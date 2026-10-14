@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f3e23cdf76a34af567b2ad5ed05c3ada6e4d7dd154df8d15a81a97b417141490",
+  "git_delta": {
+    "base_commit": "f171fda95686b47fc1daf5803e6a0d60cfcc9d27",
+    "candidate_commit": "0bf4d9521dccf4e874099eae85fa11e88e7c2aca",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "e0d627b9e696c44bd8c007451db1765d25051085d9cb3827ff3baaf2010d88b0",
+    "source_sha256": "8c61e3e418cb3547db20ddde6ecd6906b8872b5da73a76dcfb5ac08494d9057f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ac_submanifold_approxTangent",
+      "statement": "∀ (P m : ℕ) (N W : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 1 ≤ m → IsEmbeddedSubmanifold 1 m N → IsOpen W → x ∈ N ∩ W → (Q : Set (Euclid P)) = tangentSpace N x → HasApproximateTangentSpaceAt m (N ∩ W) x Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

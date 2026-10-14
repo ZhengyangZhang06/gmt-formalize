@@ -451,6 +451,1218 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 2, §4, (4.3)**: if `ψ` is `Cʳ` (`r ≥ 1`) on an open `V ⊆ ℝᵈ` and `ψ(V) ⊆ N`,
+then every `Dψ(v) a`, `v ∈ V`, is the velocity at `0` of a `C¹` curve in `N` through `ψ(v)`, i.e.
+`Dψ(v)(ℝᵈ) ⊆ T_{ψ(v)}N`.  For `a = 0` take the constant curve.  Otherwise, with
+`B_{ρ₀}(v) ⊆ V`, `c = ρ₀ / |a|` and `h(t) = t / (1 + t² / c²)` (smooth, `h(0) = 0`, `h'(0) = 1`,
+`|h| ≤ c / 2`), the curve `γ(t) = ψ(v + h(t) a)` stays in `ψ(V)` and has velocity `Dψ(v) a`. -/
+theorem Submission.dsmc_chart_range_subset_tangentSpace : ∀ (P r d : ℕ) (N : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P), 1 ≤ r → IsOpen V → ContDiffOn ℝ r ψ V → ψ '' V ⊆ N → ∀ v ∈ V, Set.range (fderiv ℝ ψ v) ⊆ tangentSpace N (ψ v) := by
+  rintro P r d N V ψ hr hV hψ hN v hv _ ⟨a, rfl⟩
+  -- `ψ` is `C¹` on `V`, hence differentiable at the interior point `v`
+  have hψ1 : ContDiffOn ℝ 1 ψ V := hψ.of_le (by exact_mod_cast hr)
+  have hψv : HasFDerivAt ψ (fderiv ℝ ψ v) v :=
+    ((hψ1.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hv)).hasFDerivAt
+  by_cases ha : a = 0
+  · -- `a = 0`: the constant curve `ψ(v)` has velocity `0 = Dψ(v) 0`
+    subst ha
+    refine ⟨fun _ => ψ v, contDiffOn_const, fun _ _ => hN (mem_image_of_mem ψ hv), rfl, ?_⟩
+    simpa using hasDerivAt_const (0 : ℝ) (ψ v)
+  · -- `a ≠ 0`: `β(t) = v + h(t) a` with `h(t) = t / (1 + t² / c²)`, `c = ρ₀ / |a|`
+    obtain ⟨ρ₀, hρ₀, hball⟩ := Metric.isOpen_iff.mp hV v hv
+    have ha' : 0 < ‖a‖ := norm_pos_iff.mpr ha
+    set c : ℝ := ρ₀ / ‖a‖ with hc_def
+    have hc : 0 < c := div_pos hρ₀ ha'
+    have hden : ∀ t : ℝ, 0 < 1 + t ^ 2 / c ^ 2 := fun t => by positivity
+    set h : ℝ → ℝ := fun t => t / (1 + t ^ 2 / c ^ 2) with hh_def
+    -- (a) `h` is smooth
+    have h_cd : ContDiff ℝ 1 h :=
+      contDiff_id.div (contDiff_const.add ((contDiff_id.pow 2).div_const _)) fun t => (hden t).ne'
+    -- (b) `h'(0) = 1`
+    have h_deriv : HasDerivAt h 1 0 := by
+      have := hasDerivAt_id' (x := (0 : ℝ)) |>.fun_div
+        (((hasDerivAt_id' (x := (0 : ℝ))).fun_pow 2).div_const (c ^ 2) |>.const_add 1) (hden 0).ne'
+      convert this using 1
+      simp
+    -- (c) `|h(t)| ≤ c / 2`, since `2 c |t| ≤ c² + t²`
+    have h_bd : ∀ t, |h t| ≤ c / 2 := by
+      intro t
+      rw [hh_def, abs_div, abs_of_pos (hden t), div_le_iff₀ (hden t)]
+      have h1 : c / 2 * (1 + t ^ 2 / c ^ 2) = (c ^ 2 + |t| ^ 2) / (2 * c) := by
+        rw [sq_abs]; field_simp
+      rw [h1, le_div_iff₀ (by positivity)]
+      nlinarith [sq_nonneg (c - |t|)]
+    -- `β` stays in `B_{ρ₀}(v) ⊆ V`, `β(0) = v` and `β'(0) = a`
+    set β : ℝ → Euclid d := fun t => v + h t • a with hβ_def
+    have hβV : ∀ t, β t ∈ V := fun t => hball <| by
+      rw [Metric.mem_ball, dist_eq_norm, hβ_def]
+      simp only [add_sub_cancel_left, norm_smul, Real.norm_eq_abs]
+      calc |h t| * ‖a‖ ≤ c / 2 * ‖a‖ := by gcongr; exact h_bd t
+        _ = ρ₀ / 2 := by rw [hc_def]; field_simp
+        _ < ρ₀ := by linarith
+    have hβ0 : β 0 = v := by simp [hβ_def, hh_def]
+    have hβ_cd : ContDiff ℝ 1 β := contDiff_const.add (h_cd.smul contDiff_const)
+    have hβ_deriv : HasDerivAt β a 0 := by
+      have := HasDerivAt.const_add v (h_deriv.smul_const a)
+      rwa [one_smul] at this
+    -- `γ = ψ ∘ β` is `C¹` on `(-1, 1)`, lies in `ψ(V) ⊆ N`, and `γ'(0) = Dψ(v) a`
+    refine ⟨ψ ∘ β, hψ1.comp hβ_cd.contDiffOn fun t _ => hβV t,
+      fun t _ => hN (mem_image_of_mem ψ (hβV t)), by simp [hβ0], ?_⟩
+    exact hψv.comp_hasDerivAt_of_eq 0 hβ_deriv hβ0.symm
+/-- Continuity of the inverse of a proper injective chart at a point (Simon Ch. 2, (4.1)–(4.2)):
+if `ψ` is continuous and injective on `V`, `ψ(V) ⊆ W`, and `V ∩ ψ⁻¹(K)` is compact for every
+compact `K ⊆ W`, then `ψ(v') → ψ(v)` with `v' ∈ V` forces `v' → v`.  Otherwise there are `vⱼ ∈ V`
+with `ψ(vⱼ) → ψ(v)` and `|vⱼ - v| ≥ ε`; they lie in the compact set `V ∩ ψ⁻¹({ψ(v)} ∪ {ψ(vⱼ)})`,
+and a limit `w ∈ V` of a subsequence has `ψ(w) = ψ(v)`, so `w = v`, a contradiction. -/
+theorem Submission.dsmc_chart_inverse_continuity : ∀ (P d : ℕ) (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P), ContinuousOn ψ V → InjOn ψ V → ψ '' V ⊆ W → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → ∀ v ∈ V, ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → dist v' v < ε := by
+  intro P d V W ψ hψ hinj hVW hproper v hv ε hε
+  by_contra! hfar
+  -- `δ = 1/(j+1)` fails: `vⱼ ∈ V`, `|ψ(vⱼ) - ψ(v)| < 1/(j+1)` and `|vⱼ - v| ≥ ε`
+  choose u huV hu_near hu_far using fun j : ℕ => hfar (1 / ((j : ℝ) + 1)) Nat.one_div_pos_of_nat
+  have hlim : Tendsto (fun j => ψ (u j)) atTop (𝓝 (ψ v)) :=
+    tendsto_iff_dist_tendsto_zero.2 <| squeeze_zero (fun j => dist_nonneg)
+      (fun j => (hu_near j).le) tendsto_one_div_add_atTop_nhds_zero_nat
+  -- `K = {ψ(v)} ∪ {ψ(vⱼ)}` is a compact subset of `W`, so `V ∩ ψ⁻¹(K)` is compact
+  have hKW : insert (ψ v) (range fun j => ψ (u j)) ⊆ W := by
+    rintro _ (rfl | ⟨j, rfl⟩)
+    exacts [hVW (mem_image_of_mem ψ hv), hVW (mem_image_of_mem ψ (huV j))]
+  obtain ⟨w, ⟨hwV, -⟩, φ, hφ, huw⟩ := (hproper _ hKW hlim.isCompact_insert_range).tendsto_subseq
+    (x := u) fun j => ⟨huV j, Or.inr ⟨j, rfl⟩⟩
+  -- `ψ(v_{φ(i)})` tends to `ψ(w)` (continuity on `V`) and to `ψ(v)`, so `w = v`
+  have hw : w = v := hinj hwV hv <| tendsto_nhds_unique
+    ((hψ w hwV).tendsto.comp (tendsto_nhdsWithin_iff.2 ⟨huw, .of_forall fun i => huV (φ i)⟩))
+    (hlim.comp hφ.tendsto_atTop)
+  rw [hw] at huw
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.1 huw ε hε
+  exact absurd (hu_far (φ N)) (not_le.2 (hN N le_rfl))
+/-- **Secant estimate at a chart point** (Simon Ch. 2, §4, (4.1)–(4.3)).  Let `ψ(V) = W ∩ N`
+with `W` open, `v ∈ V`, `Dψ(v) = A` injective, and let `ψ⁻¹` be continuous at `ψ(v)` on `ψ(V)`.
+Then every `y ∈ N` near `ψ(v)` has some `a` with `|y − ψ(v) − Aa| ≤ ε|y − ψ(v)|`.
+
+`A` is anti-Lipschitz, `|a| ≤ K|Aa|`.  With `η = min(1, ε)/(2K)`, differentiability gives
+`|ψ(v') − ψ(v) − A(v' − v)| ≤ η|v' − v|` for `|v' − v| < ρ`, hence `|v' − v| ≤ 2K|ψ(v') − ψ(v)|`.
+If `y ∈ N` and `|y − ψ(v)| < min(δ₁, δ₂)`, where `B_{δ₂}(ψ(v)) ⊆ W` and `δ₁` is the
+inverse-continuity radius for `ρ`, then `y = ψ(v')` with `v' ∈ V`, `|v' − v| < ρ`, and
+`a = v' − v` works. -/
+theorem Submission.dsmc_chart_secant_estimate : ∀ (P d : ℕ) (N : Set (Euclid P)) (V : Set (Euclid d)) (W : Set (Euclid P)) (ψ : Euclid d → Euclid P) (A : Euclid d →L[ℝ] Euclid P) (v : Euclid d), IsOpen W → ψ '' V = W ∩ N → v ∈ V → HasFDerivAt ψ A v → Injective A → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ v' ∈ V, dist (ψ v') (ψ v) < δ → dist v' v < ε) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y ∈ N, dist y (ψ v) < δ → ∃ a : Euclid d, ‖y - ψ v - A a‖ ≤ ε * ‖y - ψ v‖ := by
+  intro P d N V W ψ A v hW hψV hv hA hinj hinv ε hε
+  -- `A` is anti-Lipschitz: `‖a‖ ≤ K ‖A a‖`
+  obtain ⟨K, hK, hKA⟩ := (A : Euclid d →ₗ[ℝ] Euclid P).injective_iff_antilipschitz.1 hinj
+  have hbound : ∀ a : Euclid d, ‖a‖ ≤ K * ‖A a‖ := A.bound_of_antilipschitz hKA
+  have hK0 : (0 : ℝ) < K := hK
+  -- differentiability at `v` with `η = min 1 ε / (2K)`
+  set η : ℝ := min 1 ε / (2 * K) with hη_eq
+  have hmin : 0 < min 1 ε := lt_min one_pos hε
+  have hη : 0 < η := div_pos hmin (by positivity)
+  have hKη : K * η = min 1 ε / 2 := by
+    rw [hη_eq]
+    field_simp
+  obtain ⟨ρ, hρ, hdiff⟩ := Metric.eventually_nhds_iff.1 (hA.isLittleO.bound hη)
+  -- inverse continuity at radius `ρ`, and `B_{δ₂}(ψ v) ⊆ W`
+  obtain ⟨δ₁, hδ₁, hδ₁V⟩ := hinv ρ hρ
+  have hψv : ψ v ∈ W ∩ N := hψV ▸ mem_image_of_mem ψ hv
+  obtain ⟨δ₂, hδ₂, hδ₂W⟩ := Metric.isOpen_iff.1 hW (ψ v) hψv.1
+  refine ⟨min δ₁ δ₂, lt_min hδ₁ hδ₂, fun y hy hyd => ?_⟩
+  -- `y = ψ v'` with `v' ∈ V` and `‖v' - v‖ < ρ`
+  have hyW : y ∈ W := hδ₂W (mem_ball.2 (hyd.trans_le (min_le_right _ _)))
+  obtain ⟨v', hv'V, rfl⟩ : y ∈ ψ '' V := hψV ▸ ⟨hyW, hy⟩
+  have hv'ρ : dist v' v < ρ := hδ₁V v' hv'V (hyd.trans_le (min_le_left _ _))
+  have hest : ‖ψ v' - ψ v - A (v' - v)‖ ≤ η * ‖v' - v‖ := hdiff hv'ρ
+  refine ⟨v' - v, ?_⟩
+  -- `‖v' - v‖ ≤ 2K ‖ψ v' - ψ v‖`
+  have hlow : ‖v' - v‖ ≤ 2 * K * ‖ψ v' - ψ v‖ := by
+    have htri : ‖A (v' - v)‖ ≤ ‖ψ v' - ψ v‖ + ‖ψ v' - ψ v - A (v' - v)‖ :=
+      norm_le_norm_add_norm_sub _ _
+    have h2 : (K : ℝ) * ‖A (v' - v)‖ ≤ K * ‖ψ v' - ψ v‖ + K * η * ‖v' - v‖ := by
+      calc (K : ℝ) * ‖A (v' - v)‖ ≤ K * (‖ψ v' - ψ v‖ + η * ‖v' - v‖) :=
+            mul_le_mul_of_nonneg_left (htri.trans (add_le_add le_rfl hest)) hK0.le
+        _ = K * ‖ψ v' - ψ v‖ + K * η * ‖v' - v‖ := by ring
+    rw [hKη] at h2
+    have h3 : min 1 ε / 2 * ‖v' - v‖ ≤ 1 / 2 * ‖v' - v‖ :=
+      mul_le_mul_of_nonneg_right (by linarith [min_le_left 1 ε]) (norm_nonneg _)
+    linarith [hbound (v' - v)]
+  calc ‖ψ v' - ψ v - A (v' - v)‖ ≤ η * ‖v' - v‖ := hest
+    _ ≤ η * (2 * K * ‖ψ v' - ψ v‖) := mul_le_mul_of_nonneg_left hlow hη.le
+    _ = 2 * (K * η) * ‖ψ v' - ψ v‖ := by ring
+    _ = min 1 ε * ‖ψ v' - ψ v‖ := by rw [hKη]; ring
+    _ ≤ ε * ‖ψ v' - ψ v‖ := mul_le_mul_of_nonneg_right (min_le_right _ _) (norm_nonneg _)
+/-- **Simon Ch. 2, §4, (4.3)**, the inclusion `T_qN ⊆ A(ℝᵈ)`.  Suppose that for each `ε > 0`
+every `y ∈ N` close to `q` has some `a ∈ ℝᵈ` with `|y − q − Aa| ≤ ε|y − q|`, and let `w = γ'(0)`.
+`L = A(ℝᵈ)` is a finite-dimensional, hence closed, subspace.  The difference quotients
+`s(t) = t⁻¹(γ(t) − q)` satisfy `dist(s(t), L) ≤ ε|s(t)|` for small `t`, and `s(t) → w`, so
+`dist(w, L) ≤ ε|w|` for every `ε > 0`.  Thus `dist(w, L) = 0` and `w ∈ L`. -/
+theorem Submission.dsmc_tangentSpace_subset_range_of_secant : ∀ (P d : ℕ) (N : Set (Euclid P)) (q : Euclid P) (A : Euclid d →L[ℝ] Euclid P), (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y ∈ N, dist y q < δ → ∃ a : Euclid d, ‖y - q - A a‖ ≤ ε * ‖y - q‖) → tangentSpace N q ⊆ Set.range A := by
+  intro P d N q A hsec w hw
+  obtain ⟨γ, -, hγN, hγ0, hγw⟩ := hw
+  -- Step 1: `L = A(ℝᵈ)` is a closed (finite-dimensional) and nonempty subset of `ℝᴾ`
+  have hLc : IsClosed (Set.range A) :=
+    (LinearMap.range (A : Euclid d →ₗ[ℝ] Euclid P)).closed_of_finiteDimensional
+  have hLne : (Set.range A).Nonempty := Set.range_nonempty A
+  -- Step 2: the difference quotients `s(t) = t⁻¹ (γ(t) − q)` tend to `w` as `t → 0`, `t ≠ 0`
+  have hs : Tendsto (slope γ 0) (𝓝[≠] 0) (𝓝 w) := hγw.tendsto_slope
+  -- Steps 3–5: `dist(w, L) ≤ ε |w|` for every `ε > 0`
+  have key : ∀ ε : ℝ, 0 < ε → infDist w (Set.range A) ≤ ε * ‖w‖ := by
+    intro ε hε
+    obtain ⟨δ, hδ, hN⟩ := hsec ε hε
+    -- `γ(t) ∈ N` and `|γ(t) − q| < δ` for `t` near `0`
+    have hball : ∀ᶠ t in 𝓝 (0 : ℝ), γ t ∈ ball q δ := by
+      have hγc := hγw.continuousAt.tendsto
+      rw [hγ0] at hγc
+      exact hγc (ball_mem_nhds q hδ)
+    have hIoo : ∀ᶠ t in 𝓝 (0 : ℝ), t ∈ Ioo (-1 : ℝ) 1 := Ioo_mem_nhds (by norm_num) (by norm_num)
+    -- the secant estimate at `y = γ(t)`, divided by `|t|`
+    have hev : ∀ᶠ t in 𝓝[≠] (0 : ℝ),
+        infDist (slope γ 0 t) (Set.range A) ≤ ε * ‖slope γ 0 t‖ := by
+      filter_upwards [nhdsWithin_le_nhds (hball.and hIoo)] with t ht
+      obtain ⟨a, ha⟩ := hN (γ t) (hγN ht.2) (mem_ball.mp ht.1)
+      have hst : slope γ 0 t = t⁻¹ • (γ t - q) := by
+        rw [slope_def_module, sub_zero, hγ0]
+      calc infDist (slope γ 0 t) (Set.range A) ≤ dist (slope γ 0 t) (A (t⁻¹ • a)) :=
+            infDist_le_dist_of_mem (Set.mem_range_self _)
+        _ = ‖t⁻¹‖ * ‖γ t - q - A a‖ := by
+            rw [dist_eq_norm, hst, map_smul, ← smul_sub, norm_smul]
+        _ ≤ ‖t⁻¹‖ * (ε * ‖γ t - q‖) := by gcongr
+        _ = ε * ‖slope γ 0 t‖ := by
+            rw [hst, norm_smul]
+            ring
+    -- pass to the limit `t → 0`
+    exact le_of_tendsto_of_tendsto (((continuous_infDist_pt (Set.range A)).tendsto w).comp hs)
+      (hs.norm.const_mul ε) hev
+  -- Step 6: letting `ε → 0`, `dist(w, L) ≤ 0`
+  have h0 : infDist w (Set.range A) ≤ 0 := by
+    have hlim : Tendsto (fun ε : ℝ => ε * ‖w‖) (𝓝[>] 0) (𝓝 0) := by
+      have h : Tendsto (fun ε : ℝ => ε * ‖w‖) (𝓝 0) (𝓝 (0 * ‖w‖)) := tendsto_id.mul_const ‖w‖
+      rw [zero_mul] at h
+      exact tendsto_nhdsWithin_of_tendsto_nhds h
+    exact ge_of_tendsto hlim (eventually_nhdsWithin_of_forall fun ε hε => key ε hε)
+  -- Step 7: `L` is closed, so `dist(w, L) = 0` gives `w ∈ L`
+  exact (hLc.mem_iff_infDist_zero hLne).mpr (le_antisymm h0 infDist_nonneg)
+/-- **Simon Ch. 2, §4, (4.3)**: if `ψ : V → W` is a local representation of `N` as in (4.1)
+(`Cʳ`, `r ≥ 1`, 1:1 and proper, `ψ(V) = W ∩ N`, `Dψ` injective), then
+`T_{ψ(v)}N = Dψ(v)(ℝᵈ)` for every `v ∈ V`.  `Dψ(v)(ℝᵈ) ⊆ T_{ψ(v)}N` because `ψ(V) ⊆ N`.
+Conversely, properness and injectivity make `ψ⁻¹` continuous at `ψ(v)` on `ψ(V)`; with `Dψ(v)`
+injective this gives, for each `ε > 0`, some `a` with `|y − ψ(v) − Dψ(v)a| ≤ ε|y − ψ(v)|` for all
+`y ∈ N` near `ψ(v)`, so the difference quotients of a `C¹` curve in `N` through `ψ(v)` converge
+into the closed subspace `Dψ(v)(ℝᵈ)`. -/
+theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v : Euclid d), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v ∈ V → tangentSpace N (ψ v) = Set.range (fderiv ℝ ψ v) := by
+  intro P d r N W V ψ v hr hV hW hψ hinj hψV hproper hDψ hv
+  -- `ψ` is `C¹` on the open set `V`, hence differentiable at `v` with derivative `Dψ(v)`
+  have hψ1 : ContDiffOn ℝ 1 ψ V := hψ.of_le (by exact_mod_cast hr)
+  have hψv : HasFDerivAt ψ (fderiv ℝ ψ v) v :=
+    ((hψ1.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hv)).hasFDerivAt
+  -- `ψ(V) = W ∩ N` lies in `W` and in `N`
+  have hVW : ψ '' V ⊆ W := hψV ▸ inter_subset_left
+  have hVN : ψ '' V ⊆ N := hψV ▸ inter_subset_right
+  -- `ψ⁻¹` is continuous at `ψ(v)` on `ψ(V)`
+  have hinv := Submission.dsmc_chart_inverse_continuity P d V W ψ hψ.continuousOn hinj hVW
+    hproper v hv
+  refine Subset.antisymm ?_
+    (Submission.dsmc_chart_range_subset_tangentSpace P r d N V ψ hr hV hψ hVN v hv)
+  -- `T_{ψ(v)}N ⊆ Dψ(v)(ℝᵈ)`, from the secant estimate at `ψ(v)`
+  exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
+    (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
+      (hDψ v hv) hinv)
+/-- **`C¹` cut-off of a chart**: if `ψ` is `C¹` on an open `V ⊆ ℝᵐ` and `v₀ ∈ V`, then `ψ`
+agrees on some ball `B_ρ(v₀) ⊆ V` with a map `g` that is `C¹` on all of `ℝᵐ`.  Take
+`B_ε(v₀) ⊆ V`, a smooth bump `φ` with `φ = 1` on `B̄_{ε/4}(v₀)` and `φ = 0` off `B_{ε/2}(v₀)`,
+`g = φ ψ` and `ρ = ε/4`.  At points of `B_ε(v₀) ⊆ V`, `g` is a product of `C¹` maps; at points
+with `|v − v₀| ≥ ε`, `g` vanishes on the neighbourhood `{w : |w − v₀| > ε/2}`. -/
+theorem Submission.codim1_ac_sat_c1_local_extension : ∀ (P m : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m), IsOpen V → ContDiffOn ℝ 1 ψ V → v₀ ∈ V → ∃ (g : Euclid m → Euclid P) (ρ : ℝ), 0 < ρ ∧ ball v₀ ρ ⊆ V ∧ ContDiff ℝ 1 g ∧ EqOn g ψ (ball v₀ ρ) := by
+  intro P m V ψ v₀ hV hψ hv₀
+  -- Step 1: `B_ε(v₀) ⊆ V`
+  obtain ⟨ε, hε, hεV⟩ := Metric.isOpen_iff.mp hV v₀ hv₀
+  -- Step 2: a smooth bump `φ` with `φ = 1` on `B̄_{ε/4}(v₀)` and `φ = 0` off `B_{ε/2}(v₀)`
+  let φ : ContDiffBump v₀ := ⟨ε / 4, ε / 2, by positivity, by linarith⟩
+  -- Step 3: `g = φ ψ` and `ρ = ε / 4`, so `B_ρ(v₀) ⊆ B_ε(v₀) ⊆ V`
+  refine ⟨fun v => φ v • ψ v, ε / 4, by positivity,
+    (ball_subset_ball (by linarith)).trans hεV, ?_, fun v hv => ?_⟩
+  · -- Step 5: `g` is `C¹` at every point `v`
+    refine contDiff_iff_contDiffAt.mpr fun v => ?_
+    by_cases hv : dist v v₀ < ε
+    · -- (a) `v ∈ B_ε(v₀) ⊆ V`: `φ` and `ψ` are `C¹` at `v`
+      exact (φ.contDiffAt (n := 1)).smul (hψ.contDiffAt (hV.mem_nhds (hεV (mem_ball.mpr hv))))
+    · -- (b) `|v − v₀| ≥ ε`: `g = 0` on the neighbourhood `{w : |w − v₀| > ε/2}` of `v`
+      have hO : ∀ᶠ w in 𝓝 v, ε / 2 < dist w v₀ :=
+        continuousAt_const.eventually_lt (continuous_id.dist continuous_const).continuousAt
+          (by linarith [not_lt.mp hv])
+      refine (contDiffAt_const (c := (0 : Euclid P))).congr_of_eventuallyEq ?_
+      filter_upwards [hO] with w hw
+      rw [φ.zero_of_le_dist hw.le, zero_smul]
+  · -- Step 4: `φ = 1` on `B̄_{ε/4}(v₀)`, so `g = ψ` on `B_ρ(v₀)`
+    simp only [φ.one_of_mem_closedBall (ball_subset_closedBall hv), one_smul]
+/-- **Simon Ch. 3, Lemma 1.2** (the inverse-function step of the "only if" part): if `G` is `C¹`
+and `DG(x)` is injective, then `μ |a − b| ≤ |G(a) − G(b)|` on some ball `B_δ(x)`.  With
+`|v| ≤ K |DG(x) v|` and `μ = 1/(2K)`, strict differentiability gives
+`|G(a) − G(b) − DG(x)(a − b)| ≤ μ |a − b|` near `x`, so `|G(a) − G(b)| ≥ 2μ|a − b| − μ|a − b|`. -/
+theorem Submission.codim1_rdo_c1cov_local_lower_lipschitz : ∀ (P n : ℕ) (G : Euclid n → Euclid P) (x : Euclid n), ContDiff ℝ 1 G → Injective (fderiv ℝ G x) → ∃ δ μ : ℝ, 0 < δ ∧ 0 < μ ∧ ∀ a ∈ ball x δ, ∀ b ∈ ball x δ, μ * ‖a - b‖ ≤ ‖G a - G b‖ := by
+  intro P n G x hG hinj
+  -- `L = DG(x)` is injective on the finite-dimensional `ℝⁿ`: `‖v‖ ≤ K ‖L v‖`
+  obtain ⟨K, hK, hKL⟩ := (fderiv ℝ G x).injective_iff_antilipschitz.mp hinj
+  have hbound : ∀ v, ‖v‖ ≤ K * ‖fderiv ℝ G x v‖ :=
+    (fderiv ℝ G x).bound_of_antilipschitz hKL
+  -- `μ = 1/(2K)`, so `‖L v‖ ≥ 2μ ‖v‖`
+  set μ : ℝ := (2 * K)⁻¹ with hμ
+  have hK' : (0 : ℝ) < K := hK
+  have hμ0 : 0 < μ := by positivity
+  -- `G` is `C¹`, so `L` is a strict derivative: `G` approximates `L` with constant `μ` near `x`
+  obtain ⟨s, hs, hGs⟩ := (hG.contDiffAt.hasStrictFDerivAt one_ne_zero).approximates_deriv_on_nhds
+    (c := ⟨μ, hμ0.le⟩) (Or.inr hμ0)
+  obtain ⟨δ, hδ, hδs⟩ := Metric.mem_nhds_iff.mp hs
+  refine ⟨δ, μ, hδ, hμ0, fun a ha b hb => ?_⟩
+  have h1 : ‖G a - G b - fderiv ℝ G x (a - b)‖ ≤ μ * ‖a - b‖ := hGs a (hδs ha) b (hδs hb)
+  have h2 : 2 * μ * ‖a - b‖ ≤ ‖fderiv ℝ G x (a - b)‖ := by
+    calc 2 * μ * ‖a - b‖ ≤ 2 * μ * (K * ‖fderiv ℝ G x (a - b)‖) := by
+          gcongr
+          exact hbound (a - b)
+      _ = ‖fderiv ℝ G x (a - b)‖ := by
+          rw [hμ]
+          field_simp
+  -- triangle inequality: `‖L (a - b)‖ ≤ ‖G a - G b‖ + ‖G a - G b - L (a - b)‖`
+  have h3 : ‖fderiv ℝ G x (a - b)‖ ≤ ‖G a - G b‖ + ‖G a - G b - fderiv ℝ G x (a - b)‖ := by
+    simpa using norm_sub_le (G a - G b) (G a - G b - fderiv ℝ G x (a - b))
+  linarith
+/-- A lower Lipschitz bound at a point passes to the derivative (step 1 of the `C¹`-piece tangent
+argument, Simon Ch. 3, 1.6): if `U` is open, `a ∈ U`, `g` is differentiable at `a` and
+`m|x − a| ≤ |g(x) − g(a)|` on `U`, then `m|v| ≤ |Dg(a)v|`.  For small `t > 0`, `a + tv ∈ U`
+gives `m|v| ≤ |t⁻¹(g(a + tv) − g(a))|`, and the quotients tend to `Dg(a)v` as `t ↓ 0`. -/
+theorem Submission.codim1_rdo_c1pt_fderiv_lower_bound : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (U : Set (Euclid n)) (a : Euclid n) (m : ℝ), IsOpen U → a ∈ U → DifferentiableAt ℝ g a → (∀ x ∈ U, m * ‖x - a‖ ≤ ‖g x - g a‖) → ∀ v : Euclid n, m * ‖v‖ ≤ ‖fderiv ℝ g a v‖ := by
+  intro P n g U a m hU ha hg hm v
+  -- difference quotients `q(t) = t⁻¹ • (g (a + t • v) - g a)` tend to `Dg(a) v` as `t ↓ 0`
+  have hq : Tendsto (fun t : ℝ => t⁻¹ • (g (a + t • v) - g a)) (𝓝[>] 0)
+      (𝓝 (fderiv ℝ g a v)) := by
+    simpa only [inv_inv] using hg.hasFDerivAt.lim v (c := fun t : ℝ => t⁻¹)
+      (tendsto_norm_atTop_atTop.comp tendsto_inv_nhdsGT_zero)
+  -- `a + t • v → a` as `t → 0`, so `a + t • v ∈ U` for small `t` (`U` is a neighbourhood of `a`)
+  have hline : Tendsto (fun t : ℝ => a + t • v) (𝓝 0) (𝓝 a) :=
+    (continuous_const.add (continuous_id.smul continuous_const)).tendsto' 0 a (by simp)
+  -- for small `t > 0`: `t * (m‖v‖) ≤ ‖g (a + t • v) - g a‖`, i.e. `m‖v‖ ≤ ‖q(t)‖`
+  have hle : ∀ᶠ t in 𝓝[>] (0 : ℝ), m * ‖v‖ ≤ ‖t⁻¹ • (g (a + t • v) - g a)‖ := by
+    filter_upwards [nhdsWithin_le_nhds (hline (hU.mem_nhds ha)), self_mem_nhdsWithin]
+      with t htU ht
+    have ht : (0 : ℝ) < t := ht
+    have h := hm _ htU
+    rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg ht.le, mul_left_comm] at h
+    rwa [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 ht.le), le_inv_mul_iff₀ ht]
+  -- the non-strict inequality passes to the limit along the nontrivial filter `𝓝[>] 0`
+  exact ge_of_tendsto hq.norm hle
+/-- **Simon Ch. 2, (3.2) and (3.5)** (area formula for the blow-ups of an injective regular
+image): if `g` is differentiable on the Borel set `B`, injective on `B` and `Dg(a)` is injective
+for `a ∈ B`, then for `s > 0`, every `z` and every `f`,
+`∫_{η_{g(z),s}(g(B))} f dHⁿ = ∫_{B_s} J_g(z + s b) f(s⁻¹(g(z + s b) − g(z))) dLⁿ(b)`, where
+`B_s = {b | z + s b ∈ B}` and `J_g = √det(Dg* ∘ Dg)`.  The rescaled map
+`φ(b) = s⁻¹(g(z + s b) − g(z))` is injective on `B_s` with `Dφ(b) = Dg(z + s b)` and
+`φ(B_s) = η_{g(z),s}(g(B))`, so this is the area formula for `φ`.  That formula is proved in
+place: the linear case (3.1), sharp `Hⁿ` estimates for maps close to an injective linear map,
+a measurable partition into such pieces, and the transport of the Jacobian-weighted measure,
+following the pinned SimonGMT `Chapter02.AreaApproximation`, `AreaDerivative`, `AreaFormula`
+and `WeightedArea` proofs, which lie outside this file's imports. -/
+theorem Submission.codim1_rdo_c1pt_rescaled_area_formula : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (B : Set (Euclid n)) (z : Euclid n) (s : ℝ) (f : Euclid P → ℝ), MeasurableSet B → (∀ a ∈ B, DifferentiableAt ℝ g a) → InjOn g B → (∀ a ∈ B, Injective (fderiv ℝ g a)) → 0 < s → ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap (g z) s '' (g '' B), f y ∂μHE[n] = ∫ b in {b : Euclid n | z + s • b ∈ B}, Real.sqrt (((fderiv ℝ g (z + s • b)).adjoint ∘L fderiv ℝ g (z + s • b)).det) * f (s⁻¹ • (g (z + s • b) - g z)) := by
+  intro P n g B z s f hB hdiff hinj hreg hs
+  classical
+  -- `J(L) = √det(L* ∘ L)` is the metric Jacobian of a linear map `L : ℝⁿ → ℝᴾ`
+  obtain ⟨J, hJdef⟩ : ∃ J : (Euclid n →L[ℝ] Euclid P) → ℝ,
+      J = fun L => Real.sqrt ((L.adjoint ∘L L).det) := ⟨_, rfl⟩
+  have hJnonneg : ∀ L, 0 ≤ J L := fun L => by rw [hJdef]; exact Real.sqrt_nonneg _
+  have hJcont : Continuous J := by
+    rw [hJdef]
+    exact Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+      (Continuous.clm_comp ContinuousLinearMap.adjoint.continuous continuous_id))
+  /- Simon (3.1), the linear area formula: an injective `L` factors as `ι ∘ M` with `ι` a
+  linear isometry onto its range and `M` an endomorphism of `ℝⁿ`, so
+  `Hⁿ(L(A)) = Lⁿ(M(A)) = |det M| Lⁿ(A)`, and `J(L)² = det(M* M) = (det M)² ≠ 0`. -/
+  have hlin : ∀ L : Euclid n →L[ℝ] Euclid P, Injective L →
+      0 < J L ∧ ∀ A : Set (Euclid n), μHE[n] (L '' A) = ENNReal.ofReal (J L) * volume A := by
+    intro L hL
+    have hV : Module.finrank ℝ (LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P)) = n := by
+      rw [LinearMap.finrank_range_of_inj hL, finrank_euclideanSpace_fin]
+    let e : LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P) ≃ₗᵢ[ℝ] Euclid n :=
+      ((stdOrthonormalBasis ℝ _).reindex (finCongr hV)).repr
+    let ιI : Euclid n →ₗᵢ[ℝ] Euclid P :=
+      (LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P)).subtypeₗᵢ.comp e.symm.toLinearIsometry
+    let M : Euclid n →L[ℝ] Euclid n := (e : _ →L[ℝ] Euclid n) ∘L L.rangeRestrict
+    have hLιM : L = ιI.toContinuousLinearMap ∘L M := by
+      ext1 x
+      show L x = ((e.symm (e (L.rangeRestrict x)) :
+        LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P)) : Euclid P)
+      rw [LinearIsometryEquiv.symm_apply_apply]
+      rfl
+    have hιadj : ιI.toContinuousLinearMap.adjoint ∘L ιI.toContinuousLinearMap = 1 :=
+      (ContinuousLinearMap.norm_map_iff_adjoint_comp_self _).mp ιI.norm_map
+    have hdetadj : (ContinuousLinearMap.adjoint M).det = M.det := by
+      have h := congrArg Matrix.det (LinearMap.toMatrix_adjoint (EuclideanSpace.basisFun (Fin n) ℝ)
+        (EuclideanSpace.basisFun (Fin n) ℝ) (M : Euclid n →ₗ[ℝ] Euclid n))
+      rw [Matrix.det_conjTranspose, LinearMap.det_toMatrix, LinearMap.det_toMatrix] at h
+      simp only [star_trivial] at h
+      exact h
+    have hdet : (L.adjoint ∘L L).det = M.det ^ 2 := by
+      have h1 : L.adjoint ∘L L = M.adjoint ∘L M := by
+        rw [hLιM, ContinuousLinearMap.adjoint_comp, ContinuousLinearMap.comp_assoc,
+          ← ContinuousLinearMap.comp_assoc _ _ M, hιadj, ContinuousLinearMap.one_def,
+          ContinuousLinearMap.id_comp]
+      have h2 : (M.adjoint ∘L M).det = M.adjoint.det * M.det :=
+        LinearMap.det_comp _ _
+      rw [h1, h2, hdetadj, sq]
+    have hJ : J L = |M.det| := by
+      rw [hJdef]
+      dsimp only
+      rw [hdet, Real.sqrt_sq_eq_abs]
+    have hMinj : LinearMap.ker (M : Euclid n →ₗ[ℝ] Euclid n) = ⊥ := by
+      rw [LinearMap.ker_eq_bot]
+      intro x y hxy
+      apply hL
+      have h := congrArg (fun v => ((e.symm v : LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P)) :
+        Euclid P)) hxy
+      simpa [M] using h
+    refine ⟨?_, fun A => ?_⟩
+    · rw [hJ]
+      exact abs_pos.mpr (fun h => (LinearMap.det_eq_zero_iff_ker_ne_bot.mp h) hMinj)
+    · rw [hJ, hLιM, ContinuousLinearMap.coe_comp, Set.image_comp,
+        LinearIsometry.coe_toContinuousLinearMap, ιI.isometry.euclideanHausdorffMeasure_image,
+        EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      exact MeasureTheory.Measure.addHaar_image_linearMap volume (M : Euclid n →ₗ[ℝ] Euclid n) A
+  -- comparison of pairwise distances gives comparison of the `Hⁿ` measures of the images
+  have hdistcmp : ∀ (u v : Euclid n → Euclid P) (T : Set (Euclid n)) (K : NNReal), InjOn v T →
+      (∀ x ∈ T, ∀ y ∈ T, dist (u x) (u y) ≤ K * dist (v x) (v y)) →
+      μHE[n] (u '' T) ≤ (K : ℝ≥0∞) ^ n * μHE[n] (v '' T) := by
+    intro u v T K hv hK
+    have hh : LipschitzOnWith K (u ∘ invFunOn v T) (v '' T) := by
+      rw [lipschitzOnWith_iff_dist_le_mul]
+      rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
+      simpa only [comp_apply, hv.leftInvOn_invFunOn hx, hv.leftInvOn_invFunOn hy] using hK x hx y hy
+    have himage : (u ∘ invFunOn v T) '' (v '' T) = u '' T := by
+      rw [image_comp, hv.invFunOn_image Subset.rfl]
+    simpa only [himage] using
+      Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n hh
+  /- Near an injective `L`, one radius `δ` controls both the Jacobian of nearby linear maps and
+  the `Hⁿ` measure of images under maps `δ`-approximating `L`, up to a factor `q > 1`. -/
+  have hradius : ∀ L : Euclid n →L[ℝ] Euclid P, Injective L → ∀ q : NNReal, 1 < q →
+      ∃ δ : NNReal, 0 < δ ∧
+        (∀ L' : Euclid n →L[ℝ] Euclid P, ‖L' - L‖ ≤ δ →
+          ENNReal.ofReal (J L') ≤ q * ENNReal.ofReal (J L) ∧
+            ENNReal.ofReal (J L) ≤ q * ENNReal.ofReal (J L')) ∧
+        (∀ (T : Set (Euclid n)) (u : Euclid n → Euclid P), ApproximatesLinearOn u L T δ →
+          μHE[n] (u '' T) ≤ q * μHE[n] (L '' T) ∧ μHE[n] (L '' T) ≤ q * μHE[n] (u '' T)) := by
+    intro L hL q hq
+    obtain ⟨K, -, hK⟩ := (L : Euclid n →ₗ[ℝ] Euclid P).exists_antilipschitzWith
+      (LinearMap.ker_eq_bot.mpr hL)
+    have hqR : (1 : ℝ) < q := hq
+    have hJpos := (hlin L hL).1
+    have hmul : J L < (q : ℝ) * J L := lt_mul_of_one_lt_left hJpos hqR
+    have hnear : ∀ᶠ L' in 𝓝 L, J L' < (q : ℝ) * J L ∧ J L < (q : ℝ) * J L' :=
+      (hJcont.continuousAt.eventually_lt continuousAt_const hmul).and
+        (continuousAt_const.eventually_lt (continuousAt_const.mul hJcont.continuousAt) hmul)
+    obtain ⟨ε, hε, hnear⟩ := Metric.eventually_nhds_iff.mp hnear
+    have hsmall : ∀ᶠ δ : NNReal in 𝓝 0, δ * K < 1 :=
+      (continuousAt_id.mul continuousAt_const).eventually_lt continuousAt_const (by simp)
+    have hupper : ∀ᶠ δ : NNReal in 𝓝 0, (1 + δ * K) ^ n < q :=
+      ((continuousAt_const.add (continuousAt_id.mul continuousAt_const)).pow _).eventually_lt
+        continuousAt_const (by simpa using hq)
+    have hlower : ∀ᶠ δ : NNReal in 𝓝 0, ((1 - δ * K)⁻¹) ^ n < q := by
+      apply ContinuousAt.eventually_lt _ continuousAt_const (by simpa using hq)
+      apply ContinuousAt.pow
+      apply ContinuousAt.inv₀
+      · exact continuousAt_const.sub (continuousAt_id.mul continuousAt_const)
+      · simp
+    have hεev : ∀ᶠ δ : NNReal in 𝓝 0, (δ : ℝ) < ε :=
+      (NNReal.continuous_coe.continuousAt.eventually_lt continuousAt_const (by simpa using hε))
+    have hevent : ∀ᶠ δ : NNReal in 𝓝[>] 0,
+        0 < δ ∧ δ * K < 1 ∧ (1 + δ * K) ^ n < q ∧ ((1 - δ * K)⁻¹) ^ n < q ∧ (δ : ℝ) < ε := by
+      filter_upwards [self_mem_nhdsWithin, hsmall.filter_mono nhdsWithin_le_nhds,
+        hupper.filter_mono nhdsWithin_le_nhds, hlower.filter_mono nhdsWithin_le_nhds,
+        hεev.filter_mono nhdsWithin_le_nhds] with δ hδ h1 h2 h3 h4
+      exact ⟨hδ, h1, h2, h3, h4⟩
+    obtain ⟨δ, hδ, hδK, hδupper, hδlower, hδε⟩ := hevent.exists
+    -- `‖(u x - u y) - L(x - y)‖ ≤ δ K ‖L x - L y‖` on `T`
+    have herror : ∀ (T : Set (Euclid n)) (u : Euclid n → Euclid P),
+        ApproximatesLinearOn u L T δ → ∀ x ∈ T, ∀ y ∈ T,
+          ‖u x - u y - (L x - L y)‖ ≤ (δ : ℝ) * K * ‖L x - L y‖ := by
+      intro T u hu x hx y hy
+      have hb : ‖x - y‖ ≤ K * ‖L x - L y‖ := by
+        simpa only [dist_eq_norm, ContinuousLinearMap.coe_coe] using hK.le_mul_dist x y
+      calc ‖u x - u y - (L x - L y)‖ ≤ δ * ‖x - y‖ := by simpa only [map_sub] using hu x hx y hy
+        _ ≤ δ * (K * ‖L x - L y‖) := mul_le_mul_of_nonneg_left hb δ.2
+        _ = (δ : ℝ) * K * ‖L x - L y‖ := by ring
+    refine ⟨δ, hδ, fun L' hL' => ?_, fun T u hu => ⟨?_, ?_⟩⟩
+    · have hdist : dist L' L < ε := by
+        rw [dist_eq_norm]
+        exact hL'.trans_lt hδε
+      obtain ⟨h1, h2⟩ := hnear hdist
+      constructor
+      · rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (NNReal.coe_nonneg q)]
+        exact ENNReal.ofReal_le_ofReal h1.le
+      · rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (NNReal.coe_nonneg q)]
+        exact ENNReal.ofReal_le_ofReal h2.le
+    · refine (hdistcmp u L T (1 + δ * K) hL.injOn fun x hx y hy => ?_).trans ?_
+      · simp only [dist_eq_norm, NNReal.coe_add, NNReal.coe_one, NNReal.coe_mul]
+        calc ‖u x - u y‖ ≤ ‖u x - u y - (L x - L y)‖ + ‖L x - L y‖ := norm_le_norm_sub_add _ _
+          _ ≤ (δ : ℝ) * K * ‖L x - L y‖ + ‖L x - L y‖ :=
+            add_le_add (herror T u hu x hx y hy) le_rfl
+          _ = (1 + (δ : ℝ) * K) * ‖L x - L y‖ := by ring
+      · gcongr
+        rw [← ENNReal.coe_pow]
+        exact ENNReal.coe_le_coe.mpr hδupper.le
+    · have hδR : (δ : ℝ) * K < 1 := hδK
+      have hdist : ∀ x ∈ T, ∀ y ∈ T,
+          dist (L x) (L y) ≤ ((1 - δ * K)⁻¹ : NNReal) * dist (u x) (u y) := by
+        intro x hx y hy
+        have h1 := herror T u hu x hx y hy
+        have htriangle := norm_le_norm_add_norm_sub (u x - u y) (L x - L y)
+        rw [dist_eq_norm, dist_eq_norm, NNReal.coe_inv, NNReal.coe_sub hδK.le, NNReal.coe_one,
+          NNReal.coe_mul, inv_mul_eq_div, le_div_iff₀ (sub_pos.mpr hδR)]
+        linarith only [h1, htriangle]
+      have huinj : InjOn u T := by
+        intro x hx y hy hxy
+        apply hL
+        apply dist_le_zero.mp
+        simpa only [hxy, dist_self, mul_zero] using hdist x hx y hy
+      refine (hdistcmp L u T _ huinj hdist).trans ?_
+      gcongr
+      rw [← ENNReal.coe_pow]
+      exact ENNReal.coe_le_coe.mpr hδlower.le
+  /- On almost every point of a measurable piece where `u` is `δ`-approximated by `A`, the
+  derivative is `δ`-close to `A` (the density-point argument of Mathlib's
+  `ApproximatesLinearOn.norm_fderiv_sub_le`, for rectangular derivatives). -/
+  have hderivbound : ∀ (u : Euclid n → Euclid P) (T : Set (Euclid n)) (A : Euclid n →L[ℝ] Euclid P)
+      (δ : NNReal) (u' : Euclid n → Euclid n →L[ℝ] Euclid P), ApproximatesLinearOn u A T δ →
+      MeasurableSet T → (∀ x ∈ T, HasFDerivWithinAt u (u' x) T x) →
+      ∀ᵐ x ∂(volume.restrict T), ‖u' x - A‖₊ ≤ δ := by
+    intro u T A δ u' hf hT hf'
+    filter_upwards [Besicovitch.ae_tendsto_measure_inter_div volume T, ae_restrict_mem hT]
+    intro x hx xT
+    apply ContinuousLinearMap.opNorm_le_bound _ δ.2 fun w => ?_
+    suffices H : ∀ ε, 0 < ε → ‖(u' x - A) w‖ ≤ (δ + ε) * (‖w‖ + ε) + ‖u' x - A‖ * ε by
+      have : Tendsto (fun ε : ℝ => ((δ : ℝ) + ε) * (‖w‖ + ε) + ‖u' x - A‖ * ε) (𝓝[>] 0)
+          (𝓝 ((δ + 0) * (‖w‖ + 0) + ‖u' x - A‖ * 0)) :=
+        Tendsto.mono_left (Continuous.tendsto (by fun_prop) 0) nhdsWithin_le_nhds
+      simp only [add_zero, mul_zero] at this
+      apply le_of_tendsto_of_tendsto tendsto_const_nhds this
+      filter_upwards [self_mem_nhdsWithin]
+      exact H
+    intro ε εpos
+    have B₁ := MeasureTheory.Measure.eventually_nonempty_inter_smul_of_density_one volume T x hx
+      (closedBall w ε) measurableSet_closedBall (measure_closedBall_pos volume w εpos).ne'
+    obtain ⟨ρ, ρpos, hρ⟩ :
+        ∃ ρ > 0, ball x ρ ∩ T ⊆ {y : Euclid n | ‖u y - u x - (u' x) (y - x)‖ ≤ ε * ‖y - x‖} :=
+      mem_nhdsWithin_iff.1 (Asymptotics.isLittleO_iff.mp (hf' x xT).isLittleO εpos)
+    have B₂ := (eventually_singleton_add_smul_subset (𝕜 := ℝ) (x := x)
+      (isBounded_closedBall (x := w) (r := ε)) (ball_mem_nhds x ρpos)).filter_mono
+        (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
+    obtain ⟨r, ⟨y, ⟨yT, hy⟩⟩, rρ, rpos⟩ := (B₁.and (B₂.and self_mem_nhdsWithin)).exists
+    obtain ⟨a, aw, ya⟩ : ∃ a, a ∈ closedBall w ε ∧ y = x + r • a := by
+      have hy' := hy
+      simp only [mem_smul_set, image_add_left, mem_preimage, singleton_add] at hy'
+      rcases hy' with ⟨a, aw, ha⟩
+      exact ⟨a, aw, by simp only [ha, add_neg_cancel_left]⟩
+    have norm_a : ‖a‖ ≤ ‖w‖ + ε :=
+      calc ‖a‖ = ‖w + (a - w)‖ := by simp only [add_sub_cancel]
+        _ ≤ ‖w‖ + ‖a - w‖ := norm_add_le _ _
+        _ ≤ ‖w‖ + ε := by grw [mem_closedBall_iff_norm.1 aw]
+    have I : r * ‖(u' x - A) a‖ ≤ r * (δ + ε) * (‖w‖ + ε) :=
+      calc r * ‖(u' x - A) a‖ = ‖(u' x - A) (r • a)‖ := by
+            simp only [map_smul, norm_smul, Real.norm_eq_abs, abs_of_nonneg rpos.le]
+        _ = ‖u y - u x - A (y - x) - (u y - u x - (u' x) (y - x))‖ := by
+            simp only [ya, add_sub_cancel_left, sub_sub_sub_cancel_left, FunLike.coe_sub,
+              Pi.sub_apply, map_smul, smul_sub]
+        _ ≤ ‖u y - u x - A (y - x)‖ + ‖u y - u x - (u' x) (y - x)‖ := norm_sub_le _ _
+        _ ≤ δ * ‖y - x‖ + ε * ‖y - x‖ := add_le_add (hf _ yT _ xT) (hρ ⟨rρ hy, yT⟩)
+        _ = r * (δ + ε) * ‖a‖ := by
+            simp only [ya, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_nonneg rpos.le]
+            ring
+        _ ≤ r * (δ + ε) * (‖w‖ + ε) := by gcongr
+    calc ‖(u' x - A) w‖ = ‖(u' x - A) a + (u' x - A) (w - a)‖ := by
+          congr 1
+          simp only [FunLike.coe_sub, map_sub, Pi.sub_apply]
+          abel
+      _ ≤ ‖(u' x - A) a‖ + ‖(u' x - A) (w - a)‖ := norm_add_le _ _
+      _ ≤ (δ + ε) * (‖w‖ + ε) + ‖u' x - A‖ * ‖w - a‖ := by
+          apply add_le_add
+          · rw [mul_assoc] at I
+            exact (mul_le_mul_iff_right₀ rpos).1 I
+          · apply ContinuousLinearMap.le_opNorm
+      _ ≤ (δ + ε) * (‖w‖ + ε) + ‖u' x - A‖ * ε := by
+          rw [mem_closedBall_iff_norm'] at aw
+          gcongr
+  /- Simon (3.2), measure form: for `u` injective on a measurable `T`, differentiable along `T`
+  with injective derivative `u'`, `Hⁿ(u(T)) = ∫_T J(u'(x)) dLⁿ(x)`.  Partition `T` into
+  measurable pieces on which `u` is close to linear maps `A i = u'(yᵢ)`, compare on each piece
+  up to a factor `q²`, sum, and let `q ↓ 1`. -/
+  have hmeasure : ∀ (T : Set (Euclid n)) (u : Euclid n → Euclid P)
+      (u' : Euclid n → Euclid n →L[ℝ] Euclid P), MeasurableSet T →
+      (∀ x ∈ T, HasFDerivWithinAt u (u' x) T x) → (∀ x ∈ T, Injective (u' x)) → InjOn u T →
+      μHE[n] (u '' T) = ∫⁻ x in T, ENNReal.ofReal (J (u' x)) := by
+    intro T u u' hT hu' hreg' hinj'
+    have hcmp : ∀ q : NNReal, 1 < q →
+        μHE[n] (u '' T) ≤ (q : ℝ≥0∞) ^ 2 * ∫⁻ x in T, ENNReal.ofReal (J (u' x)) ∧
+          ∫⁻ x in T, ENNReal.ofReal (J (u' x)) ≤ (q : ℝ≥0∞) ^ 2 * μHE[n] (u '' T) := by
+      intro q hq
+      rcases eq_empty_or_nonempty T with rfl | hTne
+      · simp
+      have hchoice : ∀ L : Euclid n →L[ℝ] Euclid P, ∃ δ : NNReal, 0 < δ ∧ (Injective L →
+          (∀ L' : Euclid n →L[ℝ] Euclid P, ‖L' - L‖ ≤ δ →
+            ENNReal.ofReal (J L') ≤ q * ENNReal.ofReal (J L) ∧
+              ENNReal.ofReal (J L) ≤ q * ENNReal.ofReal (J L')) ∧
+          (∀ (T' : Set (Euclid n)) (v : Euclid n → Euclid P), ApproximatesLinearOn v L T' δ →
+            μHE[n] (v '' T') ≤ q * μHE[n] (L '' T') ∧
+              μHE[n] (L '' T') ≤ q * μHE[n] (v '' T'))) := by
+        intro L
+        by_cases hL : Injective L
+        · obtain ⟨δ, hδ, h1, h2⟩ := hradius L hL q hq
+          exact ⟨δ, hδ, fun _ => ⟨h1, h2⟩⟩
+        · exact ⟨1, one_pos, fun h => (hL h).elim⟩
+      choose δ hδpos hδ using hchoice
+      obtain ⟨t, A, hdisj, ht, hcover, happrox, hactual⟩ :=
+        exists_partition_approximatesLinearOn_of_hasFDerivWithinAt u T u' hu' δ
+          (fun L => (hδpos L).ne')
+      have hAreg : ∀ i, Injective (A i) := by
+        intro i
+        obtain ⟨x, hx, hA⟩ := hactual hTne i
+        rw [hA]
+        exact hreg' x hx
+      have hTeq : T = ⋃ i, T ∩ t i := by
+        rw [← inter_iUnion]
+        exact Subset.antisymm (subset_inter Subset.rfl hcover) inter_subset_left
+      have hsumimage : μHE[n] (u '' T) = ∑' i, μHE[n] (u '' (T ∩ t i)) := by
+        conv_lhs => rw [hTeq, image_iUnion]
+        apply measure_iUnion
+        · intro i j hij
+          exact Disjoint.image (Disjoint.mono inter_subset_right inter_subset_right (hdisj hij))
+            hinj' inter_subset_left inter_subset_left
+        · intro i
+          apply (hT.inter (ht i)).image_of_continuousOn_injOn
+          · exact fun x hx => (hu' x hx.1).continuousWithinAt.mono inter_subset_left
+          · exact hinj'.mono inter_subset_left
+      have hsumintegral : ∫⁻ x in T, ENNReal.ofReal (J (u' x)) =
+          ∑' i, ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x)) := by
+        conv_lhs => rw [hTeq]
+        exact lintegral_iUnion (fun i => hT.inter (ht i))
+          (pairwise_disjoint_mono hdisj (fun _ => inter_subset_right)) _
+      have hpiece : ∀ i, μHE[n] (u '' (T ∩ t i)) ≤
+            (q : ℝ≥0∞) ^ 2 * ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x)) ∧
+          ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x)) ≤
+            (q : ℝ≥0∞) ^ 2 * μHE[n] (u '' (T ∩ t i)) := by
+        intro i
+        have hJ := (hδ (A i) (hAreg i)).1
+        obtain ⟨harea_upper, harea_lower⟩ := (hδ (A i) (hAreg i)).2 (T ∩ t i) u (happrox i)
+        have hlinA := (hlin (A i) (hAreg i)).2 (T ∩ t i)
+        rw [hlinA] at harea_upper harea_lower
+        have hderiv := hderivbound u (T ∩ t i) (A i) (δ (A i)) u' (happrox i) (hT.inter (ht i))
+          (fun x hx => (hu' x hx.1).mono inter_subset_left)
+        have hJupper : ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x)) ≤
+            q * (ENNReal.ofReal (J (A i)) * volume (T ∩ t i)) := by
+          calc ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x))
+              ≤ ∫⁻ _ in T ∩ t i, (q : ℝ≥0∞) * ENNReal.ofReal (J (A i)) := by
+                apply lintegral_mono_ae
+                filter_upwards [hderiv] with x hx
+                exact (hJ (u' x) hx).1
+            _ = q * (ENNReal.ofReal (J (A i)) * volume (T ∩ t i)) := by
+                rw [setLIntegral_const, mul_assoc]
+        have hJlower : ENNReal.ofReal (J (A i)) * volume (T ∩ t i) ≤
+            q * ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x)) := by
+          calc ENNReal.ofReal (J (A i)) * volume (T ∩ t i)
+              = ∫⁻ _ in T ∩ t i, ENNReal.ofReal (J (A i)) := (setLIntegral_const _ _).symm
+            _ ≤ ∫⁻ x in T ∩ t i, (q : ℝ≥0∞) * ENNReal.ofReal (J (u' x)) := by
+                apply lintegral_mono_ae
+                filter_upwards [hderiv] with x hx
+                exact (hJ (u' x) hx).2
+            _ = q * ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x)) :=
+                lintegral_const_mul' _ _ ENNReal.coe_ne_top
+        constructor
+        · calc μHE[n] (u '' (T ∩ t i)) ≤ q * (ENNReal.ofReal (J (A i)) * volume (T ∩ t i)) :=
+                harea_upper
+            _ ≤ q * (q * ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x))) := by gcongr
+            _ = (q : ℝ≥0∞) ^ 2 * ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x)) := by
+                rw [pow_two, mul_assoc]
+        · calc ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x))
+              ≤ q * (ENNReal.ofReal (J (A i)) * volume (T ∩ t i)) := hJupper
+            _ ≤ q * (q * μHE[n] (u '' (T ∩ t i))) := by gcongr
+            _ = (q : ℝ≥0∞) ^ 2 * μHE[n] (u '' (T ∩ t i)) := by rw [pow_two, mul_assoc]
+      rw [hsumimage, hsumintegral]
+      constructor
+      · calc ∑' i, μHE[n] (u '' (T ∩ t i))
+            ≤ ∑' i, (q : ℝ≥0∞) ^ 2 * ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x)) :=
+              ENNReal.tsum_le_tsum (fun i => (hpiece i).1)
+          _ = (q : ℝ≥0∞) ^ 2 * ∑' i, ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x)) :=
+              ENNReal.tsum_mul_left
+      · calc ∑' i, ∫⁻ x in T ∩ t i, ENNReal.ofReal (J (u' x))
+            ≤ ∑' i, (q : ℝ≥0∞) ^ 2 * μHE[n] (u '' (T ∩ t i)) :=
+              ENNReal.tsum_le_tsum (fun i => (hpiece i).2)
+          _ = (q : ℝ≥0∞) ^ 2 * ∑' i, μHE[n] (u '' (T ∩ t i)) := ENNReal.tsum_mul_left
+    have hlimit : ∀ a : ℝ≥0∞, Tendsto (fun q : NNReal => (q : ℝ≥0∞) ^ 2 * a) (𝓝[>] 1) (𝓝 a) := by
+      intro a
+      have hcoe : Tendsto (fun q : NNReal => (q : ℝ≥0∞)) (𝓝[>] 1) (𝓝 1) :=
+        (ENNReal.tendsto_coe.2 tendsto_id).mono_left nhdsWithin_le_nhds
+      simpa only [one_pow, one_mul] using
+        ENNReal.Tendsto.mul_const (ENNReal.Tendsto.pow (n := 2) hcoe) (Or.inl (by simp))
+    apply le_antisymm
+    · apply ge_of_tendsto (hlimit _)
+      filter_upwards [self_mem_nhdsWithin] with q hq
+      exact (hcmp q hq).1
+    · apply ge_of_tendsto (hlimit _)
+      filter_upwards [self_mem_nhdsWithin] with q hq
+      exact (hcmp q hq).2
+  /- Simon (3.5), Bochner form: the Jacobian-weighted measure on `S` is transported by `u`
+  to `Hⁿ ⌞ u(S)`, so `∫_{u(S)} f dHⁿ = ∫_S J(u'(x)) f(u(x)) dLⁿ(x)` for every `f`. -/
+  have hbochner : ∀ (S : Set (Euclid n)) (u : Euclid n → Euclid P)
+      (u' : Euclid n → Euclid n →L[ℝ] Euclid P), MeasurableSet S →
+      (∀ x ∈ S, HasFDerivAt u (u' x) x) → (∀ x ∈ S, Injective (u' x)) → InjOn u S →
+      Measurable u' → ∫ y in u '' S, f y ∂μHE[n] = ∫ x in S, J (u' x) * f (u x) := by
+    intro S u u' hS hu' hreg' hinj' hmeas'
+    have hcont : ContinuousOn u S := fun x hx => (hu' x hx).continuousAt.continuousWithinAt
+    have hemb := hcont.measurableEmbedding hS hinj'
+    have hsub := MeasurableEmbedding.subtype_coe hS
+    have hJm : Measurable (fun x => J (u' x)) := hJcont.measurable.comp hmeas'
+    have hmap : Measure.map (S.domRestrict u)
+        ((volume.withDensity (fun x => ENNReal.ofReal (J (u' x)))).comap
+          (Subtype.val : S → Euclid n)) = μHE[n].restrict (u '' S) := by
+      ext t ht
+      rw [Measure.map_apply hemb.measurable ht, hsub.comap_apply]
+      have hBm : MeasurableSet (Subtype.val '' ((S.domRestrict u) ⁻¹' t)) :=
+        hsub.measurableSet_image' (hemb.measurable ht)
+      have hBS : Subtype.val '' ((S.domRestrict u) ⁻¹' t) ⊆ S := by
+        rintro x ⟨w, _, rfl⟩
+        exact w.property
+      rw [withDensity_apply _ hBm, ← hmeasure _ u u' hBm
+        (fun x hx => (hu' x (hBS hx)).hasFDerivWithinAt) (fun x hx => hreg' x (hBS hx))
+        (hinj'.mono hBS), Measure.restrict_apply ht]
+      congr 1
+      ext y
+      constructor
+      · rintro ⟨x, ⟨w, hw, rfl⟩, rfl⟩
+        exact ⟨hw, ⟨w, w.property, rfl⟩⟩
+      · rintro ⟨hy, x, hx, rfl⟩
+        exact ⟨x, ⟨⟨x, hx⟩, hy, rfl⟩, rfl⟩
+    rw [← hmap, hemb.integral_map]
+    simp only [Set.domRestrict_apply, ← Function.comp_apply (f := f), ENNReal.ofReal]
+    rw [← hsub.integral_map, map_comap_subtype_coe hS,
+      setIntegral_withDensity_eq_setIntegral_smul₀ (hJm.real_toNNReal.aemeasurable) _ hS]
+    congr with x
+    rw [NNReal.smul_def, Real.coe_toNNReal _ (hJnonneg _), smul_eq_mul, comp_apply]
+  -- the rescaled map `φ(b) = s⁻¹ • (g (z + s • b) - g z)` on `B_s = {b | z + s • b ∈ B}`
+  have hs0 : s ≠ 0 := hs.ne'
+  have hBs : MeasurableSet {b : Euclid n | z + s • b ∈ B} :=
+    hB.preimage ((measurable_const_add z).comp (measurable_const_smul s))
+  have hderiv : ∀ b ∈ {b : Euclid n | z + s • b ∈ B},
+      HasFDerivAt (fun b : Euclid n => s⁻¹ • (g (z + s • b) - g z)) (fderiv ℝ g (z + s • b)) b := by
+    intro b hb
+    have h1 : HasFDerivAt (fun b' : Euclid n => z + s • b')
+        (s • ContinuousLinearMap.id ℝ (Euclid n)) b :=
+      ((hasFDerivAt_id b).const_smul s).const_add z
+    refine ((((hdiff _ hb).hasFDerivAt.comp b h1).sub_const (g z)).const_smul s⁻¹).congr_fderiv ?_
+    ext1 v
+    simp [smul_smul, inv_mul_cancel₀ hs0]
+  have hinjφ : InjOn (fun b : Euclid n => s⁻¹ • (g (z + s • b) - g z))
+      {b : Euclid n | z + s • b ∈ B} := by
+    intro b hb b' hb' h
+    have h' : g (z + s • b) = g (z + s • b') := by
+      simpa [hs0] using h
+    exact smul_right_injective _ hs0 (add_left_cancel (hinj hb hb' h'))
+  have himage :
+      (fun b : Euclid n => s⁻¹ • (g (z + s • b) - g z)) '' {b : Euclid n | z + s • b ∈ B} =
+        Poincare.SimonGMT.Chapter03.blowUpMap (g z) s '' (g '' B) := by
+    ext y
+    constructor
+    · rintro ⟨b, hb, rfl⟩
+      exact ⟨g (z + s • b), ⟨z + s • b, hb, rfl⟩, rfl⟩
+    · rintro ⟨_, ⟨a, ha, rfl⟩, rfl⟩
+      refine ⟨s⁻¹ • (a - z), ?_, ?_⟩
+      · show z + s • s⁻¹ • (a - z) ∈ B
+        rwa [smul_smul, mul_inv_cancel₀ hs0, one_smul, add_sub_cancel]
+      · show s⁻¹ • (g (z + s • s⁻¹ • (a - z)) - g z) = s⁻¹ • (g a - g z)
+        rw [smul_smul, mul_inv_cancel₀ hs0, one_smul, add_sub_cancel]
+  have hmeasf' : Measurable (fun b : Euclid n => fderiv ℝ g (z + s • b)) :=
+    (measurable_fderiv ℝ g).comp ((measurable_const_add z).comp (measurable_const_smul s))
+  rw [← himage, hbochner _ _ (fun b : Euclid n => fderiv ℝ g (z + s • b)) hBs hderiv
+    (fun b hb => hreg _ hb) hinjφ hmeasf', hJdef]
+/-- **Simon Ch. 2, (3.1)** in integral form (area formula for an injective linear map): for an
+injective linear `L : ℝⁿ → ℝᴾ` and every `f`, `∫_{L(ℝⁿ)} f dHⁿ = √det(L* ∘ L) ∫_{ℝⁿ} f(Lb) dLⁿ(b)`.
+Write `L = W ∘ A` with `W` a linear isometry of `ℝⁿ` onto `L(ℝⁿ)` and `A` an automorphism of `ℝⁿ`;
+then `Hⁿ⌞L(ℝⁿ) = W#Lⁿ`, `Lⁿ = |det A| A#Lⁿ` and `det(L* ∘ L) = det(A* ∘ A) = (det A)²`. -/
+theorem Submission.codim1_rdo_c1pt_linear_range_integral : ∀ (P n : ℕ) (L : Euclid n →L[ℝ] Euclid P) (f : Euclid P → ℝ), Injective L → ∫ y in (LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)), f y ∂μHE[n] = Real.sqrt ((L.adjoint ∘L L).det) * ∫ b, f (L b) := by
+  intro P n L f hL
+  -- `L = W ∘ A`: `W` is a linear isometry of `ℝⁿ` onto `R = L(ℝⁿ)` (via an orthonormal basis of
+  -- `R`, which has dimension `n`) and `A` is a surjective endomorphism of `ℝⁿ`
+  obtain ⟨W, A, hWA, hA⟩ : ∃ (W : Euclid n →ₗᵢ[ℝ] Euclid P) (A : Euclid n →L[ℝ] Euclid n),
+      (∀ x, W (A x) = L x) ∧ Surjective A := by
+    let R := LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P)
+    have hrank : Module.finrank ℝ R = n :=
+      (LinearMap.finrank_range_of_inj (f := (L : Euclid n →ₗ[ℝ] Euclid P)) hL).trans
+        finrank_euclideanSpace_fin
+    let bv : OrthonormalBasis (Fin n) ℝ R := (stdOrthonormalBasis ℝ R).reindex (finCongr hrank)
+    refine ⟨R.subtypeₗᵢ.comp bv.repr.symm.toLinearIsometry,
+      bv.repr.toContinuousLinearEquiv.toContinuousLinearMap ∘L
+        L.codRestrict R (fun x => LinearMap.mem_range_self _ x), fun x => by simp, fun z => ?_⟩
+    obtain ⟨x, hx⟩ := LinearMap.mem_range.mp (bv.repr.symm z).2
+    refine ⟨x, ?_⟩
+    have hx' : L.codRestrict R (fun x => LinearMap.mem_range_self _ x) x = bv.repr.symm z :=
+      Subtype.ext hx
+    simp [hx']
+  have hAinj : Injective A := fun x y h => hL (by rw [← hWA x, ← hWA y, h])
+  -- `L(ℝⁿ) = W(ℝⁿ)`
+  have hrange : (LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)) =
+      Set.range W := by
+    rw [LinearMap.coe_range, ContinuousLinearMap.coe_coe, ← hA.range_comp W]
+    congr 1
+    funext x
+    exact (hWA x).symm
+  -- `Hⁿ⌞W(ℝⁿ) = W#Hⁿ` (`W` is an isometry) and `Hⁿ = Lⁿ` on `ℝⁿ`
+  have hW : ∫ y in Set.range W, f y ∂μHE[n] = ∫ x, f (W x) := by
+    rw [← W.isometry.map_euclideanHausdorffMeasure,
+      W.isometry.isClosedEmbedding.measurableEmbedding.integral_map,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- change of variables `x = A b` on `ℝⁿ`
+  have hAcv : ∫ x, f (W x) = |A.det| * ∫ b, f (W (A b)) := by
+    have h := integral_image_eq_integral_abs_det_fderiv_smul volume MeasurableSet.univ
+      (fun x _ => A.hasFDerivAt.hasFDerivWithinAt) hAinj.injOn (fun x => f (W x))
+    rw [Set.image_univ, hA.range_eq, Measure.restrict_univ] at h
+    rw [h, ← integral_const_mul]
+    simp only [smul_eq_mul]
+  -- `L* ∘ L = A* ∘ W* ∘ W ∘ A = A* ∘ A`, so `det (L* ∘ L) = (det A)²`
+  have hdet : (L.adjoint ∘L L).det = A.det ^ 2 := by
+    have hL' : L = W.toContinuousLinearMap ∘L A := ContinuousLinearMap.ext fun x => (hWA x).symm
+    have h1 : L.adjoint ∘L L = A.adjoint ∘L A := by
+      rw [hL', ContinuousLinearMap.adjoint_comp, ← ContinuousLinearMap.comp_assoc,
+        ContinuousLinearMap.comp_assoc (ContinuousLinearMap.adjoint _), W.adjoint_comp_self,
+        ContinuousLinearMap.one_def, ContinuousLinearMap.comp_id]
+    have hadj : LinearMap.det (LinearMap.adjoint (A : Euclid n →ₗ[ℝ] Euclid n)) =
+        LinearMap.det (A : Euclid n →ₗ[ℝ] Euclid n) := by
+      let b := EuclideanSpace.basisFun (Fin n) ℝ
+      rw [← LinearMap.det_toMatrix b.toBasis, LinearMap.toMatrix_adjoint b b,
+        Matrix.det_conjTranspose, LinearMap.det_toMatrix, star_trivial]
+    rw [h1, ContinuousLinearMap.det, ContinuousLinearMap.det,
+      ContinuousLinearMap.toLinearMap_comp, LinearMap.det_comp,
+      ← ContinuousLinearMap.adjoint_toLinearMap, hadj, sq]
+  rw [hrange, hW, hAcv, hdet, Real.sqrt_sq_eq_abs]
+  simp only [hWA]
+/-- Rescaled integrals over a `C¹` piece converge to the integral over its tangent map (proof of
+Simon Ch. 3, Theorem 1.6, with a continuous weight `h`).  With `L = Dg(z)`,
+`B_s = {b : z + s b ∈ B}` and `φ_s(b) = s⁻¹ (g(z + s b) − g(z))`:
+`∫_{B_s} h(z + s b) f(φ_s(b)) db → h(z) ∫ f(L b) db` as `s ↓ 0`.  Take `f = 0` off `B_R(0)` and
+`B̄_ρ(z) ⊆ B`.  For `0 < s < mρ/R`, `K = B̄_{R/m}(0) ⊆ B_s`, and the integrand vanishes on
+`B_s \ K` because `|φ_s(b)| ≥ m|b| > R`.  On `K` it is bounded by `sup_{B̄_ρ(z)} |h| · sup |f|` and
+tends pointwise to `h(z) f(L b)`, so dominated convergence applies.  Finally `f(L b) = 0` off `K`
+because `|L b| ≥ m|b| > R`. -/
+theorem Submission.codim1_rdo_c1pt_rescaled_integral_tendsto : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (h : Euclid n → ℝ) (B : Set (Euclid n)) (z : Euclid n) (m : ℝ) (f : Euclid P → ℝ), Continuous g → DifferentiableAt ℝ g z → Continuous h → IsOpen B → z ∈ B → 0 < m → (∀ a ∈ B, m * ‖a - z‖ ≤ ‖g a - g z‖) → (∀ v : Euclid n, m * ‖v‖ ≤ ‖fderiv ℝ g z v‖) → Continuous f → HasCompactSupport f → Tendsto (fun s : ℝ => ∫ b in {b : Euclid n | z + s • b ∈ B}, h (z + s • b) * f (s⁻¹ • (g (z + s • b) - g z))) (𝓝[>] 0) (𝓝 (h z * ∫ b, f (fderiv ℝ g z b))) := by
+  intro P n g h B z m f hg hgz hh hB hzB hm hgB hL hf hfs
+  -- Step 1: `f = 0` off `closedBall 0 R`
+  obtain ⟨R, hR, hRf⟩ : ∃ R : ℝ, 0 < R ∧ ∀ y, R < ‖y‖ → f y = 0 := by
+    obtain ⟨R, hR, hsub⟩ := hfs.isCompact.isBounded.subset_closedBall_lt 0 0
+    refine ⟨R, hR, fun y hy => ?_⟩
+    by_contra hne
+    have hy' := hsub (subset_tsupport f hne)
+    rw [mem_closedBall, dist_zero_right] at hy'
+    linarith
+  -- Step 2: `closedBall z ρ ⊆ B`
+  obtain ⟨ρ, hρ, hρB⟩ : ∃ ρ : ℝ, 0 < ρ ∧ closedBall z ρ ⊆ B := by
+    obtain ⟨ε, hε, hεB⟩ := Metric.isOpen_iff.1 hB z hzB
+    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hεB⟩
+  -- Step 3: `K = closedBall 0 (R / m)`, `s₀ = m ρ / R`
+  have hs₀ : 0 < m * ρ / R := div_pos (mul_pos hm hρ) hR
+  have hKB : ∀ s : ℝ, 0 < s → s ≤ m * ρ / R → ∀ b ∈ closedBall (0 : Euclid n) (R / m),
+      z + s • b ∈ closedBall z ρ := by
+    intro s hs hss b hb
+    rw [mem_closedBall, dist_zero_right] at hb
+    rw [mem_closedBall, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hs.le]
+    calc s * ‖b‖ ≤ m * ρ / R * (R / m) := mul_le_mul hss hb (norm_nonneg _) hs₀.le
+      _ = ρ := by field_simp
+  have hout : ∀ s : ℝ, 0 < s → ∀ b : Euclid n, z + s • b ∈ B →
+      b ∉ closedBall (0 : Euclid n) (R / m) → f (s⁻¹ • (g (z + s • b) - g z)) = 0 := by
+    intro s hs b hbB hbK
+    apply hRf
+    rw [mem_closedBall, dist_zero_right, not_le, div_lt_iff₀ hm] at hbK
+    have h1 := hgB _ hbB
+    rw [add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hs.le] at h1
+    rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hs.le)]
+    calc R < ‖b‖ * m := hbK
+      _ = s⁻¹ * (m * (s * ‖b‖)) := by field_simp
+      _ ≤ s⁻¹ * ‖g (z + s • b) - g z‖ := by gcongr
+  -- Step 4: localisation to `K`
+  have hloc : ∀ᶠ s in 𝓝[>] (0 : ℝ),
+      (∫ b in closedBall (0 : Euclid n) (R / m), h (z + s • b) * f (s⁻¹ • (g (z + s • b) - g z))) =
+        ∫ b in {b : Euclid n | z + s • b ∈ B}, h (z + s • b) * f (s⁻¹ • (g (z + s • b) - g z)) := by
+    filter_upwards [Ioo_mem_nhdsGT hs₀] with s hs
+    symm
+    apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
+    · exact (hB.preimage (continuous_const.add (continuous_const_smul s))).measurableSet
+    · intro b hb
+      exact hρB (hKB s hs.1 hs.2.le b hb)
+    · rintro b ⟨hbB, hbK⟩
+      rw [hout s hs.1 b hbB hbK, mul_zero]
+  -- Step 5: uniform bounds
+  obtain ⟨Λ, hΛ⟩ := (isCompact_closedBall z ρ).exists_bound_of_continuousOn hh.continuousOn
+  obtain ⟨C, hC⟩ := hf.bounded_above_of_compact_support hfs
+  -- Steps 6–8: dominated convergence on `K`
+  have hdom : Tendsto (fun s : ℝ => ∫ b in closedBall (0 : Euclid n) (R / m),
+      h (z + s • b) * f (s⁻¹ • (g (z + s • b) - g z))) (𝓝[>] 0)
+      (𝓝 (∫ b in closedBall (0 : Euclid n) (R / m), h z * f (fderiv ℝ g z b))) := by
+    refine tendsto_integral_filter_of_dominated_convergence (fun _ => Λ * C) ?_ ?_ ?_ ?_
+    · refine Eventually.of_forall fun s => Continuous.aestronglyMeasurable ?_
+      have hz : Continuous fun b : Euclid n => z + s • b :=
+        continuous_const.add (continuous_const_smul s)
+      exact (hh.comp hz).mul (hf.comp (((hg.comp hz).sub continuous_const).const_smul s⁻¹))
+    · filter_upwards [Ioo_mem_nhdsGT hs₀] with s hs
+      filter_upwards [ae_restrict_mem measurableSet_closedBall] with b hb
+      have hmem := hKB s hs.1 hs.2.le b hb
+      rw [norm_mul]
+      exact mul_le_mul (hΛ _ hmem) (hC _) (norm_nonneg _) ((norm_nonneg _).trans (hΛ _ hmem))
+    · exact integrableOn_const measure_closedBall_lt_top.ne
+    · refine Eventually.of_forall fun b => Tendsto.mul ?_ ?_
+      · -- `h (z + s • b) → h z`
+        have h1 : Tendsto (fun s : ℝ => z + s • b) (𝓝 0) (𝓝 (z + (0 : ℝ) • b)) :=
+          (continuous_const.add (continuous_id.smul continuous_const)).tendsto 0
+        rw [zero_smul, add_zero] at h1
+        exact (hh.tendsto z).comp (h1.mono_left nhdsWithin_le_nhds)
+      · -- difference quotients: `s⁻¹ • (g (z + s • b) - g z) → L b`
+        have hc : Tendsto (fun s : ℝ => ‖s⁻¹‖) (𝓝[>] 0) atTop :=
+          tendsto_norm_atTop_atTop.comp tendsto_inv_nhdsGT_zero
+        have hlim := hgz.hasFDerivAt.lim b hc
+        simp only [inv_inv] at hlim
+        exact (hf.tendsto _).comp hlim
+  -- Step 9: identification of the limit
+  have hid : ∫ b in closedBall (0 : Euclid n) (R / m), h z * f (fderiv ℝ g z b) =
+      h z * ∫ b, f (fderiv ℝ g z b) := by
+    rw [setIntegral_eq_integral_of_forall_compl_eq_zero, integral_const_mul]
+    intro b hb
+    rw [mem_closedBall, dist_zero_right, not_le, div_lt_iff₀ hm] at hb
+    rw [hRf _ (hb.trans_le ((mul_comm _ _).le.trans (hL b))), mul_zero]
+  rw [← hid]
+  exact hdom.congr' hloc
+
+/-- **Approximate tangent space of a `C¹` piece** (Simon Ch. 3, 1.4; the step "since `x ∈ Nⱼ` and
+`Nⱼ` is a `C¹` submanifold, `lim_{λ↓0} ∫_{η_{x,λ}(Nⱼ)} f dHⁿ = ∫_{TₓNⱼ} f dHⁿ`" of the proof of
+1.6 "⇒", chapter-03.txt lines 113–125).  Let `g` be `C¹` with `m|a − b| ≤ |g(a) − g(b)|` on
+`B = B_r(c)`, `m > 0`, and `z ∈ B`.  Then `|Dg(a)v| ≥ m|v|`, so `Dg(a)` is injective for `a ∈ B`,
+`g` is injective on `B` and `T = Dg(z)(ℝⁿ)` has dimension `n`.  By the area formula (Ch. 2, 3.2,
+3.3, 3.5), `∫_{η_{g(z),s}(g(B))} f dHⁿ = ∫_{B_s} J_g(z + sb) f(s⁻¹(g(z + sb) − g(z))) db` for
+`s > 0`.  The Jacobian `J_g = √det(Dg* ∘ Dg)` is continuous, so these integrals tend to
+`J_g(z) ∫ f(Dg(z)b) db`, which is `∫_T f dHⁿ` by the linear area formula (Ch. 2, 3.1). -/
+theorem Submission.codim1_rdo_c1_piece_approxTangent : ∀ (P n : ℕ) (g : Euclid n → Euclid P) (c : Euclid n) (r m : ℝ), ContDiff ℝ 1 g → 0 < m → (∀ a ∈ ball c r, ∀ b ∈ ball c r, m * ‖a - b‖ ≤ ‖g a - g b‖) → ∀ z ∈ ball c r, HasApproximateTangentSpaceAt n (g '' ball c r) (g z) (LinearMap.range (fderiv ℝ g z : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n g c r m hg hm hlip z hz
+  have hdiff : Differentiable ℝ g := hg.differentiable one_ne_zero
+  -- a vector `x` with `m|x| ≤ 0` vanishes, since `m > 0`
+  have hzero : ∀ x : Euclid n, m * ‖x‖ ≤ 0 → x = 0 := fun x hx =>
+    norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right hx hm)
+  -- Step 1, `m|v| ≤ |Dg(a)v|` for `a ∈ B`, so `Dg(a)` is injective; `g` is injective on `B`.
+  have hlow : ∀ a ∈ ball c r, ∀ v : Euclid n, m * ‖v‖ ≤ ‖fderiv ℝ g a v‖ := fun a ha =>
+    Submission.codim1_rdo_c1pt_fderiv_lower_bound P n g (ball c r) a m isOpen_ball ha (hdiff a)
+      fun x hx => hlip x hx a ha
+  have hinj : ∀ a ∈ ball c r, Injective (fderiv ℝ g a) := by
+    intro a ha v w hvw
+    have h := hlow a ha (v - w)
+    rw [map_sub, hvw, sub_self, norm_zero] at h
+    exact sub_eq_zero.1 (hzero _ h)
+  have hinjOn : InjOn g (ball c r) := by
+    intro a ha b hb hab
+    have h := hlip a ha b hb
+    rw [hab, sub_self, norm_zero] at h
+    exact sub_eq_zero.1 (hzero _ h)
+  -- Step 2, the Jacobian `J_g(a) = √det(Dg(a)* ∘ Dg(a))` is continuous.
+  have hcont : Continuous (fderiv ℝ g) := hg.continuous_fderiv one_ne_zero
+  have hJ : Continuous fun a => Real.sqrt (((fderiv ℝ g a).adjoint ∘L fderiv ℝ g a).det) :=
+    Real.continuous_sqrt.comp (ContinuousLinearMap.continuous_det.comp
+      ((ContinuousLinearMap.adjoint.continuous.comp hcont).clm_comp hcont))
+  refine ⟨?_, fun f => ?_⟩
+  · -- `dim T = n`
+    rw [LinearMap.finrank_range_of_inj (f := (fderiv ℝ g z : Euclid n →ₗ[ℝ] Euclid P))
+      (hinj z hz), finrank_euclideanSpace_fin]
+  · -- Steps 3–8, `∫_T f dHⁿ = J_g(z) ∫ f(Dg(z)b) db` is the limit of the rescaled area formulas.
+    rw [Submission.codim1_rdo_c1pt_linear_range_integral P n (fderiv ℝ g z) f (hinj z hz)]
+    refine (Submission.codim1_rdo_c1pt_rescaled_integral_tendsto P n g
+      (fun a => Real.sqrt (((fderiv ℝ g a).adjoint ∘L fderiv ℝ g a).det)) (ball c r) z m f
+      hdiff.continuous (hdiff z) hJ isOpen_ball hz hm (fun a ha => hlip a ha z hz) (hlow z hz)
+      f.continuous f.hasCompactSupport).congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with s hs
+    exact (Submission.codim1_rdo_c1pt_rescaled_area_formula P n g (ball c r) z s f
+      measurableSet_ball (fun a _ => hdiff a) hinjOn hinj hs).symm
+/-- **Simon Ch. 3, proof of 1.6 "⇒"** (p. 71, "since `x ∈ Nⱼ` and `Nⱼ` is a `C¹` submanifold"):
+if `ψ` is `C¹` on the open `V ⊆ ℝᵐ`, `v₀ ∈ V` and `Dψ(v₀)` is injective, then for some `ρ > 0`
+with `B_ρ(v₀) ⊆ V`, `T = Dψ(v₀)(ℝᵐ)` is the approximate tangent space of `ψ(B_ρ(v₀))` at
+`ψ(v₀)`.  A globally `C¹` map `g` equals `ψ` on some `B_{ρ₁}(v₀) ⊆ V`, so `g(v₀) = ψ(v₀)` and
+`Dg(v₀) = Dψ(v₀)` (equal germs).  `Dg(v₀)` is injective, so `μ|a − b| ≤ |g(a) − g(b)|` on some
+`B_δ(v₀)` (Ch. 3, Lemma 1.2), and the `C¹`-piece argument applies to `g` on `B_ρ(v₀)`,
+`ρ = min(ρ₁, δ)`, where `g(B_ρ(v₀)) = ψ(B_ρ(v₀))`. -/
+theorem Submission.codim1_ac_sat_chart_ball_approxTangent : ∀ (P m : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m), IsOpen V → ContDiffOn ℝ 1 ψ V → v₀ ∈ V → Injective (fderiv ℝ ψ v₀) → ∃ ρ : ℝ, 0 < ρ ∧ ball v₀ ρ ⊆ V ∧ HasApproximateTangentSpaceAt m (ψ '' ball v₀ ρ) (ψ v₀) (LinearMap.range (fderiv ℝ ψ v₀ : Euclid m →ₗ[ℝ] Euclid P)) := by
+  intro P m V ψ v₀ hV hψ hv₀ hinj
+  -- Step 1, a globally `C¹` map `g` with `g = ψ` on `B_{ρ₁}(v₀) ⊆ V`
+  obtain ⟨g, ρ₁, hρ₁, hρ₁V, hg, hgψ⟩ :=
+    Submission.codim1_ac_sat_c1_local_extension P m V ψ v₀ hV hψ hv₀
+  -- Step 2, `g = ψ` near `v₀`, so `g(v₀) = ψ(v₀)` and `Dg(v₀) = Dψ(v₀)`
+  have hv₀ρ₁ : v₀ ∈ ball v₀ ρ₁ := mem_ball_self hρ₁
+  have hgv₀ : g v₀ = ψ v₀ := hgψ hv₀ρ₁
+  have hDg : fderiv ℝ g v₀ = fderiv ℝ ψ v₀ :=
+    (hgψ.eventuallyEq_of_mem (isOpen_ball.mem_nhds hv₀ρ₁)).fderiv_eq
+  -- Step 3, `Dg(v₀)` is injective, so `μ|a − b| ≤ |g(a) − g(b)|` on `B_δ(v₀)`
+  obtain ⟨δ, μ, hδ, hμ, hlip⟩ :=
+    Submission.codim1_rdo_c1cov_local_lower_lipschitz P m g v₀ hg (by rwa [hDg])
+  -- Step 4, `ρ = min(ρ₁, δ)`: `B_ρ(v₀) ⊆ B_{ρ₁}(v₀) ⊆ V` and `B_ρ(v₀) ⊆ B_δ(v₀)`
+  have hρ : 0 < min ρ₁ δ := lt_min hρ₁ hδ
+  have hρρ₁ : ball v₀ (min ρ₁ δ) ⊆ ball v₀ ρ₁ := ball_subset_ball (min_le_left ρ₁ δ)
+  have hρδ : ball v₀ (min ρ₁ δ) ⊆ ball v₀ δ := ball_subset_ball (min_le_right ρ₁ δ)
+  refine ⟨min ρ₁ δ, hρ, hρρ₁.trans hρ₁V, ?_⟩
+  -- Step 5, the `C¹` piece `g(B_ρ(v₀))` has approximate tangent space `Dg(v₀)(ℝᵐ)` at `g(v₀)`
+  have h := Submission.codim1_rdo_c1_piece_approxTangent P m g v₀ (min ρ₁ δ) μ hg hμ
+    (fun a ha b hb => hlip a (hρδ ha) b (hρδ hb)) v₀ (mem_ball_self hρ)
+  -- Step 6, `g(B_ρ(v₀)) = ψ(B_ρ(v₀))`, `g(v₀) = ψ(v₀)` and `Dg(v₀) = Dψ(v₀)`
+  rwa [(hgψ.mono hρρ₁).image_eq, hgv₀, hDg] at h
+/-- **Chart localization** (Simon Ch. 2, §4, (4.1)–(4.2)).  Let `ψ` be continuous, 1:1 and proper
+on `V` with `ψ(V) = W₀ ∩ N`, `W₀` open, and let `v₀ ∈ V` with `x = ψ(v₀)` in the open set `W` and
+`B_ρ(v₀) ⊆ V`.  Then `N ∩ W ∩ B_δ(x) = ψ(B_ρ(v₀)) ∩ B_δ(x)` for some `δ > 0`.  Take
+`δ = min(δ₁, δ₂)`, where `δ₁` is the inverse-continuity radius of `ψ` at `v₀` for `ρ` and
+`B_{δ₂}(x) ⊆ W ∩ W₀`.  A point `y ∈ N ∩ W ∩ B_δ(x)` lies in `W₀ ∩ N = ψ(V)`, so `y = ψ(v)` with
+`v ∈ V`, and `|ψ(v) − x| < δ₁` gives `|v − v₀| < ρ`.  Conversely `ψ(B_ρ(v₀)) ⊆ ψ(V) ⊆ N` and
+`B_δ(x) ⊆ W`. -/
+theorem Submission.codim1_ac_sat_chart_localization : ∀ (P m : ℕ) (N W W₀ : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m) (ρ : ℝ), IsOpen W → IsOpen W₀ → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W₀ ∩ N → (∀ K ⊆ W₀, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → v₀ ∈ V → ψ v₀ ∈ W → 0 < ρ → ball v₀ ρ ⊆ V → ∃ δ : ℝ, 0 < δ ∧ N ∩ W ∩ ball (ψ v₀) δ = ψ '' ball v₀ ρ ∩ ball (ψ v₀) δ := by
+  intro P m N W W₀ V ψ v₀ ρ hW hW₀ hψ hinj hψV hproper hv₀ hv₀W hρ hball
+  -- `ψ(V) = W₀ ∩ N` lies in `W₀` and in `N`; in particular `ψ(v₀) ∈ W₀`
+  have hVW₀ : ψ '' V ⊆ W₀ := hψV ▸ inter_subset_left
+  have hVN : ψ '' V ⊆ N := hψV ▸ inter_subset_right
+  have hxW₀ : ψ v₀ ∈ W₀ := hVW₀ (mem_image_of_mem ψ hv₀)
+  -- inverse continuity at `v₀` for `ε = ρ`: `v ∈ V` and `|ψ(v) − ψ(v₀)| < δ₁` give `|v − v₀| < ρ`
+  obtain ⟨δ₁, hδ₁, hδ₁V⟩ := Submission.dsmc_chart_inverse_continuity P m V W₀ ψ hψ hinj hVW₀
+    hproper v₀ hv₀ ρ hρ
+  -- `B_{δ₂}(ψ(v₀)) ⊆ W ∩ W₀`, hence `B_δ(ψ(v₀)) ⊆ W ∩ W₀` for `δ = min(δ₁, δ₂)`
+  obtain ⟨δ₂, hδ₂, hδ₂W⟩ := Metric.isOpen_iff.1 (hW.inter hW₀) (ψ v₀) ⟨hv₀W, hxW₀⟩
+  have hδW : ball (ψ v₀) (min δ₁ δ₂) ⊆ W ∩ W₀ :=
+    (ball_subset_ball (min_le_right δ₁ δ₂)).trans hδ₂W
+  refine ⟨min δ₁ δ₂, lt_min hδ₁ hδ₂, Subset.antisymm ?_ ?_⟩
+  · -- `⊆`: `y ∈ W₀ ∩ N = ψ(V)`, so `y = ψ(v)` with `v ∈ V` and `|v − v₀| < ρ`
+    rintro y ⟨⟨hyN, -⟩, hyδ⟩
+    obtain ⟨v, hvV, rfl⟩ : y ∈ ψ '' V := hψV ▸ ⟨(hδW hyδ).2, hyN⟩
+    exact ⟨⟨v, mem_ball.2 (hδ₁V v hvV ((mem_ball.1 hyδ).trans_le (min_le_left δ₁ δ₂))), rfl⟩,
+      hyδ⟩
+  · -- `⊇`: `ψ(B_ρ(v₀)) ⊆ ψ(V) ⊆ N` and `B_δ(ψ(v₀)) ⊆ W`
+    rintro _ ⟨⟨v, hv, rfl⟩, hyδ⟩
+    exact ⟨⟨hVN (mem_image_of_mem ψ (hball hv)), (hδW hyδ).1⟩, hyδ⟩
+/-- **Simon Ch. 3, 1.4 (locality of approximate tangent spaces)**: if `S ∩ B_δ(x) = S' ∩ B_δ(x)`
+for some `δ > 0` and `Q` is the approximate tangent space of `S'` at `x`, then `Q` is also the
+approximate tangent space of `S` at `x`; no measurability of `S`, `S'` is needed.  For
+`f ∈ C_c(ℝᴾ)` with `spt f ⊆ B_R(0)`, `∫_T f dHⁿ = ∫_{B_R(0) ∩ T} f dHⁿ` for every set `T`, and for
+`0 < r < δ / R`, `B_R(0) ∩ η_{x,r}(T) = B_R(0) ∩ η_{x,r}(T ∩ B_δ(x))`; so the blown-up integrals
+over `S` and `S'` agree for all small `r > 0` and have the same limit `∫_Q f dHⁿ`. -/
+theorem Submission.codim1_ac_sat_approxTangent_of_local_eq : ∀ (P n : ℕ) (S S' : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (δ : ℝ), 0 < δ → S ∩ ball x δ = S' ∩ ball x δ → HasApproximateTangentSpaceAt n S' x Q → HasApproximateTangentSpaceAt n S x Q := by
+  intro P n S S' x Q δ hδ hSS' hQ
+  -- Step 1: the dimension conjunct `dim Q = n` does not involve the set
+  refine ⟨hQ.1, fun f => ?_⟩
+  -- Step 2: `spt f ⊆ B_R(0)` for some `R > 0`, so `f` vanishes off `B_R(0)`
+  obtain ⟨R₀, hR₀⟩ := (isBounded_iff_subset_ball (0 : Euclid P)).1 f.hasCompactSupport.isBounded
+  obtain ⟨R, hR, hf0⟩ : ∃ R : ℝ, 0 < R ∧ ∀ y, y ∉ ball (0 : Euclid P) R → f y = 0 :=
+    ⟨max R₀ 1, lt_max_of_lt_right one_pos, fun y hy => image_eq_zero_of_notMem_tsupport
+      fun h => hy (ball_subset_ball (le_max_left _ _) (hR₀ h))⟩
+  -- Step 3: `∫_T f dHⁿ = ∫_{B_R(0) ∩ T} f dHⁿ` for every set `T`, as `B_R(0)` is Borel
+  have hcut : ∀ T : Set (Euclid P),
+      ∫ y in T, f y ∂μHE[n] = ∫ y in ball 0 R ∩ T, f y ∂μHE[n] := by
+    intro T
+    rw [← Measure.restrict_restrict measurableSet_ball]
+    exact (setIntegral_eq_integral_of_forall_compl_eq_zero hf0).symm
+  -- Step 6: it suffices that the blown-up integrals over `S'` and `S` agree for `0 < r < δ / R`
+  refine (hQ.2 f).congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR)] with r hr
+  -- Step 4: `B_R(0) ∩ η_{x,r}(T) = B_R(0) ∩ η_{x,r}(T ∩ B_δ(x))`, as `|t − x| = r |η_{x,r}(t)|`
+  have hloc : ∀ T : Set (Euclid P),
+      ball 0 R ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r '' T =
+        ball 0 R ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r '' (T ∩ ball x δ) := by
+    intro T
+    refine Subset.antisymm ?_ (inter_subset_inter_right _ (image_mono inter_subset_left))
+    rintro _ ⟨hy, t, ht, rfl⟩
+    refine ⟨hy, t, ⟨ht, mem_ball.2 ?_⟩, rfl⟩
+    have hy' : ‖r⁻¹ • (t - x)‖ < R := mem_ball_zero_iff.1 hy
+    calc dist t x = ‖t - x‖ := dist_eq_norm t x
+      _ = r * ‖r⁻¹ • (t - x)‖ := by
+        rw [norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hr.1.le), ← mul_assoc,
+          mul_inv_cancel₀ hr.1.ne', one_mul]
+      _ < r * R := mul_lt_mul_of_pos_left hy' hr.1
+      _ < δ := (lt_div_iff₀ hR).1 hr.2
+  -- Step 5: hence, by `S ∩ B_δ(x) = S' ∩ B_δ(x)`, the two blown-up integrals coincide
+  rw [hcut (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S'),
+    hcut (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S), hloc S', hloc S, hSS']
+/-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
+has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
+increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
+and `dx^I(e_J) = δ_IJ`.  Expanding `δ_τ(v) = det(⟨τᵢ, vⱼ⟩)` at `v = τ` gives the Cauchy–Binet
+identity `Σ_I dx^I(τ)² = 1`; with Cauchy–Schwarz, `|α(τ)| ≤ |α|`. -/
+theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : MultiVector P n →L[ℝ] Covector (Euclid P) n, ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ covectorEuclideanNorm (L ξ) ≤ 1 ∧ ξ (L ξ) = 1 := by
+  intro P n
+  -- `W u v = Σ_σ sgn σ ∏ₖ ⟨uₖ, v_{σ k}⟩ = det(⟨uₖ, vⱼ⟩)`; `dx^I = W (e ∘ I)` and `δ_τ = W τ`
+  let W : (Fin n → Euclid P) → Covector (Euclid P) n := fun u =>
+    ContinuousMultilinearMap.alternatization
+      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin n) ℝ).compContinuousLinearMap
+        fun k => innerSL ℝ (u k))
+  have hW : ∀ u v, W u v =
+      ∑ σ : Equiv.Perm (Fin n), Equiv.Perm.sign σ • ∏ k, inner ℝ (u k) (v (σ k)) := by
+    intro u v
+    simp only [W, ContinuousMultilinearMap.alternatization_apply_apply,
+      ContinuousMultilinearMap.compContinuousLinearMap_apply,
+      ContinuousMultilinearMap.mkPiAlgebra_apply, innerSL_apply_apply, Function.comp_apply]
+  -- `W u v = W v u` (the determinant of the transpose): substitute `σ ↦ σ⁻¹` and `k ↦ σ k`
+  have hWsymm : ∀ u v, W u v = W v u := by
+    intro u v
+    rw [hW, hW]
+    refine Fintype.sum_equiv (Equiv.inv (Equiv.Perm (Fin n))) _ _ fun σ => ?_
+    rw [Equiv.inv_apply, Equiv.Perm.sign_inv,
+      ← Equiv.prod_comp σ (fun k => inner ℝ (v k) (u (σ⁻¹ k)))]
+    simp only [Equiv.Perm.coe_inv, Equiv.symm_apply_apply, real_inner_comm]
+  -- `W u u = 1` for orthonormal `u`: only `σ = 1` contributes
+  have hW1 : ∀ u, Orthonormal ℝ u → W u u = 1 := by
+    intro u hu
+    rw [hW, Finset.sum_eq_single (1 : Equiv.Perm (Fin n))]
+    · rw [Equiv.Perm.sign_one, one_smul]
+      refine Finset.prod_eq_one fun k _ => ?_
+      rw [Equiv.Perm.coe_one, id, real_inner_self_eq_norm_sq, hu.norm_eq_one, one_pow]
+    · intro σ _ hσ
+      obtain ⟨k, hk⟩ : ∃ k, σ k ≠ k := by
+        by_contra! h
+        exact hσ (Equiv.ext h)
+      rw [Finset.prod_eq_zero (Finset.mem_univ k) (hu.inner_eq_zero hk.symm), smul_zero]
+    · exact fun h => absurd (Finset.mem_univ _) h
+  -- Kronecker property `dx^I(e_J) = δ_IJ` for strictly increasing `I`, `J`: a nonzero term
+  -- forces `J ∘ σ = I`, so `range I = range J` and `I = J`
+  let e := EuclideanSpace.basisFun (Fin P) ℝ
+  have he : ∀ i j, inner ℝ (e i) (e j) = if i = j then (1 : ℝ) else 0 :=
+    orthonormal_iff_ite.mp e.orthonormal
+  have hK : ∀ I J : Fin n → Fin P, StrictMono I → StrictMono J →
+      W (fun k => e (I k)) (fun k => e (J k)) = if I = J then 1 else 0 := by
+    intro I J hI hJ
+    split_ifs with hIJ
+    · subst hIJ
+      have hIo : Orthonormal ℝ (fun k => e (I k)) := e.orthonormal.comp I hI.injective
+      exact hW1 _ hIo
+    · rw [hW]
+      refine Finset.sum_eq_zero fun σ _ => ?_
+      rw [Finset.prod_eq_zero_iff.mpr, smul_zero]
+      by_contra! h
+      apply hIJ
+      have hJσ : J ∘ σ = I := funext fun k => by
+        have := h k (Finset.mem_univ k)
+        rw [he] at this
+        split_ifs at this with hk
+        · exact hk.symm
+        · exact absurd rfl this
+      rw [← (StrictMono.range_inj_of_wellFoundedLT hI hJ), ← hJσ, EquivLike.range_comp]
+  -- expansion `α = Σ_{I ∈ S} α(e_I) dx^I`: both sides are alternating, so compare them on
+  -- `e ∘ f`, `f` injective; writing `f = J ∘ σ⁻¹` with `J` strictly increasing (`J = f ∘ sort f`)
+  -- reduces this to `e ∘ J`, where it is the Kronecker property
+  let S : Finset (Fin n → Fin P) := Finset.univ.filter StrictMono
+  have hE : ∀ α : Covector (Euclid P) n,
+      α = ∑ I ∈ S, α (fun k => e (I k)) • W (fun k => e (I k)) := by
+    intro α
+    apply ContinuousAlternatingMap.toAlternatingMap_injective
+    refine e.toBasis.ext_alternating fun f hf => ?_
+    simp only [OrthonormalBasis.coe_toBasis, ContinuousAlternatingMap.coe_toAlternatingMap]
+    set σ := Tuple.sort f
+    have hJ : StrictMono (f ∘ σ) :=
+      (Tuple.monotone_sort f).strictMono_of_injective (hf.comp σ.injective)
+    have hperm : ∀ β : Covector (Euclid P) n,
+        β (fun k => e (f k)) = Equiv.Perm.sign σ⁻¹ • β (fun k => e ((f ∘ σ) k)) := by
+      intro β
+      have : (fun k => e (f k)) = (fun k => e ((f ∘ σ) k)) ∘ ⇑(σ⁻¹) := by
+        funext k
+        simp
+      rw [this]
+      exact β.toAlternatingMap.map_perm _ _
+    rw [hperm α, hperm, ContinuousAlternatingMap.sum_apply, Finset.sum_eq_single (f ∘ σ)]
+    · rw [ContinuousAlternatingMap.smul_apply, hK _ _ hJ hJ, ite_eq_left rfl, smul_eq_mul,
+        mul_one]
+    · intro I hI hIJ
+      rw [ContinuousAlternatingMap.smul_apply, hK _ _ (Finset.mem_filter.mp hI).2 hJ,
+        ite_eq_right hIJ, smul_zero]
+    · exact fun h => absurd (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hJ⟩) h
+  -- `|β| = (Σ_{I ∈ S} β(e_I)²)^{1/2}`
+  have hnorm : ∀ β : Covector (Euclid P) n,
+      covectorEuclideanNorm β = Real.sqrt (∑ I ∈ S, β (fun k => e (I k)) ^ 2) := by
+    intro β
+    rw [covectorEuclideanNorm, Finset.sum_filter]
+  -- Cauchy–Binet `Σ_{I ∈ S} dx^I(τ)² = 1` for orthonormal `τ`: evaluate the expansion of `δ_τ`
+  -- at `τ`, using `δ_τ(τ) = 1` and `δ_τ(e_I) = dx^I(τ)`
+  have hCB : ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ →
+      ∑ I ∈ S, W (fun k => e (I k)) τ ^ 2 = 1 := by
+    intro τ hτ
+    have h := congrArg (fun β : Covector (Euclid P) n => β τ) (hE (W τ))
+    simp only [ContinuousAlternatingMap.sum_apply, ContinuousAlternatingMap.smul_apply,
+      smul_eq_mul, hW1 τ hτ] at h
+    rw [h]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    rw [hWsymm τ, sq]
+  -- `L ζ = Σ_{I ∈ S} ζ(dx^I) dx^I`
+  refine ⟨∑ I ∈ S, (ContinuousLinearMap.apply ℝ ℝ (W fun k => e (I k))).smulRight
+    (W fun k => e (I k)), ?_⟩
+  rintro ξ Q ⟨τ, hτ, -, hξ⟩
+  -- `ξ(α) = ±α(τ)` with a common sign
+  have hξ2 : ∀ α β : Covector (Euclid P) n, ξ α * ξ β = α τ * β τ := by
+    intro α β
+    rcases hξ with h | h
+    · rw [h, h]
+    · rw [h, h, neg_mul_neg]
+  have hξabs : ∀ α : Covector (Euclid P) n, |ξ α| = |α τ| := by
+    intro α
+    rcases hξ with h | h
+    · rw [h]
+    · rw [h, abs_neg]
+  have hL : ∀ ζ : MultiVector P n, (∑ I ∈ S, (ContinuousLinearMap.apply ℝ ℝ
+      (W fun k => e (I k))).smulRight (W fun k => e (I k))) ζ =
+      ∑ I ∈ S, ζ (W fun k => e (I k)) • W fun k => e (I k) := by
+    intro ζ
+    simp only [sum_apply, ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.apply_apply]
+  have hCBτ := hCB τ hτ
+  refine ⟨fun α => ?_, ?_, ?_⟩
+  · -- (a) `|ξ(α)| = |Σ_I α(e_I) dx^I(τ)| ≤ |α| (Σ_I dx^I(τ)²)^{1/2} = |α|`
+    rw [hξabs, hnorm]
+    apply Real.abs_le_sqrt
+    have h := congrArg (fun β : Covector (Euclid P) n => β τ) (hE α)
+    simp only [ContinuousAlternatingMap.sum_apply, ContinuousAlternatingMap.smul_apply,
+      smul_eq_mul] at h
+    rw [h]
+    calc (∑ I ∈ S, α (fun k => e (I k)) * W (fun k => e (I k)) τ) ^ 2
+        ≤ (∑ I ∈ S, α (fun k => e (I k)) ^ 2) * ∑ I ∈ S, W (fun k => e (I k)) τ ^ 2 :=
+          Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+      _ = ∑ I ∈ S, α (fun k => e (I k)) ^ 2 := by rw [hCBτ, mul_one]
+  · -- (b) `L(ξ)(e_J) = ξ(dx^J)`, so `|L(ξ)|² = Σ_J ξ(dx^J)² = Σ_J dx^J(τ)² = 1`
+    rw [hnorm, hL]
+    have : ∑ J ∈ S, (∑ I ∈ S, ξ (W fun k => e (I k)) • W fun k => e (I k))
+        (fun k => e (J k)) ^ 2 = 1 := by
+      rw [← hCBτ]
+      refine Finset.sum_congr rfl fun J hJ => ?_
+      rw [ContinuousAlternatingMap.sum_apply, Finset.sum_eq_single J]
+      · rw [ContinuousAlternatingMap.smul_apply, hK _ _ (Finset.mem_filter.mp hJ).2
+          (Finset.mem_filter.mp hJ).2, ite_eq_left rfl, smul_eq_mul, mul_one, sq, sq, hξ2]
+      · intro I hI hIJ
+        rw [ContinuousAlternatingMap.smul_apply, hK _ _ (Finset.mem_filter.mp hI).2
+          (Finset.mem_filter.mp hJ).2, ite_eq_right hIJ, smul_zero]
+      · exact fun h => absurd hJ h
+    rw [this, Real.sqrt_one]
+  · -- (c) `ξ(L(ξ)) = Σ_I ξ(dx^I)² = Σ_I dx^I(τ)² = 1`
+    rw [hL, map_sum, ← hCBτ]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    rw [map_smul, smul_eq_mul, hξ2, sq]
+
+/-- **Approximate tangent space of an embedded `C¹` submanifold** (Simon Ch. 3, 1.4; the step
+"since `x ∈ Nⱼ` and `Nⱼ` is a `C¹` submanifold, `lim_{λ↓0} ∫_{η_{x,λ}(Nⱼ)} f dHⁿ = ∫_{TₓNⱼ} f dHⁿ`"
+of the proof of 1.6 "⇒", chapter-03.txt lines 113–126).  Let `ψ : V → W₀` be a local
+representation of `N` (Ch. 2, (4.1)) with `x = ψ(v₀)`, so that `Q = TₓN = Dψ(v₀)(ℝᵐ)` (Ch. 2,
+(4.3)).  For a small ball `B_ρ(v₀) ⊆ V`, `Dψ(v₀)(ℝᵐ)` is the approximate tangent space of
+`ψ(B_ρ(v₀))` at `x` (area formula and dominated convergence).  As `ψ` is proper and 1:1,
+`N ∩ W` and `ψ(B_ρ(v₀))` agree on some ball `B_δ(x)`, and approximate tangent spaces at `x` only
+depend on the set near `x`. -/
+theorem Submission.codim1_ac_submanifold_approxTangent : ∀ (P m : ℕ) (N W : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 1 ≤ m → IsEmbeddedSubmanifold 1 m N → IsOpen W → x ∈ N ∩ W → (Q : Set (Euclid P)) = tangentSpace N x → HasApproximateTangentSpaceAt m (N ∩ W) x Q := by
+  intro P m N W x Q _ hN hW hx hQ
+  -- Step 1, a local representation `ψ : V → W₀` of `N` with `x = ψ(v₀)`
+  obtain ⟨V, W₀, ψ, hV, hW₀, hxW₀, hψ, hinj, hψV, hproper, hDψ⟩ := hN x hx.1
+  obtain ⟨v₀, hv₀, rfl⟩ : x ∈ ψ '' V := hψV ▸ ⟨hxW₀, hx.1⟩
+  have hψ1 : ContDiffOn ℝ 1 ψ V := by exact_mod_cast hψ
+  -- `Q = T_{ψ(v₀)}N = Dψ(v₀)(ℝᵐ)`
+  have hQA : Q = LinearMap.range (fderiv ℝ ψ v₀ : Euclid m →ₗ[ℝ] Euclid P) := by
+    refine SetLike.ext' ?_
+    rw [hQ, LinearMap.coe_range, Submission.chart_tangentSpace_eq_range_fderiv P m 1 N W₀ V ψ v₀
+      le_rfl hV hW₀ hψ hinj hψV hproper hDψ hv₀]
+    rfl
+  subst hQA
+  -- Step 2, `Dψ(v₀)(ℝᵐ)` is the approximate tangent space of `ψ(B_ρ(v₀))` at `ψ(v₀)`
+  obtain ⟨ρ, hρ, hρV, hT⟩ :=
+    Submission.codim1_ac_sat_chart_ball_approxTangent P m V ψ v₀ hV hψ1 hv₀ (hDψ v₀ hv₀)
+  -- Step 3, `N ∩ W` and `ψ(B_ρ(v₀))` agree on a ball `B_δ(ψ(v₀))`
+  obtain ⟨δ, hδ, hloc⟩ := Submission.codim1_ac_sat_chart_localization P m N W W₀ V ψ v₀ ρ hW hW₀
+    hψ.continuousOn hinj hψV hproper hv₀ hx.2 hρ hρV
+  -- Step 4, approximate tangent spaces only depend on the set near the point
+  exact Submission.codim1_ac_sat_approxTangent_of_local_eq P m (N ∩ W) (ψ '' ball v₀ ρ) (ψ v₀) _ δ
+    hδ hloc hT
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
