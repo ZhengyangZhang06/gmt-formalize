@@ -451,6 +451,93 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Continuity of translates: for a continuous compactly supported `j`-form `η`,
+`t ↦ τ(M, θ, ξ)(η(t + ·))` is continuous on `ℝᴾ`.  For `‖t − t₀‖ < 1` the integrands vanish off
+`B = B̄_ρ(0)`, `ρ = r + ‖t₀‖ + 1` where `spt η ⊆ B̄_r(0)`, and are dominated by `C₀ θ 1_B`,
+`C₀` bounding `‖η‖` (as `‖ξ‖ ≤ 1` a.e.); `θ 1_B` is integrable since `θ` is locally
+`Hʲ`-integrable, so dominated convergence gives continuity at `t₀`. -/
+theorem Submission.dimred_cs_sos_mt_si_translate_action_continuous : ∀ (P j : ℕ) (R : IMRep (univ : Set (Euclid P)) j) (η : DifferentialForm (Euclid P) j), Continuous η → HasCompactSupport η → Continuous (fun t : Euclid P => R.action (fun y => η (t + y))) := by
+  intro P j R η hηc hηs
+  -- Step 1: `‖ξ(y)‖ ≤ 1` for `Hʲ⌞M`-a.e. `y`, as `ξ(y) α = ±α(τ)` with `τ` orthonormal
+  have hξ : ∀ᵐ y ∂(μHE[j].restrict R.carrier), ‖R.orient y‖ ≤ 1 := by
+    filter_upwards [R.orients] with y hy
+    obtain ⟨Q, -, τ, hτ, -, hτξ⟩ := hy
+    refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_
+    have hbound : ‖α τ‖ ≤ ‖α‖ := by
+      simpa [hτ.1] using α.le_opNorm τ
+    rcases hτξ with h | h
+    · rw [h, one_mul]
+      exact hbound
+    · rw [h, norm_neg, one_mul]
+      exact hbound
+  -- Step 2: a bound `C₀` for `η` and a support radius `r`
+  obtain ⟨C₀, hC₀⟩ := hηc.bounded_above_of_compact_support hηs
+  have hC₀n : 0 ≤ C₀ := le_trans (norm_nonneg _) (hC₀ 0)
+  obtain ⟨r, hr⟩ : ∃ r, tsupport η ⊆ closedBall (0 : Euclid P) r :=
+    hηs.isCompact.isBounded.subset_closedBall 0
+  -- Step 3: measurability of the integrands
+  have hθm : Measurable fun y => (R.mult y : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have happly : Continuous fun p : MultiVector P j × Covector (Euclid P) j => p.1 p.2 :=
+    continuous_fst.clm_apply continuous_snd
+  have hmeas : ∀ t : Euclid P, AEStronglyMeasurable
+      (fun y => (R.mult y : ℝ) * R.orient y (η (t + y))) (μHE[j].restrict R.carrier) :=
+    fun t => hθm.aestronglyMeasurable.mul
+      (happly.comp_aestronglyMeasurable
+        (R.aestronglyMeasurable_orient.prodMk
+          (hηc.comp (continuous_const.add continuous_id)).aestronglyMeasurable))
+  -- Step 4: for each `y`, the integrand is continuous in `t`
+  have hcont : ∀ y : Euclid P,
+      Continuous fun t : Euclid P => (R.mult y : ℝ) * R.orient y (η (t + y)) := fun y =>
+    continuous_const.mul
+      ((R.orient y).continuous.comp (hηc.comp (continuous_id.add continuous_const)))
+  rw [continuous_iff_continuousAt]
+  intro t₀
+  -- Step 5: the window `B = B̄_ρ(0)`, `ρ = r + ‖t₀‖ + 1`: if `‖t − t₀‖ < 1` and
+  -- `t + y ∈ spt η`, then `y ∈ B`
+  set ρ : ℝ := r + ‖t₀‖ + 1 with hρ
+  set B : Set (Euclid P) := closedBall (0 : Euclid P) ρ with hB
+  have hBm : MeasurableSet B := measurableSet_closedBall
+  have hmemB : ∀ t ∈ ball t₀ 1, ∀ y : Euclid P, t + y ∈ tsupport η → y ∈ B := by
+    intro t ht y hy
+    have h1 : ‖t + y‖ ≤ r := by simpa using hr hy
+    have h2 : ‖t - t₀‖ < 1 := by rwa [mem_ball, dist_eq_norm] at ht
+    have h3 := norm_sub_norm_le t t₀
+    have h4 := norm_sub_le (t + y) t
+    rw [add_sub_cancel_left] at h4
+    simp only [hB, mem_closedBall, dist_zero_right, hρ]
+    linarith
+  -- Step 6: `θ 1_B` is integrable, `θ` being locally `Hʲ`-integrable
+  have hθB : IntegrableOn (fun y => (R.mult y : ℝ)) B (μHE[j].restrict R.carrier) := by
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, Measure.restrict_restrict hBm, inter_comm]
+    simpa only [Real.enorm_natCast] using
+      (R.locallyIntegrable_mult B (isCompact_closedBall 0 ρ) (subset_univ _)).lt_top
+  -- Step 7: domination by `C₀ θ 1_B` for `t ∈ B₁(t₀)`
+  have h_bound : ∀ᶠ t in 𝓝 t₀, ∀ᵐ y ∂(μHE[j].restrict R.carrier),
+      ‖(R.mult y : ℝ) * R.orient y (η (t + y))‖ ≤
+        C₀ * B.indicator (fun x => (R.mult x : ℝ)) y := by
+    filter_upwards [ball_mem_nhds t₀ one_pos] with t ht
+    filter_upwards [hξ] with y hy
+    by_cases hty : t + y ∈ tsupport η
+    · have hyB := hmemB t ht y hty
+      rw [indicator_of_mem hyB, norm_mul, Real.norm_natCast]
+      calc (R.mult y : ℝ) * ‖R.orient y (η (t + y))‖
+          ≤ (R.mult y : ℝ) * (‖R.orient y‖ * ‖η (t + y)‖) := by
+            gcongr; exact (R.orient y).le_opNorm _
+        _ ≤ (R.mult y : ℝ) * (1 * C₀) := by
+            gcongr
+            exact hC₀ _
+        _ = C₀ * (R.mult y : ℝ) := by ring
+    · rw [image_eq_zero_of_notMem_tsupport hty, map_zero, mul_zero, norm_zero]
+      by_cases hyB : y ∈ B
+      · rw [indicator_of_mem hyB]; positivity
+      · rw [indicator_of_notMem hyB, mul_zero]
+  -- Step 8: dominated convergence
+  show ContinuousAt (fun t => ∫ y in R.carrier, (R.mult y : ℝ) * R.orient y (η (t + y)) ∂μHE[j]) t₀
+  exact continuousAt_of_dominated (Eventually.of_forall hmeas) h_bound
+    ((hθB.integrable_indicator hBm).const_mul C₀)
+    (Eventually.of_forall fun y => (hcont y).continuousAt)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
