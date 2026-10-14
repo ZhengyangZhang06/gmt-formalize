@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_mass_bounds-a1.covector_expansion-a1",
+  "parent_id": "root.compactness_mass_bounds-a1",
+  "depth": 2,
+  "title": "Coordinate expansion of covectors in the basis dx^β",
+  "statement": "For all P, n ∈ ℕ and every α ∈ Covector (Eucl P) n:\nα = Σ_{β ∈ I(n,P)} α(e_β)·dx^β,\nwhere I(n,P) = SimonMultiIndex n P is the finite type of order embeddings β : Fin n ↪o Fin P, α(e_β) = euclideanCovectorCoordinate α β = α(e_{β(0)},…,e_{β(n−1)}) with e_i = EuclideanSpace.single i 1, and dx^β = wedgeCovectors n (fun j => EuclideanSpace.proj (β j)).",
+  "lean_statement": "∀ (P n : ℕ) (α : Covector (Eucl P) n), α = ∑ β : SimonMultiIndex n P, euclideanCovectorCoordinate α β • wedgeCovectors n (fun j => EuclideanSpace.proj (β j))",
+  "lean_name": "cmb_covector_eq_sum_coord_smul_wedge",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-covector-expansion-a1-a1"
+}
