@@ -2012,6 +2012,42 @@ theorem Submission.codim1_hcp_un_zero_mean_curvature : ∀ (P m : ℕ) (U : Set 
     (fun x hx => ⟨hMO hx, hMU hx⟩) hMmeas hcont
     (fun K hK hKU => hfin K hK (hKU.trans inter_subset_right)) hpos htest
 
+/-- **Unit normal and minimality** (Simon, Appendix B, p. 229: `M` is "orientable, with
+orientation induced from `C`"; Ch. 2, 4.23–4.29: `H = trace B` and, for a unit normal `ν`,
+`H = −(div_M ν) ν`).  Let `M ⊆ U` be an embedded `C^∞` `m`-dimensional submanifold contained in
+the `(m + 1)`-dimensional subspace `A₀`, oriented by `ξ`, with `Hᵐ(M ∩ K) < ∞` for compact
+`K ⊆ U`, and stationary in `U`.  The tangent spaces of `M` lie in `A₀`, so `ξ` and a volume form
+of `A₀` give a continuous unit normal `ν₀` of `M` in `A₀`.  In the `C^∞` charts of `M`, `ν₀` is
+`±` the normalized cross product of the coordinate vectors, hence the restriction to `M` of a
+`C^∞` map near each point of `M`, and a smooth partition of unity glues these maps into `ν`,
+`C^∞` on an open `O ⊇ M`.  Testing stationarity with `X = φν` gives `∫_M φ div_M ν dHᵐ = 0` for
+every test function `φ`, so the continuous function `div_M ν = trace(P_x ∘ Dν(x))` vanishes on
+`M`. -/
+theorem Submission.codim1_hcp_minimal_unit_normal : ∀ (P m : ℕ) (U : Set (Euclid P)) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), IsOpen U → M ⊆ U → Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → (∃ ξ : Euclid P → MultiVector P m, IsOrientation m M ξ) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[m] = 0) → ∃ (ν : Euclid P → Euclid P) (O : Set (Euclid P)), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O ∧ (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) ∧ ∀ x ∈ M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap) = 0 := by
+  intro P m U A₀ M hU hMU hA₀ hMA₀ hr hξ hfin hstat
+  -- step 1: `M` is in particular `C¹`, and each tangent space `TₓM` lies in `A₀`
+  have h1 : IsEmbeddedSubmanifold 1 m M := hr 1
+  have htan : ∀ x ∈ M, tangentSpace M x ⊆ (A₀ : Set (Euclid P)) := by
+    intro x hx v hv
+    obtain ⟨Q, hQ, -, hQA⟩ := Submission.codim1_hcp_un_tangent_subspace P m A₀ M h1 hMA₀ x hx
+    rw [← hQ] at hv
+    exact hQA hv
+  -- steps 2-3: the orientation `ξ` and a volume form of `A₀` give a continuous unit normal `ν₀`
+  obtain ⟨ξ, hξ⟩ := hξ
+  obtain ⟨ν₀, hν₀c, hν₀⟩ := Submission.codim1_hcp_un_orientation_normal P m A₀ M ξ hA₀ htan hξ
+  -- steps 4-5: in the `C^∞` charts of `M`, `ν₀` is locally the restriction of a `C^∞` map
+  have hloc := Submission.codim1_hcp_un_normal_local_smooth P m A₀ M ν₀ hA₀ hMA₀
+    (Submission.codim1_hcp_smooth_charts P m M hr) hν₀c hν₀
+  -- step 6: a smooth partition of unity glues these into `ν`, `C^∞` on an open `O ⊇ M`
+  obtain ⟨ν, O, hO, hMO, hνO, hνM⟩ := Submission.codim1_hcp_un_smooth_glue P (Euclid P) M ν₀ hloc
+  have hν : ∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0 := by
+    intro x hx
+    rw [hνM x hx]
+    exact hν₀ x hx
+  -- step 7: stationarity tested with `X = φν` gives `div_M ν = trace(P_x ∘ Dν(x)) = 0` on `M`
+  exact ⟨ν, O, hO, hMO, hνO, hν, Submission.codim1_hcp_un_zero_mean_curvature P m U A₀ M ν hU
+    hMU hA₀ hMA₀ h1 hfin hstat ⟨O, hO, hMO, hνO⟩ hν⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
