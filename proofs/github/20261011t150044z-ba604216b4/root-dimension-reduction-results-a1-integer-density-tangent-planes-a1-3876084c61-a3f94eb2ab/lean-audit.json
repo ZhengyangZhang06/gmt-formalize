@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7ededc2a04e3662adf4ad5e5a4feb0c78adea3d59b58c8e490073cc6453e93b8",
+  "git_delta": {
+    "base_commit": "bbfeab42b404f215d15ac1eadd4a665191edf358",
+    "candidate_commit": "8f6106a39553c78bbe9b498bc1e2a5d08f0fb2e1",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "854f0dadb4ac194b58759b923a7733dd4e4cdc1b0cf10d2a0bf5150786ab450c",
+    "source_sha256": "62d78e14023602f23998b8fd31b5e4369dfa7319d2493c0b2adb4bb18084fdd8",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_stationary_cone_sheet_planar",
+      "statement": "∀ (P : ℕ) (M : Set (Euclid P)) (p : Euclid P) (ρ : ℝ), IsEmbeddedSubmanifold 1 2 M → p ∈ M → p ≠ 0 → 0 < ρ → (∀ x ∈ M ∩ ball p ρ, ∀ t : ℝ, 0 < t → t • x ∈ ball p ρ → t • x ∈ M) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ ball p ρ → ∫ x in M ∩ ball p ρ, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[2] = 0) → ∃ (δ : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q = 2 ∧ p ∈ Q ∧ M ∩ ball p δ = (Q : Set (Euclid P)) ∩ ball p δ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
