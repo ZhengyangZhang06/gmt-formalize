@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.harmonic_decay-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1",
+  "depth": 6,
+  "title": "Campanato and Morrey decay of the gradient of a harmonic map (from the interior estimates)",
+  "statement": "Let m ≥ 1 and k ∈ ℕ. There is C > 0 such that for all x₀ ∈ ℝ^m, R > 0 and h : ℝ^m → ℝ^k which is C^j on B_R(x₀) for every j, harmonic there (Σ_i D²h(x)(e_i, e_i) = 0), with |Dh|² := Σ_j ‖Dh e_j‖² integrable on B_R(x₀), and all 0 < r ≤ R: (i) ∫_{B_r(x₀)} |Dh − (Dh)_{x₀,r}|² ≤ C (r/R)^{m+2} ∫_{B_R(x₀)} |Dh − (Dh)_{x₀,R}|², and (ii) ∫_{B_r(x₀)} |Dh|² ≤ C (r/R)^m ∫_{B_R(x₀)} |Dh|², where (Dh)_{x₀,ρ} := ⨍_{B_ρ(x₀)} Dh and |A|² := Σ_j ‖Ae_j‖².",
+  "lean_statement": "∀ (m k : ℕ), 1 ≤ m → ∃ C : ℝ, 0 < C ∧ ∀ (x₀ : Euclid m) (R : ℝ) (h : Euclid m → Euclid k), 0 < R → (∀ n : ℕ, ContDiffOn ℝ n h (ball x₀ R)) → (∀ x ∈ ball x₀ R, ∑ i : Fin m, iteratedFDeriv ℝ 2 h x ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → IntegrableOn (fun x => ∑ j : Fin m, ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2) (ball x₀ R) → ∀ r : ℝ, 0 < r → r ≤ R → (∫ x in ball x₀ r, ∑ j : Fin m, ‖(fderiv ℝ h x - ⨍ z in ball x₀ r, fderiv ℝ h z) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤ C * (r / R) ^ (m + 2) * ∫ x in ball x₀ R, ∑ j : Fin m, ‖(fderiv ℝ h x - ⨍ z in ball x₀ R, fderiv ℝ h z) (EuclideanSpace.single j (1 : ℝ))‖ ^ 2) ∧ ∫ x in ball x₀ r, ∑ j : Fin m, ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2 ≤ C * (r / R) ^ m * ∫ x in ball x₀ R, ∑ j : Fin m, ‖fderiv ℝ h x (EuclideanSpace.single j (1 : ℝ))‖ ^ 2",
+  "lean_name": "codim1_hcp_sr_harmonic_decay",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f15d71c3ef-a1",
+      "result_commit": "3853ad1ff1a11a7855f6e8df2d2f252bc76c23a4",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-48fb867a19-a1"
+}

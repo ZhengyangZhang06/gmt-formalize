@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.campanato_lemmas-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1",
+  "depth": 6,
+  "title": "Iteration lemma and Campanato's Hölder criterion (Giaquinta–Martinazzi Ch. 5, §5.1.1 and §5.3)",
+  "statement": "(I) For all A ≥ 0 and 0 < b < a there are ε₀, C > 0 such that: if φ : ℝ → ℝ, R₀, ε, B ∈ ℝ satisfy 0 ≤ ε ≤ ε₀, B ≥ 0, φ ≥ 0 on (0, R₀], φ(r) ≤ φ(ρ) and φ(r) ≤ A((r/ρ)^a + ε)φ(ρ) + Bρ^b whenever 0 < r ≤ ρ ≤ R₀, then φ(r) ≤ C((r/ρ)^b φ(ρ) + B r^b) whenever 0 < r ≤ ρ ≤ R₀ (real powers). (II) For all m ≥ 1, k ∈ ℕ and 0 < α ≤ 1 there is C₀ > 0 such that: if f : ℝ^m → L(ℝ^m, ℝ^k) is continuous on closedBall(x₀, R + ρ₁) with R, ρ₁ > 0, K ≥ 0, and ∫_{B_ρ(x)} ‖f − ⨍_{B_ρ(x)} f‖² ≤ Kρ^{m+2α} for all x ∈ B_R(x₀) and 0 < ρ ≤ ρ₁, then ‖f(x) − f(y)‖ ≤ C₀√K‖x − y‖^α for all x, y ∈ B_R(x₀) with ‖x − y‖ ≤ ρ₁/2.",
+  "lean_statement": "(∀ (A a b : ℝ), 0 ≤ A → 0 < b → b < a → ∃ ε₀ C : ℝ, 0 < ε₀ ∧ 0 < C ∧ ∀ (φ : ℝ → ℝ) (R₀ ε B : ℝ), 0 ≤ ε → ε ≤ ε₀ → 0 ≤ B → (∀ r : ℝ, 0 < r → r ≤ R₀ → 0 ≤ φ r) → (∀ r ρ : ℝ, 0 < r → r ≤ ρ → ρ ≤ R₀ → φ r ≤ φ ρ) → (∀ r ρ : ℝ, 0 < r → r ≤ ρ → ρ ≤ R₀ → φ r ≤ A * ((r / ρ) ^ a + ε) * φ ρ + B * ρ ^ b) → ∀ r ρ : ℝ, 0 < r → r ≤ ρ → ρ ≤ R₀ → φ r ≤ C * ((r / ρ) ^ b * φ ρ + B * r ^ b)) ∧ (∀ (m k : ℕ) (α : ℝ), 1 ≤ m → 0 < α → α ≤ 1 → ∃ C₀ : ℝ, 0 < C₀ ∧ ∀ (f : Euclid m → (Euclid m →L[ℝ] Euclid k)) (x₀ : Euclid m) (R ρ₁ K : ℝ), 0 < R → 0 < ρ₁ → 0 ≤ K → ContinuousOn f (closedBall x₀ (R + ρ₁)) → (∀ x ∈ ball x₀ R, ∀ ρ : ℝ, 0 < ρ → ρ ≤ ρ₁ → ∫ z in ball x ρ, ‖f z - ⨍ z' in ball x ρ, f z'‖ ^ 2 ≤ K * ρ ^ ((m : ℝ) + 2 * α)) → ∀ x ∈ ball x₀ R, ∀ y ∈ ball x₀ R, ‖x - y‖ ≤ ρ₁ / 2 → ‖f x - f y‖ ≤ C₀ * Real.sqrt K * ‖x - y‖ ^ α)",
+  "lean_name": "codim1_hcp_sr_campanato_lemmas",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-6cc538f739-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1.mean_value_derivative_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1",
+  "depth": 6,
+  "title": "Interior derivative bound for functions with the ball mean value identity (shifted balls)",
+  "statement": "Let n ≥ 1, x ∈ ℝⁿ (ℝⁿ = Euclid n), ρ > 0, K ∈ ℝ, and let u : ℝⁿ → ℝ satisfy:\n- u is differentiable at x;\n- u is continuous on closedBall(x, 3ρ/2), and |u(z)| ≤ K for all z ∈ closedBall(x, 3ρ/2);\n- u satisfies the ball mean value identity ∫_{B̆_ρ(z)} u = (volume (ball z ρ)).toReal·u(z) for every z ∈ closedBall(x, ρ/2).\nThen ‖Du(x)‖ ≤ 2nK/ρ, where Du(x) = fderiv ℝ u x and ‖·‖ is the operator norm.",
+  "lean_statement": "∀ (n : ℕ) (u : Euclid n → ℝ) (x : Euclid n) (ρ K : ℝ), 0 < n → 0 < ρ → DifferentiableAt ℝ u x → ContinuousOn u (closedBall x (3 * ρ / 2)) → (∀ z ∈ closedBall x (3 * ρ / 2), |u z| ≤ K) → (∀ z ∈ closedBall x (ρ / 2), ∫ y in ball z ρ, u y = (volume (ball z ρ)).toReal * u z) → ‖fderiv ℝ u x‖ ≤ 2 * (n : ℝ) * K / ρ",
+  "lean_name": "dorag_ha_ie_norm_fderiv_le_of_mean_value",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1.shifted_ball_comparison-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1.shifted_ball_comparison-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-b17a58928f-a1"
+}
