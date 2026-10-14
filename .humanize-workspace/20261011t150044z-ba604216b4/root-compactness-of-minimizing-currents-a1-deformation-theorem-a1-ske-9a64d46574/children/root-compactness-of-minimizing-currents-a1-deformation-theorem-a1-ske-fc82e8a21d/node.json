@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.support_calculus-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1",
+  "depth": 4,
+  "title": "Support calculus on ℝ^P: vanishing off a closed set, closedness, differences, zero current, boundary",
+  "statement": "Support calculus for currents on all of ℝ^P (domain U = univ). Let P, n ∈ ℕ. (i) If E ⊆ ℝ^P is closed and X ∈ 𝒟_n(ℝ^P) satisfies X(ω) = 0 for every ω ∈ 𝒟ⁿ(ℝ^P) whose tsupport is disjoint from E, then spt X ⊆ E. (ii) spt X is closed for every X ∈ 𝒟_n(ℝ^P). (iii) spt(A − B) ⊆ spt A ∪ spt B for all A, B ∈ 𝒟_n(ℝ^P). (iv) The zero current 0 ∈ 𝒟_n(ℝ^P) has empty support. (v) spt ∂A ⊆ spt A for every A ∈ 𝒟_{n+1}(ℝ^P). Here spt X = X.support = univ \\ X.zeroRegion, where X.zeroRegion is the union of all open W ⊆ ℝ^P with compact closure (closure W ⊆ univ) on which X vanishes, i.e. X(ω) = 0 for every ω with tsupport ω ⊆ W (GeometricCurrentOn.VanishesOn), and A − B, 0, ∂A are the contract subtraction, the zero current and the boundary (∂A(η) = A(dη)).",
+  "lean_statement": "∀ (P n : ℕ), (∀ (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) n), IsClosed E → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) E → X ω = 0) → X.support ⊆ E) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed X.support) ∧ (∀ A B : GeometricCurrentOn (univ : Set (Euclid P)) n, (A - B).support ⊆ A.support ∪ B.support) ∧ (0 : GeometricCurrentOn (univ : Set (Euclid P)) n).support = ∅ ∧ (∀ A : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1), A.boundary.support ⊆ A.support)",
+  "lean_name": "cmcsd_support_calculus",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-fc82e8a21d-a1"
+}
