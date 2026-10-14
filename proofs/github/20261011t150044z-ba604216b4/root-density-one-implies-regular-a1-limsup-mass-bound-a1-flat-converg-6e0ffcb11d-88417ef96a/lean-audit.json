@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "153695b42ba9e67f8909cc6f24e642d93a8d94803066a24f95506cd314610f1a",
+  "git_delta": {
+    "base_commit": "40fe70e9dfa8d8bdc20a563d72f895e43726d23e",
+    "candidate_commit": "20fa28a44a84675ccf1247f50887b9323935d593",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_sd_lipschitz_extend",
+    "diff_sha256": "1e0875eef3441790c211752281e228e8c0f408d5254cec3d96567c698b57be06",
+    "source_sha256": "874de89ccc3d4e7e335ea23764a4510c2f82ede8c5b7a40ad74fff5f817927e2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_sd_lipschitz_extend",
+      "statement": "∀ (P : ℕ) (S : Set (Euclid P)) (ψ : Euclid P → Euclid P) (K : NNReal), LipschitzOnWith K ψ S → ∃ φ : Euclid P → Euclid P, LipschitzWith (NNReal.sqrt P * K) φ ∧ EqOn φ ψ S",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
