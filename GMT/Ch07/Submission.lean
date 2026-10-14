@@ -451,6 +451,24 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The mass measure is null off the support** (Simon 6.2.5, 6.2.11; step (1d) of the shell
+decomposition in the proof of the deformation theorem, Simon Ch. 6, 5.1).  If currents vanish
+on forms supported off their support and `μ(W) = M_W(X)` for every open `W`, then
+`μ(ℝᴾ \ spt X) = 0`: the complement of `spt X` is the open zero region `Z` of `X`, and every
+form admissible for `M_Z(X)` is supported off `spt X`, so `M_Z(X) = 0`. -/
+theorem Submission.cmcsd_sh_measure_compl_support_eq_zero : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (μ : Measure (Euclid P)), (∀ W : Set (Euclid P), IsOpen W → X.massOn W = μ W) → μ X.supportᶜ = 0 := by
+  intro hVO P k X μ hμ
+  -- (1) `(spt X)ᶜ = (ℝᴾ \ Z)ᶜ = Z`, the open zero region of `X`
+  have hcompl : X.supportᶜ = X.zeroRegion := by
+    rw [GeometricCurrentOn.support, ← compl_eq_univ_sdiff, compl_compl]
+  -- (2) `μ((spt X)ᶜ) = μ(Z) = M_Z(X)`
+  rw [hcompl, ← hμ _ X.isOpen_zeroRegion]
+  -- (3)–(4) every form admissible for `M_Z(X)` is supported off `spt X`, so `X` kills it
+  refine le_antisymm (sSup_le ?_) zero_le
+  rintro r ⟨ω, hω, rfl⟩
+  show ENNReal.ofReal (X ω) ≤ 0
+  rw [hVO P k univ X ω (Disjoint.mono_left hω.1 Set.disjoint_sdiff_right), ENNReal.ofReal_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
