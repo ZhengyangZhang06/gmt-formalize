@@ -5141,6 +5141,29 @@ theorem Submission.dor_ims_action_eq_integral : ∀ (P n : ℕ) (U : Set (Euclid
   have hKm : MeasurableSet (tsupport f) := (isClosed_tsupport f).measurableSet
   have hbound : ∀ᵐ x ∂R.measure, ‖R.orient x (f x)‖ ≤ (tsupport f).indicator (fun _ => C) x := by
     filter_upwards [hac.ae_le R.orients] with x hx
+    obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
+    by_cases hxK : x ∈ tsupport f
+    · rw [Set.indicator_of_mem hxK]
+      have hτ1 : ‖f x τ‖ ≤ ‖f x‖ := by
+        simpa [hτ.norm_eq_one] using (f x).le_opNorm τ
+      rcases hξ with h | h
+      · rw [h]
+        exact hτ1.trans (hC x)
+      · rw [h, norm_neg]
+        exact hτ1.trans (hC x)
+    · rw [Set.indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport hxK, map_zero, norm_zero]
+  -- `μ_R(K) = ∫_{M ∩ K} θ dHⁿ < ∞`
+  have hKfin : R.measure (tsupport f) ≠ ∞ := by
+    rw [IMRep.measure, withDensity_apply _ hKm, Measure.restrict_restrict hKm,
+      Set.inter_comm (tsupport f) R.carrier]
+    exact R.locallyIntegrable_mult _ hcpt hU
+  have hint : Integrable (fun x => R.orient x (f x)) R.measure :=
+    ((integrable_indicator_iff hKm).2 (integrableOn_const hKfin)).mono' hmeas hbound
+  refine ⟨hint, ?_⟩
+  -- `∫ g d(θ Hⁿ⌞M) = ∫_M θ g dHⁿ`
+  rw [IMRep.measure, integral_withDensity_eq_integral_toReal_smul hθ
+    (ae_of_all _ fun x => ENNReal.natCast_lt_top _), IMRep.action]
+  simp only [ENNReal.toReal_natCast, smul_eq_mul]
 /-- **Simon Ch. 6, 1.1 and 1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of a plane (`τ`
 orthonormal) is a nonzero `n`-vector of norm at most one.  `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
 gives `‖ξ‖ ≤ 1`.  The covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩ = det(⟨τᵢ, wⱼ⟩)`, the
@@ -6430,28 +6453,80 @@ theorem Submission.dtc_bc_lc_pf_ext_imrep_integral_tendsto : ∀ (P n : ℕ) (U 
   have hbound : ∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ ‖α‖ := by
     filter_upwards [R.orients] with x hx
     obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
-    by_cases hxK : x ∈ tsupport f
-    · rw [Set.indicator_of_mem hxK]
-      have hτ1 : ‖f x τ‖ ≤ ‖f x‖ := by
-        simpa [hτ.norm_eq_one] using (f x).le_opNorm τ
-      rcases hξ with h | h
-      · rw [h]
-        exact hτ1.trans (hC x)
-      · rw [h, norm_neg]
-        exact hτ1.trans (hC x)
-    · rw [Set.indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport hxK, map_zero, norm_zero]
-  -- `μ_R(K) = ∫_{M ∩ K} θ dHⁿ < ∞`
-  have hKfin : R.measure (tsupport f) ≠ ∞ := by
-    rw [IMRep.measure, withDensity_apply _ hKm, Measure.restrict_restrict hKm,
-      Set.inter_comm (tsupport f) R.carrier]
-    exact R.locallyIntegrable_mult _ hcpt hU
-  have hint : Integrable (fun x => R.orient x (f x)) R.measure :=
-    ((integrable_indicator_iff hKm).2 (integrableOn_const hKfin)).mono' hmeas hbound
-  refine ⟨hint, ?_⟩
-  -- `∫ g d(θ Hⁿ⌞M) = ∫_M θ g dHⁿ`
-  rw [IMRep.measure, integral_withDensity_eq_integral_toReal_smul hθ
-    (ae_of_all _ fun x => ENNReal.natCast_lt_top _), IMRep.action]
-  simp only [ENNReal.toReal_natCast, smul_eq_mul]
+    intro α
+    have hτn : ∀ i, ‖τ i‖ = 1 := fun i => hτ.1 i
+    have hατ : |α τ| ≤ ‖α‖ := by
+      have h := α.le_opNorm τ
+      simp only [hτn, Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
+      exact h
+    rcases hξ with h | h
+    · rw [h]; exact hατ
+    · rw [h, abs_neg]; exact hατ
+  -- (3) `θ` is `μ`-integrable: `μ = Hⁿ⌞(M ∩ K)` and `∫_{M ∩ K} θ dHⁿ < ∞`
+  have hθmeas : AEStronglyMeasurable (fun x => (R.mult x : ℝ)) μ :=
+    ((measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult).aestronglyMeasurable
+  have hμK : μ = μHE[n].restrict (R.carrier ∩ K) := by
+    rw [hμ]
+    refine Measure.restrict_congr_set (ae_eq_set.2 ⟨?_, ?_⟩)
+    · rw [sdiff_self_inter]
+      exact hnull
+    · rw [sdiff_eq_empty.2 inter_subset_left]
+      exact measure_empty
+  have hθint : Integrable (fun x => (R.mult x : ℝ)) μ := by
+    refine ⟨hθmeas, ?_⟩
+    show ∫⁻ x, ‖(R.mult x : ℝ)‖ₑ ∂μ < ∞
+    rw [hμK]
+    simp only [Real.enorm_natCast]
+    exact lt_top_iff_ne_top.mpr (R.locallyIntegrable_mult K hK hKU)
+  -- (4) measurability of the integrand for continuous `G`
+  have hmeas : ∀ G : Euclid P → Covector (Euclid P) n, Continuous G →
+      AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (G x)) μ := by
+    intro G hG
+    have h2 : AEStronglyMeasurable (fun x => R.orient x (G x)) μ :=
+      Continuous.comp_aestronglyMeasurable₂
+        (g := fun (L : MultiVector P n) (α : Covector (Euclid P) n) => L α)
+        (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) n) (F := ℝ)).continuous
+        R.aestronglyMeasurable_orient hG.aestronglyMeasurable
+    exact hθmeas.mul h2
+  -- (5) integrability of the integrand for continuous `G`: it is dominated by `(sup_K ‖G‖) θ`
+  have hint : ∀ G : Euclid P → Covector (Euclid P) n, Continuous G →
+      Integrable (fun x => (R.mult x : ℝ) * R.orient x (G x)) μ := by
+    intro G hG
+    obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hG.continuousOn
+    refine Integrable.mono' (hθint.const_mul C) (hmeas G hG) ?_
+    filter_upwards [hbound, hae] with x hx hxK
+    rw [norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+    calc (R.mult x : ℝ) * |R.orient x (G x)| ≤ (R.mult x : ℝ) * ‖G x‖ := by
+          gcongr; exact hx _
+      _ ≤ (R.mult x : ℝ) * C := by gcongr; exact hC x hxK
+      _ = C * (R.mult x : ℝ) := mul_comm _ _
+  -- (6) the estimate `|∫ θ ξ(gⱼ) dμ − ∫ θ ξ(g) dμ| ≤ Θ ε/(Θ + 1) < ε` for large `j`
+  set Θ := ∫ x, (R.mult x : ℝ) ∂μ with hΘdef
+  have hΘ : 0 ≤ Θ := integral_nonneg fun x => Nat.cast_nonneg _
+  rw [Metric.tendstoUniformlyOn_iff] at hunif
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  have hε' : 0 < ε / (Θ + 1) := div_pos hε (by linarith)
+  obtain ⟨N, hN⟩ := eventually_atTop.mp (hunif (ε / (Θ + 1)) hε')
+  refine ⟨N, fun j hj => ?_⟩
+  rw [Real.dist_eq, ← integral_sub (hint _ (hgs j)) (hint _ hg), ← Real.norm_eq_abs]
+  have hle : ‖∫ x, ((R.mult x : ℝ) * R.orient x (gs j x) - (R.mult x : ℝ) * R.orient x (g x)) ∂μ‖
+      ≤ ∫ x, ε / (Θ + 1) * (R.mult x : ℝ) ∂μ := by
+    refine norm_integral_le_of_norm_le (hθint.const_mul _) ?_
+    filter_upwards [hbound, hae] with x hx hxK
+    rw [← mul_sub, ← (R.orient x).map_sub, norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+    calc (R.mult x : ℝ) * |R.orient x (gs j x - g x)| ≤ (R.mult x : ℝ) * ‖gs j x - g x‖ := by
+          gcongr; exact hx _
+      _ ≤ (R.mult x : ℝ) * (ε / (Θ + 1)) := by
+          gcongr
+          have h := hN j hj x hxK
+          rw [dist_comm, dist_eq_norm] at h
+          exact h.le
+      _ = ε / (Θ + 1) * (R.mult x : ℝ) := mul_comm _ _
+  rw [integral_const_mul, ← hΘdef] at hle
+  refine hle.trans_lt ?_
+  rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+  nlinarith
 
 /-- **Simon Ch. 6, 3.2(3), upper bound**: if `T = τ(M, θ, ξ)` then `M_W(T) ≤ μ_T(W)` for every
 `W`.  For admissible `ω`, `⟨ω, ξ⟩ ≤ |ω| ≤ 1` `μ_T`-a.e. (`|ξ(α)| ≤ |α|` for unit orientations)
@@ -7202,79 +7277,6 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
     le_antisymm (Submission.dor_ims_massOn_le_measure P n U T R hR W)
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
-    have hτn : ∀ i, ‖τ i‖ = 1 := fun i => hτ.1 i
-    have hατ : |α τ| ≤ ‖α‖ := by
-      have h := α.le_opNorm τ
-      simp only [hτn, Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
-      exact h
-    rcases hξ with h | h
-    · rw [h]; exact hατ
-    · rw [h, abs_neg]; exact hατ
-  -- (3) `θ` is `μ`-integrable: `μ = Hⁿ⌞(M ∩ K)` and `∫_{M ∩ K} θ dHⁿ < ∞`
-  have hθmeas : AEStronglyMeasurable (fun x => (R.mult x : ℝ)) μ :=
-    ((measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult).aestronglyMeasurable
-  have hμK : μ = μHE[n].restrict (R.carrier ∩ K) := by
-    rw [hμ]
-    refine Measure.restrict_congr_set (ae_eq_set.2 ⟨?_, ?_⟩)
-    · rw [sdiff_self_inter]
-      exact hnull
-    · rw [sdiff_eq_empty.2 inter_subset_left]
-      exact measure_empty
-  have hθint : Integrable (fun x => (R.mult x : ℝ)) μ := by
-    refine ⟨hθmeas, ?_⟩
-    show ∫⁻ x, ‖(R.mult x : ℝ)‖ₑ ∂μ < ∞
-    rw [hμK]
-    simp only [Real.enorm_natCast]
-    exact lt_top_iff_ne_top.mpr (R.locallyIntegrable_mult K hK hKU)
-  -- (4) measurability of the integrand for continuous `G`
-  have hmeas : ∀ G : Euclid P → Covector (Euclid P) n, Continuous G →
-      AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (G x)) μ := by
-    intro G hG
-    have h2 : AEStronglyMeasurable (fun x => R.orient x (G x)) μ :=
-      Continuous.comp_aestronglyMeasurable₂
-        (g := fun (L : MultiVector P n) (α : Covector (Euclid P) n) => L α)
-        (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) n) (F := ℝ)).continuous
-        R.aestronglyMeasurable_orient hG.aestronglyMeasurable
-    exact hθmeas.mul h2
-  -- (5) integrability of the integrand for continuous `G`: it is dominated by `(sup_K ‖G‖) θ`
-  have hint : ∀ G : Euclid P → Covector (Euclid P) n, Continuous G →
-      Integrable (fun x => (R.mult x : ℝ) * R.orient x (G x)) μ := by
-    intro G hG
-    obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hG.continuousOn
-    refine Integrable.mono' (hθint.const_mul C) (hmeas G hG) ?_
-    filter_upwards [hbound, hae] with x hx hxK
-    rw [norm_mul, Real.norm_natCast, Real.norm_eq_abs]
-    calc (R.mult x : ℝ) * |R.orient x (G x)| ≤ (R.mult x : ℝ) * ‖G x‖ := by
-          gcongr; exact hx _
-      _ ≤ (R.mult x : ℝ) * C := by gcongr; exact hC x hxK
-      _ = C * (R.mult x : ℝ) := mul_comm _ _
-  -- (6) the estimate `|∫ θ ξ(gⱼ) dμ − ∫ θ ξ(g) dμ| ≤ Θ ε/(Θ + 1) < ε` for large `j`
-  set Θ := ∫ x, (R.mult x : ℝ) ∂μ with hΘdef
-  have hΘ : 0 ≤ Θ := integral_nonneg fun x => Nat.cast_nonneg _
-  rw [Metric.tendstoUniformlyOn_iff] at hunif
-  rw [Metric.tendsto_atTop]
-  intro ε hε
-  have hε' : 0 < ε / (Θ + 1) := div_pos hε (by linarith)
-  obtain ⟨N, hN⟩ := eventually_atTop.mp (hunif (ε / (Θ + 1)) hε')
-  refine ⟨N, fun j hj => ?_⟩
-  rw [Real.dist_eq, ← integral_sub (hint _ (hgs j)) (hint _ hg), ← Real.norm_eq_abs]
-  have hle : ‖∫ x, ((R.mult x : ℝ) * R.orient x (gs j x) - (R.mult x : ℝ) * R.orient x (g x)) ∂μ‖
-      ≤ ∫ x, ε / (Θ + 1) * (R.mult x : ℝ) ∂μ := by
-    refine norm_integral_le_of_norm_le (hθint.const_mul _) ?_
-    filter_upwards [hbound, hae] with x hx hxK
-    rw [← mul_sub, ← (R.orient x).map_sub, norm_mul, Real.norm_natCast, Real.norm_eq_abs]
-    calc (R.mult x : ℝ) * |R.orient x (gs j x - g x)| ≤ (R.mult x : ℝ) * ‖gs j x - g x‖ := by
-          gcongr; exact hx _
-      _ ≤ (R.mult x : ℝ) * (ε / (Θ + 1)) := by
-          gcongr
-          have h := hN j hj x hxK
-          rw [dist_comm, dist_eq_norm] at h
-          exact h.le
-      _ = ε / (Θ + 1) * (R.mult x : ℝ) := mul_comm _ _
-  rw [integral_const_mul, ← hΘdef] at hle
-  refine hle.trans_lt ?_
-  rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
-  nlinarith
 
 /-- **Integral form of the push-forward along one fixed sequence of test forms** (Simon Ch. 6,
 2.23–2.24(2)).  For `f` of class `C¹` on an open `O ⊇ K` (`K` compact) and `ω ∈ 𝒟ⁿ(ℝᴾ)` there
