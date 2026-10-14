@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1.jacobian_stationary-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1",
+  "depth": 6,
+  "title": "Jacobian-integral minimality forces ∫_M div_M Z dH^m = 0 (parent steps 4–7: first variation and Fermat)",
+  "statement": "Let P, m ∈ ℕ, let M ⊆ ℝ^P be an embedded C¹ m-dimensional submanifold, let Z : ℝ^P → ℝ^P be C¹ with compact support, put E := M ∩ tsupport Z and assume H^m(E) < ∞ (H^m = μHE[m]). For x ∈ ℝ^P let S_x := span(tangentSpace M x), ι_x := S_x.subtypeL : S_x → ℝ^P and P_x := S_x.starProjection, and for t ∈ ℝ let Φ_t(y) := y + tZ(y) and J_t(x) := √det((DΦ_t(x)∘ι_x)* ∘ (DΦ_t(x)∘ι_x)) (DΦ_t(x) = fderiv ℝ Φ_t x, det on S_x, Real.sqrt). Suppose there is t₀ > 0 such that H^m(E) ≤ ∫⁻_{x∈E} ofReal(J_t(x)) dH^m for every t with |t| < t₀. Then the Bochner integral ∫_M trace(P_x ∘ DZ(x)) dH^m(x) equals 0.",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Euclid P)) (Z : Euclid P → Euclid P), IsEmbeddedSubmanifold 1 m M → ContDiff ℝ 1 Z → HasCompactSupport Z → μHE[m] (M ∩ tsupport Z) ≠ ∞ → (∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ → μHE[m] (M ∩ tsupport Z) ≤ ∫⁻ x in M ∩ tsupport Z, ENNReal.ofReal (Real.sqrt ((((fderiv ℝ (fun y => y + t • Z y) x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L ((fderiv ℝ (fun y => y + t • Z y) x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det)) ∂μHE[m]) → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ Z x).toLinearMap) ∂μHE[m] = 0",
+  "lean_name": "codim1_hcp_fv_jacobian_minimal_stationary",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1.tangent_projection-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1.trace_bound-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1.jacobian_first_order-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1-a1",
+      "result_commit": "6da66b1edf6f809895011d303069229d599f99d6",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1.tangent_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1.trace_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1.jacobian_first_order-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-2193e71e1a-a1"
+}

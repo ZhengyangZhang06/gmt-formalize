@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.codazzi-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1",
+  "depth": 6,
+  "title": "The Weingarten map is a self-adjoint endomorphism of T_xM, and the Codazzi equations hold (frame-free form)",
+  "statement": "Let P, m ∈ ℕ, A₀ ⊆ ℝ^P a subspace with dim A₀ = m + 1, M ⊆ A₀ with IsEmbeddedSubmanifold r m M for every r ∈ ℕ, and let ν : ℝ^P → ℝ^P be C^∞ on some open O ⊇ M, with ν(x) ∈ A₀, |ν(x)| = 1 and ν(x)·v = 0 for every v ∈ tangentSpace M x, for every x ∈ M. Let C(y) := Dν(y)∘P_y and, for x ∈ M and a ∈ T_x := tangentSpace M x, D_aC := fderivWithin ℝ C M x a. Then for x ∈ M and a, b, d ∈ T_x: (i) Dν(x)a ∈ T_x; (ii) Dν(x)a·b = Dν(x)b·a; (iii) (D_aC)(b)·d = (D_bC)(a)·d (Codazzi); (iv) (D_aC)(b)·d = (D_aC)(d)·b.",
+  "lean_statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, ∀ a ∈ tangentSpace M x, ∀ b ∈ tangentSpace M x, fderiv ℝ ν x a ∈ tangentSpace M x ∧ inner ℝ (fderiv ℝ ν x a) b = inner ℝ (fderiv ℝ ν x b) a ∧ ∀ d ∈ tangentSpace M x, inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x a b) d = inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x b a) d ∧ inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x a b) d = inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x a d) b",
+  "lean_name": "codim1_hcp_sc_weingarten_codazzi",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.tangent_fderiv-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.normal_complement-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.tangent_fderiv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.normal_complement-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-eb92426911-a1"
+}

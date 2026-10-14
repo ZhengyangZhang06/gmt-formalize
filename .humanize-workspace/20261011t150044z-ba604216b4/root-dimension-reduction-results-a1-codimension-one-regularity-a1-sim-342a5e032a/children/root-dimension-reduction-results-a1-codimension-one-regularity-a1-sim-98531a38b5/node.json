@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.smooth_glue-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1",
+  "depth": 6,
+  "title": "Local C^∞ extensions glue to a C^∞ extension on an open neighbourhood (smooth partition of unity, parent step 6)",
+  "statement": "Gluing local smooth extensions. Data: P ∈ ℕ; a real normed space F; M ⊆ ℝ^P; f : ℝ^P → F. Hypothesis: every y ∈ M has an open set O_y ∋ y and a map g_y : ℝ^P → F that is C^∞ on O_y (ContDiffOn ℝ (⊤ : ℕ∞) g_y O_y) with g_y(z) = f(z) for every z ∈ M ∩ O_y. Conclusion: there are ν : ℝ^P → F and an open set O ⊆ ℝ^P with M ⊆ O such that ν is C^∞ on O and ν(x) = f(x) for every x ∈ M.",
+  "lean_statement": "∀ (P : ℕ) (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] (M : Set (Euclid P)) (f : Euclid P → F), (∀ y ∈ M, ∃ (O : Set (Euclid P)) (g : Euclid P → F), IsOpen O ∧ y ∈ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) g O ∧ ∀ z ∈ M ∩ O, g z = f z) → ∃ (ν : Euclid P → F) (O : Set (Euclid P)), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O ∧ ∀ x ∈ M, ν x = f x",
+  "lean_name": "codim1_hcp_un_smooth_glue",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-98531a38b5-a1"
+}

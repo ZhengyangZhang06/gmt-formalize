@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.quasilinear_smooth-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1",
+  "depth": 6,
+  "title": "Smoothness of C¹ weak solutions with small gradient of Δu = div G(Du), DG(0) = 0 (Schauder theory for the minimal surface system; Simon's proof of Theorem 5.7.1, last part)",
+  "statement": "Let m ≥ 1, k ∈ ℕ and G : L(ℝ^m, ℝ^k) → L(ℝ^m, ℝ^k) be C^∞ with G(0) = 0 and DG(0) = 0. There is ε₀ > 0 such that for every open Ω ⊆ ℝ^m and every u : ℝ^m → ℝ^k which is C¹ on Ω with ‖Du(x)‖ ≤ ε₀ for x ∈ Ω and satisfies ∫_Ω Σ_j ⟨Du e_j, Dζ e_j⟩ = ∫_Ω Σ_j ⟨G(Du)e_j, Dζ e_j⟩ for every C¹ map ζ : ℝ^m → ℝ^k with compact support and tsupport ζ ⊆ Ω, u is C^r on Ω for every r ∈ ℕ.",
+  "lean_statement": "∀ (m k : ℕ) (G : (Euclid m →L[ℝ] Euclid k) → (Euclid m →L[ℝ] Euclid k)), 1 ≤ m → ContDiff ℝ (⊤ : ℕ∞) G → G 0 = 0 → fderiv ℝ G 0 = 0 → ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ (Ω : Set (Euclid m)) (u : Euclid m → Euclid k), IsOpen Ω → ContDiffOn ℝ 1 u Ω → (∀ x ∈ Ω, ‖fderiv ℝ u x‖ ≤ ε₀) → (∀ ζ : Euclid m → Euclid k, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ Ω → ∫ x in Ω, ∑ j : Fin m, inner ℝ (fderiv ℝ u x (EuclideanSpace.single j (1 : ℝ))) (fderiv ℝ ζ x (EuclideanSpace.single j (1 : ℝ))) = ∫ x in Ω, ∑ j : Fin m, inner ℝ (G (fderiv ℝ u x) (EuclideanSpace.single j (1 : ℝ))) (fderiv ℝ ζ x (EuclideanSpace.single j (1 : ℝ)))) → ∀ r : ℕ, ContDiffOn ℝ r u Ω",
+  "lean_name": "codim1_hcp_sr_quasilinear_smooth",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.c1alpha_estimate-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.difference_quotient-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.holder_algebra-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.linear_bootstrap-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.c1alpha_estimate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.difference_quotient-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.holder_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_regularity-a1.linear_bootstrap-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-fd7a8e4872-a1"
+}
