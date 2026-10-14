@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d7e096bbdab6012003856984bf0f555e54afb8ac9d171ad7b60f21442f681c31",
+  "git_delta": {
+    "base_commit": "70a9fe15e144200f9e15c3dddc1467862be4debf",
+    "candidate_commit": "a17d12dad67ef8b165e6258fde781ea73dc7de29",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcsd_sh_im_mass_measure",
+    "diff_sha256": "08ca65e4348e09a048984fb1df1165cd81d1c8670b3d732e251fd4563dd16527",
+    "source_sha256": "e9bb0b5b928eeac901e90fe91a389ab503c64cd6ff4c3b777693c8420c27fcaa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcsd_sh_im_mass_measure",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) n), IsIntegerMultiplicity T → T.mass < ∞ → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), IsFiniteMeasure μ ∧ AEStronglyMeasurable ξ μ ∧ (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ μ T.supportᶜ = 0 ∧ (∀ (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) n), MeasurableSet E → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, X ω = ∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) → IsIntegerMultiplicity X)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
