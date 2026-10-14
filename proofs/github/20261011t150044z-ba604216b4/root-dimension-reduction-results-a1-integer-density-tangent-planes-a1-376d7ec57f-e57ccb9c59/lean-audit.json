@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "330df6811dd61b92838193d4a67d51a5fc2f2b1ec5c06751dcdd317f02e7bab0",
+  "git_delta": {
+    "base_commit": "9a01e0d8f36f724278e4a8e0b487521ac9577d16",
+    "candidate_commit": "04fd7348fc8b92e037b9e76a487c0d5960159381",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_etp_plane_imrep",
+    "diff_sha256": "9b9152930cc388624c61b4b4e6d0c13e4f3c26a42da8bce6fec170218e0d9e4d",
+    "source_sha256": "54dc17761c87bb585c89ed26f2e05cf4f008b57e0c9f481d53615ab6720d329b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_etp_plane_imrep",
+      "statement": "∀ (P n : ℕ) (τ : Fin n → Euclid P) (c : ℤ), Orthonormal ℝ τ → c ≠ 0 → ∃ R : IMRep (univ : Set (Euclid P)) n, (∀ ω : DifferentialForm (Euclid P) n, R.action ω = (c : ℝ) * ∫ x in (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), ω x τ ∂μHE[n]) ∧ R.measure = (c.natAbs : ℝ≥0∞) • (μHE[n] : Measure (Euclid P)).restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
