@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1.face_neighbourhoods-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1",
+  "depth": 5,
+  "title": "Open neighbourhoods of the open unit faces: pairwise disjoint and missing every other closed face",
+  "statement": "Let P, k ∈ ℕ. For an index pair p = (ι, b) with ι : Fin k → Fin P and b : Fin P → ℤ let Φ_p : Euclid k → Euclid P, Φ_p(y) := b + Σ_j y_j e_{ι(j)} (Lean: WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) 1), and let Q₁ := {y ∈ Euclid k : 0 < y_i < 1 for all i}, Cᵏ := {y : 0 ≤ y_i ≤ 1 for all i}. Assume the separation property (S): for all index pairs p ≠ q whose first components are strictly increasing, all y ∈ Q₁ and all y' ∈ Cᵏ, either 1 ≤ dist(Φ_p y, Φ_q y') or min(y_j, 1 − y_j) ≤ dist(Φ_p y, Φ_q y') for some j. Then there is a family (N_p) of subsets of ℝ^P, indexed by all index pairs, such that for every p with strictly increasing first component: N_p is open; Φ_p(y) ∈ N_p for every y ∈ Q₁; and for every q ≠ p with strictly increasing first component, Φ_q(y) ∉ N_p for every y ∈ Cᵏ and N_p ∩ N_q = ∅.",
+  "lean_statement": "∀ (P k : ℕ), (∀ p q : (Fin k → Fin P) × (Fin P → ℤ), StrictMono p.1 → StrictMono q.1 → p ≠ q → ∀ y y' : Euclid k, (∀ j, 0 < y j ∧ y j < 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → 1 ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)) ∨ ∃ j, min (y j) (1 - y j) ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ))) → ∃ N : (Fin k → Fin P) × (Fin P → ℤ) → Set (Euclid P), ∀ p : (Fin k → Fin P) × (Fin P → ℤ), StrictMono p.1 → IsOpen (N p) ∧ (∀ y : Euclid k, (∀ i, 0 < y i ∧ y i < 1) → (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ N p) ∧ ∀ q : (Fin k → Fin P) × (Fin P → ℤ), StrictMono q.1 → q ≠ p → (∀ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) → (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) ∉ N p) ∧ Disjoint (N p) (N q)",
+  "lean_name": "cmcdtfrbv_face_neighbourhoods",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-cd7ba5094c-a1"
+}

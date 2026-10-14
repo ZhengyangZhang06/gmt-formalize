@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1.boundary_support_faces-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1",
+  "depth": 5,
+  "title": "The support of ∂Q₀ lies in the union of the closed faces of the representation",
+  "statement": "Let P, m ∈ ℕ and n := m + 1. Let s be a finite set of index pairs p = (ι, b) with ι : Fin n → Fin P and b : Fin P → ℤ, and let u_p : Euclid n → ℝ be arbitrary functions. Let Q₀ be an n-current on ℝ^P (GeometricCurrentOn univ n) with Q₀(ω) = Σ_{p∈s} ∫_{Q₁} u_p(y)·ω(Φ_p y)(e_{ι(0)}, …, e_{ι(m)}) dy for every test n-form ω. Here Q₁ = (0,1)ⁿ, Φ_p(y) = b + Σ_j y_j e_{ι(j)} and e_l = EuclideanSpace.single l 1. Then every x ∈ spt ∂Q₀ is of the form x = Φ_q(y) for some q ∈ s and some y in the closed cube [0,1]ⁿ.",
+  "lean_statement": "∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (u : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ) (Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Q₀ ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∀ x ∈ Q₀.boundary.support, ∃ q ∈ s, ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) = x",
+  "lean_name": "cmcdtfrbv_boundary_support_subset_faces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-7d4441241e-a1"
+}

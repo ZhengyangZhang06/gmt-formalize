@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d44528a7ad393605b05c31152ba0ef832ea29fc059dd3a587db137b8b9131958",
+  "git_delta": {
+    "base_commit": "7e0c474d80e43511654f3271ec495ccb3f688ad8",
+    "candidate_commit": "f1ad2ab336b6fd663b3abef52d689b4003d3b9b8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dtfrbv_face_test_form",
+    "diff_sha256": "2fa516789e8be3c1bb458191fc45b78cd3277ff0be8981150d55bc86f529c658",
+    "source_sha256": "302197b632d6fa8d16c46f0c4e2df417e67f9e78630325010b387997195fe6f5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dtfrbv_face_test_form",
+      "statement": "∀ (P m : ℕ) (p : (Fin (m + 1) → Fin P) × (Fin P → ℤ)) (N : Set (Euclid P)) (g : Euclid (m + 1) → Euclid (m + 1)), StrictMono p.1 → IsOpen N → (∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ N) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∃ γ : TestFormOn (univ : Set (Euclid P)) m, tsupport (γ : DifferentialForm (Euclid P) m) ⊆ N ∧ (∀ x, covectorEuclideanNorm ((γ : DifferentialForm (Euclid P) m) x) ≤ 1) ∧ ∀ (y : Euclid (m + 1)) (i : Fin (m + 1)), g y i = (-1 : ℝ) ^ (i : ℕ) * (γ : DifferentialForm (Euclid P) m) (WithLp.toLp 2 (fun k => (p.2 k : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun l => EuclideanSpace.single (p.1 (Fin.succAbove i l)) (1 : ℝ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1.cutoff_field-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.boundary_variation-a1",
+  "depth": 5,
+  "title": "Cut-off lift of a compactly supported vector field on a face, with prescribed tangential divergence",
+  "statement": "Let P, m ∈ ℕ and n := m + 1. Let p = (ι, b) be an index pair with ι : Fin n → Fin P strictly increasing and b : Fin P → ℤ. Let Φ_p(y) := b + Σ_j y_j e_{ι(j)} with e_l := EuclideanSpace.single l 1, and Q₁ := (0,1)ⁿ. Let N ⊆ ℝ^P be open with Φ_p(y) ∈ N for every y ∈ Q₁. Let g : Euclid n → Euclid n be C^∞ (ContDiff ℝ (⊤ : ℕ∞)) with compact support, tsupport g ⊆ Q₁ and ‖g(y)‖ ≤ 1 for all y. Then there is a C^∞ map G : ℝ^P → Euclid n with compact support, tsupport G ⊆ N and ‖G(x)‖ ≤ 1 for all x, such that Σ_{a ∈ Fin n} D(G_a)(Φ_p y)(e_{ι(a)}) = trace(Dg(y)) for every y ∈ Q₁. Here G_a(x) := G(x)_a is the a-th coordinate of G.",
+  "lean_statement": "∀ (P m : ℕ) (p : (Fin (m + 1) → Fin P) × (Fin P → ℤ)) (N : Set (Euclid P)) (g : Euclid (m + 1) → Euclid (m + 1)), StrictMono p.1 → IsOpen N → (∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ N) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∃ G : Euclid P → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) G ∧ HasCompactSupport G ∧ tsupport G ⊆ N ∧ (∀ x, ‖G x‖ ≤ 1) ∧ ∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → ∑ a, fderiv ℝ (fun x => G x a) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (EuclideanSpace.single (p.1 a) (1 : ℝ)) = LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y)",
+  "lean_name": "cmcdtfrbv_cutoff_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-7045ec4923-a1"
+}
