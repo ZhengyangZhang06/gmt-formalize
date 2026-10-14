@@ -451,6 +451,47 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Pointwise product rule for the divergence: if `v : ℝⁿ → ℝ` and `G : ℝⁿ → ℝⁿ` are
+differentiable at `x`, then `v(x) · trace DG(x) = Σᵢ D(v Gᵢ)(x) eᵢ − Dv(x)(G(x))`, where
+`eᵢ = EuclideanSpace.single i 1` and `Gᵢ = (G ·)ᵢ`.  The product rule gives
+`D(v Gᵢ)(x) eᵢ = v(x) (DG(x) eᵢ)ᵢ + Gᵢ(x) Dv(x) eᵢ`.  In the standard orthonormal basis,
+`trace DG(x) = Σᵢ ⟪eᵢ, DG(x) eᵢ⟫ = Σᵢ (DG(x) eᵢ)ᵢ`, and `Dv(x)(G(x)) = Σᵢ Gᵢ(x) Dv(x) eᵢ` because
+`G(x) = Σᵢ Gᵢ(x) eᵢ`.  Summing over `i` and rearranging gives the claim. -/
+theorem Submission.dimred_mbl_dt_cbm_st_div_product : ∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (G : Euclid (m + 1) → Euclid (m + 1)) (x : Euclid (m + 1)), DifferentiableAt ℝ v x → DifferentiableAt ℝ G x → v x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G x) = ∑ i, fderiv ℝ (fun y => v y * G y i) x (EuclideanSpace.single i 1) - fderiv ℝ v x (G x) := by
+  intro m v G x hv hG
+  -- the coordinate `Gᵢ = projᵢ ∘ G` has derivative `projᵢ ∘ DG(x)`
+  have hGi : ∀ i : Fin (m + 1), HasFDerivAt (fun y => G y i)
+      ((EuclideanSpace.proj i : Euclid (m + 1) →L[ℝ] ℝ).comp (fderiv ℝ G x)) x := fun i =>
+    (EuclideanSpace.proj i : Euclid (m + 1) →L[ℝ] ℝ).hasFDerivAt.comp x hG.hasFDerivAt
+  -- product rule, evaluated at `eᵢ`
+  have hprod : ∀ i : Fin (m + 1),
+      fderiv ℝ (fun y => v y * G y i) x (EuclideanSpace.single i 1) =
+        v x * (fderiv ℝ G x (EuclideanSpace.single i 1)) i +
+          G x i * fderiv ℝ v x (EuclideanSpace.single i 1) := by
+    intro i
+    have h : HasFDerivAt (fun y => v y * G y i)
+        (v x • (EuclideanSpace.proj i : Euclid (m + 1) →L[ℝ] ℝ).comp (fderiv ℝ G x) +
+          G x i • fderiv ℝ v x) x := hv.hasFDerivAt.mul (hGi i)
+    rw [h.fderiv]
+    simp
+  -- the trace in the standard orthonormal basis
+  have htrace : LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G x) =
+      ∑ i, (fderiv ℝ G x (EuclideanSpace.single i 1)) i := by
+    rw [LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin (m + 1)) ℝ)]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [EuclideanSpace.basisFun_apply, EuclideanSpace.inner_single_left]
+    simp
+  -- `G(x) = Σᵢ Gᵢ(x) eᵢ`, hence `Dv(x)(G(x)) = Σᵢ Gᵢ(x) Dv(x) eᵢ`
+  have hexp : G x = ∑ i, G x i • EuclideanSpace.single i (1 : ℝ) := by
+    ext j
+    simp [Finset.sum_apply, Pi.single_apply]
+  have hDvG : fderiv ℝ v x (G x) = ∑ i, G x i * fderiv ℝ v x (EuclideanSpace.single i 1) := by
+    conv_lhs => rw [hexp]
+    simp [map_sum, map_smul, smul_eq_mul]
+  rw [htrace, hDvG, Finset.mul_sum]
+  simp only [hprod, Finset.sum_add_distrib]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
