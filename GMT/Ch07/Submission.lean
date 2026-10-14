@@ -3040,5 +3040,69 @@ theorem Submission.idtp_tdc_puvd_planar_piece_measure : ∀ (P n : ℕ) (C : Geo
   refine ⟨c.natAbs, fun E hE hEV => ?_⟩
   rw [← Measure.restrict_eq_self R.measure hEV, hext, Measure.restrict_eq_self _ hEV,
     Measure.smul_apply, Measure.restrict_apply hE, smul_eq_mul]
+/-- **An open domain around a punctured 2-plane** (the domains `Vᵢ` in the proof of Simon
+7.3.3(1), pp. 191–192, where the Constancy Theorem, Ch. 6, 2.34, makes the density of a
+2-dimensional minimizing cone constant on each of its planes `Pᵢ ∖ {0}`).  Let `dim Pᵢ = 2` and
+`Pᵢ ∩ Pⱼ = {0}` for `j ≠ i`.  Then `V = ℝᴾ ∖ ⋃_{j ≠ i} Pⱼ` is open (finitely many closed
+subspaces are removed), contains `Pᵢ ∖ {0}` and misses every `Pⱼ`, `j ≠ i`.  `V ∩ Pᵢ` is `Pᵢ` if
+there is no `j ≠ i`, and `Pᵢ ∖ {0}` otherwise; the latter is connected as the image of `ℂ` under
+the polar coordinates `w ↦ L(eʷ)`, `L : ℂ ≃ Pᵢ` a linear isomorphism. -/
+theorem Submission.idtp_tdc_puvd_plane_domain : ∀ (P q : ℕ) (Ps : Fin q → Submodule ℝ (Euclid P)) (i : Fin q), Module.finrank ℝ (Ps i) = 2 → (∀ j, j ≠ i → Ps i ⊓ Ps j = ⊥) → ∃ V : Set (Euclid P), IsOpen V ∧ IsConnected (V ∩ (Ps i : Set (Euclid P))) ∧ (Ps i : Set (Euclid P)) \ {0} ⊆ V ∧ ∀ j, j ≠ i → Disjoint V (Ps j : Set (Euclid P)) := by
+  intro P q Ps i h2 hdisj
+  -- step 1: `F = ⋃_{j ≠ i} Pⱼ` is a finite union of closed subspaces, so `V = ℝᴾ ∖ F` is open
+  set F : Set (Euclid P) := ⋃ j ∈ {j : Fin q | j ≠ i}, (Ps j : Set (Euclid P))
+  have hFc : IsClosed F :=
+    (Set.toFinite _).isClosed_biUnion fun j _ => (Ps j).closed_of_finiteDimensional
+  -- step 2: `Pᵢ ∖ {0} ⊆ V`, since `Pᵢ ∩ Pⱼ = {0}` for `j ≠ i`
+  have hsub : (Ps i : Set (Euclid P)) \ {0} ⊆ Fᶜ := by
+    rintro x ⟨hx, hx0⟩ hxF
+    obtain ⟨j, hj, hxj⟩ := mem_iUnion₂.1 hxF
+    have hxij : x ∈ Ps i ⊓ Ps j := Submodule.mem_inf.2 ⟨hx, hxj⟩
+    rw [hdisj j hj, Submodule.mem_bot] at hxij
+    exact hx0 hxij
+  refine ⟨Fᶜ, hFc.isOpen_compl, ?_, hsub, fun j hj => ?_⟩
+  · -- step 4: `V ∩ Pᵢ` is connected
+    by_cases hq : ∃ j, j ≠ i
+    · -- case (b): `0 ∈ Pⱼ ⊆ F` for some `j ≠ i`, so `V ∩ Pᵢ = Pᵢ ∖ {0}`
+      obtain ⟨j, hj⟩ := hq
+      have h0 : (0 : Euclid P) ∈ F := mem_biUnion hj (Ps j).zero_mem
+      have hV : Fᶜ ∩ (Ps i : Set (Euclid P)) = (Ps i : Set (Euclid P)) \ {0} := by
+        ext x
+        refine ⟨fun hx => ⟨hx.2, fun hx0 => hx.1 ?_⟩, fun hx => ⟨hsub hx, hx.1⟩⟩
+        rw [mem_singleton_iff.1 hx0]
+        exact h0
+      -- polar coordinates: for a linear isomorphism `L : ℂ ≃ Pᵢ`, `w ↦ L(eʷ)` is continuous and
+      -- maps `ℂ` onto `Pᵢ ∖ {0}` (`exp` maps `ℂ` onto `ℂ ∖ {0}`)
+      let L : ℂ ≃ₗ[ℝ] Ps i :=
+        Module.Basis.equiv Complex.basisOneI (Module.finBasisOfFinrankEq ℝ (Ps i) h2) (Equiv.refl _)
+      have hcont : Continuous fun w : ℂ => ((L (Complex.exp w) : Ps i) : Euclid P) :=
+        continuous_subtype_val.comp
+          (L.toLinearMap.continuous_of_finiteDimensional.comp Complex.continuous_exp)
+      have hrange : range (fun w : ℂ => ((L (Complex.exp w) : Ps i) : Euclid P)) =
+          (Ps i : Set (Euclid P)) \ {0} := by
+        ext x
+        constructor
+        · rintro ⟨w, rfl⟩
+          exact ⟨(L (Complex.exp w)).2, fun h => Complex.exp_ne_zero w
+            (L.map_eq_zero_iff.1 (Submodule.coe_eq_zero.1 (mem_singleton_iff.1 h)))⟩
+        · rintro ⟨hx, hx0⟩
+          have hz : L.symm ⟨x, hx⟩ ≠ 0 := by
+            rw [L.symm.map_ne_zero_iff, Ne, Submodule.mk_eq_zero]
+            exact hx0
+          refine ⟨Complex.log (L.symm ⟨x, hx⟩), ?_⟩
+          show ((L (Complex.exp (Complex.log (L.symm ⟨x, hx⟩))) : Ps i) : Euclid P) = x
+          rw [Complex.exp_log hz, LinearEquiv.apply_symm_apply]
+      rw [hV, ← hrange]
+      exact isConnected_range hcont
+    · -- case (a): there is no `j ≠ i`, so `F = ∅` and `V ∩ Pᵢ = Pᵢ` is convex and nonempty
+      have hV : Fᶜ ∩ (Ps i : Set (Euclid P)) = Ps i := by
+        refine inter_eq_right.2 fun x _ hxF => ?_
+        obtain ⟨j, hj, -⟩ := mem_iUnion₂.1 hxF
+        exact hq ⟨j, hj⟩
+      rw [hV]
+      exact (Ps i).convex.isConnected ⟨0, (Ps i).zero_mem⟩
+  · -- step 3: `Pⱼ ⊆ F = ℝᴾ ∖ V` for `j ≠ i`
+    exact disjoint_compl_left_iff_subset.2
+      (subset_biUnion_of_mem (u := fun j => (Ps j : Set (Euclid P))) hj)
 
 end GMT.Ch07
