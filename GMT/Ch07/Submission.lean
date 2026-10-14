@@ -2802,6 +2802,147 @@ theorem Submission.idtp_fons_odc_ray_current_rep : ∀ (P : ℕ) (C : GeometricC
   · rw [hmeas A hA, ← Finset.sum_coe_sort F]
     simp only [zero_add]
 
+/-- **In a minimizing cone of rays, positive and negative rays are antipodal** (Simon 7.3.3,
+proof of (2), formula (10)).  Let `C = Σ_{e∈F} m(e)[[0, ∞)e]]` be minimizing in `ℝᴾ` and
+`a, b ∈ F` with `m(a) > 0 > m(b)`.  If `b ≠ -a`, the chord `s ↦ b + su`, `0 ≤ s ≤ ℓ = |a - b|`,
+lies in `B̄₁(0)` and meets every line through `0` at most once, so it gives the integer
+multiplicity competitor `X = C - [[0, a]] - [[b, 0]] + [[b, a]]`.  By the fundamental theorem of
+calculus `∂X = ∂C`, and `spt(X - C) ⊆ B̄₁(0)` is compact; minimality in `B₂(0)` gives
+`2Σ|m| = M_{B₂(0)}(C) ≤ M_{B₂(0)}(X) ≤ 2Σ|m| - 2 + ℓ`.  Hence `|a - b| ≥ 2`, and by the
+parallelogram law `|a + b|² = 4 - |a - b|² ≤ 0`, i.e. `b = -a`. -/
+theorem Submission.idtp_fons_odc_antipodal : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1), IsMinimizingIn C univ → ∀ F : Finset (Euclid P), (∀ e ∈ F, ‖e‖ = 1) → ∀ m : Euclid P → ℤ, (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, (m e : ℝ) * ∫ t in Ioi (0 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∀ a ∈ F, ∀ b ∈ F, 0 < m a → m b < 0 → b = -a := by
+  classical
+  intro P C hmin F hF m hC a ha b hb hma hmb
+  by_contra hne
+  have ha₁ := hF a ha
+  have hb₁ := hF b hb
+  have hab : a ≠ b := by
+    rintro rfl
+    exact lt_asymm hma hmb
+  -- Steps 1–2: the chord `s ↦ b + s u`, `0 ≤ s ≤ ℓ`, from `b` to `a`
+  obtain ⟨ℓ, u, hℓ, hℓab, hu, hbu, hseg, hline⟩ :=
+    Submission.idtp_fons_odc_antipodal_chord P a b ha₁ hb₁ hab hne
+  -- Step 3: the competitor; one unit of multiplicity of `[0, a]` and of `[0, b]` moves to the chord
+  obtain ⟨mi, hmi⟩ : ∃ mi : Euclid P → ℤ,
+      ∀ e, mi e = m e - (if e = a then 1 else 0) + (if e = b then 1 else 0) := ⟨_, fun _ => rfl⟩
+  obtain ⟨X, hXIM, hXω, hXm⟩ := Submission.idtp_fons_odc_antipodal_competitor
+    Submission.idtp_fons_odc_polygonal_current P F hF m mi b u ℓ hℓ.le hu hline
+  -- Step 4: `X - C = -[[0, a]] + [[0, b]] + [[b, a]]`
+  have hmisum : ∀ f : Euclid P → ℝ,
+      ∑ e ∈ F, (mi e : ℝ) * f e = ∑ e ∈ F, (m e : ℝ) * f e - f a + f b := by
+    intro f
+    simp only [hmi, Int.cast_add, Int.cast_sub, Int.cast_ite, Int.cast_one, Int.cast_zero,
+      add_mul, sub_mul, ite_mul, one_mul, zero_mul, Finset.sum_add_distrib,
+      Finset.sum_sub_distrib, Finset.sum_ite_eq', ite_eq_left ha, ite_eq_left hb]
+  have hdiff : ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, X ω - C ω =
+      -(∫ t in Ioo (0 : ℝ) 1, (ω : DifferentialForm (Euclid P) 1) (t • a) (fun _ => a)) +
+        (∫ t in Ioo (0 : ℝ) 1, (ω : DifferentialForm (Euclid P) 1) (t • b) (fun _ => b)) +
+        ∫ s in Ioo (0 : ℝ) ℓ, (ω : DifferentialForm (Euclid P) 1) (b + s • u) (fun _ => u) := by
+    intro ω
+    have hsplit : C ω = ∑ e ∈ F, (m e : ℝ) * (∫ t in Ioo (0 : ℝ) 1,
+          (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) +
+        ∑ e ∈ F, (m e : ℝ) * ∫ t in Ioi (1 : ℝ),
+          (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e) := by
+      rw [hC ω, ← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun e he => by
+        rw [Submission.idtp_fons_odc_antipodal_ray_split P ω e (hF e he), mul_add]
+    rw [hXω ω, hsplit, hmisum fun e => ∫ t in Ioo (0 : ℝ) 1,
+      (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)]
+    ring
+  -- Step 5: `∂X = ∂C`, by the fundamental theorem of calculus on the three segments
+  have hbd : SameBoundary X C := by
+    show X.boundary = C.boundary
+    ext φ
+    have hg : IsSmoothForm (φ : DifferentialForm (Euclid P) 0) := φ.property.1.1
+    have hray : ∀ e : Euclid P, ∫ t in Ioo (0 : ℝ) 1,
+        exteriorDerivative (φ : DifferentialForm (Euclid P) 0) (t • e) (fun _ => e) =
+          (φ : DifferentialForm (Euclid P) 0) e (fun i => i.elim0) -
+            (φ : DifferentialForm (Euclid P) 0) 0 (fun i => i.elim0) := fun e => by
+      simpa only [zero_add, one_smul] using
+        Submission.cbr_cc_seg_zero_form_ftc P _ hg 0 e 1 zero_le_one
+    have key : ∀ ψ : TestFormOn (univ : Set (Euclid P)) 1, (ψ : DifferentialForm (Euclid P) 1) =
+        exteriorDerivative (φ : DifferentialForm (Euclid P) 0) → X ψ = C ψ := by
+      intro ψ hψ
+      rw [← sub_eq_zero, hdiff ψ, hψ, hray a, hray b,
+        Submission.cbr_cc_seg_zero_form_ftc P _ hg b u ℓ hℓ.le, hbu]
+      ring
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply]
+    exact key _ rfl
+  -- Step 6: `spt(X - C) ⊆ B̄₁(0)`, and it is compact
+  have hvan : ∀ ω : TestFormOn (univ : Set (Euclid P)) 1,
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) 1)) (closedBall 0 1) →
+        (X - C) ω = 0 := by
+    intro ω hω
+    have h₀ : ∀ w y : Euclid P, ‖y‖ ≤ 1 →
+        (ω : DifferentialForm (Euclid P) 1) y (fun _ => w) = 0 := by
+      intro w y hy
+      rw [image_eq_zero_of_notMem_tsupport (Set.disjoint_right.1 hω (mem_closedBall_zero_iff.2 hy)),
+        ContinuousAlternatingMap.coe_zero, Pi.zero_apply]
+    have hray : ∀ e : Euclid P, ‖e‖ = 1 →
+        ∫ t in Ioo (0 : ℝ) 1, (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e) = 0 :=
+      fun e he => setIntegral_eq_zero_of_forall_eq_zero fun t ht => h₀ e _ (by
+        rw [norm_smul, he, mul_one, Real.norm_of_nonneg ht.1.le]
+        exact ht.2.le)
+    change X ω - C ω = 0
+    rw [hdiff ω, hray a ha₁, hray b hb₁, setIntegral_eq_zero_of_forall_eq_zero fun s hs =>
+      h₀ u _ (hseg s (Ioo_subset_Icc_self hs))]
+    ring
+  obtain ⟨hsupp, hcpt⟩ := Submission.rsd_cmr_support_subset_of_vanish P 1 univ (closedBall 0 1)
+    (X - C) isOpen_univ (isCompact_closedBall 0 1) (subset_univ _) hvan
+  -- Step 7: minimality of `C` in `W = B₂(0)`
+  have hle : C.massOn (ball 0 2) ≤ X.massOn (ball 0 2) :=
+    hmin.2 (ball 0 2) X isOpen_ball ⟨isBounded_ball.isCompact_closure, subset_univ _⟩ hXIM hbd
+      hcpt (subset_inter (subset_univ _) (hsupp.trans (closedBall_subset_ball (by norm_num))))
+  -- Step 8: `M_{B₂(0)}(C) = 2Σ|m|` and `M_{B₂(0)}(X) ≤ Σ|m| + Σ|mi| + ℓ`
+  obtain ⟨R, hR, hRm⟩ := Submission.idtp_fons_odc_ray_current_rep P C F hF m hC
+  have hmass : ENNReal.ofReal ((∑ e ∈ F, |(m e : ℝ)|) * 2) ≤
+      ENNReal.ofReal (∑ e ∈ F, |(m e : ℝ)| + ∑ e ∈ F, |(mi e : ℝ)| + ℓ) := by
+    rw [← Submission.idtp_fons_odc_antipodal_ray_mass P C R F hF m hR hRm 2]
+    exact hle.trans hXm
+  have key := (ENNReal.ofReal_le_ofReal_iff (add_nonneg (add_nonneg
+    (Finset.sum_nonneg fun _ _ => abs_nonneg _) (Finset.sum_nonneg fun _ _ => abs_nonneg _))
+      hℓ.le)).1 hmass
+  -- Step 9: `Σ|mi| = Σ|m| - 2`, since `m a ≥ 1` and `m b ≤ -1`; hence `ℓ ≥ 2`
+  have hma' : (1 : ℝ) ≤ m a := by exact_mod_cast (show (1 : ℤ) ≤ m a by omega)
+  have hmb' : (m b : ℝ) ≤ -1 := by exact_mod_cast (show m b ≤ -1 by omega)
+  have habs : ∀ e, |(mi e : ℝ)| =
+      |(m e : ℝ)| - (if e = a then 1 else 0) - (if e = b then 1 else 0) := by
+    intro e
+    by_cases hea : e = a
+    · rw [hea]
+      have h₁ : (mi a : ℝ) = m a - 1 := by
+        rw [hmi a, ite_eq_left rfl, ite_eq_right hab]
+        push_cast
+        ring
+      rw [h₁, ite_eq_left rfl, ite_eq_right hab,
+        abs_of_nonneg (show (0 : ℝ) ≤ m a - 1 by linarith),
+        abs_of_pos (show (0 : ℝ) < m a by linarith)]
+      ring
+    · by_cases heb : e = b
+      · rw [heb]
+        have h₁ : (mi b : ℝ) = m b + 1 := by
+          rw [hmi b, ite_eq_right hab.symm, ite_eq_left rfl]
+          push_cast
+          ring
+        rw [h₁, ite_eq_right hab.symm, ite_eq_left rfl,
+          abs_of_nonpos (show (m b : ℝ) + 1 ≤ 0 by linarith),
+          abs_of_neg (show (m b : ℝ) < 0 by linarith)]
+        ring
+      · rw [hmi e, ite_eq_right hea, ite_eq_right heb, ite_eq_right hea, ite_eq_right heb]
+        push_cast
+        ring_nf
+  have hsum : ∑ e ∈ F, |(mi e : ℝ)| = ∑ e ∈ F, |(m e : ℝ)| - 2 := by
+    rw [Finset.sum_congr rfl fun e _ => habs e, Finset.sum_sub_distrib, Finset.sum_sub_distrib,
+      Finset.sum_ite_eq', Finset.sum_ite_eq', ite_eq_left ha, ite_eq_left hb]
+    ring
+  rw [hsum] at key
+  have hℓ₂ : 2 ≤ ℓ := by linarith
+  -- Step 10: the parallelogram law gives `|a + b|² = 4 - ℓ² ≤ 0`
+  have hpar := parallelogram_law_with_norm ℝ a b
+  rw [ha₁, hb₁, hℓab] at hpar
+  have h₀ : ‖a + b‖ * ‖a + b‖ = 0 := le_antisymm (by nlinarith) (mul_self_nonneg _)
+  exact hne (eq_neg_of_add_eq_zero_right (norm_eq_zero.1 (mul_self_eq_zero.1 h₀)))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
