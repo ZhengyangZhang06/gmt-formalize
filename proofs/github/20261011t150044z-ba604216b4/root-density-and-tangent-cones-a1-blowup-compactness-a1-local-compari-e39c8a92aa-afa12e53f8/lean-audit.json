@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6914df4ad05f6a65a167160b29ffadbda358c9cc27f1ec7f8fe0dcf98aae5783",
+  "git_delta": {
+    "base_commit": "6b44543875868c4e750430bbeb484f3814d3ef1b",
+    "candidate_commit": "6741ee11d7b19c7973736cb6ae4209395aea8a47",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_ll_approx_grad_unique",
+    "diff_sha256": "6b5b6b533a44eb3ef0e6fc3591d6d7bd78b4cd923464d87de1f4f7de1e1aa064",
+    "source_sha256": "244010e2631cda454871b1487401a1efd21aed3273d7894c51a6ff9f965836ea",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_ll_approx_grad_unique",
+      "statement": "∀ (P N : ℕ) (A : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (h : Euclid P → ℝ) (u u' : Euclid P), HasApproximateTangentSpaceAt N A x Q → u ∈ Q → u' ∈ Q → (∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[N] (A ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ u (y - x)|}) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0)) → (∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[N] (A ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ u' (y - x)|}) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0)) → u = u'",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
