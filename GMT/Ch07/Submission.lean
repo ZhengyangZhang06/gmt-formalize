@@ -9850,6 +9850,235 @@ theorem Submission.dor_lmb_fcd_im_pushforward : (∀ (P m : ℕ) (U : Set (Eucli
     filter_upwards [h1, h2] with u hu1 hu2
     rw [hu1, hu2]
 
+/-- **Lipschitz push-forward and the affine homotopy formula** (Simon Ch. 6, 2.17–2.29 with
+3.2(2) and 3.9).  Given the integer multiplicity series lemma (IMS), for every `P` there are
+operations `push k F X = F_# X` and `homot k F G X = h_#([[(0,1)]] × X)`, where
+`h(t, x) = F(x) + t(G(x) − F(x))`, on `k`-currents in `ℝᴾ`.  For `Λ`-Lipschitz maps and integer
+multiplicity currents vanishing off a compact `E` they satisfy:
+(1) `id_# X = X`; (2) both operations are additive; (3) both depend only on the maps on `E`;
+(4) both are integer multiplicity, `M(F_# X) ≤ Λᵏ M(X)`, `F_# X` vanishes off `F(E)`, and
+`h_#([[(0,1)]] × X)` vanishes off `h([0,1] × E)` and has mass at most `δ (2Λ)ᵏ M(X)` when
+`|F − G| ≤ δ` on `E`; (5) `∂F_# X = F_# ∂X`, and the homotopy formula
+`G_# X − F_# X − h_#([[(0,1)]] × ∂X) = ∂h_#([[(0,1)]] × X)` (2.25) holds when `∂X` is integer
+multiplicity.
+
+Both operations come from the integer multiplicity push-forward (IPF, which follows from (IMS)):
+`push` from the push-forward toolkit and `homot` from the homotopy operator.  Each is
+characterized as the limit of `X(η_j)` for test forms `η_j` that equal `F_j^# ω` (resp. the
+homotopy form `K_j ω`) on `E`, along `C¹` `Λ`-Lipschitz maps `F_j → F`, `G_j → G`.  Take smooth
+mollifications `F_j, G_j` and a cut-off `ζ` equal to `1` near `E`.  Then `ζ F_j^# ω` and
+`ζ K_j ω` are test forms.  (1) is the case `F_j = id`, `η_j = ω`.  (2) uses linearity of `X`,
+uniqueness of limits, and that `X − Y` is integer multiplicity.  (3) and (4) are properties of
+the two operators.  (5) uses `d(F_j^# ω) = F_j^#(dω)` and Cartan's formula
+`G_j^# ω − F_j^# ω = d(K_j ω) + K_j(dω)`, together with `d(ζ γ) = d γ` where `ζ = 1`. -/
+theorem Submission.dor_lmb_fcd_pushforward_homotopy : (∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass) → ∀ P : ℕ, ∃ (push : ∀ k : ℕ, (Euclid P → Euclid P) → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) k) (homot : ∀ k : ℕ, (Euclid P → Euclid P) → (Euclid P → Euclid P) → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), (∀ (k : ℕ) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), IsCompact E → IsIntegerMultiplicity X → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → push k (fun x => x) X = X) ∧ (∀ (k : ℕ) (Λ : NNReal) (F G : Euclid P → Euclid P) (E : Set (Euclid P)) (X Y : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact E → IsIntegerMultiplicity X → IsIntegerMultiplicity Y → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → Y ω = 0) → push k F (X - Y) = push k F X - push k F Y ∧ homot k F G (X - Y) = homot k F G X - homot k F G Y) ∧ (∀ (k : ℕ) (Λ : NNReal) (F G F' G' : Euclid P → Euclid P) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → LipschitzWith Λ G → LipschitzWith Λ F' → LipschitzWith Λ G' → IsCompact E → IsIntegerMultiplicity X → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → EqOn F F' E → EqOn G G' E → push k F X = push k F' X ∧ homot k F G X = homot k F' G' X) ∧ (∀ (k : ℕ) (Λ : NNReal) (F G : Euclid P → Euclid P) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact E → IsIntegerMultiplicity X → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → IsIntegerMultiplicity (push k F X) ∧ IsIntegerMultiplicity (homot k F G X) ∧ (push k F X).mass ≤ (Λ : ℝ≥0∞) ^ k * X.mass ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (F '' E) → push k F X ω = 0) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (k + 1))) ({y : Euclid P | ∃ x ∈ E, ∃ t ∈ Icc (0 : ℝ) 1, y = F x + t • (G x - F x)}) → homot k F G X ω = 0) ∧ ∀ δ : ℝ, (∀ x ∈ E, dist (F x) (G x) ≤ δ) → (homot k F G X).mass ≤ ENNReal.ofReal δ * (2 * (Λ : ℝ≥0∞)) ^ k * X.mass) ∧ ∀ (k : ℕ) (Λ : NNReal) (F G : Euclid P → Euclid P) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact E → IsIntegerMultiplicity X → IsIntegerMultiplicity X.boundary → (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (k + 1))) (E) → X ω = 0) → (push (k + 1) F X).boundary = push k F X.boundary ∧ push (k + 1) G X - push (k + 1) F X - homot k F G X.boundary = (homot (k + 1) F G X).boundary := by
+  intro hIMS P
+  -- (IPF) from (IMS); the push-forward toolkit (mollifications, cut-offs and `push`), the
+  -- homotopy operator `homot`, smoothness of pull-backs and Cartan's formula
+  have hIPF := Submission.dor_lmb_fcd_im_pushforward hIMS
+  obtain ⟨⟨-, -, -, hmoll, hcut⟩, hpushEx⟩ := Submission.dor_lmb_fcdp_toolkit_push
+  obtain ⟨push, hpush⟩ := hpushEx hIPF P
+  obtain ⟨homot, hhomot⟩ := Submission.dor_lmb_fcdp_homot_operator hIPF P
+  obtain ⟨hpb, hcartan⟩ := Submission.dor_lmb_fcdp_smooth_homotopy
+  -- `ζ • γ` is a test form for a smooth form `γ` and a smooth compactly supported `ζ`
+  have cutTest : ∀ (j : ℕ) (ζ : Euclid P → ℝ) (γ : DifferentialForm (Euclid P) j),
+      ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → IsSmoothForm γ →
+        (fun x => ζ x • γ x) ∈ testFormOnSubmodule (univ : Set (Euclid P)) j := by
+    intro j ζ γ hζ hζc hγ
+    exact ⟨⟨hζ.smul hγ, hζc.smul_right⟩, subset_univ _⟩
+  -- `d(ζ • γ) = dγ` on an open set where `ζ = 1`
+  have dcut : ∀ (j : ℕ) (ζ : Euclid P → ℝ) (W : Set (Euclid P))
+      (γ : DifferentialForm (Euclid P) j) (x : Euclid P), IsOpen W → (∀ y ∈ W, ζ y = 1) →
+        x ∈ W → exteriorDerivative (fun y => ζ y • γ y) x = exteriorDerivative γ x := by
+    intro j ζ W γ x hW hζW hx
+    apply Filter.EventuallyEq.extDeriv_eq
+    filter_upwards [hW.mem_nhds hx] with y hy
+    rw [hζW y hy, one_smul]
+  -- `C^∞` maps are `C¹`
+  have hC1 : ∀ Φ : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Φ → ContDiff ℝ 1 Φ :=
+    fun Φ hΦ => hΦ.of_le (by exact_mod_cast le_top)
+  refine ⟨push, homot, ?_, ?_, ?_, ?_, ?_⟩
+  · -- (1) `id_# X = X`: take `F_j = id` and `η_j = ω`
+    intro k E X hE hX hXE
+    obtain ⟨-, -, hP3, -, -⟩ := hpush k 1 (fun x => x) E X LipschitzWith.id hE hX hXE
+    refine GeometricCurrentOn.ext fun ω => ?_
+    have hlim := hP3 (fun _ x => x) ω (fun _ => ω) (fun _ => contDiff_id)
+      (fun _ => LipschitzWith.id)
+      (fun u hu => Filter.Eventually.of_forall fun _ _ => refl_mem_uniformity hu)
+      (fun _ x _ => by ext v; simp)
+    exact tendsto_nhds_unique hlim tendsto_const_nhds
+  · -- (2) additivity: `X − Y` is integer multiplicity and vanishes off `E`; compare limits
+    intro k Λ F G E X Y hF hG hE hX hY hXE hYE
+    have hXY : IsIntegerMultiplicity (X - Y) :=
+      Submission.cmc_imRep_locality_restrict_sub.2.2.1 P k univ X Y isOpen_univ hX hY
+    have hXYE : ∀ ω : TestFormOn (univ : Set (Euclid P)) k,
+        Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) E → (X - Y) ω = 0 := by
+      intro ω hω
+      show X ω - Y ω = 0
+      rw [hXE ω hω, hYE ω hω, sub_self]
+    obtain ⟨Fs, hFs, hFsL, hFsU⟩ := hmoll P P Λ F hF
+    obtain ⟨Gs, hGs, hGsL, hGsU⟩ := hmoll P P Λ G hG
+    obtain ⟨ζ, W, hζ, hζc, -, -, hEW, hζW⟩ := hcut P E hE
+    refine ⟨GeometricCurrentOn.ext fun ω => ?_, GeometricCurrentOn.ext fun ω => ?_⟩
+    · -- `η_j = ζ F_j^# ω`
+      let ηs : ℕ → TestFormOn (univ : Set (Euclid P)) k := fun j =>
+        ⟨fun x => ζ x • ((ω : DifferentialForm (Euclid P) k) (Fs j x)).compContinuousLinearMap
+          (fderiv ℝ (Fs j) x),
+          cutTest k ζ _ hζ hζc (hpb P P k (Fs j) _ (hFs j) ω.property.1.1)⟩
+      have hη : ∀ j, ∀ x ∈ E, (ηs j : DifferentialForm (Euclid P) k) x =
+          ((ω : DifferentialForm (Euclid P) k) (Fs j x)).compContinuousLinearMap
+            (fderiv ℝ (Fs j) x) := by
+        intro j x hx
+        show ζ x • _ = _
+        rw [hζW x (hEW hx), one_smul]
+      have h1 := (hpush k Λ F E (X - Y) hF hE hXY hXYE).2.2.1 Fs ω ηs
+        (fun j => hC1 _ (hFs j)) hFsL hFsU hη
+      have h2 := (hpush k Λ F E X hF hE hX hXE).2.2.1 Fs ω ηs
+        (fun j => hC1 _ (hFs j)) hFsL hFsU hη
+      have h3 := (hpush k Λ F E Y hF hE hY hYE).2.2.1 Fs ω ηs
+        (fun j => hC1 _ (hFs j)) hFsL hFsU hη
+      exact tendsto_nhds_unique h1 (h2.sub h3)
+    · -- `η_j = ζ K_j ω`
+      let ηs : ℕ → TestFormOn (univ : Set (Euclid P)) k := fun j =>
+        ⟨fun x => ζ x • ∫ t in (0 : ℝ)..1,
+          (((ω : DifferentialForm (Euclid P) (k + 1)) (Fs j x + t • (Gs j x - Fs j x))).curryLeft
+            (Gs j x - Fs j x)).compContinuousLinearMap
+              (fderiv ℝ (Fs j) x + t • (fderiv ℝ (Gs j) x - fderiv ℝ (Fs j) x)),
+          cutTest k ζ _ hζ hζc (hcartan P k (Fs j) (Gs j) _ (hFs j) (hGs j) ω.property.1.1).1⟩
+      have hη : ∀ j, ∀ x ∈ E, (ηs j : DifferentialForm (Euclid P) k) x = ∫ t in (0 : ℝ)..1,
+          (((ω : DifferentialForm (Euclid P) (k + 1)) (Fs j x + t • (Gs j x - Fs j x))).curryLeft
+            (Gs j x - Fs j x)).compContinuousLinearMap
+              (fderiv ℝ (Fs j) x + t • (fderiv ℝ (Gs j) x - fderiv ℝ (Fs j) x)) := by
+        intro j x hx
+        show ζ x • _ = _
+        rw [hζW x (hEW hx), one_smul]
+      have h1 := (hhomot k Λ F G E (X - Y) hF hG hE hXY hXYE).2.2.1 Fs Gs ω ηs
+        (fun j => hC1 _ (hFs j)) (fun j => hC1 _ (hGs j)) hFsL hGsL hFsU hGsU hη
+      have h2 := (hhomot k Λ F G E X hF hG hE hX hXE).2.2.1 Fs Gs ω ηs
+        (fun j => hC1 _ (hFs j)) (fun j => hC1 _ (hGs j)) hFsL hGsL hFsU hGsU hη
+      have h3 := (hhomot k Λ F G E Y hF hG hE hY hYE).2.2.1 Fs Gs ω ηs
+        (fun j => hC1 _ (hFs j)) (fun j => hC1 _ (hGs j)) hFsL hGsL hFsU hGsU hη
+      exact tendsto_nhds_unique h1 (h2.sub h3)
+  · -- (3) locality
+    intro k Λ F G F' G' E X hF hG hF' hG' hE hX hXE hFF' hGG'
+    exact ⟨(hpush k Λ F E X hF hE hX hXE).2.1 F' hF' hFF',
+      (hhomot k Λ F G E X hF hG hE hX hXE).2.1 F' G' hF' hG' hFF' hGG'⟩
+  · -- (4) integrality, mass bounds and supports
+    intro k Λ F G E X hF hG hE hX hXE
+    obtain ⟨hP1, -, -, hP4, hP5⟩ := hpush k Λ F E X hF hE hX hXE
+    obtain ⟨hH1, -, -, hH4, hH5⟩ := hhomot k Λ F G E X hF hG hE hX hXE
+    exact ⟨hP1, hH1, hP4, hP5, hH4, hH5⟩
+  · -- (5) boundary commutation and the homotopy formula
+    intro k Λ F G E X hF hG hE hX hbX hXE
+    -- `∂X` vanishes off `E`, as `tsupport dω ⊆ tsupport ω`
+    have hbXE : ∀ ω : TestFormOn (univ : Set (Euclid P)) k,
+        Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) E → X.boundary ω = 0 :=
+      fun ω hω => hXE (exteriorDerivativeTestOn univ k ω)
+        (Disjoint.mono_left (tsupport_exteriorDerivative_subset (ω : DifferentialForm (Euclid P) k))
+          hω)
+    obtain ⟨Fs, hFs, hFsL, hFsU⟩ := hmoll P P Λ F hF
+    obtain ⟨Gs, hGs, hGsL, hGsU⟩ := hmoll P P Λ G hG
+    obtain ⟨ζ, W, hζ, hζc, -, hW, hEW, hζW⟩ := hcut P E hE
+    refine ⟨GeometricCurrentOn.ext fun ω => ?_, GeometricCurrentOn.ext fun ω => ?_⟩
+    · -- `∂X(ζ F_j^# ω) = X(d(ζ F_j^# ω))`, and `d(ζ F_j^# ω) = F_j^#(dω)` on `E`
+      let ηs : ℕ → TestFormOn (univ : Set (Euclid P)) k := fun j =>
+        ⟨fun x => ζ x • ((ω : DifferentialForm (Euclid P) k) (Fs j x)).compContinuousLinearMap
+          (fderiv ℝ (Fs j) x),
+          cutTest k ζ _ hζ hζc (hpb P P k (Fs j) _ (hFs j) ω.property.1.1)⟩
+      have hη : ∀ j, ∀ x ∈ E, (ηs j : DifferentialForm (Euclid P) k) x =
+          ((ω : DifferentialForm (Euclid P) k) (Fs j x)).compContinuousLinearMap
+            (fderiv ℝ (Fs j) x) := by
+        intro j x hx
+        show ζ x • _ = _
+        rw [hζW x (hEW hx), one_smul]
+      have hdη : ∀ j, ∀ x ∈ E,
+          (exteriorDerivativeTestOn univ k (ηs j) : DifferentialForm (Euclid P) (k + 1)) x =
+            ((exteriorDerivativeTestOn univ k ω : DifferentialForm (Euclid P) (k + 1))
+              (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x) := by
+        intro j x hx
+        show exteriorDerivative (fun y => ζ y • _) x = _
+        rw [dcut k ζ W _ x hW hζW (hEW hx)]
+        exact extDeriv_pullback (ω.property.1.1.differentiable (by simp)).differentiableAt
+          (hFs j).contDiffAt (by simp)
+      have h1 := (hpush k Λ F E X.boundary hF hE hbX hbXE).2.2.1 Fs ω ηs
+        (fun j => hC1 _ (hFs j)) hFsL hFsU hη
+      have h2 := (hpush (k + 1) Λ F E X hF hE hX hXE).2.2.1 Fs
+        (exteriorDerivativeTestOn univ k ω) (fun j => exteriorDerivativeTestOn univ k (ηs j))
+        (fun j => hC1 _ (hFs j)) hFsL hFsU hdη
+      exact tendsto_nhds_unique h2 h1
+    · -- Cartan: `ζ G_j^# ω − ζ F_j^# ω − d(ζ K_j ω) = K_j(dω)` on `E`
+      have hcart := fun j => hcartan P k (Fs j) (Gs j) (ω : DifferentialForm (Euclid P) (k + 1))
+        (hFs j) (hGs j) ω.property.1.1
+      let a : ℕ → TestFormOn (univ : Set (Euclid P)) (k + 1) := fun j =>
+        ⟨fun x => ζ x •
+          ((ω : DifferentialForm (Euclid P) (k + 1)) (Gs j x)).compContinuousLinearMap
+            (fderiv ℝ (Gs j) x),
+          cutTest (k + 1) ζ _ hζ hζc (hpb P P (k + 1) (Gs j) _ (hGs j) ω.property.1.1)⟩
+      let b : ℕ → TestFormOn (univ : Set (Euclid P)) (k + 1) := fun j =>
+        ⟨fun x => ζ x •
+          ((ω : DifferentialForm (Euclid P) (k + 1)) (Fs j x)).compContinuousLinearMap
+            (fderiv ℝ (Fs j) x),
+          cutTest (k + 1) ζ _ hζ hζc (hpb P P (k + 1) (Fs j) _ (hFs j) ω.property.1.1)⟩
+      let c : ℕ → TestFormOn (univ : Set (Euclid P)) k := fun j =>
+        ⟨fun x => ζ x • ∫ t in (0 : ℝ)..1,
+          (((ω : DifferentialForm (Euclid P) (k + 1)) (Fs j x + t • (Gs j x - Fs j x))).curryLeft
+            (Gs j x - Fs j x)).compContinuousLinearMap
+              (fderiv ℝ (Fs j) x + t • (fderiv ℝ (Gs j) x - fderiv ℝ (Fs j) x)),
+          cutTest k ζ _ hζ hζc (hcart j).1⟩
+      have ha : ∀ j, ∀ x ∈ E, (a j : DifferentialForm (Euclid P) (k + 1)) x =
+          ((ω : DifferentialForm (Euclid P) (k + 1)) (Gs j x)).compContinuousLinearMap
+            (fderiv ℝ (Gs j) x) := by
+        intro j x hx
+        show ζ x • _ = _
+        rw [hζW x (hEW hx), one_smul]
+      have hb : ∀ j, ∀ x ∈ E, (b j : DifferentialForm (Euclid P) (k + 1)) x =
+          ((ω : DifferentialForm (Euclid P) (k + 1)) (Fs j x)).compContinuousLinearMap
+            (fderiv ℝ (Fs j) x) := by
+        intro j x hx
+        show ζ x • _ = _
+        rw [hζW x (hEW hx), one_smul]
+      have hc : ∀ j, ∀ x ∈ E, (c j : DifferentialForm (Euclid P) k) x = ∫ t in (0 : ℝ)..1,
+          (((ω : DifferentialForm (Euclid P) (k + 1)) (Fs j x + t • (Gs j x - Fs j x))).curryLeft
+            (Gs j x - Fs j x)).compContinuousLinearMap
+              (fderiv ℝ (Fs j) x + t • (fderiv ℝ (Gs j) x - fderiv ℝ (Fs j) x)) := by
+        intro j x hx
+        show ζ x • _ = _
+        rw [hζW x (hEW hx), one_smul]
+      have he : ∀ j, ∀ x ∈ E,
+          ((a j - b j - exteriorDerivativeTestOn univ k (c j) :
+            TestFormOn (univ : Set (Euclid P)) (k + 1)) :
+              DifferentialForm (Euclid P) (k + 1)) x = ∫ t in (0 : ℝ)..1,
+          (((exteriorDerivativeTestOn univ (k + 1) ω : DifferentialForm (Euclid P) (k + 1 + 1))
+            (Fs j x + t • (Gs j x - Fs j x))).curryLeft (Gs j x - Fs j x)).compContinuousLinearMap
+              (fderiv ℝ (Fs j) x + t • (fderiv ℝ (Gs j) x - fderiv ℝ (Fs j) x)) := by
+        intro j x hx
+        have hxW := hEW hx
+        simp only [Submodule.coe_sub, Pi.sub_apply]
+        show ζ x • _ - ζ x • _ - exteriorDerivative (fun y => ζ y • _) x = _
+        rw [hζW x hxW, one_smul, one_smul, dcut k ζ W _ x hW hζW hxW, (hcart j).2 x]
+        exact add_sub_cancel_left _ _
+      have h1 := (hpush (k + 1) Λ G E X hG hE hX hXE).2.2.1 Gs ω a
+        (fun j => hC1 _ (hGs j)) hGsL hGsU ha
+      have h2 := (hpush (k + 1) Λ F E X hF hE hX hXE).2.2.1 Fs ω b
+        (fun j => hC1 _ (hFs j)) hFsL hFsU hb
+      have h3 := (hhomot k Λ F G E X.boundary hF hG hE hbX hbXE).2.2.1 Fs Gs ω c
+        (fun j => hC1 _ (hFs j)) (fun j => hC1 _ (hGs j)) hFsL hGsL hFsU hGsU hc
+      have h4 := (hhomot (k + 1) Λ F G E X hF hG hE hX hXE).2.2.1 Fs Gs
+        (exteriorDerivativeTestOn univ (k + 1) ω)
+        (fun j => a j - b j - exteriorDerivativeTestOn univ k (c j))
+        (fun j => hC1 _ (hFs j)) (fun j => hC1 _ (hGs j)) hFsL hGsL hFsU hGsU he
+      -- `X(a_j − b_j − d c_j) = X(a_j) − X(b_j) − ∂X(c_j)`
+      have h5 : Tendsto (fun j => X (a j - b j - exteriorDerivativeTestOn univ k (c j))) atTop
+          (𝓝 (push (k + 1) G X ω - push (k + 1) F X ω - homot k F G X.boundary ω)) := by
+        refine ((h1.sub h2).sub h3).congr fun j => ?_
+        have e1 : X (a j - b j - exteriorDerivativeTestOn univ k (c j)) =
+            X (a j - b j) - X (exteriorDerivativeTestOn univ k (c j)) :=
+          X.toCurrent.map_sub (a j - b j) (exteriorDerivativeTestOn univ k (c j))
+        have e2 : X (a j - b j) = X (a j) - X (b j) := X.toCurrent.map_sub (a j) (b j)
+        show X (a j) - X (b j) - X (exteriorDerivativeTestOn univ k (c j)) = _
+        rw [e1, e2]
+      exact tendsto_nhds_unique h5 h4
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
