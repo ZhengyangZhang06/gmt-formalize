@@ -1,0 +1,115 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "IMRep|IsMinimizingIn|HasMassDensity|IsEmbeddedSubmanifold|tangentSpace|IsOrientation|regularSet|approxTangentPlane|firstVariation|IsStationaryAlong|IsUnit",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|ae_eq_zero_of_integral_contDiff_smul_eq_zero",
+        "codim1_ldr_",
+        "rg -n -i 'allard' .lake/packages/simongmt/Poincare/SimonGMT/Chapter05",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/ldr-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/ldr-v2/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/ldr-v2/AssemblyC.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-b06ad0f914/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-low-b06ad0f914/decomposition-v2.json",
+        "/tmp/ldr-independent-audit/Types.lean",
+        "/tmp/ldr-independent-audit/reuse-evidence.json",
+        "/tmp/ldr-v2/Assembly.lean",
+        "/tmp/ldr-v2/AssemblyC.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected low-density regularity theorem. Project, Mathlib and SimonGMT pins match; the frozen contract is unchanged. SimonGMT explicitly omits Allard regularity, so it remains a genuine analytic obligation. All twelve types independently elaborate without child implementations or proof placeholders. Both assembly proofs were rerun successfully and use only propext, Classical.choice and Quot.sound; they establish the exact selected parent and the stationarity assembly. Dependencies are acyclic, including the reused branches, with no return to the selected parent. All names are bare identifiers. The eight reused declarations have identical frozen types, matching accepted source hashes, compatible package revisions and successful standard-axiom comparator evidence, recorded in reuse-evidence.json. The four new names have no DAG owners. No prohibited function-instance matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including open W not contained in U. Dual-covector approximation proves the full mass equality, including infinite mass; the zero-region argument proves the relative support identity."
+    },
+    {
+      "key": "carrier_support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The countable zero-region reduction, finite-measure localization and fundamental lemma force the orientation to vanish off support, contradicting its unit property. This proves the exact Hausdorff-null conclusion without circularity."
+    },
+    {
+      "key": "covector_gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Multilinear expansion and Cauchy–Binet establish both conclusions, including n = 0 and n > P. The Lean Gram determinant correctly uses Matrix.of."
+    },
+    {
+      "key": "tangent_projection_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Approximate-tangent uniqueness and the compact quotient construction give a measurable orientation-to-projection map. Composition proves precisely the stated almost-everywhere strong measurability; the zero-dimensional case is covered."
+    },
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bounded curve construction proves one inclusion. Properness, injectivity and the coercive derivative estimate prove the reverse inclusion without assuming differentiability of the inverse parametrization."
+    },
+    {
+      "key": "tangential_deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Chart straightening, localized deformations and finite composition establish preservation, bijectivity, injective derivatives and the uniform expansion. Defining the family as identity for large times is permitted by the exact contract."
+    },
+    {
+      "key": "stationary_mean_curvature",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The support argument, tangent inclusion, curvature formula and radial tests prove both conclusions with constants chosen before T and R. The projection regularity used is supported by [Leobacher–Steinicke](https://arxiv.org/abs/1811.10578)."
+    },
+    {
+      "key": "diffeo_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the current and its integer-multiplicity representation, justifies tangent transport and the area formula, and preserves the boundary by smooth approximation. The partition radius and degree-zero case are explicitly handled."
+    },
+    {
+      "key": "first_variation_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The uniform Gram-determinant estimate, measurable integrable domination and supremum argument prove the exact ENNReal upper bound. No unstated bijectivity or domain-openness hypothesis is needed."
+    },
+    {
+      "key": "stationary_of_minimizing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared dependencies produce admissible competitors with compact difference support in N. Minimality and the two-sided small-time mass estimate force zero first variation; zero mass and degree zero are covered."
+    },
+    {
+      "key": "allard_graph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied monotonicity, affine and Lipschitz approximation, harmonic approximation, excess decay and iteration form a non-circular proof of the exact graph contract. Constants depend only on n, k and ε; the corrected radii and k = 0 case are compatible. The route matches [Simon, Chapter 5](https://web.stanford.edu/class/math285/ts-gmt)."
+    },
+    {
+      "key": "graph_cycle_regular",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The graph geometry, orientation and area formula yield an integer-valued local density. Boundary testing proves distributional constancy, support forces a nonzero integer, and restriction supplies every witness required by regularSet."
+    }
+  ],
+  "required_changes": []
+}
