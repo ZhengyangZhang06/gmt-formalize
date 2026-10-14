@@ -1,0 +1,119 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'deformation|skeleton|telescop' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "cmcsd_",
+        "extend_real|extend_pi",
+        "ae_differentiableAt|intervalIntegrable_deriv|intervalIntegral_deriv_mem_uIcc|deriv_nonneg",
+        "theorem enorm_integral_le_lintegral_enorm|theorem integral_withDensity_eq_integral_smul|theorem mul_meas_ge_le_lintegral₀",
+        "def.*(zeroRegion|support|VanishesOn)|theorem.*(isOpen_zeroRegion|tsupport_exteriorDerivative_subset)|massOn_mono|def.*massOn",
+        "def cthickening|isClosed_cthickening|mem_cthickening_of_dist_le|self_subset_cthickening",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcsd-independent-audit-ytic3ikd/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/cmcsd_skeleton_deformation_decomposition/AssemblyAx.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/cmcsd_skeleton_deformation_decomposition/ReusedCheck.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-9a64d46574/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-9a64d46574/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcsd_skeleton_deformation_decomposition/AssemblyAx.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcsd_skeleton_deformation_decomposition/ReusedCheck.lean",
+        "/tmp/cmcsd-independent-audit-ytic3ikd/ChallengeTypes.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected skeleton-deformation theorem. The snapshot contract matches the workspace contract; Mathlib and SimonGMT revisions match the pins. The separate Ch06 deformation specification is not reused. All twelve exact one-line propositions independently elaborate without child implementations; the relevant coercions, Euclidean-space instance, subtraction and boundary conventions check correctly. No matrix-unit construction occurs. The eight new bare names have no reservation conflicts; the four reused names belong to accepted declarations with identical frozen types. Their exact accepted proofs recompile with only propext, Classical.choice and Quot.sound. Dependencies are acyclic and correctly directed. Recompiling the assembly proves the exact selected frozen type using only the expected child and resolved sibling assumptions plus standard axioms, with no sorryAx. Each supplied natural proof was independently checked and supplies a complete, non-circular argument."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "zero_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the arbitrary-domain statement. The empty-carrier representation satisfies every IMRep field, including rectifiability and orientation almost everywhere, and its action is zero."
+    },
+    {
+      "key": "support_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five conclusions match the prose. Compact zero neighbourhoods prove the support assertions directly; boundary support follows from tsupport containment for exterior derivatives. No undeclared vanishing theorem is needed."
+    },
+    {
+      "key": "mass_le_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact bound even for arbitrary E and V. Only the closed tsupport must be measurable; the unconditional Bochner-integral inequality handles nonintegrable functions."
+    },
+    {
+      "key": "good_radius",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite distribution functions give the stated liminf bounds at differentiability points. The derivative-integral estimate and Markov argument produce a positive-measure good set, including B = 0 and B = ∞. The declared dependency suffices."
+    },
+    {
+      "key": "lipschitz_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinatewise McShane extensions assembled in EuclideanSpace give exactly the √P·K constant and agreement on S. The proof also covers empty S, P = 0 and K = 0."
+    },
+    {
+      "key": "dyadic_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exponent inequalities and geometric summation establish both clauses with the stated constants. ENNReal arithmetic accommodates infinite A in the first clause; finite K and A justify multiplication in the limit clause."
+    },
+    {
+      "key": "shell_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The five antecedents are copied exactly. The proof constructs the radii and half-open shells, verifies integral formulas, integrality, supports, boundary relations and every mass bound, and proves HasSum. Boundary finiteness correctly separates m = 0 from the second-slicing case."
+    },
+    {
+      "key": "telescoping_deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "PF and IMS are explicit, verbatim hypotheses. Normality and common Lipschitz constants justify linearity and locality. The reversed homotopy has the correct sign; vanishing remainders yield the identity and boundary series. Positive-degree IMS applications and all support and mass estimates are justified."
+    },
+    {
+      "key": "lebesgue_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type reuse is verified. The supplied proof handles empty intervals and converts the nonnegative derivative integral to Mathlib's monotone-function increment bound. The accepted implementation recompiles with standard axioms."
+    },
+    {
+      "key": "mass_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type reuse is verified. Negating an admissible form preserves admissibility; pointwise subtraction and ofReal subadditivity prove the bound without openness assumptions."
+    },
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type reuse is verified. Homogeneity, admissibility of both signed rescalings, finite mass and the limit ε → 0 prove the exact statement, including r = 0."
+    },
+    {
+      "key": "imrep_restriction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical-type reuse is verified. Absolute continuity transfers strong measurability; restriction commutes with density. The cited unconditional withDensity integral identity proves the action formula for arbitrary differential forms."
+    }
+  ],
+  "required_changes": []
+}

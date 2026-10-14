@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.dyadic_series-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1",
+  "depth": 4,
+  "title": "Dyadic series estimates for the deformation constants",
+  "statement": "Dyadic series estimates. Let c₄ ∈ ℝ≥0 and Λ : ℕ → ℝ≥0 with Λ_j ≤ c₄·2^j for every j (inequality of real numbers). Then: (1) for all C ∈ ℝ≥0, A ∈ [0, ∞], p, q ∈ ℕ with p ≤ q, and a : ℕ → [0, ∞] with a_0 ≤ A and a_{j+1} ≤ C·(1/2)^{(j+2)(q+1)}·A for every j, one has Σ_{j≥0} (2Λ_j)^p·a_j ≤ (2c₄)^p·(1 + C)·A; (2) for all K, A ∈ [0, ∞) (i.e. K ≠ ∞, A ≠ ∞), p ∈ ℕ and z : ℕ → [0, ∞] with z_j ≤ K·(1/2)^{(j+2)(p+1)}·A for every j, one has (2Λ_j)^p·z_j → 0 as j → ∞. All arithmetic is in [0, ∞] (ℝ≥0∞), Λ_j and c₄ are cast from ℝ≥0, the powers (1/2)^e are real numbers cast by ENNReal.ofReal, and Σ is the tsum in [0, ∞].",
+  "lean_statement": "∀ (c₄ : NNReal) (Λ : ℕ → NNReal), (∀ j, (Λ j : ℝ) ≤ c₄ * 2 ^ j) → (∀ (C : NNReal) (A : ℝ≥0∞) (p q : ℕ) (a : ℕ → ℝ≥0∞), p ≤ q → a 0 ≤ A → (∀ j, a (j + 1) ≤ C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (q + 1))) * A) → ∑' j, (2 * (Λ j : ℝ≥0∞)) ^ p * a j ≤ (2 * (c₄ : ℝ≥0∞)) ^ p * (1 + C) * A) ∧ (∀ (K A : ℝ≥0∞) (p : ℕ) (z : ℕ → ℝ≥0∞), K ≠ ∞ → A ≠ ∞ → (∀ j, z j ≤ K * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (p + 1))) * A) → Tendsto (fun j => (2 * (Λ j : ℝ≥0∞)) ^ p * z j) atTop (𝓝 0))",
+  "lean_name": "cmcsd_dyadic_series_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-35eea6f3da-a1"
+}

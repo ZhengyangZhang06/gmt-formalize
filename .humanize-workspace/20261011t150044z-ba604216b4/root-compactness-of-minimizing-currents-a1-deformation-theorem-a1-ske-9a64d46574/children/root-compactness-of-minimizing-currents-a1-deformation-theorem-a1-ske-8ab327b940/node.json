@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.good_radius-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1",
+  "depth": 4,
+  "title": "Good slicing radius by Lebesgue differentiation and Markov (Simon 6.5.1, (8)–(10))",
+  "statement": "Choice of a good slicing radius (Simon Ch. 6, proof of 5.1, displays (8)–(10)). Let P ∈ ℕ, let μ, μ' be finite measures on ℝ^P (IsFiniteMeasure), f : ℝ^P → ℝ measurable, ρ > 0 real and B ∈ [0, ∞] with μ({x : f(x) < ρ}) ≤ B. Then there is r with ρ/2 < r < ρ such that liminf_{h → 0+} h⁻¹·μ({x : r − h < f(x) < r}) ≤ (4/ρ)·B and liminf_{h → 0+} h⁻¹·μ'({x : r − h < f(x) < r}) < ∞. Values are in [0, ∞]: h⁻¹ and 4/ρ are read through ENNReal.ofReal, and liminf is taken along the filter 𝓝[>] 0 of right neighbourhoods of 0.",
+  "lean_statement": "∀ (P : ℕ) (μ μ' : Measure (Euclid P)) (f : Euclid P → ℝ) (ρ : ℝ) (B : ℝ≥0∞), IsFiniteMeasure μ → IsFiniteMeasure μ' → Measurable f → 0 < ρ → μ {x | f x < ρ} ≤ B → ∃ r ∈ Ioo (ρ / 2) ρ, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | r - h < f x ∧ f x < r}) (𝓝[>] 0) ≤ ENNReal.ofReal (4 / ρ) * B ∧ liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ' {x | r - h < f x ∧ f x < r}) (𝓝[>] 0) < ∞",
+  "lean_name": "cmcsd_good_radius",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1.lebesgue_deriv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1.lebesgue_deriv-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-integral-a-f8cc50fd1b-a1",
+      "result_commit": "6efe397f182ee5f93e5be9c4b09eb298c3f56ad8",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-8ab327b940-a1"
+}
