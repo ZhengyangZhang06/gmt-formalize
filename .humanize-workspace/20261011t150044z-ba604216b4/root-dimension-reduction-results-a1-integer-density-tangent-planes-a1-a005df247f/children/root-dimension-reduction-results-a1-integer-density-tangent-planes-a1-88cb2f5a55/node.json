@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_constancy-a1.ray_cutoff-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_constancy-a1",
+  "depth": 6,
+  "title": "A smooth cutoff equal to ψ on the line ℝe₀ and vanishing on the other open rays of F (parent step 2)",
+  "statement": "Let P ∈ ℕ, let F be a finite set of unit vectors of ℝ^P, let e₀ ∈ ℝ^P with |e₀| = 1, and let ψ : ℝ → ℝ be C^∞ with compact support and tsupport ψ ⊆ (0, ∞). Then there is a C^∞ function f : ℝ^P → ℝ with compact support such that:\n- f(s·e₀) = ψ(s) for every s ∈ ℝ;\n- f(t·e) = 0 for every e ∈ F with e ≠ e₀ and every t > 0.",
+  "lean_statement": "∀ (P : ℕ) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ e₀ : Euclid P, ‖e₀‖ = 1 → ∀ ψ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ Ioi 0 → ∃ f : Euclid P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f ∧ HasCompactSupport f ∧ (∀ s : ℝ, f (s • e₀) = ψ s) ∧ ∀ e ∈ F, e ≠ e₀ → ∀ t : ℝ, 0 < t → f (t • e) = 0",
+  "lean_name": "idtp_fons_odc_rc_ray_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-88cb2f5a55-a1"
+}
