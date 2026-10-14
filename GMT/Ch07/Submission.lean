@@ -3457,6 +3457,64 @@ theorem Submission.codim1_hcp_stab_jacobian_bound : ∀ (P : ℕ) (Λ : ℝ), �
   have h2 : Real.sqrt (1 + t • X + t ^ 2 • Y).det ≤ (1 + (1 + t • X + t ^ 2 • Y).det) / 2 := by
     nlinarith [Real.sq_sqrt hdet0, sq_nonneg (Real.sqrt (1 + t • X + t ^ 2 • Y).det - 1)]
   linarith
+/-- **Second-variation integrand of a normal variation** (Simon Ch. 2, 5.4 and 5.11–5.12, as used
+for the stability inequality B.1): the linear algebra evaluating the second variation of area
+along `Z = ζν`.  Let `P_S` be the orthogonal projection onto a subspace `S ⊆ ℝᴾ`, `ν₀ ⊥ S` a unit
+vector, `N` a map with `N(S) ⊆ S` that is symmetric on `S`, and `Lτ = g(τ)ν₀ + ζNτ` for `τ ∈ S`.
+With `u_j = P_Se_j ∈ S`, `trace(P_S ∘ R) = trace(P_S ∘ R ∘ P_S) = Σ_j u_j · Ru_j` for every `R`,
+and `u_j · ν₀ = 0`, so `trace(P_S ∘ L) = ζ trace(P_S ∘ N)`.  As `P_Sν₀ = 0` and `P_SNu_j = Nu_j`,
+`P_SLu_j = ζNu_j`; hence `Lu_j − P_SLu_j = g(u_j)ν₀` has squared length `g(u_j)²`, and
+`u_j · L(P_SLu_j) = ζ² u_j · N(Nu_j) = ζ²|Nu_j|²` by the symmetry of `N` on `S`. -/
+theorem Submission.codim1_hcp_stab_normal_variation_algebra : ∀ (P : ℕ) (S : Submodule ℝ (Euclid P)) (ν₀ : Euclid P) (N L : Euclid P →L[ℝ] Euclid P) (g : Euclid P →L[ℝ] ℝ) (ζ : ℝ), ‖ν₀‖ = 1 → (∀ v ∈ S, inner ℝ ν₀ v = 0) → (∀ τ ∈ S, N τ ∈ S) → (∀ τ ∈ S, ∀ η ∈ S, inner ℝ η (N τ) = inner ℝ τ (N η)) → (∀ τ ∈ S, L τ = g τ • ν₀ + ζ • N τ) → LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ L.toLinearMap) = ζ * LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ N.toLinearMap) ∧ ∑ j : Fin P, (‖L (S.starProjection (EuclideanSpace.single j 1)) - S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))‖ ^ 2 - inner ℝ (S.starProjection (EuclideanSpace.single j 1)) (L (S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))))) = ∑ j : Fin P, (g (S.starProjection (EuclideanSpace.single j 1))) ^ 2 - ζ ^ 2 * ∑ j : Fin P, ‖N (S.starProjection (EuclideanSpace.single j 1))‖ ^ 2 := by
+  intro P S ν₀ N L g ζ hν hνS hNS hNsymm hL
+  -- `ν₀ ⊥ S`, so `P_S ν₀ = 0` and `u · ν₀ = 0` for `u ∈ S`
+  have hνS' : ∀ v ∈ S, inner ℝ v ν₀ = 0 := fun v hv => by rw [real_inner_comm]; exact hνS v hv
+  have hPν : S.starProjection ν₀ = 0 :=
+    (Submodule.starProjection_apply_eq_zero_iff S).mpr fun v hv => hνS' v hv
+  -- `trace (P_S ∘ R) = trace (P_S ∘ R ∘ P_S) = Σ_j P_S e_j · R (P_S e_j)`
+  have htr : ∀ R : Euclid P →L[ℝ] Euclid P,
+      LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ R.toLinearMap) =
+        ∑ j : Fin P, inner ℝ (S.starProjection (EuclideanSpace.single j 1))
+          (R (S.starProjection (EuclideanSpace.single j 1))) := by
+    intro R
+    have hPP : S.starProjection.toLinearMap ∘ₗ R.toLinearMap =
+        S.starProjection.toLinearMap ∘ₗ (S.starProjection.toLinearMap ∘ₗ R.toLinearMap) := by
+      ext x
+      simp [Submodule.starProjection_eq_self_iff.mpr (S.starProjection_apply_mem (R x))]
+    rw [hPP, LinearMap.trace_comp_comm',
+      LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin P) ℝ)]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [EuclideanSpace.basisFun_apply]
+    simp only [LinearMap.coe_comp, ContinuousLinearMap.coe_coe, Function.comp_apply]
+    rw [← Submodule.inner_starProjection_left_eq_right]
+  refine ⟨?_, ?_⟩
+  · -- `u_j · L u_j = g(u_j) (u_j · ν₀) + ζ (u_j · N u_j) = ζ (u_j · N u_j)`
+    rw [htr L, htr N, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    have hu : S.starProjection (EuclideanSpace.single j 1) ∈ S := S.starProjection_apply_mem _
+    rw [hL _ hu, inner_add_right, real_inner_smul_right, real_inner_smul_right, hνS' _ hu]
+    ring
+  · rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    have hu : S.starProjection (EuclideanSpace.single j 1) ∈ S := S.starProjection_apply_mem _
+    have hNu := hNS _ hu
+    -- normal part: `P_S L u_j = ζ N u_j`, so `L u_j - P_S L u_j = g(u_j) ν₀`
+    have hPL : S.starProjection (L (S.starProjection (EuclideanSpace.single j 1))) =
+        ζ • N (S.starProjection (EuclideanSpace.single j 1)) := by
+      rw [hL _ hu, map_add, map_smul, map_smul, hPν, smul_zero, zero_add,
+        Submodule.starProjection_eq_self_iff.mpr hNu]
+    have hnorm : ‖L (S.starProjection (EuclideanSpace.single j 1)) -
+        S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))‖ ^ 2 =
+        (g (S.starProjection (EuclideanSpace.single j 1))) ^ 2 := by
+      rw [hPL, hL _ hu, add_sub_cancel_right, norm_smul, hν, mul_one, Real.norm_eq_abs, sq_abs]
+    -- tangential part: `u_j · L (ζ N u_j) = ζ² u_j · N (N u_j) = ζ² |N u_j|²`
+    have hinner : inner ℝ (S.starProjection (EuclideanSpace.single j 1))
+        (L (S.starProjection (L (S.starProjection (EuclideanSpace.single j 1))))) =
+        ζ ^ 2 * ‖N (S.starProjection (EuclideanSpace.single j 1))‖ ^ 2 := by
+      rw [hPL, map_smul, hL _ hNu, inner_smul_right, inner_add_right, real_inner_smul_right,
+        real_inner_smul_right, hνS' _ hu, hNsymm _ hNu _ hu, real_inner_self_eq_norm_sq]
+      ring
+    rw [hnorm, hinner]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
