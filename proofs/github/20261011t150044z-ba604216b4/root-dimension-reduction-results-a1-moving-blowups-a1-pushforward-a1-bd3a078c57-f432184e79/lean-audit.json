@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4ed5641cd21b06b016f269bcf51ac1eddcd1b84817d9eb79d08996fbcfa47bec",
+  "git_delta": {
+    "base_commit": "db9d5588c96766a489428973eaa5d6a06315b195",
+    "candidate_commit": "0869ad759e93f8e15ee1a661cf868a73bb783158",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_pfb_c1_compact_perturbation",
+    "diff_sha256": "0ab8f88b2682583be40fe3296a2bcc27e11493104bc59283cfd0cb80e59b8e30",
+    "source_sha256": "b43a4ee046d0a2d61cfddfd3bcd6dc69038f1707d7f871a867441a53c56cbdc0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_pfb_c1_compact_perturbation",
+      "statement": "∀ (P : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P), IsOpen O → IsCompact K → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ (φ : Euclid P → Euclid P) (V K' : Set (Euclid P)), IsOpen V ∧ K ⊆ V ∧ IsCompact K' ∧ K' ⊆ O ∧ ContDiff ℝ 1 φ ∧ (∀ x ∈ V, φ x = f x ∧ fderiv ℝ φ x = fderiv ℝ f x) ∧ ∀ x, x ∉ K' → φ x = x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
