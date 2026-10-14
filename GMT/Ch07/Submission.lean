@@ -491,6 +491,157 @@ theorem Submission.idtp_cse_fa_sector_open_contDiffOn : ∀ (P : ℕ) (Q : Submo
   ext x
   simp only [mem_ofPred_eq, mem_inter_iff, mem_preimage, mem_Iio]
   tauto
+/-- Derivative of the polar map `F(y) = (|y|, arctan(⟨y, e⟩ / ⟨y, a⟩))` at a point `x` with
+`⟨x, a⟩ ≠ 0` (no orthonormality of `a`, `e` is assumed):
+`DF(x) v = (⟨x, v⟩ / |x|, ⟨⟨x, a⟩ e − ⟨x, e⟩ a, v⟩ / (⟨x, a⟩² + ⟨x, e⟩²))`.  The norm is
+`√(|y|²)`; the angle is `arctan(⟨y, e⟩ ⟨y, a⟩⁻¹)`, differentiated by the inverse, chain and product
+rules. -/
+theorem Submission.idtp_cse_fa_pj_polar_fderiv_apply : ∀ (P : ℕ) (a e x : Euclid P), inner ℝ x a ≠ 0 → ∀ v : Euclid P, fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x v = (inner ℝ x v / ‖x‖, inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / (inner ℝ x a ^ 2 + inner ℝ x e ^ 2)) := by
+  intro P a e x hxa v
+  -- non-degeneracy: `x ≠ 0` and `⟨x, a⟩² + ⟨x, e⟩² ≠ 0`
+  have hx : x ≠ 0 := by
+    rintro rfl
+    exact hxa (inner_zero_left a)
+  have hnx : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx
+  have hρ : inner ℝ x a ^ 2 + inner ℝ x e ^ 2 ≠ 0 := by positivity
+  -- the norm is `√(‖y‖²)`
+  have hN : HasFDerivAt (fun y : Euclid P => ‖y‖)
+      ((1 / (2 * √(‖x‖ ^ 2))) • (2 • innerSL ℝ x)) x := by
+    refine ((hasStrictFDerivAt_norm_sq x).hasFDerivAt.sqrt (by positivity)).congr_of_eventuallyEq
+      (Eventually.of_forall fun y => ?_)
+    exact (Real.sqrt_sq (norm_nonneg y)).symm
+  -- the linear coordinates `⟨y, e⟩` and `⟨y, a⟩`
+  have hE : HasFDerivAt (fun y : Euclid P => inner ℝ y e) (innerSL ℝ e) x :=
+    (innerSL ℝ e).hasFDerivAt.congr_of_eventuallyEq
+      (Eventually.of_forall fun y => real_inner_comm e y)
+  have hA : HasFDerivAt (fun y : Euclid P => inner ℝ y a) (innerSL ℝ a) x :=
+    (innerSL ℝ a).hasFDerivAt.congr_of_eventuallyEq
+      (Eventually.of_forall fun y => real_inner_comm a y)
+  -- `⟨y, e⟩ ⟨y, a⟩⁻¹` by the inverse, chain and product rules, then `arctan`
+  have hQ := hE.fun_mul ((hasFDerivAt_inv hxa).comp x hA)
+  have hF := hN.prodMk hQ.arctan
+  have hF' : HasFDerivAt (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) _ x :=
+    hF.congr_of_eventuallyEq (Eventually.of_forall fun y => by simp only [div_eq_mul_inv]; rfl)
+  rw [hF'.fderiv]
+  -- field arithmetic in each coordinate
+  simp only [ContinuousLinearMap.prod_apply, smul_apply, add_apply, ContinuousLinearMap.comp_apply,
+    ContinuousLinearMap.toSpanSingleton_apply, innerSL_apply_apply, Function.comp_apply,
+    smul_eq_mul, nsmul_eq_mul, Nat.cast_ofNat, Real.sqrt_sq (norm_nonneg x), inner_sub_left,
+    real_inner_smul_left]
+  refine Prod.ext ?_ ?_
+  · field_simp
+  · field_simp
+    ring
+/-- Gram determinant of two vectors over a `2`-plane: if `dim T = 2`, `uᵢ` is the orthonormal
+basis `stdOrthonormalBasis ℝ T` and `p, q ∈ ℝᴾ`, then
+`det(⟨p, uᵢ⟩⟨p, uⱼ⟩ + ⟨q, uᵢ⟩⟨q, uⱼ⟩) = |p_T p|² |p_T q|² − ⟨p_T p, p_T q⟩²`.  Lagrange's
+identity on `Fin 2` gives `(Σ ⟨p, uᵢ⟩²)(Σ ⟨q, uᵢ⟩²) − (Σ ⟨p, uᵢ⟩⟨q, uᵢ⟩)²`; as
+`⟨v, uᵢ⟩ = ⟨p_T v, uᵢ⟩`, Parseval in `T` evaluates the three sums. -/
+theorem Submission.idtp_cse_fa_pj_gram_det_two_plane : ∀ (P : ℕ) (T : Submodule ℝ (Euclid P)) (p q : Euclid P), Module.finrank ℝ T = 2 → Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ T) => inner ℝ p (stdOrthonormalBasis ℝ T i : Euclid P) * inner ℝ p (stdOrthonormalBasis ℝ T j : Euclid P) + inner ℝ q (stdOrthonormalBasis ℝ T i : Euclid P) * inner ℝ q (stdOrthonormalBasis ℝ T j : Euclid P)) = ‖T.starProjection p‖ ^ 2 * ‖T.starProjection q‖ ^ 2 - inner ℝ (T.starProjection p) (T.starProjection q) ^ 2 := by
+  intro P T p q hT
+  set b := stdOrthonormalBasis ℝ T
+  -- Lagrange's identity on `Fin n` with `n = 2` (the index type `Fin (dim T)` is not rewritten)
+  have hlag : ∀ n : ℕ, n = 2 → ∀ f g : Fin n → ℝ,
+      Matrix.det (Matrix.of fun i j : Fin n => f i * f j + g i * g j) =
+        (∑ i, f i ^ 2) * (∑ i, g i ^ 2) - (∑ i, f i * g i) ^ 2 := by
+    rintro n rfl f g
+    rw [Matrix.det_fin_two]
+    simp only [Matrix.of_apply, Fin.sum_univ_two]
+    ring
+  -- reduction to `T`: `⟨v, uᵢ⟩ = ⟨P_T v, uᵢ⟩_T`
+  have hred : ∀ (v : Euclid P) (i : Fin (Module.finrank ℝ T)),
+      inner ℝ v (b i : Euclid P) = inner ℝ (T.orthogonalProjectionOnto v) (b i) := fun v i =>
+    (T.inner_orthogonalProjectionOnto_eq_of_mem_right (b i) v).symm
+  rw [hlag _ hT (fun i => inner ℝ p (b i : Euclid P)) (fun i => inner ℝ q (b i : Euclid P))]
+  simp only [hred]
+  -- Parseval in `T`
+  have hpq : ∑ i, inner ℝ (T.orthogonalProjectionOnto p) (b i) *
+      inner ℝ (T.orthogonalProjectionOnto q) (b i) =
+      inner ℝ (T.orthogonalProjectionOnto p) (T.orthogonalProjectionOnto q) := by
+    rw [← b.sum_inner_mul_inner]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [real_inner_comm (b i) (T.orthogonalProjectionOnto q)]
+  rw [b.sum_sq_inner_left, b.sum_sq_inner_left, hpq, Submodule.coe_inner, ← Submodule.norm_coe,
+    ← Submodule.norm_coe, Submodule.coe_orthogonalProjectionOnto_apply,
+    Submodule.coe_orthogonalProjectionOnto_apply]
+/-- **Squared norm of the projection onto a 2-plane in an orthonormal frame.**  If `Q ⊆ ℝᴾ` has
+dimension `2` and `a, e ∈ Q` are orthonormal, then `‖π_Q x‖² = ⟨x, a⟩² + ⟨x, e⟩²` for every `x`.
+The family `(a, e)` is orthonormal, hence linearly independent, so `span {a, e} ≤ Q` has
+dimension `2` and equals `Q`.  The point `w₀ = ⟨x, a⟩a + ⟨x, e⟩e` lies in `Q` and
+`⟨x − w₀, a⟩ = ⟨x − w₀, e⟩ = 0`, so `x − w₀ ⊥ Q` and `π_Q x = w₀`; expanding `⟨w₀, w₀⟩`
+bilinearly gives `⟨x, a⟩² + ⟨x, e⟩²`. -/
+theorem Submission.idtp_cse_fa_pj_starProjection_norm_sq : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e x : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → ‖Q.starProjection x‖ ^ 2 = inner ℝ x a ^ 2 + inner ℝ x e ^ 2 := by
+  intro P Q a e x hQ ha he hna hne hae
+  have hea : inner ℝ e a = 0 := by rw [real_inner_comm]; exact hae
+  have haa : inner ℝ a a = 1 := by rw [real_inner_self_eq_norm_sq, hna]; norm_num
+  have hee : inner ℝ e e = 1 := by rw [real_inner_self_eq_norm_sq, hne]; norm_num
+  -- Step 1: `![a, e]` is orthonormal, hence linearly independent
+  have hon : Orthonormal ℝ ![a, e] := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    fin_cases i <;> fin_cases j <;> simp [hna, hne, hae, hea]
+  -- Step 2: `span {a, e} ≤ Q` and both have dimension `2`, so `span {a, e} = Q`
+  have hle : Submodule.span ℝ (range ![a, e]) ≤ Q := by
+    rw [Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    fin_cases i
+    · exact ha
+    · exact he
+  have hspan : Submodule.span ℝ (range ![a, e]) = Q :=
+    Submodule.eq_of_le_of_finrank_eq hle
+      (by rw [finrank_span_eq_card hon.linearIndependent, hQ]; simp)
+  -- Step 3: `π_Q x = w₀ = ⟨x, a⟩a + ⟨x, e⟩e`, since `w₀ ∈ Q` and `⟨x − w₀, w⟩ = 0` for `w ∈ Q`
+  have hproj : Q.starProjection x = inner ℝ x a • a + inner ℝ x e • e := by
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · exact Q.add_mem (Q.smul_mem _ ha) (Q.smul_mem _ he)
+    · intro w hw
+      rw [← hspan, Submodule.mem_span_range_iff_exists_fun] at hw
+      obtain ⟨c, rfl⟩ := hw
+      simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, inner_add_right,
+        real_inner_smul_right, inner_sub_left, inner_add_left, real_inner_smul_left, haa, hee,
+        hae, hea]
+      ring
+  -- Step 4: `‖w₀‖² = ⟨w₀, w₀⟩ = ⟨x, a⟩² + ⟨x, e⟩²` by bilinearity and orthonormality
+  rw [hproj, ← real_inner_self_eq_norm_sq]
+  simp only [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right, haa,
+    hee, hae, hea]
+  ring
+
+/-- **Area-formula Jacobian of the polar map along a 2-plane through `x`.**  Let `Q ⊆ ℝᴾ` be a
+`2`-plane with orthonormal frame `a, e ∈ Q`, `⟨x, a⟩ > 0`, and `T ⊆ ℝᴾ` a `2`-plane containing
+`x`.  For `F(y) = (|y|, arctan(⟨y, e⟩ / ⟨y, a⟩))` and the orthonormal basis `uᵢ` of `T`,
+`√det(DF(x)uᵢ · DF(x)uⱼ) = |p_T(⟨x, a⟩e − ⟨x, e⟩a)| / |π_Q x|²`.  With `A = ⟨x, a⟩e − ⟨x, e⟩a` and
+`ρ = ⟨x, a⟩² + ⟨x, e⟩²`, `DF(x)v = (⟨|x|⁻¹x, v⟩, ⟨ρ⁻¹A, v⟩)`, so the Gram determinant over `T` is
+`|p_T(|x|⁻¹x)|² |p_T(ρ⁻¹A)|² − ⟨p_T(|x|⁻¹x), p_T(ρ⁻¹A)⟩²`.  As `p_T x = x`, the first factor is `1`
+and, `p_T` being self-adjoint, the cross term is `|x|⁻¹ρ⁻¹⟨x, A⟩ = 0`; so the determinant is
+`(|p_T A| / ρ)²`, and `ρ = |π_Q x|²`. -/
+theorem Submission.idtp_cse_fa_polar_gram_jacobian : ∀ (P : ℕ) (Q T : Submodule ℝ (Euclid P)) (a e x : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < inner ℝ x a → Module.finrank ℝ T = 2 → T.starProjection x = x → Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ T) => (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T i)).1 * (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T j)).1 + (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T i)).2 * (fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x (stdOrthonormalBasis ℝ T j)).2)) = ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2 := by
+  intro P Q T a e x hQ ha he hna hne hae hxa hT hxT
+  -- P1: `x ≠ 0` and `ρ = ⟨x, a⟩² + ⟨x, e⟩² > 0`
+  have hx : x ≠ 0 := by
+    rintro rfl
+    exact hxa.ne' (inner_zero_left a)
+  have hnx : ‖x‖ ≠ 0 := norm_ne_zero_iff.mpr hx
+  have hρ : 0 < inner ℝ x a ^ 2 + inner ℝ x e ^ 2 := by positivity
+  -- P2: `DF(x)v = (⟨|x|⁻¹x, v⟩, ⟨ρ⁻¹A, v⟩)`
+  have hD : ∀ v : Euclid P, fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x v = (inner ℝ (‖x‖⁻¹ • x) v, inner ℝ ((inner ℝ x a ^ 2 + inner ℝ x e ^ 2)⁻¹ • (inner ℝ x a • e - inner ℝ x e • a)) v) := by
+    intro v
+    rw [Submission.idtp_cse_fa_pj_polar_fderiv_apply P a e x hxa.ne' v, real_inner_smul_left,
+      real_inner_smul_left, inv_mul_eq_div, inv_mul_eq_div]
+  simp only [hD]
+  -- P5–P6: the cross term vanishes, `⟨x, p_T A⟩ = ⟨p_T x, A⟩ = ⟨x, A⟩ = 0`
+  have hxA : inner ℝ x (T.starProjection (inner ℝ x a • e - inner ℝ x e • a)) = 0 := by
+    rw [← Submodule.inner_starProjection_left_eq_right, hxT, inner_sub_right,
+      real_inner_smul_right, real_inner_smul_right]
+    ring
+  -- P3–P4, P7–P9: Gram determinant over `T`, `p_T x = x` and `ρ = |π_Q x|²`
+  rw [Submission.idtp_cse_fa_pj_gram_det_two_plane P T _ _ hT, map_smul, map_smul, hxT, norm_smul,
+    norm_smul, real_inner_smul_left, real_inner_smul_right, hxA, norm_inv, norm_inv, norm_norm,
+    Real.norm_of_nonneg hρ.le, inv_mul_cancel₀ hnx,
+    Submission.idtp_cse_fa_pj_starProjection_norm_sq P Q a e x hQ ha he hna hne hae,
+    ← Real.sqrt_sq (div_nonneg (norm_nonneg _) hρ.le)]
+  congr 1
+  ring
 
 /-- Countable Lipschitz localization of a `C¹` map (Simon Ch. 3, §2 works with locally Lipschitz
 `f`).  If `Z ⊆ ℝᴾ` is open and `F : ℝᴾ → ℝⁿ` is `C¹` on `Z`, then countably many open balls
