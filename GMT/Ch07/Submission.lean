@@ -451,6 +451,157 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Pointwise tilt bound** (in the proof of Simon 7.3.3(1), the classification of the
+two-dimensional minimizing cones `S₀` in (15), chapter-07.txt lines 493–504).  For `a, e ∈ Q`
+orthonormal, `β = a♭ ∧ e♭`, `Ax = ⟨x, a⟩e − ⟨x, e⟩a` and `G = |p_{TₓM}(Ax)|² / |πx|²`:
+(i) `G ≤ 1` on `{⟨x, a⟩ > 0}`, because `|Ax|² = ⟨x, a⟩² + ⟨x, e⟩² ≤ |πx|²` (Bessel in `Q`, so
+`dim Q = 2` is not needed);
+(ii) `μ`-a.e., `TₓM` has an orthonormal basis `τ` with `ξ(x)(β) = ±D`,
+`D = ⟨a, τ₀⟩⟨e, τ₁⟩ − ⟨a, τ₁⟩⟨e, τ₀⟩`, so `|ξ(x)(β)| ≤ 1` (Lagrange and Bessel), and
+`x ∈ TₓM` gives `|p_{TₓM}(Ax)|² = D²|x|² ≥ D²|πx|²`, whence `G ≥ D² ≥ 2|D| − 1`. -/
+theorem Submission.idtp_cse_bml_tilt_pointwise_bound : ∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (β : Covector (Euclid P) 2), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → (∀ v : Fin 2 → Euclid P, β v = inner ℝ a (v 0) * inner ℝ e (v 1) - inner ℝ a (v 1) * inner ℝ e (v 0)) → (∀ᵐ x ∂R.measure, (approxTangentPlane 2 R.carrier x).starProjection x = x) → (∀ x : Euclid P, 0 < inner ℝ x a → ‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2 ≤ 1) ∧ ∀ᵐ x ∂R.measure, |R.orient x β| ≤ 1 ∧ (0 < inner ℝ x a → 1 - 2 * (1 - |R.orient x β|) ≤ ‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) := by
+  intro P R Q a e β _ ha he hna hne hae hβ hrad
+  -- Step 1: `|Ax|² = ⟨x, a⟩² + ⟨x, e⟩²`, since `a, e` are orthonormal
+  have hAx : ∀ x : Euclid P,
+      ‖inner ℝ x a • e - inner ℝ x e • a‖ ^ 2 = inner ℝ x a ^ 2 + inner ℝ x e ^ 2 := by
+    intro x
+    rw [norm_sub_sq_real, norm_smul, norm_smul, real_inner_smul_left, real_inner_smul_right,
+      real_inner_comm a e, hae, hna, hne, Real.norm_eq_abs, Real.norm_eq_abs, mul_pow, mul_pow,
+      sq_abs, sq_abs]
+    ring
+  -- Step 2: `⟨x, a⟩² + ⟨x, e⟩² ≤ |πx|²` (Bessel for `a, e` applied to `πx`; `x − πx ⊥ Q`)
+  have hon : Orthonormal ℝ ![a, e] := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    fin_cases i <;> fin_cases j <;>
+      simp [hna, hne, hae, real_inner_comm a e]
+  have hπ : ∀ x : Euclid P, inner ℝ x a ^ 2 + inner ℝ x e ^ 2 ≤ ‖Q.starProjection x‖ ^ 2 := by
+    intro x
+    have h1 : inner ℝ x a = inner ℝ a (Q.starProjection x) := by
+      have h := Submodule.starProjection_inner_eq_zero x a ha
+      rw [inner_sub_left, sub_eq_zero] at h
+      rw [h, real_inner_comm]
+    have h2 : inner ℝ x e = inner ℝ e (Q.starProjection x) := by
+      have h := Submodule.starProjection_inner_eq_zero x e he
+      rw [inner_sub_left, sub_eq_zero] at h
+      rw [h, real_inner_comm]
+    have h := hon.sum_inner_products_le (Q.starProjection x) (s := Finset.univ)
+    simpa [Fin.sum_univ_two, h1, h2] using h
+  refine ⟨fun x _ => ?_, ?_⟩
+  · -- Claim (i): `|p_{TₓM}(Ax)|² ≤ |Ax|² ≤ |πx|²`
+    refine div_le_one_of_le₀ ?_ (sq_nonneg _)
+    calc ‖(approxTangentPlane 2 R.carrier x).starProjection
+            (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2
+        ≤ ‖inner ℝ x a • e - inner ℝ x e • a‖ ^ 2 := by
+          gcongr
+          exact Submodule.norm_starProjection_apply_le _ _
+      _ ≤ ‖Q.starProjection x‖ ^ 2 := by rw [hAx]; exact hπ x
+  · -- Claim (ii).  Step 3: `μ ≪ H²⌞M`, so `R.orients` holds `μ`-a.e.
+    have hor : ∀ᵐ x ∂R.measure, ∃ Q' : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt 2 R.carrier x Q' ∧ IsUnitOrientationOf (R.orient x) Q' :=
+      (withDensity_absolutelyContinuous _ _).ae_le R.orients
+    filter_upwards [hor, hrad] with x hx hxT
+    obtain ⟨Q', hQ', τ, hτ, hspan, hξ⟩ := hx
+    -- Step 4: `TₓM = Q' = span τ`, by uniqueness of approximate tangent spaces
+    have hT : approxTangentPlane 2 R.carrier x = Q' := by
+      have h : ∃ Q'', HasApproximateTangentSpaceAt 2 R.carrier x Q'' := ⟨Q', hQ'⟩
+      rw [approxTangentPlane, dite_eq_left h]
+      exact h.choose_spec.unique hQ'
+    set T := approxTangentPlane 2 R.carrier x
+    have h00 : inner ℝ (τ 0) (τ 0) = 1 := by rw [real_inner_self_eq_norm_sq, hτ.1 0]; norm_num
+    have h11 : inner ℝ (τ 1) (τ 1) = 1 := by rw [real_inner_self_eq_norm_sq, hτ.1 1]; norm_num
+    have h01 : inner ℝ (τ 0) (τ 1) = 0 := hτ.2 (by decide)
+    have h10 : inner ℝ (τ 1) (τ 0) = 0 := hτ.2 (by decide)
+    -- Step 5: `p_T v = ⟨τ₀, v⟩τ₀ + ⟨τ₁, v⟩τ₁` and `|p_T v|² = ⟨τ₀, v⟩² + ⟨τ₁, v⟩²`
+    have hproj : ∀ v : Euclid P,
+        T.starProjection v = inner ℝ (τ 0) v • τ 0 + inner ℝ (τ 1) v • τ 1 := by
+      intro v
+      apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+      · rw [hT, ← hspan]
+        exact Submodule.add_mem _ (Submodule.smul_mem _ _ (Submodule.subset_span ⟨0, rfl⟩))
+          (Submodule.smul_mem _ _ (Submodule.subset_span ⟨1, rfl⟩))
+      · intro w hw
+        rw [hT, ← hspan] at hw
+        induction hw using Submodule.span_induction with
+        | mem w hw =>
+          obtain ⟨i, rfl⟩ := hw
+          fin_cases i
+          · simp [inner_sub_left, inner_add_left, real_inner_smul_left, h10, hτ.1 0,
+              real_inner_comm (τ 0) v]
+          · simp [inner_sub_left, inner_add_left, real_inner_smul_left, h01, hτ.1 1,
+              real_inner_comm (τ 1) v]
+        | zero => simp
+        | add u w _ _ hu hw => rw [inner_add_right, hu, hw, add_zero]
+        | smul c u _ hu => rw [real_inner_smul_right, hu, mul_zero]
+    have hnorm : ∀ v : Euclid P,
+        ‖T.starProjection v‖ ^ 2 = inner ℝ (τ 0) v ^ 2 + inner ℝ (τ 1) v ^ 2 := by
+      intro v
+      rw [hproj, ← real_inner_self_eq_norm_sq]
+      simp only [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right,
+        h00, h11, h01, h10]
+      ring
+    -- Step 6: `ξ(x)(β) = ±D`
+    have hd : |R.orient x β| =
+        |inner ℝ a (τ 0) * inner ℝ e (τ 1) - inner ℝ a (τ 1) * inner ℝ e (τ 0)| := by
+      rcases hξ with h | h
+      · rw [h, hβ]
+      · rw [h, hβ, abs_neg]
+    -- Step 7: `D² ≤ 1` (Lagrange's identity and Bessel for `τ`)
+    have hBa : inner ℝ a (τ 0) ^ 2 + inner ℝ a (τ 1) ^ 2 ≤ 1 := by
+      have h := hτ.sum_inner_products_le a (s := Finset.univ)
+      simpa [Fin.sum_univ_two, real_inner_comm a, hna] using h
+    have hBe : inner ℝ e (τ 0) ^ 2 + inner ℝ e (τ 1) ^ 2 ≤ 1 := by
+      have h := hτ.sum_inner_products_le e (s := Finset.univ)
+      simpa [Fin.sum_univ_two, real_inner_comm e, hne] using h
+    -- Step 8: coordinates of `x ∈ T`
+    have hx : x = inner ℝ (τ 0) x • τ 0 + inner ℝ (τ 1) x • τ 1 := by
+      rw [← hproj, hxT]
+    have hxa : inner ℝ x a = inner ℝ (τ 0) x * inner ℝ a (τ 0) +
+        inner ℝ (τ 1) x * inner ℝ a (τ 1) := by
+      conv_lhs => rw [hx]
+      rw [inner_add_left, real_inner_smul_left, real_inner_smul_left, real_inner_comm a (τ 0),
+        real_inner_comm a (τ 1)]
+    have hxe : inner ℝ x e = inner ℝ (τ 0) x * inner ℝ e (τ 0) +
+        inner ℝ (τ 1) x * inner ℝ e (τ 1) := by
+      conv_lhs => rw [hx]
+      rw [inner_add_left, real_inner_smul_left, real_inner_smul_left, real_inner_comm e (τ 0),
+        real_inner_comm e (τ 1)]
+    have hxx : ‖x‖ ^ 2 = inner ℝ (τ 0) x ^ 2 + inner ℝ (τ 1) x ^ 2 := by
+      rw [← hnorm, hxT]
+    -- Step 9: `|p_T(Ax)|² = D²|x|²`
+    have hPA : ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 =
+        (inner ℝ a (τ 0) * inner ℝ e (τ 1) - inner ℝ a (τ 1) * inner ℝ e (τ 0)) ^ 2 *
+          ‖x‖ ^ 2 := by
+      rw [hnorm, hxx]
+      simp only [inner_sub_right, real_inner_smul_right]
+      rw [hxa, hxe, real_inner_comm (τ 0) a, real_inner_comm (τ 1) a, real_inner_comm (τ 0) e,
+        real_inner_comm (τ 1) e]
+      ring
+    have hD2 : (inner ℝ a (τ 0) * inner ℝ e (τ 1) - inner ℝ a (τ 1) * inner ℝ e (τ 0)) ^ 2 ≤ 1 := by
+      have hL : (inner ℝ a (τ 0) * inner ℝ e (τ 1) - inner ℝ a (τ 1) * inner ℝ e (τ 0)) ^ 2 +
+          (inner ℝ a (τ 0) * inner ℝ e (τ 0) + inner ℝ a (τ 1) * inner ℝ e (τ 1)) ^ 2 =
+          (inner ℝ a (τ 0) ^ 2 + inner ℝ a (τ 1) ^ 2) *
+            (inner ℝ e (τ 0) ^ 2 + inner ℝ e (τ 1) ^ 2) := by ring
+      have hprod := mul_le_mul hBa hBe (by positivity) zero_le_one
+      nlinarith [sq_nonneg (inner ℝ a (τ 0) * inner ℝ e (τ 0) +
+        inner ℝ a (τ 1) * inner ℝ e (τ 1))]
+    refine ⟨?_, fun hxa0 => ?_⟩
+    · rw [hd]
+      exact (sq_le_one_iff_abs_le_one _).mp hD2
+    · -- Step 10: `G = D²|x|²/|πx|² ≥ D² ≥ 2|D| − 1`, as `0 < |πx|² ≤ |x|²`
+      have hpos : 0 < ‖Q.starProjection x‖ ^ 2 :=
+        lt_of_lt_of_le (add_pos_of_pos_of_nonneg (pow_pos hxa0 2) (sq_nonneg _)) (hπ x)
+      have hle : ‖Q.starProjection x‖ ^ 2 ≤ ‖x‖ ^ 2 := by
+        gcongr
+        exact Submodule.norm_starProjection_apply_le _ _
+      rw [hd, le_div_iff₀ hpos, hPA]
+      set D := inner ℝ a (τ 0) * inner ℝ e (τ 1) - inner ℝ a (τ 1) * inner ℝ e (τ 0)
+      calc (1 - 2 * (1 - |D|)) * ‖Q.starProjection x‖ ^ 2
+          ≤ D ^ 2 * ‖Q.starProjection x‖ ^ 2 := by
+            gcongr
+            nlinarith [sq_abs D, sq_nonneg (|D| - 1)]
+        _ ≤ D ^ 2 * ‖x‖ ^ 2 := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
