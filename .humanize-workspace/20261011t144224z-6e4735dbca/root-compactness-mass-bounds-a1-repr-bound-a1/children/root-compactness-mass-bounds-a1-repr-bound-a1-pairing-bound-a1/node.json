@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_mass_bounds-a1.repr_bound-a1.pairing_bound-a1",
+  "parent_id": "root.compactness_mass_bounds-a1.repr_bound-a1",
+  "depth": 3,
+  "title": "L∞–L¹ estimate for the coordinate pairing of a continuous form vanishing off K",
+  "statement": "Let P, n ∈ ℕ, μ a measure on ℝ^P, v : ℝ^P → NVector (Eucl P) n and K ⊆ ℝ^P a measurable set such that, for every β ∈ SimonMultiIndex n P, the coefficient function v^β(x) := euclideanNVectorCoordinate (v x) β is μ-integrable on K. Let θ : ℝ^P → Covector (Eucl P) n be continuous with θ(x) = 0 for every x ∉ K. Let D ∈ ℝ with |θ(x)| ≤ D for every x (|·| = covectorEuclideanNorm). Put f(x) := Σ_{β ∈ SimonMultiIndex n P} θ(x)(e_β)·v^β(x), where θ(x)(e_β) := euclideanCovectorCoordinate (θ x) β. Then f is μ-integrable and |∫ f dμ| ≤ D · Σ_β ∫_K |v^β| dμ.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n) (K : Set (Eucl P)), MeasurableSet K → (∀ β : SimonMultiIndex n P, IntegrableOn (fun x => euclideanNVectorCoordinate (v x) β) K μ) → ∀ (θ : Eucl P → Covector (Eucl P) n) (D : ℝ), Continuous θ → (∀ x, x ∉ K → θ x = 0) → (∀ x, covectorEuclideanNorm (θ x) ≤ D) → Integrable (fun x => ∑ β : SimonMultiIndex n P, euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β) μ ∧ |∫ x, ∑ β : SimonMultiIndex n P, euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β ∂μ| ≤ D * ∑ β : SimonMultiIndex n P, ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ",
+  "lean_name": "cmb_rb_integral_coeff_pairing_bound",
+  "depends_on": [
+    "root.compactness_mass_bounds-a1.repr_bound-a1.coord_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_mass_bounds-a1.repr_bound-a1.coord_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-repr-bound-a1-pairing-bound-a1-a1"
+}
