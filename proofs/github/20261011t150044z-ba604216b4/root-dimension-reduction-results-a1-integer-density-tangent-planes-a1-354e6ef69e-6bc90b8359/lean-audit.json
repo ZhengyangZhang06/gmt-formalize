@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "834a095b0325fb6f7f6f0f8f657305a698e8d3abac96f0294dd8542c05bb2878",
+  "git_delta": {
+    "base_commit": "f5fbcf0566b75b5293d9bb69634fc993b4b3a9f2",
+    "candidate_commit": "944a91954fb054fecf210f1d9f73706529d5d5a9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_line_conclusion",
+    "diff_sha256": "38b6a0fe370611c0d6762f47a7d5eaef2472a184ed293b56fe1277a446de79ae",
+    "source_sha256": "720fb771964fa47bedc8c77f801844d6ff675e889f69e40af8d04f795b459322",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_line_conclusion",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ m : Euclid P → ℤ, (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, (m e : ℝ) * ∫ t in Ioi (0 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∀ a ∈ F, -a ∈ F → (∀ e ∈ F, m e ≠ 0 → e = a ∨ e = -a) → ∀ k : ℕ, m a = k → m (-a) = -k → C.support ⊆ (Submodule.span ℝ {a} : Set (Euclid P)) ∧ ∀ y ∈ Submodule.span ℝ {a}, HasMassDensity C y k",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
