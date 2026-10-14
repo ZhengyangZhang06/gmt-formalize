@@ -1,0 +1,18 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1.class_anchor_infinite-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/8647",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "15b80eb672d1c5f7d0537eec479b4813ecf7a262",
+  "integrated_commit": "",
+  "proof_base_commit": "878b592fb50bb6de50e8d1c412af79ca56e064bc",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1",
+  "requires": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.ambient_calculus-a1",
+    "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1.zero_limit_minimizing-a1"
+  ]
+}
