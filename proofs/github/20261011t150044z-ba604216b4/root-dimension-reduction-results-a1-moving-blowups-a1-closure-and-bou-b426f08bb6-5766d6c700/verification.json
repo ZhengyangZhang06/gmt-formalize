@@ -1,0 +1,20 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.filling-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/7139",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "11262505542fb154e89a62efeeca81aba9172dd2",
+  "integrated_commit": "",
+  "proof_base_commit": "9ab3bd4049bfe3ca55451f9aa65be31cabed5fbb",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1",
+  "requires": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.zero_current_sum-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.current_algebra-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1"
+  ]
+}
