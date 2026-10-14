@@ -1828,6 +1828,41 @@ theorem Submission.dorag_sn_hausdorff_le_mul_of_lower_density : ∀ (N n : ℕ) 
           smul_eq_mul]
     _ ≤ (k : ℝ≥0∞) * (ENNReal.ofReal (10 ^ n / c) * ν O) := by gcongr
     _ = (k : ℝ≥0∞) * ENNReal.ofReal (10 ^ n / c) * ν O := by rw [mul_assoc]
+/-- **A null set at whose points the measure is locally finite has open neighbourhoods of
+arbitrarily small measure** (localized outer regularity).  The balls `B(x, r(x))` of finite
+measure, `x ∈ A`, have a countable subfamily `B(i, r(i))`, `i ∈ T ⊆ A`, still covering `A`
+(Lindelöf).  With budgets `δᵢ > 0`, `∑ᵢ δᵢ < ε`, outer regularity of the finite measure
+`μ ⌞ B(i, r(i))` at `A` gives an open `Uᵢ ⊇ A` with `μ (Uᵢ ∩ B(i, r(i))) < δᵢ`; take
+`O = ⋃ᵢ Uᵢ ∩ B(i, r(i))`. -/
+theorem Submission.dorag_sn_open_superset_measure_lt : ∀ (N : ℕ) (μ : Measure (Euclid N)) (A : Set (Euclid N)), μ A = 0 → (∀ x ∈ A, ∃ r : ℝ, 0 < r ∧ μ (ball x r) ≠ ∞) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ O : Set (Euclid N), IsOpen O ∧ A ⊆ O ∧ μ O < ε := by
+  intro N μ A hA hloc ε hε
+  choose! r hr hfin using hloc
+  -- Lindelöf: countably many of the balls `B(x, r(x))`, `x ∈ A`, still cover `A`
+  obtain ⟨T, hTA, hTc, hTU⟩ := TopologicalSpace.isOpen_biUnion_countable A
+    (fun x => ball x (r x)) fun x _ => isOpen_ball
+  have : Countable T := hTc.to_subtype
+  -- budgets `δᵢ > 0` with `∑ᵢ δᵢ < ε`
+  obtain ⟨δ, hδ, hδε⟩ := ENNReal.exists_pos_sum_of_countable' hε.ne' T
+  -- outer regularity of the finite measure `μ ⌞ B(i, r(i))` at the null set `A`
+  have hU : ∀ i : T, ∃ U : Set (Euclid N), A ⊆ U ∧ IsOpen U ∧
+      μ (U ∩ ball (i : Euclid N) (r i)) < δ i := by
+    intro i
+    have : IsFiniteMeasure (μ.restrict (ball (i : Euclid N) (r i))) :=
+      isFiniteMeasure_restrict.2 (hfin i (hTA i.2))
+    obtain ⟨U, hAU, hUo, hUδ⟩ := A.exists_isOpen_lt_of_lt
+      (μ := μ.restrict (ball (i : Euclid N) (r i))) (δ i)
+      ((Measure.restrict_apply_le _ A).trans_lt (by rw [hA]; exact hδ i))
+    exact ⟨U, hAU, hUo, by rwa [Measure.restrict_apply hUo.measurableSet] at hUδ⟩
+  choose U hAU hUo hUδ using hU
+  refine ⟨⋃ i : T, U i ∩ ball (i : Euclid N) (r i),
+    isOpen_iUnion fun i => (hUo i).inter isOpen_ball, fun x hx => ?_, ?_⟩
+  · obtain ⟨i, hiT, hxi⟩ :=
+      mem_iUnion₂.1 (hTU.superset (mem_biUnion hx (mem_ball_self (hr x hx))))
+    exact mem_iUnion.2 ⟨⟨i, hiT⟩, hAU _ hx, hxi⟩
+  · calc μ (⋃ i : T, U i ∩ ball (i : Euclid N) (r i))
+        ≤ ∑' i : T, μ (U i ∩ ball (i : Euclid N) (r i)) := measure_iUnion_le _
+      _ ≤ ∑' i : T, δ i := ENNReal.tsum_le_tsum fun i => (hUδ i).le
+      _ < ε := hδε
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
