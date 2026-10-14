@@ -1,0 +1,120 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'cmc_|dtc_vanish_off_support' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "rg -n -i 'federer.?fleming|deformation theorem|flat norm' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'",
+        "rg -n 'covectorEuclideanNorm|def massOn|def massAdmissibleOn|massOn_le_liminf|def support|Federer' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "python3 /tmp/cmc-independent-audit/metadata_check.py",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmc-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmc-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmc-independent-audit/Reuse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmc-independent-audit/Libraries.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1/decomposition-v5.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/cmc-independent-audit/metadata_check.py",
+        "/tmp/cmc-independent-audit/Types.lean",
+        "/tmp/cmc-independent-audit/Assembly.lean",
+        "/tmp/cmc-independent-audit/Reuse.lean",
+        "/tmp/cmc-independent-audit/Libraries.lean"
+      ],
+      "conclusion": "The snapshot contract is byte-identical to the workspace contract and Submission.lean; package revisions match the pins. Searches found no proposed names in the snapshot project and no Federer–Fleming, deformation-theorem or flat-norm matches in snapshot Mathlib. The missing analytic foundations justify splitting this selected theorem. All twelve exact propositions independently elaborate without child declarations. The six-child conditional assembly proves CompactnessOfMinimizingCurrents using only propext, Classical.choice and Quot.sound. The reused support declaration and checked library foundations have the same permitted axioms. All names are bare identifiers; eleven are unreserved, and dtc_vanish_off_support reuses an accepted, byte-identical frozen type. Dependencies are correctly directed and acyclic. Current subtraction uses the contract instance; no matrix-unit construction occurs. The source argument was also checked against [Simon, Chapters 6–7](https://web.stanford.edu/class/math285/ts-gmt)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact accepted type is reused legitimately. The compact-support cover and smooth partition of unity prove vanishing without requiring U to be open; the supplied proof is complete and independent."
+    },
+    {
+      "key": "mass_equals_rep_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including openness and the Euclidean coefficient norm. Cauchy–Binet proves the upper bound; compact exhaustion, Lusin, extension and mollification prove the lower bound, including infinite open-set mass."
+    },
+    {
+      "key": "zero_dim_minimizer_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly treats H⁰ as counting measure, verifies the point-deletion representation and competitor support, and obtains a strict finite-mass decrease. The degree-zero boundary condition is correctly vacuous."
+    },
+    {
+      "key": "radon_convergence_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated hypotheses, including arbitrary U. Eventual finite mass on the test-function support suffices; level-set squeezing and dominated convergence prove convergence of both positive and negative parts."
+    },
+    {
+      "key": "minimality_localizes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The support lemma gives equality of current evaluations off K. The mass formula and finite-measure uniqueness transfer this equality to Borel measures there, and additive decomposition of W′ proves the exact inequality."
+    },
+    {
+      "key": "mass_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All representation properties match the type. Mollification and Riesz representation supply the measure and bounded field; the proved top-dimensional Sobolev estimate and coordinate-projection argument establish the additional absolute-continuity conclusion under the boundary-mass hypothesis."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four conjuncts match their prose. The density-zero argument proves tangent locality; restriction preserves every representation field; overlap orientations and signed multiplicities prove subtraction; Cauchy–Binet gives the orientation bound. The reuse remarks are not assumed proof steps."
+    },
+    {
+      "key": "slicing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restrictions are constructed as sequentially continuous currents. The support identity and Lipschitz cutoff argument establish the all-level pointwise estimate; the monotone derivative majorant proves the stated lower-integral bound without assuming slice-mass measurability."
+    },
+    {
+      "key": "deformation_theorem",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The construction proves the stated integrality, identities, mass bounds and support bounds. Direct integral representations establish push-forward integrality without invoking closure. Integer face medians, scaling and bounded grid coefficients produce a finite family fixed before T and the required mass dichotomy."
+    },
+    {
+      "key": "closure_and_boundary_rectifiability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The joint induction is well-founded: CL(0), BR(d) from CL(d), then CL(d+1) from CL(d) and BR(d). Localization, slice stability, lower density, the constant-vector blow-up and projection argument, rectifiability and integer densities establish both exact conjuncts without using flat convergence or the parent theorem."
+    },
+    {
+      "key": "flat_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Localization and the finite deformation family give a flat-Cauchy subsequence. The proof checks mass and boundary-mass bounds before applying closure to both series. Restoring the outside-G terms yields the global current identity with small W-mass, and the subsequence principle handles the original sequence."
+    },
+    {
+      "key": "local_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof respects the quantifier order: W, φ and e are fixed before S. The corrected negative slice remainder, γ increasing to α from below, level-set mass control and competitor construction prove precisely the uniform comparison inequality."
+    }
+  ],
+  "required_changes": []
+}
