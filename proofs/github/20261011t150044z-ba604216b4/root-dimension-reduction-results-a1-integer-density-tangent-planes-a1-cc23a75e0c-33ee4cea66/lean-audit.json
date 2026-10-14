@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1d07b17f7e2c3ed9e51f4a7f3bae966218cb75de7284dc12d86d1cdbd0f5bd82",
+  "git_delta": {
+    "base_commit": "53075d1515cdd0d2b3728c6defec5a24e937a486",
+    "candidate_commit": "63b29452088f3f19996c0d2fcbb4b8a8a003548b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "cc42e7a0774e87654f7484ab169537c9c1f19c2f18238911abe44404c29e60a2",
+    "source_sha256": "414c897a006d625172fed846863c946d557bceb3ba3bde7793bf1f93b69edf52",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_one_dim_minimizing_cone",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∃ (e : Euclid P) (m : ℕ), (0 < m → ‖e‖ = 1) ∧ C.support ⊆ (Submodule.span ℝ {e} : Set (Euclid P)) ∧ ∀ y ∈ Submodule.span ℝ {e}, HasMassDensity C y m",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
