@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat manifest.json (project b4d606db1, mathlib 25730c7c); diff snapshot project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Submission.lean and GMT/Ch07/Contract.lean (both identical); git rev-parse HEAD = b4d606db1",
+        "python3 over dag.json: selected node record (depth 5; runtime.py _decompose splits while depth < max_depth = 6), lean_statements and statuses of interior_product / frame_measure / slice_integrable (decomposing) and translate_derivative (accepted, dimred_cs_ti_translate_action_hasDerivAt), parent decomposition-v1.json",
+        "python3 collision check of the nine proposed names dimred_cs_sos_mt_cs_{isTestForm_fderiv_apply, flat_extDeriv_split, translate_boundary_eval, slice_identity, slice_hasDerivAt, frame_box_compact, frame_box_integral, coord_box_ftc, frame_box_ftc} against all 2417 dag.json lean_names (0 matches) and against the node proof base 77e7ccf GMT/Ch07/Submission.lean (0 matches)",
+        "grep -n -i \"insertNth|piFinSuccAbove|HasDerivAt|integral_eq_sub|exteriorDerivative (fun|extDeriv\" over all dag.json lean_statements (found cmcdt_cbm_st_slice_integral and cmcdtfrcb_cube_partial_ftc: open unit cubes in Euclid (k+1) with ContDiff G, not reusable with identical types here)",
+        "grep -n over SimonGMT Chapter06/Forms.lean and Currents.lean: IsTestForm, exteriorDerivative, exteriorDerivative_apply, exteriorDerivative_isTestForm, tsupport_exteriorDerivative_subset, testFormOnSubmodule, exteriorDerivativeTestOn, GeometricCurrentOn.boundary(_apply); grep -n currentEval in GMT/Ch07/Submission.lean",
+        "rg -n over snapshot mathlib: def extDeriv, extDeriv_apply, fderiv_comp_add_left, fderiv_continuousAlternatingMap_apply_const_apply, Fin.append_left, Fin.append_right, Fin.insertNthEquiv, MeasurableEquiv.piFinSuccAbove, measurePreserving_piFinSuccAbove, MeasurableEmbedding.setIntegral_map, MeasurableEmbedding.integrableOn_map_iff, LinearMap.isClosedEmbedding_of_injective, Fintype.linearCombination, Orthonormal.inner_right_fintype, Submodule.mem_span_range_iff_exists_fun, setIntegral_prod, setIntegral_prod_swap, ContinuousOn.integrableOn_compact, Continuous.finInsertNth, intervalIntegral.integral_eq_sub_of_hasDerivAt, integral_Icc_eq_integral_Ioc",
+        "grep -n \"μHE|euclideanHausdorffMeasure\" Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_zero: μHE[0] = μH[0], so for j = 0 the face Q'_a = {0} has mass 1, consistent with frame_measure (i))",
+        "read runtime.py (_decompose depth gate, _existing_lean_name_problem, _dependency_problem) and inherited.py (cited_inherited: children inherit interior_product, frame_measure, deriv_translate by exact-name citation)",
+        "lean v4.35.0-rc3 with LEAN_PATH = local copies of the pinned build: /tmp/cs-decomp/check/{Types,Assembly,Children,Child1,Child6}.lean and /tmp/cs-decomp/final/Final.lean (generated from the exact lean_statements below)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-90e5cf2d92/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-90e5cf2d92/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-90e5cf2d92/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-7f270cb1eb/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/inherited.py",
+        "/tmp/cs-decomp/check/Types.lean",
+        "/tmp/cs-decomp/check/Assembly.lean",
+        "/tmp/cs-decomp/check/Children.lean",
+        "/tmp/cs-decomp/check/Child1.lean",
+        "/tmp/cs-decomp/check/Child6.lean",
+        "/tmp/cs-decomp/final/Final.lean"
+      ],
+      "conclusion": "Pins match. The snapshot manifest records project b4d606db1 (= workspace HEAD) and mathlib 25730c7c, and the snapshot Contract.lean equals the workspace Contract.lean and Submission.lean. The parent's frozen type equals the handoff lean_statement byte for byte.\n\nLibrary facts. SimonGMT supplies the needed current-level API:\n- exteriorDerivative = extDeriv and exteriorDerivative_apply;\n- exteriorDerivative_isTestForm and exteriorDerivativeTestOn;\n- GeometricCurrentOn.boundary_apply.\ncurrentEval is the contract's evaluation on test forms. Snapshot mathlib has every analytic tool the children use (exact names in the queries):\n- fderiv_comp_add_left (translation commutes with d);\n- fderiv_continuousAlternatingMap_apply_const_apply and Fin.append_left / append_right (the index identity);\n- MeasurableEmbedding.setIntegral_map, LinearMap.isClosedEmbedding_of_injective and Orthonormal.inner_right_fintype (frame coordinates);\n- measurePreserving_piFinSuccAbove, setIntegral_prod(_swap) and intervalIntegral.integral_eq_sub_of_hasDerivAt (Fubini and FTC).\nμHE[0] = μH[0], so the j = 0 faces are points of mass 1.\n\nReuse. No accepted DAG declaration has the type of any proposed child. The accepted deformation-theorem lemmas cmcdt_cbm_st_slice_integral and cmcdtfrcb_cube_partial_ftc are about open unit cubes in Euclid (k+1) with ContDiff G; here only directional derivatives of slice functions are available. So new names are used, and none collides (dag.json, proof base 77e7ccf). Children inherit the parent's dependencies by exact-name citation (inherited.py):\n- Submission.dimred_cs_sos_mt_interior_product (translate_boundary, slice_identity, slice_deriv);\n- Submission.dimred_cs_sos_mt_frame_measure (frame_box_integral);\n- Submission.dimred_cs_ti_translate_action_hasDerivAt (slice_deriv).\n\nLean checks.\n- All nine child types elaborate after import GMT.Ch07.Submission inside namespace GMT.Ch07 with the contract opens.\n- Final.lean, generated from these exact strings, proves every child and the frozen parent with sorry only in the stubs of the parent's four resolved dependencies.\n- isTestForm_fderiv_apply, flat_extDeriv_split, frame_box_compact and coord_box_ftc have axioms [propext, Classical.choice, Quot.sound].\n- The other children and the parent use only those four stubs and sibling children."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1",
+  "child_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.fderiv_test_form-a1",
+  "subproblem": {
+    "key": "fderiv_test_form",
+    "title": "Directional derivatives of test forms are test forms",
+    "statement": "Let P, q ∈ ℕ, let φ be a differential q-form on ℝ^P (φ : DifferentialForm (Euclid P) q) that is a test form (IsTestForm φ: φ is C^∞ and has compact support), and let v ∈ ℝ^P. Then the q-form z ↦ Dφ(z)[v] := fderiv ℝ φ z v is again a test form.",
+    "lean_statement": "∀ (P q : ℕ) (φ : DifferentialForm (Euclid P) q) (v : Euclid P), IsTestForm φ → IsTestForm (fun z => fderiv ℝ φ z v)",
+    "lean_name": "dimred_cs_sos_mt_cs_isTestForm_fderiv_apply",
+    "depends_on": [],
+    "natural_proof": "Source: the notation paragraph of the parent proof (\"z ↦ Dβ_a(z)[g_a] [is a] test form ... its derivative in a fixed direction ... tsupport Dφ ⊆ tsupport φ\"), written out.\n1. Unfold the hypothesis. IsTestForm φ is IsSmoothForm φ ∧ HasCompactSupport φ, and IsSmoothForm φ is ContDiff ℝ ∞ φ, where ∞ = (⊤ : ℕ∞) (all finite derivatives). Write hs : ContDiff ℝ ∞ φ and hc : HasCompactSupport φ.\n2. The derivative is smooth. Since ∞ + 1 ≤ ∞, ContDiff.fderiv_right applied to hs shows that fderiv ℝ φ : ℝ^P → (ℝ^P →L[ℝ] Λ^q) is ContDiff ℝ ∞.\n3. The directional derivative is smooth. z ↦ fderiv ℝ φ z v applies the C^∞ map z ↦ fderiv ℝ φ z to the constant (C^∞) map z ↦ v. By ContDiff.clm_apply (with contDiff_const) it is ContDiff ℝ ∞, i.e. IsSmoothForm (z ↦ fderiv ℝ φ z v).\n4. Compact support. HasCompactSupport.fderiv turns hc into HasCompactSupport (fderiv ℝ φ). The map L ↦ L v sends 0 to 0, so HasCompactSupport.comp_left yields HasCompactSupport (z ↦ fderiv ℝ φ z v).\n5. Steps 3 and 4 are the two components of IsTestForm (z ↦ fderiv ℝ φ z v). ∎",
+    "proof_key_steps": [
+      "ContDiff.fderiv_right (∞ + 1 ≤ ∞): fderiv ℝ φ is C^∞",
+      "ContDiff.clm_apply with the constant vector v: z ↦ fderiv ℝ φ z v is C^∞",
+      "HasCompactSupport.fderiv, then HasCompactSupport.comp_left (evaluation at v maps 0 to 0)"
+    ]
+  },
+  "audit": {
+    "key": "fderiv_test_form",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Prose and type match. Smoothness follows from differentiating a smooth map and evaluating at the fixed vector; derivative support inclusion supplies compact support. This is a complete, independent shared obligation."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-054a6032bd/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-054a6032bd/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-054a6032bd/parent-supplied-natural-proof.json"
+}
