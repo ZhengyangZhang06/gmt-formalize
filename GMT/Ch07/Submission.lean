@@ -1197,6 +1197,65 @@ theorem Submission.codim1_hcp_af_chart_jacobian_factor : ∀ (P m : ℕ) (M W : 
     Real.sqrt_mul' _ (hpos (hDψ v hv)).le]
   exact mul_comm _ _
 
+/-- **Area formula on a Borel subset of one chart** (Simon Ch. 2, 4.11–4.13).  Let `(V, W, ψ)` be
+a chart of `M` as in (4.1), `E ⊆ W ∩ M` Borel, and `Φ : ℝᴾ → ℝᴾ` a `C¹` map, injective on `E`,
+with `DΦ(x)` injective for `x ∈ E`.  With `ι` the inclusion of `span T_xM` and
+`J^MΦ(x) = √det((DΦ(x) ∘ ι)*(DΦ(x) ∘ ι))`, `Hᵐ(Φ(E)) = ∫_E J^MΦ dHᵐ`.  The coordinate piece
+`F = V ∩ ψ⁻¹(E)` is Borel with `ψ(F) = E`.  The Euclidean area formula for `Φ ∘ ψ` (weight `1`)
+and for `ψ` (weight `J^MΦ`) turns both sides into integrals over `F`, and the integrands agree:
+`J_{Φ∘ψ} = J_ψ · (J^MΦ ∘ ψ)` by the chain rule and the chart Jacobian factorization. -/
+theorem Submission.codim1_hcp_af_chart_area_formula : ∀ (P m : ℕ) (M E W : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (Φ : Euclid P → Euclid P), IsOpen V → IsOpen W → ContDiffOn ℝ 1 ψ V → InjOn ψ V → ψ '' V = W ∩ M → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → MeasurableSet E → E ⊆ W ∩ M → ContDiff ℝ 1 Φ → InjOn Φ E → (∀ x ∈ E, Injective (fderiv ℝ Φ x)) → μHE[m] (Φ '' E) = ∫⁻ x in E, ENNReal.ofReal (Real.sqrt ((((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L ((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det)) ∂μHE[m] := by
+  classical
+  intro P m M E W V ψ Φ hV hW hψ hinj hψV hproper hDψ hE hEWM hΦ hΦinj hDΦ
+  -- Step 1: `F = V ∩ ψ⁻¹(E)` is Borel: on the open set `V`, `ψ` agrees with the Borel map equal
+  -- to `ψ` on `V` and to `0` off `V`
+  have hF : MeasurableSet (V ∩ ψ ⁻¹' E) := by
+    have hψm : Measurable (V.piecewise ψ fun _ => (0 : Euclid P)) :=
+      hψ.continuousOn.measurable_piecewise continuousOn_const hV.measurableSet
+    have hFeq : V ∩ ψ ⁻¹' E = V ∩ V.piecewise ψ (fun _ => (0 : Euclid P)) ⁻¹' E := by
+      ext v
+      simp only [mem_inter_iff, mem_preimage]
+      exact and_congr_right fun hv => by rw [piecewise_eq_of_mem _ _ _ hv]
+    rw [hFeq]
+    exact hV.measurableSet.inter (hψm hE)
+  -- Step 2: `ψ(F) = E`, as `E ⊆ W ∩ M = ψ(V)`; hence `(Φ ∘ ψ)(F) = Φ(E)`
+  have hψF : ψ '' (V ∩ ψ ⁻¹' E) = E := by
+    refine Subset.antisymm (image_subset_iff.2 inter_subset_right) fun x hx => ?_
+    obtain ⟨v, hv, rfl⟩ : x ∈ ψ '' V := hψV ▸ hEWM hx
+    exact ⟨v, ⟨hv, hx⟩, rfl⟩
+  have hΦψF : (Φ ∘ ψ) '' (V ∩ ψ ⁻¹' E) = Φ '' E := by rw [image_comp, hψF]
+  -- Step 3: `ψ` is differentiable on the open set `V`, `Φ` everywhere, and
+  -- `D(Φ ∘ ψ)(v) = DΦ(ψ(v)) ∘ Dψ(v)` (chain rule)
+  have hψd : ∀ v ∈ V, DifferentiableAt ℝ ψ v := fun v hv =>
+    (hψ.differentiableOn one_ne_zero v hv).differentiableAt (hV.mem_nhds hv)
+  have hΦd : Differentiable ℝ Φ := hΦ.differentiable one_ne_zero
+  have hchain : ∀ v ∈ V, fderiv ℝ (Φ ∘ ψ) v = (fderiv ℝ Φ (ψ v)).comp (fderiv ℝ ψ v) :=
+    fun v hv => fderiv_comp v (hΦd (ψ v)) (hψd v hv)
+  -- Step 4: on `F`, `ψ` and `Φ ∘ ψ` are injective with injective derivatives
+  have hinjF : InjOn ψ (V ∩ ψ ⁻¹' E) := hinj.mono inter_subset_left
+  have hΦψinjF : InjOn (Φ ∘ ψ) (V ∩ ψ ⁻¹' E) := fun v hv w hw hvw =>
+    hinjF hv hw (hΦinj hv.2 hw.2 hvw)
+  have hDΦψ : ∀ v ∈ V ∩ ψ ⁻¹' E, Injective (fderiv ℝ (Φ ∘ ψ) v) := fun v hv => by
+    rw [hchain v hv.1, ContinuousLinearMap.coe_comp]
+    exact (hDΦ (ψ v) hv.2).comp (hDψ v hv.1)
+  -- Step 5: the area formula for `Φ ∘ ψ` on `F` with weight `1`: `Hᵐ(Φ(E)) = ∫_F J_{Φ∘ψ}`
+  have h5 := (Submission.codim1_lura_gram_area_formula m P (Φ ∘ ψ)).2 (V ∩ ψ ⁻¹' E) hF
+    (fun v hv => (hΦd (ψ v)).comp v (hψd v hv.1)) hDΦψ hΦψinjF fun _ => 1
+  rw [hΦψF, setLIntegral_one] at h5
+  -- Step 6: the area formula for `ψ` on `F` with weight `J^MΦ`:
+  -- `∫_E J^MΦ dHᵐ = ∫_F J_ψ · (J^MΦ ∘ ψ)`
+  have h6 := (Submission.codim1_lura_gram_area_formula m P ψ).2 (V ∩ ψ ⁻¹' E) hF
+    (fun v hv => hψd v hv.1) (fun v hv => hDψ v hv.1) hinjF fun x => ENNReal.ofReal
+      (Real.sqrt ((((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L
+        ((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det))
+  rw [hψF] at h6
+  rw [h5, h6]
+  -- Steps 7–8: `J_{Φ∘ψ}(v) = J_ψ(v) · J^MΦ(ψ(v))` on `F` (chart Jacobian with `B = DΦ(ψ(v))`)
+  refine setLIntegral_congr_fun hF fun v hv => ?_
+  simp only [mul_one, hchain v hv.1, ContinuousLinearMap.comp_apply]
+  rw [Submission.codim1_hcp_af_chart_jacobian_factor P m M W V ψ (fderiv ℝ Φ (ψ v)) v hV hW hψ
+    hinj hψV hproper hDψ hv.1, ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
