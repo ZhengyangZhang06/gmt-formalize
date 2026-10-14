@@ -451,6 +451,115 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, proof of 5.1, (29)–(30)**: integrable densities on finitely many unit faces
+define a current.  For `p = (ι, b) ∈ s` let `Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}`,
+`E_p = (e_{ι(0)}, …, e_{ι(m)})`, and let `w_p` be integrable on the open unit cube
+`Q₁ ⊆ ℝ^{m+1}`.  As the `e_l` are unit vectors, `|ω(x)(E_p)| ≤ ‖ω(x)‖`, which is bounded because
+`ω` is continuous with compact support; so `y ↦ w_p(y) ω(Φ_p(y))(E_p)` is integrable on `Q₁`, and
+`L(ω) = Σ_{p ∈ s} ∫_{Q₁} w_p(y) ω(Φ_p(y))(E_p) dy` is linear with
+`|L(ω)| ≤ (Σ_{p ∈ s} ∫_{Q₁} |w_p|) δ` whenever `‖ω(x)‖ ≤ δ` for all `x`.  Order-`0` uniform
+convergence on a common compact set, and vanishing off it, give the sequential continuity of
+`L`. -/
+theorem Submission.cmcdtfrfic_current_exists : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (w : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ), (∀ p ∈ s, IntegrableOn (w p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), ∀ p ∈ s, IntegrableOn (fun y => w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) ∧ ∃ D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
+  intro P m s w hw
+  -- the face maps `Φ_p`, the frames `E_p` and the open unit cube `Q₁`
+  let Φ : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → Euclid P := fun p y =>
+    WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)
+  let E : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Fin (m + 1) → Euclid P := fun p j =>
+    EuclideanSpace.single (p.1 j) (1 : ℝ)
+  set Q₁ : Set (Euclid (m + 1)) := {y | ∀ i, 0 < y i ∧ y i < 1}
+  -- `y ↦ ω(Φ_p(y))(E_p)` is continuous
+  have hcont : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      Continuous (ω : DifferentialForm (Euclid P) (m + 1)) :=
+    fun ω => ω.property.1.1.continuous
+  have hΦ : ∀ p, Continuous (Φ p) := fun p =>
+    continuous_const.add (continuous_finsetSum _ fun j _ =>
+      (PiLp.continuous_apply 2 _ j).smul continuous_const)
+  have hh : ∀ (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)) p,
+      Continuous fun y => (ω : DifferentialForm (Euclid P) (m + 1)) (Φ p y) (E p) :=
+    fun ω p => (continuous_eval_const _).comp ((hcont ω).comp (hΦ p))
+  -- `|α(E_p)| ≤ ‖α‖`, the `e_l` being unit vectors
+  have hev : ∀ (α : Covector (Euclid P) (m + 1)) p, ‖α (E p)‖ ≤ ‖α‖ := by
+    intro α p
+    simpa [E, PiLp.norm_single] using α.le_opNorm (E p)
+  -- (I): `w_p` is integrable on `Q₁`, and `y ↦ ω(Φ_p(y))(E_p)` is continuous and bounded
+  have hI : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), ∀ p ∈ s,
+      IntegrableOn (fun y => w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (Φ p y) (E p))
+        Q₁ := by
+    intro ω p hp
+    obtain ⟨C, hC⟩ := ω.property.1.2.exists_bound_of_continuous (hcont ω)
+    exact (hw p hp).mul_bdd (c := C) (hh ω p).aestronglyMeasurable
+      (Eventually.of_forall fun y => (hev _ p).trans (hC _))
+  -- the linear functional `L(ω) = Σ_{p ∈ s} ∫_{Q₁} w_p(y) ω(Φ_p(y))(E_p) dy`
+  let L : TestFormOn (univ : Set (Euclid P)) (m + 1) →ₗ[ℝ] ℝ :=
+    { toFun := fun ω =>
+        ∑ p ∈ s, ∫ y in Q₁, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (Φ p y) (E p)
+      map_add' := by
+        intro ω η
+        rw [← Finset.sum_add_distrib]
+        refine Finset.sum_congr rfl fun p hp => ?_
+        rw [← integral_add (hI ω p hp) (hI η p hp)]
+        refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+        simp only [Submodule.coe_add, Pi.add_apply, ContinuousAlternatingMap.add_apply, mul_add]
+      map_smul' := by
+        intro c ω
+        simp only [RingHom.id_apply, smul_eq_mul, Finset.mul_sum]
+        refine Finset.sum_congr rfl fun p hp => ?_
+        rw [← integral_const_mul]
+        refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+        simp only [Submodule.coe_smul, Pi.smul_apply, ContinuousAlternatingMap.smul_apply,
+          smul_eq_mul]
+        ring }
+  -- `|L(ω)| ≤ A δ` whenever `‖ω(x)‖ ≤ δ` for all `x`, where `A = Σ_{p ∈ s} ∫_{Q₁} |w_p|`
+  set A : ℝ := ∑ p ∈ s, ∫ y in Q₁, |w p y| with hA
+  have hA0 : 0 ≤ A := Finset.sum_nonneg fun p _ => integral_nonneg fun y => abs_nonneg _
+  have hest : ∀ (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)) (δ : ℝ),
+      (∀ x, ‖(ω : DifferentialForm (Euclid P) (m + 1)) x‖ ≤ δ) → |L ω| ≤ A * δ := by
+    intro ω δ hδ
+    have hterm : ∀ p ∈ s,
+        |∫ y in Q₁, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (Φ p y) (E p)| ≤
+          (∫ y in Q₁, |w p y|) * δ := by
+      intro p hp
+      rw [← integral_mul_const δ (fun y => |w p y|)]
+      refine (Real.norm_eq_abs _).symm.le.trans ?_
+      refine norm_integral_le_of_norm_le ((hw p hp).abs.mul_const δ)
+        (Eventually.of_forall fun y => ?_)
+      rw [norm_mul, Real.norm_eq_abs]
+      exact mul_le_mul_of_nonneg_left ((hev _ p).trans (hδ _)) (abs_nonneg _)
+    calc |L ω|
+        ≤ ∑ p ∈ s, |∫ y in Q₁, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (Φ p y) (E p)| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ p ∈ s, (∫ y in Q₁, |w p y|) * δ := Finset.sum_le_sum hterm
+      _ = A * δ := by rw [hA, Finset.sum_mul]
+  -- sequential continuity: order-`0` uniform convergence on the common compact set `K`
+  have hseq : ∀ (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) (m + 1)),
+      TestFormOnConverges ωs 0 → Tendsto (fun j => L (ωs j)) atTop (𝓝 0) := by
+    intro ωs hconv
+    obtain ⟨K, -, -, hsupp, -, hunif⟩ := hconv
+    have h0 := hunif 0
+    rw [Metric.tendstoUniformlyOn_iff] at h0
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    have hδ : 0 < ε / (A + 1) := div_pos hε (by linarith)
+    obtain ⟨N, hN⟩ := eventually_atTop.1 (h0 _ hδ)
+    refine ⟨N, fun j hj => ?_⟩
+    have hbd : ∀ x, ‖(ωs j : DifferentialForm (Euclid P) (m + 1)) x‖ ≤ ε / (A + 1) := by
+      intro x
+      by_cases hx : x ∈ K
+      · have := hN j hj x hx
+        rw [iteratedFDeriv_zero_eq_comp, iteratedFDeriv_zero_eq_comp] at this
+        simp only [Function.comp_apply, Submodule.coe_zero, Pi.zero_apply, map_zero,
+          dist_zero_left, LinearIsometryEquiv.norm_map] at this
+        exact this.le
+      · rw [image_eq_zero_of_notMem_tsupport (fun h => hx (hsupp j h)), norm_zero]
+        exact hδ.le
+    rw [Real.dist_eq, sub_zero]
+    calc |L (ωs j)| ≤ A * (ε / (A + 1)) := hest (ωs j) _ hbd
+      _ < ε := by
+        rw [mul_div_assoc', div_lt_iff₀ (by linarith)]
+        nlinarith
+  exact ⟨hI, ⟨L, hseq⟩, fun ω => rfl⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
