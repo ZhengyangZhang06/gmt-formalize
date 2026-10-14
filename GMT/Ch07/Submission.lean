@@ -866,6 +866,70 @@ theorem Submission.dgoj_covector_eq_det_mul_of_mem_span : ∀ (P n : ℕ) (τ b 
     rfl
   rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
 
+/-- **Normalisation of a constant unit `n`-vector** (step 5 of the constant-planes lemma in the
+proof of the closure theorem, Simon Ch. 6, 3.11, used for 7.2.4; Simon (6.1.1), (6.1.15)): let
+`ζ₀ ∈ Λₙ(ℝᴾ)`, `n = d + 1`, satisfy `|ζ₀(β)| ≤ |β|_E` for every `n`-covector `β`, `ζ₀(β₁) = 1` for
+some `β₁` with `|β₁|_E ≤ 1`, and `ζ₀(β) = ζ₀(β ∘ p_V)` for a subspace `V` with `dim V ≤ n`.  Then
+`dim V = n` and `ζ₀(β) = β(v₀, …, v_d)` for an orthonormal frame `v` of `V`.  If `dim V < n` then
+`β₁ ∘ p_V = 0`, so `ζ₀(β₁) = 0`.  Otherwise let `v` be an orthonormal frame of `V` and `β₂` a
+covector with `|β₂|_E = 1`, `β₂(v) = 1`.  As every `p_V u_j` lies in `V = span v`,
+`β(p_V u) = det(⟨v_i, p_V u_j⟩) β(v) = β(v) β₂(p_V u)`, so `ζ₀(β) = β(v) s` with `s = ζ₀(β₂)`.
+Then `|s| ≤ |β₂|_E = 1` and `1 = |β₁(v)| |s| ≤ |s|`, as `|β₁(v)| ≤ |β₁|_E ≤ 1`; so `s = ±1`, and for
+`s = −1` the frame with `v₀` negated works. -/
+theorem Submission.cbr_ci_cp_eval_eq_orthonormal_frame : ∀ (P d : ℕ) (ζ₀ : MultiVector P (d + 1)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V ≤ d + 1 → (∀ β : Covector (Euclid P) (d + 1), |ζ₀ β| ≤ covectorEuclideanNorm β) → (∃ β : Covector (Euclid P) (d + 1), covectorEuclideanNorm β ≤ 1 ∧ ζ₀ β = 1) → (∀ β : Covector (Euclid P) (d + 1), ζ₀ β = ζ₀ (β.compContinuousLinearMap V.starProjection)) → Module.finrank ℝ V = d + 1 ∧ ∃ v : Fin (d + 1) → Euclid P, Orthonormal ℝ v ∧ Submodule.span ℝ (Set.range v) = V ∧ ∀ β : Covector (Euclid P) (d + 1), ζ₀ β = β v := by
+  intro P d ζ₀ V hdim hle hβ₁ hproj
+  obtain ⟨β₁, hβ₁, hζβ₁⟩ := hβ₁
+  -- Step 1: `dim V = d + 1`; otherwise `β₁ ∘ p_V = 0` and `1 = ζ₀(β₁) = ζ₀(β₁ ∘ p_V) = ζ₀(0) = 0`
+  have hrank : Module.finrank ℝ V = d + 1 := by
+    refine le_antisymm hdim (not_lt.mp fun hlt => ?_)
+    have h0 : ζ₀ β₁ = 0 := by
+      rw [hproj β₁,
+        Submission.cbr_ci_cp_comp_starProjection_eq_zero_of_finrank_lt P (d + 1) V hlt β₁,
+        map_zero]
+    rw [hζβ₁] at h0
+    exact one_ne_zero h0
+  -- Step 2: an orthonormal frame `v` of `V`
+  obtain ⟨v, hv, hspan⟩ :=
+    Submission.cbr_ci_cp_exists_orthonormal_frame_of_finrank_eq P (d + 1) V hrank
+  -- Step 4: a covector `β₂` with `|β₂|_E = 1` and `β₂(v) = 1`
+  obtain ⟨β₂, hβ₂, hβ₂v⟩ :=
+    Submission.regcomp_exists_covector_eval_orthonormal_eq_one P (d + 1) v hv
+  -- Step 3: `p_V u_j ∈ V = span v`, so `β(p_V u) = det(⟨v_i, p_V u_j⟩) β(v) = β(v) β₂(p_V u)`
+  have hcomp : ∀ β : Covector (Euclid P) (d + 1),
+      β.compContinuousLinearMap V.starProjection =
+        β v • β₂.compContinuousLinearMap V.starProjection := by
+    intro β
+    ext u
+    have hmem : ∀ j, (V.starProjection ∘ u) j ∈ Submodule.span ℝ (Set.range v) := fun j => by
+      rw [hspan]
+      exact V.starProjection_apply_mem (u j)
+    rw [ContinuousAlternatingMap.smul_apply,
+      ContinuousAlternatingMap.compContinuousLinearMap_apply,
+      ContinuousAlternatingMap.compContinuousLinearMap_apply,
+      Submission.dgoj_covector_eq_det_mul_of_mem_span P (d + 1) v _ hv hmem β,
+      Submission.dgoj_covector_eq_det_mul_of_mem_span P (d + 1) v _ hv hmem β₂, hβ₂v,
+      smul_eq_mul]
+    ring
+  -- Step 4: `ζ₀(β) = ζ₀(β ∘ p_V) = β(v) ζ₀(β₂ ∘ p_V) = β(v) s` with `s = ζ₀(β₂)`
+  have hζ : ∀ β : Covector (Euclid P) (d + 1), ζ₀ β = β v * ζ₀ β₂ := by
+    intro β
+    rw [hproj β, hcomp β, map_smul, ← hproj β₂, smul_eq_mul]
+  -- Step 5: `|s| ≤ |β₂|_E = 1`
+  have hs₁ : |ζ₀ β₂| ≤ 1 := (hle β₂).trans_eq hβ₂
+  -- Step 6: `1 = |β₁(v)| |s| ≤ |s|`, as `|β₁(v)| ≤ |β₁|_E ≤ 1`
+  have hs₂ : 1 ≤ |ζ₀ β₂| := by
+    have hβ₁v : |β₁ v| ≤ 1 :=
+      (Submission.regcomp_covector_eval_orthonormal_le P (d + 1) β₁ v hv).trans hβ₁
+    calc (1 : ℝ) = |β₁ v| * |ζ₀ β₂| := by rw [← abs_mul, ← hζ β₁, hζβ₁, abs_one]
+      _ ≤ 1 * |ζ₀ β₂| := mul_le_mul_of_nonneg_right hβ₁v (abs_nonneg _)
+      _ = |ζ₀ β₂| := one_mul _
+  -- Step 7: `s = ±1`; for `s = −1` negate `v₀`
+  refine ⟨hrank, ?_⟩
+  rcases (abs_eq zero_le_one).mp (le_antisymm hs₁ hs₂) with hs | hs
+  · exact ⟨v, hv, hspan, fun β => by rw [hζ β, hs, mul_one]⟩
+  · obtain ⟨w, hw, hwspan, hwβ⟩ := Submission.cbr_ci_cp_exists_orthonormal_frame_eval_neg P d v hv
+    exact ⟨w, hw, hwspan.trans hspan, fun β => by rw [hζ β, hs, hwβ β, mul_neg_one]⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
