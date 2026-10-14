@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.covector_bounds-a1.pullback_eq-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.covector_bounds-a1",
+  "depth": 6,
+  "title": "Pull-back by the coordinate map of an orthonormal frame preserves the Euclidean coefficient norm (part (b))",
+  "statement": "Let P, n ∈ ℕ, let v = (v_0, …, v_{n−1}) be an orthonormal family in ℝ^P = Euclid P, and let pL : ℝ^P → ℝⁿ be a continuous linear map with (pL x)_i = ⟨v_i, x⟩ for all x ∈ ℝ^P and i ∈ Fin n. Let l ∈ ℕ and let γ be an l-covector on ℝⁿ (Covector (Euclid n) l). Then the pulled-back covector γ∘pL = γ.compContinuousLinearMap pL, (γ∘pL)(u_1, …, u_l) = γ(pL u_1, …, pL u_l), satisfies |γ∘pL|_E = |γ|_E. Here |·|_E = covectorEuclideanNorm on Covector (Euclid P) l and on Covector (Euclid n) l respectively.",
+  "lean_statement": "∀ (P n : ℕ) (v : Fin n → Euclid P) (pL : Euclid P →L[ℝ] Euclid n), Orthonormal ℝ v → (∀ (x : Euclid P) (i : Fin n), pL x i = inner ℝ (v i) x) → ∀ (l : ℕ) (γ : Covector (Euclid n) l), covectorEuclideanNorm (γ.compContinuousLinearMap pL) = covectorEuclideanNorm γ",
+  "lean_name": "cbr_ci_pw_cb_pullback_covectorEuclideanNorm_eq",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d-a1",
+      "result_commit": "16144a475b272196ba8b2bd15f104028282dbcfc",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-037aa5098f-a1"
+}

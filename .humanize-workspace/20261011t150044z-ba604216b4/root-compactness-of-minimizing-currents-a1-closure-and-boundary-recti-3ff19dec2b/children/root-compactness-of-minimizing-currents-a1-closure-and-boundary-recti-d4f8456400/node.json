@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.projection_reduction-a1.det_covector-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.projection_reduction-a1",
+  "depth": 6,
+  "title": "The determinant n-covector u ↦ det(⟨g_b, u_a⟩)",
+  "statement": "Let P, n ∈ ℕ and g_0, …, g_{n−1} ∈ ℝ^P. There is an n-covector γ on ℝ^P (a continuous alternating n-linear form, Covector (Euclid P) n) such that γ(u_0, …, u_{n−1}) = det(⟨g_b, u_a⟩)_{a,b ∈ Fin n} for all u_0, …, u_{n−1} ∈ ℝ^P. The matrix has entry ⟨g_b, u_a⟩ in row a and column b; for n = 0 the empty determinant is 1.",
+  "lean_statement": "∀ (P n : ℕ) (g : Fin n → Euclid P), ∃ γ : Covector (Euclid P) n, ∀ u : Fin n → Euclid P, γ u = Matrix.det (Matrix.of fun a b => inner ℝ (g b) (u a))",
+  "lean_name": "cbr_ci_cp_pr_inner_det_covector",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d4f8456400-a1"
+}
