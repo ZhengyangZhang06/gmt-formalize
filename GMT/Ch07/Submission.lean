@@ -3361,6 +3361,42 @@ theorem Submission.cbr_ci_bl_cvl_massOn_le : ∀ (P n : ℕ) (X : GeometricCurre
     _ ≤ ENNReal.ofReal (s * (ν' G).toReal) + ENNReal.ofReal E.toReal := ENNReal.ofReal_add_le
     _ = ENNReal.ofReal s * ν' G + E := by
         rw [ENNReal.ofReal_mul hs, ENNReal.ofReal_toReal hGfin, ENNReal.ofReal_toReal hEtop]
+/-- **A limsup bound on a compact set through its closed thickenings** (steps 5 and 6 of the proof
+of `Submission.cbr_ci_bl_constant_vector_limit`, where `a_k = μ_k(K)` and `c = s`).  Write
+`K_r = cthickening r K`; it is compact.  For `r > 0`, since `c ≠ ∞`,
+`limsup_k c ν_k(K_r) = c limsup_k ν_k(K_r) ≤ c ν(K_r)`.  Given `d > c ν(K_r)`, pick
+`c ν(K_r) < b < d`; eventually `c ν_k(K_r) < b` and `v_k < d − b`, so `a_k ≤ b + (d − b) = d`.
+Hence `limsup_k a_k ≤ c ν(K_r)` for every `r > 0`.  As `K` is closed and `ν(K_1) < ∞`,
+`ν(K_r) → ν(K)` as `r ↓ 0`, and letting `r ↓ 0` gives `limsup_k a_k ≤ c ν(K)`. -/
+theorem Submission.cbr_ci_bl_cvl_limsup_le_of_cthickening : ∀ (P : ℕ) (a : ℕ → ℝ≥0∞) (νs : ℕ → Measure (Euclid P)) (ν : Measure (Euclid P)) (c : ℝ≥0∞) (K : Set (Euclid P)), IsCompact K → c ≠ ∞ → (∀ K' : Set (Euclid P), IsCompact K' → ν K' < ∞) → (∀ K' : Set (Euclid P), IsCompact K' → limsup (fun k => νs k K') atTop ≤ ν K') → (∀ r : ℝ, 0 < r → ∃ v : ℕ → ℝ≥0∞, Tendsto v atTop (𝓝 0) ∧ ∀ k, a k ≤ c * νs k (cthickening r K) + v k) → limsup a atTop ≤ c * ν K := by
+  intro P a νs ν c K hK hc hνK hlim hv
+  -- Steps 1–2: `limsup a ≤ c ν(K_r)` for every `r > 0`, where `K_r = cthickening r K`
+  have hr : ∀ r : ℝ, 0 < r → limsup a atTop ≤ c * ν (cthickening r K) := by
+    intro r hr
+    obtain ⟨v, hv0, hav⟩ := hv r hr
+    -- Step 1: `limsup_k c ν_k(K_r) = c limsup_k ν_k(K_r) ≤ c ν(K_r)`, as `K_r` is compact
+    have hmain : limsup (fun k => c * νs k (cthickening r K)) atTop ≤ c * ν (cthickening r K) := by
+      rw [ENNReal.limsup_const_mul_of_ne_top hc]
+      gcongr
+      exact hlim (cthickening r K) hK.cthickening
+    -- Step 2: for `d > c ν(K_r)` pick `c ν(K_r) < b < d`; eventually
+    -- `a_k ≤ c ν_k(K_r) + v_k ≤ b + (d - b) = d`
+    refine le_of_forall_gt_imp_ge_of_dense fun d hd => ?_
+    obtain ⟨b, hb, hbd⟩ := exists_between hd
+    have h1 : ∀ᶠ k in atTop, c * νs k (cthickening r K) < b :=
+      eventually_lt_of_limsup_lt (hmain.trans_lt hb)
+    have h2 : ∀ᶠ k in atTop, v k < d - b := (tendsto_order.1 hv0).2 _ (tsub_pos_of_lt hbd)
+    refine limsup_le_of_le (h := ?_)
+    filter_upwards [h1, h2] with k hk1 hk2
+    calc a k ≤ c * νs k (cthickening r K) + v k := hav k
+      _ ≤ b + (d - b) := add_le_add hk1.le hk2.le
+      _ = d := add_tsub_cancel_of_le hbd.le
+  -- Step 3: `c ν(K_r) → c ν(K)` as `r ↓ 0`, since `K` is closed and `ν(K_1) < ∞`
+  have htend : Tendsto (fun r => c * ν (cthickening r K)) (𝓝[>] 0) (𝓝 (c * ν K)) :=
+    (ENNReal.Tendsto.const_mul (tendsto_measure_cthickening_of_isClosed
+      ⟨1, one_pos, (hνK _ hK.cthickening).ne⟩ hK.isClosed) (Or.inr hc)).mono_left
+      nhdsWithin_le_nhds
+  exact ge_of_tendsto htend (eventually_nhdsWithin_of_forall hr)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
