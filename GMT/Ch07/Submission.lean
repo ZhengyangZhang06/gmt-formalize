@@ -500,6 +500,42 @@ theorem Submission.idtp_fons_cr_nusc_flat_eventually : ∀ (P : ℕ) (S Dset : S
     ge_of_tendsto' ((hg.tendsto d).comp hdχ) fun m => (hygt (χ m)).le
   linarith
 
+/-- **Simon 7.3.3(2), proof (p. 192)**: the claim that if `y ∈ R_β(S)`, `y_j ∈ spt S_j` and
+`y_j → y`, then `y_j ∈ R_β(S_j)` for all large `j`, for sets.  Let the `D_k` exhaust `D` on
+compact sets, and let every subsequential limit in `D` of points of the `S_k` lie in `S`.  If `w` is
+`β`-flat for `(S, D)` with witness `(ρ, Q, s)`, `σ` is strictly increasing and `v_i → w`, then `v_i`
+is `β`-flat for `(S_{σ(i)}, D_{σ(i)})` for all large `i`, with witness `(ρ', Q, τ)`, where
+`ρ' = (ρ + max (s/β) 0)/2` and `τ = (s + βρ')/2`.  With `η = (ρ - ρ')/2`, the compact ball
+`B̄_{ρ'+η}(w) ⊆ B_ρ(w) ⊆ D` lies in `D_{σ(i)}` for large `i` and contains `B_{ρ'}(v_i)` once
+`|v_i - w| < η`; the bound `τ` on `B_{ρ'}(v_i)` is `idtp_fons_cr_nusc_flat_eventually`. -/
+theorem Submission.idtp_fons_cr_nusc_flat_point_persists : ∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)) (Ss Ds : ℕ → Set (Euclid P)), 0 < β → (∀ K : Set (Euclid P), IsCompact K → K ⊆ Dset → ∀ᶠ k in atTop, K ⊆ Ds k) → (∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub → (∀ k, z k ∈ Ss (sub k)) → Tendsto z atTop (𝓝 x) → x ∈ Dset → x ∈ S) → ∀ w : Euclid P, (∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s) → ∀ (σ : ℕ → ℕ) (v : ℕ → Euclid P), StrictMono σ → Tendsto v atTop (𝓝 w) → ∀ᶠ i in atTop, ∃ ρ : ℝ, 0 < ρ ∧ ball (v i) ρ ⊆ Ds (σ i) ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ Ss (σ i), y ∈ ball (v i) ρ → ‖(y - v i) - Q.starProjection (y - v i)‖ ≤ s := by
+  rintro P n β S Dset Ss Ds hβ hE hH w ⟨ρ, hρ, hρD, Q, hQ, s, hs, hflat⟩ σ v hσ hv
+  -- the radius `ρ' = (ρ + max (s/β) 0)/2 ∈ (0, ρ)` with `s < βρ'`
+  have hsβ : s / β < ρ := (div_lt_iff₀' hβ).2 hs
+  have hmρ : max (s / β) 0 < ρ := max_lt hsβ hρ
+  have hm0 : 0 ≤ max (s / β) 0 := le_max_right _ _
+  have hsm : s / β ≤ max (s / β) 0 := le_max_left _ _
+  obtain ⟨ρ', hρ'0, hρ'ρ, hsρ'⟩ : ∃ ρ' : ℝ, 0 < ρ' ∧ ρ' < ρ ∧ s < β * ρ' :=
+    ⟨(ρ + max (s / β) 0) / 2, by linarith, by linarith,
+      (div_lt_iff₀' hβ).1 (by linarith)⟩
+  -- the constant `τ = (s + βρ')/2 ∈ (s, βρ')` and the margin `η = (ρ - ρ')/2`
+  obtain ⟨τ, hsτ, hτ⟩ : ∃ τ : ℝ, s < τ ∧ τ < β * ρ' :=
+    ⟨(s + β * ρ') / 2, by linarith, by linarith⟩
+  obtain ⟨η, hη, hρ'η⟩ : ∃ η : ℝ, 0 < η ∧ ρ' + η < ρ := ⟨(ρ - ρ') / 2, by linarith, by linarith⟩
+  -- `B̄_{ρ'+η}(w)` is a compact subset of `B_ρ(w) ⊆ D`, so it lies in `D_{σ(i)}` for large `i`
+  have hK : closedBall w (ρ' + η) ⊆ Dset := (closedBall_subset_ball hρ'η).trans hρD
+  have hKD : ∀ᶠ i in atTop, closedBall w (ρ' + η) ⊆ Ds (σ i) :=
+    hσ.tendsto_atTop.eventually (hE _ (isCompact_closedBall w (ρ' + η)) hK)
+  have hvw : ∀ᶠ i in atTop, dist (v i) w < η := Metric.tendsto_nhds.1 hv η hη
+  -- flatness with constant `τ` on `B_{ρ'}(v_i)` for large `i`
+  have hfl := Submission.idtp_fons_cr_nusc_flat_eventually P S Dset Ss hH w ρ ρ' s τ Q hρ'ρ hρD
+    hsτ hflat σ v hσ hv
+  -- `(ρ', Q, τ)` witnesses that `v_i` is `β`-flat for `(S_{σ(i)}, D_{σ(i)})`
+  filter_upwards [hKD, hvw, hfl] with i hKi hvi hfi
+  refine ⟨ρ', hρ'0, fun x hx => hKi ?_, Q, hQ, τ, hτ, hfi⟩
+  have hxv : dist x (v i) < ρ' := mem_ball.1 hx
+  exact mem_closedBall.2 (by linarith [dist_triangle x (v i) w])
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
