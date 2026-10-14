@@ -1223,6 +1223,54 @@ theorem Submission.codim1_ac_saf_chart_gram_factor : ∀ (P m r : ℕ) (N W : Se
   rw [hchain]
   simp only [ContinuousLinearMap.comp_apply]
   rw [hmul, hstd, Real.sqrt_mul' _ hpos.le]
+/-- **Gluing a change of variables over a countable chart cover** (Simon Ch. 2, 4.11–4.13).  Let
+`Φ : ℝᴾ → ℝᴾ` be continuous and injective, and let every `y ∈ N` have an open `W ∋ y` with
+`∫_{Φ(B)} g dμ = ∫_B w · g ∘ Φ dμ` for all Borel `B ⊆ W ∩ N` and all `g ≥ 0`.  Then the same
+holds for every Borel `B ⊆ N`.  By Lusin–Souslin, `Φ` maps Borel sets to Borel sets.  Countably
+many `W_{y_k}` cover `N` (Lindelöf); the disjointed pieces `B_k ⊆ W_{y_k} ∩ N` of `B ∩ W_{y_k}`
+are Borel with union `B`, and the `Φ(B_k)` are disjoint with union `Φ(B)`.  Both sides are
+countably additive over disjoint Borel sets. -/
+theorem Submission.codim1_ac_saf_lintegral_image_of_local : ∀ (P : ℕ) (μ : Measure (Euclid P)) (N : Set (Euclid P)) (Φ : Euclid P → Euclid P) (w : Euclid P → ℝ≥0∞), Continuous Φ → Injective Φ → (∀ y ∈ N, ∃ W : Set (Euclid P), IsOpen W ∧ y ∈ W ∧ ∀ B : Set (Euclid P), B ⊆ W ∩ N → MeasurableSet B → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ z in Φ '' B, g z ∂μ = ∫⁻ x in B, w x * g (Φ x) ∂μ) → ∀ B : Set (Euclid P), B ⊆ N → MeasurableSet B → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ z in Φ '' B, g z ∂μ = ∫⁻ x in B, w x * g (Φ x) ∂μ := by
+  intro P μ N Φ w hΦc hΦinj hloc B hBN hB g
+  classical
+  -- Lusin–Souslin: `Φ` is continuous and injective on the Polish space `ℝᴾ`
+  have hemb : MeasurableEmbedding Φ := hΦc.measurableEmbedding hΦinj
+  -- `N = ∅` forces `B = ∅`, and both sides vanish
+  rcases N.eq_empty_or_nonempty with hN0 | hNne
+  · have hB0 : B = ∅ := subset_empty_iff.1 (hN0 ▸ hBN)
+    subst hB0
+    simp
+  -- countably many of the neighbourhoods `W_y`, `y ∈ N`, cover `N` (Lindelöf)
+  choose! Wf hWo hyW hform using hloc
+  have : Nonempty N := hNne.to_subtype
+  obtain ⟨j, hj⟩ := (HereditarilyLindelofSpace.isLindelof N).indexed_countable_subcover
+    (fun y : N => Wf y) (fun y => hWo y y.2) (fun y hy => mem_iUnion.2 ⟨⟨y, hy⟩, hyW y hy⟩)
+  -- disjoint Borel pieces `B_k ⊆ W_{y_k} ∩ N` of `B ∩ W_{y_k}` with union `B`
+  set S : ℕ → Set (Euclid P) := fun k => B ∩ Wf (j k)
+  set D : ℕ → Set (Euclid P) := disjointed S with hDdef
+  have hDm : ∀ k, MeasurableSet (D k) :=
+    MeasurableSet.disjointed (fun k => hB.inter (hWo _ (j k).2).measurableSet)
+  have hDdisj : Pairwise (Disjoint on D) := disjoint_disjointed S
+  have hDU : ⋃ k, D k = B := by
+    rw [hDdef, iUnion_disjointed]
+    apply Subset.antisymm
+    · exact iUnion_subset fun k => inter_subset_left
+    · intro x hx
+      obtain ⟨k, hk⟩ := mem_iUnion.1 (hj (hBN hx))
+      exact mem_iUnion.2 ⟨k, hx, hk⟩
+  have hDsub : ∀ k, D k ⊆ Wf (j k) ∩ N := fun k x hx =>
+    ⟨(disjointed_subset S k hx).2, hBN (disjointed_subset S k hx).1⟩
+  -- `Φ` is injective, so the Borel images `Φ(B_k)` are disjoint
+  have hImDisj : Pairwise (Disjoint on fun k => Φ '' D k) := fun a b hab =>
+    (hDdisj hab).image hΦinj.injOn (subset_univ _) (subset_univ _)
+  -- countable additivity on both sides, and the local formula on each piece
+  calc ∫⁻ z in Φ '' B, g z ∂μ = ∫⁻ z in ⋃ k, Φ '' D k, g z ∂μ := by rw [← image_iUnion, hDU]
+    _ = ∑' k, ∫⁻ z in Φ '' D k, g z ∂μ :=
+        lintegral_iUnion (fun k => hemb.measurableSet_image.2 (hDm k)) hImDisj g
+    _ = ∑' k, ∫⁻ x in D k, w x * g (Φ x) ∂μ := by
+        congr 1; funext k; exact hform (j k) (j k).2 (D k) (hDsub k) (hDm k) g
+    _ = ∫⁻ x in ⋃ k, D k, w x * g (Φ x) ∂μ := (lintegral_iUnion hDm hDdisj _).symm
+    _ = ∫⁻ x in B, w x * g (Φ x) ∂μ := by rw [hDU]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
