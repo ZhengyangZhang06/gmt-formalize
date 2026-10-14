@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d468ab347fd3500a8026c1202d532ea26c6e65c3e74e8ca5c19611494f65dd1f",
+  "git_delta": {
+    "base_commit": "bafacaf28ca98b05d12a5d9235c8b43929855945",
+    "candidate_commit": "70dfc4afaf8bbb27f68836d1362faa17cf34296a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_stab_variation_field",
+    "diff_sha256": "e23b9a2d09a9377311c679fc801ad0d3a37bd8ed3ee3602a38b4b47b37c28229",
+    "source_sha256": "724ef33f0f77c2b02ca39f6ca56e88f540453457065a9a5429ccf74caa12ab08",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_stab_variation_field",
+      "statement": "∀ (P : ℕ) (U O M C : Set (Euclid P)) (ν : Euclid P → Euclid P) (ζ : Euclid P → ℝ), IsOpen U → IsOpen O → M ⊆ U → M ⊆ O → ContDiffOn ℝ (⊤ : ℕ∞) ν O → (∀ x ∈ M, ‖ν x‖ = 1) → ContDiff ℝ (⊤ : ℕ∞) ζ → IsCompact C → C ⊆ M → (∀ x ∈ M, x ∉ C → ζ x = 0) → ∃ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z ∧ HasCompactSupport Z ∧ tsupport Z ⊆ U ∧ (∀ x ∈ M, Z x = ζ x • ν x) ∧ (∀ x ∈ M, ∀ τ ∈ Submodule.span ℝ (tangentSpace M x), fderiv ℝ Z x τ = fderiv ℝ ζ x τ • ν x + ζ x • fderiv ℝ ν x τ) ∧ (∀ x ∈ M, x ∉ tsupport Z → ζ x = 0 ∧ ∀ τ ∈ Submodule.span ℝ (tangentSpace M x), fderiv ℝ ζ x τ = 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
