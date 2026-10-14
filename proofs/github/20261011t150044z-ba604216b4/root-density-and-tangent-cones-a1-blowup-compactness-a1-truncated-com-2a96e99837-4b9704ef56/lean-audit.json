@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "97c7d6781fb458761f2b2ded2b1da904eb719fb1918fdb211be6c135d158ad91",
+  "git_delta": {
+    "base_commit": "83cc3fd73cbbd51eacb6692981643a2542a9346b",
+    "candidate_commit": "7c73c5e7f677b71b39458592f9757405059bef82",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_tc_wc_dense_extension",
+    "diff_sha256": "21fc5c95a9694bb94d634d5c622dfea050b6dbaf9fd9c9302960d10154133bdb",
+    "source_sha256": "29bb54365970a22b5c9ab9244131dbb48be740d05f744fd893e9ef686ae86e2c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_tc_wc_dense_extension",
+      "statement": "∀ (P n : ℕ) (S : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n) (D : Set (TestFormOn (univ : Set (Euclid P)) n)), (∀ K : Set (Euclid P), IsCompact K → ∃ c : ℝ, 0 ≤ c ∧ ∀ (i : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n) (s : ℝ), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ s) → |S i ω| ≤ c * s) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ (K : Set (Euclid P)) (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n), IsCompact K ∧ tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K ∧ (∀ k, ωs k ∈ D) ∧ (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ K) ∧ TendstoUniformly (fun k x => (ωs k : DifferentialForm (Euclid P) n) x) (ω : DifferentialForm (Euclid P) n) atTop) → (∀ δ ∈ D, ∃ L : ℝ, Tendsto (fun i => S i δ) atTop (𝓝 L)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ L : ℝ, Tendsto (fun i => S i ω) atTop (𝓝 L)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
