@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.fundamental_lemma-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1",
+  "depth": 6,
+  "title": "Fundamental lemma of the calculus of variations on a set of positive local measure (parent step 7c)",
+  "statement": "Vanishing from zero weighted integrals. Data: P ∈ ℕ; a (Borel) measure μ on ℝ^P; U, M ⊆ ℝ^P; h : ℝ^P → ℝ. Hypotheses: U is open; M ⊆ U; M is measurable; h is continuous on M; μ(M ∩ K) < ∞ for every compact K ⊆ U; μ(M ∩ B_s(x)) > 0 for every x ∈ M and every s > 0 (B_s(x) the open ball); and ∫_M φ·h dμ = 0 for every C^∞ function φ : ℝ^P → ℝ with compact support and tsupport φ ⊆ U. Conclusion: h(x) = 0 for every x ∈ M.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (U M : Set (Euclid P)) (h : Euclid P → ℝ), IsOpen U → M ⊆ U → MeasurableSet M → ContinuousOn h M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ (M ∩ K) ≠ ∞) → (∀ x ∈ M, ∀ s : ℝ, 0 < s → 0 < μ (M ∩ ball x s)) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in M, φ x * h x ∂μ = 0) → ∀ x ∈ M, h x = 0",
+  "lean_name": "codim1_hcp_un_fundamental_lemma",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-fcfbbabdfa-a1"
+}

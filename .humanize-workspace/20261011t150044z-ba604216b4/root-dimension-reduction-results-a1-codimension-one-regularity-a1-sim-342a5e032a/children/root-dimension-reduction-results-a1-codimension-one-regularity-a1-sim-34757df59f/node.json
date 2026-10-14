@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.orientation_normal-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1",
+  "depth": 6,
+  "title": "The orientation of a hypersurface of A₀ defines a continuous unit normal in A₀ (parent step 3)",
+  "statement": "Continuous unit normal from an orientation. Data: P, m ∈ ℕ; a linear subspace A₀ ⊆ ℝ^P with dim A₀ = m + 1; M ⊆ ℝ^P; ξ : ℝ^P → Λ_m(ℝ^P) (MultiVector P m, the dual of the m-covectors). Hypotheses: tangentSpace M x ⊆ A₀ for every x ∈ M; ξ is an orientation of M (IsOrientation m M ξ: ξ is continuous on M, and for every x ∈ M there are a linear subspace Q with underlying set tangentSpace M x and an orthonormal family τ = (τ_1, …, τ_m) spanning Q such that ξ(x)(α) = α(τ) for every m-covector α, or ξ(x)(α) = −α(τ) for every α). Conclusion: there is ν₀ : ℝ^P → ℝ^P, continuous on M, such that for every x ∈ M: ν₀(x) ∈ A₀, |ν₀(x)| = 1 and ν₀(x)·v = 0 for every v ∈ tangentSpace M x.",
+  "lean_statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), Module.finrank ℝ A₀ = m + 1 → (∀ x ∈ M, tangentSpace M x ⊆ (A₀ : Set (Euclid P))) → IsOrientation m M ξ → ∃ ν₀ : Euclid P → Euclid P, ContinuousOn ν₀ M ∧ ∀ x ∈ M, ν₀ x ∈ A₀ ∧ ‖ν₀ x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν₀ x) v = 0",
+  "lean_name": "codim1_hcp_un_orientation_normal",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.cross_product-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.cross_product-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-34757df59f-a1"
+}
