@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1.tangent_fderiv-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.simons_cone-a1",
+  "depth": 6,
+  "title": "Tangential derivatives are well defined: fderivWithin agrees with any derivative within M on span(tangentSpace M x)",
+  "statement": "Let P ∈ ℕ, E a real normed space, M ⊆ ℝ^P, f : ℝ^P → E, f' : ℝ^P →L[ℝ] E and x ∈ ℝ^P. If f has derivative f' within M at x (HasFDerivWithinAt f f' M x), then fderivWithin ℝ f M x v = f' v for every v in the linear span of tangentSpace M x (the velocities γ'(0) of curves γ, C¹ on (−1,1), with γ((−1,1)) ⊆ M and γ(0) = x).",
+  "lean_statement": "∀ (P : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (M : Set (Euclid P)) (f : Euclid P → E) (f' : Euclid P →L[ℝ] E) (x : Euclid P), HasFDerivWithinAt f f' M x → ∀ v ∈ Submodule.span ℝ (tangentSpace M x), fderivWithin ℝ f M x v = f' v",
+  "lean_name": "codim1_hcp_sc_fderivWithin_tangent_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-3ee0044a63-a1"
+}
