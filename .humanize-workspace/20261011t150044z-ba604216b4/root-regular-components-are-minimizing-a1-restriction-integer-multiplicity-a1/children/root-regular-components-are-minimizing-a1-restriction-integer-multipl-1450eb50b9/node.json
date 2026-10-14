@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1.action_integrable-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1",
+  "depth": 3,
+  "title": "Integrability of the action integrand of an integer multiplicity triple",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, and let R = (C, θ, ξ) be an integer multiplicity triple in U (IMRep U n). That is:\n- C = R.carrier is Borel and C ⊆ U;\n- θ = R.mult is measurable, ℕ-valued, positive on C, and ∫_{C∩K} θ dHⁿ < ∞ for every compact K ⊆ U;\n- ξ = R.orient is a.e. strongly measurable for Hⁿ⌞C;\n- for Hⁿ-a.e. x ∈ C, ξ(x) = ±(α ↦ α(τ)) for some orthonormal τ : Fin n → ℝ^P.\nLet ω ∈ 𝒟ⁿ(U) (TestFormOn U n): a C^∞ compactly supported n-form with tsupport ω ⊆ U. Then x ↦ θ(x)·⟨ω(x), ξ(x)⟩ = (θ(x) : ℝ)·ξ(x)(ω(x)) is integrable with respect to Hⁿ⌞C = μHE[n].restrict C.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (ω : TestFormOn U n), Integrable (fun x => (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)) (μHE[n].restrict R.carrier)",
+  "lean_name": "regcomp_rim_action_integrable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-restriction-integer-multipl-1450eb50b9-a1"
+}

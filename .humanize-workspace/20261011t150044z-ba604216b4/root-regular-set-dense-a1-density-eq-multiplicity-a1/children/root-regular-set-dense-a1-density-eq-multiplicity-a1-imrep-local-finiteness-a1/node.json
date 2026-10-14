@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.imrep_local_finiteness-a1",
+  "parent_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1",
+  "depth": 3,
+  "title": "Local finiteness of Hⁿ⌞M and of the weight of an integer multiplicity representation",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, and let R = (M, θ, ξ) be an integer multiplicity representation in U (an IMRep U n). That is: M = R.carrier is Borel with M ⊆ U; θ = R.mult : ℝ^P → ℕ is Borel with θ ≥ 1 on M; and ∫_{M∩K} θ dH^n < ∞ for every compact K ⊆ U, where H^n = μHE[n]. Let μ_R = R.measure = θ·(H^n⌞M), i.e. (H^n⌞M).withDensity θ. Then for every compact K ⊆ ℝ^P with K ⊆ U: H^n(M ∩ K) < ∞ and μ_R(K) < ∞.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (K : Set (Euclid P)), IsCompact K → K ⊆ U → μHE[n] (R.carrier ∩ K) ≠ ∞ ∧ R.measure K ≠ ∞",
+  "lean_name": "rsd_imrep_compact_measure_ne_top",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-imrep-local-finiteness-a1-a1"
+}
