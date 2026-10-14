@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "55545e406069f8549e972c757ffe8de6ded7d1867e1a3d5b63f31847d12316ae",
+  "git_delta": {
+    "base_commit": "521da8a64e606cdfdc28047c564a556a319c7e1d",
+    "candidate_commit": "e57de34ac214603e679b153bf701e429e973cea0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_cbm_sp_convex_slice_bound",
+    "diff_sha256": "6012977e8bd47964b538ee69aed0c4246f464f68d9e0a07b403fc4a478984a94",
+    "source_sha256": "dfe4afd03bd524972e79483096c6bc9ab6959a77c70d71b997f16bfea7313ccd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_cbm_sp_convex_slice_bound",
+      "statement": "∀ (n : ℕ) (Q : Set (Euclid n)) (g : Euclid n → ℝ≥0∞), Convex ℝ Q → MeasurableSet Q → Measurable g → ∀ t ∈ Icc (0 : ℝ) 1, ∫⁻ x in Q, ∫⁻ y in Q, g ((1 - t) • y + t • x) ≤ 2 ^ n * volume Q * ∫⁻ z in Q, g z",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
