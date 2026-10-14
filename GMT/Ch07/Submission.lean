@@ -1797,7 +1797,7 @@ theorem Submission.dimred_mbl_pfi_bilipschitz_piece_imrep : ∀ (P n : ℕ) (U :
     rw [finrank_euclideanSpace_fin, EuclideanSpace.euclideanHausdorffMeasure_eq_volume n] at h
     simpa only [hJarea, smul_eq_mul] using h
   -- Step 4: a strongly measurable version `ζ'` of `ζ`
-  set ζ' := hζm.mk ζ with hζ'def
+  set ζ' := hζm.mk ζ with hζ'eq
   have hζ'sm : StronglyMeasurable ζ' := hζm.stronglyMeasurable_mk
   have hζ'ae : ζ =ᵐ[volume.restrict B] ζ' := hζm.ae_eq_mk
   -- Step 5: `mult = w ∘ (H|_B)⁻¹` and `orient = (J⁻¹ ζ') ∘ (H|_B)⁻¹` on `N`, `0` off `N`
