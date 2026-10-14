@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1",
+  "depth": 2,
+  "title": "Simon 6.2.30–6.2.32 and 6.3.10: the cone over a compactly supported integer multiplicity cycle is an integer multiplicity filling",
+  "statement": "Let n, P ∈ ℕ and let S ∈ 𝒟_{n+1}(ℝ^P) (a GeometricCurrentOn univ (n + 1) on ℝ^P = Euclid P) be an integer multiplicity current (IsIntegerMultiplicity S: S = τ(M, θ, ξ) for an IMRep in ℝ^P) with spt S compact and ∂S = 0 (S.boundary = 0). Then there is an integer multiplicity R ∈ 𝒟_{n+2}(ℝ^P) with spt R compact and ∂R = S (R.boundary = S). (R is Simon's cone 0 ⨯ S = h_#([[(0,1)]] × S), h(t, x) = tx.)",
+  "lean_statement": "∀ (n P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)), IsIntegerMultiplicity S → IsCompact S.support → S.boundary = 0 → ∃ R : GeometricCurrentOn (univ : Set (Euclid P)) (n + 2), IsIntegerMultiplicity R ∧ IsCompact R.support ∧ R.boundary = S",
+  "lean_name": "emf_exists_cone_filling",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-a1"
+}
