@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ce6ad1cf54410e93e28d07d55beb53e3e9fc0c505dc70781881ee7ce754e3566",
+  "git_delta": {
+    "base_commit": "0034f4c7c6205038803425e4650ff6a6901940d3",
+    "candidate_commit": "6699fa568359de4f89f92997bd5d3abe4c8c126c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrsd_skeleton_point_on_open_face",
+    "diff_sha256": "f09efbd3db94bd6d493ecec8bc8484b07ed465be96dd1e9063a68f041cf7de52",
+    "source_sha256": "bb6cc96474dbcdbb9730ec198e574beb7bc255ae79433d95eaf7a21c3f372959",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrsd_skeleton_point_on_open_face",
+      "statement": "∀ (P m : ℕ) (x : Euclid P), (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z) → (¬ ∃ s : Finset (Fin P), P ≤ m + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z) → ∃ (p : (Fin (m + 1) → Fin P) × (Fin P → ℤ)) (y : Euclid (m + 1)), StrictMono p.1 ∧ (∀ i, 0 < y i ∧ y i < 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) = x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
