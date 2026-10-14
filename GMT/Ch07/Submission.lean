@@ -824,63 +824,6 @@ theorem Submission.dimred_cs_ti_translate_action_hasDerivAt : ∀ (P n : ℕ) (R
   obtain ⟨K, hK⟩ := (isCompact_Icc (a := t - 1) (b := t + 1)).prod
     (isCompact_closedBall (0 : Euclid P) ρ) |>.exists_bound_of_continuousOn hΦ.continuousOn
   have hθB : IntegrableOn (fun x => (R.mult x : ℝ)) B (μHE[n].restrict R.carrier) := by
-/-- Continuity of translates: for a continuous compactly supported `j`-form `η`,
-`t ↦ τ(M, θ, ξ)(η(t + ·))` is continuous on `ℝᴾ`.  For `‖t − t₀‖ < 1` the integrands vanish off
-`B = B̄_ρ(0)`, `ρ = r + ‖t₀‖ + 1` where `spt η ⊆ B̄_r(0)`, and are dominated by `C₀ θ 1_B`,
-`C₀` bounding `‖η‖` (as `‖ξ‖ ≤ 1` a.e.); `θ 1_B` is integrable since `θ` is locally
-`Hʲ`-integrable, so dominated convergence gives continuity at `t₀`. -/
-theorem Submission.dimred_cs_sos_mt_si_translate_action_continuous : ∀ (P j : ℕ) (R : IMRep (univ : Set (Euclid P)) j) (η : DifferentialForm (Euclid P) j), Continuous η → HasCompactSupport η → Continuous (fun t : Euclid P => R.action (fun y => η (t + y))) := by
-  intro P j R η hηc hηs
-  -- Step 1: `‖ξ(y)‖ ≤ 1` for `Hʲ⌞M`-a.e. `y`, as `ξ(y) α = ±α(τ)` with `τ` orthonormal
-  have hξ : ∀ᵐ y ∂(μHE[j].restrict R.carrier), ‖R.orient y‖ ≤ 1 := by
-    filter_upwards [R.orients] with y hy
-    obtain ⟨Q, -, τ, hτ, -, hτξ⟩ := hy
-    refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_
-    have hbound : ‖α τ‖ ≤ ‖α‖ := by
-      simpa [hτ.1] using α.le_opNorm τ
-    rcases hτξ with h | h
-    · rw [h, one_mul]
-      exact hbound
-    · rw [h, norm_neg, one_mul]
-      exact hbound
-  -- Step 2: a bound `C₀` for `η` and a support radius `r`
-  obtain ⟨C₀, hC₀⟩ := hηc.bounded_above_of_compact_support hηs
-  have hC₀n : 0 ≤ C₀ := le_trans (norm_nonneg _) (hC₀ 0)
-  obtain ⟨r, hr⟩ : ∃ r, tsupport η ⊆ closedBall (0 : Euclid P) r :=
-    hηs.isCompact.isBounded.subset_closedBall 0
-  -- Step 3: measurability of the integrands
-  have hθm : Measurable fun y => (R.mult y : ℝ) := measurable_from_nat.comp R.measurable_mult
-  have happly : Continuous fun p : MultiVector P j × Covector (Euclid P) j => p.1 p.2 :=
-    continuous_fst.clm_apply continuous_snd
-  have hmeas : ∀ t : Euclid P, AEStronglyMeasurable
-      (fun y => (R.mult y : ℝ) * R.orient y (η (t + y))) (μHE[j].restrict R.carrier) :=
-    fun t => hθm.aestronglyMeasurable.mul
-      (happly.comp_aestronglyMeasurable
-        (R.aestronglyMeasurable_orient.prodMk
-          (hηc.comp (continuous_const.add continuous_id)).aestronglyMeasurable))
-  -- Step 4: for each `y`, the integrand is continuous in `t`
-  have hcont : ∀ y : Euclid P,
-      Continuous fun t : Euclid P => (R.mult y : ℝ) * R.orient y (η (t + y)) := fun y =>
-    continuous_const.mul
-      ((R.orient y).continuous.comp (hηc.comp (continuous_id.add continuous_const)))
-  rw [continuous_iff_continuousAt]
-  intro t₀
-  -- Step 5: the window `B = B̄_ρ(0)`, `ρ = r + ‖t₀‖ + 1`: if `‖t − t₀‖ < 1` and
-  -- `t + y ∈ spt η`, then `y ∈ B`
-  set ρ : ℝ := r + ‖t₀‖ + 1 with hρ
-  set B : Set (Euclid P) := closedBall (0 : Euclid P) ρ with hB
-  have hBm : MeasurableSet B := measurableSet_closedBall
-  have hmemB : ∀ t ∈ ball t₀ 1, ∀ y : Euclid P, t + y ∈ tsupport η → y ∈ B := by
-    intro t ht y hy
-    have h1 : ‖t + y‖ ≤ r := by simpa using hr hy
-    have h2 : ‖t - t₀‖ < 1 := by rwa [mem_ball, dist_eq_norm] at ht
-    have h3 := norm_sub_norm_le t t₀
-    have h4 := norm_sub_le (t + y) t
-    rw [add_sub_cancel_left] at h4
-    simp only [hB, mem_closedBall, dist_zero_right, hρ]
-    linarith
-  -- Step 6: `θ 1_B` is integrable, `θ` being locally `Hʲ`-integrable
-  have hθB : IntegrableOn (fun y => (R.mult y : ℝ)) B (μHE[j].restrict R.carrier) := by
     refine ⟨hθm.aestronglyMeasurable, ?_⟩
     rw [hasFiniteIntegral_iff_enorm, Measure.restrict_restrict hBm, inter_comm]
     simpa only [Real.enorm_natCast] using
@@ -959,6 +902,92 @@ theorem Submission.dimred_cs_sos_mt_si_translate_action_continuous : ∀ (P j : 
   have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le hs hF_meas hF_int hF'_meas h_bound
     ((hθB.integrable_indicator hBm).const_mul K) h_diff
   exact key.2
+/-- Continuity of translates: for a continuous compactly supported `j`-form `η`,
+`t ↦ τ(M, θ, ξ)(η(t + ·))` is continuous on `ℝᴾ`.  For `‖t − t₀‖ < 1` the integrands vanish off
+`B = B̄_ρ(0)`, `ρ = r + ‖t₀‖ + 1` where `spt η ⊆ B̄_r(0)`, and are dominated by `C₀ θ 1_B`,
+`C₀` bounding `‖η‖` (as `‖ξ‖ ≤ 1` a.e.); `θ 1_B` is integrable since `θ` is locally
+`Hʲ`-integrable, so dominated convergence gives continuity at `t₀`. -/
+theorem Submission.dimred_cs_sos_mt_si_translate_action_continuous : ∀ (P j : ℕ) (R : IMRep (univ : Set (Euclid P)) j) (η : DifferentialForm (Euclid P) j), Continuous η → HasCompactSupport η → Continuous (fun t : Euclid P => R.action (fun y => η (t + y))) := by
+  intro P j R η hηc hηs
+  -- Step 1: `‖ξ(y)‖ ≤ 1` for `Hʲ⌞M`-a.e. `y`, as `ξ(y) α = ±α(τ)` with `τ` orthonormal
+  have hξ : ∀ᵐ y ∂(μHE[j].restrict R.carrier), ‖R.orient y‖ ≤ 1 := by
+    filter_upwards [R.orients] with y hy
+    obtain ⟨Q, -, τ, hτ, -, hτξ⟩ := hy
+    refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_
+    have hbound : ‖α τ‖ ≤ ‖α‖ := by
+      simpa [hτ.1] using α.le_opNorm τ
+    rcases hτξ with h | h
+    · rw [h, one_mul]
+      exact hbound
+    · rw [h, norm_neg, one_mul]
+      exact hbound
+  -- Step 2: a bound `C₀` for `η` and a support radius `r`
+  obtain ⟨C₀, hC₀⟩ := hηc.bounded_above_of_compact_support hηs
+  have hC₀n : 0 ≤ C₀ := le_trans (norm_nonneg _) (hC₀ 0)
+  obtain ⟨r, hr⟩ : ∃ r, tsupport η ⊆ closedBall (0 : Euclid P) r :=
+    hηs.isCompact.isBounded.subset_closedBall 0
+  -- Step 3: measurability of the integrands
+  have hθm : Measurable fun y => (R.mult y : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have happly : Continuous fun p : MultiVector P j × Covector (Euclid P) j => p.1 p.2 :=
+    continuous_fst.clm_apply continuous_snd
+  have hmeas : ∀ t : Euclid P, AEStronglyMeasurable
+      (fun y => (R.mult y : ℝ) * R.orient y (η (t + y))) (μHE[j].restrict R.carrier) :=
+    fun t => hθm.aestronglyMeasurable.mul
+      (happly.comp_aestronglyMeasurable
+        (R.aestronglyMeasurable_orient.prodMk
+          (hηc.comp (continuous_const.add continuous_id)).aestronglyMeasurable))
+  -- Step 4: for each `y`, the integrand is continuous in `t`
+  have hcont : ∀ y : Euclid P,
+      Continuous fun t : Euclid P => (R.mult y : ℝ) * R.orient y (η (t + y)) := fun y =>
+    continuous_const.mul
+      ((R.orient y).continuous.comp (hηc.comp (continuous_id.add continuous_const)))
+  rw [continuous_iff_continuousAt]
+  intro t₀
+  -- Step 5: the window `B = B̄_ρ(0)`, `ρ = r + ‖t₀‖ + 1`: if `‖t − t₀‖ < 1` and
+  -- `t + y ∈ spt η`, then `y ∈ B`
+  set ρ : ℝ := r + ‖t₀‖ + 1 with hρ
+  set B : Set (Euclid P) := closedBall (0 : Euclid P) ρ with hB
+  have hBm : MeasurableSet B := measurableSet_closedBall
+  have hmemB : ∀ t ∈ ball t₀ 1, ∀ y : Euclid P, t + y ∈ tsupport η → y ∈ B := by
+    intro t ht y hy
+    have h1 : ‖t + y‖ ≤ r := by simpa using hr hy
+    have h2 : ‖t - t₀‖ < 1 := by rwa [mem_ball, dist_eq_norm] at ht
+    have h3 := norm_sub_norm_le t t₀
+    have h4 := norm_sub_le (t + y) t
+    rw [add_sub_cancel_left] at h4
+    simp only [hB, mem_closedBall, dist_zero_right, hρ]
+    linarith
+  -- Step 6: `θ 1_B` is integrable, `θ` being locally `Hʲ`-integrable
+  have hθB : IntegrableOn (fun y => (R.mult y : ℝ)) B (μHE[j].restrict R.carrier) := by
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, Measure.restrict_restrict hBm, inter_comm]
+    simpa only [Real.enorm_natCast] using
+      (R.locallyIntegrable_mult B (isCompact_closedBall 0 ρ) (subset_univ _)).lt_top
+  -- Step 7: domination by `C₀ θ 1_B` for `t ∈ B₁(t₀)`
+  have h_bound : ∀ᶠ t in 𝓝 t₀, ∀ᵐ y ∂(μHE[j].restrict R.carrier),
+      ‖(R.mult y : ℝ) * R.orient y (η (t + y))‖ ≤
+        C₀ * B.indicator (fun x => (R.mult x : ℝ)) y := by
+    filter_upwards [ball_mem_nhds t₀ one_pos] with t ht
+    filter_upwards [hξ] with y hy
+    by_cases hty : t + y ∈ tsupport η
+    · have hyB := hmemB t ht y hty
+      rw [indicator_of_mem hyB, norm_mul, Real.norm_natCast]
+      calc (R.mult y : ℝ) * ‖R.orient y (η (t + y))‖
+          ≤ (R.mult y : ℝ) * (‖R.orient y‖ * ‖η (t + y)‖) := by
+            gcongr; exact (R.orient y).le_opNorm _
+        _ ≤ (R.mult y : ℝ) * (1 * C₀) := by
+            gcongr
+            exact hC₀ _
+        _ = C₀ * (R.mult y : ℝ) := by ring
+    · rw [image_eq_zero_of_notMem_tsupport hty, map_zero, mul_zero, norm_zero]
+      by_cases hyB : y ∈ B
+      · rw [indicator_of_mem hyB]; positivity
+      · rw [indicator_of_notMem hyB, mul_zero]
+  -- Step 8: dominated convergence
+  show ContinuousAt (fun t => ∫ y in R.carrier, (R.mult y : ℝ) * R.orient y (η (t + y)) ∂μHE[j]) t₀
+  exact continuousAt_of_dominated (Eventually.of_forall hmeas) h_bound
+    ((hθB.integrable_indicator hBm).const_mul C₀)
+    (Eventually.of_forall fun y => (hcont y).continuousAt)
 
 /-- Differentiation of the slices `σ ↦ Y(Φ(ω(s + σv + ·)))` (step (5c) of the cube Stokes
 argument): for `Y = τ(M, θ, ξ)` in `ℝᴾ`, a continuous linear `Φ : Λ^{n'} → Λ^q` and a test
@@ -1041,31 +1070,6 @@ theorem Submission.dimred_cs_sos_mt_cs_frame_box_compact : ∀ (P k : ℕ) (g : 
   rw [hbox]
   exact (isCompact_univ_pi fun _ => isCompact_Icc).image
     (continuous_finsetSum _ fun i _ => (continuous_apply i).smul continuous_const)
-  -- Step 7: domination by `C₀ θ 1_B` for `t ∈ B₁(t₀)`
-  have h_bound : ∀ᶠ t in 𝓝 t₀, ∀ᵐ y ∂(μHE[j].restrict R.carrier),
-      ‖(R.mult y : ℝ) * R.orient y (η (t + y))‖ ≤
-        C₀ * B.indicator (fun x => (R.mult x : ℝ)) y := by
-    filter_upwards [ball_mem_nhds t₀ one_pos] with t ht
-    filter_upwards [hξ] with y hy
-    by_cases hty : t + y ∈ tsupport η
-    · have hyB := hmemB t ht y hty
-      rw [indicator_of_mem hyB, norm_mul, Real.norm_natCast]
-      calc (R.mult y : ℝ) * ‖R.orient y (η (t + y))‖
-          ≤ (R.mult y : ℝ) * (‖R.orient y‖ * ‖η (t + y)‖) := by
-            gcongr; exact (R.orient y).le_opNorm _
-        _ ≤ (R.mult y : ℝ) * (1 * C₀) := by
-            gcongr
-            exact hC₀ _
-        _ = C₀ * (R.mult y : ℝ) := by ring
-    · rw [image_eq_zero_of_notMem_tsupport hty, map_zero, mul_zero, norm_zero]
-      by_cases hyB : y ∈ B
-      · rw [indicator_of_mem hyB]; positivity
-      · rw [indicator_of_notMem hyB, mul_zero]
-  -- Step 8: dominated convergence
-  show ContinuousAt (fun t => ∫ y in R.carrier, (R.mult y : ℝ) * R.orient y (η (t + y)) ∂μHE[j]) t₀
-  exact continuousAt_of_dominated (Eventually.of_forall hmeas) h_bound
-    ((hθB.integrable_indicator hBm).const_mul C₀)
-    (Eventually.of_forall fun y => (hcont y).continuousAt)
 /-- Translates along `G` of an action carried by `Gᗮ` vanish outside a compact set: if
 `μ_R(ℝᴾ \ Gᗮ) = 0` and `η` has compact support, then `τ(M, θ, ξ)(η(t + ·)) = 0` for every
 `t ∈ G \ K`, `K = p(spt η)` with `p` the orthogonal projection onto `G`.  As `θ ≥ 1` on `M`,
@@ -2026,98 +2030,6 @@ theorem Submission.dimred_cs_sos_mt_si_span_bounded_measure_ne_top : ∀ (P k : 
   refine ne_top_of_le_ne_top ?_ (measure_mono hbox)
   rw [((Submission.dimred_cs_sos_mt_frame_measure P k g hg).2 r hr).1]
   exact ENNReal.ofReal_ne_top
-/-- **Interior product with a frame; translated test forms.**  (a) For `g = (g₁, …, g_k)` in
-`ℝᴾ` and `n' = k + m`, `♭α(v) = α(g₁, …, g_k, v₁, …, v_m)` defines a continuous linear map
-`♭ : Λ^{n'} → Λ^m`.  Updating `vⱼ` updates only the entry `natAdd k j` of `(g, v)`, so `♭α` is
-multilinear; it is alternating because equal entries of `v` stay at distinct indices; it is
-continuous; and `‖♭α‖ ≤ (∏ᵢ ‖gᵢ‖) ‖α‖`, so `α ↦ ♭α` is bounded (`LinearMap.mkContinuous`).
-(b) For a continuous linear `Φ : Λᵃ → Λᵇ`, a test `a`-form `ω` and `t ∈ ℝᴾ`, `y ↦ Φ(ω(t + y))`
-is smooth and vanishes off the closed set `{y : t + y ∈ spt ω}`, the compact translate
-`spt ω − t`; hence it is a test form supported there.  This is the interior product `♭_g` of
-the product construction `[[E]] ×_g A` used to split off the spine of a cone. -/
-theorem Submission.dimred_cs_sos_mt_interior_product : ∀ P : ℕ, (∀ (k m n' : ℕ) (g : Fin k → Euclid P) (h : n' = k + m), ∃ flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m, ∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) ∧ ∀ (a b : ℕ) (flat : Covector (Euclid P) a →L[ℝ] Covector (Euclid P) b) (ω : DifferentialForm (Euclid P) a) (t : Euclid P), IsTestForm ω → IsTestForm (fun y => flat (ω (t + y))) ∧ tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω := by
-  intro P
-  refine ⟨fun k m n' g h => ?_, fun a b flat ω t hω => ?_⟩
-  · -- (a) the interior product with the frame `g`; first identify `n'` with `k + m`
-    subst h
-    -- the entries `castAdd m i` (from `g`) and `natAdd k j` (from `v`) are distinct
-    have hne : ∀ (i : Fin k) (j : Fin m), Fin.castAdd m i ≠ Fin.natAdd k j := by
-      intro i j hc
-      have hv := congrArg Fin.val hc
-      have hi := i.isLt
-      simp only [Fin.val_castAdd, Fin.val_natAdd] at hv
-      omega
-    -- updating `v` at `j` updates `Fin.append g v` at `natAdd k j` (for any `DecidableEq`)
-    have hupd : ∀ (_ : DecidableEq (Fin m)) (v : Fin m → Euclid P) (j : Fin m) (x : Euclid P),
-        Fin.append g (Function.update v j x) =
-          Function.update (Fin.append g v) (Fin.natAdd k j) x := by
-      intro _ v j x
-      funext z
-      induction z using Fin.addCases with
-      | left i => rw [Fin.append_left, Function.update_of_ne (hne i j), Fin.append_left]
-      | right j' =>
-        rw [Fin.append_right, Function.update_apply_of_injective _ (Fin.natAdd_injective m k)]
-        congr 1
-        funext i
-        rw [Fin.append_right]
-    -- `v ↦ Fin.append g v` is continuous: each entry is a constant `gᵢ` or a projection `vⱼ`
-    have hcont : Continuous fun v : Fin m → Euclid P => Fin.append g v := by
-      refine continuous_pi fun z => ?_
-      induction z using Fin.addCases with
-      | left i => simp only [Fin.append_left]; exact continuous_const
-      | right j => simp only [Fin.append_right]; exact continuous_apply j
-    -- `♭α (v) = α (g, v)` is a continuous alternating map
-    let φ : Covector (Euclid P) (k + m) → Covector (Euclid P) m := fun α =>
-      { toFun := fun v => α (Fin.append g v)
-        map_update_add' := fun v j x y => by
-          simp only [hupd _ v j, α.map_update_add]
-        map_update_smul' := fun v j c x => by
-          simp only [hupd _ v j, α.map_update_smul]
-        cont := α.cont.comp hcont
-        map_eq_zero_of_eq' := fun v i j hv hij =>
-          α.map_eq_zero_of_eq (Fin.append g v) (i := Fin.natAdd k i) (j := Fin.natAdd k j)
-            (by rw [Fin.append_right, Fin.append_right]; exact hv)
-            ((Fin.natAdd_injective m k).ne hij) }
-    have hφ : ∀ α v, φ α v = α (Fin.append g v) := fun α v => rfl
-    -- `α ↦ ♭α` is linear
-    let L : Covector (Euclid P) (k + m) →ₗ[ℝ] Covector (Euclid P) m :=
-      { toFun := φ
-        map_add' := fun α β => by
-          ext v
-          simp only [hφ, ContinuousAlternatingMap.add_apply]
-        map_smul' := fun c α => by
-          ext v
-          simp only [hφ, ContinuousAlternatingMap.smul_apply, RingHom.id_apply] }
-    -- and bounded: `|α (g, v)| ≤ ‖α‖ ∏ᵢ ‖gᵢ‖ ∏ⱼ ‖vⱼ‖`, so `‖♭α‖ ≤ (∏ᵢ ‖gᵢ‖) ‖α‖`
-    have hbound : ∀ α, ‖L α‖ ≤ (∏ i, ‖g i‖) * ‖α‖ := by
-      intro α
-      refine ContinuousAlternatingMap.opNorm_le_bound _ (by positivity) fun v => ?_
-      calc ‖L α v‖ = ‖α (Fin.append g v)‖ := rfl
-        _ ≤ ‖α‖ * ∏ z, ‖Fin.append g v z‖ := α.le_opNorm _
-        _ = (∏ i, ‖g i‖) * ‖α‖ * ∏ j, ‖v j‖ := by
-          rw [Fin.prod_univ_add]
-          simp only [Fin.append_left, Fin.append_right]
-          ring
-    refine ⟨L.mkContinuous (∏ i, ‖g i‖) hbound, fun α v => ?_⟩
-    rw [LinearMap.mkContinuous_apply, Fin.cast_refl, Function.comp_id]
-    rfl
-  · -- (b) off `{y : t + y ∈ spt ω}` the form `ω (t + y)` vanishes, hence so does its image
-    have hsub : tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω := by
-      refine closure_minimal (fun y hy => ?_)
-        ((isClosed_tsupport ω).preimage (continuous_const.add continuous_id))
-      by_contra hy'
-      apply hy
-      show flat (ω (t + y)) = 0
-      rw [image_eq_zero_of_notMem_tsupport (f := ω) (x := t + y) hy', map_zero]
-    have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω := hω.1
-    -- `{y : t + y ∈ spt ω}` is the compact translate `spt ω − t`
-    have hK : IsCompact ((fun y => t + y) ⁻¹' tsupport ω) := by
-      have hK' := (Homeomorph.addLeft t).isCompact_preimage.mpr hω.2
-      rwa [Homeomorph.coe_addLeft] at hK'
-    refine ⟨⟨?_, ?_⟩, hsub⟩
-    · exact flat.contDiff.comp (hs.comp (contDiff_const.add contDiff_id))
-    · exact hK.of_isClosed_subset (isClosed_tsupport _) hsub
-
 /-- **Slices of an integer multiplicity current are continuous and integrable over a frame span**
 (the product construction of the splitting lemma, Ch. 7, 3.5).  Let `G = span g`, `η = Φ ∘ ω`
 and `F(t) = T(η(t + ·))`.  By `Submission.dimred_cs_sos_mt_interior_product` (b) each
