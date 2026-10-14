@@ -561,6 +561,106 @@ theorem Submission.idtp_fons_odc_ro_line_integral_pos : ∀ (P : ℕ) (u : Eucli
     (hfc.comp_isClosedEmbedding hiso.isClosedEmbedding) (fun t => hf0 _) (x := 1)
     (by simpa using hfu.ne')
 
+/-- **Simon Ch. 3, Definition 1.4** (step 4 of `idtp_fons_odc_ray_orientation`): if near `x` the
+set `M` lies on the line `x + ℝv` up to an `H¹`-null set `N`, every `1`-dimensional approximate
+tangent space `Q` of `M` at `x` is `ℝv`.  As `finrank Q = 1 = finrank ℝv` it suffices to exclude a
+unit vector `u ∈ Q \ ℝv`, for which `Q = ℝu`.  With `d = dist(u, ℝv) > 0` and the bump
+`f = max(0, d/2 - |· - u|) ∈ C_c`, `line_integral_pos` gives `∫_Q f dH¹ > 0`.  But for
+`0 < ρ < δ/(1 + d)` every `y ∈ η_{x,ρ}(M)` with `f(y) ≠ 0` has `x + ρy ∈ B_δ(x)` off the line,
+so `y` lies in the `H¹`-null set `η_{x,ρ}(N)` (`η_{x,ρ}` is Lipschitz) and
+`∫_{η_{x,ρ}(M)} f dH¹ = 0`; uniqueness of limits as `ρ ↓ 0` then forces `∫_Q f dH¹ = 0`. -/
+theorem Submission.idtp_fons_odc_ro_tangent_line : ∀ (P : ℕ) (M N : Set (Euclid P)) (x v : Euclid P) (δ : ℝ) (Q : Submodule ℝ (Euclid P)), v ≠ 0 → 0 < δ → (μHE[1] : Measure (Euclid P)) N = 0 → M ∩ ball x δ ⊆ range (fun s : ℝ => x + s • v) ∪ N → HasApproximateTangentSpaceAt 1 M x Q → Q = Submodule.span ℝ {v} := by
+  intro P M N x v δ Q hv hδ hN hloc hQ
+  -- `η_{x,ρ}(S) = {y | x + ρ y ∈ S}` for `ρ ≠ 0`
+  have himage : ∀ (S : Set (Euclid P)) {ρ : ℝ}, ρ ≠ 0 →
+      Poincare.SimonGMT.Chapter03.blowUpMap x ρ '' S = (fun y => x + ρ • y) ⁻¹' S := by
+    intro S ρ hρ
+    ext y
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      simpa [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hρ] using hz
+    · intro hy
+      exact ⟨_, hy, by simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hρ]⟩
+  -- `η_{x,ρ}` is `|ρ⁻¹|`-Lipschitz, so `η_{x,ρ}(N)` is `H¹`-null
+  have hnull : ∀ ρ : ℝ,
+      (μHE[1] : Measure (Euclid P)) (Poincare.SimonGMT.Chapter03.blowUpMap x ρ '' N) = 0 := by
+    intro ρ
+    have hlip : LipschitzWith ‖ρ⁻¹‖₊ (Poincare.SimonGMT.Chapter03.blowUpMap x ρ) :=
+      LipschitzWith.of_dist_le_mul fun a b => by
+        simp only [Poincare.SimonGMT.Chapter03.blowUpMap, dist_smul₀, dist_sub_right,
+          coe_nnnorm, le_refl]
+    refine nonpos_iff_eq_zero.1 ?_
+    calc _ ≤ (‖ρ⁻¹‖₊ : ℝ≥0∞) ^ 1 * μHE[1] N :=
+          Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn 1
+            hlip.lipschitzOnWith
+      _ = 0 := by rw [hN, mul_zero]
+  -- `x + ρ y` lies on the line `x + ℝv` iff `y ∈ ℝv` (`ρ ≠ 0`)
+  have hline : ∀ (y : Euclid P) {ρ : ℝ}, ρ ≠ 0 →
+      (x + ρ • y ∈ range (fun s : ℝ => x + s • v) ↔ y ∈ Submodule.span ℝ {v}) := by
+    intro y ρ hρ
+    simp only [mem_range, add_right_inj, Submodule.mem_span_singleton]
+    constructor
+    · rintro ⟨s, hs⟩
+      exact ⟨ρ⁻¹ * s, by rw [mul_smul, hs, smul_smul, inv_mul_cancel₀ hρ, one_smul]⟩
+    · rintro ⟨a, rfl⟩
+      exact ⟨ρ * a, mul_smul _ _ _⟩
+  -- `finrank Q = 1 = finrank ℝv`, so it suffices to show `Q ≤ ℝv`
+  refine Submodule.eq_of_le_of_finrank_eq ?_ (by rw [hQ.1, finrank_span_singleton hv])
+  by_contra hQL
+  -- a unit vector `u ∈ Q \ ℝv`; then `Q = ℝu`
+  obtain ⟨u, huQ, huL, hu⟩ : ∃ u ∈ Q, u ∉ Submodule.span ℝ {v} ∧ ‖u‖ = 1 := by
+    obtain ⟨w, hwQ, hwL⟩ := IsConcreteLE.not_le_iff_exists.1 hQL
+    have hw : ‖w‖ ≠ 0 := norm_ne_zero_iff.2 fun h => hwL (h ▸ Submodule.zero_mem _)
+    refine ⟨‖w‖⁻¹ • w, Q.smul_mem _ hwQ, fun h => hwL ?_, ?_⟩
+    · simpa [smul_smul, mul_inv_cancel₀ hw] using (Submodule.span ℝ {v}).smul_mem ‖w‖ h
+    · rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hw]
+  have hspan : Submodule.span ℝ {u} = Q :=
+    Submodule.eq_of_le_of_finrank_eq ((Submodule.span_singleton_le_iff_mem _ _).2 huQ)
+      (by rw [hQ.1, finrank_span_singleton (by rintro rfl; simp at hu)])
+  -- `d = dist(u, ℝv) > 0` and the bump `f = max(0, d/2 - |· - u|)`
+  obtain ⟨d, hdu, hd⟩ : ∃ d, d = infDist u (Submodule.span ℝ {v} : Set (Euclid P)) ∧ 0 < d :=
+    ⟨_, rfl, ((Submodule.closed_of_finiteDimensional _).notMem_iff_infDist_pos
+      ⟨0, Submodule.zero_mem _⟩).1 huL⟩
+  obtain ⟨f, hf⟩ : ∃ f : CompactlySupportedContinuousMap (Euclid P) ℝ,
+      ∀ y, f y = max 0 (d / 2 - ‖y - u‖) :=
+    ⟨⟨⟨fun y => max 0 (d / 2 - ‖y - u‖), by fun_prop⟩,
+      HasCompactSupport.intro (isCompact_closedBall u (d / 2)) fun y hy => max_eq_left (by
+        rw [mem_closedBall, dist_eq_norm, not_le] at hy; linarith)⟩, fun y => rfl⟩
+  -- by `line_integral_pos`, the limit `∫_Q f dH¹ = ∫_{ℝu} f dH¹` is positive
+  have hpos : 0 < ∫ y in (Q : Set (Euclid P)), f y ∂(μHE[1] : Measure (Euclid P)) := by
+    rw [← hspan]
+    refine Submission.idtp_fons_odc_ro_line_integral_pos P u f hu (map_continuous f)
+      f.hasCompactSupport (fun y => by rw [hf]; exact le_max_left _ _) ?_
+    rw [hf, sub_self, norm_zero, sub_zero]
+    exact lt_max_of_lt_right (half_pos hd)
+  -- for `0 < ρ < δ / (1 + d)`, `f = 0` on `η_{x,ρ}(M)` off the null set `η_{x,ρ}(N)`
+  have hzero : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x ρ '' M,
+      f y ∂(μHE[1] : Measure (Euclid P)) = 0 := by
+    have h1d : (0 : ℝ) < 1 + d := by linarith
+    filter_upwards [Ioo_mem_nhdsGT (div_pos hδ h1d)] with ρ ⟨hρ0, hρ⟩
+    rw [lt_div_iff₀ h1d] at hρ
+    refine setIntegral_eq_zero_of_ae_eq_zero (ae_iff.2 (measure_mono_null (fun y hy => ?_)
+      (hnull ρ)))
+    simp only [mem_ofPred_eq, not_imp] at hy
+    rw [himage _ hρ0.ne'] at hy ⊢
+    obtain ⟨hyM, hfy⟩ := hy
+    have hyu : ‖y - u‖ < d / 2 := by
+      by_contra h
+      exact hfy (by rw [hf]; exact max_eq_left (by linarith [not_lt.1 h]))
+    have hball : x + ρ • y ∈ ball x δ := by
+      have hy1 : ‖y‖ < 1 + d := by linarith [norm_sub_norm_le y u]
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hρ0.le]
+      exact (mul_lt_mul_of_pos_left hy1 hρ0).trans hρ
+    rcases hloc (show x + ρ • y ∈ M ∩ ball x δ from ⟨hyM, hball⟩) with hyl | hyN
+    · exfalso
+      have h := infDist_le_dist_of_mem (x := u) (SetLike.mem_coe.2 ((hline y hρ0.ne').1 hyl))
+      rw [← hdu, dist_comm, dist_eq_norm] at h
+      linarith
+    · exact hyN
+  -- uniqueness of the limit as `ρ ↓ 0` contradicts `∫_Q f dH¹ > 0`
+  exact hpos.ne' (tendsto_nhds_unique (hQ.2 f)
+    (tendsto_const_nhds.congr' (hzero.mono fun ρ h => h.symm)))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
