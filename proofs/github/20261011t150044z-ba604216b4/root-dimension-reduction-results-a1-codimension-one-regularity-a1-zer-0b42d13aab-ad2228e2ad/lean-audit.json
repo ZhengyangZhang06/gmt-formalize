@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "142e308f0050ad2534169fe455ec07ac4c8ba3ff58ee54beadb7bf0ac40e0d1c",
+  "git_delta": {
+    "base_commit": "06632af964f287095aa9ad95217b09e6c8dc5cd0",
+    "candidate_commit": "d65a9fc54b891f1ba180dab21d84221d24ae1370",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "1f0d7cf4d6fb162cb0d0bc779736afb76da760975367dabf23626a3dfa37f600",
+    "source_sha256": "fa6e77194cb6c2a6f8984821289a1cd5d577642be356dbb7b76c33148adae5df",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_zero_scale_limit_offset_plane",
+      "statement": "∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid P)) n), 1 ≤ n → IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ y ∈ ball x r₀, ∀ ρ : ℝ, 0 < ρ → ρ < r₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → S.support.Nonempty → ∃ (Q : Submodule ℝ (Euclid P)) (a : Euclid P) (F : Set (Euclid P)) (ξA : MultiVector P (n + 1)), Module.finrank ℝ Q = n + 1 ∧ InClassO n (univ : Set (Euclid P)) {y | y + a ∈ Q} (fun _ => ξA) ∧ MeasurableSet F ∧ F ⊆ {y | y + a ∈ Q} ∧ IsBoundaryOfRegion S F (fun _ => ξA)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

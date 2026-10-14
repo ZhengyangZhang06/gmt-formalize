@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_blowup_limit-a1.centre_offsets-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_blowup_limit-a1",
+  "depth": 5,
+  "title": "Chart coordinates of the blow-up centres and bounded offsets of nearby carrier points (supplied steps 1 and 3)",
+  "statement": "Let m, k, P ∈ ℕ, N ⊆ ℝ^P, x ∈ ℝ^P, and let x_i ∈ ℝ^P and λ_i > 0 (i ∈ ℕ) satisfy x_i → x and λ_i → 0. Let ι : ℝ^m → ℝ^P and ι' : ℝ^k → ℝ^P be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, such that every y ∈ ℝ^P equals ιv + ι'w for some v, w. Let u : ℝ^m → ℝ^k, δ₁ > 0, δ₂ > 0 and C₀ ∈ ℝ. Assume that for every i some p ∈ N satisfies |p − x_i| ≤ C₀λ_i, and that N ∩ {x + ιv + ι'w : |v| < δ₁, |w| < δ₂} = {x + ιv + ι'u(v) : |v| < δ₁}. Then there are sequences s_i ∈ ℝ^m and t_i ∈ ℝ^k with x_i = x + ιs_i + ι't_i for all i, s_i → 0 and t_i → 0, such that for all sufficiently large i some w ∈ ℝ^m satisfies |w| ≤ C₀, s_i + λ_iw ∈ ball(0, δ₁) and |u(s_i + λ_iw) − t_i| ≤ C₀λ_i.",
+  "lean_statement": "∀ (m k P : ℕ) (N : Set (Euclid P)) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (ι : Euclid m →ₗᵢ[ℝ] Euclid P) (ι' : Euclid k →ₗᵢ[ℝ] Euclid P) (u : Euclid m → Euclid k) (δ₁ δ₂ C₀ : ℝ), Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∀ i, 0 < lams i) → (∀ i, ∃ p ∈ N, dist p (xs i) ≤ C₀ * lams i) → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ y : Euclid P, ∃ v w, y = ι v + ι' w) → 0 < δ₁ → 0 < δ₂ → N ∩ {y | ∃ v ∈ ball (0 : Euclid m) δ₁, ∃ w ∈ ball (0 : Euclid k) δ₂, y = x + ι v + ι' w} = (fun v => x + ι v + ι' (u v)) '' ball (0 : Euclid m) δ₁ → ∃ (s : ℕ → Euclid m) (t : ℕ → Euclid k), (∀ i, xs i = x + ι (s i) + ι' (t i)) ∧ Tendsto s atTop (𝓝 0) ∧ Tendsto t atTop (𝓝 0) ∧ ∀ᶠ i in atTop, ∃ w : Euclid m, ‖w‖ ≤ C₀ ∧ s i + lams i • w ∈ ball (0 : Euclid m) δ₁ ∧ ‖u (s i + lams i • w) - t i‖ ≤ C₀ * lams i",
+  "lean_name": "codim1_zsl_gbl_centre_chart_offsets",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-981ec92671-a1"
+}
