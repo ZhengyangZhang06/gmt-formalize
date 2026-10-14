@@ -9444,6 +9444,70 @@ theorem Submission.dor_lmb_fcd_sd_im_restrict : ∀ (P k : ℕ) (R : IMRep (univ
     obtain ⟨hsmooth, hcpt⟩ := hβ
     have hSm : MeasurableSet (tsupport β) := (isClosed_tsupport β).measurableSet
     have hcont : Continuous fun α : Covector (Euclid P) k => covectorEuclideanNorm α := by
+      unfold covectorEuclideanNorm
+      refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+      split_ifs
+      · exact (continuous_eval_const _).pow 2
+      · exact continuous_const
+    obtain ⟨s, hs⟩ := (hcont.comp hsmooth.continuous).bddAbove_range_of_hasCompactSupport
+      (hcpt.comp_left (covectorEuclideanNorm_zero P k))
+    -- step 4: `x ↦ θ(x) ξ(x)(β(x))` is `Hᵏ⌞M`-a.e. strongly measurable
+    have hev : Continuous fun p : MultiVector P k × Covector (Euclid P) k => p.1 p.2 :=
+      continuous_fst.clm_apply continuous_snd
+    have hmeas : AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (β x))
+        (μHE[k].restrict R.carrier) :=
+      (measurable_from_nat.comp R.measurable_mult).aestronglyMeasurable.mul
+        (hev.comp_aestronglyMeasurable
+          (R.aestronglyMeasurable_orient.prodMk hsmooth.continuous.aestronglyMeasurable))
+    -- step 3: `s θ 1_{spt β}` is integrable on `M`, as `∫_{M ∩ spt β} θ dHᵏ < ∞`
+    have hint : Integrable (fun x => s * (tsupport β).indicator (fun x => (R.mult x : ℝ)) x)
+        (μHE[k].restrict R.carrier) := by
+      refine Integrable.const_mul ?_ s
+      rw [integrable_indicator_iff hSm, IntegrableOn, Measure.restrict_restrict hSm]
+      have h := integrable_toReal_of_lintegral_ne_top
+        (μ := μHE[k].restrict (tsupport β ∩ R.carrier)) (f := fun x => (R.mult x : ℝ≥0∞))
+        hθm.aemeasurable
+        (by rw [inter_comm]; exact R.locallyIntegrable_mult _ hcpt (subset_univ _))
+      simpa using h
+    -- step 2: `|θ ξ(β)| ≤ θ |β| ≤ s θ 1_{spt β}` `Hᵏ⌞M`-a.e., by (IMC)(d)
+    refine hint.mono' hmeas ?_
+    filter_upwards [Submission.cmc_imRep_locality_restrict_sub.2.2.2 P k univ R] with x hx
+    by_cases hxS : x ∈ tsupport β
+    · rw [indicator_of_mem hxS, norm_mul, Real.norm_natCast, Real.norm_eq_abs, mul_comm s]
+      exact mul_le_mul_of_nonneg_left ((hx (β x)).trans (hs (mem_range_self x)))
+        (Nat.cast_nonneg _)
+    · simp [indicator_of_notMem hxS, image_eq_zero_of_notMem_tsupport hxS]
+  · -- (B), step 5: `θ Hᵏ⌞M` does not charge `Fᶜ`, so `Hᵏ(M ∖ F) = 0` as `θ ≥ 1` on `M`
+    have hnull : μHE[k] (R.carrier ∩ Fᶜ) = 0 := by
+      have h0 := (Submission.dor_lmb_fcd_sd_im_concentrated P k X R F hX hF hXF).1
+      rw [IMRep.measure, withDensity_apply_eq_zero' hθm.aemeasurable,
+        Measure.restrict_apply' R.measurableSet_carrier] at h0
+      refine measure_mono_null ?_ h0
+      intro x hx
+      exact ⟨⟨by simpa using (R.mult_pos x hx.1).ne', hx.2⟩, hx.1⟩
+    -- step 6: `Y = τ(M ∩ B, θ, ξ)` by (IMC)(b)
+    obtain ⟨Y, R', hY, hcar, hmult, horient⟩ :=
+      Submission.cmc_imRep_locality_restrict_sub.2.1 P k univ R B isOpen_univ hB
+    have hrep : ∀ ω : TestFormOn (univ : Set (Euclid P)) k, Y ω = ∫ x in R.carrier ∩ B,
+        (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k] := by
+      intro ω
+      rw [hY ω, IMRep.action, hcar, hmult, horient]
+    refine ⟨Y, ⟨R', hY⟩, hrep, ?_, fun ω hω => ?_⟩
+    · -- step 7: `M(Y) = μ_{R'}(ℝᴾ) = ∫_{M ∩ B} θ dHᵏ = μ_R(B)` by (C1)
+      rw [GeometricCurrentOn.mass, (Submission.dor_imrep_massOn_eq_measure_and_support P k univ
+        Y R' isOpen_univ hY).1 univ isOpen_univ]
+      simp only [IMRep.measure, hcar, hmult]
+      rw [withDensity_apply _ MeasurableSet.univ, withDensity_apply _ hB, Measure.restrict_univ,
+        Measure.restrict_restrict hB, inter_comm]
+    · -- step 8: the integrand vanishes on `M ∩ B ∩ F`, and `(M ∩ B) ∖ F` is `Hᵏ`-null
+      rw [hrep ω]
+      refine integral_eq_zero_of_ae ?_
+      rw [EventuallyEq, ae_restrict_iff' (R.measurableSet_carrier.inter hB)]
+      refine ae_iff.2 (measure_mono_null (fun x hx => ?_) hnull)
+      obtain ⟨⟨hxM, hxB⟩, hne⟩ := Classical.not_imp.1 hx
+      refine ⟨hxM, fun hxF => hne ?_⟩
+      rw [image_eq_zero_of_notMem_tsupport (disjoint_right.1 hω ⟨hxF, hxB⟩), map_zero, mul_zero,
+        Pi.zero_apply]
 /-- **Simon Ch. 6, Lemma 3.13 (steps 5–7 of the proof)**: an `Hⁿ`-a.e. limit `η` of integer
 multiplicity densities `D_q = 1_{N_q} ϑ_q ζ_q` of `IMRep`s `R_q = (N_q, ϑ_q, ζ_q)` in the open `U`,
 whose weights `μ_{R_q}(K)` are bounded uniformly in `q` on each compact `K ⊆ U`, is itself the
@@ -9942,65 +10006,63 @@ theorem Submission.dor_lmb_fcd_im_pushforward : (∀ (P m : ℕ) (U : Set (Eucli
       split_ifs
       · exact (continuous_eval_const _).pow 2
       · exact continuous_const
-    obtain ⟨s, hs⟩ := (hcont.comp hsmooth.continuous).bddAbove_range_of_hasCompactSupport
-      (hcpt.comp_left (covectorEuclideanNorm_zero P k))
-    -- step 4: `x ↦ θ(x) ξ(x)(β(x))` is `Hᵏ⌞M`-a.e. strongly measurable
-    have hev : Continuous fun p : MultiVector P k × Covector (Euclid P) k => p.1 p.2 :=
-      continuous_fst.clm_apply continuous_snd
-    have hmeas : AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (β x))
-        (μHE[k].restrict R.carrier) :=
-      (measurable_from_nat.comp R.measurable_mult).aestronglyMeasurable.mul
-        (hev.comp_aestronglyMeasurable
-          (R.aestronglyMeasurable_orient.prodMk hsmooth.continuous.aestronglyMeasurable))
-    -- step 3: `s θ 1_{spt β}` is integrable on `M`, as `∫_{M ∩ spt β} θ dHᵏ < ∞`
-    have hint : Integrable (fun x => s * (tsupport β).indicator (fun x => (R.mult x : ℝ)) x)
-        (μHE[k].restrict R.carrier) := by
-      refine Integrable.const_mul ?_ s
-      rw [integrable_indicator_iff hSm, IntegrableOn, Measure.restrict_restrict hSm]
-      have h := integrable_toReal_of_lintegral_ne_top
-        (μ := μHE[k].restrict (tsupport β ∩ R.carrier)) (f := fun x => (R.mult x : ℝ≥0∞))
-        hθm.aemeasurable
-        (by rw [inter_comm]; exact R.locallyIntegrable_mult _ hcpt (subset_univ _))
-      simpa using h
-    -- step 2: `|θ ξ(β)| ≤ θ |β| ≤ s θ 1_{spt β}` `Hᵏ⌞M`-a.e., by (IMC)(d)
-    refine hint.mono' hmeas ?_
-    filter_upwards [Submission.cmc_imRep_locality_restrict_sub.2.2.2 P k univ R] with x hx
-    by_cases hxS : x ∈ tsupport β
-    · rw [indicator_of_mem hxS, norm_mul, Real.norm_natCast, Real.norm_eq_abs, mul_comm s]
-      exact mul_le_mul_of_nonneg_left ((hx (β x)).trans (hs (mem_range_self x)))
-        (Nat.cast_nonneg _)
-    · simp [indicator_of_notMem hxS, image_eq_zero_of_notMem_tsupport hxS]
-  · -- (B), step 5: `θ Hᵏ⌞M` does not charge `Fᶜ`, so `Hᵏ(M ∖ F) = 0` as `θ ≥ 1` on `M`
-    have hnull : μHE[k] (R.carrier ∩ Fᶜ) = 0 := by
-      have h0 := (Submission.dor_lmb_fcd_sd_im_concentrated P k X R F hX hF hXF).1
-      rw [IMRep.measure, withDensity_apply_eq_zero' hθm.aemeasurable,
-        Measure.restrict_apply' R.measurableSet_carrier] at h0
-      refine measure_mono_null ?_ h0
-      intro x hx
-      exact ⟨⟨by simpa using (R.mult_pos x hx.1).ne', hx.2⟩, hx.1⟩
-    -- step 6: `Y = τ(M ∩ B, θ, ξ)` by (IMC)(b)
-    obtain ⟨Y, R', hY, hcar, hmult, horient⟩ :=
-      Submission.cmc_imRep_locality_restrict_sub.2.1 P k univ R B isOpen_univ hB
-    have hrep : ∀ ω : TestFormOn (univ : Set (Euclid P)) k, Y ω = ∫ x in R.carrier ∩ B,
-        (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k] := by
-      intro ω
-      rw [hY ω, IMRep.action, hcar, hmult, horient]
-    refine ⟨Y, ⟨R', hY⟩, hrep, ?_, fun ω hω => ?_⟩
-    · -- step 7: `M(Y) = μ_{R'}(ℝᴾ) = ∫_{M ∩ B} θ dHᵏ = μ_R(B)` by (C1)
-      rw [GeometricCurrentOn.mass, (Submission.dor_imrep_massOn_eq_measure_and_support P k univ
-        Y R' isOpen_univ hY).1 univ isOpen_univ]
-      simp only [IMRep.measure, hcar, hmult]
-      rw [withDensity_apply _ MeasurableSet.univ, withDensity_apply _ hB, Measure.restrict_univ,
-        Measure.restrict_restrict hB, inter_comm]
-    · -- step 8: the integrand vanishes on `M ∩ B ∩ F`, and `(M ∩ B) ∖ F` is `Hᵏ`-null
-      rw [hrep ω]
-      refine integral_eq_zero_of_ae ?_
-      rw [EventuallyEq, ae_restrict_iff' (R.measurableSet_carrier.inter hB)]
-      refine ae_iff.2 (measure_mono_null (fun x hx => ?_) hnull)
-      obtain ⟨⟨hxM, hxB⟩, hne⟩ := Classical.not_imp.1 hx
-      refine ⟨hxM, fun hxF => hne ?_⟩
-      rw [image_eq_zero_of_notMem_tsupport (disjoint_right.1 hω ⟨hxF, hxB⟩), map_zero, mul_zero,
-        Pi.zero_apply]
+    obtain ⟨c, hc⟩ := (hcont.comp hωc).bounded_above_of_compact_support
+      (ω.property.1.2.comp_left (covectorEuclideanNorm_zero N' (k + 1)))
+    have hc' : ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N') (k + 1)) x) ≤
+        max c 0 + 1 := by
+      intro x
+      have := hc x
+      rw [Function.comp_apply, Real.norm_of_nonneg (covectorEuclideanNorm_nonneg _)] at this
+      linarith [le_max_left c 0]
+    have hbd : ∀ j i, ‖f j i‖ ≤ (max c 0 + 1) * (Λ : ℝ) ^ (k + 1) * m i := by
+      intro j
+      obtain ⟨-, -, -, hb⟩ := Submission.dor_lmb_fcd_imp_image_series_im hIMS
+        Submission.cmc_imRep_locality_restrict_sub N N' k G B w (Fs j) Λ (fun i => ⟨L i, hL i⟩)
+        hBm hGd hwm hwZ hw0 hwi hfin (hFsL j)
+      intro i
+      rw [Real.norm_eq_abs]
+      exact hb ω _ (by positivity) hc' i
+    have hbs : Summable fun i => (max c 0 + 1) * (Λ : ℝ) ^ (k + 1) * m i :=
+      (ENNReal.summable_toReal hfin).mul_left _
+    -- (d) dominated convergence for series, via the counting measure on `ℕ`
+    have hbi : Integrable (fun i => (max c 0 + 1) * (Λ : ℝ) ^ (k + 1) * m i) Measure.count := by
+      rw [integrable_count_iff]
+      refine hbs.congr fun i => ?_
+      exact (Real.norm_of_nonneg ((norm_nonneg _).trans (hbd 0 i))).symm
+    have hfi : ∀ j, Integrable (f j) Measure.count := fun j =>
+      hbi.mono' (measurable_of_countable _).aestronglyMeasurable (ae_of_all _ (hbd j))
+    have hgi : Integrable g Measure.count :=
+      hbi.mono' (measurable_of_countable _).aestronglyMeasurable (ae_of_all _ fun i =>
+        le_of_tendsto (tendsto_norm.comp (hterm i)) (Eventually.of_forall fun j => hbd j i))
+    have hlim := tendsto_integral_of_dominated_convergence _
+      (fun j => (hfi j).aestronglyMeasurable) hbi (fun j => ae_of_all _ (hbd j))
+      (ae_of_all _ hterm)
+    have e1 : ∀ j, ∫ i, f j i ∂Measure.count = R.action (fun x =>
+        ((ω : DifferentialForm (Euclid N') (k + 1)) (Fs j x)).compContinuousLinearMap
+          (fderiv ℝ (Fs j) x)) := by
+      intro j
+      rw [integral_countable (hfi j)]
+      simp only [count_real_singleton, one_smul]
+      exact (htr j).tsum_eq
+    have e2 : ∫ i, g i ∂Measure.count = Y F ω := by
+      rw [integral_countable hgi]
+      simp only [count_real_singleton, one_smul]
+      exact ((hY F Λ hF).2 ω).tsum_eq
+    rw [e2] at hlim
+    exact hlim.congr e1
+  · -- locality: `F ∘ Gᵢ = F' ∘ Gᵢ` and `D(F ∘ Gᵢ) = D(F' ∘ Gᵢ)` a.e. on `Bᵢ`
+    intro F F' Λ hF hF' hae
+    ext ω
+    refine ((hY F Λ hF).2 ω).unique ?_
+    convert (hY F' Λ hF').2 ω using 1
+    funext i
+    have h1 : ∀ᵐ u ∂(volume.restrict (B i)), (F ∘ G i) u = (F' ∘ G i) u :=
+      hpull (fun x => F x = F' x) hae i
+    have h2 := (Submission.dor_lmb_fcd_imp_lipschitz_jacobian_locality).2 (k + 1) N' (F ∘ G i)
+      (F' ∘ G i) (B i) (Λ * L i) (Λ * L i) (hF.comp (hL i)) (hF'.comp (hL i)) (hBm i) h1
+    refine integral_congr_ae ?_
+    filter_upwards [h1, h2] with u hu1 hu2
+    rw [hu1, hu2]
 
 /-- **Shells along the level sets of `f`** (Simon Ch. 6, proof of the Deformation Theorem 5.1:
 the shells `T_ρ − T_{ρ/2}` of (8)–(13), here cut along the level sets of `f`).  Let
@@ -11811,63 +11873,6 @@ theorem Submission.dor_lmb_fcd_good_center : ∀ (P m : ℕ), m + 1 < P → ∃ 
           ring
   exact ⟨key μ hμ fun e he h => hgood e he (Or.inl h),
     key μ' hμ' fun e he h => hgood e he (Or.inr h)⟩
-    obtain ⟨c, hc⟩ := (hcont.comp hωc).bounded_above_of_compact_support
-      (ω.property.1.2.comp_left (covectorEuclideanNorm_zero N' (k + 1)))
-    have hc' : ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N') (k + 1)) x) ≤
-        max c 0 + 1 := by
-      intro x
-      have := hc x
-      rw [Function.comp_apply, Real.norm_of_nonneg (covectorEuclideanNorm_nonneg _)] at this
-      linarith [le_max_left c 0]
-    have hbd : ∀ j i, ‖f j i‖ ≤ (max c 0 + 1) * (Λ : ℝ) ^ (k + 1) * m i := by
-      intro j
-      obtain ⟨-, -, -, hb⟩ := Submission.dor_lmb_fcd_imp_image_series_im hIMS
-        Submission.cmc_imRep_locality_restrict_sub N N' k G B w (Fs j) Λ (fun i => ⟨L i, hL i⟩)
-        hBm hGd hwm hwZ hw0 hwi hfin (hFsL j)
-      intro i
-      rw [Real.norm_eq_abs]
-      exact hb ω _ (by positivity) hc' i
-    have hbs : Summable fun i => (max c 0 + 1) * (Λ : ℝ) ^ (k + 1) * m i :=
-      (ENNReal.summable_toReal hfin).mul_left _
-    -- (d) dominated convergence for series, via the counting measure on `ℕ`
-    have hbi : Integrable (fun i => (max c 0 + 1) * (Λ : ℝ) ^ (k + 1) * m i) Measure.count := by
-      rw [integrable_count_iff]
-      refine hbs.congr fun i => ?_
-      exact (Real.norm_of_nonneg ((norm_nonneg _).trans (hbd 0 i))).symm
-    have hfi : ∀ j, Integrable (f j) Measure.count := fun j =>
-      hbi.mono' (measurable_of_countable _).aestronglyMeasurable (ae_of_all _ (hbd j))
-    have hgi : Integrable g Measure.count :=
-      hbi.mono' (measurable_of_countable _).aestronglyMeasurable (ae_of_all _ fun i =>
-        le_of_tendsto (tendsto_norm.comp (hterm i)) (Eventually.of_forall fun j => hbd j i))
-    have hlim := tendsto_integral_of_dominated_convergence _
-      (fun j => (hfi j).aestronglyMeasurable) hbi (fun j => ae_of_all _ (hbd j))
-      (ae_of_all _ hterm)
-    have e1 : ∀ j, ∫ i, f j i ∂Measure.count = R.action (fun x =>
-        ((ω : DifferentialForm (Euclid N') (k + 1)) (Fs j x)).compContinuousLinearMap
-          (fderiv ℝ (Fs j) x)) := by
-      intro j
-      rw [integral_countable (hfi j)]
-      simp only [count_real_singleton, one_smul]
-      exact (htr j).tsum_eq
-    have e2 : ∫ i, g i ∂Measure.count = Y F ω := by
-      rw [integral_countable hgi]
-      simp only [count_real_singleton, one_smul]
-      exact ((hY F Λ hF).2 ω).tsum_eq
-    rw [e2] at hlim
-    exact hlim.congr e1
-  · -- locality: `F ∘ Gᵢ = F' ∘ Gᵢ` and `D(F ∘ Gᵢ) = D(F' ∘ Gᵢ)` a.e. on `Bᵢ`
-    intro F F' Λ hF hF' hae
-    ext ω
-    refine ((hY F Λ hF).2 ω).unique ?_
-    convert (hY F' Λ hF').2 ω using 1
-    funext i
-    have h1 : ∀ᵐ u ∂(volume.restrict (B i)), (F ∘ G i) u = (F' ∘ G i) u :=
-      hpull (fun x => F x = F' x) hae i
-    have h2 := (Submission.dor_lmb_fcd_imp_lipschitz_jacobian_locality).2 (k + 1) N' (F ∘ G i)
-      (F' ∘ G i) (B i) (Λ * L i) (Λ * L i) (hF.comp (hL i)) (hF'.comp (hL i)) (hBm i) h1
-    refine integral_congr_ae ?_
-    filter_upwards [h1, h2] with u hu1 hu2
-    rw [hu1, hu2]
 
 /-- **Lipschitz push-forward and the affine homotopy formula** (Simon Ch. 6, 2.17–2.29 with
 3.2(2) and 3.9).  Given the integer multiplicity series lemma (IMS), for every `P` there are
