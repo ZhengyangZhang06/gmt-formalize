@@ -1845,6 +1845,275 @@ theorem Submission.codim1_hcp_lsa_local_chart_approx : ∀ (P m : ℕ) (M : Set 
         ∫⁻ a, ENNReal.ofReal (‖fderiv ℝ (gs k) a - fderiv ℝ g a‖ ^ 2)) atTop (𝓝 0) := by
       have := ENNReal.Tendsto.const_mul (a := (Λ : ℝ≥0∞) ^ m) hgs_L2
         (Or.inr (ENNReal.pow_ne_top ENNReal.coe_ne_top))
+/-- Step 6 of the oriented graph chart (zero-scale limit plane, Simon 7.5.8): the inverse function
+theorem with a `C¹` local inverse on an open target (as used in Simon Ch. 2, §4).  If `φ` is `C¹`
+on an open `V ∋ z₀` and `Dφ(z₀)` is injective, then `Dφ(z₀)` is invertible, so
+`V₁ = V ∩ {z : Dφ(z) invertible}` is an open neighbourhood of `z₀`.  The inverse function theorem
+restricted to `V₁` gives `φ : V₀ → O` bijective with inverse `χ`, and `χ` is `C¹` at every
+`a ∈ O` because `Dφ(χ(a))` is invertible. -/
+theorem Submission.codim1_zsl_gc_local_inverse : ∀ (d : ℕ) (φ : Euclid d → Euclid d) (V : Set (Euclid d)) (z₀ : Euclid d), IsOpen V → z₀ ∈ V → ContDiffOn ℝ 1 φ V → Injective (fderiv ℝ φ z₀) → ∃ (V₀ O : Set (Euclid d)) (χ : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ z₀ ∈ V₀ ∧ V₀ ⊆ V ∧ ContDiffOn ℝ 1 χ O ∧ MapsTo χ O V₀ ∧ (∀ a ∈ O, φ (χ a) = a) ∧ ∀ z ∈ V₀, φ z ∈ O ∧ χ (φ z) = z := by
+  intro d φ V z₀ hV hz₀ hφ hinj
+  -- `Dφ(z₀)` is invertible (injective endomorphism of a finite-dimensional space)
+  let L₀ : Euclid d ≃L[ℝ] Euclid d :=
+    (LinearEquiv.ofInjectiveEndo
+      ((fderiv ℝ φ z₀ : Euclid d →L[ℝ] Euclid d) : Euclid d →ₗ[ℝ] Euclid d)
+      hinj).toContinuousLinearEquiv
+  have hL₀ : (L₀ : Euclid d →L[ℝ] Euclid d) = fderiv ℝ φ z₀ := by
+    ext x; rfl
+  have hcd : ∀ z ∈ V, ContDiffAt ℝ 1 φ z := fun z hz => hφ.contDiffAt (hV.mem_nhds hz)
+  have hcont : ContinuousOn (fderiv ℝ φ) V := hφ.continuousOn_fderiv_of_isOpen hV le_rfl
+  -- the open set `V₁` where `Dφ` is invertible
+  let V₁ : Set (Euclid d) :=
+    V ∩ fderiv ℝ φ ⁻¹' range ((↑) : (Euclid d ≃L[ℝ] Euclid d) → Euclid d →L[ℝ] Euclid d)
+  have hV₁ : IsOpen V₁ := hcont.isOpen_inter_preimage hV ContinuousLinearEquiv.isOpen
+  have hz₀V₁ : z₀ ∈ V₁ := ⟨hz₀, L₀, hL₀⟩
+  have hstrict : HasStrictFDerivAt φ (L₀ : Euclid d →L[ℝ] Euclid d) z₀ := by
+    rw [hL₀]
+    exact (hcd z₀ hz₀).hasStrictFDerivAt one_ne_zero
+  -- the inverse function theorem, restricted to `V₁`
+  obtain ⟨e, he, hz₀e, hsrc⟩ : ∃ e : OpenPartialHomeomorph (Euclid d) (Euclid d),
+      ⇑e = φ ∧ z₀ ∈ e.source ∧ e.source ⊆ V₁ :=
+    ⟨(hstrict.toOpenPartialHomeomorph φ).restrOpen V₁ hV₁, rfl,
+      ⟨hstrict.mem_toOpenPartialHomeomorph_source, hz₀V₁⟩, inter_subset_right⟩
+  subst he
+  refine ⟨e.source, e.target, e.symm, e.open_source, e.open_target, hz₀e,
+    fun z hz => (hsrc hz).1, ?_, e.mapsTo_symm, fun a ha => e.right_inv ha,
+    fun z hz => ⟨e.map_source hz, e.left_inv hz⟩⟩
+  -- `χ = e.symm` is `C¹` at each `a ∈ O`, since `Dφ(χ(a))` is invertible
+  intro a ha
+  obtain ⟨hV', L, hL⟩ := hsrc (e.map_target ha)
+  have hd : HasFDerivAt e (L : Euclid d →L[ℝ] Euclid d) (e.symm a) := by
+    rw [hL]
+    exact ((hcd _ hV').differentiableAt one_ne_zero).hasFDerivAt
+  exact (e.contDiffAt_symm ha hd (hcd _ hV')).contDiffWithinAt
+/-- **Calculus of locally Lipschitz functions on a `C¹` submanifold** (Simon Ch. 2, 4.4–4.9).
+Let `M ⊆ ℝᴾ` be an embedded `C¹` `m`-submanifold and `P_x` the orthogonal projection onto
+`span T_xM`.  (i) For `ζ` locally Lipschitz on `M`, `x ↦ d^M_xζ(P_xe_j)` is a.e. strongly
+measurable for `Hᵐ⌞M`: evaluate the a.e. strongly measurable operator `d^M_xζ ∘ P_x` at `e_j`.
+(ii) If moreover `ζ = 0` on `M` off a compact `C ⊆ M`, cover `C` by finitely many open sets
+`W_p ∩ B₁(p)`, `p ∈ C`, where `W_p` carries one-chart approximations, and split `ζ = Σᵢ χᵢζ` on
+`M` by a smooth partition of unity `χᵢ` on `C` subordinate to this cover.  Each piece `χᵢζ` is
+locally Lipschitz on `M` and vanishes on `M` off the compact `C ∩ spt χᵢ`, so it has approximants
+`ζ_{i,k}`; put `ζ_k = Σᵢ ζ_{i,k}`.  At `Hᵐ`-a.e. `x ∈ M` every piece is differentiable within `M`,
+so `d^M_xζ = Σᵢ d^M_x(χᵢζ)` on `span T_xM`, and Cauchy–Schwarz over the pieces bounds the
+gradient error of `ζ_k` by `#pieces` times the sum of the (a.e. measurable) errors of the pieces,
+each of which tends to `0`. -/
+theorem Submission.codim1_hcp_lipschitz_smooth_approx : ∀ (P m : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → (∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → ∀ j : Fin P, AEStronglyMeasurable (fun x => fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) (μHE[m].restrict M)) ∧ ∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∃ (C' : Set (Euclid P)) (ζs : ℕ → Euclid P → ℝ), IsCompact C' ∧ C' ⊆ M ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ζs k) ∧ HasCompactSupport (ζs k)) ∧ (∀ k, ∀ x ∈ M, x ∉ C' → ζs k x = 0) ∧ TendstoUniformlyOn ζs ζ atTop M ∧ Tendsto (fun k => ∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P, (fderiv ℝ (ζs k) x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)) - fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2) ∂μHE[m]) atTop (𝓝 0) := by
+  intro P m M hM
+  have hMmeas : MeasurableSet M := (Submission.dimred_rpd_embedded_locally_closed P 1 m M hM).1
+  -- the tangent projections `P_x e_j` are a.e. strongly measurable on `M`
+  have hPj : ∀ j : Fin P, AEStronglyMeasurable
+      (fun x => (Submodule.span ℝ (tangentSpace M x)).starProjection
+        (EuclideanSpace.single j (1 : ℝ))) (μHE[m].restrict M) := by
+    intro j
+    have hc := Submission.codim1_hcp_lsa_tangent_projection_continuousOn P m M hM
+    exact ((ContinuousLinearMap.apply ℝ (Euclid P)
+      (EuclideanSpace.single j (1 : ℝ))).continuous.comp_continuousOn hc).aestronglyMeasurable
+        hMmeas
+  -- part (i): evaluate the operator `d^M_xζ ∘ P_x` at `e_j`
+  have part_i : ∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → ∀ j : Fin P,
+      AEStronglyMeasurable (fun x => fderivWithin ℝ ζ M x
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)))
+        (μHE[m].restrict M) := by
+    intro ζ hζ j
+    exact (ContinuousLinearMap.apply ℝ ℝ
+      (EuclideanSpace.single j (1 : ℝ))).continuous.comp_aestronglyMeasurable
+        (Submission.codim1_hcp_lsa_tangential_derivative_aesm P m M ζ hM hζ)
+  refine ⟨part_i, ?_⟩
+  -- part (ii)
+  rintro ζ hζ ⟨C, hCc, hCM, hζC⟩
+  -- open sets `W p ∋ p` carrying one-chart approximations
+  choose! W hWo hpW hWapprox using Submission.codim1_hcp_lsa_local_chart_approx P m M hM
+  -- a finite subcover of `C` by the sets `W p ∩ B₁(p)`, `p ∈ C`
+  obtain ⟨t, htC, hCt⟩ := hCc.elim_nhds_subcover (fun p => W p ∩ ball p 1) fun p hp =>
+    ((hWo p (hCM hp)).inter isOpen_ball).mem_nhds ⟨hpW p (hCM hp), mem_ball_self one_pos⟩
+  let ι := {p // p ∈ t}
+  let U : ι → Set (Euclid P) := fun i => W i.1 ∩ ball i.1 1
+  have hUo : ∀ i, IsOpen (U i) := fun i => (hWo i.1 (hCM (htC i.1 i.2))).inter isOpen_ball
+  have hCU : C ⊆ ⋃ i, U i := by
+    intro x hx
+    obtain ⟨p, hp, hxp⟩ := mem_iUnion₂.1 (hCt hx)
+    exact mem_iUnion.2 ⟨⟨p, hp⟩, hxp⟩
+  -- a smooth partition of unity `χᵢ = f i` on `C` subordinate to the cover
+  obtain ⟨f, hf⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Euclid P)) hCc.isClosed U hUo hCU
+  have hfsmooth : ∀ i, ContDiff ℝ (⊤ : ℕ∞) (f i) := fun i =>
+    contMDiff_iff_contDiff.1 (f i).contMDiff
+  have hfsum : ∀ x ∈ C, ∑ i, f i x = 1 := by
+    intro x hx
+    rw [← finsum_eq_sum_of_fintype]
+    exact f.sum_eq_one hx
+  -- the pieces `ζᵢ = χᵢ ζ`, with `ζ = Σᵢ ζᵢ` on `M`
+  let ζi : ι → Euclid P → ℝ := fun i x => f i x * ζ x
+  have hζeq : ∀ x ∈ M, ζ x = ∑ i, ζi i x := by
+    intro x hx
+    by_cases hxC : x ∈ C
+    · simp only [ζi, ← Finset.sum_mul, hfsum x hxC, one_mul]
+    · simp [ζi, hζC x hx hxC]
+  -- each piece is locally Lipschitz on `M`: near `x`, `χᵢ` is Lipschitz with values in `[0, 1]`
+  -- and `ζ` is Lipschitz and bounded by `|ζ x| + K`
+  have hζiLip : ∀ i, LocallyLipschitzOn M (ζi i) := by
+    intro i x hx
+    obtain ⟨K, s, hs, hKs⟩ := hζ hx
+    obtain ⟨L, u, hu, hLu⟩ := ((hfsmooth i).of_le (by exact_mod_cast le_top)).locallyLipschitz x
+    have hxs : x ∈ s := mem_of_mem_nhdsWithin hx hs
+    refine ⟨K + Real.toNNReal (|ζ x| + K) * L, s ∩ u ∩ closedBall x 1,
+      inter_mem (inter_mem hs (mem_nhdsWithin_of_mem_nhds hu))
+        (mem_nhdsWithin_of_mem_nhds (closedBall_mem_nhds x one_pos)), ?_⟩
+    refine LipschitzOnWith.of_dist_le_mul fun y hy z hz => ?_
+    have hζyz := hKs.dist_le_mul y hy.1.1 z hz.1.1
+    have hfyz := hLu.dist_le_mul y hy.1.2 z hz.1.2
+    have hζz : |ζ z| ≤ |ζ x| + K := by
+      have h1 := hKs.dist_le_mul z hz.1.1 x hxs
+      have h2 : dist z x ≤ 1 := hz.2
+      rw [Real.dist_eq] at h1
+      have h3 : |ζ z| ≤ |ζ x| + |ζ z - ζ x| := by
+        have := abs_add_le (ζ x) (ζ z - ζ x); simpa using this
+      nlinarith [abs_nonneg (ζ z - ζ x), NNReal.coe_nonneg K]
+    have hfy : |f i y| ≤ 1 := by rw [abs_of_nonneg (f.nonneg i y)]; exact f.le_one i y
+    rw [Real.dist_eq] at hζyz hfyz ⊢
+    have hkey : f i y * ζ y - f i z * ζ z =
+        f i y * (ζ y - ζ z) + ζ z * (f i y - f i z) := by ring
+    simp only [ζi]
+    rw [hkey]
+    have hdist : 0 ≤ dist y z := dist_nonneg
+    calc |f i y * (ζ y - ζ z) + ζ z * (f i y - f i z)|
+        ≤ |f i y| * |ζ y - ζ z| + |ζ z| * |f i y - f i z| := by
+          refine (abs_add_le _ _).trans ?_; rw [abs_mul, abs_mul]
+      _ ≤ 1 * (K * dist y z) + (|ζ x| + K) * (L * dist y z) := by gcongr
+      _ = ((K + Real.toNNReal (|ζ x| + K) * L : NNReal) : ℝ) * dist y z := by
+          rw [NNReal.coe_add, NNReal.coe_mul, Real.coe_toNNReal _ (by positivity)]; ring
+  -- one-chart approximations of the pieces
+  have happ : ∀ i : ι, ∃ (C' : Set (Euclid P)) (ζs : ℕ → Euclid P → ℝ), IsCompact C' ∧
+      C' ⊆ M ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ζs k) ∧ HasCompactSupport (ζs k)) ∧
+      (∀ k, ∀ x ∈ M, x ∉ C' → ζs k x = 0) ∧ TendstoUniformlyOn ζs (ζi i) atTop M ∧
+      Tendsto (fun k => ∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P,
+        (fderiv ℝ (ζs k) x ((Submodule.span ℝ (tangentSpace M x)).starProjection
+          (EuclideanSpace.single j 1)) - fderivWithin ℝ (ζi i) M x
+          ((Submodule.span ℝ (tangentSpace M x)).starProjection
+            (EuclideanSpace.single j 1))) ^ 2) ∂μHE[m]) atTop (𝓝 0) := by
+    intro i
+    refine hWapprox i.1 (hCM (htC i.1 i.2)) (ζi i) (hζiLip i)
+      ⟨C ∩ tsupport (f i), hCc.inter_right (isClosed_tsupport _), ?_, ?_⟩
+    · -- `C ∩ spt χᵢ ⊆ M ∩ W pᵢ`
+      intro x hx
+      exact ⟨hCM hx.1, (hf i hx.2).1⟩
+    · -- `ζᵢ = 0` on `M` off `C ∩ spt χᵢ`
+      intro x hxM hx
+      by_cases hxC : x ∈ C
+      · have hxt : x ∉ tsupport (f i) := fun h => hx ⟨hxC, h⟩
+        simp [ζi, image_eq_zero_of_notMem_tsupport hxt]
+      · simp [ζi, hζC x hxM hxC]
+  choose C'i ζsi hC'c hC'M hζsi hζsi0 hζsiU hζsiL using happ
+  -- `C' = ⋃ᵢ C'ᵢ` and `ζ_k = Σᵢ ζ_{i,k}`
+  refine ⟨⋃ i, C'i i, fun k => ∑ i, ζsi i k, isCompact_iUnion hC'c, iUnion_subset hC'M,
+    fun k => ⟨?_, HasCompactSupport.finset_sum fun i _ => (hζsi i k).2⟩, ?_, ?_, ?_⟩
+  · -- smoothness
+    show ContDiff ℝ _ (∑ i, ζsi i k)
+    rw [Finset.sum_fn]
+    exact ContDiff.sum fun i _ => (hζsi i k).1
+  · -- `ζ_k = 0` on `M ∖ C'`
+    intro k x hx hxC'
+    show (∑ i, ζsi i k) x = 0
+    rw [Finset.sum_apply]
+    exact Finset.sum_eq_zero fun i _ => hζsi0 i k x hx fun h => hxC' (mem_iUnion.2 ⟨i, h⟩)
+  · -- uniform convergence on `M`
+    have hsum : ∀ s : Finset ι, TendstoUniformlyOn (fun k x => ∑ i ∈ s, ζsi i k x)
+        (fun x => ∑ i ∈ s, ζi i x) atTop M := by
+      intro s
+      induction s using Finset.induction_on with
+      | empty =>
+        simp only [Finset.sum_empty]
+        exact Metric.tendstoUniformlyOn_iff.2 fun ε hε =>
+          Eventually.of_forall fun k x _ => by simpa using hε
+      | insert a s ha ih =>
+        simp only [Finset.sum_insert ha]
+        exact (hζsiU a).add ih
+    refine ((hsum Finset.univ).congr_right fun x hx => (hζeq x hx).symm).congr ?_
+    exact Eventually.of_forall fun k x _ => by simp [Finset.sum_apply]
+  · -- convergence of the tangential gradients
+    set w : Euclid P → Fin P → Euclid P := fun x j =>
+      (Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)
+    have hwmem : ∀ x j, w x j ∈ Submodule.span ℝ (tangentSpace M x) := fun x j =>
+      Submodule.starProjection_apply_mem _ _
+    -- `Hᵐ`-a.e. on `M` every piece is differentiable within `M`
+    have hdiff : ∀ᵐ x ∂(μHE[m].restrict M),
+        x ∈ M ∧ ∀ i, DifferentiableWithinAt ℝ (ζi i) M x := by
+      have h1 : ∀ i, ∀ᵐ x ∂(μHE[m].restrict M), DifferentiableWithinAt ℝ (ζi i) M x :=
+        fun i => Submission.codim1_hcp_lsa_rademacher_on_submanifold P m M (ζi i) hM (hζiLip i)
+      filter_upwards [ae_restrict_mem hMmeas, Filter.eventually_all.2 h1] with x hx hx'
+      exact ⟨hx, hx'⟩
+    -- there `d^M_xζ = Σᵢ d^M_xζᵢ` on `span T_xM`, so the error of `ζ_k` is the sum of the errors
+    -- of the pieces
+    have hsplit : ∀ k, ∀ᵐ x ∂(μHE[m].restrict M), ∀ j,
+        fderiv ℝ (∑ i, ζsi i k) x (w x j) - fderivWithin ℝ ζ M x (w x j) =
+          ∑ i, (fderiv ℝ (ζsi i k) x (w x j) - fderivWithin ℝ (ζi i) M x (w x j)) := by
+      intro k
+      filter_upwards [hdiff] with x hx j
+      obtain ⟨hxM, hxd⟩ := hx
+      have hsum : HasFDerivWithinAt (∑ i, ζi i) (∑ i, fderivWithin ℝ (ζi i) M x) M x :=
+        HasFDerivWithinAt.sum fun i _ => (hxd i).hasFDerivWithinAt
+      have hζd : HasFDerivWithinAt ζ (∑ i, fderivWithin ℝ (ζi i) M x) M x :=
+        hsum.congr (fun y hy => by rw [Finset.sum_apply]; exact hζeq y hy)
+          (by rw [Finset.sum_apply]; exact hζeq x hxM)
+      have hW := Submission.codim1_hcp_lsa_fderivWithin_eq_on_tangent_span P M ζ _ x (w x j)
+        hζd (hwmem x j)
+      have hD : fderiv ℝ (∑ i, ζsi i k) x = ∑ i, fderiv ℝ (ζsi i k) x :=
+        fderiv_sum fun i _ => ((hζsi i k).1.differentiable (by simp)).differentiableAt
+      rw [hW, hD, sum_apply, sum_apply, ← Finset.sum_sub_distrib]
+    -- the errors of the pieces are a.e. measurable
+    set n : ℕ := Fintype.card ι with hn
+    let Fi : ι → ℕ → Euclid P → ℝ≥0∞ := fun i k x => ENNReal.ofReal (∑ j : Fin P,
+      (fderiv ℝ (ζsi i k) x (w x j) - fderivWithin ℝ (ζi i) M x (w x j)) ^ 2)
+    have hFi_meas : ∀ i k, AEMeasurable (Fi i k) (μHE[m].restrict M) := by
+      intro i k
+      refine AEMeasurable.ennreal_ofReal ?_
+      refine (Finset.aestronglyMeasurable_fun_sum _ fun j _ => ?_).aemeasurable
+      have hcont : Continuous (fderiv ℝ (ζsi i k)) := (hζsi i k).1.continuous_fderiv (by simp)
+      have h1 : AEStronglyMeasurable (fun x => fderiv ℝ (ζsi i k) x (w x j))
+          (μHE[m].restrict M) :=
+        isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable
+          (hcont.aestronglyMeasurable.prodMk (hPj j))
+      exact (h1.sub (part_i (ζi i) (hζiLip i) j)).pow 2
+    -- pointwise Cauchy–Schwarz over the pieces
+    have hbound : ∀ k, ∀ᵐ x ∂(μHE[m].restrict M), ENNReal.ofReal (∑ j : Fin P,
+        (fderiv ℝ (∑ i, ζsi i k) x (w x j) - fderivWithin ℝ ζ M x (w x j)) ^ 2) ≤
+          (n : ℝ≥0∞) * ∑ i, Fi i k x := by
+      intro k
+      filter_upwards [hsplit k] with x hx
+      have hcs : ∀ j : Fin P,
+          (∑ i, (fderiv ℝ (ζsi i k) x (w x j) - fderivWithin ℝ (ζi i) M x (w x j))) ^ 2 ≤
+            (n : ℝ) * ∑ i, (fderiv ℝ (ζsi i k) x (w x j) -
+              fderivWithin ℝ (ζi i) M x (w x j)) ^ 2 := by
+        intro j
+        have := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun _ : ι => (1 : ℝ))
+          (fun i => fderiv ℝ (ζsi i k) x (w x j) - fderivWithin ℝ (ζi i) M x (w x j))
+        simpa [hn] using this
+      calc ENNReal.ofReal (∑ j : Fin P,
+            (fderiv ℝ (∑ i, ζsi i k) x (w x j) - fderivWithin ℝ ζ M x (w x j)) ^ 2)
+          = ENNReal.ofReal (∑ j : Fin P, (∑ i, (fderiv ℝ (ζsi i k) x (w x j) -
+              fderivWithin ℝ (ζi i) M x (w x j))) ^ 2) := by simp_rw [hx]
+        _ ≤ ENNReal.ofReal (∑ j : Fin P, (n : ℝ) * ∑ i, (fderiv ℝ (ζsi i k) x (w x j) -
+              fderivWithin ℝ (ζi i) M x (w x j)) ^ 2) :=
+            ENNReal.ofReal_le_ofReal (Finset.sum_le_sum fun j _ => hcs j)
+        _ = (n : ℝ≥0∞) * ∑ i, Fi i k x := by
+            rw [← Finset.mul_sum, Finset.sum_comm, ENNReal.ofReal_mul (by positivity),
+              ENNReal.ofReal_natCast, ENNReal.ofReal_sum_of_nonneg fun i _ => by positivity]
+    -- integrate, split the finite sum, and pass to the limit
+    have hint : ∀ k, ∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P,
+        (fderiv ℝ (∑ i, ζsi i k) x (w x j) - fderivWithin ℝ ζ M x (w x j)) ^ 2) ∂μHE[m] ≤
+          (n : ℝ≥0∞) * ∑ i, ∫⁻ x in M, Fi i k x ∂μHE[m] := by
+      intro k
+      calc _ ≤ ∫⁻ x in M, (n : ℝ≥0∞) * ∑ i, Fi i k x ∂μHE[m] :=
+            lintegral_mono_ae (hbound k)
+        _ = (n : ℝ≥0∞) * ∫⁻ x in M, ∑ i, Fi i k x ∂μHE[m] :=
+            lintegral_const_mul' _ _ (ENNReal.natCast_ne_top n)
+        _ = (n : ℝ≥0∞) * ∑ i, ∫⁻ x in M, Fi i k x ∂μHE[m] := by
+            rw [lintegral_finsetSum' _ fun i _ => hFi_meas i k]
+    have hlim : Tendsto (fun k => (n : ℝ≥0∞) * ∑ i, ∫⁻ x in M, Fi i k x ∂μHE[m])
+        atTop (𝓝 0) := by
+      have := ENNReal.Tendsto.const_mul (tendsto_finsetSum Finset.univ fun i _ => hζsiL i)
+        (Or.inr (ENNReal.natCast_ne_top n))
       simpa using this
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun k => zero_le) hint
 
