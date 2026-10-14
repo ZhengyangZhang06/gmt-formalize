@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "61e46b85ab50ec493d57832f8f37f8d5558b10224c7c9af7fde5e99a32511ffc",
+  "git_delta": {
+    "base_commit": "0274683619013dcc8170531cebbd1216a3618cd7",
+    "candidate_commit": "f7040d672fb02e3f72e011c60e42da59b6945944",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_bv_l1_duality",
+    "diff_sha256": "cd0f2c565efd939714f29cabb1c5189109804e13e9cff8f6b9ca8012f8620fd0",
+    "source_sha256": "a404c51fc05b4f025670731b316c656bb7f9bc1bd73bec27f725ed6165019300",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_bv_l1_duality",
+      "statement": "∀ (n : ℕ) (R δ C : ℝ) (h : Euclid n → ℝ), 0 < δ → IntegrableOn h (ball 0 (R + δ)) → (∀ g : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ ball 0 (R + δ) → (∀ x, |g x| ≤ 1) → ∫ x, h x * g x ≤ C) → ∫ x in ball 0 R, |h x| ≤ C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
