@@ -679,6 +679,190 @@ theorem Submission.dor_lmb_fcd_jwc_mollify_fderiv_eq : ∀ (k : ℕ) (L : NNReal
   filter_upwards [hlf] with s hs
   rw [hs, hh]
   ring
+/-- **Mollification preserves the Lipschitz constant** (step 4 of the Lipschitz smoothing): if
+`ψ ≥ 0` is continuous with compact support and `∫ ψ = 1`, and `g` is `K`-Lipschitz, then
+`G x = ∫ ψ(y) g(x - y) dy` is `K`-Lipschitz.  Indeed `G x - G x'` is the integral of
+`ψ(y) (g(x - y) - g(x' - y))`, whose absolute value is at most `ψ(y) K ‖x - x'‖`, and
+`∫ ψ = 1`. -/
+theorem Submission.cmcs_ls_mollify_lipschitz : ∀ (P : ℕ) (ψ g : Euclid P → ℝ) (K : NNReal), Continuous ψ → HasCompactSupport ψ → (∀ x, 0 ≤ ψ x) → ∫ x, ψ x = 1 → LipschitzWith K g → LipschitzWith K (fun x => ∫ y, ψ y * g (x - y)) := by
+  intro P ψ g K hψc hψs hψ0 hψ1 hg
+  -- step 1: `y ↦ ψ y * g (x - y)` is continuous with support in `support ψ`, hence integrable
+  have hint : ∀ x : Euclid P, Integrable (fun y => ψ y * g (x - y)) := fun x =>
+    (hψc.mul (hg.continuous.comp (continuous_const.sub continuous_id))).integrable_of_hasCompactSupport
+      hψs.mul_right
+  -- step 5: it suffices to show `dist (G x) (G x') ≤ K * dist x x'`
+  refine LipschitzWith.of_dist_le_mul fun x x' => ?_
+  -- step 2: `G x - G x'` is a single integral
+  rw [Real.dist_eq, ← integral_sub (hint x) (hint x'), ← Real.norm_eq_abs]
+  calc ‖∫ y, (ψ y * g (x - y) - ψ y * g (x' - y))‖
+      ≤ ∫ y, ψ y * (K * dist x x') := by
+        -- step 4: integrate the pointwise bound of step 3 against the integrable majorant
+        refine norm_integral_le_of_norm_le
+          ((hψc.integrable_of_hasCompactSupport (μ := volume) hψs).mul_const _)
+          (Eventually.of_forall fun y => ?_)
+        -- step 3: `|ψ y (g (x - y) - g (x' - y))| = ψ y dist (g (x - y)) (g (x' - y))`
+        -- `≤ ψ y (K dist (x - y) (x' - y)) = ψ y (K dist x x')`
+        rw [← mul_sub, Real.norm_eq_abs, abs_mul, abs_of_nonneg (hψ0 y), ← Real.dist_eq,
+          ← dist_sub_right x x' y]
+        exact mul_le_mul_of_nonneg_left (hg.dist_le_mul _ _) (hψ0 y)
+    _ = K * dist x x' := by rw [integral_mul_const, hψ1, one_mul]
+
+/-- **Smooth approximation of a Lipschitz function** (step 4 of the weak continuity of Jacobians):
+an `L`-Lipschitz `f : ℝᵏ → ℝ` is the uniform limit of `C^∞`, `L`-Lipschitz functions `f_n` with
+`Df_n(x) → Df(x)` in operator norm for a.e. `x`.  Take `f_n = ρ_n ⋆ f`, where `ρ_n = φ_n / ∫ φ_n`
+normalizes a bump `φ_n` equal to `1` on `B(0, 1/(n+2))` and supported in `B(0, 2/(n+2))`.  Then
+`f_n` is smooth, `L`-Lipschitz (`cmcs_ls_mollify_lipschitz`) and `|f_n - f| ≤ 2L/(n+2)`.  By
+`dor_lmb_fcd_jwc_mollify_fderiv_eq`, `Df_n(x) eᵢ = (ρ_n ⋆ Df(·) eᵢ)(x)`; as `∫ φ_n ≥ |B(0, 1/(n+2))|`
+gives `0 ≤ ρ_n ≤ 2ᵈ / |B(0, 2/(n+2))|`, this tends to `Df(x) eᵢ` at every Lebesgue point of the
+bounded function `Df(·) eᵢ`, and `‖T‖ ≤ ∑ᵢ |T eᵢ|` gives convergence in operator norm. -/
+theorem Submission.dor_lmb_fcd_jwc_lipschitz_smooth_approx : ∀ (k : ℕ) (L : NNReal) (f : Euclid k → ℝ), LipschitzWith L f → ∃ fs : ℕ → Euclid k → ℝ, (∀ n, ContDiff ℝ (⊤ : ℕ∞) (fs n)) ∧ (∀ n, LipschitzWith L (fs n)) ∧ TendstoUniformly fs f atTop ∧ ∀ᵐ x ∂(volume : Measure (Euclid k)), Tendsto (fun n => fderiv ℝ (fs n) x) atTop (𝓝 (fderiv ℝ f x)) := by
+  intro k L f hf
+  -- step 1: bumps `φ n` with `rIn = 1/(n+2)`, `rOut = 2/(n+2)`, normalized to `ρ n = φ n / ∫ φ n`
+  have hpos : ∀ n : ℕ, (0 : ℝ) < (n : ℝ) + 2 := fun n => by positivity
+  let φ : ℕ → ContDiffBump (0 : Euclid k) := fun n =>
+    ⟨1 / ((n : ℝ) + 2), 2 / ((n : ℝ) + 2), by have := hpos n; positivity,
+      div_lt_div_of_pos_right (by norm_num) (hpos n)⟩
+  have hrOut : ∀ n, (φ n).rOut = 2 * (φ n).rIn := fun n => by
+    show 2 / ((n : ℝ) + 2) = 2 * (1 / ((n : ℝ) + 2))
+    rw [mul_one_div]
+  -- `|B(x, r)| = r ^ d * c` with `c = |B(0, 1)| > 0`
+  set d := Module.finrank ℝ (Euclid k)
+  set c := (volume : Measure (Euclid k)).real (closedBall 0 1)
+  have hcpos : 0 < c := ENNReal.toReal_pos (measure_closedBall_pos _ _ one_pos).ne'
+    measure_closedBall_lt_top.ne
+  have hvol : ∀ (x : Euclid k) (r : ℝ), 0 ≤ r →
+      (volume : Measure (Euclid k)).real (closedBall x r) = r ^ d * c :=
+    fun x r hr => Measure.addHaar_real_closedBall' _ x hr
+  -- `φ n = 1` on `B(0, rIn)` and `φ n ≥ 0`, so `∫ φ n ≥ |B(0, rIn)| = rIn ^ d * c > 0`
+  have hφint : ∀ n, Integrable (φ n) (volume : Measure (Euclid k)) := fun n =>
+    (φ n).continuous.integrable_of_hasCompactSupport (φ n).hasCompactSupport
+  have hIge : ∀ n, (φ n).rIn ^ d * c ≤ ∫ x, φ n x := by
+    intro n
+    rw [← hvol 0 _ (φ n).rIn_pos.le]
+    calc (volume : Measure (Euclid k)).real (closedBall 0 (φ n).rIn)
+        = ∫ x in closedBall (0 : Euclid k) (φ n).rIn, φ n x := by
+          rw [setIntegral_congr_fun measurableSet_closedBall
+            (fun x hx => (φ n).one_of_mem_closedBall hx), setIntegral_const, smul_eq_mul, mul_one]
+      _ ≤ ∫ x, φ n x :=
+          setIntegral_le_integral (hφint n) (Eventually.of_forall fun x => (φ n).nonneg)
+  have hIpos : ∀ n, 0 < ∫ x, φ n x := fun n =>
+    (mul_pos (pow_pos (φ n).rIn_pos d) hcpos).trans_le (hIge n)
+  set ρ : ℕ → Euclid k → ℝ := fun n x => φ n x / ∫ y, φ n y with hρ
+  have hρc : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (ρ n) := fun n => (φ n).contDiff.div_const _
+  have hρc1 : ∀ n, ContDiff ℝ 1 (ρ n) := fun n => (φ n).contDiff.div_const _
+  have hρcont : ∀ n, Continuous (ρ n) := fun n => (φ n).continuous.div_const _
+  have hρs : ∀ n, HasCompactSupport (ρ n) := fun n =>
+    (φ n).hasCompactSupport.comp_left (g := fun t : ℝ => t / ∫ y, φ n y) (zero_div _)
+  have hρ0 : ∀ n x, 0 ≤ ρ n x := fun n x => div_nonneg (φ n).nonneg (hIpos n).le
+  have hρint : ∀ n, ∫ x, ρ n x = 1 := fun n => by
+    show ∫ x, φ n x / ∫ y, φ n y = 1
+    rw [integral_div, div_self (hIpos n).ne']
+  have hρsupp : ∀ n, support (ρ n) ⊆ ball 0 (φ n).rOut := fun n x hx => by
+    rw [← (φ n).support_eq, mem_support]
+    intro h0
+    exact (mem_support.1 hx) (by simp [hρ, h0])
+  have hρle : ∀ n x, ρ n x ≤ 1 / ((φ n).rIn ^ d * c) := fun n x =>
+    calc ρ n x = φ n x / ∫ y, φ n y := rfl
+      _ ≤ 1 / ∫ y, φ n y := div_le_div_of_nonneg_right (φ n).le_one (hIpos n).le
+      _ ≤ 1 / ((φ n).rIn ^ d * c) :=
+          one_div_le_one_div_of_le (mul_pos (pow_pos (φ n).rIn_pos d) hcpos) (hIge n)
+  -- `f_n = ρ n ⋆ f`
+  set fs : ℕ → Euclid k → ℝ := fun n x => ∫ t, ρ n t * f (x - t) with hfs
+  have hconv : ∀ n, fs n = convolution (ρ n) f (ContinuousLinearMap.lsmul ℝ ℝ) volume := by
+    intro n; funext x; simp [hfs, convolution_def]
+  have hrOut0 : Tendsto (fun n => (φ n).rOut) atTop (𝓝 0) := by
+    have := tendsto_const_nhds (x := (2 : ℝ)) |>.div_atTop
+      (tendsto_atTop_add_const_right atTop (2 : ℝ) tendsto_natCast_atTop_atTop)
+    simpa [φ] using this
+  refine ⟨fs, fun n => ?_, fun n => ?_, ?_, ?_⟩
+  · -- step 2: `ρ n ⋆ f` is smooth
+    rw [hconv]
+    exact (hρs n).contDiff_convolution_left _ (hρc n) hf.continuous.locallyIntegrable
+  · -- step 3: `ρ n ⋆ f` is `L`-Lipschitz
+    exact Submission.cmcs_ls_mollify_lipschitz k (ρ n) f L (hρcont n) (hρs n) (hρ0 n) (hρint n) hf
+  · -- step 4: `|f_n x - f x| ≤ L * rOut` for all `x`, and `rOut → 0`
+    rw [Metric.tendstoUniformly_iff]
+    intro ε hε
+    filter_upwards [(hrOut0.const_mul (L : ℝ)).eventually (gt_mem_nhds (by simpa using hε))]
+      with n hn x
+    have hdist := dist_convolution_le (μ := volume) (x₀ := x) (z₀ := f x) (g := f)
+      (by positivity : (0 : ℝ) ≤ L * (φ n).rOut) (hρsupp n) (hρ0 n) (hρint n)
+      hf.continuous.aestronglyMeasurable (fun y hy => by
+        calc dist (f y) (f x) ≤ L * dist y x := hf.dist_le_mul y x
+          _ ≤ L * (φ n).rOut := by gcongr; exact (mem_ball.1 hy).le)
+    rw [← hconv] at hdist
+    rw [dist_comm]
+    exact lt_of_le_of_lt hdist hn
+  · -- step 5: `Df_n(x) v = ∫ ρ n t * Df(x - t) v dt`
+    have hB1 : ∀ n x v, fderiv ℝ (fs n) x v = ∫ t, ρ n t * fderiv ℝ f (x - t) v := fun n x v =>
+      Submission.dor_lmb_fcd_jwc_mollify_fderiv_eq k L f (ρ n) hf (hρc1 n) (hρs n) x v
+    have hδ : Tendsto (fun n => (φ n).rOut) atTop (𝓝[>] 0) :=
+      tendsto_nhdsWithin_iff.2 ⟨hrOut0, Eventually.of_forall fun n => (φ n).rOut_pos⟩
+    -- steps 6-7: for each basis vector `e_i`, `Df_n(x) e_i → Df(x) e_i` for a.e. `x`
+    have hDi : ∀ i : Fin k, ∀ᵐ x ∂(volume : Measure (Euclid k)),
+        Tendsto (fun n => fderiv ℝ (fs n) x (EuclideanSpace.single i (1 : ℝ))) atTop
+          (𝓝 (fderiv ℝ f x (EuclideanSpace.single i (1 : ℝ)))) := by
+      intro i
+      set g : Euclid k → ℝ := fun s => fderiv ℝ f s (EuclideanSpace.single i (1 : ℝ)) with hg
+      have hloc : LocallyIntegrable g (volume : Measure (Euclid k)) := by
+        refine (locallyIntegrable_const ((L : ℝ) * ‖EuclideanSpace.single i (1 : ℝ)‖)).mono
+          ((measurable_fderiv_apply_const ℝ f _).aestronglyMeasurable)
+          (Eventually.of_forall fun s => ?_)
+        rw [Real.norm_eq_abs (_ * _), abs_of_nonneg (by positivity)]
+        exact (ContinuousLinearMap.le_opNorm _ _).trans
+          (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ hf) (norm_nonneg _))
+      -- Lebesgue differentiation: `⨍_{B(x, r)} |g - g x| → 0` as `r → 0`, for a.e. `x`
+      filter_upwards [IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub volume hloc 1]
+        with x hx
+      have havg := hx (fun _ => x) (fun n => (φ n).rOut) hδ
+        (Eventually.of_forall fun n => mem_closedBall_self (by simpa using (φ n).rOut_pos.le))
+      -- `0 ≤ ρ n (x - ·) ≤ 2 ^ d / |B(x, rOut)|`, supported in `B(x, rOut)`, with integral `1`
+      have key := tendsto_integral_smul_of_tendsto_average_norm_sub ((2 : ℝ) ^ d) havg
+        (g := fun n y => ρ n (x - y))
+        (Eventually.of_forall fun n => hloc.integrableOn_isCompact (isCompact_closedBall _ _))
+        (tendsto_const_nhds.congr fun n => by
+          rw [integral_sub_left_eq_self (ρ n) volume x, hρint n])
+        (Eventually.of_forall fun n y hy => by
+          have hy' : x - y ∈ ball (0 : Euclid k) (φ n).rOut := hρsupp n hy
+          rw [mem_ball, dist_zero_right] at hy'
+          rw [mem_closedBall, dist_eq_norm, ← norm_neg, neg_sub]
+          exact hy'.le)
+        (Eventually.of_forall fun n y => by
+          rw [abs_of_nonneg (hρ0 n _), hvol x _ (φ n).rOut_pos.le, hrOut n]
+          calc ρ n (x - y) ≤ 1 / ((φ n).rIn ^ d * c) := hρle n _
+            _ = 2 ^ d / ((2 * (φ n).rIn) ^ d * c) := by
+              rw [mul_pow]
+              field_simp)
+      refine key.congr fun n => ?_
+      rw [hB1, ← integral_sub_left_eq_self (fun y => ρ n (x - y) • g y) volume x]
+      simp only [sub_sub_cancel, smul_eq_mul, hg]
+    filter_upwards [ae_all_iff.2 hDi] with x hx
+    -- step 8: `‖T‖ ≤ ∑ᵢ |T eᵢ|`, so convergence on the basis gives convergence in norm
+    have hbound : ∀ T : Euclid k →L[ℝ] ℝ, ‖T‖ ≤ ∑ i, ‖T (EuclideanSpace.single i (1 : ℝ))‖ := by
+      intro T
+      refine ContinuousLinearMap.opNorm_le_bound T (Finset.sum_nonneg fun i _ => norm_nonneg _)
+        fun w => ?_
+      have hw : w = ∑ i, w i • EuclideanSpace.single i (1 : ℝ) := by
+        conv_lhs => rw [← (EuclideanSpace.basisFun (Fin k) ℝ).sum_repr w]
+        simp
+      calc ‖T w‖ = ‖∑ i, w i • T (EuclideanSpace.single i (1 : ℝ))‖ := by
+            conv_lhs => rw [hw]
+            simp [map_sum, map_smul]
+        _ ≤ ∑ i, ‖w i • T (EuclideanSpace.single i (1 : ℝ))‖ := norm_sum_le _ _
+        _ = ∑ i, ‖w i‖ * ‖T (EuclideanSpace.single i (1 : ℝ))‖ := by simp
+        _ ≤ ∑ i, ‖w‖ * ‖T (EuclideanSpace.single i (1 : ℝ))‖ := by
+            gcongr with i
+            exact PiLp.norm_apply_le w i
+        _ = (∑ i, ‖T (EuclideanSpace.single i (1 : ℝ))‖) * ‖w‖ := by
+            rw [Finset.sum_mul]; simp [mul_comm]
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero (fun n => norm_nonneg _) (fun n => hbound _) ?_
+    have : Tendsto (fun n => ∑ i : Fin k, ‖(fderiv ℝ (fs n) x - fderiv ℝ f x)
+        (EuclideanSpace.single i (1 : ℝ))‖) atTop (𝓝 (∑ i : Fin k, (0 : ℝ))) := by
+      refine tendsto_finsetSum _ fun i _ => ?_
+      have := tendsto_iff_norm_sub_tendsto_zero.1 (hx i)
+      simpa using this
+    simpa using this
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
