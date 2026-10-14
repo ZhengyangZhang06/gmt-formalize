@@ -553,55 +553,6 @@ theorem Submission.codim1_lur_graph_chart_adjoint_identities : ∀ (P n : ℕ) (
     rw [map_add, hAdu', add_zero]
     exact hAι y
 
-/-- **The determinant covector** (Simon 6.2.34–2.35, step 4 of the chart perimeter computation):
-for a continuous linear `A : ℝᴾ → ℝⁿ⁺¹` there is a continuous linear `Λ : ℝⁿ⁺¹ → Λⁿ(ℝᴾ)` with
-`Λ(p)(a₀, …, aₙ₋₁) = det[p, Aa₀, …, Aaₙ₋₁]` (column `0` is `p`, column `k + 1` is `Aaₖ`).
-By Hadamard's inequality the determinant `D` in the standard basis of `ℝⁿ⁺¹` is a continuous
-alternating map; `Λ` is its first-slot curry `p ↦ D(p, ·)` pulled back by `A`. -/
-theorem Submission.codim1_lur_det_covector_clm : ∀ (P n : ℕ) (A : Euclid P →L[ℝ] Euclid (n + 1)), ∃ Λ : Euclid (n + 1) →L[ℝ] Covector (Euclid P) n, ∀ (p : Euclid (n + 1)) (a : Fin n → Euclid P), Λ p a = Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons p (fun k : Fin n => A (a k)) : Fin (n + 1) → Euclid (n + 1)) c r) := by
-  intro P n A
-  set b := EuclideanSpace.basisFun (Fin (n + 1)) ℝ with hb
-  have : Fact (Module.finrank ℝ (Euclid (n + 1)) = n + 1) := ⟨by simp⟩
-  -- Hadamard: |det v| ≤ ∏ ‖v i‖, so the determinant is a continuous alternating map
-  have hbound : ∀ v : Fin (n + 1) → Euclid (n + 1), ‖b.toBasis.det v‖ ≤ 1 * ∏ i, ‖v i‖ := by
-    intro v
-    rw [one_mul, Real.norm_eq_abs, ← Orientation.volumeForm_robust' (b.toBasis.orientation) b v]
-    exact Orientation.abs_volumeForm_apply_le _ v
-  let D : Euclid (n + 1) [⋀^Fin (n + 1)]→L[ℝ] ℝ := b.toBasis.det.mkContinuous 1 hbound
-  refine ⟨(ContinuousAlternatingMap.compContinuousLinearMapCLM A).comp D.curryLeft, ?_⟩
-  intro p a
-  simp only [ContinuousLinearMap.comp_apply, ContinuousAlternatingMap.compContinuousLinearMapCLM_apply,
-    ContinuousAlternatingMap.compContinuousLinearMap_apply, ContinuousAlternatingMap.curryLeft_apply_apply]
-  show b.toBasis.det _ = _
-  rw [Module.Basis.det_apply]
-  congr 1
-/-- **Laplace expansion along the first column** (the coordinate form of Simon 6.2.34–2.35,
-indices from `0`): if `M` has column `0` equal to `p` and column `k + 1` equal to
-`e_{j.succAbove k}`, then `det M = (−1)ʲ pⱼ`.  The minor `N_j` (delete row `j`, column `0`) is
-the identity, `j.succAbove` being injective; for `i ≠ j` the minor `N_i` has a zero row, namely
-row `r₀` with `i.succAbove r₀ = j`, since `j ∉ range j.succAbove`. -/
-theorem Submission.codim1_lur_det_laplace_first_column : ∀ (n : ℕ) (p : Euclid (n + 1)) (j : Fin (n + 1)), Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons p (fun k : Fin n => EuclideanSpace.single (j.succAbove k) (1 : ℝ)) : Fin (n + 1) → Euclid (n + 1)) c r) = (-1 : ℝ) ^ (j : ℕ) * p j := by
-  intro n p j
-  set M : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ := Matrix.of fun r c : Fin (n + 1) =>
-    (Fin.cons p (fun k : Fin n => EuclideanSpace.single (j.succAbove k) (1 : ℝ)) :
-      Fin (n + 1) → Euclid (n + 1)) c r with hM
-  -- the entries: column `0` is `p`, column `k + 1` is `e_{j.succAbove k}`
-  have hM0 : ∀ r, M r 0 = p r := fun r => by simp [hM]
-  have hMs : ∀ r k, M r k.succ = if r = j.succAbove k then 1 else 0 := fun r k => by
-    simp [hM, PiLp.single_apply]
-  -- Laplace expansion along column `0`; only the term `i = j` survives
-  rw [Matrix.det_succ_column_zero, Finset.sum_eq_single j]
-  · -- the minor `N_j` is the identity, `j.succAbove` being injective
-    have hminor : M.submatrix j.succAbove Fin.succ = 1 := by
-      ext r k
-      simp [Matrix.one_apply, hMs]
-    rw [hminor, Matrix.det_one, mul_one, hM0]
-  · -- for `i ≠ j`, row `r₀` of the minor `N_i`, where `i.succAbove r₀ = j`, is zero
-    intro i _ hij
-    obtain ⟨r₀, hr₀⟩ := Fin.exists_succAbove_eq (Ne.symm hij)
-    rw [Matrix.det_eq_zero_of_row_eq_zero r₀ fun k => by simp [hMs, hr₀], mul_zero]
-  · intro h; exact absurd (Finset.mem_univ j) h
-
 /-- **Geometry of the graph chart** (Simon 7.5.2, used in 7.5.8).  Let `ι : ℝ^{n+1} → ℝᴾ` be a
 linear isometry with adjoint `A = ι*`, `D = B_{δ₁}(0)`, `u` be `C²` on `D` with values in
 `(range ι)ᗮ`, `|u| < δ₂/2` and `G(y) = x + ιy + u(y) ∈ N` on `D`, and let `u` be the only such graph
