@@ -5045,6 +5045,50 @@ theorem Submission.dimred_mbl_fnd_tfe_ambient_extension : ∀ (P n d : ℕ) (c :
       simpa only [add_zero] using ((tendsto_const_nhds (x := r)).add hlim).mul_const (m W)
     exact le_of_tendsto_of_tendsto' (hΦ G W ωs _ hWo hWU hωW hωe hlim).abs hmW hb
 
+/-- **Simon 6.2.5** (evaluation bound by local mass): if `M_W(T) < ∞`, `spt ω ⊆ W` and
+`|ω(x)| ≤ r` for every `x`, then `|T(ω)| ≤ r · M_W(T)`.  The Euclidean coefficient norm is
+homogeneous, `|cα| = |c| |α|`, so for `s > 0` with `r ≤ s` both forms `±s⁻¹ω` are admissible for
+`M_W(T)`; hence `|T(ω)| ≤ s · M_W(T)`, and `s ↓ r` gives the claim. -/
+theorem Submission.cmr_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (r : ℝ), T.massOn W ≠ ∞ → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * (T.massOn W).toReal := by
+  intro P n U W T ω r hM hW hr
+  -- homogeneity of the Euclidean coefficient norm
+  have hsmul : ∀ (c : ℝ) (α : Covector (Euclid P) n),
+      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+    intro c α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · rw [mul_zero]
+  have hr0 : 0 ≤ r := (covectorEuclideanNorm_nonneg _).trans (hr 0)
+  -- `|T(ω)| ≤ s M_W(T)` for `0 < s`, `r ≤ s`: every `c • ω` with `|c| ≤ s⁻¹` is admissible
+  have hbound : ∀ s : ℝ, 0 < s → r ≤ s → |T ω| ≤ s * (T.massOn W).toReal := by
+    intro s hs hrs
+    have hadm : ∀ c : ℝ, |c| ≤ s⁻¹ → c * T ω ≤ (T.massOn W).toReal := by
+      intro c hc
+      have hmem : c • ω ∈ massAdmissibleOn U n W := by
+        refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hW, fun x => ?_⟩
+        show covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
+        rw [hsmul]
+        calc |c| * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ s⁻¹ * s :=
+              mul_le_mul hc ((hr x).trans hrs) (covectorEuclideanNorm_nonneg _)
+                (inv_nonneg.2 hs.le)
+          _ = 1 := inv_mul_cancel₀ hs.ne'
+      have h := (ENNReal.ofReal_le_iff_le_toReal hM).1 (T.le_massOn hmem)
+      rwa [show T (c • ω) = c * T ω from T.toCurrent.map_smul c ω] at h
+    have h1 := hadm s⁻¹ (abs_of_pos (inv_pos.2 hs)).le
+    have h2 := hadm (-s⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.2 hs)])
+    rw [neg_mul, ← mul_neg] at h2
+    rw [abs_le]
+    exact ⟨neg_le.1 ((inv_mul_le_iff₀ hs).1 h2), (inv_mul_le_iff₀ hs).1 h1⟩
+  -- let `s ↓ r`
+  have hlim : Tendsto (fun s : ℝ => s * (T.massOn W).toReal) (𝓝[>] r)
+      (𝓝 (r * (T.massOn W).toReal)) :=
+    ((continuous_mul_const _).tendsto r).mono_left nhdsWithin_le_nhds
+  exact ge_of_tendsto hlim
+    (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
 /-- **Extension of a current of locally finite mass to compactly supported continuous fields**
 (selected proof, steps 1 and 6–8).  Let `U` be open, `T ∈ 𝒟ₙ(U)` with `M_W(T) < ∞` for every open
 `W ⊂⊂ U`, and `c : Λⁿ(ℝᴾ) ≃ ℝᵈ` a continuous linear equivalence with `|α| = ‖c α‖` for the
@@ -6231,6 +6275,210 @@ theorem Submission.cmr_tdn_null_of_average_bound : ∀ (n : ℕ) (X : Type) [Mea
   rw [zero_add]
   exact le_of_tendsto_of_tendsto' hlim.abs hR fun k => hC (a k) (ha k) (hac k) (ha0 k) (ha1 k)
 
+/-- **Directional difference estimate from the divergence bound** (steps 1–2 of the parent proof).
+For `‖w‖ ≤ 1` the field `g(y) = a(y + v) • w` is admissible and `div g(y) = Da(y + v)(w)` (trace
+of a rank-one map), so `|∫ h·Da(q + v)(w) dν| ≤ Λ`.  The fundamental theorem of calculus along
+`s ↦ q x + s • z` and Fubini on `(0, 1] × X` (majorant `M‖z‖|h|`, `‖Da‖ ≤ M`) give
+`∫ h·(a(q + z) − a(q)) dν = ∫₀¹ ∫ h·Da(q + s • z)(z) dν ds`, and `Da(p)(z) = ‖z‖·Da(p)(w)` with
+`w = ‖z‖⁻¹ • z` bounds the inner integral by `Λ‖z‖`. -/
+theorem Submission.cmr_tdn_directional_bound : ∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ) (Λ : ℝ), IsFiniteMeasure ν → Measurable q → Integrable h ν → (∀ g : Euclid n → Euclid n, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → (∀ y, ‖g y‖ ≤ 1) → |∫ x, h x * LinearMap.trace ℝ (Euclid n) (fderiv ℝ g (q x)).toLinearMap ∂ν| ≤ Λ) → ∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → (∀ y, |a y| ≤ 1) → ∀ z : Euclid n, |∫ x, h x * (a (q x + z) - a (q x)) ∂ν| ≤ Λ * ‖z‖ := by
+  intro n X _ ν q h Λ hν hq hh hdiv a ha hsupp hbd z
+  -- Step 1: `a` is differentiable, `Da` is continuous with compact support, so `‖Da‖ ≤ M`
+  have h0 : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0 := by simp
+  have hdiff : Differentiable ℝ a := ha.differentiable h0
+  have hcont : Continuous (fderiv ℝ a) := ha.continuous_fderiv h0
+  obtain ⟨M, hM⟩ := hcont.bounded_above_of_compact_support (hsupp.fderiv ℝ)
+  -- Step 3: for `‖w‖ ≤ 1` the field `g(y) = a(y + v) • w` is admissible, with
+  -- `div g(y) = Da(y + v)(w)`; this gives `(∗)`
+  have key : ∀ v w : Euclid n, ‖w‖ ≤ 1 → |∫ x, h x * fderiv ℝ a (q x + v) w ∂ν| ≤ Λ := by
+    intro v w hw
+    set g : Euclid n → Euclid n := fun y => a (y + v) • w with hg_def
+    have hg_smooth : ContDiff ℝ (⊤ : ℕ∞) g :=
+      (ha.comp (contDiff_id.add contDiff_const)).smul contDiff_const
+    have hg_supp : HasCompactSupport g :=
+      (hsupp.comp_homeomorph (Homeomorph.addRight v)).smul_right (f' := fun _ => w)
+    have hg_bd : ∀ y, ‖g y‖ ≤ 1 := by
+      intro y
+      simp only [hg_def, norm_smul, Real.norm_eq_abs]
+      calc |a (y + v)| * ‖w‖ ≤ 1 * 1 := mul_le_mul (hbd _) hw (norm_nonneg _) zero_le_one
+        _ = 1 := one_mul 1
+    have htrace : ∀ y, LinearMap.trace ℝ (Euclid n) (fderiv ℝ g y).toLinearMap
+        = fderiv ℝ a (y + v) w := by
+      intro y
+      have h1 : HasFDerivAt (fun y => a (y + v)) (fderiv ℝ a (y + v)) y :=
+        (hasFDerivAt_comp_add_right v).2 (hdiff (y + v)).hasFDerivAt
+      rw [(h1.smul_const w).fderiv, ContinuousLinearMap.coe_smulRight,
+        LinearMap.trace_smulRight]
+      rfl
+    simpa only [htrace] using hdiv g hg_smooth hg_supp hg_bd
+  -- Step 4: fundamental theorem of calculus along `s ↦ q x + s • z`
+  have hftc : ∀ x, ∫ s in (0 : ℝ)..1, h x * fderiv ℝ a (q x + s • z) z
+      = h x * (a (q x + z) - a (q x)) := by
+    intro x
+    have hderiv : ∀ s ∈ uIcc (0 : ℝ) 1,
+        HasDerivAt (fun s : ℝ => a (q x + s • z)) (fderiv ℝ a (q x + s • z) z) s := by
+      intro s _
+      have hline : HasDerivAt (fun s : ℝ => q x + s • z) z s := by
+        simpa using ((hasDerivAt_id s).smul_const z).const_add (q x)
+      exact (hdiff (q x + s • z)).hasFDerivAt.comp_hasDerivAt s hline
+    have hcontS : Continuous (fun s : ℝ => fderiv ℝ a (q x + s • z) z) :=
+      (hcont.comp (continuous_const.add (continuous_id.smul continuous_const))).clm_apply
+        continuous_const
+    rw [intervalIntegral.integral_const_mul,
+      intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv (hcontS.intervalIntegrable 0 1)]
+    simp
+  -- Step 5: Fubini on `Leb|(0, 1] ⊗ ν`, with integrable majorant `M‖z‖|h|`
+  have hGint : Integrable (uncurry fun (s : ℝ) (x : X) => h x * fderiv ℝ a (q x + s • z) z)
+      ((volume.restrict (uIoc (0 : ℝ) 1)).prod ν) := by
+    have : IsFiniteMeasure (volume.restrict (uIoc (0 : ℝ) 1)) := by
+      rw [uIoc_of_le zero_le_one]; infer_instance
+    have hmaj : Integrable (fun p : ℝ × X => (M * ‖z‖) * |h p.2|)
+        ((volume.restrict (uIoc (0 : ℝ) 1)).prod ν) :=
+      (hh.abs.comp_snd _).const_mul _
+    refine hmaj.mono' ?_ ?_
+    · have h1 : AEStronglyMeasurable (fun p : ℝ × X => h p.2)
+          ((volume.restrict (uIoc (0 : ℝ) 1)).prod ν) := hh.aestronglyMeasurable.comp_snd
+      have h2 : Continuous (fun p : ℝ × Euclid n => fderiv ℝ a (p.2 + p.1 • z) z) :=
+        (hcont.comp (continuous_snd.add (continuous_fst.smul continuous_const))).clm_apply
+          continuous_const
+      have h3 : Measurable (fun p : ℝ × X => (p.1, q p.2)) :=
+        measurable_fst.prodMk (hq.comp measurable_snd)
+      exact h1.mul (h2.measurable.comp h3).aestronglyMeasurable
+    · filter_upwards with p
+      simp only [uncurry, Real.norm_eq_abs, abs_mul]
+      have hp : |fderiv ℝ a (q p.2 + p.1 • z) z| ≤ M * ‖z‖ :=
+        calc |fderiv ℝ a (q p.2 + p.1 • z) z| = ‖fderiv ℝ a (q p.2 + p.1 • z) z‖ :=
+              (Real.norm_eq_abs _).symm
+          _ ≤ ‖fderiv ℝ a (q p.2 + p.1 • z)‖ * ‖z‖ := ContinuousLinearMap.le_opNorm _ _
+          _ ≤ M * ‖z‖ := by gcongr; exact hM _
+      calc |h p.2| * |fderiv ℝ a (q p.2 + p.1 • z) z| ≤ |h p.2| * (M * ‖z‖) := by gcongr
+        _ = M * ‖z‖ * |h p.2| := by ring
+  have heq : ∫ x, h x * (a (q x + z) - a (q x)) ∂ν
+      = ∫ s in (0 : ℝ)..1, ∫ x, h x * fderiv ℝ a (q x + s • z) z ∂ν := by
+    rw [intervalIntegral_integral_swap hGint]
+    exact integral_congr_ae (Eventually.of_forall fun x => (hftc x).symm)
+  -- Step 6: with `w = ‖z‖⁻¹ • z` (so `‖w‖ ≤ 1`, `z = ‖z‖ • w`, also for `z = 0`),
+  -- `(∗)` bounds the inner integral by `Λ‖z‖` for every `s`
+  set w : Euclid n := ‖z‖⁻¹ • z with hw_def
+  have hw : ‖w‖ ≤ 1 := by
+    by_cases hz : z = 0
+    · simp [hw_def, hz]
+    · rw [hw_def, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 hz)]
+  have hzw : z = ‖z‖ • w := by
+    by_cases hz : z = 0
+    · simp [hz]
+    · rw [hw_def, smul_smul, mul_inv_cancel₀ (norm_ne_zero_iff.2 hz), one_smul]
+  have hlin : ∀ p : Euclid n, fderiv ℝ a p z = ‖z‖ * fderiv ℝ a p w := by
+    intro p
+    conv_lhs => rw [hzw]
+    rw [map_smul, smul_eq_mul]
+  have hbound : ∀ s ∈ uIoc (0 : ℝ) 1,
+      ‖∫ x, h x * fderiv ℝ a (q x + s • z) z ∂ν‖ ≤ Λ * ‖z‖ := by
+    intro s _
+    have hrw : ∫ x, h x * fderiv ℝ a (q x + s • z) z ∂ν
+        = ‖z‖ * ∫ x, h x * fderiv ℝ a (q x + s • z) w ∂ν := by
+      rw [← integral_const_mul]
+      congr 1
+      ext x
+      rw [hlin]
+      ring
+    rw [hrw, Real.norm_eq_abs, abs_mul, abs_norm, mul_comm Λ]
+    exact mul_le_mul_of_nonneg_left (key (s • z) w hw) (norm_nonneg _)
+  rw [heq]
+  simpa using intervalIntegral.norm_integral_le_of_norm_le_const hbound
+/-- **Ball-averaging estimate** (step 3 of the parent proof).  With `B = B_r(0)` and
+`V = λ(B) ∈ (0, ∞)`, Fubini on `ν ⊗ λ⌞B` gives
+`V ∫ h(x) a(q x) dν = ∫∫ h(x) a(q x + z) − ∫∫ h(x) (a(q x + z) − a(q x))`.  The second double
+integral is at most `V Λ r` by the directional bound (`‖z‖ < r` on `B`), and the first at most
+`(∫ |h| dν) ∫ a` since `0 ≤ ∫_B a(q x + z) dz ≤ ∫ a` by translation invariance.  Divide by `V`. -/
+theorem Submission.cmr_tdn_ball_average_bound : ∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ) (Λ : ℝ) (a : Euclid n → ℝ) (r : ℝ), IsFiniteMeasure ν → Measurable q → Integrable h ν → 0 ≤ Λ → Continuous a → HasCompactSupport a → (∀ y, 0 ≤ a y) → (∀ y, a y ≤ 1) → (∀ z : Euclid n, |∫ x, h x * (a (q x + z) - a (q x)) ∂ν| ≤ Λ * ‖z‖) → 0 < r → |∫ x, h x * a (q x) ∂ν| ≤ r * Λ + (volume (ball (0 : Euclid n) r)).toReal⁻¹ * (∫ x, |h x| ∂ν) * ∫ y, a y := by
+  intro n X mX ν q h Λ a r hν hq hh hΛ ha ha_supp ha0 ha1 hdir hr
+  -- the ball `B = B_r(0)`: measurable, inside `‖z‖ ≤ r`, of measure `λ(B) ∈ (0, ∞)`
+  have hBm : MeasurableSet (ball (0 : Euclid n) r) := measurableSet_ball
+  have hBr : ∀ z ∈ ball (0 : Euclid n) r, ‖z‖ ≤ r := fun z hz => (mem_ball_zero_iff.1 hz).le
+  have hBpos : 0 < volume (ball (0 : Euclid n) r) := measure_ball_pos volume 0 hr
+  have hBfin : volume (ball (0 : Euclid n) r) < ∞ := measure_ball_lt_top
+  generalize ball (0 : Euclid n) r = B at hBm hBr hBpos hBfin ⊢
+  have hV : 0 < (volume B).toReal := ENNReal.toReal_pos hBpos.ne' hBfin.ne
+  have : IsFiniteMeasure (volume.restrict B) := isFiniteMeasure_restrict.2 hBfin.ne
+  have hμB : (volume.restrict B).real univ = (volume B).toReal := by
+    rw [measureReal_def, Measure.restrict_apply_univ]
+  generalize (volume B).toReal = V at hV hμB ⊢
+  -- `a` is integrable, and so are its translates
+  have ha_int : Integrable a volume := ha.integrable_of_hasCompactSupport ha_supp
+  -- the integrands on `ν ⊗ λ⌞B`, dominated by `|h x|`
+  have hm₁ : Measurable fun p : X × Euclid n => a (q p.1 + p.2) :=
+    ha.measurable.comp ((hq.comp measurable_fst).add measurable_snd)
+  have hm₀ : Measurable fun p : X × Euclid n => a (q p.1) :=
+    ha.measurable.comp (hq.comp measurable_fst)
+  have hh₁ : AEStronglyMeasurable (fun p : X × Euclid n => h p.1) (ν.prod (volume.restrict B)) :=
+    hh.aestronglyMeasurable.comp_fst
+  have hdom : Integrable (fun p : X × Euclid n => |h p.1|) (ν.prod (volume.restrict B)) :=
+    hh.abs.comp_fst _
+  have hG₂ : Integrable (fun p : X × Euclid n => h p.1 * a (q p.1 + p.2))
+      (ν.prod (volume.restrict B)) := by
+    refine hdom.mono' (hh₁.mul hm₁.aestronglyMeasurable) (Eventually.of_forall fun p => ?_)
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (ha0 _)]
+    exact mul_le_of_le_one_right (abs_nonneg _) (ha1 _)
+  have hG₁ : Integrable (fun p : X × Euclid n => h p.1 * (a (q p.1 + p.2) - a (q p.1)))
+      (ν.prod (volume.restrict B)) := by
+    refine hdom.mono' (hh₁.mul (hm₁.sub hm₀).aestronglyMeasurable)
+      (Eventually.of_forall fun p => ?_)
+    rw [Real.norm_eq_abs, abs_mul]
+    refine mul_le_of_le_one_right (abs_nonneg _) (abs_sub_le_iff.2 ⟨?_, ?_⟩)
+    · linarith [ha0 (q p.1), ha1 (q p.1 + p.2)]
+    · linarith [ha0 (q p.1 + p.2), ha1 (q p.1)]
+  -- `V F = ∫∫ h(x) a(q x + z) - ∫∫ h(x) (a(q x + z) - a(q x))` over `ν ⊗ λ⌞B`
+  have hsplit : V * ∫ x, h x * a (q x) ∂ν =
+      (∫ p, h p.1 * a (q p.1 + p.2) ∂(ν.prod (volume.restrict B))) -
+        ∫ p, h p.1 * (a (q p.1 + p.2) - a (q p.1)) ∂(ν.prod (volume.restrict B)) := by
+    rw [← integral_sub hG₂ hG₁]
+    have hfun : (fun p : X × Euclid n =>
+        h p.1 * a (q p.1 + p.2) - h p.1 * (a (q p.1 + p.2) - a (q p.1))) =
+        fun p => h p.1 * a (q p.1) := by
+      funext p
+      ring
+    rw [hfun, integral_fun_fst (fun x => h x * a (q x)), hμB, smul_eq_mul]
+  -- Fubini and the directional bound: `|∫∫ h(x) (a(q x + z) - a(q x))| ≤ V Λ r`
+  have hJ : |∫ p, h p.1 * (a (q p.1 + p.2) - a (q p.1)) ∂(ν.prod (volume.restrict B))| ≤
+      V * (Λ * r) := by
+    rw [integral_prod_symm _ hG₁]
+    have hb : ∀ᵐ z ∂(volume.restrict B), ‖∫ x, h x * (a (q x + z) - a (q x)) ∂ν‖ ≤ Λ * r := by
+      filter_upwards [ae_restrict_mem hBm] with z hz
+      rw [Real.norm_eq_abs]
+      exact (hdir z).trans (mul_le_mul_of_nonneg_left (hBr z hz) hΛ)
+    have := norm_integral_le_of_norm_le (integrable_const (Λ * r)) hb
+    rw [integral_const, hμB, smul_eq_mul, Real.norm_eq_abs] at this
+    exact this
+  -- translation invariance: `|∫∫ h(x) a(q x + z)| ≤ (∫ |h|) ∫ a`
+  have hM : |∫ p, h p.1 * a (q p.1 + p.2) ∂(ν.prod (volume.restrict B))| ≤
+      (∫ x, |h x| ∂ν) * ∫ y, a y := by
+    rw [integral_prod _ hG₂]
+    have hb : ∀ x, ‖∫ z, h x * a (q x + z) ∂(volume.restrict B)‖ ≤ |h x| * ∫ y, a y := by
+      intro x
+      rw [integral_const_mul, Real.norm_eq_abs, abs_mul]
+      refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+      have h0 : 0 ≤ ∫ z, a (q x + z) ∂(volume.restrict B) := integral_nonneg fun z => ha0 _
+      rw [abs_of_nonneg h0]
+      exact (setIntegral_le_integral (ha_int.comp_add_left (q x))
+        (Eventually.of_forall fun z => ha0 _)).trans_eq (integral_add_left_eq_self a (q x))
+    have := norm_integral_le_of_norm_le (hh.abs.mul_const (∫ y, a y)) (Eventually.of_forall hb)
+    rw [integral_mul_const, Real.norm_eq_abs] at this
+    exact this
+  -- conclusion: `V |F| ≤ (∫ |h|) ∫ a + V Λ r`, then divide by `V > 0`
+  have key : V * |∫ x, h x * a (q x) ∂ν| ≤ (∫ x, |h x| ∂ν) * (∫ y, a y) + V * (Λ * r) := by
+    rw [← abs_of_pos hV, ← abs_mul, abs_of_pos hV, hsplit]
+    exact (abs_sub _ _).trans (add_le_add hM hJ)
+  generalize ∫ x, h x * a (q x) ∂ν = F at key ⊢
+  generalize ∫ x, |h x| ∂ν = H at key ⊢
+  generalize ∫ y, a y = A at key ⊢
+  have hV0 : V ≠ 0 := hV.ne'
+  calc |F| ≤ (H * A + V * (Λ * r)) / V := by
+        rw [le_div_iff₀ hV]
+        linarith
+    _ = r * Λ + V⁻¹ * H * A := by
+        field_simp
+        ring
 /-- **Compact Lebesgue-null sets are `q_#(h ν)`-null under a divergence bound** (Lemma TD of the
 parent proof, for the finite signed measure `m = q_#(h ν)`): if `|∫ h · div g(q) dν| ≤ Λ` for all
 smooth compactly supported fields `g` with `‖g‖ ≤ 1`, then `∫_{q⁻¹K} h dν = 0` for every compact
@@ -7283,50 +7531,6 @@ theorem Submission.cmr_abs_integral_div_le_mass : ∀ (P m : ℕ) (U W : Set (Eu
       rw [hbx, zero_mul, zero_mul]
   rw [hint, hTω, mul_add]
   exact (abs_sub _ _).trans (add_le_add h1 h2)
-/-- **Simon 6.2.5** (evaluation bound by local mass): if `M_W(T) < ∞`, `spt ω ⊆ W` and
-`|ω(x)| ≤ r` for every `x`, then `|T(ω)| ≤ r · M_W(T)`.  The Euclidean coefficient norm is
-homogeneous, `|cα| = |c| |α|`, so for `s > 0` with `r ≤ s` both forms `±s⁻¹ω` are admissible for
-`M_W(T)`; hence `|T(ω)| ≤ s · M_W(T)`, and `s ↓ r` gives the claim. -/
-theorem Submission.cmr_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (r : ℝ), T.massOn W ≠ ∞ → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * (T.massOn W).toReal := by
-  intro P n U W T ω r hM hW hr
-  -- homogeneity of the Euclidean coefficient norm
-  have hsmul : ∀ (c : ℝ) (α : Covector (Euclid P) n),
-      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
-    intro c α
-    unfold covectorEuclideanNorm
-    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
-    congr 1
-    refine Finset.sum_congr rfl fun I _ => ?_
-    split_ifs
-    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
-    · rw [mul_zero]
-  have hr0 : 0 ≤ r := (covectorEuclideanNorm_nonneg _).trans (hr 0)
-  -- `|T(ω)| ≤ s M_W(T)` for `0 < s`, `r ≤ s`: every `c • ω` with `|c| ≤ s⁻¹` is admissible
-  have hbound : ∀ s : ℝ, 0 < s → r ≤ s → |T ω| ≤ s * (T.massOn W).toReal := by
-    intro s hs hrs
-    have hadm : ∀ c : ℝ, |c| ≤ s⁻¹ → c * T ω ≤ (T.massOn W).toReal := by
-      intro c hc
-      have hmem : c • ω ∈ massAdmissibleOn U n W := by
-        refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hW, fun x => ?_⟩
-        show covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
-        rw [hsmul]
-        calc |c| * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ s⁻¹ * s :=
-              mul_le_mul hc ((hr x).trans hrs) (covectorEuclideanNorm_nonneg _)
-                (inv_nonneg.2 hs.le)
-          _ = 1 := inv_mul_cancel₀ hs.ne'
-      have h := (ENNReal.ofReal_le_iff_le_toReal hM).1 (T.le_massOn hmem)
-      rwa [show T (c • ω) = c * T ω from T.toCurrent.map_smul c ω] at h
-    have h1 := hadm s⁻¹ (abs_of_pos (inv_pos.2 hs)).le
-    have h2 := hadm (-s⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.2 hs)])
-    rw [neg_mul, ← mul_neg] at h2
-    rw [abs_le]
-    exact ⟨neg_le.1 ((inv_mul_le_iff₀ hs).1 h2), (inv_mul_le_iff₀ hs).1 h1⟩
-  -- let `s ↓ r`
-  have hlim : Tendsto (fun s : ℝ => s * (T.massOn W).toReal) (𝓝[>] r)
-      (𝓝 (r * (T.massOn W).toReal)) :=
-    ((continuous_mul_const _).tendsto r).mono_left nhdsWithin_le_nhds
-  exact ge_of_tendsto hlim
-    (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
 /-- **Mass of the current `Ξ(ω) = ∫ ⟨ω, ζ₀⟩ dν` with a constant multivector `ζ₀`** (Simon 6.2.5;
 step 5(δ) of the integer-multiplicity criterion for cycles; `|·|_E` is `covectorEuclideanNorm`).
 Suppose `ν` is finite on compact sets, `|⟨α, ζ₀⟩| ≤ s |α|_E` for every `α`, and `⟨β, ζ₀⟩ = s` for
@@ -9658,210 +9862,6 @@ theorem Submission.cbr_ci_pw_td_top_covector_spans : ∀ (n : ℕ) (δ : Covecto
   · intro α
     ext v
     rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, key α v, key δ v, hδ, one_mul]
-/-- **Directional difference estimate from the divergence bound** (steps 1–2 of the parent proof).
-For `‖w‖ ≤ 1` the field `g(y) = a(y + v) • w` is admissible and `div g(y) = Da(y + v)(w)` (trace
-of a rank-one map), so `|∫ h·Da(q + v)(w) dν| ≤ Λ`.  The fundamental theorem of calculus along
-`s ↦ q x + s • z` and Fubini on `(0, 1] × X` (majorant `M‖z‖|h|`, `‖Da‖ ≤ M`) give
-`∫ h·(a(q + z) − a(q)) dν = ∫₀¹ ∫ h·Da(q + s • z)(z) dν ds`, and `Da(p)(z) = ‖z‖·Da(p)(w)` with
-`w = ‖z‖⁻¹ • z` bounds the inner integral by `Λ‖z‖`. -/
-theorem Submission.cmr_tdn_directional_bound : ∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ) (Λ : ℝ), IsFiniteMeasure ν → Measurable q → Integrable h ν → (∀ g : Euclid n → Euclid n, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → (∀ y, ‖g y‖ ≤ 1) → |∫ x, h x * LinearMap.trace ℝ (Euclid n) (fderiv ℝ g (q x)).toLinearMap ∂ν| ≤ Λ) → ∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → (∀ y, |a y| ≤ 1) → ∀ z : Euclid n, |∫ x, h x * (a (q x + z) - a (q x)) ∂ν| ≤ Λ * ‖z‖ := by
-  intro n X _ ν q h Λ hν hq hh hdiv a ha hsupp hbd z
-  -- Step 1: `a` is differentiable, `Da` is continuous with compact support, so `‖Da‖ ≤ M`
-  have h0 : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0 := by simp
-  have hdiff : Differentiable ℝ a := ha.differentiable h0
-  have hcont : Continuous (fderiv ℝ a) := ha.continuous_fderiv h0
-  obtain ⟨M, hM⟩ := hcont.bounded_above_of_compact_support (hsupp.fderiv ℝ)
-  -- Step 3: for `‖w‖ ≤ 1` the field `g(y) = a(y + v) • w` is admissible, with
-  -- `div g(y) = Da(y + v)(w)`; this gives `(∗)`
-  have key : ∀ v w : Euclid n, ‖w‖ ≤ 1 → |∫ x, h x * fderiv ℝ a (q x + v) w ∂ν| ≤ Λ := by
-    intro v w hw
-    set g : Euclid n → Euclid n := fun y => a (y + v) • w with hg_def
-    have hg_smooth : ContDiff ℝ (⊤ : ℕ∞) g :=
-      (ha.comp (contDiff_id.add contDiff_const)).smul contDiff_const
-    have hg_supp : HasCompactSupport g :=
-      (hsupp.comp_homeomorph (Homeomorph.addRight v)).smul_right (f' := fun _ => w)
-    have hg_bd : ∀ y, ‖g y‖ ≤ 1 := by
-      intro y
-      simp only [hg_def, norm_smul, Real.norm_eq_abs]
-      calc |a (y + v)| * ‖w‖ ≤ 1 * 1 := mul_le_mul (hbd _) hw (norm_nonneg _) zero_le_one
-        _ = 1 := one_mul 1
-    have htrace : ∀ y, LinearMap.trace ℝ (Euclid n) (fderiv ℝ g y).toLinearMap
-        = fderiv ℝ a (y + v) w := by
-      intro y
-      have h1 : HasFDerivAt (fun y => a (y + v)) (fderiv ℝ a (y + v)) y :=
-        (hasFDerivAt_comp_add_right v).2 (hdiff (y + v)).hasFDerivAt
-      rw [(h1.smul_const w).fderiv, ContinuousLinearMap.coe_smulRight,
-        LinearMap.trace_smulRight]
-      rfl
-    simpa only [htrace] using hdiv g hg_smooth hg_supp hg_bd
-  -- Step 4: fundamental theorem of calculus along `s ↦ q x + s • z`
-  have hftc : ∀ x, ∫ s in (0 : ℝ)..1, h x * fderiv ℝ a (q x + s • z) z
-      = h x * (a (q x + z) - a (q x)) := by
-    intro x
-    have hderiv : ∀ s ∈ uIcc (0 : ℝ) 1,
-        HasDerivAt (fun s : ℝ => a (q x + s • z)) (fderiv ℝ a (q x + s • z) z) s := by
-      intro s _
-      have hline : HasDerivAt (fun s : ℝ => q x + s • z) z s := by
-        simpa using ((hasDerivAt_id s).smul_const z).const_add (q x)
-      exact (hdiff (q x + s • z)).hasFDerivAt.comp_hasDerivAt s hline
-    have hcontS : Continuous (fun s : ℝ => fderiv ℝ a (q x + s • z) z) :=
-      (hcont.comp (continuous_const.add (continuous_id.smul continuous_const))).clm_apply
-        continuous_const
-    rw [intervalIntegral.integral_const_mul,
-      intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv (hcontS.intervalIntegrable 0 1)]
-    simp
-  -- Step 5: Fubini on `Leb|(0, 1] ⊗ ν`, with integrable majorant `M‖z‖|h|`
-  have hGint : Integrable (uncurry fun (s : ℝ) (x : X) => h x * fderiv ℝ a (q x + s • z) z)
-      ((volume.restrict (uIoc (0 : ℝ) 1)).prod ν) := by
-    have : IsFiniteMeasure (volume.restrict (uIoc (0 : ℝ) 1)) := by
-      rw [uIoc_of_le zero_le_one]; infer_instance
-    have hmaj : Integrable (fun p : ℝ × X => (M * ‖z‖) * |h p.2|)
-        ((volume.restrict (uIoc (0 : ℝ) 1)).prod ν) :=
-      (hh.abs.comp_snd _).const_mul _
-    refine hmaj.mono' ?_ ?_
-    · have h1 : AEStronglyMeasurable (fun p : ℝ × X => h p.2)
-          ((volume.restrict (uIoc (0 : ℝ) 1)).prod ν) := hh.aestronglyMeasurable.comp_snd
-      have h2 : Continuous (fun p : ℝ × Euclid n => fderiv ℝ a (p.2 + p.1 • z) z) :=
-        (hcont.comp (continuous_snd.add (continuous_fst.smul continuous_const))).clm_apply
-          continuous_const
-      have h3 : Measurable (fun p : ℝ × X => (p.1, q p.2)) :=
-        measurable_fst.prodMk (hq.comp measurable_snd)
-      exact h1.mul (h2.measurable.comp h3).aestronglyMeasurable
-    · filter_upwards with p
-      simp only [uncurry, Real.norm_eq_abs, abs_mul]
-      have hp : |fderiv ℝ a (q p.2 + p.1 • z) z| ≤ M * ‖z‖ :=
-        calc |fderiv ℝ a (q p.2 + p.1 • z) z| = ‖fderiv ℝ a (q p.2 + p.1 • z) z‖ :=
-              (Real.norm_eq_abs _).symm
-          _ ≤ ‖fderiv ℝ a (q p.2 + p.1 • z)‖ * ‖z‖ := ContinuousLinearMap.le_opNorm _ _
-          _ ≤ M * ‖z‖ := by gcongr; exact hM _
-      calc |h p.2| * |fderiv ℝ a (q p.2 + p.1 • z) z| ≤ |h p.2| * (M * ‖z‖) := by gcongr
-        _ = M * ‖z‖ * |h p.2| := by ring
-  have heq : ∫ x, h x * (a (q x + z) - a (q x)) ∂ν
-      = ∫ s in (0 : ℝ)..1, ∫ x, h x * fderiv ℝ a (q x + s • z) z ∂ν := by
-    rw [intervalIntegral_integral_swap hGint]
-    exact integral_congr_ae (Eventually.of_forall fun x => (hftc x).symm)
-  -- Step 6: with `w = ‖z‖⁻¹ • z` (so `‖w‖ ≤ 1`, `z = ‖z‖ • w`, also for `z = 0`),
-  -- `(∗)` bounds the inner integral by `Λ‖z‖` for every `s`
-  set w : Euclid n := ‖z‖⁻¹ • z with hw_def
-  have hw : ‖w‖ ≤ 1 := by
-    by_cases hz : z = 0
-    · simp [hw_def, hz]
-    · rw [hw_def, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.2 hz)]
-  have hzw : z = ‖z‖ • w := by
-    by_cases hz : z = 0
-    · simp [hz]
-    · rw [hw_def, smul_smul, mul_inv_cancel₀ (norm_ne_zero_iff.2 hz), one_smul]
-  have hlin : ∀ p : Euclid n, fderiv ℝ a p z = ‖z‖ * fderiv ℝ a p w := by
-    intro p
-    conv_lhs => rw [hzw]
-    rw [map_smul, smul_eq_mul]
-  have hbound : ∀ s ∈ uIoc (0 : ℝ) 1,
-      ‖∫ x, h x * fderiv ℝ a (q x + s • z) z ∂ν‖ ≤ Λ * ‖z‖ := by
-    intro s _
-    have hrw : ∫ x, h x * fderiv ℝ a (q x + s • z) z ∂ν
-        = ‖z‖ * ∫ x, h x * fderiv ℝ a (q x + s • z) w ∂ν := by
-      rw [← integral_const_mul]
-      congr 1
-      ext x
-      rw [hlin]
-      ring
-    rw [hrw, Real.norm_eq_abs, abs_mul, abs_norm, mul_comm Λ]
-    exact mul_le_mul_of_nonneg_left (key (s • z) w hw) (norm_nonneg _)
-  rw [heq]
-  simpa using intervalIntegral.norm_integral_le_of_norm_le_const hbound
-/-- **Ball-averaging estimate** (step 3 of the parent proof).  With `B = B_r(0)` and
-`V = λ(B) ∈ (0, ∞)`, Fubini on `ν ⊗ λ⌞B` gives
-`V ∫ h(x) a(q x) dν = ∫∫ h(x) a(q x + z) − ∫∫ h(x) (a(q x + z) − a(q x))`.  The second double
-integral is at most `V Λ r` by the directional bound (`‖z‖ < r` on `B`), and the first at most
-`(∫ |h| dν) ∫ a` since `0 ≤ ∫_B a(q x + z) dz ≤ ∫ a` by translation invariance.  Divide by `V`. -/
-theorem Submission.cmr_tdn_ball_average_bound : ∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ) (Λ : ℝ) (a : Euclid n → ℝ) (r : ℝ), IsFiniteMeasure ν → Measurable q → Integrable h ν → 0 ≤ Λ → Continuous a → HasCompactSupport a → (∀ y, 0 ≤ a y) → (∀ y, a y ≤ 1) → (∀ z : Euclid n, |∫ x, h x * (a (q x + z) - a (q x)) ∂ν| ≤ Λ * ‖z‖) → 0 < r → |∫ x, h x * a (q x) ∂ν| ≤ r * Λ + (volume (ball (0 : Euclid n) r)).toReal⁻¹ * (∫ x, |h x| ∂ν) * ∫ y, a y := by
-  intro n X mX ν q h Λ a r hν hq hh hΛ ha ha_supp ha0 ha1 hdir hr
-  -- the ball `B = B_r(0)`: measurable, inside `‖z‖ ≤ r`, of measure `λ(B) ∈ (0, ∞)`
-  have hBm : MeasurableSet (ball (0 : Euclid n) r) := measurableSet_ball
-  have hBr : ∀ z ∈ ball (0 : Euclid n) r, ‖z‖ ≤ r := fun z hz => (mem_ball_zero_iff.1 hz).le
-  have hBpos : 0 < volume (ball (0 : Euclid n) r) := measure_ball_pos volume 0 hr
-  have hBfin : volume (ball (0 : Euclid n) r) < ∞ := measure_ball_lt_top
-  generalize ball (0 : Euclid n) r = B at hBm hBr hBpos hBfin ⊢
-  have hV : 0 < (volume B).toReal := ENNReal.toReal_pos hBpos.ne' hBfin.ne
-  have : IsFiniteMeasure (volume.restrict B) := isFiniteMeasure_restrict.2 hBfin.ne
-  have hμB : (volume.restrict B).real univ = (volume B).toReal := by
-    rw [measureReal_def, Measure.restrict_apply_univ]
-  generalize (volume B).toReal = V at hV hμB ⊢
-  -- `a` is integrable, and so are its translates
-  have ha_int : Integrable a volume := ha.integrable_of_hasCompactSupport ha_supp
-  -- the integrands on `ν ⊗ λ⌞B`, dominated by `|h x|`
-  have hm₁ : Measurable fun p : X × Euclid n => a (q p.1 + p.2) :=
-    ha.measurable.comp ((hq.comp measurable_fst).add measurable_snd)
-  have hm₀ : Measurable fun p : X × Euclid n => a (q p.1) :=
-    ha.measurable.comp (hq.comp measurable_fst)
-  have hh₁ : AEStronglyMeasurable (fun p : X × Euclid n => h p.1) (ν.prod (volume.restrict B)) :=
-    hh.aestronglyMeasurable.comp_fst
-  have hdom : Integrable (fun p : X × Euclid n => |h p.1|) (ν.prod (volume.restrict B)) :=
-    hh.abs.comp_fst _
-  have hG₂ : Integrable (fun p : X × Euclid n => h p.1 * a (q p.1 + p.2))
-      (ν.prod (volume.restrict B)) := by
-    refine hdom.mono' (hh₁.mul hm₁.aestronglyMeasurable) (Eventually.of_forall fun p => ?_)
-    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (ha0 _)]
-    exact mul_le_of_le_one_right (abs_nonneg _) (ha1 _)
-  have hG₁ : Integrable (fun p : X × Euclid n => h p.1 * (a (q p.1 + p.2) - a (q p.1)))
-      (ν.prod (volume.restrict B)) := by
-    refine hdom.mono' (hh₁.mul (hm₁.sub hm₀).aestronglyMeasurable)
-      (Eventually.of_forall fun p => ?_)
-    rw [Real.norm_eq_abs, abs_mul]
-    refine mul_le_of_le_one_right (abs_nonneg _) (abs_sub_le_iff.2 ⟨?_, ?_⟩)
-    · linarith [ha0 (q p.1), ha1 (q p.1 + p.2)]
-    · linarith [ha0 (q p.1 + p.2), ha1 (q p.1)]
-  -- `V F = ∫∫ h(x) a(q x + z) - ∫∫ h(x) (a(q x + z) - a(q x))` over `ν ⊗ λ⌞B`
-  have hsplit : V * ∫ x, h x * a (q x) ∂ν =
-      (∫ p, h p.1 * a (q p.1 + p.2) ∂(ν.prod (volume.restrict B))) -
-        ∫ p, h p.1 * (a (q p.1 + p.2) - a (q p.1)) ∂(ν.prod (volume.restrict B)) := by
-    rw [← integral_sub hG₂ hG₁]
-    have hfun : (fun p : X × Euclid n =>
-        h p.1 * a (q p.1 + p.2) - h p.1 * (a (q p.1 + p.2) - a (q p.1))) =
-        fun p => h p.1 * a (q p.1) := by
-      funext p
-      ring
-    rw [hfun, integral_fun_fst (fun x => h x * a (q x)), hμB, smul_eq_mul]
-  -- Fubini and the directional bound: `|∫∫ h(x) (a(q x + z) - a(q x))| ≤ V Λ r`
-  have hJ : |∫ p, h p.1 * (a (q p.1 + p.2) - a (q p.1)) ∂(ν.prod (volume.restrict B))| ≤
-      V * (Λ * r) := by
-    rw [integral_prod_symm _ hG₁]
-    have hb : ∀ᵐ z ∂(volume.restrict B), ‖∫ x, h x * (a (q x + z) - a (q x)) ∂ν‖ ≤ Λ * r := by
-      filter_upwards [ae_restrict_mem hBm] with z hz
-      rw [Real.norm_eq_abs]
-      exact (hdir z).trans (mul_le_mul_of_nonneg_left (hBr z hz) hΛ)
-    have := norm_integral_le_of_norm_le (integrable_const (Λ * r)) hb
-    rw [integral_const, hμB, smul_eq_mul, Real.norm_eq_abs] at this
-    exact this
-  -- translation invariance: `|∫∫ h(x) a(q x + z)| ≤ (∫ |h|) ∫ a`
-  have hM : |∫ p, h p.1 * a (q p.1 + p.2) ∂(ν.prod (volume.restrict B))| ≤
-      (∫ x, |h x| ∂ν) * ∫ y, a y := by
-    rw [integral_prod _ hG₂]
-    have hb : ∀ x, ‖∫ z, h x * a (q x + z) ∂(volume.restrict B)‖ ≤ |h x| * ∫ y, a y := by
-      intro x
-      rw [integral_const_mul, Real.norm_eq_abs, abs_mul]
-      refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
-      have h0 : 0 ≤ ∫ z, a (q x + z) ∂(volume.restrict B) := integral_nonneg fun z => ha0 _
-      rw [abs_of_nonneg h0]
-      exact (setIntegral_le_integral (ha_int.comp_add_left (q x))
-        (Eventually.of_forall fun z => ha0 _)).trans_eq (integral_add_left_eq_self a (q x))
-    have := norm_integral_le_of_norm_le (hh.abs.mul_const (∫ y, a y)) (Eventually.of_forall hb)
-    rw [integral_mul_const, Real.norm_eq_abs] at this
-    exact this
-  -- conclusion: `V |F| ≤ (∫ |h|) ∫ a + V Λ r`, then divide by `V > 0`
-  have key : V * |∫ x, h x * a (q x) ∂ν| ≤ (∫ x, |h x| ∂ν) * (∫ y, a y) + V * (Λ * r) := by
-    rw [← abs_of_pos hV, ← abs_mul, abs_of_pos hV, hsplit]
-    exact (abs_sub _ _).trans (add_le_add hM hJ)
-  generalize ∫ x, h x * a (q x) ∂ν = F at key ⊢
-  generalize ∫ x, |h x| ∂ν = H at key ⊢
-  generalize ∫ y, a y = A at key ⊢
-  have hV0 : V ≠ 0 := hV.ne'
-  calc |F| ≤ (H * A + V * (Λ * r)) / V := by
-        rw [le_div_iff₀ hV]
-        linarith
-    _ = r * Λ + V⁻¹ * H * A := by
-        field_simp
-        ring
 /-- **Inner-annulus quotients and the derivative of `r ↦ μ(B_r(x₁))`** (Simon Ch. 6: the
 quotients `h⁻¹ M(T⌞{t − h < |x − ξ| < t})` of 4.9 are bounded by the derivative of
 `r ↦ M(T⌞B_r(ξ))`, as used in the proof of 8.2, (2)).  If `μ(B_ρ(x₁)) < ∞` and
@@ -9900,6 +9900,99 @@ theorem Submission.cbrld_radius_liminf_annulus_le_of_hasDerivAt : ∀ (P : ℕ) 
           ENNReal.ofReal_toReal hfin]
     _ = ENNReal.ofReal (h⁻¹ * ((μ (ball x₁ ρ)).toReal - (μ (ball x₁ (ρ - h))).toReal)) :=
         (ENNReal.ofReal_mul (inv_nonneg.mpr hh.le)).symm
+/-- A continuous function `f` with compact support in `U` is `ν`-integrable for every measure `ν`
+finite on compact subsets of `U` (Simon Ch. 1, 4.16: `∫ f dμ` is finite for `f ∈ K(X)`).
+`S = spt f` is a compact subset of `U`, so `ν(S) < ∞` and `ν⌞S` is a finite measure; `f` is
+`ν⌞S`-integrable, and since `f` vanishes off `S` it is `ν`-integrable. -/
+theorem Submission.cbr_vl_integrable_of_tsupport_subset : ∀ (P : ℕ) (U : Set (Euclid P)) (ν : Measure (Euclid P)) (f : Euclid P → ℝ), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → Continuous f → HasCompactSupport f → tsupport f ⊆ U → Integrable f ν := by
+  intro P U ν f hν hf hcf hU
+  -- Step 1: `S = tsupport f` is a compact subset of `U`, so `ν(S) < ∞`.
+  have hS : ν (tsupport f) < ∞ := hν _ hcf hU
+  -- Step 2: `ν⌞S` has total mass `ν(S) < ∞`.
+  have : IsFiniteMeasure (ν.restrict (tsupport f)) := ⟨by rwa [Measure.restrict_apply_univ]⟩
+  -- Steps 3–4: `f` is `ν⌞S`-integrable and vanishes off `S`, hence is `ν`-integrable.
+  exact (integrableOn_iff_integrable_of_support_subset (subset_tsupport f)).mp
+    (hf.integrable_of_hasCompactSupport hcf)
+/-- **Simon 1.4.12 on `U`** (Riesz representation, as invoked in the proof of 1.4.16): a positive
+linear functional `Λ` on the continuous functions with compact support in the open set `U ⊆ ℝᴾ`
+is `f ↦ ∫ f dμ` for a measure `μ` on `ℝᴾ` with `μ(ℝᴾ \ U) = 0` that is finite on compact subsets
+of `U`.  Mathlib's `RealRMK.rieszMeasure` on the locally compact subtype `U`, applied to
+`g ↦ Λ(ĝ)` (`ĝ` the extension of `g` by zero), is pushed forward to `ℝᴾ`. -/
+theorem Submission.cbr_vl_riesz_measure_on_open : ∀ (P : ℕ) (U : Set (Euclid P)) (Λ : (Euclid P → ℝ) → ℝ), IsOpen U → (∀ f g : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ (f + g) = Λ f + Λ g) → (∀ (c : ℝ) (f : Euclid P → ℝ), Continuous f → HasCompactSupport f → tsupport f ⊆ U → Λ (c • f) = c * Λ f) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → (∀ x, 0 ≤ f x) → 0 ≤ Λ f) → ∃ μ : Measure (Euclid P), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → ∫ x, f x ∂μ = Λ f := by
+  intro P U Λ hU hadd hsmul hpos
+  have : LocallyCompactSpace U := hU.locallyCompactSpace
+  -- the extension `ĝ = Subtype.val.extend g 0` of `g : U → ℝ` by zero
+  have hext_val : ∀ (g : U → ℝ) (y : U), Subtype.val.extend g (0 : Euclid P → ℝ) y = g y :=
+    fun g y => Subtype.val_injective.extend_apply g 0 y
+  have hext_out : ∀ (g : U → ℝ) (x : Euclid P), x ∉ U →
+      Subtype.val.extend g (0 : Euclid P → ℝ) x = 0 := by
+    intro g x hx
+    have hx' : ¬∃ y : U, (y : Euclid P) = x := by
+      rintro ⟨y, rfl⟩
+      exact hx y.2
+    rw [extend_apply' g (0 : Euclid P → ℝ) x hx']
+    rfl
+  -- `ĝ` is continuous with compact support in `U` for `g ∈ C_c(U, ℝ)`
+  have hext : ∀ g : CompactlySupportedContinuousMap U ℝ,
+      Continuous (Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ)) ∧
+        HasCompactSupport (Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ)) ∧
+        tsupport (Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ)) ⊆ U := fun g =>
+    ⟨HasCompactSupport.continuous_extend_zero hU g.continuous g.hasCompactSupport,
+      g.hasCompactSupport.extend_zero continuous_subtype_val,
+      (g.hasCompactSupport.tsupport_extend_zero_subset continuous_subtype_val).trans
+        (Subtype.coe_image_subset _ _)⟩
+  -- `Λ_U(g) = Λ(ĝ)` is a positive linear functional on `C_c(U, ℝ)`
+  let L : CompactlySupportedContinuousMap U ℝ →ₗ[ℝ] ℝ :=
+    { toFun := fun g => Λ (Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ))
+      map_add' := fun g₁ g₂ => by
+        have h := extend_add (Subtype.val : U → Euclid P) (g₁ : U → ℝ) g₂ (0 : Euclid P → ℝ) 0
+        rw [add_zero] at h
+        simp only [CompactlySupportedContinuousMap.coe_add]
+        rw [h]
+        exact hadd _ _ (hext g₁).1 (hext g₁).2.1 (hext g₁).2.2 (hext g₂).1 (hext g₂).2.1
+          (hext g₂).2.2
+      map_smul' := fun c g => by
+        have h := extend_smul c (Subtype.val : U → Euclid P) (g : U → ℝ) (0 : Euclid P → ℝ)
+        rw [smul_zero] at h
+        simp only [CompactlySupportedContinuousMap.coe_smul, RingHom.id_apply, smul_eq_mul]
+        rw [h]
+        exact hsmul c _ (hext g).1 (hext g).2.1 (hext g).2.2 }
+  let ΛU := PositiveLinearMap.mk₀ L fun g hg => by
+    refine hpos _ (hext g).1 (hext g).2.1 (hext g).2.2 fun x => ?_
+    by_cases hx : x ∈ U
+    · rw [show x = ((⟨x, hx⟩ : U) : Euclid P) from rfl, hext_val]
+      exact hg ⟨x, hx⟩
+    · rw [hext_out _ x hx]
+  -- the Riesz measure of `Λ_U` on `U`, pushed forward to `ℝᴾ`
+  have hme : MeasurableEmbedding (Subtype.val : U → Euclid P) :=
+    MeasurableEmbedding.subtype_coe hU.measurableSet
+  have hcpt : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      IsCompact ((Subtype.val : U → Euclid P) ⁻¹' K) := by
+    intro K hK hKU
+    rw [Subtype.isCompact_iff, Subtype.image_preimage_coe, inter_eq_right.mpr hKU]
+    exact hK
+  refine ⟨(RealRMK.rieszMeasure ΛU).map Subtype.val, ?_, fun K hK hKU => ?_,
+    fun f hf hfc hfU => ?_⟩
+  · rw [hme.map_apply, Subtype.preimage_coe_compl, measure_empty]
+  · rw [hme.map_apply]
+    exact (hcpt K hK hKU).measure_lt_top
+  · -- `f = ĝ` for `g = f ∘ Subtype.val ∈ C_c(U, ℝ)`
+    let g : CompactlySupportedContinuousMap U ℝ :=
+      ⟨⟨f ∘ Subtype.val, hf.comp continuous_subtype_val⟩,
+        IsCompact.of_isClosed_subset (hcpt _ hfc hfU) (isClosed_tsupport _)
+          (tsupport_comp_subset_preimage f continuous_subtype_val)⟩
+    have hfg : Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ) = f := by
+      funext x
+      by_cases hx : x ∈ U
+      · rw [show x = ((⟨x, hx⟩ : U) : Euclid P) from rfl, hext_val]
+        rfl
+      · rw [hext_out _ x hx, image_eq_zero_of_notMem_tsupport fun h => hx (hfU h)]
+    rw [hme.integral_map]
+    calc ∫ y, f y ∂RealRMK.rieszMeasure ΛU = ∫ y, g y ∂RealRMK.rieszMeasure ΛU := rfl
+      _ = ΛU g := RealRMK.integral_rieszMeasure ΛU g
+      _ = Λ f := congrArg Λ hfg
+
+
 /-- **Simon 1.4.16, last step** (the vague limit is a Radon measure on `U`): if every `ν_j` is
 finite on compact subsets of the open set `U ⊆ ℝᴾ` and `∫ f dν_j` converges for every continuous
 `f` with compact support in `U`, then `Λ(f) = lim_j ∫ f dν_j` is additive, homogeneous and
@@ -11265,99 +11358,6 @@ theorem Submission.cbr_vague_convergent_subseq : ∀ (P : ℕ) (U : Set (Euclid 
   refine ⟨φ, hφ, fun f hf hfc hfU => ?_⟩
   obtain ⟨m, hm⟩ := hKC (tsupport f) hfc.isCompact hfU
   exact hconv m f ⟨hf, hm⟩
-/-- A continuous function `f` with compact support in `U` is `ν`-integrable for every measure `ν`
-finite on compact subsets of `U` (Simon Ch. 1, 4.16: `∫ f dμ` is finite for `f ∈ K(X)`).
-`S = spt f` is a compact subset of `U`, so `ν(S) < ∞` and `ν⌞S` is a finite measure; `f` is
-`ν⌞S`-integrable, and since `f` vanishes off `S` it is `ν`-integrable. -/
-theorem Submission.cbr_vl_integrable_of_tsupport_subset : ∀ (P : ℕ) (U : Set (Euclid P)) (ν : Measure (Euclid P)) (f : Euclid P → ℝ), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → Continuous f → HasCompactSupport f → tsupport f ⊆ U → Integrable f ν := by
-  intro P U ν f hν hf hcf hU
-  -- Step 1: `S = tsupport f` is a compact subset of `U`, so `ν(S) < ∞`.
-  have hS : ν (tsupport f) < ∞ := hν _ hcf hU
-  -- Step 2: `ν⌞S` has total mass `ν(S) < ∞`.
-  have : IsFiniteMeasure (ν.restrict (tsupport f)) := ⟨by rwa [Measure.restrict_apply_univ]⟩
-  -- Steps 3–4: `f` is `ν⌞S`-integrable and vanishes off `S`, hence is `ν`-integrable.
-  exact (integrableOn_iff_integrable_of_support_subset (subset_tsupport f)).mp
-    (hf.integrable_of_hasCompactSupport hcf)
-/-- **Simon 1.4.12 on `U`** (Riesz representation, as invoked in the proof of 1.4.16): a positive
-linear functional `Λ` on the continuous functions with compact support in the open set `U ⊆ ℝᴾ`
-is `f ↦ ∫ f dμ` for a measure `μ` on `ℝᴾ` with `μ(ℝᴾ \ U) = 0` that is finite on compact subsets
-of `U`.  Mathlib's `RealRMK.rieszMeasure` on the locally compact subtype `U`, applied to
-`g ↦ Λ(ĝ)` (`ĝ` the extension of `g` by zero), is pushed forward to `ℝᴾ`. -/
-theorem Submission.cbr_vl_riesz_measure_on_open : ∀ (P : ℕ) (U : Set (Euclid P)) (Λ : (Euclid P → ℝ) → ℝ), IsOpen U → (∀ f g : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ (f + g) = Λ f + Λ g) → (∀ (c : ℝ) (f : Euclid P → ℝ), Continuous f → HasCompactSupport f → tsupport f ⊆ U → Λ (c • f) = c * Λ f) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → (∀ x, 0 ≤ f x) → 0 ≤ Λ f) → ∃ μ : Measure (Euclid P), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → ∫ x, f x ∂μ = Λ f := by
-  intro P U Λ hU hadd hsmul hpos
-  have : LocallyCompactSpace U := hU.locallyCompactSpace
-  -- the extension `ĝ = Subtype.val.extend g 0` of `g : U → ℝ` by zero
-  have hext_val : ∀ (g : U → ℝ) (y : U), Subtype.val.extend g (0 : Euclid P → ℝ) y = g y :=
-    fun g y => Subtype.val_injective.extend_apply g 0 y
-  have hext_out : ∀ (g : U → ℝ) (x : Euclid P), x ∉ U →
-      Subtype.val.extend g (0 : Euclid P → ℝ) x = 0 := by
-    intro g x hx
-    have hx' : ¬∃ y : U, (y : Euclid P) = x := by
-      rintro ⟨y, rfl⟩
-      exact hx y.2
-    rw [extend_apply' g (0 : Euclid P → ℝ) x hx']
-    rfl
-  -- `ĝ` is continuous with compact support in `U` for `g ∈ C_c(U, ℝ)`
-  have hext : ∀ g : CompactlySupportedContinuousMap U ℝ,
-      Continuous (Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ)) ∧
-        HasCompactSupport (Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ)) ∧
-        tsupport (Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ)) ⊆ U := fun g =>
-    ⟨HasCompactSupport.continuous_extend_zero hU g.continuous g.hasCompactSupport,
-      g.hasCompactSupport.extend_zero continuous_subtype_val,
-      (g.hasCompactSupport.tsupport_extend_zero_subset continuous_subtype_val).trans
-        (Subtype.coe_image_subset _ _)⟩
-  -- `Λ_U(g) = Λ(ĝ)` is a positive linear functional on `C_c(U, ℝ)`
-  let L : CompactlySupportedContinuousMap U ℝ →ₗ[ℝ] ℝ :=
-    { toFun := fun g => Λ (Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ))
-      map_add' := fun g₁ g₂ => by
-        have h := extend_add (Subtype.val : U → Euclid P) (g₁ : U → ℝ) g₂ (0 : Euclid P → ℝ) 0
-        rw [add_zero] at h
-        simp only [CompactlySupportedContinuousMap.coe_add]
-        rw [h]
-        exact hadd _ _ (hext g₁).1 (hext g₁).2.1 (hext g₁).2.2 (hext g₂).1 (hext g₂).2.1
-          (hext g₂).2.2
-      map_smul' := fun c g => by
-        have h := extend_smul c (Subtype.val : U → Euclid P) (g : U → ℝ) (0 : Euclid P → ℝ)
-        rw [smul_zero] at h
-        simp only [CompactlySupportedContinuousMap.coe_smul, RingHom.id_apply, smul_eq_mul]
-        rw [h]
-        exact hsmul c _ (hext g).1 (hext g).2.1 (hext g).2.2 }
-  let ΛU := PositiveLinearMap.mk₀ L fun g hg => by
-    refine hpos _ (hext g).1 (hext g).2.1 (hext g).2.2 fun x => ?_
-    by_cases hx : x ∈ U
-    · rw [show x = ((⟨x, hx⟩ : U) : Euclid P) from rfl, hext_val]
-      exact hg ⟨x, hx⟩
-    · rw [hext_out _ x hx]
-  -- the Riesz measure of `Λ_U` on `U`, pushed forward to `ℝᴾ`
-  have hme : MeasurableEmbedding (Subtype.val : U → Euclid P) :=
-    MeasurableEmbedding.subtype_coe hU.measurableSet
-  have hcpt : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
-      IsCompact ((Subtype.val : U → Euclid P) ⁻¹' K) := by
-    intro K hK hKU
-    rw [Subtype.isCompact_iff, Subtype.image_preimage_coe, inter_eq_right.mpr hKU]
-    exact hK
-  refine ⟨(RealRMK.rieszMeasure ΛU).map Subtype.val, ?_, fun K hK hKU => ?_,
-    fun f hf hfc hfU => ?_⟩
-  · rw [hme.map_apply, Subtype.preimage_coe_compl, measure_empty]
-  · rw [hme.map_apply]
-    exact (hcpt K hK hKU).measure_lt_top
-  · -- `f = ĝ` for `g = f ∘ Subtype.val ∈ C_c(U, ℝ)`
-    let g : CompactlySupportedContinuousMap U ℝ :=
-      ⟨⟨f ∘ Subtype.val, hf.comp continuous_subtype_val⟩,
-        IsCompact.of_isClosed_subset (hcpt _ hfc hfU) (isClosed_tsupport _)
-          (tsupport_comp_subset_preimage f continuous_subtype_val)⟩
-    have hfg : Subtype.val.extend (g : U → ℝ) (0 : Euclid P → ℝ) = f := by
-      funext x
-      by_cases hx : x ∈ U
-      · rw [show x = ((⟨x, hx⟩ : U) : Euclid P) from rfl, hext_val]
-        rfl
-      · rw [hext_out _ x hx, image_eq_zero_of_notMem_tsupport fun h => hx (hfU h)]
-    rw [hme.integral_map]
-    calc ∫ y, f y ∂RealRMK.rieszMeasure ΛU = ∫ y, g y ∂RealRMK.rieszMeasure ΛU := rfl
-      _ = ΛU g := RealRMK.integral_rieszMeasure ΛU g
-      _ = Λ f := congrArg Λ hfg
-
-
 /-- A test form has bounded Euclidean coefficient norm: for `ω ∈ 𝒟ᵏ(U)` there is `M ≥ 0` with
 `|ω(x)| ≤ M` for every `x` (Simon (6.1.15), `|ω|_U < ∞`).  The coefficient norm `|ω(x)|` is
 continuous, as a square root of a finite sum of squares of evaluations of `ω(x)`, and vanishes
