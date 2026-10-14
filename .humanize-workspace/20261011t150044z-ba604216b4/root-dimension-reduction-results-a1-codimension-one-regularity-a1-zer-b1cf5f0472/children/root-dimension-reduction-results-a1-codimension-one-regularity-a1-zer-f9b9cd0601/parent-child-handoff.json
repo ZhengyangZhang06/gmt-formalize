@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; grep -n '\"rev\"' local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "sha256sum GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "python3 scan of dag.json lean_statement fields matching tangentSpace|IsEmbeddedSubmanifold|InClassO|IsOrientation (conclusions and Submodule-set hypotheses), plus '+ a ∈ Q' and codim1_zsl lean_names; status/depth/children of the selected node",
+        "python3 lean_name lookup in dag.json of codim1_zsl_op_translate_isEmbeddedSubmanifold, codim1_zsl_op_translate_tangentSpace_eq and prefix codim1_zsl_op_ (raw count 0)",
+        "grep -rl 'codim1_zsl_op_\\|translate_isEmbeddedSubmanifold\\|translate_tangentSpace_eq' runs/20261011T150044Z-ba604216b4/nodes; grep -rn same GMT .lake/packages/simongmt/Poincare",
+        "git log --all --oneline -S'codim1_zsl_op_' | wc -l; same for -S'translate_isEmbeddedSubmanifold' and -S'translate_tangentSpace_eq' (1478 refs); positive control git log --all --oneline -S'dgcr_graph_orientation_jacobian'",
+        "rg -n 'isClosedEmbedding_of_injective|theorem slope_def_module|theorem hasDerivAt_iff_tendsto_slope |theorem isCompact_of_isClosed_isBounded|theorem finrank_span_eq_card|theorem Orthonormal.inner_sum|theorem Fintype.linearIndependent_iff ' mathlib/Mathlib/{Analysis,LinearAlgebra,Topology}",
+        "rg -n 'mem_span_range_iff_exists_fun|isBounded_iff_forall_norm_le|theorem inner_eq_star_dotProduct|theorem real_inner_self_eq_norm_sq' mathlib/Mathlib/{LinearAlgebra/Finsupp,Analysis/Normed,Analysis/InnerProductSpace}",
+        "grep -n 'def check_source_delta' -A60 /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+        "lake env lean -DautoImplicit=false /tmp/offset-plane-decomp/gen/Assembly.lean (children as axioms with the exact submitted types; #print axioms of codim1_zsl_offset_plane_inClassO)",
+        "lake env lean -DautoImplicit=false /tmp/offset-plane-decomp/gen/TypeCheck.lean and /tmp/offset-plane-decomp/gen/FinalProofs.lean (verbatim child types; complete trial proofs of both children and the parent; #print axioms; python check of each proof body against the leaf forbidden-token regex)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/AffineSpace/Slope.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/LinearIndependent/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-b1cf5f0472/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-b1cf5f0472/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-b1cf5f0472/parent-supplied-natural-proof.md",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+        "/tmp/offset-plane-decomp/Types.lean",
+        "/tmp/offset-plane-decomp/Proofs.lean",
+        "/tmp/offset-plane-decomp/gen/Assembly.lean",
+        "/tmp/offset-plane-decomp/gen/TypeCheck.lean",
+        "/tmp/offset-plane-decomp/gen/FinalProofs.lean"
+      ],
+      "conclusion": "Pins: the snapshot manifest (project b4d606db, Mathlib 25730c7c) matches workspace HEAD and .lake/packages/mathlib. The snapshot lake-manifest pins simongmt 2b366308, which equals .lake/packages/simongmt. The snapshot Contract.lean and the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).\n\nDAG: the selected node is 'decomposing' at depth 4 with no children and the handoff's exact frozen type. No DAG node (accepted or not) states that an affine translate is an embedded submanifold or computes its tangentSpace. The accepted chart lemmas chart_tangentSpace_eq_range_fderiv and dsmc_chart_tangentSpace_eq_range are general-chart statements with other types and are not reused. The two proposed names and the prefix codim1_zsl_op_ are unused in dag.json, node files, GMT/, simongmt and all 1478 git refs; the positive control was found.\n\nLibrary: every lemma the child proofs cite exists in the pinned Mathlib. Examples: Orthonormal.inner_sum (Orthonormal.lean:167), hasDerivAt_iff_tendsto_slope (Deriv/Slope.lean:73), slope_def_module (AffineSpace/Slope.lean:51), finrank_span_eq_card (Dimension/Constructions.lean:463), Fintype.linearIndependent_iff (LinearIndependent/Defs.lean:770), isCompact_of_isClosed_isBounded (MetricSpace/Bounded.lean:320), Submodule.mem_span_range_iff_exists_fun (Finsupp/LinearCombination.lean:379), EuclideanSpace.inner_eq_star_dotProduct (PiL2.lean:213) and real_inner_self_eq_norm_sq (InnerProductSpace/Basic.lean:398).\n\nLeaf rule: check_source_delta forbids auxiliary declarations in a leaf, so each child must be a single theorem; both trial proofs meet this.\n\nLean: both child types elaborate verbatim, and the assembly with the children as axioms proves the frozen selected type (axioms: propext, Classical.choice, Quot.sound and the two children). The complete child proofs compile with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.offset_plane-a1",
+  "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.offset_plane-a1.translate_tangent_space-a1",
+  "subproblem": {
+    "key": "translate_tangent_space",
+    "title": "The tangent space of a translated linear subspace is the subspace",
+    "statement": "Let P ∈ ℕ, let Q ⊆ ℝ^P (= Euclid P) be a linear subspace, and let a, y ∈ ℝ^P with y + a ∈ Q. Put A := {z ∈ ℝ^P : z + a ∈ Q} = Q − a. Then tangentSpace A y = Q as subsets of ℝ^P. Here tangentSpace A y is the set of v ∈ ℝ^P for which there is γ : ℝ → ℝ^P that is C¹ on (−1, 1), maps (−1, 1) into A, satisfies γ(0) = y, and has derivative v at 0 (HasDerivAt γ v 0).",
+    "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a y : Euclid P), y + a ∈ Q → tangentSpace {z | z + a ∈ Q} y = (Q : Set (Euclid P))",
+    "lean_name": "codim1_zsl_op_translate_tangentSpace_eq",
+    "depends_on": [],
+    "natural_proof": "Source. This is step 6 of the supplied proof of the parent node codim1_zsl_offset_plane_inClassO (Lemma A-plane), together with the closedness of Q from its step 5. It is stated for an arbitrary point y of A := {z ∈ ℝ^P : z + a ∈ Q} = Q − a.\n\nRecall the definition: tangentSpace A y is the set of v ∈ ℝ^P for which there exists γ : ℝ → ℝ^P such that γ is C¹ on (−1, 1), γ((−1, 1)) ⊆ A, γ(0) = y, and HasDerivAt γ v 0.\n\n1. (Q is closed.) Q is a linear subspace of the finite-dimensional space ℝ^P. Hence Q is finite-dimensional, and therefore a closed subset of ℝ^P (Submodule.closed_of_finiteDimensional).\n\n2. (tangentSpace A y ⊆ Q.) Let v ∈ tangentSpace A y and choose γ as in the definition. The C¹ hypothesis is not needed for this inclusion.\n(a) Define the difference quotients s(t) := (t − 0)^{−1}·(γ(t) − γ(0)). Since HasDerivAt γ v 0, s(t) → v as t → 0 with t ≠ 0, i.e. along the punctured-neighbourhood filter 𝓝[≠] 0. (Lemma hasDerivAt_iff_tendsto_slope; slope_def_module identifies slope γ 0 t with (t − 0)^{−1}·(γ(t) − γ(0)).)\n(b) The open interval (−1, 1) contains 0, so it is a neighbourhood of 0 and belongs to 𝓝[≠] 0 (Ioo_mem_nhds, nhdsWithin_le_nhds). For t ∈ (−1, 1), γ(t) ∈ A, i.e. γ(t) + a ∈ Q. Also γ(0) + a = y + a ∈ Q by hypothesis.\n(c) For such t, γ(t) − γ(0) = (γ(t) + a) − (γ(0) + a) ∈ Q, because Q is closed under subtraction. Then s(t) = (t − 0)^{−1}·(γ(t) − γ(0)) ∈ Q, because Q is closed under scalar multiplication. So s(t) ∈ Q for all t in a member of 𝓝[≠] 0.\n(d) The filter 𝓝[≠] 0 on ℝ is nontrivial, s tends to v along it, and s eventually takes values in the closed set Q (step 1). So the limit v lies in Q (IsClosed.mem_of_tendsto).\n\n3. (Q ⊆ tangentSpace A y.) Let v ∈ Q and define γ : ℝ → ℝ^P by γ(t) := y + t·v.\n(a) γ is a constant plus the product of the C^∞ function t ↦ t with the constant vector v, so γ is C^∞. In particular γ is C¹ on (−1, 1).\n(b) For every t ∈ ℝ, γ(t) + a = (y + a) + t·v ∈ Q, since y + a ∈ Q, v ∈ Q, and Q is a linear subspace. Hence γ(t) ∈ A for every t; in particular γ maps (−1, 1) into A.\n(c) γ(0) = y + 0·v = y.\n(d) t ↦ t has derivative 1 at 0 (hasDerivAt_id), so t ↦ t·v has derivative 1·v = v at 0 (HasDerivAt.smul_const). Adding the constant y does not change the derivative (HasDerivAt.const_add). Hence HasDerivAt γ v 0.\nBy (a)–(d), γ witnesses v ∈ tangentSpace A y.\n\n4. (Conclusion.) Steps 2 and 3 give both inclusions, so tangentSpace {z | z + a ∈ Q} y = Q as subsets of ℝ^P. ∎",
+    "proof_key_steps": [
+      "Q is a finite-dimensional subspace of ℝ^P, hence closed.",
+      "⊆: for t ∈ (−1, 1) ∖ {0}, the slope t^{−1}(γ(t) − γ(0)) = t^{−1}((γ(t) + a) − (y + a)) lies in Q and tends to v along 𝓝[≠] 0. Closedness of Q gives v ∈ Q.",
+      "⊇: for v ∈ Q, the line γ(t) = y + t·v is C^∞, stays in A because (y + a) + t·v ∈ Q, and has γ(0) = y and HasDerivAt γ v 0."
+    ]
+  },
+  "audit": {
+    "key": "translate_tangent_space",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The one-line Lean proposition exactly matches the prose, including y + a ∈ Q and equality as sets. Finite-dimensional closedness, eventual slope membership and convergence along the nontrivial punctured real filter prove the forward inclusion. The affine line satisfies every curve-witness clause for the reverse inclusion. The proof is complete and independent of the other child and parent theorem; its equality supplies the parent's constant-orientation argument."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f9b9cd0601/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f9b9cd0601/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f9b9cd0601/parent-supplied-natural-proof.json"
+}
