@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon, proof of the deformation theorem** (the `BV`-trace step): a continuous
+`f : ℝᵏ → ℝ` is bounded and integrable on the open unit cube `Q₁ = {y : 0 < yᵢ < 1}`.  The closed
+cube `K = {0 ≤ yᵢ ≤ 1}` is the preimage of the compact box `∏ᵢ [0, 1]` under the coordinate
+homeomorphism `PiLp.homeomorph`, hence compact; `f` is bounded and (for the Haar measure `volume`)
+integrable on `K`, hence on `Q₁ ⊆ K`. -/
+theorem Submission.dimred_mbl_dt_cbm_bvt_cube_cont_bound : ∀ (k : ℕ) (f : Euclid k → ℝ), Continuous f → (∃ M : ℝ, ∀ y ∈ {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, |f y| ≤ M) ∧ IntegrableOn f {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} := by
+  intro k f hf
+  -- the closed unit cube is compact
+  have hK : IsCompact {y : Euclid k | ∀ i, 0 ≤ y i ∧ y i ≤ 1} := by
+    have hpre : {y : Euclid k | ∀ i, 0 ≤ y i ∧ y i ≤ 1} =
+        (PiLp.homeomorph 2 (fun _ : Fin k => ℝ)) ⁻¹' (Set.univ.pi fun _ => Set.Icc (0 : ℝ) 1) := by
+      ext y
+      simp [PiLp.homeomorph, Pi.le_def, forall_and]
+    rw [hpre]
+    exact (PiLp.homeomorph 2 (fun _ : Fin k => ℝ)).isCompact_preimage.2
+      (isCompact_univ_pi fun _ => isCompact_Icc)
+  have hsub : {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} ⊆ {y : Euclid k | ∀ i, 0 ≤ y i ∧ y i ≤ 1} :=
+    fun y hy i => ⟨(hy i).1.le, (hy i).2.le⟩
+  obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hf.continuousOn
+  refine ⟨⟨C, fun y hy => ?_⟩, (hf.continuousOn.integrableOn_compact hK).mono_set hsub⟩
+  simpa [Real.norm_eq_abs] using hC y (hsub hy)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
