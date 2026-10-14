@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "147287e5a95ac26b9fc6dd6671050a45ddc7706f92c58ee5ef79933500e3c9e6",
+  "git_delta": {
+    "base_commit": "06390035d33265c0a1c8afa1809c43e8e9774f56",
+    "candidate_commit": "d864d5c3da81ea71e1acd38f77103df2eee7d12f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_fd_bim_layers",
+    "diff_sha256": "0e970c37c34e5f2d28113192d5ef36376c0b50ecd409d059eea2d62c8acb0474",
+    "source_sha256": "520d0ed5125b5074b54a71f597c67f6fc3687daf1d0e9b9978437d145e9029b8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_bim_layers",
+      "statement": "∀ (n : ℕ) (R : GeometricCurrentOn (univ : Set (Euclid (n + 1))) (n + 1)), IsIntegerMultiplicity R → IsCompact R.support → ∃ (U : ℤ → Set (Euclid (n + 1))) (X : ℤ → GeometricCurrentOn (univ : Set (Euclid (n + 1))) (n + 1)), (∀ j, MeasurableSet (U j)) ∧ (∀ j, U (j + 1) ⊆ U j) ∧ (∀ (j : ℤ) (ω : TestFormOn (univ : Set (Euclid (n + 1))) (n + 1)), X j ω = ∫ x in U j, (ω : DifferentialForm (Euclid (n + 1)) (n + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))) ∧ (∀ η : TestFormOn (univ : Set (Euclid (n + 1))) n, HasSum (fun j => (X j).boundary η) (R.boundary η)) ∧ (∀ j, (X j).boundary.mass ≤ R.boundary.mass) ∧ ∀ (N : ℕ) (Y : GeometricCurrentOn (univ : Set (Euclid (n + 1))) n), (∀ η : TestFormOn (univ : Set (Euclid (n + 1))) n, Y η = ∑ j ∈ Finset.Icc (-(N : ℤ)) N, (X j).boundary η) → Y.mass ≤ R.boundary.mass",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
