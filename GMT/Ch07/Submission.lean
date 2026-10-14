@@ -451,6 +451,284 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Fubini–Tonelli on the cylinder `Â = {z ∈ ℝ^{n+1} : z₀ ∈ (0, 1), tail z ∈ A}` for Borel
+`A ⊆ ℝⁿ`.  The map `e(u, t) = (t, u₁, …, uₙ)`, the composite of the swap `ℝⁿ × ℝ ≃ ℝ × ℝⁿ`,
+`id × ofLp`, the inverse of `piFinSuccAbove · 0` (i.e. `Fin.cons`) and `toLp`, is a
+measure-preserving measurable equivalence `ℝⁿ × ℝ ≃ᵐ ℝ^{n+1}` with `e⁻¹(Â) = A × (0, 1)`.  Hence
+`Â` is Borel, and change of variables along `e` followed by Tonelli (resp. Fubini) on the product
+set `A × (0, 1)` gives the iterated lower Lebesgue (resp. Bochner) integrals. -/
+theorem Submission.cmcdt_lpi_cyl_fubini : ∀ (n : ℕ) (A : Set (Euclid n)), MeasurableSet A → MeasurableSet {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} ∧ (∀ f : Euclid (n + 1) → ℝ≥0∞, Measurable f → ∫⁻ z in {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A}, f z = ∫⁻ u in A, ∫⁻ t in Ioo (0 : ℝ) 1, f (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)))) ∧ ∀ f : Euclid (n + 1) → ℝ, IntegrableOn f {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} → ∫ z in {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A}, f z = ∫ u in A, ∫ t in Ioo (0 : ℝ) 1, f (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) := by
+  intro n A hA
+  set Ah := {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧
+    (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} with hAh_def
+  -- the measurable equivalence `e : ℝⁿ × ℝ ≃ᵐ ℝ^{n+1}`, `(u, t) ↦ (t, u)`
+  let e : (Euclid n × ℝ) ≃ᵐ Euclid (n + 1) :=
+    (MeasurableEquiv.prodComm.trans
+      ((MeasurableEquiv.prodCongr (MeasurableEquiv.refl ℝ)
+        (MeasurableEquiv.toLp 2 (Fin n → ℝ)).symm).trans
+        (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) 0).symm)).trans
+      (MeasurableEquiv.toLp 2 (Fin (n + 1) → ℝ))
+  have he : ∀ p : Euclid n × ℝ, e p = WithLp.toLp 2 (Fin.cons p.2 (WithLp.ofLp p.1)) := by
+    rintro ⟨u, t⟩
+    simp [e, MeasurableEquiv.piFinSuccAbove_symm_apply, Fin.insertNthEquiv, Fin.insertNth_zero']
+    exact ⟨rfl, rfl⟩
+  -- each factor of `e` preserves Lebesgue measure
+  have hmp : MeasurePreserving e volume volume := by
+    have h1 : MeasurePreserving
+        (MeasurableEquiv.prodComm : (Euclid n × ℝ) ≃ᵐ (ℝ × Euclid n)) volume volume :=
+      Measure.measurePreserving_swap
+    have h2 : MeasurePreserving (MeasurableEquiv.prodCongr (MeasurableEquiv.refl ℝ)
+        (MeasurableEquiv.toLp 2 (Fin n → ℝ)).symm) volume volume :=
+      (MeasurePreserving.id volume).prod
+        (EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Fin n))
+    have h3 : MeasurePreserving
+        (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) 0).symm volume volume :=
+      (volume_preserving_piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) 0).symm _
+    have h4 : MeasurePreserving (MeasurableEquiv.toLp 2 (Fin (n + 1) → ℝ)) volume volume := by
+      have := (EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Fin (n + 1))).symm _
+      simpa using this
+    exact h4.comp (h3.comp (h2.comp h1))
+  -- `e⁻¹(Â) = A × (0, 1)`
+  have hpre : e ⁻¹' Ah = A ×ˢ Ioo (0 : ℝ) 1 := by
+    ext ⟨u, t⟩
+    simp [Ah, he, and_comm]
+  have hAhm : MeasurableSet Ah := by
+    have : Ah = e.symm ⁻¹' (A ×ˢ Ioo (0 : ℝ) 1) := by
+      rw [← hpre]; ext z; simp
+    rw [this]
+    exact e.symm.measurable (hA.prod measurableSet_Ioo)
+  refine ⟨hAhm, ?_, ?_⟩
+  · intro f hf
+    rw [← hmp.setLIntegral_comp_preimage_emb e.measurableEmbedding f Ah, hpre]
+    rw [Measure.volume_eq_prod, setLIntegral_prod]
+    · simp only [he]
+    · exact (hf.comp e.measurable).aemeasurable
+  · intro f hf
+    rw [← hmp.setIntegral_preimage_emb e.measurableEmbedding f Ah, hpre]
+    rw [Measure.volume_eq_prod, setIntegral_prod]
+    · simp only [he]
+    · rw [← Measure.volume_eq_prod, ← hpre]
+      exact (hmp.integrableOn_comp_preimage e.measurableEmbedding).2 hf
+/-- The suspension `Ĝ(t, u) = (t, G(u))` of `G : ℝⁿ → ℝᴺ` (deformation theorem, Lipschitz
+push-forward integrality, cylinder step).  If `Ĝ z = (z₀, G(tail z))` for every `z ∈ ℝⁿ⁺¹`, then
+(a) `Ĝ` is `max 1 L`-Lipschitz whenever `G` is `L`-Lipschitz, (b) `Ĝ(t, u) = (t, G(u))`, and
+(c) if `G` is differentiable at `u`, then `DĜ(t, u)` maps `ê₀` to `e₀` and `ê_{b+1}` to
+`(0, DG(u) e_b)`.  Write `Ĝ = Φ ∘ (π₀, G ∘ T)` with the continuous linear maps `T = tail`,
+`π₀ z = z₀` and `Φ(s, x) = (s, x)`; then `‖(s, x)‖² = s² + ‖x‖²` gives (a), and the chain rule
+gives `DĜ(t, u) ζ = (ζ₀, DG(u)(T ζ))`, hence (c). -/
+theorem Submission.cmcdt_lpi_cyl_suspension_map : ∀ (N n : ℕ) (G : Euclid n → Euclid N) (Gh : Euclid (n + 1) → Euclid (N + 1)), (∀ z, Gh z = WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0) (WithLp.ofLp (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))))) → (∀ L : NNReal, LipschitzWith L G → LipschitzWith (max 1 L) Gh) ∧ (∀ (t : ℝ) (u : Euclid n), Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp (G u)))) ∧ ∀ (t : ℝ) (u : Euclid n), DifferentiableAt ℝ G u → (fun a => fderiv ℝ Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = Fin.cons (EuclideanSpace.single 0 1) (fun b => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (fderiv ℝ G u (EuclideanSpace.single b 1))))) := by
+  intro N n G Gh hGh
+  -- the continuous linear maps `T z = tail z` and `Φ(s, x) = (s, x)`
+  let T : Euclid (n + 1) →L[ℝ] Euclid n := LinearMap.toContinuousLinearMap
+    { toFun := fun z => WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))
+      map_add' := fun x y => by ext i; simp [Fin.tail]
+      map_smul' := fun c x => by ext i; simp [Fin.tail] }
+  let Φ : ℝ × Euclid N →L[ℝ] Euclid (N + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun p => WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2))
+      map_add' := fun x y => by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      map_smul' := fun c x => by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+  have hT : ∀ z, T z = WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) := fun z => rfl
+  have hΦ : ∀ p, Φ p = WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) := fun p => rfl
+  -- `Ĝ = Φ ∘ (π₀, G ∘ T)`
+  have hGh' : Gh = fun z => Φ (EuclideanSpace.proj (0 : Fin (n + 1)) z, G (T z)) := by
+    funext z; rw [hGh]; rfl
+  -- `‖(s, x)‖² = s² + ‖x‖²`, and `z = (z₀, T z)`
+  have hnorm : ∀ (m : ℕ) (t : ℝ) (x : Euclid m),
+      ‖(WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (m + 1))‖ ^ 2 = t ^ 2 + ‖x‖ ^ 2 := by
+    intro m t x
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, Fin.sum_univ_succ]
+    simp
+  have hsplit : ∀ z : Euclid (n + 1),
+      z = WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0) (WithLp.ofLp (T z))) := by
+    intro z; simp [hT]
+  refine ⟨?_, ?_, ?_⟩
+  · -- (a) `‖Ĝ x - Ĝ y‖² = (x₀ - y₀)² + ‖G(T x) - G(T y)‖² ≤ M² ‖x - y‖²`, `M = max 1 L`
+    intro L hL
+    apply LipschitzWith.of_dist_le_mul
+    intro x y
+    rw [dist_eq_norm, dist_eq_norm]
+    have hxy : ‖x - y‖ ^ 2 = (WithLp.ofLp x 0 - WithLp.ofLp y 0) ^ 2 + ‖T x - T y‖ ^ 2 := by
+      rw [hsplit (x - y), hnorm]; simp [map_sub]
+    have hG2 : ‖Gh x - Gh y‖ ^ 2 =
+        (WithLp.ofLp x 0 - WithLp.ofLp y 0) ^ 2 + ‖G (T x) - G (T y)‖ ^ 2 := by
+      rw [hGh x, hGh y, ← hT, ← hT]
+      have : (WithLp.toLp 2 (Fin.cons (WithLp.ofLp x 0) (WithLp.ofLp (G (T x)))) :
+            Euclid (N + 1)) - WithLp.toLp 2 (Fin.cons (WithLp.ofLp y 0) (WithLp.ofLp (G (T y)))) =
+          WithLp.toLp 2 (Fin.cons (WithLp.ofLp x 0 - WithLp.ofLp y 0)
+            (WithLp.ofLp (G (T x) - G (T y)))) := by
+        ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      rw [this, hnorm]
+    have hGL : ‖G (T x) - G (T y)‖ ≤ L * ‖T x - T y‖ := by
+      have := hL.dist_le_mul (T x) (T y); rwa [dist_eq_norm, dist_eq_norm] at this
+    have h1 : (1 : ℝ) ≤ ((max 1 L : NNReal) : ℝ) := by simp
+    have h2 : (L : ℝ) ≤ ((max 1 L : NNReal) : ℝ) := by simp
+    have hM0 : (0 : ℝ) ≤ ((max 1 L : NNReal) : ℝ) := NNReal.coe_nonneg _
+    have hsq : ‖Gh x - Gh y‖ ^ 2 ≤ (((max 1 L : NNReal) : ℝ) * ‖x - y‖) ^ 2 := by
+      rw [hG2, mul_pow, hxy]
+      have hA : (WithLp.ofLp x 0 - WithLp.ofLp y 0) ^ 2 ≤
+          ((max 1 L : NNReal) : ℝ) ^ 2 * (WithLp.ofLp x 0 - WithLp.ofLp y 0) ^ 2 := by
+        have : (1 : ℝ) ≤ ((max 1 L : NNReal) : ℝ) ^ 2 := one_le_pow₀ h1
+        nlinarith [sq_nonneg (WithLp.ofLp x 0 - WithLp.ofLp y 0)]
+      have hB : ‖G (T x) - G (T y)‖ ^ 2 ≤ ((max 1 L : NNReal) : ℝ) ^ 2 * ‖T x - T y‖ ^ 2 := by
+        have h0 : 0 ≤ ‖G (T x) - G (T y)‖ := norm_nonneg _
+        have h3 : ‖G (T x) - G (T y)‖ ≤ ((max 1 L : NNReal) : ℝ) * ‖T x - T y‖ :=
+          hGL.trans (mul_le_mul_of_nonneg_right h2 (norm_nonneg _))
+        calc ‖G (T x) - G (T y)‖ ^ 2 ≤ (((max 1 L : NNReal) : ℝ) * ‖T x - T y‖) ^ 2 :=
+              pow_le_pow_left₀ h0 h3 2
+          _ = _ := by ring
+      nlinarith [hA, hB]
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) (mul_nonneg hM0 (norm_nonneg _))
+      two_ne_zero).1 hsq
+  · -- (b) `(t, u)₀ = t` and `tail (t, u) = u`
+    intro t u
+    rw [hGh]; simp
+  · -- (c) chain rule: `DĜ(z) ζ = (ζ₀, DG(u)(T ζ))` at `z = (t, u)`; evaluate on `ê₀`, `ê_{b+1}`
+    intro t u hG
+    set z : Euclid (n + 1) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))
+    have hTz : T z = u := by simp [hT, z]
+    have h1 : HasFDerivAt (fun z => G (T z)) ((fderiv ℝ G u).comp T) z := by
+      have := hG.hasFDerivAt
+      rw [← hTz] at this
+      exact this.comp z T.hasFDerivAt
+    have hd : HasFDerivAt Gh
+        (Φ.comp ((EuclideanSpace.proj (0 : Fin (n + 1))).prod ((fderiv ℝ G u).comp T))) z := by
+      rw [hGh']
+      exact Φ.hasFDerivAt.comp z ((EuclideanSpace.proj (0 : Fin (n + 1))).hasFDerivAt.prodMk h1)
+    rw [hd.fderiv]
+    funext a
+    refine Fin.cases ?_ (fun b => ?_) a
+    · -- `ê₀ ↦ (1, DG(u) 0) = e₀`
+      simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.prod_apply, hΦ, hT,
+        Fin.cons_zero]
+      have h0 : (WithLp.toLp 2 (Fin.tail (WithLp.ofLp
+          (EuclideanSpace.single (0 : Fin (n + 1)) (1 : ℝ)))) : Euclid n) = 0 := by
+        ext j; simp [Fin.tail, Fin.succ_ne_zero]
+      rw [h0, map_zero]
+      ext i
+      refine Fin.cases ?_ (fun j => ?_) i
+      · simp
+      · simp
+    · -- `ê_{b+1} ↦ (0, DG(u) e_b)`
+      simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.prod_apply, hΦ, hT,
+        Fin.cons_succ]
+      have : (WithLp.toLp 2 (Fin.tail (WithLp.ofLp (EuclideanSpace.single b.succ (1 : ℝ)))) :
+          Euclid n) = EuclideanSpace.single b 1 := by
+        ext j; simp [Fin.tail]
+      rw [this]
+      ext i
+      refine Fin.cases ?_ (fun j => ?_) i
+      · simp
+      · simp
+/-- Covector estimate for the cylinder slice (deformation theorem, Lipschitz push-forward
+integrality).  Given the norm bounds `|β ∘ A| ≤ ‖A‖ᵏ |β|` (pull-back) and `|β ⌟ v| ≤ ‖v‖ |β|`
+(contraction), let `J x = (0, x)` embed `ℝᴺ` into `ℝᴺ⁺¹` and `e₀ = (1, 0, …, 0)`.  If
+`|α(v)| ≤ c |α|` for every `n`-covector `α` on `ℝᴺ`, then `|γ(e₀, Jv₁, …, Jvₙ)| ≤ c |γ|` for every
+`(n + 1)`-covector `γ` on `ℝᴺ⁺¹`: the left side is `β(v)` for `β = (γ ⌟ e₀) ∘ J`, and `‖J‖ ≤ 1`,
+`‖e₀‖ = 1` give `|β| ≤ |γ|`. -/
+theorem Submission.cmcdt_lpi_cyl_slice_covector_bound : (∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) → (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → ∀ (N n : ℕ) (γ : Covector (Euclid (N + 1)) (n + 1)) (v : Fin n → Euclid N) (c : ℝ), 0 ≤ c → (∀ α : Covector (Euclid N) n, |α v| ≤ c * covectorEuclideanNorm α) → |γ (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))| ≤ c * covectorEuclideanNorm γ := by
+  intro hL1 hL2 N n γ v c hc hv
+  -- the isometric embedding `J x = (0, x)` of `ℝᴺ` into `ℝᴺ⁺¹`
+  let J : Euclid N →L[ℝ] Euclid (N + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun x => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))
+      map_add' := fun x y => by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      map_smul' := fun a x => by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+  have hJx : ∀ x, J x = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x)) := fun x => rfl
+  -- `‖J x‖² = 0² + ‖x‖²`, so `‖J‖ ≤ 1`
+  have hJ : ‖J‖ ≤ 1 := by
+    refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun x => ?_
+    have h : ‖J x‖ ^ 2 = ‖x‖ ^ 2 := by
+      rw [hJx, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, Fin.sum_univ_succ]
+      simp
+    rw [pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero] at h
+    rw [h, one_mul]
+  -- `β = (γ ⌟ e₀) ∘ J`, so `β(v) = γ(e₀, Jv₁, …, Jvₙ)`
+  set β : Covector (Euclid N) n :=
+    (γ.curryLeft (EuclideanSpace.single 0 1)).compContinuousLinearMap J with hβdef
+  have hβv : β v = γ (Fin.cons (EuclideanSpace.single 0 1)
+      (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) := by
+    rw [hβdef, ContinuousAlternatingMap.compContinuousLinearMap_apply,
+      ContinuousAlternatingMap.curryLeft_apply_apply]
+    rfl
+  -- `|β| ≤ ‖J‖ⁿ |γ ⌟ e₀| ≤ |γ ⌟ e₀| ≤ ‖e₀‖ |γ| = |γ|`
+  have hβ : covectorEuclideanNorm β ≤ covectorEuclideanNorm γ := by
+    have h1 := hL1 N (N + 1) n J (γ.curryLeft (EuclideanSpace.single 0 1))
+    have h2 := hL2 (N + 1) n (EuclideanSpace.single 0 1) γ
+    have he : ‖(EuclideanSpace.single (0 : Fin (N + 1)) (1 : ℝ))‖ = 1 := by simp
+    rw [he, one_mul] at h2
+    have hJn : ‖J‖ ^ n ≤ 1 := pow_le_one₀ (norm_nonneg _) hJ
+    calc covectorEuclideanNorm β
+        ≤ ‖J‖ ^ n * covectorEuclideanNorm (γ.curryLeft (EuclideanSpace.single 0 1)) := h1
+      _ ≤ 1 * covectorEuclideanNorm (γ.curryLeft (EuclideanSpace.single 0 1)) :=
+          mul_le_mul_of_nonneg_right hJn (covectorEuclideanNorm_nonneg _)
+      _ ≤ covectorEuclideanNorm γ := by rw [one_mul]; exact h2
+  rw [← hβv]
+  exact (hv β).trans (mul_le_mul_of_nonneg_left hβ hc)
+
+/-- **Simon Ch. 6, 2.18–2.20 and 2.27**, one product piece of the cylinder `[[(0, 1)]] × G_#τ(A, w)`:
+with `Ĝ(z) = (z₀, G(tail z))`, `Â = (0, 1) × A` and `ŵ(z) = w(tail z)`, if `c ≥ 0` bounds the action
+of `DG(u)` on `n`-covectors at every `u ∈ A`, then `∫_Â ŵ ⟨ω ∘ Ĝ, DĜ ê⟩ ≤ ∫_A |w| c` for every form
+`ω` with `|ω| ≤ 1`.  At `z = (t, u) ∈ Â` the frame `DĜ(z) ê` is `(e₀, (0, DG(u) e))`, so the slice
+covector bound gives `|ŵ ⟨ω ∘ Ĝ, DĜ ê⟩| ≤ |w(u)| c(u)`; Tonelli on `(0, 1) × A` and
+`λ¹((0, 1)) = 1` evaluate the integral of this majorant (as in `M([[(0, 1)]] × T) = M(T)`). -/
+theorem Submission.cmcdt_lpi_cyl_piece_mass : (∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) → (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → ∀ (N n : ℕ) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (w : Euclid n → ℤ) (c : Euclid n → ℝ) (Gh : Euclid (n + 1) → Euclid (N + 1)) (Ah : Set (Euclid (n + 1))) (wh : Euclid (n + 1) → ℤ), MeasurableSet A → Measurable w → Measurable c → (∀ u ∈ A, DifferentiableAt ℝ G u) → (∀ u ∈ A, 0 ≤ c u ∧ ∀ α : Covector (Euclid N) n, |α (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))| ≤ c u * covectorEuclideanNorm α) → (∀ z, Gh z = WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0) (WithLp.ofLp (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))))) → Ah = {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} → (∀ z, wh z = w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) → ∀ ω : DifferentialForm (Euclid (N + 1)) (n + 1), (∀ y, covectorEuclideanNorm (ω y) ≤ 1) → ENNReal.ofReal (∫ z in Ah, (wh z : ℝ) * ω (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1))) ≤ ∫⁻ u in A, ENNReal.ofReal (|(w u : ℝ)| * c u) := by
+  intro hL1 hL2 N n G A w c Gh Ah wh hA hw hc hGd hcb hGh hAh hwh ω hω
+  -- `Â` is Borel with Tonelli on `(0, 1) × A`, and `DĜ(t, u) ê = (e₀, (0, DG(u) e))`
+  obtain ⟨hAhm, hTon, -⟩ := Submission.cmcdt_lpi_cyl_fubini n A hA
+  obtain ⟨-, -, hder⟩ := Submission.cmcdt_lpi_cyl_suspension_map N n G Gh hGh
+  have htail : Continuous fun z : Euclid (n + 1) =>
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) := by
+    fun_prop
+  -- the measurable majorant `g(z) = |w(tail z)| c(tail z)`
+  set g : Euclid (n + 1) → ℝ≥0∞ := fun z =>
+    ENNReal.ofReal (|((w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℤ) : ℝ)| *
+      c (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) with hg_def
+  have hg : Measurable g := by
+    have h1 : Measurable fun z : Euclid (n + 1) =>
+        ((w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℤ) : ℝ) :=
+      (measurable_from_top (f := fun k : ℤ => (k : ℝ))).comp (hw.comp htail.measurable)
+    exact ENNReal.measurable_ofReal.comp
+      ((continuous_abs.measurable.comp h1).mul (hc.comp htail.measurable))
+  -- on `Â`, the slice covector bound and `|ω| ≤ 1` bound the integrand by `g`
+  have hpt : ∀ z ∈ Ah,
+      ‖(wh z : ℝ) * ω (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1))‖ₑ ≤ g z := by
+    intro z hz
+    rw [hAh] at hz
+    obtain ⟨-, hu⟩ := hz
+    set u : Euclid n := WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) with hu_def
+    set t : ℝ := WithLp.ofLp z 0 with ht_def
+    have hz' : z = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) := by
+      simp [hu_def, ht_def]
+    have hb := Submission.cmcdt_lpi_cyl_slice_covector_bound hL1 hL2 N n (ω (Gh z))
+      (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) (c u) (hcb u hu).1 (hcb u hu).2
+    have hD : (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1)) =
+        Fin.cons (EuclideanSpace.single 0 1) (fun b => WithLp.toLp 2 (Fin.cons 0
+          (WithLp.ofLp (fderiv ℝ G u (EuclideanSpace.single b 1))))) := by
+      rw [hz']
+      exact hder t u (hGd u hu)
+    rw [Real.enorm_eq_ofReal_abs, hg_def]
+    apply ENNReal.ofReal_le_ofReal
+    rw [hwh, abs_mul, hD]
+    calc |((w u : ℤ) : ℝ)| * |ω (Gh z) (Fin.cons (EuclideanSpace.single 0 1) (fun b =>
+          WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (fderiv ℝ G u (EuclideanSpace.single b 1))))))|
+        ≤ |((w u : ℤ) : ℝ)| * (c u * covectorEuclideanNorm (ω (Gh z))) :=
+          mul_le_mul_of_nonneg_left hb (abs_nonneg _)
+      _ ≤ |((w u : ℤ) : ℝ)| * (c u * 1) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left (hω _) (hcb u hu).1)
+            (abs_nonneg _)
+      _ = _ := by ring
+  -- `ofReal ∫_Â F ≤ ∫⁻_Â ‖F‖ₑ ≤ ∫⁻_Â g = ∫⁻_A ∫⁻_(0,1) |w| c = ∫⁻_A |w| c`
+  calc ENNReal.ofReal (∫ z in Ah, (wh z : ℝ) * ω (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1)))
+      ≤ ‖∫ z in Ah, (wh z : ℝ) * ω (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1))‖ₑ :=
+        Real.ofReal_le_enorm _
+    _ ≤ ∫⁻ z in Ah, ‖(wh z : ℝ) * ω (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1))‖ₑ :=
+        enorm_integral_le_lintegral_enorm _
+    _ ≤ ∫⁻ z in Ah, g z := setLIntegral_mono' (hAh ▸ hAhm) hpt
+    _ = ∫⁻ u in A, ∫⁻ t in Ioo (0 : ℝ) 1, g (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) := by
+        rw [hAh]; exact hTon g hg
+    _ = ∫⁻ u in A, ENNReal.ofReal (|((w u : ℤ) : ℝ)| * c u) := by
+        congr 1; funext u
+        simp [hg_def, Real.volume_Ioo]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
