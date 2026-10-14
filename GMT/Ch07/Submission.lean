@@ -8190,6 +8190,91 @@ theorem Submission.idtp_caf_glue_pieces : ∀ (P n : ℕ) (ι : Type) [Countable
     _ = ∫⁻ x in ⋃ k, pieces k, φ x * h x ∂μHE[n] := (lintegral_iUnion hmeas hdisj _).symm
     _ = ∫⁻ x in S, φ x * h x ∂μHE[n] := setLIntegral_congr hae
 
+/-- **Simon Ch. 3, 2.4–2.5** (weighted area formula on a countably `n`-rectifiable carrier) for a
+map `F : ℝᴾ → ℝⁿ` that is `C¹` on an open set `Z`: the fibre sums
+`y ↦ Σ_{x ∈ M ∩ Z, F(x) = y} h(x)` are `Lⁿ`-a.e. measurable and
+`∫ Σ_{x ∈ M ∩ Z, F(x) = y} h(x) dLⁿ(y) = ∫_{M ∩ Z} J*(x) h(x) dHⁿ(x)`, where `J*(x)` is the
+square root of the Gram determinant of `DF(x)` on the standard orthonormal basis of the
+approximate tangent plane `TₓM`.  As in Simon's proof, `M ∩ Z` is cut, up to an `Hⁿ`-null set
+with `Lⁿ`-null `F`-image, into countably many disjoint Borel pieces
+`gᵢ(Bᵢ ∩ gᵢ⁻¹(Zₗ)) = gᵢ(Bᵢ) ∩ Zₗ`: the `gᵢ(Bᵢ)` are bi-Lipschitz images covering `M` up to a
+null set (Lemma 1.2 and Remark 1.3, with bi-Lipschitz pieces in place of `C¹` submanifolds), and
+`F` agrees with a Lipschitz map `Gₗ` on an open `Vₗ ⊇ Zₗ`.  On each piece `TₓM = range Dgᵢ`
+a.e., so the single-piece area formula applies, and the pieces are glued by countable
+additivity. -/
+theorem Submission.idtp_carrier_area_formula : ∀ (P n : ℕ) (M Z : Set (Euclid P)) (F : Euclid P → Euclid n) (h : Euclid P → ℝ≥0∞), 1 ≤ n → MeasurableSet M → CountablyRectifiable n M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → IsOpen Z → ContDiffOn ℝ 1 F Z → AEMeasurable h (μHE[n].restrict M) → AEMeasurable (fun y : Euclid n => ∑' x : ↥(M ∩ Z ∩ F ⁻¹' {y}), h x) volume ∧ ∫⁻ y, (∑' x : ↥(M ∩ Z ∩ F ⁻¹' {y}), h x) ∂volume = ∫⁻ x in M ∩ Z, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane n M x)) => inner ℝ (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) i)) (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane n M x) j))))) * h x ∂μHE[n] := by
+  intro P n M Z F h hn hM hrect hfin hZ hF hh
+  -- Step 1: `Z = ⋃ₗ Zₗ` (disjoint Borel), `Zₗ ⊆ Vₗ ⊆ Z`, `Vₗ` open, `F = Gₗ` on `Vₗ` with `Gₗ`
+  -- Lipschitz
+  obtain ⟨V, Zs, G, hVo, -, hZsm, hZsV, hZsd, hZsU, hGL, hFG⟩ :=
+    Submission.idtp_caf_lipschitz_localization P n Z F hZ hF
+  choose LG hLG using hGL
+  have hZsZ : ∀ l, Zs l ⊆ Z := fun l => by rw [← hZsU]; exact subset_iUnion Zs l
+  -- Step 2: up to an `Hⁿ`-null set, `M` is the disjoint union of the Borel bi-Lipschitz images
+  -- `gᵢ(Bᵢ) ⊆ M`, `Dgᵢ` existing and injective on `Bᵢ`
+  obtain ⟨g, B, m, hgL, hBm, hm, hlow, hdiff, hgBm, hgBM, hgBd, hnull⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces P n M hM hrect
+  choose Lg hLg using hgL
+  -- Step 3: the parameter sets `Aᵢₗ = Bᵢ ∩ gᵢ⁻¹(Zₗ)` and the pieces `gᵢ(Aᵢₗ) = gᵢ(Bᵢ) ∩ Zₗ`,
+  -- indexed by `k = (i, l)`
+  obtain ⟨A, hA⟩ : ∃ A : ℕ × ℕ → Set (Euclid n), ∀ k, A k = B k.1 ∩ g k.1 ⁻¹' Zs k.2 :=
+    ⟨fun k => B k.1 ∩ g k.1 ⁻¹' Zs k.2, fun _ => rfl⟩
+  have hAm : ∀ k, MeasurableSet (A k) := fun k => by
+    rw [hA]
+    exact (hBm k.1).inter ((hLg k.1).continuous.measurable (hZsm k.2))
+  have hAB : ∀ k, A k ⊆ B k.1 := fun k => by
+    rw [hA]
+    exact inter_subset_left
+  have hAimg : ∀ k, g k.1 '' A k = g k.1 '' B k.1 ∩ Zs k.2 := fun k => by
+    rw [hA]
+    exact image_inter_preimage _ _ _
+  have hAm' : ∀ k, MeasurableSet (g k.1 '' A k) := fun k => by
+    rw [hAimg]
+    exact (hgBm k.1).inter (hZsm k.2)
+  have hAM : ∀ k, g k.1 '' A k ⊆ M := fun k => (image_mono (hAB k)).trans (hgBM k.1)
+  have hAZ : ∀ k, g k.1 '' A k ⊆ Zs k.2 := fun k => by
+    rw [hAimg]
+    exact inter_subset_right
+  -- Step 4: the remainder `(M ∩ Z) ∖ ⋃ₖ gᵢ(Aᵢₗ) ⊆ M ∖ ⋃ᵢ gᵢ(Bᵢ)` is `Hⁿ`-null
+  have hrem : μHE[n] ((M ∩ Z) \ ⋃ k : ℕ × ℕ, g k.1 '' A k) = 0 := by
+    refine measure_mono_null ?_ hnull
+    rintro x ⟨⟨hxM, hxZ⟩, hxA⟩
+    refine ⟨hxM, fun hxB => hxA ?_⟩
+    obtain ⟨i, hi⟩ := mem_iUnion.1 hxB
+    obtain ⟨l, hl⟩ := mem_iUnion.1 (show x ∈ ⋃ l, Zs l by rwa [hZsU])
+    refine mem_iUnion.2 ⟨(i, l), ?_⟩
+    rw [hAimg]
+    exact ⟨hi, hl⟩
+  -- Step 5: glue the pieces; the `F`-image of the remainder is `Lⁿ`-null (`F` is `C¹` on `Z`)
+  refine Submission.idtp_caf_glue_pieces P n (ℕ × ℕ) (M ∩ Z) (fun k => g k.1 '' A k) F _ h hAm'
+    (fun k => subset_inter (hAM k) ((hAZ k).trans (hZsZ k.2))) ?_ hrem
+    (Submission.idtp_caf_null_image P n Z ((M ∩ Z) \ ⋃ k : ℕ × ℕ, g k.1 '' A k) F hZ hF
+      (fun x hx => hx.1.2) hrem) fun k => ?_
+  · -- the pieces are pairwise disjoint: distinct `i` by Step 2, distinct `l` by Step 1
+    intro k k' hkk'
+    show Disjoint (g k.1 '' A k) (g k'.1 '' A k')
+    rw [hAimg k, hAimg k']
+    by_cases h1 : k.1 = k'.1
+    · have h2 : k.2 ≠ k'.2 := fun h2 => hkk' (Prod.ext h1 h2)
+      exact (hZsd h2).mono inter_subset_right inter_subset_right
+    · exact (hgBd h1).mono inter_subset_left inter_subset_left
+  · -- Step 6: on the piece `gᵢ(Aᵢₗ)`, `TₓM = range Dgᵢ` a.e. and the single-piece area formula
+    -- applies with the Lipschitz extension `Gₗ` of `F|Vₗ`
+    have hlowA : ∀ a ∈ A k, ∀ a' ∈ A k, m k.1 * ‖a - a'‖ ≤ ‖g k.1 a - g k.1 a'‖ :=
+      fun a ha a' ha' => hlow k.1 a (hAB k ha) a' (hAB k ha')
+    have hinj : InjOn (g k.1) (A k) := fun a ha a' ha' he => by
+      have hle := hlowA a ha a' ha'
+      rw [he, sub_self, norm_zero] at hle
+      exact sub_eq_zero.1 (norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right hle (hm k.1)))
+    exact Submission.idtp_caf_piece_area_formula P n (g k.1) (A k) (Lg k.1) (V k.2) F (G k.2)
+      (LG k.2) (approxTangentPlane n M) h (hLg k.1) (hAm k) hinj
+      (fun a ha => (hdiff k.1 a (hAB k ha)).1) (hVo k.2) ((hAZ k).trans (hZsV k.2)) (hLG k.2)
+      (hFG k.2)
+      (fun x hx => hF.differentiableOn_one.differentiableAt (hZ.mem_nhds (hZsZ k.2 (hAZ k hx))))
+      (Submission.idtp_caf_piece_approxTangentPlane_ae P n M (g k.1) (A k) (Lg k.1) (m k.1) hn hM
+        hfin (hLg k.1) (hAm k) (hm k.1) hlowA (fun a ha => hdiff k.1 a (hAB k ha)) (hAM k))
+      (hh.mono_set (hAM k))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
