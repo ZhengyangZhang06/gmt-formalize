@@ -565,6 +565,157 @@ theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set
     Set.ext fun x => ⟨fun hx => ⟨hsub hx, hx.2⟩, fun hx => ⟨hKU hx.1, hx.2⟩⟩
   rw [heq]
   exact hK.diff F.isOpen_zeroRegion
+/-- **Push-forward of `τ(M, θ, ξ)` by a `C¹` map** (Simon 6.2.23–6.2.24(2), with a compact `K`
+carrying `Hⁿ⌞M` in place of `B̄_t(y)`).  If `Hⁿ(M \ K) = 0`, `f` is `C¹` on an open `O ⊇ K` and
+`f(K) ⊆ U`, then `Q(ω) = ∫_M θ ⟨ω(f x) ∘ Df(x), ξ⟩ dHⁿ` is a current in `U` with compact support
+`spt Q ⊆ f(K)`.  With `‖Df‖ ≤ Λ` on `K`, `|θ ⟨ω(f x) ∘ Df(x), ξ⟩| ≤ ‖ω‖_∞ Λⁿ θ 1_K` a.e., so `Q` is
+well defined, linear and `|Q(ω)| ≤ ‖ω‖_∞ Λⁿ ∫_{M ∩ K} θ dHⁿ`, which gives continuity; forms
+vanishing on `f(K)` are killed by `Q`. -/
+theorem Submission.dor_lmb_pc_pushforward_current_exists : ∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P), IsOpen U → IsCompact K → K ⊆ U → μHE[n] (R.carrier \ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → f '' K ⊆ U → ∃ Q : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, Q ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) ∧ IsCompact Q.support ∧ Q.support ⊆ f '' K := by
+  intro P n U K O R f hU hK hKU hnull hO hKO hf hfKU
+  -- Step 1: `f` and `Df` are continuous on `O`, `f(K)` is compact and `‖Df‖ ≤ Λ` on `K`
+  have hfc : ContinuousOn f O := hf.continuousOn
+  have hdfc : ContinuousOn (fderiv ℝ f) O := hf.continuousOn_fderiv_of_isOpen hO le_rfl
+  have hfK : IsCompact (f '' K) := hK.image_of_continuousOn (hfc.mono hKO)
+  obtain ⟨Λ, hΛ0, hΛ⟩ : ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ x ∈ K, ‖fderiv ℝ f x‖ ≤ Λ := by
+    obtain ⟨Λ, hΛ⟩ := hK.exists_bound_of_continuousOn (hdfc.mono hKO)
+    exact ⟨max Λ 0, le_max_right _ _, fun x hx => (hΛ x hx).trans (le_max_left _ _)⟩
+  -- Step 2: `Hⁿ⌞M` is carried by `K`
+  have hKm : MeasurableSet K := hK.isClosed.measurableSet
+  have hae : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ K := by
+    rw [ae_restrict_iff' R.measurableSet_carrier]
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hnull] with x hx hxM
+    by_contra hxK
+    exact hx ⟨hxM, hxK⟩
+  -- Step 3: the pulled-back covector field `β_ω(x) = ω(f x) ∘ Df(x)` is continuous on `O`
+  obtain ⟨β, hβ⟩ : ∃ β : TestFormOn U n → Euclid P → Covector (Euclid P) n, ∀ ω x,
+      β ω x = ((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x) :=
+    ⟨fun ω x => ((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap
+      (fderiv ℝ f x), fun _ _ => rfl⟩
+  have hcomp : Continuous fun p : Covector (Euclid P) n × (Euclid P →L[ℝ] Euclid P) =>
+      p.1.compContinuousLinearMap p.2 :=
+    continuous_iff_continuousAt.2 fun p =>
+      (ContinuousAlternatingMap.hasStrictFDerivAt_compContinuousLinearMap p).hasFDerivAt.continuousAt
+  have hβc : ∀ ω : TestFormOn U n, ContinuousOn (β ω) O := by
+    intro ω
+    have hω : Continuous (ω : DifferentialForm (Euclid P) n) := ContDiff.continuous ω.property.1.1
+    have h : ContinuousOn (fun x => ((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap
+        (fderiv ℝ f x)) O := hcomp.comp_continuousOn ((hω.comp_continuousOn hfc).prodMk hdfc)
+    exact h.congr fun x _ => hβ ω x
+  -- Step 4: `β_ω` is linear in `ω`
+  have hβadd : ∀ (ω η : TestFormOn U n) x, β (ω + η) x = β ω x + β η x := by
+    intro ω η x
+    simp only [hβ]
+    ext v
+    simp
+  have hβsmul : ∀ (c : ℝ) (ω : TestFormOn U n) x, β (c • ω) x = c • β ω x := by
+    intro c ω x
+    simp only [hβ]
+    ext v
+    simp
+  -- Step 5: the truncation `1_K β_ω` is measurable, vanishes off `K` and `‖1_K β_ω‖ ≤ M Λⁿ`
+  have hFm : ∀ ω : TestFormOn U n,
+      AEStronglyMeasurable (K.indicator (β ω)) (μHE[n].restrict R.carrier) := fun ω =>
+    (aestronglyMeasurable_indicator_iff hKm).2 (((hβc ω).mono hKO).aestronglyMeasurable hKm)
+  have hFB : ∀ (ω : TestFormOn U n) (M : ℝ), (∀ z, ‖(ω : DifferentialForm (Euclid P) n) z‖ ≤ M) →
+      ∀ x, ‖K.indicator (β ω) x‖ ≤ M * Λ ^ n := by
+    intro ω M hM x
+    have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+    by_cases hx : x ∈ K
+    · rw [indicator_of_mem hx, hβ]
+      calc ‖((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)‖
+          ≤ ‖(ω : DifferentialForm (Euclid P) n) (f x)‖ * ‖fderiv ℝ f x‖ ^ Fintype.card (Fin n) :=
+            ContinuousAlternatingMap.norm_compContinuousLinearMap_le _ _
+        _ ≤ M * Λ ^ n := by
+            rw [Fintype.card_fin]
+            exact mul_le_mul (hM _) (pow_le_pow_left₀ (norm_nonneg _) (hΛ x hx) n)
+              (pow_nonneg (norm_nonneg _) n) hM0
+    · rw [indicator_of_notMem hx, norm_zero]
+      exact mul_nonneg hM0 (pow_nonneg hΛ0 n)
+  -- Step 6: integrability and `|∫_M θ ⟨β_ω, ξ⟩| ≤ M Λⁿ ∫_{M ∩ K} θ`
+  have hpair : ∀ (ω : TestFormOn U n) (M : ℝ),
+      (∀ z, ‖(ω : DifferentialForm (Euclid P) n) z‖ ≤ M) →
+      Integrable (fun x => (R.mult x : ℝ) * R.orient x (β ω x)) (μHE[n].restrict R.carrier) ∧
+      |∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (β ω x) ∂μHE[n]| ≤
+        M * Λ ^ n * (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal := by
+    intro ω M hM
+    obtain ⟨hint, hle⟩ := Submission.dpf_pfc_imrep_pairing_integrable_abs_le P n U K R
+      (K.indicator (β ω)) (M * Λ ^ n) hK hKU (hFm ω) (fun x hx => indicator_of_notMem hx _)
+      (hFB ω M hM)
+    have heq : (fun x => (R.mult x : ℝ) * R.orient x (K.indicator (β ω) x))
+        =ᵐ[μHE[n].restrict R.carrier] fun x => (R.mult x : ℝ) * R.orient x (β ω x) := by
+      filter_upwards [hae] with x hx
+      rw [indicator_of_mem hx]
+    exact ⟨hint.congr heq, by rwa [← integral_congr_ae heq]⟩
+  have hint : ∀ ω : TestFormOn U n,
+      Integrable (fun x => (R.mult x : ℝ) * R.orient x (β ω x)) (μHE[n].restrict R.carrier) := by
+    intro ω
+    obtain ⟨M, hM⟩ := (ContDiff.continuous ω.property.1.1).bounded_above_of_compact_support
+      ω.property.1.2
+    exact (hpair ω M hM).1
+  -- Step 7: the linear functional `Q(ω) = ∫_M θ ⟨β_ω, ξ⟩ dHⁿ`
+  let I : TestFormOn U n →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (β ω x) ∂μHE[n]
+      map_add' := fun ω η => by
+        simp only [hβadd, map_add, mul_add]
+        exact integral_add (hint ω) (hint η)
+      map_smul' := fun c ω => by
+        have h : ∀ x, (R.mult x : ℝ) * R.orient x (β (c • ω) x) =
+            c * ((R.mult x : ℝ) * R.orient x (β ω x)) := by
+          intro x
+          rw [hβsmul, map_smul, smul_eq_mul]
+          ring
+        simp only [h, RingHom.id_apply, smul_eq_mul]
+        exact integral_const_mul c _ }
+  have hIapply : ∀ ω : TestFormOn U n,
+      I ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (β ω x) ∂μHE[n] := fun _ => rfl
+  -- Step 8: continuity, from `supₓ ‖ωⱼ(x)‖ → 0`
+  have hcont : ∀ ωs : ℕ → TestFormOn U n, TestFormOnConverges ωs 0 →
+      Tendsto (fun j => I (ωs j)) atTop (𝓝 0) := by
+    intro ωs hωs
+    obtain ⟨-, -, -, -, hunif⟩ := Submission.dpf_pfc_testFormOnConverges_zero_uniform P n U ωs hωs
+    have hc : 0 ≤ (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal :=
+      ENNReal.toReal_nonneg
+    have hA : 0 ≤ Λ ^ n * (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal :=
+      mul_nonneg (pow_nonneg hΛ0 n) hc
+    rw [Metric.tendsto_nhds]
+    intro δ hδ
+    have hε : 0 < δ / (Λ ^ n * (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal + 1) :=
+      div_pos hδ (by linarith)
+    filter_upwards [hunif _ hε] with j hj
+    rw [Real.dist_eq, sub_zero, hIapply]
+    calc |∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (β (ωs j) x) ∂μHE[n]|
+        ≤ δ / (Λ ^ n * (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal + 1) *
+            Λ ^ n * (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal :=
+          (hpair (ωs j) _ hj).2
+      _ = δ * (Λ ^ n * (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal) /
+            (Λ ^ n * (∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal + 1) := by
+          ring
+      _ < δ := by
+          rw [div_lt_iff₀ (by linarith)]
+          nlinarith
+  let Q : GeometricCurrentOn U n := ⟨I, hcont⟩
+  -- Step 9: `Q` kills every form vanishing near `f(K)`, so `spt Q ⊆ f(K)` is compact
+  have hvan : ∀ ω : TestFormOn U n,
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (f '' K) → Q ω = 0 := by
+    intro ω hω
+    change I ω = 0
+    rw [hIapply]
+    apply integral_eq_zero_of_ae
+    filter_upwards [hae] with x hx
+    have hfx : (ω : DifferentialForm (Euclid P) n) (f x) = 0 :=
+      image_eq_zero_of_notMem_tsupport (disjoint_right.1 hω (mem_image_of_mem f hx))
+    have h0 : ((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap
+        (fderiv ℝ f x) = 0 := by
+      rw [hfx]
+      ext v
+      simp
+    rw [Pi.zero_apply, hβ, h0, map_zero, mul_zero]
+  obtain ⟨hsub, hcpt⟩ :=
+    Submission.rsd_cmr_support_subset_of_vanish P n U (f '' K) Q hU hfK hfKU hvan
+  refine ⟨Q, fun ω => ?_, hcpt, hsub⟩
+  change I ω = _
+  simp only [hIapply, hβ]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
