@@ -522,6 +522,7 @@ theorem Submission.cbr_ci_cp_pr_det_covector_laplace : ∀ (P d : ℕ) (g : Fin 
     simp [Fin.removeNth]
   -- Step 4: `(-1) ^ (i + k) = (-1) ^ i * (-1) ^ k`.
   rw [hsub, Matrix.of_apply, pow_add]
+  ring
 /-- `n! · β(u) = ∑_I β(e_I) · det(⟨e_{I(b)}, u_a⟩)_{a,b}` for an `n`-covector `β` on `ℝᴾ`, an
 orthonormal basis `e` of `ℝᴾ` and `u ∈ (ℝᴾ)ⁿ`, the sum running over all index maps
 `I : Fin n → Fin P` (the expansion of `β` in the basis dual to `e`, used for the projection
