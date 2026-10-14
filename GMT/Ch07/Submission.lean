@@ -451,6 +451,83 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
+`spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
+`S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
+unity `ψ₁, …, ψₘ` on `K` subordinate to them splits `ω = Σᵢ ψᵢω` into test forms with
+`spt (ψᵢω) ⊆ Wᵢ`, each annihilated by `S`. -/
+theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0 := by
+  intro P n U S ω hdisj
+  classical
+  -- `K = spt ω` is a compact subset of `U`
+  set K := tsupport (ω : DifferentialForm (Euclid P) n)
+  have hKc : IsCompact K := ω.property.1.2
+  have hKU : K ⊆ U := ω.property.2
+  -- `K` lies in the zero region `⋃₀ 𝒲`, hence in finitely many members of `𝒲`
+  let 𝒲 : Set (Set (Euclid P)) :=
+    {W | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ S.VanishesOn W}
+  have hKZ : K ⊆ ⋃ W : 𝒲, (W : Set (Euclid P)) := by
+    intro x hx
+    have hxZ : x ∈ S.zeroRegion := by
+      by_contra hxZ
+      exact Set.disjoint_left.mp hdisj hx ⟨hKU hx, hxZ⟩
+    rwa [GeometricCurrentOn.zeroRegion, Set.sUnion_eq_iUnion] at hxZ
+  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun W : 𝒲 => (W : Set (Euclid P)))
+    (fun W => W.2.1) hKZ
+  let Wt : t → Set (Euclid P) := fun i => ((i : 𝒲) : Set (Euclid P))
+  have hKt : K ⊆ ⋃ i, Wt i := by
+    intro x hx
+    obtain ⟨W, hW, hxW⟩ := Set.mem_iUnion₂.mp (ht hx)
+    exact Set.mem_iUnion.mpr ⟨⟨W, hW⟩, hxW⟩
+  -- a smooth partition of unity `ψᵢ` on `K` with `spt ψᵢ ⊆ Wᵢ`
+  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Wt (fun i => (i : 𝒲).2.1) hKt
+  -- each `ψᵢω` is a test form in `U` supported in `Wᵢ`
+  have hmem : ∀ i, (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n ∧
+      tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ Wt i := by
+    intro i
+    have hsK : tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ K :=
+      tsupport_smul_subset_right _ _
+    refine ⟨⟨⟨?_, ?_⟩, hsK.trans hKU⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
+    · exact (contMDiff_iff_contDiff.mp (ψ i).contMDiff).smul ω.property.1.1
+    · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
+  let ωi : t → TestFormOn U n := fun i => ⟨_, (hmem i).1⟩
+  -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
+  have hsum : ω = ∑ i, ωi i := by
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    change (ω : DifferentialForm (Euclid P) n) x =
+      ∑ i, ψ i x • (ω : DifferentialForm (Euclid P) n) x
+    by_cases hx : x ∈ K
+    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
+    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
+      simp [h0]
+  -- linearity: `S(ω) = Σᵢ S(ψᵢω) = 0`
+  change S.toCurrent ω = 0
+  rw [hsum, map_sum]
+  exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
+
+/-- **Deformation theorem, face replacement** (Simon 6.5).  Let `Q₀` be the `(m+1)`-current
+`Q₀(ω) = Σ_{p ∈ s} ∫_{(0,1)^{m+1}} u_p(y) ω(Φ_p y)(e_{ι_p(0)}, …, e_{ι_p(m)}) dy` with
+`Φ_p(y) = b_p + Σⱼ yⱼ e_{ι_p(j)}`, and let `Z` be the union of the closed faces `Φ_q([0,1]^{m+1})`,
+`q ∈ s`.  If `spt γ ∩ Z = ∅` then `∂Q₀(γ) = Q₀(dγ) = 0` (Simon (6.2.3)): `spt dγ ⊆ spt γ`, so
+`dγ` vanishes at every `Φ_p(y)`, `y ∈ (0,1)^{m+1}`, and every integrand is zero. -/
+theorem Submission.cmcdtfrbvbsf_boundary_vanish_off_faces : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (u : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ) (Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Q₀ ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∀ γ : TestFormOn (univ : Set (Euclid P)) m, Disjoint (tsupport (γ : DifferentialForm (Euclid P) m)) {x : Euclid P | ∃ q ∈ s, ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) = x} → Q₀.boundary γ = 0 := by
+  intro P m s u Q₀ hQ₀ γ hdisj
+  -- `∂Q₀(γ) = Q₀(dγ)`, expanded with the representation of `Q₀`
+  rw [GeometricCurrentOn.boundary_apply, hQ₀]
+  -- each integrand vanishes on `(0,1)^{m+1}`: `Φ_p(y)` lies on the closed faces, which miss
+  -- `spt dγ ⊆ spt γ`
+  refine Finset.sum_eq_zero fun p hp => setIntegral_eq_zero_of_forall_eq_zero fun y hy => ?_
+  have hx : WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)
+      ∉ tsupport (exteriorDerivativeTestOn univ m γ : DifferentialForm (Euclid P) (m + 1)) :=
+    fun hx => Set.disjoint_left.mp hdisj
+      (tsupport_exteriorDerivative_subset (γ : DifferentialForm (Euclid P) m) hx)
+      ⟨p, hp, y, fun i => ⟨(hy i).1.le, (hy i).2.le⟩, rfl⟩
+  rw [image_eq_zero_of_notMem_tsupport hx, ContinuousAlternatingMap.coe_zero, Pi.zero_apply,
+    mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
