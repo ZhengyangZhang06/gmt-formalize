@@ -2812,6 +2812,149 @@ theorem Submission.dpf_approxTangent_ae_bilipschitz_piece : ∀ (P n : ℕ) (U Y
     Submission.ptd_piece_image_approxTangent_ae P n F B L m hF hB hm hbi hdiff] with b hYA hA'
   exact (hYA _).2 hA'
 
+/-- **Simon Ch. 6, 2.21 and 2.27** (the cylinder `[[(0, 1)]] × T`), with **Ch. 3, 1.4**:
+approximate tangent spaces of the cylinder `(0, 1) × M`.  Let `M ⊆ ℝᴺ` be Borel and countably
+`n`-rectifiable with `Hⁿ(M) < ∞`, and `M̃ := Ψ((0, 1) × M)`, `Ψ(t, x) = (t, x) ∈ ℝ^{N+1}`.  For
+`H^{n+1}`-a.e. `y = Ψ(t, x) ∈ M̃`, if `M` has approximate tangent space `Q` at `x`, then `M̃` has
+approximate tangent space `Q̃ = span(e₀, J(Q))` at `y`.  `M` is covered up to an `Hⁿ`-null set
+`Z₀` by bi-Lipschitz pieces `Fᵢ(Bᵢ)`, and `M̃` by the product pieces `Ĝᵢ(Φₙ((0, 1) × Bᵢ))`,
+`Ĝᵢ(t, u) = (t, Fᵢ u)`.  For a.e. `u ∈ Bᵢ`, `M` has approximate tangent space `range DFᵢ(u)` at
+`Fᵢ u`; for a.e. `z`, `M̃` has approximate tangent space `range DĜᵢ(z) = Q̃(range DFᵢ(u))` at
+`Ĝᵢ z`.  The exceptional points lie in Lipschitz images of null sets and in `Ψ(ℝ × Z₀)`, an
+`H^{n+1}`-null set; elsewhere uniqueness of approximate tangent spaces gives `Q = range DFᵢ(u)`. -/
+theorem Submission.dimred_mbl_dt_lp_imc_cylinder_tangent : ∀ (N n : ℕ) (M : Set (Euclid N)), MeasurableSet M → CountablyRectifiable n M → μHE[n] M ≠ ∞ → ∀ᵐ y ∂(μHE[n + 1].restrict ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ M))), ∀ (t : ℝ) (x : Euclid N), y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) → ∀ Q : Submodule ℝ (Euclid N), HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt (n + 1) ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ M)) y (Submodule.span ℝ (insert (EuclideanSpace.single 0 1) ((fun v : Euclid N => (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)) : Euclid (N + 1))) '' (Q : Set (Euclid N))))) := by
+  intro N n M hM hrect hfinM
+  -- `Φ_d(t, u) = (t, u)` is a continuous injection `ℝ × ℝᵈ → ℝ^{d+1}`, so a measurable embedding
+  have hinj : ∀ (d : ℕ) (t t' : ℝ) (u u' : Euclid d),
+      (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (d + 1)) =
+        WithLp.toLp 2 (Fin.cons t' (WithLp.ofLp u')) → t = t' ∧ u = u' := by
+    intro d t t' u u' h
+    obtain ⟨h1, h2⟩ := Fin.cons_injective2 (WithLp.toLp_injective 2 h)
+    exact ⟨h1, WithLp.ofLp_injective 2 h2⟩
+  have hemb : ∀ d : ℕ, MeasurableEmbedding (fun p : ℝ × Euclid d =>
+      (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (d + 1))) := by
+    intro d
+    refine Continuous.measurableEmbedding (by fun_prop) ?_
+    rintro ⟨t, u⟩ ⟨t', u'⟩ h
+    obtain ⟨rfl, rfl⟩ := hinj d t t' u u' h
+    rfl
+  -- Step 1: `M̃` is Borel and `H^{n+1}(M̃) = Hⁿ(M) < ∞`
+  have hCM := Submission.dimred_mbl_dt_lp_imc_cylinder_measure N n M hM hrect hfinM
+  set Mt := (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) :
+    Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ M)
+  have hMt : MeasurableSet Mt := (hemb N).measurableSet_image.2 (measurableSet_Ioo.prod hM)
+  have hfinMt : μHE[n + 1] Mt ≠ ∞ := by
+    have : IsFiniteMeasure (μHE[n].restrict M) := isFiniteMeasure_restrict.2 hfinM
+    have h := congrArg (fun μ : Measure (Euclid (N + 1)) => μ univ) hCM
+    simp only [Measure.restrict_apply_univ] at h
+    rw [← h, Measure.map_apply (hemb N).measurable MeasurableSet.univ, preimage_univ,
+      ← univ_prod_univ, Measure.prod_prod, Measure.restrict_apply_univ,
+      Measure.restrict_apply_univ, Real.volume_Ioo]
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfinM
+  -- Step 2: bi-Lipschitz pieces `Fᵢ(Bᵢ) ⊆ M` covering `M` up to the `Hⁿ`-null set `Z₀`
+  obtain ⟨F, B, m, hFlip, hBmeas, hmpos, hbi, hdiff, -, hFBsub, -, hnull⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces N n M hM hrect
+  choose L hL using hFlip
+  -- Step 3: for `u ∈ Bᵢ` off a null set `Zᵢ`, `M` has approximate tangent space `range DFᵢ(u)`
+  -- at `Fᵢ u`
+  have hZ : ∀ i, ∃ Z : Set (Euclid n), volume Z = 0 ∧ ∀ u ∈ B i, u ∉ Z →
+      HasApproximateTangentSpaceAt n M (F i u)
+        (LinearMap.range (fderiv ℝ (F i) u : Euclid n →ₗ[ℝ] Euclid N)) := by
+    intro i
+    have h := Submission.dpf_approxTangent_ae_bilipschitz_piece N n univ M (F i) (B i) (L i) (m i)
+      isOpen_univ hM (subset_univ M)
+      (fun C _ _ => ne_top_of_le_ne_top hfinM (measure_mono inter_subset_left)) (hL i) (hBmeas i)
+      (hmpos i) (hbi i) (hdiff i) (hFBsub i)
+    refine ⟨_, ae_iff.1 ((ae_restrict_iff' (hBmeas i)).1 h), fun u hu huZ => ?_⟩
+    by_contra hcon
+    exact huZ fun h' => hcon (h' hu)
+  choose Z hZnull hZgood using hZ
+  -- Step 4: the product pieces `Ĝᵢ(t, u) = (t, Fᵢ u)`
+  obtain ⟨G, hGcons⟩ : ∃ G : ℕ → Euclid (n + 1) → Euclid (N + 1), ∀ i (t : ℝ) (u : Euclid n),
+      G i (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) =
+        WithLp.toLp 2 (Fin.cons t (WithLp.ofLp (F i u))) :=
+    ⟨fun i z => WithLp.toLp 2 (Fin.cons ((WithLp.ofLp z) 0)
+      (WithLp.ofLp (F i (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))))), fun i t u => by simp⟩
+  -- Step 5: off a null set `Wᵢ`, `M̃` has approximate tangent space `range DĜᵢ(z)` at `Ĝᵢ z`
+  -- for `z ∈ Âᵢ = Φₙ((0, 1) × Bᵢ)`
+  have hW : ∀ i, ∃ W : Set (Euclid (n + 1)), volume W = 0 ∧ ∀ (t : ℝ) (u : Euclid n),
+      t ∈ Ioo (0 : ℝ) 1 → u ∈ B i →
+      (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (n + 1)) ∉ W →
+      HasApproximateTangentSpaceAt (n + 1) Mt (G i (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))))
+        (LinearMap.range (fderiv ℝ (G i) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) :
+          Euclid (n + 1) →ₗ[ℝ] Euclid (N + 1))) := by
+    intro i
+    obtain ⟨hlip, hcolip, hder⟩ :=
+      Submission.dimred_mbl_dt_lp_imc_suspension N n (F i) (G i) (hGcons i)
+    set A := (fun p : ℝ × Euclid n => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) :
+      Euclid (n + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ B i)
+    have hA : MeasurableSet A := (hemb n).measurableSet_image.2 (measurableSet_Ioo.prod (hBmeas i))
+    have hAbi : ∀ a ∈ A, ∀ a' ∈ A, min 1 (m i) * ‖a - a'‖ ≤ ‖G i a - G i a'‖ := by
+      rintro _ ⟨⟨t, u⟩, ⟨-, hu⟩, rfl⟩ _ ⟨⟨t', u'⟩, ⟨-, hu'⟩, rfl⟩
+      exact hcolip (m i) (B i) (hbi i) t t' u hu u' hu'
+    have hAdiff : ∀ a ∈ A, DifferentiableAt ℝ (G i) a ∧ Injective (fderiv ℝ (G i) a) := by
+      rintro _ ⟨⟨t, u⟩, ⟨-, hu⟩, rfl⟩
+      obtain ⟨hd, -, hinj', -⟩ := hder t u (hdiff i u hu).1
+      exact ⟨hd, hinj' (hdiff i u hu).2⟩
+    have hAsub : G i '' A ⊆ Mt := by
+      rintro _ ⟨_, ⟨⟨t, u⟩, ⟨ht, hu⟩, rfl⟩, rfl⟩
+      exact ⟨(t, F i u), ⟨ht, hFBsub i ⟨u, hu, rfl⟩⟩, (hGcons i t u).symm⟩
+    have h := Submission.dpf_approxTangent_ae_bilipschitz_piece (N + 1) (n + 1) univ Mt (G i) A
+      (max 1 (L i)) (min 1 (m i)) isOpen_univ hMt (subset_univ _)
+      (fun C _ _ => ne_top_of_le_ne_top hfinMt (measure_mono inter_subset_left))
+      (hlip (L i) (hL i)) hA (lt_min one_pos (hmpos i)) hAbi hAdiff hAsub
+    refine ⟨_, ae_iff.1 ((ae_restrict_iff' hA).1 h), fun t u ht hu hz => ?_⟩
+    by_contra hcon
+    exact hz fun h' => hcon (h' ⟨(t, u), ⟨ht, hu⟩, rfl⟩)
+  choose W hWnull hWgood using hW
+  -- Steps 6–7: the exceptional set `⋃ᵢ Ĝᵢ(Wᵢ ∪ Φₙ(ℝ × Zᵢ)) ∪ Ψ(ℝ × Z₀)` is `H^{n+1}`-null
+  have hE : μHE[n + 1] ((⋃ i, G i '' (W i ∪ (fun p : ℝ × Euclid n =>
+      (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (n + 1))) '' (univ ×ˢ Z i))) ∪
+      (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) :
+        Euclid (N + 1))) '' (univ ×ˢ (M \ ⋃ i, F i '' B i))) = 0 := by
+    refine measure_union_null (measure_iUnion_null fun i => ?_)
+      (Submission.dimred_mbl_dt_lp_imc_product_null N n _ hnull)
+    have h0 : μHE[n + 1] (W i ∪ (fun p : ℝ × Euclid n =>
+        (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (n + 1))) '' (univ ×ˢ Z i)) =
+        0 := by
+      refine measure_union_null ?_ (Submission.dimred_mbl_dt_lp_imc_product_null n n (Z i) ?_)
+      · rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+        exact hWnull i
+      · rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+        exact hZnull i
+    obtain ⟨hlip, -, -⟩ :=
+      Submission.dimred_mbl_dt_lp_imc_suspension N n (F i) (G i) (hGcons i)
+    refine nonpos_iff_eq_zero.1
+      ((Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn (n + 1)
+        (hlip (L i) (hL i)).lipschitzOnWith).trans ?_)
+    rw [h0, mul_zero]
+  -- Steps 8–9: the asserted property holds at every point of `M̃` outside the exceptional set
+  rw [ae_restrict_iff' hMt]
+  filter_upwards [measure_eq_zero_iff_ae_notMem.1 hE] with y hyE hyMt t x hyx Q hQ
+  subst hyx
+  -- `t ∈ (0, 1)` and `x ∈ M`, by injectivity of `Ψ`
+  obtain ⟨ht, hxM⟩ : t ∈ Ioo (0 : ℝ) 1 ∧ x ∈ M := by
+    obtain ⟨⟨t', x'⟩, ⟨ht', hx'⟩, hyeq⟩ := hyMt
+    obtain ⟨rfl, rfl⟩ := hinj N t' t x' x hyeq
+    exact ⟨ht', hx'⟩
+  -- `x = Fᵢ u` with `u ∈ Bᵢ`, since `y ∉ Ψ(ℝ × Z₀)`
+  have hx : x ∈ ⋃ i, F i '' B i := by
+    by_contra hx
+    exact hyE (Or.inr ⟨(t, x), ⟨mem_univ _, hxM, hx⟩, rfl⟩)
+  obtain ⟨i, u, hu, rfl⟩ := mem_iUnion.1 hx
+  -- `z = Φₙ(t, u)` avoids `Wᵢ ∪ Φₙ(ℝ × Zᵢ)`, since `Ĝᵢ z = y` is not exceptional
+  have hz : (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (n + 1)) ∉ W i ∪
+      (fun p : ℝ × Euclid n => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) :
+        Euclid (n + 1))) '' (univ ×ˢ Z i) :=
+    fun hz => hyE (Or.inl (mem_iUnion.2 ⟨i, _, hz, hGcons i t u⟩))
+  have huZ : u ∉ Z i := fun huZ => hz (Or.inr ⟨(t, u), ⟨mem_univ _, huZ⟩, rfl⟩)
+  -- uniqueness gives `Q = range DFᵢ(u)`, and `range DĜᵢ(z) = Q̃(range DFᵢ(u))`
+  have hQeq := hQ.unique (hZgood i u hu huZ)
+  have hT := hWgood i t u ht hu fun h => hz (Or.inl h)
+  obtain ⟨-, -, -, hrange, -⟩ := (Submission.dimred_mbl_dt_lp_imc_suspension N n (F i) (G i)
+    (hGcons i)).2.2 t u (hdiff i u hu).1
+  rwa [hGcons, hrange, ← hQeq] at hT
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
