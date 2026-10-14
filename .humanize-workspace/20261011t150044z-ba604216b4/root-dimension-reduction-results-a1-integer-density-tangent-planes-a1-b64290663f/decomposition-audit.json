@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "eq_starProjection_of_mem_of_inner_eq_zero|def starProjection|HasOrthogonalProjection|finiteDimensional",
+        "^theorem orthonormal_iff_ite|^theorem Orthonormal.linearIndependent|^theorem eq_of_le_of_finrank_eq|^theorem finrank_span_eq_card",
+        "def ContDiffAt|contDiffAt_iff|ContDiffAt.contDiffOn|exists_mem_nhds|theorem ContDiffAt.div |ContDiffAt.fun_div",
+        "theorem hasDerivAt_arctan|theorem contDiff_arctan|theorem HasFDerivAt.arctan|theorem ContDiffAt.arctan",
+        "theorem hasDerivAt_inv|theorem HasDerivAt.comp_hasFDerivAt|theorem HasFDerivAt.mul ",
+        "arctan|idtp_cse_rc_af_plane_projection|idtp_cse_rc_af_polar_angle_fderiv",
+        "python3 '/tmp/angle_fderiv_review.gIVTBu/audit.py'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean '/tmp/angle_fderiv_review.gIVTBu/IndependentContracts.lean' > '/tmp/angle_fderiv_review.gIVTBu/IndependentContracts.log' 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean '/tmp/angle_fderiv_review.gIVTBu/NamedWitnesses.lean' > '/tmp/angle_fderiv_review.gIVTBu/NamedWitnesses.log' 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b64290663f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b64290663f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean",
+        "/tmp/af_decomp/Full.lean",
+        "/tmp/af_decomp/Assembly.lean",
+        "/tmp/angle_fderiv_review.gIVTBu/audit.py",
+        "/tmp/angle_fderiv_review.gIVTBu/IndependentContracts.lean",
+        "/tmp/angle_fderiv_review.gIVTBu/IndependentContracts.log",
+        "/tmp/angle_fderiv_review.gIVTBu/NamedWitnesses.lean",
+        "/tmp/angle_fderiv_review.gIVTBu/NamedWitnesses.log"
+      ],
+      "conclusion": "The split of idtp_cse_rc_angle_fderiv is appropriate: two independent, non-circular linear-algebra and calculus obligations establish the exact frozen parent. Assembly takes the projection norm identity, derives nonvanishing from positivity, and rewrites the analytic denominator. Both types elaborate independently before either child declaration; both supplied proof witnesses also compile as Submission.<lean_name>. The children and hypothesis-only parent assembly use only propext, Classical.choice and Quot.sound. Twelve relevant Mathlib files and Submission.lean match the pinned snapshot byte-for-byte; Mathlib revision is 25730c7c759d108ef87ab70af2342a196760f79d. The required projection, dimension and calculus declarations have the stated types. The project snapshot contains no arctan or proposed-name matches. Neither name is reserved in the DAG or 6,574 other node JSON artifacts; no previously accepted declaration is reused. Empty child dependencies are correct and introduce no cycle."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition matches every hypothesis and both prose conclusions. Steps 1–3 establish an orthonormal basis of Q using membership and finrank; step 4 proves the projection through residual orthogonality and uniqueness; step 5 proves the norm identity by expansion. All required instances resolve to the intended Euclidean structures. The proof is complete, sufficiently explicit, and non-circular. The bare name is unreserved and no child dependency is needed. The computation agrees with the [standard projection formula](https://textbooks.math.gatech.edu/ila/orthogonal-sets.html)."
+    },
+    {
+      "key": "polar_angle_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including the weaker nonzero hypothesis. The proof establishes continuous linear functionals, neighbourhood C¹ regularity, and the actual Fréchet derivative through inverse, product and arctan chain rules. Its algebra explicitly justifies nonzero denominators and the stated numerator, including when α is negative. No geometric hypothesis or projection lemma is needed. The bare name is unreserved; the complete proof has no circular dependency or deferred search. The arctan derivative agrees with [DLMF 4.24.9](https://dlmf.nist.gov/4.24.E9)."
+    }
+  ],
+  "required_changes": []
+}
