@@ -1,0 +1,17 @@
+{
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.deformation-a1.face-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/8190",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "228caaf8352343988768e3985d30dd0dca63f5a4",
+  "integrated_commit": "",
+  "proof_base_commit": "173f7c0d029bc43275c1d5540b05889d352502da",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.deformation-a1",
+  "requires": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.deformation-a1.bv_median-a1"
+  ]
+}
