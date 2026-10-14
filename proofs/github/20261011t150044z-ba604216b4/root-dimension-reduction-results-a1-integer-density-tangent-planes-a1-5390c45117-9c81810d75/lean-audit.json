@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "50c4680a6542e9d6220cb943e9dcac642debf1257cf1f6ffddd4e9465b5b24fc",
+  "git_delta": {
+    "base_commit": "bdf34f91edfa2642928ed59a139dd914ab9326d5",
+    "candidate_commit": "5a3700840ed1c9098ae2cc2d3959c551b60af861",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_line_hausdorff",
+    "diff_sha256": "78539aec3acd4e9a4d079b79257ffe82f9964f730efd14a37d863ebb5af96608",
+    "source_sha256": "8ea1659cd526c00889bc4334fcec1554f516dd64be87033616a5e9f03df0aa75",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_line_hausdorff",
+      "statement": "unitBallVolume 1 = 2 ∧ ∀ (P : ℕ) (p v : Euclid P), ‖v‖ = 1 → MeasurableEmbedding (fun t : ℝ => p + t • v) ∧ ∀ I : Set ℝ, (μHE[1] : Measure (Euclid P)).restrict ((fun t : ℝ => p + t • v) '' I) = Measure.map (fun t : ℝ => p + t • v) (volume.restrict I) ∧ (μHE[1] : Measure (Euclid P)) ((fun t : ℝ => p + t • v) '' I) = volume I",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
