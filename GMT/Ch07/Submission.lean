@@ -3205,6 +3205,120 @@ theorem Submission.dtc_bc_lc_sl_ll_chart_pullback : ∀ (P n : ℕ) (ψ : Euclid
     rw [indicator_of_mem hyY, ← ha', ← map_smul, hLB y (hYV' hyY), map_smul, map_smul,
       smul_eq_mul]
 
+/-- **Weak limit on one chart piece** (Simon Ch. 6, proof of Lemma 4.5(2), step (1), p. 156:
+"since `N_j` is `C¹` this follows fairly easily by approximating `v` by smooth functions and using
+the fact that `h^{(σ)}` converges to `h` uniformly").  Let `ψ` be `C¹`, injective with injective
+derivative on the open `V`, `Y` Borel with `closure Y` compact in `V` and `A = ψ(Y)`.  Let `h` be
+`K`-Lipschitz with `h ∘ ψ = F` on `Y` (`F` is `C¹`), let the `C¹` functions `h_k` have
+`‖Dh_k‖ ≤ K` and converge to `h` uniformly, let `⟨G(ψ y), Dψ(y)e⟩ = DF(y)e` and let `w` be
+`Hᴺ`-integrable and tangent on `A`.  Then `∫_A Dh_k(w) dHᴺ → ∫_A ⟨G, w⟩ dHᴺ`.
+
+* `chart_pullback` gives an integrable `W`, zero off `Y`, with
+  `∫_A ℓ(w) dHᴺ = ∫ ℓ(ψ)(Dψ W) dy` for every `ℓ : ℝᴾ → (ℝᴾ)*`.
+* Cut off on the chart: `ψt = χψ`, with `χ` a bump equal to `1` on a ball `B ⊇ closure Y`, is
+  Lipschitz and equals `ψ` on `B`.  So `u_k = h_k ∘ ψt` and `u = h ∘ ψt` are uniformly Lipschitz,
+  `u_k → u` uniformly, and `grad_weak_limit` gives `∫ Du_k(W) → ∫ Du(W)`.
+* On `Y`, `Du_k = Dh_k(ψ) ∘ Dψ` (chain rule), so `∫ Du_k(W) = ∫_A Dh_k(w) dHᴺ`.
+* `u` is differentiable a.e. (Rademacher) and `u = F` on `Y`, so `Du = DF` a.e. on `Y`: the map
+  `(u − F) e₀` vanishes on `Y`, hence so does its derivative at a.e. point of `Y`
+  (`ApproximatesLinearOn.norm_fderiv_sub_le` with `A = 0`, `δ = 0`).  With
+  `⟨G(ψ), Dψ e⟩ = DF e` a.e. on `Y` (`chart_pullback` on null sets) this gives
+  `∫ Du(W) = ∫_A ⟨G, w⟩ dHᴺ`. -/
+theorem Submission.dtc_bc_lc_sl_ll_piece_weak_limit : ∀ (P n : ℕ) (ψ : Euclid (n + 1) → Euclid P) (V Y : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (h : Euclid P → ℝ) (K : NNReal) (G : Euclid P → Euclid P) (hs : ℕ → Euclid P → ℝ) (w : Euclid P → Euclid P), IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → MeasurableSet Y → IsCompact (closure Y) → closure Y ⊆ V → LipschitzWith K h → (∀ y ∈ Y, h (ψ y) = F y) → (∀ k, ContDiff ℝ 1 (hs k)) → (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ K) → TendstoUniformly hs h atTop → (∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → ∀ e : Euclid (n + 1), inner ℝ (G x) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → IntegrableOn w (ψ '' Y) μHE[n + 1] → (∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → w x ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P)) → Tendsto (fun k => ∫ x in ψ '' Y, fderiv ℝ (hs k) x (w x) ∂μHE[n + 1]) atTop (𝓝 (∫ x in ψ '' Y, inner ℝ (G x) (w x) ∂μHE[n + 1])) := by
+  intro P n ψ V Y F h K G hs w hV hψ hinj hDinj hFc hY hYc hYV hh hhF hs_C1 hs_deriv hunif hG hw
+    hwtan
+  obtain ⟨hpull_ae, hpull⟩ :=
+    Submission.dtc_bc_lc_sl_ll_chart_pullback P n ψ V Y hV hψ hinj hDinj hY hYc hYV
+  -- Step 1: `W`, the pull-back of `w` to the chart
+  obtain ⟨W, hWint, hW0, hWid⟩ := hpull w hw hwtan
+  -- Step 2: the cut-off chart `ψt = χψ`, equal to `ψ` on `B_r(0) ⊇ closure Y`
+  obtain ⟨R, hR⟩ : ∃ R : ℝ, closure Y ⊆ ball (0 : Euclid (n + 1)) R :=
+    hYc.isBounded.subset_ball 0
+  have hRpos : 0 < max R 1 := lt_max_of_lt_right one_pos
+  let χ : ContDiffBump (0 : Euclid (n + 1)) := ⟨max R 1, 2 * max R 1, hRpos, by linarith⟩
+  let ψt : Euclid (n + 1) → Euclid P := fun y => χ y • ψ y
+  have hYO : ∀ y ∈ Y, y ∈ ball (0 : Euclid (n + 1)) (max R 1) := fun y hy =>
+    ball_subset_ball (le_max_left R 1) (hR (subset_closure hy))
+  have hO : ∀ y ∈ ball (0 : Euclid (n + 1)) (max R 1), ψt y = ψ y := by
+    intro y hy
+    simp only [ψt, χ.one_of_mem_closedBall (ball_subset_closedBall hy), one_smul]
+  obtain ⟨Lψ, hLψ⟩ : ∃ C, LipschitzWith C ψt :=
+    ContDiff.lipschitzWith_of_hasCompactSupport χ.hasCompactSupport.smul_right
+      ((χ.contDiff (n := 1)).smul hψ) one_ne_zero
+  -- Step 3: `u_k = h_k ∘ ψt` and `u = h ∘ ψt` are `K Lψ`-Lipschitz and `u_k → u` uniformly
+  have hsLip : ∀ k, LipschitzWith K (hs k) := fun k =>
+    lipschitzWith_of_nnnorm_fderiv_le ((hs_C1 k).differentiable one_ne_zero) fun x => by
+      rw [← NNReal.coe_le_coe, coe_nnnorm]
+      exact hs_deriv k x
+  have hu_lip : LipschitzWith (K * Lψ) (h ∘ ψt) := hh.comp hLψ
+  -- Step 4: `∫ Du_k(W) → ∫ Du(W)`
+  have hlim := Submission.dtc_bc_lc_sl_ll_grad_weak_limit (n + 1) (fun k => hs k ∘ ψt) (h ∘ ψt)
+    (K * Lψ) W (fun k => (hsLip k).comp hLψ) hu_lip (hunif.comp ψt) hWint
+  -- Step 5: `∫_A Dh_k(w) dHᴺ = ∫ Du_k(W)`, as `Du_k = Dh_k(ψ) ∘ Dψ` on `Y` and `W = 0` off `Y`
+  have hleft : ∀ k, ∫ x in ψ '' Y, fderiv ℝ (hs k) x (w x) ∂μHE[n + 1] =
+      ∫ y, fderiv ℝ (hs k ∘ ψt) y (W y) := by
+    intro k
+    rw [hWid fun x => fderiv ℝ (hs k) x]
+    refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+    by_cases hyY : y ∈ Y
+    · have hev : hs k ∘ ψt =ᶠ[𝓝 y] hs k ∘ ψ := by
+        filter_upwards [isOpen_ball.mem_nhds (hYO y hyY)] with z hz
+        simp only [Function.comp_apply, hO z hz]
+      show fderiv ℝ (hs k) (ψ y) (fderiv ℝ ψ y (W y)) = fderiv ℝ (hs k ∘ ψt) y (W y)
+      rw [hev.fderiv_eq, fderiv_comp y ((hs_C1 k).differentiable one_ne_zero _)
+        (hψ.differentiable one_ne_zero y)]
+      rfl
+    · simp only [hW0 y hyY, map_zero]
+  -- Step 6: `Du = DF` a.e. on `Y`.  `(u - F) e₀` vanishes on the Borel set `Y'` of points of `Y`
+  -- where `u` is differentiable, so its derivative `(Du - DF) e₀` vanishes a.e. on `Y'`.
+  have huF : ∀ y ∈ Y, h (ψt y) - F y = 0 := fun y hy => by
+    rw [hO y (hYO y hy), hhF y hy, sub_self]
+  have hdiff_ae : ∀ᵐ y ∂(volume : Measure (Euclid (n + 1))), DifferentiableAt ℝ (h ∘ ψt) y :=
+    hu_lip.ae_differentiableAt
+  have hY' : MeasurableSet (Y ∩ {y | DifferentiableAt ℝ (h ∘ ψt) y}) :=
+    hY.inter (measurableSet_of_differentiableAt ℝ _)
+  have : Nontrivial (Euclid (n + 1)) := Module.nontrivial_of_finrank_pos (R := ℝ) (by simp)
+  obtain ⟨e₀, he₀⟩ := exists_ne (0 : Euclid (n + 1))
+  have happrox : ApproximatesLinearOn (fun y => ((h ∘ ψt) y - F y) • e₀)
+      (0 : Euclid (n + 1) →L[ℝ] Euclid (n + 1)) (Y ∩ {y | DifferentiableAt ℝ (h ∘ ψt) y}) 0 := by
+    intro x hx y hy
+    simp only [Function.comp_apply, huF x hx.1, huF y hy.1, zero_smul, sub_self,
+      zero_apply, norm_zero, NNReal.coe_zero, zero_mul, le_refl]
+  have hD := happrox.norm_fderiv_sub_le volume hY'
+    (fun y => (fderiv ℝ (h ∘ ψt) y - fderiv ℝ F y).smulRight e₀) fun y hy =>
+      ((hy.2.hasFDerivAt.sub (hFc.differentiable one_ne_zero y).hasFDerivAt).smul_const
+        e₀).hasFDerivWithinAt
+  have hDuDF : ∀ᵐ y ∂(volume : Measure (Euclid (n + 1))), y ∈ Y →
+      fderiv ℝ (h ∘ ψt) y = fderiv ℝ F y := by
+    filter_upwards [(ae_restrict_iff' hY').1 hD, hdiff_ae] with y hy hyd hyY
+    have h0 := hy ⟨hyY, hyd⟩
+    rw [sub_zero, nonpos_iff_eq_zero, nnnorm_eq_zero] at h0
+    refine ContinuousLinearMap.ext fun v => ?_
+    have hv := congrArg (fun L : Euclid (n + 1) →L[ℝ] Euclid (n + 1) => L v) h0
+    simp only [ContinuousLinearMap.smulRight_apply, sub_apply,
+      zero_apply, smul_eq_zero, he₀, or_false, sub_eq_zero] at hv
+    exact hv
+  -- Step 7: the chart gradient identity `⟨G(ψ), Dψ e⟩ = DF e` a.e. on `Y`
+  have hGy : ∀ᵐ y ∂(volume : Measure (Euclid (n + 1))), y ∈ Y →
+      ∀ e, inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e := by
+    have h1 := hpull_ae (fun x => ∀ y ∈ Y, ψ y = x → ∀ e : Euclid (n + 1),
+      inner ℝ (G x) (fderiv ℝ ψ y e) = fderiv ℝ F y e) hG
+    filter_upwards [(ae_restrict_iff' hY).1 h1] with y hy hyY
+    exact hy hyY y hyY rfl
+  -- Step 8: `∫_A ⟨G, w⟩ dHᴺ = ∫ Du(W)`
+  have hright : ∫ x in ψ '' Y, inner ℝ (G x) (w x) ∂μHE[n + 1] =
+      ∫ y, fderiv ℝ (h ∘ ψt) y (W y) := by
+    have h1 := hWid fun x => innerSL ℝ (G x)
+    simp only [innerSL_apply_apply] at h1
+    rw [h1]
+    refine integral_congr_ae ?_
+    filter_upwards [hGy, hDuDF] with y hy1 hy2
+    by_cases hyY : y ∈ Y
+    · rw [hy2 hyY, ← hy1 hyY (W y)]
+    · simp only [hW0 y hyY, map_zero, inner_zero_right]
+  rw [hright]
+  exact hlim.congr fun k => (hleft k).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
