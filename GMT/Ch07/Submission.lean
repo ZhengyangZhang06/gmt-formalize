@@ -1647,6 +1647,51 @@ theorem Submission.regcomp_covector_eval_orthonormal_le : ∀ (P n : ℕ) (α : 
   intro P n α τ hτ
   classical
   -- Step 1: `n ≤ P`, and an orthonormal basis `f` of `ℝᴾ` with `f (ι k) = τ k`, `ι = Fin.castLE`
+  have hnP : n ≤ P := by
+    simpa [finrank_euclideanSpace_fin] using hτ.linearIndependent.fintype_card_le_finrank
+  let ι : Fin n → Fin P := Fin.castLE hnP
+  have hι : Injective ι := Fin.castLE_injective hnP
+  let v : Fin P → Euclid P := fun i => if h : (i : ℕ) < n then τ ⟨i, h⟩ else 0
+  let s : Set (Fin P) := {i | (i : ℕ) < n}
+  have hvs : Orthonormal ℝ (s.domRestrict v) := by
+    let e : s → Fin n := fun i => ⟨i.1, i.2⟩
+    have he : Injective e := fun a b hab =>
+      Subtype.ext (Fin.ext (congrArg (Fin.val : Fin n → ℕ) hab))
+    have hve : s.domRestrict v = τ ∘ e := by
+      funext i
+      have hi : ((i : Fin P) : ℕ) < n := i.2
+      simp [v, e, hi]
+    rw [hve]
+    exact hτ.comp e he
+  obtain ⟨f, hf⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (by simp) hvs
+  have hfι : ∀ k, f (ι k) = τ k := by
+    intro k
+    rw [hf (ι k) k.2]
+    simp [v, ι]
+  -- Step 2: `α(f ∘ (ι ∘ π))² = α(τ ∘ π)² = α(τ)²` for every permutation `π`
+  let Φ : Equiv.Perm (Fin n) → (Fin n → Fin P) := fun π => ι ∘ π
+  have hΦ : Injective Φ := fun π π' h => Equiv.ext fun k => hι (congrFun h k)
+  have hperm : ∀ π : Equiv.Perm (Fin n), α (fun k => f (Φ π k)) ^ 2 = α τ ^ 2 := by
+    intro π
+    have h1 : (fun k => f (Φ π k)) = τ ∘ π := funext fun k => hfι (π k)
+    have h2 : α (τ ∘ π) = Equiv.Perm.sign π • α τ := α.toAlternatingMap.map_perm τ π
+    rw [h1, h2]
+    rcases Int.units_eq_one_or (Equiv.Perm.sign π) with h | h <;> simp [h]
+  -- Step 3: `n! α(τ)² = Σ_π α(f ∘ (ι ∘ π))² ≤ Σ_j α(f ∘ j)²`, the terms being nonnegative
+  have hle : (n.factorial : ℝ) * α τ ^ 2 ≤ ∑ j : Fin n → Fin P, α (fun k => f (j k)) ^ 2 :=
+    calc (n.factorial : ℝ) * α τ ^ 2
+        = ∑ j ∈ Finset.univ.image Φ, α (fun k => f (j k)) ^ 2 := by
+          rw [Finset.sum_image fun π _ π' _ h => hΦ h]
+          simp only [hperm, Finset.sum_const, Finset.card_univ, Fintype.card_perm,
+            Fintype.card_fin, nsmul_eq_mul]
+      _ ≤ ∑ j : Fin n → Fin P, α (fun k => f (j k)) ^ 2 :=
+          Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) fun j _ _ => sq_nonneg _
+  -- Step 4: `Σ_j α(f ∘ j)² = n! |α|_E²` (`regcomp_covector_sq_sum_orthonormalBasis`); cancel `n!`
+  rw [Submission.regcomp_covector_sq_sum_orthonormalBasis P n α f] at hle
+  have hsq : α τ ^ 2 ≤ covectorEuclideanNorm α ^ 2 :=
+    le_of_mul_le_mul_left hle (Nat.cast_pos.mpr n.factorial_pos)
+  -- Step 5: `|α(τ)| ≤ |α|_E`, since `|α|_E ≥ 0`
+  exact abs_le_of_sq_le_sq hsq (covectorEuclideanNorm_nonneg α)
 /-- **A unit covector attaining `1` on an orthonormal frame** (Simon (6.1.1); step 1(b) of the
 mass formula, Remark 6.3.2(3)): every orthonormal `τ₁, …, τₙ` in `ℝᴾ` admits an `n`-covector `β`
 with `|β|_E = 1` and `β(τ) = 1`.  Take the wedge `β(v) = det(⟨τᵢ, v_k⟩)` of the covectors
@@ -1708,30 +1753,42 @@ theorem Submission.regcomp_exists_covector_eval_orthonormal_eq_one : ∀ (P n : 
     intro k
     rw [hf (ι k) k.2]
     simp [v, ι]
-  -- Step 2: `α(f ∘ (ι ∘ π))² = α(τ ∘ π)² = α(τ)²` for every permutation `π`
+  -- Step 4: `β(f ∘ j)² = 1` if `j = ι ∘ π` for a permutation `π`, and `0` otherwise
   let Φ : Equiv.Perm (Fin n) → (Fin n → Fin P) := fun π => ι ∘ π
   have hΦ : Injective Φ := fun π π' h => Equiv.ext fun k => hι (congrFun h k)
-  have hperm : ∀ π : Equiv.Perm (Fin n), α (fun k => f (Φ π k)) ^ 2 = α τ ^ 2 := by
+  have hperm : ∀ π : Equiv.Perm (Fin n), β (fun k => f (Φ π k)) ^ 2 = 1 := by
     intro π
     have h1 : (fun k => f (Φ π k)) = τ ∘ π := funext fun k => hfι (π k)
-    have h2 : α (τ ∘ π) = Equiv.Perm.sign π • α τ := α.toAlternatingMap.map_perm τ π
-    rw [h1, h2]
+    have h2 : β (τ ∘ π) = Equiv.Perm.sign π • β τ := β.toAlternatingMap.map_perm τ π
+    rw [h1, h2, hβτ]
     rcases Int.units_eq_one_or (Equiv.Perm.sign π) with h | h <;> simp [h]
-  -- Step 3: `n! α(τ)² = Σ_π α(f ∘ (ι ∘ π))² ≤ Σ_j α(f ∘ j)²`, the terms being nonnegative
-  have hle : (n.factorial : ℝ) * α τ ^ 2 ≤ ∑ j : Fin n → Fin P, α (fun k => f (j k)) ^ 2 :=
-    calc (n.factorial : ℝ) * α τ ^ 2
-        = ∑ j ∈ Finset.univ.image Φ, α (fun k => f (j k)) ^ 2 := by
-          rw [Finset.sum_image fun π _ π' _ h => hΦ h]
-          simp only [hperm, Finset.sum_const, Finset.card_univ, Fintype.card_perm,
-            Fintype.card_fin, nsmul_eq_mul]
-      _ ≤ ∑ j : Fin n → Fin P, α (fun k => f (j k)) ^ 2 :=
-          Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) fun j _ _ => sq_nonneg _
-  -- Step 4: `Σ_j α(f ∘ j)² = n! |α|_E²` (`regcomp_covector_sq_sum_orthonormalBasis`); cancel `n!`
-  rw [Submission.regcomp_covector_sq_sum_orthonormalBasis P n α f] at hle
-  have hsq : α τ ^ 2 ≤ covectorEuclideanNorm α ^ 2 :=
-    le_of_mul_le_mul_left hle (Nat.cast_pos.mpr n.factorial_pos)
-  -- Step 5: `|α(τ)| ≤ |α|_E`, since `|α|_E ≥ 0`
-  exact abs_le_of_sq_le_sq hsq (covectorEuclideanNorm_nonneg α)
+  have hzero : ∀ j : Fin n → Fin P, j ∉ Finset.univ.image Φ → β (fun k => f (j k)) ^ 2 = 0 := by
+    intro j hj
+    have hj' : ∀ π, Φ π ≠ j := fun π hπ => hj (Finset.mem_image.mpr ⟨π, Finset.mem_univ _, hπ⟩)
+    rw [sq_eq_zero_iff]
+    by_cases hr : ∀ k, j k ∈ range ι
+    · -- `j = ι ∘ ρ` with `ρ` not a permutation, hence not injective: `f ∘ j` repeats a vector
+      choose ρ hρ using hr
+      have hρ' : ¬ Injective ρ := fun hinj =>
+        hj' (Equiv.ofBijective ρ (Finite.injective_iff_bijective.mp hinj)) (funext hρ)
+      refine β.map_eq_zero_of_not_injective _ fun hinj => hρ' fun a b hab => hinj ?_
+      exact congrArg f ((hρ a).symm.trans ((congrArg ι hab).trans (hρ b)))
+    · -- some `j k₀ ∉ range ι`: column `k₀` of `(⟨τᵢ, f (j k)⟩)` vanishes
+      obtain ⟨k₀, hk₀⟩ := not_forall.mp hr
+      rw [hβ]
+      refine Matrix.det_eq_zero_of_column_eq_zero k₀ fun i => ?_
+      rw [Matrix.of_apply, ← hfι i, f.inner_eq_ite, ite_eq_right fun h => hk₀ ⟨i, h⟩]
+  have hsum : ∑ j : Fin n → Fin P, β (fun k => f (j k)) ^ 2 = n.factorial := by
+    rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image Φ)) fun j _ hj => hzero j hj,
+      Finset.sum_image fun π _ π' _ h => hΦ h]
+    simp only [hperm, Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin,
+      nsmul_eq_mul, mul_one]
+  -- Step 5: `n! = n! |β|_E²` by `regcomp_covector_sq_sum_orthonormalBasis`, so `|β|_E = 1`
+  have hsq := Submission.regcomp_covector_sq_sum_orthonormalBasis P n β f
+  rw [hsum] at hsq
+  have hfac : (n.factorial : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr n.factorial_ne_zero
+  refine ⟨β, (pow_eq_one_iff_of_nonneg (covectorEuclideanNorm_nonneg β) two_ne_zero).mp ?_, hβτ⟩
+  exact mul_left_cancel₀ hfac (by rw [← hsq, mul_one])
 
 /-- **Half-space slices of an integer-sliced multiple of an oriented plane** (Simon 6.4.6; the
 slicing step of the integer-multiplicity criterion for planes).  Let `V₀ = span v`,
@@ -1814,42 +1871,6 @@ theorem Submission.cbr_cipi_slice_integer_multiplicity : (∀ (P k : ℕ) (U : S
   -- `ξ_v(dφ(y)) = dφ(y)(v)`; the test form `dφ` and the set `{f < t}` agree by definition
   simp only [hξv]
   rfl
-  -- Step 4: `β(f ∘ j)² = 1` if `j = ι ∘ π` for a permutation `π`, and `0` otherwise
-  let Φ : Equiv.Perm (Fin n) → (Fin n → Fin P) := fun π => ι ∘ π
-  have hΦ : Injective Φ := fun π π' h => Equiv.ext fun k => hι (congrFun h k)
-  have hperm : ∀ π : Equiv.Perm (Fin n), β (fun k => f (Φ π k)) ^ 2 = 1 := by
-    intro π
-    have h1 : (fun k => f (Φ π k)) = τ ∘ π := funext fun k => hfι (π k)
-    have h2 : β (τ ∘ π) = Equiv.Perm.sign π • β τ := β.toAlternatingMap.map_perm τ π
-    rw [h1, h2, hβτ]
-    rcases Int.units_eq_one_or (Equiv.Perm.sign π) with h | h <;> simp [h]
-  have hzero : ∀ j : Fin n → Fin P, j ∉ Finset.univ.image Φ → β (fun k => f (j k)) ^ 2 = 0 := by
-    intro j hj
-    have hj' : ∀ π, Φ π ≠ j := fun π hπ => hj (Finset.mem_image.mpr ⟨π, Finset.mem_univ _, hπ⟩)
-    rw [sq_eq_zero_iff]
-    by_cases hr : ∀ k, j k ∈ range ι
-    · -- `j = ι ∘ ρ` with `ρ` not a permutation, hence not injective: `f ∘ j` repeats a vector
-      choose ρ hρ using hr
-      have hρ' : ¬ Injective ρ := fun hinj =>
-        hj' (Equiv.ofBijective ρ (Finite.injective_iff_bijective.mp hinj)) (funext hρ)
-      refine β.map_eq_zero_of_not_injective _ fun hinj => hρ' fun a b hab => hinj ?_
-      exact congrArg f ((hρ a).symm.trans ((congrArg ι hab).trans (hρ b)))
-    · -- some `j k₀ ∉ range ι`: column `k₀` of `(⟨τᵢ, f (j k)⟩)` vanishes
-      obtain ⟨k₀, hk₀⟩ := not_forall.mp hr
-      rw [hβ]
-      refine Matrix.det_eq_zero_of_column_eq_zero k₀ fun i => ?_
-      rw [Matrix.of_apply, ← hfι i, f.inner_eq_ite, ite_eq_right fun h => hk₀ ⟨i, h⟩]
-  have hsum : ∑ j : Fin n → Fin P, β (fun k => f (j k)) ^ 2 = n.factorial := by
-    rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image Φ)) fun j _ hj => hzero j hj,
-      Finset.sum_image fun π _ π' _ h => hΦ h]
-    simp only [hperm, Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin,
-      nsmul_eq_mul, mul_one]
-  -- Step 5: `n! = n! |β|_E²` by `regcomp_covector_sq_sum_orthonormalBasis`, so `|β|_E = 1`
-  have hsq := Submission.regcomp_covector_sq_sum_orthonormalBasis P n β f
-  rw [hsum] at hsq
-  have hfac : (n.factorial : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr n.factorial_ne_zero
-  refine ⟨β, (pow_eq_one_iff_of_nonneg (covectorEuclideanNorm_nonneg β) two_ne_zero).mp ?_, hβτ⟩
-  exact mul_left_cancel₀ hfac (by rw [← hsq, mul_one])
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
