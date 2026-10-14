@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.integer_multiplicity_sub-a1.glue_imrep-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.integer_multiplicity_sub-a1",
+  "depth": 3,
+  "title": "A triple glued with signs from two integer multiplicity triples is an integer multiplicity triple",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P, let R₁ = (C₁, θ₁, ξ₁) and R₂ = (C₂, θ₂, ξ₂) be integer multiplicity triples in U (IMRep U n, Simon Ch. 6, 3.1), and write Hⁿ = μHE[n]. Let:\n- C ⊆ C₁ ∪ C₂ be Borel;\n- θ : ℝ^P → ℕ be measurable with 0 < θ(x) ≤ 1_{C₁}(x)θ₁(x) + 1_{C₂}(x)θ₂(x) for x ∈ C;\n- ξ : ℝ^P → Λ_n(ℝ^P) (MultiVector P n) be a.e. strongly measurable for Hⁿ⌞C.\nAssume that for Hⁿ-a.e. x ∈ C ∩ C₁, ξ(x) = ±ξ₁(x) and every approximate tangent space of C₁ at x is an approximate tangent space of C at x. Assume also that for Hⁿ-a.e. x ∈ C ∖ C₁, ξ(x) = ±ξ₂(x) and every approximate tangent space of C₂ at x is an approximate tangent space of C at x. Then there is an integer multiplicity triple R in U (R : IMRep U n) with R.carrier = C, R.mult = θ and R.orient = ξ.",
+  "lean_statement": "∀ (P n : ℕ) (U C : Set (Euclid P)) (R₁ R₂ : IMRep U n) (θ : Euclid P → ℕ) (ξ : Euclid P → MultiVector P n), MeasurableSet C → C ⊆ R₁.carrier ∪ R₂.carrier → Measurable θ → (∀ x ∈ C, 0 < θ x) → (∀ x ∈ C, θ x ≤ R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x) → AEStronglyMeasurable ξ (μHE[n].restrict C) → (∀ᵐ x ∂(μHE[n].restrict (C ∩ R₁.carrier)), ξ x = R₁.orient x ∨ ξ x = -R₁.orient x) → (∀ᵐ x ∂(μHE[n].restrict (C \\ R₁.carrier)), ξ x = R₂.orient x ∨ ξ x = -R₂.orient x) → (∀ᵐ x ∂(μHE[n].restrict (C ∩ R₁.carrier)), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n R₁.carrier x Q → HasApproximateTangentSpaceAt n C x Q) → (∀ᵐ x ∂(μHE[n].restrict (C \\ R₁.carrier)), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n R₂.carrier x Q → HasApproximateTangentSpaceAt n C x Q) → ∃ R : IMRep U n, R.carrier = C ∧ R.mult = θ ∧ R.orient = ξ",
+  "lean_name": "regcomp_ims_imrep_of_signed_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-integer-multiplicity-sub-a1-940d0d04c2-a1"
+}
