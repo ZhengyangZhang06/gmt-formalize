@@ -1560,6 +1560,48 @@ theorem Submission.dtc_bc_local_retraction : ∀ (P d : ℕ) (N : Set (Euclid P)
   exact ⟨δ, fun y => ψ (k (A (y - x))), hδ, hπ1, hπN, hπfix,
     fun η hη => Submission.dtc_bc_lr_lipschitz_near_point P _ x δ 1 hδ hπ1 hπD η hη⟩
 
+/-- **The blow-ups satisfy the hypotheses of the compactness theorem** (proof of Simon 7.3.1,
+display (1), chapter-07.txt lines 326–337; compactness theorem 7.2.4 in the form of
+Remark 7.2.5(2)).  Let `T` be minimizing in `U ∩ N`, `spt T ⊆ U ∩ N`, `x ∈ spt T \ spt ∂T`,
+`Θⁿ(μ_T, x) = θ`, and `λⱼ > 0`, `λⱼ → 0`; put `ηⱼ = η_{x,λⱼ}` and `Sⱼ = η_{x,λⱼ#}T`.  Then
+(1) `ηⱼ(U)` is open; (2) `B̄_R(0) ⊆ ηⱼ(U)` for large `j`; (3) `Sⱼ` is minimizing in
+`ηⱼ(U ∩ N)`; (4) `spt Sⱼ ⊆ ηⱼ(U ∩ N)`; (5) `M_{B_R(0)}(Sⱼ)` is bounded for large `j`;
+(6) `∂Sⱼ = 0` in `B_R(0)` for large `j`; (7) there are `C¹` retractions `πⱼ` of `B_G(0)` onto
+`ηⱼ(U ∩ N)` with `|πⱼ(y)| ≤ 2|y|` and Lipschitz constants tending to `1`.
+
+* (1), (2), (6): `dtc_bc_bh_blowUp_domain_boundary`, as `x ∈ U` and `x ∉ spt ∂T`.
+* (3): `dtc_blowUp_scaling` with `A = U ∩ N`.
+* (4): `spt Sⱼ = ηⱼ(spt T)` (`dtc_blowUp_algebra`) and `spt T ⊆ U ∩ N`.
+* (5): `dtc_bc_bh_blowUp_massOn_ball_bounded`, from the finite density at `x`.
+* (7): a local retraction `π` onto `N` at `x ∈ N` (`dtc_bc_local_retraction`), rescaled to
+  `πⱼ = ηⱼ ∘ π ∘ ηⱼ⁻¹` by `dtc_bc_bh_rescaled_retraction`. -/
+theorem Submission.dtc_bc_blowUp_hypotheses : ∀ (m k ℓ : ℕ) (U N : Set (Euclid (m + 1 + k))) (T : GeometricCurrentOn U (m + 1)) (x : Euclid (m + 1 + k)) (θ : ℝ), IsOpen U → IsEmbeddedSubmanifold 2 (m + 1 + ℓ) N → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → x ∈ T.support \ boundarySupport T → HasMassDensity T x θ → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → (∀ j, IsOpen (dilation x (lams j) '' U)) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid (m + 1 + k)) R ⊆ dilation x (lams j) '' U) ∧ (∀ j, IsMinimizingIn (blowUp T x (lams j) (hlams j).ne') (dilation x (lams j) '' (U ∩ N))) ∧ (∀ j, (blowUp T x (lams j) (hlams j).ne').support ⊆ dilation x (lams j) '' (U ∩ N)) ∧ (∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop, (blowUp T x (lams j) (hlams j).ne').massOn (ball 0 R) ≤ c) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, ∀ ω : TestFormOn (dilation x (lams j) '' U) m, tsupport (ω : DifferentialForm (Euclid (m + 1 + k)) m) ⊆ ball 0 R → (blowUp T x (lams j) (hlams j).ne').boundary ω = 0) ∧ (∀ G : ℝ, 0 < G → ∃ πs : ℕ → Euclid (m + 1 + k) → Euclid (m + 1 + k), (∀ᶠ j in atTop, ContDiffOn ℝ 1 (πs j) (ball 0 G) ∧ MapsTo (πs j) (ball 0 G) (dilation x (lams j) '' (U ∩ N)) ∧ (∀ y ∈ dilation x (lams j) '' (U ∩ N) ∩ ball 0 G, πs j y = y) ∧ ∀ y ∈ ball 0 G, ‖πs j y‖ ≤ 2 * ‖y‖) ∧ ∀ η : ℝ, 0 < η → ∀ᶠ j in atTop, ∀ y ∈ ball 0 G, ∀ z ∈ ball 0 G, ‖πs j y - πs j z‖ ≤ (1 + η) * ‖y - z‖) := by
+  intro m k ℓ U N T x θ hU hN hmin hspt hx hθ lams hlams hlim
+  -- `x ∈ spt T ⊆ U ∩ N`
+  have hxU : x ∈ U := (hspt hx.1).1
+  have hxN : x ∈ N := (hspt hx.1).2
+  -- (1), (2), (6): the blown-up domains exhaust `ℝᴾ`, and `∂Sⱼ = 0` on growing balls
+  obtain ⟨h1, h2, h6⟩ := Submission.dtc_bc_bh_blowUp_domain_boundary (m + 1 + k) m U T x hU hxU
+    hx.2 lams hlams hlim
+  refine ⟨h1, h2, ?_, ?_, ?_, h6, ?_⟩
+  · -- (3) minimality in `U ∩ N` is carried to `ηⱼ(U ∩ N)`
+    intro j
+    exact (Submission.dtc_blowUp_scaling (m + 1 + k) (m + 1) U (U ∩ N) T x (lams j) (hlams j) hU
+      (Nat.succ_pos m)).2.2 hmin
+  · -- (4) `spt Sⱼ = ηⱼ(spt T) ⊆ ηⱼ(U ∩ N)`
+    intro j
+    rw [(Submission.dtc_blowUp_algebra (m + 1 + k) U x (lams j) (hlams j)).2.2.1 (m + 1) T]
+    exact image_mono hspt
+  · -- (5) local mass bounds from `Θⁿ(μ_T, x) = θ`
+    exact Submission.dtc_bc_bh_blowUp_massOn_ball_bounded (m + 1 + k) (m + 1) U T x θ hU
+      (Nat.succ_pos m) hθ lams hlams hlim
+  · -- (7) rescale a local `C¹` retraction onto `N` at `x`
+    intro G hG
+    obtain ⟨δ, π, hδ, hC, hmaps, hid, hlip⟩ :=
+      Submission.dtc_bc_local_retraction (m + 1 + k) (m + 1 + ℓ) N x hN hxN
+    exact Submission.dtc_bc_bh_rescaled_retraction (m + 1 + k) U N x δ π hU hxU hxN hδ hC hmaps
+      hid hlip lams hlams hlim G hG
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
