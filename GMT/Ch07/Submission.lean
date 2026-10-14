@@ -18292,6 +18292,448 @@ theorem Submission.codim1_hcp_stable_minimal_cone_flat : ∀ (P m : ℕ) (A₀ :
   -- everywhere by density one of `Hᵐ⌞M`
   exact Submission.codim1_hcp_sc_hardy_cone_flat P m A₀ M ν hm2 hm6 hdim hMA h0 hM hcl hcone
     hfin hνO hν (fun z hz => Submission.dimred_rpd_submanifold_density_one P m M z (hM 1) hz) h3
+/-- Chart localization (steps 1 and 4(a) of the nearest point retraction used in the proof of
+Simon 7.4.3): if `ψ` is continuous and injective on `V`, `ψ(V) = W ∩ N` with `W` open, and `ψ` is
+proper into `W` (`V ∩ ψ⁻¹(K)` is compact for compact `K ⊆ W`), then for `v₀ ∈ V` and `ε > 0` some
+closed ball `B̄_ρ(ψ(v₀)) ⊆ W` has `N ∩ B̄_ρ(ψ(v₀)) ⊆ ψ(V ∩ B_ε(v₀))` and `N ∩ B̄_ρ(ψ(v₀))` compact.
+With `B̄_{ρ₀}(ψ(v₀)) ⊆ W`, the set `C := (V ∩ ψ⁻¹(B̄_{ρ₀}(ψ(v₀)))) \ B_ε(v₀)` is compact, so
+`ψ(C)` is compact; it misses `ψ(v₀)` by injectivity, so any `ρ ≤ ρ₀` with
+`B̄_ρ(ψ(v₀)) ∩ ψ(C) = ∅` works, and `N ∩ B̄_ρ(ψ(v₀)) = ψ(V ∩ ψ⁻¹(B̄_ρ(ψ(v₀))))` is compact by
+properness. -/
+theorem Submission.dor_lmb_ret_chart_localization : ∀ (P d : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen W → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → v₀ ∈ V → ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ closedBall (ψ v₀) ρ ⊆ W ∧ N ∩ closedBall (ψ v₀) ρ ⊆ ψ '' (V ∩ ball v₀ ε) ∧ IsCompact (N ∩ closedBall (ψ v₀) ρ) := by
+  intro P d N W V ψ v₀ hW hψ hinj himage hproper hv₀ ε hε
+  -- Step 1: `y := ψ(v₀) ∈ W`, and `B̄_{ρ₀}(y) ⊆ W` for some `ρ₀ > 0`
+  have hy : ψ v₀ ∈ W ∩ N := by
+    rw [← himage]
+    exact mem_image_of_mem ψ hv₀
+  obtain ⟨r, hr, hrW⟩ := Metric.isOpen_iff.1 hW _ hy.1
+  have hρ₀W : closedBall (ψ v₀) (r / 2) ⊆ W :=
+    (closedBall_subset_ball (half_lt_self hr)).trans hrW
+  -- Step 2: `C := (V ∩ ψ⁻¹(B̄_{ρ₀}(y))) \ B_ε(v₀)` is compact
+  have hC : IsCompact ((V ∩ ψ ⁻¹' closedBall (ψ v₀) (r / 2)) \ ball v₀ ε) :=
+    (hproper _ hρ₀W (isCompact_closedBall _ _)).diff isOpen_ball
+  -- Step 3: `ψ(C)` is compact
+  have hψC : IsCompact (ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ v₀) (r / 2)) \ ball v₀ ε)) :=
+    hC.image_of_continuousOn (hψ.mono fun _ hx => hx.1.1)
+  -- Step 4: `y ∉ ψ(C)`, by injectivity of `ψ` on `V`
+  have hyC : ψ v₀ ∉ ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ v₀) (r / 2)) \ ball v₀ ε) := by
+    rintro ⟨c, ⟨⟨hcV, -⟩, hcε⟩, hc⟩
+    rw [hinj hcV hv₀ hc] at hcε
+    exact hcε (mem_ball_self hε)
+  -- Step 5: some `B_{ρ₂}(y)` misses `ψ(C)`; take `ρ ≤ ρ₀` with `ρ < ρ₂`
+  obtain ⟨ρ₂, hρ₂, hρ₂C⟩ := Metric.isOpen_iff.1 hψC.isClosed.isOpen_compl _ hyC
+  obtain ⟨ρ, hρ, hρρ₀, hρρ₂⟩ : ∃ ρ : ℝ, 0 < ρ ∧ ρ ≤ r / 2 ∧ ρ < ρ₂ :=
+    ⟨min (r / 2) (ρ₂ / 2), lt_min (half_pos hr) (half_pos hρ₂), min_le_left _ _,
+      (min_le_right _ _).trans_lt (half_lt_self hρ₂)⟩
+  have hρW : closedBall (ψ v₀) ρ ⊆ W := (closedBall_subset_closedBall hρρ₀).trans hρ₀W
+  -- every `z ∈ N ∩ B̄_ρ(y)` is `ψ(v)` with `v ∈ V`, `ψ(v) ∈ B̄_ρ(y)`
+  have hpre : ∀ z ∈ N ∩ closedBall (ψ v₀) ρ, ∃ v ∈ V, ψ v ∈ closedBall (ψ v₀) ρ ∧ ψ v = z := by
+    rintro z ⟨hzN, hzB⟩
+    have hz : z ∈ ψ '' V := by
+      rw [himage]
+      exact ⟨hρW hzB, hzN⟩
+    obtain ⟨v, hvV, rfl⟩ := hz
+    exact ⟨v, hvV, hzB, rfl⟩
+  refine ⟨ρ, hρ, hρW, ?_, ?_⟩
+  · -- Step 6: inclusion
+    intro z hz
+    obtain ⟨v, hvV, hvB, rfl⟩ := hpre z hz
+    refine ⟨v, ⟨hvV, ?_⟩, rfl⟩
+    by_contra hvε
+    exact hρ₂C (closedBall_subset_ball hρρ₂ hvB)
+      ⟨v, ⟨⟨hvV, closedBall_subset_closedBall hρρ₀ hvB⟩, hvε⟩, rfl⟩
+  · -- Step 7: `N ∩ B̄_ρ(y) = ψ(V ∩ ψ⁻¹(B̄_ρ(y)))` is compact
+    have heq : N ∩ closedBall (ψ v₀) ρ = ψ '' (V ∩ ψ ⁻¹' closedBall (ψ v₀) ρ) := by
+      apply Subset.antisymm
+      · intro z hz
+        obtain ⟨v, hvV, hvB, rfl⟩ := hpre z hz
+        exact ⟨v, ⟨hvV, hvB⟩, rfl⟩
+      · rintro _ ⟨v, ⟨hvV, hvB⟩, rfl⟩
+        have hv : ψ v ∈ W ∩ N := by
+          rw [← himage]
+          exact mem_image_of_mem ψ hvV
+        exact ⟨hv.2, hvB⟩
+    rw [heq]
+    exact (hproper _ hρW (isCompact_closedBall _ _)).image_of_continuousOn
+      (hψ.mono inter_subset_left)
+/-- **A `C¹` immersion into a subspace of the same dimension has relatively open image** (Simon,
+App. B, Theorem B.2, the passage from `|A| ≡ 0` to a hyperplane).  Let `dim H = m`, `B ⊆ ℝᵐ` open,
+`ψ` `C¹` on `B` with every `Dψ(v)` injective and `ψ(B) ⊆ H`.  With `π` the orthogonal projection
+onto `H`, `g = π ∘ ψ : ℝᵐ → H` agrees with `ψ` on `B`, so `Dψ(v)` maps into `H` and `π ∘ Dψ(v)` is
+an injective, hence bijective, linear map `ℝᵐ → H`.  By the inverse function theorem `g(B)` is a
+neighbourhood of each `g(v)`, so `g(B)` is open in `H`, i.e. `ψ(B) = O ∩ H` with `O` open. -/
+theorem Submission.codim1_hcp_fcp_immersion_image_open_in_subspace : ∀ (P m : ℕ) (H : Submodule ℝ (Euclid P)) (B : Set (Euclid m)) (ψ : Euclid m → Euclid P), Module.finrank ℝ H = m → IsOpen B → ContDiffOn ℝ 1 ψ B → (∀ v ∈ B, Injective (fderiv ℝ ψ v)) → ψ '' B ⊆ (H : Set (Euclid P)) → ∃ O : Set (Euclid P), IsOpen O ∧ O ∩ (H : Set (Euclid P)) = ψ '' B := by
+  intro P m H B ψ hdim hB hψ hDψ hψH
+  -- step 1: `π : ℝᴾ → H` is the orthogonal projection, `π(y) = y` on `H`, so `g = π ∘ ψ = ψ` on `B`
+  set π : Euclid P →L[ℝ] H := H.orthogonalProjectionOnto
+  have hπH : ∀ y ∈ H, (π y : Euclid P) = y := fun y hy =>
+    congrArg Subtype.val (H.orthogonalProjectionOnto_mem_subspace_eq_self ⟨y, hy⟩)
+  set g : Euclid m → H := fun w => π (ψ w)
+  have hgψ : ∀ w ∈ B, (g w : Euclid P) = ψ w := fun w hw => hπH _ (hψH (mem_image_of_mem ψ hw))
+  -- steps 2–5: `g(B)` is a neighbourhood of each of its points `g(v)`, `v ∈ B`
+  have hopen : IsOpen (g '' B) := by
+    rw [isOpen_iff_mem_nhds]
+    rintro _ ⟨v, hv, rfl⟩
+    -- step 2: `ψ` has strict derivative `L = Dψ(v)` at `v`, so `g` has strict derivative `π ∘ L`
+    have hψv : HasStrictFDerivAt ψ (fderiv ℝ ψ v) v :=
+      (hψ.contDiffAt (hB.mem_nhds hv)).hasStrictFDerivAt one_ne_zero
+    set L := fderiv ℝ ψ v
+    have hgv : HasStrictFDerivAt g (π.comp L) v := π.hasStrictFDerivAt.comp v hψv
+    -- step 3: `ι ∘ π ∘ ψ = ψ` near `v`, so `L = ι ∘ π ∘ L`, i.e. `L` takes values in `H`
+    have hιπψ : HasFDerivAt (fun w => (H.subtypeL.comp π) (ψ w)) ((H.subtypeL.comp π).comp L) v :=
+      (H.subtypeL.comp π).hasFDerivAt.comp v hψv.hasFDerivAt
+    have heq : ψ =ᶠ[𝓝 v] fun w => (H.subtypeL.comp π) (ψ w) :=
+      Filter.eventually_of_mem (hB.mem_nhds hv) fun w hw => (hgψ w hw).symm
+    have hLπ : L = (H.subtypeL.comp π).comp L :=
+      hψv.hasFDerivAt.unique (hιπψ.congr_of_eventuallyEq heq)
+    have hLH : ∀ a, (π (L a) : Euclid P) = L a := fun a => (DFunLike.congr_fun hLπ a).symm
+    -- step 4: `π ∘ L` is injective, hence bijective as `dim ℝᵐ = m = dim H`: an isomorphism `E`
+    have hinj : Injective (π.comp L) := fun a b hab => hDψ v hv <|
+      calc L a = π (L a) := (hLH a).symm
+        _ = π (L b) := congrArg Subtype.val hab
+        _ = L b := hLH b
+    have hsurj : Surjective (π.comp L) :=
+      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (f := (π.comp L : Euclid m →ₗ[ℝ] H))
+        (by rw [finrank_euclideanSpace_fin, hdim])).mp hinj
+    let E : Euclid m ≃L[ℝ] H :=
+      (LinearEquiv.ofBijective (π.comp L : Euclid m →ₗ[ℝ] H) ⟨hinj, hsurj⟩).toContinuousLinearEquiv
+    have hgE : HasStrictFDerivAt g (E : Euclid m →L[ℝ] H) v := hgv
+    -- step 5: inverse function theorem: `g` maps `𝓝 v` onto `𝓝 (g v)`, and `B ∈ 𝓝 v`
+    rw [← hgE.map_nhds_eq_of_equiv]
+    exact image_mem_map (hB.mem_nhds hv)
+  -- step 6: `g(B)` is open in `H`, so `g(B) = {h ∈ H | h ∈ O}` for an open `O ⊆ ℝᴾ`
+  obtain ⟨O, hO, hOg⟩ := isOpen_induced_iff.mp hopen
+  -- step 7: `O ∩ H = ψ(B)`
+  refine ⟨O, hO, Subset.antisymm ?_ ?_⟩
+  · rintro y ⟨hyO, hyH⟩
+    obtain ⟨w, hw, hgw⟩ : (⟨y, hyH⟩ : H) ∈ g '' B := hOg ▸ hyO
+    exact ⟨w, hw, (hgψ w hw).symm.trans (congrArg Subtype.val hgw)⟩
+  · rintro _ ⟨w, hw, rfl⟩
+    refine ⟨?_, hψH (mem_image_of_mem ψ hw)⟩
+    have hgwO : g w ∈ Subtype.val ⁻¹' O := hOg ▸ mem_image_of_mem g hw
+    exact hgψ w hw ▸ hgwO
+/-- **A subspace of dimension at least `2` minus the origin is connected** (used in passing from
+`|A| ≡ 0` to a hyperplane in Simon, App. B, Theorem B.2).  The half-spaces
+`C_v = {x ∈ H : ⟨v, x⟩ > 0}` are convex subsets of `K = H ∖ {0}`.  Fix `x₀ ∈ K`; the dimension
+formula gives `w ∈ K` with `⟨x₀, w⟩ = 0`, and `T = C_{x₀} ∪ C_w ∪ C_{-x₀}` is preconnected because
+`x₀ + w ∈ C_{x₀} ∩ C_w` and `-x₀ + w ∈ C_w ∩ C_{-x₀}`.  Each `C_y`, `y ∈ K`, meets `T` (at `y` or
+at `x₀ + y`), so `T ∪ C_y ⊆ K` is a preconnected set containing `x₀` and `y`. -/
+theorem Submission.codim1_hcp_fcp_punctured_subspace_isConnected : ∀ (P : ℕ) (H : Submodule ℝ (Euclid P)), 2 ≤ Module.finrank ℝ H → IsConnected ((H : Set (Euclid P)) \ {0}) := by
+  intro P H hH
+  -- Step 1: the half-spaces `C_v = {x ∈ H : ⟨v, x⟩ > 0}` are convex, hence preconnected, and
+  -- lie in `K = H ∖ {0}`
+  set C : Euclid P → Set (Euclid P) := fun v => (H : Set (Euclid P)) ∩ {x | 0 < inner ℝ v x}
+  have hCpre : ∀ v, IsPreconnected (C v) := fun v =>
+    (H.convex.inter (convex_halfSpace_gt (innerₛₗ ℝ v).isLinear 0)).isPreconnected
+  have hCK : ∀ v, C v ⊆ (H : Set (Euclid P)) \ {0} := by
+    rintro v x ⟨hxH, hx : 0 < inner ℝ v x⟩
+    refine ⟨hxH, fun h0 => ?_⟩
+    rw [mem_singleton_iff.1 h0, inner_zero_right] at hx
+    exact lt_irrefl 0 hx
+  have hpos : ∀ y : Euclid P, y ≠ 0 → 0 < inner ℝ y y := fun y hy => real_inner_self_pos.2 hy
+  -- Step 2: `H ≠ {0}`, so there is `x₀ ∈ H` with `x₀ ≠ 0`
+  obtain ⟨x₀, hx₀H, hx₀⟩ := Submodule.exists_mem_ne_zero_of_ne_bot
+    (Submodule.one_le_finrank_iff.1 (by omega) : H ≠ ⊥)
+  -- Step 3: a nonzero `w ∈ H ∩ (span{x₀})ᗮ`, by the dimension formula
+  -- `dim (H ⊓ L) = dim H + dim L - dim (H ⊔ L) ≥ dim H - 1 ≥ 1`, `L = (span{x₀})ᗮ`
+  obtain ⟨w, ⟨hwH, hwL⟩, hw⟩ : ∃ w, w ∈ H ⊓ (ℝ ∙ x₀)ᗮ ∧ w ≠ 0 := by
+    refine Submodule.exists_mem_ne_zero_of_ne_bot (Submodule.one_le_finrank_iff.1 ?_)
+    have h1 := Submodule.finrank_sup_add_finrank_inf_eq H (ℝ ∙ x₀)ᗮ
+    have h2 := Submodule.finrank_add_finrank_orthogonal (ℝ ∙ x₀)
+    have h3 := Submodule.finrank_le (H ⊔ (ℝ ∙ x₀)ᗮ)
+    rw [finrank_span_singleton hx₀] at h2
+    omega
+  have hxw : inner ℝ x₀ w = 0 := Submodule.mem_orthogonal_singleton_iff_inner_right.1 hwL
+  have hwx : inner ℝ w x₀ = 0 := (real_inner_comm x₀ w).trans hxw
+  -- Step 4: `T = C_{x₀} ∪ C_w ∪ C_{-x₀}` is preconnected, as `x₀ + w ∈ C_{x₀} ∩ C_w` and
+  -- `-x₀ + w ∈ C_w ∩ C_{-x₀}`
+  have hT : IsPreconnected (C x₀ ∪ C w ∪ C (-x₀)) := by
+    refine ((hCpre x₀).union (x₀ + w) ?_ ?_ (hCpre w)).union (-x₀ + w) (Or.inr ?_) ?_
+      (hCpre (-x₀))
+    · refine ⟨H.add_mem hx₀H hwH, ?_⟩
+      show 0 < inner ℝ x₀ (x₀ + w)
+      rw [inner_add_right, hxw, add_zero]
+      exact hpos x₀ hx₀
+    · refine ⟨H.add_mem hx₀H hwH, ?_⟩
+      show 0 < inner ℝ w (x₀ + w)
+      rw [inner_add_right, hwx, zero_add]
+      exact hpos w hw
+    · refine ⟨H.add_mem (H.neg_mem hx₀H) hwH, ?_⟩
+      show 0 < inner ℝ w (-x₀ + w)
+      rw [inner_add_right, inner_neg_right, hwx, neg_zero, zero_add]
+      exact hpos w hw
+    · refine ⟨H.add_mem (H.neg_mem hx₀H) hwH, ?_⟩
+      show 0 < inner ℝ (-x₀) (-x₀ + w)
+      rw [inner_add_right, inner_neg_left, inner_neg_left, inner_neg_right, hxw, neg_zero,
+        add_zero, neg_neg]
+      exact hpos x₀ hx₀
+  -- Steps 5–7: `K` is nonempty, and every `y ∈ K` lies with `x₀` in a preconnected subset of `K`
+  refine ⟨⟨x₀, hx₀H, hx₀⟩, isPreconnected_of_forall x₀ fun y ⟨hyH, hy⟩ => ?_⟩
+  have hy0 : y ≠ 0 := hy
+  have hyy : y ∈ C y := ⟨hyH, hpos y hy0⟩
+  -- Step 5: `C_y` meets `T`, at `y` if `⟨x₀, y⟩ ≠ 0` and at `x₀ + y` if `⟨x₀, y⟩ = 0`
+  obtain ⟨z, hzT, hzy⟩ : ∃ z, z ∈ C x₀ ∪ C w ∪ C (-x₀) ∧ z ∈ C y := by
+    rcases lt_trichotomy 0 (inner ℝ x₀ y) with h | h | h
+    · exact ⟨y, Or.inl (Or.inl ⟨hyH, h⟩), hyy⟩
+    · refine ⟨x₀ + y, Or.inl (Or.inl ⟨H.add_mem hx₀H hyH, ?_⟩), H.add_mem hx₀H hyH, ?_⟩
+      · show 0 < inner ℝ x₀ (x₀ + y)
+        rw [inner_add_right, ← h, add_zero]
+        exact hpos x₀ hx₀
+      · show 0 < inner ℝ y (x₀ + y)
+        rw [inner_add_right, real_inner_comm x₀ y, ← h, zero_add]
+        exact hpos y hy0
+    · refine ⟨y, Or.inr ⟨hyH, ?_⟩, hyy⟩
+      show 0 < inner ℝ (-x₀) y
+      rw [inner_neg_left]
+      exact neg_pos.2 h
+  -- Step 6: `T ∪ C_y` is a preconnected subset of `K` containing `x₀` and `y`
+  refine ⟨C x₀ ∪ C w ∪ C (-x₀) ∪ C y, ?_, Or.inl (Or.inl (Or.inl ⟨hx₀H, hpos x₀ hx₀⟩)),
+    Or.inr hyy, hT.union z hzT hzy (hCpre y)⟩
+  exact union_subset (union_subset (union_subset (hCK x₀) (hCK w)) (hCK (-x₀))) (hCK y)
+
+/-- **Local flatness of a flat hypercone** (the passage from `|A| ≡ 0` to a hyperplane in Simon,
+Appendix B, Theorem B.2, on one chart).  Let `M ⊆ A₀` (`dim A₀ = m + 1`) be an embedded `C¹`
+`m`-dimensional cone with a unit normal `ν` in `A₀`, differentiable on `M` with zero tangential
+derivative.  Take a chart `ψ`, `ψ(v₀) = x`, and a ball `B = B_δ(v₀) ⊆ V`.  By the chain rule
+`ν ∘ ψ` has zero derivative on `B`, so `ν ∘ ψ ≡ n := ν(x)` there; then `⟨n, ψ⟩` has derivative
+`⟨ν(ψ(v)), Dψ(v) a⟩ = 0`, so `⟨n, ψ(v)⟩ = ⟨n, x⟩` on `B`.  Some `B̄_ρ(x)` has
+`M ∩ B̄_ρ(x) ⊆ ψ(B)` and contains the cone point `(1 + s)x`, `s = ρ/(|x| + 1)`, which forces
+`⟨n, x⟩ = 0`.  So `ψ(B)` lies in `H = A₀ ∩ n^⊥`, which has dimension `m`, and `ψ(B) = O' ∩ H`
+with `O'` open (inverse function theorem); `O = B_ρ(x) ∩ O'` has `O ∩ M = O ∩ H`. -/
+theorem Submission.codim1_hcp_fcp_local_plane : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ x ∈ M, DifferentiableAt ℝ ν x) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, ∀ v ∈ tangentSpace M x, fderiv ℝ ν x v = 0) → ∀ x ∈ M, ∃ H : Submodule ℝ (Euclid P), Module.finrank ℝ H = m ∧ H ≤ A₀ ∧ ∃ O : Set (Euclid P), IsOpen O ∧ x ∈ O ∧ O ∩ M = O ∩ (H : Set (Euclid P)) := by
+  intro P m A₀ M ν hA₀ hMA₀ hM hcone hνd hνn hνflat x hx
+  -- Step 1: a chart `ψ : V → W` with `ψ(v₀) = x`, a ball `B = B_δ(v₀) ⊆ V`, and
+  -- `Dψ(v) a ∈ T_{ψ(v)}M` for `v ∈ V` (chart_tangent_space)
+  obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hinj, hψV, hproper, hDψ⟩ := hM x hx
+  obtain ⟨v₀, hv₀, rfl⟩ : x ∈ ψ '' V := hψV ▸ ⟨hxW, hx⟩
+  obtain ⟨δ, hδ, hBV⟩ := Metric.isOpen_iff.1 hV v₀ hv₀
+  have hψ1 : ContDiffOn ℝ 1 ψ V := by exact_mod_cast hψ
+  have hψd : ∀ v ∈ V, DifferentiableAt ℝ ψ v := fun v hv =>
+    (hψ1.differentiableOn one_ne_zero).differentiableAt (hV.mem_nhds hv)
+  have hψM : ∀ v ∈ V, ψ v ∈ M := fun v hv =>
+    (show ψ v ∈ W ∩ M from hψV ▸ mem_image_of_mem ψ hv).2
+  have htan : ∀ v ∈ V, ∀ a, fderiv ℝ ψ v a ∈ tangentSpace M (ψ v) := fun v hv a => by
+    rw [Submission.chart_tangentSpace_eq_range_fderiv P m 1 M W V ψ v le_rfl hV hW hψ hinj hψV
+      hproper hDψ hv]
+    exact mem_range_self a
+  have hB : IsPreconnected (ball v₀ δ) := (convex_ball v₀ δ).isPreconnected
+  -- Step 2: `D(ν ∘ ψ)(v) a = Dν(ψ(v)) (Dψ(v) a) = 0` on `B`, so `ν(ψ(v)) = ν(x) =: n` on `B`
+  have hνψ : ∀ v ∈ ball v₀ δ, ν (ψ v) = ν (ψ v₀) := by
+    have hd : ∀ v ∈ ball v₀ δ, DifferentiableAt ℝ (ν ∘ ψ) v := fun v hv =>
+      (hνd _ (hψM v (hBV hv))).comp v (hψd v (hBV hv))
+    intro v hv
+    refine isOpen_ball.is_const_of_fderiv_eq_zero (f := ν ∘ ψ) hB
+      (fun w hw => (hd w hw).differentiableWithinAt) (fun w hw => ?_) hv (mem_ball_self hδ)
+    rw [fderiv_comp w (hνd _ (hψM w (hBV hw))) (hψd w (hBV hw))]
+    ext1 a
+    exact hνflat _ (hψM w (hBV hw)) _ (htan w (hBV hw) a)
+  obtain ⟨hnA, hnorm, -⟩ := hνn _ hx
+  set n := ν (ψ v₀)
+  clear_value n
+  -- Step 3: `D⟨n, ψ⟩(v) a = ⟨ν(ψ(v)), Dψ(v) a⟩ = 0` on `B`, so `⟨n, ψ(v)⟩ = ⟨n, x⟩` on `B`
+  have hnψ : ∀ v ∈ ball v₀ δ, inner ℝ n (ψ v) = inner ℝ n (ψ v₀) := by
+    have hd : ∀ v ∈ ball v₀ δ, HasFDerivAt (fun w => innerSL ℝ n (ψ w))
+        ((innerSL ℝ n).comp (fderiv ℝ ψ v)) v := fun v hv =>
+      (innerSL ℝ n).hasFDerivAt.comp v (hψd v (hBV hv)).hasFDerivAt
+    intro v hv
+    refine isOpen_ball.is_const_of_fderiv_eq_zero (f := fun w => innerSL ℝ n (ψ w)) hB
+      (fun w hw => (hd w hw).differentiableAt.differentiableWithinAt) (fun w hw => ?_) hv
+      (mem_ball_self hδ)
+    rw [(hd w hw).fderiv]
+    ext1 a
+    rw [ContinuousLinearMap.comp_apply, innerSL_apply_apply, ← hνψ w hw]
+    exact (hνn _ (hψM w (hBV hw))).2.2 _ (htan w (hBV hw) a)
+  -- Step 4: `M ∩ B̄_ρ(x) ⊆ ψ(B)` (chart_localization)
+  obtain ⟨ρ, hρ, -, hloc, -⟩ := Submission.dor_lmb_ret_chart_localization P m M W V ψ v₀ hW
+    hψ.continuousOn hinj hψV hproper hv₀ δ hδ
+  -- Step 5: the cone point `(1 + s) x`, `s = ρ / (|x| + 1)`, lies in `M ∩ B̄_ρ(x) ⊆ ψ(B)`,
+  -- so `(1 + s) ⟨n, x⟩ = ⟨n, x⟩` and `⟨n, x⟩ = 0`
+  have hnx : inner ℝ n (ψ v₀) = 0 := by
+    set s : ℝ := ρ / (‖ψ v₀‖ + 1) with hs_def
+    have hs : 0 < s := div_pos hρ (by positivity)
+    have hmem : (1 + s) • ψ v₀ ∈ M ∩ closedBall (ψ v₀) ρ := by
+      refine ⟨hcone _ (by linarith) _ hx, ?_⟩
+      rw [mem_closedBall, dist_eq_norm, add_smul, one_smul, add_sub_cancel_left, norm_smul,
+        Real.norm_of_nonneg hs.le, hs_def, div_mul_eq_mul_div, div_le_iff₀ (by positivity)]
+      nlinarith [norm_nonneg (ψ v₀)]
+    obtain ⟨v, ⟨-, hv⟩, hvx⟩ := hloc hmem
+    have h := hnψ v hv
+    rw [hvx, real_inner_smul_right] at h
+    have h' : s * inner ℝ n (ψ v₀) = 0 := by linear_combination h
+    exact (mul_eq_zero.1 h').resolve_left hs.ne'
+  -- Step 6: `H = A₀ ∩ n^⊥` has dimension `m` and contains `ψ(B)`
+  have hn0 : n ≠ 0 := by
+    rintro rfl
+    simp at hnorm
+  set H : Submodule ℝ (Euclid P) := A₀ ⊓ (Submodule.span ℝ {n})ᗮ with hH
+  have hHdim : Module.finrank ℝ H = m := by
+    have hle : Submodule.span ℝ {n} ≤ A₀ := (Submodule.span_singleton_le_iff_mem n A₀).2 hnA
+    have htop : A₀ ⊔ (Submodule.span ℝ {n})ᗮ = ⊤ :=
+      top_unique <| (Submodule.sup_orthogonal_of_hasOrthogonalProjection
+        (K := Submodule.span ℝ {n})).symm.le.trans (sup_le_sup_right hle _)
+    have h1 := Submodule.finrank_sup_add_finrank_inf_eq A₀ (Submodule.span ℝ {n})ᗮ
+    have h2 := Submodule.finrank_add_finrank_orthogonal (Submodule.span ℝ {n})
+    rw [htop, finrank_top, finrank_euclideanSpace_fin, ← hH] at h1
+    rw [finrank_span_singleton hn0, finrank_euclideanSpace_fin] at h2
+    omega
+  have hψBH : ψ '' ball v₀ δ ⊆ (H : Set (Euclid P)) := by
+    rintro _ ⟨v, hv, rfl⟩
+    refine Submodule.mem_inf.2 ⟨hMA₀ (hψM v (hBV hv)), ?_⟩
+    rw [Submodule.mem_orthogonal_singleton_iff_inner_right, hnψ v hv, hnx]
+  -- Step 7: `ψ(B) = O' ∩ H` with `O'` open (immersion_open)
+  obtain ⟨O', hO', hO'H⟩ := Submission.codim1_hcp_fcp_immersion_image_open_in_subspace P m H
+    (ball v₀ δ) ψ hHdim isOpen_ball (hψ1.mono hBV) (fun v hv => hDψ v (hBV hv)) hψBH
+  -- Step 8: `O = B_ρ(x) ∩ O'` is open, contains `x`, and `O ∩ M = O ∩ H`
+  refine ⟨H, hHdim, inf_le_left, ball (ψ v₀) ρ ∩ O', isOpen_ball.inter hO',
+    ⟨mem_ball_self hρ, ?_⟩, Subset.antisymm ?_ ?_⟩
+  · exact (show ψ v₀ ∈ O' ∩ (H : Set (Euclid P)) from
+      hO'H ▸ mem_image_of_mem ψ (mem_ball_self hδ)).1
+  · rintro y ⟨hyO, hyM⟩
+    obtain ⟨v, ⟨-, hv⟩, rfl⟩ := hloc ⟨hyM, ball_subset_closedBall hyO.1⟩
+    exact ⟨hyO, hψBH (mem_image_of_mem ψ hv)⟩
+  · rintro y ⟨hyO, hyH⟩
+    obtain ⟨v, hv, rfl⟩ : y ∈ ψ '' ball v₀ δ := hO'H ▸ ⟨hyO.2, hyH⟩
+    exact ⟨hyO, hψM v (hBV hv)⟩
+/-- **Globalization of local planarity** (the passage from `|A| ≡ 0` to a plane closing the proof
+of Simon, Appendix B, Theorem B.2).  Let `M ⊆ ℝᴾ` be nonempty with `0 ∉ M` and
+`closure M ⊆ M ∪ {0}`, and let `M` agree near each `x ∈ M` with some `m`-dimensional subspace
+`H ⊆ A₀`, where `m ≥ 2` and `dim A₀ = m + 1`.  Then `M = H₀ \ {0}` with `dim H₀ = m`.
+
+Two local planes at one point of `M` coincide (move from the point along `h ∈ H₁` inside both
+neighbourhoods).  Let `U_H` be the union of all open `O` with `O ∩ M = O ∩ H`; it is open and
+`U_H ∩ M = U_H ∩ H`.  If `dim H ≥ 2` and `U_H` meets `M`, then `U_H` and the open set
+`G = ℝᴾ \ closure (U_H ∩ M)` cover the connected set `H \ {0}` (a point of `H \ {0}` in
+`closure (U_H ∩ M)` lies in `M`, and its local plane is `H` by uniqueness at a nearby point of
+`U_H ∩ M`) and are disjoint on it; `H \ {0}` contains a point of `U_H ∩ M`, which is not in `G`,
+so `H \ {0} ⊆ U_H`.  Hence `H₀ \ {0} ⊆ M` for the local plane `H₀` at some `x₀ ∈ M`.  For `y ∈ M`
+with local plane `H_y`, `dim (H₀ ∩ H_y) ≥ 2m − (m + 1) ≥ 1` inside `A₀`, so the two planes share
+some `w ≠ 0`, and uniqueness at `w` gives `H_y = H₀`. -/
+theorem Submission.codim1_hcp_fcp_locally_planar_is_plane : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), 2 ≤ m → Module.finrank ℝ A₀ = m + 1 → M.Nonempty → (0 : Euclid P) ∉ M → closure M ⊆ insert 0 M → (∀ x ∈ M, ∃ H : Submodule ℝ (Euclid P), Module.finrank ℝ H = m ∧ H ≤ A₀ ∧ ∃ O : Set (Euclid P), IsOpen O ∧ x ∈ O ∧ O ∩ M = O ∩ (H : Set (Euclid P))) → ∃ H₀ : Submodule ℝ (Euclid P), Module.finrank ℝ H₀ = m ∧ M = (H₀ : Set (Euclid P)) \ {0} := by
+  intro P m A₀ M hm hA₀ hMne h0M hcl hloc
+  have hM0 : ∀ y ∈ M, y ∉ ({0} : Set (Euclid P)) := fun y hy h0 => h0M (h0 ▸ hy)
+  -- Step 1: two local planes of `M` at the same point `y ∈ M` coincide
+  have uniq_le : ∀ y ∈ M, ∀ (H₁ H₂ : Submodule ℝ (Euclid P)) (O₁ O₂ : Set (Euclid P)),
+      IsOpen O₁ → IsOpen O₂ → y ∈ O₁ → y ∈ O₂ → O₁ ∩ M = O₁ ∩ (H₁ : Set (Euclid P)) →
+      O₂ ∩ M = O₂ ∩ (H₂ : Set (Euclid P)) → H₁ ≤ H₂ := by
+    intro y hy H₁ H₂ O₁ O₂ hO₁ hO₂ hy₁ hy₂ hM₁ hM₂ h hh
+    have hyH₁ : y ∈ H₁ := (hM₁.subset ⟨hy₁, hy⟩).2
+    have hyH₂ : y ∈ H₂ := (hM₂.subset ⟨hy₂, hy⟩).2
+    -- `z = y + s h` with `0 < s`, `s |h| < ε` lies in `B_ε(y) ⊆ O₁ ∩ O₂`
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 (hO₁.inter hO₂) y ⟨hy₁, hy₂⟩
+    obtain ⟨s, hs, hsε⟩ : ∃ s : ℝ, 0 < s ∧ s * ‖h‖ < ε := by
+      refine ⟨ε / (2 * (‖h‖ + 1)), by positivity, ?_⟩
+      rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+      nlinarith [mul_nonneg hε.le (norm_nonneg h)]
+    have hz : y + s • h ∈ O₁ ∩ O₂ := hball <| by
+      rwa [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul,
+        Real.norm_of_nonneg hs.le]
+    -- `z ∈ O₁ ∩ H₁ = O₁ ∩ M`, hence `z ∈ O₂ ∩ M = O₂ ∩ H₂`
+    have hzM : y + s • h ∈ M :=
+      (hM₁.symm.subset ⟨hz.1, H₁.add_mem hyH₁ (H₁.smul_mem s hh)⟩).2
+    have hzH₂ : y + s • h ∈ H₂ := (hM₂.subset ⟨hz.2, hzM⟩).2
+    -- `h = s⁻¹ ((y + s h) − y) ∈ H₂`
+    have := H₂.smul_mem s⁻¹ (H₂.sub_mem hzH₂ hyH₂)
+    rwa [add_sub_cancel_left, inv_smul_smul₀ hs.ne'] at this
+  have uniq : ∀ y ∈ M, ∀ (H₁ H₂ : Submodule ℝ (Euclid P)) (O₁ O₂ : Set (Euclid P)),
+      IsOpen O₁ → IsOpen O₂ → y ∈ O₁ → y ∈ O₂ → O₁ ∩ M = O₁ ∩ (H₁ : Set (Euclid P)) →
+      O₂ ∩ M = O₂ ∩ (H₂ : Set (Euclid P)) → H₁ = H₂ :=
+    fun y hy H₁ H₂ O₁ O₂ hO₁ hO₂ hy₁ hy₂ hM₁ hM₂ =>
+      le_antisymm (uniq_le y hy H₁ H₂ O₁ O₂ hO₁ hO₂ hy₁ hy₂ hM₁ hM₂)
+        (uniq_le y hy H₂ H₁ O₂ O₁ hO₂ hO₁ hy₂ hy₁ hM₂ hM₁)
+  -- Step 2: `U_H`, the union of all open `O` with `O ∩ M = O ∩ H`, is open, contains each such
+  -- `O`, and satisfies `U_H ∩ M = U_H ∩ H`
+  obtain ⟨U, hUopen, hUsub, hUeq⟩ : ∃ U : Submodule ℝ (Euclid P) → Set (Euclid P),
+      (∀ H, IsOpen (U H)) ∧
+      (∀ (H : Submodule ℝ (Euclid P)) (O : Set (Euclid P)), IsOpen O →
+        O ∩ M = O ∩ (H : Set (Euclid P)) → O ⊆ U H) ∧
+      ∀ H, U H ∩ M = U H ∩ (H : Set (Euclid P)) := by
+    refine ⟨fun H => ⋃₀ {O | IsOpen O ∧ O ∩ M = O ∩ (H : Set (Euclid P))},
+      fun H => isOpen_sUnion fun O hO => hO.1, fun H O hO hOM => subset_sUnion_of_mem ⟨hO, hOM⟩,
+      fun H => Subset.antisymm ?_ ?_⟩
+    · rintro z ⟨hzU, hzM⟩
+      obtain ⟨O, ⟨-, hOM⟩, hzO⟩ := mem_sUnion.1 hzU
+      exact ⟨hzU, (hOM.subset ⟨hzO, hzM⟩).2⟩
+    · rintro z ⟨hzU, hzH⟩
+      obtain ⟨O, ⟨-, hOM⟩, hzO⟩ := mem_sUnion.1 hzU
+      exact ⟨hzU, (hOM.symm.subset ⟨hzO, hzH⟩).2⟩
+  -- Step 3: if `dim H ≥ 2` and `U_H ∩ M ≠ ∅`, then `H \ {0} ⊆ U_H`
+  have hfill : ∀ H : Submodule ℝ (Euclid P), 2 ≤ Module.finrank ℝ H → (U H ∩ M).Nonempty →
+      (H : Set (Euclid P)) \ {0} ⊆ U H := by
+    rintro H hH ⟨y₀, hy₀U, hy₀M⟩
+    -- (a) `H \ {0} ⊆ U_H ∪ G`, where `G = ℝᴾ \ closure (U_H ∩ M)`
+    have hcover : (H : Set (Euclid P)) \ {0} ⊆ U H ∪ (closure (U H ∩ M))ᶜ := by
+      rintro z ⟨-, hz0⟩
+      by_cases hzc : z ∈ closure (U H ∩ M)
+      · -- `z ∈ closure M \ {0} ⊆ M`; its local plane is `H`, by uniqueness at a nearby point
+        refine Or.inl ?_
+        have hzM : z ∈ M :=
+          (Set.mem_insert_iff.1 (hcl (closure_mono inter_subset_right hzc))).resolve_left hz0
+        obtain ⟨Hz, -, -, Oz, hOz, hzOz, hOzM⟩ := hloc z hzM
+        obtain ⟨y, hyOz, hyU, hyM⟩ := _root_.mem_closure_iff.1 hzc Oz hOz hzOz
+        rw [uniq y hyM Hz H Oz (U H) hOz (hUopen H) hyOz hyU hOzM (hUeq H)] at hOzM
+        exact hUsub H Oz hOz hOzM hzOz
+      · exact Or.inr hzc
+    -- (b) `(H \ {0}) ∩ U_H ∩ G = ∅`, as `U_H ∩ H = U_H ∩ M`
+    have hdisj : ((H : Set (Euclid P)) \ {0}) ∩ (U H ∩ (closure (U H ∩ M))ᶜ) = ∅ :=
+      eq_empty_iff_forall_notMem.2 fun z ⟨hz, hzU, hzG⟩ =>
+        hzG (subset_closure ((hUeq H).symm.subset ⟨hzU, hz.1⟩))
+    -- (c) `H \ {0}` is connected and contains `y₀ ∈ U_H ∩ M`, which is not in `G`
+    rcases isPreconnected_iff_subset_of_disjoint.1
+      (Submission.codim1_hcp_fcp_punctured_subspace_isConnected P H hH).isPreconnected
+      (U H) _ (hUopen H) isClosed_closure.isOpen_compl hcover hdisj with h | h
+    · exact h
+    · have hy₀ : y₀ ∈ (H : Set (Euclid P)) \ {0} :=
+        ⟨((hUeq H).subset ⟨hy₀U, hy₀M⟩).2, hM0 y₀ hy₀M⟩
+      exact absurd (subset_closure (show y₀ ∈ U H ∩ M from ⟨hy₀U, hy₀M⟩)) (h hy₀)
+  -- each local plane `H` (`dim H = m ≥ 2`) of `M` at a point of `M` has `H \ {0} ⊆ U_H`
+  have hplane : ∀ y ∈ M, ∀ (H : Submodule ℝ (Euclid P)) (O : Set (Euclid P)),
+      Module.finrank ℝ H = m → IsOpen O → y ∈ O → O ∩ M = O ∩ (H : Set (Euclid P)) →
+      (H : Set (Euclid P)) \ {0} ⊆ U H :=
+    fun y hy H O hH hO hyO hOM => hfill H (hH ▸ hm) ⟨y, hUsub H O hO hOM hyO, hy⟩
+  -- Step 4: the local plane `H₀` at some `x₀ ∈ M` has `H₀ \ {0} ⊆ U_{H₀} ∩ H₀ ⊆ M`
+  obtain ⟨x₀, hx₀⟩ := hMne
+  obtain ⟨H₀, hH₀, hH₀A, O₀, hO₀, hx₀O₀, hO₀M⟩ := hloc x₀ hx₀
+  have hH₀U := hplane x₀ hx₀ H₀ O₀ hH₀ hO₀ hx₀O₀ hO₀M
+  refine ⟨H₀, hH₀, Subset.antisymm ?_ fun z hz => ((hUeq H₀).symm.subset ⟨hH₀U hz, hz.1⟩).2⟩
+  -- Step 5: `M ⊆ H₀ \ {0}`
+  intro y hy
+  obtain ⟨Hy, hHy, hHyA, Oy, hOy, hyOy, hOyM⟩ := hloc y hy
+  have hHyU := hplane y hy Hy Oy hHy hOy hyOy hOyM
+  -- `dim (H₀ ⊓ H_y) ≥ 2m − (m + 1) ≥ 1`, since `H₀ ⊔ H_y ≤ A₀`
+  have hne : H₀ ⊓ Hy ≠ ⊥ := by
+    intro hbot
+    have hdim := Submodule.finrank_sup_add_finrank_inf_eq H₀ Hy
+    rw [hbot, finrank_bot, add_zero, hH₀, hHy] at hdim
+    have hle : m + m ≤ m + 1 :=
+      calc m + m = Module.finrank ℝ ↥(H₀ ⊔ Hy) := hdim.symm
+        _ ≤ Module.finrank ℝ ↥A₀ := Submodule.finrank_mono (sup_le hH₀A hHyA)
+        _ = m + 1 := hA₀
+    omega
+  obtain ⟨w, hw, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
+  obtain ⟨hw₀, hwy⟩ := Submodule.mem_inf.1 hw
+  -- `w ∈ M` lies in `U_{H₀}` and `U_{H_y}`, so `H_y = H₀` by uniqueness at `w`
+  have hwU₀ : w ∈ U H₀ := hH₀U (show w ∈ (H₀ : Set (Euclid P)) \ {0} from ⟨hw₀, hw0⟩)
+  have hwUy : w ∈ U Hy := hHyU (show w ∈ (Hy : Set (Euclid P)) \ {0} from ⟨hwy, hw0⟩)
+  have hwM : w ∈ M := ((hUeq H₀).symm.subset ⟨hwU₀, hw₀⟩).2
+  have hHy₀ : Hy = H₀ :=
+    uniq w hwM Hy H₀ (U Hy) (U H₀) (hUopen Hy) (hUopen H₀) hwUy hwU₀ (hUeq Hy) (hUeq H₀)
+  exact ⟨hHy₀ ▸ (hOyM.subset ⟨hyOy, hy⟩).2, hM0 y hy⟩
+
+/-- **Flat cones are planes** (Simon, Appendix B, proof of Theorem B.2: from `|A| ≡ 0` to a
+hyperplane).  Let `dim A₀ = m + 1`, `m ≥ 2`, and let `M ⊆ A₀` be a nonempty embedded `C¹`
+`m`-dimensional cone with `0 ∉ M` and `M̄ ⊆ M ∪ {0}`, whose unit normal `ν ∈ A₀` has zero
+tangential derivative.  Then `M = H₀ \ {0}` for an `m`-dimensional subspace `H₀`.  Near each
+`x ∈ M`, the chain rule and the mean value theorem in a chart make `ν` and then `z ↦ ν(x) · z`
+constant, the cone rays force that constant to be `0`, and the inverse function theorem makes the
+chart image open in `A₀ ∩ ν(x)^⊥`; so `M` agrees near `x` with an `m`-plane of `A₀`.  Such a set
+is one punctured `m`-plane: `H \ {0}` is connected for `dim H ≥ 2`, `M̄ ⊆ M ∪ {0}` makes the part
+of `M` modelled on `H` closed in `H \ {0}`, and two `m`-planes of `A₀` meet away from `0`. -/
+theorem Submission.codim1_hcp_flat_cone_is_plane : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), 2 ≤ m → Module.finrank ℝ A₀ = m + 1 → M.Nonempty → M ⊆ (A₀ : Set (Euclid P)) → (0 : Euclid P) ∉ M → IsEmbeddedSubmanifold 1 m M → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ x ∈ M, DifferentiableAt ℝ ν x) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, ∀ v ∈ tangentSpace M x, fderiv ℝ ν x v = 0) → ∃ H₀ : Submodule ℝ (Euclid P), Module.finrank ℝ H₀ = m ∧ M = (H₀ : Set (Euclid P)) \ {0} := by
+  intro P m A₀ M ν hm hA₀ hne hMA₀ h0 hM hcl hcone hνd hν hDν
+  -- Steps 1, 3, 4: near each `x ∈ M`, `M` coincides with an `m`-plane `H ≤ A₀`
+  have hloc := Submission.codim1_hcp_fcp_local_plane P m A₀ M ν hA₀ hMA₀ hM hcone hνd hν hDν
+  -- Steps 2, 5–8: these local planes globalize to one punctured `m`-plane `H₀ \ {0}`
+  exact Submission.codim1_hcp_fcp_locally_planar_is_plane P m A₀ M hm hA₀ hne h0 hcl hloc
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

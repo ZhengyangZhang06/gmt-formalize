@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1.punctured_connected-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.flat_cone_plane-a1",
+  "depth": 6,
+  "title": "A linear subspace of dimension at least 2 with the origin removed is connected (parent step 6)",
+  "statement": "Let P ∈ ℕ and let H ⊆ ℝ^P be a linear subspace with dim H ≥ 2 (2 ≤ Module.finrank ℝ H). Then H ∖ {0} is connected, i.e. nonempty and preconnected.",
+  "lean_statement": "∀ (P : ℕ) (H : Submodule ℝ (Euclid P)), 2 ≤ Module.finrank ℝ H → IsConnected ((H : Set (Euclid P)) \\ {0})",
+  "lean_name": "codim1_hcp_fcp_punctured_subspace_isConnected",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-7910ee5ebf-a1"
+}
