@@ -1,0 +1,68 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon 7.2.4, Remark 2.5(1) and the proof of 2.4 (chapter-07.txt lines 157–288). For any representation R of an integer multiplicity current S, R.measure = μ_S (Ch. 6, 3.2(3)), so it suffices to prove ∫ f dμ_{T_j} → ∫ f dμ_T.
+1. Case n = 0. Each T_j is 0 (the point-removal argument: if a representation of T_j had a point x₀ ∈ U, the current with x₀ deleted is an integer multiplicity competitor with spt of the difference {x₀} ⊂ W ⊂⊂ U and strictly smaller M_W). Hence T = 0, which is integer multiplicity (empty carrier) and trivially minimizing, and all representations of 0 have zero measure. Assume n ≥ 1.
+2. T is integer multiplicity (Remark 2.5(1)): by Federer–Fleming (Ch. 6, 3.11) a subsequence of T_j converges weakly to an integer multiplicity current, which equals T.
+3. Cut-offs (book lines 176–186). Fix a compact K ⊂ U and 0 < ε < dist(K, ∂U); choose ψ ∈ C^∞(U; [0,1]), ψ = 1 near K, spt ψ ⊆ {dist(·,K) < ε}; W_s := {ψ > s} (0 ≤ s < 1), so K ⊂ W_s ⊂⊂ U.
+4. Flat convergence (book (2)): by Ch. 6, 7.2 (T, T_j integer multiplicity with the uniform bounds), T − T_j = ∂R_j + S_j with R_j, S_j integer multiplicity and M_{W_0}(R_j) + M_{W_0}(S_j) → 0.
+5. Slicing (book (3)–(5)): by Ch. 6, 4.5(1),(2) applied to R_j and ψ, ∫_0^1 M(⟨R_j, ψ, s⟩) ds ≤ Lip(ψ) M_{W_0}(R_j) → 0; passing to a subsequence and using Fatou, choose α ∈ (0,1) with ∂(R_j⌞W_α) = (∂R_j)⌞W_α + P_j, P_j integer multiplicity, spt P_j ⊆ {ψ = α}, M(P_j) → 0, and (excluding countably many α) μ_{T_j}({ψ = α}) = 0 for all j and μ_T({ψ = α}) = 0.
+6. Hence (book (6),(7)) T⌞W_α = T_j⌞W_α + ∂R̃_j + S̃_j, R̃_j := R_j⌞W_α, S̃_j := S_j⌞W_α − P_j, with M(R̃_j) + M(S̃_j) → 0, and M((∂R̃_j)⌞{ψ = α}) ≤ M(P_j).
+7. Comparison (book (8)–(12)). Let X be integer multiplicity, ∂X = 0, spt X ⊆ K. Y_j := X + ∂R̃_j is an integer multiplicity cycle with spt Y_j ⊆ {ψ ≥ α}, a compact subset of W_γ for γ < α; so T_j + Y_j is a competitor and minimality gives M_{W_γ}(T_j) ≤ M_{W_γ}(T_j + Y_j). Letting γ ↑ α (W_γ ↓ {ψ ≥ α}) and using μ_{T_j}({ψ=α}) = 0, μ_X({ψ=α}) = 0 (α < 1) and step 6: M_{W_α}(T_j) ≤ M_{W_α}(T_j + Y_j) + M(P_j). By step 6, M_{W_α}(T_j + Y_j) ≤ M_{W_α}(T + X) + M(S̃_j). Thus M_{W_α}(T_j) ≤ M_{W_α}(T + X) + ε_j, ε_j := M(P_j) + M(S̃_j) → 0 (book (11)); with X = 0 (book (12)) M_{W_α}(T_j) ≤ M_{W_α}(T) + ε_j. Lower semicontinuity of mass (SimonGMT WeaklyConvergesOn.massOn_le_liminf) gives M_{W_α}(T) ≤ M_{W_α}(T + X) (book (8)).
+8. Minimality in the contract's form. Let W ⊂⊂ U be open and S' integer multiplicity with SameBoundary S' T and K := spt(S' − T) compact ⊆ W. Put X := S' − T (integer multiplicity, Ch. 6, 3.2(1); ∂X = 0) and run steps 3–7 with this K and ε < dist(K, ℝ^{n+k}∖W), so W_α ⊆ W. Since μ_{S'} = μ_T on the open set U ∖ K and M_W(T), M_W(S') < ∞, M_W(S') − M_W(T) = μ_{S'}(W_α) − μ_T(W_α) ≥ 0. With step 2, T is minimizing in U.
+9. Radon convergence (book (13),(14)). From step 7 with X = 0, limsup_j μ_{T_j}(K) ≤ limsup_j M_{W_α}(T_j) ≤ M_{W_α}(T) ≤ μ_T({dist(·,K) < ε}); letting ε ↓ 0, limsup_j μ_{T_j}(K) ≤ μ_T(K). This was proved for a subsequence of an arbitrary subsequence, hence holds for the whole sequence. Lower semicontinuity gives μ_T(G) ≤ liminf_j μ_{T_j}(G) for open G ⊆ U. For f ∈ C_c(U), f ≥ 0, write ∫ f dμ = ∫_0^∞ μ({f > t}) dt = ∫_0^∞ μ({f ≥ t}) dt (equal for all but countably many t); {f > t} is open, {f ≥ t} (t > 0) compact, so liminf ≥ and limsup ≤ hold for the integrands, and sup_j μ_{T_j}(spt f) < ∞ allows dominated convergence. Splitting f = f⁺ − f⁻ gives ∫ f dμ_{T_j} → ∫ f dμ_T.
+
+## Key steps
+
+1. n = 0 trivial; the limit is integer multiplicity (Federer–Fleming).
+2. Flat decomposition and slicing at a good level give T − T_j = ∂R̃_j + S̃_j locally with small masses.
+3. Comparison with T_j + X + ∂R̃_j and lower semicontinuity give minimality of T.
+4. limsup μ_{T_j}(K) ≤ μ_T(K) and liminf on open sets give Radon convergence.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n sorry local-references/123e8435b4a2469b/project/GMT -t lean -c`
+- `rg -n 'μHE\[' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n '^(theorem|lemma|def|structure) ' simongmt/Poincare/SimonGMT/{Chapter06/Product.lean,Chapter02/BV.lean,Chapter03/FinitePerimeter.lean,AppendixA/Foundations.lean,Chapter07/Basic.lean}`
+- `rg -n -i 'allard|federer|fleming|compactness theorem|open obligation|slice' simongmt/Poincare/SimonGMT`
+- `lake env lean /tmp/ch07-attempt3/Check.lean (ten child types + conditional root assembly + #print axioms)`
+- `lake env lean /tmp/ch07-attempt3/Lib.lean (#print axioms of minimizing_summands_source, cone_simonsDefect_lower_bound, bvVariationOn_le_liminf_of_locallyL1)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter07/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixA/Foundations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-07-source.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root/decomposition-audit-v2.json`
+- `/tmp/ch07-attempt3/Check.lean`
+- `/tmp/ch07-attempt3/Lib.lean`
+
+The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean; each snapshot chapter contract has only its frozen final sorry. All ten child Lean types elaborate after the contract's definitions in namespace GMT.Ch07 with its opens (only the stub sorry warnings), and the conditional assembly of the eleven-conjunct root depends only on propext, Classical.choice and Quot.sound. Reusable library lemmas, each using only standard axioms: Chapter06.WeaklyConvergesOn.massOn_le_liminf (lower semicontinuity of mass), Chapter07.minimizing_summands_source (Lemma 1.4), AppendixB.cone_simonsDefect_lower_bound (B.11) and Chapter02.bvVariationOn_le_liminf_of_locallyL1 (lower semicontinuity of variation). The library proves none of the following, so they are cited from Simon: Appendix A.4 (Foundations.lean calls the dimension-reduction proof an open obligation), Allard regularity (Chapter05/Basic.lean has only analytic foundations), Federer–Fleming compactness (Currents.lean: separate obligation), BV compactness (BV.lean does not claim subsequence compactness), and products [[ℝ^m]] × S₀ (Product.lean has only point products). μHE[n] is a nonzero finite multiple of μH[n] (Measure.lean), so H^n and μH[n] have the same null sets. The DAG contains only root, so no reserved names collide.

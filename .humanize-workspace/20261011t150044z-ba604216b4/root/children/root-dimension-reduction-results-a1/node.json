@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Simon 7.3.3, 7.4.4, 7.5.8: integer densities and tangent planes; small singular set where Θ < 2; codimension-one regularity",
+  "statement": "The conjunction IntegerDensityAndTangentPlanes ∧ SingularSetSmallWhereDensityBelowTwo ∧ CodimensionOneRegularity of the frozen contract (Simon 7.3.3, 7.4.4, 7.5.8), i.e. all three of the following statements, each universally quantified over all of its data.\nConventions (exactly those of the contract): ℝ^{n+k} = Euclid (n + k). \"N is an embedded C² d-dimensional submanifold\" means IsEmbeddedSubmanifold 2 d N: every y ∈ N has an open W ∋ y and an injective C² map ψ from an open V ⊆ ℝ^d with ψ(V) = W ∩ N, V ∩ ψ^{−1}(K) compact for every compact K ⊆ W, and Dψ injective on V. \"T is minimizing in A\" means IsMinimizingIn T A (Simon 7.1.1): T is integer multiplicity and M_W(T) ≤ M_W(S) for every open W with closure(W) compact and contained in U and every integer multiplicity S ∈ 𝒟_n(U) with ∂S = ∂T in U (no condition when n = 0) and spt(S − T) a compact subset of A ∩ W. \"∂T = 0 in U\" is BoundaryVanishes T (vacuous when n = 0). \"Θ^n(μ_T, x) = θ\" is HasMassDensity T x θ: θ ≥ 0 and M_{B_ρ(x)}(T)/(ω_nρ^n) → θ as ρ ↓ 0. μH[s] is the (unnormalized) s-dimensional Hausdorff measure of Mathlib, for real s. \"T has a tangent plane at x\" is HasTangentPlaneAt T x: for some sequence λ_j > 0 with λ_j → 0, the blow-ups η_{x,λ_j#}T converge weakly in ℝ^{n+k} (ConvergesWeakly) to a current C ∈ 𝒟_n(ℝ^{n+k}) whose support is an n-dimensional linear subspace. sing T := spt T ∖ reg T (singularSet), where reg T (regularSet) is the set of y ∈ spt T for which there are ρ > 0 with B_ρ(y) ⊆ U, m ∈ ℤ ∖ {0} and an embedded C¹ n-dimensional submanifold M ∋ y with a continuous orientation ξ_M (IsOrientation) and H^n(M ∩ K) < ∞ for compact K ⊆ B_ρ(y), such that T(ω) = m∫_M⟨ω, ξ_M⟩dH^n for every ω ∈ 𝒟^n(U) with spt ω ⊆ B_ρ(y).\n(1) [7.3.3] For all n, k, ℓ ∈ ℕ with ℓ ≤ k, all sets U, N ⊆ ℝ^{n+k} and every T ∈ 𝒟_n(U): if U is open, N is an embedded C² (n+ℓ)-dimensional submanifold, (closure(N) ∖ N) ∩ U = ∅, T is minimizing in U ∩ N, spt T ⊆ U ∩ N, and ∂T = 0 in U, then there exist sets E ⊆ F ⊆ ℝ^{n+k} such that μH[n − 3 + α](E) = 0 for every real α > 0; for every x ∈ U ∖ E there is an integer m with Θ^n(μ_T, x) = m; μH[n − 2 + α](F) = 0 for every real α > 0; and T has a tangent plane at every x ∈ spt T ∖ F.\n(2) [7.4.4] For all n, k, ℓ ∈ ℕ with ℓ ≤ k, all sets U, N ⊆ ℝ^{n+k} and every T ∈ 𝒟_n(U): if U is open, N is an embedded C² (n+ℓ)-dimensional submanifold, (closure(N) ∖ N) ∩ U = ∅, T is minimizing in U ∩ N, spt T ⊆ U ∩ N, and ∂T = 0 in U, then for every ξ ∈ spt T and every real θ with Θ^n(μ_T, ξ) = θ and θ < 2 there is ρ > 0 such that μH[n − 2 + α](sing T ∩ B_ρ(ξ)) = 0 for every real α > 0.\n(3) [7.5.8] For all n, k ∈ ℕ, all sets U, N, E ⊆ ℝ^{n+k}, every map ξ_N : ℝ^{n+k} → Λ_{n+1}(ℝ^{n+k}) (MultiVector (n+k) (n+1)) and every T ∈ 𝒟_n(U): if U is open; N ∈ 𝒪 with orientation ξ_N (InClassO n U N ξ_N: N is an embedded C² (n+1)-dimensional submanifold, ξ_N is continuous on N and at every y ∈ N equals ±τ_1∧⋯∧τ_{n+1} for an orthonormal basis τ of the tangent space T_yN, (closure(N) ∖ N) ∩ U = ∅, and N ∩ U ≠ ∅); E is a (Borel) measurable set with E ⊆ N ∩ U; T = ∂[[E]] in U (IsBoundaryOfRegion T E ξ_N: T(ω) = ∫_E⟨dω, ξ_N⟩dH^{n+1} for every ω ∈ 𝒟^n(U)); and T is minimizing in N ∩ U; then (a) sing T = ∅ if n ≤ 6, (b) sing T ∩ K is finite for every compact K ⊆ U if n = 7, and (c) μH[n − 7 + α](sing T) = 0 for every real α > 0 if n > 7.",
+  "lean_statement": "IntegerDensityAndTangentPlanes ∧ SingularSetSmallWhereDensityBelowTwo ∧ CodimensionOneRegularity",
+  "lean_name": "dimension_reduction_results",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1",
+    "root.compactness_of_minimizing_currents-a1",
+    "root.density_and_tangent_cones-a1",
+    "root.density_one_implies_regular-a1",
+    "root.abstract_dimension_reduction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.abstract_dimension_reduction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-a1"
+}

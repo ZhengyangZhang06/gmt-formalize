@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.pairing_bound-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1",
+  "depth": 4,
+  "title": "Integrability and sup-norm estimate for the IMRep pairing with a bounded, compactly supported covector field",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, R = (M, θ, ξ) an IMRep U n, C ⊆ U compact and B ∈ ℝ. Let F : ℝ^P → Covector(ℝ^P, n) be a.e. strongly measurable for μ := Hⁿ⌞M (μHE[n].restrict R.carrier), with F(x) = 0 for all x ∉ C and ‖F(x)‖ ≤ B for all x. Then x ↦ θ(x)·ξ(x)(F(x)) is μ-integrable, and |∫_M θ(x) ξ(x)(F(x)) dHⁿ(x)| ≤ B · (∫⁻_{M∩C} θ dHⁿ).toReal.",
+  "lean_statement": "∀ (P n : ℕ) (U C : Set (Euclid P)) (R : IMRep U n) (F : Euclid P → Covector (Euclid P) n) (B : ℝ), IsCompact C → C ⊆ U → AEStronglyMeasurable F (μHE[n].restrict R.carrier) → (∀ x, x ∉ C → F x = 0) → (∀ x, ‖F x‖ ≤ B) → Integrable (fun x => (R.mult x : ℝ) * R.orient x (F x)) (μHE[n].restrict R.carrier) ∧ |∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (F x) ∂μHE[n]| ≤ B * (∫⁻ x in R.carrier ∩ C, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal",
+  "lean_name": "dpf_pfc_imrep_pairing_integrable_abs_le",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.orient_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.orient_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978-a1"
+}

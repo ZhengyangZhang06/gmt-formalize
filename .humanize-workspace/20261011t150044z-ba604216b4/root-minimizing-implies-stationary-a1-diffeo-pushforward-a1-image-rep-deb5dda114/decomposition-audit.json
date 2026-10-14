@@ -1,0 +1,50 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "dpfir_ii_|countablyRectifiable_image|CountablyRectifiable.image|map_restrict_image|restrict_image.*le_smul|euclideanHausdorffMeasure_image_le_of_lipschitzOn|def CountablyRectifiable",
+        "dpfir_ii_map_restrict_image_le_smul|dpfir_ii_countablyRectifiable_image_of_lipschitz",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dpfir-independent-audit-3k2y1sgv/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dpfir-independent-audit-3k2y1sgv/Comparator.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dpfir-independent-audit-3k2y1sgv/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-deb5dda114/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-deb5dda114/decomposition-v2.json",
+        "/tmp/dpfir-independent-audit-3k2y1sgv/Types.lean",
+        "/tmp/dpfir-independent-audit-3k2y1sgv/Comparator.lean",
+        "/tmp/dpfir-independent-audit-3k2y1sgv/Assembly.lean"
+      ],
+      "conclusion": "Verified the pinned project b4d606db, mathlib 25730c7c and SimonGMT dependency 2b366308. The working Contract and Submission sources are byte-identical to the frozen contract. Searches found no existing matching child declarations; neither proposed name occurs in the 684-node DAG, and matching decomposition records belong only to this selected node. Both names are valid bare identifiers. Both exact one-line propositions elaborate independently in the replayed comparator scope and pass statement validation. Instance probes confirm ordinary measure scalar multiplication and order, and natural-number exponentiation on ENNReal. Both child proofs, exact-type comparator probes, and the selected parent proof compile with only propext, Classical.choice and Quot.sound. A separate parent assembly treating the two child propositions as hypotheses also compiles. The split is appropriate: the measure comparison supplies local integrability and both a.e. transfers; rectifiability supplies the remaining geometric field. Empty child dependency lists are correct and acyclic. Public background checked: [ETH rectifiability notes, Definition 1.6](https://metaphor.ethz.ch/x/2020/fs/401-4530-20L/tristan.pdf); the precise audited definition is the pinned SimonGMT definition."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "image_measure_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen proposition match all quantifiers and hypotheses, including arbitrary nonmeasurable S. The supplied proof correctly reduces to Borel test sets, applies map and restriction formulas using measurability of ψ and the test set, proves the intersection/image identity using only the left-inverse hypothesis, and applies the pinned Lipschitz Hausdorff bound. That bound requires neither measurability nor finiteness of S and covers Λ = 0 and n = 0. The scalar action is the intended action on measures. The argument is complete, independently formalizable and non-circular; it establishes the comparison needed by the selected parent."
+    },
+    {
+      "key": "rectifiable_image",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches the frozen proposition and pinned CountablyRectifiable definition. The supplied proof explicitly constructs the exceptional image set and composed parametrizations, proves the exceptional set null by the arbitrary-set Hausdorff bound, obtains Lipschitz constants Λ·K_j, and verifies the covering pointwise. No measurability, injectivity or dimension restriction is missing. It uses neither the parent nor the other child as a premise, requires no further proof planning, and directly supplies the selected parent's rectifiable field."
+    }
+  ],
+  "required_changes": []
+}
