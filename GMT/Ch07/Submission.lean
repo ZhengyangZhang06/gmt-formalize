@@ -505,6 +505,96 @@ theorem Submission.dtc_bc_tc_cl_sl_ae_liminf_lt_top : (∀ (P : ℕ) (μs : ℕ 
   filter_upwards [hm] with t ht
   obtain ⟨m, hmt⟩ := exists_nat_gt |t|
   exact ht m ⟨by linarith [neg_abs_le t], by linarith [le_abs_self t]⟩
+/-- **Boundary mass of a slice of a represented boundary** (Simon Ch. 6, (4.6)–(4.10)).  Assume
+the slicing bounds (SL) for represented currents.  If `∂T` is represented by `(μ, ξ)` with
+`|ξ(x)(α)| ≤ |α|` `μ`-a.e., `f` is `L`-Lipschitz and `B(η) = ∫_{f<t} ξ(η) dμ`, then
+`M_W(∂B) ≤ L · liminf_{h ↓ 0} h⁻¹ μ(W ∩ {t − h < f < t})` for open `W`.  For `m = 0` the left side
+is `0`.  Otherwise apply (SL) to `∂T`, whose boundary `∂∂T = 0` is represented by the zero measure
+and the zero field: its slices satisfy `A_t = B` and `B'_t = 0`, so `∂A_t − B'_t = ∂B`. -/
+theorem Submission.dmcbr_sl_sb_boundaryMassOn_slice_le : (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → ∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P m) (f : Euclid P → ℝ) (L : NNReal) (t : ℝ) (B : GeometricCurrentOn U m) (W : Set (Euclid P)), IsOpen U → IsOpen W → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) m, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ η : TestFormOn U m, T.boundary η = ∫ x, ξ x ((η : DifferentialForm (Euclid P) m) x) ∂μ) → LipschitzWith L f → (∀ η : TestFormOn U m, B η = ∫ x in {x | f x < t}, ξ x ((η : DifferentialForm (Euclid P) m) x) ∂μ) → boundaryMassOn B W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0) := by
+  intro SL P m U T μ ξ f L t B W hU hW hμ hξ hξb hT hf hB
+  cases m with
+  | zero => exact zero_le
+  | succ m =>
+    -- (SL) for `∂T`, represented by `(μ, ξ)`; `∂∂T = 0` is represented by the zero measure
+    obtain ⟨A, B', hA, hB', -, hmass, -⟩ := SL P m U T.boundary μ 0 ξ 0 f L hU hμ
+      (fun K _ _ => by simp) hξ (aestronglyMeasurable_zero_measure _) hξb (by simp) hT
+      (fun η => by simp) hf
+    -- `A_t = B` and `B'_t = 0`, hence `∂A_t − B'_t = ∂B`
+    have hAt : A t = B := GeometricCurrentOn.ext fun ω => (hA t ω).trans (hB ω).symm
+    have hslice : (A t).boundary - B' t = B.boundary := by
+      ext ζ
+      change (A t).boundary ζ - B' t ζ = B.boundary ζ
+      rw [hB' t ζ, Measure.restrict_zero, integral_zero_measure, sub_zero, hAt]
+    have h := hmass W t hW
+    rw [hslice] at h
+    exact h
+/-- Local mass is invariant under negation of a current: if `T₁(ω) = -T₂(ω)` for every
+`ω ∈ 𝒟ⁿ(U)`, then `M_W(T₁) = M_W(T₂)`.  The admissible forms of `M_W` are closed under negation
+(`tsupport_neg`, `covectorEuclideanNorm_neg`) and `T₁(ω) = T₂(-ω)` by linearity, so every
+admissible value of `T₁` is one of `T₂`; by symmetry and antisymmetry the suprema agree. -/
+theorem Submission.dmcbr_sl_sb_massOn_eq_of_apply_eq_neg : ∀ (P n : ℕ) (U : Set (Euclid P)) (T₁ T₂ : GeometricCurrentOn U n) (W : Set (Euclid P)), (∀ ω : TestFormOn U n, T₁ ω = -T₂ ω) → T₁.massOn W = T₂.massOn W := by
+  intro P n U T₁ T₂ W h
+  have key : ∀ S₁ S₂ : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, S₁ ω = -S₂ ω) →
+      S₁.massOn W ≤ S₂.massOn W := by
+    intro S₁ S₂ hS
+    refine sSup_le ?_
+    rintro r ⟨ω, ⟨hsupp, hnorm⟩, rfl⟩
+    have hadm : -ω ∈ massAdmissibleOn U n W :=
+      ⟨by simpa only [Submodule.coe_neg, tsupport_neg] using hsupp, fun x => by
+        simpa only [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg] using hnorm x⟩
+    calc ENNReal.ofReal (S₁ ω) = ENNReal.ofReal (S₂ (-ω)) := by
+          rw [hS ω]; exact congrArg ENNReal.ofReal (map_neg S₂.toCurrent ω).symm
+      _ ≤ S₂.massOn W := S₂.le_massOn hadm
+  exact le_antisymm (key T₁ T₂ h) (key T₂ T₁ fun ω => by rw [h ω, neg_neg])
+/-- Superadditivity of `liminf` in `[0, ∞]`: `liminf_F u + liminf_F v ≤ liminf_F (u + v)` for every
+filter `F`, with no finiteness or boundedness hypothesis.  In the complete lattice `ℝ≥0∞`,
+`liminf_F w = sup_{s ∈ F} inf_{i ∈ s} w(i)`; for `s, t ∈ F`,
+`inf_s u + inf_t v ≤ inf_{s ∩ t} (u + v)` and `s ∩ t ∈ F`.  Both index families are nonempty
+(`univ ∈ F`), so `ENNReal.biSup_add_biSup_le'` turns these pairwise bounds into the claim. -/
+theorem Submission.dmcbr_sl_sb_ennreal_liminf_add_le : ∀ (ι : Type) (F : Filter ι) (u v : ι → ℝ≥0∞), liminf u F + liminf v F ≤ liminf (fun i => u i + v i) F := by
+  intro ι F u v
+  simp only [liminf_eq_iSup_iInf]
+  refine ENNReal.biSup_add_biSup_le' ⟨univ, univ_mem⟩ ⟨univ, univ_mem⟩ fun s hs t ht => ?_
+  exact le_iSup₂_of_le (s ∩ t) (inter_mem hs ht) <|
+    le_iInf₂ fun i hi => add_le_add (iInf₂_le i hi.1) (iInf₂_le i hi.2)
+
+/-- **Combined mass majorant for the slices of a represented current and of its boundary**
+(Simon Ch. 6, (4.6)–(4.10)).  Assume the slicing bounds (SL) for represented currents.  If `X` and
+`∂X` are represented by `(μ, ξ)` and `(μ', ξ')` and `f` is `L`-Lipschitz, the slices `A_t` of `X`
+and `B_t` of `∂X` given by (SL) satisfy, with `Z_t = ∂A_t − B_t`, the bound
+`M_W(Z_t) + M_W(∂Z_t) ≤ L · liminf_{h ↓ 0} h⁻¹ (μ + μ')(W ∩ {t − h < f < t})` for open `W`.  (SL)
+bounds `M_W(Z_t)` by the `μ`-term.  Since `∂∂A_t = 0`, `∂Z_t = −∂B_t`, so `M_W(∂Z_t) = M_W(∂B_t)`
+(both are `0` in degree `0`), which the boundary-slice bound controls by the `μ'`-term; the
+superadditivity of `liminf` in `[0, ∞]` combines the two terms. -/
+theorem Submission.dtc_bc_tc_cl_sl_slice_sum_mass_bound : (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → ∀ (P d : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U (d + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (d + 1), X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn U d, X.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (d + 1)) (B : ℝ → GeometricCurrentOn U d), (∀ (t : ℝ) (ω : TestFormOn U (d + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U d), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W + boundaryMassOn ((A t).boundary - B t) W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * (μ + μ') (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) := by
+  intro SL P d U X μ μ' ξ ξ' f L hU hμ hμ' hξ hξ' hξb hξb' hX hXb hf
+  obtain ⟨A, B, hA, hB, -, hmass, -⟩ :=
+    SL P d U X μ μ' ξ ξ' f L hU hμ hμ' hξ hξ' hξb hξb' hX hXb hf
+  refine ⟨A, B, hA, hB, fun W t hW => ?_⟩
+  -- `∂(∂A' − B') = −∂B'` because `∂∂A' = 0`, so the boundary masses agree in every degree
+  have hbd : ∀ (m : ℕ) (A' : GeometricCurrentOn U (m + 1)) (B' : GeometricCurrentOn U m),
+      boundaryMassOn (A'.boundary - B') W = boundaryMassOn B' W := by
+    intro m A' B'
+    cases m with
+    | zero => rfl
+    | succ e =>
+      show (A'.boundary - B').boundary.massOn W = B'.boundary.massOn W
+      refine Submission.dmcbr_sl_sb_massOn_eq_of_apply_eq_neg P e U _ _ W fun ζ => ?_
+      change A'.boundary.boundary ζ - B'.boundary ζ = -B'.boundary ζ
+      rw [GeometricCurrentOn.boundary_boundary, GeometricCurrentOn.zero_apply, zero_sub]
+  -- `M_W(∂B_t)` is bounded by the `μ'`-term ((SL) for `∂X`, whose boundary is represented by `0`)
+  have hB' := Submission.dmcbr_sl_sb_boundaryMassOn_slice_le SL P d U X μ' ξ' f L t (B t) W hU hW
+    hμ' hξ' hξb' hXb hf (hB t)
+  have hsum := Submission.dmcbr_sl_sb_ennreal_liminf_add_le ℝ (𝓝[>] 0)
+    (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t}))
+    (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ' (W ∩ {x | t - h < f x ∧ f x < t}))
+  rw [hbd d (A t) (B t)]
+  refine (add_le_add (hmass W t hW) hB').trans ?_
+  rw [← mul_add]
+  gcongr
+  refine hsum.trans_eq ?_
+  simp only [Measure.add_apply, mul_add]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
