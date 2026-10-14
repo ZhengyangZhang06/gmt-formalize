@@ -744,6 +744,192 @@ theorem Submission.dpf_rectifiable_bilipschitz_pieces : ∀ (P n : ℕ) (M : Set
         · simp only [hFi, Nat.unpair_pair]
       · exact Or.inr (mem_iUnion.mpr ⟨j, a, ha, rfl⟩)
 
+/-- **Product-null lemma**: if `Z ⊆ ℝᴺ` has `Hⁿ(Z) = 0`, then the cylinder `Ψ(ℝ × Z) ⊆ ℝᴺ⁺¹`,
+`Ψ(t, x) = (t, x₁, …, x_N)`, has `Hⁿ⁺¹(Ψ(ℝ × Z)) = 0`.  Since `μHE = c • μH` with `c ≠ 0` and `Ψ`
+is linear, hence Lipschitz for the max metric on `ℝ × ℝᴺ`, it suffices that `μH[n + 1](ℝ × Z) = 0`;
+for `n = 0`, `Z = ∅`.  Given `ε ∈ (0, 1]`, cover `Z` by sets `Cⱼ` with `diam Cⱼ ≤ ε` and
+`Σ (diam Cⱼ)ⁿ < ε`, pick `eⱼ > 0` with `Σ eⱼ < ε`, and cut each strip `[m, m + 1] × Cⱼ` into
+`⌊1/dⱼ⌋ + 1` boxes of side `dⱼ = max(diam Cⱼ, eⱼ)`; their `(n + 1)`-cost is `≤ 4ε`. -/
+theorem Submission.dimred_mbl_dt_lp_imc_product_null : ∀ (N n : ℕ) (Z : Set (Euclid N)), μHE[n] Z = 0 → μHE[n + 1] ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (univ ×ˢ Z)) = 0 := by
+  intro N n Z hZ
+  -- Step 1: `μHE[d] = c_d • μH[d]` with `c_d ≠ 0`, so it suffices to work with `μH`
+  have hZ' : μH[(n : ℝ)] Z = 0 := by
+    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def, smul_eq_mul,
+      mul_eq_zero] at hZ
+    exact hZ.resolve_left
+      (by simpa using Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero n)
+  rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply]
+  suffices h : μH[((n + 1 : ℕ) : ℝ)] ((fun p : ℝ × Euclid N =>
+      (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (univ ×ˢ Z)) = 0 by
+    rw [h, smul_zero]
+  -- Step 3: for `n = 0`, `μH[0] Z = 0` forces `Z = ∅`
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · have hZe : Z = ∅ := by
+      rcases Z.eq_empty_or_nonempty with h | h
+      · exact h
+      · have := Measure.one_le_hausdorffMeasure_zero_of_nonempty h
+        rw [Nat.cast_zero] at hZ'
+        rw [hZ'] at this
+        exact absurd this (by simp)
+    simp [hZe]
+  -- Step 2: `Ψ` is linear, hence Lipschitz for the max metric on `ℝ × ℝᴺ`
+  let L : (ℝ × Euclid N) →ₗ[ℝ] Euclid (N + 1) :=
+    { toFun := fun p => WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2))
+      map_add' := fun p q => by
+        ext i
+        refine Fin.cases ?_ (fun i => ?_) i <;> simp
+      map_smul' := fun c p => by
+        ext i
+        refine Fin.cases ?_ (fun i => ?_) i <;> simp }
+  have hL : LipschitzWith ‖LinearMap.toContinuousLinearMap L‖₊ (fun p : ℝ × Euclid N =>
+      (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) :=
+    (LinearMap.toContinuousLinearMap L).lipschitzWith
+  refine le_antisymm ((hL.hausdorffMeasure_image_le (by positivity) _).trans ?_) bot_le
+  suffices hprod : μH[((n + 1 : ℕ) : ℝ)] (univ ×ˢ Z : Set (ℝ × Euclid N)) = 0 by
+    rw [hprod, mul_zero]
+  -- in the max metric, `diam (I × C) ≤ max (diam I) (diam C)`
+  have hdiam_prod : ∀ (s : Set ℝ) (c : Set (Euclid N)),
+      ediam (s ×ˢ c) ≤ max (ediam s) (ediam c) := by
+    intro s c
+    refine ediam_le ?_
+    rintro ⟨a, x⟩ ⟨ha, hx⟩ ⟨b, y⟩ ⟨hb, hy⟩
+    rw [Prod.edist_eq]
+    exact max_le_max (edist_le_ediam_of_mem ha hb) (edist_le_ediam_of_mem hx hy)
+  -- Steps 4–8: each strip `[m, m + 1] × Z` is `μH[n + 1]`-null
+  have hstrip : ∀ m : ℤ, μH[((n + 1 : ℕ) : ℝ)] (Icc (m : ℝ) (m + 1) ×ˢ Z) = 0 := by
+    intro m
+    have hcov : ∀ ε : ℝ≥0∞, 0 < ε → ε ≤ 1 → ∃ t : ℕ × ℕ → Set (ℝ × Euclid N),
+        Icc (m : ℝ) (m + 1) ×ˢ Z ⊆ ⋃ i, t i ∧ (∀ i, ediam (t i) ≤ ε) ∧
+          ∑' i, ediam (t i) ^ ((n + 1 : ℕ) : ℝ) ≤ 4 * ε := by
+      intro ε hε hε1
+      -- Step 5: covers `C j` of `Z` with mesh `≤ ε` and `n`-cost `< ε`
+      obtain ⟨C, hZC, hCε, hCsum⟩ : ∃ C : ℕ → Set (Euclid N), Z ⊆ ⋃ j, C j ∧
+          (∀ j, ediam (C j) ≤ ε) ∧ ∑' j, ⨆ _ : (C j).Nonempty, ediam (C j) ^ (n : ℝ) < ε := by
+        have h0 : (⨅ (C : ℕ → Set (Euclid N)) (_ : Z ⊆ ⋃ j, C j) (_ : ∀ j, ediam (C j) ≤ ε),
+            ∑' j, ⨆ _ : (C j).Nonempty, ediam (C j) ^ (n : ℝ)) < ε := by
+          refine lt_of_le_of_lt ?_ hε
+          rw [← hZ', Measure.hausdorffMeasure_apply]
+          exact le_iSup₂_of_le ε hε le_rfl
+        simpa only [iInf_lt_iff, exists_prop] using h0
+      obtain ⟨e, he0, hesum⟩ := ENNReal.exists_pos_sum_of_countable hε.ne' ℕ
+      have hCtop : ∀ j, ediam (C j) ≠ ⊤ := fun j =>
+        ((hCε j).trans_lt (hε1.trans_lt ENNReal.one_lt_top)).ne
+      have hele : ∀ j, (e j : ℝ≥0∞) < ε := fun j => (ENNReal.le_tsum j).trans_lt hesum
+      -- side lengths `d j = max (diam C j) (e j) ∈ (0, 1]`
+      set d : ℕ → ℝ := fun j => max (ediam (C j)).toReal (e j) with hd
+      have hdpos : ∀ j, 0 < d j := fun j => lt_max_of_lt_right (he0 j)
+      have hdofReal : ∀ j, ENNReal.ofReal (d j) = max (ediam (C j)) (e j) := by
+        intro j
+        rw [hd, ENNReal.ofReal_max, ENNReal.ofReal_toReal (hCtop j), ENNReal.ofReal_coe_nnreal]
+      have hdε : ∀ j, ENNReal.ofReal (d j) ≤ ε := fun j => by
+        rw [hdofReal]
+        exact max_le (hCε j) (hele j).le
+      have hd1 : ∀ j, d j ≤ 1 := by
+        intro j
+        have := (hdε j).trans hε1
+        rwa [← ENNReal.ofReal_one, ENNReal.ofReal_le_ofReal_iff zero_le_one] at this
+      -- Step 6: boxes `[m + q d j, m + (q + 1) d j] × C j`, `q < p j`
+      set p : ℕ → ℕ := fun j => ⌊1 / d j⌋₊ + 1 with hp
+      set t : ℕ → ℕ → Set (ℝ × Euclid N) := fun j q =>
+        if q < p j then Icc (m + q * d j) (m + (q + 1) * d j) ×ˢ C j else ∅ with ht
+      have hpiece : ∀ j q, ediam (t j q) ≤ ENNReal.ofReal (d j) := by
+        intro j q
+        simp only [ht]
+        split_ifs
+        · refine (hdiam_prod _ _).trans (max_le ?_ ?_)
+          · rw [Real.ediam_Icc]
+            exact le_of_eq (congrArg ENNReal.ofReal (by ring))
+          · rw [hdofReal]
+            exact le_max_left _ _
+        · simp
+      refine ⟨fun i => t i.1 i.2, ?_, fun i => (hpiece i.1 i.2).trans (hdε i.1), ?_⟩
+      · rintro ⟨s, x⟩ ⟨⟨hs1, hs2⟩, hx⟩
+        obtain ⟨j, hxj⟩ := mem_iUnion.1 (hZC hx)
+        have hsm : 0 ≤ (s - m) / d j := div_nonneg (sub_nonneg.2 hs1) (hdpos j).le
+        have hq1 : (⌊(s - m) / d j⌋₊ : ℝ) ≤ (s - m) / d j := Nat.floor_le hsm
+        have hq2 : (s - m) / d j < ⌊(s - m) / d j⌋₊ + 1 := Nat.lt_floor_add_one _
+        have hqp : ⌊(s - m) / d j⌋₊ < p j := by
+          refine Nat.lt_succ_of_le (Nat.floor_mono ?_)
+          exact div_le_div_of_nonneg_right (by linarith) (hdpos j).le
+        refine mem_iUnion.2 ⟨(j, ⌊(s - m) / d j⌋₊), ?_⟩
+        simp only [ht, hqp, ↓reduceIte]
+        refine ⟨⟨?_, ?_⟩, hxj⟩
+        · rw [le_div_iff₀ (hdpos j)] at hq1
+          linarith
+        · rw [div_lt_iff₀ (hdpos j)] at hq2
+          linarith
+      -- Step 7: the `(n + 1)`-cost is `≤ 2 Σ (diam C j)ⁿ + 2 Σ e j ≤ 4ε`
+      have hcostj : ∀ j, ∑' q, ediam (t j q) ^ ((n + 1 : ℕ) : ℝ) ≤
+          2 * ((⨆ _ : (C j).Nonempty, ediam (C j) ^ (n : ℝ)) + e j) := by
+        intro j
+        rw [tsum_eq_sum (s := Finset.range (p j)) ?_]
+        · calc ∑ q ∈ Finset.range (p j), ediam (t j q) ^ ((n + 1 : ℕ) : ℝ)
+              ≤ ∑ q ∈ Finset.range (p j), ENNReal.ofReal (d j) ^ (n + 1) := by
+                refine Finset.sum_le_sum fun q _ => ?_
+                rw [ENNReal.rpow_natCast]
+                exact pow_le_pow_left' (hpiece j q) _
+            _ = (p j : ℝ≥0∞) * ENNReal.ofReal (d j) * ENNReal.ofReal (d j) ^ n := by
+                rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, pow_succ]
+                ring
+            _ ≤ 2 * ENNReal.ofReal (d j) ^ n := by
+                gcongr
+                rw [← ENNReal.ofReal_natCast, ← ENNReal.ofReal_mul (Nat.cast_nonneg _),
+                  show (2 : ℝ≥0∞) = ENNReal.ofReal 2 by simp]
+                apply ENNReal.ofReal_le_ofReal
+                have h1 : (⌊1 / d j⌋₊ : ℝ) ≤ 1 / d j := Nat.floor_le (by positivity)
+                simp only [hp]
+                push_cast
+                calc ((⌊1 / d j⌋₊ : ℝ) + 1) * d j ≤ (1 / d j + 1) * d j := by gcongr
+                  _ = 1 + d j := by rw [add_mul, one_div, inv_mul_cancel₀ (hdpos j).ne', one_mul]
+                  _ ≤ 2 := by linarith [hd1 j]
+            _ ≤ 2 * ((⨆ _ : (C j).Nonempty, ediam (C j) ^ (n : ℝ)) + e j) := by
+                gcongr
+                rw [hdofReal]
+                rcases le_total (ediam (C j)) (e j : ℝ≥0∞) with h | h
+                · rw [max_eq_right h]
+                  refine le_add_left ?_
+                  exact pow_le_of_le_one zero_le ((hele j).le.trans hε1) hn.ne'
+                · rw [max_eq_left h]
+                  refine le_add_right ?_
+                  rcases (C j).eq_empty_or_nonempty with hC | hC
+                  · rw [hC, ediam_empty, zero_pow hn.ne']
+                    exact zero_le
+                  · rw [← ENNReal.rpow_natCast]
+                    exact le_iSup_of_le hC le_rfl
+        · intro q hq
+          rw [Finset.mem_range] at hq
+          simp only [ht, hq, ↓reduceIte, ediam_empty]
+          exact ENNReal.zero_rpow_of_pos (by positivity)
+      calc ∑' i : ℕ × ℕ, ediam (t i.1 i.2) ^ ((n + 1 : ℕ) : ℝ)
+          = ∑' j, ∑' q, ediam (t j q) ^ ((n + 1 : ℕ) : ℝ) :=
+            ENNReal.tsum_prod (f := fun j q => ediam (t j q) ^ ((n + 1 : ℕ) : ℝ))
+        _ ≤ ∑' j, 2 * ((⨆ _ : (C j).Nonempty, ediam (C j) ^ (n : ℝ)) + e j) :=
+            ENNReal.tsum_le_tsum hcostj
+        _ = 2 * (∑' j, (⨆ _ : (C j).Nonempty, ediam (C j) ^ (n : ℝ)) + ∑' j, (e j : ℝ≥0∞)) := by
+            rw [ENNReal.tsum_mul_left, ENNReal.tsum_add]
+        _ ≤ 2 * (ε + ε) := by gcongr
+        _ = 4 * ε := by ring
+    -- Step 8: covers with mesh and cost tending to `0`
+    choose t ht using fun k : ℕ => hcov ((k : ℝ≥0∞) + 1)⁻¹ (ENNReal.inv_pos.2 (by simp))
+      (ENNReal.inv_le_one.2 le_add_self)
+    have hr : Tendsto (fun k : ℕ => ((k : ℝ≥0∞) + 1)⁻¹) atTop (𝓝 0) := by
+      have := ENNReal.tendsto_inv_nat_nhds_zero.comp (tendsto_add_atTop_nat 1)
+      simpa [Function.comp_def] using this
+    refine le_antisymm ?_ bot_le
+    calc μH[((n + 1 : ℕ) : ℝ)] (Icc (m : ℝ) (m + 1) ×ˢ Z)
+        ≤ liminf (fun k => ∑' i, ediam (t k i) ^ ((n + 1 : ℕ) : ℝ)) atTop :=
+          Measure.hausdorffMeasure_le_liminf_tsum _ _ _ hr t
+            (Eventually.of_forall fun k => (ht k).2.1) (Eventually.of_forall fun k => (ht k).1)
+      _ ≤ liminf (fun k : ℕ => 4 * ((k : ℝ≥0∞) + 1)⁻¹) atTop :=
+          liminf_le_liminf (Eventually.of_forall fun k => (ht k).2.2)
+      _ = 0 := by
+          refine Tendsto.liminf_eq ?_
+          simpa using ENNReal.Tendsto.const_mul hr (Or.inr ENNReal.ofNat_ne_top)
+  -- Step 4: `ℝ × Z` is the union of the strips
+  refine measure_mono_null ?_ (measure_iUnion_null hstrip)
+  rintro ⟨s, x⟩ ⟨-, hx⟩
+  exact mem_iUnion.2 ⟨⌊s⌋, ⟨Int.floor_le s, (Int.lt_floor_add_one s).le⟩, hx⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
