@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c8a558fd46f63551bd7e4b6b3bcf7ebf18f0f38a13fd9b9e42ce83be2d02ef6d",
+  "git_delta": {
+    "base_commit": "2526b7f9f378789390544120e1b27b0853c7fc0c",
+    "candidate_commit": "26c1afc3a457576deee9def93ec7db6b2fb8bfa1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cs_sp_action_starProjection_eq",
+    "diff_sha256": "836e9ee42834b5ff27dcf5984e8836e410e445b195dc22fe58057034bda0139b",
+    "source_sha256": "3dff530949080ffadc4e7dd07266254bac4caa011921b8b3a880e28b70064425",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cs_sp_action_starProjection_eq",
+      "statement": "∀ (P m : ℕ) (R : IMRep (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), R.measure ((V : Set (Euclid P))ᶜ) = 0 → ∀ ω : DifferentialForm (Euclid P) m, R.action (affinePullbackForm V.starProjection 0 ω) = R.action ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
