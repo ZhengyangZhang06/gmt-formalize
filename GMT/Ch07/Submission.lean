@@ -657,6 +657,19 @@ theorem Submission.cmc_fc_tb_massOn_sub_le : ∀ (P n : ℕ) (U G : Set (Euclid 
   rintro r ⟨ω, hω, rfl⟩
   -- Step 2: `−ω` is admissible (same support, same coefficient norm)
   have hnω : -ω ∈ massAdmissibleOn U n G := by
+    refine ⟨?_, fun x => ?_⟩
+    · rw [Submodule.coe_neg, tsupport_neg]
+      exact hω.1
+    · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- Step 3: `(A − B)(ω) = A(ω) + B(−ω)`
+  have hAB : (A - B) ω = A ω + B (-ω) := by
+    change A.toCurrent ω - B.toCurrent ω = A.toCurrent ω + B.toCurrent (-ω)
+    rw [map_neg B.toCurrent ω, sub_eq_add_neg]
+  -- Steps 4–5: subadditivity of `ofReal`, and each admissible value is bounded by the mass
+  calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [hAB]
+    _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+    _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hnω)
 /-- **Mass of a difference** (Simon (6.2.5), chapter-06.txt line 231; this subadditivity makes the
 flat distances `d_W` of 7.1 (lines 2018–2022) pseudometrics and is used in the proof of 7.2):
 `M_G(A − B) ≤ M_G(A) + M_G(B)` for every set `G`.  If `ω` is admissible for `M_G` then so is `−ω`
@@ -674,14 +687,15 @@ theorem Submission.cmc_fc_cs_massOn_sub_le : ∀ (P n : ℕ) (U G : Set (Euclid 
       exact hω.1
     · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
       exact hω.2 x
-  -- Step 3: `(A − B)(ω) = A(ω) + B(−ω)`
-  have hAB : (A - B) ω = A ω + B (-ω) := by
-    change A.toCurrent ω - B.toCurrent ω = A.toCurrent ω + B.toCurrent (-ω)
-    rw [map_neg B.toCurrent ω, sub_eq_add_neg]
-  -- Steps 4–5: subadditivity of `ofReal`, and each admissible value is bounded by the mass
-  calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [hAB]
+  -- Step 3: `(A − B)(ω) = A(ω) − B(ω) = A(ω) + B(−ω)`, by linearity of `B`
+  have hsplit : (A - B) ω = A ω + B (-ω) := by
+    have hB : B (-ω) = -B ω := B.toCurrent.map_neg ω
+    change A ω - B ω = A ω + B (-ω)
+    rw [hB, sub_eq_add_neg]
+  -- Steps 4–5: `ofReal` is subadditive, and each term is bounded by the corresponding mass
+  calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [hsplit]
     _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
-    _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hnω)
+    _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hneg)
 /-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
 `spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
 `S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
@@ -1880,15 +1894,6 @@ theorem Submission.cmc_fc_total_bounded : (∀ (P m : ℕ), ∃ c : NNReal, 1 �
           gcongr
           exacts [hYm.trans hXm, hYb.trans hXb]
       _ ≤ η := hρη
-  -- Step 3: `(A − B)(ω) = A(ω) − B(ω) = A(ω) + B(−ω)`, by linearity of `B`
-  have hsplit : (A - B) ω = A ω + B (-ω) := by
-    have hB : B (-ω) = -B ω := B.toCurrent.map_neg ω
-    change A ω - B ω = A ω + B (-ω)
-    rw [hB, sub_eq_add_neg]
-  -- Steps 4–5: `ofReal` is subadditive, and each term is bounded by the corresponding mass
-  calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [hsplit]
-    _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
-    _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hneg)
 
 /-- **Close pairs** (Simon Ch. 6, 7.2, step 2 of the proof).  Assume differences of integer
 multiplicity currents in an open `U` are integer multiplicity.  If `Y − Q − S₁ = ∂R₁` and
