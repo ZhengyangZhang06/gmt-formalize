@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c29e226bbbe40a6876b5c5fdeb96af940a942d68c5d5e83e0432c509b5d5669a",
+  "git_delta": {
+    "base_commit": "5f4d98ca0b7e9d7728a77ed0132df8f902b91d49",
+    "candidate_commit": "20cc57cbafde4f826466cb66d0f9682811006fe6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_bl_rb_compact_sup_bound",
+    "diff_sha256": "32450af3ad92005c0c7eaeb9c22b7fa07d7f46b04062ac706bb54ee54156c26c",
+    "source_sha256": "6635152915351b36acb56173b63a922919589a77c299029d2dc8b81672d8d2ad",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_bl_rb_compact_sup_bound",
+      "statement": "∀ (P : ℕ) (ν : ℕ → Measure (Euclid P)), (∀ i, ν i univ < ∞) → (∀ R : ℝ, 0 < R → ∃ B : ℝ≥0∞, B < ∞ ∧ ∀ᶠ i in atTop, ν i (closedBall 0 R) ≤ B) → ∀ K : Set (Euclid P), IsCompact K → ⨆ i, ν i K < ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
