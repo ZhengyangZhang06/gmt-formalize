@@ -2397,6 +2397,38 @@ theorem Submission.dtc_isIntegerMultiplicity_sub : ∀ (P n : ℕ) (U : Set (Euc
   rw [hsub]
   push_cast
   ring
+/-- **Simon 7.1.1 in codimension zero.**  If `n ≥ 1` and `C ∈ 𝒟ₙ(ℝⁿ)` is integer multiplicity,
+then `C` is minimizing in every `A ⊆ ℝⁿ`; in fact every competitor equals `C`.  For a competitor
+`S`, the current `X = S − C` is integer multiplicity (Simon 6.3.2(1)) with `∂X = ∂S − ∂C = 0`, so
+the Constancy Theorem (6.2.34) gives `X = c[[ℝⁿ]]` with `c ∈ ℤ`.  As `spt X` is compact, testing
+`X` with a bump form supported away from `spt X` forces `c = 0`.  Hence `S = C` and
+`M_W(C) = M_W(S)`. -/
+theorem Submission.dtc_bc_cz_isMinimizingIn : ∀ (n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid n)) n) (A : Set (Euclid n)), 0 < n → IsIntegerMultiplicity C → IsMinimizingIn C A := by
+  intro n C A hn hC
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  refine ⟨hC, fun W S _ _ hS hbd hcpt _ => ?_⟩
+  -- 1. `X = S − C` is an integer multiplicity cycle in `ℝⁿ`
+  have hX : IsIntegerMultiplicity (S - C) :=
+    Submission.dtc_isIntegerMultiplicity_sub (m + 1) (m + 1) univ S C isOpen_univ hn hS hC
+  have hcycle : ∀ β : TestFormOn (univ : Set (Euclid (m + 1))) m,
+      tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ univ → (S - C).boundary β = 0 := by
+    intro β _
+    have hbd' : S.boundary = C.boundary := hbd
+    show S.boundary β - C.boundary β = 0
+    rw [hbd', sub_self]
+  -- 2. Constancy Theorem on `ℝⁿ`: `X = c[[ℝⁿ]]` with `c ∈ ℤ`
+  obtain ⟨c, hc⟩ := Submission.dtc_bc_cz_top_constancy m univ univ (S - C) isOpen_univ hX
+    isOpen_univ isPreconnected_univ Subset.rfl hcycle
+  -- 3. `spt X` is compact, so `c = 0`
+  have hc0 : (c : ℝ) = 0 := Submission.dtc_bc_cz_isMinimizingIn_const_eq_zero (m + 1) (S - C) c
+    hn hcpt fun ω => hc ω (subset_univ _)
+  -- 4. hence `S = C`, and `M_W(C) = M_W(S)`
+  have hSC : S = C := by
+    ext ω
+    have h : (S - C) ω = 0 := by rw [hc ω (subset_univ _), hc0, zero_mul]
+    exact sub_eq_zero.mp h
+  rw [hSC]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
