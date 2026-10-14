@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.wedge_orientation-a1.adapted_frame-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.wedge_orientation-a1",
+  "depth": 6,
+  "title": "Orthonormal frame (ν, σ) of Q adapted to a unit vector ν ∈ Q, with σ an orthonormal basis of Q ∩ ν^⊥",
+  "statement": "Let P, n ∈ ℕ, let Q ⊆ ℝ^P = Euclid P be a linear subspace of dimension n + 1 (Module.finrank ℝ Q = n + 1), and let ν ∈ Q with |ν| = 1. Then there is a family σ = (σ_0, …, σ_{n−1}) : Fin n → ℝ^P such that (i) σ is orthonormal; (ii) span(range σ) = Q ∩ ν^⊥ (Lean: Submodule.span ℝ (Set.range σ) = Q ⊓ (ℝ ∙ ν)ᗮ); (iii) the family (ν, σ_0, …, σ_{n−1}) = Fin.cons ν σ : Fin (n + 1) → ℝ^P is orthonormal; (iv) σ_i ∈ Q for every i; (v) ⟨ν, σ_i⟩ = 0 for every i (inner ℝ ν (σ i) = 0).",
+  "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ν : Euclid P), Module.finrank ℝ Q = n + 1 → ν ∈ Q → ‖ν‖ = 1 → ∃ σ : Fin n → Euclid P, Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = Q ⊓ (ℝ ∙ ν)ᗮ ∧ Orthonormal ℝ (Fin.cons ν σ : Fin (n + 1) → Euclid P) ∧ (∀ i, σ i ∈ Q) ∧ ∀ i, inner ℝ ν (σ i) = 0",
+  "lean_name": "dor_lmbsf_io_adapted_frame",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-666c7904cc-a1"
+}

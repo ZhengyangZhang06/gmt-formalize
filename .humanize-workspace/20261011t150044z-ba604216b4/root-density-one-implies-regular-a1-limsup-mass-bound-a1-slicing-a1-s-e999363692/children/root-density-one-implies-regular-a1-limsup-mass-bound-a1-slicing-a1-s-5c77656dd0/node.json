@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1",
+  "depth": 5,
+  "title": "C¹ chart pieces of a rectifiable set adapted to a Lipschitz function, with tangent planes and the tangential gradient (parent Steps 1–3(a))",
+  "statement": "Assume (TL): for all P, n ∈ ℕ, every open U ⊆ ℝ^P and all Borel sets A ⊆ B ⊆ U with Hⁿ(B ∩ K) < ∞ for every compact K ⊆ U (Hⁿ = μHE[n]), for Hⁿ-a.e. x ∈ A and every linear subspace Q of ℝ^P: B has approximate tangent space Q at x iff A has approximate tangent space Q at x (HasApproximateTangentSpaceAt, Simon Ch. 3, 1.4).\nLet P, n ∈ ℕ, U ⊆ ℝ^P open, M ⊆ U Borel and countably (n+1)-rectifiable with H^{n+1}(M ∩ K) < ∞ for every compact K ⊆ U, and f : ℝ^P → ℝ L-Lipschitz (L ≥ 0). Then there exist, for j ∈ ℕ, sets V_j, C_j, Y_j ⊆ ℝ^{n+1}, maps ψ_j : ℝ^{n+1} → ℝ^P and F_j : ℝ^{n+1} → ℝ, and a map g : ℝ^P → ℝ^P such that:\n(a) V_j is open, ψ_j is C¹ on V_j and injective on V_j, Dψ_j(y) is injective for every y ∈ V_j, and ψ_j(V_j) ⊆ U;\n(b) C_j is compact, C_j ⊆ V_j, Y_j is Borel, Y_j ⊆ C_j, and F_j is C¹ on ℝ^{n+1};\n(c) ψ_j(Y_j) ⊆ M for every j, the sets ψ_j(Y_j) are pairwise disjoint, and H^{n+1}(M ∖ ⋃_j ψ_j(Y_j)) = 0;\n(d) for every j and y ∈ Y_j: f(ψ_j(y)) = F_j(y), and M has approximate tangent space Dψ_j(y)(ℝ^{n+1}) at ψ_j(y) (dimension n+1);\n(e) g is Borel, |g(x)| ≤ L for every x, g(x) = 0 whenever x ∉ ⋃_j ψ_j(Y_j), and for every j and y ∈ Y_j: g(ψ_j(y)) ∈ Dψ_j(y)(ℝ^{n+1}) and ⟨g(ψ_j(y)), Dψ_j(y)e⟩ = DF_j(y)e for every e ∈ ℝ^{n+1}.\n(g is the tangential gradient ∇^M f of Simon Ch. 3, 2.1, on the pieces ψ_j(Y_j).)",
+  "lean_statement": "(∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (U M : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → MeasurableSet M → M ⊆ U → CountablyRectifiable (n + 1) M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n + 1] (M ∩ K) ≠ ∞) → LipschitzWith L f → ∃ (V C Y : ℕ → Set (Euclid (n + 1))) (ψ : ℕ → Euclid (n + 1) → Euclid P) (F : ℕ → Euclid (n + 1) → ℝ) (g : Euclid P → Euclid P), (∀ j, IsOpen (V j) ∧ ContDiffOn ℝ 1 (ψ j) (V j) ∧ InjOn (ψ j) (V j) ∧ (∀ y ∈ V j, Injective (fderiv ℝ (ψ j) y)) ∧ ψ j '' V j ⊆ U) ∧ (∀ j, IsCompact (C j) ∧ C j ⊆ V j ∧ MeasurableSet (Y j) ∧ Y j ⊆ C j ∧ ContDiff ℝ 1 (F j)) ∧ (∀ j, ψ j '' Y j ⊆ M) ∧ Pairwise (fun i j => Disjoint (ψ i '' Y i) (ψ j '' Y j)) ∧ μHE[n + 1] (M \\ ⋃ j, ψ j '' Y j) = 0 ∧ (∀ j, ∀ y ∈ Y j, f (ψ j y) = F j y ∧ HasApproximateTangentSpaceAt (n + 1) M (ψ j y) (LinearMap.range (fderiv ℝ (ψ j) y : Euclid (n + 1) →ₗ[ℝ] Euclid P))) ∧ Measurable g ∧ (∀ x, ‖g x‖ ≤ L) ∧ (∀ x, (∀ j, x ∉ ψ j '' Y j) → g x = 0) ∧ ∀ j, ∀ y ∈ Y j, g (ψ j y) ∈ LinearMap.range (fderiv ℝ (ψ j) y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (g (ψ j y)) (fderiv ℝ (ψ j) y e) = fderiv ℝ (F j) y e",
+  "lean_name": "dor_lmbsf_lipschitz_chart_pieces",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_approx-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.image_tangent-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.density_directions-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.image_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.density_directions-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-5c77656dd0-a1"
+}

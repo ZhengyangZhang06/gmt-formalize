@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.tangential_gradient-a1.weak_limit_gluing-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.tangential_gradient-a1",
+  "depth": 6,
+  "title": "Dominated convergence over a countable a.e.-partition into pieces, via Tannery's theorem (parent Step 7; Simon Ch. 6, proof of 4.5(2))",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P, and M, E ⊆ ℝ^P Borel. Let S_j ⊆ M (j ∈ ℕ) be pairwise disjoint Borel sets with μ(M ∖ ⋃_j S_j) = 0. Let u_k : ℝ^P → ℝ (k ∈ ℕ) and v, D : ℝ^P → ℝ satisfy:\n- D is μ-integrable on M;\n- each u_k is a.e. strongly measurable for μ⌞M;\n- for every k, |u_k(x)| ≤ D(x) for μ-a.e. x ∈ M;\n- v is μ-integrable on M ∩ E.\nSuppose that for every j, ∫_{S_j} u_k dμ → ∫_{S_j ∩ E} v dμ as k → ∞. Then ∫_M u_k dμ → ∫_{M∩E} v dμ as k → ∞. All integrals are Bochner integrals.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (M E : Set (Euclid P)) (S : ℕ → Set (Euclid P)) (u : ℕ → Euclid P → ℝ) (v D : Euclid P → ℝ), MeasurableSet M → MeasurableSet E → (∀ j, MeasurableSet (S j)) → Pairwise (fun i j => Disjoint (S i) (S j)) → (∀ j, S j ⊆ M) → μ (M \\ ⋃ j, S j) = 0 → IntegrableOn D M μ → (∀ k, AEStronglyMeasurable (u k) (μ.restrict M)) → (∀ k, ∀ᵐ x ∂(μ.restrict M), ‖u k x‖ ≤ D x) → IntegrableOn v (M ∩ E) μ → (∀ j, Tendsto (fun k => ∫ x in S j, u k x ∂μ) atTop (𝓝 (∫ x in S j ∩ E, v x ∂μ))) → Tendsto (fun k => ∫ x in M, u k x ∂μ) atTop (𝓝 (∫ x in M ∩ E, v x ∂μ))",
+  "lean_name": "dor_lmbsf_tg_weak_limit_gluing",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-f86974e4a3-a1"
+}

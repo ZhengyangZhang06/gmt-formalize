@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "normed_def|nonneg_normed|contDiff_normed|integral_normed|support_normed_eq|hasCompactSupport_normed",
+        "dist_convolution_le|convolution_eq_right\\x27|contDiff_convolution_left|norm_fderiv_le_of_lipschitz",
+        "mollif|smoothing|lipschitz.*convol|convol.*lipschitz|cmcs_ls_",
+        "lipschitz.*convolution|convolution.*lipschitz|lipschitz.*mollif|mollif.*lipschitz",
+        "git show 376e5f482d73f6f48d00a4945533b15f784859d5 -- GMT/Ch07/Submission.lean",
+        ". GMT/Scratch/cmcs_slicing_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/cmcs_lipschitz_smoothing_decomposition/Solution.lean",
+        ". GMT/Scratch/cmcs_slicing_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/cmcs_lipschitz_smoothing_decomposition/review/Fidelity.lean",
+        ". GMT/Scratch/cmcs_slicing_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcs_smoothing_independent_audit_v74l9_eb/ContractsAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-lipschitz-smoothing-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_lipschitz_smoothing_decomposition/Solution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_lipschitz_smoothing_decomposition/review/Fidelity.lean",
+        "/tmp/cmcs_smoothing_independent_audit_v74l9_eb/ContractsAndAssembly.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and byte-compatibility of the inspected sources. No relevant smoothing result matched in the snapshot project, and the Mathlib search found no Lipschitz-convolution match. The normalized-bump modules exist but are absent from the frozen import closure; the required general convolution and derivative lemmas are available. Both exact child propositions elaborate independently before either child is implemented. Checks confirm canonical Euclidean Lebesgue measure, real multiplication, the intended C∞ order, and dimension zero. Independently compiled both complete child proofs and the exact parent, with only propext, Classical.choice and Quot.sound. A separate compilation proves the frozen parent from the two child contracts as assumptions, establishing sufficiency without implementation dependence. The split is appropriate: the children supply normalization and Lipschitz preservation; the available convolution lemmas supply smoothness, approximation and locality. Both dependency lists are correctly empty and introduce no cycle."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "normalized_mollifier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches all stated hypotheses and conclusions. The proof constructs the bump using r > 0, establishes integrability and strictly positive integral, then verifies every property after normalization, including support containment. It is complete and non-circular, including n = 0. The bare identifier is valid. Reuse is permitted: the accepted checkpoint and candidate 376e5f482d73f6f48d00a4945533b15f784859d5 have the identical frozen type, comparator acceptance, and compatible proof; independent compilation confirms only standard axioms."
+    },
+    {
+      "key": "mollify_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including continuity, compact support, nonnegativity, normalization and the NNReal Lipschitz constant. Each proof step is justified: compact support gives integrability, integral_sub combines the integrals, nonnegativity permits the pointwise bound, translation preserves distance, and normalization yields precisely K. No smoothness or global integrability of g is silently assumed. The proof is complete and independent of the parent and other child. The bare name is unreserved in the checked 681-node DAG. The cited preservation fact is also corroborated by [Lemma 17](https://arxiv.org/html/2412.04899), but the supplied proof is self-contained."
+    }
+  ],
+  "required_changes": []
+}

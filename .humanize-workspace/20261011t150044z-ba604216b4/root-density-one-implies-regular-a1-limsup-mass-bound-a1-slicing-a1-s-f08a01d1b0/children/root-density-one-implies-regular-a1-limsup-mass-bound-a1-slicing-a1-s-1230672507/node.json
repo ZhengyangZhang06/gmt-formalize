@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1.patch_tangent_transfer-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1",
+  "depth": 6,
+  "title": "Locality transfer: a.e. on a finite-measure Borel set S, approximate tangent planes of compact C¹ patches χ_k(B̄_k) through x are tangent planes of S",
+  "statement": "Assume (TL): for all P, n ∈ ℕ, every open U ⊆ ℝ^P and all Borel sets A ⊆ B ⊆ U with Hⁿ(B ∩ K) < ∞ for every compact K ⊆ U (Hⁿ = μHE[n]), for Hⁿ-a.e. x ∈ A and every linear subspace Q of ℝ^P: B has approximate tangent space Q at x iff A does (HasApproximateTangentSpaceAt, Simon Ch. 3, 1.4). Let P, n ∈ ℕ and let S ⊆ ℝ^P be Borel with Hⁿ(S) < ∞. For k ∈ ℕ let D_k ⊆ ℝⁿ be open, χ_k : ℝⁿ → ℝ^P C¹ on D_k, c_k ∈ ℝⁿ and ρ_k ∈ ℝ with B̄_{ρ_k}(c_k) ⊆ D_k and χ_k injective on B̄_{ρ_k}(c_k). Then for Hⁿ-a.e. x ∈ S the following holds: for every k, every z ∈ B_{ρ_k}(c_k) with χ_k(z) = x and every linear subspace Q of ℝ^P, if χ_k(B̄_{ρ_k}(c_k)) has approximate tangent space Q at x, then S has approximate tangent space Q at x.",
+  "lean_statement": "(∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (S : Set (Euclid P)) (D : ℕ → Set (Euclid n)) (χ : ℕ → Euclid n → Euclid P) (c : ℕ → Euclid n) (ρ : ℕ → ℝ), MeasurableSet S → μHE[n] S ≠ ∞ → (∀ k, IsOpen (D k)) → (∀ k, ContDiffOn ℝ 1 (χ k) (D k)) → (∀ k, closedBall (c k) (ρ k) ⊆ D k) → (∀ k, InjOn (χ k) (closedBall (c k) (ρ k))) → ∀ᵐ x ∂(μHE[n].restrict S), ∀ k, ∀ z ∈ ball (c k) (ρ k), χ k z = x → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (χ k '' closedBall (c k) (ρ k)) x Q → HasApproximateTangentSpaceAt n S x Q",
+  "lean_name": "dor_lmbsf_pst_patch_tangent_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1230672507-a1"
+}

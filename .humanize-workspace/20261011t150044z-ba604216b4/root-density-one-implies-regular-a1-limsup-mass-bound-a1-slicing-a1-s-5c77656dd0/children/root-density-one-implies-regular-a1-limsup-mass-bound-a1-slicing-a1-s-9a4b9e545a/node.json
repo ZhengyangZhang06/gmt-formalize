@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1.chart_cover-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1",
+  "depth": 6,
+  "title": "Countably many C¹ charts inside U covering a set carried by embedded C¹ submanifolds (Lindelöf; parent Step 2)",
+  "statement": "Let P, m ∈ ℕ, U ⊆ ℝ^P open, M ⊆ U, N₀ ⊆ ℝ^P arbitrary, and N_l ⊆ ℝ^P (l ∈ ℕ) embedded m-dimensional C¹ submanifolds in the sense of the contract (IsEmbeddedSubmanifold 1 m N_l):\n- every z ∈ N_l has an open V ⊆ ℝ^m, an open W ∋ z and ψ : ℝ^m → ℝ^P;\n- ψ is C¹ on V and injective on V, with ψ(V) = W ∩ N_l;\n- V ∩ ψ⁻¹(K) is compact for compact K ⊆ W;\n- Dψ(y) is injective for y ∈ V.\nAssume M ⊆ N₀ ∪ ⋃_l N_l.\n\nThen there are V_s ⊆ ℝ^m and ψ_s : ℝ^m → ℝ^P (s ∈ ℕ) such that for every s:\n- V_s is open;\n- ψ_s is C¹ on V_s and injective on V_s;\n- Dψ_s(y) is injective for every y ∈ V_s;\n- ψ_s(V_s) ⊆ U.\nMoreover M ⊆ N₀ ∪ ⋃_s ψ_s(V_s).",
+  "lean_statement": "∀ (P m : ℕ) (U M N₀ : Set (Euclid P)) (N : ℕ → Set (Euclid P)), IsOpen U → M ⊆ U → (∀ l, IsEmbeddedSubmanifold 1 m (N l)) → M ⊆ N₀ ∪ ⋃ l, N l → ∃ (V : ℕ → Set (Euclid m)) (ψ : ℕ → Euclid m → Euclid P), (∀ s, IsOpen (V s) ∧ ContDiffOn ℝ 1 (ψ s) (V s) ∧ InjOn (ψ s) (V s) ∧ (∀ y ∈ V s, Injective (fderiv ℝ (ψ s) y)) ∧ ψ s '' V s ⊆ U) ∧ M ⊆ N₀ ∪ ⋃ s, ψ s '' V s",
+  "lean_name": "dor_lmbsf_cp_submanifold_chart_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-9a4b9e545a-a1"
+}

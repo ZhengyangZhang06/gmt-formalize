@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1.chart_patch-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1",
+  "depth": 6,
+  "title": "Co-area formula on one straightened patch Z ⊆ Ψ(B) of a C¹ chart ψ",
+  "statement": "Let P, n ∈ ℕ. Let V ⊆ ℝ^{n+1} be open, ψ : ℝ^{n+1} → ℝ^P C¹ on V and injective on V with Dψ(y) injective for every y ∈ V, and F : ℝ^{n+1} → ℝ C¹. Let B ⊆ ℝ^{n+1} be open and Ψ : ℝ^{n+1} → ℝ^{n+1} C¹ on B and injective on B, with DΨ(w) bijective and F(Ψ(w)) = w(0) for every w ∈ B. Let Z ⊆ ℝ^{n+1} be Borel with Z ⊆ V and Z ⊆ Ψ(B), and let G : ℝ^P → ℝ^P satisfy, for every y ∈ Z, G(ψ(y)) ∈ Dψ(y)(ℝ^{n+1}) and ⟨G(ψ(y)), Dψ(y)e⟩ = DF(y)e for every e ∈ ℝ^{n+1}. Then for every Borel φ : ℝ^P → [0, ∞]: t ↦ ∫_{ψ(Z ∩ F^{−1}(t))} φ dHⁿ is a.e.-measurable for Lebesgue measure on ℝ, and ∫_ℝ ∫_{ψ(Z ∩ F^{−1}(t))} φ dHⁿ dt = ∫_{ψ(Z)} |G|·φ dH^{n+1}. Here Hᵏ = μHE[k], |G| = ‖G‖ₑ and all integrals are lower integrals in [0, ∞].",
+  "lean_statement": "∀ (P n : ℕ) (V B Z : Set (Euclid (n + 1))) (ψ : Euclid (n + 1) → Euclid P) (F : Euclid (n + 1) → ℝ) (Ψ : Euclid (n + 1) → Euclid (n + 1)) (G : Euclid P → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → IsOpen B → ContDiffOn ℝ 1 Ψ B → InjOn Ψ B → (∀ w ∈ B, Bijective (fderiv ℝ Ψ w)) → (∀ w ∈ B, F (Ψ w) = w 0) → MeasurableSet Z → Z ⊆ V → Z ⊆ Ψ '' B → (∀ y ∈ Z, G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → ∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t : ℝ => ∫⁻ x in ψ '' (Z ∩ F ⁻¹' {t}), φ x ∂μHE[n]) ∧ ∫⁻ t : ℝ, (∫⁻ x in ψ '' (Z ∩ F ⁻¹' {t}), φ x ∂μHE[n]) = ∫⁻ x in ψ '' Z, ‖G x‖ₑ * φ x ∂μHE[n + 1]",
+  "lean_name": "dor_lmbsf_pc_chart_patch_coarea",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1.param_coarea-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1.param_coarea-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-a1a1a3825b-a1"
+}

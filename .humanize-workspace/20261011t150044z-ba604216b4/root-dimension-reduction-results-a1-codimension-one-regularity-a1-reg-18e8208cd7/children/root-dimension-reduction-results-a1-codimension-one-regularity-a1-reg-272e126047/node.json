@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1.linear_range_integral-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1",
+  "depth": 6,
+  "title": "Linear area formula in integral form (step 7)",
+  "statement": "Let P, n ∈ ℕ, L : ℝ^n → ℝ^P an injective (continuous) linear map, and f : ℝ^P → ℝ an arbitrary function. Then ∫_{L(ℝ^n)} f dH^n = √det(L* ∘ L) · ∫_{ℝ^n} f(Lb) dL^n(b). Here L(ℝ^n) is the range submodule of L viewed as a set, L* is the adjoint, H^n = μHE[n] on ℝ^P, and L^n is Lebesgue measure on ℝ^n. Both integrals are Bochner integrals.",
+  "lean_statement": "∀ (P n : ℕ) (L : Euclid n →L[ℝ] Euclid P) (f : Euclid P → ℝ), Injective L → ∫ y in (LinearMap.range (L : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)), f y ∂μHE[n] = Real.sqrt ((L.adjoint ∘L L).det) * ∫ b, f (L b)",
+  "lean_name": "codim1_rdo_c1pt_linear_range_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-272e126047-a1"
+}

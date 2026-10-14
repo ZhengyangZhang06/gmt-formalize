@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.slice_imreps-a1.coarea_signed_integral-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.slice_imreps-a1",
+  "depth": 6,
+  "title": "Signed co-area identity: integrability of slice integrals and Fubini-type formula for real integrands",
+  "statement": "Let P ∈ ℕ, let μ be a measure on ℝ^P, (ν_t)_{t∈ℝ} a family of measures on ℝ^P, and w : ℝ^P → [0, ∞] Borel. Assume the co-area identity: for every Borel φ : ℝ^P → [0, ∞], t ↦ ∫ φ dν_t is a.e.-measurable for Lebesgue measure and ∫_ℝ (∫ φ dν_t) dt = ∫ w·φ dμ (lower integrals). Let q : ℝ^P → ℝ be Borel with ∫ w·|q| dμ < ∞ (lower integral of w(x)·‖q(x)‖ₑ). Then t ↦ ∫ q dν_t (Bochner integral; it is 0 when q is not ν_t-integrable) is Lebesgue integrable on ℝ, and ∫_ℝ (∫ q dν_t) dt = ∫ w̄·q dμ, where w̄(x) := w(x) as a real number (ENNReal.toReal, so w̄ = 0 where w = ∞).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (ν : ℝ → Measure (Euclid P)) (w : Euclid P → ℝ≥0∞) (q : Euclid P → ℝ), (∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t => ∫⁻ x, φ x ∂(ν t)) ∧ ∫⁻ t, ∫⁻ x, φ x ∂(ν t) = ∫⁻ x, w x * φ x ∂μ) → Measurable w → Measurable q → ∫⁻ x, w x * ‖q x‖ₑ ∂μ ≠ ∞ → Integrable (fun t => ∫ x, q x ∂(ν t)) ∧ ∫ t, ∫ x, q x ∂(ν t) = ∫ x, (w x).toReal * q x ∂μ",
+  "lean_name": "dor_lmbsf_si_coarea_signed_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-057a3495ec-a1"
+}

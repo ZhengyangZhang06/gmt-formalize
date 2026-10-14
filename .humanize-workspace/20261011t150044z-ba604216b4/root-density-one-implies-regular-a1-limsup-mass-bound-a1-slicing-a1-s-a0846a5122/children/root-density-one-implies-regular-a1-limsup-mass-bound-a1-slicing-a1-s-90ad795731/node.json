@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.image_tangent-a1.localization-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.image_tangent-a1",
+  "depth": 6,
+  "title": "Locality of approximate tangent spaces: adding a set that stays away from the point",
+  "statement": "Let P, n ∈ ℕ, M, M' ⊆ ℝ^P with M Borel (MeasurableSet M) and M' ⊆ M, let x ∈ ℝ^P with x ∉ closure(M ∖ M'), and let Q be a linear subspace of ℝ^P. If M' has approximate tangent space Q at x in the sense of Simon Ch. 3, Definition 1.4 (HasApproximateTangentSpaceAt n M' x Q), then so does M (HasApproximateTangentSpaceAt n M x Q).",
+  "lean_statement": "∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → M' ⊆ M → x ∉ closure (M \\ M') → HasApproximateTangentSpaceAt n M' x Q → HasApproximateTangentSpaceAt n M x Q",
+  "lean_name": "dor_lmbsf_cit_approxTangent_of_subset",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-90ad795731-a1"
+}

@@ -1,0 +1,104 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_slice_tangent-a1.level_set_local_chart-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Step 2 (local graph parametrization of Γ_t by straightening F with the inverse function theorem; Simon Ch. 2, 6.3–6.4 and Remark 4.4, Ch. 3, Lemma 1.2 “if”), for one point y₀, with the neighbourhood N made explicit. The parent straightens with the coordinates y_l (l ≠ i) where ∂_iF(y₀) ≠ 0; here any linear π satisfying (★) below is used — the parent's coordinate projection is one such π, and the Lean-convenient choice is described in step 2. Notation: ℓ := DF(y₀) = fderiv ℝ F y₀, t := F(y₀), K := ker ℓ ⊆ ℝ^{n+1}. Extra import needed in Lean: Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff.
+
+1. Dimension of K. Since ℓ ≠ 0 there is v₀ with ℓ(v₀) ≠ 0, and every r ∈ ℝ equals ℓ((r/ℓ(v₀))·v₀); so ℓ is onto ℝ. By rank–nullity (LinearMap.finrank_range_add_finrank_ker), 1 + dim K = n + 1, so dim K = n = dim ℝⁿ.
+
+2. A complementary linear map π. Let e : K → ℝⁿ be a linear isomorphism (LinearEquiv.ofFinrankEq, using step 1) and let g : ℝ^{n+1} → ℝⁿ be a linear map extending e, i.e. g(v) = e(v) for v ∈ K (LinearMap.exists_extend). Let π := g, viewed as a continuous linear map (finite dimension; LinearMap.toContinuousLinearMap). Then
+ (★) if ℓ(v) = 0 and π(v) = 0, then v = 0,
+ because v ∈ K and e(v) = π(v) = 0 with e injective. (If ∂_iF(y₀) ≠ 0, the parent's choice π(y) = (y_l)_{l≠i} also satisfies (★): v ∈ K with v_l = 0 for l ≠ i gives 0 = ℓ(v) = v_i ∂_iF(y₀), so v = 0.)
+
+3. Straightening map. Define Θ : ℝ^{n+1} → ℝⁿ × ℝ by Θ(y) := (π(y), F(y)). Θ is C¹ (π is linear, F is C¹), and for every y it has derivative DΘ(y) = π × DF(y), the map v ↦ (π v, DF(y) v) (ContinuousLinearMap.prod; HasFDerivAt.prodMk).
+
+4. Invertible derivative near y₀. The linear map A₀ := π × ℓ is injective by (★), and dim ℝ^{n+1} = n + 1 = dim(ℝⁿ × ℝ), so A₀ is bijective (LinearMap.injective_iff_surjective_of_finrank_eq_finrank), i.e. A₀ is (the underlying map of) a continuous linear equivalence E₀ : ℝ^{n+1} ≃ ℝⁿ × ℝ (LinearEquiv.ofBijective, LinearEquiv.toContinuousLinearEquiv). Let O be the set of y such that π × DF(y) is (the underlying map of) a continuous linear equivalence ℝ^{n+1} ≃ ℝⁿ × ℝ. The map y ↦ π × DF(y) is continuous (DF is continuous because F is C¹, ContDiff.continuous_fderiv, and (L₁, L₂) ↦ L₁ × L₂ is the linear isometry ContinuousLinearMap.prodₗᵢ), and the set of invertible continuous linear maps is open (ContinuousLinearEquiv.isOpen); hence O is open, and y₀ ∈ O.
+
+5. Inverse function theorem. Since Θ is C¹ at y₀ with derivative E₀, the C¹ inverse function theorem (ContDiffAt.toOpenPartialHomeomorph) gives an open partial homeomorphism Φ₀ with Φ₀ = Θ as functions (ContDiffAt.toOpenPartialHomeomorph_coe, which holds by rfl) and y₀ ∈ source(Φ₀) (ContDiffAt.mem_toOpenPartialHomeomorph_source). Restrict it to the open set O ∩ W (OpenPartialHomeomorph.restrOpen): we get an open partial homeomorphism Φ, still equal to Θ as a function, with source(Φ) = source(Φ₀) ∩ O ∩ W (so y₀ ∈ source(Φ)), open source and open target, and inverse Φ⁻¹ = Φ.symm satisfying Φ⁻¹(a) ∈ source(Φ) and Θ(Φ⁻¹(a)) = a for a ∈ target(Φ), and Φ⁻¹(Θ(y)) = y, Θ(y) ∈ target(Φ) for y ∈ source(Φ).
+
+6. Definition of the chart. Put D := {z ∈ ℝⁿ : (z, t) ∈ target(Φ)}, which is open (preimage of the open target under the continuous map z ↦ (z, t)); Λ(z) := Φ⁻¹(z, t) for every z ∈ ℝⁿ (Φ⁻¹ = Φ.symm is a total function; its values for z ∉ D are never used); and c := π(y₀).
+
+7. Values of Λ. Let z ∈ D. Then Λ(z) ∈ source(Φ) ⊆ O ∩ W and Θ(Λ(z)) = (z, t), i.e. π(Λ(z)) = z and F(Λ(z)) = t = F(y₀). In particular Λ(z) ∈ W.
+
+8. Injectivity on D. If z, z' ∈ D and Λ(z) = Λ(z'), then z = π(Λ(z)) = π(Λ(z')) = z' by step 7.
+
+9. Differentiability. Let z ∈ D and a := (z, t) ∈ target(Φ). Since Λ(z) = Φ⁻¹(a) ∈ O, there is a continuous linear equivalence E with E = π × DF(Λ(z)) = DΘ(Φ⁻¹(a)). By OpenPartialHomeomorph.hasFDerivAt_symm, Φ⁻¹ has derivative E⁻¹ at a, and by OpenPartialHomeomorph.contDiffAt_symm (Θ is C¹ at Φ⁻¹(a)) Φ⁻¹ is C¹ at a. The map z ↦ (z, t) is smooth with derivative inl : w ↦ (w, 0). By the chain rule Λ is C¹ at z and DΛ(z) = E⁻¹ ∘ inl. As this holds at every z ∈ D, Λ is C¹ on D.
+
+10. Injective derivative. DΛ(z) = E⁻¹ ∘ inl is a composition of injective maps, hence injective.
+
+11. Range of DΛ(z). If v = DΛ(z)(w) = E⁻¹(w, 0), then (π v, DF(Λ(z)) v) = E v = (w, 0), so DF(Λ(z)) v = 0. Conversely, if DF(Λ(z)) v = 0, then E v = (π v, 0), so v = E⁻¹(π v, 0) = DΛ(z)(π v). Hence DΛ(z)(ℝⁿ) = ker DF(Λ(z)). (Equivalently: F∘Λ ≡ t on the open set D gives DΛ(z)(ℝⁿ) ⊆ ker DF(Λ(z)), and both spaces are n-dimensional because DΛ(z) is injective and DF(Λ(z)) ≠ 0, E being invertible.)
+
+12. The closed ball. c ∈ D, since (c, t) = (π(y₀), F(y₀)) = Θ(y₀) = Φ(y₀) ∈ target(Φ) because y₀ ∈ source(Φ). As D is open, choose ε > 0 with B_ε(c) ⊆ D (Metric.isOpen_iff) and put ρ := ε/2 > 0. Then B̄_ρ(c) ⊆ B_ε(c) ⊆ D.
+
+13. The neighbourhood N. Put N := source(Φ) ∩ π⁻¹(B_ρ(c)). It is open (source(Φ) is open and π is continuous), and y₀ ∈ N because y₀ ∈ source(Φ) and π(y₀) = c with ρ > 0. Let y ∈ N with F(y) = F(y₀) = t. Then Θ(y) = (π(y), t) ∈ target(Φ) (Φ maps its source into its target), so z := π(y) ∈ D, z ∈ B_ρ(c) because y ∈ N, and Λ(z) = Φ⁻¹(π(y), t) = Φ⁻¹(Θ(y)) = y because y ∈ source(Φ). Hence N ∩ F⁻¹(F(y₀)) ⊆ Λ(B_ρ(c)).
+
+14. Steps 6–13 give D, Λ, c, ρ, N with all the asserted properties. ∎
+
+## Key steps
+
+1. dim ker DF(y₀) = n by rank–nullity; extend an isomorphism ker DF(y₀) ≅ ℝⁿ to a linear π with (π, DF(y₀)) injective.
+2. Θ := (π, F) is C¹ with invertible derivative on an open O ∋ y₀; C¹ inverse function theorem restricted to O ∩ W gives a local inverse Φ⁻¹.
+3. D := {z : (z, F(y₀)) ∈ target}, Λ(z) := Φ⁻¹(z, F(y₀)); π∘Λ = id and F∘Λ ≡ F(y₀) on D, so Λ is injective with values in W.
+4. DΛ(z) = DΘ(Λ z)⁻¹ ∘ inl is injective with range ker DF(Λ z).
+5. c := π(y₀) ∈ D, ρ := ε/2 with B_ε(c) ⊆ D, N := source ∩ π⁻¹(B_ρ(c)); points of N on the level set are Λ(π y).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat parent-child-handoff.json, parent-supplied-plan.md of node root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-f08a01d1b0; slice_family decomposition-v1.json (node ...-e999363692)`
+- `python3 -I scan of dag.json: sibling nodes under slice_family-a1 (image_tangent frozen type), depth/status counts, regex 'implicit function|level set|implicitFunction|regular level|inverse function|toOpenPartialHomeomorph|Lindel' over statements, overlapping lean_statement scan ('ᗮ'+'Submodule.map', 'ker (fderiv', 'closedBall (c k)')`
+- `grep -n 'def CountablyRectifiable|def HasApproximateTangentSpaceAt|theorem countablyRectifiable|theorem HasApproximateTangentSpaceAt' -r simongmt/Poincare/SimonGMT`
+- `grep -rln 'implicitFunction|toOpenPartialHomeomorph|localInverse|implicit function|level set' simongmt/Poincare`
+- `grep -rn 'theorem.*image.*le|euclideanHausdorffMeasure_image_le' simongmt/Poincare/SimonGMT`
+- `ls mathlib/Mathlib/Analysis/Calculus/{Implicit.lean,ImplicitContDiff.lean,ImplicitFunction,InverseFunctionTheorem}; grep -n 'theorem|def' ImplicitContDiff.lean InverseFunctionTheorem/ContDiff.lean`
+- `grep -rn 'μHE\[' and theorem list of mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; grep hausdorffMeasure_image_le mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep coe_comp/toLinearMap_comp mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean`
+- `#check probes in contract scope: MeasurableSet.image_of_continuousOn_injOn, ContDiffAt.toOpenPartialHomeomorph, OpenPartialHomeomorph.contDiffAt_symm, OpenPartialHomeomorph.hasFDerivAt_symm, OpenPartialHomeomorph.restrOpen, ContinuousLinearEquiv.isOpen, ContinuousLinearMap.prodₗᵢ, LinearMap.exists_extend, LinearEquiv.ofFinrankEq, TopologicalSpace.isOpen_iUnion_countable, ball_subset_interior_closedBall, countablyRectifiable_image_contDiffOn_open, euclideanHausdorffMeasure_image_le_of_lipschitzOn, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, ae_restrict_iff', ae_all_iff`
+- `git for-each-ref refs/heads | xargs git grep -l dor_lmbsf_pst (no match); survey of extra imports added to Submission.lean in proof branches`
+- `python3 -I verifier lean_contract.validate_lean_statement + gmt-compare.child_modules(contract mode) on the 4 child statements; lake env lean on generated challenge modules and on /tmp/pst-decomp/{Assembly,Children,IFT,All}.lean with #print axioms`
+- `book: sed chapter-06.txt 1150-1185 (Lemma 4.1), chapter-03.txt 20-60 (Lemma 1.2), 100-140 (Theorem 1.6), 437-445 (2.10), chapter-02.txt 1470-1495 (IFT remark, 6.4)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-f08a01d1b0/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-e999363692/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/ConstancyNormalCharts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ImplicitContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/pst-decomp/All.lean`
+
+Snapshot: project b4d606d, mathlib 25730c7c, simongmt 2b36630. No existing declaration states a regular-level-set chart (implicit function theorem), a countable chart cover, or the patch tangent-plane transfer. SimonGMT has no implicit-function or level-set chart lemma; Chapter08/ConstancyNormalCharts only does local inverses of normal coordinates.
+
+No DAG node or branch uses dor_lmbsf_pst_* and no node has an overlapping statement, so all 4 children get fresh names.
+
+Reusable library facts for the child proofs:
+- Mathlib inverse function theorem: ContDiffAt.toOpenPartialHomeomorph, OpenPartialHomeomorph.contDiffAt_symm, OpenPartialHomeomorph.hasFDerivAt_symm and restrOpen. These need import Mathlib.Analysis.Calculus.InverseFunctionTheorem.ContDiff, which is built.
+- ContinuousLinearEquiv.isOpen, LinearMap.exists_extend, LinearEquiv.ofFinrankEq, TopologicalSpace.isOpen_iUnion_countable.
+- Lusin–Souslin: MeasurableSet.image_of_continuousOn_injOn.
+- SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn, reachable from Submission.
+- EuclideanSpace.euclideanHausdorffMeasure_eq_volume.
+- Chapter03.countablyRectifiable_image_contDiffOn_open (import Poincare.SimonGMT.Chapter03.SubmanifoldCover, built) and countablyRectifiable_iUnion.
+
+Lean checks:
+- All 4 child types pass validate_lean_statement and elaborate in the exact comparator scope.
+- All 4 children have complete scratch proofs depending only on propext, Classical.choice and Quot.sound.
+- The exact frozen parent type is proved from the children plus the sibling dor_lmbsf_c1_image_approxTangent; its only sorryAx is the stub for that sibling (/tmp/pst-decomp/All.lean).

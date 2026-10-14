@@ -1,0 +1,96 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_lipschitzOnWith_of_compact|ContDiffAt.exists_lipschitzOnWith|extend_finite_dimension|posDef_gram_of_linearIndependent|normDet_sq_eq_det_gram|measurable_fderiv|measurable_extend|image_of_continuousOn_injOn|ContinuousOn.measurableEmbedding|theorem lintegral_iUnion|setIntegral_withDensity_eq_setIntegral_smul₀|MeasurableEmbedding.integral_map|ae_imp_of_ae_restrict|euclideanHausdorffMeasure_eq_volume",
+        "euclideanHausdorffMeasure_image_le_of_lipschitzOn|def CountablyRectifiable|countablyRectifiable_iUnion|HasApproximateTangentSpaceAt.unique|measurable_areaJacobianAt|areaJacobianAt_eq_normDet",
+        "\"lean_name\": \"(codim1_lura_[^\"]+|dpf_itt_ae_of_ae_pieces)\"",
+        "git diff b4d606db1da5da8fa2c0292ad4924d97de8b3c4b bfe4427fb415fb3b2843a49246ce9b8ffc567a01 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/area-independent-audit-fibx5oa_/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/area-independent-audit-fibx5oa_/Instances.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/area-independent-audit-fibx5oa_/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/area-independent-audit-fibx5oa_/ae_transfer.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/MetricSpace/Lipschitz.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Defs.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3e52779924/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-3e52779924/decomposition-v1.json",
+        "/tmp/area-independent-audit-fibx5oa_/Types.lean",
+        "/tmp/area-independent-audit-fibx5oa_/Instances.lean",
+        "/tmp/area-independent-audit-fibx5oa_/c1_image.lean",
+        "/tmp/area-independent-audit-fibx5oa_/gram_chain.lean",
+        "/tmp/area-independent-audit-fibx5oa_/gram_area.lean",
+        "/tmp/area-independent-audit-fibx5oa_/borel_glue.lean",
+        "/tmp/area-independent-audit-fibx5oa_/lintegral_split.lean",
+        "/tmp/area-independent-audit-fibx5oa_/bochner_transfer.lean",
+        "/tmp/area-independent-audit-fibx5oa_/ae_transfer.lean",
+        "/tmp/area-independent-audit-fibx5oa_/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected area-formula theorem. Project, Mathlib and SimonGMT revisions match the pins; frozen contract files match. All seven one-line propositions elaborate independently under the base contract import, match their prose, and contain no implementation-dependent aliases. Every name is a bare identifier. The final 1058-node DAG check found no reservations for the six new names; ae_transfer exactly matches the accepted declaration at bfe4427f. Relevant dependency edges are acyclic. Each supplied natural proof was checked step by step, and isolated Lean proofs of all seven children compile with only propext, Classical.choice and Quot.sound. Instance probes confirm Euclidean volume, real standard basis vectors, Euclidean inner products and ordinary multiplication for Matrix.of constructions; no child uses IsUnit. The exact frozen parent assembly compiles from the six new lemmas, the reused declaration and the four existing frozen dependencies. Its axiom report contains only those five dependency stubs and standard axioms. Thus the children establish this selected parent through the supplied assembly."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_image",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and all three conclusions match. Local derivative bounds, compact Lipschitz bounds, a countable compact cover, null-image estimates and Lipschitz extensions prove the claims without extra measurability assumptions. These supply rectifiability, compact-image finiteness and null-remainder control for the parent."
+    },
+    {
+      "key": "gram_chain",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly separates injectivity-dependent positivity from the frame identity. Linear independence gives positive Gram determinant; the coefficient expansion gives RᵀHR and determinant factorization. The proof covers m = 0 and uses ordinary Matrix.of matrices."
+    },
+    {
+      "key": "gram_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standard-basis Gram expression equals areaJacobianAt everywhere by normDet_sq_eq_det_gram and nonnegativity. The pinned measurability and weighted area theorems have exactly the required hypotheses, including arbitrary target weights. No rectifiable-set area formula or parent theorem is assumed."
+    },
+    {
+      "key": "borel_glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Lusin–Souslin supplies measurable embeddings; extension by zero supplies measurable piece functions. The ENNReal sum followed by toReal is measurable and nonnegative. Disjointness leaves exactly one term on each image, and the nonnegative-weight hypothesis recovers its prescribed real value."
+    },
+    {
+      "key": "lintegral_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Continuity and injectivity restricted to each Borel piece give Borel, disjoint images. The null-image hypothesis identifies their union with G(M) almost everywhere. The pinned set-congruence and disjoint-union lemmas apply to arbitrary integrands; measurability of M is unnecessary."
+    },
+    {
+      "key": "bochner_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Indicator tests establish the exact pushforward identity on the Borel subtype B. Measurable-embedding transport and the finite nonnegative density formula then prove the Bochner identity for every f, including nonintegrable cases. No global measurability of G or sigma-finiteness is silently required."
+    },
+    {
+      "key": "ae_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exact-type reuse of the accepted declaration, with compatible frozen definitions and independently checked standard axioms. Restricted a.e. hypotheses make the bad parameter sets null without measurability of B_i or p; Lipschitz null-image preservation and the null remainder cover all bad target points."
+    }
+  ],
+  "required_changes": []
+}

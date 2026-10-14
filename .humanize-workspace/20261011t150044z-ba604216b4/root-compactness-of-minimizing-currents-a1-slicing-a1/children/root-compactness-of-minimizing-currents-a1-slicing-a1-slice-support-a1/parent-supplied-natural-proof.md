@@ -1,0 +1,93 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.slicing-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.slicing-a1.slice_support-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 6, 4.8 (chapter-06.txt line 1353; Simon derives it from 4.11, lines 1378–1394) and step 2 of the parent proof, which proves it directly by splitting η. For a form θ write θ̂ for its underlying map ℝ^P → Λ. Recall ∂A(η) = A(dη), where dη := exteriorDerivativeTestOn U k η has underlying form exteriorDerivative η̂ (GeometricCurrentOn.boundary_apply); likewise ∂T(θ) = T(dθ).
+1. (Vanishing principle.) If θ is a form and x ∉ tsupport θ̂, then θ̂(x) = 0 (image_eq_zero_of_notMem_tsupport) and (exteriorDerivative θ̂)(x) = 0, because tsupport (exteriorDerivative θ̂) ⊆ tsupport θ̂ (SimonGMT tsupport_exteriorDerivative_subset). For any set S, measure ν and G : ℝ^P → ℝ: if G = 0 off S then ∫_S G dν = ∫ G dν (setIntegral_eq_integral_of_forall_compl_eq_zero), and if G = 0 on S then ∫_S G dν = 0 (setIntegral_eq_zero_of_forall_eq_zero); neither needs integrability. Every ξ(x), ξ'(x) is linear, so it maps 0 to 0.
+2. (Separation of the support.) Let η ∈ 𝒟^k(U) with tsupport η̂ ∩ {f = t} = ∅ and K := tsupport η̂, a compact subset of U. If K = ∅ then η̂ = 0, η = 0 and ∂A(η) = 0 = B(η) by linearity. Otherwise f(K) is a nonempty compact subset of ℝ not containing t, so δ := dist(t, f(K))/2 > 0 and every x ∈ K satisfies f(x) ≤ t − 2δ or f(x) ≥ t + 2δ. The sets C₋ := {f ≤ t − δ} and C₊ := {f ≥ t + δ} are closed (f is continuous) and disjoint. By the smooth Urysohn lemma (Mathlib exists_contDiff_zero_iff_one_iff_of_isClosed with s := C₊ and t := C₋) there is a C^∞ function χ : ℝ^P → [0, 1] with χ = 0 on C₊ and χ = 1 on C₋.
+3. (Splitting η.) Let η̂₋(x) := χ(x)·η̂(x) and η̂₊(x) := (1 − χ(x))·η̂(x). Both are C^∞ (products of smooth maps) and vanish wherever η̂ does, so their topological supports lie in the compact set K ⊆ U; hence they define η₋, η₊ ∈ 𝒟^k(U), and η = η₋ + η₊. Moreover {η̂₋ ≠ 0} ⊆ {χ ≠ 0} ∩ K ⊆ {f < t + δ} ∩ K = K ∩ {f ≤ t − 2δ}, a closed set, so tsupport η̂₋ ⊆ K ∩ {f ≤ t − 2δ} ⊆ {f < t}. Similarly {η̂₊ ≠ 0} ⊆ {χ ≠ 1} ∩ K ⊆ {f > t − δ} ∩ K = K ∩ {f ≥ t + 2δ}, closed, so tsupport η̂₊ ⊆ {f > t}.
+4. (The part above the level.) If f(x) < t then x ∉ tsupport η̂₊, so by step 1 η̂₊(x) = 0 and (exteriorDerivative η̂₊)(x) = 0; thus the integrands ξ(x)(dη̂₊(x)) and ξ'(x)(η̂₊(x)) vanish on {f < t}, and ∂A(η₊) = A(dη₊) = ∫_{{f<t}} ξ(dη̂₊) dμ = 0 and B(η₊) = ∫_{{f<t}} ξ'(η̂₊) dμ' = 0.
+5. (The part below the level.) If f(x) ≥ t then x ∉ tsupport η̂₋, so η̂₋ and exteriorDerivative η̂₋ vanish at x; the integrands ξ(x)(dη̂₋(x)) and ξ'(x)(η̂₋(x)) vanish off {f < t}. By step 1, the representation of T, the definition of the boundary and the representation of ∂T:
+∂A(η₋) = ∫_{{f<t}} ξ(dη̂₋) dμ = ∫ ξ(dη̂₋) dμ = T(dη₋) = ∂T(η₋) = ∫ ξ'(η̂₋) dμ' = ∫_{{f<t}} ξ'(η̂₋) dμ' = B(η₋).
+6. (Conclusion.) ∂A and B are linear, so ∂A(η) = ∂A(η₋) + ∂A(η₊) = B(η₋) + 0 = B(η₋) + B(η₊) = B(η). ∎
+
+## Key steps
+
+1. Since tsupport η is compact and misses {f = t}, there is δ > 0 with |f − t| ≥ 2δ on tsupport η.
+2. A smooth Urysohn function χ (1 on {f ≤ t − δ}, 0 on {f ≥ t + δ}) splits η = χη + (1 − χ)η into test forms with supports in {f < t} and {f > t}.
+3. On the upper part both ∂A and B vanish, because the integrands vanish on {f < t}.
+4. On the lower part ∂A(η₋) = T(dη₋) = ∂T(η₋) = B(η₋), because the integrands vanish off {f < t}; add by linearity.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `rg -n -i 'slice|slicing|cmcs_|alternatizeUncurryFin|smulRight' local-references/123e8435b4a2469b/project/GMT -g '*.lean' (only the frozen Ch06 contract definitions IsRestriction/IsSlice/SlicingTheorem with main_theorem := sorry; no proofs, no cmcs_ names)`
+- `rg -n 'theorem fderiv_fun_smul|theorem alternatizeUncurryFin_apply|theorem alternatizeUncurryFin_add|theorem alternatizeUncurryFin_smul|theorem dist_normed_convolution_le|theorem normed_convolution_eq_right|theorem norm_fderiv_le_of_lipschitz|theorem reflection_sub|theorem exists_contDiff_zero_iff_one_iff_of_isClosed|theorem Monotone.ae_differentiableAt|theorem MonotoneOn.intervalIntegrable_deriv|theorem MonotoneOn.intervalIntegral_deriv_mem_uIcc|lemma Monotone.deriv_nonneg|theorem liminf_const_mul_of_ne_top|theorem tendsto_integral_filter_of_dominated_convergence|theorem lintegral_indicator_const_le|theorem enorm_integral_le_lintegral_enorm|theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem setIntegral_eq_zero_of_forall_eq_zero' local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'`
+- `rg -n 'contDiff_convolution_left|hasContDiffBump_of_innerProductSpace|protected def map|theorem toDual_symm_apply|lemma removeNth_insertNth|lemma insertNth_self_removeNth|theorem image_eq_one_of_notMem_mulTSupport' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -rn 'sq_le_sq₀|pow_le_pow_iff_left₀|enorm_eq_ofReal_abs|integral_Ioc_eq_integral_Ioo|lintegral_const_mul''|hasDerivAt_iff_tendsto_slope|Filter.EventuallyEq.fderiv_eq|contDiff_normed|hasCompactSupport_normed|Integrable.restrict|isBoundedBilinearMap_apply|Continuous.comp_aestronglyMeasurable₂' lake-packages-25730c7c/mathlib/Mathlib`
+- `grep -n 'tsupport_exteriorDerivative_subset|exteriorDerivative_isTestForm|def massAdmissibleOn|def covectorEuclideanNorm|def GeometricCurrentOn.massOn|def TestFormOnConverges' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,Forms}.lean`
+- `python3 scan of dag.json (514 nodes): lean_name collisions for the eight new cmcs_ names (none); nodes mentioning covectorEuclideanNorm, LipschitzWith, extDeriv, alternatizeUncurryFin (no reusable slicing, wedge or smoothing lemma); regcomp_covector_sq_sum_orthonormalBasis accepted with identical lean_statement`
+- `for r in $(git for-each-ref): git grep -l cmcs_ $r -- '*.lean' (no match in 2484 refs); git show 16144a47:GMT/Ch07/Submission.lean | grep regcomp_covector_sq_sum_orthonormalBasis`
+- `lean GMT/Scratch/cmcs_slicing_decomposition/Assembly.lean (nine child stubs + parent proof; #print axioms: propext, sorryAx, Classical.choice, Quot.sound)`
+- `lean #check with pp.coercions for the level_cutoff and lipschitz_smoothing bounds`
+- `python3 -I wedge_check.py (300 random (P ≤ 5, k ≤ P) checks of E1 and |β∧γ|²+|ι_bγ|²=|b|²|γ|²)`
+- `sed -n 20,70p; 160,185p; 270,300p; 1151,1180p; 1300,1420p book/chapter-06.txt`
+- `grep -n 'def _existing_lean_name_problem' -A 40 /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py (reuse of accepted identical-type declarations allowed)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Reflection.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slicing_decomposition/Assembly.lean`
+
+Snapshot facts:
+- The manifest pins project b4d606db and Mathlib 25730c7c.
+- The snapshot Ch07 contract is byte-identical to the workspace Submission.lean.
+- The snapshot's GMT/Ch06 contract has IsRestriction, IsSlice and SlicingTheorem only as frozen definitions with main_theorem := sorry, so there is no proof to reuse. It also contains no cmcs_ name.
+
+What else exists:
+- Neither the snapshot Mathlib nor SimonGMT Chapter06 has a slicing theorem, a coefficient-norm wedge inequality, or smoothing of Lipschitz functions with locality.
+- Mathlib does provide every tool the child proofs cite. Each was found in the snapshot and the pinned packages:
+  - exterior derivative and Leibniz: fderiv_fun_smul, alternatizeUncurryFin_apply/_add/_smul;
+  - reflections and duality: reflection_sub, OrthonormalBasis.map, toDual_symm_apply;
+  - smooth Urysohn: exists_contDiff_zero_iff_one_iff_of_isClosed;
+  - convolution and bumps: HasCompactSupport.contDiff_convolution_left, ContDiffBump.dist_normed_convolution_le, normed_convolution_eq_right;
+  - Lipschitz derivative bound: norm_fderiv_le_of_lipschitz;
+  - limits and integrals: tendsto_integral_filter_of_dominated_convergence, ENNReal.liminf_const_mul_of_ne_top;
+  - monotone functions: Monotone.ae_differentiableAt, Monotone.deriv_nonneg, MonotoneOn.intervalIntegrable_deriv, MonotoneOn.intervalIntegral_deriv_mem_uIcc;
+  - set integrals: setIntegral_eq_integral_of_forall_compl_eq_zero, setIntegral_eq_zero_of_forall_eq_zero.
+- SimonGMT provides tsupport_exteriorDerivative_subset and exteriorDerivative_isTestForm, and the definitions of massOn and covectorEuclideanNorm.
+
+DAG and Lean checks:
+- The only reusable DAG result is the accepted regcomp_covector_sq_sum_orthonormalBasis. Its type is identical and it is declared at commit 16144a47; it is reused for the wedge inequality.
+- None of the eight new cmcs_ names collides with any of the 514 DAG nodes or any git ref.
+- All nine child types elaborate.
+- The frozen parent type is proved from them in Assembly.lean using only standard axioms, apart from sorryAx coming from the stubs.

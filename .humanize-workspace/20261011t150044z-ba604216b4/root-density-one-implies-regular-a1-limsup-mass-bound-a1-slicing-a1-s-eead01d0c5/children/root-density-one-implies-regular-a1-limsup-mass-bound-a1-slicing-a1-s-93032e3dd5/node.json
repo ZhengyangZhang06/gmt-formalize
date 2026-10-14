@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.localize-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1",
+  "depth": 6,
+  "title": "Cut-off localization of h_k∘ψ near a compact subset of a C¹ chart domain: uniformly Lipschitz, uniformly convergent global functions",
+  "statement": "Let P, d ∈ ℕ, V ⊆ ℝ^d open, ψ : ℝ^d → ℝ^P C¹ on V, C ⊆ V compact, and (h_k)_{k∈ℕ} C¹ functions ℝ^P → ℝ with ‖Dh_k(x)‖ ≤ c for all k and x, converging uniformly on ℝ^P to h : ℝ^P → ℝ. Then there exist an open set O ⊇ C, a constant K ≥ 0 and functions u_k, u : ℝ^d → ℝ, all K-Lipschitz on ℝ^d, such that u_k → u uniformly on ℝ^d, u_k = h_k∘ψ on O for every k, and u = h∘ψ on O.",
+  "lean_statement": "∀ (P d : ℕ) (V C : Set (Euclid d)) (ψ : Euclid d → Euclid P) (hs : ℕ → Euclid P → ℝ) (h : Euclid P → ℝ) (c : ℝ), IsOpen V → ContDiffOn ℝ 1 ψ V → IsCompact C → C ⊆ V → (∀ k, ContDiff ℝ 1 (hs k)) → (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ c) → TendstoUniformly hs h atTop → ∃ (O : Set (Euclid d)) (K : NNReal) (us : ℕ → Euclid d → ℝ) (u : Euclid d → ℝ), IsOpen O ∧ C ⊆ O ∧ (∀ k, LipschitzWith K (us k)) ∧ LipschitzWith K u ∧ TendstoUniformly us u atTop ∧ (∀ k, ∀ y ∈ O, us k y = hs k (ψ y)) ∧ ∀ y ∈ O, u y = h (ψ y)",
+  "lean_name": "dor_lmbsf_pwl_chart_cutoff_localize",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-93032e3dd5-a1"
+}

@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.covector_finite_dimensional-a1",
+      "key": "covector_finite_dimensional",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-16606b9c1a-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/children/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-16606b9c1a",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json; cmp snapshot project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD",
+              "grep -rn -i lusin <snapshot>/mathlib/Mathlib/{MeasureTheory,Topology,Analysis}",
+              "grep -n 'theorem|lemma|instance' MeasureTheory/Measure/RegularityCompacts.lean; grep -n 'exists_isCompact_sdiff_lt|exists_isCompact_lt_add|exists_isCompact_isClosed_sdiff_lt|InnerRegularCompactLTTop' MeasureTheory/Measure/Regular.lean",
+              "grep -rln 'ContinuousAlternatingMap|ContinuousMultilinearMap' <snapshot>/mathlib/Mathlib | xargs grep -ln 'FiniteDimensional|Module.Finite|SecondCountableTopology|SeparableSpace'",
+              "grep -n of_injective LinearAlgebra/FiniteDimensional/Defs.lean; grep -n 'secondCountable_of_proper|proper_real' Topology/MetricSpace/ProperSpace.lean Analysis/Normed/Module/FiniteDimension.lean",
+              "grep -rn 'SecondCountableTopology|FiniteDimensional|SeparableSpace' simongmt/Poincare/SimonGMT/Chapter06/; grep -n 'abbrev Covector' Chapter06/Forms.lean",
+              "python3 -I scan of dag.json nodes: lean_name set, 'lusin', 'SecondCountableTopology', 'FiniteDimensional ℝ (Covector', status of dor_ims_sua_covector_finiteDimensional / imsupp_covector_finiteDimensional",
+              "verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') and child_modules shape",
+              "grep -n -i lusin book/chapter-01.txt; sed -n 300,400p book/chapter-01.txt (Simon 1.17)",
+              "lake env lean /tmp/lusin-decomp/{Probe,Probe2,Assembly,C1,C2}.lean and /tmp/lusin-decomp/final/Final.lean (#synth probes, #print axioms)",
+              "web (standard): Lusin's theorem second-countable topological space measurable function compact set continuous restriction proof countable basis"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-8f5d9ea2e2/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/tmp/lusin-decomp/final/Final.lean"
+            ],
+            "conclusion": "Snapshot: project b4d606d, mathlib 25730c7c. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical.\n\nNot available in the Submission scope (#synth / fail_if_success):\n- Lusin's continuity theorem. Mathlib has only Lusin–Souslin and Lusin separation (Constructions/Polish/Basic.lean), which justifies child lusin_measurable.\n- FiniteDimensional, SecondCountableTopology, ProperSpace and MeasurableSpace instances on Covector (Euclid P) n = E [⋀^Fin n]→L[ℝ] ℝ. No Mathlib file links continuous alternating or multilinear maps to finite-dimensionality, which justifies child covector_finite_dimensional.\n- RegularityCompacts.lean is not imported, so an arbitrary μ is not InnerRegularCompactLTTop.\n\nAvailable:\n- μ.restrict A with μ A ≠ ∞ is IsFiniteMeasure, hence Regular (Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure), hence InnerRegularCompactLTTop. MeasurableSet.exists_isCompact_sdiff_lt then gives the compact approximations.\n- ENNReal.exists_pos_sum_of_countable', TopologicalSpace.exists_countable_basis, IsTopologicalBasis.continuous_iff, continuousOn_iff_continuous_domRestrict.\n- FiniteDimensional.of_injective, Module.Basis.ext_alternating, ContinuousAlternatingMap.toAlternatingMap_injective; FiniteDimensional.proper_real then secondCountable_of_proper.\n\nDAG and naming:\n- The same FiniteDimensional type is reserved as dor_ims_sua_covector_finiteDimensional (decomposing) and imsupp_covector_finiteDimensional (comparing). Neither is accepted, so the unique name dor_ims_lusin_covector_finiteDimensional is used.\n- Neither proposed name occurs in dag.json, GMT/, simongmt or the run directory.\n- The comparator child scope is the 7 replayed commands (open…, namespace GMT.Ch07, opens, noncomputable section, end).\n\nLean checks (/tmp/lusin-decomp/final/Final.lean):\n- Both children are fully proved.\n- The parent is assembled only from the two children.\n- Comparator-shaped targets close by `exact Submission.X`.\n- All axioms are [propext, Classical.choice, Quot.sound].\n- An independent reviewer reproduced these results.\n\nSources: Simon 1.17 (book/chapter-01.txt lines 344–380) prints a level-set proof for a real-valued target and a closed C. The parent's countable-basis proof matches the second-countable form in https://math.univ-lyon1.fr/~santambrogio/Lusin.pdf and https://arxiv.org/pdf/math/0406370."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1",
+        "child_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.covector_finite_dimensional-a1",
+        "subproblem": {
+          "key": "covector_finite_dimensional",
+          "title": "Covectors on ℝ^P form a finite-dimensional real vector space",
+          "statement": "For all natural numbers P and n, the real vector space Covector (Euclid P) n = Λⁿ(ℝ^P) is finite-dimensional over ℝ. This is the space of continuous alternating n-linear forms on ℝ^P = EuclideanSpace ℝ (Fin P), with pointwise addition and scalar multiplication.",
+          "lean_statement": "∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n)",
+          "lean_name": "dor_ims_lusin_covector_finiteDimensional",
+          "depends_on": [],
+          "natural_proof": "Source: the \"Notation\" paragraph of the parent proof. It asserts that Λ := Covector (Euclid P) n is a finite-dimensional real normed space and uses this only to get a countable basis of open sets of Λ. The pinned Mathlib has no FiniteDimensional instance for continuous alternating maps, so the fact is proved here.\nNotation: E := ℝ^P = EuclideanSpace ℝ (Fin P). Λ := Covector E n = E [⋀^Fin n]→L[ℝ] ℝ is the space of continuous alternating n-linear forms on E, with pointwise addition and scalar multiplication. For I : Fin n → Fin P, e ∘ I denotes the n-tuple (e_{I(i)})_{i ∈ Fin n}.\n1. (Basis.) Let e = (e_i)_{i ∈ Fin P} be the standard basis of E: EuclideanSpace.basisFun (Fin P) ℝ, viewed as a Module.Basis (Fin P) ℝ E via .toBasis.\n2. (Evaluation map.) Define L : Λ → ((Fin n → Fin P) → ℝ) by L(α)(I) := α(e ∘ I) for every index map I : Fin n → Fin P. For fixed I, the map α ↦ α(e ∘ I) is additive and ℝ-homogeneous, because (α + β)(v) = α(v) + β(v) and (c·α)(v) = c·α(v). Hence L is ℝ-linear.\n3. (Injectivity.) Let α, β ∈ Λ with L(α) = L(β). Then α(e ∘ v) = β(e ∘ v) for every v : Fin n → Fin P, in particular for every injective v.\n An alternating n-linear map on a module with basis e is determined by its values on the tuples e ∘ v with v injective (Module.Basis.ext_alternating). [Directly: write each argument as x_j = Σ_i x_j^i e_i and expand by multilinearity. This gives α(x) = Σ_{I : Fin n → Fin P} (∏_{j ∈ Fin n} x_j^{I(j)}) α(e ∘ I), so α is determined by the numbers α(e ∘ I).]\n Hence the underlying alternating maps of α and β coincide. A continuous alternating map is determined by its underlying alternating map (ContinuousAlternatingMap.toAlternatingMap_injective), so α = β. Thus L is injective.\n4. (Conclusion.) The codomain (Fin n → Fin P) → ℝ is a finite-dimensional real vector space, because the index type Fin n → Fin P is finite (it has P^n elements). A vector space with an injective linear map into a finite-dimensional space is finite-dimensional (FiniteDimensional.of_injective, applied to L and step 3). Therefore Covector (Euclid P) n is finite-dimensional over ℝ for all P and n. ∎",
+          "proof_key_steps": [
+            "Fix the standard basis e of ℝ^P: (EuclideanSpace.basisFun (Fin P) ℝ).toBasis.",
+            "L(α) := (α(e ∘ I))_{I : Fin n → Fin P} is an ℝ-linear map from Covector (Euclid P) n to (Fin n → Fin P) → ℝ.",
+            "L is injective: Module.Basis.ext_alternating identifies the underlying alternating maps, and ContinuousAlternatingMap.toAlternatingMap_injective identifies the continuous ones.",
+            "(Fin n → Fin P) → ℝ is finite-dimensional, so FiniteDimensional.of_injective L gives FiniteDimensional ℝ (Covector (Euclid P) n)."
+          ]
+        },
+        "audit": {
+          "key": "covector_finite_dimensional",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and exact one-line Lean proposition agree for all P and n. Evaluation on standard-basis tuples defines a linear map into a finite-dimensional function space. Basis extensionality proves injectivity of the underlying alternating maps, and injectivity of toAlternatingMap gives equality of continuous alternating maps. FiniteDimensional.of_injective completes the proof, including zero-dimensional and degree-zero cases. This is complete, non-circular, and supplies the countability prerequisite used by the selected parent."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-16606b9c1a/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-16606b9c1a/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-16606b9c1a/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.lusin_measurable-a1",
+      "key": "lusin_measurable",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/children/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json; cmp snapshot project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD",
+              "grep -rn -i lusin <snapshot>/mathlib/Mathlib/{MeasureTheory,Topology,Analysis}",
+              "grep -n 'theorem|lemma|instance' MeasureTheory/Measure/RegularityCompacts.lean; grep -n 'exists_isCompact_sdiff_lt|exists_isCompact_lt_add|exists_isCompact_isClosed_sdiff_lt|InnerRegularCompactLTTop' MeasureTheory/Measure/Regular.lean",
+              "grep -rln 'ContinuousAlternatingMap|ContinuousMultilinearMap' <snapshot>/mathlib/Mathlib | xargs grep -ln 'FiniteDimensional|Module.Finite|SecondCountableTopology|SeparableSpace'",
+              "grep -n of_injective LinearAlgebra/FiniteDimensional/Defs.lean; grep -n 'secondCountable_of_proper|proper_real' Topology/MetricSpace/ProperSpace.lean Analysis/Normed/Module/FiniteDimension.lean",
+              "grep -rn 'SecondCountableTopology|FiniteDimensional|SeparableSpace' simongmt/Poincare/SimonGMT/Chapter06/; grep -n 'abbrev Covector' Chapter06/Forms.lean",
+              "python3 -I scan of dag.json nodes: lean_name set, 'lusin', 'SecondCountableTopology', 'FiniteDimensional ℝ (Covector', status of dor_ims_sua_covector_finiteDimensional / imsupp_covector_finiteDimensional",
+              "verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') and child_modules shape",
+              "grep -n -i lusin book/chapter-01.txt; sed -n 300,400p book/chapter-01.txt (Simon 1.17)",
+              "lake env lean /tmp/lusin-decomp/{Probe,Probe2,Assembly,C1,C2}.lean and /tmp/lusin-decomp/final/Final.lean (#synth probes, #print axioms)",
+              "web (standard): Lusin's theorem second-countable topological space measurable function compact set continuous restriction proof countable basis"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/RegularityCompacts.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-8f5d9ea2e2/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+              "/tmp/lusin-decomp/final/Final.lean"
+            ],
+            "conclusion": "Snapshot: project b4d606d, mathlib 25730c7c. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical.\n\nNot available in the Submission scope (#synth / fail_if_success):\n- Lusin's continuity theorem. Mathlib has only Lusin–Souslin and Lusin separation (Constructions/Polish/Basic.lean), which justifies child lusin_measurable.\n- FiniteDimensional, SecondCountableTopology, ProperSpace and MeasurableSpace instances on Covector (Euclid P) n = E [⋀^Fin n]→L[ℝ] ℝ. No Mathlib file links continuous alternating or multilinear maps to finite-dimensionality, which justifies child covector_finite_dimensional.\n- RegularityCompacts.lean is not imported, so an arbitrary μ is not InnerRegularCompactLTTop.\n\nAvailable:\n- μ.restrict A with μ A ≠ ∞ is IsFiniteMeasure, hence Regular (Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure), hence InnerRegularCompactLTTop. MeasurableSet.exists_isCompact_sdiff_lt then gives the compact approximations.\n- ENNReal.exists_pos_sum_of_countable', TopologicalSpace.exists_countable_basis, IsTopologicalBasis.continuous_iff, continuousOn_iff_continuous_domRestrict.\n- FiniteDimensional.of_injective, Module.Basis.ext_alternating, ContinuousAlternatingMap.toAlternatingMap_injective; FiniteDimensional.proper_real then secondCountable_of_proper.\n\nDAG and naming:\n- The same FiniteDimensional type is reserved as dor_ims_sua_covector_finiteDimensional (decomposing) and imsupp_covector_finiteDimensional (comparing). Neither is accepted, so the unique name dor_ims_lusin_covector_finiteDimensional is used.\n- Neither proposed name occurs in dag.json, GMT/, simongmt or the run directory.\n- The comparator child scope is the 7 replayed commands (open…, namespace GMT.Ch07, opens, noncomputable section, end).\n\nLean checks (/tmp/lusin-decomp/final/Final.lean):\n- Both children are fully proved.\n- The parent is assembled only from the two children.\n- Comparator-shaped targets close by `exact Submission.X`.\n- All axioms are [propext, Classical.choice, Quot.sound].\n- An independent reviewer reproduced these results.\n\nSources: Simon 1.17 (book/chapter-01.txt lines 344–380) prints a level-set proof for a real-valued target and a closed C. The parent's countable-basis proof matches the second-countable form in https://math.univ-lyon1.fr/~santambrogio/Lusin.pdf and https://arxiv.org/pdf/math/0406370."
+          }
+        ],
+        "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1",
+        "child_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.lusin_measurable-a1",
+        "subproblem": {
+          "key": "lusin_measurable",
+          "title": "Lusin's theorem (compact form) for measurable maps from ℝ^P into a second-countable space",
+          "statement": "Let P ∈ ℕ, and let Y be a second-countable topological space with a σ-algebra in which every open set is measurable. Let μ be any measure on ℝ^P = EuclideanSpace ℝ (Fin P) (Borel σ-algebra), let A ⊆ ℝ^P be a measurable set with μ(A) < ∞, let g : ℝ^P → Y be measurable, and let ε ∈ (0, ∞] be an extended nonnegative real with ε ≠ 0. Then there is a compact set K ⊆ A with μ(A ∖ K) < ε such that g is continuous on K (ContinuousOn g K).",
+          "lean_statement": "∀ (P : ℕ) {Y : Type} [TopologicalSpace Y] [SecondCountableTopology Y] [MeasurableSpace Y] [OpensMeasurableSpace Y] (μ : Measure (Euclid P)) (A : Set (Euclid P)) (g : Euclid P → Y) (ε : ℝ≥0∞), Measurable g → MeasurableSet A → μ A ≠ ∞ → ε ≠ 0 → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \\ K) < ε ∧ ContinuousOn g K",
+          "lean_name": "dor_ims_lusin_measurable_continuousOn",
+          "depends_on": [],
+          "natural_proof": "Source: steps 2–5 of the parent proof, which is the standard proof of Lusin's theorem (Simon Ch. 1, 1.17) in the compact form used by the parent. Here they are applied directly to a measurable map g, so the parent's measurable-modification step 1 is not needed (take A₀ = A). The target Λ is replaced by an arbitrary second-countable space Y, because steps 2–5 use only a countable basis of the target and the measurability of preimages of open sets. The error budget ε·2^{−k−2} is replaced by summable positive weights η_k, which also covers ε = ∞.\nHypotheses: P ∈ ℕ. Y is a second-countable topological space with a σ-algebra in which every open set is measurable. μ is any measure on ℝ^P (Borel σ-algebra). A ⊆ ℝ^P is measurable with μ(A) < ∞. g : ℝ^P → Y is measurable. ε ∈ [0, ∞] with ε ≠ 0.\n1. (Inner regularity inside A.) Let ν := μ.restrict A, so ν(B) = μ(B ∩ A) for measurable B.\n ν is a finite Borel measure on ℝ^P, since ν(ℝ^P) = μ(A) < ∞. A finite measure is locally finite, and ℝ^P is a σ-compact (indeed proper) metric space, so ν is regular (Mathlib instance Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure). Hence ν is inner regular by compact sets on measurable sets of finite measure (InnerRegularCompactLTTop). (Alternatively, Ulam's theorem: finite Borel measures on the Polish space ℝ^P are tight.)\n Consequently (MeasurableSet.exists_isCompact_sdiff_lt), for every measurable B ⊆ A and every η ∈ (0, ∞] there is a compact C ⊆ B with ν(B ∖ C) < η. C is compact in a Hausdorff space, hence closed and measurable. So B ∖ C is measurable and contained in A, and ν(B ∖ C) = μ((B ∖ C) ∩ A) = μ(B ∖ C). Thus μ(B ∖ C) < η.\n2. (Countable basis.) Since Y is second countable, fix a countable basis 𝓑 of its topology. Y is nonempty (it contains g(0)) and ⋃𝓑 = Y, so 𝓑 is nonempty. Enumerate it as 𝓑 = {O_k : k ∈ ℕ}, with repetitions allowed. Each O_k is open, hence measurable in Y. Since g is measurable, S_k := g^{−1}(O_k) is a measurable subset of ℝ^P.\n3. (Weights.) Choose η_k ∈ (0, ∞) for k ∈ ℕ with Σ_k η_k < ε. For example, put δ := min(ε, 1) ∈ (0, 1] and η_k := δ·2^{−k−2}; then Σ_k η_k = δ/2 < δ ≤ ε. (In Mathlib: ENNReal.exists_pos_sum_of_countable'.)\n4. (Compact pieces.) Fix k. The sets A ∩ S_k and A ∖ S_k are measurable subsets of A. By step 1 with η = η_k/2 > 0, choose compact sets C_k ⊆ A ∩ S_k and D_k ⊆ A ∖ S_k with\n μ((A ∩ S_k) ∖ C_k) < η_k/2 and μ((A ∖ S_k) ∖ D_k) < η_k/2.\n Put E_k := C_k ∪ D_k, a compact subset of A. Let x ∈ A ∖ E_k. If g(x) ∈ O_k, then x ∈ (A ∩ S_k) ∖ C_k; otherwise x ∈ (A ∖ S_k) ∖ D_k. Hence A ∖ E_k ⊆ ((A ∩ S_k) ∖ C_k) ∪ ((A ∖ S_k) ∖ D_k), and subadditivity gives μ(A ∖ E_k) < η_k/2 + η_k/2 = η_k.\n5. (The compact set.) Let K := ⋂_k E_k.\n Each E_k is compact in the Hausdorff space ℝ^P, hence closed, so K is closed. K lies in the compact set E_0, so K is compact, being a closed subset of a compact set. Also K ⊆ E_0 ⊆ A.\n Since A ∖ K = ⋃_k (A ∖ E_k), countable subadditivity and steps 3–4 give μ(A ∖ K) ≤ Σ_k μ(A ∖ E_k) ≤ Σ_k η_k < ε.\n6. (Continuity.) Fix k and x ∈ K, so x ∈ E_k = C_k ∪ D_k.\n - If x ∉ D_k, then x ∈ C_k ⊆ A ∩ S_k, so g(x) ∈ O_k.\n - If g(x) ∈ O_k, then x ∈ S_k, so x ∉ D_k because D_k ⊆ A ∖ S_k.\n Hence K ∩ g^{−1}(O_k) = K ∩ (ℝ^P ∖ D_k). D_k is compact, hence closed, so ℝ^P ∖ D_k is open. Therefore the preimage of O_k under the restriction g|_K : K → Y is open in the subspace topology of K.\n Every open subset of Y is a union of sets O_k, so its preimage under g|_K is a union of open subsets of K, hence open (IsTopologicalBasis.continuous_iff). Therefore g|_K is continuous, i.e. ContinuousOn g K (continuousOn_iff_continuous_restrict).\n Together with step 5, K is a compact subset of A with μ(A ∖ K) < ε on which g is continuous. ∎",
+          "proof_key_steps": [
+            "ν = μ.restrict A is finite, so it is regular on ℝ^P (a σ-compact metric space) and hence InnerRegularCompactLTTop. So each measurable B ⊆ A contains a compact C with μ(B ∖ C) = ν(B ∖ C) < η.",
+            "Enumerate a countable basis (O_k)_{k∈ℕ} of Y; it is nonempty because g(0) ∈ Y. Each S_k = g⁻¹(O_k) is measurable.",
+            "Choose positive weights η_k with Σ η_k < ε, e.g. min(ε,1)·2^{−k−2}.",
+            "Choose compact C_k ⊆ A ∩ S_k and D_k ⊆ A ∖ S_k with defects < η_k/2. Then E_k = C_k ∪ D_k ⊆ A has μ(A ∖ E_k) < η_k.",
+            "K = ⋂_k E_k is closed inside the compact E_0, hence compact. K ⊆ A and μ(A ∖ K) ≤ Σ_k μ(A ∖ E_k) < ε.",
+            "For x ∈ K, g(x) ∈ O_k ⇔ x ∉ D_k. So (g|_K)⁻¹(O_k) = K ∩ D_kᶜ is open in K, and by the basis criterion g is continuous on K."
+          ]
+        },
+        "audit": {
+          "key": "lusin_measurable",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose includes every Lean hypothesis, including opens-measurability and ε = ∞. Restricting μ to A gives a finite regular Borel measure and justifies compact approximation without assumptions on μ outside A. The proof correctly obtains a nonempty countable basis using g(0), chooses summable positive finite budgets, constructs paired compact pieces, bounds the intersection's measure defect, and proves continuity through relatively open basis preimages. No separation assumption on Y or circular reliance is needed. The construction agrees with [Loeb–Talvila, Theorem 1](https://arxiv.org/pdf/math/0406370) and [Santambrogio's weak Lusin proof](https://math.univ-lyon1.fr/~santambrogio/Lusin.pdf). Combined with the first child and the supplied measurable-modification/null-set argument, it proves exactly the selected parent."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/decomposition.json": "3e367623c9e1e9778b273ad3a3692a746d9f103ddd3d9cd5c8f3661085c7f146",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/decomposition-audit.json": "03f21a4d266047f81e55aa228968bbc550a3a5bca9db30579f22252b09ef6f0d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/children/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-16606b9c1a/parent-child-handoff.json": "c8f8691e05141610c04fb6793b5d0369083c96a379fd891521d99a3aa781ff32",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/children/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-16606b9c1a/parent-supplied-plan.md": "66c030eec9cca536e541fe27685201f5ab3fb19d93022c34570b99a68fc80c80",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/children/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-16606b9c1a/parent-supplied-natural-proof.md": "af11e92dfaabcf05ce2cd7974b482dfb9e2d9cda6be3c54434da6544fb58a81c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/children/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-16606b9c1a/parent-supplied-natural-proof.json": "1c5d950dd632ac7e486c3ec292662a58f195a44bf48f3d731706627c64b62682",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/children/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-16606b9c1a/node.json": "39689030fb1e6de961bdf46b1fda4d6b0fb0da7b2e348c8d035a9bac95a11b61",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/children/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9/parent-child-handoff.json": "af5e08eafde9b9b383150d86142e437ff458a719a9e3641389cf66b6321e9ed7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/children/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9/parent-supplied-plan.md": "84931a39f03f60efd8172dbeda13bcf1d662e0297e05e2c925df5aa5203de52b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/children/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9/parent-supplied-natural-proof.md": "6fede0d1bfec31c8d6cc2bf6752122c341edeea46afd27cd7b50caa2d1361cf7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/children/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9/parent-supplied-natural-proof.json": "0e9b0daed6a049bc19b944f20ed9610b398d4216e0fb0807e6d5602dbbc3ceac",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1/children/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9/node.json": "4c84843ad0996e3ffb0a187ef6d198e5a2093c7bc35fd6957914e586ec72d67c"
+  }
+}

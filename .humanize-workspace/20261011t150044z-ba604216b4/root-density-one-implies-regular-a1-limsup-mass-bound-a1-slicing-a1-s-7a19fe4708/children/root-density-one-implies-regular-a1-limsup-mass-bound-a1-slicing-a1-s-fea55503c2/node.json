@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.slice_imreps-a1.slice_orientation_field-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.slice_imreps-a1",
+  "depth": 6,
+  "title": "Strongly measurable slice orientation ζ' = ζ ∘ (ν♭∧·), ν = g/|g| (Simon Ch. 6, 4.3)",
+  "statement": "Let P, n ∈ ℕ, let ζ : ℝ^P → Λ_{n+1}(ℝ^P) be strongly measurable, where Λ_k(ℝ^P) = MultiVector P k is the space of continuous linear functionals on k-covectors (operator norm), and let g : ℝ^P → ℝ^P be Borel. For v ∈ ℝ^P and an n-covector α write v♭∧α := alternatizeUncurryFin((innerSL ℝ v).smulRight α), the (n+1)-covector (v♭∧α)(v₀, …, v_n) = Σ_{i=0}^{n} (−1)^i ⟨v, v_i⟩ α(v₀, …, v̂_i, …, v_n). Then there is a strongly measurable ζ' : ℝ^P → Λ_n(ℝ^P) such that for all x ∈ ℝ^P and all n-covectors α: (a) ζ'(x)(α) = ζ(x)((|g(x)|⁻¹ g(x))♭∧α) (with 0⁻¹ = 0); (b) |g(x)|·ζ'(x)(α) = ζ(x)(g(x)♭∧α); (c) |ζ(x)(g(x)♭∧α)| ≤ (n+1)·‖ζ(x)‖·|g(x)|·‖α‖ (operator norms).",
+  "lean_statement": "∀ (P n : ℕ) (ζ : Euclid P → MultiVector P (n + 1)) (g : Euclid P → Euclid P), StronglyMeasurable ζ → Measurable g → ∃ ζ' : Euclid P → MultiVector P n, StronglyMeasurable ζ' ∧ (∀ x (α : Covector (Euclid P) n), ζ' x α = ζ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (‖g x‖⁻¹ • g x)).smulRight α))) ∧ (∀ x (α : Covector (Euclid P) n), ‖g x‖ * ζ' x α = ζ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (g x)).smulRight α))) ∧ ∀ x (α : Covector (Euclid P) n), |ζ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (g x)).smulRight α))| ≤ ((n : ℝ) + 1) * ‖ζ x‖ * ‖g x‖ * ‖α‖",
+  "lean_name": "dor_lmbsf_si_slice_orientation_field",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-fea55503c2-a1"
+}

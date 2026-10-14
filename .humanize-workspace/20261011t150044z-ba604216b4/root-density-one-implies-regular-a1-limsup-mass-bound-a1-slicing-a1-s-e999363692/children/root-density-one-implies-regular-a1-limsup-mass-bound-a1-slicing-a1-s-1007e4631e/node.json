@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.wedge_orientation-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1",
+  "depth": 5,
+  "title": "Interior product of a unit orientation with a unit tangent vector (Simon Ch. 6, 4.3)",
+  "statement": "Let P, n ∈ ℕ and Q ⊆ ℝ^P a linear subspace. Let ζ be an (n+1)-vector, i.e. a continuous linear functional on (n+1)-covectors of ℝ^P (MultiVector P (n+1)), which is a unit orientation of Q (IsUnitOrientationOf ζ Q). This means: there is an orthonormal τ = (τ₀, …, τₙ) spanning Q with ζ(β) = β(τ) for all β, or ζ(β) = −β(τ) for all β. Let ν ∈ Q with |ν| = 1. Let ζ' be an n-vector (MultiVector P n) with ζ'(α) = ζ(ν♭ ∧ α) for every n-covector α. Here\n ν♭ ∧ α := ContinuousAlternatingMap.alternatizeUncurryFin((innerSL ℝ ν).smulRight α),\n that is, (ν♭∧α)(v₀, …, vₙ) = Σ_{i=0}^{n} (−1)^i ⟨ν, v_i⟩ α(v₀, …, v̂_i, …, vₙ).\nThen ζ' is a unit orientation of Q ∩ ν^⊥ (IsUnitOrientationOf ζ' (Q ⊓ (ℝ∙ν)ᗮ)).",
+  "lean_statement": "∀ (P n : ℕ) (ζ : MultiVector P (n + 1)) (ζ' : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (ν : Euclid P), IsUnitOrientationOf ζ Q → ν ∈ Q → ‖ν‖ = 1 → (∀ α : Covector (Euclid P) n, ζ' α = ζ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ ν).smulRight α))) → IsUnitOrientationOf ζ' (Q ⊓ (ℝ ∙ ν)ᗮ)",
+  "lean_name": "dor_lmbsf_interior_product_orientation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1007e4631e-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.lintegral_split-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1",
+  "depth": 6,
+  "title": "Lower integrals over G(M) split along a Borel partition of M up to a null image (G continuous and injective on M)",
+  "statement": "Let m, d, P ∈ ℕ, M ⊆ ℝ^d, A_i ⊆ ℝ^d (i ∈ ℕ) and G : ℝ^d → ℝ^P. Assume G is continuous on M and injective on M, every A_i is Borel with A_i ⊆ M, the A_i are pairwise disjoint, and H^m(G(M ∖ ⋃_i A_i)) = 0, where H^m := μHE[m]. Then for every g : ℝ^P → [0, ∞] (no measurability required), ∫⁻_{G(M)} g dH^m = Σ_{i∈ℕ} ∫⁻_{G(A_i)} g dH^m.",
+  "lean_statement": "∀ (m d P : ℕ) (M : Set (Euclid d)) (A : ℕ → Set (Euclid d)) (G : Euclid d → Euclid P), ContinuousOn G M → InjOn G M → (∀ i, MeasurableSet (A i)) → (∀ i, A i ⊆ M) → Pairwise (fun i j => Disjoint (A i) (A j)) → μHE[m] (G '' (M \\ ⋃ i, A i)) = 0 → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ w in G '' M, g w ∂μHE[m] = ∑' i, ∫⁻ w in G '' A i, g w ∂μHE[m]",
+  "lean_name": "codim1_lura_lintegral_image_eq_tsum_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-1edd738386-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.borel_glue-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1",
+  "depth": 6,
+  "title": "Borel gluing of functions along disjoint injective continuous images of Borel sets",
+  "statement": "Let m, d ∈ ℕ and, for i ∈ ℕ, let F_i : ℝ^m → ℝ^d be continuous, B_i ⊆ ℝ^m Borel with F_i injective on B_i, and h_i : ℝ^m → ℝ Borel with h_i ≥ 0 everywhere. Assume the images F_i(B_i) are pairwise disjoint. Then there is a Borel J : ℝ^d → ℝ with J(v) ≥ 0 for every v and J(F_i(b)) = h_i(b) for every i ∈ ℕ and every b ∈ B_i.",
+  "lean_statement": "∀ (m d : ℕ) (F : ℕ → Euclid m → Euclid d) (B : ℕ → Set (Euclid m)) (h : ℕ → Euclid m → ℝ), (∀ i, Continuous (F i)) → (∀ i, MeasurableSet (B i)) → (∀ i, InjOn (F i) (B i)) → Pairwise (fun i j => Disjoint (F i '' B i) (F j '' B j)) → (∀ i, Measurable (h i)) → (∀ i a, 0 ≤ h i a) → ∃ J : Euclid d → ℝ, Measurable J ∧ (∀ v, 0 ≤ J v) ∧ ∀ i, ∀ b ∈ B i, J (F i b) = h i b",
+  "lean_name": "codim1_lura_glue_measurable_on_pieces",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-1314bc05c1-a1"
+}

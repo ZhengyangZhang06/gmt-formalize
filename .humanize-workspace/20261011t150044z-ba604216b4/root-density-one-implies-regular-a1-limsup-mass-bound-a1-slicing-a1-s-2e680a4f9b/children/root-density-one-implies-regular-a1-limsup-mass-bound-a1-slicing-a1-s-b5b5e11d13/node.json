@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.lipschitz_leibniz-a1.cutoff_smoothing-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.lipschitz_leibniz-a1",
+  "depth": 6,
+  "title": "Smooth approximants of the Lipschitz cut-off γ_{a,b}∘f with bounded gradients, converging uniformly",
+  "statement": "Let P ∈ ℕ, let f : ℝ^P → ℝ be L-Lipschitz (L ≥ 0, LipschitzWith L f) and let a < b be real. Put h(x) := γ_{a,b}(f(x)) = min{1, max{0, (b − f(x))/(b − a)}}. Then there exist functions h_k : ℝ^P → ℝ (k ∈ ℕ) and a real constant c such that: every h_k is C^∞ (ContDiff ℝ (⊤ : ℕ∞) (h_k)); ‖Dh_k(x)‖ ≤ c for all k and x (operator norm of fderiv ℝ (h_k) x); |h_k(x)| ≤ 2 for all k and x; and h_k → h uniformly on ℝ^P as k → ∞ (TendstoUniformly along atTop).",
+  "lean_statement": "∀ (P : ℕ) (f : Euclid P → ℝ) (L : NNReal) (a b : ℝ), LipschitzWith L f → a < b → ∃ (hs : ℕ → Euclid P → ℝ) (c : ℝ), (∀ k, ContDiff ℝ (⊤ : ℕ∞) (hs k)) ∧ (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ c) ∧ (∀ k x, |hs k x| ≤ 2) ∧ TendstoUniformly hs (fun x => min 1 (max 0 ((b - f x) / (b - a)))) atTop",
+  "lean_name": "dor_lmbsf_ll_cutoff_smooth_approx",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.lipschitz_smoothing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.lipschitz_smoothing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-lipschitz-smoothing-a1-a1",
+      "result_commit": "00c458d8b5f0043b634cbdd0b8d43d20d1d7deb6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-b5b5e11d13-a1"
+}

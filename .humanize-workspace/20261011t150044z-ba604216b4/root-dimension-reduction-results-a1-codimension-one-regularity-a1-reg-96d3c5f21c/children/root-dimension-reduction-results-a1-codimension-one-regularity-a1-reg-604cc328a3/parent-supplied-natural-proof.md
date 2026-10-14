@@ -1,0 +1,159 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Simon Ch. 3, Lemma 1.2, 'only if' part (chapter-03.txt lines 25–66), as expanded in step 1 of the parent proof. Simon covers ⋃ G_{ij}(ℝ^n) by an H^n-null set together with the submanifolds G_{ij}(B_ρ(x)) at points where the Jacobian of G_{ij} is non-zero. Here each such piece is recorded quantitatively by a lower Lipschitz bound on an open ball.
+- The bound makes G_{ij} injective on the ball and a homeomorphism onto its image, with injective derivative there. This is the conclusion of the inverse-function argument in the parent proof, obtained directly from strict differentiability.
+- The Lindelöf step is realised by balls with centres in a dense sequence and rational radii.
+Corrections to the printed proof, stated here as required. Below, ℝ^P = ℝ^{n+ℓ}.
+- The maps G_{ij} take values in ℝ^{n+ℓ}; the book prints ℝ^ℓ.
+- Display (1) should read F_j(ℝ^n) ⊆ E_j ∪ ⋃_i G_{ij}(ℝ^n); the book prints 'graph F_j'.
+- The garbled 'by the area formula L^n({x : J_{G_{ij}} = 0}' should read H^n(G_{ij}({J_{G_{ij}} = 0})) = 0.
+- The local pieces are submanifolds of ℝ^{n+ℓ}; the book prints ℝ^n.
+- The scalar Theorem 2.1.5 is applied coordinatewise to the vector-valued F_j.
+Notation: H^n = μHE[n], which equals Lebesgue measure L^n (volume) on ℝ^n; B_ρ(x) is the open ball.
+
+1. (Definition 1.1.) By hypothesis there are M₀ with H^n(M₀) = 0 and Lipschitz maps F_j : ℝ^n → ℝ^P (j ∈ ℕ), with Lipschitz constants L_j, such that M ⊆ M₀ ∪ ⋃_j F_j(ℝ^n).
+
+2. (C¹ approximation, via the sibling c1_approximation = Simon Ch. 2, 1.5.) Fix j, i ∈ ℕ and put δ := ((i + 1)(P + 1))^{-1}.
+- For each coordinate l ∈ {1, …, P}, F_j^l(x) := (F_j(x))_l is L_j-Lipschitz, because |y_l − y'_l| ≤ |y − y'| in ℝ^P.
+- The sibling theorem gives C¹ functions g^l : ℝ^n → ℝ with L^n({F_j^l ≠ g^l}) ≤ L^n({F_j^l ≠ g^l} ∪ {DF_j^l ≠ Dg^l}) < δ.
+- Let G_{ij}(x) := (g^1(x), …, g^P(x)) ∈ ℝ^P. G_{ij} is C¹: its coordinates are C¹, and ℝ^P ≅ ℝ^{Fin P} is a continuous linear equivalence.
+- If F_j(x) ≠ G_{ij}(x), some coordinate differs. So {F_j ≠ G_{ij}} ⊆ ⋃_l {F_j^l ≠ g^l}, and L^n({F_j ≠ G_{ij}}) ≤ Pδ < (i + 1)^{-1}. For P = 0 the set is empty.
+
+3. (The null set F_j(Z_j).)
+- Z_j := ⋂_i {F_j ≠ G_{ij}} has L^n(Z_j) ≤ (i + 1)^{-1} for every i, so L^n(Z_j) = 0.
+- F_j is L_j-Lipschitz, so H^n(F_j(Z_j)) ≤ L_j^n H^n(Z_j) = L_j^n L^n(Z_j) = 0 (Simon Ch. 2, 1.8(i); SimonGMT Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn).
+- Every x ∉ Z_j has F_j(x) = G_{ij}(x) for some i. Hence F_j(ℝ^n) ⊆ F_j(Z_j) ∪ ⋃_i G_{ij}(ℝ^n).
+
+4. (Critical points.) Let C_{ij} := {x : DG_{ij}(x) is not injective}; G_{ij} is differentiable everywhere. The Jacobian J_{G_{ij}} vanishes exactly on C_{ij}. By the area formula the image of this set is H^n-null: H^n(G_{ij}(C_{ij})) = 0. This is Simon's 'by the area formula' in the proof of 1.2, and SimonGMT Chapter02.area_image_criticalSet_eq_zero. SimonGMT proves it by applying the injective area formula to the lifted graph x ↦ (G(x), εx) and letting ε ↓ 0.
+
+5. (Lower Lipschitz bound near regular points.) Let x ∉ C_{ij} and L := DG_{ij}(x), an injective linear map.
+- v ↦ |Lv| is continuous and positive on the compact unit sphere. So there is μ > 0 with |Lv| ≥ 2μ|v| for all v (any μ > 0 if n = 0).
+- G_{ij} is C¹, so DG_{ij} is continuous at x. Choose δ_x > 0 with ‖DG_{ij}(y) − L‖ ≤ μ for y ∈ B_{δ_x}(x).
+- The mean value inequality for G_{ij} − L on the convex ball gives |G_{ij}(a) − G_{ij}(b) − L(a − b)| ≤ μ|a − b| for a, b ∈ B_{δ_x}(x).
+- Hence |G_{ij}(a) − G_{ij}(b)| ≥ |L(a − b)| − μ|a − b| ≥ μ|a − b| for a, b ∈ B_{δ_x}(x).
+
+6. (Countably many balls.) Fix a dense sequence (e_q)_{q∈ℕ} in ℝ^n; it exists because ℝ^n is separable. For q, p ∈ ℕ put β_{q,p} := B_{1/(p+1)}(e_q). Call β_{q,p} good for G_{ij} if there is μ > 0 with μ|a − b| ≤ |G_{ij}(a) − G_{ij}(b)| for all a, b ∈ β_{q,p}.
+- Let x ∉ C_{ij}, with δ_x and μ from step 5. Choose p with 2/(p + 1) < δ_x, then q with |e_q − x| < 1/(p + 1).
+- Then x ∈ β_{q,p} ⊆ B_{2/(p+1)}(x) ⊆ B_{δ_x}(x), so β_{q,p} is good.
+- Hence G_{ij}(ℝ^n) ⊆ G_{ij}(C_{ij}) ∪ ⋃{G_{ij}(β_{q,p}) : β_{q,p} good for G_{ij}}.
+
+7. (Enumeration.) Fix a bijection ℕ → ℕ⁴, k ↦ (j, i, q, p). Put g_k := G_{ij} and c_k := e_q.
+- If β_{q,p} is good for G_{ij}, put r_k := 1/(p + 1) and let m_k > 0 be a constant witnessing goodness.
+- Otherwise put r_k := 0 and m_k := 1.
+Then g_k is C¹ and m_k > 0. Property (i) holds by goodness in the first case, and vacuously in the second, since B_0(c_k) = ∅.
+
+8. (Borel, finite measure.)
+- (ii) The open ball B_{r_k}(c_k) is σ-compact: it is the union of the closed balls of radius r_k − 1/(t + 1), t ∈ ℕ. As g_k is continuous, N_k is a countable union of compact, hence closed, sets. So N_k is Borel. (Library: Mathlib's IsSigmaCompact.image and SimonGMT Chapter03.measurableSet_of_isSigmaCompact_borel.)
+- (iii) Dg_k is continuous, hence bounded on the compact convex set closedBall(c_k, r_k). By the mean value inequality g_k is Λ_k-Lipschitz there for some Λ_k (ContDiffOn.exists_lipschitzOnWith). So H^n(N_k) ≤ Λ_k^n H^n(B_{r_k}(c_k)) = Λ_k^n L^n(B_{r_k}(c_k)) < ∞.
+
+9. (Covering, (iv).) By steps 1, 3, 4 and 6,
+ M ⊆ M₀ ∪ ⋃_j F_j(Z_j) ∪ ⋃_{i,j} G_{ij}(C_{ij}) ∪ ⋃_k N_k,
+since every good ball β_{q,p} for G_{ij} gives N_k = G_{ij}(β_{q,p}) for the index k of (j, i, q, p). The first three sets are countable unions of H^n-null sets. Hence H^n(M ∖ ⋃_k N_k) = 0. ∎
+
+Implementation note (not part of the mathematics). Step 4 uses `import Poincare.SimonGMT.Chapter02.AreaCritical` and step 8 `import Poincare.SimonGMT.Chapter03.SubmanifoldCover` (optional); both are prebuilt. The other cited facts are Mathlib lemmas: ContDiffAt.hasStrictFDerivAt, LinearMap.exists_antilipschitzWith, Convex.norm_image_sub_le_of_norm_fderiv_le, TopologicalSpace.exists_dense_seq, ContDiffOn.exists_lipschitzOnWith and EuclideanSpace.euclideanHausdorffMeasure_eq_volume. They are available after import GMT.Ch07.Submission.
+
+## Key steps
+
+1. Definition 1.1: M ⊆ M₀ ∪ ⋃_j F_j(ℝ^n) with H^n(M₀) = 0 and F_j Lipschitz.
+2. The sibling C¹ Approximation Theorem, applied to the coordinates of F_j, gives C¹ maps G_{ij} with L^n({F_j ≠ G_{ij}}) < 1/(i+1). Hence Z_j = ⋂_i {F_j ≠ G_{ij}} is null, H^n(F_j(Z_j)) = 0, and F_j(ℝ^n) ⊆ F_j(Z_j) ∪ ⋃_i G_{ij}(ℝ^n).
+3. Critical images are null: H^n(G_{ij}({DG_{ij} not injective})) = 0 (area formula; SimonGMT area_image_criticalSet_eq_zero).
+4. At a regular point x, strict differentiability gives δ_x, μ > 0 with |G_{ij}(a) − G_{ij}(b)| ≥ μ|a − b| on B_{δ_x}(x). Balls with dense-sequence centres and radii 1/(p+1) containing x and inside B_{δ_x}(x) are therefore good.
+5. Enumerate (j,i,q,p) by ℕ, using empty balls (r_k = 0) for indices that are not good. The pieces are σ-compact images (Borel), with finite H^n-measure because C¹ maps are Lipschitz on closed balls. They cover M up to the null set M₀ ∪ ⋃ F_j(Z_j) ∪ ⋃ G_{ij}(C_{ij}).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; cat lean-toolchain lakefile.toml swarm-project.json; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `python3 scans of dag.json: lean_name/status/candidate_commit/lean_statement of rsd_tendsto_closedBall_density_of_approxTangent, rsd_tendsto_ball_density_of_closedBall, regcomp_atl_upper_density_zero, regcomp_approx_tangent_locality, rsdic_ae_tangent_iff_of_subset, doraggt_ae_approxTangent_transfer, dpf_rectifiable_bilipschitz_pieces, dpf_approxTangent_ae_bilipschitz_piece, ptd_piece_image_approxTangent_ae, cbr_rectifiable_of_approx_tangent; all accepted lean_statements containing HasApproximateTangentSpaceAt; collision check for codim1_rdo_c1_approximation, codim1_rdo_rectifiable_c1_cover, codim1_rdo_c1_piece_approxTangent, codim1_rdo_rectifiable_ae_approxTangent (0 matches); no existing children of the selected node`
+- `sed -n /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py: _existing_lean_name_problem, _install_parent_supplied_child_handoff, _solve_children, accepted-child overlay (merges candidate commits of node.children + node.depends_on only), _accepted_checkpoint`
+- `grep -n '^theorem' simongmt Chapter02/{AreaCritical,AreaFormula,WeightedArea,WhitneyExtension,WhitneyJet,AreaLipschitz,Lipschitz}.lean, Chapter03/{Rectifiable,SubmanifoldCover,DisjointCover}.lean, Chapter01/Lusin.lean; module docstrings of all Chapter02/*.lean`
+- `grep -rln 'Lusin|Whitney' and 'theorem .*exists.*continuousOn' in snapshot Mathlib (only Lusin–Souslin and the manifold Whitney embedding: no measure-theoretic Lusin, no C¹ Whitney extension); grep norm_fderiv_le_of_lipschitz in Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `lake env lean /tmp/rdo1-split-check/Avail.lean (#check of SimonGMT/Mathlib lemmas after import GMT.Ch07.Submission)`
+- `lake env lean /tmp/rdo1-split-check/Imports.lean and /tmp/rdo1-split-check/Names.lean (#check and #print axioms with extra imports Poincare.SimonGMT.Chapter02.AreaCritical, Chapter02.WeightedArea, Chapter01.Lusin, Chapter03.SubmanifoldCover)`
+- `olean survey of lake-packages-25730c7c/simongmt/.lake/build/lib/lean/Poincare/SimonGMT/Chapter0{1,2,3}; findmnt and touch on lake-packages-25730c7c (read-only); lake env lean /tmp/rdo1-split-check/vendor/WhitneyExtensionCopy.lean plus #print axioms exists_contDiff_one_extension_of_whitney`
+- `git show <candidate_commit>:GMT/Ch07/Submission.lean over all accepted nodes (import headers; helper theorems in namespace Submission); git diff --stat of accepted commits; sed -n gmt-compare.py candidate_inputs/check_packages (new .lean files allowed under GMT/Ch07/)`
+- `lake env lean -DautoImplicit=false /tmp/rdo1-split-check/Types.lean (seven child types plus comparator-style `theorem target : (T) := by exact Submission.X`)`
+- `lake env lean -DautoImplicit=false /tmp/rdo1-split-check/Assembly.lean (parent and Theorem 1.6 '⇒' from child types; #print axioms parent_from_all)`
+- `lake env lean -DautoImplicit=false /tmp/rdo1-split-check/Combined.lean (accepted proofs from commits 422e346e, dbef2c15, c3ca64f2 + stubs; #print axioms Submission.codim1_rdo_rectifiable_ae_density_one)`
+- `sed -n book/chapter-02.txt 100–330, chapter-03.txt 1–160, chapter-01.txt 560–735; grep -n of the item headings (1.2 Lemma, 1.3 Remark, 1.4 Definition, 1.5 Remarks, 1.6 Theorem, Proof of Theorem 1.5, 3.6 Theorem)`
+- `read accepted parent-supplied natural proofs of regcomp_approx_tangent_locality, rsd_tendsto_closedBall_density_of_approxTangent, rsd_tendsto_ball_density_of_closedBall, doraggt_ae_approxTangent_transfer, doraggt_local_density_zero`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-96d3c5f21c/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/lakefile.toml`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/DisjointCover.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/lakefile.toml`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/WhitneyEmbedding.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-unweighted-density-one-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1-closed-to-open-b-2625a8c412/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6e2110e6b7/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-cda4d660ba/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/rdo1-split-check/Avail.lean`
+- `/tmp/rdo1-split-check/Imports.lean`
+- `/tmp/rdo1-split-check/Names.lean`
+- `/tmp/rdo1-split-check/Types.lean`
+- `/tmp/rdo1-split-check/Assembly.lean`
+- `/tmp/rdo1-split-check/Combined.lean`
+- `/tmp/rdo1-split-check/vendor/WhitneyExtensionCopy.lean`
+- `/tmp/rdo1-split-check/out/subproblems.json`
+
+Pins and contract.
+- The snapshot manifest (project b4d606db, Mathlib 25730c7c) matches the workspace.
+- Submission.lean is byte-identical to Contract.lean.
+
+Library: what exists.
+- SimonGMT defines CountablyRectifiable, HasApproximateTangentSpaceAt and blowUpMap (Chapter03/Rectifiable).
+- It proves Remark 1.3 (DisjointCover) and only the 'if' direction of Lemma 1.2. The SubmanifoldCover header states that 'only if' needs the C¹ approximation theorem and is not proved.
+- It also proves: critical images are null (Chapter02/AreaCritical.area_image_criticalSet_eq_zero); the injective area formula in Bochner form (Chapter02/WeightedArea.integral_area_formula_of_injective_derivative); Whitney's C¹ extension (Chapter02/WhitneyExtension.exists_contDiff_one_extension_of_whitney); Lusin (Chapter01/Lusin.exists_isClosed_continuousOn_of_measurable); the Lipschitz image bound (euclideanHausdorffMeasure_image_le_of_lipschitzOn). All use only propext, Classical.choice and Quot.sound.
+- Mathlib has Rademacher, Egoroff, closed inner regularity, strict differentiability, LinearMap.exists_antilipschitzWith, ContDiffOn.exists_lipschitzOnWith and μHE[n] = volume on Euclid n.
+
+Library: what is missing.
+- SimonGMT has neither Simon Ch. 2 Theorem 1.5 nor Ch. 3 Theorem 1.6.
+- Mathlib has neither a measure-theoretic Lusin theorem nor a C¹ Whitney extension.
+
+Imports.
+- The SimonGMT area, Whitney and Lusin modules are not in the import closure of GMT.Ch07.Submission.
+- Accepted nodes do add such imports (Chapter02.WeightedArea, Chapter02.AreaLipschitz, Chapter01.DensityComparison), and their Submission files contain helper theorems.
+- WhitneyExtension.olean is absent from the read-only shared package tree. An unmodified copy compiles with 0 errors, so it must be vendored under GMT/Ch07/ (the verifier accepts new Lean files there) or inlined.
+
+DAG.
+- Three declarations are accepted with candidate commits and byte-identical types, and are reused as children: doraggt_ae_approxTangent_transfer (422e346e), rsd_tendsto_closedBall_density_of_approxTangent (dbef2c15) and rsd_tendsto_ball_density_of_closedBall (c3ca64f2).
+- regcomp_atl_upper_density_zero, cited in the supplied step 4, is an ingredient of the doraggt proof chain.
+- The four new names occur nowhere in dag.json.
+- A parent worktree merges only the candidate commits of its children and depends_on, so the reused lemmas must be listed as children.
+
+Lean.
+- All seven child types elaborate after import GMT.Ch07.Submission in the contract scope.
+- The parent type is proved from the child types with axioms propext, Classical.choice and Quot.sound only.
+- With the actual accepted proofs and stubs for the three new lemma children, both Theorem 1.6 '⇒' and the parent compile. sorryAx comes only from those stubs.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1",
+  "depth": 5,
+  "title": "C¹ Approximation Theorem for Lipschitz functions (Simon Ch. 2, Theorem 1.5)",
+  "statement": "Let n ∈ ℕ, K ≥ 0 and let f : ℝ^n → ℝ be K-Lipschitz. Then for every ε ∈ (0, ∞] there is a C¹ function g : ℝ^n → ℝ with L^n({x : f(x) ≠ g(x)} ∪ {x : Df(x) ≠ Dg(x)}) < ε. Here ℝ^n = Euclid n, L^n is Lebesgue measure on it (volume), and Df(x) is the Fréchet derivative (Lean fderiv ℝ f x, which is 0 where f is not differentiable).",
+  "lean_statement": "∀ (n : ℕ) (f : Euclid n → ℝ) (K : NNReal), LipschitzWith K f → ∀ ε : ℝ≥0∞, 0 < ε → ∃ g : Euclid n → ℝ, ContDiff ℝ 1 g ∧ volume {x | f x ≠ g x ∨ fderiv ℝ f x ≠ fderiv ℝ g x} < ε",
+  "lean_name": "codim1_rdo_c1_approximation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-07b3f8e4c7-a1"
+}

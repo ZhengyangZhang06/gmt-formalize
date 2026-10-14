@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1.chart_tangent_ae-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1",
+  "depth": 6,
+  "title": "Approximate tangent planes of M on a chart piece via (TL) (Simon Ch. 3, Remark 1.5(2); parent Step 7)",
+  "statement": "Assume (TL): for all P', n' ∈ ℕ, every open U' ⊆ ℝ^{P'} and all Borel sets A ⊆ B ⊆ U' with H^{n'}(B ∩ K) < ∞ for every compact K ⊆ U' (H^{n'} = μHE[n']): for H^{n'}-a.e. x ∈ A and every linear subspace Q of ℝ^{P'}, B has approximate tangent space Q at x iff A has approximate tangent space Q at x. (HasApproximateTangentSpaceAt, Simon Ch. 3, 1.4.)\n\nLet:\n- P, m ∈ ℕ and U ⊆ ℝ^P open;\n- M ⊆ U Borel with H^m(M ∩ K) < ∞ for every compact K ⊆ U (H^m = μHE[m]);\n- C, C' ⊆ ℝ^m compact, with C' convex and C ⊆ int C';\n- ψ : ℝ^m → ℝ^P C¹ on C' (ContDiffOn ℝ 1 ψ C'), with ψ(C') ⊆ U.\nAssume (IT): for every y ∈ int C', the set ψ(C') has approximate tangent space Dψ(y)(ℝ^m) = LinearMap.range (fderiv ℝ ψ y) at ψ(y), in dimension m.\n\nThen for H^m-a.e. x ∈ M ∩ ψ(C) (that is, μHE[m]⌞(M ∩ ψ(C))-a.e.) and every y ∈ C with ψ(y) = x, M has approximate tangent space Dψ(y)(ℝ^m) at x, in dimension m.",
+  "lean_statement": "(∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P m : ℕ) (U M : Set (Euclid P)) (C C' : Set (Euclid m)) (ψ : Euclid m → Euclid P), IsOpen U → MeasurableSet M → M ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → ContDiffOn ℝ 1 ψ C' → ψ '' C' ⊆ U → IsCompact C → IsCompact C' → Convex ℝ C' → C ⊆ interior C' → (∀ y ∈ interior C', HasApproximateTangentSpaceAt m (ψ '' C') (ψ y) (LinearMap.range (fderiv ℝ ψ y : Euclid m →ₗ[ℝ] Euclid P))) → ∀ᵐ x ∂(μHE[m].restrict (M ∩ ψ '' C)), ∀ y ∈ C, ψ y = x → HasApproximateTangentSpaceAt m M x (LinearMap.range (fderiv ℝ ψ y : Euclid m →ₗ[ℝ] Euclid P))",
+  "lean_name": "dor_lmbsf_cp_chart_tangent_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-73d00ee3ab-a1"
+}

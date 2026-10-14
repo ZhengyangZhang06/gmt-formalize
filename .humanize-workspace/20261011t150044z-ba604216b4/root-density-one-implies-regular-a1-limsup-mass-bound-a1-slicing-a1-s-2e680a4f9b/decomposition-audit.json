@@ -1,0 +1,97 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "alternatizeUncurryFin_apply|norm_alternatizeUncurryFin_le|alternatizeUncurryFinCLM|alternatizeUncurryFin_(add|smul)",
+        "Continuous.stronglyMeasurable|comp_stronglyMeasurable|theorem stronglyMeasurable",
+        "extDeriv_(fun_smul|smul)|def extDeriv|def exteriorDerivative|def IsTestForm|def TestFormOn|def exteriorDerivativeTestOn|lemma boundary_apply|theorem.*unique",
+        "dor_lmbsf_ll_|cmcs_lipschitz_smoothing|cmcs_cd_defect_identity|rsd_cmr_ic_action_integrable|fvmb_imrep_ae_unitOrientation_approxTangentPlane|unit_orientation_norm_le_one",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dor_lmbsf_ll_decomposition/AllReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dor_lmbsf_ll_decomposition/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/independent-dor-ll-audit-4l290nfe/Types.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2e680a4f9b/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-2e680a4f9b/decomposition-v1.json",
+        "GMT/Ch07/Contract.lean",
+        "GMT/Ch07/Submission.lean",
+        "GMT/Scratch/dor_lmbsf_ll_decomposition/Assembly.lean",
+        "GMT/Scratch/dor_lmbsf_ll_decomposition/AllReal.lean",
+        "/tmp/independent-dor-ll-audit-4l290nfe/Types.lean"
+      ],
+      "conclusion": "The split appropriately isolates smoothing, the smooth defect identity, dominated convergence, and tangent-field construction for this selected parent. Independently checked every supplied proof and verified that Assembly.lean has the exact frozen parent type and exact direct-child hypotheses. Assembly.lean and AllReal.lean compile; the parent and all nine children use only propext, Classical.choice and Quot.sound. All nine one-line types pass lexical validation and independently elaborate as propositions in comparator scope without child implementations. Snapshot project b4d606d and mathlib 25730c7c are compatible with the compiler environment; the frozen and workspace contracts are byte-identical. No proposed declaration names occur in the snapshot project. DAG and candidate-commit checks confirm identical frozen types for the five accepted reuses; the four new names are unreserved. Dependencies, including reused dependency closures, are acyclic and do not rely on the selected parent. All names are bare identifiers. The inline constructions use the intended real Euclidean and covector instances; there are no matrix constructions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lipschitz_smoothing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type match. The normalized compactly supported mollifier proves smoothness, preservation of the Lipschitz bound, uniform error Kσ, and the locality clause. The proof is complete and non-circular; accepted reuse has an identical frozen type."
+    },
+    {
+      "key": "cutoff_smoothing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The clamp estimate and positive scales σ_k = 1/((K+1)(k+1)) give the exact derivative bound, absolute bound 2, and uniform convergence. Only the declared smoothing dependency is needed; the supplied proof matches the independently compiled implementation."
+    },
+    {
+      "key": "defect_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-domain and no-integrability formulation is sound. Smooth multiplication preserves test forms; the product rule identifies the difference form. Representations and current linearity establish the stated sign without distributing a potentially nonintegrable integral. Accepted reuse has an identical frozen type."
+    },
+    {
+      "key": "action_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The IMRep and test-form hypotheses match the type. Almost-everywhere orientation bounds, strong measurability of evaluation, and local multiplicity integrability provide the compactly supported integrable majorant. The proof is complete; accepted reuse has an identical frozen type."
+    },
+    {
+      "key": "action_dct",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Rewriting with the integrable kernel G gives measurable approximants dominated by C‖G‖ and the required pointwise limit. The pinned dominated-convergence theorem requires no separate measurability assumption on h. The exact conclusion follows using only action_integrable."
+    },
+    {
+      "key": "orient_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "R.orients supplies an approximate tangent plane almost everywhere; uniqueness identifies it with the chosen approxTangentPlane. The prose, restricted measure, and Lean proposition agree. Accepted reuse has an identical frozen type."
+    },
+    {
+      "key": "orient_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Evaluation on an orthonormal family bounds either orientation sign by the covector operator norm, including degree zero. The continuous-linear-map norm bound proves precisely ‖ξ‖ ≤ 1. Accepted reuse has an identical frozen type."
+    },
+    {
+      "key": "wedge_vector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Linearity and the standard dual-basis expansion prove the explicit representing-vector identity. The alternating-sum formula annihilates normal directions, and finite-dimensional orthogonal complementation proves tangency. Both conclusions match the prose and compile without sibling dependencies."
+    },
+    {
+      "key": "tangent_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The strongly measurable representative and norm truncation correctly produce globally measurable coefficients, the stated vanishing property, and a uniform bound. Continuous coefficient forms are strongly measurable because the source is second countable. A single full-measure set identifies the truncated orientation with R.orient, establishing tangency and the identity simultaneously for every β using exactly the declared dependencies."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1.c1_image_null-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1",
+  "depth": 6,
+  "title": "C¹ maps on open sets send Lebesgue-null sets to H^m-null sets (Luzin N property)",
+  "statement": "Let m, P ∈ ℕ, V ⊆ ℝ^m open, ψ : ℝ^m → ℝ^P C¹ on V, and Z ⊆ V with L^m(Z) = 0, where L^m = volume on Euclid m. Then H^m(ψ(Z)) = 0, where H^m = μHE[m] is the normalized m-dimensional Hausdorff measure on ℝ^P.",
+  "lean_statement": "∀ (m P : ℕ) (V Z : Set (Euclid m)) (ψ : Euclid m → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → Z ⊆ V → volume Z = 0 → μHE[m] (ψ '' Z) = 0",
+  "lean_name": "dor_lmbsf_cp_c1_image_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-b5fb4131d0-a1"
+}

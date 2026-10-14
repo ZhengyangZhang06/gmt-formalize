@@ -1,0 +1,102 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.slicing-a1.cutoff_defect-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.slicing-a1.cutoff_defect-a1.leibniz-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 6, 4.11 (book/chapter-06.txt lines 1378–1386). Its middle step T(γ∘f dω) − T(d(γ∘f ω)) = −T(γ'(f) df ∧ ω) rests on the Leibniz expansion d(γ∘f·ω) = γ∘f·dω + d(γ∘f) ∧ ω. This is step 1 (Leibniz rule) of the parent proof of cmcs_cutoff_defect_bound, isolated for an arbitrary function g and an arbitrary k-form η that are differentiable at the point x.
+
+Notation: A := ContinuousAlternatingMap.alternatizeUncurryFin. For a k-form θ : Euclid P → Covector (Euclid P) k (DifferentialForm (Euclid P) k), SimonGMT's exteriorDerivative θ is an abbreviation (abbrev) of Mathlib's extDeriv θ, and Mathlib defines extDeriv θ x := A (fderiv ℝ θ x).
+
+1. (Unfold the definitions.) By the two definitions just recalled, exteriorDerivative (fun y => g y • η y) x is definitionally A (fderiv ℝ (fun y => g y • η y) x), and exteriorDerivative η x is definitionally A (fderiv ℝ η x). So the claim is definitionally the equation
+   A (fderiv ℝ (fun y => g y • η y) x) = g x • A (fderiv ℝ η x) + A ((fderiv ℝ g x).smulRight (η x)).
+   In Lean, change the goal to this form with `show`.
+2. (Product rule.) Let hg : DifferentiableAt ℝ g x and hη : DifferentiableAt ℝ η x be the two hypotheses. Mathlib's product rule for a scalar function times a vector-valued function, fderiv_fun_smul hg hη, gives
+   fderiv ℝ (fun y => g y • η y) x = g x • fderiv ℝ η x + (fderiv ℝ g x).smulRight (η x).
+   Here (fderiv ℝ g x).smulRight (η x) is the continuous linear map v ↦ (fderiv ℝ g x v) • η x.
+3. (Linearity of A.) A is the continuous linear map alternatizeUncurryFinCLM ℝ (Euclid P) ℝ applied to its argument. So A is additive: A (F + G) = A F + A G (ContinuousAlternatingMap.alternatizeUncurryFin_add). It also commutes with real scalars: A (c • F) = c • A F (ContinuousAlternatingMap.alternatizeUncurryFin_smul, used with c = g x).
+4. (Conclusion.) Rewrite the left side of the goal of step 1 by step 2, then by the additivity of step 3, and finally by the homogeneity of step 3 at c = g x:
+   A (g x • fderiv ℝ η x + (fderiv ℝ g x).smulRight (η x)) = A (g x • fderiv ℝ η x) + A ((fderiv ℝ g x).smulRight (η x)) = g x • A (fderiv ℝ η x) + A ((fderiv ℝ g x).smulRight (η x)).
+   This is the right side of the goal. In Lean, after the `show` of step 1, `rw [fderiv_fun_smul hg hη, ContinuousAlternatingMap.alternatizeUncurryFin_add, ContinuousAlternatingMap.alternatizeUncurryFin_smul]` closes the goal (checked against Mathlib 25730c7c). ∎
+
+## Key steps
+
+1. Unfold exteriorDerivative = extDeriv: exteriorDerivative θ x is definitionally alternatizeUncurryFin (fderiv ℝ θ x); reduce the goal with `show`.
+2. Product rule fderiv_fun_smul hg hη: fderiv ℝ (fun y => g y • η y) x = g x • fderiv ℝ η x + (fderiv ℝ g x).smulRight (η x).
+3. alternatizeUncurryFin is additive and ℝ-homogeneous (alternatizeUncurryFin_add, alternatizeUncurryFin_smul); rewriting with both closes the goal.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c)`
+- `cmp GMT/Ch07/Submission.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean (identical)`
+- `rg -n 'theorem fderiv_fun_smul\b|theorem fderiv_smul\b' mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `rg -n 'theorem alternatizeUncurryFin_add|theorem alternatizeUncurryFin_smul|def alternatizeUncurryFin\b' mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `rg -n 'def extDeriv\b|theorem extDeriv_smul|theorem extDeriv_fun_smul|theorem extDeriv_add|extDeriv_apply' mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `rg -n 'theorem enorm_integral_le_lintegral_enorm|theorem integral_congr_ae\b' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `rg -n 'theorem enorm_eq_ofReal_abs' mathlib/Mathlib/Analysis/Normed/Group/Real.lean`
+- `rg -n 'theorem tsupport_smul_subset_right|theorem tsupport_smul_subset_left' mathlib/Mathlib/Topology/Algebra/Support.lean; rg -n 'theorem HasCompactSupport.smul_left\b' mathlib/Mathlib`
+- `rg -n 'theorem IsCompact.of_isClosed_subset' mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `rg -n 'theorem ContDiff.smul\b' mathlib/Mathlib; rg -n 'theorem lintegral_mono_ae\b' mathlib/Mathlib`
+- `rg -n -i 'leibniz|smulRight|smul_mem|fderiv_fun_smul|extDeriv_smul|alternatizeUncurryFin|cmcs_' local-references/123e8435b4a2469b/project -g '*.lean' (no match)`
+- `rg -n 'def testFormOnSubmodule|abbrev TestFormOn|def IsTestForm|def IsSmoothForm|def exteriorDerivativeTestOn|theorem boundary_apply|abbrev exteriorDerivative|theorem tsupport_exteriorDerivative_subset|theorem exteriorDerivative_isTestForm' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/*.lean`
+- `python3 -I scan of dag.json (680 nodes): lean_name collisions for cmcs_cd_extDeriv_smul_leibniz, cmcs_cd_smul_mem_testFormOn, cmcs_cd_defect_identity; lean_statements matching smulRight|extDeriv|exteriorDerivative (fun|∈ TestFormOn|alternatizeUncurryFin`
+- `rg -l 'cmcs_cd_extDeriv_smul_leibniz|cmcs_cd_smul_mem_testFormOn|cmcs_cd_defect_identity' runs/20261011T150044Z-ba604216b4/nodes -g '*.json' -g '*.md'`
+- `for r in $(git for-each-ref) (3200 refs): git grep -l -E 'cmcs_cd_' $r -- '*.lean' (no match)`
+- `sed -n 1360,1402p book/chapter-06.txt (Simon 6.4.11)`
+- `lean GMT/Scratch/cmcs_cutoff_defect_decomposition_a2/{StubsOnly,Full,Instances}.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_cutoff_defect_decomposition_a2/StubsOnly.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_cutoff_defect_decomposition_a2/Full.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_cutoff_defect_decomposition_a2/Instances.lean`
+
+Snapshot:
+- The manifest pins project b4d606db and Mathlib 25730c7c. The snapshot Ch07 Contract.lean is byte-identical to the workspace GMT/Ch07/Submission.lean.
+
+No match:
+- The snapshot project contains no Leibniz rule, smulRight lemma, smooth-multiplier closure or cmcs_ declaration.
+- Mathlib DifferentialForm/Basic.lean defines extDeriv ω x := alternatizeUncurryFin (fderiv 𝕜 ω x) (line 72). It has only the constant-scalar extDeriv_smul and extDeriv_fun_smul (lines 124, 128), and no Leibniz rule for a function times a form.
+- SimonGMT's testFormOnSubmodule (Currents.lean:100) is closed only under constants.
+
+Found (every tool the child proofs cite):
+- fderiv_fun_smul (FDeriv/Mul.lean:107);
+- alternatizeUncurryFin, alternatizeUncurryFin_add and alternatizeUncurryFin_smul (Alternating/Uncurry/Fin.lean:124, 149, 160);
+- ContDiff.smul (ContDiff/Operations.lean:567);
+- tsupport_smul_subset_right (Topology/Algebra/Support.lean:172); HasCompactSupport.smul_left (line 455) is deliberately avoided because of a whnf timeout;
+- IsCompact.of_isClosed_subset (Compactness/Compact.lean:105);
+- integral_congr_ae and enorm_integral_le_lintegral_enorm (Bochner/Basic.lean:301, 333);
+- Real.enorm_eq_ofReal_abs (Normed/Group/Real.lean:110);
+- lintegral_mono_ae (Lebesgue/Basic.lean:217);
+- in SimonGMT: IsSmoothForm and IsTestForm (Forms.lean:42, 46), exteriorDerivative := extDeriv (Forms.lean:113), TestFormOn (Currents.lean:123), exteriorDerivativeTestOn (Currents.lean:193), GeometricCurrentOn.boundary_apply by rfl (Currents.lean:333), covectorEuclideanNorm (Mass.lean:30).
+
+DAG and git:
+- None of the three names occurs among the 680 DAG nodes or in any Lean file on the 3200 git refs. The only mentions are this node's own unapplied attempt-1 records.
+- No accepted declaration has an identical type. dgcr_bwd_extDeriv_smul_const (constant covector) and regcomp_boundary_smul_estimate (different statement) are not reusable.
+
+Lean (scratch _a2):
+- All three child types elaborate in the contract namespace and opens, with the intended instances.
+- StubsOnly.lean proves the frozen parent from the child stubs and the cmcs_wedge_norm_le stub.
+- Full.lean proves every child using only propext, Classical.choice and Quot.sound.

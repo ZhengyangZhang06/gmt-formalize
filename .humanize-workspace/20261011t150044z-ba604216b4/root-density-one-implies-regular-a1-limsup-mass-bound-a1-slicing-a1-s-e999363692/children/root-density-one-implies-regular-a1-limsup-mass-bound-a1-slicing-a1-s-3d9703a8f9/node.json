@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.density_directions-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1",
+  "depth": 5,
+  "title": "At a Lebesgue density point, every unit direction is a limit of secant directions into the set",
+  "statement": "Let d ∈ ℕ, Z ⊆ ℝ^d an arbitrary set and y ∈ ℝ^d a Lebesgue density point of Z in the sense that L^d(Z ∩ B̄_r(y))/L^d(B̄_r(y)) → 1 as r ↓ 0 (L^d = volume on Euclid d, outer measure; B̄_r(y) = closedBall y r). Then for every v ∈ ℝ^d with |v| = 1 there is a sequence (y_i) in Z ∖ {y} with y_i → y and (y_i − y)/|y_i − y| → v.",
+  "lean_statement": "∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v)",
+  "lean_name": "dor_lmbsf_density_directions",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-3d9703a8f9-a1"
+}

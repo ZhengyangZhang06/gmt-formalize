@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1.whitney_extension-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1",
+  "depth": 6,
+  "title": "Whitney's C¹ extension theorem on ℝ^n (Simon Ch. 2, Theorem 1.6)",
+  "statement": "Let n ∈ ℕ and ℝ^n = Euclid n. Let A ⊆ ℝ^n be closed, and let h : ℝ^n → ℝ and D : ℝ^n → (ℝ^n →L[ℝ] ℝ) (continuous linear functionals) be continuous on A; their values off A are irrelevant. Assume Whitney's condition 1.6(∗) in compact-uniform form: for every compact Q ⊆ A and every real ε > 0 there is δ > 0 such that |h(y) − h(x) − D(x)(y − x)| ≤ ε|y − x| for all x ∈ Q and y ∈ A with |x − y| < δ. Then there is g : ℝ^n → ℝ of class C¹ (ContDiff ℝ 1 g) with g = h on A (EqOn g h A) and with Fréchet derivative D(a) at every a ∈ A (HasFDerivAt g (D a) a).",
+  "lean_statement": "∀ (n : ℕ) (A : Set (Euclid n)) (h : Euclid n → ℝ) (D : Euclid n → (Euclid n →L[ℝ] ℝ)), IsClosed A → ContinuousOn h A → ContinuousOn D A → (∀ Q : Set (Euclid n), IsCompact Q → Q ⊆ A → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x ∈ Q, ∀ y ∈ A, dist x y < δ → ‖h y - h x - D x (y - x)‖ ≤ ε * ‖y - x‖) → ∃ g : Euclid n → ℝ, ContDiff ℝ 1 g ∧ EqOn g h A ∧ ∀ a ∈ A, HasFDerivAt g (D a) a",
+  "lean_name": "codim1_rdo_c1a_whitney_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-7a94444b7e-a1"
+}

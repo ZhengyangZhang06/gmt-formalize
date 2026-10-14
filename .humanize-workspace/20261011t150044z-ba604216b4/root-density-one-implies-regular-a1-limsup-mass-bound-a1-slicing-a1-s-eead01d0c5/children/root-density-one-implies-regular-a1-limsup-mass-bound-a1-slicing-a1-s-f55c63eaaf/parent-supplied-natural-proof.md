@@ -1,0 +1,125 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1.eqon_deriv-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof Step 4(a), the agreement lemma at density points.
+
+1. Lebesgue density. By the Besicovitch density theorem (Besicovitch.ae_tendsto_measure_inter_div for the locally finite measure L^d, valid for an arbitrary set Z), L^d(Z ∩ B̄_r(y))/L^d(B̄_r(y)) → 1 as r ↓ 0 for (L^d⌞Z)-a.e. y. Since Z is measurable, this is equivalent to: for L^d-a.e. y, if y ∈ Z then the ratio tends to 1 (ae_restrict_iff').
+2. Fix y in this full-measure set with y ∈ Z, such that v₁ and v₂ are differentiable at y. Put v := v₁ − v₂ and L := Dv₁(y) − Dv₂(y). Then v is differentiable at y with derivative L, and v = 0 on Z; in particular v(y) = 0.
+3. L vanishes on unit vectors. Let |e| = 1.
+ - By (DD) applied to (d, Z, y) and e, there are y_i ∈ Z with y_i ≠ y, y_i → y and q_i := |y_i − y|⁻¹(y_i − y) → e.
+ - Put c_i := |y_i − y|⁻¹ and δ_i := y_i − y. Then δ_i → 0 and c_iδ_i = q_i → e.
+ - By the sequential characterization of the derivative (Mathlib HasFDerivWithinAt.lim, applied within the whole space), c_i(v(y + δ_i) − v(y)) → L(e).
+ - But y + δ_i = y_i ∈ Z, so v(y + δ_i) − v(y) = 0 − 0 = 0 for every i. The constant sequence 0 therefore converges to L(e), so L(e) = 0.
+4. L = 0. L(0) = 0. For x ≠ 0, the vector e := |x|⁻¹x is a unit vector, so 0 = L(e) = |x|⁻¹L(x) and L(x) = 0. (If d = 0, every x equals 0.) Hence Dv₁(y) = Dv₂(y).
+5. Steps 2–4 hold at every point of the full-measure set of step 1, which proves the claim. ∎
+
+Lean realization: compiled during decomposition with the pinned toolchain in the Submission layout, as the body of `theorem Submission.dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn : (frozen lean_statement) := by` inside `namespace GMT.Ch07`. #print axioms reports only propext, Classical.choice and Quot.sound. Extra imports: Mathlib.MeasureTheory.Covering.Besicovitch, Mathlib.MeasureTheory.Covering.BesicovitchVectorSpace.
+```lean
+  intro hDD d Z v₁ v₂ hZ hEq
+  have h := Besicovitch.ae_tendsto_measure_inter_div (volume : Measure (Euclid d)) Z
+  rw [ae_restrict_iff' hZ] at h
+  filter_upwards [h] with y hy hyZ h1 h2
+  have hden := hy hyZ
+  set L := fderiv ℝ v₁ y - fderiv ℝ v₂ y with hLdef
+  have hv : HasFDerivAt (fun x => v₁ x - v₂ x) L y := h1.hasFDerivAt.sub h2.hasFDerivAt
+  have hunit : ∀ e : Euclid d, ‖e‖ = 1 → L e = 0 := by
+    intro e he
+    obtain ⟨ys, hysZ, hys, hdir⟩ := hDD d Z y hden e he
+    have hd0 : Tendsto (fun i => ys i - y) atTop (𝓝 0) := by
+      simpa using hys.sub_const y
+    have hlim := (hv.hasFDerivWithinAt (s := univ)).lim (l := atTop)
+      (c := fun i => ‖ys i - y‖⁻¹) (d := fun i => ys i - y) hd0
+      (Eventually.of_forall fun _ => mem_univ _) hdir
+    have hzero : (fun i => ‖ys i - y‖⁻¹ • ((v₁ (y + (ys i - y)) - v₂ (y + (ys i - y))) -
+        (v₁ y - v₂ y))) = fun _ => (0 : ℝ) := by
+      funext i
+      have hi : y + (ys i - y) = ys i := by abel
+      rw [hi, hEq (hysZ i).1, hEq hyZ]
+      simp
+    rw [hzero] at hlim
+    exact tendsto_nhds_unique hlim tendsto_const_nhds
+  have hL : L = 0 := by
+    ext e
+    by_cases he : e = 0
+    · simp [he]
+    · have hn : ‖e‖ ≠ 0 := norm_ne_zero_iff.2 he
+      have h1' : ‖‖e‖⁻¹ • e‖ = 1 := by
+        rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hn]
+      have := hunit _ h1'
+      rw [map_smul, smul_eq_mul, mul_eq_zero] at this
+      rcases this with h | h
+      · exact absurd (inv_eq_zero.1 h) hn
+      · simpa using h
+  exact sub_eq_zero.1 hL
+```
+
+## Key steps
+
+1. Besicovitch density theorem: a.e. point of the Borel set Z is a Lebesgue density point of Z.
+2. At such a point, (DD) gives sequences in Z ∖ {y} approaching y in every unit direction e.
+3. v₁ − v₂ vanishes on Z, so its scaled difference quotients along these sequences are 0; HasFDerivWithinAt.lim gives (Dv₁ − Dv₂)(y)e = 0.
+4. A linear map vanishing on unit vectors is 0, so Dv₁(y) = Dv₂(y).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; cmp snapshot project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean (identical); cmp snapshot mathlib Analysis/Calculus/Rademacher.lean, Analysis/Normed/Lp/SmoothApprox.lean, MeasureTheory/Covering/Besicovitch.lean, Geometry/Manifold/PartitionOfUnity.lean, Analysis/Calculus/FDeriv/Basic.lean, Geometry/Euclidean/Volume/Measure.lean against lake-packages-25730c7c/mathlib (all identical)`
+- `python3 -I scan of dag.json: frozen types of dor_lmbsf_piece_weak_limit and dor_lmbsf_density_directions (exact string match); regex 'lineDeriv|Rademacher|weak|McShane|extend_real|density point|Besicovitch|ae_tendsto_measure_inter_div|integral_lineDeriv_mul_eq|dense_hasCompactSupport|areaJacobian|area formula|uniformly Lipschitz|TendstoUniformly' over node statements; lean_name collision check for the seven dor_lmbsf_pwl_* names (1523 nodes, none)`
+- `grep -n 'integral_area_formula_of_injective_derivative|weighted_area_formula_of_injective_derivative|map_withDensity_areaJacobian_eq|integrableOn_image_iff_integrableOn_areaJacobian_smul|areaJacobianAt_eq_zero_iff_not_injective|measurable_areaJacobianAt|def areaJacobianAt|areaJacobianAt_nonneg' simongmt/Poincare/SimonGMT/Chapter02`
+- `rg/grep -n 'integral_lineDeriv_mul_eq|ae_differentiableAt|HasFDerivWithinAt.lim|ae_tendsto_measure_inter_div|exist_eLpNorm_sub_le|dense_hasCompactSupport_contDiff|exists_contDiff_zero_iff_one_iff_of_isClosed|lipschitzWith_of_nnnorm_fderiv_le|ContDiff.lipschitzWith_of_hasCompactSupport|norm_fderiv_le_of_lipschitz|measurable_fderiv|NormedRing.inverse_continuousAt|ContinuousLinearMap.isUnit_iff_bijective|euclideanHausdorffMeasure_eq_volume|exists_cthickening_subset_open|cthickening_subset_thickening|tendsto_integral_filter_of_dominated_convergence|Integrable.smul_bdd|Integrable.bdd_mul|setIntegral_indicator|setIntegral_eq_integral_of_forall_compl_eq_zero|setIntegral_congr_ae|ae_withDensity_iff|ae_of_ae_map' in the snapshot/package mathlib`
+- `python3 -I verifier gmt-compare.contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') and lean_contract.validate_lean_statement on the seven child types`
+- `git show proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/theorems/solutions/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1-7af5165c95:GMT/Ch07/Submission.lean (child layout: theorem Submission.X inside namespace GMT.Ch07)`
+- `toolchains/lean-4.35.0-rc3-linux/bin/lake env lean on /tmp/pwl-decomp/{Types,Assembly,Probe2,ProtoA1,ProtoA,ProtoB,ProtoE,ProtoC,ProtoF,ProtoD,All,Layout,LayoutCmp}.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-eead01d0c5/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-eead01d0c5/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-e999363692/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Operator/Banach.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/pwl-decomp/Types.lean`
+- `/tmp/pwl-decomp/Assembly.lean`
+- `/tmp/pwl-decomp/All.lean`
+- `/tmp/pwl-decomp/Layout.lean`
+- `/tmp/pwl-decomp/LayoutCmp.lean`
+
+Snapshot: project b4d606d, mathlib 25730c7c. The snapshot Contract.lean and the cited mathlib files are byte-identical to the workspace and package trees.
+
+No existing or accepted DAG declaration has any of the seven child types. The closest node, dor_lmb_fcd_jacobian_weak_continuity, is unaccepted and states a different, Jacobian-minor result. So all seven children get fresh dor_lmbsf_pwl_* names, none used among the 1523 nodes.
+
+Library facts that suffice, all confirmed by compilation:
+- SimonGMT Chapter02: integral_area_formula_of_injective_derivative, integrableOn_image_iff_integrableOn_areaJacobian_smul, map_withDensity_areaJacobian_eq, areaJacobianAt_eq_zero_iff_not_injective, measurable_areaJacobianAt.
+- Mathlib: LipschitzWith.integral_lineDeriv_mul_eq, LipschitzWith.ae_differentiableAt, MemLp.exist_eLpNorm_sub_le, Besicovitch.ae_tendsto_measure_inter_div, HasFDerivWithinAt.lim (in this version it takes dlim : d → 0), exists_contDiff_zero_iff_one_iff_of_isClosed, lipschitzWith_of_nnnorm_fderiv_le, NormedRing.inverse_continuousAt, ContinuousLinearMap.isUnit_iff_bijective, EuclideanSpace.euclideanHausdorffMeasure_eq_volume.
+
+Lean checks:
+- All seven child types validate and elaborate in the comparator scope.
+- The parent assembly compiles with only standard axioms.
+- All seven children are fully proven in the Submission layout with only standard axioms, and `exact Submission.X` closes each comparator challenge.

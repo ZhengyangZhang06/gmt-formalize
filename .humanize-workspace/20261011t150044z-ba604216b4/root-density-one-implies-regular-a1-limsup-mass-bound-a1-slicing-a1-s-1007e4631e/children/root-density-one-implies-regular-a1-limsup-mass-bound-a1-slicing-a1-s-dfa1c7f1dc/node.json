@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.wedge_orientation-a1.wedge_eval-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.wedge_orientation-a1",
+  "depth": 6,
+  "title": "Interior-product evaluation: (ν♭ ∧ α)(ν, σ) = α(σ) for a unit ν orthogonal to σ",
+  "statement": "Let P, n ∈ ℕ, let ν ∈ ℝ^P with |ν| = 1, let σ = (σ_0, …, σ_{n−1}) : Fin n → ℝ^P with ⟨ν, σ_i⟩ = 0 for every i, and let α be an n-covector of ℝ^P (α ∈ Covector (Euclid P) n). Let ν♭ ∧ α := ContinuousAlternatingMap.alternatizeUncurryFin((innerSL ℝ ν).smulRight α), the (n+1)-covector (ν♭∧α)(v_0, …, v_n) = Σ_{i=0}^{n} (−1)^i ⟨ν, v_i⟩ α(v_0, …, v̂_i, …, v_n). Then (ν♭∧α)(ν, σ_0, …, σ_{n−1}) = α(σ_0, …, σ_{n−1}), where (ν, σ_0, …, σ_{n−1}) = Fin.cons ν σ : Fin (n + 1) → ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (ν : Euclid P) (σ : Fin n → Euclid P) (α : Covector (Euclid P) n), ‖ν‖ = 1 → (∀ i, inner ℝ ν (σ i) = 0) → ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ ν).smulRight α) (Fin.cons ν σ : Fin (n + 1) → Euclid P) = α σ",
+  "lean_name": "dor_lmbsf_io_wedge_eval_cons",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-dfa1c7f1dc-a1"
+}

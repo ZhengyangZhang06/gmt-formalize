@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def IsUnitOrientationOf|abbrev MultiVector|abbrev Euclid|dor_lmbsf_io_|interior_product_orientation|dgoj_covector_eq_det_mul_of_mem_span",
+        "theorem finrank_add_inf_finrank_orthogonal",
+        "eq_smul_basis_det",
+        "theorem Orthonormal.inner_right_fintype",
+        "theorem alternatizeUncurryFin_apply",
+        "git show 73310ec921452a01670f397b34d1cf3cd7135598:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wedge-orientation-independent-audit-76yfr47z/Verified.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1007e4631e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-596f7d2f1c/accepted-candidate.json",
+        "/tmp/wedge-orientation-independent-audit-76yfr47z/Verified.lean",
+        "/tmp/wedge-orientation-independent-audit-76yfr47z/adapted_frame_Challenge.lean",
+        "/tmp/wedge-orientation-independent-audit-76yfr47z/covector_det_Challenge.lean",
+        "/tmp/wedge-orientation-independent-audit-76yfr47z/frame_sign_Challenge.lean",
+        "/tmp/wedge-orientation-independent-audit-76yfr47z/wedge_eval_Challenge.lean"
+      ],
+      "conclusion": "Confirmed the pinned revisions and byte-identical contract definitions; all 11 inspected Mathlib files match the compiler package tree. The snapshot supplies the dimension, orthonormal-basis, determinant and unnormalized wedge-expansion facts used in the proofs. No proposed declaration was found in the snapshot project. The three fresh names are unreserved in the DAG; covector_det exactly matches the frozen type and proof of comparator-accepted candidate 73310ec921452a01670f397b34d1cf3cd7135598. All names are bare identifiers. All four one-line propositions elaborate independently in comparator scope. The supplied child proofs compile unchanged, and an independently written assembly proves the exact selected parent type; all five proofs use only propext, Classical.choice and Quot.sound. The split appropriately isolates the adapted frame, determinant/sign argument and wedge evaluation. Its sole dependency, frame_sign on covector_det, matches the actual proof references and is acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "adapted_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition include exactly the required hypotheses and five conclusions. The proof derives the complement dimension, constructs its orthonormal basis, establishes the ambient span and orthogonality, and checks every Fin.cons inner-product case. It is complete, non-circular and valid for n = 0."
+    },
+    {
+      "key": "covector_det",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The restriction to the span, basis-determinant identity and inner-product coordinate calculation prove the exact formula, including n = 0. Matrix.of and Matrix.det have the intended matrix interpretation. Reuse is valid: the accepted declaration has an identical frozen type, and its supplied proof independently compiles with permitted axioms."
+    },
+    {
+      "key": "frame_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including the sign being uniform over all covectors. The proof correctly uses covector_det, proves Parseval under the stated span membership, derives MᵀM = I using ordinary matrix multiplication, and handles all four sign combinations. Its sole declared dependency is necessary and correctly directed; no parent theorem is used."
+    },
+    {
+      "key": "wedge_eval",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact pinned alternatizeUncurryFin formula has the stated normalization. The zero-index term equals α σ by unit norm and removeNth_zero; every successor term vanishes by the supplied orthogonality hypothesis. This proves the exact proposition uniformly for n = 0 and requires no unstated orthonormality assumption."
+    }
+  ],
+  "required_changes": []
+}

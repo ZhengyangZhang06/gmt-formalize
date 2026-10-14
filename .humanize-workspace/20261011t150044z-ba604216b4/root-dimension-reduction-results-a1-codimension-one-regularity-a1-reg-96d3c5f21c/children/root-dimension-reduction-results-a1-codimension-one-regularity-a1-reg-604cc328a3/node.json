@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1",
+  "depth": 5,
+  "title": "C¹ cover of a countably n-rectifiable set by bi-Lipschitz pieces (Simon Ch. 3, Lemma 1.2, 'only if')",
+  "statement": "Let P, n ∈ ℕ and let M ⊆ ℝ^P be countably n-rectifiable (SimonGMT CountablyRectifiable n M). Then there are C¹ maps g_k : ℝ^n → ℝ^P, points c_k ∈ ℝ^n, reals r_k and constants m_k > 0 (k ∈ ℕ) such that, with N_k := g_k(B_{r_k}(c_k)) (the image of the open ball, which is empty when r_k ≤ 0): (i) m_k|a − b| ≤ |g_k(a) − g_k(b)| for all a, b ∈ B_{r_k}(c_k); (ii) each N_k is Borel; (iii) H^n(N_k) < ∞; (iv) H^n(M ∖ ⋃_k N_k) = 0. Here H^n = μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)), CountablyRectifiable n M → ∃ (g : ℕ → Euclid n → Euclid P) (c : ℕ → Euclid n) (r m : ℕ → ℝ), (∀ k, ContDiff ℝ 1 (g k)) ∧ (∀ k, 0 < m k) ∧ (∀ k, ∀ a ∈ ball (c k) (r k), ∀ b ∈ ball (c k) (r k), m k * ‖a - b‖ ≤ ‖g k a - g k b‖) ∧ (∀ k, MeasurableSet (g k '' ball (c k) (r k))) ∧ (∀ k, μHE[n] (g k '' ball (c k) (r k)) ≠ ∞) ∧ μHE[n] (M \\ ⋃ k, g k '' ball (c k) (r k)) = 0",
+  "lean_name": "codim1_rdo_rectifiable_c1_cover",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-604cc328a3-a1"
+}

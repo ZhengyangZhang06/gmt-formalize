@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1.straightening_cover-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1",
+  "depth": 6,
+  "title": "Countable cover of {DF ≠ 0} by C¹ straightening charts Ψ_q with F∘Ψ_q = first coordinate",
+  "statement": "Let n ∈ ℕ and F : ℝ^{n+1} → ℝ be C¹. Then there are sets B_q ⊆ ℝ^{n+1} and maps Ψ_q : ℝ^{n+1} → ℝ^{n+1} (q ∈ ℕ) such that for every q: B_q is open; Ψ_q is C¹ on B_q and injective on B_q; the derivative DΨ_q(w) = fderiv ℝ Ψ_q w is bijective for every w ∈ B_q; F(Ψ_q(w)) = w(0) (the 0-th coordinate of w) for every w ∈ B_q; Ψ_q(B_q) is open; and {y ∈ ℝ^{n+1} : DF(y) ≠ 0} ⊆ ⋃_q Ψ_q(B_q).",
+  "lean_statement": "∀ (n : ℕ) (F : Euclid (n + 1) → ℝ), ContDiff ℝ 1 F → ∃ (B : ℕ → Set (Euclid (n + 1))) (Ψ : ℕ → Euclid (n + 1) → Euclid (n + 1)), (∀ q, IsOpen (B q)) ∧ (∀ q, ContDiffOn ℝ 1 (Ψ q) (B q)) ∧ (∀ q, InjOn (Ψ q) (B q)) ∧ (∀ q, ∀ w ∈ B q, Bijective (fderiv ℝ (Ψ q) w)) ∧ (∀ q, ∀ w ∈ B q, F (Ψ q w) = w 0) ∧ (∀ q, IsOpen (Ψ q '' B q)) ∧ {y | fderiv ℝ F y ≠ 0} ⊆ ⋃ q, Ψ q '' B q",
+  "lean_name": "dor_lmbsf_pc_straightening_cover",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_chart-a1.local_inverse-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_chart-a1.local_inverse-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-2511ff6312-a1",
+      "result_commit": "013681e40995ed13506dee23046e6ced0faf990a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-d52a104ed2-a1"
+}

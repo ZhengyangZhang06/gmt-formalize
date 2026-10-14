@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1.rescaled_integral_tendsto-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_piece_tangent-a1",
+  "depth": 6,
+  "title": "Convergence of the rescaled integrals by localisation and dominated convergence (steps 4–7)",
+  "statement": "Let P, n ∈ ℕ and z ∈ ℝ^n. Let g : ℝ^n → ℝ^P be continuous and differentiable at z, h : ℝ^n → ℝ continuous, B ⊆ ℝ^n open with z ∈ B, m > 0, and f : ℝ^P → ℝ continuous with compact support. Assume m|a − z| ≤ |g(a) − g(z)| for all a ∈ B, and m|v| ≤ |Dg(z)v| for all v ∈ ℝ^n. Then, as s ↓ 0 (along the filter 𝓝[>] 0),\n∫_{B_s} h(z + sb) · f(s^{-1}(g(z + sb) − g(z))) dL^n(b) → h(z) · ∫_{ℝ^n} f(Dg(z)b) dL^n(b),\nwhere B_s := {b ∈ ℝ^n : z + sb ∈ B} and L^n is Lebesgue measure.",
+  "lean_statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (h : Euclid n → ℝ) (B : Set (Euclid n)) (z : Euclid n) (m : ℝ) (f : Euclid P → ℝ), Continuous g → DifferentiableAt ℝ g z → Continuous h → IsOpen B → z ∈ B → 0 < m → (∀ a ∈ B, m * ‖a - z‖ ≤ ‖g a - g z‖) → (∀ v : Euclid n, m * ‖v‖ ≤ ‖fderiv ℝ g z v‖) → Continuous f → HasCompactSupport f → Tendsto (fun s : ℝ => ∫ b in {b : Euclid n | z + s • b ∈ B}, h (z + s • b) * f (s⁻¹ • (g (z + s • b) - g z))) (𝓝[>] 0) (𝓝 (h z * ∫ b, f (fderiv ℝ g z b)))",
+  "lean_name": "codim1_rdo_c1pt_rescaled_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-baae80e277-a1"
+}

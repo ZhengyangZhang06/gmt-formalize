@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_chart-a1.local_inverse-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_chart-a1",
+  "depth": 5,
+  "title": "Inverse function theorem with a C¹ local inverse on an open target (parent step 6)",
+  "statement": "Let d ∈ ℕ, let V ⊆ ℝ^d be open, z₀ ∈ V, and let φ : ℝ^d → ℝ^d be of class C¹ on V (ContDiffOn ℝ 1 φ V) with injective derivative Dφ(z₀) = fderiv ℝ φ z₀. Then there are open sets V₀, O ⊆ ℝ^d and a map χ : ℝ^d → ℝ^d such that z₀ ∈ V₀ ⊆ V, χ is C¹ on O, χ(O) ⊆ V₀, φ(χ(a)) = a for every a ∈ O, and φ(z) ∈ O and χ(φ(z)) = z for every z ∈ V₀.",
+  "lean_statement": "∀ (d : ℕ) (φ : Euclid d → Euclid d) (V : Set (Euclid d)) (z₀ : Euclid d), IsOpen V → z₀ ∈ V → ContDiffOn ℝ 1 φ V → Injective (fderiv ℝ φ z₀) → ∃ (V₀ O : Set (Euclid d)) (χ : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ z₀ ∈ V₀ ∧ V₀ ⊆ V ∧ ContDiffOn ℝ 1 χ O ∧ MapsTo χ O V₀ ∧ (∀ a ∈ O, φ (χ a) = a) ∧ ∀ z ∈ V₀, φ z ∈ O ∧ χ (φ z) = z",
+  "lean_name": "codim1_zsl_gc_local_inverse",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-2511ff6312-a1"
+}

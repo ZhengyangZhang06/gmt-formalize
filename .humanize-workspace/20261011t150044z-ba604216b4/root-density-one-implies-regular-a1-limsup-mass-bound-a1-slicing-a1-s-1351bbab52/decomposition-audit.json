@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "CountablyRectifiable|IsEmbeddedSubmanifold",
+        "exists_antilipschitzWith",
+        "theorem norm_image_sub_le_of_norm_fderiv_le\\x27|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem IsLindelof.indexed_countable_subcover|theorem contDiff_piLp|theorem measure_iUnion_fintype_le",
+        "tendsto_inv_nat_nhds_zero|theorem Tendsto.const_mul|protected theorem Tendsto.const_mul",
+        "dor_lmbsf_c1c_(immersion_local_injOn|injOn_closedBall_chart|lipschitz_range_c1_pieces|c1_range_cover)",
+        "sed -n '180,220p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "sed -n '182,250p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "sed -n '1,125p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/c1c-independent-audit-45pf5s1c/TypesOnly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/c1c-independent-audit-45pf5s1c/AllChecked.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Lindelof.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-1351bbab52/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/c1c-decomp/All.lean",
+        "/tmp/c1c-independent-audit-45pf5s1c/TypesOnly.lean",
+        "/tmp/c1c-independent-audit-45pf5s1c/AllChecked.lean"
+      ],
+      "conclusion": "Independently confirmed the frozen definitions, snapshot compatibility, and pinned mathlib and SimonGMT revisions. The cited analytical, measure and Lindelöf lemmas have the required hypotheses; SubmanifoldCover proves the reverse direction. No proposed name occurs in the DAG or searched project sources. All four names are bare identifiers, and existing accepted related declarations have different types and are not reused. All four one-line propositions passed validation, standalone elaboration and generated comparator-challenge elaboration without child implementations. The supplied scratch proofs match the frozen child types and compile with only propext, Classical.choice and Quot.sound; both reused SimonGMT measure lemmas have the same standard axiom set. The selected parent's assembly also compiles with only standard axioms when its existing scalar-approximation dependency is an explicit hypothesis. That dependency remains in progress in the DAG; this audit does not certify its implementation. The split is appropriate: its acyclic obligations reconstruct exactly dor_lmbsf_rectifiable_c1_cover through the supplied countable-union and enumeration argument."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "immersion_injective",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree. The positive anti-Lipschitz bound, continuity of the derivative and the mean value inequality prove both asserted injectivity properties on the same closed ball. The argument includes m = 0 and is complete and non-circular."
+    },
+    {
+      "key": "ball_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract allows arbitrary r. The sphere-image complement is open and contains the ball image by closed-ball injectivity. The proved compact-preimage equality supplies precisely the contract's properness condition; all other chart conditions follow from the stated hypotheses. Empty balls and zero-dimensional spaces cause no gap."
+    },
+    {
+      "key": "lipschitz_c1_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Hypothesis H is explicit and matches the existing scalar-approximation dependency at dimension m. Coordinatewise approximation, finite subadditivity and P/i tending to zero establish the null disagreement intersection; Hausdorff-volume normalization and the Lipschitz image estimate establish its null image. The covering argument is complete, including i = 0 and P = 0 under ENNReal conventions, and requires no unstated measurability."
+    },
+    {
+      "key": "c1_range_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the standalone Lean proposition. C¹ regularity supplies differentiability for the critical-image theorem, with finrank equal to m. The two declared sibling dependencies supply the charts, and Lindelöf supplies a countable cover with the empty regular set handled separately. The dependencies are correctly directed and non-circular; the required AreaCritical import is explicitly identified."
+    }
+  ],
+  "required_changes": []
+}

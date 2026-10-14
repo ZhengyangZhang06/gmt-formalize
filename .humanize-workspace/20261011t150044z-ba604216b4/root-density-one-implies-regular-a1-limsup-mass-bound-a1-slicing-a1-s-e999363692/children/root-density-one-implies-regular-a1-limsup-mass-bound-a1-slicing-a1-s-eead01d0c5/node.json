@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_weak_limit-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1",
+  "depth": 5,
+  "title": "Weak limit of tangential derivatives of smoothed Lipschitz cut-offs on one C¹ chart piece (proof of Simon Ch. 6, 4.5(2), (1) and (4))",
+  "statement": "Let P, n ∈ ℕ. Let V ⊆ ℝ^{n+1} be open and ψ : ℝ^{n+1} → ℝ^P be C¹ on V and injective on V, with Dψ(y) injective for y ∈ V. Let C ⊆ V be compact, Y ⊆ C Borel, and F : ℝ^{n+1} → ℝ C¹. Let f : ℝ^P → ℝ be L-Lipschitz with f(ψ(y)) = F(y) for y ∈ Y. Let G : ℝ^P → ℝ^P be Borel with, for every y ∈ Y, G(ψ(y)) ∈ Dψ(y)(ℝ^{n+1}) and ⟨G(ψ(y)), Dψ(y)e⟩ = DF(y)e for all e.\nLet a < b and γ(s) := min{1, max{0, (b − s)/(b − a)}}. Let (h_k)_{k∈ℕ} be C¹ functions ℝ^P → ℝ with ‖Dh_k(x)‖ ≤ c for all k, x, converging uniformly on ℝ^P to γ∘f. Let w : ℝ^P → ℝ be integrable on ψ(Y) with respect to H^{n+1} = μHE[n+1]. Let W : ℝ^P → ℝ^P be Borel with |W| ≤ c', such that for H^{n+1}-a.e. x ∈ ψ(Y), W(x) ∈ Dψ(y)(ℝ^{n+1}) for the y ∈ Y with ψ(y) = x. Then\n lim_{k→∞} ∫_{ψ(Y)} w(x)·Dh_k(x)[W(x)] dH^{n+1}(x) = ∫_{ψ(Y)∩{a<f<b}} w(x)·(−(b − a)⁻¹⟨G(x), W(x)⟩) dH^{n+1}(x)\n(Bochner integrals).",
+  "lean_statement": "∀ (P n : ℕ) (V C Y : Set (Euclid (n + 1))) (ψ : Euclid (n + 1) → Euclid P) (F : Euclid (n + 1) → ℝ) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (L : NNReal) (a b c c' : ℝ) (hs : ℕ → Euclid P → ℝ) (w : Euclid P → ℝ) (W : Euclid P → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → IsCompact C → C ⊆ V → MeasurableSet Y → Y ⊆ C → ContDiff ℝ 1 F → (∀ y ∈ Y, f (ψ y) = F y) → (∀ y ∈ Y, G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → Measurable G → LipschitzWith L f → a < b → (∀ k, ContDiff ℝ 1 (hs k)) → (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ c) → TendstoUniformly hs (fun x => min 1 (max 0 ((b - f x) / (b - a)))) atTop → IntegrableOn w (ψ '' Y) μHE[n + 1] → Measurable W → (∀ x, ‖W x‖ ≤ c') → (∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → W x ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P)) → Tendsto (fun k => ∫ x in ψ '' Y, w x * fderiv ℝ (hs k) x (W x) ∂μHE[n + 1]) atTop (𝓝 (∫ x in ψ '' Y ∩ {x | a < f x ∧ f x < b}, w x * (-(b - a)⁻¹ * inner ℝ (G x) (W x)) ∂μHE[n + 1]))",
+  "lean_name": "dor_lmbsf_piece_weak_limit",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.density_directions-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.density_directions-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-eead01d0c5-a1"
+}
