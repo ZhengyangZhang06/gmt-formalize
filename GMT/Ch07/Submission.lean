@@ -1147,6 +1147,89 @@ theorem Submission.dimred_mbl_dt_lpo_smooth_homotopy_mass : (∀ (P n : ℕ) (U 
   calc |∫ t in (0 : ℝ)..1, X (η t)| ≤ Λ ^ k * δ * b * X.mass.toReal := hint
     _ = δ * Λ ^ k * b * X.mass.toReal := by ring
 
+/-- **Comparison of two smooth push-forwards of a normal current** (Simon 6.2.25–6.2.27, the
+estimate in the proof of 6.2.29).  If `F`, `G` are `C^∞` with `‖DF‖, ‖DG‖ ≤ Λ` and
+`|F − G| ≤ δ` on `spt X`, and `|ω| ≤ a`, `|dω| ≤ b`, then
+`|G_#X(ω) − F_#X(ω)| ≤ δ (Λᵏ M(X) b + Λᵏ⁻¹ M(∂X) a)`.  For the affine homotopy `H` from `F`
+to `G`, the homotopy formula 2.25 reads `X(ηG) − X(ηF) = cyl(X)(H^#dω) + cyl(∂X)(H^#ω)` (no
+second term if `k = 0`), and 2.27 bounds the two cylinder terms by `δΛᵏbM(X)` and
+`δΛᵏ⁻¹aM(∂X)`. -/
+theorem Submission.dimred_mbl_dt_lpo_cauchy_estimate : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → ∀ (cyl : ∀ (N k : ℕ), GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1)), (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → IsCompact (cyl N k X).support ∧ (cyl N k X).mass ≤ X.mass ∧ (cyl N k X).boundary.mass < ∞ ∧ (cyl N k X).support ⊆ {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))}) → (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → ∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), ∃ η : ℝ → TestFormOn (univ : Set (Euclid N)) k, (∀ (t : ℝ) (x : Euclid N) (v : Fin k → Euclid N), (η t : DifferentialForm (Euclid N) k) x v = (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ cyl N k X ω = ∫ t in (0 : ℝ)..1, X (η t)) → (∀ (N : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) 0), IsCompact X.support → X.mass < ∞ → ∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) 0, ∃ η₀ η₁ : TestFormOn (univ : Set (Euclid N)) 0, (∀ (x : Euclid N) (v : Fin 0 → Euclid N), (η₀ : DifferentialForm (Euclid N) 0) x v = (ω : DifferentialForm (Euclid (N + 1)) 0) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) ∧ (∀ (x : Euclid N) (v : Fin 0 → Euclid N), (η₁ : DifferentialForm (Euclid N) 0) x v = (ω : DifferentialForm (Euclid (N + 1)) 0) (WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) ∧ (cyl N 0 X).boundary ω = X η₁ - X η₀) → (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)), IsCompact X.support → X.mass < ∞ → X.boundary.mass < ∞ → ∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), ∃ η₀ η₁ : TestFormOn (univ : Set (Euclid N)) (k + 1), (∀ (x : Euclid N) (v : Fin (k + 1) → Euclid N), (η₀ : DifferentialForm (Euclid N) (k + 1)) x v = (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) ∧ (∀ (x : Euclid N) (v : Fin (k + 1) → Euclid N), (η₁ : DifferentialForm (Euclid N) (k + 1)) x v = (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) ∧ (cyl N (k + 1) X).boundary ω = X η₁ - X η₀ - cyl N k X.boundary ω) → ∀ (N N' k : ℕ) (Λ δ a b : ℝ) (F G : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ω : TestFormOn (univ : Set (Euclid N')) k) (ηF ηG : TestFormOn (univ : Set (Euclid N)) k), ContDiff ℝ (⊤ : ℕ∞) F → ContDiff ℝ (⊤ : ℕ∞) G → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (∀ x ∈ X.support, ‖fderiv ℝ F x‖ ≤ Λ ∧ ‖fderiv ℝ G x‖ ≤ Λ) → (∀ x ∈ X.support, dist (F x) (G x) ≤ δ) → (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N') k) y) ≤ a) → (∀ y, covectorEuclideanNorm (exteriorDerivative (ω : DifferentialForm (Euclid N') k) y) ≤ b) → (∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηF : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (F x)).compContinuousLinearMap (fderiv ℝ F x)) → (∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηG : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (G x)).compContinuousLinearMap (fderiv ℝ G x)) → |X ηG - X ηF| ≤ δ * (Λ ^ k * X.mass.toReal * b + Λ ^ (k - 1) * (boundaryMassOn X univ).toReal * a) := by
+  intro hVO hREP hcov cyl hC1 hC3 hC4 hC5 N N' k Λ δ a b F G X ω ηF ηG hF hG hXc hXm hXb hDFG
+    hdist ha hb hηF hηG
+  -- the affine homotopy `H(ι(t, x)) = F(x) + t • (G(x) − F(x))` (sibling `affine_homotopy` (i))
+  obtain ⟨H, hH, hHform⟩ := Submission.dimred_mbl_dt_lpo_affine_homotopy.1 N N' F G hF hG
+  -- `S(X) = ι '' ([0, 1] × spt X)` is compact
+  have hS : IsCompact {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support,
+      y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))} := by
+    have hι : Continuous fun p : ℝ × Euclid N =>
+        (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1)) := by
+      fun_prop
+    convert ((isCompact_Icc : IsCompact (Icc (0 : ℝ) 1)).prod hXc).image hι using 1
+    ext y
+    constructor
+    · rintro ⟨t, ht, x, hx, rfl⟩
+      exact ⟨(t, x), ⟨ht, hx⟩, rfl⟩
+    · rintro ⟨⟨t, x⟩, ⟨ht, hx⟩, rfl⟩
+      exact ⟨t, ht, x, hx, rfl⟩
+  -- (C1) for `X`: `spt cyl(X) ⊆ S(X)`
+  obtain ⟨-, -, -, hCX⟩ := hC1 N k X hXc hXm hXb
+  cases k with
+  | zero =>
+    -- `θ = H^#(dω)` on an open `W ⊇ S(X)` (sibling `cutoff`)
+    obtain ⟨θ, W, hW, hSW, hθ, -⟩ := Submission.dimred_mbl_dt_lpo_cutoff_pullback (N + 1) N'
+      (0 + 1) H (exteriorDerivativeTestOn univ 0 ω) _ hH hS
+    -- `X(ηG) − X(ηF) = cyl(X)(θ)`, the boundary relation being (C4)
+    have hid := (Submission.dimred_mbl_dt_lpo_smooth_homotopy_identity hVO hREP N N' F G H hF hG
+      hH hHform).1 X (cyl N 0 X) ω ηF ηG θ hXc hCX (hC4 N X hXc hXm) hηF hηG ⟨W, hW, hSW, hθ⟩
+    -- `|cyl(X)(θ)| ≤ δ Λ⁰ b M(X)`, the cylinder formula being (C3)
+    have hm := Submission.dimred_mbl_dt_lpo_smooth_homotopy_mass hVO hREP hcov N N' 0 Λ δ b F G H
+      X (cyl N 0 X) (exteriorDerivativeTestOn univ 0 ω) θ hF hG hH hHform hXm hDFG hdist hb
+      (fun t ht x hx => hθ _ (hSW ⟨t, ht, x, hx, rfl⟩)) (hC3 N 0 X hXc hXm hXb)
+    -- in degree `0`, `boundaryMassOn X univ = 0`
+    have h0 : boundaryMassOn X univ = 0 := rfl
+    rw [hid, h0, ENNReal.toReal_zero]
+    calc |cyl N 0 X θ| ≤ δ * Λ ^ 0 * b * X.mass.toReal := hm
+      _ = δ * (Λ ^ 0 * X.mass.toReal * b + Λ ^ (0 - 1) * 0 * a) := by ring
+  | succ k =>
+    -- `∂X` is NC with `spt ∂X ⊆ spt X` (toolkit (NCB)), so `spt cyl(∂X) ⊆ S(∂X) ⊆ S(X)` by (C1)
+    have hXb' : X.boundary.mass < ∞ := hXb
+    obtain ⟨hbX, hbXc, hbXb⟩ :=
+      (Submission.dimred_mbl_dt_lpo_current_toolkit hVO hREP).2.2.2.2 N k X hXc hXb'
+    obtain ⟨-, -, -, hCbX⟩ := hC1 N k X.boundary hbXc hXb' hbXb
+    have hCbX' : (cyl N k X.boundary).support ⊆ {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1,
+        ∃ x ∈ X.support, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))} := by
+      intro y hy
+      obtain ⟨t, ht, x, hx, rfl⟩ := hCbX hy
+      exact ⟨t, ht, x, hbX hx, rfl⟩
+    -- `θ = H^#(dω)` and `θ' = H^#ω` on open sets containing `S(X)` (sibling `cutoff`)
+    obtain ⟨θ, W, hW, hSW, hθ, -⟩ := Submission.dimred_mbl_dt_lpo_cutoff_pullback (N + 1) N'
+      (k + 1 + 1) H (exteriorDerivativeTestOn univ (k + 1) ω) _ hH hS
+    obtain ⟨θ', W', hW', hSW', hθ', -⟩ := Submission.dimred_mbl_dt_lpo_cutoff_pullback (N + 1) N'
+      (k + 1) H ω _ hH hS
+    -- `X(ηG) − X(ηF) = cyl(X)(θ) + cyl(∂X)(θ')`, the boundary relation being (C5)
+    have hid := (Submission.dimred_mbl_dt_lpo_smooth_homotopy_identity hVO hREP N N' F G H hF hG
+      hH hHform).2 k X (cyl N (k + 1) X) (cyl N k X.boundary) ω ηF ηG θ θ' hXc hCX hCbX'
+      (hC5 N k X hXc hXm hXb') hηF hηG ⟨W, hW, hSW, hθ⟩ ⟨W', hW', hSW', hθ'⟩
+    -- `|cyl(X)(θ)| ≤ δ Λ^(k+1) b M(X)`, the cylinder formula being (C3) for `X`
+    have hm := Submission.dimred_mbl_dt_lpo_smooth_homotopy_mass hVO hREP hcov N N' (k + 1) Λ δ b
+      F G H X (cyl N (k + 1) X) (exteriorDerivativeTestOn univ (k + 1) ω) θ hF hG hH hHform hXm
+      hDFG hdist hb (fun t ht x hx => hθ _ (hSW ⟨t, ht, x, hx, rfl⟩))
+      (hC3 N (k + 1) X hXc hXm hXb)
+    -- `|cyl(∂X)(θ')| ≤ δ Λ^k a M(∂X)`, the cylinder formula being (C3) for `∂X`
+    have hm' := Submission.dimred_mbl_dt_lpo_smooth_homotopy_mass hVO hREP hcov N N' k Λ δ a F G H
+      X.boundary (cyl N k X.boundary) ω θ' hF hG hH hHform hXb' (fun x hx => hDFG x (hbX hx))
+      (fun x hx => hdist x (hbX hx)) ha (fun t ht x hx => hθ' _ (hSW' ⟨t, ht, x, hbX hx, rfl⟩))
+      (hC3 N k X.boundary hbXc hXb' hbXb)
+    -- triangle inequality, with `k + 1 - 1 = k` and `boundaryMassOn X univ = M(∂X)`
+    have hbm : boundaryMassOn X univ = X.boundary.mass := rfl
+    rw [hid, Nat.add_sub_cancel, hbm]
+    calc |cyl N (k + 1) X θ + cyl N k X.boundary θ'|
+        ≤ |cyl N (k + 1) X θ| + |cyl N k X.boundary θ'| := abs_add_le _ _
+      _ ≤ δ * Λ ^ (k + 1) * b * X.mass.toReal + δ * Λ ^ k * a * X.boundary.mass.toReal :=
+        add_le_add hm hm'
+      _ = δ * (Λ ^ (k + 1) * X.mass.toReal * b + Λ ^ k * X.boundary.mass.toReal * a) := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
