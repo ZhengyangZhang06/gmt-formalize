@@ -1,0 +1,32 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5939",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "b1543ce47c3ceca8228ed1bdfc5f59a7e79f6e27",
+  "integrated_commit": "",
+  "proof_base_commit": "3f5c881ca0a3a56b9f1b94a4c30e2210de1a8ef4",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1",
+  "requires": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.good_center-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.im_series-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.support_calculus-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.good_radius-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.lipschitz_extension-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.dyadic_series-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.shell_decomposition-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.telescoping_deformation-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.current_algebra-a1",
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1.mass_le_measure-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1.lebesgue_deriv-a1",
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1.mass_sub_le-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.imrep_restriction-a1"
+  ]
+}
