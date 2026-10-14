@@ -887,6 +887,72 @@ theorem Submission.ecf_cp_piece_integral : ∀ (k P : ℕ) (F : Euclid k → Euc
     refine Fin.cases ?_ (fun b => ?_) a <;> simp
   rw [hc, ContinuousAlternatingMap.map_smul_univ]
   simp [Fin.prod_univ_succ]
+/-- **One piece of the cone parametrization**: the mass estimate of Simon 6.2.27 for the cone
+homotopy `h(t, x) = t x` of 6.2.30.  Write `ι(t, u) = (t, u₁, …, u_k)`, `τ z = (z₁, …, z_k)`,
+`Â = {z : z₀ ∈ (0, 1), τ z ∈ A}`, `∂H(x) = (DH(x) e_a)_a` and
+`JH(x) = √det (⟨DH(x) e_a, DH(x) e_b⟩)_{ab}`.  If `‖F‖ ≤ ρ` on `A` and
+`∂G(ι(t, u)) = (F u, t ∂F(u))` for `u ∈ A`, `t ∈ (0, 1)`, then
+`∫⁻_Â |g(τ z)| JG(z) dz ≤ ρ ∫⁻_A |g(u)| JF(u) du`.  The integrand is Borel (`fderiv` is
+measurable and a Gram determinant is a polynomial in its entries), so Tonelli on the cylinder
+gives `∫⁻_A ∫⁻_{(0, 1)} |g(u)| JG(ι(t, u)) dt du`.  By the cone Jacobian,
+`JG(ι(t, u)) = tᵏ J(F u, ∂F(u)) ≤ tᵏ ‖F u‖ JF(u) ≤ ρ JF(u)`, and `(0, 1)` has measure `1`. -/
+theorem Submission.ecf_cp_piece_weight : ∀ (k P : ℕ) (F : Euclid k → Euclid P) (A : Set (Euclid k)) (g : Euclid k → ℤ) (G : Euclid (k + 1) → Euclid P) (ρ : ℝ), MeasurableSet A → Measurable g → (∀ u ∈ A, ‖F u‖ ≤ ρ) → (∀ u ∈ A, ∀ t ∈ Ioo (0 : ℝ) 1, (fun a => fderiv ℝ G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = (Fin.cons (F u) (t • fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) : Fin (k + 1) → Euclid P)) → ∫⁻ z in {z : Euclid (k + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) ∈ A}, ‖(g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (k + 1) => inner ℝ (fderiv ℝ G z (EuclideanSpace.single a 1)) (fderiv ℝ G z (EuclideanSpace.single b 1))))) ≤ ENNReal.ofReal ρ * ∫⁻ u in A, ‖(g u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ F u (EuclideanSpace.single a 1)) (fderiv ℝ F u (EuclideanSpace.single b 1))))) := by
+  intro k P F A g G ρ hA hg hF hDG
+  -- Step 1: the integrand `f(z) = |g(τ z)| · JG(z)` is measurable.  Each `z ↦ DG(z) e_a` is
+  -- measurable, and `det` is a signed sum of products of the entries `⟨DG(z) e_a, DG(z) e_b⟩`.
+  have hJG : Measurable fun z => ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of
+      fun a b : Fin (k + 1) => inner ℝ (fderiv ℝ G z (EuclideanSpace.single a 1))
+        (fderiv ℝ G z (EuclideanSpace.single b 1))))) := by
+    have hm : ∀ a b : Fin (k + 1), Measurable fun z => inner ℝ
+        (fderiv ℝ G z (EuclideanSpace.single a 1)) (fderiv ℝ G z (EuclideanSpace.single b 1)) :=
+      fun a b => continuous_inner.measurable.comp
+        ((measurable_fderiv_apply_const ℝ G (EuclideanSpace.single a 1)).prodMk
+          (measurable_fderiv_apply_const ℝ G (EuclideanSpace.single b 1)))
+    have hdet : Measurable fun z => Matrix.det (Matrix.of fun a b : Fin (k + 1) =>
+        inner ℝ (fderiv ℝ G z (EuclideanSpace.single a 1))
+          (fderiv ℝ G z (EuclideanSpace.single b 1))) := by
+      simp only [Matrix.det_apply]
+      refine Finset.measurable_sum _ fun σ _ => ?_
+      refine Measurable.const_smul ?_ _
+      exact Finset.measurable_prod _ fun i _ => by simpa using hm (σ i) i
+    exact ENNReal.measurable_ofReal.comp (Real.continuous_sqrt.measurable.comp hdet)
+  have hτ : Measurable fun z : Euclid (k + 1) =>
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) :=
+    (WithLp.measurable_toLp 2 _).comp ((measurable_pi_iff.mpr fun i : Fin k =>
+      measurable_pi_apply (Fin.succ i)).comp (WithLp.measurable_ofLp 2 _))
+  have hfm : Measurable fun z : Euclid (k + 1) =>
+      ‖(g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt
+        (Matrix.det (Matrix.of fun a b : Fin (k + 1) =>
+          inner ℝ (fderiv ℝ G z (EuclideanSpace.single a 1))
+            (fderiv ℝ G z (EuclideanSpace.single b 1))))) :=
+    ((Measurable.of_discrete (f := fun n : ℤ => (n : ℝ))).comp (hg.comp hτ)).enorm.mul hJG
+  -- Step 2: Tonelli on the cylinder; on the right, move the finite constant `ofReal ρ` inside
+  refine le_trans (le_of_eq ((Submission.cmcdt_lpi_cyl_fubini k A hA).2.1 _ hfm))
+    (le_trans ?_ (lintegral_const_mul' _ _ ENNReal.ofReal_ne_top).le)
+  -- Step 5: compare the inner integrals at each `u ∈ A`
+  refine setLIntegral_mono' hA fun u hu => ?_
+  have hρ : 0 ≤ ρ := (norm_nonneg _).trans (hF u hu)
+  obtain ⟨hGC1, hGC2⟩ :=
+    Submission.ecf_cp_gram_cone P k (F u) fun b => fderiv ℝ F u (EuclideanSpace.single b 1)
+  -- Step 4: integrate a pointwise bound over `(0, 1)`, which has measure `1`
+  refine le_trans (setLIntegral_mono' measurableSet_Ioo fun t ht => ?_) (le_of_eq (by
+    rw [setLIntegral_const, Real.volume_Ioo, sub_zero, ENNReal.ofReal_one, mul_one]))
+  -- Step 3: `τ(ι(t, u)) = u` and `DG(ι(t, u)) e_a = (F u, t ∂F(u))_a`
+  have hDa : ∀ a, fderiv ℝ G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)))
+      (EuclideanSpace.single a 1) = (Fin.cons (F u) (t • fun b =>
+        fderiv ℝ F u (EuclideanSpace.single b 1)) : Fin (k + 1) → Euclid P) a :=
+    congrFun (hDG u hu t ht)
+  simp only [Fin.tail_cons, WithLp.toLp_ofLp, hDa]
+  -- `JG(ι(t, u)) = tᵏ J(F u, ∂F(u)) ≤ tᵏ ‖F u‖ JF(u) ≤ ρ JF(u)`, as `0 ≤ tᵏ ≤ 1`, `‖F u‖ ≤ ρ`
+  rw [hGC1 t ht.1.le, mul_left_comm (ENNReal.ofReal ρ)]
+  refine mul_le_mul_right ?_ _
+  rw [← ENNReal.ofReal_mul hρ]
+  refine ENNReal.ofReal_le_ofReal ?_
+  calc t ^ k * _ ≤ t ^ k * (‖F u‖ * _) := mul_le_mul_of_nonneg_left hGC2 (pow_nonneg ht.1.le k)
+    _ ≤ t ^ k * (ρ * _) := mul_le_mul_of_nonneg_left
+        (mul_le_mul_of_nonneg_right (hF u hu) (Real.sqrt_nonneg _)) (pow_nonneg ht.1.le k)
+    _ ≤ ρ * _ := mul_le_of_le_one_left (mul_nonneg hρ (Real.sqrt_nonneg _))
+        (pow_le_one₀ ht.1.le ht.2.le)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
