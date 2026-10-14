@@ -3445,6 +3445,250 @@ theorem Submission.dtc_bc_lc_sl_cc_chart_gradient : ∀ (P N : ℕ) (ψ : Euclid
       rw [← hgrad y hy e, h0, inner_zero_left, zero_apply]
     · intro h0
       rw [hG₀, hg, h0, map_zero, map_zero, map_zero]
+/-- **The Jacobian identity of the chart co-area argument.**  Let `A : ℝⁿ⁺¹ → ℝᴾ` be injective,
+`v ∈ A(ℝⁿ⁺¹)` with `⟨v, A e⟩ = ℓ(e)`, `D` an injective endomorphism of `ℝⁿ⁺¹` with
+`ℓ(D z) = z₀`, and `ι w = (0, w)`.  Then `C = A D ι` is injective, `C(ℝⁿ) = A(ℝⁿ⁺¹) ∩ v^⊥`,
+and `J(C) = |v| J(A) |det D|`, where `J(X) = √det(X* X)`.
+
+Proof sketch:
+* `⟨v, A D z⟩ = z₀`.  So `⟨v, C w⟩ = 0`; and `A D z ⊥ v` forces `z₀ = 0`, i.e. `z = ι w`.
+* `D` is onto, so `v = A D z⋆` with `z⋆₀ = |v|²`.  The shear `T z = z + z₀ (z⋆ − e₀)` has
+  `det T = z⋆₀ = |v|²` (first row `(z⋆₀, 0, …, 0)`, lower-right block `1`).
+* `N = A D T` sends `e₀ ↦ v` and `e_{j+1} ↦ C e'ⱼ ⊥ v`.  In the standard bases the Gram matrix
+  of `N` has first row `(|v|², 0, …, 0)` and lower-right block the Gram matrix of `C`, so
+  `det(N* N) = |v|² det(C* C)`.
+* `det((X S)* (X S)) = (det S)² det(X* X)` gives `det(N* N) = |v|⁴ (det D)² det(A* A)`.  Cancel
+  `|v|² ≠ 0` (`⟨v, A D e₀⟩ = 1`) and take square roots. -/
+theorem Submission.dtc_bc_lc_sl_cc_jacobian_identity : ∀ (n P : ℕ) (A : Euclid (n + 1) →L[ℝ] Euclid P) (ℓ : Euclid (n + 1) →L[ℝ] ℝ) (v : Euclid P) (D : Euclid (n + 1) →L[ℝ] Euclid (n + 1)) (ι : Euclid n →L[ℝ] Euclid (n + 1)), Injective A → v ∈ LinearMap.range (A : Euclid (n + 1) →ₗ[ℝ] Euclid P) → (∀ e, inner ℝ v (A e) = ℓ e) → Injective D → (∀ z, ℓ (D z) = z 0) → (∀ w, ι w 0 = 0 ∧ ∀ i : Fin n, ι w i.succ = w i) → Injective (A ∘L D ∘L ι) ∧ LinearMap.range ((A ∘L D ∘L ι : Euclid n →L[ℝ] Euclid P) : Euclid n →ₗ[ℝ] Euclid P) = LinearMap.range (A : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ v)ᗮ ∧ Real.sqrt (((A ∘L D ∘L ι).adjoint ∘L (A ∘L D ∘L ι)).det) = ‖v‖ * Real.sqrt ((A.adjoint ∘L A).det) * |D.det| := by
+  intro n P A ℓ v D ι hA hv hℓ hD hDℓ hι
+  -- `⟨v, A D z⟩ = ℓ (D z) = z₀`
+  have hvAD : ∀ z, inner ℝ v (A (D z)) = z 0 := fun z => (hℓ (D z)).trans (hDℓ z)
+  -- `ι` is injective: `(ι w)_{i+1} = w_i`
+  have hιinj : Injective ι := fun w w' h => by
+    ext i
+    rw [← (hι w).2 i, ← (hι w').2 i, h]
+  -- `D` is an injective endomorphism of `ℝⁿ⁺¹`, hence surjective
+  have hDsurj : Surjective D :=
+    (LinearMap.injective_iff_surjective (f := (D : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1)))).mp hD
+  refine ⟨hA.comp (hD.comp hιinj), ?_, ?_⟩
+  · -- the range: `C(ℝⁿ) = A(ℝⁿ⁺¹) ∩ (ℝ v)ᗮ`
+    ext x
+    simp only [Submodule.mem_inf, LinearMap.mem_range, ContinuousLinearMap.coe_coe,
+      Submodule.mem_orthogonal_singleton_iff_inner_right]
+    constructor
+    · rintro ⟨w, rfl⟩
+      exact ⟨⟨D (ι w), rfl⟩, (hvAD (ι w)).trans (hι w).1⟩
+    · -- `x = A D z ⊥ v` forces `z₀ = 0`, so `z = ι w` with `wᵢ = z_{i+1}`
+      rintro ⟨⟨y, rfl⟩, hy⟩
+      obtain ⟨z, rfl⟩ := hDsurj y
+      have hz : z 0 = 0 := (hvAD z).symm.trans hy
+      have hιz : ι (WithLp.toLp 2 fun i : Fin n => z i.succ) = z := by
+        ext i
+        refine Fin.cases ?_ (fun j => ?_) i
+        · rw [(hι _).1, hz]
+        · rw [(hι _).2 j]
+      exact ⟨WithLp.toLp 2 fun i : Fin n => z i.succ, by simp [hιz]⟩
+  · -- the Jacobian identity, via Gram matrices in the standard orthonormal bases `e`, `e'`
+    let b := EuclideanSpace.basisFun (Fin (n + 1)) ℝ
+    let b' := EuclideanSpace.basisFun (Fin n) ℝ
+    -- `det (X* X) = det [⟨X eᵢ, X eⱼ⟩]` for an orthonormal basis `e`
+    have hgram : ∀ (m : ℕ) (X : Euclid m →L[ℝ] Euclid P) (e : OrthonormalBasis (Fin m) ℝ (Euclid m)),
+        (X.adjoint ∘L X).det = (Matrix.of fun i j => inner ℝ (X (e i)) (X (e j))).det := by
+      intro m X e
+      rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix e.toBasis]
+      congr 1
+      ext i j
+      simp only [Matrix.of_apply, LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+        OrthonormalBasis.coe_toBasis, OrthonormalBasis.repr_apply_apply, ContinuousLinearMap.coe_coe,
+        ContinuousLinearMap.comp_apply, ContinuousLinearMap.adjoint_inner_right]
+    -- `det S* = det S`, hence `det ((X S)* (X S)) = (det S)² det (X* X)`
+    have hadj : ∀ S : Euclid (n + 1) →L[ℝ] Euclid (n + 1), S.adjoint.det = S.det := by
+      intro S
+      rw [ContinuousLinearMap.det, ContinuousLinearMap.det, ← ContinuousLinearMap.adjoint_toLinearMap,
+        ← LinearMap.det_toMatrix b.toBasis, LinearMap.toMatrix_adjoint b b, Matrix.det_conjTranspose,
+        LinearMap.det_toMatrix, star_trivial]
+    have hcomp : ∀ (X : Euclid (n + 1) →L[ℝ] Euclid P) (S : Euclid (n + 1) →L[ℝ] Euclid (n + 1)),
+        ((X ∘L S).adjoint ∘L (X ∘L S)).det = S.det ^ 2 * (X.adjoint ∘L X).det := by
+      intro X S
+      have h : (X ∘L S).adjoint ∘L (X ∘L S) = S.adjoint ∘L ((X.adjoint ∘L X) ∘L S) := by
+        rw [ContinuousLinearMap.adjoint_comp]
+        rfl
+      have h2 : (S.adjoint ∘L ((X.adjoint ∘L X) ∘L S)).det =
+          S.adjoint.det * ((X.adjoint ∘L X).det * S.det) := by
+        simp only [ContinuousLinearMap.det, ContinuousLinearMap.toLinearMap_comp, LinearMap.det_comp]
+      rw [h, h2, hadj]
+      ring
+    -- `ι e'ⱼ = e_{j+1}`
+    have hιb : ∀ j : Fin n, ι (b' j) = b j.succ := by
+      intro j
+      ext i
+      refine Fin.cases ?_ (fun k => ?_) i
+      · rw [(hι _).1]
+        simp [b, EuclideanSpace.basisFun_apply]
+      · rw [(hι _).2 k]
+        simp [b, b', EuclideanSpace.basisFun_apply]
+    -- `v = A D z⋆`, and `z⋆₀ = ⟨v, A D z⋆⟩ = |v|²`
+    obtain ⟨y, hy⟩ := hv
+    obtain ⟨zs, rfl⟩ := hDsurj y
+    have hy' : A (D zs) = v := hy
+    have hzs : zs 0 = ‖v‖ ^ 2 := by rw [← hvAD zs, hy', real_inner_self_eq_norm_sq]
+    -- the shear `T z = z + z₀ (z⋆ - e₀)`: `T e₀ = z⋆`, `T e_{j+1} = e_{j+1}`, so `det T = z⋆₀`
+    -- (its matrix has first row `(z⋆₀, 0, …, 0)` and lower-right block `1`)
+    let T : Euclid (n + 1) →L[ℝ] Euclid (n + 1) :=
+      ContinuousLinearMap.id ℝ _ + (EuclideanSpace.proj 0).smulRight (zs - b 0)
+    have hT0 : T (b 0) = zs := by
+      simp [T, b, EuclideanSpace.basisFun_apply]
+    have hTs : ∀ j : Fin n, T (b j.succ) = b j.succ := by
+      intro j
+      simp [T, b, EuclideanSpace.basisFun_apply]
+    have hdetT : T.det = ‖v‖ ^ 2 := by
+      have hM : ∀ i j, LinearMap.toMatrix b.toBasis b.toBasis T i j = T (b j) i := by
+        intro i j
+        simp [b, LinearMap.toMatrix_apply, EuclideanSpace.basisFun_repr]
+      have hsub : (LinearMap.toMatrix b.toBasis b.toBasis T).submatrix Fin.succ Fin.succ = 1 := by
+        ext i j
+        rw [Matrix.submatrix_apply, hM, hTs, Matrix.one_apply]
+        simp [b, EuclideanSpace.basisFun_apply]
+      rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix b.toBasis, Matrix.det_succ_row_zero,
+        Fin.sum_univ_succ, Fin.succAbove_zero, hsub]
+      simp only [hM, hT0, hTs, ← hzs]
+      simp [b, EuclideanSpace.basisFun_apply]
+    -- `N = A D T` has `N e₀ = v ⊥ C(ℝⁿ)` and `N e_{j+1} = C e'ⱼ`: its Gram matrix has first row
+    -- `(|v|², 0, …, 0)` and lower-right block the Gram matrix of `C`
+    have hdetN : (((A ∘L D) ∘L T).adjoint ∘L ((A ∘L D) ∘L T)).det =
+        ‖v‖ ^ 2 * ((A ∘L D ∘L ι).adjoint ∘L (A ∘L D ∘L ι)).det := by
+      have hN0 : ((A ∘L D) ∘L T) (b 0) = v := by
+        simp only [ContinuousLinearMap.comp_apply, hT0, hy']
+      have hNs : ∀ j : Fin n, ((A ∘L D) ∘L T) (b j.succ) = (A ∘L D ∘L ι) (b' j) := by
+        intro j
+        simp only [ContinuousLinearMap.comp_apply, hTs, hιb]
+      have hrow : ∀ j : Fin n, inner ℝ v (((A ∘L D) ∘L T) (b j.succ)) = 0 := by
+        intro j
+        rw [hNs, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, hvAD, (hι _).1]
+      have hsub : (Matrix.of fun i j => inner ℝ (((A ∘L D) ∘L T) (b i))
+          (((A ∘L D) ∘L T) (b j))).submatrix Fin.succ Fin.succ =
+          Matrix.of fun i j => inner ℝ ((A ∘L D ∘L ι) (b' i)) ((A ∘L D ∘L ι) (b' j)) := by
+        ext i j
+        simp only [Matrix.submatrix_apply, Matrix.of_apply, hNs]
+      rw [hgram _ _ b, hgram _ _ b', Matrix.det_succ_row_zero, Fin.sum_univ_succ, Fin.succAbove_zero,
+        hsub]
+      simp only [Matrix.of_apply, hN0, hrow, mul_zero, zero_mul, Finset.sum_const_zero, add_zero,
+        real_inner_self_eq_norm_sq]
+      simp
+    -- `det (N* N) = (det T)² (det D)² det (A* A)`; cancel `|v|² ≠ 0`
+    have hv0 : ‖v‖ ^ 2 ≠ 0 := by
+      refine pow_ne_zero 2 (norm_ne_zero_iff.mpr fun h0 => ?_)
+      have h1 := hvAD (b 0)
+      rw [h0, inner_zero_left] at h1
+      simp [b, EuclideanSpace.basisFun_apply] at h1
+    have hkey : ‖v‖ ^ 2 * ((A ∘L D ∘L ι).adjoint ∘L (A ∘L D ∘L ι)).det =
+        ‖v‖ ^ 2 * (‖v‖ ^ 2 * D.det ^ 2 * (A.adjoint ∘L A).det) := by
+      rw [← hdetN, hcomp, hcomp, hdetT]
+      ring
+    rw [mul_left_cancel₀ hv0 hkey, show ‖v‖ ^ 2 * D.det ^ 2 * (A.adjoint ∘L A).det =
+      (‖v‖ * |D.det|) ^ 2 * (A.adjoint ∘L A).det by rw [mul_pow, sq_abs],
+      Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (by positivity)]
+    ring
+
+/-- Level parametrisations of a straightened chart (Simon Ch. 2, §6, co-area formula 6.3/6.6;
+step 2 of the chart co-area argument).  Let `c(s, w) = (s, w₀, …, wₙ₋₁)`, let `ψ : ℝⁿ⁺¹ → ℝᴾ` be
+`C¹` and injective with injective derivative on `V`, `F : ℝⁿ⁺¹ → ℝ` be `C¹`, and `Θ` be `C¹` and
+injective with injective derivative on the open `Ω`, with `Θ(Ω) ⊆ V` and `F ∘ Θ = (·)₀` on `Ω`.
+Fix `t`.  Then `Ωᵗ = {w | c(t, w) ∈ Ω}` is open and `χ = ψ ∘ Θ ∘ c(t, ·)` is `C¹` and injective
+on `Ωᵗ`.  At `w ∈ Ωᵗ`, with `z = c(t, w)` and `y = Θ(z)`: `DF(y) ≠ 0`, `Dχ(w)` is injective,
+and for every `v ∈ Dψ(y)(ℝⁿ⁺¹)` with `⟨v, Dψ(y)e⟩ = DF(y)e` for all `e`,
+`Dχ(w)(ℝⁿ) = Dψ(y)(ℝⁿ⁺¹) ∩ (ℝv)^⊥` and `J(Dχ(w)) = |v| J(Dψ(y)) |det DΘ(z)|`, where
+`J(X) = √det(X*X)`.
+
+Proof sketch:
+* `ι w := c(t, w) − c(t, 0)` is linear with `(ι w)₀ = 0`, `(ι w)ᵢ₊₁ = wᵢ` (compare coordinates),
+  so `c(t, ·) = c(t, 0) + ι` is a `C¹` affine injection; hence `Ωᵗ` is open and `χ` is `C¹` on it.
+* `χ` is injective on `Ωᵗ`: `ψ` is injective on `V ⊇ Θ(Ω)`, `Θ` on `Ω`, and `c(t, ·)` everywhere.
+* Chain rule: `Dχ(w) = Dψ(y) ∘ DΘ(z) ∘ ι`.  As `F ∘ Θ = (·)₀` on the neighbourhood `Ω` of `z`,
+  `DF(y)(DΘ(z) z') = z'₀` for all `z'`; at `z' = e₀` this gives `DF(y) ≠ 0`.
+* `Dχ(w)` is injective as a composite of injective maps; the range and the Jacobian identity are
+  `dtc_bc_lc_sl_cc_jacobian_identity` for `Dψ(y)`, `DF(y)`, `v`, `DΘ(z)` and `ι`. -/
+theorem Submission.dtc_bc_lc_sl_cc_slice_param : ∀ (P n : ℕ) (c : ℝ → Euclid n → Euclid (n + 1)) (ψ : Euclid (n + 1) → Euclid P) (V Ω : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (Θ : Euclid (n + 1) → Euclid (n + 1)) (t : ℝ), (∀ s w, c s w 0 = s ∧ ∀ i : Fin n, c s w i.succ = w i) → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → IsOpen Ω → ContDiffOn ℝ 1 Θ Ω → InjOn Θ Ω → (∀ z ∈ Ω, Injective (fderiv ℝ Θ z)) → Θ '' Ω ⊆ V → (∀ z ∈ Ω, F (Θ z) = z 0) → IsOpen {w | c t w ∈ Ω} ∧ ContDiffOn ℝ 1 (fun w => ψ (Θ (c t w))) {w | c t w ∈ Ω} ∧ InjOn (fun w => ψ (Θ (c t w))) {w | c t w ∈ Ω} ∧ ∀ w, c t w ∈ Ω → fderiv ℝ F (Θ (c t w)) ≠ 0 ∧ Injective (fderiv ℝ (fun w' => ψ (Θ (c t w'))) w) ∧ ∀ v ∈ LinearMap.range (fderiv ℝ ψ (Θ (c t w)) : Euclid (n + 1) →ₗ[ℝ] Euclid P), (∀ e, inner ℝ v (fderiv ℝ ψ (Θ (c t w)) e) = fderiv ℝ F (Θ (c t w)) e) → LinearMap.range (fderiv ℝ (fun w' => ψ (Θ (c t w'))) w : Euclid n →ₗ[ℝ] Euclid P) = LinearMap.range (fderiv ℝ ψ (Θ (c t w)) : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ v)ᗮ ∧ Real.sqrt (((fderiv ℝ (fun w' => ψ (Θ (c t w'))) w).adjoint ∘L fderiv ℝ (fun w' => ψ (Θ (c t w'))) w).det) = ‖v‖ * Real.sqrt (((fderiv ℝ ψ (Θ (c t w))).adjoint ∘L fderiv ℝ ψ (Θ (c t w))).det) * |(fderiv ℝ Θ (c t w)).det| := by
+  intro P n c ψ V Ω F Θ t hc hψ hψinj hψd hF hΩ hΘ hΘinj hΘd hΘV hFΘ
+  have hc0 : ∀ s w, c s w 0 = s := fun s w => (hc s w).1
+  have hcs : ∀ s w (i : Fin n), c s w i.succ = w i := fun s w => (hc s w).2
+  -- Step 1: `ι w := c(t, w) − c(t, 0)` is linear, `(ι w)₀ = 0`, `(ι w)ᵢ₊₁ = wᵢ`
+  let ιₗ : Euclid n →ₗ[ℝ] Euclid (n + 1) :=
+    { toFun := fun w => c t w - c t 0
+      map_add' := fun w w' => by
+        ext i
+        refine Fin.cases ?_ (fun i => ?_) i
+        · simp [hc0]
+        · simp [hcs]
+      map_smul' := fun a w => by
+        ext i
+        refine Fin.cases ?_ (fun i => ?_) i
+        · simp [hc0]
+        · simp [hcs] }
+  let ι : Euclid n →L[ℝ] Euclid (n + 1) := LinearMap.toContinuousLinearMap ιₗ
+  have hιapp : ∀ w, ι w = c t w - c t 0 := fun w => rfl
+  have hιcoord : ∀ w, ι w 0 = 0 ∧ ∀ i : Fin n, ι w i.succ = w i := fun w =>
+    ⟨by simp [hιapp, hc0], fun i => by simp [hιapp, hcs]⟩
+  have hιinj : Injective ι := fun w w' h => by
+    ext i
+    rw [← (hιcoord w).2 i, ← (hιcoord w').2 i, h]
+  -- `c(t, ·) = c(t, 0) + ι` is a `C¹` affine map with derivative `ι`
+  have hcfun : (fun w => c t w) = fun w => c t 0 + ι w := by
+    funext w
+    rw [hιapp, add_sub_cancel]
+  have hcd : ∀ w, HasFDerivAt (fun w => c t w) ι w := fun w => by
+    rw [hcfun]
+    exact ι.hasFDerivAt.const_add (c t 0)
+  have hccd : ContDiff ℝ 1 (fun w => c t w) := by
+    rw [hcfun]
+    exact contDiff_const.add ι.contDiff
+  -- Step 2: `Ωᵗ` is open
+  have hopen : IsOpen {w | c t w ∈ Ω} := hccd.continuous.isOpen_preimage Ω hΩ
+  -- Step 3: `χ` is `C¹` on `Ωᵗ`
+  have hcda : ∀ w, c t w ∈ Ω → ContDiffAt ℝ 1 (fun w' => ψ (Θ (c t w'))) w := fun w hw =>
+    hψ.contDiffAt.comp w ((hΘ.contDiffAt (hΩ.mem_nhds hw)).comp w hccd.contDiffAt)
+  refine ⟨hopen, fun w hw => (hcda w hw).contDiffWithinAt, ?_, ?_⟩
+  · -- Step 4: `χ` is injective on `Ωᵗ`
+    intro w hw w' hw' h
+    have h₁ : Θ (c t w) = Θ (c t w') :=
+      hψinj (hΘV (mem_image_of_mem Θ hw)) (hΘV (mem_image_of_mem Θ hw')) h
+    apply hιinj
+    rw [hιapp, hιapp, hΘinj hw hw' h₁]
+  -- Step 5: derivatives at `w ∈ Ωᵗ`, with `z = c(t, w)` and `y = Θ(z)`
+  intro w hw
+  have hΘz : HasFDerivAt Θ (fderiv ℝ Θ (c t w)) (c t w) :=
+    (hΘ.contDiffAt (hΩ.mem_nhds hw)).differentiableAt_one.hasFDerivAt
+  have hψy : HasFDerivAt ψ (fderiv ℝ ψ (Θ (c t w))) (Θ (c t w)) :=
+    hψ.contDiffAt.differentiableAt_one.hasFDerivAt
+  have hFy : HasFDerivAt F (fderiv ℝ F (Θ (c t w))) (Θ (c t w)) :=
+    hF.contDiffAt.differentiableAt_one.hasFDerivAt
+  -- chain rule: `Dχ(w) = Dψ(y) ∘ DΘ(z) ∘ ι`
+  have hχ : HasFDerivAt (fun w' => ψ (Θ (c t w')))
+      (fderiv ℝ ψ (Θ (c t w)) ∘L fderiv ℝ Θ (c t w) ∘L ι) w :=
+    hψy.comp w (hΘz.comp w (hcd w))
+  rw [hχ.fderiv]
+  -- `F ∘ Θ = (·)₀` on the neighbourhood `Ω` of `z`, so `DF(y) ∘ DΘ(z) = (·)₀`
+  have hproj : HasFDerivAt (fun z' : Euclid (n + 1) => z' 0)
+      (EuclideanSpace.proj (0 : Fin (n + 1)) : Euclid (n + 1) →L[ℝ] ℝ) (c t w) :=
+    (EuclideanSpace.proj (0 : Fin (n + 1)) : Euclid (n + 1) →L[ℝ] ℝ).hasFDerivAt
+  have hℓD : fderiv ℝ F (Θ (c t w)) ∘L fderiv ℝ Θ (c t w) = EuclideanSpace.proj 0 :=
+    ((hFy.comp (c t w) hΘz).congr_of_eventuallyEq
+      (Filter.eventually_of_mem (hΩ.mem_nhds hw) fun z' hz' => (hFΘ z' hz').symm)).unique hproj
+  have hℓDz : ∀ z', fderiv ℝ F (Θ (c t w)) (fderiv ℝ Θ (c t w) z') = z' 0 := fun z' =>
+    congrArg (fun L : Euclid (n + 1) →L[ℝ] ℝ => L z') hℓD
+  -- Step 6: `DF(y) ≠ 0`, since `DF(y)(DΘ(z) e₀) = 1`
+  have hFne : fderiv ℝ F (Θ (c t w)) ≠ 0 := by
+    intro h0
+    have h₁ := hℓDz (EuclideanSpace.single 0 1)
+    rw [h0] at h₁
+    simp at h₁
+  -- Step 7: `Dχ(w)` is injective as a composite of injective maps
+  have hAinj : Injective (fderiv ℝ ψ (Θ (c t w))) := hψd _ (hΘV (mem_image_of_mem Θ hw))
+  have hDinj : Injective (fderiv ℝ Θ (c t w)) := hΘd _ hw
+  refine ⟨hFne, hAinj.comp (hDinj.comp hιinj), fun v hv hvℓ => ?_⟩
+  -- Step 8: the range and the Jacobian identity, from `jacobian_identity`
+  exact (Submission.dtc_bc_lc_sl_cc_jacobian_identity n P (fderiv ℝ ψ (Θ (c t w)))
+    (fderiv ℝ F (Θ (c t w))) v (fderiv ℝ Θ (c t w)) ι hAinj hv hvℓ hDinj hℓDz hιcoord).2
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
