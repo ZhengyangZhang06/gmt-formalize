@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "MultiVector|IsUnitOrientationOf|structure IMRep|def IMRep|namespace IMRep|locallyIntegrable_mult|aestronglyMeasurable_orient|orients|measure|Represents|action",
+        "alternatization_apply_apply|def alternatization|def mkPiAlgebra|mkPiAlgebra_apply",
+        "integral_withDensity_eq_integral_smul|withDensity_absolutelyContinuous|withDensity_apply",
+        "mem_support_iff_forall",
+        "\"lean_name\"\\s*:\\s*\"imsupp_",
+        "imsupp_|imrep_represents_support_eq_inter_measure_support",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imsupp-independent-audit-qjcvd9_m/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imsupp-independent-audit-qjcvd9_m/SuppliedProofs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imsupp-decomp/Child2basis.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imsupp-decomp/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/tmp/imsupp-decomp/Child1.lean",
+        "/tmp/imsupp-decomp/Child2basis.lean",
+        "/tmp/imsupp-decomp/Child3.lean",
+        "/tmp/imsupp-decomp/Assembly.lean",
+        "/tmp/imsupp-independent-audit-qjcvd9_m/ChallengeTypes.lean",
+        "/tmp/imsupp-independent-audit-qjcvd9_m/SuppliedProofs.lean"
+      ],
+      "conclusion": "The handoff matches the selected frozen contract. Workspace definitions and relevant dependency sources match the pinned snapshot. The split is appropriate: the orientation lemma supports the analytic implication, and the two vanishing implications establish both inclusions of the exact parent support equality. Dependencies are acyclic and correctly directed. All names are bare identifiers; reservation searches found matches only within this proposal's records, with no conflicting DAG declaration. All three one-line propositions elaborate independently of their implementations. Operator-norm checks, supplied child proofs, the scalar-basis proof, and the exact parent assembly compiled successfully. The named Submission theorems use only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_orientation_nonzero_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Unnormalized alternatization constructs a covector evaluating to 1 on the orthonormal family, including n = 0, proving nonvanishing. The operator-norm inequalities prove the stated bound with the actual inferred norms. The proof is complete and independent of the parent and other children."
+    },
+    {
+      "key": "weight_null_where_current_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type include all required hypotheses through IMRep, representation, openness of W, inclusion in U, and vanishing. Absolute continuity transfers orientation facts; compact-set finiteness establishes scalar local integrability. Smooth scalar tests and the density identity justify the fundamental lemma. The explicit finite-dimensional basis argument combines the almost-everywhere conclusions without an uncountable-intersection gap. Only the declared orientation child is needed; openness of U and compact closure of W are unnecessary."
+    },
+    {
+      "key": "current_vanishes_where_weight_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type correctly allow arbitrary W. Passing to the closed test-form support supplies measurability. Its zero weighted measure and positivity of multiplicity imply zero restricted Hausdorff measure, so the action integrand vanishes almost everywhere. Representation then gives vanishing of the current. The supplied proof is complete and has no child or parent dependency."
+    }
+  ],
+  "required_changes": []
+}
