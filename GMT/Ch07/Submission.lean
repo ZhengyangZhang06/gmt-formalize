@@ -3230,6 +3230,146 @@ theorem Submission.dpf_pushforward_formula_current_exists : ∀ (P n : ℕ) (U K
     _ = ε * (Λ ^ n * I / (Λ ^ n * I + 1)) := by ring
     _ < ε := mul_lt_of_lt_one_right hε ((div_lt_one (by linarith)).2 (lt_add_one _))
 
+/-- **Push-forward of an oriented `C¹` piece** (Simon 6.2.24(3), 6.3.1–3.2; chapter-06.txt
+lines 425–440, 733–768): if `N` is an embedded `C¹` `m`-submanifold oriented by `ξ`, `W` is open
+with `Hᵐ(N ∩ W) < ∞` and `Φ` is a `C¹` bijection of `ℝᴾ` with injective derivative, `Λ`-Lipschitz
+and `Λ`-antilipschitz, then `ω ↦ ∫_{N∩W} ⟨ω(Φ(x)) ∘ DΦ(x), ξ(x)⟩ dHᵐ` is an integer multiplicity
+current `D ∈ 𝒟_m(ℝᴾ)` with `M_{W'}(D) ≤ Hᵐ(Φ(N ∩ W) ∩ W')`.  `Φ` is a homeomorphism and `Φ(N)`
+an embedded `C¹` submanifold with `T_{Φ(x)}Φ(N) = DΦ(x)(TₓN)`.  With the Jacobian
+`J = (det(DΦ eᵢ · DΦ eⱼ))^{1/2}` and the unit orientation `ζ = J⁻¹ Λ_m DΦ ξ` of `DΦ(TₓN)`, the
+triple `(Φ(N ∩ W), 1, ζ ∘ Φ⁻¹)` defines `D` (`Hᵐ(Φ(N ∩ W)) ≤ Λᵐ Hᵐ(N ∩ W)`), and the area formula
+on `N` turns `∫_{Φ(N∩W)} ⟨ω, ζ ∘ Φ⁻¹⟩ dHᵐ` into `∫_{N∩W} J ⟨ω ∘ Φ, ζ⟩ dHᵐ`, where
+`J(x) ⟨ω(Φ(x)), ζ(x)⟩ = ⟨ω(Φ(x)) ∘ DΦ(x), ξ(x)⟩`. -/
+theorem Submission.codim1_ac_oriented_piece_pushforward : ∀ (P m : ℕ) (N W : Set (Euclid P)) (ξ : Euclid P → MultiVector P m) (Φ : Euclid P → Euclid P) (Λ : NNReal), 1 ≤ m → IsEmbeddedSubmanifold 1 m N → IsOrientation m N ξ → IsOpen W → μHE[m] (N ∩ W) ≠ ∞ → ContDiff ℝ 1 Φ → Bijective Φ → (∀ x, Injective (fderiv ℝ Φ x)) → LipschitzWith Λ Φ → AntilipschitzWith Λ Φ → ∃ D : GeometricCurrentOn (univ : Set (Euclid P)) m, IsIntegerMultiplicity D ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Integrable (fun x => ξ x (((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x))) (μHE[m].restrict (N ∩ W)) ∧ D ω = ∫ x in N ∩ W, ξ x (((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x)) ∂μHE[m]) ∧ ∀ W' : Set (Euclid P), D.massOn W' ≤ μHE[m] (Φ '' (N ∩ W) ∩ W') := by
+  intro P m N W ξ Φ Λ hm hN hξ hW hfin hΦ hbij hDΦ hlip hanti
+  -- Step 1: `Φ` is a homeomorphism (`Φ⁻¹` is `Λ`-Lipschitz), hence a measurable embedding and
+  -- an open map; `N`, `N ∩ W` and `C' = Φ(N ∩ W)` are Borel
+  obtain ⟨H, hH⟩ : ∃ H : Euclid P ≃ₜ Euclid P, ⇑H = Φ :=
+    ⟨{ toEquiv := Equiv.ofBijective Φ hbij
+       continuous_toFun := hΦ.continuous
+       continuous_invFun :=
+        (hanti.to_rightInverse (Equiv.ofBijective Φ hbij).rightInverse_symm).continuous }, rfl⟩
+  have hHΦ : ∀ x, H.symm (Φ x) = x := fun x => by
+    rw [← hH]
+    exact H.symm_apply_apply x
+  have hBm : MeasurableSet (N ∩ W) :=
+    (Submission.codim1_ac_pp_embedded_measurable_rectifiable P m N hN).1.inter hW.measurableSet
+  have hCm : MeasurableSet (Φ '' (N ∩ W)) := by
+    rw [← hH]
+    exact H.measurableEmbedding.measurableSet_image' hBm
+  have hO : IsOpen (Φ '' W) := by
+    rw [← hH]
+    exact H.isOpenMap W hW
+  -- Step 2: `Q(x) = TₓN` is oriented by `ξ(x)`; `Φ(N)` is an embedded `C¹` submanifold with
+  -- `T_{Φ(x)}Φ(N) = DΦ(x)(TₓN)`
+  obtain ⟨hξc, hξQ⟩ := hξ
+  choose! Q hQT hQξ using hξQ
+  obtain ⟨hN', hT'⟩ :=
+    Submission.codim1_ac_diffeo_image_submanifold P m N Φ Λ hN hΦ hbij hDΦ hanti
+  -- Step 3: the Jacobian `J` and the area formula on `N`; `ζ = J⁻¹ Λ_m DΦ ξ` is a unit
+  -- orientation of `DΦ(x)(Q(x))`, and `0 < J ≤ ‖DΦ‖ᵐ ≤ Λᵐ` on `N`
+  obtain ⟨hJc, harea⟩ :=
+    Submission.codim1_ac_submanifold_area_formula P m N Q Φ hm hN hQT hΦ hbij.injective hDΦ
+  set J : Euclid P → ℝ := fun x => Real.sqrt (Matrix.det
+    (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) =>
+      inner ℝ (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) i))
+        (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) j))))
+  set ζ : Euclid P → MultiVector P m := fun x =>
+    (J x)⁻¹ • (ξ x).comp (ContinuousAlternatingMap.compContinuousLinearMapCLM (fderiv ℝ Φ x))
+  have hpush : ∀ x ∈ N, 0 < J x ∧ J x ≤ ‖fderiv ℝ Φ x‖ ^ m ∧
+      IsUnitOrientationOf (ζ x) (Submodule.map (fderiv ℝ Φ x : Euclid P →ₗ[ℝ] Euclid P) (Q x)) :=
+    fun x hx => Submission.dpf_unitOrientation_map_gramNormalized P m (Q x) (ξ x)
+      (fderiv ℝ Φ x) (J x) (hQξ x hx) (hDΦ x) rfl
+  have hJΛ : ∀ x ∈ N, J x ≤ (Λ : ℝ) ^ m := fun x hx =>
+    (hpush x hx).2.1.trans
+      (pow_le_pow_left₀ (norm_nonneg _) (norm_fderiv_le_of_lipschitz ℝ hlip) m)
+  -- Step 4: the image orientation `ξ' = ζ ∘ Φ⁻¹` is continuous on `Φ(N)`
+  have hζc : ContinuousOn ζ N := by
+    have hDc := (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM (𝕜 := ℝ)
+      (ι := Fin m) (G := ℝ)).comp (hΦ.continuous_fderiv one_ne_zero)
+    exact (hJc.inv₀ fun x hx => (hpush x hx).1.ne').smul (hξc.clm_comp hDc.continuousOn)
+  set ξ' : Euclid P → MultiVector P m := fun y => ζ (H.symm y)
+  have hξ'c : ContinuousOn ξ' (Φ '' N) := by
+    refine hζc.comp H.symm.continuous.continuousOn ?_
+    rintro _ ⟨x, hx, rfl⟩
+    rw [hHΦ x]
+    exact hx
+  -- Step 5: at `y = Φ(x) ∈ C' = Φ(N) ∩ Φ(W)` the approximate tangent plane of `C'` is
+  -- `DΦ(x)(Q(x))`, oriented by `ξ'(y) = ζ(x)`
+  have horient : ∀ y ∈ Φ '' (N ∩ W), ∃ Q' : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt m (Φ '' (N ∩ W)) y Q' ∧ IsUnitOrientationOf (ξ' y) Q' := by
+    rintro _ ⟨x, ⟨hxN, hxW⟩, rfl⟩
+    refine ⟨Submodule.map (fderiv ℝ Φ x : Euclid P →ₗ[ℝ] Euclid P) (Q x), ?_, ?_⟩
+    · rw [image_inter hbij.injective]
+      refine Submission.codim1_ac_submanifold_approxTangent P m (Φ '' N) (Φ '' W) (Φ x) _ hm hN'
+        hO ⟨mem_image_of_mem Φ hxN, mem_image_of_mem Φ hxW⟩ ?_
+      rw [Submodule.map_coe, ContinuousLinearMap.coe_coe, hQT x hxN, hT' x hxN]
+    · show IsUnitOrientationOf (ζ (H.symm (Φ x))) _
+      rw [hHΦ x]
+      exact (hpush x hxN).2.2
+  -- Step 6: `Hᵐ(C') = ∫_{N∩W} J dHᵐ ≤ Λᵐ Hᵐ(N ∩ W) < ∞`
+  have hCfin : μHE[m] (Φ '' (N ∩ W)) ≠ ∞ := by
+    have h1 : ∫⁻ y in Φ '' (N ∩ W), 1 ∂μHE[m] =
+        ∫⁻ x in N ∩ W, ENNReal.ofReal (J x) * 1 ∂μHE[m] :=
+      harea (N ∩ W) inter_subset_left hBm fun _ => 1
+    have hle : ∫⁻ x in N ∩ W, ENNReal.ofReal (J x) * 1 ∂μHE[m] ≤
+        ENNReal.ofReal ((Λ : ℝ) ^ m) * μHE[m] (N ∩ W) :=
+      calc ∫⁻ x in N ∩ W, ENNReal.ofReal (J x) * 1 ∂μHE[m]
+          ≤ ∫⁻ _ in N ∩ W, ENNReal.ofReal ((Λ : ℝ) ^ m) ∂μHE[m] :=
+            setLIntegral_mono measurable_const fun x hx => by
+              rw [mul_one]
+              exact ENNReal.ofReal_le_ofReal (hJΛ x hx.1)
+        _ = ENNReal.ofReal ((Λ : ℝ) ^ m) * μHE[m] (N ∩ W) := setLIntegral_const _ _
+    rw [setLIntegral_one] at h1
+    rw [h1]
+    exact ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfin) hle
+  -- Step 7: the multiplicity-one triple `(C', 1, ξ')` defines the integer multiplicity current
+  -- `D`, with `D(ω) = ∫_{C'} ⟨ω, ξ'⟩ dHᵐ` and `M_{W'}(D) ≤ Hᵐ(C' ∩ W')`
+  have hCrect : CountablyRectifiable m (Φ '' (N ∩ W)) :=
+    (Submission.codim1_ac_pp_embedded_measurable_rectifiable P m (Φ '' N) hN').2.mono
+      (image_mono inter_subset_left)
+  have : TopologicalSpace.PseudoMetrizableSpace (MultiVector P m) :=
+    @PseudoEMetricSpace.pseudoMetrizableSpace _
+      (inferInstance : PseudoEMetricSpace (MultiVector P m))
+  have hξ'm : AEStronglyMeasurable ξ' (μHE[m].restrict (Φ '' (N ∩ W))) :=
+    (hξ'c.mono (image_mono inter_subset_left)).aestronglyMeasurable hCm
+  obtain ⟨D, hDim, hDact, hDmass⟩ := Submission.codim1_ac_pp_unit_rectifiable_current P m
+    (Φ '' (N ∩ W)) ξ' hCm hCrect
+    (fun K _ => ne_top_of_le_ne_top hCfin (measure_mono inter_subset_left)) hξ'm
+    (ae_restrict_of_forall_mem hCm horient)
+  refine ⟨D, hDim, fun ω => ?_, hDmass⟩
+  -- Step 8: `J(x) ⟨ω(Φ(x)), ξ'(Φ(x))⟩ = ⟨ω(Φ(x)) ∘ DΦ(x), ξ(x)⟩` on `N`, and the signed area
+  -- formula transfers `∫_{C'} ⟨ω, ξ'⟩ dHᵐ` to `N ∩ W`
+  obtain ⟨hfint, hDω⟩ := hDact ω
+  have hpt : ∀ x ∈ N, J x * ξ' (Φ x) ((ω : DifferentialForm (Euclid P) m) (Φ x)) =
+      ξ x (((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x)) := by
+    intro x hx
+    show J x * ζ (H.symm (Φ x)) ((ω : DifferentialForm (Euclid P) m) (Φ x)) = _
+    rw [hHΦ x]
+    exact mul_inv_cancel_left₀ (hpush x hx).1.ne' _
+  have hωc : Continuous (ω : DifferentialForm (Euclid P) m) :=
+    ContDiff.continuous ω.property.1.1
+  have hFc : Continuous fun x =>
+      ((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x) := by
+    have h := (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM (𝕜 := ℝ)
+      (ι := Fin m) (G := ℝ) |>.comp (hΦ.continuous_fderiv one_ne_zero)).clm_apply
+      (hωc.comp hΦ.continuous)
+    simpa only [Function.comp_apply, ContinuousAlternatingMap.compContinuousLinearMapCLM_apply]
+      using h
+  have hhm : AEStronglyMeasurable (fun x =>
+      ξ x (((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x)))
+      (μHE[m].restrict (N ∩ W)) :=
+    ((hξc.clm_apply hFc.continuousOn).mono inter_subset_left).aestronglyMeasurable hBm
+  have heq : (fun x => J x * ξ' (Φ x) ((ω : DifferentialForm (Euclid P) m) (Φ x)))
+      =ᵐ[μHE[m].restrict (N ∩ W)] fun x =>
+        ξ x (((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x)) :=
+    ae_restrict_of_forall_mem hBm fun x hx => hpt x hx.1
+  obtain ⟨hint, hint_eq⟩ := Submission.codim1_ac_pp_setIntegral_transfer (Euclid P) (Euclid P)
+    μHE[m] μHE[m] Φ (N ∩ W) (Φ '' (N ∩ W)) J
+    (fun y => ξ' y ((ω : DifferentialForm (Euclid P) m) y)) (fun x => Real.sqrt_nonneg _)
+    (harea (N ∩ W) inter_subset_left hBm) hfint (hhm.congr heq.symm)
+  exact ⟨hint.congr heq, hDω.trans (hint_eq.trans (integral_congr_ae heq))⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
