@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.c1_perturbation-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1",
+  "depth": 5,
+  "title": "A C¹ map near a compact set agrees there with a compactly supported C¹ perturbation of the identity (the cut-off of Simon 6.2.23)",
+  "statement": "Let P ∈ ℕ, O ⊆ ℝ^P open, K ⊆ O compact, and f : ℝ^P → ℝ^P of class C¹ on O (ContDiffOn ℝ 1 f O). Then there exist a map φ : ℝ^P → ℝ^P of class C¹ on all of ℝ^P (ContDiff ℝ 1 φ), an open set V ⊆ ℝ^P with K ⊆ V, and a compact set K' ⊆ ℝ^P such that φ(x) = f(x) and Dφ(x) = Df(x) for every x ∈ V (Df(x) := fderiv ℝ f x), and φ(x) = x for every x ∉ K'.",
+  "lean_statement": "∀ (P : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P), IsOpen O → IsCompact K → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ (φ : Euclid P → Euclid P) (V K' : Set (Euclid P)), IsOpen V ∧ K ⊆ V ∧ IsCompact K' ∧ ContDiff ℝ 1 φ ∧ (∀ x ∈ V, φ x = f x ∧ fderiv ℝ φ x = fderiv ℝ f x) ∧ ∀ x, x ∉ K' → φ x = x",
+  "lean_name": "dtc_bc_lc_pf_c1_compact_perturbation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-7609991c38-a1"
+}
