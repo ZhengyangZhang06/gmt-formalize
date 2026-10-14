@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "83d9ca20cb84683783958ec89a40edcf9ef8a623587768a8995978c410fcd1cc",
+  "git_delta": {
+    "base_commit": "23062dd4a35f9076079bf96764687ec5138bd901",
+    "candidate_commit": "8a411c0c2fb777a69689ecff61317774bb7c996a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_ll_immersion_antilipschitz",
+    "diff_sha256": "894860db61b5c76cbac8015a271bca258197937d2b8fb8f83a4e9eb114553c52",
+    "source_sha256": "efbaa5969b6db41d7212a86d3c41fb253fc1766a6ea6254a913a65f52daaebe5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_ll_immersion_antilipschitz",
+      "statement": "∀ (P N : ℕ) (ψ : Euclid N → Euclid P) (C : Set (Euclid N)), ContDiff ℝ 1 ψ → IsCompact C → InjOn ψ C → (∀ y ∈ C, Injective (fderiv ℝ ψ y)) → ∃ c : ℝ, 0 < c ∧ ∀ a ∈ C, ∀ b ∈ C, c * ‖a - b‖ ≤ ‖ψ a - ψ b‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
