@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b35afb3389264d25218ce88fc4be261263d5fe3150a11830ebc1f09a97011b83",
+  "git_delta": {
+    "base_commit": "9237b1694fad58fd4c752ee1cf6db738fd1d828c",
+    "candidate_commit": "274d428ef2afe39e3cf0ce7c4cbea73d118df8b1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cc_cycle_rescale",
+    "diff_sha256": "3ec78932ed8ee644d3f76482e77198ed2996e0e211fb7c633ba2deaef766d9d9",
+    "source_sha256": "b6dc94adfbaf6133e5a8c2e63dd5303a1fc7412bec2fcd0391084302e09eef2b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cc_cycle_rescale",
+      "statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (y : Euclid P) (t : ℝ), 1 ≤ n → 0 < t → IsMinimizingIn S univ → BoundaryVanishes S → R.Represents S → ∃ (S' : GeometricCurrentOn (univ : Set (Euclid P)) n) (R' : IMRep (univ : Set (Euclid P)) n), IsMinimizingIn S' univ ∧ BoundaryVanishes S' ∧ R'.Represents S' ∧ R'.measure = ENNReal.ofReal (t⁻¹ ^ n) • R.measure.map (dilation y t)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
