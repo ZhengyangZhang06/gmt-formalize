@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6caa14811c1690a5731a56ac26e4edc82488d3ba12fe49b3c941d8718e9f263a",
+  "git_delta": {
+    "base_commit": "88ccc7431315072f1e3c5fa6995c061153e81f3d",
+    "candidate_commit": "1d3971551c510833d5f32336bf523f4e9e7b5c50",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "ecf_cp_cone_map",
+    "diff_sha256": "5484a8cc1b5d35fa88ef7d72476ff01e84e27dd4f1c0893839f3116e84de4d7d",
+    "source_sha256": "4753f5c58cacce2972122797b5f5b75bea149384ca8a83b6fb362884afc9fb79",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ecf_cp_cone_map",
+      "statement": "∀ (k P : ℕ) (F : Euclid k → Euclid P) (A : Set (Euclid k)) (ρ : ℝ), 0 < ρ → (∃ K : NNReal, LipschitzWith K F) → (∀ u ∈ A, DifferentiableAt ℝ F u) → (∀ u ∈ A, ‖F u‖ < ρ) → ∃ G : Euclid (k + 1) → Euclid P, (∃ K : NNReal, LipschitzWith K G) ∧ ∀ u ∈ A, ∀ t ∈ Ioo (0 : ℝ) 1, G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = t • F u ∧ (fun a => fderiv ℝ G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = (Fin.cons (F u) (t • fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) : Fin (k + 1) → Euclid P)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
