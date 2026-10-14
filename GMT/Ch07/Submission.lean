@@ -1934,6 +1934,24 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
+/-- **Simon 6.2.11, 6.3.2(3)**: if `T = τ(M, θ, ξ)` in `ℝᴾ` and `F ⊆ ℝᴾ` is closed, then
+`spt T ⊆ F` iff `μ_R(ℝᴾ ∖ F) = 0`.  As `μ_R = θHⁿ⌞M ≪ Hⁿ⌞M` and `Hⁿ(M ∖ spt T) = 0`,
+`μ_R(ℝᴾ ∖ spt T) = 0`, which gives `⇒`.  Conversely, a point `x ∈ spt T ∖ F` would have a ball
+`B_ε(x) ⊆ ℝᴾ ∖ F`, which is `μ_R`-null but has positive `μ_R`-measure as `x ∈ spt T`. -/
+theorem Submission.dimred_cs_sos_mt_cc_support_subset_iff_measure : ∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (F : Set (Euclid P)), R.Represents T → IsClosed F → (T.support ⊆ F ↔ R.measure Fᶜ = 0) := by
+  intro P n T R F hR hF
+  -- `μ_R(ℝᴾ ∖ spt T) = 0`, as `μ_R ≪ Hⁿ⌞M` and `Hⁿ(M ∖ spt T) = 0`
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  have hnull : R.measure (T.support)ᶜ = 0 := hac <| by
+    rw [Measure.restrict_apply' R.measurableSet_carrier, ← sdiff_eq_compl_inter]
+    exact Submission.imrep_carrier_sdiff_support_null P n univ T R isOpen_univ hR
+  refine ⟨fun h => measure_mono_null (compl_subset_compl.2 h) hnull, fun h x hx => ?_⟩
+  -- a point `x ∈ spt T ∖ F` has a ball `B_ε(x) ⊆ ℝᴾ ∖ F` of positive `μ_R`-measure
+  by_contra hxF
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hF.isOpen_compl x hxF
+  exact ((Submission.dimred_im_mass_measure P n univ T R isOpen_univ hR).2.1 x (mem_univ x)).1 hx
+    ε hε (measure_mono_null hball h)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
