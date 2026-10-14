@@ -478,6 +478,34 @@ theorem Submission.cmc_fc_cs_massOn_sub_le : ∀ (P n : ℕ) (U G : Set (Euclid 
     _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
     _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hneg)
 
+/-- **Boundary-mass calculus** (Simon (6.2.3), chapter-06.txt lines 216–220, with the convention
+`∂T = 0` for `n = 0`; the boundary-mass bookkeeping of the shell decomposition in the deformation
+theorem): `M_G(∂(X − Y)) ≤ M_G(∂X) + M_G(∂Y)` and `M_G(∂∂X) = 0` for every set `G`.  In positive
+degree `∂(X − Y) = ∂X − ∂Y`, so the first claim is `Submission.cmc_fc_cs_massOn_sub_le`; the second
+holds because `∂∂X = 0` and `M_G(0) = 0`. -/
+theorem Submission.dimred_mbl_dtsd_sh_boundaryMassOn_calculus : ∀ (P m : ℕ) (U G : Set (Euclid P)), (∀ X Y : GeometricCurrentOn U m, boundaryMassOn (X - Y) G ≤ boundaryMassOn X G + boundaryMassOn Y G) ∧ ∀ X : GeometricCurrentOn U (m + 1), boundaryMassOn X.boundary G = 0 := by
+  intro P m U G
+  -- Step 1: `M_G(0) = 0` in every degree, since `0(ω) = 0` for each admissible `ω`
+  have hzero : ∀ {k : ℕ} (G : Set (Euclid P)), (0 : GeometricCurrentOn U k).massOn G = 0 := by
+    intro k G
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro _ ⟨ω, -, rfl⟩
+    simp
+  cases m with
+  -- Step 2: in degree `0` the boundary mass is `0` by convention
+  | zero => exact ⟨fun X Y => by simp [boundaryMassOn], fun X => rfl⟩
+  | succ k =>
+    refine ⟨fun X Y => ?_, fun X => ?_⟩
+    -- Step 3: `∂(X − Y) = ∂X − ∂Y` (both send `η` to `X(dη) − Y(dη)`), then mass subadditivity
+    · show (X - Y).boundary.massOn G ≤ X.boundary.massOn G + Y.boundary.massOn G
+      have h : (X - Y).boundary = X.boundary - Y.boundary := by ext ω; rfl
+      rw [h]
+      exact Submission.cmc_fc_cs_massOn_sub_le P k U G _ _
+    -- Step 4: `∂∂X = 0`, so `M_G(∂∂X) = M_G(0) = 0`
+    · show X.boundary.boundary.massOn G = 0
+      rw [GeometricCurrentOn.boundary_boundary]
+      exact hzero G
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
