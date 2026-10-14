@@ -819,100 +819,6 @@ theorem cmcdt_cbm_sa_smoothed_field : ∀ (m : ℕ) (δ σ : ℝ) (ρ : Euclid (
     closure_minimal hsupp hPc.isClosed
   exact ⟨hG, hPc.of_isClosed_subset (isClosed_tsupport _) hts, hts.trans hPQ, hbd⟩
 
-/-- **Smooth approximation with the variation bound on `Q_δ`** (Simon Ch. 2, 2.5, as used in the
-proof of 2.7 and of the deformation theorem, Ch. 6, 5.1).  If `u` is integrable on `Q₁` and
-`∫_{Q₁} u div g ≤ V` for every smooth compactly supported field `g` with `spt g ⊆ Q₁` and
-`|g| ≤ 1`, then for `δ > 0` the mollifications `v_k = ρ_k ⋆ 1_{Q₁}u` are `C^∞` and satisfy
-`∫_{Q_δ} ‖Dv_k‖ ≤ V` and `∫_{Q_δ} |v_k − u| → 0`.  Here `ρ_k` is the unit-mass normalization of
-the bump of radius `σ_k = δ/(k + 2) < δ`; the bound is `cmcdt_cbm_sa_grad_bound`, and since
-`1_{Q₁}u = u` on `Q_δ ⊆ Q₁`, the convergence follows from `cmcdt_cbm_sa_mollify_l1` as
-`σ_k → 0`. -/
-theorem cmcdt_cbm_smooth_approx : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (V δ : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → 0 < δ → ∃ v : ℕ → Euclid (m + 1) → ℝ, (∀ k, ContDiff ℝ 1 (v k)) ∧ (∀ k, ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖fderiv ℝ (v k) x‖ ≤ V) ∧ Tendsto (fun k => ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - u x|) atTop (𝓝 0) := by
-  intro m u V δ hu hV hδ
-  set Q1 : Set (Euclid (m + 1)) := {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}
-  set Qδ : Set (Euclid (m + 1)) := {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}
-  -- Step 0: the cubes are measurable, `Q_δ ⊆ Q₁`, and `ū = 1_{Q₁}u` is integrable
-  have hcoord : ∀ i : Fin (m + 1), Measurable (fun y : Euclid (m + 1) => y i) := fun i =>
-    (EuclideanSpace.proj (𝕜 := ℝ) i).continuous.measurable
-  have hcube : ∀ a b : ℝ, MeasurableSet {y : Euclid (m + 1) | ∀ i, a < y i ∧ y i < b} := by
-    intro a b
-    have : {y : Euclid (m + 1) | ∀ i, a < y i ∧ y i < b} =
-        ⋂ i, ({y : Euclid (m + 1) | a < y i} ∩ {y | y i < b}) := by
-      ext y; simp
-    rw [this]
-    exact MeasurableSet.iInter fun i =>
-      (measurableSet_lt measurable_const (hcoord i)).inter
-        (measurableSet_lt (hcoord i) measurable_const)
-  have hQ1m : MeasurableSet Q1 := hcube 0 1
-  have hQδm : MeasurableSet Qδ := hcube δ (1 - δ)
-  have hQδQ1 : Qδ ⊆ Q1 := fun y hy i => ⟨by linarith [(hy i).1], by linarith [(hy i).2]⟩
-  set ub : Euclid (m + 1) → ℝ := Q1.indicator u
-  have hub_int : Integrable ub := (integrable_indicator_iff hQ1m).2 hu
-  -- Step 1: radii `σ_k = δ/(k + 2) ∈ (0, δ)` and kernels `ρ_k = b_k / ∫ b_k`, where `b_k` is the
-  -- `C^∞` bump with `b_k = 1` on `B_{σ_k/2}(0)`, `0 ≤ b_k ≤ 1` and `support b_k = B_{σ_k}(0)`
-  set σ : ℕ → ℝ := fun k => δ / ((k : ℝ) + 2)
-  have hσ0 : ∀ k, 0 < σ k := fun k => div_pos hδ (by positivity)
-  have hσδ : ∀ k, σ k < δ := fun k =>
-    div_lt_self hδ (by have := (Nat.cast_nonneg k : (0 : ℝ) ≤ k); linarith)
-  let b : ℕ → ContDiffBump (0 : Euclid (m + 1)) := fun k =>
-    ⟨σ k / 2, σ k, half_pos (hσ0 k), half_lt_self (hσ0 k)⟩
-  have hb_int : ∀ k, 0 < ∫ y, b k y := fun k => by
-    refine (integral_pos_iff_support_of_nonneg (b k).nonneg'
-      ((b k).continuous.integrable_of_hasCompactSupport (b k).hasCompactSupport)).2 ?_
-    rw [(b k).support_eq]
-    exact measure_ball_pos volume _ (b k).rOut_pos
-  set ρ : ℕ → Euclid (m + 1) → ℝ := fun k x => b k x / ∫ y, b k y
-  have hρ_smooth : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (ρ k) := fun k => (b k).contDiff.div_const _
-  have hρ_nonneg : ∀ k z, 0 ≤ ρ k z := fun k z => div_nonneg (b k).nonneg (hb_int k).le
-  have hρ_one : ∀ k, ∫ z, ρ k z = 1 := fun k => by
-    show ∫ z, b k z / ∫ y, b k y = 1
-    rw [integral_div, div_self (hb_int k).ne']
-  have hρ_supp : ∀ k, support (ρ k) = ball (0 : Euclid (m + 1)) (σ k) := fun k => by
-    show support (fun x => b k x / ∫ y, b k y) = ball 0 (b k).rOut
-    rw [support_div, (b k).support_eq, support_const (hb_int k).ne', inter_univ]
-  have hρ_cpt : ∀ k, HasCompactSupport (ρ k) := fun k =>
-    HasCompactSupport.intro (isCompact_closedBall (0 : Euclid (m + 1)) (σ k)) fun x hx => by
-      by_contra h
-      exact hx (ball_subset_closedBall ((hρ_supp k).subset h))
-  -- Step 2: `v_k = ρ_k ⋆ ū` is `C^∞` (differentiation under the integral sign), hence `C¹`
-  refine ⟨fun k => convolution (ρ k) ub (ContinuousLinearMap.lsmul ℝ ℝ) volume, fun k => ?_,
-    fun k => ?_, ?_⟩
-  · exact ((hρ_cpt k).contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) (hρ_smooth k)
-      hub_int.locallyIntegrable).of_le (by exact_mod_cast le_top)
-  -- Step 3: the variation bound `∫_{Q_δ} ‖Dv_k‖ ≤ V`, since `0 < σ_k < δ`
-  · exact Submission.cmcdt_cbm_sa_grad_bound m u V δ (σ k) (ρ k) hu hV (hσ0 k) (hσδ k) (hρ_smooth k)
-      (hρ_nonneg k) (hρ_one k) (hρ_supp k).subset
-  -- Step 4: given `ε > 0`, `cmcdt_cbm_sa_mollify_l1` gives `r > 0` with `‖ρ ⋆ ū − ū‖₁ ≤ ε/2` for
-  -- unit-mass kernels supported in `B_r(0)`; `σ_k ≤ r` for `k ≥ N > δ/r`, and `ū = u` on `Q_δ`
-  · rw [Metric.tendsto_atTop]
-    intro ε hε
-    obtain ⟨r, hr, hL1⟩ :=
-      Submission.cmcdt_cbm_sa_mollify_l1 (m + 1) ub hub_int (ε / 2) (half_pos hε)
-    obtain ⟨N, hN⟩ := exists_nat_gt (δ / r)
-    refine ⟨N, fun k hk => ?_⟩
-    have hσr : σ k ≤ r := by
-      have hNk : (N : ℝ) ≤ k := by exact_mod_cast hk
-      have h1 : δ < r * ((k : ℝ) + 2) := by
-        rw [mul_comm]
-        exact (div_lt_iff₀ hr).1 (by linarith)
-      exact (div_le_iff₀ (by positivity)).2 h1.le
-    have hL := hL1 (ρ k) (hρ_smooth k).continuous (hρ_nonneg k) (hρ_one k)
-      ((hρ_supp k).subset.trans (ball_subset_ball hσr))
-    rw [dist_zero_right]
-    calc ‖∫ x in Qδ, |convolution (ρ k) ub (ContinuousLinearMap.lsmul ℝ ℝ) volume x - u x|‖
-        ≤ (∫⁻ x in Qδ, ENNReal.ofReal
-            ‖|convolution (ρ k) ub (ContinuousLinearMap.lsmul ℝ ℝ) volume x - u x|‖).toReal :=
-          norm_integral_le_lintegral_norm _
-      _ = (∫⁻ x in Qδ,
-            ‖convolution (ρ k) ub (ContinuousLinearMap.lsmul ℝ ℝ) volume x - ub x‖ₑ).toReal := by
-          congr 1
-          refine setLIntegral_congr_fun hQδm fun x hx => ?_
-          have hx1 : ub x = u x := indicator_of_mem (hQδQ1 hx) u
-          rw [hx1, Real.norm_eq_abs, abs_abs, Real.enorm_eq_ofReal_abs]
-      _ ≤ ε / 2 := ENNReal.toReal_le_of_le_ofReal (half_pos hε).le
-          ((setLIntegral_le_lintegral _ _).trans hL)
-      _ < ε := half_lt_self hε
-
 end Submission
 
 /-- **Mollification does not increase the variation on `Q_δ`** (the duality step of Simon
@@ -1051,5 +957,99 @@ theorem Submission.cmcdt_cbm_sa_grad_bound : ∀ (m : ℕ) (u : Euclid (m + 1) �
     _ = -∫ z, ub z * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G z) := h6
     _ = -∫ z in Q1, u z * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G z) := by rw [h7]
     _ ≤ V := h5'
+
+/-- **Smooth approximation with the variation bound on `Q_δ`** (Simon Ch. 2, 2.5, as used in the
+proof of 2.7 and of the deformation theorem, Ch. 6, 5.1).  If `u` is integrable on `Q₁` and
+`∫_{Q₁} u div g ≤ V` for every smooth compactly supported field `g` with `spt g ⊆ Q₁` and
+`|g| ≤ 1`, then for `δ > 0` the mollifications `v_k = ρ_k ⋆ 1_{Q₁}u` are `C^∞` and satisfy
+`∫_{Q_δ} ‖Dv_k‖ ≤ V` and `∫_{Q_δ} |v_k − u| → 0`.  Here `ρ_k` is the unit-mass normalization of
+the bump of radius `σ_k = δ/(k + 2) < δ`; the bound is `cmcdt_cbm_sa_grad_bound`, and since
+`1_{Q₁}u = u` on `Q_δ ⊆ Q₁`, the convergence follows from `cmcdt_cbm_sa_mollify_l1` as
+`σ_k → 0`. -/
+theorem Submission.cmcdt_cbm_smooth_approx : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (V δ : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → 0 < δ → ∃ v : ℕ → Euclid (m + 1) → ℝ, (∀ k, ContDiff ℝ 1 (v k)) ∧ (∀ k, ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖fderiv ℝ (v k) x‖ ≤ V) ∧ Tendsto (fun k => ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - u x|) atTop (𝓝 0) := by
+  intro m u V δ hu hV hδ
+  set Q1 : Set (Euclid (m + 1)) := {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}
+  set Qδ : Set (Euclid (m + 1)) := {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}
+  -- Step 0: the cubes are measurable, `Q_δ ⊆ Q₁`, and `ū = 1_{Q₁}u` is integrable
+  have hcoord : ∀ i : Fin (m + 1), Measurable (fun y : Euclid (m + 1) => y i) := fun i =>
+    (EuclideanSpace.proj (𝕜 := ℝ) i).continuous.measurable
+  have hcube : ∀ a b : ℝ, MeasurableSet {y : Euclid (m + 1) | ∀ i, a < y i ∧ y i < b} := by
+    intro a b
+    have : {y : Euclid (m + 1) | ∀ i, a < y i ∧ y i < b} =
+        ⋂ i, ({y : Euclid (m + 1) | a < y i} ∩ {y | y i < b}) := by
+      ext y; simp
+    rw [this]
+    exact MeasurableSet.iInter fun i =>
+      (measurableSet_lt measurable_const (hcoord i)).inter
+        (measurableSet_lt (hcoord i) measurable_const)
+  have hQ1m : MeasurableSet Q1 := hcube 0 1
+  have hQδm : MeasurableSet Qδ := hcube δ (1 - δ)
+  have hQδQ1 : Qδ ⊆ Q1 := fun y hy i => ⟨by linarith [(hy i).1], by linarith [(hy i).2]⟩
+  set ub : Euclid (m + 1) → ℝ := Q1.indicator u
+  have hub_int : Integrable ub := (integrable_indicator_iff hQ1m).2 hu
+  -- Step 1: radii `σ_k = δ/(k + 2) ∈ (0, δ)` and kernels `ρ_k = b_k / ∫ b_k`, where `b_k` is the
+  -- `C^∞` bump with `b_k = 1` on `B_{σ_k/2}(0)`, `0 ≤ b_k ≤ 1` and `support b_k = B_{σ_k}(0)`
+  set σ : ℕ → ℝ := fun k => δ / ((k : ℝ) + 2)
+  have hσ0 : ∀ k, 0 < σ k := fun k => div_pos hδ (by positivity)
+  have hσδ : ∀ k, σ k < δ := fun k =>
+    div_lt_self hδ (by have := (Nat.cast_nonneg k : (0 : ℝ) ≤ k); linarith)
+  let b : ℕ → ContDiffBump (0 : Euclid (m + 1)) := fun k =>
+    ⟨σ k / 2, σ k, half_pos (hσ0 k), half_lt_self (hσ0 k)⟩
+  have hb_int : ∀ k, 0 < ∫ y, b k y := fun k => by
+    refine (integral_pos_iff_support_of_nonneg (b k).nonneg'
+      ((b k).continuous.integrable_of_hasCompactSupport (b k).hasCompactSupport)).2 ?_
+    rw [(b k).support_eq]
+    exact measure_ball_pos volume _ (b k).rOut_pos
+  set ρ : ℕ → Euclid (m + 1) → ℝ := fun k x => b k x / ∫ y, b k y
+  have hρ_smooth : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (ρ k) := fun k => (b k).contDiff.div_const _
+  have hρ_nonneg : ∀ k z, 0 ≤ ρ k z := fun k z => div_nonneg (b k).nonneg (hb_int k).le
+  have hρ_one : ∀ k, ∫ z, ρ k z = 1 := fun k => by
+    show ∫ z, b k z / ∫ y, b k y = 1
+    rw [integral_div, div_self (hb_int k).ne']
+  have hρ_supp : ∀ k, support (ρ k) = ball (0 : Euclid (m + 1)) (σ k) := fun k => by
+    show support (fun x => b k x / ∫ y, b k y) = ball 0 (b k).rOut
+    rw [support_div, (b k).support_eq, support_const (hb_int k).ne', inter_univ]
+  have hρ_cpt : ∀ k, HasCompactSupport (ρ k) := fun k =>
+    HasCompactSupport.intro (isCompact_closedBall (0 : Euclid (m + 1)) (σ k)) fun x hx => by
+      by_contra h
+      exact hx (ball_subset_closedBall ((hρ_supp k).subset h))
+  -- Step 2: `v_k = ρ_k ⋆ ū` is `C^∞` (differentiation under the integral sign), hence `C¹`
+  refine ⟨fun k => convolution (ρ k) ub (ContinuousLinearMap.lsmul ℝ ℝ) volume, fun k => ?_,
+    fun k => ?_, ?_⟩
+  · exact ((hρ_cpt k).contDiff_convolution_left (ContinuousLinearMap.lsmul ℝ ℝ) (hρ_smooth k)
+      hub_int.locallyIntegrable).of_le (by exact_mod_cast le_top)
+  -- Step 3: the variation bound `∫_{Q_δ} ‖Dv_k‖ ≤ V`, since `0 < σ_k < δ`
+  · exact Submission.cmcdt_cbm_sa_grad_bound m u V δ (σ k) (ρ k) hu hV (hσ0 k) (hσδ k) (hρ_smooth k)
+      (hρ_nonneg k) (hρ_one k) (hρ_supp k).subset
+  -- Step 4: given `ε > 0`, `cmcdt_cbm_sa_mollify_l1` gives `r > 0` with `‖ρ ⋆ ū − ū‖₁ ≤ ε/2` for
+  -- unit-mass kernels supported in `B_r(0)`; `σ_k ≤ r` for `k ≥ N > δ/r`, and `ū = u` on `Q_δ`
+  · rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨r, hr, hL1⟩ :=
+      Submission.cmcdt_cbm_sa_mollify_l1 (m + 1) ub hub_int (ε / 2) (half_pos hε)
+    obtain ⟨N, hN⟩ := exists_nat_gt (δ / r)
+    refine ⟨N, fun k hk => ?_⟩
+    have hσr : σ k ≤ r := by
+      have hNk : (N : ℝ) ≤ k := by exact_mod_cast hk
+      have h1 : δ < r * ((k : ℝ) + 2) := by
+        rw [mul_comm]
+        exact (div_lt_iff₀ hr).1 (by linarith)
+      exact (div_le_iff₀ (by positivity)).2 h1.le
+    have hL := hL1 (ρ k) (hρ_smooth k).continuous (hρ_nonneg k) (hρ_one k)
+      ((hρ_supp k).subset.trans (ball_subset_ball hσr))
+    rw [dist_zero_right]
+    calc ‖∫ x in Qδ, |convolution (ρ k) ub (ContinuousLinearMap.lsmul ℝ ℝ) volume x - u x|‖
+        ≤ (∫⁻ x in Qδ, ENNReal.ofReal
+            ‖|convolution (ρ k) ub (ContinuousLinearMap.lsmul ℝ ℝ) volume x - u x|‖).toReal :=
+          norm_integral_le_lintegral_norm _
+      _ = (∫⁻ x in Qδ,
+            ‖convolution (ρ k) ub (ContinuousLinearMap.lsmul ℝ ℝ) volume x - ub x‖ₑ).toReal := by
+          congr 1
+          refine setLIntegral_congr_fun hQδm fun x hx => ?_
+          have hx1 : ub x = u x := indicator_of_mem (hQδQ1 hx) u
+          rw [hx1, Real.norm_eq_abs, abs_abs, Real.enorm_eq_ofReal_abs]
+      _ ≤ ε / 2 := ENNReal.toReal_le_of_le_ofReal (half_pos hε).le
+          ((setLIntegral_le_lintegral _ _).trans hL)
+      _ < ε := half_lt_self hε
 
 end GMT.Ch07
