@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "03fffc054a7fb809aab3fbdd235c1fa2f952786b3a876ee0af3e924308fea5c9",
+  "git_delta": {
+    "base_commit": "6a7994159d6c5f6c69be703692af22f85aaeffd3",
+    "candidate_commit": "cda51985b5507a211631c4afeb48524e3cdd726d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcsdtd_hasSum_telescoping_eq_zero",
+    "diff_sha256": "7d4d1b5cc32bb9741a17d361139242dca84446cc597525bca90bb343b59a1fa2",
+    "source_sha256": "b6ffe4dfee4f0cf1591b0f62cc7dfdd4f8facc3de8dd29ea58b17e0177ff84d9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcsdtd_hasSum_telescoping_eq_zero",
+      "statement": "∀ (a k : ℕ → ℝ) (s : ℝ), HasSum a s → a 0 = -k 0 → (∀ j, a (j + 1) = k j - k (j + 1)) → Tendsto k atTop (𝓝 0) → s = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
