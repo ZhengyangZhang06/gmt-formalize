@@ -537,6 +537,30 @@ theorem Submission.cbr_ci_cp_dir_integral_fderiv_span : ∀ (P : ℕ) (ν : Meas
   | smul c x _ hx =>
     simp only [map_smul, smul_eq_mul]
     rw [integral_const_mul, hx, mul_zero]
+/-- **Testing a cycle condition on `φ α`** (used for the constant-plane step of White's
+tangent-plane argument in the closure theorem behind Simon 7.2.4).  If `∫ ζ₀(dψ(y)) dν(y) = 0`
+for every test `d`-form `ψ`, and `ζ₀(w♭ ∧ α) = v · w` for every `w`, where
+`(w♭ ∧ α)(u₀, …, u_d) = Σᵢ (−1)ⁱ (w · uᵢ) α(u₀, …, ûᵢ, …, u_d)`, then `∫ Dφ(y)v dν(y) = 0`
+for every compactly supported `C^∞` function `φ`: `φ α` is a test form with
+`d(φ α)(y) = ∇φ(y)♭ ∧ α`, so `ζ₀(d(φ α)(y)) = v · ∇φ(y) = Dφ(y)v`. -/
+theorem Submission.cbr_ci_cp_dir_cycle_fderiv_integral_zero : ∀ (P d : ℕ) (ν : Measure (Euclid P)) (ζ₀ : MultiVector P (d + 1)) (α : Covector (Euclid P) d) (v : Euclid P) (φ : Euclid P → ℝ), (∀ ψ : TestFormOn (univ : Set (Euclid P)) d, ∫ y, ζ₀ (exteriorDerivative (ψ : DifferentialForm (Euclid P) d) y) ∂ν = 0) → (∀ (w : Euclid P) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → ζ₀ γ = inner ℝ v w) → ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0 := by
+  intro P d ν ζ₀ α v φ hcyc hv hφ hφc
+  have hmem : (fun y => φ y • α : DifferentialForm (Euclid P) d) ∈
+      TestFormOn (univ : Set (Euclid P)) d :=
+    ⟨⟨hφ.smul contDiff_const, hφc.smul_right⟩, subset_univ _⟩
+  have h := hcyc ⟨_, hmem⟩
+  rw [← h]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+  have hd : DifferentiableAt ℝ φ y := (hφ.differentiable (by simp)) y
+  set g : Euclid P := (InnerProductSpace.toDual ℝ (Euclid P)).symm (fderiv ℝ φ y) with hg
+  have hγ : ∀ u : Fin (d + 1) → Euclid P, exteriorDerivative (fun y => φ y • α) y u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ g (u i) * α (i.removeNth u)) := by
+    intro u
+    rw [Submission.dgcr_bwd_extDeriv_smul_const P d φ α y u hd]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [hg, InnerProductSpace.toDual_symm_apply]
+  have hz := hv g _ hγ
+  show fderiv ℝ φ y v = ζ₀ (exteriorDerivative (fun y => φ y • α) y)
+  rw [hz, real_inner_comm, hg, InnerProductSpace.toDual_symm_apply]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
