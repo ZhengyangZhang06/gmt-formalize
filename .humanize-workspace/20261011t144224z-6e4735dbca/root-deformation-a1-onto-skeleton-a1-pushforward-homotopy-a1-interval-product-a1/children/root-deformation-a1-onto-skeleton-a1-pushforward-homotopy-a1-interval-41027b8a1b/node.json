@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.horizontal_ftc-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1",
+  "depth": 5,
+  "title": "Fundamental theorem of calculus for s ↦ X(ψ_s): derivative X(∂_sψ_s) and ∫_0^1 X(∂_sψ_s) ds = X(ψ_1) − X(ψ_0) (supplied step 8)",
+  "statement": "Let m, q ∈ ℕ, X ∈ D_q(ℝ^m) = GeometricCurrentOn univ q with M(X) < ∞, ψ ∈ D^q(ℝ^{m+1}) and Ψ, Ψ′ : ℝ → D^q(ℝ^m) with Ψ(s)(x)(v) = ψ(cons(s,x))(fun i => ι(v i)) and Ψ′(s)(x)(v) = (fderiv ℝ ψ (cons(s,x)) e₀)(fun i => ι(v i)) for all s ∈ ℝ, x ∈ ℝ^m, v : Fin q → ℝ^m (cons, ι, e₀ as above). Then s ↦ X(Ψ′(s)) is continuous on ℝ; for every s ∈ ℝ the map t ↦ X(Ψ(t)) has derivative X(Ψ′(s)) at s; and ∫_0^1 X(Ψ′(s)) ds = X(Ψ(1)) − X(Ψ(0)).",
+  "lean_statement": "∀ (m q : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) q) (ψ : TestFormOn (univ : Set (Eucl (m + 1))) q) (Ψ Ψ' : ℝ → TestFormOn (univ : Set (Eucl m)) q), X.mass < ∞ → (∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m), (Ψ s : DifferentialForm (Eucl m) q) x v = (ψ : DifferentialForm (Eucl (m + 1)) q) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → (∀ (s : ℝ) (x : Eucl m) (v : Fin q → Eucl m), (Ψ' s : DifferentialForm (Eucl m) q) x v = fderiv ℝ (ψ : DifferentialForm (Eucl (m + 1)) q) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (EuclideanSpace.single 0 1) (fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Continuous (fun s => X (Ψ' s)) ∧ (∀ s : ℝ, HasDerivAt (fun t => X (Ψ t)) (X (Ψ' s)) s) ∧ ∫ s in (0 : ℝ)..1, X (Ψ' s) = X (Ψ 1) - X (Ψ 0)",
+  "lean_name": "dph_iprod_horizontal_ftc",
+  "depends_on": [
+    "root.compactness_mass_bounds-a1.mass_bound-a1",
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.slice_norm-a1",
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.slice_continuity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_mass_bounds-a1.mass_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-mass-bound-a1-a1",
+      "result_commit": "ba202ac0407b6e93210594416fcd0729874b2eff",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.slice_norm-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.slice_continuity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-interval-41027b8a1b-a1"
+}

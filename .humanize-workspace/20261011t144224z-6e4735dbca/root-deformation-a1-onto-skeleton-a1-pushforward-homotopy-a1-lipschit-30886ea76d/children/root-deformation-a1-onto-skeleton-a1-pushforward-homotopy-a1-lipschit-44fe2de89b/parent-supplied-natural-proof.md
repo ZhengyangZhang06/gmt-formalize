@@ -1,0 +1,72 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1`
+- Child DAG node: `root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.reference_sequence-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 2 of the supplied proof of lipschitz_pushforward (reference sequence), stated for an arbitrary closed set F (Step 2 uses F = spt X, Step 8 uses F = spt X ∪ spt X₁). Assume (SA) and fix m, m′, G, Λ, r, F as in the claim.
+
+1. (Apply (SA).) Apply (SA) with A := F and δ := r (r > 0 and G is Λ-Lipschitz on F_r). It gives Ĝ, maps G_n and L with: Ĝ = G on F_r (part (a)); every G_n is C^∞ (part (b)); G_n → Ĝ uniformly on ℝ^m (part (c)); ‖fderiv ℝ G_n x‖ ≤ Λ for every n and every x ∈ F_{r/2} (part (d)). Part (e) and the Lipschitz constant L are not used. Smoothness and the derivative bound are two of the three required properties.
+2. (Uniform convergence to G on F_{r/2}.) Since 0 < r/2 ≤ r, F_{r/2} ⊆ F_r (thickening_mono), so Ĝ = G on F_{r/2}. Uniform convergence on ℝ^m implies uniform convergence on the subset F_{r/2} (TendstoUniformly.tendstoUniformlyOn), and since the limit Ĝ agrees with G on F_{r/2}, G_n → G uniformly on F_{r/2} (TendstoUniformlyOn.congr_right).
+3. (Eventual closeness on F.) F ⊆ F_{r/2} because r/2 > 0 (self_subset_thickening). By step 2 and the metric characterization of uniform convergence (Metric.tendstoUniformlyOn_iff) with ε = 1, there is n₀ such that for all n ≥ n₀ and all x ∈ F_{r/2}, dist(G(x), G_n(x)) < 1; in particular dist(G_n(x), G(x)) ≤ 1 for all n ≥ n₀ and x ∈ F.
+4. (Eventual properness.) Let n ≥ n₀. G_n is continuous (a C^∞ map is continuous), F is closed, G is proper on F and dist(G_n(x), G(x)) ≤ 1 on F, so part (a) of the sibling proper_transfer (with g := G_n and d := 1) shows that G_n is proper on F. Hence G_n is proper on F for all sufficiently large n, which completes the proof. ∎
+
+## Key steps
+
+1. Apply (SA) with A := F, δ := r: C^∞ maps G_n, ‖DG_n‖ ≤ Λ on F_{r/2}, G_n → Ĝ uniformly with Ĝ = G on F_r.
+2. Restrict the uniform convergence to F_{r/2} ⊆ F_r and replace Ĝ by G there (congr_right).
+3. Eventually dist(G_n, G) ≤ 1 on F ⊆ F_{r/2}; proper_transfer (a) makes G_n proper on F.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `python3 over dag.json (662 nodes): statuses, lean_names, statements, candidate commits; grep of all accepted lean_statements for support/boundary-support, locality, pull-back norm, covector-norm smul, bounded-functional current criteria and extDeriv lemmas -> found iwl_cr_support_lemmas, iwl_cr_ce_apply_eq_of_eqOn_nhds_support, iwl_sp_covectorEuclideanNorm_pullback_le, fiw_ims_sc_continuous_of_bound, fiw_tb_ext_covectorNorm_smul, lpf_pic_current_of_dominated_density; no accepted 'bounded linear functional -> current with mass ≤ B' lemma (no match)`
+- `python3 over nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1/decomposition-v2.json: frozen lean_statements of the siblings smooth_approx (889 chars), interval_product (5579), smooth_homotopy (8216), identical to dag.json`
+- `rg -n 'theorem extDeriv_pullback|theorem Filter.EventuallyEq.extDeriv_eq|theorem TendstoUniformlyOn.congr_right|theorem TendstoUniformly.tendstoUniformlyOn|theorem IsCompact.cthickening|theorem mem_cthickening_of_dist_le|theorem self_subset_thickening|theorem cons_self_tail|theorem tail_cons|theorem cauchySeq_tendsto_of_complete|theorem tendsto_nhds_unique' over the snapshot mathlib/Mathlib (all found: DifferentialForm/Basic.lean:259,188; UniformSpace/UniformConvergence.lean:218,222; MetricSpace/Thickening.lean:283,201,309; Data/Fin/Tuple/Basic.lean:171,117; UniformSpace/Cauchy.lean:425; Separation/Hausdorff.lean:180)`
+- `grep -n '^def|^structure|^theorem|^abbrev' over .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Forms,Mass,CurrentLocalEquality}.lean: GeometricCurrentOn (toCurrent, continuous'), TestFormOnConverges, exteriorDerivativeTestOn, GeometricCurrentOn.boundary_apply/boundary_boundary/ext, exteriorDerivative = extDeriv, massAdmissibleOn, massOn, mass, covectorEuclideanNorm, VanishesOn, zeroRegion, support`
+- `rg -n 'dph_lpf|LipPF' over the snapshot project and mathlib (*.lean): no match; git log --all -S dph_lpf_ over 3993 refs: no match`
+- `read /runtime/flows/gmt-claude-0135a42af877/_recursive_lean/runtime.py (_existing_lean_name_problem, reuse-by-name id mapping, _dependency_problem, _overlay_accepted_children over children+depends_on) and store.py (ensure returns existing nodes unchanged)`
+- `git show <candidate> for the 5 reused declarations (fd5f1e29, 02f3305f, 5c248501, ba202ac0, 3e52d3e8): declarations present together with their own accepted prerequisites; isolated-comparator-result.json passed = True for all five`
+- `python3 -I verifier/gmt-compare.py contract_scope(GMT/Ch06/Contract.lean, GMT.Ch06.main_theorem); verifier/lean_contract.py validate_lean_statement on all 12 child statements (all valid)`
+- `lake env lean /tmp/lpf_decomp/AllStmts.lean (7 child statements + parent; only sorry warnings), /tmp/lpf_decomp/IfaceCheck.lean (parent proved from children + uncles; no errors), /tmp/lpf_decomp/Skel.lean and Endpt.lean (comparison instantiation of (E0),(E1),(Aff), compatible_form, support_lemmas; endpoint identities by rfl), /tmp/lpf_decomp/Checks3.lean (current_criterion fully proved; (dP); mass arithmetic), /tmp/lpf_review/lean/T2-T8.lean (independent full proofs of the new children modulo declared dependencies; exit 0, no errors)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/UniformSpace/UniformConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/UniformSpace/Cauchy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-30886ea76d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-30886ea76d/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-compatible-form-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-support-lemmas-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-series-current-a1-continuity-criterion-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-0135a42af877/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-0135a42af877/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/lpf_decomp/AllStmts.lean`
+- `/tmp/lpf_decomp/IfaceCheck.lean`
+- `/tmp/lpf_decomp/Skel.lean`
+- `/tmp/lpf_decomp/Checks3.lean`
+- `/tmp/lpf_review/lean/T6.lean`
+- `/tmp/lpf_review/lean/T7.lean`
+
+The pinned project and SimonGMT contain no Lipschitz push-forward of normal currents, no products with [[0,1]] and no homotopy formula, so the supplied Parts 1–8 are new obligations. Their smooth-approximation, product and homotopy inputs come from the three unaccepted uncle nodes, which are therefore passed as explicit hypotheses. Five accepted declarations are reused by name with byte-identical types: compatible forms (R3), the support facts (S)/(F3c), the mass bound (R1), the pull-back norm bound (F7), and the continuity criterion for (F5/F6). No accepted lemma already turns a bounded linear functional into a current with a mass bound, so this becomes the new child current_criterion. Every Mathlib lemma cited in the child proofs exists in the pinned snapshot (extDeriv_pullback, EventuallyEq.extDeriv_eq, TendstoUniformlyOn.congr_right, IsCompact.cthickening, mem_cthickening_of_dist_le, self_subset_thickening, Fin.cons_self_tail, cauchySeq_tendsto_of_complete, tendsto_nhds_unique). All statements elaborate in the exact comparator scope. The parent follows from the children by a checked 4-line assembly, and each new child has an independent Lean proof modulo its declared dependencies. The dph_lpf_* names are globally unused.

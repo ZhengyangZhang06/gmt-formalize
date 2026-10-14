@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1",
+  "depth": 3,
+  "title": "C¹ push-forward integrals converge to the tangential push-forward (part (I) of the consistency step)",
+  "statement": "Let P, Q, k ∈ ℕ, H^k := μHE[k] on ℝ^P, and let (M, θ, ξ) satisfy IsRectifiableTriple univ k M θ ξ. Let g : ℝ^P → ℝ^Q be Λ-Lipschitz and L : ℝ^P → L(ℝ^P, ℝ^Q) such that for H^k-a.e. x ∈ M, for every linear subspace T_x that is a weighted approximate tangent space of (M, θ) at x (HasWeightedApproximateTangentSpaceAt k M θ x T_x) and every v ∈ T_x, the map t ↦ g(x + t v) has derivative L(x)v at t = 0. Assume θ is H^k-integrable on M ∩ g⁻¹(K) for every compact K ⊆ ℝ^Q. Let g_j : ℝ^P → ℝ^Q (j ∈ ℕ) be C¹ maps, Λ′-Lipschitz for one common Λ′, converging uniformly to g on ℝ^P, and let ω : ℝ^Q → Covector (Eucl Q) k be continuous with compact support. Then ∫_M θ(x)·(Dg_j(x)_#ξ(x))(ω(g_j(x))) dH^k(x) → ∫_M θ(x)·(L(x)_#ξ(x))(ω(g(x))) dH^k(x) as j → ∞, where A_# = nVectorPushforward k A and Dg_j(x) = fderiv ℝ (g_j) x.",
+  "lean_statement": "∀ (P Q k : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (g : Eucl P → Eucl Q) (Λ : ℝ≥0) (L : Eucl P → (Eucl P →L[ℝ] Eucl Q)), IsRectifiableTriple (univ : Set (Eucl P)) k M θ ξ → LipschitzWith Λ g → (∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x Tx → ∀ v ∈ Tx, HasDerivAt (fun t : ℝ => g (x + t • v)) (L x v) 0) → (∀ K : Set (Eucl Q), IsCompact K → IntegrableOn θ (M ∩ g ⁻¹' K) (μHE[k] : Measure (Eucl P))) → ∀ (gj : ℕ → Eucl P → Eucl Q) (Λ' : ℝ≥0), (∀ j, ContDiff ℝ 1 (gj j)) → (∀ j, LipschitzWith Λ' (gj j)) → TendstoUniformly gj g atTop → ∀ ω : Eucl Q → Covector (Eucl Q) k, Continuous ω → HasCompactSupport ω → Tendsto (fun j => ∫ x in M, θ x * nVectorPushforward k (fderiv ℝ (gj j) x) (ξ x) (ω (gj j x)) ∂(μHE[k] : Measure (Eucl P))) atTop (𝓝 (∫ x in M, θ x * nVectorPushforward k (L x) (ξ x) (ω (g x)) ∂(μHE[k] : Measure (Eucl P))))",
+  "lean_name": "deformation_ipl_chart_convergence",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.simple_nvector_algebra-a1",
+    "root.lipschitz_pushforward_im-a1.countably_rectifiable_c1_cover-a1",
+    "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1",
+    "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1",
+    "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1",
+    "root.deformation-a1.im_pushforward_limit-a1.pushforward_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.simple_nvector_algebra-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-simple-nvector-algebra-a1-a1",
+      "result_commit": "d57bd3700c220d24cf66f12e852624be7dd975e4",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.countably_rectifiable_c1_cover-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-countably-rectifiable-c1-cover-a1-a1",
+      "result_commit": "4f96ac6781102d9a8ef81672a6a983280054017e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.chart_chain_rule-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1-a1",
+      "result_commit": "a42b48e8b29b5398bef36299f264f7c1ba3aaa98",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-ch-1ba1e0b708-a1",
+      "result_commit": "9fc44225b304fca8af9dead3256575ef03818d1e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.im_pushforward_limit-a1.pushforward_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-chart-convergence-a1-a1"
+}

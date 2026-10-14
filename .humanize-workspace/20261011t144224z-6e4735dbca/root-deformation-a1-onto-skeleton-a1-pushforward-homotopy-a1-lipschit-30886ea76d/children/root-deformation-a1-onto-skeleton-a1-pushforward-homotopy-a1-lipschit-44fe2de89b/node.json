@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.reference_sequence-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1",
+  "depth": 5,
+  "title": "Reference smooth approximations near a closed set: C^∞, derivative bound Λ on the r/2-neighbourhood, uniform convergence and eventual properness (supplied Step 2)",
+  "statement": "Notation: ℝ^p := Eucl p; A_ρ := thickening ρ A; C^∞ means ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞); a map g is proper on F if g⁻¹(K) ∩ F is compact for every compact K. Let (SA) be the following proposition (it is verbatim the frozen statement of the sibling node smooth_approx, Lean name dph_lipschitz_smooth_approx, of the parent pushforward_homotopy): for all m, m′ ∈ ℕ, G : ℝ^m → ℝ^{m′}, Λ ∈ ℝ≥0, A ⊆ ℝ^m and δ ∈ ℝ with δ > 0 and G Λ-Lipschitz on A_δ: there are Ĝ : ℝ^m → ℝ^{m′}, maps G_j : ℝ^m → ℝ^{m′} (j ∈ ℕ) and L ∈ ℝ≥0 such that: (a) Ĝ is L-Lipschitz on ℝ^m and Ĝ = G on thickening δ A; (b) every G_j is C^∞ (ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞)) and L-Lipschitz on ℝ^m; (c) G_j → Ĝ uniformly on ℝ^m; (d) ‖fderiv ℝ G_j x‖ ≤ Λ for all j and all x ∈ thickening (δ/2) A; (e) (tangential vanishing) for all k ∈ ℕ, α ∈ SimonMultiIndex k m′, z ∈ ℝ^{m′}, ω ∈ TestFormOn univ k (on ℝ^{m′}) and ε > 0 such that every x ∈ thickening ε A with G(x) ∈ thickening ε (tsupport ω) satisfies G(x)_i = z_i for every i ∉ range α, and ω(y)(e_{α(1)}, …, e_{α(k)}) = 0 for every y ∈ ℝ^{m′} (e_i = EuclideanSpace.single i 1), there is r > 0 such that for all sufficiently large j and all x ∈ thickening r A the covector ω(G_j(x)).compContinuousLinearMap (fderiv ℝ G_j x) is zero. Claim: if (SA) holds, then for all m, m′ ∈ ℕ, G : ℝ^m → ℝ^{m′}, Λ ∈ ℝ≥0, r ∈ ℝ and F ⊆ ℝ^m such that r > 0, F is closed, G is Λ-Lipschitz on F_r and G is proper on F, there are C^∞ maps G_n : ℝ^m → ℝ^{m′} (n ∈ ℕ) with ‖fderiv ℝ G_n x‖ ≤ Λ for all n and all x ∈ F_{r/2}, G_n → G uniformly on F_{r/2}, and G_n proper on F for all sufficiently large n.",
+  "lean_statement": "(∀ (m m' : ℕ) (G : Eucl m → Eucl m') (Λ : ℝ≥0) (A : Set (Eucl m)) (δ : ℝ), 0 < δ → LipschitzOnWith Λ G (thickening δ A) → ∃ (G' : Eucl m → Eucl m') (Gj : ℕ → Eucl m → Eucl m') (L : ℝ≥0), LipschitzWith L G' ∧ EqOn G' G (thickening δ A) ∧ (∀ j, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj j)) ∧ (∀ j, LipschitzWith L (Gj j)) ∧ TendstoUniformly Gj G' atTop ∧ (∀ j, ∀ x ∈ thickening (δ / 2) A, ‖fderiv ℝ (Gj j) x‖ ≤ Λ) ∧ ∀ (k : ℕ) (α : SimonMultiIndex k m') (z : Eucl m') (ω : TestFormOn (univ : Set (Eucl m')) k) (ε : ℝ), 0 < ε → (∀ x ∈ thickening ε A, G x ∈ thickening ε (tsupport (ω : DifferentialForm (Eucl m') k)) → ∀ i, i ∉ range α → G x i = z i) → (∀ y, (ω : DifferentialForm (Eucl m') k) y (fun j => EuclideanSpace.single (α j) (1 : ℝ)) = 0) → ∃ r : ℝ, 0 < r ∧ ∀ᶠ j in atTop, ∀ x ∈ thickening r A, ((ω : DifferentialForm (Eucl m') k) (Gj j x)).compContinuousLinearMap (fderiv ℝ (Gj j) x) = 0) → (∀ (m m' : ℕ) (G : Eucl m → Eucl m') (Λ : ℝ≥0) (r : ℝ) (F : Set (Eucl m)), 0 < r → IsClosed F → LipschitzOnWith Λ G (thickening r F) → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (G ⁻¹' K ∩ F)) → ∃ Gj : ℕ → Eucl m → Eucl m', (∀ n, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (Gj n)) ∧ (∀ n, ∀ x ∈ thickening (r / 2) F, ‖fderiv ℝ (Gj n) x‖ ≤ Λ) ∧ TendstoUniformlyOn Gj G atTop (thickening (r / 2) F) ∧ ∀ᶠ n in atTop, ∀ K : Set (Eucl m'), IsCompact K → IsCompact (Gj n ⁻¹' K ∩ F))",
+  "lean_name": "dph_lpf_reference_sequence",
+  "depends_on": [
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.proper_transfer-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.proper_transfer-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-44fe2de89b-a1"
+}

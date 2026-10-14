@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product_im-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1",
+  "depth": 4,
+  "title": "Products of integer multiplicity currents with [[0,1]] are integer multiplicity (Simon 3.2(2); supplied 3.5)",
+  "statement": "Notation: for s ∈ ℝ and x ∈ ℝ^m, cons(s, x) := (EuclideanSpace.equiv (Fin (m+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x)) ∈ ℝ^{m+1}; ι(v) := cons(0, v); e₀ := EuclideanSpace.single 0 1 ∈ ℝ^{m+1}; for y ∈ ℝ^{m+1}, t(y) := EuclideanSpace.equiv (Fin (m+1)) ℝ y 0 and tl(y) := (EuclideanSpace.equiv (Fin m) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (m+1)) ℝ y)); cyl(A) := {y : t(y) ∈ [0,1], tl(y) ∈ A}. D_q(ℝ^p) := GeometricCurrentOn univ q, D^q(ℝ^p) := TestFormOn univ q, M = mass, spt = support, ∂ = boundary. For X ∈ D_k(ℝ^m) and Z ∈ D_{k+1}(ℝ^{m+1}), ProdChar(X, Z) means: for every η ∈ D^{k+1}(ℝ^{m+1}) and every φ : ℝ → D^k(ℝ^m) with φ(s)(x)(v_1, …, v_k) = η(cons(s, x))(e₀, ι(v_1), …, ι(v_k)) for all s ∈ [0,1], x ∈ ℝ^m, v ∈ (ℝ^m)^k (Fin.cons e₀ (ι ∘ v)), one has Z(η) = ∫_0^1 X(φ(s)) ds (interval integral). For all m, k ∈ ℕ, every X ∈ D_k(ℝ^m) and every Z ∈ D_{k+1}(ℝ^{m+1}): if X is integer multiplicity (IsIntegerMultiplicity X) and ProdChar(X, Z), then Z is integer multiplicity.",
+  "lean_statement": "∀ (m k : ℕ) (X : GeometricCurrentOn (univ : Set (Eucl m)) k) (Z : GeometricCurrentOn (univ : Set (Eucl (m + 1))) (k + 1)), IsIntegerMultiplicity X → (∀ (η : TestFormOn (univ : Set (Eucl (m + 1))) (k + 1)) (φ : ℝ → TestFormOn (univ : Set (Eucl m)) k), (∀ s ∈ Icc (0 : ℝ) 1, ∀ (x : Eucl m) (v : Fin k → Eucl m), (φ s : DifferentialForm (Eucl m) k) x v = (η : DifferentialForm (Eucl (m + 1)) (k + 1)) ((EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin m) ℝ x))) (Fin.cons (EuclideanSpace.single 0 1) fun i => (EuclideanSpace.equiv (Fin (m + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin m) ℝ (v i))))) → Z η = ∫ s in (0 : ℝ)..1, X (φ s)) → IsIntegerMultiplicity Z",
+  "lean_name": "dph_interval_product_im",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.slice_forms-a1",
+    "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.hausdorff_product-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.slice_forms-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-slice-forms-a1-a1",
+      "result_commit": "143edefdefb78884021e674a1258fa4be2c3d315",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.hausdorff_product-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-interval-a63896b906-a1"
+}

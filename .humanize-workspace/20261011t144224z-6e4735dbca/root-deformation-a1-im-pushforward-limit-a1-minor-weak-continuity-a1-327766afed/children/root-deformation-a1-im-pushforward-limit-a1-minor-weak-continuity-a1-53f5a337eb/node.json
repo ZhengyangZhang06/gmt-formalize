@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_smooth-a1.integral_fderiv_zero-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_smooth-a1",
+  "depth": 5,
+  "title": "The integral of a directional derivative of a compactly supported C¹ function vanishes (parent Step 4)",
+  "statement": "Let k ∈ ℕ, let h : ℝ^k → ℝ (h : Eucl k → ℝ) be of class C¹ with compact support, and let e ∈ ℝ^k. Then ∫_{ℝ^k} Dh(w)(e) dw = 0, where Dh(w) = fderiv ℝ h w is the Fréchet derivative of h at w and dw is Lebesgue measure (volume) on Eucl k.",
+  "lean_statement": "∀ (k : ℕ) (h : Eucl k → ℝ) (e : Eucl k), ContDiff ℝ 1 h → HasCompactSupport h → ∫ w, fderiv ℝ h w e ∂(volume : Measure (Eucl k)) = 0",
+  "lean_name": "deformation_ipl_mwc_mis_integral_fderiv_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-53f5a337eb-a1"
+}

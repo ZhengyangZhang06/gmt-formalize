@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.skeleton_closed-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1",
+  "depth": 3,
+  "title": "The lattice n-skeleton ⋃_F latticeFace ρ F is closed",
+  "statement": "For all n, N ∈ ℕ and ρ > 0, the union over all face indices F ∈ LatticeFaceIndex n N of the closed lattice faces latticeFace ρ F (the n-skeleton of the cubical decomposition of ℝ^N of side ρ) is a closed subset of ℝ^N.",
+  "lean_statement": "∀ (n N : ℕ) (ρ : ℝ), 0 < ρ → IsClosed (⋃ F : LatticeFaceIndex n N, latticeFace ρ F)",
+  "lean_name": "deformation_skeleton_isClosed",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-skeleton-closed-a1-a1"
+}

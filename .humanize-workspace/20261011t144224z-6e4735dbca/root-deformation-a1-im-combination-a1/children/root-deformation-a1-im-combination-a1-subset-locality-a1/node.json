@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_combination-a1.subset_locality-a1",
+  "parent_id": "root.deformation-a1.im_combination-a1",
+  "depth": 3,
+  "title": "Weighted approximate tangent spaces pass to and from a subset at almost every point of the subset",
+  "statement": "Let N, k ∈ ℕ and H := μHE[k] on ℝ^N = Eucl N. Let E ⊆ M ⊆ ℝ^N be H-null-measurable sets and let θ : ℝ^N → ℝ be H-integrable on M ∩ K for every compact K ⊆ ℝ^N (no sign condition on θ and no local finiteness of H⌞M is assumed). Then for H-a.e. x ∈ E (that is, H⌞E-almost every x) and every linear subspace Q ⊆ ℝ^N: Q is a weighted approximate tangent space of (M, θ) at x in the sense of Simon Ch. 3, 1.7 (HasWeightedApproximateTangentSpaceAt k M θ x Q: finrank Q = k and ∫_{η_{x,r}(M)} f(y)θ(x + ry) dH(y) → θ(x)∫_Q f dH as r ↓ 0 for every f ∈ C_c(ℝ^N), where η_{x,r}(y) = r⁻¹(y − x)) if and only if Q is a weighted approximate tangent space of (E, θ) at x.",
+  "lean_statement": "∀ (N k : ℕ) (E M : Set (Eucl N)) (θ : Eucl N → ℝ), E ⊆ M → NullMeasurableSet E (μHE[k] : Measure (Eucl N)) → NullMeasurableSet M (μHE[k] : Measure (Eucl N)) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[k] : Measure (Eucl N))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict E), ∀ Q : Submodule ℝ (Eucl N), HasWeightedApproximateTangentSpaceAt k M θ x Q ↔ HasWeightedApproximateTangentSpaceAt k E θ x Q",
+  "lean_name": "deformation_imcomb_subset_locality",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.tangent_locality-a1",
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.zero_density_off_set-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.tangent_locality-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-tangent-locality-a1-a1",
+      "result_commit": "96e830881dafe74af53547d1e5de4de197719c25",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.zero_density_off_set-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-zero-3299c8304e-a1",
+      "result_commit": "12d217bba2a42bdf5072eede11b18f9349b61094",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-combination-a1-subset-locality-a1-a1"
+}

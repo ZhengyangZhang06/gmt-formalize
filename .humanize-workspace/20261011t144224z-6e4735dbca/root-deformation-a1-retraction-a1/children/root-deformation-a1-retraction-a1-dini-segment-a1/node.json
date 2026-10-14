@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.retraction-a1.dini_segment-a1",
+  "parent_id": "root.deformation-a1.retraction-a1",
+  "depth": 3,
+  "title": "Mean-value inequality from pointwise upper Lipschitz bounds on [0,1]",
+  "statement": "Let N ∈ ℕ, γ : ℝ → ℝ^N (ℝ^N = Eucl N with the Euclidean norm) and K ∈ ℝ. Suppose that for every s ∈ [0,1] and every ε > 0 there is δ > 0 such that ‖γ(s′) − γ(s)‖ ≤ (K + ε)|s′ − s| for all s′ ∈ [0,1] with |s′ − s| < δ. Then ‖γ(1) − γ(0)‖ ≤ K.",
+  "lean_statement": "∀ (N : ℕ) (γ : ℝ → Eucl N) (K : ℝ), (∀ s ∈ Icc (0 : ℝ) 1, ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ s' ∈ Icc (0 : ℝ) 1, |s' - s| < δ → ‖γ s' - γ s‖ ≤ (K + ε) * |s' - s|) → ‖γ 1 - γ 0‖ ≤ K",
+  "lean_name": "deformation_retraction_dini_segment",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-retraction-a1-dini-segment-a1-a1"
+}

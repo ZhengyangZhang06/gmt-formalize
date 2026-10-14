@@ -1,0 +1,110 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "dph_sh_|dph_smooth_homotopy|def massOn|def support|def TestFormOn|abbrev exteriorDerivative",
+        "extDeriv_pullback|EventuallyEq.extDeriv_eq|norm_integral_le_of_norm_le_const|theorem integral_congr|curryLeft_apply_apply|def curryLeftLI|sum_mul_sq_le_sq_mul_sq",
+        "exists_contDiff_support_eq_eq_one_iff",
+        "python3 /tmp/dph_sh_independent_audit/check_contracts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dph_sh_independent_audit/Interface.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-homotopy-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-homotopy-a1/decomposition-v1.json",
+        "/tmp/dph_sh_independent_audit/check_contracts.json",
+        "/tmp/dph_sh_independent_audit/compiler_checks.json",
+        "/tmp/dph_sh_independent_audit/Interface.lean"
+      ],
+      "conclusion": "The split appropriately establishes the selected E0/E1/Aff contract using its existing interval_product prerequisite. The reconstructed parent proof and all five new proofs compile from their exact declared dependencies. All twelve standalone types elaborate and match their prose; inline constructions select the intended instances, and no IsUnit construction occurs. The seven reused declarations have identical frozen types, passed comparators, and independently checked standard-only axioms. The five new bare names have no conflicting reservations. The combined dependency graph is acyclic. Pinned sources confirm the calculus, cutoff, support, coefficient-norm and integral facts used. All fourteen independent compiler checks passed; checked proofs use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slice_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact prose/type match. Slice families agree on the open preimage containing support; current locality and interval-integral congruence prove the conclusion. Neither finite mass nor integrability is silently assumed. Dependencies are sufficient and correctly directed."
+    },
+    {
+      "key": "slice_compatible",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the proper affine isometric inclusion, obtains its globally defined test-form pullback, and applies the chain rule. It proves both conclusions for arbitrary N and arbitrary ω without adding openness or regularity hypotheses."
+    },
+    {
+      "key": "extderiv_compatible",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Openness supplies germ equality, and the pinned exterior-derivative locality and pullback theorems apply with the stated smoothness. Global smoothness of θ is unnecessary. The exact proposition is proved without sibling or parent reliance."
+    },
+    {
+      "key": "interior_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Scalar homogeneity, contraction, Cauchy–Schwarz, tuple reindexing and positive-factorial cancellation establish the stated √(k+1) bound. Pullback_norm finishes the estimate. Zero-degree and zero-dimensional cases are covered; both dependencies are non-circular."
+    },
+    {
+      "key": "affine_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type is byte-identical to the parent's Aff conjunct. The proof establishes properness, constructs the cutoff supported over O, compares slices, computes the affine derivative, and applies the covector, mass and integral bounds. It derives C ≥ 0 and supplies the valid constant √(k+1)."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. The proof derives C ≥ 0, makes both signed rescalings admissible, correctly uses B ≥ 0 to extract real bounds from ENNReal, and passes to c ↓ C. Arbitrary U and W are retained."
+    },
+    {
+      "key": "compatible_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. Properness gives the compact set needed for the cutoff. The proof verifies smoothness, compact support, both equalities and the support inclusion, constructing an open neighborhood of arbitrary A without assuming A closed or V open."
+    },
+    {
+      "key": "slice_forms",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. Continuous linear contraction gives the exact slice formula and smoothness; the affine inclusion's norm bound gives compact support. Composition proves the required joint continuity for every real slice parameter."
+    },
+    {
+      "key": "locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse with its original accepted vanishing dependency preserved. The difference form has support disjoint from the current's support; vanishing and linearity yield equality. No openness of U is needed."
+    },
+    {
+      "key": "support_lemmas",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three conjuncts match and are proved: exterior differentiation preserves local support, weak limits preserve vanishing on suitable balls, and the evaluation identity preserves common vanishing. Original accepted dependencies remain intact. The first conjunct supplies the support inclusion needed for E1."
+    },
+    {
+      "key": "pullback_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. The full-tuple identity, single-slot Cauchy–Schwarz estimate and multilinear induction yield the squared inequality; positive-factorial cancellation and nonnegativity give the exact coefficient-norm bound, including degenerate degrees and dimensions."
+    },
+    {
+      "key": "tuple_sum_factorial",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. Noninjective tuples contribute zero; permutation signs disappear after squaring. Unique sorted representatives and the permutation count give the factorial factor, and the defining norm sum completes the proof, including empty-tuple cases."
+    }
+  ],
+  "required_changes": []
+}

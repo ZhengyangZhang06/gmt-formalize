@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_cover-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1",
+  "depth": 4,
+  "title": "Lipschitz and antilipschitz C¹ charts covering a countably n-rectifiable set (Simon Ch. 3, Lemma 1.2 and Remark 1.3)",
+  "statement": "Let P, n ∈ ℕ and let M ⊆ ℝ^P be countably n-rectifiable (M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ) with Hⁿ(M₀) = 0 and F_j : ℝⁿ → ℝ^P Lipschitz). Then there are maps Φ_j : ℝⁿ → ℝ^P and sets Ω_j ⊆ ℝⁿ (j ∈ ℕ) such that every Ω_j is open, every Φ_j is C¹, every Φ_j is Lipschitz on Ω_j, for every j there is c_j > 0 with c_j|w − w′| ≤ |Φ_j(w) − Φ_j(w′)| for all w, w′ ∈ Ω_j, and Hⁿ(M ∖ ⋃_j Φ_j(Ω_j)) = 0 (Hⁿ := μHE[n]).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Eucl P)), CountablyRectifiable n M → ∃ (Φ : ℕ → Eucl n → Eucl P) (Ω : ℕ → Set (Eucl n)), (∀ j, IsOpen (Ω j)) ∧ (∀ j, ContDiff ℝ 1 (Φ j)) ∧ (∀ j, ∃ K : ℝ≥0, LipschitzOnWith K (Φ j) (Ω j)) ∧ (∀ j, ∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω j, ∀ w' ∈ Ω j, c * ‖w - w'‖ ≤ ‖Φ j w - Φ j w'‖) ∧ (μHE[n] : Measure (Eucl P)) (M \\ ⋃ j, Φ j '' Ω j) = 0",
+  "lean_name": "slicing_im_coarea_chart_cover",
+  "depends_on": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.c1_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.c1_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-cover-a1-a1"
+}

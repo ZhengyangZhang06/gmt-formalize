@@ -1,0 +1,83 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "deformation_dilation_(calculus|hausdorff|mass|support|integer_multiplicity|lattice_chain)",
+        "def massAdmissibleOn|def massOn|def mass |theorem le_massOn|def VanishesOn|def zeroRegion|def support|structure GeometricCurrentOn|def TestFormOnConverges|def boundary|def CountablyRectifiable|def blowUpMap|def HasWeightedApproximateTangentSpaceAt",
+        "euclideanHausdorffMeasure_smul₀|theorem setIntegral_image_emb|theorem integrableOn_image|theorem restrict_image_emb|aestronglyMeasurable_map_iff|theorem ae_map_iff|theorem integral_smul_measure|theorem integral_const_mul",
+        "sed -n '1,210p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "sed -n '304,334p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dilation-independent-audit-s2b6znlq/IndependentAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dilation-independent-audit-s2b6znlq/EndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-dilation-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-dilation-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/dilation-independent-audit-s2b6znlq/IndependentAssembly.lean",
+        "/tmp/dilation-independent-audit-s2b6znlq/IndependentAssembly.log",
+        "/tmp/dilation-independent-audit-s2b6znlq/EndToEnd.lean",
+        "/tmp/dilation-independent-audit-s2b6znlq/EndToEnd.log"
+      ],
+      "conclusion": "Pinned revisions and frozen definitions match the working environment. The split appropriately separates shared calculus and Hausdorff tools from four scaling consequences; every child contributes to the selected parent, and dependencies are correctly directed and acyclic. All six names are bare identifiers, with no matches in the searched project/SimonGMT sources or any field of the current 572-node DAG. No differently typed accepted declaration is reused. All six statements pass validation and elaborate independently as hypotheses in a fresh assembly proving the exact frozen parent type. Independently recompiling the unchanged supplied prototype succeeds; all six child proofs and the parent depend only on propext, Classical.choice and Quot.sound. The pinned measure-change lemmas support the unconditional integral and restricted-measure arguments. The additional affine import is permitted by the frozen-input policy. No Matrix/IsUnit construction or inappropriate scalar instance occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches all three prose conclusions and hypotheses. Multilinearity identifies the pullback; properness preserves compact support; the derivative-jet argument proves sequential continuity. Commutation with exterior differentiation proves the boundary identity for arbitrary dilation pairs. The proof is complete and uses no child or parent theorem circularly."
+    },
+    {
+      "key": "hausdorff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly places the scaled Hausdorff measure on the source. The homeomorphism supplies measurable embedding, and inverse-image scaling with cancellation of the positive finite coefficient proves the measure-preserving assertion. The supplied argument covers every stated dimension and degree without additional measurability assumptions."
+    },
+    {
+      "key": "mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states mass scaling for an arbitrary dilation pair. The proof constructs admissible normalized pullbacks using calculus, proves the inverse-pair relation, and combines two ENNReal inequalities. Its argument remains valid for infinite mass and requires no undeclared dependency."
+    },
+    {
+      "key": "support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The proof transports relatively compact open vanishing regions using pullback support containment, obtains the reverse inclusion from the inverse pair, and takes complements under a bijection. This matches the pinned support definition and uses only calculus."
+    },
+    {
+      "key": "integer_multiplicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The implication matches the prose, whose transported triple provides the witness. The proof establishes the action identity, integer values, and all seven rectifiable-triple fields. Restricted-measure transport justifies measurability and orientation; the explicit blow-up identity and positive reparameterization prove tangent transport. Only calculus and hausdorff are required; optional other-branch templates supply no assumed result."
+    },
+    {
+      "key": "lattice_chain",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type preserves the arbitrary coefficient family and matches the stated lattice-chain implication. Positive coordinate scaling proves the face identity, Hausdorff transport proves the face-action identity, and calculus supplies the test pullback. Equality of summands proves equality of tsums without a summability hypothesis. The proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

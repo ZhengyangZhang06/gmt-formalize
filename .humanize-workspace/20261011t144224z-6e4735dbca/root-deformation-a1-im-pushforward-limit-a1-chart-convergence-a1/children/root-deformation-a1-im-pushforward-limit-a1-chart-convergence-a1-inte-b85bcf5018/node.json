@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.integrand_bound-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1",
+  "depth": 4,
+  "title": "Measurability and tangential bound Λ^k‖β‖θ of push-forward integrands θ·(A_#ξ)(β) on a rectifiable triple (steps 2–3)",
+  "statement": "Let P, Q, k ∈ ℕ, let U ⊆ ℝ^P be open, and let (M, θ, ξ) satisfy IsRectifiableTriple U k M θ ξ (H^k = μHE[k] on ℝ^P). Let A : ℝ^P → L(ℝ^P, ℝ^Q), β : ℝ^P → Covector(ℝ^Q, k) and Λ ∈ ℝ. Assume that x ↦ A(x)_#ξ(x) (A_# = nVectorPushforward k A) and β are a.e.-strongly measurable for H^k⌞M. Assume also that for H^k-a.e. x ∈ M, |A(x)v| ≤ Λ|v| for every v in every weighted approximate tangent space T_x of (M, θ) at x. Then x ↦ θ(x)·(A(x)_#ξ(x))(β(x)) is a.e.-strongly measurable for H^k⌞M, and |θ(x)·(A(x)_#ξ(x))(β(x))| ≤ Λ^k·‖β(x)‖·θ(x) for H^k-a.e. x ∈ M, where ‖β(x)‖ is the operator norm of the covector β(x).",
+  "lean_statement": "∀ (P Q k : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) k) (A : Eucl P → (Eucl P →L[ℝ] Eucl Q)) (β : Eucl P → Covector (Eucl Q) k) (Λ : ℝ), IsOpen U → IsRectifiableTriple U k M θ ξ → AEStronglyMeasurable (fun x => nVectorPushforward k (A x) (ξ x)) ((μHE[k] : Measure (Eucl P)).restrict M) → AEStronglyMeasurable β ((μHE[k] : Measure (Eucl P)).restrict M) → (∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), ∀ Tx : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt k M θ x Tx → ∀ v ∈ Tx, ‖A x v‖ ≤ Λ * ‖v‖) → AEStronglyMeasurable (fun x => θ x * nVectorPushforward k (A x) (ξ x) (β x)) ((μHE[k] : Measure (Eucl P)).restrict M) ∧ ∀ᵐ x ∂((μHE[k] : Measure (Eucl P)).restrict M), |θ x * nVectorPushforward k (A x) (ξ x) (β x)| ≤ Λ ^ k * ‖β x‖ * θ x",
+  "lean_name": "deformation_ipl_cc_pushforward_integrand_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-chart-convergence-a1-inte-b85bcf5018-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1.extderiv_leibniz-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.leibniz_bound-a1",
+  "depth": 4,
+  "title": "Leibniz rule for the exterior derivative of a function multiple: d(ψω)(x) = ψ(x)dω(x) + Dψ(x)∧ω(x)",
+  "statement": "For all P, m ∈ ℕ, every function ψ : ℝ^P → ℝ, every m-form ω : ℝ^P → Λ^m(ℝ^P) (DifferentialForm (Eucl P) m) and every point x ∈ ℝ^P at which ψ and ω are both (Fréchet) differentiable, the m-form ψω : y ↦ ψ(y)·ω(y) satisfies d(ψω)(x) = ψ(x)·dω(x) + alternatizeUncurryFin((Dψ(x)).smulRight(ω(x))). Here d = exteriorDerivative (Mathlib's extDeriv, dη(x) = alternatizeUncurryFin(Dη(x))), Dψ(x) = fderiv ℝ ψ x, and (Dψ(x)).smulRight(ω(x)) is the continuous linear map h ↦ Dψ(x)(h)·ω(x) from ℝ^P to the m-covectors.",
+  "lean_statement": "∀ (P m : ℕ) (ψ : Eucl P → ℝ) (ω : DifferentialForm (Eucl P) m) (x : Eucl P), DifferentiableAt ℝ ψ x → DifferentiableAt ℝ ω x → exteriorDerivative (fun y => ψ y • ω y : DifferentialForm (Eucl P) m) x = ψ x • exteriorDerivative ω x + ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ ψ x).smulRight (ω x))",
+  "lean_name": "slicing_mb_lb_extDeriv_smul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-leibniz-bound-a1-extderiv-leibniz-a1-a1"
+}
