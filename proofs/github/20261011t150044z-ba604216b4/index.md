@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/5264 | this PR | root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.orient_comp-a1, root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1, root.regular_set_dense-a1.integer_combination-a1.combination_action-a1, root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.vector_density_ae_eq-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1.vd_add-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1.pairing_add-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1.pullback_field-a1, root.density_one_implies_regular-a1.limsup_mass_bound-a1.projected_comparison-a1.competitor_mass-a1.integral_le_measure-a1, root.regular_set_dense-a1.integer_combination-a1.combination_construction-a1, root.regular_set_dense-a1.integer_combination-a1.combination_action-a1, root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.vector_density_ae_eq-a1, root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.pairing_bound-a1 |

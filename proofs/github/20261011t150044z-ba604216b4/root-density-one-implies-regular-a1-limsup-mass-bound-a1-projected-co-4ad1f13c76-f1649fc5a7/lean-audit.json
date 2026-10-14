@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "21080489a451e33e3815356da19ede2dc18f9b109813ce0e2435036f53bfffa4",
+  "git_delta": {
+    "base_commit": "60e7b48baa16e998fef884fc975fca7ba491570b",
+    "candidate_commit": "99f09199d05100283d8c73ffd16e7a3e6922e37b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "df10866e093da239b8df6d6e1861ab7215413cfb599636e4f9929cc75afdb840",
+    "source_sha256": "66e1ddd7758a69f8eaf7e0e19f394ea18a865b924d739aaae4309b7ec67262af",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_pc_competitor_massOn_le",
+      "statement": "∀ (P n : ℕ) (U G O : Set (Euclid P)) (RZ RX RY : IMRep U n) (Y S : GeometricCurrentOn U n) (f : Euclid P → Euclid P) (Λ : ℝ), IsOpen U → IsOpen G → CompactlyContained G U → IsOpen O → G ⊆ O → ContDiffOn ℝ 1 f O → 0 ≤ Λ → (∀ x ∈ G, ‖fderiv ℝ f x‖ ≤ Λ) → RY.Represents Y → (∀ ω : TestFormOn U n, Y ω = RZ.action (ω : DifferentialForm (Euclid P) n) + RX.action (ω : DifferentialForm (Euclid P) n)) → (∀ᵐ x ∂(μHE[n].restrict (RZ.carrier ∩ G)), f x = x ∧ ∀ α : Covector (Euclid P) n, RZ.orient x (α.compContinuousLinearMap (fderiv ℝ f x)) = RZ.orient x α) → μHE[n] (RX.carrier \\ G) = 0 → (∀ ω : TestFormOn U n, S ω = RZ.action (ω : DifferentialForm (Euclid P) n) + ∫ x in RX.carrier, (RX.mult x : ℝ) * RX.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → S.massOn G ≤ ENNReal.ofReal (Λ ^ n) * RY.measure G",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
