@@ -505,6 +505,206 @@ theorem Submission.dimred_mbl_dt_cbm_integral_div_eq_zero : ∀ (m : ℕ) (g : E
   · intro y hy
     rw [fderiv_of_notMem_tsupport ℝ fun h => hy (hsub h)]
     simp
+/-- **Simon 6.5.1** (proof, (31): `Lⁿ` of the interior of a unit face is `1`): the open unit cube
+`{y : 0 < yᵢ < 1}` of `ℝᵏ` has volume `1`.  It is the preimage of the box `∏ᵢ (0, 1)` under the
+volume-preserving `ofLp : ℝᵏ → (Fin k → ℝ)`, and the box has volume `∏ᵢ (1 - 0) = 1` (the empty
+product if `k = 0`). -/
+theorem Submission.cmcdtfrfg_cube_volume : ∀ k : ℕ, volume {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} = 1 := by
+  intro k
+  -- the box `∏ᵢ (0, 1)` in `Fin k → ℝ`
+  have hB : MeasurableSet (Set.pi univ fun _ : Fin k => Ioo (0 : ℝ) 1) :=
+    MeasurableSet.univ_pi fun _ => measurableSet_Ioo
+  -- the cube is `ofLp⁻¹` of the box
+  have hpre : {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} =
+      WithLp.ofLp ⁻¹' (Set.pi univ fun _ : Fin k => Ioo (0 : ℝ) 1) := by
+    ext y
+    simp [Set.mem_pi]
+  rw [hpre, (PiLp.volume_preserving_ofLp (Fin k)).measure_preimage hB.nullMeasurableSet,
+    Real.volume_pi_Ioo]
+  simp
+/-- **Simon Ch. 2, 2.7** (proof, the final limit `σ ↓ 0`): on the cube
+`Q_δ = {z : δ < zᵢ < 1 - δ}` (`0 ≤ δ`) the double-integral oscillation
+`∫_{Q_δ} ∫_{Q_δ} |u(x) - u(y)| dy dx` passes to `L¹(Q_δ)` limits of continuous functions: if `u` is
+integrable on the unit cube, every `v_k` has oscillation `≤ K` and `∫_{Q_δ} |v_k - u| → 0`, then
+`u` has oscillation `≤ K`.  Integrating
+`|u(x) - u(y)| ≤ |v_k(x) - v_k(y)| + |u(x) - v_k(x)| + |v_k(y) - u(y)|` over `Q_δ × Q_δ` gives
+`D(u) ≤ K + 2 |Q_δ| ∫_{Q_δ} |v_k - u|` (Fubini for `v_k`, continuous on the bounded `Q_δ`). -/
+theorem Submission.dimred_mbl_dt_cbm_bvp_osc_le_of_l1_approx : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (v : ℕ → Euclid (m + 1) → ℝ) (δ K : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → 0 ≤ δ → (∀ k, Continuous (v k)) → (∀ k, ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - v k y| ≤ K) → Tendsto (fun k => ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - u x|) atTop (𝓝 0) → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |u x - u y| ≤ K := by
+  intro m u v δ K hu hδ hv hK hlim
+  set S : Set (Euclid (m + 1)) := {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}
+  -- 1. `S ⊆ Q₁`, since `0 ≤ δ`
+  have hSQ : S ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := fun z hz i =>
+    ⟨hδ.trans_lt (hz i).1, (hz i).2.trans_le (by linarith)⟩
+  -- 2. `Q₁ ⊆ B̄(0, √(m + 1))`, so `S` has finite volume
+  have hSB : S ⊆ closedBall (0 : Euclid (m + 1)) √(m + 1 : ℕ) := by
+    intro z hz
+    rw [mem_closedBall_zero_iff, EuclideanSpace.norm_eq]
+    refine Real.sqrt_le_sqrt ?_
+    calc ∑ i, ‖z.ofLp i‖ ^ 2 ≤ ∑ _i : Fin (m + 1), (1 : ℝ) := Finset.sum_le_sum fun i _ => by
+          have h0 := (hSQ hz i).1
+          have h1 := (hSQ hz i).2
+          rw [Real.norm_eq_abs, sq_abs]
+          nlinarith
+      _ = (m + 1 : ℕ) := by simp
+  have hS_fin : volume S < ∞ := (measure_mono hSB).trans_lt measure_closedBall_lt_top
+  have : IsFiniteMeasure (volume.restrict S) := isFiniteMeasure_restrict.mpr hS_fin.ne
+  -- 3. `u, v k ∈ L¹(S)`
+  have huS : Integrable u (volume.restrict S) := hu.mono_set hSQ
+  have hvS : ∀ k, Integrable (v k) (volume.restrict S) := fun k =>
+    ((hv k).continuousOn.integrableOn_compact (isCompact_closedBall _ _)).mono_set hSB
+  -- 4. Fubini: `d_k x = ∫_S |v k x - v k y| dy` is integrable on `S`
+  have hd : ∀ k, Integrable (fun x => ∫ y in S, |v k x - v k y|) (volume.restrict S) := fun k =>
+    (((hvS k).comp_fst (volume.restrict S)).sub
+      ((hvS k).comp_snd (volume.restrict S))).abs.integral_prod_left
+  -- 5–6. the inner integral
+  have hinner : ∀ k x, ∫ y in S, |u x - u y| ≤ (∫ y in S, |v k x - v k y|) +
+      (volume.restrict S).real univ * |u x - v k x| + ∫ y in S, |v k y - u y| := by
+    intro k x
+    have h1 : Integrable (fun y => |v k x - v k y|) (volume.restrict S) :=
+      ((integrable_const (v k x)).sub (hvS k)).abs
+    have h2 : Integrable (fun _ : Euclid (m + 1) => |u x - v k x|) (volume.restrict S) :=
+      integrable_const _
+    have h3 : Integrable (fun y => |v k y - u y|) (volume.restrict S) := ((hvS k).sub huS).abs
+    have h12 : Integrable (fun y => |v k x - v k y| + |u x - v k x|) (volume.restrict S) :=
+      h1.add h2
+    calc ∫ y in S, |u x - u y|
+        ≤ ∫ y in S, (|v k x - v k y| + |u x - v k x| + |v k y - u y|) := by
+          refine integral_mono_of_nonneg (Eventually.of_forall fun y => abs_nonneg _)
+            (h12.add h3) (Eventually.of_forall fun y => ?_)
+          calc |u x - u y| = |(v k x - v k y) + (u x - v k x) + (v k y - u y)| := by
+                congr 1; ring
+            _ ≤ _ := abs_add_three _ _ _
+      _ = _ := by
+          rw [integral_add h12 h3, integral_add h1 h2, integral_const, smul_eq_mul]
+  -- 7. the outer integral: `D(u) ≤ K + 2 a ε_k`
+  have hbound : ∀ k, ∫ x in S, ∫ y in S, |u x - u y| ≤
+      K + (volume.restrict S).real univ * (∫ x in S, |v k x - u x|) +
+        (volume.restrict S).real univ * ∫ x in S, |v k x - u x| := by
+    intro k
+    have h2 : Integrable (fun x => (volume.restrict S).real univ * |u x - v k x|)
+        (volume.restrict S) := ((huS.sub (hvS k)).abs).const_mul _
+    have h3 : Integrable (fun _ : Euclid (m + 1) => ∫ y in S, |v k y - u y|) (volume.restrict S) :=
+      integrable_const _
+    have h12 : Integrable (fun x => (∫ y in S, |v k x - v k y|) +
+        (volume.restrict S).real univ * |u x - v k x|) (volume.restrict S) := (hd k).add h2
+    have hsymm : ∫ x in S, |u x - v k x| = ∫ x in S, |v k x - u x| := by
+      simp_rw [abs_sub_comm (u _)]
+    calc ∫ x in S, ∫ y in S, |u x - u y|
+        ≤ ∫ x in S, ((∫ y in S, |v k x - v k y|) + (volume.restrict S).real univ * |u x - v k x| +
+            ∫ y in S, |v k y - u y|) :=
+          integral_mono_of_nonneg
+            (Eventually.of_forall fun x => integral_nonneg fun y => abs_nonneg _)
+            (h12.add h3) (Eventually.of_forall fun x => hinner k x)
+      _ = (∫ x in S, ∫ y in S, |v k x - v k y|) +
+            (volume.restrict S).real univ * (∫ x in S, |u x - v k x|) +
+            (volume.restrict S).real univ * ∫ y in S, |v k y - u y| := by
+          rw [integral_add h12 h3, integral_add (hd k) h2, integral_const_mul,
+            integral_const, smul_eq_mul]
+      _ ≤ _ := by
+          rw [hsymm]
+          linarith [hK k]
+  -- 8. let `k → ∞`
+  have hlim' := (tendsto_const_nhds (x := K)).add (hlim.const_mul ((volume.restrict S).real univ))
+    |>.add (hlim.const_mul ((volume.restrict S).real univ))
+  rw [mul_zero, add_zero, add_zero] at hlim'
+  exact ge_of_tendsto' hlim' hbound
+
+/-- **Simon 2.7** (BV Poincaré inequality, as used for (32) in the proof of 6.5.1): the passage
+`δ ↓ 0` from the inner cubes `Q_δ = {z : δ < zᵢ < 1 - δ}` to the open unit cube
+`Q₁ = {y : 0 < yᵢ < 1}` of `ℝ^{m+1}`.  If `u` is integrable on `Q₁` and
+`∫_{Q_δ} ∫_{Q_δ} |u(x) - u(y)| dy dx ≤ K` for all `0 < δ < 1/2`, then the same bound holds on
+`Q₁`: for `δⱼ = 1/(j + 3) ↓ 0` the products `Q_{δⱼ} × Q_{δⱼ}` increase to `Q₁ × Q₁`, on which
+`|u(x) - u(y)|` is integrable (`vol(Q₁) = 1`), so the set integrals converge, and Fubini
+identifies them with the double integrals. -/
+theorem Submission.dimred_mbl_dt_cbm_bvp_osc_le_of_inner_cubes : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (K : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ δ : ℝ, 0 < δ → δ < 1 / 2 → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |u x - u y| ≤ K) → ∫ x in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u x - u y| ≤ K := by
+  intro m u K hu hK
+  set Q₁ : Set (Euclid (m + 1)) := {y | ∀ i, 0 < y i ∧ y i < 1} with hQ₁
+  -- `δⱼ = 1/(j + 3)` lies in `(0, 1/2)` and decreases to `0`
+  set δ : ℕ → ℝ := fun j => 1 / ((j : ℝ) + 3) with hδ
+  have hδpos : ∀ j, 0 < δ j := fun j => by positivity
+  have hδlt : ∀ j, δ j < 1 / 2 := fun j =>
+    one_div_lt_one_div_of_lt two_pos (by have := (Nat.cast_nonneg j : (0 : ℝ) ≤ j); linarith)
+  have hδanti : Antitone δ := fun i j hij =>
+    one_div_le_one_div_of_le (by positivity)
+      (by have := (Nat.cast_le (α := ℝ)).2 hij; linarith)
+  have hδlim : Tendsto δ atTop (𝓝 0) := by
+    have h := (tendsto_atTop_add_const_right atTop (3 : ℝ)
+      tendsto_natCast_atTop_atTop).inv_tendsto_atTop
+    refine h.congr fun j => ?_
+    simp [hδ, one_div]
+  -- the inner cubes `Qⱼ = Q_{δⱼ}` are measurable, increasing, and exhaust `Q₁`
+  set Q : ℕ → Set (Euclid (m + 1)) := fun j => {z | ∀ i, δ j < z i ∧ z i < 1 - δ j}
+    with hQ
+  have hcoord : ∀ i : Fin (m + 1), Measurable fun z : Euclid (m + 1) => z i := fun _ => by
+    fun_prop
+  have hQmeas : ∀ j, MeasurableSet (Q j) := fun j => by
+    have : Q j = ⋂ i, ({z : Euclid (m + 1) | δ j < z i} ∩ {z | z i < 1 - δ j}) := by
+      ext z
+      simp [hQ]
+    rw [this]
+    exact MeasurableSet.iInter fun i => (measurableSet_lt measurable_const (hcoord i)).inter
+      (measurableSet_lt (hcoord i) measurable_const)
+  have hQmono : Monotone Q := fun j j' hjj' z hz i =>
+    ⟨(hδanti hjj').trans_lt (hz i).1, (hz i).2.trans_le (by linarith [hδanti hjj'])⟩
+  have hQsub : ∀ j, Q j ⊆ Q₁ := fun j z hz i =>
+    ⟨(hδpos j).trans (hz i).1, (hz i).2.trans (by linarith [hδpos j])⟩
+  have hQunion : ⋃ j, Q j = Q₁ := by
+    refine Subset.antisymm (iUnion_subset hQsub) fun z hz => ?_
+    have hev : ∀ᶠ j in atTop, ∀ i, δ j < z i ∧ z i < 1 - δ j := by
+      rw [eventually_all]
+      intro i
+      have h1 : ∀ᶠ j in atTop, δ j < z i := hδlim.eventually (gt_mem_nhds (hz i).1)
+      have h2 : ∀ᶠ j in atTop, δ j < 1 - z i :=
+        hδlim.eventually (gt_mem_nhds (by linarith [(hz i).2]))
+      filter_upwards [h1, h2] with j hj1 hj2
+      exact ⟨hj1, by linarith⟩
+    obtain ⟨j, hj⟩ := hev.exists
+    exact mem_iUnion.2 ⟨j, hj⟩
+  -- `vol(Q₁) = 1`, so `|u(x) - u(y)|` is integrable on `Q₁ × Q₁`
+  have : IsFiniteMeasure (volume.restrict Q₁) := by
+    refine isFiniteMeasure_restrict.2 ?_
+    rw [hQ₁, Submission.cmcdtfrfg_cube_volume (m + 1)]
+    exact ENNReal.one_ne_top
+  have hF : IntegrableOn (fun p : Euclid (m + 1) × Euclid (m + 1) => |u p.1 - u p.2|)
+      (Q₁ ×ˢ Q₁) (volume.prod volume) := by
+    rw [IntegrableOn, ← Measure.prod_restrict]
+    exact ((Integrable.comp_fst hu _).sub (Integrable.comp_snd hu _)).abs
+  -- the products `Qⱼ × Qⱼ` increase to `Q₁ × Q₁`; pass to the limit and apply Fubini
+  have hunion : ⋃ j, Q j ×ˢ Q j = Q₁ ×ˢ Q₁ := by
+    rw [iUnion_prod_of_monotone hQmono hQmono, hQunion]
+  have hlim : Tendsto (fun j => ∫ x in Q j, ∫ y in Q j, |u x - u y|) atTop
+      (𝓝 (∫ x in Q₁, ∫ y in Q₁, |u x - u y|)) := by
+    have h := tendsto_setIntegral_of_monotone (μ := volume.prod volume)
+      (f := fun p : Euclid (m + 1) × Euclid (m + 1) => |u p.1 - u p.2|)
+      (fun j => (hQmeas j).prod (hQmeas j)) (fun j j' h => prod_mono (hQmono h) (hQmono h))
+      (by rw [hunion]; exact hF)
+    rw [hunion, setIntegral_prod _ hF] at h
+    refine h.congr fun j => ?_
+    exact setIntegral_prod _ (hF.mono_set (prod_mono (hQsub j) (hQsub j)))
+  exact le_of_tendsto' hlim fun j => hK (δ j) (hδpos j) (hδlt j)
+/-- **Simon Ch. 2, 2.7** (BV Poincaré inequality, applied to the unit faces of 6.5.1 at (32)):
+the mean deviation over a set `S` with `vol(S) = 1` is at most the double-integral oscillation.
+As `vol⌞S` is a probability measure, `u x - ∫_S u = ∫_S (u x - u y) dy`, so
+`|u x - ∫_S u| ≤ ∫_S |u x - u y| dy`; the right side is integrable in `x` by Fubini, and
+integrating over `S` gives the claim. -/
+theorem Submission.dimred_mbl_dt_cbm_bvp_mean_dev_le_osc : ∀ (m : ℕ) (S : Set (Euclid (m + 1))) (u : Euclid (m + 1) → ℝ), volume S = 1 → IntegrableOn u S → ∫ x in S, |u x - ∫ y in S, u y| ≤ ∫ x in S, ∫ y in S, |u x - u y| := by
+  intro m S u hS hu
+  -- `vol⌞S` is a probability measure
+  have : IsProbabilityMeasure (volume.restrict S) := ⟨by rw [Measure.restrict_apply_univ, hS]⟩
+  -- Fubini: `|u x - u y|` is integrable on `S × S`, so `x ↦ ∫_S |u x - u y| dy` is integrable
+  have hosc : Integrable (fun x => ∫ y in S, |u x - u y|) (volume.restrict S) :=
+    ((hu.integrable.comp_fst (volume.restrict S)).sub
+      (hu.integrable.comp_snd (volume.restrict S))).abs.integral_prod_left
+  -- pointwise bound: `u x - ∫_S u = ∫_S (u x - u y) dy` since `vol(S) = 1`
+  have hpt : ∀ x, |u x - ∫ y in S, u y| ≤ ∫ y in S, |u x - u y| := by
+    intro x
+    have hmean : ∫ y in S, (u x - u y) = u x - ∫ y in S, u y := by
+      rw [integral_sub (integrable_const (u x)) hu.integrable, integral_const, probReal_univ,
+        one_smul]
+    rw [← hmean]
+    exact abs_integral_le_integral_abs
+  exact integral_mono_of_nonneg (Eventually.of_forall fun x => abs_nonneg _) hosc
+    (Eventually.of_forall hpt)
 /-- **Segment estimate.**  For `v ∈ C¹(ℝⁿ)` and `x, y ∈ ℝⁿ`,
 `|v(x) − v(y)| ≤ ‖x − y‖ ∫₀¹ ‖Dv((1 − t)y + tx)‖ dt`.  Along `p(t) = (1 − t)y + tx` the chain
 rule gives `(v ∘ p)'(t) = Dv(p(t))(x − y)`, which is continuous in `t`; the fundamental theorem
@@ -1403,5 +1603,38 @@ theorem dimred_mbl_dt_cbm_smooth_approx : ∀ (m : ℕ) (u : Euclid (m + 1) → 
       _ < ε := by linarith
 
 end Submission
+
+/-- **BV Poincaré inequality on the unit cube** (Simon Ch. 2, 2.7, in the form used for the first
+line of display (32) in the proof of Ch. 6, 5.1): if `u ∈ L¹(Q₁)` has `∫_{Q₁} u div g ≤ V` for all
+smooth `g` with `spt g ⊆ Q₁` and `|g| ≤ 1`, then `∫_{Q₁} |u - c| ≤ 2ⁿ⁺¹ √n V` with `c = ∫_{Q₁} u`.
+Testing with `g ≡ 0` gives `V ≥ 0`.  On every inner cube `Q_δ`, `0 < δ < 1/2`, the `C¹`
+approximations `v_k` of `u` satisfy `∫_{Q_δ}∫_{Q_δ} |v_k x - v_k y| ≤ 2ⁿ √n V` by the smooth
+Poincaré inequality, and the bound passes to the `L¹` limit `u`; exhausting `Q₁` by the `Q_δ` and
+using `|Q₁| = 1` bounds the mean deviation of `u` by the same `2ⁿ √n V ≤ 2ⁿ⁺¹ √n V`. -/
+theorem Submission.dimred_mbl_dt_cbm_bv_poincare : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (V : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → ∃ c : ℝ, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - c| ≤ 2 ^ (m + 2) * Real.sqrt (m + 1) * V := by
+  intro m u V hu hV
+  -- `V ≥ 0`: test the hypothesis with `g ≡ 0`
+  have hV0 : 0 ≤ V := by
+    simpa using hV (fun _ => 0) contDiff_const HasCompactSupport.zero (by simp) fun _ => by simp
+  have hK : (0 : ℝ) ≤ 2 ^ (m + 1) * Real.sqrt (m + 1) := by positivity
+  -- on each inner cube `Q_δ`, `0 < δ < 1/2`, the oscillation of `u` is at most `2ⁿ √n V`
+  have hinner : ∀ δ : ℝ, 0 < δ → δ < 1 / 2 →
+      ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ},
+        ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |u x - u y| ≤
+        2 ^ (m + 1) * Real.sqrt (m + 1) * V := by
+    intro δ hδ _
+    obtain ⟨v, hv, hvV, hvu⟩ := Submission.dimred_mbl_dt_cbm_smooth_approx m u V δ hu hV hδ
+    refine Submission.dimred_mbl_dt_cbm_bvp_osc_le_of_l1_approx m u v δ _ hu hδ.le
+      (fun k => (hv k).continuous) (fun k => ?_) hvu
+    exact (Submission.dimred_mbl_dt_cbm_smooth_poincare m (v k) δ (hv k) hδ.le).trans
+      (mul_le_mul_of_nonneg_left (hvV k) hK)
+  -- exhaust `Q₁` by the inner cubes
+  have hosc := Submission.dimred_mbl_dt_cbm_bvp_osc_le_of_inner_cubes m u _ hu hinner
+  -- `c = ∫_{Q₁} u`; the mean deviation is at most the oscillation since `|Q₁| = 1`
+  refine ⟨∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y,
+    ((Submission.dimred_mbl_dt_cbm_bvp_mean_dev_le_osc m _ u
+      (Submission.cmcdtfrfg_cube_volume (m + 1)) hu).trans hosc).trans ?_⟩
+  have h2 : (2 : ℝ) ^ (m + 1) ≤ 2 ^ (m + 2) := pow_le_pow_right₀ (by norm_num) (by omega)
+  exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right h2 (Real.sqrt_nonneg _)) hV0
 
 end GMT.Ch07
