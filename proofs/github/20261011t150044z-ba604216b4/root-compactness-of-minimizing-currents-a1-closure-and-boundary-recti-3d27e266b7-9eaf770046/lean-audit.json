@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fb02f09a620d6b2ebb71f91d923c5966ed5e7da3be4a8b67610ff9ab61d5b9c7",
+  "git_delta": {
+    "base_commit": "0e43f129ada5fb8f445e89b1b7991bc261daed5d",
+    "candidate_commit": "27da485eeb6fc3ee4bb214716156c2b5f2e9e5b8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_ipf_covector_norm_eq",
+    "diff_sha256": "04fa82da97e2d528bc2e410bdf00b82ec2712199f6629fa1acc15293038f7482",
+    "source_sha256": "92304515e7d09cfb139f7ad00a821201af58af86312adb0ba15525267a7f232d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_ipf_covector_norm_eq",
+      "statement": "∀ (d : ℕ) (z : Euclid (d + 1)) (ε : Covector (Euclid (d + 1)) d), (∀ i : Fin (d + 1), ε (i.removeNth (fun l : Fin (d + 1) => EuclideanSpace.single l (1 : ℝ))) = (-1 : ℝ) ^ (i : ℕ) * z i) → covectorEuclideanNorm ε = ‖z‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

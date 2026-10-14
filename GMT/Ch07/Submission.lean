@@ -451,6 +451,42 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Coefficient norm of the interior-product covector** (used for `ε = ι_z(dy)` in the closure
+and boundary-rectifiability step of the compactness theorem, Simon 7.2.4).  If the `d`-covector `ε`
+on `ℝ^{d+1}` takes the value `(−1)ⁱ zᵢ` on `(e₀, …, êᵢ, …, e_d)`, then its Euclidean coefficient
+norm (Simon (6.1.15)) is `|z|`: the strictly increasing `I : Fin d → Fin (d + 1)` are exactly the
+maps `i.succAbove`, so the coefficients of `ε` are the `(−1)ⁱ zᵢ`. -/
+theorem Submission.cbr_ci_pw_ipf_covector_norm_eq : ∀ (d : ℕ) (z : Euclid (d + 1)) (ε : Covector (Euclid (d + 1)) d), (∀ i : Fin (d + 1), ε (i.removeNth (fun l : Fin (d + 1) => EuclideanSpace.single l (1 : ℝ))) = (-1 : ℝ) ^ (i : ℕ) * z i) → covectorEuclideanNorm ε = ‖z‖ := by
+  intro d z ε hε
+  have hI : ∀ I : Fin d → Fin (d + 1), StrictMono I → ∃ i : Fin (d + 1), i.succAbove = I := by
+    intro I hI
+    have hns : ¬Surjective I := fun h => by
+      simpa using Fintype.card_le_of_surjective I h
+    obtain ⟨i, hi⟩ := not_forall.mp hns
+    have hcard : (Finset.univ.erase i).card = d := by simp
+    refine ⟨i, ?_⟩
+    rw [Finset.orderEmbOfFin_unique hcard (f := I)
+        (fun k => Finset.mem_erase.2 ⟨fun h => hi ⟨k, h⟩, Finset.mem_univ _⟩) hI,
+      Finset.orderEmbOfFin_unique hcard (f := i.succAbove)
+        (fun k => Finset.mem_erase.2 ⟨Fin.succAbove_ne i k, Finset.mem_univ _⟩)
+        (Fin.strictMono_succAbove i)]
+  rw [covectorEuclideanNorm, EuclideanSpace.norm_eq]
+  congr 1
+  rw [← Finset.sum_subset
+      (Finset.subset_univ (Finset.univ.image fun i : Fin (d + 1) => i.succAbove)) ?_,
+    Finset.sum_image fun i _ j _ h => Fin.succAbove_left_injective h]
+  · refine Finset.sum_congr rfl fun i _ => ?_
+    have hb : (fun k => EuclideanSpace.basisFun (Fin (d + 1)) ℝ (i.succAbove k)) =
+        i.removeNth (fun l : Fin (d + 1) => EuclideanSpace.single l (1 : ℝ)) := by
+      funext k
+      simp [Fin.removeNth]
+    rw [ite_eq_left (Fin.strictMono_succAbove i), hb, hε i, Real.norm_eq_abs, sq_abs, mul_pow,
+      pow_right_comm, neg_one_sq, one_pow, one_mul]
+  · intro I _ hIm
+    refine ite_eq_right fun hmono => ?_
+    obtain ⟨i, rfl⟩ := hI I hmono
+    exact hIm (Finset.mem_image_of_mem _ (Finset.mem_univ i))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
