@@ -451,6 +451,58 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Markov selection of a good parameter** (Simon, Ch. 6, proof of 5.1, (10): a slicing radius
+in `(σ/2, σ)`).  If `g : ℝ → [0, ∞]` is a.e.-measurable, `p` holds for a.e. `t`, `a < b` and
+`∫_{(a,b)} g ≤ I`, then some `t ∈ (a, b)` has `p t` and `(b − a) g(t) ≤ 2I`.  Otherwise
+`2I < (b − a) g` a.e. on `(a, b)`, which is impossible for `I = ∞` as `(a, b)` is not null; for
+`I < ∞` integration gives `2I(b − a) ≤ (b − a)I`, so `I = 0`, whence `g = 0` a.e. on `(a, b)`,
+contradicting `0 < (b − a) g` a.e. there. -/
+theorem Submission.dor_lmb_fcd_sd_markov_point : ∀ (g : ℝ → ℝ≥0∞) (p : ℝ → Prop) (a b : ℝ) (I : ℝ≥0∞), a < b → AEMeasurable g → (∀ᵐ t, p t) → ∫⁻ t in Ioo a b, g t ≤ I → ∃ t ∈ Ioo a b, p t ∧ ENNReal.ofReal (b - a) * g t ≤ 2 * I := by
+  intro g p a b I hab hg hp hI
+  set c : ℝ≥0∞ := ENNReal.ofReal (b - a) with hc
+  have hc0 : c ≠ 0 := by simpa [hc] using hab
+  have hctop : c ≠ ∞ := ENNReal.ofReal_ne_top
+  have hvol : volume (Ioo a b) = c := Real.volume_Ioo
+  -- Step 1: otherwise `2I < c g(t)` for every `t ∈ (a, b)` with `p t`
+  by_contra hcon
+  have hbad : ∀ t ∈ Ioo a b, p t → 2 * I < c * g t := fun t ht hpt =>
+    not_le.1 fun hle => hcon ⟨t, ht, hpt, hle⟩
+  -- Step 2: `2I < c g` almost everywhere on `(a, b)`
+  have hae : ∀ᵐ t ∂(volume.restrict (Ioo a b)), 2 * I < c * g t := by
+    rw [ae_restrict_iff' measurableSet_Ioo]
+    filter_upwards [hp] with t ht htI
+    exact hbad t htI ht
+  -- Step 3: `(a, b)` is not null
+  have hnull : ¬ ∀ᵐ _t ∂(volume.restrict (Ioo a b)), False := by
+    intro h
+    have h0 : volume.restrict (Ioo a b) = 0 := ae_eq_bot.1 (eventually_false_iff_eq_bot.1 h)
+    rw [Measure.restrict_eq_zero, hvol] at h0
+    exact hc0 h0
+  rcases eq_or_ne I ∞ with hItop | hItop
+  · -- Step 4: `I = ∞`
+    apply hnull
+    filter_upwards [hae] with t ht
+    rw [hItop] at ht
+    simp at ht
+  · -- Step 5: `I < ∞` forces `I = 0`
+    have h1 : ∫⁻ _t in Ioo a b, 2 * I ≤ ∫⁻ t in Ioo a b, c * g t :=
+      lintegral_mono_ae (hae.mono fun t ht => ht.le)
+    rw [setLIntegral_const, lintegral_const_mul'' _ hg.restrict, hvol] at h1
+    have h2 : 2 * I * c ≤ I * c :=
+      calc 2 * I * c ≤ c * ∫⁻ t in Ioo a b, g t := h1
+        _ ≤ c * I := by gcongr
+        _ = I * c := mul_comm c I
+    have h3 : 2 * I ≤ I := (ENNReal.mul_le_mul_iff_left hc0 hctop).1 h2
+    have hI0 : I = 0 := by
+      have h4 : I + I ≤ 0 + I := by rw [zero_add, ← two_mul]; exact h3
+      exact nonpos_iff_eq_zero.1 (ENNReal.le_of_add_le_add_right hItop h4)
+    -- Step 6: `g = 0` a.e. on `(a, b)` contradicts `0 < c g` a.e.
+    have hg0 : ∀ᵐ t ∂(volume.restrict (Ioo a b)), g t = 0 :=
+      (lintegral_eq_zero_iff' hg.restrict).1 (nonpos_iff_eq_zero.1 (hI.trans hI0.le))
+    apply hnull
+    filter_upwards [hae, hg0] with t ht ht0
+    rw [hI0, ht0] at ht
+    simp at ht
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
@@ -2857,6 +2909,35 @@ theorem Submission.dor_lmb_fcd_sd_im_concentrated : ∀ (P k : ℕ) (X : Geometr
     _ ≤ R.measure W + R.measure Wᶜ := measure_union_le W Wᶜ
     _ = X.massOn W := by
         rw [measure_mono_null (Set.compl_subset_compl.mpr hFW) hFc, add_zero, hmass W hW]
+
+/-- **A good slice in a prescribed interval of levels** (Simon Ch. 6, 4.10 and display (10) of the
+proof of 5.1: Markov choice of the slicing level).  Let `T = τ(M, θ, ξ)` in `ℝᴾ`, `f` continuous,
+and let `Pₜ` satisfy (H1) `∫ M_W(Pₜ) dt ≤ L M_W(T)` for open `W` and (H2) for a.e. `t`: `Pₜ` is
+integer multiplicity, vanishes off `f⁻¹{t}` and is given by the slice formula.  Then some
+`t ∈ (a, b)` satisfies (H2) and `(b - a) M(Pₜ) ≤ 2 L μ_T{a < f < b}`.
+* `W = {a < f < b}` is open and `M_W(T) = μ_T(W)` by (C1), so (H1) gives
+  `∫_{(a, b)} M_W(Pₜ) dt ≤ L μ_T(W)`.
+* `dor_lmb_fcd_sd_markov_point` gives `t ∈ (a, b)` in the a.e. set of (H2) with
+  `(b - a) M_W(Pₜ) ≤ 2 L μ_T(W)`.
+* `Pₜ` is integer multiplicity and vanishes off the closed level set `f⁻¹{t} ⊆ W`, so
+  `M(Pₜ) ≤ M_W(Pₜ)` by `dor_lmb_fcd_sd_im_concentrated`. -/
+theorem Submission.dor_lmb_fcd_sd_good_slice : ∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (RT : IMRep (univ : Set (Euclid P)) (m + 1)) (RB : IMRep (univ : Set (Euclid P)) m) (f : Euclid P → ℝ) (L : NNReal) (Ps : ℝ → GeometricCurrentOn (univ : Set (Euclid P)) m) (a b : ℝ), RT.Represents T → Continuous f → a < b → (∀ W : Set (Euclid P), IsOpen W → AEMeasurable (fun t => (Ps t).massOn W) ∧ ∫⁻ t, (Ps t).massOn W ≤ (L : ℝ≥0∞) * T.massOn W) → (∀ᵐ t, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (f ⁻¹' {t}) → Ps t ω = 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → ∃ t ∈ Ioo a b, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) (f ⁻¹' {t}) → Ps t ω = 0) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) ∧ ENNReal.ofReal (b - a) * (Ps t).mass ≤ 2 * ((L : ℝ≥0∞) * RT.measure {x | a < f x ∧ f x < b}) := by
+  intro P m T RT RB f L Ps a b hRT hf hab hH1 hH2
+  -- Step 1: the strip `W = {a < f < b}` is open
+  have hW : IsOpen {x : Euclid P | a < f x ∧ f x < b} :=
+    (isOpen_lt continuous_const hf).inter (isOpen_lt hf continuous_const)
+  -- Step 2: (H1) and (C1) give `∫_{(a, b)} M_W(Pₜ) dt ≤ ∫ M_W(Pₜ) dt ≤ L μ_T(W)`
+  obtain ⟨hgm, hgI⟩ := hH1 _ hW
+  rw [(Submission.dor_imrep_massOn_eq_measure_and_support P (m + 1) univ T RT isOpen_univ
+    hRT).1 _ hW] at hgI
+  -- Step 3: Markov choice of `t ∈ (a, b)` in the a.e. set of (H2)
+  obtain ⟨t, ht, ⟨⟨Rt, hRt⟩, hvan, hform⟩, hle⟩ := Submission.dor_lmb_fcd_sd_markov_point _ _ a b
+    _ hab hgm hH2 ((setLIntegral_le_lintegral _ _).trans hgI)
+  -- Step 4: `Pₜ` vanishes off the closed level set `f⁻¹{t} ⊆ W`, so `M(Pₜ) ≤ M_W(Pₜ)`
+  have hmass := (Submission.dor_lmb_fcd_sd_im_concentrated P m (Ps t) Rt (f ⁻¹' {t}) hRt
+    (isClosed_singleton.preimage hf) hvan).2 _ hW fun x (hx : f x = t) => ⟨hx ▸ ht.1, hx ▸ ht.2⟩
+  -- Step 5: `(b - a) M(Pₜ) ≤ (b - a) M_W(Pₜ) ≤ 2 L μ_T(W)`
+  exact ⟨t, ht, ⟨Rt, hRt⟩, hvan, hform, (mul_le_mul_right hmass _).trans hle⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
