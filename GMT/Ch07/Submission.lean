@@ -16505,6 +16505,33 @@ theorem Submission.cmcs_smi_lintegral_left_density_le : ∀ (ν : Measure ℝ) (
     _ = ν (Ioo a b) := by rw [hFb, hFa, sub_zero, ENNReal.ofReal_toReal hN]
 
 
+/-- **Simon Ch. 6, 4.10** (integrated slice-mass bound, with `μ(W ∩ {a < f < s})` in place of
+`M_W(T⌞{a < f < s})`): if `m(t) ≤ L · liminf_{h↓0} h⁻¹ μ(W ∩ {t − h < f < t})` for every
+`t ∈ (a, b)`, then `∫⁻_{(a,b)} m ≤ L · μ(W ∩ {a < f < b})`.  The push-forward `ν = f_#(μ⌞W)` has
+`ν((s, t)) = μ(W ∩ {s < f < t})`, so the hypothesis reads
+`m(t) ≤ L · liminf_{h↓0} h⁻¹ ν((t − h, t))`; pull `L` out of the lower integral (`L ≠ ∞`) and bound
+the integrated lower left density of `ν` by `ν((a, b))` (`cmcs_smi_lintegral_left_density_le`).
+No measurability of `m` is needed. -/
+theorem Submission.cmcs_slice_mass_integral : ∀ (P : ℕ) (μ : Measure (Euclid P)) (f : Euclid P → ℝ) (W : Set (Euclid P)) (L : NNReal) (m : ℝ → ℝ≥0∞) (a b : ℝ), Measurable f → MeasurableSet W → (∀ t ∈ Ioo a b, m t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∫⁻ t in Ioo a b, m t ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}) := by
+  intro P μ f W L m a b hf _hW hm
+  -- `ν = f_#(μ⌞W)`, so `ν((s, t)) = μ(f⁻¹(s, t) ∩ W) = μ(W ∩ {s < f < t})`
+  set ν : Measure ℝ := (μ.restrict W).map f with hν
+  have hνI : ∀ s t : ℝ, ν (Ioo s t) = μ (W ∩ {x | s < f x ∧ f x < t}) := by
+    intro s t
+    rw [hν, Measure.map_apply hf measurableSet_Ioo,
+      Measure.restrict_apply (hf measurableSet_Ioo), Set.inter_comm]
+    rfl
+  calc ∫⁻ t in Ioo a b, m t
+      ≤ ∫⁻ t in Ioo a b, (L : ℝ≥0∞) *
+          liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)) (𝓝[>] 0) :=
+        setLIntegral_mono' measurableSet_Ioo fun t ht => by simpa only [hνI] using hm t ht
+    _ = (L : ℝ≥0∞) * ∫⁻ t in Ioo a b,
+          liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)) (𝓝[>] 0) :=
+        lintegral_const_mul' _ _ ENNReal.coe_ne_top
+    _ ≤ (L : ℝ≥0∞) * ν (Ioo a b) :=
+        mul_le_mul_right (Submission.cmcs_smi_lintegral_left_density_le ν a b) _
+    _ = (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}) := by rw [hνI]
+
 /-- **Simon Ch. 6, 4.6–4.10 (slicing by a Lipschitz function, pp. 157–158)**, for `T` and `∂T`
 represented by `(μ, ξ)` and `(μ', ξ')`: `A_t = T ⌞ {f < t}` and `B_t = (∂T) ⌞ {f < t}` (2.9, taken
 through the given representations) are currents in `U`, and the slice `⟨T, f, t₋⟩ = ∂A_t − B_t`
@@ -21421,6 +21448,168 @@ theorem Submission.cmc_ml_measure_eq_of_eq_on_open_subsets : ∀ (P : ℕ) (O : 
   rw [hAunion, hmono.measure_iUnion, hmono.measure_iUnion]
   refine iSup_congr fun i => ?_
   rw [← Measure.restrict_apply hA, ← Measure.restrict_apply hA, hrestr i]
+/-- **Smooth uniform approximation keeping the unit bound** (smoothing step in the proof of
+`M_W(T) = ∫_{M ∩ W} θ dHⁿ`, Simon 6.3.2(3); `|·|_E` is `covectorEuclideanNorm`).  Let
+`η := δ/(2C + 1)`, where `|·|_E ≤ C‖·‖` (`Submission.rsd_mw_tfa_norm_props`).  A continuous
+compactly supported covector field `g` with `|g|_E ≤ 1` is uniformly continuous, so
+`‖g y − g x‖ < η` when `dist y x < r`.  Mollifying, `h' = ψ ⋆ g` with `ψ = φ / ∫ φ` for a smooth
+bump `φ ≥ 0` with `support φ = B_r(0)` is a `C^∞` field with `‖h' − g‖ ≤ η`; then
+`|h' − g|_E ≤ Cη` and `|h'|_E ≤ 1 + Cη`.  The rescaled field `h = (1 + Cη)⁻¹h'` has `|h|_E ≤ 1`
+and `|h − h'|_E = Cη(1 + Cη)⁻¹|h'|_E ≤ Cη`, hence `|h − g|_E ≤ 2Cη ≤ δ`. -/
+theorem Submission.rsd_mw_tfa_smooth_uniform_approx : ∀ (P n : ℕ) (g : Euclid P → Covector (Euclid P) n), Continuous g → HasCompactSupport g → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → ∀ δ : ℝ, 0 < δ → ∃ h : Euclid P → Covector (Euclid P) n, ContDiff ℝ (⊤ : ℕ∞) h ∧ (∀ x, covectorEuclideanNorm (h x) ≤ 1) ∧ ∀ x, covectorEuclideanNorm (h x - g x) ≤ δ := by
+  intro P n g hgc hgs hg1 δ hδ
+  -- `N := covectorEuclideanNorm` is subadditive, absolutely homogeneous and `N ≤ C ‖·‖`
+  obtain ⟨htri, hsmul, ⟨C, hC0, hCle⟩, -⟩ := Submission.rsd_mw_tfa_norm_props P n
+  -- Step 1: the tolerance `η = δ / (2C + 1)`
+  set η : ℝ := δ / (2 * C + 1) with hη
+  have hη0 : 0 < η := div_pos hδ (by linarith)
+  have hCη : 0 ≤ C * η := mul_nonneg hC0 hη0.le
+  -- Step 2: `g` is uniformly continuous: `‖g y - g x‖ < η` whenever `dist y x < r`
+  obtain ⟨r, hr, hgr⟩ := Metric.uniformContinuous_iff.mp
+    (hgs.uniformContinuous_of_continuous hgc) η hη0
+  -- Step 3: mollify, `h' = ψ ⋆ g` with `ψ = φ / ∫ φ` for a smooth bump `φ`, `support φ = B_r(0)`
+  let φ : ContDiffBump (0 : Euclid P) := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
+  have hφ : 0 < ∫ y, φ y := by
+    refine (integral_pos_iff_support_of_nonneg φ.nonneg'
+      (φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport)).mpr ?_
+    rw [φ.support_eq]
+    exact measure_ball_pos volume 0 hr
+  let ψ : Euclid P → ℝ := fun y => φ y / ∫ y, φ y
+  have hψφ : support ψ ⊆ support φ := fun y hy h => hy (by simp [ψ, h])
+  have hψs : support ψ ⊆ ball 0 r := hψφ.trans φ.support_eq.subset
+  have hψ0 : ∀ y, 0 ≤ ψ y := fun y => div_nonneg φ.nonneg hφ.le
+  have hψ1 : ∫ y, ψ y = 1 := by rw [integral_div, div_self hφ.ne']
+  obtain ⟨h', hh's, hh'g⟩ : ∃ h' : Euclid P → Covector (Euclid P) n,
+      ContDiff ℝ (⊤ : ℕ∞) h' ∧ ∀ x, dist (h' x) (g x) ≤ η :=
+    ⟨convolution ψ g (ContinuousLinearMap.lsmul ℝ ℝ) volume,
+      (φ.hasCompactSupport.mono hψφ).contDiff_convolution_left _ (φ.contDiff.div_const _)
+        hgc.locallyIntegrable,
+      fun x => dist_convolution_le hη0.le hψs hψ0 hψ1 hgc.aestronglyMeasurable fun y hy =>
+        (hgr (mem_ball.mp hy)).le⟩
+  -- Step 4: `N(h' - g) ≤ Cη` and `N(h') ≤ 1 + Cη`
+  have hdiff : ∀ x, covectorEuclideanNorm (h' x - g x) ≤ C * η := fun x =>
+    (hCle _).trans (mul_le_mul_of_nonneg_left (by rw [← dist_eq_norm]; exact hh'g x) hC0)
+  have hh'1 : ∀ x, covectorEuclideanNorm (h' x) ≤ 1 + C * η := fun x =>
+    calc covectorEuclideanNorm (h' x) = covectorEuclideanNorm ((h' x - g x) + g x) := by
+          rw [sub_add_cancel]
+      _ ≤ covectorEuclideanNorm (h' x - g x) + covectorEuclideanNorm (g x) := htri _ _
+      _ ≤ C * η + 1 := add_le_add (hdiff x) (hg1 x)
+      _ = 1 + C * η := add_comm _ _
+  -- Step 5: rescale by `s = (1 + Cη)⁻¹ ∈ (0, 1]`
+  have hpos : 0 < 1 + C * η := by linarith
+  have hne : 1 + C * η ≠ 0 := hpos.ne'
+  set s : ℝ := (1 + C * η)⁻¹ with hs
+  have hs0 : 0 < s := inv_pos.mpr hpos
+  refine ⟨fun x => s • h' x, hh's.const_smul s, fun x => ?_, fun x => ?_⟩
+  · show covectorEuclideanNorm (s • h' x) ≤ 1
+    rw [hsmul, abs_of_pos hs0, hs, inv_mul_le_iff₀ hpos, mul_one]
+    exact hh'1 x
+  · show covectorEuclideanNorm (s • h' x - g x) ≤ δ
+    -- Step 6: `N(s h' - h') = |s - 1| N(h') = Cη s N(h') ≤ Cη`
+    have hsh : s • h' x - h' x = (s - 1) • h' x := by module
+    have hs1 : |s - 1| = C * η * s := by
+      have hle : s ≤ 1 := inv_le_one_of_one_le₀ (by linarith)
+      rw [abs_of_nonpos (by linarith), hs]
+      field_simp
+      ring
+    have h6 : covectorEuclideanNorm (s • h' x - h' x) ≤ C * η := by
+      rw [hsh, hsmul, hs1]
+      calc C * η * s * covectorEuclideanNorm (h' x) ≤ C * η * s * (1 + C * η) :=
+            mul_le_mul_of_nonneg_left (hh'1 x) (mul_nonneg hCη hs0.le)
+        _ = C * η := by rw [hs]; field_simp
+    -- Step 7: `N(s h' - g) ≤ N(s h' - h') + N(h' - g) ≤ 2Cη ≤ δ`
+    calc covectorEuclideanNorm (s • h' x - g x)
+        = covectorEuclideanNorm ((s • h' x - h' x) + (h' x - g x)) := by
+          rw [sub_add_sub_cancel]
+      _ ≤ covectorEuclideanNorm (s • h' x - h' x) + covectorEuclideanNorm (h' x - g x) :=
+          htri _ _
+      _ ≤ C * η + C * η := add_le_add h6 (hdiff x)
+      _ ≤ δ := by
+          have h2 : 0 < 2 * C + 1 := by linarith
+          have h2C : C * η + C * η = 2 * C * δ / (2 * C + 1) := by rw [hη]; ring
+          rw [h2C, div_le_iff₀ h2]
+          nlinarith
+/-- **Test forms approximating a unit-bounded integrable covector field in `L¹(ν)`** (the
+approximation behind `M_W(T) = ∫_{M ∩ W} θ dHⁿ`, Simon 6.3.2(3); `|·|_E` is
+`covectorEuclideanNorm`).  Let `m = ν(ℝᴾ)` and `δ = ε/(4(m + 1))`.  The smooth cut-off `χ` of
+`Submission.rsd_mw_tfa_smooth_cutoff` satisfies `tsupport χ ⊆ V` and `ν{χ ≠ 1} < ε/8`.  The
+continuous field `g₁` of `Submission.rsd_mw_tfa_continuous_approx` satisfies `|g₁|_E ≤ 1` and
+`∫ |g₁ − β|_E dν < ε/4`.  Its smoothing `g₂` (`Submission.rsd_mw_tfa_smooth_uniform_approx`)
+satisfies `|g₂|_E ≤ 1` and `|g₂ − g₁|_E ≤ δ`.  Then `ω = χ g₂` is a test form, `tsupport ω ⊆ V`
+and `|ω|_E ≤ 1`.  For a.e. `x`, `|ω − β|_E ≤ δ + |g₁ − β|_E` where `χ = 1`, and
+`|ω − β|_E ≤ 2` where `χ ≠ 1`.  Integrating,
+`∫ |ω − β|_E dν ≤ δm + ∫ |g₁ − β|_E dν + 2ν{χ ≠ 1} < ε/4 + ε/4 + ε/4 < ε`. -/
+theorem Submission.rsd_mw_exists_testForm_approx : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Set (Euclid P)) (β : Euclid P → Covector (Euclid P) n), IsFiniteMeasure ν → IsOpen V → ν Vᶜ = 0 → Integrable β ν → (∀ᵐ x ∂ν, covectorEuclideanNorm (β x) ≤ 1) → ∀ ε : ℝ, 0 < ε → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (ω x - β x)) ∂ν < ENNReal.ofReal ε := by
+  intro P n ν V β hν hV hVc hβ hβ1 ε hε
+  -- `N := covectorEuclideanNorm` is subadditive and absolutely homogeneous
+  obtain ⟨htri, hsmul, -, -⟩ := Submission.rsd_mw_tfa_norm_props P n
+  -- Step 1: a smooth cut-off `χ` with `tsupport χ ⊆ V` and `ν{χ ≠ 1} < ε/8`
+  obtain ⟨χ, hχs, hχc, hχV, hχ01, hχν⟩ :=
+    Submission.rsd_mw_tfa_smooth_cutoff P ν V hν hV hVc (ε / 8) (by positivity)
+  -- Step 2: a continuous compactly supported `g₁` with `N(g₁) ≤ 1` and `∫ N(g₁ - β) dν < ε/4`
+  obtain ⟨g₁, hg₁c, hg₁s, hg₁1, hg₁β⟩ :=
+    Submission.rsd_mw_tfa_continuous_approx P n ν β hν hβ hβ1 (ε / 4) (by positivity)
+  -- Step 3: a smooth `g₂` with `N(g₂) ≤ 1` and `N(g₂ - g₁) ≤ δ = ε/(4(m + 1))`, `m = ν(ℝᴾ)`
+  set m : ℝ := (ν univ).toReal with hm
+  have hm0 : 0 ≤ m := ENNReal.toReal_nonneg
+  set δ : ℝ := ε / (4 * (m + 1)) with hδ
+  have hδ0 : 0 < δ := by positivity
+  obtain ⟨g₂, hg₂s, hg₂1, hg₂g₁⟩ :=
+    Submission.rsd_mw_tfa_smooth_uniform_approx P n g₁ hg₁c hg₁s hg₁1 δ hδ0
+  -- Step 4: `ω = χ g₂` is a test form with `tsupport ω ⊆ V` and `N(ω) ≤ 1`
+  have hω1 : ∀ x, covectorEuclideanNorm (χ x • g₂ x) ≤ 1 := fun x => by
+    rw [hsmul, abs_of_nonneg (hχ01 x).1]
+    exact (mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) (hχ01 x).2).trans (hg₂1 x)
+  refine ⟨fun x => χ x • g₂ x, ⟨hχs.smul hg₂s, hχc.smul_right⟩,
+    (tsupport_smul_subset_left χ g₂).trans hχV, hω1, ?_⟩
+  -- Step 5: a.e., `N(ω - β) ≤ δ + N(g₁ - β)` where `χ = 1` and `N(ω - β) ≤ 2` on `S = {χ ≠ 1}`
+  set S : Set (Euclid P) := {x | χ x ≠ 1}
+  have hSm : MeasurableSet S := (isOpen_ne_fun hχs.continuous continuous_const).measurableSet
+  have hpt : ∀ᵐ x ∂ν, ENNReal.ofReal (covectorEuclideanNorm (χ x • g₂ x - β x)) ≤
+      ENNReal.ofReal δ + ENNReal.ofReal (covectorEuclideanNorm (g₁ x - β x)) +
+        S.indicator (fun _ => (2 : ℝ≥0∞)) x := by
+    filter_upwards [hβ1] with x hx
+    by_cases h1 : χ x = 1
+    · rw [indicator_of_notMem (not_not.mpr h1), add_zero,
+        ← ENNReal.ofReal_add hδ0.le (covectorEuclideanNorm_nonneg _), h1, one_smul]
+      refine ENNReal.ofReal_le_ofReal ?_
+      calc covectorEuclideanNorm (g₂ x - β x)
+          = covectorEuclideanNorm ((g₂ x - g₁ x) + (g₁ x - β x)) := by rw [sub_add_sub_cancel]
+        _ ≤ covectorEuclideanNorm (g₂ x - g₁ x) + covectorEuclideanNorm (g₁ x - β x) :=
+          htri _ _
+        _ ≤ δ + covectorEuclideanNorm (g₁ x - β x) := by linarith [hg₂g₁ x]
+    · rw [indicator_of_mem h1]
+      refine le_add_left (le_of_le_of_eq (ENNReal.ofReal_le_ofReal ?_) (ENNReal.ofReal_ofNat 2))
+      calc covectorEuclideanNorm (χ x • g₂ x - β x)
+          = covectorEuclideanNorm (χ x • g₂ x + -β x) := by rw [sub_eq_add_neg]
+        _ ≤ covectorEuclideanNorm (χ x • g₂ x) + covectorEuclideanNorm (-β x) := htri _ _
+        _ ≤ 2 := by rw [covectorEuclideanNorm_neg]; linarith [hω1 x]
+  -- Step 6: integrate, `∫ N(ω - β) dν ≤ δm + ∫ N(g₁ - β) dν + 2ν(S) < 3ε/4`
+  have hδm : ENNReal.ofReal δ * ν univ ≤ ENNReal.ofReal (ε / 4) := by
+    rw [← ENNReal.ofReal_toReal (measure_ne_top ν univ), ← hm, ← ENNReal.ofReal_mul hδ0.le]
+    refine ENNReal.ofReal_le_ofReal ?_
+    calc δ * m ≤ δ * (m + 1) := by nlinarith
+      _ = ε / 4 := by rw [hδ]; field_simp
+  have hS2 : 2 * ν S < ENNReal.ofReal (ε / 4) := by
+    calc 2 * ν S = ν S + ν S := two_mul _
+      _ < ENNReal.ofReal (ε / 8) + ENNReal.ofReal (ε / 8) := ENNReal.add_lt_add hχν hχν
+      _ = ENNReal.ofReal (ε / 4) := by
+          rw [← ENNReal.ofReal_add (by positivity) (by positivity)]
+          ring_nf
+  calc ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (χ x • g₂ x - β x)) ∂ν
+      ≤ ∫⁻ x, (ENNReal.ofReal δ + ENNReal.ofReal (covectorEuclideanNorm (g₁ x - β x)) +
+          S.indicator (fun _ => (2 : ℝ≥0∞)) x) ∂ν := lintegral_mono_ae hpt
+    _ = ENNReal.ofReal δ * ν univ +
+          ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (g₁ x - β x)) ∂ν + 2 * ν S := by
+        rw [lintegral_add_right _ (measurable_const.indicator hSm),
+          lintegral_add_left measurable_const, lintegral_const, lintegral_indicator_const hSm]
+    _ < ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) :=
+        ENNReal.add_lt_add (ENNReal.add_lt_add_of_le_of_lt
+          (ENNReal.mul_ne_top ENNReal.ofReal_ne_top (measure_ne_top ν univ)) hδm hg₁β) hS2
+    _ ≤ ENNReal.ofReal ε := by
+        rw [← ENNReal.ofReal_add (by positivity) (by positivity),
+          ← ENNReal.ofReal_add (by positivity) (by positivity)]
+        exact ENNReal.ofReal_le_ofReal (by linarith)
 /-- **A norming field bounds `μ(W')` by the mass `M_W(T)`** (the inequality `μ_T(W') ≤ M_W(T)`
 behind Simon 6.2.8, `μ_T(W) = M_W(T)`, for the representation 6.2.7 `T(ω) = ∫ ⟨ω, ξ⟩ dμ`;
 `|·|_E` is `covectorEuclideanNorm`).  Let `W' ⊂⊂ U` be open with `W' ⊆ W`.  Then `ν = μ⌞W'` is
@@ -29240,168 +29429,6 @@ theorem Submission.cmcdt_lipschitz_pushforward_homotopy : (∀ (P n : ℕ) (U : 
     rw [hhomot]
     exact h10 P P Λ L F G _ X hF hG hL hX1 hX2 (hHc_eq F G _ hX1)
 
-/-- **Smooth uniform approximation keeping the unit bound** (smoothing step in the proof of
-`M_W(T) = ∫_{M ∩ W} θ dHⁿ`, Simon 6.3.2(3); `|·|_E` is `covectorEuclideanNorm`).  Let
-`η := δ/(2C + 1)`, where `|·|_E ≤ C‖·‖` (`Submission.rsd_mw_tfa_norm_props`).  A continuous
-compactly supported covector field `g` with `|g|_E ≤ 1` is uniformly continuous, so
-`‖g y − g x‖ < η` when `dist y x < r`.  Mollifying, `h' = ψ ⋆ g` with `ψ = φ / ∫ φ` for a smooth
-bump `φ ≥ 0` with `support φ = B_r(0)` is a `C^∞` field with `‖h' − g‖ ≤ η`; then
-`|h' − g|_E ≤ Cη` and `|h'|_E ≤ 1 + Cη`.  The rescaled field `h = (1 + Cη)⁻¹h'` has `|h|_E ≤ 1`
-and `|h − h'|_E = Cη(1 + Cη)⁻¹|h'|_E ≤ Cη`, hence `|h − g|_E ≤ 2Cη ≤ δ`. -/
-theorem Submission.rsd_mw_tfa_smooth_uniform_approx : ∀ (P n : ℕ) (g : Euclid P → Covector (Euclid P) n), Continuous g → HasCompactSupport g → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → ∀ δ : ℝ, 0 < δ → ∃ h : Euclid P → Covector (Euclid P) n, ContDiff ℝ (⊤ : ℕ∞) h ∧ (∀ x, covectorEuclideanNorm (h x) ≤ 1) ∧ ∀ x, covectorEuclideanNorm (h x - g x) ≤ δ := by
-  intro P n g hgc hgs hg1 δ hδ
-  -- `N := covectorEuclideanNorm` is subadditive, absolutely homogeneous and `N ≤ C ‖·‖`
-  obtain ⟨htri, hsmul, ⟨C, hC0, hCle⟩, -⟩ := Submission.rsd_mw_tfa_norm_props P n
-  -- Step 1: the tolerance `η = δ / (2C + 1)`
-  set η : ℝ := δ / (2 * C + 1) with hη
-  have hη0 : 0 < η := div_pos hδ (by linarith)
-  have hCη : 0 ≤ C * η := mul_nonneg hC0 hη0.le
-  -- Step 2: `g` is uniformly continuous: `‖g y - g x‖ < η` whenever `dist y x < r`
-  obtain ⟨r, hr, hgr⟩ := Metric.uniformContinuous_iff.mp
-    (hgs.uniformContinuous_of_continuous hgc) η hη0
-  -- Step 3: mollify, `h' = ψ ⋆ g` with `ψ = φ / ∫ φ` for a smooth bump `φ`, `support φ = B_r(0)`
-  let φ : ContDiffBump (0 : Euclid P) := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
-  have hφ : 0 < ∫ y, φ y := by
-    refine (integral_pos_iff_support_of_nonneg φ.nonneg'
-      (φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport)).mpr ?_
-    rw [φ.support_eq]
-    exact measure_ball_pos volume 0 hr
-  let ψ : Euclid P → ℝ := fun y => φ y / ∫ y, φ y
-  have hψφ : support ψ ⊆ support φ := fun y hy h => hy (by simp [ψ, h])
-  have hψs : support ψ ⊆ ball 0 r := hψφ.trans φ.support_eq.subset
-  have hψ0 : ∀ y, 0 ≤ ψ y := fun y => div_nonneg φ.nonneg hφ.le
-  have hψ1 : ∫ y, ψ y = 1 := by rw [integral_div, div_self hφ.ne']
-  obtain ⟨h', hh's, hh'g⟩ : ∃ h' : Euclid P → Covector (Euclid P) n,
-      ContDiff ℝ (⊤ : ℕ∞) h' ∧ ∀ x, dist (h' x) (g x) ≤ η :=
-    ⟨convolution ψ g (ContinuousLinearMap.lsmul ℝ ℝ) volume,
-      (φ.hasCompactSupport.mono hψφ).contDiff_convolution_left _ (φ.contDiff.div_const _)
-        hgc.locallyIntegrable,
-      fun x => dist_convolution_le hη0.le hψs hψ0 hψ1 hgc.aestronglyMeasurable fun y hy =>
-        (hgr (mem_ball.mp hy)).le⟩
-  -- Step 4: `N(h' - g) ≤ Cη` and `N(h') ≤ 1 + Cη`
-  have hdiff : ∀ x, covectorEuclideanNorm (h' x - g x) ≤ C * η := fun x =>
-    (hCle _).trans (mul_le_mul_of_nonneg_left (by rw [← dist_eq_norm]; exact hh'g x) hC0)
-  have hh'1 : ∀ x, covectorEuclideanNorm (h' x) ≤ 1 + C * η := fun x =>
-    calc covectorEuclideanNorm (h' x) = covectorEuclideanNorm ((h' x - g x) + g x) := by
-          rw [sub_add_cancel]
-      _ ≤ covectorEuclideanNorm (h' x - g x) + covectorEuclideanNorm (g x) := htri _ _
-      _ ≤ C * η + 1 := add_le_add (hdiff x) (hg1 x)
-      _ = 1 + C * η := add_comm _ _
-  -- Step 5: rescale by `s = (1 + Cη)⁻¹ ∈ (0, 1]`
-  have hpos : 0 < 1 + C * η := by linarith
-  have hne : 1 + C * η ≠ 0 := hpos.ne'
-  set s : ℝ := (1 + C * η)⁻¹ with hs
-  have hs0 : 0 < s := inv_pos.mpr hpos
-  refine ⟨fun x => s • h' x, hh's.const_smul s, fun x => ?_, fun x => ?_⟩
-  · show covectorEuclideanNorm (s • h' x) ≤ 1
-    rw [hsmul, abs_of_pos hs0, hs, inv_mul_le_iff₀ hpos, mul_one]
-    exact hh'1 x
-  · show covectorEuclideanNorm (s • h' x - g x) ≤ δ
-    -- Step 6: `N(s h' - h') = |s - 1| N(h') = Cη s N(h') ≤ Cη`
-    have hsh : s • h' x - h' x = (s - 1) • h' x := by module
-    have hs1 : |s - 1| = C * η * s := by
-      have hle : s ≤ 1 := inv_le_one_of_one_le₀ (by linarith)
-      rw [abs_of_nonpos (by linarith), hs]
-      field_simp
-      ring
-    have h6 : covectorEuclideanNorm (s • h' x - h' x) ≤ C * η := by
-      rw [hsh, hsmul, hs1]
-      calc C * η * s * covectorEuclideanNorm (h' x) ≤ C * η * s * (1 + C * η) :=
-            mul_le_mul_of_nonneg_left (hh'1 x) (mul_nonneg hCη hs0.le)
-        _ = C * η := by rw [hs]; field_simp
-    -- Step 7: `N(s h' - g) ≤ N(s h' - h') + N(h' - g) ≤ 2Cη ≤ δ`
-    calc covectorEuclideanNorm (s • h' x - g x)
-        = covectorEuclideanNorm ((s • h' x - h' x) + (h' x - g x)) := by
-          rw [sub_add_sub_cancel]
-      _ ≤ covectorEuclideanNorm (s • h' x - h' x) + covectorEuclideanNorm (h' x - g x) :=
-          htri _ _
-      _ ≤ C * η + C * η := add_le_add h6 (hdiff x)
-      _ ≤ δ := by
-          have h2 : 0 < 2 * C + 1 := by linarith
-          have h2C : C * η + C * η = 2 * C * δ / (2 * C + 1) := by rw [hη]; ring
-          rw [h2C, div_le_iff₀ h2]
-          nlinarith
-/-- **Test forms approximating a unit-bounded integrable covector field in `L¹(ν)`** (the
-approximation behind `M_W(T) = ∫_{M ∩ W} θ dHⁿ`, Simon 6.3.2(3); `|·|_E` is
-`covectorEuclideanNorm`).  Let `m = ν(ℝᴾ)` and `δ = ε/(4(m + 1))`.  The smooth cut-off `χ` of
-`Submission.rsd_mw_tfa_smooth_cutoff` satisfies `tsupport χ ⊆ V` and `ν{χ ≠ 1} < ε/8`.  The
-continuous field `g₁` of `Submission.rsd_mw_tfa_continuous_approx` satisfies `|g₁|_E ≤ 1` and
-`∫ |g₁ − β|_E dν < ε/4`.  Its smoothing `g₂` (`Submission.rsd_mw_tfa_smooth_uniform_approx`)
-satisfies `|g₂|_E ≤ 1` and `|g₂ − g₁|_E ≤ δ`.  Then `ω = χ g₂` is a test form, `tsupport ω ⊆ V`
-and `|ω|_E ≤ 1`.  For a.e. `x`, `|ω − β|_E ≤ δ + |g₁ − β|_E` where `χ = 1`, and
-`|ω − β|_E ≤ 2` where `χ ≠ 1`.  Integrating,
-`∫ |ω − β|_E dν ≤ δm + ∫ |g₁ − β|_E dν + 2ν{χ ≠ 1} < ε/4 + ε/4 + ε/4 < ε`. -/
-theorem Submission.rsd_mw_exists_testForm_approx : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Set (Euclid P)) (β : Euclid P → Covector (Euclid P) n), IsFiniteMeasure ν → IsOpen V → ν Vᶜ = 0 → Integrable β ν → (∀ᵐ x ∂ν, covectorEuclideanNorm (β x) ≤ 1) → ∀ ε : ℝ, 0 < ε → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (ω x - β x)) ∂ν < ENNReal.ofReal ε := by
-  intro P n ν V β hν hV hVc hβ hβ1 ε hε
-  -- `N := covectorEuclideanNorm` is subadditive and absolutely homogeneous
-  obtain ⟨htri, hsmul, -, -⟩ := Submission.rsd_mw_tfa_norm_props P n
-  -- Step 1: a smooth cut-off `χ` with `tsupport χ ⊆ V` and `ν{χ ≠ 1} < ε/8`
-  obtain ⟨χ, hχs, hχc, hχV, hχ01, hχν⟩ :=
-    Submission.rsd_mw_tfa_smooth_cutoff P ν V hν hV hVc (ε / 8) (by positivity)
-  -- Step 2: a continuous compactly supported `g₁` with `N(g₁) ≤ 1` and `∫ N(g₁ - β) dν < ε/4`
-  obtain ⟨g₁, hg₁c, hg₁s, hg₁1, hg₁β⟩ :=
-    Submission.rsd_mw_tfa_continuous_approx P n ν β hν hβ hβ1 (ε / 4) (by positivity)
-  -- Step 3: a smooth `g₂` with `N(g₂) ≤ 1` and `N(g₂ - g₁) ≤ δ = ε/(4(m + 1))`, `m = ν(ℝᴾ)`
-  set m : ℝ := (ν univ).toReal with hm
-  have hm0 : 0 ≤ m := ENNReal.toReal_nonneg
-  set δ : ℝ := ε / (4 * (m + 1)) with hδ
-  have hδ0 : 0 < δ := by positivity
-  obtain ⟨g₂, hg₂s, hg₂1, hg₂g₁⟩ :=
-    Submission.rsd_mw_tfa_smooth_uniform_approx P n g₁ hg₁c hg₁s hg₁1 δ hδ0
-  -- Step 4: `ω = χ g₂` is a test form with `tsupport ω ⊆ V` and `N(ω) ≤ 1`
-  have hω1 : ∀ x, covectorEuclideanNorm (χ x • g₂ x) ≤ 1 := fun x => by
-    rw [hsmul, abs_of_nonneg (hχ01 x).1]
-    exact (mul_le_of_le_one_left (covectorEuclideanNorm_nonneg _) (hχ01 x).2).trans (hg₂1 x)
-  refine ⟨fun x => χ x • g₂ x, ⟨hχs.smul hg₂s, hχc.smul_right⟩,
-    (tsupport_smul_subset_left χ g₂).trans hχV, hω1, ?_⟩
-  -- Step 5: a.e., `N(ω - β) ≤ δ + N(g₁ - β)` where `χ = 1` and `N(ω - β) ≤ 2` on `S = {χ ≠ 1}`
-  set S : Set (Euclid P) := {x | χ x ≠ 1}
-  have hSm : MeasurableSet S := (isOpen_ne_fun hχs.continuous continuous_const).measurableSet
-  have hpt : ∀ᵐ x ∂ν, ENNReal.ofReal (covectorEuclideanNorm (χ x • g₂ x - β x)) ≤
-      ENNReal.ofReal δ + ENNReal.ofReal (covectorEuclideanNorm (g₁ x - β x)) +
-        S.indicator (fun _ => (2 : ℝ≥0∞)) x := by
-    filter_upwards [hβ1] with x hx
-    by_cases h1 : χ x = 1
-    · rw [indicator_of_notMem (not_not.mpr h1), add_zero,
-        ← ENNReal.ofReal_add hδ0.le (covectorEuclideanNorm_nonneg _), h1, one_smul]
-      refine ENNReal.ofReal_le_ofReal ?_
-      calc covectorEuclideanNorm (g₂ x - β x)
-          = covectorEuclideanNorm ((g₂ x - g₁ x) + (g₁ x - β x)) := by rw [sub_add_sub_cancel]
-        _ ≤ covectorEuclideanNorm (g₂ x - g₁ x) + covectorEuclideanNorm (g₁ x - β x) :=
-          htri _ _
-        _ ≤ δ + covectorEuclideanNorm (g₁ x - β x) := by linarith [hg₂g₁ x]
-    · rw [indicator_of_mem h1]
-      refine le_add_left (le_of_le_of_eq (ENNReal.ofReal_le_ofReal ?_) (ENNReal.ofReal_ofNat 2))
-      calc covectorEuclideanNorm (χ x • g₂ x - β x)
-          = covectorEuclideanNorm (χ x • g₂ x + -β x) := by rw [sub_eq_add_neg]
-        _ ≤ covectorEuclideanNorm (χ x • g₂ x) + covectorEuclideanNorm (-β x) := htri _ _
-        _ ≤ 2 := by rw [covectorEuclideanNorm_neg]; linarith [hω1 x]
-  -- Step 6: integrate, `∫ N(ω - β) dν ≤ δm + ∫ N(g₁ - β) dν + 2ν(S) < 3ε/4`
-  have hδm : ENNReal.ofReal δ * ν univ ≤ ENNReal.ofReal (ε / 4) := by
-    rw [← ENNReal.ofReal_toReal (measure_ne_top ν univ), ← hm, ← ENNReal.ofReal_mul hδ0.le]
-    refine ENNReal.ofReal_le_ofReal ?_
-    calc δ * m ≤ δ * (m + 1) := by nlinarith
-      _ = ε / 4 := by rw [hδ]; field_simp
-  have hS2 : 2 * ν S < ENNReal.ofReal (ε / 4) := by
-    calc 2 * ν S = ν S + ν S := two_mul _
-      _ < ENNReal.ofReal (ε / 8) + ENNReal.ofReal (ε / 8) := ENNReal.add_lt_add hχν hχν
-      _ = ENNReal.ofReal (ε / 4) := by
-          rw [← ENNReal.ofReal_add (by positivity) (by positivity)]
-          ring_nf
-  calc ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (χ x • g₂ x - β x)) ∂ν
-      ≤ ∫⁻ x, (ENNReal.ofReal δ + ENNReal.ofReal (covectorEuclideanNorm (g₁ x - β x)) +
-          S.indicator (fun _ => (2 : ℝ≥0∞)) x) ∂ν := lintegral_mono_ae hpt
-    _ = ENNReal.ofReal δ * ν univ +
-          ∫⁻ x, ENNReal.ofReal (covectorEuclideanNorm (g₁ x - β x)) ∂ν + 2 * ν S := by
-        rw [lintegral_add_right _ (measurable_const.indicator hSm),
-          lintegral_add_left measurable_const, lintegral_const, lintegral_indicator_const hSm]
-    _ < ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) + ENNReal.ofReal (ε / 4) :=
-        ENNReal.add_lt_add (ENNReal.add_lt_add_of_le_of_lt
-          (ENNReal.mul_ne_top ENNReal.ofReal_ne_top (measure_ne_top ν univ)) hδm hg₁β) hS2
-    _ ≤ ENNReal.ofReal ε := by
-        rw [← ENNReal.ofReal_add (by positivity) (by positivity),
-          ← ENNReal.ofReal_add (by positivity) (by positivity)]
-        exact ENNReal.ofReal_le_ofReal (by linarith)
 /-- **Test forms in `U` restrict to compactly supported continuous maps on `U`** (the maps
 `g_ω(x) = c(ω(x))` to which the Riesz representation theorem is applied for
 `T(ω) = ∫ ⟨ω, T⃗⟩ dμ_T`, Simon Ch. 6, 2.7–2.8; here for any continuous `f` with `f 0 = 0`).
@@ -34357,33 +34384,6 @@ theorem Submission.cbr_slice_property_of_weak_limit : (∀ (P n : ℕ) (U : Set 
   show Tendsto (fun j => ((A j t).boundary - B j t) η) atTop (𝓝 ((A'.boundary - B') η))
   simp only [hval, hA, hB, hA', hB']
   exact h1.sub h2
-/-- **Simon Ch. 6, 4.10** (integrated slice-mass bound, with `μ(W ∩ {a < f < s})` in place of
-`M_W(T⌞{a < f < s})`): if `m(t) ≤ L · liminf_{h↓0} h⁻¹ μ(W ∩ {t − h < f < t})` for every
-`t ∈ (a, b)`, then `∫⁻_{(a,b)} m ≤ L · μ(W ∩ {a < f < b})`.  The push-forward `ν = f_#(μ⌞W)` has
-`ν((s, t)) = μ(W ∩ {s < f < t})`, so the hypothesis reads
-`m(t) ≤ L · liminf_{h↓0} h⁻¹ ν((t − h, t))`; pull `L` out of the lower integral (`L ≠ ∞`) and bound
-the integrated lower left density of `ν` by `ν((a, b))` (`cmcs_smi_lintegral_left_density_le`).
-No measurability of `m` is needed. -/
-theorem Submission.cmcs_slice_mass_integral : ∀ (P : ℕ) (μ : Measure (Euclid P)) (f : Euclid P → ℝ) (W : Set (Euclid P)) (L : NNReal) (m : ℝ → ℝ≥0∞) (a b : ℝ), Measurable f → MeasurableSet W → (∀ t ∈ Ioo a b, m t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∫⁻ t in Ioo a b, m t ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}) := by
-  intro P μ f W L m a b hf _hW hm
-  -- `ν = f_#(μ⌞W)`, so `ν((s, t)) = μ(f⁻¹(s, t) ∩ W) = μ(W ∩ {s < f < t})`
-  set ν : Measure ℝ := (μ.restrict W).map f with hν
-  have hνI : ∀ s t : ℝ, ν (Ioo s t) = μ (W ∩ {x | s < f x ∧ f x < t}) := by
-    intro s t
-    rw [hν, Measure.map_apply hf measurableSet_Ioo,
-      Measure.restrict_apply (hf measurableSet_Ioo), Set.inter_comm]
-    rfl
-  calc ∫⁻ t in Ioo a b, m t
-      ≤ ∫⁻ t in Ioo a b, (L : ℝ≥0∞) *
-          liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)) (𝓝[>] 0) :=
-        setLIntegral_mono' measurableSet_Ioo fun t ht => by simpa only [hνI] using hm t ht
-    _ = (L : ℝ≥0∞) * ∫⁻ t in Ioo a b,
-          liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ν (Ioo (t - h) t)) (𝓝[>] 0) :=
-        lintegral_const_mul' _ _ ENNReal.coe_ne_top
-    _ ≤ (L : ℝ≥0∞) * ν (Ioo a b) :=
-        mul_le_mul_right (Submission.cmcs_smi_lintegral_left_density_le ν a b) _
-    _ = (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}) := by rw [hνI]
-
 /-- **Deformation onto the `n`-skeleton** (Simon Ch. 6, proof of the Deformation Theorem 5.1,
 displays (1)–(25), chapter-06.txt lines 1405–1928), `n = m + 1`: an integer multiplicity
 `T ∈ 𝒟ₙ(ℝᴾ)` with compact support and `M(T), M(∂T) < ∞` has `T − Q₀ − S₁ = ∂R₁` with `Q₀`, `R₁`
