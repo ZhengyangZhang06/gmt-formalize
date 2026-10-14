@@ -966,6 +966,142 @@ theorem Submission.cmcdtfrpi_finite_piece_imrep : ∀ (P k : ℕ) (I : Type) (U 
   · show ((μHE[k].restrict (⋃ q ∈ S, F q)).withDensity fun x => (θ x : ℝ≥0∞)) univ = _
     rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ, hlint]
 
+/-- **Integer polyhedral chains on unit lattice faces are integer multiplicity, with mass
+`Σ |β_p|`** (Simon Ch. 6, proof of 5.1, after (38): "`P`, `R` are integer multiplicity … should
+be evident", and the identity `M(P) = Σ_F |β_F|` used for (36); for faces of any dimension `k`).
+Let `T(ω) = Σ_{p ∈ s} β_p ∫_{(0,1)ᵏ} ω(Φ_p y)(e_{ι(0)}, …, e_{ι(k−1)}) dy` with
+`Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}` for `p = (ι, b)`.  The open faces `F̆_p = Φ_p((0,1)ᵏ)` with
+`β_p ≠ 0` are disjoint Borel isometric images of the unit cube, so `Hᵏ(F̆_p) = 1`; near each of
+its points their union `C` is the plane `x + V_p`, `V_p = span{e_{ι(j)}}`, which is therefore the
+approximate tangent space of `C` there, oriented by `sign(β_p) e_ι`.  So
+`(C, Σ_p |β_p| 1_{F̆_p}, sign(β_p) e_ι)` is an integer multiplicity triple, whose action is `T` by
+the change of variables along the isometries `Φ_p`.  Then `M(T) = μ_T(ℝᴾ) = Σ_p |β_p|` by (MR), and
+`T = 0` unless some `|β_p| ≥ 1`. -/
+theorem Submission.cmcdtfr_polyhedral_im : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P k : ℕ) (s : Finset ((Fin k → Fin P) × (Fin P → ℤ))) (β : (Fin k → Fin P) × (Fin P → ℤ) → ℤ) (T : GeometricCurrentOn (univ : Set (Euclid P)) k), (∀ p ∈ s, StrictMono p.1) → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, T ω = ∑ p ∈ s, (β p : ℝ) * ∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, (ω : DifferentialForm (Euclid P) k) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → IsIntegerMultiplicity T ∧ T.mass = ENNReal.ofReal (∑ p ∈ s, |(β p : ℝ)|) ∧ (T = 0 ∨ 1 ≤ T.mass) := by
+  intro hMR P k s β T hmono hT
+  -- notation: the face maps `Φ_p`, the frames `τ_p = (e_{ι(j)})ⱼ`, the planes `V_p = span τ_p`,
+  -- the open unit cube `Q₁` and the faces with nonzero coefficient `S = {p ∈ s : β_p ≠ 0}`
+  let Φ : (Fin k → Fin P) × (Fin P → ℤ) → Euclid k → Euclid P := fun p y =>
+    WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)
+  let τ : (Fin k → Fin P) × (Fin P → ℤ) → Fin k → Euclid P := fun p j =>
+    EuclideanSpace.single (p.1 j) (1 : ℝ)
+  let V : (Fin k → Fin P) × (Fin P → ℤ) → Submodule ℝ (Euclid P) := fun p =>
+    Submodule.span ℝ (range (τ p))
+  let Q₁ : Set (Euclid k) := {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}
+  let S := s.filter fun p => β p ≠ 0
+  have hS : ∀ p ∈ S, p ∈ s ∧ β p ≠ 0 := fun p hp => Finset.mem_filter.mp hp
+  have hSmono : ∀ p ∈ S, StrictMono p.1 := fun p hp => hmono p (hS p hp).1
+  have hT' : ∀ ω : TestFormOn (univ : Set (Euclid P)) k,
+      T ω = ∑ p ∈ s, (β p : ℝ) * ∫ y in Q₁, (ω : DifferentialForm (Euclid P) k) (Φ p y) (τ p) :=
+    hT
+  -- the terms with `β_p = 0` vanish, so sums over `s` are sums over `S`
+  have hsum : ∀ f : (Fin k → Fin P) × (Fin P → ℤ) → ℝ, (∀ p ∈ s, β p = 0 → f p = 0) →
+      ∑ p ∈ S, f p = ∑ p ∈ s, f p := fun f hf =>
+    Finset.sum_filter_of_ne fun p hp hfp hβ => hfp (hf p hp hβ)
+  -- step 1: by `face_geometry`, `vol(Q₁) = 1` and every face map `Φ_p` is an isometry
+  obtain ⟨hvol, hFG⟩ := Submission.cmcdtfr_face_geometry P k
+  have hiso : ∀ p ∈ s, Isometry (Φ p) := fun p hp =>
+    Isometry.of_dist_eq (hFG p p (hmono p hp) (hmono p hp)).1
+  have hQm : MeasurableSet Q₁ := by
+    have hpre : Q₁ = WithLp.ofLp ⁻¹' (Set.pi univ fun _ : Fin k => Ioo (0 : ℝ) 1) := by
+      ext y
+      simp [Q₁, Set.mem_pi]
+    rw [hpre]
+    exact (PiLp.volume_preserving_ofLp (Fin k)).measurable
+      (MeasurableSet.univ_pi fun _ => measurableSet_Ioo)
+  -- step 2: the open face `F̆_p = Φ_p(Q₁)` is Borel with `Hᵏ(F̆_p) = 1`, and integrals over it are
+  -- integrals over `Q₁` (`isometry_image_integral`)
+  have hface : ∀ p ∈ s, MeasurableSet (Φ p '' Q₁) ∧ μHE[k] (Φ p '' Q₁) = 1 ∧
+      ∀ h : Euclid P → ℝ, ∫ x in Φ p '' Q₁, h x ∂μHE[k] = ∫ y in Q₁, h (Φ p y) := fun p hp => by
+    obtain ⟨hm, hμ, hint⟩ :=
+      Submission.cmcdtfrpi_isometry_image_integral P k (Φ p) Q₁ (hiso p hp) hQm
+    exact ⟨hm, hμ.trans hvol, hint⟩
+  -- steps 1 and 4(ii): the open faces of `S` are disjoint, and near each `x ∈ F̆_p` their union
+  -- `C` agrees with `x + V_p` (`face_union_local_plane`)
+  obtain ⟨hdisj, hflat⟩ :=
+    Submission.cmcdtfrpi_face_union_local_plane Submission.cmcdtfr_face_geometry P k S hSmono
+  have hflat' : ∀ p ∈ S, ∀ t : Euclid k, (∀ i, 0 < t i ∧ t i < 1) → ∃ δ : ℝ, 0 < δ ∧
+      ∀ z : Euclid P, dist z (Φ p t) < δ → (z ∈ ⋃ q ∈ S, Φ q '' Q₁ ↔ z - Φ p t ∈ V p) :=
+    hflat
+  -- step 4(i): the unit `k`-vectors `e_p`, `e_p(α) = α(τ_p)`, with `±e_p` orienting `V_p`
+  -- (`coord_plane_orientation`; `e_p = 0` if `p.1` is not strictly increasing)
+  have hex : ∀ p : (Fin k → Fin P) × (Fin P → ℤ), ∃ e : MultiVector P k, StrictMono p.1 →
+      (∀ α : Covector (Euclid P) k, e α = α (τ p)) ∧ IsUnitOrientationOf e (V p) ∧
+        IsUnitOrientationOf (-e) (V p) := fun p => by
+    by_cases hp : StrictMono p.1
+    · obtain ⟨-, e, he⟩ := Submission.cmcdtfrpi_coord_plane_orientation P k p.1 hp
+      exact ⟨e, fun _ => he⟩
+    · exact ⟨0, fun h => absurd h hp⟩
+  choose e he using hex
+  -- the orientation `ξ_p = sign(β_p) e_p` of the face `F̆_p`
+  let ξ : (Fin k → Fin P) × (Fin P → ℤ) → MultiVector P k := fun p =>
+    if 0 < β p then e p else -e p
+  -- step 3: the faces of `S` with multiplicities `|β_p|` and orientations `ξ_p` form an integer
+  -- multiplicity triple `R` (`finite_piece_imrep`); step 4(iii): at `x = Φ_p(t)` the approximate
+  -- tangent space of `C` is `V_p` (`local_plane_tangent`), of dimension `k`
+  obtain ⟨R, hRact, hRmeas⟩ := Submission.cmcdtfrpi_finite_piece_imrep P k _ univ S
+    (fun p => Φ p '' Q₁) (fun p => (β p).natAbs) ξ Φ (fun p hp => (hface p (hS p hp).1).1)
+    (fun _ _ => subset_univ _)
+    (fun p hp => by rw [(hface p (hS p hp).1).2.1]; exact ENNReal.one_ne_top) hdisj
+    (fun p hp => Int.natAbs_pos.mpr (hS p hp).2)
+    (fun p hp => ⟨1, (hiso p (hS p hp).1).lipschitzWith⟩) (fun _ _ => image_subset_range _ _)
+    (fun p hp x hx => by
+      obtain ⟨t, ht, rfl⟩ := hx
+      obtain ⟨δ, hδ, hloc⟩ := hflat' p hp t ht
+      refine ⟨V p, Submission.cmcdtfrpi_local_plane_tangent P k _ _ (V p) δ
+        (Submission.cmcdtfrpi_coord_plane_orientation P k p.1 (hSmono p hp)).1 hδ hloc, ?_⟩
+      by_cases hβ : 0 < β p
+      · rw [show ξ p = e p from ite_eq_left hβ]
+        exact (he p (hSmono p hp)).2.1
+      · rw [show ξ p = -e p from ite_eq_right hβ]
+        exact (he p (hSmono p hp)).2.2)
+  have hRact' : ∀ ω : TestFormOn (univ : Set (Euclid P)) k,
+      R.action (ω : DifferentialForm (Euclid P) k) = ∑ p ∈ S, ((β p).natAbs : ℝ) *
+        ∫ x in Φ p '' Q₁, ξ p ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k] := hRact
+  have hRmeas' : R.measure univ = ∑ p ∈ S, ((β p).natAbs : ℝ≥0∞) * μHE[k] (Φ p '' Q₁) :=
+    hRmeas
+  -- step 5: `R` represents `T`: `|β_p| ∫_{F̆_p} ξ_p(ω) dHᵏ = β_p ∫_{Q₁} ω(Φ_p y)(τ_p) dy`
+  have hrep : R.Represents T := by
+    intro ω
+    rw [hT' ω, hRact' ω, ← hsum]
+    · refine Finset.sum_congr rfl fun p hp => ?_
+      have hτ := (he p (hSmono p hp)).1
+      rw [(hface p (hS p hp).1).2.2]
+      rcases (hS p hp).2.lt_or_gt with hneg | hpos
+      · -- `β_p < 0`: `ξ_p = -e_p` and `|β_p| = -β_p`
+        rw [show ξ p = -e p from ite_eq_right (not_lt.mpr hneg.le)]
+        simp only [neg_apply, hτ, integral_neg]
+        rw [Nat.cast_natAbs, Int.cast_abs, abs_of_neg (Int.cast_lt_zero.mpr hneg)]
+        ring
+      · -- `β_p > 0`: `ξ_p = e_p` and `|β_p| = β_p`
+        rw [show ξ p = e p from ite_eq_left hpos]
+        simp only [hτ]
+        rw [Nat.cast_natAbs, Int.cast_abs, abs_of_pos (Int.cast_pos.mpr hpos)]
+    · intro p _ hβ
+      simp [hβ]
+  -- step 6: by (MR) on `U = W = ℝᴾ`, `M(T) = μ_T(ℝᴾ) = Σ_{p ∈ S} |β_p| Hᵏ(F̆_p) = Σ_{p ∈ s} |β_p|`
+  have hmass : T.mass = ENNReal.ofReal (∑ p ∈ s, |(β p : ℝ)|) := by
+    have hTR : T.mass = R.measure univ := hMR P k univ T R isOpen_univ hrep univ isOpen_univ
+    rw [hTR, hRmeas', ← hsum (fun p => |(β p : ℝ)|) fun p _ hβ => by simp [hβ],
+      ENNReal.ofReal_sum_of_nonneg fun p _ => abs_nonneg _]
+    refine Finset.sum_congr rfl fun p hp => ?_
+    rw [(hface p (hS p hp).1).2.1, mul_one, ← Int.cast_abs, ← Nat.cast_natAbs,
+      ENNReal.ofReal_natCast]
+  refine ⟨⟨R, hrep⟩, hmass, ?_⟩
+  -- step 7: if `S = ∅`, every `β_p` vanishes and `T = 0`; otherwise `M(T) ≥ |β_p| ≥ 1`, `p ∈ S`
+  rcases S.eq_empty_or_nonempty with hS0 | ⟨p, hp⟩
+  · left
+    ext ω
+    rw [hT' ω, GeometricCurrentOn.zero_apply]
+    refine Finset.sum_eq_zero fun p hp => ?_
+    rw [not_not.mp (Finset.filter_eq_empty_iff.mp hS0 hp)]
+    simp
+  · right
+    rw [hmass, ENNReal.one_le_ofReal]
+    calc (1 : ℝ) ≤ |(β p : ℝ)| := by exact_mod_cast Int.one_le_abs (hS p hp).2
+      _ ≤ ∑ q ∈ s, |(β q : ℝ)| :=
+        Finset.single_le_sum (f := fun q => |(β q : ℝ)|) (fun q _ => abs_nonneg _) (hS p hp).1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
