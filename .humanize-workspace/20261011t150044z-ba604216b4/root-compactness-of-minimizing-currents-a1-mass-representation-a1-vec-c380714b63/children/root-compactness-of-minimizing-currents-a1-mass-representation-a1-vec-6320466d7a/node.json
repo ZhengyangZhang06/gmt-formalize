@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1.coordinate_functional-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1",
+  "depth": 4,
+  "title": "Coordinate functionals of a locally bounded functional on C_c(X, ℝ^d)",
+  "statement": "Let X be a topological space and d ∈ ℕ. Let H := EuclideanSpace ℝ (Fin d) (ℝ^d with the Euclidean norm) and, for i ∈ Fin d, let e_i := EuclideanSpace.single i 1 be the i-th standard unit vector. Let L : C_c(X, H) → ℝ be real linear and locally bounded: for every compact K ⊆ X there is M ∈ ℝ with |L g| ≤ M for all g ∈ C_c(X, H) with tsupport g ⊆ K and ‖g(x)‖ ≤ 1 for all x. Then for every i ∈ Fin d there is a real linear map Λ : C_c(X, ℝ) → ℝ with two properties. (i) L g = Λ f whenever f ∈ C_c(X, ℝ), g ∈ C_c(X, H) and g(x) = f(x)·e_i for all x ∈ X. (ii) Λ is locally bounded: for every compact K ⊆ X there is M ∈ ℝ with |Λ f| ≤ M for all f ∈ C_c(X, ℝ) with tsupport f ⊆ K and |f(x)| ≤ 1 for all x.",
+  "lean_statement": "∀ (X : Type) [TopologicalSpace X] (d : ℕ) (L : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)), tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → |L g| ≤ M) → ∀ i : Fin d, ∃ Λ : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ] ℝ, (∀ (f : CompactlySupportedContinuousMap X ℝ) (g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d))), (∀ x, g x = f x • EuclideanSpace.single i (1 : ℝ)) → L g = Λ f) ∧ ∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, tsupport f ⊆ K → (∀ x, |f x| ≤ 1) → |Λ f| ≤ M",
+  "lean_name": "cmr_vr_coordinate_functional",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-6320466d7a-a1"
+}
