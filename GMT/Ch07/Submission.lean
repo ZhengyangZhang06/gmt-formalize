@@ -7203,6 +7203,19 @@ theorem Submission.dorag_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U 
   -- `μ_V = θ Hⁿ⌞M ≪ Hⁿ⌞M`, so it suffices to prove measurability for `Hⁿ⌞M`
   refine AEStronglyMeasurable.mono_ac
     (withDensity_absolutelyContinuous (μHE[n].restrict R.carrier) fun x => (R.mult x : ℝ≥0∞)) ?_
+/-- **The approximate tangent projection of an integer multiplicity triple is measurable**
+(Simon Ch. 3, 1.4 and 1.5(1); Ch. 6, 3.1).  For `R = (M, θ, ξ)`, `x ↦ p_{TₓM}` is
+`Hⁿ⌞M`-a.e. strongly measurable.  By uniqueness of approximate tangent planes, `TₓM` is a.e. the
+plane oriented by `ξ(x)`.  A unit simple `n`-vector `ζ = ±τ₁ ∧ ⋯ ∧ τₙ` determines its plane: if
+also `ζ = ±τ'₁ ∧ ⋯ ∧ τ'ₙ` and `y ⊥ span τ'`, the `n`-covector `α(u) = det(⟨cₖ, uⱼ⟩)`, where `c` is
+`τ` with `τᵢ` replaced by `y`, gives `±⟨y, τᵢ⟩ = ±α(τ) = ζ(α) = ±α(τ') = 0`, so `τᵢ ∈ span τ'`.
+Hence `p_{TₓM} = G(ξ(x))` a.e., where `G(ζ)` is the projection onto the plane of `ζ` (`0` if there
+is none).  `G` is Borel: `Φ(τ, s) = s τ₁ ∧ ⋯ ∧ τₙ` is continuous on the compact set `Ω` of
+orthonormal frames and signs, and `G(Φ(τ, s)) = Σₖ ⟨τₖ, ·⟩ τₖ` is continuous, so for closed `t`,
+`G⁻¹(t) = Φ(Ω ∩ (G ∘ Φ)⁻¹(t)) ∪ (Φ(Ω)ᶜ ∩ {0 ∈ t})` is Borel. -/
+theorem Submission.imrep_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) := by
+  intro P n U R
+  classical
   -- `ev τ = (α ↦ α(τ₁, …, τₙ))`, a continuous alternating map of `τ`
   let ev : Euclid P [⋀^Fin n]→L[ℝ] MultiVector P n :=
     (ContinuousLinearMap.id ℝ (Covector (Euclid P) n)).flipAlternating
@@ -7342,6 +7355,7 @@ theorem Submission.dorag_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U 
   have hGΦ : ∀ ω ∈ Ω, G (Φ ω) = F ω := fun ω hω => by
     rw [hGQ _ _ ((horient _ _).mpr ⟨ω, hω, rfl, rfl⟩), hFproj ω hω]
   -- `G` is Borel: for closed `t`, `G⁻¹(t)` is the compact set `Φ(Ω ∩ F⁻¹(t))` together with the
+  -- `G` is Borel: for closed `t`, `G⁻¹(t)` is a compact set `Φ(Ω ∩ F⁻¹(t))` together with the
   -- complement of the compact set `Φ(Ω)` (if `0 ∈ t`)
   have hG : Measurable G := by
     refine measurable_of_isClosed fun t ht => ?_
@@ -7378,6 +7392,8 @@ theorem Submission.dorag_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U 
       ((hΩ.image hΦc).isClosed.measurableSet.compl.inter (MeasurableSet.const _))
   -- `Hⁿ⌞M`-a.e. `TₓM` is the plane oriented by `ξ(x)` (uniqueness of approximate tangent planes),
   -- so `p_{TₓM} = G(ξ(x))`
+  -- a.e. `TₓM` is the plane oriented by `ξ(x)` (uniqueness of approximate tangent planes), so
+  -- `p_{TₓM} = G(ξ(x))`
   have hae : (fun x => (approxTangentPlane n R.carrier x).starProjection)
       =ᵐ[μHE[n].restrict R.carrier] G ∘ R.orient := by
     filter_upwards [R.orients] with x ⟨Q, hQ, hor⟩
