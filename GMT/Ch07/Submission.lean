@@ -451,6 +451,60 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A set that coincides near `x` with the plane `x + V` has approximate tangent space `V` at
+`x`** (Simon Ch. 3, Definition 1.4).  A test function `f ∈ C_c(ℝᴾ)` vanishes off a ball `B_R(0)`,
+so `∫_S f dHⁿ = ∫_{B_R(0) ∩ S} f dHⁿ` for every `S`.  For `0 < λ < r/R` the blow-up
+`η_{x,λ}(N) = λ⁻¹(N − x)` coincides with `V` inside `B_R(0)`, hence the blow-up integrals equal
+`∫_V f dHⁿ` for all small `λ > 0` and converge to it. -/
+theorem Submission.dor_lmb_fcd_fr_local_plane_tangent : ∀ (P n : ℕ) (N : Set (Euclid P)) (x : Euclid P) (V : Submodule ℝ (Euclid P)) (r : ℝ), Module.finrank ℝ V = n → 0 < r → (∀ y ∈ Metric.ball x r, y ∈ N ↔ y - x ∈ V) → HasApproximateTangentSpaceAt n N x V := by
+  intro P n N x V r hV hr hN
+  refine ⟨hV, fun f => ?_⟩
+  -- Step 1: `f` vanishes off a ball `B_R(0)`
+  obtain ⟨R, hR, hfR⟩ : ∃ R : ℝ, 0 < R ∧ ∀ w, w ∉ ball (0 : Euclid P) R → f w = 0 := by
+    obtain ⟨C, hC⟩ := isBounded_iff_forall_norm_le.1 f.hasCompactSupport.isCompact.isBounded
+    refine ⟨max C 0 + 1, add_pos_of_nonneg_of_pos (le_max_right C 0) one_pos,
+      fun w hw => image_eq_zero_of_notMem_tsupport fun hwt => hw ?_⟩
+    rw [mem_ball_zero_iff]
+    exact (hC w hwt).trans_lt ((le_max_left C 0).trans_lt (lt_add_one _))
+  -- Step 2: the integral of `f` over any `S` only sees `B_R(0) ∩ S`
+  have hB : MeasurableSet (ball (0 : Euclid P) R) := measurableSet_ball
+  have hloc : ∀ S : Set (Euclid P),
+      ∫ y in S, f y ∂μHE[n] = ∫ y in ball (0 : Euclid P) R ∩ S, f y ∂μHE[n] := by
+    intro S
+    rw [← Measure.restrict_restrict hB, setIntegral_eq_integral_of_forall_compl_eq_zero hfR]
+  -- Step 3: for `0 < λ < r/R` the blow-up of `N` coincides with `V` inside `B_R(0)`
+  have hblow : ∀ lam ∈ Ioo 0 (r / R), ball (0 : Euclid P) R ∩
+      Poincare.SimonGMT.Chapter03.blowUpMap x lam '' N =
+        ball (0 : Euclid P) R ∩ (V : Set (Euclid P)) := by
+    rintro lam ⟨hlam0, hlamR⟩
+    have hsmall : ∀ w : Euclid P, ‖w‖ < R → ‖lam • w‖ < r := fun w hw => by
+      rw [norm_smul, Real.norm_of_nonneg hlam0.le]
+      exact (mul_lt_mul_of_pos_left hw hlam0).trans ((lt_div_iff₀ hR).1 hlamR)
+    ext w
+    constructor
+    · rintro ⟨hw, y, hy, rfl⟩
+      have hyx : y - x = lam • Poincare.SimonGMT.Chapter03.blowUpMap x lam y := by
+        rw [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hlam0.ne',
+          one_smul]
+      have hy' : y ∈ ball x r := by
+        rw [Metric.mem_ball, dist_eq_norm, hyx]
+        exact hsmall _ (mem_ball_zero_iff.1 hw)
+      exact ⟨hw, V.smul_mem lam⁻¹ ((hN y hy').1 hy)⟩
+    · rintro ⟨hw, hwV⟩
+      have hy : x + lam • w ∈ ball x r := by
+        rw [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left]
+        exact hsmall w (mem_ball_zero_iff.1 hw)
+      refine ⟨hw, x + lam • w, (hN _ hy).2 ?_, ?_⟩
+      · rw [add_sub_cancel_left]
+        exact V.smul_mem lam hwV
+      · rw [Poincare.SimonGMT.Chapter03.blowUpMap, add_sub_cancel_left, smul_smul,
+          inv_mul_cancel₀ hlam0.ne', one_smul]
+  -- Step 4: the blow-up integrals are eventually equal to `∫_V f dHⁿ`
+  refine tendsto_const_nhds.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hr hR)] with lam hlam
+  rw [hloc (V : Set (Euclid P)), hloc (Poincare.SimonGMT.Chapter03.blowUpMap x lam '' N),
+    hblow lam hlam]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
