@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b8f2a33220d0a3f4786cd7e0da58865c48cbf998840ae95302f8b577c5b08494",
+  "git_delta": {
+    "base_commit": "38e836c6a9b8b12757f4c29f371422327c981455",
+    "candidate_commit": "4449edd4bc3c65480e9a313b62eb5e971a47bfe5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cs_flat_extDeriv_split",
+    "diff_sha256": "c60b18d633b85feedff1fe8234f86c52687091375486ac7d7a6abe480599d5da",
+    "source_sha256": "76827cc1116b9662e29bb67f31bb0f58ea4a48d10caf77d6415eea1cc8b9a778",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cs_flat_extDeriv_split",
+      "statement": "∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h : n' = (j + 1) + m) (h₁ : n' + 1 = (j + 1) + (m + 1)) (h₂ : n' = j + (m + 1)) (flatD : Covector (Euclid P) (n' + 1) →L[ℝ] Covector (Euclid P) (m + 1)) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m) (flatF : Fin (j + 1) → Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) (m + 1)) (ω : DifferentialForm (Euclid P) n') (x : Euclid P), DifferentiableAt ℝ ω x → (∀ (α : Covector (Euclid P) (n' + 1)) (v : Fin (m + 1) → Euclid P), flatD α v = α (Fin.append g v ∘ Fin.cast h₁)) → (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → flatD (exteriorDerivative ω x) = ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) • fderiv ℝ (fun z => flatF a (ω z)) x (g a) + (-1 : ℝ) ^ (j + 1) • exteriorDerivative (fun z => flat (ω z)) x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
