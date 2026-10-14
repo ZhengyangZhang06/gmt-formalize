@@ -476,6 +476,100 @@ theorem Submission.cbrldlf_exists_small_scale_of_lower_density : ∀ n : ℕ, 0 
     exact ENNReal.not_lt_zero hs
   rwa [ENNReal.ofReal_mul (mul_nonneg hη₀ ENNReal.toReal_nonneg), ENNReal.ofReal_mul hη₀,
     ENNReal.ofReal_toReal hωt, mul_assoc]
+/-- **Simon Ch. 6, 8.2 (3)–(4)** (constants of the isoperimetric filling, corrected), with
+`p = m + 1` and `n = m + 2`: for `c ≥ 1` there is `a > 0` such that `0 ≤ F ≤ (a s)ⁿ` and
+`0 ≤ M ≤ 2 n a F^{(n-1)/n}` imply `c (2cM)^{1/p} M ≤ F / 2` and `(2cM)^{1/p} ≤ s`.  Take
+`K₀ = c (2c)^{1/p} (2n)^{n/p}`, `t = min {1 / (2K₀)^{m+1}, 1 / (4cn)}` and `a = t^{1/n}`, so
+`a^{m+2} = t`. -/
+theorem Submission.cbrldlf_exists_filling_constant : ∀ (m : ℕ) (c : ℝ), 1 ≤ c → ∃ a : ℝ, 0 < a ∧ ∀ (s F M : ℝ), 0 ≤ s → 0 ≤ F → F ≤ (a * s) ^ (m + 1 + 1) → 0 ≤ M → M ≤ 2 * ((m + 1 + 1 : ℕ) : ℝ) * a * F ^ ((((m + 1 + 1 : ℕ) : ℝ) - 1) / ((m + 1 + 1 : ℕ) : ℝ)) → c * (2 * c * M) ^ ((1 : ℝ) / (m + 1)) * M ≤ F / 2 ∧ (2 * c * M) ^ ((1 : ℝ) / (m + 1)) ≤ s := by
+  intro m c hc
+  have hc0 : 0 < c := lt_of_lt_of_le one_pos hc
+  -- `p = m + 1` and `n = m + 2 = p + 1`
+  have hp : (0 : ℝ) < (m : ℝ) + 1 := by positivity
+  have hn_eq : ((m + 1 + 1 : ℕ) : ℝ) = ((m : ℝ) + 1) + 1 := by push_cast; ring
+  have hn : (0 : ℝ) < ((m + 1 + 1 : ℕ) : ℝ) := by rw [hn_eq]; linarith
+  have hpinv : (1 : ℝ) / ((m : ℝ) + 1) = (((m + 1 : ℕ) : ℝ))⁻¹ := by push_cast; rw [one_div]
+  set p : ℝ := (m : ℝ) + 1 with hp_def
+  set n : ℝ := ((m + 1 + 1 : ℕ) : ℝ) with hn_def
+  -- Step 1: the constants `K₀ > 0`, `t > 0` and `a = t^{1/n} > 0`, with `a^{m+2} = t`
+  set K₀ : ℝ := c * (2 * c) ^ (1 / p) * (2 * n) ^ (n / p) with hK₀_def
+  have hK₀ : 0 < K₀ :=
+    mul_pos (mul_pos hc0 (Real.rpow_pos_of_pos (by positivity) _))
+      (Real.rpow_pos_of_pos (by positivity) _)
+  set t : ℝ := min (1 / (2 * K₀) ^ (m + 1)) (1 / (4 * c * n)) with ht_def
+  have ht : 0 < t := lt_min (by positivity) (by positivity)
+  set a : ℝ := t ^ (1 / n) with ha_def
+  have ha : 0 < a := Real.rpow_pos_of_pos ht _
+  have ha_pow : a ^ (m + 1 + 1) = t := by
+    rw [ha_def, hn_def, one_div]
+    exact Real.rpow_inv_natCast_pow ht.le (by omega)
+  -- Step 2 (i): `t^{1/p} ≤ ((1/(2K₀))^{m+1})^{1/(m+1)} = 1/(2K₀)`
+  have hi : t ^ (1 / p) ≤ 1 / (2 * K₀) := by
+    have h1 : t ≤ (1 / (2 * K₀)) ^ (m + 1) := by
+      rw [one_div_pow]; exact min_le_left _ _
+    have h2 : t ^ (1 / p) ≤ ((1 / (2 * K₀)) ^ (m + 1)) ^ (1 / p) :=
+      Real.rpow_le_rpow ht.le h1 (by positivity)
+    have h3 : ((1 / (2 * K₀)) ^ (m + 1)) ^ (1 / p) = 1 / (2 * K₀) := by
+      rw [hpinv]
+      exact Real.pow_rpow_inv_natCast (by positivity) (by omega)
+    rw [h3] at h2
+    exact h2
+  -- Step 2 (ii): `t ≤ 1/(4cn)`
+  have hii : t ≤ 1 / (4 * c * n) := min_le_right _ _
+  refine ⟨a, ha, ?_⟩
+  -- Step 3: `M ≤ b := 2 n a F^{p/n}`, since `(n - 1)/n = p/n`
+  intro s F M hs hF hFas hM hMb
+  have hexp : (n - 1) / n = p / n := by rw [hn_eq]; ring
+  rw [hexp] at hMb
+  set b : ℝ := 2 * n * a * F ^ (p / n) with hb_def
+  have hb : 0 ≤ b := by positivity
+  constructor
+  · -- Step 4: `c (2cM)^{1/p} M = c (2c)^{1/p} M^{n/p}`, as `n/p = 1/p + 1`
+    have h4 : c * (2 * c * M) ^ (1 / p) * M = c * (2 * c) ^ (1 / p) * M ^ (n / p) := by
+      rw [Real.mul_rpow (by positivity) hM]
+      have e : n / p = 1 / p + 1 := by rw [hn_eq]; field_simp; ring
+      rw [e, Real.rpow_add' hM (by positivity), Real.rpow_one]
+      ring
+    -- Step 5: `M^{n/p} ≤ b^{n/p}`
+    have h5 : M ^ (n / p) ≤ b ^ (n / p) := Real.rpow_le_rpow hM hMb (by positivity)
+    -- Step 6: `b^{n/p} = (2n)^{n/p} t^{1/p} F`
+    have h6 : b ^ (n / p) = (2 * n) ^ (n / p) * t ^ (1 / p) * F := by
+      rw [hb_def, Real.mul_rpow (by positivity) (by positivity),
+        Real.mul_rpow (by positivity) (by positivity)]
+      rw [← Real.rpow_mul hF, ha_def, ← Real.rpow_mul ht.le]
+      have e1 : p / n * (n / p) = 1 := by field_simp
+      have e2 : 1 / n * (n / p) = 1 / p := by field_simp
+      rw [e1, e2, Real.rpow_one]
+    -- Step 7: `c (2cM)^{1/p} M ≤ K₀ t^{1/p} F ≤ F / 2` by (i)
+    calc c * (2 * c * M) ^ (1 / p) * M = c * (2 * c) ^ (1 / p) * M ^ (n / p) := h4
+      _ ≤ c * (2 * c) ^ (1 / p) * b ^ (n / p) := by gcongr
+      _ = K₀ * t ^ (1 / p) * F := by rw [h6, hK₀_def]; ring
+      _ ≤ K₀ * (1 / (2 * K₀)) * F := by gcongr
+      _ = F / 2 := by field_simp
+  · -- Step 8: `F^{p/n} ≤ ((a s)^{m+2})^{p/n} = (a s)^{m+1}`
+    have h8 : F ^ (p / n) ≤ (a * s) ^ (m + 1) := by
+      have h := Real.rpow_le_rpow hF hFas (by positivity : (0 : ℝ) ≤ p / n)
+      have e : ((a * s) ^ (m + 1 + 1)) ^ (p / n) = (a * s) ^ (m + 1) := by
+        rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity)]
+        have e' : ((m + 1 + 1 : ℕ) : ℝ) * (p / n) = ((m + 1 : ℕ) : ℝ) := by
+          rw [← hn_def]; field_simp; rw [hp_def]; push_cast; ring
+        rw [e', Real.rpow_natCast]
+      rw [e] at h
+      exact h
+    -- Step 9: `2cM ≤ 4cn a^{m+2} s^{m+1} = 4cn t s^{m+1} ≤ s^{m+1}` by (ii)
+    have h9 : 2 * c * M ≤ s ^ (m + 1) := by
+      calc 2 * c * M ≤ 2 * c * (2 * n * a * F ^ (p / n)) := by gcongr
+        _ ≤ 2 * c * (2 * n * a * (a * s) ^ (m + 1)) := by gcongr
+        _ = 4 * c * n * a ^ (m + 1 + 1) * s ^ (m + 1) := by ring
+        _ = 4 * c * n * t * s ^ (m + 1) := by rw [ha_pow]
+        _ ≤ 4 * c * n * (1 / (4 * c * n)) * s ^ (m + 1) := by gcongr
+        _ = s ^ (m + 1) := by field_simp
+    -- Step 10: `(2cM)^{1/p} ≤ (s^{m+1})^{1/(m+1)} = s`
+    have h10 := Real.rpow_le_rpow (by positivity) h9 (by positivity : (0 : ℝ) ≤ 1 / p)
+    have e : (s ^ (m + 1)) ^ (1 / p) = s := by
+      rw [hpinv]; exact Real.pow_rpow_inv_natCast hs (by omega)
+    rw [e] at h10
+    exact h10
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
