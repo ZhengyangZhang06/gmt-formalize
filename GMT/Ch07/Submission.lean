@@ -3010,6 +3010,49 @@ theorem Submission.lcmp_measure_le_add_of_open_nhds : ∀ (P : ℕ) (U E : Set (
     rwa [hinter] at this
   exact ge_of_tendsto' (htend.add_const c) hle
 
+/-- **The comparison cycle** (Simon 7.2.4 with Remark 7.2.5(2)).  Let `F ⊆ ℝᴾ` be compact and let
+`C, S, Ŷ ∈ 𝒟_{m+1}(ℝᴾ)` be integer multiplicity with `∂S = ∂C`, `spt(S − C) ⊆ F`, `∂Ŷ = 0` and
+`spt Ŷ ⊆ F`.  Then `Y = (S − C) + Ŷ` is an integer multiplicity cycle with `spt Y ⊆ F` compact.
+As a current, `Y = (S − C) − ((Ŷ − Ŷ) − Ŷ)` is integer multiplicity by four differences
+(`cmc_imRep_locality_restrict_sub` (c)).  With `ζ = dη`, `∂Y(η) = S(ζ) − C(ζ) + Ŷ(ζ) = 0`.
+`Y` kills every form supported away from `F` (`dtc_vanish_off_support`), so `spt Y ⊆ F` is
+compact (`rsd_cmr_support_subset_of_vanish`). -/
+theorem Submission.dimred_mbl_lc_ic_cycle : ∀ (P m : ℕ) (F : Set (Euclid P)) (C S Ŷ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact F → IsIntegerMultiplicity C → IsIntegerMultiplicity S → S.boundary = C.boundary → (S - C).support ⊆ F → IsIntegerMultiplicity Ŷ → Ŷ.boundary = 0 → Ŷ.support ⊆ F → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ Y.boundary = 0 ∧ IsCompact Y.support ∧ Y.support ⊆ F ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Y ω = (S - C) ω + Ŷ ω := by
+  intro P m F C S Ŷ hF hC hS hbd hSC hŶ hŶbd hŶF
+  -- (IMC)(c): differences of integer multiplicity currents in the open set `ℝᴾ`
+  have hsub := Submission.cmc_imRep_locality_restrict_sub.2.2.1 P (m + 1) univ
+  -- `Y := X − ((Ŷ − Ŷ) − Ŷ)` with `X := S − C`
+  set X := S - C
+  set Y := X - ((Ŷ - Ŷ) - Ŷ)
+  -- Step 1: four differences of integer multiplicity currents
+  have hYim : IsIntegerMultiplicity Y :=
+    hsub X _ isOpen_univ (hsub S C isOpen_univ hS hC)
+      (hsub _ Ŷ isOpen_univ (hsub Ŷ Ŷ isOpen_univ hŶ hŶ) hŶ)
+  -- Step 2: `Y(ω) = X(ω) − ((Ŷ(ω) − Ŷ(ω)) − Ŷ(ω)) = X(ω) + Ŷ(ω)`
+  have hXω : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), X ω = S ω - C ω := fun ω => rfl
+  have hYω : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Y ω = X ω + Ŷ ω := by
+    intro ω
+    change X ω - ((Ŷ ω - Ŷ ω) - Ŷ ω) = X ω + Ŷ ω
+    ring
+  -- Step 3: with `ζ = dη`, `∂Y(η) = Y(ζ) = S(ζ) − C(ζ) + Ŷ(ζ) = 0`
+  have hYbd : Y.boundary = 0 := by
+    ext η
+    have h1 : S.boundary η = C.boundary η := by rw [hbd]
+    have h2 : Ŷ.boundary η = 0 := by rw [hŶbd, GeometricCurrentOn.zero_apply]
+    simp only [GeometricCurrentOn.boundary_apply] at h1 h2
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply, hYω, hXω, h1, h2,
+      sub_self, add_zero]
+  -- Step 4: `Y` vanishes on forms supported away from `F`, as `spt X ⊆ F` and `spt Ŷ ⊆ F`
+  have hvan : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) F → Y ω = 0 := by
+    intro ω hω
+    rw [hYω, Submission.dtc_vanish_off_support P (m + 1) univ X ω (hω.mono_right hSC),
+      Submission.dtc_vanish_off_support P (m + 1) univ Ŷ ω (hω.mono_right hŶF), add_zero]
+  -- Step 5: hence `spt Y ⊆ F` and `spt Y` is compact
+  obtain ⟨hYF, hYc⟩ := Submission.rsd_cmr_support_subset_of_vanish P (m + 1) univ F Y isOpen_univ
+    hF (subset_univ F) hvan
+  exact ⟨Y, hYim, hYbd, hYc, hYF, hYω⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
