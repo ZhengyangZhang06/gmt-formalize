@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e69edd5c9149dbe9265de05f82e452746cb57e27387330b7235ffea1b03b8c18",
+  "git_delta": {
+    "base_commit": "646406cdeae1b4b821c0d8276f435f9356d0d719",
+    "candidate_commit": "e723f6098bc1199559e4c9b7db5bcf40fcbc0df6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_comp_starProjection_eq_zero_of_finrank_lt",
+    "diff_sha256": "33cb9b588e11b196d90feadd3932933446e05427a166a6e71715e398a61135e1",
+    "source_sha256": "4d202c9ca197d0f4e3232519d9a01ebd93ce164b92fcdef766b33c108b440e57",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_comp_starProjection_eq_zero_of_finrank_lt",
+      "statement": "∀ (P n : ℕ) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V < n → ∀ β : Covector (Euclid P) n, β.compContinuousLinearMap V.starProjection = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
