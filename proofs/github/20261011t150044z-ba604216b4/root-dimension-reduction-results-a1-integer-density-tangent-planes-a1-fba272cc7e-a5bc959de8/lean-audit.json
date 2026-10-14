@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4810b32bb7fcf6c1c5b93052ffc427644480b6b888c8de3a6ec958711b5c7a24",
+  "git_delta": {
+    "base_commit": "1e9c784355a6e111d322c746d78d8b963c3244e6",
+    "candidate_commit": "e40117e51ee59977ed9abe72e2a6dc55a0f65ffe",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cs_sp_projected_massOn_le",
+    "diff_sha256": "45ad20263adbf2036e3fdd01ef102c46c8c6c7b78bad608230de8fe7d7c76770",
+    "source_sha256": "718b303f27926ead1f2f38143bd6505c9eea497f1e69149599b0cb2cc4b239c1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cs_sp_projected_massOn_le",
+      "statement": "∀ (P m : ℕ) (T X S' : GeometricCurrentOn (univ : Set (Euclid P)) m) (RT RX : IMRep (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)) (K : Set (Euclid P)), RT.Represents T → RX.Represents X → RT.measure ((V : Set (Euclid P))ᶜ) = 0 → IsCompact K → RX.measure Kᶜ = 0 → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, S' ω = T ω + RX.action (affinePullbackForm V.starProjection 0 (ω : DifferentialForm (Euclid P) m))) → ∃ R : IMRep (univ : Set (Euclid P)) m, (∀ ω : TestFormOn (univ : Set (Euclid P)) m, R.action (ω : DifferentialForm (Euclid P) m) = T ω + X ω) ∧ ∀ O : Set (Euclid P), S'.massOn O ≤ R.measure (V.starProjection ⁻¹' O)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
