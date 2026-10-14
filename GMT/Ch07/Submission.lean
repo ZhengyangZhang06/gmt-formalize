@@ -9226,6 +9226,41 @@ theorem Submission.idtp_cse_mlb_univ_monotonicity_density : ∀ (P n : ℕ) (C :
     hmass (fun x hx => (hsupp x (mem_univ x)).1 hx)
     (Submission.dimred_mono_ae_ball_density_ge_one P n univ R isOpen_univ) hΘ hΘusc
 
+/-- **Mass lower bound for minimizing cycles in `ℝᴾ`** (Simon 7.3.1(1), chapter-07.txt
+lines 302–329, through the monotonicity 4.7 of Ch. 4).  If `C ∈ 𝒟₂(ℝᴾ)` is minimizing in `ℝᴾ`
+and `∂C = 0`, then `ω₂ρ² ≤ M_{B_ρ(y)}(C)` for every `y ∈ spt C` and `ρ > 0`.  The ratio
+`g(σ) = σ⁻² M_{B_σ(y)}(C)` is nondecreasing on `(0, ∞)`, and `g(σ) = ω₂ · M_{B_σ(y)}(C)/(ω₂σ²)`
+tends to `ω₂Θ(y)` as `σ ↓ 0`, where `Θ(y) ≥ 1` because `y ∈ spt C`; hence
+`ω₂ ≤ ω₂Θ(y) ≤ g(ρ)`, and multiplying by `ρ²` gives the bound. -/
+theorem Submission.idtp_cse_massOn_ball_lower_bound : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2), IsMinimizingIn C univ → BoundaryVanishes C → ∀ y ∈ C.support, ∀ ρ : ℝ, 0 < ρ → unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2) ≤ C.massOn (ball y ρ) := by
+  intro P C hmin hbd y hy ρ hρ
+  -- `0 < ω₂ < ∞`
+  have hω0 : unitBallVolume 2 ≠ 0 := (measure_ball_pos volume (0 : Euclid 2) one_pos).ne'
+  have hωtop : unitBallVolume 2 ≠ ∞ :=
+    (measure_ball_lt_top (μ := volume) (x := (0 : Euclid 2)) (r := 1)).ne
+  -- monotonicity of `g` on `(0, ∞)`, the density `Θ`, and `Θ ≥ 1` on `spt C`
+  obtain ⟨hmono, ⟨Θ, hΘ, -⟩, hge⟩ :=
+    Submission.idtp_cse_mlb_univ_monotonicity_density P 2 C hmin hbd
+  have hΘ1 : 1 ≤ Θ y := hge y hy (Θ y) (hΘ y)
+  -- `ω₂Θ(y) = lim_{σ ↓ 0} g(σ) ≤ g(ρ)`
+  have hlim : unitBallVolume 2 * ENNReal.ofReal (Θ y) ≤
+      ENNReal.ofReal (1 / ρ ^ 2) * C.massOn (ball y ρ) := by
+    refine le_of_tendsto (ENNReal.Tendsto.const_mul (hΘ y).2 (Or.inr hωtop)) ?_
+    filter_upwards [Ioo_mem_nhdsGT hρ] with σ hσ
+    calc unitBallVolume 2 * (C.massOn (ball y σ) / (unitBallVolume 2 * ENNReal.ofReal (σ ^ 2)))
+        = ENNReal.ofReal (1 / σ ^ 2) * C.massOn (ball y σ) := by
+          rw [← mul_div_assoc, ENNReal.mul_div_mul_left _ _ hω0 hωtop, ENNReal.div_eq_inv_mul,
+            one_div, ENNReal.ofReal_inv_of_pos (pow_pos hσ.1 2)]
+      _ ≤ ENNReal.ofReal (1 / ρ ^ 2) * C.massOn (ball y ρ) := hmono y hσ.1 hρ hσ.2.le
+  -- `ω₂ ≤ ω₂Θ(y) ≤ g(ρ)`; multiply by `ρ²`
+  calc unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2)
+      ≤ ENNReal.ofReal (1 / ρ ^ 2) * C.massOn (ball y ρ) * ENNReal.ofReal (ρ ^ 2) := by
+        gcongr
+        exact (le_mul_of_one_le_right' (ENNReal.one_le_ofReal.2 hΘ1)).trans hlim
+    _ = C.massOn (ball y ρ) := by
+        rw [mul_right_comm, ← ENNReal.ofReal_mul (one_div_nonneg.2 (pow_nonneg hρ.le 2)),
+          one_div_mul_cancel (pow_ne_zero 2 hρ.ne'), ENNReal.ofReal_one, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
