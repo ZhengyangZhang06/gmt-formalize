@@ -1200,23 +1200,36 @@ theorem Submission.idtp_ccd_scsp_cone_conservation : ∀ (P : ℕ) (u e : Euclid
   have hcurve := Submission.idtp_ccd_scsp_angle_curve P u e s γ hγ hγα
   have hinj : InjOn γ (Ioo (-s) s) := fun a ha a' ha' haa' => by
     rw [← (hγα a ha).2.2, ← (hγα a' ha').2.2, haa']
-  -- stationarity, pulled back to the parameter rectangle by the area formula (`J_G = t‖γ′‖`)
+  -- the area formula of `idtp_ccd_scsp_cone_area` (declared after `main_theorem`, hence proved
+  -- here from its two parts): `G(t, α) = tγ(α)` is injective on `R` with injective derivative,
+  -- `∂₁G = γ(α)` and `∂₂G = tγ′(α)`
+  have hR : MeasurableSet (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s) :=
+    measurableSet_Ioo.prod measurableSet_Ioo
+  obtain ⟨hGinj, hreg⟩ := Submission.idtp_ccd_scsp_ca_cone_map_regular P r₀ s γ hs hsr hγ hinj
+    fun α hα => ⟨(hγα α hα).1, (hcurve α hα).1, (hcurve α hα).2.2⟩
+  -- stationarity, pulled back to the parameter rectangle by the area formula
   have h0 := hstat X hX1 hXc hXN
-  rw [Submission.idtp_ccd_scsp_cone_area P r₀ s γ
+  rw [Submission.idtp_ccd_scsp_ca_prod_area_formula P (fun q : ℝ × ℝ => q.1 • γ q.2) _
     (fun x => LinearMap.trace ℝ (Euclid P)
-      ((T x).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap))
-    hs hsr hγ hinj (fun α hα => ⟨(hγα α hα).1, (hcurve α hα).1, (hcurve α hα).2.2⟩)] at h0
-  -- separation of variables: `0 = (∫ tλ(t) dt) · ∫_{(-s, s)} φ′κ`
-  rw [setIntegral_congr_fun (measurableSet_Ioo.prod measurableSet_Ioo)
+      ((T x).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap)) hR
+    (fun z hz => (hreg z hz).1) (fun z hz => (hreg z hz).2.1) hGinj] at h0
+  -- separation of variables (the Jacobian is `t‖γ′(α)‖`): `0 = (∫ tλ(t) dt) · ∫_{(-s, s)} φ′κ`
+  rw [setIntegral_congr_fun hR
     (g := fun q : ℝ × ℝ => (q.1 * b q.1) *
       (deriv φ q.2 * ((inner ℝ (γ q.2) u ^ 2 + inner ℝ (γ q.2) e ^ 2) / ‖deriv γ q.2‖))) ?_,
     Measure.volume_eq_prod, setIntegral_prod_mul (fun t => t * b t)
       (fun α => deriv φ α * ((inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2) / ‖deriv γ α‖))] at h0
   swap
   · rintro ⟨t, α⟩ ⟨ht, hα⟩
+    obtain ⟨-, -, h10, h01⟩ := hreg (t, α) ⟨ht, hα⟩
+    have ht0 : 0 < t := by linarith [ht.1]
     have hne : ‖deriv γ α‖ ≠ 0 := norm_ne_zero_iff.mpr (hcurve α hα).2.2
-    simp only
-    rw [hXtr t ht α hα]
+    have hJ : (1 : ℝ) ^ 2 * (t * ‖deriv γ α‖) ^ 2 - (t * 0) ^ 2 = (t * ‖deriv γ α‖) ^ 2 := by
+      ring
+    simp only at h10 h01 ⊢
+    rw [h10, h01, (hγα α hα).1, norm_smul, Real.norm_eq_abs, abs_of_pos ht0,
+      real_inner_smul_right, (hcurve α hα).1, hJ, Real.sqrt_sq (mul_nonneg ht0.le (norm_nonneg _)),
+      hXtr t ht α hα]
     field_simp
   -- the radial factor is positive: `tλ(t) ≥ 0` on `(r₀ - s, r₀ + s)`, `> 0` on `(r₀ ± s / 2)`
   have hpos : 0 < ∫ t in Ioo (r₀ - s) (r₀ + s), t * b t := by
