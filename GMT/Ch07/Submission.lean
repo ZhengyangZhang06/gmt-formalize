@@ -1361,6 +1361,48 @@ theorem Submission.cbrr_rectifiable_of_uniform_density : ∀ (P n : ℕ) (μ : M
   obtain ⟨K, hK⟩ := hF p
   exact Poincare.SimonGMT.Chapter03.countablyRectifiable_range hK
 
+/-- **Approximate tangent spaces imply rectifiability** (Simon Ch. 3, Theorem 1.6 “⇐”).  Let
+`Hⁿ(M) < ∞`, let `x ↦ p_{Q(x)}` be `Hⁿ⌞M`-a.e. strongly measurable and let `Q(x)` be the
+approximate tangent space of `M` at `Hⁿ`-a.e. `x ∈ M`; then `M` is countably `n`-rectifiable.  For
+`n = 0`, `M` is finite.  For `n > 0` fix `0 < a` with `a < ωₙ` and `b = a/2/16ⁿ`, so
+`b·16ⁿ = a/2 < a`.  For every `m` the uniform lower density and cone bounds hold on some `E_m ⊆ M`
+with `Hⁿ(M \ E_m) < 1/(m+1)`, so `E_m` is countably `n`-rectifiable.  Then `M \ ⋃ E_m` is
+`Hⁿ`-null, and `M` lies in this null set together with countably many Lipschitz images. -/
+theorem Submission.dtc_bc_tc_cl_rectifiable_of_approx_tangent : ∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), MeasurableSet M → μHE[n] M ≠ ∞ → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → CountablyRectifiable n M := by
+  intro P n M Q hM hMfin hQm hQt
+  -- Step 1: for `n = 0` the set `M` is finite
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · exact Submission.cbrr_rectifiable_dim_zero P M hMfin
+  -- Step 2: constants `0 < a` with `ofReal a < ωₙ` and `b = a/2/16ⁿ > 0`, so `b·16ⁿ = a/2 < a`
+  obtain ⟨a, -, ha, haω⟩ := ENNReal.lt_iff_exists_real_btwn.mp
+    (measure_ball_pos volume (0 : Euclid n) one_pos : 0 < unitBallVolume n)
+  rw [ENNReal.ofReal_pos] at ha
+  have hb : 0 < a / 2 / 16 ^ n := by positivity
+  have hab : a / 2 / 16 ^ n * 16 ^ n < a := by
+    rw [div_mul_cancel₀ _ (by positivity : (16 : ℝ) ^ n ≠ 0)]
+    exact half_lt_self ha
+  -- Step 3: for every `m`, the uniform density and cone bounds hold on some `E_m ⊆ M` with
+  -- `Hⁿ(M \ E_m) < 1/(m+1)`, so `E_m` is countably `n`-rectifiable
+  have hE : ∀ m : ℕ, ∃ E : Set (Euclid P), μHE[n] (M \ E) < ENNReal.ofReal (1 / ((m : ℝ) + 1)) ∧
+      CountablyRectifiable n E := by
+    intro m
+    obtain ⟨E, δ, -, hδ, hME, hQE, hlow, hup⟩ := Submission.cbrr_uniform_density_on_large_set P n
+      M Q hn hM hMfin hQm hQt a (a / 2 / 16 ^ n) (1 / ((m : ℝ) + 1)) haω hb Nat.one_div_pos_of_nat
+    exact ⟨E, hME, Submission.cbrr_rectifiable_of_uniform_density P n (μHE[n].restrict M) E Q a
+      (a / 2 / 16 ^ n) δ ha hab hδ hQE hlow hup⟩
+  choose E hME hErect using hE
+  -- Step 4: `M \ ⋃ E_m ⊆ M \ E_m` has `Hⁿ`-measure `< 1/(m+1)` for every `m`, so it is null
+  have hlim := ENNReal.tendsto_ofReal tendsto_one_div_add_atTop_nhds_zero_nat
+  rw [ENNReal.ofReal_zero] at hlim
+  have hnull : μHE[n] (M \ ⋃ m, E m) = 0 := nonpos_iff_eq_zero.mp <| ge_of_tendsto' hlim fun m =>
+    (measure_mono (sdiff_subset_sdiff_right (subset_iUnion E m))).trans (hME m).le
+  -- Step 5: `M ⊆ (M \ ⋃ E_m) ∪ ⋃ E_m`, a null set together with countably many Lipschitz images
+  obtain ⟨M₀, hM₀, F, hF, hcover⟩ := Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion E hErect
+  refine ⟨M₀ ∪ (M \ ⋃ m, E m), measure_union_null hM₀ hnull, F, hF, fun x hx => ?_⟩
+  by_cases hxE : x ∈ ⋃ m, E m
+  · exact (hcover hxE).imp_left Or.inl
+  · exact Or.inl (Or.inr ⟨hx, hxE⟩)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
