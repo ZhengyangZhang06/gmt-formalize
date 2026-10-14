@@ -1658,6 +1658,32 @@ theorem Submission.dpf_approxTangent_ae_bilipschitz_piece : ∀ (P n : ℕ) (U Y
     Submission.ptd_piece_image_approxTangent_ae P n F B L m hF hB hm hbi hdiff] with b hYA hA'
   exact (hYA _).2 hA'
 
+/-- **Simon Ch. 3, proof of Theorem 1.6 "⇒"**, for a Lipschitz map: let `F : ℝᵏ → ℝᴾ` be
+Lipschitz and `Y ⊆ ℝᴾ` Borel with `Hᵏ(Y ∩ C) < ∞` for compact `C`.  Then for a.e. `u ∈ ℝᵏ` with
+`F(u) ∈ Y`, `F` differentiable at `u` and `DF(u)` injective, `Y` has approximate tangent space
+`range DF(u)` at `F(u)`.  These `u` are the regular points of `F` in the Borel set `F⁻¹(Y)`; they
+lie in countably many Borel pieces `Aₗ ⊆ F⁻¹(Y)` on which `F` is bi-Lipschitz, and the
+bi-Lipschitz piece case applies a.e. on each `Aₗ`, as `F(Aₗ) ⊆ Y`. -/
+theorem Submission.dimred_cs_sos_lipschitz_approx_tangent : ∀ (P k : ℕ) (F : Euclid k → Euclid P) (Y : Set (Euclid P)) (K : NNReal), 0 < k → LipschitzWith K F → MeasurableSet Y → (∀ C : Set (Euclid P), IsCompact C → μHE[k] (Y ∩ C) ≠ ∞) → ∀ᵐ u ∂(volume : Measure (Euclid k)), F u ∈ Y → DifferentiableAt ℝ F u → Function.Injective (fderiv ℝ F u) → HasApproximateTangentSpaceAt k Y (F u) (LinearMap.range (fderiv ℝ F u : Euclid k →ₗ[ℝ] Euclid P)) := by
+  intro P k F Y K _ hF hY hfin
+  -- the regular points of `F` in the Borel set `F⁻¹(Y)` lie in countably many Borel pieces `Aₗ`
+  -- on which `F` is bi-Lipschitz
+  obtain ⟨A, κ, hA, hAY, -, hκ, hbi, hreg, hcover⟩ :=
+    Submission.dor_lmb_fcd_imp_regular_partition k P F (F ⁻¹' Y)
+      (hY.preimage hF.continuous.measurable)
+  -- on each piece, `Y` has approximate tangent space `range DF(u)` at `F(u)` for a.e. `u ∈ Aₗ`
+  have hpiece : ∀ l, ∀ᵐ u ∂(volume : Measure (Euclid k)), u ∈ A l →
+      HasApproximateTangentSpaceAt k Y (F u)
+        (LinearMap.range (fderiv ℝ F u : Euclid k →ₗ[ℝ] Euclid P)) := fun l =>
+    (ae_restrict_iff' (hA l)).1 <|
+      Submission.dpf_approxTangent_ae_bilipschitz_piece P k univ Y F (A l) K (κ l) isOpen_univ hY
+        (subset_univ Y) (fun C hC _ => hfin C hC) hF (hA l) (hκ l) (hbi l) (hreg l)
+        (image_subset_iff.2 (hAY l))
+  -- the exceptional set is a countable union of null sets
+  filter_upwards [ae_all_iff.2 hpiece] with u hu hFu hdiff hinj
+  obtain ⟨l, hl⟩ := hcover u hFu hdiff hinj
+  exact hu l hl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
