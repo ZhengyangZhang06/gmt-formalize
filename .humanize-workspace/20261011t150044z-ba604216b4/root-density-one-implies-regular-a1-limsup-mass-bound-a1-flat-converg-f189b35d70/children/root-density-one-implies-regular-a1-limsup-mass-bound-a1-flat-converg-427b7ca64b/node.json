@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.minor_weak_continuity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1",
+  "depth": 6,
+  "title": "Weak-* continuity of Jacobian minors under uniform convergence with bounded Lipschitz constants (induction on the order)",
+  "statement": "Let k, r ∈ ℕ, L ∈ ℝ≥0, g^j_c, g_c : ℝᵏ → ℝ (j ∈ ℕ, c ∈ Fin r) L-Lipschitz with g^j_c → g_c uniformly on ℝᵏ as j → ∞ for every c, V_0, …, V_{r−1} ∈ ℝᵏ and φ : ℝᵏ → ℝ Lebesgue integrable (ℝᵏ = Euclid k; D = fderiv ℝ, the zero map at non-differentiability points). Then ∫ φ(x)·det(Dg^j_c(x)V_b)_{c,b ∈ Fin r} dx → ∫ φ(x)·det(Dg_c(x)V_b)_{c,b ∈ Fin r} dx as j → ∞.",
+  "lean_statement": "∀ (k r : ℕ) (L : NNReal) (gs : ℕ → Fin r → Euclid k → ℝ) (g : Fin r → Euclid k → ℝ) (V : Fin r → Euclid k) (φ : Euclid k → ℝ), Integrable φ → (∀ j c, LipschitzWith L (gs j c)) → (∀ c, LipschitzWith L (g c)) → (∀ c, TendstoUniformly (fun j => gs j c) (g c) atTop) → Tendsto (fun j => ∫ x, φ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (gs j c) x (V b))) atTop (𝓝 (∫ x, φ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b))))",
+  "lean_name": "dor_lmb_fcd_jwc_minor_weak_continuity",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.minor_bound-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.lipschitz_minor_ibp-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.weak_star_l1_upgrade-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.minor_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.lipschitz_minor_ibp-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.weak_star_l1_upgrade-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-427b7ca64b-a1"
+}

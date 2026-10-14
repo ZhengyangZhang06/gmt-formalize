@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat SNAPSHOT/manifest.json (project_commit b4d606db, mathlib_commit 25730c7c); git -C SNAPSHOT/mathlib rev-parse HEAD (25730c7c); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean workspace GMT/Ch07/Submission.lean (identical)",
+        "rg -n -i 'cylinder|\\[\\[0, ?1\\]\\]|product.?null|hausdorffMeasure.*prod|prod.*hausdorffMeasure' SNAPSHOT/project/GMT -g '*.lean' (no match)",
+        "rg -n 'theorem hausdorffMeasure_le_liminf_tsum|theorem hausdorffMeasure_apply|theorem hausdorffMeasure_prod_real|theorem normDet_sq_eq_det_gram|theorem volume_preserving_piFinSuccAbove|theorem det_succ_row_zero|theorem hausdorffMeasure_image_le|theorem one_le_hausdorffMeasure_zero_of_nonempty|theorem integral_prod' SNAPSHOT/mathlib/Mathlib (all found; the only Hausdorff product result is hausdorffMeasure_prod_real on ℝ × ℝ)",
+        "grep -rn SNAPSHOT/mathlib/Mathlib for Continuous.measurableEmbedding, curryLeftLI, compContinuousLinearMapCLM, lintegral_map, prod_sum_right, map_sum, restrict_iUnion, restrict_congr_set, exists_pos_sum_of_countable, volume_preserving_toLp, setLIntegral_comp_emb, of_dist_le_mul, measurable_fderiv, HasFDerivAt.prodMk, orthonormal_iff_ite, range_cons, map_span, inner_single_left, norm_single, euclideanHausdorffMeasure_def, addHaarScalarFactor_volume_hausdorffMeasure_ne_zero, prod_prod, ae_restrict_iff', lintegral_prod, integral_Ioc_eq_integral_Ioo, image_of_continuousOn_injOn (all found)",
+        "grep of SimonGMT (lake-packages-25730c7c/simongmt): weighted_area_formula_lipschitz_injOn, injective_area_formula_lipschitzOn, areaJacobianAt / areaJacobianAt_eq_normDet, measurable_areaJacobianAt, HasApproximateTangentSpaceAt and .unique, CountablyRectifiable, blowUpMap; Chapter06/Product.lean (only the point product {p} × T)",
+        "python3 scans of RUN/dag.json (2102 nodes) for accepted lean_statements mentioning HasApproximateTangentSpaceAt, Fin.cons, Measure.map, IMRep (found dpf_rectifiable_bilipschitz_pieces, dpf_approxTangent_ae_bilipschitz_piece, regcomp_approx_tangent_locality, ptd_ae_approxTangent_iff_of_subset, cbr_ci_imc_isIntegerMultiplicity_of_rectifiable, dpf_pfc_imrep_pairing_integrable_abs_le, dpf_raf_piece_area_formula_gram); twin node cmcdt_lpi_cylinder_im (decomposing, different hypotheses); lean_name scan and grep of RUN/nodes for the 8 new names (no hits)",
+        "grep/sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose with max_depth 6, _existing_lean_name_problem, _accepted_checkpoint: both reused nodes accepted with candidate commits a2ba78fc and a2168047, _reference_use_problem); verifier gmt-compare.py contract_scope/child_modules (replayed challenge scope); both validate_lean_statement implementations on all 10 types",
+        "lake env lean /tmp/imcyl/lean/Types.lean (11 types, only sorry warnings); lake env lean on Assembly.lean, WireImrep.lean, WireTangent.lean, WireMeasure.lean, WireRect.lean, LeafSuspension.lean, LeafOrientation.lean, LeafProductNull.lean, LeafPieceMeasure.lean and Combined.lean (#print axioms: propext, Classical.choice, Quot.sound)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-959b56b2f3/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-a2fdfc1c6f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8/parent-supplied-natural-proof.md",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/imcyl/lean/Types.lean",
+        "/tmp/imcyl/verified/Assembly.lean",
+        "/tmp/imcyl/verified/WireImrep.lean",
+        "/tmp/imcyl/verified/WireTangent.lean",
+        "/tmp/imcyl/verified/WireMeasure.lean",
+        "/tmp/imcyl/verified/WireRect.lean",
+        "/tmp/imcyl/verified/LeafSuspension.lean",
+        "/tmp/imcyl/verified/LeafOrientation.lean",
+        "/tmp/imcyl/verified/LeafProductNull.lean",
+        "/tmp/imcyl/verified/LeafPieceMeasure.lean",
+        "/tmp/imcyl/verified/Combined.lean"
+      ],
+      "conclusion": "The pins match: project b4d606db, Mathlib 25730c7c, and the workspace Submission is identical to the snapshot Ch07 contract. Neither the snapshot project, Mathlib nor SimonGMT contains a product-null lemma, a product formula for Hausdorff measure on cylinders over rectifiable sets, tangent planes of cylinders, or integrality of [[0,1]] × X. Mathlib's only Hausdorff product result is hausdorffMeasure_prod_real on ℝ × ℝ, and SimonGMT's Product.lean covers only {p} × T. So eight children are new obligations under fresh names dimred_mbl_dt_lp_imc_*. Two needed steps already exist as accepted DAG declarations with exactly the required types and are reused verbatim: dpf_rectifiable_bilipschitz_pieces (B1) and dpf_approxTangent_ae_bilipschitz_piece. Every cited Mathlib/SimonGMT name exists in the pinned sources, for example weighted_area_formula_lipschitz_injOn, normDet_sq_eq_det_gram, hausdorffMeasure_apply / hausdorffMeasure_le_liminf_tsum, volume_preserving_piFinSuccAbove and curryLeftLI. All ten child types elaborate in the comparator's challenge scope and pass both validators. Lean proofs establish every child (leaves outright, the others from their declared siblings) and the selected type, using only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "proof": "Source: parent proof, step 6, rectifiability (M ⊆ M₀ ∪ ⋃_j F_j(ℝⁿ) with Hⁿ(M₀) = 0 and F_j Lipschitz gives M̃ ⊆ ι((0,1) × M₀) ∪ ⋃_j F̃_j(ℝ^{n+1}) with F̃_j(z) := ι(z_0, F_j(tail z)) Lipschitz, the first set being H^{n+1}-null by step 3), for an arbitrary I ⊆ ℝ in place of (0, 1). Siblings used: dimred_mbl_dt_lp_imc_suspension (Lipschitz bound), dimred_mbl_dt_lp_imc_product_null.\n\nNotation. Φ_d(t, u) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) ∈ ℝ^{d+1}; Ψ := Φ_N. For z ∈ ℝ^{n+1}: z₀ := (WithLp.ofLp z) 0, tail z := WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)), so z = Φ_n(z₀, tail z), (Φ_n(t, u))₀ = t, tail Φ_n(t, u) = u.\n\n1. By the definition of CountablyRectifiable n M there are M₀ ⊆ ℝ^N with μHE[n](M₀) = 0 and maps F_j : ℝⁿ → ℝ^N (j ∈ ℕ), F_j K_j-Lipschitz, with M ⊆ M₀ ∪ ⋃_j range F_j.\n\n2. Lifted maps. Put F̃_j(z) := Φ_N(z₀, F_j(tail z)) : ℝ^{n+1} → ℝ^{N+1}. Then F̃_j(Φ_n(t, u)) = Ψ(t, F_j u) for all t, u (Fin.cons_zero, Fin.tail_cons), so the sibling dimred_mbl_dt_lp_imc_suspension (G := F_j, Gh := F̃_j), part (i), shows that F̃_j is max(1, K_j)-Lipschitz.\n\n3. Null part. M̃₀ := Ψ(ℝ × M₀) satisfies μHE[n+1](M̃₀) = 0 by the sibling dimred_mbl_dt_lp_imc_product_null.\n\n4. Covering. Let y ∈ Ψ(I × M), y = Ψ(t, x) with t ∈ I, x ∈ M. If x ∈ M₀, then y ∈ M̃₀. Otherwise x = F_j(u) for some j and u ∈ ℝⁿ, and y = Ψ(t, F_j u) = F̃_j(Φ_n(t, u)) ∈ range F̃_j. Hence Ψ(I × M) ⊆ M̃₀ ∪ ⋃_j range F̃_j.\n\n5. Steps 2–4 are exactly the data required by CountablyRectifiable (n + 1) (Ψ(I × M)) (exceptional set M̃₀, Lipschitz maps F̃_j : ℝ^{n+1} → ℝ^{N+1}). ∎\n\nFormalization note (optional aid; the proof above is self-contained): a complete Lean proof of exactly this statement from the two sibling statements (about 19 lines; axioms propext, Classical.choice, Quot.sound) was compiled during decomposition, file /tmp/imcyl/verified/WireRect.lean on the decomposition host (if available there).",
+  "key_steps": [
+    "Unpack M ⊆ M₀ ∪ ⋃_j range F_j with Hⁿ(M₀) = 0 and F_j Lipschitz.",
+    "Lift F̃_j(z) := Φ_N(z₀, F_j(tail z)), which is Lipschitz by the suspension lemma and satisfies F̃_j(Φ_n(t,u)) = Ψ(t, F_j u).",
+    "Ψ(ℝ × M₀) is H^{n+1}-null by the product-null lemma.",
+    "Ψ(I × M) ⊆ Ψ(ℝ × M₀) ∪ ⋃_j range F̃_j."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.covering-a1.complement_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.covering-a1",
+  "depth": 5,
+  "title": "Bounding the integral over W from a bound on a measurable subset V and |g| ≤ 1",
+  "statement": "Let P ∈ ℕ, let μ be a measure on the Borel σ-algebra of ℝ^P, and let g : ℝ^P → ℝ be μ-a.e. strongly measurable with |g(x)| ≤ 1 for μ-a.e. x. Let θ ∈ ℝ, and let V ⊆ W ⊆ ℝ^P with V measurable, W arbitrary and μ(W) < ∞. If ∫_V g dμ ≤ θ·μ(V), then ∫_W g dμ ≤ μ(W) − (1 − θ)·μ(V). All measures are read as real numbers via ENNReal.toReal, and set integrals are taken with respect to the restricted measure μ⌞S (μ.restrict S).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (θ : ℝ) (V W : Set (Euclid P)), AEStronglyMeasurable g μ → (∀ᵐ x ∂μ, |g x| ≤ 1) → MeasurableSet V → V ⊆ W → μ W < ∞ → ∫ y in V, g y ∂μ ≤ θ * (μ V).toReal → ∫ y in W, g y ∂μ ≤ (μ W).toReal - (1 - θ) * (μ V).toReal",
+  "lean_name": "cbrldvc_setIntegral_le_sub_of_subset",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1a30a84ea7-a1"
+}

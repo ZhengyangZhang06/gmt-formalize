@@ -1,0 +1,76 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.flat_convergence-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.flat_convergence-a1.total_bounded-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 6, proof of Theorem 7.2, the total boundedness (1) derived from the deformation theorem in (2), (3); step 4 of the parent proof, carried out for currents in U through the extension to ℝ^P and restriction back to U (step 3(c) and step 7 of the parent proof). Two elementary facts:
+(F1) Mass subadditivity: for currents A, B with the same domain and every set G, M_G(A − B) ≤ M_G(A) + M_G(B). Indeed, if ω is admissible for M_G then so is −ω, (A − B)(ω) = A(ω) + B(−ω), and ENNReal.ofReal(s + t) ≤ ENNReal.ofReal(s) + ENNReal.ofReal(t); take the supremum over ω.
+(F2) Restriction to U. For Z ∈ 𝒟_d(ℝ^P) write Z|_U := Z.restrictDomain (subset_univ U); then Z|_U(ω) = Z(ω) for ω ∈ 𝒟^d(U) (regarded in 𝒟^d(ℝ^P)), (A − B)|_U = A|_U − B|_U, and M_U(Z|_U) ≤ M_{ℝ^P}(Z), since every form admissible for M_U(Z|_U) is admissible for M_{ℝ^P}(Z) with the same value. If Z is IM, so is Z|_U: let (M_Z, θ_Z, ξ_Z) be an IMRep of Z; (IR) in ℝ^P with E := U (open, hence Borel) gives an IMRep in ℝ^P with carrier M_Z ∩ U, multiplicity θ_Z and orientation ξ_Z. The same data form an IMRep in U (the carrier lies in U, local integrability over compact subsets of U is a special case of local integrability over all compact sets, and the remaining fields do not involve the domain), and it represents Z|_U: every ω ∈ 𝒟^d(U) vanishes outside U, so ∫_{M_Z∩U} θ_Z⟨ω, ξ_Z⟩ dH^d = ∫_{M_Z} θ_Z⟨ω, ξ_Z⟩ dH^d = Z(ω) = Z|_U(ω).
+1. Let c ≥ 1 be the constant given by (DF) for (P, m). Choose ρ > 0 with 2c·ρ·Λ ≤ η: ρ := 1 if η = ∞, and ρ := η.toReal/(2c(Λ + 1)) otherwise (then 2cρΛ = η.toReal·Λ/(Λ + 1) ≤ η.toReal, so in [0, ∞] the inequality c·ENNReal.ofReal(ρ)·Λ + c·ENNReal.ofReal(ρ)·Λ ≤ η holds).
+2. Apply (DF) to (ρ, K, Λ): there is a finite set 𝒬̂ ⊆ 𝒟_{m+1}(ℝ^P) with the deformation property. Let 𝒬 := {Q̂|_U : Q̂ ∈ 𝒬̂}, finite as the image of a finite set.
+3. Let X ∈ 𝒟_{m+1}(U) be IM with spt X ⊆ K, M(X) ≤ Λ and M(∂X) ≤ Λ. The sibling extend_to_univ (applied with the assumed (IR) and (ME)) gives an IM Y ∈ 𝒟_{m+1}(ℝ^P) with Y|_U = X, spt Y ⊆ K, M(Y) ≤ M(X) ≤ Λ and M(∂Y) ≤ M(∂X) ≤ Λ < ∞. By (DF) there are Q̂ ∈ 𝒬̂, R̂ ∈ 𝒟_{m+2}(ℝ^P) and Ŝ ∈ 𝒟_{m+1}(ℝ^P) with Q̂ and R̂ IM, Y − Q̂ − Ŝ = ∂R̂, M(Q̂) ≤ c·M(Y) ≤ cΛ, M(R̂) ≤ cρ·M(Y) ≤ cρΛ and M(Ŝ) ≤ cρ·M(∂Y) ≤ cρΛ.
+4. (Ŝ is IM.) By (F1), M(∂R̂) = M(Y − Q̂ − Ŝ) ≤ M(Y) + M(Q̂) + M(Ŝ) ≤ Λ + cΛ + cρΛ < ∞, so M_G(∂R̂) ≤ M(∂R̂) < ∞ for every open G (mass is monotone in the region). By (BR) applied with U := ℝ^P (open), d := m + 1 and the IM current R̂ ∈ 𝒟_{(m+1)+1}(ℝ^P), ∂R̂ is IM. Evaluating Y − Q̂ − Ŝ = ∂R̂ at any ω gives Ŝ(ω) = Y(ω) − Q̂(ω) − ∂R̂(ω), i.e. Ŝ = (Y − Q̂) − ∂R̂, which is IM by (IS) applied twice.
+5. Put Q := Q̂|_U ∈ 𝒬, R := R̂|_U and S := Ŝ|_U; R and S are IM by (F2). For ω ∈ 𝒟^{m+1}(U), dω ∈ 𝒟^{m+2}(U) and (X − Q − S)(ω) = Y(ω) − Q̂(ω) − Ŝ(ω) = ∂R̂(ω) = R̂(dω) = R(dω) = ∂R(ω), using Y|_U = X. Hence X − Q − S = ∂R.
+6. By (F2), M(R) + M(S) ≤ M(R̂) + M(Ŝ) ≤ 2cρΛ ≤ η. ∎
+
+## Key steps
+
+1. Fix ρ with 2cρΛ ≤ η and the finite family 𝒬̂ of (DF) for (ρ, K, Λ); 𝒬 is the set of its restrictions to U.
+2. Extend X to Y on ℝ^P (sibling extend_to_univ) and deform: Y − Q̂ − Ŝ = ∂R̂ with M(R̂), M(Ŝ) ≤ cρΛ.
+3. ∂R̂ has finite mass, so it is IM by (BR), and Ŝ = (Y − Q̂) − ∂R̂ is IM by (IS).
+4. Restricting Q̂, R̂, Ŝ to U preserves IM (via (IR)), the identity and the mass bounds.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n "cmc_fc_|flat.?conver|deformation|slic" local-references/123e8435b4a2469b/project/GMT --glob '*.lean'`
+- `rg -n -i "flat norm|flat convergence|deformation theorem|federer.?fleming" local-references/123e8435b4a2469b/mathlib/Mathlib --glob '*.lean' (no match)`
+- `rg -n "theorem FiniteMeasure.limsup_measure_closed_le_of_tendsto|theorem Monotone.ae_differentiableAt|theorem MonotoneOn.intervalIntegral_deriv_mem_uIcc|theorem measurable_deriv |theorem tendsto_of_subseq_tendsto|theorem extraction_of_frequently_atTop |theorem exists_contMDiffMap_one_nhds_of_subset_interior|theorem lipschitz_infDist_pt|theorem _root_.IsCompact.exists_cthickening_subset_open|theorem integral_withDensity_eq_integral_smul |theorem lintegral_liminf_le " local-references/123e8435b4a2469b/mathlib/Mathlib --glob '*.lean'`
+- `rg -n "theorem HasDerivAt.tendsto_slope_zero_left|theorem ENNReal.tsum_geometric|theorem Finite.exists_infinite_fiber|theorem countable_meas_level_set_pos|theorem ENNReal.ofReal_tsum_of_nonneg|theorem withDensity_absolutelyContinuous|theorem tendsto_measure_iInter_atTop|theorem Summable.of_norm_bounded " local-references/123e8435b4a2469b/mathlib/Mathlib --glob '*.lean'`
+- `grep -n '^def \|^theorem \|^structure ' in lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Forms}.lean; grep -n 'theorem simon_theorem_4_16_compact_metrizable\|theorem finiteMeasure_tendsto_subseq_of_compact_metrizable' Chapter01/CompactMetrizableCompactness.lean; grep -n 'countablyRectifiable_of_measure_zero' Chapter03/Rectifiable.lean`
+- `python3 scan of dag.json: siblings of root.compactness_of_minimizing_currents-a1 and their frozen types; cross-parent dependency edges (only accepted nodes); accepted reusable declarations (dtc_vanish_off_support, dtc_isIntegerMultiplicity_sub, dtc_extend_by_zero, dtc_restrictDomain_isIntegerMultiplicity, dor_imrep_massOn_eq_measure_and_support, rsd_cmr_imrep_restrict, dor_ims_unitOrientation_dual); collisions of the seven cmc_fc_* names (none)`
+- `sed -n 1790,1960p, 2000,2200p, 3150,3260p, 5071,5200p, 6480,6620p /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py (_solve_children, _existing_lean_name_problem, _overlay_accepted_children, _node_worktree, _leaf_author_task)`
+- `sed -n 2004,2140p book/chapter-06.txt (Simon Ch. 6, 7.1–7.2)`
+- `lake env lean /tmp/fcdec/Types.lean (8 child types + 5 conjunct projections); lake env lean /tmp/fcdec/Assembly.lean (#print axioms fc_assembly); lake env lean /tmp/fcdec/Inst.lean (pp.explicit Sub instance); lake env lean /tmp/fcdec/Avail.lean … /tmp/fcdec/Avail5.lean (#check probes of the import closure of GMT.Ch07.Submission)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Portmanteau.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1/decomposition-v5.json`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/fcdec/Types.lean`
+- `/tmp/fcdec/Assembly_checked.lean`
+- `/tmp/fcdec/Inst.lean`
+- `/tmp/fcdec/Avail.lean`
+- `/tmp/fcdec/Avail2.lean`
+- `/tmp/fcdec/Avail3.lean`
+- `/tmp/fcdec/Avail4.lean`
+- `/tmp/fcdec/Avail5.lean`
+
+The snapshot (project b4d606db, mathlib 25730c7c) Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. The snapshot has no cmc_fc_ declaration. Neither the snapshot project nor Mathlib proves slicing, deformation, closure or flat convergence; the Ch06 contract only states slices as its own frozen sorry. These therefore remain the parent's prerequisite theorems and reach the children as exact antecedents. The pinned Mathlib supplies the elementary tools the children cite: isCompact_univ_pi, IsCompact.tendsto_subseq, tendsto_pi_nhds, Monotone.countable_not_continuousAt, lintegral_liminf_le, lintegral_lintegral_swap, measurable_measure_prodMk_left, Filter.Tendsto.liminf_le_liminf_comp, exists_contMDiffMap_one_nhds_of_subset_interior, IsCompact.exists_cthickening_subset_open, lipschitz_infDist_pt, integral_withDensity_eq_integral_smul, withDensity_absolutelyContinuous, Finite.exists_infinite_fiber, ENNReal.tsum_geometric and HasSum.tendsto_sum_nat. #check confirms all of them after import GMT.Ch07.Submission. FiniteMeasure.limsup_measure_closed_le_of_tendsto, MonotoneOn.intervalIntegral_deriv_mem_uIcc and SimonGMT finiteMeasure_tendsto_subseq_of_compact_metrizable exist in the pinned sources but lie outside that import closure, so good_slice avoids them. Among accepted DAG declarations, dtc_vanish_off_support is reused with its identical type. The eight child types elaborate, and the conditional assembly of the exact parent type compiles with only propext, Classical.choice and Quot.sound.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.density_bounds-a1.eventual_bounds-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.density_bounds-a1",
+  "depth": 6,
+  "title": "Small-radius density bounds from a ball-mass inequality and liminf/limsup/Tendsto hypotheses",
+  "statement": "Let n ∈ ℕ, ω_n = unitBallVolume n (the volume of the open unit ball of ℝⁿ) and V(r) = ω_n·ofReal(rⁿ). Let m, h, H, o : ℝ → [0,∞]. Let θ₀, η₁ ∈ ℝ with θ₀ > 0 and η₁ > 0, and let K ∈ [0,∞] with K ≠ ∞. All limits below are taken as r ↓ 0, i.e. along the filter 𝓝[>] 0. Assume (B) m(r) ≤ ofReal θ₀·h(r) + K·o(r) for all r > 0; (L) ofReal η₁ ≤ liminf m(r)/V(r); (U) limsup H(r)/V(r) ≤ 1; and (D) o(r)/V(r) → 0. Then there is r₀ > 0 such that for all r with 0 < r < r₀: ofReal(η₁/(4θ₀))·V(r) ≤ h(r) and H(r) ≤ 2·V(r).",
+  "lean_statement": "∀ (n : ℕ) (m h H o : ℝ → ℝ≥0∞) (θ₀ η₁ : ℝ) (K : ℝ≥0∞), 0 < θ₀ → 0 < η₁ → K ≠ ∞ → (∀ r : ℝ, 0 < r → m r ≤ ENNReal.ofReal θ₀ * h r + K * o r) → ENNReal.ofReal η₁ ≤ liminf (fun r : ℝ => m r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) → limsup (fun r : ℝ => H r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1 → Tendsto (fun r : ℝ => o r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0) → ∃ r₀ : ℝ, 0 < r₀ ∧ ∀ r : ℝ, 0 < r → r < r₀ → ENNReal.ofReal (η₁ / (4 * θ₀)) * (unitBallVolume n * ENNReal.ofReal (r ^ n)) ≤ h r ∧ H r ≤ 2 * (unitBallVolume n * ENNReal.ofReal (r ^ n))",
+  "lean_name": "cbr_ci_bl_db_eventual_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-25ca54fba0-a1"
+}

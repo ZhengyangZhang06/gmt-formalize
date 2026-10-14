@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.lower_density-a1.local_filling-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.lower_density-a1",
+  "depth": 6,
+  "title": "Small fillings of sphere slices at low-density points from the in-range isoperimetric filling, d + 1 < P (parent steps 2–4)",
+  "statement": "Assume (SL), (MR) and (Isor), which appear verbatim as the three hypotheses of the Lean statement. (SL) is the exact frozen type of the accepted cmc_slice_mass_bounds: for an open U ⊆ ℝ^P, T ∈ 𝒟_{k+1}(U) represented by (μ, ξ) together with ∂T represented by (μ', ξ') (measures finite on compact subsets of U, a.e. strongly measurable fields with |ξ(x)(α)| ≤ |α| a.e.) and an L-Lipschitz f, there are A_t, B_t with A_t(ω) = ∫_{f<t}ξ(ω)dμ, B_t(η) = ∫_{f<t}ξ'(η)dμ', ∂A_t(η) = B_t(η) whenever tsupport η misses {f = t}, M_W(∂A_t − B_t) ≤ L·liminf_{h↓0} h⁻¹μ(W ∩ {t − h < f < t}) for open W, and the integrated bound. (MR) is the exact frozen type of the accepted cmc_massOn_eq_imRep_measure: M_W(T) = R.measure(W) for every IMRep R of T ∈ 𝒟_n(U), U and W open. (Isor) is the in-range isoperimetric filling, verbatim the third hypothesis of the selected parent: for all P, m ∈ ℕ with m + 1 < P there is a real c ≥ 1 such that every integer multiplicity Z ∈ 𝒟_{m+1}(ℝ^P) with compact support, ∂Z = 0 and M(Z) < ∞ equals ∂Y for an integer multiplicity Y ∈ 𝒟_{m+2}(ℝ^P) with M(Y) ≤ c(2cM(Z))^{1/(m+1)}M(Z) and spt Y ⊆ thickening(3√P(2cM(Z))^{1/(m+1)}, spt Z) (M(Z) read as a real number). Then for all P, d ∈ ℕ with d + 1 < P there is η₀ > 0 with the following property. Let C ∈ 𝒟_{d+1}(ℝ^P) with ∂C = 0, μ a Borel measure on ℝ^P with μ(K) < ∞ for every compact K, ξ a μ-a.e. strongly measurable field of (d+1)-vectors with |ξ(x)(α)| ≤ |α| for μ-a.e. x and all α and C(ω) = ∫ξ(ω)dμ for every test form ω, and suppose C has the integer slice property ISP (verbatim the ISP hypothesis of the selected parent: for all admissible representations (μ₁, ξ₁) of C and (μ₁', ξ₁') of ∂C and every Lipschitz f, for L¹-a.e. t, all currents A ∈ 𝒟_{d+1}(ℝ^P), B ∈ 𝒟_d(ℝ^P) with A(ω) = ∫_{f<t}ξ₁(ω)dμ₁ and B(η) = ∫_{f<t}ξ₁'(η)dμ₁' have ∂A − B integer multiplicity). If x₁ ∈ ℝ^P satisfies liminf_{r↓0} μ(B_r(x₁))/(ω_{d+1}r^{d+1}) < η₀ (ω_{d+1} = unitBallVolume (d+1), quotient in [0, ∞], liminf along 𝓝[>] 0), then for every δ > 0 there are ρ ∈ (0, δ) with μ(∂B_ρ(x₁)) = 0 and currents A, S ∈ 𝒟_{d+1}(ℝ^P) with A(ω) = ∫_{B_ρ(x₁)} ξ(ω)dμ for every test form ω, ∂S = ∂A, M(S) ≤ ½·μ(B_ρ(x₁)) and spt S ⊆ B̄_{(1+3√P)δ}(x₁).",
+  "lean_statement": "(∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 1 ≤ c ∧ ∀ Z : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Z → IsCompact Z.support → Z.boundary = 0 → Z.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity Y ∧ Y.boundary = Z ∧ Y.mass ≤ ENNReal.ofReal (c * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1)) * Z.mass.toReal) ∧ Y.support ⊆ thickening (3 * Real.sqrt P * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1))) Z.support) → ∀ (P d : ℕ), d + 1 < P → ∃ η₀ : ℝ, 0 < η₀ ∧ ∀ (C : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)), C.boundary = 0 → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (C).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → ∀ x₁ : Euclid P, liminf (fun r : ℝ => μ (ball x₁ r) / (unitBallVolume (d + 1) * ENNReal.ofReal (r ^ (d + 1)))) (𝓝[>] 0) < ENNReal.ofReal η₀ → ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ μ (sphere x₁ ρ) = 0 ∧ ∃ (A S : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in ball x₁ ρ, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) ∧ S.boundary = A.boundary ∧ S.mass ≤ ENNReal.ofReal (1 / 2) * μ (ball x₁ ρ) ∧ S.support ⊆ closedBall x₁ ((1 + 3 * Real.sqrt P) * δ)",
+  "lean_name": "dtc_bc_tc_cl_ld_exists_small_filling",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.slice-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.radius-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.mass_gap-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.local_filling-a1.small_scale-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.local_filling-a1.constants-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.slice-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-431a500905-a1",
+      "result_commit": "c226ea8f92107f43aeaa2e467c96b78f0c496960",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.radius-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-03b7966d86-a1",
+      "result_commit": "215074ec7e0fa6a1701b78cbd48d0787bad62d32",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.mass_gap-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-8525b020e6-a1",
+      "result_commit": "d57ff8dadd2514897baeb94fa067c84c914df86e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.local_filling-a1.small_scale-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-edc747c1cf-a1",
+      "result_commit": "8dc7218dd1177e6a9b14a1a0aa4deb0efa1af3f6",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.local_filling-a1.constants-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e3654bb227-a1",
+      "result_commit": "1751929c6f263e153adf12491c1a853514c48fcf",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-ddc44c238a-a1"
+}

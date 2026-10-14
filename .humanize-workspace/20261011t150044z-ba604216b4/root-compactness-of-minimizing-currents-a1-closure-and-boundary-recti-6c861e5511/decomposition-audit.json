@@ -1,0 +1,119 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbr_ci_cp_|regcomp_covector_eval_orthonormal_le|regcomp_exists_covector_eval_orthonormal_eq_one|idtp_tdc_subspace_ball_measure|dgcr_bwd_extDeriv_smul_const|abbrev MultiVector|def unitBallVolume",
+        "def covectorEuclideanNorm|abbrev Covector|def IsTestForm|def TestFormOn|abbrev exteriorDerivative|theorem exteriorDerivative_apply",
+        "tendsto_measure_biInter_gt|tendsto_measure_iInter_atTop|theorem sum_apply|theorem prod_apply|theorem lintegral_tsum|starProjection_add_starProjection_orthogonal",
+        "python3 -I /tmp/cp-independent-audit-BbmfFW/check.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cp-independent-audit-BbmfFW/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cp-independent-audit-BbmfFW/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cp-independent-audit-BbmfFW/Reuse_covector_eval_le.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cp-independent-audit-BbmfFW/Reuse_covector_norming.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cp-independent-audit-BbmfFW/Reuse_subspace_ball.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cp-independent-audit-BbmfFW/Reuse_extderiv_smul.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6c861e5511/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6c861e5511/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Sum.lean",
+        "/tmp/cp-independent-audit-BbmfFW/check.py",
+        "/tmp/cp-independent-audit-BbmfFW/Types.lean",
+        "/tmp/cp-independent-audit-BbmfFW/Assembly.lean",
+        "/tmp/cp-independent-audit-BbmfFW/Reuse_covector_eval_le.lean",
+        "/tmp/cp-independent-audit-BbmfFW/Reuse_covector_norming.lean",
+        "/tmp/cp-independent-audit-BbmfFW/Reuse_subspace_ball.lean",
+        "/tmp/cp-independent-audit-BbmfFW/Reuse_extderiv_smul.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected constant-planes theorem. The snapshot contract matches the workspace contract. All 12 exact, standalone, one-line propositions elaborate and pass validate_lean_statement; their hypotheses match their prose. All names are bare identifiers. No proposed cbr_ci_cp_ name occurs in the searched snapshot project/GMT or the DAG. The four reused declarations have comparator-accepted records and byte-identical frozen types; independent recompilation confirms only propext, Classical.choice and Quot.sound as their axioms. Proposed dependencies and reused dependency closures are acyclic and avoid the selected parent. An independently written Lean assembly proves the exact frozen parent type from the eight new child contracts, with only those standard axioms. Conditional children correctly receive earlier conclusions as hypotheses rather than requiring additional dependency edges. Projection, smoothness, measure restriction, scalar multiplication and arbitrary-index Measure.sum constructions have the intended meanings; no matrix IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_eval_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The supplied proof independently establishes Hilbert–Schmidt invariance, extends the frame, and compares its permutation contributions. Factorial cancellation proves the exact norm bound, including n = 0."
+    },
+    {
+      "key": "covector_norming",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The determinant defines a continuous alternating covector, evaluates to 1 on the frame, and has coefficient norm 1 by the explicitly proved Hilbert–Schmidt identity and permutation count."
+    },
+    {
+      "key": "subspace_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Isometric inclusion, normalized Hausdorff measure on the subspace, Haar scaling and a volume-preserving orthonormal identification establish precisely the stated formula, including dimension zero."
+    },
+    {
+      "key": "extderiv_smul",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Differentiability at the specified point suffices. The exterior-derivative expansion and scalar product rule give the exact deletion indices, signs and factors without stronger regularity assumptions."
+    },
+    {
+      "key": "translation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies compact domination for differentiation under the integral, applies the directional hypothesis to translated tests, and constructs smooth approximations with common compact support. Dominated convergence and regular-measure uniqueness yield the exact preimage invariance."
+    },
+    {
+      "key": "directional",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared exterior-derivative dependency constructs the wedge and verifies its formula. Riesz representatives generate V; integrability justifies extending vanishing integrals linearly to its span. Orthogonality then proves the full quantified annihilation conclusion."
+    },
+    {
+      "key": "projection_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The adapted-basis expansion is justified on all basis tuples. Laplace expansion has the correct deletion order and signs, so every coefficient involving V-perpendicular directions is annihilated. Projection preserves exactly the remaining coefficients."
+    },
+    {
+      "key": "growth_dimension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Growth makes the positive unit-ball mass finite. Translation invariance gives equal masses to disjoint packed balls, and the explicit lattice count contradicts r > n. The r = 0 case is handled separately."
+    },
+    {
+      "key": "normalization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Linear dependence excludes dimension below d+1. Top-degree uniqueness gives the scalar representation, and the two declared norm lemmas force its scalar to be ±1. Since d+1 is positive, flipping the first frame vector resolves the negative sign."
+    },
+    {
+      "key": "product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The transverse measure is explicitly constructed and proved supported and locally finite. Haar uniqueness establishes rectangle values; the proof supplies sigma-finiteness, Borel generation and a finite-measure covering before invoking measure uniqueness. This proves the exact ambient integral formula."
+    },
+    {
+      "key": "atoms",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ball estimate and continuity from above rigorously transfer the density bound to transverse singleton masses. Local finiteness makes Z countable; the product formula proves concentration on Z. Countable integration and isometry invariance yield the exact sum of plane measures."
+    },
+    {
+      "key": "finite_planes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The full proof uses the correct piecewise plane-ball formula, including n = 0. Growth bounds every finite weight sum, forcing Z finite and all weights finite; enumeration and toReal give the required real coefficients. Small-ball positivity forces a zero offset. No initial countability or measurability of a is needed."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.directional-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1",
+  "depth": 5,
+  "title": "The cycle condition gives a subspace V of directional invariances such that ζ₀ kills w^♭∧α for w ⊥ V",
+  "statement": "Let P, d ∈ ℕ, n := d+1, ν a Borel measure on ℝ^P with ν(K) < ∞ for compact K, and ζ₀ ∈ Λ_n(ℝ^P) (MultiVector P n, a continuous linear functional on n-covectors). Assume ∫ζ₀(dφ(y))dν(y) = 0 for every test d-form φ on ℝ^P (φ ∈ TestFormOn univ d; d = exteriorDerivative). Then there is a linear subspace V ⊆ ℝ^P such that (a) ∫Dψ(y)[v]dν(y) = 0 for every v ∈ V and every C^∞ function ψ : ℝ^P → ℝ with compact support, and (b) ζ₀(γ) = 0 whenever w ∈ V^⊥, α is a d-covector and γ is an n-covector with γ(u_0, …, u_d) = Σ_{i=0}^{d}(−1)^i⟨w, u_i⟩α(u_0, …, û_i, …, u_d) for all u (û_i omitted, i.e. α(Fin.removeNth i u)); such a γ is w^♭∧α.",
+  "lean_statement": "∀ (P d : ℕ) (ν : Measure (Euclid P)) (ζ₀ : MultiVector P (d + 1)), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : TestFormOn (univ : Set (Euclid P)) d, ∫ y, ζ₀ (exteriorDerivative (φ : DifferentialForm (Euclid P) d) y) ∂ν = 0) → ∃ V : Submodule ℝ (Euclid P), (∀ v ∈ V, ∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0) ∧ ∀ w ∈ Vᗮ, ∀ (α : Covector (Euclid P) d) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → ζ₀ γ = 0",
+  "lean_name": "cbr_ci_cp_wedge_annihilator_subspace",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.extderiv_smul_const-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.extderiv_smul_const-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-18aa777bf2-a1",
+      "result_commit": "9dcae6bdd56dfe358491f8344e7a8610f929bf88",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-eb599607aa-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.product_null-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1",
+  "depth": 6,
+  "title": "Product-null lemma: ℝ × (Hⁿ-null set) is H^{n+1}-null (parent step 3)",
+  "statement": "For N, n ∈ ℕ and Z ⊆ ℝ^N with Hⁿ(Z) = 0 (Hⁿ := μHE[n]), the set Ψ(ℝ × Z) = {(t, x_1, …, x_N) : t ∈ ℝ, x ∈ Z} ⊆ ℝ^{N+1} has H^{n+1}(Ψ(ℝ × Z)) = 0, where Ψ(t, x) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)).",
+  "lean_statement": "∀ (N n : ℕ) (Z : Set (Euclid N)), μHE[n] Z = 0 → μHE[n + 1] ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (univ ×ˢ Z)) = 0",
+  "lean_name": "dimred_mbl_dt_lp_imc_product_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-d17090646a-a1"
+}

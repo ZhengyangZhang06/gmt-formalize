@@ -1,0 +1,89 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.isp_of_im-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof step 5 (V4(i)), with all details supplied; Simon Ch. 6, 4.5(2)–(3) (chapter-06.txt lines 1235–1245) for the slicing identity behind (SL). The parent's extra assumption that X and ∂X have locally finite mass is not needed, because the IMRep measures used below are finite on compact sets. Notation: |α| := covectorEuclideanNorm α; M_W(X) := X.massOn W.
+Let (μ, ξ), (μ', ξ') be admissible representations of X and ∂X, and let f be L-Lipschitz. Then f is continuous and E_t := {f < t} is a Borel set for every t (measurableSet_lt).
+1. Slices. Apply (SL) with U := ℝ^P (open), k := d, T := X and μ, μ', ξ, ξ', f, L; its hypotheses are exactly the admissibility assumptions (finiteness on compact subsets, a.e. strong measurability, a.e. bounds, the two representation formulas) and the Lipschitz property. It yields currents A_t ∈ 𝒟_{d+1}(ℝ^P), B_t ∈ 𝒟_d(ℝ^P) (t ∈ ℝ) with A_t(ω) = ∫_{E_t} ξ(ω) dμ and B_t(η) = ∫_{E_t} ξ'(η) dμ' for all test forms, such that Z_t := ∂A_t − B_t satisfies M_G(Z_t) ≤ L·liminf_{h↓0} h⁻¹μ(G ∩ {t − h < f < t}) for every open G and every t.
+2. Z_t has locally finite mass for a.e. t. Fix k, m ∈ ℕ and apply (MM) with the constant sequence μ_j := μ, G := B_k(0) (open ball), (a, b) := (−m, m), L, and Z_j(t) := M_{B_k(0)}(Z_t) for all j. Its hypotheses hold: f is continuous; μ(B_k(0) ∩ {−m < f < m}) ≤ μ(B̄_k(0)) < ∞ since closed balls are compact; and for t ∈ (−m, m), Z_j(t) ≤ L·liminf_h h⁻¹μ(B_k(0) ∩ {t−h<f<t}) by step 1. (MM) gives a measurable g : ℝ → [0, ∞] with liminf_j Z_j(t) ≤ g(t) for a.e. t ∈ (−m, m) and ∫_{(−m,m)} g ≤ L·liminf_j μ(B_k(0) ∩ {−m<f<m}). The sequences are constant, so liminf_j Z_j(t) = M_{B_k(0)}(Z_t) and the bound is L·μ(B_k(0) ∩ {−m<f<m}) < ∞ (Filter.liminf_const). A measurable function with finite integral over (−m, m) is finite a.e. there (ae_lt_top for volume.restrict (−m, m), then ae_restrict_iff'). Hence for a.e. t: t ∈ (−m, m) ⇒ M_{B_k(0)}(Z_t) < ∞. Intersecting these countably many full-measure sets (ae_all_iff over m, then over k) and taking m > |t|, we get a Lebesgue-null set N such that M_{B_k(0)}(Z_t) < ∞ for all k ∈ ℕ and all t ∉ N. If W is open with compact closure, then W is bounded, W ⊆ B_k(0) for some k, and M_W(Z_t) ≤ M_{B_k(0)}(Z_t) < ∞ for t ∉ N (massOn_mono). Fix t ∉ N for steps 3–8.
+3. Integrals against IMRep measures. Let R = (M_R, θ, ζ) be an IMRep in ℝ^P of degree q and ν := R.measure = (H^q⌞M_R) with density θ. (i) For compact K, ν(K) = ∫⁻_{M_R ∩ K} θ dH^q < ∞ (withDensity_apply, Measure.restrict_restrict, field locallyIntegrable_mult). (ii) ν ≪ H^q⌞M_R (withDensity_absolutelyContinuous); hence ζ is ν-a.e. strongly measurable (field aestronglyMeasurable_orient, AEStronglyMeasurable.mono_ac) and, by (IMC)(d), |ζ(x)(α)| ≤ |α| for ν-a.e. x and all α (AbsolutelyContinuous.ae_le). (iii) For every Borel E and every q-form ω, ∫_E ζ(ω) dν = ∫_{M_R ∩ E} θ·ζ(ω) dH^q: indeed ν⌞E = ((H^q⌞M_R)⌞E) with density θ (restrict_withDensity) = (H^q⌞(E ∩ M_R)) with density θ (Measure.restrict_restrict), and ∫ h d(λ with density θ) = ∫ θ·h dλ for the measurable ℝ≥0-valued density x ↦ θ(x) (integral_withDensity_eq_integral_smul with f := fun x => (R.mult x : ℝ≥0); no integrability is needed). With E = ℝ^P this gives ∫ ζ(ω) dν = R.action(ω).
+4. A_t is integer multiplicity. Let R_X be an IMRep of X. (IMC)(b) with E := E_t (Borel) gives a current A' and an IMRep R' representing A' with carrier M_{R_X} ∩ E_t, multiplicity θ_X and orientation ζ_X. Apply (RU) with k := d + 1, U := ℝ^P, (μ₁, ξ₁) := (μ, ξ), (μ₂, ξ₂) := (R_X.measure, ζ_X), (μ₃, ξ₃) := (0, 0): the finiteness, measurability and bound hypotheses hold by admissibility of (μ, ξ), by step 3(i)(ii), and trivially for the zero measure; the identity ∫ξ(ω)dμ = ∫ζ_X(ω)dR_X.measure + ∫0 d0 holds because both sides equal X(ω) (admissibility; step 3(iii) with E = ℝ^P and R_X.Represents X). (RU) with B := E_t and then step 3(iii) with E := E_t give, for every ω, A_t(ω) = ∫_{E_t} ξ(ω) dμ = ∫_{E_t} ζ_X(ω) dR_X.measure = ∫_{M_{R_X} ∩ E_t} θ_X ζ_X(ω) dH^{d+1} = R'.action(ω). So R' represents A_t and A_t is integer multiplicity.
+5. B_t is integer multiplicity: the same argument with an IMRep R_∂ of ∂X (degree d), the pair (μ', ξ') and (RU) with k := d shows that the IMRep obtained from R_∂ by (IMC)(b) with E := E_t represents B_t.
+6. ∂A_t is integer multiplicity. Let W be open with compact closure. (i) M_W(B_t) ≤ μ'(closure W) < ∞: for a W-admissible η (tsupport η ⊆ W, |η(x)| ≤ 1), η(x) = 0 for x ∉ closure W, so |ξ'(x)(η(x))| ≤ |η(x)| ≤ 1_{closure W}(x) for μ'-a.e. x, and ofReal(B_t(η)) ≤ ‖∫_{E_t} ξ'(η) dμ'‖ₑ ≤ ∫⁻_{E_t} ‖ξ'(η)‖ₑ dμ' ≤ ∫⁻_{E_t} 1_{closure W} dμ' ≤ μ'(closure W) (enorm_integral_le_lintegral_enorm, lintegral_mono_ae, lintegral_indicator_one); take the supremum over η. (ii) M_W(Z_t) < ∞ by step 2. (iii) ∂A_t(η) = 1·Z_t(η) + 1·B_t(η) for every η, so the sibling cbr_cc_current_algebra (b) gives M_W(∂A_t) ≤ M_W(Z_t) + M_W(B_t) < ∞. Now BR(d) with U := ℝ^P and R := A_t (integer multiplicity by step 4) shows that ∂A_t is integer multiplicity.
+7. Z_t = ∂A_t − B_t is integer multiplicity by (IMC)(c) (ℝ^P is open; steps 5 and 6).
+8. Conclusion. Let t ∉ N and let A ∈ 𝒟_{d+1}(ℝ^P), B ∈ 𝒟_d(ℝ^P) satisfy A(ω) = ∫_{E_t}ξ(ω)dμ and B(η) = ∫_{E_t}ξ'(η)dμ' for all test forms. Then A and A_t, and B and B_t, agree on all test forms, so A = A_t and B = B_t (GeometricCurrentOn.ext), and ∂A − B = Z_t is integer multiplicity by step 7. Since N is null, this holds for L¹-a.e. t; as (μ, ξ), (μ', ξ') and f were arbitrary, X has the integer slice property. ∎
+
+## Key steps
+
+1. (SL) provides slice currents A_t, B_t of X and the liminf bound for M_G(∂A_t − B_t).
+2. (MM) with constant sequences and a countable intersection: for a.e. t, ∂A_t − B_t has locally finite mass.
+3. IMRep measures are admissible and ∫_E ζ dR.measure = ∫_{M∩E} θζ dHⁿ; with (IMC)(b) and (RU) this makes A_t and B_t integer multiplicity.
+4. M_W(B_t) ≤ μ'(closure W) and current_algebra (b) give locally finite M(∂A_t); BR(d) makes ∂A_t IM and (IMC)(c) makes ∂A_t − B_t IM.
+5. Any A, B with the slice formulas equal A_t, B_t, so X has the integer slice property.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); read GMT/Ch07/Contract.lean (IMRep, IMRep.action/measure/Represents, IsIntegerMultiplicity, Sub instance, boundaryMassOn, CompactlyContained)`
+- `python3 scan of dag.json: frozen lean_statement of the selected node and of the siblings restrict_unique, convergence_tools, isoperimetric, slice_limit, cycle_im; search of accepted reusable declarations (rsd_cmr_support_subset_of_vanish, dtc_imrep_current, rsd_isIntegerMultiplicity_int_combination, dor_imrep_massOn_eq_measure_and_support, dor_zdm_imrep_zero_structure, regcomp_covector_eval_orthonormal_le, dtc_point_current); lean_name collision check (no name with prefix cbr_cc_; the two reused names map only to accepted nodes with byte-identical lean_statement); 153 existing cross-branch reuse edges`
+- `grep -n '_existing_lean_name_problem|_solve_children|_install_parent_supplied_child_handoff|_accepted_checkpoint' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py; sed -n 1,80p speculation.py (prerequisites of a node = its children + depends_on; accepted theorems may be reused by Lean name under a different parent)`
+- `grep in snapshot mathlib/Mathlib for: euclideanHausdorffMeasure_zero, hausdorffMeasure_zero_singleton, Isometry.map_euclideanHausdorffMeasure, Isometry.euclideanHausdorffMeasure_image, InnerProductSpace.euclideanHausdorffMeasure_eq_volume, integral_withDensity_eq_integral_smul, restrict_withDensity, restrict_restrict, withDensity_absolutelyContinuous, AEStronglyMeasurable.mono_ac, ae_lt_top, liminf_le_limsup, limsup_le_iSup, integral_eq_sub_of_hasDerivAt, extDeriv_apply, extDeriv_constOfIsEmpty, Filter.EventuallyEq.extDeriv_eq, ContinuousAlternatingMap.apply, constOfIsEmpty, ofSubsingleton, setIntegral_eq_of_subset_of_ae_sdiff_eq_zero, setIntegral_finset, integral_biUnion_finset, integrableOn_singleton_iff, sum_measure_singleton, Infinite.exists_subset_card_eq, Isometry.isClosedEmbedding, MeasurableEmbedding.integral_map, Measure.restrict_map, finrank_span_singleton, PiLp.norm_apply_le, segment_eq_image`
+- `read lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Forms}.lean and Chapter03/Rectifiable.lean (GeometricCurrentOn, boundary, boundary_boundary, massOn/massAdmissibleOn, le_massOn, massOn_mono, WeaklyConvergesOn.massOn_le_liminf, WeaklyConvergesOn.boundary, zeroRegion/support, tsupport_exteriorDerivative_subset, CountablyRectifiable, countablyRectifiable_range, countablyRectifiable_of_measure_zero, blowUpMap, HasApproximateTangentSpaceAt)`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement on all 8 child statements (pass); verifier/gmt-compare.py contract_scope (replay: open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt); noncomputable section)`
+- `lake env lean /tmp/cc-decomp-k7/lean/{Types,Assembly,Fill,Isp,Sub,Alg,Zero,Seg}.lean with #print axioms (Types: 8 child types elaborate; Assembly: frozen node type from 8 child types + 5 sibling types; the other six: each new child from its hypotheses and declared sibling types; all report propext, Classical.choice, Quot.sound)`
+- `sed -n on /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt: 195,215p (2.2), 295,320p (2.11-2.14), 730,770p (3.1-3.2), 860,870p (3.10), 1230,1250p (4.5), 1935,1962p (6.1), 2280,2480p (8.2-8.3)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b218e818f5/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b218e818f5/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/parent-supplied-natural-proof.md`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/speculation.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/SumMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/cc-decomp-k7/lean/Types.lean`
+- `/tmp/cc-decomp-k7/lean/Assembly.lean`
+- `/tmp/cc-decomp-k7/lean/Fill.lean`
+- `/tmp/cc-decomp-k7/lean/Isp.lean`
+- `/tmp/cc-decomp-k7/lean/Sub.lean`
+- `/tmp/cc-decomp-k7/lean/Alg.lean`
+- `/tmp/cc-decomp-k7/lean/Zero.lean`
+- `/tmp/cc-decomp-k7/lean/Seg.lean`
+
+Snapshot findings:
+- The workspace Contract.lean is the frozen contract, and the pinned snapshot (project b4d606d, mathlib 25730c7c) supplies every Mathlib/SimonGMT lemma cited in the child proofs. SimonGMT has no slicing, filling, segment-current or zero-current structure results, which justifies the split.
+- Two accepted declarations fit exactly and are reused by Lean name with byte-identical frozen types: `rsd_cmr_support_subset_of_vanish` (accepted, candidate commit present) and `dtc_imrep_current` (accepted). The runtime reuses such accepted nodes without a new worker.
+- The new names (prefix `cbr_cc_`) collide with no DAG declaration.
+- Children may use only their own children and depends_on, so the parent's dependency statements (REP, MR, IMC, SL, VO) and the sibling statements (MM from `cbr_measure_convergence_tools`, RU from `cbr_setIntegral_eq_of_integral_eq`, ISO from `cbr_isoperimetric_filling`) are passed verbatim as hypotheses. This node can discharge them, because these siblings are in its depends_on.
+
+Lean validation:
+- All 8 statements pass the verifier's lexical check and elaborate in the replayed scope.
+- The frozen node type is proved in Lean from the 8 child types plus the 5 sibling types, without sorry.
+- Each new child is proved in Lean from its hypotheses and its declared sibling types.
+- Every check reports only the axioms propext, Classical.choice and Quot.sound.

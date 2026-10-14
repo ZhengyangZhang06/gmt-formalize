@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.atoms-a1.density_atom-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.atoms-a1",
+  "depth": 6,
+  "title": "Continuity from above: a density quotient dominated by σ(B_r(z)) has liminf at most σ({z})",
+  "statement": "Let P, n ∈ ℕ. Let σ be a Borel measure on ℝ^P with σ(K) < ∞ for every compact K ⊆ ℝ^P, let z ∈ ℝ^P, and let f : ℝ → [0, ∞] satisfy f(r) ≤ ω_n·ofReal(rⁿ)·σ(B_r(z)) for every r > 0, where ω_n = unitBallVolume n and B_r(z) is the open ball. Then liminf_{r→0+} f(r)/(ω_n·ofReal(rⁿ)) ≤ σ({z}). The liminf is taken along the filter 𝓝[>] 0 on ℝ, and the quotient is division in [0, ∞].",
+  "lean_statement": "∀ (P n : ℕ) (σ : Measure (Euclid P)) (z : Euclid P) (f : ℝ → ℝ≥0∞), (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) → (∀ r : ℝ, 0 < r → f r ≤ unitBallVolume n * ENNReal.ofReal (r ^ n) * σ (ball z r)) → liminf (fun r : ℝ => f r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ σ {z}",
+  "lean_name": "cbr_ci_cp_atm_liminf_density_le_atom",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c9c9b3b972-a1"
+}

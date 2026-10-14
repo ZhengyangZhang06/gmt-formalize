@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmc_fc_|cmc_flat_convergence|dtc_vanish_off_support' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "rg -n -i 'flat norm|flat convergence|deformation theorem|federer.?fleming' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'",
+        "integral_withDensity_eq_integral_smul|lintegral_liminf_le|lintegral_lintegral_swap|measurable_measure_prodMk_left|exists_contMDiffMap_one_nhds_of_subset_interior|isCompact_univ_pi",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/fc-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/fc-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/fc-independent-audit/Projections.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/fc-independent-audit/Reuse.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/lean-audit-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/comparator-v1.log",
+        "/tmp/fc-independent-audit/Types.lean",
+        "/tmp/fc-independent-audit/Assembly.lean",
+        "/tmp/fc-independent-audit/Projections.lean",
+        "/tmp/fc-independent-audit/Reuse.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected cmc_flat_convergence contract. The pinned Ch07 contract matches the workspace definitions. Searches found no proposed declaration in the snapshot project and no matching flat-convergence result in snapshot Mathlib; the required measure-theoretic and cutoff tools are available. All eight exact one-line propositions independently elaborate, and prerequisite projections compile against the frozen DAG types. Current subtraction has the intended evaluation semantics. All names are bare identifiers; seven are unreserved, and dtc_vanish_off_support has an identical comparator-accepted frozen type. The prospective dependency graph is acyclic. The parent-supplied assembly, checked with the exact proposed child types, proves the exact selected parent conclusion. Both that conditional assembly and the reused proof compile with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree, including arbitrary U. Compactness supplies a finite cover by vanishing regions; the subordinate smooth partition splits the test form into annihilated terms. Reuse has identical frozen type and verified compatibility and axioms."
+    },
+    {
+      "key": "series_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The mass-summability hypothesis exactly matches the type. The proof establishes absolute convergence, linearity, sequential continuity using the coefficient-norm bound, and the required mass estimate. It constructs the current without assuming the desired result."
+    },
+    {
+      "key": "good_slice",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restriction makes the measures finite. Helly selection gives eventual small mass near continuity levels; Tonelli and two applications of Fatou provide finite slice majorants. The second extraction preserves the first property, and the liminf comparison has the correct direction. Both exact conclusions follow."
+    },
+    {
+      "key": "extend_to_univ",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both prerequisite propositions and all geometric hypotheses appear in prose and type. Vanishing and mass equality remove the carrier outside K up to a null set. Restriction constructs the ambient representation, and the cutoff argument proves the boundary-mass bound. Its dependency on vanish_off_support is correctly directed."
+    },
+    {
+      "key": "total_bounded",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The five antecedents match the frozen prerequisites. Extension permits deformation against one finite family; finite boundary mass justifies BR before asserting that the remainder is IM. Domain restriction preserves the identity, IM property and mass estimates, giving precisely the stated conclusion."
+    },
+    {
+      "key": "cauchy_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement requires no unstated IM hypothesis on X. Subtracting decompositions with a common center gives the correctly signed identity and doubled mass bound. Nested infinite fibers and the diagonal choice yield StrictMono and the exact bound (2⁻¹)^r."
+    },
+    {
+      "key": "series_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The partial sums telescope correctly. Their mass and boundary-mass bounds justify both applications of CL after series_current supplies weak limits. Passing evaluations to the limit proves the identity, and the geometric tail gives exactly 2·(2⁻¹)^ℓ. No flat-convergence theorem is assumed."
+    },
+    {
+      "key": "localize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five prerequisites are explicit; neither prose nor type requires W open. The proof checks the slicing hypotheses from IMReps, applies good_slice to pushforward measures, and establishes IM, compact support, uniform masses and agreement on W. The cutoff estimates prove weak convergence using precisely the supplied no-concentration conclusion."
+    }
+  ],
+  "required_changes": []
+}

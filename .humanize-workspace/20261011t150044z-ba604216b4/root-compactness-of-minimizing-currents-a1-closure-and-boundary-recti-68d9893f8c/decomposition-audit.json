@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "euclideanHausdorffMeasure_zero|hausdorffMeasure_zero_singleton",
+        "theorem (setIntegral_finset|lintegral_finset|integrableOn_singleton|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero)|integrableOn_finite_biUnion|theorem (IsCompact.tendsto_subseq|Finite.exists_infinite_fiber|extraction_of_frequently_atTop|isCompact_univ_pi)",
+        "cbrz_|approxTangent_finite_zero|isIntegerMultiplicity_point_sum|finset_integral_hausdorff_zero|point_sum_limit",
+        "python3 /tmp/cbrz-independent-audit-7fqmk6r0/audit_inputs.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrz-independent-audit-7fqmk6r0/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrz-independent-audit-7fqmk6r0/Combined.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrz-independent-audit-7fqmk6r0/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/SumMeasure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Countable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-68d9893f8c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-68d9893f8c/decomposition-v2.json",
+        "/tmp/cbrz-independent-audit-7fqmk6r0/audit_inputs.py",
+        "/tmp/cbrz-independent-audit-7fqmk6r0/Types.lean",
+        "/tmp/cbrz-independent-audit-7fqmk6r0/Combined.lean",
+        "/tmp/cbrz-independent-audit-7fqmk6r0/Assembly.lean"
+      ],
+      "conclusion": "The five-way split appropriately isolates genuine obligations used to establish exactly cbr_closure_degree_zero. Snapshot definitions and relevant pinned library files agree with the compiler environment. All five exact one-line propositions elaborate without their implementations; the names are bare identifiers, with no collisions or identical-type reuse found among 975 DAG nodes or other branches' decomposition files. Dependencies are correctly directed and acyclic, including the existing im_local prerequisite. Scalar casts and empty-family covector evaluation have the intended types; no matrix-unit construction occurs. Each prose proof was independently checked step by step. Each supplied Lean proof also compiled with only its declared child dependencies supplied as hypotheses; the combined Submission declarations compiled using only propext, Classical.choice and Quot.sound. The hypothesis-only assembly proves the exact frozen parent from the proposed conclusions and the existing frozen im_local contract, without sorryAx."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "count_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match, including arbitrary, potentially nonmeasurable functions. Singleton integrability, unit H⁰ singleton masses, and the finite-set integral formulas prove both conclusions without additional hypotheses or circularity."
+    },
+    {
+      "key": "finite_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact approximate-tangent predicate: dimension zero and convergence against every compactly supported continuous function. Separation and support radii make the integral eventually equal f(0), including the singleton case. Only count_integral is needed."
+    },
+    {
+      "key": "point_sum_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly handles arbitrary V, repeated points, cancellation, and points outside V. It verifies every IMRep field and the representation identity using the two declared dependencies. No openness or point-membership hypothesis is silently added."
+    },
+    {
+      "key": "imrep_point_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local integrability and positive integer multiplicities give finite carrier intersection. Positive singleton measure upgrades the orientation property to every carrier point. Localization, enumeration, and the measure bound prove the exact conclusion without requiring B to be measurable or open."
+    },
+    {
+      "key": "point_sum_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Nonzero weights and the total-weight bound give finitely many combinatorial types. A common subsequence has constant weights and convergent positions; continuity and uniqueness of limits establish the formula for every index simultaneously. Empty products and zero counts are covered, with no current-theoretic or circular dependency."
+    }
+  ],
+  "required_changes": []
+}

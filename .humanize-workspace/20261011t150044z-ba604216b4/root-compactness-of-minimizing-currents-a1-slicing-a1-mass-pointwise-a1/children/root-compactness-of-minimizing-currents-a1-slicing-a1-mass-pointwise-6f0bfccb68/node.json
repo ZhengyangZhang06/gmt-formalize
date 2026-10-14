@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1.pairing_integrable-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1",
+  "depth": 4,
+  "title": "Integrability of x ↦ ξ(x)(ω(x)) for a bounded a.e.-measurable multivector field and a test form",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, μ a measure on ℝ^P with μ(K) < ∞ for every compact K ⊆ U, and ξ : ℝ^P → Λ_n(ℝ^P) (MultiVector P n, i.e. continuous linear functionals on n-covectors) μ-a.e. strongly measurable and such that, for μ-a.e. x, |ξ(x)(α)| ≤ |α| for every n-covector α (|·| = covectorEuclideanNorm). Let ω ∈ 𝒟^n(U) (TestFormOn U n) with underlying form ω̂. Then x ↦ ξ(x)(ω̂(x)) is μ-integrable.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (ω : TestFormOn U n), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → Integrable (fun x => ξ x ((ω : DifferentialForm (Euclid P) n) x)) μ",
+  "lean_name": "cmcs_smp_pairing_integrable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-pointwise-6f0bfccb68-a1"
+}

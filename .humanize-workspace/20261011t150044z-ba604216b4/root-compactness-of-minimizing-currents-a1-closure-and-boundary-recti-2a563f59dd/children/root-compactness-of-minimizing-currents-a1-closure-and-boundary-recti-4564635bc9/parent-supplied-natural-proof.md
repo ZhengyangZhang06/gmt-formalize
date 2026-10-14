@@ -1,0 +1,72 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.density_bounds-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.density_bounds-a1.set_mass-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 (mass of balls) of the parent proof, stated for an arbitrary Borel set B ⊆ B', an arbitrary integrand g and constants c, K.
+1. Substitute the hypothesis μ = (Hⁿ⌞M).withDensity(ofReal∘θ). Since B is Borel, withDensity_apply gives μ(B) = ∫⁻ ofReal θ d((Hⁿ⌞M)⌞B). Since B is Borel, Measure.restrict_restrict gives (Hⁿ⌞M)⌞B = Hⁿ⌞(B ∩ M), and B ∩ M = M ∩ B (Set.inter_comm). Hence μ(B) = ∫⁻_{M∩B} ofReal θ dHⁿ.
+2. M ∩ B is Borel (MeasurableSet.inter). Every x ∈ M ∩ B lies in M, so ofReal θ(x) ≤ c + K·g(x) there. Monotonicity of the set integral over a measurable set under a pointwise bound on that set (setLIntegral_mono') gives ∫⁻_{M∩B} ofReal θ dHⁿ ≤ ∫⁻_{M∩B} (c + K·g) dHⁿ.
+3. The constant function x ↦ c is measurable (measurable_const). So lintegral_add_left gives ∫⁻_{M∩B} (c + K·g) dHⁿ = ∫⁻_{M∩B} c dHⁿ + ∫⁻_{M∩B} K·g dHⁿ. By setLIntegral_const, ∫⁻_{M∩B} c dHⁿ = c·Hⁿ(M ∩ B). Since K ≠ ∞, lintegral_const_mul' gives ∫⁻_{M∩B} K·g dHⁿ = K·∫⁻_{M∩B} g dHⁿ; no measurability of g is needed.
+4. B ⊆ B' gives M ∩ B ⊆ M ∩ B' (Set.inter_subset_inter_right). Hence ∫⁻_{M∩B} g dHⁿ ≤ ∫⁻_{M∩B'} g dHⁿ (lintegral_mono_set). Multiplying by K and adding c·Hⁿ(M ∩ B) are monotone operations in [0,∞] (gcongr), so c·Hⁿ(M ∩ B) + K·∫⁻_{M∩B} g dHⁿ ≤ c·Hⁿ(M ∩ B) + K·∫⁻_{M∩B'} g dHⁿ.
+5. Chaining steps 1–4: μ(B) = ∫⁻_{M∩B} ofReal θ dHⁿ ≤ c·Hⁿ(M ∩ B) + K·∫⁻_{M∩B} g dHⁿ ≤ c·Hⁿ(M ∩ B) + K·∫⁻_{M∩B'} g dHⁿ. ∎
+
+## Key steps
+
+1. μ(B) = ∫⁻_{M∩B} ofReal θ dHⁿ, by withDensity_apply and Measure.restrict_restrict (B Borel).
+2. Integrate the pointwise bound ofReal θ ≤ c + K·g over the Borel set M ∩ B (setLIntegral_mono').
+3. Split ∫⁻_{M∩B}(c + K·g) = c·Hⁿ(M∩B) + K·∫⁻_{M∩B} g (lintegral_add_left, setLIntegral_const, lintegral_const_mul' with K ≠ ∞).
+4. Enlarge M ∩ B to M ∩ B' in the g-integral (lintegral_mono_set) and use monotonicity.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean and GMT/Ch07/Submission.lean (identical)`
+- `python3 -I scans of dag.json: the subtree under ...cycle_im-a1.blowup_limit-a1 (status, depth, lean_name, lean_statement, depends_on). The selected node is at depth 5, and 210 nodes exist at depth 6. Sibling covector_norm (cbr_ci_bl_covector_opNorm_le) has status decomposing, i.e. not accepted. Collision check for cbr_ci_bl_db_weight_le_enorm, cbr_ci_bl_db_withDensity_le and cbr_ci_bl_db_eventual_bounds: none present`
+- `grep -rln 'cbr_ci_bl_db_' over the snapshot project and lake-packages-25730c7c/simongmt/Poincare (no match)`
+- `sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py: _decompose (depth >= max_depth stops splitting), _solve_children, _existing_lean_name_problem (an unaccepted same-name node under another parent is rejected), _overlay_accepted_children (prerequisites are only the node's own children and depends_on)`
+- `sed of simongmt Chapter06/Forms.lean (Covector E n := E [⋀^Fin n]→L[ℝ] ℝ) and Chapter06/Mass.lean (covectorEuclideanNorm); #synth and pp.explicit on MultiVector P n: SeminormedAddCommGroup = ContinuousLinearMap.toSeminormedAddCommGroup over ContinuousAlternatingMap.instSeminormedAddCommGroup, and the ENorm is SeminormedAddGroup.toContinuousENorm.toENorm`
+- `grep in snapshot mathlib/Mathlib for: withDensity_apply, Measure.restrict_restrict, setLIntegral_mono', lintegral_add_left, setLIntegral_const, lintegral_const_mul', lintegral_mono_set, ContinuousLinearMap.le_opNorm, ofReal_norm (ofReal_norm_eq_enorm is a deprecated alias), ENNReal.ofReal_add, ENNReal.ofReal_mul, ENNReal.ofReal_inv_of_pos, ENNReal.inv_mul_cancel, Metric.measure_ball_pos, measure_ball_lt_top, eventually_lt_of_lt_liminf, eventually_lt_of_limsup_lt (to_dual), ENNReal.Tendsto.const_mul, tendsto_order, mem_nhdsGT_iff_exists_Ioo_subset, ENNReal.lt_div_iff_mul_lt, ENNReal.div_lt_iff, ENNReal.add_le_add_iff_right`
+- `lake env lean on /tmp/db-decomp/Stmts.lean, ChildA.lean, ChildB.lean, ChildC.lean, Inst.lean and EndToEnd.lean, each with #print axioms; python3 -I /tmp/db-decomp/validate.py (verifier/lean_contract.py validate_lean_statement on the three child types, plus an exact-text match against the compiled declarations)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2a563f59dd/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2a563f59dd/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d8eab44069/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/db-decomp/Stmts.lean`
+- `/tmp/db-decomp/ChildA.lean`
+- `/tmp/db-decomp/ChildB.lean`
+- `/tmp/db-decomp/ChildC.lean`
+- `/tmp/db-decomp/Inst.lean`
+- `/tmp/db-decomp/EndToEnd.lean`
+- `/tmp/db-decomp/validate.py`
+
+The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (project b4d606db, Mathlib 25730c7c). No existing declaration or DAG node already provides the three new obligations. The names cbr_ci_bl_db_weight_le_enorm, cbr_ci_bl_db_withDensity_le and cbr_ci_bl_db_eventual_bounds appear neither in dag.json nor in the snapshot or SimonGMT sources. The needed bound ‖α‖ ≤ Pⁿ|α| is the sibling cbr_ci_bl_covector_opNorm_le. That node is unaccepted and owned by blowup_limit, so the runtime lets a grandchild neither reuse its name nor receive it. Child A therefore takes the bound as a hypothesis, and the selected node, which already depends on covector_norm, supplies it. Every Mathlib lemma cited in the child proofs exists in the pinned snapshot. ofReal_norm_eq_enorm is a deprecated alias of ofReal_norm, and eventually_lt_of_limsup_lt is generated by to_dual. Three Lean pitfalls were found and are written into the child proofs. First, the MultiVector norm elaborates as ContinuousLinearMap.hasOpNorm, so norm_nonneg and ofReal_norm need the element given explicitly. Second, the liminf/limsup lemmas must be applied with exact so their boundedness autoParam is discharged. Third, this Mathlib swapped the argument order of add_le_add_left, so gcongr is used instead. In scratch files importing GMT.Ch07.Submission, the three child types elaborate verbatim and pass validate_lean_statement, and each child is fully proved. db_assembly_check proves the frozen parent type from the three children with the covector_norm statement as an explicit hypothesis. #print axioms reports only propext, Classical.choice and Quot.sound.

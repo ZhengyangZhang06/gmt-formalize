@@ -1,0 +1,113 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cbr_ci_|dtc_bc_tc_cl_ci_|plane_weight_ge_one",
+        "ae_tendsto_lintegral_enorm_sub_div|ae_tendsto_average_norm_sub|def vitaliFamily|theorem tendsto_filterAt|exists_disjoint_subfamily_covering_enlargement|theorem tendsto_of_subseq_tendsto",
+        "euclideanHausdorffMeasure_def|euclideanHausdorffMeasure_eq_volume|isAddHaarMeasure",
+        "measure_toMeasurable_inter_of_sFinite|hausdorffMeasure_image_le|hausdorffMeasure_le_liminf_tsum",
+        "def HasApproximateTangentSpaceAt|def blowUpMap|def GeometricCurrentOn.massOn|def GeometricCurrentOn.mass|massOn_mono|def covectorEuclideanNorm|def exteriorDerivative|alternatizeUncurryFin_apply",
+        "git show 1acc4c76ab9d728c072a807c26ff1fe0a7e7d3f1:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cycle_im_independent_audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cycle_im_independent_audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/CountablyGenerated.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-f25b09cc66/parent-child-handoff.json",
+        "/tmp/cycle_im_independent_audit/Types.lean",
+        "/tmp/cycle_im_independent_audit/Assembly.lean",
+        "/tmp/cycle_im_independent_audit/ReuseResults.json",
+        "/tmp/cycle_im_independent_audit/verification.json"
+      ],
+      "conclusion": "The pinned definitions and covering, differentiation, normalization, measurable-hull and subsequence lemmas support the supplied arguments. No proposed child declarations occur in the pinned Ch07 source; reuse comes from accepted DAG candidates. All nine reused names have identical frozen types and passing comparator records; independent recompilation and exact-type checks passed with only propext, Classical.choice and Quot.sound. The three fresh names remain unreserved. All twelve statements are standalone one-line propositions and elaborate without their implementations. Names are bare identifiers, and no Matrix/IsUnit ambiguity occurs. Dependencies, including accepted histories, are acyclic and do not rely on the selected parent. The split is appropriate: every child contributes to the supplied proof, and an independently checked assembly derives the exact selected parent contract from the child contracts and four accepted prerequisites."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "density_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type agree. Mass equality normalizes the polar field; the covering argument establishes finite Hausdorff measure, and Radon–Nikodym construction supplies every stated representation and pointwise property."
+    },
+    {
+      "key": "im_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes measurable tangent projections, applies RECT, and constructs the required IMRep on a Borel full-measure carrier. Null-set modification of tangent spaces is justified independently."
+    },
+    {
+      "key": "isodiametric_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The symmetrization argument proves the isodiametric inequality, and the Haar-scalar comparison gives exactly the stated measure inequality, including degree zero."
+    },
+    {
+      "key": "good_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-tail covering argument gives the sharp comparison from its declared sibling. Outer regularity and Besicovitch differentiation then establish both exact conclusions. The proof is complete independently of its porting note."
+    },
+    {
+      "key": "density_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Norming covectors give the required coefficient estimate. The three eventual inequalities and justified finite ENNReal cancellation yield precisely the lower constant η₁/(4θ(a)) and upper constant 2."
+    },
+    {
+      "key": "constant_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local integral-error bounds prove weak convergence. Compact thickenings and continuity from above establish the claimed mass-measure limsup bound without additional finiteness assumptions."
+    },
+    {
+      "key": "blowup_scale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All conditional dilation hypotheses are explicit in prose and type. Their application, together with the accepted scaling identity, proves every representation, boundary, concentration and mass conclusion."
+    },
+    {
+      "key": "blowup_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared siblings and verified accepted helper histories supply the required inputs. Rescaled bounds, measure compactness, weak convergence and SLIM establish all nineteen conclusions without invoking this child or its parent."
+    },
+    {
+      "key": "constant_planes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Translation invariance and growth force a simple unit orientation. Haar decomposition and lower density produce atoms; growth bounds their total weight and number, while positivity near zero supplies a zero displacement."
+    },
+    {
+      "key": "weight_ge_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly uses cylinder-local boundary mass. It establishes projected densities, vanishing outside the measurable hull, the BV estimate and the final volume comparison. No global boundary-mass claim or carrier-measurability assumption is needed."
+    },
+    {
+      "key": "plane_integer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit half-space slice calculation, ISP and MR identify an integer-valued density with θ₀ on a positive-measure set. Degree-zero slices are covered, and the conclusion matches the frozen type."
+    },
+    {
+      "key": "pointwise",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four sibling applications have their hypotheses discharged. Positive scalar rescaling of LD, single-plane reduction, plane uniqueness and the subsequence criterion prove the exact tangent, orientation and integer-density conclusion needed by the parent."
+    }
+  ],
+  "required_changes": []
+}

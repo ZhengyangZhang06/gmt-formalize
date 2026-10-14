@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_stokes-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1",
+  "depth": 5,
+  "title": "Stokes' formula for an oriented plane and its coordinate half-planes",
+  "statement": "Let P, d ∈ ℕ, n := d+1, v = (v_0, …, v_d) an orthonormal family in ℝ^P, V₀ := span(v_0, …, v_d), and φ a test d-form on ℝ^P (φ ∈ TestFormOn univ d: smooth with compact support). Write dφ = exteriorDerivative φ, Hᵐ = μHE[m], (v_1, …, v_d) = Fin.tail v, and for t ∈ ℝ let L_t := {y ∈ ℝ^P : y − t v_0 ∈ span(v_1, …, v_d)}. Then (a) ∫_{V₀} dφ(y)(v_0, …, v_d) dHⁿ(y) = 0, and (b) for every t ∈ ℝ, ∫_{V₀ ∩ {y : ⟨y, v_0⟩ < t}} dφ(y)(v_0, …, v_d) dHⁿ(y) = ∫_{L_t} φ(y)(v_1, …, v_d) dH^d(y).",
+  "lean_statement": "∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, (∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)), exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = 0) ∧ ∀ t : ℝ, ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)) ∩ {y : Euclid P | inner ℝ y (v 0) < t}, exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = ∫ y in {y : Euclid P | y - t • v 0 ∈ Submodule.span ℝ (Set.range (Fin.tail v))}, (φ : DifferentialForm (Euclid P) d) y (Fin.tail v) ∂μHE[d]",
+  "lean_name": "cbr_cipi_plane_halfspace_stokes",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_measure-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.halfspace_ftc-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.halfspace_ftc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a2d19864c9-a1"
+}

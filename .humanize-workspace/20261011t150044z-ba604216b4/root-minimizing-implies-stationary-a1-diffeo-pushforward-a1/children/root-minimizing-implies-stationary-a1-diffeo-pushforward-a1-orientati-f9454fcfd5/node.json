@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+  "depth": 3,
+  "title": "Simon 6.3.5/3.7: the normalized push-forward of a unit orientation orients the image plane",
+  "statement": "Let Q ⊆ ℝ^P be a subspace, ξ an n-vector that is a unit orientation of Q (IsUnitOrientationOf ξ Q), L : ℝ^P → ℝ^P an injective linear map, ζ(β) := ξ(β∘L) for n-covectors β, and J := (det(Le_a · Le_b)_{a,b})^{1/2} with e the standard orthonormal basis of Q. Then 0 < J ≤ ‖L‖^n and J^{-1}ζ is a unit orientation of L(Q).",
+  "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n) (L : Euclid P →L[ℝ] Euclid P) (J : ℝ), IsUnitOrientationOf ξ Q → Injective L → J = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ Q) => inner ℝ (L (stdOrthonormalBasis ℝ Q i)) (L (stdOrthonormalBasis ℝ Q j)))) → 0 < J ∧ J ≤ ‖L‖ ^ n ∧ IsUnitOrientationOf (J⁻¹ • ξ.comp (ContinuousAlternatingMap.compContinuousLinearMapCLM L)) (Submodule.map (L : Euclid P →ₗ[ℝ] Euclid P) Q)",
+  "lean_name": "dpf_unitOrientation_map_gramNormalized",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-f9454fcfd5-a1"
+}

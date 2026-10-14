@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.bochner_transfer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1",
+  "depth": 6,
+  "title": "Bochner change of variables from the lintegral identity along a continuous injective map on a Borel set",
+  "statement": "Let d, P ∈ ℕ, let μ be a measure on ℝ^P and ν a measure on ℝ^d, let B ⊆ ℝ^d be Borel, G : ℝ^d → ℝ^P continuous on B and injective on B, and J : ℝ^d → ℝ Borel with J ≥ 0 everywhere. Assume ∫⁻_{G(B)} g dμ = ∫⁻_B ofReal(J(v)) · g(G(v)) dν(v) for every g : ℝ^P → [0, ∞]. Then ∫_{G(B)} f dμ = ∫_B J(v) · f(G(v)) dν(v) for every f : ℝ^P → ℝ (Bochner integrals; a non-integrable integrand has integral 0).",
+  "lean_statement": "∀ (d P : ℕ) (μ : Measure (Euclid P)) (ν : Measure (Euclid d)) (B : Set (Euclid d)) (G : Euclid d → Euclid P) (J : Euclid d → ℝ), MeasurableSet B → ContinuousOn G B → InjOn G B → Measurable J → (∀ v, 0 ≤ J v) → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ w in G '' B, g w ∂μ = ∫⁻ v in B, ENNReal.ofReal (J v) * g (G v) ∂ν) → ∀ f : Euclid P → ℝ, ∫ w in G '' B, f w ∂μ = ∫ v in B, J v * f (G v) ∂ν",
+  "lean_name": "codim1_lura_integral_image_of_lintegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-0d4f6dc6e0-a1"
+}

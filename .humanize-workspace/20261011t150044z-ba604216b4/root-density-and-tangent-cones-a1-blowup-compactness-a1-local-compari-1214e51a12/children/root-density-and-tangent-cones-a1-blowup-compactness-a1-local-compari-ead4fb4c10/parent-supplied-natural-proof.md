@@ -1,0 +1,95 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1.coarea_ae-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the supplied proof of the parent node slice_family, steps 2(a), 2(b) and the third condition of step 4. These are Simon Ch. 6, Lemma 4.1, last part (book/chapter-06.txt ll. 1156–1183, printed p. 154), and Remark 4.2 (ll. 1185–1196), used with g an indicator function. This matches Simon's remark in the proof of 4.5(2) that ∇^M f = 0 H^n-a.e. on {x ∈ M : f(x) = c} (ll. 1308–1310). Throughout, S_t := M ∩ f⁻¹(t). S_t is Borel because M is Borel and f is Borel. For a Borel set Z, ∫_{S_t} 1_Z dHⁿ = Hⁿ(Z ∩ S_t).
+
+Part (a).
+1. Let Y := {x : p(x) fails}. Since M is Borel, the hypothesis "p holds at H^{n+1}-a.e. point of M" means H^{n+1}(Y ∩ M) = 0 (Measure.restrict_apply').
+2. Choose a Borel set Z ⊇ Y ∩ M with H^{n+1}(Z) = 0 (Mathlib exists_measurable_superset_of_null).
+3. Apply (CF) to the Borel function g := 1_Z. The left side is ∫_ℝ Hⁿ(Z ∩ S_t) dt. On the right side the integrand |G|1_Z vanishes off Z, and H^{n+1}(M ∩ Z) ≤ H^{n+1}(Z) = 0. So the integrand vanishes at H^{n+1}-a.e. point of M and the right side is 0.
+4. Hence ∫_ℝ Hⁿ(Z ∩ S_t) dt = 0. By (CF) the integrand t ↦ Hⁿ(Z ∩ S_t) is a.e.-measurable, so it vanishes for L¹-a.e. t (Mathlib lintegral_eq_zero_iff').
+5. Fix such a t. Since S_t ⊆ M, Y ∩ S_t ⊆ Y ∩ M ⊆ Z, so Y ∩ S_t ⊆ Z ∩ S_t and Hⁿ(Y ∩ S_t) ≤ Hⁿ(Z ∩ S_t) = 0. As S_t is Borel, this says that p holds at Hⁿ-a.e. point of S_t. This proves (a).
+
+Part (b).
+6. Fix c ∈ ℝ and apply (CF) to the Borel function g := 1_{f⁻¹(c)} (Borel since f is Borel). For t ≠ c, S_t ∩ f⁻¹(c) = ∅, so ∫_{S_t} g dHⁿ = Hⁿ(f⁻¹(c) ∩ S_t) = 0. Since L¹({c}) = 0, the integrand of the left side vanishes L¹-a.e., so the left side is 0.
+7. Therefore ∫_M |G| 1_{f⁻¹(c)} dH^{n+1} = 0. The integrand x ↦ |G(x)| 1_{f⁻¹(c)}(x) is Borel (G and f are Borel), so it vanishes at H^{n+1}-a.e. x ∈ M (Mathlib lintegral_eq_zero_iff).
+8. At such an x with f(x) = c the indicator equals 1, so |G(x)| = 0 and G(x) = 0. This proves (b).
+
+Part (c).
+9. For k ∈ ℕ let B_k := closedBall(0, k), a compact Borel subset of ℝ^P (ℝ^P is proper), and g_k := 1_{B_k} g, a Borel function.
+10. By (CF), ∫_ℝ ∫_{S_t} g_k dHⁿ dt = ∫_M |G| g_k dH^{n+1} = ∫_{M∩B_k} |G| g dH^{n+1}. This is finite by the hypothesis with K := B_k. The integrand t ↦ ∫_{S_t} g_k dHⁿ = ∫_{S_t∩B_k} g dHⁿ is a.e.-measurable by (CF), so it is finite for L¹-a.e. t (Mathlib ae_lt_top').
+11. Since ℕ is countable, for L¹-a.e. t we have ∫_{S_t∩B_k} g dHⁿ < ∞ for all k ∈ ℕ simultaneously (Mathlib ae_all_iff).
+12. Fix such a t and a compact K ⊆ ℝ^P. K is bounded, so K ⊆ closedBall(0, R) for some R ≥ 0, and K ⊆ B_k for any natural number k ≥ R. Then S_t ∩ K ⊆ S_t ∩ B_k. By monotonicity of the integral in the domain, ∫_{S_t∩K} g dHⁿ ≤ ∫_{S_t∩B_k} g dHⁿ < ∞. This proves (c). ∎
+
+## Key steps
+
+1. (a) Enclose the H^{n+1}-null exceptional set of M in a Borel null set Z. (CF) with g = 1_Z gives ∫ Hⁿ(Z ∩ M ∩ f⁻¹(t)) dt = 0, so a.e. slice meets Z in an Hⁿ-null set.
+2. (b) (CF) with g = 1_{f⁻¹(c)}: the slice side vanishes for t ≠ c, so ∫_M |G|1_{f=c} = 0 and G = 0 a.e. on M ∩ {f = c}.
+3. (c) (CF) with g·1_{closedBall(0,k)} gives finiteness of ∫_{slice∩B_k} g for a.e. t. Intersect over k ∈ ℕ and cover each compact K by some B_k.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1, mathlib 25730c7c); diff -q snapshot project/GMT/Ch07/Contract.lean vs workspace GMT/Ch07/Contract.lean (identical; Submission.lean is a byte copy)`
+- `rg -n 'theorem alternatizeUncurryFin_apply|eq_smul_basis_det|theorem det_to_matrix_orthonormalBasis_real|theorem finrank_add_inf_finrank_orthogonal|theorem exists_measurable_superset_of_null|theorem integral_eq_lintegral_pos_part_sub_lintegral_neg_part|theorem integral_toReal|theorem ae_lt_top|theorem lintegral_eq_zero_iff|lemma norm_alternatizeUncurryFin_le|theorem le_opNorm' over snapshot mathlib/Mathlib (all found)`
+- `rg -n 'coarea|co-area|Coarea' project/GMT --glob '*.lean' (only GMT/Ch02/Submission.lean coareaJacobian / CoareaFormula, a Ch02 contract Prop not imported by GMT.Ch07); rg -n 'alternatizeUncurryFin ((innerSL|smulRight' project/GMT/Ch07 project/GMT/Ch06 (no match)`
+- `grep -n 'theorem HasApproximateTangentSpaceAt.unique|theorem CountablyRectifiable.mono|theorem countablyRectifiable_of_measure_zero' in the pinned simongmt Poincare/SimonGMT/Chapter03/Rectifiable.lean (found at lines 232, 55, 45); sed Chapter06/Forms.lean, Currents.lean, Mass.lean (Covector, DifferentialForm, TestFormOn, covectorEuclideanNorm)`
+- `#synth probes after import GMT.Ch07.Submission: FiniteDimensional ℝ (Covector (Euclid P) n), SecondCountableTopology (MultiVector P n), TopologicalSpace (Covector →L[ℝ] Euclid P →L[ℝ] Covector) fail; NormedAddCommGroup/NormedSpace of Covector and of Covector →L[ℝ] Covector succeed`
+- `python3 -I scans of dag.json: lean_statement/status of coarea, lipschitz_leibniz, slice_identity, im_calculus; lean_name patterns interior_product|orient_opNorm|norm_le_one; all nodes under root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1 (no accepted node equal to a proposed child)`
+- `git show 2af75d6921b01a9c889a45103692ca0af95ea394:GMT/Ch07/Submission.lean line 1760 vs dag.json im_calculus lean_statement (whitespace-normalised identical); grep -c dtc_bc_lc_sl_sf_ dag.json (0); git log --all -S dtc_bc_lc_sl_sf_ over 6418 refs (no match)`
+- `lake env lean on /tmp/sfdecomp/lean/challenges/Challenge_<key>.lean (generated by verifier gmt-compare.py child_modules after lean_contract.validate_lean_statement), /tmp/sfdecomp/lean/Assembly.lean and AssemblyAx.lean (#print axioms), /tmp/sfdecomp/val_unit/Proof.lean, /tmp/sfdecomp/val_rest/All.lean`
+- `sed -n 1140,1330p book/chapter-06.txt (Simon Ch. 6 §4: 4.1 ll. 1156–1183, 4.2 ll. 1185–1196, 4.3 ll. 1208–1218, 4.4 ll. 1221–1233, proof of 4.5 ll. 1245–1323)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-1214e51a12/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-09907e06c7/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/sfdecomp/lean/Assembly.lean`
+- `/tmp/sfdecomp/lean/challenges`
+- `/tmp/sfdecomp/val_unit/Proof.lean`
+- `/tmp/sfdecomp/val_rest/All.lean`
+
+The pinned snapshot has every Mathlib lemma cited in the child proofs:
+- alternatizeUncurryFin_apply and norm_alternatizeUncurryFin_le;
+- AlternatingMap.eq_smul_basis_det and OrthonormalBasis.det_to_matrix_orthonormalBasis_real;
+- Submodule.finrank_add_inf_finrank_orthogonal;
+- exists_measurable_superset_of_null, integral_eq_lintegral_pos_part_sub_lintegral_neg_part, integral_toReal, ae_lt_top', lintegral_eq_zero_iff';
+- ContinuousAlternatingMap.le_opNorm.
+The pinned SimonGMT package has HasApproximateTangentSpaceAt.unique, CountablyRectifiable.mono and countablyRectifiable_of_measure_zero.
+
+The snapshot project has no slicing lemma, no lemma on the interior product of orientations, and no co-area lemma usable from GMT.Ch07. The only co-area item is the Ch02 contract Prop CoareaFormula, which Ch07 does not import.
+
+No accepted DAG node equals any proposed new child. In particular dor_lmbsf_interior_product_orientation is still decomposing, so new names with the unique prefix dtc_bc_lc_sl_sf_ are used. The accepted im_calculus declaration is reused with its identical type.
+
+Lean checks:
+- All six child types elaborate in the comparator's contract-mode challenge modules.
+- All five new children are proved in Lean.
+- A 420-line assembly derives the exact frozen parent type from them plus coarea and lipschitz_leibniz.
+- In each case the axioms are propext, Classical.choice and Quot.sound only.

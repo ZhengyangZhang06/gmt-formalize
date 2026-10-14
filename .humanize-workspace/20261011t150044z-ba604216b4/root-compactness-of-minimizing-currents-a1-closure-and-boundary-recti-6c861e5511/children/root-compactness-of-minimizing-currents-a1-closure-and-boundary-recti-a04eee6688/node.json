@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.product-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1",
+  "depth": 5,
+  "title": "Product structure ν = (Hⁿ⌞V) ⊗ σ of a locally finite measure invariant under translations by an n-dimensional subspace V",
+  "statement": "Let P, n ∈ ℕ, V ⊆ ℝ^P a linear subspace with dim V = n, and ν a Borel measure on ℝ^P with ν(K) < ∞ for every compact K and ν({x : v + x ∈ A}) = ν(A) for every v ∈ V and Borel A. Then there is a Borel measure σ on ℝ^P with σ(ℝ^P∖V^⊥) = 0 and σ(K) < ∞ for every compact K, such that ν(A) = ∫⁻_{t∈V} σ({y : t + y ∈ A}) dHⁿ(t) for every Borel A ⊆ ℝ^P (Hⁿ = μHE[n]; lower Lebesgue integral over V), i.e. ν is the image of (Hⁿ⌞V) ⊗ σ under (t, y) ↦ t + y.",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A) → ∃ σ : Measure (Euclid P), σ (Vᗮ : Set (Euclid P))ᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) ∧ ∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]",
+  "lean_name": "cbr_ci_cp_invariant_measure_product",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-661fba5cee-a1",
+      "result_commit": "a029156d2b71053da5c6d27b9abcc46011c9cfac",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a04eee6688-a1"
+}

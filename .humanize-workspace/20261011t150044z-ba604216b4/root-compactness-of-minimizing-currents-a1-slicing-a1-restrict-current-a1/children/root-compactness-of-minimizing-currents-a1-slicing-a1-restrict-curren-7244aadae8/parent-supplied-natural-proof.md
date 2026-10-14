@@ -1,0 +1,72 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1.order_zero_current-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof of cmcs_restrict_current (sequential continuity), with the integral functional S₀ replaced by an arbitrary linear functional L satisfying the zeroth-order estimate that step 4 uses for S₀.
+
+For ω ∈ 𝒟ⁿ(U) write ω̂ := (ω : DifferentialForm (Euclid P) n) for its underlying form, and ‖·‖ for the operator norm of n-covectors.
+
+1. (Reduction.) A GeometricCurrentOn U n is a structure ⟨T₀, h⟩ consisting of a linear map T₀ : TestFormOn U n →ₗ[ℝ] ℝ and a proof h that T₀(ω_j) → 0 for every sequence (ω_j) with TestFormOnConverges ω_j 0; its value S(ω) is T₀(ω). Take T₀ := L. Then S(ω) = L(ω) holds by definition for every ω, and it remains to prove: if (ω_j)_{j∈ℕ} in 𝒟ⁿ(U) satisfies TestFormOnConverges ω_j 0, then L(ω_j) → 0 in ℝ.
+
+2. (Unpacking the convergence.) By definition of TestFormOnConverges ω_j 0 there is a compact K ⊆ U with tsupport ω̂_j ⊆ K for all j such that, for every k ∈ ℕ, iteratedFDeriv ℝ k ω̂_j → iteratedFDeriv ℝ k 0̂ uniformly on K, where 0̂ is the underlying form of the zero test form, i.e. the zero function. Apply the hypothesis to this compact K ⊆ U to obtain c ∈ ℝ with |L(ω)| ≤ c·M whenever ω ∈ 𝒟ⁿ(U), tsupport ω̂ ⊆ K and ‖ω̂(x)‖ ≤ M for all x.
+
+3. (Zeroth-order smallness on K.) For every function G and point x, ‖iteratedFDeriv ℝ 0 G x‖ = ‖G(x)‖ (norm_iteratedFDeriv_zero). In particular ‖iteratedFDeriv ℝ 0 0̂ x‖ = ‖0̂(x)‖ = 0, so iteratedFDeriv ℝ 0 0̂ x = 0 for every x. Uniform convergence for k = 0, in metric form (Metric.tendstoUniformlyOn_iff together with eventually_atTop), says: for every η > 0 there is N such that dist(iteratedFDeriv ℝ 0 0̂ x, iteratedFDeriv ℝ 0 ω̂_j x) < η for all j ≥ N and all x ∈ K. This distance equals dist(0, iteratedFDeriv ℝ 0 ω̂_j x) = ‖iteratedFDeriv ℝ 0 ω̂_j x‖ = ‖ω̂_j(x)‖ (dist_zero_left). Hence ‖ω̂_j(x)‖ < η for all j ≥ N and all x ∈ K.
+
+4. (Off K.) If x ∉ K, then x ∉ tsupport ω̂_j (because tsupport ω̂_j ⊆ K), so ω̂_j(x) = 0 (image_eq_zero_of_notMem_tsupport) and ‖ω̂_j(x)‖ = 0 ≤ η. With step 3: for every j ≥ N, ‖ω̂_j(x)‖ ≤ η for all x ∈ ℝ^P.
+
+5. (Conclusion.) Let δ > 0 and put η := δ/(|c| + 1) > 0; let N be as in step 3 for this η. For j ≥ N, the hypothesis applied to ω := ω_j and M := η (valid by tsupport ω̂_j ⊆ K and step 4) gives
+   |L(ω_j) − 0| = |L(ω_j)| ≤ c·η ≤ |c|·η = δ·|c|/(|c| + 1) < δ,
+   using c ≤ |c|, η ≥ 0, δ > 0 and |c| < |c| + 1. Since δ > 0 was arbitrary, L(ω_j) → 0 (Metric.tendsto_atTop). This is the continuity requirement, so S := ⟨L, h⟩ is a GeometricCurrentOn U n with S(ω) = L(ω) for every ω ∈ 𝒟ⁿ(U). ∎
+
+## Key steps
+
+1. Take S := ⟨L, h⟩; then S(ω) = L(ω) by definition, so only L(ω_j) → 0 for TestFormOnConverges ω_j 0 must be shown.
+2. TestFormOnConverges ω_j 0 gives a compact K ⊆ U containing every tsupport ω_j and uniform convergence on K of the order-0 derivatives; take the constant c for this K.
+3. ‖iteratedFDeriv ℝ 0 G x‖ = ‖G(x)‖ and the limit form is 0, so for every η > 0 eventually ‖ω_j(x)‖ < η on K; off K, ω_j(x) = 0.
+4. With η = δ/(|c|+1): eventually |L(ω_j)| ≤ c·η ≤ |c|·η < δ, hence L(ω_j) → 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (byte-identical); manifest: project b4d606db, mathlib 25730c7c`
+- `rg -n -F -f {Continuous.comp_aestronglyMeasurable₂, isBoundedBilinearMap_apply, norm_iteratedFDeriv_zero, lintegral_indicator_const_le, integral_indicator_const, norm_integral_le_of_norm_le, Integrable.mono', integrableOn_const, ae_restrict_of_ae, restrict_le_self, integral_const_mul, Continuous.bounded_above_of_compact_support, opNorm_le_bound, tendstoUniformlyOn_iff} local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -n 'def covectorEuclideanNorm|structure GeometricCurrentOn|def TestFormOnConverges|abbrev TestFormOn|def IsTestForm|abbrev Covector|abbrev DifferentialForm' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,Mass}.lean`
+- `grep -n '^theorem|^def|^abbrev|^structure' SimonGMT Chapter06/{FormSupNorm,Representation,FixedSupportCurrentTopology,ParametricCurrentContinuity}.lean; grep -rn 'TestFormOnConverges' SimonGMT (theorem/lemma lines)`
+- `rg -n 'TestFormOnConverges|cmcs_rc_|order_zero' local-references/123e8435b4a2469b/project/GMT -g '*.lean' (no match)`
+- `python3 scan of dag.json lean_statements for covectorEuclideanNorm with ‖·‖, '∃ S : GeometricCurrentOn', 'TestFormOnConverges', 'Integrable (fun x', '→ₗ[ℝ] ℝ'; lean_name collision check for cmcs_rc_pairing_integrable_abs_le / cmcs_rc_order_zero_current; status of rsd_mw_tfa_norm_props`
+- `git for-each-ref (3011 refs): git grep -l cmcs_rc_ (no match); git show f492ba4a (rsd_mw_tfa_norm_props: +84 lines in GMT/Ch07/Submission.lean on bfb7b24/b4d606d)`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint' -A 40 /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py (cross-branch reuse of an accepted identical-type declaration is allowed); validate_lean_statement from lean_contract.py on all child types`
+- `lean GMT/Scratch/cmcs_restrict_current_decomposition/Assembly.lean (reused accepted proof + full proofs of both new children + parent proved from the three; #print axioms: propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FixedSupportCurrentTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_restrict_current_decomposition/Assembly.lean`
+
+The snapshot Ch07 contract is byte-identical to the workspace Submission.lean (project b4d606db, Mathlib 25730c7c). Neither the snapshot nor SimonGMT Chapter06 constructs a GeometricCurrentOn from a measure-represented integral or gives an order-zero continuity criterion: SimonGMT has only Current.MassRepresentation.restrict on the algebraic Current E n (integrability is a structure field, no continuity, no domain U) and the converse finite-order bound GeometricCurrentOn.exists_fixedSupport_order_bound. Every Mathlib tool the child proofs cite exists in the snapshot: Continuous.comp_aestronglyMeasurable₂, isBoundedBilinearMap_apply, norm_iteratedFDeriv_zero, Metric.tendstoUniformlyOn_iff, integrableOn_const, IntegrableOn.integrable_indicator, Integrable.mono', norm_integral_le_of_norm_le, integral_indicator_const, ae_restrict_of_ae, Measure.restrict_apply, integral_add, integral_const_mul, Continuous.bounded_above_of_compact_support, image_eq_zero_of_notMem_tsupport (to_additive). The DAG already holds the accepted Submission.rsd_mw_tfa_norm_props (status accepted, commit f492ba4a). Its conjunct (iii) is exactly step 1, so it is reused with a byte-identical type, which the runtime's _existing_lean_name_problem permits for accepted checkpoints. The accepted dpf_pfc_testFormOnConverges_zero_uniform overlaps steps 2–4 of child 3. Child 3 is kept self-contained instead, avoiding a second cross-branch merge. The names cmcs_rc_pairing_integrable_abs_le and cmcs_rc_order_zero_current collide with no DAG node and no git ref. The scratch Assembly.lean compiles in the frozen environment: it contains the reused accepted proof, full proofs of both new children, and the parent proved from the three. All axioms are standard (propext, Classical.choice, Quot.sound), and an independent reviewer re-compiled it and accepted the split.

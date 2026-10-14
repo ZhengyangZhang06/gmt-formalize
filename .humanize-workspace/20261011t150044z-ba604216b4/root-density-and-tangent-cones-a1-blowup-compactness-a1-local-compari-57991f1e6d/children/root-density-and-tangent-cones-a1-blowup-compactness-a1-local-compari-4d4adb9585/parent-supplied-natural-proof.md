@@ -1,0 +1,86 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.deformation-a1`
+- Child DAG node: `root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.deformation-a1.bv_median-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the BV facts that Simon uses on the n-faces in displays (26)–(33) of the proof of 5.1 (chapter-06.txt lines 1844–1900). He cites Ch. 6, 2.34–2.35 and Ch. 2, 2.7, 2.9: the Poincaré inequality for BV functions on a cube, the choice (31) of an integer median β_F, and the boundary estimate (32). Here these facts are proved directly for an integer-valued integrable u on the open unit cube, by mollification, a smooth Poincaré inequality and a trace inequality, so no BV theory is needed. Conclusion (3) is the boundary-mass estimate M(∂((u − β)[[Q₁]])) ≤ cV of (32) written without currents: the field G represents an (n − 1)-form. The frozen statement is identical to that of cmcdt_cube_bv_median (compactness_of_minimizing_currents branch, not yet accepted); the argument below is the one written and reviewed for that statement.
+
+Notation. n := m + 1 ≥ 1, Q₁ := (0,1)ⁿ ⊆ ℝⁿ (Lebesgue measure Lⁿ, Lⁿ(Q₁) = 1), div G := trace DG. For 0 < δ < 1/8, Q_δ := (δ, 1 − δ)ⁿ (side s = 1 − 2δ ∈ [3/4, 1]). φ ∈ C_c^∞(B_1(0)), φ ≥ 0, ∫φ = 1, φ_σ(z) := σ^{−n}φ(z/σ), φ̌_σ(z) := φ_σ(−z). ū := u·1_{Q₁} ∈ L¹(ℝⁿ), u_σ := ū ∗ φ_σ ∈ C^∞(ℝⁿ). Let u, V be as in the statement.
+
+0. Preliminaries. Taking g = 0 gives V ≥ 0. Applying the hypothesis to g and −g gives |∫_{Q₁} u div g| ≤ V for every admissible g (smooth, compact support in Q₁, |g| ≤ 1). For every constant β and admissible g, ∫_{Q₁} β div g = 0 (integrate each ∂_i g_i along lines; g has compact support in Q₁). Hence v := u − β is integrable on Q₁ and satisfies the same hypothesis with the same V.
+
+1. Gradient bound: for 0 < σ < δ < 1/8, ∫_{Q_δ} |∇u_σ| ≤ V. For g ∈ C_c^∞(Q_δ; ℝⁿ) with |g| ≤ 1, Fubini and differentiation under the convolution give ∫ ∇u_σ · g = −∫ u_σ div g = −∫ ū (φ̌_σ ∗ div g) = −∫_{Q₁} u div(φ̌_σ ∗ g). Here φ̌_σ ∗ g is smooth with compact support in Q_δ + B_σ(0) ⊆ Q₁ and |φ̌_σ ∗ g| ≤ 1, so the right side is ≤ V by 0. The supremum of ∫ ∇u_σ · g over such g equals ∫_{Q_δ}|∇u_σ|: take g_k := χ_k ∇u_σ/(|∇u_σ|² + 1/k)^{1/2} with smooth cut-offs 0 ≤ χ_k ≤ 1, χ_k ↑ 1_{Q_δ}, and use monotone convergence. This proves the bound.
+
+2. Smooth Poincaré inequality. For a cube Q' of side s ∈ [1/2, 1] and v ∈ C¹(closure Q'), ∫_{Q'} |v − v_{Q'}| ≤ 2^{n+1}√n ∫_{Q'} |∇v|, where v_{Q'} is the mean. Indeed |v(x) − v(y)| ≤ √n s ∫_0^1 |∇v(x + t(y − x))| dt for x, y ∈ Q'. Integrate over Q' × Q'; for t ≤ 1/2 substitute x ↦ (1 − t)x + ty (Jacobian (1 − t)ⁿ ≥ 2^{−n}, image ⊆ Q' by convexity), and for t ≥ 1/2 substitute y ↦ (1 − t)x + ty (Jacobian tⁿ ≥ 2^{−n}). This gives ∫∫ |v(x) − v(y)| dx dy ≤ √n s · 2ⁿ sⁿ ∫_{Q'} |∇v|. Since |v(x) − v_{Q'}| ≤ s^{−n}∫_{Q'}|v(x) − v(y)| dy, ∫_{Q'} |v − v_{Q'}| ≤ √n s 2ⁿ ∫_{Q'}|∇v| ≤ 2^{n+1}√n ∫_{Q'}|∇v|.
+
+3. Poincaré inequality for u: ∫_{Q₁} |u − u_{Q₁}| ≤ 2^{n+1}√n V. By 1 and 2 (Q' = Q_δ), ∫_{Q_δ}|u_σ − (u_σ)_{Q_δ}| ≤ 2^{n+1}√n V for σ < δ. As σ ↓ 0, u_σ → ū in L¹(ℝⁿ) (continuity of translation in L¹: ‖ū ∗ φ_σ − ū‖₁ ≤ sup_{|h|≤σ}‖ū(· − h) − ū‖₁, and translation is continuous in L¹ because continuous compactly supported functions are dense in L¹(ℝⁿ) — simple functions are dense (Mathlib MemLp.exists_simpleFunc_eLpNorm_sub_lt), indicators of Borel sets of finite measure are approximated by continuous compactly supported functions by regularity of Lebesgue measure and Urysohn (Mathlib MeasurableSet.exists_isCompact_lt_add, Set.exists_isOpen_lt_add, exists_continuous_zero_one_of_isCompact) — and these are uniformly continuous), so ∫_{Q_δ}|u − u_{Q_δ}| ≤ 2^{n+1}√n V. As δ ↓ 0, u_{Q_δ} → u_{Q₁} and ∫_{Q_δ}|u − u_{Q_δ}| → ∫_{Q₁}|u − u_{Q₁}| by dominated convergence.
+
+4. Integer median (C2). Since u is real-valued and integrable, Lⁿ(Q₁ ∩ {u ≤ c}) → 1 as c → +∞ and → 0 as c → −∞. Let β be the least integer c with Lⁿ(Q₁ ∩ {u ≤ c}) ≥ 1/2. Then Lⁿ(Q₁ ∩ {u ≤ β}) ≥ 1/2 and, since u is integer-valued, Lⁿ(Q₁ ∩ {u ≥ β}) = 1 − Lⁿ(Q₁ ∩ {u ≤ β − 1}) > 1/2.
+ (a) β minimizes c ↦ ∫_{Q₁}|u − c|. For c > β, |u − c| − |u − β| ≥ c − β on {u ≤ β} and ≥ −(c − β) on {u > β}, so ∫(|u − c| − |u − β|) ≥ (c − β)(Lⁿ{u ≤ β} − Lⁿ{u > β}) ≥ 0. The case c < β is symmetric, using Lⁿ{u ≥ β} ≥ 1/2. With c = u_{Q₁} and 3: ∫_{Q₁}|u − β| ≤ 2^{n+1}√n V.
+ (b) If β > 0 then u ≥ β on a set of measure ≥ 1/2, so ∫_{Q₁}|u| ≥ β/2. If β < 0 then u ≤ β on a set of measure ≥ 1/2, so ∫_{Q₁}|u| ≥ |β|/2. Hence |β| ≤ 2∫_{Q₁}|u|.
+
+5. Trace estimate. Let G : ℝⁿ → ℝⁿ be smooth with |G| ≤ 1, and let w ∈ L¹(Q₁) satisfy the hypothesis of the statement with the constant V. Then |∫_{Q₁} w div G| ≤ (2n + 1)V + 4n∫_{Q₁}|w|.
+ Proof. Let w_σ := (w 1_{Q₁}) ∗ φ_σ, σ < δ. Apply the divergence theorem on the box Q_δ to the smooth field w_σG, whose divergence is ∇w_σ · G + w_σ div G. (By Fubini and the fundamental theorem of calculus in each coordinate, ∫_{Q_δ} ∂_i(w_σG_i) = ∫ over the two faces {x_i = 1 − δ}, {x_i = δ} of ±w_σG_i; the Mathlib divergence theorem on boxes is not in the frozen import closure and is not needed.) This gives ∫_{Q_δ} w_σ div G = −∫_{Q_δ} ∇w_σ · G + ∫_{∂Q_δ} w_σ G · ν dH^{n−1}, so |∫_{Q_δ} w_σ div G| ≤ ∫_{Q_δ}|∇w_σ| + ∫_{∂Q_δ}|w_σ|. On the face {x₁ = δ}, |w_σ(δ, x')| ≤ |w_σ(x₁, x')| + ∫_δ^{1−δ}|∂₁w_σ(t, x')| dt for x₁ ∈ (δ, 1 − δ). Averaging over x₁ (length s ≥ 1/2) and integrating in x' gives ∫_{face}|w_σ| ≤ 2∫_{Q_δ}|w_σ| + ∫_{Q_δ}|∇w_σ|; the same holds for all 2n faces. With 1 applied to w: |∫_{Q_δ} w_σ div G| ≤ (2n + 1)V + 4n∫_{Q_δ}|w_σ|. Let σ ↓ 0 (w_σ → w 1_{Q₁} in L¹, and div G is bounded on closure Q₁), then δ ↓ 0 (dominated convergence): |∫_{Q₁} w div G| ≤ (2n + 1)V + 4n∫_{Q₁}|w|.
+
+6. Conclusion. Put c := 2^{n+1}√n + (2n + 1) + 4n·2^{n+1}√n > 0 (depending only on m). By 4(a), ∫_{Q₁}|u − β| ≤ 2^{n+1}√n V ≤ cV, which is (1); 4(b) is (2). By 0, w := u − β satisfies the hypothesis with V, so by 5 and 4(a), for every smooth G with |G| ≤ 1, |∫_{Q₁}(u − β) div G| ≤ (2n + 1)V + 4n·2^{n+1}√n V ≤ cV, which is (3). ∎
+
+## Key steps
+
+1. V ≥ 0, |∫u div g| ≤ V, and u − β satisfies the same hypothesis.
+2. Mollified u_σ satisfies ∫_{Q_δ}|∇u_σ| ≤ V (duality with fields φ̌_σ ∗ g supported in Q₁).
+3. Smooth Poincaré on cubes of side in [1/2, 1] and the limits σ ↓ 0, δ ↓ 0 give ∫_{Q₁}|u − u_{Q₁}| ≤ 2^{n+1}√n V.
+4. The least integer β with Lⁿ{u ≤ β} ≥ 1/2 is a median (integer values), minimizes c ↦ ∫|u − c| and satisfies |β| ≤ 2∫|u|.
+5. Divergence theorem and the elementary trace inequality on Q_δ give |∫_{Q₁} w div G| ≤ (2n + 1)V + 4n∫|w|; apply to w = u − β.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n -i 'deform|skeleton|retraction|homotop|latticeFace|flatDistance|cube_bv|polyhedral' local-references/123e8435b4a2469b/project/GMT/Ch07 -g '*.lean' (no match)`
+- `rg -n 'def latticeFace|def IsLatticeChain|def DeformationTheorem|theorem main_theorem' local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean; sed -n 260,300p (DeformationTheorem = Simon 5.3 as a sorry-based definition in namespace GMT.Ch06; formulation reference only)`
+- `rg -n 'theorem measure_Ioo' mathlib/Mathlib/MeasureTheory/Measure/Stieltjes.lean; rg -n 'ae_hasDerivAt' mathlib/Mathlib/Analysis/Calculus/Monotone.lean; rg -n 'theorem integral_lineDeriv_mul_eq' mathlib/Mathlib/Analysis/Calculus/Rademacher.lean; rg -n 'theorem ae_tendsto_average_norm_sub' mathlib/Mathlib/MeasureTheory/Covering/; rg -n 'theorem LipschitzOnWith.extend_real' mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean; rg -n 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean (all found in the snapshot)`
+- `rg -n 'area_image_criticalSet_eq_zero|weighted_area_formula_lipschitz_injOn|area_image_nondifferentiable_eq_zero' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02 (AreaCritical.lean:185, AreaLipschitz.lean:45 and :101); grep boundary_boundary / WeaklyConvergesOn.boundary / WeaklyConvergesOn.massOn_le_liminf in .lake/packages/simongmt/Poincare/SimonGMT/Chapter06 (Currents.lean:365, :389; Mass.lean:100)`
+- `python3 -I scans of the run dag.json: statuses, candidate commits, updated_at and byte comparison of lean_statement for cmcdt_good_center, cmcdt_dilation_pushforward, cmcdt_im_series, cmr_vector_riesz_representation, ptd_piece_image_approxTangent_ae and cmc_slice_mass_bounds (all accepted, identical); subtrees of deformation_theorem-a1 and mass_representation-a1 (cmc_deformation_theorem, cmcdt_skeleton_retraction, cmcdt_cube_bv_median, cmcdt_lipschitz_pushforward_homotopy, cmcdt_skeleton_deformation, cmcdt_face_replacement and cmr_exists_massRepresentation_core not accepted); freedom of the six new names; inherited-prerequisite computation for this node (dtc_vanish_off_support)`
+- `git show <candidate>:GMT/Ch07/Submission.lean for 42b2a510, fba5d30a, 9b823b56, 5d41e1d4, 6ae39d3e and a1c12d76 (types byte-identical, the only sorry is the root theorem, no axiom declarations); grep of the cited helpers in 9b823b56; git show 58a0bf378 (adds import Poincare.SimonGMT.Chapter02.AreaLipschitz)`
+- `throwaway clone /tmp/dfm4_sim: from 4eedbcf, git merge --no-ff of 2af75d69, bff81d31, 44ef61f7, then 9b823b56 + 6ae39d3e (pushforward base), 5d41e1d4 + 9b823b56 (mass_rep base), or all six reused candidates (parent base); de-duplicate and run lake env lean on the merged file (no errors)`
+- `lake env lean on /tmp/dfm4_work/lean/{Assembly,Challenges,AvailAll,AvailAreaAll,AvailReuse,Avail6}.lean; python3 -I /tmp/dfm4_scripts/check_assembly.py; verifier/lean_contract.py validate_lean_statement`
+- `sed -n 1440,1560p book/chapter-06.txt (Simon 5.1–5.4); runtime source /runtime/flows/gmt-claude-60a586062ee7/_recursive_lean/{runtime.py (_existing_lean_name_problem, _accepted_checkpoint, _decompose, _overlay_accepted_children, _merge_candidate_history, _drop_merged_duplicates), store.py (update, refresh), inherited.py, leaf_verification.py, prompts.py}`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Stieltjes.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-57991f1e6d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-57991f1e6d/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-57991f1e6d/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-57991f1e6d/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/logs/gmt-ch07/5b793d9d6e634c829bcf09ec49beaff8.log`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-good-center-a1/accepted-candidate.json`
+- `/runtime/flows/gmt-claude-60a586062ee7/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-60a586062ee7/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-60a586062ee7/_recursive_lean/inherited.py`
+- `/runtime/flows/gmt-claude-60a586062ee7/_recursive_lean/leaf_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/dfm4_work/lean/Assembly.lean`
+- `/tmp/dfm4_work/lean/Challenges.lean`
+- `/tmp/dfm4_work/MergedAll.lean`
+
+Neither the pinned snapshot nor the workspace has a deformation theorem usable from GMT.Ch07. The snapshot's Ch06 DeformationTheorem is a sorry-based formulation in namespace GMT.Ch06 (formulation reference only). Mathlib has no Federer–Fleming theorem. The equivalent cmc_deformation_theorem and its large pieces are not accepted, so they cannot be shared. All Mathlib and SimonGMT lemmas cited by the new leaves exist at the pinned revisions; the AreaLipschitz lemmas are imported through the accepted piece_tangent candidate. The six reused declarations were accepted before this attempt began (22:58:17Z), with byte-identical types and clean candidates. This makes the cmcdt_good_center reuse valid under runtime.py _existing_lean_name_problem; attempt 3 failed only because its DAG snapshot predated the 22:12:22Z acceptance. The merged bases compile, and the Lean assembly derives this node's exact type from the children with the standard axioms only.

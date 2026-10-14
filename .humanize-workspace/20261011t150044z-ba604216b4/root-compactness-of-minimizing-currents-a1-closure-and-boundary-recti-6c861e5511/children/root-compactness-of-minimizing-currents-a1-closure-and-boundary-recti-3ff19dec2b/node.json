@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.projection_reduction-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1",
+  "depth": 5,
+  "title": "An n-vector annihilating every w^♭∧α with w ⊥ V only sees the restriction of covectors to V",
+  "statement": "Let P, d ∈ ℕ, n := d+1, ζ ∈ Λ_n(ℝ^P) (MultiVector P n) and V ⊆ ℝ^P a linear subspace with orthogonal projection p_V (V.starProjection). Assume ζ(γ) = 0 whenever w ∈ V^⊥, α is a d-covector and γ is an n-covector with γ(u_0, …, u_d) = Σ_{i=0}^{d}(−1)^i⟨w, u_i⟩α(u_0, …, û_i, …, u_d) for all u (û_i omitted). Then ζ(β) = ζ(β∘p_V) for every n-covector β, where (β∘p_V)(u_0, …, u_d) := β(p_Vu_0, …, p_Vu_d) (β.compContinuousLinearMap p_V).",
+  "lean_statement": "∀ (P d : ℕ) (ζ : MultiVector P (d + 1)) (V : Submodule ℝ (Euclid P)), (∀ w ∈ Vᗮ, ∀ (α : Covector (Euclid P) d) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → ζ γ = 0) → ∀ β : Covector (Euclid P) (d + 1), ζ β = ζ (β.compContinuousLinearMap V.starProjection)",
+  "lean_name": "cbr_ci_cp_eval_comp_starProjection_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3ff19dec2b-a1"
+}

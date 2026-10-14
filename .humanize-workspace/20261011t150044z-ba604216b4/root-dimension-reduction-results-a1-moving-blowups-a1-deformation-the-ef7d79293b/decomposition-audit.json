@@ -1,0 +1,122 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "dimred_mbl_dt_lpc|cylinder|cbrld_cone_testForm_coeff_lipschitz|regcomp_covectorEuclideanNorm_seminorm_retract|cmc_fc_sc_abs_le_mul_mass|cmc_fc_sc_current_of_coeff_bound|cmc_fc_cs_massOn_sub_le|rsd_cmr_support_subset_of_vanish",
+        "abbrev (Euclid|MultiVector)|instance : Sub|def boundaryMassOn|def CompactlyContained",
+        "theorem curryLeft_apply_apply|def curryLeftLI|def compContinuousLinearMapCLM|theorem extDeriv_apply|theorem integral_integral_swap|theorem integral_eq_sub_of_hasDerivAt",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "lean_name",
+        "lean_statement",
+        "depends_on",
+        "children",
+        "permitted_axioms",
+        "validate_lean_statement",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/CheckD.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/CheckS.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/CheckF.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/CheckC.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-ef7d79293b/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-ef7d79293b/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f66fd8b98d/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-smoot-eefd369560/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-99cd9ba1b0/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-ae24472ce6/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-cauchy-117cbe2a8e/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/isolated-comparator-result.json",
+        "GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/Types.lean",
+        "GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/Assembly.lean",
+        "GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/CheckD.lean",
+        "GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/CheckS.lean",
+        "GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/CheckF.lean",
+        "GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/CheckC.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected cylinder theorem. The frozen definitions and dependency revisions match. The snapshot project search found no matching cylinder or child declarations. All ten contracts are standalone one-line propositions matching their prose and pass validation and elaboration. All names are bare identifiers; the four new names have no DAG reservations, and the six reuses have byte-identical comparator-accepted types with compatible kernel and axiom records. Dependencies are correctly directed and acyclic. Fresh compilation of the four child proof checks and the exact parent assembly succeeds using only propext, Classical.choice and Quot.sound. The assembly establishes C1–C5 from the children and the inherited covector-bounds dependency; defining the cylinder for every finite-mass current is a valid strengthening. Inline Euclidean constructions use the intended instances; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coeff_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type. Compact support bounds the continuous derivative; coefficient/operator-norm comparison and the mean-value inequality give the stated global Lipschitz constant, including degenerate dimensions."
+    },
+    {
+      "key": "coeff_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type. The finite coefficient map proves continuity, triangle inequality, homogeneity and norm comparison. The squared-distance calculation proves the radial-retraction estimate with all sign conditions justified."
+    },
+    {
+      "key": "abs_le_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type with arbitrary U. The admissible rescalings ±c⁻¹ω, positivity of c and finiteness of mass establish both inequalities needed for the absolute-value bound."
+    },
+    {
+      "key": "bounded_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type. The proof derives A ≥ 0 from the hypothesis, obtains uniform order-zero convergence on the common compact support, and uses positive bounds tending to zero to prove precisely the current's required sequential continuity."
+    },
+    {
+      "key": "mass_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type. Negation preserves admissibility, current subtraction evaluates pointwise, and ofReal_add_le followed by the defining supremum proves the inequality without openness or finiteness assumptions."
+    },
+    {
+      "key": "support_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type. Openness of U and compactness of K give the required relatively compact zero neighborhoods. The resulting inclusion and equality F.support = K ∖ F.zeroRegion correctly establish compactness."
+    },
+    {
+      "key": "slice_forms",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "CB is explicit and matches the inherited contract. Proper affine pullbacks construct η, β and γ; extensionality handles arbitrary families. The bounds, uniformly chosen Lipschitz constant and support inclusion follow from the stated arguments and declared coeff_lipschitz dependency."
+    },
+    {
+      "key": "slice_ext_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches both degree cases. Expanding the exterior derivative, applying the affine chain rule and tracking the deleted tuple gives the stated minus sign. Degree zero leaves only the time-derivative term. No cylinder theorem is assumed."
+    },
+    {
+      "key": "ftc_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The full REP antecedent and family formulas match the prose. REP gives a finite measure; coefficient bounds and joint measurability justify Fubini. Continuous linear evaluation and scalar FTC give the endpoint difference, with endpoint integrability explicitly established."
+    },
+    {
+      "key": "cylinder_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "CB and VO are fully stated. Slice uniqueness makes the integral functional linear, the mass estimate supplies current continuity, and VO plus the compact support criterion proves the conditional support conclusion. The proof uses exactly its declared dependencies and supplies the construction needed by the parent assembly."
+    }
+  ],
+  "required_changes": []
+}

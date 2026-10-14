@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.extend_to_univ-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1",
+  "depth": 3,
+  "title": "Extension to ℝ^P of a compactly supported integer multiplicity current in U, with mass control",
+  "statement": "Assume the following two propositions. (IR) [conjunct (b) of the frozen statement of the sibling declaration cmc_imRep_locality_restrict_sub] For all P, n ∈ ℕ, every open U ⊆ ℝ^P, every IMRep R = (M, θ, ξ) in U and every Borel set E ⊆ ℝ^P, there are a current A ∈ 𝒟_n(U) and an IMRep R' in U with carrier M ∩ E, multiplicity θ and orientation ξ such that R' represents A. (ME) [the frozen statement of the sibling declaration cmc_massOn_eq_imRep_measure] For all P, n ∈ ℕ, every open U ⊆ ℝ^P, T ∈ 𝒟_n(U) and IMRep R in U representing T: M_W(T) = R.measure(W) for every open W ⊆ ℝ^P. Let P, m ∈ ℕ, n := m + 1, let U ⊆ ℝ^P be open, K ⊆ U compact and X ∈ 𝒟_n(U) integer multiplicity with spt X ⊆ K. Then there is an integer multiplicity Y ∈ 𝒟_n(ℝ^P) (a current with domain univ) whose restriction to 𝒟ⁿ(U) is X (Y.restrictDomain (subset_univ U) = X), with spt Y ⊆ K, M_{ℝ^P}(Y) ≤ M_U(X) and M_{ℝ^P}(∂Y) ≤ M_U(∂X). Conventions: 𝒟_d(U) is the space of d-currents in U (SimonGMT GeometricCurrentOn U d) and 𝒟^d(U) the test d-forms in U (TestFormOn U d: smooth forms on ℝ^P with compact support contained in U); |α| is the Euclidean coefficient norm of a covector (covectorEuclideanNorm); M_G(X) = X.massOn G is the supremum of max(X(ω), 0) over ω ∈ 𝒟^d(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x (such ω are called admissible for M_G), and M(X) = X.mass = M_U(X) for X ∈ 𝒟_d(U); spt is the support of Simon 6.2.11 (GeometricCurrentOn.support); IM means integer multiplicity (contract IsIntegerMultiplicity), an IMRep R = (M, θ, ξ) is the contract structure IMRep with R.measure = θ·Hⁿ⌞M, R.action(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ (⟨ω, ξ⟩ := ξ(x)(ω(x))) and R represents X when X(ω) = R.action(ω) for all test forms ω; subtraction of currents is the contract instance Sub; X ⇀ Y is WeaklyConvergesOn.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P m : ℕ) (U K : Set (Euclid P)) (X : GeometricCurrentOn U (m + 1)), IsOpen U → IsCompact K → K ⊆ U → IsIntegerMultiplicity X → X.support ⊆ K → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ Y.restrictDomain (subset_univ U) = X ∧ Y.support ⊆ K ∧ Y.mass ≤ X.mass ∧ Y.boundary.mass ≤ X.boundary.mass",
+  "lean_name": "cmc_fc_extend_to_univ",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-extend-to-univ-a1-a1"
+}

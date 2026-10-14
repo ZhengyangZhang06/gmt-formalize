@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.halfspace_ftc-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1",
+  "depth": 5,
+  "title": "Integrals of partial derivatives of a compactly supported C¹ function over a coordinate half-space",
+  "statement": "Let d ∈ ℕ, let ℝ^{d+1} := Fin (d+1) → ℝ and ℝ^d := Fin d → ℝ carry the product Lebesgue measures (volume), let g : ℝ^{d+1} → ℝ be C¹ (ContDiff ℝ 1) with compact support, t ∈ ℝ, and H := {z ∈ ℝ^{d+1} : z_0 < t}. Write ∂_i g(z) := Dg(z)(e_i) with e_i = Pi.single i 1, and (t, z′) := Fin.cons t z′ for z′ ∈ ℝ^d. Then (a) ∫_H ∂_i g(z) dz = 0 for every i ≠ 0, and (b) ∫_H ∂_0 g(z) dz = ∫_{ℝ^d} g(t, z′) dz′.",
+  "lean_statement": "∀ (d : ℕ) (g : (Fin (d + 1) → ℝ) → ℝ) (t : ℝ), ContDiff ℝ 1 g → HasCompactSupport g → (∀ i : Fin (d + 1), i ≠ 0 → ∫ z in {z : Fin (d + 1) → ℝ | z 0 < t}, fderiv ℝ g z (Pi.single i 1) = 0) ∧ ∫ z in {z : Fin (d + 1) → ℝ | z 0 < t}, fderiv ℝ g z (Pi.single 0 1) = ∫ z' : Fin d → ℝ, g (Fin.cons t z')",
+  "lean_name": "cbr_cipi_halfspace_partial_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2f2981d455-a1"
+}

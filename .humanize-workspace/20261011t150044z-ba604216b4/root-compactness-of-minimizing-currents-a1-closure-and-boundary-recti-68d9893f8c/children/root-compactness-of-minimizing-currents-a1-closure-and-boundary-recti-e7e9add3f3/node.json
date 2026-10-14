@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.count_integral-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1",
+  "depth": 4,
+  "title": "Integrals over finite sets with respect to H⁰ = μHE[0]",
+  "statement": "Let P ∈ ℕ, let F be a finite subset of ℝ^P (a Finset), let f : ℝ^P → ℝ be any function and g : ℝ^P → [0, ∞] any function (no measurability is assumed). Then the Bochner integral of f over F with respect to Mathlib's normalized 0-dimensional Hausdorff measure H⁰ = μHE[0] equals Σ_{x∈F} f(x). Likewise the lower Lebesgue integral of g over F with respect to μHE[0] equals Σ_{x∈F} g(x).",
+  "lean_statement": "∀ (P : ℕ) (F : Finset (Euclid P)) (f : Euclid P → ℝ) (g : Euclid P → ℝ≥0∞), (∫ x in (F : Set (Euclid P)), f x ∂μHE[0]) = ∑ x ∈ F, f x ∧ (∫⁻ x in (F : Set (Euclid P)), g x ∂μHE[0]) = ∑ x ∈ F, g x",
+  "lean_name": "cbrz_finset_integral_hausdorff_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e7e9add3f3-a1"
+}

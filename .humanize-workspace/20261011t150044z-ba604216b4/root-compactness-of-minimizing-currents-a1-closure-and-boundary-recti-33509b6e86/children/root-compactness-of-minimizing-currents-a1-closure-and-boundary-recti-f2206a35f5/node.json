@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.const_mass-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1",
+  "depth": 4,
+  "title": "Mass of a current with constant m-vector against a Radon measure",
+  "statement": "Let P, m ∈ ℕ, ν a Borel measure on ℝ^P finite on compact sets, ζ₀ ∈ Λ_m(ℝ^P) (a continuous linear functional on m-covectors, MultiVector P m) and s ∈ ℝ such that |ζ₀(α)| ≤ s·|α| for every m-covector α (|·| = covectorEuclideanNorm) and ζ₀(β) = s for some β with |β| ≤ 1 (so s is the dual norm of ζ₀). If Ξ ∈ 𝒟_m(ℝ^P) satisfies Ξ(ω) = ∫ζ₀(ω(x))dν(x) for every test m-form ω, then M_W(Ξ) = s·ν(W) (in [0, ∞], s read as ofReal s) for every open W ⊆ ℝ^P.",
+  "lean_statement": "∀ (P m : ℕ) (ν : Measure (Euclid P)) (ζ₀ : MultiVector P m) (s : ℝ) (Ξ : GeometricCurrentOn (univ : Set (Euclid P)) m), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ α : Covector (Euclid P) m, |ζ₀ α| ≤ s * covectorEuclideanNorm α) → (∃ β : Covector (Euclid P) m, covectorEuclideanNorm β ≤ 1 ∧ ζ₀ β = s) → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Ξ ω = ∫ x, ζ₀ ((ω : DifferentialForm (Euclid P) m) x) ∂ν) → ∀ W : Set (Euclid P), IsOpen W → Ξ.massOn W = ENNReal.ofReal s * ν W",
+  "lean_name": "cbr_ci_const_vector_massOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f2206a35f5-a1"
+}

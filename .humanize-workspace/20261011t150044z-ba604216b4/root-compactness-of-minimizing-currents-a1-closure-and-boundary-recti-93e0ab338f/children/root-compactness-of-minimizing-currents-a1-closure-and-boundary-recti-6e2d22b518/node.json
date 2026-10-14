@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.weight_nat-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1",
+  "depth": 5,
+  "title": "An integer multiplicity weight equal to c times Hausdorff measure on a set forces c to be a natural number",
+  "statement": "Let P, m ∈ ℕ, U ⊆ ℝ^P, R = (M, θ, ξ) an integer multiplicity triple (IMRep U m) with weight R.measure = (Hᵐ⌞M) withDensity θ (Hᵐ = μHE[m], θ : ℝ^P → ℕ), S ⊆ ℝ^P a Borel set and c > 0 a real number. Assume (Hᵐ⌞S)(K) < ∞ for every compact K, (Hᵐ⌞S)(B_r(x)) > 0 for some x ∈ ℝ^P and r ∈ ℝ, and R.measure(G) = c·(Hᵐ⌞S)(G) for every open G ⊆ ℝ^P (c read as ENNReal.ofReal c). Then c is a natural number: c = k for some k ∈ ℕ.",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (R : IMRep U m) (S : Set (Euclid P)) (c : ℝ), 0 < c → MeasurableSet S → (∀ K : Set (Euclid P), IsCompact K → ((μHE[m] : Measure (Euclid P)).restrict S) K < ∞) → (∃ (x : Euclid P) (r : ℝ), 0 < ((μHE[m] : Measure (Euclid P)).restrict S) (ball x r)) → (∀ G : Set (Euclid P), IsOpen G → R.measure G = ENNReal.ofReal c * ((μHE[m] : Measure (Euclid P)).restrict S) G) → ∃ k : ℕ, c = k",
+  "lean_name": "cbr_cipi_imrep_weight_const_nat",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6e2d22b518-a1"
+}

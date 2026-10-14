@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcs_rc_|rsd_mw_tfa_norm_props|TestFormOnConverges|order_zero",
+        "abbrev Covector|abbrev DifferentialForm|def IsTestForm|abbrev TestFormOn|def TestFormOnConverges|structure GeometricCurrentOn|def covectorEuclideanNorm|covectorEuclideanNorm_nonneg",
+        "Continuous.comp_aestronglyMeasurable₂",
+        "Measure.restrict_apply",
+        "norm_iteratedFDeriv_zero",
+        "rsd_mw_tfa_norm_props",
+        "cmcs_rc_pairing_integrable_abs_le",
+        "cmcs_rc_order_zero_current",
+        "git diff bfb7b24d1fcd2b1d9024388b8bb4a12bef38429b f492ba4a003c8f1324077e050d48667ae23c7100 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcs-restrict-independent-review-c3knl7nq/FrozenContractsAndProofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-restrict-current-a1/parent-child-handoff.json",
+        "GMT/Scratch/cmcs_restrict_current_decomposition/Assembly.lean",
+        "/tmp/cmcs-restrict-independent-review-c3knl7nq/FrozenContractsAndProofs.lean",
+        "/tmp/cmcs-restrict-independent-review-c3knl7nq/FrozenContractsAndProofs.log"
+      ],
+      "conclusion": "The pinned definitions support the supplied arguments; the project search returned no matches for the searched child names or continuity criterion. The accepted norm declaration has an identical frozen type and a compatible proof base; neither new name is reserved in the DAG. All names are bare identifiers. Independently elaborated all three exact propositions before declaring their implementations, then compiled the supplied proofs and exact selected parent assembly with frozen definitions inlined and only pinned package imports. Compilation succeeded; all four proofs use only propext, Classical.choice and Quot.sound. The split is appropriate and acyclic: norm comparison and the pairing lemma establish integrability and compact-support bounds; the parent supplies linearity and applies the continuity criterion with c_K = C * (μ K).toReal."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree on all four conjuncts. The coefficient-vector construction uses the Euclidean norm correctly; linearity, the coordinate operator-norm bound, and the Lipschitz estimate prove every conclusion without circularity. Conjunct (iii) supplies the parent's required comparison. Reuse is valid: the DAG declaration is accepted and its frozen type is identical."
+    },
+    {
+      "key": "pairing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and both conclusions match exactly. The proof derives ε ≥ 0, establishes measurable evaluation and integrable indicator domination, then restricts the measure. Measurability of K suffices for the indicator integral and restriction formula; E need not be measurable. Finite μ(K) justifies the toReal comparison. The proof is complete and independent of the other children."
+    },
+    {
+      "key": "order_zero_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches the stated compact-support bound and the frozen current structure. Zeroth-order uniform convergence gives small norms on K, while support containment gives zero values outside K. Choosing η = δ/(|c|+1) proves sequential continuity without assuming c ≥ 0. Packaging L yields the stated evaluation identity. No sibling or parent theorem is used."
+    }
+  ],
+  "required_changes": []
+}

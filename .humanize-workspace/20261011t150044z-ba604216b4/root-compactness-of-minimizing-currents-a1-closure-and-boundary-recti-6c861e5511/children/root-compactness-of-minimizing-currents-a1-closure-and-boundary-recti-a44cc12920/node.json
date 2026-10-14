@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.normalization-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1",
+  "depth": 5,
+  "title": "Normalisation: a dual-norm-one n-vector that only sees an at most n-dimensional V is the unit n-vector of V",
+  "statement": "Let P, d ∈ ℕ, n := d+1, ζ₀ ∈ Λ_n(ℝ^P) (MultiVector P n) and V ⊆ ℝ^P a linear subspace with dim V ≤ n and orthogonal projection p_V (V.starProjection). Assume |ζ₀(β)| ≤ |β| for every n-covector β, ζ₀(β₁) = 1 for some n-covector β₁ with |β₁| ≤ 1 (|·| = covectorEuclideanNorm), and ζ₀(β) = ζ₀(β∘p_V) for every n-covector β, where (β∘p_V)(u) := β(p_Vu_0, …, p_Vu_d). Then dim V = n, and there is an orthonormal family v = (v_0, …, v_d) in ℝ^P with span{v_0, …, v_d} = V and ζ₀(β) = β(v_0, …, v_d) for every n-covector β.",
+  "lean_statement": "∀ (P d : ℕ) (ζ₀ : MultiVector P (d + 1)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V ≤ d + 1 → (∀ β : Covector (Euclid P) (d + 1), |ζ₀ β| ≤ covectorEuclideanNorm β) → (∃ β : Covector (Euclid P) (d + 1), covectorEuclideanNorm β ≤ 1 ∧ ζ₀ β = 1) → (∀ β : Covector (Euclid P) (d + 1), ζ₀ β = ζ₀ (β.compContinuousLinearMap V.starProjection)) → Module.finrank ℝ V = d + 1 ∧ ∃ v : Fin (d + 1) → Euclid P, Orthonormal ℝ v ∧ Submodule.span ℝ (Set.range v) = V ∧ ∀ β : Covector (Euclid P) (d + 1), ζ₀ β = β v",
+  "lean_name": "cbr_ci_cp_eval_eq_orthonormal_frame",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_eval_le-a1",
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_norming-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_eval_le-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-930e70c904-a1",
+      "result_commit": "b7846b639953f647296619e6e73dec8a8a22ba73",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_norming-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-e3a7dbabf1-a1",
+      "result_commit": "baaca6e45ef59dcdc4a449dbbfe914c226ee5d7b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a44cc12920-a1"
+}

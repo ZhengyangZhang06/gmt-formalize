@@ -1,0 +1,109 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1`
+- Child DAG node: `root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1.blowup_change_of_variables-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1–3 of the parent-supplied proof of continuous_blowUp_image_setIntegral. Simon prints no proof; the integral is the one in Simon Ch. 3, Def. 1.4 (chapter-03.txt lines 77–86; SimonGMT HasApproximateTangentSpaceAt). The same computation appears in SimonGMT Chapter04: Poincare.SimonGMT.Chapter04.hausdorff_blowUp_image (TangentDensity.lean) and Poincare.SimonGMT.Chapter04.map_inverse_blowUp_carrier (WeightedBlowUp.lean). The frozen contract imports neither module (only Poincare.SimonGMT.Chapter04.Basic is in its import closure), so the argument is given here from Mathlib. No measurability of M and no hypothesis on f is used.
+
+Notation. Hⁿ := μHE[n] on ℝ^P with its Borel σ-algebra. For A ⊆ ℝ^P, Hⁿ⌞A is the restricted measure and ∫_A g dHⁿ := ∫ g d(Hⁿ⌞A). This is the Bochner integral: by Mathlib's convention, a function that is not integrable has integral 0. For every Borel set E and every set A, (Hⁿ⌞A)(E) = Hⁿ(E ∩ A); Measure.restrict_apply needs E to be measurable, but not A. Put b := η_{x,r}, so b(y) = r⁻¹(y − x). Put ν := Hⁿ⌞M and ν_x := Hⁿ⌞b(M). Let c := ((ofReal r)⁻¹)ⁿ ∈ [0, ∞]. Since r > 0, ofReal r ∈ (0, ∞), so c is finite and its real value is c.toReal = (r⁻¹)ⁿ (ENNReal.toReal_pow, ENNReal.toReal_inv, ENNReal.toReal_ofReal).
+
+1. b is a homeomorphism. Since r ≠ 0, the map c'(z) := x + rz satisfies c'(b(y)) = x + r·r⁻¹(y − x) = y and b(c'(z)) = r⁻¹(x + rz − x) = z, so c' = b⁻¹. Both b and c' are continuous, being affine, so b is a homeomorphism of ℝ^P. Hence b and b⁻¹ are measurable embeddings (Homeomorph.measurableEmbedding). For every Borel set A, the sets b⁻¹(A) and (b⁻¹)⁻¹(A) = b(A) are Borel.
+
+2. Scaling of Hⁿ under b, for every set. Claim: Hⁿ(b(S)) = c·Hⁿ(S) for every S ⊆ ℝ^P, measurable or not. Indeed b(S) = h(τ(S)), where τ(y) := y − x and h is the homothety with centre 0 and ratio r⁻¹, because h(τ(y)) = r⁻¹((y − x) − 0) + 0 = b(y).
+- τ is an isometry of ℝ^P (IsometryEquiv.subRight x), and isometries preserve Hⁿ of every set (Isometry.euclideanHausdorffMeasure_image). So Hⁿ(τ(S)) = Hⁿ(S).
+- Since r⁻¹ ≠ 0, Hⁿ(h(S')) = ‖r⁻¹‖₊ⁿ·Hⁿ(S') for every S' (euclideanHausdorffMeasure_homothety_image).
+- As r > 0, ‖r⁻¹‖₊ = r⁻¹, and in [0, ∞] we have ofReal(r⁻¹) = (ofReal r)⁻¹ (ENNReal.ofReal_inv_of_pos). So the factor ‖r⁻¹‖₊ⁿ equals c.
+Hence Hⁿ(b(S)) = Hⁿ(h(τ(S))) = c·Hⁿ(τ(S)) = c·Hⁿ(S).
+
+3. Push-forward identity. Claim: (b⁻¹)_#ν_x = c·ν. Let A be a Borel set. By step 1, (b⁻¹)⁻¹(A) = b(A) is Borel, so
+(b⁻¹)_#ν_x(A) = ν_x(b(A)) = Hⁿ(b(A) ∩ b(M)) = Hⁿ(b(A ∩ M)) = c·Hⁿ(A ∩ M) = c·ν(A).
+The equalities are justified as follows:
+- The first is the definition of the push-forward under the measurable map b⁻¹ (Measure.map_apply).
+- The second is the restriction formula for the Borel set b(A).
+- The third uses that b is injective, so b(A) ∩ b(M) = b(A ∩ M).
+- The fourth is step 2 with S = A ∩ M.
+- The fifth is the restriction formula for the Borel set A.
+Two measures that agree on all Borel sets are equal (Measure.ext). Hence (b⁻¹)_#ν_x = c·ν.
+Equivalently, ν_x = c·b_#ν. For Borel A, A ∩ b(M) = b(b⁻¹(A) ∩ M) because b is a bijection, so ν_x(A) = Hⁿ(b(b⁻¹(A) ∩ M)) = c·Hⁿ(b⁻¹(A) ∩ M) = c·(b_#ν)(A), where b⁻¹(A) is Borel. Either form suffices for step 4.
+
+4. Change of variables. Two integral identities hold for every function g : ℝ^P → ℝ, with no integrability or measurability hypothesis:
+- ∫ g d(φ_#μ) = ∫ g∘φ dμ for every measure μ and every measurable embedding φ (MeasurableEmbedding.integral_map).
+- ∫ g d(c₀μ) = c₀.toReal·∫ g dμ for every constant c₀ ∈ [0, ∞] (integral_smul_measure).
+Apply the first with φ = b⁻¹, μ = ν_x and g = f∘b. Using b(b⁻¹(z)) = z and step 3,
+∫_{b(M)} f dHⁿ = ∫ f dν_x = ∫ (f∘b)(b⁻¹z) dν_x(z) = ∫ f∘b d((b⁻¹)_#ν_x) = ∫ f∘b d(c·ν).
+By the second identity, this equals c.toReal·∫ f∘b dν = (r⁻¹)ⁿ·∫_M f(η_{x,r}(y)) dHⁿ(y). With the second form of step 3, the same two identities with φ = b give the same result: ∫ f dν_x = c.toReal·∫ f d(b_#ν) = c.toReal·∫ f∘b dν. This is the claimed identity ∫_{η_{x,r}(M)} f dHⁿ = r⁻¹ ^ n·∫_M f(η_{x,r}(y)) dHⁿ(y). ∎
+
+## Key steps
+
+1. η_{x,r} is a homeomorphism with inverse z ↦ x + rz. Hence η_{x,r} and its inverse are measurable embeddings, and both map Borel sets to Borel sets.
+2. Hⁿ(η_{x,r}(S)) = ((ofReal r)⁻¹)ⁿ·Hⁿ(S) for every set S: translation by −x is an isometry, followed by the homothety with centre 0 and ratio r⁻¹.
+3. Push-forward identity (η_{x,r}⁻¹)_#(Hⁿ⌞η_{x,r}(M)) = ((ofReal r)⁻¹)ⁿ·Hⁿ⌞M (equivalently Hⁿ⌞η_{x,r}(M) = ((ofReal r)⁻¹)ⁿ·(η_{x,r})_#(Hⁿ⌞M)). It is checked on Borel sets using injectivity and the scaling step; measurability of M is not needed.
+4. MeasurableEmbedding.integral_map and integral_smul_measure hold for every integrand. With ((ofReal r)⁻¹)ⁿ.toReal = (r⁻¹)ⁿ they give ∫_{η_{x,r}(M)} f dHⁿ = r⁻¹ ^ n·∫_M f(η_{x,r}(y)) dHⁿ(y).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json,decomposition-scope-v1.json}`
+- `cat local-references/123e8435b4a2469b/manifest.json; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git show 4f63722b:GMT/Ch07/Submission.lean | cmp - GMT/Ch07/Submission.lean`
+- `python3 scan of dag.json lean_statement for 'blowUpMap|dilation|homothety|smul_measure' and of lean_name for setIntegral_blowUpMap_image_eq_inv_pow_mul / continuous_integral_comp_blowUpMap / rsd_cmr_ir_blowUp_image_measure`
+- `grep -rn 'μHE' local-references/123e8435b4a2469b/mathlib/Mathlib; sed -n 55,200p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_homothety_image, Isometry.euclideanHausdorffMeasure_image)`
+- `grep -n 'theorem continuousAt_of_dominated|theorem integral_smul_measure|MeasurableEmbedding.integral_map' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean; grep -n 'integrableOn_const|integrable_indicator_iff' .../IntegrableOn.lean; grep -n bounded_above_of_compact_support .../Analysis/Normed/Group/Bounded.lean; grep -n 'Homeomorph.measurableEmbedding' .../BorelSpace/Basic.lean; grep -n 'def divRight' .../Topology/MetricSpace/IsometricSMul.lean`
+- `grep -n blowUpMap simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean; grep -rn 'hausdorff_blowUp_image|map_inverse_blowUp_carrier|integral_weighted_blowUp|blowUpHomeomorph' simongmt/Poincare/SimonGMT/Chapter04/`
+- `sed -n 70,90p book/chapter-03.txt (Simon Ch. 3 Definition 1.4)`
+- `grep -rlw -e setIntegral_blowUpMap_image_eq_inv_pow_mul -e continuous_integral_comp_blowUpMap local-references/123e8435b4a2469b/{project,mathlib/Mathlib} .lake/packages/simongmt/Poincare nodes/*/*.json; git for-each-ref (201 objects) | git show <ref>:GMT/Ch07/Submission.lean | grep -w`
+- `lake env lean /tmp/bic2-v2/Stmts.lean; /tmp/bic2-v2/Avail.lean; /tmp/bic2-v2/T1.lean; /tmp/bic2-v2/T2.lean; /tmp/bic2-v2/gen/Assembly.lean; /tmp/bic2-v2/gen/AssemblyHyp.lean; /tmp/bic2-v2/gen/Full.lean (#print axioms)`
+- `independent reviewer: lake env lean /tmp/bic2-review-r7k3q9/{R1_Stmts,R2_Assembly,R3_Route,R5_Avail}.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/IsometricSMul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/bic2-v2/Stmts.lean`
+- `/tmp/bic2-v2/Avail.lean`
+- `/tmp/bic2-v2/proposal_subproblems.json`
+- `/tmp/bic2-v2/gen/Assembly.lean`
+- `/tmp/bic2-v2/gen/AssemblyHyp.lean`
+- `/tmp/bic2-v2/gen/Full.lean`
+
+Contract and Submission:
+- The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean.
+- The parent's dispatch commit 4f63722b leaves Submission.lean unchanged.
+- The workspace lake-manifest pins Mathlib at the same rev, 25730c7c.
+
+SimonGMT:
+- Chapter03/Rectifiable.lean defines blowUpMap x r y = r⁻¹ • (y − x). HasApproximateTangentSpaceAt uses exactly ∫ y in blowUpMap x r '' M, f y ∂μHE[n], which is Simon Ch. 3 Def. 1.4 (chapter-03.txt lines 77–86).
+- Chapter04 proves the scaling and push-forward steps (hausdorff_blowUp_image, map_inverse_blowUp_carrier). They are unknown identifiers after `import GMT.Ch07.Submission`, so child A is a genuine, reusable obligation.
+
+Mathlib snapshot:
+- It supplies every cited lemma: Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_homothety_image, IsometryEquiv.subRight, Homeomorph.measurableEmbedding, Measure.map_apply, Measure.restrict_apply, MeasurableEmbedding.integral_map, integral_smul_measure, Continuous.bounded_above_of_compact_support, continuousAt_of_dominated, integrable_indicator_iff and integrableOn_const.
+
+DAG:
+- No DAG node, other branch, git ref, snapshot library or SimonGMT declaration uses either child name. They appear only in this node's own unpublished v1 artifacts.
+- The closest DAG node is rsd_cmr_ir_blowUp_image_measure (rlcr-lean). It is only the set-scaling step, with a different name and type.
+
+Lean checks:
+- Both child types and the parent type elaborate.
+- The parent follows from the two children: with the children as hypotheses it uses standard axioms only.
+- Both children are kernel-checked at their exact frozen types, using only propext, Classical.choice and Quot.sound.
+- An independent reviewer reproduced all of this and returned ACCEPT.

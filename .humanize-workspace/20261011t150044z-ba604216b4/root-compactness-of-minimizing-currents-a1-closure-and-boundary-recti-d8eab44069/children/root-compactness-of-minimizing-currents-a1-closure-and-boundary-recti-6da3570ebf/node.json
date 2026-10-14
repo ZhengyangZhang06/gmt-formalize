@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.blowup_scale-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1",
+  "depth": 5,
+  "title": "One blow-up of a represented cycle: boundary, mass measure, concentration and Hausdorff representation",
+  "statement": "Let P, d ∈ ℕ, n := d + 1, Hⁿ = μHE[n], a ∈ ℝ^P, λ > 0, D := dilation a λ (y ↦ −λ⁻¹a + λ⁻¹y) and μ' := ofReal(λ^{−n})·D_#μ (ENNReal.ofReal(λ⁻¹ ^ n) • Measure.map D μ). Let Γ, Γ' ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), μ a measure on ℝ^P, M ⊆ ℝ^P Borel, θ : ℝ^P → ℝ Borel and ζ : ℝ^P → Λ_n(ℝ^P) strongly measurable, such that ∂Γ = 0, μ(ℝ^P) < ∞, M_W(Γ) = μ(W) for every open W, μ = (Hⁿ⌞M) with density ofReal∘θ, θ > 0 on M, Γ(ω) = ∫_M θ(x)ζ(x)(ω(x)) dHⁿ(x) for every test n-form ω, and (h2) ∂Γ'(ω) = λ^{−d}·∂Γ(ω') for all test d-forms ω, ω' with ω'(y) = ω(D(y)) for all y; (h4) if Γ(ω) = ∫ ζ(x)(ω(x)) dμ(x) for all test n-forms ω, then Γ'(ω) = ∫ ζ(a + λy)(ω(y)) dμ'(y) for all ω; (h5) M_{D(W)}(Γ') = ofReal(λ^{−n})·M_W(Γ) for every W ⊆ ℝ^P. Then (P0) Γ(ω) = ∫ ζ(x)(ω(x)) dμ(x) for all ω; (P7) ∂Γ' = 0; (P1) μ'(K) < ∞ for every compact K; (P2) M_W(Γ') = μ'(W) for every open W; (P3) y ↦ ζ(a + λy) is μ'-a.e. strongly measurable; (P5) Γ'(ω) = ∫ ζ(a + λy)(ω(y)) dμ'(y) for all ω; (P6) μ'(ℝ^P ∖ blowUpMap a λ '' M) = 0; (P8) Γ'(ω) = ∫_{blowUpMap a λ '' M} (θ(a + λy)·ζ(a + λy))(ω(y)) dHⁿ(y) for all ω.",
+  "lean_statement": "∀ (P d : ℕ) (Γ Γ' : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P (d + 1)) (a : Euclid P) (lam : ℝ), 0 < lam → Γ.boundary = 0 → μ univ < ∞ → (∀ W : Set (Euclid P), IsOpen W → Γ.massOn W = μ W) → MeasurableSet M → Measurable θ → StronglyMeasurable ζ → μ = (μHE[(d + 1)].restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) → (∀ x ∈ M, 0 < θ x) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Γ ω = ∫ x in M, θ x * ζ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μHE[(d + 1)]) → (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) d, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) d) y = (ω : DifferentialForm (Euclid P) d) (dilation a lam y)) → Γ'.boundary ω = lam⁻¹ ^ d * Γ.boundary ω') → ((∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Γ ω = ∫ x, ζ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → ∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Γ' ω = ∫ y, ζ (a + lam • y) ((ω : DifferentialForm (Euclid P) (d + 1)) y) ∂(ENNReal.ofReal (lam⁻¹ ^ (d + 1)) • Measure.map (dilation a lam) μ)) → (∀ W : Set (Euclid P), Γ'.massOn (dilation a lam '' W) = ENNReal.ofReal (lam⁻¹ ^ (d + 1)) * Γ.massOn W) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Γ ω = ∫ x, ζ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) ∧ Γ'.boundary = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → (ENNReal.ofReal (lam⁻¹ ^ (d + 1)) • Measure.map (dilation a lam) μ) K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → Γ'.massOn W = (ENNReal.ofReal (lam⁻¹ ^ (d + 1)) • Measure.map (dilation a lam) μ) W) ∧ AEStronglyMeasurable (fun y => ζ (a + lam • y)) (ENNReal.ofReal (lam⁻¹ ^ (d + 1)) • Measure.map (dilation a lam) μ) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Γ' ω = ∫ y, ζ (a + lam • y) ((ω : DifferentialForm (Euclid P) (d + 1)) y) ∂(ENNReal.ofReal (lam⁻¹ ^ (d + 1)) • Measure.map (dilation a lam) μ)) ∧ (ENNReal.ofReal (lam⁻¹ ^ (d + 1)) • Measure.map (dilation a lam) μ) (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M)ᶜ = 0 ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Γ' ω = ∫ y, (θ (a + lam • y) • ζ (a + lam • y)) ((ω : DifferentialForm (Euclid P) (d + 1)) y) ∂(μHE[(d + 1)].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M)))",
+  "lean_name": "cbr_ci_bl_blowup_scale",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.blowup_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.blowup_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6da3570ebf-a1"
+}

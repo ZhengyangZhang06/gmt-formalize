@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcs_ss_|testForm_level_split|boundary_eq_of_tsupport_subset|boundary_vanish_of_disjoint|IsRestriction|IsSlice",
+        "theorem exists_contDiff_zero_iff_one_iff_of_isClosed",
+        "theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem setIntegral_eq_zero_of_forall_eq_zero",
+        "image_eq_one_of_notMem_mulTSupport|tsupport_smul_subset_right|HasCompactSupport.smul_left",
+        "theorem ContDiff.smul",
+        "tsupport_exteriorDerivative_subset|exteriorDerivativeTestOn|GeometricCurrentOn.boundary_apply",
+        "cmcs_ss_testForm_level_split|cmcs_ss_boundary_eq_of_tsupport_subset|cmcs_ss_boundary_vanish_of_disjoint",
+        ". GMT/Scratch/cmcs_slice_support_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/cmcs_slice_support_decomposition/Full.lean",
+        ". GMT/Scratch/cmcs_slice_support_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcs-ss-independent-audit-stc4_btf/ContractsAndAssembly.lean > /tmp/cmcs-ss-independent-audit-stc4_btf/ContractsAndAssembly.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-slice-support-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcs_slice_support_decomposition/Full.lean",
+        "/tmp/cmcs-ss-independent-audit-stc4_btf/ContractsAndAssembly.lean",
+        "/tmp/cmcs-ss-independent-audit-stc4_btf/ContractsAndAssembly.log"
+      ],
+      "conclusion": "The pinned definitions and cited lemmas support all three proofs; inspected snapshot sources match the compiler packages. No existing child declaration was found in the snapshot, 679-node DAG, 613 other decomposition files, or 1,343 unique Git ref-tip commits. All names are valid bare identifiers. Each exact one-line proposition elaborates without its implementation. Test-form addition uses Submodule.add. The complete child proofs and exact frozen parent compile using only propext, Classical.choice and Quot.sound. A separate assembly check derives the frozen parent from the three child propositions as hypotheses. The split is appropriate: every child is used, all dependency lists are correctly empty, and no circular or ancestor-theorem reliance occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "level_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree exactly. The closed sets K∩{f≤t} and K∩{t≤f} are disjoint by the stated hypothesis. Smooth Urysohn with order ⊤ : ℕ∞ supplies the required smooth cutoff. Multiplication preserves smoothness, compact support and containment in U; closure within the two closed sets proves the strict support bounds. The supplied proof is complete and non-circular."
+    },
+    {
+      "key": "boundary_inside",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type include all four representation hypotheses and allow arbitrary U and S. Support preservation under exterior differentiation makes both integrands vanish off S. The pinned set-integral lemma requires neither measurability of S nor integrability. The supplied equality chain correctly uses every representation and boundary_apply, proving the exact conclusion without circularity."
+    },
+    {
+      "key": "vanish_outside",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the exact standalone Lean proposition. Disjointness makes the form and its exterior derivative vanish on S; linearity of each multivector makes both integrands zero there. Applying the two supplied representations and the unconditional zero set-integral lemma proves both conjuncts. The proof is complete, independent of the other children, and non-circular."
+    }
+  ],
+  "required_changes": []
+}

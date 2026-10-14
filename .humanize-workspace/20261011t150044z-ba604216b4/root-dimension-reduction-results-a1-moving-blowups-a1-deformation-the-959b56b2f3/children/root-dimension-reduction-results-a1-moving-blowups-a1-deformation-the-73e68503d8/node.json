@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.orientation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1",
+  "depth": 6,
+  "title": "e₀ ∧ ξ is a unit orientation of ℝe₀ ⊕ J(Q) (parent step 6, orientation algebra)",
+  "statement": "Let N, n ∈ ℕ, e₀ := EuclideanSpace.single 0 1 ∈ ℝ^{N+1}, Jv := (0, v_1, …, v_N) ∈ ℝ^{N+1} (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) for v ∈ ℝ^N, Q a linear subspace of ℝ^N and Q̃ := span(insert e₀ (J(Q))). Let ξ be an n-vector on ℝ^N (MultiVector N n) that is a unit orientation of Q (IsUnitOrientationOf ξ Q), and ξ' an (n+1)-vector on ℝ^{N+1} such that ξ'(α) = ξ(β) whenever α is an (n+1)-covector on ℝ^{N+1}, β an n-covector on ℝ^N and β(v_1, …, v_n) = α(e₀, Jv_1, …, Jv_n) for all v. Then ξ' is a unit orientation of Q̃ (IsUnitOrientationOf ξ' Q̃).",
+  "lean_statement": "∀ (N n : ℕ) (ξ : MultiVector N n) (ξ' : MultiVector (N + 1) (n + 1)) (Q : Submodule ℝ (Euclid N)), IsUnitOrientationOf ξ Q → (∀ (α : Covector (Euclid (N + 1)) (n + 1)) (β : Covector (Euclid N) n), (∀ v : Fin n → Euclid N, β v = α (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → ξ' α = ξ β) → IsUnitOrientationOf ξ' (Submodule.span ℝ (insert (EuclideanSpace.single 0 1) ((fun v : Euclid N => (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)) : Euclid (N + 1))) '' (Q : Set (Euclid N)))))",
+  "lean_name": "dimred_mbl_dt_lp_imc_orientation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-73e68503d8-a1"
+}

@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cavalieri|steiner|isodiametric",
+        "volume_preserving_piFinSuccAbove|def piFinSuccAbove|theorem prod_apply_symm|theorem volume_preserving_toLp|theorem measure_preimage|theorem update_insertNth|theorem insertNth_apply_same|theorem update_idem|theorem update_self|theorem ofLp_toLp|theorem volume_Icc|theorem ofReal_toReal|theorem measure_lt_top_of_subset|theorem IsCompact.measure_lt_top|theorem IsCompact.measurableSet|theorem lintegral_congr",
+        "rg -n 'volume_prod|MeasureSpace|volume_pi' mathlib/Mathlib/MeasureTheory/Measure/Prod.lean mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "rg -n 'cbr_ci_iso_svol_volume_eq_of_slice_volume_eq|cbr_ci_iso_svol_steiner_slice_volume_eq' project",
+        "python3 -I /tmp/svol-independent-audit/generate.py",
+        "env LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/svol-independent-audit/Parent_Solution.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Logic/Function/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Layercake.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b1e99d8ae2/parent-child-handoff.json",
+        "/tmp/svol-independent-audit/generate.py",
+        "/tmp/svol-independent-audit/StandaloneTypes.lean",
+        "/tmp/svol-independent-audit/cavalieri_coordinate_Solution.lean",
+        "/tmp/svol-independent-audit/steiner_slice_length_Solution.lean",
+        "/tmp/svol-independent-audit/Parent_Solution.lean"
+      ],
+      "conclusion": "The split appropriately separates two independent analytic obligations. The snapshot contract matches the workspace, and all 14 checked Mathlib source files match the pinned snapshot. Searches found layer-cake Cavalieri references and no existing declarations with the proposed names. Both names are fresh bare identifiers; neither is reserved by another DAG branch. All frozen types elaborate without child implementations, and the volume, sigma-finiteness, coordinate, and compact-measure instance checks pass. Each child proof compiles independently; the exact parent assembly also compiles, using only propext, Classical.choice, and Quot.sound. Applying cavalieri_coordinate to the symmetral and A, with the parent's measurability hypothesis, compactness-derived measurability of A, and steiner_slice_length, proves precisely the selected parent. The independently computed parent digest matches."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cavalieri_coordinate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose, including both measurability assumptions and slice equality at every base point. The proof correctly eliminates d = 0, constructs the measure-preserving product parametrization, identifies its fibres using Fin.update_insertNth, and applies Tonelli to measurable preimages. Pointwise fibre equality justifies lintegral_congr even when total volumes are infinite. Every step is supplied; neither the parent theorem nor the other child is invoked. The empty dependency list is correct, and the frozen type and isolated proof compile."
+    },
+    {
+      "key": "steiner_slice_length",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the compactness hypothesis, symmetral definition, and universally quantified slice equality. Repeated coordinate updates leave the original slice unchanged. Its inclusion in the compact coordinate projection proves finite measure, justifying ENNReal.ofReal_toReal. The proof separately handles empty slices and nonempty centred intervals, including zero-length slices. No global measurability assumption on the symmetral is needed for this calculation. The supplied proof is complete and independent of the parent and sibling; the empty dependency list is correct, and the frozen type and isolated proof compile."
+    }
+  ],
+  "required_changes": []
+}

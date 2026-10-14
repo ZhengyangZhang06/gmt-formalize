@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1.liminf_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_pointwise-a1",
+  "depth": 4,
+  "title": "Passing the strip estimate to the liminf and removing the factor (1 − h/2)⁻¹",
+  "statement": "Let L ∈ [0,∞) (an NNReal), z ∈ ℝ, Φ : ℝ → ℝ with Φ(h) → z as h → 0+ (along 𝓝[>]0), and v : ℝ → [0,∞]. Assume that for every h with 0 < h < 1, ofReal|Φ(h)| ≤ ofReal(L/(h(1 − h/2)))·v(h) in [0,∞]. Then ofReal(z) ≤ L·liminf_{h→0+} ofReal(h⁻¹)·v(h) in [0,∞], with the liminf taken along 𝓝[>]0.",
+  "lean_statement": "∀ (L : NNReal) (z : ℝ) (Φ : ℝ → ℝ) (v : ℝ → ℝ≥0∞), Tendsto Φ (𝓝[>] 0) (𝓝 z) → (∀ h : ℝ, 0 < h → h < 1 → ENNReal.ofReal |Φ h| ≤ ENNReal.ofReal ((L : ℝ) / (h * (1 - h / 2))) * v h) → ENNReal.ofReal z ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * v h) (𝓝[>] 0)",
+  "lean_name": "cmcs_smp_liminf_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-pointwise-b96566c9ba-a1"
+}

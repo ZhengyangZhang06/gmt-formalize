@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.jacobian_continuity-a1.lipschitz_minor_ibp-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.jacobian_continuity-a1",
+  "depth": 6,
+  "title": "Integration by parts for Jacobian minors of Lipschitz maps (parent step 6(i), Lipschitz case)",
+  "statement": "Let k, r ∈ ℕ, L ∈ ℝ≥0, g_0, …, g_r : ℝᵏ → ℝ L-Lipschitz, V_0, …, V_r ∈ ℝᵏ and ψ : ℝᵏ → ℝ of class C¹ with compact support (ℝᵏ = Euclid k with Lebesgue measure; D = fderiv ℝ, the zero map at non-differentiability points). Let A(x) := (Dg_c(x)V_b)_{c,b ∈ Fin(r+1)} and M_b(x) := det(Dg_{c+1}(x)V_{s_b(b')})_{c,b' ∈ Fin r} with s_b = Fin.succAbove b. Then ∫ ψ(x)·det A(x) dx = −Σ_{b=0}^{r} (−1)^b ∫ Dψ(x)V_b·g_0(x)·M_b(x) dx.",
+  "lean_statement": "∀ (k r : ℕ) (L : NNReal) (g : Fin (r + 1) → Euclid k → ℝ) (V : Fin (r + 1) → Euclid k) (ψ : Euclid k → ℝ), (∀ c, LipschitzWith L (g c)) → ContDiff ℝ 1 ψ → HasCompactSupport ψ → ∫ x, ψ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b)) = -∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * ∫ x, fderiv ℝ ψ x (V b) * g 0 x * Matrix.det (Matrix.of fun (c b' : Fin r) => fderiv ℝ (g c.succ) x (V (b.succAbove b')))",
+  "lean_name": "dimred_mbl_dt_lp_jc_lipschitz_minor_ibp",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.minor_bound-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.jacobian_continuity-a1.lipschitz_smooth_approx-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.jacobian_continuity-a1.smooth_minor_ibp-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.minor_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-85d5c4f3c5-a1",
+      "result_commit": "13966862f4c84217ad5d35ba66b3e5440c90d946",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.jacobian_continuity-a1.lipschitz_smooth_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.jacobian_continuity-a1.smooth_minor_ibp-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-94d828802c-a1"
+}

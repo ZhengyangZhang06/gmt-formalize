@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1.mass_sub_le-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1",
+  "depth": 4,
+  "title": "Mass subadditivity for a difference of currents",
+  "statement": "For all P, n ∈ ℕ, all sets U, G ⊆ ℝ^P and all currents A, B ∈ 𝒟_n(U) (SimonGMT GeometricCurrentOn U n), M_G(A − B) ≤ M_G(A) + M_G(B) in [0, ∞]. Conventions: A − B is the contract instance Sub, so (A − B)(ω) = A(ω) − B(ω). M_G(X) = X.massOn G is the supremum of ENNReal.ofReal(X(ω)) over ω ∈ massAdmissibleOn U n G. These are the test forms ω ∈ 𝒟^n(U) (TestFormOn U n: smooth, compactly supported in U) with tsupport ω ⊆ G and covectorEuclideanNorm(ω(x)) ≤ 1 for all x, called admissible for M_G. Neither U nor G is assumed open.",
+  "lean_statement": "∀ (P n : ℕ) (U G : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).massOn G ≤ A.massOn G + B.massOn G",
+  "lean_name": "cmc_fc_cs_massOn_sub_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-cauchy-117cbe2a8e-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1",
+  "depth": 3,
+  "title": "Coordinate covectors dx^I = det(v_j(I k)) exist and span",
+  "statement": "For all P, n ∈ ℕ: (a) for every I : Fin n → Fin P there is an n-covector θ on ℝ^P with θ(v) = det(v_j(I k))_{k,j} for every v : Fin n → ℝ^P, i.e. the determinant of the n×n matrix Matrix.of fun k j => v j (I k); (b) let ζ be an n-vector (MultiVector P n, a continuous linear functional on n-covectors) such that ζ(θ) = 0 whenever I : Fin n → Fin P is strictly increasing and θ is an n-covector with θ(v) = det(v_j(I k))_{k,j} for all v; then ζ = 0.",
+  "lean_statement": "∀ (P n : ℕ), (∀ I : Fin n → Fin P, ∃ θ : Covector (Euclid P) n, ∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) ∧ ∀ ζ : MultiVector P n, (∀ (I : Fin n → Fin P) (θ : Covector (Euclid P) n), StrictMono I → (∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → ζ θ = 0) → ζ = 0",
+  "lean_name": "cmr_coordinate_covectors_span",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.covector_euclidean_equiv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.covector_euclidean_equiv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-17702f4d24-a1"
+}

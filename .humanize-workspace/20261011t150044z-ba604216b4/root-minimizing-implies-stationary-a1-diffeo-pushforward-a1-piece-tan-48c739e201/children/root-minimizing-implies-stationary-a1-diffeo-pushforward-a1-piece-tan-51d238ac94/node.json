@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1.excess_density-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1",
+  "depth": 5,
+  "title": "Zero n-density of the excess from a growth bound and relative smallness",
+  "statement": "Let P, n ∈ ℕ, let A, B ⊆ ℝ^P be arbitrary sets, x ∈ ℝ^P, and r₀, C, r₁ ∈ ℝ with r₀ > 0, r₁ > 0 and H^n(B ∩ B̄_{r₀}(x)) < ∞, where H^n := μHE[n]. Assume:\n(G) H^n(A ∩ B̄_ρ(x)) ≤ ENNReal.ofReal(C · ρ^n) for all ρ ∈ (0, r₁);\n(E) for every extended nonnegative real ε ∈ (0, ∞], eventually as ρ → 0 in 𝓝[>] 0, H^n((B ∖ A) ∩ B̄_ρ(x)) ≤ ε · H^n(B ∩ B̄_ρ(x)).\nThen H^n((B ∖ A) ∩ B̄_ρ(x)) / (ENNReal.ofReal ρ)^n → 0 in [0, ∞] as ρ → 0 in 𝓝[>] 0, where the quotient is taken in [0, ∞] (a/b = a·b⁻¹).",
+  "lean_statement": "∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ C r₁ : ℝ), 0 < r₀ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → 0 < r₁ → (∀ ρ : ℝ, 0 < ρ → ρ < r₁ → μHE[n] (A ∩ closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] ((B \\ A) ∩ closedBall x ρ) ≤ ε * μHE[n] (B ∩ closedBall x ρ)) → Tendsto (fun ρ : ℝ => μHE[n] ((B \\ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "ptd_tl_excess_density_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-51d238ac94-a1"
+}

@@ -1,0 +1,89 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.annular_monotonicity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Sibling map: smoothed_bounds — Submission.doragm_smoothed_annular_bounds (the inequalities (i'), (ii') for a fixed cutoff width A > 1).
+Source: parent proof, Step 3 (let ε' ↓ 0; Simon Ch. 4, 3.5 → 3.6 and 3.17).
+Notation: B̄_ρ := B̄_ρ(y); F_y as in the statement; ν := μ.withDensity(ofReal ∘ F_y), so ∫⁻_S ofReal(F_y)dμ = ν(S) for every Borel set S (withDensity_apply).
+1. (Preliminaries.) κ ≥ |H(y)| ≥ 0. B̄_t is compact and contained in the open set W, so there is δ₀ > 0 with B̄_{t+δ₀} ⊆ W (IsCompact.exists_cthickening_subset_open, cthickening_closedBall). B̄_{t+δ₀} is a compact subset of U, so μ(B̄_{t+δ₀}) < ∞ (IMRep.locallyIntegrable_mult), and every B̄_ρ with ρ ≤ t + δ₀ has finite μ-measure.
+2. (Cutoff widths.) For m ∈ ℕ put A_m := 1 + (δ₀/t)/(m + 2). Then A_m > 1, (A_m) is nonincreasing, A_m → 1, and A_m·t = t + δ₀/(m + 2) ≤ t + δ₀, so B̄_{A_m t} ⊆ B̄_{t+δ₀} ⊆ W. smoothed_bounds with A = A_m (and the given s < t) yields, for every m:
+   (i'_m) ν(B̄_t∖B̄_{A_m s}) + ofReal(e^{A_mκs}/sⁿ)μ(B̄_s) ≤ ofReal(e^{A_mκt}/tⁿ)μ(B̄_{A_m t});
+   (ii'_m) ofReal(e^{−A_mκt}/tⁿ)μ(B̄_t) ≤ ofReal(e^{−A_mκs}/sⁿ)μ(B̄_{A_m s}) + ofReal(A_mⁿ)ν(B̄_{A_m t}∖B̄_s).
+3. (Balls.) For ρ ∈ {s, t}: the closed balls B̄_{A_mρ} decrease in m (A_m nonincreasing), ⋂_m B̄_{A_mρ} = B̄_ρ (A_mρ ≥ ρ and A_mρ → ρ), and μ(B̄_{A_0ρ}) < ∞. By continuity from above (tendsto_measure_iInter_atTop), μ(B̄_{A_mρ}) → μ(B̄_ρ).
+4. (Annuli.) (a) S_m := B̄_t∖B̄_{A_m s} increase in m and ⋃_m S_m = B̄_t∖⋂_m B̄_{A_m s} = B̄_t∖B̄_s; by continuity from below (tendsto_measure_iUnion_atTop) ν(S_m) → ν(B̄_t∖B̄_s).
+   (b) T_m := B̄_{A_m t}∖B̄_s decrease in m and ⋂_m T_m = B̄_t∖B̄_s. On T_0 ⊆ {r > s} one has F_y = |(x − y) − p_x(x − y)|²/r^{n+2} ≤ r²/r^{n+2} = r^{−n} ≤ s^{−n} (|v − p_x v| ≤ |v|, Submodule.starProjection_orthogonal_val and norm_starProjection_apply_le), so ν(T_0) ≤ ofReal(s^{−n})μ(T_0) < ∞. By continuity from above, ν(T_m) → ν(B̄_t∖B̄_s).
+5. (Coefficients.) By continuity of exp and of ENNReal.ofReal, ofReal(e^{±A_mκρ}/ρⁿ) → ofReal(e^{±κρ}/ρⁿ) for ρ ∈ {s, t}, and ofReal(A_mⁿ) → 1. In [0, ∞], if a_m → a and b_m → b with a, b < ∞ then a_m·b_m → a·b (ENNReal.Tendsto.mul) and a_m + b_m → a + b.
+6. ((M1).) Since κs ≥ 0 and A_m ≥ 1, e^{κs} ≤ e^{A_mκs}; hence by (i'_m), for every m,
+   ν(S_m) + ofReal(e^{κs}/sⁿ)μ(B̄_s) ≤ ofReal(e^{A_mκt}/tⁿ)μ(B̄_{A_m t}).
+   By steps 3–5 the left side tends to ν(B̄_t∖B̄_s) + ofReal(e^{κs}/sⁿ)μ(B̄_s) and the right side to ofReal(e^{κt}/tⁿ)μ(B̄_t). Limits preserve ≤ (le_of_tendsto_of_tendsto'), which gives (M1).
+7. ((M2).) In (ii'_m) the left side tends to ofReal(e^{−κt}/tⁿ)μ(B̄_t) and the right side to ofReal(e^{−κs}/sⁿ)μ(B̄_s) + 1·ν(B̄_t∖B̄_s) (steps 3–5). Passing to the limit gives (M2). ∎
+Reference: a Lean proof of exactly this statement, compiled during the decomposition review against import GMT.Ch07.Submission (axioms propext, Classical.choice, Quot.sound only), is in /tmp/mono-review/Full2.lean, theorem GMT.Ch07.MonoC4Check.child4_from_child3 (there the sibling statement is the hypothesis h3); it may be consulted if that file is available.
+
+## Key steps
+
+1. Find δ₀ > 0 with B̄_{t+δ₀}(y) ⊆ W (finite μ-measure); take A_m = 1 + (δ₀/t)/(m + 2) ↓ 1, so B̄_{A_m t}(y) ⊆ W, and apply smoothed_bounds.
+2. Continuity from above: μ(B̄_{A_mρ}(y)) → μ(B̄_ρ(y)) for ρ ∈ {s, t}.
+3. For ν = F_y·μ: the inner annuli increase to B̄_t∖B̄_s (continuity from below); the outer annuli decrease to it with ν(T_0) ≤ s^{−n}μ(T_0) < ∞ (continuity from above).
+4. The coefficients converge; e^{κs} ≤ e^{A_mκs} handles the left side of (i'_m); pass to the limit in (i'_m) and (ii'_m).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project; project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp project/GMT/Ch07/Contract.lean workspace GMT/Ch07/Submission.lean (identical)`
+- `rg -n -i 'monoton|radial|cutoff|density' project/GMT/Ch04/Submission.lean; rg -c sorry project/GMT/Ch0{3,4,5}/Submission.lean; rg -n doragm project (no match)`
+- `rg -n 'def approxTangentPlane|def tangentialDivergence|def IMRep.firstVariation|def unitBallVolume|def IMRep.measure' project/GMT/Ch07/Contract.lean`
+- `rg -n 'theorem hasDerivAt_integral_of_dominated_loc_of_deriv_le' mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean; rg -n 'theorem integral_withDensity_eq_integral_toReal_smul' mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `rg -n 'theorem cthickening_closedBall|exists_cthickening_subset_open' mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean mathlib/Mathlib/Topology/MetricSpace/Thickening.lean; rg -n 'theorem tendsto_measure_iInter_atTop|theorem tendsto_measure_iUnion_atTop' mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `rg -n 'theorem starProjection_orthogonal_val|theorem norm_starProjection_apply_le' mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean; rg -n 'lemma mem_support_iff_forall' mathlib/Mathlib/MeasureTheory/Measure/Support.lean; rg -n 'one_of_one_le|zero_of_nonpos|protected theorem monotone|protected theorem contDiff' mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `rg -n 'le_lintegral_ofReal|ofReal_integral_le' mathlib/Mathlib (no match); rg -n 'theorem integral_eq_lintegral_of_nonneg_ae|theorem ofReal_toReal_le' mathlib/Mathlib; rg -n 'euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_image' mathlib/Mathlib`
+- `rg -n 'exp_normalizedBallMass_monotoneOn|cutoffMass_deriv_identity|hasDerivAt_integral_scaledRadialCutoff_mul|IsStationaryIn.cutoff_squeeze|one_le_density_of_approximateTangent|planeMeasure_unit_closedBall|hausdorff_blowUp_ball|trace_starProjection' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/*.lean; rg -n -l IMRep lake-packages-25730c7c/simongmt/Poincare/SimonGMT (no match)`
+- `lean (contract scope) #check Chapter04.hausdorff_blowUp_ball (unknown: Chapter04 not imported), integral_withDensity_eq_integral_toReal_smul, hasDerivAt_integral_of_dominated_loc_of_deriv_le, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Isometry.euclideanHausdorffMeasure_image, euclideanHausdorffMeasure_homothety_image (all in scope)`
+- `python3 -I name-collision scan of the six doragm_* names over all workspaces' dag.json, ch07 node JSON files and GMT/**/*.lean (no hit)`
+- `lean /tmp/mono-decomp-check/{Children,Comparator,Assembly,Child3,Child4,Child6}.lean and /tmp/mono-review/Full2.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch04/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/tmp/mono-decomp-check/Assembly.lean`
+- `/tmp/mono-review/Full2.lean`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c, and its GMT/Ch07/Contract.lean is byte-identical to the workspace Submission.lean, which is the compiler context of every child type.
+Nothing in the snapshot proves any child:
+- GMT/Ch04/Submission.lean only states StationaryMonotonicity and StationaryDensity as Props, for its own RectifiableVarifold type, behind a sorry-backed main theorem.
+- No doragm_* declaration exists.
+- The pinned SimonGMT Chapter04 library proves the analogous cutoff identity, exponential monotonicity, cutoff squeeze and density-one results only for its RectifiableVarifold structure; nothing in SimonGMT mentions IMRep. Chapter04 is not imported by the contract (#check fails in contract scope), so it served only as a template. Simon's chapter-04.txt 3.2–3.5 and 3.16–3.17 fixed the proof route.
+The Mathlib lemmas the children's proofs cite exist at the pinned revision and are in contract scope:
+- hasDerivAt_integral_of_dominated_loc_of_deriv_le (ParametricIntegral.lean:286);
+- integral_withDensity_eq_integral_toReal_smul (Bochner/ContinuousLinearMap.lean:318);
+- IsCompact.exists_cthickening_subset_open (Thickening.lean:426) and cthickening_closedBall (Ball/Pointwise.lean:318);
+- tendsto_measure_iInter_atTop and tendsto_measure_iUnion_atTop (Continuity.lean:220, 198);
+- Submodule.starProjection_orthogonal_val and norm_starProjection_apply_le (Projection/Basic.lean:203, 411);
+- Measure.mem_support_iff_forall (Support.lean:75);
+- the Real.smoothTransition lemmas;
+- integral_eq_lintegral_of_nonneg_ae (Bochner/Basic.lean:515) and ENNReal.ofReal_toReal_le;
+- EuclideanSpace.euclideanHausdorffMeasure_eq_volume and Isometry.euclideanHausdorffMeasure_image (Volume/Measure.lean:187, 131).
+There is no ofReal_integral_le_lintegral_ofReal (rg: no match), so tangent_lower_density uses integral_eq_lintegral_of_nonneg_ae with ofReal_toReal_le instead.
+Lean checks: all six child types elaborate, and the exact parent type follows from them plus the uncle. An end-to-end file proves all six children and the parent assuming only the uncle, with axioms propext, Classical.choice and Quot.sound only. No identical comparator-approved declaration exists to reuse.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1.cutoff_gradient-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1",
+  "depth": 6,
+  "title": "Approximate tangential gradient of the cut-off γ_{a,b}∘f (Simon Ch. 6, chain rule (4) in the proof of 4.5(2))",
+  "statement": "Let P, N ∈ ℕ, M ⊆ ℝ^P, f : ℝ^P → ℝ continuous, G : ℝ^P → ℝ^P, and real numbers a < b. Write H^N := μHE[N], T_xM := approxTangentPlane N M x, γ(s) := min{1, max{0, (b − s)/(b − a)}}, h := γ∘f, and H(x) := −(b − a)⁻¹G(x) if a < f(x) < b, H(x) := 0 otherwise. Assume: (i) for H^N-a.e. x ∈ M, M has approximate tangent space T_xM at x, G(x) ∈ T_xM, and for every ε > 0, H^N({y ∈ M ∩ B_r(x) : ε|y − x| < |f(y) − f(x) − ⟨G(x), y − x⟩|})/r^N → 0 as r ↓ 0 (the quotient taken in [0, ∞] with denominator ENNReal.ofReal(r^N)); (ii) G(x) = 0 for H^N-a.e. x ∈ M with f(x) = a; (iii) G(x) = 0 for H^N-a.e. x ∈ M with f(x) = b. Then for H^N-a.e. x ∈ M: M has approximate tangent space T_xM at x, H(x) ∈ T_xM, and for every ε > 0, H^N({y ∈ M ∩ B_r(x) : ε|y − x| < |h(y) − h(x) − ⟨H(x), y − x⟩|})/r^N → 0 as r ↓ 0. In Simon's notation: ∇^M(γ∘f) = γ'(f)∇^M f H^N-a.e. on M, with γ'(f) := 0 at the bad values a, b.",
+  "lean_statement": "∀ (P N : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (a b : ℝ), a < b → Continuous f → (∀ᵐ x ∂(μHE[N].restrict M), HasApproximateTangentSpaceAt N M x (approxTangentPlane N M x) ∧ G x ∈ approxTangentPlane N M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[N] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |f y - f x - inner ℝ (G x) (y - x)|}) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0)) → (∀ᵐ x ∂(μHE[N].restrict M), f x = a → G x = 0) → (∀ᵐ x ∂(μHE[N].restrict M), f x = b → G x = 0) → ∀ᵐ x ∂(μHE[N].restrict M), HasApproximateTangentSpaceAt N M x (approxTangentPlane N M x) ∧ (if a < f x ∧ f x < b then -(b - a)⁻¹ • G x else 0) ∈ approxTangentPlane N M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[N] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |min 1 (max 0 ((b - f y) / (b - a))) - min 1 (max 0 ((b - f x) / (b - a))) - inner ℝ (if a < f x ∧ f x < b then -(b - a)⁻¹ • G x else 0) (y - x)|}) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "dtc_bc_lc_sl_sf_cutoff_gradient",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8c43aaf831-a1"
+}

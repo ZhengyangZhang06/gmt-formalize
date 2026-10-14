@@ -1,0 +1,158 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.finite_tangent-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof step 6, orientation at y ∈ F: with δ := dist(y, F ∖ {y}) > 0 and f ∈ C_c(ℝ^P) with tsupport f ⊆ B_{R_f}(0), for 0 < ρ < δ/R_f the blow-up ρ⁻¹(F − y) meets tsupport f at most in 0, so HasApproximateTangentSpaceAt 0 F y {0}. Simon's printed proof of Ch. 6, 8.2 (book/chapter-06.txt lines 2322–2323) only says that "the theorem is trivial in case n = 0", so this argument is extracted and specialized from the parent-supplied proof (Part III, CL(0)).
+
+Definition used. HasApproximateTangentSpaceAt 0 F y Q (SimonGMT Chapter03; Simon Ch. 3, 1.4) means: finrank Q = 0, and for every f ∈ C_c(ℝ^P, ℝ) the function ρ ↦ ∫_{η_{y,ρ}(F)} f dH⁰ tends to ∫_Q f dH⁰ along 𝓝[>] 0, where η_{y,ρ}(z) = ρ⁻¹•(z − y) is SimonGMT blowUpMap y ρ and H⁰ = μHE[0]. We take Q = ⊥ = {0}.
+
+1. Dimension. finrank ℝ (⊥ : Submodule ℝ ℝ^P) = 0 (Mathlib finrank_bot). Fix f ∈ C_c(ℝ^P, ℝ).
+2. Limit value. The carrier of ⊥ is {0} (Submodule.bot_coe), the coercion of the finset {0}. The first identity of the sibling theorem cbrz_finset_integral_hausdorff_zero, applied to the finset {0}, gives ∫_⊥ f dH⁰ = f(0).
+3. Support radius. tsupport f is compact (f.hasCompactSupport), hence bounded, so tsupport f ⊆ B̄_R(0) for some R ∈ ℝ (Bornology.IsBounded.subset_closedBall). Put R₀ := max(R, 0) + 1 > 0. If ‖z‖ ≥ R₀, then ‖z‖ > R, so z ∉ tsupport f and f(z) = 0 (image_eq_zero_of_notMem_tsupport).
+4. Separation radius. F ∖ {y} is finite, hence closed, and does not contain y. Its complement is therefore an open neighbourhood of y, so there is δ > 0 with B_δ(y) ∩ (F ∖ {y}) = ∅ (Metric.isOpen_iff). Thus ‖z − y‖ ≥ δ for every z ∈ F with z ≠ y (vacuous if F = {y}).
+5. Fix ρ ∈ (0, δ/R₀); this interval belongs to 𝓝[>] 0 because δ/R₀ > 0 (Ioo_mem_nhdsGT). The image η_{y,ρ}(F) is finite (Set.Finite.image); regard it as a finset. The first identity of the sibling theorem cbrz_finset_integral_hausdorff_zero gives ∫_{η_{y,ρ}(F)} f dH⁰ = Σ_{w ∈ η_{y,ρ}(F)} f(w).
+6. The point η_{y,ρ}(y) = ρ⁻¹•0 = 0 lies in the image, since y ∈ F, and contributes f(0). Every other element w of the image is η_{y,ρ}(z) for some z ∈ F with z ≠ y (if z = y then w = 0). For such w, ‖w‖ = ρ⁻¹‖z − y‖ ≥ ρ⁻¹δ > R₀, because ρR₀ < δ; so f(w) = 0 by step 3. Hence Σ_{w ∈ η_{y,ρ}(F)} f(w) = f(0) (Finset.sum_eq_single 0).
+7. By steps 5–6, ρ ↦ ∫_{η_{y,ρ}(F)} f dH⁰ equals the constant f(0) on (0, δ/R₀), i.e. eventually along 𝓝[>] 0, so it tends to f(0) (tendsto_nhds_of_eventually_eq), and f(0) = ∫_⊥ f dH⁰ by step 2. Together with step 1 this proves HasApproximateTangentSpaceAt 0 F y ⊥. ∎
+
+Appendix (not part of the mathematical argument). The following Lean tactic proof of exactly this frozen type compiled in this decomposition session as the body of `theorem Submission.cbrz_approxTangent_finite_zero : <frozen type> := by`, placed in `namespace GMT.Ch07` after `import GMT.Ch07.Submission` with the contract's opens (Lean v4.35.0-rc3, Mathlib 25730c7c, SimonGMT 2b36630), the sibling dependency entering only as `have hCI := Submission.cbrz_finset_integral_hausdorff_zero`; `#print axioms` reports only propext, Classical.choice, Quot.sound.
+```lean
+  have hCI := Submission.cbrz_finset_integral_hausdorff_zero
+  intro P F y hF hy
+  refine ⟨by simp, fun f => ?_⟩
+  have hlim : ∫ z in ((⊥ : Submodule ℝ (Euclid P)) : Set (Euclid P)), f z ∂μHE[0] = f 0 := by
+    have h := (hCI P {0} f (fun _ => 0)).1
+    simp at h
+    simpa using h
+  rw [hlim]
+  obtain ⟨R, hR⟩ : ∃ R, tsupport f ⊆ closedBall (0 : Euclid P) R :=
+    f.hasCompactSupport.isBounded.subset_closedBall 0
+  set R₀ : ℝ := max R 0 + 1 with hR₀def
+  have hR₀ : 0 < R₀ := by positivity
+  have hfz : ∀ z : Euclid P, R₀ ≤ ‖z‖ → f z = 0 := by
+    intro z hz
+    apply image_eq_zero_of_notMem_tsupport
+    intro hzs
+    have h1 := hR hzs
+    rw [mem_closedBall, dist_zero_right] at h1
+    have h2 : R < R₀ := by
+      have := le_max_left R 0
+      linarith
+    linarith
+  obtain ⟨δ, hδ, hsep⟩ : ∃ δ > 0, ∀ z ∈ F, z ≠ y → δ ≤ ‖z - y‖ := by
+    have hclosed : IsClosed (F \ {y}) := (hF.diff).isClosed
+    have hyn : y ∉ F \ {y} := by simp
+    obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hclosed.isOpen_compl y hyn
+    refine ⟨δ, hδ, fun z hz hzy => ?_⟩
+    by_contra h
+    push_neg at h
+    have hzb : z ∈ ball y δ := by rw [mem_ball, dist_eq_norm]; exact h
+    exact hball hzb ⟨hz, hzy⟩
+  apply tendsto_nhds_of_eventually_eq
+  have hpos : 0 < δ / R₀ := div_pos hδ hR₀
+  filter_upwards [Ioo_mem_nhdsGT hpos] with ρ hρ
+  have hfin : (Poincare.SimonGMT.Chapter03.blowUpMap y ρ '' F).Finite := hF.image _
+  have hsum := (hCI P hfin.toFinset f (fun _ => 0)).1
+  rw [hfin.coe_toFinset] at hsum
+  rw [hsum]
+  rw [Finset.sum_eq_single (0 : Euclid P)]
+  · intro w hw hw0
+    rw [hfin.mem_toFinset] at hw
+    obtain ⟨z, hz, rfl⟩ := hw
+    apply hfz
+    have hzy : z ≠ y := by
+      rintro rfl
+      apply hw0
+      simp [Poincare.SimonGMT.Chapter03.blowUpMap]
+    have hρpos : 0 < ρ := hρ.1
+    have h1 : δ ≤ ‖z - y‖ := hsep z hz hzy
+    have h2 : ρ * R₀ < δ := by
+      have := hρ.2
+      rw [lt_div_iff₀ hR₀] at this
+      linarith
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, norm_inv, Real.norm_eq_abs,
+      abs_of_pos hρpos]
+    rw [inv_mul_eq_div, le_div_iff₀ hρpos]
+    nlinarith
+  · intro h0
+    exfalso
+    apply h0
+    rw [hfin.mem_toFinset]
+    exact ⟨y, hy, by simp [Poincare.SimonGMT.Chapter03.blowUpMap]⟩
+```
+
+## Key steps
+
+1. finrank ⊥ = 0, and the integral of f over ⊥ = {0} is f(0) (count_integral)
+2. choose R₀ > 0 with f = 0 outside the open ball of radius R₀, and δ > 0 separating y from F ∖ {y}
+3. for 0 < ρ < δ/R₀ the blow-up of F is a finset containing 0 whose other points have norm > R₀, so its integral is f(0) (count_integral, Finset.sum_eq_single)
+4. the integral is eventually the constant f(0) along 𝓝[>] 0, hence converges to the integral over ⊥
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); cmp GMT/Ch07/Contract.lean <snapshot>/project/GMT/Ch07/Contract.lean (identical); git -C .lake/packages/mathlib log -1 (25730c7c); git -C .lake/packages/simongmt log -1 and git -C lake-packages-25730c7c/simongmt log -1 (both 2b36630); cmp of SimonGMT Chapter03/Rectifiable.lean and Chapter06/{Currents,Mass,CurrentLocalEquality,Forms}.lean between the two package copies (identical)`
+- `python3 -I scan of dag.json (902 nodes): lean_name in {cbrz_finset_integral_hausdorff_zero, cbrz_approxTangent_finite_zero, cbrz_isIntegerMultiplicity_point_sum, cbrz_imrep_zero_local_point_sum, cbrz_point_sum_limit} (none), lean_name prefix 'cbrz' (none), lean_statement identical to a proposed one (none); selected node record (status decomposing, message 'subproblem decomposition attempt 2', children []); frozen lean_statement of cbr_isIntegerMultiplicity_of_local; accepted statements containing 'IMRep U 0', 'IMRep V 0', 'μHE[0]', 'HasApproximateTangentSpaceAt 0', 'GeometricCurrentOn U 0' (dtc_dim_zero_carrier_finite, dor_zdm_imrep_zero_structure, regcomp_cop_zdr_unitOrientation_zero, regcomp_cop_zdr_setIntegral_eq_indicator, dtc_dim_zero_erase_point, dtc_point_current, ...)`
+- `python3 -I substring scan of the five proposed names in all 807 nodes/*/decomposition-v*.json (only this node's decomposition-v1.json)`
+- `read nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-68d9893f8c/{parent-child-handoff.json, parent-supplied-plan.md, parent-supplied-natural-proof.md, decomposition-v1.json, decomposition-review-receipt-v1.json, decomposition-review-receipt-v2.json, decomposition-audit-v1.json, decomposition-scope-v1.json}`
+- `grep -rn --include=*.lean in <snapshot>/mathlib/Mathlib: 'euclideanHausdorffMeasure_zero', 'theorem hausdorffMeasure_zero_singleton', 'theorem lintegral_finset', 'theorem setIntegral_finset', 'theorem integrableOn_singleton', 'integrableOn_finite_biUnion', 'theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero', 'theorem IsCompact.tendsto_subseq', 'theorem Finite.exists_infinite_fiber', 'theorem extraction_of_frequently_atTop', 'theorem isCompact_univ_pi', 'theorem tendsto_nhds_of_eventually_eq', 'Ioo_mem_nhdsGT', 'image_eq_zero_of_notMem_tsupport', 'theorem Countable.exists_eq_range', 'def apply' (ContinuousAlternatingMap.apply), 'theorem Continuous.eval_const', 'protected theorem exists_nat_gt' (ENNReal), 'theorem limsup_le_iSup', 'theorem liminf_le_limsup', 'DiscreteMeasurableSpace.toMeasurableAdd₂', 'theorem measurable_to_countable'', 'singleton_inter'`
+- `grep -n / sed -n of /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT: Chapter03/Rectifiable.lean ('def CountablyRectifiable', 'theorem countablyRectifiable_of_measure_zero', 'theorem countablyRectifiable_range', 'theorem countablyRectifiable_iUnion', 'def blowUpMap', 'def HasApproximateTangentSpaceAt'); Chapter06/Currents.lean (testFormOnSubmodule, TestFormOn, GeometricCurrentOn, WeaklyConvergesOn); Chapter06/Mass.lean (massOn, massOn_mono, WeaklyConvergesOn.massOn_le_liminf); Chapter06/CurrentLocalEquality.lean (testFormOnInclusion, GeometricCurrentOn.restrictDomain, restrictDomain_apply); Chapter06/Forms.lean (Covector, DifferentialForm, IsSmoothForm, IsTestForm)`
+- `grep -n '8.2\|trivial in case' book/chapter-06.txt; sed -n 2296,2330p book/chapter-06.txt (Simon Ch. 6, 8.2 statement and the remark 'the theorem is trivial in case n = 0')`
+- `sed -n of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py: _decompose (1389-1560), _solve_children (1802-2000), _install_parent_supplied_child_handoff (1660-1730), _accepted_checkpoint (2365), _dependency_problem and _existing_lean_name_problem (6537-6600); swarm-project.json (max_children 12, max_depth 6, max_nodes 1000)`
+- `git show 897839f250d247f64d81132474211f0ab45b65b3:GMT/Ch07/Submission.lean (accepted child theorems are declared as 'theorem Submission.X : <type> := by' in namespace GMT.Ch07 after the section 'end')`
+- `python3 -I /tmp/cz0v2-8d3f/scripts/scope.py: verifier/lean_contract.py validate_lean_statement on the five statements (all OK, unchanged) and verifier/gmt-compare.py contract_scope(Contract.lean, GMT.Ch07.main_theorem) (replay: open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt); noncomputable section; end)`
+- `lake env lean /tmp/cz0v2-8d3f/lean/{Types,Assembly,C1,C2,C3,C4,Combined,SubStyle,Coe}.lean with toolchain lean-4.35.0-rc3 (#print axioms: the five children and the hypothesis-only assembly use [propext, Classical.choice, Quot.sound]; the parent declared from the children plus an im_local stub adds only sorryAx)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/SumMeasure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Countable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/Pigeonhole.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Neighborhoods.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Hom/ContinuousEvalConst.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Arithmetic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Countable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Insert.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-68d9893f8c/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-68d9893f8c/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-68d9893f8c/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-68d9893f8c/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-68d9893f8c/decomposition-review-receipt-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/cz0v2-8d3f/lean/Types.lean`
+- `/tmp/cz0v2-8d3f/lean/Assembly.lean`
+- `/tmp/cz0v2-8d3f/lean/Combined.lean`
+- `/tmp/cz0v2-8d3f/lean/SubStyle.lean`
+- `/tmp/cz0v2-8d3f/lean/Coe.lean`
+
+The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean (project b4d606db, Mathlib 25730c7c, SimonGMT 2b36630), and the two SimonGMT package copies agree on every file used. Neither the snapshot Mathlib nor SimonGMT contains a degree-0 closure theorem, a finite-set approximate-tangent lemma, or a point-sum-is-IM lemma. SimonGMT Chapter03 supplies only the definitions and basic closure properties of CountablyRectifiable and HasApproximateTangentSpaceAt, and Chapter06 supplies currents, mass, lower semicontinuity of mass and domain restriction. In the DAG, the accepted degree-0 lemmas of other branches are only partial tools, and no node has a lean_statement identical to a proposed child, so the split is new and no cross-branch node is reused. Every Mathlib and SimonGMT lemma cited in the child proofs exists in the pinned versions and was used in proofs that compiled. The five cbrz_* names collide with no DAG node, no other decomposition file and no declaration. All five exact lean_statements pass the verifier lexical check unchanged and elaborate in the replayed contract scope. A hypothesis-only assembly proves the frozen parent type from imrep_point_sum, point_sum_limit, point_sum_im and the frozen im_local type. Complete Lean proofs of all five children compile in Submission form using only propext, Classical.choice and Quot.sound.

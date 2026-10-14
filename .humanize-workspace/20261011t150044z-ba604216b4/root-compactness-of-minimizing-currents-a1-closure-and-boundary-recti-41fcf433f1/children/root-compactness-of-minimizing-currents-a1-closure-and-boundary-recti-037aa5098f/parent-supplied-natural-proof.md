@@ -1,0 +1,73 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.covector_bounds-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.covector_bounds-a1.pullback_eq-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1–4 of the parent proof (Fact (O), consequence (O3), of the grandparent proof). Step 4 of the parent proof concludes the equality |γ∘pL| = |γ| proved here.
+Notation: e_i := EuclideanSpace.basisFun (Fin n) ℝ i = EuclideanSpace.single i 1 is the standard orthonormal basis of ℝⁿ, so (e_i)_k = 1 if k = i and 0 otherwise. For a family b : Fin m → E and j : Fin l → Fin m write b∘j := (b_{j(0)}, …, b_{j(l−1)}). Let |·|_E := covectorEuclideanNorm.
+Uses the sibling sq_sum (regcomp_covector_sq_sum_orthonormalBasis): for every m ∈ ℕ, every orthonormal basis b : OrthonormalBasis (Fin m) ℝ (Euclid m) and every l-covector α on ℝ^m, Σ_{j : Fin l → Fin m} α(b∘j)² = l!·|α|_E² (★).
+Fix l and γ, and put α := γ∘pL ∈ Covector (Euclid P) l. Then α(u) = γ(pL∘u) for u : Fin l → ℝ^P (ContinuousAlternatingMap.compContinuousLinearMap_apply).
+1. (n ≤ P.) v is orthonormal, hence linearly independent (Orthonormal.linearIndependent), so n = card(Fin n) ≤ finrank ℝ (Euclid P) = P (LinearIndependent.fintype_card_le_finrank, finrank_euclideanSpace_fin). Let ι := Fin.castLE (n ≤ P) : Fin n → Fin P; ι is injective (Fin.castLE_injective) and (ι k : ℕ) = k.
+2. (Orthonormal basis extending v.) Define w : Fin P → ℝ^P by w(m) := v(⟨m, h⟩) if h : (m : ℕ) < n, and w(m) := 0 otherwise. Let s := {m : Fin P | (m : ℕ) < n}. The restriction s.domRestrict w equals v ∘ e, where e : s → Fin n, e(m) := ⟨m, m.2⟩, is injective; hence s.domRestrict w is orthonormal (Orthonormal.comp). Since finrank ℝ (Euclid P) = P = card(Fin P), Orthonormal.exists_orthonormalBasis_extension_of_card_eq gives f : OrthonormalBasis (Fin P) ℝ (Euclid P) with f(m) = w(m) for all m ∈ s. In particular f(ι k) = v_k for every k ∈ Fin n.
+3. (pL on the basis f.)
+(i) Let i ∈ Fin n. For every k ∈ Fin n, (pL f(ι i))_k = ⟨v_k, f(ι i)⟩ = ⟨v_k, v_i⟩. By orthonormality of v (orthonormal_iff_ite) this is 1 if k = i and 0 otherwise, which is (e_i)_k (EuclideanSpace.basisFun_apply, single_apply). Hence pL(f(ι i)) = e_i by extensionality in Euclid n.
+(ii) Let m ∈ Fin P with m ∉ range ι. For every k ∈ Fin n we have ι k ≠ m, so (pL f_m)_k = ⟨v_k, f_m⟩ = ⟨f(ι k), f_m⟩ = 0 because f is orthonormal (orthonormal_iff_ite applied to f.orthonormal). Hence pL(f_m) = 0.
+4. (The two square sums agree.) Claim: Σ_{j : Fin l → Fin P} α(f∘j)² = Σ_{j' : Fin l → Fin n} γ(e∘j')². Let Φ : (Fin l → Fin n) → (Fin l → Fin P), Φ(j') := ι∘j'. Φ is injective because ι is: if ι∘a = ι∘b then a(k) = b(k) for every k.
+(a) Let j ∉ range Φ. Then some k ∈ Fin l has j(k) ∉ range ι: otherwise, choosing for each k some j'(k) with ι(j'(k)) = j(k) gives j = Φ(j') ∈ range Φ. For this k, the k-th argument of γ in α(f∘j) = γ(pL f_{j(0)}, …, pL f_{j(l−1)}) is pL(f_{j(k)}) = 0 by step 3(ii). So α(f∘j) = 0 by multilinearity (ContinuousAlternatingMap.map_coord_zero), and the term α(f∘j)² vanishes.
+(b) For j' : Fin l → Fin n, step 3(i) gives α(f∘Φ(j')) = γ(pL f(ι j'(0)), …, pL f(ι j'(l−1))) = γ(e_{j'(0)}, …, e_{j'(l−1)}) = γ(e∘j').
+Since Φ is injective and the terms off range Φ vanish by (a), the sum over all j equals Σ_{j'} α(f∘Φ(j'))², which is Σ_{j'} γ(e∘j')² by (b) (Fintype.sum_of_injective; equivalently Finset.sum_image together with Finset.sum_subset).
+5. (Apply (★) twice.) (★) on ℝ^P with b := f and the l-covector α gives Σ_{j : Fin l → Fin P} α(f∘j)² = l!·|α|_E². (★) on ℝⁿ (m := n) with b := EuclideanSpace.basisFun (Fin n) ℝ and γ gives Σ_{j' : Fin l → Fin n} γ(e∘j')² = l!·|γ|_E². By step 4, l!·|α|_E² = l!·|γ|_E².
+6. (Conclusion.) Since l! ≠ 0, |α|_E² = |γ|_E². Both norms are ≥ 0 (covectorEuclideanNorm_nonneg), so |γ∘pL|_E = |α|_E = |γ|_E (sq_eq_sq₀).
+No case distinction is needed. For n = 0 < l both sums are 0: no tuple Fin l → Fin 0 exists, and every tuple Fin l → Fin P leaves the empty range of ι. For l = 0 both sums consist of the single empty tuple. ∎
+
+## Key steps
+
+1. Orthonormality gives n ≤ P; extend v to an orthonormal basis f of ℝ^P with f∘castLE = v.
+2. pL maps f(castLE i) to e_i and every other basis vector f_m to 0.
+3. Via the injection j' ↦ castLE∘j', Σ_j (γ∘pL)(f∘j)² = Σ_{j'} γ(e∘j')²; tuples leaving range castLE contribute 0.
+4. Apply (★) on ℝ^P (basis f) and on ℝⁿ (standard basis): l!·|γ∘pL|² = l!·|γ|², hence |γ∘pL| = |γ|.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cmp GMT/Ch07/Contract.lean <snapshot>/project/GMT/Ch07/Contract.lean (both identical)`
+- `python3 -I scans of dag.json: lean_name matching covector|orthonormal; lean_statement containing castLE|OrthonormalBasis|compContinuousLinearMap; repr of the frozen types of regcomp_covector_eval_orthonormal_le and regcomp_covector_sq_sum_orthonormalBasis; lean_name prefix cbr_ci_pw_cb (no match among 1527 names)`
+- `git show b7846b639953f647296619e6e73dec8a8a22ba73 -- GMT/Ch07/Submission.lean (accepted Lean proof of regcomp_covector_eval_orthonormal_le); git show b1f7ad57dc2d4b5bf68702805f4f51beebe5d575:GMT/Ch07/Submission.lean | grep '^theorem' (the proof base declares only main_theorem)`
+- `rg -n in <snapshot>/mathlib/Mathlib: 'theorem exists_orthonormalBasis_extension_of_card_eq', 'sum_of_injective|prod_of_injective', 'theorem map_coord_zero', 'theorem compContinuousLinearMap_apply', 'theorem orthonormal_iff_ite', 'theorem basisFun_apply'`
+- `grep -rn 'def covectorEuclideanNorm|theorem covectorEuclideanNorm_nonneg|abbrev Covector' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/ and sed of Chapter06/Mass.lean lines 20-60, Chapter06/Forms.lean lines 25-40`
+- `lake env lean /tmp/cbpw-decomp/Test1.lean and /tmp/cbpw-decomp/Final.lean (Final generated by python3 -I from the exact dag.json types plus the three child types; full proof of the pullback child and the parent assembly compile; only the two reused accepted lemmas are sorry stand-ins)`
+- `python3 -I /tmp/cbpw-decomp/scripts/check_types.py: validate_lean_statement from verifier/lean_contract.py on the three child types (all pass)`
+- `sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py _decompose, _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff and store.py ensure (an accepted node with identical frozen type is reused unchanged)`
+- `sed of parent-supplied-natural-proof.md of accepted nodes root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d (sq_sum) and -930e70c904 (eval_le); python3 -I read of the sq_sum entry in decomposition-v1.json of parent node root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-951a399d2e`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-41fcf433f1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-41fcf433f1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-951a399d2e/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-930e70c904/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/tmp/cbpw-decomp/Test1.lean`
+- `/tmp/cbpw-decomp/Final.lean`
+
+The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean (project b4d606db, Mathlib 25730c7c). Part (a) of the selected theorem is literally (β ↦ α, v ↦ τ) the accepted DAG theorem regcomp_covector_eval_orthonormal_le (accepted, candidate b7846b6399, proved by the same basis-extension/permutation argument). (★) is the accepted regcomp_covector_sq_sum_orthonormalBasis (candidate 16144a475b). Both are reused with byte-identical frozen types, which the runtime permits for accepted checkpoints. No accepted lemma gives part (b): cmcdt_lp_covector_norm_bounds is only decomposing, and the proof base contains no other theorems. So part (b) becomes the new child cbr_ci_pw_cb_pullback_covectorEuclideanNorm_eq, whose name is fresh among 1527 DAG names. The pinned Mathlib provides every cited lemma: Orthonormal.exists_orthonormalBasis_extension_of_card_eq (PiL2.lean:1044), Fintype.sum_of_injective (additive form of prod_of_injective, Finset/Basic.lean:1013), ContinuousAlternatingMap.map_coord_zero (Alternating/Basic.lean:123), compContinuousLinearMap_apply (:319), orthonormal_iff_ite (Orthonormal.lean:82) and EuclideanSpace.basisFun_apply (PiL2.lean:806). With these lemmas, the complete Lean proof of the new child and the parent assembly compile after import GMT.Ch07.Submission. All three child types pass validate_lean_statement.

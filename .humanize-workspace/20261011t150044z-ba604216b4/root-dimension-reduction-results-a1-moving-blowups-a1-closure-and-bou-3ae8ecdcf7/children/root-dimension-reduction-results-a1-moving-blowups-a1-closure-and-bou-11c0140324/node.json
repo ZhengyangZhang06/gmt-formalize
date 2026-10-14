@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.point_sum_im-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1",
+  "depth": 5,
+  "title": "Finite integer combinations of point evaluations are integer multiplicity 0-currents",
+  "statement": "Let P ∈ ℕ, let V ⊆ ℝ^P be any set and S ∈ 𝒟_0(V) (GeometricCurrentOn V 0). Let M ∈ ℕ, v : ℕ → ℤ and y : ℕ → ℝ^P; the points y_l need not lie in V. Write ⟨α⟩ := α(e) for the value of a 0-covector α on the empty family e : Fin 0 → ℝ^P (Lean: fun i => i.elim0). If S(ω) = Σ_{l<M} v_l ⟨ω(y_l)⟩ for every ω ∈ 𝒟^0(V), then S is integer multiplicity: some degree-0 IMRep R in V represents S.",
+  "lean_statement": "∀ (P : ℕ) (V : Set (Euclid P)) (S : GeometricCurrentOn V 0) (M : ℕ) (v : ℕ → ℤ) (y : ℕ → Euclid P), (∀ ω : TestFormOn V 0, S ω = ∑ l ∈ Finset.range M, (v l : ℝ) * (ω : DifferentialForm (Euclid P) 0) (y l) (fun i => i.elim0)) → IsIntegerMultiplicity S",
+  "lean_name": "dmcbrz_isIntegerMultiplicity_point_sum",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.count_integral-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.finite_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.count_integral-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e7e9add3f3-a1",
+      "result_commit": "fc243d0a96fcd9abfe56b146339fc11e52fdf627",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_zero-a1.finite_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-11c0140324-a1"
+}

@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'cbr_ci_pw_bv|mollif|convolution|ae_tendsto_average|l1_duality' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "theorem (ae_tendsto_average_norm_sub|tendsto_integral_smul_of_tendsto_average_norm_sub|continuous_of_dominated|integral_integral_swap|intervalIntegral_integral_swap|integral_eq_sub_of_hasDerivAt|norm_integral_le_of_norm_le_const)|contDiff_convolution_right|addHaar_real_closedBall|integral_comp_inv_smul_of_nonneg|IsUnifLocDoublingMeasure",
+        "theorem.*bounded_above_of_compact_support|lemma.*bounded_above_of_compact_support|theorem.*HasCompactSupport.fderiv|lemma.*HasCompactSupport.fderiv",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bv-audit-ctuqx64n/IndependentTypes.lean > /tmp/bv-audit-ctuqx64n/IndependentTypes.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bv-audit-ctuqx64n/VerifiedAssembly.lean > /tmp/bv-audit-ctuqx64n/VerifiedAssembly.log 2>&1"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Average.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-71f49efaa2/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-71f49efaa2/decomposition-v1.json",
+        "/tmp/bv-audit-ctuqx64n/IndependentTypes.lean",
+        "/tmp/bv-audit-ctuqx64n/IndependentTypes.log",
+        "/tmp/bv-audit-ctuqx64n/VerifiedAssembly.lean",
+        "/tmp/bv-audit-ctuqx64n/VerifiedAssembly.log"
+      ],
+      "conclusion": "Confirmed project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d. The pinned contract matches the workspace, and 17 inspected Mathlib files match the active dependency byte-for-byte. The project search found no relevant BV/mollification declarations. Pinned FTC, Fubini, convolution, Haar scaling, differentiation and dominated-convergence lemmas support the supplied proofs, including n = 0. All six frozen types passed lexical validation and independently elaborated before any child declaration existed. Reconstructed, unchanged child proofs and the exact parent assembly compiled successfully; all seven declarations depend only on propext, Classical.choice and Quot.sound. The sole sorry warning belongs to the inherited main_theorem. All six names are bare, fresh identifiers; no accepted DAG declaration is reused. Dependencies match actual proof references and are acyclic. The split is appropriate: continuity gives local integrability of u − w, the smooth-test estimate supplies the duality hypothesis, and duality with δ = s and C = sV proves exactly the selected frozen parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "translate_test",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the exact Lean proposition. Boundedness of Dg justifies product integrability and Fubini; segment FTC and the translated-support inequality make each variation-bound application valid. Integration yields the stated bound without additional sign or dimension assumptions. No circular dependency."
+    },
+    {
+      "key": "pairing_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and Lean type agree, including measurability of S and vanishing of g outside S. Zero extension handles u outside S. Both Fubini interchanges have explicit integrable dominants; translation invariance, normalization and justified integral subtraction establish the exact identity independently."
+    },
+    {
+      "key": "smooth_test_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. For φ(z) ≠ 0, the inequality 2s < R supplies the support margin required by translate_test. The proof correctly reverses the translation difference, uses V ≥ 0 and φ ≥ 0, and integrates using ∫φ = 1. Its only child dependencies are pairing_identity and translate_test."
+    },
+    {
+      "key": "smooth_ae_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact existential contract matches the prose. Normalized bumps and their rescalings give smooth approximants with the required uniform bound and strict support containment. Every approximate-identity hypothesis is checked using Lebesgue differentiation and closed-ball scaling. The constructions remain valid for n = 0 and arbitrary R; no further planning is needed."
+    },
+    {
+      "key": "l1_duality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-sided testing hypothesis and all other assumptions match the Lean type. A measurable representative on the restricted measure supplies the sign function. smooth_ae_approx provides admissible tests, dominated convergence applies with |h|, and the indicator identity identifies the limit with the requested integral. The dependency is correctly directed and non-circular."
+    },
+    {
+      "key": "mollify_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type both permit arbitrary S. Working directly with volume.restrict S requires no measurability assumption on S. Compact support bounds φ, integrability of u supplies the dominant, and parameterwise continuity proves the exact conclusion through continuous_of_dominated."
+    }
+  ],
+  "required_changes": []
+}

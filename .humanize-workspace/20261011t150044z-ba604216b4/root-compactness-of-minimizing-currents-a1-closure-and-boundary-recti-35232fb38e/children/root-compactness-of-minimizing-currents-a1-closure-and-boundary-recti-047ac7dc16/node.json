@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1.pullback_extension-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1",
+  "depth": 6,
+  "title": "Cut-off extension of a pulled-back form: a test form on ℝ^P agreeing with p^#γ and with p^#(dγ) on S",
+  "statement": "Let P, m, l ∈ ℕ, let pL : ℝ^P → ℝ^m be a continuous linear map, let S, O ⊆ ℝ^P, and let γ : ℝ^m → Λ^l(ℝ^m) be a C^∞ differential l-form (DifferentialForm (Euclid m) l with ContDiff ℝ ∞; no support assumption). For x ∈ ℝ^P write (p^#γ)(x) := γ(pL x)∘pL = (γ(pL x)).compContinuousLinearMap pL ∈ Λ^l(ℝ^P) and (p^#(dγ))(x) := ((dγ)(pL x)).compContinuousLinearMap pL, where d = exteriorDerivative (Mathlib's extDeriv). Write |α| := covectorEuclideanNorm α (Euclidean coefficient norm). Assume O is open, K := S ∩ pL⁻¹(tsupport γ) is compact, and K ⊆ O. Then there is a test l-form γ' ∈ 𝒟^l(ℝ^P) (an element of TestFormOn univ l: a C^∞ compactly supported l-form on ℝ^P) such that (a) tsupport γ' ⊆ O; (b) |γ'(x)| ≤ |(p^#γ)(x)| for every x ∈ ℝ^P; (c) γ'(x) = (p^#γ)(x) for every x ∈ S; (d) dγ'(x) = (p^#(dγ))(x) for every x ∈ S.",
+  "lean_statement": "∀ (P m l : ℕ) (pL : Euclid P →L[ℝ] Euclid m) (S O : Set (Euclid P)) (γ : DifferentialForm (Euclid m) l), ContDiff ℝ (⊤ : ℕ∞) γ → IsOpen O → IsCompact (S ∩ pL ⁻¹' tsupport γ) → S ∩ pL ⁻¹' tsupport γ ⊆ O → ∃ γ' : TestFormOn (univ : Set (Euclid P)) l, tsupport (γ' : DifferentialForm (Euclid P) l) ⊆ O ∧ (∀ x, covectorEuclideanNorm ((γ' : DifferentialForm (Euclid P) l) x) ≤ covectorEuclideanNorm ((γ (pL x)).compContinuousLinearMap pL)) ∧ (∀ x ∈ S, (γ' : DifferentialForm (Euclid P) l) x = (γ (pL x)).compContinuousLinearMap pL) ∧ ∀ x ∈ S, exteriorDerivative (γ' : DifferentialForm (Euclid P) l) x = (exteriorDerivative γ (pL x)).compContinuousLinearMap pL",
+  "lean_name": "cbr_ci_pw_proj_pullback_extension",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1.smooth_cutoff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1.smooth_cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-047ac7dc16-a1"
+}

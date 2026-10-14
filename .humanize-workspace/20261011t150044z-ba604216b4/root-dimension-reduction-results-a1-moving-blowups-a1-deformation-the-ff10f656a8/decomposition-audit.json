@@ -1,0 +1,123 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'lipschitz.*push|pushforward.*lipschitz|mollif|cutoff|homotopy' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "dimred_mbl_dt_lpo_",
+        "analyticOnNhd_compContinuousLinearMapCLM|contDiff_convolution_left|exists_contMDiffMap_one_nhds_of_subset_interior|theorem extDeriv_pullback|norm_fderiv_le_of_lipschitz",
+        "theorem norm_integral_le_of_norm_le_const|lemma norm_integral_le_of_norm_le_const",
+        "curryLeft_apply_apply|compContinuousLinearMap_apply",
+        "exists_thickening_subset_open|isCompact_cthickening|IsCompact.cthickening",
+        "git show 52ff6182fa1f89ef888e2fceeb5405eca51b1f0a:GMT/Ch07/Submission.lean",
+        "git show 3c4f763265d817512375837594432341d443b9ef:GMT/Ch07/Submission.lean",
+        "#print axioms GMT.Ch07.Submission.cmcsd_support_calculus",
+        "#print axioms GMT.Ch07.Submission.cmc_fc_sc_current_of_coeff_bound",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/independent-operators-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/independent-operators-audit/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Analytic/CPolynomial.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-ff10f656a8/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-ff10f656a8/decomposition-v1.json",
+        "/tmp/independent-operators-audit/Types.lean",
+        "/tmp/independent-operators-audit/Assembly.lean",
+        "/tmp/independent-operators-audit/cmcsd_support_calculus.lean",
+        "/tmp/independent-operators-audit/cmc_fc_sc_current_of_coeff_bound.lean"
+      ],
+      "conclusion": "Accept the split for this selected operators theorem. The project and Mathlib revisions match the manifest, and the workspace Submission matches the frozen contract. Project search found only an unproved Ch06 Lipschitz-pushforward specification; the required analytic infrastructure exists in pinned Mathlib. All twelve raw child propositions independently elaborate without child implementations. All names are bare identifiers; the ten new names are unreserved, and both reused declarations have identical comparator-accepted types. Their independently compiled proofs use only propext, Classical.choice and Quot.sound. Dependencies, including reused declarations and existing siblings, are acyclic and correctly directed. An independently generated Lean assembly derives the exact selected parent type from the proposed construction, properties and homotopy contracts plus the existing cylinder and covector-bound contracts, with only those standard axioms. No problematic matrix-unit or other typeclass-sensitive inline construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type match the accepted declaration exactly. The five conclusions follow from relatively compact zero neighbourhoods, their intersections, and support preservation under exterior differentiation; no circular reliance occurs."
+    },
+    {
+      "key": "coeff_bound_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The coefficient/operator-norm comparison and uniform smallness from test-form convergence prove sequential continuity, including arbitrary U and unrestricted real A."
+    },
+    {
+      "key": "toolkit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and five conclusions match. REP and VO give the support-restricted integral bound; mass suprema, locality, support calculus and boundary squared zero establish the remaining claims. The integral lemma permits arbitrary real c, including empty-support cases."
+    },
+    {
+      "key": "cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Polynomial precomposition proves smoothness, extDeriv_pullback gives derivative compatibility, and the compactly supported cutoff preserves both equalities near K. The construction proves the exact existential contract."
+    },
+    {
+      "key": "mollify",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normalized compactly supported convolution gives smooth maps, preserves the exact Lipschitz constant, and yields the stated global error bound. The proof covers zero-dimensional spaces and Λ = 0."
+    },
+    {
+      "key": "affine_homotopy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate construction and two chain-rule computations establish the precise identities. Decomposing vectors into their first coordinate and tail proves the stated operator-norm bound."
+    },
+    {
+      "key": "smooth_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff derivative identity, locality and assumed cylinder boundary relations prove both degree cases with the correct signs. Every support inclusion needed for locality is supplied."
+    },
+    {
+      "key": "smooth_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The contraction/pullback identity, L1–L2 and the convex derivative bound give the pointwise estimate. A0 and the pinned interval-integral bound prove the exact conclusion without an omitted integrability assumption or positivity hypothesis."
+    },
+    {
+      "key": "cauchy_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof combines the two smooth homotopy lemmas using precisely the assumed cylinder properties. NCB justifies application to the boundary; degree zero and natural subtraction k − 1 are handled correctly."
+    },
+    {
+      "key": "lpush_construction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied proof constructs scalar limits, proves independence for every approximation allowed by CHAR, then proves linearity and the coefficient bound before packaging a current. Classical choice produces the total operator without circularly assuming CHAR."
+    },
+    {
+      "key": "lpush_properties",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Shared approximants, uniqueness of limits, mass bounds, locality and derivative-compatible cutoffs prove all six exact conclusions. CHAR is an explicit hypothesis, so no dependency on the construction theorem is missing."
+    },
+    {
+      "key": "lipschitz_homotopy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The affine approximants converge uniformly and have uniformly bounded derivatives on S(X), sufficient for CHAR on both cylinder currents. Passing the smooth identities and value bounds to limits proves all three conclusions; max(δ, 0) correctly handles arbitrary real δ."
+    }
+  ],
+  "required_changes": []
+}

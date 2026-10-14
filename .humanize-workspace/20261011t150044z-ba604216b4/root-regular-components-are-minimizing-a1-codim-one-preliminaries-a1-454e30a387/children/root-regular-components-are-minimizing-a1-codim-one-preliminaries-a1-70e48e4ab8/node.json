@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.isolated_point_integral-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1",
+  "depth": 4,
+  "title": "H⁰-integral of a function vanishing off a measurable set that meets the domain in at most one point",
+  "statement": "Let P ∈ ℕ and H⁰ = μHE[0], the normalized 0-dimensional Hausdorff measure on ℝ^P. Let C ⊆ ℝ^P be an arbitrary set (not assumed measurable), K ⊆ ℝ^P a measurable set, x ∈ ℝ^P, and F : ℝ^P → ℝ with F(z) = 0 for every z ∉ K. If C ∩ K ⊆ {x}, then ∫_C F dH⁰ = 1_C(x)·F(x); that is, the Bochner integral of F with respect to the restricted measure H⁰⌞C (μHE[0].restrict C) equals (Set.indicator C F)(x), which is F(x) if x ∈ C and 0 otherwise.",
+  "lean_statement": "∀ (P : ℕ) (C K : Set (Euclid P)) (x : Euclid P) (F : Euclid P → ℝ), MeasurableSet K → (∀ z, z ∉ K → F z = 0) → C ∩ K ⊆ {x} → ∫ z in C, F z ∂μHE[0] = C.indicator F x",
+  "lean_name": "regcomp_cop_zdr_setIntegral_eq_indicator",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-70e48e4ab8-a1"
+}

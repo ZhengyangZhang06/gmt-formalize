@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1.pairing_identity-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1",
+  "depth": 6,
+  "title": "Fubini identity: pairing u − u∗φ with a test function equals the φ-average of translation differences",
+  "statement": "Let n ∈ ℕ, let S ⊆ ℝⁿ be a measurable set (ℝⁿ = Euclid n with Lebesgue measure), and let φ, u, g : ℝⁿ → ℝ. Assume φ is continuous with compact support and ∫_{ℝⁿ} φ = 1, u is integrable on S, g is continuous with compact support, and g(x) = 0 for every x ∉ S. Then ∫_{ℝⁿ} (u(x) − ∫_S u(y)φ(x − y) dy)·g(x) dx = ∫_{ℝⁿ} φ(z)·(∫_S u(y)(g(y) − g(y + z)) dy) dz.",
+  "lean_statement": "∀ (n : ℕ) (S : Set (Euclid n)) (φ u g : Euclid n → ℝ), MeasurableSet S → Continuous φ → HasCompactSupport φ → ∫ y, φ y = 1 → IntegrableOn u S → Continuous g → HasCompactSupport g → (∀ x, x ∉ S → g x = 0) → ∫ x, (u x - ∫ y in S, u y * φ (x - y)) * g x = ∫ z, φ z * ∫ y in S, u y * (g y - g (y + z))",
+  "lean_name": "cbr_ci_pw_bv_pairing_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e548749a7a-a1"
+}

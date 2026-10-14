@@ -1,0 +1,63 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "le_opENorm|isBoundedBilinearMap_apply|comp_aestronglyMeasurable₂|enorm_integral_le_lintegral_enorm|integral_indicator_const|integrableOn_const|integrable_indicator_iff|integrable_of_hasCompactSupport",
+        "tendsto_measure_cthickening_of_isClosed|limsup_const_mul_of_ne_top|eventually_lt_of_limsup_lt|limsup_le_of_le|le_of_forall_gt_imp_ge_of_dense",
+        "IsCompact.cthickening|self_subset_thickening|thickening_subset_cthickening|isOpen_thickening",
+        "cbr_ci_bl_cvl_pairing_error_le|cbr_ci_bl_cvl_pairing_tendsto|cbr_ci_bl_cvl_massOn_le|cbr_ci_bl_cvl_limsup_le_of_cthickening",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/constant-limit-review-wrf832xc/StandaloneContracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/constant-limit-review-wrf832xc/CheckedProofsAndAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/NNNorm.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-5981b082bc/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-5981b082bc/decomposition-v1.json",
+        "/tmp/constant-limit-review-wrf832xc/StandaloneContracts.lean",
+        "/tmp/constant-limit-review-wrf832xc/CheckedProofsAndAssembly.lean"
+      ],
+      "conclusion": "The split is appropriate: pairing_error supplies the shared estimate for pairing_tendsto and mass_bound; limsup_thickening completes the compact-set bound. Dependencies are acyclic and correctly directed. The immutable handoff matches the selected contract. All names are bare identifiers with no DAG reservations or identical existing contracts. All four exact one-line propositions pass lexical validation and elaborate independently before any child implementation. Operator-norm, measurability and proper-space instance checks compile. Independently checked proof bodies and the parent assembly compile using only propext, Classical.choice and Quot.sound; the assembly takes the frozen covector_norm prerequisite explicitly as a hypothesis. Thus the children establish this selected parent, without circular reliance or changing its contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pairing_error",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including integrability of the constant pairing and finiteness of the error bound. Continuous evaluation establishes measurability; the supported norm estimate establishes integrability before integral splitting. Both toReal comparisons have finite upper bounds. The proof is complete and independent."
+    },
+    {
+      "key": "pairing_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses support every step: compact support supplies a uniform bound and positive radius, compact finiteness supplies main-term integrability, and eventual finite error permits pairing_error. Squeezing the difference and applying the assumed continuous-compact-support convergence proves the stated limit. Finiteness of the limiting measure is unnecessary. The sole dependency is correctly declared."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the type, including both nonnegative constants and the operator-norm comparison. The proof uses the actual mass supremum, handles infinite error, applies pairing_error, and integrates the measurable finite-measure indicator bound. ENNReal conversions are justified. The general B hypothesis leaves covector_norm correctly at the parent level."
+    },
+    {
+      "key": "limsup_thickening",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact measure/filter statement is proved independently. Finite-coefficient multiplication commutes with limsup, including c = 0; the intermediate-bound argument controls the vanishing error without CountableInterFilter. Compact thickenings provide the finite radius needed for measure continuity, and the nontrivial right-neighborhood filter justifies the final limiting inequality."
+    }
+  ],
+  "required_changes": []
+}

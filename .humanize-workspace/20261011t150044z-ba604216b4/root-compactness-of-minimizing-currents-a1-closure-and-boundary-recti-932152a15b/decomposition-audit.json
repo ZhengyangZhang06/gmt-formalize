@@ -1,0 +1,95 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IMRep\\.(action|measure|Represents)|def IsIntegerMultiplicity|def boundaryMassOn|def CompactlyContained",
+        "TestFormOnConverges|structure GeometricCurrentOn|zeroRegion|def support|def mass(On)?|massOn_le_liminf|WeaklyConvergesOn.boundary|testFormOnInclusion|restrictDomain|abbrev exteriorDerivative",
+        "cbrcs_cutoff_extension|cbrcs_localize_at_point|lcmp_massOn_le_of_vanish_off_compact|lcmp_massOn_le_add_of_eval_eq|lcmp_imRep_measure_restrict|rsd_imrep_compact_measure_ne_top|dor_ims_action_eq_integral|dor_lmb_glc_good_radius",
+        "exists_contDiff_support_eq_eq_one_iff|norm_iteratedFDeriv_smul_le|support_iteratedFDeriv_subset|exists_open_between_and_isCompact_closure|integral_withDensity_eq_integral_smul|enorm_integral_le_lintegral_enorm|countable_meas_pos_of_disjoint_iUnion|meas_ge_le_lintegral_div|theorem Filter.EventuallyEq.extDeriv_eq",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbr-succ-independent-audit-mop_ykt2/Types.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbr-succ-independent-audit-mop_ykt2/Localize.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbr-succ-independent-audit-mop_ykt2/Assembly.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbr-succ-independent-audit-mop_ykt2/AcceptedReuse.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-932152a15b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-932152a15b/decomposition-v2.json",
+        "/tmp/cbr-succ-independent-audit-mop_ykt2/Types.lean",
+        "/tmp/cbr-succ-independent-audit-mop_ykt2/Localize.lean",
+        "/tmp/cbr-succ-independent-audit-mop_ykt2/Assembly.lean",
+        "/tmp/cbr-succ-independent-audit-mop_ykt2/AcceptedReuse.lean"
+      ],
+      "conclusion": "The split appropriately separates cutoff extension and localization, with six necessary accepted reuses. The snapshot contract equals the workspace contract and Submission; inspected compiler sources match the pinned revisions. The eight names have no matches in the base project snapshot. DAG inspection confirms six comparator-accepted declarations with byte-identical frozen types and matching immutable candidate sources; both new names are unreserved bare identifiers. The augmented dependency graph reachable from the selected parent is acyclic. All eight exact one-line propositions independently elaborate in the comparator scope without child implementations or aliases. Recompiling the six accepted proofs, the supplied localization appendix with its six dependencies as hypotheses, and the exact-parent assembly succeeds; each proof reports only propext, Classical.choice and Quot.sound. The assembly establishes precisely cbr_closure_succ using the proposed conclusions and its three existing sibling contracts. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree on all five conclusions and hypotheses. The fixed cutoff and Leibniz estimate establish the required sequential continuity. The derivative defect vanishes near K, proving the boundary-mass bound under exactly the stated vanishing hypothesis. Transferring the compactly supported IMRep proves integer multiplicity. The proof is complete and independent of closure."
+    },
+    {
+      "key": "vanish_off_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. The empty-set case and cutoff construction cover all cases. Multiplication preserves the original test form's support in U, so openness of U is unnecessary. Vanishing of the complementary term and norm control prove the stated inequality for every G."
+    },
+    {
+      "key": "mass_triangle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. Admissibility of both ω and −ω bounds the absolute evaluation of Y; |c| ≤ 1 and subadditivity of ENNReal.ofReal then give the exact local-mass inequality. All support conditions are correctly used."
+    },
+    {
+      "key": "imrep_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. Absolute continuity transfers orientation measurability. Restriction commutes with density on the stated measurable set, and the cited NNReal-density integral identity requires no integrability assumption on the arbitrary form. All conclusions match the prose."
+    },
+    {
+      "key": "imrep_compact_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. Compactness supplies measurability, the weight identity invokes local integrability on K ⊆ U, and positive integer multiplicity gives the unweighted Hausdorff-measure bound. In ENNReal, the stated inequalities below infinity are equivalent to the frozen non-infinity conclusions."
+    },
+    {
+      "key": "imrep_action_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. Evaluation is a.e. strongly measurable; unit orientation bounds it by the form's operator norm. Compact support has finite weight, establishing integrability before the density formula identifies the action. No additional domain hypothesis is needed."
+    },
+    {
+      "key": "good_radius",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. Restricting μ to the closed ball supplies the finite-measure instance needed to count charged spheres. The proof handles I = 0, I = ∞ and finite positive I separately, then excludes the three exceptional sets by the interval-measure estimate. Global finiteness or sigma-finiteness of μ is unnecessary."
+    },
+    {
+      "key": "localize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact hypotheses and conclusions match the prose. REP supplies boundary representations without assuming BR(d). The proof verifies slicing, good-radius extraction, total-mass bounds, preservation of compact-set limsup domination under the further subsequence, convergence and local agreement. Its six declared dependencies suffice; the supplied appendix independently compiles with exactly those hypotheses. The conclusion genuinely advances the selected parent without assuming integer multiplicity of the limit."
+    }
+  ],
+  "required_changes": []
+}

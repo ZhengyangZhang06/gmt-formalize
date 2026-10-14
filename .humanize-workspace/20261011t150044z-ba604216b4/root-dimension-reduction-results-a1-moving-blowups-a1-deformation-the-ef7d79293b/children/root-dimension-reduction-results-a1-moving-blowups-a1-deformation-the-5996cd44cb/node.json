@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.cylinder-a1.ftc_current-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.cylinder-a1",
+  "depth": 6,
+  "title": "Fundamental theorem of calculus under a finite-mass current: ∫₀¹ X(γ_t) dt = X(β₁) − X(β₀)",
+  "statement": "Assume (REP), the representation antecedent of the selected statement (its exact frozen type): for all P, n, U open and T ∈ 𝒟_n(U) = GeometricCurrentOn U n with M_W(T) < ∞ for every open W ⊂⊂ U there are a measure μ on ℝ^P and ξ : ℝ^P → MultiVector P n with μ(ℝ^P ∖ U) = 0, μ(K) < ∞ for compact K ⊆ U, M_W(T) = μ(W) for every open W, ξ μ-a.e. strongly measurable, |ξ(x)(α)| ≤ |α| for all x and n-covectors α, T(ω) = ∫ ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟ⁿ(U), and, if also M_W(∂T) < ∞ (boundaryMassOn) for every open W ⊂⊂ U, μ(E) = 0 whenever Hⁿ(E) = 0. Write ι(t, x) := (t, x_1, …, x_N) ∈ ℝ^{N+1} (Lean WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))), e₀ := (1, 0, …, 0) (EuclideanSpace.single 0 1), Jv := ι(0, v), |α| := covectorEuclideanNorm α, Dω := fderiv ℝ ω, and 𝒟^k(ℝ^m) := TestFormOn univ k (smooth compactly supported k-forms on ℝ^m). Let N, k ∈ ℕ, X ∈ 𝒟_k(ℝ^N) = GeometricCurrentOn univ k with M(X) < ∞, ω ∈ 𝒟^k(ℝ^{N+1}), and let β, γ : ℝ → 𝒟^k(ℝ^N) satisfy β_s(x)(v) = ω(ι(s, x))(Jv_1, …, Jv_k) and γ_t(x)(v) = (Dω(ι(t, x))e₀)(Jv_1, …, Jv_k) for all s, t ∈ ℝ, x ∈ ℝ^N and v ∈ (ℝ^N)^k. Then ∫_0^1 X(γ_t) dt = X(β_1) − X(β_0), the integral being the interval integral with respect to Lebesgue measure.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k), X.mass < ∞ → ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) k) (β γ : ℝ → TestFormOn (univ : Set (Euclid N)) k), (∀ (s : ℝ) (x : Euclid N) (v : Fin k → Euclid N), (β s : DifferentialForm (Euclid N) k) x v = (ω : DifferentialForm (Euclid (N + 1)) k) (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) → (∀ (t : ℝ) (x : Euclid N) (v : Fin k → Euclid N), (γ t : DifferentialForm (Euclid N) k) x v = fderiv ℝ (ω : DifferentialForm (Euclid (N + 1)) k) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) → ∫ t in (0 : ℝ)..1, X (γ t) = X (β 1) - X (β 0)",
+  "lean_name": "dimred_mbl_dt_lpc_ftc_current",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.coeff_norm_toolkit-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.smooth_form_approx-a1.coeff_norm_toolkit-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-smoot-eefd369560-a1",
+      "result_commit": "40dc34b77c97a77dd55c8bebd26e1765dccd13c0",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-5996cd44cb-a1"
+}

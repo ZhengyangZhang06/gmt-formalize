@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.translation-a1.smooth_approx-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.translation-a1",
+  "depth": 6,
+  "title": "Smooth approximation of a continuous compactly supported function with a common compact support and a uniform bound",
+  "statement": "Let P ∈ ℕ and let g : ℝ^P = Euclid P → ℝ be continuous with compact support. Then there exist a compact set K ⊆ ℝ^P, a real constant C and functions u_k : ℝ^P → ℝ (k ∈ ℕ) with the following properties: every u_k is C^∞; u_k(x) = 0 for every k and every x ∉ K; |u_k(x)| ≤ C for all k and x; and u_k(x) → g(x) as k → ∞ for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (g : Euclid P → ℝ), Continuous g → HasCompactSupport g → ∃ (K : Set (Euclid P)) (C : ℝ) (u : ℕ → Euclid P → ℝ), IsCompact K ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (u k)) ∧ (∀ k x, x ∉ K → u k x = 0) ∧ (∀ k x, |u k x| ≤ C) ∧ ∀ x, Tendsto (fun k => u k x) atTop (𝓝 (g x))",
+  "lean_name": "cbr_ci_cp_tr_smooth_approx_of_continuous",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.normalized_mollifier-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.normalized_mollifier-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-786dd02ecc-a1",
+      "result_commit": "376e5f482d73f6f48d00a4945533b15f784859d5",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-becb1caa0f-a1"
+}

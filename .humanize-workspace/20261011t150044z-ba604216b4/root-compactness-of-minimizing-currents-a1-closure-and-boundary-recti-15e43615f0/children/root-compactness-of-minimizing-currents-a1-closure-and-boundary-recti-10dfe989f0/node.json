@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.growth_dimension-a1.lattice_packing-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.growth_dimension-a1",
+  "depth": 6,
+  "title": "Separated lattice points of V: (2M+1)^dim V points of V, pairwise distance ≥ 2, norm ≤ 2M√(dim V)",
+  "statement": "Let P, M ∈ ℕ, let V ⊆ ℝ^P be a linear subspace and r := dim V. Then there is a finite set S ⊆ ℝ^P with exactly (2M+1)^r elements such that every x ∈ S lies in V and satisfies ‖x‖ ≤ 2M√r, and dist(x, y) = ‖x − y‖ ≥ 2 for all distinct x, y ∈ S.",
+  "lean_statement": "∀ (P : ℕ) (V : Submodule ℝ (Euclid P)) (M : ℕ), ∃ S : Finset (Euclid P), S.card = (2 * M + 1) ^ Module.finrank ℝ V ∧ (∀ x ∈ S, x ∈ V) ∧ (∀ x ∈ S, ‖x‖ ≤ 2 * M * Real.sqrt (Module.finrank ℝ V)) ∧ (∀ x ∈ S, ∀ y ∈ S, x ≠ y → 2 ≤ dist x y)",
+  "lean_name": "cbr_ci_cp_gd_subspace_lattice_packing",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-10dfe989f0-a1"
+}

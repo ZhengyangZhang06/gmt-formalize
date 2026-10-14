@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.wedge_norm-a1.tuple_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.wedge_norm-a1",
+  "depth": 4,
+  "title": "Square of β ∧ γ on tuples from a family where β is concentrated at one index",
+  "statement": "Let P, k ∈ ℕ, let β : ℝ^P → ℝ be a continuous linear functional, γ a k-covector on ℝ^P (Covector (Euclid P) k), v = (v_a)_{a ∈ Fin P} an injective family in ℝ^P, i₀ ∈ Fin P and c ∈ ℝ such that β(v_a) = c if a = i₀ and β(v_a) = 0 if a ≠ i₀. Let ω := β ∧ γ := ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight γ), so ω(w_0, …, w_k) = Σ_{i=0}^{k} (−1)^i·β(w_i)·γ(w_0, …, ŵ_i, …, w_k). Then for every j : Fin (k+1) → Fin P, ω(v_{j(0)}, …, v_{j(k)})² ≤ c²·Σ_{i ∈ Fin (k+1)} s_i. Here s_i := γ(v ∘ (Fin.removeNth i j))² if j(i) = i₀ and s_i := 0 otherwise. Fin.removeNth i j : Fin k → Fin P is j with its i-th entry deleted (m ↦ j(succAbove i m)), and v ∘ j' is the tuple m ↦ v_{j'(m)}.",
+  "lean_statement": "∀ (P k : ℕ) (β : Euclid P →L[ℝ] ℝ) (γ : Covector (Euclid P) k) (v : Fin P → Euclid P) (i₀ : Fin P) (c : ℝ), Function.Injective v → (∀ i : Fin P, β (v i) = if i = i₀ then c else 0) → ∀ j : Fin (k + 1) → Fin P, (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight γ) (fun m => v (j m))) ^ 2 ≤ c ^ 2 * ∑ i : Fin (k + 1), if j i = i₀ then (γ (fun m => v (i.removeNth j m))) ^ 2 else 0",
+  "lean_name": "cmcs_wn_tuple_sq_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-wedge-norm-a1-t-57a448a6b4-a1"
+}

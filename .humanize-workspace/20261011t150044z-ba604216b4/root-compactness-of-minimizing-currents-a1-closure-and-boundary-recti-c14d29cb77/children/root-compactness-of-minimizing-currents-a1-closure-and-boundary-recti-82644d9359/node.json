@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.cutoff_extension-a1.smooth_cutoff-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.cutoff_extension-a1",
+  "depth": 5,
+  "title": "Smooth cutoff with compact support in U equal to 1 on an open neighbourhood of a compact K ⊆ U",
+  "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P be open and K ⊆ U compact. Then there are a function ζ : ℝ^P → ℝ and a set N ⊆ ℝ^P such that ζ is C^∞ (ContDiff ℝ ∞), ζ has compact support, tsupport ζ ⊆ U, 0 ≤ ζ(x) ≤ 1 for every x ∈ ℝ^P, N is open, K ⊆ N, and ζ(x) = 1 for every x ∈ N.",
+  "lean_statement": "∀ (P : ℕ) (U K : Set (Euclid P)), IsOpen U → IsCompact K → K ⊆ U → ∃ (ζ : Euclid P → ℝ) (N : Set (Euclid P)), ContDiff ℝ (⊤ : ℕ∞) ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ U ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ IsOpen N ∧ K ⊆ N ∧ ∀ x ∈ N, ζ x = 1",
+  "lean_name": "cbrcs_ce_smooth_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-82644d9359-a1"
+}

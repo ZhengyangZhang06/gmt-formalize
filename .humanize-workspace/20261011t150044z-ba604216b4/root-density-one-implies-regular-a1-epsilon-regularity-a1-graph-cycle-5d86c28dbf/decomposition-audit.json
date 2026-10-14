@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "extDeriv_eq|theorem extDeriv_apply|theorem extDeriv_pullback",
+        "curryLeft_apply_apply|cons_removeNth_eq_comp_cycleRange_symm|sign_cycleRange|theorem det_self|theorem det_apply|theorem continuous_matrix|theorem Continuous.matrix_det|exists_lt_subset_ball|hasContDiffBump_of_innerProductSpace",
+        "abbrev Covector|abbrev DifferentialForm|def IsSmoothForm|abbrev TestFormOn|def TestFormOn|exteriorDerivative_apply|tsupport_exteriorDerivative_subset|exteriorDerivativeTestOn|theorem boundary_apply|def affinePullbackForm|affinePullbackForm_isSmoothForm|exteriorDerivative_affinePullbackForm",
+        "MultilinearMap.continuous_of_finiteDimensional",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/bwd-independent-audit/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/bwd-independent-audit/ProofsAndAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/GroupTheory/Perm/Fin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/Matrix.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/InnerProduct.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-5d86c28dbf/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-5d86c28dbf/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-a958fc631c/accepted-candidate.json",
+        "/tmp/bwd-independent-audit/Challenges.lean",
+        "/tmp/bwd-independent-audit/ProofsAndAssembly.lean"
+      ],
+      "conclusion": "The split is appropriate: all six obligations contribute to the selected boundary-weak-derivative theorem. The pinned declarations support the supplied arguments; no MultilinearMap.continuous_of_finiteDimensional match was found, and determinant continuity is proved explicitly. All six one-line propositions independently elaborate before their implementations. Their supplied proofs compile unchanged, and assembly proves the exact frozen parent using the comparator-accepted orthogonal-coordinate declaration with its identical frozen type. Every checked theorem uses only propext, Classical.choice and Quot.sound. Smoothness orders, bump instances and alternating-map operations typecheck correctly; no matrix-unit contract occurs. Names are distinct bare identifiers with no conflicting DAG or other-node reservations. Dependencies are acyclic, correctly directed, and match the proof references."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coordinate_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type match. Explicit determinant continuity constructs the continuous covector; the deletion permutation gives the required sign, and repeated vectors give zero. The proof covers m = 0 and uses no child or parent theorem."
+    },
+    {
+      "key": "extderiv_smul_const",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiability at x suffices for the stated formula. The proof expands the exterior derivative, differentiates each scalar multiple, and correctly converts integer scalar action to real multiplication. The proposition is standalone and matches the prose."
+    },
+    {
+      "key": "coordinate_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The construction a • β establishes smoothness and the exact support inclusion. The two declared dependencies reduce the exterior-derivative sum to the j-th term, whose signs cancel. All hypotheses and conclusions match, without circular reliance."
+    },
+    {
+      "key": "graph_pullback_extderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The adjoint identities and chain rule establish the projected base point and tangent frame. Commutation of exterior differentiation with affine pullback then proves precisely the stated equality. Only the stated pointwise differentiability and smoothness assumptions are needed."
+    },
+    {
+      "key": "normal_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The radius construction supplies a positive inner radius and an outer radius strictly below h. The bump has the required smoothness, compact support and neighbourhood equality. Empty K and k = 0 are covered; the prose and type agree."
+    },
+    {
+      "key": "graph_cutoff_lift",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are explicit and match the type. Spanning bounds the support by a compact product image inside C, while continuity makes u(tsupport ψ) compact. The two support cases prove the required ambient germ equality. Only normal_cutoff is used, and the conclusion supplies exactly the lift needed by the parent."
+    }
+  ],
+  "required_changes": []
+}

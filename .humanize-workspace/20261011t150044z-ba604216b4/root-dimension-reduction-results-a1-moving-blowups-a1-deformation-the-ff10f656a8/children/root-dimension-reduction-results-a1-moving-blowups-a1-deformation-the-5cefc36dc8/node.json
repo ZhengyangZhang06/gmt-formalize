@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.affine_homotopy-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1",
+  "depth": 6,
+  "title": "Affine homotopies ℝ^{N+1} → ℝ^{N'}: existence and derivative calculus at ι(t, x)",
+  "statement": "With ι(t,x) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)), e₀ = EuclideanSpace.single 0 1 and Jv = ι(0,v): (i) for all N, N' and C^∞ F, G : ℝ^N → ℝ^{N'} there is a C^∞ H : ℝ^{N+1} → ℝ^{N'} with H(ι(t,x)) = F(x) + t•(G(x) − F(x)) for all t ∈ ℝ, x ∈ ℝ^N; (ii) for all N, N', F, G : ℝ^N → ℝ^{N'}, H : ℝ^{N+1} → ℝ^{N'}, t ∈ ℝ, x ∈ ℝ^N, if F and G are differentiable at x, H is differentiable at ι(t,x) and H(ι(s,z)) = F(z) + s•(G(z) − F(z)) for all s, z, then DH(ι(t,x))e₀ = G(x) − F(x), DH(ι(t,x))(Jv) = DF(x)v + t•(DG(x)v − DF(x)v) for all v, and ‖DH(ι(t,x))‖ ≤ ‖G(x) − F(x)‖ + ‖DF(x) + t•(DG(x) − DF(x))‖.",
+  "lean_statement": "(∀ (N N' : ℕ) (F G : Euclid N → Euclid N'), ContDiff ℝ (⊤ : ℕ∞) F → ContDiff ℝ (⊤ : ℕ∞) G → ∃ H : Euclid (N + 1) → Euclid N', ContDiff ℝ (⊤ : ℕ∞) H ∧ ∀ (t : ℝ) (x : Euclid N), H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = F x + t • (G x - F x)) ∧ ∀ (N N' : ℕ) (F G : Euclid N → Euclid N') (H : Euclid (N + 1) → Euclid N') (t : ℝ) (x : Euclid N), DifferentiableAt ℝ F x → DifferentiableAt ℝ G x → DifferentiableAt ℝ H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) → (∀ (s : ℝ) (z : Euclid N), H (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp z))) = F z + s • (G z - F z)) → fderiv ℝ H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (EuclideanSpace.single 0 1) = G x - F x ∧ (∀ v : Euclid N, fderiv ℝ H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = fderiv ℝ F x v + t • (fderiv ℝ G x v - fderiv ℝ F x v)) ∧ ‖fderiv ℝ H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))‖ ≤ ‖G x - F x‖ + ‖fderiv ℝ F x + t • (fderiv ℝ G x - fderiv ℝ F x)‖",
+  "lean_name": "dimred_mbl_dt_lpo_affine_homotopy",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-5cefc36dc8-a1"
+}

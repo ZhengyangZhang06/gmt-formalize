@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.dim_zero-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1",
+  "depth": 4,
+  "title": "A set of finite H⁰-measure is countably 0-rectifiable (parent step 0, case n = 0)",
+  "statement": "Let P ∈ ℕ and M ⊆ ℝ^P (no measurability assumed) with H⁰(M) < ∞, where H⁰ = μHE[0]. Then M is countably 0-rectifiable in the sense of SimonGMT (CountablyRectifiable 0 M): there are an H⁰-null set M₀ and Lipschitz maps F_j : ℝ⁰ → ℝ^P (j ∈ ℕ) with M ⊆ M₀ ∪ ⋃_j F_j(ℝ⁰).",
+  "lean_statement": "∀ (P : ℕ) (M : Set (Euclid P)), μHE[0] M ≠ ∞ → CountablyRectifiable 0 M",
+  "lean_name": "cbrr_rectifiable_dim_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c1df68d5f6-a1"
+}

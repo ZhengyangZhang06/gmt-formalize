@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1.mass_le_measure-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1",
+  "depth": 4,
+  "title": "Mass of a current given by integration against a measure with unit-bounded orientation",
+  "statement": "Let P, d ∈ ℕ, U ⊆ ℝ^P and X ∈ 𝒟_d(U). Let μ be a measure on the Borel sets of ℝ^P, let ξ : ℝ^P → Λ_d(ℝ^P) (MultiVector P d), and let E, V ⊆ ℝ^P be arbitrary sets. Assume that for μ-a.e. x, |⟨α, ξ(x)⟩| ≤ |α| for every d-covector α (|α| = covectorEuclideanNorm α, ⟨α, ξ(x)⟩ = ξ(x)(α)). Assume also that X(ω) = ∫_E ⟨ω(x), ξ(x)⟩ dμ(x) (Bochner integral) for every ω ∈ 𝒟^d(U). Then M_V(X) = X.massOn V ≤ μ(E ∩ V).",
+  "lean_statement": "∀ (P d : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U d) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P d) (E V : Set (Euclid P)), (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) d, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U d, X ω = ∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ) → X.massOn V ≤ μ (E ∩ V)",
+  "lean_name": "cmc_fcl_massOn_le_measure_inter",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-be968f7b5a-a1"
+}

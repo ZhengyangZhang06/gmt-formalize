@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "setIntegral_map|integral_map_equiv",
+        "aestronglyMeasurable_map_iff|theorem AEStronglyMeasurable.smul_measure|aestronglyMeasurable_zero_measure",
+        "comp_homeomorph|isCompact_preimage|Homeomorph.measurableEmbedding|smulOfNeZero",
+        "cbr_ci_dsp_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dilisp-decomp/lean/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dilisp-decomp/lean/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-474ece9e64/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-474ece9e64/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/tmp/dilisp-decomp/lean/Children.lean",
+        "/tmp/dilisp-decomp/lean/Assembly.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, byte-identical contract, handoff, and requested scope digest. All three names are bare, unreserved identifiers; no identical child types occur in the DAG. Each frozen type is a standalone one-line proposition matching its prose and passes lexical validation. Independently reran the child proofs and hypothesis-only assembly after checking their headers against the exact frozen types: all compile using only propext, Classical.choice, and Quot.sound. The assembly establishes the selected parent from these children and its already-declared dilation_calculus dependency. Dependencies are acyclic. The split appropriately separates measure transport, test-form construction, and slice existence. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pushforward_pair",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and all four conclusions match the Lean type. The explicit homeomorphism and inverse identity establish compact-finiteness, a.e. strong measurability, and the simultaneous covector bound. Restriction/scaling identities and MeasurableEmbedding.setIntegral_map prove the stated formula for arbitrary sets and forms without missing regularity assumptions. Scalar instances are correct. The proof is complete, independent, and supplies precisely the transport needed by the parent."
+    },
+    {
+      "key": "testform_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches composition of test forms on univ under a positive dilation. The proof explicitly constructs the composite, proves smoothness, obtains compact support through the dilation homeomorphism, and discharges the support condition. It requires no other child or parent conclusion and supplies the test form needed for boundary transport."
+    },
+    {
+      "key": "cycle_slices",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "SL and the ISP antecedent are copied verbatim from the frozen contracts, and the prose includes all representation and cycle hypotheses. The proof verifies the zero boundary representation, obtains actual restriction currents from SL, proves B(t)=0 by extensionality, and applies the assumed ISP on its full-measure set. Pointwise current subtraction then gives integer multiplicity of the boundary. The existential witness and a.e. quantifiers are correct; using the parent's ISP hypothesis introduces no circularity."
+    }
+  ],
+  "required_changes": []
+}

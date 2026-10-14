@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.symmetric_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1",
+  "depth": 5,
+  "title": "Isodiametric bound for centrally symmetric sets",
+  "statement": "For every d ∈ ℕ and every set K ⊆ ℝ^d = EuclideanSpace ℝ (Fin d) such that −x ∈ K whenever x ∈ K (no measurability or boundedness assumed): L^d(K) ≤ ω_d·(ediam K/2)^d in [0, ∞]. Here L^d = volume, ω_d = unitBallVolume d = L^d(ball(0, 1)), and ediam is the extended diameter.",
+  "lean_statement": "∀ (d : ℕ) (K : Set (Euclid d)), (∀ x ∈ K, -x ∈ K) → volume K ≤ unitBallVolume d * (ediam K / 2) ^ d",
+  "lean_name": "cbr_ci_iso_volume_le_of_neg_mem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e9ba547ead-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5eb62b1aba913a61fb0ee0287b90e6ff66b2c2c0d59de41159a3613f1bb63c1c",
+  "git_delta": {
+    "base_commit": "e440fe7c1bb877ddc201572a535a8e9352c86a53",
+    "candidate_commit": "1a2e418ce4f1457141df43b4c01f4d51603d6a55",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "b6373020c65d4f19455aa5886df490d3ff9b05319f0ce7dc0810889a62ab696a",
+    "source_sha256": "2442ceb6f70ebfdec6551336a7c7c5aace8d00e23ad68a2a0f11e6de2dafd85f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_tc_closure",
+      "statement": "∀ (P m : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), m + 1 < P → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, ((Ts j).massOn W + (Ts j).boundary.massOn W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

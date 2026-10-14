@@ -1,0 +1,106 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n -i 'piola|mollif|weak.?contin|null.?lagrang|minor' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "theorem (ae_differentiableAt|integral_lineDeriv_mul_eq)|norm_fderiv_le_of_lipschitz|measurable_fderiv_apply_const|extDeriv_pullback|extDeriv_apply|induction_dense|exists_contDiff_support_eq_eq_one_iff",
+        "ae_differentiableAt|hasFDerivAt_convolution_left|contDiff_convolution_left|convolutionExists_left|ae_tendsto_average_norm_sub|tendsto_integral_smul_of_tendsto_average_norm_sub|addHaar_real_closedBall",
+        "det_apply|det_succ_row_zero|detRowAlternating|det_transpose",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/jc-independent-audit-df98pd3l/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/jc-independent-audit-df98pd3l/ProofsAndAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Average.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/SimpleFuncDenseLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b372f37aac/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b372f37aac/decomposition-v2.json",
+        "/tmp/jc-independent-audit-df98pd3l/IndependentTypes.lean",
+        "/tmp/jc-independent-audit-df98pd3l/ProofsAndAxioms.lean"
+      ],
+      "conclusion": "The split is appropriate: all eleven obligations contribute to the selected analytic theorem, and their declared dependencies exactly match the supplied proofs and are acyclic. Project and Mathlib revisions match the manifest; the snapshot project search found no relevant existing lemma. The cited analytic and algebraic tools support the proofs. All names are bare identifiers. Six reused declarations have passing comparator receipts, identical frozen types and identical proof bodies; the five fresh names are unused. Every frozen type independently elaborates as Prop in the comparator scope with autoImplicit disabled and without child implementations. The supplied proofs and assembly compile, establishing the exact selected parent type using only propext, Classical.choice and Quot.sound. All matrix expressions use Matrix.of; no problematic IsUnit construction occurs. The assembly handles continuous compactly supported forms, arbitrary L¹ weights and degree zero without additional hypotheses."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "det_covector_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree for arbitrary index maps, including degree zero. Coordinate projection, determinant alternation, transposition and the explicit factorial bound construct the required continuous covector. Accepted-name reuse is valid with the identical frozen type."
+    },
+    {
+      "key": "covector_det_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The basis expansion, permutation reindexing and alternation give exactly the stated factorial-weighted determinant sum. Signs, row/column conventions and empty-index cases are correct. The reused declaration has the identical accepted type."
+    },
+    {
+      "key": "weak_star_l1_upgrade",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All measurability and boundedness hypotheses appear in both statements. Regularity and smooth cutoffs establish L¹ density; integrability and the three-term estimate then prove convergence, including C = 0. No Jacobian-continuity result is assumed. Accepted-type reuse is valid."
+    },
+    {
+      "key": "piola_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the signed directional-derivative identity. The constant determinant form and C² pullback satisfy exterior-derivative naturality; evaluation gives precisely the succAbove minors. Only det_covector_exists is used, with no circular dependence. Accepted-type reuse is valid."
+    },
+    {
+      "key": "mollify_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Continuity and compact support establish integrability. Kernel nonnegativity, normalization and the Lipschitz estimate give the exact same Lipschitz constant after integration. The hypotheses and conclusion match the frozen type, and accepted-name reuse is valid."
+    },
+    {
+      "key": "minor_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Measurability follows entrywise and through the finite determinant expansion. The global fderiv bound yields the stated factorial bound at every point, including nondifferentiability points and r = 0. The prose matches the identical accepted type."
+    },
+    {
+      "key": "mollify_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiation of convolution is justified by the C¹ compactly supported kernel. Reflection, Lipschitz integration by parts and Rademacher give the exact formula with the correct sign. No positivity or normalization assumption is needed. The fresh name and standalone type are valid."
+    },
+    {
+      "key": "lipschitz_smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normalized shrinking bumps provide smoothness, the unchanged Lipschitz constant and global uniform convergence. The explicit kernel bound justifies Lebesgue-point convergence of derivative coordinates; the finite-basis estimate upgrades it to operator-norm convergence almost everywhere. Both declared dependencies are sufficient."
+    },
+    {
+      "key": "smooth_minor_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Laplace expansion and the product rule, followed by Piola cancellation, give the stated sign and minors. C² rows and a compactly supported C¹ weight supply all required regularity and integrability. Compactly supported directional derivatives integrate to zero. The sole dependency is correct."
+    },
+    {
+      "key": "lipschitz_minor_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite family of smooth approximations has simultaneous almost-everywhere derivative convergence. Determinant bounds dominate the left side; eventual uniform closeness supplies the integrable right-side majorant. Passing to limits in smooth_minor_ibp proves exactly the frozen identity using the declared dependencies."
+    },
+    {
+      "key": "minor_weak_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The induction is correctly strengthened over all row families, directions and L¹ weights. The zero-order case, smooth-test reduction, integration by parts, uniform error estimate and lower-order induction close the argument without circularity. Applied to coordinate rows, this supplies the selected parent's required weak continuity."
+    }
+  ],
+  "required_changes": []
+}

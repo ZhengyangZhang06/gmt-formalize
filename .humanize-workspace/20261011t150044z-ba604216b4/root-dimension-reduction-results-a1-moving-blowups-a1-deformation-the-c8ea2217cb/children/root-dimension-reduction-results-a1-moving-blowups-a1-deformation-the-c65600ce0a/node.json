@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1.bilip_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1",
+  "depth": 6,
+  "title": "Two-sided Hausdorff-measure comparison on a bi-Lipschitz piece (supplied (NT))",
+  "statement": "Let P, n ∈ ℕ, L ∈ ℝ≥0 and m ∈ ℝ with m > 0. Let G : ℝⁿ → ℝ^P be L-Lipschitz and let A ⊆ ℝⁿ be any set with m|a − a'| ≤ |G(a) − G(a')| for all a, a' ∈ A. Then for every Z ⊆ A, in [0, ∞]: ofReal(m)ⁿ·λ(Z) ≤ Hⁿ(G(Z)) ≤ Lⁿ·λ(Z), where λ = volume on ℝⁿ and Hⁿ = μHE[n] on ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (G : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L G → 0 < m → (∀ a ∈ A, ∀ a' ∈ A, m * ‖a - a'‖ ≤ ‖G a - G a'‖) → ∀ Z : Set (Euclid n), Z ⊆ A → ENNReal.ofReal m ^ n * volume Z ≤ μHE[n] (G '' Z) ∧ μHE[n] (G '' Z) ≤ (L : ℝ≥0∞) ^ n * volume Z",
+  "lean_name": "dimred_mbl_dt_lpip_bilipschitz_measure_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-c65600ce0a-a1"
+}

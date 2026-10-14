@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1",
+  "depth": 3,
+  "title": "Restriction of a measure-represented current to an arbitrary set is a current (Simon Ch. 6, 2.9)",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, let μ be a measure on ℝ^P with μ(K) < ∞ for every compact K ⊆ U, let ξ : ℝ^P → Λ_n(ℝ^P) (MultiVector P n: continuous linear functionals on n-covectors) be μ-a.e. strongly measurable with |ξ(x)(α)| ≤ |α| for every n-covector α, for μ-a.e. x (|α| = covectorEuclideanNorm α, the Euclidean coefficient norm), and let E ⊆ ℝ^P be any set. Then there is a current S ∈ 𝒟_n(U) (GeometricCurrentOn U n) with S(ω) = ∫_E ξ(x)(ω(x)) dμ(x) (Bochner integral for μ restricted to E) for every ω ∈ 𝒟ⁿ(U).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (E : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → ∃ S : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, S ω = ∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ",
+  "lean_name": "cmcs_restrict_current",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-restrict-current-a1-a1"
+}

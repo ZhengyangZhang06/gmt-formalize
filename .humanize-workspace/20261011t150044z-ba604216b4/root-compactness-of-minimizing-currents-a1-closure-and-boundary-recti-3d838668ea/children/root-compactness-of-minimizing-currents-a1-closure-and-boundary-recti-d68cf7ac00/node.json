@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1.support_sub-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1",
+  "depth": 5,
+  "title": "Support of a difference of currents",
+  "statement": "For all P, n ∈ ℕ, every set U ⊆ ℝ^P and all currents S, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), the difference current S − T of the frozen contract (Sub instance, (S − T)(ω) = S(ω) − T(ω)) satisfies spt(S − T) ⊆ spt S ∪ spt T. Here spt R = U ∖ Z(R) (GeometricCurrentOn.support). The zero region Z(R) is the union of all open sets W with closure(W) compact and closure(W) ⊆ U such that R(ω) = 0 for every test form ω ∈ 𝒟^n(U) with tsupport ω ⊆ W.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n), (S - T).support ⊆ S.support ∪ T.support",
+  "lean_name": "cbrld_ns_support_sub_subset",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d68cf7ac00-a1"
+}

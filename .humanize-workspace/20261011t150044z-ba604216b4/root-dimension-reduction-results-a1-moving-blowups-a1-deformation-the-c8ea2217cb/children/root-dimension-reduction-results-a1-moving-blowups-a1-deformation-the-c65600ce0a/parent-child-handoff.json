@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat SNAPSHOT/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); git rev-parse HEAD in the workspace (b4d606db1da5…) and in SNAPSHOT/mathlib (25730c7c…); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)",
+        "python3 scans of RUN/dag.json: the selected node, its depends_on and their statuses; accepted lean_statements containing IsUnitOrientationOf, Pairwise/bi-Lipschitz pieces, area formulas, IMRep constructors, R.action with HasSum, carrier ⊆ support; lean_name prefix dimred_mbl_dt_lpip (no node)",
+        "python3/cat of twin and parent decompositions: nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9bda5f8762/decomposition-v1.json (cmcdt_lp_integer_multiplicity), nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-3cd71b3c6f/decomposition-v1.json (dor_lmb_fcd_im_pushforward), nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-a2fdfc1c6f/decomposition-v1.json, and the parent-child-handoff.json of the six reused nodes",
+        "rg -c dimred_mbl_dt_lpip SNAPSHOT/project lake-packages-25730c7c/simongmt/Poincare -g '*.lean' (no match)",
+        "grep -n in SNAPSHOT/mathlib and lake-packages-25730c7c/mathlib: exists_partition_approximatesLinearOn_of_hasFDerivWithinAt (MeasureTheory/Function/Jacobian.lean:255), hausdorffMeasure_image_le (MeasureTheory/Measure/Hausdorff.lean:733,745), euclideanHausdorffMeasure_def and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean), tendsto_tsum_of_dominated_convergence (Analysis/Normed/Group/Tannery.lean:45; imported only by NumberTheory/LSeries/Injectivity and Analysis/Normed/Ring/InfiniteProd), LinearMap.exists_antilipschitzWith and isOpen_setOfPred_linearIndependent (Analysis/Normed/Module/FiniteDimension.lean), nullMeasurableSet_eq_fun (MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean:575), LinearMap.normDet API (Analysis/InnerProductSpace/NormDet.lean), grep -i hadamard (no Gram Hadamard inequality)",
+        "grep -n in SimonGMT Chapter03/Rectifiable.lean (CountablyRectifiable, countablyRectifiable_of_measure_zero, CountablyRectifiable.mono, countablyRectifiable_range, HasApproximateTangentSpaceAt, HasApproximateTangentSpaceAt.unique) and Chapter06/Forms.lean, Currents.lean, Mass.lean, CurrentLocalEquality.lean (Covector, DifferentialForm, IsTestForm, TestFormOn, GeometricCurrentOn, GeometricCurrentOn.ext, covectorEuclideanNorm, massAdmissibleOn, massOn, mass, zeroRegion, isOpen_zeroRegion, support)",
+        "lake env lean /tmp/imp_decomp/lean/Avail.lean and Avail2.lean: #check of the cited Mathlib/SimonGMT names after import GMT.Ch07.Submission (all present except tendsto_tsum_of_dominated_convergence, Matrix.gram, LinearMap.normDet and ContinuousAlternatingMap.map_linearDependent; AlternatingMap.map_linearDependent is present)",
+        "lake env lean /tmp/imp_decomp/lean/Types.lean (the 12 child types in the comparator challenge scope: only sorry warnings); python3 -I validate_lean_statement of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py and of verifier/lean_contract.py on all 12; verifier gmt-compare.py contract_scope replay",
+        "lake env lean /tmp/imp_decomp/lean/Skeleton.lean (exact selected type from the exact child and dependency types, sorry only in analytic steps), /tmp/imp_decomp/lean/BilipProof.lean (bilip_measure proved, no sorry), /tmp/imp_decomp/lean/ChainCheck.lean (chain-rule identity and CB/c-bound domination)",
+        "git show <candidate>:GMT/Ch07/Submission.lean | grep ^import for accepted candidates a2ba78fca3, 98617b4294, d5ba41d68f, 15f8046553, c2cf4bd9, 6ae39d3e62 (accepted solutions may add imports such as Poincare.SimonGMT.Chapter02.AreaLipschitz)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Group/Tannery.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-c8ea2217cb/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-a2fdfc1c6f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9bda5f8762/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-3cd71b3c6f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-64a6473a66/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-dad7016689/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-828dc69c10/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-4d6ef43151/parent-child-handoff.json",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/imp_decomp/lean/Types.lean",
+        "/tmp/imp_decomp/lean/Skeleton.lean",
+        "/tmp/imp_decomp/lean/BilipProof.lean",
+        "/tmp/imp_decomp/lean/ChainCheck.lean",
+        "/tmp/imp_decomp/lean/Avail.lean",
+        "/tmp/imp_decomp/lean/Avail2.lean"
+      ],
+      "conclusion": "Pins match: project b4d606db, Mathlib 25730c7c, and the workspace Submission is byte-identical to the snapshot contract. The snapshot, SimonGMT and Mathlib contain no lemma for this node's obligations: Lipschitz push-forward integrality, parametric piece representation, orientation sign along pieces, or the two-sided bi-Lipschitz Hausdorff comparison. Six accepted DAG declarations have exactly the needed types and are reused byte-identically: ptd_piece_image_approxTangent_ae, codim1_lura_gram_area_formula, codim1_lur_cd_injective_area_formula_gram, codim1_lur_normalized_wedge_orientation, rsdic_unitOrientation_eq_or_eq_neg and dtc_bc_lc_sl_sf_imrep_of_subset. The analogous twin children (cmcdt_lpi_*, dor_lmb_fcd_imp_*) are unaccepted, so six fresh names dimred_mbl_dt_lpip_* are used. Every cited Mathlib/SimonGMT lemma exists in the pinned snapshot. All of them are in the frozen import closure except Tannery's tendsto_tsum_of_dominated_convergence, which the parent must import (as accepted solutions already import extra modules) or prove inline. All 12 types elaborate in the comparator scope and pass both validators. A Lean skeleton derives the selected type from the children and the parent's dependencies, and bilip_measure is fully proved."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1",
+  "child_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1.bilip_measure-a1",
+  "subproblem": {
+    "key": "bilip_measure",
+    "title": "Two-sided Hausdorff-measure comparison on a bi-Lipschitz piece (supplied (NT))",
+    "statement": "Let P, n ∈ ℕ, L ∈ ℝ≥0 and m ∈ ℝ with m > 0. Let G : ℝⁿ → ℝ^P be L-Lipschitz and let A ⊆ ℝⁿ be any set with m|a − a'| ≤ |G(a) − G(a')| for all a, a' ∈ A. Then for every Z ⊆ A, in [0, ∞]: ofReal(m)ⁿ·λ(Z) ≤ Hⁿ(G(Z)) ≤ Lⁿ·λ(Z), where λ = volume on ℝⁿ and Hⁿ = μHE[n] on ℝ^P.",
+    "lean_statement": "∀ (P n : ℕ) (G : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L G → 0 < m → (∀ a ∈ A, ∀ a' ∈ A, m * ‖a - a'‖ ≤ ‖G a - G a'‖) → ∀ Z : Set (Euclid n), Z ⊆ A → ENNReal.ofReal m ^ n * volume Z ≤ μHE[n] (G '' Z) ∧ μHE[n] (G '' Z) ≤ (L : ℝ≥0∞) ^ n * volume Z",
+    "lean_name": "dimred_mbl_dt_lpip_bilipschitz_measure_bounds",
+    "depends_on": [],
+    "natural_proof": "Source: the null-set transfer paragraph (NT) of the supplied proof ('the inverse K(E) → E is κ⁻¹-Lipschitz; Mathlib LipschitzOnWith.hausdorffMeasure_image_le … and Hⁿ(K(Z)) ≤ Lip(K)ⁿLⁿ(Z)'), stated for one bi-Lipschitz piece; it is the quantitative form used by the siblings piece_sign, piece_rep and image_current. Notation: λ := volume on ℝⁿ; Hⁿ := μHE[n]; μH[d] is Mathlib's Hausdorff measure.\n1. (Normalization.) By Measure.euclideanHausdorffMeasure_def, on every metric space X, μHE[n] = c_n • μH[n] with the single constant c_n := addHaarScalarFactor (volume on EuclideanSpace ℝ (Fin n)) μH[n], which does not depend on X; so (μHE[n]) s = c_n·μH[n](s) for every s (Measure.smul_apply, ENNReal.smul_def). On ℝⁿ, μHE[n] = λ (EuclideanSpace.euclideanHausdorffMeasure_eq_volume). If f is K-Lipschitz on a set s (K ∈ ℝ≥0), then μH[n](f(s)) ≤ K^(n:ℝ)·μH[n](s) (LipschitzOnWith.hausdorffMeasure_image_le with d := n ≥ 0) and K^(n:ℝ) = Kⁿ (ENNReal.rpow_natCast); multiplying by c_n gives μHE[n](f(s)) ≤ Kⁿ·μHE[n](s).\n2. (Upper bound.) G is L-Lipschitz on ℝⁿ (LipschitzWith.hausdorffMeasure_image_le), so for every Z ⊆ ℝⁿ: Hⁿ(G(Z)) ≤ Lⁿ·μHE[n](Z) = Lⁿ·λ(Z).\n3. (Injectivity on A.) If a, a' ∈ A and G(a) = G(a'), then m|a − a'| ≤ 0 with m > 0, hence a = a'. Let g := Function.invFunOn G A (ℝⁿ is nonempty). Then g(G(a)) = a for all a ∈ A (InjOn.leftInvOn_invFunOn).\n4. (The inverse is Lipschitz.) g is m⁻¹-Lipschitz on G(A) (constant Real.toNNReal m⁻¹): for y = G(a), y' = G(a') with a, a' ∈ A, |g(y) − g(y')| = |a − a'| ≤ m⁻¹|G(a) − G(a')| = m⁻¹|y − y'| (LipschitzOnWith.of_dist_le_mul).\n5. (Lower bound.) Let Z ⊆ A. By step 3, g(G(Z)) = Z. Step 1 for g on G(Z) ⊆ G(A) gives λ(Z) = μHE[n](Z) = μHE[n](g(G(Z))) ≤ (m⁻¹)ⁿ·Hⁿ(G(Z)). Multiply by ofReal(m)ⁿ and use ofReal(m)·ofReal(m⁻¹) = ofReal(m·m⁻¹) = 1 (ENNReal.ofReal_mul, m > 0): ofReal(m)ⁿ·λ(Z) ≤ Hⁿ(G(Z)). Steps 2 and 5 are the two inequalities. ∎\n(A Lean proof of exactly this frozen type along steps 1–5 was compiled against the frozen contract during this decomposition.)",
+    "proof_key_steps": [
+      "μHE[n] = c_n·μH[n] with a dimension-only constant, and μHE[n] = volume on ℝⁿ; Lipschitz maps scale μH[n] by at most Kⁿ.",
+      "Upper bound: G is L-Lipschitz, so Hⁿ(G(Z)) ≤ Lⁿλ(Z).",
+      "G is injective on A; g := invFunOn G A is m⁻¹-Lipschitz on G(A) and g(G(Z)) = Z for Z ⊆ A.",
+      "Lower bound: λ(Z) ≤ m⁻ⁿHⁿ(G(Z)); multiply by mⁿ."
+    ]
+  },
+  "audit": {
+    "key": "bilip_measure",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The prose and type agree for arbitrary subsets and all dimensions. The common Hausdorff normalization, Lipschitz upper bound and inverse-on-image lower bound prove both inequalities. Positivity of m justifies cancellation; the exact supplied implementation independently compiles."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-c65600ce0a/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-c65600ce0a/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-c65600ce0a/parent-supplied-natural-proof.json"
+}

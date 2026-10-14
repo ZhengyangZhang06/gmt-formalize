@@ -1,0 +1,119 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'dimred_mbl_fnd_|cmc_imRep_locality_restrict_sub|cmr_abs_apply_le_massOn|cmr_covector_euclidean_equiv|dor_ims_sua_mollify_unit_field|rsd_mw_exists_testForm_approx' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "def rieszMeasure|integral_rieszMeasure|IsFiniteMeasureOnCompacts|variable",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero|variable",
+        "covectorEuclideanNorm|massAdmissibleOn|def massOn|le_massOn",
+        "exteriorDerivative_apply|def exteriorDerivative|def Covector|IsTestForm|TestFormOnConverges",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/foundations-independent-audit/TypesAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/foundations-independent-audit/LibraryChecks.lean",
+        "#print axioms GMT.Ch07.Submission.cmc_imRep_locality_restrict_sub",
+        "#print axioms GMT.Ch07.Submission.cmr_abs_apply_le_massOn",
+        "#print axioms GMT.Ch07.Submission.cmr_covector_euclidean_equiv",
+        "#print axioms GMT.Ch07.Submission.dor_ims_sua_mollify_unit_field",
+        "#print axioms GMT.Ch07.Submission.rsd_mw_exists_testForm_approx",
+        "#print axioms independent_foundations_assembly"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1/decomposition-v1.json",
+        "/tmp/foundations-independent-audit/TypesAssembly.lean",
+        "/tmp/foundations-independent-audit/LibraryChecks.lean",
+        "/tmp/foundations-independent-audit/imc-source.lean",
+        "/tmp/foundations-independent-audit/eval_mass_bound-source.lean",
+        "/tmp/foundations-independent-audit/covector_euclidean_equiv-source.lean",
+        "/tmp/foundations-independent-audit/mollify_unit_field-source.lean",
+        "/tmp/foundations-independent-audit/testform_l1_approx-source.lean"
+      ],
+      "conclusion": "Confirmed project b4d606db and mathlib 25730c7c; snapshot Contract.lean and Submission.lean match the workspace. The declaration-name search returned no matches in the snapshot project. All twelve frozen statements are standalone, single-line propositions matching their prose and elaborate in the comparator scope. Matrix.of determinants, derivative traces, and smoothness orders have the intended types. All names are bare identifiers; seven fresh names are unreserved. The five reused declarations have identical frozen types and accepted dependency closures excluding the selected node and its ancestors. Recompiling their accepted sources and printing each target's axioms returned only propext, Classical.choice, and Quot.sound. Dependencies are acyclic, correctly directed, and every child contributes. The conditional assembly compiles to the exact handoff contract with only those permitted axioms. The split is appropriate."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "imc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted IMC reuse. Density-zero excess establishes tangent locality; restriction and signed-overlap constructions verify the IMRep fields and current actions. Cauchy–Binet supplies the orientation bound. The internal proof dependencies are non-circular."
+    },
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof applies to arbitrary U and W as stated. It derives r ≥ 0, uses both admissible signs, converts finite mass to its real value, and takes ε to zero. The reused frozen type is identical."
+    },
+    {
+      "key": "covector_euclidean_equiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Multilinear expansion and sorting independently prove coefficient-map injectivity. An orthonormal basis of its range gives the norm identity, and finite dimensionality supplies continuity of the equivalence. Degenerate degrees are covered."
+    },
+    {
+      "key": "mollify_unit_field",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The normalized positive bump, support margin, and convolution argument establish smoothness, compact support, the unit coefficient bound, and uniform approximation. The proof uses precisely the stated continuity and support hypotheses."
+    },
+    {
+      "key": "testform_l1_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite-measure regularity gives the compact core; continuous approximation, radial retraction, smoothing, rescaling, and cutoff give the required unit test form. The displayed error estimates establish the strict lintegral bound."
+    },
+    {
+      "key": "coordinate_covectors",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The determinant construction supplies continuous alternating covectors for every I. The Kronecker identity and the declared norm-equivalence dependency prove their spanning property and hence annihilator triviality, including n = 0 and n > P."
+    },
+    {
+      "key": "testform_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Zero extension and the declared mollification lemma provide approximating forms. The evaluation bound proves convergence and independence of choices; sums, scalar multiples, and constant sequences establish linearity, agreement with T, and the exact compact-support boundedness condition."
+    },
+    {
+      "key": "vector_riesz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The scalar variation construction proves positivity and additivity explicitly. Scalar RMK and Radon–Nikodym densities against a finite sum of measures yield the measurable, compact-locally-integrable vector field and the stated integral representation. No vector-Riesz conclusion is assumed."
+    },
+    {
+      "key": "representation_core",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Polar normalization and pushforward establish the measure and field properties. The unit dual field, L¹ approximation, and exhaustion prove both mass inequalities for every open W. The declared dependencies suffice, without assuming the parent representation theorem."
+    },
+    {
+      "key": "top_dim_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The rank-one trace identity and fundamental theorem of calculus give the directional estimate. Ball averaging and shrinking smooth cutoffs then force the integral over each compact null preimage to vanish. Integrable h supplies the domination needed for Fubini and limits; no compact-support assumption on its pushforward is needed."
+    },
+    {
+      "key": "divergence_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Contraction with the lifted field gives η. The alternating determinant trace identity cancels the derivatives of g in ζ, leaving bounds depending only on b and θ. Smoothness and both support inclusions follow as stated, even without compact support of g."
+    },
+    {
+      "key": "null_sets",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof derives the needed local mass finiteness from the representation hypotheses. Projection, the divergence bound, top_dim_null, and valid local integral uniqueness force ξ to vanish almost everywhere on compact null sets. Finite-mass cancellation and compact exhaustion extend this to arbitrary Hausdorff-null sets; degree zero is handled separately."
+    }
+  ],
+  "required_changes": []
+}

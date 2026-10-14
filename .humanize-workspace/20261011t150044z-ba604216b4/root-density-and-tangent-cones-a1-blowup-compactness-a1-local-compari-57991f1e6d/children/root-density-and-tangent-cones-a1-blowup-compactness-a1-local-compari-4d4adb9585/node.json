@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.deformation-a1.bv_median-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.deformation-a1",
+  "depth": 6,
+  "title": "Integer median with Poincaré and boundary estimates for integer-valued functions on the unit cube (the BV facts of Simon 6.5.1, (26)–(33))",
+  "statement": "Let m ∈ ℕ, n := m + 1, Q₁ := {y ∈ ℝⁿ : 0 < y_i < 1 for all i} (Euclid n, Lebesgue measure), and div G := trace of the derivative (LinearMap.trace of fderiv). There is c > 0, depending only on m, such that: if u : ℝⁿ → ℝ is integer-valued (u(y) ∈ ℤ for every y), integrable on Q₁, and V ∈ ℝ satisfies ∫_{Q₁} u · div g ≤ V for every C^∞ map g : ℝⁿ → ℝⁿ with compact support, tsupport g ⊆ Q₁ and |g(y)| ≤ 1 for all y, then there is β ∈ ℤ with (1) ∫_{Q₁}|u − β| ≤ cV, (2) |β| ≤ 2∫_{Q₁}|u|, and (3) |∫_{Q₁}(u − β) · div G| ≤ cV for every C^∞ map G : ℝⁿ → ℝⁿ with |G(y)| ≤ 1 for all y.",
+  "lean_statement": "∀ m : ℕ, ∃ c : ℝ, 0 < c ∧ ∀ (u : Euclid (m + 1) → ℝ) (V : ℝ), (∀ y, ∃ z : ℤ, u y = z) → IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → ∃ β : ℤ, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - β| ≤ c * V ∧ |(β : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y| ∧ ∀ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) G → (∀ y, ‖G y‖ ≤ 1) → |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, (u y - β) * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤ c * V",
+  "lean_name": "dtc_bc_lc_fd_dfm_cube_bv_median",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-4d4adb9585-a1"
+}

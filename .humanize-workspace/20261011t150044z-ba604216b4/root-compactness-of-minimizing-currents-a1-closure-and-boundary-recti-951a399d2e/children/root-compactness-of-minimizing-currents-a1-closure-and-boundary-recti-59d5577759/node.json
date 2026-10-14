@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.interior_form-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1",
+  "depth": 5,
+  "title": "The d-form f·ι_z(dy) on ℝ^{d+1} has exterior derivative (∂_z f)·dy",
+  "statement": "Let d ∈ ℕ and z ∈ ℝ^{d+1} = Euclid (d+1). There is a d-covector ε on ℝ^{d+1} with |ε| ≤ ‖z‖ (|·| = covectorEuclideanNorm) such that for every f : ℝ^{d+1} → ℝ and every y at which f is differentiable, the exterior derivative of the d-form x ↦ f(x)·ε satisfies d(f·ε)(y)(e_0, …, e_d) = Df(y)(z), where e_i = EuclideanSpace.single i 1.",
+  "lean_statement": "∀ (d : ℕ) (z : Euclid (d + 1)), ∃ ε : Covector (Euclid (d + 1)) d, covectorEuclideanNorm ε ≤ ‖z‖ ∧ ∀ (f : Euclid (d + 1) → ℝ) (y : Euclid (d + 1)), DifferentiableAt ℝ f y → exteriorDerivative (fun x => f x • ε) y (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ f y z",
+  "lean_name": "cbr_ci_pw_interior_product_form",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-59d5577759-a1"
+}

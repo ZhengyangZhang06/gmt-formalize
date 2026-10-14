@@ -1,0 +1,381 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.fderiv_bound-a1",
+      "key": "fderiv_bound",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-ebb928a3a8-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-ebb928a3a8",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); cmp project/GMT/Ch07/Contract.lean vs workspace GMT/Ch07/Contract.lean (identical)",
+              "python3 -I over dag.json (509 nodes): lean_statements containing 'orient x' together with ≤/‖/Integrable; '‖R.orient'/IsUnitOrientationOf bounds; 'TestFormOnConverges'; '‖fderiv ℝ _ x‖ ≤'; duplicate lean_names (none)",
+              "python3 -I: list all nodes under root.minimizing_implies_stationary-a1.diffeo_pushforward-a1 with lean_name/status (11 siblings, no dpf_pfc_* names)",
+              "grep -l '<each of the 4 proposed names>' dag.json nodes/*/decomposition-v*.json nodes/*/parent-child-handoff.json; grep -rl dpf_pfc .humanize (no matches)",
+              "rg -n 'TestFormOnConverges|compContinuousLinearMap|IsUnitOrientationOf|locallyIntegrable_mult' project/GMT --glob '*.lean'",
+              "rg -n 'dpf_pfc|pairing_integrable|orient_abs|fderiv_norm_le_of_eq_id' project/GMT mathlib/Mathlib --glob '*.lean' (no match)",
+              "grep -rn mathlib/Mathlib: compContinuousLinearMapCLM, continuous_compContinuousLinearMapCLM, norm_compContinuousLinearMap_le, le_opNorm, hasStrictFDerivAt_compContinuousLinearMap, Continuous.comp_aestronglyMeasurable₂, def AEStronglyMeasurable, measurable_from_nat, integrable_indicator_iff, integral_indicator, integral_eq_lintegral_of_nonneg_ae, norm_integral_le_of_norm_le, Integrable.mono'",
+              "grep -rn TestFormOnConverges simongmt/Poincare/SimonGMT (definitions in Chapter06/Currents.lean; TestFormOnConverges.tendsto_eval in Chapter06/GeometricPointProduct.lean)",
+              "sed -n book/chapter-06.txt lines 168-215 (6.1 test-form topology, 6.2.1-2.2), 395-445 (6.2.23-2.24), 725-760 (6.3.1)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Types.lean (4 child types + parent elaborate in replayed contract scope)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Assembly.lean (#print axioms assembly_conditional)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Children.lean (#print axioms childA/childD/childE/childB)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Final.lean (children as Submission.X in namespace GMT.Ch07, parent proved from them, comparator-style exact Submission.X checks, #print axioms NodeTarget0-4)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/GeometricPointProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/tmp/pfc-decomp-7f3a/Types.lean",
+              "/tmp/pfc-decomp-7f3a/Assembly.lean",
+              "/tmp/pfc-decomp-7f3a/Children.lean",
+              "/tmp/pfc-decomp-7f3a/Final.lean"
+            ],
+            "conclusion": "No declaration in the snapshot (project b4d606d, Mathlib 25730c7c) or in SimonGMT proves the selected statement or any proposed child, so the four children are new. None of the four names appears in dag.json (509 nodes), in any stored decomposition or handoff, anywhere under .humanize, in the project, in SimonGMT or in Mathlib.\n\nRelated nodes in other branches have different types and are not reused:\n- unit_orientation_norm_le_one and rsd_mw_wlm_orient_opNorm_le_one: IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1;\n- regcomp_rim_action_integrable;\n- lcn_mult_mul_orient_apply_integrableOn.\nSimonGMT's TestFormOnConverges.tendsto_eval gives only pointwise convergence, not the uniform bound uniform_small provides.\n\nPinned Mathlib supplies every library fact the children use: ContDiff.continuous_fderiv, IsCompact.exists_bound_of_continuousOn, Filter.EventuallyEq.fderiv_eq, ContinuousLinearMap.norm_id_le, ContinuousAlternatingMap.le_opNorm, norm_compContinuousLinearMap_le, continuous_compContinuousLinearMapCLM, compContinuousLinearMapCLM_apply, Continuous.clm_apply, Continuous.comp_aestronglyMeasurable₂, measurable_from_nat, integrable_indicator_iff, Integrable.mono', integral_indicator, integral_eq_lintegral_of_nonneg_ae, norm_integral_le_of_norm_le, norm_iteratedFDeriv_zero and Metric.tendstoUniformlyOn_iff.\n\nLean checks:\n- All four frozen child types and the parent type elaborate in the comparator's replayed contract scope.\n- Complete proofs of the four children, and of the parent from Submission.dpf_pfc_*, compile in the Submission layout.\n- Comparator-style `exact Submission.X` checks for all five declarations depend only on propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1",
+        "child_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.fderiv_bound-a1",
+        "subproblem": {
+          "key": "fderiv_bound",
+          "title": "Uniform bound on Dφ for a C¹ map equal to the identity off a compact set",
+          "statement": "Let P ∈ ℕ, K ⊆ ℝ^P compact, and φ : ℝ^P → ℝ^P a C¹ map with φ(x) = x for every x ∉ K. Then there is Λ ∈ ℝ with Λ ≥ 0 and ‖Dφ(x)‖ ≤ Λ for every x ∈ ℝ^P, where Dφ(x) = fderiv ℝ φ x ∈ L(ℝ^P, ℝ^P) and ‖·‖ is the operator norm.",
+          "lean_statement": "∀ (P : ℕ) (K : Set (Euclid P)) (φ : Euclid P → Euclid P), IsCompact K → ContDiff ℝ 1 φ → (∀ x, x ∉ K → φ x = x) → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ x, ‖fderiv ℝ φ x‖ ≤ Λ",
+          "lean_name": "dpf_pfc_fderiv_norm_le_of_eq_id_off_compact",
+          "depends_on": [],
+          "natural_proof": "Source: step 1 of the parent proof. Simon 6.2.24(2)–(3) (chapter-06.txt lines 414–440) makes sense of f_#T for f \"merely C¹ with f|spt T proper\". The printed text omits this derivative estimate, so it is supplied here. Notation: E := ℝ^P (Euclid P); Dφ(x) := fderiv ℝ φ x ∈ E →L[ℝ] E; ‖·‖ is the operator norm.\n1. Continuity of Dφ. φ is C¹, so x ↦ Dφ(x) is continuous (ContDiff.continuous_fderiv, using 1 ≠ 0).\n2. Bound on K. K is compact and Dφ is continuous on K. So there is c ∈ ℝ with ‖Dφ(x)‖ ≤ c for all x ∈ K (IsCompact.exists_bound_of_continuousOn).\n3. Choice of Λ. Put Λ := max(1, c). Then 0 ≤ 1 ≤ Λ and c ≤ Λ.\n4. Points of K. If x ∈ K, then ‖Dφ(x)‖ ≤ c ≤ Λ by steps 2–3.\n5. Points off K. Let x ∉ K.\n   - A compact subset of the Hausdorff space E is closed (IsCompact.isClosed), so E ∖ K is open and is a neighbourhood of x.\n   - By hypothesis φ(y) = y for every y ∈ E ∖ K, so φ agrees with id on a neighbourhood of x (φ =ᶠ[𝓝 x] id).\n   - The derivative at x depends only on the germ at x (Filter.EventuallyEq.fderiv_eq). Hence Dφ(x) = D(id)(x) = id_E (fderiv_id).\n   - Therefore ‖Dφ(x)‖ = ‖id_E‖ ≤ 1 ≤ Λ (ContinuousLinearMap.norm_id_le, step 3).\n6. Conclusion. By steps 4–5, ‖Dφ(x)‖ ≤ Λ for every x ∈ E, and Λ ≥ 0 by step 3. So Λ is the required constant.",
+          "proof_key_steps": [
+            "Dφ is continuous because φ is C¹.",
+            "Compactness of K gives c with ‖Dφ(x)‖ ≤ c on K.",
+            "K is closed, so φ = id near any x ∉ K; hence Dφ(x) = id and ‖Dφ(x)‖ ≤ 1.",
+            "Λ := max(1, c) ≥ 0 bounds ‖Dφ(x)‖ for every x."
+          ]
+        },
+        "audit": {
+          "key": "fderiv_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The one-line proposition exactly matches the prose and includes every hypothesis. Continuity bounds the derivative on K; closedness makes φ locally identical to id outside K, giving derivative norm at most 1. Taking max(1,c) proves the stated global nonnegative bound, including P = 0. No circular reliance."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-ebb928a3a8/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-ebb928a3a8/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-ebb928a3a8/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.orient_bound-a1",
+      "key": "orient_bound",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); cmp project/GMT/Ch07/Contract.lean vs workspace GMT/Ch07/Contract.lean (identical)",
+              "python3 -I over dag.json (509 nodes): lean_statements containing 'orient x' together with ≤/‖/Integrable; '‖R.orient'/IsUnitOrientationOf bounds; 'TestFormOnConverges'; '‖fderiv ℝ _ x‖ ≤'; duplicate lean_names (none)",
+              "python3 -I: list all nodes under root.minimizing_implies_stationary-a1.diffeo_pushforward-a1 with lean_name/status (11 siblings, no dpf_pfc_* names)",
+              "grep -l '<each of the 4 proposed names>' dag.json nodes/*/decomposition-v*.json nodes/*/parent-child-handoff.json; grep -rl dpf_pfc .humanize (no matches)",
+              "rg -n 'TestFormOnConverges|compContinuousLinearMap|IsUnitOrientationOf|locallyIntegrable_mult' project/GMT --glob '*.lean'",
+              "rg -n 'dpf_pfc|pairing_integrable|orient_abs|fderiv_norm_le_of_eq_id' project/GMT mathlib/Mathlib --glob '*.lean' (no match)",
+              "grep -rn mathlib/Mathlib: compContinuousLinearMapCLM, continuous_compContinuousLinearMapCLM, norm_compContinuousLinearMap_le, le_opNorm, hasStrictFDerivAt_compContinuousLinearMap, Continuous.comp_aestronglyMeasurable₂, def AEStronglyMeasurable, measurable_from_nat, integrable_indicator_iff, integral_indicator, integral_eq_lintegral_of_nonneg_ae, norm_integral_le_of_norm_le, Integrable.mono'",
+              "grep -rn TestFormOnConverges simongmt/Poincare/SimonGMT (definitions in Chapter06/Currents.lean; TestFormOnConverges.tendsto_eval in Chapter06/GeometricPointProduct.lean)",
+              "sed -n book/chapter-06.txt lines 168-215 (6.1 test-form topology, 6.2.1-2.2), 395-445 (6.2.23-2.24), 725-760 (6.3.1)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Types.lean (4 child types + parent elaborate in replayed contract scope)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Assembly.lean (#print axioms assembly_conditional)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Children.lean (#print axioms childA/childD/childE/childB)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Final.lean (children as Submission.X in namespace GMT.Ch07, parent proved from them, comparator-style exact Submission.X checks, #print axioms NodeTarget0-4)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/GeometricPointProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/tmp/pfc-decomp-7f3a/Types.lean",
+              "/tmp/pfc-decomp-7f3a/Assembly.lean",
+              "/tmp/pfc-decomp-7f3a/Children.lean",
+              "/tmp/pfc-decomp-7f3a/Final.lean"
+            ],
+            "conclusion": "No declaration in the snapshot (project b4d606d, Mathlib 25730c7c) or in SimonGMT proves the selected statement or any proposed child, so the four children are new. None of the four names appears in dag.json (509 nodes), in any stored decomposition or handoff, anywhere under .humanize, in the project, in SimonGMT or in Mathlib.\n\nRelated nodes in other branches have different types and are not reused:\n- unit_orientation_norm_le_one and rsd_mw_wlm_orient_opNorm_le_one: IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1;\n- regcomp_rim_action_integrable;\n- lcn_mult_mul_orient_apply_integrableOn.\nSimonGMT's TestFormOnConverges.tendsto_eval gives only pointwise convergence, not the uniform bound uniform_small provides.\n\nPinned Mathlib supplies every library fact the children use: ContDiff.continuous_fderiv, IsCompact.exists_bound_of_continuousOn, Filter.EventuallyEq.fderiv_eq, ContinuousLinearMap.norm_id_le, ContinuousAlternatingMap.le_opNorm, norm_compContinuousLinearMap_le, continuous_compContinuousLinearMapCLM, compContinuousLinearMapCLM_apply, Continuous.clm_apply, Continuous.comp_aestronglyMeasurable₂, measurable_from_nat, integrable_indicator_iff, Integrable.mono', integral_indicator, integral_eq_lintegral_of_nonneg_ae, norm_integral_le_of_norm_le, norm_iteratedFDeriv_zero and Metric.tendstoUniformlyOn_iff.\n\nLean checks:\n- All four frozen child types and the parent type elaborate in the comparator's replayed contract scope.\n- Complete proofs of the four children, and of the parent from Submission.dpf_pfc_*, compile in the Submission layout.\n- Comparator-style `exact Submission.X` checks for all five declarations depend only on propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1",
+        "child_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.orient_bound-a1",
+        "subproblem": {
+          "key": "orient_bound",
+          "title": "IMRep orientations are a.e. unit: |ξ(x)(β)| ≤ ‖β‖",
+          "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P and R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n). Then for Hⁿ⌞M-almost every x (i.e. μHE[n].restrict R.carrier-a.e.), every n-covector β ∈ Covector(ℝ^P, n) satisfies |ξ(x)(β)| ≤ ‖β‖, where ‖β‖ is the operator norm of β as a continuous alternating map.",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ β : Covector (Euclid P) n, |R.orient x β| ≤ ‖β‖",
+          "lean_name": "dpf_pfc_imrep_orient_abs_apply_le",
+          "depends_on": [],
+          "natural_proof": "Source: step 2 of the parent proof; Simon 6.3.1 (chapter-06.txt lines 735–746). There, for Hⁿ-a.e. x ∈ M, ξ(x) = τ₁ ∧ ⋯ ∧ τ_n for an orthonormal basis τ₁, …, τ_n of the approximate tangent space. The contract encodes this as IsUnitOrientationOf: ⟨α, ξ⟩ = ±α(τ₁, …, τ_n). Notation: μ := μHE[n].restrict R.carrier and ξ := R.orient. For an n-covector β (a continuous alternating map (ℝ^P)^n → ℝ), ‖β‖ is its operator norm.\n1. Reduction to a pointwise claim. By the field R.orients, for μ-a.e. x there is a subspace Q of ℝ^P with HasApproximateTangentSpaceAt n R.carrier x Q and IsUnitOrientationOf (ξ x) Q. The a.e. filter is upward closed (filter_upwards). So it suffices to prove: if IsUnitOrientationOf (ξ x) Q holds for some Q, then |ξ(x)(β)| ≤ ‖β‖ for every n-covector β.\n2. Unfolding the orientation. IsUnitOrientationOf (ξ x) Q provides an orthonormal τ : Fin n → ℝ^P (its span is Q, which is not needed) such that either\n   (a) ξ(x)(α) = α(τ) for all n-covectors α, or\n   (b) ξ(x)(α) = −α(τ) for all n-covectors α.\n3. Operator-norm bound at τ. Let β be an n-covector.\n   - The operator-norm inequality for continuous alternating maps (ContinuousAlternatingMap.le_opNorm) gives ‖β(τ)‖ ≤ ‖β‖ · ∏_{i<n} ‖τ_i‖.\n   - Orthonormality gives ‖τ_i‖ = 1 for every i, so the product is 1. For n = 0 it is the empty product, also 1.\n   - Since β(τ) is real, ‖β(τ)‖ = |β(τ)|. Hence |β(τ)| ≤ ‖β‖.\n4. Both signs. In case (a), |ξ(x)(β)| = |β(τ)| ≤ ‖β‖. In case (b), |ξ(x)(β)| = |−β(τ)| = |β(τ)| ≤ ‖β‖ (abs_neg).\n5. Conclusion. For μ-a.e. x, every n-covector β satisfies |R.orient x β| ≤ ‖β‖, which is the claim.",
+          "proof_key_steps": [
+            "R.orients gives, μ-a.e., ξ(x) = ±(evaluation at an orthonormal τ).",
+            "|β(τ)| ≤ ‖β‖ ∏‖τ_i‖ = ‖β‖ by le_opNorm and ‖τ_i‖ = 1.",
+            "Both signs give |ξ(x)(β)| ≤ ‖β‖; conclude by filter_upwards."
+          ]
+        },
+        "audit": {
+          "key": "orient_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "R.orients supplies a single almost-everywhere set on which the orientation formula holds for every covector. The alternating-map operator-norm inequality and orthonormality give the bound for either sign, including the empty product when n = 0. The prose, measure restriction and quantifier order exactly match the independent Lean proposition."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.uniform_small-a1",
+      "key": "uniform_small",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); cmp project/GMT/Ch07/Contract.lean vs workspace GMT/Ch07/Contract.lean (identical)",
+              "python3 -I over dag.json (509 nodes): lean_statements containing 'orient x' together with ≤/‖/Integrable; '‖R.orient'/IsUnitOrientationOf bounds; 'TestFormOnConverges'; '‖fderiv ℝ _ x‖ ≤'; duplicate lean_names (none)",
+              "python3 -I: list all nodes under root.minimizing_implies_stationary-a1.diffeo_pushforward-a1 with lean_name/status (11 siblings, no dpf_pfc_* names)",
+              "grep -l '<each of the 4 proposed names>' dag.json nodes/*/decomposition-v*.json nodes/*/parent-child-handoff.json; grep -rl dpf_pfc .humanize (no matches)",
+              "rg -n 'TestFormOnConverges|compContinuousLinearMap|IsUnitOrientationOf|locallyIntegrable_mult' project/GMT --glob '*.lean'",
+              "rg -n 'dpf_pfc|pairing_integrable|orient_abs|fderiv_norm_le_of_eq_id' project/GMT mathlib/Mathlib --glob '*.lean' (no match)",
+              "grep -rn mathlib/Mathlib: compContinuousLinearMapCLM, continuous_compContinuousLinearMapCLM, norm_compContinuousLinearMap_le, le_opNorm, hasStrictFDerivAt_compContinuousLinearMap, Continuous.comp_aestronglyMeasurable₂, def AEStronglyMeasurable, measurable_from_nat, integrable_indicator_iff, integral_indicator, integral_eq_lintegral_of_nonneg_ae, norm_integral_le_of_norm_le, Integrable.mono'",
+              "grep -rn TestFormOnConverges simongmt/Poincare/SimonGMT (definitions in Chapter06/Currents.lean; TestFormOnConverges.tendsto_eval in Chapter06/GeometricPointProduct.lean)",
+              "sed -n book/chapter-06.txt lines 168-215 (6.1 test-form topology, 6.2.1-2.2), 395-445 (6.2.23-2.24), 725-760 (6.3.1)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Types.lean (4 child types + parent elaborate in replayed contract scope)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Assembly.lean (#print axioms assembly_conditional)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Children.lean (#print axioms childA/childD/childE/childB)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Final.lean (children as Submission.X in namespace GMT.Ch07, parent proved from them, comparator-style exact Submission.X checks, #print axioms NodeTarget0-4)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/GeometricPointProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/tmp/pfc-decomp-7f3a/Types.lean",
+              "/tmp/pfc-decomp-7f3a/Assembly.lean",
+              "/tmp/pfc-decomp-7f3a/Children.lean",
+              "/tmp/pfc-decomp-7f3a/Final.lean"
+            ],
+            "conclusion": "No declaration in the snapshot (project b4d606d, Mathlib 25730c7c) or in SimonGMT proves the selected statement or any proposed child, so the four children are new. None of the four names appears in dag.json (509 nodes), in any stored decomposition or handoff, anywhere under .humanize, in the project, in SimonGMT or in Mathlib.\n\nRelated nodes in other branches have different types and are not reused:\n- unit_orientation_norm_le_one and rsd_mw_wlm_orient_opNorm_le_one: IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1;\n- regcomp_rim_action_integrable;\n- lcn_mult_mul_orient_apply_integrableOn.\nSimonGMT's TestFormOnConverges.tendsto_eval gives only pointwise convergence, not the uniform bound uniform_small provides.\n\nPinned Mathlib supplies every library fact the children use: ContDiff.continuous_fderiv, IsCompact.exists_bound_of_continuousOn, Filter.EventuallyEq.fderiv_eq, ContinuousLinearMap.norm_id_le, ContinuousAlternatingMap.le_opNorm, norm_compContinuousLinearMap_le, continuous_compContinuousLinearMapCLM, compContinuousLinearMapCLM_apply, Continuous.clm_apply, Continuous.comp_aestronglyMeasurable₂, measurable_from_nat, integrable_indicator_iff, Integrable.mono', integral_indicator, integral_eq_lintegral_of_nonneg_ae, norm_integral_le_of_norm_le, norm_iteratedFDeriv_zero and Metric.tendstoUniformlyOn_iff.\n\nLean checks:\n- All four frozen child types and the parent type elaborate in the comparator's replayed contract scope.\n- Complete proofs of the four children, and of the parent from Submission.dpf_pfc_*, compile in the Submission layout.\n- Comparator-style `exact Submission.X` checks for all five declarations depend only on propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1",
+        "child_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.uniform_small-a1",
+        "subproblem": {
+          "key": "uniform_small",
+          "title": "Test-form convergence to 0 gives uniform smallness with a common compact support",
+          "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P and (ω_j)_{j∈ℕ} a sequence in 𝒟ⁿ(U) (TestFormOn U n) with TestFormOnConverges ω_j 0. Then there is a compact C ⊆ U such that ω_j(x) = 0 for every j and every x ∉ C. Moreover, for every ε > 0, for all sufficiently large j, ‖ω_j(x)‖ ≤ ε for every x ∈ ℝ^P.",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (ωs : ℕ → TestFormOn U n), TestFormOnConverges ωs 0 → ∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ U ∧ (∀ j x, x ∉ C → (ωs j : DifferentialForm (Euclid P) n) x = 0) ∧ ∀ ε : ℝ, 0 < ε → ∀ᶠ j in atTop, ∀ x, ‖(ωs j : DifferentialForm (Euclid P) n) x‖ ≤ ε",
+          "lean_name": "dpf_pfc_testFormOnConverges_zero_uniform",
+          "depends_on": [],
+          "natural_proof": "Source: the first half of step 6 of the parent proof; Simon §6.1 (chapter-06.txt lines 170–176). There, ω_k → ω in 𝒟ⁿ(U) means spt ω_k ⊆ K for a fixed compact K ⊆ U and D^β ω_k → D^β ω uniformly on K. Here this is used with β = 0, as encoded by TestFormOnConverges. Notation: ω_j(x) := (ωs j : DifferentialForm (Euclid P) n) x.\n1. Unfolding. By definition of TestFormOnConverges ωs 0, there is C ⊆ ℝ^P such that:\n   - C is compact and C ⊆ U;\n   - tsupport ω_j ⊆ C for every j (and tsupport 0 ⊆ C, which is not needed);\n   - for every k ∈ ℕ, iteratedFDeriv ℝ k ω_j → iteratedFDeriv ℝ k 0 uniformly on C as j → ∞.\n   Take this C.\n2. Vanishing off C. Let x ∉ C and j ∈ ℕ. Since tsupport ω_j ⊆ C, x ∉ tsupport ω_j, so ω_j(x) = 0 (image_eq_zero_of_notMem_tsupport). This is the third conjunct.\n3. The case k = 0. The zero test form coerces to the zero form, so iteratedFDeriv ℝ 0 0 x = 0 for every x. Let ε > 0.\n   - Uniform convergence for k = 0 (Metric.tendstoUniformlyOn_iff) gives j₀ such that for all j ≥ j₀ and x ∈ C, dist(iteratedFDeriv ℝ 0 0 x, iteratedFDeriv ℝ 0 ω_j x) < ε, i.e. ‖iteratedFDeriv ℝ 0 ω_j x‖ < ε.\n   - Since ‖iteratedFDeriv ℝ 0 f x‖ = ‖f(x)‖ (norm_iteratedFDeriv_zero), this gives ‖ω_j(x)‖ < ε, hence ‖ω_j(x)‖ ≤ ε, for x ∈ C.\n4. Points off C. For j ≥ j₀ and x ∉ C, step 2 gives ‖ω_j(x)‖ = 0 ≤ ε.\n5. Conclusion. For every ε > 0 and all sufficiently large j (∀ᶠ j in atTop), ‖ω_j(x)‖ ≤ ε for all x ∈ ℝ^P. Together with steps 1–2, C satisfies all four conjuncts.",
+          "proof_key_steps": [
+            "Unfold TestFormOnConverges: compact C ⊆ U contains every tsupport ω_j, and all iterated derivatives converge uniformly on C.",
+            "x ∉ C ⇒ ω_j(x) = 0.",
+            "k = 0 and ‖iteratedFDeriv ℝ 0 f x‖ = ‖f x‖ give, eventually, ‖ω_j‖ < ε on C.",
+            "Combine: eventually ‖ω_j(x)‖ ≤ ε for all x."
+          ]
+        },
+        "audit": {
+          "key": "uniform_small",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Unfolding the pinned convergence definition supplies precisely the required compact subset of U and common support. Zeroth-derivative uniform convergence gives eventual smallness on that set; vanishing outside it extends the bound globally. The proof establishes the exact eventual quantifiers and every conjunct of the one-line Lean proposition without another planning step."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.pairing_bound-a1",
+      "key": "pairing_bound",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c); cmp project/GMT/Ch07/Contract.lean vs workspace GMT/Ch07/Contract.lean (identical)",
+              "python3 -I over dag.json (509 nodes): lean_statements containing 'orient x' together with ≤/‖/Integrable; '‖R.orient'/IsUnitOrientationOf bounds; 'TestFormOnConverges'; '‖fderiv ℝ _ x‖ ≤'; duplicate lean_names (none)",
+              "python3 -I: list all nodes under root.minimizing_implies_stationary-a1.diffeo_pushforward-a1 with lean_name/status (11 siblings, no dpf_pfc_* names)",
+              "grep -l '<each of the 4 proposed names>' dag.json nodes/*/decomposition-v*.json nodes/*/parent-child-handoff.json; grep -rl dpf_pfc .humanize (no matches)",
+              "rg -n 'TestFormOnConverges|compContinuousLinearMap|IsUnitOrientationOf|locallyIntegrable_mult' project/GMT --glob '*.lean'",
+              "rg -n 'dpf_pfc|pairing_integrable|orient_abs|fderiv_norm_le_of_eq_id' project/GMT mathlib/Mathlib --glob '*.lean' (no match)",
+              "grep -rn mathlib/Mathlib: compContinuousLinearMapCLM, continuous_compContinuousLinearMapCLM, norm_compContinuousLinearMap_le, le_opNorm, hasStrictFDerivAt_compContinuousLinearMap, Continuous.comp_aestronglyMeasurable₂, def AEStronglyMeasurable, measurable_from_nat, integrable_indicator_iff, integral_indicator, integral_eq_lintegral_of_nonneg_ae, norm_integral_le_of_norm_le, Integrable.mono'",
+              "grep -rn TestFormOnConverges simongmt/Poincare/SimonGMT (definitions in Chapter06/Currents.lean; TestFormOnConverges.tendsto_eval in Chapter06/GeometricPointProduct.lean)",
+              "sed -n book/chapter-06.txt lines 168-215 (6.1 test-form topology, 6.2.1-2.2), 395-445 (6.2.23-2.24), 725-760 (6.3.1)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Types.lean (4 child types + parent elaborate in replayed contract scope)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Assembly.lean (#print axioms assembly_conditional)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Children.lean (#print axioms childA/childD/childE/childB)",
+              "lake env lean /tmp/pfc-decomp-7f3a/Final.lean (children as Submission.X in namespace GMT.Ch07, parent proved from them, comparator-style exact Submission.X checks, #print axioms NodeTarget0-4)"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/parent-supplied-natural-proof.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/GeometricPointProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+              "/tmp/pfc-decomp-7f3a/Types.lean",
+              "/tmp/pfc-decomp-7f3a/Assembly.lean",
+              "/tmp/pfc-decomp-7f3a/Children.lean",
+              "/tmp/pfc-decomp-7f3a/Final.lean"
+            ],
+            "conclusion": "No declaration in the snapshot (project b4d606d, Mathlib 25730c7c) or in SimonGMT proves the selected statement or any proposed child, so the four children are new. None of the four names appears in dag.json (509 nodes), in any stored decomposition or handoff, anywhere under .humanize, in the project, in SimonGMT or in Mathlib.\n\nRelated nodes in other branches have different types and are not reused:\n- unit_orientation_norm_le_one and rsd_mw_wlm_orient_opNorm_le_one: IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1;\n- regcomp_rim_action_integrable;\n- lcn_mult_mul_orient_apply_integrableOn.\nSimonGMT's TestFormOnConverges.tendsto_eval gives only pointwise convergence, not the uniform bound uniform_small provides.\n\nPinned Mathlib supplies every library fact the children use: ContDiff.continuous_fderiv, IsCompact.exists_bound_of_continuousOn, Filter.EventuallyEq.fderiv_eq, ContinuousLinearMap.norm_id_le, ContinuousAlternatingMap.le_opNorm, norm_compContinuousLinearMap_le, continuous_compContinuousLinearMapCLM, compContinuousLinearMapCLM_apply, Continuous.clm_apply, Continuous.comp_aestronglyMeasurable₂, measurable_from_nat, integrable_indicator_iff, Integrable.mono', integral_indicator, integral_eq_lintegral_of_nonneg_ae, norm_integral_le_of_norm_le, norm_iteratedFDeriv_zero and Metric.tendstoUniformlyOn_iff.\n\nLean checks:\n- All four frozen child types and the parent type elaborate in the comparator's replayed contract scope.\n- Complete proofs of the four children, and of the parent from Submission.dpf_pfc_*, compile in the Submission layout.\n- Comparator-style `exact Submission.X` checks for all five declarations depend only on propext, Classical.choice and Quot.sound."
+          }
+        ],
+        "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1",
+        "child_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.pairing_bound-a1",
+        "subproblem": {
+          "key": "pairing_bound",
+          "title": "Integrability and sup-norm estimate for the IMRep pairing with a bounded, compactly supported covector field",
+          "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, R = (M, θ, ξ) an IMRep U n, C ⊆ U compact and B ∈ ℝ. Let F : ℝ^P → Covector(ℝ^P, n) be a.e. strongly measurable for μ := Hⁿ⌞M (μHE[n].restrict R.carrier), with F(x) = 0 for all x ∉ C and ‖F(x)‖ ≤ B for all x. Then x ↦ θ(x)·ξ(x)(F(x)) is μ-integrable, and |∫_M θ(x) ξ(x)(F(x)) dHⁿ(x)| ≤ B · (∫⁻_{M∩C} θ dHⁿ).toReal.",
+          "lean_statement": "∀ (P n : ℕ) (U C : Set (Euclid P)) (R : IMRep U n) (F : Euclid P → Covector (Euclid P) n) (B : ℝ), IsCompact C → C ⊆ U → AEStronglyMeasurable F (μHE[n].restrict R.carrier) → (∀ x, x ∉ C → F x = 0) → (∀ x, ‖F x‖ ≤ B) → Integrable (fun x => (R.mult x : ℝ) * R.orient x (F x)) (μHE[n].restrict R.carrier) ∧ |∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (F x) ∂μHE[n]| ≤ B * (∫⁻ x in R.carrier ∩ C, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal",
+          "lean_name": "dpf_pfc_imrep_pairing_integrable_abs_le",
+          "depends_on": [
+            "orient_bound"
+          ],
+          "natural_proof": "Source: steps 2 and 4 of the parent proof, together with the estimate in its step 6. Simon 6.2.24(2) (chapter-06.txt lines 414–425) says that when M_W(T) < ∞ for W ⊂⊂ U, f_#T(ω) = ∫⟨ω(f(x)), df_x#ξ(x)⟩θ dHⁿ makes sense for C¹ f. The printed text leaves the integrability and the estimate to the reader; they are supplied here. This proof uses the sibling theorem orient_bound (Submission.dpf_pfc_imrep_orient_abs_apply_le).\nNotation:\n- M := R.carrier, θ := R.mult, ξ := R.orient, μ := μHE[n].restrict M;\n- h(x) := θ(x)·ξ(x)(F(x)), with θ(x) viewed in ℝ;\n- 1_C θ := C.indicator (fun y => (θ y : ℝ)) and g(x) := B·(1_C θ)(x).\n1. C is measurable. C is compact, hence closed (IsCompact.isClosed), hence a Borel, i.e. measurable, set.\n2. θ is measurable. θ : ℝ^P → ℕ is measurable (R.measurable_mult), and every function on ℕ is measurable (measurable_from_nat). So x ↦ (θ(x) : ℝ) is measurable, hence a.e. strongly measurable.\n3. Restriction identity. Since C is measurable, μ.restrict C = (μHE[n].restrict M).restrict C = μHE[n].restrict (C ∩ M) = μHE[n].restrict (M ∩ C) (Measure.restrict_restrict, inter_comm).\n4. 1_C θ and g are μ-integrable.\n   - By R.locallyIntegrable_mult applied to the compact set C ⊆ U, ∫⁻_{M∩C} θ dμHE[n] ≠ ∞.\n   - Since θ(x) ≥ 0, its extended norm ‖(θ(x) : ℝ)‖ₑ equals (θ(x) : ℝ≥0∞) (Real.enorm_natCast). By step 3, ∫⁻ ‖θ‖ₑ d(μ.restrict C) = ∫⁻_{M∩C} θ dμHE[n] < ∞.\n   - With step 2, θ is integrable on C with respect to μ (IntegrableOn).\n   - Hence 1_C θ is μ-integrable (integrable_indicator_iff, C measurable), and so is g = B·1_C θ (Integrable.const_mul).\n5. h is μ-a.e. strongly measurable.\n   - The evaluation map (ζ, β) ↦ ζ(β) from MultiVector P n × Covector (Euclid P) n to ℝ is continuous, since ζ ranges over continuous linear maps (continuous_fst.clm_apply continuous_snd).\n   - ξ is μ-a.e. strongly measurable (R.aestronglyMeasurable_orient), and so is F (hypothesis). So x ↦ ξ(x)(F(x)) is μ-a.e. strongly measurable (Continuous.comp_aestronglyMeasurable₂).\n   - Multiplying by the measurable θ of step 2 preserves this (AEStronglyMeasurable.mul).\n6. Domination |h| ≤ g μ-a.e. By orient_bound, for μ-a.e. x, |ξ(x)(β)| ≤ ‖β‖ for all n-covectors β. Fix such an x.\n   - If x ∈ C, then (1_C θ)(x) = θ(x). Using θ(x) ≥ 0 and ‖F(x)‖ ≤ B: |h(x)| = θ(x)·|ξ(x)(F(x))| ≤ θ(x)·‖F(x)‖ ≤ θ(x)·B = g(x).\n   - If x ∉ C, then F(x) = 0 by hypothesis, so ξ(x)(F(x)) = 0 (ξ(x) is linear) and |h(x)| = 0. Also g(x) = B·0 = 0.\n   Hence ‖h(x)‖ ≤ g(x) for μ-a.e. x.\n7. Integrability. h is μ-a.e. strongly measurable (step 5) and dominated μ-a.e. by the μ-integrable g (steps 4 and 6). So h is μ-integrable (Integrable.mono'). This is the first conjunct.\n8. Value of ∫ g dμ:\n   ∫ g dμ = B·∫ 1_C θ dμ (integral_const_mul)\n   = B·∫ θ d(μ.restrict C) (integral_indicator, C measurable)\n   = B·∫ θ d(μHE[n].restrict (M ∩ C)) (step 3)\n   = B·(∫⁻_{M∩C} ENNReal.ofReal(θ) dμHE[n]).toReal (integral_eq_lintegral_of_nonneg_ae; θ ≥ 0 and is a.e. strongly measurable)\n   = B·(∫⁻_{M∩C} θ dμHE[n]).toReal (ENNReal.ofReal_natCast).\n9. Estimate. By definition of the set integral, ∫_M θ ξ(F) dμHE[n] = ∫ h dμ. Then |∫ h dμ| = ‖∫ h dμ‖ ≤ ∫ g dμ (norm_integral_le_of_norm_le, using integrability of g and step 6). By step 8 this gives |∫_M θ ξ(F) dμHE[n]| ≤ B·(∫⁻_{M∩C} θ dμHE[n]).toReal, the second conjunct.",
+          "proof_key_steps": [
+            "C compact ⇒ measurable; θ measurable; μ.restrict C = Hⁿ⌞(M ∩ C).",
+            "Local integrability of θ on the compact C ⊆ U makes g = B·1_C θ μ-integrable.",
+            "h = θ·ξ(F) is a.e. strongly measurable via continuity of evaluation.",
+            "orient_bound together with F = 0 off C and ‖F‖ ≤ B gives |h| ≤ g μ-a.e.",
+            "Integrable.mono' gives integrability; |∫ h| ≤ ∫ g = B·(∫⁻_{M∩C} θ).toReal."
+          ]
+        },
+        "audit": {
+          "key": "pairing_bound",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proof establishes measurability, the correct restriction identity, integrability of the multiplicity indicator, and almost-everywhere domination using only the declared orient_bound dependency. Integrating the majorant gives exactly the stated ENNReal.toReal bound. No additional B ≥ 0 hypothesis is needed: the global norm bound implies it. Both conjuncts match the prose and are proved without gaps or circularity."
+        },
+        "resolved_dependencies": [
+          "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_current-a1.orient_bound-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/decomposition.json": "c286e70300e3e25dca17e1972dfbd52105f2e800a4c33589c5d3519c5eef67e6",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/decomposition-audit.json": "fd8bdd3a490c98f4455e1dc8e0b932d70bf97e4088df4909a5a7010d09496b51",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-ebb928a3a8/parent-child-handoff.json": "73d8ed3fe2b5bf27762d98cf457978ce791ddda9405aa750c32f4f9467b26972",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-ebb928a3a8/parent-supplied-plan.md": "2cb16c8a43d171740475efe16d5d20d63d08961c8ee3684f56f3022152c5bfae",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-ebb928a3a8/parent-supplied-natural-proof.md": "87bf4844849d5ef812d5ba6af64891b9b1a67e79b58c8984384f1fe974b2f531",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-ebb928a3a8/parent-supplied-natural-proof.json": "b6bdfc9c3ba1bd56de730ad0d61dba479a72a47733aaba9881411e2730c2955e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-ebb928a3a8/node.json": "b4a6adc63d0bc8ca043d0930d08f04bb0c1d21c9e026248ab0547f46d751d28b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca/parent-child-handoff.json": "6b04bd6ae41bbf0e0892fd5ae0e743e17094bf788d386d471f3cf027668e21df",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca/parent-supplied-plan.md": "5f97ef21a6a301b40e2c49726d11ee06c251cf88711febaff474495960adec20",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca/parent-supplied-natural-proof.md": "b0d3aeedb29685574b486fb44ea531d191ab4b778a690f3c9ad27787fdb75f80",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca/parent-supplied-natural-proof.json": "16440d7587507691a3851f8f15fe9a6b9d3ff8b20deaad72b64e8de609454989",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b8bbc130ca/node.json": "9bd88be17f8b7335182048e3bc8d8c6c759fb2121c549d003107ff1368765340",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b/parent-child-handoff.json": "3f7060bd5e9a289b0c78d1ce59f0441b7a792b3a26c49bb4bd66436bbb55231f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b/parent-supplied-plan.md": "ea5c9ec25fed59efe1f857710c0858d7d37d28c23ed45cfe65e799e6f072edd2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b/parent-supplied-natural-proof.md": "3c87377b3602033eb120dfb544c00f526cf459bd4788551b3e7f9409c3b4d8d3",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b/parent-supplied-natural-proof.json": "7216c03d13c2f37545b1e55327f08d3ae598e66b3608aa405c4aa75a9ac4ceeb",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b/node.json": "46ee74315734083e0975707a6ad8f989d5a055c284bd08f311e72d51ea334c4a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978/parent-child-handoff.json": "7bf44d86f8634dd3757ac07a778f9c9ef858badbf1f22fddf5c7f0a3bf1cacec",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978/parent-supplied-plan.md": "7db7c55a97e58f79f33ac5f297f00714f847749311213e5f2a492d2b9acd73e1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978/parent-supplied-natural-proof.md": "5c2d16dc289add9229be60162ea59eecf37d09b21a608020879e9c8d5ccb56e7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978/parent-supplied-natural-proof.json": "3c6e04dc83be196253e49f9b3473d560c07fa16e8ba2574d6fcd7ce52714da17",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/children/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-49ef3e5978/node.json": "33f0619cec1133bb372c174456a43130d7b53468f4ef17dbd4d4e20545ebd2a9"
+  }
+}

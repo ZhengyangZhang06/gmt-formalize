@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.cone_density-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1",
+  "depth": 4,
+  "title": "Vanishing density of M in the cone X_{1/2}(TₓM^⊥, x) at an approximate tangent point (Simon Ch. 3, Remark 1.5(3), formula (6))",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, M ⊆ ℝ^P with Hⁿ(M) < ∞ (Hⁿ = μHE[n]), x ∈ ℝ^P and Q a linear subspace of ℝ^P which is the approximate tangent space of M at x (SimonGMT HasApproximateTangentSpaceAt n M x Q). Let X(x) := {z ∈ ℝ^P : 2|p_Q(z − x)| < |z − x|}, p_Q the orthogonal projection onto Q (this is Simon's cone X_{1/2}(Q^⊥, x) in the form (2), since dist(v, Q^⊥) = |p_Q v|). Then for every t ∈ (0, ∞] there is ρ₀ > 0 such that Hⁿ(M ∩ X(x) ∩ B_ρ(x)) ≤ t ρⁿ for all 0 < ρ < ρ₀.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 0 < n → μHE[n] M ≠ ∞ → HasApproximateTangentSpaceAt n M x Q → ∀ t : ℝ≥0∞, 0 < t → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] (M ∩ ({z | 2 * ‖Q.starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ)) ≤ t * ENNReal.ofReal (ρ ^ n)",
+  "lean_name": "cbrr_tangent_cone_density_zero",
+  "depends_on": [
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1.blowup_image_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1.blowup_image_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-re-844f5fd455-a1",
+      "result_commit": "6d5fb477cd678ba8a2494f88aea12fb69f2dbbc3",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d692d7eef5-a1"
+}

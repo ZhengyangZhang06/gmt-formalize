@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.im_criterion-a1.tangent_field_measurable-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.im_criterion-a1",
+  "depth": 5,
+  "title": "A.e. strong measurability of an approximate-tangent-plane projection field",
+  "statement": "Let P, n ∈ ℕ and let M ⊆ ℝ^P be any set (measurability is not assumed) with Hⁿ(M ∩ K) < ∞ for every compact K ⊆ ℝ^P, where Hⁿ = μHE[n]. Let Q be any map from ℝ^P to the linear subspaces of ℝ^P such that, for Hⁿ⌞M-almost every x, Q(x) is an approximate tangent space of M at x in the sense of Simon Ch. 3, 1.4 (SimonGMT HasApproximateTangentSpaceAt n M x (Q x): dim Q(x) = n and ∫_{η_{x,r}(M)} f dHⁿ → ∫_{Q(x)} f dHⁿ as r ↓ 0 for every f ∈ C_c(ℝ^P), where η_{x,r}(y) = r⁻¹(y − x) is blowUpMap x r). Then the field of orthogonal projections x ↦ p_{Q(x)} = (Q x).starProjection ∈ L(ℝ^P, ℝ^P) is Hⁿ⌞M-a.e. strongly measurable (AEStronglyMeasurable for μHE[n].restrict M).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M)",
+  "lean_name": "cbr_ci_imc_tangent_field_aestronglyMeasurable",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.plane_quadratic_moment-a1",
+    "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1",
+    "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.projection_field_aemeasurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.plane_quadratic_moment-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-b7386b9a1e-a1",
+      "result_commit": "2b2d626519e4fa0614aa7db98d667e391e9c1c2c",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.blowup_integral_continuous-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-0192684290-a1",
+      "result_commit": "fad2341d37df1dd3adc1ecea4db9a08ac1f874b4",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.tangent_projection_aemeasurable-a1.projection_field_aemeasurable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasura-3808e84e38-a1",
+      "result_commit": "3c953dc51e9275172a78ad6ab0ee0f4a0ddfb6ab",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e151359d7a-a1"
+}

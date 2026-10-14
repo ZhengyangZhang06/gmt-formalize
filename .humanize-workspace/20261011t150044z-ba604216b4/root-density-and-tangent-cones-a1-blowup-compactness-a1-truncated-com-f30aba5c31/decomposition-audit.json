@@ -1,0 +1,103 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'dtc_bc_tc_cl_cc|cbr_cc_|cbr_ccisp_|dmcbr_cc_|cmc_fcl_|rsd_cmr_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "git show 791f7d722ecc7a162afa46e5f9e1dd564f0ce80b:GMT/Ch07/Submission.lean",
+        "git show 02c6122c94d0280a6288d299659b2dab7b59e109:GMT/Ch07/Submission.lean",
+        "git show b4a337bf478562dea20f901a100bb415db25177b:GMT/Ch07/Submission.lean",
+        "git show ad94b18a1bb24467dccad74cba9c0e2490568baa:GMT/Ch07/Submission.lean",
+        "git show 21e4e0a22ce3be62d2574c29c90eb7228d3e8676:GMT/Ch07/Submission.lean",
+        "git show 1041782e1e2a67602f99d002bd3c0a494ba9e196:GMT/Ch07/Submission.lean",
+        "git show 3a4872b49a9c0eb8a3c88f58522e0e1b6bc771af:GMT/Ch07/Submission.lean",
+        "git show 594767533a275ee5cf34ab7fbe3fea03af4d081a:GMT/Ch07/Submission.lean",
+        "sed -n '38,166p' /tmp/ccdecomp_work/lean/SubNames.lean",
+        "sed -n '168,270p' /tmp/ccdecomp_work/lean/SubNames.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-f30aba5c31/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-f30aba5c31/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/tmp/ccdecomp_work/lean/SubNames.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace, and the installed package revisions match the pinned context. The snapshot project contains none of the searched helper names. All eight reused declarations have byte-identical frozen types, matching candidate-source hashes, and passing comparator receipts permitting only propext, Classical.choice and Quot.sound. Both new names are unused. All ten types are standalone one-line propositions with valid bare names and correctly typed constructions. The relevant dependency closure is acyclic; accepted reuse preserves existing dependencies. The split is appropriate: the supplied proofs and assembly establish exactly dtc_bc_tc_cl_closure_compact_support using its six frozen prerequisites. I independently checked the proof sources; an optional fresh Lean replay was stopped after prolonged resource pressure without a compiler verdict."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "current_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse; prose and type match all three clauses. The empty representation, symmetric admissible-form estimate, and integer/finite-set inductions establish the claimed integrality and mass bounds without closure assumptions."
+    },
+    {
+      "key": "support_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse. Relatively compact balls exclude every point of U ∖ K from the support; support = K ∖ zeroRegion then proves compactness. All domain and compactness hypotheses are present."
+    },
+    {
+      "key": "isp_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse. REP and SL supply comparison representations and restrictions; RU identifies the arbitrary restriction defect with a difference of IM slices. The exceptional-set argument respects the exact ISP quantifiers."
+    },
+    {
+      "key": "restrict_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse with its retained dependencies. The restricted IMRep, integral-data lemmas and RU with the zero measure identify A with the represented IM restriction. No additional mass-identity assumption is needed."
+    },
+    {
+      "key": "ae_mass_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse. MM applied to constant sequences yields finite measurable majorants. Countable intersection over balls and intervals produces one exceptional null set controlling every bounded region."
+    },
+    {
+      "key": "mass_le_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse. The unconditional integral norm inequality and measurable topological-support indicator establish the estimate. Arbitrary E and V require no omitted measurability or integrability hypotheses."
+    },
+    {
+      "key": "segment_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse with retained dependencies. The proof covers coincident endpoints and constructs the nondegenerate segment through its IMRep, Hausdorff-measure parametrization and fundamental theorem of calculus, obtaining every stated boundary, mass and support property."
+    },
+    {
+      "key": "zero_current_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted reuse. MR and VO place the carrier inside the compact support. Counting measure and positive multiplicity make it finite and turn the orientation condition into a pointwise sign, yielding the required integer sum."
+    },
+    {
+      "key": "isp_of_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh name is unreserved, and the type correctly assumes BR only at the fixed P. Declared dependencies give IM restrictions and locally finite slice defects; BR_P(d) and subtraction then prove ISP for arbitrary admissible representations. The supplied argument and Lean appendix are complete and non-circular."
+    },
+    {
+      "key": "filling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh name is unreserved, and d < P supplies exactly the required isoperimetric range. Positive d uses m = d − 1; d = 0 uses a bump test to prove zero total multiplicity and then a finite segment sum. Both cases establish the exact boundary, finite mass and compact support conclusions."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.slice_limit-a1.slice_sum_bound-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.slice_limit-a1",
+  "depth": 6,
+  "title": "Slicing a represented current and its boundary: combined slice plus slice-boundary mass majorant (parent steps 3, 4 and 6)",
+  "statement": "Assume (SL), the type of the selected node's accepted dependency slicing (cmc_slice_mass_bounds), verbatim the first hypothesis: for all P, k ∈ ℕ, open U ⊆ ℝ^P, T ∈ 𝒟_{k+1}(U), admissible representations (μ, ξ) of T and (μ', ξ') of ∂T in U (measures on ℝ^P finite on compact subsets of U; a.e. strongly measurable fields of (k+1)- resp. k-vectors with |ξ(x)(α)| ≤ |α| for μ-a.e. x and |ξ'(x)(α)| ≤ |α| for μ'-a.e. x, |α| = covectorEuclideanNorm α; T(ω) = ∫ξ(ω)dμ, ∂T(η) = ∫ξ'(η)dμ' for all test forms in U) and every L-Lipschitz f : ℝ^P → ℝ, there are A_t ∈ 𝒟_{k+1}(U), B_t ∈ 𝒟_k(U) (t ∈ ℝ) with A_t(ω) = ∫_{f<t}ξ(ω)dμ, B_t(η) = ∫_{f<t}ξ'(η)dμ', ∂A_t(η) = B_t(η) whenever tsupport η misses {f = t}, M_W(∂A_t − B_t) ≤ L · liminf_{h→0+} ofReal(h⁻¹)μ(W ∩ {t − h < f < t}) for open W and all t, and ∫⁻_{(a,b)} M_W(∂A_t − B_t)dt ≤ L · μ(W ∩ {a < f < b}). Let P, d ∈ ℕ, U ⊆ ℝ^P open, X ∈ 𝒟_{d+1}(U), (μ, ξ) an admissible representation of X and (μ', ξ') an admissible representation of ∂X in U (as above), and f : ℝ^P → ℝ L-Lipschitz (L ∈ ℝ≥0). Then there are currents A_t ∈ 𝒟_{d+1}(U) and B_t ∈ 𝒟_d(U) (t ∈ ℝ) with A_t(ω) = ∫_{f<t}ξ(ω)dμ and B_t(η) = ∫_{f<t}ξ'(η)dμ' for all t and all test forms ω, η in U, such that for every open W ⊆ ℝ^P and every t ∈ ℝ, with Z_t := ∂A_t − B_t, M_W(Z_t) + boundaryMassOn(Z_t, W) ≤ L · liminf_{h→0+} ofReal(h⁻¹)(μ + μ')(W ∩ {t − h < f < t}) in [0, ∞], where boundaryMassOn(Z_t, W) = M_W(∂Z_t) if d ≥ 1 and = 0 if d = 0.",
+  "lean_statement": "(∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → ∀ (P d : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U (d + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (d + 1), X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn U d, X.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (d + 1)) (B : ℝ → GeometricCurrentOn U d), (∀ (t : ℝ) (ω : TestFormOn U (d + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U d), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W + boundaryMassOn ((A t).boundary - B t) W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * (μ + μ') (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0))",
+  "lean_name": "dtc_bc_tc_cl_sl_slice_sum_mass_bound",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.slice_bound-a1.boundary_slice-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.slice_bound-a1.mass_neg-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.slice_bound-a1.liminf_add-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.slice_bound-a1.boundary_slice-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-b7707a9a38-a1",
+      "result_commit": "f782bc92534a1603cd2fa0ae721fce7c24bb4608",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.slice_bound-a1.mass_neg-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-d8a61cf59f-a1",
+      "result_commit": "d058af94f483f3e29b42ad8dde99786c24dc17d1",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.slice_bound-a1.liminf_add-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-b99cb3da90-a1",
+      "result_commit": "e1842e9536a825f70723711ef3c5fe73f9f51aa0",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-7d19c3dc21-a1"
+}

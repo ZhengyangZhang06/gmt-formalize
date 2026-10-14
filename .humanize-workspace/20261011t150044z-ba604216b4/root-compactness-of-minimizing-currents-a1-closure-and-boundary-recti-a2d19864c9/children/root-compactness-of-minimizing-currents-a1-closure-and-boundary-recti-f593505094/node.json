@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_stokes-a1.extderiv_coords-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.plane_integer-a1.plane_stokes-a1",
+  "depth": 6,
+  "title": "Exterior derivative of a test form along an orthonormally parametrised plane, in coordinates",
+  "statement": "Let P, d ∈ ℕ, let v = (v_0, …, v_d) : Fin (d+1) → ℝ^P (ℝ^P = Euclid P) be an orthonormal family, and let φ ∈ TestFormOn univ d, i.e. a C^∞ d-form on ℝ^P with compact support. Put ℝ^{d+1} := Fin (d+1) → ℝ and e_i := Pi.single i 1. For i ∈ Fin (d+1) define g_i : ℝ^{d+1} → ℝ by g_i(x) := φ(Σ_j x_j v_j)(removeNth i v), where removeNth i v = (v_0, …, v̂_i, …, v_d). Then:\n(i) every g_i is C¹ (ContDiff ℝ 1) and has compact support;\n(ii) for every z ∈ ℝ^{d+1}, dφ(Σ_j z_j v_j)(v_0, …, v_d) = Σ_i (−1)^i · Dg_i(z)(e_i), where dφ = exteriorDerivative φ and Dg_i(z) is the Fréchet derivative.",
+  "lean_statement": "∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, (∀ i : Fin (d + 1), ContDiff ℝ 1 (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (i.removeNth v)) ∧ HasCompactSupport (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (i.removeNth v))) ∧ ∀ z : Fin (d + 1) → ℝ, exteriorDerivative (φ : DifferentialForm (Euclid P) d) (∑ j, z j • v j) v = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * fderiv ℝ (fun x : Fin (d + 1) → ℝ => (φ : DifferentialForm (Euclid P) d) (∑ j, x j • v j) (i.removeNth v)) z (Pi.single i 1)",
+  "lean_name": "cbr_cipi_plane_extDeriv_coords",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f593505094-a1"
+}

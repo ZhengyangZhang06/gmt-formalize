@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero|isOpen_sUnion_countable|exists_contMDiffMap_one_nhds_of_subset_interior|exists_cthickening_subset_open|hausdorffMeasure_image_le|euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero",
+        "cmc_fc_eu_cutoff_mass_le|dtc_extend_by_zero|imrep_carrier_sdiff_support_null|dtc_vanish_off_support",
+        "restrict_congr_set|ae_eq_set",
+        "setIntegral_congr_set|setIntegral_congr_fun|setIntegral_eq_zero_of_forall_eq_zero",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git show 44ef61f79e2168134f8a5a6d6520baba56052d67:GMT/Ch07/Submission.lean",
+        "git show d15b5cf486116871dce9295932632b12f0af96e0:GMT/Ch07/Submission.lean",
+        "git show 2527748da70b09774a09fb289587a318d32d7832:GMT/Ch07/Submission.lean",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/bin:/usr/bin:/bin lake env lean /tmp/cmc-eu-independent-audit-q5gdp39l/Types.lean",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/bin:/usr/bin:/bin lake env lean /tmp/cmc-eu-independent-audit-q5gdp39l/Combined.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-extend-to-univ-a1/parent-child-handoff.json",
+        "/tmp/cmc-eu-independent-audit-q5gdp39l/Types.lean",
+        "/tmp/cmc-eu-independent-audit-q5gdp39l/Reused.lean",
+        "/tmp/cmc-eu-independent-audit-q5gdp39l/Combined.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace definitions, and the package revisions and inspected Mathlib sources match the snapshot. The cited partition, distributional uniqueness, null-set, and cutoff results support the supplied proofs. All four child types independently elaborate before any child declaration exists. The three reused declarations have identical frozen types and passed comparator records; their prerequisite closures are acyclic and do not reach the selected parent. The new name is unreserved and absent from the searched contract/submission files. Independently compiling the accepted proof blocks, a formalization of the supplied cutoff argument, and the exact parent assembly succeeds with only propext, Classical.choice, and Quot.sound for all five declarations. The split is appropriate: accepted results supply the extension, and the new child supplies both mass bounds. Retaining the unused IR and ME antecedents preserves the frozen parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition match, including arbitrary U. Compactness gives a finite cover inside the zero region; a subordinate smooth partition splits the form into admissible pieces annihilated by the current. Linearity finishes without silently assuming U open. The bare name validly reuses the identical accepted type."
+    },
+    {
+      "key": "carrier_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the Lean type. Local integrability supplies integrable orientation components; testing with smooth scalar functions and applying the fundamental lemma makes them vanish. A finite covector basis and nonzero unit orientations force local carrier nullity, and the countable cover proves the conclusion. This is complete without ME or the parent theorem. Reuse preserves the accepted type."
+    },
+    {
+      "key": "extend_by_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches all five conclusions, including the degree-zero boundary convention. The proof justifies tangent-plane invariance under null modifications, every transferred representation field, and sequential continuity of its action. It then proves restriction, support containment, compactness, and boundary preservation. The helper arguments are supplied rather than deferred. The accepted type is unchanged and its prerequisite closure is non-circular."
+    },
+    {
+      "key": "cutoff_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match for general currents; no integer-multiplicity or finite-mass hypothesis is missing. The cutoff preserves admissibility using the actual Euclidean coefficient norm. Vanishing off support gives equality of current evaluations, and exterior-derivative linearity and support locality give the boundary equality. Taking suprema proves both bounds. The sole dependency on vanish_off_support is correctly directed, and the bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}

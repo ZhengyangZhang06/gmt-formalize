@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.mollify-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1",
+  "depth": 6,
+  "title": "Smooth Λ-Lipschitz mollifications of a Λ-Lipschitz map",
+  "statement": "For all N, N', Λ ∈ ℝ≥0 and every Λ-Lipschitz F : ℝ^N → ℝ^{N'} there are maps Fs_j : ℝ^N → ℝ^{N'} (j ∈ ℕ), each C^∞ (ContDiff ℝ (⊤ : ℕ∞)) and Λ-Lipschitz, with dist(Fs_j(x), F(x)) ≤ Λ/(j+1) for all j and x.",
+  "lean_statement": "∀ (N N' : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N'), LipschitzWith Λ F → ∃ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, LipschitzWith Λ (Fs j)) ∧ ∀ (j : ℕ) (x : Euclid N), dist (Fs j x) (F x) ≤ (Λ : ℝ) / ((j : ℝ) + 1)",
+  "lean_name": "dimred_mbl_dt_lpo_mollify_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-c43836140d-a1"
+}

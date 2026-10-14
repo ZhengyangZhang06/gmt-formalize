@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1.order_zero_current-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.restrict_current-a1",
+  "depth": 4,
+  "title": "A linear functional on 𝒟ⁿ(U) with zeroth-order bounds on every compact subset of U is a current",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, and let L : 𝒟ⁿ(U) → ℝ be ℝ-linear (L : TestFormOn U n →ₗ[ℝ] ℝ). Suppose that for every compact K ⊆ U there is c ∈ ℝ such that |L(ω)| ≤ c·M for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ K and every M ∈ ℝ with ‖ω(x)‖ ≤ M for all x ∈ ℝ^P (‖·‖ the operator norm on n-covectors). Then there is a current S ∈ 𝒟_n(U) (GeometricCurrentOn U n, i.e. L together with Simon's sequential continuity) with S(ω) = L(ω) for every ω ∈ 𝒟ⁿ(U).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (L : TestFormOn U n →ₗ[ℝ] ℝ), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ c : ℝ, ∀ (ω : TestFormOn U n) (M : ℝ), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ M) → |L ω| ≤ c * M) → ∃ S : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, S ω = L ω",
+  "lean_name": "cmcs_rc_order_zero_current",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-restrict-curren-7244aadae8-a1"
+}

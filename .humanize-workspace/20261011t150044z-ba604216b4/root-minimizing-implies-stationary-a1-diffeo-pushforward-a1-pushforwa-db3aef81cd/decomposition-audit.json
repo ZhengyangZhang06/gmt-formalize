@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsUnitOrientationOf|structure IMRep|locallyIntegrable_mult|TestFormOnConverges|structure GeometricCurrentOn|def Covector",
+        "dpf_pfc|pairing_integrable|orient_abs|fderiv_norm_le_of_eq_id",
+        "theorem le_opNorm|norm_compContinuousLinearMap_le|def compContinuousLinearMapCLM|theorem compContinuousLinearMapCLM_apply",
+        "Continuous.comp_aestronglyMeasurable₂",
+        "norm_iteratedFDeriv_zero|EventuallyEq.fderiv_eq",
+        "dpf_pfc_fderiv_norm_le_of_eq_id_off_compact",
+        "dpf_pfc_imrep_orient_abs_apply_le",
+        "dpf_pfc_imrep_pairing_integrable_abs_le",
+        "dpf_pfc_testFormOnConverges_zero_uniform",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/pfc-independent-audit-qio_f36j/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/pfc-independent-audit-qio_f36j/Final.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-db3aef81cd/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/pfc-independent-audit-qio_f36j/Types.lean",
+        "/tmp/pfc-independent-audit-qio_f36j/Final.lean"
+      ],
+      "conclusion": "The split is appropriate for the exact selected contract. The pinned definitions and library results support all four supplied proofs. Targeted snapshot searches found no matching child declarations; the four bare names are absent from the 512-node DAG and appear in stored proposals/handoffs only in this proposal. The sole dependency, pairing_bound depending on orient_bound, is correctly directed and acyclic. All frozen types independently elaborate as propositions before any child implementation. Fresh Lean runs verify the four proofs and the exact parent assembly through comparator-style exact Submission.X checks; all five depend only on propext, Classical.choice and Quot.sound. Norm instances were independently confirmed as continuous-linear-map and continuous-alternating-map operator norms. The children supply integrability and the common-compact-support estimate; linearity and uniform smallness then establish precisely GeometricCurrentOn.continuous' and the frozen integral formula."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "fderiv_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and includes every hypothesis. Continuity bounds the derivative on K; closedness makes φ locally identical to id outside K, giving derivative norm at most 1. Taking max(1,c) proves the stated global nonnegative bound, including P = 0. No circular reliance."
+    },
+    {
+      "key": "orient_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "R.orients supplies a single almost-everywhere set on which the orientation formula holds for every covector. The alternating-map operator-norm inequality and orthonormality give the bound for either sign, including the empty product when n = 0. The prose, measure restriction and quantifier order exactly match the independent Lean proposition."
+    },
+    {
+      "key": "pairing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes measurability, the correct restriction identity, integrability of the multiplicity indicator, and almost-everywhere domination using only the declared orient_bound dependency. Integrating the majorant gives exactly the stated ENNReal.toReal bound. No additional B ≥ 0 hypothesis is needed: the global norm bound implies it. Both conjuncts match the prose and are proved without gaps or circularity."
+    },
+    {
+      "key": "uniform_small",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Unfolding the pinned convergence definition supplies precisely the required compact subset of U and common support. Zeroth-derivative uniform convergence gives eventual smallness on that set; vanishing outside it extends the bound globally. The proof establishes the exact eventual quantifiers and every conjunct of the one-line Lean proposition without another planning step."
+    }
+  ],
+  "required_changes": []
+}

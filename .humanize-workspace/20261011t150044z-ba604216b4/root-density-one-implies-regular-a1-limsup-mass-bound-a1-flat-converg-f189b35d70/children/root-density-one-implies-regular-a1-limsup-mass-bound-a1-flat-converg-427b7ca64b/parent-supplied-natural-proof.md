@@ -1,0 +1,175 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.minor_weak_continuity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent Step 4, the induction '(M_{r−1}) ⇒ (M_r)' on the order of minors, combined with the density reduction of Step 3 (the weights are taken in L¹ directly, which is the form the parent's Step 3 needs with φ_I = 1_A·w·ω_I(H)). This is the classical weak continuity of Jacobian minors (null Lagrangians; Reshetnyak 1967, Ball 1977). The parent's base case (M_1) is the case r + 1 = 1 of the step below (lipschitz_minor_ibp with r = 0 is integration by parts ∫ψ ∂_V g = −∫ ∂_Vψ g). Uses the siblings minor_bound, lipschitz_minor_ibp and weak_star_l1_upgrade.
+
+Notation: D = fderiv ℝ; for functions h = (h_c)_{c ∈ Fin m} and directions W = (W_b)_{b ∈ Fin m}, J(h, W)(x) := det(Dh_c(x)W_b)_{c,b ∈ Fin m}. The claim (M_r) is: for all L, all L-Lipschitz g^j_c, g_c (c ∈ Fin r) with g^j_c → g_c uniformly, all W ∈ (ℝᵏ)^r and all φ ∈ L¹, ∫ φ·J(g^j, W) → ∫ φ·J(g, W). We prove (M_r) by induction on r, for all these data simultaneously.
+
+1. (r = 0.) The determinant of the empty matrix is 1 (Matrix.det_isEmpty), so both integrals equal ∫ φ for every j; a constant sequence converges.
+2. (Step r → r+1: reduction to smooth weights.) Let D_j := J(g^j, V) and D := J(g, V) for families indexed by Fin(r+1). By the sibling minor_bound, D_j and D are measurable with |D_j|, |D| ≤ B := (r+1)!·(L·Σ_b ‖V_b‖)^{r+1} everywhere. By the sibling weak_star_l1_upgrade (with C = B) it suffices to show ∫ ψD_j → ∫ ψD for every C^∞ function ψ with compact support.
+3. (Integration by parts.) Fix such ψ; it is C¹. Write s_b = Fin.succAbove b, ∂_Wψ(x) := Dψ(x)W, M^j_b := J((g^j_{c+1})_{c ∈ Fin r}, V ∘ s_b) and M_b := J((g_{c+1})_c, V ∘ s_b). The sibling lipschitz_minor_ibp applied to (g^j_c)_c and to (g_c)_c gives ∫ ψD_j = −Σ_b (−1)^b ∫ ∂_{V_b}ψ·g^j_0·M^j_b and ∫ ψD = −Σ_b (−1)^b ∫ ∂_{V_b}ψ·g_0·M_b. The sums are finite, so it suffices to prove ∫ ∂_{V_b}ψ·g^j_0·M^j_b → ∫ ∂_{V_b}ψ·g_0·M_b for each b.
+4. (Splitting.) ∂_{V_b}ψ is continuous with compact support (ψ is C¹ with compact support), g^j_0 and g_0 are continuous, and by minor_bound M^j_b is measurable with |M^j_b| ≤ B_b := r!·(L·Σ_{b'} ‖V_{s_b(b')}‖)^r. Hence every product below is integrable, and ∫ ∂_{V_b}ψ·g^j_0·M^j_b = ∫ ∂_{V_b}ψ·(g^j_0 − g_0)·M^j_b + ∫ θ_b·M^j_b with θ_b := ∂_{V_b}ψ·g_0.
+5. (Error term.) |∫ ∂_{V_b}ψ·(g^j_0 − g_0)·M^j_b| ≤ B_b·sup_x |g^j_0(x) − g_0(x)|·∫ |∂_{V_b}ψ| → 0 as j → ∞, by the uniform convergence g^j_0 → g_0.
+6. (Induction hypothesis.) θ_b is continuous with compact support, hence integrable. The functions g^j_{c+1}, g_{c+1} (c ∈ Fin r) are L-Lipschitz with g^j_{c+1} → g_{c+1} uniformly. So (M_r), applied with these functions, the directions V ∘ s_b and the weight θ_b, gives ∫ θ_b·M^j_b → ∫ θ_b·M_b.
+7. (Conclusion of the step.) By steps 4–6, ∫ ∂_{V_b}ψ·g^j_0·M^j_b → 0 + ∫ θ_b·M_b = ∫ ∂_{V_b}ψ·g_0·M_b for every b. By step 3, ∫ ψD_j → ∫ ψD; by step 2, ∫ φD_j → ∫ φD for every φ ∈ L¹. This proves (M_{r+1}) and completes the induction.
+
+Lean realization (compiled during decomposition with the pinned toolchain in the Submission layout, inside namespace GMT.Ch07; uses Submission.dor_lmb_fcd_jwc_minor_measurable_bound, Submission.dor_lmb_fcd_jwc_weak_star_l1_upgrade, Submission.dor_lmb_fcd_jwc_lipschitz_minor_ibp; #print axioms: propext, Classical.choice, Quot.sound; no extra import):
+```lean
+theorem Submission.dor_lmb_fcd_jwc_minor_weak_continuity : (∀ (k r : ℕ) (L : NNReal) (gs : ℕ → Fin r → Euclid k → ℝ) (g : Fin r → Euclid k → ℝ) (V : Fin r → Euclid k) (φ : Euclid k → ℝ), Integrable φ → (∀ j c, LipschitzWith L (gs j c)) → (∀ c, LipschitzWith L (g c)) → (∀ c, TendstoUniformly (fun j => gs j c) (g c) atTop) → Tendsto (fun j => ∫ x, φ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (gs j c) x (V b))) atTop (𝓝 (∫ x, φ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b))))) := by
+  intro k r
+  induction r with
+  | zero =>
+    intro L gs g V φ hφ hgs hg hU
+    simp only [Matrix.det_isEmpty, mul_one]
+    exact tendsto_const_nhds
+  | succ r ih =>
+    intro L gs g V φ hφ hgs hg hU
+    have hb := fun (G : Fin (r + 1) → Euclid k → ℝ) (hG : ∀ c, LipschitzWith L (G c)) =>
+      Submission.dor_lmb_fcd_jwc_minor_measurable_bound k (r + 1) L G V hG
+    refine Submission.dor_lmb_fcd_jwc_weak_star_l1_upgrade k
+      (((r + 1).factorial : ℝ) * ((L : ℝ) * ∑ b, ‖V b‖) ^ (r + 1))
+      (fun j x => Matrix.det (Matrix.of fun c b => fderiv ℝ (gs j c) x (V b)))
+      (fun x => Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b)))
+      (fun j => (hb (gs j) (hgs j)).1.aestronglyMeasurable) (hb g hg).1.aestronglyMeasurable
+      (fun j => (hb (gs j) (hgs j)).2) (hb g hg).2 ?_ φ hφ
+    intro ψ hψ hψs
+    have hψ1 : ContDiff ℝ 1 ψ := hψ.of_le (by exact_mod_cast le_top)
+    have hIBPj := fun j => Submission.dor_lmb_fcd_jwc_lipschitz_minor_ibp k r L (gs j) V ψ (hgs j) hψ1 hψs
+    have hIBP := Submission.dor_lmb_fcd_jwc_lipschitz_minor_ibp k r L g V ψ hg hψ1 hψs
+    simp only [hIBPj, hIBP]
+    refine Tendsto.neg (tendsto_finsetSum _ fun b _ => Tendsto.const_mul _ ?_)
+    -- notation for the minors M_b
+    set Mj : ℕ → Euclid k → ℝ := fun j x => Matrix.det (Matrix.of fun (c b' : Fin r) =>
+      fderiv ℝ (gs j c.succ) x (V (b.succAbove b'))) with hMj
+    set M : Euclid k → ℝ := fun x => Matrix.det (Matrix.of fun (c b' : Fin r) =>
+      fderiv ℝ (g c.succ) x (V (b.succAbove b'))) with hM
+    set Br : ℝ := (r.factorial : ℝ) * ((L : ℝ) * ∑ b', ‖V (b.succAbove b')‖) ^ r with hBr
+    have hbr := fun j => Submission.dor_lmb_fcd_jwc_minor_measurable_bound k r L
+      (fun c => gs j c.succ) (fun b' => V (b.succAbove b')) (fun c => hgs j c.succ)
+    -- the weight θ = ∂_{V_b}ψ · g_0 is continuous with compact support
+    have hdψc : Continuous (fun x => fderiv ℝ ψ x (V b)) :=
+      (hψ.continuous_fderiv (by simp)).clm_apply continuous_const
+    have hdψs : HasCompactSupport (fun x => fderiv ℝ ψ x (V b)) :=
+      (hψs.fderiv (𝕜 := ℝ)).comp_left (g := fun T : Euclid k →L[ℝ] ℝ => T (V b)) (by simp)
+    have hdψi : Integrable (fun x => fderiv ℝ ψ x (V b)) := hdψc.integrable_of_hasCompactSupport hdψs
+    have hθi : Integrable (fun x => fderiv ℝ ψ x (V b) * g 0 x) :=
+      (hdψc.mul (hg 0).continuous).integrable_of_hasCompactSupport hdψs.mul_right
+    have hih := ih L (fun j c => gs j c.succ) (fun c => g c.succ) (fun b' => V (b.succAbove b'))
+      (fun x => fderiv ℝ ψ x (V b) * g 0 x) hθi (fun j c => hgs j c.succ) (fun c => hg c.succ)
+      (fun c => hU c.succ)
+    -- error term
+    have herr : Tendsto (fun j => ∫ x, fderiv ℝ ψ x (V b) * (gs j 0 x - g 0 x) * Mj j x) atTop (𝓝 0) := by
+      rw [Metric.tendsto_atTop]
+      intro ε hε
+      set K : ℝ := Br * (∫ x, ‖fderiv ℝ ψ x (V b)‖) + 1 with hK
+      have hBr0 : 0 ≤ Br := by positivity
+      have hK0 : 0 < K := by
+        have : 0 ≤ ∫ x, ‖fderiv ℝ ψ x (V b)‖ := integral_nonneg fun _ => norm_nonneg _
+        positivity
+      have hδ : 0 < ε / (2 * K) := by positivity
+      obtain ⟨N, hN⟩ := (Metric.tendstoUniformly_iff.1 (hU 0) (ε / (2 * K)) hδ).exists_forall_of_atTop
+      refine ⟨N, fun j hj => ?_⟩
+      rw [Real.dist_eq, sub_zero]
+      have hbd : ∀ x, ‖fderiv ℝ ψ x (V b) * (gs j 0 x - g 0 x) * Mj j x‖ ≤
+          (ε / (2 * K) * Br) * ‖fderiv ℝ ψ x (V b)‖ := by
+        intro x
+        have h1 : |gs j 0 x - g 0 x| ≤ ε / (2 * K) := by
+          have := hN j hj x
+          rw [dist_comm, Real.dist_eq] at this
+          exact this.le
+        have h2 : |Mj j x| ≤ Br := (hbr j).2 x
+        rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_mul, abs_mul]
+        calc |fderiv ℝ ψ x (V b)| * |gs j 0 x - g 0 x| * |Mj j x|
+            ≤ |fderiv ℝ ψ x (V b)| * (ε / (2 * K)) * Br := by gcongr
+          _ = (ε / (2 * K) * Br) * |fderiv ℝ ψ x (V b)| := by ring
+      calc |∫ x, fderiv ℝ ψ x (V b) * (gs j 0 x - g 0 x) * Mj j x|
+          = ‖∫ x, fderiv ℝ ψ x (V b) * (gs j 0 x - g 0 x) * Mj j x‖ := (Real.norm_eq_abs _).symm
+        _ ≤ ∫ x, (ε / (2 * K) * Br) * ‖fderiv ℝ ψ x (V b)‖ :=
+            norm_integral_le_of_norm_le (hdψi.norm.const_mul _) (Eventually.of_forall hbd)
+        _ = (ε / (2 * K)) * (Br * ∫ x, ‖fderiv ℝ ψ x (V b)‖) := by rw [integral_const_mul]; ring
+        _ ≤ (ε / (2 * K)) * K := by gcongr; linarith
+        _ = ε / 2 := by field_simp
+        _ < ε := by linarith
+    have hsum := herr.add hih
+    rw [zero_add] at hsum
+    refine hsum.congr' (Eventually.of_forall fun j => ?_)
+    have i2 : Integrable (fun x => fderiv ℝ ψ x (V b) * g 0 x * Mj j x) := by
+      have h1 : Integrable (fun x => Mj j x * (fderiv ℝ ψ x (V b) * g 0 x)) :=
+        Integrable.bdd_mul (c := Br) hθi (hbr j).1.aestronglyMeasurable
+          (Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact (hbr j).2 x)
+      exact h1.congr (Eventually.of_forall fun x => by simp only; ring)
+    have i1 : Integrable (fun x => fderiv ℝ ψ x (V b) * (gs j 0 x - g 0 x) * Mj j x) := by
+      have hgj : Integrable (fun x => fderiv ℝ ψ x (V b) * gs j 0 x) :=
+        (hdψc.mul (hgs j 0).continuous).integrable_of_hasCompactSupport hdψs.mul_right
+      have h1 : Integrable (fun x => Mj j x * (fderiv ℝ ψ x (V b) * gs j 0 x)) :=
+        Integrable.bdd_mul (c := Br) hgj (hbr j).1.aestronglyMeasurable
+          (Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact (hbr j).2 x)
+      have h2 : Integrable (fun x => Mj j x * (fderiv ℝ ψ x (V b) * g 0 x)) :=
+        Integrable.bdd_mul (c := Br) hθi (hbr j).1.aestronglyMeasurable
+          (Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact (hbr j).2 x)
+      exact (h1.sub h2).congr (Eventually.of_forall fun x => by simp only [Pi.sub_apply]; ring)
+    simp only
+    rw [← integral_add i1 i2]
+    congr 1
+    funext x
+    ring
+```
+
+## Key steps
+
+1. Induction on r; r = 0 is trivial (empty determinant 1).
+2. Bounds from minor_bound and weak_star_l1_upgrade reduce the step to C^∞ compactly supported weights ψ.
+3. Lipschitz (∗) (sibling lipschitz_minor_ibp) rewrites ∫ψ·det as −Σ_b (−1)^b ∫ ∂_{V_b}ψ·g_0·M_b, for the sequence and for the limit.
+4. Split g^j_0 = (g^j_0 − g_0) + g_0: the first part → 0 by uniform convergence and the bound on M^j_b; the second converges by the induction hypothesis with the continuous compactly supported weight ∂_{V_b}ψ·g_0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `python3 -I parse of nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f189b35d70/parent-child-handoff.json and cat parent-supplied-plan.md (frozen type, empty sibling prerequisites)`
+- `sed -n 1,140p .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean; sed -n 60,160p .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean (Covector = E [Wedge^Fin n]->L ℝ, DifferentialForm = E -> Covector, TestFormOn U n = testFormOnSubmodule: IsTestForm (ContDiff ∞ and HasCompactSupport) and tsupport ⊆ U)`
+- `python3 -I scans of dag.json (1744 nodes): regex mollif|convolution|ContDiffBump|Piola|null Lagrang|Jacobian minor|weak continuity|lineDeriv|Rademacher|Matrix.det|minor|dense|weak-*; printed statuses and frozen types of cmcs_lipschitz_smoothing, cmcs_ls_mollify_lipschitz, cmr_cc_det_covector_exists, dgcr_stc_exists_normalized_mollifier, dor_ims_sua_mollify_unit_field, dor_lmbsf_pwl_fderiv_weak_integrable, cbr_ci_cp_pr_factorial_mul_eq_sum_det, cbr_ci_cp_tr_smooth_approx_of_continuous, codim1_rdo_dg_bvc_smooth_indicator_approx, regcomp_exists_continuous_unit_form_approx; siblings under deformation-a1; grep dor_lmb_fcd_jwc in dag.json and rg dor_lmb_fcd_jwc in the snapshot project (no match: names fresh)`
+- `git show 00c458d8b5f0043b634cbdd0b8d43d20d1d7deb6:GMT/Ch07/Submission.lean and git show fee01ff86c9de6b32f7cfc6b3f5088750ef5af7e:GMT/Ch07/Submission.lean (accepted proofs of cmcs_ls_mollify_lipschitz and cmr_cc_det_covector_exists); python3 -I import scan of accepted candidate commits (accepted nodes add Mathlib imports such as ContinuousMapDense, BumpFunction.SmoothApprox)`
+- `lake env lean /tmp/jwc-decomp-k7q2/Avail*.lean: #check in the import closure of GMT.Ch07.Submission (present: LipschitzWith.ae_differentiableAt, LipschitzWith.integral_lineDeriv_mul_eq, measurable_fderiv, HasCompactSupport.contDiff_convolution_left, HasCompactSupport.hasFDerivAt_convolution_left, dist_convolution_le, extDeriv_pullback, extDeriv_apply, extDeriv_extDeriv_apply, Matrix.det_succ_row_zero, MultilinearMap.map_sum, Integrable.induction, IsUnifLocDoublingMeasure.ae_tendsto_average; absent without extra imports: ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable, ContDiffBump.normed, Integrable.exists_hasCompactSupport_integral_sub_le, Matrix.det_le, integral_mul_fderiv_eq_neg_fderiv_mul_of_integrable)`
+- `rg -n in snapshot mathlib: theorem ae_convolution_tendsto_right_of_locallyIntegrable (Analysis/Calculus/BumpFunction/Convolution.lean:103), theorem exist_eLpNorm_sub_le (Analysis/Normed/Lp/SmoothApprox.lean:87), theorem det_le (LinearAlgebra/Matrix/AbsoluteValue.lean:43), theorem extDeriv_pullback (Analysis/Calculus/DifferentialForm/Basic.lean:259), DifferentiableAt.continuousAlternatingMapCompContinuousLinearMap (Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean:137), alternatizeUncurryFinCLM_apply (Analysis/Normed/Module/Alternating/Uncurry/Fin.lean:129), precompL_apply (Analysis/Normed/Operator/Bilinear.lean:379), Continuous.exists_contDiff_approx (Geometry/Manifold/SmoothApprox.lean:132), Integrable.exists_hasCompactSupport_integral_sub_le (MeasureTheory/Function/ContinuousMapDense.lean:226)`
+- `sed -n 1,28p, 300,372p, 580,660p verifier/gmt-compare.py (child challenge = import GMT.Ch07.Submission + contract scope replay; new Lean files allowed only under GMT/Ch07); verifier/lean_contract.py validate_lean_statement; runtime.py _existing_lean_name_problem (accepted declarations reusable only with identical frozen type) and _decompose (depth >= max_depth stops splitting)`
+- `lake env lean /tmp/jwc-decomp-k7q2/lean/Chal_*.lean (12 exact comparator challenges), AllProps.lean, ParentAssembly.lean, E3Assembly.lean, C3Assembly.lean, C4bAssembly.lean, C4aAssembly.lean, B2Assembly.lean, H0Proof.lean, E2Proof.lean, C1Proof.lean, B1Proof.lean, AllProofs.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f189b35d70/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f189b35d70/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-e358a4c0e4/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-498906c61d/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-lipschitz-smoot-0c46a16452/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/AbsoluteValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py`
+- `/tmp/jwc-decomp-k7q2/lean/AllProofs.lean`
+- `/tmp/jwc-decomp-k7q2/lean/ParentAssembly.lean`
+
+Snapshot: project b4d606db, mathlib 25730c7c; the snapshot Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. Neither the snapshot project nor SimonGMT contains weak continuity of Jacobian minors, a Piola identity, or a Lipschitz mollification lemma with a.e. derivative convergence (SimonGMT Chapter06 gives the Covector/DifferentialForm/TestFormOn objects and d^2 = 0 / pull-back naturality on open domains). Pinned Mathlib supplies every tool used by the child proofs: Rademacher (LipschitzWith.ae_differentiableAt), Lipschitz integration by parts (LipschitzWith.integral_lineDeriv_mul_eq), convolution differentiation and smoothness, extDeriv_pullback/extDeriv_apply, Laplace expansion, and, with an extra import, ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable, MemLp.exist_eLpNorm_sub_le and Matrix.det_le. Reuse: cmr_cc_det_covector_exists and cmcs_ls_mollify_lipschitz are comparator-accepted with byte-identical frozen types and are reused as siblings; the other nine dor_lmb_fcd_jwc_* names are fresh. Lean: the 12 types compile as exact comparator challenges; the parent and all internal dependencies were proved from their listed siblings, the leaves were proved, and a combined file with all 12 declarations compiles with axioms [propext, Classical.choice, Quot.sound].

@@ -1,0 +1,100 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -il 'isodiametric|steiner' project mathlib/Mathlib",
+        "rg -n 'cbr_ci_iso_' project",
+        "rg -n 'ediam_le|edist_le_ediam_of_mem|ediam_subsingleton' mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+        "rg -n 'finrank_euclideanSpace_fin|dist_sq_eq|norm_eq|toLp_apply|norm_apply_le' mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/iso-independent-audit/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/iso-decomp/final/Comparator.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch01/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Semicontinuity/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/EMetricSpace/Diam.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3684511996/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3684511996/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "GMT/Ch07/Submission.lean",
+        "/tmp/iso-independent-audit/IndependentTypes.lean",
+        "/tmp/iso-decomp/final/Integrated.lean",
+        "/tmp/iso-decomp/final/Comparator.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected normalization theorem. Snapshot revisions match the project configuration; the contract and inspected Mathlib sources match the workspace byte-for-byte. Snapshot searches found no Steiner/isodiametric result in Mathlib and no proposed-name declarations. All nine names are bare identifiers and remain unreserved among 1,380 DAG nodes. Every frozen proposition passes lexical validation and independently elaborates without child implementations. The WithLp constructions select Euclidean spaces, with real slice volumes and ENNReal diameter arithmetic. Dependencies are acyclic and exactly match the sibling references in the supplied implementations. Independently rerunning the supplied proofs and all exact comparator targets succeeded; all nine children and the selected parent use only propext, Classical.choice, and Quot.sound. The children establish the dimensional volume bound; the supplied Haar-factor cancellation on the unit cube then proves precisely the frozen parent inequality for every P and n. The mathematical route agrees with [Simon, Chapter 1, Theorem 2.10 and completion of Theorem 2.9](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "steiner_reflect",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches both reflection clauses and all hypotheses. Coordinate updates establish commutation and involution, hence equality of slices and preservation of the defining absolute-value bound. No regularity assumption or sibling result is needed."
+    },
+    {
+      "key": "steiner_diam",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactness gives compact finite-measure slices with attained extrema. The slice-length bounds and squared-distance identity justify the endpoint comparison and the extended-diameter inequality. The argument also handles empty sets. The frozen type matches the prose."
+    },
+    {
+      "key": "slice_usc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Slice finiteness justifies toReal conversion. Outer regularity and the closed projection of the compact exceptional set produce the required neighbourhood and strict length bound. This proves upper semicontinuity on the entire stated domain without circular reliance."
+    },
+    {
+      "key": "steiner_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type explicitly includes the upper-semicontinuity hypothesis used in the proof. The projection condition and superlevel condition are closed; the supplied 3R estimate proves boundedness. Properness then gives compactness, without requiring the slice_usc sibling."
+    },
+    {
+      "key": "steiner_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable-set hypothesis is explicit and sufficient. The coordinate equivalence preserves the specified volumes, compactness ensures finite slice measures, and the fibre calculation handles empty and zero-length slices. Tonelli proves exactly the asserted equality."
+    },
+    {
+      "key": "symmetric_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Central symmetry gives containment in the stated closed ball when diameter is finite. The pinned ball-volume formula applies at radius zero and dimension zero. The infinite-diameter case correctly forces positive dimension. No measurability hypothesis is missing."
+    },
+    {
+      "key": "symmetric_replacement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite-set induction uses exactly the five declared dependencies, supplying upper semicontinuity and measurability before applying the conditional interfaces. The second induction establishes central symmetry. Empty sets and dimension zero are covered, and the existential conclusion matches the prose."
+    },
+    {
+      "key": "isodiametric",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly separates infinite diameter from bounded sets, passes to compact closure without changing extended diameter, and applies precisely the two declared siblings. Measure and power monotonicity complete the exact inequality for arbitrary sets, including dimension zero."
+    },
+    {
+      "key": "volume_le_hausdorff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The normalization constant is proved positive and finite before cancellation. The isodiametric sibling bounds the rescaled measure by the Hausdorff weight; the pinned le_hausdorffMeasure theorem and scaling back establish the exact setwise measure inequality."
+    }
+  ],
+  "required_changes": []
+}

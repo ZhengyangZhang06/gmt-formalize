@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.restrict_unique-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1",
+  "depth": 3,
+  "title": "Restricted representing integrals are determined by the represented current",
+  "statement": "Let P, k ∈ ℕ and U ⊆ ℝ^P open. For i = 1, 2, 3 let μ_i be a Borel measure on ℝ^P with μ_i(K) < ∞ for every compact K ⊆ U, and ξ_i : ℝ^P → Λ_k(ℝ^P) (MultiVector P k, continuous linear functionals on k-covectors) μ_i-a.e. strongly measurable with |ξ_i(x)(α)| ≤ |α| (Euclidean coefficient norm) for μ_i-a.e. x and every k-covector α. If ∫ ξ₁(x)(ω(x)) dμ₁ = ∫ ξ₂(x)(ω(x)) dμ₂ + ∫ ξ₃(x)(ω(x)) dμ₃ for every test form ω ∈ 𝒟^k(U), then for every Borel set B ⊆ ℝ^P and every ω ∈ 𝒟^k(U): ∫_B ξ₁(x)(ω(x)) dμ₁ = ∫_B ξ₂(x)(ω(x)) dμ₂ + ∫_B ξ₃(x)(ω(x)) dμ₃.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (μ₁ μ₂ μ₃ : Measure (Euclid P)) (ξ₁ ξ₂ ξ₃ : Euclid P → MultiVector P k), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₁ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₂ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₃ K < ∞) → AEStronglyMeasurable ξ₁ μ₁ → AEStronglyMeasurable ξ₂ μ₂ → AEStronglyMeasurable ξ₃ μ₃ → (∀ᵐ x ∂μ₁, ∀ α : Covector (Euclid P) k, |ξ₁ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₂, ∀ α : Covector (Euclid P) k, |ξ₂ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₃, ∀ α : Covector (Euclid P) k, |ξ₃ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U k, ∫ x, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃) → ∀ (B : Set (Euclid P)) (ω : TestFormOn U k), MeasurableSet B → ∫ x in B, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x in B, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x in B, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃",
+  "lean_name": "cbr_setIntegral_eq_of_integral_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3b7f38a08d-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1.l1_duality-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1",
+  "depth": 6,
+  "title": "L¹ norm on a ball is controlled by pairings with smooth test functions bounded by 1 (duality)",
+  "statement": "Let n ∈ ℕ and R, δ, C ∈ ℝ with δ > 0 (ℝⁿ = Euclid n with Lebesgue measure), and let h : ℝⁿ → ℝ be integrable on B_{R+δ}(0). Assume ∫_{ℝⁿ} h(x)g(x) dx ≤ C for every smooth compactly supported g : ℝⁿ → ℝ with tsupport g ⊆ B_{R+δ}(0) and |g(x)| ≤ 1 for all x. Then ∫_{B_R(0)} |h(x)| dx ≤ C.",
+  "lean_statement": "∀ (n : ℕ) (R δ C : ℝ) (h : Euclid n → ℝ), 0 < δ → IntegrableOn h (ball 0 (R + δ)) → (∀ g : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ ball 0 (R + δ) → (∀ x, |g x| ≤ 1) → ∫ x, h x * g x ≤ C) → ∫ x in ball 0 R, |h x| ≤ C",
+  "lean_name": "cbr_ci_pw_bv_l1_duality",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1.smooth_ae_approx-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1.smooth_ae_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-81900362d1-a1"
+}

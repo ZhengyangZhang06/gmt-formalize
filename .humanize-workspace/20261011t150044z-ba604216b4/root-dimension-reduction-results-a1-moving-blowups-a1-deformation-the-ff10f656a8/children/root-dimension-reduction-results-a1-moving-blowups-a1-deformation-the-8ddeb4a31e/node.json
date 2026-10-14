@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.cutoff-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1",
+  "depth": 6,
+  "title": "Cut-off smooth pull-back test forms agreeing with F^#ω and F^#dω near a compact set",
+  "statement": "For all N, N', k, every C^∞ map F : ℝ^N → ℝ^{N'} (ContDiff ℝ (⊤ : ℕ∞) F), every ω ∈ 𝒟^k(ℝ^{N'}) = TestFormOn univ k and every compact K ⊆ ℝ^N there are η ∈ 𝒟^k(ℝ^N) and an open W ⊇ K such that for all x ∈ W, η(x) = (ω(F x)).compContinuousLinearMap (fderiv ℝ F x) and exteriorDerivative η x = (exteriorDerivative ω (F x)).compContinuousLinearMap (fderiv ℝ F x).",
+  "lean_statement": "∀ (N N' k : ℕ) (F : Euclid N → Euclid N') (ω : TestFormOn (univ : Set (Euclid N')) k) (K : Set (Euclid N)), ContDiff ℝ (⊤ : ℕ∞) F → IsCompact K → ∃ (η : TestFormOn (univ : Set (Euclid N)) k) (W : Set (Euclid N)), IsOpen W ∧ K ⊆ W ∧ (∀ x ∈ W, (η : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (F x)).compContinuousLinearMap (fderiv ℝ F x)) ∧ ∀ x ∈ W, exteriorDerivative (η : DifferentialForm (Euclid N) k) x = (exteriorDerivative (ω : DifferentialForm (Euclid N') k) (F x)).compContinuousLinearMap (fderiv ℝ F x)",
+  "lean_name": "dimred_mbl_dt_lpo_cutoff_pullback",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-8ddeb4a31e-a1"
+}

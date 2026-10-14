@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.interior_form-a1.covector_norm-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.interior_form-a1",
+  "depth": 6,
+  "title": "A d-covector on ℝ^{d+1} with coordinates (−1)^i z_i has coefficient norm ‖z‖",
+  "statement": "Let d ∈ ℕ and z ∈ ℝ^{d+1} = Euclid (d+1), and write e_l := EuclideanSpace.single l 1 and z_i for the i-th coordinate of z. Let ε ∈ Covector (Euclid (d+1)) d be a d-covector with ε(i.removeNth e) = (−1)^i z_i for every i ∈ Fin (d+1), where i.removeNth e = (e_{i.succAbove k})_{k ∈ Fin d}. Then the Euclidean coefficient norm of ε equals the Euclidean norm of z: covectorEuclideanNorm ε = ‖z‖.",
+  "lean_statement": "∀ (d : ℕ) (z : Euclid (d + 1)) (ε : Covector (Euclid (d + 1)) d), (∀ i : Fin (d + 1), ε (i.removeNth (fun l : Fin (d + 1) => EuclideanSpace.single l (1 : ℝ))) = (-1 : ℝ) ^ (i : ℕ) * z i) → covectorEuclideanNorm ε = ‖z‖",
+  "lean_name": "cbr_ci_pw_ipf_covector_norm_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3d27e266b7-a1"
+}

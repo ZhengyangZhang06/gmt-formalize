@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1.boundary_mass_le-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1",
+  "depth": 6,
+  "title": "Boundary-mass comparison M_W(∂Y) ≤ M_{pL⁻¹(W)}(∂Z) via cut-off pull-backs of admissible forms",
+  "statement": "Let P, m, l ∈ ℕ, pL : ℝ^P → ℝ^m continuous linear, U ⊆ ℝ^m, S, F ⊆ ℝ^P, μ a measure on ℝ^P, ξ : ℝ^P → Λ_{l+1}(ℝ^P) (MultiVector P (l+1)), Y ∈ 𝒟_{l+1}(U) (GeometricCurrentOn U (l+1)) and Z ∈ 𝒟_{l+1}(ℝ^P) (GeometricCurrentOn univ (l+1)). Write |α| := covectorEuclideanNorm α and γ∘pL := γ.compContinuousLinearMap pL. Assume: F is measurable; F ⊆ S; S ∩ pL⁻¹(K) is compact for every compact K ⊆ U; |γ∘pL| ≤ |γ| for every l-covector γ on ℝ^m; Y(ω) = ∫_F ξ(x)(ω(pL x)∘pL) dμ(x) for every ω ∈ 𝒟^{l+1}(U); and Z(ω) = ∫_F ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟^{l+1}(ℝ^P). Then for every open W ⊆ ℝ^m, M_W(∂Y) ≤ M_{pL⁻¹(W)}(∂Z), where ∂T(γ) = T(dγ) is GeometricCurrentOn.boundary and M_V(T) = T.massOn V is the supremum of ofReal(T(γ)) over test forms γ in the domain of T with tsupport γ ⊆ V and |γ(y)| ≤ 1 for all y.",
+  "lean_statement": "∀ (P m l : ℕ) (pL : Euclid P →L[ℝ] Euclid m) (U : Set (Euclid m)) (S F : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (l + 1)) (Y : GeometricCurrentOn U (l + 1)) (Z : GeometricCurrentOn (univ : Set (Euclid P)) (l + 1)), MeasurableSet F → F ⊆ S → (∀ K : Set (Euclid m), IsCompact K → K ⊆ U → IsCompact (S ∩ pL ⁻¹' K)) → (∀ γ : Covector (Euclid m) l, covectorEuclideanNorm (γ.compContinuousLinearMap pL) ≤ covectorEuclideanNorm γ) → (∀ ω : TestFormOn U (l + 1), Y ω = ∫ x in F, ξ x (((ω : DifferentialForm (Euclid m) (l + 1)) (pL x)).compContinuousLinearMap pL) ∂μ) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (l + 1), Z ω = ∫ x in F, ξ x ((ω : DifferentialForm (Euclid P) (l + 1)) x) ∂μ) → ∀ W : Set (Euclid m), IsOpen W → Y.boundary.massOn W ≤ Z.boundary.massOn (pL ⁻¹' W)",
+  "lean_name": "cbr_ci_pw_proj_boundary_mass_le",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1.pullback_extension-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1.pullback_extension-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-132869f543-a1"
+}

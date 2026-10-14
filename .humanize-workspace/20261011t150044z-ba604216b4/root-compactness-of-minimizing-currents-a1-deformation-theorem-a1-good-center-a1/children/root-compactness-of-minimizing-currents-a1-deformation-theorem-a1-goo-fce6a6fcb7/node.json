@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.good_center-a1.cube_selection-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.good_center-a1",
+  "depth": 4,
+  "title": "Fubini choice of a centre whose coordinate projections avoid small sets (Simon 6.5.1, display (5) and the choice of a)",
+  "statement": "Let P, d ∈ ℕ. For each map e : Fin d → Fin P let E_e ⊆ ℝ^d = (Fin d → ℝ) be an arbitrary set, and suppose Σ_{e : Fin d → Fin P} L^d(E_e) < (1/2)^P, where L^d is the Lebesgue outer measure (volume) on Fin d → ℝ and the sum over all P^d maps is taken in [0, ∞]. Then there is a ∈ ℝ^P (Euclid P) with |a_i − 1/2| < 1/4 for every i such that (a_{e(k)})_{k ∈ Fin d} ∉ E_e for every injective e.",
+  "lean_statement": "∀ (P d : ℕ) (E : (Fin d → Fin P) → Set (Fin d → ℝ)), ∑ e, volume (E e) < ENNReal.ofReal ((1 / 2) ^ P) → ∃ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) ∧ ∀ e : Fin d → Fin P, Function.Injective e → (fun k => a (e k)) ∉ E e",
+  "lean_name": "cmcdt_gc_cube_selection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-goo-fce6a6fcb7-a1"
+}

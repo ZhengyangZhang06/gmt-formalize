@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.finite_planes-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1",
+  "depth": 5,
+  "title": "Growth and positivity make a sum of weighted parallel planes finite, with total weight ≤ 1 and one plane through 0",
+  "statement": "Let P, n ∈ ℕ, c > 0, V ⊆ ℝ^P a linear subspace with dim V = n, Z ⊆ V^⊥ any set and a : ℝ^P → [0, ∞] with a(w) ≥ ofReal c for every w ∈ Z, and let ν = Σ_{w∈Z}a(w)·Hⁿ⌞{y : y − w ∈ V} (Measure.sum indexed by Z; Hⁿ = μHE[n]). Assume ν(B_R(0)) ≤ ω_nRⁿ for all R > 0 (ω_n = unitBallVolume n) and ν(B_r(0)) > 0 for all r > 0. Then there are N ∈ ℕ, pairwise distinct w_1, …, w_N ∈ V^⊥ and reals α_1, …, α_N ≥ c with Σ_iα_i ≤ 1, such that some w_i = 0 and ν = Σ_{i=1}^{N}ofReal(α_i)·Hⁿ⌞{y : y − w_i ∈ V}.",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)) (a : Euclid P → ℝ≥0∞) (c : ℝ), 0 < c → Module.finrank ℝ V = n → Z ⊆ (Vᗮ : Set (Euclid P)) → (∀ w ∈ Z, ENNReal.ofReal c ≤ a w) → ν = Measure.sum (fun w : Z => a w • (μHE[n]).restrict {y : Euclid P | y - w ∈ V}) → (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ unitBallVolume n * ENNReal.ofReal (R ^ n)) → (∀ r : ℝ, 0 < r → 0 < ν (ball 0 r)) → ∃ (N : ℕ) (w : Fin N → Euclid P) (α : Fin N → ℝ), Injective w ∧ (∀ i, w i ∈ Vᗮ) ∧ (∀ i, c ≤ α i) ∧ ∑ i, α i ≤ 1 ∧ (∃ i, w i = 0) ∧ ν = ∑ i, ENNReal.ofReal (α i) • (μHE[n]).restrict {y : Euclid P | y - w i ∈ V}",
+  "lean_name": "cbr_ci_cp_finite_parallel_planes",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-661fba5cee-a1",
+      "result_commit": "a029156d2b71053da5c6d27b9abcc46011c9cfac",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b3595d6587-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.cutoff_extension-a1.imrep_lift-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_succ-a1.cutoff_extension-a1",
+  "depth": 5,
+  "title": "An integer multiplicity triple in U whose carrier lies in a compact K ⊆ U is a triple in ℝ^P",
+  "statement": "Let P, n ∈ ℕ, let U, K ⊆ ℝ^P with K compact and K ⊆ U, and let R = (M, θ, ξ) be an integer multiplicity triple in U (IMRep U n) with carrier M ⊆ K. Then there is an integer multiplicity triple R′ in ℝ^P (IMRep univ n) with the same carrier, multiplicity and orientation: R′.carrier = M, R′.mult = θ and R′.orient = ξ.",
+  "lean_statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n), IsCompact K → K ⊆ U → R.carrier ⊆ K → ∃ R' : IMRep (univ : Set (Euclid P)) n, R'.carrier = R.carrier ∧ R'.mult = R.mult ∧ R'.orient = R.orient",
+  "lean_name": "cbrcs_ce_imrep_lift_univ",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a58c78d0ed-a1"
+}

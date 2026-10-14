@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1.coarea_ae-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1",
+  "depth": 6,
+  "title": "Null sets, level sets and local finiteness of slices from the co-area identity (Simon Ch. 6, 4.1–4.2 with special g)",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P Borel, f : ℝ^P → ℝ Borel and G : ℝ^P → ℝ^P Borel. Write Hᵏ := μHE[k] and assume the co-area identity (CF): for every Borel g : ℝ^P → [0, ∞], the function t ↦ ∫_{M∩f⁻¹(t)} g dHⁿ is Lebesgue-a.e.-measurable on ℝ and ∫_ℝ ∫_{M∩f⁻¹(t)} g dHⁿ dt = ∫_M |G| g dH^{n+1}. Then: (a) (null sets) if a property p holds at H^{n+1}-a.e. point of M, then for L¹-a.e. t it holds at Hⁿ-a.e. point of M ∩ f⁻¹(t); (b) (level sets) for every c ∈ ℝ, G(x) = 0 for H^{n+1}-a.e. x ∈ M with f(x) = c; (c) (local finiteness) if g : ℝ^P → [0, ∞] is Borel and ∫_{M∩K} |G| g dH^{n+1} < ∞ for every compact K ⊆ ℝ^P, then for L¹-a.e. t, ∫_{M∩f⁻¹(t)∩K} g dHⁿ < ∞ for every compact K ⊆ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P), MeasurableSet M → Measurable f → Measurable G → (∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in M ∩ f ⁻¹' {t}, g x ∂μHE[n] = ∫⁻ x in M, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]) → (∀ p : Euclid P → Prop, (∀ᵐ x ∂(μHE[n + 1].restrict M), p x) → ∀ᵐ t, ∀ᵐ x ∂(μHE[n].restrict (M ∩ f ⁻¹' {t})), p x) ∧ (∀ c : ℝ, ∀ᵐ x ∂(μHE[n + 1].restrict M), f x = c → G x = 0) ∧ ∀ g : Euclid P → ℝ≥0∞, Measurable g → (∀ K : Set (Euclid P), IsCompact K → ∫⁻ x in M ∩ K, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] ≠ ∞) → ∀ᵐ t, ∀ K : Set (Euclid P), IsCompact K → ∫⁻ x in M ∩ f ⁻¹' {t} ∩ K, g x ∂μHE[n] ≠ ∞",
+  "lean_name": "dtc_bc_lc_sl_sf_coarea_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-ead4fb4c10-a1"
+}

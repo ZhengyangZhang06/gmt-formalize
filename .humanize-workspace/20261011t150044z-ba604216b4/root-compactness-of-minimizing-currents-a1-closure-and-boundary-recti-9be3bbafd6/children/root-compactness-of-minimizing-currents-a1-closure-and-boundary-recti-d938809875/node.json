@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.translation-a1.smooth_translate-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.translation-a1",
+  "depth": 6,
+  "title": "Vanishing directional-derivative integrals give translation invariance of smooth test-function integrals",
+  "statement": "Let P ∈ ℕ, ν a Borel measure on ℝ^P = Euclid P with ν(K) < ∞ for every compact K ⊆ ℝ^P, and v ∈ ℝ^P. Assume ∫Dφ(y)[v] dν(y) = 0 (the Bochner integral of y ↦ fderiv ℝ φ y v) for every C^∞ function φ : ℝ^P → ℝ with compact support. Then ∫φ(v + y) dν(y) = ∫φ(y) dν(y) for every C^∞ function φ : ℝ^P → ℝ with compact support.",
+  "lean_statement": "∀ (P : ℕ) (ν : Measure (Euclid P)) (v : Euclid P), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, φ (v + y) ∂ν = ∫ y, φ y ∂ν",
+  "lean_name": "cbr_ci_cp_tr_smooth_translate_integral_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d938809875-a1"
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.cylinder_tangent-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1",
+  "depth": 6,
+  "title": "Approximate tangent planes of the cylinder (0,1) × M are ℝe₀ ⊕ J(TₓM) almost everywhere (parent steps 2 and 6)",
+  "statement": "Let N, n ∈ ℕ and M ⊆ ℝ^N be Borel, countably n-rectifiable, with Hⁿ(M) < ∞ (Hᵈ := μHE[d]). Put Ψ(t, x) := (t, x_1, …, x_N) ∈ ℝ^{N+1} (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))), M̃ := Ψ((0, 1) × M), e₀ := EuclideanSpace.single 0 1, Jv := Ψ(0, v), and for a subspace Q ⊆ ℝ^N, Q̃ := span(insert e₀ (J(Q))). Then for H^{n+1}-a.e. y ∈ M̃ the following holds: for all t ∈ ℝ, x ∈ ℝ^N with y = Ψ(t, x) and every subspace Q such that M has approximate tangent space Q at x (HasApproximateTangentSpaceAt n M x Q), M̃ has approximate tangent space Q̃ at y (HasApproximateTangentSpaceAt (n+1) M̃ y Q̃).",
+  "lean_statement": "∀ (N n : ℕ) (M : Set (Euclid N)), MeasurableSet M → CountablyRectifiable n M → μHE[n] M ≠ ∞ → ∀ᵐ y ∂(μHE[n + 1].restrict ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ M))), ∀ (t : ℝ) (x : Euclid N), y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) → ∀ Q : Submodule ℝ (Euclid N), HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt (n + 1) ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ M)) y (Submodule.span ℝ (insert (EuclideanSpace.single 0 1) ((fun v : Euclid N => (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)) : Euclid (N + 1))) '' (Q : Set (Euclid N)))))",
+  "lean_name": "dimred_mbl_dt_lp_imc_cylinder_tangent",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.suspension-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.product_null-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.cylinder_measure-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.suspension-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.product_null-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_cylinder-a1.cylinder_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8-a1",
+      "result_commit": "a2ba78fca36b5fe8a0051278d30da09823c8b59c",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9-a1",
+      "result_commit": "a21680472b6919972de04d02dc3e1395a15d4171",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-9f41123919-a1"
+}

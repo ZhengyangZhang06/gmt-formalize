@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1.mass_le-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1",
+  "depth": 6,
+  "title": "Mass bound M_U(Y) ≤ μ(F ∩ pL⁻¹(U)) for a current given by the pulled-back integral",
+  "statement": "Let P, m, l ∈ ℕ, pL : ℝ^P → ℝ^m continuous linear, U ⊆ ℝ^m open, F ⊆ ℝ^P, μ a measure on ℝ^P, ξ : ℝ^P → Λ_l(ℝ^P) (MultiVector P l) and Y ∈ 𝒟_l(U) (GeometricCurrentOn U l). Write |α| := covectorEuclideanNorm α and γ∘pL := γ.compContinuousLinearMap pL. Assume: for μ-a.e. x, |ξ(x)(β)| ≤ |β| for every l-covector β on ℝ^P; |γ∘pL| ≤ |γ| for every l-covector γ on ℝ^m; and Y(ω) = ∫_F ξ(x)(ω(pL x)∘pL) dμ(x) for every ω ∈ 𝒟^l(U). Then M_U(Y) ≤ μ(F ∩ pL⁻¹(U)), where M_U(Y) = Y.massOn U is the supremum of ofReal(Y(ω)) over ω ∈ 𝒟^l(U) with tsupport ω ⊆ U and |ω(y)| ≤ 1 for all y.",
+  "lean_statement": "∀ (P m l : ℕ) (pL : Euclid P →L[ℝ] Euclid m) (U : Set (Euclid m)) (F : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P l) (Y : GeometricCurrentOn U l), IsOpen U → (∀ᵐ x ∂μ, ∀ β : Covector (Euclid P) l, |ξ x β| ≤ covectorEuclideanNorm β) → (∀ γ : Covector (Euclid m) l, covectorEuclideanNorm (γ.compContinuousLinearMap pL) ≤ covectorEuclideanNorm γ) → (∀ ω : TestFormOn U l, Y ω = ∫ x in F, ξ x (((ω : DifferentialForm (Euclid m) l) (pL x)).compContinuousLinearMap pL) ∂μ) → Y.massOn U ≤ μ (F ∩ pL ⁻¹' U)",
+  "lean_name": "cbr_ci_pw_proj_mass_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e002264f16-a1"
+}

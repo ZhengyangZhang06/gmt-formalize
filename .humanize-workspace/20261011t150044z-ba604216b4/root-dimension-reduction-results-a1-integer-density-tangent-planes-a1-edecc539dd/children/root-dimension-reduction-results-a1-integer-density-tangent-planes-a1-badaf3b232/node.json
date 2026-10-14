@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.cone_set_finite_planes-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1",
+  "depth": 4,
+  "title": "A closed dilation-invariant set that is locally a 2-plane away from 0 lies in finitely many 2-planes meeting only at 0",
+  "statement": "Let P ∈ ℕ and let S ⊆ ℝ^P be a closed set such that s·x ∈ S for every x ∈ S and every real s > 0. Suppose every p ∈ S with p ≠ 0 has δ > 0 and a 2-dimensional linear subspace Q of ℝ^P with S ∩ B_δ(p) = Q ∩ B_δ(p). Then there are q ∈ ℕ and 2-dimensional linear subspaces P_1, …, P_q (a family indexed by Fin q) with P_i ∩ P_j = {0} (P_i ⊓ P_j = ⊥) for all i ≠ j, such that every x ∈ S with x ≠ 0 lies in some P_i.",
+  "lean_statement": "∀ (P : ℕ) (S : Set (Euclid P)), IsClosed S → (∀ x ∈ S, ∀ s : ℝ, 0 < s → s • x ∈ S) → (∀ p ∈ S, p ≠ 0 → ∃ (δ : ℝ) (Q : Submodule ℝ (Euclid P)), 0 < δ ∧ Module.finrank ℝ Q = 2 ∧ S ∩ ball p δ = (Q : Set (Euclid P)) ∩ ball p δ) → ∃ (q : ℕ) (Ps : Fin q → Submodule ℝ (Euclid P)), (∀ i, Module.finrank ℝ (Ps i) = 2) ∧ (∀ i j, i ≠ j → Ps i ⊓ Ps j = ⊥) ∧ ∀ x ∈ S, x ≠ 0 → ∃ i, x ∈ Ps i",
+  "lean_name": "idtp_tdc_cone_set_finite_planes",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-badaf3b232-a1"
+}

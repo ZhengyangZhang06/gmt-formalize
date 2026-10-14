@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.level_cut-a1.cut_cycle-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.level_cut-a1",
+  "depth": 4,
+  "title": "The cut cycle X = D + Q (informally ∂(R⌞B_t(y))): a cycle vanishing off B̄_t(y) that equals ∂R on forms supported in B_t(y)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, y ∈ ℝ^P and t ∈ ℝ; write B := B_t(y) = {x : |x − y| < t} (Metric.ball y t) and B̄ := B̄_t(y). Let R ∈ 𝒟_{n+1}(U) be represented by an integer multiplicity triple R̂ = (M̂, θ̂, ξ̂) in U (IMRep U (n+1), i.e. R(φ) = ∫_{M̂} θ̂⟨φ, ξ̂⟩ dH^{n+1} for every φ ∈ 𝒟^{n+1}(U)), and let (M_B, θ_B, ξ_B) be any integer multiplicity triple in U of dimension n (IMRep U n; no relation to R is assumed). Let D, Q ∈ 𝒟_n(U) satisfy, for every ω ∈ 𝒟ⁿ(U), D(ω) = ∫_{M_B∩B} θ_B⟨ω, ξ_B⟩ dHⁿ and Q(ω) = ∫_{M̂∩B} θ̂⟨dω, ξ̂⟩ dH^{n+1} − ∫_{M_B∩B} θ_B⟨ω, ξ_B⟩ dHⁿ (Bochner integrals with respect to μHE[n] and μHE[n+1]; dω = exteriorDerivative ω). Then there is X ∈ 𝒟_n(U) such that: X(ω) = D(ω) + Q(ω) for every ω ∈ 𝒟ⁿ(U); ∂X = 0 in U (BoundaryVanishes X, which is vacuous when n = 0); X(ω) = 0 for every ω ∈ 𝒟ⁿ(U) whose topological support is disjoint from B̄; and X(ω) = ∂R(ω) for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ B.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : GeometricCurrentOn U (n + 1)) (RR : IMRep U (n + 1)) (RB : IMRep U n) (D Q : GeometricCurrentOn U n) (y : Euclid P) (t : ℝ), RR.Represents R → (∀ ω : TestFormOn U n, D ω = ∫ x in RB.carrier ∩ ball y t, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ ω : TestFormOn U n, Q ω = (∫ x in RR.carrier ∩ ball y t, (RR.mult x : ℝ) * RR.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ ball y t, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → ∃ X : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, X ω = D ω + Q ω) ∧ BoundaryVanishes X ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (closedBall y t) → X ω = 0) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball y t → X ω = R.boundary ω",
+  "lean_name": "dor_lmb_glc_cut_cycle",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-level-cut-a1-a052336671-a1"
+}

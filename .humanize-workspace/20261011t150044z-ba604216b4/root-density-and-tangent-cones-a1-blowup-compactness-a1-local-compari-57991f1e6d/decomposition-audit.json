@@ -1,0 +1,112 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'deform|skeleton|retraction|homotop|latticeFace|flatDistance|cube_bv|polyhedral' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07 -g '*.lean'",
+        "sed -n '250,306p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "measure_Ioo|ae_hasDerivAt|integral_lineDeriv_mul_eq|exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|theorem LipschitzOnWith.extend_real",
+        "git show 42b2a510305ba3378dd09bf89118752f69ba691d:GMT/Ch07/Submission.lean",
+        "git show 9b823b56965f653716675d2e458c314229939386:GMT/Ch07/Submission.lean",
+        "python3 -I /tmp/dfm4_scripts/check_assembly.py .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-57991f1e6d/decomposition-v4.json /tmp/dfm4_work/lean/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dfm4_work/lean/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/deformation_independent_audit_wet3q6ss/Types.lean > /tmp/deformation_independent_audit_wet3q6ss/Types.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/deformation_independent_audit_wet3q6ss/Axioms.lean > /tmp/deformation_independent_audit_wet3q6ss/Axioms.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-57991f1e6d/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-57991f1e6d/decomposition-v4.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/dfm4_work/lean/Assembly.lean",
+        "/tmp/deformation_independent_audit_wet3q6ss/Types.lean",
+        "/tmp/deformation_independent_audit_wet3q6ss/Types.log",
+        "/tmp/deformation_independent_audit_wet3q6ss/Axioms.lean",
+        "/tmp/deformation_independent_audit_wet3q6ss/Axioms.log"
+      ],
+      "conclusion": "The split is appropriate: the Ch07 snapshot search found no deformation theorem, and Ch06 supplies a proposition formulation rather than an available proof. The construction follows the relevant results in [Simon, Chapter 6](https://web.stanford.edu/class/math285/ts-gmt). All 12 frozen types independently elaborate as propositions using the frozen import, without declaring the children. Names are bare and unique; the six reused names have accepted records and byte-identical types, and the six new names are unreserved. Dependencies are acyclic. REP and SL are explicit antecedents discharged by the parent, so their absence from certain sibling dependency lists is valid. The assembly's hypotheses and conclusion match the supplied contracts, and recompilation proves this selected parent's exact type. The assembly, six reused declarations, and six checked mass-representation helpers use only propext, Classical.choice, and Quot.sound. The retained root sorry is not in their axiom dependencies. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "retraction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the quantified coordinate, displacement, and Lipschitz conditions. Compatible radial retractions, the periodic-plane distance estimate, and the segment argument prove the exact bounds. The corrected 1/4 estimate is sufficient, and no deformation theorem is assumed."
+    },
+    {
+      "key": "good_center",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of accepted candidate 42b2a510. The periodic-cylinder identity, Vitali estimate, and simultaneous avoidance argument prove the bounds for both finite measures and every permitted radius, including zero-measure cases."
+    },
+    {
+      "key": "bv_median",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-sided hypothesis yields V ≥ 0 and absolute variation bounds using zero and negated fields. Mollification, Poincaré, the integer median, and the trace estimate establish all three conclusions, including the bound for globally bounded smooth G without compact support."
+    },
+    {
+      "key": "dilation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of accepted candidate fba5d30a. Proper affine push-forward, inverse pullbacks, mass scaling, support transport, and the transported IMRep prove all six clauses. The proof covers degree zero and does not introduce a finite-mass hypothesis."
+    },
+    {
+      "key": "im_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of accepted candidate 9b823b56. Absolute convergence supplies the current, mass bound, and support inclusion. Finite carrier measure, tangent locality, and integer signed multiplicities construct an IMRep without invoking completeness or the parent theorem."
+    },
+    {
+      "key": "vector_riesz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of accepted candidate 5d41e1d. Scalar variation and Jordan decomposition lead to RMK measures; a common dominating measure and Radon–Nikodym densities give the measurable, locally integrable vector field and the exact representation."
+    },
+    {
+      "key": "piece_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of accepted candidate 6ae39d3e. Density and Jacobian differentiation, the derivative lower bound, and the rescaled area formula prove the specified approximate-tangent limit. The exceptional set is independent of the test function, and dimension zero is addressed."
+    },
+    {
+      "key": "slicing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of accepted candidate a1c12d76. The supplied proof constructs both restrictions, proves the support and pointwise left-slice bounds, and derives the lower-integral estimate using Stieltjes measures. It correctly handles L = 0 and infinite strip measure."
+    },
+    {
+      "key": "pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type include the required representation antecedents and normality conditions. Smooth approximation and homotopies establish the operators; the independently proved integral identification and declared IMS/PT dependencies establish integrality. Empty support, degree zero, and unbounded G − F are handled without circular reliance."
+    },
+    {
+      "key": "skeleton",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger all-dimensions contract is justified by the explicit n ≥ P case. Good slicing radii make the shells normal; locality yields telescoping, and summable estimates give the claimed currents, identity, boundary bound, and supports. REP and SL are legitimately assumed and discharged in the parent assembly."
+    },
+    {
+      "key": "face",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite family is fixed before Q₀. Disjoint face neighbourhoods control the sum of variations; integer medians yield the mass estimates. Cubical Stokes and explicit IMReps prove boundary integrality, including zero-dimensional boundaries, while the support arguments establish both stated inclusions."
+    },
+    {
+      "key": "mass_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract follows from continuous-field extension, the declared vector Riesz dependency, polar normalization, and the compact-exhaustion/Lusin argument proving equality on every open W. The cited approximation helpers exist in the accepted IMS candidate and passed axiom checks; no representation theorem is assumed circularly."
+    }
+  ],
+  "required_changes": []
+}

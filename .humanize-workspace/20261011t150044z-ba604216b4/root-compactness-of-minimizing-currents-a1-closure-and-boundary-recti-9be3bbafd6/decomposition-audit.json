@@ -1,0 +1,61 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "hasDerivAt_integral_of_dominated_loc_of_deriv_le|theorem dist_convolution_le|theorem contDiff_convolution_left|ext_of_integral_eq_on_compactlySupported|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts|is_const_of_deriv_eq_zero",
+        "cbr_ci_cp_tr_|dgcr_stc_exists_normalized_mollifier",
+        "tendsto_integral_of_dominated_convergence|integral_map \\{|theorem integral_map|instHasContDiffBumpOfFiniteDimensionalReal",
+        "git show 376e5f482d73f6f48d00a4945533b15f784859d5:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/translation-independent-audit-ie8p81a2/ContractsAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/translation-independent-audit-ie8p81a2/FullChecked.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9be3bbafd6/parent-child-handoff.json",
+        "/tmp/tr-decomp/Full.lean",
+        "/tmp/translation-independent-audit-ie8p81a2/ContractsAndAssembly.lean",
+        "/tmp/translation-independent-audit-ie8p81a2/FullChecked.lean"
+      ],
+      "conclusion": "The split appropriately separates differentiation, smooth approximation, and measure uniqueness. Dependencies are acyclic and correctly directed. All four exact types elaborate independently before child declarations; all names are bare identifiers. The three new names have no conflicting DAG reservation or snapshot/workspace declaration. The accepted mollifier's frozen type is byte-identical to the DAG and candidate declaration. Consulted compiler sources match the pinned snapshot. Independent compilation verifies the exact parent from the child contracts, and recompilation verifies all supplied implementations; every child and the parent use only propext, Classical.choice, and Quot.sound. Euclidean-space instances and the scalar convolution construction were checked. Supplementary mollifier convergence reference: [Rohner, Theorem 11](https://timorohner.com/files/mollifiers.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "smooth_translate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact standalone type matches the prose with all hypotheses. The proof establishes compact-support integrability, a uniform local integrable derivative bound, and the chain rule. Applying the hypothesis to translated tests gives zero derivative everywhere, so the mean value theorem yields the stated integral equality without circular reliance."
+    },
+    {
+      "key": "mollifier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reuse is valid: the accepted declaration has the identical frozen type. The reproduced proof constructs a smooth compactly supported nonnegative bump, proves its integral strictly positive, and normalizes it while preserving the required support inclusion. No positive-dimension assumption is missing."
+    },
+    {
+      "key": "smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states the prose conclusion. The proof uses only the declared mollifier dependency, establishes convolution smoothness and vanishing outside one compact ball, and proves the uniform bound and pointwise convergence by the normalized averaging estimate. Scalar multiplication has the intended real multiplication instance."
+    },
+    {
+      "key": "smooth_ext",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes compact finiteness for both measures and exactly matches the prose. The supplied proof obtains regularity, uses smooth_approx to produce compactly supported smooth tests, applies dominated convergence separately to both measures, and concludes equality by uniqueness of limits and compactly supported continuous-test uniqueness."
+    }
+  ],
+  "required_changes": []
+}

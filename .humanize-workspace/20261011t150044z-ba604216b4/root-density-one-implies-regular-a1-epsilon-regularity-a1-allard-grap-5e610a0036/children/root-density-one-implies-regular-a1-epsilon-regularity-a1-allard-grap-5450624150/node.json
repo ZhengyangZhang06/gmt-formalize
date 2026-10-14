@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.support_lower_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1",
+  "depth": 5,
+  "title": "Unit lower bound for the monotone ball ratio at support points",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, U ⊆ ℝ^P any set, R = (M, θ, ξ) an IMRep U n with μ := R.measure = θHⁿ⌞M (Hⁿ = μHE[n]), W ⊆ U open, and κ ≥ 0. Suppose that the exponentially weighted ball ratio is monotone in W: for every z ∈ ℝ^P and 0 < s < t with B̄_t(z) ⊆ W, e^{κs}s^{−n}μ(B̄_s(z)) ≤ e^{κt}t^{−n}μ(B̄_t(z)) in [0, ∞] (closed balls; coefficients via ENNReal.ofReal). Then for every y ∈ spt μ (R.measure.support) and t > 0 with B̄_t(y) ⊆ W: ω_n ≤ e^{κt}t^{−n}μ(B̄_t(y)), where ω_n = unitBallVolume n.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (κ : ℝ), 0 < n → IsOpen W → W ⊆ U → 0 ≤ κ → (∀ (z : Euclid P) (s t : ℝ), 0 < s → s < t → closedBall z t ⊆ W → ENNReal.ofReal (Real.exp (κ * s) / s ^ n) * R.measure (closedBall z s) ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall z t)) → ∀ y ∈ R.measure.support, ∀ t : ℝ, 0 < t → closedBall y t ⊆ W → unitBallVolume n ≤ ENNReal.ofReal (Real.exp (κ * t) / t ^ n) * R.measure (closedBall y t)",
+  "lean_name": "doragm_support_ball_ratio_ge",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.tangent_lower_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.tangent_lower_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-5450624150-a1"
+}

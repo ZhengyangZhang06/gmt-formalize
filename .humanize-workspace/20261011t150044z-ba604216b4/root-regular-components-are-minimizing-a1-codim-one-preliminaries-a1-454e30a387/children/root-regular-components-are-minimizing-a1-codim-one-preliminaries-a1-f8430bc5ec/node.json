@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.unit_orientation_zero-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1",
+  "depth": 4,
+  "title": "A degree-0 unit orientation is plus or minus evaluation",
+  "statement": "Let P ∈ ℕ, let ξ ∈ Λ_0(ℝ^P) = MultiVector P 0 (a continuous linear functional on the space Covector (Euclid P) 0 of 0-covectors, i.e. of continuous alternating maps (ℝ^P)^{Fin 0} → ℝ), and let Q be a linear subspace of ℝ^P with IsUnitOrientationOf ξ Q (as frozen in the contract: there is an orthonormal τ : Fin 0 → ℝ^P with span(range τ) = Q such that either ξ(α) = α(τ) for every 0-covector α, or ξ(α) = −α(τ) for every 0-covector α). Then there is s ∈ ℝ with |s| = 1 such that ξ(α) = s·α(()) for every 0-covector α, where () = (fun i => i.elim0) : Fin 0 → ℝ^P is the empty family.",
+  "lean_statement": "∀ (P : ℕ) (ξ : MultiVector P 0) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ∃ s : ℝ, |s| = 1 ∧ ∀ α : Covector (Euclid P) 0, ξ α = s * α (fun i => i.elim0)",
+  "lean_name": "regcomp_cop_zdr_unitOrientation_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-f8430bc5ec-a1"
+}

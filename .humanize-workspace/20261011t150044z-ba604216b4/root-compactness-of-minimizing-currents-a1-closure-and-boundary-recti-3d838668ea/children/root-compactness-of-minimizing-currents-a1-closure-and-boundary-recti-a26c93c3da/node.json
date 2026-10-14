@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1.comparison-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1",
+  "depth": 5,
+  "title": "Comparison estimate A(ω) ≤ (κ + cR(1+κ))·m from a small filling and the cone bound",
+  "statement": "Let P, d ∈ ℕ, A, S ∈ 𝒟_{d+1}(ℝ^P) (GeometricCurrentOn univ (d+1)), and ω ∈ 𝒟^{d+1}(ℝ^P) with |ω(y)| ≤ 1 for every y (|·| = covectorEuclideanNorm). Let m ∈ [0, ∞] with m < ∞, x ∈ ℝ^P, and c, κ, R ∈ ℝ with c ≥ 0, κ ≥ 0 and R > 0. Assume the cone bound for ω with constant c: |X(ω)| ≤ c·ϱ·M(X).toReal for every X ∈ 𝒟_{d+1}(ℝ^P), x₀ ∈ ℝ^P and ϱ > 0 with ∂X = 0, M(X) < ∞ and spt X ⊆ B̄_ϱ(x₀). Assume further that ∂S = ∂A, M(A) ≤ m, M(S) ≤ ENNReal.ofReal(κ)·m, spt A ⊆ B̄_R(x) and spt S ⊆ B̄_R(x). Then A(ω) ≤ (κ + c·R·(1 + κ))·m.toReal. Here M(T) = T.mass = M_{ℝ^P}(T), and B̄ denotes a closed ball.",
+  "lean_statement": "∀ (P d : ℕ) (A S : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (ω : TestFormOn (univ : Set (Euclid P)) (d + 1)) (m : ℝ≥0∞) (x : Euclid P) (c κ R : ℝ), 0 ≤ c → 0 ≤ κ → 0 < R → m < ∞ → (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) (d + 1)) y) ≤ 1) → (∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (x₀ : Euclid P) (ϱ : ℝ), 0 < ϱ → X.boundary = 0 → X.mass < ∞ → X.support ⊆ closedBall x₀ ϱ → |X ω| ≤ c * ϱ * X.mass.toReal) → S.boundary = A.boundary → A.mass ≤ m → S.mass ≤ ENNReal.ofReal κ * m → A.support ⊆ closedBall x R → S.support ⊆ closedBall x R → A ω ≤ (κ + c * R * (1 + κ)) * m.toReal",
+  "lean_name": "cbrld_ns_eval_le_of_small_filling",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1.support_sub-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1.mass_sub-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1.support_sub-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.lower_density-a1.null_set-a1.mass_sub-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a26c93c3da-a1"
+}

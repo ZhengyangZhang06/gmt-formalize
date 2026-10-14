@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "extDeriv_pullback|EventuallyEq.extDeriv_eq|exists_contDiff_support_eq_eq_one_iff|exists_cthickening_subset_open|compContinuousLinearMapCLM|enorm_integral_le_lintegral_enorm|lintegral_indicator_one",
+        "compContinuousLinearMap|extDeriv_pullback|exists_contDiff_support_eq_eq_one_iff|massAdmissibleOn|cbr_ci_pw_proj_",
+        "isBoundedBilinearMap_apply|comp_aestronglyMeasurable|prodMk|norm_iteratedFDeriv_zero|le_opNorm|theorem restrict_apply|lemma restrict_apply|ae_restrict_of_ae",
+        "def validate_lean_statement|def contract_scope|NodeChallenges|replay|def _existing_lean_name_problem",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/projection-independent-audit-c4q3qdx2/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/projection-independent-audit-c4q3qdx2/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-35232fb38e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-35232fb38e/decomposition-v1.json",
+        "/tmp/projection-independent-audit-c4q3qdx2/ChallengeTypes.lean",
+        "/tmp/projection-independent-audit-c4q3qdx2/Assembly.lean"
+      ],
+      "conclusion": "The six-child split appropriately separates the selected projection theorem's analytic obligations. Snapshot and workspace contracts are byte-identical; installed dependency revisions match their pins. The project search found no matching reusable lemma. All six names are fresh bare identifiers, and dependencies are acyclic and correctly directed. All frozen types independently elaborate as propositions in the comparator-replayed scope without child implementations. The supplied proofs compile against their exact frozen types. The exact selected parent assembles from them with the existing covector_bounds contract supplied as an explicit assumption; that external obligation remains pending. All six proofs and this conditional assembly use only propext, Classical.choice and Quot.sound. The inferred pullback, smoothness, norm and measure constructions match the prose."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "smooth_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match all hypotheses and conclusions. Compact thickening and smooth Urysohn provide the stated cutoff, support containment, bounds and open neighbourhood. The proof is complete and independent of the parent."
+    },
+    {
+      "key": "pullback_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract is proved using only smooth_cutoff. Scalar homogeneity gives the norm bound; locality and pullback naturality give derivative agreement near the compact lifted support, while local vanishing handles every remaining point of S. No closedness assumption on S is needed."
+    },
+    {
+      "key": "integral_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the frozen type. The coefficient/operator-norm estimate, measurable evaluation and finite-measure indicator domination establish integrability and the uniform constant c. Nonnegativity of M and finiteness needed for toReal monotonicity are explicitly justified."
+    },
+    {
+      "key": "integral_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the exact linear current and integral formula. integral_estimate supplies integrability and a common-support bound; order-zero uniform convergence and the explicit epsilon argument prove the required sequential continuity. Arbitrary U is supported by the pinned definitions."
+    },
+    {
+      "key": "mass_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree, including the absence of measurability or integrability assumptions beyond those stated. The unconditional extended-norm integral bound and measurable preimage of U justify the estimate even for arbitrary F. Taking the admissible supremum proves the exact conclusion."
+    },
+    {
+      "key": "boundary_mass_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly uses pullback_extension to obtain an admissible ambient form with matching exterior derivative on S. Measurability of F and F ⊆ S justify equality of set integrals. The stronger conclusion for every open W is valid because each admissible form already has compact support inside U and W."
+    }
+  ],
+  "required_changes": []
+}

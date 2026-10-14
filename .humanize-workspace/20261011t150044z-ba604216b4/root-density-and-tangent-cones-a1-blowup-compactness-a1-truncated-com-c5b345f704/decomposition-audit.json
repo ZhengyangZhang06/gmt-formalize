@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "bim_|slice_localization|boundary_im_of_compact|extend_to_univ|boundary rectifiab",
+        "theorem (setLIntegral_congr_fun|enorm_integral_le_lintegral_enorm|lintegral_indicator_one_le|integral_withDensity_eq_integral_smul|integral_withDensity_eq_integral_toReal_smul)|lemma integral_withDensity_eq_integral_smul|theorem withDensity_apply|theorem restrict_withDensity|theorem setIntegral_eq_zero_of_forall_eq_zero|theorem setIntegral_eq_integral_of_forall_compl_eq_zero",
+        "def GeometricCurrentOn.restrictDomain|restrictDomain_apply|def GeometricCurrentOn.support|def GeometricCurrentOn.zeroRegion|isOpen_zeroRegion|def WeaklyConvergesOn|def GeometricCurrentOn.boundary|boundary_boundary|def GeometricCurrentOn.massOn|massOn_mono|le_massOn",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dtc-bim-independent-audit/Types.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dtc-bim-independent-audit/Proofs.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dtc-bim-independent-audit/Reuse_extend_to_univ.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dtc-bim-independent-audit/Reuse_imrep_restrict.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dtc-bim-independent-audit/Reuse_vanish_off_compact.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dtc-bim-independent-audit/Reuse_eval_bound.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dtc-bim-independent-audit/Reuse_norm_props.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-c5b345f704/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-c5b345f704/decomposition-v1.json",
+        "/tmp/dtc-bim-independent-audit/Types.lean",
+        "/tmp/dtc-bim-independent-audit/Proofs.lean",
+        "/tmp/dtc-bim-independent-audit/Reuse_extend_to_univ.lean",
+        "/tmp/dtc-bim-independent-audit/Reuse_imrep_restrict.lean",
+        "/tmp/dtc-bim-independent-audit/Reuse_vanish_off_compact.lean",
+        "/tmp/dtc-bim-independent-audit/Reuse_eval_bound.lean",
+        "/tmp/dtc-bim-independent-audit/Reuse_norm_props.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and byte-identical contract definitions. The project search found no matching implementation. Inspected library results justify the measure, support, and boundary operations used. All seven frozen propositions independently elaborate in comparator scope. Both supplied new proofs and the exact selected-parent assembly compile, using only their declared dependencies as temporary axioms. All five accepted candidates recompile with only propext, Classical.choice, and Quot.sound. Their frozen types match exactly; both new names are unreserved bare identifiers. The dependency graph is acyclic. Splitting is appropriate: localization, extension, and the compact deformation/closure argument establish this selected parent through the supplied restriction-and-gluing assembly."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "slice_localization",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type match, including all four assumed propositions. The proof establishes the representing-measure bounds, obtains a good radius without assuming slice-mass measurability, localizes the slice mass, and proves IM, support, finite masses, and boundary agreement. Its compiled proof uses exactly the two declared helpers."
+    },
+    {
+      "key": "compact_boundary_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "DTr and fixed-ambient CL_P(d) match the parent's hypotheses exactly. DTr supplies IM boundaries directly, avoiding circular boundary rectifiability. The evaluation estimates prove weak convergence; uniform local bounds correctly handle both d = 0 and positive degree. The supplied proof compiles with exactly eval_bound and norm_props."
+    },
+    {
+      "key": "extend_to_univ",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of accepted cmc_fc_extend_to_univ at its identical frozen type. The written proof establishes carrier concentration, global IM extension, restriction equality, support containment, and both mass inequalities using a cutoff. Its existing support-vanishing dependency is acyclic; independent recompilation confirms only standard axioms."
+    },
+    {
+      "key": "imrep_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical type. Absolute continuity transfers strong measurability; restriction commutes with density; the finite measurable density identity proves the action formula even without integrability assumptions on the form. No openness hypothesis is missing. Independent recompilation confirms only standard axioms."
+    },
+    {
+      "key": "vanish_off_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical type. The proof handles the empty compact set and constructs a cutoff for the nonempty case. Multiplication preserves the test form's support in U while placing it in V, so the argument proves the stated inequality for arbitrary U and G. Independent recompilation confirms only standard axioms."
+    },
+    {
+      "key": "eval_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical type. The norm bound implies r ≥ 0; positive-epsilon rescaling makes both signs admissible. Finite mass justifies conversion to real bounds, and letting epsilon tend to zero includes r = 0. Independent recompilation confirms only standard axioms."
+    },
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid accepted reuse with identical type. The finite coefficient-vector construction proves subadditivity and homogeneity. The operator-norm coordinate bound gives the stated domination and Lipschitz continuity, without requiring n ≤ P. Independent recompilation confirms only standard axioms."
+    }
+  ],
+  "required_changes": []
+}

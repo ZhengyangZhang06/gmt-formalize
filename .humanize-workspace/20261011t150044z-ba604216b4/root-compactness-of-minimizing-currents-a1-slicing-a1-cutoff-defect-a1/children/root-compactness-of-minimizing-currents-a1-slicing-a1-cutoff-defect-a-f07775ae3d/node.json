@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.cutoff_defect-a1.smul_test_form-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.cutoff_defect-a1",
+  "depth": 4,
+  "title": "Test forms in U are closed under multiplication by C^∞ functions",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, let g : ℝ^P → ℝ be C^∞ (ContDiff ℝ ∞ g), and let ω ∈ 𝒟ⁿ(U) = TestFormOn U n. Thus ω is a C^∞ n-form on ℝ^P whose topological support is compact and contained in U. Then the n-form x ↦ g(x)·ω(x) also belongs to 𝒟ⁿ(U).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (g : Euclid P → ℝ) (ω : TestFormOn U n), ContDiff ℝ (⊤ : ℕ∞) g → (fun x => g x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n",
+  "lean_name": "cmcs_cd_smul_mem_testFormOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-cutoff-defect-a-f07775ae3d-a1"
+}

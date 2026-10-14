@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.constant_limit-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1",
+  "depth": 5,
+  "title": "Currents L¹-close to a constant n-vector converge weakly, with a limsup mass bound",
+  "statement": "Let P, n ∈ ℕ and |·| = covectorEuclideanNorm, ‖·‖ the operator norm on MultiVector P n = Λ_n(ℝ^P), ‖·‖ₑ its [0,∞]-valued version. Let X_k (k ∈ ℕ) and C be currents in 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), ν_k, ν, μ_k measures on ℝ^P, τ_k : ℝ^P → Λ_n(ℝ^P), ζ₀ ∈ Λ_n(ℝ^P) and s ∈ ℝ such that: ν_k and ν are finite on compact sets; ∫ f dν_k → ∫ f dν for every continuous compactly supported f : ℝ^P → ℝ; limsup_k ν_k(K) ≤ ν(K) for every compact K; each τ_k is ν_k-a.e. strongly measurable; s ≥ 0 and |ζ₀(α)| ≤ s|α| for every n-covector α; for every R > 0, ∫⁻_{B̄_R(0)} ‖τ_k(x) − ζ₀‖ₑ dν_k(x) → 0; X_k(ω) = ∫ τ_k(x)(ω(x)) dν_k(x) and C(ω) = ∫ ζ₀(ω(x)) dν(x) for every test n-form ω; and M_W(X_k) = μ_k(W) for every k and every open W. Then X_k ⇀ C (WeaklyConvergesOn) and limsup_k μ_k(K) ≤ ofReal(s)·ν(K) for every compact K.",
+  "lean_statement": "∀ (P n : ℕ) (Xs : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (νs : ℕ → Measure (Euclid P)) (ν : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (τs : ℕ → Euclid P → MultiVector P n) (ζ₀ : MultiVector P n) (s : ℝ), (∀ (k : ℕ) (K : Set (Euclid P)), IsCompact K → νs k K < ∞) → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x ∂(νs k)) atTop (𝓝 (∫ x, f x ∂ν))) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun k => νs k K) atTop ≤ ν K) → (∀ k, AEStronglyMeasurable (τs k) (νs k)) → 0 ≤ s → (∀ α : Covector (Euclid P) n, |ζ₀ α| ≤ s * covectorEuclideanNorm α) → (∀ R : ℝ, 0 < R → Tendsto (fun k => ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k)) atTop (𝓝 0)) → (∀ (k : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n), Xs k ω = ∫ x, τs k x ((ω : DifferentialForm (Euclid P) n) x) ∂(νs k)) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, C ω = ∫ x, ζ₀ ((ω : DifferentialForm (Euclid P) n) x) ∂ν) → (∀ (k : ℕ) (W : Set (Euclid P)), IsOpen W → (Xs k).massOn W = μs k W) → WeaklyConvergesOn Xs C ∧ ∀ K : Set (Euclid P), IsCompact K → limsup (fun k => μs k K) atTop ≤ ENNReal.ofReal s * ν K",
+  "lean_name": "cbr_ci_bl_constant_vector_limit",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.covector_norm-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.covector_norm-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-5981b082bc-a1"
+}

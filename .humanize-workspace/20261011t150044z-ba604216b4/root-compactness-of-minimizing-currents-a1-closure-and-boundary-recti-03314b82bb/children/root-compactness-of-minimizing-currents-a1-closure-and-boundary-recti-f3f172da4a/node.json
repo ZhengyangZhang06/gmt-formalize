@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.mollified_uniform-a1.translate_admissible-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.mollified_uniform-a1",
+  "depth": 6,
+  "title": "Translates of a test function supported in B_s(0) by centres in the closed ball B̄_R(0) are test functions in B_{2R}(0) with the same integral",
+  "statement": "Let n ∈ ℕ, R, s ∈ ℝ with s < R, φ : ℝⁿ → ℝ (ℝⁿ = Euclid n with Lebesgue measure) smooth (ContDiff ℝ ⊤) with tsupport φ ⊆ B_s(0) (open ball), and x ∈ closedBall(0, R). Let b(y) := φ(x − y). Then b is smooth (ContDiff ℝ ⊤), b has compact support, tsupport b ⊆ B_{2R}(0), and ∫_{ℝⁿ} φ(x − y) dy = ∫_{ℝⁿ} φ(y) dy.",
+  "lean_statement": "∀ (n : ℕ) (R s : ℝ) (φ : Euclid n → ℝ) (x : Euclid n), s < R → ContDiff ℝ (⊤ : ℕ∞) φ → tsupport φ ⊆ ball 0 s → x ∈ closedBall 0 R → ContDiff ℝ (⊤ : ℕ∞) (fun y => φ (x - y)) ∧ HasCompactSupport (fun y => φ (x - y)) ∧ tsupport (fun y => φ (x - y)) ⊆ ball 0 (2 * R) ∧ ∫ y, φ (x - y) = ∫ y, φ y",
+  "lean_name": "cbr_ci_pw_mu_translate_admissible",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f3f172da4a-a1"
+}

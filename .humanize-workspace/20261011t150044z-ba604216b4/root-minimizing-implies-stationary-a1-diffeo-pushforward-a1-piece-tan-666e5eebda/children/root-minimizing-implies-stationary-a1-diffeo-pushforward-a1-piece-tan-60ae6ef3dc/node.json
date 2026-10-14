@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.rescaled_integral_limit-a1.compl_average-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.rescaled_integral_limit-a1",
+  "depth": 6,
+  "title": "Averages of the complement indicator vanish at a density-one point",
+  "statement": "Let n ∈ ℕ, B ⊆ ℝ^n Borel and b ∈ ℝ^n. Suppose λ(B ∩ B̄_ρ(b))/λ(B̄_ρ(b)) → 1 as ρ → 0⁺, with the quotient taken in [0, ∞]. Then ⨍_{B̄_s(b)} 1_{ℝ^n∖B} dλ → 0 as s → 0⁺. Here λ is Lebesgue measure on ℝ^n, and the averages are Bochner set averages of the real-valued indicator function of the complement of B.",
+  "lean_statement": "∀ (n : ℕ) (B : Set (Euclid n)) (b : Euclid n), MeasurableSet B → Tendsto (fun ρ : ℝ => volume (B ∩ closedBall b ρ) / volume (closedBall b ρ)) (𝓝[>] 0) (𝓝 1) → Tendsto (fun s : ℝ => ⨍ a in closedBall b s, Bᶜ.indicator (fun _ => (1 : ℝ)) a ∂volume) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "pit_ril_compl_average_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-60ae6ef3dc-a1"
+}

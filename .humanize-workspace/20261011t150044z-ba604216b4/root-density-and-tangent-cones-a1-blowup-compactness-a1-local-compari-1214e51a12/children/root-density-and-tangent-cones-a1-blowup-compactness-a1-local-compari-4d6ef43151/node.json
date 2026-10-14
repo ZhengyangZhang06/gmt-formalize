@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1.imrep_of_subset-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1",
+  "depth": 6,
+  "title": "An integer multiplicity triple carried by a Borel subset of a rectifiable set with tangent data (Simon Ch. 6, Definition 4.4)",
+  "statement": "Let P, n ∈ ℕ and Hⁿ := μHE[n]. Let A ⊆ S ⊆ ℝ^P be Borel sets with S countably n-rectifiable; let θ : ℝ^P → ℕ be Borel with θ(x) > 0 for every x ∈ S and ∫_{S∩K} θ dHⁿ < ∞ for every compact K ⊆ ℝ^P; and let ζ : ℝ^P → MultiVector P n (n-vectors, the continuous linear functionals on n-covectors) be a.e. strongly measurable for Hⁿ⌞A. Assume that for Hⁿ-a.e. x ∈ A there is a linear subspace Q of ℝ^P such that S has approximate tangent space Q at x (SimonGMT HasApproximateTangentSpaceAt n S x Q) and ζ(x) is a unit orientation of Q (contract IsUnitOrientationOf). Then (A, θ, ζ) is an integer multiplicity triple in ℝ^P of dimension n: there is R : IMRep univ n with R.carrier = A, R.mult = θ and R.orient = ζ.",
+  "lean_statement": "∀ (P n : ℕ) (A S : Set (Euclid P)) (θ : Euclid P → ℕ) (ζ : Euclid P → MultiVector P n), MeasurableSet A → MeasurableSet S → A ⊆ S → CountablyRectifiable n S → Measurable θ → (∀ x ∈ S, 0 < θ x) → (∀ K : Set (Euclid P), IsCompact K → ∫⁻ x in S ∩ K, (θ x : ℝ≥0∞) ∂μHE[n] ≠ ∞) → AEStronglyMeasurable ζ (μHE[n].restrict A) → (∀ᵐ x ∂(μHE[n].restrict A), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n S x Q ∧ IsUnitOrientationOf (ζ x) Q) → ∃ R : IMRep (univ : Set (Euclid P)) n, R.carrier = A ∧ R.mult = θ ∧ R.orient = ζ",
+  "lean_name": "dtc_bc_lc_sl_sf_imrep_of_subset",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-4d6ef43151-a1"
+}

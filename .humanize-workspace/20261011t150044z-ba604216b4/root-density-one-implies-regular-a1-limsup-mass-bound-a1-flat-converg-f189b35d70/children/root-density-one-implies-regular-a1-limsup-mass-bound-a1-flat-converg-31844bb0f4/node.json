@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.weak_star_l1_upgrade-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1",
+  "depth": 6,
+  "title": "Weak-* convergence of bounded functions: smooth compactly supported test functions suffice for L¹ weights",
+  "statement": "Let k ∈ ℕ, C ∈ ℝ, and let F_j (j ∈ ℕ) and F be functions ℝᵏ → ℝ (ℝᵏ = Euclid k with Lebesgue measure) that are a.e.-strongly measurable with |F_j(x)| ≤ C and |F(x)| ≤ C for all j and x. Suppose ∫ ψ·F_j → ∫ ψ·F as j → ∞ for every C^∞ function ψ : ℝᵏ → ℝ with compact support. Then ∫ φ·F_j → ∫ φ·F for every Lebesgue integrable φ : ℝᵏ → ℝ.",
+  "lean_statement": "∀ (k : ℕ) (C : ℝ) (Fs : ℕ → Euclid k → ℝ) (F : Euclid k → ℝ), (∀ j, AEStronglyMeasurable (Fs j) (volume : Measure (Euclid k))) → AEStronglyMeasurable F (volume : Measure (Euclid k)) → (∀ j x, |Fs j x| ≤ C) → (∀ x, |F x| ≤ C) → (∀ ψ : Euclid k → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → Tendsto (fun j => ∫ x, ψ x * Fs j x) atTop (𝓝 (∫ x, ψ x * F x))) → ∀ φ : Euclid k → ℝ, Integrable φ → Tendsto (fun j => ∫ x, φ x * Fs j x) atTop (𝓝 (∫ x, φ x * F x))",
+  "lean_name": "dor_lmb_fcd_jwc_weak_star_l1_upgrade",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-31844bb0f4-a1"
+}

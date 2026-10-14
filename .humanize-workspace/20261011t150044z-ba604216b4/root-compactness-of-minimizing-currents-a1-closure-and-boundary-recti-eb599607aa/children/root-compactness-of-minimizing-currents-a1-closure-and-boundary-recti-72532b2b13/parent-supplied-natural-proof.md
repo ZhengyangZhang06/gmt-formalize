@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.directional-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.directional-a1.span_vanishing-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 5(ii)–(iii) of the parent proof (linearity of v ↦ ∫Dψ(y)[v]dν(y), justified by integrability of the continuous compactly supported integrands against a measure finite on compact sets, and its vanishing on the span of the generators), stated for an arbitrary set S of directions.
+Notation: ℝ^P = Euclid P; Dφ(y) = fderiv ℝ φ y, a continuous linear functional on ℝ^P; C^∞ means ContDiff ℝ (⊤ : ℕ∞) (in the contract scope ∞ is ENNReal's, so the order is written (⊤ : ℕ∞)); for v ∈ ℝ^P let g_v(y) := Dφ(y)[v] and I(v) := ∫ g_v dν.
+1. (ν is finite on compacts.) The hypothesis ν(K) < ∞ for every compact K is precisely the defining property of IsFiniteMeasureOnCompacts ν, so this instance is available.
+2. (Each g_v is integrable.) Fix v. Since φ is C^∞, hence C^1, the map y ↦ Dφ(y) is continuous (ContDiff.continuous_fderiv, using 1 ≤ ∞), and evaluating at the fixed vector v shows that g_v is continuous (Continuous.clm_apply with a constant). Since φ has compact support, g_v has compact support (HasCompactSupport.fderiv_apply: g_v vanishes outside the compact set tsupport φ). A continuous compactly supported function is integrable with respect to a measure that is finite on compact sets (Continuous.integrable_of_hasCompactSupport, with step 1); hence g_v is ν-integrable.
+3. (I is linear.) Because each Dφ(y) is linear, g_{x+x'}(y) = g_x(y) + g_{x'}(y), g_{c•x}(y) = c·g_x(y) and g_0(y) = 0 for all y (map_add, map_smul, map_zero). By step 2 and linearity of the integral on integrable functions, I(x + x') = I(x) + I(x') (integral_add) and I(c•x) = c·I(x) (integral_const_mul); also I(0) = ∫0 dν = 0.
+4. (Induction over the span.) Let v ∈ span S. We prove I(v) = 0 by induction on membership in the span (Submodule.span_induction): (generators) if v ∈ S then I(v) = 0 by hypothesis; (zero) I(0) = 0 by step 3; (sums) if I(x) = 0 and I(x') = 0 then I(x + x') = I(x) + I(x') = 0 by step 3; (scalar multiples) if I(x) = 0 then I(c•x) = c·I(x) = 0 by step 3. Hence ∫Dφ(y)[v]dν(y) = I(v) = 0 for every v ∈ span S. ∎
+Formalization note: this child is a machine leaf (one theorem `Submission.cbr_ci_cp_dir_integral_fderiv_span` inserted inside `namespace GMT.Ch07` of GMT/Ch07/Submission.lean before main_theorem; no helper declarations, no set_option). The following tactic proof was compiled on the pinned toolchain (Lean v4.35.0-rc3, Mathlib 25730c7c, simongmt 2b36630) in exactly that file context under default maxHeartbeats, passes the workflow's leaf source-delta check, and depends only on propext, Classical.choice, Quot.sound; it may be used verbatim:
+theorem Submission.cbr_ci_cp_dir_integral_fderiv_span : ∀ (P : ℕ) (ν : Measure (Euclid P)) (φ : Euclid P → ℝ) (S : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → (∀ v ∈ S, ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ v ∈ Submodule.span ℝ S, ∫ y, fderiv ℝ φ y v ∂ν = 0 := by
+  intro P ν φ S hν hφ hφc hS
+  have : IsFiniteMeasureOnCompacts ν := ⟨fun K hK => hν K hK⟩
+  have hint : ∀ v, Integrable (fun y => fderiv ℝ φ y v) ν := by
+    intro v
+    have hc : Continuous (fun y => fderiv ℝ φ y v) :=
+      (hφ.continuous_fderiv (by simp)).clm_apply continuous_const
+    exact hc.integrable_of_hasCompactSupport (hφc.fderiv_apply (𝕜 := ℝ) v)
+  intro v hv
+  induction hv using Submodule.span_induction with
+  | mem x hx => exact hS x hx
+  | zero => simp
+  | add x y _ _ hx hy =>
+    simp only [map_add]
+    rw [integral_add (hint x) (hint y), hx, hy, add_zero]
+  | smul c x _ hx =>
+    simp only [map_smul, smul_eq_mul]
+    rw [integral_const_mul, hx, mul_zero]
+
+## Key steps
+
+1. ν is finite on compact sets (IsFiniteMeasureOnCompacts), and for each v the integrand y ↦ Dφ(y)[v] is continuous with compact support, hence ν-integrable.
+2. v ↦ ∫Dφ(y)[v]dν(y) is additive and homogeneous (integral_add, integral_const_mul) and vanishes at 0.
+3. By Submodule.span_induction, vanishing on S extends to every v ∈ span S.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp same GMT/Ch07/Submission.lean (identical)`
+- `rg -n "cbr_ci_cp_dir" /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project (no match); python3 -I scan of dag.json (1549 nodes): names cbr_ci_cp_dir_wedge_riesz_vector, cbr_ci_cp_dir_integral_fderiv_span, cbr_ci_cp_dir_cycle_fderiv_integral_zero unused; lean_statement substrings 'removeNth u))) → ζ₀ γ = inner', '∂ν = 0) → ∀ v ∈ Submodule.span', 'inner ℝ v w', 'Submodule.span ℝ S' (no match)`
+- `python3 -I scan of dag.json for lean_name dgcr_bwd_extDeriv_smul_const (status accepted, candidate_commit 9dcae6bdd56dfe358491f8344e7a8610f929bf88, lean_statement byte-identical); git show 9dcae6bdd56dfe358491f8344e7a8610f929bf88 -- GMT/Ch07/Submission.lean (one theorem inserted before main_theorem)`
+- `grep -rln "alternatizeUncurryFin" /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib; sed -n 80,170p Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean (alternatizeUncurryFinCLM exists; the children instead follow the supplied proof via extderiv_smul)`
+- `rg -n "theorem toDual_symm_apply|theorem inner_right_of_mem_orthogonal|theorem Continuous.integrable_of_hasCompactSupport|theorem HasCompactSupport.fderiv_apply|theorem span_induction|class IsFiniteMeasureOnCompacts|theorem integral_const_mul |theorem integral_congr_ae|theorem real_inner_smul_left|theorem inner_add_left|theorem innerSL_apply_apply|theorem real_inner_comm|def toContinuousLinearMap|theorem Continuous.clm_apply|theorem HasCompactSupport.smul_right|theorem fderiv_mul_const" /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib (all found)`
+- `sed -n 20,145p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean; sed -n 100,130p .../Chapter06/Currents.lean (Covector, DifferentialForm, exteriorDerivative = extDeriv, exteriorDerivative_apply, testFormOnSubmodule / TestFormOn)`
+- `lake env lean /tmp/wedge-decomp/Elab.lean (the three new child types elaborate after import GMT.Ch07.Submission in the contract namespace/opens)`
+- `lake env lean /tmp/wedge-decomp/lean/Final.lean (Submission.* children with exact types, the parent from them, and hypothesis-only wedge_assembly_exact: three new child types verbatim ⊢ frozen parent type; #print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/wedge-decomp/lean/FullSubmission2.lean (Submission.lean at 9dcae6bd + the three child proofs extracted verbatim from the natural_proof notes + parent assembly before main_theorem: only main_theorem's frozen sorry warning; axioms propext, Classical.choice, Quot.sound)`
+- `python3 -I /tmp/wedge-decomp/build/check.py (verifier/lean_contract.py validate_lean_statement on all five strings; key/lean_name regexes; replica of leaf_verification.check_source_delta for each child inserted before main_theorem: pass)`
+- `sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose: max_depth 6, so children of this depth-5 node are leaves; _existing_lean_name_problem/_accepted_checkpoint: an accepted node is reusable under an identical type; _reference_use_problem) and leaf_verification.py (check_source_delta forbidden tokens)`
+- `independent reviewer agent: re-compiled Final.lean, FullSubmission2.lean and per-child files /tmp/wedge-review/IsoSpan.lean (bare frozen base), IsoRiesz.lean and IsoPair.lean (base 9dcae6bd): all pass; string-identity and digest checks pass`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/LinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Span/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-eb599607aa/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-eb599607aa/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6c861e5511/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-18aa777bf2/parent-supplied-natural-proof.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-18aa777bf2/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/parent_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/wedge-decomp/lean/Final.lean`
+- `/tmp/wedge-decomp/lean/FullSubmission2.lean`
+
+The snapshot contract (project b4d606db, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. No snapshot declaration or DAG node already states the Riesz-vector, span-vanishing or cycle-pairing lemma, and the three new names cbr_ci_cp_dir_* are fresh; the only reuse is the accepted dgcr_bwd_extDeriv_smul_const with its byte-identical type. Every Mathlib lemma cited in the child proofs exists in the snapshot and is reachable from import GMT.Ch07.Submission: InnerProductSpace.toDual_symm_apply, Submodule.inner_right_of_mem_orthogonal, Continuous.integrable_of_hasCompactSupport, HasCompactSupport.fderiv_apply, Submodule.span_induction, IsFiniteMeasureOnCompacts, integral_const_mul, integral_congr_ae, real_inner_smul_left, inner_add_left, innerSL_apply_apply, real_inner_comm, LinearMap.toContinuousLinearMap, Continuous.clm_apply, HasCompactSupport.smul_right and fderiv_mul_const. The compiled checks listed in the queries confirm that the three child types imply the frozen parent type, and that each child has a compiling leaf proof using only propext, Classical.choice and Quot.sound.
