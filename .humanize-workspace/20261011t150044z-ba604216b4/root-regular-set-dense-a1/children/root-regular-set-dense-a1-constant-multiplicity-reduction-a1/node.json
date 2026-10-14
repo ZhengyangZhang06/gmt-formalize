@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1",
+  "parent_id": "root.regular_set_dense-a1",
+  "depth": 2,
+  "title": "Dividing a minimizing cycle by its constant local multiplicity",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, and let N ⊆ ℝ^P be an arbitrary set. Let T ∈ 𝒟_n(U) be minimizing in U ∩ N in the sense of Simon 7.1.1 (IsMinimizingIn): T is integer multiplicity, and M_W(T) ≤ M_W(S) for every open W ⊂⊂ U and every integer multiplicity S ∈ 𝒟_n(U) with ∂S = ∂T and spt(S − T) a compact subset of U ∩ N ∩ W. Assume spt T ⊆ N and ∂T = 0 in U, let R = (M, θ, ξ) represent T, and let μ_T = R.measure.\nLet z₀ ∈ spt T and r > 0 with B_r(z₀) ⊆ U, and let N₀ ≥ 1 be an integer such that θ(x) = N₀ for μ_T-a.e. x ∈ B_r(z₀) and HasMassDensity T z₀ N₀ holds (Θ^n(μ_T, z₀) = N₀).\nThen there is T₀ ∈ 𝒟_n(B_r(z₀)) (namely T₀ = N₀^{−1}·T restricted to B_r(z₀)) with the following properties:\n- T₀ is minimizing in B_r(z₀) ∩ N;\n- spt T₀ ⊆ N;\n- ∂T₀ = 0 in B_r(z₀);\n- M_W(T₀) < ∞ for every open W with W̄ compact ⊆ B_r(z₀);\n- z₀ ∈ spt T₀;\n- HasMassDensity T₀ z₀ 1;\n- z₀ ∈ reg T₀ implies z₀ ∈ reg T.",
+  "lean_statement": "∀ (P n : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (z₀ : Euclid P) (r : ℝ) (N₀ : ℕ), IsOpen U → IsMinimizingIn T (U ∩ N) → T.support ⊆ N → BoundaryVanishes T → R.Represents T → 0 < r → ball z₀ r ⊆ U → 0 < N₀ → (∀ᵐ x ∂R.measure, x ∈ ball z₀ r → R.mult x = N₀) → z₀ ∈ T.support → HasMassDensity T z₀ N₀ → ∃ T₀ : GeometricCurrentOn (ball z₀ r) n, IsMinimizingIn T₀ (ball z₀ r ∩ N) ∧ T₀.support ⊆ N ∧ BoundaryVanishes T₀ ∧ (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W (ball z₀ r) → T₀.massOn W < ∞) ∧ z₀ ∈ T₀.support ∧ HasMassDensity T₀ z₀ 1 ∧ (z₀ ∈ regularSet T₀ → z₀ ∈ regularSet T)",
+  "lean_name": "rsd_constant_multiplicity_reduction",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1",
+    "root.regular_set_dense-a1.support_iff_weight_pos-a1",
+    "root.regular_set_dense-a1.integer_combination-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.support_iff_weight_pos-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-a1"
+}
