@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ee36a7983703987e94cf1428af1c6f65b87c12d33c95122daae5bc348c360bcd",
+  "git_delta": {
+    "base_commit": "aab0244e7650e2cb878ff3ffa06c7307108a69a0",
+    "candidate_commit": "0c4a2d889ef2ace802253866592c5bf4af07e9ce",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_lp_imc_cylinder_imrep",
+    "diff_sha256": "1b914a67c6d2514e6eeaae0d21c627ce0cef9fae0a9021868554f326f5a76be9",
+    "source_sha256": "0766c6b2d6cef26ae3c054d93abd325ab38df25173b0578f204d780cdea24154",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_lp_imc_cylinder_imrep",
+      "statement": "∀ (N n : ℕ) (R : IMRep (univ : Set (Euclid N)) n), ∫⁻ x in R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] ≠ ∞ → ∃ R' : IMRep (univ : Set (Euclid (N + 1))) (n + 1), R'.carrier = (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ R.carrier) ∧ (∀ (t : ℝ) (x : Euclid N), R'.mult (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = R.mult x) ∧ ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ (t : ℝ) (α : Covector (Euclid (N + 1)) (n + 1)) (β : Covector (Euclid N) n), (∀ v : Fin n → Euclid N, β v = α (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → R'.orient (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) α = R.orient x β",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
