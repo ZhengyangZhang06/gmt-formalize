@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1.piece_locally_line-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1",
+  "depth": 6,
+  "title": "Near a point of one open line piece away from the closures of the others, a union of pieces is locally the line (parent step 3e)",
+  "statement": "Let P ∈ ℕ, ι a finite type, p, v : ι → ℝ^P, I : ι → Set ℝ, M ⊆ ℝ^P, k ∈ ι and x ∈ ℝ^P. Put S_j := {p_j + t·v_j : t ∈ I_j}. Assume ‖v_k‖ = 1, I_k is open, M ⊆ ⋃_j S_j, S_k ⊆ M, x ∈ S_k, and x ∉ closure(S_j) for every j ≠ k. Then there is r > 0 such that M ∩ B_r(x) = {y : y − x ∈ span{v_k}} ∩ B_r(x).",
+  "lean_statement": "∀ (P : ℕ) (ι : Type) [Finite ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (M : Set (Euclid P)) (k : ι) (x : Euclid P), ‖v k‖ = 1 → IsOpen (I k) → M ⊆ (⋃ j, (fun t : ℝ => p j + t • v j) '' I j) → (fun t : ℝ => p k + t • v k) '' I k ⊆ M → x ∈ (fun t : ℝ => p k + t • v k) '' I k → (∀ j, j ≠ k → x ∉ closure ((fun t : ℝ => p j + t • v j) '' I j)) → ∃ r : ℝ, 0 < r ∧ M ∩ ball x r = {y | y - x ∈ Submodule.span ℝ {v k}} ∩ ball x r",
+  "lean_name": "idtp_fons_odc_pc_piece_locally_line",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2a055a4c1e-a1"
+}

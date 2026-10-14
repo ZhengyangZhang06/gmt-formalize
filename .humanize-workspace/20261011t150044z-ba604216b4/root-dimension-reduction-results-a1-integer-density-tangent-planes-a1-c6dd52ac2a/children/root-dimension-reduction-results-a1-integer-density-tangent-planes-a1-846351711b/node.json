@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.antipodal-a1.ray_mass-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.antipodal-a1",
+  "depth": 6,
+  "title": "Mass of a weighted ray current in a ball centred at 0 (parent step 8, mass of C)",
+  "statement": "Let P ∈ ℕ, C ∈ 𝒟_1(ℝ^P) (GeometricCurrentOn univ 1), R an integer multiplicity triple in ℝ^P (IMRep univ 1) with R.Represents C, F ⊆ ℝ^P a finite set of unit vectors and m : ℝ^P → ℤ such that R.measure(A) = Σ_{e∈F} |m(e)|·ℒ¹((0,∞) ∩ {t : te ∈ A}) for every Borel set A ⊆ ℝ^P. Then for every r ∈ ℝ, M_{B_r(0)}(C) = C.massOn(B_r(0)) = ofReal((Σ_{e∈F} |m(e)|)·r) in [0, ∞] (B_r(0) the open ball; both sides are 0 when r ≤ 0).",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1) (R : IMRep (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ m : Euclid P → ℤ, R.Represents C → (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ e ∈ F, ENNReal.ofReal |(m e : ℝ)| * volume (Ioi (0 : ℝ) ∩ (fun t : ℝ => t • e) ⁻¹' A)) → ∀ r : ℝ, C.massOn (ball (0 : Euclid P) r) = ENNReal.ofReal ((∑ e ∈ F, |(m e : ℝ)|) * r)",
+  "lean_name": "idtp_fons_odc_antipodal_ray_mass",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-im-mass-measure-a1-a1",
+      "result_commit": "01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-846351711b-a1"
+}
