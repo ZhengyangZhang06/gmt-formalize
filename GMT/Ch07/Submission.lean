@@ -1814,6 +1814,49 @@ theorem Submission.idtp_cttp_bti_rescaled_tests_tendsto : ∀ (P : ℕ) (μs : �
   have hlim := (hconv f hf hfc).add hdiff
   rw [add_zero] at hlim
   exact hlim.congr fun j => add_sub_cancel _ _
+/-- **Simon, Appendix A, proof of A.4 (p. 228)**: the identity behind
+`ψ_{βx,1} = lim φ_{x+λⱼβx,λⱼ}`.  If `μ` is `n`-homogeneous, `μ(c·A) = cⁿμ(A)` for `c > 0`, and
+`ν(B) = λ⁻ⁿμ(η_{p,λ}⁻¹B)` is its blow-up at `p` with scale `λ > 0`, then for `s = 1 + λt > 0`,
+`∫ f(y − tp) dν(y) = sⁿ ∫ f(sy) dν(y)` for every continuous `f`.  With `τ = (· − tp)` and
+`m_s = (s ·)`, `η⁻¹(τ⁻¹B) = s·η⁻¹(m_s⁻¹B)`, hence `τ_#ν = sⁿ(m_s)_#ν`. -/
+theorem Submission.idtp_cttp_bti_blowup_translate_integral : ∀ (P n : ℕ) (μ ν : Measure (Euclid P)) (p : Euclid P) (lam t : ℝ), 0 < lam → 0 < 1 + lam * t → (∀ c : ℝ, 0 < c → ∀ A : Set (Euclid P), MeasurableSet A → μ ((fun x => c • x) '' A) = ENNReal.ofReal (c ^ n) * μ A) → (∀ B : Set (Euclid P), MeasurableSet B → ν B = ENNReal.ofReal (lam⁻¹ ^ n) * μ (dilation p lam ⁻¹' B)) → ∀ f : Euclid P → ℝ, Continuous f → ∫ y, f (y - t • p) ∂ν = (1 + lam * t) ^ n * ∫ y, f ((1 + lam * t) • y) ∂ν := by
+  intro P n μ ν p lam t hlam hs hhom hblow f hf
+  set s := 1 + lam * t with hs_def
+  -- `τ`, `m_s` and `η = η_{p,λ}` are continuous, hence Borel
+  have hτ : Measurable fun y : Euclid P => y - t • p :=
+    (continuous_id.sub continuous_const).measurable
+  have hm : Measurable fun y : Euclid P => s • y := (continuous_const_smul s).measurable
+  have hη : Measurable (dilation p lam) :=
+    (continuous_const.add (dilationCLM P lam).continuous).measurable
+  -- `sλ⁻¹ = λ⁻¹ + t` and `s(λ⁻¹s⁻¹) = λ⁻¹`
+  have h1 : s * lam⁻¹ = lam⁻¹ + t := by
+    rw [hs_def]
+    field_simp
+  have h2 : s * (lam⁻¹ * s⁻¹) = lam⁻¹ := by
+    rw [mul_left_comm, mul_inv_cancel₀ hs.ne', mul_one]
+  -- `η⁻¹(τ⁻¹B) = s·η⁻¹(m_s⁻¹B)`: the image under `m_s` is the preimage under `m_{s⁻¹}`, and
+  -- `s·η(s⁻¹y) = η(y) − tp`
+  have hset : ∀ B : Set (Euclid P), dilation p lam ⁻¹' ((fun y => y - t • p) ⁻¹' B) =
+      (fun x => s • x) '' (dilation p lam ⁻¹' ((fun y => s • y) ⁻¹' B)) := by
+    intro B
+    rw [image_eq_preimage_of_inverse (f := fun x : Euclid P => s • x) (g := fun x => s⁻¹ • x)
+      (fun x => inv_smul_smul₀ hs.ne' x) (fun x => smul_inv_smul₀ hs.ne' x)]
+    ext y
+    have key : s • (-(lam⁻¹ • p) + lam⁻¹ • s⁻¹ • y) = -(lam⁻¹ • p) + lam⁻¹ • y - t • p := by
+      simp only [smul_add, smul_neg, smul_smul]
+      rw [h2, h1, add_smul]
+      abel
+    simp only [mem_preimage, dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply]
+    rw [key]
+  -- `τ_#ν = sⁿ(m_s)_#ν` on Borel sets, by the blow-up formula and homogeneity at `c = s`
+  have hmap : ν.map (fun y => y - t • p) = ENNReal.ofReal (s ^ n) • ν.map (fun y => s • y) := by
+    ext B hB
+    rw [Measure.map_apply hτ hB, Measure.smul_apply, Measure.map_apply hm hB, smul_eq_mul,
+      hblow _ (hτ hB), hblow _ (hm hB), hset, hhom s hs _ (hη (hm hB)), mul_left_comm]
+  -- change of variables; no integrability of `f` is needed
+  rw [← integral_map hτ.aemeasurable hf.aestronglyMeasurable, hmap, integral_smul_measure,
+    integral_map hm.aemeasurable hf.aestronglyMeasurable,
+    ENNReal.toReal_ofReal (pow_nonneg hs.le n), smul_eq_mul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
