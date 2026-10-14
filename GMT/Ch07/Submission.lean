@@ -782,6 +782,58 @@ theorem Submission.dpf_det_gram_stdOrthonormalBasis_eq : ∀ (P n : ℕ) (Q : Su
   have h2 := key (OrthonormalBasis.mk hτ' hspan')
   simp only [OrthonormalBasis.coe_mk] at h2
   exact (key (stdOrthonormalBasis ℝ Q)).trans h2.symm
+/-- **Simon Ch. 2, 4.11–4.12, (2.1)**: the Jacobian of `Φ ∘ ψ` factors through a chart.  Let
+`ψ : V → W` be a local representation of `N` as in (4.1), `Q(x) = T_xN` on `N`, `v ∈ V` and `Φ`
+differentiable at `ψ(v)`.  With `A = Dψ(v)`, `L = DΦ(ψ(v))` and `G(T) = det[⟨Teₖ, Teₗ⟩]`,
+`G(A) > 0` and `√G(D(Φ ∘ ψ)(v)) = J^NΦ(ψ(v)) · √G(A)`, where `J^NΦ(y) = √det[⟨Lτᵢ, Lτⱼ⟩]` for
+`τ = stdOrthonormalBasis ℝ (Q y)`.  Indeed `D(Φ ∘ ψ)(v) = L ∘ A` and `Q(ψ(v)) = T_{ψ(v)}N = range A`,
+of dimension `m` as `A` is injective; for an orthonormal frame `σ` of `range A`,
+`G(L ∘ A) = det[⟨Lσᵢ, Lσⱼ⟩] · G(A)` and `det[⟨Lσᵢ, Lσⱼ⟩] = det[⟨Lτᵢ, Lτⱼ⟩]`. -/
+theorem Submission.codim1_ac_saf_chart_gram_factor : ∀ (P m r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (Q : Euclid P → Submodule ℝ (Euclid P)) (Φ : Euclid P → Euclid P) (v : Euclid m), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → (∀ x ∈ N, (Q x : Set (Euclid P)) = tangentSpace N x) → DifferentiableAt ℝ Φ (ψ v) → v ∈ V → 0 < Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ ψ v (EuclideanSpace.single k 1)) (fderiv ℝ ψ v (EuclideanSpace.single l 1))) ∧ Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ (Φ ∘ ψ) v (EuclideanSpace.single k 1)) (fderiv ℝ (Φ ∘ ψ) v (EuclideanSpace.single l 1)))) = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q (ψ v))) => inner ℝ (fderiv ℝ Φ (ψ v) (stdOrthonormalBasis ℝ (Q (ψ v)) i)) (fderiv ℝ Φ (ψ v) (stdOrthonormalBasis ℝ (Q (ψ v)) j)))) * Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ ψ v (EuclideanSpace.single k 1)) (fderiv ℝ ψ v (EuclideanSpace.single l 1)))) := by
+  intro P m r N W V ψ Q Φ v hr hV hW hψ hinj hψV hprop hDψ hQ hΦ hv
+  -- chain rule: `ψ` is `C¹` on the open set `V`, so `D(Φ ∘ ψ)(v) = DΦ(ψ(v)) ∘ Dψ(v)`
+  have hψ1 : ContDiffOn ℝ 1 ψ V := hψ.of_le (by exact_mod_cast hr)
+  have hψd : DifferentiableAt ℝ ψ v :=
+    (hψ1.differentiableOn one_ne_zero v hv).differentiableAt (hV.mem_nhds hv)
+  have hchain : fderiv ℝ (Φ ∘ ψ) v = (fderiv ℝ Φ (ψ v)).comp (fderiv ℝ ψ v) :=
+    fderiv_comp v hΦ hψd
+  -- `Q(ψ(v)) = T_{ψ(v)}N = range Dψ(v)`, as `ψ(v) ∈ ψ(V) = W ∩ N`
+  have hT := Submission.chart_tangentSpace_eq_range_fderiv P m r N W V ψ v hr hV hW hψ hinj hψV
+    hprop hDψ hv
+  have hψvWN : ψ v ∈ W ∩ N := hψV ▸ mem_image_of_mem ψ hv
+  set A : Euclid m →L[ℝ] Euclid P := fderiv ℝ ψ v
+  set L : Euclid P →L[ℝ] Euclid P := fderiv ℝ Φ (ψ v)
+  have hQv : Q (ψ v) = LinearMap.range (A : Euclid m →ₗ[ℝ] Euclid P) := by
+    apply SetLike.coe_injective
+    rw [hQ _ hψvWN.2, hT, LinearMap.coe_range]
+    rfl
+  -- an orthonormal frame `σ : Fin m → ℝᴾ` of `S = range A`, which has dimension `m` (`A` injective)
+  have hAinj : Injective A := hDψ v hv
+  set S : Submodule ℝ (Euclid P) := LinearMap.range (A : Euclid m →ₗ[ℝ] Euclid P) with hS
+  have hfr : Module.finrank ℝ S = m := by
+    rw [hS, LinearMap.finrank_range_of_inj (f := (A : Euclid m →ₗ[ℝ] Euclid P)) hAinj,
+      finrank_euclideanSpace_fin]
+  let b : OrthonormalBasis (Fin m) ℝ S := (stdOrthonormalBasis ℝ S).reindex (finCongr hfr)
+  let σ : Fin m → Euclid P := fun i => (b i : Euclid P)
+  have hσ : Orthonormal ℝ σ := b.orthonormal.comp_linearIsometry S.subtypeₗᵢ
+  have hspan : Submodule.span ℝ (Set.range σ) = S := by
+    have hrange : Set.range σ = S.subtype '' Set.range b := by
+      ext x
+      simp [σ]
+    rw [hrange, Submodule.span_image]
+    have htop : Submodule.span ℝ (Set.range b) = ⊤ := by
+      simpa [OrthonormalBasis.coe_toBasis] using b.toBasis.span_eq
+    rw [htop, Submodule.map_top, Submodule.range_subtype]
+  -- `G(A) > 0` and `G(L ∘ A) = det[⟨Lσᵢ, Lσⱼ⟩] · G(A) = det[⟨Lτᵢ, Lτⱼ⟩] · G(A)`
+  have hcomp := Submission.codim1_lura_gram_det_comp_orthonormal m P P A
+  have hpos := hcomp.1 hAinj
+  have hmul := hcomp.2 L σ hσ hspan
+  have hstd := Submission.dpf_det_gram_stdOrthonormalBasis_eq P m (Q (ψ v)) L σ hσ
+    (hspan.trans hQv.symm)
+  refine ⟨hpos, ?_⟩
+  rw [hchain]
+  simp only [ContinuousLinearMap.comp_apply]
+  rw [hmul, hstd, Real.sqrt_mul' _ hpos.le]
 /-- **Injective area formula with the Gram-determinant Jacobian** (Simon Ch. 2, (3.3) and (3.5)).
 For `f : ℝᵐ → ℝᴾ` let `Jf(x) = √det(⟨Df(x)eₖ, Df(x)eₗ⟩)`, `eₖ` the standard basis of `ℝᵐ`.  Then
 (i) `Jf` is Borel; (ii) if `s` is Borel, `f` is differentiable with injective `Df(x)` at every
@@ -1181,8 +1233,20 @@ of dimension `m` as `A` is injective; for an orthonormal frame `σ` of `range A`
 theorem Submission.codim1_ac_saf_chart_gram_factor : ∀ (P m r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (Q : Euclid P → Submodule ℝ (Euclid P)) (Φ : Euclid P → Euclid P) (v : Euclid m), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → (∀ x ∈ N, (Q x : Set (Euclid P)) = tangentSpace N x) → DifferentiableAt ℝ Φ (ψ v) → v ∈ V → 0 < Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ ψ v (EuclideanSpace.single k 1)) (fderiv ℝ ψ v (EuclideanSpace.single l 1))) ∧ Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ (Φ ∘ ψ) v (EuclideanSpace.single k 1)) (fderiv ℝ (Φ ∘ ψ) v (EuclideanSpace.single l 1)))) = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q (ψ v))) => inner ℝ (fderiv ℝ Φ (ψ v) (stdOrthonormalBasis ℝ (Q (ψ v)) i)) (fderiv ℝ Φ (ψ v) (stdOrthonormalBasis ℝ (Q (ψ v)) j)))) * Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ ψ v (EuclideanSpace.single k 1)) (fderiv ℝ ψ v (EuclideanSpace.single l 1)))) := by
   intro P m r N W V ψ Q Φ v hr hV hW hψ hinj hψV hprop hDψ hQ hΦ hv
   -- chain rule: `ψ` is `C¹` on the open set `V`, so `D(Φ ∘ ψ)(v) = DΦ(ψ(v)) ∘ Dψ(v)`
+
+/-- **Simon Ch. 2, (3.2) and (3.5) on a chart (4.1)**: let `ψ : V → W` be a local representation
+of `N` as in (4.1), `Q(x) = TₓN` on `N`, and `Φ : ℝᴾ → ℝᴾ` a 1:1 `C¹` map with `DΦ` injective;
+write `J(x) = √det(⟨DΦ(x)τᵢ, DΦ(x)τⱼ⟩)`, `τ` the standard orthonormal basis of `Q(x)`.  Then
+`∫_{Φ(B)} g dHᵐ = ∫_B J(x) g(Φ(x)) dHᵐ(x)` for Borel `B ⊆ W ∩ N` and every `g ≥ 0`.  With
+`A = V ∩ ψ⁻¹(B)` (Borel, `ψ(A) = B`), the weighted parametric area formula for `Φ ∘ ψ` and for
+`ψ` turns both sides into integrals over `A` against Lebesgue measure, and the integrands agree
+on `A` because `J_{Φ∘ψ} = (J ∘ ψ) · J_ψ` there. -/
+theorem Submission.codim1_ac_saf_chart_area_formula : ∀ (P m r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (Q : Euclid P → Submodule ℝ (Euclid P)) (Φ : Euclid P → Euclid P), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → (∀ x ∈ N, (Q x : Set (Euclid P)) = tangentSpace N x) → ContDiff ℝ 1 Φ → Injective Φ → (∀ x, Injective (fderiv ℝ Φ x)) → ∀ B : Set (Euclid P), B ⊆ W ∩ N → MeasurableSet B → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in Φ '' B, g y ∂μHE[m] = ∫⁻ x in B, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) j))))) * g (Φ x) ∂μHE[m] := by
+  intro P m r N W V ψ Q Φ hr hV hW hψ hinj hψV hprop hDψ hQ hΦ hΦinj hDΦ B hBWN hB g
+  classical
+  -- `ψ` is `C¹` on the open set `V`, hence differentiable on `V`; `Φ` is differentiable
   have hψ1 : ContDiffOn ℝ 1 ψ V := hψ.of_le (by exact_mod_cast hr)
-  have hψd : DifferentiableAt ℝ ψ v :=
+  have hψd : ∀ v ∈ V, DifferentiableAt ℝ ψ v := fun v hv =>
     (hψ1.differentiableOn one_ne_zero v hv).differentiableAt (hV.mem_nhds hv)
   have hchain : fderiv ℝ (Φ ∘ ψ) v = (fderiv ℝ Φ (ψ v)).comp (fderiv ℝ ψ v) :=
     fderiv_comp v hΦ hψd
@@ -1332,6 +1396,54 @@ theorem Submission.codim1_ac_saf_jacobian_continuousOn : ∀ (P m : ℕ) (N : Se
     hψV ▸ ⟨hball (mem_ball.2 (hy'd.trans_le (min_le_right _ _))), hy'⟩
   rw [hJ v' hv', hJ v₀ hv₀]
   exact hG hv' (hinv v' hv' (hy'd.trans_le (min_le_left _ _)))
+  have hΦd : ∀ x, DifferentiableAt ℝ Φ x := fun x => hΦ.differentiable one_ne_zero x
+  -- Step 1: the parameter set `A = V ∩ ψ⁻¹(B)` has `ψ(A) = B`
+  set A : Set (Euclid m) := V ∩ ψ ⁻¹' B with hAdef
+  have hAV : A ⊆ V := inter_subset_left
+  have hAimg : ψ '' A = B := by
+    apply Subset.antisymm
+    · rintro _ ⟨v, hv, rfl⟩
+      exact hv.2
+    · intro b hb
+      have : b ∈ ψ '' V := hψV ▸ hBWN hb
+      obtain ⟨v, hv, rfl⟩ := this
+      exact ⟨v, ⟨hv, hb⟩, rfl⟩
+  -- `A` is Borel: on `V` it is the preimage of `B` under the Borel map `ψ` on `V`, `0` off `V`
+  have hAmeas : MeasurableSet A := by
+    have hm : Measurable (V.piecewise ψ (fun _ => (0 : Euclid P))) :=
+      ContinuousOn.measurable_piecewise hψ1.continuousOn continuousOn_const hV.measurableSet
+    have : A = V ∩ (V.piecewise ψ (fun _ => (0 : Euclid P))) ⁻¹' B := by
+      ext v
+      simp only [hAdef, mem_inter_iff, mem_preimage]
+      constructor
+      · rintro ⟨hv, hb⟩
+        exact ⟨hv, by rw [Set.piecewise_eq_of_mem _ _ _ hv]; exact hb⟩
+      · rintro ⟨hv, hb⟩
+        exact ⟨hv, by rw [Set.piecewise_eq_of_mem _ _ _ hv] at hb; exact hb⟩
+    rw [this]
+    exact hV.measurableSet.inter (hm hB)
+  -- Steps 2–3: the weighted area formula for `Φ ∘ ψ` on `A` (`D(Φ ∘ ψ) = DΦ ∘ Dψ` is injective)
+  have h1 := (Submission.codim1_lura_gram_area_formula m P (Φ ∘ ψ)).2 A hAmeas
+    (fun v hv => (hΦd (ψ v)).comp v (hψd v (hAV hv)))
+    (fun v hv => by
+      rw [fderiv_comp v (hΦd (ψ v)) (hψd v (hAV hv))]
+      exact (hDΦ (ψ v)).comp (hDψ v (hAV hv)))
+    (fun a ha b hb hab => hinj (hAV ha) (hAV hb) (hΦinj hab)) g
+  -- Step 4: the weighted area formula for `ψ` on `A` with weight `J · (g ∘ Φ)`
+  have h2 := (Submission.codim1_lura_gram_area_formula m P ψ).2 A hAmeas
+    (fun v hv => hψd v (hAV hv)) (fun v hv => hDψ v (hAV hv)) (hinj.mono hAV)
+    (fun x => ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) j))))) * g (Φ x))
+  rw [image_comp, hAimg] at h1
+  rw [hAimg] at h2
+  rw [h1, h2]
+  -- Steps 5–6: on `A`, `J_{Φ∘ψ} = (J ∘ ψ) · J_ψ`, so the two integrands over `A` agree
+  apply setLIntegral_congr_fun hAmeas
+  intro v hv
+  have hfac := Submission.codim1_ac_saf_chart_gram_factor P m r N W V ψ Q Φ v hr hV hW hψ hinj hψV
+    hprop hDψ hQ (hΦd (ψ v)) (hAV hv)
+  simp only [Function.comp_apply]
+  rw [hfac.2, ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
+  ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
