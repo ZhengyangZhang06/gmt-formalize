@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aa64953571b45fafa23a4a404ddb9e48ba7f678d3c22ca5d034a53d32d8c3b81",
+  "git_delta": {
+    "base_commit": "40795fbcf5f7b51a12507c22dd07ab0b2c66e546",
+    "candidate_commit": "e431fb6fdf1392762683750a5b108abdb620ba6b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_stab_second_variation_nonneg",
+    "diff_sha256": "745a80e9b01bb4be1c46671b2a5f964efe44373f02be26504e782618e2efb628",
+    "source_sha256": "ec7a03be14aa250487ee6d3fd8b74cc8cf861bbafca8d27cad7a5a24485ce196",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_stab_second_variation_nonneg",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (E : Set (Euclid P)) (J : ℝ → Euclid P → ℝ) (q : Euclid P → ℝ) (B C t₀ : ℝ), MeasurableSet E → μ E ≠ ∞ → 0 < t₀ → AEStronglyMeasurable q (μ.restrict E) → (∀ x ∈ E, |q x| ≤ B) → (∀ t : ℝ, |t| < t₀ → μ E ≤ ∫⁻ x in E, ENNReal.ofReal (J t x) ∂μ) → (∀ t : ℝ, |t| < t₀ → ∀ x ∈ E, J t x ≤ 1 + t ^ 2 / 2 * q x + C * |t| ^ 3) → 0 ≤ ∫ x in E, q x ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
