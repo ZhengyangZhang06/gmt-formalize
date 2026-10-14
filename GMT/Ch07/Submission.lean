@@ -3375,64 +3375,6 @@ theorem Submission.cbr_ci_bl_covector_opNorm_le : ∀ (P n : ℕ) (α : Covector
         simp only [Fintype.card_fin]
         push_cast
         ring
-/-- **`Hⁿ` and the measure `θ Hⁿ⌞M` under the blow-up map `η = η_{a,λ}`, `λ > 0`** (step 2 of the
-blow-up argument in the integer-multiplicity criterion for cycles; `η_{x,λ}(y) = λ⁻¹(y − x)` and
-the change of variables for `η_{x,λ#}` as in the proof of Simon Ch. 6, 8.1, chapter-06.txt
-lines 2230–2238).  `η = blowUpMap a λ` is the contract's `dilation a λ`, `D(y) = −λ⁻¹a + λ⁻¹y`,
-an affine homeomorphism with inverse `x ↦ a + λx`; so (i) `η(M) = D(M)` is Borel.
-`Hⁿ(D(s)) = λ⁻ⁿ Hⁿ(s)` for every `s`, as `D(s)` is the translate by `−λ⁻¹a` of `λ⁻¹s`.  For Borel
-`B` this gives (ii): `Hⁿ(B ∩ D(M)) = Hⁿ(D(D⁻¹B ∩ M)) = λ⁻ⁿ Hⁿ(D⁻¹B ∩ M)`.  (iii) follows from
-(ii): pull `λ⁻ⁿ` out of `withDensity` and transport the density along `D`, as
-`θ(a + λD(x)) = θ(x)`. -/
-theorem Submission.cbr_ci_bl_blowUp_restrict_scaling : ∀ (P n : ℕ) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (a : Euclid P) (lam : ℝ), MeasurableSet M → Measurable θ → 0 < lam → MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M) ∧ μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M) = ENNReal.ofReal (lam⁻¹ ^ n) • Measure.map (dilation a lam) (μHE[n].restrict M) ∧ ENNReal.ofReal (lam⁻¹ ^ n) • Measure.map (dilation a lam) ((μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x))) = (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap a lam '' M)).withDensity (fun y => ENNReal.ofReal (θ (a + lam • y))) := by
-  intro P n M θ a lam hM _ hlam
-  -- Step 1: `η = blowUpMap a λ` is `D = dilation a λ`, `y ↦ −λ⁻¹a + λ⁻¹y`, an affine
-  -- homeomorphism with inverse `x ↦ a + λx`
-  have hηD : Poincare.SimonGMT.Chapter03.blowUpMap a lam = dilation a lam := by
-    funext y
-    simp only [Poincare.SimonGMT.Chapter03.blowUpMap, dilation, dilationCLM,
-      _root_.smul_apply, ContinuousLinearMap.id_apply, smul_sub]
-    abel
-  have hDc : (((Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
-      (Homeomorph.addLeft (-(lam⁻¹ • a)))) : Euclid P → Euclid P) = dilation a lam := by
-    funext y
-    simp [dilation, dilationCLM]
-  have hme : MeasurableEmbedding (dilation a lam) := by
-    rw [← hDc]
-    exact Homeomorph.measurableEmbedding _
-  have hιD : ∀ x, a + lam • dilation a lam x = x := fun x => by
-    simp [dilation, dilationCLM, smul_add, smul_smul, mul_inv_cancel₀ hlam.ne']
-  -- Step 2: `Hⁿ(D(s)) = λ⁻ⁿ Hⁿ(s)`: `D(s)` is the translate by `−λ⁻¹a` of `λ⁻¹s`
-  have himage : ∀ s : Set (Euclid P),
-      μHE[n] (dilation a lam '' s) = ENNReal.ofReal (lam⁻¹ ^ n) * μHE[n] s := by
-    intro s
-    have hs : dilation a lam '' s =
-        (fun z => -(lam⁻¹ • a) + z) '' ((fun y => lam⁻¹ • y) '' s) := by
-      rw [Set.image_image]
-      rfl
-    rw [hs, (isometry_add_left (-(lam⁻¹ • a))).euclideanHausdorffMeasure_image, Set.image_smul,
-      Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hlam.ne') s, ENNReal.smul_def,
-      smul_eq_mul, ← ENNReal.ofReal_coe_nnreal]
-    congr 2
-    simp [abs_of_pos hlam]
-  -- Step 3, (ii): on Borel `B`, `Hⁿ(B ∩ D(M)) = Hⁿ(D(D⁻¹B ∩ M)) = λ⁻ⁿ Hⁿ(D⁻¹B ∩ M)`
-  have hrestrict : μHE[n].restrict (dilation a lam '' M) =
-      ENNReal.ofReal (lam⁻¹ ^ n) • Measure.map (dilation a lam) (μHE[n].restrict M) := by
-    ext B hB
-    rw [Measure.restrict_apply hB, Measure.smul_apply, hme.map_apply,
-      Measure.restrict_apply (hme.measurable hB), smul_eq_mul, ← himage,
-      Set.image_preimage_inter]
-  rw [hηD]
-  refine ⟨hme.measurableSet_image.mpr hM, hrestrict, ?_⟩
-  -- Step 4, (iii): pull out the scalar and transport the density along `D`, using
-  -- `θ(a + λD(x)) = θ(x)`
-  rw [hrestrict, withDensity_smul_measure]
-  congr 1
-  ext B hB
-  rw [hme.map_apply, withDensity_apply _ (hme.measurable hB), withDensity_apply _ hB,
-    hme.restrict_map, hme.lintegral_map]
-  simp only [hιD]
-
 /-- **The weight is controlled by the multivector difference through a norming covector**
 (fact (F2) in the proof of `Submission.cbr_ci_bl_density_bounds`; `|·|_E` is
 `covectorEuclideanNorm`).  Let `‖α‖ ≤ C |α|_E` and `|⟨α, ζa⟩| ≤ |α|_E` for every `n`-covector
