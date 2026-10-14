@@ -2313,6 +2313,62 @@ theorem Submission.cbr_ci_cp_finite_parallel_planes : ∀ (P n : ℕ) (ν : Meas
   rw [← ENNReal.toReal_sum fun i _ => hfin (e i), e.sum_comp (fun w : Z => a w)]
   exact (ENNReal.toReal_mono ENNReal.one_ne_top htsum).trans_eq ENNReal.toReal_one
 
+/-- **A cycle with constant unit `n`-vector, Euclidean growth and positive lower density is a
+finite sum of parallel `n`-planes** (White's tangent-plane argument for the closure theorem used in
+Simon 7.2.4; B. White, Comment. Math. Helv. 64 (1989) 207–220).  Let `n = d + 1`, `ν` a locally
+finite measure on `ℝᴾ` and `ζ₀` an `n`-vector with `|ζ₀(β)| ≤ |β|` and `ζ₀(β₁) = 1` for some
+`|β₁| ≤ 1`, such that `C(ω) = ∫ ⟨ω, ζ₀⟩ dν` has `∂C = 0`, `ν(B_R(0)) ≤ ωₙRⁿ`, `0 ∈ spt ν` and
+`liminf_{r↓0} ν(B_r(y))/(ωₙrⁿ) ≥ c > 0` for `ν`-a.e. `y`.  Then `ζ₀(β) = β(v)` for an orthonormal
+`v = (v₁, …, vₙ)`, and `ν = Σᵢ αᵢ Hⁿ⌞(wᵢ + span v)` for finitely many distinct `wᵢ ⊥ span v`, one
+of them `0`, with `αᵢ ≥ c` and `Σᵢ αᵢ ≤ 1`.  The cycle condition gives a subspace `V` (spanned by
+the Riesz representatives of `w ↦ ζ₀(w♭ ∧ α)`) along which `ν` has vanishing directional
+derivatives and such that `ζ₀(w♭ ∧ α) = 0` for `w ⊥ V` (`cbr_ci_cp_wedge_annihilator_subspace`);
+so `ν` is invariant under translation by `V` (`cbr_ci_cp_translation_invariant_of_fderiv`) and
+`ζ₀` only sees coordinates in `V` (`cbr_ci_cp_eval_comp_starProjection_eq`).  The growth bound,
+with `ωₙ < ∞` and `ν(B_1(0)) > 0`, gives `dim V ≤ n` (`cbr_ci_cp_finrank_le_of_growth`), and the
+normalisation of `ζ₀` then gives `dim V = n` and `ζ₀(β) = β(v)` for an orthonormal frame `v` of
+`V` (`cbr_ci_cp_eval_eq_orthonormal_frame`).  Haar uniqueness on `V` gives `ν = Hⁿ⌞V ⊗ σ`
+(`cbr_ci_cp_invariant_measure_product`), the lower density bound makes `σ` purely atomic with
+atoms `≥ c` (`cbr_ci_cp_atomic_transversal`), and the growth bound and `0 ∈ spt ν` leave finitely
+many planes of total weight `≤ 1`, one through `0` (`cbr_ci_cp_finite_parallel_planes`).  Finally
+`span v = V`, and `⟨wᵢ, vⱼ⟩ = 0` as `wᵢ ∈ V^⊥` and `vⱼ ∈ V`. -/
+theorem Submission.cbr_ci_constant_cycle_planes : ∀ (P d : ℕ) (ν : Measure (Euclid P)) (ζ₀ : MultiVector P (d + 1)) (c : ℝ), 0 < c → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ β : Covector (Euclid P) (d + 1), |ζ₀ β| ≤ covectorEuclideanNorm β) → (∃ β : Covector (Euclid P) (d + 1), covectorEuclideanNorm β ≤ 1 ∧ ζ₀ β = 1) → (∀ φ : TestFormOn (univ : Set (Euclid P)) d, ∫ y, ζ₀ (exteriorDerivative (φ : DifferentialForm (Euclid P) d) y) ∂ν = 0) → (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ unitBallVolume (d + 1) * ENNReal.ofReal (R ^ (d + 1))) → (∀ r : ℝ, 0 < r → 0 < ν (ball 0 r)) → (∀ᵐ y ∂ν, ENNReal.ofReal c ≤ liminf (fun r : ℝ => ν (ball y r) / (unitBallVolume (d + 1) * ENNReal.ofReal (r ^ (d + 1)))) (𝓝[>] 0)) → ∃ (v : Fin (d + 1) → Euclid P) (N : ℕ) (w : Fin N → Euclid P) (α : Fin N → ℝ), Orthonormal ℝ v ∧ (∀ β : Covector (Euclid P) (d + 1), ζ₀ β = β v) ∧ Injective w ∧ (∀ (i : Fin N) (j : Fin (d + 1)), inner ℝ (w i) (v j) = 0) ∧ (∀ i, c ≤ α i) ∧ ∑ i, α i ≤ 1 ∧ (∃ i, w i = 0) ∧ ν = ∑ i, ENNReal.ofReal (α i) • (μHE[(d + 1)]).restrict {y : Euclid P | y - w i ∈ Submodule.span ℝ (Set.range v)} := by
+  intro P d ν ζ₀ c hc hfin hnorm hone hcyc hgrowth hpos hdens
+  -- Steps 0–1: a subspace `V` with `∫ Dφ(y)[v] dν(y) = 0` for `v ∈ V` (`φ ∈ C_c^∞`), and
+  -- `ζ₀(w♭ ∧ α) = 0` for `w ∈ V^⊥`
+  obtain ⟨V, hVderiv, hVann⟩ :=
+    Submission.cbr_ci_cp_wedge_annihilator_subspace P d ν ζ₀ hfin hcyc
+  -- Step 2: `ν` is invariant under translation by every vector of `V`
+  have hinv : ∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A →
+      ν ((fun x => v + x) ⁻¹' A) = ν A := fun v hv =>
+    Submission.cbr_ci_cp_translation_invariant_of_fderiv P ν v hfin (hVderiv v hv)
+  -- Step 3: `ζ₀` only sees coordinates in `V`: `ζ₀(β) = ζ₀(β ∘ p_V)`
+  have hproj := Submission.cbr_ci_cp_eval_comp_starProjection_eq P d ζ₀ V hVann
+  -- Step 4: `ωₙ < ∞`, `ν(B_1(0)) > 0` and `ν(B_R(0)) ≤ ωₙRⁿ` force `dim V ≤ n`
+  have hωn : unitBallVolume (d + 1) ≠ ∞ := measure_ball_lt_top.ne
+  have hdimle : Module.finrank ℝ V ≤ d + 1 :=
+    Submission.cbr_ci_cp_finrank_le_of_growth P (d + 1) ν V (unitBallVolume (d + 1)) hωn hinv
+      hgrowth (hpos 1 one_pos)
+  -- Step 5: normalisation: `dim V = n` and `ζ₀(β) = β(v)` for an orthonormal frame `v` of `V`
+  obtain ⟨hdim, v, hv, hspan, hζ₀⟩ :=
+    Submission.cbr_ci_cp_eval_eq_orthonormal_frame P d ζ₀ V hdimle hnorm hone hproj
+  -- Step 6: product structure `ν = Hⁿ⌞V ⊗ σ`, with `σ` concentrated on `V^⊥`
+  obtain ⟨σ, hσV, hσfin, hνσ⟩ :=
+    Submission.cbr_ci_cp_invariant_measure_product P (d + 1) ν V hdim hfin hinv
+  -- Step 7: `σ` is purely atomic, with atoms `Z ⊆ V^⊥` of mass `≥ c`
+  obtain ⟨Z, -, hZV, hZc, hνZ⟩ :=
+    Submission.cbr_ci_cp_atomic_transversal P (d + 1) ν σ V c hc hdim hσV hσfin hνσ hdens
+  -- Steps 8–9: finitely many planes of total weight `≤ 1`, one of them through `0`
+  obtain ⟨N, w, α, hw, hwV, hαc, hαsum, hw0, hν⟩ :=
+    Submission.cbr_ci_cp_finite_parallel_planes P (d + 1) ν V Z (fun w => σ {w}) c hc hdim hZV
+      hZc hνZ hgrowth hpos
+  -- Step 10: the required form, with `span v = V` and `⟨wᵢ, vⱼ⟩ = 0` (`wᵢ ∈ V^⊥`, `vⱼ ∈ V`)
+  have hvV : ∀ j, v j ∈ V := fun j => hspan ▸ Submodule.subset_span (Set.mem_range_self j)
+  refine ⟨v, N, w, α, hv, hζ₀, hw, fun i j => ?_, hαc, hαsum, hw0, ?_⟩
+  · exact Submodule.inner_left_of_mem_orthogonal (hvV j) (hwV i)
+  · rw [hspan]
+    exact hν
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
