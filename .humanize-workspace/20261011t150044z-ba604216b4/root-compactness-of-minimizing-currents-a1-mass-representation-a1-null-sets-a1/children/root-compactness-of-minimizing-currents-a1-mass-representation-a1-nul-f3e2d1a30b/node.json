@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1.localize_null-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.null_sets-a1",
+  "depth": 4,
+  "title": "Uniform divergence bounds and (TD) force f = 0 a.e. on W ∩ q⁻¹(N) (parent steps 5–6)",
+  "statement": "Let P, n ∈ ℕ, W ⊆ ℝ^P open, μ a measure on ℝ^P with μ(W) < ∞, f : ℝ^P → ℝ μ-a.e. strongly measurable with |f(x)| ≤ c for all x, q : ℝ^P → ℝⁿ (Euclid n) measurable and N ⊆ ℝⁿ measurable. For g : ℝⁿ → ℝⁿ write div g(y) := LinearMap.trace ℝ (Euclid n) (fderiv ℝ g y). Assume (TD): for every finite measure ν on ℝ^P, every ν-integrable h : ℝ^P → ℝ and every Λ ∈ ℝ such that |∫ h(x)·div g(q(x)) dν(x)| ≤ Λ for all C^∞ compactly supported g : ℝⁿ → ℝⁿ with ‖g(y)‖ ≤ 1 for all y, one has ∫_{q⁻¹(N)} h dν = 0. Assume (DB): for every C^∞ compactly supported b : ℝ^P → ℝ with tsupport b ⊆ W there is Λ_b ∈ ℝ with |∫ b(x)·f(x)·div g(q(x)) d(μ.restrict W)(x)| ≤ Λ_b for all C^∞ compactly supported g : ℝⁿ → ℝⁿ with ‖g(y)‖ ≤ 1 for all y. Then for μ-a.e. x, x ∈ W and q(x) ∈ N imply f(x) = 0. (C^∞ means ContDiff ℝ (⊤ : ℕ∞).)",
+  "lean_statement": "∀ (P n : ℕ) (W : Set (Euclid P)) (μ : Measure (Euclid P)) (f : Euclid P → ℝ) (q : Euclid P → Euclid n) (N : Set (Euclid n)) (c : ℝ), IsOpen W → μ W < ∞ → AEStronglyMeasurable f μ → (∀ x, |f x| ≤ c) → Measurable q → MeasurableSet N → (∀ (ν : Measure (Euclid P)) (h : Euclid P → ℝ) (Λ : ℝ), IsFiniteMeasure ν → Integrable h ν → (∀ g : Euclid n → Euclid n, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → (∀ y, ‖g y‖ ≤ 1) → |∫ x, h x * LinearMap.trace ℝ (Euclid n) (fderiv ℝ g (q x)).toLinearMap ∂ν| ≤ Λ) → ∫ x in q ⁻¹' N, h x ∂ν = 0) → (∀ b : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ W → ∃ Λ : ℝ, ∀ g : Euclid n → Euclid n, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → (∀ y, ‖g y‖ ≤ 1) → |∫ x, b x * f x * LinearMap.trace ℝ (Euclid n) (fderiv ℝ g (q x)).toLinearMap ∂(μ.restrict W)| ≤ Λ) → ∀ᵐ x ∂μ, x ∈ W → q x ∈ N → f x = 0",
+  "lean_name": "cmr_ae_zero_of_div_bounds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-nul-f3e2d1a30b-a1"
+}
