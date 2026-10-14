@@ -532,6 +532,28 @@ theorem Submission.ecf_cp_gc_det_orth : ∀ (P k : ℕ) (b : Euclid P) (w : Fin 
     real_inner_self_eq_norm_sq]
   -- the `j = 0` minor `M.submatrix Fin.succ Fin.succ` has entries `⟪w i, w j⟫` (`Fin.cons_succ`)
   rfl
+/-- **Orthogonal residual against a finite family.**  For `a ∈ ℝᴾ` and any `w₀, …, w_{k-1} ∈ ℝᴾ`
+(not necessarily independent) there are `c₀, …, c_{k-1} ∈ ℝ` such that `a' = a - ∑ₗ cₗ wₗ` is
+orthogonal to every `w_j` and `‖a'‖ ≤ ‖a‖`.  Take `∑ₗ cₗ wₗ = π a` for the orthogonal projection
+`π` onto the (finite-dimensional, hence complete) span `W` of the `wₗ`: then `a - π a ⊥ W`, and
+Pythagoras for `a = (a - π a) + π a` gives `‖a - π a‖² ≤ ‖a‖²`. -/
+theorem Submission.ecf_cp_gc_orth_residual : ∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P), ∃ c : Fin k → ℝ, (∀ j : Fin k, inner ℝ (a - ∑ l, c l • w l) (w j) = 0) ∧ ‖a - ∑ l, c l • w l‖ ≤ ‖a‖ := by
+  intro P k a w
+  -- `π a ∈ W = span (range w)` is a linear combination `∑ₗ cₗ wₗ`
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp
+    ((Submodule.span ℝ (range w)).starProjection_apply_mem a)
+  refine ⟨c, fun j => ?_, ?_⟩
+  · -- `a - π a ⊥ w_j`, since `w_j ∈ W`
+    rw [hc]
+    exact Submodule.starProjection_inner_eq_zero a (w j) (Submodule.subset_span (mem_range_self j))
+  · -- Pythagoras: `‖a‖² = ‖a - π a‖² + ‖π a‖²`
+    rw [hc]
+    have hp := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero _ _
+      (Submodule.starProjection_inner_eq_zero a _
+        ((Submodule.span ℝ (range w)).starProjection_apply_mem a))
+    rw [sub_add_cancel] at hp
+    rw [mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _), hp]
+    exact le_add_of_nonneg_right (mul_self_nonneg _)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
