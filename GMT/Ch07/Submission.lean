@@ -38096,4 +38096,36 @@ theorem Submission.dtc_bc_tc_closure : ∀ (P m : ℕ) (Ts : ℕ → GeometricCu
   refine hCL (m + 1) hmP univ Ts T isOpen_univ hTs (fun W hW hWU => ?_) hconv
   exact hmass W hW (isBounded_closure_iff.mp hWU.1.isBounded)
 
+/-- **Closure theorem for integer multiplicity cycles of bounded mass** (Simon Ch. 6, Theorem 8.2
+in the case `∂Tⱼ = 0`, Remark 6.4, with `U = ℝᴾ`).  Let `n < P` and `Tⱼ, T ∈ 𝒟ₙ(ℝᴾ)` with every
+`Tⱼ` an integer multiplicity cycle, `supⱼ M(Tⱼ) < ∞` and `Tⱼ ⇀ T`; then `T` is integer
+multiplicity.  For every `W`, `M_W(Tⱼ) ≤ M_{ℝᴾ}(Tⱼ) = M(Tⱼ)` (`massOn_mono`) and `M_W(∂Tⱼ) = 0`,
+so `supⱼ (M_W(Tⱼ) + M_W(∂Tⱼ)) ≤ supⱼ M(Tⱼ) < ∞`.  For `n = m + 1` (where `∂Tⱼ = 0` and the zero
+current has zero mass) this is the hypothesis of the closure theorem `dtc_bc_tc_closure`; for
+`n = 0` (where `boundaryMassOn` is `0`) it is the hypothesis of the degree-zero closure theorem
+`dtc_bc_tc_cl_closure_degree_zero` in `U = ℝᴾ`. -/
+theorem Submission.dtc_bc_lc_fd_bim_closure_cycles : ∀ (P n : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n) (T : GeometricCurrentOn (univ : Set (Euclid P)) n), n < P → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ j, BoundaryVanishes (Ts j)) → ⨆ j, (Ts j).mass < ∞ → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T := by
+  intro P n
+  cases n with
+  | zero =>
+    intro Ts T _ hTs _ hmass hconv
+    -- `CL_P(0)` in `U = ℝᴾ`: `boundaryMassOn` of a `0`-current is `0`, and `M_W(Tⱼ) ≤ M(Tⱼ)`
+    refine Submission.dtc_bc_tc_cl_closure_degree_zero Submission.dtc_bc_tc_cl_foundations.1
+      Submission.cmc_massOn_eq_imRep_measure Submission.cmc_imRep_locality_restrict_sub P univ Ts T
+      isOpen_univ hTs (fun W _ _ => lt_of_le_of_lt (iSup_mono fun j => ?_) hmass) hconv
+    rw [boundaryMassOn, add_zero]
+    exact (Ts j).massOn_mono (subset_univ W)
+  | succ m =>
+    intro Ts T hmP hTs hbd hmass hconv
+    -- the closure theorem in degree `m + 1`: `M_W(∂Tⱼ) = M_W(0) = 0` and `M_W(Tⱼ) ≤ M(Tⱼ)`
+    refine Submission.dtc_bc_tc_closure P m Ts T hmP hTs
+      (fun W _ _ => lt_of_le_of_lt (iSup_mono fun j => ?_) hmass) hconv
+    have hbW : (Ts j).boundary.massOn W = 0 := by
+      rw [show (Ts j).boundary = 0 from hbd j]
+      refine le_antisymm (sSup_le ?_) bot_le
+      rintro _ ⟨ω, _, rfl⟩
+      simp
+    rw [hbW, add_zero]
+    exact (Ts j).massOn_mono (subset_univ W)
+
 end GMT.Ch07
