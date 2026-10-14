@@ -1939,6 +1939,60 @@ theorem Submission.idtp_fons_cr_nonflat_closed : ∀ (P n : ℕ) (β : ℝ) (S D
     rintro (⟨⟨hw'S', -⟩, -⟩ | hnD)
     · exact hw'S hw'S'
     · exact hnD hw'D
+/-- **Simon 7.3.3, display (5) in the proof of 3.3(2); A.3(2)** (the non-flat set under a
+dilation).  Write `g(x) = y₀ + λx` with `λ > 0`, `q_Q(v) = v − p_Q(v)`, `R(S, D)` for the set of
+`w` for which some `ρ > 0` with `B_ρ(w) ⊆ D`, `n`-dimensional `Q` and `s < βρ` give
+`|q_Q(y − w)| ≤ s` for `y ∈ S ∩ B_ρ(w)`, and `N(S, D) = ((S ∩ D) \ R(S, D)) ∪ Dᶜ`.  Then
+`N(g⁻¹S, g⁻¹D) = g⁻¹N(S, D)`: since `g(y) − g(w) = λ(y − w)` and `q_Q` is linear, `(ρ, Q, s)`
+witnesses `w ∈ R(g⁻¹S, g⁻¹D)` iff `(λρ, Q, λs)` witnesses `g(w) ∈ R(S, D)`, and preimages commute
+with the Boolean operations. -/
+theorem Submission.idtp_fons_cr_nonflat_affine_preimage : ∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)) (y₀ : Euclid P) (lam : ℝ), 0 < lam → ((((fun x => y₀ + lam • x) ⁻¹' S) ∩ ((fun x => y₀ + lam • x) ⁻¹' Dset)) \ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ ((fun x => y₀ + lam • x) ⁻¹' Dset) ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ ((fun x => y₀ + lam • x) ⁻¹' S), y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ ((fun x => y₀ + lam • x) ⁻¹' Dset)ᶜ = (fun x => y₀ + lam • x) ⁻¹' (((S ∩ Dset) \ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ Dsetᶜ) := by
+  intro P n β S Dset y₀ lam hlam
+  -- `g x = y₀ + lam • x` scales differences by `lam`, and `z ↦ lam⁻¹ • (z - y₀)` inverts it
+  have hsub : ∀ a b : Euclid P, y₀ + lam • a - (y₀ + lam • b) = lam • (a - b) := fun a b => by
+    rw [smul_sub]
+    abel
+  have hdist : ∀ a b : Euclid P, dist (y₀ + lam • a) (y₀ + lam • b) = lam * dist a b :=
+    fun a b => by rw [dist_eq_norm, dist_eq_norm, hsub, norm_smul, Real.norm_of_nonneg hlam.le]
+  have hinv : ∀ z : Euclid P, y₀ + lam • lam⁻¹ • (z - y₀) = z := fun z => by
+    rw [smul_inv_smul₀ hlam.ne', add_sub_cancel]
+  -- `q_Q = id − p_Q` is linear, so `|q_Q(lam v)| = lam |q_Q(v)|`
+  have hq : ∀ (Q : Submodule ℝ (Euclid P)) [Q.HasOrthogonalProjection] (v : Euclid P),
+      ‖lam • v - Q.starProjection (lam • v)‖ = lam * ‖v - Q.starProjection v‖ := fun Q _ v => by
+    rw [map_smul, ← smul_sub, norm_smul, Real.norm_of_nonneg hlam.le]
+  -- preimages commute with `∩`, `\`, `∪` and complements; it remains to compare the flat sets
+  ext x
+  simp only [mem_union, Set.mem_sdiff, mem_inter_iff, mem_preimage, mem_compl_iff, mem_ofPred_eq]
+  refine or_congr_left (and_congr_right fun _ => not_congr ⟨?_, ?_⟩)
+  · -- `(lam ρ, Q, lam s)` witnesses flatness of `g x`
+    rintro ⟨ρ, hρ, hball, Q, hQ, s, hs, hflat⟩
+    have hmem : ∀ z ∈ ball (y₀ + lam • x) (lam * ρ), lam⁻¹ • (z - y₀) ∈ ball x ρ := by
+      intro z hz
+      rw [mem_ball, ← mul_lt_mul_iff_of_pos_left hlam, ← hdist, hinv]
+      exact hz
+    refine ⟨lam * ρ, mul_pos hlam hρ, fun z hz => ?_, Q, hQ, lam * s, ?_, fun z hzS hz => ?_⟩
+    · simpa only [mem_preimage, hinv] using hball (hmem z hz)
+    · rw [mul_left_comm]
+      exact mul_lt_mul_of_pos_left hs hlam
+    · have h := hflat _ (by rwa [hinv]) (hmem z hz)
+      have hz' : z - (y₀ + lam • x) = lam • (lam⁻¹ • (z - y₀) - x) := by rw [← hsub, hinv]
+      rw [hz', hq]
+      exact mul_le_mul_of_nonneg_left h hlam.le
+  · -- `(ρ₀ / lam, Q, s₀ / lam)` witnesses flatness of `x`
+    rintro ⟨ρ₀, hρ₀, hball, Q, hQ, s₀, hs₀, hflat⟩
+    have hmem : ∀ y ∈ ball x (ρ₀ / lam), y₀ + lam • y ∈ ball (y₀ + lam • x) ρ₀ := by
+      intro y hy
+      rw [mem_ball, lt_div_iff₀ hlam] at hy
+      rw [mem_ball, hdist]
+      linarith
+    refine ⟨ρ₀ / lam, div_pos hρ₀ hlam, fun y hy => hball (hmem y hy), Q, hQ, s₀ / lam, ?_,
+      fun y hyS hy => ?_⟩
+    · rw [← mul_div_assoc]
+      exact div_lt_div_of_pos_right hs₀ hlam
+    · have h := hflat _ hyS (hmem y hy)
+      rw [hsub, hq] at h
+      rw [le_div_iff₀ hlam]
+      linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
