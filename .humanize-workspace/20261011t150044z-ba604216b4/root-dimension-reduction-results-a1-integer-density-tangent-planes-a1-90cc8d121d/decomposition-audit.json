@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "hasStrictFDerivAt|toOpenPartialHomeomorph|contDiffAt_symm|hasFDerivAt_symm",
+        "def ofInjectiveEndo|isOpen.*range|theorem isOpen|continuousOn_fderiv_of_isOpen|isOpen_inter_preimage|restrOpen_source|symm_image_target_eq_source",
+        "range_comp|isCompact_insert_range|tendsto_subseq|injective_iff_antilipschitz",
+        "idtp_ccd_scsp_li_c1_inverse|idtp_ccd_scsp_li_chart_image_open|chart_tangentSpace_eq_range_fderiv|dsmc_chart_inverse_continuity",
+        "git show 5e4b215846243d699169f3e42b95b8e007ea2d70:GMT/Ch07/Submission.lean",
+        "git show d626082a69a01ae54fab73c0d6072850ddfab6ae:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtp_li_independent_audit_tmuae9g9/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/idtp_li_independent_audit_tmuae9g9/EndToEnd.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/OfCompLeft.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-90cc8d121d/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-90cc8d121d/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-fa87c2bbbce7/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-fa87c2bbbce7/_recursive_lean/decomposition_scope.py",
+        "/tmp/idtp_li_independent_audit_tmuae9g9/base_invcont.lean",
+        "/tmp/idtp_li_independent_audit_tmuae9g9/base_charttan.lean",
+        "/tmp/idtp_li_independent_audit_tmuae9g9/Types.lean",
+        "/tmp/idtp_li_independent_audit_tmuae9g9/EndToEnd.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected local-inverse theorem. Project and Mathlib revisions match the manifest, and the frozen contract matches the workspace and selected proof base byte-for-byte. The snapshot project contains none of the four child declarations; the two reused declarations instead come from accepted immutable DAG candidates with identical frozen types. Both new names have no competing reservation in the DAG or indexed handoffs. All names are bare identifiers, and the dependency closure is acyclic and correctly directed. Every frozen child proposition elaborates independently without its implementation; Euclidean-space instances and continuous-linear-map coercions check successfully. No matrix-unit construction occurs. Independently replaying the supplied proofs on the immutable accepted base proves all four exact child types and the exact selected parent type, using only propext, Classical.choice and Quot.sound. Both new leaves pass the actual source-delta gate. The parent assembly applies c1_inverse to F ∘ ψ, uses surjectivity of DH for the tangent-range equality, and sets G = ψ ∘ H and N = N₀ ∩ U. The requested parent contract digest was independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone Lean proposition. Finite-dimensional injectivity supplies an equivalence, derivative continuity gives an open invertibility region, and the restricted strict-derivative inverse function theorem supplies the required sets and inverse. The inverse derivative is an equivalence’s inverse, proving surjectivity everywhere on O. The proof covers d = 0, is complete, and uses neither the child nor selected parent circularly."
+    },
+    {
+      "key": "chart_image_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including the absence of an openness assumption on V. The correctly declared chart_inverse_continuity dependency supplies the positive radii. Their union defines an open N₀, and the proof establishes both inclusions in M ∩ N₀ = ψ '' V₁. Every prerequisite is supplied, including when V₁ is empty."
+    },
+    {
+      "key": "chart_inverse_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is valid reuse of the identical accepted frozen type at 5e4b215846243d699169f3e42b95b8e007ea2d70. Independently, the supplied proof constructs a compact image sequence with its limit inside W; properness gives a convergent preimage subsequence. Relative continuity and injectivity identify its limit with v, contradicting the fixed positive separation. Neither V nor W needs to be open, and there is no circular reliance."
+    },
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is valid reuse of the identical accepted frozen type at d626082a69a01ae54fab73c0d6072850ddfab6ae. All chart hypotheses appear in the prose. Bounded smooth reparametrized curves prove the forward inclusion. Properness establishes inverse continuity; the injective derivative’s lower bound controls lifted increments, making the remainder negligible in difference quotients. Closedness of the finite-dimensional derivative range proves the reverse inclusion. The argument is complete and non-circular, including zero-dimensional charts."
+    }
+  ],
+  "required_changes": []
+}
