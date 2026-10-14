@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e582e66a57789d8fa5686a6da4b3bc81217c6867b03badb39644b86bccd3eaea",
+  "git_delta": {
+    "base_commit": "47d8cb0ac8bd52ed3ef985bf64d6665a7a51c10d",
+    "candidate_commit": "6741c392a2746651d5445eada1f2fd13f7e327a8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tpf_pse_support_of_mass_formula",
+    "diff_sha256": "d00923b0acf1b526c22002b3798fdc4f6c979f78ad0606bb37fa2e7b15dded60",
+    "source_sha256": "d9ba4080b1c94776b7d38772e11c6e6573d0917bb702180a1aa9c237012cac4d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tpf_pse_support_of_mass_formula",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (τ : Fin n → Euclid P) (c : ℤ), Orthonormal ℝ τ → C.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) → (∀ W : Set (Euclid P), IsOpen W → C.massOn W = (c.natAbs : ℝ≥0∞) * μHE[n] (W ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)))) → (∃ W : Set (Euclid P), IsOpen W ∧ C.massOn W ≠ 0) → C.support = (Submodule.span ℝ (Set.range τ) : Set (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

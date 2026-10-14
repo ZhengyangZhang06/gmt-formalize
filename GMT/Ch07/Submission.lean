@@ -451,6 +451,56 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Support of a planar current with a constant-multiple mass formula** (the last steps of the
+proof that a planar tangent cone is supported by its plane, Simon 7.3.2 Remark (1), 7.3.3).  Let
+`τ` be orthonormal, `Q = span{τ₁, …, τₙ}`, `spt C ⊆ Q`, `M_W(C) = |c| Hⁿ(W ∩ Q)` for every open
+`W`, and `M_W(C) ≠ 0` for some open `W`.  Then `|c| ≠ 0`, and `Hⁿ(B_ε(v) ∩ Q) > 0` for `v ∈ Q`,
+`ε > 0`, since `Hⁿ` is an additive Haar measure on the `n`-dimensional space `Q`.  If `v ∈ Q` lay
+in the zero region of `C` (6.2.11), `C` would vanish on every form supported in some `B_ε(v)`, so
+`M_{B_ε(v)}(C) = 0` (6.2.5), a contradiction.  Hence `spt C = Q`. -/
+theorem Submission.idtp_tpf_pse_support_of_mass_formula : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (τ : Fin n → Euclid P) (c : ℤ), Orthonormal ℝ τ → C.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) → (∀ W : Set (Euclid P), IsOpen W → C.massOn W = (c.natAbs : ℝ≥0∞) * μHE[n] (W ∩ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)))) → (∃ W : Set (Euclid P), IsOpen W ∧ C.massOn W ≠ 0) → C.support = (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) := by
+  intro P n C τ c hτ hsupp hmass hne
+  set Q := Submodule.span ℝ (Set.range τ) with hQ
+  -- `|c| ≠ 0`: otherwise every `M_W(C)` vanishes
+  have hc : (c.natAbs : ℝ≥0∞) ≠ 0 := by
+    obtain ⟨W₀, hW₀, hW₀ne⟩ := hne
+    intro h0
+    apply hW₀ne
+    rw [hmass W₀ hW₀, h0, zero_mul]
+  -- `dim Q = n`
+  have hrank : Module.finrank ℝ Q = n := by
+    rw [hQ, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  -- `Hⁿ(B_ε(v) ∩ Q) = Hⁿ(B^Q_ε(v)) > 0` for `v ∈ Q`: the inclusion `Q → ℝᴾ` is an isometry and
+  -- `Hⁿ` is an additive Haar measure on `Q`
+  have hpos : ∀ v ∈ (Q : Set (Euclid P)), ∀ ε : ℝ, 0 < ε →
+      μHE[n] (ball v ε ∩ (Q : Set (Euclid P))) ≠ 0 := by
+    intro v hv ε hε
+    have hiso : Isometry (Subtype.val : Q → Euclid P) := isometry_subtype_coe
+    have h1 := hiso.euclideanHausdorffMeasure_preimage (d := n) (ball v ε)
+    rw [Subtype.range_coe] at h1
+    rw [← h1]
+    have h2 : (Subtype.val : Q → Euclid P) ⁻¹' ball v ε = ball (⟨v, hv⟩ : Q) ε :=
+      hiso.preimage_ball ⟨v, hv⟩ ε
+    rw [h2]
+    have hHaar : (μHE[Module.finrank ℝ Q] : Measure Q).IsAddHaarMeasure := inferInstance
+    rw [hrank] at hHaar
+    exact (measure_ball_pos _ _ hε).ne'
+  -- `Q ⊆ spt C`: a point of `Q` in the zero region gives a ball `B_ε(v)` with `M_{B_ε(v)}(C) = 0`
+  refine subset_antisymm hsupp fun v hv => ?_
+  by_contra hvn
+  have hvz : v ∈ C.zeroRegion := by
+    by_contra hz
+    exact hvn ⟨mem_univ v, hz⟩
+  obtain ⟨W', ⟨hW'open, -, -, hvan⟩, hvW'⟩ := mem_sUnion.mp hvz
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hW'open v hvW'
+  have hzero : C.massOn (ball v ε) = 0 := by
+    refine nonpos_iff_eq_zero.mp (sSup_le ?_)
+    rintro r ⟨ω, hω, rfl⟩
+    have h0 : C ω = 0 := hvan ω (hω.1.trans hball)
+    simp only [h0, ENNReal.ofReal_zero, le_refl]
+  rw [hmass _ isOpen_ball] at hzero
+  exact mul_ne_zero hc (hpos v hv ε hε) hzero
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

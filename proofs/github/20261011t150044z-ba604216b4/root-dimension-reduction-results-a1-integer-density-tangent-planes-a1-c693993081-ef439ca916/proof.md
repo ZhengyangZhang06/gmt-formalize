@@ -1,0 +1,107 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.planar_support_eq-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.planar_support_eq-a1.support_of_mass_formula-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 3–6 of the parent-supplied proof of planar_support_eq (the part that does not use constancy; the constancy conclusion of its step 2 is now the hypothesis 'mass formula'). Notation: Q := span{τ_1, …, τ_n} (Submodule.span ℝ (range τ)); H^n := μHE[n]; |c| := c.natAbs regarded in [0, ∞]; B_ε(v) is the open ball of ℝ^P; M_W(C) = C.massOn W is the supremum of ofReal(C(ω)) over the test forms ω ∈ 𝒟^n(ℝ^P) with tsupport ω ⊆ W and Euclidean covector norm of ω(x) at most 1 for every x (massAdmissibleOn); spt C = ℝ^P ∖ zeroRegion C, where zeroRegion C is the union of the open sets W' with compact closure on which C vanishes, i.e. C(ω) = 0 for every ω ∈ 𝒟^n(ℝ^P) with tsupport ω ⊆ W' (Simon 6.2.11; GeometricCurrentOn.support, zeroRegion, VanishesOn).
+1. (|c| ≠ 0.) By hypothesis there is an open W₀ with M_{W₀}(C) ≠ 0. If |c| = 0 in [0, ∞], the mass formula would give M_{W₀}(C) = 0·H^n(W₀ ∩ Q) = 0, a contradiction. Hence |c| ≠ 0.
+2. (dim Q = n.) τ is orthonormal, hence linearly independent (Orthonormal.linearIndependent), and it spans Q; so finrank Q = card(Fin n) = n (finrank_span_eq_card).
+3. (Plane balls have positive measure.) Let v ∈ Q and ε > 0. Regard Q as a finite-dimensional real inner product space with the induced metric and its Borel σ-algebra. On it μHE[finrank Q] = μHE[n] (step 2) is an additive Haar measure (Mathlib instance isAddHaarMeasure_euclideanHausdorffMeasure), hence positive on nonempty open sets; in particular μHE[n](B^Q_ε(v)) > 0 for B^Q_ε(v) := {w ∈ Q : |w − v| < ε} (measure_ball_pos). The inclusion ι : Q → ℝ^P is an isometry (isometry_subtype_coe) with range Q, and ι^{−1}(B_ε(v)) = B^Q_ε(v) because Q carries the ambient distance. Since μHE[n] is invariant under isometries, μHE[n](ι^{−1}(A)) = μHE[n](A ∩ range ι) for every A ⊆ ℝ^P (Isometry.euclideanHausdorffMeasure_preimage). Taking A := B_ε(v) gives H^n(B_ε(v) ∩ Q) = μHE[n](B^Q_ε(v)) > 0.
+4. (Q ⊆ spt C.) Let v ∈ Q and suppose v ∉ spt C, i.e. v ∈ zeroRegion C. Then there is an open W' ∋ v (with compact closure) such that C(ω) = 0 for every ω ∈ 𝒟^n(ℝ^P) with tsupport ω ⊆ W'. As W' is open, choose ε > 0 with B_ε(v) ⊆ W' (Metric.isOpen_iff). Every ω admissible for M_{B_ε(v)}(C) has tsupport ω ⊆ B_ε(v) ⊆ W', so C(ω) = 0 and ofReal(C(ω)) = 0; since M_{B_ε(v)}(C) is the supremum of these values, M_{B_ε(v)}(C) = 0. On the other hand B_ε(v) is open, so the mass formula gives M_{B_ε(v)}(C) = |c|·H^n(B_ε(v) ∩ Q), a product in [0, ∞] of the nonzero factor |c| (step 1) and the positive factor H^n(B_ε(v) ∩ Q) (step 3), hence nonzero (mul_ne_zero). This contradiction shows v ∈ spt C.
+5. (Conclusion.) spt C ⊆ Q by hypothesis and Q ⊆ spt C by step 4, so spt C = Q. ∎
+
+## Key steps
+
+1. A nonzero mass on some open set forces |c| = c.natAbs ≠ 0 in [0, ∞].
+2. finrank Q = n, so μHE[n] is an additive Haar measure on Q; through the isometric inclusion Q → ℝ^P, H^n(B_ε(v) ∩ Q) > 0 for every v ∈ Q and ε > 0.
+3. If v ∈ Q lay in the zero region, C would vanish on all test forms supported in some B_ε(v), so M_{B_ε(v)}(C) = 0, contradicting M_{B_ε(v)}(C) = |c|·H^n(B_ε(v) ∩ Q) ≠ 0.
+4. Hence Q ⊆ spt C ⊆ Q, i.e. spt C = Q.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cmp GMT/Ch07/Contract.lean .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean; sha256sum GMT/Ch07/Submission.lean`
+- `git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (compared with manifest.json)`
+- `grep -n 'euclideanHausdorffMeasure\|isAddHaarMeasure\|μHE' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep -rn 'theorem measure_ball_pos\|theorem finrank_span_eq_card\|theorem Convex.isConnected\|theorem isometry_subtype_coe\|theorem Orthonormal.linearIndependent' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -rn 'isometry_subtype_coe' mathlib/Mathlib/Topology/MetricSpace/Isometry.lean; grep -rn 'theorem range_coe' mathlib/Mathlib/Data/Set/Image.lean; grep -rn 'theorem isOpen_iff' mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean; grep -rn 'Submodule.convex' mathlib/Mathlib/Analysis/Convex/Basic.lean`
+- `rg -n 'idtp_tpf_pse|support_of_mass_formula' local-references/123e8435b4a2469b (no match)`
+- `grep -n 'VanishesOn\|zeroRegion\|support' simongmt Chapter06/CurrentLocalEquality.lean; grep -n 'def massAdmissibleOn\|def massOn' simongmt Chapter06/Mass.lean`
+- `python3 -I scan of dag.json: lean_name == idtp_planar_cycle_eq_const_mul, startswith idtp_tpf, contains support_of_mass; node count; selected node status; ancestors' depends_on lean names vs child-2 proof text (inherited.py cited rule)`
+- `python3 -I byte-compare of decomposition-v12.json child planar_constancy with nodes/…-77d7be4677/parent-child-handoff.json subproblem and dag.json lean_statement`
+- `git show 1a4666d518e818e04da514547ded5bdcb7703bbf:GMT/Ch07/Submission.lean | sha256sum; extract declared type of theorem Submission.idtp_planar_cycle_eq_const_mul and compare with frozen lean_statement`
+- `issue-workers.json / .humanize/issue-claims/22ac3a995036b376/5329.json / .humanize/swarm-configs/{5b7787252fc14686b2c423b87a2935ed,4f7746a8499f4d9ea6418935ac89784d}.json max_nodes lookup`
+- `sed -n 1850,2000p runtime.py; sed -n 6839,6920p runtime.py; sed -n 1708,1760p runtime.py; grep -n 'def ensure' -A 60 store.py; cat inherited.py (flow /runtime/flows/gmt-claude-b8891bf47f75/_recursive_lean)`
+- `sed -n 300,320p and 495,535p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `lake env lean /tmp/pse_v13_check_7f3a/Child2.lean (EXIT 0, #print axioms)`
+- `lake env lean -R /tmp/pse_v13_cand_9c21/src -o …/Submission.olean /tmp/pse_v13_cand_9c21/src/GMT/Ch07/Submission.lean (EXIT 0); LEAN_PATH=/tmp/pse_v13_cand_9c21/build:$LEAN_PATH lean /tmp/pse_v13_check_7f3a/RealCheck.lean (EXIT 0, #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convex/PathConnected.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convex/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8c5c890e10/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8c5c890e10/decomposition-v12.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8c5c890e10/decomposition-audit-v12.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-77d7be4677/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-77d7be4677/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-77d7be4677/comparator-v1.log`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/issue-claims/22ac3a995036b376/5329.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/5b7787252fc14686b2c423b87a2935ed.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/4f7746a8499f4d9ea6418935ac89784d.json`
+- `/runtime/flows/gmt-claude-b8891bf47f75/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b8891bf47f75/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-b8891bf47f75/_recursive_lean/inherited.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/pse_v13_check_7f3a/Child2.lean`
+- `/tmp/pse_v13_check_7f3a/RealCheck.lean`
+- `/tmp/pse_v13_cand_9c21/src/GMT/Ch07/Submission.lean`
+
+Pins and contract.
+- The snapshot pins project b4d606db (the workspace HEAD) and mathlib 25730c7c; SimonGMT is at 2b366308.
+- The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical.
+
+Definitions and library names.
+- SimonGMT defines support = U ∖ zeroRegion, the union of relatively compact open sets on which the current vanishes (CurrentLocalEquality.lean 101–117).
+- massOn is sSup of ofReal T(ω) over massAdmissibleOn, i.e. tsupport ⊆ W and covector norm ≤ 1 (Mass.lean 57–71).
+- Every Mathlib name cited by child 2 exists in the snapshot: isAddHaarMeasure_euclideanHausdorffMeasure (Measure.lean:104), Isometry.euclideanHausdorffMeasure_preimage (:136), measure_ball_pos (OpenPos.lean:212), finrank_span_eq_card (Constructions.lean:463), Orthonormal.linearIndependent (Orthonormal.lean:183), Convex.isConnected (PathConnected.lean:88), isometry_subtype_coe (Isometry.lean:178), Metric.isOpen_iff (Pseudo/Defs.lean:833).
+- No snapshot match for idtp_tpf_pse or support_of_mass_formula.
+
+DAG state (dag.json 16:18:23Z, 2465 nodes).
+- planar_constancy-a1 (idtp_planar_cycle_eq_const_mul) is accepted with candidate 1a4666d5. Its isolated comparator passed ('Your solution is okay!').
+- That candidate's Submission.lean (sha256 43abe3ba…) declares it once, with a type byte-identical to the frozen lean_statement.
+- Child planar_constancy is byte-identical to that node's frozen handoff.
+- No DAG node uses the fresh name, and no node has the would-be child id.
+- The new child's proof cites no ancestor-dependency Lean name.
+
+Ownership and node bound.
+- #5329 is now owned by worker 5b7787252fc14686b2c423b87a2935ed (flow gmt-claude-b8891bf47f75, max_nodes 5000); the old owner had max_nodes 1000.
+- Reading this archive's code: _existing_lean_name_problem permits the exact accepted reuse, _solve_children needs 1 new node with 2535 remaining, Store.ensure leaves the accepted node unchanged, and handoff installation skips accepted children.
+
+Book. chapter-07.txt 311–314 (7.3.2 Remarks (1)) obtains C = m[[P]] from Constancy 2.34. The proof of 7.3.3(2) starts at line 512.
+
+Lean, fresh this session; all checks EXIT 0 with axioms propext, Classical.choice and Quot.sound only.
+- Child 2 is proved on the plain contract base.
+- The selected parent's exact type is proved from the exact child-1 type plus child 2.
+- Against the compiled accepted candidate, the parent's exact type is proved from the real declaration plus child 2, with no extra hypothesis.
+
+No web search was needed: the mathematics is Simon Ch. 6 Theorem 2.34 and Ch. 7 §3, available in the local book copy.
