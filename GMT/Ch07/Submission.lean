@@ -451,6 +451,62 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The comparison box** (proof of Simon 7.3.5, which the book leaves to the reader).  Let
+`g = (g₁, …, g_k)` be orthonormal in `ℝᴾ`, `G = span{gᵢ}`, `p = G.starProjection`,
+`q = Gᗮ.starProjection`, `r < s`, `C_s = {x : |⟨gᵢ, x⟩| < s for all i}` and
+`W = p⁻¹(C_s) ∩ q⁻¹(B_ρ(0))`.  Then `W` is open: `C_s` is a finite intersection of open sets, and
+`p`, `q` are continuous.  A vector `t = Σ cᵢgᵢ ∈ G` has `cᵢ = ⟨gᵢ, t⟩`, so `‖t‖ ≤ Σᵢ |⟨gᵢ, t⟩|`.
+Hence `‖x‖ ≤ ‖p x‖ + ‖q x‖ ≤ ks + ρ` on `W`, and `W ⊂⊂ ℝᴾ`.  Finally, `⟨gᵢ, p x⟩ = ⟨p gᵢ, x⟩ =
+⟨gᵢ, x⟩`, so for `K ⊆ B_ρ(0)` the slab `{|⟨gᵢ, ·⟩| ≤ r} ∩ q⁻¹(K)` lies in `W`. -/
+theorem Submission.dimred_cs_sos_mt_cm_comparison_box : ∀ (P k : ℕ) (g : Fin k → Euclid P) (r s ρ : ℝ), Orthonormal ℝ g → r < s → IsOpen ((Submodule.span ℝ (Set.range g)).starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' ball (0 : Euclid P) ρ) ∧ CompactlyContained ((Submodule.span ℝ (Set.range g)).starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' ball (0 : Euclid P) ρ) univ ∧ ∀ K : Set (Euclid P), K ⊆ ball (0 : Euclid P) ρ → {x | ∀ i, |inner ℝ (g i) x| ≤ r} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' K ⊆ (Submodule.span ℝ (Set.range g)).starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' ball (0 : Euclid P) ρ := by
+  intro P k g r s ρ hg hrs
+  set G := Submodule.span ℝ (Set.range g)
+  -- Step 1: `C_s = ⋂ᵢ {|⟨gᵢ, ·⟩| < s}` is open and `p`, `q` are continuous, so `W` is open
+  have hCo : IsOpen {x : Euclid P | ∀ i, |inner ℝ (g i) x| < s} := by
+    have hset : {x : Euclid P | ∀ i, |inner ℝ (g i) x| < s} = ⋂ i, {x | |inner ℝ (g i) x| < s} := by
+      ext x; simp
+    rw [hset]
+    exact isOpen_iInter_of_finite fun i =>
+      isOpen_lt (continuous_const.inner continuous_id).abs continuous_const
+  have hWo : IsOpen (G.starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩
+      Gᗮ.starProjection ⁻¹' ball (0 : Euclid P) ρ) :=
+    (hCo.preimage G.starProjection.continuous).inter
+      (isOpen_ball.preimage Gᗮ.starProjection.continuous)
+  -- Step 2: `t = Σ cᵢgᵢ ∈ G` has `cᵢ = ⟨gᵢ, t⟩` and `‖gᵢ‖ = 1`, so `‖t‖ ≤ Σᵢ |⟨gᵢ, t⟩|`
+  have hcoord : ∀ t ∈ G, ‖t‖ ≤ ∑ i, |inner ℝ (g i) t| := by
+    intro t ht
+    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 ht
+    calc ‖∑ i, c i • g i‖ ≤ ∑ i, ‖c i • g i‖ := norm_sum_le _ _
+      _ = ∑ i, |inner ℝ (g i) (∑ j, c j • g j)| := by
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [norm_smul, hg.1 i, mul_one, hg.inner_right_fintype c i, Real.norm_eq_abs]
+  -- Step 3: on `W`, `‖x‖ ≤ ‖p x‖ + ‖q x‖ ≤ ks + ρ`, so `W` is bounded
+  have hbdd : Bornology.IsBounded (G.starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩
+      Gᗮ.starProjection ⁻¹' ball (0 : Euclid P) ρ) := by
+    rw [isBounded_iff_subset_closedBall 0]
+    refine ⟨k * s + ρ, fun x hx => ?_⟩
+    rw [mem_closedBall, dist_zero_right]
+    have h1 : ‖G.starProjection x‖ ≤ k * s := by
+      calc ‖G.starProjection x‖ ≤ ∑ i, |inner ℝ (g i) (G.starProjection x)| :=
+            hcoord _ (G.starProjection_apply_mem x)
+        _ ≤ ∑ _i : Fin k, s := Finset.sum_le_sum fun i _ => (hx.1 i).le
+        _ = k * s := by simp
+    have h2 : ‖Gᗮ.starProjection x‖ < ρ := by simpa using hx.2
+    calc ‖x‖ = ‖G.starProjection x + Gᗮ.starProjection x‖ := by
+          rw [G.starProjection_add_starProjection_orthogonal]
+      _ ≤ ‖G.starProjection x‖ + ‖Gᗮ.starProjection x‖ := norm_add_le _ _
+      _ ≤ k * s + ρ := by linarith
+  -- Step 4: `ℝᴾ` is proper, so the bounded set `W` has compact closure
+  refine ⟨hWo, ⟨hbdd.isCompact_closure, subset_univ _⟩, ?_⟩
+  -- Step 5: `⟨gᵢ, p x⟩ = ⟨p gᵢ, x⟩ = ⟨gᵢ, x⟩`, so the slab over `K ⊆ B_ρ(0)` lies in `W`
+  intro K hK x hx
+  refine ⟨fun i => ?_, hK hx.2⟩
+  have hgi : inner ℝ (g i) (G.starProjection x) = inner ℝ (g i) x := by
+    rw [← G.inner_starProjection_left_eq_right,
+      G.starProjection_eq_self_iff.mpr (Submodule.subset_span ⟨i, rfl⟩)]
+  rw [hgi]
+  exact (hx.1 i).trans_lt hrs
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
