@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_trace-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1",
+  "depth": 4,
+  "title": "Trace estimate on the unit cube for functions of variation at most V tested on bounded C¹ fields",
+  "statement": "Let m ∈ ℕ, n := m + 1, Q₁ := (0,1)ⁿ ⊆ Euclid n (Lebesgue measure), div g := trace Dg. If w : ℝⁿ → ℝ is integrable on Q₁ and V ∈ ℝ satisfies ∫_{Q₁} w · div g ≤ V for every C^∞ map g : ℝⁿ → ℝⁿ with compact support, tsupport g ⊆ Q₁ and |g| ≤ 1, then for every C¹ map G : ℝⁿ → ℝⁿ with |G(y)| ≤ 1 for all y: |∫_{Q₁} w · div G| ≤ (2n + 1) V + 4n ∫_{Q₁}|w| (2n + 1 = 2(m + 1) + 1, 4n = 4(m + 1)).",
+  "lean_statement": "∀ (m : ℕ) (w : Euclid (m + 1) → ℝ) (V : ℝ), IntegrableOn w {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → ∀ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 G → (∀ y, ‖G y‖ ≤ 1) → |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤ (2 * (m + 1) + 1) * V + 4 * (m + 1) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w y|",
+  "lean_name": "cmcdt_cbm_bv_trace",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-59622a92c9-a1"
+}

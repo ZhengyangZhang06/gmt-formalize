@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1.rn_carrier-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1",
+  "depth": 5,
+  "title": "Radon–Nikodym density on a positive carrier: μ ≪ ν⌞M₀ with ν(M₀) < ∞ gives μ = (ν⌞M)·θ with θ > 0 on M ⊆ M₀",
+  "statement": "Let P ∈ ℕ and let μ, ν be measures on ℝ^P with μ(ℝ^P) < ∞. Let M₀ ⊆ ℝ^P be a Borel set with ν(M₀) < ∞ and μ(ℝ^P ∖ M₀) = 0, and suppose μ(E) = 0 for every E ⊆ ℝ^P with ν(E) = 0. Then there are a Borel set M ⊆ M₀ and a Borel function θ : ℝ^P → ℝ with θ(x) > 0 for every x ∈ M such that μ = (ν⌞M).withDensity(x ↦ ofReal θ(x)).",
+  "lean_statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)) (M₀ : Set (Euclid P)), μ univ < ∞ → MeasurableSet M₀ → ν M₀ < ∞ → μ M₀ᶜ = 0 → (∀ E : Set (Euclid P), ν E = 0 → μ E = 0) → ∃ (M : Set (Euclid P)) (θ : Euclid P → ℝ), MeasurableSet M ∧ M ⊆ M₀ ∧ Measurable θ ∧ (∀ x ∈ M, 0 < θ x) ∧ μ = (ν.restrict M).withDensity (fun x => ENNReal.ofReal (θ x))",
+  "lean_name": "cbr_ci_dr_withDensity_carrier_of_absolutelyContinuous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c111f37983-a1"
+}

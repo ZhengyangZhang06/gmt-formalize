@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.skeleton_decomposition-a1.faces_meeting_compact_finite-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.skeleton_decomposition-a1",
+  "depth": 5,
+  "title": "Only finitely many unit lattice faces meet a compact set (parent step 5)",
+  "statement": "Let P, k ∈ ℕ and K ⊆ ℝ^P compact. Then only finitely many index pairs p = (ι, b), with ι : Fin k → Fin P arbitrary and b ∈ ℤ^P, have Φ_p(y) := b + Σ_j y_j e_{ι(j)} ∈ K for some y in the closed unit cube [0,1]^k (in Lean: the set {p | ∃ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) 1 ∈ K} is finite).",
+  "lean_statement": "∀ (P k : ℕ) (K : Set (Euclid P)), IsCompact K → {p : (Fin k → Fin P) × (Fin P → ℤ) | ∃ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) ∈ K}.Finite",
+  "lean_name": "cmcdtfrsd_faces_meeting_compact_finite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-f3d25200d4-a1"
+}

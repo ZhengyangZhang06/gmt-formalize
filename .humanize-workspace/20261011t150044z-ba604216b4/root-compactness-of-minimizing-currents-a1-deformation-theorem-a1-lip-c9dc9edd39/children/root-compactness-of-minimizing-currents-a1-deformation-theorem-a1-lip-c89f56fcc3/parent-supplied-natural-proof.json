@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "python3 scan of runs/20261011T150044Z-ba604216b4/dag.json: ancestors and depends_on of the selected node, frozen lean_statement of slice-a1 (cmcdt_lpo_slice_forms) and toolkit-a1 (cmcdt_lpo_current_toolkit), and lean_name collision check for the five proposed cmcdt_lpo_cyl_* names (no collision)",
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean workspaces/gmt-ch07/GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d)",
+        "rg -n cmcdt_lpo_cyl local-references/123e8435b4a2469b/project local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean' (no match)",
+        "rg -n -i 'cylinder|productWithInterval|homotopy' local-references/123e8435b4a2469b/project/GMT -g '*.lean' (no match)",
+        "rg -n 'GeometricCurrentOn|zeroRegion|massAdmissibleOn' local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "rg -n 'def compContinuousLinearMapCLM|def curryLeftLI|theorem curryLeft_apply_apply|theorem compContinuousLinearMapCLM_apply' local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'",
+        "rg -n continuous_eval_const mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean; rg -ln 'class ContinuousEvalConst' mathlib/Mathlib",
+        "rg -n 'theorem Continuous.finCons|theorem IsCompact.of_isClosed_subset|closure_ball_subset_closedBall' mathlib/Mathlib -g '*.lean'",
+        "rg -n 'theorem integral_add|theorem integral_const_mul' mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Forms}.lean",
+        "sed -n 345,420p book/chapter-06.txt; grep -n 'homotopy formula' book/chapter-06.txt (Simon 6.2.17-2.21, 2.25)",
+        "lake env lean /tmp/cyl-decomp-m3x9/Probe.lean and Probe2.lean (#check of cited Mathlib lemmas; fun_prop proves continuity of t ↦ ι(t, x))",
+        "lake env lean /tmp/cyl-decomp-m3x9/Children.lean (all five child types elaborate after import GMT.Ch07.Submission; sorry-free assembly Submission.cmcdt_lpo_cyl_assembly_check of the exact selected frozen type from the children and the two stubbed sibling dependencies)",
+        "lake env lean /tmp/cyl-decomp-m3x9/Child1.lean ... Child5.lean and Consolidated.lean (complete scratch proofs of all five children; #print axioms)",
+        "sed of /runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py, prompts.py and runtime.py (inherited-prerequisite citation rule; depth gate node.depth >= max_depth = 6)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Hom/ContinuousEvalConst.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-c9dc9edd39/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/cyl-decomp-m3x9/Children.lean",
+        "/tmp/cyl-decomp-m3x9/Child1.lean",
+        "/tmp/cyl-decomp-m3x9/Child2.lean",
+        "/tmp/cyl-decomp-m3x9/Child3.lean",
+        "/tmp/cyl-decomp-m3x9/Child4.lean",
+        "/tmp/cyl-decomp-m3x9/Child5.lean",
+        "/tmp/cyl-decomp-m3x9/Consolidated.lean",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py"
+      ],
+      "conclusion": "Nothing in the snapshot can be reused. The snapshot is project b4d606d with Mathlib 25730c7c, and its Ch07 Contract.lean is identical to the workspace Submission.lean. It has no product-with-[[0,1]], cylinder or homotopy construction for GeometricCurrentOn (rg cylinder|homotopy in project/GMT: no match). It has no declaration with prefix cmcdt_lpo_cyl (no match), and dag.json reserves none of the five proposed names. Every tool the child proofs cite is in the frozen import closure. From Mathlib: ContinuousAlternatingMap.compContinuousLinearMapCLM (Topology/Algebra/Module/Alternating/Topology.lean:281), curryLeftLI and curryLeft_apply_apply (Analysis/Normed/Module/Alternating/Curry.lean:77, :57), continuous_eval_const (Topology/Hom/ContinuousEvalConst.lean), Continuous.finCons (Topology/Constructions.lean:983), IsCompact.of_isClosed_subset (Topology/Compactness/Compact.lean:105), closure_ball_subset_closedBall (Topology/MetricSpace/Pseudo/Lemmas.lean:73), and intervalIntegral.integral_add / integral_const_mul (IntervalIntegral/Basic.lean:774, :817). From SimonGMT Chapter06: GeometricCurrentOn.ext, boundary_apply, isOpen_zeroRegion, zeroRegion/support, massAdmissibleOn and mass. All five child types elaborate after import GMT.Ch07.Submission. Each child has a complete sorry-free scratch proof with axioms propext, Classical.choice and Quot.sound. The exact selected frozen type is assembled from the five children and the two sibling dependencies, stubbed, with no other sorry. Simon 6.2.17–2.21 and the homotopy formula 2.25 in book/chapter-06.txt match the construction."
+    }
+  ],
+  "proof": "Source: step 7 of the parent proof. Let C := {ι(t, x) : t ∈ [0, 1], x ∈ spt X} ⊆ ℝ^{N+1}.\n1. C is compact. C is the image of [0, 1] × spt X under (t, x) ↦ ι(t, x) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)), which is continuous on ℝ × ℝ^N (fun_prop). [0, 1] and spt X are compact, so their product is compact (isCompact_Icc.prod) and so is its continuous image (IsCompact.image). In particular C is closed (compact sets in the Hausdorff space ℝ^{N+1} are closed), so Cᶜ is open.\n2. spt Z ⊆ C. Let y ∈ spt Z and suppose y ∉ C. As Cᶜ is open, there is r > 0 with B := ball(y, r) ⊆ Cᶜ (Metric.isOpen_iff); the parent proof uses the ball of radius infDist(y, C)/2, and any ball inside Cᶜ serves. B is open; closure B ⊆ closedBall(y, r) (closure_ball_subset_closedBall), which is compact in the proper space ℝ^{N+1}, so closure B is compact (IsCompact.of_isClosed_subset); and closure B ⊆ univ. Z vanishes on B: let ω ∈ 𝒟^{k+1}(ℝ^{N+1}) with tsupport ω ⊆ B. If some x lay in tsupport S(ω) ∩ spt X, the hypothesis on S would give t ∈ [0, 1] with ι(t, x) ∈ tsupport ω ⊆ B ⊆ Cᶜ, whereas ι(t, x) ∈ C because t ∈ [0, 1] and x ∈ spt X; contradiction. So tsupport S(ω) is disjoint from spt X, and (VO) with P := N, n := k, U := univ, the current X and the test form S(ω) gives X(S(ω)) = 0; hence Z(ω) = X(S(ω)) = 0. [The parent proof reaches X(S(ω)) = 0 through the locality property and X(0) = 0; (VO) gives it directly.] Thus B is an open set with compact closure contained in univ on which Z vanishes, so B is one of the sets whose union is zeroRegion Z, and y ∈ B ⊆ zeroRegion Z. This contradicts y ∈ spt Z = univ \\ zeroRegion Z. Hence spt Z ⊆ C.\n3. spt Z is compact. spt Z = univ \\ zeroRegion Z = (zeroRegion Z)ᶜ is closed, because zeroRegion Z is open (GeometricCurrentOn.isOpen_zeroRegion). A closed subset of the compact set C is compact (IsCompact.of_isClosed_subset), so spt Z is compact. With step 2 this proves both claims. □",
+  "key_steps": [
+    "C = ι([0, 1] × spt X) is a continuous image of a compact set, hence compact and closed.",
+    "For y ∉ C choose ball(y, r) ⊆ Cᶜ; it is open with compact closure.",
+    "If tsupport ω ⊆ ball(y, r), then tsupport S(ω) misses spt X, so (VO) gives Z(ω) = X(S(ω)) = 0; hence y ∈ zeroRegion Z and y ∉ spt Z.",
+    "spt Z = (zeroRegion Z)ᶜ is closed and contained in the compact C, hence compact."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
