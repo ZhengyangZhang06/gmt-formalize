@@ -1604,6 +1604,50 @@ theorem Submission.dpf_approxTangent_ae_bilipschitz_piece : ∀ (P n : ℕ) (U Y
     Submission.ptd_piece_image_approxTangent_ae P n F B L m hF hB hm hbi hdiff] with b hYA hA'
   exact (hYA _).2 hA'
 
+/-- Orientation of an integer multiplicity triple `(M, θ, ξ)` in `U` along a bi-Lipschitz piece of
+its carrier: let `F` be Lipschitz, `B` Borel with `m|a − a'| ≤ |F(a) − F(a')|` on `B`, `DF(a)`
+injective for `a ∈ B`, and `F(B) ⊆ M`.  Then `b ↦ ξ(F(b))` is a.e. strongly measurable on `B`, and
+for a.e. `b ∈ B`, `ξ(F(b))` is a unit orientation of `range DF(b)`.  As `θ ≥ 1` on `M`, `M` is
+locally `Hⁿ`-finite in `U`, so it has approximate tangent space `range DF(b)` at `F(b)` for a.e.
+`b`; `ξ` orients an approximate tangent space of `M` `Hⁿ`-a.e. on `F(B) ⊆ M`, which pulls back to
+a.e. `b ∈ B`; and approximate tangent spaces are unique (Simon Ch. 3, Remark 1.5(1)). -/
+theorem Submission.dimred_mbl_pfi_imrep_orient_along_piece : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), IsOpen U → LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → F '' B ⊆ R.carrier → AEStronglyMeasurable (fun b => R.orient (F b)) (volume.restrict B) ∧ ∀ᵐ b ∂(volume.restrict B), IsUnitOrientationOf (R.orient (F b)) (LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n U R F B L m hU hFL hB hm hlow hdiff hsub
+  -- Step 1: `θ ≥ 1` on `M` and `θ` is locally integrable, so `M` is locally `Hⁿ`-finite in `U`
+  have hloc : ∀ C : Set (Euclid P), IsCompact C → C ⊆ U → μHE[n] (R.carrier ∩ C) ≠ ∞ := by
+    intro C hC hCU
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult C hC hCU) ?_
+    rw [← setLIntegral_one]
+    refine setLIntegral_mono' (R.measurableSet_carrier.inter hC.isClosed.measurableSet)
+      (fun x hx => ?_)
+    have := R.mult_pos x hx.1
+    exact_mod_cast this
+  -- Step 2: `M` has approximate tangent space `range DF(b)` at `F(b)` for a.e. `b ∈ B`
+  have htan := Submission.dpf_approxTangent_ae_bilipschitz_piece P n U R.carrier F B L m hU
+    R.measurableSet_carrier R.carrier_subset hloc hFL hB hm hlow hdiff hsub
+  -- Step 3: `ξ(F(b))` orients some approximate tangent space of `M` at `F(b)` for a.e. `b ∈ B`
+  have hpull := (Submission.ptd_piece_image_measurable_ae_pullback P n F B L m hFL hB hm hlow).2
+  have hor1 : ∀ᵐ y ∂(μHE[n].restrict (F '' B)), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n R.carrier y Q ∧ IsUnitOrientationOf (R.orient y) Q :=
+    ae_restrict_of_ae_restrict_of_subset hsub R.orients
+  have hor2 := hpull _ hor1
+  -- Step 5: `ξ(F(b)) = ξ̃(F(b))` for a.e. `b ∈ B`, `ξ̃` a strongly measurable version of `ξ`
+  have hξ := R.aestronglyMeasurable_orient
+  have heq1 : ∀ᵐ y ∂(μHE[n].restrict (F '' B)), R.orient y = hξ.mk _ y :=
+    ae_restrict_of_ae_restrict_of_subset hsub hξ.ae_eq_mk
+  have heq2 := hpull _ heq1
+  refine ⟨?_, ?_⟩
+  · refine (hξ.stronglyMeasurable_mk.comp_measurable
+      hFL.continuous.measurable).aestronglyMeasurable.congr ?_
+    filter_upwards [heq2] with b hb
+    exact hb.symm
+  -- Step 4: uniqueness of approximate tangent spaces identifies the oriented one with `range DF(b)`
+  · filter_upwards [htan, hor2] with b hb1 hb2
+    obtain ⟨Q, hQ, hor⟩ := hb2
+    have hQeq := hQ.unique hb1
+    rw [← hQeq]
+    exact hor
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
