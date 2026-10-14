@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b7cb1a63862d6b3db52435c34effc3e09151b3fabed3a850aed3929bcb0b41ee",
+  "git_delta": {
+    "base_commit": "6c3c53e2be05cc427977a6c42e6e166ad7f9b502",
+    "candidate_commit": "db853563962e1ff5e0fc535934e0654ae7c3d292",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_fa_area_formula_prod",
+    "diff_sha256": "b2b73ac5ccbaefdf239f1f64d54d953d18f5e2f7009922b3a81cb484140f44dc",
+    "source_sha256": "a70d5791bae10bec8e0e094370101b3158d47351360e7f01f6ffeb53349dbbb4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_fa_area_formula_prod",
+      "statement": "∀ (P : ℕ) (M Z : Set (Euclid P)) (F : Euclid P → ℝ × ℝ) (h : Euclid P → ℝ≥0∞), MeasurableSet M → CountablyRectifiable 2 M → (∀ K : Set (Euclid P), IsCompact K → μHE[2] (M ∩ K) ≠ ∞) → IsOpen Z → ContDiffOn ℝ 1 F Z → AEMeasurable h (μHE[2].restrict M) → AEMeasurable (fun p : ℝ × ℝ => ∑' x : ↥(M ∩ Z ∩ F ⁻¹' {p}), h x) volume ∧ ∫⁻ p : ℝ × ℝ, (∑' x : ↥(M ∩ Z ∩ F ⁻¹' {p}), h x) = ∫⁻ x in M ∩ Z, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane 2 M x)) => (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) i)).1 * (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) j)).1 + (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) i)).2 * (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) j)).2))) * h x ∂μHE[2]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
