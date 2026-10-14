@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6c262feb27c4ce2cbbed5c14eded6bbd8ecb4b32d9bdb6c342af9d9d8cebd656",
+  "git_delta": {
+    "base_commit": "ae283a6ae38c268b0a2e5b348ef3954044ff9834",
+    "candidate_commit": "b2e9cffb5539a163798443cc38e74004a298dc05",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_antipodal_ray_split",
+    "diff_sha256": "2ce5bcd344c3893173ceb819be3bf79eb27dd4dc09e38f35db11625e1b974941",
+    "source_sha256": "ac48a6ea2dc59e8a2a83cca4dc00297a14a5a638dced6f54a2d6cc48e59853fc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_antipodal_ray_split",
+      "statement": "∀ (P : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) 1) (e : Euclid P), ‖e‖ = 1 → ∫ t in Ioi (0 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e) = (∫ t in Ioo (0 : ℝ) 1, (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) + ∫ t in Ioi (1 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
