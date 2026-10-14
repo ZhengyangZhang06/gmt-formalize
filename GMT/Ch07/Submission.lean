@@ -993,6 +993,151 @@ theorem Submission.cmcdt_lpo_mollify_lipschitz : ∀ (N N' : ℕ) (Λ : NNReal) 
   refine ⟨G, fun j => (hG j).1, fun j => (hG j).2.1, fun j x => ?_⟩
   calc dist (G j x) (F x) ≤ (Λ : ℝ) * (1 / ((j : ℝ) + 1)) := (hG j).2.2 x
     _ = (Λ : ℝ) / ((j : ℝ) + 1) := by ring
+/-- **Simon Ch. 6, 2.7–2.8 with 2.12** (mass–support bound).  Let `X ∈ 𝒟ₖ(ℝᴺ)` have
+`M(X) < ∞` and let `|ψ(x)| ≤ c` on `spt X`.  The representation `X(ω) = ∫ ⟨ω, ξ⟩ dμ` with
+`M_W(X) = μ(W)` (`W` open) and `|ξ| ≤ 1` makes `μ` finite with `μ(ℝᴺ) = M(X)`.  `X` kills every
+test form supported in the open zero region `ℝᴺ \ spt X`, so `μ` gives it measure zero; hence
+`|ξ(x)(ψ(x))| ≤ c` for `μ`-a.e. `x`, and `|X(ψ)| ≤ c μ(ℝᴺ) = c M(X)`. -/
+theorem Submission.cmcdt_lpo_tk_mass_support_bound : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ψ : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), X.mass < ∞ → (∀ x ∈ X.support, covectorEuclideanNorm ((ψ : DifferentialForm (Euclid N) k) x) ≤ c) → |X ψ| ≤ c * X.mass.toReal := by
+  intro hVO hREP N k X ψ c hX hψ
+  -- the representation of `X`: every local mass is at most `M(X) < ∞`
+  obtain ⟨μ, ξ, -, -, hμ, -, hξ, hrep, -⟩ := hREP N k univ X isOpen_univ
+    fun W _ _ => (X.massOn_mono (subset_univ W)).trans_lt hX
+  -- `μ(ℝᴺ) = M(X)`, so `μ` is finite
+  have hμuniv : μ univ = X.mass := (hμ univ isOpen_univ).symm
+  have : IsFiniteMeasure μ := ⟨hμuniv ▸ hX⟩
+  -- the zero region is `μ`-null: `X` kills every admissible form supported in it
+  have hZ : μ X.zeroRegion = 0 := by
+    rw [← hμ _ X.isOpen_zeroRegion]
+    refine le_antisymm (sSup_le ?_) bot_le
+    rintro r ⟨ω, hω, rfl⟩
+    have hω0 : X ω = 0 := hVO N k univ X ω <| Set.disjoint_left.2 fun x hx hxS => hxS.2 (hω.1 hx)
+    simp [hω0]
+  -- hence `μ`-a.e. `x` lies in `spt X`, where `|ξ(x)(ψ(x))| ≤ |ψ(x)| ≤ c`
+  have hbound : ∀ᵐ x ∂μ, ‖ξ x ((ψ : DifferentialForm (Euclid N) k) x)‖ ≤ c := by
+    have hae : ∀ᵐ x ∂μ, x ∈ X.support :=
+      measure_mono_null (fun x hx => by_contra fun hxZ => hx ⟨mem_univ x, hxZ⟩) hZ
+    filter_upwards [hae] with x hx
+    rw [Real.norm_eq_abs]
+    exact (hξ x _).trans (hψ x hx)
+  rw [hrep ψ, ← Real.norm_eq_abs, ← hμuniv, ← measureReal_def]
+  exact norm_integral_le_of_norm_le_const hbound
+/-- **Simon 6.2.1, 6.2.4** (bounded functionals are currents): a linear functional `T₀` on
+`𝒟ᵏ(ℝᴺ)` with `|T₀(ω)| ≤ C c` whenever `|ω(x)| ≤ c` for all `x` (Euclidean coefficient norm) is
+a current `T ∈ 𝒟ₖ(ℝᴺ)` with `M(T) ≤ C`.  Each coefficient of a covector `α` is its value on unit
+vectors, so `|α| ≤ √(Nᵏ) ‖α‖`; hence `ωⱼ → 0` uniformly (supports in a fixed compact set) forces
+`T₀(ωⱼ) → 0`.  The zero form gives `C ≥ 0`, and admissible forms give `T(ω) ≤ C`. -/
+theorem Submission.cmcdt_lpo_tk_bounded_current : ∀ (N k : ℕ) (T₀ : TestFormOn (univ : Set (Euclid N)) k →ₗ[ℝ] ℝ) (C : ℝ), (∀ (ω : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) x) ≤ c) → |T₀ ω| ≤ C * c) → ∃ T : GeometricCurrentOn (univ : Set (Euclid N)) k, (∀ ω, T ω = T₀ ω) ∧ T.mass ≤ ENNReal.ofReal C := by
+  intro N k T₀ C hT
+  -- `|α| ≤ √(Nᵏ) ‖α‖`: each of the `Nᵏ` summands is at most `‖α‖²`
+  have hA : 0 ≤ Real.sqrt (Fintype.card (Fin k → Fin N)) := Real.sqrt_nonneg _
+  have hcoef : ∀ α : Covector (Euclid N) k,
+      covectorEuclideanNorm α ≤ Real.sqrt (Fintype.card (Fin k → Fin N)) * ‖α‖ := by
+    intro α
+    unfold covectorEuclideanNorm
+    calc _ ≤ Real.sqrt (∑ _I : Fin k → Fin N, ‖α‖ ^ 2) := by
+          apply Real.sqrt_le_sqrt
+          apply Finset.sum_le_sum
+          intro I _
+          split_ifs
+          · have h2 := α.le_opNorm (fun i ↦ EuclideanSpace.basisFun (Fin N) ℝ (I i))
+            simp only [OrthonormalBasis.norm_eq_one, Finset.prod_const_one, mul_one,
+              Real.norm_eq_abs] at h2
+            exact sq_le_sq' (abs_le.mp h2).1 (abs_le.mp h2).2
+          · positivity
+      _ = Real.sqrt (Fintype.card (Fin k → Fin N)) * ‖α‖ := by
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
+            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
+  -- the zero form gives `0 ≤ C`
+  have hC : 0 ≤ C := by
+    have h := hT 0 1 (fun x => by simp)
+    simpa using h
+  -- continuity: only the uniform convergence of the forms themselves (`m = 0`) is needed
+  have hcont : ∀ (omegaSeq : ℕ → TestFormOn (univ : Set (Euclid N)) k),
+      TestFormOnConverges omegaSeq 0 → Tendsto (fun j ↦ T₀ (omegaSeq j)) atTop (𝓝 0) := by
+    intro omegaSeq hconv
+    obtain ⟨K, -, -, hsupp, -, hunif⟩ := hconv
+    have h0 := Metric.tendstoUniformlyOn_iff.mp (hunif 0)
+    have hsmall : ∀ δ > 0, ∀ᶠ j in atTop,
+        ∀ x, ‖(omegaSeq j : DifferentialForm (Euclid N) k) x‖ ≤ δ := by
+      intro δ hδ
+      filter_upwards [h0 δ hδ] with j hj
+      intro x
+      by_cases hx : x ∈ K
+      · have hz : iteratedFDeriv ℝ 0
+            ((0 : TestFormOn (univ : Set (Euclid N)) k) : DifferentialForm (Euclid N) k) x = 0 := by
+          rw [← norm_eq_zero, norm_iteratedFDeriv_zero]
+          simp
+        have h1 := hj x hx
+        rw [hz, dist_zero_left, norm_iteratedFDeriv_zero] at h1
+        exact h1.le
+      · rw [image_eq_zero_of_notMem_tsupport (fun hx' => hx (hsupp j hx')), norm_zero]
+        exact hδ.le
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    have hCA : 0 ≤ C * Real.sqrt (Fintype.card (Fin k → Fin N)) := mul_nonneg hC hA
+    have hδ : 0 < ε / (C * Real.sqrt (Fintype.card (Fin k → Fin N)) + 1) :=
+      div_pos hε (by linarith)
+    filter_upwards [hsmall _ hδ] with j hj
+    have hb := hT (omegaSeq j) _
+      (fun x => (hcoef _).trans (mul_le_mul_of_nonneg_left (hj x) hA))
+    rw [Real.dist_eq, sub_zero]
+    refine hb.trans_lt ?_
+    rw [← mul_assoc, mul_div_assoc', div_lt_iff₀ (by linarith)]
+    nlinarith
+  -- the current, and its mass bound from admissible forms
+  refine ⟨⟨T₀, hcont⟩, fun ω => rfl, ?_⟩
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  apply ENNReal.ofReal_le_ofReal
+  have h := hT ω 1 hω.2
+  rw [mul_one] at h
+  exact (le_abs_self _).trans h
+/-- **Simon 6.2.3 and 6.2.11**: `spt ∂X ⊆ spt X` for `X ∈ 𝒟_{k+1}(ℝᴺ)`.  If `x ∉ spt X`, then
+`x` lies in an open `W` with compact closure on which `X` vanishes.  For a test `k`-form `ω` with
+`spt ω ⊆ W`, `∂X(ω) = X(dω) = 0`, as `spt dω ⊆ spt ω ⊆ W`.  So `W` is also a zero region of `∂X`,
+and `x ∉ spt ∂X`. -/
+theorem Submission.cmcdt_lpo_tk_boundary_support_subset : ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)), X.boundary.support ⊆ X.support := by
+  intro N k X x hx
+  -- `x ∈ spt ∂X = univ \ (∂X).zeroRegion`; it remains to show `x ∉ X.zeroRegion`
+  refine ⟨hx.1, ?_⟩
+  -- step 1: otherwise `x` lies in a zero region `W` of `X`
+  rintro ⟨W, ⟨hWo, hWc, hWU, hXW⟩, hxW⟩
+  -- steps 2–3: `W` is a zero region of `∂X` as well, so `x ∈ (∂X).zeroRegion`
+  refine hx.2 ⟨W, ⟨hWo, hWc, hWU, fun ω hω => ?_⟩, hxW⟩
+  -- `∂X(ω) = X(dω)` and `spt dω ⊆ spt ω ⊆ W`
+  rw [GeometricCurrentOn.boundary_apply]
+  exact hXW (exteriorDerivativeTestOn univ k ω)
+    ((tsupport_exteriorDerivative_subset (ω : DifferentialForm (Euclid N) k)).trans hω)
+/-- **Locality of a current** (Simon 6.2.11, chapter-06.txt lines 296–303): if every current
+`S ∈ 𝒟ₙ(U)` kills the test forms whose support misses `spt S`, then `X ∈ 𝒟ₖ(ℝᴺ)` takes the same
+value on test forms `η`, `η'` that agree on an open set `W ⊇ spt X`.  The difference
+`ψ = η − η'` vanishes on `W`, so `tsupport ψ` lies in the closed set `Wᶜ`, which misses
+`spt X ⊆ W`; hence `X(η) − X(η') = X(ψ) = 0`. -/
+theorem Submission.cmcdt_lpo_tk_locality : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (η η' : TestFormOn (univ : Set (Euclid N)) k) (W : Set (Euclid N)), IsOpen W → X.support ⊆ W → (∀ x ∈ W, (η : DifferentialForm (Euclid N) k) x = (η' : DifferentialForm (Euclid N) k) x) → X η = X η' := by
+  intro hVO N k X η η' W hW hXW hηη'
+  -- Step 1: `ψ = η − η'` vanishes on `W`, so `tsupport ψ` lies in the closed set `Wᶜ`.
+  have hψ : tsupport ((η - η' : TestFormOn (univ : Set (Euclid N)) k) :
+      DifferentialForm (Euclid N) k) ⊆ Wᶜ := by
+    refine closure_minimal (fun x hx hxW => hx ?_) hW.isClosed_compl
+    rw [Submodule.coe_sub, Pi.sub_apply, hηη' x hxW, sub_self]
+  -- Step 2: `tsupport ψ ⊆ Wᶜ` misses `spt X ⊆ W`, so `X(ψ) = 0` by the vanishing hypothesis.
+  have h0 : X (η - η') = 0 := hVO N k univ X (η - η') (disjoint_compl_left.mono hψ hXW)
+  -- Step 3: `X(ψ) = X(η) − X(η')` by linearity of `X`.
+  rw [map_sub X.toCurrent] at h0
+  exact sub_eq_zero.mp h0
+
+/-- **Current toolkit** (Simon 6.2.1–2.12), for currents in `ℝᴺ`.  Assume (VO): a current
+kills every test form supported off its support; and (REP): a current of locally finite mass
+is integration against a measure `μ` with `M_W(T) = μ(W)` and a pointwise bounded `ξ`.  Then:
+(MSB) `|X(ψ)| ≤ c M(X)` if `M(X) < ∞` and `|ψ| ≤ c` on `spt X`; (BC) a linear `T₀` with
+`|T₀(ω)| ≤ C c` whenever `|ω| ≤ c` is a current of mass `≤ C`; (SB) `spt ∂X ⊆ spt X`;
+(LOC) `X(η) = X(η')` if `η = η'` on an open set containing `spt X`.  The four parts are
+independent: (MSB) uses (VO) and (REP), (LOC) uses only (VO), and (BC), (SB) use neither. -/
+theorem Submission.cmcdt_lpo_current_toolkit : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ψ : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), X.mass < ∞ → (∀ x ∈ X.support, covectorEuclideanNorm ((ψ : DifferentialForm (Euclid N) k) x) ≤ c) → |X ψ| ≤ c * X.mass.toReal) ∧ (∀ (N k : ℕ) (T₀ : TestFormOn (univ : Set (Euclid N)) k →ₗ[ℝ] ℝ) (C : ℝ), (∀ (ω : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) x) ≤ c) → |T₀ ω| ≤ C * c) → ∃ T : GeometricCurrentOn (univ : Set (Euclid N)) k, (∀ ω, T ω = T₀ ω) ∧ T.mass ≤ ENNReal.ofReal C) ∧ (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)), X.boundary.support ⊆ X.support) ∧ ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (η η' : TestFormOn (univ : Set (Euclid N)) k) (W : Set (Euclid N)), IsOpen W → X.support ⊆ W → (∀ x ∈ W, (η : DifferentialForm (Euclid N) k) x = (η' : DifferentialForm (Euclid N) k) x) → X η = X η' :=
+  fun hVO hREP => ⟨Submission.cmcdt_lpo_tk_mass_support_bound hVO hREP,
+    Submission.cmcdt_lpo_tk_bounded_current, Submission.cmcdt_lpo_tk_boundary_support_subset,
+    Submission.cmcdt_lpo_tk_locality hVO⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
