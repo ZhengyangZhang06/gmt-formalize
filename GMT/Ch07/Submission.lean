@@ -1547,6 +1547,307 @@ theorem Submission.codim1_hcp_lsa_tangential_derivative_aesm : ∀ (P m : ℕ) (
   rw [hMU]
   exact aestronglyMeasurable_iUnion_iff.2 fun i => hO i.1 (hTM i.2)
 
+/-- **Smooth approximation in one graph chart** (Simon Ch. 2, §4, 4.4–4.9; Lipschitz test
+functions in App. B, proof of B.2, used for 7.5.8).  `W` is the domain of a `C¹` graph chart at `p`:
+`M ∩ W = G(B_r(0))`, `pr(G(a) − p) = a`.  If `ζ` is locally Lipschitz on `M` and vanishes off a
+compact `C ⊆ M ∩ W`, then `g = ζ ∘ G` on `B_r(0)` (`0` outside) is Lipschitz and vanishes off
+`S = pr(C − p)`.  Mollify `g` to `gₖ`, supported in `T = cthickening δ S`, and put
+`ζₖ = β · gₖ ∘ pr(· − p)` with `β` smooth, `= 1` near `C' = G(T)` and `tsupport β ⊆ W`.
+`H^m`-a.e. on `M ∩ W` (Rademacher) the tangential error is `(Dgₖ(a) − Dg(a))(pr Pₓeⱼ)`,
+`a = pr(x − p)`, whose squares sum to at most `‖Dgₖ(a) − Dg(a)‖²`; off `W` it vanishes.  The
+Lipschitz area bound moves the error integral to `B_r(0)`, where it tends to `0`. -/
+theorem Submission.codim1_hcp_lsa_local_chart_approx : ∀ (P m : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → ∀ p ∈ M, ∃ W : Set (Euclid P), IsOpen W ∧ p ∈ W ∧ ∀ ζ : Euclid P → ℝ, LocallyLipschitzOn M ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∩ W ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∃ (C' : Set (Euclid P)) (ζs : ℕ → Euclid P → ℝ), IsCompact C' ∧ C' ⊆ M ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ζs k) ∧ HasCompactSupport (ζs k)) ∧ (∀ k, ∀ x ∈ M, x ∉ C' → ζs k x = 0) ∧ TendstoUniformlyOn ζs ζ atTop M ∧ Tendsto (fun k => ∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P, (fderiv ℝ (ζs k) x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)) - fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2) ∂μHE[m]) atTop (𝓝 0) := by
+  classical
+  intro P m M hM p hp
+  -- step 1: the graph chart at `p`; its domain `W` is the asserted neighbourhood
+  obtain ⟨pr, G, r, W, Λ, hr, hWo, hpW, hpr, hG0, hGc, hGL, hMW, hleft, hderiv, htan⟩ :=
+    Submission.codim1_hcp_lsa_c1_graph_chart P m M p hM hp
+  have hMmeas : MeasurableSet M := (Submission.dimred_rpd_embedded_locally_closed P 1 m M hM).1
+  refine ⟨W, hWo, hpW, ?_⟩
+  rintro ζ hζ ⟨C, hCc, hCMW, hζC⟩
+  have hGMW : ∀ a ∈ ball (0 : Euclid m) r, G a ∈ M ∩ W := fun a ha => by
+    rw [hMW]; exact mem_image_of_mem G ha
+  have hrep : ∀ x ∈ M ∩ W, pr (x - p) ∈ ball (0 : Euclid m) r ∧ G (pr (x - p)) = x := by
+    intro x hx
+    rw [hMW] at hx
+    obtain ⟨a, ha, rfl⟩ := hx
+    rw [hleft a ha]; exact ⟨ha, rfl⟩
+  have hGcont : ContinuousOn G (ball 0 r) := hGc.continuousOn
+  -- step 2: the compact parameter sets `S = pr(C − p) ⊆ T = cthickening δ S ⊆ B_r(0)`
+  set S : Set (Euclid m) := (fun x => pr (x - p)) '' C with hS
+  have hSc : IsCompact S := hCc.image (by fun_prop)
+  have hSball : S ⊆ ball 0 r := by
+    rintro _ ⟨x, hx, rfl⟩; exact (hrep x (hCMW hx)).1
+  obtain ⟨δ₀, hδ₀, hδ₀sub⟩ := hSc.exists_cthickening_subset_open isOpen_ball hSball
+  set δ : ℝ := δ₀ / 2 with hδ
+  have hδpos : 0 < δ := by positivity
+  set T : Set (Euclid m) := Metric.cthickening δ S with hT
+  have hTc : IsCompact T := hSc.cthickening
+  have hTball : T ⊆ ball 0 r := (Metric.cthickening_mono (by linarith) S).trans hδ₀sub
+  have hST : S ⊆ T := Metric.self_subset_cthickening S
+  -- step 3: the coordinate function `g = ζ ∘ G` on `B_r(0)`, `0` outside; `g = 0` off `S`
+  set g : Euclid m → ℝ := fun a => if a ∈ ball (0 : Euclid m) r then ζ (G a) else 0 with hg
+  have hg_ball : ∀ a ∈ ball (0 : Euclid m) r, g a = ζ (G a) := fun a ha => ite_eq_left ha
+  have hg0 : ∀ a, a ∉ S → g a = 0 := by
+    intro a ha
+    by_cases hab : a ∈ ball (0 : Euclid m) r
+    · rw [hg_ball a hab]
+      refine hζC (G a) (hGMW a hab).1 fun hGC => ha ?_
+      exact ⟨G a, hGC, hleft a hab⟩
+    · exact ite_eq_right hab
+  -- (b) `ζ ∘ G` is locally Lipschitz on the ball, hence Lipschitz and bounded on `T`
+  have hζG : LocallyLipschitzOn (ball (0 : Euclid m) r) (ζ ∘ G) := by
+    intro a ha
+    obtain ⟨K, t, ht, hKt⟩ := hζ (hGMW a ha).1
+    have ht' : t ∈ 𝓝[G '' ball 0 r] (G a) :=
+      nhdsWithin_mono _ (fun y hy => by rw [← hMW] at hy; exact hy.1) ht
+    refine ⟨K * Λ, G ⁻¹' t ∩ ball 0 r, ?_, ?_⟩
+    · exact inter_mem ((hGcont a ha).preimage_mem_nhdsWithin' ht') self_mem_nhdsWithin
+    · exact hKt.comp (hGL.mono inter_subset_right) fun b hb => hb.1
+  obtain ⟨K₁, hK₁⟩ := (hζG.mono hTball).exists_lipschitzOnWith_of_compact hTc
+  obtain ⟨B, hB⟩ := hTc.exists_bound_of_continuousOn (hK₁.continuousOn)
+  -- (c) `g` is globally Lipschitz with constant `max(K₁, B/δ)`
+  have hgLip : LipschitzWith (max K₁ (Real.toNNReal (B / δ))) g := by
+    have hgT : ∀ a ∈ T, g a = ζ (G a) := fun a ha => hg_ball a (hTball ha)
+    have hfar : ∀ a b, a ∈ S → b ∉ T →
+        dist (g a) (g b) ≤ max K₁ (Real.toNNReal (B / δ)) * dist a b := by
+      intro a b ha hb
+      have hgb : g b = 0 := hg0 b fun h => hb (hST h)
+      have hdist : δ < dist a b := by
+        by_contra hle
+        exact hb (Metric.mem_cthickening_of_dist_le b a δ S ha (by rw [dist_comm]; linarith))
+      rw [hgb, dist_zero_right]
+      have hBa : ‖g a‖ ≤ B := by rw [hgT a (hST ha)]; exact hB a (hST ha)
+      have hB0 : 0 ≤ B := le_trans (norm_nonneg _) hBa
+      calc ‖g a‖ ≤ B := hBa
+        _ ≤ B / δ * dist a b := by
+            rw [div_mul_eq_mul_div, le_div_iff₀ hδpos]
+            exact mul_le_mul_of_nonneg_left hdist.le hB0
+        _ ≤ (Real.toNNReal (B / δ) : ℝ) * dist a b :=
+            mul_le_mul_of_nonneg_right (Real.le_coe_toNNReal _) dist_nonneg
+        _ ≤ (max K₁ (Real.toNNReal (B / δ)) : ℝ) * dist a b := by
+            gcongr; exact le_max_right _ _
+    refine LipschitzWith.of_dist_le_mul fun a b => ?_
+    by_cases ha : a ∈ T <;> by_cases hb : b ∈ T
+    · rw [hgT a ha, hgT b hb]
+      calc dist (ζ (G a)) (ζ (G b)) ≤ K₁ * dist a b := hK₁.dist_le_mul a ha b hb
+        _ ≤ _ := by gcongr; exact le_max_left _ _
+    · by_cases haS : a ∈ S
+      · exact hfar a b haS hb
+      · rw [hg0 a haS, hg0 b fun h => hb (hST h), dist_self]; positivity
+    · by_cases hbS : b ∈ S
+      · rw [dist_comm, dist_comm a b]; exact hfar b a hbS ha
+      · rw [hg0 a fun h => ha (hST h), hg0 b hbS, dist_self]; positivity
+    · rw [hg0 a fun h => ha (hST h), hg0 b fun h => hb (hST h), dist_self]; positivity
+  -- step 4: mollification
+  obtain ⟨gs, hgs_smooth, hgs_supp, hgs_unif, hgs_L2⟩ :=
+    Submission.codim1_hcp_lsa_mollify_lipschitz_compact_support m g _ S δ hgLip hSc hg0 hδpos
+  -- step 5: the cutoff `β`, smooth, `= 1` near `K' = G(T)`, `tsupport β ⊆ W`
+  set K' : Set (Euclid P) := G '' T with hK'
+  have hK'c : IsCompact K' := hTc.image_of_continuousOn (hGcont.mono hTball)
+  have hK'MW : K' ⊆ M ∩ W := by rintro _ ⟨a, ha, rfl⟩; exact hGMW a (hTball ha)
+  obtain ⟨ε, hε, hεW⟩ := hK'c.exists_cthickening_subset_open hWo fun x hx => (hK'MW hx).2
+  obtain ⟨β, hβs, hβr, hβsupp, hβ1⟩ := exists_contDiff_support_eq_eq_one_iff (n := (⊤ : ℕ∞))
+    (Metric.isOpen_thickening (δ := ε) (E := K'))
+    (Metric.isClosed_cthickening (δ := ε / 2) (E := K'))
+    (Metric.cthickening_subset_thickening' hε (by linarith) K')
+  have htsβ : tsupport β ⊆ Metric.cthickening ε K' := by
+    rw [tsupport, hβsupp]; exact Metric.closure_thickening_subset_cthickening ε K'
+  have hβcs : HasCompactSupport β :=
+    hK'c.cthickening.of_isClosed_subset (isClosed_tsupport β) htsβ
+  have hβ0 : ∀ x, x ∉ W → x ∉ tsupport β := fun x hx h => hx (hεW (htsβ h))
+  have hβone : ∀ x ∈ Metric.thickening (ε / 2) K', β x = 1 := fun x hx =>
+    (hβ1 x).1 (Metric.thickening_subset_cthickening _ _ hx)
+  have hK'thick : K' ⊆ Metric.thickening (ε / 2) K' :=
+    Metric.self_subset_thickening (by positivity) K'
+  have hprc : ContDiff ℝ (⊤ : ℕ∞) (fun z : Euclid P => pr (z - p)) := by fun_prop
+  -- step 6: the approximants `ζₖ = β · gₖ ∘ pr(· − p)` and `C' = K'`
+  refine ⟨K', fun k z => β z * gs k (pr (z - p)), hK'c, fun x hx => (hK'MW hx).1,
+    fun k => ⟨hβs.mul ((hgs_smooth k).comp hprc), hβcs.mul_right⟩, ?_, ?_, ?_⟩
+  · -- step 7: `ζₖ = 0` on `M \ K'`
+    intro k x hxM hxK
+    by_cases hxW : x ∈ W
+    · obtain ⟨ha, hGa⟩ := hrep x ⟨hxM, hxW⟩
+      have haT : pr (x - p) ∉ T := fun h => hxK ⟨_, h, hGa⟩
+      simp only [hgs_supp k _ haT, mul_zero]
+    · simp only [image_eq_zero_of_notMem_tsupport (hβ0 x hxW), zero_mul]
+  · -- step 8: uniform convergence on `M`, read off in chart coordinates
+    rw [Metric.tendstoUniformlyOn_iff]
+    intro ε' hε'
+    filter_upwards [Metric.tendstoUniformly_iff.1 hgs_unif ε' hε'] with k hk x hxM
+    by_cases hxW : x ∈ W
+    · obtain ⟨ha, hGa⟩ := hrep x ⟨hxM, hxW⟩
+      have hζx : ζ x = g (pr (x - p)) := by rw [hg_ball _ ha, hGa]
+      by_cases haT : pr (x - p) ∈ T
+      · rw [hβone x (hK'thick ⟨_, haT, hGa⟩), one_mul, hζx]; exact hk _
+      · rw [hgs_supp k _ haT, mul_zero, hζx, hg0 _ fun h => haT (hST h), dist_self]; exact hε'
+    · rw [image_eq_zero_of_notMem_tsupport (hβ0 x hxW), zero_mul,
+        hζC x hxM fun h => hxW (hCMW h).2, dist_self]
+      exact hε'
+  · -- steps 9–11: the tangential gradient error
+    set w : Euclid P → Fin P → Euclid P := fun x j =>
+      (Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1) with hw
+    -- step 9: `∑ⱼ λ(pr(Pₓeⱼ))² ≤ ‖λ‖²`, via the Riesz vector of `λ ∘ pr ∘ Pₓ`
+    have halg : ∀ (l : Euclid m →L[ℝ] ℝ) (x : Euclid P),
+        ∑ j : Fin P, (l (pr (w x j))) ^ 2 ≤ ‖l‖ ^ 2 := by
+      intro l x
+      set ℓ : Euclid P →L[ℝ] ℝ :=
+        (l.comp pr).comp (Submodule.span ℝ (tangentSpace M x)).starProjection
+      set u : Euclid P := (InnerProductSpace.toDual ℝ (Euclid P)).symm ℓ
+      have hu : ∀ v, ℓ v = inner ℝ u v := fun v => (InnerProductSpace.toDual_symm_apply).symm
+      have hcoord : ∀ j : Fin P, l (pr (w x j)) = u j := by
+        intro j
+        have := hu (EuclideanSpace.single j 1)
+        rw [EuclideanSpace.inner_single_right] at this
+        simpa [ℓ, w] using this
+      have hnorm : ‖u‖ = ‖ℓ‖ := LinearIsometryEquiv.norm_map _ _
+      have hℓ : ‖ℓ‖ ≤ ‖l‖ := by
+        calc ‖ℓ‖ ≤ ‖l.comp pr‖ * ‖(Submodule.span ℝ (tangentSpace M x)).starProjection‖ :=
+              ContinuousLinearMap.opNorm_comp_le _ _
+          _ ≤ (‖l‖ * ‖pr‖) * 1 := by
+              gcongr
+              · exact ContinuousLinearMap.opNorm_comp_le _ _
+              · exact Submodule.starProjection_norm_le _
+          _ ≤ ‖l‖ * 1 * 1 := by gcongr
+          _ = ‖l‖ := by ring
+      calc ∑ j : Fin P, (l (pr (w x j))) ^ 2 = ∑ j : Fin P, (u j) ^ 2 := by simp_rw [hcoord]
+        _ = ‖u‖ ^ 2 := (EuclideanSpace.real_norm_sq_eq u).symm
+        _ ≤ ‖l‖ ^ 2 := by rw [hnorm]; gcongr
+    -- the Borel chart majorant `Hₖ(z) = ‖Dgₖ(pr(z − p)) − Dg(pr(z − p))‖²`
+    set H : ℕ → Euclid P → ℝ≥0∞ := fun k z =>
+      ENNReal.ofReal (‖fderiv ℝ (gs k) (pr (z - p)) - fderiv ℝ g (pr (z - p))‖ ^ 2) with hH
+    have hHm : ∀ k, Measurable (H k) := by
+      intro k
+      have h1 : Measurable fun z : Euclid P => fderiv ℝ (gs k) (pr (z - p)) :=
+        (measurable_fderiv ℝ (gs k)).comp (by fun_prop)
+      have h2 : Measurable fun z : Euclid P => fderiv ℝ g (pr (z - p)) :=
+        (measurable_fderiv ℝ g).comp (by fun_prop)
+      exact ((h1.sub h2).norm.pow_const 2).ennreal_ofReal
+    have hζdiff := Submission.codim1_hcp_lsa_rademacher_on_submanifold P m M ζ hM hζ
+    -- step 10: the pointwise bound by `1_W · Hₖ`, `H^m`-a.e. on `M`
+    have hpt : ∀ k, ∀ᵐ x ∂(μHE[m].restrict M), ENNReal.ofReal (∑ j : Fin P,
+        (fderiv ℝ (fun z => β z * gs k (pr (z - p))) x (w x j) -
+          fderivWithin ℝ ζ M x (w x j)) ^ 2) ≤ W.indicator (H k) x := by
+      intro k
+      filter_upwards [hζdiff, ae_restrict_mem hMmeas] with x hxd hxM
+      by_cases hxW : x ∈ W
+      · rw [indicator_of_mem hxW]
+        obtain ⟨ha, hGa⟩ := hrep x ⟨hxM, hxW⟩
+        set a := pr (x - p) with ha_def
+        -- (i) `Dg(a) = d^M_xζ ∘ DG(a)`
+        have hGd : HasFDerivAt G (fderiv ℝ G a) a :=
+          ((hGc.contDiffAt (isOpen_ball.mem_nhds ha)).differentiableAt one_ne_zero).hasFDerivAt
+        have hGM : MapsTo G (ball 0 r) M := fun b hb => (hGMW b hb).1
+        have hcomp : HasFDerivAt (ζ ∘ G) ((fderivWithin ℝ ζ M x).comp (fderiv ℝ G a)) a := by
+          have hxd' : HasFDerivWithinAt ζ (fderivWithin ℝ ζ M x) M (G a) := by
+            rw [hGa]; exact hxd.hasFDerivWithinAt
+          exact (hxd'.comp a hGd.hasFDerivWithinAt hGM).hasFDerivAt (isOpen_ball.mem_nhds ha)
+        have hgeq : g =ᶠ[𝓝 a] ζ ∘ G := by
+          filter_upwards [isOpen_ball.mem_nhds ha] with b hb
+          exact hg_ball b hb
+        have hDg : fderiv ℝ g a = (fderivWithin ℝ ζ M x).comp (fderiv ℝ G a) :=
+          (hcomp.congr_of_eventuallyEq hgeq).fderiv
+        -- (ii) `Dζₖ(x) = Dgₖ(a) ∘ pr`
+        have hDζs : fderiv ℝ (fun z => β z * gs k (pr (z - p))) x =
+            (fderiv ℝ (gs k) a).comp pr := by
+          have hprd : HasFDerivAt (fun z : Euclid P => pr (z - p)) pr x := by
+            have h := (pr.hasFDerivAt (x := x - p)).comp x ((hasFDerivAt_id x).sub_const p)
+            rw [ContinuousLinearMap.comp_id] at h
+            exact h
+          by_cases haT : a ∈ T
+          · have hxK : x ∈ Metric.thickening (ε / 2) K' := hK'thick ⟨a, haT, hGa⟩
+            have heq : (fun z => β z * gs k (pr (z - p))) =ᶠ[𝓝 x]
+                fun z => gs k (pr (z - p)) := by
+              filter_upwards [Metric.isOpen_thickening.mem_nhds hxK] with z hz
+              rw [hβone z hz, one_mul]
+            rw [heq.fderiv_eq]
+            have hgsd : HasFDerivAt (gs k) (fderiv ℝ (gs k) a) a :=
+              ((hgs_smooth k).differentiable (by simp) a).hasFDerivAt
+            exact (hgsd.comp x hprd).fderiv
+          · have hnhds : (fun z : Euclid P => pr (z - p)) ⁻¹' Tᶜ ∈ 𝓝 x :=
+              (Metric.isClosed_cthickening.isOpen_compl.preimage (by fun_prop)).mem_nhds haT
+            have heq : (fun z => β z * gs k (pr (z - p))) =ᶠ[𝓝 x] fun _ => (0 : ℝ) := by
+              filter_upwards [hnhds] with z hz
+              rw [hgs_supp k _ hz, mul_zero]
+            have hga : gs k =ᶠ[𝓝 a] fun _ => (0 : ℝ) := by
+              filter_upwards [Metric.isClosed_cthickening.isOpen_compl.mem_nhds haT] with b hb
+              exact hgs_supp k b hb
+            rw [heq.fderiv_eq, hga.fderiv_eq]
+            simp
+        -- (iii) `Pₓeⱼ = DG(a)(pr(Pₓeⱼ))`, since `T_xM = range DG(a)` and `pr ∘ DG(a) = id`
+        have hwj : ∀ j, fderiv ℝ G a (pr (w x j)) = w x j := by
+          intro j
+          have hmem0 := Submodule.starProjection_apply_mem (Submodule.span ℝ (tangentSpace M x))
+            (EuclideanSpace.single j (1 : ℝ))
+          have hle : Submodule.span ℝ (tangentSpace M x) ≤ LinearMap.range
+              ((fderiv ℝ G a : Euclid m →L[ℝ] Euclid P) : Euclid m →ₗ[ℝ] Euclid P) := by
+            rw [Submodule.span_le, ← hGa, htan a ha]
+            rintro _ ⟨y, rfl⟩
+            exact ⟨y, rfl⟩
+          obtain ⟨h, hh⟩ := LinearMap.mem_range.1 (hle hmem0)
+          have hh' : fderiv ℝ G a h = w x j := hh
+          rw [← hh']
+          congr 1
+          have := congrArg (fun T => T h) (hderiv a ha)
+          simpa using this
+        -- (iv) the error is `(Dgₖ(a) − Dg(a))(pr(Pₓeⱼ))`; apply step 9
+        have herr : ∀ j, fderiv ℝ (fun z => β z * gs k (pr (z - p))) x (w x j) -
+            fderivWithin ℝ ζ M x (w x j) = (fderiv ℝ (gs k) a - fderiv ℝ g a) (pr (w x j)) := by
+          intro j
+          rw [hDζs, hDg]
+          simp only [ContinuousLinearMap.comp_apply, sub_apply, hwj j]
+        simp_rw [herr]
+        exact ENNReal.ofReal_le_ofReal (halg _ x)
+      · rw [indicator_of_notMem hxW]
+        -- off `W`: `ζₖ = 0` near `x`, and `ζ` has derivative `0` within `M` at `x`
+        have hxC : x ∉ C := fun h => hxW (hCMW h).2
+        have hz1 : (fun z => β z * gs k (pr (z - p))) =ᶠ[𝓝 x] fun _ => (0 : ℝ) := by
+          filter_upwards [(notMem_tsupport_iff_eventuallyEq.1 (hβ0 x hxW))] with z hz
+          rw [hz, Pi.zero_apply, zero_mul]
+        have hz2 : HasFDerivWithinAt ζ (0 : Euclid P →L[ℝ] ℝ) M x := by
+          have h0 : HasFDerivWithinAt (fun _ : Euclid P => (0 : ℝ)) (0 : Euclid P →L[ℝ] ℝ) M x :=
+            hasFDerivWithinAt_const 0 x M
+          refine h0.congr_of_eventuallyEq ?_ (hζC x hxM hxC)
+          filter_upwards [inter_mem_nhdsWithin M (hCc.isClosed.isOpen_compl.mem_nhds hxC)]
+            with y hy
+          exact hζC y hy.1 hy.2
+        have hterm : ∀ j, fderiv ℝ (fun z => β z * gs k (pr (z - p))) x (w x j) -
+            fderivWithin ℝ ζ M x (w x j) = 0 := by
+          intro j
+          rw [hz1.fderiv_eq,
+            Submission.codim1_hcp_lsa_fderivWithin_eq_on_tangent_span P M ζ 0 x (w x j) hz2
+              (Submodule.starProjection_apply_mem _ _)]
+          simp
+        have hsum0 : ∑ j : Fin P, (fderiv ℝ (fun z => β z * gs k (pr (z - p))) x (w x j) -
+            fderivWithin ℝ ζ M x (w x j)) ^ 2 = 0 := by
+          simp only [hterm]; simp
+        rw [hsum0, ENNReal.ofReal_zero]
+    -- step 11: integrate, transfer to the chart ball, and pass to the limit
+    have hint : ∀ k, ∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P,
+        (fderiv ℝ (fun z => β z * gs k (pr (z - p))) x (w x j) -
+          fderivWithin ℝ ζ M x (w x j)) ^ 2) ∂μHE[m] ≤ (Λ : ℝ≥0∞) ^ m *
+            ∫⁻ a, ENNReal.ofReal (‖fderiv ℝ (gs k) a - fderiv ℝ g a‖ ^ 2) := by
+      intro k
+      have hWm : MeasurableSet W := hWo.measurableSet
+      calc _ ≤ ∫⁻ x in M, W.indicator (H k) x ∂μHE[m] := lintegral_mono_ae (hpt k)
+        _ = ∫⁻ x in G '' ball 0 r, H k x ∂μHE[m] := by
+            rw [lintegral_indicator hWm, Measure.restrict_restrict hWm, inter_comm, hMW]
+        _ ≤ (Λ : ℝ≥0∞) ^ m * ∫⁻ a in ball (0 : Euclid m) r, H k (G a) :=
+            (Submission.codim1_hcp_lsa_lipschitz_image_lintegral_le m P G (ball 0 r) Λ hGL).2
+              measurableSet_ball (H k) (hHm k)
+        _ = (Λ : ℝ≥0∞) ^ m * ∫⁻ a in ball (0 : Euclid m) r,
+              ENNReal.ofReal (‖fderiv ℝ (gs k) a - fderiv ℝ g a‖ ^ 2) := by
+            congr 1
+            refine setLIntegral_congr_fun measurableSet_ball fun a ha => ?_
+            simp only [hH, hleft a ha]
+        _ ≤ _ := mul_le_mul_right (setLIntegral_le_lintegral _ _) _
+    have hlim : Tendsto (fun k => (Λ : ℝ≥0∞) ^ m *
+        ∫⁻ a, ENNReal.ofReal (‖fderiv ℝ (gs k) a - fderiv ℝ g a‖ ^ 2)) atTop (𝓝 0) := by
+      have := ENNReal.Tendsto.const_mul (a := (Λ : ℝ≥0∞) ^ m) hgs_L2
+        (Or.inr (ENNReal.pow_ne_top ENNReal.coe_ne_top))
+      simpa using this
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun k => zero_le) hint
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
