@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f8dd49783942c27cde6ad35f445d3599716d19b3decc6679686aa43ca62db980",
+  "git_delta": {
+    "base_commit": "df7aac516eba728f2c6376dfcbeb4503583fb371",
+    "candidate_commit": "177c07ae00cf683dddbcfd74fcbe0c53c1e8f6ca",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "2a2fdba21b8e7a455d77c1f0407bbabe598dbc9f921c9f0e816966eee71eb8f3",
+    "source_sha256": "a3efbe71c3292a1243eac5e7078f037ca44e851950dc78c52827a395b3eff70f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tpf_planar_support_eq",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (τ : Fin n → Euclid P), 1 ≤ n → Orthonormal ℝ τ → IsIntegerMultiplicity C → BoundaryVanishes C → C.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) → (∃ W : Set (Euclid P), IsOpen W ∧ C.massOn W ≠ 0) → C.support = (Submodule.span ℝ (Set.range τ) : Set (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
