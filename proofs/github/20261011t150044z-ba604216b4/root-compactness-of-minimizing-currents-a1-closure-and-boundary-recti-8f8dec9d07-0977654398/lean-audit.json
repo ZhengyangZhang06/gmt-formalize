@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d50ccdd39c32af01f9d02125979603836d0f87bf07c4b93d3c641e956cd5bd78",
+  "git_delta": {
+    "base_commit": "46987af9fbcf819b134b230fad2415cd0878f67e",
+    "candidate_commit": "17250813f84ca9ffac30ac1ecf60ae184a21c2a8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_l1_scalar_test_tendsto",
+    "diff_sha256": "7a2f2515940d1d5f84840a377349a2c6173fd5a288c405a9981707ef797dc154",
+    "source_sha256": "53e18246cafd36babef1ff09d2e93ba9eda0a6fa434643d05495363c1d97ff08",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_l1_scalar_test_tendsto",
+      "statement": "∀ (n : ℕ) (U : Set (Euclid n)) (c : ℝ) (Y : ℕ → GeometricCurrentOn U n) (u : ℕ → Euclid n → ℝ), (∀ (k : ℕ) (ω : TestFormOn U n), Y k ω = ∫ y in U, u k y * (ω : DifferentialForm (Euclid n) n) y (fun i => EuclideanSpace.single i (1 : ℝ))) → (∀ ω : TestFormOn U n, Tendsto (fun k => Y k ω) atTop (𝓝 (c * ∫ y, (ω : DifferentialForm (Euclid n) n) y (fun i => EuclideanSpace.single i (1 : ℝ))))) → ∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → Tendsto (fun k => ∫ y in U, u k y * b y) atTop (𝓝 (c * ∫ y, b y))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

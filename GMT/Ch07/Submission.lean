@@ -451,6 +451,42 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A continuous determinant `n`-covector on `ℝⁿ`**: some `δ ∈ Λⁿ(ℝⁿ)` (a continuous
+alternating `n`-form) has `δ(e₁, …, eₙ) = 1` for the standard basis `eᵢ`.  Take the volume form
+`ω` of the orientation of the standard orthonormal basis `B`; Hadamard's inequality
+`|ω(v)| ≤ ∏ᵢ ‖vᵢ‖` makes it continuous, and `ω = det_B` gives `δ(e₁, …, eₙ) = det_B(B) = 1`. -/
+theorem Submission.dgoj_exists_det_covector : ∀ n : ℕ, ∃ δ : Covector (Euclid n) n, δ (fun i => EuclideanSpace.single i (1 : ℝ)) = 1 := by
+  intro n
+  have : Fact (Module.finrank ℝ (Euclid n) = n) := ⟨finrank_euclideanSpace_fin⟩
+  let b := EuclideanSpace.basisFun (Fin n) ℝ
+  let o : Orientation ℝ (Euclid n) (Fin n) := b.toBasis.orientation
+  refine ⟨o.volumeForm.mkContinuous 1 fun m => ?_, ?_⟩
+  · rw [one_mul, Real.norm_eq_abs]
+    exact o.abs_volumeForm_apply_le m
+  · rw [AlternatingMap.coe_mkContinuous, o.volumeForm_robust b rfl]
+    have h : (fun i => EuclideanSpace.single i (1 : ℝ)) = ⇑b.toBasis := by
+      funext i; simp [b]
+    rw [h, Module.Basis.det_self]
+
+/-- **Scalar tests of density-represented top-dimensional currents**: if `Y_k(ω) = ∫_U u_k ω(e)`
+for every test `n`-form `ω` on `U ⊆ ℝⁿ` and `Y_k ⇀` the current `ω ↦ c ∫ ω(e)`, then
+`∫_U u_k b → c ∫ b` for every smooth compactly supported `b` with `spt b ⊆ U`.  Test with
+`ω_b = b • δ`, `δ` the determinant covector (`δ(e₁, …, eₙ) = 1`), so that `ω_b(y)(e) = b(y)`. -/
+theorem Submission.cbr_ci_pw_l1_scalar_test_tendsto : ∀ (n : ℕ) (U : Set (Euclid n)) (c : ℝ) (Y : ℕ → GeometricCurrentOn U n) (u : ℕ → Euclid n → ℝ), (∀ (k : ℕ) (ω : TestFormOn U n), Y k ω = ∫ y in U, u k y * (ω : DifferentialForm (Euclid n) n) y (fun i => EuclideanSpace.single i (1 : ℝ))) → (∀ ω : TestFormOn U n, Tendsto (fun k => Y k ω) atTop (𝓝 (c * ∫ y, (ω : DifferentialForm (Euclid n) n) y (fun i => EuclideanSpace.single i (1 : ℝ))))) → ∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → Tendsto (fun k => ∫ y in U, u k y * b y) atTop (𝓝 (c * ∫ y, b y)) := by
+  intro n U c Y u hrep hweak b hb hbc hbU
+  obtain ⟨δ, hδ⟩ := Submission.dgoj_exists_det_covector n
+  have hmem : (fun y => b y • δ : DifferentialForm (Euclid n) n) ∈ testFormOnSubmodule (E := Euclid n) U n :=
+    ⟨⟨hb.smul contDiff_const, hbc.smul_right⟩, (tsupport_smul_subset_left b (fun _ => δ)).trans hbU⟩
+  let ω : TestFormOn U n := ⟨fun y => b y • δ, hmem⟩
+  have hωe : ∀ y, (ω : DifferentialForm (Euclid n) n) y (fun i => EuclideanSpace.single i (1 : ℝ)) = b y := by
+    intro y
+    simp [ω, hδ]
+  have h1 := hweak ω
+  simp only [hωe] at h1
+  refine h1.congr (fun k => ?_)
+  rw [hrep k ω]
+  simp only [hωe]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
