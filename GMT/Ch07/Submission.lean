@@ -1337,6 +1337,29 @@ theorem Submission.dmcbr_ci_euclideanHausdorff_le_isodiametric : ∀ (P n : ℕ)
     Measure.smul_apply, smul_eq_mul]
   exact mul_le_mul_of_nonneg_right hcle zero_le
 
+/-- **Good points of `(M, θ, ζ)`** (Simon Ch. 1, 3.26(1), and Lebesgue points of `θζ` by
+Besicovitch differentiation).  Let `M ⊆ ℝᴾ` be Borel with `Hⁿ(M) < ∞`, `θ` Borel with `θ > 0` on
+`M` and `∫_M θ dHⁿ < ∞`, and `ζ` strongly measurable with `|⟨α, ζ(x)⟩| ≤ |α|`.  Then for
+`Hⁿ`-a.e. `a ∈ M`: (i) `limsup_{r↓0} Hⁿ(M ∩ B̄_r(a)) / (ωₙrⁿ) ≤ 1`, and (ii)
+`(ωₙrⁿ)⁻¹ ∫_{M ∩ B̄_r(a)} ‖θ(x)ζ(x) − θ(a)ζ(a)‖ dHⁿ(x) → 0` as `r ↓ 0`.  (i) is the upper
+density bound under the isodiametric normalisation `Hⁿ ≤ (ωₙ/2ⁿ) μH[n]`.  The field `τ = θζ` is
+strongly measurable with `∫_M ‖τ‖ dHⁿ < ∞`, so its normalised Lebesgue error at `a` tends to `0`
+for `Hⁿ`-a.e. `a ∈ M` at which `M` has finite upper density, in particular wherever (i) holds. -/
+theorem Submission.dmcbr_ci_ae_good_points : ∀ (P n : ℕ) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n), MeasurableSet M → μHE[n] M < ∞ → Measurable θ → StronglyMeasurable ζ → (∀ x ∈ M, 0 < θ x) → ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μHE[n] < ∞ → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) → ∀ᵐ a ∂(μHE[n].restrict M), limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1 ∧ Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0) := by
+  intro P n M θ ζ hM hMfin hθ hζ hpos hint hbound
+  -- (i): upper density at most `1`, from the isodiametric normalisation `Hⁿ ≤ (ωₙ/2ⁿ) μH[n]`
+  have h1 := Submission.dmcbr_ci_gp_upper_density_le_one P n M
+    (Submission.dmcbr_ci_euclideanHausdorff_le_isodiametric P n) hM hMfin
+  -- `τ = θζ` is strongly measurable with `∫_M ‖τ‖ dHⁿ < ∞`
+  obtain ⟨hτm, hτf⟩ :=
+    Submission.dmcbr_ci_gp_weighted_field_l1 P n μHE[n] M θ ζ hM hθ hζ hpos hint hbound
+  -- Lebesgue points of `τ`, normalised by `ωₙrⁿ` where the upper density of `M` is finite
+  have h2 := Submission.dmcbr_ci_gp_lebesgue_error_tendsto P n M (fun x => θ x • ζ x) hM hMfin
+    hτm hτf
+  -- (ii): where (i) holds the upper density is finite
+  filter_upwards [h1, h2] with a ha1 ha2
+  exact ⟨ha1, ha2 (ha1.trans_lt ENNReal.one_lt_top)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
