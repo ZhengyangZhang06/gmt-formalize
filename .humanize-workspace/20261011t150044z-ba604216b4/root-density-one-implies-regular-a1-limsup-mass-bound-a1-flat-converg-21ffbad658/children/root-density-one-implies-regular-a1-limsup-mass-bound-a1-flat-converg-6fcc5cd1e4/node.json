@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.good_center-a1.bad_set_volume-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.good_center-a1",
+  "depth": 6,
+  "title": "The bad centres for one finite measure have small Lebesgue measure (step 2; Simon 6.5.1 (1)–(4), 5-times covering)",
+  "statement": "Let d ∈ ℕ, let ρ be a finite measure on ℝ^d = (Fin d → ℝ) and let β > 0. For g ∈ ℝ^d and r ∈ ℝ put O_r(g) := {y : ∃ z ∈ ℤ^d, Σ_k (y_k − g_k − z_k)² < r²} (for r > 0, the union of the open Euclidean r-balls about the points g + z, z ∈ ℤ^d). Let Bad be the set of g ∈ ℝ^d with |g_k − 1/2| < 1/4 for all k for which some r with 0 < r ≤ 1/4 satisfies β r^d ρ(ℝ^d) < ρ(O_r(g)), an inequality in [0, ∞] with β r^d read via ENNReal.ofReal. Then the Lebesgue outer measure of Bad (volume on Fin d → ℝ) is at most 10^d/β (read via ENNReal.ofReal).",
+  "lean_statement": "∀ (d : ℕ) (ρ : Measure (Fin d → ℝ)), IsFiniteMeasure ρ → ∀ β : ℝ, 0 < β → volume {g : Fin d → ℝ | (∀ k, |g k - 1 / 2| < 1 / 4) ∧ ∃ r : ℝ, 0 < r ∧ r ≤ 1 / 4 ∧ ENNReal.ofReal (β * r ^ d) * ρ univ < ρ {y | ∃ z : Fin d → ℤ, ∑ k, (y k - g k - z k) ^ 2 < r ^ 2}} ≤ ENNReal.ofReal (10 ^ d / β)",
+  "lean_name": "dor_lmb_fcd_gc_bad_set_volume",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-6fcc5cd1e4-a1"
+}

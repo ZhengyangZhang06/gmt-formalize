@@ -1,0 +1,189 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.good_center-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.good_center-a1.cube_selection-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon, Introduction to Geometric Measure Theory, Ch. 6, proof of the Deformation Theorem 5.1: display (5) and the choice of a point a ∈ ⋂_{j=1}^{N} p_j^{-1}(G_j) ∩ B_{1/4}(q) (book/chapter-06.txt lines 1691–1704), and the remark after (6) that β can be taken so large that one a is good for T and for ∂T simultaneously (lines 1715–1721). This is steps 3 (Fubini) and 4 (choice of a) of the supplied proof of the good-centre lemma Submission.dor_lmb_fcd_good_center: Fubini over S_J × S_J^⊥ and the union bound over the 2N exceptional sets.
+
+Departures from the printed text and from steps 3–4 of the supplied proof. None of them changes the Fubini-and-union-bound argument, which is Simon's:
+(i) The centre region is the open cube Q = (1/4, 3/4)^P instead of the ball B_{1/4}(q). Its points satisfy exactly |a_i − 1/2| < 1/4, which is what the selected node's statement asks for.
+(ii) The projection p_J is written x ↦ (x_{e(k)})_k for an injective e : Fin d → Fin P enumerating J. There is one set E_e per map e, and non-injective maps are ignored.
+(iii) The fibre of the centre region over a point of S_J lies in the complementary cube, of volume (1/2)^{P−d} ≤ 1. In step 3 of the supplied proof, and implicitly in printed (5), it lies in a ball of radius 1/4 of the (ℓ−1)-dimensional space S_J^⊥, of volume at most ω_{ℓ−1}4^{1−ℓ}. The case ℓ = 1 needs no separate treatment: for d = P the complementary index set is empty and the complementary cube is a one-point space of volume 1. Erratum: printed (5) has the factor ω_{n+1}/ω_{n+ℓ}, but the Fubini computation gives ω_{n+1}ω_{ℓ−1}/ω_{n+ℓ}. Step 3 of the supplied proof already has the corrected factor ω_{ℓ−1}4^{1−ℓ}, and with cubes the issue does not arise.
+(iv) Simon shows that the good sets for T and for ∂T each fill more than half of B_{1/4}(q), and picks one a in both (lines 1715–1721). Here, as in step 4 of the supplied proof, the bad sets of both measures are combined, so a single union bound suffices. E_e plays the role of B_J(μ) ∪ B_J(μ') of the supplied proof, in the coordinates of S_J; the supplied set {a ∈ B_{1/4}(q) : p_J(a) ∈ B_J(μ) ∪ B_J(μ')} corresponds to A_e in step 3 below.
+(v) The sets E_e need not be measurable, since every estimate is an outer-measure estimate. The supplied step 3 reaches the same end by enclosing the exceptional set in an open set; here the product formula for arbitrary sets is used instead.
+
+Notation. volume on Euclid P is Lebesgue measure; volume on a function space ι → ℝ (ι finite) is the product Lebesgue measure. I := (1/4, 3/4). Note |t − 1/2| < 1/4 ⟺ t ∈ I.
+
+1. (The cube.) Let Q := {a ∈ Euclid P : a_i ∈ I for all i}. The coordinate map ofLp : Euclid P → (Fin P → ℝ) is a volume-preserving measurable equivalence (EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp). For such an equivalence, volume(ofLp^{-1}(X)) = volume(X) for every set X (MeasurePreserving.measure_preimage_equiv). Since Q = ofLp^{-1}(∏_{i<P} I), volume(Q) = ∏_{i<P} (3/4 − 1/4) = (1/2)^P (Real.volume_pi_Ioo).
+2. (Fubini bound.) Let e : Fin d → Fin P be injective and F ⊆ (Fin d → ℝ) any set, and put W := {x ∈ Fin P → ℝ : x_i ∈ I for all i, and (x_{e(k)})_k ∈ F}. Then volume(W) ≤ volume(F).
+ Proof. Let p(i) :⟺ i ∈ range(e). The map Φ(x) := ((x_i)_{p(i)}, (x_i)_{¬p(i)}) is a measurable equivalence (Fin P → ℝ) ≃ ({i // p i} → ℝ) × ({i // ¬p i} → ℝ) carrying volume to the product of the volumes (volume_preserving_piEquivPiSubtypeProd). Let σ : Fin d ≃ {i // p i}, σ(k) := e(k) (Equiv.ofInjective, which uses injectivity). For u : {i // p i} → ℝ put ψ(u) := (u_{σ(k)})_k. Then ψ is the inverse of the measurable equivalence MeasurableEquiv.piCongrLeft for σ, which is volume preserving (volume_measurePreserving_piCongrLeft), so volume(ψ^{-1}(F)) = volume(F). Put G := ψ^{-1}(F) and H := ∏_{i : ¬p(i)} I. If x ∈ W then Φ(x) ∈ G × H, because ψ((x_i)_{p(i)}) = (x_{e(k)})_k ∈ F and x_i ∈ I for every i. Hence
+ volume(W) ≤ volume(Φ^{-1}(G × H)) = volume(G × H) = volume(G) · volume(H) = volume(F) · (1/2)^{#{i : ¬p(i)}} ≤ volume(F).
+ The second step uses that Φ preserves measure. The third uses Measure.prod_prod, which holds for arbitrary sets. The fourth uses volume(H) = ∏ (1/2) ≤ 1 (Real.volume_pi_Ioo; the empty product is 1).
+3. (Bad centres.) For each map e : Fin d → Fin P let A_e := {a ∈ Q : (a_{e(k)})_k ∈ E_e} if e is injective, and A_e := ∅ otherwise. For injective e, A_e = ofLp^{-1}(W) with W as in 2 for F := E_e, so steps 1 and 2 give volume(A_e) = volume(W) ≤ volume(E_e). For non-injective e, volume(A_e) = 0 ≤ volume(E_e).
+4. (Union bound.) Suppose, for contradiction, that every a ∈ Q has some injective e with (a_{e(k)})_k ∈ E_e; then Q ⊆ ⋃_e A_e. Monotonicity, finite subadditivity over the finitely many maps e (measure_iUnion_fintype_le), step 3 and the hypothesis give
+ (1/2)^P = volume(Q) ≤ Σ_e volume(A_e) ≤ Σ_e volume(E_e) < (1/2)^P,
+ a contradiction.
+5. Therefore some a ∈ Q satisfies (a_{e(k)})_k ∉ E_e for every injective e : Fin d → Fin P. Also a ∈ Q means |a_i − 1/2| < 1/4 for every i. This is the claim. ∎
+
+Appendix (supplementary, machine-checked; not needed for the argument above). The following Lean 4 declaration, placed in GMT/Ch07/Submission.lean inside `namespace GMT.Ch07` after the contract's closing `end` of the noncomputable section (so with the contract's `open`s), follows the numbered steps above and adds no helper declaration. It was compiled with `lake env lean` against the pinned workspace (Lean v4.35.0-rc3, Mathlib 25730c7c), alone and inserted into a copy of GMT/Ch07/Submission.lean; `#print axioms` reports only propext, Classical.choice, Quot.sound.
+
+/-- **Simon, Ch. 6, proof of 5.1** ((5) and the choice of `a`, cube version).  If sets
+`E_e ⊆ ℝ^d`, one for each map `e : Fin d → Fin P`, have total Lebesgue outer measure
+`< (1/2)^P`, then some `a` in the open cube `(1/4, 3/4)^P` has `(a_{e(k)})_k ∉ E_e` for every
+injective `e`.  By Fubini over the coordinates in `range e` and the rest, the centres in the cube
+whose `e`-projection lies in `E_e` have volume `≤ L^d(E_e)`; the cube has volume `(1/2)^P`, so the
+union bound leaves a good centre. -/
+theorem Submission.dor_lmb_fcd_gc_cube_selection : ∀ (P d : ℕ) (E : (Fin d → Fin P) → Set (Fin d → ℝ)), ∑ e, volume (E e) < ENNReal.ofReal ((1 / 2) ^ P) → ∃ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) ∧ ∀ e : Fin d → Fin P, Function.Injective e → (fun k => a (e k)) ∉ E e := by
+  classical
+  intro P d E hsum
+  -- Step 2 (Fubini): for injective `e`, the points of the cube whose `e`-projection lies in `F`
+  -- have volume at most `volume F`
+  have fubini : ∀ e : Fin d → Fin P, Function.Injective e → ∀ F : Set (Fin d → ℝ),
+      volume {x : Fin P → ℝ | (∀ i, x i ∈ Ioo (1 / 4 : ℝ) (3 / 4)) ∧ (fun k => x (e k)) ∈ F} ≤
+        volume F := by
+    intro e he F
+    let p : Fin P → Prop := fun i => i ∈ range e
+    let Φ := MeasurableEquiv.piEquivPiSubtypeProd (fun _ : Fin P => ℝ) p
+    have hΦ : MeasurePreserving Φ := by
+      convert volume_preserving_piEquivPiSubtypeProd (fun _ : Fin P => ℝ) p
+    let σ : Fin d ≃ {i // p i} := Equiv.ofInjective e he
+    let ψ := (MeasurableEquiv.piCongrLeft (fun _ : {i // p i} => ℝ) σ).symm
+    have hψ : MeasurePreserving ψ :=
+      (volume_measurePreserving_piCongrLeft (fun _ : {i // p i} => ℝ) σ).symm _
+    have hψapp : ∀ u k, ψ u k = u (σ k) := by
+      intro u k
+      simp [ψ, MeasurableEquiv.piCongrLeft, Equiv.piCongrLeft_symm_apply]
+    let G : Set ({i // p i} → ℝ) := ψ ⁻¹' F
+    let H : Set ({i // ¬ p i} → ℝ) := Set.pi univ fun _ => Ioo (1 / 4 : ℝ) (3 / 4)
+    have hsub : {x : Fin P → ℝ | (∀ i, x i ∈ Ioo (1 / 4 : ℝ) (3 / 4)) ∧ (fun k => x (e k)) ∈ F} ⊆
+        Φ ⁻¹' (G ×ˢ H) := by
+      rintro x ⟨hx1, hx2⟩
+      refine ⟨?_, fun i _ => hx1 i⟩
+      show ψ (fun i => x i) ∈ F
+      have : ψ (fun i : {i // p i} => x i) = fun k => x (e k) := by
+        funext k; rw [hψapp]; rfl
+      rw [this]; exact hx2
+    have hG : volume G = volume F := hψ.measure_preimage_equiv F
+    have hH : volume H ≤ 1 := by
+      rw [Real.volume_pi_Ioo]
+      refine Finset.prod_le_one fun i _ => ?_
+      rw [ENNReal.ofReal_le_one]; norm_num
+    calc volume {x : Fin P → ℝ | (∀ i, x i ∈ Ioo (1 / 4 : ℝ) (3 / 4)) ∧ (fun k => x (e k)) ∈ F}
+        ≤ volume (Φ ⁻¹' (G ×ˢ H)) := measure_mono hsub
+      _ = volume (G ×ˢ H) := hΦ.measure_preimage_equiv _
+      _ = volume G * volume H := by
+          rw [Measure.volume_eq_prod]; exact Measure.prod_prod G H
+      _ ≤ volume G * 1 := by gcongr
+      _ = volume F := by rw [mul_one, hG]
+  have hI : ∀ t : ℝ, |t - 1 / 2| < 1 / 4 ↔ t ∈ Ioo (1 / 4 : ℝ) (3 / 4) := by
+    intro t
+    rw [abs_sub_lt_iff, mem_Ioo]
+    constructor <;> rintro ⟨h1, h2⟩ <;> constructor <;> linarith
+  -- Step 1: the open cube `Q` in `Euclid P` has volume `(1/2)^P`
+  let Q : Set (Euclid P) := {a | ∀ i, a i ∈ Ioo (1 / 4 : ℝ) (3 / 4)}
+  have hofLp : MeasurePreserving (MeasurableEquiv.toLp 2 (Fin P → ℝ)).symm :=
+    EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Fin P)
+  have hQ : volume Q = ENNReal.ofReal ((1 / 2) ^ P) := by
+    have : Q = (MeasurableEquiv.toLp 2 (Fin P → ℝ)).symm ⁻¹'
+        (Set.pi univ fun _ => Ioo (1 / 4 : ℝ) (3 / 4)) := by
+      ext a; simp [Q, Set.mem_pi]
+    rw [this, hofLp.measure_preimage_equiv, Real.volume_pi_Ioo, Finset.prod_const,
+      Finset.card_univ, Fintype.card_fin, ← ENNReal.ofReal_pow (by norm_num)]
+    norm_num
+  -- Step 3: the sets of centres with a bad projection
+  let A : (Fin d → Fin P) → Set (Euclid P) := fun e =>
+    {a | Function.Injective e ∧ a ∈ Q ∧ (fun k => a (e k)) ∈ E e}
+  have hA : ∀ e, volume (A e) ≤ volume (E e) := by
+    intro e
+    by_cases he : Function.Injective e
+    · have hsub : A e ⊆ (MeasurableEquiv.toLp 2 (Fin P → ℝ)).symm ⁻¹'
+          {x : Fin P → ℝ | (∀ i, x i ∈ Ioo (1 / 4 : ℝ) (3 / 4)) ∧ (fun k => x (e k)) ∈ E e} := by
+        rintro a ⟨-, haQ, haE⟩
+        exact ⟨haQ, haE⟩
+      calc volume (A e) ≤ _ := measure_mono hsub
+        _ = _ := hofLp.measure_preimage_equiv _
+        _ ≤ volume (E e) := fubini e he (E e)
+    · have : A e = ∅ := by
+        ext a; simp only [mem_empty_iff_false, iff_false]; exact fun h => he h.1
+      rw [this, measure_empty]; exact bot_le
+  -- Steps 4–5: union bound and choice of `a`
+  by_contra hcon
+  push Not at hcon
+  have hcov : Q ⊆ ⋃ e, A e := by
+    intro a haQ
+    obtain ⟨e, he, haE⟩ := hcon a fun i => (hI _).2 (haQ i)
+    exact mem_iUnion.2 ⟨e, he, haQ, haE⟩
+  have : volume Q < volume Q :=
+    calc volume Q ≤ volume (⋃ e, A e) := measure_mono hcov
+      _ ≤ ∑ e, volume (A e) := measure_iUnion_fintype_le _ _
+      _ ≤ ∑ e, volume (E e) := Finset.sum_le_sum fun e _ => hA e
+      _ < ENNReal.ofReal ((1 / 2) ^ P) := hsum
+      _ = volume Q := hQ.symm
+  exact lt_irrefl _ this
+
+## Key steps
+
+1. The open cube Q = (1/4, 3/4)^P in Euclid P has volume (1/2)^P: ofLp is a volume-preserving measurable equivalence, and Real.volume_pi_Ioo applies.
+2. For injective e, split the coordinates into range(e) and its complement (volume_preserving_piEquivPiSubtypeProd, volume_measurePreserving_piCongrLeft, Measure.prod_prod for arbitrary sets): volume{x in the cube : (x_{e(k)})_k ∈ F} ≤ volume(F)·(1/2)^{P−d} ≤ volume(F) for every set F (cube form of the corrected printed (5)).
+3. So the centres in Q with a bad e-projection have volume ≤ volume(E_e), and non-injective e contribute nothing.
+4. Summing over the finitely many e gives a total < (1/2)^P = volume(Q), so some a ∈ Q avoids all of them; a ∈ Q is exactly |a_i − 1/2| < 1/4 for all i.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project b4d606db, mathlib 25730c7c)`
+- `cmp project/GMT/Ch07/Contract.lean <workspace>/GMT/Ch07/Contract.lean; cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (both identical)`
+- `rg -n "theorem exists_disjoint_subfamily_covering_enlargement|theorem volume_pi_ball|theorem volume_pi_Ioo|theorem volume_preserving_piEquivPiSubtypeProd|theorem volume_measurePreserving_piCongrLeft|theorem infDist_lt_iff|theorem le_map_apply|theorem measure_iUnion_fintype_le|theorem measure_biUnion_le|theorem measure_biUnion |theorem measure_preimage_equiv" mathlib/Mathlib -g '*.lean'`
+- `rg -n "volume_preserving_symm_measurableEquiv_toLp|PairwiseDisjoint.countable_of_isOpen|theorem prod_prod |exists_subset_card_eq|lemma dist_pi_lt_iff|orderEmbOfFin_mem|theorem EuclideanSpace.dist_eq|isFiniteMeasure_map" mathlib/Mathlib`
+- `rg -l -i "good.?center|dual skeleton|deformation" project -g '*.lean'`
+- `rg -n -i "good.?center|dual skeleton|deformation|latticeFace" project/GMT/Ch06/Contract.lean`
+- `rg -n -i "Vitali|exists_disjoint_subfamily" project -g '*.lean'`
+- `python3 -I scans of dag.json (2050 nodes at 2026-10-13T22:12Z): lean_name/status/candidate_commit of cmcdt_gc_tube_cover, cmcdt_gc_bad_set_volume, cmcdt_gc_cube_selection, cmcdt_good_center, dimred_mbl_dt_good_center, dor_lmb_fcd_good_center; occurrences of dor_lmb_fcd_gc_tube_cover/bad_set_volume/cube_selection (none)`
+- `git log --all -S'dor_lmb_fcd_gc_' over 7825 refs (no hit); grep dor_lmb_fcd_gc_ in GMT/Ch07/Submission.lean of 1791 git worktrees (no hit); grep -rl dor_lmb_fcd_gc_ nodes/ (only this node's rejected decomposition-v1.json)`
+- `git diff <c>^ <c> -- GMT/Ch07/Submission.lean for accepted candidates e26fd126f, 95867e156, e55d09573 (the cmcdt_gc_* proofs reused, renamed, as Lean appendices)`
+- `python3 -I parse of nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-good-center-a1/decomposition-v2.json + decomposition-audit-v2.json and nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-9b0e7b29a0/decomposition-v1.json + decomposition-audit-v1.json (identical child types, audits passed)`
+- `sed -n 1470,1530p and 1651,1725p book/chapter-06.txt; sed -n 605,660p book/chapter-01.txt`
+- `sed -n 1380,1570p and 6600,6800p /runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py; grep -n 'def _accepted_checkpoint' (name-reservation rule, max_depth gate)`
+- `contract_scope() of verifier/gmt-compare.py on GMT/Ch07/Contract.lean; lake env lean /tmp/gc2-lean/{Challenge_tube,Challenge_bad,Challenge_cube,Challenge_parent,RealBuild,StubBuild,SubmissionInserted,FromDraft2}.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch01/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Card.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-21ffbad658/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-21ffbad658/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-good-center-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-good-center-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-9b0e7b29a0/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-9b0e7b29a0/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+
+Snapshot: project b4d606db, mathlib 25730c7c; its GMT/Ch07/Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. No Lean declaration of the good-centre averaging argument (Simon 6.5.1 (1)–(7)) exists in the snapshot project: the only deformation-theorem material is the sorry-frozen latticeFace/IsLatticeChain/DeformationTheorem definitions of GMT/Ch06/Contract.lean (not imported by GMT.Ch07.Submission), and the only Vitali material is Ch01's HasSymmetricVitaliProperty definition. Every Mathlib lemma used by the three children and the assembly exists in the pinned snapshot: Vitali.exists_disjoint_subfamily_covering_enlargement (Covering/Vitali.lean:59), Real.volume_pi_ball (Measure/Lebesgue/Basic.lean:272), Real.volume_pi_Ioo (:244), volume_preserving_piEquivPiSubtypeProd (Constructions/Pi.lean:726), volume_measurePreserving_piCongrLeft (:740), EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Measure/Haar/InnerProductSpace.lean:124), Metric.infDist_lt_iff (HausdorffDistance.lean:513), Measure.le_map_apply (Measure/Map.lean:218), measure_iUnion_fintype_le and measure_biUnion_le (OuterMeasure/Basic.lean:84, :74), measure_biUnion (Measure/Basic.lean:132), Set.PairwiseDisjoint.countable_of_isOpen (Topology/Bases.lean:487), Measure.prod_prod for arbitrary sets (Measure/Prod.lean:231), MeasurePreserving.measure_preimage_equiv (Dynamics/Ergodic/MeasurePreserving.lean:155), EuclideanSpace.dist_eq (InnerProductSpace/PiL2.lean:158), dist_pi_lt_iff (MetricSpace/Pseudo/Pi.lean:67), Finset.exists_subset_card_eq (Finset/Card.lean:677), Finset.orderEmbOfFin_mem (Finset/Sort.lean:211), Measure.isFiniteMeasure_map (Measure/Typeclasses/Finite.lean:124). Reuse: the three child types are byte-identical to the accepted cmcdt_gc_* nodes (candidates e26fd126f, 95867e156, e55d09573) and to the audited dimred_mbl_dt_gc_* split, but the runtime refused reuse of cmcdt_gc_tube_cover under this parent, so fresh dor_lmb_fcd_gc_* names (absent from dag.json, all git refs and all worktrees) are used and the accepted proofs are supplied, renamed, as Lean appendices. All four exact comparator challenges, the real build, the stub build and the in-place insertion into a Submission.lean copy compile; axioms [propext, Classical.choice, Quot.sound].
