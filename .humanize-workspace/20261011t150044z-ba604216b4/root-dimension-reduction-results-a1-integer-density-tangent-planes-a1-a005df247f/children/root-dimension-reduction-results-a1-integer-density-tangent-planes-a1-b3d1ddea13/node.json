@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_constancy-a1.boundary_ray_test-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_constancy-a1",
+  "depth": 6,
+  "title": "Testing ∂C = 0 against df for a 1-current given by densities along rays (parent step 1)",
+  "statement": "Let P ∈ ℕ and let C ∈ 𝒟_1(ℝ^P) (a GeometricCurrentOn univ 1) satisfy ∂C = 0 (C.boundary = 0). Let F be a finite subset of ℝ^P and G : ℝ^P → ℝ → ℝ an arbitrary function. Suppose that C(ω) = Σ_{e∈F} ∫_{(0,∞)} G(e)(t)·ω(te)(fun _ => e) dt for every test 1-form ω ∈ 𝒟¹(ℝ^P). Then for every C^∞ function f : ℝ^P → ℝ with compact support, Σ_{e∈F} ∫_{(0,∞)} G(e)(t)·deriv (s ↦ f(s·e))(t) dt = 0.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1), C.boundary = 0 → ∀ (F : Finset (Euclid P)) (G : Euclid P → ℝ → ℝ), (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, ∫ t in Ioi (0 : ℝ), G e t * (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∀ f : Euclid P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → ∑ e ∈ F, ∫ t in Ioi (0 : ℝ), G e t * deriv (fun s : ℝ => f (s • e)) t = 0",
+  "lean_name": "idtp_fons_odc_rc_boundary_ray_test",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b3d1ddea13-a1"
+}

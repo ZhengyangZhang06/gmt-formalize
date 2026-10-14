@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_constancy-a1.ray_ftc-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_constancy-a1",
+  "depth": 6,
+  "title": "Fundamental theorem of calculus along a ray: ∫_0^∞ (d/dt) f(te) dt = −f(0) (parent step 5)",
+  "statement": "Let P ∈ ℕ, let f : ℝ^P → ℝ be C^∞ with compact support, and let e ∈ ℝ^P with |e| = 1. Then ∫_{(0,∞)} deriv (s ↦ f(s·e))(t) dt = −f(0).",
+  "lean_statement": "∀ (P : ℕ) (f : Euclid P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f → ∀ e : Euclid P, ‖e‖ = 1 → ∫ t in Ioi (0 : ℝ), deriv (fun s : ℝ => f (s • e)) t = -f 0",
+  "lean_name": "idtp_fons_odc_rc_ray_ftc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8b0a9a5c49-a1"
+}
