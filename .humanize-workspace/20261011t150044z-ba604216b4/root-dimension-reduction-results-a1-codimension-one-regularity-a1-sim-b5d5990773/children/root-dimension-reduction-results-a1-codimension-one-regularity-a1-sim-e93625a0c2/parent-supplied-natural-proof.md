@@ -1,0 +1,96 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.first_variation-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Simon Ch. 2, 5.1–5.3 (area formula for the deformations φ_t = id + tZ, Taylor expansion of J_t, first variation formula 5.3 and the definition of stationarity after 5.4); steps (0c) and 1 of the supplied proof of the parent. Sibling lemmas: area_formula (Submission.codim1_hcp_submanifold_area_formula), chart_tangent_space (Submission.chart_tangentSpace_eq_range_fderiv), locally_closed (Submission.dimred_rpd_embedded_locally_closed).
+
+Notation. H^m := μHE[m]; T_x := tangentSpace M x; P_x as in the statement; div_M X(x) := trace(P_x∘DX(x)).
+
+0. (Preliminaries.)
+ (0.1) M is Borel (locally_closed, part (a)). For x ∈ M choose a chart (V, W, ψ) of M with x = ψ(v); chart_tangent_space gives T_x = range Dψ(v), an m-dimensional linear subspace (Dψ(v) is injective). So span(T_x) = T_x and P_x is the orthogonal projection onto T_x.
+ (0.2) (Trace formula.) For every linear L : ℝ^P → ℝ^P and every orthonormal basis τ_1, …, τ_m of T_x, trace(P_x∘L) = Σ_{i=1}^m τ_i·Lτ_i. Indeed, extend τ to an orthonormal basis τ_1, …, τ_P of ℝ^P; then trace(P_xL) = Σ_{j≤P} τ_j·P_xLτ_j = Σ_j P_xτ_j·Lτ_j = Σ_{i≤m} τ_i·Lτ_i. In particular |div_M X(x)| ≤ m‖DX(x)‖.
+ (0.3) (Continuity along M.) In a chart, P_{ψ(v)} = Dψ(v)(Dψ(v)*Dψ(v))^{-1}Dψ(v)* is a continuous function of v ∈ V, and ψ^{-1} : W ∩ M → V is continuous (if ψ(z_j) → ψ(z), the compact set {ψ(z_j)} ∪ {ψ(z)} ⊆ W has a compact preimage in V containing every z_j, and every cluster point of (z_j) equals z by injectivity). Hence x ↦ P_x is continuous on M, and for every X with continuous DX the function x ↦ div_M X(x) is continuous on M; as M is Borel, 1_M·div_M X is Borel.
+
+1. (Set-up.) Fix a C^∞ map Z : ℝ^P → ℝ^P with compact support K := tsupport Z ⊆ U, and put Λ := sup_{ℝ^P}‖DZ‖ < ∞ (DZ is continuous with compact support). If K = ∅ then Z ≡ 0 and (1.1) below is trivial, so assume K ≠ ∅.
+
+2. (Deformations.) For t ∈ ℝ let Φ_t(x) := x + tZ(x). If |t|Λ < 1, then Φ_t is C^∞ with DΦ_t(x) = I + tDZ(x), which is injective because ‖tDZ(x)‖ < 1; and Φ_t is injective, because the mean value inequality gives |Z(a) − Z(b)| ≤ Λ|a − b| and hence |Φ_t(a) − Φ_t(b)| ≥ (1 − |t|Λ)|a − b|.
+
+3. (Area formula.) For |t| < 1/(1 + Λ), area_formula applied to M, the Borel set E := M ∩ K ⊆ M and Φ := Φ_t gives
+ f(t) := H^m(Φ_t(M ∩ K)) = ∫_{M∩K} J_t dH^m, J_t(x) := √det G_t(x), G_t(x) := (DΦ_t(x)∘ι_x)*(DΦ_t(x)∘ι_x),
+ ι_x : T_x → ℝ^P the inclusion. In an orthonormal basis τ_1, …, τ_m of T_x the matrix of G_t(x) is b_ij(t) = (τ_i + tDZ(x)τ_i)·(τ_j + tDZ(x)τ_j) = δ_ij + t c_ij + t² d_ij, with c_ij := τ_i·DZ(x)τ_j + τ_j·DZ(x)τ_i and d_ij := DZ(x)τ_i·DZ(x)τ_j; |c_ij| ≤ 2Λ and |d_ij| ≤ Λ².
+
+4. (Uniform bounds in t.) g(t, x) := det G_t(x) = det(δ_ij + tc_ij + t²d_ij) is a polynomial in t of degree ≤ 2m whose coefficients are polynomials in the c_ij and d_ij. Hence there are constants C_k = C_k(m, Λ) with |∂_t^k g(t, x)| ≤ C_k for |t| ≤ 1 and x ∈ M, and g(0, x) = 1. Choose t₁ ∈ (0, 1/(1 + Λ)) with C_1t₁ ≤ 1/2. Then g(t, x) ≥ 1/2 for |t| ≤ t₁, so J_t(x) = √g(t, x) is C^∞ in t on (−t₁, t₁), with |∂_tJ_t(x)| ≤ C_1/√2 and 0 ≤ J_t(x) ≤ √(1 + C_1) for all such t and all x ∈ M ∩ K. By Jacobi's formula (the derivative of det at the identity is the trace) and (0.2),
+ ∂_tJ_t(x)|_{t=0} = ½∂_tg(0, x) = ½Σ_i c_ii = Σ_i τ_i·DZ(x)τ_i = div_M Z(x).
+
+5. (Differentiation under the integral sign.) For each t, J_t is continuous on M ∩ K (as in (0.3): in a chart, G_t is a continuous function of v), hence Borel there. H^m(M ∩ K) < ∞ because K is a compact subset of U. So F(t) := ∫_{M∩K} J_t dH^m is a finite real number and f(t) = ENNReal.ofReal(F(t)) for |t| < t₁. The bound of step 4 is an integrable dominant on M ∩ K, so by differentiation under the integral sign (Mathlib hasDerivAt_integral_of_dominated_loc_of_deriv_le) F is differentiable at 0 with F'(0) = ∫_{M∩K} div_M Z dH^m.
+
+6. (Minimality.) By hypothesis there is t₀ > 0 with f(0) = H^m(M ∩ K) ≤ f(t) for |t| < t₀ (Φ_0 = id). Hence F(0) ≤ F(t) for |t| < min(t₀, t₁): F has a local minimum at the interior point 0, where it is differentiable, so F'(0) = 0 (Fermat). Thus ∫_{M∩K} div_M Z dH^m = 0.
+
+7. (Off K.) Z ≡ 0 on the open set ℝ^P ∖ K, so DZ = 0 there and div_M Z = 0 on M ∖ K. div_M Z is Borel on M, bounded by mΛ, and vanishes off M ∩ K, a set of finite measure; so it is integrable on M and
+ (1.1) ∫_M div_M Z dH^m = ∫_{M∩K} div_M Z dH^m = 0.
+
+8. (C¹ vector fields.) Let X be C¹ with compact support K₀ := tsupport X ⊆ U. Since K₀ is compact and U is open, there is δ > 0 with K' := {x : dist(x, K₀) ≤ δ} ⊆ U; K' is compact. Let ϕ ∈ C^∞_c(B_1(0)) with ϕ ≥ 0 and ∫ϕ = 1, ϕ_k(x) := k^Pϕ(kx), and X_k := X ∗ ϕ_k for k > 1/δ. Then X_k is C^∞, tsupport X_k ⊆ K' ⊆ U is compact, and DX_k = (DX) ∗ ϕ_k → DX uniformly on ℝ^P because DX is uniformly continuous (continuous with compact support). By (1.1) with Z := X_k, ∫_M div_M X_k dH^m = 0 for every k > 1/δ. For x ∈ M, |div_M X_k(x) − div_M X(x)| ≤ m·sup‖DX_k − DX‖ → 0 by (0.2); |div_M X_k| ≤ m·sup‖DX‖; div_M X_k and div_M X vanish on M ∖ K'; and H^m(M ∩ K') < ∞. Dominated convergence gives ∫_M div_M X dH^m = lim_k ∫_M div_M X_k dH^m = 0. Since P_x is the starProjection of span(tangentSpace M x) and DX(x) = fderiv ℝ X x, this is the statement. ∎
+
+## Key steps
+
+1. For |t|·sup‖DZ‖ < 1, Φ_t = id + tZ is an injective C^∞ map with injective derivative.
+2. area_formula: f(t) = H^m(Φ_t(M ∩ K)) = ∫_{M∩K} √det G_t, G_t the Gram matrix of (I + tDZ)τ_i.
+3. det G_t is a polynomial in t with uniformly bounded coefficients, ≥ 1/2 for |t| ≤ t₁, and ∂_tJ_t|_{t=0} = div_M Z.
+4. Differentiate under the integral; the deformation hypothesis gives a local minimum at 0, so ∫_M div_M Z dH^m = 0 (div_M Z = 0 off K).
+5. Mollify a C¹ field X with supports in a fixed compact K' ⊆ U; dominated convergence gives ∫_M div_M X dH^m = 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `sed -n 1,457p GMT/Ch07/Contract.lean (IsEmbeddedSubmanifold, tangentSpace, IsOrientation, IsUnitOrientationOf, MultiVector, tangentialDivergence, unitBallVolume)`
+- `python3 scans of dag.json: selected node, parent simons_regular_cone and its decomposition-v1.json; nodes whose types mention IsEmbeddedSubmanifold or tangentSpace with statuses and candidate commits; keyword scan Allard|Schauder|second fundamental|Simons|stability|first variation|area formula`
+- `grep -n 'theorem|def' simongmt/Poincare/SimonGMT/AppendixB/{SimonsInequalities,ConeDefect,LagrangeIdentity}.lean and Chapter02/{SecondFundamentalForm,SecondFundamentalFormCalculus,SubmanifoldCalculus,AreaFormula,Area}.lean`
+- `grep -rn 'measurable_fderiv|LipschitzWith.ae_differentiableAt|ae_differentiableWithinAt_of_mem|hausdorffMeasure_image_le|image_of_continuousOn_injOn|hasDerivAt_integral_of_dominated_loc_of_deriv_le|exists_isSubordinate|contDiffOn_infty|HasFDerivWithinAt.unique_on|normDet' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `runtime.py of flow gmt-claude-252c8df06c56: _existing_lean_name_problem, _solve_children, _install_parent_supplied_child_handoff, _accepted_checkpoint; store.py ensure`
+- `git for-each-ref (1709 distinct objects) | xargs git grep -l codim1_hcp -- 'GMT/*.lean' (no match); grep -c codim1_hcp dag.json (0); grep -rn codim1_hcp simongmt (no match)`
+- `lean -DautoImplicit=false /tmp/hcp-split/check/{Types,TypesAll,Assembly,Inst}.lean (LEAN_PATH = .lake/build/lib/lean plus every package's .lake/build/lib/lean)`
+- `book: chapter-B.txt 1-282; chapter-02.txt 854-1410; chapter-05.txt 1280-1397; chapter-03.txt 290-330; grep 'B.2 Theorem|B.8 Lemma|B.11 Lemma|Proof of B.2' sources/chapter-07-source.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-7577af74dd/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-density-one-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/SimonsInequalities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/LagrangeIdentity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SecondFundamentalForm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-252c8df06c56/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-B.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/hcp-split/check/TypesAll.lean`
+- `/tmp/hcp-split/check/Assembly.lean`
+- `/tmp/hcp-split/check/Inst.lean`
+
+Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib (simongmt 2b366308). The snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+Library. SimonGMT supplies injective_area_formula_of_injective_derivative (Chapter02/AreaFormula.lean:145), the Appendix B algebra simonsDefect_eq_sum_skew (LagrangeIdentity.lean:122), four_mul_radialSkewSum_le, radial_derivative_of_codazzi, cone_simonsDefect_lower_bound (ConeDefect.lean:136–228) and exists_final_exponent (witness 1/10). It has no submanifold curvature calculus, Simons identity or Allard theorem; these remain book citations inside unit_normal, stability, simons_cone and smooth_regularity. The snapshot Mathlib has measurable_fderiv (FDeriv/Measurable.lean:378), LipschitzWith.ae_differentiableAt and LipschitzOnWith.ae_differentiableWithinAt_of_mem (Calculus/Rademacher.lean), LipschitzOnWith.hausdorffMeasure_image_le (Hausdorff.lean:733), MeasurableSet.image_of_continuousOn_injOn, hasDerivAt_integral_of_dominated_loc_of_deriv_le, SmoothPartitionOfUnity.exists_isSubordinate, contDiffOn_infty and HasFDerivWithinAt.unique_on. LinearMap.normDet exists (InnerProductSpace/NormDet.lean) but is outside Submission's import closure, so Jacobians are stated as √det(L*∘L).
+DAG. chart_tangentSpace_eq_range_fderiv, dimred_rpd_submanifold_density_one and dimred_rpd_embedded_locally_closed are accepted with candidate commits (d626082a69a0, e8842d90b78f, 6da66b1edf6f) and are reused with byte-identical types; the runtime reuses accepted nodes by identical name and type and leaves their handoffs untouched. The Allard nodes dor_allard_bounded_curvature_graph and codim1_ldr_allard_bounded_curvature_graph are unaccepted and cannot be reused. The stationarity integrand has the same form as idtp_ccd_sheet_first_variation. The 9 new codim1_hcp_ names are free in dag.json, GMT/, SimonGMT and all ref trees.
+Lean. All 12 child types elaborate after import GMT.Ch07.Submission in the contract namespace and opens (TypesAll.lean, exit 0). The selected frozen type is kernel-checked from the child types as axioms (Assembly.lean, exit 0; axioms: propext, Classical.choice, Quot.sound and six children). Inline instances verified by rfl (Inst.lean): the inner product on span(tangentSpace M x) is Submodule.innerProductSpace and starProjection = subtypeL ∘ orthogonalProjection; ContDiff ℝ (⊤ : ℕ∞) elaborates to ↑⊤ (C^∞, not analytic).
