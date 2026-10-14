@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.halving_step-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1",
+  "depth": 6,
+  "title": "Halving step (★): an open set compactly inside D is half-covered by a closed countably m-rectifiable set",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, D ⊆ E, μ a Borel measure on E with μ(K) < ∞ for every compact K ⊆ D, and ν : E → E Borel with |ν(y)| = 1 for all y. Put ω_m := unitBallVolume m and C(y) := {z : ¼|z − y| ≤ |⟨z − y, ν(y)⟩|}, and assume that for μ-a.e. y, as r ↓ 0, μ(B̄_r(y))/(ω_m r^m) → 1 and μ(C(y) ∩ B̄_r(y))/r^m → 0 in [0, ∞]. Then for every open U ⊆ E whose closure Ū is compact and contained in D there is a closed countably m-rectifiable set Γ ⊆ E with μ(U \\ Γ) ≤ μ(U)/2.",
+  "lean_statement": "∀ (m : ℕ) (D : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ y, ‖ν y‖ = 1) → (∀ᵐ y ∂μ, Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ Tendsto (fun r : ℝ => μ ({z | (1 / 4 : ℝ) * ‖z - y‖ ≤ |inner ℝ (z - y) (ν y)|} ∩ closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0)) → ∀ U : Set (Euclid (m + 1)), IsOpen U → IsCompact (closure U) → closure U ⊆ D → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ μ (U \\ Γ) ≤ μ U / 2",
+  "lean_name": "codim1_rdo_dg_rc_halving_step",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.uniform_compact-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.compact_cover-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.uniform_compact-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.compact_cover-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-6a93bdf10b-a1"
+}

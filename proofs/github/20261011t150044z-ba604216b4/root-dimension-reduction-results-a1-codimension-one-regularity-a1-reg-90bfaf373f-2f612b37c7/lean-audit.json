@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "df93b1e20c56d3bc9496ace93aa787bcf919b1811fe642c54abc313b4f18372b",
+  "git_delta": {
+    "base_commit": "394e7ca432bf668fd6669f6c832efd98ee04adfb",
+    "candidate_commit": "0d2badd2923f942708f5237e08cbaf9324132c0f",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "34ae17c82a3d1f88bb4db12eb72d8b4d82fb79767ea1a9015be993f5589541cb",
+    "source_sha256": "3bd323f5a3067a9ce7ad81e2639fb6a8847259b1c9642dce0ba3063b54306d07",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_rdo_de_giorgi_gauss_green",
+      "statement": "∀ (m : ℕ) (D F : Set (Euclid (m + 1))), 1 ≤ m → IsOpen D → MeasurableSet F → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → ∃ C : ℝ, ∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ K → (∀ y, ‖φ y‖ ≤ 1) → ∫ y in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ y : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C) → ∃ (B : Set (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)), MeasurableSet B ∧ B ⊆ D ∧ CountablyRectifiable m B ∧ (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μHE[m] (B ∩ K) ≠ ∞) ∧ Measurable ν ∧ (∀ y ∈ B, ‖ν y‖ = 1) ∧ (∀ᵐ y ∂(μHE[m].restrict B), HasApproximateTangentSpaceAt m B y (Submodule.span ℝ {ν y})ᗮ) ∧ ∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ y in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ y : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ y in B, inner ℝ (φ y) (ν y) ∂μHE[m]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
