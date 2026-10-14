@@ -1871,6 +1871,42 @@ theorem Submission.rsdic_exists_imrep_int_combination : ∀ (P n : ℕ) (U : Set
     module
   · rw [indicator_of_notMem hx₁, indicator_of_notMem hx₂, hc_off x hx₁ hx₂, smul_zero,
       smul_zero, add_zero, Int.cast_zero, zero_smul]
+/-- **Simon Ch. 6, 3.1–3.2** (the weight `θHᵏ⌞M`): for an integer multiplicity triple
+`R = (M, θ, ξ)` in `W`, `R.measure = (Hᵏ⌞M).withDensity θ` has the same null sets as `Hᵏ⌞M`
+(`θ` is measurable and `θ ≥ 1` on `M`).  For Borel `A`, `R.measure(A) = ∫_{M ∩ A} θ dHᵏ`; hence
+`R.measure(ℝᴾ \ M) = 0`, and `R.measure(K) < ∞` for compact `K ⊆ W` by local integrability of
+`θ`.  Absolute continuity makes `ξ` a.e. strongly measurable for `R.measure`, and
+`R.action ω = ∫_M θ⟨ω, ξ⟩ dHᵏ = ∫ ⟨ω, ξ⟩ dR.measure` for every form `ω`. -/
+theorem Submission.cbr_imRep_measure_basic : ∀ (P k : ℕ) (W : Set (Euclid P)) (R : IMRep W k), R.measure ≪ μHE[k].restrict R.carrier ∧ μHE[k].restrict R.carrier ≪ R.measure ∧ (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ x in R.carrier ∩ A, (R.mult x : ℝ≥0∞) ∂μHE[k]) ∧ R.measure R.carrierᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → R.measure K < ∞) ∧ AEStronglyMeasurable R.orient R.measure ∧ ∀ ω : DifferentialForm (Euclid P) k, R.action ω = ∫ x, R.orient x (ω x) ∂R.measure := by
+  intro P k W R
+  -- the density `θ`, as an `ℝ≥0`-valued measurable function
+  have hθ : Measurable fun x => (R.mult x : NNReal) := measurable_from_nat.comp R.measurable_mult
+  -- (a) a measure with density is absolutely continuous w.r.t. its base measure
+  have hac : R.measure ≪ μHE[k].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  -- (c) `μ(A) = ∫_A θ d(Hᵏ⌞M) = ∫_{M ∩ A} θ dHᵏ` for Borel `A`
+  have happly : ∀ A : Set (Euclid P), MeasurableSet A →
+      R.measure A = ∫⁻ x in R.carrier ∩ A, (R.mult x : ℝ≥0∞) ∂μHE[k] := fun A hA => by
+    rw [IMRep.measure, withDensity_apply _ hA, Measure.restrict_restrict hA, inter_comm A]
+  refine ⟨hac, ?_, happly, ?_, fun K hK hKW => ?_, R.aestronglyMeasurable_orient.mono_ac hac,
+    fun ω => ?_⟩
+  -- (b) `θ ≠ 0` on `M`, hence `Hᵏ⌞M`-a.e.
+  · refine withDensity_absolutelyContinuous'
+      (measurable_from_nat.comp R.measurable_mult).aemeasurable ?_
+    filter_upwards [ae_restrict_mem R.measurableSet_carrier] with x hx
+    exact Nat.cast_ne_zero.2 (R.mult_pos x hx).ne'
+  -- (d) `M ∩ Mᶜ = ∅`
+  · rw [happly _ R.measurableSet_carrier.compl, inter_compl_self, Measure.restrict_empty,
+      lintegral_zero_measure]
+  -- (e) local integrability of `θ`
+  · rw [happly K hK.measurableSet]
+    exact lt_top_iff_ne_top.2 (R.locallyIntegrable_mult K hK hKW)
+  -- (g) `∫ ⟨ω, ξ⟩ d(θ Hᵏ⌞M) = ∫_M θ ⟨ω, ξ⟩ dHᵏ`
+  · have h := integral_withDensity_eq_integral_smul (μ := μHE[k].restrict R.carrier) hθ
+      fun x => R.orient x (ω x)
+    simp only [ENNReal.coe_natCast] at h
+    rw [IMRep.measure, h, IMRep.action]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp [NNReal.smul_def]
 /-- **Simon Ch. 3, Definition 1.4 and Remark 1.5(1)**: an approximate tangent space of `M` at `x`
 lies in every subspace `T` along which a set `N` carrying `Hⁿ`-almost all of `M` is flat at `x`
 (for each `ε > 0` there is `ρ > 0` such that every `z ∈ N` with `|z − x| < ρ` has some `t ∈ T`
@@ -2015,6 +2051,59 @@ theorem Submission.atsm_approxTangent_le_of_flat : ∀ (P n : ℕ) (N M : Set (E
   have heq := tendsto_nhds_unique hlim hlim0
   have hzero : ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] = 0 := heq
   linarith
+/-- **Simon 6.1.1, 6.1.7** (step 7 of the local comparison in the proof of 7.3.1): if `ξ` is a unit
+orientation of `Q` and the continuous linear map `L` fixes `Q` pointwise, then
+`⟨α ∘ ΛⁿL, ξ⟩ = ⟨α, ξ⟩` for every `n`-covector `α`.  Write `⟨β, ξ⟩ = ±β(τ₁, …, τₙ)` with `τ`
+spanning `Q`; each `τᵢ ∈ Q`, so `L ∘ τ = τ` and `(α ∘ ΛⁿL)(τ) = α(L ∘ τ) = α(τ)`. -/
+theorem Submission.dtc_bc_lc_unitOrientation_comp_eq : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α := by
+  intro P n ξ Q L hξ hL α
+  obtain ⟨τ, -, hspan, hsign⟩ := hξ
+  -- each `τᵢ` lies in `Q = span (range τ)`, so `L ∘ τ = τ`
+  have hLτ : ⇑L ∘ τ = τ := by
+    funext i
+    exact hL (τ i) (hspan ▸ Submodule.subset_span (mem_range_self i))
+  -- `(α ∘ ΛⁿL)(τ) = α(L ∘ τ) = α(τ)`
+  have hτ : α.compContinuousLinearMap L τ = α τ := by
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
+  rcases hsign with h | h <;> rw [h, h, hτ]
+
+/-- **Simon 7.3.1, footnote 2** (`q_#T = T` for the orthogonal projection `q` onto `V`): if the
+weight `μ_R = θ Hᵐ⌞M` of the triple `R = (M, θ, ξ)` gives no mass to `ℝᴾ \ V`, then
+`τ(M, θ, ξ)(q^#ω) = τ(M, θ, ξ)(ω)` for every `m`-form `ω`.  As `Hᵐ⌞M ≪ μ_R`, `Hᵐ(M \ V) = 0`; so
+`Hᵐ`-a.e. `x ∈ M` lies in `V` and has an approximate tangent plane `Q` oriented by `ξ(x)`.  `V` is
+flat at `x ∈ V` along `V`, so `Q ≤ V`; then `qx = x`, `q` fixes `Q` pointwise, and
+`⟨(q^#ω)(x), ξ(x)⟩ = ⟨ω(x) ∘ Λᵐq, ξ(x)⟩ = ⟨ω(x), ξ(x)⟩`. -/
+theorem Submission.dimred_cs_sp_action_starProjection_eq : ∀ (P m : ℕ) (R : IMRep (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), R.measure ((V : Set (Euclid P))ᶜ) = 0 → ∀ ω : DifferentialForm (Euclid P) m, R.action (affinePullbackForm V.starProjection 0 ω) = R.action ω := by
+  intro P m R V hV ω
+  -- `Hᵐ⌞M ≪ μ_R`, so `Hᵐ⌞M` gives no mass to `Vᶜ`
+  have hV' : (μHE[m].restrict R.carrier) ((V : Set (Euclid P))ᶜ) = 0 :=
+    (Submission.cbr_imRep_measure_basic P m univ R).2.1 hV
+  -- hence `Hᵐ(M \ V) = 0`, and `Hᵐ⌞M`-a.e. `x` lies in `V`
+  have hnull : μHE[m] (R.carrier \ (V : Set (Euclid P))) = 0 := by
+    rwa [Measure.restrict_apply' R.measurableSet_carrier, ← Set.sdiff_eq_compl_inter] at hV'
+  have hVae : ∀ᵐ x ∂(μHE[m].restrict R.carrier), x ∈ (V : Set (Euclid P)) := by
+    rw [ae_iff]
+    exact hV'
+  -- the integrands agree `Hᵐ⌞M`-a.e.
+  unfold IMRep.action
+  refine integral_congr_ae ?_
+  filter_upwards [hVae, R.orients] with x hxV hx
+  obtain ⟨Q, hQ, hξ⟩ := hx
+  -- `Q ≤ V`: `V` is flat at `x ∈ V` along `V` (take `t = z - x`)
+  have hQV : Q ≤ V :=
+    Submission.atsm_approxTangent_le_of_flat P m (V : Set (Euclid P)) R.carrier x Q V hnull
+      (fun ε hε => ⟨1, one_pos, fun z hz _ => ⟨z - x, V.sub_mem hz hxV, by
+        rw [sub_self, norm_zero]
+        positivity⟩⟩) hQ
+  -- `q` fixes `Q` pointwise and fixes `x`
+  have hfix : ∀ v ∈ Q, V.starProjection v = v := fun v hv =>
+    Submodule.starProjection_eq_self_iff.2 (hQV hv)
+  have hxq : V.starProjection x = x := Submodule.starProjection_eq_self_iff.2 hxV
+  -- `(q^#ω)(x) = ω(x) ∘ Λᵐq`, and `Λᵐq` fixes the unit orientation `ξ(x)` of `Q`
+  have key := Submission.dtc_bc_lc_unitOrientation_comp_eq P m (R.orient x) Q V.starProjection
+    hξ hfix (ω x)
+  simp only [affinePullbackForm, zero_add, hxq]
+  rw [key]
 
 /-- **Simon 7.3.1, footnote 2** (`spt C ⊆ TₓN`): if the weight `θ Hᵐ⌞M` of the triple
 `R = (M, θ, ξ)` gives no mass to `ℝᴾ \ V`, the orthogonal projection `q` onto `V` fixes
