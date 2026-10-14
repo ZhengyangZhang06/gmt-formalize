@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "66d600631f86033c84894465359f4e69b0b4aa29bb075d5b51841601adde1389",
+  "git_delta": {
+    "base_commit": "b30cb8e4558dc5164261c1c93628bde4a1d29065",
+    "candidate_commit": "96759ef51fc5a42b428de989ffba8e410308dffb",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "0f166bac6896a76e5a57c766ea9a45ae85960087fc11e42f7b3232f4700dc5e1",
+    "source_sha256": "4ad63db3e82032535717404f234da5ac672fab9905ba72372b0e3817c9a22e24",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_span_eq_of_covector_eval_eq",
+      "statement": "∀ (P n : ℕ) (v v' : Fin n → Euclid P), Orthonormal ℝ v → Orthonormal ℝ v' → (∀ β : Covector (Euclid P) n, β v = β v') → Submodule.span ℝ (Set.range v) = Submodule.span ℝ (Set.range v')",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
