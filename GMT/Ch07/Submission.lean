@@ -9523,6 +9523,201 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
+/-- **Simon 7.3.1, footnote 2** (orthogonal projection onto a subspace does not increase area):
+if `T ∈ 𝒟ₘ(ℝᴾ)`, `m ≥ 1`, is minimizing in the subspace `V` and `spt T ⊆ V`, then `T` is
+minimizing in `ℝᴾ`.  Let `q` be the orthogonal projection onto `V`; `μ_T(ℝᴾ \ V) = 0` since
+`spt μ_T = spt T`.  For a competitor `S` with `K' = spt(S − T)` a compact subset of `W`, the
+current `S'' = T + q_#(S − T)` is a competitor in `V` inside `W* = {x : qx ∈ q(W), |x − qx| < 1}`,
+with `S'' − T = q_#(S − T)` supported in `q(K')`.  With `A = q(W)`, `μ_S = μ_T` off `K'` gives
+`μ_T(W) + μ_T(A \ W) ≤ μ_T(W*) = M_{W*}(T) ≤ M_{W*}(S'') ≤ μ_S(q⁻¹(A)) ≤ μ_S(W) + μ_T(A \ W)`,
+and the finite term `μ_T(A \ W)` cancels. -/
+theorem Submission.dimred_cs_minimizing_of_minimizing_in_subspace : ∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), 0 < m → IsMinimizingIn T (V : Set (Euclid P)) → T.support ⊆ (V : Set (Euclid P)) → IsMinimizingIn T univ := by
+  intro P m T V hm hTV hsptV
+  obtain _ | k := m
+  · exact absurd hm (lt_irrefl 0)
+  obtain ⟨⟨RT, hRT⟩, hmin⟩ := hTV
+  -- `q = V.starProjection` is the identity on `V` and has range in `V`
+  have hqV : ∀ x, V.starProjection x ∈ V := fun x => V.starProjection_apply_mem x
+  have hqid : ∀ x ∈ V, V.starProjection x = x := fun x hx =>
+    Submodule.starProjection_eq_self_iff.2 hx
+  have hqq : ∀ x, V.starProjection (V.starProjection x) = V.starProjection x := fun x =>
+    hqid _ (hqV x)
+  have hVcl : IsClosed (V : Set (Euclid P)) := V.closed_of_finiteDimensional
+  -- Step 1: `μ_T(ℝᴾ \ V) = 0`, because `spt μ_T = spt T ⊆ V`
+  obtain ⟨hmassT, hsptT⟩ :=
+    Submission.dor_imrep_massOn_eq_measure_and_support P (k + 1) univ T RT isOpen_univ hRT
+  have hTV0 : RT.measure ((V : Set (Euclid P))ᶜ) = 0 := by
+    refine measure_mono_null ?_ (Measure.measure_compl_support (μ := RT.measure))
+    intro x hxV hxμ
+    refine hxV (hsptV ?_)
+    rw [hsptT]
+    exact ⟨mem_univ x, hxμ⟩
+  -- `μ_T` is finite on compact sets
+  have hTfin : ∀ K : Set (Euclid P), IsCompact K → RT.measure K ≠ ∞ := by
+    intro K hK
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact RT.locallyIntegrable_mult K hK (subset_univ K)
+  refine ⟨⟨RT, hRT⟩, fun W S hW hWc hS hST hK hKW => ?_⟩
+  -- Step 2: `X = S − T` is integer multiplicity with `∂X = 0`, and `K' = spt X ⊆ W`
+  have hK'W : (S - T).support ⊆ W := fun x hx => (hKW hx).2
+  have hXval : ∀ ω, (S - T) ω = S ω - T ω := fun ω => rfl
+  obtain ⟨RX, hRX⟩ :=
+    Submission.dtc_isIntegerMultiplicity_sub P (k + 1) univ S T isOpen_univ hm hS ⟨RT, hRT⟩
+  have hXbdry : BoundaryVanishes (S - T) := by
+    have hST' : S.boundary = T.boundary := hST
+    show (S - T).boundary = 0
+    ext φ
+    show S.boundary φ - T.boundary φ = 0
+    rw [hST', sub_self]
+  -- `Y = q_#X`, and the competitor `S'' = T − ((Y − Y) − Y)`, i.e. `S'' = T + Y`
+  obtain ⟨Y, hYim, hYspt, hYbdry, hYval⟩ :=
+    Submission.dimred_cs_sp_linear_pushforward P (k + 1) (S - T) RX V.starProjection hm hRX hK
+  obtain ⟨S'', hS''⟩ : ∃ S'' : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1),
+      S'' = T - ((Y - Y) - Y) := ⟨_, rfl⟩
+  have hS''val : ∀ ω, S'' ω = T ω + Y ω := fun ω => by
+    rw [hS'']
+    show T ω - ((Y ω - Y ω) - Y ω) = T ω + Y ω
+    ring
+  have hS''T : S'' - T = Y := by
+    ext ω
+    show S'' ω - T ω = Y ω
+    rw [hS''val]
+    ring
+  have hS''im : IsIntegerMultiplicity S'' := by
+    have hYY :=
+      Submission.dtc_isIntegerMultiplicity_sub P (k + 1) univ Y Y isOpen_univ hm hYim hYim
+    rw [hS'']
+    exact Submission.dtc_isIntegerMultiplicity_sub P (k + 1) univ T _ isOpen_univ hm ⟨RT, hRT⟩
+      (Submission.dtc_isIntegerMultiplicity_sub P (k + 1) univ _ Y isOpen_univ hm hYY hYim)
+  have hS''bdry : SameBoundary S'' T := by
+    have hY0 : Y.boundary = 0 := hYbdry hXbdry
+    show S''.boundary = T.boundary
+    ext φ
+    have hYφ : Y.boundary φ = 0 := by rw [hY0]; rfl
+    have h1 : S''.boundary φ = T.boundary φ + Y.boundary φ :=
+      hS''val (exteriorDerivativeTestOn univ k φ)
+    rw [h1, hYφ, add_zero]
+  -- Step 3: the window `W* = {x : qx ∈ A, |x − qx| < 1}` with `A = q(W)`
+  obtain ⟨A, hA⟩ : ∃ A : Set (Euclid P), A = V.starProjection '' W := ⟨_, rfl⟩
+  obtain ⟨Wst, hWst⟩ : ∃ Wst : Set (Euclid P),
+      Wst = {x | V.starProjection x ∈ A ∧ ‖x - V.starProjection x‖ < 1} := ⟨_, rfl⟩
+  have hAWst : A ⊆ Wst := by
+    rw [hWst, hA]
+    rintro _ ⟨w, hw, rfl⟩
+    refine ⟨⟨w, hw, (hqq w).symm⟩, ?_⟩
+    rw [hqq, sub_self, norm_zero]
+    exact one_pos
+  have hWVst : W ∩ V ⊆ Wst := by
+    rw [hWst, hA]
+    rintro x ⟨hxW, hxV⟩
+    refine ⟨⟨x, hxW, rfl⟩, ?_⟩
+    rw [hqid x hxV, sub_self, norm_zero]
+    exact one_pos
+  have hpre : V.starProjection ⁻¹' Wst ⊆ V.starProjection ⁻¹' A := by
+    rw [hWst]
+    intro x hx
+    have h := hx.1
+    rwa [hqq] at h
+  have hWst_open : IsOpen Wst := by
+    have hpreA : V.starProjection ⁻¹' A =
+        ⋃ (v : Euclid P) (_ : V.starProjection v = 0), (fun x => x + v) ⁻¹' W := by
+      rw [hA]
+      ext x
+      simp only [mem_preimage, mem_image, mem_iUnion, exists_prop]
+      constructor
+      · rintro ⟨w, hw, hwx⟩
+        refine ⟨w - x, by rw [map_sub, hwx, sub_self], ?_⟩
+        rwa [add_sub_cancel]
+      · rintro ⟨v, hv, hxv⟩
+        exact ⟨x + v, hxv, by rw [map_add, hv, add_zero]⟩
+    have h1 : IsOpen (V.starProjection ⁻¹' A) := by
+      rw [hpreA]
+      exact isOpen_biUnion fun v _ => hW.preimage (continuous_id.add continuous_const)
+    have h2 : IsOpen {x : Euclid P | ‖x - V.starProjection x‖ < 1} :=
+      isOpen_lt (continuous_norm.comp (continuous_id.sub V.starProjection.continuous))
+        continuous_const
+    rw [hWst]
+    exact h1.inter h2
+  have hWst_cpt : IsCompact (closure Wst) := by
+    obtain ⟨r, hr⟩ := (hWc.1.isBounded.subset subset_closure).subset_closedBall (0 : Euclid P)
+    refine (isCompact_closedBall (0 : Euclid P) (r + 1)).of_isClosed_subset isClosed_closure
+      (closure_minimal ?_ isClosed_closedBall)
+    rw [hWst, hA]
+    rintro x ⟨⟨w, hw, hwx⟩, hx1⟩
+    rw [mem_closedBall_zero_iff]
+    calc ‖x‖ = ‖V.starProjection x + (x - V.starProjection x)‖ := by rw [add_sub_cancel]
+      _ ≤ ‖V.starProjection x‖ + ‖x - V.starProjection x‖ := norm_add_le _ _
+      _ ≤ r + 1 := by
+        refine add_le_add ?_ hx1.le
+        rw [← hwx]
+        exact (Submodule.norm_starProjection_apply_le (K := V) w).trans
+          (mem_closedBall_zero_iff.1 (hr hw))
+  -- `S'' − T = Y` is supported in the compact set `q(K') ⊆ V ∩ W*`
+  have hYcl : IsClosed Y.support := isClosed_univ.sdiff Y.isOpen_zeroRegion
+  have hS''cpt : IsCompact (S'' - T).support := by
+    rw [hS''T]
+    exact (hK.image V.starProjection.continuous).of_isClosed_subset hYcl hYspt
+  have hS''spt : (S'' - T).support ⊆ (V : Set (Euclid P)) ∩ Wst := by
+    rw [hS''T]
+    intro y hy
+    obtain ⟨x, hx, rfl⟩ := hYspt hy
+    exact ⟨hqV x, hAWst (hA ▸ ⟨x, hK'W hx, rfl⟩)⟩
+  -- minimality of `T` in `V`: `M_{W*}(T) ≤ M_{W*}(S'')`
+  have hminW := hmin Wst S'' hWst_open ⟨hWst_cpt, subset_univ _⟩ hS''im hS''bdry hS''cpt hS''spt
+  -- Step 4: `M_{W*}(S'') ≤ μ_S(q⁻¹(W*))` for the representation `R` of `S = T + X`
+  obtain ⟨R, hRact, hRmass⟩ :=
+    Submission.dimred_cs_sp_projected_massOn_le P (k + 1) T (S - T) S'' RT RX V hRT hRX hTV0 hK
+      (fun ω => by rw [hS''val, hYval])
+  have hRS : R.Represents S := fun ω => by
+    rw [hRact, hXval]
+    ring
+  obtain ⟨hmassS, -⟩ :=
+    Submission.dor_imrep_massOn_eq_measure_and_support P (k + 1) univ S R isOpen_univ hRS
+  -- Step 5: `S = T` off `K'`, so `μ_S = μ_T` there
+  have hagree : ∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1),
+      tsupport (ω : DifferentialForm (Euclid P) (k + 1)) ⊆ (S - T).supportᶜ → S ω = T ω := by
+    intro ω hω
+    have h0 := Submission.dtc_vanish_off_support P (k + 1) univ (S - T) ω
+      (Set.disjoint_left.2 fun x hx => hω hx)
+    rw [hXval] at h0
+    exact sub_eq_zero.1 h0
+  have hloc := Submission.dimred_cs_sp_measure_restrict_eq_of_agree P (k + 1) S T R RT
+    (S - T).supportᶜ hK.isClosed.isOpen_compl hRS hRT hagree
+  have hsubK : V.starProjection ⁻¹' A \ W ⊆ (S - T).supportᶜ := fun x hx hxK => hx.2 (hK'W hxK)
+  have hlocW : R.measure (V.starProjection ⁻¹' A \ W) =
+      RT.measure (V.starProjection ⁻¹' A \ W) := by
+    rw [← Measure.restrict_eq_self R.measure hsubK, hloc,
+      Measure.restrict_eq_self RT.measure hsubK]
+  have hdisj : Disjoint (W ∩ V) (A \ W) := Set.disjoint_left.2 fun x hx hx' => hx'.2 hx.1
+  have hfin : RT.measure (A \ W) ≠ ∞ :=
+    ne_top_of_le_ne_top (hTfin _ hWst_cpt)
+      (measure_mono (sdiff_subset.trans (hAWst.trans subset_closure)))
+  -- `μ_T(W) + μ_T(A \ W) ≤ μ_S(W) + μ_T(A \ W)`
+  have hchain : RT.measure W + RT.measure (A \ W) ≤ R.measure W + RT.measure (A \ W) :=
+    calc RT.measure W + RT.measure (A \ W)
+        = RT.measure (W ∩ V) + RT.measure (A \ W) := by rw [measure_inter_conull hTV0]
+      _ = RT.measure ((W ∩ V) ∪ (A \ W)) :=
+        (measure_union' hdisj (hW.measurableSet.inter hVcl.measurableSet)).symm
+      _ ≤ RT.measure Wst := measure_mono (union_subset hWVst (sdiff_subset.trans hAWst))
+      _ = T.massOn Wst := (hmassT Wst hWst_open).symm
+      _ ≤ S''.massOn Wst := hminW
+      _ ≤ R.measure (V.starProjection ⁻¹' Wst) := hRmass Wst
+      _ ≤ R.measure (V.starProjection ⁻¹' A) := measure_mono hpre
+      _ ≤ R.measure (W ∪ (V.starProjection ⁻¹' A \ W)) :=
+        measure_mono (subset_union_right.trans union_sdiff_self.symm.subset)
+      _ ≤ R.measure W + R.measure (V.starProjection ⁻¹' A \ W) := measure_union_le _ _
+      _ = R.measure W + RT.measure (V.starProjection ⁻¹' A \ W) := by rw [hlocW]
+      _ ≤ R.measure W + RT.measure (A \ W) := by
+        refine add_le_add le_rfl ?_
+        calc RT.measure (V.starProjection ⁻¹' A \ W)
+            = RT.measure ((V.starProjection ⁻¹' A \ W) ∩ V) := (measure_inter_conull hTV0).symm
+          _ ≤ RT.measure (A \ W) := measure_mono fun x ⟨⟨hxA, hxW⟩, hxV⟩ =>
+            ⟨by rwa [mem_preimage, hqid x hxV] at hxA, hxW⟩
+  -- Step 6: cancel `μ_T(A \ W) < ∞`, so `M_W(T) = μ_T(W) ≤ μ_S(W) = M_W(S)`
+  rw [hmassT W hW, hmassS W hW]
+  exact ENNReal.le_of_add_le_add_right hfin hchain
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
