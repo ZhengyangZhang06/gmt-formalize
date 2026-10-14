@@ -1,0 +1,121 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(def|abbrev) (Euclid|MultiVector|IsEmbeddedSubmanifold|tangentSpace|IsUnitOrientationOf|IsOrientation|LocallyLipschitzOn|unitBallVolume)|^namespace|^open|^import",
+        "def fderivWithin|theorem HasFDerivWithinAt.unique_on|theorem measurable_fderiv|ae_differentiableWithinAt_of_mem|ae_differentiableAt|def LocallyLipschitzOn",
+        "Allard|Schauder|simons.identity|simons_identity|codim1_hcp_",
+        "theorem contDiff(On)?_infty|lemma contDiff(On)?_infty|def contDiff|contDiff_infty",
+        "git -C .lake/packages/simongmt diff --name-only HEAD",
+        "git -C .lake/packages/mathlib diff --name-only HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/hcp-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/hcp-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/hcp-independent-audit/Inst.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/hcp-independent-audit/LibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/SimonsInequalities.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/comparison-identity-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-density-one-a1/comparison-identity-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1/comparison-identity-v1.json",
+        "/tmp/hcp-independent-audit/Types.lean",
+        "/tmp/hcp-independent-audit/Assembly.lean",
+        "/tmp/hcp-independent-audit/Inst.lean",
+        "/tmp/hcp-independent-audit/LibraryAxioms.lean"
+      ],
+      "conclusion": "The split is appropriate for the exact selected hypercone theorem. Project, Mathlib and SimonGMT revisions match the pins. All 12 one-line propositions elaborate independently; conditional assembly proves the unchanged selected parent type. The inherited subspace inner product, orthogonal projection and C∞ interpretation were checked. No matrix-function IsUnit construction occurs. All names are bare; the nine new names have no reservation anywhere in the inspected DAG. The three reused types are identical, their candidate source hashes match comparator evidence, and their accepted dependency closure is acyclic and independent of the selected parent. Comparator configurations permit only propext, Quot.sound and Classical.choice. Direct axiom checks of the cited SimonGMT area-formula and cone-algebra results also report only those axioms. No proved Allard/Schauder theorem or full geometric Simons identity was found in the inspected libraries; these remain substantive child obligations with explicit textbook-based proofs. The supplied child proofs were independently checked, including hypothesis discharge, integrability and the final parent implication."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact contract and valid accepted reuse. Bounded smooth curves prove one inclusion; properness gives inverse continuity, and the secant estimate plus closedness of the derivative range proves the reverse inclusion without assuming the result."
+    },
+    {
+      "key": "density_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The near-isometric chart inclusions and Hausdorff-measure bounds give the stated ENNReal squeeze, including dimension zero. The reused type is identical; both cited auxiliary declarations and their dependencies are already accepted."
+    },
+    {
+      "key": "locally_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Properness and continuity give compact chart slices. These establish both compact intersections with sufficiently small closed balls and M = O ∩ closure M, hence Borel measurability. The proof works for every stated regularity order, including zero."
+    },
+    {
+      "key": "area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the independently elaborated Gram-determinant proposition. Jacobian factorization, measurable chart partitioning, the injective Euclidean area formula and disjoint-image summation prove the equality, including infinite measures. The inner-product and adjoint constructions use the intended instances."
+    },
+    {
+      "key": "first_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Uniform Jacobian derivative bounds and local finite measure justify differentiation. Deformation minimality gives zero first derivative; support control makes the integral over M legitimate. Mollification with a fixed compact support inside U proves the precise C¹ stationarity conclusion."
+    },
+    {
+      "key": "smooth_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local closedness identifies the varifold support, density_one supplies density one, and stationarity gives generalized mean curvature zero. The hypotheses of the cited regularity theorem are discharged, and the resulting graph is converted into a proper chart with injective derivative for each r. See [Simon, Chapter 5, Theorem 7.1](https://web.stanford.edu/class/math285/ts-gmt.pdf#page=67)."
+    },
+    {
+      "key": "smooth_charts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly addresses charts depending on r: one fixed C¹ graph agrees locally with each higher-regularity graph by uniqueness of projection coordinates. Thus that fixed graph is C∞. Its image, properness and injective derivative satisfy every conclusion clause."
+    },
+    {
+      "key": "lipschitz_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate mollifications produce ambient smooth approximants with a common compact support on M. Lipschitz measure bounds transfer null sets and L² errors. Part (i) independently supplies measurable representatives. Derivative uniqueness is used only on tangent vectors, so no unjustified ambient UniqueDiff assumption enters."
+    },
+    {
+      "key": "unit_normal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The orientation and volume form construct a continuous unit normal in A₀. Smooth charts make it smooth along M, and a locally finite partition extends it to an open neighborhood. Testing stationarity with φν, then using continuity and positive local measure, proves the exact trace-zero conclusion."
+    },
+    {
+      "key": "stability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pointwise Jacobian expansion gives the stated second variation using normal velocity, symmetry and trace zero; the omitted stationarity and global closedness assumptions are unnecessary here. Compact-support extensions are valid. Measurability, uniform convergence and L² convergence justify passage to the stated Bochner-integral inequality."
+    },
+    {
+      "key": "simons_cone",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof derives the curvature identity and radial defect estimate, then supplies integration by parts, cutoff limits and both required integrability bounds. Dyadic exponents and ε = 1/10 give strictly positive coefficients throughout 2 ≤ m ≤ 6. Vanishing almost everywhere becomes pointwise vanishing before concluding Dν annihilates tangent vectors. No reliance on B.2 itself occurs. See [Simon, Appendix B](https://web.stanford.edu/class/math285/ts-gmt.pdf#page=119)."
+    },
+    {
+      "key": "flat_cone_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Zero tangential derivative makes the normal locally constant. Each component is open and closed in its punctured hyperplane; m ≥ 2 supplies connectedness. The dimension bound forces different component planes to intersect away from zero, and nonemptiness yields the required single plane."
+    }
+  ],
+  "required_changes": []
+}
