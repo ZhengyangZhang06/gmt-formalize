@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "grep -n '^open|^namespace|^end|^noncomputable section|^theorem' GMT/Ch06/Contract.lean; python3 -I verifier/gmt-compare.py contract_scope(Contract.lean, GMT.Ch06.main_theorem) -> open MeasureTheory Filter Set Metric / open scoped ENNReal NNReal Topology / namespace GMT.Ch06 / open Poincare.SimonGMT.Chapter06 / open ...Chapter03 (...) / open ...Chapter01 (...) / noncomputable section / end",
+        "grep -n '^structure|^def|^abbrev|^theorem' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Forms,Mass,CurrentLocalEquality}.lean: GeometricCurrentOn, TestFormOn (IsTestForm ∧ tsupport ⊆ U), exteriorDerivative = extDeriv, exteriorDerivativeTestOn, GeometricCurrentOn.boundary_apply (∂T ω = T(dω)), support = U \\ zeroRegion, isOpen_zeroRegion, mass = massOn U, covectorEuclideanNorm (strictly increasing tuples), covectorEuclideanNorm_zero/_nonneg",
+        "sed -n 180,275p local-references/.../mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean (Filter.EventuallyEq.extDeriv_eq, extDeriv_pullback with minSmoothness 𝕜 2 ≤ r); diff with .lake/packages/mathlib copy (identical)",
+        "grep Mathlib: ContinuousAlternatingMap.curryLeft/curryLeft_apply_apply (Analysis/Normed/Module/Alternating/Curry.lean), HasFDerivAt.finCons (Analysis/Calculus/FDeriv/Prod.lean:567), intervalIntegral.norm_integral_le_of_norm_le_const (IntervalIntegral/Basic.lean:769), intervalIntegral.integral_congr (:1077), Fin.comp_cons (Data/Fin/Tuple/Basic.lean:260), Fin.consEquiv (:184), EuclideanSpace.real_norm_sq_eq (InnerProductSpace/PiL2.lean:153), Finset.sum_mul_sq_le_sq_mul_sq (Algebra/Order/BigOperators/Ring/Finset.lean:171), Isometry.isClosedEmbedding (Topology/MetricSpace/Isometry.lean:209), Topology.IsClosedEmbedding.isCompact_preimage (Topology/Compactness/Compact.lean:1016)",
+        "python3 -I over dag.json (662 nodes): accepted statements matching covectorEuclideanNorm | boundary.support | .support ⊆ | exteriorDerivative | compContinuousLinearMap | EqOn; found iwl_cr_ce_apply_eq_of_eqOn_nhds_support, iwl_cr_support_lemmas, iwl_sp_covectorEuclideanNorm_pullback_le, iwl_sp_pn_sum_sq_tuples_eq_factorial_mul, iwl_cr_ci_cutoff_pullback_testForm, iwl_sp_boundary_apply_eq_of_compatible, iwl_cr_ci_product_support; statuses and lean_statements of dph_* siblings (all decomposing) and of the five prerequisites of the selected node",
+        "python3 -I: for the 7 reused nodes compare DAG title/statement/lean_statement with their parent-child-handoff.json subproblem (all equal), read isolated-comparator-result.json (passed, same candidate commit), and git grep -E 'theorem (Submission\\.)?<name>' <candidate_commit> -- '*.lean' (each found in GMT/Ch06/Submission.lean)",
+        "name collisions: python3 over dag.json lean_names; grep -rn dph_sh GMT/ .lake/packages/simongmt/Poincare and the local reference project snapshot; git grep -q 'dph_sh_' over all 1703 distinct commits of the 3993 local refs (-- '*.lean'): no match",
+        "read /runtime/flows/gmt-claude-eb5f84b9e61e/_recursive_lean/runtime.py (_existing_lean_name_problem, child activation by Lean name, _install_parent_supplied_child_handoff skips accepted checkpoints, _accepted_checkpoint) and store.py (ensure returns existing nodes unchanged)",
+        "python3 -I verifier/lean_contract.py validate_lean_statement on all 12 child statements, the selected statement and dph_interval_product (all valid)",
+        "lake env lean /tmp/dsh/lean/AllStmts.lean (14 statements after the replayed scope; 14 sorry warnings, no errors)",
+        "lake env lean /tmp/dsh/lean/Iface.lean and IfaceAx.lean (selected type proved from the frozen child types + dph_interval_product as hypotheses; no errors or warnings; axioms propext, Classical.choice, Quot.sound)",
+        "lake env lean /tmp/dsh/lean/ChildSC.lean, ChildSLC.lean, ChildED.lean, ChildIB.lean, ChildAFF.lean (each new child proved from exactly its declared sibling dependencies; axioms propext, Classical.choice, Quot.sound)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/mathlib/Mathlib/Analysis/Calculus/FDeriv/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/mathlib/Mathlib/Algebra/Order/BigOperators/Ring/Finset.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-homotopy-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-homotopy-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-exists-a1-locality-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-support-lemmas-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1-mass-bound-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-compatible-form-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-slice-forms-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-exists-a1-locality-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-support-lemmas-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a-71535d6e53/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/runtime/flows/gmt-claude-eb5f84b9e61e/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-eb5f84b9e61e/_recursive_lean/store.py",
+        "/tmp/dsh/lean/AllStmts.lean",
+        "/tmp/dsh/lean/Iface.lean",
+        "/tmp/dsh/lean/ChildSC.lean",
+        "/tmp/dsh/lean/ChildSLC.lean",
+        "/tmp/dsh/lean/ChildED.lean",
+        "/tmp/dsh/lean/ChildIB.lean",
+        "/tmp/dsh/lean/ChildAFF.lean"
+      ],
+      "conclusion": "The pinned project and SimonGMT contain no interval-product locality, no slice or chain-rule lemma for compatible forms, no local d∘pull-back lemma for currents' test forms and no interior-product covector bound, so the five new children are genuine obligations. Mathlib supplies the analytic inputs: extDeriv_pullback and EventuallyEq.extDeriv_eq (identical in the snapshot and .lake), curryLeft, HasFDerivAt.finCons and the interval-integral lemmas. Seven accepted declarations cover the remaining black boxes and are reused with byte-identical types and passed comparators: cmb_abs_apply_le_of_massOn_le, iwl_sp_exists_compatible_testForm, iwl_cr_ci_slice_testForm, iwl_cr_ce_apply_eq_of_eqOn_nhds_support, iwl_cr_support_lemmas, iwl_sp_covectorEuclideanNorm_pullback_le and iwl_sp_pn_sum_sq_tuples_eq_factorial_mul. All statements elaborate in the exact comparator scope. A Lean interface theorem proves the selected type from the children plus dph_interval_product, and each new child was proved in Lean from its declared dependencies; both checks use standard axioms only. The five new dph_sh_ names are globally unused."
+    }
+  ],
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1",
+  "child_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.interior_bound-a1",
+  "subproblem": {
+    "key": "interior_bound",
+    "title": "Interior-product and pull-back bound |γ(w, T·, …, T·)| ≤ √(k+1)·|w|·‖T‖^k·|γ| (fact (F8))",
+    "statement": "Let m, m′, k ∈ ℕ, let γ be a (k+1)-covector on ℝ^{m′} (γ : Covector (Eucl m′) (k+1)), w ∈ ℝ^{m′}, T : ℝ^m → ℝ^{m′} a continuous linear map, a ∈ ℝ, and let β be a k-covector on ℝ^m with β(v) = a·γ(Fin.cons w (i ↦ T(v_i))) for every v : Fin k → ℝ^m. Then |β| ≤ |a|·√(k+1)·‖w‖·‖T‖^k·|γ|. Here |·| = covectorEuclideanNorm, the Euclidean norm of the coefficients α(e_{I(1)}, …, e_{I(n)}) over strictly increasing index tuples I (e = standard basis, EuclideanSpace.basisFun), ‖w‖ is the Euclidean norm and ‖T‖ the operator norm.",
+    "lean_statement": "∀ (m m' k : ℕ) (γ : Covector (Eucl m') (k + 1)) (w : Eucl m') (T : Eucl m →L[ℝ] Eucl m') (a : ℝ) (β : Covector (Eucl m) k), (∀ v : Fin k → Eucl m, β v = a * γ (Fin.cons w (fun i => T (v i)))) → covectorEuclideanNorm β ≤ |a| * Real.sqrt ((k : ℝ) + 1) * ‖w‖ * ‖T‖ ^ k * covectorEuclideanNorm γ",
+    "lean_name": "dph_sh_covectorEuclideanNorm_interior_le",
+    "depends_on": [
+      "pullback_norm",
+      "tuple_sum_factorial"
+    ],
+    "natural_proof": "Source: (F8) in Part 2 of the supplied proof of dph_smooth_homotopy, with (F7) taken from the accepted sibling pullback_norm. The supplied proof bounds the contraction γ_w := γ(w, ·) by counting coefficients, which gives the constant √(m′^k)·√m′ and needs that every value γ(e_i, e_J) is ± a coefficient of γ. Here that step is replaced by Cauchy–Schwarz together with the accepted all-tuples identity tuple_sum_factorial. This avoids sorting index tuples and gives the constant √(k+1); the sibling affine_estimate only needs some constant depending on (m′, k). Siblings used: pullback_norm (iwl_sp_covectorEuclideanNorm_pullback_le) and tuple_sum_factorial (iwl_sp_pn_sum_sq_tuples_eq_factorial_mul).\n\nNotation: for an n-covector α on ℝ^p, |α| := covectorEuclideanNorm α = √(Σ_{I : Fin n → Fin p strictly increasing} α(e∘I)²), where e_b := EuclideanSpace.basisFun (Fin p) ℝ b and e∘I := (i ↦ e_{I(i)}). Below e_b is the standard basis of ℝ^{m′}, and w_b is the b-th coordinate of w.\n\n1. (The contraction.) Let γ_w := γ.curryLeft w (ContinuousAlternatingMap.curryLeft), a k-covector on ℝ^{m′} with γ_w(u) = γ(Matrix.vecCons w u) = γ(Fin.cons w u) for every u : Fin k → ℝ^{m′} (ContinuousAlternatingMap.curryLeft_apply_apply; Matrix.vecCons is Fin.cons). Then β = a • (γ_w.compContinuousLinearMap T), because at every v both sides equal a·γ(Fin.cons w (i ↦ T(v_i))).\n2. (Homogeneity.) For every n-covector α on ℝ^p and c ∈ ℝ, |c•α| = |c|·|α|: each term of the defining sum is multiplied by c², so |c•α| = √(c²·S) = √(c²)·√S = |c|·|α| (Real.sqrt_mul with c² ≥ 0, Real.sqrt_sq_eq_abs), where S is the defining sum of α. By step 1, |β| = |a|·|γ_w.compContinuousLinearMap T|.\n3. (Pull-back.) pullback_norm with P := m, Q := m′, j := k, L := T and α := γ_w gives |γ_w.compContinuousLinearMap T| ≤ ‖T‖^k·|γ_w|.\n4. (Expansion in the first slot.) w = Σ_b w_b·e_b (OrthonormalBasis.sum_repr for EuclideanSpace.basisFun, whose coordinates are the w_b). Since γ.curryLeft is linear, γ_w = Σ_b w_b • γ.curryLeft(e_b), so γ_w(u) = Σ_b w_b·γ(Fin.cons e_b u) for every u.\n5. (Cauchy–Schwarz.) Fix J : Fin k → Fin m′. Then Fin.cons e_b (e∘J) = e∘(Fin.cons b J) (compare the entry 0 and the entries i+1, Fin.cases). By step 4 and the Cauchy–Schwarz inequality for finite sums (Finset.sum_mul_sq_le_sq_mul_sq):\n   γ_w(e∘J)² = (Σ_b w_b·γ(e∘(Fin.cons b J)))² ≤ (Σ_b w_b²)·Σ_b γ(e∘(Fin.cons b J))² = ‖w‖²·Σ_b γ(e∘(Fin.cons b J))²,\n   using ‖w‖² = Σ_b w_b² (EuclideanSpace.real_norm_sq_eq).\n6. (Reindexing.) The map (b, J) ↦ Fin.cons b J is a bijection Fin m′ × (Fin k → Fin m′) → (Fin (k+1) → Fin m′) (Fin.consEquiv). Hence Σ_J Σ_b γ(e∘(Fin.cons b J))² = Σ_{I : Fin (k+1) → Fin m′} γ(e∘I)² (exchange the finite sums with Finset.sum_comm, then Fintype.sum_prod_type' and Equiv.sum_comp).\n7. (All-tuples identity.) tuple_sum_factorial (with m := m′) gives Σ_{J : Fin k → Fin m′} γ_w(e∘J)² = k!·|γ_w|² and Σ_{I : Fin (k+1) → Fin m′} γ(e∘I)² = (k+1)!·|γ|². Summing step 5 over all J and using step 6: k!·|γ_w|² ≤ ‖w‖²·(k+1)!·|γ|².\n8. (Bound for γ_w.) Since (k+1)! = (k+1)·k! (Nat.factorial_succ) and k! > 0, step 7 gives |γ_w|² ≤ (k+1)·‖w‖²·|γ|² = (√(k+1)·‖w‖·|γ|)² (Real.sq_sqrt). Both |γ_w| and √(k+1)·‖w‖·|γ| are ≥ 0, hence |γ_w| ≤ √(k+1)·‖w‖·|γ| (pow_le_pow_iff_left₀).\n9. (Conclusion.) By steps 2, 3 and 8: |β| = |a|·|γ_w.compContinuousLinearMap T| ≤ |a|·‖T‖^k·|γ_w| ≤ |a|·‖T‖^k·√(k+1)·‖w‖·|γ| = |a|·√(k+1)·‖w‖·‖T‖^k·|γ|. No restriction on m, m′, k is used: for k = 0 there is exactly one tuple J and 0! = 1; for m′ = 0 we have w = 0 and all sums over Fin 0 are empty, so both sides vanish. ∎",
+    "proof_key_steps": [
+      "β = a•(γ_w∘T) with γ_w := γ.curryLeft w; homogeneity |a•α| = |a||α| and pullback_norm give |β| ≤ |a|·‖T‖^k·|γ_w|.",
+      "γ_w(e∘J) = Σ_b w_b·γ(e∘(Fin.cons b J)), so Cauchy–Schwarz gives γ_w(e∘J)² ≤ ‖w‖²·Σ_b γ(e∘(Fin.cons b J))².",
+      "Summing over J, reindexing by Fin.consEquiv and applying the all-tuples identity: k!|γ_w|² ≤ ‖w‖²(k+1)!|γ|², hence |γ_w| ≤ √(k+1)‖w‖|γ|."
+    ]
+  },
+  "audit": {
+    "key": "interior_bound",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Scalar homogeneity, contraction, Cauchy–Schwarz, tuple reindexing and positive-factorial cancellation establish the stated √(k+1) bound. Pullback_norm finishes the estimate. Zero-degree and zero-dimensional cases are covered; both dependencies are non-circular."
+  },
+  "resolved_dependencies": [
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1.tuple_sum_factorial-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-715d48ac9c/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-715d48ac9c/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-smooth-h-715d48ac9c/parent-supplied-natural-proof.json"
+}

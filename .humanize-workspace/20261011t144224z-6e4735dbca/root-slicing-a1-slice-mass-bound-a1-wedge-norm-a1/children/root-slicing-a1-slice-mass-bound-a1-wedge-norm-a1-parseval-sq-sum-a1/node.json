@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1.parseval_sq_sum-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.wedge_norm-a1",
+  "depth": 4,
+  "title": "Slotwise Parseval: Σ_{all I} φ(u_I)² is the same for every orthonormal basis u (parent Step 2)",
+  "statement": "For all P, k ∈ ℕ, any two orthonormal bases u = (u_0,…,u_{P−1}) and v = (v_0,…,v_{P−1}) of ℝ^P (OrthonormalBasis (Fin P) ℝ (Eucl P)) and every k-covector φ on ℝ^P (Covector (Eucl P) k): Σ_{I : {0,…,k−1} → [P]} φ(u_{I(0)},…,u_{I(k−1)})² = Σ_{I : {0,…,k−1} → [P]} φ(v_{I(0)},…,v_{I(k−1)})². Both sums run over all index maps I : Fin k → Fin P.",
+  "lean_statement": "∀ (P k : ℕ) (u v : OrthonormalBasis (Fin P) ℝ (Eucl P)) (φ : Covector (Eucl P) k), ∑ I : Fin k → Fin P, (φ (fun i => u (I i))) ^ 2 = ∑ I : Fin k → Fin P, (φ (fun i => v (I i))) ^ 2",
+  "lean_name": "slicing_mb_wn_sq_sum_onb_invariant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-wedge-norm-a1-parseval-sq-sum-a1-a1"
+}

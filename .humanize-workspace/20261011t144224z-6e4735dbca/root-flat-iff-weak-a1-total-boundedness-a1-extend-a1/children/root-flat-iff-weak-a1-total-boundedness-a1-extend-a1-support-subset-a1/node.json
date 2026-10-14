@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1.support_subset-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.extend-a1",
+  "depth": 4,
+  "title": "A current vanishing on test forms supported off a closed set K has support in K",
+  "statement": "Let P, q ∈ ℕ, V ⊆ ℝ^P open, K ⊆ ℝ^P closed, and Z ∈ D_q(V) (GeometricCurrentOn V q) with Z(ω) = 0 for every ω ∈ D^q(V) whose tsupport is disjoint from K. Then spt Z ⊆ K. Here spt Z = Z.support = V ∖ zeroRegion(Z), and zeroRegion(Z) is the union of all open W ⊆ ℝ^P with closure W compact, closure W ⊆ V and Z(ω) = 0 for every ω ∈ D^q(V) with tsupport ω ⊆ W (Simon Ch. 6, 2.11).",
+  "lean_statement": "∀ (P q : ℕ) (V K : Set (Eucl P)) (Z : GeometricCurrentOn V q), IsOpen V → IsClosed K → (∀ ω : TestFormOn V q, Disjoint (tsupport (ω : DifferentialForm (Eucl P) q)) K → Z ω = 0) → Z.support ⊆ K",
+  "lean_name": "fiw_tb_ext_support_subset",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-extend-a1-support-subset-a1-a1"
+}

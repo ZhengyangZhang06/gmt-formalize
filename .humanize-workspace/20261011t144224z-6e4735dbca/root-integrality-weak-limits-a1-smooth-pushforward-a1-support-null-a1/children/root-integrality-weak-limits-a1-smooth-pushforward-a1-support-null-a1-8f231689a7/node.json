@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1.signed_simple_bound-a1",
+  "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1",
+  "depth": 4,
+  "title": "A signed simple n-vector of an orthonormal frame has evaluation bound 1 and is nonzero",
+  "statement": "Let P, n ∈ ℕ, let τ : Fin n → ℝ^P be orthonormal, and let w ∈ NVector (Eucl P) n satisfy w = simpleNVector τ or w = −simpleNVector τ. Here simpleNVector τ = τ_1 ∧ ⋯ ∧ τ_n is the functional b ↦ b(τ_1, …, τ_n). Then:\n(i) |w(b)| ≤ ‖b‖ for every n-covector b ∈ Covector (Eucl P) n, where ‖b‖ is the operator norm of the continuous alternating map b;\n(ii) w ≠ 0.",
+  "lean_statement": "∀ (P n : ℕ) (τ : Fin n → Eucl P) (w : NVector (Eucl P) n), Orthonormal ℝ τ → (w = simpleNVector τ ∨ w = -simpleNVector τ) → (∀ b : Covector (Eucl P) n, |w b| ≤ ‖b‖) ∧ w ≠ 0",
+  "lean_name": "iwl_sp_sn_signed_simpleNVector_bound_ne_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-support-null-a1-8f231689a7-a1"
+}

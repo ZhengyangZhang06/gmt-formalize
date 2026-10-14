@@ -1,0 +1,112 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "structure GeometricCurrentOn|def TestFormOnConverges|def boundary|boundary_boundary|def zeroRegion|def support|isClosed_support",
+        "abbrev SimonMultiIndex|def covectorEuclideanNorm|def covectorPullback|def nVectorPushforward|def massAdmissibleOn|def massOn|massOn_le_liminf|def CountablyRectifiable|def HasWeightedApproximateTangentSpaceAt|def blowUpMap",
+        "dph_|interval_product|homotopy|IsUnit",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|r A|A i",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dph-independent-audit-3xqfuabx/AllStatements.lean",
+        "LEAN_NUM_THREADS=2 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dph-independent-audit-3xqfuabx/AcceptedCombined.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1/decomposition-v2.json",
+        "/tmp/dph-independent-audit-3xqfuabx/AllStatements.lean",
+        "/tmp/dph-independent-audit-3xqfuabx/AcceptedCombined.lean"
+      ],
+      "conclusion": "The pinned definitions and package revisions match the contracts. Searches found no existing interval-product or homotopy theorem covering the proposed new obligations. All twelve child propositions and the selected parent proposition independently elaborate in the comparator scope without implementation-dependent aliases. The sibling dependency graph is acyclic and correctly directed. All names are bare identifiers; the seven new names are unreserved in the inspected 649-node DAG. The five reused declarations have identical frozen types and passed comparator records. Fresh checks against those types, and the accepted theorem matching hausdorff_product, compile using only propext, Classical.choice and Quot.sound. No matrix-unit construction occurs. Splitting is appropriate: the children establish the analytic infrastructure, and the supplied assembly derives all nine clauses of deformation_pushforward_homotopy with the required quantifier order, constants and choice independence."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree. Coordinate extensions and the specified mollification scales give the common Lipschitz bound, uniform convergence and derivative bound for every index. The tangential argument establishes constant normal coordinates on a neighbourhood, then vanishing by alternating multilinearity. No circular dependency."
+    },
+    {
+      "key": "interval_product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes every characterization, uniqueness, mass, support, continuity and boundary clause. In part III, continuity of the boundary integrand follows from the calculus identity and finite mass of X; finite boundary mass is not silently assumed. The normality clause separately uses its stated HEq hypothesis."
+    },
+    {
+      "key": "interval_product_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cylinder triple construction verifies null-measurability, rectifiability, local integrability, orientation and natural multiplicity. The weighted tangent limit has an explicit integrable dominating function. The action identity follows from the stated Hausdorff-product dependency and integrability estimates. No global finite-mass assumption is needed."
+    },
+    {
+      "key": "smooth_homotopy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compatible-form locality, exterior differentiation and the product boundary formulas prove E0 and E1 with the stated sign. The affine estimate verifies properness and supplies a constant depending only on dimensions and degree. The sign also agrees with [Simon, Chapter 6, formula 2.25](https://web.stanford.edu/class/math285/ts-gmt)."
+    },
+    {
+      "key": "lipschitz_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The comparison argument proves the exact stronger characterization using arbitrary locally admissible approximations. Properness transfer and cutoffs on intersected open neighbourhoods justify its applications. The reference sequence ensures nonvacuous uniqueness; the subsequent arguments establish mass, support, boundary and linearity under precisely the displayed hypotheses."
+    },
+    {
+      "key": "lipschitz_pushforward_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The S5′ premise is byte-identical to the selected parent's premise. The extension and approximations satisfy its global hypotheses. Support-nullness identifies the integral with compatible-form evaluations, and uniqueness of real limits identifies S with the integer-multiplicity current supplied by S5′."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type with standard axioms verified. The proof derives C ≥ 0, bounds both signed rescalings using mass admissibility, and passes to the limiting bound without dividing by C. It covers zero forms and arbitrary U and W."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type with standard axioms verified. Compactness gives a finite cover inside the zero region; a subordinate smooth partition decomposes the test form into forms annihilated by T. The argument does not require U to be open."
+    },
+    {
+      "key": "compatible_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type with standard axioms verified. Properness supplies the compact cutoff set inside U. The construction proves smoothness, compact support, the support inclusion and agreement on an open neighbourhood of A, including the empty-set case."
+    },
+    {
+      "key": "slice_forms",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type with standard axioms verified. Contraction followed by pullback is continuous linear. Composition with the affine slice gives smoothness and joint continuity; the coordinate norm estimate supplies compact support. The Fin.cons construction matches the frozen proposition."
+    },
+    {
+      "key": "support_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type with standard axioms verified. The proof establishes nonzero orientations, a finite separating covector family, integrable scalar coefficients and vanishing via the fundamental lemma. A countable cover of the zero region then proves the exact measure-zero conclusion."
+    },
+    {
+      "key": "hausdorff_product",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh name is unreserved and the frozen type matches the independently checked accepted theorem. The supplied proof itself is complete: null-cylinder coverings, measurable injective pieces, the lifted Gram determinant, measure-preserving coordinate splitting, Tonelli and countable summation establish both conjuncts. Implementation notes introduce no circular reliance."
+    }
+  ],
+  "required_changes": []
+}

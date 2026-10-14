@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1",
+  "parent_id": "root.isoperimetric-a1",
+  "depth": 2,
+  "title": "Mass lower bound for lattice chains (Simon 6.1 (1))",
+  "statement": "Let m, N ∈ ℕ, ρ > 0, β : LatticeFaceIndex (m+1) N → ℝ (real coefficients of the faces F = ρ(z + F_α) ∈ 𝓛_{m+1}(ρ) of ℝ^N), and Pc ∈ 𝒟_{m+1}(ℝ^N) with Pc(ω) = Σ'_F β_F [[F]](ω) for every test form ω (IsLatticeChain ρ β Pc). Then for every face index F, |β_F| · ρ^{m+1} ≤ M(Pc) (stated in [0, ∞] as ENNReal.ofReal(|β_F| ρ^{m+1}) ≤ Pc.mass).",
+  "lean_statement": "∀ (m N : ℕ) (ρ : ℝ) (β : LatticeFaceIndex (m + 1) N → ℝ) (Pc : GeometricCurrentOn (univ : Set (Eucl N)) (m + 1)), 0 < ρ → IsLatticeChain ρ β Pc → ∀ F : LatticeFaceIndex (m + 1) N, ENNReal.ofReal (|β F| * ρ ^ (m + 1)) ≤ Pc.mass",
+  "lean_name": "isoperimetric_lattice_chain_mass_ge",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-lattice-mass-lower-bound-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.measure_identity-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1",
+  "depth": 4,
+  "title": "Product formula in measure form: H^{m+1}⌞π⁻¹(A) = Φ_*(L¹ ⊗ Hᵐ⌞A)",
+  "statement": "Let P, m ∈ ℕ and let A ⊆ ℝ^P satisfy Hᵐ(A ∩ K) < ∞ for every compact K ⊆ ℝ^P, where Hᵏ := μHE[k]. Write Φ(s, x) := (s, x_1, …, x_P) ∈ ℝ^{P+1} (Lean: (EuclideanSpace.equiv (Fin (P+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) and π(y) := (y_1, …, y_P) ∈ ℝ^P for y = (y_0, …, y_P) (Lean: (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P+1)) ℝ y))). Suppose that ∫⁻_{π⁻¹(A)} g dH^{m+1} = ∫⁻_ℝ ∫⁻_A g(Φ(s, x)) dHᵐ(x) ds for every Borel g : ℝ^{P+1} → [0, ∞]. Then the restriction H^{m+1}⌞π⁻¹(A) equals the push-forward of the product measure L¹ ⊗ (Hᵐ⌞A) on ℝ × ℝ^P under Φ′(s, x) := Φ(s, x) (L¹ = Lebesgue measure on ℝ): (μHE[m+1]).restrict {y | π y ∈ A} = Measure.map (fun p => Φ p.1 p.2) (volume.prod ((μHE[m]).restrict A)).",
+  "lean_statement": "∀ (P m : ℕ) (A : Set (Eucl P)), (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (∀ g : Eucl (P + 1) → ℝ≥0∞, Measurable g → ∫⁻ y in {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A}, g y ∂(μHE[m + 1] : Measure (Eucl (P + 1))) = ∫⁻ s : ℝ, ∫⁻ x in A, g ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ x))) ∂(μHE[m] : Measure (Eucl P))) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))",
+  "lean_name": "iwl_cr_ip_restrict_preimage_eq_map",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-ef3d70356e-a1"
+}
