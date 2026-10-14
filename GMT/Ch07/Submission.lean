@@ -7342,6 +7342,314 @@ theorem Submission.lcmp_massOn_le_add_of_eval_eq : ∀ (P k : ℕ) (U G : Set (E
     _ ≤ ENNReal.ofReal (X ω + |Y ω|) := ENNReal.ofReal_le_ofReal (by linarith)
     _ ≤ ENNReal.ofReal (X ω) + ENNReal.ofReal |Y ω| := ENNReal.ofReal_add_le
     _ ≤ X.massOn G + Y.massOn G := add_le_add hXle habs
+/-- Directional derivatives of test forms are test forms: if `φ ∈ 𝒟^q(ℝᴾ)` and `v ∈ ℝᴾ`, then
+`z ↦ Dφ(z)[v]` is again `C^∞` (`Dφ` is `C^∞`, as `∞ + 1 ≤ ∞`) with compact support
+(`spt Dφ ⊆ spt φ`, and evaluation at `v` maps `0` to `0`). -/
+theorem Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply : ∀ (P q : ℕ) (φ : DifferentialForm (Euclid P) q) (v : Euclid P), IsTestForm φ → IsTestForm (fun z => fderiv ℝ φ z v) := by
+  rintro P q φ v ⟨hs, hc⟩
+  refine ⟨?_, ?_⟩
+  · -- `Dφ` is `C^∞`, hence so is its evaluation at the constant vector `v`
+    exact (hs.fderiv_right (by simp)).clm_apply contDiff_const
+  · -- `Dφ` has compact support, and `L ↦ L v` maps `0` to `0`
+    exact (hc.fderiv ℝ).comp_left (g := fun L : Euclid P →L[ℝ] Covector (Euclid P) q => L v) rfl
+/-- **Splitting the contracted exterior derivative** (Step 1 of the cube Stokes formula in the proof
+of Simon 7.3.5, where minimality passes from `[[L]] × S₀` to `S₀`).  Let `g = (g₀, …, g_j)` be
+vectors in `ℝᴾ` and let `flatD`, `flat`, `flatF a` contract covectors with `g`, resp. with `g`
+without `g_a`: `flatD α v = α(g, v)`, `flat α v = α(g, v)`, `flatF a α v = α(g ∘ a.succAbove, v)`.
+If the `n'`-form `ω` is differentiable at `x`, then
+`flatD(dω(x)) = Σₐ (−1)ᵃ D[flatF a ∘ ω](x)[g_a] + (−1)^{j+1} d[flat ∘ ω](x)`.
+Evaluate at a tuple `w` and put `V = (g, w)`.  As `dω(x)(V) = Σᵢ (−1)ⁱ (Dω(x)[Vᵢ])(V without Vᵢ)`,
+`D[flatF a ∘ ω](x) = flatF a ∘ Dω(x)` and `D[flat ∘ ω](x) = flat ∘ Dω(x)`, both sides are
+alternating sums of values of `Dω(x)`.  Split the sum over `i < n' + 1` at `j + 1`: the index
+`a < j + 1` carries `g_a`, and omitting it leaves `(g ∘ a.succAbove, w)`; the index `j + 1 + l`
+carries `w_l`, and omitting it leaves `(g, w without w_l)`, with sign `(−1)^{j+1}(−1)ˡ`. -/
+theorem Submission.dimred_cs_sos_mt_cs_flat_extDeriv_split : ∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h : n' = (j + 1) + m) (h₁ : n' + 1 = (j + 1) + (m + 1)) (h₂ : n' = j + (m + 1)) (flatD : Covector (Euclid P) (n' + 1) →L[ℝ] Covector (Euclid P) (m + 1)) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m) (flatF : Fin (j + 1) → Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) (m + 1)) (ω : DifferentialForm (Euclid P) n') (x : Euclid P), DifferentiableAt ℝ ω x → (∀ (α : Covector (Euclid P) (n' + 1)) (v : Fin (m + 1) → Euclid P), flatD α v = α (Fin.append g v ∘ Fin.cast h₁)) → (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → flatD (exteriorDerivative ω x) = ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) • fderiv ℝ (fun z => flatF a (ω z)) x (g a) + (-1 : ℝ) ^ (j + 1) • exteriorDerivative (fun z => flat (ω z)) x := by
+  intro P j m n' g h h₁ h₂ flatD flat flatF ω x hω hflatD hflat hflatF
+  -- Step 1: chain rule, `D[flatF a ∘ ω](x) = flatF a ∘ Dω(x)` and `D[flat ∘ ω](x) = flat ∘ Dω(x)`
+  have hβ : ∀ a, fderiv ℝ (fun z => flatF a (ω z)) x = (flatF a).comp (fderiv ℝ ω x) := fun a =>
+    ((flatF a).hasFDerivAt.comp x hω.hasFDerivAt).fderiv
+  have hγ : fderiv ℝ (fun z => flat (ω z)) x = flat.comp (fderiv ℝ ω x) :=
+    (flat.hasFDerivAt.comp x hω.hasFDerivAt).fderiv
+  -- Step 5: value formulas for `Fin.append` and `Fin.succAbove`
+  have happL : ∀ {p q : ℕ} (u : Fin p → Euclid P) (v : Fin q → Euclid P) (k : Fin (p + q))
+      (hk : (k : ℕ) < p), Fin.append u v k = u ⟨k, hk⟩ := fun u v k hk =>
+    Fin.append_left u v ⟨k, hk⟩
+  have happR : ∀ {p q : ℕ} (u : Fin p → Euclid P) (v : Fin q → Euclid P) (k : Fin (p + q))
+      (hk : p ≤ (k : ℕ)), Fin.append u v k = v ⟨k - p, by have := k.isLt; omega⟩ := by
+    intro p q u v k hk
+    rw [← Fin.append_right u v ⟨k - p, by have := k.isLt; omega⟩]
+    congr 1
+    ext
+    simp only [Fin.val_natAdd]
+    omega
+  have hsA : ∀ {N : ℕ} (p : Fin (N + 1)) (i : Fin N),
+      ((p.succAbove i : Fin (N + 1)) : ℕ) = if (i : ℕ) < p then (i : ℕ) else i + 1 := by
+    intro N p i
+    rcases Nat.lt_or_ge (i : ℕ) p with hip | hip
+    · rw [Fin.succAbove_of_castSucc_lt _ _ (Fin.lt_def.2 hip), ite_eq_left hip]
+      rfl
+    · rw [Fin.succAbove_of_le_castSucc _ _ (Fin.le_def.2 hip), ite_eq_right (by omega)]
+      rfl
+  -- Steps 2–4: evaluate at `w`; both sides become alternating sums of values of `Dω(x)`
+  ext w
+  rw [hflatD]
+  simp only [exteriorDerivative, extDeriv, ContinuousAlternatingMap.alternatizeUncurryFin_apply,
+    ContinuousAlternatingMap.add_apply, ContinuousAlternatingMap.sum_apply,
+    ContinuousAlternatingMap.smul_apply, hβ, hγ, ContinuousLinearMap.comp_apply, hflatF, hflat]
+  -- Step 7: omitting the index of value `a` from `V = (g, w)` leaves `(g ∘ a.succAbove, w)`
+  have e2 : ∀ (a : Fin (j + 1)) (i : Fin (n' + 1)), (i : ℕ) = a →
+      i.removeNth (Fin.append g w ∘ Fin.cast h₁) =
+        Fin.append (g ∘ a.succAbove) w ∘ Fin.cast h₂ := by
+    intro a i hi
+    funext l
+    have ha := a.isLt
+    have hs := hsA i l
+    rw [hi] at hs
+    simp only [Fin.removeNth, Function.comp_apply]
+    rcases Nat.lt_or_ge (l : ℕ) j with hlj | hlj
+    · have hk1 : (Fin.cast h₂ l : ℕ) < j := by simpa using hlj
+      have hk2 : (Fin.cast h₁ (i.succAbove l) : ℕ) < j + 1 := by
+        rw [Fin.val_cast, hs]; split_ifs <;> omega
+      rw [happL _ _ _ hk1, happL _ _ _ hk2, Function.comp_apply]
+      congr 1
+      ext
+      simp only [Fin.val_cast, hs, hsA]
+    · have hla : ¬ (l : ℕ) < a := by omega
+      rw [ite_eq_right hla] at hs
+      have hk1 : j ≤ (Fin.cast h₂ l : ℕ) := by simpa using hlj
+      have hk2 : j + 1 ≤ (Fin.cast h₁ (i.succAbove l) : ℕ) := by
+        rw [Fin.val_cast, hs]; omega
+      rw [happR _ _ _ hk1, happR _ _ _ hk2]
+      congr 1
+      ext
+      simp only [Fin.val_cast, hs]
+      omega
+  -- Step 8: omitting the index of value `j + 1 + l` from `V = (g, w)` leaves `(g, w without w_l)`
+  have e4 : ∀ (l : Fin (m + 1)) (i : Fin (n' + 1)), (i : ℕ) = j + 1 + l →
+      i.removeNth (Fin.append g w ∘ Fin.cast h₁) = Fin.append g (l.removeNth w) ∘ Fin.cast h := by
+    intro l i hi
+    funext k
+    have hs := hsA i k
+    rw [hi] at hs
+    simp only [Fin.removeNth, Function.comp_apply]
+    rcases Nat.lt_or_ge (k : ℕ) (j + 1) with hkj | hkj
+    · rw [ite_eq_left (by omega)] at hs
+      have hk1 : (Fin.cast h k : ℕ) < j + 1 := by simpa using hkj
+      have hk2 : (Fin.cast h₁ (i.succAbove k) : ℕ) < j + 1 := by
+        rw [Fin.val_cast, hs]; omega
+      rw [happL _ _ _ hk1, happL _ _ _ hk2]
+      congr 1
+      ext
+      simp only [Fin.val_cast, hs]
+    · have hk1 : j + 1 ≤ (Fin.cast h k : ℕ) := by simpa using hkj
+      have hk2 : j + 1 ≤ (Fin.cast h₁ (i.succAbove k) : ℕ) := by
+        rw [Fin.val_cast, hs]; split_ifs <;> omega
+      rw [happR _ _ _ hk1, happR _ _ _ hk2]
+      congr 1
+      ext
+      simp only [Fin.val_cast, hs, hsA]
+      split_ifs <;> omega
+  -- Step 6: reindex along `Fin.cast h₁` and split the sum at `j + 1`
+  rw [← Fin.sum_congr' _ h₁.symm, Fin.sum_univ_add (a := j + 1) (b := m + 1)]
+  congr 1
+  · refine Finset.sum_congr rfl fun a _ => ?_
+    have hi : (((Fin.castAdd (m + 1) a).cast h₁.symm : Fin (n' + 1)) : ℕ) = a := by simp
+    rw [e2 a _ hi]
+    simp only [Function.comp_apply, Fin.cast_cast, Fin.cast_eq_self, Fin.append_left, hi,
+      zsmul_eq_mul, smul_eq_mul, Int.cast_pow, Int.cast_neg, Int.cast_one]
+  · -- the sign `(−1)^{(j+1)+l} = (−1)^{j+1}(−1)^l`
+    rw [Finset.smul_sum]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    have hi : (((Fin.natAdd (j + 1) l).cast h₁.symm : Fin (n' + 1)) : ℕ) = j + 1 + l := by simp
+    rw [e4 l _ hi]
+    simp only [Function.comp_apply, Fin.cast_cast, Fin.cast_eq_self, Fin.append_right, hi,
+      zsmul_eq_mul, smul_eq_mul]
+    push_cast
+    ring
+/-- **Interior product with a frame; translated test forms.**  (a) For `g = (g₁, …, g_k)` in
+`ℝᴾ` and `n' = k + m`, `♭α(v) = α(g₁, …, g_k, v₁, …, v_m)` defines a continuous linear map
+`♭ : Λ^{n'} → Λ^m`.  Updating `vⱼ` updates only the entry `natAdd k j` of `(g, v)`, so `♭α` is
+multilinear; it is alternating because equal entries of `v` stay at distinct indices; it is
+continuous; and `‖♭α‖ ≤ (∏ᵢ ‖gᵢ‖) ‖α‖`, so `α ↦ ♭α` is bounded (`LinearMap.mkContinuous`).
+(b) For a continuous linear `Φ : Λᵃ → Λᵇ`, a test `a`-form `ω` and `t ∈ ℝᴾ`, `y ↦ Φ(ω(t + y))`
+is smooth and vanishes off the closed set `{y : t + y ∈ spt ω}`, the compact translate
+`spt ω − t`; hence it is a test form supported there.  This is the interior product `♭_g` of
+the product construction `[[E]] ×_g A` used to split off the spine of a cone. -/
+theorem Submission.dimred_cs_sos_mt_interior_product : ∀ P : ℕ, (∀ (k m n' : ℕ) (g : Fin k → Euclid P) (h : n' = k + m), ∃ flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m, ∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) ∧ ∀ (a b : ℕ) (flat : Covector (Euclid P) a →L[ℝ] Covector (Euclid P) b) (ω : DifferentialForm (Euclid P) a) (t : Euclid P), IsTestForm ω → IsTestForm (fun y => flat (ω (t + y))) ∧ tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω := by
+  intro P
+  refine ⟨fun k m n' g h => ?_, fun a b flat ω t hω => ?_⟩
+  · -- (a) the interior product with the frame `g`; first identify `n'` with `k + m`
+    subst h
+    -- the entries `castAdd m i` (from `g`) and `natAdd k j` (from `v`) are distinct
+    have hne : ∀ (i : Fin k) (j : Fin m), Fin.castAdd m i ≠ Fin.natAdd k j := by
+      intro i j hc
+      have hv := congrArg Fin.val hc
+      have hi := i.isLt
+      simp only [Fin.val_castAdd, Fin.val_natAdd] at hv
+      omega
+    -- updating `v` at `j` updates `Fin.append g v` at `natAdd k j` (for any `DecidableEq`)
+    have hupd : ∀ (_ : DecidableEq (Fin m)) (v : Fin m → Euclid P) (j : Fin m) (x : Euclid P),
+        Fin.append g (Function.update v j x) =
+          Function.update (Fin.append g v) (Fin.natAdd k j) x := by
+      intro _ v j x
+      funext z
+      induction z using Fin.addCases with
+      | left i => rw [Fin.append_left, Function.update_of_ne (hne i j), Fin.append_left]
+      | right j' =>
+        rw [Fin.append_right, Function.update_apply_of_injective _ (Fin.natAdd_injective m k)]
+        congr 1
+        funext i
+        rw [Fin.append_right]
+    -- `v ↦ Fin.append g v` is continuous: each entry is a constant `gᵢ` or a projection `vⱼ`
+    have hcont : Continuous fun v : Fin m → Euclid P => Fin.append g v := by
+      refine continuous_pi fun z => ?_
+      induction z using Fin.addCases with
+      | left i => simp only [Fin.append_left]; exact continuous_const
+      | right j => simp only [Fin.append_right]; exact continuous_apply j
+    -- `♭α (v) = α (g, v)` is a continuous alternating map
+    let φ : Covector (Euclid P) (k + m) → Covector (Euclid P) m := fun α =>
+      { toFun := fun v => α (Fin.append g v)
+        map_update_add' := fun v j x y => by
+          simp only [hupd _ v j, α.map_update_add]
+        map_update_smul' := fun v j c x => by
+          simp only [hupd _ v j, α.map_update_smul]
+        cont := α.cont.comp hcont
+        map_eq_zero_of_eq' := fun v i j hv hij =>
+          α.map_eq_zero_of_eq (Fin.append g v) (i := Fin.natAdd k i) (j := Fin.natAdd k j)
+            (by rw [Fin.append_right, Fin.append_right]; exact hv)
+            ((Fin.natAdd_injective m k).ne hij) }
+    have hφ : ∀ α v, φ α v = α (Fin.append g v) := fun α v => rfl
+    -- `α ↦ ♭α` is linear
+    let L : Covector (Euclid P) (k + m) →ₗ[ℝ] Covector (Euclid P) m :=
+      { toFun := φ
+        map_add' := fun α β => by
+          ext v
+          simp only [hφ, ContinuousAlternatingMap.add_apply]
+        map_smul' := fun c α => by
+          ext v
+          simp only [hφ, ContinuousAlternatingMap.smul_apply, RingHom.id_apply] }
+    -- and bounded: `|α (g, v)| ≤ ‖α‖ ∏ᵢ ‖gᵢ‖ ∏ⱼ ‖vⱼ‖`, so `‖♭α‖ ≤ (∏ᵢ ‖gᵢ‖) ‖α‖`
+    have hbound : ∀ α, ‖L α‖ ≤ (∏ i, ‖g i‖) * ‖α‖ := by
+      intro α
+      refine ContinuousAlternatingMap.opNorm_le_bound _ (by positivity) fun v => ?_
+      calc ‖L α v‖ = ‖α (Fin.append g v)‖ := rfl
+        _ ≤ ‖α‖ * ∏ z, ‖Fin.append g v z‖ := α.le_opNorm _
+        _ = (∏ i, ‖g i‖) * ‖α‖ * ∏ j, ‖v j‖ := by
+          rw [Fin.prod_univ_add]
+          simp only [Fin.append_left, Fin.append_right]
+          ring
+    refine ⟨L.mkContinuous (∏ i, ‖g i‖) hbound, fun α v => ?_⟩
+    rw [LinearMap.mkContinuous_apply, Fin.cast_refl, Function.comp_id]
+    rfl
+  · -- (b) off `{y : t + y ∈ spt ω}` the form `ω (t + y)` vanishes, hence so does its image
+    have hsub : tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω := by
+      refine closure_minimal (fun y hy => ?_)
+        ((isClosed_tsupport ω).preimage (continuous_const.add continuous_id))
+      by_contra hy'
+      apply hy
+      show flat (ω (t + y)) = 0
+      rw [image_eq_zero_of_notMem_tsupport (f := ω) (x := t + y) hy', map_zero]
+    have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω := hω.1
+    -- `{y : t + y ∈ spt ω}` is the compact translate `spt ω − t`
+    have hK : IsCompact ((fun y => t + y) ⁻¹' tsupport ω) := by
+      have hK' := (Homeomorph.addLeft t).isCompact_preimage.mpr hω.2
+      rwa [Homeomorph.coe_addLeft] at hK'
+    refine ⟨⟨?_, ?_⟩, hsub⟩
+    · exact flat.contDiff.comp (hs.comp (contDiff_const.add contDiff_id))
+    · exact hK.of_isClosed_subset (isClosed_tsupport _) hsub
+
+/-- **Boundary on translated forms.**  If `∂Y = X` in `ℝᴾ`, `γ` is a test `m`-form and
+`t ∈ ℝᴾ`, then `Y(d(γ(t + ·))) = X(γ(t + ·))`, both sides read by `currentEval`.  The translate
+`γₜ = γ(t + ·)` is a test form (`dimred_cs_sos_mt_interior_product` (b) with `Φ = id`), and
+translation commutes with `d`: `D(γ(t + ·))(y) = Dγ(t + y)` (`fderiv_comp_add_left`), so
+`dγₜ = (dγ)(t + ·)`.  Hence both arguments are test forms supported in `ℝᴾ`, `currentEval`
+evaluates the currents on them, and `Y(dγₜ) = ∂Y(γₜ) = X(γₜ)`. -/
+theorem Submission.dimred_cs_sos_mt_cs_translate_boundary_eval : ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (γ : DifferentialForm (Euclid P) m) (t : Euclid P), Y.boundary = X → IsTestForm γ → currentEval Y (fun y => exteriorDerivative γ (t + y)) = currentEval X (fun y => γ (t + y)) := by
+  intro P m X Y γ t hYX hγ
+  subst hYX
+  -- the translate `γₜ = γ(t + ·)` is a test form (interior product (b) with `Φ = id`)
+  have hγt : IsTestForm (fun y => γ (t + y)) :=
+    ((Submission.dimred_cs_sos_mt_interior_product P).2 m m
+      (ContinuousLinearMap.id ℝ (Covector (Euclid P) m)) γ t hγ).1
+  -- translation commutes with `d`, since `D(γ(t + ·))(y) = Dγ(t + y)`
+  have hd : exteriorDerivative (fun y => γ (t + y)) = fun y => exteriorDerivative γ (t + y) := by
+    funext y
+    show ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ (fun y => γ (t + y)) y) =
+      ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ γ (t + y))
+    rw [fderiv_comp_add_left]
+  -- both forms are test forms supported in `ℝᴾ`, so `currentEval` evaluates on them
+  have hmem : IsTestForm (fun y => γ (t + y)) ∧ tsupport (fun y => γ (t + y)) ⊆ univ :=
+    ⟨hγt, subset_univ _⟩
+  have hdmem : IsTestForm (fun y => exteriorDerivative γ (t + y)) ∧
+      tsupport (fun y => exteriorDerivative γ (t + y)) ⊆ univ :=
+    ⟨hd ▸ exteriorDerivative_isTestForm hγt, subset_univ _⟩
+  -- unfold `currentEval`; `∂Y(γₜ) = Y(dγₜ)` and `dγₜ = (dγ)(t + ·)` as test forms
+  rw [currentEval, currentEval, dite_eq_left hdmem, dite_eq_left hmem,
+    GeometricCurrentOn.boundary_apply]
+  exact congrArg Y (Subtype.ext hd.symm)
+
+/-- **Slice identity for one translate.**  Write `β_a = ♭_{g ∘ a.succAbove} ω`, `γ = ♭_g ω` and
+`δ_a = D_{g_a} β_a`.  At every point `t + y` the contraction of `dω` with the frame splits as
+`♭_g dω = Σ_a (−1)^a δ_a + (−1)^{j+1} dγ` (`flat_extDeriv_split`).  Every translated form here
+is a test form (interior product (b), `isTestForm_fderiv_apply`, `exteriorDerivative_isTestForm`),
+so `Y` evaluates the splitting linearly, and the last term is
+`Y(dγ(t + ·)) = ∂Y(γ(t + ·)) = X(γ(t + ·))` (`translate_boundary_eval`). -/
+theorem Submission.dimred_cs_sos_mt_cs_slice_identity : ∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h : n' = (j + 1) + m) (h₁ : n' + 1 = (j + 1) + (m + 1)) (h₂ : n' = j + (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (flatD : Covector (Euclid P) (n' + 1) →L[ℝ] Covector (Euclid P) (m + 1)) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m) (flatF : Fin (j + 1) → Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) (m + 1)) (ω : TestFormOn (univ : Set (Euclid P)) n') (t : Euclid P), Y.boundary = X → (∀ (α : Covector (Euclid P) (n' + 1)) (v : Fin (m + 1) → Euclid P), flatD α v = α (Fin.append g v ∘ Fin.cast h₁)) → (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → currentEval Y (fun y => flatD (exteriorDerivative (ω : DifferentialForm (Euclid P) n') (t + y))) = ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) * currentEval Y (fun y => fderiv ℝ (fun z => flatF a ((ω : DifferentialForm (Euclid P) n') z)) (t + y) (g a)) + (-1 : ℝ) ^ (j + 1) * currentEval X (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) := by
+  intro P j m n' g h h₁ h₂ X Y flatD flat flatF ω t hYX hD hflat hF
+  -- `currentEval` is the current itself on test forms (every support lies in `univ`)
+  have hev : ∀ (k : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) k)
+      (φ : DifferentialForm (Euclid P) k) (hφ : IsTestForm φ ∧ tsupport φ ⊆ univ),
+      currentEval T φ = T ⟨φ, hφ⟩ := by
+    intro k T φ hφ
+    rw [currentEval, dite_eq_left hφ]
+  -- work with the underlying form `w` of `ω`
+  have hω : IsTestForm (ω : DifferentialForm (Euclid P) n') := ω.property.1
+  generalize (ω : DifferentialForm (Euclid P) n') = w at hω ⊢
+  -- `β_a = flatF a ∘ w` and `γ = flat ∘ w` are test forms (interior product (b), translate by `0`)
+  have hβ : ∀ a : Fin (j + 1), IsTestForm (fun z => flatF a (w z)) := fun a => by
+    simpa only [zero_add] using
+      ((Submission.dimred_cs_sos_mt_interior_product P).2 n' (m + 1) (flatF a) w 0 hω).1
+  have hγ : IsTestForm (fun z => flat (w z)) := by
+    simpa only [zero_add] using
+      ((Submission.dimred_cs_sos_mt_interior_product P).2 n' m flat w 0 hω).1
+  -- the translates `♭_g dw (t + ·)`, `δ_a (t + ·)` and `dγ (t + ·)` are test forms
+  have hFt : IsTestForm (fun y => flatD (exteriorDerivative w (t + y))) :=
+    ((Submission.dimred_cs_sos_mt_interior_product P).2 (n' + 1) (m + 1) flatD _ t
+      (exteriorDerivative_isTestForm hω)).1
+  have hAt : ∀ a : Fin (j + 1),
+      IsTestForm (fun y => fderiv ℝ (fun z => flatF a (w z)) (t + y) (g a)) := fun a => by
+    simpa only [ContinuousLinearMap.id_apply] using
+      ((Submission.dimred_cs_sos_mt_interior_product P).2 (m + 1) (m + 1)
+        (ContinuousLinearMap.id ℝ _) _ t
+        (Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply P (m + 1) _ (g a) (hβ a))).1
+  have hDt : IsTestForm (fun y => exteriorDerivative (fun z => flat (w z)) (t + y)) := by
+    simpa only [ContinuousLinearMap.id_apply] using
+      ((Submission.dimred_cs_sos_mt_interior_product P).2 (m + 1) (m + 1)
+        (ContinuousLinearMap.id ℝ _) _ t (exteriorDerivative_isTestForm hγ)).1
+  -- the pointwise splitting at `t + y`, read as an identity of test forms in `ℝᴾ`
+  have hsplit : (⟨fun y => flatD (exteriorDerivative w (t + y)), hFt, subset_univ _⟩ :
+        TestFormOn (univ : Set (Euclid P)) (m + 1)) =
+      ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) •
+        (⟨fun y => fderiv ℝ (fun z => flatF a (w z)) (t + y) (g a), hAt a, subset_univ _⟩ :
+          TestFormOn (univ : Set (Euclid P)) (m + 1)) +
+      (-1 : ℝ) ^ (j + 1) •
+        (⟨fun y => exteriorDerivative (fun z => flat (w z)) (t + y), hDt, subset_univ _⟩ :
+          TestFormOn (univ : Set (Euclid P)) (m + 1)) := by
+    refine Subtype.ext (funext fun y => ?_)
+    simp only [Submodule.coe_add, Submodule.coe_sum, Submodule.coe_smul, Finset.sum_apply,
+      Pi.add_apply, Pi.smul_apply]
+    exact Submission.dimred_cs_sos_mt_cs_flat_extDeriv_split P j m n' g h h₁ h₂ flatD flat flatF
+      w (t + y) ((hω.1.differentiable (by simp)).differentiableAt) hD hflat hF
+  -- the boundary term: `Y(dγ(t + ·)) = X(γ(t + ·))`
+  have hbd : currentEval Y (fun y => exteriorDerivative (fun z => flat (w z)) (t + y)) =
+      currentEval X (fun y => flat (w (t + y))) :=
+    Submission.dimred_cs_sos_mt_cs_translate_boundary_eval P m X Y _ t hYX hγ
+  have hA : ∀ a : Fin (j + 1),
+      currentEval Y (fun y => fderiv ℝ (fun z => flatF a (w z)) (t + y) (g a)) =
+        Y ⟨_, hAt a, subset_univ _⟩ := fun a => hev _ Y _ ⟨hAt a, subset_univ _⟩
+  -- linearity of `Y`
+  rw [← hbd, hev _ Y _ ⟨hFt, subset_univ _⟩, hev _ Y _ ⟨hDt, subset_univ _⟩, hsplit]
+  simp only [map_add, map_sum, map_smul, smul_eq_mul, hA]
 /-- A unit orientation has norm at most `1` (step 1(c) of the proof of Simon Ch. 6, 3.2(3)).
 If `ξ α = ±α(τ₁, …, τₙ)` for an orthonormal family `τ`, then `|ξ α| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
 for every `n`-covector `α`, so the operator norm of `ξ` is at most `1`. -/
@@ -7571,6 +7879,88 @@ theorem Submission.dimred_cs_sos_mt_si_translate_action_continuous : ∀ (P j : 
   exact continuousAt_of_dominated (Eventually.of_forall hmeas) h_bound
     ((hθB.integrable_indicator hBm).const_mul C₀)
     (Eventually.of_forall fun y => (hcont y).continuousAt)
+
+/-- Differentiation of the slices `σ ↦ Y(Φ(ω(s + σv + ·)))` (step (5c) of the cube Stokes
+argument): for `Y = τ(M, θ, ξ)` in `ℝᴾ`, a continuous linear `Φ : Λ^{n'} → Λ^q` and a test
+`n'`-form `ω`, the derivative at `τ` is `Y(D(Φ ∘ ω)(s + τv + ·)[v])`.  The translate
+`ω_s = Φ ∘ ω ∘ (s + ·)` is a test form (`dimred_cs_sos_mt_interior_product` (b)), so
+`dimred_cs_ti_translate_action_hasDerivAt` differentiates `σ ↦ τ(M, θ, ξ)(ω_s(σv + ·))`; here
+`ω_s(σv + y) = Φ(ω(s + σv + y))` and `Dω_s(z) = D(Φ ∘ ω)(s + z)`, and on these test forms
+`currentEval Y` is `τ(M, θ, ξ)`. -/
+theorem Submission.dimred_cs_sos_mt_cs_slice_hasDerivAt : ∀ (P q n' : ℕ) (Y : GeometricCurrentOn (univ : Set (Euclid P)) q) (RY : IMRep (univ : Set (Euclid P)) q) (Φ : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) q) (ω : TestFormOn (univ : Set (Euclid P)) n') (s v : Euclid P) (τ : ℝ), RY.Represents Y → HasDerivAt (fun σ : ℝ => currentEval Y (fun y => Φ ((ω : DifferentialForm (Euclid P) n') (s + σ • v + y)))) (currentEval Y (fun y => fderiv ℝ (fun z => Φ ((ω : DifferentialForm (Euclid P) n') z)) (s + τ • v + y) v)) τ := by
+  intro P q n' Y RY Φ ω s v τ hRY
+  set w : DifferentialForm (Euclid P) n' := (ω : DifferentialForm (Euclid P) n') with hw_def
+  have hw : IsTestForm w := ω.property.1
+  have hb := (Submission.dimred_cs_sos_mt_interior_product P).2
+  -- Step 1: on a test form `ψ`, `currentEval Y ψ = Y ψ = τ(M, θ, ξ)(ψ)`
+  have hEval : ∀ ψ : DifferentialForm (Euclid P) q, IsTestForm ψ →
+      currentEval Y ψ = RY.action ψ := by
+    intro ψ hψ
+    have h : IsTestForm ψ ∧ tsupport ψ ⊆ (univ : Set (Euclid P)) := ⟨hψ, subset_univ _⟩
+    rw [currentEval, dite_eq_left h]
+    exact hRY ⟨ψ, h⟩
+  -- Step 2: `β = Φ ∘ ω` and its translate `ω_s = β(s + ·)` are test forms
+  set β : DifferentialForm (Euclid P) q := fun z => Φ (w z) with hβ_def
+  have hβ : IsTestForm β := by
+    simpa only [zero_add] using (hb n' q Φ w 0 hw).1
+  set ωs : DifferentialForm (Euclid P) q := fun y => Φ (w (s + y)) with hωs_def
+  have hωs : IsTestForm ωs ∧ tsupport ωs ⊆ (univ : Set (Euclid P)) :=
+    ⟨(hb n' q Φ w s hw).1, subset_univ _⟩
+  -- Step 3: `σ ↦ τ(M, θ, ξ)(ω_s(σv + ·))` has derivative `τ(M, θ, ξ)(Dω_s(τv + ·)[v])` at `τ`
+  have key := Submission.dimred_cs_ti_translate_action_hasDerivAt P q RY ⟨ωs, hωs⟩ v τ
+  -- Step 4: the function, as `ω_s(σv + y) = Φ(ω(s + σv + y))`
+  have hfun : (fun σ : ℝ => currentEval Y (fun y => Φ (w (s + σ • v + y)))) =
+      fun σ : ℝ => RY.action (fun y => ωs (σ • v + y)) := by
+    funext σ
+    rw [hEval _ (hb n' q Φ w (s + σ • v) hw).1]
+    simp only [hωs_def, add_assoc]
+  -- Step 5: the derivative, as `Dω_s(z) = Dβ(s + z)`; `y ↦ Dβ(s + τv + y)[v]` is a test form
+  have hderiv : currentEval Y (fun y => fderiv ℝ β (s + τ • v + y) v) =
+      RY.action (fun y => fderiv ℝ ωs (τ • v + y) v) := by
+    have hβv : IsTestForm (fun z => fderiv ℝ β z v) :=
+      Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply P q β v hβ
+    have htr : IsTestForm (fun y => fderiv ℝ β (s + τ • v + y) v) := by
+      simpa only [ContinuousLinearMap.id_apply] using
+        (hb q q (ContinuousLinearMap.id ℝ (Covector (Euclid P) q)) _ (s + τ • v) hβv).1
+    have hDs : ∀ z, fderiv ℝ ωs z = fderiv ℝ β (s + z) := fun z =>
+      fderiv_comp_add_left (f := β) (x := z) s
+    rw [hEval _ htr]
+    congr 1
+    funext y
+    rw [hDs, add_assoc]
+  -- Step 6: rewrite the function and the derivative in step 3
+  rw [hfun, hderiv]
+  exact key
+/-- **The closed frame box is compact** (cube Stokes step in the proof of Simon 7.3.5, which the
+book leaves to the reader).  Let `g = (g₁, …, g_k)` be orthonormal in `ℝᴾ` and `r ∈ ℝ`.  The map
+`ι(u) = Σ uᵢgᵢ` is continuous, takes values in `span{gᵢ}` and satisfies `⟨gᵢ, ι(u)⟩ = uᵢ`.  Every
+`t ∈ span{gᵢ}` is some `ι(c)`, so the box `{t ∈ span{gᵢ} : |⟨gᵢ, t⟩| ≤ r for all i}` is the image
+`ι([-r, r]ᵏ)` of a compact cube, hence compact. -/
+theorem Submission.dimred_cs_sos_mt_cs_frame_box_compact : ∀ (P k : ℕ) (g : Fin k → Euclid P) (r : ℝ), Orthonormal ℝ g → IsCompact {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} := by
+  intro P k g r hg
+  -- Step 1: `ι(u) = Σ uᵢgᵢ` lies in `span g`; its coordinates `⟨gᵢ, ι(u)⟩ = uᵢ` come from
+  -- `Orthonormal.inner_right_fintype` below
+  have hmem : ∀ u : Fin k → ℝ, ∑ i, u i • g i ∈ Submodule.span ℝ (Set.range g) := fun u =>
+    Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span ⟨i, rfl⟩)
+  -- Step 2: the box is the image of the cube `Π [-r, r]` under `ι`
+  have hbox : {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} =
+      (fun u : Fin k → ℝ => ∑ i, u i • g i) '' Set.pi univ fun _ => Icc (-r) r := by
+    ext t
+    constructor
+    · rintro ⟨ht, hr⟩
+      obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 ht
+      refine ⟨c, fun i _ => ?_, rfl⟩
+      have hi := hr i
+      rw [hg.inner_right_fintype c i] at hi
+      exact abs_le.1 hi
+    · rintro ⟨u, hu, rfl⟩
+      refine ⟨hmem u, fun i => ?_⟩
+      rw [hg.inner_right_fintype u i]
+      exact abs_le.2 (hu i (mem_univ i))
+  -- Step 3: `ι` is continuous and the cube is compact, so its image is compact
+  rw [hbox]
+  exact (isCompact_univ_pi fun _ => isCompact_Icc).image
+    (continuous_finsetSum _ fun i _ => (continuous_apply i).smul continuous_const)
 /-- Translates along `G` of an action carried by `Gᗮ` vanish outside a compact set: if
 `μ_R(ℝᴾ \ Gᗮ) = 0` and `η` has compact support, then `τ(M, θ, ξ)(η(t + ·)) = 0` for every
 `t ∈ G \ K`, `K = p(spt η)` with `p` the orthogonal projection onto `G`.  As `θ ≥ 1` on `M`,
@@ -8346,6 +8736,166 @@ theorem Submission.dimred_cs_sos_mt_frame_measure : ∀ (P k : ℕ) (g : Fin k �
   -- (i): the affine plane measure at `a = 0`, where `0 + ι(u) = ι(u)` and `y − 0 = y`
   simpa using (Submission.cbr_cipi_affine_plane_measure P k g 0 hg).1
 
+/-- **Frame-box integrals in frame coordinates** (step (5a) of the cube Stokes formula).  For an
+orthonormal frame `g₁, …, gₖ` of `ℝᴾ` with span `G`, the frame map `ι(u) = ∑ᵢ uᵢ gᵢ` is a linear
+isometry from Euclidean `ℝᵏ` onto `G`, so it pushes Lebesgue measure to `Hᵏ⌞G`.  The frame box
+`Q = {t ∈ G : |⟨gᵢ, t⟩| ≤ r}` is closed, lies in `G`, and has preimage `ι⁻¹(Q) = [-r, r]ᵏ`; hence
+`∫_Q f dHᵏ = ∫_{[-r, r]ᵏ} f(∑ᵢ uᵢ gᵢ) du` for every `f` (no integrability is needed). -/
+theorem Submission.dimred_cs_sos_mt_cs_frame_box_integral : ∀ (P k : ℕ) (g : Fin k → Euclid P) (r : ℝ) (f : Euclid P → ℝ), Orthonormal ℝ g → ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, f t ∂μHE[k] = ∫ u in {u : Fin k → ℝ | ∀ i, |u i| ≤ r}, f (∑ i, u i • g i) := by
+  intro P k g r f hg
+  -- Step 1: the frame map `ι u = ∑ᵢ uᵢ gᵢ` lands in `G` and has coordinates `⟨gᵢ, ι u⟩ = uᵢ`
+  let ι : (Fin k → ℝ) →ₗ[ℝ] Euclid P := Fintype.linearCombination ℝ g
+  have hcoord : ∀ u i, inner ℝ (g i) (ι u) = u i := fun u i => hg.inner_right_fintype u i
+  have hrange : LinearMap.range ι = Submodule.span ℝ (Set.range g) :=
+    Fintype.range_linearCombination ℝ g
+  -- Step 2: `ι` is injective, hence a closed and so a measurable embedding
+  have hemb : MeasurableEmbedding ι := by
+    refine (LinearMap.isClosedEmbedding_of_injective
+      (LinearMap.ker_eq_bot.mpr ?_)).measurableEmbedding
+    intro u v huv
+    funext i
+    rw [← hcoord u i, ← hcoord v i, huv]
+  -- Step 3: `volume.map ι = Hᵏ⌞G`: on Euclidean `ℝᵏ` the frame map is a linear isometry onto `G`
+  have hmap : (volume : Measure (Fin k → ℝ)).map ι =
+      μHE[k].restrict (Submodule.span ℝ (Set.range g) : Set (Euclid P)) := by
+    let L : EuclideanSpace ℝ (Fin k) →ₗ[ℝ] Euclid P :=
+      ι ∘ₗ (WithLp.linearEquiv 2 ℝ (Fin k → ℝ)).toLinearMap
+    have hL : ∀ x y, inner ℝ (L x) (L y) = inner ℝ x y := by
+      intro x y
+      simp [L, ι, Fintype.linearCombination_apply, hg.inner_sum, PiLp.inner_apply, mul_comm]
+    have hiso : Isometry L := (L.isometryOfInner hL).isometry
+    have hrangeL : Set.range L = (Submodule.span ℝ (Set.range g) : Set (Euclid P)) := by
+      rw [← hrange, LinearMap.coe_range]
+      exact (WithLp.linearEquiv 2 ℝ (Fin k → ℝ)).surjective.range_comp ι
+    calc (volume : Measure (Fin k → ℝ)).map ι
+        = ((volume : Measure (Fin k → ℝ)).map (WithLp.toLp 2)).map L := by
+          rw [Measure.map_map hiso.continuous.measurable
+            (PiLp.volume_preserving_toLp (Fin k)).measurable]
+          rfl
+      _ = (μHE[k] : Measure (EuclideanSpace ℝ (Fin k))).map L := by
+          rw [(PiLp.volume_preserving_toLp (Fin k)).map_eq,
+            EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      _ = μHE[k].restrict (Submodule.span ℝ (Set.range g) : Set (Euclid P)) := by
+          rw [hiso.map_euclideanHausdorffMeasure, hrangeL]
+  -- Step 4: `Hᵏ⌞Q = (volume.map ι)⌞Q`, since `Q ⊆ G` is closed (`frame_box_compact`)
+  have hQ : MeasurableSet
+      {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} :=
+    (Submission.dimred_cs_sos_mt_cs_frame_box_compact P k g r hg).isClosed.measurableSet
+  have hrestrict :
+      μHE[k].restrict {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} =
+        ((volume : Measure (Fin k → ℝ)).map ι).restrict
+          {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} := by
+    rw [hmap, Measure.restrict_restrict hQ, Set.inter_eq_left.mpr fun t ht => ht.1]
+  -- Step 5: `ι⁻¹(Q) = I`
+  have hpre : ι ⁻¹' {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} =
+      {u : Fin k → ℝ | ∀ i, |u i| ≤ r} := by
+    ext u
+    simp only [Set.mem_preimage, Set.mem_ofPred_eq, hcoord]
+    exact and_iff_right (hrange ▸ LinearMap.mem_range_self ι u)
+  -- Step 6: change of variables along the measurable embedding `ι`
+  rw [hrestrict, hemb.setIntegral_map, hpre]
+  rfl
+/-- **Fubini and the fundamental theorem of calculus on a coordinate box** (steps (5b) and (5d)
+of the cube Stokes formula in the minimality transfer of Simon 7.3.5).  Let `a ∈ Fin (j + 1)`,
+`r > 0`, `Q = [-r, r]^{j+1}` and `Q' = [-r, r]^j`.  If `φ` is continuous and, on every line in the
+coordinate direction `a`, `φ` is the derivative of `ψ`, then
+`∫_Q φ = ∫_{Q'} (ψ(a.insertNth r u) - ψ(a.insertNth (-r) u)) du`.  The map
+`e(τ, u) = a.insertNth τ u` is measure preserving and pulls `Q` back to `[-r, r] × Q'`.  The
+integrand is continuous on this compact box, so Fubini applies, and for each `u` the fundamental
+theorem of calculus evaluates the inner integral over `τ ∈ [-r, r]`. -/
+theorem Submission.dimred_cs_sos_mt_cs_coord_box_ftc : ∀ (j : ℕ) (a : Fin (j + 1)) (r : ℝ) (φ ψ : (Fin (j + 1) → ℝ) → ℝ), 0 < r → Continuous φ → (∀ (u : Fin j → ℝ) (τ : ℝ), HasDerivAt (fun σ : ℝ => ψ (Fin.insertNth a σ u)) (φ (Fin.insertNth a τ u)) τ) → ∫ u in {u : Fin (j + 1) → ℝ | ∀ i, |u i| ≤ r}, φ u = ∫ u in {u : Fin j → ℝ | ∀ c, |u c| ≤ r}, (ψ (Fin.insertNth a r u) - ψ (Fin.insertNth a (-r) u)) := by
+  intro j a r φ ψ hr hφ hψ
+  -- Step 1: `e (τ, u') = a.insertNth τ u'` is measure preserving from `volume.prod volume`
+  set e : ℝ × (Fin j → ℝ) ≃ᵐ (Fin (j + 1) → ℝ) :=
+    (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (j + 1) => ℝ) a).symm
+  have he : MeasurePreserving e :=
+    (volume_preserving_piFinSuccAbove (fun _ : Fin (j + 1) => ℝ) a).symm _
+  have he_apply : ∀ p : ℝ × (Fin j → ℝ), e p = Fin.insertNth a p.1 p.2 := fun _ => rfl
+  -- Step 2: `e` pulls the cube back to the box `[-r, r] ×ˢ I_j`, and `I_j` is compact
+  set T : Set (Fin j → ℝ) := {u | ∀ c, |u c| ≤ r}
+  have hpre : e ⁻¹' {u : Fin (j + 1) → ℝ | ∀ i, |u i| ≤ r} = Icc (-r) r ×ˢ T := by
+    ext ⟨τ, u⟩
+    simp only [mem_preimage, mem_ofPred_eq, he_apply, Fin.forall_iff_succAbove a,
+      Fin.insertNth_apply_same, Fin.insertNth_apply_succAbove, mem_prod, mem_Icc, abs_le, T]
+  have hT : IsCompact T := by
+    have hTpi : T = Set.pi univ fun _ => Icc (-r) r := by
+      ext u
+      simp only [T, mem_ofPred_eq, mem_univ_pi, mem_Icc, abs_le]
+    rw [hTpi]
+    exact isCompact_univ_pi fun _ => isCompact_Icc
+  have hcont : Continuous fun p : (Fin j → ℝ) × ℝ => φ (Fin.insertNth a p.2 p.1) :=
+    hφ.comp (Continuous.finInsertNth (A := fun _ => ℝ) a continuous_snd continuous_fst)
+  -- Steps 3–4: change of variables, then Fubini on the compact box `I_j ×ˢ [-r, r]`
+  rw [← he.setIntegral_preimage_emb e.measurableEmbedding φ, hpre, Measure.volume_eq_prod,
+    ← setIntegral_prod_swap, setIntegral_prod]
+  · -- Step 5: the fundamental theorem of calculus in `τ`, for each `u'`
+    congr 1
+    funext u
+    simp only [Prod.swap_prod_mk, he_apply]
+    rw [integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le (by linarith)]
+    exact intervalIntegral.integral_eq_sub_of_hasDerivAt (fun τ _ => hψ u τ)
+      ((hcont.comp (Continuous.prodMk_right u)).intervalIntegrable _ _)
+  · exact hcont.continuousOn.integrableOn_compact (hT.prod isCompact_Icc)
+
+/-- **Frame-box FTC** (step 5 of the proof of `dimred_cs_sos_mt_cube_stokes`, for abstract `A`
+and `b`).  Let `g = (g₀, …, g_j)` be orthonormal, `r > 0`, and let `σ ↦ b(s + σ g_a)` have
+derivative `A(s + τ g_a)` at every `τ`.  Then
+`∫_{Q_r} A dH^{j+1} = ∫_{Q'_a} b(s + r g_a) dHʲ(s) − ∫_{Q'_a} b(s − r g_a) dHʲ(s)`, where `Q_r` is
+the box of radius `r` of the frame `g` and `Q'_a` that of the frame `g ∘ a.succAbove`.  In the
+frame coordinates `ι(u) = ∑ᵢ uᵢ gᵢ` on `Q_r` and `ι_a(u') = ∑_c u'_c g_{a.succAbove c}` on `Q'_a`
+(`dimred_cs_sos_mt_cs_frame_box_integral`) this is the coordinate FTC
+`dimred_cs_sos_mt_cs_coord_box_ftc` for `φ = A ∘ ι` and `ψ = b ∘ ι`, as
+`ι(a.insertNth τ u') = ι_a(u') + τ g_a`; both face integrands are continuous on the compact cube
+`I_j = [−r, r]ʲ`, so the integral of their difference splits. -/
+theorem Submission.dimred_cs_sos_mt_cs_frame_box_ftc : ∀ (P j : ℕ) (g : Fin (j + 1) → Euclid P) (a : Fin (j + 1)) (r : ℝ) (A b : Euclid P → ℝ), Orthonormal ℝ g → 0 < r → Continuous A → Continuous b → (∀ (s : Euclid P) (τ : ℝ), HasDerivAt (fun σ : ℝ => b (s + σ • g a)) (A (s + τ • g a)) τ) → ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, A t ∂μHE[j + 1] = (∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, b (s + r • g a) ∂μHE[j]) - ∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, b (s - r • g a) ∂μHE[j] := by
+  intro P j g a r A b hg hr hA hb hd
+  -- the face frame `g ∘ a.succAbove` is orthonormal; `ι` and `ι_a` are continuous
+  have hg' : Orthonormal ℝ (g ∘ a.succAbove) := hg.comp _ Fin.succAbove_right_injective
+  have hι : Continuous fun u : Fin (j + 1) → ℝ => ∑ i, u i • g i :=
+    continuous_finsetSum _ fun i _ => (continuous_apply i).smul continuous_const
+  have hιa : Continuous fun u : Fin j → ℝ => ∑ c, u c • g (a.succAbove c) :=
+    continuous_finsetSum _ fun c _ => (continuous_apply c).smul continuous_const
+  -- splitting off the coordinate `a`: `ι(a.insertNth τ u') = ι_a(u') + τ g_a`
+  have hsplit : ∀ (u : Fin j → ℝ) (τ : ℝ),
+      ∑ i, (Fin.insertNth a τ u : Fin (j + 1) → ℝ) i • g i =
+        ∑ c, u c • g (a.succAbove c) + τ • g a := by
+    intro u τ
+    rw [Fin.sum_univ_succAbove _ a, Fin.insertNth_apply_same, add_comm]
+    simp only [Fin.insertNth_apply_succAbove]
+  -- frame coordinates on `Q_r` (frame `g`) and on the face `Q'_a` (frame `g ∘ a.succAbove`)
+  have hbox : ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r},
+      A t ∂μHE[j + 1] = ∫ u in {u : Fin (j + 1) → ℝ | ∀ i, |u i| ≤ r}, A (∑ i, u i • g i) :=
+    Submission.dimred_cs_sos_mt_cs_frame_box_integral P (j + 1) g r A hg
+  have hface : ∀ f : Euclid P → ℝ,
+      ∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧
+        ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, f s ∂μHE[j] =
+        ∫ u in {u : Fin j → ℝ | ∀ c, |u c| ≤ r}, f (∑ c, u c • g (a.succAbove c)) :=
+    fun f => Submission.dimred_cs_sos_mt_cs_frame_box_integral P j (g ∘ a.succAbove) r f hg'
+  -- the coordinate FTC for `φ = A ∘ ι` and `ψ = b ∘ ι`, its face terms rewritten by `hsplit`
+  have hftc : ∫ u in {u : Fin (j + 1) → ℝ | ∀ i, |u i| ≤ r}, A (∑ i, u i • g i) =
+      ∫ u in {u : Fin j → ℝ | ∀ c, |u c| ≤ r},
+        (b (∑ c, u c • g (a.succAbove c) + r • g a) -
+          b (∑ c, u c • g (a.succAbove c) - r • g a)) := by
+    refine (Submission.dimred_cs_sos_mt_cs_coord_box_ftc j a r (fun u => A (∑ i, u i • g i))
+      (fun u => b (∑ i, u i • g i)) hr (hA.comp hι) fun u τ => ?_).trans ?_
+    · simp only [hsplit]
+      exact hd _ τ
+    · simp only [hsplit, neg_smul, ← sub_eq_add_neg]
+  -- both face integrands are continuous on the compact cube `I_j`, hence integrable there
+  have hK : IsCompact {u : Fin j → ℝ | ∀ c, |u c| ≤ r} := by
+    have hI : {u : Fin j → ℝ | ∀ c, |u c| ≤ r} = Set.univ.pi fun _ => Set.Icc (-r) r := by
+      ext u
+      simp only [Set.mem_ofPred_eq, Set.mem_univ_pi, Set.mem_Icc, abs_le]
+    rw [hI]
+    exact isCompact_univ_pi fun _ => isCompact_Icc
+  have hint₁ : IntegrableOn (fun u : Fin j → ℝ => b (∑ c, u c • g (a.succAbove c) + r • g a))
+      {u : Fin j → ℝ | ∀ c, |u c| ≤ r} :=
+    (hb.comp (hιa.add continuous_const)).continuousOn.integrableOn_compact hK
+  have hint₂ : IntegrableOn (fun u : Fin j → ℝ => b (∑ c, u c • g (a.succAbove c) - r • g a))
+      {u : Fin j → ℝ | ∀ c, |u c| ≤ r} :=
+    (hb.comp (hιa.sub continuous_const)).continuousOn.integrableOn_compact hK
+  rw [hbox, hftc, hface (fun s => b (s + r • g a)), hface (fun s => b (s - r • g a)),
+    integral_sub hint₁ hint₂]
 /-- **Bounded subsets of the span of an orthonormal frame have finite `Hᵏ`-measure** (Simon
 Ch. 1, 2.9, `Hᵏ = Lᵏ` on `ℝᵏ`; integrability over `G` in the splitting lemma, Ch. 7, 3.5).
 Let `G = span g`.  A bounded `E ⊆ G` lies in some `closedBall 0 ρ`; put `r = max ρ 0 + 1 > 0`.
@@ -8371,98 +8921,6 @@ theorem Submission.dimred_cs_sos_mt_si_span_bounded_measure_ne_top : ∀ (P k : 
   refine ne_top_of_le_ne_top ?_ (measure_mono hbox)
   rw [((Submission.dimred_cs_sos_mt_frame_measure P k g hg).2 r hr).1]
   exact ENNReal.ofReal_ne_top
-/-- **Interior product with a frame; translated test forms.**  (a) For `g = (g₁, …, g_k)` in
-`ℝᴾ` and `n' = k + m`, `♭α(v) = α(g₁, …, g_k, v₁, …, v_m)` defines a continuous linear map
-`♭ : Λ^{n'} → Λ^m`.  Updating `vⱼ` updates only the entry `natAdd k j` of `(g, v)`, so `♭α` is
-multilinear; it is alternating because equal entries of `v` stay at distinct indices; it is
-continuous; and `‖♭α‖ ≤ (∏ᵢ ‖gᵢ‖) ‖α‖`, so `α ↦ ♭α` is bounded (`LinearMap.mkContinuous`).
-(b) For a continuous linear `Φ : Λᵃ → Λᵇ`, a test `a`-form `ω` and `t ∈ ℝᴾ`, `y ↦ Φ(ω(t + y))`
-is smooth and vanishes off the closed set `{y : t + y ∈ spt ω}`, the compact translate
-`spt ω − t`; hence it is a test form supported there.  This is the interior product `♭_g` of
-the product construction `[[E]] ×_g A` used to split off the spine of a cone. -/
-theorem Submission.dimred_cs_sos_mt_interior_product : ∀ P : ℕ, (∀ (k m n' : ℕ) (g : Fin k → Euclid P) (h : n' = k + m), ∃ flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m, ∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) ∧ ∀ (a b : ℕ) (flat : Covector (Euclid P) a →L[ℝ] Covector (Euclid P) b) (ω : DifferentialForm (Euclid P) a) (t : Euclid P), IsTestForm ω → IsTestForm (fun y => flat (ω (t + y))) ∧ tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω := by
-  intro P
-  refine ⟨fun k m n' g h => ?_, fun a b flat ω t hω => ?_⟩
-  · -- (a) the interior product with the frame `g`; first identify `n'` with `k + m`
-    subst h
-    -- the entries `castAdd m i` (from `g`) and `natAdd k j` (from `v`) are distinct
-    have hne : ∀ (i : Fin k) (j : Fin m), Fin.castAdd m i ≠ Fin.natAdd k j := by
-      intro i j hc
-      have hv := congrArg Fin.val hc
-      have hi := i.isLt
-      simp only [Fin.val_castAdd, Fin.val_natAdd] at hv
-      omega
-    -- updating `v` at `j` updates `Fin.append g v` at `natAdd k j` (for any `DecidableEq`)
-    have hupd : ∀ (_ : DecidableEq (Fin m)) (v : Fin m → Euclid P) (j : Fin m) (x : Euclid P),
-        Fin.append g (Function.update v j x) =
-          Function.update (Fin.append g v) (Fin.natAdd k j) x := by
-      intro _ v j x
-      funext z
-      induction z using Fin.addCases with
-      | left i => rw [Fin.append_left, Function.update_of_ne (hne i j), Fin.append_left]
-      | right j' =>
-        rw [Fin.append_right, Function.update_apply_of_injective _ (Fin.natAdd_injective m k)]
-        congr 1
-        funext i
-        rw [Fin.append_right]
-    -- `v ↦ Fin.append g v` is continuous: each entry is a constant `gᵢ` or a projection `vⱼ`
-    have hcont : Continuous fun v : Fin m → Euclid P => Fin.append g v := by
-      refine continuous_pi fun z => ?_
-      induction z using Fin.addCases with
-      | left i => simp only [Fin.append_left]; exact continuous_const
-      | right j => simp only [Fin.append_right]; exact continuous_apply j
-    -- `♭α (v) = α (g, v)` is a continuous alternating map
-    let φ : Covector (Euclid P) (k + m) → Covector (Euclid P) m := fun α =>
-      { toFun := fun v => α (Fin.append g v)
-        map_update_add' := fun v j x y => by
-          simp only [hupd _ v j, α.map_update_add]
-        map_update_smul' := fun v j c x => by
-          simp only [hupd _ v j, α.map_update_smul]
-        cont := α.cont.comp hcont
-        map_eq_zero_of_eq' := fun v i j hv hij =>
-          α.map_eq_zero_of_eq (Fin.append g v) (i := Fin.natAdd k i) (j := Fin.natAdd k j)
-            (by rw [Fin.append_right, Fin.append_right]; exact hv)
-            ((Fin.natAdd_injective m k).ne hij) }
-    have hφ : ∀ α v, φ α v = α (Fin.append g v) := fun α v => rfl
-    -- `α ↦ ♭α` is linear
-    let L : Covector (Euclid P) (k + m) →ₗ[ℝ] Covector (Euclid P) m :=
-      { toFun := φ
-        map_add' := fun α β => by
-          ext v
-          simp only [hφ, ContinuousAlternatingMap.add_apply]
-        map_smul' := fun c α => by
-          ext v
-          simp only [hφ, ContinuousAlternatingMap.smul_apply, RingHom.id_apply] }
-    -- and bounded: `|α (g, v)| ≤ ‖α‖ ∏ᵢ ‖gᵢ‖ ∏ⱼ ‖vⱼ‖`, so `‖♭α‖ ≤ (∏ᵢ ‖gᵢ‖) ‖α‖`
-    have hbound : ∀ α, ‖L α‖ ≤ (∏ i, ‖g i‖) * ‖α‖ := by
-      intro α
-      refine ContinuousAlternatingMap.opNorm_le_bound _ (by positivity) fun v => ?_
-      calc ‖L α v‖ = ‖α (Fin.append g v)‖ := rfl
-        _ ≤ ‖α‖ * ∏ z, ‖Fin.append g v z‖ := α.le_opNorm _
-        _ = (∏ i, ‖g i‖) * ‖α‖ * ∏ j, ‖v j‖ := by
-          rw [Fin.prod_univ_add]
-          simp only [Fin.append_left, Fin.append_right]
-          ring
-    refine ⟨L.mkContinuous (∏ i, ‖g i‖) hbound, fun α v => ?_⟩
-    rw [LinearMap.mkContinuous_apply, Fin.cast_refl, Function.comp_id]
-    rfl
-  · -- (b) off `{y : t + y ∈ spt ω}` the form `ω (t + y)` vanishes, hence so does its image
-    have hsub : tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω := by
-      refine closure_minimal (fun y hy => ?_)
-        ((isClosed_tsupport ω).preimage (continuous_const.add continuous_id))
-      by_contra hy'
-      apply hy
-      show flat (ω (t + y)) = 0
-      rw [image_eq_zero_of_notMem_tsupport (f := ω) (x := t + y) hy', map_zero]
-    have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω := hω.1
-    -- `{y : t + y ∈ spt ω}` is the compact translate `spt ω − t`
-    have hK : IsCompact ((fun y => t + y) ⁻¹' tsupport ω) := by
-      have hK' := (Homeomorph.addLeft t).isCompact_preimage.mpr hω.2
-      rwa [Homeomorph.coe_addLeft] at hK'
-    refine ⟨⟨?_, ?_⟩, hsub⟩
-    · exact flat.contDiff.comp (hs.comp (contDiff_const.add contDiff_id))
-    · exact hK.of_isClosed_subset (isClosed_tsupport _) hsub
-
 /-- **Slices of an integer multiplicity current are continuous and integrable over a frame span**
 (the product construction of the splitting lemma, Ch. 7, 3.5).  Let `G = span g`, `η = Φ ∘ ω`
 and `F(t) = T(η(t + ·))`.  By `Submission.dimred_cs_sos_mt_interior_product` (b) each
@@ -9554,6 +10012,73 @@ theorem Submission.dimred_cs_sos_mt_measure_comparison : ∀ (P j : ℕ) (S₁ S
     ← measure_sdiff_add_inter (μ := R₁.measure) W₀ hKm,
     inter_eq_right.mpr (hKW.trans hWB), inter_eq_right.mpr hKW, hBK, hWK]
   ring
+
+/-- **Stokes formula on a cube for current slices.**  Let `g = (g₀, …, g_j)` be orthonormal,
+`Q_r = {t ∈ span g : |⟨gᵢ, t⟩| ≤ r}`, `Q'ₐ` the corresponding box of the frame `g ∘ a.succAbove`
+(`g` without `gₐ`), and `∂Y = X`.  Then `∫_{Q_r} Y(♭(dω)(t + ·))` is the sum of the face terms
+`(−1)ᵃ (∫_{Q'ₐ} Y(♭ₐω(s + r gₐ + ·)) − ∫_{Q'ₐ} Y(♭ₐω(s − r gₐ + ·)))` and of
+`(−1)^{j+1} ∫_{Q_r} X(♭ω(t + ·))`.  For each `t` the slice identity writes `Y(♭(dω)(t + ·))` as
+`Σₐ (−1)ᵃ Y(D(♭ₐω)(t + ·)[gₐ]) + (−1)^{j+1} X(♭ω(t + ·))`.  All slices are continuous, hence
+integrable on the compact box `Q_r`; the `X`-slice is the `Y`-slice of the test form `d(♭ω)`, as
+`∂Y = X`.  Split the integral and apply the fundamental theorem of calculus in the direction `gₐ`
+to `t ↦ Y(♭ₐω(t + ·))`, whose derivative along `gₐ` is the slice `Y(D(♭ₐω)(t + ·)[gₐ])`. -/
+theorem Submission.dimred_cs_sos_mt_cube_stokes : ∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h : n' = (j + 1) + m) (h₁ : n' + 1 = (j + 1) + (m + 1)) (h₂ : n' = j + (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (RY : IMRep (univ : Set (Euclid P)) (m + 1)) (flatD : Covector (Euclid P) (n' + 1) →L[ℝ] Covector (Euclid P) (m + 1)) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m) (flatF : Fin (j + 1) → Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) (m + 1)) (ω : TestFormOn (univ : Set (Euclid P)) n') (r : ℝ), Orthonormal ℝ g → RY.Represents Y → Y.boundary = X → 0 < r → (∀ (α : Covector (Euclid P) (n' + 1)) (v : Fin (m + 1) → Euclid P), flatD α v = α (Fin.append g v ∘ Fin.cast h₁)) → (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval Y (fun y => flatD (exteriorDerivative (ω : DifferentialForm (Euclid P) n') (t + y))) ∂μHE[j + 1] = (∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) * ((∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (s + r • g a + y))) ∂μHE[j]) - ∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (s - r • g a + y))) ∂μHE[j])) + (-1 : ℝ) ^ (j + 1) * ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval X (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) ∂μHE[j + 1] := by
+  intro P j m n' g h h₁ h₂ X Y RY flatD flat flatF ω r hg hRY hYX hr hflatD hflat hflatF
+  set Q : Set (Euclid P) := {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}
+  -- `Q_r` is compact, hence a bounded Borel subset of `span g`
+  have hQc : IsCompact Q := Submission.dimred_cs_sos_mt_cs_frame_box_compact P (j + 1) g r hg
+  have hQm : MeasurableSet Q := hQc.measurableSet
+  -- slices `t ↦ Y(Φ(φ(t + ·)))` by translated test forms are continuous and integrable on `Q_r`
+  have hsl : ∀ (q : ℕ) (Φ : Covector (Euclid P) q →L[ℝ] Covector (Euclid P) (m + 1))
+      (φ : TestFormOn (univ : Set (Euclid P)) q),
+      Continuous (fun t => currentEval Y (fun y =>
+        Φ ((φ : DifferentialForm (Euclid P) q) (t + y)))) ∧
+        IntegrableOn (fun t => currentEval Y (fun y =>
+          Φ ((φ : DifferentialForm (Euclid P) q) (t + y)))) Q μHE[j + 1] := by
+    intro q Φ φ
+    have hs := Submission.dimred_cs_sos_mt_slice_integrable P (j + 1) (m + 1) q g Y RY Φ φ hg hRY
+    exact ⟨hs.1, hs.2.1 Q hQm (fun t ht => ht.1) hQc.isBounded⟩
+  -- the contracted forms `♭ₐω = flatF a ∘ ω` and `♭ω = flat ∘ ω` are test forms
+  have hβ : ∀ a, IsTestForm (fun z => flatF a ((ω : DifferentialForm (Euclid P) n') z)) := fun a =>
+    ⟨(flatF a).contDiff.comp ω.property.1.1, ω.property.1.2.comp_left (map_zero (flatF a))⟩
+  have hγ : IsTestForm (fun z => flat ((ω : DifferentialForm (Euclid P) n') z)) :=
+    ⟨flat.contDiff.comp ω.property.1.1, ω.property.1.2.comp_left (map_zero flat)⟩
+  -- the slices `Aₐ(t) = Y(D(♭ₐω)(t + ·)[gₐ])` of the test forms `D(♭ₐω)(·)[gₐ]`
+  have hA : ∀ a : Fin (j + 1),
+      Continuous (fun t => currentEval Y (fun y =>
+        fderiv ℝ (fun z => flatF a ((ω : DifferentialForm (Euclid P) n') z)) (t + y) (g a))) ∧
+        IntegrableOn (fun t => currentEval Y (fun y =>
+          fderiv ℝ (fun z => flatF a ((ω : DifferentialForm (Euclid P) n') z)) (t + y) (g a)))
+          Q μHE[j + 1] := fun a =>
+    hsl (m + 1) (ContinuousLinearMap.id ℝ _)
+      ⟨fun z => fderiv ℝ (fun z => flatF a ((ω : DifferentialForm (Euclid P) n') z)) z (g a),
+        Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply P (m + 1) _ (g a) (hβ a),
+        subset_univ _⟩
+  -- `t ↦ X(♭ω(t + ·))` is the slice `t ↦ Y(d(♭ω)(t + ·))` (`∂Y = X`), so it is integrable on `Q_r`
+  have hX : IntegrableOn
+      (fun t => currentEval X (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))))
+      Q μHE[j + 1] :=
+    (hsl (m + 1) (ContinuousLinearMap.id ℝ _)
+      ⟨exteriorDerivative (fun z => flat ((ω : DifferentialForm (Euclid P) n') z)),
+        exteriorDerivative_isTestForm hγ, subset_univ _⟩).2.congr_fun
+      (fun t _ => Submission.dimred_cs_sos_mt_cs_translate_boundary_eval P m X Y _ t hYX hγ) hQm
+  -- integrate the slice identity over `Q_r` and split the integral
+  rw [setIntegral_congr_fun hQm fun t _ =>
+      Submission.dimred_cs_sos_mt_cs_slice_identity P j m n' g h h₁ h₂ X Y flatD flat flatF ω t
+        hYX hflatD hflat hflatF,
+    integral_add
+      (integrable_finsetSum Finset.univ fun a _ => (hA a).2.const_mul ((-1 : ℝ) ^ (a : ℕ)))
+      (hX.const_mul ((-1 : ℝ) ^ (j + 1))),
+    integral_finsetSum Finset.univ fun a _ => (hA a).2.const_mul ((-1 : ℝ) ^ (a : ℕ)),
+    integral_const_mul]
+  congr 1
+  refine Finset.sum_congr rfl fun a _ => ?_
+  -- the fundamental theorem of calculus in the direction `gₐ` for `bₐ(t) = Y(♭ₐω(t + ·))`
+  rw [integral_const_mul,
+    Submission.dimred_cs_sos_mt_cs_frame_box_ftc P j g a r _
+      (fun t => currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (t + y))))
+      hg hr (hA a).1 (hsl n' (flatF a) ω).1 fun s τ =>
+        Submission.dimred_cs_sos_mt_cs_slice_hasDerivAt P (m + 1) n' Y RY (flatF a) ω s (g a) τ hRY]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
