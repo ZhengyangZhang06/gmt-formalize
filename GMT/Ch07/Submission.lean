@@ -2778,6 +2778,178 @@ theorem Submission.codim1_hcp_sc_fderivWithin_tangent_eq : ∀ (P : ℕ) (E : Ty
   -- so it contains the linear span of `T_xM`
   exact LinearMap.eqOn_span (f := (fderivWithin ℝ f M x : Euclid P →ₗ[ℝ] E))
     (g := (f' : Euclid P →ₗ[ℝ] E)) (fun w hw => huniq (hcone hw)) hv
+/-- **Rademacher's theorem on an embedded `C¹` submanifold** (Simon Ch. 2, 4.8–4.9, via
+Rademacher's theorem 1.4 in local coordinates).  If `M ⊆ ℝᴾ` is an embedded `C¹` `m`-dimensional
+submanifold and `f` is locally Lipschitz on `M`, then `f` is differentiable within `M` at
+`Hᵐ`-a.e. point of `M`.  The given charts `(V, W, ψ)` are used directly.  As `ψ` is proper and
+injective, `M ∩ B_δ(ψ(b)) ⊆ ψ(V₀)` for every open `V₀ ∋ b`.  With `Q` a linear left inverse of
+`Dψ(b)`, the inverse function theorem for `Q ∘ ψ` gives a local inverse `Θ`, differentiable at
+`Q(ψ(b))`, so `f = (f ∘ ψ) ∘ Θ ∘ Q` on `M` near `ψ(b)`: if `f ∘ ψ` is differentiable at `b`, then
+`f` is differentiable within `M` at `ψ(b)`.  On an open `B ∋ a` where `ψ` and `f ∘ ψ` are
+Lipschitz, Rademacher's theorem makes `f ∘ ψ` differentiable off an `Lᵐ`-null set `N`, and
+`Hᵐ(ψ(N)) ≤ Λᵐ Lᵐ(N) = 0`.  `M = O ∩ closure M` (`O` the union of the chart domains) is Borel,
+and countably many of these neighbourhoods cover `M`. -/
+theorem Submission.codim1_hcp_sc_rademacher_submanifold : ∀ (P m : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ), IsEmbeddedSubmanifold 1 m M → LocallyLipschitzOn M f → ∀ᵐ x ∂(μHE[m].restrict M), DifferentiableWithinAt ℝ f M x := by
+  intro P m M f hM hf
+  -- step 1: `M` is Borel, as `M = O ∩ closure M` with `O` the union of the chart domains
+  have hMmeas : MeasurableSet M := by
+    have key : ∀ y ∈ M, ∃ W : Set (Euclid P), IsOpen W ∧ y ∈ W ∧
+        ∀ K ⊆ W, IsCompact K → IsClosed (M ∩ K) := by
+      intro y hy
+      obtain ⟨V, W, ψ, -, hW, hyW, hψ, -, himg, hprop, -⟩ := hM y hy
+      refine ⟨W, hW, hyW, fun K hKW hK => ?_⟩
+      have hEq : M ∩ K = ψ '' (V ∩ ψ ⁻¹' K) := by
+        ext x
+        constructor
+        · rintro ⟨hxM, hxK⟩
+          obtain ⟨v, hv, rfl⟩ : x ∈ ψ '' V := by rw [himg]; exact ⟨hKW hxK, hxM⟩
+          exact ⟨v, ⟨hv, hxK⟩, rfl⟩
+        · rintro ⟨v, ⟨hv, hvK⟩, rfl⟩
+          exact ⟨(himg ▸ mem_image_of_mem ψ hv : ψ v ∈ W ∩ M).2, hvK⟩
+      rw [hEq]
+      exact ((hprop K hKW hK).image_of_continuousOn
+        (hψ.continuousOn.mono inter_subset_left)).isClosed
+    choose! Wf hWo hyW hcl using key
+    have hMeq : M = (⋃ y ∈ M, Wf y) ∩ closure M := by
+      refine Subset.antisymm (fun x hx => ⟨mem_biUnion hx (hyW x hx), subset_closure hx⟩) ?_
+      rintro p ⟨hpO, hpcl⟩
+      obtain ⟨y, hy, hpW⟩ := mem_iUnion₂.1 hpO
+      obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.1 (hWo y hy) p hpW
+      have hC := hcl y hy (closedBall p (r / 2))
+        ((closedBall_subset_ball (by linarith)).trans hball) (isCompact_closedBall p (r / 2))
+      have h1 : p ∈ ball p (r / 2) ∩ closure M := ⟨mem_ball_self (by linarith), hpcl⟩
+      have hsub : ball p (r / 2) ∩ M ⊆ M ∩ closedBall p (r / 2) :=
+        fun x hx => ⟨hx.2, ball_subset_closedBall hx.1⟩
+      have h3 : p ∈ closure (M ∩ closedBall p (r / 2)) :=
+        closure_mono hsub (isOpen_ball.inter_closure h1)
+      rw [hC.closure_eq] at h3
+      exact h3.1
+    rw [hMeq]
+    exact (isOpen_biUnion fun y hy => hWo y hy).measurableSet.inter isClosed_closure.measurableSet
+  -- step 2: near each `p ∈ M`, `f` is differentiable within `M` off an `Hᵐ`-null set
+  have hloc : ∀ p ∈ M, ∃ O : Set (Euclid P), IsOpen O ∧ p ∈ O ∧ ∃ E : Set (Euclid P),
+      μHE[m] E = 0 ∧ ∀ x ∈ M ∩ O, x ∉ E → DifferentiableWithinAt ℝ f M x := by
+    intro p hp
+    obtain ⟨V, W, ψ, hV, hW, hpW, hψ, hinj, himg, hprop, hDψ⟩ := hM p hp
+    have hψ1 : ContDiffOn ℝ 1 ψ V := by exact_mod_cast hψ
+    have hψM : ∀ c ∈ V, ψ c ∈ M := fun c hc => (himg ▸ mem_image_of_mem ψ hc : ψ c ∈ W ∩ M).2
+    -- (a) `M ∩ B_δ(ψ(b)) ⊆ ψ(V₀)` for open `V₀ ∋ b`, as `ψ` is proper and injective
+    have himgnhds : ∀ b ∈ V, ∀ V₀ : Set (Euclid m), IsOpen V₀ → V₀ ⊆ V → b ∈ V₀ →
+        ∃ δ : ℝ, 0 < δ ∧ M ∩ ball (ψ b) δ ⊆ ψ '' V₀ := by
+      intro b hb V₀ hV₀ hV₀V hbV₀
+      have hbW : ψ b ∈ W := (himg ▸ mem_image_of_mem ψ hb : ψ b ∈ W ∩ M).1
+      obtain ⟨ε, hε, hεW⟩ := Metric.isOpen_iff.1 hW _ hbW
+      have hKW : closedBall (ψ b) (ε / 2) ⊆ W :=
+        (closedBall_subset_ball (by linarith)).trans hεW
+      -- `C = (V ∩ ψ⁻¹(K)) \ V₀` is compact, so its image is closed and misses `ψ(b)`
+      have hCc : IsClosed (ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ b) (ε / 2)) \ V₀)) :=
+        (((hprop _ hKW (isCompact_closedBall _ _)).diff hV₀).image_of_continuousOn
+          (hψ1.continuousOn.mono fun c hc => hc.1.1)).isClosed
+      have hbC : ψ b ∉ ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ b) (ε / 2)) \ V₀) := by
+        rintro ⟨c, ⟨⟨hcV, -⟩, hcV₀⟩, hc⟩
+        exact hcV₀ (hinj hcV hb hc ▸ hbV₀)
+      obtain ⟨δ, hδ, hδC⟩ := Metric.isOpen_iff.1 hCc.isOpen_compl _ hbC
+      refine ⟨min (ε / 2) δ, lt_min (by linarith) hδ, fun y hy => ?_⟩
+      have hyK : y ∈ closedBall (ψ b) (ε / 2) :=
+        ball_subset_closedBall (ball_subset_ball (min_le_left _ _) hy.2)
+      obtain ⟨c, hcV, rfl⟩ : y ∈ ψ '' V := by rw [himg]; exact ⟨hKW hyK, hy.1⟩
+      refine ⟨c, ?_, rfl⟩
+      by_contra hcV₀
+      exact hδC (ball_subset_ball (min_le_right _ _) hy.2) ⟨c, ⟨⟨hcV, hyK⟩, hcV₀⟩, rfl⟩
+    -- (b) if `f ∘ ψ` is differentiable at `b`, then `f` is differentiable within `M` at `ψ(b)`
+    have htransfer : ∀ b ∈ V, DifferentiableAt ℝ (f ∘ ψ) b →
+        DifferentiableWithinAt ℝ f M (ψ b) := by
+      intro b hb hdiff
+      -- a continuous linear left inverse `Q` of the injective `Dψ(b)`
+      obtain ⟨Q₀, hQ₀⟩ := LinearMap.exists_leftInverse_of_injective
+        (fderiv ℝ ψ b : Euclid m →ₗ[ℝ] Euclid P) (LinearMap.ker_eq_bot.2 (hDψ b hb))
+      let Q : Euclid P →L[ℝ] Euclid m := LinearMap.toContinuousLinearMap Q₀
+      have hQ : ∀ v, Q (fderiv ℝ ψ b v) = v := fun v => LinearMap.congr_fun hQ₀ v
+      -- `Φ = Q ∘ ψ` has strict derivative `id` at `b`
+      have hψs : HasStrictFDerivAt ψ (fderiv ℝ ψ b) b :=
+        (hψ1.contDiffAt (hV.mem_nhds hb)).hasStrictFDerivAt one_ne_zero
+      have hΦ : HasStrictFDerivAt (Q ∘ ψ)
+          ((ContinuousLinearEquiv.refl ℝ (Euclid m) : Euclid m ≃L[ℝ] Euclid m) :
+            Euclid m →L[ℝ] Euclid m) b := by
+        have hQψ : Q.comp (fderiv ℝ ψ b) =
+            ((ContinuousLinearEquiv.refl ℝ (Euclid m) : Euclid m ≃L[ℝ] Euclid m) :
+              Euclid m →L[ℝ] Euclid m) :=
+          ContinuousLinearMap.ext fun v => hQ v
+        rw [← hQψ]
+        exact Q.hasStrictFDerivAt.comp b hψs
+      -- the inverse function theorem: a local inverse `Θ` of `Φ`, differentiable at `Φ(b)`
+      set Θ := hΦ.localInverse (Q ∘ ψ) _ b
+      have hΘ := hΦ.to_localInverse
+      have hleft : ∀ᶠ c in 𝓝 b, Θ ((Q ∘ ψ) c) = c := hΦ.eventually_left_inverse
+      obtain ⟨V₁, hV₁sub, hV₁o, hbV₁⟩ := _root_.mem_nhds_iff.1 hleft
+      obtain ⟨δ, hδ, hδsub⟩ :=
+        himgnhds b hb (V₁ ∩ V) (hV₁o.inter hV) inter_subset_right ⟨hbV₁, hb⟩
+      have hΘb : Θ (Q (ψ b)) = b := hleft.self_of_nhds
+      -- `f = (f ∘ ψ) ∘ Θ ∘ Q` on `M ∩ B_δ(ψ(b))`, and the right side is differentiable at `ψ(b)`
+      have hg : DifferentiableAt ℝ ((f ∘ ψ) ∘ Θ ∘ Q) (ψ b) := by
+        have h1 : DifferentiableAt ℝ (f ∘ ψ) (Θ (Q (ψ b))) := by rw [hΘb]; exact hdiff
+        exact h1.comp (ψ b) (hΘ.differentiableAt.comp (ψ b) Q.differentiableAt)
+      refine hg.differentiableWithinAt.congr_of_eventuallyEq ?_ ?_
+      · filter_upwards [inter_mem_nhdsWithin M (ball_mem_nhds (ψ b) hδ)] with y hy
+        obtain ⟨c, ⟨hc₁, -⟩, rfl⟩ := hδsub hy
+        have hc : Θ (Q (ψ c)) = c := hV₁sub hc₁
+        simp only [Function.comp_apply, hc]
+      · simp only [Function.comp_apply, hΘb]
+    -- (c) `ψ` and `f ∘ ψ` are Lipschitz on an open `B ∋ a`, where `ψ(a) = p`
+    obtain ⟨a, haV, rfl⟩ : p ∈ ψ '' V := by rw [himg]; exact ⟨hpW, hp⟩
+    obtain ⟨K, t, ht, hft⟩ := hf hp
+    obtain ⟨U, hUo, haU, hUt⟩ := mem_nhdsWithin.1 ht
+    have hψa : ContDiffAt ℝ 1 ψ a := hψ1.contDiffAt (hV.mem_nhds haV)
+    obtain ⟨Λ, s, hs, hψs⟩ := hψa.exists_lipschitzOnWith
+    obtain ⟨B, hBsub, hBo, haB⟩ := _root_.mem_nhds_iff.1 (inter_mem (inter_mem (hV.mem_nhds haV) hs)
+      (hψa.continuousAt.preimage_mem_nhds (hUo.mem_nhds haU)))
+    have hBV : B ⊆ V := fun c hc => (hBsub hc).1.1
+    have hψB : LipschitzOnWith Λ ψ B := hψs.mono fun c hc => (hBsub hc).1.2
+    have hfB : LipschitzOnWith (K * Λ) (f ∘ ψ) B :=
+      hft.comp hψB fun c hc => hUt ⟨(hBsub hc).2, hψM c (hBV hc)⟩
+    -- (d) Rademacher: `f ∘ ψ` is differentiable on `B` off the `Lᵐ`-null set `N`
+    let N : Set (Euclid m) := {c | c ∈ B ∧ ¬ DifferentiableAt ℝ (f ∘ ψ) c}
+    have hN : volume N = 0 := by
+      have hrad := hfB.ae_differentiableWithinAt_of_mem (μ := volume)
+      rw [ae_iff] at hrad
+      refine measure_mono_null (fun c hc => ?_) hrad
+      simp only [mem_ofPred_eq, not_imp]
+      exact ⟨hc.1, fun hd => hc.2 (hd.differentiableAt (hBo.mem_nhds hc.1))⟩
+    obtain ⟨δ, hδ, hδB⟩ := himgnhds a haV B hBo hBV haB
+    refine ⟨ball (ψ a) δ, isOpen_ball, mem_ball_self hδ, ψ '' N, ?_, ?_⟩
+    · -- (e) `Hᵐ(ψ(N)) ≤ Λᵐ Lᵐ(N) = 0`
+      have h := (hψB.mono fun c (hc : c ∈ N) => hc.1).hausdorffMeasure_image_le
+        (d := (m : ℝ)) (Nat.cast_nonneg m)
+      rw [ENNReal.rpow_natCast] at h
+      have h2 : μHE[m] (ψ '' N) ≤ (Λ : ℝ≥0∞) ^ m * volume N := by
+        rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume m,
+          Measure.euclideanHausdorffMeasure_def, Measure.euclideanHausdorffMeasure_def]
+        simp only [Measure.smul_apply, ENNReal.smul_def, smul_eq_mul]
+        calc _ ≤ _ := mul_le_mul_right h _
+          _ = _ := by ring
+      rw [hN, mul_zero] at h2
+      exact le_antisymm h2 zero_le
+    · -- (f) off `ψ(N)`, each `x ∈ M ∩ B_δ(ψ(a))` is `ψ(c)` with `f ∘ ψ` differentiable at `c`
+      intro x hx hxE
+      obtain ⟨c, hcB, rfl⟩ := hδB hx
+      refine htransfer c (hBV hcB) ?_
+      by_contra hnd
+      exact hxE ⟨c, ⟨hcB, hnd⟩, rfl⟩
+  -- step 3: countably many of the neighbourhoods `O p` cover `M` (second countability)
+  choose! O hOo hpO E hE hdiff using hloc
+  obtain ⟨T, hTM, hTc, hTU⟩ := TopologicalSpace.isOpen_biUnion_countable M O hOo
+  have hnull : μHE[m] (⋃ p ∈ T, E p) = 0 :=
+    (measure_biUnion_null_iff hTc).2 fun p hp => hE p (hTM hp)
+  rw [ae_restrict_iff' hMmeas, ae_iff]
+  refine measure_mono_null (fun x hx => ?_) hnull
+  simp only [mem_ofPred_eq, not_imp] at hx
+  obtain ⟨hxM, hxnd⟩ := hx
+  have hxU : x ∈ ⋃ p ∈ M, O p := mem_iUnion₂.2 ⟨x, hxM, hpO x hxM⟩
+  rw [← hTU] at hxU
+  obtain ⟨p, hpT, hxO⟩ := mem_iUnion₂.1 hxU
+  refine mem_iUnion₂.2 ⟨p, hpT, ?_⟩
+  by_contra hxE
+  exact hxnd (hdiff p (hTM hpT) x ⟨hxM, hxO⟩ hxE)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
