@@ -1,0 +1,47 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IsUnitOrientationOf|def MultiVector|abbrev MultiVector|def BoundaryVanishes|def Represents|def action|pullback|Pullback|dpf_pb_smooth_pullback_isTestForm|dpf_pb_imrep_pullback_integral_tendsto",
+        "extDeriv_pullback|analyticOnNhd_compContinuousLinearMapCLM|continuous_compContinuousLinearMapCLM|norm_compContinuousLinearMap_le|theorem tendsto_integral_of_dominated_convergence",
+        "dpf_pb_smooth_pullback_isTestForm",
+        "dpf_pb_imrep_pullback_integral_tendsto",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dpf-boundary-independent-audit-w8h_w1eb/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dpf-boundary-independent-audit-w8h_w1eb/ProofReplay.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Analytic/CPolynomial.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026/decomposition-v1.json",
+        "/tmp/dpf-boundary-independent-audit-w8h_w1eb/Types.lean",
+        "/tmp/dpf-boundary-independent-audit-w8h_w1eb/ProofReplay.lean"
+      ],
+      "conclusion": "The split appropriately separates two independent analytic obligations. Both exact one-line types elaborate against frozen definitions before either child is declared. Replaying the supplied proofs and exact parent assembly succeeded; all three proofs use only propext, Classical.choice and Quot.sound. The assembly proves the selected boundary-vanishing contract, including degree zero, conditional on the exact inherited smooth-approximation contract. That sibling remains a DAG obligation, not a verified implementation here. Dependencies are correctly directed and acyclic. Neither bare child name is reserved elsewhere: searches of DAG records, stored proposals and GMT sources across 1181 local branches found only this proposal's records. Relevant library declarations have compatible hypotheses; ten consulted Mathlib files matched the snapshot byte-for-byte. The inline constructions use continuous alternating maps and operator norms as intended; neither contract contains a matrix-unit construction."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "smooth_pullback_test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and exactly matches the standalone Lean proposition. Analytic dependence of covector precomposition on the derivative proves smoothness. Vanishing outside the closed compact union tsupport α ∪ K' proves the support inclusion and compact support. Every step is justified without invoking this child or its parent. The conclusion supplies the pulled-back test forms needed by the parent. The bare declaration name is unreserved."
+    },
+    {
+      "key": "pullback_integral_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including the absence of regularity assumptions on φ. The proof establishes measurable approximants, derives the orientation norm bound, constructs the common bound A·C^n·θ supported on tsupport α ∪ K', and proves its integrability from local multiplicity integrability. Pointwise convergence then meets every hypothesis of the pinned dominated-convergence theorem, which needs no separate measurability assumption on the limit. Nonnegativity required by the inequalities follows from the stated bounds. The proof is complete, non-circular and directly applicable to α = dη. The bare declaration name is unreserved."
+    }
+  ],
+  "required_changes": []
+}
