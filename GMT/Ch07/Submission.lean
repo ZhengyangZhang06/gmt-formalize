@@ -1454,6 +1454,27 @@ theorem Submission.dor_lmb_fc_dtop_ip_approxTangent_isometry : ∀ (P Q d : ℕ)
     simp only [Poincare.SimonGMT.Chapter03.blowUpMap, map_smul, map_sub]
   rw [hblow, hint]
   rfl
+/-- **Simon Ch. 6, 3.4–3.5 and 3.7** (the Jacobian-one case): an isometric linear map
+`L : ℝᴾ → ℝ^Q` transports unit orientations.  If `ξ = ±τ₁ ∧ ⋯ ∧ τ_d` orients `S` (`τ`
+orthonormal), then `L ∘ τ` is orthonormal, since `L` fixes `0` and so preserves norms and inner
+products; it spans `L(S)`, the span of an image being the image of the span; and `(∧L)ξ = ξ ∘ L^*`
+pairs as `β ↦ ξ(L^*β) = ±(L^*β)(τ) = ±β(L ∘ τ)`, so `(∧L)ξ = ±Lτ₁ ∧ ⋯ ∧ Lτ_d` with the same
+sign. -/
+theorem Submission.dor_lmb_fc_dtop_ip_unitOrientation_isometry : ∀ (P Q d : ℕ) (L : Euclid P →L[ℝ] Euclid Q) (ξ : MultiVector P d) (S : Submodule ℝ (Euclid P)), Isometry L → IsUnitOrientationOf ξ S → IsUnitOrientationOf (ξ.comp (ContinuousAlternatingMap.compContinuousLinearMapCLM L)) (Submodule.map (L : Euclid P →ₗ[ℝ] Euclid Q) S) := by
+  intro P Q d L ξ S hL hξ
+  obtain ⟨τ, hτo, hτS, hτ⟩ := hξ
+  -- `L 0 = 0`, so the isometry `L` preserves norms: it is a linear isometry `ℝᴾ →ₗᵢ ℝ^Q`
+  let Li : Euclid P →ₗᵢ[ℝ] Euclid Q :=
+    { toLinearMap := (L : Euclid P →ₗ[ℝ] Euclid Q)
+      norm_map' := hL.norm_map_of_map_zero (map_zero L) }
+  refine ⟨L ∘ τ, hτo.comp_linearIsometry Li, ?_, ?_⟩
+  · -- `span (range (L ∘ τ)) = span (L '' range τ) = (span (range τ)).map L`
+    rw [Set.range_comp, ← hτS]
+    exact Submodule.span_image (L : Euclid P →ₗ[ℝ] Euclid Q)
+  · -- `((∧L)ξ)(β) = ξ(L^*β)` and `(L^*β)(τ) = β(L ∘ τ)` hold by definition
+    rcases hτ with h | h
+    · exact Or.inl fun β => h (β.compContinuousLinearMap L)
+    · exact Or.inr fun β => h (β.compContinuousLinearMap L)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
