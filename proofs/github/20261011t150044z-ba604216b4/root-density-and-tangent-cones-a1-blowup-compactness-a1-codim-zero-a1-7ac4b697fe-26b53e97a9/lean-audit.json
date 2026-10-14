@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "63218433c679e1cee4cc20275cee48edf8bedcafa751ade14b57e2ed4220ec58",
+  "git_delta": {
+    "base_commit": "aa4507586a8f3d5d15a10beb116ecd2097e59922",
+    "candidate_commit": "9e7805429021a96ee05b65f49eb2bf0bc724773c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_cz_unit_current_imrep",
+    "diff_sha256": "4759ce10814723f5a53872270b35cf6944d1dcf542a6249b4d647bd0b2f4b30e",
+    "source_sha256": "32f12ede0aa680e86c62b96690aacdc5861b8ed946170bb3ac0c9c456358e5f2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_cz_unit_current_imrep",
+      "statement": "∀ (n : ℕ) (c : ℤ), 0 < n → ∃ R : IMRep (univ : Set (Euclid n)) n, ∀ ω : TestFormOn (univ : Set (Euclid n)) n, R.action (ω : DifferentialForm (Euclid n) n) = (c : ℝ) * ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
