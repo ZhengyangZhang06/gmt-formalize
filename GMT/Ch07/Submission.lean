@@ -568,6 +568,48 @@ theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covect
   exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
     (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
 
+/-- The operator norm of an `n`-covector on `ℝᴾ` is at most a constant times its Euclidean
+coefficient norm: `α ↦ (α(e_{I(1)}, …, e_{I(n)}))_I`, set to `0` on tuples `I` that are not
+strictly increasing, is linear and injective on the finite-dimensional space `Λⁿ(ℝᴾ)`, hence
+antilipschitz, and each of its coordinates is at most `covectorEuclideanNorm α` in absolute
+value. -/
+theorem Submission.cbr_ci_dr_dn_norm_le_mul_covectorEuclideanNorm : ∀ (P n : ℕ), ∃ K : ℝ, 0 < K ∧ ∀ α : Covector (Euclid P) n, ‖α‖ ≤ K * covectorEuclideanNorm α := by
+  intro P n
+  classical
+  have := Submission.dor_ims_lusin_covector_finiteDimensional P n
+  -- `L α = (α(e ∘ I))_I` on strictly increasing `I`, and `0` elsewhere
+  let L : Covector (Euclid P) n →ₗ[ℝ] (Fin n → Fin P) → ℝ :=
+    { toFun := fun α I =>
+        if StrictMono I then α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i) else 0
+      map_add' := fun α β => by
+        funext I
+        by_cases hI : StrictMono I <;> simp [hI]
+      map_smul' := fun c α => by
+        funext I
+        by_cases hI : StrictMono I <;> simp [hI] }
+  have hker : LinearMap.ker L = ⊥ := by
+    rw [LinearMap.ker_eq_bot']
+    intro α hα
+    refine Submission.cbr_ci_dr_dn_covector_eq_zero_of_coords P n α fun I hI => ?_
+    simpa [L, hI] using congrFun hα I
+  obtain ⟨K, hKpos, hK⟩ := L.exists_antilipschitzWith hker
+  refine ⟨K, NNReal.coe_pos.2 hKpos, fun α => ?_⟩
+  have h1 : ‖α‖ ≤ K * ‖L α‖ := by
+    simpa using hK.le_mul_dist α 0
+  -- `|α(e ∘ I)| ≤ covectorEuclideanNorm α`: one summand of the sum under the square root
+  have h2 : ‖L α‖ ≤ covectorEuclideanNorm α := by
+    refine (pi_norm_le_iff_of_nonneg (covectorEuclideanNorm_nonneg α)).2 fun I => ?_
+    by_cases hI : StrictMono I
+    · have hs := Finset.single_le_sum (f := fun J : Fin n → Fin P =>
+        if StrictMono J then (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (J i)) ^ 2 else 0)
+        (fun J _ => by split_ifs <;> positivity) (Finset.mem_univ I)
+      simp only [L, LinearMap.coe_mk, AddHom.coe_mk, hI, ↓reduceIte, Real.norm_eq_abs]
+      rw [← Real.sqrt_sq_eq_abs]
+      exact Real.sqrt_le_sqrt (by simpa [hI] using hs)
+    · simp [L, hI, covectorEuclideanNorm_nonneg]
+  calc ‖α‖ ≤ K * ‖L α‖ := h1
+    _ ≤ K * covectorEuclideanNorm α := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
