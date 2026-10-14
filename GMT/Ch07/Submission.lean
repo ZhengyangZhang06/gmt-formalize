@@ -6701,6 +6701,128 @@ theorem Submission.dtc_bc_lc_pf_pushforward_isIntegerMultiplicity : (∀ (P n : 
           ∂μHE[n] :=
           tsum_congr fun j => hNint j _ hωc.stronglyMeasurable
 
+/-- **Push-forward by a map that is `C¹` near the support** (Simon Ch. 6, 2.23–2.24(2), 2.29 and
+3.3–3.9).  Let `O` be open, `f` be `C¹` on `O` and `n = m + 1`.  For integer multiplicity
+`Y ∈ 𝒟ₙ(ℝᴾ)` with `spt Y` compact and `⊆ O`, choose a representation `(M₀, θ₀, ξ₀)` and a `C¹` map
+`φ`, the identity off a compact set, with `φ = f` and `Dφ = Df` on an open `V ⊇ spt Y`; put
+`push Y(ω) = ∫_{M₀} θ₀ ⟨ω(φ(x)) ∘ ΛⁿDφ(x), ξ₀⟩ dHⁿ`, a current.  For every other `Y`,
+`push Y = 0`.  As `Hⁿ(M₀ ∖ spt Y) = 0`, `f` may replace `φ` in the integrand.
+(i) Every representation `(M, θ, ξ)` of `Y` gives the same integral: it is the limit of `Y(ωⱼ)`
+for one sequence of test forms `ωⱼ`, chosen before the representation.
+(ii) `push Y` is integer multiplicity by the area formula (Simon 3.5–3.9).
+(iii) If `spt ω` misses the compact set `f(spt Y)`, the integrand vanishes `Hⁿ`-a.e. on `M`.
+(iv) `|⟨ω(f(x)) ∘ ΛⁿDf(x), ξ⟩| ≤ |ω(f(x))|·‖Df(x)‖ⁿ` gives `M(push Y) ≤ Lⁿ M(Y)`.
+(v) The formula with `φ` sends cycles to cycles (Simon 2.24(1)).
+(B) `Y₁ − Y₂` is integer multiplicity with compact support in `spt Y₁ ∪ spt Y₂ ⊆ O`, and the three
+integrals are the limits of `(Y₁ − Y₂)(ωⱼ) = Y₁(ωⱼ) − Y₂(ωⱼ)`, `Y₁(ωⱼ)` and `Y₂(ωⱼ)`. -/
+theorem Submission.dtc_bc_lc_pushforward : ∀ (P m : ℕ) (O : Set (Euclid P)) (f : Euclid P → Euclid P), IsOpen O → ContDiffOn ℝ 1 f O → ∃ push : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), (∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : IMRep (univ : Set (Euclid P)) (m + 1)), R.Represents Y → IsCompact Y.support → Y.support ⊆ O → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), push Y ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) (m + 1)) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[m + 1]) ∧ IsIntegerMultiplicity (push Y) ∧ (push Y).support ⊆ f '' Y.support ∧ (∀ L : ℝ, (∀ y ∈ O, ‖fderiv ℝ f y‖ ≤ L) → (push Y).mass ≤ ENNReal.ofReal (L ^ (m + 1)) * Y.mass) ∧ (Y.boundary = 0 → (push Y).boundary = 0)) ∧ ∀ Y₁ Y₂ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y₁ → IsIntegerMultiplicity Y₂ → IsCompact Y₁.support → Y₁.support ⊆ O → IsCompact Y₂.support → Y₂.support ⊆ O → push (Y₁ - Y₂) = push Y₁ - push Y₂ := by
+  intro P m O f hO hf
+  -- Step 1: `Hⁿ(M ∖ spt Y) = 0`, so `Hⁿ`-a.e. point of the carrier lies in `spt Y`
+  have hcf := Submission.dtc_bc_lc_pf_imrep_carrier_mass_support P (m + 1)
+  have hspt : ∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1))
+      (R : IMRep (univ : Set (Euclid P)) (m + 1)), R.Represents Y →
+      ∀ᵐ x ∂(μHE[m + 1].restrict R.carrier), x ∈ Y.support := by
+    intro Y R hR
+    rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+    refine measure_mono_null (fun x hx => ?_) (hcf.1 Y R hR).1
+    exact ⟨hx.2, hx.1⟩
+  -- Step 2: for `Y ∈ 𝒴`, a representation `R₀` and a cut-off `φ` of `f` near `spt Y` define
+  -- `push Y` by the formula with `φ` (a current); `push Y = 0` otherwise
+  have key : ∀ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1),
+      ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1),
+        IsIntegerMultiplicity Y → IsCompact Y.support → Y.support ⊆ O →
+          ∃ (R₀ : IMRep (univ : Set (Euclid P)) (m + 1)) (φ : Euclid P → Euclid P)
+            (V K' : Set (Euclid P)), R₀.Represents Y ∧ Y.support ⊆ V ∧ IsCompact K' ∧
+            ContDiff ℝ 1 φ ∧ (∀ x ∈ V, φ x = f x ∧ fderiv ℝ φ x = fderiv ℝ f x) ∧
+            (∀ x, x ∉ K' → φ x = x) ∧
+            ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), S ω = ∫ x in R₀.carrier,
+              (R₀.mult x : ℝ) * R₀.orient x (((ω : DifferentialForm (Euclid P) (m + 1))
+                (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[m + 1] := by
+    intro Y
+    by_cases hY : IsIntegerMultiplicity Y ∧ IsCompact Y.support ∧ Y.support ⊆ O
+    · obtain ⟨⟨R₀, hR₀⟩, hK, hKO⟩ := hY
+      obtain ⟨φ, V, K', -, hKV, hK', hφ, hφf, hφK'⟩ :=
+        Submission.dtc_bc_lc_pf_c1_compact_perturbation P O Y.support f hO hK hKO hf
+      obtain ⟨S, hS⟩ := Submission.dpf_pushforward_formula_current_exists P (m + 1) univ K' R₀ φ
+        hK' (subset_univ _) hφ hφK'
+      exact ⟨S, fun _ _ _ => ⟨R₀, φ, V, K', hR₀, hKV, hK', hφ, hφf, hφK', hS⟩⟩
+    · exact ⟨0, fun h₁ h₂ h₃ => absurd ⟨h₁, h₂, h₃⟩ hY⟩
+  choose push hpush using key
+  -- Step 3 (i): the formula with `f`, for every representation of `Y`
+  have hform : ∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1))
+      (R : IMRep (univ : Set (Euclid P)) (m + 1)), R.Represents Y → IsCompact Y.support →
+      Y.support ⊆ O → ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), push Y ω =
+        ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) (m + 1))
+          (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[m + 1] := by
+    intro Y R hR hK hKO ω
+    obtain ⟨R₀, φ, V, K', hR₀, hKV, -, -, hφf, -, hS⟩ := hpush Y ⟨R, hR⟩ hK hKO
+    -- `φ = f` and `Dφ = Df` on `V ⊇ spt Y`, which contains `Hⁿ`-a.e. point of `M₀`
+    have h₀ : push Y ω = ∫ x in R₀.carrier, (R₀.mult x : ℝ) * R₀.orient x
+        (((ω : DifferentialForm (Euclid P) (m + 1)) (f x)).compContinuousLinearMap
+          (fderiv ℝ f x)) ∂μHE[m + 1] := by
+      rw [hS ω]
+      refine integral_congr_ae ?_
+      filter_upwards [hspt Y R₀ hR₀] with x hx
+      rw [(hφf x (hKV hx)).1, (hφf x (hKV hx)).2]
+    -- both integrals are limits of `Y(ωⱼ)` for one sequence `ωⱼ`
+    obtain ⟨ωs, hωs⟩ := Submission.dtc_bc_lc_pf_pullback_integral_extension P (m + 1) O Y.support
+      f ω hO hf hK hKO
+    rw [h₀]
+    exact tendsto_nhds_unique (hωs Y R₀ hR₀ subset_rfl) (hωs Y R hR subset_rfl)
+  refine ⟨push, fun Y R hR hK hKO => ⟨hform Y R hR hK hKO, ?_, ?_, ?_, ?_⟩, ?_⟩
+  · -- Step 4 (ii): integer multiplicity by the area formula, with tangent locality from the
+    -- integer multiplicity calculus (`↔` reversed)
+    exact Submission.dtc_bc_lc_pf_pushforward_isIntegerMultiplicity
+      (fun P n U A B hU hA hB hAB hBU hfin =>
+        (Submission.cmc_imRep_locality_restrict_sub.1 P n U A B hU hA hB hAB hBU hfin).mono
+          fun x hx Q => (hx Q).symm)
+      P (m + 1) univ Y.support O R f (push Y) isOpen_univ (Nat.succ_pos m) hK (subset_univ _)
+      (hcf.1 Y R hR).1 hO hKO hf (subset_univ _) (hform Y R hR hK hKO)
+  · -- Step 5 (iii): if `spt ω` misses the compact set `f(spt Y)`, then `ω(f(x)) = 0` for
+    -- `Hⁿ`-a.e. `x ∈ M`, so `push Y(ω) = 0`
+    have hfK : IsCompact (f '' Y.support) := hK.image_of_continuousOn (hf.continuousOn.mono hKO)
+    refine (Submission.rsd_cmr_support_subset_of_vanish P (m + 1) univ (f '' Y.support) (push Y)
+      isOpen_univ hfK (subset_univ _) fun ω hω => ?_).1
+    rw [hform Y R hR hK hKO ω]
+    refine integral_eq_zero_of_ae ?_
+    filter_upwards [hspt Y R hR] with x hx
+    have h0 : (ω : DifferentialForm (Euclid P) (m + 1)) (f x) = 0 :=
+      image_eq_zero_of_notMem_tsupport (Set.disjoint_right.1 hω (mem_image_of_mem f hx))
+    have h0' : ((ω : DifferentialForm (Euclid P) (m + 1)) (f x)).compContinuousLinearMap
+        (fderiv ℝ f x) = 0 := by
+      ext v
+      simp [h0]
+    simp [h0']
+  · -- Step 6 (iv): the mass bound
+    intro L hL
+    exact Submission.dtc_bc_lc_pf_pushforward_mass_le P (m + 1) O f L Y (push Y) R hL hR hK hKO
+      (hform Y R hR hK hKO)
+  · -- Step 7 (v): `push Y` is given by the formula with `φ`, which preserves cycles
+    intro hYb
+    obtain ⟨R₀, φ, V, K', hR₀, -, hK', hφ, -, hφK', hS⟩ := hpush Y ⟨R, hR⟩ hK hKO
+    exact Submission.dpf_pushforward_formula_boundaryVanishes P (m + 1) univ K' Y (push Y) R₀ φ
+      isOpen_univ hR₀ hK' (subset_univ _) hφ hφK' hS hYb
+  · -- Step 8 (B): `Y₁ − Y₂ ∈ 𝒴`, and all three formulas are limits along one sequence `ωⱼ`
+    intro Y₁ Y₂ hY₁ hY₂ hK₁ hKO₁ hK₂ hKO₂
+    obtain ⟨R₁₂, hR₁₂⟩ := Submission.cmc_imRep_locality_restrict_sub.2.2.1 P (m + 1) univ Y₁ Y₂
+      isOpen_univ hY₁ hY₂
+    obtain ⟨R₁, hR₁⟩ := hY₁
+    obtain ⟨R₂, hR₂⟩ := hY₂
+    have hsub : (Y₁ - Y₂).support ⊆ Y₁.support ∪ Y₂.support := (hcf.2 Y₁ Y₂).2
+    have hK₁₂ : IsCompact (Y₁ - Y₂).support :=
+      (hK₁.union hK₂).of_isClosed_subset (hcf.2 (Y₁ - Y₂) Y₂).1 hsub
+    have hKO₁₂ : (Y₁ - Y₂).support ⊆ O := hsub.trans (union_subset hKO₁ hKO₂)
+    ext ω
+    obtain ⟨ωs, hωs⟩ := Submission.dtc_bc_lc_pf_pullback_integral_extension P (m + 1) O
+      (Y₁.support ∪ Y₂.support) f ω hO hf (hK₁.union hK₂) (union_subset hKO₁ hKO₂)
+    have h₁ := hωs Y₁ R₁ hR₁ subset_union_left
+    have h₂ := hωs Y₂ R₂ hR₂ subset_union_right
+    have h₁₂ := hωs (Y₁ - Y₂) R₁₂ hR₁₂ hsub
+    rw [← hform Y₁ R₁ hR₁ hK₁ hKO₁ ω] at h₁
+    rw [← hform Y₂ R₂ hR₂ hK₂ hKO₂ ω] at h₂
+    rw [← hform (Y₁ - Y₂) R₁₂ hR₁₂ hK₁₂ hKO₁₂ ω] at h₁₂
+    exact tendsto_nhds_unique h₁₂ (h₁.sub h₂)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
