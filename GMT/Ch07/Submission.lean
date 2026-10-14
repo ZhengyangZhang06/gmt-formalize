@@ -841,6 +841,56 @@ theorem Submission.cmcdtfr_plane_orientation : ∀ (P n : ℕ) (ι : Fin n → F
   · exact Or.inr fun α => by rw [h1, h2]
   · exact Or.inl fun α => by rw [h1, h2, neg_neg]
 
+/-- **Points of the `(m + 1)`-skeleton off the `m`-skeleton lie in open `(m + 1)`-faces** (Simon
+Ch. 6, proof of the deformation theorem 5.1: `L_n \ L_{n−1}` is the union of the interiors `F̆` of
+the faces `F ∈ 𝓛_n`, `n = m + 1`).  If `x ∈ ℝᴾ` has at least `P − (m + 1)` integer coordinates but
+not `P − m` of them, its set `J` of integer coordinates has exactly `P − (m + 1)` elements, so the
+increasing enumeration `ι` of `Jᶜ` is defined on `Fin (m + 1)`.  With `b = ⌊x⌋` and
+`yⱼ = fract(x_{ι(j)}) ∈ (0, 1)` (as `x_{ι(j)} ∉ ℤ`), the face point `Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}`
+is `x`: its coordinate is `⌊xᵢ⌋ = xᵢ` for `i ∈ J` and `⌊xᵢ⌋ + fract(xᵢ) = xᵢ` for `i = ι(j)`. -/
+theorem Submission.cmcdtfrsd_skeleton_point_on_open_face : ∀ (P m : ℕ) (x : Euclid P), (∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z) → (¬ ∃ s : Finset (Fin P), P ≤ m + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z) → ∃ (p : (Fin (m + 1) → Fin P) × (Fin P → ℤ)) (y : Euclid (m + 1)), StrictMono p.1 ∧ (∀ i, 0 < y i ∧ y i < 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) = x := by
+  classical
+  intro P m x ⟨s, hs, hsx⟩ hnot
+  -- step 1: the set `J` of integer coordinates of `x`
+  set J : Finset (Fin P) := Finset.univ.filter fun i => ∃ z : ℤ, x i = z
+  have hJx : ∀ i ∈ J, ∃ z : ℤ, x i = z := fun i hi => (Finset.mem_filter.mp hi).2
+  -- step 2: `s ⊆ J`, so `P ≤ m + 1 + |J|`
+  have hsJ : s.card ≤ J.card :=
+    Finset.card_le_card fun i hi => Finset.mem_filter.mpr ⟨Finset.mem_univ i, hsx i hi⟩
+  -- step 3: `m + |J| < P`, otherwise `J` itself would contradict the second hypothesis
+  have hJP : m + J.card < P := by
+    by_contra h
+    exact hnot ⟨J, by omega, hJx⟩
+  -- step 4: `|Jᶜ| = P − |J| = m + 1`
+  have hcard : Jᶜ.card = m + 1 := by
+    have h := Finset.card_add_card_compl J
+    rw [Fintype.card_fin] at h
+    omega
+  -- step 5: `ι` enumerates `Jᶜ` increasingly
+  set ι : Fin (m + 1) ↪o Fin P := Jᶜ.orderEmbOfFin hcard with hι
+  have hιJ : ∀ j, ι j ∉ J := fun j => Finset.mem_compl.mp (Finset.orderEmbOfFin_mem Jᶜ hcard j)
+  -- step 6: the base point `b = ⌊x⌋` and the parameters `yⱼ = fract(x_{ι(j)})`
+  refine ⟨(ι, fun i => ⌊x i⌋), WithLp.toLp 2 fun j => Int.fract (x (ι j)), ι.strictMono,
+    fun j => ?_, ?_⟩
+  -- step 7: `0 < yⱼ < 1`, as `x_{ι(j)}` is not an integer
+  · refine ⟨Int.fract_pos.mpr fun h => hιJ j ?_, Int.fract_lt_one _⟩
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, ⌊x (ι j)⌋, h⟩
+  -- step 8: `Φ_p(y)ᵢ = ⌊xᵢ⌋ + Σⱼ [i = ι(j)] yⱼ = xᵢ` for every `i`
+  · ext i
+    rw [PiLp.add_apply, PiLp.toLp_apply, WithLp.ofLp_sum, Finset.sum_apply]
+    simp only [PiLp.smul_apply, PiLp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero]
+    by_cases hi : i ∈ J
+    -- (a) `i ∈ J`: no summand survives and `⌊xᵢ⌋ = xᵢ`
+    · obtain ⟨z, hz⟩ := hJx i hi
+      rw [Finset.sum_eq_zero fun j _ => ite_eq_right fun h : i = ι j => hιJ j (h ▸ hi), add_zero,
+        hz, Int.floor_intCast]
+    -- (b) `i = ι(j₀)`: only the summand `j₀` survives and `⌊xᵢ⌋ + fract(xᵢ) = xᵢ`
+    · obtain ⟨j₀, rfl⟩ : i ∈ Set.range ι := by
+        rw [hι, Finset.range_orderEmbOfFin]
+        exact Finset.mem_coe.mpr (Finset.mem_compl.mpr hi)
+      rw [Fintype.sum_eq_single j₀ fun j hj => ite_eq_right fun h => hj (ι.injective h).symm,
+        ite_eq_left rfl, Int.floor_add_fract]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
