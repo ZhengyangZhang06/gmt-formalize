@@ -3970,6 +3970,108 @@ theorem Submission.cmc_massOn_eq_imRep_measure : ∀ (P n : ℕ) (U : Set (Eucli
   exact le_antisymm (Submission.dor_ims_massOn_le_measure P n U T R hR W)
     (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
 
+/-- **Truncation at a good slicing radius** (Simon Ch. 6, 2.7–2.9 and 3.1; the truncation step of
+the blow-up compactness argument for Simon 7.3.1(2)).  Let `S = τ(M, θ, ξ)` be integer multiplicity
+in `U`, `B̄_R(0) ⊆ U`, with `∂S = 0` in `B_R(0)`.  `dtc_bc_tc_radial_slice_bound` gives
+`ρ ∈ (R/4, R/2)` and `σ` with `|∫_{M ∩ B_ρ(0)} θ ⟨dβ, ξ⟩ dHⁿ| ≤ σ sup |β|` for `β ∈ 𝒟ᵐ(ℝᴾ)`.  The
+truncation `Ŝ = S⌞B_ρ(0) = τ(M ∩ B_ρ(0), θ, ξ)` is an integer multiplicity current in `ℝᴾ`
+(`rsd_cmr_imrep_restrict`, `dtc_imrep_current`).  It agrees with `S` on forms supported in
+`B_ρ(0)`, the integrand vanishing on `M \ B_ρ(0)`, so `∂Ŝ(β) = S(dβ) = ∂S(β) = 0` there.  By
+`cmc_massOn_eq_imRep_measure`, `M_O(Ŝ) = μ_Ŝ(O) ≤ μ_S(O) = M_O(S)` for open `O` and
+`M(Ŝ) ≤ ∫_{M ∩ B̄_R(0)} θ dHⁿ < ∞`; the slicing bound with `sup |β| ≤ 1` gives `M(∂Ŝ) ≤ σ`. -/
+theorem Submission.dtc_bc_tc_truncation : ∀ (P m : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (R : ℝ), IsOpen U → 0 < R → closedBall (0 : Euclid P) R ⊆ U → IsIntegerMultiplicity S → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → S.boundary ω = 0) → ∃ (ρ : ℝ) (Ŝ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), R / 4 < ρ ∧ ρ < R / 2 ∧ IsIntegerMultiplicity Ŝ ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 ρ → Ŝ ω = currentEval S (ω : DifferentialForm (Euclid P) (m + 1))) ∧ (∀ β : TestFormOn (univ : Set (Euclid P)) m, tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 ρ → Ŝ.boundary β = 0) ∧ (∀ O : Set (Euclid P), IsOpen O → Ŝ.massOn O ≤ S.massOn O) ∧ Ŝ.mass < ∞ ∧ Ŝ.boundary.mass < ∞ := by
+  intro P m U S R hU hR hRU hS hbd
+  -- (1) a representation `S = τ(M, θ, ξ)` in `U`
+  obtain ⟨Rp, hRp⟩ := hS
+  -- (2) a good radius `ρ = t ∈ (R/4, R/2)` with the slicing bound
+  obtain ⟨t, σ, ht1, ht2, hσ⟩ :=
+    Submission.dtc_bc_tc_radial_slice_bound P m U S Rp R hU hR hRU hRp hbd
+  have htR : ball (0 : Euclid P) t ⊆ closedBall 0 R :=
+    ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith))
+  have htU : ball (0 : Euclid P) t ⊆ U := htR.trans hRU
+  -- `∫_{M ∩ B̄_R(0)} θ dHⁿ < ∞`, as `B̄_R(0) ⊆ U` is compact
+  have hfin : ∫⁻ x in Rp.carrier ∩ closedBall 0 R, (Rp.mult x : ℝ≥0∞) ∂μHE[m + 1] ≠ ∞ :=
+    Rp.locallyIntegrable_mult _ (isCompact_closedBall 0 R) hRU
+  -- (3) `R̂ = (M ∩ B_t(0), θ, ξ)` is a triple in `ℝᴾ`: every `x ∈ M ∩ B_t(0)` has
+  -- `B_{t - |x|}(x) ⊆ B_t(0)`, a ball missing `M \ B_t(0)`
+  obtain ⟨Rh, hRhc, hRhm, hRho⟩ := Submission.rsd_cmr_imrep_restrict P (m + 1) U univ
+    (ball 0 t) Rp Rp.mult measurableSet_ball (subset_univ _) Rp.measurable_mult
+    (fun x hx => Rp.mult_pos x hx.1)
+    (fun K _ _ => ne_top_of_le_ne_top hfin
+      (lintegral_mono_set fun x hx => ⟨hx.1.1, htR hx.1.2⟩))
+    (ae_restrict_of_forall_mem (Rp.measurableSet_carrier.inter measurableSet_ball)
+      fun x hx => ⟨t - ‖x‖, sub_pos.mpr (mem_ball_zero_iff.mp hx.2),
+        measure_mono_null (fun y hy => absurd
+          (ball_subset_ball' (by rw [dist_zero_right, sub_add_cancel]) hy.2) hy.1.2)
+          measure_empty⟩)
+  -- (4) `Ŝ = τ(R̂)`, i.e. `Ŝ(ω) = ∫_{M ∩ B_t(0)} θ ⟨ω, ξ⟩ dHⁿ`
+  obtain ⟨Ŝ, hŜ⟩ := Submission.dtc_imrep_current P (m + 1) univ Rh
+  have hŜω : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Ŝ ω =
+      ∫ x in Rp.carrier ∩ ball 0 t, (Rp.mult x : ℝ) *
+        Rp.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] := by
+    intro ω
+    rw [hŜ ω, IMRep.action, hRhc, hRhm, hRho]
+  -- (5) agreement with `S` on forms supported in `B_t(0)`: the integrand vanishes on
+  -- `M \ B_t(0)`, which misses `spt ω`
+  have hagree : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 t →
+        Ŝ ω = currentEval S (ω : DifferentialForm (Euclid P) (m + 1)) := by
+    intro ω hω
+    have hωU : IsTestForm (ω : DifferentialForm (Euclid P) (m + 1)) ∧
+        tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ U := ⟨ω.2.1, hω.trans htU⟩
+    have hSω : currentEval S (ω : DifferentialForm (Euclid P) (m + 1)) =
+        Rp.action (ω : DifferentialForm (Euclid P) (m + 1)) := by
+      rw [currentEval, dite_eq_left hωU]
+      exact hRp ⟨(ω : DifferentialForm (Euclid P) (m + 1)), hωU⟩
+    rw [hSω, IMRep.action, hŜω]
+    refine (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero Rp.measurableSet_carrier
+      inter_subset_left fun x hx => ?_).symm
+    have hx0 : (ω : DifferentialForm (Euclid P) (m + 1)) x = 0 :=
+      image_eq_zero_of_notMem_tsupport fun h => hx.2 ⟨hx.1, hω h⟩
+    rw [hx0, map_zero, mul_zero]
+  -- (6) `∂Ŝ(β) = Ŝ(dβ) = S(dβ) = ∂S(β) = 0` for `spt β ⊆ B_t(0) ⊆ B_R(0)`
+  have hbdry : ∀ β : TestFormOn (univ : Set (Euclid P)) m,
+      tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 t → Ŝ.boundary β = 0 := by
+    intro β hβ
+    have hβU : (β : DifferentialForm (Euclid P) m) ∈ TestFormOn U m := ⟨β.2.1, hβ.trans htU⟩
+    have hdβ : IsTestForm (exteriorDerivative (β : DifferentialForm (Euclid P) m)) ∧
+        tsupport (exteriorDerivative (β : DifferentialForm (Euclid P) m)) ⊆ U :=
+      ⟨exteriorDerivative_isTestForm β.2.1,
+        (tsupport_exteriorDerivative_subset _).trans (hβ.trans htU)⟩
+    calc Ŝ.boundary β = Ŝ (exteriorDerivativeTestOn univ m β) := rfl
+      _ = currentEval S (exteriorDerivative (β : DifferentialForm (Euclid P) m)) :=
+          hagree _ ((tsupport_exteriorDerivative_subset _).trans hβ)
+      _ = S.boundary ⟨_, hβU⟩ := by
+          rw [currentEval, dite_eq_left hdβ]
+          rfl
+      _ = 0 := hbd _ (hβ.trans (ball_subset_ball (by linarith)))
+  -- (7) `μ_R̂ = θ Hⁿ⌞(M ∩ B_t(0)) ≤ θ Hⁿ⌞M = μ_S` on open sets
+  have hle : ∀ O : Set (Euclid P), IsOpen O → Rh.measure O ≤ Rp.measure O := by
+    intro O hO
+    rw [IMRep.measure, IMRep.measure, withDensity_apply _ hO.measurableSet,
+      withDensity_apply _ hO.measurableSet, hRhc, hRhm]
+    exact lintegral_mono' (Measure.restrict_mono subset_rfl
+      (Measure.restrict_mono inter_subset_left le_rfl)) le_rfl
+  refine ⟨t, Ŝ, ht1, ht2, ⟨Rh, hŜ⟩, hagree, hbdry, fun O hO => ?_, ?_, ?_⟩
+  · -- `M_O(Ŝ) = μ_R̂(O) ≤ μ_S(O) = M_O(S)`
+    rw [Submission.cmc_massOn_eq_imRep_measure P (m + 1) univ Ŝ Rh isOpen_univ hŜ O hO,
+      Submission.cmc_massOn_eq_imRep_measure P (m + 1) U S Rp hU hRp O hO]
+    exact hle O hO
+  · -- (8) `M(Ŝ) = ∫_{M ∩ B_t(0)} θ dHⁿ ≤ ∫_{M ∩ B̄_R(0)} θ dHⁿ < ∞`
+    rw [GeometricCurrentOn.mass, Submission.cmc_massOn_eq_imRep_measure P (m + 1) univ Ŝ Rh
+      isOpen_univ hŜ univ isOpen_univ, IMRep.measure, withDensity_apply _ MeasurableSet.univ,
+      Measure.restrict_univ, hRhc, hRhm]
+    exact lt_of_le_of_lt (lintegral_mono_set (inter_subset_inter_right _ htR)) hfin.lt_top
+  · -- (9) `∂Ŝ(β) = ∫_{M ∩ B_t(0)} θ ⟨dβ, ξ⟩ dHⁿ ≤ σ` for admissible `β`, so `M(∂Ŝ) ≤ σ`
+    refine lt_of_le_of_lt ?_ (ENNReal.ofReal_lt_top (r := σ * 1))
+    apply sSup_le
+    rintro r ⟨β, ⟨-, hβ1⟩, rfl⟩
+    refine ENNReal.ofReal_le_ofReal ?_
+    calc Ŝ.boundary β = Ŝ (exteriorDerivativeTestOn univ m β) := rfl
+      _ = ∫ x in Rp.carrier ∩ ball 0 t, (Rp.mult x : ℝ) * Rp.orient x
+          (exteriorDerivative (β : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1] := hŜω _
+      _ ≤ σ * 1 := (le_abs_self _).trans (hσ β 1 hβ1)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
