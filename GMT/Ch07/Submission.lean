@@ -17858,4 +17858,115 @@ theorem Submission.dor_lmb_fc_deformation_top : ((∀ (P n : ℕ) (U : Set (Eucl
       _ ≤ ENNReal.ofReal (c₀ * ρ) * Tt.boundary.mass := hStmass
       _ = ENNReal.ofReal (c₀ * ρ) * T.boundary.mass := by rw [hbTt, hbTtmass]
 
+/-- **Simon Ch. 6, proof of Theorem 7.2, (1)–(3)** (total boundedness): given `Λ < ∞` and
+`ε > 0` there is a finite set `𝒬` of `(m+1)`-currents in `U` such that every integer multiplicity
+`A ∈ 𝒟_{m+1}(U)` with `∂A` integer multiplicity, vanishing off the compact `K ⊆ U`, with
+`M(A), M(∂A) ≤ Λ`, satisfies `A − Q = ∂R + S` for some `Q ∈ 𝒬` and integer multiplicity `R`, `S`
+with `M(R) + M(S) < ε`.  If `m + 1 > P` every current of degree `m + 1` is `0` and `𝒬 = {0}`.
+Otherwise extend `A` by zero to `Y ∈ 𝒟_{m+1}(ℝᴾ)`, apply the deformation theorem (`m + 1 < P`, or
+its top-dimensional case `m + 1 = P`) to `Y` with a grid size `ρ` such that `2cρΛ < ε`, and
+restrict back to `U`: the polyhedral part is an integer chain on the finitely many grid cells in
+`cthickening (rρ) K` with coefficients at most `cΛ/ρ^{m+1}`, and restriction to `U` keeps
+integer multiplicity without increasing mass. -/
+theorem Submission.dor_lmb_fc_total_bounded : ((∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (RT : IMRep U (n + 1)) (RB : IMRep U n) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → ∃ Ps : ℝ → GeometricCurrentOn U n, (∀ W : Set (Euclid P), IsOpen W → AEMeasurable (fun t => (Ps t).massOn W) ∧ ∫⁻ t, (Ps t).massOn W ≤ (L : ℝ≥0∞) * T.massOn W) ∧ ∀ᵐ t, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (f ⁻¹' {t}) → Ps t ω = 0) ∧ ∀ ω : TestFormOn U n, Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → ∀ (P m : ℕ) (U K : Set (Euclid P)) (Λ ε : ℝ≥0∞), IsOpen U → IsCompact K → K ⊆ U → Λ ≠ ∞ → 0 < ε → ∃ 𝒬 : Set (GeometricCurrentOn U (m + 1)), 𝒬.Finite ∧ ∀ A : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity A → IsIntegerMultiplicity A.boundary → (∀ ω : TestFormOn U (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → A ω = 0) → A.mass ≤ Λ → A.boundary.mass ≤ Λ → ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn U (m + 1), A ω - Q ω = R.boundary ω + S ω) ∧ R.mass + S.mass < ε := by
+  intro hSL P m U K Λ ε hU hK hKU hΛ hε
+  -- restriction from `ℝᴾ` to `U` does not increase mass: a form admissible in `U` is admissible
+  -- in `ℝᴾ`, with the same value
+  have hres : ∀ (d : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) d),
+      (X.restrictDomain (subset_univ U)).mass ≤ X.mass := by
+    intro d X
+    apply sSup_le
+    rintro _ ⟨ω, hω, rfl⟩
+    exact X.le_massOn (W := univ) (omega := testFormOnInclusion (subset_univ U) d ω)
+      ⟨subset_univ _, hω.2⟩
+  -- the zero current has mass `0`
+  have hzero : ∀ d : ℕ, (0 : GeometricCurrentOn U d).mass = 0 := by
+    intro d
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro _ ⟨ω, -, rfl⟩
+    simp
+  -- Step 0: for `m + 1 > P` every current of degree `m + 1` is `0`, and `𝒬 = {0}` works
+  by_cases hdeg : P < m + 1
+  · refine ⟨{0}, finite_singleton 0, fun A _ _ _ _ _ => ⟨0, mem_singleton 0, 0, 0,
+      Submission.dor_lmb_fc_tb_zero_isIntegerMultiplicity P (m + 2) U,
+      Submission.dor_lmb_fc_tb_zero_isIntegerMultiplicity P (m + 1) U, fun ω => ?_, ?_⟩⟩
+    · rw [Submission.dor_lmb_fc_tb_eq_zero_of_lt_degree P (m + 1) U A hdeg]
+      simp
+    · simpa [hzero] using hε
+  -- the deformation theorem in degree `m + 1 ≤ P` (`m + 1 < P`, or `m + 1 = P`), with constant
+  -- `c`, the cells lying within distance `r ρ` of `K`
+  obtain ⟨c, r, hc, hdef⟩ : ∃ c r : ℝ, 0 ≤ c ∧ ∀ (ρ : ℝ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 0 < ρ → IsIntegerMultiplicity T → IsIntegerMultiplicity T.boundary → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → T ω = 0) → ∃ (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (β : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℤ) (Pc : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Pc ω = ∑ p ∈ s, (β p : ℝ) * ∫ x in {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧ (i ∉ Set.range p.2 → x i = ρ * p.1 i)}, (ω : DifferentialForm (Euclid P) (m + 1)) x (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) ∂μHE[m + 1]) ∧ IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω - Pc ω = R.boundary ω + S ω) ∧ (∑ p ∈ s, ((β p).natAbs : ℝ≥0∞)) * ENNReal.ofReal (ρ ^ (m + 1)) ≤ ENNReal.ofReal c * T.mass ∧ R.mass ≤ ENNReal.ofReal (c * ρ) * T.mass ∧ S.mass ≤ ENNReal.ofReal (c * ρ) * T.boundary.mass ∧ ∀ p ∈ s, {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧ (i ∉ Set.range p.2 → x i = ρ * p.1 i)} ⊆ cthickening (r * ρ) K := by
+    rcases (not_lt.mp hdeg).lt_or_eq with hlt | heq
+    · obtain ⟨c, hc, hD⟩ := Submission.dor_lmb_fc_deformation hSL P m hlt
+      refine ⟨c, 2 * Real.sqrt P, hc, fun ρ T hρ hT hbT hTK => ?_⟩
+      obtain ⟨s, β, Pc, R, S, -, hPc, hR, hS, hid, hβ, hRm, hSm, hcell, -, -⟩ :=
+        hD ρ K T hρ hK hT hbT hTK
+      exact ⟨s, β, Pc, R, S, hPc, hR, hS, hid, hβ, hRm, hSm, hcell⟩
+    · obtain ⟨c, hc, hD⟩ := Submission.dor_lmb_fc_deformation_top hSL P m heq
+      refine ⟨c, 2 * Real.sqrt (P + 1), hc, fun ρ T hρ hT hbT hTK => ?_⟩
+      obtain ⟨s, β, Pc, R, S, -, hPc, hR, hS, hid, hβ, hRm, hSm, hcell, -, -⟩ :=
+        hD ρ K T hρ hK hT hbT hTK
+      exact ⟨s, β, Pc, R, S, hPc, hR, hS, hid, hβ, hRm, hSm, hcell⟩
+  -- Step 1: a grid size `ρ > 0` with `2 c ρ Λ < δ`, where `0 < δ < ε`
+  obtain ⟨δ, -, hδ0, hδε⟩ := ENNReal.lt_iff_exists_real_btwn.mp hε
+  have hδ : 0 < δ := ENNReal.ofReal_pos.mp hδ0
+  have hΛr : 0 ≤ Λ.toReal := ENNReal.toReal_nonneg
+  have hcΛ : 0 ≤ c * Λ.toReal := mul_nonneg hc hΛr
+  obtain ⟨ρ, hρ, hρδ⟩ := exists_pos_mul_lt hδ (2 * c * Λ.toReal)
+  have hsmall : 2 * (c * ρ * Λ.toReal) < δ :=
+    calc 2 * (c * ρ * Λ.toReal) = 2 * c * Λ.toReal * ρ := by ring
+      _ < δ := hρδ
+  -- Step 2: `𝒬` is the finite set of integer chains on the grid cells in `cthickening (r ρ) K`
+  -- with coefficients at most `c Λ / ρ^{m+1}`
+  refine ⟨_, Submission.dor_lmb_fc_tb_cell_chains_finite P m U (cthickening (r * ρ) K) ρ
+    ⌊c * Λ.toReal / ρ ^ (m + 1)⌋₊ hρ hK.cthickening, ?_⟩
+  intro A hA hbA hAK hAm hbAm
+  -- Step 3: extension of `A` by zero to `Y ∈ 𝒟_{m+1}(ℝᴾ)` with `∂Y` integer multiplicity
+  obtain ⟨Y, hY, hbY, hYA, hYK, hYm, hbYm⟩ :=
+    Submission.dor_lmb_fc_tb_extend_univ_boundary P m U K A hU hK hKU hA hbA hAK
+  have hYΛ : Y.mass ≤ Λ := hYm.trans hAm
+  have hbYΛ : Y.boundary.mass ≤ Λ := hbYm.trans hbAm
+  -- Step 4: deformation of `Y`: `Y − Π = ∂R̂ + Ŝ`
+  obtain ⟨s, β, Pc, R, S, hPc, hR, hS, hid, hβ, hRm, hSm, hcell⟩ := hdef ρ Y hρ hY hbY hYK
+  -- Step 5: restriction to `U`: `Q = Π⌞U`, `R = R̂⌞U` and `S = Ŝ⌞U`
+  refine ⟨Pc.restrictDomain (subset_univ U), ⟨s, β, hcell, fun p hp => ?_, fun ω => ?_⟩,
+    R.restrictDomain (subset_univ U), S.restrictDomain (subset_univ U),
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P (m + 2) univ U (subset_univ U) R hU hR,
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P (m + 1) univ U (subset_univ U) S hU hS,
+    fun ω => ?_, ?_⟩
+  · -- `|β_p| ρ^{m+1} ≤ (Σ_q |β_q|) ρ^{m+1} ≤ c M(Y) ≤ c Λ`
+    have h1 : ((β p).natAbs : ℝ≥0∞) * ENNReal.ofReal (ρ ^ (m + 1)) ≤
+        ENNReal.ofReal (c * Λ.toReal) :=
+      calc ((β p).natAbs : ℝ≥0∞) * ENNReal.ofReal (ρ ^ (m + 1))
+          ≤ (∑ q ∈ s, ((β q).natAbs : ℝ≥0∞)) * ENNReal.ofReal (ρ ^ (m + 1)) := by
+            gcongr
+            exact Finset.single_le_sum (f := fun q => ((β q).natAbs : ℝ≥0∞))
+              (fun _ _ => zero_le) hp
+        _ ≤ ENNReal.ofReal c * Y.mass := hβ
+        _ ≤ ENNReal.ofReal c * Λ := by gcongr
+        _ = ENNReal.ofReal (c * Λ.toReal) := by
+            rw [ENNReal.ofReal_mul hc, ENNReal.ofReal_toReal hΛ]
+    have h2 : ((β p).natAbs : ℝ) * ρ ^ (m + 1) ≤ c * Λ.toReal := by
+      rw [← ENNReal.ofReal_le_ofReal_iff hcΛ, ENNReal.ofReal_mul (Nat.cast_nonneg _),
+        ENNReal.ofReal_natCast]
+      exact h1
+    exact Nat.le_floor ((le_div_iff₀ (pow_pos hρ _)).mpr h2)
+  · -- `Q(ω) = Π(ιω)`, and `ιω` has the same underlying form as `ω`
+    exact hPc (testFormOnInclusion (subset_univ U) (m + 1) ω)
+  · -- `A(ω) − Q(ω) = Y(ιω) − Π(ιω) = ∂R̂(ιω) + Ŝ(ιω)`, where `d(ιω) = ι(dω)`
+    rw [← hYA]
+    exact hid (testFormOnInclusion (subset_univ U) (m + 1) ω)
+  · -- `M(R) + M(S) ≤ M(R̂) + M(Ŝ) ≤ 2 c ρ Λ < ε`
+    have hcρ : 0 ≤ c * ρ := mul_nonneg hc hρ.le
+    calc (R.restrictDomain (subset_univ U)).mass + (S.restrictDomain (subset_univ U)).mass
+        ≤ ENNReal.ofReal (c * ρ) * Λ + ENNReal.ofReal (c * ρ) * Λ := by
+          gcongr
+          · exact (hres _ R).trans (hRm.trans (by gcongr))
+          · exact (hres _ S).trans (hSm.trans (by gcongr))
+      _ = ENNReal.ofReal (2 * (c * ρ * Λ.toReal)) := by
+          rw [two_mul, ENNReal.ofReal_add (mul_nonneg hcρ hΛr) (mul_nonneg hcρ hΛr),
+            ENNReal.ofReal_mul hcρ, ENNReal.ofReal_toReal hΛ]
+      _ ≤ ENNReal.ofReal δ := ENNReal.ofReal_le_ofReal hsmall.le
+      _ < ε := hδε
+
 end GMT.Ch07
