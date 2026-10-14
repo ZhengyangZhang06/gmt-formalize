@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4fcc33b4f47e51bfc11ee278e74a40a7ad3c8bad4098d089bb1cfebb27a69938",
+  "git_delta": {
+    "base_commit": "cd7d1523c9fa2f534627970b479361573c8f0ca7",
+    "candidate_commit": "8940533e7e37e6793e3b9cf86fa2e7587e84c004",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_fa_sector_open_contDiffOn",
+    "diff_sha256": "947e89fa998c0a5df248537a45c3f41ed8c189b84bac889b88f8aca48c765cb7",
+    "source_sha256": "2c732d47726bd85e5943d5c72045619f794f543cea17152243709b0eaf453e81",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_fa_sector_open_contDiffOn",
+      "statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ), IsOpen {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∧ ContDiffOn ℝ 1 (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) {x : Euclid P | 0 < inner ℝ x a}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
