@@ -2473,6 +2473,116 @@ theorem Submission.dpf_pfc_imrep_pairing_integrable_abs_le : ∀ (P n : ℕ) (U 
   rw [← Real.norm_eq_abs, ← hgval]
   exact norm_integral_le_of_norm_le hg hdom
 
+/-- **Radial slice bound** (Simon Ch. 6, 4.9–4.11 for the `1`-Lipschitz `f(y) = |y|`).  If
+`S = τ(M, θ, ξ)` has `∂S = 0` on `B_R(0)`, `B̄_R(0) ⊆ U`, `t < R` and `|β| ≤ s`, then
+`|∫_{M ∩ B_t(0)} θ ⟨dβ, ξ⟩ dHⁿ| ≤ s · liminf_{h ↓ 0} h⁻¹ μ_S({t − h < |x| < t})`.
+For `0 < h < 1` let `g_h` be the level cut-off of `|·|` (`cmcs_level_cutoff`): `g_h = 1` on
+`{|x| ≤ t − h}`, `g_h = 0` on `{|x| ≥ t}`, and `|Dg_h| ≤ 1/(h(1 − h/2))` vanishes off the strip
+`A_h = {t − h < |x| < t}`.  The defect estimate `dtc_bc_tc_rs_cutoff_defect` (`V = B_R(0)`) gives
+`|∫_M g_h θ ⟨dβ, ξ⟩ dHⁿ| ≤ s/(h(1 − h/2)) · μ_S(A_h)`.  With the integrand truncated to
+`B̄_t(0)` (integrable by `dpf_pfc_imrep_pairing_integrable_abs_le`), dominated convergence
+(`cmcs_smp_cutoff_integral_tendsto`) gives `∫_M g_h θ ⟨dβ, ξ⟩ dHⁿ → ∫_{M ∩ B_t(0)} θ ⟨dβ, ξ⟩ dHⁿ`,
+and `cmcs_smp_liminf_bound` (`L = s`) passes to the `liminf`. -/
+theorem Submission.dtc_bc_tc_rs_radius_bound : ∀ (P m : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (Rp : IMRep U (m + 1)) (R t : ℝ), closedBall (0 : Euclid P) R ⊆ U → Rp.Represents S → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → S.boundary ω = 0) → t < R → ∀ (β : TestFormOn (univ : Set (Euclid P)) m) (s : ℝ), (∀ x, covectorEuclideanNorm ((β : DifferentialForm (Euclid P) m) x) ≤ s) → ENNReal.ofReal |∫ x in Rp.carrier ∩ ball 0 t, (Rp.mult x : ℝ) * Rp.orient x (exteriorDerivative (β : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]| ≤ ENNReal.ofReal s * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * Rp.measure {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t}) (𝓝[>] 0) := by
+  intro P m U S Rp R t hRU hrep hbd htR β s hs
+  -- step 1: `s ≥ |β(0)| ≥ 0`
+  have hs0 : 0 ≤ s := (covectorEuclideanNorm_nonneg _).trans (hs 0)
+  -- step 2: if `t ≤ 0` then `B_t(0) = ∅` and the integral vanishes
+  rcases le_or_gt t 0 with ht | ht
+  · rw [ball_eq_empty.2 ht, inter_empty, Measure.restrict_empty, integral_zero_measure, abs_zero,
+      ENNReal.ofReal_zero]
+    exact zero_le
+  -- step 3: the level cut-offs `g_h` of `|·|` for `0 < h < 1` (`g_h = 0` for other `h`)
+  have hcut : ∀ h : ℝ, ∃ g : Euclid P → ℝ, 0 < h → h < 1 → ContDiff ℝ (⊤ : ℕ∞) g ∧
+      (∀ x, |g x| ≤ 2) ∧ (∀ x, ‖fderiv ℝ g x‖ ≤ ((1 : NNReal) : ℝ) / (h * (1 - h / 2))) ∧
+      (∀ x, fderiv ℝ g x ≠ 0 → t - h < ‖x‖ ∧ ‖x‖ < t) ∧ (∀ x, ‖x‖ ≤ t - h → g x = 1) ∧
+      ∀ x, t ≤ ‖x‖ → g x = 0 := by
+    intro h
+    by_cases hh : 0 < h ∧ h < 1
+    · obtain ⟨g, hg⟩ :=
+        Submission.cmcs_level_cutoff P norm 1 t h lipschitzWith_one_norm hh.1 hh.2
+      exact ⟨g, fun _ _ => hg⟩
+    · exact ⟨0, fun h0 h1 => absurd ⟨h0, h1⟩ hh⟩
+  choose g hg using hcut
+  -- `tsupport g_h ⊆ B̄_t(0) ⊆ B_R(0) ⊆ U`, as `g_h = 0` on `{|x| ≥ t}`
+  have hCR : closedBall (0 : Euclid P) t ⊆ ball 0 R := closedBall_subset_ball htR
+  have hCU : closedBall (0 : Euclid P) t ⊆ U := (closedBall_subset_closedBall htR.le).trans hRU
+  have hgt : ∀ h : ℝ, 0 < h → h < 1 → tsupport (g h) ⊆ closedBall 0 t := fun h h0 h1 =>
+    closure_minimal (fun x hx => mem_closedBall_zero_iff.2 (not_lt.1 fun hxt =>
+      mem_support.1 hx ((hg h h0 h1).2.2.2.2.2 x hxt.le))) isClosed_closedBall
+  -- step 4: `F = 1_{B̄_t(0)} θ ⟨dβ, ξ⟩` is `Hⁿ⌞M`-integrable (`dβ` is a bounded test form)
+  have hdβ : IsTestForm (exteriorDerivative (β : DifferentialForm (Euclid P) m)) :=
+    exteriorDerivative_isTestForm β.property.1
+  have hdβc : Continuous (exteriorDerivative (β : DifferentialForm (Euclid P) m)) :=
+    ContDiff.continuous hdβ.1
+  obtain ⟨B, hB⟩ := hdβc.bounded_above_of_compact_support hdβ.2
+  have hF := (Submission.dpf_pfc_imrep_pairing_integrable_abs_le P (m + 1) U (closedBall 0 t) Rp
+    ((closedBall 0 t).indicator (exteriorDerivative (β : DifferentialForm (Euclid P) m))) B
+    (isCompact_closedBall 0 t) hCU (hdβc.aestronglyMeasurable.indicator measurableSet_closedBall)
+    (fun x hx => indicator_of_notMem hx _)
+    (fun x => (norm_indicator_le_norm_self _ x).trans (hB x))).1
+  -- step 5: `∫ g_h F d(Hⁿ⌞M) = ∫_M g_h θ ⟨dβ, ξ⟩ dHⁿ`, as `g_h = 0` off `B̄_t(0)`
+  have hΦ : ∀ h : ℝ, 0 < h → h < 1 →
+      ∫ x, g h x * ((Rp.mult x : ℝ) * Rp.orient x ((closedBall 0 t).indicator
+        (exteriorDerivative (β : DifferentialForm (Euclid P) m)) x))
+          ∂(μHE[m + 1].restrict Rp.carrier) =
+      ∫ x in Rp.carrier, g h x * ((Rp.mult x : ℝ) *
+        Rp.orient x (exteriorDerivative (β : DifferentialForm (Euclid P) m) x)) ∂μHE[m + 1] := by
+    intro h h0 h1
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    by_cases hx : x ∈ closedBall (0 : Euclid P) t
+    · simp only [indicator_of_mem hx]
+    · have hxt : t ≤ ‖x‖ := (not_le.1 fun hle => hx (mem_closedBall_zero_iff.2 hle)).le
+      simp only [(hg h h0 h1).2.2.2.2.2 x hxt, zero_mul]
+  -- step 6: the strip estimate `|∫ g_h F| ≤ s/(h(1 − h/2)) · μ(A_h)` (`cutoff_defect`)
+  have hstrip : ∀ h : ℝ, 0 < h → h < 1 →
+      ENNReal.ofReal |∫ x, g h x * ((Rp.mult x : ℝ) * Rp.orient x ((closedBall 0 t).indicator
+        (exteriorDerivative (β : DifferentialForm (Euclid P) m)) x))
+          ∂(μHE[m + 1].restrict Rp.carrier)| ≤
+      ENNReal.ofReal ((s.toNNReal : ℝ) / (h * (1 - h / 2))) *
+        Rp.measure {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t} := by
+    intro h h0 h1
+    obtain ⟨hgs, -, hgd, hgA, -, -⟩ := hg h h0 h1
+    have hA : MeasurableSet {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t} :=
+      (measurableSet_lt measurable_const measurable_norm).inter
+        (measurableSet_lt measurable_norm measurable_const)
+    rw [hΦ h h0 h1, Real.coe_toNNReal s hs0, ← lintegral_indicator_const hA]
+    refine (Submission.dtc_bc_tc_rs_cutoff_defect P m U (ball 0 R) S Rp (g h) β hrep hbd hgs
+      ((hgt h h0 h1).trans hCU) ((hgt h h0 h1).trans hCR)).trans (lintegral_mono fun x => ?_)
+    -- pointwise: `|Dg_h| |β| ≤ s/(h(1 − h/2))` on `A_h`, and `Dg_h = 0` off `A_h`
+    by_cases hx : fderiv ℝ (g h) x = 0
+    · rw [hx, norm_zero, zero_mul, ENNReal.ofReal_zero]
+      exact zero_le
+    · rw [indicator_of_mem (show x ∈ {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t} from hgA x hx)]
+      refine ENNReal.ofReal_le_ofReal ?_
+      calc ‖fderiv ℝ (g h) x‖ * covectorEuclideanNorm ((β : DifferentialForm (Euclid P) m) x)
+          ≤ ((1 : NNReal) : ℝ) / (h * (1 - h / 2)) * s :=
+            mul_le_mul (hgd x) (hs x) (covectorEuclideanNorm_nonneg _)
+              (div_nonneg (NNReal.coe_nonneg _) (mul_pos h0 (by linarith)).le)
+        _ = s / (h * (1 - h / 2)) := by rw [NNReal.coe_one]; ring
+  -- step 7: `∫ g_h F d(Hⁿ⌞M) → ∫_{M ∩ B_t(0)} θ ⟨dβ, ξ⟩ dHⁿ` as `h ↓ 0`
+  have hlim := Submission.cmcs_smp_cutoff_integral_tendsto P (μHE[m + 1].restrict Rp.carrier) _
+    norm t 2 g hF measurable_norm
+    (fun h h0 h1 => (ContDiff.continuous (hg h h0 h1).1).aestronglyMeasurable)
+    (fun h h0 h1 => (hg h h0 h1).2.1) (fun h h0 h1 => (hg h h0 h1).2.2.2.2.1)
+    (fun h h0 h1 => (hg h h0 h1).2.2.2.2.2)
+  -- the limit: `{|x| < t} = B_t(0)`, `(Hⁿ⌞M)⌞B_t(0) = Hⁿ⌞(M ∩ B_t(0))` and `F = θ ⟨dβ, ξ⟩` there
+  have hball : {x : Euclid P | ‖x‖ < t} = ball 0 t := by
+    ext x
+    exact mem_ball_zero_iff.symm
+  have hI : ∫ x in {x : Euclid P | ‖x‖ < t}, (Rp.mult x : ℝ) * Rp.orient x
+        ((closedBall 0 t).indicator (exteriorDerivative (β : DifferentialForm (Euclid P) m)) x)
+          ∂(μHE[m + 1].restrict Rp.carrier) =
+      ∫ x in Rp.carrier ∩ ball 0 t, (Rp.mult x : ℝ) *
+        Rp.orient x (exteriorDerivative (β : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1] := by
+    rw [hball, Measure.restrict_restrict measurableSet_ball, inter_comm]
+    refine setIntegral_congr_fun (Rp.measurableSet_carrier.inter measurableSet_ball) fun x hx => ?_
+    simp only [indicator_of_mem (ball_subset_closedBall hx.2)]
+  rw [hI] at hlim
+  -- step 8: `cmcs_smp_liminf_bound` with `L = s`, `z = |I|` and `Φ(h) = |∫ g_h F|`
+  exact Submission.cmcs_smp_liminf_bound s.toNNReal _ _ _ hlim.abs fun h h0 h1 => by
+    simpa only [abs_abs] using hstrip h h0 h1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
