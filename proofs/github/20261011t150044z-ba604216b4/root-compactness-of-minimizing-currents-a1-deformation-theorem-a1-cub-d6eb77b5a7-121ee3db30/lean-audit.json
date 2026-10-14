@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "309b26e2c29e7c578a778f67701ce77148bc642f58019b1747afd30238de3e38",
+  "git_delta": {
+    "base_commit": "9bfca6622c7ea7825e93764029a1a4a25be25191",
+    "candidate_commit": "2fd76e6eecfe0003c13b8da9b758ed56d95a275d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_im_median_abs_le",
+    "diff_sha256": "65ae3d132628da5a96965143dfe6dcac0b249d57083e1f49286d71fdc5e82e65",
+    "source_sha256": "1c9a71be7381416940510e266bd1a6f234d3ccbf15b2f912c152f1d0297c080f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_im_median_abs_le",
+      "statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ) (β : ℝ), IsProbabilityMeasure μ → Integrable u μ → 1 / 2 ≤ μ.real {x | β ≤ u x} → 1 / 2 ≤ μ.real {x | u x ≤ β} → |β| ≤ 2 * ∫ x, |u x| ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
