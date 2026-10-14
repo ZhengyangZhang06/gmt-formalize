@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "819ae6ca84384dc17c3427a2f94b998d508de1af1f608bcf9e72be673612e066",
+  "git_delta": {
+    "base_commit": "a046fa177e663734e403c972dcc0d630bb6a6d76",
+    "candidate_commit": "71e21234210430624842b6e1e7a6594764bc9877",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_tc_cl_cc_compact_im_filling",
+    "diff_sha256": "9b42234263a7c393835267e4d1be56aa071f4e28c483ff8df81e06e5d7d76207",
+    "source_sha256": "c50ae42da958cd82a03de5a9e51cee83560e0167902c5a00491c7a2ce19fe849",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_tc_cl_cc_compact_im_filling",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 1 ≤ c ∧ ∀ Z : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Z → IsCompact Z.support → Z.boundary = 0 → Z.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity Y ∧ Y.boundary = Z ∧ Y.mass ≤ ENNReal.ofReal (c * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1)) * Z.mass.toReal) ∧ Y.support ⊆ thickening (3 * Real.sqrt P * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1))) Z.support) → ∀ (P d : ℕ), d < P → ∀ (T : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), IsCompact T.support → T.boundary.mass < ∞ → IsIntegerMultiplicity T.boundary → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1), IsIntegerMultiplicity Y ∧ Y.boundary = T.boundary ∧ Y.mass < ∞ ∧ IsCompact Y.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
