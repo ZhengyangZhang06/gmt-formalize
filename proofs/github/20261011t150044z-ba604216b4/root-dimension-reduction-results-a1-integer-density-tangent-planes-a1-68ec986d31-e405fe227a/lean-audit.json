@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "401bcc87768a1a174fd1b8f8dc04404e4d650b712044e98b9168b4a35d5d23db",
+  "git_delta": {
+    "base_commit": "f7d98547831ab8880caf199f560d9d2dc7da2ede",
+    "candidate_commit": "952a17aca4d03bd866c7725f180bf88284cae962",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_bml_tendsto_nhdsGT_of_subseq",
+    "diff_sha256": "08341cf69bbdff27210d98b99292d6db67d01098deae4028a5a3cc5ef03a79c4",
+    "source_sha256": "fb9a0364869f27fffbe2877b375fa1bdb4e6786378ddf5b092eaff7d60a06c22",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_bml_tendsto_nhdsGT_of_subseq",
+      "statement": "∀ (f : ℝ → ℝ≥0∞) (L : ℝ≥0∞), (∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ Tendsto (fun j => f (lams (φ j))) atTop (𝓝 L)) → Tendsto f (𝓝[>] 0) (𝓝 L)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
