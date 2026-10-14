@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7dd7b69d48598d1ecec6adec28030fa8a993f79a6a60776abf4f23d919cde125",
+  "git_delta": {
+    "base_commit": "c72efedd02a0d616f765cb8fbafed06830f1909d",
+    "candidate_commit": "ee6fe01ff88a4fae79345889f39a366b44e8e0b9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_dema_upper_density_zero",
+    "diff_sha256": "d076d2374b40747c7e03e4f834b75aef5184724bfa1c7fcec8296d9d5905afa0",
+    "source_sha256": "beb1015d88f3749470bb4bab9b7c3714ed428b18deadc31ebf97f7ecd13d4bb6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_dema_upper_density_zero",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (A : Set (Euclid P)), MeasurableSet A → (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∉ A → Tendsto (fun ρ : ℝ => μ (A ∩ ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
