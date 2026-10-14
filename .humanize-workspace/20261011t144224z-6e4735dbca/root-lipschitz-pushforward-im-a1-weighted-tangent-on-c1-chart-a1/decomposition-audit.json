@@ -1,0 +1,107 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n 'blowUpMap|HasApproximateTangentSpaceAt|HasWeightedApproximateTangentSpaceAt' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "withDensity_apply|def withDensity|theorem restrict_map|integral_map|integral_smul_measure|exists_measurable_subset_ae_eq|exists_isClosed_sdiff_lt",
+        "theorem (simon_theorem_3_6|ae_dimensionalUpperDensity_eq_zero_outside)|def (dimensionalUpperDensity|dimensionalDensityRatio)|measure_toOuterMeasure_isBorelRegular|exists_isClosed_continuousOn_of_measurable",
+        "simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure|realUnitBallVolume_pos|realUnitBallVolume_ne_top|normDet_sq_eq_det_gram|theorem normDet_nonneg",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "python3 run_lean.py Scratch/Statements.lean",
+        "python3 run_lean.py Scratch/StatementsExtra.lean",
+        "python3 run_lean.py Scratch/Assembly.lean",
+        "python3 run_lean.py Scratch/BlowupCheck.lean",
+        "python3 run_lean.py Scratch/Axioms.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/tmp/wtc_independent_audit_2tulpesa/run_lean.py",
+        "/tmp/wtc_independent_audit_2tulpesa/Scratch/Statements.lean",
+        "/tmp/wtc_independent_audit_2tulpesa/Scratch/StatementsExtra.lean",
+        "/tmp/wtc_independent_audit_2tulpesa/Scratch/Assembly.lean",
+        "/tmp/wtc_independent_audit_2tulpesa/Scratch/BlowupCheck.lean",
+        "/tmp/wtc_independent_audit_2tulpesa/Scratch/Axioms.lean"
+      ],
+      "conclusion": "Confirmed project d8d46c9587747dee0751a1f780fcafdba16a3886, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d, and manifest-pinned SimonGMT 2b3663083f3fe399b6296fb8eaee52169170e197. All nine exact one-line propositions independently elaborate in the comparator scope, both before and after the additional imports. Their names are bare identifiers with no current DAG reservation collisions. The dependency graph is acyclic and correctly directed. The split appropriately separates the selected theorem's analytic obligations. A fresh kernel check establishes the exact selected parent from the child contracts supplied as explicit hypotheses, using only propext, Classical.choice, and Quot.sound. The cited library lemmas and the rerun complete blow-up proof pass the same axiom check. Matrix.of supplies the intended Gram matrix, and the implicit source volume uses measureSpaceOfInnerProductSpace. Every child contributes directly or through its declared dependents; none invokes the selected parent or an ancestor."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary S and g. Similarity scaling, measurable-equivalence restriction, and unrestricted Bochner integral transport justify every step, including nonintegrable cases. The supplied complete Lean proof independently rechecks with only standard axioms."
+    },
+    {
+      "key": "chart_image_measurable_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Antilipschitzity supplies injectivity and bounds the relevant preimage. Global C¹ regularity supplies a Lipschitz bound on the containing compact convex ball. Lusin–Souslin and the normalized Hausdorff image estimate establish precisely the stated Borelness and local finiteness."
+    },
+    {
+      "key": "chart_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Gram-determinant expression and canonical source volume match the prose. The proof identifies the Jacobian with normDet, localizes the supported integrands to a bounded open domain, verifies finiteness, and applies the pinned weighted area formula to positive and negative parts. No undeclared child is required."
+    },
+    {
+      "key": "chart_approximate_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The derivative lower bound proves injectivity and the required dimension. The two declared dependencies justify the rescaling and area identities. Compact domination and pointwise convergence justify dominated convergence; the linear specialization of AREA identifies the exact tangent-plane integral."
+    },
+    {
+      "key": "lusin_compact_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in the Lean type. The Borel representative and full-measure Borel core handle the original null-measurability correctly. Lusin applied to a finite weighted measure yields compact continuity pieces; positivity proves their finite Hausdorff measure and converts the weighted null remainder into a Hausdorff-null remainder."
+    },
+    {
+      "key": "zero_density_off_set",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "No measurability hypothesis on g is missing: the pinned withDensity_apply identity holds for arbitrary g on Borel sets. The measurable carrier hull and countable compact localization meet the upper-density theorem's hypotheses. The normalization conversion and limsup-zero argument prove the stated ENNReal limit, including dimension zero."
+    },
+    {
+      "key": "density_bound_of_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff proof establishes the exact eventual bound. Local finiteness guarantees integrability of the cutoff and ball indicator even for arbitrary S; the declared blow-up identity and tangent convergence then yield a finite nonnegative constant K."
+    },
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes both null-measurability hypotheses and local finiteness. The first density limit supplies eventual finiteness of the additional piece, making the signed integral decomposition valid. Both rescaled errors tend to zero, and the dimension condition is inherited from N."
+    },
+    {
+      "key": "weighted_tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type include all required inclusion, membership, positivity, continuity, and integrability hypotheses. Local integrability justifies the three-term decomposition; the declared density bound controls the continuity error, and nonnegativity controls the off-piece remainder. The resulting limit and inherited dimension are exactly the weighted tangent predicate."
+    }
+  ],
+  "required_changes": []
+}

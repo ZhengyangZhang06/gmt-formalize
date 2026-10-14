@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1.inner_compact_approx-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.locally_lipschitz_image-a1",
+  "depth": 3,
+  "title": "Compact inner approximation of σ-finite null-measurable sets in ℝ^P (parent step 3)",
+  "statement": "For every P ∈ ℕ, every measure μ on the Borel σ-algebra of ℝ^P, and every μ-null-measurable set A ⊆ ℝ^P such that the restriction μ⌞A is σ-finite, there are compact sets C_k ⊆ A (k ∈ ℕ) with μ(A ∖ ⋃_k C_k) = 0.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Eucl P)) (A : Set (Eucl P)), NullMeasurableSet A μ → SigmaFinite (μ.restrict A) → ∃ C : ℕ → Set (Eucl P), (∀ k, IsCompact (C k)) ∧ (∀ k, C k ⊆ A) ∧ μ (A \\ ⋃ k, C k) = 0",
+  "lean_name": "lpf_lli_inner_compact_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-inner-com-6be04fd41f-a1"
+}

@@ -1,0 +1,111 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_mass_bounds-a1`
+- Child DAG node: `root.compactness_mass_bounds-a1.repr_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof Step 7, the content of 'by 2.7' in the printed text. (a) Testing the representation with χ·dx^β makes the coefficients of v integrable on the relevant compact set. (b) The mass bound passes from test forms to continuous forms by mollification. The parent's dominated-convergence step is replaced by the direct estimate of Step 5 below, which uses the same integrable functions g_β. Siblings used:
+- mass_bound (cmb_abs_apply_le_of_massOn_le);
+- mollify (cmb_exists_testForm_uniform_approx);
+- covector_expansion (cmb_covector_eq_sum_coord_smul_wedge).
+
+Notation: |α| := covectorEuclideanNorm α; I(n,P) := SimonMultiIndex n P; for β ∈ I(n,P), α(e_β) := euclideanCovectorCoordinate α β and dx^β := wedgeCovectors n (fun j => EuclideanSpace.proj (β j)). v(θ) denotes the function x ↦ v(x)(θ(x)).
+
+1. (Facts on |·|.)
+(i) |α(e_β)| ≤ |α| for β ∈ I(n,P). Indeed α(e_β)² is the term I = β (strictly increasing; EuclideanSpace.single i 1 = EuclideanSpace.basisFun (Fin P) ℝ i) in the sum of nonnegative terms defining |α|².
+(ii) |α + γ| ≤ |α| + |γ|. Indeed |α| is the Euclidean norm of the vector (if I is strictly increasing then α(e_I) else 0)_{I : Fin n → Fin P} ∈ EuclideanSpace ℝ (Fin n → Fin P), which depends additively on α. Also |−α| = |α| (covectorEuclideanNorm_neg).
+2. (Supports.) C ≥ 0 since 0 ≤ |ω(0)| ≤ C. K := tsupport ω is closed and contained in the compact set closure(W), hence compact. Since W is open, choose an open V with K ⊆ V, closure(V) compact and closure(V) ⊆ W. Then choose an open V₂ with closure(V) ⊆ V₂, closure(V₂) compact and closure(V₂) ⊆ W (exists_open_between_and_isCompact_closure, applied twice).
+3. (Cutoff and coefficient functions.) Choose a C^∞ function χ : ℝ^P → [0,1] with support χ = V₂ and χ(x) = 1 ⇔ x ∈ closure(V) (exists_contDiff_support_eq_eq_one_iff). Then tsupport χ = closure(V₂) is compact and ⊆ W ⊆ closure(W) ⊆ U. For β ∈ I(n,P) let ψ_β(x) := χ(x)·dx^β. ψ_β is C^∞ (ContDiff.smul with a constant), and tsupport ψ_β ⊆ tsupport χ (tsupport_smul_subset_left), so ψ_β has compact support and tsupport ⊆ U; thus ψ_β ∈ TestFormOn U n. Let g_β(x) := v(x)(ψ_β(x)). By IsMeasureRepresentation T μ v, every g_β is μ-integrable. Put G := Σ_β ∫|g_β| dμ ≥ 0.
+4. (Pointwise identity.) Let θ : ℝ^P → Covector (Eucl P) n with θ(x) = 0 for every x ∉ closure(V). Then v(x)(θ(x)) = Σ_β θ(x)(e_β)·g_β(x) for every x. If x ∈ closure(V), then χ(x) = 1, so g_β(x) = v(x)(dx^β); the sibling covector_expansion gives θ(x) = Σ_β θ(x)(e_β)·dx^β, and v(x) is linear. If x ∉ closure(V), then θ(x) = 0 and both sides are 0.
+5. (Integrability and basic estimate.) Let θ be as in Step 4, continuous, with |θ(x)| ≤ D for all x. For each β, x ↦ θ(x)(e_β) is continuous (evaluation at a fixed tuple), hence μ-a.e. strongly measurable (ℝ^P carries its Borel σ-algebra), and it is bounded by D by Step 1(i). So x ↦ θ(x)(e_β)·g_β(x) is μ-integrable (Integrable.bdd_mul). By Step 4, v(θ) is a finite sum of integrable functions, hence μ-integrable, with ∫v(θ)dμ = Σ_β ∫θ(x)(e_β)g_β(x)dμ (integral_finsetSum). Therefore |∫v(θ)dμ| ≤ Σ_β ∫|θ(x)(e_β)|·|g_β(x)|dμ ≤ D·G.
+6. (Integrability of v(ω).) ω vanishes off K ⊆ V ⊆ closure(V) and |ω| ≤ C. By Step 5, x ↦ v(x)(ω(x)) is μ-integrable, which is the first conclusion.
+7. (Approximation.) Let ε > 0. The sibling mollify (V open, V ⊆ U, ω continuous with compact support, tsupport ω ⊆ V) gives η ∈ TestFormOn U n with tsupport η ⊆ V and |ω(x) − η(x)| ≤ ε for all x. Writing η(x) = ω(x) + (−(ω(x) − η(x))), Step 1(ii) gives |η(x)| ≤ C + ε. Since tsupport η ⊆ V ⊆ W and T.massOn W ≤ ENNReal.ofReal B, the sibling mass_bound gives |T(η)| ≤ B(C + ε).
+8. (Comparison.) θ := ω − η is continuous, vanishes off closure(V) (both ω and η vanish off V), and |θ(x)| ≤ ε. By Step 5, v(θ) is integrable and |∫v(θ)dμ| ≤ εG. Pointwise v(x)(ω(x)) = v(x)(η(x)) + v(x)(θ(x)), both summands are integrable, and ∫v(η)dμ = T(η) (IsMeasureRepresentation). Hence |∫v(ω)dμ| ≤ |T(η)| + |∫v(θ)dμ| ≤ B(C + ε) + εG.
+9. (Conclusion.) For ε₀ > 0, apply Step 8 with ε := ε₀/(B + G + 1): |∫v(ω)dμ| ≤ BC + ε(B + G) ≤ BC + ε₀. As ε₀ > 0 is arbitrary, |∫ v(x)(ω(x)) dμ(x)| ≤ B·C (le_of_forall_pos_le_add). ∎
+
+## Key steps
+
+1. Cutoff χ = 1 on closure V ⊇ tsupport ω with tsupport χ ⊆ W; g_β := v(χ·dx^β) is μ-integrable.
+2. Covector expansion: v(x)(θ(x)) = Σ_β θ(x)(e_β)·g_β(x) for θ vanishing off closure V.
+3. Hence v(θ) is integrable with |∫v(θ)dμ| ≤ sup|θ|·Σ_β‖g_β‖₁; in particular v(ω) is integrable.
+4. Mollify ω to η (tsupport ⊆ V, |ω − η| ≤ ε); the mass bound gives |T(η)| ≤ B(C + ε).
+5. |∫v(ω)dμ| ≤ |T(η)| + |∫v(ω − η)dμ| ≤ B(C + ε) + εG; let ε → 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `sha256sum project/GMT/Ch06/Contract.lean project/GMT/Ch06/Submission.lean and workspace GMT/Ch06/Contract.lean (all ea3ee0ddd08be5db60dced2b002e9f60fd87091910069abcfcbd7e34db89853d)`
+- `sed -n 240,345p book/chapter-06.txt (Simon 2.6-2.15 and the Banach-Alaoglu paragraph before 2.15)`
+- `cat simongmt Poincare/SimonGMT/Chapter06/{Mass,FormSupNorm,Currents,Forms,FormsDuality,Representation,CurrentLocalEquality,FixedSupportCurrentTopology,CurrentDistributionEquivalence}.lean`
+- `rg -n 'theorem exists_open_between_and_isCompact_closure|theorem IsCompact.tendsto_subseq|theorem dist_normed_convolution_le|theorem support_convolution_subset|theorem Integrable.bdd_mul|uniformContinuous_of_continuous' mathlib/Mathlib`
+- `rg -n 'exists_contDiff_support_eq_eq_one_iff|exists_contDiff_tsupport_subset|exists_smooth_tsupport_subset' mathlib/Mathlib`
+- `cat mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean; sed -n 60,100p mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `sed -n 60,90p mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean; rg -n 'isSeparable' mathlib/Mathlib/Topology/Bases.lean`
+- `sed -n 900,925p mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean (Module.Basis.ext_alternating)`
+- `rg -n '^theorem (continuous_infE[dD]ist|infE[dD]ist_zero_of_mem|mem_closure_iff_infE[dD]ist_zero)' mathlib/Mathlib`
+- `#synth CompleteSpace / FiniteDimensional / SecondCountableTopology / ProperSpace (Covector (Eucl P) n); BorelSpace (Eucl P); Fintype (SimonMultiIndex n P); FirstCountableTopology (E -> R) for countable E`
+- `python3 listing of dag.json lean_name values; nodes/root-federer-fleming-a1/decomposition-v1.json (should_split false)`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement and gmt-compare.py contract_scope/child_modules for all 8 children`
+- `lake env lean Scratch/Ch_<key>.lean for the 8 generated NodeChallenge modules (0 errors)`
+- `lake env lean Scratch/{Stmts,ContForms,Repr,Weak,Leaves,Cov,Sep,Final}.lean; #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/UniformSpace/HeineCantor.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FixedSupportCurrentTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentDistributionEquivalence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-compactness-mass-bounds-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-federer-fleming-a1/decomposition-v1.json`
+- `/tmp/cmb_decomp_scratch/Scratch/Final.lean`
+- `/tmp/cmb_decomp_scratch/Scratch/Leaves.lean`
+- `/tmp/cmb_decomp_scratch/Scratch/Cov.lean`
+- `/tmp/cmb_decomp_scratch/Scratch/Sep.lean`
+- `/tmp/cmb_decomp_scratch/Scratch/Weak.lean`
+- `/tmp/cmb_decomp_scratch/Scratch/Repr.lean`
+- `/tmp/cmb_decomp_scratch/Scratch/ContForms.lean`
+
+Snapshot: project d8d46c95, Mathlib 25730c7c. Contract and Submission are byte-identical (sha256 ea3ee0dd…). They state CompactnessUnderMassBounds over SimonGMT's GeometricCurrentOn, TestFormOn, massOn, WeaklyConvergesOn, covectorEuclideanNorm and IsMeasureRepresentation.
+
+SimonGMT provides GeometricCurrentOn.le_massOn, WeaklyConvergesOn.massOn_le_liminf (2.14), wedgeCovectors_apply_det, euclideanCovectorCoordinate and covectorEuclideanNorm_neg. It has no compactness, separability, mollification or representation-extension lemma (no match).
+
+Mathlib provides exists_open_between_and_isCompact_closure, exists_contDiff_support_eq_eq_one_iff, UniformContinuous.exists_contDiff_dist_le (SmoothApprox, needs an extra import), HasCompactSupport.uniformContinuous_of_continuous, IsCompact.tendsto_subseq, isCompact_univ_pi, ContinuousMap.instSecondCountableTopology (extra import), IsSeparable.exists_countable_dense_subset, Module.Basis.ext_alternating, AlternatingMap.map_perm, Tuple.monotone_sort, OrderEmbedding.range_inj_of_wellFoundedLT, Metric.infEDist lemmas and Integrable.bdd_mul.
+
+Covector (Eucl P) n has a CompleteSpace instance but no FiniteDimensional or SecondCountableTopology instance.
+
+In a scratch build of the frozen project:
+- all 8 exact child statements pass the validator and elaborate as comparator NodeChallenge modules;
+- each statement is proved with no sorry, each composite only from its declared siblings;
+- CompactnessUnderMassBounds follows from weak_subseq and continuous_form_conv, with axioms [propext, Classical.choice, Quot.sound].
+
+The DAG reserves only the 12 depth-1 names, so the cmb_ names are free.
