@@ -11794,6 +11794,75 @@ theorem Submission.dimred_cs_sos_mt_face_currents : ∀ (P j m n' : ℕ) (g : Fi
       Int.cast_pow, Int.cast_one]
     ring
 
+/-- **Cube cycle for splitting off the spine** (Simon 7.3.5).  Let `g = (g₁, …, g_k)`, `k ≥ 1`,
+be orthonormal with span `G`, `q` the orthogonal projection onto `G^⊥`,
+`Q_r = {t ∈ G : |⟨gᵢ, t⟩| ≤ r}`, and let `X = ∂Y` with `X`, `Y` integer multiplicity and `spt Y`
+a compact subset of `G^⊥`.  Then `Z = (−1)ᵏ ∂([[Q_r]] × Y) = [[Q_r]] × X + E'` is an integer
+multiplicity cycle with compact support in `{|⟨gᵢ, x⟩| ≤ r} ∩ q⁻¹(spt Y)`, and
+`M(E') ≤ 2k(2r)^{k−1} M(Y)`.  As `spt X ⊆ spt Y ⊆ G^⊥`, the weights `μ_X`, `μ_Y` vanish off
+`G^⊥`, so the products `B = [[Q_r]] × Y`, `B_X = [[Q_r]] × X` and the face current `E''` exist,
+and Stokes on the cube gives `∂B = E'' + (−1)ᵏ B_X`.  Hence `Z = (−1)ᵏ ∂B = B_X + (−1)ᵏ E''`,
+`spt Z ⊆ spt B ⊆ Q_r + spt Y`, and `M(E') ≤ M(E'') ≤ 2k(2r)^{k−1} μ_Y(ℝᴾ) = 2k(2r)^{k−1} M(Y)`. -/
+theorem Submission.dimred_cs_sos_mt_cube_cycle : ∀ (P k m n' : ℕ) (g : Fin k → Euclid P) (h : n' = k + m) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (r : ℝ), 0 < k → 0 < m → Orthonormal ℝ g → IsIntegerMultiplicity X → IsIntegerMultiplicity Y → Y.boundary = X → IsCompact Y.support → Y.support ⊆ ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P)) → 0 < r → ∃ Z E' : GeometricCurrentOn (univ : Set (Euclid P)) n', IsIntegerMultiplicity Z ∧ BoundaryVanishes Z ∧ IsCompact Z.support ∧ Z.support ⊆ {x | ∀ i, |inner ℝ (g i) x| ≤ r} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' Y.support ∧ E'.mass ≤ ENNReal.ofReal (2 * (k : ℝ) * (2 * r) ^ (k - 1)) * Y.mass ∧ ∀ flat : Covector (Euclid P) n' → Covector (Euclid P) m, (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n', Z ω = (∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval X (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) ∂μHE[k]) + E' ω := by
+  intro P k m n' g h X Y r hk hm hg hXim hYim hYX hYc hYG hr
+  obtain ⟨RX, hRX⟩ := hXim
+  obtain ⟨RY, hRY⟩ := hYim
+  -- `μ_Y` and `μ_X` vanish off `G^⊥`, since `spt X ⊆ spt Y ⊆ G^⊥` (`X = 1 · ∂Y`)
+  have hGc : IsClosed ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P)) :=
+    Submodule.isClosed_orthogonal _
+  have hXY : X.support ⊆ Y.support :=
+    Submission.dimred_cs_sos_mt_cc_support_smul_boundary P m univ Y X 1 fun ω => by
+      rw [one_mul, hYX]
+  have hRYG := (Submission.dimred_cs_sos_mt_cc_support_subset_iff_measure P (m + 1) Y RY _
+    hRY hGc).1 hYG
+  have hRXG := (Submission.dimred_cs_sos_mt_cc_support_subset_iff_measure P m X RX _
+    hRX hGc).1 (hXY.trans hYG)
+  -- `Q_r` is compact and `Q_r + spt Y` is a compact subset of the slab `∩ q⁻¹(spt Y)`
+  obtain ⟨hQc, hFc, hFsub⟩ :=
+    Submission.dimred_cs_sos_mt_cc_cube_sum_geometry P k g r Y.support hg hYc hYG
+  -- write `k = j + 1` and `n' = n + 1`
+  obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, by omega⟩
+  obtain ⟨n, rfl⟩ : ∃ n, n' = n + 1 := ⟨n' - 1, by omega⟩
+  have h₁ : n + 1 + 1 = (j + 1) + (m + 1) := by omega
+  have h₂ : n + 1 = j + (m + 1) := by omega
+  -- the interior products `♭_g` in degrees `n' + 1` and `n'`, and `♭_{g ∘ a.succAbove}`
+  obtain ⟨flatD, hflatD⟩ :=
+    (Submission.dimred_cs_sos_mt_interior_product P).1 (j + 1) (m + 1) (n + 1 + 1) g h₁
+  obtain ⟨flat₀, hflat₀⟩ :=
+    (Submission.dimred_cs_sos_mt_interior_product P).1 (j + 1) m (n + 1) g h
+  choose flatF hflatF using fun a : Fin (j + 1) =>
+    (Submission.dimred_cs_sos_mt_interior_product P).1 j (m + 1) (n + 1) (g ∘ a.succAbove) h₂
+  -- `B = [[Q_r]] × Y`, `B_X = [[Q_r]] × X` and the face current `E''`
+  obtain ⟨B, RB, hRB, hRBm, hB⟩ := Submission.idtp_fons_cs_sos_product_current P (j + 1) (m + 1)
+    (n + 1 + 1) g h₁ _ Y RY m.succ_pos hg hQc.isClosed.measurableSet (fun t ht => ht.1) hRY hRYG
+  obtain ⟨BX, RBX, hRBX, -, hBX⟩ := Submission.idtp_fons_cs_sos_product_current P (j + 1) m
+    (n + 1) g h _ X RX hm hg hQc.isClosed.measurableSet (fun t ht => ht.1) hRX hRXG
+  obtain ⟨E'', hE''im, hE''mass, hE''⟩ :=
+    Submission.dimred_cs_sos_mt_face_currents P j m (n + 1) g h₂ Y RY r hg hRY hRYG hr
+  -- `∂B = E'' + (-1)ᵏ B_X`, by Stokes on the cube
+  have hbd : ∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 1),
+      B.boundary ω = E'' ω + (-1 : ℝ) ^ (j + 1) * BX ω := by
+    intro ω
+    rw [GeometricCurrentOn.boundary_apply, hB flatD hflatD, hE'' (fun a => flatF a) hflatF,
+      hBX flat₀ hflat₀]
+    exact Submission.dimred_cs_sos_mt_cube_stokes P j m (n + 1) g h h₁ h₂ X Y RY flatD flat₀
+      flatF ω r hg hRY hYX hr hflatD hflat₀ hflatF
+  -- `Z = (-1)ᵏ ∂B = B_X + E'` is an integer multiplicity cycle with `spt Z ⊆ spt B`
+  obtain ⟨Z, E', hZim, hZbd, hZB, hE'mass, hZ⟩ :=
+    Submission.dimred_cs_sos_mt_cc_cycle_of_boundary_eq P n univ B BX E'' (j + 1) isOpen_univ
+      ⟨RBX, hRBX⟩ hE''im hbd
+  -- `spt Z ⊆ spt B ⊆ Q_r + spt Y`
+  have hZF := hZB.trans (Submission.dimred_cs_sos_mt_cc_product_support P (j + 1) (m + 1)
+    (n + 1 + 1) _ Y RY B RB hQc hYc hRY hRB hRBm)
+  refine ⟨Z, E', hZim, hZbd, hFc.of_isClosed_subset (isClosed_univ.sdiff Z.isOpen_zeroRegion) hZF,
+    hZF.trans hFsub, ?_, fun fl hfl ω => by rw [hZ, hBX fl hfl]⟩
+  -- `M(E') ≤ M(E'') ≤ 2k(2r)^{k-1} μ_Y(ℝᴾ)` and `μ_Y(ℝᴾ) = M(Y)`
+  have hYmass : Y.mass = RY.measure univ :=
+    Submission.imrep_represents_massOn_eq_measure P (m + 1) univ univ Y RY isOpen_univ hRY
+      isOpen_univ subset_rfl
+  rw [hYmass, Nat.add_sub_cancel, Nat.cast_add_one]
+  exact hE'mass.trans hE''mass
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
