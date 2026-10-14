@@ -1,0 +1,48 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem extraction_of_frequently_atTop|theorem IsCompact.tendsto_subseq|theorem StrictMono.tendsto_atTop|def starProjection|class HasOrthogonalProjection|instance.*HasOrthogonalProjection|isCompact_closedBall|def Euclid|abbrev Euclid",
+        "instance.*[Cc]ompleteSpace|FiniteDimensional.complete|proper.*[Ff]inite|finiteDimensional.*proper",
+        "idtp_fons_cr_nusc_flat_eventually|idtp_fons_cr_nusc_flat_point_persists",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/nonflat-usc-independent-audit-euzpeuh1/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/nonflat-usc-independent-audit-euzpeuh1/Full.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/nonflat-usc-independent-audit-euzpeuh1/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Tendsto.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/ProperSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-e0bc5065ed/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-e0bc5065ed/decomposition-v1.json",
+        "/tmp/nonflat-usc-independent-audit-euzpeuh1/Types.lean",
+        "/tmp/nonflat-usc-independent-audit-euzpeuh1/Full.lean",
+        "/tmp/nonflat-usc-independent-audit-euzpeuh1/Assembly.lean"
+      ],
+      "conclusion": "The project and Mathlib revisions match the manifest; inspected Mathlib files match the snapshot. The sources provide the required subsequence, compactness, and projection facts. Independent Lean checks all exited 0: both child propositions elaborate before either child is declared, projection and proper-space instances synthesize, and proofs under the exact Submission names use only propext, Classical.choice, and Quot.sound. A separate assembly check establishes child 2 from child 1 alone and the exact frozen parent from child 2 alone. Neither proposed name nor exact child type occurs among the 2117 registered DAG nodes. Both names are bare identifiers. The split isolates two substantive obligations and has correctly directed, acyclic dependencies."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "flat_eventually",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line Lean proposition. The supplied proof correctly extracts bad indices, applies compactness to displacements, obtains y′ = w + d inside Bρ(w), and applies support convergence along σ ∘ ψ ∘ χ. Continuity then yields τ ≤ g(d) ≤ s < τ. No bound on the centers or positivity assumption on ρ′ is missing; nonpositive-radius balls are empty. The proof is complete and invokes neither child nor parent theorem."
+    },
+    {
+      "key": "flat_point_persists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition agree exactly. The explicit parameter choices give 0 < ρ′ < ρ and s < τ < βρ′. Compact exhaustion and convergence of the centers give the required eventual domain inclusion. The sole declared dependency supplies uniform flatness, and (ρ′, Q, τ) supplies every conclusion witness, including dimension n. The proof is complete and non-circular. Combined with the parent's supplied outer compactness argument, this conclusion proves the selected frozen parent contract."
+    }
+  ],
+  "required_changes": []
+}

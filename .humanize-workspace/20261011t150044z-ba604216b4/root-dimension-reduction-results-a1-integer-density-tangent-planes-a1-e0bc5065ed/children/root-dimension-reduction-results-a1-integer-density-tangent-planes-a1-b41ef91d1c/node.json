@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.nonflat_usc-a1.flat_eventually-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.nonflat_usc-a1",
+  "depth": 6,
+  "title": "Eventual uniform flatness near a flat point under support convergence (supplied proof, step 7)",
+  "statement": "Let P ∈ ℕ, S, D ⊆ ℝ^P and S_k ⊆ ℝ^P (k ∈ ℕ). B_r(x) denotes the open ball. For a linear subspace Q, p_Q = Q.starProjection is the orthogonal projection onto Q. Assume (H): whenever sub : ℕ → ℕ is strictly increasing, z_k ∈ S_{sub(k)} for all k, z_k → x and x ∈ D, then x ∈ S. Let w ∈ ℝ^P, let ρ, ρ', s, τ ∈ ℝ, and let Q ⊆ ℝ^P be a linear subspace such that ρ' < ρ, B_ρ(w) ⊆ D, s < τ, and |(y − w) − p_Q(y − w)| ≤ s for every y ∈ S ∩ B_ρ(w). Let σ : ℕ → ℕ be strictly increasing and v : ℕ → ℝ^P with v_i → w. Then for all sufficiently large i, |(y − v_i) − p_Q(y − v_i)| ≤ τ for every y ∈ S_{σ(i)} ∩ B_{ρ'}(v_i).",
+  "lean_statement": "∀ (P : ℕ) (S Dset : Set (Euclid P)) (Ss : ℕ → Set (Euclid P)), (∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub → (∀ k, z k ∈ Ss (sub k)) → Tendsto z atTop (𝓝 x) → x ∈ Dset → x ∈ S) → ∀ (w : Euclid P) (ρ ρ' s τ : ℝ) (Q : Submodule ℝ (Euclid P)), ρ' < ρ → ball w ρ ⊆ Dset → s < τ → (∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s) → ∀ (σ : ℕ → ℕ) (v : ℕ → Euclid P), StrictMono σ → Tendsto v atTop (𝓝 w) → ∀ᶠ i in atTop, ∀ y ∈ Ss (σ i), y ∈ ball (v i) ρ' → ‖(y - v i) - Q.starProjection (y - v i)‖ ≤ τ",
+  "lean_name": "idtp_fons_cr_nusc_flat_eventually",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b41ef91d1c-a1"
+}
