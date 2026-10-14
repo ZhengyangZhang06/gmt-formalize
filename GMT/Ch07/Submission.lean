@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter03.SubmanifoldCover
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -4444,6 +4445,365 @@ theorem Submission.dor_lmbsf_piece_coarea : ∀ (P n : ℕ) (V C Y : Set (Euclid
     (hψ.continuousOn.mono hY'V) (hψinj.mono hY'V) hF.continuous.measurable hZsm hZsd hZsU hpatch
   simp only [hslice, hrhs]
   exact hglue
+
+/-- **Slice tangent-plane algebra** (Simon Ch. 6, Lemma 4.1 (2): `∇ᴹf(x) ∈ TₓM` and `TₓMₜ` is
+the orthogonal complement of `∇ᴹf(x)` in `TₓM`).  Let `L : ℝᵐ → ℝᴾ` and `ℓ : ℝᵐ → ℝ` be linear,
+`g ∈ L(ℝᵐ)` and `⟨g, L e⟩ = ℓ(e)` for every `e`.  Then `g = 0 ⇔ ℓ = 0` (if `ℓ = 0` and
+`g = L w`, then `|g|² = ⟨g, L w⟩ = ℓ(w) = 0`), and `L(ℝᵐ) ∩ g^⊥ = L(ker ℓ)`, because `v = L e`
+is orthogonal to `g` iff `ℓ(e) = ⟨g, L e⟩ = 0`. -/
+theorem Submission.dor_lmbsf_pst_slice_plane_algebra : ∀ (m P : ℕ) (L : Euclid m →L[ℝ] Euclid P) (ℓ : Euclid m →L[ℝ] ℝ) (g : Euclid P), g ∈ LinearMap.range (L : Euclid m →ₗ[ℝ] Euclid P) → (∀ e : Euclid m, inner ℝ g (L e) = ℓ e) → (g = 0 ↔ ℓ = 0) ∧ LinearMap.range (L : Euclid m →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ g)ᗮ = Submodule.map (L : Euclid m →ₗ[ℝ] Euclid P) (LinearMap.ker (ℓ : Euclid m →ₗ[ℝ] ℝ)) := by
+  intro m P L ℓ g hg hgℓ
+  refine ⟨⟨fun h => ?_, fun h => ?_⟩, ?_⟩
+  · -- Step 1, `g = 0` gives `ℓ(e) = ⟨0, L e⟩ = 0` for every `e`
+    ext e
+    rw [← hgℓ e, h, inner_zero_left, zero_apply]
+  · -- Step 2, `g = L w` and `ℓ = 0` give `⟨g, g⟩ = ⟨g, L w⟩ = ℓ(w) = 0`
+    obtain ⟨w, hw⟩ := LinearMap.mem_range.1 hg
+    have hgg := hgℓ w
+    rw [ContinuousLinearMap.coe_coe] at hw
+    rw [hw, h, zero_apply] at hgg
+    exact inner_self_eq_zero.1 hgg
+  · -- Steps 3–5, `v = L e` lies in `gᗮ` iff `ℓ(e) = ⟨g, L e⟩ = 0`
+    ext v
+    simp only [Submodule.mem_inf, LinearMap.mem_range, Submodule.mem_map, LinearMap.mem_ker,
+      Submodule.mem_orthogonal_singleton_iff_inner_right, ContinuousLinearMap.coe_coe]
+    constructor
+    · rintro ⟨⟨e, rfl⟩, he⟩
+      exact ⟨e, (hgℓ e).symm.trans he, rfl⟩
+    · rintro ⟨e, he, rfl⟩
+      exact ⟨⟨e, rfl⟩, (hgℓ e).trans he⟩
+/-- **Local `C¹` chart of a regular level set** (the implicit function theorem step of Simon
+Ch. 2, §6, after 6.3, chapter-02.txt lines 1476–1482: off `{DF = 0}` a level set of a `C¹` map is
+a `C¹` submanifold).  `ℓ = DF(y₀) ≠ 0` has `dim ker ℓ = n`; extending an isomorphism
+`ker ℓ ≅ ℝⁿ` gives a linear `π` with `π × ℓ` invertible.  Invert `Θ = (π, F)` near `y₀` (inverse
+function theorem) inside `W` and the open set where `DΘ` is invertible.  Then
+`Λ(z) = Θ⁻¹(z, F(y₀))` on `D = {z | (z, F(y₀)) ∈ target}` has `π ∘ Λ = id`, `F ∘ Λ = F(y₀)` and
+`DΛ(z) = DΘ(Λ z)⁻¹ ∘ inl`, injective with range `ker DF(Λ z)`.  For `c = π(y₀)`, `B̄_ρ(c) ⊆ D`
+and `N = source ∩ π⁻¹(B_ρ(c))`, a point `y ∈ N` with `F(y) = F(y₀)` is `Λ(π y)`. -/
+theorem Submission.dor_lmbsf_pst_level_set_local_chart : ∀ (n : ℕ) (W : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (y₀ : Euclid (n + 1)), IsOpen W → ContDiff ℝ 1 F → y₀ ∈ W → fderiv ℝ F y₀ ≠ 0 → ∃ (D : Set (Euclid n)) (Λ : Euclid n → Euclid (n + 1)) (c : Euclid n) (ρ : ℝ) (N : Set (Euclid (n + 1))), IsOpen D ∧ ContDiffOn ℝ 1 Λ D ∧ InjOn Λ D ∧ (∀ z ∈ D, Λ z ∈ W ∧ F (Λ z) = F y₀ ∧ Injective (fderiv ℝ Λ z) ∧ LinearMap.range (fderiv ℝ Λ z : Euclid n →ₗ[ℝ] Euclid (n + 1)) = LinearMap.ker (fderiv ℝ F (Λ z) : Euclid (n + 1) →ₗ[ℝ] ℝ)) ∧ closedBall c ρ ⊆ D ∧ IsOpen N ∧ y₀ ∈ N ∧ N ∩ F ⁻¹' {F y₀} ⊆ Λ '' ball c ρ := by
+  intro n W F y₀ hW hF hy₀ hDF
+  set ℓ : Euclid (n + 1) →L[ℝ] ℝ := fderiv ℝ F y₀
+  set t : ℝ := F y₀
+  set K := LinearMap.ker (ℓ : Euclid (n + 1) →ₗ[ℝ] ℝ)
+  -- Step 1, `ℓ ≠ 0` is onto `ℝ`, so `dim K = n` by rank–nullity
+  have hdimK : Module.finrank ℝ K = Module.finrank ℝ (Euclid n) := by
+    obtain ⟨v₀, hv₀⟩ : ∃ v₀, ℓ v₀ ≠ 0 := by
+      by_contra! h
+      exact hDF (ContinuousLinearMap.ext h)
+    have hrange : LinearMap.range (ℓ : Euclid (n + 1) →ₗ[ℝ] ℝ) = ⊤ :=
+      eq_top_iff.2 fun r _ => LinearMap.mem_range.2 ⟨(r / ℓ v₀) • v₀, by simp [hv₀]⟩
+    have h : _ + Module.finrank ℝ K = _ :=
+      LinearMap.finrank_range_add_finrank_ker (ℓ : Euclid (n + 1) →ₗ[ℝ] ℝ)
+    rw [hrange, finrank_top, Module.finrank_self, finrank_euclideanSpace_fin] at h
+    rw [finrank_euclideanSpace_fin]
+    omega
+  -- Step 2, `π` extends an isomorphism `e : K ≃ ℝⁿ`, so `ℓ v = 0 = π v` forces `v = 0`
+  obtain ⟨π, hπ⟩ : ∃ π : Euclid (n + 1) →L[ℝ] Euclid n, ∀ v, ℓ v = 0 → π v = 0 → v = 0 := by
+    let e : K ≃ₗ[ℝ] Euclid n := LinearEquiv.ofFinrankEq _ _ hdimK
+    obtain ⟨g, hg⟩ := LinearMap.exists_extend (e : K →ₗ[ℝ] Euclid n)
+    refine ⟨LinearMap.toContinuousLinearMap g, fun v hv hπv => ?_⟩
+    have hvK : v ∈ K := hv
+    have h : e ⟨v, hvK⟩ = 0 := by
+      have hgv := congrArg (fun f => f ⟨v, hvK⟩) hg
+      simp only [LinearMap.comp_apply, Submodule.subtype_apply, LinearEquiv.coe_coe] at hgv
+      rw [← hgv]
+      exact hπv
+    exact congrArg Subtype.val (e.injective (h.trans (map_zero e).symm))
+  -- Step 3, `Θ = (π, F)` is `C¹` with `DΘ(y) = π × DF(y)`
+  set Θ : Euclid (n + 1) → Euclid n × ℝ := fun y => (π y, F y)
+  have hΘ : ContDiff ℝ 1 Θ := π.contDiff.prodMk hF
+  have hΘd : ∀ y, HasFDerivAt Θ (π.prod (fderiv ℝ F y)) y := fun y =>
+    π.hasFDerivAt.prodMk (hF.differentiable one_ne_zero y).hasFDerivAt
+  -- Step 4, `π × ℓ` is injective by Step 2, hence (equal dimensions) an isomorphism `E₀`
+  have hker₀ : LinearMap.ker (π.prod ℓ : Euclid (n + 1) →ₗ[ℝ] Euclid n × ℝ) = ⊥ := by
+    refine LinearMap.ker_eq_bot'.2 fun v hv => ?_
+    have h : (π v, ℓ v) = ((0 : Euclid n), (0 : ℝ)) := hv
+    exact hπ v (congrArg Prod.snd h) (congrArg Prod.fst h)
+  have hrange₀ : LinearMap.range (π.prod ℓ : Euclid (n + 1) →ₗ[ℝ] Euclid n × ℝ) = ⊤ := by
+    have hdim : Module.finrank ℝ (Euclid (n + 1)) = Module.finrank ℝ (Euclid n × ℝ) := by
+      rw [Module.finrank_prod, Module.finrank_self, finrank_euclideanSpace_fin,
+        finrank_euclideanSpace_fin]
+    exact LinearMap.range_eq_top.2
+      ((LinearMap.injective_iff_surjective_of_finrank_eq_finrank hdim).1
+        (LinearMap.ker_eq_bot.1 hker₀))
+  obtain ⟨E₀, hE₀⟩ : ∃ E₀ : Euclid (n + 1) ≃L[ℝ] Euclid n × ℝ,
+      (E₀ : Euclid (n + 1) →L[ℝ] Euclid n × ℝ) = π.prod ℓ :=
+    ⟨ContinuousLinearEquiv.ofBijective _ hker₀ hrange₀,
+      ContinuousLinearEquiv.coe_ofBijective _ _ _⟩
+  have hΘE₀ : HasFDerivAt Θ (E₀ : Euclid (n + 1) →L[ℝ] Euclid n × ℝ) y₀ := by
+    rw [hE₀]
+    exact hΘd y₀
+  -- the set `O` where `DΘ` is invertible is open (`DΘ` is continuous) and contains `y₀`
+  set O : Set (Euclid (n + 1)) :=
+    fderiv ℝ Θ ⁻¹' range ContinuousLinearEquiv.toContinuousLinearMap
+  have hO : IsOpen O :=
+    ContinuousLinearEquiv.isOpen.preimage (hΘ.continuous_fderiv one_ne_zero)
+  have hy₀O : y₀ ∈ O := ⟨E₀, hΘE₀.fderiv.symm⟩
+  -- Step 5, the inverse function theorem for `Θ` at `y₀`, restricted to `O ∩ W`
+  have hΘs : HasStrictFDerivAt Θ (E₀ : Euclid (n + 1) →L[ℝ] Euclid n × ℝ) y₀ :=
+    hΘ.contDiffAt.hasStrictFDerivAt' hΘE₀ one_ne_zero
+  obtain ⟨Φ, hΦ, hΦsrc, hy₀Φ⟩ : ∃ Φ : OpenPartialHomeomorph (Euclid (n + 1)) (Euclid n × ℝ),
+      (Φ : Euclid (n + 1) → Euclid n × ℝ) = Θ ∧ Φ.source ⊆ O ∩ W ∧ y₀ ∈ Φ.source :=
+    ⟨(hΘs.toOpenPartialHomeomorph Θ).restrOpen (O ∩ W) (hO.inter hW), rfl, inter_subset_right,
+      ⟨hΘs.mem_toOpenPartialHomeomorph_source, hy₀O, hy₀⟩⟩
+  -- Step 6, the chart `Λ(z) = Φ⁻¹(z, t)` on the open set `D = {z | (z, t) ∈ target Φ}`
+  set D : Set (Euclid n) := (fun z => (z, t)) ⁻¹' Φ.target
+  set Λ : Euclid n → Euclid (n + 1) := fun z => Φ.symm (z, t)
+  have hD : IsOpen D := Φ.open_target.preimage (continuous_id.prodMk continuous_const)
+  -- Step 7, for `z ∈ D`, `Λ(z) ∈ source Φ ⊆ O ∩ W` and `Θ(Λ z) = (z, t)`
+  have hΛsrc : ∀ z ∈ D, Λ z ∈ Φ.source := fun z hz => Φ.map_target hz
+  have hΘΛ : ∀ z ∈ D, Θ (Λ z) = (z, t) := fun z hz => by
+    rw [← hΦ]
+    exact Φ.right_inv hz
+  have hπΛ : ∀ z ∈ D, π (Λ z) = z := fun z hz => congrArg Prod.fst (hΘΛ z hz)
+  have hFΛ : ∀ z ∈ D, F (Λ z) = t := fun z hz => congrArg Prod.snd (hΘΛ z hz)
+  -- Step 9, `Λ` is `C¹` at `z ∈ D` with `DΛ(z) = E⁻¹ ∘ inl`, `E = DΘ(Λ z) = π × DF(Λ z)`
+  have hΛd : ∀ z ∈ D, ∃ E : Euclid (n + 1) ≃L[ℝ] Euclid n × ℝ,
+      (E : Euclid (n + 1) →L[ℝ] Euclid n × ℝ) = π.prod (fderiv ℝ F (Λ z)) ∧
+      HasFDerivAt Λ ((E.symm : Euclid n × ℝ →L[ℝ] Euclid (n + 1)).comp
+        (ContinuousLinearMap.inl ℝ (Euclid n) ℝ)) z ∧ ContDiffAt ℝ 1 Λ z := by
+    intro z hz
+    obtain ⟨E, hE⟩ := (hΦsrc (hΛsrc z hz)).1
+    have hEΘ : (E : Euclid (n + 1) →L[ℝ] Euclid n × ℝ) = π.prod (fderiv ℝ F (Λ z)) := by
+      rw [← (hΘd (Λ z)).fderiv]
+      exact hE
+    have hΦE : HasFDerivAt Φ (E : Euclid (n + 1) →L[ℝ] Euclid n × ℝ) (Φ.symm (z, t)) := by
+      rw [hΦ, hEΘ]
+      exact hΘd _
+    have hΦC : ContDiffAt ℝ 1 Φ (Φ.symm (z, t)) := by
+      rw [hΦ]
+      exact hΘ.contDiffAt
+    exact ⟨E, hEΘ, (Φ.hasFDerivAt_symm hz hΦE).comp z (hasFDerivAt_prodMk_left z t),
+      (Φ.contDiffAt_symm hz hΦE hΦC).comp z (contDiffAt_id.prodMk contDiffAt_const)⟩
+  -- Step 12, `c = π(y₀) ∈ D` since `(c, t) = Θ(y₀)`; `B̄_ρ(c) ⊆ B_ε(c) ⊆ D` for `ρ = ε/2`
+  have hcD : π y₀ ∈ D := by
+    show (π y₀, t) ∈ Φ.target
+    have h := Φ.map_source hy₀Φ
+    rw [hΦ] at h
+    exact h
+  obtain ⟨ε, hε, hεD⟩ := Metric.isOpen_iff.1 hD (π y₀) hcD
+  -- Step 13, `N = source Φ ∩ π⁻¹(B_ρ(c))`
+  refine ⟨D, Λ, π y₀, ε / 2, Φ.source ∩ π ⁻¹' ball (π y₀) (ε / 2), hD, fun z hz => ?_,
+    ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · obtain ⟨E, -, -, hΛC⟩ := hΛd z hz
+    exact hΛC.contDiffWithinAt
+  · -- Step 8, `π ∘ Λ = id` on `D`
+    intro z hz z' hz' h
+    rw [← hπΛ z hz, ← hπΛ z' hz', h]
+  · intro z hz
+    obtain ⟨E, hEΘ, hΛE, -⟩ := hΛd z hz
+    have hEv : ∀ v, E v = (π v, fderiv ℝ F (Λ z) v) := fun v => by
+      rw [← ContinuousLinearEquiv.coe_coe, hEΘ]
+      rfl
+    refine ⟨(hΦsrc (hΛsrc z hz)).2, hFΛ z hz, ?_, ?_⟩
+    · -- Step 10, `E⁻¹ ∘ inl` is injective
+      rw [hΛE.fderiv]
+      intro w w' h
+      have h' : ((w, 0) : Euclid n × ℝ) = (w', 0) := E.symm.injective h
+      exact congrArg Prod.fst h'
+    · -- Step 11, `E v = (π v, DF(Λ z) v)`: `E⁻¹(w, 0) ∈ ker DF(Λ z)`, and `v = E⁻¹(π v, 0)`
+      -- if `DF(Λ z) v = 0`
+      rw [hΛE.fderiv]
+      ext v
+      rw [LinearMap.mem_range, LinearMap.mem_ker]
+      constructor
+      · rintro ⟨w, rfl⟩
+        have h := hEv (E.symm (w, 0))
+        rw [ContinuousLinearEquiv.apply_symm_apply] at h
+        exact (congrArg Prod.snd h).symm
+      · intro hv
+        refine ⟨π v, E.injective ?_⟩
+        change E (E.symm (π v, 0)) = E v
+        rw [ContinuousLinearMap.coe_coe] at hv
+        rw [ContinuousLinearEquiv.apply_symm_apply, hEv, hv]
+  · exact (closedBall_subset_ball (half_lt_self hε)).trans hεD
+  · exact Φ.open_source.inter (isOpen_ball.preimage π.continuous)
+  · exact ⟨hy₀Φ, mem_ball_self (half_pos hε)⟩
+  · -- `y ∈ N` with `F y = t` has `Φ(y) = (π y, t)`, so `Λ(π y) = Φ⁻¹(Φ y) = y`
+    rintro y ⟨⟨hyΦ, hyB⟩, hyF⟩
+    refine ⟨π y, hyB, ?_⟩
+    have hyF' : F y = t := hyF
+    have h := Φ.left_inv hyΦ
+    rw [hΦ] at h
+    show Φ.symm (π y, t) = y
+    rw [← hyF']
+    exact h
+
+/-- **Countable chart cover of a regular level set** (Simon Ch. 2, before 6.4: "the implicit
+function theorem implies that either `f⁻¹(y) ∖ C` is empty or else it is a `k`-dimensional `C¹`
+submanifold", chapter-02.txt lines 1479–1496; used for the slice tangent planes of Ch. 6,
+Lemma 4.1(2)).  Let `W ⊆ ℝ^{n+1}` be open, `F` be `C¹` and `t ∈ ℝ`.  There are countably many
+`C¹` maps `Λ_k`, injective on open sets `D_k ⊇ B̄_{ρ_k}(c_k)` and with values in `W ∩ {F = t}`,
+such that `DΛ_k(z)` is injective with range `ker DF(Λ_k z)` and every `y ∈ W` with `DF(y) ≠ 0`,
+`F(y) = t` is `Λ_k(z)` for some `k` and `z ∈ B_{ρ_k}(c_k)`.  Take the local chart
+(`dor_lmbsf_pst_level_set_local_chart`) at each such `y`, with neighbourhood `N_y`, and a
+countable subfamily of the open sets `N_y` with the same union (second countability); if there
+is no such `y`, take empty charts with `ρ_k = -1`. -/
+theorem Submission.dor_lmbsf_pst_level_set_chart_cover : ∀ (n : ℕ) (W : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (t : ℝ), IsOpen W → ContDiff ℝ 1 F → ∃ (D : ℕ → Set (Euclid n)) (Λ : ℕ → Euclid n → Euclid (n + 1)) (c : ℕ → Euclid n) (ρ : ℕ → ℝ), (∀ k, IsOpen (D k)) ∧ (∀ k, ContDiffOn ℝ 1 (Λ k) (D k)) ∧ (∀ k, InjOn (Λ k) (D k)) ∧ (∀ k, ∀ z ∈ D k, Λ k z ∈ W ∧ F (Λ k z) = t ∧ Injective (fderiv ℝ (Λ k) z) ∧ LinearMap.range (fderiv ℝ (Λ k) z : Euclid n →ₗ[ℝ] Euclid (n + 1)) = LinearMap.ker (fderiv ℝ F (Λ k z) : Euclid (n + 1) →ₗ[ℝ] ℝ)) ∧ (∀ k, closedBall (c k) (ρ k) ⊆ D k) ∧ ∀ y ∈ W, fderiv ℝ F y ≠ 0 → F y = t → ∃ k, ∃ z ∈ ball (c k) (ρ k), Λ k z = y := by
+  intro n W F t hW hF
+  by_cases hne : ∃ y, y ∈ W ∧ fderiv ℝ F y ≠ 0 ∧ F y = t
+  swap
+  · -- Step 1, no regular point of `{F = t}` in `W`: empty charts, `B̄_{-1}(0) = ∅`
+    refine ⟨fun _ => ∅, fun _ => 0, fun _ => 0, fun _ => -1, fun _ => isOpen_empty,
+      fun _ => contDiffOn_empty, fun _ => injOn_empty _,
+      fun _ z hz => (Set.notMem_empty z hz).elim,
+      fun _ => (closedBall_eq_empty.2 (by norm_num)).subset, fun y hyW hdF hFy => ?_⟩
+    exact (hne ⟨y, hyW, hdF, hFy⟩).elim
+  obtain ⟨y₀, hy₀⟩ := hne
+  -- Step 2, a local chart `(D y, Λ y, c y, ρ y)` with neighbourhood `N y` at each regular point `y`
+  choose D Λ c ρ N hD hΛ hinj hprop hcb hNo hyN hcov using
+    fun y : {y // y ∈ W ∧ fderiv ℝ F y ≠ 0 ∧ F y = t} =>
+      Submission.dor_lmbsf_pst_level_set_local_chart n W F y hW hF y.2.1 y.2.2.1
+  -- Step 3, the `N y` with `y` in a countable `T` have the same union; `T ≠ ∅` as `y₀` is regular
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable N hNo
+  have hT : ∀ y : {y // y ∈ W ∧ fderiv ℝ F y ≠ 0 ∧ F y = t},
+      ∃ i ∈ T, (y : Euclid (n + 1)) ∈ N i := by
+    intro y
+    have hy : (y : Euclid (n + 1)) ∈ ⋃ i ∈ T, N i := by
+      rw [hTU]
+      exact mem_iUnion.2 ⟨y, hyN y⟩
+    obtain ⟨i, hi, hyi⟩ := mem_iUnion₂.1 hy
+    exact ⟨i, hi, hyi⟩
+  obtain ⟨i₀, hi₀, -⟩ := hT ⟨y₀, hy₀⟩
+  obtain ⟨e, rfl⟩ := hTc.exists_eq_range ⟨i₀, hi₀⟩
+  -- Step 4, the charts at the points `e k`, where `F (e k) = t`
+  refine ⟨fun k => D (e k), fun k => Λ (e k), fun k => c (e k), fun k => ρ (e k),
+    fun k => hD (e k), fun k => hΛ (e k), fun k => hinj (e k), fun k z hz => ?_,
+    fun k => hcb (e k), fun y hyW hdF hFy => ?_⟩
+  · obtain ⟨h₁, h₂, h₃, h₄⟩ := hprop (e k) z hz
+    exact ⟨h₁, h₂.trans (e k).2.2.2, h₃, h₄⟩
+  · -- Step 5, `y ∈ N (e k) ∩ F⁻¹(F (e k)) ⊆ Λ (e k) '' B_{ρ (e k)}(c (e k))` for some `k`
+    obtain ⟨_, ⟨k, rfl⟩, hyk⟩ := hT ⟨y, hyW, hdF, hFy⟩
+    obtain ⟨z, hz, hzy⟩ := hcov (e k) ⟨hyk, hFy.trans (e k).2.2.2.symm⟩
+    exact ⟨k, z, hz, hzy⟩
+/-- **Approximate tangent spaces of compact `C¹` patches pass to `S`** (Simon Ch. 3, 1.4; the
+locality step (TL) applied patch by patch).  Assume (TL).  Let `S` be Borel with `Hⁿ(S) < ∞`, and
+for each `k` let `χ_k` be `C¹` on the open `D_k ⊇ K_k = B̄_{ρ_k}(c_k)` and injective on `K_k`.  The
+patch `Σ_k = χ_k(K_k)` is compact with `Hⁿ(Σ_k) < ∞` (Lipschitz image of a compact ball), and
+`A_k = S ∩ χ_k(B_{ρ_k}(c_k))` is Borel (Lusin–Souslin) with `A_k ⊆ Σ_k` and `A_k ⊆ S`.  Two
+applications of (TL) with `U = ℝᴾ` give, `Hⁿ`-a.e. on `A_k`, `Σ_k`-tangent `Q` ⇒ `A_k`-tangent `Q`
+⇒ `S`-tangent `Q`; intersecting over the countably many `k` gives the claim `Hⁿ`-a.e. on `S`. -/
+theorem Submission.dor_lmbsf_pst_patch_tangent_transfer : (∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (S : Set (Euclid P)) (D : ℕ → Set (Euclid n)) (χ : ℕ → Euclid n → Euclid P) (c : ℕ → Euclid n) (ρ : ℕ → ℝ), MeasurableSet S → μHE[n] S ≠ ∞ → (∀ k, IsOpen (D k)) → (∀ k, ContDiffOn ℝ 1 (χ k) (D k)) → (∀ k, closedBall (c k) (ρ k) ⊆ D k) → (∀ k, InjOn (χ k) (closedBall (c k) (ρ k))) → ∀ᵐ x ∂(μHE[n].restrict S), ∀ k, ∀ z ∈ ball (c k) (ρ k), χ k z = x → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (χ k '' closedBall (c k) (ρ k)) x Q → HasApproximateTangentSpaceAt n S x Q := by
+  intro TL P n S D χ c ρ hS hSfin hD hχ hKD hinj
+  -- Steps 1–7, for each patch `k`: `Hⁿ⌞S`-a.e., if `x ∈ A_k = S ∩ χ_k(B_k)`, every approximate
+  -- tangent space of `Σ_k = χ_k(K_k)` at `x` is one of `S`
+  have hpatch : ∀ k, ∀ᵐ x ∂(μHE[n].restrict S), x ∈ S ∩ χ k '' ball (c k) (ρ k) →
+      ∀ Q : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt n (χ k '' closedBall (c k) (ρ k)) x Q →
+          HasApproximateTangentSpaceAt n S x Q := by
+    intro k
+    -- Step 1, `Σ_k` is compact, hence Borel
+    have hχK : ContinuousOn (χ k) (closedBall (c k) (ρ k)) :=
+      ((hχ k).mono (hKD k)).continuousOn
+    have hsig : MeasurableSet (χ k '' closedBall (c k) (ρ k)) :=
+      ((isCompact_closedBall _ _).image_of_continuousOn hχK).isClosed.measurableSet
+    -- Step 2, `χ_k` is `L`-Lipschitz on the convex compact `K_k`, so `Hⁿ(Σ_k) ≤ Lⁿ Hⁿ(K_k) < ∞`
+    obtain ⟨L, hL⟩ := ((hχ k).mono (hKD k)).exists_lipschitzOnWith one_ne_zero
+      (convex_closedBall _ _) (isCompact_closedBall _ _)
+    have hsigfin : μHE[n] (χ k '' closedBall (c k) (ρ k)) ≠ ∞ := by
+      refine ne_top_of_le_ne_top (ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top) ?_)
+        (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n hL)
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      exact (isCompact_closedBall _ _).measure_lt_top.ne
+    -- Step 3, `A_k` is Borel (Lusin–Souslin for the injective continuous `χ_k` on `B_k`)
+    have hA : MeasurableSet (S ∩ χ k '' ball (c k) (ρ k)) :=
+      hS.inter (measurableSet_ball.image_of_continuousOn_injOn
+        (hχK.mono ball_subset_closedBall) ((hinj k).mono ball_subset_closedBall))
+    -- Steps 4–6, `A_k ⊆ Σ_k` and `A_k ⊆ S`, and (TL) applies to both pairs with `U = ℝᴾ`
+    have h1 := TL P n univ _ _ isOpen_univ hA hsig
+      (inter_subset_right.trans (image_mono ball_subset_closedBall)) (subset_univ _)
+      fun K _ _ => ne_top_of_le_ne_top hsigfin (measure_mono inter_subset_left)
+    have h2 := TL P n univ _ _ isOpen_univ hA hS inter_subset_left (subset_univ _)
+      fun K _ _ => ne_top_of_le_ne_top hSfin (measure_mono inter_subset_left)
+    -- Step 7, `Hⁿ⌞A_k`-a.e., `Σ_k`-tangent `Q` ⇒ `A_k`-tangent `Q` ⇒ `S`-tangent `Q`
+    have h3 : ∀ᵐ x ∂(μHE[n].restrict (S ∩ χ k '' ball (c k) (ρ k))),
+        ∀ Q : Submodule ℝ (Euclid P),
+          HasApproximateTangentSpaceAt n (χ k '' closedBall (c k) (ρ k)) x Q →
+            HasApproximateTangentSpaceAt n S x Q := by
+      filter_upwards [h1, h2] with x hx1 hx2 Q hQ
+      exact (hx2 Q).2 ((hx1 Q).1 hQ)
+    exact ae_restrict_of_ae ((ae_restrict_iff' hA).1 h3)
+  -- Steps 8–9, intersect over the countably many `k`; `x = χ_k(z)` with `z ∈ B_k` lies in `A_k`
+  filter_upwards [ae_all_iff.2 hpatch, ae_restrict_mem hS] with x hx hxS k z hz hzx Q hQ
+  exact hx k ⟨hxS, z, hz, hzx⟩ Q hQ
+/-- **Slices of one `C¹` chart piece** (Simon Ch. 6, Lemma 4.1(1),(2) for one piece; Ch. 2, 6.4
+and Remark 4.4; Ch. 3, Lemma 1.2 "if").  For `y ∈ Y`, `G(ψ(y)) ≠ 0 ⇔ DF(y) ≠ 0`, so
+`S_t = ψ(Y ∩ Γ_t)` with `Γ_t = {DF ≠ 0} ∩ F⁻¹(t)`, a Borel set by Lusin–Souslin.  Countably many
+`C¹` graph charts `Λ_k` cover `Γ_t ∩ V`, and `χ_k := ψ ∘ Λ_k` is `C¹` with `Dχ_k(z)` injective of
+range `Dψ(y)(ker DF(y)) = Dψ(y)(ℝ^{n+1}) ∩ G(ψ(y))^⊥`, `y = Λ_k(z)`.  (i) `S_t ⊆ ⋃_k χ_k(D_k)`.
+(ii) The compact patch `χ_k(B̄_{ρ_k}(c_k))` has approximate tangent space `Dχ_k(z)(ℝⁿ)` at
+`χ_k(z)`, `z ∈ B_{ρ_k}(c_k)`, and (TL) transfers it to `S_t`, `Hⁿ`-a.e. on `S_t`. -/
+theorem Submission.dor_lmbsf_piece_slice_approxTangent : (∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (V C Y : Set (Euclid (n + 1))) (ψ : Euclid (n + 1) → Euclid P) (F : Euclid (n + 1) → ℝ) (f : Euclid P → ℝ) (G : Euclid P → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → IsCompact C → C ⊆ V → MeasurableSet Y → Y ⊆ C → ContDiff ℝ 1 F → (∀ y ∈ Y, f (ψ y) = F y) → (∀ y ∈ Y, G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → ∀ t : ℝ, CountablyRectifiable n (ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}) ∧ (μHE[n] (ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}) ≠ ∞ → ∀ᵐ x ∂(μHE[n].restrict (ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t})), ∀ y ∈ Y, ψ y = x → HasApproximateTangentSpaceAt n (ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}) x (LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ G x)ᗮ)) := by
+  intro hTL P n V C Y ψ F f G hV hψ hψinj hDψ hC hCV hY hYC hF hfF hG t
+  have hYV : Y ⊆ V := hYC.trans hCV
+  -- Step 1, for `y ∈ Y`: `G(ψ(y)) = 0 ⇔ DF(y) = 0`, and
+  -- `Dψ(y)(ℝ^{n+1}) ∩ G(ψ(y))^⊥ = Dψ(y)(ker DF(y))`
+  have halg := fun y (hy : y ∈ Y) => Submission.dor_lmbsf_pst_slice_plane_algebra (n + 1) P
+    (fderiv ℝ ψ y) (fderiv ℝ F y) (G (ψ y)) (hG y hy).1 (hG y hy).2
+  set S := ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}
+  have hlevel : ∀ y ∈ Y, ψ y ∈ S → fderiv ℝ F y ≠ 0 ∧ F y = t := by
+    rintro y hy ⟨⟨-, hGy⟩, hfy⟩
+    exact ⟨fun h => hGy ((halg y hy).1.2 h), (hfF y hy).symm.trans hfy⟩
+  -- so `S_t = ψ(Y ∩ Γ_t)`
+  have hSeq : S = ψ '' (Y ∩ {y | fderiv ℝ F y ≠ 0} ∩ F ⁻¹' {t}) := by
+    refine Subset.antisymm (fun x hx => ?_) ?_
+    · obtain ⟨y, hy, rfl⟩ := hx.1.1
+      exact ⟨y, ⟨⟨hy, (hlevel y hy hx).1⟩, (hlevel y hy hx).2⟩, rfl⟩
+    · rintro x ⟨y, ⟨⟨hy, hDF⟩, hFy⟩, rfl⟩
+      exact ⟨⟨mem_image_of_mem ψ hy, fun h => hDF ((halg y hy).1.1 h)⟩, (hfF y hy).trans hFy⟩
+  -- Step 2, countably many `C¹` graph charts `Λ_k : D_k → Γ_t ∩ V` with
+  -- `Γ_t ∩ V = ⋃_k Λ_k(B_{ρ_k}(c_k))`; `χ_k := ψ ∘ Λ_k` is `C¹` on `D_k` and injective on
+  -- `B̄_{ρ_k}(c_k)`
+  obtain ⟨D, Λ, c, ρ, hDo, hΛ, hΛinj, hΛD, hball, hcover⟩ :=
+    Submission.dor_lmbsf_pst_level_set_chart_cover n V F t hV hF
+  have hΛV : ∀ k, MapsTo (Λ k) (D k) V := fun k z hz => (hΛD k z hz).1
+  have hχ : ∀ k, ContDiffOn ℝ 1 (ψ ∘ Λ k) (D k) := fun k => hψ.comp (hΛ k) (hΛV k)
+  have hχinj : ∀ k, InjOn (ψ ∘ Λ k) (closedBall (c k) (ρ k)) := fun k =>
+    (hψinj.comp (hΛinj k) (hΛV k)).mono (hball k)
+  have hchart : ∀ y ∈ Y, ψ y ∈ S → ∃ k, ∃ z ∈ ball (c k) (ρ k), Λ k z = y := fun y hy hyS =>
+    hcover y (hYV hy) (hlevel y hy hyS).1 (hlevel y hy hyS).2
+  refine ⟨?_, fun hfin => ?_⟩
+  · -- Step 3, (i): `S_t ⊆ ⋃_k χ_k(D_k)`, a countable union of `C¹` images of open sets
+    refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion (fun k => (ψ ∘ Λ k) '' D k)
+      fun k => Poincare.SimonGMT.Chapter03.countablyRectifiable_image_contDiffOn_open (hDo k)
+        (hχ k)).mono fun x hx => ?_
+    obtain ⟨y, hy, rfl⟩ := hx.1.1
+    obtain ⟨k, z, hz, rfl⟩ := hchart y hy hx
+    exact mem_iUnion.2 ⟨k, z, hball k (ball_subset_closedBall hz), rfl⟩
+  -- Step 4, (ii): `S_t` is Borel, so (TL) transfers the tangent planes of the compact patches
+  -- `χ_k(B̄_{ρ_k}(c_k))` to `S_t` at `Hⁿ`-a.e. `x ∈ S_t`
+  have hSmeas : MeasurableSet S := by
+    have hΓ : MeasurableSet (Y ∩ {y | fderiv ℝ F y ≠ 0} ∩ F ⁻¹' {t}) :=
+      (hY.inter (isOpen_ne_fun (hF.continuous_fderiv one_ne_zero)
+        continuous_const).measurableSet).inter
+        (hF.continuous.measurable (measurableSet_singleton t))
+    rw [hSeq]
+    exact hΓ.image_of_continuousOn_injOn (hψ.continuousOn.mono fun y hy => hYV hy.1.1)
+      (hψinj.mono fun y hy => hYV hy.1.1)
+  filter_upwards [Submission.dor_lmbsf_pst_patch_tangent_transfer hTL P n S D (fun k => ψ ∘ Λ k)
+    c ρ hSmeas hfin hDo hχ hball hχinj, ae_restrict_mem hSmeas] with x hx hxS
+  rintro y hy rfl
+  obtain ⟨k, z, hz, rfl⟩ := hchart y hy hxS
+  -- Step 5, `Dχ_k(z) = Dψ(Λ_k z) ∘ DΛ_k(z)` is injective, with range
+  -- `Dψ(Λ_k z)(ker DF(Λ_k z)) = Dψ(Λ_k z)(ℝ^{n+1}) ∩ G(χ_k z)^⊥`
+  have hzD : z ∈ D k := hball k (ball_subset_closedBall hz)
+  obtain ⟨-, -, hDΛ, hrangeΛ⟩ := hΛD k z hzD
+  have hderiv : fderiv ℝ (ψ ∘ Λ k) z = (fderiv ℝ ψ (Λ k z)).comp (fderiv ℝ (Λ k) z) :=
+    fderiv_comp z ((hψ.contDiffAt (hV.mem_nhds (hΛV k hzD))).differentiableAt one_ne_zero)
+      (((hΛ k).contDiffAt ((hDo k).mem_nhds hzD)).differentiableAt one_ne_zero)
+  have hrange : LinearMap.range (fderiv ℝ (ψ ∘ Λ k) z : Euclid n →ₗ[ℝ] Euclid P) =
+      LinearMap.range (fderiv ℝ ψ (Λ k z) : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓
+        (ℝ ∙ G (ψ (Λ k z)))ᗮ := by
+    rw [(halg _ hy).2, hderiv, ContinuousLinearMap.toLinearMap_comp, LinearMap.range_comp,
+      hrangeΛ]
+  -- `image_tangent`: the patch `χ_k(B̄_{ρ_k}(c_k))` has approximate tangent space
+  -- `Dχ_k(z)(ℝⁿ)` at `χ_k(z)`, since `z ∈ B_{ρ_k}(c_k) ⊆ int B̄_{ρ_k}(c_k)`
+  have himage := Submission.dor_lmbsf_c1_image_approxTangent n P (D k) (closedBall (c k) (ρ k))
+    (ψ ∘ Λ k) z (hDo k) (hχ k) (isCompact_closedBall _ _) (hball k) (hχinj k)
+    (ball_subset_interior_closedBall hz)
+    (by rw [hderiv, ContinuousLinearMap.coe_comp]; exact (hDψ _ (hYV hy)).comp hDΛ)
+  rw [hrange] at himage
+  exact hx k z hz rfl _ himage
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
