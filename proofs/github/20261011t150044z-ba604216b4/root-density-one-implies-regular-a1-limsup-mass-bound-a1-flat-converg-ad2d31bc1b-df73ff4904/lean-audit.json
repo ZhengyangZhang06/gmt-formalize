@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5ea549faa9cf6ab7492221c73636ed603d7d3b1f75f439c09b7516f83179af24",
+  "git_delta": {
+    "base_commit": "218b56c1e33d8c372777186d2278d66ac3a0500a",
+    "candidate_commit": "76b561281414b26d418f6b2b7683e89c92b7ee8b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_cp_smooth_duality",
+    "diff_sha256": "a62644b0ecf96bb636626e62bbce190500072384b8d23825a5587dde59dab7fb",
+    "source_sha256": "9f3f0d4329a677c9bd08ac364537233267694c3dd3cb2701444afeb5bd145537",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_cp_smooth_duality",
+      "statement": "∀ (P : ℕ) (w : Euclid P → ℝ) (W : Set (Euclid P)) (V : ℝ), IsOpen W → Bornology.IsBounded W → ContDiff ℝ (⊤ : ℕ∞) w → (∀ g : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ W → (∀ y, ‖g y‖ ≤ 1) → ∫ y, fderiv ℝ w y (g y) ≤ V) → ∫ y in W, ‖fderiv ℝ w y‖ ≤ V",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
