@@ -697,6 +697,69 @@ theorem Submission.dimred_cs_sos_mt_cs_translate_boundary_eval : ∀ (P m : ℕ)
     GeometricCurrentOn.boundary_apply]
   exact congrArg Y (Subtype.ext hd.symm)
 
+/-- **Slice identity for one translate.**  Write `β_a = ♭_{g ∘ a.succAbove} ω`, `γ = ♭_g ω` and
+`δ_a = D_{g_a} β_a`.  At every point `t + y` the contraction of `dω` with the frame splits as
+`♭_g dω = Σ_a (−1)^a δ_a + (−1)^{j+1} dγ` (`flat_extDeriv_split`).  Every translated form here
+is a test form (interior product (b), `isTestForm_fderiv_apply`, `exteriorDerivative_isTestForm`),
+so `Y` evaluates the splitting linearly, and the last term is
+`Y(dγ(t + ·)) = ∂Y(γ(t + ·)) = X(γ(t + ·))` (`translate_boundary_eval`). -/
+theorem Submission.dimred_cs_sos_mt_cs_slice_identity : ∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h : n' = (j + 1) + m) (h₁ : n' + 1 = (j + 1) + (m + 1)) (h₂ : n' = j + (m + 1)) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (flatD : Covector (Euclid P) (n' + 1) →L[ℝ] Covector (Euclid P) (m + 1)) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m) (flatF : Fin (j + 1) → Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) (m + 1)) (ω : TestFormOn (univ : Set (Euclid P)) n') (t : Euclid P), Y.boundary = X → (∀ (α : Covector (Euclid P) (n' + 1)) (v : Fin (m + 1) → Euclid P), flatD α v = α (Fin.append g v ∘ Fin.cast h₁)) → (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → currentEval Y (fun y => flatD (exteriorDerivative (ω : DifferentialForm (Euclid P) n') (t + y))) = ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) * currentEval Y (fun y => fderiv ℝ (fun z => flatF a ((ω : DifferentialForm (Euclid P) n') z)) (t + y) (g a)) + (-1 : ℝ) ^ (j + 1) * currentEval X (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) := by
+  intro P j m n' g h h₁ h₂ X Y flatD flat flatF ω t hYX hD hflat hF
+  -- `currentEval` is the current itself on test forms (every support lies in `univ`)
+  have hev : ∀ (k : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) k)
+      (φ : DifferentialForm (Euclid P) k) (hφ : IsTestForm φ ∧ tsupport φ ⊆ univ),
+      currentEval T φ = T ⟨φ, hφ⟩ := by
+    intro k T φ hφ
+    rw [currentEval, dite_eq_left hφ]
+  -- work with the underlying form `w` of `ω`
+  have hω : IsTestForm (ω : DifferentialForm (Euclid P) n') := ω.property.1
+  generalize (ω : DifferentialForm (Euclid P) n') = w at hω ⊢
+  -- `β_a = flatF a ∘ w` and `γ = flat ∘ w` are test forms (interior product (b), translate by `0`)
+  have hβ : ∀ a : Fin (j + 1), IsTestForm (fun z => flatF a (w z)) := fun a => by
+    simpa only [zero_add] using
+      ((Submission.dimred_cs_sos_mt_interior_product P).2 n' (m + 1) (flatF a) w 0 hω).1
+  have hγ : IsTestForm (fun z => flat (w z)) := by
+    simpa only [zero_add] using
+      ((Submission.dimred_cs_sos_mt_interior_product P).2 n' m flat w 0 hω).1
+  -- the translates `♭_g dw (t + ·)`, `δ_a (t + ·)` and `dγ (t + ·)` are test forms
+  have hFt : IsTestForm (fun y => flatD (exteriorDerivative w (t + y))) :=
+    ((Submission.dimred_cs_sos_mt_interior_product P).2 (n' + 1) (m + 1) flatD _ t
+      (exteriorDerivative_isTestForm hω)).1
+  have hAt : ∀ a : Fin (j + 1),
+      IsTestForm (fun y => fderiv ℝ (fun z => flatF a (w z)) (t + y) (g a)) := fun a => by
+    simpa only [ContinuousLinearMap.id_apply] using
+      ((Submission.dimred_cs_sos_mt_interior_product P).2 (m + 1) (m + 1)
+        (ContinuousLinearMap.id ℝ _) _ t
+        (Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply P (m + 1) _ (g a) (hβ a))).1
+  have hDt : IsTestForm (fun y => exteriorDerivative (fun z => flat (w z)) (t + y)) := by
+    simpa only [ContinuousLinearMap.id_apply] using
+      ((Submission.dimred_cs_sos_mt_interior_product P).2 (m + 1) (m + 1)
+        (ContinuousLinearMap.id ℝ _) _ t (exteriorDerivative_isTestForm hγ)).1
+  -- the pointwise splitting at `t + y`, read as an identity of test forms in `ℝᴾ`
+  have hsplit : (⟨fun y => flatD (exteriorDerivative w (t + y)), hFt, subset_univ _⟩ :
+        TestFormOn (univ : Set (Euclid P)) (m + 1)) =
+      ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) •
+        (⟨fun y => fderiv ℝ (fun z => flatF a (w z)) (t + y) (g a), hAt a, subset_univ _⟩ :
+          TestFormOn (univ : Set (Euclid P)) (m + 1)) +
+      (-1 : ℝ) ^ (j + 1) •
+        (⟨fun y => exteriorDerivative (fun z => flat (w z)) (t + y), hDt, subset_univ _⟩ :
+          TestFormOn (univ : Set (Euclid P)) (m + 1)) := by
+    refine Subtype.ext (funext fun y => ?_)
+    simp only [Submodule.coe_add, Submodule.coe_sum, Submodule.coe_smul, Finset.sum_apply,
+      Pi.add_apply, Pi.smul_apply]
+    exact Submission.dimred_cs_sos_mt_cs_flat_extDeriv_split P j m n' g h h₁ h₂ flatD flat flatF
+      w (t + y) ((hω.1.differentiable (by simp)).differentiableAt) hD hflat hF
+  -- the boundary term: `Y(dγ(t + ·)) = X(γ(t + ·))`
+  have hbd : currentEval Y (fun y => exteriorDerivative (fun z => flat (w z)) (t + y)) =
+      currentEval X (fun y => flat (w (t + y))) :=
+    Submission.dimred_cs_sos_mt_cs_translate_boundary_eval P m X Y _ t hYX hγ
+  have hA : ∀ a : Fin (j + 1),
+      currentEval Y (fun y => fderiv ℝ (fun z => flatF a (w z)) (t + y) (g a)) =
+        Y ⟨_, hAt a, subset_univ _⟩ := fun a => hev _ Y _ ⟨hAt a, subset_univ _⟩
+  -- linearity of `Y`
+  rw [← hbd, hev _ Y _ ⟨hFt, subset_univ _⟩, hev _ Y _ ⟨hDt, subset_univ _⟩, hsplit]
+  simp only [map_add, map_sum, map_smul, smul_eq_mul, hA]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
