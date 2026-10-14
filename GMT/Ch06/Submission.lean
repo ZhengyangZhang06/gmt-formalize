@@ -359,6 +359,84 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- **Local integrability of `⟨c, v⟩` from test forms (Simon Ch. 6, (2.7), p. 136).**  If
+`⟨ω, v⟩` is `μ`-integrable for every test form `ω ∈ 𝒟ⁿ(U)`, then `⟨c, v⟩` is `μ`-integrable on
+every compact `K ⊆ U`, for every constant `n`-covector `c`.  With `cthickening δ K ⊆ U` and
+`r = δ / 2`, the smooth Urysohn lemma gives a smooth `χ` with `χ = 0` off `thickening r K` and
+`χ = 1` on `K`; its support lies in the compact `cthickening r K ⊆ U`, so `ω_K = χ c` is a test
+form on `U`, and `⟨ω_K, v⟩ = χ ⟨c, v⟩` agrees with `⟨c, v⟩` on the closed set `K`. -/
+theorem Submission.polyhedral_approx_rt_integrableOn_apply : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), (∀ ω : TestFormOn U n, Integrable (fun x => v x ((ω : DifferentialForm (Eucl P) n) x)) μ) → ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∀ c : Covector (Eucl P) n, IntegrableOn (fun x => v x c) K μ := by
+  intro P n U hU μ v hv K hK hKU c
+  -- Step 1: a radius `r = δ / 2 > 0` with `cthickening r K ⊆ cthickening δ K ⊆ U`.
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hKU
+  have hr : 0 < δ / 2 := half_pos hδ
+  have hrU : cthickening (δ / 2) K ⊆ U := (cthickening_mono (half_le_self hδ.le) K).trans hδU
+  -- Step 2: smooth Urysohn for the disjoint closed sets `(thickening r K)ᶜ` and `K`.
+  obtain ⟨χ, hχ0, hχ1, -⟩ := exists_contMDiffMap_zero_one_of_isClosed
+    (modelWithCornersSelf ℝ (Eucl P)) (n := (⊤ : ℕ∞))
+    (isOpen_thickening (δ := δ / 2) (E := K)).isClosed_compl hK.isClosed
+    (disjoint_compl_left_iff_subset.mpr (self_subset_thickening hr K))
+  have hχd : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ := contMDiff_iff_contDiff.mp χ.contMDiff
+  -- Step 3: `tsupport χ ⊆ cthickening r K ⊆ U`, a compact set, so `χ` has compact support.
+  have hχs : Function.support χ ⊆ thickening (δ / 2) K := fun x hx => by
+    by_contra h
+    exact hx (hχ0 h)
+  have hχt : tsupport χ ⊆ cthickening (δ / 2) K :=
+    (closure_mono hχs).trans (closure_thickening_subset_cthickening _ _)
+  have hχc : HasCompactSupport χ := hK.cthickening.of_isClosed_subset (isClosed_tsupport _) hχt
+  -- Step 4: `ω_K = χ c` is a test form on `U`.
+  let ω : DifferentialForm (Eucl P) n := fun x => χ x • c
+  have hω : ω ∈ TestFormOn U n :=
+    ⟨⟨hχd.smul contDiff_const, hχc.smul_right (f' := fun _ => c)⟩,
+      (tsupport_smul_subset_left (fun x => χ x) fun _ => c).trans (hχt.trans hrU)⟩
+  -- Step 5: by linearity of `v x`, `x ↦ v x (ω_K x) = χ x * v x c` is `μ`-integrable.
+  have h5 : Integrable (fun x => χ x * v x c) μ := by
+    simpa [ω, map_smul, smul_eq_mul] using hv ⟨ω, hω⟩
+  -- Step 6: `χ = 1` on the closed, hence measurable, set `K`.
+  refine (h5.integrableOn (s := K)).congr_fun (fun x hx => ?_) hK.isClosed.measurableSet
+  simp [hχ1 hx]
+/-- **Local integrability of `θ ⟨c, ξ⟩` for `τ(M, θ, ξ)` (Simon Ch. 6, 3.1, p. 146).**  If
+`(M, θ, ξ)` is a rectifiable triple in `U`, then `x ↦ θ(x) ⟨c, ξ(x)⟩` is `Hⁿ⌞M`-integrable on
+every compact `K ⊆ U`, for every `n`-covector `c`.  For orthonormal `τ`,
+`‖±τ₁ ∧ ⋯ ∧ τₙ‖ ≤ ∏ᵢ ‖τᵢ‖ = 1`, so `|⟨c, ξ⟩| ≤ ‖c‖` `Hⁿ⌞M`-a.e.; `(Hⁿ⌞M)⌞K = Hⁿ⌞(M ∩ K)`, on
+which `θ` is integrable, and an integrable function times an a.e.-bounded one is integrable. -/
+theorem Submission.polyhedral_approx_rt_tau_integrableOn : ∀ (P n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∀ c : Covector (Eucl P) n, IntegrableOn (fun x => θ x * ξ x c) K ((μHE[n] : Measure (Eucl P)).restrict M) := by
+  intro P n U M θ ξ hT K hK hKU c
+  -- Step 1: `‖simpleNVector τ‖ ≤ ∏ᵢ ‖τᵢ‖ = 1` for orthonormal `τ` (the `mkContinuous` bound).
+  have hunit : ∀ τ : Fin n → Eucl P, Orthonormal ℝ τ → ‖simpleNVector τ‖ ≤ 1 := by
+    intro τ hτ
+    have h1 : ‖simpleNVector τ‖ ≤ ∏ i, ‖τ i‖ :=
+      LinearMap.mkContinuous_norm_le _ (Finset.prod_nonneg fun i _ => norm_nonneg _) _
+    simpa [hτ.norm_eq_one] using h1
+  -- Step 2: `ξ = ±simpleNVector τ` gives `|ξ(x)(c)| ≤ ‖c‖` for `Hⁿ⌞M`-a.e. `x`.
+  have hbound : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ x c‖ ≤ ‖c‖ := by
+    filter_upwards [hT.orients] with x hx
+    obtain ⟨τ, hτ, -, hξ⟩ := hx
+    have hs : ‖simpleNVector τ c‖ ≤ ‖c‖ :=
+      calc ‖simpleNVector τ c‖ ≤ ‖simpleNVector τ‖ * ‖c‖ := (simpleNVector τ).le_opNorm c
+        _ ≤ 1 * ‖c‖ := by gcongr; exact hunit τ hτ
+        _ = ‖c‖ := one_mul _
+    rcases hξ with h | h
+    · rw [h]; exact hs
+    · rw [h, neg_apply, norm_neg]; exact hs
+  -- Step 3: `K` is closed, so `(Hⁿ⌞M)⌞K = Hⁿ⌞(M ∩ K) ≤ Hⁿ⌞M`.
+  have hKm : MeasurableSet K := hK.isClosed.measurableSet
+  rw [IntegrableOn, Measure.restrict_restrict hKm, Set.inter_comm]
+  have hle : (μHE[n] : Measure (Eucl P)).restrict (M ∩ K) ≤
+      (μHE[n] : Measure (Eucl P)).restrict M :=
+    Measure.restrict_mono Set.inter_subset_left le_rfl
+  -- Step 4: `θ` is `Hⁿ⌞(M ∩ K)`-integrable (the `integrableOn` field).
+  have hθ : Integrable θ ((μHE[n] : Measure (Eucl P)).restrict (M ∩ K)) :=
+    hT.integrableOn K hK hKU
+  -- Step 5: `ξ(·)(c)` is a.e.-strongly measurable and a.e. bounded by `‖c‖` for `Hⁿ⌞(M ∩ K)`.
+  have hmeas : AEStronglyMeasurable (fun x => ξ x c)
+      ((μHE[n] : Measure (Eucl P)).restrict (M ∩ K)) :=
+    ((ContinuousLinearMap.apply ℝ ℝ c).continuous.comp_aestronglyMeasurable
+      hT.aestronglyMeasurable).mono_measure hle
+  have hbd : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict (M ∩ K)), ‖ξ x c‖ ≤ ‖c‖ :=
+    ae_mono hle hbound
+  -- Step 6: integrable times a.e.-bounded is integrable.
+  exact hθ.mul_bdd hmeas hbd
 /-- **Kronecker duality of coordinate wedges (Simon Ch. 6, 1.1–1.2).**  For an increasing
 multi-index `I`, `dx^I = dx^{I₁} ∧ ⋯ ∧ dx^{Iₙ}` has coordinate `1` at `I` and `0` at every
 increasing `J ≠ I`: by (1.1), `dx^I(e_{J₁}, …, e_{Jₙ}) = det [I i = J j]`.  For `J = I` this matrix
@@ -790,6 +868,118 @@ theorem Submission.polyhedral_approx_restriction_exists : ∀ (P n : ℕ) (U : S
           integral_mono_measure Measure.restrict_le_self
             (ae_of_all _ (indicator_nonneg fun y _ => hG0 y)) hint
       _ = ∫ x in closure W, G x ∂μ := integral_indicator hKm
+/-- **Simon Ch. 6, (2.9) and 3.1 (pp. 136, 146).**  If `T = τ(M, θ, ξ)` and `S = T ⌞ A`, then
+`S = τ(M ∩ A, θ, ξ)`.  Let `(μ, v)` be the representation of `T` defining `S`.  For a covector
+`c`, `⟨c, v⟩` is locally `μ`-integrable and `θ ⟨c, ξ⟩` is locally `Hⁿ ⌞ M`-integrable on `U`
+(`polyhedral_approx_rt_integrableOn_apply`, `polyhedral_approx_rt_tau_integrableOn`).  Both pair
+with every smooth `ψ` to `T(ψ c)`, so `polyhedral_approx_measure_uniqueness` equates their
+integrals over `A` against continuous compactly supported weights.  Expanding `ω` in the
+coordinate wedges `dx^I` (`polyhedral_approx_pairing_expansion`), with the coordinates `ω_I` as
+weights, and summing over `I` gives `S(ω) = ∫_A θ ⟨ω, ξ⟩ d(Hⁿ ⌞ M) = τ(M ∩ A, θ, ξ)(ω)`. -/
+theorem Submission.polyhedral_approx_restriction_tau : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → ∀ (A : Set (Eucl P)) (S : GeometricCurrentOn U n), IsRestriction T A S → ∀ ω : TestFormOn U n, S ω = tauAction n (M ∩ A) θ ξ ω := by
+  intro P n U hU T M θ ξ hMθξ hT A S hS ω
+  obtain ⟨hA, μ, v, hrep, hSω⟩ := hS
+  -- For every covector `c`, `⟨c, v⟩` is locally `μ`-integrable and `θ ⟨c, ξ⟩` is locally
+  -- `Hⁿ ⌞ M`-integrable on `U`.
+  have hloc : ∀ (c : Covector (Eucl P) n) (K : Set (Eucl P)), IsCompact K → K ⊆ U →
+      IntegrableOn (fun x => v x c) K μ ∧
+        IntegrableOn (fun x => θ x * ξ x c) K ((μHE[n] : Measure (Eucl P)).restrict M) :=
+    fun c K hK hKU =>
+      ⟨Submission.polyhedral_approx_rt_integrableOn_apply P n U hU μ v (fun ω => (hrep ω).1)
+          K hK hKU c,
+        Submission.polyhedral_approx_rt_tau_integrableOn P n U M θ ξ hMθξ K hK hKU c⟩
+  -- Both pair with a smooth `ψ` to `T(ψ c)`; hence their integrals over `A` against continuous
+  -- compactly supported weights agree.
+  have key : ∀ (c : Covector (Eucl P) n) (u : Eucl P → ℝ), Continuous u → HasCompactSupport u →
+      tsupport u ⊆ U → ∫ x in A, u x * v x c ∂μ =
+        ∫ x in A, u x * (θ x * ξ x c) ∂((μHE[n] : Measure (Eucl P)).restrict M) := by
+    intro c
+    refine Submission.polyhedral_approx_measure_uniqueness P U hU μ _ (fun x => v x c)
+      (fun x => θ x * ξ x c) (hloc c) (fun ψ hψ hψc hψU => ?_) A hA
+    -- `ψ c` is a test form in `U`.
+    have hmem : (fun x => ψ x • c : DifferentialForm (Eucl P) n) ∈
+        testFormOnSubmodule (E := Eucl P) U n :=
+      ⟨⟨hψ.smul contDiff_const,
+          IsCompact.of_isClosed_subset hψc (isClosed_tsupport _) (tsupport_smul_subset_left _ _)⟩,
+        (tsupport_smul_subset_left _ _).trans hψU⟩
+    calc ∫ x, ψ x * v x c ∂μ
+        = ∫ x, v x (((⟨_, hmem⟩ : TestFormOn U n) : DifferentialForm (Eucl P) n) x) ∂μ := by
+          refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+          show ψ x * v x c = v x (ψ x • c)
+          rw [map_smul, smul_eq_mul]
+      _ = tauAction n M θ ξ (⟨_, hmem⟩ : TestFormOn U n) :=
+          (hrep ⟨_, hmem⟩).2.symm.trans (hT ⟨_, hmem⟩)
+      _ = ∫ x, ψ x * (θ x * ξ x c) ∂((μHE[n] : Measure (Eucl P)).restrict M) := by
+          refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+          show θ x * ξ x (ψ x • c) = ψ x * (θ x * ξ x c)
+          rw [map_smul, smul_eq_mul]
+          ring
+  -- Weighted by a continuous compactly supported `u` with `tsupport u ⊆ U`, both coefficient
+  -- functions are integrable.
+  have hint : ∀ (c : Covector (Eucl P) n) (u : Eucl P → ℝ), Continuous u →
+      HasCompactSupport u → tsupport u ⊆ U → Integrable (fun x => u x * v x c) μ ∧
+        Integrable (fun x => u x * (θ x * ξ x c)) ((μHE[n] : Measure (Eucl P)).restrict M) := by
+    intro c u hu hus huU
+    exact ⟨(IntegrableOn.continuousOn_mul hu.continuousOn (hloc c (tsupport u) hus huU).1
+        hus).integrable_of_forall_notMem_eq_zero
+          fun x hx => by simp [image_eq_zero_of_notMem_tsupport hx],
+      (IntegrableOn.continuousOn_mul hu.continuousOn (hloc c (tsupport u) hus huU).2
+        hus).integrable_of_forall_notMem_eq_zero
+          fun x hx => by simp [image_eq_zero_of_notMem_tsupport hx]⟩
+  -- The coordinates `ω_I = ω(e_{I 0}, …, e_{I (n-1)})` are continuous, with compact support
+  -- in `U`.
+  have hcoord : ∀ I : SimonMultiIndex n P,
+      Continuous (fun x => euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I) ∧
+        HasCompactSupport
+          (fun x => euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I) ∧
+        tsupport (fun x => euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I) ⊆
+          U := by
+    intro I
+    have h0 : (fun c : Covector (Eucl P) n => euclideanCovectorCoordinate c I) 0 = 0 := by
+      simp [euclideanCovectorCoordinate]
+    exact ⟨(ContDiff.continuous ω.property.1.1).eval_const
+        (fun j => EuclideanSpace.single (I j) (1 : ℝ)),
+      ω.property.1.2.comp_left (g := fun c : Covector (Eucl P) n => euclideanCovectorCoordinate c I)
+        h0,
+      (tsupport_comp_subset
+        (g := fun c : Covector (Eucl P) n => euclideanCovectorCoordinate c I) h0 _).trans
+          ω.property.2⟩
+  -- Expand `ω` in the coordinate wedges `dx^I` and sum over `I`.
+  calc S ω = ∫ x in A, v x ((ω : DifferentialForm (Eucl P) n) x) ∂μ := hSω ω
+    _ = ∫ x in A, ∑ I : SimonMultiIndex n P,
+          euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I *
+            v x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) ∂μ :=
+        integral_congr_ae (Eventually.of_forall fun x =>
+          (Submission.polyhedral_approx_pairing_expansion P n (v x)
+            ((ω : DifferentialForm (Eucl P) n) x)).1)
+    _ = ∑ I : SimonMultiIndex n P, ∫ x in A,
+          euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I *
+            v x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))) ∂μ :=
+        integral_finsetSum _ fun I _ =>
+          (hint _ _ (hcoord I).1 (hcoord I).2.1 (hcoord I).2.2).1.integrableOn
+    _ = ∑ I : SimonMultiIndex n P, ∫ x in A,
+          euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I *
+            (θ x * ξ x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))))
+            ∂((μHE[n] : Measure (Eucl P)).restrict M) :=
+        Finset.sum_congr rfl fun I _ => key _ _ (hcoord I).1 (hcoord I).2.1 (hcoord I).2.2
+    _ = ∫ x in A, ∑ I : SimonMultiIndex n P,
+          euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I *
+            (θ x * ξ x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j))))
+            ∂((μHE[n] : Measure (Eucl P)).restrict M) :=
+        (integral_finsetSum _ fun I _ =>
+          (hint _ _ (hcoord I).1 (hcoord I).2.1 (hcoord I).2.2).2.integrableOn).symm
+    _ = ∫ x in A, θ x * ξ x ((ω : DifferentialForm (Eucl P) n) x)
+          ∂((μHE[n] : Measure (Eucl P)).restrict M) := by
+        refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+        show ∑ I : SimonMultiIndex n P,
+            euclideanCovectorCoordinate ((ω : DifferentialForm (Eucl P) n) x) I *
+              (θ x * ξ x (wedgeCovectors n (fun j => EuclideanSpace.proj (I j)))) =
+          θ x * ξ x ((ω : DifferentialForm (Eucl P) n) x)
+        rw [(Submission.polyhedral_approx_pairing_expansion P n (ξ x)
+          ((ω : DifferentialForm (Eucl P) n) x)).1, Finset.mul_sum]
+        exact Finset.sum_congr rfl fun I _ => by ring
+    _ = tauAction n (M ∩ A) θ ξ ω := by
+        rw [tauAction, Measure.restrict_restrict hA, inter_comm]
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
