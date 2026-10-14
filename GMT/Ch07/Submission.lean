@@ -548,6 +548,31 @@ theorem Submission.cbr_ci_cp_gd_translated_ball_count : ∀ (P : ℕ) (ν : Meas
     _ = ν (⋃ x ∈ S, ball x 1) :=
         (measure_biUnion_finset hdisj fun x _ => measurableSet_ball).symm
     _ ≤ ν (ball 0 (ρ + 1)) := measure_mono hsub
+/-- Final step of the growth-forces-dimension argument in the proof of Simon 7.2.4 (packing
+`(2M+1)ʳ` disjoint unit balls of an `r`-plane into `B_{3M√r}(0)`): if `a > 0` and
+`a·Mʳ ≤ b·Mⁿ` for every integer `M ≥ 1`, then `r ≤ n`.  Otherwise `n + 1 ≤ r`; the Archimedean
+property gives `N > b/a`, and `M = N + 1` has `a·M > b`, while
+`a·M·Mⁿ = a·Mⁿ⁺¹ ≤ a·Mʳ ≤ b·Mⁿ` gives `a·M ≤ b` after cancelling `Mⁿ > 0`. -/
+theorem Submission.cbr_ci_cp_gd_le_of_pow_bound : ∀ (r n : ℕ) (a b : ℝ), 0 < a → (∀ M : ℕ, 1 ≤ M → a * (M : ℝ) ^ r ≤ b * (M : ℝ) ^ n) → r ≤ n := by
+  intro r n a b ha h
+  -- suppose `n + 1 ≤ r`
+  by_contra hrn
+  have hr : n + 1 ≤ r := Nat.lt_iff_add_one_le.mp (not_le.mp hrn)
+  -- Archimedean choice `N > b / a`; `M := N + 1 ≥ 1` has `a * M > b`
+  obtain ⟨N, hN⟩ := exists_nat_gt (b / a)
+  have hM : (1 : ℝ) ≤ ((N + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.le_add_left 1 N
+  have hbM : b < ((N + 1 : ℕ) : ℝ) * a := by
+    rw [← div_lt_iff₀ ha]
+    push_cast
+    linarith
+  -- `a * M * Mⁿ = a * Mⁿ⁺¹ ≤ a * Mʳ ≤ b * Mⁿ`, then cancel `Mⁿ > 0`
+  have hle : a * ((N + 1 : ℕ) : ℝ) * ((N + 1 : ℕ) : ℝ) ^ n ≤ b * ((N + 1 : ℕ) : ℝ) ^ n :=
+    calc a * ((N + 1 : ℕ) : ℝ) * ((N + 1 : ℕ) : ℝ) ^ n = a * ((N + 1 : ℕ) : ℝ) ^ (n + 1) := by
+          ring
+      _ ≤ a * ((N + 1 : ℕ) : ℝ) ^ r := mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hM hr) ha.le
+      _ ≤ b * ((N + 1 : ℕ) : ℝ) ^ n := h (N + 1) (Nat.le_add_left 1 N)
+  have hMa := le_of_mul_le_mul_right hle (pow_pos (zero_lt_one.trans_le hM) n)
+  linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
