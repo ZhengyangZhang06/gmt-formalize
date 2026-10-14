@@ -2886,6 +2886,48 @@ theorem Submission.idtp_planar_cycle_eq_const_mul : ∀ (P n : ℕ) (V : Set (Eu
     filter_upwards [ae_restrict_of_ae_restrict_of_subset (inter_subset_inter_left _ hWV) hc]
       with x hx
     rw [hx, Real.enorm_eq_ofReal_abs, ← Int.cast_abs, ← Nat.cast_natAbs, ENNReal.ofReal_natCast]
+/-- **The mass measure of a current carried by planes through `0` splits over the punctured
+planes** (used in the proof of Simon 7.3.3(1), pp. 191–192, for a 2-dimensional minimizing cone
+with `spt S₀ ⊆ ⋃ᵢ Pᵢ`, `Pᵢ ∩ Pⱼ = {0}`).  Let `C = τ(M, θ, ξ)` in `ℝᴾ`, `n ≥ 1`, `μ = θHⁿ⌞M`, and
+let `P₁, …, P_q` be linear subspaces with `Pᵢ ∩ Pⱼ = {0}` for `i ≠ j` and `spt C ∖ {0} ⊆ ⋃ᵢ Pᵢ`.
+Then `μ(A) = Σᵢ μ(A ∩ (Pᵢ ∖ {0}))` for every Borel `A`.  `Hⁿ({0}) = 0` and `μ ≪ Hⁿ` give
+`μ({0}) = 0`; `spt μ ⊆ spt C` (`dimred_im_mass_measure`) and `μ(ℝᴾ ∖ spt μ) = 0`, so
+`A ∖ ⋃ᵢ Aᵢ ⊆ {0} ∪ (ℝᴾ ∖ spt μ)` is `μ`-null, where the `Aᵢ = A ∩ (Pᵢ ∖ {0})` are Borel and
+pairwise disjoint. -/
+theorem Submission.idtp_tdc_puvd_measure_eq_sum_planes : ∀ (P n q : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (Ps : Fin q → Submodule ℝ (Euclid P)), 1 ≤ n → R.Represents C → (∀ i j, i ≠ j → Ps i ⊓ Ps j = ⊥) → (∀ x ∈ C.support, x ≠ 0 → ∃ i, x ∈ Ps i) → ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ i, R.measure (A ∩ ((Ps i : Set (Euclid P)) \ {0})) := by
+  intro P n q C R Ps hn hR hPs hspt A hA
+  -- `Hⁿ({0}) = 0` for `n ≥ 1`: otherwise `H⁰({0}) = ∞`, while `H⁰({0}) = 1`
+  have hH0 : μHE[n] ({0} : Set (Euclid P)) = 0 := by
+    refine (Measure.euclideanHausdorffMeasure_zero_or_top (d₁ := 0) (by omega) _).resolve_right ?_
+    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+    exact ENNReal.one_ne_top
+  -- `μ = θHⁿ⌞M ≪ Hⁿ`, so `μ({0}) = 0`
+  have h0 : R.measure {0} = 0 :=
+    (withDensity_absolutelyContinuous _ _).trans Measure.restrict_le_self.absolutelyContinuous hH0
+  -- `spt μ ⊆ spt C`: every ball about a point of `spt μ` has positive `μ`-measure
+  have hsupp : ∀ x ∈ R.measure.support, x ∈ C.support := fun x hx =>
+    ((Submission.dimred_im_mass_measure P n univ C R isOpen_univ hR).2.1 x (mem_univ x)).2
+      fun ε hε => (Metric.nhds_basis_ball.mem_measureSupport.1 hx ε hε).ne'
+  -- the pieces `Aᵢ = A ∩ (Pᵢ ∖ {0})` are Borel and pairwise disjoint (`Pᵢ ∩ Pⱼ = {0}`)
+  have hBm : ∀ i, MeasurableSet (A ∩ ((Ps i : Set (Euclid P)) \ {0})) := fun i =>
+    hA.inter ((Ps i).closed_of_finiteDimensional.measurableSet.diff (measurableSet_singleton 0))
+  have hBd : Pairwise (Disjoint on fun i => A ∩ ((Ps i : Set (Euclid P)) \ {0})) :=
+    fun i j hij => Set.disjoint_left.2 fun x hxi hxj => by
+      have hx : x ∈ Ps i ⊓ Ps j := Submodule.mem_inf.2 ⟨hxi.2.1, hxj.2.1⟩
+      rw [hPs i j hij, Submodule.mem_bot] at hx
+      exact hxi.2.2 hx
+  -- `A ∖ ⋃ᵢ Aᵢ ⊆ {0} ∪ (ℝᴾ ∖ spt μ)`, a `μ`-null set
+  have hrem : R.measure (A \ ⋃ i, A ∩ ((Ps i : Set (Euclid P)) \ {0})) = 0 := by
+    refine measure_mono_null (fun x hx => ?_)
+      (measure_union_null h0 (Measure.measure_compl_support (μ := R.measure)))
+    by_cases hx0 : x = 0
+    · exact Or.inl hx0
+    · refine Or.inr fun hxs => ?_
+      obtain ⟨i, hi⟩ := hspt x (hsupp x hxs) hx0
+      exact hx.2 (mem_iUnion.2 ⟨i, hx.1, hi, hx0⟩)
+  -- `μ(A) = μ(⋃ᵢ Aᵢ) = Σᵢ μ(Aᵢ)`
+  rw [← measure_eq_measure_of_null_sdiff (iUnion_subset fun i => inter_subset_left) hrem,
+    measure_iUnion hBd hBm, tsum_fintype]
 
 /-- **A cycle carried by an `n`-plane `Q` in an open set `V` has constant multiplicity there**
 (the constancy step in the proof of Simon 7.3.3(1), p. 191, by the constancy theorem, Simon Ch. 6,
