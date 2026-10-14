@@ -3115,6 +3115,85 @@ theorem Submission.dtc_restrictDomain_isIntegerMultiplicity : ∀ (P n : ℕ) (U
     fun h => hx.2 ⟨hx.1, ω.property.2 h⟩
   rw [image_eq_zero_of_notMem_tsupport hxω, map_zero, mul_zero]
 
+/-- **Three-region mass bound** (Simon 7.2.4, (8)–(11), with Remark 7.2.5(2)).  Let `W ⊆ F ⊆ B ⊆ U`
+with `U`, `W`, `B` open and `F` compact, `T = τ(R)` in `U` with `μ_T(F ∖ W) = 0`, and
+`Z = T + Y` in `U`, where `Y = (S − C) + Ŷ`, `spt(S − C) ⊆ W`, `spt Ŷ ⊆ F`, `C = T + Ŷ + Sr` on
+forms supported in `W`, `M(Sr) ≤ e` and `μ_Ŷ(F ∖ W) ≤ e`.  Then `b = μ_T(B ∖ F)` satisfies
+`M_B(T) = M_W(T) + b` and `M_B(Z) ≤ M_W(S) + e + e + b`.  Masses of the integer multiplicity
+currents `T` and `Z` on open sets are measures, and `B = W ⊔ (F ∖ W) ⊔ (B ∖ F)`.  On `B ∖ F`,
+`Z = T`; on `W`, `Z = S − Sr`; on `U ∖ spt(S − C)`, an open set containing the compact `F ∖ W`,
+`Z = T + Ŷ`, so `μ_Z(F ∖ W) ≤ μ_T(F ∖ W) + μ_Ŷ(F ∖ W) ≤ e`. -/
+theorem Submission.dimred_mbl_lc_ic_region_bound : ∀ (P n : ℕ) (U W F B : Set (Euclid P)) (T Z : GeometricCurrentOn U n) (R : IMRep U n) (C S Ŷ Sr Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (e : ℝ≥0∞), IsOpen U → R.Represents T → IsIntegerMultiplicity Z → IsOpen B → B ⊆ U → IsOpen W → IsCompact F → W ⊆ F → F ⊆ B → R.measure (F \ W) = 0 → (S - C).support ⊆ W → IsIntegerMultiplicity Ŷ → Ŷ.support ⊆ F → (∀ R' : IMRep (univ : Set (Euclid P)) n, R'.Represents Ŷ → R'.measure (F \ W) ≤ e) → Sr.mass ≤ e → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → C ω = currentEval T (ω : DifferentialForm (Euclid P) n) + Ŷ ω + Sr ω) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Y ω = (S - C) ω + Ŷ ω) → (∀ ω : TestFormOn U n, Z ω = T ω + Y (testFormOnInclusion (subset_univ U) n ω)) → ∃ b : ℝ≥0∞, T.massOn B = T.massOn W + b ∧ Z.massOn B ≤ S.massOn W + e + e + b := by
+  intro P n U W F B T Z R C S Ŷ Sr Y e hU hR hZ hB hBU hW hF hWF hFB hRFW hXW hŶ hŶF hŶe hSr hC
+    hY hZY
+  -- Step 0(a): representations `R_Z` of `Z` and `R_Ŷ` of `Ŷ`; `M_G(T) = μ_T(G)` and
+  -- `M_G(Z) = μ_Z(G)` for open `G`
+  obtain ⟨RZ, hRZ⟩ := hZ
+  obtain ⟨RŶ, hRŶ⟩ := hŶ
+  have hMT := (Submission.dor_imrep_massOn_eq_measure_and_support P n U T R hU hR).1
+  have hMZ := (Submission.dor_imrep_massOn_eq_measure_and_support P n U Z RZ hU hRZ).1
+  -- Step 0(b): `F` is closed, so `B ∖ F` is open
+  have hFc : IsClosed F := hF.isClosed
+  have hO : IsOpen (B \ F) := hB.sdiff hFc
+  -- Step 0(c): `μ(B) = μ(W) + μ(F ∖ W) + μ(B ∖ F)` for every measure `μ`
+  have hsplit : ∀ μ : Measure (Euclid P), μ B = μ W + μ (F \ W) + μ (B \ F) := fun μ => by
+    have hμF : μ F = μ W + μ (F \ W) := by
+      rw [← measure_inter_add_sdiff F hW.measurableSet, inter_eq_right.2 hWF]
+    rw [← measure_inter_add_sdiff B hFc.measurableSet, inter_eq_right.2 hFB, hμF]
+  -- `(S − C)(ω) = S(ω) − C(ω)`
+  have hsub : ∀ ω : TestFormOn (univ : Set (Euclid P)) n, (S - C) ω = S ω - C ω := fun _ => rfl
+  -- Step 2: on `B ∖ F`, `S − C` and `Ŷ` vanish (their supports lie in `W ⊆ F` and in `F`), so
+  -- `Z = T + 0 · Ŷ` there and `μ_Z(B ∖ F) = M_{B∖F}(Z) ≤ M_{B∖F}(T) = μ_T(B ∖ F)`
+  have h2 : RZ.measure (B \ F) ≤ R.measure (B \ F) := by
+    have h := Submission.dimred_mbl_lc_ic_rb_massOn_le_add_incl P n U U univ (B \ F)
+      (subset_refl U) (subset_univ U) Z T Ŷ 0 (fun ω hω => by
+        have hX : (S - C) (testFormOnInclusion (subset_univ U) n ω) = 0 :=
+          Submission.dtc_vanish_off_support P n univ (S - C) _
+            (Disjoint.mono hω (hXW.trans hWF) disjoint_sdiff_left)
+        have hŶ0 : Ŷ (testFormOnInclusion (subset_univ U) n ω) = 0 :=
+          Submission.dtc_vanish_off_support P n univ Ŷ _
+            (Disjoint.mono hω hŶF disjoint_sdiff_left)
+        have hι : testFormOnInclusion (subset_refl U) n ω = ω := rfl
+        rw [hι, hZY ω, hY, hX, hŶ0]
+        simp)
+    rw [hMZ _ hO, hMT _ hO] at h
+    simpa using h
+  -- Step 3: on `W`, `currentEval T (ιω) = T(ω)`, so `Z(ω) = S(ιω) + (−1) · Sr(ιω)` and
+  -- `μ_Z(W) = M_W(Z) ≤ M_W(S) + M_W(Sr) ≤ M_W(S) + M(Sr) ≤ M_W(S) + e`
+  have h3 : RZ.measure W ≤ S.massOn W + e := by
+    have h := Submission.dimred_mbl_lc_ic_rb_massOn_le_add_incl P n U univ univ W
+      (subset_univ U) (subset_univ U) Z S Sr (-1) (fun ω hω => by
+        have hev : currentEval T ((testFormOnInclusion (subset_univ U) n ω :
+            TestFormOn (univ : Set (Euclid P)) n) : DifferentialForm (Euclid P) n) = T ω := by
+          rw [testFormOnInclusion_coe, currentEval]
+          exact dite_eq_left ω.property
+        rw [hZY ω, hY, hsub, hC (testFormOnInclusion (subset_univ U) n ω) hω, hev]
+        ring)
+    rw [← hMZ W hW]
+    calc Z.massOn W ≤ S.massOn W + ENNReal.ofReal |(-1 : ℝ)| * Sr.massOn W := h
+      _ = S.massOn W + Sr.massOn W := by simp
+      _ ≤ S.massOn W + e := add_le_add le_rfl ((Sr.massOn_mono (subset_univ W)).trans hSr)
+  -- Step 4: `spt(S − C)` is closed, so `U′ = U ∖ spt(S − C)` is open; it contains the compact
+  -- `F ∖ W`, and `Z = T + Ŷ` on forms supported in `U′`.  `compact_sum_bound` gives
+  -- `μ_Z(F ∖ W) ≤ μ_T(F ∖ W) + μ_Ŷ(F ∖ W) = 0 + μ_Ŷ(F ∖ W) ≤ e`
+  have hXc : IsClosed (S - C).support := isClosed_univ.sdiff (S - C).isOpen_zeroRegion
+  have h4 : RZ.measure (F \ W) ≤ e := by
+    have h := Submission.dimred_mbl_lc_ic_rb_measure_le_add_of_compact P n U
+      (U \ (S - C).support) (F \ W) T Z Ŷ R RZ RŶ hU (hU.sdiff hXc) sdiff_subset (hF.diff hW)
+      (fun x hx => ⟨hBU (hFB hx.1), fun hxX => hx.2 (hXW hxX)⟩) hR hRZ hRŶ (fun ω hω => by
+        have hX : (S - C) (testFormOnInclusion (subset_univ U) n ω) = 0 :=
+          Submission.dtc_vanish_off_support P n univ (S - C) _
+            (Disjoint.mono_left hω disjoint_sdiff_left)
+        rw [hZY ω, hY, hX, zero_add])
+    rw [hRFW, zero_add] at h
+    exact h.trans (hŶe RŶ hRŶ)
+  -- Step 1: `M_B(T) = μ_T(W) + μ_T(F ∖ W) + μ_T(B ∖ F) = M_W(T) + 0 + b`
+  refine ⟨R.measure (B \ F), ?_, ?_⟩
+  · rw [hMT B hB, hMT W hW, hsplit R.measure, hRFW, add_zero]
+  -- Step 5: `M_B(Z) = μ_Z(W) + μ_Z(F ∖ W) + μ_Z(B ∖ F) ≤ (M_W(S) + e) + e + b`
+  · rw [hMZ B hB, hsplit RZ.measure]
+    exact add_le_add (add_le_add h3 h4) h2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
