@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e03230d0d085324290cbf1cd1bc0ee0163de1e598088962bdbf1e6fb27a74488",
+  "git_delta": {
+    "base_commit": "a7dd1b7b2c5be71d9096cb43008edcc995e533e0",
+    "candidate_commit": "8d6f1b9533179b134678e8ae50f7f1deea645093",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_cz_top_density_of_sign",
+    "diff_sha256": "bcd974c48dbd0f2d91f220a94948cb188d0b9adee5776ffa147e11e93d4b309c",
+    "source_sha256": "c75dffb6eeebb6caa8b7a07141ae8198eb1b85c392b6dcf006bb3717307d9ca4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_cz_top_density_of_sign",
+      "statement": "∀ (n : ℕ) (V : Set (Euclid n)) (R : IMRep V n) (σ : Euclid n → ℝ), IsOpen V → Measurable σ → (∀ᵐ y ∂(μHE[n].restrict R.carrier), (σ y = 1 ∨ σ y = -1) ∧ ∀ α : Covector (Euclid n) n, R.orient y α = σ y * α ⇑(EuclideanSpace.basisFun (Fin n) ℝ)) → ∃ g : Euclid n → ℤ, LocallyIntegrableOn (fun y => (g y : ℝ)) V volume ∧ ∀ ω : DifferentialForm (Euclid n) n, R.action ω = ∫ y, (g y : ℝ) * ω y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
