@@ -5400,6 +5400,56 @@ theorem Submission.cmcdt_lpi_pc_piece_current : (∀ (N k : ℕ) (α : Covector 
     _ ≤ ∫⁻ y in H '' B, ‖m y‖ₑ ∂μHE[n] := setLIntegral_mono' hNmeas hle
     _ ≤ (L : ℝ≥0∞) ^ n * ∫⁻ u in B, ‖(g u : ℝ)‖ₑ := hmle
 
+/-- **Integer multiplicity push-forward of a weighted Lipschitz piece** (step B3 of the
+deformation theorem, Simon 6.5.1; Simon 6.3.5–3.9 for `H_#τ(M, θ, ξ)`).  Let `n = k + 1`,
+`H : ℝⁿ → ℝ^{N'}` be `L`-Lipschitz, `A ⊆ ℝⁿ` Borel and `g : ℝⁿ → ℤ` integrable on `A`.  Then
+`ω ↦ ∫_A g(u)·ω(H(u))(DH(u)e₀, …, DH(u)eₙ₋₁) du` is an integer multiplicity current.
+Write `Ψ_ω` for this integrand.  By `cmcdt_lpi_pc_regular_part_reduction`, `∫_A Ψ_ω = ∫_{A⁺} Ψ_ω`
+with `A⁺ = {u ∈ A : DH(u) exists and is injective, g(u) ≠ 0}`.  `cmcdt_lpi_pc_bilipschitz_partition`
+splits `A⁺` into disjoint Borel pieces `C_l` on which `H` is bi-Lipschitz, and
+`cmcdt_lpi_pc_piece_current` (with (L3) of (CB) and part (b) of (IMC)) gives integer multiplicity
+currents `Φ_l` with `M(Φ_l) ≤ Lⁿ ∫_{C_l} |g|` and `Φ_l(ω) = ∫_{C_l} Ψ_ω`.  Hence
+`Σ_l M(Φ_l) ≤ Lⁿ ∫_A |g| < ∞`, (IMSc) sums the `Φ_l` to an integer multiplicity `S`, and countable
+additivity of the integral over `A⁺ = ⋃_l C_l` gives `S(ω) = ∫_{A⁺} Ψ_ω = ∫_A Ψ_ω`. -/
+theorem Submission.cmcdt_lpi_lipschitz_piece_im : ((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (α : Covector (Euclid N) k) (τ : Fin k → Euclid N), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P k : ℕ) (W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), ∑' i, (W i).mass < ∞ → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => W i ω) (S ω)) ∧ S.mass ≤ ∑' i, (W i).mass ∧ S.support ⊆ closure (⋃ i, (W i).support) ∧ ((∀ i, IsIntegerMultiplicity (W i)) → IsIntegerMultiplicity S)) → ∀ (N' k : ℕ) (L : NNReal) (H : Euclid (k + 1) → Euclid N') (A : Set (Euclid (k + 1))) (g : Euclid (k + 1) → ℤ), LipschitzWith L H → MeasurableSet A → Measurable g → IntegrableOn (fun u => (g u : ℝ)) A → ∃ S : GeometricCurrentOn (univ : Set (Euclid N')) (k + 1), IsIntegerMultiplicity S ∧ ∀ ω : TestFormOn (univ : Set (Euclid N')) (k + 1), S ω = ∫ u in A, (g u : ℝ) * (ω : DifferentialForm (Euclid N') (k + 1)) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)) := by
+  intro hCB hIMC hIMSc N' k L H A g hH hA hg hgi
+  -- Steps 1–2: `Ψ_ω` is integrable on `A` and `∫_A Ψ_ω = ∫_{A⁺} Ψ_ω`
+  obtain ⟨hAp, hΨ⟩ :=
+    Submission.cmcdt_lpi_pc_regular_part_reduction N' (k + 1) L H A g hH hA hg hgi
+  set Ap : Set (Euclid (k + 1)) :=
+    {u | u ∈ A ∧ DifferentiableAt ℝ H u ∧ Injective (fderiv ℝ H u) ∧ g u ≠ 0}
+  -- Step 3: disjoint Borel pieces `C_l` with `⋃_l C_l = A⁺`, on which `H` is bi-Lipschitz
+  obtain ⟨C, κ, hCm, hCd, hCU, hκ, hCbil⟩ :=
+    Submission.cmcdt_lpi_pc_bilipschitz_partition N' (k + 1) H Ap hAp
+      fun a ha => ⟨ha.2.1, ha.2.2.1⟩
+  have hCA : ∀ l, C l ⊆ Ap := fun l => (subset_iUnion C l).trans hCU.subset
+  -- Steps 5–7: an integer multiplicity current `Φ_l` for each piece, with
+  -- `M(Φ_l) ≤ Lⁿ ∫_{C_l} |g|` and `Φ_l(ω) = ∫_{C_l} Ψ_ω`
+  choose Φ hΦim hΦmass hΦω using fun l =>
+    Submission.cmcdt_lpi_pc_piece_current hCB.2.2 hIMC.2.1 N' (k + 1) L (κ l) H (C l) g hH
+      (hCm l) (hκ l) (hCbil l) (fun a ha => ⟨(hCA l ha).2.1, (hCA l ha).2.2.1⟩) hg
+      (hgi.mono_set fun u hu => (hCA l hu).1) fun u hu => (hCA l hu).2.2.2
+  -- Step 8: `Σ_l M(Φ_l) ≤ Lⁿ Σ_l ∫_{C_l} |g| = Lⁿ ∫_{A⁺} |g| ≤ Lⁿ ∫_A |g| < ∞`
+  have hsum : ∑' l, (Φ l).mass < ∞ :=
+    calc ∑' l, (Φ l).mass ≤ ∑' l, (L : ℝ≥0∞) ^ (k + 1) * ∫⁻ u in C l, ‖(g u : ℝ)‖ₑ :=
+          ENNReal.tsum_le_tsum hΦmass
+      _ = (L : ℝ≥0∞) ^ (k + 1) * ∫⁻ u in Ap, ‖(g u : ℝ)‖ₑ := by
+          rw [ENNReal.tsum_mul_left, ← lintegral_iUnion hCm hCd, hCU]
+      _ ≤ (L : ℝ≥0∞) ^ (k + 1) * ∫⁻ u in A, ‖(g u : ℝ)‖ₑ :=
+          mul_le_mul_right (lintegral_mono_set fun u hu => hu.1) _
+      _ < ∞ := ENNReal.mul_lt_top (ENNReal.pow_lt_top ENNReal.coe_lt_top) hgi.2
+  -- (IMSc): the series `S = Σ_l Φ_l` is an integer multiplicity current
+  obtain ⟨S, hS, -, -, hSim⟩ := hIMSc N' k Φ hsum
+  refine ⟨S, hSim hΦim, fun ω => ?_⟩
+  -- countable additivity over `A⁺ = ⋃_l C_l` and uniqueness of sums
+  obtain ⟨hint, heq⟩ := hΨ ω
+  rw [heq]
+  refine (hS ω).unique ?_
+  simp only [hΦω]
+  rw [← hCU]
+  exact hasSum_integral_iUnion hCm hCd
+    (hint.mono_set (iUnion_subset fun l => (hCA l).trans fun u hu => hu.1))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
