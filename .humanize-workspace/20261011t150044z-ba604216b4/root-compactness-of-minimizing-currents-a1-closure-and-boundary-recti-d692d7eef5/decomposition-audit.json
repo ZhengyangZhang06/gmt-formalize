@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "cone_cutoff|cone_density|blowUp_preimage|plane_closedBall|rsd_cmr_ir_blowUp",
+        "starProjection_eq_self_iff|def starProjection",
+        "isFiniteMeasure_restrict|theorem image_inter_preimage|lintegral_indicator_one|class Regular",
+        "git show 6d5fb477cd678ba8a2494f88aea12fb69f2dbbc3 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cone-density-audit-59b27qzt/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cone-density-audit-59b27qzt/ProofAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d692d7eef5/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-re-844f5fd455/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/cone-density-audit-59b27qzt/FrozenTypes.lean",
+        "/tmp/cone-density-audit-59b27qzt/ProofAudit.lean",
+        "/tmp/cone-density-audit-59b27qzt/ProofAudit.log"
+      ],
+      "conclusion": "The split appropriately isolates plane measure, cutoff construction, and the analytic upper bound needed for the selected cone-density theorem. Pinned sources match the runtime sources; the project search returned no matching cone/cutoff helpers. Every frozen type passed lexical validation and fresh Lean elaboration without child implementations. Projection and proper-space instances were checked explicitly. All names are bare identifiers; the three new names are unreserved, and scaling reuses a comparator-accepted declaration with byte-identical type. The sole sibling dependency, blowup_upper on blowup_scaling, is correctly directed and acyclic. Independent proof review and fresh replay of the supplied proofs establish all children and the exact frozen parent assembly. Axiom reports contain only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. Orthonormal coordinates identify the closed ball in Q with its Euclidean counterpart; isometry invariance and Haar scaling prove the formula. The pinned closed-ball lemma covers n = 0 and r = 0 without an extra nontriviality hypothesis."
+    },
+    {
+      "key": "cone_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit construction with s = δ/4 proves continuity, compact support, both bounds, and both required value conditions. Orthogonal projection instances resolve for arbitrary Euclid P submodules. The proof establishes exactly the stated existential proposition without dependencies or circularity."
+    },
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the accepted declaration at commit 6d5fb477cd678ba8a2494f88aea12fb69f2dbbc3 with identical frozen type. Translation invariance and nonzero homogeneity prove the formula for arbitrary sets. Compatibility and permitted-axiom checks passed."
+    },
+    {
+      "key": "blowup_upper",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the prose. Scaling supplies finite restricted measure and integrability without requiring M measurable. Tangent convergence, the measurable indicator comparison, image/preimage identity, and positive scaling cancellation give the exact eventual bound. The t = ∞ case is handled correctly; its only child dependency is blowup_scaling."
+    }
+  ],
+  "required_changes": []
+}
