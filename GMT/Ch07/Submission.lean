@@ -508,6 +508,143 @@ theorem Submission.idtp_cse_ah_normalized_bump : ∀ c d : ℝ, c < d → ∃ χ
   · exact tsupport_mul_subset_right.trans (hθ_tsupp.trans (Icc_subset_Ioo hcp hqd))
   · rw [integral_const_mul]
     exact inv_mul_cancel₀ hI.ne'
+/-- **Smooth plateaus converge weakly to `1_{(p, q)}`.**  For real `p, q` the `C¹` functions
+`χ_k(α) = σ(k(α - p)) σ(k(q - α))`, `σ = Real.smoothTransition`, satisfy `0 ≤ χ_k ≤ 1` and vanish
+off `(p, q)`, so `tsupport χ_k ⊆ [p, q]`; for `p < α < q`, `χ_k(α) = 1` once
+`k ≥ max (1/(α - p)) (1/(q - α))`.  Dominated convergence with bound `|g|` then gives
+`∫ χ_k g → ∫_{(p, q)} g` for every integrable `g`. -/
+theorem Submission.idtp_cse_ah_cst_plateau_weak_limit : ∀ p q : ℝ, ∃ χ : ℕ → ℝ → ℝ, (∀ k, ContDiff ℝ 1 (χ k)) ∧ (∀ k, tsupport (χ k) ⊆ Icc p q) ∧ ∀ g : ℝ → ℝ, Integrable g → Tendsto (fun k => ∫ α, χ k α * g α) atTop (𝓝 (∫ α in Ioo p q, g α)) := by
+  intro p q
+  -- `χ_k(α) = σ(k(α - p)) σ(k(q - α))`, with `σ` the smooth transition from `0` (on `(-∞, 0]`)
+  -- to `1` (on `[1, ∞)`)
+  have hzero : ∀ (k : ℕ) (α : ℝ), α ∉ Ioo p q →
+      Real.smoothTransition (k * (α - p)) * Real.smoothTransition (k * (q - α)) = 0 := by
+    intro k α hα
+    rcases not_and_or.1 hα with h | h
+    · rw [Real.smoothTransition.zero_of_nonpos
+        (mul_nonpos_of_nonneg_of_nonpos k.cast_nonneg (sub_nonpos.2 (not_lt.1 h))), zero_mul]
+    · rw [Real.smoothTransition.zero_of_nonpos
+        (mul_nonpos_of_nonneg_of_nonpos k.cast_nonneg (sub_nonpos.2 (not_lt.1 h))), mul_zero]
+  refine ⟨fun k α => Real.smoothTransition (k * (α - p)) * Real.smoothTransition (k * (q - α)),
+    fun k => ?_, fun k => ?_, fun g hg => ?_⟩
+  · exact (Real.smoothTransition.contDiff.comp
+      (contDiff_const.mul (contDiff_id.sub contDiff_const))).mul
+      (Real.smoothTransition.contDiff.comp (contDiff_const.mul (contDiff_const.sub contDiff_id)))
+  · -- `χ_k` vanishes off `(p, q)`, so its closed support lies in `[p, q]`
+    exact closure_minimal (fun α hα => Ioo_subset_Icc_self (by_contra fun h => hα (hzero k α h)))
+      isClosed_Icc
+  · -- dominated convergence with bound `|g|`, the limit being `1_{(p, q)} g`
+    rw [← integral_indicator measurableSet_Ioo]
+    refine tendsto_integral_of_dominated_convergence (fun α => ‖g α‖) (fun k => ?_) hg.norm
+      (fun k => Eventually.of_forall fun α => ?_) (Eventually.of_forall fun α => ?_)
+    · exact (((Real.smoothTransition.continuous.comp (continuous_const.mul
+        (continuous_id.sub continuous_const))).mul (Real.smoothTransition.continuous.comp
+        (continuous_const.mul (continuous_const.sub continuous_id)))).aestronglyMeasurable).mul
+        hg.aestronglyMeasurable
+    · -- `0 ≤ χ_k ≤ 1`
+      rw [norm_mul]
+      refine mul_le_of_le_one_left (norm_nonneg _) ?_
+      rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (Real.smoothTransition.nonneg _)
+        (Real.smoothTransition.nonneg _))]
+      exact (mul_le_of_le_one_left (Real.smoothTransition.nonneg _)
+        (Real.smoothTransition.le_one _)).trans (Real.smoothTransition.le_one _)
+    · by_cases hα : α ∈ Ioo p q
+      · -- `χ_k(α) = 1` once `k ≥ max (1/(α - p)) (1/(q - α))`
+        rw [indicator_of_mem hα]
+        obtain ⟨N, hN⟩ := exists_nat_ge (max (1 / (α - p)) (1 / (q - α)))
+        have hp : 0 < α - p := sub_pos.2 hα.1
+        have hq : 0 < q - α := sub_pos.2 hα.2
+        refine tendsto_const_nhds.congr' ?_
+        filter_upwards [eventually_ge_atTop N] with k hk
+        have hk' : max (1 / (α - p)) (1 / (q - α)) ≤ k := hN.trans (Nat.cast_le.2 hk)
+        have h1 : 1 ≤ (k : ℝ) * (α - p) := by
+          have := (le_max_left _ _).trans hk'
+          rwa [div_le_iff₀ hp] at this
+        have h2 : 1 ≤ (k : ℝ) * (q - α) := by
+          have := (le_max_right _ _).trans hk'
+          rwa [div_le_iff₀ hq] at this
+        rw [Real.smoothTransition.one_of_one_le h1, Real.smoothTransition.one_of_one_le h2, one_mul,
+          one_mul]
+      · -- `χ_k(α) = 0` for every `k`
+        rw [indicator_of_notMem hα]
+        simp only [hzero _ α hα, zero_mul]
+        exact tendsto_const_nhds
+/-- Vanishing integrals over rational subintervals force a.e. vanishing: if `w` is integrable on
+`(c, d)` and `∫_{(p, q)} w = 0` for all rationals `c < p < q < d`, then `w = 0` a.e. on `(c, d)`.
+Extend `w` by zero to `w̄ = 𝟙_{(c, d)} w`.  The primitive `W x = ∫_c^x w̄` is continuous and
+constant on the dense set `(c, d) ∩ ℚ`, hence `W ≡ W c = 0` on `[c, d]`; so the averages of `w̄`
+over `[x - ρ, x + ρ] ⊆ [c, d]` vanish, and Lebesgue differentiation gives `w x = w̄ x = 0` for
+a.e. `x ∈ (c, d)`. -/
+theorem Submission.idtp_cse_ah_cst_ae_zero_of_rat_intervals : ∀ (c d : ℝ) (w : ℝ → ℝ), IntegrableOn w (Ioo c d) → (∀ p q : ℚ, c < (p : ℝ) → (p : ℝ) < (q : ℝ) → (q : ℝ) < d → ∫ α in Ioo (p : ℝ) (q : ℝ), w α = 0) → ∀ᵐ α, α ∈ Ioo c d → w α = 0 := by
+  intro c d w hw hrat
+  -- Step 0: if `d ≤ c` the interval is empty and the claim is vacuous.
+  rcases le_or_gt d c with hdc | hcd
+  · exact Eventually.of_forall fun α hα => absurd (hα.1.trans hα.2) (not_lt.mpr hdc)
+  -- Step 1: the extension `w̄ = 𝟙_{(c, d)} w` by zero is integrable on `ℝ`.
+  set wb : ℝ → ℝ := (Ioo c d).indicator w with hwb
+  have hwbi : Integrable wb := hw.integrable_indicator measurableSet_Ioo
+  have hwb_rat : ∀ p q : ℚ, c < (p : ℝ) → (p : ℝ) < (q : ℝ) → (q : ℝ) < d →
+      ∫ α in Ioo (p : ℝ) (q : ℝ), wb α = 0 := by
+    intro p q hcp hpq hqd
+    rw [← hrat p q hcp hpq hqd]
+    exact setIntegral_congr_fun measurableSet_Ioo fun α hα =>
+      indicator_of_mem (show α ∈ Ioo c d from ⟨hcp.trans hα.1, hα.2.trans hqd⟩) w
+  -- Step 2: the primitive `W x = ∫_c^x w̄` is continuous and `W q = W p` for rationals.
+  set W : ℝ → ℝ := fun x => ∫ t in c..x, wb t with hW
+  have hWc : Continuous W :=
+    intervalIntegral.continuous_primitive (fun _ _ => hwbi.intervalIntegrable) c
+  have hWsub : ∀ a b : ℝ, W b - W a = ∫ t in a..b, wb t := fun a b =>
+    intervalIntegral.integral_interval_sub_left hwbi.intervalIntegrable hwbi.intervalIntegrable
+  have hWrat : ∀ p q : ℚ, c < (p : ℝ) → (p : ℝ) < (q : ℝ) → (q : ℝ) < d → W q = W p := by
+    intro p q hcp hpq hqd
+    have h := hWsub p q
+    rw [intervalIntegral.integral_of_le hpq.le, integral_Ioc_eq_integral_Ioo,
+      hwb_rat p q hcp hpq hqd] at h
+    linarith
+  -- Step 3: `W` is constant on the dense set `(c, d) ∩ ℚ`, hence `W ≡ W c = 0` on `[c, d]`.
+  obtain ⟨q₀, hcq₀, hq₀d⟩ := exists_rat_btwn hcd
+  have hWS : ∀ r : ℚ, c < (r : ℝ) → (r : ℝ) < d → W r = W q₀ := by
+    intro r hcr hrd
+    rcases lt_trichotomy (r : ℝ) (q₀ : ℝ) with h | h | h
+    · exact (hWrat r q₀ hcr h hq₀d).symm
+    · rw [h]
+    · exact hWrat q₀ r hcq₀ h hrd
+  have hSsub : Ioo c d ∩ range ((↑) : ℚ → ℝ) ⊆ Icc c d := fun x hx =>
+    Ioo_subset_Icc_self hx.1
+  have hclos : Icc c d ⊆ closure (Ioo c d ∩ range ((↑) : ℚ → ℝ)) := by
+    have h : Ioo c d ⊆ closure (Ioo c d ∩ range ((↑) : ℚ → ℝ)) :=
+      Rat.denseRange_cast.open_subset_closure_inter isOpen_Ioo
+    rw [← closure_Ioo hcd.ne]
+    exact closure_minimal h isClosed_closure
+  have hEq : EqOn W (fun _ => W q₀) (Icc c d) := by
+    refine EqOn.of_subset_closure ?_ hWc.continuousOn continuousOn_const hSsub hclos
+    rintro x ⟨hxJ, r, rfl⟩
+    exact hWS r hxJ.1 hxJ.2
+  have hWq₀ : W q₀ = 0 := by
+    have h := hEq (left_mem_Icc.mpr hcd.le)
+    simp only [hW, intervalIntegral.integral_same] at h
+    exact h.symm
+  have hW0 : ∀ x ∈ Icc c d, W x = 0 := fun x hx => (hEq hx).trans hWq₀
+  -- Step 4: Lebesgue differentiation for `w̄` along closed balls centred at `x`.
+  filter_upwards [IsUnifLocDoublingMeasure.ae_tendsto_average volume hwbi.locallyIntegrable 1]
+    with x hx hxJ
+  have hlim : Tendsto (fun ρ => ⨍ y in closedBall x ρ, wb y) (𝓝[>] 0) (𝓝 (wb x)) := by
+    refine hx (fun _ => x) id tendsto_id ?_
+    filter_upwards [self_mem_nhdsWithin] with ρ hρ
+    exact mem_closedBall_self (by rw [one_mul]; exact le_of_lt hρ)
+  -- Step 5: the averages vanish for `0 < ρ < min (x - c) (d - x)`.
+  have hm : 0 < min (x - c) (d - x) := lt_min (sub_pos.mpr hxJ.1) (sub_pos.mpr hxJ.2)
+  have hzero : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ⨍ y in closedBall x ρ, wb y = 0 := by
+    filter_upwards [Ioo_mem_nhdsGT hm] with ρ hρ
+    have h1 : c ≤ x - ρ := by linarith [min_le_left (x - c) (d - x), hρ.2]
+    have h2 : x + ρ ≤ d := by linarith [min_le_right (x - c) (d - x), hρ.2]
+    have hle : x - ρ ≤ x + ρ := by linarith [hρ.1]
+    rw [setAverage_eq, Real.closedBall_eq_Icc, integral_Icc_eq_integral_Ioc,
+      ← intervalIntegral.integral_of_le hle, ← hWsub, hW0 _ ⟨by linarith, h2⟩,
+      hW0 _ ⟨h1, by linarith⟩, sub_zero, smul_zero]
+  have hwbx : wb x = 0 :=
+    tendsto_nhds_unique hlim (tendsto_const_nhds.congr' (hzero.mono fun ρ hρ => hρ.symm))
+  rwa [hwb, indicator_of_mem hxJ] at hwbx
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
@@ -604,5 +741,59 @@ theorem Submission.idtp_cse_ah_slice_integral_ae_zero : ∀ (a b c d : ℝ) (H :
   refine integral_congr_ae (Eventually.of_forall fun α => ?_)
   simp only
   ring
+/-- **Countable separating `C¹` tests on an interval** (replaces the separability of `C([−s, s])`
+in the `α`-homogeneity step of the cone-sector endpoint density argument for Simon 7.3.3).  For
+reals `c, d` there are `C¹` functions `Fₙ` with `tsupport Fₙ ⊆ (c, d)` such that every `w`
+integrable on `(c, d)` with `∫ Fₙ w = 0` for all `n` vanishes a.e. on `(c, d)`.  Enumerate the
+triples `(p, q, k) ∈ ℚ × ℚ × ℕ` by a surjection `e : ℕ → ℚ × ℚ × ℕ`, and let `Fₙ` be the `k`-th
+`C¹` plateau `χ_{p,q,k}` (`tsupport ⊆ [p, q]`) if `c < p < q < d`, and `0` otherwise.  For such
+`p, q` the plateaus vanish off `(c, d)`, so with `w̄ = 1_{(c,d)} w` integrable,
+`∫_{(p,q)} w = ∫_{(p,q)} w̄ = lim_k ∫ χ_{p,q,k} w̄ = lim_k ∫ χ_{p,q,k} w = 0`; vanishing on all
+rational subintervals gives `w = 0` a.e. on `(c, d)`. -/
+theorem Submission.idtp_cse_ah_countable_separating_tests : ∀ c d : ℝ, ∃ F : ℕ → ℝ → ℝ, (∀ n, ContDiff ℝ 1 (F n)) ∧ (∀ n, tsupport (F n) ⊆ Ioo c d) ∧ ∀ w : ℝ → ℝ, IntegrableOn w (Ioo c d) → (∀ n, ∫ α, F n α * w α = 0) → ∀ᵐ α, α ∈ Ioo c d → w α = 0 := by
+  intro c d
+  classical
+  -- plateaus `χ p q k`: `C¹`, `tsupport ⊆ [p, q]`, and `∫ χ p q k · g → ∫_{(p,q)} g`
+  choose χ hχC hχS hχT using Submission.idtp_cse_ah_cst_plateau_weak_limit
+  -- an enumeration `e` of the triples `(p, q, k)`; `A t` says `c < p < q < d`
+  obtain ⟨e, he⟩ := exists_surjective_nat (ℚ × ℚ × ℕ)
+  let A : ℚ × ℚ × ℕ → Prop := fun t => c < (t.1 : ℝ) ∧ (t.1 : ℝ) < t.2.1 ∧ (t.2.1 : ℝ) < d
+  refine ⟨fun n => if A (e n) then χ (e n).1 (e n).2.1 (e n).2.2 else 0, fun n => ?_, fun n => ?_,
+    ?_⟩
+  · dsimp only
+    split_ifs
+    · exact hχC _ _ _
+    · exact contDiff_zero_fun
+  -- `tsupport Fₙ ⊆ [p, q] ⊆ (c, d)`, or `Fₙ = 0`
+  · dsimp only
+    split_ifs with h
+    · exact (hχS _ _ _).trans (Icc_subset_Ioo h.1 h.2.2)
+    · simp
+  -- it suffices that `∫_{(p,q)} w = 0` for rationals `c < p < q < d`
+  · intro w hw hF
+    refine Submission.idtp_cse_ah_cst_ae_zero_of_rat_intervals c d w hw fun p q hcp hpq hqd => ?_
+    have hg : Integrable ((Ioo c d).indicator w) := hw.integrable_indicator measurableSet_Ioo
+    -- `∫ χ p q k · w̄ = ∫ Fₙ w = 0` for `e n = (p, q, k)`, since `χ p q k = 0` off `(c, d)`
+    have hzero : ∀ k, ∫ α, χ p q k α * (Ioo c d).indicator w α = 0 := by
+      intro k
+      obtain ⟨n, hn⟩ := he (p, q, k)
+      have hA : A (e n) := by rw [hn]; exact ⟨hcp, hpq, hqd⟩
+      have h := hF n
+      dsimp only at h
+      rw [ite_eq_left hA, hn] at h
+      rw [← h]
+      congr 1
+      funext α
+      by_cases hα : α ∈ Ioo c d
+      · rw [indicator_of_mem hα]
+      · have hα' : α ∉ tsupport (χ p q k) :=
+          fun h' => hα ((hχS _ _ _).trans (Icc_subset_Ioo hcp hqd) h')
+        simp [image_eq_zero_of_notMem_tsupport hα']
+    -- so `∫_{(p,q)} w̄ = lim_k ∫ χ p q k · w̄ = 0`, and `w̄ = w` on `(p, q)`
+    have hlim := hχT p q _ hg
+    simp only [hzero] at hlim
+    rw [← tendsto_nhds_unique hlim tendsto_const_nhds]
+    exact (setIntegral_congr_fun measurableSet_Ioo fun α hα =>
+      indicator_of_mem (Ioo_subset_Ioo hcp.le hqd.le hα) w).symm
 
 end GMT.Ch07
