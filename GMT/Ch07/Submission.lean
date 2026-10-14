@@ -762,6 +762,102 @@ theorem Submission.cmr_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid 
   exact ge_of_tendsto hlim
     (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
 
+/-- **Countable-test criterion** (Lemma CT): convergence on one fixed countable family of test
+forms, together with local mass bounds, gives weak convergence in `ℝᴾ`.  The family `ωs`
+enumerates the countable set `D` of `dor_lmbs_testForm_countable_approx` for `U = ℝᴾ`.  Given
+`ω`, its approximants in `D` are supported in one compact `K ⊆ B = B_{R+1}(0)`; pick `ωs m`
+uniformly `η`-close to `ω`.  Then `|ω − ωs m| ≤ C₀η` (`rsd_mw_tfa_norm_props` (iii)), so
+`cmr_abs_apply_le_massOn` bounds `|A(ω) − A(ωs m)|` and, for `k ≥ k₀`, `|A_k(ω) − A_k(ωs m)|`
+by `C₀ηΓ ≤ ε/4`; the tests `A_k(ωs m) → A(ωs m)` give the remaining `ε/2`. -/
+theorem Submission.dimred_tr_ibl_countable_tests : ∀ (P n : ℕ), ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, ∀ (Vs : ℕ → Set (Euclid P)) (As : (k : ℕ) → GeometricCurrentOn (Vs k) n) (A : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℕ, ∃ (k₀ : ℕ) (Γ : ℝ≥0∞), Γ ≠ ∞ ∧ A.massOn (ball 0 ((R : ℝ) + 1)) ≤ Γ ∧ ∀ k, k₀ ≤ k → ball (0 : Euclid P) ((R : ℝ) + 1) ⊆ Vs k ∧ (As k).massOn (ball 0 ((R : ℝ) + 1)) ≤ Γ) → (∀ m, Tendsto (fun k => currentEval (As k) ((ωs m : TestFormOn (univ : Set (Euclid P)) n) : DifferentialForm (Euclid P) n)) atTop (𝓝 (A (ωs m)))) → ConvergesWeakly As A := by
+  intro P n
+  -- step 1: the countable family `D` for `U = ℝᴾ` is nonempty, so `D = range ωs`
+  obtain ⟨D, hDc, hD⟩ := Submission.dor_lmbs_testForm_countable_approx P n univ isOpen_univ
+  have hDne : D.Nonempty := by
+    obtain ⟨_, ωs₀, -, -, -, hωs₀D, -⟩ := hD 0
+    exact ⟨ωs₀ 0, hωs₀D 0⟩
+  obtain ⟨ωs, hωs⟩ := hDc.exists_eq_range hDne
+  refine ⟨ωs, fun Vs As A hM hT => ?_⟩
+  intro ω
+  -- step 2: `|α| ≤ C₀ ‖α‖`
+  obtain ⟨-, -, ⟨C₀, hC₀, hC₀α⟩, -⟩ := Submission.rsd_mw_tfa_norm_props P n
+  -- step 4: the approximants `ωs'` of `ω` lie in `D` and are supported in a compact `K`;
+  -- `K ⊆ B = B_{R+1}(0)`, and the mass hypothesis for this `R` gives `k₀` and `Γ`
+  obtain ⟨K, ωs', hK, -, hωK, hωs'D, hωs'K, hunif, -⟩ := hD ω
+  obtain ⟨r, hr⟩ := hK.isBounded.subset_closedBall (0 : Euclid P)
+  obtain ⟨R, hR⟩ := exists_nat_ge r
+  have hKB : K ⊆ ball (0 : Euclid P) ((R : ℝ) + 1) := fun x hx => by
+    rw [mem_ball]
+    linarith [mem_closedBall.1 (hr hx)]
+  obtain ⟨k₀, Γ, hΓ, hAΓ, hAsΓ⟩ := hM R
+  have hG : 0 ≤ Γ.toReal := ENNReal.toReal_nonneg
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  -- step 9: `η = ε / (4 (C₀ Γ + 1))` has `C₀ η Γ ≤ ε / 4`
+  obtain ⟨η, hη_def⟩ : ∃ η : ℝ, η = ε / (4 * (C₀ * Γ.toReal + 1)) := ⟨_, rfl⟩
+  have hη : 0 < η := by
+    rw [hη_def]
+    positivity
+  have hsmall : C₀ * η * Γ.toReal ≤ ε / 4 := by
+    rw [hη_def, show C₀ * (ε / (4 * (C₀ * Γ.toReal + 1))) * Γ.toReal =
+        C₀ * Γ.toReal * ε / (4 * (C₀ * Γ.toReal + 1)) by ring,
+      div_le_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith [mul_nonneg hC₀ hG]
+  -- step 5: `ωs m` is uniformly `η`-close to `ω`
+  obtain ⟨j, hj⟩ := (Metric.tendstoUniformly_iff.1 hunif η hη).exists
+  obtain ⟨m, hm⟩ : ωs' j ∈ range ωs := hωs ▸ hωs'D j
+  rw [← hm] at hj
+  have hmK : tsupport (ωs m : DifferentialForm (Euclid P) n) ⊆ K := hm ▸ hωs'K j
+  -- step 6: `β = ω − ωs m` is supported in `B`, and `|β| ≤ C₀ η` pointwise
+  have hβB : tsupport ((ω : DifferentialForm (Euclid P) n) - (ωs m : DifferentialForm (Euclid P) n))
+      ⊆ ball (0 : Euclid P) ((R : ℝ) + 1) :=
+    (tsupport_sub _ _).trans (union_subset (hωK.trans hKB) (hmK.trans hKB))
+  have hβη : ∀ x, covectorEuclideanNorm
+      (((ω : DifferentialForm (Euclid P) n) - (ωs m : DifferentialForm (Euclid P) n)) x) ≤
+        C₀ * η := by
+    intro x
+    have h := hj x
+    rw [dist_eq_norm] at h
+    exact (hC₀α _).trans (mul_le_mul_of_nonneg_left h.le hC₀)
+  -- steps 7 and 8: if `M_B(T) ≤ Γ` and `a`, `b` are `ω`, `ωs m` as test forms of the domain of
+  -- `T`, then `|T(a) − T(b)| = |T(a − b)| ≤ C₀ η M_B(T) ≤ C₀ η Γ ≤ ε / 4`
+  have key : ∀ (U' : Set (Euclid P)) (T : GeometricCurrentOn U' n) (a b : TestFormOn U' n),
+      (a : DifferentialForm (Euclid P) n) = (ω : DifferentialForm (Euclid P) n) →
+      (b : DifferentialForm (Euclid P) n) = (ωs m : DifferentialForm (Euclid P) n) →
+      T.massOn (ball 0 ((R : ℝ) + 1)) ≤ Γ → |T a - T b| ≤ ε / 4 := by
+    intro U' T a b ha hb hTΓ
+    rw [show T a - T b = T (a - b) from (map_sub T.toCurrent a b).symm]
+    refine (Submission.cmr_abs_apply_le_massOn P n U' _ T (a - b) (C₀ * η)
+      (ne_top_of_le_ne_top hΓ hTΓ) ?_ ?_).trans (le_trans ?_ hsmall)
+    · rw [Submodule.coe_sub, ha, hb]
+      exact hβB
+    · rw [Submodule.coe_sub, ha, hb]
+      exact hβη
+    · exact mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hΓ hTΓ) (mul_nonneg hC₀ hη.le)
+  have hlim : |A ω - A (ωs m)| ≤ ε / 4 := key univ A ω (ωs m) rfl rfl hAΓ
+  -- step 10: the tests `currentEval (As k) (ωs m) → A (ωs m)`
+  obtain ⟨k₁, hk₁⟩ := Metric.tendsto_atTop.1 (hT m) (ε / 2) (by positivity)
+  refine ⟨max k₀ k₁, fun k hk => ?_⟩
+  -- step 8: for `k ≥ k₀`, `ω` and `ωs m` are test forms of `Vs k`
+  obtain ⟨hBk, hAkΓ⟩ := hAsΓ k (le_of_max_le_left hk)
+  have hωk : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
+      tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Vs k :=
+    ⟨ω.property.1, hωK.trans (hKB.trans hBk)⟩
+  have hmk : IsTestForm (ωs m : DifferentialForm (Euclid P) n) ∧
+      tsupport (ωs m : DifferentialForm (Euclid P) n) ⊆ Vs k :=
+    ⟨(ωs m).property.1, hmK.trans (hKB.trans hBk)⟩
+  have hseq : |currentEval (As k) (ω : DifferentialForm (Euclid P) n) -
+      currentEval (As k) (ωs m : DifferentialForm (Euclid P) n)| ≤ ε / 4 := by
+    unfold currentEval
+    rw [dite_eq_left hωk, dite_eq_left hmk]
+    exact key (Vs k) (As k) ⟨(ω : DifferentialForm (Euclid P) n), hωk⟩
+      ⟨(ωs m : DifferentialForm (Euclid P) n), hmk⟩ rfl rfl hAkΓ
+  -- step 11: `ε / 4 + ε / 2 + ε / 4`
+  have h₂ := hk₁ k (le_of_max_le_right hk)
+  rw [Real.dist_eq, abs_lt] at h₂ ⊢
+  rw [abs_le] at hlim hseq
+  constructor <;> linarith [hlim.1, hlim.2, hseq.1, hseq.2, h₂.1, h₂.2]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
