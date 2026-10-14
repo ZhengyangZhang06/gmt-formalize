@@ -3253,6 +3253,70 @@ theorem Submission.dor_lmb_imrep_restrict_current : ∀ (P n : ℕ) (U A : Set (
   simp only [IMRep.measure, hc, hm]
   rw [restrict_withDensity hA, Measure.restrict_restrict hA, inter_comm]
 
+/-- **The blow-up class `𝓜` is locally finite and is `Hⁿ` weighted by its upper density** (Simon
+7.3.3, proof of (1), and Remark 3.4: the measures of `𝒯` are `θHⁿ`).  Assume the density theorem
+(DEN) for weights `μ_R⌞W`, `W` open, and the blow-up of integer multiplicity representations (BUI).
+Let `𝓜` consist of the rescalings `ν^{a,t} = t⁻ⁿ η_{a,t#}(μ_T⌞B_{2r}(z))` (`0 < t ≤ r`,
+`|a − z| ≤ r − t`) and of the weights `μ_S` of the limits `S` of blow-ups of `T`.  Then every
+`μ ∈ 𝓜` is finite on compact sets, and `μ = Hⁿ⌞(ofReal ∘ dens μ)` for the upper density
+`dens μ x = limsup_{ρ↓0} μ(B_ρ(x)) / (ωₙρⁿ)`.  A weight `μ_R = θHⁿ⌞M` is finite on compact subsets
+of its domain, as `θ` is locally integrable; and `ν^{a,t}(ℝ^{n+k}) = t⁻ⁿ μ_T(B_{2r}(z)) < ∞`.  By
+(DEN) with `W = ℝ^{n+k}`, every locally finite weight is `Hⁿ` weighted by its upper density.  The
+`μ_S` are weights, and `ν^{a,t}` is the weight of the blow-up `η_{a,t#}(T⌞B_{2r}(z))`. -/
+theorem Submission.dimred_tr_bc_class_finite_density : (∀ (P n : ℕ) (V W : Set (Euclid P)) (R : IMRep V n), IsOpen W → (∀ K : Set (Euclid P), IsCompact K → R.measure (K ∩ W) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), Tendsto (fun ρ : ℝ => R.measure (ball x ρ ∩ W) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (Set.indicator (R.carrier ∩ W) (fun y => (R.mult y : ℝ≥0∞)) x))) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (R : IMRep U n), R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s)) → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (z : Euclid (n + k)) (r : ℝ) (RT : IMRep U n) (𝓜 : Set (Measure (Euclid (n + k)))), 0 < r → closedBall z (2 * r) ⊆ U → RT.Represents T → (∀ μ : Measure (Euclid (n + k)), μ ∈ 𝓜 ↔ (∃ (a : Euclid (n + k)) (t : ℝ), 0 < t ∧ t ≤ r ∧ dist a z ≤ r - t ∧ μ = ENNReal.ofReal (t⁻¹ ^ n) • (RT.measure.restrict (ball z (2 * r))).map (dilation a t)) ∨ ∃ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RS : IMRep (univ : Set (Euclid (n + k))) n) (cs : ℕ → Euclid (n + k)) (ts : ℕ → ℝ) (hts : ∀ i, 0 < ts i) (b : Euclid (n + k)), (∀ i, dist (cs i) z < r - ts i) ∧ Tendsto ts atTop (𝓝 0) ∧ Tendsto cs atTop (𝓝 b) ∧ ConvergesWeakly (fun i => blowUp T (cs i) (ts i) (hts i).ne') S ∧ RS.Represents S ∧ μ = RS.measure) → ∀ dens : Measure (Euclid (n + k)) → Euclid (n + k) → ℝ, (∀ (μ : Measure (Euclid (n + k))) (x : Euclid (n + k)), dens μ x = (limsup (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) → (∀ μ ∈ 𝓜, ∀ K : Set (Euclid (n + k)), IsCompact K → μ K ≠ ∞) ∧ (∀ μ ∈ 𝓜, μ = (μHE[n] : Measure (Euclid (n + k))).withDensity (fun x => ENNReal.ofReal (dens μ x))) := by
+  intro hDEN hBUI n k ℓ _ U N T hn hU _ _ _ _ _ z r RT 𝓜 _ hball _ h𝓜 dens hdens
+  -- Step 1: a weight `μ_R` is finite on compact subsets `K` of the domain of `R`, as
+  -- `μ_R(K) = ∫_{M ∩ K} θ dHⁿ`; in particular `μ_T(B_{2r}(z)) ≤ μ_T(B̄_{2r}(z)) < ∞`
+  have hcpt : ∀ (V : Set (Euclid (n + k))) (R : IMRep V n) (K : Set (Euclid (n + k))),
+      IsCompact K → K ⊆ V → R.measure K ≠ ∞ := by
+    intro V R K hK hKV
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact R.locallyIntegrable_mult K hK hKV
+  have hW : RT.measure (ball z (2 * r)) ≠ ∞ :=
+    ne_top_of_le_ne_top (hcpt U RT _ (isCompact_closedBall z (2 * r)) hball)
+      (measure_mono ball_subset_closedBall)
+  -- Step 2: property (1); `ν^{a,t}(K) ≤ ν^{a,t}(ℝ^{n+k}) = t⁻ⁿ μ_T(B_{2r}(z))`, and `μ_S` is a
+  -- weight in `ℝ^{n+k}`
+  have h1 : ∀ μ ∈ 𝓜, ∀ K : Set (Euclid (n + k)), IsCompact K → μ K ≠ ∞ := by
+    intro μ hμ K hK
+    rcases (h𝓜 μ).1 hμ with ⟨a, t, ht, _, _, rfl⟩ | ⟨_, RS, _, _, _, _, _, _, _, _, _, rfl⟩
+    · refine ne_top_of_le_ne_top ?_ (measure_mono (subset_univ K))
+      rw [Submission.idtp_fons_cc_ambient_calculus.2.1 (n + k) n _ a t univ ht MeasurableSet.univ,
+        preimage_univ, Measure.restrict_apply_univ]
+      exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hW
+    · exact hcpt univ RS K hK (subset_univ K)
+  -- Steps 3–4: (DEN) with `W = ℝ^{n+k}` is the density hypothesis of the density
+  -- representation, so a weight finite on compact sets is `Hⁿ⌞(ofReal ∘ dens μ_R)`
+  have hrep : ∀ (V : Set (Euclid (n + k))) (R : IMRep V n),
+      (∀ K : Set (Euclid (n + k)), IsCompact K → R.measure K ≠ ∞) →
+      R.measure = (μHE[n] : Measure (Euclid (n + k))).withDensity
+        (fun x => ENNReal.ofReal (dens R.measure x)) := by
+    intro V R hfin
+    simp only [hdens]
+    refine Submission.idtp_fons_cc_density_representation (fun P m V' R' _ hfin' => ?_)
+      (n + k) n V R hn hfin
+    simpa only [inter_univ] using hDEN P m V' univ R' isOpen_univ fun K hK => by
+      rw [inter_univ]
+      exact hfin' K hK
+  refine ⟨h1, fun μ hμ => ?_⟩
+  rcases (h𝓜 μ).1 hμ with ⟨a, t, ht, _, _, hμa⟩ | ⟨_, RS, _, _, _, _, _, _, _, _, _, rfl⟩
+  · -- Step 6: `ν^{a,t}` is the weight of the blow-up `η_{a,t#}(T⌞B_{2r}(z))`, by restriction of
+    -- `RT` to `B_{2r}(z)` and (BUI)
+    obtain ⟨SW, RW, hRW, _, _, _, hRWm⟩ := Submission.dor_lmb_imrep_restrict_current (n + k) n U
+      (ball z (2 * r)) RT hU measurableSet_ball
+    obtain ⟨R'', _, hR''⟩ := hBUI (n + k) n U SW a t ht RW hRW
+    have heq : R''.measure = μ := by
+      ext s hs
+      rw [hR'' s hs, hμa, Submission.idtp_fons_cc_ambient_calculus.2.1 (n + k) n _ a t s ht hs,
+        hRWm]
+    rw [← heq]
+    exact hrep _ R'' fun K hK => by
+      rw [heq]
+      exact h1 μ hμ K hK
+  · -- Step 5: `μ_S` is a weight in `ℝ^{n+k}`
+    exact hrep univ RS (h1 _ hμ)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
