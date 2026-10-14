@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "5597fc04265cbf98dc30332b2c9ee6e39b2b4de34aa5aba6fde25713c26a2921",
+  "git_delta": {
+    "base_commit": "405eb5b1fe0c818e1a53603849d27c4287e187e4",
+    "candidate_commit": "558a0fd4c13d3ea4e60bffb6f9de17afeb1d0a61",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "9f5ffeefa4d697f62c2d3be323abbdd521eb957911fc9650a3bc242bc713385c",
+    "source_sha256": "b30c0b6179ac38b9cbcc5e0fa7787d3721d165089e2e041397bedf33aadd655c",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_cipi_plane_halfspace_stokes",
+      "statement": "∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, (∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)), exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = 0) ∧ ∀ t : ℝ, ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)) ∩ {y : Euclid P | inner ℝ y (v 0) < t}, exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = ∫ y in {y : Euclid P | y - t • v 0 ∈ Submodule.span ℝ (Set.range (Fin.tail v))}, (φ : DifferentialForm (Euclid P) d) y (Fin.tail v) ∂μHE[d]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
