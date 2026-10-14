@@ -1269,6 +1269,76 @@ theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : Multi
   have hE : ∀ α : Covector (Euclid P) n,
       α = ∑ I ∈ S, α (fun k => e (I k)) • W (fun k => e (I k)) := by
     intro α
+/-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
+has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
+increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
+and `dx^I(e_J) = δ_IJ`.  Expanding `δ_τ(v) = det(⟨τᵢ, vⱼ⟩)` at `v = τ` gives the Cauchy–Binet
+identity `Σ_I dx^I(τ)² = 1`; with Cauchy–Schwarz, `|α(τ)| ≤ |α|`. -/
+theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : MultiVector P n →L[ℝ] Covector (Euclid P) n, ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ covectorEuclideanNorm (L ξ) ≤ 1 ∧ ξ (L ξ) = 1 := by
+  intro P n
+  -- `W u v = Σ_σ sgn σ ∏ₖ ⟨uₖ, v_{σ k}⟩ = det(⟨uₖ, vⱼ⟩)`; `dx^I = W (e ∘ I)` and `δ_τ = W τ`
+  let W : (Fin n → Euclid P) → Covector (Euclid P) n := fun u =>
+    ContinuousMultilinearMap.alternatization
+      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin n) ℝ).compContinuousLinearMap
+        fun k => innerSL ℝ (u k))
+  have hW : ∀ u v, W u v =
+      ∑ σ : Equiv.Perm (Fin n), Equiv.Perm.sign σ • ∏ k, inner ℝ (u k) (v (σ k)) := by
+    intro u v
+    simp only [W, ContinuousMultilinearMap.alternatization_apply_apply,
+      ContinuousMultilinearMap.compContinuousLinearMap_apply,
+      ContinuousMultilinearMap.mkPiAlgebra_apply, innerSL_apply_apply, Function.comp_apply]
+  -- `W u v = W v u` (the determinant of the transpose): substitute `σ ↦ σ⁻¹` and `k ↦ σ k`
+  have hWsymm : ∀ u v, W u v = W v u := by
+    intro u v
+    rw [hW, hW]
+    refine Fintype.sum_equiv (Equiv.inv (Equiv.Perm (Fin n))) _ _ fun σ => ?_
+    rw [Equiv.inv_apply, Equiv.Perm.sign_inv,
+      ← Equiv.prod_comp σ (fun k => inner ℝ (v k) (u (σ⁻¹ k)))]
+    simp only [Equiv.Perm.coe_inv, Equiv.symm_apply_apply, real_inner_comm]
+  -- `W u u = 1` for orthonormal `u`: only `σ = 1` contributes
+  have hW1 : ∀ u, Orthonormal ℝ u → W u u = 1 := by
+    intro u hu
+    rw [hW, Finset.sum_eq_single (1 : Equiv.Perm (Fin n))]
+    · rw [Equiv.Perm.sign_one, one_smul]
+      refine Finset.prod_eq_one fun k _ => ?_
+      rw [Equiv.Perm.coe_one, id, real_inner_self_eq_norm_sq, hu.norm_eq_one, one_pow]
+    · intro σ _ hσ
+      obtain ⟨k, hk⟩ : ∃ k, σ k ≠ k := by
+        by_contra! h
+        exact hσ (Equiv.ext h)
+      rw [Finset.prod_eq_zero (Finset.mem_univ k) (hu.inner_eq_zero hk.symm), smul_zero]
+    · exact fun h => absurd (Finset.mem_univ _) h
+  -- Kronecker property `dx^I(e_J) = δ_IJ` for strictly increasing `I`, `J`: a nonzero term
+  -- forces `J ∘ σ = I`, so `range I = range J` and `I = J`
+  let e := EuclideanSpace.basisFun (Fin P) ℝ
+  have he : ∀ i j, inner ℝ (e i) (e j) = if i = j then (1 : ℝ) else 0 :=
+    orthonormal_iff_ite.mp e.orthonormal
+  have hK : ∀ I J : Fin n → Fin P, StrictMono I → StrictMono J →
+      W (fun k => e (I k)) (fun k => e (J k)) = if I = J then 1 else 0 := by
+    intro I J hI hJ
+    split_ifs with hIJ
+    · subst hIJ
+      have hIo : Orthonormal ℝ (fun k => e (I k)) := e.orthonormal.comp I hI.injective
+      exact hW1 _ hIo
+    · rw [hW]
+      refine Finset.sum_eq_zero fun σ _ => ?_
+      rw [Finset.prod_eq_zero_iff.mpr, smul_zero]
+      by_contra! h
+      apply hIJ
+      have hJσ : J ∘ σ = I := funext fun k => by
+        have := h k (Finset.mem_univ k)
+        rw [he] at this
+        split_ifs at this with hk
+        · exact hk.symm
+        · exact absurd rfl this
+      rw [← (StrictMono.range_inj_of_wellFoundedLT hI hJ), ← hJσ, EquivLike.range_comp]
+  -- expansion `α = Σ_{I ∈ S} α(e_I) dx^I`: both sides are alternating, so compare them on
+  -- `e ∘ f`, `f` injective; writing `f = J ∘ σ⁻¹` with `J` strictly increasing (`J = f ∘ sort f`)
+  -- reduces this to `e ∘ J`, where it is the Kronecker property
+  let S : Finset (Fin n → Fin P) := Finset.univ.filter StrictMono
+  have hE : ∀ α : Covector (Euclid P) n,
+      α = ∑ I ∈ S, α (fun k => e (I k)) • W (fun k => e (I k)) := by
+    intro α
     apply ContinuousAlternatingMap.toAlternatingMap_injective
     refine e.toBasis.ext_alternating fun f hf => ?_
     simp only [OrthonormalBasis.coe_toBasis, ContinuousAlternatingMap.coe_toAlternatingMap]
@@ -2853,6 +2923,58 @@ theorem Submission.dtc_isIntegerMultiplicity_sub : ∀ (P n : ℕ) (U : Set (Euc
   rw [hsub]
   push_cast
   ring
+
+/-- **Simon 6.2.13, 6.2.16, 7.2.4 and Remark 7.2.5(1)** (eventual local agreement with a limit
+current).  Assume measure locality (the type of `dtc_bc_measure_restrict_eq_of_eqOn`).  Let
+`Sⱼ ∈ 𝒟ₙ(Uⱼ)`, `n = m + 1`, `Uⱼ` open, and `C ∈ 𝒟ₙ(ℝᴾ)`, and suppose that for every `R`, for all
+large `j`: `B_R(0) ⊆ Uⱼ`, `Sⱼ(ω) = C(ω)` if `spt ω ⊆ B_R(0)`, and `∂Sⱼ(β) = 0` if
+`spt β ⊆ B_R(0)`.  Then `Sⱼ ⇀ C`, `μ_{Sⱼ} → μ_C` and `∂C = 0`.  Every compact set lies in some
+ball `B_R(0)`: so `Sⱼ(ω) = C(ω)` for large `j`; for `spt f ⊆ B_R(0)` measure locality gives
+`μ_{Sⱼ}⌞B_R(0) = μ_C⌞B_R(0)`, hence `∫ f dμ_{Sⱼ} = ∫ f dμ_C`, for large `j`; and
+`∂C(β) = C(dβ) = Sⱼ(dβ) = ∂Sⱼ(β) = 0`. -/
+theorem Submission.dtc_bc_cz_local_agreement : (∀ (P n : ℕ) (U₁ U₂ W : Set (Euclid P)) (T₁ : GeometricCurrentOn U₁ n) (T₂ : GeometricCurrentOn U₂ n) (R₁ : IMRep U₁ n) (R₂ : IMRep U₂ n), IsOpen U₁ → IsOpen U₂ → IsOpen W → W ⊆ U₁ → W ⊆ U₂ → R₁.Represents T₁ → R₂.Represents T₂ → (∀ ω : TestFormOn W n, currentEval T₁ (ω : DifferentialForm (Euclid P) n) = currentEval T₂ (ω : DifferentialForm (Euclid P) n)) → R₁.measure.restrict W = R₂.measure.restrict W) → ∀ (P m : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, ball (0 : Euclid P) R ⊆ Us j ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 R → currentEval (Ss j) (ω : DifferentialForm (Euclid P) (m + 1)) = C ω) ∧ ∀ β : TestFormOn (Us j) m, tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 R → (Ss j).boundary β = 0) → ConvergesWeakly Ss C ∧ MassMeasuresConverge Ss C ∧ C.boundary = 0 := by
+  intro hmeas P m Us Ss C hUs hagree
+  refine ⟨?_, ?_, ?_⟩
+  · -- 1. `spt ω ⊆ B_r(0)` for some `r`, so `Sⱼ(ω) = C(ω)` for all large `j`
+    intro ω
+    obtain ⟨r, hr⟩ := ω.property.1.2.isCompact.isBounded.subset_ball (0 : Euclid P)
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [hagree r] with j hj
+    exact (hj.2.1 ω hr).symm
+  · -- 2. `spt f ⊆ B_r(0)` for some `r`, so `f = 0` off `B_r(0)`
+    intro Rs hRs R hR f _ hfc _
+    obtain ⟨r, hr⟩ := hfc.isCompact.isBounded.subset_ball (0 : Euclid P)
+    have hf0 : ∀ x, x ∉ ball (0 : Euclid P) r → f x = 0 := fun x hx =>
+      image_eq_zero_of_notMem_tsupport fun h => hx (hr h)
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [hagree r] with j hj
+    -- `Sⱼ = C` on `𝒟ⁿ(B_r(0))`, read through `currentEval`
+    have hloc : ∀ ω : TestFormOn (ball (0 : Euclid P) r) (m + 1),
+        currentEval (Ss j) (ω : DifferentialForm (Euclid P) (m + 1)) =
+          currentEval C (ω : DifferentialForm (Euclid P) (m + 1)) := by
+      intro ω
+      have h := hj.2.1 (testFormOnInclusion (subset_univ _) (m + 1) ω) ω.property.2
+      rw [testFormOnInclusion_coe] at h
+      rw [h, currentEval, dite_eq_left ⟨ω.property.1, subset_univ _⟩]
+      rfl
+    -- measure locality on `B_r(0) ⊆ Uⱼ`: `μ_{Sⱼ}⌞B_r(0) = μ_C⌞B_r(0)`
+    have hrestr := hmeas P (m + 1) (Us j) univ (ball 0 r) (Ss j) C (Rs j) R (hUs j) isOpen_univ
+      isOpen_ball hj.1 (subset_univ _) (hRs j) hR hloc
+    calc ∫ x, f x ∂R.measure = ∫ x in ball (0 : Euclid P) r, f x ∂R.measure :=
+          (setIntegral_eq_integral_of_forall_compl_eq_zero hf0).symm
+      _ = ∫ x in ball (0 : Euclid P) r, f x ∂(Rs j).measure := by rw [hrestr]
+      _ = ∫ x, f x ∂(Rs j).measure := setIntegral_eq_integral_of_forall_compl_eq_zero hf0
+  · -- 3. `spt β ⊆ B_r(0) ⊆ Uⱼ` for some `r`, `j`, and `C(dβ) = Sⱼ(dβ) = ∂Sⱼ(β) = 0`
+    ext β
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply]
+    obtain ⟨r, hr⟩ := β.property.1.2.isCompact.isBounded.subset_ball (0 : Euclid P)
+    obtain ⟨j, hj⟩ := (hagree r).exists
+    have hdβ : tsupport ((exteriorDerivativeTestOn univ m β : TestFormOn (univ : Set (Euclid P))
+        (m + 1)) : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 r :=
+      (tsupport_exteriorDerivative_subset (β : DifferentialForm (Euclid P) m)).trans hr
+    rw [← hj.2.1 _ hdβ, currentEval,
+      dite_eq_left ⟨(exteriorDerivativeTestOn univ m β).property.1, hdβ.trans hj.1⟩]
+    exact hj.2.2 ⟨β, β.property.1, hr.trans hj.1⟩ hr
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
