@@ -2665,6 +2665,72 @@ theorem Submission.idtp_fons_cc_mb_mass_dichotomy : ∀ (P n : ℕ) (μ : Measur
       exact hw ⟨x, h⟩
     exact ⟨ball x ε, by rw [nhdsWithin_univ]; exact ball_mem_nhds x hε, hμ⟩
 
+/-- **Lower mass bounds and densities from monotonicity** (Simon 7.3.1(1) and its proof,
+chapter-07.txt lines 302–330; proof of 7.3.3(1), (2), (4) and (11), lines 420–470).  Assume
+(MON), the frozen type of `Submission.idtp_fons_minimizing_monotonicity`: for `T` minimizing in
+`U ∩ N` with `spt T ⊆ U ∩ N` and `∂T = 0`, (i) `ρ ↦ e^{Λρ}ρ⁻ⁿ M_{B_ρ(y)}(T)` is nondecreasing on
+`(0, R)` whenever `closedBall y R ⊆ K`, with `Λ` depending only on the compact `K ⊆ U`; (ii) if
+`N = ℝᴾ`, `ρ ↦ ρ⁻ⁿ M_{B_ρ(y)}(T)` is nondecreasing; (iii) `Θⁿ(μ_T, ·)` exists on `U`; (iv)
+`Θⁿ(μ_T, y) ≥ 1` on `spt T`.  Then (A) `μ_R(B_σ(p)) ≥ e^{−Λσ}ωₙσⁿ` for `p ∈ spt μ_R`,
+`closedBall p ρ ⊆ K` and `0 < σ < ρ`; (B) for a minimizing cycle `S` of `ℝᴾ` represented by `R`,
+(B1) `μ_R(B_ρ(w)) ≥ ωₙρⁿ` for `w ∈ spt μ_R` and `ρ > 0`, (B2) `μ_R(ℝᴾ) ∈ {0, ∞}`, and (B3)
+`Θⁿ(μ_S, w) = θ` iff `θ` is the real value of `limsup_{ρ↓0} μ_R(B_ρ(w))/(ωₙρⁿ)`.  By
+`dimred_im_mass_measure`, `M_W(T) = μ_R(W)` for open `W ⊆ U` and `spt T = U ∩ spt μ_R`; the
+nondecreasing weighted ratio tends to `ωₙΘⁿ(μ_T, p) ≥ ωₙ` as the radius decreases to `0`. -/
+theorem Submission.idtp_fons_cc_monotonicity_bounds : (∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n), 1 ≤ n → n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (N = univ → ∀ (y : Euclid P) (R : ℝ), ball y R ⊆ U → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y ∈ U, HasMassDensity T y (Θ y)) ∧ UpperSemicontinuousOn Θ U) ∧ ∀ y ∈ T.support, ∀ θ : ℝ, HasMassDensity T y θ → 1 ≤ θ) → (∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (K : Set (Euclid P)), 1 ≤ n → n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → R.Represents T → IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ p : Euclid P, (∀ ε : ℝ, 0 < ε → R.measure (ball p ε) ≠ 0) → ∀ σ ρ : ℝ, closedBall p ρ ⊆ K → 0 < σ → σ < ρ → ENNReal.ofReal (Real.exp (-(Λ * σ))) * (unitBallVolume n * ENNReal.ofReal (σ ^ n)) ≤ R.measure (ball p σ)) ∧ ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), 1 ≤ n → n ≤ P → IsMinimizingIn S univ → BoundaryVanishes S → R.Represents S → (∀ w : Euclid P, (∀ ε : ℝ, 0 < ε → R.measure (ball w ε) ≠ 0) → ∀ ρ : ℝ, 0 < ρ → unitBallVolume n * ENNReal.ofReal (ρ ^ n) ≤ R.measure (ball w ρ)) ∧ (R.measure univ = 0 ∨ R.measure univ = ∞) ∧ ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ ↔ θ = (limsup (fun ρ : ℝ => R.measure (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal := by
+  intro hMON
+  refine ⟨?_, ?_⟩
+  · -- (A), steps A1–A5
+    intro P n d U N T R K hn hnd hdP hU hN hNU hmin hspt hbd hR hK hKU
+    -- A1: (MON)(i), (iii), (iv) for `T`; `Λ` depends only on `K`
+    obtain ⟨hi, -, ⟨Θ, hΘ, -⟩, hiv⟩ := hMON P n d U N T hn hnd hdP hU hN hNU hmin hspt hbd
+    obtain ⟨Λ, hΛ, hmono⟩ := hi K hK hKU
+    obtain ⟨hmass, hsupp, -⟩ := Submission.dimred_im_mass_measure P n U T R hU hR
+    refine ⟨Λ, hΛ, fun p hp σ ρ hpρ hσ hσρ => ?_⟩
+    -- A2: `p ∈ closedBall p ρ ⊆ K ⊆ U`, so `p ∈ spt T`, and `M_{B_σ(p)}(T) = μ_R(B_σ(p))`
+    have hpU : p ∈ U := hKU (hpρ (mem_closedBall_self (hσ.trans hσρ).le))
+    have hpT : p ∈ T.support := (hsupp p hpU).2 hp
+    have hσU : ball p σ ⊆ U :=
+      ((ball_subset_ball hσρ.le).trans (ball_subset_closedBall.trans hpρ)).trans hKU
+    rw [← hmass (ball p σ) isOpen_ball hσU]
+    -- A3–A5: the nondecreasing `e^{Λτ}τ⁻ⁿ M_{B_τ(p)}(T)` tends to `ωₙΘ(p) ≥ ωₙ` as `τ ↓ 0`
+    exact Submission.idtp_fons_cc_mb_monotone_lower_bound n Λ ρ σ (Θ p)
+      (fun τ => T.massOn (ball p τ)) (hiv p hpT (Θ p) (hΘ p hpU)) hσ hσρ (hmono p ρ hpρ)
+      (hΘ p hpU).2
+  · -- (B)
+    intro P n S R hn hnP hmin hbd hR
+    -- B0: (MON) with `d = P` and `U = N = ℝᴾ`, an embedded `C²` submanifold of itself
+    obtain ⟨-, hii, ⟨Θ, hΘ, -⟩, hiv⟩ := hMON P n P univ univ S hn hnP le_rfl isOpen_univ
+      (Submission.idtp_fons_cc_ambient_calculus.1 P)
+      (by rw [closure_univ, Set.sdiff_self, empty_inter]) (by rw [inter_self]; exact hmin)
+      (by rw [inter_self]; exact subset_univ _) hbd
+    obtain ⟨hmass, hsupp, -⟩ := Submission.dimred_im_mass_measure P n univ S R isOpen_univ hR
+    have hball : ∀ (w : Euclid P) (ρ : ℝ), S.massOn (ball w ρ) = R.measure (ball w ρ) :=
+      fun w ρ => hmass _ isOpen_ball (subset_univ _)
+    -- B1: as in (A) with `Λ = 0` on `(0, ρ + 1)`, by (MON)(ii)
+    have hB1 : ∀ w : Euclid P, (∀ ε : ℝ, 0 < ε → R.measure (ball w ε) ≠ 0) → ∀ ρ : ℝ, 0 < ρ →
+        unitBallVolume n * ENNReal.ofReal (ρ ^ n) ≤ R.measure (ball w ρ) := by
+      intro w hw ρ hρ
+      have hwS : w ∈ S.support := (hsupp w (mem_univ w)).2 hw
+      have hmono : MonotoneOn (fun τ : ℝ => ENNReal.ofReal (Real.exp (0 * τ) / τ ^ n) *
+          S.massOn (ball w τ)) (Ioo 0 (ρ + 1)) := by
+        simpa only [zero_mul, Real.exp_zero] using hii rfl w (ρ + 1) (subset_univ _)
+      have hlow := Submission.idtp_fons_cc_mb_monotone_lower_bound n 0 (ρ + 1) ρ (Θ w)
+        (fun τ => S.massOn (ball w τ)) (hiv w hwS (Θ w) (hΘ w (mem_univ w))) hρ (lt_add_one ρ)
+        hmono (hΘ w (mem_univ w)).2
+      rwa [zero_mul, neg_zero, Real.exp_zero, ENNReal.ofReal_one, one_mul, hball] at hlow
+    -- B2: a support point has infinite total mass; with none, `μ_R` is locally null
+    refine ⟨hB1, Submission.idtp_fons_cc_mb_mass_dichotomy P n R.measure hn hB1, fun w θ => ?_⟩
+    -- B3: the density is the limit, hence the `limsup`, of `μ_R(B_ρ(w))/(ωₙρⁿ)`
+    have hlim : ∀ θ' : ℝ, HasMassDensity S w θ' → θ' = (limsup (fun ρ : ℝ => R.measure (ball w ρ) /
+        (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal := by
+      rintro θ' ⟨hθ', htend⟩
+      simp only [hball] at htend
+      rw [htend.limsup_eq, ENNReal.toReal_ofReal hθ']
+    refine ⟨hlim θ, fun h => ?_⟩
+    rw [h, ← hlim (Θ w) (hΘ w (mem_univ w))]
+    exact hΘ w (mem_univ w)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
