@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_mass_bounds-a1.exhaustion-a1",
+  "parent_id": "root.compactness_mass_bounds-a1",
+  "depth": 2,
+  "title": "Exhaustion of an open set by compactly contained open sets",
+  "statement": "For every P ∈ ℕ and every open set U ⊆ ℝ^P (= Eucl P) there is a sequence (W_i)_{i∈ℕ} of subsets of ℝ^P with two properties. (a) For every i, CompactlyContainedOpen W_i U holds: W_i is open, closure(W_i) is compact and closure(W_i) ⊆ U. (b) Every compact K ⊆ U is contained in W_i for some i.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ W : ℕ → Set (Eucl P), (∀ i, CompactlyContainedOpen (W i) U) ∧ ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ i, K ⊆ W i",
+  "lean_name": "cmb_exists_compactly_contained_exhaustion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-exhaustion-a1-a1"
+}

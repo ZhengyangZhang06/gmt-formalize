@@ -359,6 +359,822 @@ def IntegralityOfWeakLimits : Prop :=
 
 end
 
+/-- Exhaustion of an open `U ⊆ ℝ^P` by open sets `W i ⊂⊂ U` such that every compact `K ⊆ U`
+lies in some `W i`: `W i = {x : |x| < i, (i + 1)⁻¹ < infEDist x (ℝ^P ∖ U)}`. -/
+theorem Submission.cmb_exists_compactly_contained_exhaustion :
+    ∀ (P : ℕ) (U : Set (Eucl P)), IsOpen U → ∃ W : ℕ → Set (Eucl P),
+      (∀ i, CompactlyContainedOpen (W i) U) ∧
+      ∀ K : Set (Eucl P), IsCompact K → K ⊆ U → ∃ i, K ⊆ W i := by
+  intro P U hU
+  -- `d x = infEDist x Uᶜ` is continuous and positive exactly on `U`.
+  have hd : Continuous fun x : Eucl P => infEDist x Uᶜ := continuous_infEDist
+  have hpos : ∀ x ∈ U, 0 < infEDist x Uᶜ := fun x hx => by
+    rw [infEDist_pos_iff_notMem_closure, hU.isClosed_compl.closure_eq, notMem_compl_iff]
+    exact hx
+  refine ⟨fun i => {x | ‖x‖ < i} ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ}, fun i => ?_,
+    fun K hK hKU => ?_⟩
+  · -- `closure (W i) ⊆ closedBall 0 i ∩ {(i + 1)⁻¹ ≤ d}`, a compact subset of `U`.
+    have hcl : closure ({x : Eucl P | ‖x‖ < i} ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ}) ⊆
+        closedBall 0 i ∩ {x | ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ} :=
+      closure_minimal (fun x hx => ⟨mem_closedBall_zero_iff.2 hx.1.le,
+        show ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ from hx.2.le⟩)
+        (isClosed_closedBall.inter (isClosed_le continuous_const hd))
+    refine ⟨(isOpen_lt continuous_norm continuous_const).inter (isOpen_lt continuous_const hd),
+      (isCompact_closedBall 0 _).of_isClosed_subset isClosed_closure (hcl.trans inter_subset_left),
+      fun x hx => ?_⟩
+    by_contra hxU
+    have h : ((i : ℝ≥0∞) + 1)⁻¹ ≤ infEDist x Uᶜ := (hcl hx).2
+    rw [infEDist_zero_of_mem hxU, nonpos_iff_eq_zero, ENNReal.inv_eq_zero] at h
+    exact ENNReal.add_ne_top.2 ⟨ENNReal.natCast_ne_top i, ENNReal.one_ne_top⟩ h
+  · -- A compact `K ⊆ U` is bounded and `d` has a positive minimum on it.
+    rcases K.eq_empty_or_nonempty with rfl | hne
+    · exact ⟨0, empty_subset _⟩
+    obtain ⟨R, hR⟩ := isBounded_iff_forall_norm_le.1 hK.isBounded
+    obtain ⟨i₁, hi₁⟩ := exists_nat_gt R
+    obtain ⟨x₀, hx₀K, hx₀⟩ := hK.exists_isMinOn hne hd.continuousOn
+    obtain ⟨i₂, hi₂⟩ := ENNReal.exists_inv_nat_lt (hpos x₀ (hKU hx₀K)).ne'
+    refine ⟨max i₁ i₂, fun x hx => ⟨?_, ?_⟩⟩
+    · show ‖x‖ < ((max i₁ i₂ : ℕ) : ℝ)
+      calc ‖x‖ ≤ R := hR x hx
+        _ < i₁ := hi₁
+        _ ≤ (max i₁ i₂ : ℕ) := Nat.cast_le.2 (le_max_left _ _)
+    · show (((max i₁ i₂ : ℕ) : ℝ≥0∞) + 1)⁻¹ < infEDist x Uᶜ
+      calc (((max i₁ i₂ : ℕ) : ℝ≥0∞) + 1)⁻¹ ≤ (i₂ : ℝ≥0∞)⁻¹ :=
+            ENNReal.inv_le_inv.2 (by exact_mod_cast (le_max_right i₁ i₂).trans (Nat.le_succ _))
+        _ < infEDist x₀ Uᶜ := hi₂
+        _ ≤ infEDist x Uᶜ := isMinOn_iff.1 hx₀ x hx
+/-- A coordinate of an `n`-covector is bounded by its Euclidean coefficient norm:
+`|α(e_{β(0)}, …, e_{β(n-1)})| ≤ |α|` for every increasing multi-index `β`. -/
+theorem Submission.cmb_rb_abs_euclideanCovectorCoordinate_le :
+    ∀ (P n : ℕ) (α : Covector (Eucl P) n) (β : SimonMultiIndex n P),
+      |euclideanCovectorCoordinate α β| ≤ covectorEuclideanNorm α := by
+  intro P n α β
+  -- `|c| = √(c²)` and `√` is monotone, so it suffices to bound `c²` by the defining sum.
+  rw [covectorEuclideanNorm, ← Real.sqrt_sq_eq_abs]
+  refine Real.sqrt_le_sqrt ?_
+  -- `c²` is the summand of the strictly increasing tuple `β`; every summand is nonnegative.
+  refine le_trans (le_of_eq ?_) (Finset.single_le_sum (fun I _ => ?_) (Finset.mem_univ ⇑β))
+  · simp only [euclideanCovectorCoordinate, β.strictMono, ↓reduceIte,
+      EuclideanSpace.basisFun_apply]
+  · exact ite_nonneg (sq_nonneg _) le_rfl
+/-- The triangle inequality for the Euclidean coefficient norm of covectors (Simon Ch. 6, 1.15):
+`|α + γ| ≤ |α| + |γ|`.  `|a|` is the Euclidean norm of the coefficient vector
+`c(a)_I = [I strictly increasing] · a(b_{I(0)}, …, b_{I(n-1)})` in `ℝ^(Fin n → Fin P)`, and `c` is
+additive, so this is `norm_add_le` in that Euclidean space. -/
+theorem Submission.cmb_rb_covectorEuclideanNorm_add_le :
+    ∀ (P n : ℕ) (α γ : Covector (Eucl P) n),
+      covectorEuclideanNorm (α + γ) ≤ covectorEuclideanNorm α + covectorEuclideanNorm γ := by
+  intro P n α γ
+  -- The coefficient vector `c(a)_I = [I strictly increasing] · a(b_{I(0)}, …, b_{I(n-1)})`.
+  let c : Covector (Eucl P) n → EuclideanSpace ℝ (Fin n → Fin P) := fun a =>
+    WithLp.toLp 2 fun I =>
+      if StrictMono I then a (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) else 0
+  have hc : ∀ a, covectorEuclideanNorm a = ‖c a‖ := by
+    intro a
+    rw [EuclideanSpace.norm_eq, covectorEuclideanNorm]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    simp only [c, Real.norm_eq_abs, sq_abs]
+    split_ifs <;> simp
+  have hadd : c (α + γ) = c α + c γ := by
+    ext I
+    simp only [c, PiLp.add_apply, ContinuousAlternatingMap.add_apply]
+    split_ifs <;> simp
+  rw [hc, hc, hc, hadd]
+  exact norm_add_le _ _
+/-- Coefficients of a measure representation (2.7) are integrable on compact sets (Simon Ch. 6,
+p. 136): for compact `K ⊆ W ⊆ U`, `W` open, test with `ψ = χ dx^β`, where the smooth cutoff `χ`
+equals `1` exactly on `K` and has compact support in `W`.  Then `⟨ψ, v⟩` is `μ`-integrable and
+agrees on `K` with the coefficient `⟨dx^β, v⟩`. -/
+theorem Submission.cmb_rb_measureRepresentation_integrableOn_coeff :
+    ∀ (P n : ℕ) (U W : Set (Eucl P)), IsOpen W → W ⊆ U → ∀ (T : GeometricCurrentOn U n)
+      (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v →
+      ∀ K : Set (Eucl P), IsCompact K → K ⊆ W → ∀ β : SimonMultiIndex n P,
+        IntegrableOn (fun x => euclideanNVectorCoordinate (v x) β) K μ := by
+  intro P n U W hW hWU T μ v hrep K hK hKW β
+  -- An open `V` with `K ⊆ V` and `closure V` compact inside `W`.
+  obtain ⟨V, hVo, hKV, hVW, hVc⟩ := exists_open_between_and_isCompact_closure hK hW hKW
+  -- A smooth cutoff `χ` with `support χ = V` and `χ x = 1 ↔ x ∈ K`.
+  obtain ⟨χ, hχs, -, hχV, hχK⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := (⊤ : ℕ∞)) hVo hK.isClosed hKV
+  -- The test form `ψ = χ dx^β`.
+  let c : Covector (Eucl P) n := wedgeCovectors n (fun j => EuclideanSpace.proj (β j))
+  let ψ : DifferentialForm (Eucl P) n := fun x => χ x • c
+  have hψV : tsupport ψ ⊆ closure V := by
+    simpa [tsupport, hχV] using tsupport_smul_subset_left χ (fun _ => c)
+  have hψ : ψ ∈ TestFormOn U n :=
+    ⟨⟨hχs.smul contDiff_const, hVc.of_isClosed_subset (isClosed_tsupport _) hψV⟩,
+      hψV.trans (hVW.trans hWU)⟩
+  -- `⟨ψ, v⟩` is `μ`-integrable and equals the coefficient on the closed set `K`.
+  refine (hrep ⟨ψ, hψ⟩).1.integrableOn.congr_fun (fun x hx => ?_) hK.isClosed.measurableSet
+  simp [ψ, c, (hχK x).1 hx, euclideanNVectorCoordinate]
+
+/-- **Coordinate pairing estimate, the step "by (2.7)" in the proof of Simon Ch. 6, Lemma 2.15
+(p. 137).**  Let the coefficients `v^β = ⟨dx^β, v⟩` of `v` be `μ`-integrable on a measurable set
+`K`, and let `θ` be a continuous `n`-form vanishing off `K` with `|θ| ≤ D` (Euclidean coefficient
+norm).  Then `f = ∑_β θ(e_β) v^β` is `μ`-integrable and `|∫ f dμ| ≤ D ∑_β ∫_K |v^β| dμ`.  Each
+coefficient `θ(e_β)` is continuous with `|θ(e_β)| ≤ |θ| ≤ D`, so `f` is integrable on `K`; it
+vanishes off `K`; and `|f| ≤ ∑_β D |v^β|` pointwise. -/
+theorem Submission.cmb_rb_integral_coeff_pairing_bound : ∀ (P n : ℕ) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n) (K : Set (Eucl P)), MeasurableSet K → (∀ β : SimonMultiIndex n P, IntegrableOn (fun x => euclideanNVectorCoordinate (v x) β) K μ) → ∀ (θ : Eucl P → Covector (Eucl P) n) (D : ℝ), Continuous θ → (∀ x, x ∉ K → θ x = 0) → (∀ x, covectorEuclideanNorm (θ x) ≤ D) → Integrable (fun x => ∑ β : SimonMultiIndex n P, euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β) μ ∧ |∫ x, ∑ β : SimonMultiIndex n P, euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β ∂μ| ≤ D * ∑ β : SimonMultiIndex n P, ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ := by
+  intro P n μ v K _hK hv θ D hθ hθK hθD
+  -- Step 1: every coefficient is bounded, `|θ(x)(e_β)| ≤ |θ(x)| ≤ D`.
+  have hcD : ∀ (β : SimonMultiIndex n P) (x : Eucl P),
+      |euclideanCovectorCoordinate (θ x) β| ≤ D := fun β x =>
+    (Submission.cmb_rb_abs_euclideanCovectorCoordinate_le P n (θ x) β).trans (hθD x)
+  -- Step 2: `x ↦ θ(x)(e_β)` is continuous, as evaluation at `e_β` is continuous.
+  have hcc : ∀ β : SimonMultiIndex n P,
+      Continuous fun x => euclideanCovectorCoordinate (θ x) β := fun β =>
+    hθ.eval_const _
+  -- Step 3: each `θ(e_β) v^β`, hence `f`, is `μ`-integrable on `K`.
+  have hfK : IntegrableOn (fun x => ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β) K μ :=
+    integrable_finsetSum _ fun β _ => Integrable.bdd_mul (hv β) (hcc β).aestronglyMeasurable
+      (ae_of_all _ fun x => (Real.norm_eq_abs _).trans_le (hcD β x))
+  -- Step 4: `f = 0` off `K`, so `f` is `μ`-integrable and `∫ f dμ = ∫_K f dμ`.
+  have hf0 : ∀ x, x ∉ K → ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β = 0 := by
+    intro x hx
+    simp [euclideanCovectorCoordinate, hθK x hx]
+  refine ⟨(integrableOn_iff_integrable_of_support_subset
+    (Function.support_subset_iff'.2 hf0)).1 hfK, ?_⟩
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hf0]
+  -- Steps 5–6: `|f| ≤ ∑_β D |v^β|` pointwise; integrate over `K`.
+  have hg : ∀ β ∈ (Finset.univ : Finset (SimonMultiIndex n P)),
+      IntegrableOn (fun x => D * |euclideanNVectorCoordinate (v x) β|) K μ := fun β _ =>
+    (hv β).abs.const_mul D
+  calc |∫ x in K, ∑ β : SimonMultiIndex n P,
+          euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β ∂μ|
+      ≤ ∫ x in K, |∑ β : SimonMultiIndex n P,
+          euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β| ∂μ :=
+        abs_integral_le_integral_abs
+    _ ≤ ∫ x in K, ∑ β : SimonMultiIndex n P, D * |euclideanNVectorCoordinate (v x) β| ∂μ :=
+        integral_mono hfK.abs (integrable_finsetSum _ hg) fun x =>
+          (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun β _ => by
+            rw [abs_mul]
+            exact mul_le_mul_of_nonneg_right (hcD β x) (abs_nonneg _))
+    _ = ∑ β : SimonMultiIndex n P, D * ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ := by
+        rw [integral_finsetSum _ hg]
+        simp only [integral_const_mul]
+    _ = D * ∑ β : SimonMultiIndex n P, ∫ x in K, |euclideanNVectorCoordinate (v x) β| ∂μ :=
+        (Finset.mul_sum _ _ _).symm
+/-- Mass estimate: if `M_W(T) ≤ B` and `ω` is supported in `W` with `|ω(x)| ≤ C` everywhere
+(Euclidean covector norm), then `|T(ω)| ≤ B · C`. -/
+theorem Submission.cmb_abs_apply_le_of_massOn_le :
+    ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (B C : ℝ),
+      0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W →
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) ≤ C) →
+      |T ω| ≤ B * C := by
+  intro P n U W T ω B C hB hM hW hC
+  -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
+  have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  -- `C ≥ 0`, by evaluating the pointwise bound at `0`.
+  have hC0 : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hC 0)
+  -- For every `c > C`, both `±c⁻¹ ω` are mass-admissible for `W`, hence `|T ω| ≤ B c`.
+  have key : ∀ c, C < c → |T ω| ≤ B * c := by
+    intro c hc
+    have hc0 : 0 < c := hC0.trans_lt hc
+    have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * T ω ≤ B := by
+      intro s hs
+      have hadm : s • ω ∈ massAdmissibleOn U n W := by
+        refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hW, fun x => ?_⟩
+        change covectorEuclideanNorm (s • (ω : DifferentialForm (Eucl P) n) x) ≤ 1
+        rw [hsmul, hs, inv_mul_le_iff₀ hc0, mul_one]
+        exact (hC x).trans hc.le
+      have hle := (T.le_massOn hadm).trans hM
+      rw [ENNReal.ofReal_le_ofReal_iff hB] at hle
+      have hlin : T (s • ω) = s * T ω := by
+        rw [map_smul, smul_eq_mul]
+      rwa [hlin] at hle
+    have h1 := hbound c⁻¹ (abs_of_pos (inv_pos.mpr hc0))
+    have h2 := hbound (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc0)])
+    have e1 : c * (c⁻¹ * T ω) = T ω := by field_simp
+    have e2 : c * (-c⁻¹ * T ω) = -T ω := by field_simp
+    rw [abs_le]
+    constructor
+    · have := mul_le_mul_of_nonneg_left h2 hc0.le
+      rw [e2] at this
+      linarith
+    · have := mul_le_mul_of_nonneg_left h1 hc0.le
+      rw [e1] at this
+      linarith
+  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  have hB1 : 0 < B + 1 := by linarith
+  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
+  have hBδ : B * (ε / (B + 1)) ≤ ε := by
+    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
+          mul_le_mul_of_nonneg_right (by linarith) hδ.le
+      _ = ε := by field_simp
+  have := key (C + ε / (B + 1)) (by linarith)
+  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
+    _ = B * C + B * (ε / (B + 1)) := by ring
+    _ ≤ B * C + ε := by linarith
+/-- Coordinate expansion of an `n`-covector on `ℝ^P` in the wedge basis:
+`α = ∑_β α(e_{β(0)}, …, e_{β(n-1)}) dx^β` over the increasing multi-indices `β`. -/
+theorem Submission.cmb_covector_eq_sum_coord_smul_wedge :
+    ∀ (P n : ℕ) (α : Covector (Eucl P) n), α = ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate α β • wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) := by
+  intro P n α
+  classical
+  -- `e v = (e_{v 0}, …, e_{v (n - 1)})` for a tuple `v` of coordinate indices.
+  set e : (Fin n → Fin P) → Fin n → Eucl P := fun v j => EuclideanSpace.single (v j) 1
+  set R : Covector (Eucl P) n := ∑ β : SimonMultiIndex n P,
+    euclideanCovectorCoordinate α β • wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) with hR
+  -- Kronecker property: `dx^β (e_γ) = δ_{βγ}`.
+  have hK : ∀ β γ : SimonMultiIndex n P,
+      wedgeCovectors n (fun j => EuclideanSpace.proj (β j)) (e γ) = if β = γ then 1 else 0 := by
+    intro β γ
+    rw [wedgeCovectors_apply_det]
+    split_ifs with hβγ
+    · -- the matrix `[δ_{β i, β j}]` is the identity
+      subst hβγ
+      convert Matrix.det_one (n := Fin n) (R := ℝ)
+      ext i j
+      simp [e, Matrix.one_apply, PiLp.single_apply, β.injective.eq_iff]
+    · -- some `β i` is not among the `γ j`, so row `i` vanishes
+      obtain ⟨i, hi⟩ : ∃ i, ∀ j, β i ≠ γ j := by
+        by_contra! h
+        apply hβγ
+        rw [← OrderEmbedding.range_inj_of_wellFoundedLT]
+        have hsub : Set.range β ⊆ Set.range γ := by
+          rintro _ ⟨i, rfl⟩
+          obtain ⟨j, hj⟩ := h i
+          exact ⟨j, hj.symm⟩
+        refine Set.eq_of_subset_of_ncard_le hsub ?_ (Set.finite_range γ)
+        rw [Set.ncard_range_of_injective γ.injective, Set.ncard_range_of_injective β.injective]
+      exact Matrix.det_eq_zero_of_row_eq_zero i fun j => by simp [e, PiLp.single_apply, hi j]
+  -- `R` agrees with `α` on increasing tuples of basis vectors.
+  have h1 : ∀ γ : SimonMultiIndex n P, R (e γ) = α (e γ) := by
+    intro γ
+    rw [hR, ContinuousAlternatingMap.sum_apply]
+    simp only [ContinuousAlternatingMap.smul_apply, hK, smul_eq_mul, mul_ite, mul_one, mul_zero,
+      Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+    rfl
+  -- `R` agrees with `α` on injective tuples: sort them and use `map_perm`.
+  have h2 : ∀ v : Fin n → Fin P, Function.Injective v → R (e v) = α (e v) := by
+    intro v hv
+    have hsm : StrictMono (v ∘ Tuple.sort v) :=
+      (Tuple.monotone_sort v).strictMono_of_injective (hv.comp (Tuple.sort v).injective)
+    have hγ := h1 (OrderEmbedding.ofStrictMono _ hsm)
+    have heq : e (OrderEmbedding.ofStrictMono _ hsm) = e v ∘ Tuple.sort v := rfl
+    rw [heq, ← ContinuousAlternatingMap.coe_toAlternatingMap R,
+      ← ContinuousAlternatingMap.coe_toAlternatingMap α, AlternatingMap.map_perm,
+      AlternatingMap.map_perm] at hγ
+    exact smul_left_cancel _ hγ
+  -- Conclude by extensionality on the standard basis.
+  symm
+  apply ContinuousAlternatingMap.toAlternatingMap_injective
+  refine Module.Basis.ext_alternating (EuclideanSpace.basisFun (Fin P) ℝ).toBasis fun v hv => ?_
+  simp only [OrthonormalBasis.coe_toBasis, EuclideanSpace.basisFun_apply,
+    ContinuousAlternatingMap.coe_toAlternatingMap]
+  exact h2 v hv
+/-- **Separability step of Simon Ch. 6, Lemma 2.15 (p. 137).**  If `closure W` is compact, a
+countable family `E` of test forms supported in `W` is dense among all test forms supported in
+`W`, uniformly in the Euclidean coefficient norm.  The coefficient vector
+`c(α) = (α(e_{I 0}, …, e_{I (n-1)}))_I ∈ ℝ^(Fin n → Fin P)` satisfies `|α| ≤ √N ‖c(α)‖_∞`.  For
+each accuracy `1/(m+1)` and scale `1/(j+1)`, the forms whose coefficients oscillate by less than
+`1/(m+1)` at scale `1/(j+1)` are approximated through their values on a finite `1/(j+1)`-net of
+`closure W`, which lie in a separable finite-dimensional space. -/
+theorem Submission.cmb_exists_countable_dense_testForms : ∀ (P n : ℕ) (U W : Set (Eucl P)), IsCompact (closure W) → ∃ E : Set (TestFormOn U n), E.Countable ∧ (∀ η ∈ E, tsupport (η : DifferentialForm (Eucl P) n) ⊆ W) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W → ∀ ε : ℝ, 0 < ε → ∃ η ∈ E, ∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x - (η : DifferentialForm (Eucl P) n) x) ≤ ε := by
+  intro P n U W hW
+  classical
+  -- The coefficient map `c` and the estimate `|α| ≤ √N ‖c α‖_∞`.
+  let c : Covector (Eucl P) n → (Fin n → Fin P) → ℝ :=
+    fun α I => α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))
+  have hc_cont : Continuous c := continuous_pi fun I => by fun_prop
+  have hc_sub : ∀ α γ, c (α - γ) = c α - c γ := fun α γ => by funext I; simp [c]
+  have hc_zero : c 0 = 0 := by funext I; simp [c]
+  set N : ℝ := Real.sqrt (Fintype.card (Fin n → Fin P)) with hN_def
+  have hN : 0 ≤ N := Real.sqrt_nonneg _
+  have hcmp : ∀ α, covectorEuclideanNorm α ≤ N * ‖c α‖ := by
+    intro α
+    unfold covectorEuclideanNorm
+    rw [hN_def, ← Real.sqrt_sq (norm_nonneg (c α)), ← Real.sqrt_mul (by positivity)]
+    apply Real.sqrt_le_sqrt
+    calc ∑ I : Fin n → Fin P,
+          (if StrictMono I then (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2 else 0)
+        ≤ ∑ _I : Fin n → Fin P, ‖c α‖ ^ 2 := by
+          apply Finset.sum_le_sum
+          intro I _
+          split_ifs
+          · have h : |c α I| ≤ ‖c α‖ := by
+              simpa [Real.norm_eq_abs] using norm_le_pi_norm (c α) I
+            calc (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2 = |c α I| ^ 2 :=
+                  (sq_abs _).symm
+              _ ≤ ‖c α‖ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h 2
+          · positivity
+      _ = (Fintype.card (Fin n → Fin P) : ℝ) * ‖c α‖ ^ 2 := by simp
+  -- Test forms supported in `W` vanish off `closure W`.
+  let D : Set (TestFormOn U n) := {ω | tsupport (ω : DifferentialForm (Eucl P) n) ⊆ W}
+  have hzero : ∀ ω ∈ D, ∀ x ∉ closure W, (ω : DifferentialForm (Eucl P) n) x = 0 :=
+    fun ω hω x hx => image_eq_zero_of_notMem_tsupport fun h => hx (subset_closure (hω h))
+  -- Finite `1/(j+1)`-nets of the compact set `closure W`.
+  have hnet : ∀ j : ℕ, ∃ t : Finset (Eucl P),
+      closure W ⊆ ⋃ y ∈ t, Metric.ball y (1 / ((j : ℝ) + 1)) := by
+    intro j
+    obtain ⟨t, -, ht, hcov⟩ := hW.finite_cover_balls (e := 1 / ((j : ℝ) + 1)) (by positivity)
+    exact ⟨ht.toFinset, by simpa using hcov⟩
+  choose net hnet using hnet
+  -- Accuracy `r = 1/(m+1)` at scale `1/(j+1)`: take a countable dense subset of the coefficient
+  -- values on the net and choose preimages.
+  have key : ∀ m j : ℕ, ∃ E' : Set (TestFormOn U n), E'.Countable ∧ E' ⊆ D ∧
+      ∀ ω ∈ D, (∀ x y, dist x y < 1 / ((j : ℝ) + 1) →
+          dist (c ((ω : DifferentialForm (Eucl P) n) x)) (c ((ω : DifferentialForm (Eucl P) n) y))
+            < 1 / ((m : ℝ) + 1)) →
+        ∃ η ∈ E', ∀ x, ‖c ((ω : DifferentialForm (Eucl P) n) x)
+          - c ((η : DifferentialForm (Eucl P) n) x)‖ ≤ 3 / ((m : ℝ) + 1) := by
+    intro m j
+    set r : ℝ := 1 / ((m : ℝ) + 1) with hr_def
+    have hr : 0 < r := by positivity
+    let Dj : Set (TestFormOn U n) := {ω | ω ∈ D ∧ ∀ x y, dist x y < 1 / ((j : ℝ) + 1) →
+      dist (c ((ω : DifferentialForm (Eucl P) n) x))
+        (c ((ω : DifferentialForm (Eucl P) n) y)) < r}
+    let g : TestFormOn U n → (net j → (Fin n → Fin P) → ℝ) :=
+      fun ω y => c ((ω : DifferentialForm (Eucl P) n) y)
+    obtain ⟨S, hSA, hSc, hAS⟩ :=
+      (TopologicalSpace.IsSeparable.of_separableSpace (g '' Dj)).exists_countable_dense_subset
+    have hpre : ∀ s : S, ∃ ω ∈ Dj, g ω = s := fun s => hSA s.2
+    choose pick hpickD hpickg using hpre
+    have : Countable S := hSc.to_subtype
+    refine ⟨Set.range pick, Set.countable_range pick, ?_, ?_⟩
+    · rintro _ ⟨s, rfl⟩
+      exact (hpickD s).1
+    · intro ω hωD hωmod
+      obtain ⟨s, hsS, hdist⟩ :=
+        Metric.mem_closure_iff.mp (hAS ⟨ω, ⟨hωD, hωmod⟩, rfl⟩) r hr
+      set η := pick ⟨s, hsS⟩ with hη_def
+      have hηD : η ∈ Dj := hpickD ⟨s, hsS⟩
+      have hgη : g η = s := hpickg ⟨s, hsS⟩
+      refine ⟨η, ⟨⟨s, hsS⟩, rfl⟩, fun x => ?_⟩
+      by_cases hx : x ∈ closure W
+      · obtain ⟨y, hy, hxy⟩ := Set.mem_iUnion₂.mp (hnet j hx)
+        have h1 := hωmod x y (Metric.mem_ball.mp hxy)
+        rw [← hgη] at hdist
+        have h2 : dist (c ((ω : DifferentialForm (Eucl P) n) y))
+            (c ((η : DifferentialForm (Eucl P) n) y)) < r :=
+          (dist_le_pi_dist (g ω) (g η) ⟨y, hy⟩).trans_lt hdist
+        have h3 := hηD.2 y x (by rwa [dist_comm])
+        have h4 := dist_triangle4 (c ((ω : DifferentialForm (Eucl P) n) x))
+          (c ((ω : DifferentialForm (Eucl P) n) y)) (c ((η : DifferentialForm (Eucl P) n) y))
+          (c ((η : DifferentialForm (Eucl P) n) x))
+        rw [← dist_eq_norm, show 3 / ((m : ℝ) + 1) = r + r + r by rw [hr_def]; ring]
+        linarith
+      · rw [hzero ω hωD x hx, hzero η hηD.1 x hx, sub_self, norm_zero]
+        positivity
+  choose E' hE'c hE'D hE' using key
+  refine ⟨⋃ m, ⋃ j, E' m j,
+    Set.countable_iUnion fun m => Set.countable_iUnion fun j => hE'c m j, ?_, ?_⟩
+  · intro η hη
+    obtain ⟨m, j, hη⟩ := Set.mem_iUnion₂.mp hη
+    exact hE'D m j hη
+  · intro ω hω ε hε
+    obtain ⟨m, hm⟩ : ∃ m : ℕ, N * (3 / ((m : ℝ) + 1)) ≤ ε := by
+      obtain ⟨m, hm⟩ := exists_nat_gt (3 * N / ε)
+      refine ⟨m, ?_⟩
+      rw [div_lt_iff₀ hε] at hm
+      rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+      nlinarith
+    -- `c ∘ ω` is continuous with compact support, hence uniformly continuous.
+    have huc : UniformContinuous (c ∘ (ω : DifferentialForm (Eucl P) n)) :=
+      (ω.property.1.2.comp_left hc_zero).uniformContinuous_of_continuous
+        (hc_cont.comp ω.property.1.1.continuous)
+    obtain ⟨δ, hδ, hδ'⟩ :=
+      Metric.uniformContinuous_iff.mp huc (1 / ((m : ℝ) + 1)) (by positivity)
+    obtain ⟨j, hj⟩ := exists_nat_one_div_lt hδ
+    obtain ⟨η, hηE, hη⟩ := hE' m j ω hω fun x y hxy => hδ' (hxy.trans hj)
+    refine ⟨η, Set.mem_iUnion.2 ⟨m, Set.mem_iUnion.2 ⟨j, hηE⟩⟩, fun x => ?_⟩
+    calc covectorEuclideanNorm
+          ((ω : DifferentialForm (Eucl P) n) x - (η : DifferentialForm (Eucl P) n) x)
+        ≤ N * ‖c ((ω : DifferentialForm (Eucl P) n) x
+            - (η : DifferentialForm (Eucl P) n) x)‖ := hcmp _
+      _ = N * ‖c ((ω : DifferentialForm (Eucl P) n) x)
+            - c ((η : DifferentialForm (Eucl P) n) x)‖ := by rw [hc_sub]
+      _ ≤ N * (3 / ((m : ℝ) + 1)) := mul_le_mul_of_nonneg_left (hη x) hN
+      _ ≤ ε := hm
+/-- **Mollification step of Simon Ch. 6, Lemma 2.15 (p. 137).**  A continuous compactly supported
+`n`-form `ω` with `tsupport ω ⊆ V`, `V` open, is a uniform limit, in the Euclidean coefficient
+norm, of test forms supported in `V`.  As `|α| ≤ √N ‖α‖` (`N = #(Fin n → Fin P)`, `‖α‖` the
+operator norm), it suffices to approximate in `‖·‖`.  The approximant is `χ • (ψ ⋆ ω)`: `ψ ⋆ ω`
+is the convolution of `ω` with a normalized smooth bump `ψ` supported in a ball whose radius is
+a uniform-continuity modulus of `ω`, and `χ` is a smooth cutoff with values in `[0, 1]`, equal to
+`1` exactly on `tsupport ω`, whose support `V'` has compact closure in `V`. -/
+theorem Submission.cmb_exists_testForm_uniform_approx : ∀ (P n : ℕ) (U V : Set (Eucl P)) (ω : Eucl P → Covector (Eucl P) n), IsOpen V → V ⊆ U → Continuous ω → HasCompactSupport ω → tsupport ω ⊆ V → ∀ ε : ℝ, 0 < ε → ∃ η : TestFormOn U n, tsupport (η : DifferentialForm (Eucl P) n) ⊆ V ∧ ∀ x, covectorEuclideanNorm (ω x - (η : DifferentialForm (Eucl P) n) x) ≤ ε := by
+  intro P n U V ω hV hVU hω hωc hωV ε hε
+  -- Step 1: `|α| ≤ √N ‖α‖`, since every coefficient satisfies `|α(e_I)| ≤ ‖α‖ ∏ ‖e_{I j}‖ = ‖α‖`.
+  set N : ℝ := Real.sqrt (Fintype.card (Fin n → Fin P)) with hN_def
+  have hN : 0 ≤ N := Real.sqrt_nonneg _
+  have hcmp : ∀ α : Covector (Eucl P) n, covectorEuclideanNorm α ≤ N * ‖α‖ := by
+    intro α
+    unfold covectorEuclideanNorm
+    rw [hN_def, ← Real.sqrt_sq (norm_nonneg α), ← Real.sqrt_mul (by positivity)]
+    apply Real.sqrt_le_sqrt
+    calc ∑ I : Fin n → Fin P,
+          (if StrictMono I then (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2 else 0)
+        ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 := by
+          apply Finset.sum_le_sum
+          intro I _
+          split_ifs
+          · have h := α.le_opNorm fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)
+            simp only [EuclideanSpace.basisFun_apply, PiLp.norm_single, norm_one,
+              Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
+            exact sq_le_sq.mpr (by simpa [abs_of_nonneg (norm_nonneg α)] using h)
+          · positivity
+      _ = (Fintype.card (Fin n → Fin P) : ℝ) * ‖α‖ ^ 2 := by simp
+  have hN1 : 0 < N + 1 := by linarith
+  set ε' : ℝ := ε / (N + 1) with hε'_def
+  have hε' : 0 < ε' := div_pos hε hN1
+  -- Step 2: an open `V'` with `tsupport ω ⊆ V'` and `closure V' ⊆ V` compact.
+  obtain ⟨V', hV'o, hKV', hV'V, hV'c⟩ :=
+    exists_open_between_and_isCompact_closure hωc.isCompact hV hωV
+  -- Step 3: a smooth cutoff `χ : ℝ^P → [0, 1]` with `support χ = V'` and `χ = 1` exactly on
+  -- `tsupport ω`.
+  obtain ⟨χ, hχ, hχr, hχs, hχ1⟩ :=
+    exists_contDiff_support_eq_eq_one_iff (n := ⊤) hV'o (isClosed_tsupport ω) hKV'
+  -- Step 4: mollification.  `ω` is uniformly continuous with modulus `δ` at accuracy `ε'`; `ψ` is
+  -- a smooth bump `≥ 0` with `∫ ψ = 1` and `support ψ ⊆ ball 0 δ`, so `g = ψ ⋆ ω` is smooth and
+  -- `dist (g x) (ω x) ≤ ε'`.
+  obtain ⟨δ, hδ, hωδ⟩ :=
+    Metric.uniformContinuous_iff.mp (hωc.uniformContinuous_of_continuous hω) ε' hε'
+  obtain ⟨φ, hφs, hφc, hφd, hφr, hφ0⟩ :=
+    exists_contDiff_tsupport_subset (n := ⊤) (ball_mem_nhds (0 : Eucl P) hδ)
+  have hφnn : ∀ y, 0 ≤ φ y := fun y => (hφr (mem_range_self y)).1
+  have hφint : 0 < ∫ y, φ y :=
+    hφd.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hφc (fun y => hφnn y)
+      (hφ0.symm ▸ one_ne_zero : φ 0 ≠ 0)
+  set ψ : Eucl P → ℝ := fun y => (∫ z, φ z)⁻¹ * φ y with hψ_def
+  have hψd : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ := contDiff_const.mul hφd
+  have hψc : HasCompactSupport ψ := hφc.mul_left
+  have hψnn : ∀ y, 0 ≤ ψ y := fun y => mul_nonneg (inv_nonneg.mpr hφint.le) (hφnn y)
+  have hψs : Function.support ψ ⊆ ball 0 δ :=
+    (Function.support_mul_subset_right _ _).trans ((subset_tsupport φ).trans hφs)
+  have hψ1 : ∫ y, ψ y = 1 := by
+    rw [hψ_def, integral_const_mul, inv_mul_cancel₀ hφint.ne']
+  obtain ⟨g, hg, hgd⟩ : ∃ g : Eucl P → Covector (Eucl P) n,
+      ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ ∀ x, dist (g x) (ω x) ≤ ε' :=
+    ⟨convolution ψ ω (ContinuousLinearMap.lsmul ℝ ℝ) volume,
+      hψc.contDiff_convolution_left _ hψd hω.locallyIntegrable,
+      fun x => dist_convolution_le hε'.le hψs hψnn hψ1 hω.aestronglyMeasurable
+        fun y hy => (hωδ (mem_ball.mp hy)).le⟩
+  -- Step 5: `η = χ • g` is a test form with `tsupport η ⊆ closure V' ⊆ V ⊆ U`.
+  have hη_supp : tsupport (fun x => χ x • g x) ⊆ closure V' := by
+    refine (tsupport_smul_subset_left χ g).trans ?_
+    rw [tsupport, hχs]
+  have hη_cpt : HasCompactSupport (fun x => χ x • g x) :=
+    hV'c.of_isClosed_subset (isClosed_tsupport _) hη_supp
+  refine ⟨⟨fun x => χ x • g x, ⟨⟨hχ.smul hg, hη_cpt⟩, hη_supp.trans (hV'V.trans hVU)⟩⟩,
+    hη_supp.trans hV'V, fun x => ?_⟩
+  -- Step 6: `‖ω x - η x‖ ≤ ε'` (on `tsupport ω`, `η = g`; off it, `ω = 0` and `0 ≤ χ ≤ 1`),
+  -- hence `|ω x - η x| ≤ √N ε' ≤ ε`.
+  have hle : ‖ω x - χ x • g x‖ ≤ ε' := by
+    by_cases hx : x ∈ tsupport ω
+    · rw [(hχ1 x).1 hx, one_smul, ← dist_eq_norm, dist_comm]
+      exact hgd x
+    · have h0 : ω x = 0 := image_eq_zero_of_notMem_tsupport hx
+      have hχx := hχr (mem_range_self x)
+      have hgx : ‖g x‖ ≤ ε' := by simpa [h0, dist_eq_norm] using hgd x
+      rw [h0, zero_sub, norm_neg, norm_smul, Real.norm_eq_abs, abs_of_nonneg hχx.1]
+      exact (mul_le_of_le_one_left (norm_nonneg _) hχx.2).trans hgx
+  calc covectorEuclideanNorm (ω x - χ x • g x) ≤ N * ‖ω x - χ x • g x‖ := hcmp _
+    _ ≤ N * ε' := mul_le_mul_of_nonneg_left hle hN
+    _ ≤ ε := by
+      rw [hε'_def, mul_div_assoc', div_le_iff₀ hN1]
+      nlinarith
+
+/-- **Continuous forms against a measure representation: the step "by (2.7)" in the proof of
+Simon Ch. 6, Lemma 2.15 (p. 137).**  Let `(μ, v)` represent `T` as in (2.7), `W ⊂⊂ U` and
+`M_W(T) ≤ B`.  If `ω` is a continuous `n`-form with `tsupport ω ⊆ W` and `|ω(x)| ≤ C` everywhere
+(Euclidean coefficient norm), then `⟨ω, v⟩` is `μ`-integrable and `|∫ ⟨ω, v⟩ dμ| ≤ B · C`.
+Choose `V` open with `tsupport ω ⊆ V` and `closure V ⊆ W` compact.  The coefficients `v_β` of `v`
+are `μ`-integrable on `closure V`, so for every continuous `θ` vanishing off `closure V` with
+`|θ| ≤ D`, `⟨θ, v⟩ = ∑_β θ(e_β) v_β` is integrable and `|∫ ⟨θ, v⟩ dμ| ≤ D · G`, where
+`G = ∑_β ∫_{closure V} |v_β| dμ`.  For a test form `η` supported in `V` with `|ω - η| ≤ ε`, the
+mass bound gives `|∫ ⟨ω, v⟩ dμ| ≤ |T(η)| + ε G ≤ B (C + ε) + ε G`; let `ε → 0`. -/
+theorem Submission.cmb_measureRepresentation_continuous_bound : ∀ (P n : ℕ) (U W : Set (Eucl P)), CompactlyContainedOpen W U → ∀ (T : GeometricCurrentOn U n) (μ : Measure (Eucl P)) (v : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ v → ∀ (B C : ℝ), 0 ≤ B → T.massOn W ≤ ENNReal.ofReal B → ∀ ω : Eucl P → Covector (Eucl P) n, Continuous ω → tsupport ω ⊆ W → (∀ x, covectorEuclideanNorm (ω x) ≤ C) → Integrable (fun x => v x (ω x)) μ ∧ |∫ x, v x (ω x) ∂μ| ≤ B * C := by
+  intro P n U W hWU T μ v hT B C hB hM ω hω hωW hωC
+  obtain ⟨hWo, hWc, hWU'⟩ := hWU
+  have hWU₀ : W ⊆ U := subset_closure.trans hWU'
+  -- Step 1: `tsupport ω` is compact; choose `V` open with `tsupport ω ⊆ V`, `closure V ⊆ W`
+  -- compact.
+  have hωc : HasCompactSupport ω :=
+    hWc.of_isClosed_subset (isClosed_tsupport ω) (hωW.trans subset_closure)
+  obtain ⟨V, hVo, hωV, hVW, hVc⟩ :=
+    exists_open_between_and_isCompact_closure hωc.isCompact hWo hωW
+  have hVU : V ⊆ U := subset_closure.trans (hVW.trans hWU₀)
+  -- Step 2: the coefficients `v_β` of `v` are `μ`-integrable on `closure V`.
+  have hcoef : ∀ β : SimonMultiIndex n P,
+      IntegrableOn (fun x => euclideanNVectorCoordinate (v x) β) (closure V) μ :=
+    Submission.cmb_rb_measureRepresentation_integrableOn_coeff P n U W hWo hWU₀ T μ v hT
+      (closure V) hVc hVW
+  set G : ℝ := ∑ β : SimonMultiIndex n P,
+    ∫ x in closure V, |euclideanNVectorCoordinate (v x) β| ∂μ
+  have hG : 0 ≤ G := Finset.sum_nonneg fun β _ => integral_nonneg fun x => abs_nonneg _
+  -- Step 3: coordinate expansion `v(x)(α) = ∑_β α(e_β) v_β(x)`.
+  have hexp : ∀ (x : Eucl P) (α : Covector (Eucl P) n), v x α = ∑ β : SimonMultiIndex n P,
+      euclideanCovectorCoordinate α β * euclideanNVectorCoordinate (v x) β := by
+    intro x α
+    conv_lhs => rw [Submission.cmb_covector_eq_sum_coord_smul_wedge P n α]
+    simp only [map_sum, map_smul, smul_eq_mul, euclideanNVectorCoordinate]
+  -- Step 4: pairings with continuous forms vanishing off `closure V` are integrable, and
+  -- `|∫ ⟨θ, v⟩ dμ| ≤ D G` when `|θ| ≤ D`.
+  have hpair : ∀ (θ : Eucl P → Covector (Eucl P) n) (D : ℝ), Continuous θ →
+      (∀ x, x ∉ closure V → θ x = 0) → (∀ x, covectorEuclideanNorm (θ x) ≤ D) →
+      Integrable (fun x => v x (θ x)) μ ∧ |∫ x, v x (θ x) ∂μ| ≤ D * G := by
+    intro θ D hθ hθV hθD
+    have hfun : (fun x => v x (θ x)) = fun x => ∑ β : SimonMultiIndex n P,
+        euclideanCovectorCoordinate (θ x) β * euclideanNVectorCoordinate (v x) β :=
+      funext fun x => hexp x (θ x)
+    rw [hfun]
+    exact Submission.cmb_rb_integral_coeff_pairing_bound P n μ v (closure V)
+      isClosed_closure.measurableSet hcoef θ D hθ hθV hθD
+  have hωV' : ∀ x, x ∉ closure V → ω x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun h => hx (subset_closure (hωV h))
+  refine ⟨(hpair ω C hω hωV' hωC).1, ?_⟩
+  -- Step 5: compare with a test form `η` supported in `V`, `|ω - η| ≤ ε`.
+  have key : ∀ ε : ℝ, 0 < ε → |∫ x, v x (ω x) ∂μ| ≤ B * (C + ε) + ε * G := by
+    intro ε hε
+    obtain ⟨η, hηV, hηω⟩ :=
+      Submission.cmb_exists_testForm_uniform_approx P n U V ω hVo hVU hω hωc hωV ε hε
+    -- `|η| ≤ C + ε`, hence `|T(η)| ≤ B (C + ε)` by the mass bound.
+    have hηC : ∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x) ≤ C + ε := by
+      intro x
+      have h := Submission.cmb_rb_covectorEuclideanNorm_add_le P n (ω x)
+        (-(ω x - (η : DifferentialForm (Eucl P) n) x))
+      have heq : ω x + -(ω x - (η : DifferentialForm (Eucl P) n) x) =
+          (η : DifferentialForm (Eucl P) n) x := by abel
+      rw [heq, covectorEuclideanNorm_neg] at h
+      linarith [hωC x, hηω x]
+    have hTη : |T η| ≤ B * (C + ε) :=
+      Submission.cmb_abs_apply_le_of_massOn_le P n U W T η B (C + ε) hB hM
+        (hηV.trans (subset_closure.trans hVW)) hηC
+    -- `θ = ω - η` is continuous, vanishes off `closure V` and `|θ| ≤ ε`.
+    have hηc : Continuous (η : DifferentialForm (Eucl P) n) := ContDiff.continuous η.property.1.1
+    have hθV : ∀ x, x ∉ closure V → ω x - (η : DifferentialForm (Eucl P) n) x = 0 := by
+      intro x hx
+      rw [hωV' x hx, image_eq_zero_of_notMem_tsupport fun h => hx (subset_closure (hηV h)),
+        sub_zero]
+    obtain ⟨hθi, hθb⟩ :
+        Integrable (fun x => v x (ω x - (η : DifferentialForm (Eucl P) n) x)) μ ∧
+          |∫ x, v x (ω x - (η : DifferentialForm (Eucl P) n) x) ∂μ| ≤ ε * G :=
+      hpair (fun x => ω x - (η : DifferentialForm (Eucl P) n) x) ε (hω.sub hηc) hθV hηω
+    -- `∫ ⟨ω, v⟩ dμ = T(η) + ∫ ⟨ω - η, v⟩ dμ`.
+    obtain ⟨hηi, hηT⟩ := hT η
+    have hsplit : ∫ x, v x (ω x) ∂μ =
+        T η + ∫ x, v x (ω x - (η : DifferentialForm (Eucl P) n) x) ∂μ := by
+      rw [hηT, ← integral_add hηi hθi]
+      congr 1
+      funext x
+      rw [← map_add, add_sub_cancel]
+    rw [hsplit]
+    exact (abs_add_le _ _).trans (add_le_add hTη hθb)
+  -- Step 6: let `ε → 0`, with `ε = ε₀ / (B + G + 1)`.
+  refine le_of_forall_pos_le_add fun ε₀ hε₀ => ?_
+  have hBG : 0 < B + G + 1 := by linarith
+  have hε : 0 < ε₀ / (B + G + 1) := div_pos hε₀ hBG
+  have hεε₀ : ε₀ / (B + G + 1) * (B + G + 1) = ε₀ := div_mul_cancel₀ ε₀ hBG.ne'
+  have h := key _ hε
+  nlinarith
+
+/-- **Convergence on continuous forms in Simon Ch. 6, Lemma 2.15 (p. 137).**  If
+`sup_q M_W(S_q) < ∞` for each `W ⊂⊂ U` and `S_q ⇀ S₀`, then `∫ ⟨ω, v_q⟩ dμ_q → ∫ ⟨ω, v₀⟩ dμ₀`
+for every continuous compactly supported `n`-form `ω` with `tsupport ω ⊆ U` and all
+representations (2.7) `(μ_q, v_q)` of `S_q` and `(μ₀, v₀)` of `S₀`.  Take `W ⊂⊂ U` containing
+`tsupport ω` and `B = sup_q M_W(S_q)`, so that `M_W(S₀) ≤ B` by 2.14.  A test form `η` supported
+in `W` with `|ω - η| ≤ δ` splits `∫ ⟨ω, v⟩ dμ = T(η) + ∫ ⟨ω - η, v⟩ dμ` with remainder at most
+`B δ`, and `S_q(η) → S₀(η)`. -/
+theorem Submission.cmb_tendsto_integral_of_weaklyConvergesOn : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (S : ℕ → GeometricCurrentOn U n) (S₀ : GeometricCurrentOn U n), (∀ W, CompactlyContainedOpen W U → (⨆ q, (S q).massOn W) < ∞) → WeaklyConvergesOn S S₀ → ∀ ω : Eucl P → Covector (Eucl P) n, Continuous ω → HasCompactSupport ω → tsupport ω ⊆ U → ∀ (μ : ℕ → Measure (Eucl P)) (v : ℕ → Eucl P → NVector (Eucl P) n) (μ₀ : Measure (Eucl P)) (v₀ : Eucl P → NVector (Eucl P) n), (∀ q, IsMeasureRepresentation (S q) (μ q) (v q)) → IsMeasureRepresentation S₀ μ₀ v₀ → Tendsto (fun q => ∫ x, v q x (ω x) ∂(μ q)) atTop (𝓝 (∫ x, v₀ x (ω x) ∂μ₀)) := by
+  intro P n U hU S S₀ hmass hconv ω hω hωc hωU μ v μ₀ v₀ hrep hrep₀
+  -- Step 1: an open `W ⊂⊂ U` with `tsupport ω ⊆ W`.
+  obtain ⟨W, hWo, hωW, hWU, hWc⟩ :=
+    exists_open_between_and_isCompact_closure hωc.isCompact hU hωU
+  have hW : CompactlyContainedOpen W U := ⟨hWo, hWc, hWU⟩
+  -- Step 2: `B = sup_q M_W(S_q)` is finite and bounds every `M_W(S_q)`, and also `M_W(S₀)` by
+  -- lower semicontinuity of mass (2.14).
+  set B : ℝ := (⨆ q, (S q).massOn W).toReal
+  have hB : 0 ≤ B := ENNReal.toReal_nonneg
+  have hBeq : ENNReal.ofReal B = ⨆ q, (S q).massOn W := ENNReal.ofReal_toReal (hmass W hW).ne
+  have hSB : ∀ q, (S q).massOn W ≤ ENNReal.ofReal B := fun q =>
+    (le_iSup (fun q => (S q).massOn W) q).trans hBeq.ge
+  have hS₀B : S₀.massOn W ≤ ENNReal.ofReal B :=
+    calc S₀.massOn W ≤ liminf (fun q => (S q).massOn W) atTop := hconv.massOn_le_liminf W
+      _ ≤ limsup (fun q => (S q).massOn W) atTop := liminf_le_limsup
+      _ ≤ ⨆ q, (S q).massOn W := limsup_le_iSup
+      _ = ENNReal.ofReal B := hBeq.symm
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  -- Step 3: a test form `η` supported in `W` with `|ω - η| ≤ δ`, where `δ = ε / (2B + 2)`.
+  set δ : ℝ := ε / (2 * B + 2)
+  have hB2 : 0 < 2 * B + 2 := by linarith
+  have hδ : 0 < δ := div_pos hε hB2
+  obtain ⟨η, hηW, hωη⟩ := Submission.cmb_exists_testForm_uniform_approx P n U W ω hWo
+    (subset_closure.trans hWU) hω hωc hωW δ hδ
+  -- Step 4: the remainder `ω - η` is continuous, supported in `W` and bounded by `δ`.
+  have hω'c : Continuous fun x => ω x - (η : DifferentialForm (Eucl P) n) x :=
+    hω.sub (ContDiff.continuous η.2.1.1)
+  have hω'W : tsupport (fun x => ω x - (η : DifferentialForm (Eucl P) n) x) ⊆ W :=
+    (tsupport_sub _ _).trans (union_subset hωW hηW)
+  -- Step 5: for a representation `(μ', v')` of `T` with `M_W(T) ≤ B`,
+  -- `∫ ⟨ω, v'⟩ dμ' = T(η) + ∫ ⟨ω - η, v'⟩ dμ'` and the remainder is at most `B δ`.
+  have hrem : ∀ (T : GeometricCurrentOn U n) (μ' : Measure (Eucl P))
+      (v' : Eucl P → NVector (Eucl P) n), IsMeasureRepresentation T μ' v' →
+      T.massOn W ≤ ENNReal.ofReal B → |∫ x, v' x (ω x) ∂μ' - T η| ≤ B * δ := by
+    intro T μ' v' hT hTB
+    obtain ⟨hint, hbd⟩ := Submission.cmb_measureRepresentation_continuous_bound P n U W hW T μ'
+      v' hT B δ hB hTB _ hω'c hω'W hωη
+    obtain ⟨hηint, hTη⟩ := hT η
+    have hsplit : ∫ x, v' x (ω x) ∂μ' =
+        T η + ∫ x, v' x (ω x - (η : DifferentialForm (Eucl P) n) x) ∂μ' := by
+      rw [hTη, ← integral_add hηint hint]
+      congr 1
+      ext x
+      rw [← map_add, add_sub_cancel]
+    rwa [hsplit, add_sub_cancel_left]
+  -- Step 6: `S_q(η) → S₀(η)`, so eventually the difference is `< δ + 2 B δ < ε`.
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp (hconv η) δ hδ
+  refine ⟨N, fun q hq => ?_⟩
+  have hq₁ := abs_le.mp (hrem (S q) (μ q) (v q) (hrep q) (hSB q))
+  have hq₀ := abs_le.mp (hrem S₀ μ₀ v₀ hrep₀ hS₀B)
+  have hqη := abs_lt.mp (Real.dist_eq _ _ ▸ hN q hq)
+  have hδε : δ + B * δ + B * δ < ε := by
+    have : δ * (2 * B + 2) = ε := div_mul_cancel₀ ε hB2.ne'
+    nlinarith
+  rw [Real.dist_eq, abs_lt]
+  constructor <;> linarith [hq₁.1, hq₁.2, hq₀.1, hq₀.2, hqη.1, hqη.2]
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
+
+/-- **Weak compactness step of Simon Ch. 6, Lemma 2.15 (p. 137).**  If `sup_q M_W(T_q) < ∞` for
+every `W ⊂⊂ U`, a subsequence of `T_q` converges weakly in `U`.  Take an exhaustion `W i ⊂⊂ U`,
+`B i = sup_q M_{W i}(T_q)`, and countable families `E i` of test forms supported in `W i` that are
+uniformly dense there.  The mass estimate bounds `T_q(η)` uniformly in `q` for `η ∈ ⋃ i, E i`, so
+sequential compactness of the countable product `∏_η [-b_η, b_η]` gives one subsequence `φ` along
+which every `T_q(η)` converges.  Density and the mass estimate make `T_{φ q}(ω)` Cauchy for every
+test form `ω`; its limit `L` is linear, and `|L(ω)| ≤ B i · N · sup_x ‖ω(x)‖` for `spt ω ⊆ W i`
+(operator norm `‖·‖`, `N = √#(Fin n → Fin P)`) gives the sequential continuity of `L`. -/
+theorem Submission.cmb_exists_weakly_convergent_subseq : ∀ (P n : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ T : ℕ → GeometricCurrentOn U n, (∀ W, CompactlyContainedOpen W U → (⨆ q, (T q).massOn W) < ∞) → ∃ (φ : ℕ → ℕ) (T₀ : GeometricCurrentOn U n), StrictMono φ ∧ WeaklyConvergesOn (fun q => T (φ q)) T₀ := by
+  intro P n U hU T hT
+  classical
+  -- Step 0: `|α| ≤ N ‖α‖`, `N = √#(Fin n → Fin P)`, for the operator norm `‖α‖`.
+  set N : ℝ := Real.sqrt (Fintype.card (Fin n → Fin P)) with hN_def
+  have hN : 0 ≤ N := Real.sqrt_nonneg _
+  have hcmp : ∀ α : Covector (Eucl P) n, covectorEuclideanNorm α ≤ N * ‖α‖ := by
+    intro α
+    unfold covectorEuclideanNorm
+    rw [hN_def, ← Real.sqrt_sq (norm_nonneg α), ← Real.sqrt_mul (by positivity)]
+    apply Real.sqrt_le_sqrt
+    calc ∑ I : Fin n → Fin P,
+          (if StrictMono I then (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2 else 0)
+        ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 := by
+          apply Finset.sum_le_sum
+          intro I _
+          split_ifs
+          · have h : |α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)| ≤ ‖α‖ := by
+              have h1 := α.le_opNorm (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))
+              have h2 : ∀ i, ‖EuclideanSpace.basisFun (Fin P) ℝ (I i)‖ = 1 := fun i =>
+                (EuclideanSpace.basisFun (Fin P) ℝ).orthonormal.1 (I i)
+              simpa [Real.norm_eq_abs, h2] using h1
+            calc (α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) ^ 2
+                = |α fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)| ^ 2 := (sq_abs _).symm
+              _ ≤ ‖α‖ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) h 2
+          · positivity
+      _ = (Fintype.card (Fin n → Fin P) : ℝ) * ‖α‖ ^ 2 := by simp
+  -- Step 1: an exhaustion of `U` by open sets `W i ⊂⊂ U`.
+  obtain ⟨W, hW, hWK⟩ := Submission.cmb_exists_compactly_contained_exhaustion P U hU
+  -- Step 2: the finite mass bounds `M_{W i}(T_q) ≤ B i`.
+  set B : ℕ → ℝ := fun i => (⨆ q, (T q).massOn (W i)).toReal with hB_def
+  have hB0 : ∀ i, 0 ≤ B i := fun i => ENNReal.toReal_nonneg
+  have hBm : ∀ i q, (T q).massOn (W i) ≤ ENNReal.ofReal (B i) := fun i q => by
+    rw [hB_def, ENNReal.ofReal_toReal (hT (W i) (hW i)).ne]
+    exact le_iSup (fun q => (T q).massOn (W i)) q
+  -- Step 3: countable families `E i`, supported in `W i` and uniformly dense there.
+  choose E hEc hEsupp hEdense using fun i =>
+    Submission.cmb_exists_countable_dense_testForms P n U (W i) (hW i).2.1
+  -- Step 4: `|T_q(η)| ≤ B (idx η) * C η` for `η ∈ E (idx η)` and every `q`.
+  have hCη : ∀ η : TestFormOn U n, ∃ C : ℝ,
+      ∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl P) n) x) ≤ C := by
+    intro η
+    obtain ⟨C', hC'⟩ := Continuous.bounded_above_of_compact_support
+      η.property.1.1.continuous η.property.1.2
+    exact ⟨N * C', fun x => (hcmp _).trans (mul_le_mul_of_nonneg_left (hC' x) hN)⟩
+  choose C hC using hCη
+  have hidx : ∀ η ∈ ⋃ i, E i, ∃ i, η ∈ E i := fun η h => mem_iUnion.1 h
+  choose! idx hidx using hidx
+  have hb : ∀ q, ∀ η ∈ ⋃ i, E i, |T q η| ≤ B (idx η) * C η := fun q η hη =>
+    Submission.cmb_abs_apply_le_of_massOn_le P n U (W (idx η)) (T q) η (B (idx η)) (C η)
+      (hB0 _) (hBm _ q) (hEsupp _ η (hidx η hη)) (hC η)
+  -- Step 5: one subsequence along which `T_q(η)` converges for every `η ∈ ⋃ i, E i`
+  -- (Tychonoff and sequential compactness in `ℝ^(⋃ i, E i)`, a countable product).
+  obtain ⟨φ, hφ, hconvE⟩ : ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ η ∈ ⋃ i, E i,
+      ∃ l : ℝ, Tendsto (fun q => T (φ q) η) atTop (𝓝 l) := by
+    have := (countable_iUnion hEc).to_subtype
+    have hK : IsCompact (Set.pi univ fun η : ↥(⋃ i, E i) =>
+        Icc (-(B (idx η) * C η)) (B (idx η) * C η)) :=
+      isCompact_univ_pi fun _ => isCompact_Icc
+    obtain ⟨a, -, φ, hφ, hlim⟩ := hK.tendsto_subseq
+      (x := fun q (η : ↥(⋃ i, E i)) => T q η)
+      (fun q => by
+        simp only [Set.mem_pi, Set.mem_univ, Set.mem_Icc, forall_const]
+        intro η
+        exact abs_le.1 (hb q η η.2))
+    exact ⟨φ, hφ, fun η hη => ⟨a ⟨η, hη⟩, (tendsto_pi_nhds.1 hlim) ⟨η, hη⟩⟩⟩
+  -- Step 6: `T_{φ q}(ω)` is a Cauchy sequence for every test form `ω`.
+  have hconv : ∀ ω : TestFormOn U n, ∃ l : ℝ, Tendsto (fun q => T (φ q) ω) atTop (𝓝 l) := by
+    intro ω
+    obtain ⟨i, hi⟩ := hWK _ ω.property.1.2 ω.property.2
+    apply cauchySeq_tendsto_of_complete
+    rw [Metric.cauchySeq_iff']
+    intro ε hε
+    obtain ⟨η, hηE, hη⟩ := hEdense i ω hi (ε / (3 * (B i + 1))) (by have := hB0 i; positivity)
+    obtain ⟨l, hl⟩ := hconvE η (mem_iUnion.2 ⟨i, hηE⟩)
+    obtain ⟨N₀, hN₀⟩ := Metric.cauchySeq_iff'.1 hl.cauchySeq (ε / 3) (by positivity)
+    have hdiff : ∀ q, |T q ω - T q η| ≤ ε / 3 := by
+      intro q
+      have hsupp : tsupport ((ω - η : TestFormOn U n) : DifferentialForm (Eucl P) n) ⊆ W i :=
+        (tsupport_sub _ _).trans (union_subset hi (hEsupp i η hηE))
+      have h := Submission.cmb_abs_apply_le_of_massOn_le P n U (W i) (T q) (ω - η) (B i)
+        (ε / (3 * (B i + 1))) (hB0 i) (hBm i q) hsupp (fun x => by simpa using hη x)
+      rw [(T q).toCurrent.map_sub ω η] at h
+      refine h.trans ?_
+      have hBi := hB0 i
+      rw [mul_div_assoc', div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith
+    refine ⟨N₀, fun m hm => ?_⟩
+    have h1 := hdiff (φ m)
+    have h2 := hdiff (φ N₀)
+    have h3 := hN₀ m hm
+    rw [Real.dist_eq] at h3 ⊢
+    calc |T (φ m) ω - T (φ N₀) ω|
+        ≤ |T (φ m) ω - T (φ m) η| + |T (φ m) η - T (φ N₀) η| + |T (φ N₀) η - T (φ N₀) ω| := by
+          have := abs_sub_le (T (φ m) ω) (T (φ m) η) (T (φ N₀) ω)
+          have := abs_sub_le (T (φ m) η) (T (φ N₀) η) (T (φ N₀) ω)
+          linarith
+      _ < ε / 3 + ε / 3 + ε / 3 := by
+          rw [abs_sub_comm (T (φ N₀) η)]
+          have : |T (φ m) η - T (φ N₀) η| < ε / 3 := h3
+          linarith
+      _ = ε := by ring
+  -- Step 7: the limit `L` is linear.
+  choose L hL using hconv
+  let Lin : CurrentOn U n :=
+    { toFun := L
+      map_add' := fun ω ω' => tendsto_nhds_unique (hL (ω + ω'))
+        (by simpa only [map_add] using (hL ω).add (hL ω'))
+      map_smul' := fun t ω => tendsto_nhds_unique (hL (t • ω))
+        (by simpa only [map_smul, smul_eq_mul, RingHom.id_apply] using (hL ω).const_mul t) }
+  -- Steps 8–9: `L` is sequentially continuous, so `T₀ = L` is a current and `T_{φ q} ⇀ T₀`.
+  refine ⟨φ, ⟨Lin, ?_⟩, hφ, fun ω => hL ω⟩
+  intro ωs hωs
+  obtain ⟨K, hK, hKU, hsupp, -, hunif⟩ := hωs
+  obtain ⟨i, hi⟩ := hWK K hK hKU
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  have hBi := hB0 i
+  set δ : ℝ := ε / (2 * (B i + 1) * (N + 1)) with hδ_def
+  have hδ : 0 < δ := by positivity
+  -- Uniform convergence of the zeroth derivatives: `sup_K ‖ωs j‖ < δ` for large `j`.
+  obtain ⟨J, hJ⟩ := eventually_atTop.1 (Metric.tendstoUniformlyOn_iff.1 (hunif 0) δ hδ)
+  refine ⟨J, fun j hj => ?_⟩
+  have hpt : ∀ x, covectorEuclideanNorm ((ωs j : DifferentialForm (Eucl P) n) x) ≤ N * δ := by
+    intro x
+    by_cases hx : x ∈ K
+    · have h2 : ‖(ωs j : DifferentialForm (Eucl P) n) x‖ < δ := by
+        simpa [iteratedFDeriv_fun_zero, norm_iteratedFDeriv_zero] using hJ j hj x hx
+      exact (hcmp _).trans (mul_le_mul_of_nonneg_left h2.le hN)
+    · rw [image_eq_zero_of_notMem_tsupport fun h => hx (hsupp j h), covectorEuclideanNorm_zero]
+      positivity
+  have hle : |L (ωs j)| ≤ B i * (N * δ) :=
+    le_of_tendsto' ((continuous_abs.tendsto _).comp (hL (ωs j))) fun q =>
+      Submission.cmb_abs_apply_le_of_massOn_le P n U (W i) (T (φ q)) (ωs j) (B i) (N * δ) hBi
+        (hBm i (φ q)) ((hsupp j).trans hi) hpt
+  have hlt : B i * (N * δ) < ε := by
+    have hfrac : B i * (N * δ) = ε * (B i * N) / (2 * (B i + 1) * (N + 1)) := by
+      rw [hδ_def]; field_simp
+    rw [hfrac, div_lt_iff₀ (by positivity)]
+    nlinarith [mul_nonneg hBi hN]
+  change dist (L (ωs j)) 0 < ε
+  rw [Real.dist_eq, sub_zero]
+  exact hle.trans_lt hlt
+
+/-- **Simon Ch. 6, Lemma 2.15 (p. 137).**  Take a weakly convergent subsequence
+`T_{φ(q)} ⇀ T₀` (`cmb_exists_weakly_convergent_subseq`).  Since
+`sup_q M_W(T_{φ(q)}) ≤ sup_q M_W(T_q) < ∞` for every `W ⊂⊂ U`, it also converges on continuous
+compactly supported forms for all measure representations
+(`cmb_tendsto_integral_of_weaklyConvergesOn`). -/
+theorem Submission.compactness_under_mass_bounds : CompactnessUnderMassBounds := by
+  intro P n U hU T hT
+  obtain ⟨φ, T₀, hφ, hconv⟩ := Submission.cmb_exists_weakly_convergent_subseq P n U hU T hT
+  -- The local mass bounds pass to the subsequence.
+  have hTφ : ∀ W, CompactlyContainedOpen W U → (⨆ q, (T (φ q)).massOn W) < ∞ :=
+    fun W hW => (iSup_comp_le (fun q => (T q).massOn W) φ).trans_lt (hT W hW)
+  exact ⟨φ, T₀, hφ, hconv,
+    Submission.cmb_tendsto_integral_of_weaklyConvergesOn P n U hU (fun q => T (φ q)) T₀ hTφ hconv⟩
 
 end GMT.Ch06

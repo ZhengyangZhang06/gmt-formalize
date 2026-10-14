@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.isoperimetric-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Isoperimetric theorem (Simon 6.1)",
+  "statement": "For all m, ℓ ∈ ℕ with ℓ ≥ 1 there is c = c(m,ℓ) ∈ [0,∞) such that every integer multiplicity T ∈ D_{m+1}(ℝ^{m+2+ℓ}) with compact support and ∂T = 0 satisfies T = ∂R for some integer multiplicity R ∈ D_{m+2}(ℝ^{m+2+ℓ}) with compact support and M(R)^{(m+1)/(m+2)} ≤ c·M(T).",
+  "lean_statement": "IsoperimetricTheorem",
+  "lean_name": "isoperimetric_theorem",
+  "depends_on": [
+    "root.deformation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-a1"
+}
