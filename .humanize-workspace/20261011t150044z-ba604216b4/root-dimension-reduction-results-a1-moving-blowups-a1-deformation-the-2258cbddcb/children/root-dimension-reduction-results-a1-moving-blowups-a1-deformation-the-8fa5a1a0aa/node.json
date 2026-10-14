@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1.cube_cover-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1",
+  "depth": 5,
+  "title": "The closed unit cubes containing a point cover a neighbourhood of it (parent steps 5 and 6)",
+  "statement": "Let P ∈ ℕ and x ∈ ℝ^P (Euclid P). There is a finite set Z ⊆ ℤ^P such that x ∈ z + [0,1]^P (i.e. z_i ≤ x_i ≤ z_i + 1 for all i) for every z ∈ Z, and every y in some neighbourhood of x lies in z + [0,1]^P for some z ∈ Z.",
+  "lean_statement": "∀ (P : ℕ) (x : Euclid P), ∃ Z : Finset (Fin P → ℤ), (∀ z ∈ Z, ∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1) ∧ ∀ᶠ y : Euclid P in 𝓝 x, ∃ z ∈ Z, ∀ i, (z i : ℝ) ≤ y i ∧ y i ≤ z i + 1",
+  "lean_name": "dimred_mbl_dtsr_cube_cover",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-8fa5a1a0aa-a1"
+}

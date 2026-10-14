@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1.segment_lipschitz-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1",
+  "depth": 5,
+  "title": "Local Lipschitz bounds along a segment give the global bound (parent step 6a)",
+  "statement": "Let P ∈ ℕ, f : ℝ^P → ℝ^P (Euclid P), x, y ∈ ℝ^P and K ≥ 0. Suppose that for every t ∈ [0, 1], with w_t := x + t(y − x), there is a neighbourhood U of w_t such that |f(w) − f(w_t)| ≤ K|w − w_t| for all w ∈ U. Then |f(y) − f(x)| ≤ K|y − x|.",
+  "lean_statement": "∀ (P : ℕ) (f : Euclid P → Euclid P) (x y : Euclid P) (K : ℝ), 0 ≤ K → (∀ t ∈ Icc (0 : ℝ) 1, ∀ᶠ w in 𝓝 (x + t • (y - x)), dist (f w) (f (x + t • (y - x))) ≤ K * dist w (x + t • (y - x))) → dist (f y) (f x) ≤ K * dist y x",
+  "lean_name": "dimred_mbl_dtsr_segment_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-c5633019d7-a1"
+}

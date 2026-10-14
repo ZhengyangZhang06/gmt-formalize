@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1.dual_dist_count-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_retraction-a1",
+  "depth": 5,
+  "title": "At most n = m + 1 coordinates lie within d(x)/√(n + 1) of a cube centre (parent step 5)",
+  "statement": "Let P, m ∈ ℕ, a, x ∈ ℝ^P and b ∈ ℤ^P. Let L*(a) := {w ∈ ℝ^P : there is a finite set s of coordinate indices with |s| ≥ m + 2 and w_i − a_i ∈ ℤ for all i ∈ s} and d := infDist(x, L*(a)) (Metric.infDist, which is 0 for the empty set). Then at most m + 1 indices i satisfy |x_i − b_i − a_i| < d/√(m + 2).",
+  "lean_statement": "∀ (P m : ℕ) (a x : Euclid P) (b : Fin P → ℤ), (Finset.univ.filter (fun i => |x i - b i - a i| < infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} / Real.sqrt (m + 2))).card ≤ m + 1",
+  "lean_name": "dimred_mbl_dtsr_dual_dist_count",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-c225cc5409-a1"
+}
