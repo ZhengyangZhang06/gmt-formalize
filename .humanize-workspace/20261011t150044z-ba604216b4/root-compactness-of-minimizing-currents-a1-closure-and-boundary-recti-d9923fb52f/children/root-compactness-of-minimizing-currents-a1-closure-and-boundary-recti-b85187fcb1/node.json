@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.vague_subseq-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1",
+  "depth": 4,
+  "title": "Helly-type selection: a subsequence along which ∫ f dμ_j converges for every f ∈ C_c(U)",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P open, and (μ_j)_{j∈ℕ} Borel measures on ℝ^P such that sup_j μ_j(K) < ∞ for every compact K ⊆ U. Then there is a strictly increasing φ : ℕ → ℕ such that for every continuous f : ℝ^P → ℝ with compact support and tsupport f ⊆ U the real sequence (∫ f dμ_{φ(j)})_{j∈ℕ} converges to some c ∈ ℝ.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ⨆ j, μs j K < ∞) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → ∃ c : ℝ, Tendsto (fun j => ∫ x, f x ∂(μs (φ j))) atTop (𝓝 c)",
+  "lean_name": "cbr_vague_convergent_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-b85187fcb1-a1"
+}

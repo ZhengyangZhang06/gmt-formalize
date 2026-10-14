@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "abbrev Euclid|open Filter|open scoped|namespace|end GMT|namespace Submission|sorry|axiom",
+        "MeasurableEmbedding.comap_apply|theorem comap_apply|integral_subtype_comap|setIntegral_eq_integral_of_forall_compl_eq_zero|instance.*borelSpace|exists_thickening_subset_open|tendsto_add_atTop_iff_nat",
+        "cbr_ct_vs_compact_exhaustion|cbr_ct_vs_compact_piece_subseq|cbr_ct_vs_diagonal_subseq|vague.*subseq|diagonal",
+        "structure CompactExhaustion|exists_superset_of_isCompact|def compactExhaustion"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/tmp/cbr-vs-independent-audit-kjd9jhs3/Types.lean",
+        "/tmp/cbr-vs-independent-audit-kjd9jhs3/Assembly.lean",
+        "/tmp/cbr-vs-independent-audit-kjd9jhs3/Instances.lean",
+        "/tmp/cbr-vs-decomp-q7k2/lean/ExactProofs.lean"
+      ],
+      "conclusion": "The three-part split is appropriate and acyclic. Independent Lean checks confirm that all exact child propositions elaborate before implementation and that their hypotheses suffice to prove the selected frozen parent type. The supplied scratch proofs were inspected, matched against the frozen child strings, and independently recompiled successfully. Typeclass checks and the additional SimonGMT import also pass. The proofs and reused compact-metrizable theorem depend only on propext, Classical.choice and Quot.sound. Inspected Mathlib sources match the pinned runtime files. The snapshot project search found no matching helper declaration. All proposed names are bare and unreserved in the DAG; the identical exhaustion contract on another active branch has a different name and is not reused."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "compact_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean proposition agree. The proof establishes compactness, containment in U, and containment of every compact C using a positive uniform margin and an explicit Archimedean index choice. Empty sets and P = 0 cause no gap. Monotonicity is neither promised nor needed. The obligation is independent and non-circular."
+    },
+    {
+      "key": "compact_piece",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree. The compact subtype has the required compact, metrizable and Borel instances. Its measurable inclusion justifies comap evaluation and the uniform mass bound. The corrected selection theorem includes the empty case. Both integral-transfer identities hold without additional integrability assumptions, yielding one subsequence for every admissible test function without circular reliance."
+    },
+    {
+      "key": "diagonal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. The supplied choice and recursion construct the nested subsequences; factorization proves each diagonal tail lies in an earlier subsequence. Strict monotonicity of the diagonal and reflection through the earlier map establish strict monotonicity of the tail indices. Composition and index-shift invariance complete convergence. No monotonicity of F or sibling dependency is required."
+    }
+  ],
+  "required_changes": []
+}
