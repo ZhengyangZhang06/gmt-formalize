@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e768ade59f7ba2004206b037880c8b93a1962f55d5d88805648f41d17c54c9d6",
+  "git_delta": {
+    "base_commit": "d9c9559b2a59f6c24fd1017cf596f81d5d9edc5a",
+    "candidate_commit": "e7763d1a9bdf5e5f8340232829647af86bda78ee",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_fd_identify_constant",
+    "diff_sha256": "971a3495154b0c4208fbe92eadb181ba2f12f0fa4733bd053e34703cbcf9655e",
+    "source_sha256": "4e12ca9e6a37cba2a9a93aeeaac3caec8ab7cc721ef40cce2ba3060f581c7b85",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_fd_identify_constant",
+      "statement": "∀ (s c : ℝ) (m : ℕ) (H : ℝ × ℝ → ℝ≥0∞) (I : ℝ → ℝ≥0∞), 0 < s → s ≤ 1 → (∀ᵐ p : ℝ × ℝ, H p ≠ ∞) → (∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-s) s → (H p).toReal = c * p.1) → (∀ s' : ℝ, 0 < s' → s' ≤ s / 8 → ∫⁻ p in Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s', H p = I s') → Tendsto (fun s' : ℝ => I s' / ENNReal.ofReal (s' ^ 2)) (𝓝[>] 0) (𝓝 (4 * (m : ℝ≥0∞))) → ∀ᵐ p : ℝ × ℝ, p ∈ Ioo (1 - s / 8) (1 + s / 8) ×ˢ Ioo (-(s / 8)) (s / 8) → H p = ENNReal.ofReal ((m : ℝ) * p.1)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
