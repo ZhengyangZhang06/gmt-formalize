@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "456f1b13e72a35572e3618ee38fb0809c875e37eb100fb1355e13908269483a5",
+  "git_delta": {
+    "base_commit": "b27b91776d4f63fc6aa41ddf15c0b7e4dfb1dfd5",
+    "candidate_commit": "90c9bba792ba737dec771c20dfa7345e16421b07",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cr_nonflat_affine_preimage",
+    "diff_sha256": "0a372c0c8f9c769b4da08a81269edfbbf7df3ee6882c93b76ecf68c4e2101145",
+    "source_sha256": "9b6938daf35eeb94572f0373a0006233ee038da9390d0b6ab5649c9903f1413f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cr_nonflat_affine_preimage",
+      "statement": "∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)) (y₀ : Euclid P) (lam : ℝ), 0 < lam → ((((fun x => y₀ + lam • x) ⁻¹' S) ∩ ((fun x => y₀ + lam • x) ⁻¹' Dset)) \\ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ ((fun x => y₀ + lam • x) ⁻¹' Dset) ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ ((fun x => y₀ + lam • x) ⁻¹' S), y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ ((fun x => y₀ + lam • x) ⁻¹' Dset)ᶜ = (fun x => y₀ + lam • x) ⁻¹' (((S ∩ Dset) \\ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ Dsetᶜ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
