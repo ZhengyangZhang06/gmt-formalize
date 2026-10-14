@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+  "depth": 3,
+  "title": "Lusin's theorem for covector fields on ℝ^P (compact form)",
+  "statement": "Let P, n be natural numbers and μ a measure on ℝ^P (Borel σ-algebra). Let A ⊆ ℝ^P be measurable with μ(A) < ∞, f : ℝ^P → Λⁿ(ℝ^P) (Covector (Euclid P) n) μ-a.e. strongly measurable, and ε > 0 real. Then there is a compact K ⊆ A with μ(A ∖ K) < ε on which f is continuous (ContinuousOn f K).",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (A : Set (Euclid P)) (f : Euclid P → Covector (Euclid P) n) (ε : ℝ), MeasurableSet A → μ A ≠ ∞ → AEStronglyMeasurable f μ → 0 < ε → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \\ K) < ENNReal.ofReal ε ∧ ContinuousOn f K",
+  "lean_name": "dor_ims_lusin_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-covector-a1-a1"
+}

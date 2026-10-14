@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1.covector_finite_dimensional-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.smooth_unit_approximation-a1",
+  "depth": 4,
+  "title": "The space of n-covectors on ℝ^P is finite-dimensional",
+  "statement": "For all natural numbers P and n, the real vector space Λ := Covector (Euclid P) n of continuous alternating n-linear forms on ℝ^P is finite-dimensional.",
+  "lean_statement": "∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n)",
+  "lean_name": "dor_ims_sua_covector_finiteDimensional",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-4cd4a7de2e-a1"
+}
