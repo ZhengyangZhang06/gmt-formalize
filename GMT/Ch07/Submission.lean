@@ -29201,6 +29201,58 @@ theorem Submission.dimred_invariant_cone_splitting : ∀ (P n : ℕ) (S : Geomet
     hnull₀ hprod fun y _ => ⟨Θ₀ y, hΘ₀ y (mem_univ y)⟩
   exact ⟨S₀, hmin₀', hbd₀, hcone₀, hspt₀, hsupp, hdens⟩
 
+/-- **Planar support of an invariant minimizing current** (Simon 7.3.3, proof of (2), (8)–(10),
+with Lemma 7.3.5).  Assume the cone splitting (CS) and the classification (ODC) of `1`-dimensional
+minimizing cones.  Let `S ∈ 𝒟ₙ(ℝᴾ)`, `n ≤ P`, be minimizing in `ℝᴾ` with `∂S = 0` and density
+invariant under `w ↦ y + λw` (`y ∈ L`, `λ > 0`), where `dim L + 1 = n`.  (CS) gives a minimizing
+cone `S₀` with `∂S₀ = 0` and `t + y ∈ spt S ⟺ y ∈ spt S₀` (`t ∈ L`, `y ∈ Lᗮ`); its degree is
+`n − dim L = 1`, so (ODC) gives `spt S₀ ⊆ span{e}`.  Writing `w = t + y` with `t ∈ L`, `y ∈ Lᗮ`
+gives `spt S ⊆ L ⊔ span{e}`, of dimension `≤ n ≤ P`, which is enlarged one vector at a time
+(`Submodule.finrank_sup_span_singleton`) to an `n`-dimensional subspace `Q`. -/
+theorem Submission.idtp_fons_invariant_planar_support : (∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), Module.finrank ℝ L < n → IsMinimizingIn S univ → BoundaryVanishes S → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → IsConeCurrent S ∧ (∀ v ∈ L, ∀ ω : TestFormOn (univ : Set (Euclid P)) n, currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω) ∧ ∃ S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L), IsMinimizingIn S₀ univ ∧ BoundaryVanishes S₀ ∧ IsConeCurrent S₀ ∧ S₀.support ⊆ (Lᗮ : Set (Euclid P)) ∧ (∀ t ∈ L, ∀ y ∈ Lᗮ, (t + y ∈ S.support ↔ y ∈ S₀.support)) ∧ ∀ t ∈ L, ∀ y ∈ Lᗮ, ∀ θ : ℝ, (HasMassDensity S (t + y) θ ↔ HasMassDensity S₀ y θ)) → (∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∃ (e : Euclid P) (m : ℕ), (0 < m → ‖e‖ = 1) ∧ C.support ⊆ (Submodule.span ℝ {e} : Set (Euclid P)) ∧ ∀ y ∈ Submodule.span ℝ {e}, HasMassDensity C y m) → ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), n ≤ P → Module.finrank ℝ L + 1 = n → IsMinimizingIn S univ → BoundaryVanishes S → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ S.support ⊆ (Q : Set (Euclid P)) := by
+  intro hCS hODC P n S L hnP hd hmin hbd hinv
+  -- (CS) with `dim L < n`
+  obtain ⟨-, -, S₀, hmin₀, hbd₀, hcone₀, -, hsupp, -⟩ := hCS P n S L (by omega) hmin hbd hinv
+  -- `S₀` has degree `n − dim L = 1`, so (ODC) gives `spt S₀ ⊆ span{e}`
+  have hODC' : ∀ (k : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) k), k = 1 →
+      IsMinimizingIn T univ → BoundaryVanishes T → IsConeCurrent T →
+      ∃ e : Euclid P, T.support ⊆ (Submodule.span ℝ {e} : Set (Euclid P)) := by
+    rintro k T rfl hT hbT hcT
+    obtain ⟨e, -, -, he, -⟩ := hODC P T hT hbT hcT
+    exact ⟨e, he⟩
+  obtain ⟨e, he⟩ := hODC' _ S₀ (by omega) hmin₀ hbd₀ hcone₀
+  -- `spt S ⊆ M := L ⊔ span{e}`, since `w = t + y` with `t ∈ L`, `y ∈ Lᗮ`
+  have hsub : S.support ⊆ ((L ⊔ Submodule.span ℝ {e} : Submodule ℝ (Euclid P)) :
+      Set (Euclid P)) := by
+    intro w hw
+    obtain ⟨t, ht, y, hy, rfl⟩ := L.exists_add_mem_mem_orthogonal w
+    exact Submodule.add_mem_sup ht (he ((hsupp t ht y hy).1 hw))
+  -- `dim M ≤ dim L + 1 = n`
+  have hdim : Module.finrank ℝ (L ⊔ Submodule.span ℝ {e} : Submodule ℝ (Euclid P)) ≤ n := by
+    have h₁ := Submodule.finrank_add_le_finrank_add_finrank L (Submodule.span ℝ {e})
+    have h₂ : Module.finrank ℝ (Submodule.span ℝ {e}) ≤ 1 := by
+      simpa using finrank_span_le_card ({e} : Set (Euclid P))
+    omega
+  generalize L ⊔ Submodule.span ℝ {e} = M at hsub hdim
+  -- enlarge `M` one vector at a time while its dimension is `< P`
+  have hext : ∀ k : ℕ, Module.finrank ℝ M + k ≤ P →
+      ∃ Q : Submodule ℝ (Euclid P), M ≤ Q ∧ Module.finrank ℝ Q = Module.finrank ℝ M + k := by
+    intro k
+    induction k with
+    | zero => exact fun _ => ⟨M, le_rfl, rfl⟩
+    | succ k ih =>
+      intro hk
+      obtain ⟨Q, hMQ, hQ⟩ := ih (by omega)
+      have hQtop : Q ≠ ⊤ := by
+        rintro rfl
+        rw [finrank_top, finrank_euclideanSpace_fin] at hQ
+        omega
+      obtain ⟨v, -, hv⟩ := IsConcreteLE.exists_of_lt (lt_top_iff_ne_top.2 hQtop)
+      refine ⟨Q ⊔ Submodule.span ℝ {v}, hMQ.trans le_sup_left, ?_⟩
+      rw [Submodule.finrank_sup_span_singleton hv, hQ, add_assoc]
+  obtain ⟨Q, hMQ, hQ⟩ := hext (n - Module.finrank ℝ M) (by omega)
+  exact ⟨Q, by omega, hsub.trans (SetLike.coe_subset_coe.2 hMQ)⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
