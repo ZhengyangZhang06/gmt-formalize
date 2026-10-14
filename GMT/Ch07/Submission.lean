@@ -29202,6 +29202,92 @@ theorem Submission.dimred_invariant_cone_splitting : ∀ (P n : ℕ) (S : Geomet
     hnull₀ hprod fun y _ => ⟨Θ₀ y, hΘ₀ y (mem_univ y)⟩
   exact ⟨S₀, hmin₀', hbd₀, hcone₀, hspt₀, hsupp, hdens⟩
 
+/-- **Planar support of a `2`-dimensional minimizing cycle with `ℝp`-invariant density**
+(Simon 7.3.5 followed by formula (10) in the proof of 7.3.3(2)).  Let `S ∈ 𝒟₂(ℝᴾ)` be minimizing
+with `∂S = 0`, whose density is invariant under `w ↦ y + λw` (`y ∈ ℝp`, `λ > 0`, `p ≠ 0`), and
+with `Θ²(μ_S, 0) = θ ≥ 1`.  Splitting off `L = ℝp` gives `S = [[L]] × S₀` with `S₀` a minimizing
+`1`-dimensional cone cycle, `spt S₀ ⊆ Lᗮ`; by formula (10) `S₀ = m[[ℝe]]`.  Comparing densities
+at `0` gives `m = θ ≥ 1`, so `|e| = 1`, and `Θ(S₀, e) = m > 0` forces `e ∈ spt S₀ ⊆ Lᗮ`.  Then
+`τ = (p/|p|, e)` is orthonormal, `p ∈ span τ`, and `x = p_L x + (x − p_L x)` shows
+`spt S ⊆ span τ`. -/
+theorem Submission.idtp_cttp_planar_support : ∀ (P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) 2) (p : Euclid P) (θ : ℝ), p ≠ 0 → IsMinimizingIn S univ → BoundaryVanishes S → (∀ y ∈ Submodule.span ℝ {p}, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ' : ℝ), HasMassDensity S w θ' → HasMassDensity S (y + lam • w) θ') → 1 ≤ θ → HasMassDensity S 0 θ → ∃ τ : Fin 2 → Euclid P, Orthonormal ℝ τ ∧ p ∈ Submodule.span ℝ (Set.range τ) ∧ S.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) := by
+  intro P S p θ hp hmin hbd hinv hθ hS
+  -- Step 1: `dim ℝp = 1 < 2`
+  have hrank : Module.finrank ℝ (Submodule.span ℝ {p}) = 1 := finrank_span_singleton hp
+  -- Step 2: `S = [[ℝp]] × S₀` (Simon 7.3.5), with `S₀` of degree `2 - 1 = 1`
+  obtain ⟨-, -, S₀, hmin₀, hbd₀, hcone₀, hspt₀, hsupp, hdens⟩ :=
+    Submission.dimred_invariant_cone_splitting P 2 S (Submodule.span ℝ {p}) (by omega) hmin hbd
+      hinv
+  have key : ∀ (k : ℕ) (S₀ : GeometricCurrentOn (univ : Set (Euclid P)) k), k = 1 →
+      IsMinimizingIn S₀ univ → BoundaryVanishes S₀ → IsConeCurrent S₀ →
+      S₀.support ⊆ ((Submodule.span ℝ {p})ᗮ : Set (Euclid P)) →
+      (∀ t ∈ Submodule.span ℝ {p}, ∀ y ∈ (Submodule.span ℝ {p})ᗮ,
+        (t + y ∈ S.support ↔ y ∈ S₀.support)) →
+      (∀ t ∈ Submodule.span ℝ {p}, ∀ y ∈ (Submodule.span ℝ {p})ᗮ, ∀ θ : ℝ,
+        (HasMassDensity S (t + y) θ ↔ HasMassDensity S₀ y θ)) →
+      ∃ τ : Fin 2 → Euclid P, Orthonormal ℝ τ ∧ p ∈ Submodule.span ℝ (Set.range τ) ∧
+        S.support ⊆ (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) := by
+    intro k S₀ hk hmin₀ hbd₀ hcone₀ hspt₀ hsupp hdens
+    subst hk
+    -- Step 3: `S₀ = m[[ℝe]]` (formula (10)): `spt S₀ ⊆ ℝe` and `Θ(S₀, ·) = m` on `ℝe`
+    obtain ⟨e, m, hem, hsptS₀, hdensS₀⟩ :=
+      Submission.dimred_one_dim_minimizing_cone P S₀ hmin₀ hbd₀ hcone₀
+    -- Step 4: `Θ(S₀, 0) = Θ(S, 0 + 0) = θ`, so `m = θ ≥ 1` and `|e| = 1`
+    have h0 : HasMassDensity S₀ 0 θ :=
+      (hdens 0 (Submodule.zero_mem _) 0 (Submodule.zero_mem _) θ).1 (by rwa [add_zero])
+    have hmθ : θ = m := Submission.dimred_cs_mi_hasMassDensity_unique P 1 univ S₀ 0 θ m h0
+      (hdensS₀ 0 (Submodule.zero_mem _))
+    have hm1 : (1 : ℝ) ≤ m := by rw [← hmθ]; exact hθ
+    have he : ‖e‖ = 1 := hem (by exact_mod_cast zero_lt_one.trans_le hm1)
+    -- Step 5: `e ∈ spt S₀`, otherwise `μ_{S₀}(B_ρ(e)) = 0` for small `ρ` and `Θ(S₀, e) = 0 ≠ m`
+    have heS₀ : e ∈ S₀.support := by
+      by_contra hne
+      obtain ⟨R₀, hR₀⟩ := hmin₀.1
+      obtain ⟨hmass, hsptR, -⟩ :=
+        Submission.dimred_im_mass_measure P 1 univ S₀ R₀ isOpen_univ hR₀
+      obtain ⟨ε, hε, hε0⟩ : ∃ ε : ℝ, 0 < ε ∧ R₀.measure (ball e ε) = 0 := by
+        by_contra! h
+        exact hne ((hsptR e (mem_univ e)).2 h)
+      have hzero : HasMassDensity S₀ e 0 := by
+        refine ⟨le_rfl, ?_⟩
+        rw [ENNReal.ofReal_zero]
+        refine (tendsto_congr' ?_).2 tendsto_const_nhds
+        filter_upwards [Ioo_mem_nhdsGT hε] with ρ hρ
+        rw [hmass _ isOpen_ball (subset_univ _),
+          measure_mono_null (ball_subset_ball hρ.2.le) hε0, ENNReal.zero_div]
+      have hm0 : (m : ℝ) = 0 := Submission.dimred_cs_mi_hasMassDensity_unique P 1 univ S₀ e m 0
+        (hdensS₀ e (Submodule.mem_span_singleton_self e)) hzero
+      linarith
+    -- hence `e ∈ (ℝp)ᗮ`
+    have hpe : inner ℝ p e = 0 :=
+      Submodule.inner_right_of_mem_orthogonal (Submodule.mem_span_singleton_self p) (hspt₀ heS₀)
+    have hep : inner ℝ e p = 0 := by rw [real_inner_comm]; exact hpe
+    -- Step 6: the orthonormal frame `τ = (p/|p|, e)`, with `p ∈ span τ`
+    have hpn : ‖p‖ ≠ 0 := norm_ne_zero_iff.2 hp
+    have hτ0 : ‖p‖⁻¹ • p ∈ Submodule.span ℝ (Set.range ![‖p‖⁻¹ • p, e]) :=
+      Submodule.subset_span ⟨0, rfl⟩
+    have hτ1 : e ∈ Submodule.span ℝ (Set.range ![‖p‖⁻¹ • p, e]) :=
+      Submodule.subset_span ⟨1, rfl⟩
+    have hpτ : p ∈ Submodule.span ℝ (Set.range ![‖p‖⁻¹ • p, e]) := by
+      have h := Submodule.smul_mem _ ‖p‖ hτ0
+      rwa [smul_inv_smul₀ hpn] at h
+    refine ⟨![‖p‖⁻¹ • p, e], ⟨fun i => ?_, fun i j hij => ?_⟩, hpτ, ?_⟩
+    · fin_cases i
+      · simp [norm_smul, hpn]
+      · simpa using he
+    · fin_cases i <;> fin_cases j
+      · exact absurd rfl hij
+      · simp [real_inner_smul_left, hpe]
+      · simp [real_inner_smul_right, hep]
+      · exact absurd rfl hij
+    -- Step 7: `x = t + z`, `t ∈ ℝp`, `z ∈ (ℝp)ᗮ`, and `z ∈ spt S₀ ⊆ ℝe`
+    · intro x hx
+      obtain ⟨t, ht, z, hz, rfl⟩ := (Submodule.span ℝ {p}).exists_add_mem_mem_orthogonal x
+      have hze : z ∈ Submodule.span ℝ {e} := hsptS₀ ((hsupp t ht z hz).1 hx)
+      exact Submodule.add_mem _ ((Submodule.span_singleton_le_iff_mem _ _).2 hpτ ht)
+        ((Submodule.span_singleton_le_iff_mem _ _).2 hτ1 hze)
+  exact key _ S₀ (by omega) hmin₀ hbd₀ hcone₀ hspt₀ hsupp hdens
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
