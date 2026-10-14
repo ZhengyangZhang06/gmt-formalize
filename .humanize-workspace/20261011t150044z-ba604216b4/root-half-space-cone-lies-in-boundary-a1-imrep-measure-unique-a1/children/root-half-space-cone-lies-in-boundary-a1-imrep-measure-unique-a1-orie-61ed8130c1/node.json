@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_common_covector-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1",
+  "depth": 3,
+  "title": "Two unit orientations of the same plane both take absolute value 1 on a common covector",
+  "statement": "Let P, n ∈ ℕ, let Q be a linear subspace of ℝ^P, and let ξ_1, ξ_2 ∈ MultiVector P n both be unit orientations of Q (IsUnitOrientationOf ξ_k Q for k = 1, 2: there are orthonormal families τ, τ' spanning Q and signs with ξ_1(α) = ±α(τ) and ξ_2(α) = ±α(τ') for every n-covector α). Then there is an n-covector α on ℝ^P (α ∈ Covector (Euclid P) n) with |ξ_1(α)| = 1 and |ξ_2(α)| = 1. (With ξ_1 = ξ_2 this shows that a unit orientation is non-zero.)",
+  "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ₁ ξ₂ : MultiVector P n), IsUnitOrientationOf ξ₁ Q → IsUnitOrientationOf ξ₂ Q → ∃ α : Covector (Euclid P) n, |ξ₁ α| = 1 ∧ |ξ₂ α| = 1",
+  "lean_name": "unit_orientations_common_unit_covector",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-61ed8130c1-a1"
+}
