@@ -1740,6 +1740,31 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
+/-- **Simon Ch. 7, proof of 3.3(2), (10)** (one-dimensional minimizing cones): if
+`C = τ(M, θ, ξ)` in `ℝᴾ` has `μ_C(A) = Σ_{e ∈ F} |m(e)| ℒ¹({t > 0 : te ∈ A})` for unit vectors
+`e ∈ F` (`C` is the sum of the rays `m(e)[[(0, ∞)e]]`), then `M_{B_r(0)}(C) = r Σ_{e ∈ F} |m(e)|`.
+By Ch. 6, 3.2(3) (`dimred_im_mass_measure`), `M_{B_r(0)}(C) = μ_C(B_r(0))`; for a unit vector
+`e`, `{t > 0 : |te| < r} = (0, r)`, of length `r` (`0` if `r ≤ 0`). -/
+theorem Submission.idtp_fons_odc_antipodal_ray_mass : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1) (R : IMRep (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ m : Euclid P → ℤ, R.Represents C → (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ e ∈ F, ENNReal.ofReal |(m e : ℝ)| * volume (Ioi (0 : ℝ) ∩ (fun t : ℝ => t • e) ⁻¹' A)) → ∀ r : ℝ, C.massOn (ball (0 : Euclid P) r) = ENNReal.ofReal ((∑ e ∈ F, |(m e : ℝ)|) * r) := by
+  intro P C R F hF m hR hmeas r
+  -- `M_{B_r(0)}(C) = μ_C(B_r(0))`, since the ball is open, and the ray formula evaluates `μ_C`
+  rw [(Submission.dimred_im_mass_measure P 1 univ C R isOpen_univ hR).1 _ isOpen_ball
+    (subset_univ _), hmeas _ measurableSet_ball]
+  -- for a unit vector `e`, `{t > 0 : t • e ∈ B_r(0)} = (0, r)`, of length `r` (`0` if `r ≤ 0`)
+  have hray : ∀ e ∈ F, volume (Ioi (0 : ℝ) ∩ (fun t : ℝ => t • e) ⁻¹' ball (0 : Euclid P) r) =
+      ENNReal.ofReal r := by
+    intro e he
+    have hset : Ioi (0 : ℝ) ∩ (fun t : ℝ => t • e) ⁻¹' ball (0 : Euclid P) r = Ioo 0 r := by
+      ext t
+      simp only [mem_inter_iff, mem_Ioi, mem_preimage, mem_ball_zero_iff, norm_smul, hF e he,
+        mul_one, Real.norm_eq_abs, mem_Ioo]
+      exact and_congr_right fun ht => by rw [abs_of_pos ht]
+    rw [hset, Real.volume_Ioo, sub_zero]
+  -- `Σ_e ofReal |m(e)| · ofReal r = ofReal ((Σ_e |m(e)|) r)`
+  rw [Finset.sum_congr rfl fun e he => by rw [hray e he], ← Finset.sum_mul,
+    ← ENNReal.ofReal_sum_of_nonneg fun e _ => abs_nonneg _,
+    ← ENNReal.ofReal_mul (Finset.sum_nonneg fun e _ => abs_nonneg _)]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
