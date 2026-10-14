@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5129c3662c226539dbe52eab4e15d6b1429ac7b612a5f35c65b58723314f78de",
+  "git_delta": {
+    "base_commit": "84a71e4f839637ba2f14400b943eb39ac7080d18",
+    "candidate_commit": "10bd965a2c38f7475e0f70542f13c507712ace13",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_fr_coordinate_covectors",
+    "diff_sha256": "4c1164118701f98cafbd8b79ec2b45a2287615cfef132c935454452b4ec45031",
+    "source_sha256": "8f6de286e863d35834002d0f784d129d5a3bbe25b9834a16fc57dbd412b8abc0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_fr_coordinate_covectors",
+      "statement": "∀ (P k : ℕ), ∃ dx : (Fin k → Fin P) → Covector (Euclid P) k, (∀ I J : Fin k → Fin P, StrictMono I → StrictMono J → dx J (fun r => EuclideanSpace.single (I r) (1 : ℝ)) = if I = J then 1 else 0) ∧ ∀ (N : ℕ) (J : Fin N → Fin k → Fin P) (c : Fin N → ℝ), Function.Injective J → (∀ l, StrictMono (J l)) → covectorEuclideanNorm (∑ l, c l • dx (J l)) = Real.sqrt (∑ l, c l ^ 2)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
