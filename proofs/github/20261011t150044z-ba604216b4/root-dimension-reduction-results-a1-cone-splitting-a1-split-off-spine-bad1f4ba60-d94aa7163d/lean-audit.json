@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "043acbb7fbe94db3d3c8a1ebef4f398d2a937665a8b5ea452658ce546d320c85",
+  "git_delta": {
+    "base_commit": "d3331ed5eb1168cf3ab9bbba932415e3c1f34562",
+    "candidate_commit": "91074a5e310017275ae73874d243216b36127087",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cc_cube_sum_geometry",
+    "diff_sha256": "88b49255920ffdfcf04a85bb9cb3f2ffc815a8604482133f6e128e44dc8fc8f3",
+    "source_sha256": "f5bba5f8c388fcb70e3ee3e7e994b20e22081926e30fdb7f12c44aea28c58c1d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cc_cube_sum_geometry",
+      "statement": "∀ (P k : ℕ) (g : Fin k → Euclid P) (r : ℝ) (K : Set (Euclid P)), Orthonormal ℝ g → IsCompact K → K ⊆ ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P)) → IsCompact {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} ∧ IsCompact (Set.image2 (fun t y => t + y) {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} K) ∧ Set.image2 (fun t y => t + y) {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} K ⊆ {x | ∀ i, |inner ℝ (g i) x| ≤ r} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' K",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
