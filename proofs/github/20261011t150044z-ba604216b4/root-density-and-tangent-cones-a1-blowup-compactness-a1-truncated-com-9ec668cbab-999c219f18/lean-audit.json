@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0d7ec1944ab8f2a0c555d93f651c376aa99d068f237d6fa31397117e03f0cda4",
+  "git_delta": {
+    "base_commit": "1cd3ab15da2be4b4e68090677f79991c5fccbb9b",
+    "candidate_commit": "f082cdea0eff0e99daf434427382085807010323",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_tc_cl_sl_ae_level_set_null",
+    "diff_sha256": "9603dcaa4fa8e4895a075dd95958ec25ccb0b61b1de430b472979149cbff2828",
+    "source_sha256": "1fd09952d285eb890dde44bdd0d162324a45ea81d6ff935d0002697a1e62a8fc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_tc_cl_sl_ae_level_set_null",
+      "statement": "∀ (P : ℕ) (ν : Measure (Euclid P)) (f : Euclid P → ℝ), Measurable f → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → ∀ᵐ t ∂(volume : Measure ℝ), ν {x | f x = t} = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
