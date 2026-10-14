@@ -1,0 +1,144 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_dense-a1.mass_eq_weight-a1`
+- Child DAG node: `root.regular_set_dense-a1.mass_eq_weight-a1.unit_orientation_dual-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 1 (linear algebra); Simon Ch. 6, Remark 2.6(a)–(b) (chapter-06.txt lines 238–256), for the inner-product (Euclidean coefficient) norm. Step 3 below is the Cauchy–Binet identity Σ_I det(A_I)² = det(AAᵀ) (see https://en.wikipedia.org/wiki/Cauchy%E2%80%93Binet_formula); it is proved here directly from step 1.
+
+Notation. F := Covector (Euclid P) n is the space of continuous alternating n-linear maps (ℝ^P)^n → ℝ. An n-vector is w ∈ MultiVector P n = (F →L[ℝ] ℝ). e_1, …, e_P is the standard orthonormal basis (EuclideanSpace.basisFun). For x ∈ ℝ^P, x_j := ⟨x, e_j⟩ is its j-th coordinate, so x = Σ_j x_j e_j. 𝓘 is the finite set of strictly increasing I : Fin n → Fin P. For f : Fin n → Fin P put e_f := (e_{f(0)}, …, e_{f(n−1)}) ∈ (ℝ^P)^n. By definition N(α) := covectorEuclideanNorm α = (Σ_{I∈𝓘} α(e_I)²)^{1/2}; the Lean sum ranges over all I : Fin n → Fin P, with summand 0 unless StrictMono I. For v = (v_0, …, v_{n−1}) ∈ (ℝ^P)^n and f : Fin n → Fin P let D_f(v) := det[(v_i)_{f(k)}]_{i,k∈Fin n}.
+
+1. Expansion: for all α ∈ F and v ∈ (ℝ^P)^n, α(v) = Σ_{I∈𝓘} D_I(v)·α(e_I).
+- Write each argument as v_i = Σ_j (v_i)_j e_j. By multilinearity, α(v) = Σ_{f : Fin n → Fin P} (∏_i (v_i)_{f(i)})·α(e_f).
+- If f is not injective, e_f has two equal entries, so α(e_f) = 0 because α is alternating.
+- Every injective f is uniquely f = I∘σ with I ∈ 𝓘 (the increasing enumeration of the n-element set f(Fin n)) and σ ∈ Perm(Fin n) (σ = I⁻¹∘f). Every such pair gives an injective f.
+- Since α is alternating, α(e_{I∘σ}) = α(e_I∘σ) = sign(σ)·α(e_I).
+- Hence α(v) = Σ_{I∈𝓘} α(e_I)·Σ_σ sign(σ)·∏_i (v_i)_{I(σ(i))} = Σ_{I∈𝓘} α(e_I)·D_I(v). The last equality is the Leibniz formula det[m_{ik}] = Σ_σ sign(σ)·∏_i m_{i,σ(i)} with m_{ik} = (v_i)_{I(k)}.
+- For n = 0, 𝓘 consists of the empty map, D is the determinant of the empty matrix, which is 1, and both sides equal α of the empty tuple.
+
+2. Coordinate covectors. For f : Fin n → Fin P define e^f(v) := D_f(v).
+- Row i of the matrix [(v_i)_{f(k)}]_{i,k} depends linearly on v_i alone, and det is linear in each row, so e^f is n-linear.
+- If v_i = v_{i'} for some i ≠ i', two rows coincide and the determinant vanishes, so e^f is alternating.
+- e^f is continuous. Every entry satisfies |(v_i)_{f(k)}| ≤ ‖v_i‖, and the Leibniz formula has n! terms, each of absolute value ≤ ∏_i ‖v_i‖. So |e^f(v)| ≤ n!·∏_i ‖v_i‖, and a multilinear map with such a bound is continuous. Thus e^f ∈ F.
+- Lean note: build e^f with AlternatingMap.mkContinuous and this bound, or as the alternatization of the product of the coordinate functionals v ↦ (v_k)_{f(k)}. The pinned Mathlib has no continuity lemma for multilinear maps on finite-dimensional spaces, and FiniteDimensional ℝ (Covector (Euclid P) n) is not inferred.
+- For I, K ∈ 𝓘: e^I(e_K) = det[(e_{K(i)})_{I(k)}]_{i,k} = det[δ_{K(i),I(k)}]_{i,k}. If K = I this is the identity matrix, so e^I(e_I) = 1.
+- If K ≠ I: a strictly increasing map is determined by its image, so K(Fin n) ≠ I(Fin n). Both sets have n elements, so some K(i) ∉ I(Fin n). Row i is then zero, and e^I(e_K) = 0.
+
+3. Cauchy–Binet for orthonormal families: if τ : Fin n → ℝ^P is orthonormal, then Σ_{I∈𝓘} D_I(τ)² = 1.
+- Let γ(v) := det[⟨v_i, τ_k⟩]_{i,k}. Exactly as in step 2, γ ∈ F; the bound is |γ(v)| ≤ n!·∏_i ‖v_i‖, because |⟨v_i, τ_k⟩| ≤ ‖v_i‖·‖τ_k‖ = ‖v_i‖.
+- By orthonormality, γ(τ) = det[⟨τ_i, τ_k⟩] = det(Id) = 1.
+- For I ∈ 𝓘, γ(e_I) = det[⟨e_{I(i)}, τ_k⟩]_{i,k} = det[(τ_k)_{I(i)}]_{i,k}. This matrix is the transpose of [(τ_i)_{I(k)}]_{i,k}, so γ(e_I) = D_I(τ).
+- Step 1 with α = γ and v = τ gives 1 = γ(τ) = Σ_I D_I(τ)·γ(e_I) = Σ_I D_I(τ)².
+
+4. The map J. Define J(w) := Σ_{I∈𝓘} w(e^I)·e^I for w ∈ MultiVector P n.
+- Each w ↦ w(e^I) is evaluation at the fixed covector e^I, a continuous linear functional on MultiVector P n, and the sum is finite. So J : MultiVector P n →L[ℝ] F, and J does not depend on any ξ or Q.
+- Lean note: J := Σ_{I∈𝓘} (ContinuousLinearMap.apply ℝ ℝ e^I).smulRight e^I typechecks with this type. Avoid LinearMap.toContinuousLinearMap, which needs a FiniteDimensional instance that is not inferred.
+- By step 2, for K ∈ 𝓘: J(w)(e_K) = Σ_I w(e^I)·e^I(e_K) = w(e^K).
+- Therefore N(J(w))² = Σ_{K∈𝓘} w(e^K)².
+- By linearity of w, w(J(w)) = Σ_I w(e^I)·w(e^I) = Σ_I w(e^I)².
+
+5. Conclusion. Let ξ ∈ MultiVector P n and Q satisfy IsUnitOrientationOf ξ Q. Then there are an orthonormal τ : Fin n → ℝ^P (spanning Q) and s ∈ {1, −1} with ξ(α) = s·α(τ) for every α ∈ F.
+- (i) For α ∈ F, step 1 gives α(τ) = Σ_I D_I(τ)·α(e_I). By the Cauchy–Schwarz inequality in ℝ^𝓘 and step 3: |ξ(α)| = |α(τ)| ≤ (Σ_I D_I(τ)²)^{1/2}·(Σ_I α(e_I)²)^{1/2} = N(α).
+- (ii) For I ∈ 𝓘, ξ(e^I) = s·e^I(τ) = s·D_I(τ). By steps 4 and 3, N(J(ξ))² = Σ_I s²·D_I(τ)² = 1. Since N ≥ 0, N(J(ξ)) = 1.
+- (iii) By steps 4 and 3, ξ(J(ξ)) = Σ_I ξ(e^I)² = Σ_I D_I(τ)² = 1.
+This proves the statement with the single map J of step 4. If n > P, then 𝓘 = ∅ and step 3 shows that no orthonormal τ : Fin n → ℝ^P exists, so the hypothesis is never satisfied; the argument covers this case unchanged.
+
+## Key steps
+
+1. Expansion: α(v) = Σ_{I strictly increasing} D_I(v)·α(e_I), by multilinearity, alternation and the Leibniz formula.
+2. Coordinate covectors: e^I(v) = det[(v_i)_{I(k)}] lies in F and satisfies e^I(e_K) = δ_{IK} on strictly increasing I, K.
+3. Cauchy–Binet for orthonormal τ: Σ_I D_I(τ)² = 1, by expanding γ(v) = det[⟨v_i, τ_k⟩] at v = τ.
+4. Define J(w) = Σ_I w(e^I)·e^I. It is continuous linear with J(w)(e_K) = w(e^K), so N(Jw)² = Σ_I w(e^I)² = w(Jw).
+5. For ξ = ±τ₁∧⋯∧τ_n: Cauchy–Schwarz gives |ξ(α)| ≤ N(α), and ξ(e^I) = ±D_I(τ) gives N(Jξ) = 1 and ξ(Jξ) = 1.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}`
+- `python3 -I scan of dag.json: node ids, lean_name, status; related nodes matching mass_eq_measure|imrep_mass_and_support|imrep_mass_formula|imrep_measure_unique|support_iff_weight`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cmp lake-manifest.json local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `grep -n '^def \|^theorem \|^structure \|^abbrev ' simongmt/Poincare/SimonGMT/Chapter06/Currents.lean Chapter06/Mass.lean; cat Chapter06/{Mass,Forms,FormSupNorm,Representation}.lean`
+- `grep -rln 'Cauchy-Binet\|Cauchy–Binet\|CauchyBinet\|cauchy_binet\|cauchyBinet' mathlib/Mathlib; grep -rn 'Binet' mathlib/Mathlib`
+- `grep -rn 'theorem Integrable.exists_hasCompactSupport\|theorem MemLp.exists_hasCompactSupport' mathlib/Mathlib`
+- `grep -n 'of_sigmaCompactSpace_of_isLocallyFiniteMeasure' mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `grep -rn 'exists_contDiff_support_eq_eq_one_iff\|exists_contDiff_tsupport_subset\|exists_contMDiff_zero_iff_one_iff_of_isClosed' mathlib/Mathlib`
+- `cat mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `grep -rn 'HasCompactSupport.contDiff_convolution_left\|dist_normed_convolution_le\|Convex.integral_mem' mathlib/Mathlib`
+- `grep -rn 'integral_withDensity_eq_integral_smul\|setIntegral_eq_integral_of_forall_compl_eq_zero\|exists_open_between_and_isCompact_closure\|exists_compact_between' mathlib/Mathlib`
+- `grep -rn 'enorm_integral_le_lintegral_enorm\|ofReal_integral_eq_lintegral_ofReal' mathlib/Mathlib/MeasureTheory/Integral/Bochner/*.lean; grep -rn 'withDensity_apply\|withDensity_absolutelyContinuous\|theorem le_of_forall_lt' mathlib/Mathlib`
+- `grep -rn 'rsd_mw_\|rsd_unit_orientation\|rsd_massOn_le\|rsd_measure_le\|rsd_exists_testForm' .humanize GMT`
+- `sed -n 225,285p book/chapter-06.txt; sed -n 755,770p book/chapter-06.txt`
+- `sed -n 480,570p verifier/gmt-compare.py`
+- `lake env lean /tmp/rsd-mw-split/Children.lean`
+- `lake env lean /tmp/rsd-mw-split/Assembly.lean`
+- `lake env lean /tmp/rsd-mw-split/Glue.lean`
+- `lake env lean /tmp/rsd-mw-review/GlueFull.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Representation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convex/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/rsd-mw-split/Children.lean`
+- `/tmp/rsd-mw-split/Assembly.lean`
+- `/tmp/rsd-mw-split/Glue.lean`
+- `/tmp/rsd-mw-review/GlueFull.lean`
+
+Snapshot integrity (project b4d606d, Mathlib 25730c7c): the snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, and lake-manifest.json matches.
+
+No local declaration states mass = weight for IMRep, or the Euclidean-norm dual bound for unit simple n-vectors:
+- simongmt Chapter06 provides covectorEuclideanNorm (with _nonneg, _zero and _neg), massAdmissibleOn, massOn, le_massOn and massOn_mono.
+- Representation.lean leaves the mass bridge pending.
+- Mathlib has no Cauchy–Binet formula (grep finds no match), so child 1 derives the needed identity from the expansion α(v) = Σ_I D_I(v)α(e_I).
+
+Reusable Mathlib tools located:
+- Integrable.exists_hasCompactSupport_integral_sub_le (ContinuousMapDense.lean:226);
+- Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure (Regular.lean:1183);
+- UniformContinuous.exists_contDiff_dist_le (BumpFunction/SmoothApprox.lean);
+- exists_contDiff_support_eq_eq_one_iff (PartitionOfUnity.lean:789);
+- exists_open_between_and_isCompact_closure (Separation/Regular.lean:364);
+- integral_withDensity_eq_integral_smul (Bochner/ContinuousLinearMap.lean:251);
+- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486);
+- enorm_integral_le_lintegral_enorm (Bochner/Basic.lean:333);
+- withDensity_apply and withDensity_absolutelyContinuous (WithDensity.lean);
+- le_of_forall_lt (Order/Basic.lean:352).
+The ContinuousMapDense and SmoothApprox modules are outside the import closure of GMT.Ch07.Submission; this is noted in child 3.
+
+Lean checks in the replayed contract scope:
+- All four child types elaborate.
+- The parent assembly from children 2 and 4 depends only on propext, Classical.choice and Quot.sound.
+- The glue facts (withDensity conversion, restriction, localization) depend only on the same axioms.
+- The reviewer's proofs of child 2 from child 1, and of child 4 and the parent from children 1 and 3, depend only on the same axioms.
+
+Names: no rsd_mw_ name occurs in the run directory or GMT/. The parallel mass = measure nodes in other branches have no children yet, so no reserved names collide.

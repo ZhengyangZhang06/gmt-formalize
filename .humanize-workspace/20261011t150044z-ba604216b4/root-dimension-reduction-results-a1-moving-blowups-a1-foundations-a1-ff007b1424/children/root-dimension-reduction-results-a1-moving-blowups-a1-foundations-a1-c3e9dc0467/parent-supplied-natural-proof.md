@@ -1,0 +1,69 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.testform_extension-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.testform_extension-a1.uniform_approx-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: selected proof, step 3, first bullet (approximating sequences): the rescaling argument around the sibling mollify_unit_field, stated for an arbitrary open set V and a single error ε > 0. In the selected proof, V = W and G = g̃.
+Notation: Λ := Covector (Euclid P) n; |α| := covectorEuclideanNorm α = ‖c α‖ (hypothesis). For F : ℝ^P → Λ and t ∈ ℝ, t•F is the pointwise multiple x ↦ t•F(x).
+1. (Homogeneity.) For t ∈ ℝ and α ∈ Λ, |t•α| = ‖c(t•α)‖ = ‖t•c(α)‖ = |t|·‖c(α)‖ = |t|·|α|, because c is linear.
+2. (Bound for G.) The map c∘G : ℝ^P → ℝ^d is continuous. Since c(0) = 0, support(c∘G) ⊆ support G, so c∘G has compact support (HasCompactSupport.comp_left). A continuous compactly supported map into a normed space is bounded (HasCompactSupport.exists_bound_of_continuous): there is C ∈ ℝ with ‖c(G(x))‖ ≤ C for all x. Put s := max(C, 0) + 1. Then s ≥ 1 > 0 and |G(x)| = ‖c(G(x))‖ ≤ C ≤ max(C, 0) ≤ s for every x.
+3. (Normalized field.) Let g(x) := s⁻¹•G(x). g is continuous, as a constant multiple of a continuous map. If g(x) ≠ 0 then G(x) ≠ 0, so support g ⊆ support G. Hence g has compact support (HasCompactSupport.mono), and tsupport g ⊆ tsupport G ⊆ V. By steps 1–2, |g(x)| = s⁻¹·|G(x)| ≤ s⁻¹·s = 1 for every x.
+4. (Mollification.) Apply the sibling mollify_unit_field (dor_ims_sua_mollify_unit_field) to P, n, the open set V, the field g and the positive number ε/s. Its hypotheses hold: V is open by assumption, the conditions on g were verified in step 3, and ε/s > 0 because ε > 0 and s > 0. It gives an n-form ω₀ with IsTestForm ω₀, tsupport ω₀ ⊆ V and |ω₀(x) − g(x)| ≤ ε/s for every x. Its further conclusion |ω₀| ≤ 1 is not needed.
+5. (Rescaling.) Put ω := s•ω₀ (pointwise). ω is C^∞ because ω₀ is (a constant multiple of a C^∞ map), and ω has compact support because ω₀ does (HasCompactSupport.smul_left). So IsTestForm ω. Also tsupport ω ⊆ tsupport ω₀ ⊆ V (tsupport_smul_subset_right).
+6. (Error.) For every x, ω(x) − G(x) = s•ω₀(x) − s•(s⁻¹•G(x)) = s•(ω₀(x) − g(x)), using s·s⁻¹ = 1 and linearity. By step 1 and s > 0, |ω(x) − G(x)| = s·|ω₀(x) − g(x)| ≤ s·(ε/s) = ε.
+7. By steps 5 and 6, ω satisfies IsTestForm ω, tsupport ω ⊆ V and covectorEuclideanNorm (ω(x) − G(x)) ≤ ε for all x ∈ ℝ^P.
+
+## Key steps
+
+1. |t•α| = |t|·|α| because |·| = ‖c ·‖ and c is linear.
+2. c∘G is continuous with compact support, hence bounded by some C; put s := max(C, 0) + 1 > 0, so |G| ≤ s.
+3. g := s⁻¹•G is continuous, compactly supported, tsupport g ⊆ V and |g| ≤ 1.
+4. mollify_unit_field applied to g with error ε/s gives a test form ω₀ with tsupport ω₀ ⊆ V and |ω₀ − g| ≤ ε/s.
+5. ω := s•ω₀ is a test form with tsupport ω ⊆ V and |ω − G| = s·|ω₀ − g| ≤ ε.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json (project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); git log -1 --format=%H in <snapshot>/project and <snapshot>/mathlib (same commits)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean and <snapshot>/project/GMT/Ch07/Submission.lean against workspace GMT/Ch07/Contract.lean and GMT/Ch07/Submission.lean (identical)`
+- `rg -n 'dimred_mbl_fnd_tfe|cmr_tfe|dor_ims_sua_mollify_unit_field|cmr_abs_apply_le_massOn|testForm_extension' <snapshot>/project -g '*.lean' (no match, rc=1)`
+- `rg -n 'theorem continuous_extend_one|theorem mulTSupport_extend_one_subset|theorem extend_one : HasCompactMulSupport' <snapshot>/mathlib/Mathlib/Topology/Algebra/Support.lean (lines 341, 321, 327)`
+- `rg -n 'theorem exists_open_between_and_isCompact_closure' <snapshot>/mathlib/Mathlib/Topology/Separation/Regular.lean (line 364)`
+- `rg -n 'theorem cauchySeq_tendsto_of_complete' <snapshot>/mathlib/Mathlib/Topology/UniformSpace/Cauchy.lean (line 425)`
+- `grep -n 'exists_bound_of_continuous' <snapshot>/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean (line 98, HasCompactMulSupport.exists_bound_of_continuous and its additive form)`
+- `grep -n 'tendsto_one_div_add_atTop_nhds_zero_nat' <snapshot>/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean (line 70); grep -n 'tsupport_smul_subset_right|image_eq_one_of_notMem_mulTSupport' <snapshot>/mathlib/Mathlib/Topology/Algebra/Support.lean (lines 172, 111); grep -rn 'squeeze_zero_norm' <snapshot>/mathlib/Mathlib/Analysis/Normed/Group/Continuity.lean`
+- `git show 8abce3204fc05f00ae9a4047981f27a9f9a6ba3b:GMT/Ch07/Submission.lean and git show 7a706164baaf42fc7f55751247396a8836928310:GMT/Ch07/Submission.lean (accepted proofs of dor_ims_sua_coeff_norm_rep, dor_ims_sua_mollify_unit_field, cmr_abs_apply_le_massOn)`
+- `python3 scans of dag.json: selected node; identical-type node cmr_testForm_extension_functional with its decomposition-v1/audit-v1; statuses, candidate commits and closures of dor_ims_sua_mollify_unit_field and cmr_abs_apply_le_massOn; lean_name collisions for dimred_mbl_fnd_tfe_* (none)`
+- `lean_contract.validate_lean_statement on all child and parent types (pass); read runtime.py _existing_lean_name_problem/_solve_children/_overlay_accepted_children and leaf_verification.check_source_delta`
+- `lake env lean /tmp/dmf-tfe-split/Types.lean, Parent.lean, ChildUA.lean, ChildLF.lean, ChildAE.lean, E2E.lean, Thick.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/Cauchy.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-ff007b1424/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-tes-dd42d587af/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-tes-dd42d587af/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-smooth-b62f226305/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/dmf-tfe-split/E2E.lean`
+
+The snapshot pins match: project b4d606db and mathlib 25730c7c. The snapshot Contract.lean and Submission.lean are byte-identical to the workspace's. The snapshot project contains no dimred_mbl_fnd_tfe_*, cmr_tfe_*, testForm_extension or reused declaration. So no snapshot declaration is reused, and the fresh names collide with nothing. Snapshot Mathlib supplies every library fact the children and the parent assembly use, and all of them resolve after import GMT.Ch07.Submission (Lean compile): HasCompactSupport.continuous_extend_zero, extend_zero and tsupport_extend_zero_subset (to_additive of Support.lean:341/327/321); exists_open_between_and_isCompact_closure (Regular.lean:364); cauchySeq_tendsto_of_complete (Cauchy.lean:425); HasCompactSupport.exists_bound_of_continuous (Bounded.lean:98); tendsto_one_div_add_atTop_nhds_zero_nat; tsupport_smul_subset_right; squeeze_zero_norm. SimonGMT supplies TestFormOn as a Submodule, the linear GeometricCurrentOn, covectorEuclideanNorm and le_massOn. The reused dor_ims_sua_mollify_unit_field is accepted (candidate 8abce32, closure accepted) with an identical type. The parent's own prerequisite cmr_abs_apply_le_massOn is accepted (7a70616). All child types elaborate in the replayed comparator scope. The complete chain, with the real accepted proofs, compiles sorry-free with axioms propext, Classical.choice and Quot.sound.

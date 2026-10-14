@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1.common_density-a1.dominating_measure-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.vector_riesz-a1.common_density-a1",
+  "depth": 5,
+  "title": "Common dominating compact-finite measure for two finite families of compact-finite measures",
+  "statement": "Let X be a topological space equipped with a σ-algebra; no compatibility between the two is assumed. Let m ∈ ℕ and let a, b : Fin m → Measure X be two families of measures on X, each of which is finite on compact sets. Then there is a measure μ₀ on X that is finite on compact sets and satisfies aᵢ ≪ μ₀ and bᵢ ≪ μ₀ for every i ∈ Fin m.",
+  "lean_statement": "∀ (X : Type) [TopologicalSpace X] [MeasurableSpace X] (m : ℕ) (a b : Fin m → Measure X), (∀ i, IsFiniteMeasureOnCompacts (a i)) → (∀ i, IsFiniteMeasureOnCompacts (b i)) → ∃ μ₀ : Measure X, IsFiniteMeasureOnCompacts μ₀ ∧ (∀ i, a i ≪ μ₀) ∧ ∀ i, b i ≪ μ₀",
+  "lean_name": "cmr_vr_cd_dominating_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-vec-245edb53e7-a1"
+}
