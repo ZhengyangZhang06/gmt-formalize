@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "cf9df700b0752620f78fe824cd49abb2ea1e66a85633790bbcf4e25fc10aec08",
+  "git_delta": {
+    "base_commit": "769b9c3a4005ccf66c92d6f575026d98bf02c739",
+    "candidate_commit": "6ec8cb213f553959e6a1ba796cffd03bb22595df",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "ef6275cb7f1064cbb6be4a8f1a448efa594b2d19ecb61e86b20da43393b6705a",
+    "source_sha256": "2322f9b58277eff6d3fd45845292d427378215cf74345d8ab2ba08d1fe0e9d31",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_dilation",
+      "statement": "∀ P : ℕ, ∃ dil : ∀ k : ℕ, ℝ → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) k, ∀ (k : ℕ) (lam : ℝ), 0 < lam → (∀ X Y : GeometricCurrentOn (univ : Set (Euclid P)) k, dil k lam (X - Y) = dil k lam X - dil k lam Y) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) k, dil k lam⁻¹ (dil k lam X) = X) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) k, (dil k lam X).mass = ENNReal.ofReal (lam ^ k) * X.mass) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) k, IsIntegerMultiplicity X → IsIntegerMultiplicity (dil k lam X)) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (dil (k + 1) lam X).boundary = dil k lam X.boundary) ∧ (∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (E : Set (Euclid P)), (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → ∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) ((fun x => lam • x) '' E) → dil k lam X ω = 0) ∧ (∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (ω : TestFormOn (univ : Set (Euclid P)) k), ∃ η : TestFormOn (univ : Set (Euclid P)) k, (∀ x, (η : DifferentialForm (Euclid P) k) x = lam ^ k • (ω : DifferentialForm (Euclid P) k) (lam • x)) ∧ dil k lam X ω = X η) ∧ ∀ (A : Set (Euclid P)) (g : Euclid P → ℝ), ∫ y in (fun x => lam • x) '' A, g y ∂μHE[k] = lam ^ k * ∫ x in A, g (lam • x) ∂μHE[k]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
