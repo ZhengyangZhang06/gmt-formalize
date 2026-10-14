@@ -3301,6 +3301,66 @@ theorem Submission.cbr_ci_bl_cvl_pairing_tendsto : ∀ (P n : ℕ) (νs : ℕ �
   have hlim' := hd.add (hconv (fun x => ζ₀ (w x)) hfc hfs)
   rw [zero_add] at hlim'
   exact hlim'.congr fun k => sub_add_cancel _ _
+/-- **Mass bound for a current `L¹`-close to a constant `n`-vector** (step 4 of the weak
+convergence and limsup mass bound for such currents, used for blow-ups of cycles).  Let
+`X ∈ 𝒟ₙ(ℝᴾ)` satisfy `X(ω) = ∫ ⟨ω(x), τ(x)⟩ dν'(x)` for every test form, with `ν'` finite on
+compact sets, and let `|⟨α, ζ₀⟩| ≤ s|α|` and `‖α‖ ≤ B|α|` for all covectors `α`.  Then for open
+`G ⊆ B̄_R(0)`, `M_G(X) ≤ s ν'(G) + B ∫_{B̄_R(0)} ‖τ − ζ₀‖ dν'`.  Fix an admissible `ω`
+(`tsupport ω ⊆ G`, `|ω| ≤ 1`); it vanishes off `G ⊆ B̄_R(0)` and `‖ω‖ ≤ B`, so the pairing-error
+estimate bounds `X(ω) − ∫ ⟨ω, ζ₀⟩ dν'` by the error term `E`, while `⟨ω, ζ₀⟩ ≤ s 1_G` pointwise
+gives `∫ ⟨ω, ζ₀⟩ dν' ≤ s ν'(G)`.  As `ν'(G) < ∞`, `X(ω) ≤ s ν'(G) + E` in `[0, ∞]`. -/
+theorem Submission.cbr_ci_bl_cvl_massOn_le : ∀ (P n : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) n) (ν' : Measure (Euclid P)) (τ : Euclid P → MultiVector P n) (ζ₀ : MultiVector P n) (s B R : ℝ) (G : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → ν' K < ∞) → AEStronglyMeasurable τ ν' → 0 ≤ s → (∀ α : Covector (Euclid P) n, |ζ₀ α| ≤ s * covectorEuclideanNorm α) → 0 ≤ B → (∀ α : Covector (Euclid P) n, ‖α‖ ≤ B * covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, X ω = ∫ x, τ x ((ω : DifferentialForm (Euclid P) n) x) ∂ν') → IsOpen G → G ⊆ closedBall (0 : Euclid P) R → X.massOn G ≤ ENNReal.ofReal s * ν' G + ENNReal.ofReal B * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν' := by
+  intro P n X ν' τ ζ₀ s B R G hfin hτ hs hζ₀ hB hBnorm hrep hG hGR
+  have : IsFiniteMeasureOnCompacts ν' := ⟨hfin⟩
+  -- Step 1: `ν'(G) ≤ ν'(B̄_R(0)) < ∞`
+  have hGfin : ν' G ≠ ∞ :=
+    ((measure_mono hGR).trans_lt (hfin _ (isCompact_closedBall 0 R))).ne
+  -- Step 2: `M_G(X)` is the supremum of `X(ω)` over admissible `ω`; fix one, and dispose of the
+  -- case `E = ∞`
+  refine sSup_le ?_
+  rintro r ⟨ω, ⟨hωG, hω1⟩, rfl⟩
+  show ENNReal.ofReal (X ω) ≤ _
+  by_cases hEtop : ENNReal.ofReal B * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν' = ∞
+  · rw [hEtop, add_top]
+    exact le_top
+  -- Step 3: `w = ω̂` is continuous with compact support, vanishes off `G ⊆ B̄_R(0)`, and
+  -- `‖w‖ ≤ B|w| ≤ B`; hence `ζ₀ ∘ w` is `ν'`-integrable
+  have hwcont : Continuous (ω : DifferentialForm (Euclid P) n) := ω.2.1.1.continuous
+  have hwcs : HasCompactSupport (ω : DifferentialForm (Euclid P) n) := ω.2.1.2
+  rw [hrep ω]
+  generalize (ω : DifferentialForm (Euclid P) n) = w at hwcont hwcs hωG hω1 ⊢
+  have hw0 : ∀ x, x ∉ G → w x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun h => hx (hωG h)
+  have hwR : ∀ x, x ∉ closedBall (0 : Euclid P) R → w x = 0 := fun x hx =>
+    hw0 x fun h => hx (hGR h)
+  have hwB : ∀ x, ‖w x‖ ≤ B := fun x =>
+    (hBnorm (w x)).trans ((mul_le_mul_of_nonneg_left (hω1 x) hB).trans (mul_one B).le)
+  have hfint : Integrable (fun x => ζ₀ (w x)) ν' :=
+    (ζ₀.continuous.comp hwcont).integrable_of_hasCompactSupport (hwcs.comp_left (map_zero ζ₀))
+  -- Step 4: the pairing-error estimate gives `X(ω) ≤ ∫ ζ₀(w) dν' + E`
+  have herr := Submission.cbr_ci_bl_cvl_pairing_error_le P n ν' τ ζ₀ w B R hτ hwcont hwB hwR
+    hfint hEtop
+  -- Step 5: `ζ₀(w) ≤ s 1_G` pointwise, so `∫ ζ₀(w) dν' ≤ s ν'(G)`
+  have hGm : MeasurableSet G := hG.measurableSet
+  have hmain : ∫ x, ζ₀ (w x) ∂ν' ≤ s * (ν' G).toReal := by
+    refine (integral_mono hfint ((integrable_indicator_iff hGm).2 (integrableOn_const hGfin))
+      fun x => ?_).trans_eq ?_
+    · show ζ₀ (w x) ≤ G.indicator (fun _ => s) x
+      by_cases hx : x ∈ G
+      · rw [indicator_of_mem hx]
+        exact (le_abs_self _).trans ((hζ₀ (w x)).trans
+          ((mul_le_mul_of_nonneg_left (hω1 x) hs).trans (mul_one s).le))
+      · rw [indicator_of_notMem hx, hw0 x hx, map_zero]
+    · rw [integral_indicator_const _ hGm, smul_eq_mul, measureReal_def, mul_comm]
+  -- Step 6: `ofReal(X(ω)) ≤ ofReal(s ν'(G)) + ofReal(E) = ofReal(s) ν'(G) + E`
+  generalize ENNReal.ofReal B * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν' = E
+    at hEtop herr ⊢
+  calc ENNReal.ofReal (∫ x, τ x (w x) ∂ν')
+      ≤ ENNReal.ofReal (s * (ν' G).toReal + E.toReal) :=
+        ENNReal.ofReal_le_ofReal (by linarith [(abs_sub_le_iff.1 herr).1])
+    _ ≤ ENNReal.ofReal (s * (ν' G).toReal) + ENNReal.ofReal E.toReal := ENNReal.ofReal_add_le
+    _ = ENNReal.ofReal s * ν' G + E := by
+        rw [ENNReal.ofReal_mul hs, ENNReal.ofReal_toReal hGfin, ENNReal.ofReal_toReal hEtop]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
