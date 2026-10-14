@@ -580,6 +580,31 @@ theorem Submission.dimred_tr_bc_ct_zero_scale_iterate : (∀ (P n : ℕ) (U : Se
     -- same limit; its terms are `η_{c′ₖ,t′ₖ#}T` (the nonvanishing proofs are irrelevant)
     intro ω
     exact (hconv ω).comp hshift
+/-- **Rescaled IMRep weights along blow-ups converge** (preliminary P7 with
+`MassMeasuresConverge`).  Assume (BUI): every IMRep `R` of `T` in `U` gives an IMRep `R'` of the
+blow-up `η_{x,λ#}T` in `η_{x,λ}(U)` with `R'.measure(s) = λ⁻ⁿ R.measure(η_{x,λ}⁻¹(s))` for Borel
+`s`.  Let `R` represent `A` in `V`, `R_C` represent `C` in `ℝᴾ`, `sⱼ > 0`, and let the mass measures
+of the blow-ups `η_{a,sⱼ#}A` converge to those of `C`.  Then `∫ f d(sⱼ⁻ⁿ η_{a,sⱼ#}R.measure) →
+∫ f dR_C.measure` for every continuous compactly supported `f`: the IMReps `Rⱼ` of the blow-ups
+given by (BUI) have weights `Rⱼ.measure = sⱼ⁻ⁿ η_{a,sⱼ#}R.measure` (both sides agree on Borel sets,
+`η_{a,sⱼ}` being continuous), and `MassMeasuresConverge` applies to `(Rⱼ)`, `R_C` and `f`. -/
+theorem Submission.dimred_tr_bc_ct_weight_convergence : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (R : IMRep U n), R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s)) → ∀ (P n : ℕ) (V : Set (Euclid P)) (A : GeometricCurrentOn V n) (R : IMRep V n) (a : Euclid P) (ss : ℕ → ℝ) (hss : ∀ j, 0 < ss j) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (RC : IMRep (univ : Set (Euclid P)) n), R.Represents A → RC.Represents C → MassMeasuresConverge (fun j => blowUp A a (ss j) (hss j).ne') C → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((ss j)⁻¹ ^ n) • R.measure.map (dilation a (ss j)))) atTop (𝓝 (∫ x, f x ∂RC.measure)) := by
+  intro hBUI P n V A R a ss hss C RC hRA hRC hconv f hf hfc
+  -- Step 1: `η_{a,s}(v) = −s⁻¹a + s⁻¹v` is a constant plus a continuous linear map, hence
+  -- continuous and Borel measurable
+  have hmeas : ∀ s : ℝ, Measurable (dilation a s) := fun s =>
+    (continuous_const.add (dilationCLM P s).continuous).measurable
+  -- Step 2: (BUI) gives, for every `j`, an IMRep `Rⱼ` of `η_{a,sⱼ#}A` in `η_{a,sⱼ}(V)` with
+  -- `Rⱼ.measure(B) = sⱼ⁻ⁿ R.measure(η_{a,sⱼ}⁻¹(B))` for Borel `B`
+  choose Rs hRs hRsμ using fun j => hBUI P n V A a (ss j) (hss j) R hRA
+  -- Step 3: `Rⱼ.measure = sⱼ⁻ⁿ η_{a,sⱼ#}R.measure`, as both sides agree on Borel sets
+  have hw : ∀ j, (Rs j).measure =
+      ENNReal.ofReal ((ss j)⁻¹ ^ n) • R.measure.map (dilation a (ss j)) := by
+    intro j
+    ext B hB
+    rw [hRsμ j B hB, Measure.smul_apply, Measure.map_apply (hmeas (ss j)) hB, smul_eq_mul]
+  -- Steps 4–5: `MassMeasuresConverge` applied to `(Rⱼ)`, `R_C`, `f` and `tsupport f ⊆ ℝᴾ`
+  exact (hconv Rs hRs RC hRC f hf hfc (subset_univ _)).congr fun j => by rw [hw j]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
