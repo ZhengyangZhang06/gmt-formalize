@@ -451,6 +451,78 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The integer multiplicity triple of `c[[ℝⁿ]]`** (Simon 6.2.2, 6.2.34, 6.3.1 (‡)): for
+`c ∈ ℤ` there is `R ∈ IMRep ℝⁿ n` with `R(ω) = c ∫ ⟨ω(y), e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ(y)`, where `e` is the
+standard basis of `ℝⁿ`.
+
+For `c = 0` take `R = (∅, 0, 0)`.  For `c ≠ 0` take `R = (ℝⁿ, |c|, sign(c) e₁ ∧ ⋯ ∧ eₙ)`, with
+`⟨α, e₁ ∧ ⋯ ∧ eₙ⟩ = α(e)`: `ℝⁿ` is the range of the identity, it is its own approximate tangent
+space at every point, `e` is an orthonormal basis of it, and `Hⁿ = Lⁿ` on `ℝⁿ`, so
+`R(ω) = ∫ |c| sign(c) ω(y)(e) dLⁿ(y) = c ∫ ω(y)(e) dLⁿ(y)`. -/
+theorem Submission.dtc_bc_cz_unit_current_imrep : ∀ (n : ℕ) (c : ℤ), 0 < n → ∃ R : IMRep (univ : Set (Euclid n)) n, ∀ ω : TestFormOn (univ : Set (Euclid n)) n, R.action (ω : DifferentialForm (Euclid n) n) = (c : ℝ) * ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ) := by
+  intro n c _
+  have hH : (μHE[n] : Measure (Euclid n)) = volume :=
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume n
+  by_cases hc : c = 0
+  · -- the empty triple `(∅, 0, 0)`
+    refine ⟨{ carrier := ∅
+              mult := fun _ => 0
+              orient := fun _ => 0
+              measurableSet_carrier := MeasurableSet.empty
+              carrier_subset := empty_subset _
+              rectifiable :=
+                Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+              measurable_mult := measurable_const
+              mult_pos := fun _ hx => by simp at hx
+              locallyIntegrable_mult := fun _ _ _ => by simp
+              aestronglyMeasurable_orient := aestronglyMeasurable_const
+              orients := by simp }, fun ω => ?_⟩
+    simp [IMRep.action, hc]
+  · -- the triple `(ℝⁿ, |c|, sign(c) e₁ ∧ ⋯ ∧ eₙ)`
+    let ξ : MultiVector n n := (c.sign : ℝ) •
+      ContinuousAlternatingMap.apply ℝ (Euclid n) ℝ ⇑(EuclideanSpace.basisFun (Fin n) ℝ)
+    have hξ : ∀ α : Covector (Euclid n) n,
+        ξ α = (c.sign : ℝ) * α ⇑(EuclideanSpace.basisFun (Fin n) ℝ) := fun α => rfl
+    have hrect : CountablyRectifiable n (univ : Set (Euclid n)) := by
+      simpa using Poincare.SimonGMT.Chapter03.countablyRectifiable_range (n := n)
+        (LipschitzWith.id (α := Euclid n))
+    have hloc : ∀ K : Set (Euclid n), IsCompact K → K ⊆ univ →
+        ∫⁻ _ in univ ∩ K, (c.natAbs : ℝ≥0∞) ∂μHE[n] ≠ ∞ := by
+      intro K hK _
+      rw [lintegral_const, Measure.restrict_apply_univ, univ_inter, hH]
+      exact ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) hK.measure_lt_top.ne
+    -- `ℝⁿ` is its own approximate tangent space, oriented by `sign(c) e₁ ∧ ⋯ ∧ eₙ`
+    have htan : ∀ x : Euclid n, HasApproximateTangentSpaceAt n (univ : Set (Euclid n)) x ⊤ := by
+      intro x
+      have h := Poincare.SimonGMT.Chapter03.hasApproximateTangentSpaceAt_submodule
+        (n := n) (P := (⊤ : Submodule ℝ (Euclid n))) (by simp) (Submodule.mem_top (x := x))
+      rwa [Submodule.top_coe] at h
+    have hor : IsUnitOrientationOf ξ (⊤ : Submodule ℝ (Euclid n)) := by
+      refine ⟨⇑(EuclideanSpace.basisFun (Fin n) ℝ), (EuclideanSpace.basisFun (Fin n) ℝ).orthonormal,
+        (EuclideanSpace.basisFun (Fin n) ℝ).toBasis.span_eq, ?_⟩
+      rcases lt_or_gt_of_ne hc with h | h
+      · right; intro α; simp [hξ, Int.sign_eq_neg_one_of_neg h]
+      · left; intro α; simp [hξ, Int.sign_eq_one_of_pos h]
+    refine ⟨{ carrier := univ
+              mult := fun _ => c.natAbs
+              orient := fun _ => ξ
+              measurableSet_carrier := MeasurableSet.univ
+              carrier_subset := subset_rfl
+              rectifiable := hrect
+              measurable_mult := measurable_const
+              mult_pos := fun _ _ => Int.natAbs_pos.mpr hc
+              locallyIntegrable_mult := hloc
+              aestronglyMeasurable_orient := aestronglyMeasurable_const
+              orients := ae_of_all _ fun x => ⟨⊤, htan x, hor⟩ }, fun ω => ?_⟩
+    -- `R(ω) = ∫ |c| sign(c) ω(y)(e) dLⁿ(y)`, and `|c| sign(c) = c`
+    have hcs : (c.natAbs : ℝ) * (c.sign : ℝ) = c := by
+      rw [mul_comm, ← Int.cast_natCast, ← Int.cast_mul, Int.sign_mul_natAbs]
+    show ∫ x in univ, (c.natAbs : ℝ) * ξ ((ω : DifferentialForm (Euclid n) n) x) ∂μHE[n] = _
+    rw [Measure.restrict_univ, hH, ← integral_const_mul]
+    congr 1
+    funext y
+    rw [hξ, ← mul_assoc, hcs]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
