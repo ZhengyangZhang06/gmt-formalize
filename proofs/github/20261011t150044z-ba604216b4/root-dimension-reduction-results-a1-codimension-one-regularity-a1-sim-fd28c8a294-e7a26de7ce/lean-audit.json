@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ee8829473b0a2d2408e4c0adc0999c1e6e5d46589a5690dcd50dda9786cfdbd5",
+  "git_delta": {
+    "base_commit": "8c088e9c23a20bf54f3deb6c3d4b74bbc310c4ef",
+    "candidate_commit": "67cfc47ac8ea8c7b1f289b7d4315f1ebbebb66ef",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_stab_energy_convergence",
+    "diff_sha256": "96102b9156d2e62a26c8f637dae275e56d961088a151cb5c7287a189cf134899",
+    "source_sha256": "ea97f5834a4c4a2cf8ba776ed9c83a7131c79672ef369280b9ecd4b12871222d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_stab_energy_convergence",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (F : ℕ → Fin P → Euclid P → ℝ) (G : Fin P → Euclid P → ℝ), (∀ k j, AEStronglyMeasurable (F k j) μ) → (∀ j, AEStronglyMeasurable (G j) μ) → (∀ k, Integrable (fun x => ∑ j : Fin P, (F k j x) ^ 2) μ) → Tendsto (fun k => ∫⁻ x, ENNReal.ofReal (∑ j : Fin P, (F k j x - G j x) ^ 2) ∂μ) atTop (𝓝 0) → Integrable (fun x => ∑ j : Fin P, (G j x) ^ 2) μ ∧ Tendsto (fun k => ∫ x, ∑ j : Fin P, (F k j x) ^ 2 ∂μ) atTop (𝓝 (∫ x, ∑ j : Fin P, (G j x) ^ 2 ∂μ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
