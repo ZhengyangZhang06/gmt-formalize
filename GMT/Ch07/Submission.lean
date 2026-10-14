@@ -748,6 +748,86 @@ theorem Submission.dimred_mbl_dtsd_sh_shell_series : (∀ (P n : ℕ), (∀ (E :
     fun j => (hmassY (j + 1)).trans (measure_mono ?_)⟩
   rw [hEs]
   exact fun x hx => hx.2
+/-- **Good slicing radii in the dyadic intervals** (Simon 6.5.1, proof of the deformation
+theorem, displays (8)–(10), chapter-06.txt lines 1725–1740: a radius `ρ ∈ (σ/2, σ)` with
+`M⟨T, d, ρ⟩ ≤ (c/σ) M(T_σ − T_{σ/2})`).  Assume the good-radius lemma (GR) and the bounds
+`μ{d < r} ≤ C r^(m+2) M`, `μ'{d < r} ≤ C r^(m+2) M'` for `0 < r ≤ 1/4`.  With
+`ρⱼ = (1/2)^(j+2) ≤ 1/4`, (GR) at `ρⱼ` and `B = C ρⱼ^(m+2) M` gives `rⱼ ∈ (ρⱼ/2, ρⱼ)` whose
+lower slicing derivatives are `≤ (4/ρⱼ) C ρⱼ^(m+2) M = 4 C ρⱼ^(m+1) M` for `μ` and finite for
+`μ'`.  Since `r (j+1) < (1/2)^(j+3) < r j`, `r` is strictly decreasing, and
+`μ{d < rⱼ} ≤ μ{d < ρⱼ} ≤ C (1/2)^((j+2)(m+2)) M → 0` (`M ≠ ∞`; likewise for `μ'`). -/
+theorem Submission.dimred_mbl_dtsd_sh_dyadic_good_radii : (∀ (P : ℕ) (μ μ' : Measure (Euclid P)) (f : Euclid P → ℝ) (ρ : ℝ) (B : ℝ≥0∞), IsFiniteMeasure μ → IsFiniteMeasure μ' → Measurable f → 0 < ρ → μ {x | f x < ρ} ≤ B → ∃ r ∈ Ioo (ρ / 2) ρ, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | r - h < f x ∧ f x < r}) (𝓝[>] 0) ≤ ENNReal.ofReal (4 / ρ) * B ∧ liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ' {x | r - h < f x ∧ f x < r}) (𝓝[>] 0) < ∞) → ∀ (P m : ℕ) (μ μ' : Measure (Euclid P)) (d : Euclid P → ℝ) (C : NNReal) (M M' : ℝ≥0∞), IsFiniteMeasure μ → IsFiniteMeasure μ' → Measurable d → M ≠ ∞ → M' ≠ ∞ → (∀ r : ℝ, 0 < r → r ≤ 1 / 4 → μ {x | d x < r} ≤ C * ENNReal.ofReal (r ^ (m + 2)) * M ∧ μ' {x | d x < r} ≤ C * ENNReal.ofReal (r ^ (m + 2)) * M') → ∃ r : ℕ → ℝ, (∀ j, (1 / 2 : ℝ) ^ (j + 3) < r j ∧ r j < (1 / 2 : ℝ) ^ (j + 2)) ∧ StrictAnti r ∧ (∀ j, μ {x | d x < r j} ≤ C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (m + 2))) * M ∧ μ' {x | d x < r j} ≤ C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (m + 2))) * M') ∧ Tendsto (fun j => μ {x | d x < r j}) atTop (𝓝 0) ∧ Tendsto (fun j => μ' {x | d x < r j}) atTop (𝓝 0) ∧ (∀ j, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | r j - h < d x ∧ d x < r j}) (𝓝[>] 0) ≤ 4 * C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (m + 1))) * M) ∧ (∀ j, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ' {x | r j - h < d x ∧ d x < r j}) (𝓝[>] 0) < ∞) := by
+  intro hGR P m μ μ' d C M M' hμ hμ' hd hM hM' hdens
+  -- Step 1: `ρⱼ = (1/2)^(j+2)` satisfies `0 < ρⱼ ≤ 1/4` and `ρⱼ / 2 = (1/2)^(j+3)`
+  have hρpos : ∀ j : ℕ, 0 < (1 / 2 : ℝ) ^ (j + 2) := fun j => by positivity
+  have hρle : ∀ j : ℕ, (1 / 2 : ℝ) ^ (j + 2) ≤ 1 / 4 := fun j => by
+    calc (1 / 2 : ℝ) ^ (j + 2) ≤ (1 / 2) ^ 2 :=
+          pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
+      _ = 1 / 4 := by norm_num
+  have hhalf : ∀ j : ℕ, (1 / 2 : ℝ) ^ (j + 3) = (1 / 2 : ℝ) ^ (j + 2) / 2 := fun j => by
+    rw [pow_succ]; ring
+  -- Step 2: (GR) at `ρⱼ` with `Bⱼ = C ρⱼ^(m+2) M` (the density bound at `ρⱼ`); choose `rⱼ`
+  have hex : ∀ j : ℕ, ∃ r ∈ Ioo ((1 / 2 : ℝ) ^ (j + 2) / 2) ((1 / 2 : ℝ) ^ (j + 2)),
+      liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | r - h < d x ∧ d x < r}) (𝓝[>] 0) ≤
+        ENNReal.ofReal (4 / (1 / 2 : ℝ) ^ (j + 2)) *
+          (C * ENNReal.ofReal (((1 / 2 : ℝ) ^ (j + 2)) ^ (m + 2)) * M) ∧
+      liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ' {x | r - h < d x ∧ d x < r}) (𝓝[>] 0) < ∞ :=
+    fun j => hGR P μ μ' d _ _ hμ hμ' hd (hρpos j) (hdens _ (hρpos j) (hρle j)).1
+  choose r hr hlim hlim' using hex
+  have hbounds : ∀ j, (1 / 2 : ℝ) ^ (j + 3) < r j ∧ r j < (1 / 2 : ℝ) ^ (j + 2) :=
+    fun j => ⟨(hhalf j).symm ▸ (hr j).1, (hr j).2⟩
+  -- Step 4: `μ{d < rⱼ} ≤ μ{d < ρⱼ} ≤ C ρⱼ^(m+2) M`, and `ρⱼ^k = (1/2)^((j+2) k)`
+  have hpow : ∀ j k : ℕ, ((1 / 2 : ℝ) ^ (j + 2)) ^ k = (1 / 2 : ℝ) ^ ((j + 2) * k) :=
+    fun j k => (pow_mul _ _ _).symm
+  have hmono : ∀ (ν : Measure (Euclid P)) (j : ℕ),
+      ν {x | d x < r j} ≤ ν {x | d x < (1 / 2 : ℝ) ^ (j + 2)} := fun ν j =>
+    measure_mono fun x hx => lt_trans (show d x < r j from hx) (hr j).2
+  have hrμ : ∀ j, μ {x | d x < r j} ≤ C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (m + 2))) * M ∧
+      μ' {x | d x < r j} ≤ C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (m + 2))) * M' := by
+    intro j
+    obtain ⟨h1, h2⟩ := hdens _ (hρpos j) (hρle j)
+    rw [hpow] at h1 h2
+    exact ⟨(hmono μ j).trans h1, (hmono μ' j).trans h2⟩
+  -- Step 5: the bound `C (1/2)^((j+2)(m+2)) N` tends to `0` when `N ≠ ∞`
+  have hgeom : Tendsto (fun j : ℕ => ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (m + 2)))) atTop
+      (𝓝 0) := by
+    have h1 : Tendsto (fun j : ℕ => (1 / 2 : ℝ) ^ ((j + 2) * (m + 2))) atTop (𝓝 0) := by
+      refine (tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num)).comp ?_
+      refine tendsto_atTop_mono (fun j => ?_) tendsto_id
+      show j ≤ (j + 2) * (m + 2)
+      nlinarith
+    simpa using ENNReal.tendsto_ofReal h1
+  have htend : ∀ (ν : Measure (Euclid P)) (N : ℝ≥0∞), N ≠ ∞ →
+      (∀ j, ν {x | d x < r j} ≤ C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (m + 2))) * N) →
+      Tendsto (fun j => ν {x | d x < r j}) atTop (𝓝 0) := by
+    intro ν N hN hle
+    have hg : Tendsto (fun j : ℕ => (C : ℝ≥0∞) * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (m + 2))) * N)
+        atTop (𝓝 0) := by
+      have := ENNReal.Tendsto.mul_const (ENNReal.Tendsto.const_mul hgeom (Or.inr ENNReal.coe_ne_top))
+        (a := (C : ℝ≥0∞) * 0) (b := N) (Or.inr hN)
+      simpa using this
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hg (fun j => zero_le) hle
+  -- Step 3: `r (j+1) < (1/2)^(j+3) < r j`, so `r` is strictly decreasing
+  refine ⟨r, hbounds, strictAnti_nat_of_succ_lt fun j => ?_, hrμ,
+    htend μ M hM (fun j => (hrμ j).1), htend μ' M' hM' (fun j => (hrμ j).2), fun j => ?_, hlim'⟩
+  · calc r (j + 1) < (1 / 2 : ℝ) ^ (j + 1 + 2) := (hr (j + 1)).2
+      _ = (1 / 2 : ℝ) ^ (j + 3) := by ring_nf
+      _ < r j := (hbounds j).1
+  -- Step 6: `ofReal (4/ρ) · C ofReal (ρ^(m+2)) M = 4 C ofReal (ρ^(m+1)) M` for `ρ = ρⱼ > 0`
+  · refine (hlim j).trans (le_of_eq ?_)
+    have hρ := hρpos j
+    set ρ := (1 / 2 : ℝ) ^ (j + 2) with hρdef
+    have hkey : ENNReal.ofReal (4 / ρ) * ENNReal.ofReal (ρ ^ (m + 2)) =
+        4 * ENNReal.ofReal (ρ ^ (m + 1)) := by
+      rw [← ENNReal.ofReal_mul (by positivity)]
+      have : 4 / ρ * ρ ^ (m + 2) = 4 * ρ ^ (m + 1) := by
+        field_simp
+        ring
+      rw [this, ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_ofNat]
+    rw [← hpow j (m + 1)]
+    calc ENNReal.ofReal (4 / ρ) * (C * ENNReal.ofReal (ρ ^ (m + 2)) * M)
+        = C * (ENNReal.ofReal (4 / ρ) * ENNReal.ofReal (ρ ^ (m + 2))) * M := by ring
+      _ = 4 * C * ENNReal.ofReal (ρ ^ (m + 1)) * M := by rw [hkey]; ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
