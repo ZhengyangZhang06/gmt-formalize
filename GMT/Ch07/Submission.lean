@@ -13672,6 +13672,238 @@ theorem Submission.dimred_mbl_dt_lipschitz_pushforward_homotopy : (∀ (P n : �
     obtain ⟨⟨L, hL⟩, ha⟩ := hHs Λ F G X.support hK hF hG
     exact hhom0 P P Λ L F G (Hs F G X.support) X hF hG hL hK hM ha
 
+/-- **Deformation onto the `(m+1)`-skeleton** (Simon Ch. 6, proof of the Deformation Theorem
+5.1, displays (1)–(25)).  For some `c = c(P, m) ≥ 1`, every integer multiplicity
+`T ∈ 𝒟_{m+1}(ℝᴾ)` with compact support and `M(T), M(∂T) < ∞` decomposes as
+`T − Q₀ − S₁ = ∂R₁` with `Q₀`, `R₁` integer multiplicity, `spt Q₀` in the skeleton `L_{m+1}` of
+the unit cubical grid, `M(Q₀), M(R₁) ≤ c M(T)`, `M(∂Q₀), M(S₁) ≤ c M(∂T)`, and supports within
+`√P` of `spt T`, resp. `spt ∂T`.  If `m + 1 ≥ P` then `L_{m+1} = ℝᴾ`, and `Q₀ = T`,
+`R₁ = S₁ = 0`, `c = 1` work.  Otherwise the mass measures of `T` and `∂T` ((REP)) give a good
+centre `a` for `d = dist(·, L*(a))` (`dimred_mbl_dt_good_center`), and
+`dimred_mbl_dtsd_shell_decomposition` cuts `T` into dyadic shells `Wⱼ` supported in `{d ≥ rⱼ}`,
+`2^{-j-3} < rⱼ < 2^{-j-2}`.  The retraction `ψ` (`dimred_mbl_dt_skeleton_retraction`) is
+`(c_R/rⱼ)`-Lipschitz on `{d ≥ rⱼ}`, so it extends to `φⱼ` (`dimred_mbl_dtsd_lipschitz_extension`)
+with constant `Λⱼ = max(1, √P c_R/rⱼ) ≤ c₄ 2ʲ`, `c₄ = 1 + 8√P c_R`.  The dyadic series bounds then
+let `dimred_mbl_dtsd_telescoping_deformation` (with (PF) and (IMS)) deform, telescope and sum the
+shells, and `c = (1 + √P)(2c₄)^{m+1}(1 + C)` absorbs the constants. -/
+theorem Submission.dimred_mbl_dt_skeleton_deformation : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → ∀ (P m : ℕ), ∃ c : NNReal, 1 ≤ c ∧ ∀ T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity T → IsCompact T.support → T.mass < ∞ → T.boundary.mass < ∞ → ∃ (Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q₀ ∧ IsIntegerMultiplicity R₁ ∧ T - Q₀ - S₁ = R₁.boundary ∧ Q₀.support ⊆ {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} ∧ Q₀.mass ≤ c * T.mass ∧ Q₀.boundary.mass ≤ c * T.boundary.mass ∧ R₁.mass ≤ c * T.mass ∧ S₁.mass ≤ c * T.boundary.mass ∧ Q₀.support ∪ R₁.support ⊆ cthickening (Real.sqrt P) T.support ∧ Q₀.boundary.support ∪ S₁.support ⊆ cthickening (Real.sqrt P) T.boundary.support := by
+  intro hVO hMR hREP hIMC hSL P m
+  -- the zero current is integer multiplicity, with empty support and zero mass
+  have hzeroIM : ∀ k : ℕ,
+      IsIntegerMultiplicity (0 : GeometricCurrentOn (univ : Set (Euclid P)) k) :=
+    fun k => Submission.cbr_cc_current_algebra.1 P k univ
+  have hzeroSupp : ∀ k : ℕ, (0 : GeometricCurrentOn (univ : Set (Euclid P)) k).support = ∅ :=
+    fun k => (Submission.dimred_mbl_dtsd_support_calculus P k).2.2.2.1
+  have hzeroMass : ∀ k : ℕ, (0 : GeometricCurrentOn (univ : Set (Euclid P)) k).mass = 0 :=
+    fun k => le_antisymm (sSup_le (by rintro _ ⟨ω, -, rfl⟩; simp)) zero_le
+  by_cases hmP : m + 1 < P
+  swap
+  · -- Step 1 (`m + 1 ≥ P`): `L_{m+1} = ℝᴾ`, so `Q₀ = T`, `R₁ = S₁ = 0` and `c = 1` work
+    refine ⟨1, le_rfl, fun T hTIM _ _ _ => ⟨T, 0, 0, hTIM, hzeroIM (m + 2), ?_,
+      fun x _ => ⟨∅, by simpa using not_lt.1 hmP, fun i hi => by simp at hi⟩, by simp, by simp,
+      by rw [hzeroMass]; exact zero_le, by rw [hzeroMass]; exact zero_le, ?_, ?_⟩⟩
+    · ext ω
+      rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply]
+      change T ω - T ω - (0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) ω = 0
+      rw [GeometricCurrentOn.zero_apply, sub_self, sub_zero]
+    · rw [hzeroSupp, union_empty]
+      exact self_subset_cthickening _
+    · rw [hzeroSupp, union_empty]
+      exact self_subset_cthickening _
+  -- Step 2: `c_R` (RET), `C` (GC), `(push, homot)` (PF), `c₄ = 1 + 8√P c_R` and
+  -- `c = (1 + √P)(2c₄)^{m+1}(1 + C) ≥ 1`
+  obtain ⟨cR, hcR, hRET⟩ := Submission.dimred_mbl_dt_skeleton_retraction P m hmP
+  obtain ⟨C, hGC⟩ := Submission.dimred_mbl_dt_good_center P m hmP
+  obtain ⟨push, homot, hPF⟩ :=
+    Submission.dimred_mbl_dt_lipschitz_pushforward_homotopy hVO hMR hREP hIMC P
+  have hX : 0 ≤ 8 * Real.sqrt P * cR :=
+    mul_nonneg (mul_nonneg (by norm_num) (Real.sqrt_nonneg _)) hcR.le
+  obtain ⟨sP, hsP⟩ : ∃ sP : NNReal, ENNReal.ofReal (Real.sqrt P) = sP := ⟨_, rfl⟩
+  obtain ⟨c₄, hc₄⟩ : ∃ c₄ : NNReal, (c₄ : ℝ) = 1 + 8 * Real.sqrt P * cR :=
+    ⟨⟨1 + 8 * Real.sqrt P * cR, add_nonneg zero_le_one hX⟩, rfl⟩
+  have hc₄1 : (1 : NNReal) ≤ c₄ := by
+    rw [← NNReal.coe_le_coe, NNReal.coe_one, hc₄]
+    linarith
+  have h2c₄ : (1 : NNReal) ≤ 2 * c₄ := one_le_two.trans (le_mul_of_one_le_right zero_le hc₄1)
+  obtain ⟨c, hc⟩ : ∃ c : NNReal, c = (1 + sP) * ((2 * c₄) ^ (m + 1) * (1 + C)) := ⟨_, rfl⟩
+  have hpow : (2 * c₄) ^ m * (1 + C) ≤ (2 * c₄) ^ (m + 1) * (1 + C) :=
+    mul_le_mul_of_nonneg_right (pow_le_pow_right₀ h2c₄ (Nat.le_succ m)) zero_le
+  have hcA : (2 * (c₄ : ℝ≥0∞)) ^ (m + 1) * (1 + C) ≤ c := by
+    rw [hc]
+    exact_mod_cast (le_mul_of_one_le_left zero_le le_self_add :
+      (2 * c₄) ^ (m + 1) * (1 + C) ≤ (1 + sP) * ((2 * c₄) ^ (m + 1) * (1 + C)))
+  have hcB : (2 * (c₄ : ℝ≥0∞)) ^ m * (1 + C) ≤ c := by
+    rw [hc]
+    exact_mod_cast hpow.trans (le_mul_of_one_le_left zero_le le_self_add :
+      (2 * c₄) ^ (m + 1) * (1 + C) ≤ (1 + sP) * ((2 * c₄) ^ (m + 1) * (1 + C)))
+  have hcsA : (sP : ℝ≥0∞) * ((2 * (c₄ : ℝ≥0∞)) ^ (m + 1) * (1 + C)) ≤ c := by
+    rw [hc]
+    exact_mod_cast (mul_le_mul_of_nonneg_right le_add_self zero_le :
+      sP * ((2 * c₄) ^ (m + 1) * (1 + C)) ≤ (1 + sP) * ((2 * c₄) ^ (m + 1) * (1 + C)))
+  have hcsB : (sP : ℝ≥0∞) * ((2 * (c₄ : ℝ≥0∞)) ^ m * (1 + C)) ≤ c := by
+    rw [hc]
+    exact_mod_cast (mul_le_mul_of_nonneg_left hpow zero_le).trans
+      (mul_le_mul_of_nonneg_right le_add_self zero_le :
+        sP * ((2 * c₄) ^ (m + 1) * (1 + C)) ≤ (1 + sP) * ((2 * c₄) ^ (m + 1) * (1 + C)))
+  refine ⟨c, hc ▸ one_le_mul_of_one_le_of_one_le le_self_add
+    (one_le_mul_of_one_le_of_one_le (one_le_pow₀ h2c₄) le_self_add),
+    fun T hTIM hTc hTmass hbmass => ?_⟩
+  -- Step 3: the mass measures `μ_T`, `μ_∂` of `T` and `∂T` (REP); both are finite
+  obtain ⟨μT, -, -, -, hμT, -, -, -, -⟩ := hREP P (m + 1) univ T isOpen_univ
+    fun W _ _ => (T.massOn_mono (subset_univ W)).trans_lt hTmass
+  obtain ⟨μD, -, -, -, hμD, -, -, -, -⟩ := hREP P m univ T.boundary isOpen_univ
+    fun W _ _ => (T.boundary.massOn_mono (subset_univ W)).trans_lt hbmass
+  have hμTuniv : μT univ = T.mass := (hμT univ isOpen_univ).symm
+  have hμDuniv : μD univ = T.boundary.mass := (hμD univ isOpen_univ).symm
+  have hfinT : IsFiniteMeasure μT := ⟨by rw [hμTuniv]; exact hTmass⟩
+  have hfinD : IsFiniteMeasure μD := ⟨by rw [hμDuniv]; exact hbmass⟩
+  -- Step 4: a good centre `a` (GC) and the retraction `ψ` (RET); `d = dist(·, L*(a))`
+  obtain ⟨a, ha, hda⟩ := hGC μT μD hfinT hfinD
+  obtain ⟨ψ, hψ, hψLip⟩ := hRET a ha
+  set Lstar : Set (Euclid P) :=
+    {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z}
+  have hopen : ∀ r : ℝ, IsOpen {x : Euclid P | infDist x Lstar < r} := fun r =>
+    isOpen_lt (continuous_infDist_pt Lstar) continuous_const
+  -- the density bounds of the good centre, in mass form ((MR)/(REP) on the open `{d < r}`)
+  have hdens : ∀ r : ℝ, 0 < r → r ≤ 1 / 4 →
+      T.massOn {x | infDist x Lstar < r} ≤ C * ENNReal.ofReal (r ^ (m + 2)) * T.mass ∧
+        T.boundary.massOn {x | infDist x Lstar < r} ≤
+          C * ENNReal.ofReal (r ^ (m + 2)) * T.boundary.mass := by
+    intro r hr hr'
+    rw [hμT _ (hopen r), hμD _ (hopen r), ← hμTuniv, ← hμDuniv]
+    exact hda r hr hr'
+  -- Step 5: the dyadic shells `Wⱼ`, `Dⱼ`, the slices `Zⱼ` and the radii `rⱼ`
+  obtain ⟨r, W, D, Z, hr, hsum, hW0, hWs, hWIM, hWnc, hDnc, hZnc, hWsupp, hDsupp, hZsupp, hW0m,
+      hWm, hD0m, hDm, hZm⟩ :=
+    Submission.dimred_mbl_dtsd_shell_decomposition hVO hMR hREP hIMC hSL P m T
+      (fun x => infDist x Lstar) C hTIM hTc hTmass hbmass (lipschitz_infDist_pt Lstar) hdens
+  have hr0 : ∀ j, 0 < r j := fun j => (pow_pos (by norm_num) _).trans (hr j).1
+  have hr14 : ∀ j, r j ≤ 1 / 4 := fun j => (hr j).2.le.trans
+    ((pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega : 2 ≤ j + 2)).trans_eq
+      (by norm_num))
+  have hrdec : ∀ j, r (j + 1) ≤ r j := fun j => ((hr (j + 1)).2.trans (hr j).1).le
+  -- Step 6: `ψ` is `(c_R/rⱼ)`-Lipschitz on `{d ≥ rⱼ}`; extend it to `φⱼ` on `ℝᴾ`
+  obtain ⟨K, hK⟩ : ∃ K : ℕ → NNReal, ∀ j, K j = Real.toNNReal (cR / r j) := ⟨_, fun j => rfl⟩
+  have hKcoe : ∀ j, (K j : ℝ) = cR / r j := fun j => by
+    rw [hK, Real.coe_toNNReal _ (div_pos hcR (hr0 j)).le]
+  have hψK : ∀ j, LipschitzOnWith (K j) ψ {x | r j ≤ infDist x Lstar} := fun j =>
+    LipschitzOnWith.of_dist_le_mul fun x hx y hy => by
+      rw [hKcoe j]
+      exact hψLip (r j) (hr0 j) (hr14 j) x y hx hy
+  choose φ hφLip hφψ using fun j =>
+    Submission.dimred_mbl_dtsd_lipschitz_extension P {x | r j ≤ infDist x Lstar} ψ (K j) (hψK j)
+  have hφeq : ∀ j x, r j ≤ infDist x Lstar → φ j x = ψ x := fun j x hx =>
+    hφψ j (show x ∈ {x | r j ≤ infDist x Lstar} from hx)
+  -- `Λⱼ = max(1, √P c_R/rⱼ)` is a nondecreasing Lipschitz constant of `φⱼ`, `Λⱼ ≤ c₄ 2ʲ`
+  obtain ⟨Λ, hΛ⟩ : ∃ Λ : ℕ → NNReal, ∀ j, Λ j = max 1 (NNReal.sqrt P * K j) :=
+    ⟨_, fun j => rfl⟩
+  have hΛLip : ∀ j, LipschitzWith (Λ j) (φ j) := fun j =>
+    (hφLip j).weaken (by rw [hΛ]; exact le_max_right _ _)
+  have hΛ1 : ∀ j, 1 ≤ Λ j := fun j => by
+    rw [hΛ]
+    exact le_max_left _ _
+  have hΛmono : ∀ j, Λ j ≤ Λ (j + 1) := fun j => by
+    rw [hΛ, hΛ, hK, hK]
+    exact max_le_max le_rfl (mul_le_mul_of_nonneg_left (Real.toNNReal_le_toNNReal
+      (div_le_div_of_nonneg_left hcR.le (hr0 (j + 1)) (hrdec j))) zero_le)
+  have hΛc₄ : ∀ j, (Λ j : ℝ) ≤ c₄ * 2 ^ j := by
+    intro j
+    have hsq : 0 ≤ Real.sqrt P := Real.sqrt_nonneg _
+    have h2j : (1 : ℝ) ≤ 2 ^ j := one_le_pow₀ (by norm_num)
+    -- `rⱼ > 2^{-j-3}`, so `c_R/rⱼ ≤ 8 c_R 2ʲ`
+    have hrj : 1 < r j * (8 * 2 ^ j) := by
+      have h := (hr j).1
+      rw [one_div_pow, div_lt_iff₀ (by positivity)] at h
+      calc (1 : ℝ) < r j * 2 ^ (j + 3) := h
+        _ = r j * (8 * 2 ^ j) := by ring
+    have hcr : cR / r j ≤ 8 * cR * 2 ^ j := by
+      rw [div_le_iff₀ (hr0 j)]
+      nlinarith [mul_lt_mul_of_pos_left hrj hcR]
+    rw [hΛ, NNReal.coe_max, NNReal.coe_one, NNReal.coe_mul, hKcoe, Real.coe_sqrt,
+      NNReal.coe_natCast, hc₄]
+    refine max_le ?_ ?_
+    · nlinarith [mul_le_mul_of_nonneg_left h2j hX]
+    · calc Real.sqrt P * (cR / r j) ≤ Real.sqrt P * (8 * cR * 2 ^ j) :=
+            mul_le_mul_of_nonneg_left hcr hsq
+        _ ≤ (1 + 8 * Real.sqrt P * cR) * 2 ^ j := by nlinarith
+  -- Step 7: `φⱼ = ψ` on the supports, which lie in `{d ≥ rⱼ}`: consecutive extensions agree on
+  -- `spt Zⱼ ⊆ {d = rⱼ}`, `ψ` moves points by at most `√P` and maps `spt Wⱼ` into `L_{m+1}`
+  have hEqZ : ∀ j, EqOn (φ (j + 1)) (φ j) (Z j).support := by
+    intro j x hx
+    have hxd : infDist x Lstar = r j := (hZsupp j hx).2
+    rw [hφeq (j + 1) x ((hrdec j).trans hxd.ge), hφeq j x hxd.ge]
+  have hdist : ∀ j, ∀ x ∈ (W j).support ∪ (D j).support ∪ (Z j).support,
+      dist (φ j x) x ≤ Real.sqrt P := by
+    intro j x hx
+    have hxd : r j ≤ infDist x Lstar := by
+      rcases hx with (hx | hx) | hx
+      · exact (hWsupp j hx).2
+      · exact (hDsupp j hx).2
+      · exact (show infDist x Lstar = r j from (hZsupp j hx).2).ge
+    rw [hφeq j x hxd]
+    exact (hψ x ((hr0 j).trans_le hxd)).2
+  have hφL : ∀ j, ∀ x ∈ (W j).support, φ j x ∈
+      {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} := by
+    intro j x hx
+    have hxd : r j ≤ infDist x Lstar := (hWsupp j hx).2
+    rw [hφeq j x hxd]
+    exact (hψ x ((hr0 j).trans_le hxd)).1
+  -- `L_{m+1}` is closed: a finite union of finite intersections of preimages of `ℤ`
+  have hLclosed : IsClosed
+      {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} := by
+    have hcoord : ∀ i : Fin P, IsClosed {x : Euclid P | ∃ z : ℤ, x i = z} := by
+      intro i
+      have h : {x : Euclid P | ∃ z : ℤ, x i = z} =
+          (fun x : Euclid P => x i) ⁻¹' range ((↑) : ℤ → ℝ) := by
+        ext x
+        simp only [mem_ofPred_eq, mem_preimage, mem_range]
+        exact ⟨fun ⟨z, hz⟩ => ⟨z, hz.symm⟩, fun ⟨z, hz⟩ => ⟨z, hz.symm⟩⟩
+      rw [h]
+      exact Int.isClosedEmbedding_coe_real.isClosed_range.preimage (PiLp.continuous_apply 2 _ i)
+    have h : {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} =
+        ⋃ s : Finset (Fin P),
+          {x : Euclid P | P ≤ m + 1 + s.card} ∩ ⋂ i ∈ s, {x : Euclid P | ∃ z : ℤ, x i = z} := by
+      ext x
+      simp only [mem_ofPred_eq, mem_iUnion, mem_inter_iff, mem_iInter]
+    rw [h]
+    exact isClosed_iUnion_of_finite fun s =>
+      isClosed_const.inter (isClosed_biInter fun i _ => hcoord i)
+  -- Step 8: the dyadic series of the deformed shells converge, and the slice terms vanish
+  obtain ⟨hDS1, hDS2⟩ := Submission.dimred_mbl_dtsd_dyadic_series_bounds c₄ Λ hΛc₄
+  have hsumW := hDS1 C T.mass (m + 1) (m + 1) (fun j => (W j).mass) le_rfl hW0m hWm
+  have hsumD := hDS1 C T.boundary.mass m (m + 1) (fun j => (D j).mass) (Nat.le_succ m) hD0m hDm
+  have hZlim := hDS2 (4 * C) T.mass m (fun j => (Z j).mass)
+    (ENNReal.mul_ne_top ENNReal.ofNat_ne_top ENNReal.coe_ne_top) hTmass.ne hZm
+  -- Step 9: deform, telescope and sum (`telescoping_deformation` with (PF) and (IMS))
+  obtain ⟨Q₀, R₁, S₁, hQIM, hRIM, hid, hQsupp, hRsupp, hQbsupp, hSsupp, hQm, hQbm, hRm, hSm⟩ :=
+    Submission.dimred_mbl_dtsd_telescoping_deformation hVO P m push homot hPF
+      (Submission.dimred_mbl_dt_im_series hVO hMR hIMC P) T W D Z φ Λ (Real.sqrt P)
+      {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z}
+      T.support T.boundary.support hsum hW0 hWs hWIM hWnc hDnc hZnc hΛLip hΛ1 hΛmono hEqZ hdist
+      hLclosed hφL (fun j => (hWsupp j).trans inter_subset_left)
+      (fun j => (hDsupp j).trans inter_subset_left)
+      (hsumW.trans_lt ((mul_le_mul_of_nonneg_right hcA zero_le).trans_lt
+        (ENNReal.mul_lt_top ENNReal.coe_lt_top hTmass)))
+      (hsumD.trans_lt ((mul_le_mul_of_nonneg_right hcB zero_le).trans_lt
+        (ENNReal.mul_lt_top ENNReal.coe_lt_top hbmass)))
+      hZlim
+  -- Step 10: `c` absorbs the constants
+  rw [hsP] at hRm hSm
+  refine ⟨Q₀, R₁, S₁, hQIM, hRIM, hid, fun x hx => (hQsupp hx).1,
+    hQm.trans (hsumW.trans (mul_le_mul_of_nonneg_right hcA zero_le)),
+    hQbm.trans (hsumD.trans (mul_le_mul_of_nonneg_right hcB zero_le)), ?_, ?_,
+    union_subset (fun x hx => (hQsupp hx).2) hRsupp, union_subset hQbsupp hSsupp⟩
+  · calc R₁.mass ≤ sP * ∑' j, (2 * (Λ j : ℝ≥0∞)) ^ (m + 1) * (W j).mass := hRm
+      _ ≤ sP * ((2 * (c₄ : ℝ≥0∞)) ^ (m + 1) * (1 + C) * T.mass) :=
+          mul_le_mul_of_nonneg_left hsumW zero_le
+      _ = sP * ((2 * (c₄ : ℝ≥0∞)) ^ (m + 1) * (1 + C)) * T.mass := by ring
+      _ ≤ c * T.mass := mul_le_mul_of_nonneg_right hcsA zero_le
+  · calc S₁.mass ≤ sP * ∑' j, (2 * (Λ j : ℝ≥0∞)) ^ m * (D j).mass := hSm
+      _ ≤ sP * ((2 * (c₄ : ℝ≥0∞)) ^ m * (1 + C) * T.boundary.mass) :=
+          mul_le_mul_of_nonneg_left hsumD zero_le
+      _ = sP * ((2 * (c₄ : ℝ≥0∞)) ^ m * (1 + C)) * T.boundary.mass := by ring
+      _ ≤ c * T.boundary.mass := mul_le_mul_of_nonneg_right hcsB zero_le
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
