@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_representation-a1.orientation_sign-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_representation-a1",
+  "depth": 6,
+  "title": "Measurable sign between an orientation field and the oriented Jacobian (supplied step 5)",
+  "statement": "Let N, n ∈ ℕ, G : ℝⁿ → ℝ^N (no regularity assumed), A ⊆ ℝⁿ Borel and λ := volume on ℝⁿ. Write DG(u) := fderiv ℝ G u, e_a := EuclideanSpace.single a 1, v(u) := (DG(u)e_0, …, DG(u)e_{n−1}) and J(u) := √det(⟨DG(u)e_a, DG(u)e_b⟩)_{a,b} (Real.sqrt of Matrix.det). Let ζ : ℝⁿ → Λ_n(ℝ^N) (MultiVector N n) be AE strongly measurable for λ⌞A. Assume that DG(u) is injective for every u ∈ A, and that ζ(u) is a unit orientation (IsUnitOrientationOf) of span{v_a(u) : a} for λ⌞A-a.e. u. Then there is a measurable s : ℝⁿ → ℤ with s(u) = 1 or s(u) = −1 for every u, such that for λ⌞A-a.e. u and every n-covector α on ℝ^N: J(u)·ζ(u)(α) = s(u)·α(v(u)).",
+  "lean_statement": "∀ (N n : ℕ) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (ζ : Euclid n → MultiVector N n), MeasurableSet A → (∀ u ∈ A, Injective (fderiv ℝ G u)) → AEStronglyMeasurable ζ (volume.restrict A) → (∀ᵐ u ∂(volume.restrict A), IsUnitOrientationOf (ζ u) (Submodule.span ℝ (Set.range (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))))) → ∃ s : Euclid n → ℤ, Measurable s ∧ (∀ u, s u = 1 ∨ s u = -1) ∧ ∀ᵐ u ∂(volume.restrict A), ∀ α : Covector (Euclid N) n, Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ G u (EuclideanSpace.single a 1)) (fderiv ℝ G u (EuclideanSpace.single b 1)))) * ζ u α = (s u : ℝ) * α (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))",
+  "lean_name": "cmcdt_lpi_pr_orientation_sign",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-836d202eb4-a1"
+}
