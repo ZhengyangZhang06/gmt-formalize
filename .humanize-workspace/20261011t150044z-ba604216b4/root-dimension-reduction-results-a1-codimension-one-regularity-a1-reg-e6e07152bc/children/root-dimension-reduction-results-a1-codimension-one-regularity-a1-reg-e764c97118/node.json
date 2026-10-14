@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1.graph_over_tangent-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1",
+  "depth": 5,
+  "title": "An embedded C² submanifold is locally the graph of a C² map over its tangent plane (parent steps 2–5)",
+  "statement": "Let P, d ∈ ℕ, let U ⊆ ℝ^P be open, let N ⊆ ℝ^P be an embedded C² submanifold of dimension d (IsEmbeddedSubmanifold 2 d N), let x ∈ N ∩ U, and let ι : ℝ^d → ℝ^P be a linear isometry whose range equals the tangent space tangentSpace N x (as sets). Then there are u : ℝ^d → ℝ^P and reals δ₁, δ₂ > 0 such that: closedBall(x, δ₁ + δ₂) ⊆ U; u(0) = 0; Du(0) = fderiv ℝ u 0 = 0; u is C² on D := ball(0, δ₁); for every v ∈ D, u(v) ⊥ ι(ℝ^d) (⟨ιw, u(v)⟩ = 0 for all w), ‖Du(v)‖ ≤ 1, ‖u(v)‖ < δ₂/2 and x + ιv + u(v) ∈ N; and whenever v ∈ ℝ^d, h ∈ ℝ^P, ‖v‖ < δ₁, ‖h‖ < δ₂, h ⊥ ι(ℝ^d) and x + ιv + h ∈ N, then h = u(v).",
+  "lean_statement": "∀ (P d : ℕ) (U N : Set (Euclid P)) (x : Euclid P) (ι : Euclid d →ₗᵢ[ℝ] Euclid P), IsOpen U → IsEmbeddedSubmanifold 2 d N → x ∈ N ∩ U → Set.range ι = tangentSpace N x → ∃ (u : Euclid d → Euclid P) (δ₁ δ₂ : ℝ), 0 < δ₁ ∧ 0 < δ₂ ∧ closedBall x (δ₁ + δ₂) ⊆ U ∧ u 0 = 0 ∧ fderiv ℝ u 0 = 0 ∧ ContDiffOn ℝ 2 u (ball 0 δ₁) ∧ (∀ v ∈ ball (0 : Euclid d) δ₁, (∀ w : Euclid d, inner ℝ (ι w) (u v) = 0) ∧ ‖fderiv ℝ u v‖ ≤ 1 ∧ ‖u v‖ < δ₂ / 2 ∧ x + ι v + u v ∈ N) ∧ ∀ (v : Euclid d) (h : Euclid P), ‖v‖ < δ₁ → ‖h‖ < δ₂ → (∀ w : Euclid d, inner ℝ (ι w) h = 0) → x + ι v + h ∈ N → h = u v",
+  "lean_name": "codim1_rdo_gc_graph_over_tangent",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1.local_inverse_c2-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1.local_inverse_c2-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-f0862c44ef-a1",
+      "result_commit": "44afba4d4bb94935d28c2adb17f6284821cebaca",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-e764c97118-a1"
+}
