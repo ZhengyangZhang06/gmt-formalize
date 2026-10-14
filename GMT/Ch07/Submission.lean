@@ -8088,6 +8088,209 @@ theorem Submission.dimred_cdg_pushforward_massOn_le_first_variation : ∀ (P n :
     _ = m + t * R.firstVariation X + m * ε' * |t| := by ring
     _ ≤ m + t * R.firstVariation X + ε * |t| := by linarith
 
+/-- **Minimizing integer multiplicity cycles in `ℝᴾ` are stationary** (Simon 7.1.2, flat case
+`N = U = ℝᴾ`; chapter-07.txt lines 29–60).  Let `C ∈ 𝒟ⱼ(ℝᴾ)` be minimizing in `ℝᴾ` with
+`∂C = 0`, `C = τ(M, θ, ξ)` and `spt C ≠ ∅`, and let `X ∈ C¹_c(ℝᴾ; ℝᴾ)`.  By
+`Submission.dor_imrep_massOn_eq_measure_and_support`, `M_W(C) = μ_V(W)` for open `W` and some
+`z` lies in `spt μ_V`; the open `1`-neighbourhood `W` of `K ∪ {z}` (`K = spt X`) satisfies
+`W ⊂⊂ ℝᴾ` and `0 < μ_V(W) < ∞`.  For `‖DX‖ ≤ A` and `|t|A < 1`, `φ_t = id + tX` is a `C¹`
+bijection with injective derivative that fixes `ℝᴾ \ K` and maps `K` into `K`, so its
+push-forward `S` (`Submission.dimred_cdg_c1_diffeo_pushforward_im`) is an integer multiplicity
+cycle with `spt(S − C) ⊆ K`, an admissible competitor: `μ_V(W) ≤ M_W(S)`.  If `δV(X) ≠ 0`,
+`Submission.dimred_cdg_pushforward_massOn_le_first_variation` with `ε = |δV(X)|/2` gives
+`M_W(S) ≤ μ_V(W) + t δV(X) + ε|t| < μ_V(W)` for `t = ±s` of the sign opposite to `δV(X)`. -/
+theorem Submission.dimred_cdg_or_minimizing_firstVariation_eq_zero : ∀ (P j : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) j) (R : IMRep (univ : Set (Euclid P)) j), IsMinimizingIn C univ → BoundaryVanishes C → R.Represents C → C.support.Nonempty → ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0 := by
+  intro P j C R hmin hbd hR hspt X hX hXc
+  -- `M_W(C) = μ(W)` for open `W`, and `spt C = spt μ`, so some `z` lies in `spt μ`
+  obtain ⟨hmass, hsupp⟩ :=
+    Submission.dor_imrep_massOn_eq_measure_and_support P j univ C R isOpen_univ hR
+  obtain ⟨z, hz⟩ := hspt
+  have hzμ : z ∈ R.measure.support := by
+    rw [hsupp] at hz
+    exact hz.2
+  -- `K = spt X` is compact and `‖DX‖ ≤ A`, so `X` is `A`-Lipschitz
+  have hKc : IsCompact (tsupport X) := hXc
+  have hXd : Differentiable ℝ X := hX.differentiable one_ne_zero
+  obtain ⟨A₀, hA₀⟩ :=
+    (hX.continuous_fderiv one_ne_zero).bounded_above_of_compact_support (hXc.fderiv (𝕜 := ℝ))
+  obtain ⟨A, hA0, hDXA⟩ : ∃ A : ℝ, 0 ≤ A ∧ ∀ x, ‖fderiv ℝ X x‖ ≤ A :=
+    ⟨max A₀ 0, le_max_right _ _, fun x => (hA₀ x).trans (le_max_left _ _)⟩
+  have hXA : ∀ x y, ‖X x - X y‖ ≤ A * ‖x - y‖ := fun x y =>
+    convex_univ.norm_image_sub_le_of_norm_fderiv_le (fun w _ => hXd w) (fun w _ => hDXA w)
+      (mem_univ y) (mem_univ x)
+  -- the deformations `φ_t = id + tX`: `C¹`, the identity off `K`, `Dφ_t = I + t DX`
+  obtain ⟨φ, hφ⟩ : ∃ φ : ℝ → Euclid P → Euclid P, ∀ t y, φ t y = y + t • X y :=
+    ⟨fun t y => y + t • X y, fun _ _ => rfl⟩
+  have hφfun : ∀ t, φ t = fun y => y + t • X y := fun t => funext (hφ t)
+  have hφC : ∀ t, ContDiff ℝ 1 (φ t) := fun t => by
+    rw [hφfun t]
+    exact contDiff_id.add (hX.const_smul t)
+  have hφid : ∀ t x, x ∉ tsupport X → φ t x = x := fun t x hx => by
+    rw [hφ, image_eq_zero_of_notMem_tsupport hx, smul_zero, add_zero]
+  have hφD : ∀ t x,
+      fderiv ℝ (φ t) x = ContinuousLinearMap.id ℝ (Euclid P) + t • fderiv ℝ X x := fun t x => by
+    rw [hφfun t]
+    exact ((hasFDerivAt_id x).add ((hXd x).hasFDerivAt.const_smul t)).fderiv
+  -- for `|t|A < 1`, `φ_t` is injective ...
+  have hinj : ∀ t : ℝ, |t| * A < 1 → Injective (φ t) := by
+    intro t htA x y hxy
+    rw [hφ, hφ] at hxy
+    have h1 : x - y = t • (X y - X x) := by
+      rw [smul_sub, sub_eq_sub_iff_add_eq_add, add_comm (t • X y) y]
+      exact hxy
+    have h2 : ‖x - y‖ ≤ |t| * A * ‖x - y‖ :=
+      calc ‖x - y‖ = |t| * ‖X y - X x‖ := by rw [h1, norm_smul, Real.norm_eq_abs]
+        _ ≤ |t| * (A * ‖y - x‖) := mul_le_mul_of_nonneg_left (hXA y x) (abs_nonneg t)
+        _ = |t| * A * ‖x - y‖ := by rw [norm_sub_rev, mul_assoc]
+    have h3 : ‖x - y‖ ≤ 0 := by nlinarith [norm_nonneg (x - y)]
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 h3)
+  -- ... surjective, since it approximates the identity with constant `|t|A < 1` ...
+  have hsurj : ∀ t : ℝ, |t| * A < 1 → Surjective (φ t) := by
+    intro t htA
+    rcases subsingleton_or_nontrivial (Euclid P) with hE | hE
+    · exact fun y => ⟨y, Subsingleton.elim _ _⟩
+    · have happ : ApproximatesLinearOn (φ t)
+          ((ContinuousLinearEquiv.refl ℝ (Euclid P) : Euclid P →L[ℝ] Euclid P)) univ
+          (|t| * A).toNNReal := by
+        intro x _ y _
+        have h1 : φ t x - φ t y -
+            (ContinuousLinearEquiv.refl ℝ (Euclid P) : Euclid P →L[ℝ] Euclid P) (x - y) =
+              t • (X x - X y) := by
+          rw [hφ, hφ, ContinuousLinearEquiv.coe_refl, ContinuousLinearMap.id_apply, smul_sub]
+          abel
+        rw [h1, norm_smul, Real.norm_eq_abs, Real.coe_toNNReal _ (mul_nonneg (abs_nonneg t) hA0),
+          mul_assoc]
+        exact mul_le_mul_of_nonneg_left (hXA x y) (abs_nonneg t)
+      refine happ.surjective (Or.inr ?_)
+      rw [ContinuousLinearEquiv.refl_symm, ContinuousLinearEquiv.coe_refl,
+        ContinuousLinearMap.nnnorm_id, inv_one]
+      exact Real.toNNReal_lt_one.2 htA
+  -- ... and `Dφ_t(x) = I + t DX(x)` is injective
+  have hinjD : ∀ t : ℝ, |t| * A < 1 → ∀ x, Injective (fderiv ℝ (φ t) x) := by
+    intro t htA x
+    rw [hφD t x]
+    refine (injective_iff_map_eq_zero _).2 fun v hv => ?_
+    rw [add_apply, smul_apply, ContinuousLinearMap.id_apply] at hv
+    have hv' : v = -(t • fderiv ℝ X x v) := eq_neg_of_add_eq_zero_left hv
+    have h2 : ‖v‖ ≤ |t| * A * ‖v‖ :=
+      calc ‖v‖ = ‖-(t • fderiv ℝ X x v)‖ := congrArg _ hv'
+        _ = |t| * ‖fderiv ℝ X x v‖ := by rw [norm_neg, norm_smul, Real.norm_eq_abs]
+        _ ≤ |t| * (A * ‖v‖) := mul_le_mul_of_nonneg_left
+            ((ContinuousLinearMap.le_opNorm _ v).trans
+              (mul_le_mul_of_nonneg_right (hDXA x) (norm_nonneg v))) (abs_nonneg t)
+        _ = |t| * A * ‖v‖ := (mul_assoc _ _ _).symm
+    have h3 : ‖v‖ ≤ 0 := by nlinarith [norm_nonneg v]
+    exact norm_le_zero_iff.1 h3
+  -- `W = {dist(·, K ∪ {z}) < 1}`: open, `W ⊂⊂ ℝᴾ`, `K ⊆ W`, `z ∈ W`
+  obtain ⟨W, hWo, hKW, hzW, hWc⟩ : ∃ W : Set (Euclid P), IsOpen W ∧ tsupport X ⊆ W ∧ z ∈ W ∧
+      IsCompact (closure W) :=
+    ⟨thickening 1 (insert z (tsupport X)), isOpen_thickening,
+      (subset_insert z _).trans (self_subset_thickening one_pos _),
+      self_subset_thickening one_pos _ (mem_insert z _),
+      (hKc.insert z).cthickening.of_isClosed_subset isClosed_closure
+        (closure_thickening_subset_cthickening 1 _)⟩
+  -- `0 < μ(W) < ∞`
+  have hWm : MeasurableSet W := hWo.measurableSet
+  have hRWfin : R.measure W ≠ ∞ := by
+    rw [IMRep.measure, withDensity_apply _ hWm, Measure.restrict_restrict hWm]
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult _ hWc (subset_univ _))
+      (lintegral_mono_set ?_)
+    exact fun x hx => ⟨hx.2, subset_closure hx.1⟩
+  have hRWpos : 0 < R.measure W :=
+    (Measure.mem_support_iff_forall z).1 hzμ W (hWo.mem_nhds hzW)
+  have hm : 0 < (R.measure W).toReal := ENNReal.toReal_pos hRWpos.ne' hRWfin
+  -- `∂S₁ = 0 = ∂S₂` gives `∂S₁ = ∂S₂` (vacuous in degree `0`)
+  have hsame : ∀ {m : ℕ} (S₁ S₂ : GeometricCurrentOn (univ : Set (Euclid P)) m),
+      BoundaryVanishes S₁ → BoundaryVanishes S₂ → SameBoundary S₁ S₂ := by
+    intro m S₁ S₂ h₁ h₂
+    cases m with
+    | zero => trivial
+    | succ m => exact (show S₁.boundary = 0 from h₁).trans (show S₂.boundary = 0 from h₂).symm
+  -- suppose `δV(X) ≠ 0`, and take `δ` from the first variation bound with `ε = |δV(X)|/2`
+  by_contra ha
+  have hε : 0 < |R.firstVariation X| / 2 := half_pos (abs_pos.2 ha)
+  obtain ⟨δ, hδ, hδS⟩ := Submission.dimred_cdg_pushforward_massOn_le_first_variation P j univ W
+    R X φ hWo hRWfin hX hXc hKW hφC hφid
+    (fun ε hε => ⟨1, one_pos, fun t _ x => by
+      rw [hφD t x, add_sub_cancel_left, sub_self, norm_zero]
+      exact mul_nonneg hε.le (abs_nonneg t)⟩) _ hε
+  -- for `|t| < δ` and `|t|A < 1`, compare `C` with the competitor `φ_{t#}C`
+  have key : ∀ t : ℝ, |t| < δ → |t| * A < 1 →
+      0 ≤ t * R.firstVariation X + |R.firstVariation X| / 2 * |t| := by
+    intro t ht htA
+    obtain ⟨S, hSi, hSb, hSω⟩ := Submission.dimred_cdg_c1_diffeo_pushforward_im P j univ
+      (tsupport X) C R (φ t) isOpen_univ hR hKc (subset_univ _) (hφC t)
+      ⟨hinj t htA, hsurj t htA⟩ (hinjD t htA) (hφid t)
+    -- `φ_t` maps `K` into `K`
+    have hφK : ∀ x ∈ tsupport X, φ t x ∈ tsupport X := by
+      intro x hx
+      by_contra h
+      exact h (by rwa [hinj t htA (hφid t _ h)])
+    -- `spt(S − C) ⊆ K`: near `y ∉ K` the integrands of `S(ω)` and `C(ω)` agree
+    have hsub : (S - C).support ⊆ tsupport X := by
+      intro y hy
+      by_contra hyK
+      obtain ⟨r, hr, hrK⟩ := Metric.isOpen_iff.1 hKc.isClosed.isOpen_compl y hyK
+      have hball : ball y r ∈ {V : Set (Euclid P) | IsOpen V ∧ IsCompact (closure V) ∧
+          closure V ⊆ univ ∧ (S - C).VanishesOn V} := by
+        refine ⟨isOpen_ball,
+          (isCompact_closedBall y r).closure_of_subset ball_subset_closedBall,
+          subset_univ _, ?_⟩
+        intro ω hω
+        have hω0 : ∀ x ∈ tsupport X, (ω : DifferentialForm (Euclid P) j) x = 0 :=
+          fun x hx => image_eq_zero_of_notMem_tsupport fun hxω => hrK (hω hxω) hx
+        change S ω - C ω = 0
+        rw [hSω ω, hR ω, IMRep.action, sub_eq_zero]
+        congr 1
+        funext x
+        have harg : ((ω : DifferentialForm (Euclid P) j) (φ t x)).compContinuousLinearMap
+            (fderiv ℝ (φ t) x) = (ω : DifferentialForm (Euclid P) j) x := by
+          by_cases hxK : x ∈ tsupport X
+          · rw [hω0 x hxK, hω0 (φ t x) (hφK x hxK)]
+            ext v
+            simp
+          · have hφx : φ t =ᶠ[𝓝 x] id := by
+              filter_upwards [(isClosed_tsupport X).isOpen_compl.mem_nhds hxK] with w hw
+              exact hφid t w hw
+            rw [hφx.fderiv_eq, fderiv_id, hφid t x hxK]
+            ext v
+            simp
+        rw [harg]
+      exact hy.2 (mem_sUnion_of_mem (mem_ball_self hr) hball)
+    have hSCc : IsCompact (S - C).support := by
+      have h : (S - C).support = tsupport X ∩ ((S - C).zeroRegion)ᶜ :=
+        Subset.antisymm (fun y hy => ⟨hsub hy, hy.2⟩) fun y hy => ⟨mem_univ y, hy.2⟩
+      rw [h]
+      exact hKc.inter_right (S - C).isOpen_zeroRegion.isClosed_compl
+    -- `μ(W) = M_W(C) ≤ M_W(S) ≤ μ(W) + t δV(X) + (|δV(X)|/2)|t|`
+    have hle : C.massOn W ≤ S.massOn W :=
+      hmin.2 W S hWo ⟨hWc, subset_univ _⟩ hSi (hsame S C (hSb hbd) hbd) hSCc fun y hy =>
+        ⟨mem_univ y, hKW (hsub hy)⟩
+    have h := (ENNReal.ofReal_toReal hRWfin).le.trans
+      (((hmass W hWo).symm.le.trans hle).trans (hδS t ht S hSω))
+    by_contra hneg
+    exact not_lt.2 h ((ENNReal.ofReal_lt_ofReal_iff hm).2 (by linarith [not_le.1 hneg]))
+  -- `t = ±s` with `0 < s < δ`, `sA < 1` contradicts `δV(X) ≠ 0`
+  obtain ⟨s, hs0, hsδ, hsA⟩ : ∃ s : ℝ, 0 < s ∧ s < δ ∧ s * A < 1 := by
+    have hA1 : (0 : ℝ) < 2 * (A + 1) := by linarith
+    refine ⟨min (δ / 2) (1 / (2 * (A + 1))), lt_min (half_pos hδ) (one_div_pos.2 hA1),
+      (min_le_left _ _).trans_lt (half_lt_self hδ), ?_⟩
+    have h1 : min (δ / 2) (1 / (2 * (A + 1))) * (2 * (A + 1)) ≤ 1 :=
+      calc min (δ / 2) (1 / (2 * (A + 1))) * (2 * (A + 1))
+          ≤ 1 / (2 * (A + 1)) * (2 * (A + 1)) :=
+            mul_le_mul_of_nonneg_right (min_le_right _ _) hA1.le
+        _ = 1 := one_div_mul_cancel hA1.ne'
+    nlinarith [lt_min (half_pos hδ) (one_div_pos.2 hA1)]
+  have h₁ := key s (by rwa [abs_of_pos hs0]) (by rwa [abs_of_pos hs0])
+  have h₂ := key (-s) (by rwa [abs_neg, abs_of_pos hs0]) (by rwa [abs_neg, abs_of_pos hs0])
+  rw [abs_of_pos hs0] at h₁
+  rw [abs_neg, abs_of_pos hs0] at h₂
+  rcases lt_or_gt_of_ne ha with ha' | ha'
+  · rw [abs_of_neg ha'] at h₁
+    nlinarith [mul_neg_of_pos_of_neg hs0 ha']
+  · rw [abs_of_pos ha'] at h₂
+    nlinarith [mul_pos hs0 ha']
+
 /-- **Simon 7.1.2, first claim (pp. 181–182).**  If `T ∈ 𝒟ₙ(U)` is minimizing in `N ∩ U`
 (`N` an embedded `C²` submanifold, `(N̄ \ N) ∩ U = ∅`), `∂T = 0` in `U`, and `T = τ(M, θ, ξ)` with
 `Hⁿ(M \ N) = 0`, then `V = v(M, θ)` is stationary in `N ∩ U`.  Fix `X` tangent to `N` and an
