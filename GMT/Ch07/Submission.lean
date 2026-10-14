@@ -2758,6 +2758,44 @@ theorem Submission.dtc_bc_lc_pf_ext_imrep_integral_tendsto : ∀ (P n : ℕ) (U 
   rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
   nlinarith
 
+/-- **Integral form of the push-forward along one fixed sequence of test forms** (Simon Ch. 6,
+2.23–2.24(2)).  For `f` of class `C¹` on an open `O ⊇ K` (`K` compact) and `ω ∈ 𝒟ⁿ(ℝᴾ)` there
+are `ω_j ∈ 𝒟ⁿ(ℝᴾ)`, chosen before any current, with `Y(ω_j) → ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ⟩ dHⁿ`
+for every `Y = τ(M, θ, ξ)` with `spt Y ⊆ K`.  A cut-off of `ω(f(·)) ∘ Df(·)` is a continuous,
+compactly supported `h` equal to it on `K` (`dtc_bc_lc_pf_ext_pullback_cutoff`), and mollified
+test forms converge to `h` uniformly (`dtc_bc_lc_pf_ext_mollify_tendstoUniformly`).  As
+`Hⁿ(M \ K) ≤ Hⁿ(M \ spt Y) = 0` (`dtc_bc_lc_pf_imrep_carrier_mass_support`),
+`Y(ω_j) = ∫_M θ ξ(ω_j) → ∫_M θ ξ(h)` (`dtc_bc_lc_pf_ext_imrep_integral_tendsto`), and
+`∫_M θ ξ(h)` is the stated integral because `h = ω(f) ∘ Df` on `K`. -/
+theorem Submission.dtc_bc_lc_pf_pullback_integral_extension : ∀ (P n : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P) (ω : TestFormOn (univ : Set (Euclid P)) n), IsOpen O → ContDiffOn ℝ 1 f O → IsCompact K → K ⊆ O → ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, ∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents Y → Y.support ⊆ K → Tendsto (fun j => Y (ωs j)) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n])) := by
+  intro P n O K f ω hO hf hK hKO
+  -- Steps 1–2: a continuous, compactly supported `h` with `h = ω(f(·)) ∘ Df(·)` on `K`
+  obtain ⟨h, hhc, hhs, hhK⟩ := Submission.dtc_bc_lc_pf_ext_pullback_cutoff P P n O K f
+    (ω : DifferentialForm (Euclid P) n) hO hf hK hKO ω.property.1.1.continuous
+  -- Step 3: test forms `ω_j → h` uniformly; they depend only on `f`, `ω`, `O` and `K`
+  obtain ⟨ωs, hωs⟩ := Submission.dtc_bc_lc_pf_ext_mollify_tendstoUniformly P n h hhc hhs
+  refine ⟨ωs, fun Y R hRY hYK => ?_⟩
+  -- Step 4(a): `Hⁿ(M \ K) ≤ Hⁿ(M \ spt Y) = 0`
+  have hnull : μHE[n] (R.carrier \ K) = 0 :=
+    measure_mono_null (Set.sdiff_subset_sdiff_right hYK)
+      ((Submission.dtc_bc_lc_pf_imrep_carrier_mass_support P n).1 Y R hRY).1
+  -- Step 5: `h = ω(f) ∘ Df` on `K`, which contains `Hⁿ`-a.e. point of `M`, so the limits agree
+  have hae : (fun x => (R.mult x : ℝ) * R.orient x (h x)) =ᵐ[μHE[n].restrict R.carrier]
+      fun x => (R.mult x : ℝ) * R.orient x
+        (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) := by
+    have hMK : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ K := by
+      rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+      refine measure_mono_null (fun x hx => ?_) hnull
+      exact ⟨hx.2, hx.1⟩
+    filter_upwards [hMK] with x hx
+    rw [hhK x hx]
+  rw [← integral_congr_ae hae]
+  -- Step 6: `Y(ω_j) = ∫_M θ ξ(ω_j) → ∫_M θ ξ(h)`
+  exact (Submission.dtc_bc_lc_pf_ext_imrep_integral_tendsto P n univ K R
+    (fun j x => (ωs j : DifferentialForm (Euclid P) n) x) h hK (subset_univ K) hnull
+    (fun j => (ωs j).property.1.1.continuous) hhc hωs.tendstoUniformlyOn).congr
+    fun j => (hRY (ωs j)).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
