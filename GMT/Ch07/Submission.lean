@@ -451,6 +451,124 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Geometry of the graph chart** (Simon 7.5.2, used in 7.5.8).  Let `ι : ℝ^{n+1} → ℝᴾ` be a
+linear isometry with adjoint `A = ι*`, `D = B_{δ₁}(0)`, `u` be `C²` on `D` with values in
+`(range ι)ᗮ`, `|u| < δ₂/2` and `G(y) = x + ιy + u(y) ∈ N` on `D`, and let `u` be the only such graph
+of `N` over `D` within `δ₂` (`x + ιv + h ∈ N`, `|v| < δ₁`, `|h| < δ₂`, `h ⊥ range ι` force
+`h = u(v)`).  With `Z = {w : |A(w − x)| < δ₁, |w − x − ιA(w − x)| < δ₂}`: `G` is a `C²` immersion,
+`DG(v) = ι + Du(v)`, `G` is injective on `D`, `Z` is open, `D ∩ G⁻¹K` is compact for compact
+`K ⊆ Z`, `S ∩ Z = G(D ∩ G⁻¹S)` for `S ⊆ N`, and `D ∩ G⁻¹S` is Borel for Borel `S`.  The key
+identity is `A(G(v) − x) = v` on `D` (`Aι = id`, `A u = 0`); `Du(v) ⊥ range ι` (differentiate
+`⟨ιw, u⟩ ≡ 0`) gives `|DG(v)a| ≥ |a|`. -/
+theorem Submission.codim1_lur_cd_graph_chart_geometry : ∀ (P n : ℕ) (N : Set (Euclid P)) (x : Euclid P) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ₁ δ₂ : ℝ), ContDiffOn ℝ 2 u (ball 0 δ₁) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ‖u v‖ < δ₂ / 2) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, x + ι v + u v ∈ N) → (∀ (v : Euclid (n + 1)) (h : Euclid P), ‖v‖ < δ₁ → ‖h‖ < δ₂ → (∀ w : Euclid (n + 1), inner ℝ (ι w) h = 0) → x + ι v + h ∈ N → h = u v) → ContDiffOn ℝ 2 (fun y => x + ι y + u y) (ball 0 δ₁) ∧ (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ a : Euclid (n + 1), fderiv ℝ (fun y => x + ι y + u y) v a = ι a + fderiv ℝ u v a) ∧ (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, Function.Injective (fderiv ℝ (fun y => x + ι y + u y) v)) ∧ InjOn (fun y => x + ι y + u y) (ball 0 δ₁) ∧ IsOpen {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ ∧ ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂} ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ ∧ ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂} → IsCompact (ball 0 δ₁ ∩ (fun y => x + ι y + u y) ⁻¹' K)) ∧ (∀ S : Set (Euclid P), S ⊆ N → S ∩ {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ ∧ ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂} = (fun y => x + ι y + u y) '' (ball 0 δ₁ ∩ (fun y => x + ι y + u y) ⁻¹' S)) ∧ ∀ S : Set (Euclid P), MeasurableSet S → MeasurableSet (ball 0 δ₁ ∩ (fun y => x + ι y + u y) ⁻¹' S) := by
+  intro P n N x ι u δ₁ δ₂ hu horth hsmall hN huniq
+  set A := ContinuousLinearMap.adjoint ι.toContinuousLinearMap with hA
+  -- `Aι = id`, `A` kills `(range ι)ᗮ`, and `w − x − ιA(w − x) ⊥ range ι`
+  have hAι : ∀ a, A (ι a) = a := fun a => ext_inner_right ℝ fun b => by
+    rw [hA, ContinuousLinearMap.adjoint_inner_left]
+    exact ι.inner_map_map a b
+  have hA0 : ∀ h : Euclid P, (∀ w, inner ℝ (ι w) h = 0) → A h = 0 := fun h hh =>
+    ext_inner_right ℝ fun b => by
+      rw [hA, ContinuousLinearMap.adjoint_inner_left, inner_zero_left, real_inner_comm]
+      exact hh b
+  have hperp : ∀ w : Euclid P, ∀ b, inner ℝ (ι b) (w - x - ι (A (w - x))) = 0 := fun w b => by
+    rw [inner_sub_right, ι.inner_map_map, hA, ContinuousLinearMap.adjoint_inner_right]
+    simp
+  -- `A(G(v) − x) = v` on `D`
+  have hπG : ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, A (x + ι v + u v - x) = v := fun v hv => by
+    rw [show x + ι v + u v - x = ι v + u v by abel, map_add, hAι, hA0 _ (horth v hv), add_zero]
+  have hG2 : ContDiffOn ℝ 2 (fun y => x + ι y + u y) (ball 0 δ₁) :=
+    (contDiffOn_const.add ι.contDiff.contDiffOn).add hu
+  have hGc : ContinuousOn (fun y => x + ι y + u y) (ball 0 δ₁) := hG2.continuousOn
+  have hud : ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, DifferentiableAt ℝ u v := fun v hv =>
+    (hu.differentiableOn (by norm_num) v hv).differentiableAt (isOpen_ball.mem_nhds hv)
+  have hGd : ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁,
+      HasFDerivAt (fun y => x + ι y + u y) (ι.toContinuousLinearMap + fderiv ℝ u v) v :=
+    fun v hv => (ι.toContinuousLinearMap.hasFDerivAt.const_add x).add (hud v hv).hasFDerivAt
+  -- `Du(v)` maps into `(range ι)ᗮ`: differentiate `⟨ιw, u⟩ ≡ 0` on the open set `D`
+  have hDu : ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ w a, inner ℝ (ι w) (fderiv ℝ u v a) = 0 := by
+    intro v hv w a
+    have h1 : HasFDerivAt (fun y => inner ℝ (ι w) (u y))
+        ((innerSL ℝ (ι w)).comp (fderiv ℝ u v)) v :=
+      (innerSL ℝ (ι w)).hasFDerivAt.comp v (hud v hv).hasFDerivAt
+    have h2 : HasFDerivAt (fun y => inner ℝ (ι w) (u y)) (0 : Euclid (n + 1) →L[ℝ] ℝ) v :=
+      (hasFDerivAt_const (0 : ℝ) v).congr_of_eventuallyEq
+        (Filter.eventually_of_mem (isOpen_ball.mem_nhds hv) fun y hy => horth y hy w)
+    simpa using congrArg (fun L => L a) (h1.unique h2)
+  refine ⟨hG2, fun v hv a => ?_, fun v hv => ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · rw [(hGd v hv).fderiv]
+    rfl
+  · -- `⟨ιa, DG(v)a⟩ = |a|²`
+    rw [(hGd v hv).fderiv]
+    intro a b hab
+    have h0 : (ι.toContinuousLinearMap + fderiv ℝ u v) (a - b) = 0 := by
+      rw [map_sub, hab, sub_self]
+    have h1 : inner ℝ (ι (a - b)) ((ι.toContinuousLinearMap + fderiv ℝ u v) (a - b)) =
+        ‖a - b‖ ^ 2 := by
+      rw [add_apply, inner_add_right, hDu v hv, add_zero,
+        LinearIsometry.coe_toContinuousLinearMap, ι.inner_map_map, real_inner_self_eq_norm_sq]
+    rw [h0, inner_zero_right] at h1
+    exact sub_eq_zero.mp (norm_eq_zero.mp (pow_eq_zero_iff two_ne_zero |>.mp h1.symm))
+  · intro v hv v' hv' h
+    have h' : x + ι v + u v = x + ι v' + u v' := h
+    rw [← hπG v hv, ← hπG v' hv', h']
+  · exact (isOpen_lt (by fun_prop) continuous_const).and (isOpen_lt (by fun_prop) continuous_const)
+  · -- `D ∩ G⁻¹K = A(K − x) ∩ G⁻¹K`, a closed subset of the compact set `A(K − x) ⊆ D`
+    intro K hK hKZ
+    have hK' : IsCompact ((fun w => A (w - x)) '' K) := hK.image (by fun_prop)
+    have hK'D : (fun w => A (w - x)) '' K ⊆ ball 0 δ₁ := by
+      rintro _ ⟨w, hw, rfl⟩
+      exact mem_ball_zero_iff.mpr (hKZ hw).1
+    have heq : ball 0 δ₁ ∩ (fun y => x + ι y + u y) ⁻¹' K =
+        (fun w => A (w - x)) '' K ∩ (fun y => x + ι y + u y) ⁻¹' K := by
+      ext v
+      constructor
+      · rintro ⟨hv, hvK⟩
+        exact ⟨⟨_, hvK, hπG v hv⟩, hvK⟩
+      · rintro ⟨hv, hvK⟩
+        exact ⟨hK'D hv, hvK⟩
+    rw [heq]
+    exact hK'.of_isClosed_subset
+      ((hGc.mono hK'D).preimage_isClosed_of_isClosed hK'.isClosed hK.isClosed) inter_subset_left
+  · intro S hSN
+    ext w
+    constructor
+    · -- graph uniqueness at `v = A(w − x)`, `h = w − x − ιv`
+      rintro ⟨hwS, hw1, hw2⟩
+      have hx : x + ι (A (w - x)) + (w - x - ι (A (w - x))) = w := by abel
+      have h := huniq (A (w - x)) (w - x - ι (A (w - x))) hw1 hw2 (hperp w)
+        (by rw [hx]; exact hSN hwS)
+      refine ⟨A (w - x), ⟨mem_ball_zero_iff.mpr hw1, ?_⟩, ?_⟩
+      · show x + ι (A (w - x)) + u (A (w - x)) ∈ S
+        rw [← h, hx]
+        exact hwS
+      · show x + ι (A (w - x)) + u (A (w - x)) = w
+        rw [← h, hx]
+    · rintro ⟨v, ⟨hv, hvS⟩, rfl⟩
+      refine ⟨hvS, ?_, ?_⟩
+      · show ‖A (x + ι v + u v - x)‖ < δ₁
+        rw [hπG v hv]
+        exact mem_ball_zero_iff.mp hv
+      · show ‖x + ι v + u v - x - ι (A (x + ι v + u v - x))‖ < δ₂
+        rw [hπG v hv, show x + ι v + u v - x - ι v = u v by abel]
+        linarith [hsmall v hv, norm_nonneg (u v)]
+  · -- on `D`, `G` agrees with the Borel map equal to `G` on `D` and to `x` off `D`
+    intro S hS
+    classical
+    have hm : Measurable ((ball (0 : Euclid (n + 1)) δ₁).piecewise (fun y => x + ι y + u y)
+        fun _ => x) :=
+      hGc.measurable_piecewise continuousOn_const measurableSet_ball
+    have heq : ball 0 δ₁ ∩ (fun y => x + ι y + u y) ⁻¹' S = ball 0 δ₁ ∩
+        (ball (0 : Euclid (n + 1)) δ₁).piecewise (fun y => x + ι y + u y) (fun _ => x) ⁻¹' S := by
+      ext v
+      constructor
+      · rintro ⟨hv, h⟩
+        exact ⟨hv, by rwa [mem_preimage, piecewise_eq_of_mem _ _ _ hv]⟩
+      · rintro ⟨hv, h⟩
+        exact ⟨hv, by rwa [mem_preimage, piecewise_eq_of_mem _ _ _ hv] at h⟩
+    rw [heq]
+    exact measurableSet_ball.inter (hm hS)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
