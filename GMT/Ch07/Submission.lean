@@ -1795,6 +1795,47 @@ theorem Submission.dimred_cs_sos_mt_cs_frame_box_integral : ∀ (P k : ℕ) (g :
   -- Step 6: change of variables along the measurable embedding `ι`
   rw [hrestrict, hemb.setIntegral_map, hpre]
   rfl
+/-- **Fubini and the fundamental theorem of calculus on a coordinate box** (steps (5b) and (5d)
+of the cube Stokes formula in the minimality transfer of Simon 7.3.5).  Let `a ∈ Fin (j + 1)`,
+`r > 0`, `Q = [-r, r]^{j+1}` and `Q' = [-r, r]^j`.  If `φ` is continuous and, on every line in the
+coordinate direction `a`, `φ` is the derivative of `ψ`, then
+`∫_Q φ = ∫_{Q'} (ψ(a.insertNth r u) - ψ(a.insertNth (-r) u)) du`.  The map
+`e(τ, u) = a.insertNth τ u` is measure preserving and pulls `Q` back to `[-r, r] × Q'`.  The
+integrand is continuous on this compact box, so Fubini applies, and for each `u` the fundamental
+theorem of calculus evaluates the inner integral over `τ ∈ [-r, r]`. -/
+theorem Submission.dimred_cs_sos_mt_cs_coord_box_ftc : ∀ (j : ℕ) (a : Fin (j + 1)) (r : ℝ) (φ ψ : (Fin (j + 1) → ℝ) → ℝ), 0 < r → Continuous φ → (∀ (u : Fin j → ℝ) (τ : ℝ), HasDerivAt (fun σ : ℝ => ψ (Fin.insertNth a σ u)) (φ (Fin.insertNth a τ u)) τ) → ∫ u in {u : Fin (j + 1) → ℝ | ∀ i, |u i| ≤ r}, φ u = ∫ u in {u : Fin j → ℝ | ∀ c, |u c| ≤ r}, (ψ (Fin.insertNth a r u) - ψ (Fin.insertNth a (-r) u)) := by
+  intro j a r φ ψ hr hφ hψ
+  -- Step 1: `e (τ, u') = a.insertNth τ u'` is measure preserving from `volume.prod volume`
+  set e : ℝ × (Fin j → ℝ) ≃ᵐ (Fin (j + 1) → ℝ) :=
+    (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (j + 1) => ℝ) a).symm
+  have he : MeasurePreserving e :=
+    (volume_preserving_piFinSuccAbove (fun _ : Fin (j + 1) => ℝ) a).symm _
+  have he_apply : ∀ p : ℝ × (Fin j → ℝ), e p = Fin.insertNth a p.1 p.2 := fun _ => rfl
+  -- Step 2: `e` pulls the cube back to the box `[-r, r] ×ˢ I_j`, and `I_j` is compact
+  set T : Set (Fin j → ℝ) := {u | ∀ c, |u c| ≤ r}
+  have hpre : e ⁻¹' {u : Fin (j + 1) → ℝ | ∀ i, |u i| ≤ r} = Icc (-r) r ×ˢ T := by
+    ext ⟨τ, u⟩
+    simp only [mem_preimage, mem_ofPred_eq, he_apply, Fin.forall_iff_succAbove a,
+      Fin.insertNth_apply_same, Fin.insertNth_apply_succAbove, mem_prod, mem_Icc, abs_le, T]
+  have hT : IsCompact T := by
+    have hTpi : T = Set.pi univ fun _ => Icc (-r) r := by
+      ext u
+      simp only [T, mem_ofPred_eq, mem_univ_pi, mem_Icc, abs_le]
+    rw [hTpi]
+    exact isCompact_univ_pi fun _ => isCompact_Icc
+  have hcont : Continuous fun p : (Fin j → ℝ) × ℝ => φ (Fin.insertNth a p.2 p.1) :=
+    hφ.comp (Continuous.finInsertNth (A := fun _ => ℝ) a continuous_snd continuous_fst)
+  -- Steps 3–4: change of variables, then Fubini on the compact box `I_j ×ˢ [-r, r]`
+  rw [← he.setIntegral_preimage_emb e.measurableEmbedding φ, hpre, Measure.volume_eq_prod,
+    ← setIntegral_prod_swap, setIntegral_prod]
+  · -- Step 5: the fundamental theorem of calculus in `τ`, for each `u'`
+    congr 1
+    funext u
+    simp only [Prod.swap_prod_mk, he_apply]
+    rw [integral_Icc_eq_integral_Ioc, ← intervalIntegral.integral_of_le (by linarith)]
+    exact intervalIntegral.integral_eq_sub_of_hasDerivAt (fun τ _ => hψ u τ)
+      ((hcont.comp (Continuous.prodMk_right u)).intervalIntegrable _ _)
+  · exact hcont.continuousOn.integrableOn_compact (hT.prod isCompact_Icc)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
