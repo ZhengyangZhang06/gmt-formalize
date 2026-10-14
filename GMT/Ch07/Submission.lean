@@ -1721,6 +1721,55 @@ theorem Submission.idtp_fons_cr_density_measurable : ∀ (P n : ℕ) (μ : Measu
   simp_rw [hbasis.limsup_eq_iInf_iSup]
   exact Measurable.ennreal_toReal (Measurable.iInf fun m => Measurable.iInf fun _ =>
     (lowerSemicontinuous_biSup fun ρ hρ => hg ρ hρ.2).measurable)
+/-- **Simon 7.3.3, proof of 3.3(2)**, rescaling (chapter-07.txt lines 512–583, with Remark 3.4,
+lines 380–398): for `t > 0` let `μ^{y,t} = t⁻ⁿ (η_{y,t})_# μ`.  As
+`η_{y,t}⁻¹(B_ρ(w)) = B_{tρ}(y + tw)`, `μ^{y,t}(B_ρ(w)) = t⁻ⁿ μ(B_{tρ}(y + tw))`, so the density
+ratio of `μ^{y,t}` at `(w, ρ)` is that of `μ` at `(y + tw, tρ)`; since `ρ ↦ tρ` maps `𝓝[>] 0`
+onto itself the upper densities agree, and since `t⁻ⁿ ≠ 0` every ball about `w` has positive
+`μ^{y,t}`-measure iff every ball about `y + tw` has positive `μ`-measure. -/
+theorem Submission.idtp_fons_cr_density_rescale : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (t : ℝ), 0 < t → (∀ w : Euclid P, limsup (fun ρ : ℝ => (ENNReal.ofReal (t⁻¹ ^ n) • μ.map (dilation y t)) (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => μ (ball (y + t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)) ∧ ∀ w : Euclid P, (∀ ε : ℝ, 0 < ε → (ENNReal.ofReal (t⁻¹ ^ n) • μ.map (dilation y t)) (ball w ε) ≠ 0) ↔ ∀ ε : ℝ, 0 < ε → μ (ball (y + t • w) ε) ≠ 0 := by
+  intro P n μ y t ht
+  -- `η_{y,t}⁻¹(B_ρ(w)) = B_{tρ}(y + tw)`, so `μ^{y,t}(B_ρ(w)) = t⁻ⁿ μ(B_{tρ}(y + tw))`
+  have hball : ∀ (w : Euclid P) (ρ : ℝ), (ENNReal.ofReal (t⁻¹ ^ n) • μ.map (dilation y t))
+      (ball w ρ) = ENNReal.ofReal (t⁻¹ ^ n) * μ (ball (y + t • w) (t * ρ)) := by
+    intro w ρ
+    have hmeas : Measurable (dilation y t) :=
+      (continuous_const.add (dilationCLM P t).continuous).measurable
+    have hpre : dilation y t ⁻¹' ball w ρ = ball (y + t • w) (t * ρ) := by
+      ext z
+      have hz : dilation y t z - w = t⁻¹ • (z - (y + t • w)) := by
+        change -(t⁻¹ • y) + t⁻¹ • z - w = _
+        rw [smul_sub, smul_add, smul_smul, inv_mul_cancel₀ ht.ne', one_smul]
+        abel
+      rw [mem_preimage, mem_ball, mem_ball, dist_eq_norm, dist_eq_norm, hz, norm_smul,
+        Real.norm_of_nonneg (inv_nonneg.2 ht.le), inv_mul_lt_iff₀ ht]
+    rw [Measure.smul_apply, Measure.map_apply hmeas measurableSet_ball, hpre, smul_eq_mul]
+  refine ⟨fun w => ?_, fun w => ?_⟩
+  · -- the density ratio of `μ^{y,t}` at `(w, ρ)` is that of `μ` at `(y + tw, tρ)`
+    set H : ℝ → ℝ≥0∞ := fun r => μ (ball (y + t • w) r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))
+    have hk0 : ENNReal.ofReal (t ^ n) ≠ 0 := (ENNReal.ofReal_pos.2 (pow_pos ht n)).ne'
+    have hfun : (fun ρ : ℝ => (ENNReal.ofReal (t⁻¹ ^ n) • μ.map (dilation y t)) (ball w ρ) /
+        (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) = H ∘ (t * ·) := by
+      funext ρ
+      rw [comp_apply, hball]
+      simp only [H, mul_pow, ENNReal.ofReal_mul (pow_nonneg ht.le n), inv_pow,
+        ENNReal.ofReal_inv_of_pos (pow_pos ht n), div_eq_mul_inv]
+      rw [mul_left_comm (unitBallVolume n), ENNReal.mul_inv (Or.inl hk0) (Or.inl ENNReal.ofReal_ne_top)]
+      ring
+    -- `ρ ↦ tρ` maps `𝓝[>] 0` onto itself
+    have hmap : map (t * ·) (𝓝[>] (0 : ℝ)) = 𝓝[>] 0 := by
+      conv_lhs => rw [← comap_mulLeft_nhdsGT_zero ht]
+      exact map_comap_of_surjective (mul_left_surjective₀ ht.ne') _
+    rw [hfun, limsup_comp, hmap]
+  · -- `t⁻ⁿ ≠ 0` and `ε ↦ tε` is a bijection of `(0, ∞)`
+    have hc : ENNReal.ofReal (t⁻¹ ^ n) ≠ 0 := (ENNReal.ofReal_pos.2 (pow_pos (inv_pos.2 ht) n)).ne'
+    simp only [hball, ne_eq, mul_eq_zero, hc, false_or]
+    constructor
+    · intro h δ hδ
+      have := h (δ / t) (div_pos hδ ht)
+      rwa [mul_div_cancel₀ δ ht.ne'] at this
+    · intro h ε hε
+      exact h (t * ε) (mul_pos ht hε)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
