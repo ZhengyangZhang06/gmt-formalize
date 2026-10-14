@@ -4672,6 +4672,80 @@ theorem Submission.dtc_restrictDomain_isIntegerMultiplicity : ∀ (P n : ℕ) (U
   have hxω : x ∉ tsupport (ω : DifferentialForm (Euclid P) n) :=
     fun h => hx.2 ⟨hx.1, ω.property.2 h⟩
   rw [image_eq_zero_of_notMem_tsupport hxω, map_zero, mul_zero]
+/-- Measures `μ, ν` on `ℝᴾ` that agree on the open subsets of an open set `O`, with `μ` finite on
+compact subsets of `O`, agree on the Borel subsets of `O`.  `O` is exhausted by the open sets
+`Oᵢ = {x : |x| < i, dist(x, ℝᴾ ∖ O) > 1/(i+1)}`, whose closures are compact subsets of `O`; the
+finite measures `μ⌞Oᵢ, ν⌞Oᵢ` agree on the π-system of open sets, hence everywhere, and continuity
+from below along `A ∩ Oᵢ ↑ A` gives `μ(A) = ν(A)`. -/
+theorem Submission.cmc_ml_measure_eq_of_eq_on_open_subsets : ∀ (P : ℕ) (O : Set (Euclid P)) (μ ν : Measure (Euclid P)), IsOpen O → (∀ C : Set (Euclid P), IsCompact C → C ⊆ O → μ C ≠ ∞) → (∀ G : Set (Euclid P), IsOpen G → G ⊆ O → μ G = ν G) → ∀ A : Set (Euclid P), MeasurableSet A → A ⊆ O → μ A = ν A := by
+  intro P O μ ν hO hfin hopen A hA hAO
+  -- `d(x) = dist(x, ℝᴾ ∖ O) ∈ [0, ∞]` (`d ≡ ∞` if `O = ℝᴾ`), and the thresholds `1/(i+1)`
+  set d : Euclid P → ℝ≥0∞ := fun x => infEDist x Oᶜ
+  have hdc : Continuous d := continuous_infEDist
+  set c : ℕ → ℝ≥0∞ := fun i => ((i + 1 : ℕ) : ℝ≥0∞)⁻¹
+  have hc0 : ∀ i, c i ≠ 0 := fun i => ENNReal.inv_ne_zero.mpr (ENNReal.natCast_ne_top _)
+  -- 1. the exhaustion `Oᵢ = {x : |x| < i, d(x) > 1/(i+1)}`
+  set Oi : ℕ → Set (Euclid P) := fun i => ball 0 i ∩ d ⁻¹' Ioi (c i)
+  -- (a) `Oᵢ` is open
+  have hOi_open : ∀ i, IsOpen (Oi i) := fun i => isOpen_ball.inter (isOpen_Ioi.preimage hdc)
+  -- (b) `closure Oᵢ ⊆ Fᵢ = {x : |x| ≤ i, d(x) ≥ 1/(i+1)} ⊆ O`
+  have hOi_cl : ∀ i, closure (Oi i) ⊆ closedBall 0 i ∩ d ⁻¹' Ici (c i) := fun i =>
+    closure_minimal (inter_subset_inter ball_subset_closedBall (preimage_mono Ioi_subset_Ici_self))
+      (isClosed_closedBall.inter (isClosed_Ici.preimage hdc))
+  have hOi_O : ∀ i, closure (Oi i) ⊆ O := by
+    intro i x hx
+    by_contra hxO
+    have h0 : d x = 0 := infEDist_zero_of_mem hxO
+    have h1 : c i ≤ d x := (hOi_cl i hx).2
+    rw [h0, nonpos_iff_eq_zero] at h1
+    exact hc0 i h1
+  -- (c) `closure Oᵢ` is compact
+  have hOi_cpt : ∀ i, IsCompact (closure (Oi i)) := fun i =>
+    (isCompact_closedBall 0 i).of_isClosed_subset isClosed_closure fun x hx => (hOi_cl i hx).1
+  -- (d) `Oᵢ ⊆ Oⱼ` for `i ≤ j`
+  have hOi_mono : Monotone Oi := by
+    intro i j hij x hx
+    have h1 : x ∈ ball (0 : Euclid P) j := ball_subset_ball (by exact_mod_cast hij) hx.1
+    have h2 : c i < d x := hx.2
+    have h3 : c j ≤ c i := ENNReal.inv_le_inv.mpr (by exact_mod_cast Nat.succ_le_succ hij)
+    have h4 : c j < d x := h3.trans_lt h2
+    exact ⟨h1, h4⟩
+  -- (e) `⋃ᵢ Oᵢ = O`
+  have hOi_union : ⋃ i, Oi i = O := by
+    refine Subset.antisymm (iUnion_subset fun i => subset_closure.trans (hOi_O i)) fun x hx => ?_
+    have hdx : 0 < d x := infEDist_pos_iff_notMem_closure.mpr (by
+      rw [hO.isClosed_compl.closure_eq]; exact fun h => h hx)
+    obtain ⟨m, hm⟩ := ENNReal.exists_inv_nat_lt hdx.ne'
+    obtain ⟨k, hk⟩ := exists_nat_gt ‖x‖
+    have h1 : x ∈ ball (0 : Euclid P) (max m k : ℕ) := by
+      rw [mem_ball, dist_zero_right]
+      exact hk.trans_le (by exact_mod_cast le_max_right m k)
+    have h2 : c (max m k) ≤ (m : ℝ≥0∞)⁻¹ :=
+      ENNReal.inv_le_inv.mpr (by exact_mod_cast (le_max_left m k).trans (Nat.le_succ _))
+    have h3 : c (max m k) < d x := h2.trans_lt hm
+    exact mem_iUnion.mpr ⟨max m k, h1, h3⟩
+  -- 2. `μ(Oᵢ) ≤ μ(closure Oᵢ) < ∞`
+  have hμOi : ∀ i, μ (Oi i) ≠ ∞ := fun i =>
+    ne_top_of_le_ne_top (hfin _ (hOi_cpt i) (hOi_O i)) (measure_mono subset_closure)
+  -- 3. `μ⌞Oᵢ = ν⌞Oᵢ`: finite measures agreeing on the π-system of open sets (and on `ℝᴾ`)
+  have hrestr : ∀ i, μ.restrict (Oi i) = ν.restrict (Oi i) := by
+    intro i
+    have : IsFiniteMeasure (μ.restrict (Oi i)) := isFiniteMeasure_restrict.mpr (hμOi i)
+    have hG : ∀ G : Set (Euclid P), IsOpen G → μ.restrict (Oi i) G = ν.restrict (Oi i) G := by
+      intro G hG
+      rw [Measure.restrict_apply hG.measurableSet, Measure.restrict_apply hG.measurableSet]
+      exact hopen _ (hG.inter (hOi_open i))
+        (inter_subset_right.trans (subset_closure.trans (hOi_O i)))
+    exact ext_of_generate_finite _ BorelSpace.measurable_eq isPiSystem_isOpen
+      (fun G hG' => hG G hG') (hG univ isOpen_univ)
+  -- 4. continuity from below along `A ∩ Oᵢ ↑ A`
+  have hAunion : A = ⋃ i, A ∩ Oi i := by
+    rw [← inter_iUnion, hOi_union, inter_eq_left.mpr hAO]
+  have hmono : Monotone fun i => A ∩ Oi i := fun i j hij =>
+    inter_subset_inter_right _ (hOi_mono hij)
+  rw [hAunion, hmono.measure_iUnion, hmono.measure_iUnion]
+  refine iSup_congr fun i => ?_
+  rw [← Measure.restrict_apply hA, ← Measure.restrict_apply hA, hrestr i]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
