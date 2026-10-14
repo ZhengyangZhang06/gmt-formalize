@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d78856aab4db2d49c86d177adf082edb1d78ac92e114066de80fdb672c80ae99",
+  "git_delta": {
+    "base_commit": "9472aec629f34d4262a77d51ae433ffeb86e4c07",
+    "candidate_commit": "6f0bdcdb0d7a91e819fe4801c075780e4c9ddffe",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_atm_ball_le_transversal_ball",
+    "diff_sha256": "e0b711289b0a465bce224b0327c4621acc6c4f10357951b5c084c62a1f350981",
+    "source_sha256": "14ebfb1ce55cb8ee19328e6a2347bea9e50ea45e219b977f27a89895e51bf21a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_atm_ball_le_transversal_ball",
+      "statement": "∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → ∀ (x : Euclid P) (r : ℝ), 0 < r → ν (ball x r) ≤ unitBallVolume n * ENNReal.ofReal (r ^ n) * σ (ball (x - V.starProjection x) r)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
