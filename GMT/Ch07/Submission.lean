@@ -626,6 +626,63 @@ theorem Submission.cbr_rlim_thin_band : ∀ (P : ℕ) (μ ν : Measure (Euclid P
     (hB0.trans_lt hδ')
   obtain ⟨N, hN⟩ := (hA.and hB).exists
   exact ⟨1 / ((N : ℝ) + 1), Nat.one_div_pos_of_nat, hN.1, hN.2⟩
+/-- **Restrictions to a sublevel set pass to the weak limit** (step (T2) of the closure argument,
+cf. the proof of Simon Ch. 6, 4.5(2)): let `X_j ⇀ X` in `U` with admissible representations
+`(μ_j, ξ_j)` of `X_j` and `(μ_X, ξ_X)` of `X`, let `μ` be finite on compact subsets of `U` with
+`limsup_j μ_j(K) ≤ μ(K)` for compact `K ⊆ U`, and let `f` be continuous with `μ{f = t} = 0`.
+Then `∫_{f<t} ξ_j(ω) dμ_j → ∫_{f<t} ξ_X(ω) dμ_X` for every `ω ∈ 𝒟ᵏ(U)`.  Given `e > 0`, take a
+band `{t − ε ≤ f ≤ t}` whose `μ`- and `μ_X`-measures inside `spt ω` are below `δ`, and a smooth
+cut-off `χ`, `χ = 1` on `{f ≤ t − ε}`, `χ = 0` on `{f ≥ t}`.  Both restricted integrals differ
+from the values at `χ ω` by at most `M δ` (for `μ_j` eventually, by the limsup bound on the
+compact band), and `X_j(χ ω) → X(χ ω)`. -/
+theorem Submission.dmcbr_sublevel_restriction_tendsto : ∀ (P k : ℕ) (U : Set (Euclid P)) (Xs : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (μs : ℕ → Measure (Euclid P)) (ξs : ℕ → Euclid P → MultiVector P k) (μX μ : Measure (Euclid P)) (ξX : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (t : ℝ), IsOpen U → Continuous f → WeaklyConvergesOn Xs X → (∀ j, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μs j K < ∞) → (∀ j, AEStronglyMeasurable (ξs j) (μs j)) → (∀ j, ∀ᵐ x ∂(μs j), ∀ α : Covector (Euclid P) k, |ξs j x α| ≤ covectorEuclideanNorm α) → (∀ j, ∀ ω : TestFormOn U k, Xs j ω = ∫ x, ξs j x ((ω : DifferentialForm (Euclid P) k) x) ∂(μs j)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μX K < ∞) → AEStronglyMeasurable ξX μX → (∀ᵐ x ∂μX, ∀ α : Covector (Euclid P) k, |ξX x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U k, X ω = ∫ x, ξX x ((ω : DifferentialForm (Euclid P) k) x) ∂μX) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ μ K) → μ {x | f x = t} = 0 → ∀ ω : TestFormOn U k, Tendsto (fun j => ∫ x in {x | f x < t}, ξs j x ((ω : DifferentialForm (Euclid P) k) x) ∂(μs j)) atTop (𝓝 (∫ x in {x | f x < t}, ξX x ((ω : DifferentialForm (Euclid P) k) x) ∂μX)) := by
+  intro P k U Xs X μs ξs μX μ ξX f t _ hf hXs hμs hξsm hξs hXsr hμX hξXm hξX hXr hμ hlim hμt ω
+  -- step 1: `|ω|_E ≤ M`, and `spt ω` is a compact subset of `U`
+  obtain ⟨M, hM, hωM⟩ := Submission.cbr_rlim_coeffNorm_bound P k U ω
+  obtain ⟨⟨-, hCc⟩, hCU⟩ := ω.2
+  rw [Metric.tendsto_nhds]
+  intro e he
+  -- step 2: a tolerance `δ > 0` with `M δ ≤ e / 3`
+  obtain ⟨δ, hδ, hMδ⟩ : ∃ δ : ℝ, 0 < δ ∧ M * δ ≤ e / 3 :=
+    ⟨e / 3 / (M + 1), by positivity, by
+      rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+      nlinarith⟩
+  -- step 3: a thin band of width `ε` in `spt ω` with `μ`- and `μ_X`-measure below `δ`
+  obtain ⟨ε, hε, hμB, hμXB⟩ := Submission.cbr_rlim_thin_band P μ μX
+    (tsupport (ω : DifferentialForm (Euclid P) k)) f t δ (isClosed_tsupport _).measurableSet
+    (hμ _ hCc hCU) (hμX _ hCc hCU) hf hμt hδ
+  -- step 4: the smooth cut-off `χ` and the test form `η = χ ω`
+  obtain ⟨χ, η, hη, hχ, hχ1, hχ0⟩ := Submission.cbr_rlim_smooth_cutoff P k U ω f t ε hf hε
+  -- step 5: the closed band is a compact subset of `U`, so eventually its `μ_j`-measure is
+  -- below `δ`; it contains the open band
+  have hBc : IsCompact (tsupport (ω : DifferentialForm (Euclid P) k) ∩
+      {x | t - ε ≤ f x ∧ f x ≤ t}) :=
+    IsCompact.inter_right hCc
+      ((isClosed_le continuous_const hf).inter (isClosed_le hf continuous_const))
+  have hev : ∀ᶠ j in atTop, μs j (tsupport (ω : DifferentialForm (Euclid P) k) ∩
+      {x | t - ε ≤ f x ∧ f x ≤ t}) < ENNReal.ofReal δ :=
+    eventually_lt_of_limsup_lt ((hlim _ hBc (inter_subset_left.trans hCU)).trans_lt hμB)
+  have hsub : tsupport (ω : DifferentialForm (Euclid P) k) ∩ {x | t - ε < f x ∧ f x < t} ⊆
+      tsupport (ω : DifferentialForm (Euclid P) k) ∩ {x | t - ε ≤ f x ∧ f x ≤ t} :=
+    fun x hx => ⟨hx.1, hx.2.1.le, hx.2.2.le⟩
+  -- step 6: `X_j(η) → X(η)` by weak convergence
+  filter_upwards [hev, Metric.tendsto_nhds.1 (hXs η) (e / 3) (by positivity)] with j hj hjη
+  -- step 7: the cut-off errors for `(μ_j, ξ_j)` and for `(μ_X, ξ_X)` are at most `M δ`
+  have hE := Submission.cbr_rlim_cutoff_error_le P k U (μs j) (ξs j) ω η χ f t ε M hf (hμs j)
+    (hξsm j) (hξs j) hωM hη hχ hχ1 hχ0
+  have hEX := Submission.cbr_rlim_cutoff_error_le P k U μX ξX ω η χ f t ε M hf hμX hξXm hξX
+    hωM hη hχ hχ1 hχ0
+  have hb : M * (μs j (tsupport (ω : DifferentialForm (Euclid P) k) ∩
+      {x | t - ε < f x ∧ f x < t})).toReal ≤ M * δ :=
+    mul_le_mul_of_nonneg_left
+      (ENNReal.toReal_lt_of_lt_ofReal ((measure_mono hsub).trans_lt hj)).le hM
+  have hbX : M * (μX (tsupport (ω : DifferentialForm (Euclid P) k) ∩
+      {x | t - ε < f x ∧ f x < t})).toReal ≤ M * δ :=
+    mul_le_mul_of_nonneg_left (ENNReal.toReal_lt_of_lt_ofReal hμXB).le hM
+  -- step 8: the triangle inequality
+  rw [Real.dist_eq, abs_lt] at hjη ⊢
+  rw [abs_le] at hE hEX
+  constructor <;> linarith [hXsr j η, hXr η]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
