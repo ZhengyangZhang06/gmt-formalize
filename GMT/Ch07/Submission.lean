@@ -549,6 +549,23 @@ theorem Submission.cmc_fc_gs_aqf_liminf_le_seq : ∀ (μ : Measure ℝ) (a b t :
   rw [Measure.restrict_apply measurableSet_Ioo, Set.inter_eq_left.2 hsub, one_div, inv_inv,
     ENNReal.ofReal_add (Nat.cast_nonneg n) zero_le_one, ENNReal.ofReal_natCast, ENNReal.ofReal_one]
 
+/-- **Simon 7.2.4, good slices** (a.e. finiteness of the lower difference quotients): if
+`μ_j([a, b]) ≤ Λ < ∞` for all `j`, then for a.e. `t ∈ (a, b)`,
+`liminf_j liminf_{h ↓ 0} h⁻¹ μ_j((t − h, t)) < ∞`.  The restrictions `ν_j = μ_j⌞[a, b]` have
+total mass `μ_j([a, b]) ≤ Λ`, so by double Fatou `liminf_j liminf_n (n + 1) ν_j((t − hₙ, t))`,
+`hₙ = 1/(n + 1)`, is finite for a.e. `t`; for `a < t < b` it dominates the quotient above. -/
+theorem Submission.dimred_mbl_fc_gs_ae_quotient_finite : ∀ (μ : ℕ → Measure ℝ) (a b : ℝ) (Λ : ℝ≥0∞), Λ ≠ ∞ → (∀ j, μ j (Icc a b) ≤ Λ) → ∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ j (Ioo (t - h) t)) (𝓝[>] 0)) atTop ≠ ∞ := by
+  intro μ a b Λ hΛ hμ
+  -- the restrictions `ν_j = μ_j⌞[a, b]` have total mass `μ_j([a, b]) ≤ Λ`
+  have hν : ∀ j, (μ j).restrict (Icc a b) univ ≤ Λ := fun j => by
+    rw [Measure.restrict_apply_univ]
+    exact hμ j
+  -- double Fatou for `ν_j`, then `S_j(t) ≤ q_j(t)` on `(a, b)` and monotonicity of `liminf_j`
+  filter_upwards [Submission.cmc_fc_gs_aqf_ae_seq_liminf_finite
+    (fun j => (μ j).restrict (Icc a b)) Λ hΛ hν] with t ht hta
+  exact ne_top_of_le_ne_top ht (liminf_le_liminf (Eventually.of_forall fun j =>
+    Submission.cmc_fc_gs_aqf_liminf_le_seq (μ j) a b t hta))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
