@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'reflection_sub|toDual_symm_apply|orthonormal_iff_ite|inner_map_map' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace -g '*.lean'",
+        "rg -n 'cmcs_wn_|alternatizeUncurryFin|covectorEuclideanNorm|removeNth|insertNth|smulRight' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "rg -n -i 'alternatizeUncurryFin.*norm|norm_alternatizeUncurryFin|wedge.*norm_le|norm_wedge|exists_orthonormalBasis.*inner|reflection.*OrthonormalBasis|OrthonormalBasis.*reflection|sum.*removeNth|removeNth.*sum' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'",
+        ". GMT/Scratch/cmcs_wedge_norm_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/cmcs_wedge_norm_decomposition/Full.lean",
+        ". GMT/Scratch/cmcs_wedge_norm_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/cmcs_wedge_norm_decomposition/InstCheck.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Reflection.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/LinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/BigOperators.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-wedge-norm-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-wedge-norm-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-wedge-norm-a1/decomposition-scope-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/isolated-comparator-result.json",
+        "GMT/Ch07/Submission.lean",
+        "GMT/Scratch/cmcs_wedge_norm_decomposition/ChildA.lean",
+        "GMT/Scratch/cmcs_wedge_norm_decomposition/ChildB.lean",
+        "GMT/Scratch/cmcs_wedge_norm_decomposition/ChildC.lean",
+        "GMT/Scratch/cmcs_wedge_norm_decomposition/Assembly.lean",
+        "GMT/Scratch/cmcs_wedge_norm_decomposition/Full.lean",
+        "GMT/Scratch/cmcs_wedge_norm_decomposition/InstCheck.lean"
+      ],
+      "conclusion": "The manifest pins project b4d606db and Mathlib 25730c7c; the contract matches Submission.lean, and the checked compiler sources match the snapshot. The snapshot supplies Riesz duality, reflection_sub, basis transport, alternating-map expansion and vanishing, and insertNthEquiv. Searches found no directly reusable adapted-basis or deletion-fiber-sum theorem; the available alternatizeUncurryFin norm bound concerns the operator norm with factor k+1, not the selected coefficient norm. The project search returned no matches.\n\nThe split is appropriate: its three independent obligations establish distinct steps of exactly cmcs_wedge_norm_le. Summing the tuple bound, applying fiber_sum and the accepted square-sum identity, cancelling the positive factorial, and comparing nonnegative squares proves the selected conclusion. The separate P=0 case is valid. The dependency closure is acyclic and correctly directed. The reused regcomp_covector_sq_sum_orthonormalBasis is comparator-accepted at 16144a475b272196ba8b2bd15f104028282dbcfc with the identical frozen type; its copied declarations and proofs were checked against that commit.\n\nAll proposed names are bare identifiers, with no reservations in the inspected DAG and no matches in 711 worktree Submission.lean files. Each frozen child type is a standalone one-line proposition, matching its compiled declaration exactly and requiring no implemented child. Independent compilation of ChildA, ChildB, ChildC, Assembly, Full and InstCheck succeeded. Each child and the full parent use only propext, Classical.choice and Quot.sound; Assembly's sorryAx comes from its explicit stubs. Instance inspection confirms ContinuousLinearMap.hasOpNorm for β and the intended continuous alternating-map and Fin.removeNth constructions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "adapted_basis",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including the distinguished index i₀ : Fin P. Riesz representation gives both evaluation and norm identities. The zero case uses the standard basis; the nonzero case normalizes b, reflects e_i₀ to that unit vector, transports the basis, and computes every functional value by orthonormality. All steps are justified independently of the parent and other children."
+    },
+    {
+      "key": "tuple_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly captures the stated hypotheses, wedge convention and deletion sum, with arbitrary real c. Repeated indices force the alternating map to vanish; injective tuples have zero or one contributing index. The supplied expansion and squared-sign calculation establish the bound, while nonnegativity handles vanishing cases. Injectivity of v is redundant but harmless. The proof is complete and non-circular."
+    },
+    {
+      "key": "fiber_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line real-valued identity match, without an unstated positivity assumption on F. Exchanging sums, reindexing through insertNthEquiv, evaluating deletion and insertion, and retaining only x=i₀ proves each fiber identity. Counting Fin (k+1), with the stated real cast, gives precisely the conclusion, including k=0. No sibling or parent theorem is used."
+    }
+  ],
+  "required_changes": []
+}
