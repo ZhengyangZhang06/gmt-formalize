@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a932118798555ff72a9ddfb4b934e062733b2dbf07076541abfd5c1242f71032",
+  "git_delta": {
+    "base_commit": "0b4a349eaf496ca3c00151546611d2348db6e6c9",
+    "candidate_commit": "ede0332171de17de10a758224653cdb81e65bd6d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_stab_det_second_order",
+    "diff_sha256": "b609edf9d9c05a27e615cbd799b9f12f572d1a3b4aa0bbc7a0dee449be5d01cd",
+    "source_sha256": "d0a02a920ce29daf817e60c2b67bafafd85405dd123da789a468e3a9afc9152d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_stab_det_second_order",
+      "statement": "∀ (N : ℕ) (κ : ℝ), ∃ C : ℝ, ∀ n : ℕ, n ≤ N → ∀ X Y : Matrix (Fin n) (Fin n) ℝ, (∀ i j, |X i j| ≤ κ) → (∀ i j, |Y i j| ≤ κ) → ∀ t : ℝ, |t| ≤ 1 → |(1 + t • X + t ^ 2 • Y).det - (1 + t * X.trace + t ^ 2 * (Y.trace + (X.trace ^ 2 - (X * X).trace) / 2))| ≤ C * |t| ^ 3",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
