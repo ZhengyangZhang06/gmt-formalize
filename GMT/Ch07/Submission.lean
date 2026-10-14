@@ -665,6 +665,21 @@ theorem Submission.cmcsd_support_calculus : ∀ (P n : ℕ), (∀ (E : Set (Eucl
     obtain ⟨WA, ⟨hWAo, hWAc, -, hWAv⟩, hxWA⟩ := mem_sUnion.mp hxA
     obtain ⟨WB, ⟨hWBo, -, -, hWBv⟩, hxWB⟩ := mem_sUnion.mp hxB
     refine hx.2 (mem_sUnion_of_mem (⟨hxWA, hxWB⟩ : x ∈ WA ∩ WB) ⟨hWAo.inter hWBo,
+      hWAc.of_isClosed_subset isClosed_closure (closure_mono inter_subset_left), subset_univ _,
+      fun ω hω => ?_⟩)
+    change A ω - B ω = 0
+    rw [hWAv ω (hω.trans inter_subset_left), hWBv ω (hω.trans inter_subset_right), sub_zero]
+  · -- (iv) every ball is a zero neighbourhood of the zero current
+    exact eq_empty_iff_forall_notMem.mpr fun x hx => hx.2 (mem_sUnion_of_mem
+      (mem_ball_self one_pos) ⟨(hball x 1).1, (hball x 1).2.1, (hball x 1).2.2,
+        fun ω _ => GeometricCurrentOn.zero_apply ω⟩)
+  · -- (v) `∂A(η) = A(dη)` with `spt dη ⊆ spt η`: a zero neighbourhood of `A` is one of `∂A`
+    intro A x hx
+    refine ⟨mem_univ x, fun hxA => hx.2 ?_⟩
+    obtain ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hxW⟩ := mem_sUnion.mp hxA
+    refine mem_sUnion_of_mem hxW ⟨hWo, hWc, hWU, fun η hη => ?_⟩
+    rw [GeometricCurrentOn.boundary_apply]
+    exact hWv _ ((tsupport_exteriorDerivative_subset (η : DifferentialForm (Euclid P) n)).trans hη)
 /-- **Support calculus in `ℝᴾ`** (Simon 6.2.11, 6.2.3).  For currents in `ℝᴾ`: (i) if `E` is
 closed and `X(ω) = 0` whenever `spt ω ∩ E = ∅`, then `spt X ⊆ E`; (ii) `spt X` is closed;
 (iii) `spt(A − B) ⊆ spt A ∪ spt B`; (iv) `spt 0 = ∅`; (v) `spt ∂A ⊆ spt A`. -/
@@ -706,14 +721,13 @@ theorem Submission.dimred_mbl_dtsd_support_calculus : ∀ (P n : ℕ), (∀ (E :
     change A ω - B ω = 0
     rw [hWAv ω (hω.trans inter_subset_left), hWBv ω (hω.trans inter_subset_right), sub_zero]
   · -- (iv) every ball is a zero neighbourhood of the zero current
-    exact eq_empty_iff_forall_notMem.mpr fun x hx => hx.2 (mem_sUnion_of_mem
-      (mem_ball_self one_pos) ⟨(hball x 1).1, (hball x 1).2.1, (hball x 1).2.2,
-        fun ω _ => GeometricCurrentOn.zero_apply ω⟩)
-  · -- (v) `∂A(η) = A(dη)` with `spt dη ⊆ spt η`: a zero neighbourhood of `A` is one of `∂A`
+    refine eq_empty_of_forall_notMem fun x hx => hx.2 (mem_sUnion_of_mem (mem_ball_self one_pos)
+      ⟨(hball x 1).1, (hball x 1).2.1, (hball x 1).2.2, fun ω _ => GeometricCurrentOn.zero_apply ω⟩)
+  · -- (v) `tsupport dη ⊆ tsupport η`, so zero neighbourhoods of `A` are ones of `∂A`
     intro A x hx
-    refine ⟨mem_univ x, fun hxA => hx.2 ?_⟩
-    obtain ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hxW⟩ := mem_sUnion.mp hxA
-    refine mem_sUnion_of_mem hxW ⟨hWo, hWc, hWU, fun η hη => ?_⟩
+    by_contra hxA
+    obtain ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hxW⟩ := mem_sUnion.mp (hzero A x hxA)
+    refine hx.2 (mem_sUnion_of_mem hxW ⟨hWo, hWc, hWU, fun η hη => ?_⟩)
     rw [GeometricCurrentOn.boundary_apply]
     exact hWv _ ((tsupport_exteriorDerivative_subset (η : DifferentialForm (Euclid P) n)).trans hη)
 /-- **Telescoping series** (Simon Ch. 6, proof of 5.1: the passage from the limits (19) to the
@@ -1026,15 +1040,6 @@ theorem Submission.cmcsdtd_deformed_series_sum : (∀ (P n : ℕ) (U : Set (Eucl
     hRspt.trans (closure_minimal (iUnion_subset fun j => (hspt j).2.1) hK₂), hbdspt,
     hSspt.trans (closure_minimal (iUnion_subset fun j => (hspt j).2.2.2) hK₃),
     hQm.trans hVsum, hbdm, hRm.trans hHsum, hSm.trans hEsum⟩
-    refine eq_empty_of_forall_notMem fun x hx => hx.2 (mem_sUnion_of_mem (mem_ball_self one_pos)
-      ⟨(hball x 1).1, (hball x 1).2.1, (hball x 1).2.2, fun ω _ => GeometricCurrentOn.zero_apply ω⟩)
-  · -- (v) `tsupport dη ⊆ tsupport η`, so zero neighbourhoods of `A` are ones of `∂A`
-    intro A x hx
-    by_contra hxA
-    obtain ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hxW⟩ := mem_sUnion.mp (hzero A x hxA)
-    refine hx.2 (mem_sUnion_of_mem hxW ⟨hWo, hWc, hWU, fun η hη => ?_⟩)
-    rw [GeometricCurrentOn.boundary_apply]
-    exact hWv _ ((tsupport_exteriorDerivative_subset (η : DifferentialForm (Euclid P) n)).trans hη)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
