@@ -1524,6 +1524,74 @@ theorem Submission.lcmp_massOn_le_add_of_eval_eq : ∀ (P k : ℕ) (U G : Set (E
     _ ≤ ENNReal.ofReal (X ω) + ENNReal.ofReal |Y ω| := ENNReal.ofReal_add_le
     _ ≤ X.massOn G + Y.massOn G := add_le_add hXle habs
 
+/-- **Mass of the split competitor** (Simon, Ch. 7, Lemma 3.5).  Let `G = span g` for an
+orthonormal frame `g` and `Q_r = {t ∈ G : |⟨gᵢ, t⟩| ≤ r ∀ i}`.  On test forms, through the
+interior product `♭` with `g`, let `S = [[G]] × S₀`, `Z = [[Q_r]] × (S₀' − S₀) + E'`,
+`A₁ = [[G \ Q_r]] × S₀` and `A₂ = [[Q_r]] × S₀'`, where `S₀ = τ(R₀)` and `S₀' = τ(R₀')` are
+carried by `Gᗮ`, and let `S' = S + Z`.  Fix a continuous linear `♭` by
+`Submission.dimred_cs_sos_mt_interior_product` (a).  The slices `t ↦ S₀(♭ω(t + ·))` and
+`t ↦ S₀'(♭ω(t + ·))` are `Hᵏ`-integrable on `G` and on the closed `Q_r ⊆ G`
+(`Submission.dimred_cs_sos_mt_slice_integrable` (iii)), so `∫_G − ∫_{Q_r} = ∫_{G \ Q_r}` gives
+`S' = A₁ + (A₂ + E')`.  Two applications of `Submission.lcmp_massOn_le_add_of_eval_eq`, through
+`T₂ = A₂ + E'`, and `M_W(E') ≤ M(E')` give `M_W(S') ≤ M_W(A₁) + M_W(A₂) + M(E')`. -/
+theorem Submission.dimred_cs_sos_mt_cm_split_mass : ∀ (P k m n : ℕ) (g : Fin k → Euclid P) (h : n = k + m) (S₀ S₀' : GeometricCurrentOn (univ : Set (Euclid P)) m) (R₀ R₀' : IMRep (univ : Set (Euclid P)) m) (S Z E' A₁ A₂ S' : GeometricCurrentOn (univ : Set (Euclid P)) n) (r : ℝ) (W : Set (Euclid P)), Orthonormal ℝ g → R₀.Represents S₀ → R₀'.Represents S₀' → R₀.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → R₀'.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → (∀ flat : Covector (Euclid P) n → Covector (Euclid P) m, (∀ (α : Covector (Euclid P) n) (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = ∫ t in (Submodule.span ℝ (Set.range g) : Set (Euclid P)), currentEval S₀ (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[k]) → (∀ flat : Covector (Euclid P) n → Covector (Euclid P) m, (∀ (α : Covector (Euclid P) n) (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, Z ω = (∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval (S₀' - S₀) (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[k]) + E' ω) → (∀ flat : Covector (Euclid P) n → Covector (Euclid P) m, (∀ (α : Covector (Euclid P) n) (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, A₁ ω = ∫ t in (Submodule.span ℝ (Set.range g) : Set (Euclid P)) \ {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval S₀ (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[k]) → (∀ flat : Covector (Euclid P) n → Covector (Euclid P) m, (∀ (α : Covector (Euclid P) n) (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, A₂ ω = ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval S₀' (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[k]) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, S' ω = S ω + Z ω) → S'.massOn W ≤ A₁.massOn W + A₂.massOn W + E'.mass := by
+  intro P k m n g h S₀ S₀' R₀ R₀' S Z E' A₁ A₂ S' r W hg hR₀ hR₀' hR₀c hR₀'c hSf hZf hA₁f hA₂f hS'
+  -- Step 1: a continuous linear interior product `♭` with the frame `g`
+  obtain ⟨flatL, hflatL⟩ := (Submission.dimred_cs_sos_mt_interior_product P).1 k m n g h
+  -- Step 2: `G` and `Q_r ⊆ G` are closed, hence Borel
+  have hGc : IsClosed ((Submodule.span ℝ (Set.range g) : Set (Euclid P))) :=
+    Submodule.closed_of_finiteDimensional _
+  have hQc : IsClosed
+      {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} := by
+    have hset : {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} =
+        (Submodule.span ℝ (Set.range g) : Set (Euclid P)) ∩ ⋂ i, {t | |inner ℝ (g i) t| ≤ r} := by
+      ext t; simp
+    rw [hset]
+    exact hGc.inter (isClosed_iInter fun i =>
+      isClosed_le (continuous_const.inner continuous_id).abs continuous_const)
+  have hQG : {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} ⊆
+      (Submodule.span ℝ (Set.range g) : Set (Euclid P)) := fun t ht => ht.1
+  -- Step 3: `currentEval (S₀' − S₀) = currentEval S₀' − currentEval S₀`
+  have hdiff : ∀ φ : DifferentialForm (Euclid P) m,
+      currentEval (S₀' - S₀) φ = currentEval S₀' φ - currentEval S₀ φ := by
+    intro φ
+    unfold currentEval
+    split_ifs with hφ
+    · rfl
+    · simp
+  -- Steps 4–5: the slices are integrable on `G` and `Q_r`, so `S' = A₁ + (A₂ + E')`
+  have hact : ∀ ω : TestFormOn (univ : Set (Euclid P)) n, S' ω = A₁ ω + (A₂ ω + E' ω) := by
+    intro ω
+    have hint := Submission.dimred_cs_sos_mt_slice_integrable P k m n g S₀ R₀ flatL ω hg hR₀
+    have hint' := Submission.dimred_cs_sos_mt_slice_integrable P k m n g S₀' R₀' flatL ω hg hR₀'
+    have hIG := hint.2.2 hR₀c _ hGc.measurableSet subset_rfl
+    have hIQ := hint.2.2 hR₀c _ hQc.measurableSet hQG
+    have hIQ' := hint'.2.2 hR₀'c _ hQc.measurableSet hQG
+    rw [hS' ω, hSf flatL hflatL ω, hZf flatL hflatL ω, hA₁f flatL hflatL ω, hA₂f flatL hflatL ω]
+    simp_rw [hdiff]
+    rw [integral_sub hIQ' hIQ, setIntegral_sdiff hQc.measurableSet hIG hQG]
+    ring
+  -- Step 6: the current `T₂ = A₂ − (0 − E') = A₂ + E'`
+  let T₂ : GeometricCurrentOn (univ : Set (Euclid P)) n := A₂ - (0 - E')
+  have hT₂ : ∀ ω : TestFormOn (univ : Set (Euclid P)) n, T₂ ω = A₂ ω + E' ω := by
+    intro ω
+    show A₂ ω - ((0 : GeometricCurrentOn (univ : Set (Euclid P)) n) ω - E' ω) = A₂ ω + E' ω
+    rw [GeometricCurrentOn.zero_apply]; ring
+  -- Step 7: two triangle inequalities with `c = 1`, and `M_W(E') ≤ M(E')`
+  have h1 : S'.massOn W ≤ A₁.massOn W + T₂.massOn W :=
+    Submission.lcmp_massOn_le_add_of_eval_eq P n univ W A₁ T₂ S' 1 (by simp)
+      (fun ω _ => by rw [hact ω, hT₂ ω, one_mul])
+  have h2 : T₂.massOn W ≤ A₂.massOn W + E'.massOn W :=
+    Submission.lcmp_massOn_le_add_of_eval_eq P n univ W A₂ E' T₂ 1 (by simp)
+      (fun ω _ => by rw [hT₂ ω, one_mul])
+  have h3 : E'.massOn W ≤ E'.mass := E'.massOn_mono (subset_univ W)
+  -- Step 8: combine the three bounds
+  calc S'.massOn W ≤ A₁.massOn W + T₂.massOn W := h1
+    _ ≤ A₁.massOn W + (A₂.massOn W + E'.mass) := by
+      gcongr
+      exact h2.trans (by gcongr)
+    _ = A₁.massOn W + A₂.massOn W + E'.mass := by rw [add_assoc]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
