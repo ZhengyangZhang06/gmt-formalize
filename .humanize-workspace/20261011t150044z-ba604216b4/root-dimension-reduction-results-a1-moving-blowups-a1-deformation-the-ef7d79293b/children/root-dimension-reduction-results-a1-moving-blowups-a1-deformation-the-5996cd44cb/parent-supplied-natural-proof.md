@@ -1,0 +1,107 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.cylinder-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.cylinder-a1.ftc_current-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, step 5, 'First integral (A0, Fubini, fundamental theorem of calculus)', together with step 0(d) (A0: (REP) represents a finite-mass current by μ and ξ). It is stated here for arbitrary families β, γ with the given formulas; γ_t is the parent's ∂_tβ^ω_t.
+- (REP) is the antecedent of the statement.
+- The uniform bound uses conjunct (iv) of the reused sibling coeff_norm (regcomp_covectorEuclideanNorm_seminorm_retract).
+
+Notation as in the statement. ‖·‖ denotes operator norms. M^ℝ := M(X).toReal.
+
+1. Representation (A0).
+   (a) For every open W ⊂⊂ ℝ^N, M_W(X) ≤ M_{ℝ^N}(X) = M(X) < ∞ (massOn_mono).
+   (b) So (REP) with P = N, n = k, U = univ (open) gives μ and ξ : ℝ^N → MultiVector N k with: M_W(X) = μ(W) for open W; ξ μ-a.e. strongly measurable; |ξ(x)(α)| ≤ |α| for all x, α; and X(φ) = ∫ ξ(x)(φ(x)) dμ for every φ ∈ 𝒟^k(ℝ^N).
+   (c) Taking W = ℝ^N gives μ(ℝ^N) = M(X) < ∞, so μ is a finite measure.
+
+2. Normal forms. Let J v := (0, v) as in slice_forms; then ι(t, x) = t e₀ + Jx. Let C_J : α ↦ α.compContinuousLinearMap J be the continuous linear map from k-covectors on ℝ^{N+1} to k-covectors on ℝ^N (ContinuousAlternatingMap.compContinuousLinearMapCLM). Comparing values on every v (ext), the hypotheses give β_s(x) = C_J(ω(s e₀ + Jx)) and γ_t(x) = C_J(Dω(t e₀ + Jx)e₀) for all s, t, x.
+
+3. Regularity of ω. ω is C^∞ with compact support. So ω is differentiable and Dω is continuous. Both ω and y ↦ Dω(y)e₀ are continuous with compact support (HasCompactSupport.fderiv), hence bounded: ‖ω(y)‖ ≤ M₀ and ‖Dω(y)e₀‖ ≤ M₁ for all y (Continuous.bounded_above_of_compact_support).
+
+4. Derivative in t. Fix x. The map t ↦ t e₀ + Jx has derivative e₀, so t ↦ ω(t e₀ + Jx) has derivative Dω(t e₀ + Jx)e₀ (chain rule, HasFDerivAt.comp_hasDerivAt). Composing with the continuous linear maps C_J and ξ(x) and using step 2, f_x(t) := ξ(x)(β_t(x)) has derivative ξ(x)(γ_t(x)) at every t ∈ ℝ.
+
+5. Continuity and bounds.
+   (a) (t, x) ↦ γ_t(x) = C_J(Dω(t e₀ + Jx)e₀) is continuous on ℝ × ℝ^N, and x ↦ β_s(x) is continuous for each s.
+   (b) By coeff_norm (iv) there is c > 0 with |α| ≤ c‖α‖ for every k-covector α on ℝ^N.
+   (c) Hence |ξ(x)(γ_t(x))| ≤ |γ_t(x)| ≤ c‖C_J‖M₁ and |ξ(x)(β_s(x))| ≤ c‖C_J‖M₀ for all t, s, x.
+
+6. Measurability and integrability. Let λ be Lebesgue measure restricted to (0, 1], a finite measure.
+   (a) The pairing (α, L) ↦ L(α) on (k-covectors) × MultiVector N k is continuous.
+   (b) Since ξ is μ-a.e. strongly measurable, (t, x) ↦ ξ(x) is a.e. strongly measurable for λ ⊗ μ (AEStronglyMeasurable.comp_snd). (t, x) ↦ γ_t(x) is continuous, hence strongly measurable.
+   (c) So G(t, x) := ξ(x)(γ_t(x)) is a.e. strongly measurable for λ ⊗ μ (Continuous.comp_aestronglyMeasurable₂). G is bounded (step 5) and λ ⊗ μ is finite, so G is λ ⊗ μ-integrable (Integrable.of_bound).
+   (d) In the same way, x ↦ ξ(x)(β_s(x)) is μ-integrable for each s.
+
+7. Conclusion.
+   (a) ∫_0^1 X(γ_t) dt = ∫_0^1 ∫ ξ(x)(γ_t(x)) dμ(x) dt, by step 1.
+   (b) = ∫ ∫_0^1 ξ(x)(γ_t(x)) dt dμ(x), by Fubini (integral_integral_swap), using ∫_0^1 = ∫_{(0,1]} (intervalIntegral.integral_of_le) and step 6.
+   (c) = ∫ [ξ(x)(β_1(x)) − ξ(x)(β_0(x))] dμ(x), by the fundamental theorem of calculus for f_x (intervalIntegral.integral_eq_sub_of_hasDerivAt). Its derivative (step 4) is continuous in t by step 5, hence interval integrable.
+   (d) = ∫ ξ(x)(β_1(x)) dμ − ∫ ξ(x)(β_0(x)) dμ, by integral_sub and step 6.
+   (e) = X(β_1) − X(β_0), by step 1. ∎
+
+## Key steps
+
+1. (REP) with U = univ represents X by a finite measure μ and a bounded measurable orientation ξ.
+2. β_s(x) = C_J(ω(s e₀ + Jx)) and γ_t(x) = C_J(Dω(t e₀ + Jx)e₀), so t ↦ ξ(x)(β_t(x)) has derivative ξ(x)(γ_t(x)).
+3. Uniform bounds (coeff_norm (iv), compact support) and a.e. strong measurability make ξ(x)(γ_t(x)) integrable on (0, 1] × ℝ^N.
+4. Fubini, the fundamental theorem of calculus for each x, and the representation again give X(β_1) − X(β_0).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project_commit b4d606db, mathlib_commit 25730c7c); cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean (identical)`
+- `python3 scan of /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json accepted lean_statements for the patterns '|X ω| ≤', '→ₗ[ℝ] ℝ', '.support ⊆', 'mass.toReal', '(A - B).mass', 'covectorEuclideanNorm ((' -> cmc_fc_sc_abs_le_mul_mass, cmc_fc_sc_current_of_coeff_bound, cmc_fc_cs_massOn_sub_le, rsd_cmr_support_subset_of_vanish, cbrld_cone_testForm_coeff_lipschitz, regcomp_covectorEuclideanNorm_seminorm_retract (status accepted, candidate commits, byte-identical lean_statement)`
+- `grep -rn "dimred_mbl_dt_lpc" /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT --include=*.lean (no match); python3 lookup of the four new lean_names in dag.json (no node)`
+- `python3 dump of dag.json nodes cmcdt_lpo_cylinder, cmcdt_lpo_slice_forms, cmcdt_lpo_current_toolkit (twin branch, status decomposing, different types: not reusable) and of the parent decomposition /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-a2fdfc1c6f/decomposition-v1.json`
+- `grep -n 'def |theorem ' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Forms,AffineCurrentPushforward,Product,ParametricCurrentContinuity,FormSupNorm,GeometricPointProduct}.lean (GeometricCurrentOn, TestFormOnConverges, exteriorDerivativeTestOn, GeometricCurrentOn.boundary_apply, GeometricCurrentOn.ext, covectorEuclideanNorm, massAdmissibleOn, massOn, mass, massOn_mono, le_massOn, support, zeroRegion, exteriorDerivative_apply, affinePullbackForm, affinePullbackForm_isTestForm; no product with [[0,1]] beyond the point product)`
+- `grep in pinned Mathlib: ContinuousAlternatingMap.curryLeft, curryLeftLI, curryLeft_apply_apply (Analysis/Normed/Module/Alternating/Curry.lean); compContinuousLinearMapCLM (Topology/Algebra/Module/Alternating/Topology.lean); fderiv_continuousAlternatingMap_apply_const (Analysis/Calculus/FDeriv/CompCLM.lean); ContinuousLinearMap.flipAlternating_apply_apply (Analysis/Normed/Module/Alternating/Basic.lean); extDeriv_apply (Analysis/Calculus/DifferentialForm/Basic.lean); Fin.cons_comp_succ_succAbove, Fin.removeNth_zero (Data/Fin/Tuple/Basic.lean); Isometry.isClosedEmbedding; Topology.IsClosedEmbedding.isProperMap; integral_integral_swap; AEStronglyMeasurable.comp_snd; Continuous.comp_aestronglyMeasurable₂; Integrable.of_bound; intervalIntegral.integral_eq_sub_of_hasDerivAt; Continuous.bounded_above_of_compact_support`
+- `lake env lean /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/Types.lean, Assembly.lean, CheckD.lean, CheckS.lean, CheckF.lean, CheckC.lean (Lean toolchain lean-4.35.0-rc3-linux)`
+- `python3 -I run of validate_lean_statement from /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py and /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py on all ten types`
+- `grep of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_existing_lean_name_problem, _accepted_checkpoint, _overlay_accepted_children) and /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py (contract_scope, child_modules)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-ef7d79293b/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-a2fdfc1c6f/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-a2fdfc1c6f/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Product.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/ParametricCurrentContinuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/ContinuousAlternatingMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Maps/Proper/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/Types.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/Assembly.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/CheckD.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/CheckS.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/CheckF.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dt_lpc_cylinder_decomposition/CheckC.lean`
+
+Pins match: project b4d606db and Mathlib 25730c7c, and the workspace Submission is byte-identical to the frozen Ch07 contract. Neither the snapshot project, SimonGMT nor Mathlib contains the product [[0,1]] × X, its slice forms, the slice exterior-derivative identity, or a fundamental theorem of calculus under a current. SimonGMT supplies the affine pull-back of test forms (affinePullbackForm_isTestForm). Mathlib supplies curryLeft/curryLeftLI, compContinuousLinearMapCLM, extDeriv_apply, derivatives of evaluations, Fubini and FTC. Six needed toolkit facts already exist as accepted DAG declarations with exactly the required types, and are reused verbatim: cmc_fc_sc_abs_le_mul_mass, cmc_fc_sc_current_of_coeff_bound, cmc_fc_cs_massOn_sub_le, rsd_cmr_support_subset_of_vanish, cbrld_cone_testForm_coeff_lipschitz and regcomp_covectorEuclideanNorm_seminorm_retract. The four new obligations get fresh, unused names dimred_mbl_dt_lpc_*. All ten types elaborate in the challenge scope and pass both validators. A Lean assembly derives the exact selected type from the children plus the covector-bounds dependency. Each new child was proved in Lean from its declared siblings. Every check used only propext, Classical.choice and Quot.sound.
