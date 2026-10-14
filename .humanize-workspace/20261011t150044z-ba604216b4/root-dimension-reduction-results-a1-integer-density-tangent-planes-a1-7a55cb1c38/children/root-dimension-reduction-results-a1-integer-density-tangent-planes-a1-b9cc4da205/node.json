@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1.fibre_signed-a1.signed_transfer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1.fibre_signed-a1",
+  "depth": 6,
+  "title": "From a nonnegative pushforward-density identity on a finite measure space to finiteness, integrability, signed and set identities",
+  "statement": "Let X be a measurable space with a measure ν such that ν(X) < ∞, φ : X → ℝ² a measurable map, g : X → ℝ a ν-a.e. strongly measurable function with 0 ≤ g(x) ≤ 1 for ν-a.e. x, and H : ℝ² → [0,∞] a.e.-measurable for Lebesgue measure on ℝ² = ℝ × ℝ, such that ∫ b(p)H(p) dp = ∫ b(φ(x))·ofReal(g(x)) dν(x) for every Borel b : ℝ² → [0,∞] (lower integrals). Then (i) H(p) ≠ ∞ for a.e. p; (ii) toReal∘H is Lebesgue integrable on ℝ²; (iii) for every Borel b : ℝ² → ℝ with |b| ≤ M for some real M, ∫ b(p)·toReal(H(p)) dp = ∫ b(φ(x))·g(x) dν(x) (Bochner integrals); (iv) for every Borel S ⊆ ℝ², ∫_S H(p) dp = ∫_{φ⁻¹(S)} ofReal(g(x)) dν(x).",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (φ : X → ℝ × ℝ) (g : X → ℝ) (H : ℝ × ℝ → ℝ≥0∞), ν univ ≠ ∞ → Measurable φ → AEStronglyMeasurable g ν → (∀ᵐ x ∂ν, 0 ≤ g x ∧ g x ≤ 1) → AEMeasurable H volume → (∀ b : ℝ × ℝ → ℝ≥0∞, Measurable b → ∫⁻ p : ℝ × ℝ, b p * H p = ∫⁻ x, b (φ x) * ENNReal.ofReal (g x) ∂ν) → (∀ᵐ p : ℝ × ℝ, H p ≠ ∞) ∧ Integrable (fun p : ℝ × ℝ => (H p).toReal) ∧ (∀ b : ℝ × ℝ → ℝ, Measurable b → (∃ M : ℝ, ∀ p, |b p| ≤ M) → ∫ p : ℝ × ℝ, b p * (H p).toReal = ∫ x, b (φ x) * g x ∂ν) ∧ ∀ S : Set (ℝ × ℝ), MeasurableSet S → ∫⁻ p in S, H p = ∫⁻ x in φ ⁻¹' S, ENNReal.ofReal (g x) ∂ν",
+  "lean_name": "idtp_cse_fd_fs_pushforward_signed_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b9cc4da205-a1"
+}
