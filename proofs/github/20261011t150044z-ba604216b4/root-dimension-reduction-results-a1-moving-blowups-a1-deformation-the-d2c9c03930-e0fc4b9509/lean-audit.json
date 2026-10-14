@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9f1cdabbf379651ca18fda6ba4b779309cb78816067289d5ffcd91884ca8ebee",
+  "git_delta": {
+    "base_commit": "2887db6d00206413fe1608bae6ffcf87c09d14cc",
+    "candidate_commit": "a7fb4be9371ca5060f99b7a80e691b65bf5b959b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_cbm_st_box_integrableOn",
+    "diff_sha256": "61440986945a8b9d7f28c743f0677247038318f44a6491902b79f6c76852e39b",
+    "source_sha256": "7585540b92a781cb5c436b82228f2c2526e645b375cc9ddef16775c10bf069b7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_cbm_st_box_integrableOn",
+      "statement": "∀ (n : ℕ) (h : Euclid n → ℝ) (a b : ℝ), Continuous h → IntegrableOn h {z : Euclid n | ∀ j, a < z j ∧ z j < b}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

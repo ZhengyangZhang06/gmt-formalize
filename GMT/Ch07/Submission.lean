@@ -451,6 +451,18 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The integrands of the smooth trace estimate are integrable on an open cube (fact (F3) of its
+proof): a continuous `h : ℝⁿ → ℝ` is integrable on the open box `{z : a < z_j < b for all j}`,
+which lies in the compact closed box `toLp '' Icc (fun _ => a) (fun _ => b)`. -/
+theorem Submission.dimred_mbl_dt_cbm_st_box_integrableOn : ∀ (n : ℕ) (h : Euclid n → ℝ) (a b : ℝ), Continuous h → IntegrableOn h {z : Euclid n | ∀ j, a < z j ∧ z j < b} := by
+  intro n h a b hh
+  have hsub : {z : Euclid n | ∀ j, a < z j ∧ z j < b} ⊆
+      (WithLp.toLp 2) '' (Set.Icc (fun _ => a) (fun _ => b) : Set (Fin n → ℝ)) :=
+    fun z hz => ⟨z.ofLp, ⟨fun j => (hz j).1.le, fun j => (hz j).2.le⟩, rfl⟩
+  have hKc : IsCompact ((WithLp.toLp 2) '' (Set.Icc (fun _ => a) (fun _ => b) : Set (Fin n → ℝ))) :=
+    isCompact_Icc.image (PiLp.continuous_toLp 2 _)
+  exact (hh.continuousOn.integrableOn_compact hKc).mono_set hsub
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
