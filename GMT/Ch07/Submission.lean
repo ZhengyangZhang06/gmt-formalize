@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.5.1** (proof, (35): `|β_F| ≤ 2 ∫_{F̊} |F| dLⁿ` from the median choice (31)): if
+`μ{β ≤ u} ≥ 1/2` and `μ{u ≤ β} ≥ 1/2` for an integrable `u` on a probability space, then
+`|β| ≤ 2 ∫ |u| dμ`.  By Markov's inequality `|β| μ{|β| ≤ |u|} ≤ ∫ |u| dμ`, and `{|β| ≤ |u|}`
+contains `{β ≤ u}` if `β ≥ 0` and `{u ≤ β}` if `β < 0`, so it has measure `≥ 1/2`. -/
+theorem Submission.dimred_mbl_dt_cbm_im_median_abs_le : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ) (β : ℝ), IsProbabilityMeasure μ → Integrable u μ → 1 / 2 ≤ μ.real {x | β ≤ u x} → 1 / 2 ≤ μ.real {x | u x ≤ β} → |β| ≤ 2 * ∫ x, |u x| ∂μ := by
+  intro X _ μ u β _ hu hge hle
+  -- Markov's inequality for `|u|` at level `|β|`
+  have hmarkov : |β| * μ.real {x | |β| ≤ |u x|} ≤ ∫ x, |u x| ∂μ :=
+    mul_meas_ge_le_integral_of_nonneg (ae_of_all _ fun x => abs_nonneg (u x)) hu.abs |β|
+  -- `{|β| ≤ |u|}` contains `{β ≤ u}` if `β ≥ 0` and `{u ≤ β}` if `β < 0`
+  have hhalf : 1 / 2 ≤ μ.real {x | |β| ≤ |u x|} := by
+    rcases le_or_gt 0 β with hβ | hβ
+    · refine hge.trans (measureReal_mono fun x (hx : β ≤ u x) => ?_)
+      rw [abs_of_nonneg hβ]
+      exact hx.trans (le_abs_self (u x))
+    · refine hle.trans (measureReal_mono fun x (hx : u x ≤ β) => ?_)
+      rw [abs_of_neg hβ]
+      exact (neg_le_neg hx).trans (neg_le_abs (u x))
+  calc |β| = 2 * (|β| * (1 / 2)) := by ring
+    _ ≤ 2 * (|β| * μ.real {x | |β| ≤ |u x|}) := by gcongr
+    _ ≤ 2 * ∫ x, |u x| ∂μ := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
