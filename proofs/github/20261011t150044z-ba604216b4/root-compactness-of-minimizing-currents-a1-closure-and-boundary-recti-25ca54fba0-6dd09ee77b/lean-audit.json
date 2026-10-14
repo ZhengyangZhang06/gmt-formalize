@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "23ef5237430fbfa50cc536bbe25d07bc9bb5f6f832c265a080c4dc94836a3a3a",
+  "git_delta": {
+    "base_commit": "ebd41b60cfc142b79ab764916a7441df0c6c9200",
+    "candidate_commit": "c1f0b73bdb7374774aa7627c260559647d000cb1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_bl_db_eventual_bounds",
+    "diff_sha256": "a3e86d7bdad3ddb194109112288e6c3a8b7127a75301d1ae41a57d9342979c65",
+    "source_sha256": "0dd6a4049214a7c8469cbee0da7e3315865a8697f66759c3b83926fc3e46b6b1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_bl_db_eventual_bounds",
+      "statement": "∀ (n : ℕ) (m h H o : ℝ → ℝ≥0∞) (θ₀ η₁ : ℝ) (K : ℝ≥0∞), 0 < θ₀ → 0 < η₁ → K ≠ ∞ → (∀ r : ℝ, 0 < r → m r ≤ ENNReal.ofReal θ₀ * h r + K * o r) → ENNReal.ofReal η₁ ≤ liminf (fun r : ℝ => m r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) → limsup (fun r : ℝ => H r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1 → Tendsto (fun r : ℝ => o r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0) → ∃ r₀ : ℝ, 0 < r₀ ∧ ∀ r : ℝ, 0 < r → r < r₀ → ENNReal.ofReal (η₁ / (4 * θ₀)) * (unitBallVolume n * ENNReal.ofReal (r ^ n)) ≤ h r ∧ H r ≤ 2 * (unitBallVolume n * ENNReal.ofReal (r ^ n))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
