@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.chart_geometry-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1",
+  "depth": 6,
+  "title": "Graph-chart identities: ‖ι*‖ ≤ 1, ι*ι = id, π∘G = id, p^⊥∘G = u, ι*∘DG = id (supplied step 1)",
+  "statement": "Let P, n ∈ ℕ, x ∈ ℝ^P, let ι : ℝ^{n+1} → ℝ^P be a linear isometry with adjoint A := ι* : ℝ^P → ℝ^{n+1} (ContinuousLinearMap.adjoint ι.toContinuousLinearMap), let δ₁ ∈ ℝ, D := B_{δ₁}(0) ⊆ ℝ^{n+1}, and let u : ℝ^{n+1} → ℝ^P be differentiable on D with ⟨ιw, u(v)⟩ = 0 for all v ∈ D and w ∈ ℝ^{n+1}. Put G(y) := x + ιy + u(y). Then (i) ‖A‖ ≤ 1; (ii) A(ιz) = z for every z ∈ ℝ^{n+1}; and for every v ∈ D: (iii) A(G(v) − x) = v, (iv) G(v) − x − ιA(G(v) − x) = u(v), and (v) A(DG(v)y) = y for every y ∈ ℝ^{n+1}, where DG(v) is the Fréchet derivative of G at v.",
+  "lean_statement": "∀ (P n : ℕ) (x : Euclid P) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ₁ : ℝ), DifferentiableOn ℝ u (ball 0 δ₁) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) → ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap‖ ≤ 1 ∧ (∀ z : Euclid (n + 1), ContinuousLinearMap.adjoint ι.toContinuousLinearMap (ι z) = z) ∧ ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ContinuousLinearMap.adjoint ι.toContinuousLinearMap (x + ι v + u v - x) = v ∧ x + ι v + u v - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (x + ι v + u v - x)) = u v ∧ ∀ y : Euclid (n + 1), ContinuousLinearMap.adjoint ι.toContinuousLinearMap (fderiv ℝ (fun y => x + ι y + u y) v y) = y",
+  "lean_name": "codim1_lur_graph_chart_adjoint_identities",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a08e0327a7-a1"
+}
