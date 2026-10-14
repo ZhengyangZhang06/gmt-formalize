@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9eb97c78c84158ca85aaaf2cf58d1dbc50afdb62bd01885be5916d6c85b25e9f",
+  "git_delta": {
+    "base_commit": "5050503cea2c8f2166b9d6d9a3385ab0403b2892",
+    "candidate_commit": "15f44b93ca2c033eea29e75494e04bc9744832fd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_fa_pj_polar_fderiv_apply",
+    "diff_sha256": "f86108a3eca6440d2cd398d65b6dc48c443826cdc83e5b03af82966928fa7cd9",
+    "source_sha256": "8b3e3cd9ed508656050ffb88a46bde1e5beda106ee32bb692c57f376df986729",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_fa_pj_polar_fderiv_apply",
+      "statement": "∀ (P : ℕ) (a e x : Euclid P), inner ℝ x a ≠ 0 → ∀ v : Euclid P, fderiv ℝ (fun y : Euclid P => (‖y‖, Real.arctan (inner ℝ y e / inner ℝ y a))) x v = (inner ℝ x v / ‖x‖, inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / (inner ℝ x a ^ 2 + inner ℝ x e ^ 2))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
