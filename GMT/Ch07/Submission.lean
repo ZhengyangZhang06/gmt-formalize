@@ -573,6 +573,27 @@ theorem Submission.idtp_cse_bml_rbi_norm_expansion : ∀ (P : ℕ) (a w : Euclid
     linear_combination hsq / 2
   rw [hkey, abs_le]
   constructor <;> nlinarith [sq_nonneg (t - 1), sq_nonneg s']
+/-- Projection residual of `a + s'w` for `a ∈ Q`, `s' ≥ 0`: with `π = Q.starProjection`, `πa = a`
+and linearity give `(a + s'w) − π(a + s'w) = s'(w − πw)`; since `w − πw = π_{Qᗮ}w`, Pythagoras
+`‖w‖² = ‖πw‖² + ‖w − πw‖²` gives `‖w − πw‖ ≤ ‖w‖`, so the residual has norm at most `s'‖w‖`. -/
+theorem Submission.idtp_cse_bml_rbi_projection_residual_le : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a w : Euclid P) (s' : ℝ), a ∈ Q → 0 ≤ s' → ‖(a + s' • w) - Q.starProjection (a + s' • w)‖ ≤ s' * ‖w‖ := by
+  intro P Q a w s' ha hs'
+  -- `πa = a`, since `a ∈ Q`
+  have hπa : Q.starProjection a = a := Submodule.starProjection_eq_self_iff.mpr ha
+  -- by linearity the residual is `s' • (w − πw)`
+  have hres : (a + s' • w) - Q.starProjection (a + s' • w) = s' • (w - Q.starProjection w) := by
+    rw [map_add, map_smul, hπa, smul_sub, add_sub_add_left_eq_sub]
+  -- `w − πw = π_{Qᗮ}w`, so Pythagoras gives `‖w‖² = ‖πw‖² + ‖w − πw‖²`
+  have hpyth : ‖w‖ ^ 2 = ‖Q.starProjection w‖ ^ 2 + ‖w - Q.starProjection w‖ ^ 2 := by
+    rw [← Submodule.starProjection_orthogonal_val]
+    exact Submodule.norm_sq_eq_add_norm_sq_starProjection w Q
+  have hle : ‖w - Q.starProjection w‖ ≤ ‖w‖ := by
+    refine (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp ?_
+    rw [hpyth]
+    exact le_add_of_nonneg_left (sq_nonneg _)
+  -- `‖s' • (w − πw)‖ = s'‖w − πw‖ ≤ s'‖w‖`, as `s' ≥ 0`
+  rw [hres, norm_smul, Real.norm_of_nonneg hs']
+  exact mul_le_mul_of_nonneg_left hle hs'
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
