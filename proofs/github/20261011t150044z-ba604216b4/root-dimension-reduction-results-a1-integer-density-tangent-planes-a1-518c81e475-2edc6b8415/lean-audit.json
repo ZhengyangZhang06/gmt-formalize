@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "918af09a3eeb9337fd2034f09b9f415463b13b207dfcfc59bf3a5b2e7f4009ee",
+  "git_delta": {
+    "base_commit": "ae86a6462eb102319bc63ca6b11b059adc15d2de",
+    "candidate_commit": "6636c4f69369a09f80758ab311d5d2a3aff4763e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_fd_fs_frame_ratio_aesm",
+    "diff_sha256": "e4313f80b64d316a939082e82e50b83907d28a48e61b08939b7b30a7fb6260cf",
+    "source_sha256": "547f490b0b5f20a146a53bc6f0a3ae9d4b71ce44577f0c0fae919df4008a5110",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_fd_fs_frame_ratio_aesm",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), AEStronglyMeasurable (fun x : Euclid P => ‖(approxTangentPlane n R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
