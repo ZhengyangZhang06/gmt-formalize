@@ -1249,6 +1249,33 @@ theorem Submission.dor_lmbsf_c1_image_approxTangent : ∀ (k P : ℕ) (V C : Set
   exact Submission.dor_lmbsf_cit_approxTangent_of_subset P k (χ '' C) (χ '' ball y δ) (χ y) _
     (hC.image_of_continuousOn hχC).isClosed.measurableSet (image_mono hδC) hfar hpiece
 
+/-- **Slice tangent-plane algebra** (Simon Ch. 6, Lemma 4.1 (2): `∇ᴹf(x) ∈ TₓM` and `TₓMₜ` is
+the orthogonal complement of `∇ᴹf(x)` in `TₓM`).  Let `L : ℝᵐ → ℝᴾ` and `ℓ : ℝᵐ → ℝ` be linear,
+`g ∈ L(ℝᵐ)` and `⟨g, L e⟩ = ℓ(e)` for every `e`.  Then `g = 0 ⇔ ℓ = 0` (if `ℓ = 0` and
+`g = L w`, then `|g|² = ⟨g, L w⟩ = ℓ(w) = 0`), and `L(ℝᵐ) ∩ g^⊥ = L(ker ℓ)`, because `v = L e`
+is orthogonal to `g` iff `ℓ(e) = ⟨g, L e⟩ = 0`. -/
+theorem Submission.dor_lmbsf_pst_slice_plane_algebra : ∀ (m P : ℕ) (L : Euclid m →L[ℝ] Euclid P) (ℓ : Euclid m →L[ℝ] ℝ) (g : Euclid P), g ∈ LinearMap.range (L : Euclid m →ₗ[ℝ] Euclid P) → (∀ e : Euclid m, inner ℝ g (L e) = ℓ e) → (g = 0 ↔ ℓ = 0) ∧ LinearMap.range (L : Euclid m →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ g)ᗮ = Submodule.map (L : Euclid m →ₗ[ℝ] Euclid P) (LinearMap.ker (ℓ : Euclid m →ₗ[ℝ] ℝ)) := by
+  intro m P L ℓ g hg hgℓ
+  refine ⟨⟨fun h => ?_, fun h => ?_⟩, ?_⟩
+  · -- Step 1, `g = 0` gives `ℓ(e) = ⟨0, L e⟩ = 0` for every `e`
+    ext e
+    rw [← hgℓ e, h, inner_zero_left, zero_apply]
+  · -- Step 2, `g = L w` and `ℓ = 0` give `⟨g, g⟩ = ⟨g, L w⟩ = ℓ(w) = 0`
+    obtain ⟨w, hw⟩ := LinearMap.mem_range.1 hg
+    have hgg := hgℓ w
+    rw [ContinuousLinearMap.coe_coe] at hw
+    rw [hw, h, zero_apply] at hgg
+    exact inner_self_eq_zero.1 hgg
+  · -- Steps 3–5, `v = L e` lies in `gᗮ` iff `ℓ(e) = ⟨g, L e⟩ = 0`
+    ext v
+    simp only [Submodule.mem_inf, LinearMap.mem_range, Submodule.mem_map, LinearMap.mem_ker,
+      Submodule.mem_orthogonal_singleton_iff_inner_right, ContinuousLinearMap.coe_coe]
+    constructor
+    · rintro ⟨⟨e, rfl⟩, he⟩
+      exact ⟨e, (hgℓ e).symm.trans he, rfl⟩
+    · rintro ⟨e, he, rfl⟩
+      exact ⟨⟨e, rfl⟩, (hgℓ e).trans he⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
