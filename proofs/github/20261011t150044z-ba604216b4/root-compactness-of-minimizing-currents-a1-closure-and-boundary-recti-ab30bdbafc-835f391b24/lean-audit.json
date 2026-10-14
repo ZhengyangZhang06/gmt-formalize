@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "08afcb556aa3ac3bdd85c6f640122e7b7ea100a6fe69d32fe781b5f10db9e234",
+  "git_delta": {
+    "base_commit": "b1aaccf789e764e3f314fd3e9925eb44bbab7ddf",
+    "candidate_commit": "d654635021e1893ad3b618e2dd7645f8b62fbf90",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_atm_transversal_carried",
+    "diff_sha256": "1f6e868bf50e8b680d402bf0b335e1a0003e49b1bff7576e0c9cae79fc11e888",
+    "source_sha256": "aaebb6f21b809e20e0aefedcd6fd018bab5322eaf0e198aaed44640dab96cb56",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_atm_transversal_carried",
+      "statement": "∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)), Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → MeasurableSet Z → (∀ᵐ x ∂ν, x - V.starProjection x ∈ Z) → σ Zᶜ = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

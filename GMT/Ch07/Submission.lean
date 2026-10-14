@@ -451,6 +451,69 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- `Hⁿ(Q ∩ B_ρ(y)) = ωₙρⁿ` for an `n`-dimensional linear subspace `Q` of `ℝᴾ`, `y ∈ Q` and
+`ρ > 0` (used in the proof of Simon 7.3.3(1), p. 191, for the density of the planes of a
+2-dimensional minimizing cone).  The inclusion `Q → ℝᴾ` is an isometry, so `Q ∩ B_ρ(y)` has the
+measure of the ball `B_ρ(y)` of `Q`; on `Q`, `μHE[n]` is the volume, Haar scaling gives
+`vol(B_ρ(y)) = ρⁿ vol(B_1(0))`, and orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume, so
+`vol(B_1(0)) = ωₙ`. -/
+theorem Submission.idtp_tdc_subspace_ball_measure : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (y : Euclid P) (ρ : ℝ), Module.finrank ℝ Q = n → y ∈ Q → 0 < ρ → μHE[n] ((Q : Set (Euclid P)) ∩ ball y ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+  intro P n Q y ρ hn hy hρ
+  subst hn
+  -- the inclusion `Q → ℝᴾ` is an isometry with range `Q`; `B_ρ(y)` pulls back to the ball of `Q`
+  have hball : μHE[Module.finrank ℝ Q] ((Q : Set (Euclid P)) ∩ ball y ρ) =
+      μHE[Module.finrank ℝ Q] (ball (⟨y, hy⟩ : Q) ρ) := by
+    rw [← isometry_subtype_coe.preimage_ball (⟨y, hy⟩ : Q) ρ,
+      isometry_subtype_coe.euclideanHausdorffMeasure_preimage, Subtype.range_coe, Set.inter_comm]
+  -- orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume and map `B_1(0)` onto `B_1(0)`
+  have hunit := (stdOrthonormalBasis ℝ Q).measurePreserving_repr.measure_preimage
+    (measurableSet_ball (x := (0 : Euclid (Module.finrank ℝ Q))) (ε := 1)).nullMeasurableSet
+  rw [LinearIsometryEquiv.preimage_ball, map_zero] at hunit
+  -- `μHE[n] = volume` on `Q`, then Haar scaling of balls
+  rw [hball, InnerProductSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_ball_of_pos _ _ hρ, hunit, mul_comm]
+  rfl
+
+/-- If `ν(A) = ∫_V σ(A − t) dHⁿ(t)` for Borel `A`, where `V` is an `n`-dimensional subspace of
+`ℝᴾ` and `σ` is carried by `Vᗮ`, and `x − p_V x ∈ Z` for `ν`-a.e. `x` with `Z` Borel, then
+`σ(ℝᴾ ∖ Z) = 0` (used for the translation-invariant blow-up measures in B. White's proof of the
+closure theorem, part of Simon 7.2.4).  The Borel set `E = {y : y − p_V y ∉ Z}` is `ν`-null and
+invariant under translation by `V`, so `0 = ν(E) = σ(E) Hⁿ(V)`;
+`Hⁿ(V) ≥ Hⁿ(V ∩ B_1(0)) = ωₙ > 0` gives `σ(E) = 0`, and `ℝᴾ ∖ Z ⊆ E ∪ (ℝᴾ ∖ Vᗮ)` because
+`p_V w = 0` for `w ∈ Vᗮ`. -/
+theorem Submission.cbr_ci_cp_atm_transversal_carried : ∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)), Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → MeasurableSet Z → (∀ᵐ x ∂ν, x - V.starProjection x ∈ Z) → σ Zᶜ = 0 := by
+  intro P n ν σ V Z hn hσ hD hZ hae
+  -- `E = {y : y − p_V y ∉ Z}` is Borel and `ν`-null
+  set E : Set (Euclid P) := (fun y => y - V.starProjection y) ⁻¹' Zᶜ with hE_def
+  have hE : MeasurableSet E := (continuous_id.sub V.starProjection.continuous).measurable hZ.compl
+  have hνE : ν E = 0 := ae_iff.mp hae
+  -- `p_V (t + y) = t + p_V y` for `t ∈ V`, so `E` is invariant under translation by `V`
+  -- and the product formula gives `ν(E) = σ(E) Hⁿ(V)`
+  have hprod : ν E = σ E * μHE[n] (V : Set (Euclid P)) := by
+    rw [hD E hE, ← setLIntegral_const]
+    refine setLIntegral_congr_fun V.closed_of_finiteDimensional.measurableSet fun t ht => ?_
+    congr 1
+    ext y
+    simp [hE_def, Submodule.starProjection_eq_self_iff.mpr ht]
+  -- `Hⁿ(V) ≥ Hⁿ(V ∩ B_1(0)) = ωₙ > 0`
+  have hV : μHE[n] (V : Set (Euclid P)) ≠ 0 := by
+    have hball := Submission.idtp_tdc_subspace_ball_measure P n V 0 1 hn V.zero_mem one_pos
+    rw [one_pow, ENNReal.ofReal_one, mul_one] at hball
+    have hω : 0 < unitBallVolume n := measure_ball_pos volume (0 : Euclid n) one_pos
+    refine (hω.trans_le ?_).ne'
+    rw [← hball]
+    exact measure_mono Set.inter_subset_left
+  have hσE : σ E = 0 := by
+    rw [hνE, eq_comm, mul_eq_zero] at hprod
+    exact hprod.resolve_right hV
+  -- `ℝᴾ ∖ Z ⊆ E ∪ (ℝᴾ ∖ Vᗮ)`, since `p_V w = 0` for `w ∈ Vᗮ`
+  refine measure_mono_null (fun w hw => ?_) (measure_union_null hσE hσ)
+  by_cases hw' : w ∈ Vᗮ
+  · left
+    show w - V.starProjection w ∈ Zᶜ
+    rwa [(V.starProjection_apply_eq_zero_iff).mpr hw', sub_zero]
+  · exact Or.inr hw'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
