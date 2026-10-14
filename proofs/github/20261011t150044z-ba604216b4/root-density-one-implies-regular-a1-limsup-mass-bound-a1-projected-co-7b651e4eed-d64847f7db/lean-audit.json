@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "87aec24177f6a01d76b2f15e18bd8704b63ff10a44b8166a5916369477f4439e",
+  "git_delta": {
+    "base_commit": "b27af564e51ab376476664ce73795b3bfbbddfd4",
+    "candidate_commit": "99a08c8f02741a3d9ed3a509269acb063b92fdae",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_pc_cm_ofReal_integral_le_measure",
+    "diff_sha256": "3436d18db665bc62adfa8004b767c44f2b8c45cd062bef89f4ee5b017c27cda9",
+    "source_sha256": "6692a37cf254f251d41937f493f69467727add4ceb3441fbaab84c7db70777f9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_pc_cm_ofReal_integral_le_measure",
+      "statement": "∀ (P n : ℕ) (U G : Set (Euclid P)) (R : IMRep U n) (g : Euclid P → ℝ) (c : ℝ), MeasurableSet G → (∀ᵐ x ∂(μHE[n].restrict R.carrier), |g x| ≤ G.indicator (fun _ => c) x) → ENNReal.ofReal (∫ x in R.carrier, (R.mult x : ℝ) * g x ∂μHE[n]) ≤ ENNReal.ofReal c * R.measure G",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
