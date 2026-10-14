@@ -609,6 +609,47 @@ theorem Submission.cbr_ci_cp_fp_exists_offset_eq_zero : ∀ (P n : ℕ) (ν : Me
       smul_zero]
   exact (hpos r hr).ne' hzero
 
+/-- Let `ν = Σ_{w ∈ Z} a(w) Hⁿ⌞{y : y − w ∈ V}` be a sum of parallel translates of the `n`-plane
+`V`, with offsets `Z ⊆ V^⊥` and weights `a(w) ≥ c > 0`.  If `ν(B_R(0)) ≤ ωₙRⁿ` for all `R > 0`
+and `ν(B_r(0)) > 0` for all `r > 0`, then `ν = Σᵢ αᵢ Hⁿ⌞{y : y − wᵢ ∈ V}` for finitely many
+distinct `wᵢ ∈ V^⊥` and `αᵢ ≥ c` with `Σᵢ αᵢ ≤ 1` and some `wᵢ = 0` (the constant-plane step
+of the closure argument for Simon 7.2.4).  The growth bound gives `Σ_{w ∈ Z} a(w) ≤ 1`, so `Z`
+is finite; enumerating `Z` gives the finite sum, and positivity near `0` forces a plane through
+`0`. -/
+theorem Submission.cbr_ci_cp_finite_parallel_planes : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)) (a : Euclid P → ℝ≥0∞) (c : ℝ), 0 < c → Module.finrank ℝ V = n → Z ⊆ (Vᗮ : Set (Euclid P)) → (∀ w ∈ Z, ENNReal.ofReal c ≤ a w) → ν = Measure.sum (fun w : Z => a w • (μHE[n]).restrict {y : Euclid P | y - w ∈ V}) → (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ unitBallVolume n * ENNReal.ofReal (R ^ n)) → (∀ r : ℝ, 0 < r → 0 < ν (ball 0 r)) → ∃ (N : ℕ) (w : Fin N → Euclid P) (α : Fin N → ℝ), Injective w ∧ (∀ i, w i ∈ Vᗮ) ∧ (∀ i, c ≤ α i) ∧ ∑ i, α i ≤ 1 ∧ (∃ i, w i = 0) ∧ ν = ∑ i, ENNReal.ofReal (α i) • (μHE[n]).restrict {y : Euclid P | y - w i ∈ V} := by
+  intro P n ν V Z a c hc hn hZ ha hν hgrowth hpos
+  -- the total weight is at most `1`
+  have htsum : ∑' w : Z, a w ≤ 1 :=
+    Submission.cbr_ci_cp_fp_tsum_weight_le_one P n ν V Z a hn hZ hν hgrowth
+  -- every weight is at least `ofReal c ≠ 0`, so `Z` is finite
+  have hZfin : Finite Z := by
+    by_contra hinf
+    have : Infinite Z := not_finite_iff_infinite.1 hinf
+    have hle : ∑' _ : Z, ENNReal.ofReal c ≤ ∑' w : Z, a w :=
+      ENNReal.tsum_le_tsum fun w => ha w w.2
+    rw [ENNReal.tsum_const_eq_top_of_ne_zero (ENNReal.ofReal_pos.2 hc).ne'] at hle
+    exact ENNReal.one_ne_top (top_le_iff.1 (hle.trans htsum))
+  have : Fintype Z := Fintype.ofFinite Z
+  -- every weight is finite
+  have hfin : ∀ w : Z, a w ≠ ∞ := fun w =>
+    ne_top_of_le_ne_top ENNReal.one_ne_top ((ENNReal.le_tsum w).trans htsum)
+  -- enumerate `Z` as `w₁, …, w_N` and put `αᵢ := a(wᵢ)`
+  obtain ⟨e⟩ : Nonempty (Fin (Fintype.card Z) ≃ Z) := ⟨(Fintype.equivFin Z).symm⟩
+  have hw : ∀ i, (e i : Euclid P) ∈ Vᗮ := fun i => hZ (e i).2
+  have hνsum : ν = ∑ i, ENNReal.ofReal (a (e i)).toReal •
+      (μHE[n]).restrict {y : Euclid P | y - (e i : Euclid P) ∈ V} := by
+    rw [hν, Measure.sum_fintype, ← e.sum_comp]
+    exact Finset.sum_congr rfl fun i _ => by rw [ENNReal.ofReal_toReal (hfin (e i))]
+  refine ⟨Fintype.card Z, fun i => e i, fun i => (a (e i)).toReal,
+    Subtype.val_injective.comp e.injective, hw,
+    fun i => (ENNReal.ofReal_le_iff_le_toReal (hfin (e i))).1 (ha _ (e i).2), ?_,
+    Submission.cbr_ci_cp_fp_exists_offset_eq_zero P n ν V (Fintype.card Z) (fun i => e i)
+      (fun i => (a (e i)).toReal) hw hνsum hpos, hνsum⟩
+  -- `Σᵢ αᵢ = (Σ_{w ∈ Z} a(w)).toReal ≤ 1`
+  rw [tsum_fintype] at htsum
+  rw [← ENNReal.toReal_sum fun i _ => hfin (e i), e.sum_comp (fun w : Z => a w)]
+  exact (ENNReal.toReal_mono ENNReal.one_ne_top htsum).trans_eq ENNReal.toReal_one
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
