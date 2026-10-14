@@ -1030,6 +1030,100 @@ theorem Submission.cmcdtfrbv_face_covectors : ∀ (P m : ℕ) (ι : Fin (m + 1) 
       rw [EuclideanSpace.basisFun_apply, hJ]
     rw [hv]
     exact hface c j
+/-- **Cut-off lift of a vector field on a face** (Simon Ch. 6, proof of 5.1, displays (27)–(28):
+the test forms giving `M(∂Q ⌞ F̆) = ∫_{F̆} |Dθ_F|`, as in 2.35).  Let
+`Φ_p(y) = b + Σ_j y_j e_{ι(j)}` be the chart of the face and `π(x) = (x_{ι(j)} − b_{ι(j)})_j` its
+affine left inverse.  Put `G = χ · (g ∘ π)`, where the smooth cut-off `χ : ℝᴾ → [0, 1]` equals
+`1` near the compact set `K = Φ_p(spt g) ⊆ N` and is supported in `N`.  Then `G = g ∘ π` near
+each `Φ_p(y)` with `y ∈ (0,1)ⁿ`.  So `D(G_a)(Φ_p y)(e_{ι(a)}) = (Dg(y) ê_a)_a` by the chain rule,
+and the sum over `a` is `trace Dg(y)`. -/
+theorem Submission.cmcdtfrbv_cutoff_field : ∀ (P m : ℕ) (p : (Fin (m + 1) → Fin P) × (Fin P → ℤ)) (N : Set (Euclid P)) (g : Euclid (m + 1) → Euclid (m + 1)), StrictMono p.1 → IsOpen N → (∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ N) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∃ G : Euclid P → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) G ∧ HasCompactSupport G ∧ tsupport G ⊆ N ∧ (∀ x, ‖G x‖ ≤ 1) ∧ ∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → ∑ a, fderiv ℝ (fun x => G x a) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (EuclideanSpace.single (p.1 a) (1 : ℝ)) = LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) := by
+  intro P m p N g hmono hN hΦN hg hgc hgQ hg1
+  -- Step 1: the face chart `Φ_p` and its affine left inverse `π = L - c₀`
+  let Φ : Euclid (m + 1) → Euclid P := fun y =>
+    WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)
+  let L : Euclid P →L[ℝ] Euclid (m + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun x => WithLp.toLp 2 (fun j => x (p.1 j))
+      map_add' := fun x x' => by ext j; simp
+      map_smul' := fun c x => by ext j; simp }
+  have hL : ∀ x, L x = WithLp.toLp 2 (fun j => x (p.1 j)) := fun x => rfl
+  let c₀ : Euclid (m + 1) := WithLp.toLp 2 (fun j => (p.2 (p.1 j) : ℝ))
+  let π : Euclid P → Euclid (m + 1) := fun x => L x - c₀
+  -- (i) `L e_{ι(a)} = ê_a` and (ii) `π (Φ_p y) = y`, since `ι` is injective
+  have hLe : ∀ a, L (EuclideanSpace.single (p.1 a) (1 : ℝ)) = EuclideanSpace.single a (1 : ℝ) := by
+    intro a
+    ext j
+    simp [hL, PiLp.single_apply, hmono.injective.eq_iff]
+  have hπΦ : ∀ y, π (Φ y) = y := by
+    intro y
+    ext j
+    simp [π, hL, c₀, Φ, Pi.single_apply, hmono.injective.eq_iff]
+  have hΦc : Continuous Φ := by fun_prop
+  have hπc : ContDiff ℝ (⊤ : ℕ∞) π := L.contDiff.sub contDiff_const
+  -- Steps 2–3: `K = Φ_p(spt g)` is a compact subset of `N`, and `cthickening δ K ⊆ N`
+  have hKc : IsCompact (Φ '' tsupport g) := hgc.isCompact.image hΦc
+  have hKN : Φ '' tsupport g ⊆ N := by
+    rintro _ ⟨y, hy, rfl⟩
+    exact hΦN y (hgQ hy)
+  obtain ⟨δ, hδ, hδN⟩ := hKc.exists_cthickening_subset_open hN hKN
+  have hr0 : 0 < δ / 3 := by positivity
+  -- Step 4: smooth `χ` with values in `[0, 1]`, `χ = 1` exactly on `cthickening (δ / 3) K` and
+  -- `spt χ ⊆ cthickening (2 δ / 3) K`
+  obtain ⟨χ, hχ, hχr, hχs, hχ1⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+    (isOpen_thickening (δ := 2 * (δ / 3)) (E := Φ '' tsupport g))
+    (isClosed_cthickening (δ := δ / 3) (E := Φ '' tsupport g))
+    (cthickening_subset_thickening' (by positivity) (by linarith) _)
+  have hχK : tsupport χ ⊆ cthickening (2 * (δ / 3)) (Φ '' tsupport g) := by
+    rw [tsupport, hχs]
+    exact closure_thickening_subset_cthickening _ _
+  -- Step 5: `G = χ · (g ∘ π)` is smooth, compactly supported in `N` and bounded by `1`
+  refine ⟨fun x => χ x • g (π x), hχ.smul (hg.comp hπc), ?_, ?_, ?_, ?_⟩
+  · exact hKc.cthickening.of_isClosed_subset (isClosed_tsupport _)
+      ((tsupport_smul_subset_left _ _).trans hχK)
+  · exact (tsupport_smul_subset_left _ _).trans
+      (hχK.trans ((cthickening_mono (by linarith) _).trans hδN))
+  · intro x
+    have hx := hχr (mem_range_self x)
+    rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hx.1]
+    exact (mul_le_of_le_one_left (norm_nonneg _) hx.2).trans (hg1 _)
+  · intro y hy
+    -- Step 6: `G = g ∘ π` near `Φ_p y`; case A: `χ = 1` near `K`, case B: `g ∘ π = 0` nearby
+    have hloc : (fun x => χ x • g (π x)) =ᶠ[𝓝 (Φ y)] fun x => g (π x) := by
+      by_cases hyg : y ∈ tsupport g
+      · have hmem : Φ y ∈ thickening (δ / 3) (Φ '' tsupport g) :=
+          self_subset_thickening hr0 _ (mem_image_of_mem Φ hyg)
+        filter_upwards [isOpen_thickening.mem_nhds hmem] with x hx
+        rw [(hχ1 x).1 (thickening_subset_cthickening _ _ hx), one_smul]
+      · have hopen : IsOpen (π ⁻¹' (tsupport g)ᶜ) :=
+          (isClosed_tsupport g).isOpen_compl.preimage hπc.continuous
+        have hmem : Φ y ∈ π ⁻¹' (tsupport g)ᶜ := by
+          simpa [hπΦ] using hyg
+        filter_upwards [hopen.mem_nhds hmem] with x hx
+        rw [image_eq_zero_of_notMem_tsupport hx, smul_zero]
+    -- Step 7: by the chain rule, `D(G_a)(Φ_p y)(e_{ι(a)}) = (Dg(y)(L e_{ι(a)}))_a = (Dg(y) ê_a)_a`
+    have hgd : HasFDerivAt g (fderiv ℝ g y) (π (Φ y)) := by
+      rw [hπΦ]
+      exact (hg.differentiable (by simp)).differentiableAt.hasFDerivAt
+    have hπd : HasFDerivAt π L (Φ y) := L.hasFDerivAt.sub_const c₀
+    have key : ∀ a, fderiv ℝ (fun x => (χ x • g (π x)) a) (Φ y)
+        (EuclideanSpace.single (p.1 a) (1 : ℝ)) =
+          fderiv ℝ g y (EuclideanSpace.single a (1 : ℝ)) a := by
+      intro a
+      have hcoord : (fun x => (χ x • g (π x)) a) =ᶠ[𝓝 (Φ y)] fun x => g (π x) a :=
+        hloc.fun_comp (fun v => v a)
+      have hd : HasFDerivAt (fun x => g (π x) a)
+          ((PiLp.proj 2 (fun _ : Fin (m + 1) => ℝ) a).comp ((fderiv ℝ g y).comp L)) (Φ y) := by
+        have h := (PiLp.hasFDerivAt_apply (𝕜 := ℝ) 2 (g (π (Φ y))) a).comp (Φ y)
+          (hgd.comp (Φ y) hπd)
+        exact h
+      rw [hcoord.fderiv_eq, hd.fderiv]
+      simp [hLe]
+    -- Step 8: `trace A = Σ_a (A ê_a)_a` in the standard orthonormal basis of `Euclid (m + 1)`
+    show ∑ a, fderiv ℝ (fun x => (χ x • g (π x)) a) (Φ y)
+      (EuclideanSpace.single (p.1 a) (1 : ℝ)) = _
+    simp only [key]
+    rw [LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin (m + 1)) ℝ)]
+    simp [EuclideanSpace.inner_single_left]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
