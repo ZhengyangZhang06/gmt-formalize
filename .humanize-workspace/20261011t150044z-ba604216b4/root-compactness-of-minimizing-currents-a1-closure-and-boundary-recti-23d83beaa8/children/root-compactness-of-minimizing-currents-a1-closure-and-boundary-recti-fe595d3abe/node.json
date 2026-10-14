@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.zero_current_sum-a1.finset_integral_h0-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.zero_current_sum-a1",
+  "depth": 5,
+  "title": "Integrals over finite sets against H⁰ are sums of values",
+  "statement": "Let P ∈ ℕ, let F be a finite subset of ℝ^P (a Finset), and let f : ℝ^P → ℝ be any function. Then ∫_F f dH⁰ = Σ_{x∈F} f(x). Here H⁰ = μHE[0], and the left side is the Bochner integral of f against H⁰ restricted to the set F.",
+  "lean_statement": "∀ (P : ℕ) (F : Finset (Euclid P)) (f : Euclid P → ℝ), ∫ x in (F : Set (Euclid P)), f x ∂μHE[0] = ∑ x ∈ F, f x",
+  "lean_name": "cbr_cc_zcs_setIntegral_finset_hausdorff_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-fe595d3abe-a1"
+}

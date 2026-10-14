@@ -558,6 +558,23 @@ theorem Submission.regcomp_cop_zdr_unitOrientation_zero : ∀ (P : ℕ) (ξ : Mu
   · exact ⟨1, abs_one, fun α => by rw [h α, one_mul, Subsingleton.elim τ fun i => i.elim0]⟩
   · exact ⟨-1, by rw [abs_neg, abs_one],
       fun α => by rw [h α, neg_one_mul, Subsingleton.elim τ fun i => i.elim0]⟩
+/-- **Integrals over a finite set against `H⁰`** (`H⁰` is counting measure, Simon Ch. 2).  Since
+`μHE[0] = μH[0]`, every point has `H⁰`-mass `1`; so `f` is integrable on each singleton, hence on
+the finite union `F = ⋃_{x ∈ F} {x}`, and `∫_F f dH⁰ = Σ_{x ∈ F} H⁰({x}) f(x) = Σ_{x ∈ F} f(x)`. -/
+theorem Submission.cbr_cc_zcs_setIntegral_finset_hausdorff_zero : ∀ (P : ℕ) (F : Finset (Euclid P)) (f : Euclid P → ℝ), ∫ x in (F : Set (Euclid P)), f x ∂μHE[0] = ∑ x ∈ F, f x := by
+  intro P F f
+  -- `H⁰ = μH[0]`: every point has `H⁰`-mass `1`
+  have hpt : ∀ x : Euclid P, μHE[0] ({x} : Set (Euclid P)) = 1 := fun x => by
+    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+  -- `f` is integrable on each singleton, hence on the finite union `F = ⋃_{x ∈ F} {x}`
+  have hint : IntegrableOn f (F : Set (Euclid P)) μHE[0] := by
+    rw [← Set.biUnion_of_singleton (F : Set (Euclid P)), Finset.set_biUnion_coe,
+      integrableOn_finset_iUnion]
+    exact fun x _ => integrableOn_singleton enorm_ne_top (by rw [hpt]; exact ENNReal.one_lt_top)
+  -- `∫_F f dH⁰ = Σ_{x ∈ F} H⁰.real({x}) • f(x)`, and `H⁰.real({x}) = 1`
+  rw [setIntegral_finset F hint]
+  refine Finset.sum_congr rfl fun x _ => ?_
+  rw [measureReal_def, hpt, ENNReal.toReal_one, one_smul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

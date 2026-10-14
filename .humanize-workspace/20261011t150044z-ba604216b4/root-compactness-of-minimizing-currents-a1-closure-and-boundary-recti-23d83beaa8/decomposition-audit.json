@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IMRep|IsUnitOrientationOf|IsIntegerMultiplicity|abbrev MultiVector|def MultiVector|abbrev Euclid|def action|def measure|def Represents",
+        "rg -n 'dor_zdm_imrep_zero_structure|regcomp_cop_zdr_unitOrientation_zero|cbr_cc_zcs|zero_current_finite_sum|setIntegral_finset' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "CountablyRectifiable|HasApproximateTangentSpaceAt|def support|def zeroRegion|isOpen_zeroRegion|massAdmissibleOn|noncomputable def massOn|def massOn|def VanishesOn",
+        "git diff 39634bad5eec4be8528431168a20eb2a5ff79a28^ 39634bad5eec4be8528431168a20eb2a5ff79a28 -- GMT/Ch07/Submission.lean",
+        "git diff b79a8362eb8e1de4d573486b97c38079112a1023^ b79a8362eb8e1de4d573486b97c38079112a1023 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/zcs-decomp-q3/lean/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/zcs-decomp-q3/lean/FinSum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/zcs-independent-audit-ua5d3yqk/ReusedAndTypes.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/SumMeasure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-23d83beaa8/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-23d83beaa8/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-zero-dim-minimizing-trivial-a1-im-4b50b377f9/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-f8430bc5ec/accepted-candidate.json",
+        "/tmp/zcs-decomp-q3/lean/Assembly.lean",
+        "/tmp/zcs-decomp-q3/lean/FinSum.lean",
+        "/tmp/zcs-independent-audit-ua5d3yqk/ReusedAndTypes.lean"
+      ],
+      "conclusion": "The split is appropriate for the exact selected cbr_cc_zero_current_finite_sum contract. The pinned contract matches the workspace, and the inspected Mathlib sources match revision 25730c7c759d108ef87ab70af2342a196760f79d. The snapshot project search found no matching proposed declarations. Both reused declarations have comparator-accepted receipts, byte-identical frozen types, matching candidate-source hashes, and unchanged contract definitions. The new name is unreserved; all names are bare identifiers. Dependencies are acyclic, with no child relying on the selected parent. All three standalone propositions elaborate and match their prose. Independently rerunning the accepted proofs, finite-integral proof, and assembly succeeded; their axiom reports contain only propext, Classical.choice and Quot.sound. The assembly has exactly the three child hypotheses and the selected frozen conclusion: MR and VO place the carrier in the compact support, child 1 gives finiteness and pointwise orientation, child 2 gives integer coefficients ±θ, and child 3 evaluates the integral. The constant zero-covector and empty-tuple constructions have the intended types; no matrix-instance issue occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "imrep_zero_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches all four conclusions, allowing arbitrary U until the final openness hypothesis. Each proof step is valid: positive singleton mass eliminates the rectifiable exceptional set, multiplicity bounds give finite compact intersections, singleton positivity upgrades the a.e. orientation condition, the constant covector proves nonvanishing, and local finiteness proves the reverse support inclusion. The internal use of (ii) in (iv) is non-circular. The complete proof supports direct formalization, and the accepted declaration is reused with its identical frozen type."
+    },
+    {
+      "key": "unit_orientation_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree exactly. Unfolding IsUnitOrientationOf supplies one sign uniformly for all covectors; uniqueness of functions on Fin 0 identifies the frame with the empty tuple. Choosing 1 or −1 proves both conclusions. Unused orthonormality and span hypotheses cause no gap. The proof is complete and independent, and reuse preserves the comparator-accepted frozen type."
+    },
+    {
+      "key": "finset_integral_h0",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly permits an arbitrary real function. Each singleton has H⁰-mass 1, so the function is integrable there by a.e. equality with a constant; finite-union integrability then justifies setIntegral_finset. Singleton real masses reduce every coefficient to 1. This proves the exact proposition without a missing measurability assumption or circular dependency. The bare name is unreserved, and independent Lean verification succeeded."
+    }
+  ],
+  "required_changes": []
+}
