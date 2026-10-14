@@ -996,6 +996,266 @@ theorem Submission.dimred_mbl_dtfr_face_geometry : ∀ (P k : ℕ), volume {y : 
   obtain ⟨hiso, hdiam⟩ := Submission.cmcdtfrfg_face_isometry_diam P k p.1 p.2 hp.injective
   -- steps 5-8: distinct faces are separated
   exact ⟨hiso, hdiam, Submission.cmcdtfrfg_face_separation P k p q hp hq⟩
+/-- **Integrable densities on finitely many unit faces define a current** (Simon Ch. 6, proof of
+Theorem 5.1, displays (27)–(30)).  Let `Q₁ ⊆ ℝ^{m+1}` be the open unit cube and, for
+`p = (ι, b) ∈ s`, `Φₚ(y) = b + Σⱼ yⱼ e_{ι j}`, `Eₚ = (e_{ι j})ⱼ`, with `wₚ` integrable on `Q₁`.
+(I) For every test form `ω`, `y ↦ wₚ(y) ω(Φₚ y)(Eₚ)` is integrable on `Q₁`: it is `wₚ` times a
+continuous function bounded by `supₓ ‖ω(x)‖`, as `|α(Eₚ)| ≤ ‖α‖` (the `e_l` are unit vectors).
+(II) `L(ω) = Σₚ ∫_{Q₁} wₚ(y) ω(Φₚ y)(Eₚ) dy` is linear with `|L(ω)| ≤ (Σₚ ∫_{Q₁} |wₚ|) · δ`
+whenever `‖ω(x)‖ ≤ δ` for all `x`; order-0 uniform convergence on a common compact set then
+gives `L(ωⱼ) → 0` for `ωⱼ → 0`, so `L` is a current. -/
+theorem Submission.dimred_mbl_dtfric_current_exists : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (w : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ), (∀ p ∈ s, IntegrableOn (w p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), ∀ p ∈ s, IntegrableOn (fun y => w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) ∧ ∃ D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
+  intro P m s w hint
+  -- Step 1: the face map `Φₚ` is continuous
+  have hΦcont : ∀ p : (Fin (m + 1) → Fin P) × (Fin P → ℤ), Continuous (fun y : Euclid (m + 1) =>
+      WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
+    intro p
+    exact continuous_const.add
+      (continuous_finsetSum _ fun j _ => (PiLp.continuous_apply 2 _ j).smul continuous_const)
+  -- Step 2: `y ↦ ω(Φₚ y)(Eₚ)` is continuous (evaluation at `Eₚ` is continuous linear)
+  have hhcont : ∀ (ω : TestFormOn (univ : Set (Euclid P)) (m + 1))
+      (p : (Fin (m + 1) → Fin P) × (Fin P → ℤ)),
+      Continuous (fun y : Euclid (m + 1) => (ω : DifferentialForm (Euclid P) (m + 1))
+        (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+        (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) := by
+    intro ω p
+    have hω : Continuous (ω : DifferentialForm (Euclid P) (m + 1)) := ω.property.1.1.continuous
+    exact (ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ
+      (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))).continuous.comp (hω.comp (hΦcont p))
+  -- Step 3: `|α(Eₚ)| ≤ ‖α‖`, since `‖e_l‖ = 1`
+  have hop : ∀ (α : Covector (Euclid P) (m + 1)) (p : (Fin (m + 1) → Fin P) × (Fin P → ℤ)),
+      ‖α (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))‖ ≤ ‖α‖ := by
+    intro α p
+    have := α.le_opNorm (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))
+    simpa [PiLp.norm_single] using this
+  -- Step 4: a test form is bounded (continuous with compact support)
+  have hbdd : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), ∃ C : ℝ,
+      ∀ x, ‖(ω : DifferentialForm (Euclid P) (m + 1)) x‖ ≤ C := by
+    intro ω
+    exact ω.property.1.2.exists_bound_of_continuous ω.property.1.1.continuous
+  -- Step 5: (I), integrable times bounded measurable
+  have hI : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), ∀ p ∈ s,
+      IntegrableOn (fun y => w p y * (ω : DifferentialForm (Euclid P) (m + 1))
+        (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+        (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)))
+        {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := by
+    intro ω p hp
+    obtain ⟨C, hC⟩ := hbdd ω
+    exact (hint p hp).mul_bdd (hhcont ω p).aestronglyMeasurable
+      (Eventually.of_forall fun y => (hop _ p).trans (hC _))
+  -- Step 6: the functional `L` is linear, by (I)
+  let L : TestFormOn (univ : Set (Euclid P)) (m + 1) →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+          w p y * (ω : DifferentialForm (Euclid P) (m + 1))
+            (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+            (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))
+      map_add' := by
+        intro ω η
+        rw [← Finset.sum_add_distrib]
+        apply Finset.sum_congr rfl
+        intro p hp
+        rw [← integral_add (hI ω p hp) (hI η p hp)]
+        apply integral_congr_ae
+        filter_upwards with y
+        simp [mul_add]
+      map_smul' := by
+        intro c ω
+        simp only [RingHom.id_apply, smul_eq_mul, Finset.mul_sum]
+        apply Finset.sum_congr rfl
+        intro p hp
+        rw [← integral_const_mul]
+        apply integral_congr_ae
+        filter_upwards with y
+        simp only [SetLike.val_smul, Pi.smul_apply, ContinuousAlternatingMap.smul_apply,
+          smul_eq_mul]
+        ring }
+  -- Step 7: `|L(ω)| ≤ A δ` whenever `‖ω(x)‖ ≤ δ` for all `x`, `A = Σₚ ∫_{Q₁} |wₚ|`
+  set A : ℝ := ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y| with hA
+  have hA0 : 0 ≤ A := Finset.sum_nonneg fun p _ => integral_nonneg fun y => abs_nonneg _
+  have hest : ∀ (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)) (δ : ℝ),
+      (∀ x, ‖(ω : DifferentialForm (Euclid P) (m + 1)) x‖ ≤ δ) → |L ω| ≤ A * δ := by
+    intro ω δ hδ
+    calc |L ω| ≤ ∑ p ∈ s, |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+          w p y * (ω : DifferentialForm (Euclid P) (m + 1))
+            (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+            (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))| := Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ p ∈ s, (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) * δ := by
+          apply Finset.sum_le_sum
+          intro p hp
+          have hpt : ∀ y : Euclid (m + 1), ‖w p y * (ω : DifferentialForm (Euclid P) (m + 1))
+              (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+              (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))‖ ≤ |w p y| * δ := by
+            intro y
+            rw [norm_mul, Real.norm_eq_abs (w p y)]
+            exact mul_le_mul_of_nonneg_left ((hop _ p).trans (hδ _)) (abs_nonneg _)
+          have h := norm_integral_le_of_norm_le ((hint p hp).abs.mul_const δ)
+            (Eventually.of_forall hpt)
+          rw [integral_mul_const, Real.norm_eq_abs] at h
+          exact h
+      _ = A * δ := by rw [hA, Finset.sum_mul]
+  -- Step 8: sequential continuity at `0`, from order-0 uniform convergence on the compact `K`
+  -- and `ωⱼ = 0` off `K`
+  have hcont : ∀ ωseq : ℕ → TestFormOn (univ : Set (Euclid P)) (m + 1),
+      TestFormOnConverges ωseq 0 → Tendsto (fun j => L (ωseq j)) atTop (𝓝 0) := by
+    intro ωseq hconv
+    obtain ⟨K, -, -, hsupp, -, hunif⟩ := hconv
+    have h0 := Metric.tendstoUniformlyOn_iff.mp (hunif 0)
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    have hδ : 0 < ε / (A + 1) := div_pos hε (by linarith)
+    obtain ⟨N, hN⟩ := eventually_atTop.mp (h0 (ε / (A + 1)) hδ)
+    refine ⟨N, fun j hj => ?_⟩
+    have hsmall : ∀ x, ‖(ωseq j : DifferentialForm (Euclid P) (m + 1)) x‖ ≤ ε / (A + 1) := by
+      intro x
+      by_cases hx : x ∈ K
+      · have h := hN j hj x hx
+        have hz : iteratedFDeriv ℝ 0
+            ((0 : TestFormOn (univ : Set (Euclid P)) (m + 1)) : DifferentialForm (Euclid P) (m + 1))
+              x = 0 := by
+          simp
+        rw [hz, dist_zero_left, norm_iteratedFDeriv_zero] at h
+        exact h.le
+      · have hx' : x ∉ tsupport (ωseq j : DifferentialForm (Euclid P) (m + 1)) :=
+          fun h => hx (hsupp j h)
+        rw [image_eq_zero_of_notMem_tsupport hx', norm_zero]
+        exact hδ.le
+    rw [Real.dist_eq, sub_zero]
+    calc |L (ωseq j)| ≤ A * (ε / (A + 1)) := hest _ _ hsmall
+      _ < ε := by
+        rw [mul_div_assoc', div_lt_iff₀ (by linarith)]
+        nlinarith
+  -- Step 9: `D = ⟨L, Step 8⟩` satisfies the formula by definition
+  exact ⟨hI, ⟨⟨L, hcont⟩, fun ω => rfl⟩⟩
+/-- **Mass bound for a current given by integrable densities on coordinate unit faces** (Simon
+Ch. 6, proof of Theorem 5.1, (28) and the first line of (30)).  Let `n = m + 1`, `Q₁ = (0, 1)ⁿ`,
+and for `p = (ι, b)` let `Φ_p(y) = b + Σ_j y_j e_{ι(j)}` and `E_p = (e_{ι(0)}, …, e_{ι(m)})`.  If
+every `ι` is strictly increasing, every `w_p` is integrable on `Q₁` and
+`D(ω) = Σ_{p ∈ s} ∫_{Q₁} w_p(y) ω(Φ_p(y))(E_p) dy` for every test form `ω`, then
+`M(D) ≤ Σ_{p ∈ s} ∫_{Q₁} |w_p|`.  For strictly increasing `I`, `α(e_I)²` is one nonnegative
+summand of `|α|² = Σ_{J strictly increasing} α(e_J)²`, so `|α(e_I)| ≤ |α|`.  Hence for an
+admissible `ω` (`|ω(x)| ≤ 1`) the integrand of each face term is bounded by `|w_p|`, an integrable
+majorant. -/
+theorem Submission.dimred_mbl_dtfric_mass_le : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (w : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ) (D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.1) → (∀ p ∈ s, IntegrableOn (w p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → D.mass ≤ ENNReal.ofReal (∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) := by
+  intro P m s w D hmono hint hD
+  -- Step 1 (F1): for strictly increasing `I`, `α(e_I)²` is one nonnegative summand of `|α|²`,
+  -- so `|α(e_I)| ≤ |α|`
+  have hcoef : ∀ (α : Covector (Euclid P) (m + 1)) (I : Fin (m + 1) → Fin P), StrictMono I →
+      |α (fun j => EuclideanSpace.single (I j) (1 : ℝ))| ≤ covectorEuclideanNorm α := by
+    intro α I hI
+    unfold covectorEuclideanNorm
+    apply Real.abs_le_sqrt
+    have hnn : ∀ J ∈ (Finset.univ : Finset (Fin (m + 1) → Fin P)), 0 ≤
+        (if StrictMono J then (α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (J i))) ^ 2
+          else 0) := by
+      intro J _
+      split_ifs <;> positivity
+    have hI' := Finset.single_le_sum hnn (Finset.mem_univ I)
+    simpa [hI, EuclideanSpace.basisFun_apply] using hI'
+  -- Step 2: `M(D)` is the supremum of `D ω` over admissible `ω`; bound each `D ω`
+  change D.massOn univ ≤ _
+  unfold GeometricCurrentOn.massOn
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  apply ENNReal.ofReal_le_ofReal
+  rw [hD ω]
+  -- Step 5: compare the two sums term by term
+  apply Finset.sum_le_sum
+  intro p hp
+  -- Step 3: `|w_p(y) ω(Φ_p y)(E_p)| ≤ |w_p(y)| |ω(Φ_p y)| ≤ |w_p(y)|` by Step 1 with `I = p.1`
+  have hbound : ∀ y : Euclid (m + 1),
+      ‖w p y * (ω : DifferentialForm (Euclid P) (m + 1))
+        (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+        (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))‖ ≤ |w p y| := by
+    intro y
+    rw [Real.norm_eq_abs, abs_mul]
+    have h1 := (hcoef _ p.1 (hmono p hp)).trans (hω.2
+      (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)))
+    calc _ ≤ |w p y| * 1 := mul_le_mul_of_nonneg_left h1 (abs_nonneg _)
+      _ = |w p y| := mul_one _
+  -- Step 4: `∫ w_p h ≤ |∫ w_p h| ≤ ∫ |w_p|`, with the integrable majorant `|w_p|`
+  have hint' := norm_integral_le_of_norm_le (hint p hp).abs (Eventually.of_forall hbound)
+  rw [Real.norm_eq_abs] at hint'
+  exact (le_abs_self _).trans hint'
+/-- **Support of a face current** (Simon Ch. 6, proof of Theorem 5.1, the face currents of (27)).
+Let `D ∈ 𝒟_{m+1}(ℝᴾ)` act by `D(ω) = Σ_{p ∈ s} ∫_{Q₁} w_p(y) ω(Φ_p y)(E_p) dy`, where `Q₁` is the
+open unit cube, each `w_p` is integrable on `Q₁`, `Φ_p(y) = b_p + Σ_j y_j e_{ι_p(j)}` and
+`E_p = (e_{ι_p(j)})_j`.  Then every `x ∈ spt D` is `Φ_p(y)` for some `p ∈ s` with
+`∫_{Q₁} |w_p| ≠ 0` and some `y` in the closed unit cube.  Otherwise `x` lies outside the compact
+union `Z` of the closed faces `Φ_p([0,1]^{m+1})` with `∫_{Q₁} |w_p| ≠ 0`, so some ball `B` about
+`x` misses `Z`.  Each face integral of a test form supported in `B` vanishes: either `w_p = 0`
+a.e. on `Q₁`, or the form vanishes on `Φ_p(Q₁) ⊆ Z`.  So `D` vanishes on `B`, and `x` lies in the
+zero region of `D`, contradicting `x ∈ spt D`. -/
+theorem Submission.dimred_mbl_dtfric_support_faces : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (w : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ) (D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, IntegrableOn (w p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∀ x ∈ D.support, ∃ p ∈ s, (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) ≠ 0 ∧ ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) = x := by
+  intro P m s w D hint hD x hx
+  -- Step 1: otherwise `x` misses every closed face `Φ_p(Cⁿ)` with `∫_{Q₁} |w_p| ≠ 0`
+  by_contra hcon
+  push Not at hcon
+  set Q : Set (Euclid (m + 1)) := {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}
+  set C : Set (Euclid (m + 1)) := {y : Euclid (m + 1) | ∀ i, 0 ≤ y i ∧ y i ≤ 1}
+  set Φ : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → Euclid P :=
+    fun p y => WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)
+    with hΦ
+  set s' := s.filter (fun p => (∫ y in Q, |w p y|) ≠ 0) with hs'
+  set Z : Set (Euclid P) := ⋃ p ∈ s', Φ p '' C with hZ
+  -- Step 2: `Z` is compact, so some ball about `x` misses it
+  have hCcomp : IsCompact C := by
+    have hpi : IsCompact (Set.pi univ (fun _ : Fin (m + 1) => Icc (0 : ℝ) 1)) :=
+      isCompact_univ_pi (fun _ => isCompact_Icc)
+    have himg := hpi.image (PiLp.continuous_toLp 2 (fun _ : Fin (m + 1) => ℝ))
+    convert himg using 1
+    ext y
+    constructor
+    · intro hy
+      refine ⟨WithLp.ofLp y, ?_, by simp⟩
+      intro i _
+      exact ⟨(hy i).1, (hy i).2⟩
+    · rintro ⟨z, hz, rfl⟩ i
+      exact ⟨(hz i (mem_univ i)).1, (hz i (mem_univ i)).2⟩
+  have hΦcont : ∀ p, Continuous (Φ p) := by
+    intro p
+    exact continuous_const.add
+      (continuous_finsetSum _ fun j _ => (PiLp.continuous_apply 2 _ j).smul continuous_const)
+  have hZcomp : IsCompact Z := s'.isCompact_biUnion (fun p _ => hCcomp.image (hΦcont p))
+  have hxZ : x ∉ Z := by
+    intro hxZ
+    simp only [hZ, mem_iUnion, mem_image] at hxZ
+    obtain ⟨p, hp, y, hy, hyx⟩ := hxZ
+    rw [hs', Finset.mem_filter] at hp
+    exact hcon p hp.1 hp.2 y hy hyx
+  obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hZcomp.isClosed.isOpen_compl x hxZ
+  -- Step 3: `D` vanishes on `ball x r`, face by face
+  have hvan : D.VanishesOn (ball x r) := by
+    intro ω hω
+    rw [hD ω]
+    apply Finset.sum_eq_zero
+    intro p hp
+    by_cases hp0 : (∫ y in Q, |w p y|) = 0
+    · -- (a) `w_p = 0` a.e. on `Q₁`
+      have habs : (fun y => |w p y|) =ᵐ[volume.restrict Q] 0 :=
+        (integral_eq_zero_iff_of_nonneg (fun y => abs_nonneg (w p y)) (hint p hp).abs).mp hp0
+      apply integral_eq_zero_of_ae
+      filter_upwards [habs] with y hy
+      have : w p y = 0 := abs_eq_zero.mp hy
+      simp [this]
+    · -- (b) `ω` vanishes on `Φ_p(Q₁) ⊆ Z`
+      apply setIntegral_eq_zero_of_forall_eq_zero
+      intro y hy
+      have hyC : y ∈ C := fun i => ⟨(hy i).1.le, (hy i).2.le⟩
+      have hps' : p ∈ s' := by rw [hs', Finset.mem_filter]; exact ⟨hp, hp0⟩
+      have hmemZ : Φ p y ∈ Z := mem_biUnion hps' (mem_image_of_mem _ hyC)
+      have hnot : Φ p y ∉ tsupport (ω : DifferentialForm (Euclid P) (m + 1)) := by
+        intro hin
+        exact hball (hω hin) hmemZ
+      have h0 := image_eq_zero_of_notMem_tsupport hnot
+      simp only [hΦ] at h0
+      simp [h0]
+  -- Step 4: `ball x r` is open with compact closure, so `x` lies in the zero region of `D`
+  have hxzero : x ∈ D.zeroRegion := by
+    refine mem_sUnion.mpr ⟨ball x r, ⟨isOpen_ball, ?_, subset_univ _, hvan⟩, mem_ball_self hr⟩
+    exact (isCompact_closedBall x r).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall
+  -- Step 5: this contradicts `x ∈ spt D`
+  exact hx.2 hxzero
 /-- Deformation theorem, face replacement: divergence form of `dγ` on a coordinate face.  For
 `Φ(y) = b + ∑ⱼ yⱼ e_{ι j}` and `G(y)ᵢ = (−1)ⁱ γ(Φ y)(e_{ι ∘ succAbove i})` (`γ(Φ y)` on the
 frame `E = (e_{ι 0}, …, e_{ι m})` with its `i`-th vector removed), `G` is smooth,
@@ -1087,6 +1347,63 @@ theorem Submission.dimred_mbl_dtfr_face_divergence : ∀ (P m : ℕ) (ι : Fin (
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [hfd]
     simp [Matrix.diag, LinearMap.toMatrix_apply, hcoord, hL, ev, w, zsmul_eq_mul]
+
+/-- **Currents given by integrable densities on finitely many unit faces** (Simon Ch. 6, proof of
+Theorem 5.1, displays (27)–(30) and (34)).  Let `Q₁ ⊆ ℝ^{m+1}` be the open unit cube and, for
+`p = (ι, b) ∈ s` with `ι` strictly increasing, `Φₚ(y) = b + Σⱼ yⱼ e_{ι j}`, `Eₚ = (e_{ι j})ⱼ`,
+with `wₚ` integrable on `Q₁`.  Then (I) each `y ↦ wₚ(y) ω(Φₚ y)(Eₚ)` is integrable on `Q₁`;
+(II) `D(ω) = Σₚ ∫_{Q₁} wₚ(y) ω(Φₚ y)(Eₚ) dy` defines a current; and every such `D` has
+(a) `M(D) ≤ Σₚ ∫_{Q₁} |wₚ|`, (b) `M(∂D) ≤ Σₚ Bₚ` whenever `|∫_{Q₁} wₚ div G| ≤ Bₚ` for every
+smooth `G` with `|G| ≤ 1`, and (c) `spt D` in the closed faces `Φₚ([0,1]^{m+1})` with
+`∫_{Q₁} |wₚ| ≠ 0`.  For (b), an admissible `γ` gives on each face the smooth field
+`Gₚ(y)ᵢ = (−1)ⁱ γ(Φₚ y)(Eₚ ∘ succAbove i)`, with `|Gₚ| ≤ |γ ∘ Φₚ| ≤ 1` and
+`dγ(Φₚ y)(Eₚ) = div Gₚ(y)`; so `∂D(γ) = D(dγ) = Σₚ ∫_{Q₁} wₚ div Gₚ ≤ Σₚ Bₚ`. -/
+theorem Submission.dimred_mbl_dtfr_face_integral_current : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (w : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ), (∀ p ∈ s, StrictMono p.1) → (∀ p ∈ s, IntegrableOn (w p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), ∀ p ∈ s, IntegrableOn (fun y => w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) ∧ (∃ D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) ∧ ∀ D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → D.mass ≤ ENNReal.ofReal (∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) ∧ (∀ B : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → ℝ, (∀ p ∈ s, ∀ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) G → (∀ y, ‖G y‖ ≤ 1) → |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤ B p) → D.boundary.mass ≤ ENNReal.ofReal (∑ p ∈ s, B p)) ∧ (∀ x ∈ D.support, ∃ p ∈ s, (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) ≠ 0 ∧ ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) = x) := by
+  intro P m s w hmono hint
+  -- Step 1: (I) and (II), by `dimred_mbl_dtfric_current_exists`
+  obtain ⟨hI, D₀, hD₀⟩ := Submission.dimred_mbl_dtfric_current_exists P m s w hint
+  refine ⟨hI, ⟨D₀, hD₀⟩, fun D hD => ⟨?_, ?_, ?_⟩⟩
+  -- Step 2: (III)(a), by `dimred_mbl_dtfric_mass_le`
+  · exact Submission.dimred_mbl_dtfric_mass_le P m s w D hmono hint hD
+  -- Step 3: (III)(b).  `M(∂D)` is the supremum of `∂D(γ)` over admissible `γ`; bound each
+  -- `∂D(γ) = D(dγ)` face by face
+  · intro B hB
+    change D.boundary.massOn univ ≤ _
+    unfold GeometricCurrentOn.massOn
+    apply sSup_le
+    rintro r ⟨γ, hγ, rfl⟩
+    apply ENNReal.ofReal_le_ofReal
+    rw [GeometricCurrentOn.boundary_apply, hD]
+    apply Finset.sum_le_sum
+    intro p hp
+    -- the field `Gₚ(y)ᵢ = (−1)ⁱ γ(Φₚ y)(Eₚ ∘ succAbove i)` of `dimred_mbl_dtfr_face_divergence`
+    -- is smooth, with `‖Gₚ(y)‖ ≤ |γ(Φₚ y)|` and `dγ(Φₚ y)(Eₚ) = div Gₚ(y)`
+    set G : Euclid (m + 1) → Euclid (m + 1) := fun y => WithLp.toLp 2 (fun i : Fin (m + 1) =>
+      (-1 : ℝ) ^ (i : ℕ) * (γ : DifferentialForm (Euclid P) m)
+        (WithLp.toLp 2 (fun k => (p.2 k : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+        (fun l => EuclideanSpace.single (p.1 (Fin.succAbove i l)) (1 : ℝ)))
+    obtain ⟨hGsmooth, hGnorm, hGdiv⟩ := Submission.dimred_mbl_dtfr_face_divergence P m p.1 p.2
+      (γ : DifferentialForm (Euclid P) m) G (hmono p hp) γ.property.1.1 (fun y i => rfl)
+    -- `‖Gₚ‖ ≤ 1`, since `γ` is admissible
+    have hG1 : ∀ y, ‖G y‖ ≤ 1 := fun y => (hGnorm y).trans (hγ.2 _)
+    -- the form underlying the test form `dγ` is `exteriorDerivative γ`
+    have hdiv : ∀ y, w p y * ((exteriorDerivativeTestOn (univ : Set (Euclid P)) m γ :
+        TestFormOn (univ : Set (Euclid P)) (m + 1)) : DifferentialForm (Euclid P) (m + 1))
+          (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+          (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) =
+        w p y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) := by
+      intro y
+      rw [← hGdiv y]
+      rfl
+    -- the `p`-th face term is `∫_{Q₁} wₚ div Gₚ ≤ |∫_{Q₁} wₚ div Gₚ| ≤ Bₚ`
+    calc _ = ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+            w p y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) :=
+          integral_congr_ae (Eventually.of_forall hdiv)
+      _ ≤ |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+            w p y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| := le_abs_self _
+      _ ≤ B p := hB p hp G hGsmooth hG1
+  -- Step 4: (III)(c), by `dimred_mbl_dtfric_support_faces`
+  · exact Submission.dimred_mbl_dtfric_support_faces P m s w D hint hD
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
