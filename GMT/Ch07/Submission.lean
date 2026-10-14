@@ -455,6 +455,52 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A top-degree test form with positive integral**: for `p ∈ ℝⁿ` and `r > 0` some
+`ω ∈ 𝒟ⁿ(ℝⁿ)` has `spt ω ⊆ B̄_r(p)` and `∫ ω(y)(e₁, …, eₙ) dy > 0`, `e` the standard basis.
+Take `ω = a e*`: `e* = det_e` is continuous (`det_e v = det (vⱼ(k))_{k,j}`) with `e*(e) = 1`,
+and `a` is a smooth bump with `a = 1` on `B̄_{r/2}(p)` and `tsupport a = B̄_r(p)`.  Then
+`ω(y)(e) = a(y)`, and `∫ a > 0` as `a ≥ 0` is continuous, compactly supported, `a(p) = 1`. -/
+theorem Submission.dtc_bc_cz_isMinimizingIn_bump_form : ∀ (n : ℕ) (p : Euclid n) (r : ℝ), 0 < r → ∃ ω : TestFormOn (univ : Set (Euclid n)) n, tsupport (ω : DifferentialForm (Euclid n) n) ⊆ closedBall p r ∧ 0 < ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ) := by
+  intro n p r hr
+  -- Step 1: the covector `e* = det_e`; `det_e v = det (vⱼ(k))_{k,j}` is continuous in `v`
+  let e := EuclideanSpace.basisFun (Fin n) ℝ
+  let D : Euclid n [⋀^Fin n]→ₗ[ℝ] ℝ := e.toBasis.det
+  have hD : ∀ v : Fin n → Euclid n, D v = (Matrix.of fun k j => v j k).det := by
+    intro v
+    have hM : e.toBasis.toMatrix v = Matrix.of fun k j => v j k := by
+      ext k j
+      simp [e, Module.Basis.toMatrix_apply]
+    rw [Module.Basis.det_apply, hM]
+  have hDcont : Continuous fun v : Fin n → Euclid n => D v := by
+    simp_rw [hD]
+    exact Continuous.matrix_det (continuous_matrix fun k j =>
+      (PiLp.continuous_apply 2 _ k).comp (continuous_apply j))
+  let estar : Covector (Euclid n) n := { D with cont := hDcont }
+  have hestar : estar ⇑e = 1 := by
+    change D ⇑e = 1
+    rw [← OrthonormalBasis.coe_toBasis]
+    exact e.toBasis.det_self
+  -- Step 2: a smooth bump `a` with `a = 1` on `B̄_{r/2}(p)` and `tsupport a = B̄_r(p)`
+  let a : ContDiffBump p := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
+  -- Step 3: the test form `ω = a e*`, with `tsupport ω ⊆ tsupport a = B̄_r(p)`
+  let ω : DifferentialForm (Euclid n) n := fun y => a y • estar
+  have hωsmooth : IsSmoothForm ω := (a.contDiff (n := ⊤)).smul contDiff_const
+  have hωcpt : HasCompactSupport ω := a.hasCompactSupport.smul_right
+  have hωsupp : tsupport ω ⊆ closedBall p r :=
+    (tsupport_smul_subset_left (fun y => a y) fun _ => estar).trans a.tsupport_eq.subset
+  refine ⟨⟨ω, ⟨hωsmooth, hωcpt⟩, subset_univ _⟩, hωsupp, ?_⟩
+  -- Step 4: `ω(y)(e) = a(y) e*(e) = a(y)`, and `∫ a > 0` since `a ≥ 0` is continuous with
+  -- compact support and `a(p) = 1`
+  have hωe : ∀ y, ω y ⇑e = a y := by
+    intro y
+    simp only [ω, ContinuousAlternatingMap.smul_apply, hestar, smul_eq_mul, mul_one]
+  have hap : a p ≠ 0 := by
+    rw [a.one_of_mem_closedBall (mem_closedBall_self (half_pos hr).le)]
+    exact one_ne_zero
+  change 0 < ∫ y, ω y ⇑e
+  simp_rw [hωe]
+  exact a.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero a.hasCompactSupport
+    (fun _ => a.nonneg) hap
 /-- **The coordinate covector `eⱼ ⌟ δ` on `ℝ^{m+1}`** (step 2 of the boundary weak-derivative
 computation in the graph-cycle regularity step of Simon 7.4.3).  For `j ∈ Fin (m + 1)` there is a
 continuous alternating `m`-form `β` on `ℝ^{m+1}` with `β(e₀, …, êᵢ, …, e_m) = (−1)ʲ` if `i = j`
@@ -1974,6 +2020,38 @@ theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P))
   change S.toCurrent ω = 0
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
+
+/-- A constant multiple `X = c[[ℝⁿ]]` (`n ≥ 1`) with compact support is zero (step 6 of
+`dtc_bc_cz_isMinimizingIn`): if `X(ω) = c ∫ ω(y)(e₁, …, eₙ) dy` for every `ω ∈ 𝒟ⁿ(ℝⁿ)` and
+`spt X` is compact, then `c = 0`.  Take `r₀` with `spt X ⊆ B̄_{r₀}(0)` and `p = (|r₀| + 2)e₁`,
+so `‖p‖ = |r₀| + 2`.  A test form `ω` with `spt ω ⊆ B̄₁(p)` and `∫ ω(y)(e₁, …, eₙ) dy > 0` has
+`spt ω ∩ spt X = ∅`, since `‖p‖ ≤ ‖y‖ + ‖y − p‖ ≤ r₀ + 1` for `y` in both.  Hence `X(ω) = 0`
+(Simon 6.2.11), so `c ∫ ω(y)(e₁, …, eₙ) dy = 0` and `c = 0`. -/
+theorem Submission.dtc_bc_cz_isMinimizingIn_const_eq_zero : ∀ (n : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid n)) n) (c : ℝ), 0 < n → IsCompact X.support → (∀ ω : TestFormOn (univ : Set (Euclid n)) n, X ω = c * ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)) → c = 0 := by
+  intro n X c hn hX hXc
+  -- Step 1: `spt X ⊆ B̄(0, r₀)`, `spt X` being compact
+  obtain ⟨r₀, hr₀⟩ := hX.isBounded.subset_closedBall (0 : Euclid n)
+  -- Step 2: `p = (|r₀| + 2) e₁` (`n ≥ 1`) has `‖p‖ = |r₀| + 2`
+  obtain ⟨p, hpn⟩ : ∃ p : Euclid n, ‖p‖ = |r₀| + 2 :=
+    ⟨(|r₀| + 2) • EuclideanSpace.single (⟨0, hn⟩ : Fin n) (1 : ℝ), by
+      rw [norm_smul, PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs,
+        abs_of_pos (by positivity)]⟩
+  -- Step 3 (child `bump_form`): `ω` with `spt ω ⊆ B̄(p, 1)` and `∫ ω(y)(e) dy > 0`
+  obtain ⟨ω, hωs, hωI⟩ := Submission.dtc_bc_cz_isMinimizingIn_bump_form n p 1 one_pos
+  -- Step 4: `spt ω ∩ spt X = ∅`, as `‖p‖ ≤ ‖y‖ + ‖y − p‖ ≤ r₀ + 1 < |r₀| + 2` on it
+  have hdisj : Disjoint (tsupport (ω : DifferentialForm (Euclid n) n)) X.support := by
+    refine Set.disjoint_left.mpr fun y hyω hyX => ?_
+    have h1 : ‖y - p‖ ≤ 1 := mem_closedBall_iff_norm.mp (hωs hyω)
+    have h2 : ‖y‖ ≤ r₀ := mem_closedBall_zero_iff.mp (hr₀ hyX)
+    have h3 : ‖p‖ ≤ ‖y‖ + ‖y - p‖ := by
+      simpa only [sub_sub_cancel] using norm_sub_le y (y - p)
+    linarith [le_abs_self r₀]
+  -- Step 5 (`dtc_vanish_off_support`): `X(ω) = 0`
+  have hX0 : X ω = 0 := Submission.dtc_vanish_off_support n n univ X ω hdisj
+  -- Step 6: `c ∫ ω(y)(e) dy = 0` with a positive integral, so `c = 0`
+  rw [hXc ω] at hX0
+  exact (mul_eq_zero.mp hX0).resolve_right hωI.ne'
+
 /-- **Simon Ch. 6, Remark 3.2(1)**, step 3 (orientations `±τ₁ ∧ ⋯ ∧ τₙ` as in 2.1–2.2): two unit
 orientations `v = ±τ₁ ∧ ⋯ ∧ τₙ`, `w = ±τ'₁ ∧ ⋯ ∧ τ'ₙ` of the same subspace `Q` differ by a sign.
 `τ` and `τ'` are orthonormal bases `b`, `b'` of `Q`; every alternating `n`-form on `Q` is a
@@ -2945,5 +3023,37 @@ theorem Submission.dtc_bc_cz_top_constancy : ∀ (m : ℕ) (V B : Set (Euclid (m
   · rw [hy hyB]
   · rw [image_eq_zero_of_notMem_tsupport fun h => hyB (hω h)]
     simp
+
+/-- **Simon 7.1.1 in codimension zero.**  If `n ≥ 1` and `C ∈ 𝒟ₙ(ℝⁿ)` is integer multiplicity,
+then `C` is minimizing in every `A ⊆ ℝⁿ`; in fact every competitor equals `C`.  For a competitor
+`S`, the current `X = S − C` is integer multiplicity (Simon 6.3.2(1)) with `∂X = ∂S − ∂C = 0`, so
+the Constancy Theorem (6.2.34) gives `X = c[[ℝⁿ]]` with `c ∈ ℤ`.  As `spt X` is compact, testing
+`X` with a bump form supported away from `spt X` forces `c = 0`.  Hence `S = C` and
+`M_W(C) = M_W(S)`. -/
+theorem Submission.dtc_bc_cz_isMinimizingIn : ∀ (n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid n)) n) (A : Set (Euclid n)), 0 < n → IsIntegerMultiplicity C → IsMinimizingIn C A := by
+  intro n C A hn hC
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  refine ⟨hC, fun W S _ _ hS hbd hcpt _ => ?_⟩
+  -- 1. `X = S − C` is an integer multiplicity cycle in `ℝⁿ`
+  have hX : IsIntegerMultiplicity (S - C) :=
+    Submission.dtc_isIntegerMultiplicity_sub (m + 1) (m + 1) univ S C isOpen_univ hn hS hC
+  have hcycle : ∀ β : TestFormOn (univ : Set (Euclid (m + 1))) m,
+      tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ univ → (S - C).boundary β = 0 := by
+    intro β _
+    have hbd' : S.boundary = C.boundary := hbd
+    show S.boundary β - C.boundary β = 0
+    rw [hbd', sub_self]
+  -- 2. Constancy Theorem on `ℝⁿ`: `X = c[[ℝⁿ]]` with `c ∈ ℤ`
+  obtain ⟨c, hc⟩ := Submission.dtc_bc_cz_top_constancy m univ univ (S - C) isOpen_univ hX
+    isOpen_univ isPreconnected_univ Subset.rfl hcycle
+  -- 3. `spt X` is compact, so `c = 0`
+  have hc0 : (c : ℝ) = 0 := Submission.dtc_bc_cz_isMinimizingIn_const_eq_zero (m + 1) (S - C) c
+    hn hcpt fun ω => hc ω (subset_univ _)
+  -- 4. hence `S = C`, and `M_W(C) = M_W(S)`
+  have hSC : S = C := by
+    ext ω
+    have h : (S - C) ω = 0 := by rw [hc ω (subset_univ _), hc0, zero_mul]
+    exact sub_eq_zero.mp h
+  rw [hSC]
 
 end GMT.Ch07
