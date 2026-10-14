@@ -1197,63 +1197,6 @@ theorem Submission.cmcdt_cbm_smooth_trace : ∀ (m : ℕ) (v : Euclid (m + 1) �
         push_cast
         ring
 
-/-- **Trace estimate on the unit cube** (step 5 of the median argument; it replaces the appeal to
-Simon Ch. 2, 2.8–2.9 in the second line of (32) in the proof of Ch. 6, 5.1).  `div G = tr DG` is
-continuous, so `|div G| ≤ M` on `Q₁`.  For `δ ∈ (0, 1/4)` the `C¹` functions `v_k` of
-`cmcdt_cbm_smooth_approx` have `∫_{Q_δ} ‖Dv_k‖ ≤ V` and `v_k → w` in `L¹(Q_δ)`, so the smooth
-estimate `cmcdt_cbm_smooth_trace` on `Q_δ` passes to `w` (`cmcdt_cbm_bvt_l1_limit`); `Q_δ ⊆ Q₁`
-bounds `∫_{Q_δ} |w|` by `∫_{Q₁} |w|`, and `δ → 0⁺` by `cmcdt_cbm_bvt_cube_exhaust`. -/
-theorem Submission.cmcdt_cbm_bv_trace : ∀ (m : ℕ) (w : Euclid (m + 1) → ℝ) (V : ℝ), IntegrableOn w {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → ∀ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 G → (∀ y, ‖G y‖ ≤ 1) → |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤ (2 * (m + 1) + 1) * V + 4 * (m + 1) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w y| := by
-  intro m w V hw hV G hG hG1
-  -- the cubes `{a < z_i < b}` are open, and `Q_δ ⊆ Q₁` for `δ ≥ 0`
-  have hopen : ∀ a b : ℝ, IsOpen {z : Euclid (m + 1) | ∀ i, a < z i ∧ z i < b} := by
-    intro a b
-    simp only [ofPred_forall, ofPred_and]
-    exact isOpen_iInter_of_finite fun i =>
-      (isOpen_lt continuous_const (PiLp.continuous_apply 2 _ i)).inter
-        (isOpen_lt (PiLp.continuous_apply 2 _ i) continuous_const)
-  have hsub : ∀ δ : ℝ, 0 ≤ δ → {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ} ⊆
-      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := fun δ hδ z hz i =>
-    ⟨hδ.trans_lt (hz i).1, (hz i).2.trans_le (by linarith)⟩
-  -- `div G = tr ∘ DG` is continuous, hence bounded by `M` on `Q₁`
-  have hdc : Continuous fun y => LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) :=
-    ((LinearMap.trace ℝ (Euclid (m + 1))).comp
-      (ContinuousLinearMap.coeLM ℝ)).continuous_of_finiteDimensional.comp
-      (hG.continuous_fderiv one_ne_zero)
-  obtain ⟨⟨M, hM⟩, -⟩ := Submission.cmcdt_cbm_bvt_cube_cont_bound (m + 1) _ hdc
-  -- for `δ ∈ (0, 1/4)`: `|∫_{Q_δ} w div G| ≤ (2n + 1) V + 4n ∫_{Q₁} |w|`
-  have hδbound : ∀ δ ∈ Ioo (0 : ℝ) (1 / 4),
-      |∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ},
-          w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤
-        (2 * (m + 1) + 1) * V +
-          4 * (m + 1) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w y| := by
-    rintro δ ⟨hδ0, hδ⟩
-    have hQ := hsub δ hδ0.le
-    -- `C¹` approximations `v_k → w` in `L¹(Q_δ)` with `∫_{Q_δ} ‖Dv_k‖ ≤ V`
-    obtain ⟨v, hv, hvV, hvw⟩ := Submission.cmcdt_cbm_smooth_approx m w V δ hw hV hδ0
-    refine (Submission.cmcdt_cbm_bvt_l1_limit volume _ v w
-      (fun y => LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)) ((2 * (m + 1) + 1) * V)
-      (4 * (m + 1)) M (hopen δ (1 - δ)).measurableSet (by positivity)
-      (fun k => (Submission.cmcdt_cbm_bvt_cube_cont_bound (m + 1) (v k)
-        (hv k).continuous).2.mono_set hQ)
-      (hw.mono_set hQ) hdc.aestronglyMeasurable (fun y hy => hM y (hQ hy)) hvw
-      fun k => ?_).trans ?_
-    · -- the smooth estimate on `Q_δ`, with `∫_{Q_δ} ‖Dv_k‖ ≤ V`
-      refine (Submission.cmcdt_cbm_smooth_trace m (v k) G δ (hv k) hG hG1 hδ0.le hδ.le).trans ?_
-      gcongr _ * ?_ + _
-      exact hvV k
-    · -- `∫_{Q_δ} |w| ≤ ∫_{Q₁} |w|`
-      gcongr _ + _ * ?_
-      exact setIntegral_mono_set (Integrable.abs hw) (ae_of_all _ fun y => abs_nonneg (w y))
-        (ae_of_all _ hQ)
-  -- `δ → 0⁺`: `∫_{Q_δ} w div G → ∫_{Q₁} w div G`, with `w div G` integrable on `Q₁`
-  have hwG : IntegrableOn (fun y => w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y))
-      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} :=
-    Integrable.mul_bdd hw hdc.aestronglyMeasurable
-      (ae_restrict_of_forall_mem (hopen 0 1).measurableSet fun y hy => hM y hy)
-  exact le_of_tendsto (Submission.cmcdt_cbm_bvt_cube_exhaust (m + 1) _ hwG).abs
-    (Filter.mem_of_superset (Ioo_mem_nhdsGT (by norm_num : (0 : ℝ) < 1 / 4)) hδbound)
-
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
@@ -1554,5 +1497,62 @@ theorem Submission.cmcdt_cbm_smooth_approx : ∀ (m : ℕ) (u : Euclid (m + 1) �
       _ ≤ ε / 2 := ENNReal.toReal_le_of_le_ofReal (half_pos hε).le
           ((setLIntegral_le_lintegral _ _).trans hL)
       _ < ε := half_lt_self hε
+
+/-- **Trace estimate on the unit cube** (step 5 of the median argument; it replaces the appeal to
+Simon Ch. 2, 2.8–2.9 in the second line of (32) in the proof of Ch. 6, 5.1).  `div G = tr DG` is
+continuous, so `|div G| ≤ M` on `Q₁`.  For `δ ∈ (0, 1/4)` the `C¹` functions `v_k` of
+`cmcdt_cbm_smooth_approx` have `∫_{Q_δ} ‖Dv_k‖ ≤ V` and `v_k → w` in `L¹(Q_δ)`, so the smooth
+estimate `cmcdt_cbm_smooth_trace` on `Q_δ` passes to `w` (`cmcdt_cbm_bvt_l1_limit`); `Q_δ ⊆ Q₁`
+bounds `∫_{Q_δ} |w|` by `∫_{Q₁} |w|`, and `δ → 0⁺` by `cmcdt_cbm_bvt_cube_exhaust`. -/
+theorem Submission.cmcdt_cbm_bv_trace : ∀ (m : ℕ) (w : Euclid (m + 1) → ℝ) (V : ℝ), IntegrableOn w {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → ∀ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 G → (∀ y, ‖G y‖ ≤ 1) → |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤ (2 * (m + 1) + 1) * V + 4 * (m + 1) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w y| := by
+  intro m w V hw hV G hG hG1
+  -- the cubes `{a < z_i < b}` are open, and `Q_δ ⊆ Q₁` for `δ ≥ 0`
+  have hopen : ∀ a b : ℝ, IsOpen {z : Euclid (m + 1) | ∀ i, a < z i ∧ z i < b} := by
+    intro a b
+    simp only [ofPred_forall, ofPred_and]
+    exact isOpen_iInter_of_finite fun i =>
+      (isOpen_lt continuous_const (PiLp.continuous_apply 2 _ i)).inter
+        (isOpen_lt (PiLp.continuous_apply 2 _ i) continuous_const)
+  have hsub : ∀ δ : ℝ, 0 ≤ δ → {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ} ⊆
+      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := fun δ hδ z hz i =>
+    ⟨hδ.trans_lt (hz i).1, (hz i).2.trans_le (by linarith)⟩
+  -- `div G = tr ∘ DG` is continuous, hence bounded by `M` on `Q₁`
+  have hdc : Continuous fun y => LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) :=
+    ((LinearMap.trace ℝ (Euclid (m + 1))).comp
+      (ContinuousLinearMap.coeLM ℝ)).continuous_of_finiteDimensional.comp
+      (hG.continuous_fderiv one_ne_zero)
+  obtain ⟨⟨M, hM⟩, -⟩ := Submission.cmcdt_cbm_bvt_cube_cont_bound (m + 1) _ hdc
+  -- for `δ ∈ (0, 1/4)`: `|∫_{Q_δ} w div G| ≤ (2n + 1) V + 4n ∫_{Q₁} |w|`
+  have hδbound : ∀ δ ∈ Ioo (0 : ℝ) (1 / 4),
+      |∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ},
+          w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤
+        (2 * (m + 1) + 1) * V +
+          4 * (m + 1) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w y| := by
+    rintro δ ⟨hδ0, hδ⟩
+    have hQ := hsub δ hδ0.le
+    -- `C¹` approximations `v_k → w` in `L¹(Q_δ)` with `∫_{Q_δ} ‖Dv_k‖ ≤ V`
+    obtain ⟨v, hv, hvV, hvw⟩ := Submission.cmcdt_cbm_smooth_approx m w V δ hw hV hδ0
+    refine (Submission.cmcdt_cbm_bvt_l1_limit volume _ v w
+      (fun y => LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)) ((2 * (m + 1) + 1) * V)
+      (4 * (m + 1)) M (hopen δ (1 - δ)).measurableSet (by positivity)
+      (fun k => (Submission.cmcdt_cbm_bvt_cube_cont_bound (m + 1) (v k)
+        (hv k).continuous).2.mono_set hQ)
+      (hw.mono_set hQ) hdc.aestronglyMeasurable (fun y hy => hM y (hQ hy)) hvw
+      fun k => ?_).trans ?_
+    · -- the smooth estimate on `Q_δ`, with `∫_{Q_δ} ‖Dv_k‖ ≤ V`
+      refine (Submission.cmcdt_cbm_smooth_trace m (v k) G δ (hv k) hG hG1 hδ0.le hδ.le).trans ?_
+      gcongr _ * ?_ + _
+      exact hvV k
+    · -- `∫_{Q_δ} |w| ≤ ∫_{Q₁} |w|`
+      gcongr _ + _ * ?_
+      exact setIntegral_mono_set (Integrable.abs hw) (ae_of_all _ fun y => abs_nonneg (w y))
+        (ae_of_all _ hQ)
+  -- `δ → 0⁺`: `∫_{Q_δ} w div G → ∫_{Q₁} w div G`, with `w div G` integrable on `Q₁`
+  have hwG : IntegrableOn (fun y => w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y))
+      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} :=
+    Integrable.mul_bdd hw hdc.aestronglyMeasurable
+      (ae_restrict_of_forall_mem (hopen 0 1).measurableSet fun y hy => hM y hy)
+  exact le_of_tendsto (Submission.cmcdt_cbm_bvt_cube_exhaust (m + 1) _ hwG).abs
+    (Filter.mem_of_superset (Ioo_mem_nhdsGT (by norm_num : (0 : ℝ) < 1 / 4)) hδbound)
 
 end GMT.Ch07
