@@ -1,0 +1,95 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_set_dense-a1.constant_multiplicity_reduction-a1`
+- Child DAG node: `root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_current-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 6, Definition 3.1 (formula (‡) defines an element of 𝒟_n(U)); parent proof, step 6(c): “E is linear, and |E(ω)| ≤ sup_x ‖ω(x)‖·∫_{M_X∩K} θ_X dH^n, because |⟨α, ξ_X⟩| ≤ ‖α‖ H^n-a.e. (ξ_X is a unit simple n-vector a.e.). So E is sequentially continuous, E ∈ 𝒟_n(U)”. The pinned library notes that this continuity estimate is still missing (Chapter06/Currents.lean, docstring of IntegerRectifiableCurrentData.action).
+
+Notation. For an n-covector α (a continuous alternating n-linear map, Covector), ‖α‖ is its operator norm, so |α(v₁, …, v_n)| ≤ ‖α‖·∏|v_i| (ContinuousAlternatingMap.le_opNorm). For ω ∈ 𝒟^n(U) put g_ω(x) := θ(x)·ξ(x)(ω(x)), so that R.action ω = ∫_M g_ω dHⁿ.
+
+1. Pointwise bound. By the orients field of R, for Hⁿ⌞M-a.e. x there is a subspace Q with IsUnitOrientationOf (ξ x) Q: there is an orthonormal family τ = (τ₁, …, τ_n) with ξ(x)(α) = α(τ) for all α, or ξ(x)(α) = −α(τ) for all α. For such x and every α, |ξ(x)(α)| = |α(τ)| ≤ ‖α‖·∏|τ_i| = ‖α‖. For n = 0 the product is empty and the same bound holds.
+
+2. Measurability. θ is measurable, so x ↦ (θ(x) : ℝ) is measurable. ξ is a.e. strongly measurable for Hⁿ⌞M, and ω is continuous (it is smooth). The evaluation map (L, α) ↦ L(α), from (Covector →L[ℝ] ℝ) × Covector to ℝ, is a continuous bilinear map. Hence x ↦ ξ(x)(ω(x)), and so g_ω, is a.e. strongly measurable for Hⁿ⌞M.
+
+3. Integrability. Let K_ω := tsupport ω. It is compact (ω has compact support) and K_ω ⊆ U (ω ∈ 𝒟^n(U)). Let C_ω := sup_x ‖ω(x)‖ < ∞ (ω is continuous with compact support), and note ω(x) = 0 for x ∉ K_ω. By step 1, |g_ω(x)| ≤ θ(x)‖ω(x)‖ ≤ C_ω·θ(x)·1_{K_ω}(x) for Hⁿ⌞M-a.e. x. The right side is Hⁿ⌞M-integrable because ∫_{M∩K_ω} θ dHⁿ < ∞ (field locallyIntegrable_mult of R, with K_ω compact ⊆ U). By step 2, g_ω is integrable on M.
+
+4. Linearity. For ω₁, ω₂ ∈ 𝒟^n(U) and a ∈ ℝ, g_{ω₁+ω₂} = g_{ω₁} + g_{ω₂} and g_{aω₁} = a·g_{ω₁} pointwise, because ξ(x) is linear and the submodule operations on 𝒟^n(U) are pointwise. By step 3 and the linearity of the integral of integrable functions, ω ↦ R.action ω is ℝ-linear on 𝒟^n(U).
+
+5. Sequential continuity. Let (ω_j) satisfy TestFormOnConverges ω_j 0. Then there is a compact K ⊆ U with tsupport ω_j ⊆ K for all j, and iteratedFDeriv ℝ 0 ω_j → 0 uniformly on K. Since ‖iteratedFDeriv ℝ 0 f x‖ = ‖f x‖ (norm_iteratedFDeriv_zero), ε_j := sup_{x∈K} ‖ω_j(x)‖ → 0. As ω_j = 0 off K, step 1 gives |g_{ω_j}| ≤ ε_j·θ·1_K Hⁿ⌞M-a.e. Hence |R.action ω_j| ≤ ε_j·∫_{M∩K} θ dHⁿ → 0, using ∫_{M∩K} θ dHⁿ < ∞ (locallyIntegrable_mult, K compact ⊆ U).
+
+6. Conclusion. By steps 4 and 5, T(ω) := R.action ω defines T ∈ GeometricCurrentOn U n, with toCurrent the linear map of step 4 and continuity from step 5. By definition T(ω) = R.action ω for every ω ∈ 𝒟^n(U), i.e. R.Represents T. ∎
+
+## Key steps
+
+1. A unit simple n-vector satisfies |ξ(x)(α)| = |α(τ)| ≤ ‖α‖ for orthonormal τ (operator-norm bound), Hⁿ⌞M-a.e.
+2. g_ω = θ·ξ(ω) is a.e. strongly measurable and dominated by sup‖ω‖·θ·1_{tsupport ω}, which is integrable by local integrability of θ on the compact tsupport ω ⊆ U.
+3. Integrability gives linearity of ω ↦ ∫_M g_ω dHⁿ.
+4. For ω_j → 0 in 𝒟^n(U): |∫_M g_{ω_j}| ≤ sup_K‖ω_j‖·∫_{M∩K} θ → 0 (0-th derivatives converge uniformly), so the functional is a GeometricCurrentOn represented by R.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `python3 over dag.json: lean_name/lean_statement of all 111 nodes; frozen statements of rsd_massOn_eq_measure, rsd_mem_support_iff_measure_ball_pos, rsd_isIntegerMultiplicity_int_combination and of the selected node; rg -l rsd_cmr_ over the run directory and GMT/`
+- `python3 over nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1/decomposition-v1.json (convention: children do not use the parent's resolved siblings)`
+- `rg -n 'restrictDomain|zeroRegion|VanishesOn|theorem .*massOn|theorem .*support' simongmt/Poincare/SimonGMT (Chapter06)`
+- `sed simongmt Chapter06/{Currents,Mass,CurrentLocalEquality,Forms}.lean and Chapter03/Rectifiable.lean (HasApproximateTangentSpaceAt, blowUpMap, CountablyRectifiable.mono)`
+- `grep/rg in local-references/123e8435b4a2469b/mathlib: exists_contDiff_support_eq_eq_one_iff, IsCompact.exists_cthickening_subset_open, measure_null_of_locally_null, ae_withDensity_iff, setIntegral_eq_of_subset_of_*, euclideanHausdorffMeasure_homothety_image, LipschitzWith.hausdorffMeasure_image_le, ENNReal.mul_sSup`
+- `lake env lean /tmp/rsd-cmr-decomp/build/FinalChildren.lean, FinalAssembly.lean, FinalSiblings.lean, FinalLeaves.lean (#print axioms)`
+- `book: chapter-05.txt proof of 7.3; chapter-06.txt 2.11, 2.16, 3.1, 3.2; chapter-03.txt 1.4-1.6`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-05.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/rsd-cmr-decomp/build/FinalChildren.lean`
+- `/tmp/rsd-cmr-decomp/build/FinalAssembly.lean`
+- `/tmp/rsd-cmr-decomp/build/FinalSiblings.lean`
+- `/tmp/rsd-cmr-decomp/build/FinalLeaves.lean`
+
+The snapshot contract (project b4d606d, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean.
+
+The pinned library proves none of the children:
+- Chapter06 has restrictDomain, testFormOnInclusion, zeroRegion/support, massOn_mono and le_massOn, but no mass or support lemma for restricted or scaled currents.
+- Currents.lean explicitly leaves the integral continuity estimate (IMRep action as a current) open.
+- Chapter03 has HasApproximateTangentSpaceAt and CountablyRectifiable.mono, but no locality or null-set invariance of approximate tangent spaces.
+
+Reusable tools, all used in compiled proofs:
+- Mathlib: exists_contDiff_support_eq_eq_one_iff, IsCompact.exists_cthickening_subset_open, measure_null_of_locally_null, ae_withDensity_iff, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, setIntegral_congr_set/_ae, ENNReal.mul_sSup.
+- The muHE scaling and isometry lemmas are cited for imrep_restrict.
+
+Lean checks:
+- All nine child types elaborate in the comparator scope.
+- The conditional assembly of the exact frozen parent type from seven children plus the three frozen uncle types depends only on propext, Classical.choice and Quot.sound.
+- Both sibling dependencies are verified.
+- Five leaf children are fully proved.
+
+No rsd_cmr_ name collides with the 111 live DAG declarations.

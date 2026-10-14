@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.translation_invariance-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1",
+  "depth": 3,
+  "title": "Tangency of a fixed direction gives translation invariance",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, S ∈ 𝒟_n(ℝ^P), R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) with R.Represents S, μ := R.measure, and v ∈ ℝ^P. Assume ∂S = 0 (BoundaryVanishes S) and p_x(v) = v for μ-a.e. x (v ∈ T_x = approxTangentPlane n M x). Then currentEval (blowUp S (−v) 1) ω = S ω for every ω ∈ 𝒟^n(ℝ^P), i.e. S(ω(v + ·)) = S(ω).",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (v : Euclid P), 0 < n → R.Represents S → BoundaryVanishes S → (∀ᵐ x ∂R.measure, (approxTangentPlane n R.carrier x).starProjection v = v) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω",
+  "lean_name": "dimred_cs_translation_invariant_of_tangency",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5-a1",
+      "result_commit": "0325970d8b47298803106a41abbcdb3c8c9ac103",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-translation-invariance-a1-a1"
+}

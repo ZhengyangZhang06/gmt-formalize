@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.competitor_mass-a1.comparison_box-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.competitor_mass-a1",
+  "depth": 6,
+  "title": "The comparison box W = p⁻¹(C_s) ∩ q⁻¹(B_ρ(0)) is open, relatively compact in ℝ^P, and contains the slab {|⟨g_i,·⟩| ≤ r} ∩ q⁻¹(K) for K ⊆ B_ρ(0)",
+  "statement": "Let P, k ∈ ℕ, let g = (g_1, …, g_k) (g : Fin k → Euclid P) be orthonormal with span G := span{g_1, …, g_k}, p := G.starProjection, q := G^⊥.starProjection, and let r, s, ρ ∈ ℝ with r < s. Put C_s := {x ∈ ℝ^P : |⟨g_i, x⟩| < s for all i} and W := p⁻¹(C_s) ∩ q⁻¹(B_ρ(0)). Then (i) W is open; (ii) W ⊂⊂ ℝ^P, i.e. CompactlyContained W univ (closure W is compact and contained in ℝ^P); (iii) for every K ⊆ B_ρ(0): {x ∈ ℝ^P : |⟨g_i, x⟩| ≤ r for all i} ∩ q⁻¹(K) ⊆ W.",
+  "lean_statement": "∀ (P k : ℕ) (g : Fin k → Euclid P) (r s ρ : ℝ), Orthonormal ℝ g → r < s → IsOpen ((Submodule.span ℝ (Set.range g)).starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' ball (0 : Euclid P) ρ) ∧ CompactlyContained ((Submodule.span ℝ (Set.range g)).starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' ball (0 : Euclid P) ρ) univ ∧ ∀ K : Set (Euclid P), K ⊆ ball (0 : Euclid P) ρ → {x | ∀ i, |inner ℝ (g i) x| ≤ r} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' K ⊆ (Submodule.span ℝ (Set.range g)).starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' ball (0 : Euclid P) ρ",
+  "lean_name": "dimred_cs_sos_mt_cm_comparison_box",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-02e1b84c90-a1"
+}

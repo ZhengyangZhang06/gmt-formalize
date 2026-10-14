@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.restrict_to_univ-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1",
+  "depth": 5,
+  "title": "Restriction of an integer multiplicity current to a relatively compact Borel set, as a current in ℝ^P, with the complementary piece (steps 2 and 6 of the parent)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, T ∈ 𝒟_n(U) (SimonGMT GeometricCurrentOn U n) and R = (M, θ, ξ) an integer multiplicity representation in U (contract IMRep U n) with R.Represents T, i.e. T(ω) = ∫_M θ(x)⟨ω(x), ξ(x)⟩ dHⁿ(x) for every ω ∈ 𝒟ⁿ(U) (Hⁿ = μHE[n]); write μ := μ_R = θHⁿ⌞M (R.measure). Let E ⊆ ℝ^P be Borel and K ⊆ ℝ^P compact with E ⊆ K ⊆ U. Then there exist a current Q ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) with an IMRep R_Q in ℝ^P (IMRep univ n) representing Q, and a current T₁ ∈ 𝒟_n(U) with an IMRep R₁ in U representing T₁, such that: (1) μ_{R_Q} = μ⌞E; (2) μ_{R₁} = μ⌞(ℝ^P ∖ E); (3) T(ω) = Q(ω) + T₁(ω) for every ω ∈ 𝒟ⁿ(U), where Q is evaluated at ω regarded as a test form on ℝ^P (testFormOnInclusion (subset_univ U) n ω, the same form); (4) Q(ω) = T(ω) for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ E (same convention); (5) spt Q ⊆ closure(E) ∩ spt T; (6) spt Q is compact. Here spt is the support of Simon 6.2.11 (SimonGMT GeometricCurrentOn.support: the domain minus the union of all open sets W with closure(W) compact and contained in the domain on which the current vanishes).",
+  "lean_statement": "∀ (P n : ℕ) (U E K : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → MeasurableSet E → IsCompact K → E ⊆ K → K ⊆ U → ∃ (Q : GeometricCurrentOn (univ : Set (Euclid P)) n) (RQ : IMRep (univ : Set (Euclid P)) n) (T₁ : GeometricCurrentOn U n) (R₁ : IMRep U n), RQ.Represents Q ∧ RQ.measure = R.measure.restrict E ∧ R₁.Represents T₁ ∧ R₁.measure = R.measure.restrict Eᶜ ∧ (∀ ω : TestFormOn U n, T ω = Q (testFormOnInclusion (subset_univ U) n ω) + T₁ ω) ∧ (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ E → Q (testFormOnInclusion (subset_univ U) n ω) = T ω) ∧ Q.support ⊆ closure E ∩ T.support ∧ IsCompact Q.support",
+  "lean_name": "dimred_mbl_lc_rc_restrict_to_univ",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.imrep_restriction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.imrep_restriction-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-imrep-1bd5f15878-a1",
+      "result_commit": "ae810e9b4cb8d26664747b2f51d22fb4241e09ca",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-5a45ed3919-a1"
+}
