@@ -2570,6 +2570,27 @@ theorem Submission.idtp_fons_cc_ambient_calculus : (∀ P : ℕ, IsEmbeddedSubma
     obtain ⟨h, hh⟩ := hhomeo P a s hs
     have hemb : MeasurableEmbedding (dilation a s) := hh ▸ h.measurableEmbedding
     rw [Measure.restrict_smul, hemb.restrict_map, hemb.injective.preimage_image]
+/-- **The weight is the upper density times `Hⁿ`** (Simon Ch. 3, Remark 1.8(2) and Theorem 1.9).
+Assume the density theorem: for every `R = (M, θ, ξ)` with weight `μ = θHⁿ⌞M` finite on compact
+sets and `n ≥ 1`, `μ(B_ρ(x)) / (ωₙρⁿ) → 1_M(x)θ(x)` as `ρ ↓ 0` for `Hⁿ`-a.e. `x`.  Then
+`μ = Hⁿ⌞L` for the upper density `L(x) = limsup_{ρ↓0} μ(B_ρ(x)) / (ωₙρⁿ)`, read through
+`ofReal ∘ toReal`.  Where the ratio converges, `L(x)` is its limit `1_M(x)θ(x) < ∞`, so the two
+densities agree `Hⁿ`-a.e., and `Hⁿ⌞(1_Mθ) = (Hⁿ⌞M)⌞θ = μ` as `M` is Borel. -/
+theorem Submission.idtp_fons_cc_density_representation : (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), 1 ≤ n → (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → ∀ᵐ x ∂μHE[n], Tendsto (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (Set.indicator R.carrier (fun y => (R.mult y : ℝ≥0∞)) x))) → ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), 1 ≤ n → (∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞) → R.measure = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal ((limsup (fun ρ : ℝ => R.measure (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal)) := by
+  intro hDEM P n U R hn hK
+  -- Steps 1–2: wherever the density ratio converges, its limsup is the finite limit
+  -- `1_M(x) θ(x)`, so `ofReal ∘ toReal` returns it unchanged
+  have hae : (fun x => ENNReal.ofReal ((limsup (fun ρ : ℝ => R.measure (ball x ρ) /
+      (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal)) =ᵐ[μHE[n]]
+      R.carrier.indicator fun y => (R.mult y : ℝ≥0∞) := by
+    filter_upwards [hDEM P n U R hn hK] with x hx
+    rw [hx.limsup_eq, ENNReal.ofReal_toReal]
+    by_cases hxM : x ∈ R.carrier
+    · simp [Set.indicator_of_mem hxM]
+    · simp [Set.indicator_of_notMem hxM]
+  -- Steps 3–5: `Hⁿ.withDensity (1_M θ) = (Hⁿ⌞M).withDensity θ = μ_R`
+  rw [withDensity_congr_ae hae, withDensity_indicator R.measurableSet_carrier]
+  rfl
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
