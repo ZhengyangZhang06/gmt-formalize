@@ -1110,6 +1110,193 @@ theorem Submission.cbr_ci_cp_wedge_annihilator_subspace : ∀ (P d : ℕ) (ν : 
       hφ hφc
   · rw [hv α w γ hγ]
     exact Submodule.inner_right_of_mem_orthogonal (Submodule.subset_span (mem_range_self α)) hw
+/-- **An orthonormal basis of `ℝᴾ` adapted to a subspace `V`** (used to show that an `n`-vector
+annihilating every `w♭ ∧ α` with `w ⊥ V` only sees `β ∘ p_V`): each basis vector lies in `V` or in
+`Vᗮ`.  `V` and `Vᗮ` are orthogonal, and a vector orthogonal to `V + Vᗮ` lies in `Vᗮ ∩ Vᗮᗮ = 0`, so
+`ℝᴾ` is the internal orthogonal direct sum of `V` and `Vᗮ`.  Concatenating orthonormal bases of
+`V` and `Vᗮ` and re-indexing by `Fin P` (`finrank ℝ ℝᴾ = P`) gives the basis. -/
+theorem Submission.cbr_ci_cp_pr_adapted_orthonormalBasis : ∀ (P : ℕ) (V : Submodule ℝ (Euclid P)), ∃ e : OrthonormalBasis (Fin P) ℝ (Euclid P), ∀ i : Fin P, e i ∈ V ∨ e i ∈ Vᗮ := by
+  intro P V
+  -- Step 1: `b ↦ cond b V Vᗮ` is an orthogonal family of subspaces
+  have hW' : OrthogonalFamily ℝ (fun b : Bool => ↥(cond b V Vᗮ))
+      fun b => (cond b V Vᗮ).subtypeₗᵢ :=
+    V.orthogonalFamily_self
+  -- Step 2: it is internal, since `(V ⊔ Vᗮ)ᗮ ≤ Vᗮ ⊓ Vᗮᗮ = ⊥`
+  have hW : DirectSum.IsInternal fun b : Bool => cond b V Vᗮ := by
+    rw [hW'.isInternal_iff, Submodule.eq_bot_iff]
+    intro x hx
+    have h1 : x ∈ Vᗮ :=
+      Submodule.orthogonal_le (le_iSup (fun b : Bool => cond b V Vᗮ) true) hx
+    have h2 : x ∈ Vᗮᗮ :=
+      Submodule.orthogonal_le (le_iSup (fun b : Bool => cond b V Vᗮ) false) hx
+    exact Submodule.disjoint_def.mp (Submodule.orthogonal_disjoint Vᗮ) x h1 h2
+  -- Step 3: the orthonormal basis subordinate to this decomposition, indexed by `Fin P`; its
+  -- `i`-th vector lies in the summand `cond b V Vᗮ` for some `b : Bool`
+  refine ⟨hW.subordinateOrthonormalBasis finrank_euclideanSpace_fin hW', fun i => ?_⟩
+  have hmem := hW.subordinateOrthonormalBasis_subordinate finrank_euclideanSpace_fin i hW'
+  revert hmem
+  generalize hW.subordinateOrthonormalBasisIndex finrank_euclideanSpace_fin i hW' = b
+  cases b
+  · intro hmem
+    exact Or.inr hmem
+  · intro hmem
+    exact Or.inl hmem
+/-- The determinant `n`-covector of `g₀, …, g_{n-1} ∈ ℝᴾ`: `u ↦ det(⟨g_b, u_a⟩)_{a,b}`, with
+`⟨g_b, u_a⟩` in row `a` and column `b` (for an orthonormal basis `e'`, the dual covectors `e'^I`
+of the projection reduction in White's proof that limits are integer multiplicity, Simon 6.3.11).
+Row `a` is `L u_a` for the linear map `L x = (⟨g_b, x⟩)_b`, so this is the row determinant
+`detRowAlternating` composed with `L`, an alternating `n`-linear map.  It is continuous, the
+determinant being a polynomial in the continuous entries `⟨g_b, u_a⟩`.  For `n = 0` it is the
+constant `1`. -/
+theorem Submission.cbr_ci_cp_pr_inner_det_covector : ∀ (P n : ℕ) (g : Fin n → Euclid P), ∃ γ : Covector (Euclid P) n, ∀ u : Fin n → Euclid P, γ u = Matrix.det (Matrix.of fun a b => inner ℝ (g b) (u a)) := by
+  intro P n g
+  -- the alternating map `u ↦ D(L u₀, …, L u_{n-1})`, `D` the row determinant
+  let f : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ :=
+    Matrix.detRowAlternating.compLinearMap (LinearMap.pi fun b => innerₛₗ ℝ (g b))
+  have hf : ∀ u, f u = Matrix.det (Matrix.of fun a b => inner ℝ (g b) (u a)) := fun _ => rfl
+  -- continuity: a polynomial in the continuous entries `⟨g_b, u_a⟩`
+  have hc : Continuous fun u : Fin n → Euclid P =>
+      Matrix.det (Matrix.of fun a b => inner ℝ (g b) (u a)) := by
+    fun_prop
+  exact ⟨⟨⟨f.toMultilinearMap, hc.congr fun u => (hf u).symm⟩, f.map_eq_zero_of_eq'⟩, hf⟩
+
+/-- Laplace expansion of a determinant covector along column `k`.  If the `(d + 1)`-covector `γ`
+is `u ↦ det (⟨g b, u a⟩)_{a b}`, then `γ u = ∑ᵢ (-1)ⁱ ⟨g k, u i⟩ α (u₀, …, ûᵢ, …, u_d)` with
+`α = (-1)ᵏ γ'`, where `γ'` is the `d`-covector `v ↦ det (⟨g (k.succAbove b), v a⟩)_{a b}` of the
+tuple `g` with `g k` deleted (`cbr_ci_cp_pr_inner_det_covector`): the `(i, k)` minor of
+`(⟨g b, u a⟩)_{a b}` is that matrix for `v = i.removeNth u`. -/
+theorem Submission.cbr_ci_cp_pr_det_covector_laplace : ∀ (P d : ℕ) (g : Fin (d + 1) → Euclid P) (k : Fin (d + 1)) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = Matrix.det (Matrix.of fun a b => inner ℝ (g b) (u a))) → ∃ α : Covector (Euclid P) d, ∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ (g k) (u i) * α (i.removeNth u)) := by
+  intro P d g k γ hγ
+  -- Step 1: the minor covector `γ'` of `g` with its `k`-th entry deleted, and `α = (-1)ᵏ γ'`.
+  obtain ⟨γ', hγ'⟩ := Submission.cbr_ci_cp_pr_inner_det_covector P d (fun b => g (k.succAbove b))
+  refine ⟨((-1 : ℝ) ^ (k : ℕ)) • γ', fun u => ?_⟩
+  -- Step 2: Laplace expansion of `det (⟨g b, u a⟩)_{a b}` along column `k`.
+  rw [hγ u, Matrix.det_succ_column _ k]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [ContinuousAlternatingMap.smul_apply, hγ' (i.removeNth u), smul_eq_mul]
+  -- Step 3: the `(i, k)` minor is the matrix of `i.removeNth u` against `g ∘ k.succAbove`.
+  have hsub : (Matrix.of fun a b => inner ℝ (g b) (u a)).submatrix i.succAbove k.succAbove =
+      Matrix.of fun a b => inner ℝ (g (k.succAbove b)) (i.removeNth u a) := by
+    ext a b
+    simp [Fin.removeNth]
+  -- Step 4: `(-1) ^ (i + k) = (-1) ^ i * (-1) ^ k`.
+  rw [hsub, Matrix.of_apply, pow_add]
+  ring
+/-- `n! · β(u) = ∑_I β(e_I) · det(⟨e_{I(b)}, u_a⟩)_{a,b}` for an `n`-covector `β` on `ℝᴾ`, an
+orthonormal basis `e` of `ℝᴾ` and `u ∈ (ℝᴾ)ⁿ`, the sum running over all index maps
+`I : Fin n → Fin P` (the expansion of `β` in the basis dual to `e`, used for the projection
+reduction of constant plane currents in the integer multiplicity part of Simon 7.2.4, Remark
+7.2.5(1)).  Expanding every argument in the basis `e` gives
+`β(v) = ∑_I (∏_a ⟨e_{I(a)}, v_a⟩) β(e_I)`; as `β` is alternating,
+`n! · β(u) = ∑_σ sign(σ) β(u ∘ σ)`; the Leibniz formula collects the sums over `σ` into the
+determinants. -/
+theorem Submission.cbr_ci_cp_pr_factorial_mul_eq_sum_det : ∀ (P n : ℕ) (e : OrthonormalBasis (Fin P) ℝ (Euclid P)) (β : Covector (Euclid P) n) (u : Fin n → Euclid P), (n.factorial : ℝ) * β u = ∑ I : Fin n → Fin P, β (fun a => e (I a)) * Matrix.det (Matrix.of fun a b => inner ℝ (e (I b)) (u a)) := by
+  intro P n e β u
+  classical
+  -- multilinear expansion of `β` in the orthonormal basis `e`
+  have hexp : ∀ v : Fin n → Euclid P, β v =
+      ∑ I : Fin n → Fin P, (∏ a, inner ℝ (e (I a)) (v a)) * β (fun a => e (I a)) := by
+    intro v
+    have hv : v = fun a => ∑ m, inner ℝ (e m) (v a) • e m := by
+      funext a
+      exact (e.sum_repr' (v a)).symm
+    conv_lhs => rw [hv]
+    rw [β.map_sum]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    rw [β.map_smul_univ (fun a => inner ℝ (e (I a)) (v a)) (fun a => e (I a)), smul_eq_mul]
+  -- alternation: `sign(σ) β(u ∘ σ) = sign(σ)² β(u) = β(u)`, and there are `n!` permutations
+  have halt : (n.factorial : ℝ) * β u =
+      ∑ σ : Equiv.Perm (Fin n), (Equiv.Perm.sign σ : ℝ) * β (u ∘ σ) := by
+    have : ∀ σ : Equiv.Perm (Fin n), (Equiv.Perm.sign σ : ℝ) * β (u ∘ σ) = β u := by
+      intro σ
+      rw [show β (u ∘ σ) = Equiv.Perm.sign σ • β u from β.toAlternatingMap.map_perm u σ]
+      rw [Units.smul_def, zsmul_eq_mul, ← mul_assoc]
+      have hs : ((Equiv.Perm.sign σ : ℤ) : ℝ) * ((Equiv.Perm.sign σ : ℤ) : ℝ) = 1 := by
+        rw [← Int.cast_mul, ← Units.val_mul, Int.units_mul_self, Units.val_one, Int.cast_one]
+      rw [hs, one_mul]
+    rw [Finset.sum_congr rfl fun σ _ => this σ, Finset.sum_const, Finset.card_univ,
+      Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+  rw [halt]
+  -- expand only `β (u ∘ σ)` (the right side of `hexp` contains `β` again), then swap the sums
+  have h2 : ∀ σ : Equiv.Perm (Fin n), (Equiv.Perm.sign σ : ℝ) * β (u ∘ σ) =
+      ∑ I : Fin n → Fin P, (Equiv.Perm.sign σ : ℝ) *
+        ((∏ a, inner ℝ (e (I a)) ((u ∘ σ) a)) * β (fun a => e (I a))) := by
+    intro σ
+    rw [hexp (u ∘ σ), Finset.mul_sum]
+  rw [Finset.sum_congr rfl fun σ _ => h2 σ, Finset.sum_comm]
+  -- for fixed `I`, the sum over `σ` is the Leibniz formula for the determinant
+  refine Finset.sum_congr rfl fun I _ => ?_
+  rw [Matrix.det_apply', Finset.mul_sum]
+  refine Finset.sum_congr rfl fun σ _ => ?_
+  simp only [Matrix.of_apply, Function.comp_apply]
+  ring
+
+/-- Projection reduction for the constant-planes step of the cycle case of closure and boundary
+rectifiability: if an `n`-vector `ζ` (`n = d + 1`) vanishes on every `n`-covector `w♭ ∧ α` with
+`w ∈ Vᗮ` and `α` a `d`-covector, then `ζ(β) = ζ(β ∘ p_V)` for every `n`-covector `β`, where `p_V`
+is the orthogonal projection onto `V`.  Take an orthonormal basis `e` of `ℝᴾ` with each `eᵢ` in
+`V` or in `Vᗮ` (subordinate to `ℝᴾ = V ⊕ Vᗮ`) and the covectors `e^I(u) = det(⟨e_{I b}, u_a⟩)`,
+`I : Fin n → Fin P` (`cbr_ci_cp_pr_inner_det_covector`), so that `n! β = ∑_I β(e_I) e^I`
+(`cbr_ci_cp_pr_factorial_mul_eq_sum_det`).  If `e_{I k} ∈ Vᗮ` for some `k`, Laplace expansion along
+column `k` writes `e^I = e_{I k}♭ ∧ α` (`cbr_ci_cp_pr_det_covector_laplace`), so `ζ(e^I) = 0`;
+otherwise `p_V e_{I b} = e_{I b}` for every `b`, and `β ∘ p_V` has the same coefficient `β(e_I)`. -/
+theorem Submission.cbr_ci_cp_eval_comp_starProjection_eq : ∀ (P d : ℕ) (ζ : MultiVector P (d + 1)) (V : Submodule ℝ (Euclid P)), (∀ w ∈ Vᗮ, ∀ (α : Covector (Euclid P) d) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → ζ γ = 0) → ∀ β : Covector (Euclid P) (d + 1), ζ β = ζ (β.compContinuousLinearMap V.starProjection) := by
+  have hdet := Submission.cbr_ci_cp_pr_inner_det_covector
+  have hlap := Submission.cbr_ci_cp_pr_det_covector_laplace
+  have hexp := Submission.cbr_ci_cp_pr_factorial_mul_eq_sum_det
+  intro P d ζ V hζ β
+  -- Step 1: an orthonormal basis of `ℝᴾ` subordinate to `ℝᴾ = V ⊕ Vᗮ`
+  obtain ⟨e, he⟩ : ∃ e : OrthonormalBasis (Fin P) ℝ (Euclid P), ∀ i, e i ∈ V ∨ e i ∈ Vᗮ := by
+    have hV' := V.orthogonalFamily_self
+    have hint : DirectSum.IsInternal (fun b : Bool => cond b V Vᗮ) := by
+      refine DirectSum.isInternal_submodule_of_iSupIndep_of_iSup_eq_top hV'.independent ?_
+      rw [iSup_bool_eq]
+      exact Submodule.sup_orthogonal_of_hasOrthogonalProjection
+    refine ⟨hint.subordinateOrthonormalBasis finrank_euclideanSpace_fin hV', fun i => ?_⟩
+    have hi := hint.subordinateOrthonormalBasis_subordinate finrank_euclideanSpace_fin i hV'
+    revert hi
+    cases hint.subordinateOrthonormalBasisIndex finrank_euclideanSpace_fin i hV'
+    · exact Or.inr
+    · exact Or.inl
+  -- Step 2: the determinant covectors `e^I(u) = det(⟨e_{I b}, u_a⟩)`
+  choose γ hγ using fun I : Fin (d + 1) → Fin P => hdet P (d + 1) fun b => e (I b)
+  -- Step 3: `(d+1)! ζ(β') = ∑_I β'(e_I) ζ(e^I)` for every `(d+1)`-covector `β'`
+  have hsum : ∀ β' : Covector (Euclid P) (d + 1), ((d + 1).factorial : ℝ) * ζ β' =
+      ∑ I : Fin (d + 1) → Fin P, β' (fun a => e (I a)) * ζ (γ I) := by
+    intro β'
+    have hcov : ((d + 1).factorial : ℝ) • β' =
+        ∑ I : Fin (d + 1) → Fin P, β' (fun a => e (I a)) • γ I := by
+      ext u
+      rw [ContinuousAlternatingMap.smul_apply, ContinuousAlternatingMap.sum_apply, smul_eq_mul,
+        hexp P (d + 1) e β' u]
+      refine Finset.sum_congr rfl fun I _ => ?_
+      rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, hγ]
+    have := congrArg ζ hcov
+    rw [map_smul, map_sum, smul_eq_mul] at this
+    rw [this]
+    simp only [map_smul, smul_eq_mul]
+  -- Step 4: `ζ(e^I) = 0` if some `e_{I k} ∈ Vᗮ` (Laplace expansion along column `k`)
+  have hkill : ∀ (I : Fin (d + 1) → Fin P) (k : Fin (d + 1)), e (I k) ∈ Vᗮ → ζ (γ I) = 0 := by
+    intro I k hk
+    obtain ⟨α, hα⟩ := hlap P d (fun b => e (I b)) k (γ I) (hγ I)
+    exact hζ (e (I k)) hk α (γ I) hα
+  -- Step 5: `β ∘ p_V` and `β` agree on `e_I` if every `e_{I b} ∈ V`
+  have hcoef : ∀ I : Fin (d + 1) → Fin P, (∀ b, e (I b) ∈ V) →
+      β.compContinuousLinearMap V.starProjection (fun a => e (I a)) = β (fun a => e (I a)) := by
+    intro I hI
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply]
+    congr 1
+    funext a
+    exact Submodule.starProjection_eq_self_iff.mpr (hI a)
+  -- Step 6: compare the two expansions term by term
+  have hfact : ((d + 1).factorial : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
+  apply mul_left_cancel₀ hfact
+  rw [hsum β, hsum (β.compContinuousLinearMap V.starProjection)]
+  refine Finset.sum_congr rfl fun I _ => ?_
+  by_cases hI : ∀ b, e (I b) ∈ V
+  · rw [hcoef I hI]
+  · obtain ⟨k, hk⟩ := not_forall.mp hI
+    rw [hkill I k ((he (I k)).resolve_left hk), mul_zero, mul_zero]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
