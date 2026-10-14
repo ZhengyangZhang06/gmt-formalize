@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2d6def9bd45ccad37b92b4712d667d21b72c8b177b653b6e380bf7e8ec1c93f8",
+  "git_delta": {
+    "base_commit": "e07c5ac128e2db28a903b2d5e8249785b5b45e18",
+    "candidate_commit": "b143aa71f93c287cc32dc68b90719fbf7c278648",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_bvp_osc_le_of_l1_approx",
+    "diff_sha256": "0b3550227626c9c7d46991eec974ea67dc746d364dd9c9402e127e5e15935d98",
+    "source_sha256": "69c2225270d964b9476318903337d316e6ead73ea60d34d315abe9b90d1f8910",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_bvp_osc_le_of_l1_approx",
+      "statement": "∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (v : ℕ → Euclid (m + 1) → ℝ) (δ K : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → 0 ≤ δ → (∀ k, Continuous (v k)) → (∀ k, ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - v k y| ≤ K) → Tendsto (fun k => ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - u x|) atTop (𝓝 0) → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |u x - u y| ≤ K",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

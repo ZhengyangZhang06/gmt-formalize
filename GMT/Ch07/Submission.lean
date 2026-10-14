@@ -451,6 +451,94 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Oscillation bound passes to `L¹` limits** (step 2 of the BV Poincaré inequality on cubes,
+cf. Simon Ch. 2, 2.7).  Let `Q_δ = {z : δ < z_i < 1 − δ ∀ i}` with `δ ≥ 0`, `u` integrable on
+`Q₁ = {y : 0 < y_i < 1 ∀ i}`, and `v_k` continuous with
+`∫_{Q_δ}∫_{Q_δ} |v_k(x) − v_k(y)| dy dx ≤ K` and `ε_k = ∫_{Q_δ} |v_k − u| → 0`.  Then
+`∫_{Q_δ}∫_{Q_δ} |u(x) − u(y)| dy dx ≤ K`.  `Q_δ ⊆ Q₁` lies in the compact box `[0, 1]^{m+1}`, so
+`μ = vol⌞Q_δ` is finite and `u, v_k ∈ L¹(μ)`; `(x, y) ↦ |v_k(x) − v_k(y)|` is `μ ⊗ μ`-integrable
+(Fubini).  Integrating `|u(x) − u(y)| ≤ |v_k(x) − v_k(y)| + |u(x) − v_k(x)| + |v_k(y) − u(y)|`
+twice gives `D(u) ≤ K + 2 vol(Q_δ) ε_k`; let `k → ∞`. -/
+theorem Submission.cmcdt_cbm_bvp_osc_le_of_l1_approx : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (v : ℕ → Euclid (m + 1) → ℝ) (δ K : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → 0 ≤ δ → (∀ k, Continuous (v k)) → (∀ k, ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - v k y| ≤ K) → Tendsto (fun k => ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - u x|) atTop (𝓝 0) → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |u x - u y| ≤ K := by
+  intro m u v δ K hu hδ hv hK hlim
+  set S : Set (Euclid (m + 1)) := {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}
+  -- `Q_δ ⊆ Q₁`, using `δ ≥ 0`
+  have hSQ : S ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := fun z hz i =>
+    ⟨hδ.trans_lt (hz i).1, (hz i).2.trans_le (by linarith)⟩
+  -- `Q₁` lies in the compact closed box `toLp '' [0, 1]^{m+1}`
+  have hKc : IsCompact ((WithLp.toLp 2) ''
+      (Set.Icc (fun _ => (0 : ℝ)) (fun _ => 1) : Set (Fin (m + 1) → ℝ))) :=
+    isCompact_Icc.image (PiLp.continuous_toLp 2 _)
+  have hSK : S ⊆ (WithLp.toLp 2) ''
+      (Set.Icc (fun _ => (0 : ℝ)) (fun _ => 1) : Set (Fin (m + 1) → ℝ)) :=
+    fun z hz => ⟨z.ofLp, ⟨fun j => (hSQ hz j).1.le, fun j => (hSQ hz j).2.le⟩, rfl⟩
+  -- hence `μ = vol⌞Q_δ` is a finite measure, and `u` and every `v k` are `μ`-integrable
+  have hSfin : volume S < ∞ := (measure_mono hSK).trans_lt hKc.measure_lt_top
+  have : IsFiniteMeasure (volume.restrict S) := isFiniteMeasure_restrict.2 hSfin.ne
+  have huS : Integrable u (volume.restrict S) := hu.mono_set hSQ
+  have hvS : ∀ k, Integrable (v k) (volume.restrict S) := fun k =>
+    ((hv k).continuousOn.integrableOn_compact hKc).mono_set hSK
+  -- `D(u) ≤ D(v k) + 2 vol(Q_δ) ε_k ≤ K + 2 vol(Q_δ) ε_k`
+  have key : ∀ k, ∫ x in S, ∫ y in S, |u x - u y| ≤
+      K + 2 * volume.real S * ∫ x in S, |v k x - u x| := by
+    intro k
+    have hw := hvS k
+    have hwu : Integrable (fun x => |v k x - u x|) (volume.restrict S) := (hw.sub huS).abs
+    have huw : Integrable (fun x => |u x - v k x|) (volume.restrict S) := (huS.sub hw).abs
+    -- Fubini: `x ↦ ∫_{Q_δ} |v k x - v k y| dy` is integrable
+    have hg : Integrable (fun x => ∫ y in S, |v k x - v k y|) (volume.restrict S) :=
+      ((hw.comp_fst (volume.restrict S)).sub
+        (hw.comp_snd (volume.restrict S))).abs.integral_prod_left
+    -- inner integral, for fixed `x`
+    have inner : ∀ x, ∫ y in S, |u x - u y| ≤
+        (∫ y in S, |v k x - v k y|) + volume.real S * |u x - v k x| +
+          ∫ y in S, |v k y - u y| := by
+      intro x
+      have h1 : Integrable (fun y => |v k x - v k y|) (volume.restrict S) :=
+        ((integrable_const (v k x)).sub hw).abs
+      have h2 : Integrable (fun y => |v k x - v k y| + |u x - v k x|) (volume.restrict S) :=
+        h1.add (integrable_const |u x - v k x|)
+      calc ∫ y in S, |u x - u y|
+          ≤ ∫ y in S, (|v k x - v k y| + |u x - v k x| + |v k y - u y|) := by
+            refine integral_mono_of_nonneg (Eventually.of_forall fun y => abs_nonneg _)
+              (h2.add hwu) (Eventually.of_forall fun y => ?_)
+            calc |u x - u y| = |(v k x - v k y) + (u x - v k x) + (v k y - u y)| := by ring_nf
+              _ ≤ |v k x - v k y| + |u x - v k x| + |v k y - u y| := abs_add_three _ _ _
+        _ = (∫ y in S, |v k x - v k y|) + volume.real S * |u x - v k x| +
+              ∫ y in S, |v k y - u y| := by
+            rw [integral_add h2 hwu, integral_add h1 (integrable_const _), setIntegral_const,
+              smul_eq_mul]
+    -- outer integral
+    have hg2 : Integrable (fun x => (∫ y in S, |v k x - v k y|) + volume.real S * |u x - v k x|)
+        (volume.restrict S) :=
+      hg.add (huw.const_mul _)
+    have hsymm : ∫ x in S, |u x - v k x| = ∫ x in S, |v k x - u x| := by
+      congr 1
+      funext x
+      exact abs_sub_comm _ _
+    calc ∫ x in S, ∫ y in S, |u x - u y|
+        ≤ ∫ x in S, ((∫ y in S, |v k x - v k y|) + volume.real S * |u x - v k x| +
+            ∫ y in S, |v k y - u y|) := by
+          refine integral_mono_of_nonneg
+            (Eventually.of_forall fun x => integral_nonneg fun y => abs_nonneg _)
+            (hg2.add (integrable_const _)) (Eventually.of_forall inner)
+      _ = (∫ x in S, ∫ y in S, |v k x - v k y|) + volume.real S * (∫ x in S, |u x - v k x|) +
+            volume.real S * ∫ y in S, |v k y - u y| := by
+          rw [integral_add hg2 (integrable_const _), integral_add hg (huw.const_mul _),
+            integral_const_mul, setIntegral_const, smul_eq_mul]
+      _ = (∫ x in S, ∫ y in S, |v k x - v k y|) +
+            2 * volume.real S * ∫ x in S, |v k x - u x| := by
+          rw [hsymm]
+          ring
+      _ ≤ K + 2 * volume.real S * ∫ x in S, |v k x - u x| := by
+          linarith [hK k]
+  -- let `k → ∞`
+  have hlim' : Tendsto (fun k => K + 2 * volume.real S * ∫ x in S, |v k x - u x|) atTop
+      (𝓝 (K + 2 * volume.real S * 0)) :=
+    tendsto_const_nhds.add (tendsto_const_nhds.mul hlim)
+  rw [mul_zero, add_zero] at hlim'
+  exact ge_of_tendsto' hlim' key
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
