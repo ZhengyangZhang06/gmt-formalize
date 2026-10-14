@@ -493,6 +493,41 @@ theorem Submission.dimred_mbl_dtsr_cube_cover : ∀ (P : ℕ) (x : Euclid P), �
   choose k hkT hk using hy
   exact ⟨k, Finset.mem_filter.mpr ⟨Fintype.mem_piFinset.mpr hkT, fun i => (hk i).1⟩,
     fun i => (hk i).2⟩
+/-- **At most `m + 1` coordinates lie near a cube centre** (Simon Ch. 6, Lemma 5.4, closing
+Remark: the cone `K_G` through the centre `b + a` of the cube `b + C` lies in `L*(a)`).  Let
+`d = dist(x, L*(a))`, where `L*(a) = {w : w_i − a_i ∈ ℤ for at least m + 2 indices i}`.  If
+`m + 2` coordinates had `|x_i − b_i − a_i| < d/√(m + 2)`, moving exactly those coordinates to
+`b_i + a_i` would give a point `w ∈ L*(a)` with `|x − w|² < (m + 2) · d²/(m + 2) = d²`.  This
+contradicts `d ≤ |x − w|`. -/
+theorem Submission.dimred_mbl_dtsr_dual_dist_count : ∀ (P m : ℕ) (a x : Euclid P) (b : Fin P → ℤ), (Finset.univ.filter (fun i => |x i - b i - a i| < infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} / Real.sqrt (m + 2))).card ≤ m + 1 := by
+  intro P m a x b
+  set L := {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z}
+  -- Step 1: otherwise keep exactly `m + 2` coordinates within `d/√(m + 2)` of `b i + a i`
+  by_contra hcon
+  obtain ⟨s, hsS, hs⟩ := Finset.exists_subset_card_eq (show m + 2 ≤ _ from not_le.mp hcon)
+  -- Step 2: moving them to `b i + a i` gives a point of `K_G ⊆ L*(a)`, so `d ≤ |x - w|`
+  let w : Euclid P := WithLp.toLp 2 (fun i => if i ∈ s then (b i : ℝ) + a i else x i)
+  have hw : ∀ i, w i = if i ∈ s then (b i : ℝ) + a i else x i := fun i => rfl
+  have hwL : w ∈ L := ⟨s, hs.ge, fun i hi => ⟨b i, by rw [hw, ite_eq_left hi]; ring⟩⟩
+  have hdw : infDist x L ≤ dist x w := infDist_le_dist_of_mem hwL
+  -- Step 3: `|x - w|² = ∑_{i ∈ s} (x i - b i - a i)² < (m + 2) · d² / (m + 2) = d²`
+  have hm : (0 : ℝ) < m + 2 := by positivity
+  have hsum : ∑ i, dist (x i) (w i) ^ 2 = ∑ i ∈ s, (x i - b i - a i) ^ 2 := by
+    rw [← Finset.sum_subset (Finset.subset_univ s) fun i _ hi => by rw [hw, ite_eq_right hi, dist_self]; ring]
+    refine Finset.sum_congr rfl fun i hi => ?_
+    rw [hw, ite_eq_left hi, Real.dist_eq, sq_abs]
+    ring
+  have hlt : ∑ i ∈ s, (x i - b i - a i) ^ 2 < ∑ i ∈ s, infDist x L ^ 2 / (m + 2) := by
+    refine Finset.sum_lt_sum_of_nonempty (Finset.card_pos.mp (by omega)) fun i hi => ?_
+    have hi' := (Finset.mem_filter.mp (hsS hi)).2
+    rw [← sq_abs, ← Real.sq_sqrt hm.le, ← div_pow]
+    exact pow_lt_pow_left₀ hi' (abs_nonneg _) two_ne_zero
+  rw [Finset.sum_const, hs, nsmul_eq_mul, Nat.cast_add, Nat.cast_two, mul_div_cancel₀ _ hm.ne'] at hlt
+  -- Step 4: `d ≤ |x - w| < d`
+  have hxw : dist x w < infDist x L := by
+    rw [EuclideanSpace.dist_eq, hsum]
+    exact (Real.sqrt_lt (Finset.sum_nonneg fun i _ => sq_nonneg _) infDist_nonneg).mpr hlt
+  exact hxw.not_ge hdw
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
