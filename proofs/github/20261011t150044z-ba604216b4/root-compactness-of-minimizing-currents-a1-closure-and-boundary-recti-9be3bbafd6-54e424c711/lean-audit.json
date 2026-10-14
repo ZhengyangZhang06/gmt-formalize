@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0f2780dede41e90b82769ac7ced6039db0433fade0316d25af3f2897d3f992cf",
+  "git_delta": {
+    "base_commit": "ea10dfc19e061f528b690724aaed83c07fcddaae",
+    "candidate_commit": "5cde0931d8b8b6fa1e3cd0cf1789131f4f7eec4d",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "a8c1710039eaa2f5719d27e939091b2dbab61175f7ac3cbdb602811e1214c7a9",
+    "source_sha256": "9b9ac3e43d4fd495a0c31d2dd15bef1d8e25b71f94ce030dbae636713f7a85c1",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_translation_invariant_of_fderiv",
+      "statement": "∀ (P : ℕ) (ν : Measure (Euclid P)) (v : Euclid P), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
