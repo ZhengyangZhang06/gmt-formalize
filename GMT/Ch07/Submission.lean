@@ -966,6 +966,115 @@ theorem Submission.codim1_hcp_lsa_lipschitz_image_lintegral_le : ∀ (m P : ℕ)
         lintegral_mono' hle le_rfl
     _ = (Λ : ℝ≥0∞) ^ m * ∫⁻ a in D, H (G a) := by
         rw [lintegral_smul_measure, lintegral_map' hH.aemeasurable hGae, smul_eq_mul]
+/-- The tangent projection `x ↦ P_x` of an embedded `C¹` submanifold `M ⊆ ℝᴾ`, `P_x` the
+orthogonal projection onto `span T_xM`, is continuous on `M`.  Near `x₀ ∈ M` take a `C¹` graph
+chart `G` on `B_r(0) ⊆ ℝᵐ`: `M ∩ W = G(B_r(0))`, `pr(G(a) − x₀) = a`, `pr ∘ DG(a) = id` and
+`T_{G(a)}M = DG(a)(ℝᵐ)`.  `A = DG(a)` is injective, so the Gram operator `A*A` is invertible,
+and `P_{G(a)} = A(A*A)⁻¹A*` by the orthogonality characterization of the projection.  This is
+continuous in `a`, as `DG` is continuous, the adjoint is an isometry and inversion is continuous
+at units; composing with `x ↦ pr(x − x₀)` gives continuity on the neighbourhood `M ∩ W` of `x₀`
+in `M`. -/
+theorem Submission.codim1_hcp_lsa_tangent_projection_continuousOn : ∀ (P m : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → ContinuousOn (fun x => (Submodule.span ℝ (tangentSpace M x)).starProjection) M := by
+  intro P m M hM x₀ hx₀
+  -- step 1: a `C¹` graph chart `G` on `B_r(0)` at `x₀`, with `M ∩ W = G(B_r(0))`
+  obtain ⟨pr, G, r, W, -, -, hWo, hx₀W, -, -, hGc, -, hMW, hleft, hderiv, htan⟩ :=
+    Submission.codim1_hcp_lsa_c1_graph_chart P m M x₀ hM hx₀
+  -- step 2: `A(a) = DG(a)` is continuous on `B_r(0)`, and injective since `pr ∘ A(a) = id`
+  set A : Euclid m → (Euclid m →L[ℝ] Euclid P) := fun a => fderiv ℝ G a
+  have hAc : ContinuousOn A (ball 0 r) := hGc.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl
+  have hAinj : ∀ a ∈ ball (0 : Euclid m) r, Injective (A a) := by
+    intro a ha u v huv
+    have h1 := congrArg (fun L => L u) (hderiv a ha)
+    have h2 := congrArg (fun L => L v) (hderiv a ha)
+    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply] at h1 h2
+    rw [← h1, ← h2]
+    exact congrArg pr huv
+  -- step 3: the Gram operator `Γ(a) = A(a)* A(a)` is injective, hence a unit of `L(ℝᵐ)`
+  set Γ : Euclid m → (Euclid m →L[ℝ] Euclid m) := fun a =>
+    (ContinuousLinearMap.adjoint (A a)).comp (A a) with hΓ
+  have hΓunit : ∀ a ∈ ball (0 : Euclid m) r, IsUnit (Γ a) := by
+    intro a ha
+    rw [ContinuousLinearMap.isUnit_iff_bijective]
+    have hinj : Injective (Γ a) := by
+      intro u v huv
+      -- `⟨Γ(a) h, h⟩ = ‖A(a) h‖²` vanishes for `h = u - v`
+      have h0 : Γ a (u - v) = 0 := by rw [map_sub, huv, sub_self]
+      have h1 : inner ℝ (Γ a (u - v)) (u - v) = ‖A a (u - v)‖ ^ 2 := by
+        simp only [hΓ, ContinuousLinearMap.comp_apply, ContinuousLinearMap.adjoint_inner_left]
+        exact real_inner_self_eq_norm_sq _
+      rw [h0, inner_zero_left] at h1
+      have h2 : A a (u - v) = 0 := by
+        have : ‖A a (u - v)‖ = 0 := by nlinarith [norm_nonneg (A a (u - v))]
+        exact norm_eq_zero.1 this
+      exact sub_eq_zero.1 (hAinj a ha (by rw [h2, map_zero]))
+    exact ⟨hinj, (LinearMap.injective_iff_surjective
+      (f := ((Γ a : Euclid m →L[ℝ] Euclid m) : Euclid m →ₗ[ℝ] Euclid m))).1 hinj⟩
+  -- step 4: `P_{G(a)} = Q(a) = A(a) Γ(a)⁻¹ A(a)*`, by the orthogonality characterization
+  set Q : Euclid m → (Euclid P →L[ℝ] Euclid P) := fun a =>
+    (A a).comp ((Ring.inverse (Γ a)).comp (ContinuousLinearMap.adjoint (A a))) with hQ
+  have hQeq : ∀ a ∈ ball (0 : Euclid m) r,
+      (Submodule.span ℝ (tangentSpace M (G a))).starProjection = Q a := by
+    intro a ha
+    -- `T_{G(a)}M = A(a)(ℝᵐ)` is already a linear subspace
+    have hspan : Submodule.span ℝ (tangentSpace M (G a)) =
+        LinearMap.range ((A a : Euclid m →L[ℝ] Euclid P) : Euclid m →ₗ[ℝ] Euclid P) := by
+      apply le_antisymm
+      · rw [Submodule.span_le, htan a ha]
+        rintro _ ⟨y, rfl⟩
+        exact ⟨y, rfl⟩
+      · rintro _ ⟨y, rfl⟩
+        apply Submodule.subset_span
+        rw [htan a ha]
+        exact ⟨y, rfl⟩
+    have hinvr : Γ a * Ring.inverse (Γ a) = 1 := Ring.mul_inverse_cancel _ (hΓunit a ha)
+    ext1 u
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero ?_ ?_
+    · rw [hspan]
+      exact ⟨_, rfl⟩
+    · -- `⟨u − Q(a) u, A(a) h⟩ = ⟨A(a)* u − Γ(a) Γ(a)⁻¹ A(a)* u, h⟩ = 0`
+      intro w hw
+      rw [hspan] at hw
+      obtain ⟨h, rfl⟩ := hw
+      simp only [hQ, ContinuousLinearMap.coe_coe]
+      rw [inner_sub_left, ← ContinuousLinearMap.adjoint_inner_left,
+        ← ContinuousLinearMap.adjoint_inner_left]
+      have : ContinuousLinearMap.adjoint (A a) ((A a).comp ((Ring.inverse (Γ a)).comp
+          (ContinuousLinearMap.adjoint (A a))) u) = ContinuousLinearMap.adjoint (A a) u := by
+        have h4 := congrArg
+          (fun L : Euclid m →L[ℝ] Euclid m => L (ContinuousLinearMap.adjoint (A a) u)) hinvr
+        simpa [hΓ, mul_apply_eq_comp] using h4
+      rw [this, sub_self]
+  -- step 5: `Q` is continuous on `B_r(0)`: the adjoint is a linear isometry, and inversion is
+  -- continuous at every unit
+  have hQc : ContinuousOn Q (ball 0 r) := by
+    have hadj : ContinuousOn (fun a => ContinuousLinearMap.adjoint (A a)) (ball 0 r) :=
+      (ContinuousLinearMap.adjoint (𝕜 := ℝ) (E := Euclid m) (F := Euclid P)).continuous
+        |>.comp_continuousOn hAc
+    have hΓc : ContinuousOn Γ (ball 0 r) := hadj.clm_comp hAc
+    have hinv : ContinuousOn (fun a => Ring.inverse (Γ a)) (ball 0 r) := by
+      intro a ha
+      obtain ⟨u, hu⟩ := hΓunit a ha
+      have := NormedRing.inverse_continuousAt u
+      rw [hu] at this
+      exact this.comp_continuousWithinAt (hΓc a ha)
+    exact hAc.clm_comp (hinv.clm_comp hadj)
+  -- step 6: on `M ∩ W`, `x = G(a)` with `a = pr(x − x₀) ∈ B_r(0)`, so `P_x = Q(pr(x − x₀))`
+  have hPQ : ∀ x ∈ M ∩ W,
+      (Submodule.span ℝ (tangentSpace M x)).starProjection = Q (pr (x - x₀)) := by
+    intro x hx
+    rw [hMW] at hx
+    obtain ⟨a, ha, rfl⟩ := hx
+    rw [hleft a ha]
+    exact hQeq a ha
+  have hcont : ContinuousOn (fun x => Q (pr (x - x₀))) (M ∩ W) := by
+    refine hQc.comp (by fun_prop) fun x hx => ?_
+    rw [hMW] at hx
+    obtain ⟨a, ha, rfl⟩ := hx
+    rw [hleft a ha]
+    exact ha
+  -- step 7: `M ∩ W` is a neighbourhood of `x₀` in `M`
+  exact (hcont.congr hPQ x₀ ⟨hx₀, hx₀W⟩).mono_of_mem_nhdsWithin
+    (inter_mem_nhdsWithin M (hWo.mem_nhds hx₀W))
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
