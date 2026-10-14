@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_cbm_sp_|BVPoincare|PoincareInequality",
+        "map_addHaar_smul|volume_preserving_ofLp|integral_eq_lintegral_of_nonneg_ae|lintegral_lintegral_swap|lintegral_prod_right|theorem integral_eq_sub_of_hasDerivAt|continuous_fderiv",
+        "EuclideanSpace.norm_eq|norm_eq \\{|measure_lt_top|lintegral_add_left_eq_self",
+        "cmcdt_cbm_sp_segment_bound",
+        "cmcdt_cbm_sp_convex_slice_bound",
+        "cmcdt_cbm_sp_convex_poincare",
+        "cmcdt_cbm_sp_cube_geometry",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/smooth-poincare-independent-audit-c946/FrozenTypes.lean > /tmp/smooth-poincare-independent-audit-c946/FrozenTypes.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/smooth-poincare-independent-audit-c946/Proofs.lean > /tmp/smooth-poincare-independent-audit-c946/Proofs.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c9462d69d0/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c9462d69d0/decomposition-v1.json",
+        "/tmp/smooth-poincare-independent-audit-c946/FrozenTypes.lean",
+        "/tmp/smooth-poincare-independent-audit-c946/FrozenTypes.log",
+        "/tmp/smooth-poincare-independent-audit-c946/Proofs.lean",
+        "/tmp/smooth-poincare-independent-audit-c946/Proofs.log"
+      ],
+      "conclusion": "The pinned contract matches the workspace, and the actual Mathlib revision matches 25730c7c759d108ef87ab70af2342a196760f79d. Relevant local declarations support FTC, Haar scaling, Tonelli, Bochner conversion, Euclidean norms and coordinate-volume preservation. No proposed name occurs in the searched snapshot or the current 1613-node DAG; all four names are bare identifiers. Related accepted ball lemmas have different types and are not reused as declarations. Independently generated checks confirm that every frozen type elaborates as a Prop before implementing any child. The supplied proof appendices, comparator-style exact checks, and supplied composition proving the exact selected parent all compile; their only axioms are propext, Classical.choice and Quot.sound. The split is appropriate and acyclic: convex_poincare depends on segment_bound and convex_slice_bound; the parent follows from convex_poincare and cube_geometry with n=m+1, d=√n and volume≤1."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "segment_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose hypotheses, segment orientation and operator norm. C¹ regularity supplies the continuous derivative and interval integrability needed for the chain rule, FTC and integral inequalities. The proof is complete and independent of the parent and other children."
+    },
+    {
+      "key": "convex_slice_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree on measurable convex Q, measurable ENNReal-valued g and t∈[0,1]. Indicator extension, positive dilation and translation invariance establish the one-variable estimate. Tonelli and the correctly weighted variable choices cover both halves and endpoints. All operations remain valid for infinite lower integrals and zero measure; no finiteness assumption or circular dependency is hidden."
+    },
+    {
+      "key": "convex_poincare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the real-valued volume factor match the frozen type. The diameter bound gives boundedness and compact closure, establishing finiteness of the gradient lower integral. The two declared dependencies supply exactly the segment and slice estimates. Joint measurability, Tonelli and conversion to Bochner integrals are justified, with a finite upper bound established before applying toReal monotonicity. The proof is complete and non-circular."
+    },
+    {
+      "key": "cube_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The four conclusions and δ≥0 hypothesis match the one-line conjunction exactly. Coordinate inequalities prove convexity and the Euclidean diameter bound; continuous coordinates give measurability. The measure-preserving coordinate map and unit-box volume establish volume≤1. The proof covers n=0 and every δ≥0 without relying on an invalid empty-cube assertion in dimension zero."
+    }
+  ],
+  "required_changes": []
+}

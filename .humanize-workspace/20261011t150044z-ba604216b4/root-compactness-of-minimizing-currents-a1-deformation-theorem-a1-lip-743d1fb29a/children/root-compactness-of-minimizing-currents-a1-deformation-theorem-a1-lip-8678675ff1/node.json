@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1.piece_multiplicity-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1",
+  "depth": 6,
+  "title": "Integer density g∘H⁻¹ of a Lipschitz image piece and its area-formula bound (supplied steps 4–5)",
+  "statement": "Let P, n ∈ ℕ, L ≥ 0, let H : ℝⁿ → ℝ^P be L-Lipschitz, and let B ⊆ ℝⁿ be Borel such that H is injective on B and differentiable with injective derivative DH(a) = fderiv ℝ H a at every a ∈ B. Let g : ℝⁿ → ℤ be measurable and Lebesgue integrable on B, with g(u) ≠ 0 for every u ∈ B. Then there is a measurable m : ℝ^P → ℝ with m(y) ∈ ℤ for every y and m(H(u)) = g(u) for every u ∈ B, such that Hⁿ(H(B)) < ∞ and ∫⁻_{H(B)} |m| dHⁿ ≤ Lⁿ·∫⁻_B |g| dλ in [0, ∞], where Hⁿ := μHE[n] on ℝ^P and λ is Lebesgue measure on ℝⁿ.",
+  "lean_statement": "∀ (P n : ℕ) (L : NNReal) (H : Euclid n → Euclid P) (B : Set (Euclid n)) (g : Euclid n → ℤ), LipschitzWith L H → MeasurableSet B → InjOn H B → (∀ a ∈ B, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) → Measurable g → IntegrableOn (fun u => (g u : ℝ)) B → (∀ u ∈ B, g u ≠ 0) → ∃ m : Euclid P → ℝ, Measurable m ∧ (∀ y, ∃ z : ℤ, m y = z) ∧ (∀ u ∈ B, m (H u) = g u) ∧ μHE[n] (H '' B) ≠ ∞ ∧ ∫⁻ y in H '' B, ‖m y‖ₑ ∂μHE[n] ≤ (L : ℝ≥0∞) ^ n * ∫⁻ u in B, ‖(g u : ℝ)‖ₑ",
+  "lean_name": "cmcdt_lpi_pc_piece_multiplicity",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1.measurable_inverse-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1.measurable_inverse-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-8678675ff1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1.piece_orientation-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1",
+  "depth": 6,
+  "title": "Induced orientation J⁻¹·(α ↦ α(DH e)) of a bi-Lipschitz image piece: strongly measurable, a unit orientation of range DH, and of the approximate tangent plane Hⁿ-a.e. (supplied steps 4–5)",
+  "statement": "Let P, n ∈ ℕ, L ≥ 0, κ > 0, let H : ℝⁿ → ℝ^P be L-Lipschitz, and let B ⊆ ℝⁿ be Borel with κ·|a − a'| ≤ |H(a) − H(a')| for all a, a' ∈ B, such that H is differentiable with injective derivative DH(a) = fderiv ℝ H a at every a ∈ B. Write e_a := EuclideanSpace.single a 1, v(u) := (DH(u)e_a)_{a ∈ Fin n} and J(u) := √det(⟨DH(u)e_a, DH(u)e_b⟩)_{a,b}. Then there is a strongly measurable η : ℝ^P → Λ_n(ℝ^P) (MultiVector P n) such that (i) for every u ∈ B, η(H(u)) is a unit orientation of the subspace range DH(u) (IsUnitOrientationOf) and J(u)·η(H(u))(α) = α(v(u)) for every n-covector α on ℝ^P; and (ii) for Hⁿ-a.e. y ∈ H(B) (Hⁿ := μHE[n]) there is a linear subspace Q of ℝ^P with HasApproximateTangentSpaceAt n (H(B)) y Q and IsUnitOrientationOf (η(y)) Q.",
+  "lean_statement": "∀ (P n : ℕ) (L : NNReal) (κ : ℝ) (H : Euclid n → Euclid P) (B : Set (Euclid n)), LipschitzWith L H → MeasurableSet B → 0 < κ → (∀ a ∈ B, ∀ a' ∈ B, κ * ‖a - a'‖ ≤ ‖H a - H a'‖) → (∀ a ∈ B, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) → ∃ η : Euclid P → MultiVector P n, StronglyMeasurable η ∧ (∀ u ∈ B, IsUnitOrientationOf (η (H u)) (LinearMap.range (fderiv ℝ H u : Euclid n →ₗ[ℝ] Euclid P)) ∧ ∀ α : Covector (Euclid P) n, Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ H u (EuclideanSpace.single a 1)) (fderiv ℝ H u (EuclideanSpace.single b 1)))) * η (H u) α = α (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))) ∧ ∀ᵐ y ∂(μHE[n].restrict (H '' B)), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (H '' B) y Q ∧ IsUnitOrientationOf (η y) Q",
+  "lean_name": "cmcdt_lpi_pc_piece_orientation",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1.measurable_inverse-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1.measurable_inverse-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-b70dcf4ce0-a1"
+}
