@@ -493,6 +493,88 @@ theorem Submission.isoperimetric_abs_covector_apply_le : ∀ (P n : ℕ) (α : C
         rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
           Fintype.card_fin, nsmul_eq_mul, Nat.cast_pow]
 
+/-- Step 1 of Simon Ch. 6, 6.1: a compactly supported integer multiplicity `T = τ(M, θ, ξ)` in
+`ℝ^P` has finite mass.  For a bump `χ` equal to `1` near `spt T` and supported in the ball `K`,
+every admissible `ω` has `T ω = T (χ ω)` by locality, and `|T (χ ω)| ≤ P^n ∫_{M ∩ K} θ dHⁿ`. -/
+theorem Submission.isoperimetric_mass_lt_top :
+    ∀ (P n : ℕ) (T : GeometricCurrentOn (univ : Set (Eucl P)) n),
+      IsIntegerMultiplicity T → IsCompact T.support → T.mass < ∞ := by
+  intro P n T hT hK
+  obtain ⟨M, θ, ξ, htri, -, hrep⟩ := hT
+  -- `spt T ⊆ closedBall 0 R`; the bump `χ` is `1` on `closedBall 0 (R + 1)` and vanishes off
+  -- `K = closedBall 0 (R + 2)`.
+  obtain ⟨R, hR0, hR⟩ := hK.isBounded.subset_closedBall_lt 0 (0 : Eucl P)
+  obtain ⟨χ, hχin, hχout⟩ : ∃ χ : ContDiffBump (0 : Eucl P), χ.rIn = R + 1 ∧ χ.rOut = R + 2 :=
+    ⟨⟨R + 1, R + 2, by linarith, by linarith⟩, rfl, rfl⟩
+  -- The dominating function `P^n 𝟙_K θ` is `Hⁿ`-integrable on `M`.
+  have hg : Integrable (fun x => (P : ℝ) ^ n * (closedBall (0 : Eucl P) (R + 2)).indicator θ x)
+      ((μHE[n] : Measure (Eucl P)).restrict M) := by
+    refine Integrable.const_mul ?_ _
+    rw [integrable_indicator_iff measurableSet_closedBall, IntegrableOn,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact htri.integrableOn _ (isCompact_closedBall 0 _) (subset_univ _)
+  suffices h : ∃ B : ℝ, ∀ ω ∈ massAdmissibleOn (univ : Set (Eucl P)) n univ, T ω ≤ B by
+    obtain ⟨B, hB⟩ := h
+    refine lt_of_le_of_lt (sSup_le ?_) (ENNReal.ofReal_lt_top (r := B))
+    rintro _ ⟨ω, hω, rfl⟩
+    exact ENNReal.ofReal_le_ofReal (hB ω hω)
+  refine ⟨∫ x in M, (P : ℝ) ^ n * (closedBall (0 : Eucl P) (R + 2)).indicator θ x
+    ∂(μHE[n] : Measure (Eucl P)), fun ω hω => ?_⟩
+  obtain ⟨ω₁, hω₁⟩ : ∃ ω₁ : TestFormOn (univ : Set (Eucl P)) n,
+      ∀ x, (ω₁ : DifferentialForm (Eucl P) n) x = χ x • (ω : DifferentialForm (Eucl P) n) x :=
+    ⟨⟨fun x => χ x • (ω : DifferentialForm (Eucl P) n) x,
+      ⟨χ.contDiff.smul ω.property.1.1, ω.property.1.2.smul_left (f := (χ : Eucl P → ℝ))⟩,
+      subset_univ _⟩, fun _ => rfl⟩
+  -- `ω - ω₁ = (1 - χ) ω` vanishes on `ball 0 (R + 1)`, a neighbourhood of `spt T`.
+  have h₂ : T (ω - ω₁) = 0 := by
+    refine Submission.isoperimetric_apply_eq_zero_of_disjoint_support P n univ T (ω - ω₁) ?_
+    have hsupp : Function.support ((ω - ω₁ : TestFormOn (univ : Set (Eucl P)) n) :
+        DifferentialForm (Eucl P) n) ⊆ (ball (0 : Eucl P) (R + 1))ᶜ := by
+      intro x hx hxb
+      rw [Function.mem_support] at hx
+      apply hx
+      have hχ1 : χ x = 1 :=
+        χ.one_of_mem_closedBall (by rw [hχin]; exact ball_subset_closedBall hxb)
+      rw [Submodule.coe_sub, Pi.sub_apply, hω₁ x, hχ1, one_smul, sub_self]
+    refine Disjoint.mono_left (closure_minimal hsupp isOpen_ball.isClosed_compl) ?_
+    rw [disjoint_compl_left_iff_subset]
+    exact hR.trans (closedBall_subset_ball (by linarith))
+  have h₁ : T ω = T ω₁ := sub_eq_zero.1 ((map_sub T.toCurrent ω ω₁).symm.trans h₂)
+  rw [h₁]
+  refine (le_abs_self _).trans ?_
+  rw [hrep ω₁, tauAction, ← Real.norm_eq_abs]
+  refine norm_integral_le_of_norm_le hg ?_
+  -- Pointwise: `|θ ⟨χ ω, ξ⟩| ≤ θ |χ| |ω(τ)| ≤ P^n 𝟙_K θ` for `ξ = ±τ₁ ∧ ⋯ ∧ τₙ`.
+  filter_upwards [ae_restrict_mem₀ htri.nullMeasurableSet, htri.orients] with x hxM hx
+  obtain ⟨τ, hτ, -, hξ⟩ := hx
+  have hθ : 0 < θ x := htri.pos x hxM
+  have hξω : |ξ x ((ω : DifferentialForm (Eucl P) n) x)| ≤ (P : ℝ) ^ n := by
+    have h : |ξ x ((ω : DifferentialForm (Eucl P) n) x)| =
+        |(ω : DifferentialForm (Eucl P) n) x τ| := by
+      rcases hξ with h | h <;> simp [h]
+    rw [h]
+    calc |(ω : DifferentialForm (Eucl P) n) x τ|
+        ≤ (P : ℝ) ^ n * covectorEuclideanNorm ((ω : DifferentialForm (Eucl P) n) x) :=
+          Submission.isoperimetric_abs_covector_apply_le P n _ τ fun j => (hτ.1 j).le
+      _ ≤ (P : ℝ) ^ n * 1 := mul_le_mul_of_nonneg_left (hω.2 x) (by positivity)
+      _ = (P : ℝ) ^ n := mul_one _
+  rw [hω₁ x, map_smul, smul_eq_mul, Real.norm_eq_abs, abs_mul, abs_mul, abs_of_pos hθ]
+  by_cases hxK : x ∈ closedBall (0 : Eucl P) (R + 2)
+  · have hχ : |χ x| ≤ 1 := by
+      rw [abs_of_nonneg χ.nonneg]
+      exact χ.le_one
+    rw [indicator_of_mem hxK]
+    calc _ ≤ θ x * (1 * (P : ℝ) ^ n) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul hχ hξω (abs_nonneg _) zero_le_one) hθ.le
+      _ = (P : ℝ) ^ n * θ x := by ring
+  · have hχ0 : χ x = 0 := by
+      refine χ.zero_of_le_dist ?_
+      rw [mem_closedBall, not_le] at hxK
+      rw [hχout]
+      exact hxK.le
+    rw [indicator_of_notMem hxK, hχ0]
+    simp
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
