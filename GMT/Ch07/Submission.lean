@@ -451,6 +451,25 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Limits at `0⁺` along a positive null sequence, with a finite factor.**  If `s i > 0` and
+`s i → 0`, then `s → 0` along `𝓝[>] 0`.  Let `C ≠ ∞`.  (i) If `limsup_{r↓0} f r ≤ 1`, then
+`limsup_i C · f (s i) = C · limsup_i f (s i)`, and for every `c > 1` eventually `f r < c` near `0⁺`,
+hence `f (s i) < c` for all large `i`; by density `limsup_i f (s i) ≤ 1`, so the limsup is `≤ C`.
+(ii) If `h r → 0` as `r ↓ 0`, then `h (s i) → 0` by composition and `C · h (s i) → C · 0 = 0`. -/
+theorem Submission.cbr_ci_bl_rb_null_seq_transfer : ∀ (f h : ℝ → ℝ≥0∞) (C : ℝ≥0∞) (s : ℕ → ℝ), C ≠ ∞ → (∀ i, 0 < s i) → Tendsto s atTop (𝓝 0) → (limsup f (𝓝[>] 0) ≤ 1 → limsup (fun i => C * f (s i)) atTop ≤ C) ∧ (Tendsto h (𝓝[>] 0) (𝓝 0) → Tendsto (fun i => C * h (s i)) atTop (𝓝 0)) := by
+  intro f h C s hC hpos hs
+  have hs' : Tendsto s atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.2 ⟨hs, Eventually.of_forall hpos⟩
+  refine ⟨fun hf => ?_, fun hh => ?_⟩
+  · rw [ENNReal.limsup_const_mul_of_ne_top hC]
+    have hL : limsup (fun i => f (s i)) atTop ≤ 1 := by
+      refine le_of_forall_gt_imp_ge_of_dense fun c hc => ?_
+      have hev : ∀ᶠ r in 𝓝[>] (0 : ℝ), f r < c := eventually_lt_of_limsup_lt (hf.trans_lt hc)
+      exact limsup_le_of_le (h := (hs'.eventually hev).mono fun i hi => hi.le)
+    exact (mul_le_mul_right hL C).trans_eq (mul_one C)
+  · have hlim := ENNReal.Tendsto.const_mul (hh.comp hs') (Or.inr hC)
+    rwa [mul_zero] at hlim
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
