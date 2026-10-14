@@ -2002,16 +2002,6 @@ Ch. 6, Remark 2.6(a); step 1(a) of the mass formula, Remark 6.3.2(3)): `|α(τ)|
 `n! α(τ)² ≤ Σ_j α(f ∘ j)² = n! |α|_E²` by `regcomp_covector_sq_sum_orthonormalBasis`. -/
 theorem Submission.regcomp_covector_eval_orthonormal_le : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (τ : Fin n → Euclid P), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α := by
   intro P n α τ hτ
-/-- **The Euclidean coefficient norm is a continuous seminorm dominated by the operator norm**
-(Simon Ch. 6, 1.15 and 2.4; used by the smooth approximation of test forms behind the mass of
-`τ(M, θ, ξ)`).  With `e` the standard basis of `ℝᴾ`, let `c_I α = α(e_{I(0)}, …, e_{I(n-1)})`
-for strictly increasing `I : Fin n → Fin P` and `c_I α = 0` otherwise.  Then
-`covectorEuclideanNorm α = ‖v α‖` for the coefficient vector
-`v α = (c_I α)_I ∈ EuclideanSpace ℝ (Fin n → Fin P)`, which is linear in `α`; this gives the
-triangle inequality and homogeneity.  `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖` gives the bound with
-`C = √(card (Fin n → Fin P))`, and then the norm is `C`-Lipschitz, hence continuous. -/
-theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covector (Euclid P) n, covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α') ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∃ C : ℝ, 0 ≤ C ∧ ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ C * ‖α‖) ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α) := by
-  intro P n
   classical
   -- Step 1: `n ≤ P`, and an orthonormal basis `f` of `ℝᴾ` with `f (ι k) = τ k`, `ι = Fin.castLE`
   have hnP : n ≤ P := by
@@ -8089,42 +8079,6 @@ theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P))
   change S.toCurrent ω = 0
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
-    rw [hN, hN, hsmul, norm_smul, Real.norm_eq_abs]
-  -- Step 5: `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖`
-  have hc : ∀ (I : Fin n → Fin P) (α : Covector (Euclid P) n), |c I α| ≤ ‖α‖ := by
-    intro I α
-    by_cases hI : StrictMono I
-    · simpa [c, e, hI, Real.norm_eq_abs] using α.le_opNorm (fun i => e (I i))
-    · simp [c, hI]
-  -- Step 6: (iii) with `C = √(card (Fin n → Fin P))`
-  have h3 : ∀ α : Covector (Euclid P) n,
-      covectorEuclideanNorm α ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
-    intro α
-    have hsum : ∑ I, ‖(v α).ofLp I‖ ^ 2 ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 :=
-      Finset.sum_le_sum fun I _ => by
-        simpa [v, Real.norm_eq_abs] using pow_le_pow_left₀ (abs_nonneg _) (hc I α) 2
-    rw [hN, EuclideanSpace.norm_eq]
-    calc Real.sqrt (∑ I, ‖(v α).ofLp I‖ ^ 2) ≤ Real.sqrt (∑ _I : Fin n → Fin P, ‖α‖ ^ 2) :=
-          Real.sqrt_le_sqrt hsum
-      _ = Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
-          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
-            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
-  -- Step 7: (iv), `|N α - N α'| ≤ N (α - α') ≤ C ‖α - α'‖`, so `N` is Lipschitz
-  have hlip : ∀ α α' : Covector (Euclid P) n, dist (covectorEuclideanNorm α)
-      (covectorEuclideanNorm α') ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * dist α α' := by
-    intro α α'
-    have ha : covectorEuclideanNorm α ≤
-        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α' := by
-      simpa only [sub_add_cancel] using h1 (α - α') α'
-    have hb : covectorEuclideanNorm α' ≤
-        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α := by
-      have h := h1 (α' - α) α
-      rwa [sub_add_cancel, ← neg_sub, covectorEuclideanNorm_neg] at h
-    have hC := h3 (α - α')
-    rw [Real.dist_eq, dist_eq_norm, abs_le]
-    constructor <;> linarith
-  exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
-    (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
 /-- **Integrability and zeroth-order bound of the pairing `∫_E ⟨ω, ξ⟩ dμ`** (Simon 6.2.4–6.2.5,
 `μ⌞E ∧ ξ` as a current; used for restrictions of currents in the slicing argument of 7.2.4).
 If `|⟨α, ξ(x)⟩| ≤ |α|` for every `n`-covector `α` and `μ`-a.e. `x`, and the continuous form
