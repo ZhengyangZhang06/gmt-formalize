@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "504755cf9c461783cfa1f0e295f68f33c23b3520936f2a1c49bffac26cf06d03",
+  "git_delta": {
+    "base_commit": "dea0c420c9bc77b9ba901d69530c1df20d45688e",
+    "candidate_commit": "a2df67e7cedf07d6098c5d2352ebddeccc1138ea",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_bvp_osc_le_of_inner_cubes",
+    "diff_sha256": "ba0c66e19587e6a90e8a17e740e5a101eb1e7d6149225b9c119a4e15f5ed6b85",
+    "source_sha256": "30addf554f77965fa3d80b69d5ebd73e862028f10e032ad50501cb732d062859",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_bvp_osc_le_of_inner_cubes",
+      "statement": "∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (K : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ δ : ℝ, 0 < δ → δ < 1 / 2 → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |u x - u y| ≤ K) → ∫ x in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u x - u y| ≤ K",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
