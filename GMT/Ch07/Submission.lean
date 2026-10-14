@@ -25960,4 +25960,158 @@ theorem Submission.dor_lmb_fc_total_bounded : ((∀ (P n : ℕ) (U : Set (Euclid
       _ ≤ ENNReal.ofReal δ := ENNReal.ofReal_le_ofReal hsmall.le
       _ < ε := hδε
 
+/-- **Simon Ch. 6, Theorem 7.2, "only if" part, for cycles** (chapter-06.txt lines 2020–2135):
+assume (C1) (`dor_imrep_massOn_eq_measure_and_support`).  Let `n ≥ 1`, `U ⊆ ℝ^P` open, and let
+`T_j, T ∈ 𝒟ₙ(U)` be integer multiplicity with `∂T_j = 0`, `∂T = 0`, `T_j ⇀ T` in `U` and
+`sup_j M_V(T_j) < ∞` for every open `V ⊂⊂ U`.  Then for every open `W ⊂⊂ U` there are integer
+multiplicity `R_j ∈ 𝒟ₙ₊₁(U)`, `S_j ∈ 𝒟ₙ(U)` with `T − T_j = ∂R_j + S_j` in `U` and
+`M_W(R_j) + M_W(S_j) → 0`, i.e. `d_W(T_j, T) → 0`.
+
+Step 0: if `W = ∅` then `M_∅ ≡ 0`, and `R_j = 0`, `S_j = T − T_j` work.  Otherwise put
+`d_W(T, T_j) = inf {M_W(R) + M_W(S) : T − T_j = ∂R + S, R, S integer multiplicity}` (Simon 7.1).
+Pairs with cost `≤ d_W(T, T_j) + 2⁻ʲ` prove the theorem once `d_W(T, T_j) → 0`, and for this it
+suffices that every subsequence `T_{ns(j)}` has a further subsequence along which
+`d_W(T, ·) → 0`.
+Step 1 (`dor_lmb_fc_localize`, with the slicing theorem `dor_lmb_slicing_lipschitz`): a
+subsequence `T_{ns(φ(j))}` and integer multiplicity `T'_j ⇀ T'` (the restrictions to a good
+sublevel set of `dist(·, W̄)`) that agree with `T_{ns(φ(j))}`, `T` on forms supported in `W`,
+vanish off a compact `K ⊆ U`, and have `M(T'_j), M(∂T'_j) ≤ Λ < ∞`.
+Steps 2–3 (`dor_lmb_fc_total_bounded`, `dor_lmb_fc_cauchy_subseq`): the `T'_j` are totally bounded
+for the flat distance, so `T'_{θ(r+1)} − T'_{θ(r)} = ∂R_r + S_r` with `M(R_r) + M(S_r) ≤ 2⁻ʳ`.
+Step 4 (`dor_lmb_fc_series_limit`): `T' − T'_{θ(ℓ)} = ∂R' + S'` with `M(R') + M(S') ≤ 2·2⁻ˡ`.
+Step 5: `T − T_{ns(φ(θ(ℓ)))} = ∂R' + S̃` with
+`S̃ = (S' − (T' − T)) − (T_{ns(φ(θ(ℓ)))} − T'_{θ(ℓ)})`, integer multiplicity (differences,
+`cmc_imRep_locality_restrict_sub`), and `M_W(S̃) = M_W(S')` because both bracketed differences
+vanish on forms supported in `W`.  Hence `d_W(T, T_{ns(φ(θ(ℓ)))}) ≤ 2·2⁻ˡ → 0`. -/
+theorem Submission.dor_lmb_flat_convergence_cycles : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U n) (T : GeometricCurrentOn U n), IsOpen U → 0 < n → (∀ j, IsIntegerMultiplicity (Ts j)) → IsIntegerMultiplicity T → (∀ j, BoundaryVanishes (Ts j)) → BoundaryVanishes T → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, (Ts j).massOn W < ∞) → WeaklyConvergesOn Ts T → ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ∃ (Rs : ℕ → GeometricCurrentOn U (n + 1)) (Ss : ℕ → GeometricCurrentOn U n), (∀ j, IsIntegerMultiplicity (Rs j)) ∧ (∀ j, IsIntegerMultiplicity (Ss j)) ∧ (∀ j (ω : TestFormOn U n), T ω - Ts j ω = (Rs j).boundary ω + Ss j ω) ∧ Tendsto (fun j => (Rs j).massOn W + (Ss j).massOn W) atTop (𝓝 0) := by
+  intro _ P n U Ts T hU hn hTsIM hTIM hTsB _ hbd hconv W _ hWU
+  -- write `n = m + 1`, so that `∂T_j = 0` reads `(Ts j).boundary = 0`
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, (Nat.succ_pred_eq_of_pos hn).symm⟩
+  have hsub_apply : ∀ {k : ℕ} (A B : GeometricCurrentOn U k) (ω : TestFormOn U k),
+      (A - B) ω = A ω - B ω := fun _ _ _ => rfl
+  -- differences of integer multiplicity currents (`cmc_imRep_locality_restrict_sub` (c))
+  have hsub : ∀ {k : ℕ} (A B : GeometricCurrentOn U k), IsIntegerMultiplicity A →
+      IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B) :=
+    fun A B hA hB => Submission.cmc_imRep_locality_restrict_sub.2.2.1 P _ U A B hU hA hB
+  -- `0 = τ(∅, 1, 0)` is integer multiplicity, and `T − T_j = ∂0 + (T − T_j)`
+  have hIM0 : IsIntegerMultiplicity (0 : GeometricCurrentOn U (m + 1 + 1)) := by
+    refine ⟨{ carrier := ∅
+              mult := fun _ => 1
+              orient := fun _ => 0
+              measurableSet_carrier := MeasurableSet.empty
+              carrier_subset := empty_subset U
+              rectifiable :=
+                Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+              measurable_mult := measurable_const
+              mult_pos := fun _ _ => Nat.one_pos
+              locallyIntegrable_mult := fun K _ _ => by simp
+              aestronglyMeasurable_orient := aestronglyMeasurable_const
+              orients := by simp }, fun ω => ?_⟩
+    simp [IMRep.action]
+  have htriv : ∀ j (ω : TestFormOn U (m + 1)),
+      T ω - Ts j ω = (0 : GeometricCurrentOn U (m + 1 + 1)).boundary ω + (T - Ts j) ω := by
+    intro j ω
+    rw [hsub_apply, GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply, zero_add]
+  -- Step 0: if `W = ∅`, then `M_∅ ≡ 0`, and `R_j = 0`, `S_j = T − T_j` work
+  rcases W.eq_empty_or_nonempty with rfl | hWne
+  · have hmass : ∀ {k : ℕ} (A : GeometricCurrentOn U k), A.massOn ∅ = 0 := by
+      intro k A
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro _ ⟨ω, hω, rfl⟩
+      have h0 : ω = 0 := Subtype.ext (funext fun x => by
+        by_contra hx
+        exact hω.1 (subset_tsupport _ hx))
+      simp [h0]
+    refine ⟨fun _ => 0, fun j => T - Ts j, fun _ => hIM0, fun j => hsub _ _ hTIM (hTsIM j),
+      htriv, ?_⟩
+    simp only [hmass, add_zero]
+    exact tendsto_const_nhds
+  have hWsub : W ⊆ U := subset_closure.trans hWU.2
+  -- `M_W` only sees forms supported in `W`
+  have hcongr : ∀ {k : ℕ} (A B : GeometricCurrentOn U k), (∀ ω : TestFormOn U k,
+      tsupport (ω : DifferentialForm (Euclid P) k) ⊆ W → A ω = B ω) →
+      A.massOn W = B.massOn W := by
+    intro k A B h
+    unfold GeometricCurrentOn.massOn
+    congr 1
+    exact Set.image_congr fun ω hω => congrArg ENNReal.ofReal (h ω hω.1)
+  have hε : Tendsto (fun j : ℕ => (2⁻¹ : ℝ≥0∞) ^ j) atTop (𝓝 0) :=
+    ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one (ENNReal.inv_lt_one.2 ENNReal.one_lt_two)
+  -- the flat distance `d_W(T, T_j)` (Simon 7.1)
+  obtain ⟨d, hd⟩ : ∃ d : ℕ → ℝ≥0∞, ∀ j, d j = ⨅ (R : GeometricCurrentOn U (m + 1 + 1))
+      (S : GeometricCurrentOn U (m + 1)) (_ : IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧
+        ∀ ω : TestFormOn U (m + 1), T ω - Ts j ω = R.boundary ω + S ω),
+      R.massOn W + S.massOn W := ⟨_, fun _ => rfl⟩
+  -- Step 0: once `d_W(T, T_j) → 0`, pairs with cost `≤ d_W(T, T_j) + 2⁻ʲ` prove the theorem
+  suffices hd0 : Tendsto d atTop (𝓝 0) by
+    have hpair : ∀ j, ∃ (R : GeometricCurrentOn U (m + 1 + 1)) (S : GeometricCurrentOn U (m + 1)),
+        (IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧
+          ∀ ω : TestFormOn U (m + 1), T ω - Ts j ω = R.boundary ω + S ω) ∧
+        R.massOn W + S.massOn W ≤ d j + (2⁻¹ : ℝ≥0∞) ^ j := by
+      intro j
+      by_cases hdj : d j = ∞
+      · exact ⟨0, T - Ts j, ⟨hIM0, hsub _ _ hTIM (hTsIM j), htriv j⟩, by simp [hdj]⟩
+      have hlt : d j < d j + (2⁻¹ : ℝ≥0∞) ^ j :=
+        ENNReal.lt_add_right hdj (pow_ne_zero j (ENNReal.inv_ne_zero.2 ENNReal.ofNat_ne_top))
+      obtain ⟨R, hR⟩ := iInf_lt_iff.1 ((hd j).symm.trans_lt hlt)
+      obtain ⟨S, hS⟩ := iInf_lt_iff.1 hR
+      obtain ⟨hRS, hcost⟩ := iInf_lt_iff.1 hS
+      exact ⟨R, S, hRS, hcost.le⟩
+    choose Rs Ss hRS hcost using hpair
+    refine ⟨Rs, Ss, fun j => (hRS j).1, fun j => (hRS j).2.1, fun j => (hRS j).2.2, ?_⟩
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ?_ (fun _ => zero_le)
+      hcost
+    simpa only [add_zero] using hd0.add hε
+  -- Step 0: it suffices that every subsequence has a further subsequence along which
+  -- `d_W(T, ·) → 0`
+  refine tendsto_of_subseq_tendsto fun ns hns => ?_
+  -- Step 1: localization of `T_{ns(j)}` (`dor_lmb_fc_localize`)
+  obtain ⟨φ, K, Λ, Ts', T', -, hK, hKU, hΛ, hTs'IM, hTs'BIM, hT'IM, hTs'K, hTs'mass, hTs'conv,
+      hTs'W, hT'W⟩ := Submission.dor_lmb_fc_localize Submission.dor_lmb_slicing_lipschitz P m U W
+    (fun j => Ts (ns j)) T hU (fun j => hTsIM (ns j)) hTIM (fun j => hTsB (ns j))
+    (fun V hV hVU => (iSup_le fun j => le_iSup (fun i => (Ts i).massOn V) (ns j)).trans_lt
+      (hbd V hV hVU)) (fun ω => (hconv ω).comp hns) hWne hWU
+  -- Steps 2–3: total boundedness (`dor_lmb_fc_total_bounded`) gives a subsequence with
+  -- `T'_{θ(r+1)} − T'_{θ(r)} = ∂R_r + S_r`, `M(R_r) + M(S_r) ≤ 2⁻ʳ` (`dor_lmb_fc_cauchy_subseq`)
+  obtain ⟨θ, hθ, hcauchy⟩ := Submission.dor_lmb_fc_cauchy_subseq P m U Ts' hU fun ε hε0 => by
+    obtain ⟨𝒬, h𝒬, hnet⟩ := Submission.dor_lmb_fc_total_bounded
+      Submission.dor_lmb_slicing_lipschitz P m U K Λ ε hU hK hKU hΛ hε0
+    exact ⟨𝒬, h𝒬, fun j => hnet (Ts' j) (hTs'IM j) (hTs'BIM j) (hTs'K j) (hTs'mass j).1
+      (hTs'mass j).2⟩
+  choose Rc Sc hRSc using hcauchy
+  -- Step 4: `T' − T'_{θ(ℓ)} = ∂R' + S'` with `M(R') + M(S') ≤ 2·2⁻ˡ` (`dor_lmb_fc_series_limit`)
+  have hlim := Submission.dor_lmb_fc_series_limit P m U (fun r => Ts' (θ r)) T' Rc Sc hU
+    (fun ω => (hTs'conv ω).comp hθ.tendsto_atTop) hRSc
+  refine ⟨fun ℓ => φ (θ ℓ), ?_⟩
+  -- Step 5: `d_W(T, T_{ns(φ(θ(ℓ)))}) ≤ 2·2⁻ˡ`
+  have hle : ∀ ℓ, d (ns (φ (θ ℓ))) ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ := by
+    intro ℓ
+    obtain ⟨R', S', hR', hS', heq, hmass⟩ := hlim ℓ
+    -- `S₁ = S̃ = (S' − (T' − T)) − (T_{ns(φ(θ(ℓ)))} − T'_{θ(ℓ)})`
+    set S₁ : GeometricCurrentOn U (m + 1) :=
+      (S' - (T' - T)) - (Ts (ns (φ (θ ℓ))) - Ts' (θ ℓ)) with hS₁
+    have hS₁IM : IsIntegerMultiplicity S₁ :=
+      hsub _ _ (hsub _ _ hS' (hsub _ _ hT'IM hTIM)) (hsub _ _ (hTsIM _) (hTs'IM _))
+    have hS₁eq : ∀ ω : TestFormOn U (m + 1),
+        T ω - Ts (ns (φ (θ ℓ))) ω = R'.boundary ω + S₁ ω := by
+      intro ω
+      have h := heq ω
+      simp only [hS₁, hsub_apply]
+      linarith
+    -- the bracketed differences vanish on forms supported in `W`
+    have hS₁W : S₁.massOn W = S'.massOn W := by
+      refine hcongr _ _ fun ω hω => ?_
+      have h₁ : T' ω = T ω := hT'W ω hω
+      have h₂ : Ts' (θ ℓ) ω = Ts (ns (φ (θ ℓ))) ω := hTs'W (θ ℓ) ω hω
+      simp only [hS₁, hsub_apply, h₁, h₂]
+      ring
+    calc d (ns (φ (θ ℓ))) ≤ R'.massOn W + S₁.massOn W :=
+          (hd _).trans_le (iInf_le_of_le R' (iInf_le_of_le S₁
+            (iInf_le_of_le ⟨hR', hS₁IM, hS₁eq⟩ le_rfl)))
+      _ = R'.massOn W + S'.massOn W := by rw [hS₁W]
+      _ ≤ R'.mass + S'.mass := add_le_add (R'.massOn_mono hWsub) (S'.massOn_mono hWsub)
+      _ ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ := hmass
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ?_ (fun _ => zero_le) hle
+  simpa only [mul_zero] using ENNReal.Tendsto.const_mul hε (Or.inr ENNReal.ofNat_ne_top)
+
 end GMT.Ch07
