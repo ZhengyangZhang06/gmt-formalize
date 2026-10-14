@@ -2992,6 +2992,29 @@ theorem Submission.lcmp_measure_le_add_of_open_nhds : ∀ (P : ℕ) (U E : Set (
       (fun k => (hGo k).measurableSet.nullMeasurableSet) hanti ⟨0, hfin0⟩
     rwa [hinter] at this
   exact ge_of_tendsto' (htend.add_const c) hle
+/-- **Local mass under change of domain** (Simon 6.2.5, 6.2.16).  Let `X ∈ 𝒟ₙ(ℝᴾ)` and
+`Z ∈ 𝒟ₙ(U)`.  (a) `M_G(X⌞U) ≤ M_G(X)`: a form `ω ∈ 𝒟ⁿ(U)` admissible for `M_G` is, regarded in
+`𝒟ⁿ(ℝᴾ)`, admissible for `M_G(X)` (same support and coefficient norms), with
+`X⌞U(ω) = X(ω)`.  (b) If `G ⊆ U` and `X(ω) = Z(ω)` for all `ω ∈ 𝒟ⁿ(U)` with `spt ω ⊆ G`, then
+`M_G(X) ≤ M_G(Z)`: a form `ω ∈ 𝒟ⁿ(ℝᴾ)` admissible for `M_G` has `spt ω ⊆ G ⊆ U`, so it is a form
+`ω' ∈ 𝒟ⁿ(U)` admissible for `M_G(Z)` with `X(ω) = Z(ω')`.  Take suprema over admissible forms. -/
+theorem Submission.dimred_mbl_lc_rc_massOn_restrict_univ : ∀ (P n : ℕ) (U G : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) n) (Z : GeometricCurrentOn U n), (X.restrictDomain (subset_univ U)).massOn G ≤ X.massOn G ∧ (G ⊆ U → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → X (testFormOnInclusion (subset_univ U) n ω) = Z ω) → X.massOn G ≤ Z.massOn G) := by
+  intro P n U G X Z
+  refine ⟨?_, fun hGU hXZ => ?_⟩
+  · -- (a): `X⌞U(ω) = X(ι ω)` and `ι ω` is admissible for `M_G(X)`
+    refine sSup_le ?_
+    rintro r ⟨ω, hω, rfl⟩
+    exact X.le_massOn (omega := testFormOnInclusion (subset_univ U) n ω) hω
+  · -- (b): an admissible `ω ∈ 𝒟ⁿ(ℝᴾ)` has `spt ω ⊆ G ⊆ U`, so `ω = ι ω'` with `ω' ∈ 𝒟ⁿ(U)`
+    refine sSup_le ?_
+    rintro r ⟨ω, hω, rfl⟩
+    let ω' : TestFormOn U n :=
+      ⟨(ω : DifferentialForm (Euclid P) n), ω.property.1, hω.1.trans hGU⟩
+    have hω' : ω' ∈ massAdmissibleOn U n G := hω
+    calc ENNReal.ofReal (X ω)
+        = ENNReal.ofReal (X (testFormOnInclusion (subset_univ U) n ω')) := rfl
+      _ = ENNReal.ofReal (Z ω') := by rw [hXZ ω' hω'.1]
+      _ ≤ Z.massOn G := Z.le_massOn hω'
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
