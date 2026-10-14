@@ -509,6 +509,68 @@ theorem Submission.dimred_mbl_dt_cbm_st_slice_integral : ∀ (m : ℕ) (i : Fin 
       _ = ∫ y in Q', ∫ t in Ioo a b, h (E (t, y)) := integral_prod_symm _ hint'
       _ = ∫ y in Q', ∫ t in a..b, h (WithLp.toLp 2 (Fin.insertNth i t y)) := by
           simp only [hinner]
+/-- **One-dimensional boundary-term and trace estimate.**  For `a < b`, `C¹` functions `φ, γ` on
+`ℝ` with `|γ| ≤ 1`, `|∫_a^b (φγ)'| ≤ (2/(b − a)) ∫_a^b |φ| + 2 ∫_a^b |φ'|`.  By the fundamental
+theorem of calculus the left side is `|φ(b)γ(b) − φ(a)γ(a)| ≤ |φ(b)| + |φ(a)|`.  For `c, t ∈ [a, b]`,
+`|φ(c)| ≤ |φ(t)| + |∫_t^c φ'| ≤ |φ(t)| + ∫_a^b |φ'|`; averaging over `t ∈ [a, b]` gives
+`|φ(c)| ≤ (b − a)⁻¹ ∫_a^b |φ| + ∫_a^b |φ'|`, applied at `c = a` and `c = b`. -/
+theorem Submission.dimred_mbl_dt_cbm_st_interval_bound : ∀ (φ γ : ℝ → ℝ) (a b : ℝ), ContDiff ℝ 1 φ → ContDiff ℝ 1 γ → (∀ t, |γ t| ≤ 1) → a < b → |∫ t in a..b, deriv (fun s => φ s * γ s) t| ≤ 2 / (b - a) * (∫ t in a..b, |φ t|) + 2 * ∫ t in a..b, |deriv φ t| := by
+  intro φ γ a b hφ hγ hγb hab
+  have hφd : Differentiable ℝ φ := hφ.differentiable one_ne_zero
+  have hφ'c : Continuous (deriv φ) := hφ.continuous_deriv le_rfl
+  have hpc : ContDiff ℝ 1 (fun s => φ s * γ s) := hφ.mul hγ
+  -- fundamental theorem of calculus for the product
+  have hftc : ∫ t in a..b, deriv (fun s => φ s * γ s) t = φ b * γ b - φ a * γ a :=
+    intervalIntegral.integral_deriv_eq_sub (fun t _ => (hpc.differentiable one_ne_zero) t)
+      ((hpc.continuous_deriv le_rfl).intervalIntegrable _ _)
+  -- the one-dimensional trace inequality at a point `c ∈ [a, b]`
+  have htrace : ∀ c ∈ Icc a b,
+      |φ c| ≤ (b - a)⁻¹ * (∫ t in a..b, |φ t|) + ∫ t in a..b, |deriv φ t| := by
+    intro c hc
+    set D := ∫ t in a..b, |deriv φ t| with hD
+    have hpt : ∀ t ∈ Icc a b, |φ c| ≤ |φ t| + D := by
+      intro t ht
+      have hsub : φ c - φ t = ∫ s in t..c, deriv φ s :=
+        (intervalIntegral.integral_deriv_eq_sub (fun s _ => hφd s)
+          (hφ'c.intervalIntegrable _ _)).symm
+      have hle : |∫ s in t..c, deriv φ s| ≤ D := by
+        have habs : |∫ s in t..c, deriv φ s| ≤ |∫ s in t..c, (|deriv φ s|)| := by
+          simpa only [Real.norm_eq_abs] using
+            (intervalIntegral.norm_integral_le_abs_integral_norm (f := deriv φ) (a := t) (b := c)
+              (μ := volume))
+        refine habs.trans ?_
+        rcases le_total t c with htc | hct
+        · rw [abs_of_nonneg (intervalIntegral.integral_nonneg htc fun s _ => abs_nonneg _)]
+          exact intervalIntegral.integral_mono_interval ht.1 htc hc.2
+            (Eventually.of_forall fun s => abs_nonneg _) (hφ'c.abs.intervalIntegrable _ _)
+        · rw [intervalIntegral.integral_symm, abs_neg,
+            abs_of_nonneg (intervalIntegral.integral_nonneg hct fun s _ => abs_nonneg _)]
+          exact intervalIntegral.integral_mono_interval hc.1 hct ht.2
+            (Eventually.of_forall fun s => abs_nonneg _) (hφ'c.abs.intervalIntegrable _ _)
+      calc |φ c| = |φ t + (φ c - φ t)| := by ring_nf
+        _ ≤ |φ t| + |φ c - φ t| := abs_add_le _ _
+        _ ≤ |φ t| + D := by rw [hsub]; gcongr
+    have hint : ∫ t in a..b, |φ c| ≤ ∫ t in a..b, (|φ t| + D) :=
+      intervalIntegral.integral_mono_on hab.le intervalIntegrable_const
+        ((hφd.continuous.abs.add continuous_const).intervalIntegrable _ _) hpt
+    rw [intervalIntegral.integral_const, intervalIntegral.integral_add
+      (hφd.continuous.abs.intervalIntegrable _ _) intervalIntegrable_const,
+      intervalIntegral.integral_const, smul_eq_mul, smul_eq_mul] at hint
+    have hba : 0 < b - a := sub_pos.mpr hab
+    rw [inv_mul_eq_div, ← sub_le_iff_le_add, le_div_iff₀ hba]
+    nlinarith
+  have hA := htrace a ⟨le_rfl, hab.le⟩
+  have hB := htrace b ⟨hab.le, le_rfl⟩
+  rw [hftc]
+  have hγa := hγb a
+  have hγb' := hγb b
+  calc |φ b * γ b - φ a * γ a| ≤ |φ b * γ b| + |φ a * γ a| := abs_sub _ _
+    _ = |φ b| * |γ b| + |φ a| * |γ a| := by rw [abs_mul, abs_mul]
+    _ ≤ |φ b| * 1 + |φ a| * 1 := by gcongr
+    _ = |φ b| + |φ a| := by ring
+    _ ≤ 2 / (b - a) * (∫ t in a..b, |φ t|) + 2 * ∫ t in a..b, |deriv φ t| := by
+        have : 2 / (b - a) = (b - a)⁻¹ + (b - a)⁻¹ := by ring
+        rw [this]; linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
