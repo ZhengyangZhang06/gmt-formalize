@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "f49cb21ad4d961c6fff0eb163306933968cb58c49b7ce4244fcecf5f8f8cd282",
+  "git_delta": {
+    "base_commit": "846e55415e663cb92bd01968036c993e8e04b71d",
+    "candidate_commit": "8033a8a00bfe287e0362102de1964b4267799e45",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "779f0f4173162eb5a923f19522c10224b734fb73c04535560366e461e1420d52",
+    "source_sha256": "1d1d47f72b7947188f55e6ffbe9cbcc23d8ea8d8b2e12e7ad1508610a1b714e7",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_planes_union_vertex_density",
+      "statement": "∀ (P q : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Ps : Fin q → Submodule ℝ (Euclid P)), IsIntegerMultiplicity C → BoundaryVanishes C → (∀ i, Module.finrank ℝ (Ps i) = 2) → (∀ i j, i ≠ j → Ps i ⊓ Ps j = ⊥) → (∀ x ∈ C.support, x ≠ 0 → ∃ i, x ∈ Ps i) → ∃ m : ℕ, HasMassDensity C 0 m",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
