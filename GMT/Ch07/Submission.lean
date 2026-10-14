@@ -451,6 +451,183 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Faces of the unit cubical lattice** (Simon Ch. 6, §5: the `n`-faces `F ∈ 𝓛ₙ` used in the proof
+of the deformation theorem 5.1).  Let `n = m + 1` and `p = (z, ι)` with `ι : Fin n → Fin P` strictly
+increasing.  The map `Φ_p(y) = z + Σⱼ yⱼ e_{ι(j)}` has coordinates `z_{ι(k)} + y_k` at `ι(k)` and
+`zᵢ` off `range ι`, so it is an isometric embedding `ℝⁿ → ℝᴾ` with `Φ_p⁻¹(F_p) = [0, 1]ⁿ` and
+`F_p ⊆ range Φ_p`.  As `μHE[n] = volume` on `ℝⁿ`, `Φ_p#μHE[n] = μHE[n]⌞range Φ_p` and `∂[0, 1]ⁿ` is
+Lebesgue-null, `Hⁿ⌞F_p = Φ_p#(Lⁿ⌞(0, 1)ⁿ)`; hence `Hⁿ(F_p) = 1` and
+`∫_{F_p} f dHⁿ = ∫_{(0, 1)ⁿ} f ∘ Φ_p`.  `F_p` is closed with diameter `≤ √P`, and the non-integer
+coordinates of a point of `Φ_p((0, 1)ⁿ)` determine `ι` and `z`, so it lies in no other face
+`F_q`. -/
+theorem Submission.dor_lmb_fcd_fr_face_geometry : ∀ (P m : ℕ) (p : (Fin P → ℤ) × (Fin (m + 1) → Fin P)), StrictMono p.2 → volume {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} = 1 ∧ μHE[m + 1] {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)} = 1 ∧ (μHE[m + 1] : Measure (Euclid P)).restrict {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)} = Measure.map (fun y : Euclid (m + 1) => WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) (volume.restrict {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) ∧ (∀ f : Euclid P → ℝ, ∫ x in {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)}, f x ∂μHE[m + 1] = ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, f (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ))) ∧ (∀ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ) ∈ {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)}) ∧ (∀ y y' : Euclid (m + 1), dist (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (p.2 j) (1 : ℝ)) = dist y y') ∧ (∀ x ∈ {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)}, ∀ x' ∈ {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)}, dist x x' ≤ Real.sqrt P) ∧ IsClosed {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)} ∧ ∀ q : (Fin P → ℤ) × (Fin (m + 1) → Fin P), StrictMono q.2 → q ≠ p → ∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ) ∉ {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range q.2 → (q.1 i : ℝ) ≤ x i ∧ x i ≤ q.1 i + 1) ∧ (i ∉ Set.range q.2 → x i = q.1 i)} := by
+  intro P m p hp
+  -- the face map `Φ = Φ_p`, the closed face `F = F_p`, the open cube `Q = Q₁`, the closed cube `C`
+  let Φ : Euclid (m + 1) → Euclid P := fun y =>
+    WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)
+  let F : Set (Euclid P) := {x : Euclid P | ∀ i : Fin P,
+    (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)}
+  let Q : Set (Euclid (m + 1)) := {y | ∀ i, 0 < y i ∧ y i < 1}
+  let C : Set (Euclid (m + 1)) := {y | ∀ i, 0 ≤ y i ∧ y i ≤ 1}
+  show volume Q = 1 ∧ μHE[m + 1] F = 1 ∧
+    (μHE[m + 1] : Measure (Euclid P)).restrict F = Measure.map Φ (volume.restrict Q) ∧
+    (∀ f : Euclid P → ℝ, ∫ x in F, f x ∂μHE[m + 1] = ∫ y in Q, f (Φ y)) ∧
+    (∀ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → Φ y ∈ F) ∧
+    (∀ y y' : Euclid (m + 1), dist (Φ y) (Φ y') = dist y y') ∧
+    (∀ x ∈ F, ∀ x' ∈ F, dist x x' ≤ Real.sqrt P) ∧ IsClosed F ∧
+    ∀ q : (Fin P → ℤ) × (Fin (m + 1) → Fin P), StrictMono q.2 → q ≠ p →
+      ∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → Φ y ∉ {x : Euclid P | ∀ i : Fin P,
+        (i ∈ Set.range q.2 → (q.1 i : ℝ) ≤ x i ∧ x i ≤ q.1 i + 1) ∧
+          (i ∉ Set.range q.2 → x i = q.1 i)}
+  have hinj : Injective p.2 := hp.injective
+  -- Step 1: coordinates of `Φ`
+  have hcoord : ∀ y i, Φ y i = p.1 i + ∑ j, if i = p.2 j then y j else 0 := by
+    intro y i
+    simp [Φ, Pi.single_apply]
+  have hcoord_mem : ∀ y k, Φ y (p.2 k) = p.1 (p.2 k) + y k := by
+    intro y k
+    rw [hcoord]
+    simp [hinj.eq_iff]
+  have hcoord_nmem : ∀ y i, i ∉ range p.2 → Φ y i = p.1 i := by
+    intro y i hi
+    rw [hcoord, add_eq_left]
+    exact Finset.sum_eq_zero fun j _ => ite_eq_right fun h => hi ⟨j, h.symm⟩
+  -- Step 2: `Φ` is an isometry, hence a measurable embedding
+  have hdist : ∀ y y' : Euclid (m + 1), dist (Φ y) (Φ y') = dist y y' := by
+    intro y y'
+    rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq]
+    congr 1
+    symm
+    refine Fintype.sum_of_injective p.2 hinj _ _ (fun i hi => ?_) (fun k => ?_)
+    · rw [hcoord_nmem y i hi, hcoord_nmem y' i hi, dist_self]
+      simp
+    · rw [hcoord_mem, hcoord_mem, dist_add_left]
+  have hiso : Isometry Φ := Isometry.of_dist_eq hdist
+  have hemb : MeasurableEmbedding Φ := hiso.isClosedEmbedding.measurableEmbedding
+  -- Step 3: `Φ` maps the closed cube `C` into `F`, `F ⊆ range Φ` and `Φ⁻¹(F) = C`
+  have hCF : ∀ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → Φ y ∈ F := by
+    intro y hy i
+    constructor
+    · rintro ⟨k, rfl⟩
+      rw [hcoord_mem]
+      constructor <;> linarith [(hy k).1, (hy k).2]
+    · exact hcoord_nmem y i
+  have hFrange : F ⊆ range Φ := by
+    intro x hx
+    refine ⟨WithLp.toLp 2 fun k => x (p.2 k) - p.1 (p.2 k), PiLp.ext fun i => ?_⟩
+    by_cases hi : i ∈ range p.2
+    · obtain ⟨k, rfl⟩ := hi
+      rw [hcoord_mem]
+      simp
+    · rw [hcoord_nmem _ i hi]
+      exact ((hx i).2 hi).symm
+  have hpreF : Φ ⁻¹' F = C := by
+    ext y
+    refine ⟨fun hy k => ?_, hCF y⟩
+    have h := (hy (p.2 k)).1 ⟨k, rfl⟩
+    rw [hcoord_mem] at h
+    constructor <;> linarith [h.1, h.2]
+  -- Step 4: `volume Q = volume C = 1`
+  have hvol := PiLp.volume_preserving_ofLp (Fin (m + 1))
+  have hQ_eq : Q = WithLp.ofLp ⁻¹' (Set.univ.pi fun _ : Fin (m + 1) => Set.Ioo (0 : ℝ) 1) := by
+    ext y
+    simp [Q, Set.mem_pi]
+  have hC_eq : C = WithLp.ofLp ⁻¹' (Set.Icc (0 : Fin (m + 1) → ℝ) 1) := by
+    ext y
+    simp [C, Pi.le_def, forall_and]
+  have hQmeas : MeasurableSet Q := by
+    rw [hQ_eq]
+    exact hvol.measurable (MeasurableSet.univ_pi fun _ => measurableSet_Ioo)
+  have hvolQ : volume Q = 1 := by
+    rw [hQ_eq, hvol.measure_preimage
+      (MeasurableSet.univ_pi fun _ => measurableSet_Ioo).nullMeasurableSet, Real.volume_pi_Ioo]
+    simp
+  have hvolC : volume C = 1 := by
+    rw [hC_eq, hvol.measure_preimage measurableSet_Icc.nullMeasurableSet, Real.volume_Icc_pi]
+    simp
+  have hQC : volume.restrict C = volume.restrict Q := by
+    refine (Measure.restrict_congr_set ?_).symm
+    refine ae_eq_of_subset_of_measure_ge (fun y hy i => ⟨(hy i).1.le, (hy i).2.le⟩)
+      (hvolC.trans hvolQ.symm).le hQmeas.nullMeasurableSet ?_
+    rw [hvolC]
+    exact ENNReal.one_ne_top
+  -- Step 5: `F` is closed
+  have hcont : ∀ i : Fin P, Continuous fun x : Euclid P => x i := fun i =>
+    PiLp.continuous_apply 2 _ i
+  have hFclosed : IsClosed F := by
+    have hF : F = ⋂ i : Fin P, {x : Euclid P | (i ∈ Set.range p.2 →
+        (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)} :=
+      Set.ofPred_forall _
+    rw [hF]
+    refine isClosed_iInter fun i =>
+      (isClosed_imp isOpen_const ?_).inter (isClosed_imp isOpen_const ?_)
+    · exact (isClosed_le continuous_const (hcont i)).inter (isClosed_le (hcont i) continuous_const)
+    · exact isClosed_eq (hcont i) continuous_const
+  have hFmeas : MeasurableSet F := hFclosed.measurableSet
+  -- Step 6: `Hⁿ⌞F = Φ#(volume⌞Q)`
+  have hmeas :
+      (μHE[m + 1] : Measure (Euclid P)).restrict F = Measure.map Φ (volume.restrict Q) := by
+    have h1 : Measure.map Φ (volume : Measure (Euclid (m + 1))) =
+        (μHE[m + 1] : Measure (Euclid P)).restrict (range Φ) := by
+      rw [← hiso.map_euclideanHausdorffMeasure, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    rw [← hQC, ← hpreF, ← hemb.restrict_map, h1, Measure.restrict_restrict hFmeas,
+      inter_eq_left.2 hFrange]
+  -- Step 7: `Hⁿ(F) = 1`
+  have hFmass : μHE[m + 1] F = 1 := by
+    have h := congrArg (fun μ : Measure (Euclid P) => μ univ) hmeas
+    simp only [Measure.restrict_apply_univ] at h
+    rw [h, hemb.map_apply, preimage_univ, Measure.restrict_apply_univ, hvolQ]
+  refine ⟨hvolQ, hFmass, hmeas, fun f => ?_, hCF, hdist, ?_, hFclosed, ?_⟩
+  -- Step 8: the integral formula
+  · rw [hmeas, hemb.integral_map]
+  -- Step 9: `diam F ≤ √P`
+  · intro x hx x' hx'
+    rw [EuclideanSpace.dist_eq]
+    refine Real.sqrt_le_sqrt ?_
+    calc ∑ i, dist (x i) (x' i) ^ 2 ≤ ∑ _i : Fin P, (1 : ℝ) := by
+          refine Finset.sum_le_sum fun i _ => pow_le_one₀ dist_nonneg ?_
+          by_cases hi : i ∈ range p.2
+          · have h := (hx i).1 hi
+            have h' := (hx' i).1 hi
+            rw [Real.dist_eq, abs_le]
+            constructor <;> linarith [h.1, h.2, h'.1, h'.2]
+          · rw [(hx i).2 hi, (hx' i).2 hi, dist_self]
+            exact zero_le_one
+      _ = P := by simp
+  -- Step 10: the open face `Φ(Q)` meets no other closed face
+  · intro q hq hqp y hy hx
+    apply hqp
+    have hsub : range p.2 ⊆ range q.2 := by
+      rintro _ ⟨k, rfl⟩
+      by_contra hk
+      have h := (hx (p.2 k)).2 hk
+      rw [hcoord_mem] at h
+      have a1 : (p.1 (p.2 k) : ℝ) < q.1 (p.2 k) := by linarith [(hy k).1]
+      have a2 : (q.1 (p.2 k) : ℝ) < p.1 (p.2 k) + 1 := by linarith [(hy k).2]
+      have b1 : p.1 (p.2 k) < q.1 (p.2 k) := by exact_mod_cast a1
+      have b2 : q.1 (p.2 k) < p.1 (p.2 k) + 1 := by exact_mod_cast a2
+      omega
+    have hrange : range p.2 = range q.2 := by
+      apply Set.eq_of_subset_of_card_le hsub
+      rw [Set.card_range_of_injective hq.injective, Set.card_range_of_injective hinj]
+    have h2 : p.2 = q.2 := (hp.range_inj_of_wellFoundedLT hq).1 hrange
+    have h1 : p.1 = q.1 := by
+      funext i
+      by_cases hi : i ∈ range p.2
+      · obtain ⟨k, rfl⟩ := hi
+        have h := (hx (p.2 k)).1 (hrange ▸ ⟨k, rfl⟩)
+        rw [hcoord_mem] at h
+        have a1 : (q.1 (p.2 k) : ℝ) < p.1 (p.2 k) + 1 := by linarith [h.1, (hy k).2]
+        have a2 : (p.1 (p.2 k) : ℝ) < q.1 (p.2 k) + 1 := by linarith [h.2, (hy k).1]
+        have b1 : q.1 (p.2 k) < p.1 (p.2 k) + 1 := by exact_mod_cast a1
+        have b2 : p.1 (p.2 k) < q.1 (p.2 k) + 1 := by exact_mod_cast a2
+        omega
+      · have h : (p.1 i : ℝ) = q.1 i := by
+          rw [← hcoord_nmem y i hi]
+          exact (hx i).2 (hrange ▸ hi)
+        exact_mod_cast h
+    exact Prod.ext h1.symm h2.symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
