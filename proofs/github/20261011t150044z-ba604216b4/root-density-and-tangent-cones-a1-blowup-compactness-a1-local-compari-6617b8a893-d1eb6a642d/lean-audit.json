@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aef5466c16cc6253d2a4399e5e8d5da5c31ae08e8db4837ebb4f402221f17ed1",
+  "git_delta": {
+    "base_commit": "3d7ffbf04fd8b96bf5906afdbe60ca214631b60b",
+    "candidate_commit": "9a1826be3e3ea79725c08703bafdf0ad920a4f30",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_co_chart_bilipschitz",
+    "diff_sha256": "422045c3ce6cbfcd142675835b13afd313c6d1dbf6f7c0e6c6bd8bc915bad424",
+    "source_sha256": "ccde9b0f05dc7ff693a45912536439c946170f27ed2c4d48710adf5b792710e6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_co_chart_bilipschitz",
+      "statement": "∀ (P d : ℕ) (ψ : Euclid d → Euclid P) (K : Set (Euclid d)), ContDiff ℝ 1 ψ → IsCompact K → InjOn ψ K → (∀ y ∈ K, Injective (fderiv ℝ ψ y)) → ∃ m Λ : ℝ, 0 < m ∧ ∀ a ∈ K, ∀ b ∈ K, m * ‖a - b‖ ≤ ‖ψ a - ψ b‖ ∧ ‖ψ a - ψ b‖ ≤ Λ * ‖a - b‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
