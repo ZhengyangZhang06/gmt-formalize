@@ -654,6 +654,29 @@ theorem Submission.imrep_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U 
   exact ((hG.comp_aemeasurable R.aestronglyMeasurable_orient.aemeasurable).aestronglyMeasurable
     ).congr hae.symm
 
+/-- **The tangential rotation ratio of an integer multiplicity triple is measurable**
+(Simon 7.3.3, proof; Ch. 6, 3.1).  For `R = (M, θ, ξ)` with weight `μ = θ Hⁿ⌞M`, a subspace `Q`
+with projection `π` and `A x = ⟨x, a⟩ e − ⟨x, e⟩ a`, the ratio `|p_{TₓM}(A x)|² / |π x|²` is
+`μ`-a.e. strongly measurable: `x ↦ p_{TₓM}` is `Hⁿ⌞M`-a.e. strongly measurable, hence
+`μ`-a.e. strongly measurable as `μ ≪ Hⁿ⌞M`; evaluation at the continuous field `A` is continuous
+bilinear, `|π x|²` is continuous, and real division (`t / 0 = 0`) is measurable. -/
+theorem Submission.idtp_cse_fd_fs_frame_ratio_aesm : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), AEStronglyMeasurable (fun x : Euclid P => ‖(approxTangentPlane n R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) R.measure := by
+  intro P n U R Q a e
+  -- `x ↦ p_{TₓM}` is `μ`-a.e. strongly measurable, since `μ = (Hⁿ⌞M).withDensity θ ≪ Hⁿ⌞M`
+  have hT : AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection)
+      R.measure :=
+    (Submission.imrep_approxTangent_starProjection_aesm P n U R).mono_ac
+      (withDensity_absolutelyContinuous _ _)
+  -- evaluation `(L, v) ↦ L v` at the continuous field `A x = ⟨x, a⟩ e − ⟨x, e⟩ a`
+  have hA : Continuous fun x : Euclid P => inner ℝ x a • e - inner ℝ x e • a := by fun_prop
+  have hN : AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection
+      (inner ℝ x a • e - inner ℝ x e • a)) R.measure :=
+    (ContinuousLinearMap.id ℝ (Euclid P →L[ℝ] Euclid P)).aestronglyMeasurable_comp₂ hT
+      hA.aestronglyMeasurable
+  -- the denominator `|π x|²` is continuous, and real division is measurable
+  have hD : Continuous fun x : Euclid P => ‖Q.starProjection x‖ ^ 2 := by fun_prop
+  exact (hN.norm.fun_pow 2).aemeasurable.fun_div hD.measurable.aemeasurable |>.aestronglyMeasurable
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
