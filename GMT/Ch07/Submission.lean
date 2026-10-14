@@ -554,6 +554,37 @@ theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P))
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
 
+/-- A constant multiple `X = c[[ℝⁿ]]` (`n ≥ 1`) with compact support is zero (step 6 of
+`dtc_bc_cz_isMinimizingIn`): if `X(ω) = c ∫ ω(y)(e₁, …, eₙ) dy` for every `ω ∈ 𝒟ⁿ(ℝⁿ)` and
+`spt X` is compact, then `c = 0`.  Take `r₀` with `spt X ⊆ B̄_{r₀}(0)` and `p = (|r₀| + 2)e₁`,
+so `‖p‖ = |r₀| + 2`.  A test form `ω` with `spt ω ⊆ B̄₁(p)` and `∫ ω(y)(e₁, …, eₙ) dy > 0` has
+`spt ω ∩ spt X = ∅`, since `‖p‖ ≤ ‖y‖ + ‖y − p‖ ≤ r₀ + 1` for `y` in both.  Hence `X(ω) = 0`
+(Simon 6.2.11), so `c ∫ ω(y)(e₁, …, eₙ) dy = 0` and `c = 0`. -/
+theorem Submission.dtc_bc_cz_isMinimizingIn_const_eq_zero : ∀ (n : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid n)) n) (c : ℝ), 0 < n → IsCompact X.support → (∀ ω : TestFormOn (univ : Set (Euclid n)) n, X ω = c * ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)) → c = 0 := by
+  intro n X c hn hX hXc
+  -- Step 1: `spt X ⊆ B̄(0, r₀)`, `spt X` being compact
+  obtain ⟨r₀, hr₀⟩ := hX.isBounded.subset_closedBall (0 : Euclid n)
+  -- Step 2: `p = (|r₀| + 2) e₁` (`n ≥ 1`) has `‖p‖ = |r₀| + 2`
+  obtain ⟨p, hpn⟩ : ∃ p : Euclid n, ‖p‖ = |r₀| + 2 :=
+    ⟨(|r₀| + 2) • EuclideanSpace.single (⟨0, hn⟩ : Fin n) (1 : ℝ), by
+      rw [norm_smul, PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs,
+        abs_of_pos (by positivity)]⟩
+  -- Step 3 (child `bump_form`): `ω` with `spt ω ⊆ B̄(p, 1)` and `∫ ω(y)(e) dy > 0`
+  obtain ⟨ω, hωs, hωI⟩ := Submission.dtc_bc_cz_isMinimizingIn_bump_form n p 1 one_pos
+  -- Step 4: `spt ω ∩ spt X = ∅`, as `‖p‖ ≤ ‖y‖ + ‖y − p‖ ≤ r₀ + 1 < |r₀| + 2` on it
+  have hdisj : Disjoint (tsupport (ω : DifferentialForm (Euclid n) n)) X.support := by
+    refine Set.disjoint_left.mpr fun y hyω hyX => ?_
+    have h1 : ‖y - p‖ ≤ 1 := mem_closedBall_iff_norm.mp (hωs hyω)
+    have h2 : ‖y‖ ≤ r₀ := mem_closedBall_zero_iff.mp (hr₀ hyX)
+    have h3 : ‖p‖ ≤ ‖y‖ + ‖y - p‖ := by
+      simpa only [sub_sub_cancel] using norm_sub_le y (y - p)
+    linarith [le_abs_self r₀]
+  -- Step 5 (`dtc_vanish_off_support`): `X(ω) = 0`
+  have hX0 : X ω = 0 := Submission.dtc_vanish_off_support n n univ X ω hdisj
+  -- Step 6: `c ∫ ω(y)(e) dy = 0` with a positive integral, so `c = 0`
+  rw [hXc ω] at hX0
+  exact (mul_eq_zero.mp hX0).resolve_right hωI.ne'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
