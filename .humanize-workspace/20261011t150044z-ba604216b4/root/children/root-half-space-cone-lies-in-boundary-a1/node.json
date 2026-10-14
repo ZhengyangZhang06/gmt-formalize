@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Theorem 7.4.5: a minimizing cone in a closed half-space lies in the boundary hyperplane",
+  "statement": "Let C ∈ 𝒟_n(ℝ^{n+k}) be minimizing in ℝ^{n+k}, ∂C = 0, and a cone (η_{0,λ#}C = C for all λ > 0). If v ≠ 0 and spt C ⊆ closure{x : ⟨v,x⟩ > 0}, then spt C ⊆ frontier{x : ⟨v,x⟩ > 0} = {x : ⟨v,x⟩ = 0}.",
+  "lean_statement": "HalfSpaceConeLiesInBoundary",
+  "lean_name": "half_space_cone_lies_in_boundary",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-a1"
+}

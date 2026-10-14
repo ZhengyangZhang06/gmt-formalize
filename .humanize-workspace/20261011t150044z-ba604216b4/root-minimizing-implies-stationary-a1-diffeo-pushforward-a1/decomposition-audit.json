@@ -1,0 +1,106 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "pushforward|Pushforward|dpf_|imrep_c1_diffeo|approxTangent.*map|area_formula",
+        "theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt",
+        "normDet_comp|normDet_sq_eq_det_gram|euclideanHausdorffMeasure_image|normDet_of_subsingleton",
+        "areaJacobianAt|measurable_areaJacobianAt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dpf-independent-audit-8zwr771v/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dpf-independent-audit-8zwr771v/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dpf-independent-audit-8zwr771v/InstancesAndAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v3.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-tangent-projection-measurable-a1/accepted-candidate.json",
+        "/tmp/dpf-independent-audit-8zwr771v/Types.lean",
+        "/tmp/dpf-independent-audit-8zwr771v/Assembly.lean",
+        "/tmp/dpf-independent-audit-8zwr771v/InstancesAndAxioms.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected push-forward theorem. All eleven children contribute to its assembly, and their declared dependencies exactly match the sibling calls in their proofs and form an acyclic graph. No proposed name conflicts with the 451 DAG nodes or other nodes' stored proposals; every name is a bare identifier. All eleven one-line propositions independently elaborate in the comparator's replayed contract scope without child implementations. The conditional assembly proves the exact frozen parent type and uses only propext, Classical.choice and Quot.sound. The accepted projection dependency has the required identical frozen type and retained comparator acceptance under those permitted axioms. The pinned project provides no reusable proof of this contract; its related Ch06 push-forward proposition is different and unproved. The inspected library results have compatible hypotheses, and the checked analytic and algebraic dependencies use only standard axioms. Independent Lean checks confirm that the Matrix.of Gram expression equals the intended restricted-map normDet, the linear-map norm is the operator norm, orthogonal-projection instances exist, the stated smoothness order is C∞, and μHE[0] assigns mass one to singletons."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "bilipschitz_diffeo",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches all stated hypotheses and conclusions. Compact support bounds the derivatives of both the map and its C¹ inverse; properness supplies the homeomorphism needed by the inverse theorem. The set-preservation and common Lipschitz/antilipschitz bounds follow without assuming U open."
+    },
+    {
+      "key": "pushforward_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes measurability, integrability, linearity and the exact sequential continuity required by GeometricCurrentOn. The compact support bound tsupport ω ∪ K justifies omitting bijectivity and openness from this child. The resulting action is exactly the frozen integral."
+    },
+    {
+      "key": "smooth_approximation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The mollifier construction supplies a common compact support inside U, smooth approximants, a uniform derivative bound and both pointwise limits. The convolution lemmas have the required hypotheses. The explicitly typed smoothness order and the zero-dimensional case are correct."
+    },
+    {
+      "key": "pushforward_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The sole sibling dependency supplies precisely the approximation properties used. Pullbacks are valid test forms, exterior differentiation commutes with their smooth pullbacks, and the displayed common integrable bound permits dominated convergence. This proves BoundaryVanishes S, including its vacuous degree-zero case."
+    },
+    {
+      "key": "bilipschitz_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The regular-set reduction and partition theorem yield the asserted lower bounds. The radius is nonzero for every linear map, including dimension zero. Enumeration and subtraction of earlier Borel images give exactly the disjoint pieces and null remainder in the frozen type."
+    },
+    {
+      "key": "piece_tangent_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact parameter-a.e. conclusion. Besicovitch density together with the bi-Lipschitz O(r^n) image bound gives the required o(r^n) remainder. The rescaled area formula, density and Jacobian Lebesgue-point estimates prove the blow-up limit on a single conull set valid for every test function. Dimension zero is covered."
+    },
+    {
+      "key": "image_tangent_transport",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both density-lemma applications satisfy their hypotheses: the image is Borel, lies in U and is locally H^n-finite. The chain rule identifies the image derivative range, uniqueness identifies the chosen original tangent plane, and Lipschitz null-image estimates transfer the conclusion from parameters to M. Surjectivity is unnecessary."
+    },
+    {
+      "key": "rectifiable_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two listed siblings identify tangents on the disjoint pieces. The independently checked Gram/normDet identity and normDet_comp give the correct tangential Jacobian. The pinned weighted area formula and lintegral_iUnion accept arbitrary weights, so the stronger nonmeasurable-weight conclusion is justified without an undeclared measurability dependency."
+    },
+    {
+      "key": "jacobian_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The block determinant identity replaces the varying-dimensional Gram determinant by det(p L* L p + I − p) on the fixed ambient space. Continuous composition with the two a.e. strongly measurable inputs proves the exact conclusion, without requiring measurable choices of bases."
+    },
+    {
+      "key": "orientation_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The orientation hypothesis supplies an orthonormal basis of dimension n. Basis independence, Gram–Schmidt and the alternating determinant identity establish positivity, the operator-norm bound and the normalized image orientation. The empty determinant and zero-covector cases correctly handle n = 0."
+    },
+    {
+      "key": "image_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every IMRep field is verified using the four declared siblings and the explicit projection-measurability hypothesis. The inverse's quasi-measure-preservation has the correct direction for transporting a.e. measurability. Integrability and change of variables on positive and negative parts prove the exact action formula without relying on this child or the parent theorem."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.image_imrep-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1",
+  "depth": 4,
+  "title": "Image of an integer multiplicity triple under a bi-Lipschitz bijection preserving U, with an orientation prescribed in source coordinates",
+  "statement": "Setting: U ⊆ ℝ^P; R = (M, θ, ξ) is an integer multiplicity triple in U (IMRep U n); φ : ℝ^P → ℝ^P is a bijection that is Λ-Lipschitz and Λ-antilipschitz with φ^{-1}(U) = U.\nAssume η : ℝ^P → Λ_n(ℝ^P) is H^n⌞M-a.e. strongly measurable, and that for H^n-a.e. x ∈ M there is a subspace Q such that φ(M) has approximate tangent space Q at φ(x) and η(x) is a unit orientation of Q.\nThen there is an integer multiplicity triple R' in U with carrier φ(M), R'.mult(φ(x)) = θ(x) and R'.orient(φ(x)) = η(x) for every x ∈ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P) (Λ : NNReal) (η : Euclid P → MultiVector P n), Bijective φ → LipschitzWith Λ φ → AntilipschitzWith Λ φ → φ ⁻¹' U = U → AEStronglyMeasurable η (μHE[n].restrict R.carrier) → (∀ᵐ x ∂(μHE[n].restrict R.carrier), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (φ '' R.carrier) (φ x) Q ∧ IsUnitOrientationOf (η x) Q) → ∃ R' : IMRep U n, R'.carrier = φ '' R.carrier ∧ ∀ x, R'.mult (φ x) = R.mult x ∧ R'.orient (φ x) = η x",
+  "lean_name": "dpfir_bilipschitz_image_imrep_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-deb5dda114-a1"
+}
