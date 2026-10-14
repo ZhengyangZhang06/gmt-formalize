@@ -2963,6 +2963,158 @@ theorem Submission.cmcs_smp_cutoff_integral_tendsto : ∀ (P : ℕ) (μ : Measur
       filter_upwards [hev] with h hh
       rw [hg0 h hh.1 hh.2 x (not_lt.1 hx), zero_mul]
 
+/-- **Boundary mass of `T⌞B_{t₀}`** (Simon Ch. 6, proof of 4.9: the computation 4.11 with a radial
+cut-off, chapter-06.txt lines 1378–1402, applied to `T' = T⌞B_{t₀}`).  Let `R = (M, θ, ξ)`
+represent `T`, let `R' = (M ∩ B_{t₀}, θ, ξ)` represent `T'`, and let `B̄_{t₀}(0) ⊆ V`.  Then
+`M(∂T') ≤ 2 M_V(∂T) + 2 liminf_{h↓0} h⁻¹ μ_R({t₀ − h < |x| < t₀})`.
+
+Fix `η ∈ 𝒟^m(U)` with `|η| ≤ 1` and put `F = θ⟨dη, ξ⟩`.  `F` is `Hⁿ⌞M`-integrable:
+`|⟨α, ξ⟩| ≤ |α|` a.e. (`cmc_imRep_locality_restrict_sub` (d)), `|dη|` is bounded with compact
+support `K ⊆ U`, and `θ` is integrable on `M ∩ K`.  For `0 < h < 1`, let `g_h` be the level
+cut-off of `|·|` at `t₀` (`cmcs_level_cutoff` with `L = 1`).  Then `|g_h| ≤ 2`,
+`‖Dg_h‖ ≤ 1/(h(1 − h/2)) ≤ 2/h`, `Dg_h = 0` off the strip `{t₀ − h < |x| < t₀}`, and
+`spt g_h ⊆ B̄_{t₀}(0) ⊆ V`.  So the cut-off estimate gives
+`|τ(M, θ, ξ)(g_h dη)| ≤ 2 M_V(∂T) + 2h⁻¹ μ_R(strip_h)`.  By dominated convergence
+(`cmcs_smp_cutoff_integral_tendsto`),
+`τ(M, θ, ξ)(g_h dη) = ∫ g_h F → ∫_{|x| < t₀} F = T'(dη) = ∂T'(η)`.  Take `liminf_{h↓0}`; the map
+`y ↦ 2 M_V(∂T) + 2y` is monotone and continuous, so it commutes with `liminf`.  Finally take the
+supremum over `η`. -/
+theorem Submission.dtc_bc_lc_fd_lz_boundary_mass : ∀ (P m : ℕ) (U V : Set (Euclid P)) (T T' : GeometricCurrentOn U (m + 1)) (R R' : IMRep U (m + 1)) (t₀ : ℝ), closedBall (0 : Euclid P) t₀ ⊆ V → R.Represents T → R'.Represents T' → R'.carrier = R.carrier ∩ ball (0 : Euclid P) t₀ → R'.mult = R.mult → R'.orient = R.orient → T'.boundary.mass ≤ 2 * T.boundary.massOn V + 2 * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * R.measure {x : Euclid P | t₀ - h < ‖x‖ ∧ ‖x‖ < t₀}) (𝓝[>] 0) := by
+  intro P m U V T T' R R' t₀ hV hR hR' hcar hmult horient
+  set ν := μHE[m + 1].restrict R.carrier with hν
+  -- `A(h) = μ_R({t₀ − h < |x| < t₀})`
+  set A : ℝ → ℝ≥0∞ := fun h => R.measure {x : Euclid P | t₀ - h < ‖x‖ ∧ ‖x‖ < t₀}
+  -- Step 4: the level cut-offs `g_h` of `|·|` at `t₀` (`L = 1`), for `0 < h < 1`
+  have hLC : ∀ h : ℝ, 0 < h → h < 1 → ∃ g : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) g ∧
+      (∀ x, |g x| ≤ 2) ∧ (∀ x, ‖fderiv ℝ g x‖ ≤ ((1 : NNReal) : ℝ) / (h * (1 - h / 2))) ∧
+      (∀ x, fderiv ℝ g x ≠ 0 → t₀ - h < ‖x‖ ∧ ‖x‖ < t₀) ∧ (∀ x, ‖x‖ ≤ t₀ - h → g x = 1) ∧
+      (∀ x, t₀ ≤ ‖x‖ → g x = 0) := fun h h0 h1 =>
+    Submission.cmcs_level_cutoff P (fun x => ‖x‖) 1 t₀ h lipschitzWith_one_norm h0 h1
+  choose! g hgs hg2 hgd hgS hg1 hg0 using hLC
+  -- Step 1: it suffices to bound `∂T'(η)` for `η ∈ 𝒟^m(U)` with `|η| ≤ 1`
+  refine sSup_le ?_
+  rintro r ⟨η, hη, rfl⟩
+  -- Step 3: `dη` is continuous with compact support `K ⊆ U`; `F = θ⟨dη, ξ⟩` is `ν`-integrable
+  set dη := exteriorDerivative (η : DifferentialForm (Euclid P) m)
+  have hdη : IsTestForm dη := exteriorDerivative_isTestForm η.property.1
+  have hdηc : Continuous dη := hdη.1.continuous
+  set K := tsupport dη
+  have hKc : IsCompact K := hdη.2
+  have hKU : K ⊆ U := (tsupport_exteriorDerivative_subset _).trans η.property.2
+  set F : Euclid P → ℝ := fun x => (R.mult x : ℝ) * R.orient x (dη x) with hF
+  -- `|dη|` is continuous with compact support, hence bounded by some `b`
+  have hcEN : Continuous fun α : Covector (Euclid P) (m + 1) => covectorEuclideanNorm α := by
+    unfold covectorEuclideanNorm
+    refine (continuous_finsetSum _ fun I _ => ?_).sqrt
+    split_ifs
+    · exact (continuous_eval_const _).pow 2
+    · exact continuous_const
+  obtain ⟨b, hb⟩ := (hcEN.comp hdηc).bounded_above_of_compact_support
+    (hdη.2.comp_left (covectorEuclideanNorm_zero P (m + 1)))
+  have hθmeas : AEStronglyMeasurable (fun x => (R.mult x : ℝ)) ν :=
+    ((measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult).aestronglyMeasurable
+  have hFmeas : AEStronglyMeasurable F ν :=
+    hθmeas.mul (Continuous.comp_aestronglyMeasurable₂
+      (g := fun (L : MultiVector P (m + 1)) (α : Covector (Euclid P) (m + 1)) => L α)
+      (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) (m + 1)) (F := ℝ)).continuous
+      R.aestronglyMeasurable_orient hdηc.aestronglyMeasurable)
+  -- `1_K θ` is `ν`-integrable: `∫_{M ∩ K} θ dHⁿ < ∞`
+  have hθK : Integrable (K.indicator fun x => (R.mult x : ℝ)) ν := by
+    rw [integrable_indicator_iff hKc.isClosed.measurableSet]
+    refine ⟨hθmeas.restrict, ?_⟩
+    show ∫⁻ x, ‖(R.mult x : ℝ)‖ₑ ∂(ν.restrict K) < ∞
+    rw [hν, Measure.restrict_restrict hKc.isClosed.measurableSet, inter_comm]
+    simp only [Real.enorm_natCast]
+    exact lt_top_iff_ne_top.mpr (R.locallyIntegrable_mult K hKc hKU)
+  -- `|F| ≤ b 1_K θ` a.e., by `|⟨α, ξ⟩| ≤ |α|` and `dη = 0` off `K`
+  have hFint : Integrable F ν := by
+    refine Integrable.mono' (hθK.const_mul b) hFmeas ?_
+    filter_upwards [(Submission.cmc_imRep_locality_restrict_sub).2.2.2 P (m + 1) U R] with x hx
+    by_cases hxK : x ∈ K
+    · show ‖(R.mult x : ℝ) * R.orient x (dη x)‖ ≤ b * K.indicator (fun x => (R.mult x : ℝ)) x
+      rw [indicator_of_mem hxK, norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+      calc (R.mult x : ℝ) * |R.orient x (dη x)|
+          ≤ (R.mult x : ℝ) * covectorEuclideanNorm (dη x) := by
+            gcongr
+            exact hx _
+        _ ≤ (R.mult x : ℝ) * b := by
+            gcongr
+            exact (le_abs_self _).trans (hb x)
+        _ = b * (R.mult x : ℝ) := mul_comm _ _
+    · have h0 : dη x = 0 := image_eq_zero_of_notMem_tsupport hxK
+      simp [hF, h0, indicator_of_notMem hxK]
+  -- Step 2: `∂T'(η) = T'(dη) = ∫_{M ∩ B_{t₀}} θ⟨dη, ξ⟩ dHⁿ = ∫_{|x| < t₀} F dν`
+  have hball : {x : Euclid P | ‖x‖ < t₀} = ball (0 : Euclid P) t₀ := by
+    ext x
+    exact mem_ball_zero_iff.symm
+  have hmeasB : MeasurableSet {x : Euclid P | ‖x‖ < t₀} := hball ▸ measurableSet_ball
+  have hz : T'.boundary η = ∫ x in {x : Euclid P | ‖x‖ < t₀}, F x ∂ν := by
+    rw [GeometricCurrentOn.boundary_apply, hR' (exteriorDerivativeTestOn U m η), IMRep.action,
+      hcar, hmult, horient, hν, Measure.restrict_restrict hmeasB, hball,
+      inter_comm (ball (0 : Euclid P) t₀) R.carrier]
+    rfl
+  -- Step 6: `Φ(h) = R(g_h dη) = ∫ g_h F dν`, as `ξ(x)` is linear
+  set Φ : ℝ → ℝ := fun h => R.action (fun x => g h x • dη x)
+  have hΦ : ∀ h : ℝ, Φ h = ∫ x, g h x * F x ∂ν := by
+    intro h
+    show R.action _ = _
+    rw [IMRep.action]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp only [hF, map_smul, smul_eq_mul]
+    ring
+  -- Step 5: the cut-off estimate for `0 < h < 1`, with `1/(h(1 − h/2)) ≤ 2/h`
+  have hest : ∀ h : ℝ, 0 < h → h < 1 →
+      ENNReal.ofReal |Φ h| ≤ 2 * T.boundary.massOn V + 2 * (ENNReal.ofReal h⁻¹ * A h) := by
+    intro h h0 h1
+    -- `spt g_h ⊆ B̄_{t₀}(0) ⊆ V`, since `g_h = 0` on `{|x| ≥ t₀}`
+    have hsupp : tsupport (g h) ⊆ V :=
+      (closure_mono (s := support (g h)) (t := ball (0 : Euclid P) t₀) fun x hx =>
+        mem_ball_zero_iff.2 (not_le.1 fun hx' => hx (hg0 h h0 h1 x hx'))).trans
+        (closure_ball_subset_closedBall.trans hV)
+    have hc : ENNReal.ofReal (((1 : NNReal) : ℝ) / (h * (1 - h / 2))) ≤ 2 * ENNReal.ofReal h⁻¹ :=
+      calc ENNReal.ofReal (((1 : NNReal) : ℝ) / (h * (1 - h / 2))) ≤ ENNReal.ofReal (2 * h⁻¹) := by
+            refine ENNReal.ofReal_le_ofReal ?_
+            rw [NNReal.coe_one]
+            calc 1 / (h * (1 - h / 2)) ≤ 1 / (h / 2) :=
+                  one_div_le_one_div_of_le (half_pos h0) (by nlinarith [mul_pos h0 (sub_pos.2 h1)])
+              _ = 2 * h⁻¹ := by rw [one_div_div, div_eq_mul_inv]
+        _ = 2 * ENNReal.ofReal h⁻¹ := by rw [ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_ofNat]
+    calc ENNReal.ofReal |Φ h|
+        ≤ ENNReal.ofReal 2 * T.boundary.massOn V +
+            ENNReal.ofReal (((1 : NNReal) : ℝ) / (h * (1 - h / 2))) * A h :=
+          Submission.dtc_bc_lc_fd_lz_cutoff_estimate P m U V
+            {x : Euclid P | t₀ - h < ‖x‖ ∧ ‖x‖ < t₀} T R (g h) η 2 _ hR (hgs h h0 h1) hsupp
+            (hg2 h h0 h1) (hgd h h0 h1) (hgS h h0 h1) hη.2
+      _ ≤ 2 * T.boundary.massOn V + 2 * ENNReal.ofReal h⁻¹ * A h := by
+          rw [ENNReal.ofReal_ofNat]
+          gcongr
+      _ = 2 * T.boundary.massOn V + 2 * (ENNReal.ofReal h⁻¹ * A h) := by rw [mul_assoc]
+  -- Step 7: `Φ(h) = ∫ g_h F dν → ∫_{|x| < t₀} F dν = ∂T'(η)` as `h → 0+`
+  have hlim : Tendsto Φ (𝓝[>] 0) (𝓝 (T'.boundary η)) := by
+    rw [hz]
+    exact (Submission.cmcs_smp_cutoff_integral_tendsto P ν F (fun x => ‖x‖) t₀ 2 g hFint
+      measurable_norm (fun h h0 h1 => (hgs h h0 h1).continuous.aestronglyMeasurable) hg2 hg1
+      hg0).congr fun h => (hΦ h).symm
+  -- Step 8: pass to `liminf_{h↓0}`; `y ↦ 2 M_V(∂T) + 2y` is monotone and continuous
+  have hev : ∀ᶠ h in 𝓝[>] (0 : ℝ),
+      ENNReal.ofReal |Φ h| ≤ 2 * T.boundary.massOn V + 2 * (ENNReal.ofReal h⁻¹ * A h) := by
+    filter_upwards [Ioo_mem_nhdsGT one_pos] with h hh
+    exact hest h hh.1 hh.2
+  have hmono : Monotone fun y : ℝ≥0∞ => 2 * T.boundary.massOn V + 2 * y := fun y₁ y₂ hy => by
+    dsimp only
+    gcongr
+  have hcont : Continuous fun y : ℝ≥0∞ => 2 * T.boundary.massOn V + 2 * y :=
+    continuous_const.add (ENNReal.continuous_const_mul ENNReal.ofNat_ne_top)
+  calc ENNReal.ofReal (T'.boundary η) ≤ ENNReal.ofReal |T'.boundary η| :=
+        ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ = liminf (fun h => ENNReal.ofReal |Φ h|) (𝓝[>] 0) :=
+        (ENNReal.tendsto_ofReal hlim.abs).liminf_eq.symm
+    _ ≤ liminf (fun h => 2 * T.boundary.massOn V + 2 * (ENNReal.ofReal h⁻¹ * A h)) (𝓝[>] 0) :=
+        liminf_le_liminf hev
+    _ = 2 * T.boundary.massOn V + 2 * liminf (fun h => ENNReal.ofReal h⁻¹ * A h) (𝓝[>] 0) :=
+        (hmono.map_liminf_of_continuousAt (fun h => ENNReal.ofReal h⁻¹ * A h)
+          hcont.continuousAt).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
