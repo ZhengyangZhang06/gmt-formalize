@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7f8affa65796a512d6bad8da2fbe27989e72a2bb6685fc522563b06b354b5669",
+  "git_delta": {
+    "base_commit": "71d1223139012c519f0d3cc1f041d331fbd65f7c",
+    "candidate_commit": "340093d14b6aa5bb444d914d6ad97046e4b04bf0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_sr_holder_algebra",
+    "diff_sha256": "c369fe2aa7c68bc7b807336102fc82667aa612a9d7542ecbc6fd62668bc7d8a3",
+    "source_sha256": "801b039185e7d796c075e6798ce0b5fb4dc08559ff243ebf00287c68a4dae82d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_sr_holder_algebra",
+      "statement": "∀ (m : ℕ) (α : ℝ) (Ω : Set (Euclid m)), IsOpen Ω → 0 < α → α ≤ 1 → ∀ l : ℕ, (∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (c : E), (ContDiffOn ℝ l (fun _ : Euclid m => c) Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l (fun _ : Euclid m => c) y - iteratedFDeriv ℝ l (fun _ : Euclid m => c) z‖ ≤ C * ‖y - z‖ ^ α)) ∧ (∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (f g : Euclid m → E), (ContDiffOn ℝ l f Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l f y - iteratedFDeriv ℝ l f z‖ ≤ C * ‖y - z‖ ^ α) → (ContDiffOn ℝ l g Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l g y - iteratedFDeriv ℝ l g z‖ ≤ C * ‖y - z‖ ^ α) → (ContDiffOn ℝ l (fun x => f x + g x) Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l (fun x => f x + g x) y - iteratedFDeriv ℝ l (fun x => f x + g x) z‖ ≤ C * ‖y - z‖ ^ α)) ∧ (∀ (E₁ E₂ E₃ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] [NormedAddCommGroup E₃] [NormedSpace ℝ E₃] (β : E₁ →L[ℝ] E₂ →L[ℝ] E₃) (f₁ : Euclid m → E₁) (f₂ : Euclid m → E₂), (ContDiffOn ℝ l f₁ Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l f₁ y - iteratedFDeriv ℝ l f₁ z‖ ≤ C * ‖y - z‖ ^ α) → (ContDiffOn ℝ l f₂ Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l f₂ y - iteratedFDeriv ℝ l f₂ z‖ ≤ C * ‖y - z‖ ^ α) → (ContDiffOn ℝ l (fun x => β (f₁ x) (f₂ x)) Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l (fun x => β (f₁ x) (f₂ x)) y - iteratedFDeriv ℝ l (fun x => β (f₁ x) (f₂ x)) z‖ ≤ C * ‖y - z‖ ^ α)) ∧ (∀ (E₁ E₂ : Type) [NormedAddCommGroup E₁] [NormedSpace ℝ E₁] [NormedAddCommGroup E₂] [NormedSpace ℝ E₂] (Φ : E₁ → E₂) (f : Euclid m → E₁), ContDiff ℝ (⊤ : ℕ∞) Φ → (ContDiffOn ℝ l f Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l f y - iteratedFDeriv ℝ l f z‖ ≤ C * ‖y - z‖ ^ α) → (ContDiffOn ℝ l (fun x => Φ (f x)) Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l (fun x => Φ (f x)) y - iteratedFDeriv ℝ l (fun x => Φ (f x)) z‖ ≤ C * ‖y - z‖ ^ α)) ∧ (∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (f : Euclid m → E), ContDiffOn ℝ (l + 1) f Ω → (ContDiffOn ℝ l f Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l f y - iteratedFDeriv ℝ l f z‖ ≤ C * ‖y - z‖ ^ α)) ∧ (∀ (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (f : Euclid m → E), ContDiffOn ℝ 1 f Ω → ((ContDiffOn ℝ (l + 1) f Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ (l + 1) f y - iteratedFDeriv ℝ (l + 1) f z‖ ≤ C * ‖y - z‖ ^ α) ↔ (ContDiffOn ℝ l (fun x => fderiv ℝ f x) Ω ∧ ∀ x ∈ Ω, ∃ ρ : ℝ, 0 < ρ ∧ ball x ρ ⊆ Ω ∧ ∃ C : ℝ, ∀ y ∈ ball x ρ, ∀ z ∈ ball x ρ, ‖iteratedFDeriv ℝ l (fun x => fderiv ℝ f x) y - iteratedFDeriv ℝ l (fun x => fderiv ℝ f x) z‖ ≤ C * ‖y - z‖ ^ α)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
