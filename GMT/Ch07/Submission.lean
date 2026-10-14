@@ -482,6 +482,39 @@ intersection of the finitely many coordinate neighbourhoods the corner is chosen
 coordinate. -/
 theorem Submission.dimred_mbl_dtsr_cube_cover : ∀ (P : ℕ) (x : Euclid P), ∃ Z : Finset (Fin P → ℤ), (∀ z ∈ Z, ∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1) ∧ ∀ᶠ y : Euclid P in 𝓝 x, ∃ z ∈ Z, ∀ i, (z i : ℝ) ≤ y i ∧ y i ≤ z i + 1 := by
   intro P x
+  classical
+  -- step 1: for `t ∈ ℝ`, the intervals `[k, k + 1] ∋ t` with `k ∈ {⌊t⌋ − 1, ⌊t⌋}` cover a
+  -- neighbourhood of `t`
+  have h1 : ∀ t : ℝ, ∀ᶠ s in 𝓝 t, ∃ k ∈ ({⌊t⌋ - 1, ⌊t⌋} : Finset ℤ),
+      ((k : ℝ) ≤ t ∧ t ≤ k + 1) ∧ (k : ℝ) ≤ s ∧ s ≤ k + 1 := by
+    intro t
+    have hfl : (⌊t⌋ : ℝ) ≤ t := Int.floor_le t
+    have hfl' : t < ⌊t⌋ + 1 := Int.lt_floor_add_one t
+    rcases hfl.lt_or_eq with hlt | heq
+    · -- `t ∉ ℤ`: `[⌊t⌋, ⌊t⌋ + 1]` contains the neighbourhood `(⌊t⌋, ⌊t⌋ + 1)` of `t`
+      filter_upwards [Ioo_mem_nhds hlt hfl'] with s hs
+      exact ⟨⌊t⌋, by simp, ⟨hfl, hfl'.le⟩, hs.1.le, hs.2.le⟩
+    · -- `t ∈ ℤ`: `[t − 1, t] ∪ [t, t + 1]` contains the neighbourhood `(t − 1, t + 1)` of `t`
+      filter_upwards [Ioo_mem_nhds (sub_one_lt t) (lt_add_one t)] with s hs
+      rcases le_total s t with hst | hts
+      · refine ⟨⌊t⌋ - 1, by simp, ?_⟩
+        push_cast
+        exact ⟨⟨by linarith, by linarith⟩, by linarith [hs.1], by linarith⟩
+      · exact ⟨⌊t⌋, by simp, ⟨hfl, hfl'.le⟩, by linarith, by linarith [hs.2]⟩
+  -- step 2: `Z` is the set of corners in `∏ᵢ {⌊xᵢ⌋ − 1, ⌊xᵢ⌋}` whose cube contains `x`
+  let T : Fin P → Finset ℤ := fun i => {⌊x i⌋ - 1, ⌊x i⌋}
+  refine ⟨(Fintype.piFinset T).filter fun z => ∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1,
+    fun z hz => (Finset.mem_filter.mp hz).2, ?_⟩
+  -- step 3: pull the neighbourhoods back along the continuous coordinates `y ↦ yᵢ` and intersect
+  -- the finitely many of them
+  have h3 : ∀ᶠ y : Euclid P in 𝓝 x, ∀ i, ∃ k ∈ T i,
+      ((k : ℝ) ≤ x i ∧ x i ≤ k + 1) ∧ (k : ℝ) ≤ y i ∧ y i ≤ k + 1 :=
+    eventually_all.mpr fun i => ((PiLp.continuous_apply 2 _ i).tendsto x).eventually (h1 (x i))
+  -- step 4: choose the corner coordinate by coordinate
+  filter_upwards [h3] with y hy
+  choose k hkT hk using hy
+  exact ⟨k, Finset.mem_filter.mpr ⟨Fintype.mem_piFinset.mpr hkT, fun i => (hk i).1⟩,
+    fun i => (hk i).2⟩
 /-- Integrability of the pairing `x ↦ ⟨ω(x), ξ(x)⟩`: if `μ` is finite on compact subsets of `U`,
 `ξ` is `μ`-a.e. strongly measurable with `|⟨α, ξ(x)⟩| ≤ |α|` (Euclidean coefficient norm) for
 `μ`-a.e. `x`, and `ω ∈ 𝒟ⁿ(U)`, then `x ↦ ⟨ω(x), ξ(x)⟩` is `μ`-integrable.  The coefficient norm
@@ -840,46 +873,6 @@ theorem Submission.cmcs_wn_removeNth_fiber_sum : ∀ (k P : ℕ) (i₀ : Fin P) 
   -- each of the `k + 1` indices `i` contributes `Σ_{j'} F j'`
   rw [Finset.sum_congr rfl fun i _ => hfib i, Finset.sum_const, Finset.card_univ,
     Fintype.card_fin, nsmul_eq_mul, Nat.cast_add_one]
-/-- **Basis independence of `Σ_j α(b ∘ j)²`** (Simon 6.1): for an `n`-covector `α` on `ℝᴾ` and
-orthonormal bases `b`, `b'` of `ℝᴾ`, `Σ_{j : Fin n → Fin P} α(b_{j 0}, …, b_{j (n-1)})²` is the same
-for `b` and `b'`.  Expand `bᵢ = Σₛ ⟨b'ₛ, bᵢ⟩ b'ₛ` in every slot (multilinearity), square and sum
-over `j`; the `j`-sum factors over the slots, and `Σᵢ ⟨b'ₛ, bᵢ⟩⟨bᵢ, b'ₜ⟩ = ⟨b'ₛ, b'ₜ⟩ = δₛₜ`
-(Parseval for `b`) kills every cross term. -/
-theorem Submission.regcomp_covector_sq_sum_basis_invariant : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (b b' : OrthonormalBasis (Fin P) ℝ (Euclid P)), ∑ j : Fin n → Fin P, (α (fun k => b (j k))) ^ 2 = ∑ j : Fin n → Fin P, (α (fun k => b' (j k))) ^ 2 := by
-  intro P n α b b'
-  classical
-  -- step 1: for `t ∈ ℝ`, the intervals `[k, k + 1] ∋ t` with `k ∈ {⌊t⌋ − 1, ⌊t⌋}` cover a
-  -- neighbourhood of `t`
-  have h1 : ∀ t : ℝ, ∀ᶠ s in 𝓝 t, ∃ k ∈ ({⌊t⌋ - 1, ⌊t⌋} : Finset ℤ),
-      ((k : ℝ) ≤ t ∧ t ≤ k + 1) ∧ (k : ℝ) ≤ s ∧ s ≤ k + 1 := by
-    intro t
-    have hfl : (⌊t⌋ : ℝ) ≤ t := Int.floor_le t
-    have hfl' : t < ⌊t⌋ + 1 := Int.lt_floor_add_one t
-    rcases hfl.lt_or_eq with hlt | heq
-    · -- `t ∉ ℤ`: `[⌊t⌋, ⌊t⌋ + 1]` contains the neighbourhood `(⌊t⌋, ⌊t⌋ + 1)` of `t`
-      filter_upwards [Ioo_mem_nhds hlt hfl'] with s hs
-      exact ⟨⌊t⌋, by simp, ⟨hfl, hfl'.le⟩, hs.1.le, hs.2.le⟩
-    · -- `t ∈ ℤ`: `[t − 1, t] ∪ [t, t + 1]` contains the neighbourhood `(t − 1, t + 1)` of `t`
-      filter_upwards [Ioo_mem_nhds (sub_one_lt t) (lt_add_one t)] with s hs
-      rcases le_total s t with hst | hts
-      · refine ⟨⌊t⌋ - 1, by simp, ?_⟩
-        push_cast
-        exact ⟨⟨by linarith, by linarith⟩, by linarith [hs.1], by linarith⟩
-      · exact ⟨⌊t⌋, by simp, ⟨hfl, hfl'.le⟩, by linarith, by linarith [hs.2]⟩
-  -- step 2: `Z` is the set of corners in `∏ᵢ {⌊xᵢ⌋ − 1, ⌊xᵢ⌋}` whose cube contains `x`
-  let T : Fin P → Finset ℤ := fun i => {⌊x i⌋ - 1, ⌊x i⌋}
-  refine ⟨(Fintype.piFinset T).filter fun z => ∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1,
-    fun z hz => (Finset.mem_filter.mp hz).2, ?_⟩
-  -- step 3: pull the neighbourhoods back along the continuous coordinates `y ↦ yᵢ` and intersect
-  -- the finitely many of them
-  have h3 : ∀ᶠ y : Euclid P in 𝓝 x, ∀ i, ∃ k ∈ T i,
-      ((k : ℝ) ≤ x i ∧ x i ≤ k + 1) ∧ (k : ℝ) ≤ y i ∧ y i ≤ k + 1 :=
-    eventually_all.mpr fun i => ((PiLp.continuous_apply 2 _ i).tendsto x).eventually (h1 (x i))
-  -- step 4: choose the corner coordinate by coordinate
-  filter_upwards [h3] with y hy
-  choose k hkT hk using hy
-  exact ⟨k, Finset.mem_filter.mpr ⟨Fintype.mem_piFinset.mpr hkT, fun i => (hk i).1⟩,
-    fun i => (hk i).2⟩
 /-- **At most `m + 1` coordinates lie near a cube centre** (Simon Ch. 6, Lemma 5.4, closing
 Remark: the cone `K_G` through the centre `b + a` of the cube `b + C` lies in `L*(a)`).  Let
 `d = dist(x, L*(a))`, where `L*(a) = {w : w_i − a_i ∈ ℤ for at least m + 2 indices i}`.  If
@@ -14247,17 +14240,6 @@ theorem Submission.regcomp_covector_sq_sum_basisFun : ∀ (P n : ℕ) (α : Cove
     rw [hperm]
     rcases Int.units_eq_one_or (Equiv.Perm.sign p.2) with h | h <;> simp [h]
 
-/-- **Simon 6.1.2, 6.1.5** in an arbitrary orthonormal basis (the coefficient norm behind
-Remark 6.3.2(3)): for an `n`-covector `α` on `ℝᴾ` and an orthonormal basis `f` of `ℝᴾ`,
-`Σ_{j : Fin n → Fin P} α(f_{j(0)}, …, f_{j(n−1)})² = n! |α|_E²`.  The sum is the same for every
-orthonormal basis (`regcomp_covector_sq_sum_basis_invariant` with `b' = e`, the standard basis),
-and for `e` it is `n! |α|_E²` (`regcomp_covector_sq_sum_basisFun`). -/
-theorem Submission.regcomp_covector_sq_sum_orthonormalBasis : ∀ (P n : ℕ) (α : Covector (Euclid P) n) (f : OrthonormalBasis (Fin P) ℝ (Euclid P)), ∑ j : Fin n → Fin P, (α (fun k => f (j k))) ^ 2 = (n.factorial : ℝ) * covectorEuclideanNorm α ^ 2 := by
-  intro P n α f
-  rw [Submission.regcomp_covector_sq_sum_basis_invariant P n α f
-    (EuclideanSpace.basisFun (Fin P) ℝ)]
-  exact Submission.regcomp_covector_sq_sum_basisFun P n α
-
 /-- **Simon 6.1.8** (the pull-back estimate behind the mass bound of Lemma 6.2.29): for a linear
 map `A : ℝᴺ → ℝᴺ'` and a `k`-covector `β` on `ℝᴺ'`, the pull-back `A^#β = β(A ·, …, A ·)` satisfies
 `|A^#β|_E ≤ ‖A‖ᵏ |β|_E`.  With the standard bases `e`, `e'` and `S_b(γ) = Σ_j γ(b ∘ j)²` over all
@@ -22261,32 +22243,6 @@ theorem Submission.cmcs_slice_mass_pointwise : ∀ (P k : ℕ) (U : Set (Euclid 
   exact (Submission.cmcs_cutoff_defect_bound P k U T μ μ' ξ ξ' (g h) η hξ hT hbT hgs).trans
     (Submission.cmcs_smp_strip_lintegral_le P k μ (g h) (η : DifferentialForm (Euclid P) k) W
       {x | t - h < f x ∧ f x < t} _ hgd hgS hηW hη1)
-/-- **Lebesgue's inequality for monotone functions** (Simon Ch. 6, remark before 4.10): if `F` is
-nondecreasing, then `∫⁻_{(a,b)} F′ ≤ F(b) − F(a)`.  Let `G = F(·⁺)` be the Stieltjes function of
-`F`, with measure `μ_G`; then `μ_G (a, b) = G(b⁻) − G(a) ≤ F(b) − F(a)`.  By Lebesgue's theorem
-(`Monotone.ae_hasDerivAt`), `F′ = dμ_G/dt` a.e., and `∫⁻_{(a,b)} dμ_G/dt ≤ μ_G (a, b)` since
-`(dμ_G/dt) dt ≤ μ_G` (Lebesgue decomposition). -/
-theorem Submission.cmcs_smi_lintegral_ofReal_deriv_le : ∀ (F : ℝ → ℝ) (a b : ℝ), Monotone F → ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t) ≤ ENNReal.ofReal (F b - F a) := by
-  intro F a b hF
-  set G := hF.stieltjesFunction
-  -- `F(a) ≤ F(a⁺) = G(a)`, and `G(b⁻) ≤ F(b)` because `G(y) = F(y⁺) ≤ F(b)` for `y < b`
-  have hGa : F a ≤ G a := hF.le_rightLim le_rfl
-  have hGb : leftLim G b ≤ F b := by
-    refine le_of_tendsto (G.mono.tendsto_leftLim b) ?_
-    filter_upwards [self_mem_nhdsWithin] with y (hy : y < b)
-    exact hF.rightLim_le hy
-  calc ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t)
-      ≤ ∫⁻ t in Ioo a b, G.measure.rnDeriv volume t := by
-        -- a.e. `F′(t) = (dμ_G/dt)(t).toReal`
-        refine lintegral_mono_ae (ae_restrict_of_ae ?_)
-        filter_upwards [hF.ae_hasDerivAt] with t ht
-        rw [ht.deriv]
-        exact ENNReal.ofReal_toReal_le
-    _ ≤ volume.withDensity (G.measure.rnDeriv volume) (Ioo a b) := withDensity_apply_le _ _
-    _ ≤ G.measure (Ioo a b) := Measure.le_iff'.1 (Measure.withDensity_rnDeriv_le _ _) _
-    _ = ENNReal.ofReal (leftLim G b - G a) := G.measure_Ioo
-    _ ≤ ENNReal.ofReal (F b - F a) := ENNReal.ofReal_le_ofReal (by linarith)
-
 /-- **Simon Ch. 6, remark before 4.10** (integrated lower left Dini derivative).  For monotone
 `F : ℝ → ℝ`, the lower integral over `(a, b)` of `D(t) = liminf_{h → 0+} (F(t) - F(t - h)) / h`
 is at most `F(b) - F(a)`.  `F` is differentiable a.e. (Lebesgue), and at a point of
