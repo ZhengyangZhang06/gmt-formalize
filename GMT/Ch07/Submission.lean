@@ -451,6 +451,25 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Change of variables for the dilation `η_{x,λ}(y) = λ⁻¹(y − x)`, `λ > 0`** (the `λⁿ`
+scaling of Lebesgue measure under `η_{x,λⱼ}` in the proof of Simon 7.3.1, (1),
+chapter-07.txt lines 326–335).  For every `F : ℝᴾ → ℝ`, with no measurability or integrability
+assumption (a non-integrable function has integral `0`), `∫ F(η_{x,λ}(y)) dy = λᴾ ∫ F(z) dz`:
+`F ∘ η_{x,λ} = G(· − x)` with `G = F(λ⁻¹ ·)`, Lebesgue measure is translation invariant, and
+`∫ F(λ⁻¹y) dy = λ^{dim ℝᴾ} ∫ F = λᴾ ∫ F` (Haar scaling). -/
+theorem Submission.dtc_bc_cz_blowUp_eval_integral_dilation : ∀ (P : ℕ) (F : Euclid P → ℝ) (x : Euclid P) (lam : ℝ), 0 < lam → ∫ y, F (dilation x lam y) = lam ^ P * ∫ z, F z := by
+  intro P F x lam hlam
+  -- Step 1: `η_{x,λ}(y) = −λ⁻¹x + λ⁻¹y = λ⁻¹(y − x)`.
+  have hη : ∀ y, dilation x lam y = lam⁻¹ • (y - x) := by
+    intro y
+    simp [dilation, dilationCLM, sub_eq_neg_add]
+  simp_rw [hη]
+  -- Step 2: translation invariance, `∫ G(y − x) dy = ∫ G(y) dy` for `G = F(λ⁻¹ ·)`.
+  rw [integral_sub_right_eq_self (fun y => F (lam⁻¹ • y)) x]
+  -- Step 3: Haar scaling `∫ F(λ⁻¹y) dy = λ^{finrank ℝᴾ} ∫ F` (`λ ≥ 0`), and `finrank ℝᴾ = P`.
+  rw [Measure.integral_comp_inv_smul_of_nonneg volume F hlam.le, finrank_euclideanSpace_fin,
+    smul_eq_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
