@@ -498,6 +498,74 @@ theorem Submission.dimred_mbl_dt_cbm_sp_segment_bound : ∀ (n : ℕ) (v : Eucli
           exact (fderiv ℝ v (p t)).le_opNorm (x - y)
     _ = ‖x - y‖ * ∫ t in (0 : ℝ)..1, ‖fderiv ℝ v (p t)‖ :=
         intervalIntegral.integral_const_mul _ _
+/-- **Slice bound on a convex set.**  For convex measurable `Q ⊆ ℝⁿ`, measurable `g ≥ 0` and
+`t ∈ [0, 1]`, `∫_Q ∫_Q g((1 − t)y + tx) dy dx ≤ 2ⁿ Lⁿ(Q) ∫_Q g`.  If `s ≥ 1/2` and `c + sQ ⊆ Q`,
+the Haar scaling `v ↦ sv` and translation invariance give
+`∫_Q g(c + sv) dv ≤ ∫ (1_Q g)(c + sv) dv = s⁻ⁿ ∫_Q g ≤ 2ⁿ ∫_Q g`.  By convexity of `Q`, this applies
+in `y` (`c = tx`, `s = 1 − t`) when `t ≤ 1/2`, and in `x` after Tonelli (`c = (1 − t)y`, `s = t`)
+when `t ≥ 1/2`; integrating the constant bound over `Q` gives the claim. -/
+theorem Submission.dimred_mbl_dt_cbm_sp_convex_slice_bound : ∀ (n : ℕ) (Q : Set (Euclid n)) (g : Euclid n → ℝ≥0∞), Convex ℝ Q → MeasurableSet Q → Measurable g → ∀ t ∈ Icc (0 : ℝ) 1, ∫⁻ x in Q, ∫⁻ y in Q, g ((1 - t) • y + t • x) ≤ 2 ^ n * volume Q * ∫⁻ z in Q, g z := by
+  intro n Q g hQc hQm hg t ht
+  obtain ⟨ht0, ht1⟩ := ht
+  -- One-variable bound: if `s ≥ 1/2` and `c + s • Q ⊆ Q`, then `∫_Q g(c + s v) dv ≤ 2ⁿ ∫_Q g`.
+  have key : ∀ (c : Euclid n) (s : ℝ), 1 / 2 ≤ s →
+      (∀ v ∈ Q, c + s • v ∈ Q) →
+      ∫⁻ v in Q, g (c + s • v) ≤ 2 ^ n * ∫⁻ z in Q, g z := by
+    intro c s hs hcs
+    have hs0 : 0 < s := by linarith
+    obtain ⟨F, hFdef⟩ : ∃ F : Euclid n → ℝ≥0∞, F = Q.indicator g := ⟨_, rfl⟩
+    have hF : Measurable F := hFdef ▸ hg.indicator hQm
+    -- change of variables `v ↦ s • v` (Haar scaling) followed by translation invariance
+    have hcv : ∫⁻ v, F (c + s • v) = ENNReal.ofReal |(s ^ n)⁻¹| * ∫⁻ z, F z := by
+      have h1 : ∫⁻ w, F (c + w) ∂(Measure.map (fun v : Euclid n => s • v) volume)
+          = ∫⁻ v, F (c + s • v) :=
+        lintegral_map (hF.comp (measurable_const_add c)) (measurable_const_smul s)
+      rw [← h1, Measure.map_addHaar_smul volume hs0.ne', lintegral_smul_measure,
+        lintegral_add_left_eq_self F c, finrank_euclideanSpace_fin, smul_eq_mul]
+    have hs2 : s⁻¹ ≤ 2 := by
+      rw [inv_le_comm₀ hs0 two_pos]
+      linarith
+    calc ∫⁻ v in Q, g (c + s • v)
+        = ∫⁻ v in Q, F (c + s • v) := by
+          refine setLIntegral_congr_fun hQm fun v hv => ?_
+          rw [hFdef, Set.indicator_of_mem (hcs v hv)]
+      _ ≤ ∫⁻ v, F (c + s • v) := setLIntegral_le_lintegral _ _
+      _ = ENNReal.ofReal |(s ^ n)⁻¹| * ∫⁻ z in Q, g z := by
+          rw [hcv, hFdef, lintegral_indicator hQm]
+      _ ≤ 2 ^ n * ∫⁻ z in Q, g z := by
+          gcongr
+          calc ENNReal.ofReal |(s ^ n)⁻¹| = ENNReal.ofReal s⁻¹ ^ n := by
+                rw [abs_of_pos (by positivity), ← inv_pow, ENNReal.ofReal_pow (by positivity)]
+            _ ≤ ENNReal.ofReal 2 ^ n := by gcongr
+            _ = 2 ^ n := by rw [ENNReal.ofReal_ofNat]
+  -- the integrand is jointly measurable
+  have hmeas : Measurable (fun p : Euclid n × Euclid n => g ((1 - t) • p.2 + t • p.1)) :=
+    hg.comp (by fun_prop)
+  rcases le_total (1 / 2 : ℝ) t with h | h
+  · -- `t ≥ 1/2`: Tonelli, then change variables in `x` with `c = (1 - t) • y`, `s = t`
+    rw [lintegral_lintegral_swap (f := fun x y => g ((1 - t) • y + t • x)) hmeas.aemeasurable]
+    calc ∫⁻ y in Q, ∫⁻ x in Q, g ((1 - t) • y + t • x)
+        ≤ ∫⁻ _ in Q, 2 ^ n * ∫⁻ z in Q, g z := by
+          refine setLIntegral_mono' hQm fun y hy => ?_
+          refine key ((1 - t) • y) t h fun v hv => ?_
+          exact hQc hy hv (by linarith) ht0 (by ring)
+      _ = 2 ^ n * volume Q * ∫⁻ z in Q, g z := by
+          rw [setLIntegral_const]
+          ring
+  · -- `t ≤ 1/2`: change variables in `y` with `c = t • x`, `s = 1 - t`
+    calc ∫⁻ x in Q, ∫⁻ y in Q, g ((1 - t) • y + t • x)
+        ≤ ∫⁻ _ in Q, 2 ^ n * ∫⁻ z in Q, g z := by
+          refine setLIntegral_mono' hQm fun x hx => ?_
+          calc ∫⁻ y in Q, g ((1 - t) • y + t • x)
+              = ∫⁻ y in Q, g (t • x + (1 - t) • y) :=
+                lintegral_congr fun y => by rw [add_comm]
+            _ ≤ 2 ^ n * ∫⁻ z in Q, g z := by
+                refine key (t • x) (1 - t) (by linarith) fun v hv => ?_
+                rw [add_comm]
+                exact hQc hv hx (by linarith) ht0 (by ring)
+      _ = 2 ^ n * volume Q * ∫⁻ z in Q, g z := by
+          rw [setLIntegral_const]
+          ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
