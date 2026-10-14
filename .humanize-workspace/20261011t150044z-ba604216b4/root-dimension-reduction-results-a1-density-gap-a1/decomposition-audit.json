@@ -1,0 +1,125 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'def (IsMinimizingIn|BoundaryVanishes|IsConeCurrent|HasMassDensity|regularSet|IsIntegerMultiplicity)|structure IMRep|def (measure|firstVariation)' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "dimred_cdg_|cone_current_imrep_measure_smul_image|dor_imrep_massOn_eq_measure_and_support|imrep_approxTangent_starProjection_aesm|covectorEuclideanNorm_gram_bounds|dor_graph_supported_cycle_regular",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|ae_hausdorff_dimensionalUpperDensity_le_one|simonHausdorffMeasureReal_nat_eq_smul_euclideanHausdorffMeasure|weighted_area_formula_lipschitz_injOn|area_image_compl_regularSet_eq_zero|simon_theorem_3_6|ae_eq_const_of_weak_coordinate_derivatives_zero",
+        "integral_lineDeriv_mul_eq",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/dg8/lean/Types.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/dg8/lean/Assembly.lean",
+        "PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:$PATH lake env lean /tmp/dg8/lean/OriginRegular.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-density-gap-a1/decomposition-v8.json",
+        "/tmp/dg8/lean/Types.lean",
+        "/tmp/dg8/lean/Assembly.lean",
+        "/tmp/dg8/lean/HighDegreeZero.lean",
+        "/tmp/dg8/lean/ConeBallMass.lean",
+        "/tmp/dg8/lean/OriginRegular.lean",
+        "/tmp/dg8/lean/HarmonicConclusion.lean",
+        "/tmp/dg8-review-candidates/e183b985f8baf48aa0fe07ee8e978c1474ec9d0a.lean",
+        "/tmp/dg8-review-candidates/d49dda91b75b7417d67a10053e6dc4b65d4f0312.lean",
+        "/tmp/dg8-review-candidates/36b2d372040645171f355c68541910ce3ab4bab8.lean",
+        "/tmp/dg8-review-candidates/2fd8f6ff9db8d5c94835632a4abd3e7d37106715.lean",
+        "/tmp/dg8-review-candidates/8a6855aa8803ff6f7de32b5a809497f6953347c4.lean",
+        "/tmp/dg8-review-candidates/428db72e1193239539dd7db69ca6e5efbf4472c8.lean",
+        "/tmp/dg8-review-candidates/4d9f2899c19743fcbb67ddcf158a7f37390c657b.lean"
+      ],
+      "conclusion": "The pinned revisions match, and the snapshot contract is byte-identical to the workspace contract and submission. All twelve frozen propositions elaborate independently and match their prose; all names are bare identifiers. No proposed fresh name occurs in the searched sources or reserves another DAG node's name. The five reused declarations have identical frozen types and comparator acceptance. Their freshly compiled proofs, the accepted regular-point-density and first-variation declarations, and the checked conditional proofs depend only on propext, Classical.choice and Quot.sound. The reused/resolved dependency closure contains 73 accepted nodes, is acyclic, and excludes the selected parent. The split is appropriate: cone homogeneity permits the direct Allard route, and the supplied assembly proves exactly Submission.dimred_cone_density_gap using δ = min(δ₀, 1), with the high-degree case handled separately. The Allard statement agrees with [Simon's Chapter 5, Theorem 5.2](https://web.stanford.edu/class/math285/ts-gmt). Type and conditional-assembly checks do not constitute completed Lean proofs of the remaining analytic children."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "high_degree_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the arbitrary-domain statement. Linear dependence annihilates every alternating covector, hence every test form and current. The supplied proof also compiles outright."
+    },
+    {
+      "key": "cone_homogeneity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse is verified. The rescaled representation, Hausdorff change of variables, cone identity and already-accepted measure uniqueness establish the asserted homogeneity, including degree zero."
+    },
+    {
+      "key": "imrep_mass_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse is verified. Unit-orientation duality gives the upper bound; approximation by admissible smooth forms gives the lower bound. The zero-region argument yields precisely U ∩ support μ, without requiring W ⊆ U."
+    },
+    {
+      "key": "cone_ball_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two declared prerequisites imply all three conclusions. Positive finite unit-ball volume justifies ENNReal cancellation and density uniqueness; positive density forces positive measure in every vertex neighbourhood. The exact conditional proof compiles."
+    },
+    {
+      "key": "tangent_projection_aesm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse is verified. Tangent uniqueness identifies the plane almost everywhere; the continuous quotient construction recovers its projection measurably from the orientation. Degree zero is covered."
+    },
+    {
+      "key": "covector_gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse is verified. Alternating expansion, Cauchy–Binet and Cauchy–Schwarz prove the bound, and the determinant covector provides equality on an orthonormal frame. The inline Gram matrix correctly uses Matrix.of."
+    },
+    {
+      "key": "c1_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and integral formula match exactly. Global invertibility, compact support, current continuity, boundary preservation by smooth approximation, tangent transport, area transport and normalized orientation are justified. The partition radius and degree-zero case are explicitly covered; no unaccepted external declaration is assumed."
+    },
+    {
+      "key": "first_variation_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh name is unreserved and the proposition matches the prose. The uniform Gram-Jacobian estimate, measurable integrable domination and vanishing outside W yield the stated mass supremum bound. The independently checked accepted proof of the identical type provides additional confirmation."
+    },
+    {
+      "key": "harmonic_affine",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied MV, IE, WL, PI, RC, EL and HA arguments form a non-circular proof, including boundary-layer compactness and energy control of the harmonic limit. Scaling and the final estimates give exactly the stated quantifier order and one affine pair valid for every permitted θ′."
+    },
+    {
+      "key": "allard_graph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and Lean type agree, including arbitrary U, local open W, closed-ball mass control and open-ball graph equality. The proof supplies monotonicity, density bounds, affine/Lipschitz approximation, harmonic normalization, excess decay and iteration. The corrected radii and enlarged A⁺ cover the Campanato argument; dependencies are directed correctly."
+    },
+    {
+      "key": "graph_cycle_regular",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse is verified. The graph chart, tangent identification, orientation and area formula reduce the cycle condition to distributional constancy. The support hypothesis excludes zero multiplicity, and restriction to a smaller graph supplies every regularSet requirement."
+    },
+    {
+      "key": "origin_regularity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact conditional proof compiles from the five listed prerequisites. Admissible compactly supported competitors establish stationarity; the open-ball estimates imply the required closed-ball bound. Allard's graph is converted to the cylinder contract, yielding regularity with δ chosen before C. This directly supports the selected density-gap assembly."
+    }
+  ],
+  "required_changes": []
+}
