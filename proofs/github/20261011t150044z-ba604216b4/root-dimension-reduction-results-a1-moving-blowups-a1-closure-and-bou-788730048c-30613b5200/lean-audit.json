@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ac6f8fc3dc91f7fc6fea9887348fad5ca7925606cd0558aa83b729535274132a",
+  "git_delta": {
+    "base_commit": "354e30f4d52fc1a6954c977514830fb364c462ba",
+    "candidate_commit": "6f9100d721b7613dac4bc4fbc3fed341f5ed3c54",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbr_sl_isIntegerMultiplicity_of_liminf_bounded",
+    "diff_sha256": "56a4743015c21e066a690eaad91c20af9764d333fd8eafc173eaee2df911406a",
+    "source_sha256": "9c120c9ae0333dfcd54d0326d05b14c10a8af9f1c648a769a1739aef3061db12",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_sl_isIntegerMultiplicity_of_liminf_bounded",
+      "statement": "∀ d : ℕ, (∀ (P : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) → (∀ (P : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U d), IsOpen U → ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → X.massOn W < ∞) → (∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ ∃ h : ball x r ⊆ U, IsIntegerMultiplicity (X.restrictDomain h)) → IsIntegerMultiplicity X) ∧ (∀ (V : Set (Euclid P)) (h : V ⊆ U), IsOpen V → IsIntegerMultiplicity X → IsIntegerMultiplicity (X.restrictDomain h))) → ∀ (P : ℕ) (Zs : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) d) (Z : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ i, IsIntegerMultiplicity (Zs i)) → WeaklyConvergesOn Zs Z → (∀ k : ℕ, liminf (fun i => (Zs i).massOn (ball (0 : Euclid P) k) + boundaryMassOn (Zs i) (ball (0 : Euclid P) k)) atTop < ∞) → IsIntegerMultiplicity Z",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
