@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1.integer_median_exists-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1",
+  "depth": 6,
+  "title": "An integer-valued function on a probability space has an integer median",
+  "statement": "Let X be a measurable space (X : Type) and μ a probability measure on X. Let u : X → ℝ be μ-a.e.-measurable with u(x) ∈ ℤ for every x ∈ X. Then there is β ∈ ℤ with μ{x : β ≤ u(x)} ≥ 1/2 and μ{x : u(x) ≤ β} ≥ 1/2. Here μ(A) denotes the real number μ.real A = (μ A).toReal, and 1/2 is the real number one half.",
+  "lean_statement": "∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ), IsProbabilityMeasure μ → AEMeasurable u μ → (∀ x, ∃ z : ℤ, u x = z) → ∃ β : ℤ, 1 / 2 ≤ μ.real {x | (β : ℝ) ≤ u x} ∧ 1 / 2 ≤ μ.real {x | u x ≤ (β : ℝ)}",
+  "lean_name": "dimred_mbl_dt_cbm_im_integer_median_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-6354e2bf94-a1"
+}
