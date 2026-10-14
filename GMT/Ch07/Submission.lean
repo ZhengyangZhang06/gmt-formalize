@@ -3875,24 +3875,6 @@ theorem Submission.dor_lmb_pc_cm_vector_density_add : ∀ (P n : ℕ) (U : Set (
   -- Step 5: combine with step 1
   rw [hxR, hx']
   simp only [Int.cast_one, one_smul]
-/-- Simon 6.3.1: `Hⁿ`-a.e. on `M` the orientation `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` of an integer
-multiplicity triple is a unit simple `n`-vector (`τ` orthonormal), so every `n`-covector `β`
-satisfies `|⟨β, ξ(x)⟩| = |β(τ₁, …, τₙ)| ≤ ‖β‖ ∏ᵢ ‖τᵢ‖ = ‖β‖` (operator norm). -/
-theorem Submission.dpf_pfc_imrep_orient_abs_apply_le : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ β : Covector (Euclid P) n, |R.orient x β| ≤ ‖β‖ := by
-  intro P n U R
-  filter_upwards [R.orients] with x hx β
-  -- `ξ(x)` is `±` evaluation at an orthonormal frame `τ`
-  obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
-  have hβ : |β τ| ≤ ‖β‖ :=
-    calc |β τ| = ‖β τ‖ := (Real.norm_eq_abs _).symm
-      _ ≤ ‖β‖ * ∏ i, ‖τ i‖ := β.le_opNorm τ
-      _ = ‖β‖ := by rw [Finset.prod_eq_one fun i _ => hτ.1 i, mul_one]
-  rcases hξ with h | h
-  · rw [h β]
-    exact hβ
-  · rw [h β, abs_neg]
-    exact hβ
-
 /-- **Simon Ch. 6, Definition 3.1, from an integer density**: let `N ⊆ U` be Borel and countably
 `n`-rectifiable with `Hⁿ(N ∩ K) < ∞` for compact `K ⊆ U`, let `η` orient the approximate tangent
 spaces of `N` `Hⁿ`-a.e. on `N`, and let `m` be integer-valued with `∫_{N ∩ K} |m| dHⁿ < ∞` for
@@ -5773,9 +5755,6 @@ theorem Submission.approxTangent_le_submanifold_tangentSpace : ∀ (P n d : ℕ)
     hprop hDψ hv]
   intro w hw
   exact LinearMap.mem_range.1 (hQA hw)
-  -- Step 9: `|∫ h dμ| ≤ ∫ g dμ`
-  rw [← Real.norm_eq_abs, ← hgval]
-  exact norm_integral_le_of_norm_le hg hdom
 
 /-- **Additivity of the pairing with a bounded field** (the identity
 `∫ ⟨φ, ν_Y⟩ dHⁿ = ∫ ⟨φ, ν_Z + ν_X⟩ dHⁿ` in the competitor mass bound of Simon 7.2.4 (8)–(9)).
