@@ -4464,6 +4464,101 @@ theorem Submission.cbr_isIntegerMultiplicity_of_local_reps : (∀ (P n : ℕ) (U
   -- Step 4: the glued triple represents `X`: `R'.action ω = ∫ ⟨ω, ξ⟩ dμ = X(ω)`
   refine ⟨R', fun ω => ?_⟩
   rw [hX ω, (Submission.cbr_imRep_measure_basic P k U R').2.2.2.2.2.2, hR'o, hR'μ]
+/-- **Simon Ch. 6, 1.2 (p. 132)**: `Λⁿ(ℝᴾ)` is finite-dimensional.  An `n`-covector `α` is
+determined by its values `α(e_{I(1)}, …, e_{I(n)})` on tuples of standard basis vectors
+(alternating maps agreeing on distinct basis vectors are equal), so
+`Φ α = (α(e ∘ I))_{I : Fin n → Fin P}` is an injective linear map into the finite-dimensional
+space `ℝ^(Fin n → Fin P)`. -/
+theorem Submission.lcn_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n) := by
+  intro P n
+  -- the standard basis `e` of `ℝᴾ`
+  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  -- `Φ α = (α(e ∘ I))_I`, linear since addition and scaling of covectors are pointwise
+  let Φ : Covector (Euclid P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
+    { toFun := fun α I => α fun i => e (I i)
+      map_add' := fun α β => rfl
+      map_smul' := fun c α => rfl }
+  -- `Φ α = Φ β` makes `α` and `β` agree on distinct basis vectors, hence everywhere
+  refine FiniteDimensional.of_injective Φ fun α β h => ?_
+  exact ContinuousAlternatingMap.toAlternatingMap_injective
+    (e.ext_alternating fun v _ => congr_fun h v)
+
+/-- **Equal set integrals against all test forms of an open `B` determine the orientation a.e.
+on `B`** (orientation step of the locality of integer multiplicity).  On `E ⊆ B`,
+`μ₂⌞E = (μ₂⌞B)⌞E = (μ₁⌞B)⌞E = μ₁⌞E`.  Fix a covector `α` and a compact `K ⊆ B`.  A smooth
+Urysohn function `φ` with `φ = 1` on `K` and `tsupport φ` compact in `B` gives the test form
+`ω = φ α ∈ 𝒟ᵏ(B)`, equal to `α` on `K`; so for Borel `s`, `∫_s ξ₁(α) d(μ₁⌞K) = ∫_{s∩K} ξ₁(ω) dμ₁
+= ∫_{s∩K} ξ₂(ω) dμ₂ = ∫_s ξ₂(α) d(μ₁⌞K)`.  Both evaluations are bounded by `|α|` and `μ₁(K) < ∞`,
+so they are `μ₁⌞K`-integrable and uniqueness of densities gives `ξ₁(α) = ξ₂(α)` `μ₁`-a.e. on `K`.
+Testing on a finite basis of covectors (`Λᵏ` is finite-dimensional,
+`Submission.lcn_covector_finiteDimensional`) gives `ξ₁ = ξ₂` `μ₁`-a.e. on `K`; each point of
+`B` has a closed-ball neighbourhood `K ⊆ B`, and `μ₁`-null sets are local
+(`measure_null_of_locally_null`, `ℝᴾ` second countable). -/
+theorem Submission.cbr_orient_ae_eq_of_setIntegral_eq : ∀ (P k : ℕ) (B : Set (Euclid P)) (μ₁ μ₂ : Measure (Euclid P)) (ξ₁ ξ₂ : Euclid P → MultiVector P k), IsOpen B → (∀ K : Set (Euclid P), IsCompact K → K ⊆ B → μ₁ K < ∞) → μ₁.restrict B = μ₂.restrict B → AEStronglyMeasurable ξ₁ μ₁ → AEStronglyMeasurable ξ₂ μ₂ → (∀ᵐ x ∂μ₁, ∀ α : Covector (Euclid P) k, |ξ₁ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₂, ∀ α : Covector (Euclid P) k, |ξ₂ x α| ≤ covectorEuclideanNorm α) → (∀ (E : Set (Euclid P)) (ω : TestFormOn B k), MeasurableSet E → ∫ x in E, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x in E, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂) → ∀ᵐ x ∂μ₁, x ∈ B → ξ₁ x = ξ₂ x := by
+  intro P k B μ₁ μ₂ ξ₁ ξ₂ hB hfin hres hm₁ hm₂ hb₁ hb₂ hint
+  -- Step 1: on `E ⊆ B`, `μ₂⌞E = (μ₂⌞B)⌞E = (μ₁⌞B)⌞E = μ₁⌞E`
+  have hrestr : ∀ E : Set (Euclid P), E ⊆ B → μ₂.restrict E = μ₁.restrict E := fun E hEB => by
+    rw [← Measure.restrict_restrict_of_subset hEB, ← hres, Measure.restrict_restrict_of_subset hEB]
+  -- Step 2: for a covector `α` and a compact `K ⊆ B`, `ξ₁(α) = ξ₂(α)` holds `μ₁⌞K`-a.e.
+  have hcov : ∀ K : Set (Euclid P), IsCompact K → K ⊆ B → ∀ α : Covector (Euclid P) k,
+      ∀ᵐ y ∂μ₁.restrict K, ξ₁ y α = ξ₂ y α := by
+    intro K hKc hKB α
+    have hKm : MeasurableSet K := hKc.isClosed.measurableSet
+    -- a smooth cut-off `φ`, `φ = 1` on `K`, with `tsupport φ = closure V` compact in `B`
+    obtain ⟨V, hVo, hKV, hVB, hVc⟩ := exists_open_between_and_isCompact_closure hKc hB hKB
+    obtain ⟨φ, hφ, -, hφs, hφ1⟩ :=
+      exists_contDiff_support_eq_eq_one_iff (n := ⊤) hVo hKc.isClosed hKV
+    have hts : tsupport φ = closure V := by rw [tsupport, hφs]
+    -- the test form `ω = φ α ∈ 𝒟ᵏ(B)`: smooth, `tsupport ω ⊆ tsupport φ = closure V`
+    have hωφ : tsupport (fun y => φ y • α : DifferentialForm (Euclid P) k) ⊆ closure V :=
+      (tsupport_smul_subset_left φ fun _ => α).trans hts.subset
+    have hω : (fun y => φ y • α : DifferentialForm (Euclid P) k) ∈ testFormOnSubmodule B k :=
+      ⟨⟨hφ.smul (contDiff_const (c := α)), hVc.of_isClosed_subset (isClosed_tsupport _) hωφ⟩,
+        hωφ.trans hVB⟩
+    -- `ξ₁(α)`, `ξ₂(α)` are a.e. strongly measurable and bounded by `|α|`, `μ₁ K = μ₂ K < ∞`
+    have hK₁ : μ₁ K ≠ ∞ := (hfin K hKc hKB).ne
+    have hK₂ : μ₂ K ≠ ∞ :=
+      calc μ₂ K = μ₂.restrict K univ := (Measure.restrict_apply_univ K).symm
+        _ = μ₁.restrict K univ := by rw [hrestr K hKB]
+        _ = μ₁ K := Measure.restrict_apply_univ K
+        _ ≠ ∞ := hK₁
+    have hf : Integrable (fun y => ξ₁ y α) (μ₁.restrict K) :=
+      Measure.integrableOn_of_bounded hK₁ (hm₁.apply_continuousLinearMap α)
+        ((ae_restrict_of_ae hb₁).mono fun y hy => (Real.norm_eq_abs _).trans_le (hy α))
+    have hg : Integrable (fun y => ξ₂ y α) (μ₁.restrict K) := by
+      rw [← hrestr K hKB]
+      exact Measure.integrableOn_of_bounded hK₂ (hm₂.apply_continuousLinearMap α)
+        ((ae_restrict_of_ae hb₂).mono fun y hy => (Real.norm_eq_abs _).trans_le (hy α))
+    -- equal set integrals for `μ₁⌞K`: on `s ∩ K`, `ω = α`
+    refine Integrable.ae_eq_of_forall_setIntegral_eq _ _ hf hg fun s hs _ => ?_
+    have hsK : MeasurableSet (s ∩ K) := hs.inter hKm
+    have heq : ∀ ξ : Euclid P → MultiVector P k,
+        EqOn (fun y => ξ y α) (fun y => ξ y (φ y • α)) (s ∩ K) := fun ξ y hy => by
+      show ξ y α = ξ y (φ y • α)
+      rw [(hφ1 y).1 hy.2, one_smul]
+    rw [Measure.restrict_restrict hs]
+    calc ∫ y in s ∩ K, ξ₁ y α ∂μ₁ = ∫ y in s ∩ K, ξ₁ y (φ y • α) ∂μ₁ :=
+          setIntegral_congr_fun hsK (heq ξ₁)
+      _ = ∫ y in s ∩ K, ξ₂ y (φ y • α) ∂μ₂ := hint (s ∩ K) ⟨_, hω⟩ hsK
+      _ = ∫ y in s ∩ K, ξ₂ y (φ y • α) ∂μ₁ := by
+          rw [hrestr (s ∩ K) (inter_subset_right.trans hKB)]
+      _ = ∫ y in s ∩ K, ξ₂ y α ∂μ₁ := (setIntegral_congr_fun hsK (heq ξ₂)).symm
+  -- Step 3: on a compact `K ⊆ B`, test on a basis of the finite-dimensional `Λᵏ`
+  have := Submission.lcn_covector_finiteDimensional P k
+  let b := Module.finBasis ℝ (Covector (Euclid P) k)
+  have hK : ∀ K : Set (Euclid P), IsCompact K → K ⊆ B → ∀ᵐ y ∂μ₁, y ∈ K → ξ₁ y = ξ₂ y := by
+    intro K hKc hKB
+    refine (ae_restrict_iff' hKc.isClosed.measurableSet).1 ?_
+    filter_upwards [ae_all_iff.2 fun i => hcov K hKc hKB (b i)] with y hy
+    exact ContinuousLinearMap.coe_injective (b.ext hy)
+  -- Step 4: each `x ∈ B` has a closed-ball neighbourhood `K ⊆ B`; null sets are local
+  refine ae_iff.2 (measure_null_of_locally_null _ fun x hx => ?_)
+  have hx' : ¬(x ∈ B → ξ₁ x = ξ₂ x) := hx
+  obtain ⟨ε, hε, hεB⟩ := Metric.isOpen_iff.1 hB x (not_imp.1 hx').1
+  refine ⟨_, inter_mem_nhdsWithin _ (closedBall_mem_nhds x (half_pos hε)),
+    measure_mono_null ?_ (ae_iff.1 (hK _ (isCompact_closedBall x (ε / 2))
+      ((closedBall_subset_ball (half_lt_self hε)).trans hεB)))⟩
+  exact fun y hy h => hy.1 fun _ => h hy.2
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
