@@ -4033,6 +4033,78 @@ theorem Submission.cmcdt_im_series : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : 
   rw [hWR]
   exact hR' ω
 
+/-- **Integer density on one injective Lipschitz piece** (Simon Ch. 6, 3.6–3.9: the multiplicity
+of `f#T` on a piece where `f` is injective).  Let `H : ℝⁿ → ℝᴾ` be `L`-Lipschitz, injective on the
+Borel set `B` with injective `DH(u)` at every `u ∈ B`, and let `g : ℝⁿ → ℤ` be integrable and
+nonzero on `B`.  With `h` a Borel inverse of `H|B` (Lusin–Souslin), `m = 1_{H(B)} · (g ∘ h)` is
+Borel, integer-valued and `m ∘ H = g` on `B`.  For injective linear `A`, the area formula on the
+unit ball and `Hⁿ(A(S)) ≤ ‖A‖ⁿ Hⁿ(S)` give `JA ≤ ‖A‖ⁿ`; as `‖DH‖ ≤ L`, `JH ≤ Lⁿ` on `B`, and the
+area formula gives `∫_{H(B)} |m| dHⁿ = ∫_B JH |g| ≤ Lⁿ ∫_B |g|`.  Since `|m| ≥ 1` on `H(B)`, this
+bounds `Hⁿ(H(B)) < ∞`. -/
+theorem Submission.cmcdt_lpi_pc_piece_multiplicity : ∀ (P n : ℕ) (L : NNReal) (H : Euclid n → Euclid P) (B : Set (Euclid n)) (g : Euclid n → ℤ), LipschitzWith L H → MeasurableSet B → InjOn H B → (∀ a ∈ B, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) → Measurable g → IntegrableOn (fun u => (g u : ℝ)) B → (∀ u ∈ B, g u ≠ 0) → ∃ m : Euclid P → ℝ, Measurable m ∧ (∀ y, ∃ z : ℤ, m y = z) ∧ (∀ u ∈ B, m (H u) = g u) ∧ μHE[n] (H '' B) ≠ ∞ ∧ ∫⁻ y in H '' B, ‖m y‖ₑ ∂μHE[n] ≤ (L : ℝ≥0∞) ^ n * ∫⁻ u in B, ‖(g u : ℝ)‖ₑ := by
+  intro P n L H B g hH hB hinj hdiff hg hgi hg0
+  -- `G A = √det(⟨A eₖ, A eₗ⟩)`, the Gram-determinant Jacobian of a linear `A : ℝⁿ → ℝᴾ`
+  obtain ⟨G, hG⟩ : ∃ G : (Euclid n →L[ℝ] Euclid P) → ℝ, ∀ A, G A = Real.sqrt (Matrix.det
+      (Matrix.of fun k l : Fin n => inner ℝ (A (EuclideanSpace.single k 1)) (A (EuclideanSpace.single l 1)))) :=
+    ⟨_, fun A => rfl⟩
+  -- Lusin–Souslin: `H(B)` is Borel and `h ∘ H = id` on `B` for a Borel `h`
+  obtain ⟨hN, h, hh, hhH⟩ := Submission.cmcdt_lpi_pc_measurable_inverse P n H B
+    hH.continuous.continuousOn hB hinj
+  -- the density `m = 1_{H(B)} · (g ∘ h)`
+  obtain ⟨m, hm⟩ : ∃ m : Euclid P → ℝ, m = (H '' B).indicator fun y => (g (h y) : ℝ) := ⟨_, rfl⟩
+  have hmH : ∀ u ∈ B, m (H u) = g u := fun u hu => by
+    simp only [hm, indicator_of_mem (mem_image_of_mem H hu), hhH u hu]
+  -- `G A ≤ ‖A‖ⁿ`: the area formula for `A` on the unit ball `B₁` gives `Hⁿ(A(B₁)) = G A · |B₁|`,
+  -- while `A` is `‖A‖`-Lipschitz, so `Hⁿ(A(B₁)) ≤ ‖A‖ⁿ Hⁿ(B₁) = ‖A‖ⁿ |B₁|`
+  have hGle : ∀ A : Euclid n →L[ℝ] Euclid P, Injective A →
+      ENNReal.ofReal (G A) ≤ (‖A‖₊ : ℝ≥0∞) ^ n := by
+    intro A hA
+    have harea := (Submission.codim1_lura_gram_area_formula n P A).2 (ball 0 1) measurableSet_ball
+      (fun x _ => A.differentiableAt) (fun x _ => by rw [A.fderiv]; exact hA) hA.injOn
+      (fun _ => 1)
+    simp only [A.fderiv, ← hG, mul_one, setLIntegral_one, setLIntegral_const] at harea
+    have hlip := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (A.lipschitzWith.lipschitzOnWith (s := ball (0 : Euclid n) 1))
+    rw [harea, EuclideanSpace.euclideanHausdorffMeasure_eq_volume n] at hlip
+    exact (ENNReal.mul_le_mul_iff_left (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+      measure_ball_lt_top.ne).1 hlip
+  -- the Jacobian bound `JH ≤ Lⁿ` on `B`, from `‖DH(u)‖ ≤ L`
+  have hJ : ∀ u ∈ B, ENNReal.ofReal (G (fderiv ℝ H u)) ≤ (L : ℝ≥0∞) ^ n := by
+    intro u hu
+    refine (hGle _ (hdiff u hu).2).trans ?_
+    have hle : ‖fderiv ℝ H u‖ ≤ L := norm_fderiv_le_of_lipschitz ℝ hH
+    gcongr
+    exact_mod_cast hle
+  -- the area formula for `H` on `B` with weight `|m|`, and `m ∘ H = g` on `B`
+  have hbound : ∫⁻ y in H '' B, ‖m y‖ₑ ∂μHE[n] ≤ (L : ℝ≥0∞) ^ n * ∫⁻ u in B, ‖(g u : ℝ)‖ₑ := by
+    have hareaH := (Submission.codim1_lura_gram_area_formula n P H).2 B hB
+      (fun u hu => (hdiff u hu).1) (fun u hu => (hdiff u hu).2) hinj fun y => ‖m y‖ₑ
+    simp only [← hG] at hareaH
+    calc ∫⁻ y in H '' B, ‖m y‖ₑ ∂μHE[n]
+        = ∫⁻ u in B, ENNReal.ofReal (G (fderiv ℝ H u)) * ‖m (H u)‖ₑ := hareaH
+      _ ≤ ∫⁻ u in B, (L : ℝ≥0∞) ^ n * ‖(g u : ℝ)‖ₑ := by
+          refine setLIntegral_mono' hB fun u hu => ?_
+          rw [hmH u hu]
+          gcongr
+          exact hJ u hu
+      _ = (L : ℝ≥0∞) ^ n * ∫⁻ u in B, ‖(g u : ℝ)‖ₑ :=
+          lintegral_const_mul' _ _ (ENNReal.pow_ne_top ENNReal.coe_ne_top)
+  -- `|m| ≥ 1` on `H(B)` (`g` is a nonzero integer on `B`), so `Hⁿ(H(B)) ≤ ∫_{H(B)} |m| dHⁿ`
+  have hmeasN : μHE[n] (H '' B) ≤ ∫⁻ y in H '' B, ‖m y‖ₑ ∂μHE[n] := by
+    rw [← setLIntegral_one]
+    refine setLIntegral_mono' hN ?_
+    rintro _ ⟨u, hu, rfl⟩
+    rw [hmH u hu, Real.enorm_eq_ofReal_abs, ENNReal.one_le_ofReal, ← Int.cast_abs]
+    exact_mod_cast Int.one_le_abs (hg0 u hu)
+  refine ⟨m, ?_, fun y => ?_, hmH, ?_, hbound⟩
+  · rw [hm]
+    exact ((measurable_of_countable fun z : ℤ => (z : ℝ)).comp (hg.comp hh)).indicator hN
+  · by_cases hy : y ∈ H '' B
+    · exact ⟨g (h y), by rw [hm, indicator_of_mem hy]⟩
+    · exact ⟨0, by rw [hm, indicator_of_notMem hy, Int.cast_zero]⟩
+  · exact (hmeasN.trans_lt (hbound.trans_lt (ENNReal.mul_lt_top
+      (ENNReal.pow_lt_top ENNReal.coe_lt_top) hgi.2))).ne
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
