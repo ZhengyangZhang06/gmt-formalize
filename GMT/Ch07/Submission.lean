@@ -732,6 +732,94 @@ theorem Submission.cmcdt_dil_isIntegerMultiplicity : ∀ (P k : ℕ) (lam : ℝ)
     _ = _ := by
         rw [← mul_assoc, ← mul_pow, mul_inv_cancel₀ hlam0, one_pow, one_mul]
 
+/-- **Change of scale `x ↦ λx`** (Simon 6.5.3, chapter-06.txt lines 1458–1459: the scaled
+Deformation Theorem follows from 6.5.1 "by first changing scale `x → ρ⁻¹x`, then applying 5.1,
+then changing scale back by `x → ρx`").  `dil k λ X = δ_{λ#}X` is the push-forward 6.2.23 along
+`δ_λ(x) = λx`, `dil k λ X (ω) = X(δ_λ^#ω)` with `(δ_λ^#ω)(x) = λᵏ ω(λx)`, built from the proper
+affine push-forward `GeometricCurrentOn.affinePushforward` (`λ ≠ 0`; `dil k λ X = X` otherwise).
+It is additive, `δ_{λ⁻¹#}δ_{λ#} = id`, scales mass by `λᵏ` (`Submission.cmcdt_dil_mass_eq`),
+preserves integer multiplicity (`Submission.cmcdt_dil_isIntegerMultiplicity`), commutes with `∂`
+(6.2.24(1)), moves vanishing sets by `δ_λ`, and `Hᵏ`-integrals over `δ_λ(A)` scale by `λᵏ`
+(`Submission.euclid_hausdorff_dilation_change_of_variables` with `δ_λ⁻¹(δ_λ(A)) = A`). -/
+theorem Submission.dor_lmb_fcd_dilation : ∀ P : ℕ, ∃ dil : ∀ k : ℕ, ℝ → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) k, ∀ (k : ℕ) (lam : ℝ), 0 < lam → (∀ X Y : GeometricCurrentOn (univ : Set (Euclid P)) k, dil k lam (X - Y) = dil k lam X - dil k lam Y) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) k, dil k lam⁻¹ (dil k lam X) = X) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) k, (dil k lam X).mass = ENNReal.ofReal (lam ^ k) * X.mass) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) k, IsIntegerMultiplicity X → IsIntegerMultiplicity (dil k lam X)) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (dil (k + 1) lam X).boundary = dil k lam X.boundary) ∧ (∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (E : Set (Euclid P)), (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (E) → X ω = 0) → ∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) ((fun x => lam • x) '' E) → dil k lam X ω = 0) ∧ (∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (ω : TestFormOn (univ : Set (Euclid P)) k), ∃ η : TestFormOn (univ : Set (Euclid P)) k, (∀ x, (η : DifferentialForm (Euclid P) k) x = lam ^ k • (ω : DifferentialForm (Euclid P) k) (lam • x)) ∧ dil k lam X ω = X η) ∧ ∀ (A : Set (Euclid P)) (g : Euclid P → ℝ), ∫ y in (fun x => lam • x) '' A, g y ∂μHE[k] = lam ^ k * ∫ x in A, g (lam • x) ∂μHE[k] := by
+  intro P
+  -- Step 0: `δ_λ(x) = 0 + (λ·id)x = λx` is a homeomorphism for `λ ≠ 0`, hence proper.
+  have hproper : ∀ lam : ℝ, lam ≠ 0 → IsProperMap
+      (fun x : Euclid P => (0 : Euclid P) + (lam • ContinuousLinearMap.id ℝ (Euclid P)) x) := by
+    intro lam hlam
+    convert (Homeomorph.smulOfNeZero (α := Euclid P) lam hlam).isProperMap using 1
+    funext x
+    simp
+  -- Step 1: `dil k λ X = δ_{λ#}X` (6.2.23) for `λ ≠ 0`, `X` otherwise; `dil k λ X (ω) = X(δ_λ^#ω)`.
+  obtain ⟨dil, hdil⟩ : ∃ dil : ∀ k : ℕ, ℝ → GeometricCurrentOn (univ : Set (Euclid P)) k →
+      GeometricCurrentOn (univ : Set (Euclid P)) k,
+      ∀ (k : ℕ) (lam : ℝ), lam ≠ 0 → ∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) k)
+        (ω η : TestFormOn (univ : Set (Euclid P)) k),
+        (η : DifferentialForm (Euclid P) k) = affinePullbackForm
+          (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0 (ω : DifferentialForm (Euclid P) k) →
+        dil k lam X ω = X η := by
+    classical
+    refine ⟨fun k lam X => if hlam : lam ≠ 0 then
+      (X.restrictDomain (subset_univ _)).affinePushforward
+        (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0 (hproper lam hlam) else X, ?_⟩
+    intro k lam hlam X ω η hη
+    simp only [dite_eq_left hlam, GeometricCurrentOn.affinePushforward_apply,
+      GeometricCurrentOn.restrictDomain_apply]
+    congr 1
+    exact Subtype.ext hη.symm
+  refine ⟨dil, fun k lam hlam => ?_⟩
+  have hlam0 : lam ≠ 0 := hlam.ne'
+  refine ⟨fun X Y => ?_, fun X => ?_, fun X => ?_, fun X hX => ?_, fun X => ?_,
+    fun X E hXE ω hω => ?_, fun X ω => ?_, fun A g => ?_⟩
+  -- Step 2 (sub): `δ_{λ#}(X − Y)(ω) = (X − Y)(δ_λ^#ω) = X(δ_λ^#ω) − Y(δ_λ^#ω)`.
+  · ext ω
+    obtain ⟨η, hη, -⟩ := Submission.cmcdt_dil_pullback_testForm P k lam hlam0 ω
+    change dil k lam (X - Y) ω = dil k lam X ω - dil k lam Y ω
+    rw [hdil k lam hlam0 (X - Y) ω η hη, hdil k lam hlam0 X ω η hη, hdil k lam hlam0 Y ω η hη]
+    rfl
+  -- Step 3 (inverse): `δ_λ^#(δ_{λ⁻¹}^#ω)(x) = λᵏλ⁻ᵏ ω(λ⁻¹λx) = ω(x)`.
+  · ext ω
+    obtain ⟨ζ, hζ, hζx⟩ := Submission.cmcdt_dil_pullback_testForm P k lam⁻¹ (inv_ne_zero hlam0) ω
+    obtain ⟨η, hη, hηx⟩ := Submission.cmcdt_dil_pullback_testForm P k lam hlam0 ζ
+    have hηω : η = ω := by
+      refine Subtype.ext (funext fun x => ?_)
+      change (η : DifferentialForm (Euclid P) k) x = (ω : DifferentialForm (Euclid P) k) x
+      rw [hηx x, hζx, smul_smul, ← mul_pow, mul_inv_cancel₀ hlam0, one_pow, one_smul,
+        inv_smul_smul₀ hlam0]
+    rw [hdil k lam⁻¹ (inv_ne_zero hlam0) (dil k lam X) ω ζ hζ, hdil k lam hlam0 X ζ η hη, hηω]
+  -- Step 4 (mass): `M(δ_{λ#}X) = λᵏ M(X)`.
+  · exact Submission.cmcdt_dil_mass_eq P k lam hlam X (dil k lam X) (hdil k lam hlam0 X)
+  -- Step 5 (integer multiplicity): `δ_{λ#}τ(M, θ, ξ) = τ(λM, θ(·/λ), ξ(·/λ))`.
+  · exact Submission.cmcdt_dil_isIntegerMultiplicity P k lam hlam X (dil k lam X)
+      (hdil k lam hlam0 X) hX
+  -- Step 6 (boundary): `d(δ_λ^#ω) = δ_λ^#(dω)` (naturality of `d`, 6.2.24(1)).
+  · ext ω
+    obtain ⟨η, hη, -⟩ := Submission.cmcdt_dil_pullback_testForm P k lam hlam0 ω
+    rw [GeometricCurrentOn.boundary_apply, hdil k lam hlam0 X.boundary ω η hη,
+      GeometricCurrentOn.boundary_apply]
+    refine hdil (k + 1) lam hlam0 X _ _ ?_
+    change exteriorDerivative (η : DifferentialForm (Euclid P) k) =
+      affinePullbackForm (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0
+        (exteriorDerivative (ω : DifferentialForm (Euclid P) k))
+    rw [hη]
+    exact exteriorDerivative_affinePullbackForm _ 0 ω.property.1.1
+  -- Step 7 (vanishing): `tsupport δ_λ^#ω ⊆ δ_λ⁻¹(tsupport ω)`, which is disjoint from `E`.
+  · obtain ⟨η, hη, -⟩ := Submission.cmcdt_dil_pullback_testForm P k lam hlam0 ω
+    rw [hdil k lam hlam0 X ω η hη]
+    refine hXE η (Set.disjoint_left.2 fun x hx hxE => ?_)
+    rw [hη] at hx
+    have hx' : lam • x ∈ tsupport (ω : DifferentialForm (Euclid P) k) := by
+      simpa using tsupport_affinePullbackForm_subset _ 0 _ hx
+    exact Set.disjoint_left.1 hω hx' ⟨x, hxE, rfl⟩
+  -- Step 8 (action): `η = δ_λ^#ω` has `η(x) = λᵏ ω(λx)`.
+  · obtain ⟨η, hη, hηx⟩ := Submission.cmcdt_dil_pullback_testForm P k lam hlam0 ω
+    exact ⟨η, hηx, hdil k lam hlam0 X ω η hη⟩
+  -- Step 9 (change of variables): `M = δ_λ(A)` with `δ_λ⁻¹(δ_λ(A)) = A`, then `λᵏλ⁻ᵏ = 1`.
+  · have h := (Submission.euclid_hausdorff_dilation_change_of_variables P k lam hlam
+      ((fun x : Euclid P => lam • x) '' A)).2.2 g
+    rw [Set.preimage_image_eq A (smul_right_injective (Euclid P) hlam0)] at h
+    rw [h, ← mul_assoc, ← mul_pow, mul_inv_cancel₀ hlam0, one_pow, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
