@@ -1969,6 +1969,31 @@ theorem Submission.dimred_cs_sos_mt_cc_support_subset_iff_measure : ∀ (P n : �
   exact ((Submission.dimred_im_mass_measure P n univ T R isOpen_univ hR).2.1 x (mem_univ x)).1 hx
     ε hε (measure_mono_null hball h)
 
+/-- **Simon 6.2.11**, for the product `[[Q_r]] × Y` in the proof of Lemma 7.3.5: let `E ⊆ ℝᴾ` and
+`spt A` be compact, and let `R_A`, `R_B` represent `A`, `B` with
+`μ_B(C) = ∫_E μ_A({y : t + y ∈ C}) dHᵏ(t)` for every Borel `C`.  Then `spt B ⊆ E + spt A`.
+The set `F = E + spt A` is compact, hence closed.  As `μ_A(ℝᴾ ∖ spt A) = 0` and
+`{y : t + y ∉ F} ⊆ ℝᴾ ∖ spt A` for `t ∈ E`, the integrand vanishes on `E`, so
+`μ_B(ℝᴾ ∖ F) = 0` and `spt B ⊆ F`. -/
+theorem Submission.dimred_cs_sos_mt_cc_product_support : ∀ (P k m' n' : ℕ) (E : Set (Euclid P)) (A : GeometricCurrentOn (univ : Set (Euclid P)) m') (RA : IMRep (univ : Set (Euclid P)) m') (B : GeometricCurrentOn (univ : Set (Euclid P)) n') (RB : IMRep (univ : Set (Euclid P)) n'), IsCompact E → IsCompact A.support → RA.Represents A → RB.Represents B → (∀ C : Set (Euclid P), MeasurableSet C → RB.measure C = ∫⁻ t in E, RA.measure ((fun y => t + y) ⁻¹' C) ∂μHE[k]) → B.support ⊆ Set.image2 (fun t y => t + y) E A.support := by
+  intro P k m' n' E A RA B RB hE hA hRA hRB hB
+  -- step 1: `F = E + spt A` is compact (the image of `E × spt A` under `+`), hence closed
+  have hF : IsClosed (Set.image2 (fun t y => t + y) E A.support) := (hE.add hA).isClosed
+  -- step 2: `μ_A(ℝᴾ ∖ spt A) = 0`
+  have hA0 : RA.measure A.supportᶜ = 0 :=
+    (Submission.dimred_cs_sos_mt_cc_support_subset_iff_measure P m' A RA A.support hRA
+      hA.isClosed).1 Set.Subset.rfl
+  -- step 3: for `t ∈ E`, `{y : t + y ∉ F} ⊆ ℝᴾ ∖ spt A` is `μ_A`-null
+  have h0 : ∀ t ∈ E,
+      RA.measure ((fun y => t + y) ⁻¹' (Set.image2 (fun t y => t + y) E A.support)ᶜ) = 0 := by
+    intro t ht
+    have hsub : (fun y => t + y) ⁻¹' (Set.image2 (fun t y => t + y) E A.support)ᶜ ⊆
+        A.supportᶜ := fun y hy hyA => hy (Set.mem_image2_of_mem ht hyA)
+    exact measure_mono_null hsub hA0
+  -- steps 4–5: `μ_B(ℝᴾ ∖ F) = ∫_E 0 dHᵏ = 0`, so `spt B ⊆ F`
+  refine (Submission.dimred_cs_sos_mt_cc_support_subset_iff_measure P n' B RB _ hRB hF).2 ?_
+  rw [hB _ hF.measurableSet.compl, setLIntegral_congr_fun hE.measurableSet h0, lintegral_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
