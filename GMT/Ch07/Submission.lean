@@ -47,6 +47,26 @@ misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-cu
 `∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
 -/
 
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
 open Filter Function Set MeasureTheory Metric
 open scoped ENNReal Topology
 
@@ -1075,10 +1095,6 @@ Simon Ch. 1, Theorem 3.16 = Mathlib's `Besicovitch.ae_tendsto_measure_inter_div`
 open, `A ⊆ B ⊆ U` Borel, and `Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e.
 `x` and every `ε > 0`, `Hⁿ((B \ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))` for all small `ρ > 0`; the
 exceptional set does not depend on `ε`.
-/-- Localized Besicovitch density (Simon Ch. 1, Theorem 3.16; Mathlib's
-`Besicovitch.ae_tendsto_measure_inter_div`).  Let `U` be open, `A ⊆ B ⊆ U` Borel, and
-`Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e. `x` and every `ε > 0`,
-`Hⁿ((B \ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))` for all small `ρ > 0`.
 
 Proof sketch:
 * Cover `U` by countably many open balls `B_r(y)` with `B̄_r(y) ⊆ U`.
@@ -1102,7 +1118,6 @@ theorem Submission.ptd_tl_ae_excess_le : ∀ (P n : ℕ) (U A B : Set (Euclid P)
     fun x hx => mem_nhdsWithin_of_mem_nhds (ball_mem_nhds x (hr0 x hx))
   -- Steps 2–3: Besicovitch density for the finite measures `Hⁿ⌞(B ∩ B̄(y, r y))`, off one
   -- `Hⁿ⌞A`-null set for all `y ∈ D` at once
-  -- Step 2: Besicovitch's density theorem for the finite measures `Hⁿ⌞(B ∩ B̄(y, r y))`
   have hpiece : ∀ᵐ x ∂(μHE[n].restrict A), ∀ y ∈ D, x ∈ closedBall y (r y) →
       Tendsto (fun ρ : ℝ => (μHE[n].restrict (B ∩ closedBall y (r y))) (A ∩ closedBall x ρ) /
         (μHE[n].restrict (B ∩ closedBall y (r y))) (closedBall x ρ)) (𝓝[>] 0) (𝓝 1) := by
@@ -1130,7 +1145,6 @@ theorem Submission.ptd_tl_ae_excess_le : ∀ (P n : ℕ) (U A B : Set (Euclid P)
     ((closedBall_subset_ball hρ).trans hδy).trans ball_subset_closedBall
   have hBK : MeasurableSet (B ∩ closedBall y (r y)) := hB.inter measurableSet_closedBall
   -- (i)–(ii): for `ρ < δ` the quotient is `Hⁿ(A ∩ B̄_ρ(x)) / Hⁿ(B ∩ B̄_ρ(x))`
-  -- Step 3: for `ρ < δ` the quotient is `Hⁿ(A ∩ B̄_ρ(x)) / Hⁿ(B ∩ B̄_ρ(x))`
   have hT : Tendsto (fun ρ : ℝ => μHE[n] (A ∩ closedBall x ρ) / μHE[n] (B ∩ closedBall x ρ))
       (𝓝[>] 0) (𝓝 1) := by
     refine (hx y hyD (ball_subset_closedBall hxy)).congr' ?_
@@ -1146,10 +1160,6 @@ theorem Submission.ptd_tl_ae_excess_le : ∀ (P n : ℕ) (U A B : Set (Euclid P)
     ne_top_of_le_ne_top (hfin _ (isCompact_closedBall y (r y)) (hrU y (hDU hyD)))
       (measure_mono (inter_subset_inter_right B (hsmall ρ hρ)))
   -- (iv): `Hⁿ((B \ A) ∩ B̄_ρ(x)) + Hⁿ(A ∩ B̄_ρ(x)) = Hⁿ(B ∩ B̄_ρ(x))`
-  have hfinρ : ∀ ρ : ℝ, ρ < δ → μHE[n] (B ∩ closedBall x ρ) ≠ ∞ := fun ρ hρ =>
-    ne_top_of_le_ne_top (hfin _ (isCompact_closedBall y (r y)) (hrU y (hDU hyD)))
-      (measure_mono (inter_subset_inter_right B (hsmall ρ hρ)))
-  -- `Hⁿ((B \ A) ∩ B̄_ρ(x)) + Hⁿ(A ∩ B̄_ρ(x)) = Hⁿ(B ∩ B̄_ρ(x))`
   have hsplit : ∀ ρ : ℝ, μHE[n] ((B \ A) ∩ closedBall x ρ) + μHE[n] (A ∩ closedBall x ρ) =
       μHE[n] (B ∩ closedBall x ρ) := by
     intro ρ
@@ -1170,9 +1180,6 @@ theorem Submission.ptd_tl_ae_excess_le : ∀ (P n : ℕ) (U A B : Set (Euclid P)
   -- Step 5: the excess estimate
   rcases le_or_gt 1 ε with hε1 | hε1
   · -- (a) `ε ≥ 1`: monotonicity
-  -- Step 4: the excess estimate
-  rcases le_or_gt 1 ε with hε1 | hε1
-  · -- `ε ≥ 1`: monotonicity
     refine Eventually.of_forall fun ρ => ?_
     calc μHE[n] ((B \ A) ∩ closedBall x ρ) ≤ μHE[n] (B ∩ closedBall x ρ) :=
           measure_mono (inter_subset_inter_left _ sdiff_subset)
@@ -1202,6 +1209,97 @@ theorem Submission.ptd_tl_ae_excess_le : ∀ (P n : ℕ) (U A B : Set (Euclid P)
         _ = (ε + (1 - ε)) * β := by rw [add_tsub_cancel_of_le hε1.le, one_mul]
         _ = ε * β + (1 - ε) * β := add_mul _ _ _
     exact ENNReal.le_of_add_le_add_right (ENNReal.mul_ne_top (by simp) hβtop) h1
+/-- Localized Besicovitch density (Simon Ch. 1, Theorem 3.16; Mathlib's
+`Besicovitch.ae_tendsto_measure_inter_div`).  Let `U` be open, `A ⊆ B ⊆ U` Borel, and
+`Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e. `x` and every `ε > 0`,
+`Hⁿ((B \ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))` for all small `ρ > 0`.
+
+Proof sketch:
+* Cover `U` by countably many open balls `B_r(y)` with `B̄_r(y) ⊆ U`.
+* On each ball, `ν = Hⁿ⌞(B ∩ B̄_r(y))` is finite, so Besicovitch gives
+  `ν(A ∩ B̄_ρ(x))/ν(B̄_ρ(x)) → 1` for `ν⌞A = (Hⁿ⌞A)⌞B̄_r(y)`-a.e. `x`.
+* For `x ∈ B_r(y)` and small `ρ`, this quotient is `b/a`, where
+  `b = Hⁿ(A ∩ B̄_ρ(x))` and `a = Hⁿ(B ∩ B̄_ρ(x)) < ∞`.
+* If `ε ≥ 1`, the bound is monotonicity.
+* If `ε < 1`, eventually `b/a > 1 − ε`, which forces `0 < a < ∞`; hence
+  `Hⁿ((B \ A) ∩ B̄_ρ(x)) = a − b ≤ εa`. -/
+theorem Submission.rsdic_tl_ae_excess_le : ∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] ((B \ A) ∩ closedBall x ρ) ≤ ε * μHE[n] (B ∩ closedBall x ρ) := by
+  intro P n U A B hU hA hB hAB hBU hfin
+  -- Step 1: countably many balls `B(y, r y)`, `y ∈ D`, with `B̄(y, r y) ⊆ U` cover `U`
+  have hr : ∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ closedBall x r ⊆ U := by
+    intro x hx
+    obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hU x hx
+    exact ⟨δ / 2, half_pos hδ, (closedBall_subset_ball (half_lt_self hδ)).trans hball⟩
+  choose! r hr0 hrU using hr
+  obtain ⟨D, hDU, hDc, hcov⟩ := TopologicalSpace.countable_cover_nhdsWithin
+    (f := fun y => ball y (r y)) (s := U)
+    fun x hx => mem_nhdsWithin_of_mem_nhds (ball_mem_nhds x (hr0 x hx))
+  -- Step 2: Besicovitch's density theorem for the finite measures `Hⁿ⌞(B ∩ B̄(y, r y))`
+  have hpiece : ∀ᵐ x ∂(μHE[n].restrict A), ∀ y ∈ D, x ∈ closedBall y (r y) →
+      Tendsto (fun ρ : ℝ => (μHE[n].restrict (B ∩ closedBall y (r y))) (A ∩ closedBall x ρ) /
+        (μHE[n].restrict (B ∩ closedBall y (r y))) (closedBall x ρ)) (𝓝[>] 0) (𝓝 1) := by
+    rw [ae_ball_iff hDc]
+    intro y hy
+    have : IsFiniteMeasure ((μHE[n] : Measure (Euclid P)).restrict (B ∩ closedBall y (r y))) :=
+      ⟨by
+        rw [Measure.restrict_apply_univ]
+        exact (hfin _ (isCompact_closedBall y (r y)) (hrU y (hDU hy))).lt_top⟩
+    have h := Besicovitch.ae_tendsto_measure_inter_div
+      ((μHE[n] : Measure (Euclid P)).restrict (B ∩ closedBall y (r y))) A
+    -- `(Hⁿ⌞(B ∩ K))⌞A = (Hⁿ⌞A)⌞K` since `A ⊆ B`
+    have hres : ((μHE[n] : Measure (Euclid P)).restrict (B ∩ closedBall y (r y))).restrict A =
+        ((μHE[n] : Measure (Euclid P)).restrict A).restrict (closedBall y (r y)) := by
+      rw [Measure.restrict_restrict hA, Measure.restrict_restrict measurableSet_closedBall]
+      congr 1
+      ext z
+      exact ⟨fun ⟨hzA, _, hzK⟩ => ⟨hzK, hzA⟩, fun ⟨hzK, hzA⟩ => ⟨hzA, hAB hzA, hzK⟩⟩
+    rwa [hres, ae_restrict_iff' measurableSet_closedBall] at h
+  filter_upwards [hpiece, ae_restrict_mem hA] with x hx hxA ε hε
+  obtain ⟨y, hyD, hxy⟩ := mem_iUnion₂.1 (hcov (hBU (hAB hxA)))
+  obtain ⟨δ, hδ, hδy⟩ := Metric.isOpen_iff.1 isOpen_ball x hxy
+  have hsmall : ∀ ρ : ℝ, ρ < δ → closedBall x ρ ⊆ closedBall y (r y) := fun ρ hρ =>
+    ((closedBall_subset_ball hρ).trans hδy).trans ball_subset_closedBall
+  have hBK : MeasurableSet (B ∩ closedBall y (r y)) := hB.inter measurableSet_closedBall
+  -- Step 3: for `ρ < δ` the quotient is `Hⁿ(A ∩ B̄_ρ(x)) / Hⁿ(B ∩ B̄_ρ(x))`
+  have hT : Tendsto (fun ρ : ℝ => μHE[n] (A ∩ closedBall x ρ) / μHE[n] (B ∩ closedBall x ρ))
+      (𝓝[>] 0) (𝓝 1) := by
+    refine (hx y hyD (ball_subset_closedBall hxy)).congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT hδ] with ρ hρ
+    rw [Measure.restrict_apply' hBK, Measure.restrict_apply' hBK]
+    congr 2
+    · ext z
+      exact ⟨fun ⟨hz, _⟩ => hz, fun ⟨hzA, hzx⟩ => ⟨⟨hzA, hzx⟩, hAB hzA, hsmall ρ hρ.2 hzx⟩⟩
+    · ext z
+      exact ⟨fun ⟨hzx, hzB, _⟩ => ⟨hzB, hzx⟩, fun ⟨hzB, hzx⟩ => ⟨hzx, hzB, hsmall ρ hρ.2 hzx⟩⟩
+  have hfinρ : ∀ ρ : ℝ, ρ < δ → μHE[n] (B ∩ closedBall x ρ) ≠ ∞ := fun ρ hρ =>
+    ne_top_of_le_ne_top (hfin _ (isCompact_closedBall y (r y)) (hrU y (hDU hyD)))
+      (measure_mono (inter_subset_inter_right B (hsmall ρ hρ)))
+  -- `Hⁿ((B \ A) ∩ B̄_ρ(x)) + Hⁿ(A ∩ B̄_ρ(x)) = Hⁿ(B ∩ B̄_ρ(x))`
+  have hsplit : ∀ ρ : ℝ, μHE[n] ((B \ A) ∩ closedBall x ρ) + μHE[n] (A ∩ closedBall x ρ) =
+      μHE[n] (B ∩ closedBall x ρ) := by
+    intro ρ
+    rw [← measure_union _ (hA.inter measurableSet_closedBall)]
+    · congr 1
+      ext z
+      constructor
+      · rintro (⟨⟨hzB, -⟩, hzx⟩ | ⟨hzA, hzx⟩)
+        · exact ⟨hzB, hzx⟩
+        · exact ⟨hAB hzA, hzx⟩
+      · rintro ⟨hzB, hzx⟩
+        by_cases hzA : z ∈ A
+        · exact Or.inr ⟨hzA, hzx⟩
+        · exact Or.inl ⟨⟨hzB, hzA⟩, hzx⟩
+    · rw [Set.disjoint_left]
+      rintro z ⟨⟨-, hzA⟩, -⟩ ⟨hzA', -⟩
+      exact hzA hzA'
+  -- Step 4: the excess estimate
+  rcases le_or_gt 1 ε with hε1 | hε1
+  · -- `ε ≥ 1`: monotonicity
+    refine Eventually.of_forall fun ρ => ?_
+    calc μHE[n] ((B \ A) ∩ closedBall x ρ) ≤ μHE[n] (B ∩ closedBall x ρ) :=
+          measure_mono (inter_subset_inter_left _ sdiff_subset)
+      _ = 1 * μHE[n] (B ∩ closedBall x ρ) := (one_mul _).symm
+      _ ≤ ε * μHE[n] (B ∩ closedBall x ρ) := by gcongr
   · -- `ε < 1`: eventually `b / a > 1 − ε`, with `a ≠ ∞`
     have hsub : 1 - ε < 1 := ENNReal.sub_lt_self ENNReal.one_ne_top one_ne_zero hε.ne'
     filter_upwards [hT (isOpen_Ioi.mem_nhds hsub), Ioo_mem_nhdsGT hδ] with ρ hρq hρ
@@ -3030,54 +3128,6 @@ theorem Submission.dtc_bc_lc_pfi_unitOrientation_algebra : ∀ (P n : ℕ), (∀
     have hdep : ¬ LinearIndependent ℝ (fun k : Fin n => A (EuclideanSpace.single k 1)) := fun hli =>
       hA (LinearMap.injective_of_linearIndependent (f := (A : Euclid n →ₗ[ℝ] Euclid P)) he_span hli)
     exact β.toAlternatingMap.map_linearDependent _ hdep
-/-- Localized Besicovitch density (Simon Ch. 1, Theorem 3.16; Mathlib's
-`Besicovitch.ae_tendsto_measure_inter_div`).  Let `U` be open, `A ⊆ B ⊆ U` Borel, and
-`Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e. `x` and every `ε > 0`,
-`Hⁿ((B \ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))` for all small `ρ > 0`.
-
-Proof sketch:
-* Cover `U` by countably many open balls `B_r(y)` with `B̄_r(y) ⊆ U`.
-* On each ball, `ν = Hⁿ⌞(B ∩ B̄_r(y))` is finite, so Besicovitch gives
-  `ν(A ∩ B̄_ρ(x))/ν(B̄_ρ(x)) → 1` for `ν⌞A = (Hⁿ⌞A)⌞B̄_r(y)`-a.e. `x`.
-* For `x ∈ B_r(y)` and small `ρ`, this quotient is `b/a`, where
-  `b = Hⁿ(A ∩ B̄_ρ(x))` and `a = Hⁿ(B ∩ B̄_ρ(x)) < ∞`.
-* If `ε ≥ 1`, the bound is monotonicity.
-* If `ε < 1`, eventually `b/a > 1 − ε`, which forces `0 < a < ∞`; hence
-  `Hⁿ((B \ A) ∩ B̄_ρ(x)) = a − b ≤ εa`. -/
-theorem Submission.rsdic_tl_ae_excess_le : ∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] ((B \ A) ∩ closedBall x ρ) ≤ ε * μHE[n] (B ∩ closedBall x ρ) := by
-  intro P n U A B hU hA hB hAB hBU hfin
-  -- Step 1: countably many balls `B(y, r y)`, `y ∈ D`, with `B̄(y, r y) ⊆ U` cover `U`
-  have hr : ∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ closedBall x r ⊆ U := by
-    intro x hx
-    obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hU x hx
-    exact ⟨δ / 2, half_pos hδ, (closedBall_subset_ball (half_lt_self hδ)).trans hball⟩
-    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hU x hx
-    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hball⟩
-  choose! r hr0 hrU using hr
-  obtain ⟨D, hDU, hDc, hcov⟩ := TopologicalSpace.countable_cover_nhdsWithin
-    (f := fun y => ball y (r y)) (s := U)
-    fun x hx => mem_nhdsWithin_of_mem_nhds (ball_mem_nhds x (hr0 x hx))
-  -- Step 2: Besicovitch's density theorem for the finite measures `Hⁿ⌞(B ∩ B̄(y, r y))`
-  have hpiece : ∀ᵐ x ∂(μHE[n].restrict A), ∀ y ∈ D, x ∈ closedBall y (r y) →
-      Tendsto (fun ρ : ℝ => (μHE[n].restrict (B ∩ closedBall y (r y))) (A ∩ closedBall x ρ) /
-        (μHE[n].restrict (B ∩ closedBall y (r y))) (closedBall x ρ)) (𝓝[>] 0) (𝓝 1) := by
-  -- Steps 2 and 3, the finite-measure theorem on each piece `S ∩ B(y, r y)`, simultaneously
-  -- for the countably many `y ∈ D`.
-  have hpiece : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), ∀ y ∈ D, x ∉ S ∩ ball y (r y) →
-      Tendsto (fun ρ : ℝ => μHE[n] (S ∩ ball y (r y) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n)
-        (𝓝[>] 0) (𝓝 0) := by
-    rw [ae_ball_iff hDc]
-    intro y hy
-    apply Submission.regcomp_atl_upper_density_zero P n _ (hS.inter measurableSet_ball)
-    exact ne_top_of_le_ne_top (hfin _ (isCompact_closedBall y (r y)) (hrU y (hDU hy)))
-      (measure_mono (inter_subset_inter_right S ball_subset_closedBall))
-  -- Step 4, localization: for small `ρ`, `B̄(x, ρ) ⊆ B(y, r y)`, so the piece agrees with `S`.
-  filter_upwards [hpiece] with x hx hxU hxS
-  obtain ⟨y, hyD, hxy⟩ := mem_iUnion₂.1 (hcov hxU)
-  obtain ⟨ε, hε, hεy⟩ := Metric.isOpen_iff.1 isOpen_ball x hxy
-  refine (hx y hyD fun h => hxS h.1).congr' ?_
-  filter_upwards [Ioo_mem_nhdsGT hε] with ρ hρ
-  rw [inter_assoc, inter_eq_right.2 ((closedBall_subset_ball hρ.2).trans hεy)]
 /-- Zero `n`-density of the excess `B ∖ A` (step 5 of the tangent-locality argument): if
 `Hⁿ(A ∩ B̄_ρ(x)) ≤ Cρⁿ` for `0 < ρ < r₁`, `Hⁿ(B ∩ B̄_{r₀}(x)) < ∞`, and for every `ε > 0`
 eventually `Hⁿ((B ∖ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))`, then `ρ⁻ⁿ Hⁿ((B ∖ A) ∩ B̄_ρ(x)) → 0`.
@@ -6564,6 +6614,7 @@ theorem Submission.dor_lmb_pc_competitor_massOn_le : ∀ (P n : ℕ) (U G O : Se
   rw [hSY]
   exact Submission.dor_lmb_pc_cm_ofReal_integral_le_measure P n U G RY
     (fun x => RY.orient x (φ x)) (Λ ^ n) hG.measurableSet hbound
+
 /-- **Basis independence of `Σ_j α(b ∘ j)²`** (Simon 6.1): for an `n`-covector `α` on `ℝᴾ` and
 orthonormal bases `b`, `b'` of `ℝᴾ`, `Σ_{j : Fin n → Fin P} α(b_{j 0}, …, b_{j (n-1)})²` is the same
 for `b` and `b'`.  Expand `bᵢ = Σₛ ⟨b'ₛ, bᵢ⟩ b'ₛ` in every slot (multilinearity), square and sum
