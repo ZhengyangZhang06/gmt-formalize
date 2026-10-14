@@ -451,6 +451,75 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Countably many `C¹` charts inside `U`** (Simon Ch. 2, §4 (4.1); Ch. 3, Lemma 1.2 and
+Remark 1.3).  Let `U ⊆ ℝᴾ` be open and `M ⊆ U` with `M ⊆ N₀ ∪ ⋃ₗ Nₗ`, each `Nₗ` an embedded
+`m`-dimensional `C¹` submanifold.  Then there are countably many charts `(Vₛ, ψₛ)`: `Vₛ ⊆ ℝᵐ`
+open, `ψₛ` `C¹` and injective on `Vₛ` with injective differential at every point of `Vₛ`, and
+`ψₛ(Vₛ) ⊆ U`, such that `M ⊆ N₀ ∪ ⋃ₛ ψₛ(Vₛ)`. -/
+theorem Submission.dor_lmbsf_cp_submanifold_chart_cover : ∀ (P m : ℕ) (U M N₀ : Set (Euclid P)) (N : ℕ → Set (Euclid P)), IsOpen U → M ⊆ U → (∀ l, IsEmbeddedSubmanifold 1 m (N l)) → M ⊆ N₀ ∪ ⋃ l, N l → ∃ (V : ℕ → Set (Euclid m)) (ψ : ℕ → Euclid m → Euclid P), (∀ s, IsOpen (V s) ∧ ContDiffOn ℝ 1 (ψ s) (V s) ∧ InjOn (ψ s) (V s) ∧ (∀ y ∈ V s, Injective (fderiv ℝ (ψ s) y)) ∧ ψ s '' V s ⊆ U) ∧ M ⊆ N₀ ∪ ⋃ s, ψ s '' V s := by
+  classical
+  intro P m U M N₀ N hU hMU hN hMN
+  -- a chart `(V, W, ψ)` of `Nₗ` at every `z ∈ Nₗ`, with `ψ(V) = W ∩ Nₗ`
+  have hch : ∀ (l : ℕ) (z : N l), ∃ (V : Set (Euclid m)) (W : Set (Euclid P))
+      (ψ : Euclid m → Euclid P), IsOpen V ∧ IsOpen W ∧ (z : Euclid P) ∈ W ∧
+      ContDiffOn ℝ 1 ψ V ∧ InjOn ψ V ∧ ψ '' V = W ∩ N l ∧ ∀ y ∈ V, Injective (fderiv ℝ ψ y) := by
+    intro l z
+    obtain ⟨V, W, ψ, hV, hW, hzW, hψ, hinj, himg, -, hD⟩ := hN l z z.2
+    exact ⟨V, W, ψ, hV, hW, hzW, by simpa using hψ, hinj, himg, hD⟩
+  choose V W ψ hV hW hzW hψ hinj himg hD using hch
+  -- Lindelöf: countably many `W l z`, `z ∈ T l`, cover `Nₗ`
+  have hT : ∀ l, ∃ T : Set (N l), T.Countable ∧ ⋃ z ∈ T, W l z = ⋃ z, W l z :=
+    fun l => TopologicalSpace.isOpen_iUnion_countable (W l) (hW l)
+  choose T hTc hTU using hT
+  let I := Σ l : ℕ, T l
+  have : ∀ l, Countable (T l) := fun l => (hTc l).to_subtype
+  have : Countable I := inferInstance
+  -- shrink each domain to `V ∩ ψ⁻¹(U)`; the extra index `none` carries the empty chart
+  let V' : Option I → Set (Euclid m) := fun o =>
+    match o with
+    | none => ∅
+    | some i => V i.1 i.2 ∩ ψ i.1 i.2 ⁻¹' U
+  let ψ' : Option I → Euclid m → Euclid P := fun o =>
+    match o with
+    | none => 0
+    | some i => ψ i.1 i.2
+  have hchart : ∀ o : Option I, IsOpen (V' o) ∧ ContDiffOn ℝ 1 (ψ' o) (V' o) ∧
+      InjOn (ψ' o) (V' o) ∧ (∀ y ∈ V' o, Injective (fderiv ℝ (ψ' o) y)) ∧ ψ' o '' V' o ⊆ U := by
+    intro o
+    cases o with
+    | none => simp [V', ψ']
+    | some i =>
+      refine ⟨(hψ i.1 i.2).continuousOn.isOpen_inter_preimage (hV i.1 i.2) hU,
+        (hψ i.1 i.2).mono inter_subset_left, (hinj i.1 i.2).mono inter_subset_left,
+        fun y hy => hD i.1 i.2 y hy.1, ?_⟩
+      rintro _ ⟨y, hy, rfl⟩
+      exact hy.2
+  -- enumerate the countable index set `Option I` by `ℕ`
+  obtain ⟨σ, hσ⟩ := exists_surjective_nat (Option I)
+  refine ⟨fun s => V' (σ s), fun s => ψ' (σ s), fun s => hchart (σ s), ?_⟩
+  -- covering: `x ∈ M ∩ Nₗ` lies in some `W l z ∩ Nₗ = ψ(V)`, and its preimage in `ψ⁻¹(U)`
+  intro x hxM
+  rcases hMN hxM with h0 | hx
+  · exact Or.inl h0
+  · right
+    obtain ⟨l, hxl⟩ := mem_iUnion.1 hx
+    have hxW : x ∈ ⋃ z ∈ T l, W l z := by
+      rw [hTU l]
+      exact mem_iUnion.2 ⟨⟨x, hxl⟩, hzW l ⟨x, hxl⟩⟩
+    obtain ⟨z, hzT, hxz⟩ := mem_iUnion₂.1 hxW
+    have hx' : x ∈ ψ l z '' V l z := by
+      rw [himg l z]
+      exact ⟨hxz, hxl⟩
+    obtain ⟨v, hv, hvx⟩ := hx'
+    obtain ⟨s, hs⟩ := hσ (some ⟨l, ⟨z, hzT⟩⟩)
+    refine mem_iUnion.2 ⟨s, v, ?_, ?_⟩
+    · show v ∈ V' (σ s)
+      rw [hs]
+      exact ⟨hv, by simpa [hvx] using hMU hxM⟩
+    · show ψ' (σ s) v = x
+      rw [hs]
+      exact hvx
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
