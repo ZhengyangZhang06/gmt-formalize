@@ -685,6 +685,37 @@ theorem Submission.dimred_tr_bc_dilation_pullback_comp : ∀ (P n : ℕ) (x y : 
   funext i
   exact hlin (v i)
 
+/-- **Blow-up calculus for `η_{x,λ#}T`, `λ > 0`** (Simon 6.2.23 for the dilation
+`η = η_{x,λ}(y) = λ⁻¹(y − x)`, chapter-06.txt lines 403–413; scaling identity (1) in the proof of
+7.3.1, chapter-07.txt lines 329–331, and the closure (10) of `𝒯` under `η_{x,λ#}` in the proof of
+7.3.3, chapter-07.txt line 472).  (i) `M_W(η_{x,λ#}T) = λ⁻ⁿ M_{η⁻¹(W)}(T)` for every `W ⊆ ℝᴾ`:
+`η` is surjective (`η(x + λz) = z`), so `W = η(η⁻¹(W))` and this is the image form
+`Submission.dtc_blowUp_massOn_image`.  (ii) `currentEval (η_{x,λ#}T) ω = currentEval T (η^#ω)`
+(`Submission.dimred_tr_bc_currentEval_blowUp`).  (iii) Applying (ii) to `η_{y,μ#}` and then to
+`η_{x,λ#}`, and composing the pull-backs, `η_{x,λ}^#(η_{y,μ}^#ω) = η_{x+λy,λμ}^#ω`
+(`Submission.dimred_tr_bc_dilation_pullback_comp`), gives
+`currentEval (η_{y,μ#}η_{x,λ#}T) ω = currentEval (η_{x+λy,λμ#}T) ω`. -/
+theorem Submission.dimred_tr_blowup_calculus : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ W : Set (Euclid P), (blowUp T x lam hlam.ne').massOn W = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn (dilation x lam ⁻¹' W)) ∧ (∀ ω : DifferentialForm (Euclid P) n, currentEval (blowUp T x lam hlam.ne') ω = currentEval T (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω)) ∧ ∀ (y : Euclid P) (mu : ℝ) (hmu : 0 < mu) (ω : DifferentialForm (Euclid P) n), currentEval (blowUp (blowUp T x lam hlam.ne') y mu hmu.ne') ω = currentEval (blowUp T (x + lam • y) (lam * mu) (mul_pos hlam hmu).ne') ω := by
+  intro P n U T x lam hlam
+  have hne : lam ≠ 0 := hlam.ne'
+  -- `η = η_{x,λ}` is surjective: `η(x + λz) = z`.
+  have hsurj : Surjective (dilation x lam) := fun z =>
+    ⟨x + lam • z, by simp [dilation, dilationCLM, smul_add, smul_smul, hne]⟩
+  refine ⟨fun W => ?_, Submission.dimred_tr_bc_currentEval_blowUp P n U T x lam hlam, ?_⟩
+  · -- (i) With `W' = η⁻¹(W)`, `η(W') = W`, so `M_W(η_{x,λ#}T) = M_{η(W')}(η_{x,λ#}T)`
+    -- `= λ⁻ⁿ M_{W'}(T)`.
+    have h := Submission.dtc_blowUp_massOn_image P n U T x lam hlam (dilation x lam ⁻¹' W)
+    rwa [image_preimage_eq W hsurj] at h
+  · -- (iii) `currentEval (η_{y,μ#}η_{x,λ#}T) ω = currentEval (η_{x,λ#}T) (η_{y,μ}^#ω)`
+    -- `= currentEval T (η_{x,λ}^#η_{y,μ}^#ω) = currentEval T (η_{x+λy,λμ}^#ω)`
+    -- `= currentEval (η_{x+λy,λμ#}T) ω`.
+    intro y mu hmu ω
+    rw [Submission.dimred_tr_bc_currentEval_blowUp P n _ _ y mu hmu ω,
+      Submission.dimred_tr_bc_currentEval_blowUp P n U T x lam hlam,
+      Submission.dimred_tr_bc_dilation_pullback_comp P n x y lam mu hne,
+      Submission.dimred_tr_bc_currentEval_blowUp P n U T (x + lam • y) (lam * mu)
+        (mul_pos hlam hmu) ω]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
