@@ -30,6 +30,26 @@ misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-cu
 `∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
 -/
 
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
 open Filter Function Set MeasureTheory Metric
 open scoped ENNReal Topology
 
@@ -603,11 +623,6 @@ theorem Submission.covectorEuclideanNorm_gram_bounds : ∀ (P n : ℕ), (∀ (α
       · rfl
     unfold covectorEuclideanNorm
     rw [← he, hsum, Real.sqrt_one]
-/-- Localized Besicovitch density (Simon Ch. 1, Theorem 3.16; Mathlib's
-`Besicovitch.ae_tendsto_measure_inter_div`).  Let `U` be open, `A ⊆ B ⊆ U` Borel, and
-`Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e. `x` and every `ε > 0`,
-`Hⁿ((B \ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))` for all small `ρ > 0`.
-
 /-- Steps 3–5 of the orientation push-forward (Simon 6.3.4–3.5, with the orthonormal basis of
 `span v` chosen by Gram–Schmidt): a linearly independent family `v` in `ℝᴾ` has an orthonormal
 frame `σ` with the same span such that `A = (⟨σᵢ, vⱼ⟩)` satisfies `det(⟨vᵢ, vⱼ⟩) = (det A)²`,
@@ -1324,7 +1339,6 @@ theorem Submission.rsdic_tl_ae_excess_le : ∀ (P n : ℕ) (U A B : Set (Euclid 
         _ = (ε + (1 - ε)) * a := by rw [add_tsub_cancel_of_le hε1.le, one_mul]
         _ = ε * a + (1 - ε) * a := add_mul _ _ _
     exact ENNReal.le_of_add_le_add_right (ENNReal.mul_ne_top (by simp) hatop) h1
-
 /-- Localized Besicovitch density (Simon Ch. 3, Remark 1.5(2) and the proof of Theorem 1.6, with
 Simon Ch. 1, Theorem 3.16 = Mathlib's `Besicovitch.ae_tendsto_measure_inter_div`).  Let `U` be
 open, `A ⊆ B ⊆ U` Borel, and `Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e.
@@ -1949,7 +1963,6 @@ theorem Submission.rsdic_tl_tangent_iff_of_density_zero : ∀ (P n : ℕ) (A B :
     have h := (hconv f).add (key f)
     rw [add_zero] at h
     exact h.congr fun ρ => add_sub_cancel _ _
-
 /-- **Simon Ch. 3, Remarks 1.5(2)–(3) and the proof of Theorem 1.6 "⇒"**: let `U` be open,
 `A ⊆ B ⊆ U` Borel, and `Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e. `x`,
 simultaneously for every subspace `Q`, `B` has approximate tangent space `Q` at `x` iff `A` does.
@@ -2145,6 +2158,7 @@ theorem Submission.rsdic_ae_tangent_iff_of_subset : ∀ (P n : ℕ) (U A B : Set
       Submission.rsdic_measure_closedBall_le_of_tangent P n A x Q (s / 2) hA hr₀
         (ne_top_of_le_ne_top hBfin (hAB' (s / 2))) hTA
     exact (key C r₁ hr₁ hgrowth).2 hTA
+
 /-- Borel image and null-set pullback along a bi-Lipschitz piece: if `F : ℝⁿ → ℝᴾ` is Lipschitz,
 `B ⊆ ℝⁿ` is Borel and `m‖a − a'‖ ≤ ‖F a − F a'‖` on `B` (`m > 0`), then `F(B)` is Borel
 (Lusin–Souslin), and a property holding `Hⁿ⌞F(B)`-a.e. holds at `F b` for Lebesgue-a.e. `b ∈ B`:
@@ -4548,7 +4562,6 @@ theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : M
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
-
 /-- **Simon 6.3.2(1)**, agreement on the overlap (step 3 of the proof that `p₁T₁ + p₂T₂` is
 integer multiplicity).  Let `R₁ = (M₁, θ₁, ξ₁)` and `R₂ = (M₂, θ₂, ξ₂)` be integer multiplicity
 triples in the open set `U`.  `M₂` is Borel and locally `Hⁿ`-finite in `U`:
@@ -4896,7 +4909,673 @@ theorem Submission.rsdic_imrep_action_int_combination : ∀ (P n : ℕ) (U : Set
   refine integral_congr_ae ?_
   filter_upwards [hF] with x hx
   rw [hx, add_apply, smul_apply, smul_apply, smul_eq_mul, smul_eq_mul]
+/-- Scaling of `Hⁿ` under the blow-up `η_{x,r}(z) = r⁻¹(z − x)`, `r > 0` (proof of Simon 3.1.6):
+`Hⁿ(η_{x,r}(S) ∩ B̄_R(0)) = r⁻ⁿ Hⁿ(S ∩ B̄_{rR}(x))`.  Since `‖η_{x,r}(z)‖ = r⁻¹‖z − x‖`, the left
+side is `Hⁿ(η_{x,r}(S ∩ B̄_{rR}(x)))`; `η_{x,r}` is the homothety of centre `x` and ratio `r⁻¹`
+followed by the translation by `−x`, which preserves `Hⁿ`, while the homothety multiplies it by
+`‖r⁻¹‖₊ⁿ = r⁻ⁿ`. -/
+theorem Submission.regcomp_atl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R)) := by
+  intro P n x r R S hr
+  -- `‖η(z)‖ = r⁻¹‖z − x‖`
+  have hnorm : ∀ z : Euclid P,
+      ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ = r⁻¹ * ‖z - x‖ := by
+    intro z
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (inv_pos.mpr hr)]
+  -- Step 1: `η(S) ∩ B̄(0, R) = η(S ∩ B̄(x, rR))`
+  have hset : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R =
+      Poincare.SimonGMT.Chapter03.blowUpMap x r '' (S ∩ closedBall x (r * R)) := by
+    ext y
+    constructor
+    · rintro ⟨⟨z, hz, rfl⟩, hy⟩
+      refine ⟨z, ⟨hz, ?_⟩, rfl⟩
+      rw [mem_closedBall_zero_iff, hnorm] at hy
+      rw [mem_closedBall, dist_eq_norm]
+      calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by field_simp
+        _ ≤ r * R := mul_le_mul_of_nonneg_left hy hr.le
+    · rintro ⟨z, ⟨hz, hzx⟩, rfl⟩
+      refine ⟨⟨z, hz, rfl⟩, ?_⟩
+      rw [mem_closedBall, dist_eq_norm] at hzx
+      rw [mem_closedBall_zero_iff, hnorm]
+      calc r⁻¹ * ‖z - x‖ ≤ r⁻¹ * (r * R) := mul_le_mul_of_nonneg_left hzx (inv_pos.mpr hr).le
+        _ = R := by field_simp
+  -- Step 2: `η = τ ∘ h` with `h = homothety x r⁻¹` and `τ y = y + (-x)`
+  have hcomp : Poincare.SimonGMT.Chapter03.blowUpMap x r =
+      (fun y : Euclid P => y + -x) ∘ AffineMap.homothety x r⁻¹ := by
+    funext z
+    simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
+  -- Step 3: `μ(η(T)) = (ENNReal.ofReal r)⁻¹ ^ n * μ(T)`
+  have hscale : ∀ T : Set (Euclid P), μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) =
+      (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] T := by
+    intro T
+    rw [hcomp, Set.image_comp, (isometry_add_right (-x)).euclideanHausdorffMeasure_image,
+      euclideanHausdorffMeasure_homothety_image n x (inv_ne_zero hr.ne') T, ENNReal.smul_def,
+      smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
+      Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
+  -- Step 4: conclusion
+  rw [hset, hscale]
 
+/-- **Simon Ch. 6, Remark 3.2(1)**: the difference of two integer multiplicity currents in the
+open set `U` is integer multiplicity.  Let `S = τ(M₁, θ₁, ξ₁)`, `T = τ(M₂, θ₂, ξ₂)`.  By the Upper
+Density Theorem (Ch. 1, 3.6) the carriers have density zero at `Hⁿ`-a.e. point outside them, and
+approximate tangent spaces ignore sets of density zero (Ch. 3, 1.4–1.5), so `T_yM₁ = T_yM₂` and
+`ξ₂(y) = σ(y) ξ₁(y)` with a Borel sign `σ = ±1` for `Hⁿ`-a.e. `y ∈ M₁ ∩ M₂`.  Then
+`S − T = τ(M, m, ζ)` with `M = (M₁ \ M₂) ∪ (M₂ \ M₁) ∪ {y ∈ M₁ ∩ M₂ : θ₁ ≠ σθ₂}` and
+`(m, ζ) = (θ₁, ξ₁)`, `(θ₂, −ξ₂)`, `(|θ₁ − σθ₂|, ±ξ₁)` on the three pieces. -/
+theorem Submission.dtc_isIntegerMultiplicity_sub : ∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n), IsOpen U → 0 < n → IsIntegerMultiplicity S → IsIntegerMultiplicity T → IsIntegerMultiplicity (S - T) := by
+  classical
+  intro P n U S T hU _hn hS hT
+  obtain ⟨R₁, hR₁⟩ := hS
+  obtain ⟨R₂, hR₂⟩ := hT
+  -- Step 1: carriers are locally `Hⁿ`-finite in `U` (multiplicities are `≥ 1`)
+  have hfin : ∀ R : IMRep U n, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      μHE[n] (R.carrier ∩ K) ≠ ∞ := by
+    intro R K hK hKU
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU) ?_
+    rw [← setLIntegral_one]
+    apply setLIntegral_mono' (R.measurableSet_carrier.inter hK.measurableSet)
+    intro x hx
+    have := R.mult_pos x hx.1
+    exact_mod_cast Nat.one_le_iff_ne_zero.2 (Nat.pos_iff_ne_zero.1 this)
+  -- Step 2 (F1): Upper Density Theorem (Simon 1.3.6), localized to `U`
+  have F1 : ∀ A : Set (Euclid P), MeasurableSet A →
+      (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (A ∩ K) ≠ ∞) →
+      ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), y ∈ U → y ∉ A →
+        Tendsto (fun ρ : ℝ => μHE[n] (A ∩ closedBall y ρ) / ENNReal.ofReal (ρ ^ n))
+          (𝓝[>] 0) (𝓝 0) := by
+    intro A hA hAfin
+    have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    have hzero : ∀ y : Euclid P,
+        Poincare.SimonGMT.Chapter01.dimensionalUpperDensity
+          ((μHE[n] : Measure (Euclid P)).toOuterMeasure) (n : ℝ) A y = 0 →
+        Tendsto (fun ρ : ℝ => μHE[n] (A ∩ closedBall y ρ) / ENNReal.ofReal (ρ ^ n))
+          (𝓝[>] 0) (𝓝 0) := by
+      intro y h
+      have hq : Tendsto (Poincare.SimonGMT.Chapter01.dimensionalDensityQuotient
+          ((μHE[n] : Measure (Euclid P)).toOuterMeasure) (n : ℝ) A y) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+        apply tendsto_of_le_liminf_of_limsup_le (zero_le)
+        exact h.le
+      have hω0 : Poincare.SimonGMT.Chapter01.realUnitBallVolume (n : ℝ) ≠ 0 :=
+        (Poincare.SimonGMT.Chapter01.realUnitBallVolume_pos hn0).ne'
+      have hωt : Poincare.SimonGMT.Chapter01.realUnitBallVolume (n : ℝ) ≠ ∞ :=
+        Poincare.SimonGMT.Chapter01.realUnitBallVolume_ne_top _
+      have h2 := ENNReal.Tendsto.const_mul hq (Or.inr hωt)
+        (a := Poincare.SimonGMT.Chapter01.realUnitBallVolume (n : ℝ))
+      rw [mul_zero] at h2
+      refine h2.congr' ?_
+      filter_upwards [self_mem_nhdsWithin] with ρ hρ
+      simp only [Poincare.SimonGMT.Chapter01.dimensionalDensityQuotient,
+        Measure.toOuterMeasure_apply]
+      rw [ENNReal.rpow_natCast, ← ENNReal.ofReal_pow (le_of_lt hρ), ← mul_div_assoc,
+        ENNReal.mul_div_mul_left _ _ hω0 hωt]
+    -- null sets of Simon's `Hⁿ` are `μHE[n]`-null
+    have bridge : ∀ Z : Set (Euclid P),
+        Poincare.SimonGMT.Chapter01.simonHausdorffOuterMeasureReal (n : ℝ) Z = 0 →
+          (μHE[n] : Measure (Euclid P)) Z = 0 := by
+      intro Z hZ
+      rw [Poincare.SimonGMT.Chapter01.simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure
+        hn0] at hZ
+      rw [smul_apply, smul_eq_mul] at hZ
+      have hc : Poincare.SimonGMT.Chapter01.realUnitBallVolume (n : ℝ) / (2 : ℝ≥0∞) ^ (n : ℝ)
+          ≠ 0 :=
+        ENNReal.div_ne_zero.mpr
+          ⟨(Poincare.SimonGMT.Chapter01.realUnitBallVolume_pos hn0).ne', by simp⟩
+      have hH : (μH[(n : ℝ)] : Measure (Euclid P)) Z = 0 := by
+        simpa using (mul_eq_zero.mp hZ).resolve_left hc
+      rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH, smul_zero]
+    -- countable cover of `U` by balls whose closures are compact subsets of `U`
+    let ι := {p : Euclid P × ℝ // 0 < p.2 ∧ closedBall p.1 p.2 ⊆ U}
+    obtain ⟨J, hJc, hJU⟩ := TopologicalSpace.isOpen_iUnion_countable
+      (fun i : ι => ball i.1.1 i.1.2) (fun _ => isOpen_ball)
+    have hcover : U ⊆ ⋃ i : ι, ball i.1.1 i.1.2 := by
+      intro x hx
+      obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU x hx
+      exact mem_iUnion.mpr ⟨⟨(x, ε / 2), half_pos hε,
+        (closedBall_subset_ball (half_lt_self hε)).trans hεU⟩, mem_ball_self (half_pos hε)⟩
+    let N : ι → Set (Euclid P) := fun i => {x | x ∉ A ∩ ball i.1.1 i.1.2 ∧
+      Poincare.SimonGMT.Chapter01.dimensionalUpperDensity
+        ((μHE[n] : Measure (Euclid P)).toOuterMeasure) (n : ℝ) (A ∩ ball i.1.1 i.1.2) x ≠ 0}
+    have hN : ∀ i, (μHE[n] : Measure (Euclid P)) (N i) = 0 := by
+      intro i
+      apply bridge
+      apply Poincare.SimonGMT.Chapter01.simon_theorem_3_6 _
+        (Poincare.SimonGMT.Chapter01.measure_toOuterMeasure_isBorelRegular _) hn0
+      · exact le_toOuterMeasure_caratheodory _ _ (hA.inter measurableSet_ball)
+      · have := hAfin (closedBall i.1.1 i.1.2) (isCompact_closedBall _ _) i.2.2
+        exact lt_of_le_of_lt (measure_mono (inter_subset_inter_right _ ball_subset_closedBall))
+          this.lt_top
+    rw [ae_iff]
+    apply measure_mono_null (t := ⋃ i ∈ J, N i)
+    · intro y hy
+      simp only [mem_ofPred_eq, not_imp] at hy
+      obtain ⟨hyU, hyA, hnot⟩ := hy
+      have hy' := hcover hyU
+      rw [← hJU] at hy'
+      obtain ⟨i, hiJ, hyi⟩ := mem_iUnion₂.mp hy'
+      refine mem_iUnion₂.mpr ⟨i, hiJ, fun h => hyA h.1, fun hden => hnot ?_⟩
+      rw [Poincare.SimonGMT.Chapter01.dimensionalUpperDensity_inter_of_mem_nhds _ _ _ _ _
+        (isOpen_ball.mem_nhds hyi)] at hden
+      exact hzero y hden
+    · exact (measure_biUnion_null_iff hJc).mpr fun i _ => hN i
+  -- Step 3 (F2): approximate tangent spaces ignore sets of zero `n`-density
+  have F2 : ∀ (A A' : Set (Euclid P)) (y : Euclid P) (Q : Submodule ℝ (Euclid P)) (s : ℝ),
+      MeasurableSet A → MeasurableSet A' → 0 < s →
+      μHE[n] (A ∩ closedBall y s) ≠ ∞ → μHE[n] (A' ∩ closedBall y s) ≠ ∞ →
+      Tendsto (fun ρ : ℝ => μHE[n] (((A \ A') ∪ (A' \ A)) ∩ closedBall y ρ) /
+        ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) →
+      HasApproximateTangentSpaceAt n A y Q → HasApproximateTangentSpaceAt n A' y Q := by
+    intro A A' y Q s hA hA' hs hAfin hA'fin hD hTA
+    refine ⟨hTA.1, fun f => ?_⟩
+    set D := (A \ A') ∪ (A' \ A) with hDdef
+    have hfc : Continuous f := map_continuous f
+    have hfcs : HasCompactSupport f := f.hasCompactSupport
+    obtain ⟨C, hC⟩ := hfc.bounded_above_of_compact_support hfcs
+    obtain ⟨L₀, hL₀⟩ := hfcs.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+    set L := max L₀ 1 with hLdef
+    have hL : 0 < L := lt_of_lt_of_le one_pos (le_max_right _ _)
+    have hfL : ∀ z, z ∉ closedBall (0 : Euclid P) L → f z = 0 := by
+      intro z hz
+      apply image_eq_zero_of_notMem_tsupport
+      intro hzt
+      exact hz (closedBall_subset_closedBall (le_max_left _ _) (hL₀ hzt))
+    have hDm : MeasurableSet D := (hA.diff hA').union (hA'.diff hA)
+    have hinj : ∀ r : ℝ, 0 < r → Injective (Poincare.SimonGMT.Chapter03.blowUpMap y r) := by
+      intro r hr a b hab
+      simp only [Poincare.SimonGMT.Chapter03.blowUpMap] at hab
+      have := smul_right_injective (Euclid P) (inv_ne_zero hr.ne') hab
+      simpa using this
+    have hmeasIm : ∀ r : ℝ, 0 < r → ∀ Z : Set (Euclid P), MeasurableSet Z →
+        MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap y r '' Z) := by
+      intro r hr Z hZ
+      have : Poincare.SimonGMT.Chapter03.blowUpMap y r '' Z = (fun w => r • w + y) ⁻¹' Z := by
+        ext w
+        simp only [mem_image, mem_preimage, Poincare.SimonGMT.Chapter03.blowUpMap]
+        constructor
+        · rintro ⟨z, hz, rfl⟩
+          rwa [smul_inv_smul₀ hr.ne', sub_add_cancel]
+        · intro hw
+          exact ⟨r • w + y, hw, by rw [add_sub_cancel_right, inv_smul_smul₀ hr.ne']⟩
+      rw [this]
+      exact hZ.preimage (by fun_prop)
+    have hintOn : ∀ Z : Set (Euclid P), MeasurableSet Z →
+        μHE[n] (Z ∩ closedBall 0 L) ≠ ∞ → IntegrableOn f Z μHE[n] := by
+      intro Z hZ hZfin
+      have h1 : IntegrableOn f (Z ∩ closedBall 0 L) μHE[n] :=
+        Measure.integrableOn_of_bounded hZfin hfc.aestronglyMeasurable (M := C)
+          (Eventually.of_forall hC)
+      exact h1.of_forall_sdiff_eq_zero hZ (fun z hz => hfL z (fun h => hz.2 ⟨hz.1, h⟩))
+    have hnormle : ∀ Z : Set (Euclid P), MeasurableSet Z →
+        μHE[n] (Z ∩ closedBall 0 L) ≠ ∞ →
+        ‖∫ z in Z, f z ∂μHE[n]‖ ≤ C * (μHE[n] : Measure (Euclid P)).real (Z ∩ closedBall 0 L) := by
+      intro Z hZ hZfin
+      rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hZ inter_subset_left
+        (fun z hz => hfL z (fun h => hz.2 ⟨hz.1, h⟩))]
+      exact norm_setIntegral_le_of_norm_le_const hZfin.lt_top (fun z _ => hC z)
+    -- the scaling identity: reused child `regcomp_atl_blowUp_measure_scaling`
+    have hscale : ∀ r : ℝ, 0 < r → ∀ Z : Set (Euclid P),
+        μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap y r '' Z ∩ closedBall 0 L) =
+          (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (Z ∩ closedBall y (r * L)) :=
+      fun r hr Z => Submission.regcomp_atl_blowUp_measure_scaling P n y r L Z hr
+    have hfinS : ∀ Z ⊆ A ∪ A', ∀ r, 0 < r → r * L ≤ s →
+        μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap y r '' Z ∩ closedBall 0 L) ≠ ∞ := by
+      intro Z hZ r hr hrs
+      rw [hscale r hr]
+      refine ENNReal.mul_ne_top (ENNReal.pow_ne_top
+        (ENNReal.inv_ne_top.2 (ENNReal.ofReal_pos.2 hr).ne')) ?_
+      apply ne_top_of_le_ne_top (ENNReal.add_ne_top.mpr ⟨hAfin, hA'fin⟩)
+      calc μHE[n] (Z ∩ closedBall y (r * L))
+          ≤ μHE[n] ((A ∩ closedBall y s) ∪ (A' ∩ closedBall y s)) := by
+            apply measure_mono
+            rintro z ⟨hzZ, hzB⟩
+            have hzB' : z ∈ closedBall y s := closedBall_subset_closedBall hrs hzB
+            rcases hZ hzZ with h | h
+            · exact Or.inl ⟨h, hzB'⟩
+            · exact Or.inr ⟨h, hzB'⟩
+        _ ≤ _ := measure_union_le _ _
+    have hbound : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+        ‖(∫ z in Poincare.SimonGMT.Chapter03.blowUpMap y r '' A', f z ∂μHE[n]) -
+            ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap y r '' A, f z ∂μHE[n]‖ ≤
+          2 * C * (L ^ n * (μHE[n] (D ∩ closedBall y (r * L)) /
+            ENNReal.ofReal ((r * L) ^ n)).toReal) := by
+      have hpos : ∀ᶠ r in 𝓝[>] (0 : ℝ), 0 < r ∧ r * L ≤ s := by
+        filter_upwards [Ioo_mem_nhdsGT (div_pos hs hL)] with r hr
+        refine ⟨hr.1, ?_⟩
+        have := hr.2
+        rw [lt_div_iff₀ hL] at this
+        linarith
+      filter_upwards [hpos] with r ⟨hr, hrs⟩
+      set η := Poincare.SimonGMT.Chapter03.blowUpMap y r with hη
+      have hinjr : Injective η := hinj r hr
+      have hsub1 : A' ∩ A ⊆ A ∪ A' := fun z hz => Or.inl hz.2
+      have hsub2 : A' \ A ⊆ A ∪ A' := fun z hz => Or.inr hz.1
+      have hsub3 : A \ A' ⊆ A ∪ A' := fun z hz => Or.inl hz.1
+      have hsubD : D ⊆ A ∪ A' := union_subset hsub3 hsub2
+      have hI1 := hintOn _ (hmeasIm r hr _ (hA'.inter hA)) (hfinS _ hsub1 r hr hrs)
+      have hI2 := hintOn _ (hmeasIm r hr _ (hA'.diff hA)) (hfinS _ hsub2 r hr hrs)
+      have hI3 := hintOn _ (hmeasIm r hr _ (hA.diff hA')) (hfinS _ hsub3 r hr hrs)
+      have hsplitA' : η '' A' = η '' (A' ∩ A) ∪ η '' (A' \ A) := by
+        rw [← image_union, inter_union_sdiff]
+      have hsplitA : η '' A = η '' (A' ∩ A) ∪ η '' (A \ A') := by
+        rw [← image_union, inter_comm, inter_union_sdiff]
+      have hdisj1 : Disjoint (η '' (A' ∩ A)) (η '' (A' \ A)) :=
+        (disjoint_image_iff hinjr).mpr (disjoint_sdiff_inter.symm)
+      have hdisj2 : Disjoint (η '' (A' ∩ A)) (η '' (A \ A')) := by
+        rw [disjoint_image_iff hinjr, inter_comm]
+        exact disjoint_sdiff_inter.symm
+      rw [hsplitA', hsplitA, setIntegral_union hdisj1 (hmeasIm r hr _ (hA'.diff hA)) hI1 hI2,
+        setIntegral_union hdisj2 (hmeasIm r hr _ (hA.diff hA')) hI1 hI3]
+      have hfinD := hfinS D hsubD r hr hrs
+      have hmono2 : (μHE[n] : Measure (Euclid P)).real (η '' (A' \ A) ∩ closedBall 0 L) ≤
+          (μHE[n] : Measure (Euclid P)).real (η '' D ∩ closedBall 0 L) :=
+        measureReal_mono (inter_subset_inter_left _ (image_mono subset_union_right)) hfinD
+      have hmono3 : (μHE[n] : Measure (Euclid P)).real (η '' (A \ A') ∩ closedBall 0 L) ≤
+          (μHE[n] : Measure (Euclid P)).real (η '' D ∩ closedBall 0 L) :=
+        measureReal_mono (inter_subset_inter_left _ (image_mono subset_union_left)) hfinD
+      have hn2 := hnormle _ (hmeasIm r hr _ (hA'.diff hA)) (hfinS _ hsub2 r hr hrs)
+      have hn3 := hnormle _ (hmeasIm r hr _ (hA.diff hA')) (hfinS _ hsub3 r hr hrs)
+      have hC0 : 0 ≤ C := (norm_nonneg _).trans (hC 0)
+      have hkey : (μHE[n] : Measure (Euclid P)).real (η '' D ∩ closedBall 0 L) =
+          L ^ n * (μHE[n] (D ∩ closedBall y (r * L)) / ENNReal.ofReal ((r * L) ^ n)).toReal := by
+        have hfin' : μHE[n] (D ∩ closedBall y (r * L)) ≠ ∞ := by
+          have h0 := hfinD
+          rw [hscale r hr] at h0
+          have ha0 : (ENNReal.ofReal r)⁻¹ ^ n ≠ 0 :=
+            pow_ne_zero _ (ENNReal.inv_ne_zero.2 ENNReal.ofReal_ne_top)
+          exact fun hb => h0 (ENNReal.mul_eq_top.mpr (Or.inl ⟨ha0, hb⟩))
+        rw [measureReal_def, hscale r hr, ENNReal.toReal_mul, ENNReal.toReal_div,
+          ENNReal.toReal_ofReal (by positivity), ENNReal.toReal_pow, ENNReal.toReal_inv,
+          ENNReal.toReal_ofReal hr.le, mul_pow]
+        have hrn : r ^ n ≠ 0 := pow_ne_zero n hr.ne'
+        have hLn : L ^ n ≠ 0 := pow_ne_zero n hL.ne'
+        rw [inv_pow, mul_div_assoc', mul_comm (L ^ n), mul_div_mul_right _ _ hLn, div_eq_inv_mul]
+      calc ‖(∫ z in η '' (A' ∩ A), f z ∂μHE[n]) + (∫ z in η '' (A' \ A), f z ∂μHE[n]) -
+            ((∫ z in η '' (A' ∩ A), f z ∂μHE[n]) + ∫ z in η '' (A \ A'), f z ∂μHE[n])‖
+          = ‖(∫ z in η '' (A' \ A), f z ∂μHE[n]) - ∫ z in η '' (A \ A'), f z ∂μHE[n]‖ := by
+            congr 1; ring
+        _ ≤ ‖∫ z in η '' (A' \ A), f z ∂μHE[n]‖ + ‖∫ z in η '' (A \ A'), f z ∂μHE[n]‖ :=
+            norm_sub_le _ _
+        _ ≤ C * (μHE[n] : Measure (Euclid P)).real (η '' (A' \ A) ∩ closedBall 0 L) +
+            C * (μHE[n] : Measure (Euclid P)).real (η '' (A \ A') ∩ closedBall 0 L) :=
+            add_le_add hn2 hn3
+        _ ≤ C * (μHE[n] : Measure (Euclid P)).real (η '' D ∩ closedBall 0 L) +
+            C * (μHE[n] : Measure (Euclid P)).real (η '' D ∩ closedBall 0 L) :=
+            add_le_add (mul_le_mul_of_nonneg_left hmono2 hC0)
+              (mul_le_mul_of_nonneg_left hmono3 hC0)
+        _ = 2 * C * (L ^ n * (μHE[n] (D ∩ closedBall y (r * L)) /
+              ENNReal.ofReal ((r * L) ^ n)).toReal) := by
+            rw [hkey]; ring
+    have hlim : Tendsto (fun r : ℝ => 2 * C * (L ^ n * (μHE[n] (D ∩ closedBall y (r * L)) /
+        ENNReal.ofReal ((r * L) ^ n)).toReal)) (𝓝[>] 0) (𝓝 0) := by
+      have hmap : Tendsto (fun r : ℝ => r * L) (𝓝[>] 0) (𝓝[>] 0) := by
+        apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
+        · have h0 : Tendsto (fun r : ℝ => r * L) (𝓝 0) (𝓝 (0 * L)) :=
+            (continuous_id.mul continuous_const).tendsto 0
+          rw [zero_mul] at h0
+          exact h0.mono_left nhdsWithin_le_nhds
+        · filter_upwards [self_mem_nhdsWithin] with r hr
+          exact mul_pos hr hL
+      have h1 := hD.comp hmap
+      have h2 := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp h1
+      have h3 := (h2.const_mul (L ^ n)).const_mul (2 * C)
+      simpa [Function.comp_def] using h3
+    have hdiff := squeeze_zero_norm' hbound hlim
+    have h3 := (hTA.2 f).add hdiff
+    simp only [add_zero, add_sub_cancel] at h3
+    exact h3
+  -- Steps 2–3 combined: a.e. on `A ∩ B` the tangent spaces of `A` and `B` coincide
+  have F3 : ∀ A B : Set (Euclid P), MeasurableSet A → MeasurableSet B → A ⊆ U → B ⊆ U →
+      (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (A ∩ K) ≠ ∞) →
+      (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) →
+      ∀ᵐ y ∂(μHE[n].restrict (A ∩ B)), ∀ Q : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt n A y Q ↔ HasApproximateTangentSpaceAt n B y Q := by
+    intro A B hA hB hAU hBU hAfin hBfin
+    set D : Set (Euclid P) := (A \ B) ∪ (B \ A) with hD
+    have hDmeas : MeasurableSet D := (hA.diff hB).union (hB.diff hA)
+    have hDfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (D ∩ K) ≠ ∞ := by
+      intro K hK hKU
+      refine ne_top_of_le_ne_top (ENNReal.add_ne_top.2 ⟨hAfin K hK hKU, hBfin K hK hKU⟩) ?_
+      calc μHE[n] (D ∩ K) ≤ μHE[n] ((A ∩ K) ∪ (B ∩ K)) := by
+            apply measure_mono
+            rintro x ⟨hx | hx, hxK⟩
+            · exact Or.inl ⟨hx.1, hxK⟩
+            · exact Or.inr ⟨hx.1, hxK⟩
+        _ ≤ μHE[n] (A ∩ K) + μHE[n] (B ∩ K) := measure_union_le _ _
+    have h1 := F1 D hDmeas hDfin
+    have h1' : ∀ᵐ y ∂(μHE[n].restrict (A ∩ B)), y ∈ U → y ∉ D →
+        Tendsto (fun ρ : ℝ => μHE[n] (D ∩ closedBall y ρ) / ENNReal.ofReal (ρ ^ n))
+          (𝓝[>] 0) (𝓝 0) :=
+      ae_restrict_of_ae h1
+    filter_upwards [h1', ae_restrict_mem (hA.inter hB)] with y hy hyAB
+    have hyU : y ∈ U := hAU hyAB.1
+    have hyD : y ∉ D := by
+      rintro (h | h)
+      · exact h.2 hyAB.2
+      · exact h.2 hyAB.1
+    have hdens := hy hyU hyD
+    obtain ⟨s, hs, hsU⟩ : ∃ s > 0, closedBall y s ⊆ U := by
+      obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU y hyU
+      exact ⟨ε / 2, by positivity, (closedBall_subset_ball (by linarith)).trans hεU⟩
+    have hK : IsCompact (closedBall y s) := isCompact_closedBall y s
+    have hAs := hAfin _ hK hsU
+    have hBs := hBfin _ hK hsU
+    intro Q
+    constructor
+    · intro hQ
+      exact F2 A B y Q s hA hB hs hAs hBs hdens hQ
+    · intro hQ
+      have hdens' : Tendsto (fun ρ : ℝ => μHE[n] (((B \ A) ∪ (A \ B)) ∩ closedBall y ρ) /
+          ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) := by
+        simpa only [hD, Set.union_comm] using hdens
+      exact F2 B A y Q s hB hA hs hBs hAs hdens' hQ
+  -- Step 6 with Step 4 (reused child `rsdic_unitOrientation_eq_or_eq_neg`):
+  -- `ξ₂ = ±ξ₁` a.e. on `M₁ ∩ M₂`
+  have hov : ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)),
+      R₂.orient x = R₁.orient x ∨ R₂.orient x = -R₁.orient x := by
+    have hL := F3 R₁.carrier R₂.carrier R₁.measurableSet_carrier R₂.measurableSet_carrier
+      R₁.carrier_subset R₂.carrier_subset (hfin R₁) (hfin R₂)
+    have ho₁ : ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), ∃ Q : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt n R₁.carrier x Q ∧ IsUnitOrientationOf (R₁.orient x) Q :=
+      ae_restrict_of_ae_restrict_of_subset inter_subset_left R₁.orients
+    have ho₂ : ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), ∃ Q : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt n R₂.carrier x Q ∧ IsUnitOrientationOf (R₂.orient x) Q :=
+      ae_restrict_of_ae_restrict_of_subset inter_subset_right R₂.orients
+    filter_upwards [hL, ho₁, ho₂] with x hx h₁ h₂
+    obtain ⟨Q₁, hT₁, hO₁⟩ := h₁
+    obtain ⟨Q₂, hT₂, hO₂⟩ := h₂
+    have hT₁' : HasApproximateTangentSpaceAt n R₂.carrier x Q₁ := (hx Q₁).1 hT₁
+    have hQ : Q₁ = Q₂ := hT₁'.unique hT₂
+    subst hQ
+    exact Submission.rsdic_unitOrientation_eq_or_eq_neg P n (R₁.orient x) (R₂.orient x) Q₁ hO₁ hO₂
+  -- Step 8: IMRep fields for sub-data of `R₁`, `R₂`
+  have recombine : ∀ (M : Set (Euclid P)) (m : Euclid P → ℕ) (ζ : Euclid P → MultiVector P n),
+      MeasurableSet M → M ⊆ R₁.carrier ∪ R₂.carrier → Measurable m → (∀ x ∈ M, 0 < m x) →
+      (∀ x ∈ M, m x ≤ R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x) →
+      AEStronglyMeasurable ζ (μHE[n].restrict M) →
+      (∀ᵐ x ∂(μHE[n].restrict (M ∩ R₁.carrier)), ζ x = R₁.orient x ∨ ζ x = -R₁.orient x) →
+      (∀ᵐ x ∂(μHE[n].restrict (M \ R₁.carrier)), ζ x = R₂.orient x ∨ ζ x = -R₂.orient x) →
+      ∃ R : IMRep U n, R.carrier = M ∧ R.mult = m ∧ R.orient = ζ := by
+    intro M m ζ hM hMsub hm hmpos hmle hζ h₁ h₂
+    have hMU : M ⊆ U := hMsub.trans (union_subset R₁.carrier_subset R₂.carrier_subset)
+    have hMfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M ∩ K) ≠ ∞ := by
+      intro K hK hKU
+      refine ne_top_of_le_ne_top (ENNReal.add_ne_top.2 ⟨hfin R₁ K hK hKU, hfin R₂ K hK hKU⟩) ?_
+      calc μHE[n] (M ∩ K) ≤ μHE[n] ((R₁.carrier ∩ K) ∪ (R₂.carrier ∩ K)) := by
+            apply measure_mono
+            rintro x ⟨hx, hxK⟩
+            rcases hMsub hx with h | h
+            · exact Or.inl ⟨h, hxK⟩
+            · exact Or.inr ⟨h, hxK⟩
+        _ ≤ _ := measure_union_le _ _
+    have hneg : ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
+        IsUnitOrientationOf ξ Q → IsUnitOrientationOf (-ξ) Q := by
+      rintro ξ Q ⟨τ, hτ, hspan, h | h⟩
+      · exact ⟨τ, hτ, hspan, Or.inr fun α => by simp [h α]⟩
+      · exact ⟨τ, hτ, hspan, Or.inl fun α => by simp [h α]⟩
+    have hpm : ∀ (ξ ξ' : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
+        IsUnitOrientationOf ξ' Q → (ξ = ξ' ∨ ξ = -ξ') → IsUnitOrientationOf ξ Q := by
+      rintro ξ ξ' Q hO (h | h)
+      · rw [h]; exact hO
+      · rw [h]; exact hneg _ _ hO
+    have horient : ∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ζ x) Q := by
+      have key : ∀ᵐ x ∂(μHE[n].restrict ((M ∩ R₁.carrier) ∪ (M \ R₁.carrier))),
+          ∃ Q : Submodule ℝ (Euclid P),
+            HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ζ x) Q := by
+        rw [ae_restrict_union_iff]
+        constructor
+        · have hL := F3 M R₁.carrier hM R₁.measurableSet_carrier hMU R₁.carrier_subset hMfin
+            (hfin R₁)
+          have ho := ae_restrict_of_ae_restrict_of_subset (inter_subset_right (s := M))
+            R₁.orients
+          filter_upwards [hL, ho, h₁] with x hx hox hζx
+          obtain ⟨Q, hTQ, hO⟩ := hox
+          exact ⟨Q, (hx Q).2 hTQ, hpm _ _ _ hO hζx⟩
+        · have hL := F3 M R₂.carrier hM R₂.measurableSet_carrier hMU R₂.carrier_subset hMfin
+            (hfin R₂)
+          have hsub : M \ R₁.carrier ⊆ M ∩ R₂.carrier :=
+            fun x hx => ⟨hx.1, (hMsub hx.1).resolve_left hx.2⟩
+          have hL' := ae_restrict_of_ae_restrict_of_subset hsub hL
+          have ho := ae_restrict_of_ae_restrict_of_subset (hsub.trans inter_subset_right)
+            R₂.orients
+          filter_upwards [hL', ho, h₂] with x hx hox hζx
+          obtain ⟨Q, hTQ, hO⟩ := hox
+          exact ⟨Q, (hx Q).2 hTQ, hpm _ _ _ hO hζx⟩
+      rwa [inter_union_sdiff] at key
+    have hrect : CountablyRectifiable n M := by
+      have hU12 : CountablyRectifiable n
+          (⋃ i : ℕ, (if i = 0 then R₁.carrier else R₂.carrier)) := by
+        apply Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion
+        intro i
+        split_ifs
+        · exact R₁.rectifiable
+        · exact R₂.rectifiable
+      apply hU12.mono
+      intro x hx
+      rcases hMsub hx with h | h
+      · exact mem_iUnion.2 ⟨0, by simpa using h⟩
+      · exact mem_iUnion.2 ⟨1, by simpa using h⟩
+    have hint : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+        ∫⁻ x in M ∩ K, (m x : ℝ≥0∞) ∂μHE[n] ≠ ∞ := by
+      intro K hK hKU
+      have hm1 : Measurable fun x => (R₁.mult x : ℝ≥0∞) :=
+        measurable_from_nat.comp R₁.measurable_mult
+      have hS1 : MeasurableSet (R₁.carrier ∩ K) :=
+        R₁.measurableSet_carrier.inter hK.measurableSet
+      have hS2 : MeasurableSet (R₂.carrier ∩ K) :=
+        R₂.measurableSet_carrier.inter hK.measurableSet
+      have hbound : ∫⁻ x in M ∩ K, (m x : ℝ≥0∞) ∂μHE[n] ≤
+          ∫⁻ x in R₁.carrier ∩ K, (R₁.mult x : ℝ≥0∞) ∂μHE[n] +
+            ∫⁻ x in R₂.carrier ∩ K, (R₂.mult x : ℝ≥0∞) ∂μHE[n] := by
+        calc ∫⁻ x in M ∩ K, (m x : ℝ≥0∞) ∂μHE[n]
+            ≤ ∫⁻ x in M ∩ K, ((R₁.carrier ∩ K).indicator (fun x => (R₁.mult x : ℝ≥0∞)) x +
+                (R₂.carrier ∩ K).indicator (fun x => (R₂.mult x : ℝ≥0∞)) x) ∂μHE[n] := by
+              apply setLIntegral_mono' (hM.inter hK.measurableSet)
+              intro x hx
+              have h := hmle x hx.1
+              have hxK := hx.2
+              by_cases h1 : x ∈ R₁.carrier <;> by_cases h2 : x ∈ R₂.carrier <;>
+                simp [h1, h2, hxK] at h ⊢ <;> exact_mod_cast h
+          _ ≤ ∫⁻ x, ((R₁.carrier ∩ K).indicator (fun x => (R₁.mult x : ℝ≥0∞)) x +
+                (R₂.carrier ∩ K).indicator (fun x => (R₂.mult x : ℝ≥0∞)) x) ∂μHE[n] :=
+              setLIntegral_le_lintegral _ _
+          _ = _ := by
+              rw [lintegral_add_left (hm1.indicator hS1), lintegral_indicator hS1,
+                lintegral_indicator hS2]
+      exact ne_top_of_le_ne_top (ENNReal.add_ne_top.2 ⟨R₁.locallyIntegrable_mult K hK hKU,
+        R₂.locallyIntegrable_mult K hK hKU⟩) hbound
+    exact ⟨⟨M, m, ζ, hM, hMU, hrect, hm, hmpos, hint, hζ, horient⟩, rfl, rfl, rfl⟩
+  -- Steps 5–7: Borel orientations, Borel sign, the new data `(M, m, ζ)`
+  obtain ⟨R, hR⟩ : ∃ R : IMRep U n, ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)),
+      ∀ α : Covector (Euclid P) n,
+        R.carrier.indicator (fun y => (R.mult y : ℝ) * R.orient y α) x =
+          R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) * R₁.orient y α) x -
+            R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) * R₂.orient y α) x := by
+    have : TopologicalSpace.MetrizableSpace (MultiVector P n) := by
+      let M : MetricSpace (MultiVector P n) := inferInstance
+      have h1 : @TopologicalSpace.PseudoMetrizableSpace (MultiVector P n)
+          (PseudoMetricSpace.toUniformSpace.toTopologicalSpace) :=
+        @UniformSpace.pseudoMetrizableSpace (MultiVector P n) PseudoMetricSpace.toUniformSpace
+          inferInstance
+      have h2 : @T0Space (MultiVector P n)
+          (PseudoMetricSpace.toUniformSpace.toTopologicalSpace) := inferInstance
+      exact @TopologicalSpace.MetrizableSpace.mk _ _ h1 h2
+    have : ContinuousNeg (MultiVector P n) := by
+      exact @IsTopologicalAddGroup.toContinuousNeg _ _ _ ContinuousLinearMap.isTopologicalAddGroup
+    set M₁ := R₁.carrier with hM₁def
+    set M₂ := R₂.carrier with hM₂def
+    have hM₁ : MeasurableSet M₁ := R₁.measurableSet_carrier
+    have hM₂ : MeasurableSet M₂ := R₂.measurableSet_carrier
+    set ξt₁ := R₁.aestronglyMeasurable_orient.mk R₁.orient with hξt₁def
+    set ξt₂ := R₂.aestronglyMeasurable_orient.mk R₂.orient with hξt₂def
+    have hs₁ : StronglyMeasurable ξt₁ := R₁.aestronglyMeasurable_orient.stronglyMeasurable_mk
+    have hs₂ : StronglyMeasurable ξt₂ := R₂.aestronglyMeasurable_orient.stronglyMeasurable_mk
+    have he₁ : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ M₁ → R₁.orient x = ξt₁ x :=
+      (ae_restrict_iff' hM₁).1 R₁.aestronglyMeasurable_orient.ae_eq_mk
+    have he₂ : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ M₂ → R₂.orient x = ξt₂ x :=
+      (ae_restrict_iff' hM₂).1 R₂.aestronglyMeasurable_orient.ae_eq_mk
+    have hov' : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ M₁ ∩ M₂ →
+        R₂.orient x = R₁.orient x ∨ R₂.orient x = -R₁.orient x :=
+      (ae_restrict_iff' (hM₁.inter hM₂)).1 hov
+    set σ : Euclid P → ℤ := fun x => if ξt₂ x = ξt₁ x then 1 else -1 with hσdef
+    have hσmeas : Measurable σ :=
+      Measurable.ite (hs₂.measurableSet_eq_fun hs₁) measurable_const measurable_const
+    set d : Euclid P → ℤ := fun x => (R₁.mult x : ℤ) - σ x * (R₂.mult x : ℤ) with hddef
+    have hdmeas : Measurable d := by
+      have h1 : Measurable fun x => (R₁.mult x : ℤ) := measurable_from_nat.comp R₁.measurable_mult
+      have h2 : Measurable fun x => (R₂.mult x : ℤ) := measurable_from_nat.comp R₂.measurable_mult
+      exact h1.sub (hσmeas.mul h2)
+    set G : Set (Euclid P) := {x | x ∈ M₁ ∩ M₂ ∧ d x ≠ 0} with hGdef
+    have hG : MeasurableSet G :=
+      (hM₁.inter hM₂).inter (hdmeas (measurableSet_singleton 0).compl)
+    set M : Set (Euclid P) := (M₁ \ M₂) ∪ (M₂ \ M₁) ∪ G with hMdef
+    have hM : MeasurableSet M := ((hM₁.diff hM₂).union (hM₂.diff hM₁)).union hG
+    set m : Euclid P → ℕ := fun x => if x ∈ M₁ \ M₂ then R₁.mult x
+      else if x ∈ M₂ \ M₁ then R₂.mult x else if x ∈ M₁ ∩ M₂ then (d x).natAbs else 0
+      with hmdef
+    set ζ : Euclid P → MultiVector P n := fun x => if x ∈ M₁ \ M₂ then ξt₁ x
+      else if x ∈ M₂ \ M₁ then -ξt₂ x else if 0 < d x then ξt₁ x else -ξt₁ x with hζdef
+    have hmmeas : Measurable m := by
+      refine Measurable.ite (hM₁.diff hM₂) R₁.measurable_mult
+        (Measurable.ite (hM₂.diff hM₁) R₂.measurable_mult
+          (Measurable.ite (hM₁.inter hM₂)
+            ((Measurable.of_discrete (f := Int.natAbs)).comp hdmeas) measurable_const))
+    have hζmeas : StronglyMeasurable ζ := by
+      refine StronglyMeasurable.ite (hM₁.diff hM₂) hs₁
+        (StronglyMeasurable.ite (hM₂.diff hM₁) hs₂.neg (StronglyMeasurable.ite ?_ hs₁ hs₁.neg))
+      exact hdmeas (measurableSet_Ioi (a := (0 : ℤ)))
+    have hMsub : M ⊆ M₁ ∪ M₂ := by
+      rintro x ((h | h) | h)
+      · exact Or.inl h.1
+      · exact Or.inr h.1
+      · exact Or.inl h.1.1
+    have hmpos : ∀ x ∈ M, 0 < m x := by
+      rintro x ((h | h) | h)
+      · simp only [hmdef, ite_eq_left h]; exact R₁.mult_pos x h.1
+      · have hn : x ∉ M₁ \ M₂ := fun h' => h.2 h'.1
+        simp only [hmdef, ite_eq_right hn, ite_eq_left h]; exact R₂.mult_pos x h.1
+      · have hn1 : x ∉ M₁ \ M₂ := fun h' => h'.2 h.1.2
+        have hn2 : x ∉ M₂ \ M₁ := fun h' => h'.2 h.1.1
+        simp only [hmdef, ite_eq_right hn1, ite_eq_right hn2, ite_eq_left h.1]
+        exact Int.natAbs_pos.2 h.2
+    have hσpm : ∀ x, σ x = 1 ∨ σ x = -1 := by
+      intro x; simp only [hσdef]; split_ifs <;> simp
+    have hmle : ∀ x ∈ M, m x ≤ M₁.indicator R₁.mult x + M₂.indicator R₂.mult x := by
+      rintro x ((h | h) | h)
+      · simp only [hmdef, ite_eq_left h, indicator_of_mem h.1, indicator_of_notMem h.2]; omega
+      · have hn : x ∉ M₁ \ M₂ := fun h' => h.2 h'.1
+        simp only [hmdef, ite_eq_right hn, ite_eq_left h, indicator_of_mem h.1, indicator_of_notMem h.2]
+        omega
+      · have hn1 : x ∉ M₁ \ M₂ := fun h' => h'.2 h.1.2
+        have hn2 : x ∉ M₂ \ M₁ := fun h' => h'.2 h.1.1
+        simp only [hmdef, ite_eq_right hn1, ite_eq_right hn2, ite_eq_left h.1, indicator_of_mem h.1.1,
+          indicator_of_mem h.1.2]
+        simp only [hddef]
+        rcases hσpm x with hs | hs <;> rw [hs] <;> omega
+    have h₁ : ∀ᵐ x ∂(μHE[n].restrict (M ∩ M₁)), ζ x = R₁.orient x ∨ ζ x = -R₁.orient x := by
+      rw [ae_restrict_iff' (hM.inter hM₁)]
+      filter_upwards [he₁] with x hx hxM
+      have hxe := hx hxM.2
+      rcases hxM.1 with (h | h) | h
+      · left; simp only [hζdef, ite_eq_left h]; exact hxe.symm
+      · exact absurd hxM.2 h.2
+      · have hn1 : x ∉ M₁ \ M₂ := fun h' => h'.2 h.1.2
+        have hn2 : x ∉ M₂ \ M₁ := fun h' => h'.2 h.1.1
+        simp only [hζdef, ite_eq_right hn1, ite_eq_right hn2]
+        split_ifs
+        · left; exact hxe.symm
+        · right; rw [hxe]
+    have h₂ : ∀ᵐ x ∂(μHE[n].restrict (M \ M₁)), ζ x = R₂.orient x ∨ ζ x = -R₂.orient x := by
+      rw [ae_restrict_iff' (hM.diff hM₁)]
+      filter_upwards [he₂] with x hx hxM
+      have hx2 : x ∈ M₂ \ M₁ := ⟨(hMsub hxM.1).resolve_left hxM.2, hxM.2⟩
+      have hn1 : x ∉ M₁ \ M₂ := fun h' => hxM.2 h'.1
+      right; simp only [hζdef, ite_eq_right hn1, ite_eq_left hx2]; rw [hx hx2.1]
+    obtain ⟨R, hRc, hRm, hRo⟩ := recombine M m ζ hM hMsub hmmeas hmpos hmle
+      hζmeas.aestronglyMeasurable h₁ h₂
+    refine ⟨R, ?_⟩
+    rw [hRc, hRm, hRo]
+    filter_upwards [he₁, he₂, hov'] with x hx₁ hx₂ hx₃
+    intro α
+    by_cases hA : x ∈ M₁ <;> by_cases hB : x ∈ M₂
+    · -- overlap
+      have hAB : x ∈ M₁ ∩ M₂ := ⟨hA, hB⟩
+      have hn1 : x ∉ M₁ \ M₂ := fun h' => h'.2 hB
+      have hn2 : x ∉ M₂ \ M₁ := fun h' => h'.2 hA
+      have e₁ := hx₁ hA
+      have e₂ := hx₂ hB
+      have hsig : R₂.orient x α = ((σ x : ℤ) : ℝ) * R₁.orient x α := by
+        rcases hx₃ hAB with h | h
+        · have : ξt₂ x = ξt₁ x := by rw [← e₁, ← e₂, h]
+          simp only [hσdef, ite_eq_left this]; simp [h]
+        · by_cases hq : ξt₂ x = ξt₁ x
+          · have : R₂.orient x = R₁.orient x := by rw [e₁, e₂, hq]
+            simp only [hσdef, ite_eq_left hq]; simp [this]
+          · simp only [hσdef, ite_eq_right hq]; simp [h]
+      rw [indicator_of_mem hA, indicator_of_mem hB, hsig]
+      have hcoef : (R₁.mult x : ℝ) * R₁.orient x α -
+          (R₂.mult x : ℝ) * (((σ x : ℤ) : ℝ) * R₁.orient x α) =
+          ((d x : ℤ) : ℝ) * R₁.orient x α := by
+        simp only [hddef]; push_cast; ring
+      rw [hcoef]
+      rcases lt_trichotomy (d x) 0 with hd | hd | hd
+      · have hxM : x ∈ M := Or.inr ⟨hAB, hd.ne⟩
+        rw [indicator_of_mem hxM]
+        simp only [hmdef, hζdef, ite_eq_right hn1, ite_eq_right hn2, ite_eq_left hAB, ite_eq_right (not_lt.2 hd.le)]
+        have hc : (((d x).natAbs : ℕ) : ℝ) = -((d x : ℤ) : ℝ) := by
+          have h1 : ((d x).natAbs : ℤ) = -(d x) := Int.ofNat_natAbs_of_nonpos hd.le
+          have h2 : ((((d x).natAbs : ℕ) : ℤ) : ℝ) = ((-(d x) : ℤ) : ℝ) := by rw [h1]
+          simpa using h2
+        rw [hc, neg_apply, e₁]; ring
+      · have hxM : x ∉ M := by
+          rintro ((h | h) | h)
+          · exact hn1 h
+          · exact hn2 h
+          · exact h.2 hd
+        rw [indicator_of_notMem hxM, hd]; simp
+      · have hxM : x ∈ M := Or.inr ⟨hAB, hd.ne'⟩
+        rw [indicator_of_mem hxM]
+        simp only [hmdef, hζdef, ite_eq_right hn1, ite_eq_right hn2, ite_eq_left hAB, ite_eq_left hd]
+        have hc : (((d x).natAbs : ℕ) : ℝ) = ((d x : ℤ) : ℝ) := by
+          have h1 : ((d x).natAbs : ℤ) = d x := Int.natAbs_of_nonneg hd.le
+          have h2 : ((((d x).natAbs : ℕ) : ℤ) : ℝ) = ((d x : ℤ) : ℝ) := by rw [h1]
+          simpa using h2
+        rw [hc, e₁]
+    · -- only in `M₁`
+      have h : x ∈ M₁ \ M₂ := ⟨hA, hB⟩
+      have hxM : x ∈ M := Or.inl (Or.inl h)
+      rw [indicator_of_mem hxM, indicator_of_mem hA, indicator_of_notMem hB, sub_zero]
+      simp only [hmdef, hζdef, ite_eq_left h]
+      rw [hx₁ hA]
+    · -- only in `M₂`
+      have h : x ∈ M₂ \ M₁ := ⟨hB, hA⟩
+      have hn : x ∉ M₁ \ M₂ := fun h' => hA h'.1
+      have hxM : x ∈ M := Or.inl (Or.inr h)
+      rw [indicator_of_mem hxM, indicator_of_notMem hA, indicator_of_mem hB, zero_sub]
+      simp only [hmdef, hζdef, ite_eq_right hn, ite_eq_left h]
+      rw [hx₂ hB, neg_apply]; ring
+    · -- outside both
+      have hxM : x ∉ M := fun h => (hMsub h).elim hA hB
+      rw [indicator_of_notMem hxM, indicator_of_notMem hA, indicator_of_notMem hB, sub_zero]
+  -- Step 9 (reused child `rsdic_imrep_action_int_combination` with `p₁ = 1`, `p₂ = -1`)
+  have hRv : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)),
+      R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x =
+        ((1 : ℤ) : ℝ) • R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x +
+          ((-1 : ℤ) : ℝ) • R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x := by
+    filter_upwards [hR] with x hx
+    ext α
+    have h := hx α
+    rw [add_apply, smul_apply, smul_apply, smul_eq_mul, smul_eq_mul]
+    by_cases h0 : x ∈ R.carrier <;> by_cases h1 : x ∈ R₁.carrier <;>
+      by_cases h2 : x ∈ R₂.carrier <;>
+      simp only [indicator_of_mem, indicator_of_notMem, h0, h1, h2, not_false_eq_true,
+        smul_apply, smul_eq_mul, zero_apply] at h ⊢ <;> push_cast <;> linarith
+  refine ⟨R, fun ω => ?_⟩
+  rw [Submission.rsdic_imrep_action_int_combination P n U R₁ R₂ R 1 (-1) hRv ω, ← hR₁ ω,
+    ← hR₂ ω]
+  have hsub : (S - T) ω = S ω - T ω := rfl
+  rw [hsub]
+  push_cast
+  ring
 /-- **Simon Ch. 6, Remark 3.2(1)**: if `T₁, T₂ ∈ 𝒟ₙ(U)` are integer multiplicity and
 `p₁, p₂ ∈ ℤ`, then `S = p₁T₁ + p₂T₂` is integer multiplicity.  Write `Tᵢ = τ(Mᵢ, θᵢ, ξᵢ)`.  The
 orientations agree up to sign `Hⁿ`-a.e. on `M₁ ∩ M₂`, which gives a triple `(M', θ', ξ')` in `U`
@@ -5170,6 +5849,7 @@ theorem Submission.dor_ims_action_eq_integral : ∀ (P n : ℕ) (U : Set (Euclid
   rw [IMRep.measure, integral_withDensity_eq_integral_toReal_smul hθ
     (ae_of_all _ fun x => ENNReal.natCast_lt_top _), IMRep.action]
   simp only [ENNReal.toReal_natCast, smul_eq_mul]
+
 /-- **Simon Ch. 6, 1.1 and 1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of a plane (`τ`
 orthonormal) is a nonzero `n`-vector of norm at most one.  `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
 gives `‖ξ‖ ≤ 1`.  The covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩ = det(⟨τᵢ, wⱼ⟩)`, the
@@ -6945,1484 +7625,6 @@ theorem Submission.dor_ims_sua_mollify_unit_field : ∀ (P n : ℕ) (V : Set (Eu
         rw [mul_div_assoc', div_le_iff₀ hC]
         nlinarith [norm_nonneg A]
 
-/-- **Simon Ch. 3, Remarks 1.5(2) and 1.8(1)**: if `A ⊆ B ⊆ U` are Borel and `Hⁿ(B ∩ K) < ∞` for
-compact `K ⊆ U`, then for `Hⁿ`-a.e. `x ∈ A`, `B` and `A` have the same approximate tangent spaces
-at `x`.  Off a `Hⁿ⌞A`-null set independent of `Q`, `Hⁿ((B ∖ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))` for
-small `ρ` (Besicovitch).  A tangent plane of `B` or of `A` at `x` gives
-`Hⁿ(A ∩ B̄_ρ(x)) ≤ Cρⁿ` (Remark 1.5(3), using `A ⊆ B` in the first case), hence
-`Hⁿ((B ∖ A) ∩ B̄_ρ(x)) = o(ρⁿ)`, and then the blow-up integrals of `B` and `A` have the same
-limits. -/
-theorem Submission.rsdic_ae_tangent_iff_of_subset : ∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q := by
-  intro P n U A B hU hA hB hAB hBU hfin
-  -- Steps 1–4: for `Hⁿ⌞A`-a.e. `x`, `x ∈ A` and the excess of `B` over `A` near `x` is eventually
-  -- small relative to `Hⁿ(B ∩ B̄_ρ(x))`; the exceptional set does not depend on `Q`
-  filter_upwards [Submission.rsdic_tl_ae_excess_le P n U A B hU hA hB hAB hBU hfin,
-    ae_restrict_mem hA] with x hexc hxA Q
-  -- a compact ball `B̄_{s/2}(x) ⊆ B_s(x) ⊆ U`, so `Hⁿ(B ∩ B̄_{s/2}(x)) < ∞`
-  obtain ⟨s, hs, hsU⟩ := Metric.isOpen_iff.1 hU x (hBU (hAB hxA))
-  have hr₀ : 0 < s / 2 := half_pos hs
-  have hBfin : μHE[n] (B ∩ closedBall x (s / 2)) ≠ ∞ :=
-    hfin _ (isCompact_closedBall x (s / 2)) ((closedBall_subset_ball (half_lt_self hs)).trans hsU)
-  have hAB' : ∀ ρ : ℝ, μHE[n] (A ∩ closedBall x ρ) ≤ μHE[n] (B ∩ closedBall x ρ) :=
-    fun ρ => measure_mono (inter_subset_inter_left _ hAB)
-  -- Steps 5–7: a growth bound `Hⁿ(A ∩ B̄_ρ(x)) ≤ Cρⁿ` gives `Hⁿ((B ∖ A) ∩ B̄_ρ(x)) = o(ρⁿ)`, which
-  -- forces equal approximate tangent spaces
-  have key : ∀ C r₁ : ℝ, 0 < r₁ →
-      (∀ ρ : ℝ, 0 < ρ → ρ < r₁ → μHE[n] (A ∩ closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) →
-      (HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) :=
-    fun C r₁ hr₁ hgrowth =>
-      Submission.rsdic_tl_tangent_iff_of_density_zero P n A B x (s / 2) hA hB hAB hr₀ hBfin
-        (Submission.rsdic_tl_excess_density_zero P n A B x (s / 2) C r₁ hr₀ hBfin hr₁ hgrowth hexc)
-        Q
-  constructor
-  · -- the growth bound for `B` passes to `A ⊆ B`
-    intro hTB
-    obtain ⟨C, r₁, hr₁, hgrowth⟩ :=
-      Submission.rsdic_measure_closedBall_le_of_tangent P n B x Q (s / 2) hB hr₀ hBfin hTB
-    exact (key C r₁ hr₁ fun ρ hρ hρr₁ => (hAB' ρ).trans (hgrowth ρ hρ hρr₁)).1 hTB
-  · intro hTA
-    obtain ⟨C, r₁, hr₁, hgrowth⟩ :=
-      Submission.rsdic_measure_closedBall_le_of_tangent P n A x Q (s / 2) hA hr₀
-        (ne_top_of_le_ne_top hBfin (hAB' (s / 2))) hTA
-    exact (key C r₁ hr₁ hgrowth).2 hTA
-
-/-- **`ξ` orients the approximate tangent space of every locally finite `C ⊇ B`, a.e. on
-`B ⊆ M`** (Simon 6.3.1, chapter-06.txt lines 733–748, with Ch. 3, 1.4–1.6, chapter-03.txt
-lines 77–144, where the proof of 1.6 shows `TₓM = TₓNⱼ` a.e. on `Mⱼ ⊆ Nⱼ` by the Upper Density
-Theorem).  Let `R = (M, θ, ξ)` be an `IMRep` in `U`, and `B ⊆ M`, `B ⊆ C ⊆ U` Borel with `C`
-locally `Hⁿ`-finite in `U`.  `M` is locally `Hⁿ`-finite in `U` since `θ ≥ 1` on `M`, so tangent
-locality gives `TₓB = TₓM` and `TₓB = TₓC` for `Hⁿ`-a.e. `x ∈ B`; `ξ(x)` orients `TₓM` for
-`Hⁿ`-a.e. `x ∈ M ⊇ B`. -/
-theorem Submission.rsdic_imrep_ae_tangent_orient_of_subset : ∀ (P n : ℕ) (U B C : Set (Euclid P)) (R : IMRep U n), IsOpen U → MeasurableSet B → MeasurableSet C → B ⊆ R.carrier → B ⊆ C → C ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (C ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict B), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n C x Q ∧ IsUnitOrientationOf (R.orient x) Q := by
-  intro P n U B C R hU hB hC hBM hBC hCU hCfin
-  -- `M` is locally `Hⁿ`-finite in `U`: `Hⁿ(M ∩ K) = ∫_{M∩K} 1 dHⁿ ≤ ∫_{M∩K} θ dHⁿ < ∞`
-  have hMfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (R.carrier ∩ K) ≠ ∞ := by
-    intro K hK hKU
-    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU) ?_
-    exact (setLIntegral_one _).symm.trans_le
-      (setLIntegral_mono' (R.measurableSet_carrier.inter hK.measurableSet)
-        fun x hx => Nat.one_le_cast.2 (R.mult_pos x hx.1))
-  -- `TₓM = TₓB` and `TₓC = TₓB` for `Hⁿ`-a.e. `x ∈ B` (tangent locality for `B ⊆ M`, `B ⊆ C`)
-  have hM := Submission.rsdic_ae_tangent_iff_of_subset P n U B R.carrier hU hB
-    R.measurableSet_carrier hBM R.carrier_subset hMfin
-  have hC' := Submission.rsdic_ae_tangent_iff_of_subset P n U B C hU hB hC hBC hCU hCfin
-  -- `ξ(x)` orients `TₓM` for `Hⁿ`-a.e. `x ∈ M`, hence for `Hⁿ`-a.e. `x ∈ B`
-  filter_upwards [hM, hC', ae_restrict_of_ae_restrict_of_subset hBM R.orients]
-    with x hxM hxC ⟨Q, hQ, hξ⟩
-  exact ⟨Q, (hxC Q).2 ((hxM Q).1 hQ), hξ⟩
-/-- **Simon Ch. 6, Remark 3.2(1)**, step 3 (orientations `±τ₁ ∧ ⋯ ∧ τₙ` as in 2.1–2.2): two unit
-orientations `v = ±τ₁ ∧ ⋯ ∧ τₙ`, `w = ±τ'₁ ∧ ⋯ ∧ τ'ₙ` of the same subspace `Q` differ by a sign.
-`τ` and `τ'` are orthonormal bases `b`, `b'` of `Q`; every alternating `n`-form on `Q` is a
-multiple of `det_b`, so `α(τ') = det_b(b') α(τ)` for every `n`-covector `α`, and
-`det_b(b') = ±1`, the change of orthonormal basis being orthogonal. -/
-theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf v Q → IsUnitOrientationOf w Q → w = v ∨ w = -v := by
-  rintro P n v w Q ⟨τ, hτ, hspan, hv⟩ ⟨τ', hτ', hspan', hw⟩
-  -- an orthonormal frame spanning `Q` is an orthonormal basis of `Q`
-  have frame : ∀ σ : Fin n → Euclid P, Orthonormal ℝ σ → Submodule.span ℝ (range σ) = Q →
-      ∃ c : OrthonormalBasis (Fin n) ℝ Q, ∀ i, (c i : Euclid P) = σ i := by
-    intro σ hσ hσspan
-    have hmem : ∀ i, σ i ∈ Q := fun i => hσspan ▸ Submodule.subset_span (mem_range_self i)
-    let u : Fin n → Q := fun i => ⟨σ i, hmem i⟩
-    have hu : Orthonormal ℝ u := by
-      rw [← Q.subtypeₗᵢ.orthonormal_comp_iff (v := u)]
-      exact hσ
-    have huspan : ⊤ ≤ Submodule.span ℝ (range u) := by
-      rintro ⟨y, hy⟩ -
-      rw [← hσspan, Submodule.mem_span_range_iff_exists_fun] at hy
-      obtain ⟨c, hc⟩ := hy
-      rw [Submodule.mem_span_range_iff_exists_fun]
-      exact ⟨c, Subtype.ext (by simpa [u] using hc)⟩
-    exact ⟨OrthonormalBasis.mk hu huspan, fun i => by simp [u]⟩
-  obtain ⟨b, hb⟩ := frame τ hτ hspan
-  obtain ⟨b', hb'⟩ := frame τ' hτ' hspan'
-  -- `det_b(b') = ±1`
-  have hd := b.det_to_matrix_orthonormalBasis_real b'
-  -- `α(τ') = det_b(b') α(τ)`: the restriction `α_Q` of `α` to `Q` is `α_Q(b) det_b`
-  have hτ'τ : ∀ α : Covector (Euclid P) n, α τ' = b.toBasis.det b' * α τ := by
-    intro α
-    let f : Q [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap Q.subtype
-    have hf : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (σ : Fin n → Euclid P),
-        (∀ i, (c i : Euclid P) = σ i) → f c = α σ := by
-      intro c σ hc
-      have hcσ : (fun i => Q.subtype (c i)) = σ := funext hc
-      rw [AlternatingMap.compLinearMap_apply, hcσ, ContinuousAlternatingMap.coe_toAlternatingMap]
-    have h := congrArg (fun g : Q [⋀^Fin n]→ₗ[ℝ] ℝ => g b') (f.eq_smul_basis_det b.toBasis)
-    simp only [AlternatingMap.smul_apply, smul_eq_mul, OrthonormalBasis.coe_toBasis] at h
-    rw [← hf b' τ' hb', h, hf b τ hb, mul_comm]
-  -- `w = ±v`
-  rcases hd with hd | hd <;> rcases hv with hv | hv <;> rcases hw with hw | hw
-  · left; ext α; rw [hw, hv, hτ'τ, hd, one_mul]
-  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, one_mul]
-  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, one_mul, neg_neg]
-  · left; ext α; rw [hw, hv, hτ'τ, hd, one_mul]
-  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul]
-  · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
-  · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
-  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
-/-- **Simon Ch. 6, Remark 3.2(1)** (the representation step): if `1_M θ ξ = p₁ 1_{M₁} θ₁ ξ₁ +
-p₂ 1_{M₂} θ₂ ξ₂` holds `Hⁿ`-a.e., then `τ(M, θ, ξ)(ω) = p₁ τ(M₁, θ₁, ξ₁)(ω) + p₂ τ(M₂, θ₂, ξ₂)(ω)`
-for every `ω ∈ 𝒟ⁿ(U)`.  A unit orientation has `|⟨α, ξ⟩| ≤ ‖α‖`, so on each carrier `θ⟨ω, ξ⟩` is
-dominated by `sup ‖ω‖ · θ 1_{spt ω}`, integrable by local integrability of `θ`.  Thus each action
-is `∫ ⟨ω, 1_M θ ξ⟩ dHⁿ` with an integrable integrand, and the identity integrates linearly. -/
-theorem Submission.rsdic_imrep_action_int_combination : ∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (p₁ p₂ : ℤ), (∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = (p₁ : ℝ) • R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + (p₂ : ℝ) • R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x) → ∀ ω : TestFormOn U n, R.action (ω : DifferentialForm (Euclid P) n) = (p₁ : ℝ) * R₁.action (ω : DifferentialForm (Euclid P) n) + (p₂ : ℝ) * R₂.action (ω : DifferentialForm (Euclid P) n) := by
-  intro P n U R₁ R₂ R p₁ p₂ hF ω
-  -- `ω` is continuous, bounded by `W`, and supported in the compact `K = spt ω ⊆ U`
-  obtain ⟨⟨hsmooth, hcpt⟩, hωU⟩ := ω.2
-  have hωc : Continuous (ω : DifferentialForm (Euclid P) n) := ContDiff.continuous hsmooth
-  obtain ⟨W, hW⟩ := hωc.bounded_above_of_compact_support hcpt
-  -- Step 1: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` has `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
-  have hunit : ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q →
-      ∀ α : Covector (Euclid P) n, ‖ξ α‖ ≤ ‖α‖ := by
-    rintro ξ Q ⟨τ, hτ, -, hξ⟩ α
-    have h : ‖α τ‖ ≤ ‖α‖ := by
-      calc ‖α τ‖ ≤ ‖α‖ * ∏ i, ‖τ i‖ := α.le_opNorm τ
-        _ = ‖α‖ := by simp [hτ.norm_eq_one]
-    rcases hξ with h' | h'
-    · rw [h' α]; exact h
-    · rw [h' α, norm_neg]; exact h
-  -- Steps 2–3: for every `R' = (M', θ', ξ')`, `x ↦ (1_{M'} θ' ξ')(x)(ω(x))` is integrable with
-  -- integral `τ(R')(ω)`
-  have key : ∀ R' : IMRep U n,
-      Integrable (fun x => R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x
-        ((ω : DifferentialForm (Euclid P) n) x)) μHE[n] ∧
-      ∫ x, R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x
-        ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] =
-        R'.action (ω : DifferentialForm (Euclid P) n) := by
-    intro R'
-    have hfun : (fun x => R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x
-        ((ω : DifferentialForm (Euclid P) n) x)) = R'.carrier.indicator
-          (fun y => (R'.mult y : ℝ) * R'.orient y ((ω : DifferentialForm (Euclid P) n) y)) := by
-      funext x
-      by_cases hx : x ∈ R'.carrier
-      · simp [Set.indicator_of_mem hx]
-      · simp [Set.indicator_of_notMem hx]
-    rw [hfun, integrable_indicator_iff R'.measurableSet_carrier,
-      integral_indicator R'.measurableSet_carrier]
-    refine ⟨?_, rfl⟩
-    -- `θ'⟨ω, ξ'⟩` is a.e. strongly measurable: `(L, α) ↦ L(α)` is continuous
-    have hmult : Measurable fun y => (R'.mult y : ℝ) := measurable_from_nat.comp R'.measurable_mult
-    have hev : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
-      continuous_fst.clm_apply continuous_snd
-    have hmeas : AEStronglyMeasurable
-        (fun y => (R'.mult y : ℝ) * R'.orient y ((ω : DifferentialForm (Euclid P) n) y))
-        (μHE[n].restrict R'.carrier) :=
-      hmult.aestronglyMeasurable.mul (hev.comp_aestronglyMeasurable
-        (R'.aestronglyMeasurable_orient.prodMk hωc.aestronglyMeasurable))
-    -- the dominating function `W θ' 1_K` is integrable on `M'`, as `∫_{M' ∩ K} θ' dHⁿ < ∞`
-    have hKm : MeasurableSet (tsupport (ω : DifferentialForm (Euclid P) n)) :=
-      (isClosed_tsupport _).measurableSet
-    have hint : Integrable (fun y => W * (tsupport (ω : DifferentialForm (Euclid P) n)).indicator
-        (fun y => (R'.mult y : ℝ)) y) (μHE[n].restrict R'.carrier) := by
-      refine Integrable.const_mul ?_ W
-      rw [integrable_indicator_iff hKm, IntegrableOn, Measure.restrict_restrict hKm]
-      have h := integrable_toReal_of_lintegral_ne_top
-        (μ := μHE[n].restrict (tsupport (ω : DifferentialForm (Euclid P) n) ∩ R'.carrier))
-        (f := fun y => (R'.mult y : ℝ≥0∞))
-        (measurable_from_nat.comp R'.measurable_mult).aemeasurable
-        (by rw [Set.inter_comm]; exact R'.locallyIntegrable_mult _ hcpt hωU)
-      simpa using h
-    refine hint.mono' hmeas ?_
-    filter_upwards [R'.orients] with y hyQ
-    obtain ⟨Q, -, hQ⟩ := hyQ
-    by_cases hy : y ∈ tsupport (ω : DifferentialForm (Euclid P) n)
-    · rw [Set.indicator_of_mem hy]
-      calc ‖(R'.mult y : ℝ) * R'.orient y ((ω : DifferentialForm (Euclid P) n) y)‖
-          = (R'.mult y : ℝ) * ‖R'.orient y ((ω : DifferentialForm (Euclid P) n) y)‖ := by
-            rw [norm_mul, Real.norm_natCast]
-        _ ≤ (R'.mult y : ℝ) * ‖(ω : DifferentialForm (Euclid P) n) y‖ :=
-            mul_le_mul_of_nonneg_left (hunit _ _ hQ _) (Nat.cast_nonneg _)
-        _ ≤ (R'.mult y : ℝ) * W := mul_le_mul_of_nonneg_left (hW y) (Nat.cast_nonneg _)
-        _ = W * (R'.mult y : ℝ) := mul_comm _ _
-    · rw [Set.indicator_of_notMem hy, image_eq_zero_of_notMem_tsupport hy, map_zero, mul_zero,
-        norm_zero, mul_zero]
-  -- Step 4: integrate the a.e. identity evaluated at `ω(x)`, using linearity of the integral
-  obtain ⟨-, he⟩ := key R
-  obtain ⟨hi₁, he₁⟩ := key R₁
-  obtain ⟨hi₂, he₂⟩ := key R₂
-  rw [← he, ← he₁, ← he₂, ← integral_const_mul, ← integral_const_mul,
-    ← integral_add (hi₁.const_mul _) (hi₂.const_mul _)]
-  refine integral_congr_ae ?_
-  filter_upwards [hF] with x hx
-  rw [hx, add_apply, smul_apply, smul_apply, smul_eq_mul, smul_eq_mul]
-/-- Scaling of `Hⁿ` under the blow-up `η_{x,r}(z) = r⁻¹(z − x)`, `r > 0` (proof of Simon 3.1.6):
-`Hⁿ(η_{x,r}(S) ∩ B̄_R(0)) = r⁻ⁿ Hⁿ(S ∩ B̄_{rR}(x))`.  Since `‖η_{x,r}(z)‖ = r⁻¹‖z − x‖`, the left
-side is `Hⁿ(η_{x,r}(S ∩ B̄_{rR}(x)))`; `η_{x,r}` is the homothety of centre `x` and ratio `r⁻¹`
-followed by the translation by `−x`, which preserves `Hⁿ`, while the homothety multiplies it by
-`‖r⁻¹‖₊ⁿ = r⁻ⁿ`. -/
-theorem Submission.regcomp_atl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R)) := by
-  intro P n x r R S hr
-  -- `‖η(z)‖ = r⁻¹‖z − x‖`
-  have hnorm : ∀ z : Euclid P,
-      ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ = r⁻¹ * ‖z - x‖ := by
-    intro z
-    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
-      abs_of_pos (inv_pos.mpr hr)]
-  -- Step 1: `η(S) ∩ B̄(0, R) = η(S ∩ B̄(x, rR))`
-  have hset : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R =
-      Poincare.SimonGMT.Chapter03.blowUpMap x r '' (S ∩ closedBall x (r * R)) := by
-    ext y
-    constructor
-    · rintro ⟨⟨z, hz, rfl⟩, hy⟩
-      refine ⟨z, ⟨hz, ?_⟩, rfl⟩
-      rw [mem_closedBall_zero_iff, hnorm] at hy
-      rw [mem_closedBall, dist_eq_norm]
-      calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by field_simp
-        _ ≤ r * R := mul_le_mul_of_nonneg_left hy hr.le
-    · rintro ⟨z, ⟨hz, hzx⟩, rfl⟩
-      refine ⟨⟨z, hz, rfl⟩, ?_⟩
-      rw [mem_closedBall, dist_eq_norm] at hzx
-      rw [mem_closedBall_zero_iff, hnorm]
-      calc r⁻¹ * ‖z - x‖ ≤ r⁻¹ * (r * R) := mul_le_mul_of_nonneg_left hzx (inv_pos.mpr hr).le
-        _ = R := by field_simp
-  -- Step 2: `η = τ ∘ h` with `h = homothety x r⁻¹` and `τ y = y + (-x)`
-  have hcomp : Poincare.SimonGMT.Chapter03.blowUpMap x r =
-      (fun y : Euclid P => y + -x) ∘ AffineMap.homothety x r⁻¹ := by
-    funext z
-    simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
-  -- Step 3: `μ(η(T)) = (ENNReal.ofReal r)⁻¹ ^ n * μ(T)`
-  have hscale : ∀ T : Set (Euclid P), μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) =
-      (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] T := by
-    intro T
-    rw [hcomp, Set.image_comp, (isometry_add_right (-x)).euclideanHausdorffMeasure_image,
-      euclideanHausdorffMeasure_homothety_image n x (inv_ne_zero hr.ne') T, ENNReal.smul_def,
-      smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
-      Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
-  -- Step 4: conclusion
-  rw [hset, hscale]
-
-/-- **Simon Ch. 6, Remark 3.2(1)**: the difference of two integer multiplicity currents in the
-open set `U` is integer multiplicity.  Let `S = τ(M₁, θ₁, ξ₁)`, `T = τ(M₂, θ₂, ξ₂)`.  By the Upper
-Density Theorem (Ch. 1, 3.6) the carriers have density zero at `Hⁿ`-a.e. point outside them, and
-approximate tangent spaces ignore sets of density zero (Ch. 3, 1.4–1.5), so `T_yM₁ = T_yM₂` and
-`ξ₂(y) = σ(y) ξ₁(y)` with a Borel sign `σ = ±1` for `Hⁿ`-a.e. `y ∈ M₁ ∩ M₂`.  Then
-`S − T = τ(M, m, ζ)` with `M = (M₁ \ M₂) ∪ (M₂ \ M₁) ∪ {y ∈ M₁ ∩ M₂ : θ₁ ≠ σθ₂}` and
-`(m, ζ) = (θ₁, ξ₁)`, `(θ₂, −ξ₂)`, `(|θ₁ − σθ₂|, ±ξ₁)` on the three pieces. -/
-theorem Submission.dtc_isIntegerMultiplicity_sub : ∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n), IsOpen U → 0 < n → IsIntegerMultiplicity S → IsIntegerMultiplicity T → IsIntegerMultiplicity (S - T) := by
-  classical
-  intro P n U S T hU _hn hS hT
-  obtain ⟨R₁, hR₁⟩ := hS
-  obtain ⟨R₂, hR₂⟩ := hT
-  -- Step 1: carriers are locally `Hⁿ`-finite in `U` (multiplicities are `≥ 1`)
-  have hfin : ∀ R : IMRep U n, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
-      μHE[n] (R.carrier ∩ K) ≠ ∞ := by
-    intro R K hK hKU
-    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU) ?_
-    rw [← setLIntegral_one]
-    apply setLIntegral_mono' (R.measurableSet_carrier.inter hK.measurableSet)
-    intro x hx
-    have := R.mult_pos x hx.1
-    exact_mod_cast Nat.one_le_iff_ne_zero.2 (Nat.pos_iff_ne_zero.1 this)
-  -- Step 2 (F1): Upper Density Theorem (Simon 1.3.6), localized to `U`
-  have F1 : ∀ A : Set (Euclid P), MeasurableSet A →
-      (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (A ∩ K) ≠ ∞) →
-      ∀ᵐ y ∂(μHE[n] : Measure (Euclid P)), y ∈ U → y ∉ A →
-        Tendsto (fun ρ : ℝ => μHE[n] (A ∩ closedBall y ρ) / ENNReal.ofReal (ρ ^ n))
-          (𝓝[>] 0) (𝓝 0) := by
-    intro A hA hAfin
-    have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
-    have hzero : ∀ y : Euclid P,
-        Poincare.SimonGMT.Chapter01.dimensionalUpperDensity
-          ((μHE[n] : Measure (Euclid P)).toOuterMeasure) (n : ℝ) A y = 0 →
-        Tendsto (fun ρ : ℝ => μHE[n] (A ∩ closedBall y ρ) / ENNReal.ofReal (ρ ^ n))
-          (𝓝[>] 0) (𝓝 0) := by
-      intro y h
-      have hq : Tendsto (Poincare.SimonGMT.Chapter01.dimensionalDensityQuotient
-          ((μHE[n] : Measure (Euclid P)).toOuterMeasure) (n : ℝ) A y) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-        apply tendsto_of_le_liminf_of_limsup_le (zero_le)
-        exact h.le
-      have hω0 : Poincare.SimonGMT.Chapter01.realUnitBallVolume (n : ℝ) ≠ 0 :=
-        (Poincare.SimonGMT.Chapter01.realUnitBallVolume_pos hn0).ne'
-      have hωt : Poincare.SimonGMT.Chapter01.realUnitBallVolume (n : ℝ) ≠ ∞ :=
-        Poincare.SimonGMT.Chapter01.realUnitBallVolume_ne_top _
-      have h2 := ENNReal.Tendsto.const_mul hq (Or.inr hωt)
-        (a := Poincare.SimonGMT.Chapter01.realUnitBallVolume (n : ℝ))
-      rw [mul_zero] at h2
-      refine h2.congr' ?_
-      filter_upwards [self_mem_nhdsWithin] with ρ hρ
-      simp only [Poincare.SimonGMT.Chapter01.dimensionalDensityQuotient,
-        Measure.toOuterMeasure_apply]
-      rw [ENNReal.rpow_natCast, ← ENNReal.ofReal_pow (le_of_lt hρ), ← mul_div_assoc,
-        ENNReal.mul_div_mul_left _ _ hω0 hωt]
-    -- null sets of Simon's `Hⁿ` are `μHE[n]`-null
-    have bridge : ∀ Z : Set (Euclid P),
-        Poincare.SimonGMT.Chapter01.simonHausdorffOuterMeasureReal (n : ℝ) Z = 0 →
-          (μHE[n] : Measure (Euclid P)) Z = 0 := by
-      intro Z hZ
-      rw [Poincare.SimonGMT.Chapter01.simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure
-        hn0] at hZ
-      rw [smul_apply, smul_eq_mul] at hZ
-      have hc : Poincare.SimonGMT.Chapter01.realUnitBallVolume (n : ℝ) / (2 : ℝ≥0∞) ^ (n : ℝ)
-          ≠ 0 :=
-        ENNReal.div_ne_zero.mpr
-          ⟨(Poincare.SimonGMT.Chapter01.realUnitBallVolume_pos hn0).ne', by simp⟩
-      have hH : (μH[(n : ℝ)] : Measure (Euclid P)) Z = 0 := by
-        simpa using (mul_eq_zero.mp hZ).resolve_left hc
-      rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH, smul_zero]
-    -- countable cover of `U` by balls whose closures are compact subsets of `U`
-    let ι := {p : Euclid P × ℝ // 0 < p.2 ∧ closedBall p.1 p.2 ⊆ U}
-    obtain ⟨J, hJc, hJU⟩ := TopologicalSpace.isOpen_iUnion_countable
-      (fun i : ι => ball i.1.1 i.1.2) (fun _ => isOpen_ball)
-    have hcover : U ⊆ ⋃ i : ι, ball i.1.1 i.1.2 := by
-      intro x hx
-      obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU x hx
-      exact mem_iUnion.mpr ⟨⟨(x, ε / 2), half_pos hε,
-        (closedBall_subset_ball (half_lt_self hε)).trans hεU⟩, mem_ball_self (half_pos hε)⟩
-    let N : ι → Set (Euclid P) := fun i => {x | x ∉ A ∩ ball i.1.1 i.1.2 ∧
-      Poincare.SimonGMT.Chapter01.dimensionalUpperDensity
-        ((μHE[n] : Measure (Euclid P)).toOuterMeasure) (n : ℝ) (A ∩ ball i.1.1 i.1.2) x ≠ 0}
-    have hN : ∀ i, (μHE[n] : Measure (Euclid P)) (N i) = 0 := by
-      intro i
-      apply bridge
-      apply Poincare.SimonGMT.Chapter01.simon_theorem_3_6 _
-        (Poincare.SimonGMT.Chapter01.measure_toOuterMeasure_isBorelRegular _) hn0
-      · exact le_toOuterMeasure_caratheodory _ _ (hA.inter measurableSet_ball)
-      · have := hAfin (closedBall i.1.1 i.1.2) (isCompact_closedBall _ _) i.2.2
-        exact lt_of_le_of_lt (measure_mono (inter_subset_inter_right _ ball_subset_closedBall))
-          this.lt_top
-    rw [ae_iff]
-    apply measure_mono_null (t := ⋃ i ∈ J, N i)
-    · intro y hy
-      simp only [mem_ofPred_eq, not_imp] at hy
-      obtain ⟨hyU, hyA, hnot⟩ := hy
-      have hy' := hcover hyU
-      rw [← hJU] at hy'
-      obtain ⟨i, hiJ, hyi⟩ := mem_iUnion₂.mp hy'
-      refine mem_iUnion₂.mpr ⟨i, hiJ, fun h => hyA h.1, fun hden => hnot ?_⟩
-      rw [Poincare.SimonGMT.Chapter01.dimensionalUpperDensity_inter_of_mem_nhds _ _ _ _ _
-        (isOpen_ball.mem_nhds hyi)] at hden
-      exact hzero y hden
-    · exact (measure_biUnion_null_iff hJc).mpr fun i _ => hN i
-  -- Step 3 (F2): approximate tangent spaces ignore sets of zero `n`-density
-  have F2 : ∀ (A A' : Set (Euclid P)) (y : Euclid P) (Q : Submodule ℝ (Euclid P)) (s : ℝ),
-      MeasurableSet A → MeasurableSet A' → 0 < s →
-      μHE[n] (A ∩ closedBall y s) ≠ ∞ → μHE[n] (A' ∩ closedBall y s) ≠ ∞ →
-      Tendsto (fun ρ : ℝ => μHE[n] (((A \ A') ∪ (A' \ A)) ∩ closedBall y ρ) /
-        ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) →
-      HasApproximateTangentSpaceAt n A y Q → HasApproximateTangentSpaceAt n A' y Q := by
-    intro A A' y Q s hA hA' hs hAfin hA'fin hD hTA
-    refine ⟨hTA.1, fun f => ?_⟩
-    set D := (A \ A') ∪ (A' \ A) with hDdef
-    have hfc : Continuous f := map_continuous f
-    have hfcs : HasCompactSupport f := f.hasCompactSupport
-    obtain ⟨C, hC⟩ := hfc.bounded_above_of_compact_support hfcs
-    obtain ⟨L₀, hL₀⟩ := hfcs.isCompact.isBounded.subset_closedBall (0 : Euclid P)
-    set L := max L₀ 1 with hLdef
-    have hL : 0 < L := lt_of_lt_of_le one_pos (le_max_right _ _)
-    have hfL : ∀ z, z ∉ closedBall (0 : Euclid P) L → f z = 0 := by
-      intro z hz
-      apply image_eq_zero_of_notMem_tsupport
-      intro hzt
-      exact hz (closedBall_subset_closedBall (le_max_left _ _) (hL₀ hzt))
-    have hDm : MeasurableSet D := (hA.diff hA').union (hA'.diff hA)
-    have hinj : ∀ r : ℝ, 0 < r → Injective (Poincare.SimonGMT.Chapter03.blowUpMap y r) := by
-      intro r hr a b hab
-      simp only [Poincare.SimonGMT.Chapter03.blowUpMap] at hab
-      have := smul_right_injective (Euclid P) (inv_ne_zero hr.ne') hab
-      simpa using this
-    have hmeasIm : ∀ r : ℝ, 0 < r → ∀ Z : Set (Euclid P), MeasurableSet Z →
-        MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap y r '' Z) := by
-      intro r hr Z hZ
-      have : Poincare.SimonGMT.Chapter03.blowUpMap y r '' Z = (fun w => r • w + y) ⁻¹' Z := by
-        ext w
-        simp only [mem_image, mem_preimage, Poincare.SimonGMT.Chapter03.blowUpMap]
-        constructor
-        · rintro ⟨z, hz, rfl⟩
-          rwa [smul_inv_smul₀ hr.ne', sub_add_cancel]
-        · intro hw
-          exact ⟨r • w + y, hw, by rw [add_sub_cancel_right, inv_smul_smul₀ hr.ne']⟩
-      rw [this]
-      exact hZ.preimage (by fun_prop)
-    have hintOn : ∀ Z : Set (Euclid P), MeasurableSet Z →
-        μHE[n] (Z ∩ closedBall 0 L) ≠ ∞ → IntegrableOn f Z μHE[n] := by
-      intro Z hZ hZfin
-      have h1 : IntegrableOn f (Z ∩ closedBall 0 L) μHE[n] :=
-        Measure.integrableOn_of_bounded hZfin hfc.aestronglyMeasurable (M := C)
-          (Eventually.of_forall hC)
-      exact h1.of_forall_sdiff_eq_zero hZ (fun z hz => hfL z (fun h => hz.2 ⟨hz.1, h⟩))
-    have hnormle : ∀ Z : Set (Euclid P), MeasurableSet Z →
-        μHE[n] (Z ∩ closedBall 0 L) ≠ ∞ →
-        ‖∫ z in Z, f z ∂μHE[n]‖ ≤ C * (μHE[n] : Measure (Euclid P)).real (Z ∩ closedBall 0 L) := by
-      intro Z hZ hZfin
-      rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hZ inter_subset_left
-        (fun z hz => hfL z (fun h => hz.2 ⟨hz.1, h⟩))]
-      exact norm_setIntegral_le_of_norm_le_const hZfin.lt_top (fun z _ => hC z)
-    -- the scaling identity: reused child `regcomp_atl_blowUp_measure_scaling`
-    have hscale : ∀ r : ℝ, 0 < r → ∀ Z : Set (Euclid P),
-        μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap y r '' Z ∩ closedBall 0 L) =
-          (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (Z ∩ closedBall y (r * L)) :=
-      fun r hr Z => Submission.regcomp_atl_blowUp_measure_scaling P n y r L Z hr
-    have hfinS : ∀ Z ⊆ A ∪ A', ∀ r, 0 < r → r * L ≤ s →
-        μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap y r '' Z ∩ closedBall 0 L) ≠ ∞ := by
-      intro Z hZ r hr hrs
-      rw [hscale r hr]
-      refine ENNReal.mul_ne_top (ENNReal.pow_ne_top
-        (ENNReal.inv_ne_top.2 (ENNReal.ofReal_pos.2 hr).ne')) ?_
-      apply ne_top_of_le_ne_top (ENNReal.add_ne_top.mpr ⟨hAfin, hA'fin⟩)
-      calc μHE[n] (Z ∩ closedBall y (r * L))
-          ≤ μHE[n] ((A ∩ closedBall y s) ∪ (A' ∩ closedBall y s)) := by
-            apply measure_mono
-            rintro z ⟨hzZ, hzB⟩
-            have hzB' : z ∈ closedBall y s := closedBall_subset_closedBall hrs hzB
-            rcases hZ hzZ with h | h
-            · exact Or.inl ⟨h, hzB'⟩
-            · exact Or.inr ⟨h, hzB'⟩
-        _ ≤ _ := measure_union_le _ _
-    have hbound : ∀ᶠ r in 𝓝[>] (0 : ℝ),
-        ‖(∫ z in Poincare.SimonGMT.Chapter03.blowUpMap y r '' A', f z ∂μHE[n]) -
-            ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap y r '' A, f z ∂μHE[n]‖ ≤
-          2 * C * (L ^ n * (μHE[n] (D ∩ closedBall y (r * L)) /
-            ENNReal.ofReal ((r * L) ^ n)).toReal) := by
-      have hpos : ∀ᶠ r in 𝓝[>] (0 : ℝ), 0 < r ∧ r * L ≤ s := by
-        filter_upwards [Ioo_mem_nhdsGT (div_pos hs hL)] with r hr
-        refine ⟨hr.1, ?_⟩
-        have := hr.2
-        rw [lt_div_iff₀ hL] at this
-        linarith
-      filter_upwards [hpos] with r ⟨hr, hrs⟩
-      set η := Poincare.SimonGMT.Chapter03.blowUpMap y r with hη
-      have hinjr : Injective η := hinj r hr
-      have hsub1 : A' ∩ A ⊆ A ∪ A' := fun z hz => Or.inl hz.2
-      have hsub2 : A' \ A ⊆ A ∪ A' := fun z hz => Or.inr hz.1
-      have hsub3 : A \ A' ⊆ A ∪ A' := fun z hz => Or.inl hz.1
-      have hsubD : D ⊆ A ∪ A' := union_subset hsub3 hsub2
-      have hI1 := hintOn _ (hmeasIm r hr _ (hA'.inter hA)) (hfinS _ hsub1 r hr hrs)
-      have hI2 := hintOn _ (hmeasIm r hr _ (hA'.diff hA)) (hfinS _ hsub2 r hr hrs)
-      have hI3 := hintOn _ (hmeasIm r hr _ (hA.diff hA')) (hfinS _ hsub3 r hr hrs)
-      have hsplitA' : η '' A' = η '' (A' ∩ A) ∪ η '' (A' \ A) := by
-        rw [← image_union, inter_union_sdiff]
-      have hsplitA : η '' A = η '' (A' ∩ A) ∪ η '' (A \ A') := by
-        rw [← image_union, inter_comm, inter_union_sdiff]
-      have hdisj1 : Disjoint (η '' (A' ∩ A)) (η '' (A' \ A)) :=
-        (disjoint_image_iff hinjr).mpr (disjoint_sdiff_inter.symm)
-      have hdisj2 : Disjoint (η '' (A' ∩ A)) (η '' (A \ A')) := by
-        rw [disjoint_image_iff hinjr, inter_comm]
-        exact disjoint_sdiff_inter.symm
-      rw [hsplitA', hsplitA, setIntegral_union hdisj1 (hmeasIm r hr _ (hA'.diff hA)) hI1 hI2,
-        setIntegral_union hdisj2 (hmeasIm r hr _ (hA.diff hA')) hI1 hI3]
-      have hfinD := hfinS D hsubD r hr hrs
-      have hmono2 : (μHE[n] : Measure (Euclid P)).real (η '' (A' \ A) ∩ closedBall 0 L) ≤
-          (μHE[n] : Measure (Euclid P)).real (η '' D ∩ closedBall 0 L) :=
-        measureReal_mono (inter_subset_inter_left _ (image_mono subset_union_right)) hfinD
-      have hmono3 : (μHE[n] : Measure (Euclid P)).real (η '' (A \ A') ∩ closedBall 0 L) ≤
-          (μHE[n] : Measure (Euclid P)).real (η '' D ∩ closedBall 0 L) :=
-        measureReal_mono (inter_subset_inter_left _ (image_mono subset_union_left)) hfinD
-      have hn2 := hnormle _ (hmeasIm r hr _ (hA'.diff hA)) (hfinS _ hsub2 r hr hrs)
-      have hn3 := hnormle _ (hmeasIm r hr _ (hA.diff hA')) (hfinS _ hsub3 r hr hrs)
-      have hC0 : 0 ≤ C := (norm_nonneg _).trans (hC 0)
-      have hkey : (μHE[n] : Measure (Euclid P)).real (η '' D ∩ closedBall 0 L) =
-          L ^ n * (μHE[n] (D ∩ closedBall y (r * L)) / ENNReal.ofReal ((r * L) ^ n)).toReal := by
-        have hfin' : μHE[n] (D ∩ closedBall y (r * L)) ≠ ∞ := by
-          have h0 := hfinD
-          rw [hscale r hr] at h0
-          have ha0 : (ENNReal.ofReal r)⁻¹ ^ n ≠ 0 :=
-            pow_ne_zero _ (ENNReal.inv_ne_zero.2 ENNReal.ofReal_ne_top)
-          exact fun hb => h0 (ENNReal.mul_eq_top.mpr (Or.inl ⟨ha0, hb⟩))
-        rw [measureReal_def, hscale r hr, ENNReal.toReal_mul, ENNReal.toReal_div,
-          ENNReal.toReal_ofReal (by positivity), ENNReal.toReal_pow, ENNReal.toReal_inv,
-          ENNReal.toReal_ofReal hr.le, mul_pow]
-        have hrn : r ^ n ≠ 0 := pow_ne_zero n hr.ne'
-        have hLn : L ^ n ≠ 0 := pow_ne_zero n hL.ne'
-        rw [inv_pow, mul_div_assoc', mul_comm (L ^ n), mul_div_mul_right _ _ hLn, div_eq_inv_mul]
-      calc ‖(∫ z in η '' (A' ∩ A), f z ∂μHE[n]) + (∫ z in η '' (A' \ A), f z ∂μHE[n]) -
-            ((∫ z in η '' (A' ∩ A), f z ∂μHE[n]) + ∫ z in η '' (A \ A'), f z ∂μHE[n])‖
-          = ‖(∫ z in η '' (A' \ A), f z ∂μHE[n]) - ∫ z in η '' (A \ A'), f z ∂μHE[n]‖ := by
-            congr 1; ring
-        _ ≤ ‖∫ z in η '' (A' \ A), f z ∂μHE[n]‖ + ‖∫ z in η '' (A \ A'), f z ∂μHE[n]‖ :=
-            norm_sub_le _ _
-        _ ≤ C * (μHE[n] : Measure (Euclid P)).real (η '' (A' \ A) ∩ closedBall 0 L) +
-            C * (μHE[n] : Measure (Euclid P)).real (η '' (A \ A') ∩ closedBall 0 L) :=
-            add_le_add hn2 hn3
-        _ ≤ C * (μHE[n] : Measure (Euclid P)).real (η '' D ∩ closedBall 0 L) +
-            C * (μHE[n] : Measure (Euclid P)).real (η '' D ∩ closedBall 0 L) :=
-            add_le_add (mul_le_mul_of_nonneg_left hmono2 hC0)
-              (mul_le_mul_of_nonneg_left hmono3 hC0)
-        _ = 2 * C * (L ^ n * (μHE[n] (D ∩ closedBall y (r * L)) /
-              ENNReal.ofReal ((r * L) ^ n)).toReal) := by
-            rw [hkey]; ring
-    have hlim : Tendsto (fun r : ℝ => 2 * C * (L ^ n * (μHE[n] (D ∩ closedBall y (r * L)) /
-        ENNReal.ofReal ((r * L) ^ n)).toReal)) (𝓝[>] 0) (𝓝 0) := by
-      have hmap : Tendsto (fun r : ℝ => r * L) (𝓝[>] 0) (𝓝[>] 0) := by
-        apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
-        · have h0 : Tendsto (fun r : ℝ => r * L) (𝓝 0) (𝓝 (0 * L)) :=
-            (continuous_id.mul continuous_const).tendsto 0
-          rw [zero_mul] at h0
-          exact h0.mono_left nhdsWithin_le_nhds
-        · filter_upwards [self_mem_nhdsWithin] with r hr
-          exact mul_pos hr hL
-      have h1 := hD.comp hmap
-      have h2 := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp h1
-      have h3 := (h2.const_mul (L ^ n)).const_mul (2 * C)
-      simpa [Function.comp_def] using h3
-    have hdiff := squeeze_zero_norm' hbound hlim
-    have h3 := (hTA.2 f).add hdiff
-    simp only [add_zero, add_sub_cancel] at h3
-    exact h3
-  -- Steps 2–3 combined: a.e. on `A ∩ B` the tangent spaces of `A` and `B` coincide
-  have F3 : ∀ A B : Set (Euclid P), MeasurableSet A → MeasurableSet B → A ⊆ U → B ⊆ U →
-      (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (A ∩ K) ≠ ∞) →
-      (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) →
-      ∀ᵐ y ∂(μHE[n].restrict (A ∩ B)), ∀ Q : Submodule ℝ (Euclid P),
-        HasApproximateTangentSpaceAt n A y Q ↔ HasApproximateTangentSpaceAt n B y Q := by
-    intro A B hA hB hAU hBU hAfin hBfin
-    set D : Set (Euclid P) := (A \ B) ∪ (B \ A) with hD
-    have hDmeas : MeasurableSet D := (hA.diff hB).union (hB.diff hA)
-    have hDfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (D ∩ K) ≠ ∞ := by
-      intro K hK hKU
-      refine ne_top_of_le_ne_top (ENNReal.add_ne_top.2 ⟨hAfin K hK hKU, hBfin K hK hKU⟩) ?_
-      calc μHE[n] (D ∩ K) ≤ μHE[n] ((A ∩ K) ∪ (B ∩ K)) := by
-            apply measure_mono
-            rintro x ⟨hx | hx, hxK⟩
-            · exact Or.inl ⟨hx.1, hxK⟩
-            · exact Or.inr ⟨hx.1, hxK⟩
-        _ ≤ μHE[n] (A ∩ K) + μHE[n] (B ∩ K) := measure_union_le _ _
-    have h1 := F1 D hDmeas hDfin
-    have h1' : ∀ᵐ y ∂(μHE[n].restrict (A ∩ B)), y ∈ U → y ∉ D →
-        Tendsto (fun ρ : ℝ => μHE[n] (D ∩ closedBall y ρ) / ENNReal.ofReal (ρ ^ n))
-          (𝓝[>] 0) (𝓝 0) :=
-      ae_restrict_of_ae h1
-    filter_upwards [h1', ae_restrict_mem (hA.inter hB)] with y hy hyAB
-    have hyU : y ∈ U := hAU hyAB.1
-    have hyD : y ∉ D := by
-      rintro (h | h)
-      · exact h.2 hyAB.2
-      · exact h.2 hyAB.1
-    have hdens := hy hyU hyD
-    obtain ⟨s, hs, hsU⟩ : ∃ s > 0, closedBall y s ⊆ U := by
-      obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU y hyU
-      exact ⟨ε / 2, by positivity, (closedBall_subset_ball (by linarith)).trans hεU⟩
-    have hK : IsCompact (closedBall y s) := isCompact_closedBall y s
-    have hAs := hAfin _ hK hsU
-    have hBs := hBfin _ hK hsU
-    intro Q
-    constructor
-    · intro hQ
-      exact F2 A B y Q s hA hB hs hAs hBs hdens hQ
-    · intro hQ
-      have hdens' : Tendsto (fun ρ : ℝ => μHE[n] (((B \ A) ∪ (A \ B)) ∩ closedBall y ρ) /
-          ENNReal.ofReal (ρ ^ n)) (𝓝[>] 0) (𝓝 0) := by
-        simpa only [hD, Set.union_comm] using hdens
-      exact F2 B A y Q s hB hA hs hBs hAs hdens' hQ
-  -- Step 6 with Step 4 (reused child `rsdic_unitOrientation_eq_or_eq_neg`):
-  -- `ξ₂ = ±ξ₁` a.e. on `M₁ ∩ M₂`
-  have hov : ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)),
-      R₂.orient x = R₁.orient x ∨ R₂.orient x = -R₁.orient x := by
-    have hL := F3 R₁.carrier R₂.carrier R₁.measurableSet_carrier R₂.measurableSet_carrier
-      R₁.carrier_subset R₂.carrier_subset (hfin R₁) (hfin R₂)
-    have ho₁ : ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), ∃ Q : Submodule ℝ (Euclid P),
-        HasApproximateTangentSpaceAt n R₁.carrier x Q ∧ IsUnitOrientationOf (R₁.orient x) Q :=
-      ae_restrict_of_ae_restrict_of_subset inter_subset_left R₁.orients
-    have ho₂ : ∀ᵐ x ∂(μHE[n].restrict (R₁.carrier ∩ R₂.carrier)), ∃ Q : Submodule ℝ (Euclid P),
-        HasApproximateTangentSpaceAt n R₂.carrier x Q ∧ IsUnitOrientationOf (R₂.orient x) Q :=
-      ae_restrict_of_ae_restrict_of_subset inter_subset_right R₂.orients
-    filter_upwards [hL, ho₁, ho₂] with x hx h₁ h₂
-    obtain ⟨Q₁, hT₁, hO₁⟩ := h₁
-    obtain ⟨Q₂, hT₂, hO₂⟩ := h₂
-    have hT₁' : HasApproximateTangentSpaceAt n R₂.carrier x Q₁ := (hx Q₁).1 hT₁
-    have hQ : Q₁ = Q₂ := hT₁'.unique hT₂
-    subst hQ
-    exact Submission.rsdic_unitOrientation_eq_or_eq_neg P n (R₁.orient x) (R₂.orient x) Q₁ hO₁ hO₂
-  -- Step 8: IMRep fields for sub-data of `R₁`, `R₂`
-  have recombine : ∀ (M : Set (Euclid P)) (m : Euclid P → ℕ) (ζ : Euclid P → MultiVector P n),
-      MeasurableSet M → M ⊆ R₁.carrier ∪ R₂.carrier → Measurable m → (∀ x ∈ M, 0 < m x) →
-      (∀ x ∈ M, m x ≤ R₁.carrier.indicator R₁.mult x + R₂.carrier.indicator R₂.mult x) →
-      AEStronglyMeasurable ζ (μHE[n].restrict M) →
-      (∀ᵐ x ∂(μHE[n].restrict (M ∩ R₁.carrier)), ζ x = R₁.orient x ∨ ζ x = -R₁.orient x) →
-      (∀ᵐ x ∂(μHE[n].restrict (M \ R₁.carrier)), ζ x = R₂.orient x ∨ ζ x = -R₂.orient x) →
-      ∃ R : IMRep U n, R.carrier = M ∧ R.mult = m ∧ R.orient = ζ := by
-    intro M m ζ hM hMsub hm hmpos hmle hζ h₁ h₂
-    have hMU : M ⊆ U := hMsub.trans (union_subset R₁.carrier_subset R₂.carrier_subset)
-    have hMfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M ∩ K) ≠ ∞ := by
-      intro K hK hKU
-      refine ne_top_of_le_ne_top (ENNReal.add_ne_top.2 ⟨hfin R₁ K hK hKU, hfin R₂ K hK hKU⟩) ?_
-      calc μHE[n] (M ∩ K) ≤ μHE[n] ((R₁.carrier ∩ K) ∪ (R₂.carrier ∩ K)) := by
-            apply measure_mono
-            rintro x ⟨hx, hxK⟩
-            rcases hMsub hx with h | h
-            · exact Or.inl ⟨h, hxK⟩
-            · exact Or.inr ⟨h, hxK⟩
-        _ ≤ _ := measure_union_le _ _
-    have hneg : ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
-        IsUnitOrientationOf ξ Q → IsUnitOrientationOf (-ξ) Q := by
-      rintro ξ Q ⟨τ, hτ, hspan, h | h⟩
-      · exact ⟨τ, hτ, hspan, Or.inr fun α => by simp [h α]⟩
-      · exact ⟨τ, hτ, hspan, Or.inl fun α => by simp [h α]⟩
-    have hpm : ∀ (ξ ξ' : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
-        IsUnitOrientationOf ξ' Q → (ξ = ξ' ∨ ξ = -ξ') → IsUnitOrientationOf ξ Q := by
-      rintro ξ ξ' Q hO (h | h)
-      · rw [h]; exact hO
-      · rw [h]; exact hneg _ _ hO
-    have horient : ∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P),
-        HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ζ x) Q := by
-      have key : ∀ᵐ x ∂(μHE[n].restrict ((M ∩ R₁.carrier) ∪ (M \ R₁.carrier))),
-          ∃ Q : Submodule ℝ (Euclid P),
-            HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ζ x) Q := by
-        rw [ae_restrict_union_iff]
-        constructor
-        · have hL := F3 M R₁.carrier hM R₁.measurableSet_carrier hMU R₁.carrier_subset hMfin
-            (hfin R₁)
-          have ho := ae_restrict_of_ae_restrict_of_subset (inter_subset_right (s := M))
-            R₁.orients
-          filter_upwards [hL, ho, h₁] with x hx hox hζx
-          obtain ⟨Q, hTQ, hO⟩ := hox
-          exact ⟨Q, (hx Q).2 hTQ, hpm _ _ _ hO hζx⟩
-        · have hL := F3 M R₂.carrier hM R₂.measurableSet_carrier hMU R₂.carrier_subset hMfin
-            (hfin R₂)
-          have hsub : M \ R₁.carrier ⊆ M ∩ R₂.carrier :=
-            fun x hx => ⟨hx.1, (hMsub hx.1).resolve_left hx.2⟩
-          have hL' := ae_restrict_of_ae_restrict_of_subset hsub hL
-          have ho := ae_restrict_of_ae_restrict_of_subset (hsub.trans inter_subset_right)
-            R₂.orients
-          filter_upwards [hL', ho, h₂] with x hx hox hζx
-          obtain ⟨Q, hTQ, hO⟩ := hox
-          exact ⟨Q, (hx Q).2 hTQ, hpm _ _ _ hO hζx⟩
-      rwa [inter_union_sdiff] at key
-    have hrect : CountablyRectifiable n M := by
-      have hU12 : CountablyRectifiable n
-          (⋃ i : ℕ, (if i = 0 then R₁.carrier else R₂.carrier)) := by
-        apply Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion
-        intro i
-        split_ifs
-        · exact R₁.rectifiable
-        · exact R₂.rectifiable
-      apply hU12.mono
-      intro x hx
-      rcases hMsub hx with h | h
-      · exact mem_iUnion.2 ⟨0, by simpa using h⟩
-      · exact mem_iUnion.2 ⟨1, by simpa using h⟩
-    have hint : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
-        ∫⁻ x in M ∩ K, (m x : ℝ≥0∞) ∂μHE[n] ≠ ∞ := by
-      intro K hK hKU
-      have hm1 : Measurable fun x => (R₁.mult x : ℝ≥0∞) :=
-        measurable_from_nat.comp R₁.measurable_mult
-      have hS1 : MeasurableSet (R₁.carrier ∩ K) :=
-        R₁.measurableSet_carrier.inter hK.measurableSet
-      have hS2 : MeasurableSet (R₂.carrier ∩ K) :=
-        R₂.measurableSet_carrier.inter hK.measurableSet
-      have hbound : ∫⁻ x in M ∩ K, (m x : ℝ≥0∞) ∂μHE[n] ≤
-          ∫⁻ x in R₁.carrier ∩ K, (R₁.mult x : ℝ≥0∞) ∂μHE[n] +
-            ∫⁻ x in R₂.carrier ∩ K, (R₂.mult x : ℝ≥0∞) ∂μHE[n] := by
-        calc ∫⁻ x in M ∩ K, (m x : ℝ≥0∞) ∂μHE[n]
-            ≤ ∫⁻ x in M ∩ K, ((R₁.carrier ∩ K).indicator (fun x => (R₁.mult x : ℝ≥0∞)) x +
-                (R₂.carrier ∩ K).indicator (fun x => (R₂.mult x : ℝ≥0∞)) x) ∂μHE[n] := by
-              apply setLIntegral_mono' (hM.inter hK.measurableSet)
-              intro x hx
-              have h := hmle x hx.1
-              have hxK := hx.2
-              by_cases h1 : x ∈ R₁.carrier <;> by_cases h2 : x ∈ R₂.carrier <;>
-                simp [h1, h2, hxK] at h ⊢ <;> exact_mod_cast h
-          _ ≤ ∫⁻ x, ((R₁.carrier ∩ K).indicator (fun x => (R₁.mult x : ℝ≥0∞)) x +
-                (R₂.carrier ∩ K).indicator (fun x => (R₂.mult x : ℝ≥0∞)) x) ∂μHE[n] :=
-              setLIntegral_le_lintegral _ _
-          _ = _ := by
-              rw [lintegral_add_left (hm1.indicator hS1), lintegral_indicator hS1,
-                lintegral_indicator hS2]
-      exact ne_top_of_le_ne_top (ENNReal.add_ne_top.2 ⟨R₁.locallyIntegrable_mult K hK hKU,
-        R₂.locallyIntegrable_mult K hK hKU⟩) hbound
-    exact ⟨⟨M, m, ζ, hM, hMU, hrect, hm, hmpos, hint, hζ, horient⟩, rfl, rfl, rfl⟩
-  -- Steps 5–7: Borel orientations, Borel sign, the new data `(M, m, ζ)`
-  obtain ⟨R, hR⟩ : ∃ R : IMRep U n, ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)),
-      ∀ α : Covector (Euclid P) n,
-        R.carrier.indicator (fun y => (R.mult y : ℝ) * R.orient y α) x =
-          R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) * R₁.orient y α) x -
-            R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) * R₂.orient y α) x := by
-    have : TopologicalSpace.MetrizableSpace (MultiVector P n) := by
-      let M : MetricSpace (MultiVector P n) := inferInstance
-      have h1 : @TopologicalSpace.PseudoMetrizableSpace (MultiVector P n)
-          (PseudoMetricSpace.toUniformSpace.toTopologicalSpace) :=
-        @UniformSpace.pseudoMetrizableSpace (MultiVector P n) PseudoMetricSpace.toUniformSpace
-          inferInstance
-      have h2 : @T0Space (MultiVector P n)
-          (PseudoMetricSpace.toUniformSpace.toTopologicalSpace) := inferInstance
-      exact @TopologicalSpace.MetrizableSpace.mk _ _ h1 h2
-    have : ContinuousNeg (MultiVector P n) := by
-      exact @IsTopologicalAddGroup.toContinuousNeg _ _ _ ContinuousLinearMap.isTopologicalAddGroup
-    set M₁ := R₁.carrier with hM₁def
-    set M₂ := R₂.carrier with hM₂def
-    have hM₁ : MeasurableSet M₁ := R₁.measurableSet_carrier
-    have hM₂ : MeasurableSet M₂ := R₂.measurableSet_carrier
-    set ξt₁ := R₁.aestronglyMeasurable_orient.mk R₁.orient with hξt₁def
-    set ξt₂ := R₂.aestronglyMeasurable_orient.mk R₂.orient with hξt₂def
-    have hs₁ : StronglyMeasurable ξt₁ := R₁.aestronglyMeasurable_orient.stronglyMeasurable_mk
-    have hs₂ : StronglyMeasurable ξt₂ := R₂.aestronglyMeasurable_orient.stronglyMeasurable_mk
-    have he₁ : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ M₁ → R₁.orient x = ξt₁ x :=
-      (ae_restrict_iff' hM₁).1 R₁.aestronglyMeasurable_orient.ae_eq_mk
-    have he₂ : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ M₂ → R₂.orient x = ξt₂ x :=
-      (ae_restrict_iff' hM₂).1 R₂.aestronglyMeasurable_orient.ae_eq_mk
-    have hov' : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ M₁ ∩ M₂ →
-        R₂.orient x = R₁.orient x ∨ R₂.orient x = -R₁.orient x :=
-      (ae_restrict_iff' (hM₁.inter hM₂)).1 hov
-    set σ : Euclid P → ℤ := fun x => if ξt₂ x = ξt₁ x then 1 else -1 with hσdef
-    have hσmeas : Measurable σ :=
-      Measurable.ite (hs₂.measurableSet_eq_fun hs₁) measurable_const measurable_const
-    set d : Euclid P → ℤ := fun x => (R₁.mult x : ℤ) - σ x * (R₂.mult x : ℤ) with hddef
-    have hdmeas : Measurable d := by
-      have h1 : Measurable fun x => (R₁.mult x : ℤ) := measurable_from_nat.comp R₁.measurable_mult
-      have h2 : Measurable fun x => (R₂.mult x : ℤ) := measurable_from_nat.comp R₂.measurable_mult
-      exact h1.sub (hσmeas.mul h2)
-    set G : Set (Euclid P) := {x | x ∈ M₁ ∩ M₂ ∧ d x ≠ 0} with hGdef
-    have hG : MeasurableSet G :=
-      (hM₁.inter hM₂).inter (hdmeas (measurableSet_singleton 0).compl)
-    set M : Set (Euclid P) := (M₁ \ M₂) ∪ (M₂ \ M₁) ∪ G with hMdef
-    have hM : MeasurableSet M := ((hM₁.diff hM₂).union (hM₂.diff hM₁)).union hG
-    set m : Euclid P → ℕ := fun x => if x ∈ M₁ \ M₂ then R₁.mult x
-      else if x ∈ M₂ \ M₁ then R₂.mult x else if x ∈ M₁ ∩ M₂ then (d x).natAbs else 0
-      with hmdef
-    set ζ : Euclid P → MultiVector P n := fun x => if x ∈ M₁ \ M₂ then ξt₁ x
-      else if x ∈ M₂ \ M₁ then -ξt₂ x else if 0 < d x then ξt₁ x else -ξt₁ x with hζdef
-    have hmmeas : Measurable m := by
-      refine Measurable.ite (hM₁.diff hM₂) R₁.measurable_mult
-        (Measurable.ite (hM₂.diff hM₁) R₂.measurable_mult
-          (Measurable.ite (hM₁.inter hM₂)
-            ((Measurable.of_discrete (f := Int.natAbs)).comp hdmeas) measurable_const))
-    have hζmeas : StronglyMeasurable ζ := by
-      refine StronglyMeasurable.ite (hM₁.diff hM₂) hs₁
-        (StronglyMeasurable.ite (hM₂.diff hM₁) hs₂.neg (StronglyMeasurable.ite ?_ hs₁ hs₁.neg))
-      exact hdmeas (measurableSet_Ioi (a := (0 : ℤ)))
-    have hMsub : M ⊆ M₁ ∪ M₂ := by
-      rintro x ((h | h) | h)
-      · exact Or.inl h.1
-      · exact Or.inr h.1
-      · exact Or.inl h.1.1
-    have hmpos : ∀ x ∈ M, 0 < m x := by
-      rintro x ((h | h) | h)
-      · simp only [hmdef, ite_eq_left h]; exact R₁.mult_pos x h.1
-      · have hn : x ∉ M₁ \ M₂ := fun h' => h.2 h'.1
-        simp only [hmdef, ite_eq_right hn, ite_eq_left h]; exact R₂.mult_pos x h.1
-      · have hn1 : x ∉ M₁ \ M₂ := fun h' => h'.2 h.1.2
-        have hn2 : x ∉ M₂ \ M₁ := fun h' => h'.2 h.1.1
-        simp only [hmdef, ite_eq_right hn1, ite_eq_right hn2, ite_eq_left h.1]
-        exact Int.natAbs_pos.2 h.2
-    have hσpm : ∀ x, σ x = 1 ∨ σ x = -1 := by
-      intro x; simp only [hσdef]; split_ifs <;> simp
-    have hmle : ∀ x ∈ M, m x ≤ M₁.indicator R₁.mult x + M₂.indicator R₂.mult x := by
-      rintro x ((h | h) | h)
-      · simp only [hmdef, ite_eq_left h, indicator_of_mem h.1, indicator_of_notMem h.2]; omega
-      · have hn : x ∉ M₁ \ M₂ := fun h' => h.2 h'.1
-        simp only [hmdef, ite_eq_right hn, ite_eq_left h, indicator_of_mem h.1, indicator_of_notMem h.2]
-        omega
-      · have hn1 : x ∉ M₁ \ M₂ := fun h' => h'.2 h.1.2
-        have hn2 : x ∉ M₂ \ M₁ := fun h' => h'.2 h.1.1
-        simp only [hmdef, ite_eq_right hn1, ite_eq_right hn2, ite_eq_left h.1, indicator_of_mem h.1.1,
-          indicator_of_mem h.1.2]
-        simp only [hddef]
-        rcases hσpm x with hs | hs <;> rw [hs] <;> omega
-    have h₁ : ∀ᵐ x ∂(μHE[n].restrict (M ∩ M₁)), ζ x = R₁.orient x ∨ ζ x = -R₁.orient x := by
-      rw [ae_restrict_iff' (hM.inter hM₁)]
-      filter_upwards [he₁] with x hx hxM
-      have hxe := hx hxM.2
-      rcases hxM.1 with (h | h) | h
-      · left; simp only [hζdef, ite_eq_left h]; exact hxe.symm
-      · exact absurd hxM.2 h.2
-      · have hn1 : x ∉ M₁ \ M₂ := fun h' => h'.2 h.1.2
-        have hn2 : x ∉ M₂ \ M₁ := fun h' => h'.2 h.1.1
-        simp only [hζdef, ite_eq_right hn1, ite_eq_right hn2]
-        split_ifs
-        · left; exact hxe.symm
-        · right; rw [hxe]
-    have h₂ : ∀ᵐ x ∂(μHE[n].restrict (M \ M₁)), ζ x = R₂.orient x ∨ ζ x = -R₂.orient x := by
-      rw [ae_restrict_iff' (hM.diff hM₁)]
-      filter_upwards [he₂] with x hx hxM
-      have hx2 : x ∈ M₂ \ M₁ := ⟨(hMsub hxM.1).resolve_left hxM.2, hxM.2⟩
-      have hn1 : x ∉ M₁ \ M₂ := fun h' => hxM.2 h'.1
-      right; simp only [hζdef, ite_eq_right hn1, ite_eq_left hx2]; rw [hx hx2.1]
-    obtain ⟨R, hRc, hRm, hRo⟩ := recombine M m ζ hM hMsub hmmeas hmpos hmle
-      hζmeas.aestronglyMeasurable h₁ h₂
-    refine ⟨R, ?_⟩
-    rw [hRc, hRm, hRo]
-    filter_upwards [he₁, he₂, hov'] with x hx₁ hx₂ hx₃
-    intro α
-    by_cases hA : x ∈ M₁ <;> by_cases hB : x ∈ M₂
-    · -- overlap
-      have hAB : x ∈ M₁ ∩ M₂ := ⟨hA, hB⟩
-      have hn1 : x ∉ M₁ \ M₂ := fun h' => h'.2 hB
-      have hn2 : x ∉ M₂ \ M₁ := fun h' => h'.2 hA
-      have e₁ := hx₁ hA
-      have e₂ := hx₂ hB
-      have hsig : R₂.orient x α = ((σ x : ℤ) : ℝ) * R₁.orient x α := by
-        rcases hx₃ hAB with h | h
-        · have : ξt₂ x = ξt₁ x := by rw [← e₁, ← e₂, h]
-          simp only [hσdef, ite_eq_left this]; simp [h]
-        · by_cases hq : ξt₂ x = ξt₁ x
-          · have : R₂.orient x = R₁.orient x := by rw [e₁, e₂, hq]
-            simp only [hσdef, ite_eq_left hq]; simp [this]
-          · simp only [hσdef, ite_eq_right hq]; simp [h]
-      rw [indicator_of_mem hA, indicator_of_mem hB, hsig]
-      have hcoef : (R₁.mult x : ℝ) * R₁.orient x α -
-          (R₂.mult x : ℝ) * (((σ x : ℤ) : ℝ) * R₁.orient x α) =
-          ((d x : ℤ) : ℝ) * R₁.orient x α := by
-        simp only [hddef]; push_cast; ring
-      rw [hcoef]
-      rcases lt_trichotomy (d x) 0 with hd | hd | hd
-      · have hxM : x ∈ M := Or.inr ⟨hAB, hd.ne⟩
-        rw [indicator_of_mem hxM]
-        simp only [hmdef, hζdef, ite_eq_right hn1, ite_eq_right hn2, ite_eq_left hAB, ite_eq_right (not_lt.2 hd.le)]
-        have hc : (((d x).natAbs : ℕ) : ℝ) = -((d x : ℤ) : ℝ) := by
-          have h1 : ((d x).natAbs : ℤ) = -(d x) := Int.ofNat_natAbs_of_nonpos hd.le
-          have h2 : ((((d x).natAbs : ℕ) : ℤ) : ℝ) = ((-(d x) : ℤ) : ℝ) := by rw [h1]
-          simpa using h2
-        rw [hc, neg_apply, e₁]; ring
-      · have hxM : x ∉ M := by
-          rintro ((h | h) | h)
-          · exact hn1 h
-          · exact hn2 h
-          · exact h.2 hd
-        rw [indicator_of_notMem hxM, hd]; simp
-      · have hxM : x ∈ M := Or.inr ⟨hAB, hd.ne'⟩
-        rw [indicator_of_mem hxM]
-        simp only [hmdef, hζdef, ite_eq_right hn1, ite_eq_right hn2, ite_eq_left hAB, ite_eq_left hd]
-        have hc : (((d x).natAbs : ℕ) : ℝ) = ((d x : ℤ) : ℝ) := by
-          have h1 : ((d x).natAbs : ℤ) = d x := Int.natAbs_of_nonneg hd.le
-          have h2 : ((((d x).natAbs : ℕ) : ℤ) : ℝ) = ((d x : ℤ) : ℝ) := by rw [h1]
-          simpa using h2
-        rw [hc, e₁]
-    · -- only in `M₁`
-      have h : x ∈ M₁ \ M₂ := ⟨hA, hB⟩
-      have hxM : x ∈ M := Or.inl (Or.inl h)
-      rw [indicator_of_mem hxM, indicator_of_mem hA, indicator_of_notMem hB, sub_zero]
-      simp only [hmdef, hζdef, ite_eq_left h]
-      rw [hx₁ hA]
-    · -- only in `M₂`
-      have h : x ∈ M₂ \ M₁ := ⟨hB, hA⟩
-      have hn : x ∉ M₁ \ M₂ := fun h' => hA h'.1
-      have hxM : x ∈ M := Or.inl (Or.inr h)
-      rw [indicator_of_mem hxM, indicator_of_notMem hA, indicator_of_mem hB, zero_sub]
-      simp only [hmdef, hζdef, ite_eq_right hn, ite_eq_left h]
-      rw [hx₂ hB, neg_apply]; ring
-    · -- outside both
-      have hxM : x ∉ M := fun h => (hMsub h).elim hA hB
-      rw [indicator_of_notMem hxM, indicator_of_notMem hA, indicator_of_notMem hB, sub_zero]
-  -- Step 9 (reused child `rsdic_imrep_action_int_combination` with `p₁ = 1`, `p₂ = -1`)
-  have hRv : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)),
-      R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x =
-        ((1 : ℤ) : ℝ) • R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x +
-          ((-1 : ℤ) : ℝ) • R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x := by
-    filter_upwards [hR] with x hx
-    ext α
-    have h := hx α
-    rw [add_apply, smul_apply, smul_apply, smul_eq_mul, smul_eq_mul]
-    by_cases h0 : x ∈ R.carrier <;> by_cases h1 : x ∈ R₁.carrier <;>
-      by_cases h2 : x ∈ R₂.carrier <;>
-      simp only [indicator_of_mem, indicator_of_notMem, h0, h1, h2, not_false_eq_true,
-        smul_apply, smul_eq_mul, zero_apply] at h ⊢ <;> push_cast <;> linarith
-  refine ⟨R, fun ω => ?_⟩
-  rw [Submission.rsdic_imrep_action_int_combination P n U R₁ R₂ R 1 (-1) hRv ω, ← hR₁ ω,
-    ← hR₂ ω]
-  have hsub : (S - T) ω = S ω - T ω := rfl
-  rw [hsub]
-  push_cast
-  ring
-/-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
-has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
-increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
-and `dx^I(e_J) = δ_IJ`.  Expanding `δ_τ(v) = det(⟨τᵢ, vⱼ⟩)` at `v = τ` gives the Cauchy–Binet
-identity `Σ_I dx^I(τ)² = 1`; with Cauchy–Schwarz, `|α(τ)| ≤ |α|`. -/
-theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : MultiVector P n →L[ℝ] Covector (Euclid P) n, ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ covectorEuclideanNorm (L ξ) ≤ 1 ∧ ξ (L ξ) = 1 := by
-  intro P n
-  -- `W u v = Σ_σ sgn σ ∏ₖ ⟨uₖ, v_{σ k}⟩ = det(⟨uₖ, vⱼ⟩)`; `dx^I = W (e ∘ I)` and `δ_τ = W τ`
-  let W : (Fin n → Euclid P) → Covector (Euclid P) n := fun u =>
-    ContinuousMultilinearMap.alternatization
-      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin n) ℝ).compContinuousLinearMap
-        fun k => innerSL ℝ (u k))
-  have hW : ∀ u v, W u v =
-      ∑ σ : Equiv.Perm (Fin n), Equiv.Perm.sign σ • ∏ k, inner ℝ (u k) (v (σ k)) := by
-    intro u v
-    simp only [W, ContinuousMultilinearMap.alternatization_apply_apply,
-      ContinuousMultilinearMap.compContinuousLinearMap_apply,
-      ContinuousMultilinearMap.mkPiAlgebra_apply, innerSL_apply_apply, Function.comp_apply]
-  -- `W u v = W v u` (the determinant of the transpose): substitute `σ ↦ σ⁻¹` and `k ↦ σ k`
-  have hWsymm : ∀ u v, W u v = W v u := by
-    intro u v
-    rw [hW, hW]
-    refine Fintype.sum_equiv (Equiv.inv (Equiv.Perm (Fin n))) _ _ fun σ => ?_
-    rw [Equiv.inv_apply, Equiv.Perm.sign_inv,
-      ← Equiv.prod_comp σ (fun k => inner ℝ (v k) (u (σ⁻¹ k)))]
-    simp only [Equiv.Perm.coe_inv, Equiv.symm_apply_apply, real_inner_comm]
-  -- `W u u = 1` for orthonormal `u`: only `σ = 1` contributes
-  have hW1 : ∀ u, Orthonormal ℝ u → W u u = 1 := by
-    intro u hu
-    rw [hW, Finset.sum_eq_single (1 : Equiv.Perm (Fin n))]
-    · rw [Equiv.Perm.sign_one, one_smul]
-      refine Finset.prod_eq_one fun k _ => ?_
-      rw [Equiv.Perm.coe_one, id, real_inner_self_eq_norm_sq, hu.norm_eq_one, one_pow]
-    · intro σ _ hσ
-      obtain ⟨k, hk⟩ : ∃ k, σ k ≠ k := by
-        by_contra! h
-        exact hσ (Equiv.ext h)
-      rw [Finset.prod_eq_zero (Finset.mem_univ k) (hu.inner_eq_zero hk.symm), smul_zero]
-    · exact fun h => absurd (Finset.mem_univ _) h
-  -- Kronecker property `dx^I(e_J) = δ_IJ` for strictly increasing `I`, `J`: a nonzero term
-  -- forces `J ∘ σ = I`, so `range I = range J` and `I = J`
-  let e := EuclideanSpace.basisFun (Fin P) ℝ
-  have he : ∀ i j, inner ℝ (e i) (e j) = if i = j then (1 : ℝ) else 0 :=
-    orthonormal_iff_ite.mp e.orthonormal
-  have hK : ∀ I J : Fin n → Fin P, StrictMono I → StrictMono J →
-      W (fun k => e (I k)) (fun k => e (J k)) = if I = J then 1 else 0 := by
-    intro I J hI hJ
-    split_ifs with hIJ
-    · subst hIJ
-      have hIo : Orthonormal ℝ (fun k => e (I k)) := e.orthonormal.comp I hI.injective
-      exact hW1 _ hIo
-    · rw [hW]
-      refine Finset.sum_eq_zero fun σ _ => ?_
-      rw [Finset.prod_eq_zero_iff.mpr, smul_zero]
-      by_contra! h
-      apply hIJ
-      have hJσ : J ∘ σ = I := funext fun k => by
-        have := h k (Finset.mem_univ k)
-        rw [he] at this
-        split_ifs at this with hk
-        · exact hk.symm
-        · exact absurd rfl this
-      rw [← (StrictMono.range_inj_of_wellFoundedLT hI hJ), ← hJσ, EquivLike.range_comp]
-  -- expansion `α = Σ_{I ∈ S} α(e_I) dx^I`: both sides are alternating, so compare them on
-  -- `e ∘ f`, `f` injective; writing `f = J ∘ σ⁻¹` with `J` strictly increasing (`J = f ∘ sort f`)
-  -- reduces this to `e ∘ J`, where it is the Kronecker property
-  let S : Finset (Fin n → Fin P) := Finset.univ.filter StrictMono
-  have hE : ∀ α : Covector (Euclid P) n,
-      α = ∑ I ∈ S, α (fun k => e (I k)) • W (fun k => e (I k)) := by
-    intro α
-    apply ContinuousAlternatingMap.toAlternatingMap_injective
-    refine e.toBasis.ext_alternating fun f hf => ?_
-    simp only [OrthonormalBasis.coe_toBasis, ContinuousAlternatingMap.coe_toAlternatingMap]
-    set σ := Tuple.sort f
-    have hJ : StrictMono (f ∘ σ) :=
-      (Tuple.monotone_sort f).strictMono_of_injective (hf.comp σ.injective)
-    have hperm : ∀ β : Covector (Euclid P) n,
-        β (fun k => e (f k)) = Equiv.Perm.sign σ⁻¹ • β (fun k => e ((f ∘ σ) k)) := by
-      intro β
-      have : (fun k => e (f k)) = (fun k => e ((f ∘ σ) k)) ∘ ⇑(σ⁻¹) := by
-        funext k
-        simp
-      rw [this]
-      exact β.toAlternatingMap.map_perm _ _
-    rw [hperm α, hperm, ContinuousAlternatingMap.sum_apply, Finset.sum_eq_single (f ∘ σ)]
-    · rw [ContinuousAlternatingMap.smul_apply, hK _ _ hJ hJ, ite_eq_left rfl, smul_eq_mul,
-        mul_one]
-    · intro I hI hIJ
-      rw [ContinuousAlternatingMap.smul_apply, hK _ _ (Finset.mem_filter.mp hI).2 hJ,
-        ite_eq_right hIJ, smul_zero]
-    · exact fun h => absurd (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hJ⟩) h
-  -- `|β| = (Σ_{I ∈ S} β(e_I)²)^{1/2}`
-  have hnorm : ∀ β : Covector (Euclid P) n,
-      covectorEuclideanNorm β = Real.sqrt (∑ I ∈ S, β (fun k => e (I k)) ^ 2) := by
-    intro β
-    rw [covectorEuclideanNorm, Finset.sum_filter]
-  -- Cauchy–Binet `Σ_{I ∈ S} dx^I(τ)² = 1` for orthonormal `τ`: evaluate the expansion of `δ_τ`
-  -- at `τ`, using `δ_τ(τ) = 1` and `δ_τ(e_I) = dx^I(τ)`
-  have hCB : ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ →
-      ∑ I ∈ S, W (fun k => e (I k)) τ ^ 2 = 1 := by
-    intro τ hτ
-    have h := congrArg (fun β : Covector (Euclid P) n => β τ) (hE (W τ))
-    simp only [ContinuousAlternatingMap.sum_apply, ContinuousAlternatingMap.smul_apply,
-      smul_eq_mul, hW1 τ hτ] at h
-    rw [h]
-    refine Finset.sum_congr rfl fun I _ => ?_
-    rw [hWsymm τ, sq]
-  -- `L ζ = Σ_{I ∈ S} ζ(dx^I) dx^I`
-  refine ⟨∑ I ∈ S, (ContinuousLinearMap.apply ℝ ℝ (W fun k => e (I k))).smulRight
-    (W fun k => e (I k)), ?_⟩
-  rintro ξ Q ⟨τ, hτ, -, hξ⟩
-  -- `ξ(α) = ±α(τ)` with a common sign
-  have hξ2 : ∀ α β : Covector (Euclid P) n, ξ α * ξ β = α τ * β τ := by
-    intro α β
-    rcases hξ with h | h
-    · rw [h, h]
-    · rw [h, h, neg_mul_neg]
-  have hξabs : ∀ α : Covector (Euclid P) n, |ξ α| = |α τ| := by
-    intro α
-    rcases hξ with h | h
-    · rw [h]
-    · rw [h, abs_neg]
-  have hL : ∀ ζ : MultiVector P n, (∑ I ∈ S, (ContinuousLinearMap.apply ℝ ℝ
-      (W fun k => e (I k))).smulRight (W fun k => e (I k))) ζ =
-      ∑ I ∈ S, ζ (W fun k => e (I k)) • W fun k => e (I k) := by
-    intro ζ
-    simp only [sum_apply, ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.apply_apply]
-  have hCBτ := hCB τ hτ
-  refine ⟨fun α => ?_, ?_, ?_⟩
-  · -- (a) `|ξ(α)| = |Σ_I α(e_I) dx^I(τ)| ≤ |α| (Σ_I dx^I(τ)²)^{1/2} = |α|`
-    rw [hξabs, hnorm]
-    apply Real.abs_le_sqrt
-    have h := congrArg (fun β : Covector (Euclid P) n => β τ) (hE α)
-    simp only [ContinuousAlternatingMap.sum_apply, ContinuousAlternatingMap.smul_apply,
-      smul_eq_mul] at h
-    rw [h]
-    calc (∑ I ∈ S, α (fun k => e (I k)) * W (fun k => e (I k)) τ) ^ 2
-        ≤ (∑ I ∈ S, α (fun k => e (I k)) ^ 2) * ∑ I ∈ S, W (fun k => e (I k)) τ ^ 2 :=
-          Finset.sum_mul_sq_le_sq_mul_sq _ _ _
-      _ = ∑ I ∈ S, α (fun k => e (I k)) ^ 2 := by rw [hCBτ, mul_one]
-  · -- (b) `L(ξ)(e_J) = ξ(dx^J)`, so `|L(ξ)|² = Σ_J ξ(dx^J)² = Σ_J dx^J(τ)² = 1`
-    rw [hnorm, hL]
-    have : ∑ J ∈ S, (∑ I ∈ S, ξ (W fun k => e (I k)) • W fun k => e (I k))
-        (fun k => e (J k)) ^ 2 = 1 := by
-      rw [← hCBτ]
-      refine Finset.sum_congr rfl fun J hJ => ?_
-      rw [ContinuousAlternatingMap.sum_apply, Finset.sum_eq_single J]
-      · rw [ContinuousAlternatingMap.smul_apply, hK _ _ (Finset.mem_filter.mp hJ).2
-          (Finset.mem_filter.mp hJ).2, ite_eq_left rfl, smul_eq_mul, mul_one, sq, sq, hξ2]
-      · intro I hI hIJ
-        rw [ContinuousAlternatingMap.smul_apply, hK _ _ (Finset.mem_filter.mp hI).2
-          (Finset.mem_filter.mp hJ).2, ite_eq_right hIJ, smul_zero]
-      · exact fun h => absurd hJ h
-    rw [this, Real.sqrt_one]
-  · -- (c) `ξ(L(ξ)) = Σ_I ξ(dx^I)² = Σ_I dx^I(τ)² = 1`
-    rw [hL, map_sum, ← hCBτ]
-    refine Finset.sum_congr rfl fun I _ => ?_
-    rw [map_smul, smul_eq_mul, hξ2, sq]
-/-- **Simon Ch. 6, 3.1 (‡), 3.2(3)**: for `R = (M, θ, ξ)` and `ω ∈ 𝒟ⁿ(U)`, the function
-`x ↦ ⟨ω(x), ξ(x)⟩` is `μ_R`-integrable and `τ(M, θ, ξ)(ω) = ∫ ⟨ω, ξ⟩ dμ_R`, `μ_R = θ Hⁿ⌞M`.
-`μ_R`-a.e. `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal, so `|⟨ω(x), ξ(x)⟩| ≤ ‖ω(x)‖`; this is
-bounded and vanishes off the compact `spt ω ⊆ U`, which has finite `μ_R`-measure. -/
-theorem Submission.dor_ims_action_eq_integral : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (ω : TestFormOn U n), Integrable (fun x => R.orient x ((ω : DifferentialForm (Euclid P) n) x)) R.measure ∧ R.action (ω : DifferentialForm (Euclid P) n) = ∫ x, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂R.measure := by
-  intro P n U R ω
-  obtain ⟨⟨hsmooth, hcpt⟩, hU⟩ := ω.2
-  set f : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n)
-  have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
-  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
-  -- `x ↦ ξ(x)(ω(x))` is `μ_R`-a.e. strongly measurable
-  have hmeas : AEStronglyMeasurable (fun x => R.orient x (f x)) R.measure :=
-    isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable₂
-      (R.aestronglyMeasurable_orient.mono_ac hac) hsmooth.continuous.aestronglyMeasurable
-  -- `|ξ(x)(ω(x))| ≤ C 1_K(x)`, `K = spt ω`
-  obtain ⟨C, hC⟩ := hsmooth.continuous.bounded_above_of_compact_support hcpt
-  have hKm : MeasurableSet (tsupport f) := (isClosed_tsupport f).measurableSet
-  have hbound : ∀ᵐ x ∂R.measure, ‖R.orient x (f x)‖ ≤ (tsupport f).indicator (fun _ => C) x := by
-    filter_upwards [hac.ae_le R.orients] with x hx
-    obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
-    by_cases hxK : x ∈ tsupport f
-    · rw [Set.indicator_of_mem hxK]
-      have hτ1 : ‖f x τ‖ ≤ ‖f x‖ := by
-        simpa [hτ.norm_eq_one] using (f x).le_opNorm τ
-      rcases hξ with h | h
-      · rw [h]
-        exact hτ1.trans (hC x)
-      · rw [h, norm_neg]
-        exact hτ1.trans (hC x)
-    · rw [Set.indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport hxK, map_zero, norm_zero]
-  -- `μ_R(K) = ∫_{M ∩ K} θ dHⁿ < ∞`
-  have hKfin : R.measure (tsupport f) ≠ ∞ := by
-    rw [IMRep.measure, withDensity_apply _ hKm, Measure.restrict_restrict hKm,
-      Set.inter_comm (tsupport f) R.carrier]
-    exact R.locallyIntegrable_mult _ hcpt hU
-  have hint : Integrable (fun x => R.orient x (f x)) R.measure :=
-    ((integrable_indicator_iff hKm).2 (integrableOn_const hKfin)).mono' hmeas hbound
-  refine ⟨hint, ?_⟩
-  -- `∫ g d(θ Hⁿ⌞M) = ∫_M θ g dHⁿ`
-  rw [IMRep.measure, integral_withDensity_eq_integral_toReal_smul hθ
-    (ae_of_all _ fun x => ENNReal.natCast_lt_top _), IMRep.action]
-  simp only [ENNReal.toReal_natCast, smul_eq_mul]
-
-/-- **Simon Ch. 6, 3.2(3), upper bound**: if `T = τ(M, θ, ξ)` then `M_W(T) ≤ μ_T(W)` for every
-`W`.  For admissible `ω`, `⟨ω, ξ⟩ ≤ |ω| ≤ 1` `μ_T`-a.e. (`|ξ(α)| ≤ |α|` for unit orientations)
-and `⟨ω, ξ⟩ = 0` off `spt ω`, so `T(ω) = ∫ ⟨ω, ξ⟩ dμ_T ≤ μ_T(spt ω) ≤ μ_T(W)`. -/
-theorem Submission.dor_ims_massOn_le_measure : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → ∀ W : Set (Euclid P), T.massOn W ≤ R.measure W := by
-  intro P n U T R hR W
-  obtain ⟨L, hL⟩ := Submission.dor_ims_unitOrientation_dual P n
-  -- `|ξ(x)(α)| ≤ |α|` for `μ_T`-a.e. `x`: `ξ(x)` is a unit orientation `Hⁿ⌞M`-a.e., and
-  -- `μ_T = θ Hⁿ⌞M ≪ Hⁿ⌞M`
-  have hdual : ∀ᵐ x ∂R.measure, ∀ α : Covector (Euclid P) n,
-      |R.orient x α| ≤ covectorEuclideanNorm α := by
-    have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
-    refine hac.ae_le ?_
-    filter_upwards [R.orients] with x hx
-    obtain ⟨Q, -, hQ⟩ := hx
-    exact (hL _ Q hQ).1
-  apply sSup_le
-  rintro r ⟨ω, ⟨hωW, hω1⟩, rfl⟩
-  -- `K = spt ω` is a compact subset of `U`, so `μ_T(K) = ∫_{M ∩ K} θ dHⁿ < ∞`
-  set K := tsupport (ω : DifferentialForm (Euclid P) n)
-  have hKm : MeasurableSet K := (isClosed_tsupport _).measurableSet
-  have hμK : R.measure K ≠ ∞ := by
-    rw [IMRep.measure, withDensity_apply _ hKm, Measure.restrict_restrict hKm, inter_comm]
-    exact R.locallyIntegrable_mult K ω.2.1.2.isCompact ω.2.2
-  obtain ⟨hint, haction⟩ := Submission.dor_ims_action_eq_integral P n U R ω
-  -- `⟨ω, ξ⟩ ≤ 1_K` `μ_T`-a.e.: `⟨ω(x), ξ(x)⟩ ≤ |ω(x)| ≤ 1` on `K` and `ω = 0` off `K`
-  have hle : (fun x => R.orient x ((ω : DifferentialForm (Euclid P) n) x)) ≤ᵐ[R.measure]
-      K.indicator fun _ => (1 : ℝ) := by
-    filter_upwards [hdual] with x hx
-    by_cases hxK : x ∈ K
-    · rw [indicator_of_mem hxK]
-      exact (le_abs_self _).trans ((hx _).trans (hω1 x))
-    · rw [indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport hxK, map_zero]
-  calc ENNReal.ofReal (T ω)
-      = ENNReal.ofReal (∫ x, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂R.measure) := by
-        rw [hR ω, haction]
-    _ ≤ ENNReal.ofReal (∫ x, K.indicator (fun _ => (1 : ℝ)) x ∂R.measure) :=
-        ENNReal.ofReal_le_ofReal (integral_mono_ae hint
-          ((integrableOn_const hμK).integrable_indicator hKm) hle)
-    _ = R.measure K := by
-        rw [integral_indicator_const _ hKm, smul_eq_mul, mul_one, measureReal_def,
-          ENNReal.ofReal_toReal hμK]
-    _ ≤ R.measure W := measure_mono hωW
-/-- `Λⁿ(ℝᴾ)` is finite-dimensional: `α ↦ (α(e_{I(1)}, …, e_{I(n)}))_{I : Fin n → Fin P}` is a linear
-map into the finite-dimensional space `(Fin n → Fin P) → ℝ`, injective because an alternating map
-is determined by its values on tuples of basis vectors. -/
-theorem Submission.dor_ims_lusin_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n) := by
-  intro P n
-  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
-  -- `L α = (α(e ∘ I))_I`
-  let L : Covector (Euclid P) n →ₗ[ℝ] (Fin n → Fin P) → ℝ :=
-    { toFun := fun α I => α fun k => e (I k)
-      map_add' := fun α β => rfl
-      map_smul' := fun c α => rfl }
-  refine FiniteDimensional.of_injective L fun α β h => ?_
-  apply ContinuousAlternatingMap.toAlternatingMap_injective
-  exact e.ext_alternating fun v _ => congrFun h v
-/-- **Lusin's theorem**, compact form (Simon 1.17), for a measurable `g : ℝᴾ → Y` into a
-second-countable `Y`.  If `μ(A) < ∞` and `ε ≠ 0`, there is a compact `K ⊆ A` with
-`μ(A \ K) < ε` on which `g` is continuous.  `μ⌞A` is finite, hence inner regular on `ℝᴾ`.  For a
-countable basis `(O_k)` of `Y` and weights `η_k > 0` with `∑ η_k < ε`, choose compact
-`C_k ⊆ A ∩ g⁻¹(O_k)` and `D_k ⊆ A \ g⁻¹(O_k)` with defects `< η_k / 2`, and put
-`K = ⋂ₖ (C_k ∪ D_k)`.  On `K`, `g x ∈ O_k ↔ x ∉ D_k`, so every `g⁻¹(O_k) ∩ K` is relatively
-open. -/
-theorem Submission.dor_ims_lusin_measurable_continuousOn : ∀ (P : ℕ) {Y : Type} [TopologicalSpace Y] [SecondCountableTopology Y] [MeasurableSpace Y] [OpensMeasurableSpace Y] (μ : Measure (Euclid P)) (A : Set (Euclid P)) (g : Euclid P → Y) (ε : ℝ≥0∞), Measurable g → MeasurableSet A → μ A ≠ ∞ → ε ≠ 0 → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \ K) < ε ∧ ContinuousOn g K := by
-  intro P Y _ _ _ _ μ A g ε hg hA hμA hε
-  -- `μ⌞A` is finite, hence regular on the σ-compact metric space `ℝᴾ`, so every measurable
-  -- `B ⊆ A` contains a compact `C` with `μ (B \ C) = μ⌞A (B \ C)` arbitrarily small
-  have : IsFiniteMeasure (μ.restrict A) := isFiniteMeasure_restrict.mpr hμA
-  have approx : ∀ B, B ⊆ A → MeasurableSet B → ∀ η : ℝ≥0∞, η ≠ 0 →
-      ∃ C ⊆ B, IsCompact C ∧ μ (B \ C) < η := by
-    intro B hBA hB η hη
-    obtain ⟨C, hCB, hC, hlt⟩ :=
-      hB.exists_isCompact_sdiff_lt (μ := μ.restrict A) (measure_ne_top _ _) hη
-    exact ⟨C, hCB, hC, by rwa [Measure.restrict_eq_self _ (sdiff_subset.trans hBA)] at hlt⟩
-  -- a countable basis `(O_k)` of `Y`, and weights `η_k > 0` with `∑ η_k < ε`
-  obtain ⟨O, hO⟩ := TopologicalSpace.exists_seq_basis Y
-  obtain ⟨η, hη, hηε⟩ := ENNReal.exists_pos_sum_of_countable' hε ℕ
-  have hS : ∀ k, MeasurableSet (g ⁻¹' O k) :=
-    fun k => hg (hO.isOpen (mem_range_self k)).measurableSet
-  -- compact `C_k ⊆ A ∩ g⁻¹(O_k)` and `D_k ⊆ A \ g⁻¹(O_k)`, each with defect `< η_k / 2`
-  choose C hCA hC hCμ using fun k =>
-    approx (A ∩ g ⁻¹' O k) inter_subset_left (hA.inter (hS k)) (η k / 2)
-      (ENNReal.half_pos (hη k).ne').ne'
-  choose D hDA hD hDμ using fun k =>
-    approx (A \ g ⁻¹' O k) sdiff_subset (hA.diff (hS k)) (η k / 2)
-      (ENNReal.half_pos (hη k).ne').ne'
-  -- `E_k = C_k ∪ D_k` misses less than `η_k` of `A`
-  have hE : ∀ k, μ (A \ (C k ∪ D k)) < η k := by
-    intro k
-    calc μ (A \ (C k ∪ D k))
-        ≤ μ ((A ∩ g ⁻¹' O k) \ C k ∪ (A \ g ⁻¹' O k) \ D k) := by
-          refine measure_mono fun x hx => ?_
-          by_cases hxO : g x ∈ O k
-          · exact Or.inl ⟨⟨hx.1, hxO⟩, fun hxC => hx.2 (Or.inl hxC)⟩
-          · exact Or.inr ⟨⟨hx.1, hxO⟩, fun hxD => hx.2 (Or.inr hxD)⟩
-      _ ≤ μ ((A ∩ g ⁻¹' O k) \ C k) + μ ((A \ g ⁻¹' O k) \ D k) := measure_union_le _ _
-      _ < η k / 2 + η k / 2 := ENNReal.add_lt_add (hCμ k) (hDμ k)
-      _ = η k := ENNReal.add_halves _
-  -- `K = ⋂ₖ E_k` is closed inside the compact `E_0 ⊆ A`
-  refine ⟨⋂ k, (C k ∪ D k), ?_, ?_, ?_, ?_⟩
-  · exact ((hC 0).union (hD 0)).of_isClosed_subset
-      (isClosed_iInter fun k => ((hC k).union (hD k)).isClosed) (iInter_subset _ 0)
-  · exact (iInter_subset _ 0).trans
-      (union_subset ((hCA 0).trans inter_subset_left) ((hDA 0).trans sdiff_subset))
-  · calc μ (A \ ⋂ k, (C k ∪ D k)) = μ (⋃ k, A \ (C k ∪ D k)) := by rw [sdiff_iInter]
-      _ ≤ ∑' k, μ (A \ (C k ∪ D k)) := measure_iUnion_le _
-      _ ≤ ∑' k, η k := ENNReal.tsum_le_tsum fun k => (hE k).le
-      _ < ε := hηε
-  -- on `K`, `g x ∈ O_k ↔ x ∉ D_k`, so `g⁻¹(O_k) ∩ K = D_kᶜ ∩ K` is relatively open
-  · rw [hO.continuousOn_iff]
-    rintro _ ⟨k, rfl⟩
-    refine ⟨(D k)ᶜ, (hD k).isClosed.isOpen_compl, ?_⟩
-    ext x
-    refine ⟨fun ⟨hxO, hxK⟩ => ⟨fun hxD => (hDA k hxD).2 hxO, hxK⟩, fun ⟨hxD, hxK⟩ => ⟨?_, hxK⟩⟩
-    rcases mem_iInter.mp hxK k with hxC | hxD'
-    · exact (hCA k hxC).2
-    · exact absurd hxD' hxD
-
-/-- **Lusin's theorem** (Simon 1.17) for a `μ`-a.e. strongly measurable covector field
-`f : ℝᴾ → Λⁿ(ℝᴾ)`.  `Λⁿ(ℝᴾ)` is finite-dimensional, hence second countable; give it the Borel
-σ-algebra.  `f` agrees with the Borel modification `f' = hf.mk f` off a measurable `μ`-null set
-`Z`, and Lusin's theorem for `f'` on `A \ Z` gives a compact `K ⊆ A \ Z` with
-`μ((A \ Z) \ K) < ε` on which `f = f'` is continuous.  As `μ(Z) = 0`,
-`μ(A \ K) = μ((A \ K) \ Z) = μ((A \ Z) \ K)`. -/
-theorem Submission.dor_ims_lusin_continuousOn : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (A : Set (Euclid P)) (f : Euclid P → Covector (Euclid P) n) (ε : ℝ), MeasurableSet A → μ A ≠ ∞ → AEStronglyMeasurable f μ → 0 < ε → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \ K) < ENNReal.ofReal ε ∧ ContinuousOn f K := by
-  intro P n μ A f ε hA hμA hf hε
-  -- `Λⁿ(ℝᴾ)` is finite-dimensional, hence proper and second countable
-  have := Submission.dor_ims_lusin_covector_finiteDimensional P n
-  borelize (Covector (Euclid P) n)
-  -- `f = f'` off a measurable null set `Z`
-  obtain ⟨Z, hfZ, hZ, hZ0⟩ := exists_measurable_superset_of_null (ae_iff.mp hf.ae_eq_mk)
-  obtain ⟨K, hK, hKA, hKμ, hfK⟩ := Submission.dor_ims_lusin_measurable_continuousOn P μ (A \ Z)
-    (hf.mk f) (ENNReal.ofReal ε) hf.measurable_mk (hA.diff hZ)
-    (ne_top_of_le_ne_top hμA (measure_mono sdiff_subset)) (ENNReal.ofReal_pos.mpr hε).ne'
-  refine ⟨K, hK, hKA.trans sdiff_subset, ?_, hfK.congr fun x hx => ?_⟩
-  · rwa [← measure_sdiff_null hZ0, sdiff_right_comm]
-  · by_contra hfx
-    exact (hKA hx).2 (hfZ hfx)
-/-- **The Euclidean coefficient norm is a pulled-back Euclidean norm** (Simon Ch. 6, 1.2 and 1.5;
-used by the smooth unit approximation behind the mass of `τ(M, θ, ξ)`).  With `e` the standard
-basis of `ℝᴾ`, let `c_I α = α(e_{I(0)}, …, e_{I(n-1)})` for strictly increasing `I : Fin n → Fin P`
-and `c_I = 0` otherwise.  Each `c_I` is a continuous linear functional, so
-`A α = (c_I α)_I ∈ EuclideanSpace ℝ (Fin n → Fin P)` is continuous linear, and termwise
-`‖A α‖ = √(∑_I c_I(α)²)` is the defining sum of `covectorEuclideanNorm α`. -/
-theorem Submission.dor_ims_sua_coeff_norm_rep : ∀ (P n : ℕ), ∃ A : Covector (Euclid P) n →L[ℝ] EuclideanSpace ℝ (Fin n → Fin P), ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖A α‖ := by
-  intro P n
-  -- Step 1: the coefficient functionals `c_I : α ↦ α(e_I)` for increasing `I`, else `0`
-  let c : (Fin n → Fin P) → Covector (Euclid P) n →L[ℝ] ℝ := fun I =>
-    if StrictMono I then
-      ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)
-    else 0
-  -- Step 2: `A α = (c_I α)_I`, moved into `EuclideanSpace ℝ (Fin n → Fin P)`
-  refine ⟨(EuclideanSpace.equiv (Fin n → Fin P) ℝ).symm.toContinuousLinearMap.comp
-    (ContinuousLinearMap.pi c), fun α => ?_⟩
-  -- Step 3: `‖A α‖ = √(∑_I |c_I α|²)` and `|c_I α|² = [StrictMono I] α(e_I)²` termwise
-  rw [EuclideanSpace.norm_eq, covectorEuclideanNorm]
-  congr 1
-  refine Finset.sum_congr rfl fun I _ => ?_
-  by_cases hI : StrictMono I <;> simp [c, hI]
-/-- **`Λⁿ(ℝᴾ)` is finite-dimensional** (Simon Ch. 6, 1.2; used by Tietze in the smooth unit
-approximation behind the mass of `τ(M, θ, ξ)`).  With `e` the standard basis of `ℝᴾ`, the map
-`Φ α = (α(e_{v(0)}, …, e_{v(n-1)}))_{v : Fin n → Fin P}` is linear into the finite-dimensional
-space `ℝ^(Fin n → Fin P)`, and injective: alternating maps agreeing on distinct basis vectors are
-equal, and a continuous alternating map is determined by its underlying alternating map. -/
-theorem Submission.dor_ims_sua_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n) := by
-  intro P n
-  -- Step 1: the standard basis `e` of `ℝᴾ`
-  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
-  -- Step 2: `Φ α = (α(e ∘ v))_v`, linear since covector operations are pointwise
-  let Φ : Covector (Euclid P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
-    { toFun := fun α v => α fun i => e (v i)
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl }
-  -- Steps 3–4: `Φ` is injective into the finite-dimensional `(Fin n → Fin P) → ℝ`
-  refine FiniteDimensional.of_injective Φ fun α α' h => ?_
-  exact ContinuousAlternatingMap.toAlternatingMap_injective
-    (e.ext_alternating fun v _ => congr_fun h v)
-/-- **Continuous unit extension** (steps 0 and 2–5 of the smooth unit approximation behind the
-mass of `τ(M, θ, ξ)`).  Let `K ⊆ V ⊆ ℝᴾ`, `K` compact, `V` open, and let `β : ℝᴾ → Λⁿ(ℝᴾ)` be
-continuous on `K` with `|β| ≤ 1` there, `|·|` the Euclidean coefficient norm.  Then `β|_K`
-extends to a continuous `g` with compact support in `V` and `|g| ≤ 1` everywhere.  Tietze is
-proved in place for the complete normed space `Λⁿ(ℝᴾ)`: partitions of unity subordinate to
-finite `δ`-nets of `K` give continuous `G_k` with `‖G_k - β‖ ≤ 2⁻ᵏ` on `K`, and
-`B = G₀ + ∑ₖ D_k`, with `D_k` the difference `G_{k+1} - G_k` clamped to the ball of radius
-`2 · 2⁻ᵏ`, is a uniformly convergent series of continuous maps equal to `β` on `K`.  Then retract
-radially by `ρ(α) = max(1, |α|)⁻¹ α` and cut off by `χ = max(0, 1 − dist(·, K)/r)` with
-`cthickening r K ⊆ V`; `g = χ · (ρ ∘ B)`. -/
-theorem Submission.dor_ims_sua_continuous_unit_extension : ∀ (P n : ℕ) (K V : Set (Euclid P)) (β : Euclid P → Covector (Euclid P) n), IsCompact K → IsOpen V → K ⊆ V → ContinuousOn β K → (∀ x ∈ K, covectorEuclideanNorm (β x) ≤ 1) → ∃ g : Euclid P → Covector (Euclid P) n, Continuous g ∧ HasCompactSupport g ∧ tsupport g ⊆ V ∧ (∀ x, covectorEuclideanNorm (g x) ≤ 1) ∧ ∀ x ∈ K, g x = β x := by
-  intro P n K V β hK hV hKV hβ hβ1
-  -- Step 0: if `K = ∅`, take `g = 0`
-  rcases K.eq_empty_or_nonempty with rfl | hKne
-  · exact ⟨0, continuous_zero, HasCompactSupport.zero, by simp, by simp, by simp⟩
-  -- Step 1: `|α| = ‖A α‖`, so `|·|` is continuous and `|c • α| = |c| |α|`
-  obtain ⟨A, hA⟩ := Submission.dor_ims_sua_coeff_norm_rep P n
-  have hN1 : Continuous fun α : Covector (Euclid P) n => covectorEuclideanNorm α := by
-    simpa only [hA] using A.continuous.norm
-  have hN2 : ∀ (c : ℝ) (α : Covector (Euclid P) n),
-      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
-    intro c α
-    rw [hA, hA, map_smul, norm_smul, Real.norm_eq_abs]
-  -- Step 2: Tietze, a continuous `B` with `B = β` on `K`
-  obtain ⟨B, hBc, hBK⟩ : ∃ B : Euclid P → Covector (Euclid P) n, Continuous B ∧
-      ∀ x ∈ K, B x = β x := by
-    -- (a) a partition of unity on a finite `δ`-net of `K` averages `β` to within `ε` on `K`
-    have happrox : ∀ ε > 0, ∃ G : Euclid P → Covector (Euclid P) n, Continuous G ∧
-        ∀ x ∈ K, ‖G x - β x‖ ≤ ε := by
-      intro ε hε
-      obtain ⟨δ, hδ, hβδ⟩ :=
-        Metric.uniformContinuousOn_iff.1 (hK.uniformContinuousOn_of_continuous hβ) ε hε
-      obtain ⟨t, htK, hKt⟩ :=
-        hK.elim_nhds_subcover (fun a => ball a δ) fun a _ => ball_mem_nhds a hδ
-      obtain ⟨φ, hφ⟩ := PartitionOfUnity.exists_isSubordinate hK.isClosed
-        (fun a : t => ball (a : Euclid P) δ) (fun a => isOpen_ball) fun x hx => by
-          obtain ⟨a, ha, hxa⟩ := mem_iUnion₂.1 (hKt hx)
-          exact mem_iUnion.2 ⟨⟨a, ha⟩, hxa⟩
-      refine ⟨fun x => ∑ a : t, φ a x • β a,
-        continuous_finsetSum _ fun a _ => (φ a).continuous.smul continuous_const, fun x hx => ?_⟩
-      have h1 : ∑ a : t, φ a x = 1 := by
-        rw [← finsum_eq_sum_of_fintype]
-        exact φ.sum_eq_one hx
-      calc ‖∑ a : t, φ a x • β a - β x‖ = ‖∑ a : t, φ a x • (β a - β x)‖ := by
-            simp only [smul_sub, Finset.sum_sub_distrib, ← Finset.sum_smul, h1, one_smul]
-        _ ≤ ∑ a : t, ‖φ a x • (β a - β x)‖ := norm_sum_le _ _
-        _ ≤ ∑ a : t, φ a x * ε := by
-            refine Finset.sum_le_sum fun a _ => ?_
-            rw [norm_smul, Real.norm_of_nonneg (φ.nonneg a x)]
-            rcases eq_or_ne (φ a x) 0 with h | h
-            · simp [h]
-            · refine mul_le_mul_of_nonneg_left ?_ (φ.nonneg a x)
-              rw [← dist_eq_norm]
-              exact (hβδ a (htK a a.2) x hx (mem_ball'.1 (hφ a (subset_tsupport _ h)))).le
-        _ = ε := by rw [← Finset.sum_mul, h1, one_mul]
-    choose G hGc hGK using fun k : ℕ => happrox ((1 / 2) ^ k) (by positivity)
-    -- (b) clamp `G_{k+1} - G_k` to the ball of radius `2 · 2⁻ᵏ`; on `K` nothing changes
-    have hc : ∀ k : ℕ, 0 < 2 * (1 / 2 : ℝ) ^ k := fun k => by positivity
-    obtain ⟨D, hD⟩ : ∃ D : ℕ → Euclid P → Covector (Euclid P) n, ∀ k x,
-        D k x = (max 1 (‖G (k + 1) x - G k x‖ / (2 * (1 / 2) ^ k)))⁻¹ • (G (k + 1) x - G k x) :=
-      ⟨_, fun _ _ => rfl⟩
-    have hDc : ∀ k, Continuous (D k) := by
-      intro k
-      have hv : Continuous fun x => G (k + 1) x - G k x := (hGc (k + 1)).sub (hGc k)
-      refine Continuous.congr ?_ fun x => (hD k x).symm
-      exact ((continuous_const.max (hv.norm.div_const _)).inv₀ fun x =>
-        (zero_lt_one.trans_le (le_max_left _ _)).ne').smul hv
-    have hDb : ∀ k x, ‖D k x‖ ≤ 2 * (1 / 2) ^ k := by
-      intro k x
-      have hm : 0 < max 1 (‖G (k + 1) x - G k x‖ / (2 * (1 / 2) ^ k)) :=
-        zero_lt_one.trans_le (le_max_left _ _)
-      rw [hD, norm_smul, norm_inv, Real.norm_of_nonneg hm.le, inv_mul_le_iff₀ hm]
-      calc ‖G (k + 1) x - G k x‖
-          = ‖G (k + 1) x - G k x‖ / (2 * (1 / 2) ^ k) * (2 * (1 / 2) ^ k) :=
-            (div_mul_cancel₀ _ (hc k).ne').symm
-        _ ≤ max 1 (‖G (k + 1) x - G k x‖ / (2 * (1 / 2) ^ k)) * (2 * (1 / 2) ^ k) :=
-            mul_le_mul_of_nonneg_right (le_max_right _ _) (hc k).le
-    have hDK : ∀ k, ∀ x ∈ K, D k x = G (k + 1) x - G k x := by
-      intro k x hx
-      have h2 : ‖G (k + 1) x - G k x‖ ≤ 2 * (1 / 2) ^ k := by
-        calc ‖G (k + 1) x - G k x‖ = ‖(G (k + 1) x - β x) - (G k x - β x)‖ := by
-              rw [sub_sub_sub_cancel_right]
-          _ ≤ ‖G (k + 1) x - β x‖ + ‖G k x - β x‖ := norm_sub_le _ _
-          _ ≤ (1 / 2) ^ (k + 1) + (1 / 2) ^ k := add_le_add (hGK _ x hx) (hGK _ x hx)
-          _ ≤ 2 * (1 / 2) ^ k := by
-              rw [pow_succ]
-              linarith [pow_pos (by norm_num : (0 : ℝ) < 1 / 2) k]
-      rw [hD, max_eq_left ((div_le_one (hc k)).2 h2), inv_one, one_smul]
-    -- (c) `B = G₀ + ∑ D_k` converges uniformly; on `K` the series telescopes to `β - G₀`
-    refine ⟨fun x => G 0 x + ∑' k, D k x,
-      (hGc 0).add (continuous_tsum hDc (summable_geometric_two.mul_left 2) hDb), fun x hx => ?_⟩
-    have hs : Summable fun k => D k x :=
-      Summable.of_norm_bounded (summable_geometric_two.mul_left 2) fun k => hDb k x
-    have hTel : ∀ N, ∑ k ∈ Finset.range N, D k x = G N x - G 0 x := by
-      intro N
-      induction N with
-      | zero => simp
-      | succ N ih => rw [Finset.sum_range_succ, ih, hDK N x hx]; abel
-    have hG : Tendsto (fun N => G N x) atTop (𝓝 (β x)) := by
-      rw [tendsto_iff_norm_sub_tendsto_zero]
-      exact squeeze_zero (fun N => norm_nonneg _) (fun N => hGK N x hx)
-        (tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num) (by norm_num))
-    have hlim := tendsto_nhds_unique hs.hasSum.tendsto_sum_nat
-      ((hG.sub_const (G 0 x)).congr fun N => (hTel N).symm)
-    show G 0 x + ∑' k, D k x = β x
-    rw [hlim]
-    abel
-  -- Step 3: the radial retraction `ρ(α) = max(1, |α|)⁻¹ α` onto `{|α| ≤ 1}`
-  let ρ : Covector (Euclid P) n → Covector (Euclid P) n :=
-    fun α => (max 1 (covectorEuclideanNorm α))⁻¹ • α
-  have hm : ∀ α : Covector (Euclid P) n, 0 < max 1 (covectorEuclideanNorm α) :=
-    fun α => zero_lt_one.trans_le (le_max_left _ _)
-  have hρ : Continuous ρ :=
-    ((continuous_const.max hN1).inv₀ fun α => (hm α).ne').smul continuous_id
-  have hρ1 : ∀ α, covectorEuclideanNorm (ρ α) ≤ 1 := by
-    intro α
-    rw [hN2, abs_of_pos (inv_pos.2 (hm α))]
-    exact inv_mul_le_one_of_le₀ (le_max_right _ _) (hm α).le
-  have hρid : ∀ α, covectorEuclideanNorm α ≤ 1 → ρ α = α := by
-    intro α hα
-    simp [ρ, max_eq_left hα]
-  -- Step 4: the cut-off `χ = max(0, 1 − dist(·, K)/r)`, where `cthickening r K ⊆ V`
-  obtain ⟨r, hr, hrV⟩ := hK.exists_cthickening_subset_open hV hKV
-  let χ : Euclid P → ℝ := fun x => max 0 (1 - infDist x K / r)
-  have hχ : Continuous χ :=
-    continuous_const.max (continuous_const.sub ((continuous_infDist_pt K).div_const r))
-  have hχ0 : ∀ x, 0 ≤ χ x := fun x => le_max_left _ _
-  have hχ1 : ∀ x, χ x ≤ 1 := fun x =>
-    max_le zero_le_one (sub_le_self _ (div_nonneg infDist_nonneg hr.le))
-  have hχK : ∀ x ∈ K, χ x = 1 := by
-    intro x hx
-    simp [χ, infDist_zero_of_mem hx]
-  have hχr : ∀ x, χ x ≠ 0 → x ∈ thickening r K := by
-    intro x hx
-    rw [mem_thickening_iff_infDist_lt hKne]
-    by_contra h
-    refine hx (max_eq_left ?_)
-    rw [sub_nonpos, le_div_iff₀ hr, one_mul]
-    exact not_lt.1 h
-  -- Step 5: `g = χ · (ρ ∘ B)` has `tsupport g ⊆ cthickening r K ⊆ V`, compact
-  have hsupp : support (fun x => χ x • ρ (B x)) ⊆ thickening r K := fun x hx =>
-    hχr x fun h => hx (by simp [h])
-  have htsupp : tsupport (fun x => χ x • ρ (B x)) ⊆ cthickening r K :=
-    (closure_mono hsupp).trans (closure_thickening_subset_cthickening r K)
-  refine ⟨fun x => χ x • ρ (B x), hχ.smul (hρ.comp hBc),
-    hK.cthickening.of_isClosed_subset (isClosed_tsupport _) htsupp, htsupp.trans hrV,
-    fun x => ?_, fun x hx => ?_⟩
-  · -- `|g x| = χ x |ρ (B x)| ≤ χ x ≤ 1`
-    rw [hN2, abs_of_nonneg (hχ0 x)]
-    exact (mul_le_of_le_one_right (hχ0 x) (hρ1 _)).trans (hχ1 x)
-  · -- on `K`: `χ = 1`, `B = β` and `|β| ≤ 1`, so `g = ρ ∘ β = β`
-    simp only [hχK x hx, one_smul, hBK x hx, hρid _ (hβ1 x hx)]
-
-/-- **Mollifying a unit covector field** (smooth unit approximation, step 6).  A continuous,
-compactly supported `n`-covector field `g` with `tsupport g ⊆ V` (`V` open) and `|g| ≤ 1` for the
-Euclidean coefficient norm `|·|` is uniformly `ε`-approximated in `|·|` by a test form `ω` with
-`tsupport ω ⊆ V` and `|ω| ≤ 1`.
-
-Write `|α| = ‖Aα‖` for a continuous linear coefficient map `A` (`dor_ims_sua_coeff_norm_rep`), so
-`|α| ≤ ‖A‖‖α‖`.  Take `r > 0` with `cthickening r (tsupport g) ⊆ V`, and `s ≤ r` such that
-`‖g y − g x‖ < ε/(‖A‖+1)` when `dist y x < s` (uniform continuity).  Let `ω = ψ ⋆ g`, where
-`ψ = φ / ∫ φ` normalizes a smooth bump `φ ≥ 0` with `support φ = B_s(0)`.  Then `ω` is `C^∞` with
-compact support and `tsupport ω ⊆ cthickening s (tsupport g) ⊆ V`; `Aω(x) = (ψ ⋆ (A ∘ g))(x)` is
-an average of values of norm `|g| ≤ 1`; and `‖ω(x) − g(x)‖ ≤ ε/(‖A‖+1)`, whence
-`|ω(x) − g(x)| ≤ ε`. -/
-theorem Submission.dor_ims_sua_mollify_unit_field : ∀ (P n : ℕ) (V : Set (Euclid P)) (g : Euclid P → Covector (Euclid P) n) (ε : ℝ), IsOpen V → Continuous g → HasCompactSupport g → tsupport g ⊆ V → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → 0 < ε → ∃ ω : DifferentialForm (Euclid P) n, IsTestForm ω ∧ tsupport ω ⊆ V ∧ (∀ x, covectorEuclideanNorm (ω x) ≤ 1) ∧ ∀ x, covectorEuclideanNorm (ω x - g x) ≤ ε := by
-  intro P n V g ε hV hgc hgs hgV hg1 hε
-  -- (1) the coefficient map `A` with `|α| = ‖A α‖ ≤ ‖A‖ ‖α‖`
-  obtain ⟨A, hA⟩ := Submission.dor_ims_sua_coeff_norm_rep P n
-  have hC : 0 < ‖A‖ + 1 := by positivity
-  -- (2) a support margin `r`
-  obtain ⟨r, hr, hrV⟩ := hgs.isCompact.exists_cthickening_subset_open hV hgV
-  -- (3) uniform continuity of `g`, and the radius `s = min s₀ r`
-  obtain ⟨s₀, hs₀, hgs₀⟩ := Metric.uniformContinuous_iff.mp
-    (hgs.uniformContinuous_of_continuous hgc) (ε / (‖A‖ + 1)) (div_pos hε hC)
-  have hs : 0 < min s₀ r := lt_min hs₀ hr
-  -- (4) a smooth bump `φ` with `support φ = B_s(0)`, and `ψ = φ / ∫ φ`: `ψ ≥ 0`, `∫ ψ = 1`
-  let φ : ContDiffBump (0 : Euclid P) := ⟨min s₀ r / 2, min s₀ r, half_pos hs, half_lt_self hs⟩
-  have hφ : 0 < ∫ y, φ y := by
-    refine (integral_pos_iff_support_of_nonneg φ.nonneg'
-      (φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport)).mpr ?_
-    rw [φ.support_eq]
-    exact measure_ball_pos volume 0 hs
-  let ψ : Euclid P → ℝ := fun y => φ y / ∫ y, φ y
-  have hψφ : support ψ ⊆ support φ := fun y hy h => hy (by simp [ψ, h])
-  have hψs : support ψ ⊆ ball 0 (min s₀ r) := hψφ.trans φ.support_eq.subset
-  have hψc : HasCompactSupport ψ := φ.hasCompactSupport.mono hψφ
-  have hψ0 : ∀ y, 0 ≤ ψ y := fun y => div_nonneg φ.nonneg hφ.le
-  have hψ1 : ∫ y, ψ y = 1 := by rw [integral_div, div_self hφ.ne']
-  -- (5) `ω = ψ ⋆ g`
-  let ω : DifferentialForm (Euclid P) n :=
-    convolution ψ g (ContinuousLinearMap.lsmul ℝ ℝ) volume
-  have hgi : LocallyIntegrable g volume := hgc.locallyIntegrable
-  have hω : ConvolutionExists ψ g (ContinuousLinearMap.lsmul ℝ ℝ) volume :=
-    hψc.convolutionExists_left _ (φ.continuous.div_const _) hgi
-  refine ⟨ω, ⟨?_, ?_⟩, ?_, ?_, ?_⟩
-  · -- (6) smoothness
-    exact hψc.contDiff_convolution_left _ (φ.contDiff.div_const _) hgi
-  · exact hψc.convolution _ hgs
-  · -- (7) `spt ω ⊆ cthickening s (tsupport g) ⊆ V`
-    have hsupp : support ω ⊆ thickening (min s₀ r) (tsupport g) := by
-      refine (support_convolution_subset _).trans ?_
-      rintro _ ⟨t, ht, z, hz, rfl⟩
-      have ht' : ‖t‖ < min s₀ r := mem_ball_zero_iff.mp (hψs ht)
-      exact mem_thickening_iff.mpr ⟨z, subset_tsupport g hz, by
-        rwa [dist_eq_norm, add_sub_cancel_right]⟩
-    calc tsupport ω ⊆ closure (thickening (min s₀ r) (tsupport g)) := closure_mono hsupp
-      _ ⊆ cthickening (min s₀ r) (tsupport g) := closure_thickening_subset_cthickening _ _
-      _ ⊆ cthickening r (tsupport g) := cthickening_mono (min_le_right _ _) _
-      _ ⊆ V := hrV
-  · -- (8) `|ω x| = ‖(ψ ⋆ (A ∘ g)) x‖ ≤ 1`
-    intro x
-    have hAω : A (ω x) = convolution ψ (fun y => A (g y))
-        (ContinuousLinearMap.lsmul ℝ ℝ) volume x := by
-      calc A (ω x) = ∫ t, A (ContinuousLinearMap.lsmul ℝ ℝ (ψ t) (g (x - t))) :=
-            (A.integral_comp_comm (hω x).integrable).symm
-        _ = _ := by simp only [convolution_def, ContinuousLinearMap.lsmul_apply, map_smul]
-    rw [hA, hAω, ← dist_zero_right]
-    exact dist_convolution_le zero_le_one hψs hψ0 hψ1
-      (A.continuous.comp hgc).aestronglyMeasurable fun y _ => by
-        rw [dist_zero_right, ← hA]
-        exact hg1 y
-  · -- (9) `‖ω x − g x‖ ≤ ε/(‖A‖+1)`, hence `|ω x − g x| ≤ ‖A‖ ε/(‖A‖+1) ≤ ε`
-    intro x
-    have hd : dist (ω x) (g x) ≤ ε / (‖A‖ + 1) :=
-      dist_convolution_le (div_pos hε hC).le hψs hψ0 hψ1 hgc.aestronglyMeasurable fun y hy =>
-        (hgs₀ ((mem_ball.mp hy).trans_le (min_le_left _ _))).le
-    calc covectorEuclideanNorm (ω x - g x) = ‖A (ω x - g x)‖ := hA _
-      _ ≤ ‖A‖ * dist (ω x) (g x) := by rw [dist_eq_norm]; exact A.le_opNorm _
-      _ ≤ ‖A‖ * (ε / (‖A‖ + 1)) := by gcongr
-      _ ≤ ε := by
-        rw [mul_div_assoc', div_le_iff₀ hC]
-        nlinarith [norm_nonneg A]
-
 /-- **Smooth unit approximation** (Simon Ch. 6, 1.15 and 2.5; steps 4(c)–(d) of the mass formula
 `M_W(T) = μ_T(W)` of Remark 3.2(3) for `T = τ(M, θ, ξ)`).  Extend `β|_K` to a continuous unit
 field `g` with compact support in `V` and `g = β` on `K` (Tietze extension, radial retraction,
@@ -8761,426 +7963,6 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
     le_antisymm (Submission.dor_ims_massOn_le_measure P n U T R hR W)
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
-/-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
-`spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
-`S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
-unity `ψ₁, …, ψₘ` on `K` subordinate to them splits `ω = Σᵢ ψᵢω` into test forms with
-`spt (ψᵢω) ⊆ Wᵢ`, each annihilated by `S`. -/
-theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0 := by
-  intro P n U S ω hdisj
-  classical
-  -- `K = spt ω` is a compact subset of `U`
-  set K := tsupport (ω : DifferentialForm (Euclid P) n)
-  have hKc : IsCompact K := ω.property.1.2
-  have hKU : K ⊆ U := ω.property.2
-  -- `K` lies in the zero region `⋃₀ 𝒲`, hence in finitely many members of `𝒲`
-  let 𝒲 : Set (Set (Euclid P)) :=
-    {W | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ S.VanishesOn W}
-  have hKZ : K ⊆ ⋃ W : 𝒲, (W : Set (Euclid P)) := by
-    intro x hx
-    have hxZ : x ∈ S.zeroRegion := by
-      by_contra hxZ
-      exact Set.disjoint_left.mp hdisj hx ⟨hKU hx, hxZ⟩
-    rwa [GeometricCurrentOn.zeroRegion, Set.sUnion_eq_iUnion] at hxZ
-  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun W : 𝒲 => (W : Set (Euclid P)))
-    (fun W => W.2.1) hKZ
-  let Wt : t → Set (Euclid P) := fun i => ((i : 𝒲) : Set (Euclid P))
-  have hKt : K ⊆ ⋃ i, Wt i := by
-    intro x hx
-    obtain ⟨W, hW, hxW⟩ := Set.mem_iUnion₂.mp (ht hx)
-    exact Set.mem_iUnion.mpr ⟨⟨W, hW⟩, hxW⟩
-  -- a smooth partition of unity `ψᵢ` on `K` with `spt ψᵢ ⊆ Wᵢ`
-  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
-    (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Wt (fun i => (i : 𝒲).2.1) hKt
-  -- each `ψᵢω` is a test form in `U` supported in `Wᵢ`
-  have hmem : ∀ i, (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n ∧
-      tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ Wt i := by
-    intro i
-    have hsK : tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ K :=
-      tsupport_smul_subset_right _ _
-    refine ⟨⟨⟨?_, ?_⟩, hsK.trans hKU⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
-    · exact (contMDiff_iff_contDiff.mp (ψ i).contMDiff).smul ω.property.1.1
-    · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
-  let ωi : t → TestFormOn U n := fun i => ⟨_, (hmem i).1⟩
-  -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
-  have hsum : ω = ∑ i, ωi i := by
-    apply Subtype.ext
-    funext x
-    rw [Submodule.coe_sum, Finset.sum_apply]
-    change (ω : DifferentialForm (Euclid P) n) x =
-      ∑ i, ψ i x • (ω : DifferentialForm (Euclid P) n) x
-    by_cases hx : x ∈ K
-    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
-    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
-      simp [h0]
-  -- linearity: `S(ω) = Σᵢ S(ψᵢω) = 0`
-  change S.toCurrent ω = 0
-  rw [hsum, map_sum]
-  exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
-
-/-- **Simon Ch. 6, 3.2(3) and 2.11–2.12**: if `T = τ(M, θ, ξ)` in the open set `U`, then
-(i) `M_W(T) = μ_R(W)` for every open `W`, where `μ_R = θ Hⁿ⌞M`, and (ii) `spt T = U ∩ spt μ_R`.
-`M_W(T) ≤ μ_R(W)` because admissible forms pair with `ξ` to at most `1`; `μ_R(W) ≤ M_W(T)` by
-smoothing the dual covector field of `ξ` (Lusin); (ii) follows from (i) alone. -/
-theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support := by
-  intro P n U T R hU hR
-  have hmass : ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W := fun W hW =>
-    le_antisymm (Submission.dor_ims_massOn_le_measure P n U T R hR W)
-      (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
-  exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
-
-/-- **Simon Ch. 6, Remark 3.2(1)** (the construction step): for IMReps `R₁ = (M₁, θ₁, ξ₁)`,
-`R₂ = (M₂, θ₂, ξ₂)` in an open `U` and `p₁, p₂ ∈ ℤ` there is an IMRep `R = (M', θ', ξ')` in `U`
-with `1_{M'} θ' ξ' = p₁ 1_{M₁} θ₁ ξ₁ + p₂ 1_{M₂} θ₂ ξ₂` `Hⁿ`-a.e.  Take Borel versions `η₁, η₂`
-of the orientations and the Borel sign `σ = ±1` according as `η₂ = η₁` or not; as `ξ₂ = ±ξ₁`
-a.e. on `M₁ ∩ M₂`, `η₂ = σ η₁` there.  With `c = p₁ θ₁ 1_{M₁} + p₂ θ₂ (σ 1_{M₁ ∩ M₂} + 1_{M₂ \ M₁})`
-and `ζ = η₁` on `M₁`, `ζ = η₂` off `M₁`, put `M' = (M₁ ∪ M₂) ∩ {c ≠ 0}`, `θ' = |c|`,
-`ξ' = sgn(c) ζ`.  Then `1_{M'} θ' ξ' = c ζ` is the combination a.e., `|c| ≤ |p₁| θ₁ 1_{M₁} +
-|p₂| θ₂ 1_{M₂}` gives local integrability, and `ξ' = ±ξᵢ` orients `T_x M'` a.e. on `M' ∩ M₁`
-(`i = 1`) and on `M' \ M₁ ⊆ M₂` (`i = 2`). -/
-theorem Submission.rsdic_exists_imrep_int_combination : ∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ : IMRep U n) (p₁ p₂ : ℤ), IsOpen U → ∃ R : IMRep U n, ∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = (p₁ : ℝ) • R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + (p₂ : ℝ) • R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x := by
-  intro P n U R₁ R₂ p₁ p₂ hU
-  classical
-  have hM₁ := R₁.measurableSet_carrier
-  have hM₂ := R₂.measurableSet_carrier
-  -- Step 1: Borel versions `η₁, η₂` of the orientations, equal to them a.e. on the carriers
-  obtain ⟨η₁, hη₁, hη₁e⟩ : ∃ η : Euclid P → MultiVector P n, StronglyMeasurable η ∧
-      ∀ᵐ x ∂μHE[n], x ∈ R₁.carrier → R₁.orient x = η x :=
-    ⟨_, R₁.aestronglyMeasurable_orient.stronglyMeasurable_mk,
-      (ae_restrict_iff' hM₁).mp R₁.aestronglyMeasurable_orient.ae_eq_mk⟩
-  obtain ⟨η₂, hη₂, hη₂e⟩ : ∃ η : Euclid P → MultiVector P n, StronglyMeasurable η ∧
-      ∀ᵐ x ∂μHE[n], x ∈ R₂.carrier → R₂.orient x = η x :=
-    ⟨_, R₂.aestronglyMeasurable_orient.stronglyMeasurable_mk,
-      (ae_restrict_iff' hM₂).mp R₂.aestronglyMeasurable_orient.ae_eq_mk⟩
-  -- Step 2: `ξ₂ = ±ξ₁` a.e. on `M₁ ∩ M₂`
-  have hpm : ∀ᵐ x ∂μHE[n], x ∈ R₁.carrier → x ∈ R₂.carrier →
-      R₂.orient x = R₁.orient x ∨ R₂.orient x = -R₁.orient x := by
-    filter_upwards [(ae_restrict_iff' (hM₁.inter hM₂)).mp
-      (Submission.rsdic_imrep_ae_orient_eq_or_eq_neg_inter P n U R₁ R₂ hU)] with x hx h₁ h₂
-    exact hx ⟨h₁, h₂⟩
-  -- Step 3: the coefficient `c` (with the Borel sign `σ`) and the orientation field `ζ`
-  have hE : MeasurableSet {x | η₂ x = η₁ x} := by
-    -- `Λₙ(ℝᴾ)` carries the strong operator topology; it is the topology of the operator norm
-    have : TopologicalSpace.MetrizableSpace (MultiVector P n) :=
-      { toPseudoMetrizableSpace := ⟨⟨PseudoMetricSpace.toUniformSpace, rfl,
-          Metric.uniformity_basis_dist_inv_nat_succ.isCountablyGenerated⟩⟩
-        toT0Space := inferInstance }
-    exact hη₂.measurableSet_eq_fun hη₁
-  obtain ⟨c, hc⟩ : ∃ c : Euclid P → ℤ, c = fun x =>
-      (if x ∈ R₁.carrier then p₁ * R₁.mult x else 0) +
-        (if x ∈ R₂.carrier then
-          (if x ∈ R₁.carrier then (if η₂ x = η₁ x then 1 else -1) else 1) * (p₂ * R₂.mult x)
-        else 0) := ⟨_, rfl⟩
-  have hc_meas : Measurable c := by
-    have hθ₁ : Measurable fun x => (R₁.mult x : ℤ) := measurable_from_nat.comp R₁.measurable_mult
-    have hθ₂ : Measurable fun x => (R₂.mult x : ℤ) := measurable_from_nat.comp R₂.measurable_mult
-    rw [hc]
-    exact (Measurable.ite hM₁ (measurable_const.mul hθ₁) measurable_const).add
-      (Measurable.ite hM₂ ((Measurable.ite hM₁ (Measurable.ite hE measurable_const measurable_const)
-        measurable_const).mul (measurable_const.mul hθ₂)) measurable_const)
-  have hc_off : ∀ x, x ∉ R₁.carrier → x ∉ R₂.carrier → c x = 0 := by
-    intro x h₁ h₂
-    simp [hc, h₁, h₂]
-  obtain ⟨ζ, hζ⟩ : ∃ ζ : Euclid P → MultiVector P n,
-      ζ = fun x => if x ∈ R₁.carrier then η₁ x else η₂ x := ⟨_, rfl⟩
-  have hζ_meas : StronglyMeasurable ζ := by
-    rw [hζ]
-    exact StronglyMeasurable.ite hM₁ hη₁ hη₂
-  have hζ₁ : ∀ x, x ∈ R₁.carrier → ζ x = η₁ x := fun x hx => by simp [hζ, hx]
-  have hζ₂ : ∀ x, x ∉ R₁.carrier → ζ x = η₂ x := fun x hx => by simp [hζ, hx]
-  -- the new carrier `M' = (M₁ ∪ M₂) ∩ {c ≠ 0}`
-  obtain ⟨M', hM'⟩ : ∃ M' : Set (Euclid P),
-      M' = (R₁.carrier ∪ R₂.carrier) ∩ {x | c x ≠ 0} := ⟨_, rfl⟩
-  have hmem : ∀ x, x ∈ M' ↔ (x ∈ R₁.carrier ∨ x ∈ R₂.carrier) ∧ c x ≠ 0 := by
-    intro x
-    rw [hM']
-    rfl
-  have hM'meas : MeasurableSet M' := by
-    rw [hM']
-    exact (hM₁.union hM₂).inter (hc_meas (measurableSet_singleton 0).compl)
-  have hM'U : M' ⊆ U := fun x hx =>
-    ((hmem x).mp hx).1.elim (fun h => R₁.carrier_subset h) fun h => R₂.carrier_subset h
-  -- Step 5: `1_{M'} |c| sgn(c) ζ = c ζ` everywhere
-  have hind : ∀ x, M'.indicator (fun y => ((c y).natAbs : ℝ) • (((c y).sign : ℝ) • ζ y)) x =
-      (c x : ℝ) • ζ x := by
-    intro x
-    by_cases hx : x ∈ M'
-    · rw [indicator_of_mem hx, smul_smul]
-      congr 1
-      have h : (((c x).sign * ((c x).natAbs : ℤ) : ℤ) : ℝ) = (c x : ℝ) := by
-        rw [Int.sign_mul_natAbs]
-      rw [Int.cast_mul, Int.cast_natCast] at h
-      rw [mul_comm]
-      exact h
-    · rw [indicator_of_notMem hx]
-      have hc0 : c x = 0 := by
-        by_contra hcx
-        by_cases hA : x ∈ R₁.carrier ∨ x ∈ R₂.carrier
-        · exact hx ((hmem x).mpr ⟨hA, hcx⟩)
-        · exact hcx (hc_off x (fun h => hA (Or.inl h)) fun h => hA (Or.inr h))
-      rw [hc0, Int.cast_zero, zero_smul]
-  -- Step 6 (d): `|c| ≤ |p₁| θ₁ 1_{M₁} + |p₂| θ₂ 1_{M₂}`, so `θ' = |c|` is locally integrable
-  have hθ₁e : Measurable fun x => (R₁.mult x : ℝ≥0∞) := measurable_from_nat.comp R₁.measurable_mult
-  have hθ₂e : Measurable fun x => (R₂.mult x : ℝ≥0∞) := measurable_from_nat.comp R₂.measurable_mult
-  have hbound : ∀ x, ((c x).natAbs : ℝ≥0∞) ≤
-      (p₁.natAbs : ℝ≥0∞) * R₁.carrier.indicator (fun y => (R₁.mult y : ℝ≥0∞)) x +
-        (p₂.natAbs : ℝ≥0∞) * R₂.carrier.indicator (fun y => (R₂.mult y : ℝ≥0∞)) x := by
-    intro x
-    have key : (c x).natAbs ≤ p₁.natAbs * (if x ∈ R₁.carrier then R₁.mult x else 0) +
-        p₂.natAbs * (if x ∈ R₂.carrier then R₂.mult x else 0) := by
-      rw [hc]
-      refine (Int.natAbs_add_le _ _).trans (add_le_add ?_ ?_)
-      · split_ifs <;> simp [Int.natAbs_mul]
-      · split_ifs <;> simp [Int.natAbs_mul]
-    calc ((c x).natAbs : ℝ≥0∞)
-        ≤ ((p₁.natAbs * (if x ∈ R₁.carrier then R₁.mult x else 0) +
-            p₂.natAbs * (if x ∈ R₂.carrier then R₂.mult x else 0) : ℕ) : ℝ≥0∞) := by
-          exact_mod_cast key
-      _ = _ := by
-          by_cases h₁ : x ∈ R₁.carrier <;> by_cases h₂ : x ∈ R₂.carrier <;> simp [h₁, h₂]
-  have hlocint : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
-      ∫⁻ x in M' ∩ K, ((c x).natAbs : ℝ≥0∞) ∂μHE[n] ≠ ∞ := by
-    intro K hK hKU
-    refine ne_top_of_le_ne_top (b := ∫⁻ x in K, ((p₁.natAbs : ℝ≥0∞) *
-        R₁.carrier.indicator (fun y => (R₁.mult y : ℝ≥0∞)) x + (p₂.natAbs : ℝ≥0∞) *
-        R₂.carrier.indicator (fun y => (R₂.mult y : ℝ≥0∞)) x) ∂μHE[n]) ?_
-      ((lintegral_mono hbound).trans (lintegral_mono_set inter_subset_right))
-    rw [lintegral_add_left ((hθ₁e.indicator hM₁).const_mul _),
-      lintegral_const_mul _ (hθ₁e.indicator hM₁), lintegral_const_mul _ (hθ₂e.indicator hM₂),
-      lintegral_indicator hM₁, lintegral_indicator hM₂, Measure.restrict_restrict hM₁,
-      Measure.restrict_restrict hM₂]
-    exact ENNReal.add_ne_top.mpr
-      ⟨ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) (R₁.locallyIntegrable_mult K hK hKU),
-        ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) (R₂.locallyIntegrable_mult K hK hKU)⟩
-  -- Step 6 (f): `Hⁿ(M' ∩ K) ≤ Hⁿ(M₁ ∩ K) + Hⁿ(M₂ ∩ K) < ∞`, as `θᵢ ≥ 1` on `Mᵢ`
-  have hfinR : ∀ (R : IMRep U n) (K : Set (Euclid P)), IsCompact K → K ⊆ U →
-      μHE[n] (R.carrier ∩ K) ≠ ∞ := by
-    intro R K hK hKU
-    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU) ?_
-    rw [← setLIntegral_one]
-    exact setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) fun x hx =>
-      Nat.one_le_cast.mpr (R.mult_pos x hx.1)
-  have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞ := by
-    intro K hK hKU
-    refine ne_top_of_le_ne_top (ENNReal.add_ne_top.mpr ⟨hfinR R₁ K hK hKU, hfinR R₂ K hK hKU⟩)
-      ((measure_mono ?_).trans (measure_union_le _ _))
-    rintro x ⟨hx, hxK⟩
-    exact ((hmem x).mp hx).1.elim (fun h => Or.inl ⟨h, hxK⟩) fun h => Or.inr ⟨h, hxK⟩
-  -- `sgn(c) ξ` is a unit orientation of `Q` when `c ≠ 0` and `ξ` is one
-  have hsign : ∀ (k : ℤ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), k ≠ 0 →
-      IsUnitOrientationOf ξ Q → IsUnitOrientationOf ((k.sign : ℝ) • ξ) Q := by
-    rintro k ξ Q hk ⟨τ, hτ, hspan, hξ⟩
-    refine ⟨τ, hτ, hspan, ?_⟩
-    rcases lt_or_gt_of_ne hk with hk | hk
-    · rw [Int.sign_eq_neg_one_of_neg hk]
-      rcases hξ with h | h
-      · exact Or.inr fun α => by simp [h α]
-      · exact Or.inl fun α => by simp [h α]
-    · rw [Int.sign_eq_one_of_pos hk]
-      simpa using hξ
-  -- Step 6 (f): the orientation condition, separately on `M' ∩ M₁` and on `M' \ M₁ ⊆ M₂`
-  have horient : ∀ᵐ x ∂(μHE[n].restrict M'), ∃ Q : Submodule ℝ (Euclid P),
-      HasApproximateTangentSpaceAt n M' x Q ∧
-        IsUnitOrientationOf (((c x).sign : ℝ) • ζ x) Q := by
-    have h₁ : ∀ᵐ x ∂(μHE[n].restrict (M' ∩ R₁.carrier)), ∃ Q : Submodule ℝ (Euclid P),
-        HasApproximateTangentSpaceAt n M' x Q ∧
-          IsUnitOrientationOf (((c x).sign : ℝ) • ζ x) Q := by
-      filter_upwards [Submission.rsdic_imrep_ae_tangent_orient_of_subset P n U (M' ∩ R₁.carrier)
-          M' R₁ hU (hM'meas.inter hM₁) hM'meas inter_subset_right inter_subset_left hM'U hfin,
-        ae_restrict_mem (hM'meas.inter hM₁), ae_restrict_of_ae hη₁e] with x hx hxB hxη
-      obtain ⟨Q, hQ, hξQ⟩ := hx
-      refine ⟨Q, hQ, ?_⟩
-      rw [hζ₁ x hxB.2, ← hxη hxB.2]
-      exact hsign (c x) _ Q ((hmem x).mp hxB.1).2 hξQ
-    have h₂ : ∀ᵐ x ∂(μHE[n].restrict (M' \ R₁.carrier)), ∃ Q : Submodule ℝ (Euclid P),
-        HasApproximateTangentSpaceAt n M' x Q ∧
-          IsUnitOrientationOf (((c x).sign : ℝ) • ζ x) Q := by
-      have hsub : M' \ R₁.carrier ⊆ R₂.carrier := fun x hx =>
-        ((hmem x).mp hx.1).1.resolve_left hx.2
-      filter_upwards [Submission.rsdic_imrep_ae_tangent_orient_of_subset P n U (M' \ R₁.carrier)
-          M' R₂ hU (hM'meas.diff hM₁) hM'meas hsub Set.sdiff_subset hM'U hfin,
-        ae_restrict_mem (hM'meas.diff hM₁), ae_restrict_of_ae hη₂e] with x hx hxB hxη
-      obtain ⟨Q, hQ, hξQ⟩ := hx
-      refine ⟨Q, hQ, ?_⟩
-      rw [hζ₂ x hxB.2, ← hxη (hsub hxB)]
-      exact hsign (c x) _ Q ((hmem x).mp hxB.1).2 hξQ
-    have h := (ae_restrict_union_iff (M' ∩ R₁.carrier) (M' \ R₁.carrier) _).mpr ⟨h₁, h₂⟩
-    rwa [Set.inter_union_sdiff] at h
-  -- Step 6: `R = (M', |c|, sgn(c) ζ)` is an IMRep in `U`
-  refine ⟨{ carrier := M'
-            mult := fun x => (c x).natAbs
-            orient := fun x => ((c x).sign : ℝ) • ζ x
-            measurableSet_carrier := hM'meas
-            carrier_subset := hM'U
-            rectifiable := ?_
-            measurable_mult := (measurable_of_countable Int.natAbs).comp hc_meas
-            mult_pos := fun x hx => Int.natAbs_pos.mpr ((hmem x).mp hx).2
-            locallyIntegrable_mult := hlocint
-            aestronglyMeasurable_orient :=
-              (((measurable_of_countable fun k : ℤ => (k.sign : ℝ)).comp
-                hc_meas).stronglyMeasurable.smul hζ_meas).aestronglyMeasurable
-            orients := horient }, ?_⟩
-  · -- `M' ⊆ M₁ ∪ M₂ ⊆ ⋃ᵢ (M₁, M₂, M₂, …)ᵢ`
-    refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion
-      (fun i : ℕ => if i = 0 then R₁.carrier else R₂.carrier) fun i => ?_).mono ?_
-    · split_ifs
-      exacts [R₁.rectifiable, R₂.rectifiable]
-    · intro x hx
-      rcases ((hmem x).mp hx).1 with h | h
-      · exact mem_iUnion.mpr ⟨0, by simpa using h⟩
-      · exact mem_iUnion.mpr ⟨1, by simpa using h⟩
-  -- Steps 4 and 7: `c ζ = p₁ 1_{M₁} θ₁ ξ₁ + p₂ 1_{M₂} θ₂ ξ₂` wherever `ηᵢ = ξᵢ` on `Mᵢ` and
-  -- `ξ₂ = ±ξ₁` on `M₁ ∩ M₂`, i.e. `Hⁿ`-a.e.
-  filter_upwards [hη₁e, hη₂e, hpm] with x hx₁e hx₂e hx₁₂
-  show M'.indicator (fun y => ((c y).natAbs : ℝ) • (((c y).sign : ℝ) • ζ y)) x = _
-  rw [hind x]
-  by_cases hx₁ : x ∈ R₁.carrier <;> by_cases hx₂ : x ∈ R₂.carrier
-  · rw [indicator_of_mem hx₁, indicator_of_mem hx₂, hx₁e hx₁, hx₂e hx₂, hζ₁ x hx₁]
-    by_cases hxE : η₂ x = η₁ x
-    · have hcx : c x = p₁ * R₁.mult x + p₂ * R₂.mult x := by
-        simp [hc, hx₁, hx₂, hxE]
-      rw [hcx, hxE]
-      push_cast
-      module
-    · have hcx : c x = p₁ * R₁.mult x - p₂ * R₂.mult x := by
-        simp [hc, hx₁, hx₂, hxE, sub_eq_add_neg]
-      have hneg : η₂ x = -η₁ x := by
-        rcases hx₁₂ hx₁ hx₂ with h | h
-        · exact absurd (by rw [← hx₂e hx₂, h, hx₁e hx₁]) hxE
-        · rw [← hx₂e hx₂, h, hx₁e hx₁]
-      rw [hcx, hneg]
-      push_cast
-      module
-  · rw [indicator_of_mem hx₁, indicator_of_notMem hx₂, hx₁e hx₁, hζ₁ x hx₁]
-    have hcx : c x = p₁ * R₁.mult x := by simp [hc, hx₁, hx₂]
-    rw [hcx]
-    push_cast
-    module
-  · rw [indicator_of_notMem hx₁, indicator_of_mem hx₂, hx₂e hx₂, hζ₂ x hx₁]
-    have hcx : c x = p₂ * R₂.mult x := by simp [hc, hx₁, hx₂]
-    rw [hcx]
-    push_cast
-    module
-  · rw [indicator_of_notMem hx₁, indicator_of_notMem hx₂, hc_off x hx₁ hx₂, smul_zero,
-      smul_zero, add_zero, Int.cast_zero, zero_smul]
-/-- **An integer multiplicity triple defines a current** (Simon 6.3.1 (‡)): for an `IMRep`
-`R = (M, θ, ξ)` in `U`, `ω ↦ ∫_M θ⟨ω, ξ⟩ dHⁿ` is a current `T ∈ 𝒟ₙ(U)`, so `T = τ(M, θ, ξ)`.
-
-Write `μ = Hⁿ⌞M`.  A unit orientation has `|ξ(x)(α)| = |α(τ₁, …, τₙ)| ≤ ‖α‖` (`τ` orthonormal),
-the integrand is a.e. strongly measurable, and `1_K θ` is `μ`-integrable for compact `K ⊆ U`.
-Hence for a test form `ω` the integrand is dominated by `sup|ω| · 1_{spt ω} θ`, so the functional
-is defined and linear.  If `ωⱼ → 0` in `𝒟ⁿ(U)` with supports in the compact `K`, then
-`|T(ωⱼ)| ≤ sup_K |ωⱼ| · ∫_K θ dμ → 0`. -/
-theorem Submission.dtc_imrep_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∃ T : GeometricCurrentOn U n, R.Represents T := by
-  intro P n U R
-  set μ := μHE[n].restrict R.carrier with hμ
-  -- (1) a unit orientation has norm at most one
-  have hbound : ∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ ‖α‖ := by
-    filter_upwards [R.orients] with x hx
-    obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
-    intro α
-    have hτn : ∀ i, ‖τ i‖ = 1 := fun i => hτ.1 i
-    have hατ : |α τ| ≤ ‖α‖ := by
-      have h := α.le_opNorm τ
-      simp only [hτn, Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
-      exact h
-    rcases hξ with h | h
-    · rw [h]; exact hατ
-    · rw [h, abs_neg]; exact hατ
-  have hθmeas : AEStronglyMeasurable (fun x => (R.mult x : ℝ)) μ :=
-    ((measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult).aestronglyMeasurable
-  -- (2) measurability of the integrand
-  have hmeas : ∀ ω : DifferentialForm (Euclid P) n, Continuous ω →
-      AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (ω x)) μ := by
-    intro ω hω
-    have h2 : AEStronglyMeasurable (fun x => R.orient x (ω x)) μ :=
-      Continuous.comp_aestronglyMeasurable₂
-        (g := fun (L : MultiVector P n) (α : Covector (Euclid P) n) => L α)
-        (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) n) (F := ℝ)).continuous
-        R.aestronglyMeasurable_orient hω.aestronglyMeasurable
-    exact hθmeas.mul h2
-  -- (3) `θ` is integrable over compact subsets of `U`
-  have hθK : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
-      Integrable (K.indicator fun x => (R.mult x : ℝ)) μ := by
-    intro K hK hKU
-    rw [integrable_indicator_iff hK.isClosed.measurableSet]
-    refine ⟨hθmeas.restrict, ?_⟩
-    show ∫⁻ x, ‖(R.mult x : ℝ)‖ₑ ∂(μ.restrict K) < ∞
-    rw [hμ, Measure.restrict_restrict hK.isClosed.measurableSet, inter_comm]
-    simp only [Real.enorm_natCast]
-    exact lt_top_iff_ne_top.mpr (R.locallyIntegrable_mult K hK hKU)
-  -- (4) integrability of the integrand for test forms
-  have hint : ∀ ω : TestFormOn U n,
-      Integrable (fun x => (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x))
-        μ := by
-    intro ω
-    have hωc : Continuous (ω : DifferentialForm (Euclid P) n) := ω.property.1.1.continuous
-    obtain ⟨C, hC⟩ := HasCompactSupport.exists_bound_of_continuous ω.property.1.2 hωc
-    have hK : IsCompact (tsupport (ω : DifferentialForm (Euclid P) n)) := ω.property.1.2
-    refine Integrable.mono' ((hθK _ hK ω.property.2).const_mul C) (hmeas _ hωc) ?_
-    filter_upwards [hbound] with x hx
-    by_cases hxK : x ∈ tsupport (ω : DifferentialForm (Euclid P) n)
-    · rw [indicator_of_mem hxK, norm_mul, Real.norm_natCast, Real.norm_eq_abs]
-      calc (R.mult x : ℝ) * |R.orient x ((ω : DifferentialForm (Euclid P) n) x)|
-          ≤ (R.mult x : ℝ) * ‖(ω : DifferentialForm (Euclid P) n) x‖ := by
-            gcongr; exact hx _
-        _ ≤ (R.mult x : ℝ) * C := by gcongr; exact hC x
-        _ = C * (R.mult x : ℝ) := mul_comm _ _
-    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hxK
-      simp [h0, indicator_of_notMem hxK]
-  -- (5) the linear functional `ω ↦ ∫_M θ ⟨ω, ξ⟩ dHⁿ`
-  let L : TestFormOn U n →ₗ[ℝ] ℝ :=
-    { toFun := fun ω => R.action (ω : DifferentialForm (Euclid P) n)
-      map_add' := by
-        intro ω η
-        simp only [IMRep.action, Submodule.coe_add, Pi.add_apply, map_add, mul_add]
-        exact integral_add (hint ω) (hint η)
-      map_smul' := by
-        intro c ω
-        simp only [IMRep.action, Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul,
-          RingHom.id_apply]
-        rw [← integral_const_mul]
-        congr 1
-        funext x
-        ring }
-  refine ⟨⟨L, ?_⟩, fun ω => rfl⟩
-  -- (6) sequential continuity
-  intro ωs hconv
-  obtain ⟨K, hK, hKU, hsupp, -, hderiv⟩ := hconv
-  have h0 := hderiv 0
-  rw [Metric.tendstoUniformlyOn_iff] at h0
-  set CK := ∫ x, K.indicator (fun x => (R.mult x : ℝ)) x ∂μ with hCKdef
-  have hCK : 0 ≤ CK := integral_nonneg fun x => indicator_nonneg (fun _ _ => Nat.cast_nonneg _) x
-  rw [Metric.tendsto_atTop]
-  intro ε hε
-  have hε' : 0 < ε / (CK + 1) := div_pos hε (by linarith)
-  obtain ⟨N, hN⟩ := eventually_atTop.mp (h0 (ε / (CK + 1)) hε')
-  refine ⟨N, fun j hj => ?_⟩
-  have hptw : ∀ x ∈ K, ‖(ωs j : DifferentialForm (Euclid P) n) x‖ < ε / (CK + 1) := by
-    intro x hx
-    have h := hN j hj x hx
-    rw [dist_comm, dist_eq_norm] at h
-    simpa [norm_iteratedFDeriv_zero] using h
-  rw [Real.dist_eq, sub_zero]
-  have hle : |L (ωs j)| ≤ ∫ x, (ε / (CK + 1)) * K.indicator (fun x => (R.mult x : ℝ)) x ∂μ := by
-    refine (Real.norm_eq_abs _).symm.le.trans (norm_integral_le_of_norm_le
-      ((hθK K hK hKU).const_mul _) ?_)
-    filter_upwards [hbound] with x hx
-    by_cases hxK : x ∈ K
-    · rw [indicator_of_mem hxK, norm_mul, Real.norm_natCast, Real.norm_eq_abs]
-      calc (R.mult x : ℝ) * |R.orient x ((ωs j : DifferentialForm (Euclid P) n) x)|
-          ≤ (R.mult x : ℝ) * ‖(ωs j : DifferentialForm (Euclid P) n) x‖ := by
-            gcongr; exact hx _
-        _ ≤ (R.mult x : ℝ) * (ε / (CK + 1)) := by gcongr; exact (hptw x hxK).le
-        _ = ε / (CK + 1) * (R.mult x : ℝ) := mul_comm _ _
-    · have h0 : (ωs j : DifferentialForm (Euclid P) n) x = 0 :=
-        image_eq_zero_of_notMem_tsupport (fun h => hxK (hsupp j h))
-      simp [h0, indicator_of_notMem hxK]
-  rw [integral_const_mul, ← hCKdef] at hle
-  calc |L (ωs j)| ≤ ε / (CK + 1) * CK := hle
-    _ < ε := by
-      rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
-      nlinarith
 /-- **Orthogonal projection does not increase `m`-dimensional area** (Simon Ch. 7 §3, footnote 2;
 Gram-determinant form, cf. 6.3.4–3.5).  If `τ₁, …, τₘ` is orthonormal in `ℝᴾ` and `q` is the
 orthogonal projection onto a subspace `V`, then `det(⟨qτᵢ, qτⱼ⟩) ≤ 1`.  With `U eᵢ = τᵢ` (an
@@ -9553,6 +8335,7 @@ theorem Submission.dimred_cs_sp_measure_restrict_eq_of_agree : ∀ (P m : ℕ) (
   exact Measure.ext_of_generateFrom_of_iUnion {s | IsOpen s} (fun j : ℕ => ball (0 : Euclid P) j)
     BorelSpace.measurable_eq isPiSystem_isOpen (iUnion_ball_nat 0)
     (fun j => (isOpen_ball : IsOpen (ball (0 : Euclid P) j))) hball hopen
+
 /-- **Integral form of the push-forward along one fixed sequence of test forms** (Simon Ch. 6,
 2.23–2.24(2)).  For `f` of class `C¹` on an open `O ⊇ K` (`K` compact) and `ω ∈ 𝒟ⁿ(ℝᴾ)` there
 are `ω_j ∈ 𝒟ⁿ(ℝᴾ)`, chosen before any current, with `Y(ω_j) → ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ⟩ dHⁿ`
