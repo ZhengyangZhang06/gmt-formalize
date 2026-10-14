@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1",
+  "depth": 4,
+  "title": "Simons' theorem (Simon B.2) for C¹ hypercones minimizing area under deformations away from the vertex (parent B5e–B9)",
+  "statement": "Simons' theorem for deformation-minimal C¹ hypercones. Data: P, m ∈ ℕ with 2 ≤ m ≤ 6; a linear subspace A₀ ⊆ ℝ^P with dim A₀ = m + 1; M ⊆ ℝ^P. Hypotheses: M ≠ ∅, M ⊆ A₀ and 0 ∉ M; M is an embedded C¹ m-submanifold of ℝ^P; closure(M) ⊆ M ∪ {0}; tx ∈ M for every x ∈ M and t > 0; M has an orientation ξ (IsOrientation m M ξ for some ξ); H^m(M ∩ K) < ∞ for every compact K; and for every C^∞ map Z : ℝ^P → ℝ^P with compact support and 0 ∉ tsupport Z there is t₀ > 0 with H^m(M ∩ tsupport Z) ≤ H^m({x + tZ(x) : x ∈ M ∩ tsupport Z}) for every t with |t| < t₀. Conclusion: there is a linear subspace H₀ ⊆ ℝ^P with dim H₀ = m and M = H₀ ∖ {0}. H^m = μHE[m].",
+  "lean_statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), 2 ≤ m → m ≤ 6 → Module.finrank ℝ A₀ = m + 1 → M.Nonempty → M ⊆ (A₀ : Set (Euclid P)) → (0 : Euclid P) ∉ M → IsEmbeddedSubmanifold 1 m M → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∃ ξ : Euclid P → MultiVector P m, IsOrientation m M ξ) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z → HasCompactSupport Z → (0 : Euclid P) ∉ tsupport Z → ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ → μHE[m] (M ∩ tsupport Z) ≤ μHE[m] ((fun x => x + t • Z x) '' (M ∩ tsupport Z))) → ∃ H₀ : Submodule ℝ (Euclid P), Module.finrank ℝ H₀ = m ∧ M = (H₀ : Set (Euclid P)) \\ {0}",
+  "lean_name": "codim1_deformation_minimal_hypercone_is_plane",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.bilipschitz_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.bilipschitz_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-bilipsch-1804d7035f-a1",
+      "result_commit": "0501e07ced47186792005c0a22c976aafdb0ebdf",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b5d5990773-a1"
+}
