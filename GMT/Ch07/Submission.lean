@@ -8466,6 +8466,54 @@ theorem Submission.idtp_carrier_area_formula : ∀ (P n : ℕ) (M Z : Set (Eucli
         hfin (hLg k.1) (hAm k) (hm k.1) hlowA (fun a ha => hdiff k.1 a (hAB k ha)) (hAM k))
       (hh.mono_set (hAM k))
 
+/-- The carrier area formula (Simon Ch. 3, 2.4–2.5) for `n = 2` and a map `F : ℝᴾ → ℝ × ℝ` that is
+`C¹` on an open set `Z`, with the Jacobian in product coordinates: the fibre sums
+`p ↦ Σ_{x ∈ M ∩ Z, F(x) = p} h(x)` are a.e. measurable and
+`∫ Σ_{x ∈ M ∩ Z, F(x) = p} h(x) dp = ∫_{M ∩ Z} J_F(x) h(x) dH²(x)`, where `J_F(x)` is the square
+root of `det((DF(x)uᵢ)₁(DF(x)uⱼ)₁ + (DF(x)uᵢ)₂(DF(x)uⱼ)₂)` for the standard orthonormal basis `u`
+of `TₓM`.  The coordinate isomorphism `κ : ℝ × ℝ ≃ ℝ²` preserves Lebesgue measure and inner
+products, so this is `Submission.idtp_carrier_area_formula` for `κ ∘ F`, transported along `κ`. -/
+theorem Submission.idtp_cse_fa_area_formula_prod : ∀ (P : ℕ) (M Z : Set (Euclid P)) (F : Euclid P → ℝ × ℝ) (h : Euclid P → ℝ≥0∞), MeasurableSet M → CountablyRectifiable 2 M → (∀ K : Set (Euclid P), IsCompact K → μHE[2] (M ∩ K) ≠ ∞) → IsOpen Z → ContDiffOn ℝ 1 F Z → AEMeasurable h (μHE[2].restrict M) → AEMeasurable (fun p : ℝ × ℝ => ∑' x : ↥(M ∩ Z ∩ F ⁻¹' {p}), h x) volume ∧ ∫⁻ p : ℝ × ℝ, (∑' x : ↥(M ∩ Z ∩ F ⁻¹' {p}), h x) = ∫⁻ x in M ∩ Z, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (approxTangentPlane 2 M x)) => (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) i)).1 * (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) j)).1 + (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) i)).2 * (fderiv ℝ F x (stdOrthonormalBasis ℝ (approxTangentPlane 2 M x) j)).2))) * h x ∂μHE[2] := by
+  intro P M Z F h hM hrect hfin hZ hF hh
+  -- Step 1: the coordinate isomorphism `κ : ℝ × ℝ ≃L Euclid 2`, `κ p = (p.1, p.2)`, with
+  -- `⟪κ p, κ p'⟫ = p.1 p'.1 + p.2 p'.2`
+  let κ : (ℝ × ℝ) ≃L[ℝ] Euclid 2 :=
+    (ContinuousLinearEquiv.finTwoArrow ℝ ℝ).symm.trans (EuclideanSpace.equiv (Fin 2) ℝ).symm
+  have hκi : ∀ p p' : ℝ × ℝ, inner ℝ (κ p) (κ p') = p.1 * p'.1 + p.2 * p'.2 := by
+    intro p p'
+    simp only [κ, ContinuousLinearEquiv.trans_apply, ContinuousLinearEquiv.finTwoArrow_symm_apply,
+      PiLp.continuousLinearEquiv_symm_apply, PiLp.inner_apply, RCLike.inner_apply, conj_trivial,
+      Fin.sum_univ_two, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one]
+    ring
+  -- Step 2: `κ` is a measure-preserving measurable embedding
+  have hκ : MeasurePreserving κ volume volume :=
+    (PiLp.volume_preserving_toLp (Fin 2)).comp (volume_preserving_finTwoArrow ℝ).symm
+  have hκe : MeasurableEmbedding κ := κ.toHomeomorph.measurableEmbedding
+  -- Step 3: `Φ = κ ∘ F` has the same Gram Jacobian as `F`
+  have hgram : ∀ x v w, inner ℝ (fderiv ℝ (κ ∘ F) x v) (fderiv ℝ (κ ∘ F) x w) =
+      (fderiv ℝ F x v).1 * (fderiv ℝ F x w).1 + (fderiv ℝ F x v).2 * (fderiv ℝ F x w).2 := by
+    intro x v w
+    rw [κ.comp_fderiv]
+    exact hκi _ _
+  -- Step 4: the fibres of `F` over `p` are the fibres of `Φ` over `κ p`
+  have hS : (fun p : ℝ × ℝ => ∑' x : ↥(M ∩ Z ∩ F ⁻¹' {p}), h x) =
+      (fun y : Euclid 2 => ∑' x : ↥(M ∩ Z ∩ (κ ∘ F) ⁻¹' {y}), h x) ∘ κ := by
+    funext p
+    have hfib : M ∩ Z ∩ (κ ∘ F) ⁻¹' {κ p} = M ∩ Z ∩ F ⁻¹' {p} := by
+      ext x
+      simp only [mem_inter_iff, mem_preimage, mem_singleton_iff, comp_apply, κ.injective.eq_iff]
+    exact congrArg (fun s : Set (Euclid P) => ∑' x : ↥s, h x) hfib.symm
+  -- Step 5: the area formula on the carrier for `Φ : ℝᴾ → Euclid 2`
+  obtain ⟨hmeas, hint⟩ := Submission.idtp_carrier_area_formula P 2 M Z (κ ∘ F) h (by norm_num)
+    hM hrect hfin hZ (κ.contDiff.comp_contDiffOn hF) hh
+  -- Step 6: transport along `κ`
+  refine ⟨?_, ?_⟩
+  · rw [hS]
+    exact (hκ.aemeasurable_comp_iff hκe).2 hmeas
+  · rw [hS]
+    refine (hκ.lintegral_comp_emb hκe _).trans (hint.trans ?_)
+    simp only [hgram]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
