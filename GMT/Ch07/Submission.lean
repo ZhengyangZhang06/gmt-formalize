@@ -1602,6 +1602,254 @@ theorem Submission.dpf_exists_orthonormal_frame_det_gram : ∀ (P n : ℕ) (v : 
     calc |inner ℝ (σ i) (v i)| ≤ ‖σ i‖ * ‖v i‖ := abs_real_inner_le_norm _ _
       _ = ‖v i‖ := by rw [show ‖σ i‖ = 1 from b.norm_eq_one i, one_mul]
 
+/-- **Simon Ch. 6, 2.27–2.29 and 3.9** (analytic toolkit, and the Lipschitz push-forward of
+integer multiplicity currents vanishing off a compact set).  (i) If `X = τ(M, θ, ξ)` in `ℝᴾ`
+vanishes off the compact `E`, then `μ_R(ℝᴾ ∖ E) = M_{ℝᴾ∖E}(X) = 0`, so `Hᵏ(M ∖ E) = 0` (`θ ≥ 1`
+on `M`), `M(X) = μ_R(ℝᴾ) = μ_R(E) < ∞`, and `R.action γ` depends only on `γ|_E`.  (ii) Hadamard:
+`|α(v)| ≤ |α| ∏ᵢ |vᵢ|`, from `|α(v)| ≤ |α| det(⟨vᵢ, vⱼ⟩)^{1/2}` and a Gram–Schmidt frame with
+`det(⟨vᵢ, vⱼ⟩) = (det A)²`, `|det A| ≤ ∏ᵢ |vᵢ|`.  (iii) `ξ = ±τ₁ ∧ ⋯ ∧ τₖ` a.e. with `τ`
+orthonormal, so `|θ ξ(γ)| ≤ c θ` and `|R.action γ| ≤ c μ_R(ℝᴾ)`.  (iv) `F_j = ψ_j ⋆ F` with
+normalized `C^∞` bumps `ψ_j` supported in `B_{1/(j+1)}(0)` are `Λ`-Lipschitz and
+`|F_j - F| ≤ Λ/(j+1)`.  (v) A smooth Urysohn function for `cthickening 1 E ⊆ thickening 2 E`.
+(vi) Given (IPF), `push k F X = Y_X(F)` for `Y_X` from (IPF) for a chosen finite-mass
+representation of `X`: it is integer multiplicity, depends only on `F|_E`, is the limit of
+`X(η_j) = R.action(F_j^#ω)`, has `M ≤ Λᵏ M(X)` (Hadamard with `‖DF_j‖ ≤ Λ`, then (iii)), and
+vanishes off `F(E)` (for large `j`, `F_j(E)` avoids `spt ω`). -/
+theorem Submission.dor_lmb_fcdp_toolkit_push : ((∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (R : IMRep (univ : Set (Euclid P)) k) (E : Set (Euclid P)), R.Represents X → IsCompact E → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) E → X ω = 0) → μHE[k] (R.carrier \ E) = 0 ∧ X.mass = R.measure univ ∧ R.measure univ ≠ ∞ ∧ ∀ γ γ' : DifferentialForm (Euclid P) k, EqOn γ γ' E → R.action γ = R.action γ') ∧ (∀ (N m : ℕ) (α : Covector (Euclid N) m) (v : Fin m → Euclid N), |α v| ≤ covectorEuclideanNorm α * ∏ i, ‖v i‖) ∧ (∀ (P k : ℕ) (U : Set (Euclid P)) (R : IMRep U k) (γ : DifferentialForm (Euclid P) k) (c : ℝ), R.measure univ ≠ ∞ → 0 ≤ c → (∀ᵐ x ∂(μHE[k].restrict R.carrier), ∀ τ : Fin k → Euclid P, Orthonormal ℝ τ → |γ x τ| ≤ c) → |R.action γ| ≤ c * (R.measure univ).toReal) ∧ (∀ (N N' : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N'), LipschitzWith Λ F → ∃ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, LipschitzWith Λ (Fs j)) ∧ TendstoUniformly Fs F atTop) ∧ ∀ (P : ℕ) (E : Set (Euclid P)), IsCompact E → ∃ (χ : Euclid P → ℝ) (W : Set (Euclid P)), ContDiff ℝ (⊤ : ℕ∞) χ ∧ HasCompactSupport χ ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ IsOpen W ∧ E ⊆ W ∧ ∀ x ∈ W, χ x = 1) ∧ ((∀ (N N' k : ℕ) (R : IMRep (univ : Set (Euclid N)) k), R.measure univ ≠ ∞ → ∃ Y : (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N')) k, (∀ (F : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → IsIntegerMultiplicity (Y F) ∧ ∀ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ 1 (Fs j)) → (∀ j, LipschitzWith Λ (Fs j)) → TendstoUniformly Fs F atTop → ∀ ω : TestFormOn (univ : Set (Euclid N')) k, Tendsto (fun j => R.action (fun x => ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x))) atTop (𝓝 (Y F ω))) ∧ ∀ (F F' : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → LipschitzWith Λ F' → (∀ᵐ x ∂(μHE[k].restrict R.carrier), F x = F' x) → Y F = Y F') → ∀ P : ℕ, ∃ push : ∀ k : ℕ, (Euclid P → Euclid P) → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) k, ∀ (k : ℕ) (Λ : NNReal) (F : Euclid P → Euclid P) (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → IsCompact E → IsIntegerMultiplicity X → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) E → X ω = 0) → IsIntegerMultiplicity (push k F X) ∧ (∀ F' : Euclid P → Euclid P, LipschitzWith Λ F' → EqOn F F' E → push k F X = push k F' X) ∧ (∀ (Fs : ℕ → Euclid P → Euclid P) (ω : TestFormOn (univ : Set (Euclid P)) k) (ηs : ℕ → TestFormOn (univ : Set (Euclid P)) k), (∀ j, ContDiff ℝ 1 (Fs j)) → (∀ j, LipschitzWith Λ (Fs j)) → TendstoUniformly Fs F atTop → (∀ j, ∀ x ∈ E, (ηs j : DifferentialForm (Euclid P) k) x = ((ω : DifferentialForm (Euclid P) k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (push k F X ω))) ∧ (push k F X).mass ≤ (Λ : ℝ≥0∞) ^ k * X.mass ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (F '' E) → push k F X ω = 0) := by
+  -- (i) compactly vanishing integer multiplicity representations
+  have hi : ∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (R : IMRep (univ : Set (Euclid P)) k) (E : Set (Euclid P)), R.Represents X → IsCompact E → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) E → X ω = 0) → μHE[k] (R.carrier \ E) = 0 ∧ X.mass = R.measure univ ∧ R.measure univ ≠ ∞ ∧ ∀ γ γ' : DifferentialForm (Euclid P) k, EqOn γ γ' E → R.action γ = R.action γ' := by
+    intro P k X R E hR hE hXE
+    have hmass :=
+      (Submission.dor_imrep_massOn_eq_measure_and_support P k univ X R isOpen_univ hR).1
+    have hEm : MeasurableSet E := hE.isClosed.measurableSet
+    have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+    -- `μ_R(ℝᴾ ∖ E) = M_{ℝᴾ∖E}(X) = 0`: admissible forms supported off `E` are killed by `X`
+    have hμEc : R.measure Eᶜ = 0 := by
+      rw [← hmass Eᶜ hE.isClosed.isOpen_compl]
+      refine le_antisymm (sSup_le ?_) bot_le
+      rintro _ ⟨ω, ⟨hωE, -⟩, rfl⟩
+      dsimp only
+      rw [hXE ω (subset_compl_iff_disjoint_right.mp hωE), ENNReal.ofReal_zero]
+    -- `Hᵏ(M ∖ E) = 0`, since `θ ≥ 1` on `M`
+    have hnull : μHE[k] (R.carrier \ E) = 0 := by
+      rw [IMRep.measure, withDensity_apply_eq_zero' hθ.aemeasurable,
+        Measure.restrict_apply' R.measurableSet_carrier] at hμEc
+      refine measure_mono_null ?_ hμEc
+      intro x hx
+      exact ⟨⟨Nat.cast_ne_zero.mpr (R.mult_pos x hx.1).ne', hx.2⟩, hx.1⟩
+    -- `Hᵏ⌞M`-a.e. point lies in `E`
+    have hae : ∀ᵐ x ∂(μHE[k].restrict R.carrier), x ∈ E := by
+      rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+      refine measure_mono_null ?_ hnull
+      intro x hx
+      exact ⟨hx.2, hx.1⟩
+    -- `μ_R(ℝᴾ) = μ_R(E) = ∫_{M ∩ E} θ dHᵏ < ∞`
+    have hfin : R.measure univ ≠ ∞ := by
+      rw [← measure_add_measure_compl hEm, hμEc, add_zero, IMRep.measure, withDensity_apply _ hEm,
+        Measure.restrict_restrict hEm, inter_comm]
+      exact R.locallyIntegrable_mult E hE (subset_univ E)
+    refine ⟨hnull, hmass univ isOpen_univ, hfin, fun γ γ' hγ => ?_⟩
+    -- the integrands agree on `E`, hence `Hᵏ⌞M`-a.e.
+    refine integral_congr_ae ?_
+    filter_upwards [hae] with x hx
+    rw [hγ hx]
+  -- (ii) Hadamard's inequality for the Euclidean coefficient norm
+  have hii : ∀ (N m : ℕ) (α : Covector (Euclid N) m) (v : Fin m → Euclid N), |α v| ≤ covectorEuclideanNorm α * ∏ i, ‖v i‖ := by
+    intro N m α v
+    by_cases hv : LinearIndependent ℝ v
+    · obtain ⟨σ, -, -, hG, -, hA⟩ := Submission.dpf_exists_orthonormal_frame_det_gram N m v hv
+      calc |α v| ≤ covectorEuclideanNorm α *
+            Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j))) :=
+            (Submission.covectorEuclideanNorm_gram_bounds N m).1 α v
+        _ = covectorEuclideanNorm α * |Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (v j))| := by
+            rw [hG, Real.sqrt_sq_eq_abs]
+        _ ≤ covectorEuclideanNorm α * ∏ i, ‖v i‖ :=
+            mul_le_mul_of_nonneg_left hA (covectorEuclideanNorm_nonneg α)
+    · -- a linearly dependent family is killed by every alternating map
+      rw [show α v = 0 from α.toAlternatingMap.map_linearDependent v hv, abs_zero]
+      exact mul_nonneg (covectorEuclideanNorm_nonneg α)
+        (Finset.prod_nonneg fun i _ => norm_nonneg _)
+  -- (iii) the action is bounded by `c μ_R(ℝᴾ)` when `γ` is bounded by `c` on orthonormal frames
+  have hiii : ∀ (P k : ℕ) (U : Set (Euclid P)) (R : IMRep U k) (γ : DifferentialForm (Euclid P) k) (c : ℝ), R.measure univ ≠ ∞ → 0 ≤ c → (∀ᵐ x ∂(μHE[k].restrict R.carrier), ∀ τ : Fin k → Euclid P, Orthonormal ℝ τ → |γ x τ| ≤ c) → |R.action γ| ≤ c * (R.measure univ).toReal := by
+    intro P k U R γ c hfin hc hγ
+    have hθm : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+    -- `∫⁻ θ d(Hᵏ⌞M) = μ_R(ℝᴾ)`, so `θ` is `Hᵏ⌞M`-integrable with `∫ θ d(Hᵏ⌞M) = μ_R(ℝᴾ)`
+    have hlint : ∫⁻ x, ENNReal.ofReal (R.mult x : ℝ) ∂(μHE[k].restrict R.carrier) =
+        R.measure univ := by
+      rw [IMRep.measure, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+      exact lintegral_congr fun x => ENNReal.ofReal_natCast _
+    have hθ0 : 0 ≤ᵐ[μHE[k].restrict R.carrier] fun x => (R.mult x : ℝ) :=
+      ae_of_all _ fun x => Nat.cast_nonneg _
+    have hθint : Integrable (fun x => (R.mult x : ℝ)) (μHE[k].restrict R.carrier) :=
+      ⟨hθm.aestronglyMeasurable, (hasFiniteIntegral_iff_ofReal hθ0).mpr (hlint ▸ hfin.lt_top)⟩
+    have hθI : ∫ x, (R.mult x : ℝ) ∂(μHE[k].restrict R.carrier) = (R.measure univ).toReal := by
+      rw [integral_eq_lintegral_of_nonneg_ae hθ0 hθm.aestronglyMeasurable, hlint]
+    rw [← Real.norm_eq_abs, IMRep.action]
+    calc ‖∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (γ x) ∂μHE[k]‖
+        ≤ ∫ x, c * (R.mult x : ℝ) ∂(μHE[k].restrict R.carrier) := by
+          refine norm_integral_le_of_norm_le (hθint.const_mul c) ?_
+          -- a.e. `ξ(x)(β) = ±β(τ)` with `τ` orthonormal, so `|ξ(x)(γ x)| = |γ(x)(τ)| ≤ c`
+          filter_upwards [hγ, R.orients] with x hx hor
+          obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hor
+          rw [norm_mul, Real.norm_natCast, mul_comm c]
+          refine mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _)
+          rcases hξ with h | h
+          · rw [h, Real.norm_eq_abs]
+            exact hx τ hτ
+          · rw [h, norm_neg, Real.norm_eq_abs]
+            exact hx τ hτ
+      _ = c * (R.measure univ).toReal := by rw [integral_const_mul, hθI]
+  -- (iv) `C^∞` `Λ`-Lipschitz approximations by mollification
+  have hiv : ∀ (N N' : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N'), LipschitzWith Λ F → ∃ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, LipschitzWith Λ (Fs j)) ∧ TendstoUniformly Fs F atTop := by
+    intro N N' Λ F hF
+    -- normalized `C^∞` bumps `ψ = φ / ∫ φ` supported in `B_r(0)`
+    have hker : ∀ r : ℝ, 0 < r → ∃ ψ : Euclid N → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ ∧
+        HasCompactSupport ψ ∧ (∀ y, 0 ≤ ψ y) ∧ ∫ y, ψ y = 1 ∧ support ψ ⊆ ball 0 r := by
+      intro r hr
+      let φ : ContDiffBump (0 : Euclid N) := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
+      have hφ : 0 < ∫ y, φ y := by
+        rw [integral_pos_iff_support_of_nonneg φ.nonneg'
+          (φ.continuous.integrable_of_hasCompactSupport φ.hasCompactSupport), φ.support_eq]
+        exact measure_ball_pos _ _ hr
+      have hsupp : support (fun y => φ y / ∫ y, φ y) ⊆ support φ := fun y hy =>
+        (div_ne_zero_iff.1 hy).1
+      exact ⟨fun y => φ y / ∫ y, φ y, φ.contDiff.div_const _, φ.hasCompactSupport.mono hsupp,
+        fun y => div_nonneg φ.nonneg hφ.le, by rw [integral_div, div_self hφ.ne'],
+        hsupp.trans φ.support_eq.subset⟩
+    choose ψ hψ hψc hψ0 hψ1 hψs using fun j : ℕ =>
+      hker (1 / ((j : ℝ) + 1)) Nat.one_div_pos_of_nat
+    have hFi : LocallyIntegrable F volume := hF.continuous.locallyIntegrable
+    refine ⟨fun j => convolution (ψ j) F (ContinuousLinearMap.lsmul ℝ ℝ) volume,
+      fun j => (hψc j).contDiff_convolution_left _ (hψ j) hFi, fun j => ?_, ?_⟩
+    · -- `ψ_j ⋆ F` is `Λ`-Lipschitz: it averages the differences `F(x - t) - F(x' - t)`
+      have hconv : ∀ x, Integrable (fun t => ψ j t • F (x - t)) volume := fun x =>
+        ((hψc j).convolutionExists_left (ContinuousLinearMap.lsmul ℝ ℝ) (hψ j).continuous hFi
+          x).integrable
+      refine LipschitzWith.of_dist_le_mul fun x x' => ?_
+      dsimp only
+      rw [dist_eq_norm, convolution_def, convolution_def]
+      simp only [ContinuousLinearMap.lsmul_apply]
+      rw [← integral_sub (hconv x) (hconv x')]
+      calc ‖∫ t, (ψ j t • F (x - t) - ψ j t • F (x' - t))‖ ≤ ∫ t, ψ j t * (Λ * dist x x') := by
+            refine norm_integral_le_of_norm_le
+              (((hψ j).continuous.integrable_of_hasCompactSupport (hψc j)).mul_const _)
+              (ae_of_all _ fun t => ?_)
+            rw [← smul_sub, norm_smul, Real.norm_of_nonneg (hψ0 j t)]
+            refine mul_le_mul_of_nonneg_left ?_ (hψ0 j t)
+            rw [← dist_eq_norm]
+            calc dist (F (x - t)) (F (x' - t)) ≤ Λ * dist (x - t) (x' - t) := hF.dist_le_mul _ _
+              _ = Λ * dist x x' := by rw [dist_sub_right]
+        _ = Λ * dist x x' := by rw [integral_mul_const, hψ1 j, one_mul]
+    · -- `dist((ψ_j ⋆ F)(x), F(x)) ≤ Λ/(j+1)`, as `F` moves by `≤ Λ/(j+1)` on `B_{1/(j+1)}(x)`
+      rw [Metric.tendstoUniformly_iff]
+      intro ε hε
+      have hlim : Tendsto (fun j : ℕ => (Λ : ℝ) * (1 / ((j : ℝ) + 1))) atTop (𝓝 0) := by
+        have := (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul (Λ : ℝ)
+        rwa [mul_zero] at this
+      filter_upwards [hlim.eventually (gt_mem_nhds hε)] with j hj x
+      rw [dist_comm]
+      refine (dist_convolution_le (by positivity) (hψs j) (hψ0 j) (hψ1 j)
+        hF.continuous.aestronglyMeasurable fun y hy => ?_).trans_lt hj
+      calc dist (F y) (F x) ≤ Λ * dist y x := hF.dist_le_mul y x
+        _ ≤ Λ * (1 / ((j : ℝ) + 1)) := mul_le_mul_of_nonneg_left (mem_ball.mp hy).le Λ.coe_nonneg
+  -- (v) smooth cut-off functions
+  have hv : ∀ (P : ℕ) (E : Set (Euclid P)), IsCompact E → ∃ (χ : Euclid P → ℝ) (W : Set (Euclid P)), ContDiff ℝ (⊤ : ℕ∞) χ ∧ HasCompactSupport χ ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ IsOpen W ∧ E ⊆ W ∧ ∀ x ∈ W, χ x = 1 := by
+    intro P E hE
+    obtain ⟨χ, hχ, hχr, hχs, hχ1⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+      (isOpen_thickening (δ := 2) (E := E)) (isClosed_cthickening (δ := 1) (E := E))
+      (cthickening_subset_thickening' two_pos one_lt_two E)
+    refine ⟨χ, thickening 1 E, hχ, ?_, fun x => hχr ⟨x, rfl⟩, isOpen_thickening,
+      self_subset_thickening one_pos E,
+      fun x hx => (hχ1 x).mp (thickening_subset_cthickening 1 E hx)⟩
+    exact HasCompactSupport.of_support_subset_isCompact (hE.cthickening (r := 2))
+      (hχs ▸ thickening_subset_cthickening 2 E)
+  refine ⟨⟨hi, hii, hiii, hiv, hv⟩, ?_⟩
+  -- (vi) the push-forward operator, assuming (IPF)
+  intro hIPF P
+  -- for `X` with a finite-mass IM representation `R`, choose `Y_X` from (IPF) for `R`
+  obtain ⟨Ych, hYch⟩ : ∃ Ych : ∀ k : ℕ, GeometricCurrentOn (univ : Set (Euclid P)) k →
+      (Euclid P → Euclid P) → GeometricCurrentOn (univ : Set (Euclid P)) k,
+      ∀ (k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k),
+        (∃ R : IMRep (univ : Set (Euclid P)) k, R.Represents X ∧ R.measure univ ≠ ∞) →
+        ∃ (R : IMRep (univ : Set (Euclid P)) k) (hR : R.measure univ ≠ ∞),
+          R.Represents X ∧ Ych k X = Classical.choose (hIPF P P k R hR) := by
+    classical
+    exact ⟨fun k X => if h : ∃ R : IMRep (univ : Set (Euclid P)) k, R.Represents X ∧
+      R.measure univ ≠ ∞ then Classical.choose (hIPF P P k h.choose h.choose_spec.2)
+      else fun _ => X, fun k X h => ⟨h.choose, h.choose_spec.2, h.choose_spec.1, dite_eq_left h⟩⟩
+  refine ⟨fun k F X => Ych k X F, ?_⟩
+  rintro k Λ F E X hF hE ⟨R', hR'⟩ hXE
+  dsimp only
+  -- by (i) every representation of `X` has finite mass
+  obtain ⟨R, hRfin, hRX, hY⟩ := hYch k X ⟨R', hR', (hi P k X R' E hR' hE hXE).2.2.1⟩
+  obtain ⟨hYa, hYb⟩ := Classical.choose_spec (hIPF P P k R hRfin)
+  rw [← hY] at hYa hYb
+  obtain ⟨hnull, hmass, -, hloc⟩ := hi P k X R E hRX hE hXE
+  have hae : ∀ᵐ x ∂(μHE[k].restrict R.carrier), x ∈ E := by
+    rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+    refine measure_mono_null ?_ hnull
+    intro x hx
+    exact ⟨hx.2, hx.1⟩
+  -- `C^∞` `Λ`-Lipschitz `F_j → F` by (iv); `push k F X (ω) = lim R.action(F_j^#ω)`
+  obtain ⟨Fs, hFs, hFsL, hFsU⟩ := hiv P P Λ F hF
+  have hFs1 : ∀ j, ContDiff ℝ 1 (Fs j) := fun j => (hFs j).of_le (by exact_mod_cast le_top)
+  have hlim := (hYa F Λ hF).2 Fs hFs1 hFsL hFsU
+  refine ⟨(hYa F Λ hF).1, fun F' hF' hFF' => hYb F F' Λ hF hF' ?_,
+    fun Fs' ω ηs hFs' hFsL' hFsU' hη => ?_, ?_, fun ω hω => ?_⟩
+  · -- (P2): `F = F'` on `E`, hence `Hᵏ⌞M`-a.e.
+    filter_upwards [hae] with x hx using hFF' hx
+  · -- (P3): `X(η_j) = R.action(η_j) = R.action(F_j^#ω) → push k F X (ω)`
+    refine ((hYa F Λ hF).2 Fs' hFs' hFsL' hFsU' ω).congr fun j => ?_
+    rw [hRX (ηs j)]
+    exact hloc _ _ fun x hx => (hη j x hx).symm
+  · -- (P4): for admissible `ω`, `|R.action(F_j^#ω)| ≤ Λᵏ μ_R(ℝᴾ)` by (ii) and (iii)
+    rw [hmass, GeometricCurrentOn.mass, GeometricCurrentOn.massOn]
+    refine sSup_le ?_
+    rintro _ ⟨ω, ⟨-, hω1⟩, rfl⟩
+    dsimp only
+    have hbd : ∀ j, |R.action (fun x => ((ω : DifferentialForm (Euclid P) k)
+        (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x))| ≤
+        (Λ : ℝ) ^ k * (R.measure univ).toReal := by
+      intro j
+      refine hiii P k univ R _ _ hRfin (by positivity) (ae_of_all _ fun x τ hτ => ?_)
+      rw [ContinuousAlternatingMap.compContinuousLinearMap_apply]
+      calc |(ω : DifferentialForm (Euclid P) k) (Fs j x) (fderiv ℝ (Fs j) x ∘ τ)|
+          ≤ covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) (Fs j x)) *
+            ∏ i, ‖(fderiv ℝ (Fs j) x ∘ τ) i‖ := hii P k _ _
+        _ ≤ 1 * ∏ _i : Fin k, (Λ : ℝ) := by
+          refine mul_le_mul (hω1 _)
+            (Finset.prod_le_prod₀ (fun i _ => norm_nonneg _) fun i _ => ?_)
+            (Finset.prod_nonneg fun i _ => norm_nonneg _) zero_le_one
+          -- `‖DF_j(x) τᵢ‖ ≤ ‖DF_j(x)‖ ≤ Λ`
+          calc ‖(fderiv ℝ (Fs j) x ∘ τ) i‖ ≤ ‖fderiv ℝ (Fs j) x‖ * ‖τ i‖ :=
+                (fderiv ℝ (Fs j) x).le_opNorm _
+            _ ≤ Λ := by
+                rw [hτ.1 i, mul_one]
+                exact norm_fderiv_le_of_lipschitz ℝ (hFsL j)
+        _ = (Λ : ℝ) ^ k := by rw [one_mul, Fin.prod_const]
+    have hle : Ych k X F ω ≤ (Λ : ℝ) ^ k * (R.measure univ).toReal :=
+      le_of_tendsto' (hlim ω) fun j => (le_abs_self _).trans (hbd j)
+    calc ENNReal.ofReal (Ych k X F ω)
+        ≤ ENNReal.ofReal ((Λ : ℝ) ^ k * (R.measure univ).toReal) := ENNReal.ofReal_le_ofReal hle
+      _ = (Λ : ℝ≥0∞) ^ k * R.measure univ := by
+        rw [ENNReal.ofReal_mul (by positivity), ENNReal.ofReal_toReal hRfin,
+          ENNReal.ofReal_pow NNReal.zero_le_coe, ENNReal.ofReal_coe_nnreal]
+  · -- (P5): for large `j`, `F_j(E)` avoids `spt ω`, so `F_j^#ω = 0` on `E`
+    obtain ⟨δ, hδ, hδK⟩ := (hE.image hF.continuous).exists_cthickening_subset_open
+      (isClosed_tsupport _).isOpen_compl (subset_compl_iff_disjoint_left.mpr hω)
+    have hev : ∀ᶠ j in atTop, R.action (fun x => ((ω : DifferentialForm (Euclid P) k)
+        (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) = 0 := by
+      filter_upwards [Metric.tendstoUniformly_iff.mp hFsU δ hδ] with j hj
+      refine (hloc _ 0 fun x hx => ?_).trans ?_
+      · have hmem : Fs j x ∉ tsupport (ω : DifferentialForm (Euclid P) k) :=
+          hδK (thickening_subset_cthickening δ _
+            (mem_thickening_iff.mpr ⟨F x, mem_image_of_mem F hx, by rw [dist_comm]; exact hj x⟩))
+        rw [image_eq_zero_of_notMem_tsupport hmem]
+        ext v
+        simp
+      · simp [IMRep.action]
+    exact tendsto_nhds_unique (hlim ω) (tendsto_const_nhds.congr' (hev.mono fun j hj => hj.symm))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
