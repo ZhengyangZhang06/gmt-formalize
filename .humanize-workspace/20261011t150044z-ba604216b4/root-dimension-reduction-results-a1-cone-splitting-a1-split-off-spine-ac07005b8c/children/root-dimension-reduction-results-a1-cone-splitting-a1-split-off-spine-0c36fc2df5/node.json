@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.spine_coarea-a1.coarea_of_pieces-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.spine_coarea-a1",
+  "depth": 5,
+  "title": "Coarea formula along a spine for a set given by disjoint bi-Lipschitz pieces whose tangent planes contain L",
+  "statement": "Setting: P, n ∈ ℕ and L ⊆ ℝ^P a linear subspace with d := dim L < n; m := n − d ≥ 1. p := L.starProjection is the orthogonal projection onto L, viewed as a map ℝ^P → ℝ^P; H^k := μHE[k]; for t ∈ L, M_t := M ∩ p⁻¹(t) = M ∩ {x : L.starProjection x = t}.\nHypotheses on M ⊆ ℝ^P:\n- (H1) M is Borel;\n- (H2) (bi-Lipschitz pieces) there are maps F_i : ℝ^n → ℝ^P, sets B_i ⊆ ℝ^n and reals m_i (i ∈ ℕ) such that:\n - each F_i is Lipschitz, each B_i is Borel and m_i > 0;\n - m_i|a − a'| ≤ |F_i(a) − F_i(a')| for a, a' ∈ B_i;\n - F_i is differentiable at every a ∈ B_i with injective derivative;\n - each F_i(B_i) is Borel and contained in M, and the sets F_i(B_i) are pairwise disjoint;\n - H^n(M ∖ ⋃_i F_i(B_i)) = 0;\n- (H3) H^n(M ∩ K) < ∞ for every compact K;\n- (H4) for H^n-a.e. x ∈ M there is a subspace Q with HasApproximateTangentSpaceAt n M x Q and L ⊆ Q.\nConclusions:\n(i) For H^d⌞L-a.e. t, M_t is countably m-rectifiable. Moreover, for H^m-a.e. x ∈ M_t and every subspace Q with HasApproximateTangentSpaceAt n M x Q, HasApproximateTangentSpaceAt m M_t x (Q ∩ L^⊥).\n(ii) For every Borel g : ℝ^P → [0, ∞], t ↦ ∫_{M_t} g dH^m is a.e.-measurable for H^d⌞L, and ∫_M g dH^n = ∫_L (∫_{M_t} g dH^m) dH^d(t).\nThis is the selected spine coarea theorem with \"M countably n-rectifiable\" replaced by the piece decomposition that bilipschitz_pieces produces from it.",
+  "lean_statement": "∀ (P n : ℕ) (L : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), Module.finrank ℝ L < n → MeasurableSet M → (∃ (F : ℕ → Euclid n → Euclid P) (B : ℕ → Set (Euclid n)) (m : ℕ → ℝ), (∀ i, ∃ K : NNReal, LipschitzWith K (F i)) ∧ (∀ i, MeasurableSet (B i)) ∧ (∀ i, 0 < m i) ∧ (∀ i, ∀ a ∈ B i, ∀ a' ∈ B i, m i * ‖a - a'‖ ≤ ‖F i a - F i a'‖) ∧ (∀ i, ∀ a ∈ B i, DifferentiableAt ℝ (F i) a ∧ Injective (fderiv ℝ (F i) a)) ∧ (∀ i, MeasurableSet (F i '' B i)) ∧ (∀ i, F i '' B i ⊆ M) ∧ Pairwise (fun i j => Disjoint (F i '' B i) (F j '' B j)) ∧ μHE[n] (M \\ ⋃ i, F i '' B i) = 0) → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ∧ L ≤ Q) → (∀ᵐ t ∂(μHE[Module.finrank ℝ L].restrict (L : Set (Euclid P))), CountablyRectifiable (n - Module.finrank ℝ L) (M ∩ {x | L.starProjection x = t}) ∧ ∀ᵐ x ∂(μHE[n - Module.finrank ℝ L].restrict (M ∩ {x | L.starProjection x = t})), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt (n - Module.finrank ℝ L) (M ∩ {x | L.starProjection x = t}) x (Q ⊓ Lᗮ)) ∧ ∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[n - Module.finrank ℝ L]) (μHE[Module.finrank ℝ L].restrict (L : Set (Euclid P))) ∧ ∫⁻ x in M, g x ∂μHE[n] = ∫⁻ t in (L : Set (Euclid P)), ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[n - Module.finrank ℝ L] ∂μHE[Module.finrank ℝ L]",
+  "lean_name": "dimred_cs_sos_sc_coarea_of_pieces",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1.ae_transfer-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1.lipschitz_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-e483a373f0-a1",
+      "result_commit": "bed5b8494a351297a2be8f0a0b63079868d53507",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1.ae_transfer-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-6d6197c93d-a1",
+      "result_commit": "bfe4427fb415fb3b2843a49246ce9b8ffc567a01",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1.lipschitz_tangent-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-aad3a33660-a1",
+      "result_commit": "2626c7a33b0710ef02dabb5fabccd7f228531ad1",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-0c36fc2df5-a1"
+}
