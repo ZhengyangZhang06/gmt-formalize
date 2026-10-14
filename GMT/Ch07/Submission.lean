@@ -451,6 +451,172 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The radial retraction onto the closed ball `B̄ = {z : ‖z‖ ≤ ρ}` of `ℝᴾ`, `r(y) = y` for
+`‖y‖ ≤ ρ` and `r(y) = (ρ/‖y‖)•y` otherwise, maps `ℝᴾ` into `B̄`, fixes `B̄` and is 1-Lipschitz.
+It is the nearest-point projection onto `B̄`: `⟪x - r x, z - r x⟫ ≤ 0` for `z ∈ B̄`, since
+`x - r x` is a nonnegative multiple of `x` and `⟪x, z⟫ ≤ ρ‖x‖ = ⟪x, r x⟫`.  Adding these
+inequalities for `(x, z) = (x, r y)` and `(y, r x)` gives
+`‖r x - r y‖² ≤ ⟪x - y, r x - r y⟫ ≤ ‖x - y‖ ‖r x - r y‖`. -/
+theorem Submission.ecf_cp_ball_retraction : ∀ (P : ℕ) (ρ : ℝ), 0 < ρ → ∃ r : Euclid P → Euclid P, LipschitzWith 1 r ∧ (∀ y, ‖r y‖ ≤ ρ) ∧ ∀ y, ‖y‖ ≤ ρ → r y = y := by
+  intro P ρ hρ
+  -- `r y = y` on the ball `‖y‖ ≤ ρ` and `r y = (ρ / ‖y‖) • y` outside it
+  obtain ⟨r, hr_in, hr_out⟩ : ∃ r : Euclid P → Euclid P, (∀ y, ‖y‖ ≤ ρ → r y = y) ∧
+      ∀ y, ρ < ‖y‖ → r y = (ρ / ‖y‖) • y :=
+    ⟨fun y => if ‖y‖ ≤ ρ then y else (ρ / ‖y‖) • y, fun y hy => ite_eq_left hy,
+      fun y hy => ite_eq_right (not_le.mpr hy)⟩
+  -- `‖r y‖ ≤ ρ`: outside the ball, `‖r y‖ = (ρ / ‖y‖) * ‖y‖ = ρ`
+  have hr_le : ∀ y, ‖r y‖ ≤ ρ := by
+    intro y
+    rcases le_or_gt ‖y‖ ρ with hy | hy
+    · rw [hr_in y hy]
+      exact hy
+    · have hy0 : 0 < ‖y‖ := hρ.trans hy
+      rw [hr_out y hy, norm_smul_of_nonneg (div_nonneg hρ.le hy0.le), div_mul_cancel₀ _ hy0.ne']
+  -- variational inequality `⟪x - r x, z - r x⟫ ≤ 0` for `‖z‖ ≤ ρ`
+  have hvar : ∀ x z : Euclid P, ‖z‖ ≤ ρ → inner ℝ (x - r x) (z - r x) ≤ 0 := by
+    intro x z hz
+    rcases le_or_gt ‖x‖ ρ with hx | hx
+    · rw [hr_in x hx, sub_self, inner_zero_left]
+    · have hx0 : 0 < ‖x‖ := hρ.trans hx
+      have hc : 0 ≤ 1 - ρ / ‖x‖ := by
+        rw [sub_nonneg, div_le_one hx0]
+        exact hx.le
+      -- `x - r x = (1 - ρ / ‖x‖) • x` and `⟪x, z⟫ ≤ ρ ‖x‖ = ⟪x, r x⟫`
+      have hxz : inner ℝ x z ≤ ρ * ‖x‖ :=
+        calc inner ℝ x z ≤ ‖x‖ * ‖z‖ := real_inner_le_norm x z
+          _ ≤ ‖x‖ * ρ := by gcongr
+          _ = ρ * ‖x‖ := mul_comm _ _
+      have hxx : ρ / ‖x‖ * ‖x‖ ^ 2 = ρ * ‖x‖ := by
+        field_simp
+      rw [hr_out x hx, show x - (ρ / ‖x‖) • x = (1 - ρ / ‖x‖) • x by rw [sub_smul, one_smul],
+        real_inner_smul_left, inner_sub_right, real_inner_smul_right, real_inner_self_eq_norm_sq,
+        hxx]
+      exact mul_nonpos_of_nonneg_of_nonpos hc (by linarith)
+  refine ⟨r, LipschitzWith.mk_one fun x y => ?_, hr_le, hr_in⟩
+  rw [dist_eq_norm, dist_eq_norm]
+  -- adding the variational inequalities for `(x, r y)` and `(y, r x)`
+  have h1 := hvar x (r y) (hr_le y)
+  have h2 := hvar y (r x) (hr_le x)
+  have hkey : ‖r x - r y‖ ^ 2 ≤ inner ℝ (x - y) (r x - r y) := by
+    have e : inner ℝ (x - y) (r x - r y) = ‖r x - r y‖ ^ 2 - inner ℝ (x - r x) (r y - r x)
+        - inner ℝ (y - r y) (r x - r y) := by
+      rw [← real_inner_self_eq_norm_sq]
+      simp only [inner_sub_left, inner_sub_right, real_inner_comm]
+      ring
+    linarith
+  -- Cauchy–Schwarz, then cancel `‖r x - r y‖` (the case `r x = r y` is trivial)
+  have hcs : inner ℝ (x - y) (r x - r y) ≤ ‖x - y‖ * ‖r x - r y‖ := real_inner_le_norm _ _
+  nlinarith [norm_nonneg (r x - r y), norm_nonneg (x - y)]
+
+/-- The cone map over a Lipschitz `F : ℝᵏ → ℝᴾ` (Simon Ch. 6, 2.30 with `h(t, x) = t x`).  With
+the coordinates `s(z) = z₀`, `τ(z) = (z₁, …, z_k)`, the clamp `σ(t) = min (max t 0) 1` and the
+`1`-Lipschitz retraction `r` of `ℝᴾ` onto `B̄_ρ(0)` (`ecf_cp_ball_retraction`),
+`G(z) = σ(s z) • r(F(τ z))` is `(ρ + L)`-Lipschitz.  On the open set
+`s⁻¹(0, 1) ∩ τ⁻¹(F⁻¹(B_ρ(0)))`, a neighbourhood of `(t, u)` for `t ∈ (0, 1)`, `u ∈ A`, `G` agrees
+with `s • (F ∘ τ)`; so `G(t, u) = t F(u)`, and the product and chain rules give
+`DG(t, u) e₀ = F(u)` and `DG(t, u) e_{b+1} = t DF(u) e_b`. -/
+theorem Submission.ecf_cp_cone_map : ∀ (k P : ℕ) (F : Euclid k → Euclid P) (A : Set (Euclid k)) (ρ : ℝ), 0 < ρ → (∃ K : NNReal, LipschitzWith K F) → (∀ u ∈ A, DifferentiableAt ℝ F u) → (∀ u ∈ A, ‖F u‖ < ρ) → ∃ G : Euclid (k + 1) → Euclid P, (∃ K : NNReal, LipschitzWith K G) ∧ ∀ u ∈ A, ∀ t ∈ Ioo (0 : ℝ) 1, G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = t • F u ∧ (fun a => fderiv ℝ G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = (Fin.cons (F u) (t • fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) : Fin (k + 1) → Euclid P) := by
+  rintro k P F A ρ hρ ⟨L, hL⟩ hdiff hlt
+  obtain ⟨r, hr, hr_le, hr_id⟩ := Submission.ecf_cp_ball_retraction P ρ hρ
+  -- the coordinates `s(z) = z₀` and `τ(z) = (z₁, …, z_k)`, both norm-nonincreasing
+  let s : Euclid (k + 1) →L[ℝ] ℝ := EuclideanSpace.proj 0
+  let τl : Euclid (k + 1) →ₗ[ℝ] Euclid k :=
+    { toFun := fun z => WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))
+      map_add' := fun x y => by ext i; simp [Fin.tail]
+      map_smul' := fun c x => by ext i; simp [Fin.tail] }
+  let τ : Euclid (k + 1) →L[ℝ] Euclid k := LinearMap.toContinuousLinearMap τl
+  have hs : ∀ z, s z = WithLp.ofLp z 0 := fun z => rfl
+  have hτ : ∀ z, τ z = WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) := fun z => rfl
+  have hs_le : ∀ w, ‖s w‖ ≤ ‖w‖ := fun w => PiLp.norm_apply_le w 0
+  have hτ_le : ∀ w, ‖τ w‖ ≤ ‖w‖ := fun w => by
+    refine (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 ?_
+    rw [PiLp.norm_sq_eq_of_L2, PiLp.norm_sq_eq_of_L2, Fin.sum_univ_succ]
+    exact le_add_of_nonneg_left (sq_nonneg _)
+  -- the clamp `σ(t) = min (max t 0) 1`
+  let σ : ℝ → ℝ := fun x => min (max x 0) 1
+  have hσ : LipschitzWith 1 σ := (LipschitzWith.id.max_const 0).min_const 1
+  have hσ_le : ∀ x, ‖σ x‖ ≤ 1 := fun x => by
+    rw [Real.norm_of_nonneg (le_min (le_max_right x 0) zero_le_one)]
+    exact min_le_right _ _
+  have hσ_id : ∀ x, 0 ≤ x → x ≤ 1 → σ x = x := fun x h0 h1 => by
+    show min (max x 0) 1 = x
+    rw [max_eq_left h0, min_eq_left h1]
+  let G : Euclid (k + 1) → Euclid P := fun z => σ (s z) • r (F (τ z))
+  refine ⟨G, ⟨Real.toNNReal ρ + L, LipschitzWith.of_dist_le_mul fun z z' => ?_⟩, ?_⟩
+  · -- `G` is `(ρ + L)`-Lipschitz
+    rw [dist_eq_norm, dist_eq_norm, NNReal.coe_add, Real.coe_toNNReal _ hρ.le]
+    have hσd : ‖σ (s z) - σ (s z')‖ ≤ ‖z - z'‖ := by
+      have h := hσ.dist_le_mul (s z) (s z')
+      rw [dist_eq_norm, dist_eq_norm, NNReal.coe_one, one_mul, ← map_sub] at h
+      exact h.trans (hs_le _)
+    have hrd : ‖r (F (τ z)) - r (F (τ z'))‖ ≤ L * ‖z - z'‖ := by
+      have h1 := hr.dist_le_mul (F (τ z)) (F (τ z'))
+      have h2 := hL.dist_le_mul (τ z) (τ z')
+      rw [dist_eq_norm, dist_eq_norm, NNReal.coe_one, one_mul] at h1
+      rw [dist_eq_norm, dist_eq_norm, ← map_sub] at h2
+      exact h1.trans (h2.trans (mul_le_mul_of_nonneg_left (hτ_le _) L.coe_nonneg))
+    have hsplit : G z - G z' =
+        (σ (s z) - σ (s z')) • r (F (τ z)) + σ (s z') • (r (F (τ z)) - r (F (τ z'))) := by
+      simp only [G, sub_smul, smul_sub]
+      abel
+    calc ‖G z - G z'‖
+        ≤ ‖σ (s z) - σ (s z')‖ * ‖r (F (τ z))‖ + ‖σ (s z')‖ * ‖r (F (τ z)) - r (F (τ z'))‖ := by
+          rw [hsplit, ← norm_smul, ← norm_smul]
+          exact norm_add_le _ _
+      _ ≤ ‖z - z'‖ * ρ + 1 * (L * ‖z - z'‖) :=
+          add_le_add (mul_le_mul hσd (hr_le _) (norm_nonneg _) (norm_nonneg _))
+            (mul_le_mul (hσ_le _) hrd (norm_nonneg _) zero_le_one)
+      _ = (ρ + L) * ‖z - z'‖ := by ring
+  · intro u hu t ht
+    set z₀ : Euclid (k + 1) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))
+    have hsz : s z₀ = t := by simp [hs, z₀]
+    have hτz : τ z₀ = u := by simp [hτ, z₀]
+    refine ⟨?_, ?_⟩
+    · -- the value `G(t, u) = t F(u)`
+      show σ (s z₀) • r (F (τ z₀)) = t • F u
+      rw [hsz, hτz, hσ_id t ht.1.le ht.2.le, hr_id _ (hlt u hu).le]
+    · -- near `(t, u)`, `G = s • (F ∘ τ)`
+      have hN : IsOpen (s ⁻¹' Ioo 0 1 ∩ τ ⁻¹' (F ⁻¹' ball 0 ρ)) :=
+        (isOpen_Ioo.preimage s.continuous).inter
+          ((isOpen_ball.preimage hL.continuous).preimage τ.continuous)
+      have hz₀N : z₀ ∈ s ⁻¹' Ioo 0 1 ∩ τ ⁻¹' (F ⁻¹' ball 0 ρ) := by
+        refine ⟨?_, ?_⟩
+        · show s z₀ ∈ Ioo 0 1
+          rw [hsz]
+          exact ht
+        · show F (τ z₀) ∈ ball 0 ρ
+          rw [hτz, mem_ball_zero_iff]
+          exact hlt u hu
+      have hGH : G =ᶠ[𝓝 z₀] fun z => s z • F (τ z) := by
+        filter_upwards [hN.mem_nhds hz₀N] with z hz
+        have hz1 : s z ∈ Ioo 0 1 := hz.1
+        have hz2 : F (τ z) ∈ ball (0 : Euclid P) ρ := hz.2
+        show σ (s z) • r (F (τ z)) = s z • F (τ z)
+        rw [hσ_id _ hz1.1.le hz1.2.le, hr_id _ (mem_ball_zero_iff.1 hz2).le]
+      -- product and chain rules for `s • (F ∘ τ)` at `(t, u)`
+      have hFτ : HasFDerivAt (fun z => F (τ z)) ((fderiv ℝ F u).comp τ) z₀ := by
+        have h : HasFDerivAt F (fderiv ℝ F u) (τ z₀) := by
+          rw [hτz]
+          exact (hdiff u hu).hasFDerivAt
+        exact h.comp z₀ τ.hasFDerivAt
+      have hH : HasFDerivAt (fun z => s z • F (τ z))
+          (s z₀ • (fderiv ℝ F u).comp τ + s.smulRight (F (τ z₀))) z₀ :=
+        s.hasFDerivAt.smul hFτ
+      rw [hGH.fderiv_eq (𝕜 := ℝ), hH.fderiv]
+      funext a
+      refine Fin.cases ?_ (fun b => ?_) a
+      · have h1 : τ (EuclideanSpace.single 0 1) = 0 := by
+          ext i
+          simp [hτ, Fin.tail, Fin.succ_ne_zero]
+        have h2 : s (EuclideanSpace.single 0 1) = 1 := by simp [hs]
+        simp [hsz, hτz, h1, h2]
+      · have h1 : τ (EuclideanSpace.single b.succ 1) = EuclideanSpace.single b 1 := by
+          ext i
+          simp [hτ, Fin.tail, Pi.single_apply, Fin.succ_inj]
+        have h2 : s (EuclideanSpace.single b.succ 1) = 0 := by
+          simp [hs, (Fin.succ_ne_zero b).symm]
+        simp [hsz, h1, h2]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
