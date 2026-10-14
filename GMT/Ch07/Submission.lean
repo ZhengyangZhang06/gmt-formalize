@@ -3357,6 +3357,238 @@ theorem Submission.dtc_bc_lc_pf_unitOrientation_comp : ∀ (P n : ℕ) (ξ : Mul
       exact hL (τ i) (hspan ▸ Submodule.subset_span (mem_range_self i))
     rcases hsign with h | h <;> rw [h, h, hcomp, hLτ]
 
+/-- **Cut-off of the pulled-back form** (Simon Ch. 6, 2.23 and Remark 2.24(2)).  Let `O ⊆ ℝᴾ` be
+open, `K ⊆ O` compact, `f : ℝᴾ → ℝ^Q` of class `C¹` on `O` and `ω` a continuous `n`-form on `ℝ^Q`.
+Some continuous, compactly supported `h : ℝᴾ → Λⁿ(ℝᴾ)` equals `ω(f(x)) ∘ Df(x)` on `K`.
+
+Proof sketch:
+* `f` and `Df` are continuous on `O`, and `(β, A) ↦ β ∘ A` is continuous (it has a strict
+  derivative everywhere), so `γ(x) = ω(f(x)) ∘ Df(x)` is continuous on `O`.
+* Take `ρ > 0` with `cthickening ρ K ⊆ O`, and a Urysohn cut-off `χ` with
+  `support χ = thickening ρ K` and `χ = 1` on `cthickening (ρ/2) K ⊇ K`.
+* `h = χ • γ` has `tsupport h ⊆ tsupport χ ⊆ cthickening ρ K`, a compact subset of `O`: so `h` has
+  compact support, is continuous (being continuous on the open `O ⊇ tsupport h`), and `h = γ`
+  on `K`. -/
+theorem Submission.dtc_bc_lc_pf_ext_pullback_cutoff : ∀ (P Q n : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid Q) (ω : DifferentialForm (Euclid Q) n), IsOpen O → ContDiffOn ℝ 1 f O → IsCompact K → K ⊆ O → Continuous ω → ∃ h : Euclid P → Covector (Euclid P) n, Continuous h ∧ HasCompactSupport h ∧ ∀ x ∈ K, h x = (ω (f x)).compContinuousLinearMap (fderiv ℝ f x) := by
+  intro P Q n O K f ω hO hf hK hKO hω
+  -- `f` and `Df` are continuous on `O`
+  have hfc : ContinuousOn f O := hf.continuousOn
+  have hDf : ContinuousOn (fderiv ℝ f) O := hf.continuousOn_fderiv_of_isOpen hO le_rfl
+  -- `(β, A) ↦ β ∘ A` is continuous, having a strict derivative everywhere
+  have hΦ : Continuous fun βA : Covector (Euclid Q) n × (Euclid P →L[ℝ] Euclid Q) =>
+      βA.1.compContinuousLinearMap βA.2 :=
+    continuous_iff_continuousAt.2 fun βA =>
+      (ContinuousAlternatingMap.hasStrictFDerivAt_compContinuousLinearMap βA).continuousAt
+  -- `γ(x) = ω(f(x)) ∘ Df(x)` is continuous on `O`
+  have hγ : ContinuousOn (fun x => (ω (f x)).compContinuousLinearMap (fderiv ℝ f x)) O :=
+    hΦ.comp_continuousOn ((hω.comp_continuousOn hfc).prodMk hDf)
+  -- a margin `cthickening ρ K ⊆ O`, a compact set
+  obtain ⟨ρ, hρ, hρO⟩ := hK.exists_cthickening_subset_open hO hKO
+  have hρK : IsCompact (cthickening ρ K) := hK.cthickening
+  -- a cut-off `χ` with `support χ = thickening ρ K` and `χ = 1` on `cthickening (ρ/2) K`
+  obtain ⟨χ, hχ, -, hχs, hχ1⟩ := exists_contDiff_support_eq_eq_one_iff (n := 0)
+    (isOpen_thickening (δ := ρ) (E := K)) (isClosed_cthickening (δ := ρ / 2) (E := K))
+    (cthickening_subset_thickening' hρ (half_lt_self hρ) K)
+  have hχK : ∀ x ∈ K, χ x = 1 := fun x hx => (hχ1 x).1 (self_subset_cthickening K hx)
+  have hχt : tsupport χ ⊆ cthickening ρ K := by
+    rw [tsupport, hχs]
+    exact closure_thickening_subset_cthickening ρ K
+  -- `h = χ • γ`, whose support lies in `tsupport χ`
+  have hts := tsupport_smul_subset_left χ
+    fun x => (ω (f x)).compContinuousLinearMap (fderiv ℝ f x)
+  refine ⟨fun x => χ x • (ω (f x)).compContinuousLinearMap (fderiv ℝ f x), ?_, ?_, ?_⟩
+  · -- continuous on the open `O ⊇ tsupport h`, hence continuous
+    exact (hχ.continuous.continuousOn.smul hγ).continuous_of_tsupport_subset hO
+      (hts.trans (hχt.trans hρO))
+  · -- `tsupport h ⊆ tsupport χ ⊆ cthickening ρ K`, a compact set
+    exact hρK.of_isClosed_subset (isClosed_tsupport _) (hts.trans hχt)
+  · -- `χ = 1` on `K`
+    intro x hx
+    simp only [hχK x hx, one_smul]
+/-- **Mollification** (behind Simon Ch. 6, Remark 2.24(2)): a continuous, compactly supported
+`n`-covector field `h` on `ℝᴾ` is the uniform limit of test forms `ωⱼ ∈ 𝒟ⁿ(ℝᴾ)`.
+
+Let `ψⱼ = φⱼ / ∫ φⱼ`, where `φⱼ ≥ 0` is a smooth bump with `support φⱼ = B_{1/(j+1)}(0)`, so
+`ψⱼ ≥ 0` and `∫ ψⱼ = 1`.  Then `ωⱼ = ψⱼ ⋆ h` is `C^∞` with compact support, and
+`‖ωⱼ(x) − h(x)‖ ≤ sup_{‖t‖ < 1/(j+1)} ‖h(x − t) − h(x)‖`, which tends to `0` uniformly in `x`
+because `h` is uniformly continuous. -/
+theorem Submission.dtc_bc_lc_pf_ext_mollify_tendstoUniformly : ∀ (P n : ℕ) (h : Euclid P → Covector (Euclid P) n), Continuous h → HasCompactSupport h → ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, TendstoUniformly (fun j x => (ωs j : DifferentialForm (Euclid P) n) x) h atTop := by
+  intro P n h hhc hhs
+  -- (1) `h` is locally integrable
+  have hhi : LocallyIntegrable h volume := hhc.locallyIntegrable
+  -- (2) smooth bumps `φ j ≥ 0` with `support (φ j) = B_{1/(j+1)}(0)`, and the normalized kernels
+  -- `ψ j = φ j / ∫ φ j`: `ψ j ≥ 0`, `∫ ψ j = 1`
+  have hr : ∀ j : ℕ, 0 < 1 / ((j : ℝ) + 1) := fun j => Nat.one_div_pos_of_nat
+  let φ : ℕ → ContDiffBump (0 : Euclid P) := fun j =>
+    ⟨1 / ((j : ℝ) + 1) / 2, 1 / ((j : ℝ) + 1), half_pos (hr j), half_lt_self (hr j)⟩
+  have hφ : ∀ j, 0 < ∫ y, φ j y := fun j => by
+    refine (integral_pos_iff_support_of_nonneg (φ j).nonneg'
+      ((φ j).continuous.integrable_of_hasCompactSupport (φ j).hasCompactSupport)).mpr ?_
+    rw [(φ j).support_eq]
+    exact measure_ball_pos volume 0 (hr j)
+  let ψ : ℕ → Euclid P → ℝ := fun j y => φ j y / ∫ y, φ j y
+  have hψφ : ∀ j, support (ψ j) ⊆ support (φ j) := fun j y hy h0 => hy (by simp [ψ, h0])
+  have hψs : ∀ j, support (ψ j) ⊆ ball 0 (1 / ((j : ℝ) + 1)) := fun j =>
+    (hψφ j).trans (φ j).support_eq.subset
+  have hψc : ∀ j, HasCompactSupport (ψ j) := fun j => (φ j).hasCompactSupport.mono (hψφ j)
+  have hψ0 : ∀ j y, 0 ≤ ψ j y := fun j y => div_nonneg (φ j).nonneg (hφ j).le
+  have hψ1 : ∀ j, ∫ y, ψ j y = 1 := fun j => by rw [integral_div, div_self (hφ j).ne']
+  -- (3) `ω j = ψ j ⋆ h`
+  let ω : ℕ → DifferentialForm (Euclid P) n := fun j =>
+    convolution (ψ j) h (ContinuousLinearMap.lsmul ℝ ℝ) volume
+  -- (4) `ω j` is `C^∞` with compact support, so it is a test form on `ℝᴾ`
+  have hω : ∀ j, ω j ∈ TestFormOn (univ : Set (Euclid P)) n := fun j =>
+    ⟨⟨(hψc j).contDiff_convolution_left _ ((φ j).contDiff.div_const _) hhi,
+      (hψc j).convolution _ hhs⟩, subset_univ _⟩
+  refine ⟨fun j => ⟨ω j, hω j⟩, Metric.tendstoUniformly_iff.mpr fun ε hε => ?_⟩
+  -- (6) uniform continuity of `h` gives `δ` for `ε/2`; take `J` with `1/(J+1) < δ`
+  obtain ⟨δ, hδ, hhδ⟩ := Metric.uniformContinuous_iff.mp
+    (hhs.uniformContinuous_of_continuous hhc) (ε / 2) (half_pos hε)
+  obtain ⟨J, hJ⟩ := exists_nat_one_div_lt hδ
+  refine eventually_atTop.mpr ⟨J, fun j hj x => ?_⟩
+  -- (5) for `j ≥ J`, `‖h(y) − h(x)‖ < ε/2` on `B_{1/(j+1)}(x)`, so `‖ω j x − h x‖ ≤ ε/2 < ε`
+  rw [dist_comm]
+  refine lt_of_le_of_lt ?_ (half_lt_self hε)
+  exact dist_convolution_le (half_pos hε).le (hψs j) (hψ0 j) (hψ1 j) hhc.aestronglyMeasurable
+    fun y hy => (hhδ ((mem_ball.mp hy).trans_le ((Nat.one_div_le_one_div hj).trans hJ.le))).le
+/-- **Limit of `IMRep` integrals under uniform convergence on a compact carrier set** (Simon
+Ch. 6, 2.24(2) with the integral representation 6.3.1 (‡); chapter-06.txt lines 415–424, 271).
+Let `R = (M, θ, ξ)` be an `IMRep` in `U`, `K ⊆ U` compact with `Hⁿ(M \ K) = 0`, and `gⱼ`, `g`
+continuous `n`-covector fields with `gⱼ → g` uniformly on `K`.  Then
+`∫_M θ ⟨gⱼ, ξ⟩ dHⁿ → ∫_M θ ⟨g, ξ⟩ dHⁿ`.
+
+Write `μ = Hⁿ⌞M`.  `μ`-a.e. `x` lies in `K`, and `M =ᵐ M ∩ K`, so `θ` is `μ`-integrable by the
+local integrability of `θ` on `K`.  A unit orientation has `|ξ(x)(β)| = |β(τ)| ≤ ‖β‖` (`τ`
+orthonormal), so for continuous `G` the integrand `θ ξ(G)` is a.e. strongly measurable and
+dominated by `(sup_K ‖G‖) θ`, hence integrable.  Finally
+`|∫ θ ξ(gⱼ) dμ − ∫ θ ξ(g) dμ| ≤ ∫ θ ‖gⱼ − g‖ dμ ≤ Θ ε/(Θ + 1) < ε` for large `j`,
+where `Θ = ∫ θ dμ`. -/
+theorem Submission.dtc_bc_lc_pf_ext_imrep_integral_tendsto : ∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n) (gs : ℕ → Euclid P → Covector (Euclid P) n) (g : Euclid P → Covector (Euclid P) n), IsCompact K → K ⊆ U → μHE[n] (R.carrier \ K) = 0 → (∀ j, Continuous (gs j)) → Continuous g → TendstoUniformlyOn gs g atTop K → Tendsto (fun j => ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (gs j x) ∂μHE[n]) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (g x) ∂μHE[n])) := by
+  intro P n U K R gs g hK hKU hnull hgs hg hunif
+  set μ := μHE[n].restrict R.carrier with hμ
+  -- (1) `μ`-a.e. point lies in `K`, as `Hⁿ(M \ K) = 0`
+  have hae : ∀ᵐ x ∂μ, x ∈ K := by
+    rw [hμ, ae_restrict_iff' R.measurableSet_carrier, ae_iff]
+    refine measure_mono_null (fun x hx => ?_) hnull
+    simp only [mem_ofPred_eq, not_imp] at hx
+    exact hx
+  -- (2) a unit orientation has norm at most one
+  have hbound : ∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ ‖α‖ := by
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
+    intro α
+    have hτn : ∀ i, ‖τ i‖ = 1 := fun i => hτ.1 i
+    have hατ : |α τ| ≤ ‖α‖ := by
+      have h := α.le_opNorm τ
+      simp only [hτn, Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
+      exact h
+    rcases hξ with h | h
+    · rw [h]; exact hατ
+    · rw [h, abs_neg]; exact hατ
+  -- (3) `θ` is `μ`-integrable: `μ = Hⁿ⌞(M ∩ K)` and `∫_{M ∩ K} θ dHⁿ < ∞`
+  have hθmeas : AEStronglyMeasurable (fun x => (R.mult x : ℝ)) μ :=
+    ((measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult).aestronglyMeasurable
+  have hμK : μ = μHE[n].restrict (R.carrier ∩ K) := by
+    rw [hμ]
+    refine Measure.restrict_congr_set (ae_eq_set.2 ⟨?_, ?_⟩)
+    · rw [sdiff_self_inter]
+      exact hnull
+    · rw [sdiff_eq_empty.2 inter_subset_left]
+      exact measure_empty
+  have hθint : Integrable (fun x => (R.mult x : ℝ)) μ := by
+    refine ⟨hθmeas, ?_⟩
+    show ∫⁻ x, ‖(R.mult x : ℝ)‖ₑ ∂μ < ∞
+    rw [hμK]
+    simp only [Real.enorm_natCast]
+    exact lt_top_iff_ne_top.mpr (R.locallyIntegrable_mult K hK hKU)
+  -- (4) measurability of the integrand for continuous `G`
+  have hmeas : ∀ G : Euclid P → Covector (Euclid P) n, Continuous G →
+      AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (G x)) μ := by
+    intro G hG
+    have h2 : AEStronglyMeasurable (fun x => R.orient x (G x)) μ :=
+      Continuous.comp_aestronglyMeasurable₂
+        (g := fun (L : MultiVector P n) (α : Covector (Euclid P) n) => L α)
+        (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) n) (F := ℝ)).continuous
+        R.aestronglyMeasurable_orient hG.aestronglyMeasurable
+    exact hθmeas.mul h2
+  -- (5) integrability of the integrand for continuous `G`: it is dominated by `(sup_K ‖G‖) θ`
+  have hint : ∀ G : Euclid P → Covector (Euclid P) n, Continuous G →
+      Integrable (fun x => (R.mult x : ℝ) * R.orient x (G x)) μ := by
+    intro G hG
+    obtain ⟨C, hC⟩ := hK.exists_bound_of_continuousOn hG.continuousOn
+    refine Integrable.mono' (hθint.const_mul C) (hmeas G hG) ?_
+    filter_upwards [hbound, hae] with x hx hxK
+    rw [norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+    calc (R.mult x : ℝ) * |R.orient x (G x)| ≤ (R.mult x : ℝ) * ‖G x‖ := by
+          gcongr; exact hx _
+      _ ≤ (R.mult x : ℝ) * C := by gcongr; exact hC x hxK
+      _ = C * (R.mult x : ℝ) := mul_comm _ _
+  -- (6) the estimate `|∫ θ ξ(gⱼ) dμ − ∫ θ ξ(g) dμ| ≤ Θ ε/(Θ + 1) < ε` for large `j`
+  set Θ := ∫ x, (R.mult x : ℝ) ∂μ with hΘdef
+  have hΘ : 0 ≤ Θ := integral_nonneg fun x => Nat.cast_nonneg _
+  rw [Metric.tendstoUniformlyOn_iff] at hunif
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  have hε' : 0 < ε / (Θ + 1) := div_pos hε (by linarith)
+  obtain ⟨N, hN⟩ := eventually_atTop.mp (hunif (ε / (Θ + 1)) hε')
+  refine ⟨N, fun j hj => ?_⟩
+  rw [Real.dist_eq, ← integral_sub (hint _ (hgs j)) (hint _ hg), ← Real.norm_eq_abs]
+  have hle : ‖∫ x, ((R.mult x : ℝ) * R.orient x (gs j x) - (R.mult x : ℝ) * R.orient x (g x)) ∂μ‖
+      ≤ ∫ x, ε / (Θ + 1) * (R.mult x : ℝ) ∂μ := by
+    refine norm_integral_le_of_norm_le (hθint.const_mul _) ?_
+    filter_upwards [hbound, hae] with x hx hxK
+    rw [← mul_sub, ← (R.orient x).map_sub, norm_mul, Real.norm_natCast, Real.norm_eq_abs]
+    calc (R.mult x : ℝ) * |R.orient x (gs j x - g x)| ≤ (R.mult x : ℝ) * ‖gs j x - g x‖ := by
+          gcongr; exact hx _
+      _ ≤ (R.mult x : ℝ) * (ε / (Θ + 1)) := by
+          gcongr
+          have h := hN j hj x hxK
+          rw [dist_comm, dist_eq_norm] at h
+          exact h.le
+      _ = ε / (Θ + 1) * (R.mult x : ℝ) := mul_comm _ _
+  rw [integral_const_mul, ← hΘdef] at hle
+  refine hle.trans_lt ?_
+  rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+  nlinarith
+
+/-- **Integral form of the push-forward along one fixed sequence of test forms** (Simon Ch. 6,
+2.23–2.24(2)).  For `f` of class `C¹` on an open `O ⊇ K` (`K` compact) and `ω ∈ 𝒟ⁿ(ℝᴾ)` there
+are `ω_j ∈ 𝒟ⁿ(ℝᴾ)`, chosen before any current, with `Y(ω_j) → ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ⟩ dHⁿ`
+for every `Y = τ(M, θ, ξ)` with `spt Y ⊆ K`.  A cut-off of `ω(f(·)) ∘ Df(·)` is a continuous,
+compactly supported `h` equal to it on `K` (`dtc_bc_lc_pf_ext_pullback_cutoff`), and mollified
+test forms converge to `h` uniformly (`dtc_bc_lc_pf_ext_mollify_tendstoUniformly`).  As
+`Hⁿ(M \ K) ≤ Hⁿ(M \ spt Y) = 0` (`dtc_bc_lc_pf_imrep_carrier_mass_support`),
+`Y(ω_j) = ∫_M θ ξ(ω_j) → ∫_M θ ξ(h)` (`dtc_bc_lc_pf_ext_imrep_integral_tendsto`), and
+`∫_M θ ξ(h)` is the stated integral because `h = ω(f) ∘ Df` on `K`. -/
+theorem Submission.dtc_bc_lc_pf_pullback_integral_extension : ∀ (P n : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P) (ω : TestFormOn (univ : Set (Euclid P)) n), IsOpen O → ContDiffOn ℝ 1 f O → IsCompact K → K ⊆ O → ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, ∀ (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), R.Represents Y → Y.support ⊆ K → Tendsto (fun j => Y (ωs j)) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n])) := by
+  intro P n O K f ω hO hf hK hKO
+  -- Steps 1–2: a continuous, compactly supported `h` with `h = ω(f(·)) ∘ Df(·)` on `K`
+  obtain ⟨h, hhc, hhs, hhK⟩ := Submission.dtc_bc_lc_pf_ext_pullback_cutoff P P n O K f
+    (ω : DifferentialForm (Euclid P) n) hO hf hK hKO ω.property.1.1.continuous
+  -- Step 3: test forms `ω_j → h` uniformly; they depend only on `f`, `ω`, `O` and `K`
+  obtain ⟨ωs, hωs⟩ := Submission.dtc_bc_lc_pf_ext_mollify_tendstoUniformly P n h hhc hhs
+  refine ⟨ωs, fun Y R hRY hYK => ?_⟩
+  -- Step 4(a): `Hⁿ(M \ K) ≤ Hⁿ(M \ spt Y) = 0`
+  have hnull : μHE[n] (R.carrier \ K) = 0 :=
+    measure_mono_null (Set.sdiff_subset_sdiff_right hYK)
+      ((Submission.dtc_bc_lc_pf_imrep_carrier_mass_support P n).1 Y R hRY).1
+  -- Step 5: `h = ω(f) ∘ Df` on `K`, which contains `Hⁿ`-a.e. point of `M`, so the limits agree
+  have hae : (fun x => (R.mult x : ℝ) * R.orient x (h x)) =ᵐ[μHE[n].restrict R.carrier]
+      fun x => (R.mult x : ℝ) * R.orient x
+        (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) := by
+    have hMK : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ K := by
+      rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+      refine measure_mono_null (fun x hx => ?_) hnull
+      exact ⟨hx.2, hx.1⟩
+    filter_upwards [hMK] with x hx
+    rw [hhK x hx]
+  rw [← integral_congr_ae hae]
+  -- Step 6: `Y(ω_j) = ∫_M θ ξ(ω_j) → ∫_M θ ξ(h)`
+  exact (Submission.dtc_bc_lc_pf_ext_imrep_integral_tendsto P n univ K R
+    (fun j x => (ωs j : DifferentialForm (Euclid P) n) x) h hK (subset_univ K) hnull
+    (fun j => (ωs j).property.1.1.continuous) hhc hωs.tendstoUniformlyOn).congr
+    fun j => (hRY (ωs j)).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
