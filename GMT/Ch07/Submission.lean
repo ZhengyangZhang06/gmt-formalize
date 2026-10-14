@@ -451,6 +451,93 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Two orthonormal frames of one `2`-plane** (used in the proof of Simon 7.3.3).  If
+`a, e ∈ Q` (`dim Q = 2`) are orthonormal and lie in the span of the orthonormal pair `τ`, then
+`span τ = Q` (`span {a, e}` is a `2`-plane inside both), and `α(τ) = ε α(a, e)`, `ε = ±1`, for
+every `2`-covector `α`: writing `a = c₀τ₀ + c₁τ₁`, `e = d₀τ₀ + d₁τ₁`, bilinearity and alternation
+give `α(a, e) = D α(τ)` with `D = c₀d₁ − c₁d₀`, and `D² = 1` by Lagrange's identity. -/
+theorem Submission.idtp_cse_etp_plane_frame_sign : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (τ : Fin 2 → Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → Orthonormal ℝ τ → a ∈ Submodule.span ℝ (Set.range τ) → e ∈ Submodule.span ℝ (Set.range τ) → Submodule.span ℝ (Set.range τ) = Q ∧ ∃ ε : ℤ, ε.natAbs = 1 ∧ ∀ α : Covector (Euclid P) 2, α τ = (ε : ℝ) * α ![a, e] := by
+  intro P Q a e τ hQ haQ heQ ha he hae hτ haτ heτ
+  -- `![a, e]` is orthonormal, so `W = span {a, e}` is a plane inside both `Q` and `span τ`
+  have hae' : Orthonormal ℝ ![a, e] := by
+    refine ⟨Fin.forall_fin_two.mpr ⟨ha, he⟩, fun i j hij => ?_⟩
+    fin_cases i <;> fin_cases j
+    · exact absurd rfl hij
+    · simpa using hae
+    · simpa [real_inner_comm] using hae
+    · exact absurd rfl hij
+  have hWdim : Module.finrank ℝ (Submodule.span ℝ (Set.range ![a, e])) = 2 := by
+    rw [finrank_span_eq_card hae'.linearIndependent, Fintype.card_fin]
+  have hτdim : Module.finrank ℝ (Submodule.span ℝ (Set.range τ)) = 2 := by
+    rw [finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  have hWτ : Submodule.span ℝ (Set.range ![a, e]) = Submodule.span ℝ (Set.range τ) :=
+    Submodule.eq_of_le_of_finrank_eq
+      (Submodule.span_le.mpr (Set.range_subset_iff.mpr (Fin.forall_fin_two.mpr ⟨haτ, heτ⟩)))
+      (by rw [hWdim, hτdim])
+  have hWQ : Submodule.span ℝ (Set.range ![a, e]) = Q :=
+    Submodule.eq_of_le_of_finrank_eq
+      (Submodule.span_le.mpr (Set.range_subset_iff.mpr (Fin.forall_fin_two.mpr ⟨haQ, heQ⟩)))
+      (by rw [hWdim, hQ])
+  refine ⟨hWτ.symm.trans hWQ, ?_⟩
+  -- coordinates `a = c₀τ₀ + c₁τ₁`, `e = d₀τ₀ + d₁τ₁`
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp haτ
+  obtain ⟨d, hd⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp heτ
+  have hi : ∀ u v : Fin 2 → ℝ,
+      inner ℝ (∑ i, u i • τ i) (∑ i, v i • τ i) = u 0 * v 0 + u 1 * v 1 := by
+    intro u v
+    rw [hτ.inner_sum u v Finset.univ, Fin.sum_univ_two]
+    simp
+  have h1 := hi c c
+  rw [hc, real_inner_self_eq_norm_sq, ha] at h1
+  have h2 := hi d d
+  rw [hd, real_inner_self_eq_norm_sq, he] at h2
+  have h3 := hi c d
+  rw [hc, hd, hae] at h3
+  -- Lagrange's identity: the determinant `D = c₀d₁ − c₁d₀` has `D² = 1`
+  have hD : (c 0 * d 1 - c 1 * d 0) * (c 0 * d 1 - c 1 * d 0) = 1 := by
+    linear_combination (-(d 0 * d 0 + d 1 * d 1)) * h1 - h2 + (c 0 * d 0 + c 1 * d 1) * h3
+  -- bilinearity and alternation of a `2`-covector: `α(a, e) = D α(τ)`
+  have hα : ∀ α : Covector (Euclid P) 2, α ![a, e] = (c 0 * d 1 - c 1 * d 0) * α τ := by
+    intro α
+    have hu0 : ∀ x y w : Euclid P, update ![x, y] 0 w = ![w, y] := by
+      intro x y w; funext i; fin_cases i <;> rfl
+    have hu1 : ∀ x y w : Euclid P, update ![x, y] 1 w = ![x, w] := by
+      intro x y w; funext i; fin_cases i <;> rfl
+    have add0 : ∀ x y z : Euclid P, α ![x + y, z] = α ![x, z] + α ![y, z] := by
+      intro x y z
+      have h := α.map_update_add ![x, z] 0 x y
+      rwa [hu0, hu0, hu0] at h
+    have add1 : ∀ x y z : Euclid P, α ![x, y + z] = α ![x, y] + α ![x, z] := by
+      intro x y z
+      have h := α.map_update_add ![x, y] 1 y z
+      rwa [hu1, hu1, hu1] at h
+    have smul0 : ∀ (r : ℝ) (x z : Euclid P), α ![r • x, z] = r * α ![x, z] := by
+      intro r x z
+      have h := α.map_update_smul ![x, z] 0 r x
+      rwa [hu0, hu0, smul_eq_mul] at h
+    have smul1 : ∀ (r : ℝ) (x z : Euclid P), α ![x, r • z] = r * α ![x, z] := by
+      intro r x z
+      have h := α.map_update_smul ![x, z] 1 r z
+      rwa [hu1, hu1, smul_eq_mul] at h
+    have diag : ∀ x : Euclid P, α ![x, x] = 0 := fun x =>
+      α.map_eq_zero_of_eq ![x, x] (i := 0) (j := 1) rfl (by decide)
+    have anti : ∀ x y : Euclid P, α ![y, x] = -α ![x, y] := by
+      intro x y
+      have h := diag (x + y)
+      rw [add0, add1, add1, diag, diag] at h
+      linarith
+    rw [← hc, ← hd, Fin.sum_univ_two, Fin.sum_univ_two]
+    simp only [add0, add1, smul0, smul1, diag]
+    rw [anti (τ 0) (τ 1),
+      show (![τ 0, τ 1] : Fin 2 → Euclid P) = τ by funext i; fin_cases i <;> rfl]
+    ring
+  have key : ∀ α : Covector (Euclid P) 2, α τ = (c 0 * d 1 - c 1 * d 0) * α ![a, e] := by
+    intro α
+    rw [hα α, ← mul_assoc, hD, one_mul]
+  rcases mul_self_eq_one_iff.mp hD with h | h
+  · exact ⟨1, rfl, fun α => by rw [key α, h]; norm_num⟩
+  · exact ⟨-1, rfl, fun α => by rw [key α, h]; norm_num⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
