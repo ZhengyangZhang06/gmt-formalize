@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fd36c5e4652eab9e77b74c8223bfdbb8ca3c4bcef706ccf773383d3a6b90ebd7",
+  "git_delta": {
+    "base_commit": "90a24321f99ab1b007fb26c41a9aa70a239c5b6c",
+    "candidate_commit": "2f8435154decbdaa7ee286b5bd470d9f6aea197e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_tb_extend_univ_boundary",
+    "diff_sha256": "d75d0def32f887f4a8b59628a1d5d64abfc326765403af117fc152ed638d045e",
+    "source_sha256": "3ebe0177694e390bf10f99dc9279482aba790ce4154ef2dc352270f75f4b869a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_tb_extend_univ_boundary",
+      "statement": "∀ (P m : ℕ) (U K : Set (Euclid P)) (A : GeometricCurrentOn U (m + 1)), IsOpen U → IsCompact K → K ⊆ U → IsIntegerMultiplicity A → IsIntegerMultiplicity A.boundary → (∀ ω : TestFormOn U (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → A ω = 0) → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ IsIntegerMultiplicity Y.boundary ∧ Y.restrictDomain (subset_univ U) = A ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → Y ω = 0) ∧ Y.mass ≤ A.mass ∧ Y.boundary.mass ≤ A.boundary.mass",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
