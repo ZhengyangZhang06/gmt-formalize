@@ -1,0 +1,101 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1`
+- Child DAG node: `root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1.standard_basis_count-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1 and 3–6 of the parent node's supplied proof (the standard-basis computation S_e(α) = n!·|α|_E²); the coefficients α(e∘I), I strictly increasing, are Simon's α_{i_1…i_n} = α(e_{i_1}, …, e_{i_n}) of Ch. 6, 1.2 (chapter-06.txt lines 43–47), which are orthonormal coordinates by 1.5 (lines 94–97).
+
+Notation. e_i := EuclideanSpace.basisFun (Fin P) ℝ i is the standard orthonormal basis of ℝ^P = Euclid P, and |α|_E := covectorEuclideanNorm α. For I : Fin n → Fin P write e∘I := (e_{I(0)}, …, e_{I(n−1)}) (in Lean: fun k => e (I k)). Perm(Fin n) is the group of permutations of Fin n; it has n! elements (Fintype.card_perm, Fintype.card_fin). Let A := {I : Fin n → Fin P | I strictly increasing (StrictMono I)} and Inj := {j : Fin n → Fin P | j injective}.
+
+1. (Square of the norm.) By definition |α|_E = √N with N := Σ_{I : Fin n → Fin P} (if I ∈ A then α(e∘I)² else 0). Every summand is ≥ 0, so N ≥ 0 and |α|_E² = N (Real.sq_sqrt). Multiplying by n!, distributing (Finset.mul_sum) and writing n!·x = Σ_{π ∈ Perm(Fin n)} x (Finset.sum_const, nsmul_eq_mul and |Perm(Fin n)| = n!),
+   n!·|α|_E² = Σ_{I ∈ A} Σ_{π ∈ Perm(Fin n)} α(e∘I)² = Σ_{(I, π) ∈ A × Perm(Fin n)} α(e∘I)².
+
+2. (Non-injective tuples contribute 0.) Let j : Fin n → Fin P be non-injective: there are k ≠ k' with j(k) = j(k'). Then the k-th and k'-th entries e_{j(k)} = e_{j(k')} of e∘j coincide, so the n-tuple e∘j is not injective, and α(e∘j) = 0 because α is alternating (ContinuousAlternatingMap.map_eq_zero_of_not_injective). Therefore Σ_{j : Fin n → Fin P} α(e∘j)² = Σ_{j ∈ Inj} α(e∘j)² (Finset.sum_filter_of_ne).
+
+3. (Permuting slots only changes the sign.) For I : Fin n → Fin P and π ∈ Perm(Fin n) we have e∘(I∘π) = (e∘I)∘π, so α(e∘(I∘π)) = sign(π)·α(e∘I) (AlternatingMap.map_perm applied to α.toAlternatingMap). Since sign(π) ∈ {1, −1} (Int.units_eq_one_or), α(e∘(I∘π))² = α(e∘I)².
+
+4. (Increasing tuples × permutations ≅ injective tuples.) Define Φ : A × Perm(Fin n) → Inj by Φ(I, π) := I∘π.
+   (a) Φ lands in Inj: a strictly increasing I is injective (StrictMono.injective) and π is a bijection, so I∘π is injective.
+   (b) Φ is injective: suppose I∘π = I'∘π' with I, I' ∈ A. Since π and π' are surjective, range(I) = range(I∘π) = range(I'∘π') = range(I') (EquivLike.range_comp). Two strictly increasing maps from the well-ordered Fin n into Fin P with the same range are equal (StrictMono.range_inj_of_wellFoundedLT), so I = I'. Then I(π(k)) = I(π'(k)) for every k, and injectivity of I gives π(k) = π'(k); hence π = π'.
+   (c) Φ is surjective: for j ∈ Inj let σ := Tuple.sort j ∈ Perm(Fin n). Then j∘σ is monotone (Tuple.monotone_sort) and injective (a composition of injective maps), hence strictly increasing (Monotone.strictMono_of_injective); so (j∘σ, σ⁻¹) ∈ A × Perm(Fin n) and Φ(j∘σ, σ⁻¹) = j∘σ∘σ⁻¹ = j.
+
+5. (Conclusion.) Reindexing the double sum of step 1 along the bijection Φ (Finset.sum_bij) and using step 3 for each pair (I, π),
+   Σ_{(I, π) ∈ A × Perm(Fin n)} α(e∘I)² = Σ_{(I, π)} α(e∘(I∘π))² = Σ_{j ∈ Inj} α(e∘j)².
+   By step 2 the right-hand side equals Σ_{j : Fin n → Fin P} α(e∘j)², and by step 1 the left-hand side equals n!·|α|_E². Hence Σ_{j : Fin n → Fin P} α(e∘j)² = n!·(covectorEuclideanNorm α)². ∎
+
+Degenerate cases are covered by the same argument: for n = 0 the unique (empty) tuple is injective and strictly increasing, Perm(Fin 0) has one element and 0! = 1; for n > P (including P = 0 < n) no tuple j : Fin n → Fin P is injective and none is strictly increasing, so by step 2 every summand on the left vanishes, while N = 0 and the right-hand side is n!·(√0)² = 0.
+
+## Key steps
+
+1. |α|_E² = Σ_I [I strictly increasing] α(e∘I)² (Real.sq_sqrt), hence n!·|α|_E² = Σ_{(I, π) ∈ A × Perm(Fin n)} α(e∘I)².
+2. Non-injective j make e∘j non-injective, so α(e∘j) = 0 and only injective tuples contribute.
+3. α(e∘(I∘π)) = sign(π)·α(e∘I), so α(e∘(I∘π))² = α(e∘I)².
+4. (I, π) ↦ I∘π is a bijection from A × Perm(Fin n) onto the injective tuples (equal ranges force I = I'; Tuple.sort gives surjectivity).
+5. Reindex along the bijection: Σ_j α(e∘j)² = n!·|α|_E².
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (IDENTICAL); cat local-references/123e8435b4a2469b/manifest.json`
+- `grep -n 'covectorEuclideanNorm\|^def \|^theorem \|Covector' simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; grep -rn 'abbrev Covector\|def Covector' simongmt/Poincare/SimonGMT/`
+- `python3 -I scan of dag.json: imrep_mass_formula-a1 siblings with lean_statement/depends_on; lean_name regex covector|sq_sum|strictMono|perm|factorial|orthonormal|basis|multilinear|parseval|tuple|sort; lean_statement containing StrictMono|factorial|Equiv.Perm|OrthonormalBasis|MultilinearMap`
+- `git show 2fd8f6ff9db8d5c94835632a4abd3e7d37106715:GMT/Ch07/Submission.lean (accepted Submission.covectorEuclideanNorm_gram_bounds; inline Tuple.sort / StrictMono.range_inj_of_wellFoundedLT bijection)`
+- `grep -n "theorem sum_repr'\|sum_inner_mul_inner\|sum_sq_inner_right\|sum_sq_norm_inner_right" Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `grep -n 'theorem map_sum\|map_sum_finset\|theorem map_smul_univ\|map_eq_zero_of_not_injective\|theorem map_perm' Mathlib/Topology/Algebra/Module/Alternating/Basic.lean Mathlib/LinearAlgebra/Alternating/Basic.lean Mathlib/LinearAlgebra/Multilinear/Basic.lean Mathlib/Topology/Algebra/Module/Multilinear/Basic.lean`
+- `grep -n 'prod_univ_sum\|lemma prod_sum\|sum_mul_sum\|prod_filter_of_ne' Mathlib/Algebra/BigOperators/Ring/Finset.lean Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean`
+- `grep -rn 'range_inj_of_wellFoundedLT\|theorem monotone_sort\|def sort\|theorem Fintype.card_perm\|orderEmbOfFin_unique\|theorem orthonormal_iff_ite' Mathlib`
+- `grep -c / grep -rl / git grep over 514 refs / grep -l over 117 .swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean for regcomp_covector_sq_sum_basis_invariant|regcomp_covector_sq_sum_basisFun (no match)`
+- `lake env lean /tmp/cvsq-split/Elab.lean, DebugA.lean, DebugA2.lean, DebugA3.lean, DebugA4.lean, DebugB.lean, Full.lean (#print axioms)`
+- `independent reviewer: lake env lean /tmp/cvsq-review/Stubs.lean (sorry-stub children + parent assembly), FullCopy.lean, Names.lean (#check of 29 cited lemma names)`
+- `sed -n 14,60p; 94,130p; 170,185p; 755,770p book/chapter-06.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Multilinear/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Ring/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/WellFounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/Perm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/cvsq-split/Full.lean`
+- `/tmp/cvsq-split/DebugA3.lean`
+- `/tmp/cvsq-split/DebugA4.lean`
+- `/tmp/cvsq-split/DebugB.lean`
+- `/tmp/cvsq-split/decomposition-draft.md`
+- `/tmp/cvsq-review/Stubs.lean`
+- `/tmp/cvsq-review/FullCopy.lean`
+- `/tmp/cvsq-review/Names.lean`
+
+**Contract.** The snapshot contract (project b4d606d, mathlib 25730c7c) is byte-identical to the workspace GMT/Ch07/Submission.lean.
+
+**Definitions.** SimonGMT Mass.lean:30 defines covectorEuclideanNorm α = √(Σ_{I : Fin n → Fin P} if StrictMono I then α(basisFun∘I)² else 0). Forms.lean:31 defines Covector E n = E [⋀^Fin n]→L[ℝ] ℝ.
+
+**Mathlib lemmas.** Every lemma the child proofs cite exists in the pinned Mathlib: OrthonormalBasis.sum_repr' / sum_inner_mul_inner (PiL2:499,506), ContinuousAlternatingMap.map_sum / map_smul_univ / map_eq_zero_of_not_injective (Topology/Algebra/Module/Alternating/Basic:434,518,137), AlternatingMap.map_perm (LinearAlgebra/Alternating/Basic:672), Fintype.prod_sum (Ring/Finset:305), Finset.sum_mul_sum, Finset.prod_filter_of_ne / sum_filter_of_ne, StrictMono.range_inj_of_wellFoundedLT (Order/WellFounded:249), Tuple.sort / Tuple.monotone_sort (Data/Fin/Tuple/Sort:80,95), Fintype.card_perm (Data/Fintype/Perm:155) and orthonormal_iff_ite. The reviewer resolved all 29 names with #check.
+
+**Reuse.** No comparator-accepted declaration with either child's type exists. The accepted Submission.covectorEuclideanNorm_gram_bounds (commit 2fd8f6f) has a different type, but its inline bijection argument is the same technique child B uses. The siblings covector_eval_le, covector_norming, mass_le_measure, measure_le_mass, near_maximizer, smooth_form_approx and unit_orientation_pairing all have different types. covector_eval_le and covector_norming depend on the unchanged parent signature.
+
+**Names.** Neither proposed name occurs in dag.json, nodes/, 514 git refs, or the 117 worktree Submission.lean files.
+
+**Compilation.** Both child types elaborate in the contract context. The 2-line assembly proves the parent from sorry-stubbed children. The full prototype /tmp/cvsq-split/Full.lean proves both children and the parent using only propext, Classical.choice and Quot.sound; the reviewer confirmed this independently.
+
+**Book.** Simon Ch. 6, 1.2 and 1.5 (chapter-06.txt lines 43–47 and 94–97) give the increasing-index coefficients and their orthonormality, matching covectorEuclideanNorm.
