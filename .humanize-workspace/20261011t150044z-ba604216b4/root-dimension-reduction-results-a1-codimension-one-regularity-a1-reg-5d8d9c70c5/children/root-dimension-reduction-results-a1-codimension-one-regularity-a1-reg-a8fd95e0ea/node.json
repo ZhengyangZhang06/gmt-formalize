@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.piece_tangent-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1",
+  "depth": 5,
+  "title": "A bi-Lipschitz piece F(B) has approximate tangent space range DF(b) at F(b) for a.e. b ∈ B",
+  "statement": "Let P, n ∈ ℕ, F : ℝ^n → ℝ^P L-Lipschitz, B ⊆ ℝ^n Borel and m > 0 with m|a − a′| ≤ |F(a) − F(a′)| for all a, a′ ∈ B, and suppose F is differentiable with injective derivative DF(b) at every b ∈ B. Then for Lebesgue-almost every b ∈ B, range DF(b) is the approximate tangent space of F(B) at F(b) in the sense of Simon Ch. 3, 1.4 (HasApproximateTangentSpaceAt n (F(B)) (F(b)) (range DF(b))).",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → ∀ᵐ b ∂(volume.restrict B), HasApproximateTangentSpaceAt n (F '' B) (F b) (LinearMap.range (fderiv ℝ F b : Euclid n →ₗ[ℝ] Euclid P))",
+  "lean_name": "codim1_lur_piece_image_approxTangent_ae",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a8fd95e0ea-a1"
+}
