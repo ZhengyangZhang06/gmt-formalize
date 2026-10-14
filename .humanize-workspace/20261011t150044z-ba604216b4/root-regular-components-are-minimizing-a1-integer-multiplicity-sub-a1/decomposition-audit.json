@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsUnitOrientationOf|structure IMRep|def IsIntegerMultiplicity|def IMRep.action|def IMRep.Represents|namespace Submission|instance.*Sub",
+        "CountablyRectifiable.mono|countablyRectifiable_iUnion|def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|structure GeometricCurrentOn|abbrev TestFormOn|def IsTestForm",
+        "eq_smul_basis_det|det_to_matrix_orthonormalBasis_real|measurableSet_eq_fun|ae_restrict_union_iff|ae_restrict_of_ae_restrict_of_subset|integral_indicator|setLIntegral_mono",
+        "regcomp_ims_overlap_orient_eq_or_neg|regcomp_ims_difference_data|regcomp_ims_imrep_of_signed_pieces",
+        "git show fe95347:GMT/Ch07/Submission.lean",
+        "git show faacb9c:GMT/Ch07/Submission.lean",
+        "git show 048ff2b:GMT/Ch07/Submission.lean",
+        "lake env lean /tmp/ims-independent-audit-knuosj04/TypesAndInstances.lean",
+        "lake env lean /tmp/ims-independent-audit-knuosj04/ConditionalAssembly.lean",
+        "lake env lean /tmp/ims-independent-audit-knuosj04/CheckedProofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-integer-multiplicity-sub-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-integer-multiplicity-sub-a1/decomposition-v2.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-combination-action-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-combination-action-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/tmp/ims-independent-audit-knuosj04/TypesAndInstances.lean",
+        "/tmp/ims-independent-audit-knuosj04/ConditionalAssembly.lean",
+        "/tmp/ims-independent-audit-knuosj04/CheckedProofs.lean"
+      ],
+      "conclusion": "Verified the pinned project b4d606d and Mathlib 25730c7c; the snapshot contract and workspace definitions agree. All five exact one-line propositions elaborate independently without child implementations. The supplied proofs, accepted locality dependency, and exact selected parent assembly compile using only propext, Classical.choice and Quot.sound. Both reused declarations have successful comparator records and byte-identical frozen types. Searches found no reservation of the three new names; every name is a bare identifier. The only internal dependency is overlap_sign on orientation_sign, and no reused obligation or locality dependency reaches the selected parent. Scalar multiplication, negation and subtraction have the intended continuous-linear-map meanings; current subtraction evaluates pointwise. No matrix-unit construction occurs. Splitting appropriately isolates three new obligations and reuses two accepted results; together they prove the selected subtraction theorem for every n, including zero."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. Restricting the spanning orthonormal frames to Q gives bases; the determinant identity and determinant ±1 yield equality up to sign, including n = 0. The proof is complete and non-circular. Reuse at fe95347 has the identical comparator-accepted type."
+    },
+    {
+      "key": "overlap_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both tangent-inheritance hypotheses are explicit and match the type. Restricting the orientation conditions to the overlap, applying inheritance, and using tangent uniqueness puts both orientations on one plane. The declared orientation_sign dependency then proves the conclusion without circularity."
+    },
+    {
+      "key": "difference_data",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every required property appears in both prose and type. Strongly measurable representatives give a measurable sign; the explicit carrier and multiplicity construction establishes positivity, the indicator bound and orientation signs. The exhaustive density calculation includes cancellation where d = 0 and correctly transfers restricted almost-everywhere equalities to ambient implications."
+    },
+    {
+      "key": "glue_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement includes all measurability, domination, sign and tangent-inheritance assumptions. The proof verifies every IMRep field: rectifiability by union and subset, local integrability by indicator domination, and orientation on the two covering pieces. It constructs the requested triple with the exact three field equalities."
+    },
+    {
+      "key": "action_combination",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. The unit-orientation norm estimate and compactly supported test form provide an integrable bound on each carrier. Indicator rewriting and integration of the evaluated density identity establish the stated action formula. Reuse at faacb9c has the identical comparator-accepted type; coefficients 1 and −1 give the parent's subtraction identity."
+    }
+  ],
+  "required_changes": []
+}

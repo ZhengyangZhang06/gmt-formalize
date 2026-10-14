@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1",
+  "depth": 2,
+  "title": "Step 1 of Corollary 7.5.11: basic facts in the codimension-one setting and the vacuous case n = 0",
+  "statement": "Let n, k ∈ ℕ, let U ⊆ ℝ^{n+k} be open, let N ∈ 𝒪 with orientation ξ_N (InClassO n U N ξ_N: N is an embedded C² (n+1)-dimensional submanifold oriented by ξ_N, (N̄∖N) ∩ U = ∅ and N ∩ U ≠ ∅), let E ⊆ N ∩ U, and let T ∈ 𝒟_n(U) satisfy T = ∂[[E]] in U, i.e. T(ω) = ∫_E ⟨dω, ξ_N⟩ dH^{n+1} for ω ∈ 𝒟^n(U) (IsBoundaryOfRegion), and be minimizing in N ∩ U (IsMinimizingIn T (N ∩ U)). Then (i) k ≥ 1; (ii) spt T ⊆ N; (iii) ∂T = 0 in U (BoundaryVanishes T, which is vacuous for n = 0); (iv) if n = 0 then reg T = ∅.",
+  "lean_statement": "∀ (n k : ℕ) (U N E : Set (Euclid (n + k))) (ξN : Euclid (n + k) → MultiVector (n + k) (n + 1)) (T : GeometricCurrentOn U n), IsOpen U → InClassO n U N ξN → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsMinimizingIn T (N ∩ U) → 1 ≤ k ∧ T.support ⊆ N ∧ BoundaryVanishes T ∧ (n = 0 → regularSet T = ∅)",
+  "lean_name": "regcomp_codim_one_preliminaries",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-a1"
+}
