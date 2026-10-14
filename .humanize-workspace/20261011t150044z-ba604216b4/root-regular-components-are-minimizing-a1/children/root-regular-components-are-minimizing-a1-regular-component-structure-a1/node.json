@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.regular_component_structure-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1",
+  "depth": 2,
+  "title": "Structure of a connected component of the regular set: frontier in sing T and local proportionality T₁ = c·T",
+  "statement": "Let U ⊆ ℝ^P be open, n = m + 1 ≥ 1, let the IMRep R = (C, θ, ξ) in U represent T ∈ 𝒟_n(U), let y ∈ reg T (Simon 7.4.1 as formalized by regularSet), let M₁ be the connected component of reg T containing y, and let T₁ ∈ 𝒟_n(U) satisfy T₁(ω) = ∫_{M₁} ⟨ω, ξ⟩ dH^n for all ω ∈ 𝒟^n(U). Then (i) M₁ is Borel; (ii) H^n(M₁ ∖ C) = 0; (iii) closure(M₁) ∩ U ⊆ M₁ ∪ sing T; (iv) sing T ∩ K is compact for every compact K ⊆ U; (v) every z ∈ M₁ has an open neighbourhood G and a constant c ∈ ℝ with T₁(ω) = c·T(ω) for all ω ∈ 𝒟^n(U) with tsupport ω ⊆ G.",
+  "lean_statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (T T₁ : GeometricCurrentOn U (m + 1)) (R : IMRep U (m + 1)) (y : Euclid P), IsOpen U → R.Represents T → y ∈ regularSet T → (∀ ω : TestFormOn U (m + 1), T₁ ω = ∫ x in connectedComponentIn (regularSet T) y, R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]) → MeasurableSet (connectedComponentIn (regularSet T) y) ∧ μHE[m + 1] (connectedComponentIn (regularSet T) y \\ R.carrier) = 0 ∧ closure (connectedComponentIn (regularSet T) y) ∩ U ⊆ connectedComponentIn (regularSet T) y ∪ singularSet T ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → IsCompact (singularSet T ∩ K)) ∧ ∀ z ∈ connectedComponentIn (regularSet T) y, ∃ G : Set (Euclid P), IsOpen G ∧ z ∈ G ∧ ∃ c : ℝ, ∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ G → T₁ ω = c * T ω",
+  "lean_name": "regcomp_regular_component_structure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-regular-component-structure-a1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1",
+  "depth": 2,
+  "title": "Mass of an integer multiplicity current: M_W(τ(M, θ, ξ)) = ∫_{M∩W} θ dH^n (Simon Ch. 6, Remark 3.2(3))",
+  "statement": "Let U ⊆ ℝ^P be open and let the IMRep R = (C, θ, ξ) in U represent T ∈ 𝒟_n(U). Then for every open W ⊆ ℝ^P, M_W(T) = R.measure(W) = ∫_{C∩W} θ dH^n, where M_W(T) is Simon's mass (6.2.5) with the Euclidean coefficient norm |·|_E on n-covectors (GeometricCurrentOn.massOn).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W",
+  "lean_name": "regcomp_imrep_mass_formula",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-a1"
+}
