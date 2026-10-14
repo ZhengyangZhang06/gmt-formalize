@@ -476,6 +476,69 @@ theorem Submission.cmcdt_lpo_slice_coords : ∀ N : ℕ, ∃ L : (ℝ × Euclid 
   · -- (iii): `‖L (0, x)‖² = ‖0‖² + ∑ⱼ ‖xⱼ‖² = ‖x‖²`
     rw [hL, EuclideanSpace.norm_eq, EuclideanSpace.norm_eq x, Fin.sum_univ_succ]
     simp
+/-- Smoothness of parametric integrals over `[0, 1]`, used for the slice form of `[[0, 1]] × T`
+(Simon 6.2.17–2.22).  If `h : ℝ × ℝᴺ → V` is `C^∞`, then `x ↦ ∫₀¹ h(t, x) dt` is `C^∞` and its
+derivative at `x` is `∫₀¹ D[x' ↦ h(t, x')](x) dt`.  The derivative formula is differentiation under
+the integral sign, with the partial derivative bounded on `[0, 1] × closedBall x 1`; `C^n` follows
+by induction on `n` over all value spaces, the derivative being a parametric integral of the
+`C^∞` map `(t, x) ↦ D[x' ↦ h(t, x')](x)` with values in `L(ℝᴺ, V)`. -/
+theorem Submission.cmcdt_lpo_slice_param_integral : ∀ (N : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V] (h : ℝ × Euclid N → V), ContDiff ℝ (⊤ : ℕ∞) h → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x)) ∧ ∀ x : Euclid N, HasFDerivAt (fun x' : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x')) (∫ t in (0 : ℝ)..1, fderiv ℝ (fun x' : Euclid N => h (t, x')) x) x := by
+  intro N
+  -- Steps 1–2: `x' ↦ h (t, x')` has derivative `(fderiv ℝ h (t, x)).comp inr` at `x`, so the
+  -- partial derivative `h₁ p = fderiv ℝ (fun x' => h (p.1, x')) p.2` is `C^∞` in `p`.
+  have hsmooth : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] (h : ℝ × Euclid N → V),
+      ContDiff ℝ (⊤ : ℕ∞) h →
+        ContDiff ℝ (⊤ : ℕ∞) (fun p : ℝ × Euclid N => fderiv ℝ (fun x' : Euclid N => h (p.1, x')) p.2) := by
+    intro V _ _ h hh
+    have hd : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ h) := (contDiff_infty_iff_fderiv.1 hh).2
+    have hpart : (fun p : ℝ × Euclid N => fderiv ℝ (fun x' : Euclid N => h (p.1, x')) p.2) =
+        fun p => (fderiv ℝ h p).comp (ContinuousLinearMap.inr ℝ ℝ (Euclid N)) := by
+      funext p
+      exact (((contDiff_infty_iff_fderiv.1 hh).1 p).hasFDerivAt.comp p.2
+        (hasFDerivAt_prodMk_right p.1 p.2)).fderiv
+    rw [hpart]
+    exact hd.clm_comp contDiff_const
+  -- Step 3: differentiation under the integral sign, with a uniform bound on the partial
+  -- derivative over the compact set `[0, 1] × closedBall x₀ 1`.
+  have hderiv : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] (h : ℝ × Euclid N → V),
+      ContDiff ℝ (⊤ : ℕ∞) h → ∀ x₀ : Euclid N,
+        HasFDerivAt (fun x' : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x'))
+          (∫ t in (0 : ℝ)..1, fderiv ℝ (fun x' : Euclid N => h (t, x')) x₀) x₀ := by
+    intro V _ _ h hh x₀
+    have hdiff : Differentiable ℝ h := (contDiff_infty_iff_fderiv.1 hh).1
+    have hc : Continuous h := hh.continuous
+    have h₁c := (hsmooth V h hh).continuous
+    obtain ⟨B, hB⟩ := (isCompact_Icc.prod (isCompact_closedBall x₀ 1)).exists_bound_of_continuousOn
+      h₁c.continuousOn
+    refine hasFDerivAt_integral_of_dominated_of_fderiv_le'' (μ := volume)
+      (F := fun x t => h (t, x)) (F' := fun x t => fderiv ℝ (fun x' : Euclid N => h (t, x')) x)
+      (bound := fun _ => B) (ball_mem_nhds x₀ one_pos) ?_ ?_ ?_ ?_ intervalIntegrable_const ?_
+    · exact Eventually.of_forall fun x =>
+        (hc.comp (continuous_id.prodMk continuous_const)).aestronglyMeasurable
+    · exact (hc.comp (continuous_id.prodMk continuous_const)).intervalIntegrable 0 1
+    · exact (h₁c.comp (continuous_id.prodMk continuous_const)).aestronglyMeasurable
+    · refine (ae_restrict_mem measurableSet_uIoc).mono fun t ht x hx => ?_
+      rw [uIoc_of_le zero_le_one] at ht
+      exact hB (t, x) (Set.mk_mem_prod (Ioc_subset_Icc_self ht) (ball_subset_closedBall hx))
+    · exact Eventually.of_forall fun t x _ =>
+        ((hdiff (t, x)).hasFDerivAt.comp x (hasFDerivAt_prodMk_right t x)).differentiableAt.hasFDerivAt
+  -- Step 4: `C^n` for every `n`, by induction over all value spaces at once.
+  have hind : ∀ n : ℕ, ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] (h : ℝ × Euclid N → V),
+      ContDiff ℝ (⊤ : ℕ∞) h → ContDiff ℝ n (fun x : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x)) := by
+    intro n
+    induction n with
+    | zero =>
+      intro V _ _ h hh
+      rw [Nat.cast_zero, contDiff_zero]
+      exact continuous_iff_continuousAt.2 fun x => (hderiv V h hh x).continuousAt
+    | succ n ih =>
+      intro V _ _ h hh
+      rw [Nat.cast_add_one, contDiff_succ_iff_hasFDerivAt]
+      exact ⟨fun x => ∫ t in (0 : ℝ)..1, fderiv ℝ (fun x' : Euclid N => h (t, x')) x,
+        ih (Euclid N →L[ℝ] V) _ (hsmooth V h hh), hderiv V h hh⟩
+  -- Step 5.
+  intro V _ _ _ h hh
+  exact ⟨contDiff_infty.2 fun n => hind n V h hh, hderiv V h hh⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
