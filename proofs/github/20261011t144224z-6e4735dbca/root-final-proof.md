@@ -28,12 +28,14 @@ of `main_theorem`. The other **3** are accepted but unused; they are kept, uncha
 their accepted interfaces, and §6 explains why the formal proof does not need them.
 
 Section 3 is the mathematical core: for each conjunct it gives the proof that the Lean code
-actually carries out, step by step, naming every accepted lemma at the point where it is used and
-stating its role. Appendix A catalogues all 691 accepted declarations with their statements and
+actually carries out, step by step, naming the accepted lemmas that carry each step at the point
+where they are used and stating their roles; the lemmas below them are in Appendix A. Appendix A catalogues all 691 accepted declarations with their statements and
 proofs (the Lean doc comments), the accepted declarations each one calls and the ones that call it.
-Nineteen of these doc comments contain errors: two mathematical errors, one omitted hypothesis and
-sixteen wrong locators. None of them is in a Lean statement or proof. They are corrected in
-Appendix A and listed in §8.
+In 120 entries the reproduced text contained an error. Counting each entry once, under its most
+serious error, 14 contain a false or ill-formed mathematical claim, 53 omit a hypothesis of the
+Lean statement on which the claim depends, and 53 have a wrong locator, quotation or provenance
+label. None of these errors is in a Lean statement or proof. They are corrected in Appendix A and
+listed in §8.
 Appendix B lists the SimonGMT constants that the proofs use directly, with the declarations that use
 each SimonGMT theorem, as read from the compiled environment.
 
@@ -80,7 +82,7 @@ dimensions `P, m, ℓ, n, Q`, open sets, currents, maps, sequences and scales wi
 hypotheses written in its definition in `GMT/Ch06/Contract.lean`. The proof adds, removes or weakens
 no hypothesis. It declares no axiom and contains no `sorry`, `admit`, `opaque`, `native_decide`,
 `implemented_by` or `extern` (a search of the source finds only the English words
-"admits"/"admitting" in three doc comments).
+"admits"/"admitting" in three doc comments, and "(opaque)" in one `--` comment, line 12181).
 
 ### 1.3 Conventions and the frozen definitions
 
@@ -113,8 +115,9 @@ Notation is that of the contract and of `GMT/Ch06/README.md`:
   `P = ∑_{F ∈ 𝓛ₙ(ρ)} β_F [[F]]` of §5; `flatDistance W T₁ T₂` is `d_W` of (7.1).
 
 **Degree convention.** Whenever a statement involves `∂T` for an `n`-current, the book's `n` is
-written `m + 1`; in 6.1 the book's `n ≥ 2` is `m + 2`. In §5–§6 the ambient space is
-`ℝ^{(m+1)+ℓ}` with `ℓ ≥ 1`.
+written `m + 1`; in 6.1 the book's `n ≥ 2` is `m + 2`. In 5.3 and 6.2 the ambient space is
+`ℝ^{(m+1)+ℓ}` and in 6.1 it is `ℝ^{(m+2)+ℓ}`, in each case with `ℓ ≥ 1`; 6.3 is stated for every
+`ℝ^P`.
 
 **Corrections already built into the frozen statement** (`GMT/Ch06/README.md`, "Errata / notes"):
 
@@ -139,7 +142,8 @@ written `m + 1`; in 6.1 the book's `n ≥ 2` is `m + 2`. In §5–§6 the ambien
 2. Lines 16–367: byte-for-byte the contract's lines 9–360, i.e. the module docstring, the `open`
    commands, `namespace GMT.Ch06`, `noncomputable section`, the 29 definitions of the contract
    (26 `def`s, 2 `abbrev`s and the `structure IsRectifiableTriple`) and the `end` closing the section.
-3. Lines 368–69497: the 691 accepted child theorems `Submission.*`, each with its doc comment.
+3. Lines 368–69497: the 691 accepted child theorems `Submission.*`, all but six of them with a doc
+   comment (Appendix A).
 4. Line 69498: `main_theorem`, with the contract's statement and the proof of §2.
 5. Line 69506: `end GMT.Ch06`.
 
@@ -381,9 +385,11 @@ Then some subsequence `T_{φ(q)}` converges weakly to some `T₀ ∈ 𝒟ₙ(U)`
   null compact projections (`rpn_null_compact_cutoff`, `rpn_moc_abs_apply_top_form_le`). The bound
   on a piece is `rpn_pullback_top_form_bound`: `|T(φ)| ≤ C · M · Lⁿ(spt a)^{1/n}` for
   `φ = f · (a ∘ L) · L^#dy`, obtained from `T(φ) = ∂T(Φ) − T(Ξ)` (`rpn_extDeriv_potential_form`)
-  and the potential estimate `rpn_potential_estimate`. That estimate (Gilbarg–Trudinger, Lemma 7.14,
-  replacing the BV argument of Remark 2.35) writes `a = ∑_j ∂_jψ_j` with the kernels
-  `K_j(t) = t_j/(nω_n|t|ⁿ)` and `|ψ_j| ≤ C M Lⁿ(spt a)^{1/n}`.
+  and the potential estimate `rpn_potential_estimate`. That estimate replaces the BV argument of
+  Remark 2.35 by the potential estimates of Gilbarg–Trudinger, §7.8. It writes `a = ∑_j ∂_jψ_j`
+  with `ψ_j = K_j * a` and the kernels `K_j(t) = t_j/(nω_n|t|ⁿ)` (the representation formula of
+  Lemma 7.14), and bounds `|ψ_j| ≤ C M Lⁿ(spt a)^{1/n}` through `∫_S |w|^{1−n} dw ≤ c Lⁿ(S)^{1/n}`
+  (as in the proof of Lemma 7.12).
 - *σ-finiteness and null sets on the positive-density carrier*
   (`rectifiability_positive_density_cover_null`, printed (1) and (6)): by the density comparison
   (Ch. 1, 3.3), a set of positive upper density covered by open sets of finite `μ`-measure is
@@ -391,12 +397,32 @@ Then some subsequence `T_{φ(q)}` converges weakly to some `T₀ ∈ 𝒟ₙ(U)`
 - *Decomposition and structure theorem.* SimonGMT's
   `Chapter03.measurable_rectifiable_purelyUnrectifiable_decomposition` (Ch. 3, Lemma 3.2) splits a
   Borel carrier `B₀ ⊆ U ∩ {Θ*ⁿ(μ, ·) > 0}` of `μ`, which is `Hⁿ`-σ-finite, into a countably
-  `n`-rectifiable part and a purely `n`-unrectifiable part `P′`. The structure theorem (Ch. 3, 3.6),
-  `rectifiability_structure_projection`, gives a rotation `Q` for which every coordinate projection
-  `p_α(Q(P′))` is `Lⁿ`-null. It is derived from the Besicovitch–Federer projection theorem
-  `rectifiability_bf_projection_null_ae` (for `E` purely unrectifiable with `Hⁿ(E) < ∞`,
-  `Lⁿ(L_v(E)) = 0` for Lebesgue-a.e. frame `v`) by Gram–Schmidt and Tonelli. The projection theorem
-  follows Mattila, Ch. 18 and Hovila–Järvenpää–Järvenpää–Ledrappier:
+  `n`-rectifiable Borel part `R` and a purely `n`-unrectifiable part `P′`. The structure theorem (Ch. 3, 3.6),
+  `rectifiability_structure_projection`, gives a linear isometry (orthogonal transformation) `Q` of
+  `ℝ^P` for which every coordinate projection `p_α(Q(P′))` is `Lⁿ`-null. It assumes only that `P′`
+  is purely `n`-unrectifiable and covered by countably many sets `S_j` of finite `Hⁿ`-measure, and
+  it is derived from the Besicovitch–Federer projection theorem
+  `rectifiability_bf_projection_null_ae` (for a Borel, purely unrectifiable `E` with `Hⁿ(E) < ∞`,
+  `Lⁿ(L_v(E)) = 0` for Lebesgue-a.e. frame `v`) as follows.
+  - Each `P′ ∩ S_j` has a Borel hull `B_j` with `Hⁿ(B_j ∩ F) = Hⁿ(P′ ∩ S_j ∩ F)` for measurable `F`.
+    Splitting `B_j` by Ch. 3, Lemma 3.2 shows that `B_j` is purely unrectifiable: its countably
+    rectifiable part is `Hⁿ`-null by this identity.
+  - Inner regularity gives compact `C_{j,i} ⊆ B_j` with `Hⁿ(B_j ∖ ⋃_i C_{j,i}) = 0`.
+  - For a.e. frame `v`, every `L_v(C_{j,i})` is null. So is `L_v(P′ ∖ ⋃_{j,i} C_{j,i})`, because
+    `L_v` is Lipschitz and that set is `Hⁿ`-null.
+  - The set `Z` of bad frames (those `v` with `Lⁿ(L_v(C_{j,i})) > 0` for some `j, i`) is Borel
+    and null. For every `n × n` matrix `G`, `Lⁿ(L_{Gv}(C)) = |det G| Lⁿ(L_v(C))`, where `Gv` is the
+    frame with rows recombined by `G`. Hence `v ∈ Z` whenever `Gv ∈ Z`.
+  - The first `n` Gram–Schmidt vectors of a frame recombine its first `n` vectors. Apply
+    Gram–Schmidt to a random frame, distributed by Lebesgue measure on the linearly independent
+    frames in a ball. Tonelli's theorem shows that the orthonormalized frame and its transpose have
+    the same law, and coordinate permutations reduce every `α` to `α = (1, …, n)`. This gives an
+    orthonormal basis `(b_k)` all of whose subframes `(b_{α(1)}, …, b_{α(n)})` avoid `Z`. The
+    linear isometry `Q` with `Q⁻¹ e_k = b_k` then satisfies `p_α ∘ Q = L_{(b_{α(i)})_i}` for every
+    `α`.
+
+  The details are in the entry for `rectifiability_structure_projection` in A.3. The projection
+  theorem follows Mattila, Ch. 18 and Hovila–Järvenpää–Järvenpää–Ledrappier:
   - the trichotomy `rectifiability_bf_trichotomy`, built from the Mickle–Radó density theorem
     `rectifiability_mickle_rado`, Borel measurability of the cone ratio, and the comparison of cones
     with fibres;
@@ -405,28 +431,40 @@ Then some subsequence `T_{φ(q)}` converges weakly to some `T₀ ∈ 𝒟ₙ(U)`
   - the density comparison for the points of infinite projected density;
   - Eilenberg finiteness `rectifiability_bf_infinite_fibre_null` for the points with infinite
     fibres.
-- So Lemma 2.36, with this rotation `Q`, gives `μ(P′) = 0`, and then `Hⁿ(P′) = 0` by the previous
-  bullet. Hence `μ` is carried by the countably rectifiable part `R` of `B₀`, and `μ ≪ Hⁿ⌞R`.
-  Finally σ-finite Radon–Nikodym (`rectifiability_rn_positive_real_density`, printed (8)) gives
-  `μ = (Hⁿ ⌞ M).withDensity θ` with `M = R ∩ {0 < dμ/d(Hⁿ⌞R) < ∞}`, a countably rectifiable
-  Borel set, and `θ = dμ/d(Hⁿ⌞R)` real, positive on `M` and integrable on `M ∩ K` whenever
-  `μ(K) < ∞`.
+- Hence `μ(P′) = 0`. The decomposition gives `P′` only as an `Hⁿ`-null-measurable set, so the
+  Lean proof takes a Borel set `B_k ⊆ P′` with `Hⁿ(P′ ∖ B_k) = 0`. Lemma 2.36 with this `Q` gives
+  `μ(B_k) = 0`, and `μ ≪ Hⁿ` gives `μ(P′ ∖ B_k) = 0`. Then `Hⁿ(P′) = 0` by
+  `rectifiability_positive_density_cover_null` (printed (6)), so `B₀ = R ∪ P′` is countably
+  rectifiable (printed (7)).
+- Finally, `Hⁿ ⌞ B₀` is σ-finite (it is covered by sets of finite `Hⁿ`-measure), `μ` is σ-finite,
+  `μ(ℝ^P ∖ B₀) = 0` and `μ ≪ Hⁿ`. So σ-finite Radon–Nikodym
+  (`rectifiability_rn_positive_real_density`, printed (8)) gives a Borel `M ⊆ B₀` and a Borel
+  `θ > 0` on `M` with `μ = (Hⁿ ⌞ M).withDensity θ`. Here `M = B₀ ∩ {0 < dμ/d(Hⁿ⌞B₀) < ∞}`, which
+  is countably rectifiable as a subset of `B₀`, and `θ = (dμ/d(Hⁿ⌞B₀)).toReal`, which is
+  `Hⁿ`-integrable on `M ∩ K` whenever `μ(K) < ∞`. A compact `K ⊆ U` lies in one of the exhaustion
+  sets `W_i` with `μ(W_i) < ∞`, so `θ` is locally integrable on `M` in `U`.
 
 **Step 4 in detail** (`rectifiability_orientation`, printed (10)–(13)). Weighted approximate
 tangent spaces `L = TₓM` exist `Hⁿ`-a.e. on `M` (`rectifiability_weighted_tangent_ae`, Ch. 3, 1.9
-"⇒", proved through `C¹` charts, the injective area formula and Lebesgue points). Fix a point `x`
+"⇒"). That lemma cuts the Lipschitz parametrizations of `M` into Borel pieces on which they are
+differentiable with injective derivative and uniformly bi-Lipschitz (Rademacher's theorem, null
+images of critical sets, an approximately linear partition), and then uses the injective area
+formula and Lebesgue points. Fix a point `x`
 where moreover `ξ` has a Lebesgue point for `θ Hⁿ ⌞ M` and both `θ Hⁿ ⌞ M` and the mass measure
 `ν` of `∂T` have finite upper `n`-density (Ch. 1, 3.3). Let `a` be a covector vanishing on `L`,
-`β` an `(n−1)`-covector, `ϕ` a cut-off, `Ψ = (aϕ)β` and `Ω = dΨ`; on `L`, `Ω = ϕ · (a ∧ β)`. With
-the blow-up forms `ψ_r(y) = r Ψ((y − x)/r)`, so that `dψ_r(y) = Ω((y − x)/r)`:
+`β` an `(n−1)`-covector, `ϕ` a cut-off with support in `B̄₂(0)`, `Ψ(z) = a(z) ϕ(z) β` and
+`Ω = dΨ`; on `L`, where `a(z) = 0`, `Ω = ϕ · (a ∧ β)`. With the blow-up forms
+`ψ_r(y) = r Ψ((y − x)/r)`, supported in `B̄_{2r}(x)` and with `dψ_r(y) = Ω((y − x)/r)`:
 
 - `I_r := ∂T(ψ_r) = T(dψ_r) = ∫_M θ ⟨Ω((y − x)/r), ξ(y)⟩ dHⁿ(y)`;
 - (12) `|I_r| ≤ M_{B_{4r}(x)}(∂T) · sup |ψ_r| = O(rⁿ) · O(r)`;
 - (11) `r⁻ⁿ I_r → θ(x) ∫_L ⟨Ω, ξ(x)⟩ dHⁿ`, by the weighted tangent plane at `x` and the Lebesgue
   point of `ξ`.
 
-Hence `∫_L ⟨Ω, ξ(x)⟩ dHⁿ = ⟨a ∧ β, ξ(x)⟩ ∫_L ϕ dHⁿ = 0` with `∫_L ϕ > 0`, i.e. (13)
-`⟨a ∧ β, ξ(x)⟩ = 0`. In an orthonormal frame adapted to `L` this forces
+Hence `∫_L ⟨Ω, ξ(x)⟩ dHⁿ = ⟨a ∧ β, ξ(x)⟩ ∫_L ϕ dHⁿ = 0` with `∫_L ϕ > 0`, i.e.
+`⟨a ∧ β, ξ(x)⟩ = 0`. (This is the conclusion that the book draws on p. 175 from its display (13),
+the definition of the limit current `S_x`, and from `∂S_x = 0`.) In an orthonormal frame adapted
+to `L` this forces
 `ξ(x) = c τ₁ ∧ ⋯ ∧ τₙ`, and `|ξ(x)| = 1` gives `c = ±1`. ∎
 
 *Uses:* no sibling. The structure theorem, which SimonGMT does not provide (`GMT/Ch06/README.md`), is
@@ -614,7 +652,8 @@ stated with the Slicing Theorem and Lemma 3.9 as hypotheses and applied to §3.5
    `μᵢ{dist(·, L_{ℓ−1}(a)) < σ} ≤ c σ^{m+2} μᵢ(ℝ^d)` for `0 < σ < 1/4`. This is proved by the
    periodic maximal estimate `dgc_periodic_maximal` (Vitali covering, `dgc_pm_vitali_volume_bound`),
    the corrected cylinder bound `dgc_cylinder_volume` (printed (5)) and the tube cover
-   `dgc_tube_cover`, with the erratum `ω_k ≤ 2^k` (`dgc_pm_ball_volume_le`).
+   `dgc_tube_cover`; ball volumes are bounded by the cube bound `Lᵏ(B̄_r) ≤ (2r)ᵏ`
+   (`dgc_pm_ball_volume_le`), a simplification of the printed `ω_k rᵏ`.
 2. *Retraction, Lemma 5.4* (`deformation_retraction`). A map `ψ` sends `ℝ^d ∖ L_{ℓ−1}(a)` into the
    `n`-skeleton and each unit cube into itself, and is `c/σ`-Lipschitz on
    `{dist(·, L_{ℓ−1}(a)) ≥ σ}`. It is the periodic extension of the composite of radial face
@@ -952,7 +991,7 @@ rectifiability, integrality}.
   `flat_convergence_iff_weak_convergence` (L69448),
   `federer_fleming_compactness` (L69482), and `main_theorem` (L69498).
 - Mathematically, the order is: 2.15, 2.34, 8.1, 3.9 and 4.4–4.10 from first principles (with
-  Mathlib and SimonGMT); then 5.3 from §4 and 3.9; 6.1 and 6.2 from 5.3; 8.2 from 8.1, 6.1, §4 and
+  Mathlib and SimonGMT); then 5.3 from §4 and 3.9; 6.1 from 5.3; 6.2 from 5.3 and §4; 8.2 from 8.1, 6.1, §4 and
   3.9; 6.3 from 5.3, §4 and 8.2; 7.2 from 5.3, §4 and 6.3; and 3.11 from 2.15, 6.3 and 8.2. In
   particular 8.2 does not use 3.11, 6.3 or 7.2, and 6.3 uses 8.2 only for cycles (the book's
   Remarks 6.4 and 8.3(2)).
@@ -1088,18 +1127,26 @@ Riesz representation. In the final Lean proof:
 
 So nothing is assumed beyond Mathlib and the pinned SimonGMT library.
 
-**Corrections of printed proof steps made by the accepted children** (no frozen statement is
-changed):
+**Gaps filled, arguments replaced and printed steps corrected by the accepted children** (no
+frozen statement is changed):
 
 - 2.34 uses `(L¹)* = L^∞` without proof; it is proved (§3.2).
-- Remark 2.35 is replaced by the potential estimate of Gilbarg–Trudinger, Lemma 7.14 (§3.3).
+- The BV argument of Remark 2.35 is replaced by the potential estimates of Gilbarg–Trudinger, §7.8
+  (§3.3).
 - In Remark 2.37(2) the projections `p_α ∘ Q` are meant, not `Q` (§3.3).
-- In the proof of 5.1, the cylinder bound (5) is corrected (`dgc_cylinder_volume`), `ω_k ≤ 2^k` is
-  used for the ball volumes (`dgc_pm_ball_volume_le`), and the similarity bound (4)–(7) of Lemma 5.4
-  is corrected (`dr_cc_similarity_bound`).
-- In the proof of 3.9, the first decomposition's claim that different image sheets have density
-  zero at each other's points was false; the accepted proof uses the common approximate tangent
-  plane instead (§3.4).
+- In the proof of 5.1, the cylinder bound (5) is corrected (`dgc_cylinder_volume`). In the proof of
+  Lemma 5.4, the printed "`|y − a| ≥ 3/4`" before (6) fails: for `a = (1/2, …, 1/2)` and small
+  `δ > 0`, the point `x = (1/4, 1/2 + δ, …, 1/2 + δ)` has no coordinate in `a_i + ℤ`, so it lies off
+  the dual skeleton, and its radial projection from `a` onto `∂[0, 1]^d` is
+  `y = (0, 1/2 + 2δ, …, 1/2 + 2δ)`, with `|y − a| < 3/4`. Only `|y − a| > 1/4` holds, and the
+  similarity estimate (4)–(7) is adjusted accordingly (`dr_cc_similarity_bound`).
+- The ball volumes in the proof of 5.1 are bounded by the cube bound `Lᵏ(B̄_r) ≤ (2r)ᵏ`
+  (`dgc_pm_ball_volume_le`). This is a simplification of the printed `ω_k rᵏ`, not a correction.
+
+One more correction concerns the run's own work, not the book: the first, rejected root
+decomposition claimed in the proof of 3.9 that different image sheets have density zero at each
+other's points. That claim was false, and the accepted proof uses the common approximate tangent
+plane instead (§3.4).
 
 ## 7. History (preserved, not rewritten)
 
@@ -1135,15 +1182,28 @@ The following records are left untouched under
 - `nodes/root/rlcr-plan-v1.md`: the plan of the second round. That round produced `e9e57ea4` (§8)
   and the first version of this file (commit `c3c9b342`). `comparison-identity-v2.json` and
   `lean-audit-v2.json` record that `c3c9b342` passed the exact comparator. The same holds for
-  `comparator-v1.log` and `isolated-comparator-result.json`, which now hold the controller's isolated
-  comparator run on `c3c9b342` (evidence `20261014T195224Z-ch06-root-kexkmndq`). That run reused the
+  `comparator-v1.log`, which holds the controller's isolated comparator run on `c3c9b342`
+  (evidence `20261014T195224Z-ch06-root-kexkmndq`). That run reused the
   verdict of the full run on `e9e57ea4` (§9).
 - `nodes/root/publication-prose-audit-v1.json`: the independent review of that first version. It
   found no circularity in the dependency order. It withheld acceptance for two corrections in
-  Appendix A: a wrong image-density formula and a wrong lemma number. This revision makes both
-  corrections and seventeen further ones found by re-checking Appendix A (§8). The review record is
-  left unchanged.
-- `nodes/root/rlcr-plan-v2.md`: the plan of the present round, which revises this file.
+  Appendix A: a wrong image-density formula and a wrong lemma number. The revision `e26e6909`
+  made both corrections and seventeen further ones found by re-checking Appendix A (§8). The review
+  record is left unchanged.
+- `nodes/root/rlcr-plan-v2.md`: the plan of the third round, which produced `e26e6909`.
+  `comparison-identity-v3.json` and `lean-audit-v3.json` record that `e26e6909` passed the exact
+  comparator; `comparator-v2.log` holds the controller's isolated comparator run on `e26e6909`
+  (evidence `20261014T205631Z-ch06-root-u8y3fc07`), which reused the verdict of the full run on
+  `e9e57ea4` (§9). `isolated-comparator-result.json` is overwritten by each isolated run; when this
+  revision was written it recorded the run on `e26e6909`.
+- `nodes/root/publication-prose-audit-v2.json`: the independent review of `e26e6909`. It found the
+  stated dependency graph acyclic, with the reported 688 reachable declarations, and withheld
+  acceptance for two corrections in A.3: the claim in `rectifiability_structure_projection` that a
+  possibly non-measurable `A` is, up to a null set, a countable union of compact pieces, and the
+  example in the Correction line of `rectifiability_orientation`, which omitted a boundary term.
+  This revision makes both corrections and the further ones of §8. The review record is left
+  unchanged.
+- `nodes/root/rlcr-plan-v3.md`: the plan of the present round, which revises this file.
 
 **The overlay.** Starting from the frozen commit `d8d46c95`, the integration branch merged the
 twelve children's accepted candidate commits, which already contain their accepted descendants:
@@ -1169,8 +1229,9 @@ it:
   and the contract's header occurs exactly once.
 - No declaration, statement, import or proof changed. A docstring does not affect elaboration.
 
-**Prose.** This file was added in commit `c3c9b342` and is revised by a later commit. Neither commit
-changes a `.lean` file or a build input, so neither changes the comparator's inputs (§9).
+**Prose.** This file was added in commit `c3c9b342`, revised in commit `e26e6909`, and is revised
+again by the commit that records the present revision. None of these commits changes a `.lean`
+file or a build input, so none changes the comparator's inputs (§9).
 
 **Corrections after the first publication review.** The independent review of the first version
 of this file (`nodes/root/publication-prose-audit-v1.json`) withheld acceptance for two corrections.
@@ -1216,6 +1277,136 @@ comments are part of neither, and the Lean kernel checks both (§9). The doc com
 belong to the accepted declaration texts. Those texts are kept byte-identical to the accepted
 commits (§9), so the doc comments are corrected only in this file.
 
+**Corrections after the second publication review.** The independent review of `e26e6909`
+(`nodes/root/publication-prose-audit-v2.json`) withheld acceptance for two corrections in A.3:
+
+1. `rectifiability_structure_projection` said that, up to an `Hⁿ`-null set, `A` is a countable
+   union of compact purely unrectifiable pieces of finite measure. `A` is not assumed measurable,
+   and for a non-measurable `A` this is false. The entry (its passage and its Correction line) now describes what the Lean proof does:
+   Borel hulls `B_j` of the pieces `A ∩ S_j`, which are purely unrectifiable by the hull identity
+   and Ch. 3, Lemma 3.2; compact cores of the `B_j`; and the transfer of null projections to `A` by
+   inclusion and the Lipschitz null-image bound. §3.3 now gives the same argument, and also states
+   the recombination invariance of the set of bad frames on which the Gram–Schmidt step rests.
+2. The Correction line of `rectifiability_orientation` illustrated the order `O(r)` with
+   `T = (2 + y₁)[[B₁(0)]]` and the formula `∂T(φ) = −∫ φ(e₂) dL²`, which omits the boundary term
+   `∫_{∂B₁(0)} (2 + y₁) ⟨φ, τ⟩ dH¹`. The example now states the general formula, takes `x = 0`, and
+   uses `φ = a dy₂` with `spt a ⊆ B_R(0)` and `r < 1/R`, so that `η^#φ` has compact support in the
+   open disc and the boundary term vanishes. The reference to Simon's display (12) is now a
+   paraphrase rather than a quotation, since the book writes `λ` and a constant factor.
+
+Following these two findings, every entry of Appendix A and every paragraph of §0–§6 were audited
+again. Each entry was compared with the Lean statement at its line, with the accepted
+natural-language proof of its node, with the book (`book/chapter-0*.txt`, using the printed page
+headers), and, for external citations, with the cited sources. The audit found errors in 100
+further entries, and added to the corrections of four previously corrected entries. Each entry is
+again corrected in place, marked **[corrected]**, and explained in its **Correction** line, with a
+counterexample where one is not immediate from the explanation. Grouped by the
+most serious error in the entry, the newly corrected entries are the following (the first group
+includes `rectifiability_structure_projection` of item 1).
+
+- **False or ill-formed mathematical claims (11).**
+  - A.1: `cmb_exists_countable_dense_testForms` (the constant `N` was undefined, and with the value
+    of the neighbouring entry the bound is false).
+  - A.3: `rpn_pe_kernel_sup_bound` (a reflected set called a translate), `rectifiability_structure_projection`.
+  - A.5: `slicing_im_st_slice_geometry` (level-set charts exist only at regular points).
+  - A.6: `dph_lpf_cmp_core_estimate` (the boundary term has the factor `c′ L^{k−1}`, not `c L^k`),
+    `iwl_restriction_theory` (missing absolute values), `dr_cc_similarity_bound` (a case missing
+    from a case distinction).
+  - A.9: `iwl_top_dim_integrality` (a translation estimate stated without its smallness condition).
+  - A.10: `br_zd_im_dirac_repr` (a `0`-vector written as a current).
+  - A.11: `fiw_tl_ae_l1_density` (a non-compact set called compact), `fiw_tb_finite_net` (a
+    quantifier in the wrong place).
+- **Omitted hypotheses (51).** In these entries the reproduced statement left out hypotheses of the
+  Lean statement on which its claim depends, most often measurability, openness, local finiteness,
+  positivity of a weight, a normalization of a representation, or a finite mass:
+  - A.3: `rectifiability_mass_measure_rectifiable`, `rectifiability_mickle_rado_density_zero`.
+  - A.4: `lpf_lipschitz_localization`, `lpf_weighted_tangent_on_c1_chart`,
+    `lpf_wtc_chart_image_measurable_locally_finite`, `lpf_wtc_lusin_compact_pieces`,
+    `lpf_wtc_ae_zero_density_off_set`, `lpf_wtc_caf_lipschitz_localization`,
+    `lpf_wtc_caf_signed_of_lintegral`, `lpf_wtc_wtt_remainder_vanishes`,
+    `lpf_wtc_wtt_blowup_integral_split`, `lpf_rsn_local_null`, `lpf_pic_current_of_dominated_density`,
+    `lpf_pi_signed_fibre_sum`, `lpf_rectifiable_area_formula`, `lpf_raf_chart_area_formula`,
+    `lpf_raf_chart_change_of_variables`, `lpf_pi_im_of_chart_density`.
+  - A.5: `smr_rb_transfer_functional`, `smr_exists_unit_form_gt`, `smr_ufd_unit_coord_field`,
+    `slicing_mb_pointwise`, `slicing_mb_pointwise_cutoff_tendsto`, `slicing_im_tg_weighted_tangent_chart`,
+    `slicing_im_slice_triple`, `slicing_im_coarea_chart_tangent`, `slicing_im_st_measure_fields`,
+    `slicing_im_st_mf_slice_integrable`, `slicing_im_st_weighted_tangent_on_c1_chart`.
+  - A.6: `dph_iprod_current_of_bound`, `dph_sh_ae_affine_homotopy_isCompact_preimage_cyl`,
+    `dph_lpf_comparison`, `dph_lpf_existence`, `imc_ae_zero_density_off_set`,
+    `isoperimetric_coord_box_measure`, `fiw_ims_overlap_finite`, `iwl_imc_normalized_lebesgue_points`.
+  - A.9: `iwl_imc_tangent_overlap`, `iwl_imc_density_zero_off_set`, `iwl_rl_restriction_cutoff_estimate`,
+    `iwl_cr_ce_cutoff_converges_zero`, `iwl_cr_cone_estimates`, `iwl_cr_cest_mass_le_of_forms`,
+    `iwl_cr_ci_ie_param_fubini`, `iwl_sp_massOn_le_of_compatible`, `iwl_integer_density`,
+    `ind_ae_blowup_limit`, `ind_pi_good_slice_selection`, `ind_pi_ss_fatou_level_selection`.
+  - A.11: `flat_convergence_iff_weak_convergence`, `fiw_flat_cauchy_limit`.
+- **Wrong locators, quotations or provenance labels (39).** Pages and item numbers into Simon's
+  book; quotations that were not verbatim (for example "(1), (2) give `P_k(ω) → T(ω)`", where p. 169
+  prints `T_k(ω)`, a misprint for `T(ω)`); step labels of the accepted natural-language proofs
+  presented as steps of the book's or of Mattila's proofs; uses ascribed to the proof of 3.9 that
+  serve the formal proof of 5.1; an outdated remark on imports; a ball-volume bound presented as an
+  erratum; and three summaries (`iwl_cr_hp_injective_pieces`, `iwl_top_dim_integrality`,
+  `ind_pi_ss_cycle_slice_boundary`) labelled as summaries of the accepted natural-language proofs,
+  although they summarize the Lean proofs, which take a different route. (`iwl_top_dim_integrality`
+  is counted in the first group, because its summary also stated the translation estimate
+  without its smallness condition.)
+  - A.2: `constancy_theorem`, `constancy_local_of_mollified_const`.
+  - A.3: `br_la_apply_eq_zero_of_lt_degree`, `rectifiability_bf_cone_ratio_measurable`,
+    `rectifiability_mickle_rado_sup_lsc`, `rectifiability_bf_fibre_cone_comparison`.
+  - A.4: `lpf_c1_approximation_eucl`.
+  - A.5: `slicing_mass_representation`, `smr_exists_testForm_uniform_approx`, `smr_ufd_small_cutoff`,
+    `slicing_im_tangential_gradient`, `slicing_im_coarea_eil_liminf_cover_bound`,
+    `slicing_im_st_lsc_c1_extension`, `slicing_im_ll_twl_cie_jacobian_measurable`.
+  - A.6: `fiw_ims_sc_converges_zero_small`, `iwl_cr_hp_injective_pieces`,
+    `br_la_testForm_covectorNorm_bounded`, `dgc_pm_ball_volume_le`,
+    `imc_mlb_exists_hasCompactSupport_eLpNorm_sub_le`, `deformation_ipl_cc_chart_orientation_sign`,
+    `deformation_ipl_cc_signed_change_of_variables`, `deformation_ipl_mwc_mil_ae_fderiv_eq_proj`,
+    `fiw_ims_combine`.
+  - A.8: `polyhedral_approx_flat_seq_tendsto`, `polyhedral_approx_testForm_covectorNorm_bounded`.
+  - A.9: `iwl_cycle_reduction`, `iwl_cr_radial_operator`, `iwl_cr_ci_cutoff_pullback_testForm`,
+    `ind_md_diagonal_weak_subseq`, `ind_ab_weighted_lebesgue_point`, `ind_pi_ss_cycle_slice_boundary`,
+    `ind_const_multiple_integer`.
+  - A.10: `br_la_weaklyConvergesOn_of_flat_decomposition`.
+  - A.11: `fiw_localization`, `fiw_tangent_locality`, `fiw_tl_growth_bound`,
+    `fiw_tb_translation_estimate`, `fiw_tb_te_directional_form`, `fiw_tb_lattice_coeff_finite`.
+
+The audit also extended four earlier corrections. In `slicing_im_creg_local_to_global` the
+hypotheses `Ω` open, `f` measurable and `W ⊆ Φ(Ω)` Borel are added. The title of
+`iwl_restriction_weak_limit` now says that the convergence holds along a subsequence and for all
+but countably many levels, and its quotation is verbatim. In `ind_top_form_density_ae_unique` the
+quotation of p. 179 is replaced by a paraphrase. The Correction line of
+`iwl_rl_testForm_smooth_cutoff` now mentions the extension `ω̃` of p. 179.
+
+With these extensions `iwl_restriction_weak_limit` counts as a false claim and
+`slicing_im_creg_local_to_global` as an omitted hypothesis, so the 19 entries corrected before this
+revision now count 3, 2 and 14 in the three groups.
+
+Altogether 120 entries of Appendix A now carry a Correction line. Counting each entry once, under
+its most serious error, 14 contained a false or ill-formed mathematical claim, 53 omitted a
+hypothesis of the Lean statement, and 53 had a wrong locator, quotation or provenance label. The
+preamble of Appendix A also states two reading conventions that the audit made explicit: Simon's
+implicit hypotheses, and phrases such as "the locality step in the proof of 6.3" when the printed
+proof is shorter.
+
+**Corrections of the main text in this revision.**
+
+- §1.2: the source search also finds "(opaque)" in one `--` comment.
+- §1.3: the ambient spaces of 5.3, 6.2, 6.1 and 6.3 are stated separately (6.1 lives in
+  `ℝ^{(m+2)+ℓ}`, 6.3 in every `ℝ^P`).
+- §1.4: six of the 691 declarations have no doc comment.
+- §3.3: the structure-theorem bullet describes the hull argument and the Gram–Schmidt step; the
+  step `μ(P′) = 0` uses a Borel subset of `P′` of full measure, as the Lean proof does; the
+  Radon–Nikodym step is applied to `B₀`, not to `R`; the potential estimate cites Gilbarg–Trudinger
+  §7.8 (the representation formula of Lemma 7.14 and the bound in the proof of Lemma 7.12);
+  `rectifiability_weighted_tangent_ae` is described through bi-Lipschitz pieces instead of `C¹`
+  charts; and the conclusion `⟨a ∧ β, ξ(x)⟩ = 0` is no longer labelled (13), which in the book is
+  the definition of `S_x`.
+- §3.6 and §6: the cube bound `(2r)ᵏ` for ball volumes is described as a simplification, not as an
+  erratum; the §6 list now distinguishes gaps filled, arguments replaced and printed steps corrected,
+  states the failing printed bound of Lemma 5.4, and moves the false claim of the first root
+  decomposition out of the list of printed errors.
+- §4: 6.2 depends on §4 (slicing) as well as on 5.3.
+- §0: §3 names the accepted lemmas that carry each step, not every lemma.
+
 ## 9. Verification record
 
 All checks used the pinned toolchain and the shared package tree
@@ -1253,8 +1444,12 @@ the wrapper reads only the `.lean` files and the Lake build inputs of the worktr
 comparator's inputs are byte-identical to those of the run above. The comparator was run on the
 first version of this file (`c3c9b342`) by the author (evidence
 `20261014T194958Z-ch06-root-h1hdql_2`) and by the controller (evidence
-`20261014T195224Z-ch06-root-kexkmndq`). Both runs passed and reused the verdict of the run above
-(key `a14f190d…`). The previous overlay `dfdc020b`, which differs only by the duplicated docstring of §8,
+`20261014T195224Z-ch06-root-kexkmndq`). On the second version (`e26e6909`) it ran just after the
+commit (evidence `20261014T205523Z-ch06-root-sm9imq73`) and in the controller's isolated check
+(evidence `20261014T205631Z-ch06-root-u8y3fc07`). For the present revision it was run on `e26e6909`
+before any edit (evidence `20261014T211347Z-ch06-root-ekb9ck7e`), and on the edited worktree
+immediately before the commit (evidence `20261014T231552Z-ch06-root-4x3admcz`). All these runs passed and reused the
+verdict of the run above (key `a14f190d…`). The previous overlay `dfdc020b`, which differs only by the duplicated docstring of §8,
 had also passed (evidence `20261014T165641Z-ch06-root-oypmaw0x`).
 
 **Private build and axioms.** `GMT/Ch06/Submission.lean` of commit `e9e57ea4` (sha256
@@ -1337,7 +1532,11 @@ There is exactly one entry, and its source is `local-project`.
       "rg -n 'HasWeightedApproximateTangentSpaceAt' project/GMT/Ch06/Contract.lean; rg -n 'nVectorPushforward' project/GMT/Ch06/Contract.lean",
       "rg -n 'Hovila|1104\\.3453|Mickle' project/",
       "rg -n 'lpf_pushforward_integrality|rectifiability_bf_trichotomy|br_weightedTangent_congr|rectifiability_orientation' project/",
-      "rg -n '3\\.1 \\(‡\\)|2\\.35' project/GMT/Ch06/"
+      "rg -n '3\\.1 \\(‡\\)|2\\.35' project/GMT/Ch06/",
+      "rg -n 'theorem Measure.measure_toMeasurable_inter' mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+      "rg -n 'theorem MemLp.exists_hasCompactSupport_eLpNorm_sub_le' mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+      "rg -c 'rectifiability_structure_projection|lpf_wtc_lusin_compact_pieces|dph_lpf_cmp_core_estimate|iwl_integer_density' project/",
+      "cmp project/GMT/Ch06/Contract.lean <worktree>/GMT/Ch06/Contract.lean"
     ],
     "findings": [
       "manifest.json: mode local-project, project d8d46c9587747dee0751a1f780fcafdba16a3886, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; `git -C mathlib rev-parse HEAD` = 25730c7c…, the revision pinned in lake-manifest.json.",
@@ -1346,14 +1545,15 @@ There is exactly one entry, and its source is `local-project`.
       "`Submission.` occurs only in README prose of the snapshot (e.g. project/GMT/Ch06/README.md:4); none of the twelve child names occurs anywhere in project/ (rg exit status 1). The snapshot contains no prior proof of this chapter; every Lean proof used here comes from the run's accepted nodes.",
       "Mathlib (snapshot): RealRMK.rieszMeasure at RieszMarkovKakutani/Real.lean:65 and RealRMK.integral_rieszMeasure at :345 (namespace RealRMK, lines 52–494); VitaliFamily.ae_tendsto_lintegral_enorm_sub_div at Covering/Differentiation.lean:818 (namespace VitaliFamily, 87–872); Besicovitch.vitaliFamily at Covering/Besicovitch.lean:1021 and Besicovitch.ae_tendsto_measure_inter_div at :1105; IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero at Analysis/Distribution/AEEqOfIntegralContDiff.lean:205; exists_partition_approximatesLinearOn_of_hasFDerivWithinAt at MeasureTheory/Function/Jacobian.lean:255 (before `namespace MeasureTheory` at 272, so a root-namespace name); LipschitzWith.ae_differentiableAt at Analysis/Calculus/Rademacher.lean:385.",
       "SimonGMT is not part of the snapshot; its declarations cited in §5 were located in the pinned package lake-packages-25730c7c/simongmt (git HEAD 2b3663083f3fe399b6296fb8eaee52169170e197, the revision in lake-manifest.json), e.g. GeometricCurrentOn.boundary_boundary at Chapter06/Currents.lean:365 and measurable_rectifiable_purelyUnrectifiable_decomposition at Chapter03/Rectifiable.lean:514.",
-      "Revision checks for the corrections of Appendix A (§8). Contract.lean uses HasWeightedApproximateTangentSpaceAt at lines 37, 74 (orientation clause of IsRectifiableTriple) and 150 (derivative clause of IsLipschitzPushforward). Line 153 defines the push-forward through the source-side density `θ x * nVectorPushforward n (L x) (ξ x)`; the normalized image density of §3.4 and A.4 occurs only in the run's proofs. 'Hovila|1104.3453|Mickle' and the four declaration names corrected in A.3–A.4 have no match in project/ (rg exit status 1 both times). The snapshot contains no doc comment of this run's declarations, so the corrections concern only the run's Submission.lean. '3.1 (‡)' occurs at Contract.lean:77, README.md:49 and the snapshot's Submission.lean:77. This is the contract's reading of the display marker; the same glyph marks the display of 2.35 in the book, which is why '2.35 (∗)' is corrected to '(‡)'."
+      "Revision checks for the corrections of Appendix A (§8). Contract.lean uses HasWeightedApproximateTangentSpaceAt at lines 37, 74 (orientation clause of IsRectifiableTriple) and 150 (derivative clause of IsLipschitzPushforward). Line 153 defines the push-forward through the source-side density `θ x * nVectorPushforward n (L x) (ξ x)`; the normalized image density of §3.4 and A.4 occurs only in the run's proofs. 'Hovila|1104.3453|Mickle' and the four declaration names corrected in A.3–A.4 have no match in project/ (rg exit status 1 both times). The snapshot contains no doc comment of this run's declarations, so the corrections concern only the run's Submission.lean. '3.1 (‡)' occurs at Contract.lean:77, README.md:49 and the snapshot's Submission.lean:77. This is the contract's reading of the display marker; the same glyph marks the display of 2.35 in the book, which is why '2.35 (∗)' is corrected to '(‡)'.",
+      "Checks for the corrections after the second review (§8). Mathlib (snapshot) has Measure.measure_toMeasurable_inter at MeasureTheory/Measure/Basic.lean:472, with hypotheses `MeasurableSet s` and `μ t ≠ ∞`: the hull identity `Hⁿ(B_j ∩ F) = Hⁿ(A_j ∩ F)` for measurable `F` used in the corrected entry `rectifiability_structure_projection`, whose Lean proof applies it with `Hⁿ(A ∩ S_j) < ∞`. MemLp.exists_hasCompactSupport_eLpNorm_sub_le is at MeasureTheory/Function/ContinuousMapDense.lean:141; that module is imported by the final Submission.lean through SimonGMT's Chapter01.RadonCaratheodoryIntegral, VectorFunctionalL1 and RadonDensity (pinned package lake-packages-25730c7c/simongmt), which corrects the remark in `imc_mlb_exists_hasCompactSupport_eLpNorm_sub_le`. The search for four corrected declaration names in project/ has no match (rg exit status 1), as expected since the snapshot's Submission.lean is its Contract.lean (third finding): the snapshot contains none of the run's doc comments. Its Contract.lean is byte-identical to the candidate's (cmp exit status 0)."
     ],
     "use": "Contract identity and absence of prior proofs; provenance (file and line at the pinned revisions) of the Mathlib and SimonGMT declarations named in §3 and §5; the contract's definitions and notation behind the corrections of Appendix A (§8). No snapshot declaration was copied. Compatibility holds because the pins are identical, and every reused declaration is re-checked by the comparator's kernel replay with the axiom check (§9)."
   }
 ]
 ```
 
-Web access was used only for bibliographic checks of two papers cited in §11.
+Web access was used only for bibliographic checks of the external citations of §11.
 
 - Hovila–Järvenpää–Järvenpää–Ledrappier: the text of <https://arxiv.org/pdf/1104.3453> (version 2,
   December 2012) was checked. Its Theorem 1.2 is the projection theorem, Lemma 2.2 the conical
@@ -1361,6 +1561,13 @@ Web access was used only for bibliographic checks of two papers cited in §11.
   (§8). See also <https://arxiv.org/abs/1104.3453>.
 - Mickle–Radó, Proc. Amer. Math. Soc. 9 (1958) 433–439: the reference was confirmed as cited in
   <https://www.ams.org/journals/tran/1959-092-02/S0002-9947-1959-0112947-5/S0002-9947-1959-0112947-5.pdf>.
+- In the second audit (§8) the following were consulted to confirm locators only: Federer 2.10.25
+  as Eilenberg's inequality (<https://arxiv.org/pdf/2006.00419>), Federer 3.2.23 as the product
+  formula for rectifiable sets (<https://arxiv.org/pdf/2505.11279>), Mattila's statement of the
+  Mickle–Radó lemma in his survey (<https://arxiv.org/pdf/2112.00540>, Lemma 4.14), and Whitney's
+  extension theorem in Evans–Gariepy §6.5 (<https://ncatlab.org/nlab/show/Whitney+extension+theorem>).
+  A search for the numbering of Gilbarg–Trudinger's Lemmas 7.12 and 7.14 was inconclusive. §3.3 and
+  §6 therefore cite §7.8 of that book and use the lemma numbers given in the accepted doc comments.
 
 No proof step depends on a network source: the mathematics is that of Simon's book as recorded in
 the accepted child proofs, which cite the additional sources listed in §11.
@@ -1399,13 +1606,17 @@ Every accepted DAG node of the run, grouped by the root child under which the Le
 
 - its name (all are `GMT.Ch06.Submission.<name>`) and line in `GMT/Ch06/Submission.lean`;
 - its DAG node, theorem issue `#i` (<https://github.com/ZhengyangZhang06/gmt-formalize/issues/i>), solution PR `#p` (<https://github.com/ZhengyangZhang06/gmt-formalize/pull/p>) and accepted candidate commit;
-- **Statement and proof**: its Lean doc comment, reproduced verbatim except that line breaks are joined (six declarations have no doc comment; for them a summary of the accepted natural-language proof is given, marked as such). Nineteen doc comments contain an error, listed in §8. Two are mathematical errors, one omits a hypothesis of the Lean statement, and sixteen give wrong locators into Simon's book or into the literature. In those entries the reproduced passage is corrected in place, and the change is marked **[corrected]**. A **Correction** line in the same entry quotes the original wording and justifies the change. The Lean doc comments themselves belong to the accepted declarations' text and are left unchanged. The authoritative statement is the declaration's Lean type, which equals the node's frozen `lean_statement` (§9);
+- **Statement and proof**: its Lean doc comment, reproduced verbatim except that line breaks are joined. Six declarations have no doc comment, and for them a summary is given, marked as such. For three of them it summarizes the accepted natural-language proof. For `iwl_cr_hp_injective_pieces`, `iwl_top_dim_integrality` and `ind_pi_ss_cycle_slice_boundary` it summarizes the Lean proof, which takes a different route from the accepted natural-language proof (see their entries). In 120 entries the reproduced text contained an error; they are listed in §8. Counting each entry once, under its most serious error, 14 contained a false or ill-formed mathematical claim, 53 omitted a hypothesis of the Lean statement on which the claim depends, and 53 had a wrong locator, quotation or provenance label. In those entries the reproduced passage is corrected in place, and each change is marked **[corrected]**. A **Correction** line in the same entry quotes the original wording and justifies the change. The Lean doc comments themselves belong to the accepted declarations' text and are left unchanged. The authoritative statement is the declaration's Lean type, which equals the node's frozen `lean_statement` (§9);
 - **Calls**: the accepted declarations its proof references directly, with the section where each is listed;
 - **Called by**: the accepted declarations (or `main_theorem`) whose proofs reference it directly.
 
 Doc comments sometimes refer to an accepted declaration by an abbreviation, for example `l1_density` for `imc_mlb_exists_hasCompactSupport_eLpNorm_sub_le` (node `root.deformation-a1.im_completeness-a1.mass_lower_bound-a1.l1_density-a1`) or `minor_weak_star` for `deformation_ipl_mwc_minor_weak_star`. Each such abbreviation (a DAG key, i.e. the last component of a node id, or the end of a declaration name) was checked to denote exactly one declaration of this catalogue; the **Calls** and **Called by** lines give exact names.
 
-Doc comments also use the step labels of the accepted natural-language proofs (`nodes/*/parent-supplied-natural-proof.md`, §7). Examples are "Step 6", "Part I", "I.5", "(6c)", "(P4)", "(E0)", "(Aff)" and "(MF)". Such labels number steps of those reviewed proofs, not items of Simon's book, even where the same sentence names the theorem of the book that the step helps to prove.
+Doc comments also use the step labels of the accepted natural-language proofs (`nodes/*/parent-supplied-natural-proof.md`, §7). Examples are "Step 6", "Part I", "I.5", "(6c)", "(P4)", "(E0)", "(Aff)" and "(MF)". Such labels number steps of those reviewed proofs, not items of Simon's book or of the other cited works, even where the same sentence names the theorem of the book that the step helps to prove.
+
+Some doc comments locate a step of the formal proof "in the proof of" a theorem of the book whose printed proof is shorter. For example, the printed proof of 6.3 (p. 170) is the single sentence "A direct consequence of 6.2 above and the Compactness 3.11". So "the locality step in the proof of Ch. 6, 6.3" means a step of the formal proof of 6.3, i.e. of the accepted natural-language proofs of `root.boundary_rectifiability-a1` and its descendants, and does not claim that the printed proof contains that step.
+
+Doc comments often state a result in Simon's conventions, in which some hypotheses are implicit. For instance, Ch. 3, 1.7 (p. 74) builds the measurability of `M` and the positivity and local integrability of `θ` into the definition of the approximate tangent space, while SimonGMT's `HasWeightedApproximateTangentSpaceAt` does not. Where a reproduced statement omitted a hypothesis of the Lean statement on which its claim depends, the hypothesis is added and marked **[corrected]**.
 
 ### A.1 Lemma 2.15 (§3.1): `compactness_under_mass_bounds` and its 12 further declarations
 
@@ -1433,7 +1644,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `cmb_exists_countable_dense_testForms` (L3869)
 
 - `root.compactness_mass_bounds-a1.testform_separable-a1` · issue #693 · PR #1757 · candidate `bfaf075e7525`
-- **Statement and proof**: **Separability step of Simon Ch. 6, Lemma 2.15 (p. 137).**  If `closure W` is compact, a countable family `E` of test forms supported in `W` is dense among all test forms supported in `W`, uniformly in the Euclidean coefficient norm.  The coefficient vector `c(α) = (α(e_{I 0}, …, e_{I (n-1)}))_I ∈ ℝ^(Fin n → Fin P)` satisfies `|α| ≤ √N ‖c(α)‖_∞`.  For each accuracy `1/(m+1)` and scale `1/(j+1)`, the forms whose coefficients oscillate by less than `1/(m+1)` at scale `1/(j+1)` are approximated through their values on a finite `1/(j+1)`-net of `closure W`, which lie in a separable finite-dimensional space.
+- **Statement and proof**: **Separability step of Simon Ch. 6, Lemma 2.15 (p. 137).**  If `closure W` is compact, a countable family `E` of test forms supported in `W` is dense among all test forms supported in `W`, uniformly in the Euclidean coefficient norm.  The coefficient vector `c(α) = (α(e_{I 0}, …, e_{I (n-1)}))_I ∈ ℝ^(Fin n → Fin P)` satisfies `|α| ≤ √N ‖c(α)‖_∞` with `N = #(Fin n → Fin P)` **[corrected]**.  For each accuracy `1/(m+1)` and scale `1/(j+1)`, the forms whose coefficients oscillate by less than `1/(m+1)` at scale `1/(j+1)` are approximated through their values on a finite `1/(j+1)`-net of `closure W`, which lie in a separable finite-dimensional space.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), leaves `N` undefined. The neighbouring entry `cmb_exists_weakly_convergent_subseq` uses `N` for `√#(Fin n → Fin P)`, and with that value the bound would be false: for `P = 2`, `n = 1` and `α = dx¹ + dx²`, `|α| = √2 > 2^{1/4}` while `‖c(α)‖_∞ = 1`. The Lean proof (lines 3878–3880), whose local constant `N` is `√#(Fin n → Fin P)`, proves `|α| ≤ √#(Fin n → Fin P) · ‖c(α)‖_∞`, i.e. the stated bound with `N = #(Fin n → Fin P)`: `|α|²` is the sum of the squares of at most `N` coefficients, each at most `‖c(α)‖_∞²`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `cmb_exists_weakly_convergent_subseq`
 
@@ -1505,7 +1717,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `constancy_theorem` (L42133)
 
 - `root.constancy-a1` · issue #316 · PR #4888 · candidate `b4bbd87115fa`
-- **Statement and proof**: **Simon Ch. 6, Theorem 2.34 (Constancy Theorem, p. 142).**  The printed proof in three parts: `∂T = 0` makes `T` kill every `(D_j a) dx¹ ∧ ⋯ ∧ dxⁿ` (display (2)); such a `T` is `c_{x₀} [[B_r(x₀)]]` near each `x₀ ∈ U` (Riesz representation of the mollified functional, `θ_ε` constant, `ε ↓ 0`); on connected `U` these local constants agree, and a partition of unity gives `T = c [[U]]`.
+- **Statement and proof**: **Simon Ch. 6, Theorem 2.34 (Constancy Theorem, p. 142).**  The proof in three parts, of which the printed proof contains the first two **[corrected]**: `∂T = 0` makes `T` kill every `(D_j a) dx¹ ∧ ⋯ ∧ dxⁿ` (display (2)); such a `T` is `c_{x₀} [[B_r(x₀)]]` near each `x₀ ∈ U` (Riesz representation of the mollified functional, `θ_ε` constant, `ε ↓ 0`); on connected `U` these local constants agree, and a partition of unity gives `T = c [[U]]`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "The printed proof in three parts". The printed proof (pp. 142–143) ends with the constancy of `T` on balls `B_ρ(x₀) ⊆ U` and the words "and the result follows". The third part, the agreement of the local constants on the connected set `U` and the partition of unity, is supplied by the formal proof (`constancy_of_local_constancy`, `constancy_testFormOn_eq_finset_sum_subordinate`).
 - **Calls**: `constancy_of_local_constancy`, `constancy_local_on_balls`, `constancy_closed_kills_partial_derivatives`
 - **Called by**: `main_theorem`
 
@@ -1610,7 +1823,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `constancy_local_of_mollified_const` (L41467)
 
 - `root.constancy-a1.local_on_balls-a1.mollifier_limit-a1` · issue #2604 · PR #3732 · candidate `4a6e0cee1f77`
-- **Statement and proof**: Simon Ch. 6, Theorem 2.34, Step 5 of the proof (p. 143, "letting ε ↓ 0"): let `u` be sequentially continuous on C^∞ functions supported in a fixed compact `K ⊆ U` (condition (C)), `B̄_R(x₀) ⊆ U`, and let continuous kernels `ψ_k` with `spt ψ_k ⊆ B̄_{r_k}(0)`, `ρ + r_k ≤ R`, satisfy `D^q(ψ_k ∗ b) → D^q b` uniformly for every C^∞ compactly supported `b`.  If `u(ψ_k ∗ (1_{B_ρ(x₀)} f)) = c_k ∫_{B_ρ(x₀)} f` for all `k` and all `f` integrable on `B_ρ(x₀)`, then `u(b) = c₀ ∫ b` for one constant `c₀` and every C^∞ compactly supported `b` with `spt b ⊆ B_ρ(x₀)`.
+- **Statement and proof**: Simon Ch. 6, Theorem 2.34: Step 5 of the accepted natural-language proof of `constancy_local_on_balls`, i.e. the final passage to the limit in the mollification parameter in the printed proof (p. 143) **[corrected]**: let `u` be sequentially continuous on C^∞ functions supported in a fixed compact `K ⊆ U` (condition (C)), `B̄_R(x₀) ⊆ U`, and let continuous kernels `ψ_k` with `spt ψ_k ⊆ B̄_{r_k}(0)`, `ρ + r_k ≤ R`, satisfy `D^q(ψ_k ∗ b) → D^q b` uniformly for every C^∞ compactly supported `b`.  If `u(ψ_k ∗ (1_{B_ρ(x₀)} f)) = c_k ∫_{B_ρ(x₀)} f` for all `k` and all `f` integrable on `B_ρ(x₀)`, then `u(b) = c₀ ∫ b` for one constant `c₀` and every C^∞ compactly supported `b` with `spt b ⊆ B_ρ(x₀)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "Step 5 of the proof (p. 143, "letting ε ↓ 0")". The printed proof has no numbered steps, and `ε` is the accepted proofs' name for the book's mollification parameter, so the quotation is not verbatim. The step is Step 5, "(Letting ε ↓ 0.)", of the accepted natural-language proof of the parent node `root.constancy-a1.local_on_balls-a1`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `constancy_local_on_balls`
 
@@ -1640,7 +1854,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `rectifiability_mass_measure_rectifiable` (L62354)
 
 - `root.rectifiability-a1.mass_measure_rectifiable-a1` · issue #1041 · PR #5390 · candidate `15bc3161e8f8`
-- **Statement and proof**: Simon Ch. 6, proof of 8.1, (1)–(8) (pp. 173–174): if `Θ*ⁿ(μ, x) > 0` for `μ`-a.e. `x`, the mass measure `μ` of `T` is `θ Hⁿ ⌞ M` for a Borel, countably `n`-rectifiable `M ⊆ U` and a Borel `θ`, positive on `M` and locally `Hⁿ`-integrable in `U`.  A Borel carrier `B₀ ⊆ U ∩ {Θ*ⁿ(μ, ·) > 0}` of `μ` is `Hⁿ`-σ-finite; in its decomposition `B₀ = R ∪ P'` (Ch. 3, Lemma 3.2) the purely unrectifiable part `P'` is `μ`-null by the structure theorem and Remark 2.37(2), hence `Hⁿ`-null; Radon–Nikodym for `μ ≪ Hⁿ ⌞ B₀` then gives `M` and `θ`.
+- **Statement and proof**: Simon Ch. 6, proof of 8.1, (1)–(8) (pp. 173–174): if `M_W(T) + M_W(∂T) < ∞` for all `W ⊂⊂ U` **[corrected]** and `Θ*ⁿ(μ, x) > 0` for `μ`-a.e. `x`, the mass measure `μ` of `T` is `θ Hⁿ ⌞ M` for a Borel, countably `n`-rectifiable `M ⊆ U` and a Borel `θ`, positive on `M` and locally `Hⁿ`-integrable in `U`.  A Borel carrier `B₀ ⊆ U ∩ {Θ*ⁿ(μ, ·) > 0}` of `μ` is `Hⁿ`-σ-finite; in its decomposition `B₀ = R ∪ P'` (Ch. 3, Lemma 3.2) the purely unrectifiable part `P'` is `μ`-null by the structure theorem and Remark 2.37(2), hence `Hⁿ`-null; Radon–Nikodym for `μ ≪ Hⁿ ⌞ B₀` then gives `M` and `θ`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), leaves implicit the hypothesis of 8.1 that `M_W(T) + M_W(∂T) < ∞` for all `W ⊂⊂ U`, which the Lean statement (line 62354) assumes and the proof needs (Lemma 2.36 uses the bound on `∂T`).
 - **Calls**: `cmb_exists_compactly_contained_exhaustion` (A.1), `rectifiability_mass_measure_abs_continuous`, `rectifiability_positive_density_cover_null`, `rectifiability_structure_projection`, `rectifiability_projection_null`, `rectifiability_rn_positive_real_density`
 - **Called by**: `rectifiability_theorem`
 
@@ -1668,7 +1883,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `br_la_apply_eq_zero_of_lt_degree` (L3440)
 
 - `root.boundary_rectifiability-a1.lattice_approximation-a1.low_degree_vanish-a1` · issue #1191 · PR #1555 · candidate `5e97e54b7c48`
-- **Statement and proof**: Currents of degree `n > P` in `ℝ^P` vanish (step 1 of the proof of Simon Ch. 6, 6.2): any `n` vectors of `ℝ^P` are linearly dependent, so every `n`-covector is `0`, every test form is `0`, and `X(ω) = X(0) = 0`.
+- **Statement and proof**: Currents of degree `n > P` in `ℝ^P` vanish (step 1 of the accepted natural-language proof of `br_lattice_approximation`, the finite-mass case of Simon Ch. 6, 6.2 used for 6.3 **[corrected]**): any `n` vectors of `ℝ^P` are linearly dependent, so every `n`-covector is `0`, every test form is `0`, and `X(ω) = X(0) = 0`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "step 1 of the proof of Simon Ch. 6, 6.2". The printed proof of 6.2 (pp. 169–170) has no such step; the case `P < m + 1` is step 1 of the accepted proof of the parent node `root.boundary_rectifiability-a1.lattice_approximation-a1`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `rectifiability_mass_measure_representation`, `br_lattice_approximation`
 
@@ -1801,7 +2017,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `rpn_pe_kernel_sup_bound` (L3137)
 
 - `root.rectifiability-a1.projection_null-a1.potential_estimate-a1.kernel_sup_bound-a1` · issue #3343 · PR #4318 · candidate `6d0076523601`
-- **Statement and proof**: Sup bound for the kernel potentials (Step 5 of the potential estimate).  With `ω = Lⁿ(B₁(0))`, `c = (m + 1) ω` and `K_j(t) = t_j / (c |t|^{m+1})`, every compactly supported `a` with `|a| ≤ M` satisfies `|∫ K_j(t) a(y - t) dt| ≤ C M Lⁿ(spt a)^{1/(m+1)}` with `C = (m + 2) ω^{m/(m+1)} / c`.  Proof: `|K_j(t) a(y - t)| ≤ (M / c) 1_{S_y}(t) |t|^{-m}` on `S_y = {t : y - t ∈ spt a}`, a translate of `spt a`; integrate and apply `rpn_pe_inv_norm_pow_set_bound` to `S_y`.  No measurability of `a` is needed.
+- **Statement and proof**: Sup bound for the kernel potentials (Step 5 of the potential estimate).  With `ω = Lⁿ(B₁(0))`, `c = (m + 1) ω` and `K_j(t) = t_j / (c |t|^{m+1})`, every compactly supported `a` with `|a| ≤ M` satisfies `|∫ K_j(t) a(y - t) dt| ≤ C M Lⁿ(spt a)^{1/(m+1)}` with `C = (m + 2) ω^{m/(m+1)} / c`.  Proof: `|K_j(t) a(y - t)| ≤ (M / c) 1_{S_y}(t) |t|^{-m}` on `S_y = {t : y - t ∈ spt a} = y − spt a`, the image of `spt a` under the measure-preserving map `s ↦ y − s`, so that `Lⁿ(S_y) = Lⁿ(spt a)` **[corrected]**; integrate and apply `rpn_pe_inv_norm_pow_set_bound` to `S_y`.  No measurability of `a` is needed.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), calls `S_y` "a translate of `spt a`". It is `y − spt a`, a translate of the reflection `−spt a`, and in general not a translate of `spt a` (for `n = 1`, `spt a = [0, 1] ∪ [2, 4]` and `y = 0`, `S_0 = [−4, −2] ∪ [−1, 0]`). The proof only uses `Lⁿ(S_y) = Lⁿ(spt a)`, which holds because `t ↦ y − t` preserves Lebesgue measure.
 - **Calls**: `rpn_pe_inv_norm_pow_set_bound`
 - **Called by**: `rpn_potential_estimate`
 
@@ -1892,7 +2109,14 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `rectifiability_structure_projection` (L61823)
 
 - `root.rectifiability-a1.structure_projection-a1` · issue #1034 · PR #5322 · candidate `2fe9c1f38968`
-- **Statement and proof**: **Simon Ch. 3, Structure Theorem 3.6, as used in Ch. 6, 8.1 (p. 174).**  If `A ⊆ ℝ^P` is purely `n`-unrectifiable and `Hⁿ`-σ-finite (`n = m + 1`), then some rotation `Q` makes every coordinate projection `p_α(Q(A))`, `α ∈ I(n, P)`, Lebesgue-null.  Up to an `Hⁿ`-null set, `A` is a countable union of compact purely unrectifiable pieces of finite measure, and their images under `x ↦ (⟪vᵢ, x⟫)ᵢ` are null for almost every frame `v` (`rectifiability_bf_projection_null_ae`).  Gram–Schmidt applied to a random frame, together with Tonelli's theorem, gives an orthonormal frame all of whose coordinate subframes avoid the null set of bad frames.
+- **Statement and proof**: **Simon Ch. 3, Structure Theorem 3.6, as used in Ch. 6, 8.1 (p. 174).**  If `A ⊆ ℝ^P` is purely `n`-unrectifiable and `Hⁿ`-σ-finite (`n = m + 1`), then some rotation `Q` makes every coordinate projection `p_α(Q(A))`, `α ∈ I(n, P)`, Lebesgue-null.  Up to an `Hⁿ`-null set, `A` is covered by countably many compact purely unrectifiable sets of finite measure, which lie in Borel hulls `B_j` of the pieces `A ∩ S_j` and not necessarily in `A`; their images under `x ↦ (⟪vᵢ, x⟫)ᵢ` are null for almost every frame `v` (`rectifiability_bf_projection_null_ae`), and so is the image of the `Hⁿ`-null rest of `A`, because a linear map is Lipschitz **[corrected]**.  Gram–Schmidt applied to a random frame, together with Tonelli's theorem, gives an orthonormal frame all of whose coordinate subframes avoid the null set of bad frames.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "Up to an `Hⁿ`-null set, `A` is a countable union of compact purely unrectifiable pieces of finite measure". The statement does not assume that `A` is measurable, and for a non-measurable `A` this is false, because a set that differs from a countable union of compact sets by an `Hⁿ`-null set is `Hⁿ`-measurable. For example, let `C ⊆ ℝ²` be the four-corner Cantor set of Ch. 3, 3.5 (p. 79): it is compact and purely 1-unrectifiable, with `0 < H¹(C) < ∞`. Any non-`H¹`-measurable `A ⊆ C` satisfies the hypotheses. Such a set exists because `H¹⌞C` is a non-zero, finite, atomless Borel measure. The Lean proof covers `A` instead of decomposing it. This happens in its block "Step 2" (step 2 of the accepted natural-language proof, which uses Borel hulls as the proof of Ch. 3, Lemma 3.2, p. 78, does) and in its final block "Steps 4 and 3(d)" (step 3(d) of that proof).
+  - *Hulls.* The hypothesis gives sets `S_j` with `A ⊆ ⋃_j S_j` and `Hⁿ(S_j) < ∞`. Put `A_j = A ∩ S_j` and `B_j = toMeasurable Hⁿ A_j`. This is a Borel set containing `A_j`, with `Hⁿ(B_j) = Hⁿ(A_j) < ∞` and `Hⁿ(B_j ∩ F) = Hⁿ(A_j ∩ F)` for every measurable `F` (Mathlib `Measure.measure_toMeasurable_inter`).
+  - *The hulls are purely unrectifiable.* SimonGMT's `measurable_rectifiable_purelyUnrectifiable_decomposition` (Ch. 3, Lemma 3.2), which needs a measurable set and is therefore applied to `B_j` and not to `A_j`, gives `B_j = R_j ∪ P_j` with `R_j` measurable and countably `n`-rectifiable and `P_j` purely `n`-unrectifiable. Since `R_j ⊆ B_j`, `Hⁿ(R_j) = Hⁿ(B_j ∩ R_j) = Hⁿ(A_j ∩ R_j) = 0`, because `A_j ∩ R_j` is a countably rectifiable subset of `A`. So every countably rectifiable `T ⊆ B_j` has `Hⁿ(T) ≤ Hⁿ(R_j) + Hⁿ(T ∩ P_j) = 0`.
+  - *Compact cores.* Inner regularity of the finite measure `Hⁿ⌞B_j` gives compact sets `C_{j,i} ⊆ B_j` with `Hⁿ(B_j ∖ ⋃_i C_{j,i}) = 0`. Each `C_{j,i}` is compact, purely unrectifiable and of finite measure, and `A ∖ ⋃_{j,i} C_{j,i} ⊆ ⋃_j (B_j ∖ ⋃_i C_{j,i})` is `Hⁿ`-null.
+  - *Transfer to `A`.* Let `v` lie outside the null set of frames for which some `Lⁿ(L_v(C_{j,i}))` is positive. Then `L_v(A) ⊆ ⋃_{j,i} L_v(C_{j,i}) ∪ L_v(A ∖ ⋃_{j,i} C_{j,i})`. The last set is null, because `L_v` is linear, hence Lipschitz, Lipschitz maps send `Hⁿ`-null sets to `Hⁿ`-null sets (SimonGMT `euclideanHausdorffMeasure_image_le_of_lipschitzOn`), and `Hⁿ = Lⁿ` on `ℝⁿ`.
+
+  The passage above is corrected accordingly. Here "rotation" means what the Lean statement provides: a linear isometry `Q` of `ℝ^P`, i.e. an orthogonal transformation, as in Simon's use of 3.6 on p. 174. The last sentence of the passage relies on one more property of the set `Z` of bad frames, proved in the Lean proof (Step 3(c) and the block `hZpre`) and used in its Steps 4–6: `Lⁿ(L_{Gv}(C)) = |det G| Lⁿ(L_v(C))` for every `n × n` matrix `G`, so `v ∈ Z` whenever the recombined frame `Gv` lies in `Z`. Since the first `n` Gram–Schmidt vectors of a frame recombine its first `n` vectors, they lie outside `Z` for almost every random frame (see §3.3).
 - **Calls**: `rectifiability_bf_projection_null_ae`
 - **Called by**: `rectifiability_mass_measure_rectifiable`
 
@@ -1921,7 +2145,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `rectifiability_bf_cone_ratio_measurable` (L60879)
 
 - `root.rectifiability-a1.bf_trichotomy-a1.cone_ratio_measurable-a1` · issue #4591 · PR #5081 · candidate `7e1169c130d8`
-- **Statement and proof**: **Borel measurability of the cone ratio** (step 2(a)–(c) of the Besicovitch–Federer trichotomy, Mattila, *Geometry of Sets and Measures in Euclidean Spaces*, Lemma 18.9).  For `v ∈ (ℝ^N)^k`, `k = m + 1`, let `L_v y = (⟨v₁, y⟩, …, ⟨v_k, y⟩)` and `X_v(a, r, s) = {x : |x - a| < r, |L_v (x - a)| < s |x - a|}`.  Then `Φ(a, v) = limsup_{s → 0⁺} sup_{0 < r < δ} μ(X_v(a, r, s)) / (rs)ᵏ` is measurable in `(a, v)`: the cones are the sections of `G(r, s) = {((a, v), x) : |x - a| < r, |L_v (x - a)| < s |x - a|}`, which is open, monotone in `s` and left continuous in `r`, so `limsup_sup_measurable` applies.
+- **Statement and proof**: **Borel measurability of the cone ratio** (steps 2(a)–(c) of the accepted natural-language proof of the Besicovitch–Federer trichotomy `rectifiability_bf_trichotomy`, cf. Mattila, *Geometry of Sets and Measures in Euclidean Spaces*, Lemma 18.9 **[corrected]**).  For `v ∈ (ℝ^N)^k`, `k = m + 1`, let `L_v y = (⟨v₁, y⟩, …, ⟨v_k, y⟩)` and `X_v(a, r, s) = {x : |x - a| < r, |L_v (x - a)| < s |x - a|}`.  Then `Φ(a, v) = limsup_{s → 0⁺} sup_{0 < r < δ} μ(X_v(a, r, s)) / (rs)ᵏ` is measurable in `(a, v)`: the cones are the sections of `G(r, s) = {((a, v), x) : |x - a| < r, |L_v (x - a)| < s |x - a|}`, which is open, monotone in `s` and left continuous in `r`, so `limsup_sup_measurable` applies.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "step 2(a)–(c) of the Besicovitch–Federer trichotomy, Mattila, …, Lemma 18.9". The step labels are those of the accepted proof of `rectifiability_bf_trichotomy`, not of Mattila's proof.
 - **Calls**: `rectifiability_bf_limsup_sup_measurable`
 - **Called by**: `rectifiability_bf_trichotomy`
 
@@ -1963,14 +2188,16 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `rectifiability_mickle_rado_sup_lsc` (L60380)
 
 - `root.rectifiability-a1.mickle_rado-a1.sup_lsc-a1` · issue #2500 · PR #3328 · candidate `c24b145c9e3f`
-- **Statement and proof** (no doc comment in the source; summary of the accepted natural-language proof): **Lower semicontinuity of the truncated density supremum** (step 1 of Mattila, Thm 18.5). If the outer measure `ψ` on `ℝᵏ`, `k = m + 1`, is inner continuous on open balls, then for every `r` the function `c ↦ sup_{0<t<r} ψ(B(c, t))/tᵏ` is lower semicontinuous. Proof: inner continuity gives, for `a < ψ(B(c, τ))`, some `τ′ < τ` with `a < ψ(B(c, τ′))`, and `B(c, τ′) ⊆ B(c′, τ)` for `|c′ − c| < τ − τ′`, so `c ↦ ψ(B(c, τ))` is lower semicontinuous; division by `tᵏ ∈ (0, ∞)` is a continuous monotone bijection of `[0, ∞]`, and a supremum of lower semicontinuous functions is lower semicontinuous.
+- **Statement and proof** (no doc comment in the source; summary of the accepted natural-language proof): **Lower semicontinuity of the truncated density supremum** (step 1 of the accepted natural-language proof of `rectifiability_mickle_rado`, the Mickle–Radó density theorem, cf. Mattila, Thm 18.5 **[corrected]**). If the outer measure `ψ` on `ℝᵏ`, `k = m + 1`, is inner continuous on open balls, then for every `r` the function `c ↦ sup_{0<t<r} ψ(B(c, t))/tᵏ` is lower semicontinuous. Proof: inner continuity gives, for `a < ψ(B(c, τ))`, some `τ′ < τ` with `a < ψ(B(c, τ′))`, and `B(c, τ′) ⊆ B(c′, τ)` for `|c′ − c| < τ − τ′`, so `c ↦ ψ(B(c, τ))` is lower semicontinuous; division by `tᵏ ∈ (0, ∞)` is a continuous monotone bijection of `[0, ∞]`, and a supremum of lower semicontinuous functions is lower semicontinuous.
+- **Correction**: the summary in the previous revision of this file said "step 1 of Mattila, Thm 18.5". The step number is that of the accepted proof of the parent node `root.rectifiability-a1.mickle_rado-a1`, whose source is Mattila's Theorem 18.5; it is not a step number of Mattila's proof.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `rectifiability_mickle_rado`
 
 #### `rectifiability_mickle_rado_density_zero` (L60495)
 
 - `root.rectifiability-a1.mickle_rado-a1.density_zero-a1` · issue #2525 · PR #3523 · candidate `c75bb5e20a2f`
-- **Statement and proof**: Mickle–Radó density step (Mattila, Thm 18.5, step 3 with `ε ↓ 0`): if `ψ(B(z,τ)) ≤ C τᵏ` for `z ∈ K`, `0 < τ < r`, where `K` is closed and `ψ(K) = 0`, then the upper `k`-density of `ψ` vanishes at `Lᵏ`-a.e. point of `K`.  At a Lebesgue density point `c ∈ K` of `K`, the Vitali estimate `ψ(B(c,t))·ω ≤ C·6ᵏ·Lᵏ(B(c,2t) ∖ K)` together with `Lᵏ(B̄(c,2t) ∖ K) = (2t)ᵏ·ω·(1 − R_c(2t))`, `R_c(ρ) = Lᵏ(K ∩ B̄(c,ρ))/Lᵏ(B̄(c,ρ)) → 1`, gives `ψ(B(c,t))/tᵏ ≤ C·12ᵏ·(1 − R_c(2t)) → 0`.
+- **Statement and proof**: Mickle–Radó density step (step 3 of the accepted natural-language proof of `rectifiability_mickle_rado`, run with `ε ↓ 0`; cf. Mattila, Thm 18.5 **[corrected]**): if `ψ(B(z,τ)) ≤ C τᵏ` for `z ∈ K`, `0 < τ < r`, with `C < ∞` and `r > 0` **[corrected]**, where `K` is closed and `ψ(K) = 0`, then the upper `k`-density of `ψ` vanishes at `Lᵏ`-a.e. point of `K`.  At a Lebesgue density point `c ∈ K` of `K`, the Vitali estimate `ψ(B(c,t))·ω ≤ C·6ᵏ·Lᵏ(B(c,2t) ∖ K)` together with `Lᵏ(B̄(c,2t) ∖ K) = (2t)ᵏ·ω·(1 − R_c(2t))`, `R_c(ρ) = Lᵏ(K ∩ B̄(c,ρ))/Lᵏ(B̄(c,ρ)) → 1`, gives `ψ(B(c,t))/tᵏ ≤ C·12ᵏ·(1 − R_c(2t)) → 0`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "Mattila, Thm 18.5, step 3". The step number is that of the accepted proof of the parent node `root.rectifiability-a1.mickle_rado-a1`, whose source is Mattila's Theorem 18.5; it is not a step number of Mattila's proof. The doc comment also leaves implicit the hypotheses `C < ∞` and `r > 0` of the Lean statement (line 60495).
 - **Calls**: `rectifiability_mickle_rado_vitali_bound`
 - **Called by**: `rectifiability_mickle_rado`
 
@@ -1984,7 +2211,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `rectifiability_bf_fibre_cone_comparison` (L61032)
 
 - `root.rectifiability-a1.bf_trichotomy-a1.fibre_cone_comparison-a1` · issue #4600 · PR #4962 · candidate `ec1bc95d1c91`
-- **Statement and proof**: Cones versus unions of coordinate fibres (step 4 of the Besicovitch–Federer trichotomy, Mattila 18.9, used for Simon Ch. 6, 8.1).  Let `k = m + 1`, `L_u(y) = (⟨u₁, y⟩, …, ⟨u_k, y⟩)`, `X_u(a, r, s) = {x : |x − a| < r, |L_u(x − a)| < s|x − a|}`, `u ⊕_j c = (uᵢ + cᵢ e_j)ᵢ` and `K_j(t) = {x ≠ a : L_{u ⊕_j c}(x − a) = 0 for some |c| < t}`.  With `Φ = limsup_{s → 0⁺} sup_{0<r<δ} μ(X_u(a, r, s))/(rs)ᵏ` and `ϑ_j = limsup_{t → 0⁺} sup_{0<r<δ} μ(B(a, r) ∩ K_j(t))/(rt)ᵏ`, we have `ϑ_j ≤ Φ` for every `j` and `Φ ≤ (√N)ᵏ Σ_j ϑ_j`.  Since `L_{u ⊕_j c}(y) = L_u(y) + y_j c`, `B(a, r) ∩ K_j(t) ⊆ X_u(a, r, t)` and `X_u(a, r, s) ⊆ ⋃_j B(a, r) ∩ K_j(√N s)`.
+- **Statement and proof**: Cones versus unions of coordinate fibres (step 4 of the accepted natural-language proof of the Besicovitch–Federer trichotomy `rectifiability_bf_trichotomy`, cf. Mattila 18.9; used for Simon Ch. 6, 8.1 **[corrected]**).  Let `k = m + 1`, `L_u(y) = (⟨u₁, y⟩, …, ⟨u_k, y⟩)`, `X_u(a, r, s) = {x : |x − a| < r, |L_u(x − a)| < s|x − a|}`, `u ⊕_j c = (uᵢ + cᵢ e_j)ᵢ` and `K_j(t) = {x ≠ a : L_{u ⊕_j c}(x − a) = 0 for some |c| < t}`.  With `Φ = limsup_{s → 0⁺} sup_{0<r<δ} μ(X_u(a, r, s))/(rs)ᵏ` and `ϑ_j = limsup_{t → 0⁺} sup_{0<r<δ} μ(B(a, r) ∩ K_j(t))/(rt)ᵏ`, we have `ϑ_j ≤ Φ` for every `j` and `Φ ≤ (√N)ᵏ Σ_j ϑ_j`.  Since `L_{u ⊕_j c}(y) = L_u(y) + y_j c`, `B(a, r) ∩ K_j(t) ⊆ X_u(a, r, t)` and `X_u(a, r, s) ⊆ ⋃_j B(a, r) ∩ K_j(√N s)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "step 4 of the Besicovitch–Federer trichotomy, Mattila 18.9". The step number is that of the accepted proof of `rectifiability_bf_trichotomy`, not of Mattila's proof.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `rectifiability_bf_trichotomy`
 
@@ -2020,7 +2248,7 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 
 - `root.rectifiability-a1.orientation-a1` · issue #1039 · PR #1918 · candidate `537363e208ed`
 - **Statement and proof**: Simon Ch. 6, proof of Theorem 8.1 (pp. 174–175), (10)–(13) and the concluding argument: the orientation of a rectifiable representation of a current with locally finite boundary mass. For `Hⁿ`-a.e. `x ∈ M` (weighted tangent space `L`, Lebesgue point of `ξ` for `μ = θ Hⁿ⌞M`, finite upper densities of `μ` and of the mass measure `ν` of `∂T`), the blow-ups of `T` at `x` converge to `S_x(ω) = θ(x) ∫_L ⟨ω, ξ(x)⟩ dHⁿ`, while the boundary bound `|∂T(η^#φ)| ≤ sup |η^#φ| ν(B_{4r}(x)) = O(r)` **[corrected]** gives `∂S_x = 0`.  Testing with `φ = (a ϕ) β`, `a` a covector vanishing on `L`, shows `⟨a ∧ β, ξ(x)⟩ = 0`; in an orthonormal frame adapted to `L` this forces `ξ(x) = c τ₁ ∧ ⋯ ∧ τₙ`, and `|ξ(x)| = 1` gives `c = ±1`.
-- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), writes this bound as `= O(rⁿ⁺¹)`. Here `η^#φ` is the pull-back of the `(n − 1)`-form `φ` by `η_{x,r}(y) = (y − x)/r`, so `sup |η^#φ| = r^{1−n} sup |φ|`. The finite upper density of `ν` gives `ν(B_{4r}(x)) = O(rⁿ)`, so the bound is `O(r)`, as in Simon's display (12) of the proof of 8.1 (p. 175: `|ω| ρ^{1−n} μ_{∂T}(B_{Rρ}(x)) → 0`). The order `rⁿ⁺¹` is false for `η^#φ` in general. For example, for `T = (2 + y₁)[[B₁(0)]]` in `ℝ²` one has `∂T(φ) = −∫ φ(e₂) dL²`, and `φ = a dy₂` gives `∂T(η^#φ) = −r ∫ a dL²`. The exponent `n + 1` belongs to the test forms of the Lean proof, `ψ_r(y) = r φ((y − x)/r) = rⁿ (η^#φ)(y)`. For these, `|∂T(ψ_r)| ≤ sup |ψ_r| M_{B_{4r}(x)}(∂T) = O(rⁿ⁺¹)`, and the blow-up is normalized by `r⁻ⁿ` (§3.3, Step 4). Both normalizations give `∂S_x = 0`, so the Lean proof is unaffected.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), writes this bound as `= O(rⁿ⁺¹)`. Here `η^#φ` is the pull-back of the `(n − 1)`-form `φ` by `η_{x,r}(y) = (y − x)/r`, so `sup |η^#φ| = r^{1−n} sup |φ|`. The finite upper density of `ν` gives `ν(B_{4r}(x)) = O(rⁿ)`, so the bound is `O(r)`. This is Simon's display (12) of the proof of 8.1 (p. 175), with `λ` for `r`: for `spt ω ⊆ B_R(0)` it bounds `∂(η_{x,λ#}T)(ω) = ∂T(η_{x,λ}^# ω)` by a constant times `|ω| λ^{1−n} μ_{∂T}(B_{λR}(x))`, which tends to `0` as `λ ↓ 0` because `Θ*ⁿ(μ_{∂T}, x) < ∞`. The order `rⁿ⁺¹` is false for `η^#φ` in general. For example, let `n = 2`, `x = 0` and `T = (2 + y₁)[[B₁(0)]]` in `ℝ²`, i.e. `T(ω) = ∫_{B₁(0)} (2 + y₁) ⟨ω, e₁ ∧ e₂⟩ dL²`. For a 1-form `ψ`, the divergence theorem gives `∂T(ψ) = T(dψ) = ∫_{∂B₁(0)} (2 + y₁) ⟨ψ, τ⟩ dH¹ − ∫_{B₁(0)} ψ(e₂) dL²`, where `τ` is the counterclockwise unit tangent of the circle. The boundary term vanishes when `spt ψ` is a compact subset of the open disc `B₁(0)`. Take `φ = a dy₂` with `a ∈ C_c^∞(B_R(0))`, `∫ a dL² ≠ 0`, and `0 < r < 1/R`. Then `η^#φ = r⁻¹ a(y/r) dy₂`, and its support `r · spt a` is a compact subset of `B_{rR}(0) ⊆ B₁(0)`. Hence `∂T(η^#φ) = −r⁻¹ ∫ a(y/r) dL²(y) = −r ∫ a dL²`, which is of exact order `r`, not `O(r³) = O(rⁿ⁺¹)`. (The previous revision of this file stated the example without the boundary term and without the support condition; see §8.) The exponent `n + 1` belongs to the test forms of the Lean proof, `ψ_r(y) = r φ((y − x)/r) = rⁿ (η^#φ)(y)`. For these, `|∂T(ψ_r)| ≤ sup |ψ_r| M_{B_{4r}(x)}(∂T) = O(rⁿ⁺¹)`, and the blow-up is normalized by `r⁻ⁿ` (§3.3, Step 4). Both normalizations give `∂S_x = 0`, so the Lean proof is unaffected.
 - **Calls**: `cmb_covector_eq_sum_coord_smul_wedge` (A.1), `cmb_exists_compactly_contained_exhaustion` (A.1), `rectifiability_mass_measure_representation`, `rectifiability_weighted_tangent_ae`, `rectifiability_density_comparison`, `cmb_abs_apply_le_of_massOn_le` (A.1)
 - **Called by**: `rectifiability_theorem`
 
@@ -2072,14 +2300,16 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `lpf_lipschitz_localization` (L24536)
 
 - `root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.lipschitz_localization-a1` · issue #1149 · PR #2107 · candidate `e9f440ddea21`
-- **Statement and proof**: Countable localization of a locally Lipschitz map: open sets `B m ⊆ Ω` covering `Ω` and globally Lipschitz maps `v m` agreeing with `u` on `B m` (Lindelöf, then Lipschitz extension).
+- **Statement and proof**: Countable localization of a map `u` that is locally Lipschitz on an open set `Ω` **[corrected]**: open sets `B m ⊆ Ω` covering `Ω` and globally Lipschitz maps `v m` agreeing with `u` on `B m` (Lindelöf, then Lipschitz extension).
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), does not say that `Ω` is open, which the Lean statement (line 24537) assumes; open subsets of `Ω` can cover `Ω` only if `Ω` is open.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `lpf_lipschitz_c1_immersion_pieces`
 
 #### `lpf_c1_approximation_eucl` (L24443)
 
 - `root.lipschitz_pushforward_im-a1.lipschitz_c1_immersion_pieces-a1.c1_approximation_eucl-a1` · issue #1147 · PR #3446 · candidate `eff6bc809135`
-- **Statement and proof**: Simon Ch. 2, Theorem 1.5 (C¹ Approximation Theorem, p. 42) for `ℝ^Q`-valued maps, applied componentwise as in the proof of Ch. 6, Lemma 3.9 (p. 148): a Lipschitz `u : ℝⁿ → ℝ^Q` agrees with a `C¹` map `G`, and has Fréchet derivative `DG(x)`, at every `x` of a closed set `A` with `Lⁿ(ℝⁿ ∖ A) < ε`.
+- **Statement and proof**: Simon Ch. 2, Theorem 1.5 (C¹ Approximation Theorem, p. 42) for `ℝ^Q`-valued maps, applied componentwise (as in Simon's proof of Ch. 3, Lemma 1.2; used for Ch. 6, Lemma 3.9, p. 148) **[corrected]**: a Lipschitz `u : ℝⁿ → ℝ^Q` agrees with a `C¹` map `G`, and has Fréchet derivative `DG(x)`, at every `x` of a closed set `A` with `Lⁿ(ℝⁿ ∖ A) < ε`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "applied componentwise as in the proof of Ch. 6, Lemma 3.9 (p. 148)". The printed discussion of 3.9 (3.3–3.9, pp. 146–148) does not invoke Ch. 2, Theorem 1.5. The componentwise application is made in the accepted proof of `lpf_lipschitz_c1_immersion_pieces` (step 3), which follows Simon's proof of Ch. 3, Lemma 1.2 and which the formal proof of 3.9 uses.
 - **Calls**: `lpf_c1_approximation_real`
 - **Called by**: `lpf_lipschitz_c1_immersion_pieces`, `slicing_im_coarea_chart_cover`, `slicing_im_tg_cc_lipschitz_range_c1_cover`
 
@@ -2170,28 +2400,32 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `lpf_weighted_tangent_on_c1_chart` (L39786)
 
 - `root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1` · issue #731 · PR #3558 · candidate `f9637977f9e7`
-- **Statement and proof**: For `Hⁿ`-a.e. `y ∈ M ∩ Φ(Ω)` and `w ∈ Ω` with `Φ w = y`, `DΦ(w)(ℝⁿ)` is the approximate tangent space of `M` with multiplicity `θ` at `y` (Simon Ch. 3, proof of 1.6 and Remark 1.8(1), for one `C¹` chart `Φ` that is antilipschitz on the open set `Ω`).
+- **Statement and proof**: Let `V` be open, `M ⊆ V` `Hⁿ`-null-measurable and `θ > 0` on `M` with `θ` `Hⁿ`-integrable on `M ∩ K` for compact `K ⊆ V` **[corrected]**. For `Hⁿ`-a.e. `y ∈ M ∩ Φ(Ω)` and `w ∈ Ω` with `Φ w = y`, `DΦ(w)(ℝⁿ)` is the approximate tangent space of `M` with multiplicity `θ` at `y` (Simon Ch. 3, proof of 1.6 and Remark 1.8(1), for one `C¹` chart `Φ` that is antilipschitz on the open set `Ω`).
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), leaves the hypotheses on `(M, θ)` implicit; they are part of Simon's setting in Ch. 3, 1.7, but not of SimonGMT's `HasWeightedApproximateTangentSpaceAt`. The Lean statement (lines 39788–39791) assumes them, and they are now stated.
 - **Calls**: `lpf_wtc_chart_image_measurable_locally_finite`, `lpf_wtc_lusin_compact_pieces`, `lpf_wtc_ae_zero_density_off_set`, `lpf_wtc_tangent_transfer`, `lpf_wtc_chart_approx_tangent`, `lpf_wtc_weighted_tangent_transfer`
 - **Called by**: `deformation_ipl_cc_chart_orientation_sign`, `lpf_chart_chain_rule`, `lpf_pushforward_integrality`, `lpf_tangential_differential_exists`, `slicing_im_ll_tangential_weak_limit`
 
 #### `lpf_wtc_chart_image_measurable_locally_finite` (L25340)
 
 - `root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_image_measurable_finite-a1` · issue #1266 · PR #1564 · candidate `a2f705665fe4`
-- **Statement and proof**: The image `Φ(Ω)` of an open `Ω ⊆ ℝⁿ` under a `C¹` map `Φ : ℝⁿ → ℝ^Q` with `c |w - w'| ≤ |Φ w - Φ w'|` on `Ω` is Borel, and `Hⁿ(Φ(Ω) ∩ K) < ∞` for every compact `K`.
+- **Statement and proof**: The image `Φ(Ω)` of an open `Ω ⊆ ℝⁿ` under a `C¹` map `Φ : ℝⁿ → ℝ^Q` with `c |w - w'| ≤ |Φ w - Φ w'|` on `Ω` for some `c > 0` **[corrected]** is Borel, and `Hⁿ(Φ(Ω) ∩ K) < ∞` for every compact `K`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), does not say `c > 0`, which the Lean statement (line 25342) assumes. With `c = 0` the local finiteness fails: `Φ(t) = (1 + (1 + t²)⁻¹)(cos t, sin t)` is `C¹` and injective on `Ω = (0, ∞)`, and its image is a curve of infinite length in `B̄₂(0)`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `lpf_weighted_tangent_on_c1_chart`, `deformation_ipl_chart_convergence`, `slicing_im_tg_weighted_tangent_chart`, `slicing_im_st_weighted_tangent_on_c1_chart`, `slicing_im_coarea_chart_tangent`
 
 #### `lpf_wtc_lusin_compact_pieces` (L25634)
 
 - `root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.lusin_compact_pieces-a1` · issue #1273 · PR #2283 · candidate `5b63f318a7c2`
-- **Statement and proof**: Lusin decomposition (Simon Ch. 3, Remark 1.8(1)): a positive weight `θ`, `Hⁿ`-integrable on `M ∩ K` for compact `K ⊆ V`, is continuous on countably many compact pieces `C k ⊆ M` of finite `Hⁿ`-measure which cover `M` up to an `Hⁿ`-null set.
+- **Statement and proof**: Lusin decomposition (Simon Ch. 3, Remark 1.8(1)): if `V` is open and `M ⊆ V` is `Hⁿ`-null-measurable **[corrected]**, a positive weight `θ`, `Hⁿ`-integrable on `M ∩ K` for compact `K ⊆ V`, is continuous on countably many compact pieces `C k ⊆ M` of finite `Hⁿ`-measure which cover `M` up to an `Hⁿ`-null set.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits three hypotheses of the Lean statement (lines 25635–25636): `V` is open, `M ⊆ V`, and `M` is `Hⁿ`-null-measurable. The last one is necessary: a set that is covered up to an `Hⁿ`-null set by compact subsets of itself is `Hⁿ`-null-measurable. For example, for `n = Q = 1`, `θ ≡ 1` and a Bernstein set `M ⊆ [0, 1]` (every compact subset of `M` is countable, and `M` has outer measure `1`), the other hypotheses hold but no such pieces exist.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `imc_weightedTangent_iff_approxTangent`, `lpf_weighted_tangent_on_c1_chart`, `slicing_im_tg_weighted_tangent_chart`, `slicing_im_st_weighted_tangent_on_c1_chart`, `slicing_im_coarea_chart_tangent`
 
 #### `lpf_wtc_ae_zero_density_off_set` (L11274)
 
 - `root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.zero_density_off_set-a1` · issue #1274 · PR #2200 · candidate `12d217bba2a4`
-- **Statement and proof**: Localized upper density theorem (Simon Ch. 1, 3.6) for `ν = (Hⁿ ⌞ S).withDensity g`: if `∫⁻_{S ∩ K} g dHⁿ < ∞` for every compact `K ⊆ W`, then `ν(B̄_ρ(y)) / ρⁿ → 0` as `ρ → 0+` for `Hⁿ`-a.e. `y ∈ W \ S`.
+- **Statement and proof**: Localized upper density theorem (Simon Ch. 1, 3.6) for `ν = (Hⁿ ⌞ S).withDensity g`: if `W` is open, `S` is `Hⁿ`-null-measurable **[corrected]** and `∫⁻_{S ∩ K} g dHⁿ < ∞` for every compact `K ⊆ W`, then `ν(B̄_ρ(y)) / ρⁿ → 0` as `ρ → 0+` for `Hⁿ`-a.e. `y ∈ W \ S`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits two hypotheses of the Lean statement (lines 11275–11276): `W` is open and `S` is `Hⁿ`-null-measurable. Simon's Ch. 1, 3.6 (p. 16) also concerns a measurable set. Without measurability the claim fails: for `n = Q = 1`, `W = ℝ`, `g ≡ 1` and a Bernstein set `S ⊆ [0, 1]`, `S` meets every interval `I ⊆ [0, 1]` in a set of outer measure `|I|`, so `ν(B̄_ρ(y)) = 2ρ` for every `y ∈ (0, 1)` and small `ρ`, while `(0, 1) ∖ S` has outer measure `1`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `deformation_imcomb_subset_locality`, `dmr_weightedTangent_inter`, `iwl_imc_density_zero_off_set`, `lpf_weighted_tangent_on_c1_chart`, `slicing_im_tg_weighted_tangent_chart`, `slicing_im_st_weighted_tangent_on_c1_chart`, `slicing_im_coarea_chart_tangent`
 
@@ -2226,14 +2460,16 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `lpf_wtc_caf_lipschitz_localization` (L25382)
 
 - `root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_area_formula-a1.lipschitz_localization-a1` · issue #2378 · PR #2937 · candidate `86fd6e41a7a2`
-- **Statement and proof**: For a `C¹` map `Φ : ℝⁿ → ℝ^Q` with `c |w - w'| ≤ |Φ w - Φ w'|` on an open `Ω ⊆ ℝⁿ` and a compact `K ⊆ ℝ^Q`, `Ω ∩ Φ⁻¹(K)` lies in a bounded open `s ⊆ Ω` on which `Φ` is Lipschitz.
+- **Statement and proof**: For a `C¹` map `Φ : ℝⁿ → ℝ^Q` with `c |w - w'| ≤ |Φ w - Φ w'|` on an open `Ω ⊆ ℝⁿ` for some `c > 0` **[corrected]** and a compact `K ⊆ ℝ^Q`, `Ω ∩ Φ⁻¹(K)` lies in a bounded open `s ⊆ Ω` on which `Φ` is Lipschitz.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), does not say `c > 0`, which the Lean statement (line 25384) assumes. With `c = 0`, `n ≥ 1`, `Φ ≡ 0`, `Ω = ℝⁿ` and `K = {0}`, the set `Ω ∩ Φ⁻¹(K) = ℝⁿ` lies in no bounded `s`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `lpf_wtc_chart_area_formula`
 
 #### `lpf_wtc_caf_signed_of_lintegral` (L25414)
 
 - `root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_area_formula-a1.signed_of_lintegral-a1` · issue #2388 · PR #2998 · candidate `f573bdec80e2`
-- **Statement and proof**: Signed area formula from the nonnegative one: if `∫⁻_{Φ(s)} g dHⁿ = ∫⁻_s J · (g ∘ Φ) dLⁿ` for every Borel `g ≥ 0`, then `∫_{Φ(Ω)} h dHⁿ = ∫_Ω J · (h ∘ Φ) dLⁿ` for every continuous compactly supported `h` with `Ω ∩ Φ⁻¹(spt h) ⊆ s`.
+- **Statement and proof**: Signed area formula from the nonnegative one: let `Ω, s ⊆ ℝⁿ` be open with `s ⊆ Ω` and `s` bounded, `Φ` continuous and injective on `Ω`, and `J ≥ 0` continuous **[corrected]**. If `∫⁻_{Φ(s)} g dHⁿ = ∫⁻_s J · (g ∘ Φ) dLⁿ` for every Borel `g ≥ 0`, then `∫_{Φ(Ω)} h dHⁿ = ∫_Ω J · (h ∘ Φ) dLⁿ` for every continuous compactly supported `h` with `Ω ∩ Φ⁻¹(spt h) ⊆ s`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), leaves `Ω`, `s`, `Φ` and `J` unqualified. The Lean statement (lines 25416–25417) assumes the conditions now stated, and `s ⊆ Ω` is necessary: for `n = Q = 1`, `Ω = (0, 1)`, `s = (−1, 1)`, `Φ(v) = |v|`, `J ≡ 1/2` and continuous `h ≥ 0` with `spt h ⊆ (0, 1)` and `∫ h = 1`, the hypothesis holds (both sides equal `∫₀¹ g`) but the conclusion reads `1 = 1/2`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `lpf_wtc_chart_area_formula`
 
@@ -2275,14 +2511,16 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `lpf_wtc_wtt_remainder_vanishes` (L25211)
 
 - `root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.remainder_vanishes-a1` · issue #2127 · PR #2662 · candidate `178784030758`
-- **Statement and proof**: Zero `θ`-weighted `n`-density of `D` at `y` kills the blow-up integrals (Simon Ch. 3, Remark 1.8(1)): if `(∫⁻_{D ∩ B̄_ρ(y)} θ dHⁿ) / ρⁿ → 0` as `ρ ↓ 0`, then for every `φ ∈ C_c(ℝ^Q)`, `(tⁿ)⁻¹ ∫_D φ(η_{y,t}(x)) θ(x) dHⁿ(x) → 0` as `t ↓ 0`.  No integrability of `θ` is assumed.
+- **Statement and proof**: Zero `θ`-weighted `n`-density of `D` at `y` kills the blow-up integrals (Simon Ch. 3, Remark 1.8(1)): let `D` be `Hⁿ`-null-measurable and `θ ≥ 0` on `D` **[corrected]**. If `(∫⁻_{D ∩ B̄_ρ(y)} θ dHⁿ) / ρⁿ → 0` as `ρ ↓ 0`, then for every `φ ∈ C_c(ℝ^Q)`, `(tⁿ)⁻¹ ∫_D φ(η_{y,t}(x)) θ(x) dHⁿ(x) → 0` as `t ↓ 0`.  No integrability of `θ` is assumed.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), leaves implicit these hypotheses of the Lean statement (line 25211).
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `lpf_wtc_weighted_tangent_transfer`, `imc_wte_approxTangent_of_weightedTangent`
 
 #### `lpf_wtc_wtt_blowup_integral_split` (L25053)
 
 - `root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.weighted_tangent_transfer-a1.blowup_integral_split-a1` · issue #2098 · PR #2683 · candidate `405169da3a03`
-- **Statement and proof**: Splitting of the blown-up weighted integral (Simon Ch. 3, Remark 1.8(1)): for `C ⊆ M` and all small `t > 0`, `∫_M φ(η_t) θ = θ(y) ∫_C φ(η_t) + ∫_C φ(η_t) (θ − θ(y)) + ∫_{M∖C} φ(η_t) θ`.
+- **Statement and proof**: Splitting of the blown-up weighted integral (Simon Ch. 3, Remark 1.8(1)): for `Hⁿ`-null-measurable sets `C ⊆ M` such that `Hⁿ(C ∩ B̄_r(y)) < ∞` and `θ` is `Hⁿ`-integrable on `M ∩ B̄_r(y)` for some `r > 0` **[corrected]**, and all small `t > 0`, `∫_M φ(η_t) θ = θ(y) ∫_C φ(η_t) + ∫_C φ(η_t) (θ − θ(y)) + ∫_{M∖C} φ(η_t) θ`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits these hypotheses of the Lean statement (line 25053). Additivity of the integral over `M = C ∪ (M ∖ C)` needs the null-measurability of `C`: for `n = Q = 1`, `M = [0, 1]`, `θ ≡ 1`, `y = 1/2`, `C ⊆ M` a Bernstein set and `φ ≥ 0` with `spt φ ⊆ (−1, 1)` and `∫ φ = 1`, the integrals over `C` and over `M ∖ C` both equal the integral over `[0, 1]`, so for `t < 1/2` the right side is `2t` and the left side is `t`. The finiteness conditions near `y` make the three integrals on the right finite for small `t`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `lpf_wtc_weighted_tangent_transfer`, `imc_wte_approxTangent_of_weightedTangent`
 
@@ -2331,7 +2569,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `lpf_rsn_local_null` (L9247)
 
 - `root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1.local_null_on_vanishing_open-a1` · issue #1182 · PR #2111 · candidate `b405c044b9ac`
-- **Statement and proof**: **A representation is null where the current vanishes (steps 5–8 of (P2) in Simon Ch. 6, Lemma 3.9).**  If `T = τ(M, θ, ξ)` with `‖ξ‖ = 1` `Hⁿ`-a.e. on `M`, `T` vanishes on the open set `W ⊆ U` and `θ` is integrable on `M ∩ W`, then `Hⁿ(M ∩ W) = 0`.  Testing `T` with `φ α` (`φ ∈ C_c^∞(W)`, `α` an `n`-covector) gives `∫_M θ φ ⟨α, ξ⟩ dHⁿ = 0`, so `⟨α, ξ⟩ = 0` a.e. on `M ∩ W` (`lpf_rsn_weighted_fundamental_lemma`).  Finitely many covectors separate `n`-vectors (`lpf_rsn_covector_separating_family`), so `ξ = 0` a.e. on `M ∩ W`; as `‖ξ‖ = 1` a.e. on `M`, the set `M ∩ W` is null.
+- **Statement and proof**: **A representation is null where the current vanishes (steps 5–8 of (P2) in Simon Ch. 6, Lemma 3.9).**  If `T = τ(M, θ, ξ)` with `M` `Hⁿ`-null-measurable, `θ > 0` on `M`, `ξ` `Hⁿ⌞M`-a.e. strongly measurable **[corrected]** and `‖ξ‖ = 1` `Hⁿ`-a.e. on `M`, `T` vanishes on the open set `W ⊆ U` and `θ` is integrable on `M ∩ W`, then `Hⁿ(M ∩ W) = 0`.  Testing `T` with `φ α` (`φ ∈ C_c^∞(W)`, `α` an `n`-covector) gives `∫_M θ φ ⟨α, ξ⟩ dHⁿ = 0`, so `⟨α, ξ⟩ = 0` a.e. on `M ∩ W` (`lpf_rsn_weighted_fundamental_lemma`).  Finitely many covectors separate `n`-vectors (`lpf_rsn_covector_separating_family`), so `ξ = 0` a.e. on `M ∩ W`; as `‖ξ‖ = 1` a.e. on `M`, the set `M ∩ W` is null.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits three hypotheses of the Lean statement (line 9247). `θ > 0` is necessary: for `θ ≡ 0` the current `τ(M, θ, ξ)` vanishes whatever `M` is.
 - **Calls**: `lpf_rsn_weighted_fundamental_lemma`, `lpf_rsn_covector_separating_family`
 - **Called by**: `lpf_rectifiable_support_null`
 
@@ -2366,7 +2605,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `lpf_pic_current_of_dominated_density` (L45784)
 
 - `root.lipschitz_pushforward_im-a1.pushforward_is_current-a1.current_of_dominated_density-a1` · issue #1065 · PR #1916 · candidate `52afef6d786b`
-- **Statement and proof**: Simon Ch. 6, (3.6): an `n`-vector density `w` that is dominated by an integrable function on `g⁻¹(K)` for every compact `K ⊆ V` defines a current `ω ↦ ∫ ⟨ω(g x), w x⟩ dμ(x)` in `𝒟ₙ(V)`.
+- **Statement and proof**: Simon Ch. 6, (3.6): if `g` is `μ`-a.e. measurable, then a `μ`-a.e. strongly measurable **[corrected]** `n`-vector density `w` that is dominated by an integrable function on `g⁻¹(K)` for every compact `K ⊆ V` defines a current `ω ↦ ∫ ⟨ω(g x), w x⟩ dμ(x)` in `𝒟ₙ(V)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits the measurability of `g` and `w`, which the Lean statement (line 45785) assumes; without it the integrals that define the current need not exist.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `lpf_pushforward_is_current`
 
@@ -2480,7 +2720,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `lpf_pi_signed_fibre_sum` (L8161)
 
 - `root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.signed_fibre_sum-a1` · issue #2621 · PR #3559 · candidate `db4569b324be`
-- **Statement and proof**: Signed form of a fibre-sum area identity.  If `∫⁻_A h J dμ = ∫⁻ ∑'_{x ∈ A, f x = y} h x dν(y)` for every `μ⌞A`-a.e. measurable `h : X → [0, ∞]`, and `g : X → ℝ` is `μ⌞A`-a.e. strongly measurable with `∫⁻_A ‖g‖ₑ J dμ < ∞`, then for `ν`-a.e. `y` the fibre family of `g` over `y` is summable, the fibre sum of `g` is `ν`-integrable and `∫_A g J dμ = ∫ ∑'_{x ∈ A, f x = y} g x dν(y)`.  Apply the identity to `ofReal ∘ g` and `ofReal ∘ (-g)`: both sides equal the difference of the two finite lintegrals, the source side because `g = 0` a.e. where `J = ∞`.
+- **Statement and proof**: Signed form of a fibre-sum area identity.  Let `J : X → [0, ∞]` be `μ⌞A`-a.e. measurable **[corrected]**. If `∫⁻_A h J dμ = ∫⁻ ∑'_{x ∈ A, f x = y} h x dν(y)` with the fibre sum `ν`-a.e. measurable **[corrected]**, for every `μ⌞A`-a.e. measurable `h : X → [0, ∞]`, and `g : X → ℝ` is `μ⌞A`-a.e. strongly measurable with `∫⁻_A ‖g‖ₑ J dμ < ∞`, then for `ν`-a.e. `y` the fibre family of `g` over `y` is summable, the fibre sum of `g` is `ν`-integrable and `∫_A g J dμ = ∫ ∑'_{x ∈ A, f x = y} g x dν(y)`.  Apply the identity to `ofReal ∘ g` and `ofReal ∘ (-g)`: both sides equal the difference of the two finite lintegrals, the source side because `g = 0` a.e. where `J = ∞`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), does not introduce `J`. In the Lean statement (line 8163) `J` is `[0, ∞]`-valued and `μ⌞A`-a.e. measurable, and the hypothesis includes the `ν`-a.e. measurability of the fibre sums (lines 8164–8166).
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `lpf_pi_image_density`
 
@@ -2494,7 +2735,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `lpf_rectifiable_area_formula` (L45312)
 
 - `root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1` · issue #740 · PR #4280 · candidate `2acb4ed7dac3`
-- **Statement and proof**: Area formula on a rectifiable set (Simon Ch. 3, 2.4–2.5), with `J^M f = ‖L_# ξ‖`: for `Hⁿ`-null-measurable `A ⊆ M` and `h ≥ 0`, the fibre sum `y ↦ ∑_{x ∈ A ∩ f⁻¹(y)} h(x)` is `Hⁿ`-a.e. measurable and `∫_A h ‖L_# ξ‖ dHⁿ = ∫ ∑_{x ∈ A ∩ f⁻¹(y)} h(x) dHⁿ(y)`. `A` is cut into the pieces `A ∩ disjointed (Φⱼ(Ωⱼ)) j` of the `C¹` chart cover; on each piece the chart area formula applies, and the rest of `A` is `Hⁿ`-null with `Hⁿ`-null image.
+- **Statement and proof**: Area formula on a rectifiable set (Simon Ch. 3, 2.4–2.5), with `J^M f = ‖L_# ξ‖`: for `Hⁿ`-null-measurable `A ⊆ M` and `Hⁿ⌞A`-a.e. measurable `h : ℝ^P → [0, ∞]` **[corrected]**, the fibre sum `y ↦ ∑_{x ∈ A ∩ f⁻¹(y)} h(x)` is `Hⁿ`-a.e. measurable and `∫_A h ‖L_# ξ‖ dHⁿ = ∫ ∑_{x ∈ A ∩ f⁻¹(y)} h(x) dHⁿ(y)`. `A` is cut into the pieces `A ∩ disjointed (Φⱼ(Ωⱼ)) j` of the `C¹` chart cover; on each piece the chart area formula applies, and the rest of `A` is `Hⁿ`-null with `Hⁿ`-null image.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says only "`h ≥ 0`". The Lean statement (line 45322) assumes `h` `Hⁿ⌞A`-a.e. measurable, and the claimed measurability of the fibre sum needs it: for `f = id` on `M = A = [0, 1]ⁿ` the fibre sum is `h` itself, which need not be measurable.
 - **Calls**: `lpf_countably_rectifiable_c1_cover`, `lpf_locally_lipschitz_image`, `lpf_raf_pushforward_enorm_aemeasurable`, `lpf_chart_chain_rule`, `lpf_raf_chart_jacobian_ae`, `lpf_simple_nvector_algebra`, `lpf_raf_chart_area_formula`, `lpf_raf_fiber_sum_glue`
 - **Called by**: `lpf_pushforward_integrality`
 
@@ -2522,14 +2764,16 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `lpf_raf_chart_area_formula` (L21148)
 
 - `root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_area_formula-a1` · issue #1079 · PR #2839 · candidate `75b8b2de8736`
-- **Statement and proof**: **Area formula on one chart piece (Simon Ch. 3, 2.1–2.2, for one piece `A_j` of the proof of the area formula on a countably `n`-rectifiable set).**  Let `f` be locally Lipschitz on the open set `U ⊆ ℝ^P`, `Φ` Lipschitz and `c`-antilipschitz on the open set `Ω ⊆ ℝⁿ`, and `A ⊆ U ∩ Φ(Ω)` `Hⁿ`-measurable.  If `J(Φ w) · JΦ(w) = J(f ∘ Φ)(w)` for a.e. `w ∈ Ω ∩ Φ⁻¹(A)` (Gram-determinant Jacobians), then `N_A(y) = ∑_{x ∈ A, f x = y} h(x)` is `Hⁿ`-a.e. measurable and `∫_A h J dHⁿ = ∫ N_A dHⁿ`. With `D = Ω ∩ Φ⁻¹(A)`: the change of variables `x = Φ(w)` and the Jacobian identity give `∫_A h J dHⁿ = ∫_D h(Φ w) J(f ∘ Φ)(w) dw`; the area formula for `f ∘ Φ`, which is locally Lipschitz on the open set `Ω ∩ Φ⁻¹(U) ⊇ D`, gives `∫ ∑_{w ∈ D, f(Φ w) = y} h(Φ w) dHⁿ(y)`; and `Φ` maps the fibres `{w ∈ D : f(Φ w) = y}` bijectively onto `{x ∈ A : f x = y}`.
+- **Statement and proof**: **Area formula on one chart piece (Simon Ch. 3, 2.1–2.2, for one piece `A_j` of the proof of the area formula on a countably `n`-rectifiable set).**  Let `f` be locally Lipschitz on the open set `U ⊆ ℝ^P`, `Φ` Lipschitz and `c`-antilipschitz on the open set `Ω ⊆ ℝⁿ`, and `A ⊆ U ∩ Φ(Ω)` `Hⁿ`-measurable, and let `h, J : ℝ^P → [0, ∞]` be `Hⁿ⌞A`-a.e. measurable **[corrected]**.  If `J(Φ w) · JΦ(w) = J(f ∘ Φ)(w)` for a.e. `w ∈ Ω ∩ Φ⁻¹(A)` (Gram-determinant Jacobians), then `N_A(y) = ∑_{x ∈ A, f x = y} h(x)` is `Hⁿ`-a.e. measurable and `∫_A h J dHⁿ = ∫ N_A dHⁿ`. With `D = Ω ∩ Φ⁻¹(A)`: the change of variables `x = Φ(w)` and the Jacobian identity give `∫_A h J dHⁿ = ∫_D h(Φ w) J(f ∘ Φ)(w) dw`; the area formula for `f ∘ Φ`, which is locally Lipschitz on the open set `Ω ∩ Φ⁻¹(U) ⊇ D`, gives `∫ ∑_{w ∈ D, f(Φ w) = y} h(Φ w) dHⁿ(y)`; and `Φ` maps the fibres `{w ∈ D : f(Φ w) = y}` bijectively onto `{x ∈ A : f x = y}`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), does not introduce `h` and `J`. In the Lean statement (line 21148) they are `[0, ∞]`-valued and `Hⁿ⌞A`-a.e. measurable; the claimed measurability of `N_A` needs the measurability of `h` (for `f = Φ = id` the fibre sum is `h` on `A`).
 - **Calls**: `lpf_raf_chart_change_of_variables`, `lpf_raf_local_lipschitz_area`
 - **Called by**: `lpf_rectifiable_area_formula`
 
 #### `lpf_raf_chart_change_of_variables` (L21048)
 
 - `root.lipschitz_pushforward_im-a1.rectifiable_area_formula-a1.chart_change_of_variables-a1` · issue #1073 · PR #2746 · candidate `9fc44225b304`
-- **Statement and proof**: Change of variables along an injective Lipschitz chart (Simon Ch. 3, 2.6 with a weight; used for Ch. 6, 3.9): if `Φ` is Lipschitz and `c`-antilipschitz on the open set `Ω` and `A ⊆ Φ(Ω)` is `Hⁿ`-null-measurable, then `D = Ω ∩ Φ⁻¹(A)` is `Lⁿ`-null-measurable, `g ∘ Φ` is a.e.-measurable on `D`, and `∫_A g dHⁿ = ∫_D g(Φ(w)) JΦ(w) dLⁿ(w)`.  This is the area formula for `Φ` on `D`, whose fibre sums are `1_A g` because `Φ` is injective on `Ω`.
+- **Statement and proof**: Change of variables along an injective Lipschitz chart (Simon Ch. 3, 2.6 with a weight; used for Ch. 6, 3.9): if `Φ` is Lipschitz and `c`-antilipschitz on the open set `Ω` and `A ⊆ Φ(Ω)` is `Hⁿ`-null-measurable and `g : ℝ^P → [0, ∞]` is `Hⁿ⌞A`-a.e. measurable **[corrected]**, then `D = Ω ∩ Φ⁻¹(A)` is `Lⁿ`-null-measurable, `g ∘ Φ` is a.e.-measurable on `D`, and `∫_A g dHⁿ = ∫_D g(Φ(w)) JΦ(w) dLⁿ(w)`.  This is the area formula for `Φ` on `D`, whose fibre sums are `1_A g` because `Φ` is injective on `Ω`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), does not introduce `g`. In the Lean statement (line 21048) `g` is `[0, ∞]`-valued and `Hⁿ⌞A`-a.e. measurable; the claimed measurability of `g ∘ Φ` needs this (for `Φ = id` on `Ω = ℝⁿ`, `g ∘ Φ = g`).
 - **Calls**: `lpf_raf_chart_preimage_null`, `lpf_raf_local_lipschitz_area`
 - **Called by**: `lpf_raf_chart_area_formula`, `deformation_ipl_cc_signed_change_of_variables`, `deformation_ipl_cc_chart_integral_representation`, `slicing_im_creg_box_bulk`, `slicing_im_creg_box_slice_area`, `slicing_im_ll_twl_chart_integral_eq`
 
@@ -2558,7 +2802,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `lpf_pi_im_of_chart_density` (L8980)
 
 - `root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.im_of_chart_density-a1` · issue #2687 · PR #3910 · candidate `441bdc5bad6a`
-- **Statement and proof**: Integer multiplicity from an integer chart-oriented density (parent Steps 7, 8, 10, 11). Let `S(ω) = ∫_Y ⟨ω, Ψ⟩ dHⁿ`, where for `Hⁿ`-a.e. `y ∈ Y`, `Ψ(y) = ∑ᵢ aᵢ σᵢ₁ ∧ ⋯ ∧ σᵢₙ` with `aᵢ ∈ ℤ` and `σᵢ` an orthonormal frame of `DG_{kᵢ}(wᵢ)(ℝⁿ)`, `G_{kᵢ}(wᵢ) = y`.  By (WTC) for `(Y, 1)` all these planes are the approximate tangent plane of `Y` at `y`, so sign rigidity gives `Ψ(y) = c(y) σ₁ ∧ ⋯ ∧ σₙ` with `c(y) ∈ ℤ` and `‖Ψ(y)‖ = |c(y)|`.  Off a null set, `S = τ(M′, θ′, ξ′)` with `M′ = {Ψ ≠ 0}`, `θ′ = ‖Ψ‖` and `ξ′ = Ψ/‖Ψ‖`; (WTC) for `(M′, θ′)` orients `ξ′`.
+- **Statement and proof**: Integer multiplicity from an integer chart-oriented density (parent Steps 7, 8, 10, 11). Let `Y ⊆ V` (`V` open) be `Hⁿ`-null-measurable with `Hⁿ(Y ∩ K) < ∞`, let `Ψ` be `Hⁿ⌞Y`-a.e. strongly measurable with `‖Ψ‖` integrable on `Y ∩ K`, for compact `K ⊆ V`, and let the `G_k` be `C¹` and antilipschitz on open sets `O_k` **[corrected]**. Let `S(ω) = ∫_Y ⟨ω, Ψ⟩ dHⁿ`, where for `Hⁿ`-a.e. `y ∈ Y`, `Ψ(y) = ∑ᵢ aᵢ σᵢ₁ ∧ ⋯ ∧ σᵢₙ` with `aᵢ ∈ ℤ` and `σᵢ` an orthonormal frame of `DG_{kᵢ}(wᵢ)(ℝⁿ)`, `wᵢ ∈ O_{kᵢ}` **[corrected]** and `G_{kᵢ}(wᵢ) = y`.  By (WTC) for `(Y, 1)` all these planes are the approximate tangent plane of `Y` at `y`, so sign rigidity gives `Ψ(y) = c(y) σ₁ ∧ ⋯ ∧ σₙ` with `c(y) ∈ ℤ` and `‖Ψ(y)‖ = |c(y)|`.  Off a null set, `S = τ(M′, θ′, ξ′)` with `M′ = {y ∈ Y : Ψ(y) ≠ 0}` **[corrected]**, `θ′ = ‖Ψ‖` and `ξ′ = Ψ/‖Ψ‖`; (WTC) for `(M′, θ′)` orients `ξ′`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), leaves these hypotheses of the Lean statement (line 8980) implicit; (WTC) applies to `(Y, 1)` and `(M′, θ′)` only under them. It also writes `M′ = {Ψ ≠ 0}`; the Lean proof takes the points of `Y` where `Ψ ≠ 0`, minus a null set.
 - **Calls**: `lpf_pi_simple_unit_facts`, `lpf_pi_chart_image_rectifiable`
 - **Called by**: `lpf_pushforward_integrality`
 
@@ -2588,7 +2833,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_mass_representation` (L22918)
 
 - `root.slicing-a1.mass_representation-a1` · issue #664 · PR #4788 · candidate `59c4caf12f87`
-- **Statement and proof**: **Simon Ch. 6, 2.7–2.9 (pp. 136–137).**  A current `X ∈ 𝒟ₖ(U)` with `M_W(X) < ∞` for every `W ⊂⊂ U` is represented as `X(ω) = ∫ ⟨ω, v⟩ dμ` (2.7) by a Borel measure `μ` living on `U`, finite on compact subsets of `U`, with `|⟨α, v(x)⟩| ≤ |α|`; the restrictions `(X ⌞ A)(ω) = ∫_A ⟨ω, v⟩ dμ` to Borel sets `A` are currents (2.9) with `M_W(X ⌞ A) = μ(W ∩ A)` for every open `W ⊆ U` (2.8).  `X` extends to continuous compactly supported forms in `U` (`smr_exists_continuous_extension`); the Riesz representation of the extension (`smr_riesz_continuous_forms`) gives `(μ, v)`, and the restriction statements are `smr_restriction_isCurrent` and `smr_restriction_massOn_eq`.
+- **Statement and proof**: **Simon Ch. 6, 2.7–2.9 (p. 136 **[corrected]**).**  A current `X ∈ 𝒟ₖ(U)` with `M_W(X) < ∞` for every `W ⊂⊂ U` is represented as `X(ω) = ∫ ⟨ω, v⟩ dμ` (2.7) by a Borel measure `μ` living on `U`, finite on compact subsets of `U`, with `|⟨α, v(x)⟩| ≤ |α|`; the restrictions `(X ⌞ A)(ω) = ∫_A ⟨ω, v⟩ dμ` to Borel sets `A` are currents (2.9) with `M_W(X ⌞ A) = μ(W ∩ A)` for every open `W ⊆ U` (2.8).  `X` extends to continuous compactly supported forms in `U` (`smr_exists_continuous_extension`); the Riesz representation of the extension (`smr_riesz_continuous_forms`) gives `(μ, v)`, and the restriction statements are `smr_restriction_isCurrent` and `smr_restriction_massOn_eq`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), gives "pp. 136–137". The cited items 2.7–2.9 are printed on p. 136 (as is 2.10); 2.11 is on p. 137.
 - **Calls**: `smr_exists_continuous_extension`, `smr_riesz_continuous_forms`, `smr_restriction_isCurrent`, `smr_restriction_massOn_eq`
 - **Called by**: `slicing_exists`, `slicing_mass_bound`
 
@@ -2630,7 +2876,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `smr_exists_testForm_uniform_approx` (L21770)
 
 - `root.slicing-a1.mass_representation-a1.testform_approx-a1` · issue #1323 · PR #2229 · candidate `f8173b174e2d`
-- **Statement and proof**: **Mollification step of Simon Ch. 6, 2.7–2.9 (pp. 136–137).**  A continuous compactly supported `k`-form `φ` with `tsupport φ ⊆ V`, `V` open, is a uniform limit, in the Euclidean coefficient norm, of test forms supported in `V`.  As `|α| ≤ √M ‖α‖` (`M = #(Fin k → Fin P)`, `‖α‖` the operator norm), it suffices to approximate in `‖·‖`.  The approximant is `χ • (ψ ⋆ φ)`: `ψ ⋆ φ` is the convolution of `φ` with a normalized smooth bump `ψ` supported in a ball whose radius is a uniform-continuity modulus of `φ`, and `χ` is a smooth cutoff with values in `[0, 1]`, equal to `1` exactly on `tsupport φ`, whose support `V'` has compact closure in `V`.
+- **Statement and proof**: **Mollification step of Simon Ch. 6, 2.7–2.9 (p. 136 **[corrected]**).**  A continuous compactly supported `k`-form `φ` with `tsupport φ ⊆ V`, `V` open, is a uniform limit, in the Euclidean coefficient norm, of test forms supported in `V`.  As `|α| ≤ √M ‖α‖` (`M = #(Fin k → Fin P)`, `‖α‖` the operator norm), it suffices to approximate in `‖·‖`.  The approximant is `χ • (ψ ⋆ φ)`: `ψ ⋆ φ` is the convolution of `φ` with a normalized smooth bump `ψ` supported in a ball whose radius is a uniform-continuity modulus of `φ`, and `χ` is a smooth cutoff with values in `[0, 1]`, equal to `1` exactly on `tsupport φ`, whose support `V'` has compact closure in `V`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), gives "pp. 136–137". The cited items 2.7–2.9 are printed on p. 136 (as is 2.10); 2.11 is on p. 137.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `smr_exists_continuous_extension`, `smr_ofReal_integral_le_massOn`
 
@@ -2651,7 +2898,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `smr_rb_transfer_functional` (L22175)
 
 - `root.slicing-a1.mass_representation-a1.riesz_borel-a1.transfer_functional-a1` · issue #2073 · PR #2727 · candidate `accc0298da56`
-- **Statement and proof**: Extension by zero from `↥U` to `ℝ^P` transfers a locally bounded functional `L` on `CF_N(U)` to a locally bounded linear functional `L'` on `C_c(↥U, ℝ^N)`, with `L f = L' (f ∘ ι)` for every `f ∈ CF_N(U)`.
+- **Statement and proof**: Extension by zero from `↥U` to `ℝ^P` transfers a locally bounded linear **[corrected]** functional `L` on `CF_N(U)` to a locally bounded linear functional `L'` on `C_c(↥U, ℝ^N)`, with `L f = L' (f ∘ ι)` for every `f ∈ CF_N(U)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), does not say that `L` is linear (additive and homogeneous on `CF_N(U)`), which the Lean statement (line 22175) assumes.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `smr_riesz_borel_euclidean`
 
@@ -2686,14 +2934,16 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `smr_exists_unit_form_gt` (L22814)
 
 - `root.slicing-a1.mass_representation-a1.unit_form_density-a1` · issue #1329 · PR #4098 · candidate `b5389008e353`
-- **Statement and proof**: Simon Ch. 6, 2.8–2.9 (pp. 136–137), the step `μ(W ∩ A) ≤ M_W(T ⌞ A)` of the mass formula for a restriction: continuous unit forms supported in an open `W ⊆ U` detect `μ(W ∩ A)`.  Write `v(x)(α) = ⟨Jα, u(x)⟩` for an isometry `J` of `(Λᵏ, |·|)` onto `ℝ^N`, so `‖u‖ ≤ 1` and `‖u‖ = 1` `μ`-a.e.  Take a compact Lusin set `C ⊆ W ∩ A ∩ {‖u‖ = 1}` of `u` with `c < μ(C)`, a continuous extension `w` of `u|C` with `‖w‖ ≤ 1` (Tietze) and a cutoff `ψ ∈ [0, 1]`, `ψ = 1` on `C`, with `tsupport ψ ⊆ W` and `μ(support ψ ∖ C) < μ(C) − c` (Urysohn).  Then `φ = J⁻¹(ψ w)` has `|φ| ≤ 1`, and `⟨φ, v⟩ = ⟨ψ w, u⟩` is `1` on `C` and `0` off `support ψ`, so `∫_A ⟨φ, v⟩ dμ > c`.
+- **Statement and proof**: Simon Ch. 6, 2.8–2.9 (p. 136 **[corrected]**), the step `μ(W ∩ A) ≤ M_W(T ⌞ A)` of the mass formula for a restriction: continuous unit forms supported in an open `W ⊆ U` detect `μ(W ∩ A)`, for `μ` finite on compact subsets of `U` and a Borel `v` with `|v(x)(α)| ≤ |α|` for all `x`, `α` and, for `μ`-a.e. `x`, `v(x)(α) = 1` for some `|α| ≤ 1` **[corrected]**.  Write `v(x)(α) = ⟨Jα, u(x)⟩` for an isometry `J` of `(Λᵏ, |·|)` onto `ℝ^N`, so `‖u‖ ≤ 1` and `‖u‖ = 1` `μ`-a.e.  Take a compact Lusin set `C ⊆ W ∩ A ∩ {‖u‖ = 1}` of `u` with `c < μ(C)`, a continuous extension `w` of `u|C` with `‖w‖ ≤ 1` (Tietze) and a cutoff `ψ ∈ [0, 1]`, `ψ = 1` on `C`, with `tsupport ψ ⊆ W` and `μ(support ψ ∖ C) < μ(C) − c` (Urysohn).  Then `φ = J⁻¹(ψ w)` has `|φ| ≤ 1`, and `⟨φ, v⟩ = ⟨ψ w, u⟩` is `1` on `C` and `0` off `support ψ`, so `∫_A ⟨φ, v⟩ dμ > c`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), gives "pp. 136–137"; 2.8 and 2.9 are printed on p. 136. It also leaves implicit the hypotheses on `(μ, v)` of the Lean statement (line 22814), on which "so `‖u‖ ≤ 1` and `‖u‖ = 1` `μ`-a.e." rests (see `smr_ufd_unit_coord_field`).
 - **Calls**: `smr_covector_coord_isometry`, `smr_ufd_unit_coord_field`, `smr_ufd_compact_lusin_set`, `smr_ufd_ball_tietze`, `smr_ufd_small_cutoff`, `smr_ufd_integral_lower_bound`
 - **Called by**: `smr_restriction_massOn_eq`
 
 #### `smr_ufd_unit_coord_field` (L21289)
 
 - `root.slicing-a1.mass_representation-a1.unit_form_density-a1.unit_coord_field-a1` · issue #2154 · PR #2865 · candidate `71e312bb1c69`
-- **Statement and proof**: Coordinates of a Borel `k`-vector field in an isometric chart `J` of the `k`-covectors: `u(x) = (v(x)(J⁻¹eᵢ))ᵢ` is Borel, `‖u‖ ≤ 1`, `‖u‖ = 1` `μ`-a.e. and `v(x)(α) = ⟨Jα, u(x)⟩`.
+- **Statement and proof**: Coordinates of a Borel `k`-vector field `v` with `|v(x)(α)| ≤ |α|` for all `x` and `α` and, for `μ`-a.e. `x`, `v(x)(α) = 1` for some `α` with `|α| ≤ 1` **[corrected]**, in an isometric chart `J` of the `k`-covectors: `u(x) = (v(x)(J⁻¹eᵢ))ᵢ` is Borel, `‖u‖ ≤ 1`, `‖u‖ = 1` `μ`-a.e. and `v(x)(α) = ⟨Jα, u(x)⟩`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits these two hypotheses of the Lean statement (lines 21293 and 21295), without which `‖u‖ ≤ 1` and `‖u‖ = 1` fail: since `J` is an isometry, `‖u(x)‖ = sup_{|α| ≤ 1} v(x)(α)`; e.g. `v(x)(α) = 2α(e₁)` for `P = k = N = 1` gives `‖u‖ ≡ 2`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `smr_exists_unit_form_gt`
 
@@ -2728,7 +2978,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `smr_ufd_small_cutoff` (L21598)
 
 - `root.slicing-a1.mass_representation-a1.unit_form_density-a1.small_cutoff-a1` · issue #2188 · PR #2982 · candidate `75510cd11e79`
-- **Statement and proof**: **Small cutoff (step of Simon Ch. 6, 2.7–2.9, pp. 136–137).**  If `μ` is finite on compact subsets of `U`, `C` is compact and `W ⊆ U` is open with `C ⊆ W`, then for every `ε > 0` there is a continuous compactly supported `ψ : ℝ^P → [0, 1]` with `tsupport ψ ⊆ W`, `ψ = 1` on `C` and `μ(support ψ ∖ C) < ε`.  Choose `r > 0` with the compact `cthickening r C ⊆ W`; the open thickenings `O j = thickening (r / (j + 1)) C` decrease to `C`, so by continuity from above `μ(O j ∖ C) < ε` for some `j`, and Urysohn's lemma for `C` and `(O j)ᶜ` gives `ψ`.
+- **Statement and proof**: **Small cutoff (step of Simon Ch. 6, 2.7–2.9, p. 136 **[corrected]**).**  If `μ` is finite on compact subsets of `U`, `C` is compact and `W ⊆ U` is open with `C ⊆ W`, then for every `ε > 0` there is a continuous compactly supported `ψ : ℝ^P → [0, 1]` with `tsupport ψ ⊆ W`, `ψ = 1` on `C` and `μ(support ψ ∖ C) < ε`.  Choose `r > 0` with the compact `cthickening r C ⊆ W`; the open thickenings `O j = thickening (r / (j + 1)) C` decrease to `C`, so by continuity from above `μ(O j ∖ C) < ε` for some `j`, and Urysohn's lemma for `C` and `(O j)ᶜ` gives `ψ`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), gives "pp. 136–137". The cited items 2.7–2.9 are printed on p. 136 (as is 2.10); 2.11 is on p. 137.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `smr_exists_unit_form_gt`
 
@@ -2833,7 +3084,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_mb_pointwise` (L16605)
 
 - `root.slicing-a1.slice_mass_bound-a1.pointwise-a1` · issue #1888 · PR #3886 · candidate `fdaebfd29faa`
-- **Statement and proof**: Simon Ch. 6, 4.9 (p. 158) for the slice `S = ⟨T, f, t₋⟩` of 4.6, `T` represented by `(μ, v)`: for open `W ⊆ U` with `|Df| ≤ L_W` a.e. on `W`, `M_W(S) ≤ L_W · liminf_{h ↓ 0} μ(W ∩ {t - h ≤ f ≤ t}) / h`.  For admissible `ω` and the cut-offs `χ_h` of `slicing_mb_cutoff` (slope at most `(1 + ε)/h`), the defect `X(h) = ∫ χ_h(f) ⟨ω, v₂⟩ dμ₂ - ∫ χ_h(f) ⟨dω, v₁⟩ dμ₁` of 4.11 tends to `B(ω) - ∂A(ω) = -S(ω)` as `h ↓ 0` and satisfies `|X(h)| ≤ (1 + ε)/h · L_W · μ(W ∩ {t - h ≤ f ≤ t})`; let `h ↓ 0`, then `ε ↓ 0`.
+- **Statement and proof**: Simon Ch. 6, 4.9 (p. 158) for the slice `S = ⟨T, f, t₋⟩` of 4.6, `f` Lipschitz on `U`, and `T` represented by `(μ, v)` with `μ` finite on compact subsets of `U` and `|⟨α, v(x)⟩| ≤ |α|` for all `x` and `α` **[corrected]**: for open `W ⊆ U` with `|Df| ≤ L_W` a.e. on `W`, `M_W(S) ≤ L_W · liminf_{h ↓ 0} μ(W ∩ {t - h ≤ f ≤ t}) / h`.  For admissible `ω` and the cut-offs `χ_h` of `slicing_mb_cutoff` (slope at most `(1 + ε)/h`), the defect `X(h) = ∫ χ_h(f) ⟨ω, v₂⟩ dμ₂ - ∫ χ_h(f) ⟨dω, v₁⟩ dμ₁` of 4.11 tends to `B(ω) - ∂A(ω) = -S(ω)` as `h ↓ 0` and satisfies `|X(h)| ≤ (1 + ε)/h · L_W · μ(W ∩ {t - h ≤ f ≤ t})`; let `h ↓ 0`, then `ε ↓ 0`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits three hypotheses of the Lean statement (lines 16608–16610). The normalization `|⟨α, v(x)⟩| ≤ |α|` is necessary, because a representation in the sense of `IsMeasureRepresentation`, the contract's reading of (2.7), need not be normalized: for `P = 1`, `U = W = ℝ`, `T = [[(0, 1)]]`, `f(x) = x` and `t = 1/2`, the slice is `δ_{1/2}` with `M_W(S) = 1`, while `μ = ½ L¹⌞(0, 1)` and `v = 2e₁` represent `T` and give `liminf_{h ↓ 0} μ([1/2 − h, 1/2])/h = 1/2`.
 - **Calls**: `slicing_mb_pointwise_liminf_bound`, `slicing_mb_cutoff`, `slicing_mb_pointwise_cutoff_tendsto`, `slicing_mb_cutoff_defect_bound`
 - **Called by**: `slicing_mass_bound`
 
@@ -2854,7 +3106,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_mb_pointwise_cutoff_tendsto` (L4259)
 
 - `root.slicing-a1.slice_mass_bound-a1.pointwise-a1.cutoff_tendsto-a1` · issue #2242 · PR #2976 · candidate `012eb78d57e0`
-- **Statement and proof**: Level cut-offs converge to the indicator of `{x ∈ U : f x < t}` under the integral: for `χ_h = 1` on `(-∞, t - h]`, `χ_h = 0` on `[t, ∞)` and `|χ_h| ≤ 1`, `∫ χ_h(f) F dν → ∫_{x ∈ U, f x < t} F dν` as `h → 0+` (dominated convergence; Simon 4.11).
+- **Statement and proof**: Level cut-offs converge to the indicator of `{x ∈ U : f x < t}` under the integral: for `f` Lipschitz on the open set `U`, `F` `ν`-integrable with `F = 0` off `U`, and measurable `χ_h` **[corrected]** with `χ_h = 1` on `(-∞, t - h]`, `χ_h = 0` on `[t, ∞)` and `|χ_h| ≤ 1`, `∫ χ_h(f) F dν → ∫_{x ∈ U, f x < t} F dν` as `h → 0+` (dominated convergence; Simon 4.11).
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits these hypotheses of the Lean statement (line 4259). `F = 0` off `U` is necessary: the pointwise limit of `χ_h(f)` is `1_{f < t}` on all of `ℝ^P`; e.g. for `U = (0, 1)`, `f = id`, `ν = δ_{−1}`, `F ≡ 1` and `t = 1/2`, the left side is `1` for small `h` and the right side is `0`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `slicing_mb_pointwise`, `slicing_im_slice_identity`
 
@@ -3001,7 +3254,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_im_tangential_gradient` (L46411)
 
 - `root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1` · issue #2474 · PR #4985 · candidate `dfb10e73f9e3`
-- **Statement and proof**: Tangential gradient of a Lipschitz function on a rectifiable carrier (Simon Ch. 3, 2.1, for the weighted tangent planes of 1.7): for `(M, θ, ξ)` as in 3.1 and `f` `L`-Lipschitz there is a Borel `G` with `‖G‖ ≤ L` everywhere such that for `Hⁿ`-a.e. `x ∈ M`, `G x` lies in every weighted approximate tangent plane `Q` of `(M, θ)` at `x` and `⟨G x, u⟩` is the derivative of `f` at `x` along every `u ∈ Q`.  Cover `M` up to an `Hⁿ`-null set by C¹ bi-Lipschitz charts `Φ_j : Ω_j → ℝ^P`, let `g_j` be the gradient of `f` along `range DΦ_j` on `Φ_j(Ω_j)`, and put `G = g_j` on `Φ_j(Ω_j)` for some `j` and `G = 0` off `⋃ j, Φ_j(Ω_j)`.  At `Hⁿ`-a.e. `x = Φ_j(w) ∈ M`, `range DΦ_j(w)` is a weighted approximate tangent plane, hence the only one as `θ x > 0`.
+- **Statement and proof**: Tangential gradient of a Lipschitz function on a rectifiable carrier (Simon Ch. 3, 2.1, for the weighted tangent planes of 1.7): for a rectifiable triple `(M, θ, ξ)` (Ch. 6, 3.1, with real `θ > 0`) **[corrected]** and `f` `L`-Lipschitz there is a Borel `G` with `‖G‖ ≤ L` everywhere such that for `Hⁿ`-a.e. `x ∈ M`, `G x` lies in every weighted approximate tangent plane `Q` of `(M, θ)` at `x` and `⟨G x, u⟩` is the derivative of `f` at `x` along every `u ∈ Q`.  Cover `M` up to an `Hⁿ`-null set by C¹ bi-Lipschitz charts `Φ_j : Ω_j → ℝ^P`, let `g_j` be the gradient of `f` along `range DΦ_j` on `Φ_j(Ω_j)`, and put `G = g_j` on `Φ_j(Ω_j)` for some `j` and `G = 0` off `⋃ j, Φ_j(Ω_j)`.  At `Hⁿ`-a.e. `x = Φ_j(w) ∈ M`, `range DΦ_j(w)` is a weighted approximate tangent plane, hence the only one as `θ x > 0`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "`(M, θ, ξ)` as in 3.1" right after a parenthetical citing Ch. 3, so that it reads as Ch. 3, 3.1, the definition of purely unrectifiable sets. The triple is that of Ch. 6, 3.1 (p. 146), and the Lean hypothesis `IsRectifiableTriple` allows real `θ > 0`.
 - **Calls**: `slicing_im_tg_c1_chart_cover`, `slicing_im_tg_chart_gradient`, `slicing_im_tg_weighted_tangent_chart`
 - **Called by**: `slicing_integer_multiplicity_ae`
 
@@ -3057,7 +3311,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_im_tg_weighted_tangent_chart` (L45184)
 
 - `root.slicing-a1.slice_integer_multiplicity-a1.tangential_gradient-a1.chart_tangent-a1` · issue #3334 · PR #4292 · candidate `a812942bc581`
-- **Statement and proof**: Weighted approximate tangent plane along a `C¹` chart (Simon Ch. 3, proof of 1.6 "⇒", Remarks 1.5(2) and 1.8(1); used for the tangential gradient in Ch. 6, 4.6–4.7): if `Φ` is `C¹` and antilipschitz on the open set `Ω`, then for `Hⁿ`-a.e. `y ∈ M ∩ Φ(Ω)` and `w ∈ Ω` with `Φ w = y`, `DΦ(w)(ℝⁿ)` is the approximate tangent space of `M` with respect to `θ` at `y`. Cover `M` up to an `Hⁿ`-null set by compact pieces `C k` on which `θ` is continuous; at `Hⁿ`-a.e. `y ∈ C k ∩ Φ(Ω)` the sets `C k ∖ Φ(Ω)`, `Φ(Ω) ∖ C k` and the weight `θ` on `M ∖ C k` have `n`-density `0`, so the tangent plane of `Φ(Ω)` passes to `C k` and then to `(M, θ)`.
+- **Statement and proof**: Weighted approximate tangent plane along a `C¹` chart (Simon Ch. 3, proof of 1.6 "⇒", Remarks 1.5(2) and 1.8(1); used for the tangential gradient in Ch. 6, 4.1–4.5 **[corrected]**): let `V` be open, `M ⊆ V` `Hⁿ`-null-measurable and `θ > 0` on `M` with `θ` `Hⁿ`-integrable on `M ∩ K` for compact `K ⊆ V` **[corrected]**. If `Φ` is `C¹` and antilipschitz on the open set `Ω`, then for `Hⁿ`-a.e. `y ∈ M ∩ Φ(Ω)` and `w ∈ Ω` with `Φ w = y`, `DΦ(w)(ℝⁿ)` is the approximate tangent space of `M` with respect to `θ` at `y`. Cover `M` up to an `Hⁿ`-null set by compact pieces `C k` on which `θ` is continuous; at `Hⁿ`-a.e. `y ∈ C k ∩ Φ(Ω)` the sets `C k ∖ Φ(Ω)`, `Φ(Ω) ∖ C k` and the weight `θ` on `M ∖ C k` have `n`-density `0`, so the tangent plane of `Φ(Ω)` passes to `C k` and then to `(M, θ)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "used for the tangential gradient in Ch. 6, 4.6–4.7". 4.6–4.7 (p. 157) define the slices of a general current and do not involve the tangential gradient; `∇^M f` is used in 4.1–4.5 (pp. 154–157). It also leaves the hypotheses on `(M, θ)` implicit; Simon's Ch. 3, 1.7 (p. 74) builds them into the definition of the approximate tangent space, SimonGMT's `HasWeightedApproximateTangentSpaceAt` does not, and the Lean statement (lines 45186–45189) assumes them.
 - **Calls**: `lpf_wtc_chart_image_measurable_locally_finite` (A.4), `lpf_wtc_lusin_compact_pieces` (A.4), `lpf_wtc_ae_zero_density_off_set` (A.4), `lpf_wtc_tangent_transfer` (A.4), `lpf_wtc_chart_approx_tangent` (A.4), `lpf_wtc_weighted_tangent_transfer` (A.4)
 - **Called by**: `slicing_im_tangential_gradient`
 
@@ -3085,7 +3340,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_im_slice_triple` (L62571)
 
 - `root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1` · issue #2492 · PR #5202 · candidate `ec722690b696`
-- **Statement and proof**: Slices of a rectifiable triple are rectifiable triples (Simon Ch. 6, 4.1–4.4).  For `L¹`-a.e. `t`, `M_t = {x ∈ M : f(x) = t, G(x) ≠ 0}` with multiplicity `θ` and orientation `ξ_t = ξ ⌞ ν`, `ν = |G|⁻¹ G` (`ξ_t(x)(α) = ξ(x)(ν(x)♭ ∧ α)`), is a rectifiable `m`-triple in `U`. The co-area formula `slicing_im_coarea` for `(M, f, G)` feeds `slicing_im_st_measure_fields` (null-measurability of `M_t`, local integrability of `θ` on `M_t`, measurability of `ξ_t`), `slicing_im_st_slice_geometry` (`M_t` is countably `m`-rectifiable with weighted approximate tangent plane `TₓM ∩ G(x)^⊥`, Simon 4.1(2)) and the null transfer `slicing_im_st_ae_transfer`, which carries the orientation clause of `(M, θ, ξ)` and the tangential-gradient property to `Hᵐ`-a.e. point of `M_t`; `subset` and `pos` are inherited from `M_t ⊆ M`.  At such a point, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₘ₊₁` with `τ` an orthonormal basis of `TₓM ∋ G(x) ≠ 0`, so `slicing_im_st_interior_product` gives an orthonormal basis `τ'` of `TₓM ∩ G(x)^⊥` with `ξ_t(x) = ±τ'₁ ∧ ⋯ ∧ τ'ₘ` (Simon 4.3).
+- **Statement and proof**: Slices of a rectifiable triple are rectifiable triples (Simon Ch. 6, 4.1–4.4).  Let `f` be `L`-Lipschitz on `ℝ^P` and `G` a Borel tangential gradient of `f` on `M` with `|G| ≤ L` (as given by `slicing_im_tangential_gradient`) **[corrected]**. For `L¹`-a.e. `t`, `M_t = {x ∈ M : f(x) = t, G(x) ≠ 0}` with multiplicity `θ` and orientation `ξ_t = ξ ⌞ ν`, `ν = |G|⁻¹ G` (`ξ_t(x)(α) = ξ(x)(ν(x)♭ ∧ α)`), is a rectifiable `m`-triple in `U`. The co-area formula `slicing_im_coarea` for `(M, f, G)` feeds `slicing_im_st_measure_fields` (null-measurability of `M_t`, local integrability of `θ` on `M_t`, measurability of `ξ_t`), `slicing_im_st_slice_geometry` (`M_t` is countably `m`-rectifiable with weighted approximate tangent plane `TₓM ∩ G(x)^⊥`, Simon 4.1(1)–(2) **[corrected]**) and the null transfer `slicing_im_st_ae_transfer`, which carries the orientation clause of `(M, θ, ξ)` and the tangential-gradient property to `Hᵐ`-a.e. point of `M_t`; `subset` and `pos` are inherited from `M_t ⊆ M`.  At such a point, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₘ₊₁` with `τ` an orthonormal basis of `TₓM ∋ G(x) ≠ 0`, so `slicing_im_st_interior_product` gives an orthonormal basis `τ'` of `TₓM ∩ G(x)^⊥` with `ξ_t(x) = ±τ'₁ ∧ ⋯ ∧ τ'ₘ` (Simon 4.3).
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), does not state the hypotheses on `f` and `G` of the Lean statement (lines 62573–62578), and they are needed: for an arbitrary `G`, `ξ_t = ξ ⌞ ν` can vanish (e.g. `M = ℝ² × {0}` in `ℝ³`, `ξ = e₁ ∧ e₂`, `f = x₁`, `G ≡ e₃`). It also cites 4.1(2) for the countable rectifiability of `M_t`, which is 4.1(1); 4.1(2) gives the tangent planes.
 - **Calls**: `slicing_im_coarea`, `slicing_im_st_measure_fields`, `slicing_im_st_slice_geometry`, `slicing_im_st_ae_transfer`, `slicing_im_st_interior_product`
 - **Called by**: `slicing_integer_multiplicity_ae`
 
@@ -3120,7 +3376,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_im_coarea_chart_tangent` (L46072)
 
 - `root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_tangent-a1` · issue #3422 · PR #4371 · candidate `7ecb6efce6fd`
-- **Statement and proof**: Weighted approximate tangent planes along a `C¹` chart (Simon Ch. 3, proof of Theorem 1.6 "⇒" and Remark 1.8(1), for one chart): if `Φ : ℝⁿ → ℝ^Q` is `C¹` and antilipschitz on the open set `Ω`, then at `Hⁿ`-a.e. `y ∈ M ∩ Φ(Ω)`, with `y = Φ(w)`, `DΦ(w)(ℝⁿ)` is the approximate tangent space of `M` with respect to `θ`.  Cover `M` up to a null set by compact pieces `C` with `θ|C` continuous (`lpf_wtc_lusin_compact_pieces`).  At a.e. `y ∈ C ∩ Φ(Ω)`, the sets `C ∖ Φ(Ω)`, `Φ(Ω) ∖ C` and the measure `θ Hⁿ ⌞ (M ∖ C)` have zero `n`-density (`lpf_wtc_ae_zero_density_off_set`); there the tangent plane of `Φ(Ω)` (`lpf_wtc_chart_approx_tangent`) passes to `C` (`lpf_wtc_tangent_transfer`) and then to the weighted set `(M, θ)` (`lpf_wtc_weighted_tangent_transfer`).
+- **Statement and proof**: Weighted approximate tangent planes along a `C¹` chart (Simon Ch. 3, proof of Theorem 1.6 "⇒" and Remark 1.8(1), for one chart): let `V` be open, `M ⊆ V` `Hⁿ`-null-measurable and `θ > 0` on `M` with `θ` `Hⁿ`-integrable on `M ∩ K` for compact `K ⊆ V` **[corrected]**. If `Φ : ℝⁿ → ℝ^Q` is `C¹` and antilipschitz on the open set `Ω`, then at `Hⁿ`-a.e. `y ∈ M ∩ Φ(Ω)`, with `y = Φ(w)`, `DΦ(w)(ℝⁿ)` is the approximate tangent space of `M` with respect to `θ`.  Cover `M` up to a null set by compact pieces `C` with `θ|C` continuous (`lpf_wtc_lusin_compact_pieces`).  At a.e. `y ∈ C ∩ Φ(Ω)`, the sets `C ∖ Φ(Ω)`, `Φ(Ω) ∖ C` and the measure `θ Hⁿ ⌞ (M ∖ C)` have zero `n`-density (`lpf_wtc_ae_zero_density_off_set`); there the tangent plane of `Φ(Ω)` (`lpf_wtc_chart_approx_tangent`) passes to `C` (`lpf_wtc_tangent_transfer`) and then to the weighted set `(M, θ)` (`lpf_wtc_weighted_tangent_transfer`).
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), leaves the hypotheses on `(M, θ)` implicit. Simon's Ch. 3, 1.7 (p. 74) builds them into the definition of the approximate tangent space (for compact `K` in the whole space), but SimonGMT's `HasWeightedApproximateTangentSpaceAt` does not. The Lean statement (line 46072) assumes them, and they are now stated.
 - **Calls**: `lpf_wtc_chart_image_measurable_locally_finite` (A.4), `lpf_wtc_lusin_compact_pieces` (A.4), `lpf_wtc_ae_zero_density_off_set` (A.4), `lpf_wtc_chart_approx_tangent` (A.4), `lpf_wtc_tangent_transfer` (A.4), `lpf_wtc_weighted_tangent_transfer` (A.4)
 - **Called by**: `slicing_im_coarea_pieces`
 
@@ -3169,7 +3426,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_im_coarea_eil_liminf_cover_bound` (L4927)
 
 - `root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.eilenberg-a1.liminf_cover_bound-a1` · issue #4045 · PR #4678 · candidate `05b86f9232cb`
-- **Statement and proof**: Simon Ch. 6, §4 (Eilenberg's inequality in the coarea step): if for every `k` the sets `T k i` (`i ∈ ℕ`) cover `s` and have diameter `≤ r k`, where `r k → 0`, then `μH[d](s) ≤ liminf_k ∑ᵢ (ediam T k i)^d`, empty pieces contributing `0`.  Reindexing the `k`-th cover by its nonempty pieces `{i // (T k i).Nonempty}` (a countable type) keeps a cover of `s` with the same diameter bound, so Mathlib's `hausdorffMeasure_le_liminf_tsum` bounds `μH[d](s)` by the liminf of the reindexed sums; each reindexed sum is at most the sum over all `i`.
+- **Statement and proof**: Used for Eilenberg's inequality (Federer 2.10.25) in the formal proof of the co-area formula of Simon Ch. 6, Lemma 4.1 **[corrected]**: if for every `k` the sets `T k i` (`i ∈ ℕ`) cover `s` and have diameter `≤ r k`, where `r k → 0`, then `μH[d](s) ≤ liminf_k ∑ᵢ (ediam T k i)^d`, empty pieces contributing `0`.  Reindexing the `k`-th cover by its nonempty pieces `{i // (T k i).Nonempty}` (a countable type) keeps a cover of `s` with the same diameter bound, so Mathlib's `hausdorffMeasure_le_liminf_tsum` bounds `μH[d](s)` by the liminf of the reindexed sums; each reindexed sum is at most the sum over all `i`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "Simon Ch. 6, §4 (Eilenberg's inequality in the coarea step)". Simon's §4 does not use Eilenberg's inequality; it enters through step 5 of the accepted proof of `slicing_im_coarea`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `slicing_im_coarea_eil_unnormalized`
 
@@ -3204,8 +3462,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_im_creg_local_to_global` (L16355)
 
 - `root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1.cover-a1` · issue #4150 · PR #4768 · candidate `f17042c51b0e`
-- **Statement and proof**: Local-to-global gluing of co-area identities through an injective continuous chart (used for the co-area formula of Simon Ch. 6, Lemma 4.1, p. 154 **[corrected]**): if every point of `Ω ∩ Φ⁻¹(W)` has an open neighbourhood `O` such that for all Borel `S ⊆ O ∩ Ω ∩ Φ⁻¹(W)` the slice function `t ↦ ∫_{Φ(S) ∩ f⁻¹{t}} g dν` is a.e.-measurable and `∫ ∫_{Φ(S) ∩ f⁻¹{t}} g dν dt = ∫_{Φ(S)} J g dμ`, then the same holds with `Φ(S)` replaced by `W` (Lindelöf, disjointification, Lusin–Souslin and countable additivity).
-- **Correction**: the Lean doc comment, kept byte-identical (§9), gives p. 153. §4 begins at the foot of p. 153, but Lemma 4.1 and its co-area formula are printed on p. 154, the page that `slicing_im_st_slice_geometry` cites.
+- **Statement and proof**: Local-to-global gluing of co-area identities through an injective continuous chart (used for the co-area formula of Simon Ch. 6, Lemma 4.1, p. 154 **[corrected]**): let `Ω` be open, `f` measurable and `W ⊆ Φ(Ω)` Borel **[corrected]**. If every point of `Ω ∩ Φ⁻¹(W)` has an open neighbourhood `O` such that for all Borel `S ⊆ O ∩ Ω ∩ Φ⁻¹(W)` the slice function `t ↦ ∫_{Φ(S) ∩ f⁻¹{t}} g dν` is a.e.-measurable and `∫ ∫_{Φ(S) ∩ f⁻¹{t}} g dν dt = ∫_{Φ(S)} J g dμ`, then the same holds with `Φ(S)` replaced by `W` (Lindelöf, disjointification, Lusin–Souslin and countable additivity).
+- **Correction**: the Lean doc comment, kept byte-identical (§9), gives p. 153. §4 begins at the foot of p. 153, but Lemma 4.1 and its co-area formula are printed on p. 154, the page that `slicing_im_st_slice_geometry` cites. The doc comment also omits these hypotheses of the Lean statement (line 16355). `W ⊆ Φ(Ω)` is necessary: for `n = P = 1`, `Ω = (0, 1)`, `Φ = f = id`, `W = {5}`, `ν = 0`, `μ = δ₅` and `J = g = 1`, the hypothesis holds vacuously while the conclusion reads `0 = 1`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `slicing_im_coarea_chart_regular`
 
@@ -3261,7 +3519,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_im_st_measure_fields` (L5162)
 
 - `root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.measure_fields-a1` · issue #3395 · PR #5136 · candidate `deae3dc4ec25`
-- **Statement and proof**: Measure-theoretic fields of the slice triple (Simon Ch. 6, §4; Steps 2, 4, 5 and 6 of the slice triple): under the co-area identity for `(M, f, G)`, for `L¹`-a.e. `t` the set `M_t = {x ∈ M : f x = t, G x ≠ 0}` is `H^m`-null-measurable, `θ` is `H^m`-integrable on `M_t ∩ K` for every compact `K ⊆ U`, and `ξ_t = ξ ∘ ι(|G|⁻¹ G)` is `H^m⌞M_t`-a.e. strongly measurable.  The null transfer moves the fields of `(M, θ, ξ)` to the whole slice `M ∩ f⁻¹{t}`, and `M_t = (M ∩ f⁻¹{t}) ∩ G⁻¹{0}ᶜ` inherits them.
+- **Statement and proof**: Measure-theoretic fields of the slice triple (Simon Ch. 6, §4; Steps 2, 4, 5 and 6 of the slice triple): under the co-area identity for `(M, f, G)`, with `f` measurable and `G` Borel and bounded, `|G| ≤ L` (as for the tangential gradient of an `L`-Lipschitz `f`) **[corrected]**, for `L¹`-a.e. `t` the set `M_t = {x ∈ M : f x = t, G x ≠ 0}` is `H^m`-null-measurable, `θ` is `H^m`-integrable on `M_t ∩ K` for every compact `K ⊆ U`, and `ξ_t = ξ ∘ ι(|G|⁻¹ G)` is `H^m⌞M_t`-a.e. strongly measurable.  The null transfer moves the fields of `(M, θ, ξ)` to the whole slice `M ∩ f⁻¹{t}`, and `M_t = (M ∩ f⁻¹{t}) ∩ G⁻¹{0}ᶜ` inherits them.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits these hypotheses of the Lean statement (line 5162). The bound on `G` is necessary for the integrability claim: for `M = (0, 1)²` in `U = ℝ²` with `θ ≡ 1` and `ξ = e₁ ∧ e₂`, `f(x) = sin(1/x₁)` and `G = ∇f`, the co-area identity holds, but for every `t ∈ (−1, 1)` the slice `M_t` contains infinitely many segments `{s} × (0, 1)`, so `θ` is not `H¹`-integrable on `M_t ∩ [0, 1]²`.
 - **Calls**: `slicing_im_st_ae_transfer`, `slicing_im_st_mf_slice_null_measurable`, `slicing_im_st_mf_slice_integrable`, `slicing_im_st_mf_slice_orientation_aesm`
 - **Called by**: `slicing_im_st_slice_geometry`, `slicing_im_slice_triple`
 
@@ -3282,7 +3541,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_im_st_mf_slice_integrable` (L4992)
 
 - `root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.measure_fields-a1.slice_integrable-a1` · issue #4060 · PR #4706 · candidate `079d76f82b5f`
-- **Statement and proof**: For `L¹`-a.e. `t`, `θ` is `Hᵐ`-integrable on `M ∩ f⁻¹{t} ∩ K` for every compact `K ⊆ U`: co-area with `g = 1_{Kᵢ} |θ₀|` over a compact exhaustion `Kᵢ` of `U`, `θ₀` a Borel version of `θ` on `M`, transferred to the slices by the null-transfer hypothesis.
+- **Statement and proof**: Let `U` be open and `M ⊆ U`, let `θ` be `Hᵐ⁺¹`-integrable on `M ∩ K` for compact `K ⊆ U`, and let `|G| ≤ L` and the co-area identity and the null transfer hold for `(M, f, G)` **[corrected]**. Then for `L¹`-a.e. `t`, `θ` is `Hᵐ`-integrable on `M ∩ f⁻¹{t} ∩ K` for every compact `K ⊆ U`: co-area with `g = 1_{Kᵢ} |θ₀|` over a compact exhaustion `Kᵢ` of `U` gives `∫∫_{M ∩ f⁻¹{t} ∩ Kᵢ} |θ₀| dHᵐ dt ≤ L ∫_{M ∩ Kᵢ} |θ| dHᵐ⁺¹ < ∞` **[corrected]**, `θ₀` a Borel version of `θ` on `M`, transferred to the slices by the null-transfer hypothesis.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits the hypotheses of the Lean statement (line 4992). The bound `|G| ≤ L` and the integrability of `θ` on `M ∩ K` are what make the co-area integrals finite; without the bound the example in the entry `slicing_im_st_measure_fields` applies. The bound displayed in the sketch is added; the Lean proof derives it from the co-area identity (lines 5026–5027).
 - **Calls**: `cmb_exists_compactly_contained_exhaustion` (A.1)
 - **Called by**: `slicing_im_st_measure_fields`
 
@@ -3303,7 +3563,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_im_st_slice_geometry` (L46813)
 
 - `root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.slice_geometry-a1` · issue #3426 · PR #5177 · candidate `9a27cfc863f3`
-- **Statement and proof**: Simon Ch. 6, Lemma 4.1 (1)–(2) (p. 154), from Ch. 3, 2.10(2) and 1.6 (`n = m + 1`): for `L¹`-a.e. `t` the regular level set `M_t = {x ∈ M : f(x) = t, G(x) ≠ 0}` is countably `m`-rectifiable, and at `H^m`-a.e. `x ∈ M_t` every weighted approximate tangent plane `Q` of `(M, θ)` gives the weighted approximate tangent plane `Q ∩ G(x)^⊥` of `(M_t, θ)`. `M` is covered up to an `Hⁿ`-null set by C¹ antilipschitz charts `Φ j` with `f ∘ Φ j = h j` on `A j`, `h j` C¹, `range DΦ j` the tangent plane, `G ∈ range DΦ j` and `⟪G, DΦ j u⟫ = D(h j) u` (`slicing_im_st_chart_data`). For a.e. `t` these facts hold at `H^m`-a.e. point of `M_t` (`slicing_im_st_ae_transfer`), and `M_t` is `H^m`-null-measurable with `θ` locally integrable (`slicing_im_st_measure_fields`). The level sets `{h j = t}` are covered by C¹ bi-Lipschitz `m`-charts `Ψ` with `range DΨ = DΦ j (ker D(h j))` (`slicing_im_st_level_set_charts`). At a good point `G ≠ 0` forces `D(h j) ≠ 0`, and `DΦ j (ker D(h j)) = Q ∩ G^⊥`. Lipschitz extensions of the `Ψ` cover `M_t` up to an `H^m`-null set, and `slicing_im_st_weighted_tangent_on_c1_chart` makes each `range DΨ` a weighted approximate tangent plane of `(M_t, θ)`.
+- **Statement and proof**: Simon Ch. 6, Lemma 4.1 (1)–(2) (p. 154), from Ch. 3, 2.10(2) and 1.6 (`n = m + 1`): for `L¹`-a.e. `t` the regular level set `M_t = {x ∈ M : f(x) = t, G(x) ≠ 0}` is countably `m`-rectifiable, and at `H^m`-a.e. `x ∈ M_t` every weighted approximate tangent plane `Q` of `(M, θ)` gives the weighted approximate tangent plane `Q ∩ G(x)^⊥` of `(M_t, θ)`. `M` is covered up to an `Hⁿ`-null set by C¹ antilipschitz charts `Φ j` with `f ∘ Φ j = h j` on `A j`, `h j` C¹, `range DΦ j` the tangent plane, `G ∈ range DΦ j` and `⟪G, DΦ j u⟫ = D(h j) u` (`slicing_im_st_chart_data`). For a.e. `t` these facts hold at `H^m`-a.e. point of `M_t` (`slicing_im_st_ae_transfer`), and `M_t` is `H^m`-null-measurable with `θ` locally integrable (`slicing_im_st_measure_fields`). The images under `Φ j` of the regular parts `{w ∈ Ω j : h j w = t, D(h j)(w) ≠ 0}` of the level sets are covered by C¹ bi-Lipschitz `m`-charts `Ψ` with `range DΨ(v) = DΦ j(w)(ker D(h j)(w))` where `Ψ(v) = Φ j(w)` (`slicing_im_st_level_set_charts`) **[corrected]**. At a good point `G ≠ 0` forces `D(h j) ≠ 0`, and `DΦ j (ker D(h j)) = Q ∩ G^⊥`. Lipschitz extensions of the `Ψ` cover `M_t` up to an `H^m`-null set, and `slicing_im_st_weighted_tangent_on_c1_chart` makes each `range DΨ` a weighted approximate tangent plane of `(M_t, θ)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says that the level sets `{h j = t}` are covered by charts with `range DΨ = DΦ j (ker D(h j))`. At a critical point, `ker D(h j)` is all of `ℝⁿ`, so `DΦ j(w)(ker D(h j)(w))` is `(m + 1)`-dimensional and cannot be the range of the derivative of an `m`-chart; `slicing_im_st_level_set_charts` covers the images of the regular points only, which suffices because `G ≠ 0` forces `D(h j) ≠ 0` (next sentence).
 - **Calls**: `slicing_im_st_chart_data`, `slicing_im_st_ae_transfer`, `slicing_im_st_measure_fields`, `slicing_im_st_level_set_charts`, `slicing_im_st_weighted_tangent_on_c1_chart`
 - **Called by**: `slicing_im_slice_triple`
 
@@ -3345,7 +3606,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_im_st_weighted_tangent_on_c1_chart` (L45248)
 
 - `root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.weighted_tangent_chart-a1` · issue #3404 · PR #4325 · candidate `04a776d4541f`
-- **Statement and proof**: Weighted approximate tangent planes on a `C¹` antilipschitz chart (Simon Ch. 3, proof of 1.6 "⇒" and Remark 1.8(1); used for the tangent planes of `M` and of the level sets `M_t` in Ch. 6, 4.1(2) and 4.4): for `Hⁿ`-a.e. `y ∈ M ∩ Φ(Ω)` and every `w ∈ Ω` with `Φ w = y`, `DΦ(w)(ℝⁿ)` is the approximate tangent space of `M` with respect to `θ` at `y`.  Cover `M` up to an `Hⁿ`-null set by compact pieces `C k` on which `θ` is continuous (Lusin).  At `Hⁿ`-a.e. `y ∈ C k ∩ Φ(Ω)` the upper density theorem makes `Hⁿ ⌞ (C k ∖ Φ(Ω))`, `Hⁿ ⌞ (Φ(Ω) ∖ C k)` and `θ Hⁿ ⌞ (M ∖ C k)` of `n`-density `0`, so the tangent plane of the chart image `Φ(Ω)` at `y` passes first to `C k` and then to `(M, θ)`.
+- **Statement and proof**: Weighted approximate tangent planes on a `C¹` antilipschitz chart (Simon Ch. 3, proof of 1.6 "⇒" and Remark 1.8(1); used for the tangent planes of `M` and of the level sets `M_t` in Ch. 6, 4.1(2) and 4.4): let `V` be open, `M ⊆ V` `Hⁿ`-null-measurable and `θ > 0` on `M` with `θ` `Hⁿ`-integrable on `M ∩ K` for compact `K ⊆ V` **[corrected]**. For `Hⁿ`-a.e. `y ∈ M ∩ Φ(Ω)` and every `w ∈ Ω` with `Φ w = y`, `DΦ(w)(ℝⁿ)` is the approximate tangent space of `M` with respect to `θ` at `y`.  Cover `M` up to an `Hⁿ`-null set by compact pieces `C k` on which `θ` is continuous (Lusin).  At `Hⁿ`-a.e. `y ∈ C k ∩ Φ(Ω)` the upper density theorem makes `Hⁿ ⌞ (C k ∖ Φ(Ω))`, `Hⁿ ⌞ (Φ(Ω) ∖ C k)` and `θ Hⁿ ⌞ (M ∖ C k)` of `n`-density `0`, so the tangent plane of the chart image `Φ(Ω)` at `y` passes first to `C k` and then to `(M, θ)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), leaves the hypotheses on `(M, θ)` implicit. Simon's Ch. 3, 1.7 (p. 74) builds them into the definition of the approximate tangent space (for compact `K` in the whole space), but SimonGMT's `HasWeightedApproximateTangentSpaceAt` does not. The Lean statement (lines 45250–45253) assumes them, and they are now stated.
 - **Calls**: `lpf_wtc_chart_image_measurable_locally_finite` (A.4), `lpf_wtc_lusin_compact_pieces` (A.4), `lpf_wtc_ae_zero_density_off_set` (A.4), `lpf_wtc_tangent_transfer` (A.4), `lpf_wtc_chart_approx_tangent` (A.4), `lpf_wtc_weighted_tangent_transfer` (A.4)
 - **Called by**: `slicing_im_st_chart_data`, `slicing_im_st_slice_geometry`
 
@@ -3373,7 +3635,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_im_st_lsc_c1_extension` (L44662)
 
 - `root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.level_set_charts-a1.c1_extension-a1` · issue #4123 · PR #4751 · candidate `829465a8a234`
-- **Statement and proof**: `C¹` germ extension (steps 1–2 of the level-set chart construction for Simon Ch. 6, 4.6): if `g` is `C¹` at `x`, then some `g'` that is `C¹` on all of `ℝ^m` agrees with `g` on a ball `B(x, ρ)`.  Take `ε` with `g` `C¹` on `B(x, ε)`, `ρ = ε / 3`, a bump `χ` with `χ = 1` on `B̄(x, ρ)` and `χ = 0` off `B(x, 2ρ)`, and `g' = χ g`.
+- **Statement and proof**: `C¹` germ extension (steps 1–2 of the level-set chart construction for Simon Ch. 6, 4.1–4.4 **[corrected]**): if `g` is `C¹` at `x`, then some `g'` that is `C¹` on all of `ℝ^m` agrees with `g` on a ball `B(x, ρ)`.  Take `ε` with `g` `C¹` on `B(x, ε)`, `ρ = ε / 3`, a bump `χ` with `χ = 1` on `B̄(x, ρ)` and `χ = 0` off `B(x, 2ρ)`, and `g' = χ g`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "for Simon Ch. 6, 4.6". 4.6 (p. 157) defines the slices of a general current; the level-set charts serve Lemma 4.1 and Definition 4.4, and reach 4.6 only through 4.5(2).
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `slicing_im_st_lsc_local_graph`
 
@@ -3534,7 +3797,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `slicing_im_ll_twl_cie_jacobian_measurable` (L44166)
 
 - `root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_integral_eq-a1.jacobian_measurable-a1` · issue #4909 · PR #5208 · candidate `379410958dd0`
-- **Statement and proof**: Measurability of the Gram-determinant Jacobian (step 2 of Simon Ch. 6, 3.9 in charts): for an arbitrary map `Φ : ℝⁿ → ℝ^P`, `w ↦ √det(⟨DΦ(w)eᵢ, DΦ(w)eⱼ⟩)` is Borel measurable, being the continuous map `L ↦ √det(⟨Leᵢ, Leⱼ⟩)` on `ℝⁿ →L[ℝ] ℝ^P` composed with the Borel map `w ↦ fderiv ℝ Φ w`.
+- **Statement and proof**: Measurability of the Gram-determinant Jacobian (step 2 of the accepted natural-language proof of `slicing_im_ll_twl_chart_integral_eq`, the change of variables of Simon Ch. 3, 2.6 used for Ch. 6, 4.5(2) **[corrected]**): for an arbitrary map `Φ : ℝⁿ → ℝ^P`, `w ↦ √det(⟨DΦ(w)eᵢ, DΦ(w)eⱼ⟩)` is Borel measurable, being the continuous map `L ↦ √det(⟨Leᵢ, Leⱼ⟩)` on `ℝⁿ →L[ℝ] ℝ^P` composed with the Borel map `w ↦ fderiv ℝ Φ w`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "step 2 of Simon Ch. 6, 3.9 in charts". Lemma 3.9 (p. 148) has no steps, and this declaration is not used for it: its only user is `slicing_im_ll_twl_chart_integral_eq`, and its source is step 2 of the accepted proof of that node.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `slicing_im_ll_twl_chart_integral_eq`
 
@@ -3669,7 +3933,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `fiw_ims_sc_converges_zero_small` (L5304)
 
 - `root.flat_iff_weak-a1.im_series-a1.series_current-a1.converges_small-a1` · issue #1914 · PR #2610 · candidate `49ba437cb4c7`
-- **Statement and proof**: **A null sequence of test forms is uniformly small (Simon Ch. 6, 2.1).**  If `ω_q → 0` in `𝒟ⁿ(U)`, then all `ω_q` are supported in one compact `K ⊆ U` and, for every `ε > 0`, eventually `|ω_q(x)| ≤ ε` for every `x`, in the Euclidean coefficient norm of Remark 2.6.  The `k = 0` part of the convergence makes the operator norm `‖ω_q(x)‖` uniformly small on `K`, and `ω_q = 0` off `K`; `Submission.fiw_ims_sc_covectorNorm_le_opNorm` gives `|α| ≤ √(P^n) ‖α‖`.
+- **Statement and proof**: **A null sequence of test forms is uniformly small (convergence in `𝒟ⁿ(U)`, Simon Ch. 6, §1, p. 134, as used in the definition 2.1 of currents **[corrected]**).**  If `ω_q → 0` in `𝒟ⁿ(U)`, then all `ω_q` are supported in one compact `K ⊆ U` and, for every `ε > 0`, eventually `|ω_q(x)| ≤ ε` for every `x`, in the Euclidean coefficient norm of Remark 2.6.  The `k = 0` part of the convergence makes the operator norm `‖ω_q(x)‖` uniformly small on `K`, and `ω_q = 0` off `K`; `Submission.fiw_ims_sc_covectorNorm_le_opNorm` gives `|α| ≤ √(P^n) ‖α‖`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), cites "Simon Ch. 6, 2.1". 2.1 (p. 135) defines currents as continuous linear functionals; the convergence of test forms used here is defined in §1, p. 134.
 - **Calls**: `fiw_ims_sc_covectorNorm_le_opNorm` (A.3)
 - **Called by**: `fiw_ims_sc_continuous_of_bound`, `fiw_tb_ext_cutoff_current`
 
@@ -3788,7 +4053,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `dph_iprod_current_of_bound` (L33788)
 
 - `root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.interval_product-a1.current_criterion-a1` · issue #5667 · PR #6095 · candidate `51d9121840c6`
-- **Statement and proof**: A linear functional `T₀` on `𝒟^q(U)` with `|T₀(ω)| ≤ B · sup_x |ω(x)|` (Euclidean coefficient norm) is a current of mass at most `B`: test-form convergence makes `sup_x |ω_j(x)| → 0`, since `|α| ≤ √(P^q) ‖α‖` (conjunct (C3) of `Submission.dph_iprod_slice_covector_norm_le`), and every mass-admissible `ω` has `T(ω) ≤ |T₀(ω)| ≤ B`.
+- **Statement and proof**: A linear functional `T₀` on `𝒟^q(U)` with `|T₀(ω)| ≤ B · sup_x |ω(x)|` (Euclidean coefficient norm) for some `B ≥ 0` **[corrected]** is a current of mass at most `B`: test-form convergence makes `sup_x |ω_j(x)| → 0`, since `|α| ≤ √(P^q) ‖α‖` (conjunct (C3) of `Submission.dph_iprod_slice_covector_norm_le`), and every mass-admissible `ω` has `T(ω) ≤ |T₀(ω)| ≤ B`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), does not say `B ≥ 0`, which the Lean statement (line 33788) assumes; the conclusion "mass at most `B`" needs it when `𝒟^q(U) = {0}`.
 - **Calls**: `dph_iprod_slice_covector_norm_le`
 - **Called by**: `dph_iprod_exists`
 
@@ -3830,7 +4096,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_cr_hp_injective_pieces` (L27106)
 
 - `root.integrality_weak_limits-a1.cycle_reduction-a1.hausdorff_product-a1.injective_pieces-a1` · issue #3758 · PR #4437 · candidate `d4b1082b0720`
-- **Statement and proof** (no doc comment in the source; summary of the accepted natural-language proof): **Disjoint injective Lipschitz pieces of a Borel countably `m`-rectifiable set.** If `A ⊆ ℝ^P` is Borel and countably `m`-rectifiable, there are Lipschitz `G_p : ℝᵐ → ℝ^P` and Borel `B_p ⊆ ℝᵐ` such that `G_p` is injective on `B_p` and differentiable at every point of `B_p`, the images `G_p(B_p) ⊆ A` are Borel and pairwise disjoint, and `Hᵐ(A ∖ ⋃_p G_p(B_p)) = 0`. Proof: Lipschitz maps `F_j` cover `A` up to an `Hᵐ`-null set; the set of points where `F_j` is differentiable with injective derivative is partitioned into Borel pieces on which `F_j` is close to an injective linear map, hence injective (Mathlib's `exists_partition_approximatesLinearOn_of_hasFDerivWithinAt`); the images of the remaining points are `Hᵐ`-null: the non-differentiability points by Rademacher's theorem (Mathlib's `LipschitzWith.ae_differentiableAt`) and the bound on `Hᵐ` of Lipschitz images, and the critical points by a compression estimate `Hᵐ(f(S)) ≤ (‖Λ‖ + s)ᵐ s Lᵐ(S)` on pieces where `f` is `s²`-close to a non-injective linear `Λ`, with `s → 0`; images of Borel sets under maps continuous and injective on them are Borel (Lusin–Souslin); finally the pieces are disjointified.
+- **Statement and proof** (no doc comment in the source; summary of the Lean proof **[corrected]**): **Disjoint injective Lipschitz pieces of a Borel countably `m`-rectifiable set.** If `A ⊆ ℝ^P` is Borel and countably `m`-rectifiable, there are Lipschitz `G_p : ℝᵐ → ℝ^P` and Borel `B_p ⊆ ℝᵐ` such that `G_p` is injective on `B_p` and differentiable at every point of `B_p`, the images `G_p(B_p) ⊆ A` are Borel and pairwise disjoint, and `Hᵐ(A ∖ ⋃_p G_p(B_p)) = 0`. Proof: Lipschitz maps `F_j` cover `A` up to an `Hᵐ`-null set; the set of points where `F_j` is differentiable with injective derivative is partitioned into Borel pieces on which `F_j` is close to an injective linear map, hence injective (Mathlib's `exists_partition_approximatesLinearOn_of_hasFDerivWithinAt`); the images of the remaining points are `Hᵐ`-null: the non-differentiability points by Rademacher's theorem (Mathlib's `LipschitzWith.ae_differentiableAt`) and the bound on `Hᵐ` of Lipschitz images, and the critical points by a compression estimate `Hᵐ(f(S)) ≤ (‖Λ‖ + s)ᵐ s Lᵐ(S)` on pieces where `f` is `s²`-close to a non-injective linear `Λ`, with `s → 0`; images of Borel sets under maps continuous and injective on them are Borel (Lusin–Souslin); finally the pieces are disjointified.
+- **Correction**: the previous revision of this file labelled this summary as a summary of the accepted natural-language proof. It summarizes the Lean proof (steps 1–8, lines 27106–27415), which shows that critical images are `Hᵐ`-null by the compression estimate; the accepted natural-language proof (step 5, with its key step 4) cites SimonGMT's `area_image_compl_regularSet_eq_zero` for this.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `iwl_cr_hausdorff_product_formula`, `dph_hausdorff_product_formula` (A.13, unused)
 
@@ -3999,7 +4266,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `dph_sh_ae_affine_homotopy_isCompact_preimage_cyl` (L28585)
 
 - `root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.smooth_homotopy-a1.affine_estimate-a1.affine_homotopy_proper-a1` · issue #5689 · PR #5814 · candidate `7a915c9aa2f7`
-- **Statement and proof**: The straight-line homotopy `G(y) = F₀(tl y) + t(y) • (F₁(tl y) - F₀(tl y))`, `t(y) = y₀`, `tl(y) = (y₁, …, yₘ)`, is proper on the cylinder `cyl(S) = {t ∈ [0,1], tl ∈ S}`.  `G` is continuous and `cyl(S)` is closed, so `G⁻¹(K) ∩ cyl(S)` is closed.  For `y` in it, `dist(F₀(tl y), G y) = t(y) · dist(F₁(tl y), F₀(tl y)) ≤ s`, so `F₀(tl y) ∈ cthickening s K` and `y = (t y, tl y)` lies in the compact image of `[0,1] × (F₀⁻¹(cthickening s K) ∩ S)`.
+- **Statement and proof**: If `F₀`, `F₁` are continuous, `S` is closed, `F₀⁻¹(K) ∩ S` is compact for every compact `K`, and `dist(F₁(x), F₀(x)) ≤ s` for `x ∈ S` **[corrected]**, then the straight-line homotopy `G(y) = F₀(tl y) + t(y) • (F₁(tl y) - F₀(tl y))`, `t(y) = y₀`, `tl(y) = (y₁, …, yₘ)`, is proper on the cylinder `cyl(S) = {t ∈ [0,1], tl ∈ S}`, i.e. `G⁻¹(K) ∩ cyl(S)` is compact for every compact `K` **[corrected]**.  `G` is continuous and `cyl(S)` is closed, so `G⁻¹(K) ∩ cyl(S)` is closed.  For `y` in it, `dist(F₀(tl y), G y) = t(y) · dist(F₁(tl y), F₀(tl y)) ≤ s`, so `F₀(tl y) ∈ cthickening s K` and `y = (t y, tl y)` lies in the compact image of `[0,1] × (F₀⁻¹(cthickening s K) ∩ S)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), states the conclusion without the hypotheses of the Lean statement (line 28585), which the proof sketch uses. Without them it is false: for `m = m′ = 1`, `F₀ = F₁ = 0` and `S = ℝ`, `G ≡ 0` and `G⁻¹({0}) ∩ cyl(S) = [0, 1] × ℝ`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `dph_sh_affine_estimate`
 
@@ -4090,21 +4358,24 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `dph_lpf_comparison` (L32022)
 
 - `root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.comparison-a1` · issue #5565 · PR #6126 · candidate `b258640d1b3d`
-- **Statement and proof**: Comparison lemma (Step 1 of the Lipschitz push-forward): if `C^∞` maps `Gₙ`, `G'ₙ` with eventual derivative bounds `L`, `L'` near `spt X` both converge uniformly to a map `G` proper on `spt X`, then pull-backs `ηₙ`, `η'ₙ` of `ω` compatible with `Gₙ`, `G'ₙ` near `spt X` satisfy `X(η'ₙ) − X(ηₙ) → 0`.  For `ε > 0`, eventually `Gₙ` and `G'ₙ` are `ε`-close to `G` on `O ∩ O' ⊇ spt X`; so `Gₙ` is proper on `spt X` and the affine homotopy between `Gₙ` and `G'ₙ` is proper on `[0,1] × spt X` (properness transfer), `dist(G'ₙ, Gₙ) ≤ 2ε` on `O ∩ O'`, and the core estimate gives `|X(η'ₙ) − X(ηₙ)| ≤ 2C₀ε`, which is `< δ` for `ε = δ/(2C₀ + 1)`.
+- **Statement and proof**: Comparison lemma (Step 1 of the Lipschitz push-forward): for `X` with `M(X) < ∞` and, if `k ≥ 1`, `M(∂X) < ∞` **[corrected]**, if `C^∞` maps `Gₙ`, `G'ₙ` with eventual derivative bounds `L`, `L'` near `spt X` both converge uniformly to a map `G` proper on `spt X`, then pull-backs `ηₙ`, `η'ₙ` of `ω` compatible with `Gₙ`, `G'ₙ` near `spt X` satisfy `X(η'ₙ) − X(ηₙ) → 0`.  For `ε > 0`, eventually `Gₙ` and `G'ₙ` are `ε`-close to `G` on `O ∩ O' ⊇ spt X`; so `Gₙ` is proper on `spt X` and the affine homotopy between `Gₙ` and `G'ₙ` is proper on `[0,1] × spt X` (properness transfer), `dist(G'ₙ, Gₙ) ≤ 2ε` on `O ∩ O'`, and the core estimate gives `|X(η'ₙ) − X(ηₙ)| ≤ 2C₀ε`, which is `< δ` for `ε = δ/(2C₀ + 1)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits these two hypotheses of the Lean statement (line 32022); the core estimate `dph_lpf_cmp_core_estimate` uses both masses.
 - **Calls**: `dph_lpf_cmp_core_estimate`, `dph_lpf_proper_transfer`
 - **Called by**: `dph_lipschitz_pushforward`
 
 #### `dph_lpf_cmp_core_estimate` (L31919)
 
 - `root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.comparison-a1.core_estimate-a1` · issue #5874 · PR #5988 · candidate `096c8c29bdaa`
-- **Statement and proof**: **Core estimate of the comparison lemma** (Simon Ch. 6, proof of 2.29, p. 141: the homotopy formula 2.25 for the affine homotopy 2.26 and the mass bound 2.27 give `|f_ε# T(ω) − f_δ# T(ω)| ≤ C sup |f_ε − f_δ| (Lip f)ⁿ`).  Assume the interval product (Prod) and the homotopy formulas (E0), (E1) with the affine estimate (Aff).  For `X` with `M(X) < ∞` (and `M(∂X) < ∞` if `k ≥ 1`), `ω` and `L ≥ 0`, everything entering `C₀` is chosen before the maps: `Z` with `ProdChar(X, Z)`, the constant `c` of (Aff), `C₁ ≥ |dω|` and `B = M(X)`; for `k = j + 1` also `Z′` with `ProdChar(∂X, Z′)`, `c′`, `C₂ ≥ |ω|` and `B′ = M(∂X)`.  For the affine homotopy `H = H[F₀, F₁]`, the pull-backs `η′ = H^# dω`, `θ′ = H^# ω` near `[0, 1] × spt X` turn the homotopy formula into `X(η₁) − X(η₀) = Z(η′) (+ Z′(θ′))`, and (Aff) bounds each term by `c s L^k M(·) sup |·|`.
+- **Statement and proof**: **Core estimate of the comparison lemma** (Simon Ch. 6, proof of 2.29, p. 141: the homotopy formula 2.25 for the affine homotopy 2.26 and the mass bound 2.27 give `|f_ε# T(ω) − f_δ# T(ω)| ≤ C sup |f_ε − f_δ| (Lip f)ⁿ`).  Assume the interval product (Prod) and the homotopy formulas (E0), (E1) with the affine estimate (Aff).  For `X` with `M(X) < ∞` (and `M(∂X) < ∞` if `k ≥ 1`), `ω` and `L ≥ 0`, everything entering `C₀` is chosen before the maps: `Z` with `ProdChar(X, Z)`, the constant `c` of (Aff), `C₁ ≥ |dω|` and `B = M(X)`; for `k = j + 1` also `Z′` with `ProdChar(∂X, Z′)`, `c′`, `C₂ ≥ |ω|` and `B′ = M(∂X)`.  For the affine homotopy `H = H[F₀, F₁]`, the pull-backs `η′ = H^# dω`, `θ′ = H^# ω` near `[0, 1] × spt X` turn the homotopy formula into `X(η₁) − X(η₀) = Z(η′) (+ Z′(θ′))`, and (Aff) bounds `|Z(η′)|` by `c s L^k M(X) C₁` and, for `k = j + 1`, `|Z′(θ′)|` by `c′ s L^j M(∂X) C₂`, with the constant `c′` of (Aff) in degree `j`; so `C₀ = c L^k M(X) C₁`, plus `c′ L^j M(∂X) C₂` if `k = j + 1` **[corrected]**.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "(Aff) bounds each term by `c s L^k M(·) sup |·|`". The term `Z′(θ′)` concerns the `j`-current `∂X`, `j = k − 1`, so (Aff) is applied in degree `j` with its own constant `c′` and gives the factor `L^j`, not `L^k`. The Lean proof (lines 31971–32013) takes `C₀ = c L^{j+1} B C₁ + c′ L^j B′ C₂` with `B = M(X)` and `B′ = M(∂X)`.
 - **Calls**: `br_la_testForm_covectorNorm_bounded`, `dph_lpf_cmp_affine_homotopy`, `iwl_sp_exists_compatible_testForm`, `iwl_cr_support_lemmas`
 - **Called by**: `dph_lpf_comparison`
 
 #### `br_la_testForm_covectorNorm_bounded` (L2533)
 
 - `root.boundary_rectifiability-a1.lattice_approximation-a1.testform_bounded-a1` · issue #1189 · PR #2114 · candidate `c34586955a82`
-- **Statement and proof**: **Test forms have bounded Euclidean coefficient norm** (the finiteness of `sup_x |ω(x)|` behind "Evidently (1), (2) give `P_k(ω) → T(ω)`" in the proof of Simon Ch. 6, 6.2, p. 169). `x ↦ |ω(x)|` is continuous, since `α ↦ |α|` is the square root of a finite sum of squares of evaluations, and has compact support, since `|0| = 0`.  A continuous compactly supported real function is bounded by some `C₀ ≥ 0`, and `C = C₀ + 1` is positive.
+- **Statement and proof**: **Test forms have bounded Euclidean coefficient norm** (the finiteness of `sup_x |ω(x)|` behind "Evidently (1), (2) give `P_k(ω) → T_k(ω)`" in the proof of Simon Ch. 6, 6.2, p. 169, where the printed `T_k(ω)` is a misprint for `T(ω)` **[corrected]**). `x ↦ |ω(x)|` is continuous, since `α ↦ |α|` is the square root of a finite sum of squares of evaluations, and has compact support, since `|0| = 0`.  A continuous compactly supported real function is bounded by some `C₀ ≥ 0`, and `C = C₀ + 1` is positive.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), quotes the sentence of p. 169 with `T(ω)` as the limit. The book prints "Evidently (1), (2) give `P_k(ω) → T_k(ω)` `∀ω ∈ 𝒟ⁿ(ℝ^{n+ℓ})`" (the paragraph after display (2) of the proof of 6.2). No `T_k` is defined there, and `T(ω)` is meant, since display (1) reads `T − P_k = ∂R_k + S_k`. The quotation above now follows the printed text and notes the misprint.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `isoperimetric_mass_eq_zero_iff`, `br_la_weaklyConvergesOn_of_flat_decomposition`, `dph_lpf_cmp_core_estimate`, `iwl_restriction_weak_limit`
 
@@ -4118,7 +4389,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `dph_lpf_existence` (L33293)
 
 - `root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.existence-a1` · issue #5590 · PR #6347 · candidate `73e44feaf098`
-- **Statement and proof**: **Lipschitz push-forward, existence** (Simon Ch. 6, 2.29, p. 141; supplied Steps 1–12).  Assume the reference-sequence statement (RS) and the comparison statement (CL).  Let `M(X) < ∞`, let `G` be `Λ`-Lipschitz on `(spt X)_r` and proper on `spt X`.  (RS) with `F := spt X` gives `C^∞` maps `G_n` with `‖DG_n‖ ≤ Λ` on `O₀ := (spt X)_{r/2}`, `G_n → G` uniformly there and `G_n` proper on `spt X` for `n ≥ n₀`.  `Submission.dph_lpfex_bounded_compatible_form` gives forms `η_n(ω)`, compatible with `(G_n, ω)` near `spt X` for `n ≥ n₀` (`η_n(ω) := 0` for `n < n₀`), with `|η_n(ω)| ≤ Λ^k C` whenever `|ω| ≤ C`; the mass bound gives `|X(η_n(ω))| ≤ M(X) Λ^k C`. (CL) along pairs of reindexings and `Submission.dph_lpfex_tendsto_of_index_maps` give a limit `S₀(ω) = lim X(η_n(ω))`, and (CL) against `η_n(ω)` shows that every admissible approximation computes `S₀(ω)`; this makes `S₀` linear.  `Submission.dph_lpf_current_of_bounded_functional` turns `S₀` into a current `S` with `M(S) ≤ Λ^k M(X)`; uniqueness is uniqueness of limits, and `Submission.dph_lpfex_support_subset_closure_image` gives `spt S ⊆ closure (G(spt X))`.
+- **Statement and proof**: **Lipschitz push-forward, existence** (Simon Ch. 6, 2.29, p. 141; supplied Steps 1–12).  Assume the reference-sequence statement (RS) and the comparison statement (CL).  Let `M(X) < ∞` and, if `k ≥ 1`, `M(∂X) < ∞` **[corrected]**; let `G` be `Λ`-Lipschitz on `(spt X)_r` and proper on `spt X`.  (RS) with `F := spt X` gives `C^∞` maps `G_n` with `‖DG_n‖ ≤ Λ` on `O₀ := (spt X)_{r/2}`, `G_n → G` uniformly there and `G_n` proper on `spt X` for `n ≥ n₀`.  `Submission.dph_lpfex_bounded_compatible_form` gives forms `η_n(ω)`, compatible with `(G_n, ω)` near `spt X` for `n ≥ n₀` (`η_n(ω) := 0` for `n < n₀`), with `|η_n(ω)| ≤ Λ^k C` whenever `|ω| ≤ C`; the mass bound gives `|X(η_n(ω))| ≤ M(X) Λ^k C`. (CL) along pairs of reindexings and `Submission.dph_lpfex_tendsto_of_index_maps` give a limit `S₀(ω) = lim X(η_n(ω))`, and (CL) against `η_n(ω)` shows that every admissible approximation computes `S₀(ω)`; this makes `S₀` linear.  `Submission.dph_lpf_current_of_bounded_functional` turns `S₀` into a current `S` with `M(S) ≤ Λ^k M(X)`; uniqueness is uniqueness of limits, and `Submission.dph_lpfex_support_subset_closure_image` gives `spt S ⊆ closure (G(spt X))`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits the hypothesis `M(∂X) < ∞` for `k ≥ 1` of the Lean statement (line 33293), which the comparison statement (CL) needs: the homotopy formula behind it has a boundary term.
 - **Calls**: `dph_lpfex_bounded_compatible_form`, `dph_lpfex_tendsto_of_index_maps`, `cmb_abs_apply_le_of_massOn_le` (A.1), `dph_lpf_current_of_bounded_functional`, `dph_lpfex_support_subset_closure_image`
 - **Called by**: `dph_lipschitz_pushforward`
 
@@ -4245,7 +4517,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `dgc_pm_ball_volume_le` (L7696)
 
 - `root.deformation-a1.good_center-a1.periodic_maximal-a1.ball_volume-a1` · issue #4807 · PR #4976 · candidate `f935cd0e258f`
-- **Statement and proof**: Ball-volume bound used in step 8 of the proof of Simon Ch. 6, 5.1 (pp. 163–164), with the erratum `ω_k ≤ 2^k`: a closed Euclidean ball of radius `r ≥ 0` in `ℝ^ι` has Lebesgue measure at most `(2r)^k`, `k = card ι`.  Each coordinate is `1`-Lipschitz, so `B̄_r(c)` lies in the preimage under the measure-preserving coordinate map `ofLp` of the sup-metric cube `∏_i [c_i - r, c_i + r]`, whose volume is `(2r)^k`.
+- **Statement and proof**: Ball-volume bound used in step 8 of the accepted natural-language proof of `dgc_periodic_maximal`, for the covering estimate in the proof of Simon Ch. 6, 5.1 (pp. 163–164), where the formal proof replaces the book's ball volume `ω_k rᵏ` by the larger cube volume `(2r)ᵏ`, i.e. uses `ω_k ≤ 2ᵏ` **[corrected]**: a closed Euclidean ball of radius `r ≥ 0` in `ℝ^ι` has Lebesgue measure at most `(2r)^k`, `k = card ι`.  Each coordinate is `1`-Lipschitz, so `B̄_r(c)` lies in the preimage under the measure-preserving coordinate map `ofLp` of the sup-metric cube `∏_i [c_i - r, c_i + r]`, whose volume is `(2r)^k`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "step 8 of the proof of Simon Ch. 6, 5.1 (pp. 163–164), with the erratum `ω_k ≤ 2^k`". The step number is that of the accepted proof of `dgc_periodic_maximal`. The printed estimate uses the exact ball volume `ω_k rᵏ` and is correct; replacing it by the cube bound `(2r)ᵏ` is a simplification, not an erratum.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `dgc_pm_vitali_volume_bound`
 
@@ -4273,7 +4546,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_restriction_theory` (L19780)
 
 - `root.integrality_weak_limits-a1.restriction_theory-a1` · issue #938 · PR #1873 · candidate `b9f9acdc41ea`
-- **Statement and proof**: **Restriction theory, Simon Ch. 6, (2.7)–(2.9) (p. 136).** (R0) A current with a measure representation (2.7) has locally finite mass: `M_W(X)` is bounded by the `μ`-integrals of the coefficients `v(dx^I)` over `closure W`. (R1) Restrictions `X ⌞ A` (2.9) do not depend on the representation: the coefficient densities of two representations agree on `C_c^∞`, hence on `C_c` and on bounded Borel functions. (R2) If `M_W(X) < ∞` for all `W ⊂⊂ U`, the vector Riesz theorem (Ch. 1, 4.14, SimonGMT) applied on `U` to the extension of `X` to continuous compactly supported forms gives the mass measure `μ` and a density `v` with `|v| ≤ 1`, `μ(W) = M_W(X)` by the envelope identity. Then `S_A(ω) = ∫_A ⟨ω, v⟩ dμ` is the restriction, and `M_W(S) = μ(W ∩ A)`: `≤` from `|v| ≤ 1`, `≥` from `X = S_A + S_{Aᶜ}` and inner approximation by compact sets.
+- **Statement and proof**: **Restriction theory, Simon Ch. 6, (2.7)–(2.9) (p. 136).** (R0) A current with a measure representation (2.7) has locally finite mass: `M_W(X)` is bounded by `∑_I ∫_{closure W} |v(dx^I)| dμ` **[corrected]**. (R1) Restrictions `X ⌞ A` (2.9) do not depend on the representation: the coefficient densities of two representations agree on `C_c^∞`, hence on `C_c` and on bounded Borel functions. (R2) If `M_W(X) < ∞` for all `W ⊂⊂ U`, the vector Riesz theorem (Ch. 1, 4.14, SimonGMT) applied on `U` to the extension of `X` to continuous compactly supported forms gives the mass measure `μ` and a density `v` with `|v| ≤ 1`, `μ(W) = M_W(X)` by the envelope identity. Then `S_A(ω) = ∫_A ⟨ω, v⟩ dμ` is the restriction, and `M_W(S) = μ(W ∩ A)`: `≤` from `|v| ≤ 1`, `≥` from `X = S_A + S_{Aᶜ}` and inner approximation by compact sets.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says that `M_W(X)` is bounded by "the `μ`-integrals of the coefficients `v(dx^I)` over `closure W`", which read literally omits the absolute values (for `X = −[[(0, 1)]]`, `μ = L¹⌞(0, 1)`, `v = −e₁` and `W = (−1, 2)` that integral is `−1`). The Lean proof (line 19897) uses `C = ∑_I ∫_{closure W} |v(dx^I)| dμ`.
 - **Calls**: `cmb_covector_eq_sum_coord_smul_wedge` (A.1), `cmb_exists_compactly_contained_exhaustion` (A.1), `polyhedral_approx_pairing_coordinate_bound`, `slicing_ru_smooth_to_continuous` (A.5), `slicing_ru_continuous_to_bounded` (A.5), `lpf_lli_inner_compact_approx` (A.3), `cmb_abs_apply_le_of_massOn_le` (A.1), `cmb_exists_testForm_uniform_approx` (A.1)
 - **Called by**: `br_local_finite_mass_extension`, `deformation_mass_restriction`, `iwl_im_closure`, `iwl_restriction_weak_limit`, `ind_md_mass_measure_balls`, `iwl_localization`, `iwl_positive_density`
 
@@ -4406,7 +4680,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `imc_mlb_exists_hasCompactSupport_eLpNorm_sub_le` (L10103)
 
 - `root.deformation-a1.im_completeness-a1.mass_lower_bound-a1.l1_density-a1` · issue #4229 · PR #4820 · candidate `0a00d6a3533d`
-- **Statement and proof**: **`L¹` density of continuous compactly supported maps for a finite measure on `ℝ^N`.**  For a finite Borel measure `ν` on `ℝ^N` and `f ∈ L¹(ν)` with values in a real normed space `E`, every `ε ≠ 0` admits a continuous compactly supported `g ∈ L¹(ν)` with `‖f - g‖_{L¹(ν)} ≤ ε` (the case `p = 1` of Mathlib's `MemLp.exists_hasCompactSupport_eLpNorm_sub_le`, whose file is not imported here; its proof is reproduced).  Urysohn's lemma and outer regularity approximate `c • 1_s` (`s` closed, `s ⊆ u` open, `ν s < ∞`) by a continuous `L¹` map supported in `u`; inner regularity by compact closed sets treats `c • 1_t` for measurable `t` with `ν t < ∞`; and `MemLp.induction_dense` (density of simple functions) extends this to all of `L¹(ν)`, the class being closed under `+`.
+- **Statement and proof**: **`L¹` density of continuous compactly supported maps for a finite measure on `ℝ^N`.**  For a finite Borel measure `ν` on `ℝ^N` and `f ∈ L¹(ν)` with values in a real normed space `E`, every `ε ≠ 0` admits a continuous compactly supported `g ∈ L¹(ν)` with `‖f - g‖_{L¹(ν)} ≤ ε` (the case `p = 1` of Mathlib's `MemLp.exists_hasCompactSupport_eLpNorm_sub_le`, whose proof is reproduced here **[corrected]**).  Urysohn's lemma and outer regularity approximate `c • 1_s` (`s` closed, `s ⊆ u` open, `ν s < ∞`) by a continuous `L¹` map supported in `u`; inner regularity by compact closed sets treats `c • 1_t` for measurable `t` with `ν t < ∞`; and `MemLp.induction_dense` (density of simple functions) extends this to all of `L¹(ν)`, the class being closed under `+`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says that the Mathlib file is "not imported here". The final `Submission.lean` does import it, transitively: `Poincare.SimonGMT.Chapter01.RadonCaratheodoryIntegral` imports `Chapter01.VectorFunctionalL1`, which imports `Chapter01.RadonDensity`, which imports `Mathlib.MeasureTheory.Function.ContinuousMapDense`. The reproduced proof does not depend on this.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `imc_mlb_exists_unit_field_integral_ge`
 
@@ -4441,7 +4716,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `imc_ae_zero_density_off_set` (L34191)
 
 - `root.deformation-a1.im_completeness-a1.zero_density-a1` · issue #3336 · PR #4313 · candidate `af9b120b0819`
-- **Statement and proof**: Upper Density Theorem on `ℝ^Q` (Simon Ch. 1, 3.6, localized as in Remark 3.7(2)) for `ν = (Hⁿ ⌞ S).withDensity g`: if `∫⁻_{S ∩ K} g dHⁿ < ∞` for every compact `K`, then `ν(B̄_ρ(y)) / ρⁿ → 0` as `ρ → 0+` for `Hⁿ`-a.e. `y ∉ S`.
+- **Statement and proof**: Upper Density Theorem on `ℝ^Q` (Simon Ch. 1, 3.6, localized as in Remark 3.7(2)) for `ν = (Hⁿ ⌞ S).withDensity g`: if `S` is `Hⁿ`-null-measurable **[corrected]** and `∫⁻_{S ∩ K} g dHⁿ < ∞` for every compact `K`, then `ν(B̄_ρ(y)) / ρⁿ → 0` as `ρ → 0+` for `Hⁿ`-a.e. `y ∉ S`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits the null-measurability of `S`, which the Lean statement (line 34191) assumes (Simon's Ch. 1, 3.6 likewise concerns a measurable set); see the example in the entry `lpf_wtc_ae_zero_density_off_set`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `imc_approxTangent_iff_of_subset`, `imc_weightedTangent_iff_approxTangent`
 
@@ -4532,14 +4808,16 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `deformation_ipl_cc_chart_orientation_sign` (L39938)
 
 - `root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.chart_orientation-a1` · issue #4923 · PR #5146 · candidate `714635af911e`
-- **Statement and proof**: Measurable relative orientation on a `C¹` antilipschitz chart (Simon Ch. 6, proof of 3.9, step (6c)): for a rectifiable triple `(M, θ, ξ)` and a `C¹` map `Φ` that is antilipschitz on the open set `Ω`, there is a sign `σ = ±1`, a.e.-strongly measurable for `Lᵏ ⌞ (Ω ∩ Φ⁻¹(M))`, with `JΦ(w) ξ(Φ(w)) = σ(w) ∂₁Φ(w) ∧ ⋯ ∧ ∂ₖΦ(w)` for `Lᵏ`-a.e. `w ∈ Ω ∩ Φ⁻¹(M)`.  The sign is that of `⟨ξ(Φ(w)), β_w⟩` for the covector `β_w(u) = det (⟪∂ₐΦ(w), u_b⟫)`, continuous in `w`.
+- **Statement and proof**: Measurable relative orientation on a `C¹` antilipschitz chart (step (6c) of the accepted natural-language proof of `deformation_ipl_chart_convergence`, the `C¹` push-forward limit behind the proof of Simon Ch. 6, 5.1 **[corrected]**): for a rectifiable triple `(M, θ, ξ)` and a `C¹` map `Φ` that is antilipschitz on the open set `Ω`, there is a sign `σ = ±1`, a.e.-strongly measurable for `Lᵏ ⌞ (Ω ∩ Φ⁻¹(M))`, with `JΦ(w) ξ(Φ(w)) = σ(w) ∂₁Φ(w) ∧ ⋯ ∧ ∂ₖΦ(w)` for `Lᵏ`-a.e. `w ∈ Ω ∩ Φ⁻¹(M)`.  The sign is that of `⟨ξ(Φ(w)), β_w⟩` for the covector `β_w(u) = det (⟪∂ₐΦ(w), u_b⟫)`, continuous in `w`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "Simon Ch. 6, proof of 3.9, step (6c)". The printed discussion of 3.9 (pp. 146–148) has no step (6c). Step (6c) belongs to the accepted proof of the parent node `root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1`, and the lemma is used only in the formal proof of 5.1.
 - **Calls**: `lpf_weighted_tangent_on_c1_chart` (A.4), `lpf_ccr_ae_pullback` (A.4), `lpf_simple_nvector_algebra` (A.4)
 - **Called by**: `deformation_ipl_cc_chart_integral_representation`
 
 #### `deformation_ipl_cc_signed_change_of_variables` (L39846)
 
 - `root.deformation-a1.im_pushforward_limit-a1.chart_convergence-a1.signed_change_of_variables-a1` · issue #4918 · PR #5112 · candidate `81af8e83cfa0`
-- **Statement and proof**: Signed change of variables along an injective Lipschitz chart (Simon Ch. 3, 2.6; used for Ch. 6, 3.9): if `Φ` is Lipschitz and `c`-antilipschitz on the open set `Ω`, `A ⊆ Φ(Ω)` is `Hᵏ`-null-measurable and `h` is `Hᵏ`-integrable on `A`, then `h(Φ(w)) JΦ(w)` is `Lᵏ`-integrable on `D = Ω ∩ Φ⁻¹(A)` and `∫_A h dHᵏ = ∫_D h(Φ(w)) JΦ(w) dLᵏ(w)`.  This is the `[0, ∞]`-valued change of variables applied to the positive and negative parts of `h` and to `|h|`.
+- **Statement and proof**: Signed change of variables along an injective Lipschitz chart (Simon Ch. 3, 2.6; used for the `C¹` push-forward limit behind the proof of Ch. 6, 5.1 **[corrected]**): if `Φ` is Lipschitz and `c`-antilipschitz on the open set `Ω`, `A ⊆ Φ(Ω)` is `Hᵏ`-null-measurable and `h` is `Hᵏ`-integrable on `A`, then `h(Φ(w)) JΦ(w)` is `Lᵏ`-integrable on `D = Ω ∩ Φ⁻¹(A)` and `∫_A h dHᵏ = ∫_D h(Φ(w)) JΦ(w) dLᵏ(w)`.  This is the `[0, ∞]`-valued change of variables applied to the positive and negative parts of `h` and to `|h|`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "used for Ch. 6, 3.9". Its only user is `deformation_ipl_cc_chart_integral_representation`, in the formal proof of 5.1.
 - **Calls**: `lpf_raf_chart_change_of_variables` (A.4)
 - **Called by**: `deformation_ipl_cc_chart_integral_representation`
 
@@ -4665,7 +4943,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `deformation_ipl_mwc_mil_ae_fderiv_eq_proj` (L40823)
 
 - `root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.minor_ibp_lipschitz-a1.ae_fderiv_extension-a1` · issue #5191 · PR #5357 · candidate `b42e6549be1d`
-- **Statement and proof**: A.e. derivative of a coordinate of a Lipschitz map (the Rademacher step of the Lipschitz minor integration by parts in the proof of Simon Ch. 6, 3.9): if `v : ℝᵏ → ℝ^Q` is `C`-Lipschitz on an open `Ω` and `g = v^c := proj_c ∘ v` on `Ω`, then for Lebesgue-a.e. `w ∈ Ω`, `Dg(w) x = proj_c (Dv(w) x)` for every `x`.  By Rademacher's theorem `v` is differentiable within `Ω` at a.e. `w ∈ Ω`, hence at `w` as `Ω` is open; `g` and `v^c` agree near `w`, so they have the same `fderiv`, which is `proj_c ∘L Dv(w)` by the chain rule.  No regularity of `g` is needed.
+- **Statement and proof**: A.e. derivative of a coordinate of a Lipschitz map (the Rademacher step, steps 6(a)–(b), of the accepted natural-language proof of the Lipschitz minor integration by parts `deformation_ipl_mwc_minor_ibp_lipschitz`, used for the `C¹` push-forward limit behind the proof of Simon Ch. 6, 5.1 **[corrected]**): if `v : ℝᵏ → ℝ^Q` is `C`-Lipschitz on an open `Ω` and `g = v^c := proj_c ∘ v` on `Ω`, then for Lebesgue-a.e. `w ∈ Ω`, `Dg(w) x = proj_c (Dv(w) x)` for every `x`.  By Rademacher's theorem `v` is differentiable within `Ω` at a.e. `w ∈ Ω`, hence at `w` as `Ω` is open; `g` and `v^c` agree near `w`, so they have the same `fderiv`, which is `proj_c ∘L Dv(w)` by the chain rule.  No regularity of `g` is needed.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), places this step "in the proof of Simon Ch. 6, 3.9". The printed discussion of 3.9 (pp. 146–148) uses the area formula and contains no integration by parts of Jacobian minors; the lemma serves the formal proof of 5.1.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `deformation_ipl_mwc_minor_ibp_lipschitz`
 
@@ -4728,7 +5007,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `dr_cc_similarity_bound` (L6705)
 
 - `root.deformation-a1.retraction-a1.cube_core-a1.similarity_bound-a1` · issue #3614 · PR #4342 · candidate `0d6109c0ff96`
-- **Statement and proof**: Simon Ch. 6, Lemma 5.4, displays (4)–(7) (corrected similarity bound): if `y ∈ [0,1]^d` lies on the ray `y = c + s(x - c)` from a face centre `c` (with `c_i = a_i` on `J`, `c_i ∈ {0,1}` and `x_i = c_i` off `J`), then `min{1/4, s·dist(x, La)} ≤ dist(y, La)`.  A point `w ∈ La` either has a witness coordinate where `y_i ∈ [0,1]` is `1/4`-far from `a_i + ℤ`, or all its witness coordinates are free with zero shift, and then `w' = c + s⁻¹(w - c) ∈ La` and `y - w = s(x - w')`.
+- **Statement and proof**: Simon Ch. 6, Lemma 5.4, displays (4)–(7) (corrected similarity bound): if `y ∈ [0,1]^d` lies on the ray `y = c + s(x - c)` from a face centre `c` (with `c_i = a_i` on `J`, `c_i ∈ {0,1}` and `x_i = c_i` off `J`), then `min{1/4, s·dist(x, La)} ≤ dist(y, La)`; here `1/4 < a_i < 3/4` for all `i` **[corrected]**.  A point `w ∈ La`, `w_i = a_i + k_i` (`k_i ∈ ℤ`) on its witness set, either has a witness coordinate `i` with `|y_i − w_i| > 1/4` (if `i ∉ J`, then `y_i = c_i ∈ {0, 1}`, which is `1/4`-far from `a_i + ℤ`; if `k_i ≠ 0`, then `w_i` is `1/4`-far from `[0, 1]`), or all its witness coordinates are free with zero shift **[corrected]**, and then `w' = c + s⁻¹(w - c) ∈ La` and `y - w = s(x - w')`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), states a dichotomy that misses the case of a free witness coordinate with a nonzero shift `k_i`, where `y_i` may lie in `a_i + ℤ`; there `|y_i − w_i| > 1/4` because `w_i = a_i + k_i` lies outside `(−1/4, 5/4)`. The range `1/4 < a_i < 3/4`, a hypothesis of the Lean statement (line 6705) on which this argument rests, is also stated now. The Lean proof treats the three cases separately (the three cases begin at lines 6722, 6748 and 6765).
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `dr_cc_pointwise_lip`
 
@@ -4777,7 +5057,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `isoperimetric_coord_box_measure` (L9287)
 
 - `root.isoperimetric-a1.lattice_mass_lower_bound-a1.box_measure-a1` · issue #1228 · PR #1494 · candidate `eefd7c3e7c63`
-- **Statement and proof**: The `n`-dimensional coordinate box `{x : c_i + a ≤ x_i ≤ c_i + b (i ∈ range α), x_i = c_i (i ∉ range α)}` in `ℝ^N` has `μHE[n]`-measure `(b - a)^n`.  The map `ι(y)_i = c_i + ∑_j [α j = i] y_j` is an isometry `ℝⁿ → ℝ^N` carrying the cube `[a, b]ⁿ` onto the box; `μHE[n]` is invariant under isometries and equals Lebesgue measure on `ℝⁿ`.
+- **Statement and proof**: For `a ≤ b` **[corrected]**, the `n`-dimensional coordinate box `{x : c_i + a ≤ x_i ≤ c_i + b (i ∈ range α), x_i = c_i (i ∉ range α)}` in `ℝ^N` has `μHE[n]`-measure `(b - a)^n`.  The map `ι(y)_i = c_i + ∑_j [α j = i] y_j` is an isometry `ℝⁿ → ℝ^N` carrying the cube `[a, b]ⁿ` onto the box; `μHE[n]` is invariant under isometries and equals Lebesgue measure on `ℝⁿ`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits the hypothesis `a ≤ b` of the Lean statement (line 9288); for `a > b` and `n ≥ 1` the box is empty while `(b − a)ⁿ` may be positive.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `isoperimetric_lattice_face_isolating_form`, `deformation_skeleton_polyhedral`
 
@@ -4861,14 +5142,16 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `fiw_ims_combine` (L63314)
 
 - `root.flat_iff_weak-a1.im_series-a1.im_combine-a1` · issue #1254 · PR #2679 · candidate `db32c8c94202`
-- **Statement and proof**: **Series of integer multiplicity currents, Simon Ch. 6, 3.13 (p. 149), as used in the proof of 7.2 (p. 170).**  Under tangent locality in `U`, an `M`-absolutely convergent series `∑ c_r τ(M_r, θ_r, ξ_r)` with `c_r ∈ ℤ` and integer `θ_r` is one integer multiplicity current `τ(M', θ', ξ')`.  Off an `Hⁿ`-null set, only finitely many `M_r` with `c_r ≠ 0` contain `x`, each `ξ_r` orients `M_r` at `x`, and `ξ_r(x) = ±ξ_{r'}(x)` whenever `x ∈ M_r ∩ M_{r'}`.  With `ξ̂ = ξ_{r(x)}` for the first index `r(x)` of an `M_r ∋ x` and `ξ_r = σ_r ξ̂` (`σ_r = ±1`), `θ̂ = ∑' r, 1_{M_r} c_r σ_r θ_r` is an integer-valued finite sum bounded by `∑' r, |c_r| 1_{M_r} θ_r`; then `M' = {θ̂ ≠ 0}`, `θ' = |θ̂|`, `ξ' = (θ̂/|θ̂|) ξ̂` give the sum of the series.
+- **Statement and proof**: **Series of integer multiplicity currents, Simon Ch. 6, 3.13 (p. 149), as used in the proof of 7.2 (p. 172 **[corrected]**).**  Under tangent locality in `U`, an `M`-absolutely convergent series `∑ c_r τ(M_r, θ_r, ξ_r)` with `c_r ∈ ℤ` and integer `θ_r` is one integer multiplicity current `τ(M', θ', ξ')`.  Off an `Hⁿ`-null set, only finitely many `M_r` with `c_r ≠ 0` contain `x`, each `ξ_r` orients `M_r` at `x`, and `ξ_r(x) = ±ξ_{r'}(x)` whenever `x ∈ M_r ∩ M_{r'}`.  With `ξ̂ = ξ_{r(x)}` for the first index `r(x)` of an `M_r ∋ x` and `ξ_r = σ_r ξ̂` (`σ_r = ±1`), `θ̂ = ∑' r, 1_{M_r} c_r σ_r θ_r` is an integer-valued finite sum bounded by `∑' r, |c_r| 1_{M_r} θ_r`; then `M' = {θ̂ ≠ 0}`, `θ' = |θ̂|`, `ξ' = (θ̂/|θ̂|) ξ̂` give the sum of the series.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), gives "p. 170". The statement of 7.2 begins on p. 170, but its proof begins on p. 171, and 3.13 is used on p. 172 ("Therefore by 3.13 we can define …").
 - **Calls**: `fiw_ims_overlap_finite`, `fiw_ims_orientation_sign`, `fiw_ims_tsum_tau`
 - **Called by**: `fiw_im_series`, `deformation_im_combination`
 
 #### `fiw_ims_overlap_finite` (L63069)
 
 - `root.flat_iff_weak-a1.im_series-a1.overlap_finite-a1` · issue #1252 · PR #1542 · candidate `02fc45016615`
-- **Statement and proof**: Local finiteness for an integer series of currents `∑ c_r τ(M_r, θ_r, ξ_r)` (Simon Ch. 6, 3.13, used for `R^(ℓ)`, `S^(ℓ)` in the proof of 7.2): with `Θ = ∑' r, |c_r| 1_{M_r} θ_r` and `∑' r, |c_r| ∫_{M_r ∩ W} θ_r dHⁿ < ∞` for each `W ⊂⊂ U`, `Θ` is locally `Hⁿ`-integrable in `U` and `Hⁿ`-a.e. `x` lies in `M_r` for only finitely many `r` with `c_r ≠ 0`.  Termwise integration (`lintegral_tsum`) gives `∫_W Θ dHⁿ < ∞` on each `W ⊂⊂ U`, so `Θ < ∞` a.e. near each point of `U`, hence a.e. on `U` (`ℝ^P` is second countable); at such `x` each such `r` adds at least `1` to `Θ(x)`, and off `U` no `M_r` contains `x`.
+- **Statement and proof**: Local finiteness for an integer series of currents `∑ c_r τ(M_r, θ_r, ξ_r)` (Simon Ch. 6, 3.13, used for `R^(ℓ)`, `S^(ℓ)` in the proof of 7.2): for an open `U`, `Hⁿ`-null-measurable `M_r ⊆ U`, and `θ_r ≥ 1` on `M_r` (e.g. integer multiplicities) and `Hⁿ`-integrable on `M_r ∩ K` for compact `K ⊆ U` **[corrected]**, with `Θ = ∑' r, |c_r| 1_{M_r} θ_r` and `∑' r, |c_r| ∫_{M_r ∩ W} θ_r dHⁿ < ∞` for each `W ⊂⊂ U`, `Θ` is locally `Hⁿ`-integrable in `U` and `Hⁿ`-a.e. `x` lies in `M_r` for only finitely many `r` with `c_r ≠ 0`.  Termwise integration (`lintegral_tsum`) gives `∫_W Θ dHⁿ < ∞` on each `W ⊂⊂ U`, so `Θ < ∞` a.e. near each point of `U`, hence a.e. on `U` (`ℝ^P` is second countable); at such `x` each such `r` adds at least `1` to `Θ(x)`, and off `U` no `M_r` contains `x`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits these hypotheses of the Lean statement (lines 63070–63075), and `θ_r ≥ 1` is necessary: the sketch uses that each `r` with `x ∈ M_r` and `c_r ≠ 0` adds at least `1` to `Θ(x)`. For `P = n = 1`, `U = ℝ`, `M_r = [0, 1]`, `θ_r ≡ 2^{−r}` and `c_r = 1`, the summability condition holds but every `x ∈ [0, 1]` lies in every `M_r`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `fiw_ims_combine`
 
@@ -4917,7 +5200,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_imc_normalized_lebesgue_points` (L37760)
 
 - `root.integrality_weak_limits-a1.im_closure-a1.lebesgue_points-a1` · issue #2814 · PR #3733 · candidate `3047dcd2a39a`
-- **Statement and proof**: Normalized Lebesgue points (Simon Ch. 1, 3.23 with Theorem 3.3): for `Hᵏ⌞M`-a.e. `x` and every `R > 0`, `r⁻ᵏ ∫_{M ∩ B̄_{Rr}(x)} |f - f(x)| dHᵏ → 0` as `r ↓ 0`.  On a ball `W` with `K = B̄ ⊆ U`, Lebesgue–Besicovitch differentiation for the finite measure `λ = Hᵏ⌞(M ∩ K)` makes the `λ`-averages over `B̄_ρ(x)` tend to `0`, and density comparison gives `Θ*ᵏ(λ, x) < ∞`, so `λ(B̄_ρ(x)) ≤ C ωₖ ρᵏ` for small `ρ`.
+- **Statement and proof**: Normalized Lebesgue points (Simon Ch. 1, 3.23 with Theorem 3.3): if `U` is open, `M ⊆ U` is `Hᵏ`-null-measurable with `Hᵏ(M ∩ K) < ∞`, and `f` is `Hᵏ`-integrable on `M ∩ K`, for every compact `K ⊆ U` **[corrected]**, then for `Hᵏ⌞M`-a.e. `x` and every `R > 0`, `r⁻ᵏ ∫_{M ∩ B̄_{Rr}(x)} |f - f(x)| dHᵏ → 0` as `r ↓ 0`.  On a ball `W` with `K = B̄ ⊆ U`, Lebesgue–Besicovitch differentiation for the finite measure `λ = Hᵏ⌞(M ∩ K)` makes the `λ`-averages over `B̄_ρ(x)` tend to `0`, and density comparison gives `Θ*ᵏ(λ, x) < ∞`, so `λ(B̄_ρ(x)) ≤ C ωₖ ρᵏ` for small `ρ`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), states no hypotheses; the Lean statement (line 37760) assumes these, and the sketch uses them (the finite measure `λ`).
 - **Calls**: `rectifiability_density_comparison` (A.3)
 - **Called by**: `iwl_imc_tangent_overlap`, `deformation_imcomb_weight_change`
 
@@ -5041,14 +5325,16 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `polyhedral_approx_flat_seq_tendsto` (L18413)
 
 - `root.polyhedral_approximation-a1.finite_mass_approximation-a1.flat_convergence-a1` · issue #2223 · PR #3252 · candidate `ca2d03cda38d`
-- **Statement and proof**: Simon Ch. 6, 6.2 (p. 169), "(1), (2) give `P_k(ω) → T(ω)`": if `X_k − Pc_k = ∂R_k + S_k` with `M(R_k) → 0` and `M(S_k) → 0`, then `Pc_k(ω) − X_k(ω) → 0` for every test form `ω`.
+- **Statement and proof**: Simon Ch. 6, 6.2 (p. 169), "(1), (2) give `P_k(ω) → T_k(ω)`", where the printed `T_k(ω)` is a misprint for `T(ω)` **[corrected]**: if `X_k − Pc_k = ∂R_k + S_k` with `M(R_k) → 0` and `M(S_k) → 0`, then `Pc_k(ω) − X_k(ω) → 0` for every test form `ω`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), quotes the sentence of p. 169 with `T(ω)` as the limit. The book prints "Evidently (1), (2) give `P_k(ω) → T_k(ω)` `∀ω ∈ 𝒟ⁿ(ℝ^{n+ℓ})`" (the paragraph after display (2) of the proof of 6.2). No `T_k` is defined there, and `T(ω)` is meant, since display (1) reads `T − P_k = ∂R_k + S_k`. The quotation above now follows the printed text and notes the misprint.
 - **Calls**: `polyhedral_approx_testForm_covectorNorm_bounded`, `br_la_abs_apply_le_mul_mass`
 - **Called by**: `polyhedral_approx_finite_mass_seq`
 
 #### `polyhedral_approx_testForm_covectorNorm_bounded` (L18339)
 
 - `root.polyhedral_approximation-a1.finite_mass_approximation-a1.testform_bounded-a1` · issue #2195 · PR #2910 · candidate `7110c9805fef`
-- **Statement and proof**: **Test forms have bounded Euclidean coefficient norm** (Simon Ch. 6, 1.15 and 2.4; the finiteness of `sup_x |ω(x)|` behind "Evidently (1), (2) give `Pₖ(ω) → T(ω)`" in the proof of 6.2, p. 169): for `ω ∈ 𝒟ⁿ(U)` there is `C > 0` with `|ω(x)| ≤ C` for all `x`. `α ↦ |α|` is continuous (a square root of a finite sum of squares of evaluations) and `ω` is smooth, so `x ↦ |ω(x)|` is continuous; it has compact support since `|0| = 0`.  Hence it is bounded by some `C₀ ≥ 0`, and `C = C₀ + 1` works.
+- **Statement and proof**: **Test forms have bounded Euclidean coefficient norm** (Simon Ch. 6, 1.15 and 2.4; the finiteness of `sup_x |ω(x)|` behind "Evidently (1), (2) give `Pₖ(ω) → Tₖ(ω)`" in the proof of 6.2, p. 169, where the printed `Tₖ(ω)` is a misprint for `T(ω)` **[corrected]**): for `ω ∈ 𝒟ⁿ(U)` there is `C > 0` with `|ω(x)| ≤ C` for all `x`. `α ↦ |α|` is continuous (a square root of a finite sum of squares of evaluations) and `ω` is smooth, so `x ↦ |ω(x)|` is continuous; it has compact support since `|0| = 0`.  Hence it is bounded by some `C₀ ≥ 0`, and `C = C₀ + 1` works.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), quotes the sentence of p. 169 with `T(ω)` as the limit. The book prints "Evidently (1), (2) give `P_k(ω) → T_k(ω)` `∀ω ∈ 𝒟ⁿ(ℝ^{n+ℓ})`" (the paragraph after display (2) of the proof of 6.2). No `T_k` is defined there, and `T(ω)` is meant, since display (1) reads `T − P_k = ∂R_k + S_k`. The quotation above now follows the printed text and notes the misprint.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `polyhedral_approx_flat_seq_tendsto`
 
@@ -5071,7 +5357,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_top_dim_integrality` (L67311)
 
 - `root.integrality_weak_limits-a1.top_dim-a1` · issue #934 · PR #4089 · candidate `e7ec1ab7ad46`
-- **Statement and proof** (no doc comment in the source; summary of the accepted natural-language proof): **Remark 3.12: Theorem 8.2 in top dimension.** If `U ⊆ ℝⁿ`, `n = m + 1`, is open, the `T_j ∈ 𝒟ₙ(U)` are integer multiplicity, `sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for every `W ⊂⊂ U` and `T_j ⇀ T`, then `T` is integer multiplicity. Proof (BV compactness, proved here): every `T_j` acts as `ω ↦ ∫ β_j ω(e) dLⁿ` with `β_j` Borel, integer valued and locally integrable, since the orientation of a top-dimensional triple is `±e₁ ∧ ⋯ ∧ eₙ`; the translation estimate (Remark 2.35) bounds `∫_K |β_j(· + z) − β_j|` by a multiple of `|z| M_V(∂T_j)`; with `L¹` duality against smooth functions and mollification, weak convergence makes `(β_j)` Cauchy in `L¹` on compact subsets of `U`; a fast subsequence converges a.e. and in `L¹_loc` to an integer-valued Borel `β`; `T(ω) = ∫ β ω(e)`; at Lebesgue points of `β` the weighted tangent space of `({β ≠ 0}, |β|)` is `ℝⁿ` (`iwl_weighted_tangent_locality`), so `T = τ({β ≠ 0}, |β|, sign(β) e₁ ∧ ⋯ ∧ eₙ)`.
+- **Statement and proof** (no doc comment in the source; summary of the Lean proof **[corrected]**): **Remark 3.12: Theorem 8.2 in top dimension.** If `U ⊆ ℝⁿ`, `n = m + 1`, is open, the `T_j ∈ 𝒟ₙ(U)` are integer multiplicity, `sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for every `W ⊂⊂ U` and `T_j ⇀ T`, then `T` is integer multiplicity. Proof (BV compactness, proved here): every `T_j` acts as `ω ↦ ∫ β_j ω(e) dLⁿ` with `β_j` Borel, integer valued and locally integrable, since the orientation of a top-dimensional triple is `±e₁ ∧ ⋯ ∧ eₙ`; the translation estimate (Remark 2.35) bounds `∫_K |β_j(· + z) − β_j|` by a multiple of `|z| M_V(∂T_j)` for `|z| ≤ δ`, where `V ⊆ U` is open and contains the closed `2δ`-neighbourhood of `K` **[corrected]**; with `L¹` duality against smooth functions and mollification, weak convergence makes `(β_j)` Cauchy in `L¹` on compact subsets of `U`; a fast subsequence converges a.e. and in `L¹_loc` to an integer-valued Borel `β`; `T(ω) = ∫ β ω(e)`; at Lebesgue points of `β` the weighted tangent space of `({β ≠ 0}, |β|)` is `ℝⁿ` (`iwl_weighted_tangent_locality`), so `T = τ({β ≠ 0}, |β|, sign(β) e₁ ∧ ⋯ ∧ eₙ)`.
+- **Correction**: the previous revision of this file labelled this summary as a summary of the accepted natural-language proof. It summarizes the Lean proof, which proves the BV compactness for this sequence through a translation estimate; the accepted natural-language proof (step 4) cites the Compactness Theorem for BV functions, Simon Ch. 2, 2.6, instead. The summary also stated the translation estimate without its smallness condition; the Lean proof (lines 67709–67716) proves it for `|z| ≤ δ` with `cthickening(2δ, K) ⊆ V`, and it fails for large `z`: for `U = B₁(0)`, `T_j = [[U]]` (`β_j = 1` on `U`, `0` off `U`), `K = B̄_{1/2}(0)` and `V = B_{3/4}(0)`, `M_V(∂T_j) = 0` but `∫_K |β_j(· + e₁) − β_j| > 0`.
 - **Calls**: `iwl_weighted_tangent_locality` (A.6)
 - **Called by**: `iwl_integer_density`, `integrality_of_weak_limits`
 
@@ -5092,14 +5379,16 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_imc_tangent_overlap` (L37885)
 
 - `root.integrality_weak_limits-a1.im_closure-a1.tangent_overlap-a1` · issue #2820 · PR #4894 · candidate `840ab47ea3d0`
-- **Statement and proof**: Tangent planes agree on the overlap (for Simon Ch. 6, 3.2 (1); Ch. 3, 1.7): given the tangent locality (TL), for `Hᵏ⌞(M₁ ∩ M₂)`-a.e. `x` every weighted approximate tangent plane of `(M₁, θ₁)` at `x` is one of `(M₂, θ₂)`.  At normalized Lebesgue points of `θ₁, θ₂` on `M₁ ∩ M₂` where `M₁ Δ M₂` has density zero, (TL) compares each `(M_l, θ_l)` with the constant weight `θ_l(x)` on `M₁ ∩ M₂`, and a nonzero constant factor does not change the tangent condition.
+- **Statement and proof**: Tangent planes agree on the overlap (for Simon Ch. 6, 3.2 (1); Ch. 3, 1.7): given the tangent locality (TL), an open `U` and `Hᵏ`-null-measurable `M₁, M₂ ⊆ U` with `θ_l ≥ 1` on `M_l` and `θ_l` integrable on `M_l ∩ K` for compact `K ⊆ U` **[corrected]**, for `Hᵏ⌞(M₁ ∩ M₂)`-a.e. `x` every weighted approximate tangent plane of `(M₁, θ₁)` at `x` is one of `(M₂, θ₂)`.  At normalized Lebesgue points of `θ₁, θ₂` on `M₁ ∩ M₂` where `M₁ Δ M₂` has density zero, (TL) compares each `(M_l, θ_l)` with the constant weight `θ_l(x)` on `M₁ ∩ M₂`, and a nonzero constant factor does not change the tangent condition.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), does not introduce the pairs `(M_l, θ_l)`; the Lean statement (line 37885) assumes these hypotheses.
 - **Calls**: `iwl_imc_normalized_lebesgue_points` (A.6), `iwl_imc_density_zero_off_set`
 - **Called by**: `iwl_im_closure`
 
 #### `iwl_imc_density_zero_off_set` (L37453)
 
 - `root.integrality_weak_limits-a1.im_closure-a1.density_zero_off_set-a1` · issue #2799 · PR #4846 · candidate `4eb4d55a3670`
-- **Statement and proof**: Upper density theorem at every scale `Rr` (Simon Ch. 1, 3.6 with Remark 3.7(2)): if `∫⁻_{S ∩ K} g dHᵏ < ∞` for every compact `K ⊆ U`, then for `Hᵏ`-a.e. `x ∈ U \ S` and every `R > 0`, `r⁻ᵏ ∫⁻_{S ∩ B̄_{Rr}(x)} g dHᵏ → 0` as `r → 0+`.  The unit-scale case `ρ⁻ᵏ ∫⁻_{S ∩ B̄_ρ(x)} g dHᵏ → 0` is `lpf_wtc_ae_zero_density_off_set`; the change of scale `ρ = Rr` is `iwl_imc_quotient_rescale_tendsto_zero`.
+- **Statement and proof**: Upper density theorem at every scale `Rr` (Simon Ch. 1, 3.6 with Remark 3.7(2)): if `U` is open, `S` is `Hᵏ`-null-measurable **[corrected]** and `∫⁻_{S ∩ K} g dHᵏ < ∞` for every compact `K ⊆ U`, then for `Hᵏ`-a.e. `x ∈ U \ S` and every `R > 0`, `r⁻ᵏ ∫⁻_{S ∩ B̄_{Rr}(x)} g dHᵏ → 0` as `r → 0+`.  The unit-scale case `ρ⁻ᵏ ∫⁻_{S ∩ B̄_ρ(x)} g dHᵏ → 0` is `lpf_wtc_ae_zero_density_off_set`; the change of scale `ρ = Rr` is `iwl_imc_quotient_rescale_tendsto_zero`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits these hypotheses of the Lean statement (line 37453); Simon's Ch. 1, 3.6 likewise concerns a measurable set. See the example in the entry `lpf_wtc_ae_zero_density_off_set`.
 - **Calls**: `lpf_wtc_ae_zero_density_off_set` (A.4), `iwl_imc_quotient_rescale_tendsto_zero`
 - **Called by**: `iwl_imc_tangent_overlap`
 
@@ -5134,8 +5423,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_restriction_weak_limit` (L54463)
 
 - `root.integrality_weak_limits-a1.restriction_limit-a1` · issue #942 · PR #3781 · candidate `e20506c047f7`
-- **Statement and proof**: **Restrictions of weakly convergent currents converge weakly** (Simon Ch. 6, Remark 8.3(1) and (1), (8) in the proof of 8.2, pp. 176 and 178 **[corrected]**: "4.5(1) and a selection argument as in 6.7(2) of Ch. 2").  `F_j(t) = M_{W ∩ {φ < t}}(X_j)` is nondecreasing in `t` and bounded by `sup_j M_W(X_j)`, so Helly selection gives `ψ` and a countable `E` such that for `s ∉ E` the increments `F_{ψ j}(b) - F_{ψ j}(a)` over some `a < s < b` are eventually small.  The restrictions give measure representations, hence mass measures (restriction theory). (A) For `tsupport ω ⊆ W` and `a < s`, a smooth cutoff `ω'` of `ω` vanishes on `{φ ≥ s}` and equals `ω` near `tsupport ω ∩ {φ ≤ a}`; the cutoff estimate bounds `|R_j ω - X_{ψ j} ω'|` by `c (F_{ψ j}(s) - F_{ψ j}(a))` and `|R ω - X ω'|` by `c (M_{W_s}(X) - M_{W_a}(X))`, which is small for `a` near `s` by continuity of `t ↦ M_{W_t}(X)` from below, while `X_{ψ j} ω' → X ω'`. (B) If `{φ ≤ s} ⊆ K ⊆ W`, a cutoff `ω''` equal to `ω` near `K` and supported in `W` has the same restrictions to `{φ < s}`, so (A) applied to `ω''` gives `R_j ω → R ω`.
-- **Correction**: the Lean doc comment, kept byte-identical (§9), gives p. 176 for all of these. Remark 8.3(1) and display (1) are on p. 176. Display (8) and the quoted phrase are on p. 178, where the book prints "justified by 4.5(1) and a selection arguments in 6.7(2) of Ch. 2". Remark 8.3(1) has the similar "an argument like that in 6.7(2) of Ch. 2".
+- **Statement and proof**: **Restrictions of weakly convergent currents converge on forms supported in `W`, along a subsequence and for all but countably many levels (weakly if `{φ ≤ s}` lies in a compact subset of `W`)** **[corrected]** (Simon Ch. 6, Remark 8.3(1) and (1), (8) in the proof of 8.2, pp. 176 and 178 **[corrected]**: "4.5(1) and a selection arguments [sic] in 6.7(2) of Ch. 2").  `F_j(t) = M_{W ∩ {φ < t}}(X_j)` is nondecreasing in `t` and bounded by `sup_j M_W(X_j)`, so Helly selection gives `ψ` and a countable `E` such that for `s ∉ E` the increments `F_{ψ j}(b) - F_{ψ j}(a)` over some `a < s < b` are eventually small.  The restrictions give measure representations, hence mass measures (restriction theory). (A) For `tsupport ω ⊆ W` and `a < s`, a smooth cutoff `ω'` of `ω` vanishes on `{φ ≥ s}` and equals `ω` near `tsupport ω ∩ {φ ≤ a}`; the cutoff estimate bounds `|R_j ω - X_{ψ j} ω'|` by `c (F_{ψ j}(s) - F_{ψ j}(a))` and `|R ω - X ω'|` by `c (M_{W_s}(X) - M_{W_a}(X))`, which is small for `a` near `s` by continuity of `t ↦ M_{W_t}(X)` from below, while `X_{ψ j} ω' → X ω'`. (B) If `{φ ≤ s} ⊆ K ⊆ W`, a cutoff `ω''` equal to `ω` near `K` and supported in `W` has the same restrictions to `{φ < s}`, so (A) applied to `ω''` gives `R_j ω → R ω`.
+- **Correction**: the Lean doc comment, kept byte-identical (§9), gives p. 176 for all of these. Remark 8.3(1) and display (1) are on p. 176. Display (8) and the quoted phrase are on p. 178, where the book prints "justified by 4.5(1) and a selection arguments in 6.7(2) of Ch. 2". Remark 8.3(1) has the similar "an argument like that in 6.7(2) of Ch. 2". The title of the doc comment claims the convergence without qualification, which is false: for `X_j = δ_{1/j} ⇀ X = δ₀` in `ℝ` and `φ(x) = −x`, the restrictions to `{φ < 0} = {x > 0}` are `δ_{1/j} ⇀ δ₀`, while `X ⌞ {x > 0} = 0`. The Lean statement (line 54463) gives it along a subsequence `ψ`, for levels `s` outside a countable set, on forms supported in `W` (and weakly if `{φ ≤ s}` lies in a compact subset of `W`). The quotation also read "a selection argument as in 6.7(2)"; it now follows the printed wording.
 - **Calls**: `iwl_rl_monotone_helly_selection`, `iwl_restriction_theory` (A.6), `br_la_testForm_covectorNorm_bounded` (A.6), `iwl_rl_massOn_iUnion_monotone`, `iwl_rl_testForm_smooth_cutoff`, `iwl_rl_restriction_cutoff_estimate`
 - **Called by**: `iwl_localization`, `iwl_positive_density`, `iwl_integer_density`
 
@@ -5157,21 +5446,23 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 
 - `root.integrality_weak_limits-a1.restriction_limit-a1.testform_cutoff-a1` · issue #2487 · PR #3469 · candidate `95d4fa1296da`
 - **Statement and proof**: **Smooth cutoff of a test form between two disjoint closed sets** (the cutoffs `ω′`, `ω″` of steps (A), (B) of `iwl_restriction_weak_limit`, which formalizes the selection step of Simon Ch. 6, Remark 8.3(1), p. 176 **[corrected]**).  Normality of `ℝ^P` gives open `N₀ ⊇ C₀` and `N₁ ⊇ C₁` with disjoint closures, and the smooth Urysohn lemma gives a `C^∞` function `χ : ℝ^P → [0, 1]` with `χ = 0` on `closure N₀` and `χ = 1` on `closure N₁`.  Then `ω' = χ ω` is a test form in `U` with `tsupport ω' ⊆ tsupport ω`, and `|ω - ω'| = (1 - χ) |ω| ≤ |ω|` by homogeneity of the Euclidean coefficient norm.
-- **Correction**: the Lean doc comment, kept byte-identical (§9), says "the cutoffs `χω` and `ζω` in the proof of Simon Ch. 6, 8.2, p. 176". No such cutoffs occur in Simon's proof of 8.2 (pp. 176–179). The cutoff is a device of the formal proof, used only in `iwl_restriction_weak_limit`. That lemma formalizes the selection argument of Remark 8.3(1) and the choice of subsequence for (8) in the proof of 8.2.
+- **Correction**: the Lean doc comment, kept byte-identical (§9), says "the cutoffs `χω` and `ζω` in the proof of Simon Ch. 6, 8.2, p. 176". Simon's proof of 8.2 (pp. 176–179) contains no cutoffs `χω`, `ζω` between two disjoint closed sets; its only modification of test forms, the extension `ω̃` of a form on `Ω` by `0` (p. 179), serves to define the currents `S̃_j`. The cutoff is a device of the formal proof, used only in `iwl_restriction_weak_limit`. That lemma formalizes the selection argument of Remark 8.3(1) and the choice of subsequence for (8) in the proof of 8.2.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `iwl_restriction_weak_limit`
 
 #### `iwl_rl_restriction_cutoff_estimate` (L54369)
 
 - `root.integrality_weak_limits-a1.restriction_limit-a1.cutoff_estimate-a1` · issue #2516 · PR #3562 · candidate `9ca4ad88cb32`
-- **Statement and proof**: Cutoff estimate: if `S = Y ⌞ {φ < s}`, `ω'` vanishes where `φ ≥ s`, and `ω - ω'` is supported in `{x ∈ W : a < φ x}` with `|ω - ω'| ≤ c`, then `|S(ω) - Y(ω')| ≤ c (M_{W ∩ {φ < s}}(Y) - M_{W ∩ {φ < a}}(Y))`.
+- **Statement and proof**: Cutoff estimate: let `W ⊆ U` be open, `φ` continuous on `U`, `a < s` and `M_W(Y) < ∞`, and let a measure give the masses of the restrictions of `Y` **[corrected]**. If `S = Y ⌞ {φ < s}`, `ω'` vanishes where `φ ≥ s`, and `ω - ω'` is supported in `{x ∈ W : a < φ x}` with `|ω - ω'| ≤ c`, then `|S(ω) - Y(ω')| ≤ c (M_{W ∩ {φ < s}}(Y) - M_{W ∩ {φ < a}}(Y))`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits these hypotheses of the Lean statement (lines 54371–54375). `a < s` is necessary: for `P = 1`, `k = 0`, `W = U = ℝ`, `φ(x) = x`, `s = 0`, `a = 1`, `Y = δ_{1/2}`, `ω′ = 0` and `ω` a bump with `0 ≤ ω ≤ 1` supported in `(1, 3)`, all other hypotheses hold with `c = 1`, but the claim reads `0 ≤ −1`.
 - **Calls**: `cmb_abs_apply_le_of_massOn_le` (A.1)
 - **Called by**: `iwl_restriction_weak_limit`
 
 #### `iwl_cycle_reduction` (L58218)
 
 - `root.integrality_weak_limits-a1.cycle_reduction-a1` · issue #953 · PR #5368 · candidate `9801717d461a`
-- **Statement and proof**: **Reduction to cycles** in the proof of Simon Ch. 6, Theorem 8.2 (p. 176, the paragraph before (2)): the general case follows from the case `∂T = 0`.  Let `T_j ⇀ T` with `T_j, ∂T_j` integer multiplicity, `spt T_j ⊆ K` compact and `Λ = sup_j (M(T_j) + M(∂T_j)) < ∞`.  By the boundary hypothesis (BLI), `∂T` is integer multiplicity.  All supports lie in a ball `B̄_R(0) ⊇ K`, and the cones `C_j = 0 ⨯ ∂T_j`, `C = 0 ⨯ ∂T` are integer multiplicity with `∂C_j = ∂T_j`, `spt C_j ⊆ B̄_R(0)`, `M(C_j) ≤ cR M(∂T_j)` and `C_j ⇀ C`.  Hence the `T'_j = T_j - C_j` are integer multiplicity cycles in `B̄_R(0)` with `M(T'_j) ≤ (1 + cR) Λ` and `T'_j ⇀ T' = T - C`, so `T'` is integer multiplicity by the cycle hypothesis (Cyc), and so is `T = T' + C`.
+- **Statement and proof**: **Reduction to cycles** in the proof of Simon Ch. 6, Theorem 8.2 (p. 176, the paragraph after display (1) **[corrected]**): the general case follows from the case `∂T = 0`.  Let `T_j ⇀ T` with `T_j, ∂T_j` integer multiplicity, `spt T_j ⊆ K` compact and `Λ = sup_j (M(T_j) + M(∂T_j)) < ∞`.  By the boundary hypothesis (BLI), `∂T` is integer multiplicity.  All supports lie in a ball `B̄_R(0) ⊇ K`, and the cones `C_j = 0 ⨯ ∂T_j`, `C = 0 ⨯ ∂T` are integer multiplicity with `∂C_j = ∂T_j`, `spt C_j ⊆ B̄_R(0)`, `M(C_j) ≤ cR M(∂T_j)` and `C_j ⇀ C`.  Hence the `T'_j = T_j - C_j` are integer multiplicity cycles in `B̄_R(0)` with `M(T'_j) ≤ (1 + cR) Λ` and `T'_j ⇀ T' = T - C`, so `T'` is integer multiplicity by the cycle hypothesis (Cyc), and so is `T = T' + C`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "the paragraph before (2)". The reduction to `∂T = 0` is the paragraph after display (1) on p. 176; the text before display (2) defines `f(r) = M(T ⌞ B_r(ξ))`.
 - **Calls**: `iwl_cr_support_lemmas` (A.6), `iwl_cr_cone_exists`, `iwl_cr_cone_estimates`, `iwl_cr_cone_boundary`, `iwl_cr_cone_integer_multiplicity`, `iwl_im_closure`, `iwl_smooth_pushforward`
 - **Called by**: `integrality_of_weak_limits`
 
@@ -5192,14 +5483,16 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_cr_ce_cutoff_converges_zero` (L11634)
 
 - `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_exists-a1.cutoff_null-a1` · issue #3711 · PR #4473 · candidate `1ce45c2246fb`
-- **Statement and proof**: Cut-off of a null sequence: if every derivative of `ψ_l` tends to `0` uniformly on `K = tsupport ζ`, then the test forms `φ_l = ζ ψ_l` tend to `0` in `𝒟ᵏ(U)`.  By the Leibniz rule, `D^j φ_l` is controlled on `K` by the bounded derivatives of `ζ` and the derivatives of `ψ_l` of order `≤ j`.
+- **Statement and proof**: Cut-off of a null sequence: let `ζ` be smooth with compact support in `U` and the `ψ_l` smooth **[corrected]**. If every derivative of `ψ_l` tends to `0` uniformly on `K = tsupport ζ`, then the test forms `φ_l = ζ ψ_l` tend to `0` in `𝒟ᵏ(U)`.  By the Leibniz rule, `D^j φ_l` is controlled on `K` by the bounded derivatives of `ζ` and the derivatives of `ψ_l` of order `≤ j`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), leaves these hypotheses of the Lean statement (line 11634) implicit.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `iwl_cr_ce_cutoff_radial_operator`
 
 #### `iwl_cr_radial_operator` (L12404)
 
 - `root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1` · issue #2723 · PR #4671 · candidate `17ec2f4cdda3`
-- **Statement and proof**: The radial homotopy operator `ψ(x) = ∫₀¹ tᵃ x ⌟ ω(t x) dt` (proof of Simon Ch. 6, 8.2, Part I): for a smooth `(k + 1)`-form `ω`, `ψ` is a smooth `k`-form with (i) `ψ(x)(v) = ∫₀¹ tᵃ ω(t x)(x, v) dt`, (ii) `Dψ(x)[w](v) = ∫₀¹ tᵃ (t Dω(t x)[w](x, v) + ω(t x)(w, v)) dt`, and (iii) `‖Dʲψ(x)‖ ≤ (R + j) D` on `B̄_R(0)` whenever `‖Dⁱω‖ ≤ D` there for all `i ≤ j`. The integrand `F(t, x) = tᵃ • (ω(t x)).curryLeft x` is jointly smooth, so `ψ = ∫₀¹ F(t, ·) dt` is smooth with `Dʲψ = ∫₀¹ Dʲ_x F dt`; evaluation commutes with the integral.
+- **Statement and proof**: The radial homotopy operator `ψ(x) = ∫₀¹ tᵃ x ⌟ ω(t x) dt` (Part I of the accepted natural-language proof of `iwl_cycle_reduction`, in the proof of Simon Ch. 6, 8.2 **[corrected]**): for a smooth `(k + 1)`-form `ω`, `ψ` is a smooth `k`-form with (i) `ψ(x)(v) = ∫₀¹ tᵃ ω(t x)(x, v) dt`, (ii) `Dψ(x)[w](v) = ∫₀¹ tᵃ (t Dω(t x)[w](x, v) + ω(t x)(w, v)) dt`, and (iii) `‖Dʲψ(x)‖ ≤ (R + j) D` on `B̄_R(0)` whenever `‖Dⁱω‖ ≤ D` there for all `i ≤ j`. The integrand `F(t, x) = tᵃ • (ω(t x)).curryLeft x` is jointly smooth, so `ψ = ∫₀¹ F(t, ·) dt` is smooth with `Dʲψ = ∫₀¹ Dʲ_x F dt`; evaluation commutes with the integral.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "proof of Simon Ch. 6, 8.2, Part I". The printed proof has no parts; Part I ("the cone") is part of the accepted proof of `root.integrality_weak_limits-a1.cycle_reduction-a1`.
 - **Calls**: `iwl_cr_ro_integrand_contDiff_fderiv`, `iwl_cr_ro_intervalIntegral_contDiff`, `iwl_cr_ro_integrand_iteratedFDeriv_le`
 - **Called by**: `iwl_cr_cone_exists`, `iwl_cr_cone_estimates`, `iwl_cr_cone_boundary`, `iwl_cr_cone_integer_multiplicity`
 
@@ -5227,7 +5520,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_cr_cone_estimates` (L12750)
 
 - `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1` · issue #2743 · PR #4825 · candidate `ea4ec8d78d8b`
-- **Statement and proof**: **Cone estimates** (items 3–4 of the cycle reduction; cf. the cone 2.30 and the mass bound 2.27 of Simon Ch. 6).  With `c = P^{2m+1}` and `R ≥ 0`: if `spt X ⊆ B̄_R(0)` and `C` is a cone over `X`, i.e. `C(ω) = X(ψ)` whenever `ψ(x)(v) = ∫₀¹ t^m ω(tx)(x, v) dt` near `spt X`, then `spt C ⊆ B̄_R(0)` and `M(C) ≤ c R M(X)`; and if `X_j ⇀ X` (all supported in `B̄_R(0)`), the cones `C_j` over `X_j` converge weakly to `C`.  Each `ω` is tested through one cut-off radial form `ψ = ζ ψ_ω`, with `ζ = 1` near `B̄_R(0)`.
+- **Statement and proof**: **Cone estimates** (items 3–4 of the cycle reduction; cf. the cone 2.30 and the mass bound 2.27 of Simon Ch. 6).  With `c = P^{2m+1}` and `R ≥ 0`: if `spt X ⊆ B̄_R(0)` and `C` is a cone over `X`, i.e. `C(ω) = X(ψ)` whenever `ψ(x)(v) = ∫₀¹ t^m ω(tx)(x, v) dt` near `spt X`, then `spt C ⊆ B̄_R(0)` and, if `M(X) < ∞` **[corrected]**, `M(C) ≤ c R M(X)`; and if `X_j ⇀ X` (all supported in `B̄_R(0)`), the cones `C_j` over `X_j` converge weakly to `C`.  Each `ω` is tested through one cut-off radial form `ψ = ζ ψ_ω`, with `ζ = 1` near `B̄_R(0)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), states the mass bound without the hypothesis `M(X) < ∞` of the Lean statement (line 12750); for `R = 0` and `M(X) = ∞` the right side would be read as `0`.
 - **Calls**: `iwl_cr_radial_operator`, `iwl_cr_cest_cutoff_radial_form`, `iwl_cr_cest_cone_support`, `iwl_cr_cest_mass_le_of_forms`
 - **Called by**: `iwl_cycle_reduction`
 
@@ -5255,7 +5549,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_cr_cest_mass_le_of_forms` (L12013)
 
 - `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_estimates-a1.mass_le_of_forms-a1` · issue #3840 · PR #4428 · candidate `9635524d1d0b`
-- **Statement and proof**: Mass comparison through bounded transfer forms: if for every mass-admissible `ω` and `δ > 0` there is a test form `ψ` with `C(ω) = X(ψ)` and `|ψ(x)| ≤ c (R + δ)` everywhere, then `M(C) ≤ c R · M(X)`.
+- **Statement and proof**: Mass comparison through bounded transfer forms: let `c, R ≥ 0` and `M(X) < ∞` **[corrected]**. If for every mass-admissible `ω` and `δ > 0` there is a test form `ψ` with `C(ω) = X(ψ)` and `|ψ(x)| ≤ c (R + δ)` everywhere, then `M(C) ≤ c R · M(X)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits these hypotheses of the Lean statement (line 12015).
 - **Calls**: `cmb_abs_apply_le_of_massOn_le` (A.1)
 - **Called by**: `iwl_cr_cone_estimates`
 
@@ -5339,7 +5634,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_cr_ci_cutoff_pullback_testForm` (L13060)
 
 - `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.cutoff_pullback-a1` · issue #3628 · PR #4334 · candidate `15be873de6f5`
-- **Statement and proof**: Cut-off pull-backs of smooth forms are test forms (step 5 of the proof of Simon Ch. 6, 8.2): for smooth `f : ℝ^P → ℝ^Q`, a smooth form `ω` and a smooth compactly supported `χ`, `η(y) = χ(y) ω(f(y)) ∘ Df(y)` is smooth (the pull-back `B ↦ (α ↦ α ∘ B)` is analytic) and has compact support.
+- **Statement and proof**: Cut-off pull-backs of smooth forms are test forms (step 5 of the accepted natural-language proof of `iwl_cr_cone_integer_multiplicity`, in the proof of Simon Ch. 6, 8.2 **[corrected]**): for smooth `f : ℝ^P → ℝ^Q`, a smooth form `ω` and a smooth compactly supported `χ`, `η(y) = χ(y) ω(f(y)) ∘ Df(y)` is smooth (the pull-back `B ↦ (α ↦ α ∘ B)` is analytic) and has compact support.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "step 5 of the proof of Simon Ch. 6, 8.2". The step is Step 5 ("A good `η`") of the accepted proof of `iwl_cr_cone_integer_multiplicity`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `iwl_cr_cone_integer_multiplicity`
 
@@ -5360,7 +5656,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_cr_ci_ie_param_fubini` (L26706)
 
 - `root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.integral_exchange-a1.param_fubini-a1` · issue #4242 · PR #4817 · candidate `db77a916adae`
-- **Statement and proof**: **Fubini for `∫ θ ⟨Φ(s), ξ⟩ dμ` over `s ∈ [0, 1]`.**  Let `μ` be s-finite, `θ ∈ L¹(μ)` and `|ξ(x)(α)| ≤ ‖α‖` for `μ`-a.e. `x`, let `(s, x) ↦ Φ(s)(x)` be continuous with `‖Φ(s)(x)‖ ≤ B` on `[0, 1] × ℝ^P`, and `Ψ(x) = ∫₀¹ Φ(s)(x) ds`.  Then `∫₀¹ ∫ θ ξ(Φ(s)) dμ ds = ∫ θ ξ(Ψ) dμ`: the integrand is dominated by `B |θ(x)|` for `𝓛¹ ⌞ (0, 1] × μ`-a.e. `(s, x)`, so Fubini applies (`integral_integral_swap`), and the inner integral is `θ(x) ∫₀¹ ξ(x)(Φ(s)(x)) ds = θ(x) ξ(x)(Ψ(x))` (`iwl_cr_ci_ie_nvector_intervalIntegral`).
+- **Statement and proof**: **Fubini for `∫ θ ⟨Φ(s), ξ⟩ dμ` over `s ∈ [0, 1]`.**  Let `μ` be s-finite, `θ ∈ L¹(μ)`, `ξ` `μ`-a.e. strongly measurable **[corrected]** and `|ξ(x)(α)| ≤ ‖α‖` for `μ`-a.e. `x`, let `(s, x) ↦ Φ(s)(x)` be continuous with `‖Φ(s)(x)‖ ≤ B` on `[0, 1] × ℝ^P`, and `Ψ(x) = ∫₀¹ Φ(s)(x) ds`.  Then `∫₀¹ ∫ θ ξ(Φ(s)) dμ ds = ∫ θ ξ(Ψ) dμ`: the integrand is dominated by `B |θ(x)|` for `𝓛¹ ⌞ (0, 1] × μ`-a.e. `(s, x)`, so Fubini applies (`integral_integral_swap`), and the inner integral is `θ(x) ∫₀¹ ξ(x)(Φ(s)(x)) ds = θ(x) ξ(x)(Ψ(x))` (`iwl_cr_ci_ie_nvector_intervalIntegral`).
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits the measurability of `ξ`, which the Lean statement (line 26706) assumes and Fubini's theorem needs.
 - **Calls**: `iwl_cr_ci_ie_nvector_intervalIntegral`
 - **Called by**: `iwl_cr_ci_integral_exchange`
 
@@ -5396,7 +5693,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_sp_massOn_le_of_compatible` (L57452)
 
 - `root.integrality_weak_limits-a1.smooth_pushforward-a1.mass_bound-a1` · issue #2507 · PR #4596 · candidate `31e47f0afb18`
-- **Statement and proof**: Mass bound for currents related by compatible pull-backs (step 6 of the smooth push-forward step in the proof of Simon Ch. 6, 8.2): if `Y(ω) = Z(η)` whenever `η = f^#ω` near `A`, and `‖Df‖ ≤ c`, then `M_W(Y) ≤ c^j M_{f⁻¹(W) ∩ U}(Z)`.  For `ω` admissible for `M_W(Y)`, the compatible form `η = ζ f^#ω` (`Submission.iwl_sp_exists_compatible_testForm`) has `Y(ω) = Z(η)`, `spt η ⊆ f⁻¹(W) ∩ U` and `|η| ≤ ‖Df‖^j |ω ∘ f| ≤ c^j` (`Submission.iwl_sp_covectorEuclideanNorm_pullback_le`), so `c^{-j} η` is admissible for `M_{f⁻¹(W) ∩ U}(Z)`; if `c^j = 0`, then `j ≥ 1`, `Df = 0` and `η = 0`.
+- **Statement and proof**: Mass bound for currents related by compatible pull-backs (step 6 of the smooth push-forward step in the proof of Simon Ch. 6, 8.2): let `U` be open, `A ⊆ U`, `f` of class `C^∞` with `f|A` proper (`f⁻¹(K) ∩ A` compact for compact `K ⊆ V`) and `c ≥ 0` **[corrected]**. If `Y(ω) = Z(η)` whenever `η = f^#ω` near `A`, and `‖Df‖ ≤ c`, then `M_W(Y) ≤ c^j M_{f⁻¹(W) ∩ U}(Z)`.  For `ω` admissible for `M_W(Y)`, the compatible form `η = ζ f^#ω` (`Submission.iwl_sp_exists_compatible_testForm`) has `Y(ω) = Z(η)`, `spt η ⊆ f⁻¹(W) ∩ U` and `|η| ≤ ‖Df‖^j |ω ∘ f| ≤ c^j` (`Submission.iwl_sp_covectorEuclideanNorm_pullback_le`), so `c^{-j} η` is admissible for `M_{f⁻¹(W) ∩ U}(Z)`; if `c^j = 0`, then `j ≥ 1`, `Df = 0` and `η = 0`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits these hypotheses of the Lean statement (line 57452). Properness is needed for the compatible forms `η` (`iwl_sp_exists_compatible_testForm`), and the claim fails without it: for `P = Q = j = c = 1`, `U = A = (0, 1)`, `V = ℝ`, `f = id`, `Z = 0` and `Y(ω) = ω(0)(e₁)`, every `ω` with a compatible `η ∈ 𝒟¹(U)` agrees with `η` on `(0, 1)`, and `η` vanishes on some `(0, ε)` because `spt η` is a compact subset of `(0, 1)`; so `ω(0) = 0` by continuity and the hypothesis holds, but `M(Y) = 1`.
 - **Calls**: `iwl_sp_exists_compatible_testForm` (A.6), `iwl_sp_covectorEuclideanNorm_pullback_le` (A.6)
 - **Called by**: `iwl_smooth_pushforward`
 
@@ -5410,7 +5708,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `iwl_integer_density` (L68671)
 
 - `root.integrality_weak_limits-a1.integer_density-a1` · issue #955 · PR #5271 · candidate `914dbf6c21ef`
-- **Statement and proof**: **Rectifiable weak limits of integer multiplicity cycles are integer multiplicity** (Simon Ch. 6, proof of Theorem 8.2, printed (7)–(10), pp. 178–179, with the documented corrections). Write `T = τ(M, θ, ξ)`; it suffices that `θ(x) ∈ ℕ` for `Hⁿ`-a.e. `x ∈ M`.  After passing to a subsequence, at a.e. `x` we have `M_{B_r(x)}(T_j) ≤ C rⁿ` for small `r` and large `j`, the blow-ups `(η_{x,λ})_# T` converge to `θ(x) ∫_{TₓM} ⟨·, ξ(x)⟩ dHⁿ` as `λ ↓ 0`, and `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `TₓM = span τ`.  For `λ_k ↓ 0` the rescalings `Y_{k,j} = (η_{x,λ_k})_# T_j` are integer multiplicity cycles with `M_{B_2(0)}(Y_{k,j}) ≤ λ_k⁻ⁿ M_{B_{2λ_k}(x)}(T_j) ≤ 2ⁿ C` for large `j`, and `Y_{k,j} → (η_{x,λ_k})_# T` as `j → ∞`.  A diagonal sequence `Y_{k,φ'(k)}` converges in `B_2(0)` to `c [[span τ]]` with `c = ±θ(x)`, so the planar integrality theorem gives `c ∈ ℤ`, hence `θ(x) = |c| ∈ ℕ` as `θ(x) > 0`.  The hypothesis `m + 2 ≤ P` is not needed.
+- **Statement and proof**: **Rectifiable weak limits of integer multiplicity cycles `T_j ∈ 𝒟ₙ(ℝ^P)` with `sup_j M(T_j) < ∞` are integer multiplicity** **[corrected]** (Simon Ch. 6, proof of Theorem 8.2, printed (7)–(10), pp. 178–179, with the documented corrections). Write `T = τ(M, θ, ξ)`; it suffices that `θ(x) ∈ ℕ` for `Hⁿ`-a.e. `x ∈ M`.  After passing to a subsequence, at a.e. `x` we have `M_{B_r(x)}(T_j) ≤ C rⁿ` for small `r` and large `j`, the blow-ups `(η_{x,λ})_# T` converge to `θ(x) ∫_{TₓM} ⟨·, ξ(x)⟩ dHⁿ` as `λ ↓ 0`, and `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `TₓM = span τ`.  For `λ_k ↓ 0` the rescalings `Y_{k,j} = (η_{x,λ_k})_# T_j` are integer multiplicity cycles with `M_{B_2(0)}(Y_{k,j}) ≤ λ_k⁻ⁿ M_{B_{2λ_k}(x)}(T_j) ≤ 2ⁿ C` for large `j`, and `Y_{k,j} → (η_{x,λ_k})_# T` as `j → ∞`.  A diagonal sequence `Y_{k,φ'(k)}` converges in `B_2(0)` to `c [[span τ]]` with `c = ±θ(x)`, so the planar integrality theorem gives `c ∈ ℤ`, hence `θ(x) = |c| ∈ ℕ` as `θ(x) > 0`.  The hypothesis `m + 2 ≤ P` is not needed.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits the mass bound `sup_j M(T_j) < ∞` of the Lean statement (line 68671), which the proof uses at once (`ind_mass_density_bound`). Without it the claim fails: for `P = 2`, `n = 1`, the unit disc `D` and `E_j = {x ∈ D : ⌊j x₁⌋ even}`, the cycles `T_j = ∂[[E_j]]` are integer multiplicity and converge weakly to `½ ∂[[D]] = ½ [[∂D]]`, which is rectifiable with multiplicity `½`.
 - **Calls**: `ind_mass_density_bound`, `ind_ae_integer_multiplicity`, `ind_ae_blowup_limit`, `ind_rescaled_current`, `ind_diagonal_weak_limit`, `ind_plane_multiplicity_integer`, `iwl_restriction_weak_limit`, `iwl_smooth_pushforward`, `iwl_top_dim_integrality`
 - **Called by**: `integrality_of_weak_limits`
 
@@ -5438,7 +5737,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `ind_md_diagonal_weak_subseq` (L55413)
 
 - `root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1.diagonal_weak_subseq-a1` · issue #3292 · PR #3876 · candidate `93e13175da02`
-- **Statement and proof**: Diagonal extraction over the closed balls `B̄_R(0)`, `R ∈ ℕ` (Simon Ch. 6, proof of 8.2, steps (2b)–(2c) and 3, carrying the closed-set `limsup` bound instead of weak convergence).  Apply `ind_md_closedBall_weak_subseq` to the nested subsequences `p₀ = id`, `p_{R+1} = p_R ∘ χ_{R, p_R}` and take the diagonal `φ(j) = p_{j+1}(j)`.  For `j ≥ R`, `φ(j) = p_{R+1}(i)` with `i ≥ j`, so the bound `limsup_i μ_{p_{R+1}(i)}(F) ≤ ν_R(F)` for closed `F ⊆ B̄_R(0)` passes to `φ`.
+- **Statement and proof**: Diagonal extraction over the closed balls `B̄_R(0)`, `R ∈ ℕ` (steps (2b)–(2c) and 3 of the accepted natural-language proof of `ind_mass_density_bound`, within the proof of Simon Ch. 6, 8.2 **[corrected]**, carrying the closed-set `limsup` bound instead of weak convergence).  Apply `ind_md_closedBall_weak_subseq` to the nested subsequences `p₀ = id`, `p_{R+1} = p_R ∘ χ_{R, p_R}` and take the diagonal `φ(j) = p_{j+1}(j)`.  For `j ≥ R`, `φ(j) = p_{R+1}(i)` with `i ≥ j`, so the bound `limsup_i μ_{p_{R+1}(i)}(F) ≤ ν_R(F)` for closed `F ⊆ B̄_R(0)` passes to `φ`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "Simon Ch. 6, proof of 8.2, steps (2b)–(2c) and 3". The printed proof of 8.2 is labelled only by its displays (1)–(10); the steps are those of the accepted proof of the parent node `root.integrality_weak_limits-a1.integer_density-a1.mass_density-a1`.
 - **Calls**: `ind_md_closedBall_weak_subseq`
 - **Called by**: `ind_mass_density_bound`
 
@@ -5466,7 +5766,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `ind_ae_blowup_limit` (L56121)
 
 - `root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1` · issue #2486 · PR #4309 · candidate `a3152bb94953`
-- **Statement and proof**: Blow-up of `τ(M, θ, ξ)` at a.e. point (Simon Ch. 6, proof of 8.2, display (7)): for `Hⁿ`-a.e. `x ∈ M`, every weighted approximate tangent space `Q` of `(M, θ)` at `x` and every continuous compactly supported `n`-form `ω`, `τ(M, θ, ξ)(r⁻ⁿ ω ∘ η_{x,r}) → θ(x) ∫_Q ⟨ω, ξ(x)⟩ dHⁿ` as `r ↓ 0`, `η_{x,r}(y) = r⁻¹(y − x)`.
+- **Statement and proof**: Blow-up of `τ(M, θ, ξ)` at a.e. point (Simon Ch. 6, proof of 8.2, display (7)): for a rectifiable triple `(M, θ, ξ)` in `ℝ^P` **[corrected]** and `Hⁿ`-a.e. `x ∈ M`, every weighted approximate tangent space `Q` of `(M, θ)` at `x` and every continuous compactly supported `n`-form `ω`, `τ(M, θ, ξ)(r⁻ⁿ ω ∘ η_{x,r}) → θ(x) ∫_Q ⟨ω, ξ(x)⟩ dHⁿ` as `r ↓ 0`, `η_{x,r}(y) = r⁻¹(y − x)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), does not state that `(M, θ, ξ)` is a rectifiable triple, which the Lean statement (line 56123) assumes.
 - **Calls**: `ind_ab_rescaled_tangent_limit`, `ind_ab_weighted_ball_growth`, `ind_ab_weighted_lebesgue_point`, `ind_ab_orientation_error_vanishes`
 - **Called by**: `iwl_integer_density`
 
@@ -5487,7 +5788,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `ind_ab_weighted_lebesgue_point` (L55893)
 
 - `root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1.weighted_lebesgue_point-a1` · issue #3313 · PR #3940 · candidate `d054ee15516d`
-- **Statement and proof**: Weighted Lebesgue points of the orientation of a rectifiable triple (Simon Ch. 1, 3.23 with 3.11(3); Steps 1–3 of the proof of Ch. 6, 8.2).  For `Hⁿ⌞M`-a.e. `x`, `(∫_{M ∩ B̄_s(x)} θ(y) ‖ξ(y) − ξ(x)‖ dHⁿ(y)) / (∫_{M ∩ B̄_s(x)} θ dHⁿ) → 0` as `s ↓ 0` (`ℝ≥0∞`-valued).  With `λ = (Hⁿ⌞M) ⌞ θ`, `λ(B̄_s(x))` is the denominator, `λ` is locally finite and mutually absolutely continuous with `Hⁿ⌞M` (`θ > 0` on `M`), and `ξ` is locally `λ`-integrable as `‖ξ‖ ≤ 1` a.e.; the claim is Lebesgue differentiation of `ξ` with respect to `λ` along the Besicovitch Vitali family of closed balls.
+- **Statement and proof**: Weighted Lebesgue points of the orientation of a rectifiable triple (Simon Ch. 1, 3.23 with 3.11(3); Steps 1–3 of the accepted natural-language proof of `ind_ae_blowup_limit`, in the proof of Ch. 6, 8.2 **[corrected]**).  For `Hⁿ⌞M`-a.e. `x`, `(∫_{M ∩ B̄_s(x)} θ(y) ‖ξ(y) − ξ(x)‖ dHⁿ(y)) / (∫_{M ∩ B̄_s(x)} θ dHⁿ) → 0` as `s ↓ 0` (`ℝ≥0∞`-valued).  With `λ = (Hⁿ⌞M) ⌞ θ`, `λ(B̄_s(x))` is the denominator, `λ` is locally finite and mutually absolutely continuous with `Hⁿ⌞M` (`θ > 0` on `M`), and `ξ` is locally `λ`-integrable as `‖ξ‖ ≤ 1` a.e.; the claim is Lebesgue differentiation of `ξ` with respect to `λ` along the Besicovitch Vitali family of closed balls.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "Steps 1–3 of the proof of Ch. 6, 8.2". The printed proof has no numbered steps; the steps are those of the accepted proof of the parent node `root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `ind_ae_blowup_limit`
 
@@ -5593,7 +5895,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `ind_pi_good_slice_selection` (L56851)
 
 - `root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1` · issue #4034 · PR #6446 · candidate `afa97e5c91a5`
-- **Statement and proof**: Simon Ch. 6, proof of 8.2, display (8) ("by 4.5(1) and a selection argument as in 6.7(2) of Ch. 2"): for cycles `X_k ⇀ X` with `sup_k M_W(X_k) < ∞` there are a level `γ ∈ (a, b)` and a subsequence `κ` such that the restrictions `R_k = X_{κ(k)} ⌞ {d < γ}` satisfy `M_W(R_k) ≤ M_W(X_{κ(k)})`, `sup_k M_W(∂R_k) < ∞` and `R_k(ω) → (X ⌞ {d < γ})(ω)` for `spt ω ⊆ W`.
+- **Statement and proof**: Simon Ch. 6, proof of 8.2, display (8) for a subsequence (which the book justifies "by 4.5(1) and a selection arguments [sic] in 6.7(2) of Ch. 2") **[corrected]**: for `W ⊂⊂ U`, `d` Lipschitz, `a < b` and cycles `X_k ⇀ X` with `M_V(X_k) < ∞` for `V ⊂⊂ U` and `sup_k M_W(X_k) < ∞` **[corrected]** there are a level `γ ∈ (a, b)` and a subsequence `κ` such that the restrictions `R_k = X_{κ(k)} ⌞ {d < γ}` satisfy `M_W(R_k) ≤ M_W(X_{κ(k)})`, `sup_k M_W(∂R_k) < ∞` and `R_k(ω) → (X ⌞ {d < γ})(ω)` for `spt ω ⊆ W`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), quotes the book as "by 4.5(1) and a selection argument as in 6.7(2) of Ch. 2"; p. 178 prints "justified by 4.5(1) and a selection arguments in 6.7(2) of Ch. 2", as the justification that (8) remains valid for a subsequence `T_{j′}`. It also omits the hypotheses `W ⊂⊂ U`, `d` Lipschitz, `a < b` and the local finiteness of the masses of the `X_k` of the Lean statement (lines 56866–56868).
 - **Calls**: `ind_pi_ss_cycle_slice_family`, `ind_pi_ss_fatou_level_selection`, `ind_pi_ss_restriction_massOn_le`
 - **Called by**: `ind_pi_localized_cycles`
 
@@ -5607,7 +5910,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `ind_pi_ss_cycle_slice_boundary` (L55138)
 
 - `root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.cycle_slice_boundary-a1` · issue #4628 · PR #5137 · candidate `014fdc802b43`
-- **Statement and proof** (no doc comment in the source; summary of the accepted natural-language proof): **A slice of a cycle is the boundary of the restriction.** If `∂T = 0` and `IsSlice T f t S`, then some restriction `A` of `T` to `{x ∈ U : f(x) < t}` has `∂A = S`. Proof: unfolding (4.6), `S = ∂A − B` with `B(ω) = ∫_{A_t} ⟨ω, v⟩ dμ` for a representation `(μ, v)` of `∂T`; testing `∂T = 0` with `g ω`, `g ∈ C_c^∞(U)`, and the fundamental lemma of the calculus of variations (Mathlib's `IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero`) give `⟨ω, v⟩ = 0` `μ`-a.e. on `U ⊇ A_t`, so `B = 0` and `∂A = S`.
+- **Statement and proof** (no doc comment in the source; summary of the Lean proof **[corrected]**): **A slice of a cycle is the boundary of the restriction.** If `∂T = 0` and `IsSlice T f t S`, then some restriction `A` of `T` to `{x ∈ U : f(x) < t}` has `∂A = S`. Proof: unfolding (4.6), `S = ∂A − B` with `B(ω) = ∫_{A_t} ⟨ω, v⟩ dμ` for a representation `(μ, v)` of `∂T`; testing `∂T = 0` with `g ω`, `g ∈ C_c^∞(U)`, and the fundamental lemma of the calculus of variations (Mathlib's `IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero`) give `⟨ω, v⟩ = 0` `μ`-a.e. on `U ⊇ A_t`, so `B = 0` and `∂A = S`.
+- **Correction**: the previous revision of this file labelled this summary as a summary of the accepted natural-language proof. It summarizes the Lean proof, which shows `B = 0` with the fundamental lemma of the calculus of variations; the accepted natural-language proof (steps 2–3) obtains `B = 0` from the uniqueness (R1) of restrictions in `iwl_restriction_theory`, since `0` is also a restriction of `∂T = 0` to `A_t`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `ind_pi_ss_cycle_slice_family`
 
@@ -5621,7 +5925,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `ind_pi_ss_fatou_level_selection` (L56818)
 
 - `root.integrality_weak_limits-a1.integer_density-a1.plane_integer-a1.slice_selection-a1.fatou_level_selection-a1` · issue #4641 · PR #5027 · candidate `fbecac1595ff`
-- **Statement and proof**: Fatou selection of a good level (the "selection argument as in 6.7(2) of Ch. 2" in the proof of Simon Ch. 6, 8.2): if `∫⁻_{(a,b)} g_k ≤ C < ∞` for all `k` and `E` is countable, there are `γ ∈ (a, b) \ E`, a subsequence `σ` and `G < ∞` with `g_{σ(k)}(γ) ≤ G` for all `k`.  By Fatou, `∫⁻_{(a,b)} liminf_k g_k ≤ C`, so `liminf_k g_k(γ) < ∞` for some `γ ∈ (a, b) \ E` (`E` is Lebesgue-null); with `G = liminf_k g_k(γ) + 1`, `g_k(γ) < G` for infinitely many `k`.
+- **Statement and proof**: Fatou selection of a good level (the selection argument that the proof of Simon Ch. 6, 8.2 (p. 178) cites from 6.7(2) of Ch. 2 **[corrected]**): if `a < b`, the `g_k` are measurable **[corrected]** and `∫⁻_{(a,b)} g_k ≤ C < ∞` for all `k` and `E` is countable, there are `γ ∈ (a, b) \ E`, a subsequence `σ` and `G < ∞` with `g_{σ(k)}(γ) ≤ G` for all `k`.  By Fatou, `∫⁻_{(a,b)} liminf_k g_k ≤ C`, so `liminf_k g_k(γ) < ∞` for some `γ ∈ (a, b) \ E` (`E` is Lebesgue-null); with `G = liminf_k g_k(γ) + 1`, `g_k(γ) < G` for infinitely many `k`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), quotes "selection argument as in 6.7(2) of Ch. 2"; p. 178 prints "a selection arguments in 6.7(2) of Ch. 2". It also omits the hypotheses `a < b` and the measurability of the `g_k` (used for Fatou) of the Lean statement (line 56819).
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `ind_pi_good_slice_selection`
 
@@ -5649,7 +5954,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `ind_const_multiple_integer` (L57320)
 
 - `root.integrality_weak_limits-a1.integer_density-a1.const_integer-a1` · issue #2534 · PR #4449 · candidate `3cf5b3cf1bbd`
-- **Statement and proof**: A constant multiple `c [[U]]` of a nonempty open `U ⊆ ℝⁿ` is integer multiplicity only if `c ∈ ℤ` (Simon Ch. 6, end of the proof of 8.2, p. 179: "`θ ≡ θ(x)` in `B₁ⁿ(0)`; thus `θ(x) ∈ ℤ`").  An integer multiplicity `X ∈ 𝒟ₙ(U)` acts as `X(ω) = ∫_U u ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ` with `u` a.e. integer-valued and integrable on compact subsets of `U`; the constant `c` is a second such density of `X`, so `c = u` a.e. on `U`, and `Lⁿ(U) > 0`.
+- **Statement and proof**: A constant multiple `c [[U]]` of a nonempty open `U ⊆ ℝⁿ` is integer multiplicity only if `c ∈ ℤ` (Simon Ch. 6, the end of the proof of 8.2, p. 179, where the `L¹`-limit of the integer-valued densities of the projected currents is shown to be the constant `θ(x)`, so that `θ(x) ∈ ℤ` **[corrected]**).  An integer multiplicity `X ∈ 𝒟ₙ(U)` acts as `X(ω) = ∫_U u ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ` with `u` a.e. integer-valued and integrable on compact subsets of `U`; the constant `c` is a second such density of `X`, so `c = u` a.e. on `U`, and `Lⁿ(U) > 0`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), quotes p. 179 as "`θ ≡ θ(x)` in `B₁ⁿ(0)`; thus `θ(x) ∈ ℤ`". In the book the function that is identically `θ(x)` is the `L¹`-limit of the densities of the projected currents, not the multiplicity `θ` of `T`; the reference is paraphrased instead.
 - **Calls**: `ind_top_dim_integer_density`, `ind_top_form_density_ae_unique`
 - **Called by**: `ind_plane_multiplicity_integer`
 
@@ -5671,8 +5977,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `ind_top_form_density_ae_unique` (L57137)
 
 - `root.integrality_weak_limits-a1.integer_density-a1.const_integer-a1.top_density_unique-a1` · issue #3518 · PR #4159 · candidate `38e98aa2eb31`
-- **Statement and proof**: Densities of top-degree test-form functionals on an open set are unique a.e. (Simon Ch. 6, end of the Proof of 8.2, p. 179: `θ ≡ θ(x)` in `B₁ⁿ(0)`, top-dimensional currents acting by `ω = a dx¹ ∧ ⋯ ∧ dxⁿ ↦ ∫ a θ dLⁿ` as in 2.35 (‡) **[corrected]**).  For `a ∈ C_c^∞(U)`, the form `ω = a • vol` with `vol = dx¹ ∧ ⋯ ∧ dxⁿ` is a test form on `U` with `ω(x)(e₁, …, eₙ) = a(x)` (`wedgeCovectors_apply_det`: `vol(e) = det 1 = 1`), so the hypothesis gives `∫ a (u - v) = ∫_U u a - ∫_U v a = 0`.  As `u - v` is locally integrable on the open set `U`, the fundamental lemma of the calculus of variations (`IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero`) gives `u = v` a.e. on `U`.
-- **Correction**: the Lean doc comment, kept byte-identical (§9), writes "2.35 (∗)". The display of 2.35 (p. 143) carries the marker (‡), the same symbol as the display of 3.1 (see the correction in the entry `ind_top_dim_integer_density`).
+- **Statement and proof**: Densities of top-degree test-form functionals on an open set are unique a.e. (Simon Ch. 6, the end of the proof of 8.2, p. 179, where the `L¹`-limit of the integer-valued densities of the projected currents is shown to be the constant `θ(x)`, so that `θ(x) ∈ ℤ` **[corrected]**; top-dimensional currents acting by `ω = a dx¹ ∧ ⋯ ∧ dxⁿ ↦ ∫ a θ dLⁿ` as in 2.35 (‡) **[corrected]**).  For `a ∈ C_c^∞(U)`, the form `ω = a • vol` with `vol = dx¹ ∧ ⋯ ∧ dxⁿ` is a test form on `U` with `ω(x)(e₁, …, eₙ) = a(x)` (`wedgeCovectors_apply_det`: `vol(e) = det 1 = 1`), so the hypothesis gives `∫ a (u - v) = ∫_U u a - ∫_U v a = 0`.  As `u - v` is locally integrable on the open set `U`, the fundamental lemma of the calculus of variations (`IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero`) gives `u = v` a.e. on `U`.
+- **Correction**: the Lean doc comment, kept byte-identical (§9), writes "2.35 (∗)". The display of 2.35 (p. 143) carries the marker (‡), the same symbol as the display of 3.1 (see the correction in the entry `ind_top_dim_integer_density`). It also quotes p. 179 as "`θ ≡ θ(x)` in `B₁ⁿ(0)`"; the function there is the `L¹`-limit of the densities of the projected currents, so the reference is paraphrased (see `ind_const_multiple_integer`).
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `ind_const_multiple_integer`
 
@@ -5807,7 +6113,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `br_la_weaklyConvergesOn_of_flat_decomposition` (L28710)
 
 - `root.boundary_rectifiability-a1.lattice_approximation-a1.flat_to_weak-a1` · issue #1190 · PR #2140 · candidate `d3d5fa610f70`
-- **Statement and proof**: **Flat decompositions with vanishing masses converge weakly** (the step "Evidently (1), (2) give `P_k(ω) → T(ω)`" in the proof of Simon Ch. 6, 6.2, p. 169).  Let `X − P_k = ∂R_k + S_k` with `M(R_k), M(S_k) → 0`, and fix `ω` with `|ω| ≤ C₁` and `|dω| ≤ C₂`.  Since `∂R_k(ω) = R_k(dω)`, once both masses are finite `|X(ω) − P_k(ω)| ≤ |R_k(dω)| + |S_k(ω)| ≤ C₂ M(R_k) + C₁ M(S_k)`, and the right-hand side tends to `0`.
+- **Statement and proof**: **Flat decompositions with vanishing masses converge weakly** (the step "Evidently (1), (2) give `P_k(ω) → T_k(ω)`" in the proof of Simon Ch. 6, 6.2, p. 169, where the printed `T_k(ω)` is a misprint for `T(ω)` **[corrected]**).  Let `X − P_k = ∂R_k + S_k` with `M(R_k), M(S_k) → 0`, and fix `ω` with `|ω| ≤ C₁` and `|dω| ≤ C₂`.  Since `∂R_k(ω) = R_k(dω)`, once both masses are finite `|X(ω) − P_k(ω)| ≤ |R_k(dω)| + |S_k(ω)| ≤ C₂ M(R_k) + C₁ M(S_k)`, and the right-hand side tends to `0`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), quotes the sentence of p. 169 with `T(ω)` as the limit. The book prints "Evidently (1), (2) give `P_k(ω) → T_k(ω)` `∀ω ∈ 𝒟ⁿ(ℝ^{n+ℓ})`" (the paragraph after display (2) of the proof of 6.2). No `T_k` is defined there, and `T(ω)` is meant, since display (1) reads `T − P_k = ∂R_k + S_k`. The quotation above now follows the printed text and notes the misprint.
 - **Calls**: `br_la_testForm_covectorNorm_bounded` (A.6), `br_la_abs_apply_le_mul_mass` (A.8)
 - **Called by**: `br_lattice_approximation`
 
@@ -5828,7 +6135,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `br_zd_im_dirac_repr` (L917)
 
 - `root.boundary_rectifiability-a1.zero_dim_weak_limit-a1.dirac_repr-a1` · issue #1092 · PR #2150 · candidate `a530e777eaab`
-- **Statement and proof**: Simon Ch. 6, 3.1 with `n = 0` (the `0`-dimensional step in the proof of 6.3): an integer multiplicity `Y = τ(M, θ, ξ) ∈ 𝒟₀(U)` is a locally finite integer combination of point masses, `Y(ω) = ∑_{x ∈ N} c(x) ω(x)` with `c(x) ≠ 0` on `N = M`.  `H⁰` is counting measure, so `H⁰`-null sets are empty and sets of finite `H⁰` measure are finite.  As `θ ≥ 1` on `M` and `θ` is locally `H⁰`-integrable, `M ∩ K` is finite for compact `K ⊆ U`; the orientation condition holds at every point of `M`, where `ξ(x) = ±[[x]]`, so `c(x) = θ(x) ξ(x)(1) = ±θ(x)` is a nonzero integer, and the integral over `M` reduces to the finite sum over `M ∩ spt ω`.
+- **Statement and proof**: Simon Ch. 6, 3.1 with `n = 0` (the `0`-dimensional step in the proof of 6.3): an integer multiplicity `Y = τ(M, θ, ξ) ∈ 𝒟₀(U)` is a locally finite integer combination of point masses, `Y(ω) = ∑_{x ∈ N} c(x) ω(x)` with `c(x) ≠ 0` on `N = M`.  `H⁰` is counting measure, so `H⁰`-null sets are empty and sets of finite `H⁰` measure are finite.  As `θ ≥ 1` on `M` and `θ` is locally `H⁰`-integrable, `M ∩ K` is finite for compact `K ⊆ U`; the orientation condition holds at every point of `M`, where `ξ(x) = ±1` (the empty wedge) **[corrected]**, so `c(x) = θ(x) ξ(x)(1) = ±θ(x)` is a nonzero integer, and the integral over `M` reduces to the finite sum over `M ∩ spt ω`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), writes `ξ(x) = ±[[x]]`. `ξ(x)` is a `0`-vector, i.e. `±1`; `[[x]]` is the Dirac current at `x`, and the same sentence evaluates `ξ(x)(1)`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `br_zero_dim_weak_limit_isIntegerMultiplicity`
 
@@ -5844,7 +6152,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `flat_convergence_iff_weak_convergence` (L69448)
 
 - `root.flat_iff_weak-a1` · issue #338 · PR #8796 · candidate `7c119a556b4c`
-- **Statement and proof**: **Simon Ch. 6, Theorem 7.2 (pp. 170–172).**  For integer multiplicity `T, T_j ∈ 𝒟ₙ(U)` with `sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for all `W ⊂⊂ U`, `T_j ⇀ T` iff `d_W(T_j, T) → 0` for every `W ⊂⊂ U`.  The "if" part is `fiw_flat_to_weak`.  For "only if", fix `W ⊂⊂ U`; by the subsequence principle it suffices that every subsequence `T_{ns j}` has a further subsequence with `d_W(·, T) → 0`.  Localization (printed (4)) gives integral currents `T'_j ⇀ T'` with supports in a fixed compact `K ⊆ U` and bounded `M(T'_j) + M(∂T'_j)`, such that every decomposition `T'_j − T' = ∂R + S` bounds `d_W(T_{ns(ψ j)}, T)` by `M_W(S) + M_W(R)`.  Total boundedness ((1)–(3), from the Deformation Theorem) and the series of 3.13 ((5) and `R^(ℓ)`, `S^(ℓ)`) give such decompositions with `M(R) + M(S) ≤ 2 · 2^{-ℓ}` along a subsequence `φ`.
+- **Statement and proof**: **Simon Ch. 6, Theorem 7.2 (pp. 170–172).**  For integer multiplicity `T, T_j ∈ 𝒟ₙ(U)` with `sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for all `W ⊂⊂ U`, `T_j ⇀ T` iff `d_W(T_j, T) → 0` for every `W ⊂⊂ U`.  The "if" part is `fiw_flat_to_weak`.  For "only if", fix `W ⊂⊂ U`; by the subsequence principle it suffices that every subsequence `T_{ns j}` has a further subsequence with `d_W(·, T) → 0`.  Localization (printed (4)) gives integral currents `T'_j ⇀ T'` with supports in a fixed compact `K ⊆ U` and bounded `M(T'_j) + M(∂T'_j)`, such that every decomposition `T'_j − T' = ∂R + S` with `R`, `S` integer multiplicity **[corrected]** bounds `d_W(T_{ns(ψ j)}, T)` by `M_W(S) + M_W(R)`.  Total boundedness ((1)–(3), from the Deformation Theorem) and the series of 3.13 ((5) and `R^(ℓ)`, `S^(ℓ)`) give such decompositions with `M(R) + M(S) ≤ 2 · 2^{-ℓ}` along a subsequence `φ`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), omits that `R` and `S` are integer multiplicity, as `d_W` (7.1) and the Lean statement of `fiw_localization` require.
 - **Calls**: `fiw_flat_to_weak`, `fiw_localization`, `slicing_theorem` (A.5), `boundary_rectifiability` (A.10), `fiw_flat_cauchy_limit`, `fiw_total_boundedness`, `deformation_theorem` (A.6)
 - **Called by**: `main_theorem`
 
@@ -5858,21 +6167,24 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `fiw_localization` (L64437)
 
 - `root.flat_iff_weak-a1.localization-a1` · issue #824 · PR #5105 · candidate `7ece361b32af`
-- **Statement and proof**: **Localization step in the proof of Simon Ch. 6, Theorem 7.2 (p. 170), reduction (4).** Given integer multiplicity `T_j ⇀ T` with locally bounded `M_V(T_j) + M_V(∂T_j)` and `W ⊂⊂ U`, pass to a subsequence `ψ` and cut every `T_{ψ(j)}` (and `T`) along a level set `{φ = s}` of `φ = δ - dist(·, closure W)`: * Helly selection (diagonal subsequence along which `μ_{T_j}({φ ≥ q})` converges for rational `q`) and Fatou's lemma applied to the slice masses (4.10 clause of the Slicing Theorem) give a level `s` that is a continuity point of the limit and along which the slices have bounded mass; * `T'_j = T_{ψ(j)} ⌞ {φ ≥ s}` and `T' = T ⌞ {φ ≥ s}` are integer multiplicity (restriction calculus: uniqueness of the representing vector measure (2.7)–(2.9) and locality of approximate tangent spaces), `∂T'_j = (∂T_{ψ(j)}) ⌞ {φ ≥ s} - ⟨T_{ψ(j)}, φ, s⟩` is integer multiplicity by Boundary Rectifiability (6.3), `spt T'_j ⊆ {φ ≥ s}`, and the masses are uniformly bounded; * `T'_j ⇀ T'` by smooth cutoffs between rational levels around `s`; * a flat decomposition `T'_j - T' = ∂R + S` transfers to `T_{ψ(j)} - T = ∂R + Ŝ` with `Ŝ` agreeing with `S` on forms supported in `W`.
+- **Statement and proof**: **Localization step in the proof of Simon Ch. 6, Theorem 7.2 (stated on pp. 170–171), reduction (4) (pp. 171–172) **[corrected]**.** Given integer multiplicity `T_j ⇀ T` with locally bounded `M_V(T_j) + M_V(∂T_j)` and `W ⊂⊂ U`, pass to a subsequence `ψ` and cut every `T_{ψ(j)}` (and `T`) along a level set `{φ = s}` of `φ = δ - dist(·, closure W)`: * Helly selection (diagonal subsequence along which `μ_{T_j}({φ ≥ q})` converges for rational `q`) and Fatou's lemma applied to the slice masses (4.10 clause of the Slicing Theorem) give a level `s` that is a continuity point of the limit and along which the slices have bounded mass; * `T'_j = T_{ψ(j)} ⌞ {φ ≥ s}` and `T' = T ⌞ {φ ≥ s}` are integer multiplicity (restriction calculus: uniqueness of the representing vector measure (2.7)–(2.9) and locality of approximate tangent spaces), `∂T'_j = (∂T_{ψ(j)}) ⌞ {φ ≥ s} - ⟨T_{ψ(j)}, φ, s⟩` is integer multiplicity by Boundary Rectifiability (6.3), `spt T'_j ⊆ {φ ≥ s}`, and the masses are uniformly bounded; * `T'_j ⇀ T'` by smooth cutoffs between rational levels around `s`; * a flat decomposition `T'_j - T' = ∂R + S` transfers to `T_{ψ(j)} - T = ∂R + Ŝ` with `Ŝ` agreeing with `S` on forms supported in `W`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), gives p. 170, where the statement of 7.2 begins. The proof begins on p. 171, and the reduction leading to display (4) runs from p. 171 to p. 172.
 - **Calls**: `fiw_tangent_locality`, `fiw_im_lincomb`, `fiw_im_mass_formula` (A.10)
 - **Called by**: `flat_convergence_iff_weak_convergence`
 
 #### `fiw_tangent_locality` (L64325)
 
 - `root.flat_iff_weak-a1.tangent_locality-a1` · issue #809 · PR #4919 · candidate `e508153288a8`
-- **Statement and proof**: Locality of weighted approximate tangent spaces (Simon Ch. 3, Remarks 1.5(2), 1.8(1); the step `T_x M_C = T_x M_Q` of Ch. 6, 3.13): for `Hⁿ`-a.e. `x ∈ M₁ ∩ M₂`, every weighted approximate tangent space of `(M₁, θ₁)` at `x` is one of `(M₂, θ₂)`.  By `fiw_tl_ae_l1_density`, a.e. `x ∈ M₁ ∩ M₂` has `∫_{B̄_s(x)} |1_{M₂} θ₂ − c 1_{M₁} θ₁| dHⁿ = o(∫_{M₁ ∩ B̄_s(x)} θ₁ dHⁿ)` as `s ↓ 0`, where `c = θ₂(x) / θ₁(x)`, so `θ₂(x) = c θ₁(x)`.  As `x ∈ U`, some compact `B̄_ρ(x)` lies in `U`, so `θᵢ` is integrable on `Mᵢ ∩ B̄_ρ(x)`, and `fiw_tl_transfer` carries the tangent space from `(M₁, θ₁)` to `(M₂, θ₂)`.  The exceptional null set does not depend on `Q`.
+- **Statement and proof**: Locality of weighted approximate tangent spaces (Simon Ch. 3, Remarks 1.5(2), 1.8(1); the step `T_x M_+ = T_x M_Q`, `M_+ = {θ > 0}`, in the proof of Ch. 6, Lemma 3.13, p. 150 **[corrected]**): for `Hⁿ`-a.e. `x ∈ M₁ ∩ M₂`, every weighted approximate tangent space of `(M₁, θ₁)` at `x` is one of `(M₂, θ₂)`.  By `fiw_tl_ae_l1_density`, a.e. `x ∈ M₁ ∩ M₂` has `∫_{B̄_s(x)} |1_{M₂} θ₂ − c 1_{M₁} θ₁| dHⁿ = o(∫_{M₁ ∩ B̄_s(x)} θ₁ dHⁿ)` as `s ↓ 0`, where `c = θ₂(x) / θ₁(x)`, so `θ₂(x) = c θ₁(x)`.  As `x ∈ U`, some compact `B̄_ρ(x)` lies in `U`, so `θᵢ` is integrable on `Mᵢ ∩ B̄_ρ(x)`, and `fiw_tl_transfer` carries the tangent space from `(M₁, θ₁)` to `(M₂, θ₂)`.  The exceptional null set does not depend on `Q`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), writes "`T_x M_C`". The book has no set `M_C`: the proof of 3.13 defines `M_+ = {x ∈ U : θ(x) > 0}` (p. 150) and states "(by (3)) `T_x M_+ = T_x M_Q`"; the text extraction of the book renders `+` as `C`.
 - **Calls**: `fiw_tl_ae_l1_density`, `fiw_tl_transfer`
 - **Called by**: `fiw_im_series`, `fiw_localization`
 
 #### `fiw_tl_ae_l1_density` (L64288)
 
 - `root.flat_iff_weak-a1.tangent_locality-a1.ae_l1_density-a1` · issue #2187 · PR #4860 · candidate `13182a2385ff`
-- **Statement and proof**: Relative `L¹` density of the weighted measures `θᵢ Hⁿ ⌞ Mᵢ`, as used for the locality of approximate tangent spaces (Simon Ch. 3, Remark 1.8(1)): for `Hⁿ ⌞ (M₁ ∩ M₂)`-a.e. `x` and every `ε > 0`, `∫_{B̄_s(x)} |1_{M₂} θ₂ − (θ₂(x)/θ₁(x)) 1_{M₁} θ₁| dHⁿ ≤ ε ∫_{M₁ ∩ B̄_s(x)} θ₁ dHⁿ` for all small `s > 0`.  Cover `U` by balls `B_r(y)` with `B̄_r(y) ⊆ U`.  On each, `θᵢ` is integrable on the compact `Mᵢ ∩ B̄_r(y)`, so the weighted Lebesgue-point and Besicovitch density limits hold a.e. on `M₁ ∩ M₂ ∩ B_r(y)`; at such `x` they give the estimate, with `ρ = r − dist(x, y)`.
+- **Statement and proof**: Relative `L¹` density of the weighted measures `θᵢ Hⁿ ⌞ Mᵢ`, as used for the locality of approximate tangent spaces (Simon Ch. 3, Remark 1.8(1)): for `Hⁿ ⌞ (M₁ ∩ M₂)`-a.e. `x` and every `ε > 0`, `∫_{B̄_s(x)} |1_{M₂} θ₂ − (θ₂(x)/θ₁(x)) 1_{M₁} θ₁| dHⁿ ≤ ε ∫_{M₁ ∩ B̄_s(x)} θ₁ dHⁿ` for all small `s > 0`.  Cover `U` by balls `B_r(y)` with `B̄_r(y) ⊆ U`.  On each, `θᵢ` is integrable on `Mᵢ ∩ B̄_r(y)`, since `B̄_r(y) ⊆ U` is compact **[corrected]**, so the weighted Lebesgue-point and Besicovitch density limits hold a.e. on `M₁ ∩ M₂ ∩ B_r(y)`; at such `x` they give the estimate, with `ρ = r − dist(x, y)`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), calls `Mᵢ ∩ B̄_r(y)` compact; `Mᵢ` is only null-measurable, so this set need not be compact. Only the compactness of `B̄_r(y) ⊆ U` is used.
 - **Calls**: `fiw_tl_ald_ball_reduction`, `fiw_tl_ald_local_differentiation`, `fiw_tl_ald_pointwise_estimate`
 - **Called by**: `fiw_tangent_locality`
 
@@ -5921,7 +6233,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `fiw_tl_growth_bound` (L63748)
 
 - `root.flat_iff_weak-a1.tangent_locality-a1.growth_bound-a1` · issue #2161 · PR #3273 · candidate `2a9dc9351920`
-- **Statement and proof**: Simon Ch. 3, 1.7: if `M` has weighted approximate tangent space `Q` at `x` and `θ ≥ 0` is `Hⁿ`-integrable on `M ∩ B̄_ρ(x)`, then `∫_{M ∩ B̄_s(x)} θ dHⁿ ≤ C sⁿ` for all small `s > 0`. Test with the cut-off `f₀ = max 0 (min 1 (2 - ‖·‖))` (`= 1` on `B̄₁(0)`, `= 0` off `B₂(0)`): by `fiw_tl_blowup_setIntegral` the tangent integrals equal `s⁻ⁿ ∫_M f₀(η_s z) θ(z) dHⁿ(z)`, which dominate `s⁻ⁿ ∫_{M ∩ B̄_s(x)} θ dHⁿ` and converge as `s ↓ 0`.
+- **Statement and proof**: Simon Ch. 3, 1.7 and Remark 1.8(2) **[corrected]**: if `M` has weighted approximate tangent space `Q` at `x` and `θ ≥ 0` is `Hⁿ`-integrable on `M ∩ B̄_ρ(x)`, then `∫_{M ∩ B̄_s(x)} θ dHⁿ ≤ C sⁿ` for all small `s > 0`. Test with the cut-off `f₀ = max 0 (min 1 (2 - ‖·‖))` (`= 1` on `B̄₁(0)`, `= 0` off `B₂(0)`): by `fiw_tl_blowup_setIntegral` the tangent integrals equal `s⁻ⁿ ∫_M f₀(η_s z) θ(z) dHⁿ(z)`, which dominate `s⁻ⁿ ∫_{M ∩ B̄_s(x)} θ dHⁿ` and converge as `s ↓ 0`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), cites only Ch. 3, 1.7, the definition. The bound is the upper half of the density statement of Remark 1.8(2) (p. 75), proved as there with a cut-off test function.
 - **Calls**: `fiw_tl_blowup_setIntegral` (A.6)
 - **Called by**: `fiw_tl_transfer`
 
@@ -5956,7 +6269,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `fiw_flat_cauchy_limit` (L65704)
 
 - `root.flat_iff_weak-a1.flat_cauchy_limit-a1` · issue #828 · PR #5080 · candidate `25b4585dc2a4`
-- **Statement and proof**: Simon Ch. 6, proof of 7.2 (p. 172), from (5) to `T − T_{j_ℓ} = ∂R^(ℓ) + S^(ℓ)`: if `T_j ⇀ T` and every infinite `J ⊆ ℕ` contains an infinite `J'` with `T_i − T_j = ∂R + S` for `i, j ∈ J'` (`R`, `S` integer multiplicity, `M(R) + M(S) < ε`), then for some subsequence `T_{φ(ℓ)}`, `T_{φ(ℓ)} − T = ∂R + S` with `R`, `S` integer multiplicity and `M(R) + M(S) ≤ 2 · 2^{-ℓ}`.
+- **Statement and proof**: Simon Ch. 6, proof of 7.2 (p. 172), from (5) to `T − T_{j_ℓ} = ∂R^(ℓ) + S^(ℓ)`: if `T_j ⇀ T` and, for every `ε > 0` **[corrected]**, every infinite `J ⊆ ℕ` contains an infinite `J'` with `T_i − T_j = ∂R + S` for `i, j ∈ J'` (`R`, `S` integer multiplicity, `M(R) + M(S) < ε`), then for some subsequence `T_{φ(ℓ)}`, `T_{φ(ℓ)} − T = ∂R + S` with `R`, `S` integer multiplicity and `M(R) + M(S) ≤ 2 · 2^{-ℓ}`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), leaves `ε` unquantified; in the Lean statement (line 65706) the hypothesis holds for every `ε > 0`.
 - **Calls**: `fiw_fcl_nested_subseq`, `fiw_im_series`, `fiw_fcl_telescope_limit`
 - **Called by**: `flat_convergence_iff_weak_convergence`
 
@@ -5984,7 +6298,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `fiw_tb_finite_net` (L69233)
 
 - `root.flat_iff_weak-a1.total_boundedness-a1.finite_net-a1` · issue #2393 · PR #5123 · candidate `16bd0f6600e7`
-- **Statement and proof**: Simon Ch. 6, proof of 7.2 (p. 171, (1)–(3)): for `K ⊆ U` compact there is `C` such that for every `B < ∞` and `ρ > 0` finitely many `Q ∈ 𝒟_{m+1}(U)` have the property that every `T` with `T`, `∂T` integer multiplicity, `spt T ⊆ K` and `M(T) + M(∂T) ≤ B` is `T − Q = ∂R + S` with `R`, `S` integer multiplicity and `M(R) + M(S) ≤ C ρ B`.  If `P < m + 1` then `T = 0`; otherwise the centres `Q` are restrictions to `U` of lattice chains, from the Deformation Theorem (`P ≥ m + 2`) or `fiw_tb_top_dim_approx` (`P = m + 1`), whose integer coefficients range over a finite set (`fiw_tb_lattice_coeff_finite`).
+- **Statement and proof**: Simon Ch. 6, proof of 7.2 (p. 171, (1)–(3)): for `K ⊆ U` compact there is `C` such that for every `B < ∞` and `ρ > 0` there is a finite set `𝒬 ⊆ 𝒟_{m+1}(U)` such that every `T` with `T`, `∂T` integer multiplicity, `spt T ⊆ K` and `M(T) + M(∂T) ≤ B` satisfies `T − Q = ∂R + S` for some `Q ∈ 𝒬` **[corrected]**, with `R`, `S` integer multiplicity and `M(R) + M(S) ≤ C ρ B`.  If `P < m + 1` then `T = 0`; otherwise the centres `Q` are restrictions to `U` of lattice chains, from the Deformation Theorem (`P ≥ m + 2`) or `fiw_tb_top_dim_approx` (`P = m + 1`), whose integer coefficients range over a finite set (`fiw_tb_lattice_coeff_finite`).
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says that finitely many `Q` "have the property that every `T` … is `T − Q = ∂R + S`", which read literally puts every `T` near every `Q`. The Lean statement (lines 69245–69248) gives a finite set `Qs` such that every admissible `T` is near some `Q ∈ Qs`.
 - **Calls**: `fiw_tb_extend_to_univ`, `fiw_tb_restrictDomain_mass_im`, `fiw_tb_top_dim_approx`, `fiw_tb_lattice_coeff_finite`, `fiw_tb_lattice_chain_coeff`
 - **Called by**: `fiw_total_boundedness`
 
@@ -6176,14 +6491,16 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `fiw_tb_translation_estimate` (L69113)
 
 - `root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1` · issue #2375 · PR #4676 · candidate `026be1addf72`
-- **Statement and proof**: Translation estimate (Simon Ch. 6, proof of 7.2, used for the summed form of 5.1 (32)): if the top-dimensional current `X ∈ 𝒟ₙ(ℝⁿ)` is `X(ω) = ∫ u ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ` with `u ∈ L¹`, then `∫ |u(x + h) − u(x)| dx ≤ |h| M(∂X)` for every `h ∈ ℝⁿ`.
+- **Statement and proof**: Translation estimate (Step 2(b) of the accepted natural-language proof of `fiw_total_boundedness`, in the formal proof of Simon Ch. 6, 7.2; it gives the summed form of 5.1 (32)) **[corrected]**: if the top-dimensional current `X ∈ 𝒟ₙ(ℝⁿ)` is `X(ω) = ∫ u ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ` with `u ∈ L¹`, then `∫ |u(x + h) − u(x)| dx ≤ |h| M(∂X)` for every `h ∈ ℝⁿ`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "Simon Ch. 6, proof of 7.2". The printed proof of 7.2 (pp. 171–172) has no translation estimate; it is Step 2(b) of the accepted proof of the parent node `root.flat_iff_weak-a1.total_boundedness-a1`, which treats the case `P = m + 1`.
 - **Calls**: `fiw_tb_te_directional_form`, `fiw_tb_te_abs_apply_le_mul_mass`, `fiw_tb_te_translation_dual`, `fiw_tb_te_l1_le_of_smooth_dual`
 - **Called by**: `fiw_tb_top_dim_approx`
 
 #### `fiw_tb_te_directional_form` (L15071)
 
 - `root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1.directional_form-a1` · issue #3226 · PR #3803 · candidate `31080f006414`
-- **Statement and proof**: Simon Ch. 6, proof of 7.2 (translation estimate): for `φ ∈ C_c^∞(ℝⁿ)`, `n = m + 1`, and `h ∈ ℝⁿ`, the test `m`-form `ω = φ α` with `α = ∑ₖ (-1)ᵏ hₖ dx⁽ᵏ⁾`, where `dx⁽ᵏ⁾` is the wedge of the coordinate covectors `dxʲ`, `j ≠ k`, in increasing order (indices `0, …, m`), satisfies `|ω(x)| = ‖h‖ |φ(x)|` and `dω(x)(e₀, …, eₘ) = ∑ᵢ hᵢ ∂ᵢφ(x) = Dφ(x) h`.
+- **Statement and proof**: Steps 2(a)–(d) of the accepted natural-language proof of the translation estimate `fiw_tb_translation_estimate` **[corrected]**: for `φ ∈ C_c^∞(ℝⁿ)`, `n = m + 1`, and `h ∈ ℝⁿ`, the test `m`-form `ω = φ α` with `α = ∑ₖ (-1)ᵏ hₖ dx⁽ᵏ⁾`, where `dx⁽ᵏ⁾` is the wedge of the coordinate covectors `dxʲ`, `j ≠ k`, in increasing order (indices `0, …, m`), satisfies `|ω(x)| = ‖h‖ |φ(x)|` and `dω(x)(e₀, …, eₘ) = ∑ᵢ hᵢ ∂ᵢφ(x) = Dφ(x) h`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), says "Simon Ch. 6, proof of 7.2 (translation estimate)". The printed proof of 7.2 has no translation estimate; the source is Steps 2(a)–(d) of the accepted proof of `fiw_tb_translation_estimate`.
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `fiw_tb_translation_estimate`
 
@@ -6225,7 +6542,8 @@ Doc comments also use the step labels of the accepted natural-language proofs (`
 #### `fiw_tb_lattice_coeff_finite` (L15005)
 
 - `root.flat_iff_weak-a1.total_boundedness-a1.lattice_coeff_finite-a1` · issue #2369 · PR #3065 · candidate `c9c7285ac3ad`
-- **Statement and proof**: Simon Ch. 6, proof of 7.2 (p. 171, "only finitely many currents `P` as in (2)"): for `ρ > 0`, a bounded `Y ⊆ ℝ^N` and `A ∈ ℝ`, only finitely many integer coefficient families `β` have the face `F` inside `Y` and `|β_F| ≤ A` whenever `β_F ≠ 0`.
+- **Statement and proof**: Simon Ch. 6, proof of 7.2 (p. 171, "only finitely many `P_1, …, P_N` currents `P` as in (2)" **[corrected]**): for `ρ > 0`, a bounded `Y ⊆ ℝ^N` and `A ∈ ℝ`, only finitely many integer coefficient families `β` have the face `F` inside `Y` and `|β_F| ≤ A` whenever `β_F ≠ 0`.
+- **Correction**: the Lean doc comment, kept byte-identical as part of the accepted declaration text (§9), quotes "only finitely many currents `P` as in (2)"; the book prints "only finitely many `P_1, …, P_N` currents `P` as in (2)".
 - **Calls**: — (no accepted declaration; Mathlib and SimonGMT only)
 - **Called by**: `fiw_tb_finite_net`
 
