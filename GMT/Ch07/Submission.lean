@@ -1766,6 +1766,122 @@ theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : M
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
 
+/-- **Simon Ch. 6, 3.4–3.5** (orientation along a bi-Lipschitz parametrised piece): let
+`(M, θ, ξ)` be an integer multiplicity triple of degree `k` in `ℝᴺ` with `Hᵏ(M) < ∞`, `G : ℝᵏ → ℝᴺ`
+Lipschitz, `B` Borel with `κ|a − a'| ≤ |G(a) − G(a')|` on `B`, `DG(a)` injective for `a ∈ B`, and
+`G(B) ⊆ M`.  Then there is a Borel sign `s = ±1` with
+`J_G(u) ξ(G u) = s(u) DG(u)e₁ ∧ ⋯ ∧ DG(u)eₖ` for a.e. `u ∈ B`, `J_G = det(⟨DG eₐ, DG e_b⟩)^{1/2}`.
+For a.e. `u ∈ B`, `T_{G(u)}M = range DG(u)` and `ξ(G u)` orients it; so does
+`ζ = J_G⁻¹ DG(u)e₁ ∧ ⋯ ∧ DG(u)eₖ`, hence `ξ(G u) = ±ζ`.  The sign is read off by comparing the
+distances from `J_G ξ̃(G u)` to `±DG(u)e₁ ∧ ⋯ ∧ DG(u)eₖ`, `ξ̃` a Borel version of `ξ`. -/
+theorem Submission.dor_lmb_fcd_imp_piece_orientation_sign : ∀ (N k : ℕ) (R : IMRep (univ : Set (Euclid N)) k) (G : Euclid k → Euclid N) (B : Set (Euclid k)) (L : NNReal) (κ : ℝ), μHE[k] R.carrier ≠ ∞ → LipschitzWith L G → MeasurableSet B → 0 < κ → (∀ a ∈ B, ∀ a' ∈ B, κ * ‖a - a'‖ ≤ ‖G a - G a'‖) → (∀ a ∈ B, DifferentiableAt ℝ G a ∧ Injective (fderiv ℝ G a)) → G '' B ⊆ R.carrier → ∃ s : Euclid k → ℝ, Measurable s ∧ (∀ u, s u = 1 ∨ s u = -1) ∧ ∀ᵐ u ∂(volume.restrict B), ∀ α : Covector (Euclid N) k, Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ G u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ G u (EuclideanSpace.single b (1 : ℝ))))) * R.orient (G u) α = s u * α (fun a => fderiv ℝ G u (EuclideanSpace.single a (1 : ℝ))) := by
+  intro N k R G B L κ hfin hG hB hκ hbi hdiff hGBM
+  -- `e` is the standard basis of `ℝᵏ`; `J T = det(⟨T eₐ, T e_b⟩)^{1/2}` and `Ev T = (α ↦ α(T e))`
+  let e : Fin k → Euclid k := fun a => EuclideanSpace.single a (1 : ℝ)
+  let J : (Euclid k →L[ℝ] Euclid N) → ℝ := fun T =>
+    Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (T (e a)) (T (e b))))
+  let Ev : (Euclid k →L[ℝ] Euclid N) → MultiVector N k := fun T =>
+    (ContinuousAlternatingMap.apply ℝ (Euclid k) ℝ e).comp
+      (ContinuousAlternatingMap.compContinuousLinearMapCLM T)
+  have hev : ∀ v : Euclid k, Continuous fun T : Euclid k →L[ℝ] Euclid N => T v :=
+    fun v => continuous_eval_const v
+  have hJc : Continuous J := Real.continuous_sqrt.comp (Continuous.matrix_det
+    (continuous_matrix fun a b => (hev (e a)).inner (hev (e b))))
+  have hEvc : Continuous Ev :=
+    continuous_const.clm_comp ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM
+  -- Step 1: `Hᵏ⌞M`-a.e. properties hold at `G u` for a.e. `u ∈ B`
+  obtain ⟨-, hpull⟩ := Submission.ptd_piece_image_measurable_ae_pullback N k G B L κ hG hB hκ hbi
+  have hpullM : ∀ p : Euclid N → Prop, (∀ᵐ y ∂(μHE[k].restrict R.carrier), p y) →
+      ∀ᵐ u ∂(volume.restrict B), p (G u) :=
+    fun p hp => hpull p (ae_restrict_of_ae_restrict_of_subset hGBM hp)
+  -- a strongly measurable version `g` of the orientation `ξ`
+  let g := R.aestronglyMeasurable_orient.mk R.orient
+  have hg : StronglyMeasurable g := R.aestronglyMeasurable_orient.stronglyMeasurable_mk
+  have hgeq : ∀ᵐ u ∂(volume.restrict B), R.orient (G u) = g (G u) :=
+    hpullM (fun y => R.orient y = g y) R.aestronglyMeasurable_orient.ae_eq_mk
+  -- the sign `s u = ±1` compares the distances from `J g(G u)` to `±Ev(DG u)`
+  let X : Euclid k → MultiVector N k := fun u => J (fderiv ℝ G u) • g (G u)
+  let E : Euclid k → MultiVector N k := fun u => Ev (fderiv ℝ G u)
+  let s : Euclid k → ℝ := fun u =>
+    if dist (X u) (E u) ≤ dist (X u) ((-1 : ℝ) • E u) then 1 else -1
+  have hX : StronglyMeasurable X :=
+    (hJc.measurable.comp (measurable_fderiv ℝ G)).stronglyMeasurable.smul
+      (hg.comp_measurable hG.continuous.measurable)
+  have hE : StronglyMeasurable E :=
+    hEvc.comp_stronglyMeasurable (measurable_fderiv ℝ G).stronglyMeasurable
+  have hs : Measurable s :=
+    Measurable.ite (measurableSet_le
+      ((continuous_dist (α := MultiVector N k)).comp_stronglyMeasurable (hX.prodMk hE)).measurable
+      ((continuous_dist (α := MultiVector N k)).comp_stronglyMeasurable
+        (hX.prodMk (hE.const_smul (-1 : ℝ)))).measurable)
+      measurable_const measurable_const
+  refine ⟨s, hs, fun u => ?_, ?_⟩
+  · simp only [s]
+    split_ifs
+    · exact Or.inl rfl
+    · exact Or.inr rfl
+  -- Steps 2–5: for a.e. `u ∈ B`, `J ξ(G u) = ± Ev(DG u)`
+  have hkey : ∀ᵐ u ∂(volume.restrict B), X u = E u ∨ X u = (-1 : ℝ) • E u := by
+    filter_upwards [ae_restrict_mem hB, hgeq, hpullM _ R.orients,
+      Submission.dpf_approxTangent_ae_bilipschitz_piece N k univ R.carrier G B L κ isOpen_univ
+        R.measurableSet_carrier (subset_univ _)
+        (fun C _ _ => ne_top_of_le_ne_top hfin (measure_mono inter_subset_left)) hG hB hκ hbi
+        hdiff hGBM] with u huB hgu hQ hT
+    obtain ⟨Q, hQ, hξQ⟩ := hQ
+    obtain ⟨-, hinj⟩ := hdiff u huB
+    -- the approximate tangent space at `G u` is `range DG(u)`
+    have hQeq : Q = LinearMap.range (fderiv ℝ G u : Euclid k →ₗ[ℝ] Euclid N) := hQ.unique hT
+    -- `v = DG(u) e` is linearly independent and spans `range DG(u)`
+    have hli : LinearIndependent ℝ (fun a => fderiv ℝ G u (e a)) := by
+      have h := ((EuclideanSpace.basisFun (Fin k) ℝ).toBasis.linearIndependent).map'
+        (fderiv ℝ G u : Euclid k →ₗ[ℝ] Euclid N) (LinearMap.ker_eq_bot.2 hinj)
+      convert h using 1
+      funext a
+      simp [e]
+    have hspan : Submodule.span ℝ (range fun a => fderiv ℝ G u (e a)) =
+        LinearMap.range (fderiv ℝ G u : Euclid k →ₗ[ℝ] Euclid N) := by
+      rw [LinearMap.range_eq_map, ← (EuclideanSpace.basisFun (Fin k) ℝ).toBasis.span_eq,
+        Submodule.map_span, ← range_comp]
+      congr 2
+      funext a
+      simp [e]
+    -- `ζ = J⁻¹ Ev(DG u)` is a unit orientation of `range DG(u)`, and `J > 0`
+    obtain ⟨hpos, hwedge⟩ :=
+      Submission.codim1_lur_normalized_wedge_orientation N k (fun a => fderiv ℝ G u (e a)) hli
+    have hJpos : 0 < J (fderiv ℝ G u) := Real.sqrt_pos.2 hpos
+    have hζ : IsUnitOrientationOf ((J (fderiv ℝ G u))⁻¹ • E u) Q := by
+      rw [hQeq, ← hspan]
+      exact hwedge _ fun α => rfl
+    -- `ξ(G u) = ±ζ`
+    rcases Submission.rsdic_unitOrientation_eq_or_eq_neg N k _ _ Q hζ hξQ with h | h
+    · left
+      ext α
+      show J (fderiv ℝ G u) * g (G u) α = E u α
+      rw [← hgu, h]
+      show J (fderiv ℝ G u) * ((J (fderiv ℝ G u))⁻¹ * E u α) = E u α
+      rw [← mul_assoc, mul_inv_cancel₀ hJpos.ne', one_mul]
+    · right
+      ext α
+      show J (fderiv ℝ G u) * g (G u) α = -1 * E u α
+      rw [← hgu, h]
+      show J (fderiv ℝ G u) * -((J (fderiv ℝ G u))⁻¹ * E u α) = -1 * E u α
+      rw [mul_neg, ← mul_assoc, mul_inv_cancel₀ hJpos.ne', one_mul, neg_one_mul]
+  -- Steps 5–7: the distance comparison selects the sign
+  filter_upwards [hkey, hgeq] with u hu hgu α
+  rw [hgu]
+  show X u α = s u * E u α
+  simp only [s]
+  split_ifs with hle
+  · rcases hu with h | h
+    · rw [h, one_mul]
+    · rw [h, dist_self] at hle
+      have h0 : (-1 : ℝ) • E u = E u := dist_le_zero.1 hle
+      rw [h, h0, one_mul]
+  · rcases hu with h | h
+    · exact absurd (by rw [h, dist_self]; exact dist_nonneg) hle
+    · rw [h]
+      rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
