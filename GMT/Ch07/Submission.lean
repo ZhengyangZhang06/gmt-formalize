@@ -680,6 +680,31 @@ theorem Submission.dimred_cs_sp_op_gram_det_starProjection_le_one : ∀ (P m : �
   simp only [RCLike.ofReal_real_eq_id, id]
   exact Finset.prod_le_one₀ (fun k _ => (hbounds k).1) (fun k _ => (hbounds k).2)
 
+/-- **Simon 7.3.1, footnote 2; 6.3.4–3.5** (orthogonal projection does not increase area): if
+`ξ = ±τ₁ ∧ ⋯ ∧ τₘ` is a unit orientation of `Q` and `q` is the orthogonal projection onto `V`,
+then `|⟨α ∘ q, ξ⟩| = |α(qτ₁, …, qτₘ)| ≤ |α|_E · det(⟨qτᵢ, qτⱼ⟩)^{1/2} ≤ |α|_E`, by the Gram bound
+of `covectorEuclideanNorm_gram_bounds` and `det(⟨qτᵢ, qτⱼ⟩) ≤ 1` (`q` is a contraction). -/
+theorem Submission.dimred_cs_sp_orient_projection_le : ∀ (P m : ℕ) (V Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P m) (α : Covector (Euclid P) m), IsUnitOrientationOf ξ Q → |ξ (α.compContinuousLinearMap V.starProjection)| ≤ covectorEuclideanNorm α := by
+  intro P m V Q ξ α hξ
+  obtain ⟨τ, hτ, -, hsign⟩ := hξ
+  -- `ξ(α ∘ q) = ±(α ∘ q)(τ) = ±α(qτ₁, …, qτₘ)`
+  have hcomp : α.compContinuousLinearMap V.starProjection τ =
+      α fun i => V.starProjection (τ i) := rfl
+  have hval : |ξ (α.compContinuousLinearMap V.starProjection)| =
+      |α fun i => V.starProjection (τ i)| := by
+    rcases hsign with h | h
+    · rw [h, hcomp]
+    · rw [h, abs_neg, hcomp]
+  -- the Gram bound for `v = qτ`, then `det(⟨qτᵢ, qτⱼ⟩) ≤ 1`
+  rw [hval]
+  calc |α fun i => V.starProjection (τ i)|
+      ≤ covectorEuclideanNorm α * Real.sqrt (Matrix.det (Matrix.of fun i j =>
+          inner ℝ (V.starProjection (τ i)) (V.starProjection (τ j)))) :=
+        (Submission.covectorEuclideanNorm_gram_bounds P m).1 α _
+    _ ≤ covectorEuclideanNorm α :=
+        mul_le_of_le_one_right (covectorEuclideanNorm_nonneg α) (Real.sqrt_le_one.mpr
+          (Submission.dimred_cs_sp_op_gram_det_starProjection_le_one P m V τ hτ))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
