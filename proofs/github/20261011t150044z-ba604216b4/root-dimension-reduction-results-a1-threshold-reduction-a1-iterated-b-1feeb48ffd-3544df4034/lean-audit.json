@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eec33ff51ece72dd39424ea1c086dc44f45d0eaccddad094322cb006bd7e0e95",
+  "git_delta": {
+    "base_commit": "7dad717de61cf1ea58751ce34ad2dcb46264bc98",
+    "candidate_commit": "4796011d40140980ad83e7275c1c8f9c42c16842",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_tr_ibl_diagonal_limit",
+    "diff_sha256": "b42c40466d5f20e3eb84422dd2edeacdc887bad45dc3cb3434603e53609ba27d",
+    "source_sha256": "8ea72248f214cb95d11b8375a3aaa1a0735bb36373cfee356cfcf36fb664995d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_tr_ibl_diagonal_limit",
+      "statement": "∀ (P n : ℕ) (Vs : ℕ → ℕ → Set (Euclid P)) (As : (k i : ℕ) → GeometricCurrentOn (Vs k i) n) (Ws : ℕ → Set (Euclid P)) (Zs : (k : ℕ) → GeometricCurrentOn (Ws k) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ (k : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n), Tendsto (fun i => currentEval (As k i) (ω : DifferentialForm (Euclid P) n)) atTop (𝓝 (currentEval (Zs k) (ω : DifferentialForm (Euclid P) n)))) → ConvergesWeakly Zs C → (∀ R : ℕ, ∃ (k₀ : ℕ) (Γ : ℝ≥0∞), Γ ≠ ∞ ∧ C.massOn (ball 0 ((R : ℝ) + 1)) ≤ Γ ∧ ∀ k, k₀ ≤ k → ∀ᶠ i in atTop, ball (0 : Euclid P) ((R : ℝ) + 1) ⊆ Vs k i ∧ (As k i).massOn (ball 0 ((R : ℝ) + 1)) ≤ Γ) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ConvergesWeakly (fun k => As k (φ k)) C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
