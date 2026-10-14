@@ -451,6 +451,534 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The approximate tangent projection of an integer multiplicity triple is measurable**
+(Simon Ch. 3, 1.4 and 1.5(1); Ch. 6, 3.1).  For `R = (M, θ, ξ)`, `x ↦ p_{TₓM}` is
+`Hⁿ⌞M`-a.e. strongly measurable.  By uniqueness of approximate tangent planes, `TₓM` is a.e. the
+plane oriented by `ξ(x)`.  A unit simple `n`-vector `ζ = ±τ₁ ∧ ⋯ ∧ τₙ` determines its plane: if
+also `ζ = ±τ'₁ ∧ ⋯ ∧ τ'ₙ` and `y ⊥ span τ'`, the `n`-covector `α(u) = det(⟨cₖ, uⱼ⟩)`, where `c` is
+`τ` with `τᵢ` replaced by `y`, gives `±⟨y, τᵢ⟩ = ±α(τ) = ζ(α) = ±α(τ') = 0`, so `τᵢ ∈ span τ'`.
+Hence `p_{TₓM} = G(ξ(x))` a.e., where `G(ζ)` is the projection onto the plane of `ζ` (`0` if there
+is none).  `G` is Borel: `Φ(τ, s) = s τ₁ ∧ ⋯ ∧ τₙ` is continuous on the compact set `Ω` of
+orthonormal frames and signs, and `G(Φ(τ, s)) = Σₖ ⟨τₖ, ·⟩ τₖ` is continuous, so for closed `t`,
+`G⁻¹(t) = Φ(Ω ∩ (G ∘ Φ)⁻¹(t)) ∪ (Φ(Ω)ᶜ ∩ {0 ∈ t})` is Borel. -/
+theorem Submission.imrep_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) := by
+  intro P n U R
+  classical
+  -- `ev τ = (α ↦ α(τ₁, …, τₙ))`, a continuous alternating map of `τ`
+  let ev : Euclid P [⋀^Fin n]→L[ℝ] MultiVector P n :=
+    (ContinuousLinearMap.id ℝ (Covector (Euclid P) n)).flipAlternating
+  have hev : ∀ (τ : Fin n → Euclid P) (α : Covector (Euclid P) n), ev τ α = α τ :=
+    fun τ α => rfl
+  -- `Φ(τ, s) = s τ₁ ∧ ⋯ ∧ τₙ` on the compact set `Ω` of orthonormal frames and signs `s = ±1`
+  let Φ : (Fin n → Euclid P) × ℝ → MultiVector P n := fun ω => ω.2 • ev ω.1
+  have hΦc : Continuous Φ := continuous_snd.smul (ev.coe_continuous.comp continuous_fst)
+  let Ω : Set ((Fin n → Euclid P) × ℝ) := {τ | Orthonormal ℝ τ} ×ˢ {1, -1}
+  have hΩ : IsCompact Ω := by
+    refine IsCompact.prod (isCompact_of_isClosed_isBounded ?_ ?_) (Set.toFinite _).isCompact
+    · have hset : {τ : Fin n → Euclid P | Orthonormal ℝ τ} =
+          ⋂ i, ⋂ j, {τ | inner ℝ (τ i) (τ j) = if i = j then (1 : ℝ) else 0} := by
+        ext τ
+        simp [orthonormal_iff_ite]
+      rw [hset]
+      exact isClosed_iInter fun i => isClosed_iInter fun j =>
+        isClosed_eq ((continuous_apply i).inner (continuous_apply j)) continuous_const
+    · refine (isBounded_iff_subset_closedBall 0).mpr ⟨1, fun τ hτ => ?_⟩
+      rw [mem_closedBall_zero_iff]
+      exact (pi_norm_le_iff_of_nonneg zero_le_one).mpr fun i => (hτ.1 i).le
+  -- `ζ` orients `Q` iff `ζ = Φ(τ, s)` for a point `(τ, s)` of `Ω` with `span τ = Q`
+  have horient : ∀ (ζ : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
+      IsUnitOrientationOf ζ Q ↔ ∃ ω ∈ Ω, Φ ω = ζ ∧ Submodule.span ℝ (range ω.1) = Q := by
+    intro ζ Q
+    constructor
+    · rintro ⟨τ, hτ, hQ, h | h⟩
+      · refine ⟨(τ, 1), ⟨hτ, Or.inl rfl⟩, ?_, hQ⟩
+        ext α
+        simp [Φ, hev, h]
+      · refine ⟨(τ, -1), ⟨hτ, Or.inr rfl⟩, ?_, hQ⟩
+        ext α
+        simp [Φ, hev, h]
+    · rintro ⟨⟨τ, s⟩, ⟨hτ, hs⟩, rfl, hQ⟩
+      refine ⟨τ, hτ, hQ, ?_⟩
+      rcases hs with rfl | rfl
+      · left
+        intro α
+        simp [Φ, hev]
+      · right
+        intro α
+        simp [Φ, hev]
+  -- the `n`-covector `u ↦ det(⟨cₖ, uⱼ⟩)ₖⱼ`
+  have hdet : ∀ c : Fin n → Euclid P, ∃ α : Covector (Euclid P) n,
+      ∀ u : Fin n → Euclid P, α u = (Matrix.of fun k j => inner ℝ (c k) (u j)).det := by
+    intro c
+    let L : Euclid P →ₗ[ℝ] (Fin n → ℝ) := LinearMap.pi fun k => (innerSL ℝ (c k)).toLinearMap
+    let A : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := Matrix.detRowAlternating.compLinearMap L
+    have hA : ∀ u : Fin n → Euclid P, A u = (Matrix.of fun k j => inner ℝ (c k) (u j)).det := by
+      intro u
+      rw [← Matrix.det_transpose]
+      rfl
+    have hAc : Continuous fun u : Fin n → Euclid P => A u := by
+      simp only [hA]
+      exact Continuous.matrix_det (continuous_matrix fun k j => by
+        simp only [Matrix.of_apply]
+        exact continuous_const.inner (continuous_apply j))
+    exact ⟨{ A with cont := hAc }, hA⟩
+  -- a unit simple `n`-vector determines its plane: if `ζ` orients `span τ` and `span τ'`, then
+  -- each `τᵢ` is orthogonal to `(span τ')ᗮ`
+  have hle : ∀ (ζ : MultiVector P n) (Q Q' : Submodule ℝ (Euclid P)),
+      IsUnitOrientationOf ζ Q → IsUnitOrientationOf ζ Q' → Q ≤ Q' := by
+    rintro ζ Q Q' ⟨τ, hτ, rfl, hζ⟩ ⟨τ', hτ', rfl, hζ'⟩
+    rw [Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    rw [SetLike.mem_coe, ← Submodule.orthogonal_orthogonal (Submodule.span ℝ (range τ')),
+      Submodule.mem_orthogonal]
+    intro y hy
+    obtain ⟨α, hα⟩ := hdet (Function.update τ i y)
+    -- `α(τ)` is the determinant of the identity matrix with row `i` replaced by `(⟨y, τⱼ⟩)ⱼ`
+    have h1 : α τ = inner ℝ y (τ i) := by
+      rw [hα]
+      have hM : (Matrix.of fun k j => inner ℝ (Function.update τ i y k) (τ j)) =
+          (1 : Matrix (Fin n) (Fin n) ℝ).updateRow i (fun j => inner ℝ y (τ j)) := by
+        ext k j
+        by_cases hk : k = i
+        · subst hk
+          simp
+        · simp [hk, Matrix.one_apply, orthonormal_iff_ite.mp hτ k j]
+      rw [hM, ← Matrix.det_transpose, ← Matrix.updateCol_transpose, Matrix.transpose_one,
+        ← Matrix.cramer_apply, Matrix.cramer_one]
+      rfl
+    -- row `i` of the matrix of `α(τ')` is `(⟨y, τ'ⱼ⟩)ⱼ = 0`
+    have h2 : α τ' = 0 := by
+      rw [hα]
+      refine Matrix.det_eq_zero_of_row_eq_zero i fun j => ?_
+      simp only [Matrix.of_apply, Function.update_self]
+      rw [real_inner_comm]
+      exact hy _ (Submodule.subset_span ⟨j, rfl⟩)
+    have h3 : ζ α = 0 := by
+      rcases hζ' with h | h <;> simp [h, h2]
+    rcases hζ with h | h
+    · rw [← h1, ← h, h3]
+    · have h4 := h α
+      rw [h3] at h4
+      rw [← h1]
+      linarith
+  have huniq : ∀ (ζ : MultiVector P n) (Q Q' : Submodule ℝ (Euclid P)),
+      IsUnitOrientationOf ζ Q → IsUnitOrientationOf ζ Q' → Q = Q' :=
+    fun ζ Q Q' h h' => le_antisymm (hle ζ Q Q' h h') (hle ζ Q' Q h' h)
+  -- the projection onto the span of an orthonormal frame `τ` is `Σₖ ⟨τₖ, ·⟩ τₖ`, continuous in `τ`
+  let F : (Fin n → Euclid P) × ℝ → (Euclid P →L[ℝ] Euclid P) :=
+    fun ω => ∑ k, (innerSL ℝ (ω.1 k)).smulRight (ω.1 k)
+  have hFapply : ∀ ω v, F ω v = ∑ k, inner ℝ (ω.1 k) v • ω.1 k := by
+    intro ω v
+    simp [F]
+  have hFc : Continuous F := by
+    refine continuous_clm_apply.mpr fun v => ?_
+    simp only [hFapply]
+    exact continuous_finsetSum _ fun k _ => by fun_prop
+  have hFproj : ∀ ω ∈ Ω, (Submodule.span ℝ (range ω.1)).starProjection = F ω := by
+    rintro ⟨τ, s⟩ ⟨hτ, -⟩
+    refine ContinuousLinearMap.ext fun v => ?_
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero ?_ ?_
+    · rw [hFapply]
+      exact Submodule.sum_mem _ fun k _ =>
+        Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, rfl⟩)
+    · intro w hw
+      refine Submodule.span_induction ?_ ?_ ?_ ?_ hw
+      · rintro _ ⟨j, rfl⟩
+        rw [hFapply, inner_sub_left, sum_inner]
+        simp [inner_smul_left, orthonormal_iff_ite.mp hτ, real_inner_comm]
+      · simp
+      · intro x y _ _ hx hy
+        rw [inner_add_right, hx, hy, add_zero]
+      · intro a x _ hx
+        rw [inner_smul_right, hx, mul_zero]
+  -- `G ζ` is the projection onto the plane oriented by `ζ` (`0` if there is none)
+  let G : MultiVector P n → (Euclid P →L[ℝ] Euclid P) := fun ζ =>
+    if h : ∃ Q, IsUnitOrientationOf ζ Q then h.choose.starProjection else 0
+  have hGQ : ∀ (ζ : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
+      IsUnitOrientationOf ζ Q → G ζ = Q.starProjection := by
+    intro ζ Q hQ
+    have hex : ∃ Q, IsUnitOrientationOf ζ Q := ⟨Q, hQ⟩
+    simp only [G, dite_eq_left hex]
+    rw [huniq _ _ _ hex.choose_spec hQ]
+  have hGΦ : ∀ ω ∈ Ω, G (Φ ω) = F ω := fun ω hω => by
+    rw [hGQ _ _ ((horient _ _).mpr ⟨ω, hω, rfl, rfl⟩), hFproj ω hω]
+  -- `G` is Borel: for closed `t`, `G⁻¹(t)` is a compact set `Φ(Ω ∩ F⁻¹(t))` together with the
+  -- complement of the compact set `Φ(Ω)` (if `0 ∈ t`)
+  have hG : Measurable G := by
+    refine measurable_of_isClosed fun t ht => ?_
+    have hset : G ⁻¹' t = Φ '' (Ω ∩ F ⁻¹' t) ∪
+        ((Φ '' Ω)ᶜ ∩ {_ζ | (0 : Euclid P →L[ℝ] Euclid P) ∈ t}) := by
+      ext ζ
+      simp only [Set.mem_preimage, Set.mem_union, Set.mem_image, Set.mem_inter_iff,
+        Set.mem_compl_iff]
+      by_cases h : ∃ Q, IsUnitOrientationOf ζ Q
+      · obtain ⟨Q, hQ⟩ := h
+        obtain ⟨ω, hω, hΦω, -⟩ := (horient ζ Q).mp hQ
+        have hGζ : G ζ = F ω := by
+          rw [← hΦω]
+          exact hGΦ ω hω
+        constructor
+        · intro hζt
+          exact Or.inl ⟨ω, ⟨hω, by rwa [← hGζ]⟩, hΦω⟩
+        · rintro (⟨ω', ⟨hω', hω't⟩, hΦω'⟩ | ⟨hn, -⟩)
+          · rw [← hΦω', hGΦ ω' hω']
+            exact hω't
+          · exact absurd ⟨ω, hω, hΦω⟩ hn
+      · have hGζ : G ζ = 0 := dite_eq_right h
+        have hn : ¬∃ ω, ω ∈ Ω ∧ Φ ω = ζ := fun ⟨ω, hω, hΦω⟩ =>
+          h ⟨_, (horient ζ _).mpr ⟨ω, hω, hΦω, rfl⟩⟩
+        rw [hGζ]
+        constructor
+        · intro h0
+          exact Or.inr ⟨hn, h0⟩
+        · rintro (⟨ω', ⟨hω', -⟩, hΦω'⟩ | ⟨-, h0⟩)
+          · exact absurd ⟨ω', hω', hΦω'⟩ hn
+          · exact h0
+    rw [hset]
+    exact ((hΩ.inter_right (ht.preimage hFc)).image hΦc).isClosed.measurableSet.union
+      ((hΩ.image hΦc).isClosed.measurableSet.compl.inter (MeasurableSet.const _))
+  -- a.e. `TₓM` is the plane oriented by `ξ(x)` (uniqueness of approximate tangent planes), so
+  -- `p_{TₓM} = G(ξ(x))`
+  have hae : (fun x => (approxTangentPlane n R.carrier x).starProjection)
+      =ᵐ[μHE[n].restrict R.carrier] G ∘ R.orient := by
+    filter_upwards [R.orients] with x ⟨Q, hQ, hor⟩
+    have hex : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
+    have h1 : approxTangentPlane n R.carrier x = Q := by
+      rw [approxTangentPlane, dite_eq_left hex]
+      exact hex.choose_spec.unique hQ
+    rw [Function.comp_apply, hGQ _ _ hor, h1]
+  -- `G ∘ ξ` is a.e. measurable, with values in the finite-dimensional space `End(ℝᴾ)`
+  have : TopologicalSpace.PseudoMetrizableSpace (MultiVector P n) :=
+    @PseudoEMetricSpace.pseudoMetrizableSpace _
+      (inferInstance : PseudoEMetricSpace (MultiVector P n))
+  exact ((hG.comp_aemeasurable R.aestronglyMeasurable_orient.aemeasurable).aestronglyMeasurable
+    ).congr hae.symm
+/-- **Planar fibre geometry** (fibre count for the cone-sector endpoint density in the proof of
+Simon 7.3.3).  Let `Q ⊆ ℝᴾ` be a plane with orthonormal basis `a, e`, `π = Q.starProjection`,
+`Ax = ⟨x, a⟩e − ⟨x, e⟩a` and `f(x) = arctan(⟨x, e⟩/⟨x, a⟩)`.  Then (a) `|p_T(Ax)| ≤ |πx| ≤ |x|`
+for every subspace `T`; (b) for `t > 0` and `|α| < Real.pi/2`, the point
+`x₀ = t(cos α a + sin α e)` has `⟨x₀, a⟩ > 0`, `|x₀| = t`, `f(x₀) = α`, `πx₀ = x₀` and
+`|π(Ax₀)| = t`; (c) every other `x` with `⟨x, a⟩ > 0`, `|x| = t` and `f(x) = α` has `|πx| < t`.
+A dimension count gives `Q = span{a, e}`, hence `πx = ⟨x, a⟩a + ⟨x, e⟩e` and `|Ax| = |πx|`; in
+(c), `|πx| = |x|` would give `x ∈ Q`, `x = ua + ve` with `u² + v² = t²`, and then `cos α = u/t`,
+`sin α = v/t` force `x = x₀`. -/
+theorem Submission.idtp_cse_fc_planar_fibre_geometry : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → (∀ (T : Submodule ℝ (Euclid P)) (x : Euclid P), ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ≤ ‖Q.starProjection x‖ ∧ ‖Q.starProjection x‖ ≤ ‖x‖) ∧ ∀ t α : ℝ, 0 < t → |α| < Real.pi / 2 → (0 < inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a ∧ ‖t • (Real.cos α • a + Real.sin α • e)‖ = t ∧ Real.arctan (inner ℝ (t • (Real.cos α • a + Real.sin α • e)) e / inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a) = α ∧ Q.starProjection (t • (Real.cos α • a + Real.sin α • e)) = t • (Real.cos α • a + Real.sin α • e) ∧ ‖Q.starProjection (inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a • e - inner ℝ (t • (Real.cos α • a + Real.sin α • e)) e • a)‖ = t) ∧ ∀ x : Euclid P, 0 < inner ℝ x a → ‖x‖ = t → Real.arctan (inner ℝ x e / inner ℝ x a) = α → x ≠ t • (Real.cos α • a + Real.sin α • e) → ‖Q.starProjection x‖ < t := by
+  intro P Q a e hQ haQ heQ ha he hae
+  -- Step 1: the Gram matrix of `(a, e)`
+  have haa : inner ℝ a a = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, ha, one_pow]
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, he, one_pow]
+  have hea : inner ℝ e a = (0 : ℝ) := by rw [real_inner_comm, hae]
+  -- Step 2: `Q = span {a, e}` by a dimension count, so every `w ∈ Q` is `c₁ a + c₂ e`
+  have hQmem : ∀ w ∈ Q, ∃ c₁ c₂ : ℝ, w = c₁ • a + c₂ • e := by
+    have hon : Orthonormal ℝ ![a, e] := by
+      rw [orthonormal_iff_ite]
+      intro i j
+      fin_cases i <;> fin_cases j <;> simp [ha, he, hae, hea]
+    have hspan : Submodule.span ℝ (Set.range ![a, e]) = Q := by
+      refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
+      · rw [Submodule.span_le, Set.range_subset_iff]
+        intro i
+        fin_cases i
+        · simpa using haQ
+        · simpa using heQ
+      · rw [finrank_span_eq_card hon.linearIndependent, hQ, Fintype.card_fin]
+    intro w hw
+    rw [← hspan, Submodule.mem_span_range_iff_exists_fun] at hw
+    obtain ⟨c, rfl⟩ := hw
+    exact ⟨c 0, c 1, by simp [Fin.sum_univ_two]⟩
+  -- Step 3: `πx = ⟨x, a⟩ a + ⟨x, e⟩ e`
+  have hproj : ∀ x : Euclid P, Q.starProjection x = inner ℝ x a • a + inner ℝ x e • e := by
+    intro x
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+      (Q.add_mem (Q.smul_mem _ haQ) (Q.smul_mem _ heQ)) fun w hw => ?_
+    obtain ⟨c₁, c₂, rfl⟩ := hQmem w hw
+    simp only [inner_sub_left, inner_add_left, inner_add_right, real_inner_smul_left,
+      real_inner_smul_right, haa, hee, hae, hea]
+    ring
+  -- Step 4: `‖u e − v a‖² = u² + v² = ‖u a + v e‖²`, hence `‖Ax‖ = ‖πx‖`
+  have hnormA : ∀ u v : ℝ, ‖u • e - v • a‖ ^ 2 = u ^ 2 + v ^ 2 := by
+    intro u v
+    rw [← real_inner_self_eq_norm_sq]
+    simp only [inner_sub_left, inner_sub_right, real_inner_smul_left, real_inner_smul_right, haa,
+      hee, hae, hea]
+    ring
+  have hnormP : ∀ u v : ℝ, ‖u • a + v • e‖ ^ 2 = u ^ 2 + v ^ 2 := by
+    intro u v
+    rw [← real_inner_self_eq_norm_sq]
+    simp only [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right, haa,
+      hee, hae, hea]
+    ring
+  have hAx : ∀ x : Euclid P, ‖inner ℝ x a • e - inner ℝ x e • a‖ = ‖Q.starProjection x‖ := by
+    intro x
+    rw [hproj x]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1
+      ((hnormA _ _).trans (hnormP _ _).symm)
+  -- Step 5: part (a)
+  refine ⟨fun T x => ⟨(T.norm_starProjection_apply_le _).trans (hAx x).le,
+    Q.norm_starProjection_apply_le x⟩, fun t α ht hα => ?_⟩
+  -- Step 6: part (b)
+  obtain ⟨hα₁, hα₂⟩ := abs_lt.1 hα
+  have hcos : 0 < Real.cos α := Real.cos_pos_of_mem_Ioo ⟨hα₁, hα₂⟩
+  have hx₀Q : t • (Real.cos α • a + Real.sin α • e) ∈ Q :=
+    Q.smul_mem t (Q.add_mem (Q.smul_mem _ haQ) (Q.smul_mem _ heQ))
+  have hx₀a : inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a = t * Real.cos α := by
+    simp only [real_inner_smul_left, inner_add_left, haa, hea]
+    ring
+  have hx₀e : inner ℝ (t • (Real.cos α • a + Real.sin α • e)) e = t * Real.sin α := by
+    simp only [real_inner_smul_left, inner_add_left, hee, hae]
+    ring
+  have hx₀n : ‖t • (Real.cos α • a + Real.sin α • e)‖ = t := by
+    have h1 : ‖Real.cos α • a + Real.sin α • e‖ = 1 :=
+      (pow_left_inj₀ (norm_nonneg _) zero_le_one two_ne_zero).1
+        (by rw [hnormP, Real.cos_sq_add_sin_sq, one_pow])
+    rw [norm_smul, h1, mul_one, Real.norm_eq_abs, abs_of_pos ht]
+  refine ⟨⟨?_, hx₀n, ?_, Submodule.starProjection_eq_self_iff.2 hx₀Q, ?_⟩, ?_⟩
+  · rw [hx₀a]
+    exact mul_pos ht hcos
+  · rw [hx₀a, hx₀e, mul_div_mul_left _ _ ht.ne', ← Real.tan_eq_sin_div_cos,
+      Real.arctan_tan hα₁ hα₂]
+  · rw [Submodule.starProjection_eq_self_iff.2 (Q.sub_mem (Q.smul_mem _ heQ) (Q.smul_mem _ haQ)),
+      hAx, Submodule.starProjection_eq_self_iff.2 hx₀Q, hx₀n]
+  -- Steps 7–8: part (c)
+  · intro x hxa hxt hxα hne
+    refine not_le.1 fun hlt => ?_
+    have hπx : ‖Q.starProjection x‖ = ‖x‖ :=
+      le_antisymm (Q.norm_starProjection_apply_le x) (by rw [hxt]; exact hlt)
+    have hx : x = inner ℝ x a • a + inner ℝ x e • e := by
+      rw [← hproj x,
+        Submodule.starProjection_eq_self_iff.2 ((Q.mem_iff_norm_starProjection x).2 hπx)]
+    have huv : inner ℝ x a ^ 2 + inner ℝ x e ^ 2 = t ^ 2 := by
+      rw [← hnormP, ← hx, hxt]
+    have hu0 : inner ℝ x a ≠ 0 := hxa.ne'
+    have hsqrt : √(1 + (inner ℝ x e / inner ℝ x a) ^ 2) = t / inner ℝ x a := by
+      rw [← Real.sqrt_sq (div_pos ht hxa).le]
+      congr 1
+      field_simp
+      linarith [huv]
+    have hcosα : Real.cos α = inner ℝ x a / t := by
+      rw [← hxα, Real.cos_arctan, hsqrt, one_div_div]
+    have hsinα : Real.sin α = inner ℝ x e / t := by
+      rw [← hxα, Real.sin_arctan, hsqrt]
+      field_simp
+    apply hne
+    rw [hcosα, hsinα, smul_add, smul_smul, smul_smul, mul_div_cancel₀ _ ht.ne',
+      mul_div_cancel₀ _ ht.ne']
+    exact hx
+
+/-- **The tangential rotation ratio of an integer multiplicity triple is measurable**
+(Simon 7.3.3, proof; Ch. 6, 3.1).  For `R = (M, θ, ξ)` with weight `μ = θ Hⁿ⌞M`, a subspace `Q`
+with projection `π` and `A x = ⟨x, a⟩ e − ⟨x, e⟩ a`, the ratio `|p_{TₓM}(A x)|² / |π x|²` is
+`μ`-a.e. strongly measurable: `x ↦ p_{TₓM}` is `Hⁿ⌞M`-a.e. strongly measurable, hence
+`μ`-a.e. strongly measurable as `μ ≪ Hⁿ⌞M`; evaluation at the continuous field `A` is continuous
+bilinear, `|π x|²` is continuous, and real division (`t / 0 = 0`) is measurable. -/
+theorem Submission.idtp_cse_fd_fs_frame_ratio_aesm : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), AEStronglyMeasurable (fun x : Euclid P => ‖(approxTangentPlane n R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) R.measure := by
+  intro P n U R Q a e
+  -- `x ↦ p_{TₓM}` is `μ`-a.e. strongly measurable, since `μ = (Hⁿ⌞M).withDensity θ ≪ Hⁿ⌞M`
+  have hT : AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection)
+      R.measure :=
+    (Submission.imrep_approxTangent_starProjection_aesm P n U R).mono_ac
+      (withDensity_absolutelyContinuous _ _)
+  -- evaluation `(L, v) ↦ L v` at the continuous field `A x = ⟨x, a⟩ e − ⟨x, e⟩ a`
+  have hA : Continuous fun x : Euclid P => inner ℝ x a • e - inner ℝ x e • a := by fun_prop
+  have hN : AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection
+      (inner ℝ x a • e - inner ℝ x e • a)) R.measure :=
+    (ContinuousLinearMap.id ℝ (Euclid P →L[ℝ] Euclid P)).aestronglyMeasurable_comp₂ hT
+      hA.aestronglyMeasurable
+  -- the denominator `|π x|²` is continuous, and real division is measurable
+  have hD : Continuous fun x : Euclid P => ‖Q.starProjection x‖ ^ 2 := by fun_prop
+  exact (hN.norm.fun_pow 2).aemeasurable.fun_div hD.measurable.aemeasurable |>.aestronglyMeasurable
+/-- **Transfer of a push-forward density identity.**  Let `ν` be a finite measure on `X`,
+`φ : X → ℝ²` measurable, `g` `ν`-a.e. strongly measurable with `0 ≤ g ≤ 1` `ν`-a.e., and
+`H : ℝ² → [0, ∞]` a.e.-measurable with `∫ b H dp = ∫ (b ∘ φ) g dν` for every Borel `b ≥ 0`.  Then
+`H < ∞` a.e., `H` is integrable, `∫ b H dp = ∫ (b ∘ φ) g dν` for every bounded Borel
+`b : ℝ² → ℝ`, and `∫_S H dp = ∫_{φ⁻¹(S)} g dν` for every Borel `S`.  Taking `b ≡ 1` gives
+`∫ H dp ≤ ν(X) < ∞`; for a Borel `0 ≤ β ≤ M` both sides are integrable and their lower integrals
+agree (`b = ofReal ∘ β`); a bounded `b` is `max(b, 0) − max(−b, 0)`; and `b = 1_S` gives the set
+identity. -/
+theorem Submission.idtp_cse_fd_fs_pushforward_signed_transfer : ∀ (X : Type) [MeasurableSpace X] (ν : Measure X) (φ : X → ℝ × ℝ) (g : X → ℝ) (H : ℝ × ℝ → ℝ≥0∞), ν univ ≠ ∞ → Measurable φ → AEStronglyMeasurable g ν → (∀ᵐ x ∂ν, 0 ≤ g x ∧ g x ≤ 1) → AEMeasurable H volume → (∀ b : ℝ × ℝ → ℝ≥0∞, Measurable b → ∫⁻ p : ℝ × ℝ, b p * H p = ∫⁻ x, b (φ x) * ENNReal.ofReal (g x) ∂ν) → (∀ᵐ p : ℝ × ℝ, H p ≠ ∞) ∧ Integrable (fun p : ℝ × ℝ => (H p).toReal) ∧ (∀ b : ℝ × ℝ → ℝ, Measurable b → (∃ M : ℝ, ∀ p, |b p| ≤ M) → ∫ p : ℝ × ℝ, b p * (H p).toReal = ∫ x, b (φ x) * g x ∂ν) ∧ ∀ S : Set (ℝ × ℝ), MeasurableSet S → ∫⁻ p in S, H p = ∫⁻ x in φ ⁻¹' S, ENNReal.ofReal (g x) ∂ν := by
+  intro X _ ν φ g H hν hφ hg hg01 hH htr
+  have : IsFiniteMeasure ν := ⟨lt_top_iff_ne_top.mpr hν⟩
+  -- the identity with `b ≡ 1`, and `∫ ofReal g dν ≤ ν(X) < ∞` since `g ≤ 1` a.e.
+  have hfin : ∫⁻ p : ℝ × ℝ, H p ≠ ∞ := by
+    have h1 := htr (fun _ => 1) measurable_const
+    simp only [one_mul] at h1
+    rw [h1]
+    refine ne_top_of_le_ne_top hν ?_
+    calc ∫⁻ x, ENNReal.ofReal (g x) ∂ν ≤ ∫⁻ _, 1 ∂ν :=
+          lintegral_mono_ae (hg01.mono fun x hx => ENNReal.ofReal_le_one.mpr hx.2)
+      _ = ν univ := lintegral_one
+  -- (i) and (ii)
+  have hi : ∀ᵐ p : ℝ × ℝ, H p ≠ ∞ := (ae_lt_top' hH hfin).mono fun p hp => hp.ne
+  have hii : Integrable (fun p : ℝ × ℝ => (H p).toReal) :=
+    integrable_toReal_of_lintegral_ne_top hH hfin
+  -- the signed identity for a Borel `β` with `0 ≤ β ≤ M`, via lower integrals
+  have hpos : ∀ β : ℝ × ℝ → ℝ, Measurable β → ∀ M : ℝ, (∀ p, 0 ≤ β p ∧ β p ≤ M) →
+      Integrable (fun p => β p * (H p).toReal) ∧ Integrable (fun x => β (φ x) * g x) ν ∧
+      ∫ p : ℝ × ℝ, β p * (H p).toReal = ∫ x, β (φ x) * g x ∂ν := by
+    intro β hβ M hβM
+    have hint1 : Integrable (fun p => β p * (H p).toReal) :=
+      hii.bdd_mul hβ.aestronglyMeasurable (Eventually.of_forall fun p => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (hβM p).1]
+        exact (hβM p).2)
+    have hint2 : Integrable (fun x => β (φ x) * g x) ν := by
+      refine Integrable.of_bound ((hβ.comp hφ).aestronglyMeasurable.mul hg) M ?_
+      filter_upwards [hg01] with x hx
+      rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (hβM (φ x)).1 hx.1)]
+      calc β (φ x) * g x ≤ M * 1 :=
+            mul_le_mul (hβM (φ x)).2 hx.2 hx.1 ((hβM (φ x)).1.trans (hβM (φ x)).2)
+        _ = M := mul_one M
+    refine ⟨hint1, hint2, ?_⟩
+    rw [integral_eq_lintegral_of_nonneg_ae
+        (Eventually.of_forall fun p => mul_nonneg (hβM p).1 ENNReal.toReal_nonneg)
+        hint1.aestronglyMeasurable,
+      integral_eq_lintegral_of_nonneg_ae (hg01.mono fun x hx => mul_nonneg (hβM (φ x)).1 hx.1)
+        hint2.aestronglyMeasurable]
+    congr 1
+    calc ∫⁻ p, ENNReal.ofReal (β p * (H p).toReal)
+        = ∫⁻ p, ENNReal.ofReal (β p) * H p := by
+          refine lintegral_congr_ae ?_
+          filter_upwards [hi] with p hp
+          rw [ENNReal.ofReal_mul (hβM p).1, ENNReal.ofReal_toReal hp]
+      _ = ∫⁻ x, ENNReal.ofReal (β (φ x)) * ENNReal.ofReal (g x) ∂ν :=
+          htr (fun p => ENNReal.ofReal (β p)) (ENNReal.measurable_ofReal.comp hβ)
+      _ = ∫⁻ x, ENNReal.ofReal (β (φ x) * g x) ∂ν := by
+          refine lintegral_congr fun x => ?_
+          rw [ENNReal.ofReal_mul (hβM (φ x)).1]
+  refine ⟨hi, hii, ?_, ?_⟩
+  · -- (iii): split `b = max b 0 - max (-b) 0`
+    rintro b hb ⟨M, hM⟩
+    have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+    obtain ⟨i1, i2, e1⟩ := hpos (fun p => max (b p) 0) (hb.max measurable_const) M
+      fun p => ⟨le_max_right _ _, max_le ((le_abs_self _).trans (hM p)) hM0⟩
+    obtain ⟨i3, i4, e2⟩ := hpos (fun p => max (-b p) 0) (hb.neg.max measurable_const) M
+      fun p => ⟨le_max_right _ _, max_le ((neg_le_abs _).trans (hM p)) hM0⟩
+    calc ∫ p, b p * (H p).toReal
+        = ∫ p, (max (b p) 0 * (H p).toReal - max (-b p) 0 * (H p).toReal) := by
+          refine integral_congr_ae (Eventually.of_forall fun p => ?_)
+          dsimp only
+          rw [← sub_mul, max_zero_sub_eq_self]
+      _ = (∫ p, max (b p) 0 * (H p).toReal) - ∫ p, max (-b p) 0 * (H p).toReal :=
+          integral_sub i1 i3
+      _ = (∫ x, max (b (φ x)) 0 * g x ∂ν) - ∫ x, max (-b (φ x)) 0 * g x ∂ν := by rw [e1, e2]
+      _ = ∫ x, (max (b (φ x)) 0 * g x - max (-b (φ x)) 0 * g x) ∂ν := (integral_sub i2 i4).symm
+      _ = ∫ x, b (φ x) * g x ∂ν := by
+          refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+          dsimp only
+          rw [← sub_mul, max_zero_sub_eq_self]
+  · -- (iv): the identity with `b = 1_S`
+    intro S hS
+    have key := htr (S.indicator 1) (measurable_one.indicator hS)
+    calc ∫⁻ p in S, H p = ∫⁻ p, S.indicator H p := (lintegral_indicator hS H).symm
+      _ = ∫⁻ p, S.indicator 1 p * H p := by
+          refine lintegral_congr fun p => ?_
+          by_cases hp : p ∈ S <;> simp [hp]
+      _ = ∫⁻ x, S.indicator 1 (φ x) * ENNReal.ofReal (g x) ∂ν := key
+      _ = ∫⁻ x, (φ ⁻¹' S).indicator (fun x => ENNReal.ofReal (g x)) x ∂ν := by
+          refine lintegral_congr fun x => ?_
+          by_cases hx : φ x ∈ S <;> simp [hx]
+      _ = ∫⁻ x in φ ⁻¹' S, ENNReal.ofReal (g x) ∂ν := lintegral_indicator (hφ hS) _
+
+/-- **Signed fibre identity** (flux density for the cone-sector endpoint density in the proof of
+Simon 7.3.3).  Let `R = (M, θ, ξ)` be a `2`-dimensional integer multiplicity triple in `ℝᴾ`,
+`μ = θ H²⌞M`, `Q` a plane with orthonormal basis `a, e`, `π = Q.starProjection`,
+`Ax = ⟨x, a⟩e − ⟨x, e⟩a`, `G(x) = |p_{TₓM}(Ax)|² / |πx|²`, `f(x) = arctan(⟨x, e⟩/⟨x, a⟩)`,
+`F̃(x) = (|x|, f(x))` and
+`Z(s, s') = {x : ⟨x, a⟩ > 0, ||x| − 1| < s', |f(x)| < s', |x − πx| < s|x|}`.  If
+`∫ b H = ∫_{Z(s, s)} b(F̃) G dμ` for every Borel `b : ℝ² → [0, ∞]`, then `H < ∞` a.e., `H` is
+integrable, the identity holds for bounded signed Borel `b`, and
+`∫_{(1 − s', 1 + s') × (−s', s')} H = ∫_{Z(s, s')} G dμ` for `s' ≤ s`.  Self-adjointness of `π`
+and Bessel's inequality for `a, e` give `|p_T(Ax)|² ≤ |Ax|² ≤ |πx|²`, so `0 ≤ G ≤ 1`
+(`t / 0 = 0`); `Z(s, s) ⊆ B̄_{1+|s|}(0)` has finite `μ`-measure, so the push-forward transfer
+applies to `μ⌞Z(s, s)`, and `F̃⁻¹((1 − s', 1 + s') × (−s', s')) ∩ Z(s, s) = Z(s, s')`. -/
+theorem Submission.idtp_cse_fd_fibre_signed_identity : ∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ) (H : ℝ × ℝ → ℝ≥0∞), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → AEMeasurable H volume → (∀ b : ℝ × ℝ → ℝ≥0∞, Measurable b → ∫⁻ p : ℝ × ℝ, b p * H p = ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, b (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure) → (∀ᵐ p : ℝ × ℝ, H p ≠ ∞) ∧ Integrable (fun p : ℝ × ℝ => (H p).toReal) ∧ (∀ b : ℝ × ℝ → ℝ, Measurable b → (∃ M : ℝ, ∀ p, |b p| ≤ M) → ∫ p : ℝ × ℝ, b p * (H p).toReal = ∫ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, b (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure) ∧ ∀ s' : ℝ, s' ≤ s → ∫⁻ p in Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s', H p = ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure := by
+  intro P R Q a e s H hQ haQ heQ ha he hae hHm hH
+  -- `Z = Z(s, s)`
+  set Z : Set (Euclid P) := {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧
+    |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} with hZ
+  -- Step 1: the frame bound `|p_T(Ax)|² ≤ |Ax|² = ⟨πx, a⟩² + ⟨πx, e⟩² ≤ |πx|²`
+  have haa : inner ℝ a a = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, ha, one_pow]
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, he, one_pow]
+  have hea : inner ℝ e a = (0 : ℝ) := by rw [real_inner_comm, hae]
+  have hframe : ∀ (T : Submodule ℝ (Euclid P)) (x : Euclid P),
+      ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 ≤ ‖Q.starProjection x‖ ^ 2 := by
+    intro T x
+    -- `π` is self-adjoint and fixes `a, e ∈ Q`
+    have hya : inner ℝ (Q.starProjection x) a = inner ℝ x a := by
+      rw [Submodule.inner_starProjection_left_eq_right,
+        Submodule.starProjection_eq_self_iff.2 haQ]
+    have hye : inner ℝ (Q.starProjection x) e = inner ℝ x e := by
+      rw [Submodule.inner_starProjection_left_eq_right,
+        Submodule.starProjection_eq_self_iff.2 heQ]
+    have hA : ∀ u v : ℝ, ‖u • e - v • a‖ ^ 2 = u ^ 2 + v ^ 2 := by
+      intro u v
+      rw [← real_inner_self_eq_norm_sq]
+      simp only [inner_sub_left, inner_sub_right, real_inner_smul_left, real_inner_smul_right,
+        haa, hee, hae, hea]
+      ring
+    -- Bessel: `0 ≤ |y − ⟨y, a⟩a − ⟨y, e⟩e|² = |y|² − ⟨y, a⟩² − ⟨y, e⟩²`
+    have hB : ∀ y : Euclid P, inner ℝ y a ^ 2 + inner ℝ y e ^ 2 ≤ ‖y‖ ^ 2 := by
+      intro y
+      have h : ‖y - (inner ℝ y a • a + inner ℝ y e • e)‖ ^ 2 =
+          ‖y‖ ^ 2 - (inner ℝ y a ^ 2 + inner ℝ y e ^ 2) := by
+        rw [← real_inner_self_eq_norm_sq, ← real_inner_self_eq_norm_sq y]
+        simp only [inner_sub_left, inner_sub_right, inner_add_left, inner_add_right,
+          real_inner_smul_left, real_inner_smul_right, haa, hee, hae, hea, real_inner_comm y a,
+          real_inner_comm y e]
+        ring
+      rw [← sub_nonneg, ← h]
+      positivity
+    calc ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2
+        ≤ ‖inner ℝ x a • e - inner ℝ x e • a‖ ^ 2 := by
+          gcongr
+          exact T.norm_starProjection_apply_le _
+      _ = inner ℝ (Q.starProjection x) a ^ 2 + inner ℝ (Q.starProjection x) e ^ 2 := by
+          rw [hA, hya, hye]
+      _ ≤ ‖Q.starProjection x‖ ^ 2 := hB _
+  -- Step 2: `F̃ = (|·|, f)` is Borel
+  have hφ : Measurable fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) :=
+    continuous_norm.measurable.prodMk (Real.continuous_arctan.measurable.comp
+      ((continuous_id.inner continuous_const).measurable.div
+        (continuous_id.inner continuous_const).measurable))
+  -- Step 3: `Z ⊆ B̄_{1+|s|}(0)`, so `μ(Z) < ∞` by local integrability of `θ`
+  have hZK : Z ⊆ closedBall (0 : Euclid P) (1 + |s|) := by
+    intro x hx
+    rw [mem_closedBall_zero_iff]
+    have h1 := le_abs_self (‖x‖ - 1)
+    have h2 := le_abs_self s
+    have h3 := hx.2.1
+    linarith
+  have hfin : R.measure.restrict Z univ ≠ ∞ := by
+    rw [Measure.restrict_apply_univ]
+    refine ne_top_of_le_ne_top ?_ (measure_mono hZK)
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact R.locallyIntegrable_mult _ (isCompact_closedBall 0 _) (subset_univ _)
+  -- Step 4: the push-forward transfer for `ν = μ⌞Z`, `φ = F̃`, `g = G` (`0 ≤ G ≤ 1`)
+  obtain ⟨h1, h2, h3, h4⟩ := Submission.idtp_cse_fd_fs_pushforward_signed_transfer (Euclid P)
+    (R.measure.restrict Z) (fun x => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)))
+    (fun x => ‖(approxTangentPlane 2 R.carrier x).starProjection
+      (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) H hfin hφ
+    (Submission.idtp_cse_fd_fs_frame_ratio_aesm P 2 univ R Q a e).restrict
+    (ae_of_all _ fun x => ⟨div_nonneg (sq_nonneg _) (sq_nonneg _),
+      div_le_one_of_le₀ (hframe _ x) (sq_nonneg _)⟩) hHm hH
+  refine ⟨h1, h2, h3, fun s' hs' => ?_⟩
+  -- Step 5: `F̃⁻¹((1 − s', 1 + s') × (−s', s')) ∩ Z(s, s) = Z(s, s')` for `s' ≤ s`
+  have hS : MeasurableSet (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s') :=
+    measurableSet_Ioo.prod measurableSet_Ioo
+  have hset : (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹'
+      (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s') ∩ Z = {x : Euclid P | 0 < inner ℝ x a ∧
+        |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧
+        ‖x - Q.starProjection x‖ < s * ‖x‖} := by
+    ext x
+    simp only [hZ, mem_inter_iff, mem_preimage, mem_prod, mem_Ioo, mem_ofPred_eq, abs_lt]
+    constructor
+    · rintro ⟨⟨⟨hr₁, hr₂⟩, hf₁, hf₂⟩, hxa, -, -, hxπ⟩
+      exact ⟨hxa, ⟨by linarith, by linarith⟩, ⟨hf₁, hf₂⟩, hxπ⟩
+    · rintro ⟨hxa, ⟨hr₁, hr₂⟩, ⟨hf₁, hf₂⟩, hxπ⟩
+      exact ⟨⟨⟨by linarith, by linarith⟩, hf₁, hf₂⟩, hxa, ⟨by linarith, by linarith⟩,
+        ⟨by linarith, by linarith⟩, hxπ⟩
+  rw [h4 _ hS, Measure.restrict_restrict (hφ hS), hset]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
