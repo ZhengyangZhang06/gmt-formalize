@@ -3454,6 +3454,71 @@ theorem Submission.dor_lmb_fc_ims_ae_limit_imrep : ∀ (P n : ℕ) (U : Set (Euc
   · simp only [Set.indicator_of_mem hxM, smul_apply, smul_eq_mul]
   · simp only [Set.indicator_of_notMem hxM, zero_apply]
 
+/-- **Simon Ch. 6, Lemma 3.13 (p. 149), for the partial sums of a mass-summable series.**  If
+`X_r ∈ 𝒟ₙ(U)` (`n = m + 1`, `U` open) are integer multiplicity with `Σ_r M(X_r) < ∞`, then
+`Y(ω) = Σ_r X_r(ω)` is an integer multiplicity current with `M(Y) ≤ Σ_r M(X_r)`.
+Write `X_r = τ(M_r, θ_r, ξ_r)`; by 3.2(3), `M(X_r) = μ_{X_r}(U)`, so the densities
+`η_r = 1_{M_r} θ_r ξ_r` sum `Hⁿ`-a.e. to some `η` with `Σ_r X_r(ω) = ∫ ⟨ω, η⟩ dHⁿ`.  The partial
+sums `Σ_{r<q} η_r` are `Hⁿ`-a.e. the densities of triples `R'_q` with `μ_{R'_q} ≤ Σ_{r<q} μ_{X_r}`;
+they converge to `η` with locally bounded masses, so `η` is the density of a triple `(M₊, θ, ξ)`
+and `Y = τ(M₊, θ, ξ)`.  An admissible `ω` has `Y(ω) = Σ_r X_r(ω) ≤ Σ_r M(X_r)`. -/
+theorem Submission.dor_lmb_fc_im_series : ∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass := by
+  intro P m U X hU hX hfin
+  -- Step 2: triples `R_r = (M_r, θ_r, ξ_r)` with `X_r = τ(R_r)`; `M(X_r) = μ_{R_r}(U)` (3.2(3))
+  have hX' : ∀ r, ∃ R : IMRep U (m + 1), R.Represents (X r) := hX
+  choose R hR using hX'
+  have hmass : ∀ r, (X r).mass = (R r).measure U := fun r =>
+    (Submission.dor_imrep_massOn_eq_measure_and_support P (m + 1) U (X r) (R r) hU (hR r)).1 U hU
+  have hfin' : ∑' r, (R r).measure U ≠ ∞ := by simpa only [hmass] using hfin
+  -- `η = Σ_r 1_{M_r} θ_r ξ_r` converges `Hⁿ`-a.e., and `Σ_r X_r(ω) = ∫ ⟨ω, η⟩ dHⁿ`
+  obtain ⟨η, hη, hηω⟩ := Submission.dor_lmb_fc_ims_density_series P (m + 1) U R hfin'
+  -- Steps 3–4: the partial sums `Y_q = Σ_{r<q} X_r` are represented by triples `R'_q` with
+  -- density `Σ_{r<q} 1_{M_r} θ_r ξ_r` `Hⁿ`-a.e. and `μ_{R'_q} ≤ Σ_{r<q} μ_{R_r}`
+  choose R' hR'η hR'μ using Submission.dor_lmb_fc_ims_partial_sum_reps P (m + 1) U R hU
+  -- the densities of the `R'_q` converge to `η` `Hⁿ`-a.e.
+  have hconv : ∀ᵐ x ∂μHE[m + 1], Tendsto (fun q => (R' q).carrier.indicator
+      (fun y => ((R' q).mult y : ℝ) • (R' q).orient y) x) atTop (𝓝 (η x)) := by
+    filter_upwards [hη, ae_all_iff.2 hR'η] with x hx hx'
+    exact hx.tendsto_sum_nat.congr fun q => (hx' q).symm
+  -- `μ_{R'_q}(K) ≤ Σ_{r<q} μ_{R_r}(U) ≤ Σ_r μ_{R_r}(U) < ∞` for compact `K ⊆ U`
+  have hbound : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ q, (R' q).measure K ≤ C := by
+    intro K _ hKU
+    refine ⟨∑' r, (R r).measure U, hfin', fun q => ?_⟩
+    calc (R' q).measure K ≤ (∑ r ∈ Finset.range q, (R r).measure) K :=
+          Measure.le_iff'.1 (hR'μ q) K
+      _ = ∑ r ∈ Finset.range q, (R r).measure K := Measure.finsetSum_apply _ _ _
+      _ ≤ ∑ r ∈ Finset.range q, (R r).measure U :=
+          Finset.sum_le_sum fun r _ => measure_mono hKU
+      _ ≤ ∑' r, (R r).measure U := ENNReal.sum_le_tsum _
+  -- Steps 5–7: a triple `R★ = (M₊, θ, ξ)` with density `η`, so `τ(R★)(ω) = ∫ ⟨ω, η⟩ dHⁿ`
+  obtain ⟨Rs, -, hRs⟩ :=
+    Submission.dor_lmb_fc_ims_ae_limit_imrep P (m + 1) U R' η hU hconv hbound
+  -- `Y = τ(R★)`: the restriction of `R★` to `E = ℝᴾ` represents a current `Y`
+  obtain ⟨Y, R₀, hY, hcar, hmult, hor⟩ :=
+    Submission.cmc_imRep_locality_restrict_sub.2.1 P (m + 1) U Rs univ hU MeasurableSet.univ
+  have hYω : ∀ ω : TestFormOn U (m + 1),
+      Y ω = ∫ x, η x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] := by
+    intro ω
+    rw [hY ω, ← hRs (ω : DifferentialForm (Euclid P) (m + 1))]
+    simp only [IMRep.action, hcar, hmult, hor, inter_univ]
+  -- Step 1: `Σ_r X_r(ω) = Σ_r τ(R_r)(ω)` converges to `∫ ⟨ω, η⟩ dHⁿ = Y(ω)`
+  have hsum : ∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω) := by
+    intro ω
+    have hXR : (fun r => X r ω) =
+        fun r => (R r).action (ω : DifferentialForm (Euclid P) (m + 1)) := funext fun r => hR r ω
+    rw [hXR, hYω ω]
+    exact hηω ω
+  refine ⟨Y, ⟨R₀, hY⟩, hsum, ?_⟩
+  -- Step 1: for admissible `ω`, `X_r(ω) ≤ M(X_r) < ∞`, so `Y(ω) = Σ_r X_r(ω) ≤ Σ_r M(X_r)`
+  have hne : ∀ r, (X r).mass ≠ ∞ := ENNReal.ne_top_of_tsum_ne_top hfin
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  show ENNReal.ofReal (Y ω) ≤ ∑' r, (X r).mass
+  rw [ENNReal.ofReal_le_iff_le_toReal hfin, ENNReal.tsum_toReal_eq hne]
+  exact hasSum_le (fun r => (ENNReal.ofReal_le_iff_le_toReal (hne r)).1 ((X r).le_massOn hω))
+    (hsum ω) (ENNReal.summable_toReal hfin).hasSum
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
