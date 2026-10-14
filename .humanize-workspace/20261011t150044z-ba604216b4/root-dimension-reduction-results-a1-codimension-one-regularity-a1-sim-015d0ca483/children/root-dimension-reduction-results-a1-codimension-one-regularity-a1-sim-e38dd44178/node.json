@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1.subspace_gram-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1",
+  "depth": 6,
+  "title": "Determinant of (B∘ι_T)*(B∘ι_T) on a subspace T equals the Gram determinant of B on an orthonormal frame of T",
+  "statement": "Let P, k ∈ ℕ, let T be a linear subspace of ℝ^P with the inner product of ℝ^P, let B : ℝ^P → ℝ^P be a continuous linear map, and let σ = (σ_0, …, σ_{k−1}) be an orthonormal family in ℝ^P with span{σ_0, …, σ_{k−1}} = T. Let ι_T : T → ℝ^P be the inclusion (T.subtypeL) and let * denote the adjoint for the inner products of T and ℝ^P. Then the determinant of the endomorphism (B∘ι_T)*(B∘ι_T) of T equals det[⟨Bσ_i, Bσ_j⟩]_{i,j<k}.",
+  "lean_statement": "∀ (P k : ℕ) (T : Submodule ℝ (Euclid P)) (B : Euclid P →L[ℝ] Euclid P) (σ : Fin k → Euclid P), Orthonormal ℝ σ → Submodule.span ℝ (Set.range σ) = T → ((B.comp T.subtypeL).adjoint ∘L (B.comp T.subtypeL)).det = Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (B (σ i)) (B (σ j)))",
+  "lean_name": "codim1_hcp_af_adjoint_det_eq_gram",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e38dd44178-a1"
+}

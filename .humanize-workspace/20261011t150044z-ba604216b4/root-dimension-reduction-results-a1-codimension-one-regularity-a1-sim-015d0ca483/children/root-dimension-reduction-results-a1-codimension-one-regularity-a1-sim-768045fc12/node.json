@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1.chart_jacobian-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1",
+  "depth": 6,
+  "title": "Jacobian factorization in a chart: J(B∘Dψ(v)) = J(Dψ(v))·J(B∘ι_{T_{ψ(v)}M}) (Simon Ch. 2, 4.11; (7.1) of the supplied proof)",
+  "statement": "Let P, m ∈ ℕ, M, W ⊆ ℝ^P, V ⊆ ℝ^m, ψ : ℝ^m → ℝ^P, a continuous linear map B : ℝ^P → ℝ^P and v ∈ V. Assume (V, W, ψ) is a chart of M: V and W are open, ψ is C¹ on V and injective on V, ψ(V) = W ∩ M, V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W, and Dψ(z) = fderiv ℝ ψ z is injective for every z ∈ V. Let e_k := EuclideanSpace.single k 1 (k < m), T := span(tangentSpace M (ψ(v))) with the inner product of ℝ^P, and ι_T : T → ℝ^P the inclusion. Then √det[⟨B(Dψ(v)e_k), B(Dψ(v)e_l)⟩]_{k,l<m} = √det[⟨Dψ(v)e_k, Dψ(v)e_l⟩]_{k,l<m} · √det((B∘ι_T)*(B∘ι_T)), where the last determinant is that of an endomorphism of T, * is the adjoint for the inner products of T and ℝ^P, and √ is Real.sqrt.",
+  "lean_statement": "∀ (P m : ℕ) (M W : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (B : Euclid P →L[ℝ] Euclid P) (v : Euclid m), IsOpen V → IsOpen W → ContDiffOn ℝ 1 ψ V → InjOn ψ V → ψ '' V = W ∩ M → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v ∈ V → Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (B (fderiv ℝ ψ v (EuclideanSpace.single k 1))) (B (fderiv ℝ ψ v (EuclideanSpace.single l 1))))) = Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ ψ v (EuclideanSpace.single k 1)) (fderiv ℝ ψ v (EuclideanSpace.single l 1)))) * Real.sqrt (((B.comp (Submodule.span ℝ (tangentSpace M (ψ v))).subtypeL).adjoint ∘L (B.comp (Submodule.span ℝ (tangentSpace M (ψ v))).subtypeL)).det)",
+  "lean_name": "codim1_hcp_af_chart_jacobian_factor",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_chain-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1.subspace_gram-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_chain-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-12e3a7fde6-a1",
+      "result_commit": "d596f85ab9a9c39c0c4c596dec42ece0e9d97b0a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.area_formula-a1.subspace_gram-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-768045fc12-a1"
+}
