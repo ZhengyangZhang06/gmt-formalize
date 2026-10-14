@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7c3f183a9f2a7cfb3698fae44c04212179f97985fecc96c02083ddc1816a6f04",
+  "git_delta": {
+    "base_commit": "610df9dd553505577bcb83229d6ad4b0db1d2a9f",
+    "candidate_commit": "03117a2a9a9efc8c8071d19a8ce74e5fb05adcf8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_ah_slice_ae_const",
+    "diff_sha256": "921a7631647c6fca4f981b1ecf785fcb5ab8aa2696f5527237fb980ece7e63f6",
+    "source_sha256": "f353fbc0bb1b78c8668ffac184331e83f178f500570cc37c8272e2528d6aefdd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_ah_slice_ae_const",
+      "statement": "∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ), c < d → IntegrableOn H (Ioo a b ×ˢ Ioo c d) → (∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo c d → tsupport l ⊆ Ioo a b → ∫ p : ℝ × ℝ, deriv ψ p.2 * l p.1 * H p = 0) → ∀ᵐ t, t ∈ Ioo a b → ∃ k : ℝ, ∀ᵐ α, α ∈ Ioo c d → H (t, α) = k",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
