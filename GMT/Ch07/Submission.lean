@@ -451,6 +451,36 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 7.2.4, proof** (choice of a good slice; Tonelli for the sliding window): for an
+s-finite measure `ν` on `ℝ` and `h ∈ ℝ`, `t ↦ ν((t − h, t))` is measurable and
+`∫ ν((t − h, t)) dt = h₊ · ν(ℝ)`, where `h₊ = max h 0`.  The set
+`E = {(t, x) : t − h < x < t}` is measurable, its `t`-sections are `(t − h, t)` and its
+`x`-sections are `(x, x + h)`; computing `(L¹ ⊗ ν)(E)` in both orders gives the identity. -/
+theorem Submission.cmc_fc_gs_aqf_window_lintegral : ∀ (ν : Measure ℝ) [SFinite ν] (h : ℝ), Measurable (fun t : ℝ => ν (Ioo (t - h) t)) ∧ ∫⁻ t, ν (Ioo (t - h) t) ∂volume = ENNReal.ofReal h * ν univ := by
+  intro ν _ h
+  -- the window set `E = {(t, x) : t - h < x < t}` and its two families of sections
+  set E : Set (ℝ × ℝ) := {p | p.1 - h < p.2} ∩ {p | p.2 < p.1} with hE
+  have hEm : MeasurableSet E :=
+    (measurableSet_lt (measurable_fst.sub_const h) measurable_snd).inter
+      (measurableSet_lt measurable_snd measurable_fst)
+  have hsec : ∀ t : ℝ, Prod.mk t ⁻¹' E = Ioo (t - h) t := fun t => rfl
+  have hsec' : ∀ x : ℝ, (fun t => (t, x)) ⁻¹' E = Ioo x (x + h) := by
+    intro x
+    ext t
+    simp only [hE, mem_preimage, mem_inter_iff, mem_ofPred_eq, mem_Ioo]
+    constructor <;> rintro ⟨h₁, h₂⟩ <;> constructor <;> linarith
+  refine ⟨?_, ?_⟩
+  · simpa only [hsec] using measurable_measure_prodMk_left (ν := ν) hEm
+  · -- Tonelli in both orders for `L¹ ⊗ ν` on `E`, then `L¹((x, x + h)) = h₊`
+    calc ∫⁻ t, ν (Ioo (t - h) t) ∂volume = (volume.prod ν) E := by
+          rw [Measure.prod_apply hEm]
+          simp only [hsec]
+      _ = ∫⁻ x, volume (Ioo x (x + h)) ∂ν := by
+          rw [Measure.prod_apply_symm hEm]
+          simp only [hsec']
+      _ = ENNReal.ofReal h * ν univ := by
+          simp only [Real.volume_Ioo, add_sub_cancel_left, lintegral_const]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
