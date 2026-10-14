@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.singular_set_density_below_two-a1",
+  "parent_id": "root.dimension_reduction_results-a1",
+  "depth": 2,
+  "title": "Simon 7.4.4: near a point of density below 2 the singular set is H^{n−2+α}-null",
+  "statement": "SingularSetSmallWhereDensityBelowTwo of the frozen contract (Simon 7.4.4). For all n, k, ℓ ∈ ℕ with ℓ ≤ k, all sets U, N ⊆ ℝ^{n+k} and every T ∈ 𝒟_n(U): if U is open, N is an embedded C² (n+ℓ)-dimensional submanifold, (closure N ∖ N) ∩ U = ∅, T is minimizing in U ∩ N, spt T ⊆ U ∩ N and ∂T = 0 in U, then for every ξ ∈ spt T and every real θ with HasMassDensity T ξ θ and θ < 2 there is ρ > 0 such that μH[n − 2 + α](sing T ∩ B_ρ(ξ)) = 0 for every real α > 0 (sing T = singularSet T = spt T ∖ regularSet T).",
+  "lean_statement": "SingularSetSmallWhereDensityBelowTwo",
+  "lean_name": "dimred_singular_set_density_below_two",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1",
+    "root.dimension_reduction_results-a1.one_dim_cones-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1",
+    "root.dimension_reduction_results-a1.density_gap-a1",
+    "root.dimension_reduction_results-a1.threshold_reduction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.one_dim_cones-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.density_gap-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-singular-set-density-below-two-a1-a1"
+}
