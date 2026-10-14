@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "0de6a2b824737b40f5b27c71aee1c64fcebba811b01e5e6ccf3e3136fe5fa10e",
+  "git_delta": {
+    "base_commit": "36f52a48af1bca55f34ca3efbd98536820ca711a",
+    "candidate_commit": "78dbf7214562b1a7fdf61a5a3cb8c052f6b3f3c5",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "445b957156a8d1d9b98248557a68e3b5ed8bcc270110178bbd84f4f9d67d3006",
+    "source_sha256": "a60327e400c36505556238a810a154ae81aa4a97f320816843e4e895697a365e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_face_currents",
+      "statement": "∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h₂ : n' = j + (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (RY : IMRep (univ : Set (Euclid P)) (m + 1)) (r : ℝ), Orthonormal ℝ g → RY.Represents Y → RY.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → 0 < r → ∃ E' : GeometricCurrentOn (univ : Set (Euclid P)) n', IsIntegerMultiplicity E' ∧ E'.mass ≤ ENNReal.ofReal (2 * ((j : ℝ) + 1) * (2 * r) ^ j) * RY.measure univ ∧ ∀ flatF : Fin (j + 1) → Covector (Euclid P) n' → Covector (Euclid P) (m + 1), (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n', E' ω = ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) * ((∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (s + r • g a + y))) ∂μHE[j]) - ∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (s - r • g a + y))) ∂μHE[j])",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
