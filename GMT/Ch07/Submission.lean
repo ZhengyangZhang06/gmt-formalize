@@ -6110,6 +6110,60 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **Simon 6.3.1, 6.2.16, 8.3(1)**: integer multiplicity is a local property and passes to open
+subdomains.  The hypotheses are the mass representation of currents of locally finite mass
+(REP), `M_W(τ(M, θ, ξ)) = θHᵏ⌞M(W)` (MR) and four facts about integer multiplicity triples (IMC).
+(1) Let `X ∈ 𝒟ₖ(U)` have locally finite mass, and let each `x ∈ U` have a ball
+`B = B_r(x) ⊆ U` with `X|_B = τ(M, θ, ξ_B)`.  (REP) gives `X(ω) = ∫ ξ(ω) dμ`.  For open
+`G ⊆ B`, `μ(G) = M_G(X) = M_G(X|_B) = θHᵏ⌞M(G)` by (MR), so `μ⌞B = θHᵏ⌞M`.  Both
+representations compute `X(ω)` for `ω ∈ 𝒟ᵏ(B)`, so their set integrals agree and `ξ = ξ_B`
+`μ`-a.e. on `B`.  The local triples then glue to a representation of `X` in `U`.
+(2) `X|_V = τ(M ∩ V, θ, ξ)` (`dtc_restrictDomain_isIntegerMultiplicity`). -/
+theorem Submission.cbr_isIntegerMultiplicity_of_local : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P k : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U k), IsOpen U → ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → X.massOn W < ∞) → (∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ ∃ h : ball x r ⊆ U, IsIntegerMultiplicity (X.restrictDomain h)) → IsIntegerMultiplicity X) ∧ (∀ (V : Set (Euclid P)) (h : V ⊆ U), IsOpen V → IsIntegerMultiplicity X → IsIntegerMultiplicity (X.restrictDomain h)) := by
+  intro hREP hMR hIMC P k U X hU
+  refine ⟨fun hmass hloc => ?_, fun V hVU hV hX =>
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P k U V hVU X hV hX⟩
+  -- Step 4: the mass representation `X(ω) = ∫ ξ(ω) dμ` of (REP)
+  obtain ⟨μ, ξ, hμU, hμK, hμmass, hξmeas, hξbound, hXrep, -⟩ := hREP P k U X hU hmass
+  -- Steps 7–9: it suffices that `(μ, ξ)` agrees near each `x ∈ U` with an IMRep
+  refine Submission.cbr_isIntegerMultiplicity_of_local_reps hIMC.1 P k U X μ ξ hU hμU hμK hξmeas
+    hXrep fun x hx => ?_
+  obtain ⟨r, hr, hB, R, hR⟩ := hloc x hx
+  obtain ⟨hRac, -, -, hRcompl, hRK, hRmeas, hRaction⟩ :=
+    Submission.cbr_imRep_measure_basic P k (ball x r) R
+  have hμKB : ∀ K : Set (Euclid P), IsCompact K → K ⊆ ball x r → μ K < ∞ :=
+    fun K hK hKB => hμK K hK (hKB.trans hB)
+  -- (IMC)(d) holds `Hᵏ⌞M`-a.e., hence `θHᵏ⌞M`-a.e. as `θHᵏ⌞M ≪ Hᵏ⌞M`
+  have hRbound : ∀ᵐ y ∂R.measure, ∀ α : Covector (Euclid P) k,
+      |R.orient y α| ≤ covectorEuclideanNorm α :=
+    hRac.ae_le (hIMC.2.2.2 P k (ball x r) R)
+  -- Step 5: `μ(G) = M_G(X) = M_G(X|_B) = θHᵏ⌞M(G)` for open `G ⊆ B`, so `μ⌞B = θHᵏ⌞M`
+  have hopen : ∀ G : Set (Euclid P), IsOpen G → G ⊆ ball x r → μ G = R.measure G := by
+    intro G hG hGB
+    rw [← hμmass G hG, Submission.dtc_massOn_eq_of_agreeOn P k U (ball x r) G hB X
+      (X.restrictDomain hB) hGB fun ω _ => rfl]
+    exact hMR P k (ball x r) (X.restrictDomain hB) R isOpen_ball hR G hG
+  have hborel := Submission.cmc_ml_measure_eq_of_eq_on_open_subsets P (ball x r) μ R.measure
+    isOpen_ball (fun C hC hCB => (hμKB C hC hCB).ne) hopen
+  have hrestr : μ.restrict (ball x r) = R.measure.restrict (ball x r) :=
+    (Measure.restrict_congr_meas measurableSet_ball).2 fun A hAB hA => hborel A hA hAB
+  -- `θHᵏ⌞M` lives on `M ⊆ B`
+  have hRB : R.measure.restrict (ball x r) = R.measure :=
+    Measure.restrict_eq_self_of_ae_mem
+      (Filter.mem_of_superset (mem_ae_iff.2 hRcompl) R.carrier_subset)
+  -- Step 6: for `ω ∈ 𝒟ᵏ(B)`, `∫ ξ(ω) dμ = X(ω) = X|_B(ω) = ∫ ξ_B(ω) d(θHᵏ⌞M)`, so the set
+  -- integrals agree (with `(μ₃, ξ₃) = (0, 0)`) and `ξ = ξ_B` `μ`-a.e. on `B`
+  have hset := Submission.cbr_setIntegral_eq_of_integral_eq P k (ball x r) μ R.measure 0 ξ
+    R.orient 0 isOpen_ball hμKB hRK (fun K _ _ => by simp) hξmeas hRmeas
+    (aestronglyMeasurable_zero_measure _) (ae_of_all μ hξbound) hRbound
+    (ae_of_all _ fun y α => by simpa using covectorEuclideanNorm_nonneg α) fun ω => by
+      rw [integral_zero_measure, add_zero, ← hRaction (ω : DifferentialForm (Euclid P) k),
+        ← hR ω, GeometricCurrentOn.restrictDomain_apply, hXrep, testFormOnInclusion_coe]
+  have hae := Submission.cbr_orient_ae_eq_of_setIntegral_eq P k (ball x r) μ R.measure ξ R.orient
+    isOpen_ball hμKB hrestr hξmeas hRmeas (ae_of_all μ hξbound) hRbound fun E ω hE => by
+      rw [hset E ω hE, Measure.restrict_zero, integral_zero_measure, add_zero]
+  exact ⟨ball x r, R, isOpen_ball, mem_ball_self hr, hB, hrestr.trans hRB, hae⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
