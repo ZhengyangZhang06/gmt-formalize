@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.lipschitz_approx-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1",
+  "depth": 5,
+  "title": "Tangential gradients of locally Lipschitz functions on an embedded C¹ submanifold: a.e.-measurability, and smooth approximation with L²-convergent gradients (parent step 4c)",
+  "statement": "Calculus of locally Lipschitz functions on a C¹ submanifold. Data: P, m ∈ ℕ; M ⊆ ℝ^P. Hypothesis: M is an embedded C¹ m-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold 1 m M). Notation: d^M_xζ := fderivWithin ℝ ζ M x; P_x is the orthogonal projection onto span(tangentSpace M x); e_j := EuclideanSpace.single j 1; H^m = μHE[m]. Conclusion (two parts). (i) Measurability: for every ζ : ℝ^P → ℝ that is locally Lipschitz on M (LocallyLipschitzOn M ζ) and every j ∈ Fin P, the function x ↦ d^M_xζ(P_xe_j) is a.e. strongly measurable with respect to H^m restricted to M. (ii) Approximation: for every ζ : ℝ^P → ℝ that is locally Lipschitz on M and vanishes on M outside some compact set C ⊆ M, there are a compact set C' ⊆ M and functions ζ_k : ℝ^P → ℝ (k ∈ ℕ), each C^∞ with compact support, such that ζ_k(x) = 0 for all k and all x ∈ M ∖ C'; ζ_k → ζ uniformly on M (TendstoUniformlyOn ζ_k ζ atTop M); and ∫⁻_M ofReal(Σ_{j=1}^P (Dζ_k(x)(P_xe_j) − d^M_xζ(P_xe_j))²) dH^m(x) → 0 as k → ∞, where Dζ_k(x) = fderiv ℝ ζ_k x.",
+  "lean_statement": "∀ (P m : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → (∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → ∀ j : Fin P, AEStronglyMeasurable (fun x => fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) (μHE[m].restrict M)) ∧ ∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∃ (C' : Set (Euclid P)) (ζs : ℕ → Euclid P → ℝ), IsCompact C' ∧ C' ⊆ M ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ζs k) ∧ HasCompactSupport (ζs k)) ∧ (∀ k, ∀ x ∈ M, x ∉ C' → ζs k x = 0) ∧ TendstoUniformlyOn ζs ζ atTop M ∧ Tendsto (fun k => ∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P, (fderiv ℝ (ζs k) x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)) - fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2) ∂μHE[m]) atTop (𝓝 0)",
+  "lean_name": "codim1_hcp_lipschitz_smooth_approx",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1-a1",
+      "result_commit": "6da66b1edf6f809895011d303069229d599f99d6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-e9797ac1a5-a1"
+}
