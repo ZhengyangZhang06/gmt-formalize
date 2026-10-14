@@ -1,0 +1,106 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.tilt_excess_step-a1.graph_transfer-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof Step 6 (Simon Ch. 5, proof of 4.5, (14)–(16)): the sets Z₀ (graph points off M) and Z₂ (points of multiplicity ≠ 1), Lⁿ(Z₀) ≤ C₇σⁿE₀ via (4′) and support_null, Lⁿ(Z₂) = 0 via density_bounds (d), and |θ_FJ_f − 1| ≤ C|Df|² off Z₀ ∪ Z₂. Here the exceptional-set bounds are hypotheses. Notation: Lⁿ := volume on ℝⁿ, φ(x) := P(x − ξ), and for g : ℝⁿ → ℝ write g̃ := g∘φ. Clause (b) bounds the absolute value of the difference (∫_D g dLⁿ) − (∫_{Φ(D)} g̃ dμ) of two separately computed integrals; this is exactly how its Lean type is parenthesized, |(∫ v in D, g v) − (∫ x in Φ '' D, g (P (x − ξ)) ∂R.measure)|.
+Step 0 (setup).
+0.1 P(Φ(v) − ξ) = P(ιv) + P(ι'f(v)) = v, i.e. φ(Φ(v)) = v; hence Φ is injective. Φ is continuous, since f is 1-Lipschitz.
+0.2 Since ι, ι' are isometries with ⟨ιu, ι'w⟩ = 0, |Φ(v) − ξ|² = |v|² + |f(v)|². For v ∈ D this is < r²/4 + r²/16 < r², so Φ(D) ⊆ B̆_r(ξ) ⊆ B_r(ξ) ⊆ W.
+0.3 Φ is continuous and injective, so Φ(A) is Borel for every Borel A ⊆ ℝⁿ (MeasurableSet.image_of_continuousOn_injOn). M = R.carrier is Borel, θ = R.mult is measurable, and θ ≥ 1 on M (mult_pos; θ is integer-valued).
+0.4 μ(B_r(ξ)) < ∞, because B_r(ξ) is a compact subset of W ⊆ U, so μ(B_r(ξ)) = ∫_{M∩B_r(ξ)} θ dHⁿ < ∞ (IMRep.locallyIntegrable_mult).
+0.5 μ is Hⁿ⌞M with density θ. So for Borel S and measurable h̃ ≥ 0, ∫_S h̃ dμ = ∫_{S∩M} θh̃ dHⁿ; in particular μ(ℝ^{n+k} ∖ M) = 0.
+0.6 Each fʲ and f are 1-Lipschitz, so ‖Dfʲ(v)‖ ≤ 1 and ‖Df(v)‖ ≤ 1 for every v (norm_fderiv_le_of_lipschitz; fderiv is 0 at points of non-differentiability). The maps v ↦ Df(v), v ↦ Dfʲ(v) are measurable (measurable_fderiv).
+Step 1 (exceptional sets). Let Z₀ := {v ∈ D : Φ(v) ∉ M}, Z₂ := {v ∈ D : Φ(v) ∈ M, θ(Φ(v)) ≠ 1} and Z := Z₀ ∪ Z₂. These are Borel (preimages under the continuous Φ, intersected with the open set D).
+1.1 N := {x ∈ M ∩ B_r(ξ) : θ(x) ≠ 1} is Borel with μ(N) = 0 by the multiplicity hypothesis. Since θ ≥ 1 on N ⊆ M, Hⁿ(N) ≤ ∫_N θ dHⁿ = μ(N) = 0.
+1.2 Φ(Z₂) ⊆ N by 0.2. Sibling graph_area (Submission.dorag_tes_lipschitz_graph_area_bounds), lower bound with h ≡ 1 and A := Z₂, gives Lⁿ(Z₂) = ∫⁻_{Z₂} 1 dLⁿ ≤ Hⁿ(Φ(Z₂)) ≤ Hⁿ(N) = 0.
+1.3 Φ(Z₀) ⊆ B_r(ξ) ⊆ W and Φ(Z₀) ∩ M = ∅. A point of Φ(Z₀) outside spt μ lies in (F ∖ spt μ) ∩ B_r(ξ); a point inside spt μ lies in (spt μ ∩ W) ∖ M. So Hⁿ(Φ(Z₀)) ≤ Hⁿ((F ∖ spt μ) ∩ B_r(ξ)) + Hⁿ((spt μ ∩ W) ∖ M) ≤ a + 0. graph_area (lower bound, h ≡ 1, A := Z₀) gives Lⁿ(Z₀) ≤ Hⁿ(Φ(Z₀)) ≤ a. Hence Lⁿ(Z) ≤ Lⁿ(Z₀) + Lⁿ(Z₂) ≤ a.
+Step 2 (μ on Φ(D)). Φ(D) is the disjoint union of Φ(D ∖ Z), Φ(Z₀) and Φ(Z₂) (Φ injective). μ(Φ(Z₀)) = 0 because Φ(Z₀) ⊆ ℝ^{n+k} ∖ M (0.5), and μ(Φ(Z₂)) ≤ μ(N) = 0. On Φ(D ∖ Z) ⊆ M we have θ = 1. Hence for every measurable h̃ : ℝ^{n+k} → [0, ∞]: ∫_{Φ(D)} h̃ dμ = ∫_{Φ(D∖Z)} h̃ dμ = ∫_{Φ(D∖Z)} θh̃ dHⁿ = ∫_{Φ(D∖Z)} h̃ dHⁿ.
+Step 3 (two-sided comparison for bounded nonnegative functions). Let h : ℝⁿ → [0, G] be measurable (so G ≥ 0) and h̃ := h∘φ. h̃ is measurable and h̃(Φ(v)) = h(v) (0.1). Put t(v) := Σ_i|Df(v)e_i|² and s(v) := Σ_{j∈Fin k}‖Dfʲ(v)‖². By Step 2 and graph_area with A := D ∖ Z, applied to the measurable function ofReal∘h̃:
+ (3a) ∫_{D∖Z} h dLⁿ ≤ ∫_{Φ(D)} h̃ dμ ≤ ∫_{D∖Z} (1 + 2ⁿt(v))h(v) dLⁿ(v) (lower integrals).
+3.1 t(v) ≤ s(v) for every v. If f is differentiable at v, then Dfʲ(v) = proj_j∘Df(v). For a functional ψ on ℝⁿ, ‖ψ‖² = Σ_iψ(e_i)² (Riesz representation in the orthonormal basis). So s(v) = Σ_jΣ_i((Df(v)e_i)_j)² = Σ_i|Df(v)e_i|² = t(v). Otherwise Df(v) = 0, so t(v) = 0 ≤ s(v).
+3.2 All quantities are finite: ∫_D h ≤ G·Lⁿ(D) < ∞, ∫_{Φ(D)} h̃ dμ ≤ Gμ(B_r(ξ)) < ∞ (0.4), and 0 ≤ t ≤ s ≤ k (0.6). So each lower integral equals the Bochner integral of the same bounded measurable integrand over a set of finite measure, and Δ(h) := (∫_{Φ(D)} h̃ dμ) − (∫_D h dLⁿ) is a real number. From (3a):
+ Δ(h) ≥ ∫_{D∖Z} h − ∫_D h = −∫_Z h ≥ −G·Lⁿ(Z);
+ Δ(h) ≤ ∫_{D∖Z}(1 + 2ⁿt)h − ∫_D h = −∫_Z h + 2ⁿ∫_{D∖Z} t·h ≤ 2ⁿ∫_D t·h ≤ 2ⁿG∫_D s dLⁿ.
+Step 4 (proof of (a)). Let g be measurable with 0 ≤ g ≤ G; then G ≥ g(0) ≥ 0. Split ∫⁻_D ofReal(g) = ∫⁻_{D∖Z} ofReal(g) + ∫⁻_Z ofReal(g) (Z is measurable). The first term is ≤ ∫⁻_{Φ(D)} ofReal(g(φ(x))) dμ by the left inequality of (3a). The second is ≤ ofReal(G)·Lⁿ(Z) ≤ ofReal(G)·ofReal(a) = ofReal(G·a) (Step 1.3; G, a ≥ 0). Together: (∫⁻_D ofReal(g)) ≤ (∫⁻_{Φ(D)} ofReal(g(P(x − ξ))) dμ) + ofReal(G·a), with the constant added outside the second integral. This is (a).
+Step 5 (proof of (b)). Let g be measurable with |g| ≤ G; then G ≥ |g(0)| ≥ 0. Write g = g⁺ − g⁻ with g^± := max(±g, 0), measurable with values in [0, G].
+5.1 Integrability. g^± are integrable on D (bounded, Lⁿ(D) < ∞). g^±∘φ are μ-integrable on Φ(D) (bounded, measurable, μ(Φ(D)) ≤ μ(B_r(ξ)) < ∞). By linearity of the Bochner integral, ∫_D g = ∫_D g⁺ − ∫_D g⁻ and ∫_{Φ(D)} g∘φ dμ = ∫_{Φ(D)} g⁺∘φ dμ − ∫_{Φ(D)} g⁻∘φ dμ. Hence Δ(g) := (∫_{Φ(D)} g∘φ dμ) − (∫_D g dLⁿ) = Δ(g⁺) − Δ(g⁻).
+5.2 By 3.2 applied to g⁺ and g⁻: Δ(g) ≤ 2ⁿG∫_D s + G·Lⁿ(Z) and Δ(g) ≥ −G·Lⁿ(Z) − 2ⁿG∫_D s.
+5.3 Hence |(∫_D g dLⁿ) − (∫_{Φ(D)} g(P(x − ξ)) dμ)| = |Δ(g)| ≤ G(Lⁿ(Z) + 2ⁿ∫_D s dLⁿ) ≤ G(a + 2ⁿ(∫_D Σ_j‖Dfʲ(v)‖² dLⁿ(v))), by Lⁿ(Z) ≤ a (Step 1.3) and G ≥ 0. Both integrals on the left are computed separately and then subtracted, which is (b). ∎
+
+## Key steps
+
+1. Φ is injective with P(Φ(v) − ξ) = v, and Φ(D) ⊆ B̆_r(ξ) ⊆ W; μ(B_r(ξ)) < ∞.
+2. Z₀ = {Φ ∉ M}: the graph_area lower bound gives Lⁿ(Z₀) ≤ Hⁿ(Φ(Z₀)) ≤ Hⁿ((F ∖ spt μ) ∩ B_r) + Hⁿ((spt μ ∩ W) ∖ M) ≤ a.
+3. Z₂ = {θ∘Φ ≠ 1}: Hⁿ(N) ≤ μ(N) = 0 because θ ≥ 1, so Lⁿ(Z₂) = 0.
+4. μ⌞Φ(D) = Hⁿ⌞Φ(D ∖ Z), so for 0 ≤ h ≤ G graph_area gives ∫_{D∖Z}h ≤ ∫_{Φ(D)} h∘φ dμ ≤ ∫_{D∖Z}(1 + 2ⁿΣ_i|Df e_i|²)h, with Σ_i|Df e_i|² ≤ Σ_j‖Dfʲ‖².
+5. (a) follows from the lower bound plus ∫_Z g ≤ G·a. (b) follows by splitting g = g⁺ − g⁻ and bounding the difference of the two separately computed integrals by G(Lⁿ(Z) + 2ⁿ∫_D Σ_j‖Dfʲ‖²).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project; project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical)`
+- `rg -n -i 'tilt|harmonic approx|lipschitz approx|weakly harmonic|graph.*transfer|area formula' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT --glob '*.lean'`
+- `rg -l -i 'weakly harmonic|rellich|harmonic approximation|tilt.excess' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory  (no match)`
+- `rg -n --fixed-strings over /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib for: lemma fderiv_const_smul_field; theorem addHaar_ball_of_pos; theorem norm_setIntegral_le_of_norm_le_const; theorem pow_rpow_inv_natCast; theorem withDensity_absolutelyContinuous; theorem ae_restrict_iff'; theorem toDual_symm_apply; theorem EuclideanSpace.inner_single_right; theorem measurable_fderiv_apply_const; lemma IntegrableOn.of_bound; theorem integral_finsetSum; theorem norm_fderiv_le_of_lipschitz; theorem integral_eq_lintegral_of_nonneg_ae; theorem toReal_le_of_le_ofReal; theorem lintegral_mono_set; theorem adjoint_inner_left`
+- `lean (lean-4.35.0-rc3, LEAN_PATH of the built workspace) on /tmp/tes-v2/chk/AreaChk.lean: #check/#print axioms Poincare.SimonGMT.Chapter02.weighted_area_formula_lipschitz_injOn and areaJacobianAt_sq_eq_det_adjoint_comp`
+- `git log --all -G '^import Poincare.SimonGMT' -- GMT/Ch07/Submission.lean; git show 77fcc7d -- GMT/Ch07/Submission.lean | grep '^+import'`
+- `python3 -I: lean_name scan for dorag_tes_* over every workspace runs/*/dag.json and this run's nodes/; frozen sibling lean_statement comparison dag.json vs nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-graph-a1/decomposition-v3.json; lean_contract.validate_lean_statement on the 8 v2 types`
+- `lean on /tmp/tes-v2/lean/Integrals.lean (integral-scope dump) and /tmp/tes-v2/lean/Challenge_<key>.lean (8 comparator-format modules)`
+- `lean on /tmp/tes-v2/asm/GWH.lean and /tmp/tes-v2/asm/Final.lean with #print axioms Asm.C_graph_weak_harmonic and #print axioms Asm.parent`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch05/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/VectorMeasure/SetIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Dual.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-af4665598c/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-af4665598c/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-af4665598c/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-graph-a1/decomposition-v3.json`
+- `/tmp/tes-v2/lean/Integrals.lean`
+- `/tmp/tes-v2/asm/GWH.lean`
+- `/tmp/tes-v2/asm/Final.lean`
+- `/tmp/tes-v2-review/Parens.lean`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. Its GMT/Ch07/Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, so every child type was checked in the correct compiler context.
+
+Nothing in the snapshot proves the selected theorem or any child:
+- GMT/Ch05 has only unproved Prop definitions for a different varifold type (TiltExcessHeightEstimate, LipschitzApproximationLemma, HarmonicApproximationLemma, TiltExcessDecayTheorem, …), used only in main_theorem := by sorry.
+- GMT/Ch02 states the area formula as a contract.
+- The weakly-harmonic/Rellich/tilt-excess search over Mathlib Analysis and MeasureTheory found no match.
+So the split stands, and no identical comparator-approved declaration exists to reuse.
+
+Usable infrastructure:
+- The pinned SimonGMT area formula, weighted_area_formula_lipschitz_injOn, with only standard axioms.
+- The Mathlib lemmas the v2 assembly uses, all present at the cited paths: fderiv_const_smul_field, Measure.addHaar_ball_of_pos, norm_setIntegral_le_of_norm_le_const, Real.pow_rpow_inv_natCast, withDensity_absolutelyContinuous, ae_restrict_iff', InnerProductSpace.toDual_symm_apply, EuclideanSpace.inner_single_right, measurable_fderiv_apply_const, IntegrableOn.of_bound, integral_finsetSum.
+
+Lean results:
+- All 8 v2 child types elaborate in comparator scope, and their integral scopes are as intended.
+- graph_weak_harmonic is proved from the corrected graph_transfer and graph_variation.
+- The exact frozen parent type is proved from the 8 frozen sibling types and the v2 child types. Axioms: propext, Classical.choice, Quot.sound and the assumed contracts only; no sorryAx.
+
+No dorag_tes_* name is reserved in any DAG.
