@@ -3847,6 +3847,193 @@ theorem Submission.dor_lmb_fcd_fr_divergence_form : ∀ (P m : ℕ) (p : (Fin P 
     push_cast
     rw [← mul_assoc, ← mul_pow, neg_one_mul, neg_neg, one_pow, one_mul]
 
+/-- **Boundary variation on the faces** (Simon Ch. 6, proof of 5.1, (28), second part, by the
+arguments of the Constancy Theorem 2.34 and of 2.35).  Let `Q(ω) = Σ_{p∈s} ∫_{Q₁} u_p ω(Φ_p)(e_p)`
+with `M(∂Q) < ∞`.  The sets `W_p = {x : dist(x, F_p) < dist(x, F_q) for q ∈ s ∖ {p}}` are
+pairwise disjoint, so disjointly supported admissible forms add up to an admissible form and
+`Σ_{p∈s} M_{W_p}(∂Q) ≤ M(∂Q)`; put `V_p = M_{W_p}(∂Q)`.  For an admissible `g`, the compact
+`Φ_p(spt g)` has positive distance from the other faces, so the divergence form `ω` of `g` is
+supported in `W_p`, and `∂Q(ω) = Q(dω) = ∫_{Q₁} u_p div g` since `dω` vanishes on the other faces;
+hence `∫_{Q₁} u_p div g ≤ M_{W_p}(∂Q) = V_p`. -/
+theorem Submission.dor_lmb_fcd_fr_boundary_variation : ∀ (P m : ℕ) (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (u : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → Euclid (m + 1) → ℝ) (Q : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.2) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Q ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ))) → Q.boundary.mass ≠ ∞ → ∃ V : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℝ, (∀ p ∈ s, 0 ≤ V p) ∧ ENNReal.ofReal (∑ p ∈ s, V p) ≤ Q.boundary.mass ∧ ∀ p ∈ s, ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u p y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V p := by
+  intro P m s u Q hs hQ hmass
+  classical
+  -- the parametrizations `Φ_p`, the closed faces `F_p` and the sets `W_p`
+  let Φ : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → Euclid (m + 1) → Euclid P := fun p y =>
+    WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)
+  let F : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → Set (Euclid P) := fun p =>
+    {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧ x i ≤ p.1 i + 1) ∧
+      (i ∉ Set.range p.2 → x i = p.1 i)}
+  let W : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → Set (Euclid P) := fun p =>
+    {x | ∀ q ∈ s, q ≠ p → infDist x (F p) < infDist x (F q)}
+  -- face geometry: `Φ_p` maps the closed cube into `F_p`, is continuous, `F_p` is closed, and
+  -- `Φ_p` maps the open cube off every other face
+  have hFG : ∀ p ∈ s, (∀ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → Φ p y ∈ F p) ∧
+      Continuous (Φ p) ∧ IsClosed (F p) ∧ ∀ q : (Fin P → ℤ) × (Fin (m + 1) → Fin P),
+        StrictMono q.2 → q ≠ p → ∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → Φ p y ∉ F q := by
+    intro p hp
+    obtain ⟨-, -, -, -, h5, h6, -, h8, h9⟩ :=
+      Submission.dor_lmb_fcd_fr_face_geometry P m p (hs p hp)
+    exact ⟨h5, (Isometry.of_dist_eq h6).continuous, h8, h9⟩
+  have hFne : ∀ p ∈ s, (F p).Nonempty := fun p hp =>
+    ⟨Φ p 0, (hFG p hp).1 0 fun i => by simp⟩
+  -- Step 1: the `W_p`, `p ∈ s`, are pairwise disjoint
+  have hWdisj : ∀ p ∈ s, ∀ q ∈ s, p ≠ q → ∀ x, x ∈ W p → x ∉ W q := by
+    intro p hp q hq hpq x hxp hxq
+    exact lt_asymm (hxp q hq (Ne.symm hpq)) (hxq p hp hpq)
+  -- Step 2: `Σ_{p∈s} M_{W_p}(∂Q) ≤ M(∂Q)`
+  set T := Q.boundary with hT
+  have hadm0 : ∀ V : Set (Euclid P),
+      (0 : TestFormOn (univ : Set (Euclid P)) m) ∈ massAdmissibleOn univ m V := by
+    intro V
+    refine ⟨?_, fun x => ?_⟩ <;> simp
+  -- (a) a family of admissible forms, one in each `W_p`
+  have hfam : ∀ ω : (p : (Fin P → ℤ) × (Fin (m + 1) → Fin P)) → massAdmissibleOn univ m (W p),
+      ∑ p ∈ s, ENNReal.ofReal (T (ω p)) ≤ T.mass := by
+    intro ω
+    -- drop the forms with negative value
+    let ω' : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → TestFormOn (univ : Set (Euclid P)) m :=
+      fun p => if 0 ≤ T (ω p) then (ω p : TestFormOn (univ : Set (Euclid P)) m) else 0
+    have hω' : ∀ p, ENNReal.ofReal (T (ω p)) = ENNReal.ofReal (T (ω' p)) ∧ 0 ≤ T (ω' p) ∧
+        ω' p ∈ massAdmissibleOn univ m (W p) := by
+      intro p
+      by_cases h : 0 ≤ T (ω p)
+      · have h0 : ω' p = ω p := ite_eq_left h
+        rw [h0]
+        exact ⟨rfl, h, (ω p).2⟩
+      · have h0 : ω' p = 0 := ite_eq_right h
+        rw [h0, map_zero, ENNReal.ofReal_zero, ENNReal.ofReal_eq_zero]
+        exact ⟨(not_le.1 h).le, le_rfl, hadm0 (W p)⟩
+    -- the sum is admissible in `ℝ^P`: at each point at most one summand is nonzero
+    have hsum_adm : (∑ p ∈ s, ω' p) ∈ massAdmissibleOn univ m univ := by
+      refine ⟨subset_univ _, fun x => ?_⟩
+      have hx : ((∑ p ∈ s, ω' p : TestFormOn (univ : Set (Euclid P)) m) :
+          DifferentialForm (Euclid P) m) x =
+          ∑ p ∈ s, ((ω' p : TestFormOn (univ : Set (Euclid P)) m) :
+            DifferentialForm (Euclid P) m) x := by
+        rw [Submodule.coe_sum, Finset.sum_apply]
+      rw [hx]
+      by_cases hex : ∃ p ∈ s, ((ω' p : TestFormOn (univ : Set (Euclid P)) m) :
+          DifferentialForm (Euclid P) m) x ≠ 0
+      · obtain ⟨p, hp, hpx⟩ := hex
+        have hzero : ∀ q ∈ s, q ≠ p → ((ω' q : TestFormOn (univ : Set (Euclid P)) m) :
+            DifferentialForm (Euclid P) m) x = 0 := by
+          intro q hq hqp
+          by_contra hqx
+          exact hWdisj p hp q hq (Ne.symm hqp) x ((hω' p).2.2.1 (subset_tsupport _ hpx))
+            ((hω' q).2.2.1 (subset_tsupport _ hqx))
+        rw [Finset.sum_eq_single p hzero fun h => absurd hp h]
+        exact (hω' p).2.2.2 x
+      · have hzero : ∀ p ∈ s, ((ω' p : TestFormOn (univ : Set (Euclid P)) m) :
+            DifferentialForm (Euclid P) m) x = 0 := fun p hp =>
+          not_not.1 fun hpx => hex ⟨p, hp, hpx⟩
+        rw [Finset.sum_eq_zero hzero, covectorEuclideanNorm_zero]
+        exact zero_le_one
+    calc ∑ p ∈ s, ENNReal.ofReal (T (ω p)) = ∑ p ∈ s, ENNReal.ofReal (T (ω' p)) :=
+          Finset.sum_congr rfl fun p _ => (hω' p).1
+      _ = ENNReal.ofReal (∑ p ∈ s, T (ω' p)) :=
+          (ENNReal.ofReal_sum_of_nonneg fun p _ => (hω' p).2.1).symm
+      _ = ENNReal.ofReal (T (∑ p ∈ s, ω' p)) := by rw [map_sum]
+      _ ≤ T.mass := T.le_massOn hsum_adm
+  -- (b) `M_{W_p}(∂Q)` as a supremum over families, which are directed
+  have hsupW : ∀ p, T.massOn (W p) =
+      ⨆ ω : (q : (Fin P → ℤ) × (Fin (m + 1) → Fin P)) → massAdmissibleOn univ m (W q),
+        ENNReal.ofReal (T (ω p)) := by
+    intro p
+    rw [GeometricCurrentOn.massOn, sSup_image']
+    refine le_antisymm (iSup_le fun ω => ?_) (iSup_le fun ω => le_iSup_of_le (ω p) le_rfl)
+    let z : (q : (Fin P → ℤ) × (Fin (m + 1) → Fin P)) → massAdmissibleOn univ m (W q) :=
+      fun q => ⟨0, hadm0 (W q)⟩
+    exact le_iSup_of_le (Function.update z p ω) (by simp only [Function.update_self, le_refl])
+  have hdir : ∀ i j : (p : (Fin P → ℤ) × (Fin (m + 1) → Fin P)) → massAdmissibleOn univ m (W p),
+      ∃ k : (p : (Fin P → ℤ) × (Fin (m + 1) → Fin P)) → massAdmissibleOn univ m (W p), ∀ p,
+        ENNReal.ofReal (T (i p)) ≤ ENNReal.ofReal (T (k p)) ∧
+          ENNReal.ofReal (T (j p)) ≤ ENNReal.ofReal (T (k p)) := by
+    intro i j
+    refine ⟨fun p => if ENNReal.ofReal (T (i p)) ≤ ENNReal.ofReal (T (j p)) then j p else i p,
+      fun p => ?_⟩
+    by_cases h : ENNReal.ofReal (T (i p)) ≤ ENNReal.ofReal (T (j p))
+    · simp only [ite_eq_left h]
+      exact ⟨h, le_rfl⟩
+    · simp only [ite_eq_right h]
+      exact ⟨le_rfl, (not_le.1 h).le⟩
+  have hsum : ∑ p ∈ s, T.massOn (W p) ≤ T.mass := by
+    rw [Finset.sum_congr rfl fun p _ => hsupW p, ENNReal.finsetSum_iSup hdir]
+    exact iSup_le hfam
+  -- Step 3: `V_p = M_{W_p}(∂Q)`
+  have hne : ∀ p, T.massOn (W p) ≠ ∞ := fun p =>
+    ne_top_of_le_ne_top hmass (T.massOn_mono (subset_univ (W p)))
+  refine ⟨fun p => (T.massOn (W p)).toReal, fun p _ => ENNReal.toReal_nonneg, ?_, ?_⟩
+  · rw [ENNReal.ofReal_sum_of_nonneg fun p _ => ENNReal.toReal_nonneg]
+    calc ∑ p ∈ s, ENNReal.ofReal (T.massOn (W p)).toReal = ∑ p ∈ s, T.massOn (W p) :=
+          Finset.sum_congr rfl fun p _ => ENNReal.ofReal_toReal (hne p)
+      _ ≤ T.mass := hsum
+  intro p hp g hg hgc hgC hg1
+  -- Step 4: `Φ_p(spt g)` is compact and has positive distance from the other faces
+  have hGc : IsCompact (Φ p '' tsupport g) := IsCompact.image hgc (hFG p hp).2.1
+  have hBc : IsClosed (⋃ q ∈ s.erase p, F q) :=
+    isClosed_biUnion_finset fun q hq => (hFG q (Finset.mem_of_mem_erase hq)).2.2.1
+  have hGB : Disjoint (Φ p '' tsupport g) (⋃ q ∈ s.erase p, F q) := by
+    refine Set.disjoint_left.2 ?_
+    rintro _ ⟨y, hy, rfl⟩ hyB
+    obtain ⟨q, hq, hyq⟩ := Set.mem_iUnion₂.1 hyB
+    exact (hFG p hp).2.2.2 q (hs q (Finset.mem_of_mem_erase hq)) (Finset.ne_of_mem_erase hq) y
+      (hgC hy) hyq
+  obtain ⟨r, hr0, hr⟩ := exists_pos_forall_lt_edist hGc hBc hGB
+  set δ : ℝ := (r : ℝ) / 3 with hδ
+  have hδ0 : 0 < δ := div_pos (NNReal.coe_pos.2 hr0) three_pos
+  -- Step 5: the divergence form of `g`
+  obtain ⟨ω, hω1, hωspt, hωd⟩ :=
+    Submission.dor_lmb_fcd_fr_divergence_form P m p g δ (hs p hp) hg hgc hg1 hδ0
+  -- Step 6: `spt ω ⊆ W_p`, so `ω` is admissible for `M_{W_p}(∂Q)`
+  have hωW : tsupport (ω : DifferentialForm (Euclid P) m) ⊆ W p := by
+    intro x hx q hq hqp
+    obtain ⟨y, hy, hxy⟩ := hωspt x hx
+    have hyC : ∀ i, 0 < y i ∧ y i < 1 := hgC hy
+    have hxy' : dist (Φ p y) x ≤ δ := by
+      rw [dist_comm]
+      exact hxy
+    have h1 : infDist x (F p) ≤ δ :=
+      (infDist_le_dist_of_mem ((hFG p hp).1 y fun i => ⟨(hyC i).1.le, (hyC i).2.le⟩)).trans
+        (by rw [dist_comm]; exact hxy')
+    have h2 : 2 * δ ≤ infDist x (F q) := by
+      refine (le_infDist (hFne q hq)).2 fun b hb => ?_
+      have hb' : (r : ℝ≥0∞) < edist (Φ p y) b :=
+        hr _ ⟨y, hy, rfl⟩ b (Set.mem_iUnion₂.2 ⟨q, Finset.mem_erase.2 ⟨hqp, hq⟩, hb⟩)
+      have hrb : (r : ℝ) < dist (Φ p y) b := by
+        rw [dist_edist]
+        exact ENNReal.toReal_strict_mono (edist_ne_top _ _) hb'
+      have htri := dist_triangle (Φ p y) x b
+      linarith
+    linarith
+  have hωadm : ω ∈ massAdmissibleOn univ m (W p) := ⟨hωW, hω1⟩
+  -- Step 7: `∂Q(ω) = Q(dω) = ∫_{Q₁} u_p div g`, `dω` vanishing on the other faces
+  have hval : T ω = ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+      u p y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) := by
+    rw [hT, GeometricCurrentOn.boundary_apply, hQ, Finset.sum_eq_single p]
+    · congr 1
+      funext y
+      exact congrArg (fun t => u p y * t) (hωd y)
+    · intro q hq hqp
+      refine setIntegral_eq_zero_of_forall_eq_zero fun y hy => ?_
+      have hyF : Φ q y ∈ F q := (hFG q hq).1 y fun i => ⟨(hy i).1.le, (hy i).2.le⟩
+      have hnot : Φ q y ∉ tsupport (exteriorDerivative (ω : DifferentialForm (Euclid P) m)) := by
+        intro hmem
+        have hlt := hωW (tsupport_exteriorDerivative_subset _ hmem) q hq hqp
+        rw [infDist_zero_of_mem hyF] at hlt
+        exact absurd hlt (not_lt.2 infDist_nonneg)
+      have h0 : exteriorDerivative (ω : DifferentialForm (Euclid P) m) (Φ q y)
+          (fun k => EuclideanSpace.single (q.2 k) (1 : ℝ)) = 0 := by
+        rw [image_eq_zero_of_notMem_tsupport hnot]
+        rfl
+      exact (congrArg (fun t => u q y * t) h0).trans (mul_zero _)
+    · intro h
+      exact absurd hp h
+  -- Step 8: `∫_{Q₁} u_p div g = ∂Q(ω) ≤ M_{W_p}(∂Q)`
+  have hle : ENNReal.ofReal (T ω) ≤ T.massOn (W p) := T.le_massOn hωadm
+  rw [hval] at hle
+  exact (ENNReal.ofReal_le_iff_le_toReal (hne p)).1 hle
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
