@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1.osc_l1_limit-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1",
+  "depth": 5,
+  "title": "The double-integral oscillation on Q_δ passes to L¹ limits of continuous functions",
+  "statement": "Let m ∈ ℕ, n := m + 1, Q₁ := {y ∈ Euclid n : 0 < y_i < 1 for all i}; fix δ ∈ ℝ with δ ≥ 0 and let Q_δ := {z ∈ Euclid n : δ < z_i < 1 − δ for all i} (Lebesgue measure). Let u : ℝⁿ → ℝ be integrable on Q₁, K ∈ ℝ, and let v_k : ℝⁿ → ℝ (k ∈ ℕ) be continuous functions with ∫_{x∈Q_δ}∫_{y∈Q_δ}|v_k(x) − v_k(y)| dy dx ≤ K for every k and ∫_{Q_δ}|v_k − u| → 0 as k → ∞. Then ∫_{x∈Q_δ}∫_{y∈Q_δ}|u(x) − u(y)| dy dx ≤ K.",
+  "lean_statement": "∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (v : ℕ → Euclid (m + 1) → ℝ) (δ K : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → 0 ≤ δ → (∀ k, Continuous (v k)) → (∀ k, ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - v k y| ≤ K) → Tendsto (fun k => ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - u x|) atTop (𝓝 0) → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |u x - u y| ≤ K",
+  "lean_name": "cmcdt_cbm_bvp_osc_le_of_l1_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-a2b9a0af0e-a1"
+}
