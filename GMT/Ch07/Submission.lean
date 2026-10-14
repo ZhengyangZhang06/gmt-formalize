@@ -620,6 +620,59 @@ theorem Submission.idtp_fons_odc_fr_origin_null : ∀ (P : ℕ) (μ : Measure (E
       rw [← hscale r hr _ isOpen_ball, image_smul, smul_ball hr.ne', smul_zero,
         Real.norm_of_nonneg hr.le, mul_one]
 
+/-- **Simon, proof of 7.3.3, (10)** (finite rays).  Let `μ` on `ℝᴾ` be finite on compact sets,
+`1`-homogeneous on open sets (`μ(λW) = λ μ(W)`, `λ > 0`), with `ρ ≤ μ(B_ρ(x))` for small `ρ > 0` at
+every `x ∈ spt μ`.  Then `μ` is carried by finitely many open rays `{te : t > 0}`, `|e| = 1`.
+A finite set of unit vectors of `spt μ` has at most `2 μ(B₁(0)) < ∞` elements, so these unit
+vectors form a finite set `F`.  If `x ≠ 0` lies on no ray of `F`, then `x̂ = |x|⁻¹x ∉ spt μ`, and
+`μ(B(x, |x|ε)) = |x| μ(B(x̂, ε)) = 0` for some `ε > 0`, so `x ∉ spt μ`.  Hence the complement of
+the rays lies in `{0} ∪ (ℝᴾ ∖ spt μ)`, where `μ{0} = 0` and `ℝᴾ ∖ spt μ` is locally null. -/
+theorem Submission.idtp_fons_odc_finite_rays : ∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → (∀ x : Euclid P, (∀ ε : ℝ, 0 < ε → μ (ball x ε) ≠ 0) → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal ρ ≤ μ (ball x ρ)) → ∃ F : Finset (Euclid P), (∀ e ∈ F, ‖e‖ = 1) ∧ μ ((⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0)ᶜ) = 0 := by
+  intro P μ hfin hscale hdens
+  -- `μ(B₁(0)) ≤ μ(closedBall(0, 1)) < ∞`
+  have hB : μ (ball (0 : Euclid P) 1) ≠ ∞ :=
+    ne_top_of_le_ne_top (hfin _ (isCompact_closedBall 0 1)) (measure_mono ball_subset_closedBall)
+  -- `S = spt μ`
+  set S : Set (Euclid P) := {x | ∀ ε : ℝ, 0 < ε → μ (ball x ε) ≠ 0} with hS
+  -- the unit vectors of `spt μ` form a finite set: `n > 2 μ(B₁(0))` of them would contradict
+  -- the cardinality bound
+  have hU : {σ : Euclid P | ‖σ‖ = 1 ∧ σ ∈ S}.Finite := by
+    by_contra h
+    have h2 : (2 : ℝ≥0∞) * μ (ball 0 1) ≠ ∞ := ENNReal.mul_ne_top ENNReal.ofNat_ne_top hB
+    obtain ⟨n, hn⟩ := ENNReal.exists_nat_gt h2
+    obtain ⟨T, hTsub, hTcard⟩ := Set.Infinite.exists_subset_card_eq h n
+    have hT := Submission.idtp_fons_odc_fr_card_le P μ hscale hB T (fun σ hσ => (hTsub hσ).1)
+      fun σ hσ => hdens σ (hTsub hσ).2
+    rw [hTcard] at hT
+    exact lt_irrefl _ (hT.trans_lt hn)
+  refine ⟨hU.toFinset, fun e he => (hU.mem_toFinset.1 he).1, ?_⟩
+  -- a point `x ≠ 0` on none of the rays lies outside `spt μ`
+  have hsub : (⋃ e ∈ hU.toFinset, (fun t : ℝ => t • e) '' Ioi 0)ᶜ ⊆ {0} ∪ Sᶜ := by
+    intro x hx
+    by_contra hx'
+    simp only [mem_union, mem_singleton_iff, mem_compl_iff, not_or, not_not] at hx'
+    obtain ⟨hx0, hxS⟩ := hx'
+    have hn : 0 < ‖x‖ := norm_pos_iff.2 hx0
+    refine hx (mem_iUnion₂.2 ⟨‖x‖⁻¹ • x, hU.mem_toFinset.2 ⟨?_, ?_⟩, ‖x‖, hn, ?_⟩)
+    · rw [norm_smul, Real.norm_of_nonneg (inv_pos.2 hn).le, inv_mul_cancel₀ hn.ne']
+    · -- `μ(B(x̂, ε)) = |x|⁻¹ μ(B(x, |x|ε))`: homogeneity on the open ball `B(x, |x|ε)`
+      intro ε hε
+      have hball : μ (ball (‖x‖⁻¹ • x) (‖x‖⁻¹ * (‖x‖ * ε))) =
+          ENNReal.ofReal ‖x‖⁻¹ * μ (ball x (‖x‖ * ε)) := by
+        rw [← hscale _ (inv_pos.2 hn) _ isOpen_ball, image_smul, smul_ball (inv_ne_zero hn.ne'),
+          Real.norm_of_nonneg (inv_pos.2 hn).le]
+      rw [← mul_assoc, inv_mul_cancel₀ hn.ne', one_mul] at hball
+      rw [hball]
+      exact mul_ne_zero (ENNReal.ofReal_pos.2 (inv_pos.2 hn)).ne' (hxS _ (mul_pos hn hε))
+    · exact smul_inv_smul₀ hn.ne' x
+  -- `μ{0} = 0`, and `ℝᴾ ∖ spt μ` is null since each of its points has a null neighbourhood
+  refine measure_mono_null hsub
+    (measure_union_null (Submission.idtp_fons_odc_fr_origin_null P μ hscale hB) ?_)
+  refine measure_null_of_locally_null _ fun x hx => ?_
+  simp only [hS, mem_compl_iff, mem_ofPred_eq, not_forall, not_not, exists_prop] at hx
+  obtain ⟨ε, hε, h0⟩ := hx
+  exact ⟨ball x ε, mem_nhdsWithin_of_mem_nhds (ball_mem_nhds x hε), h0⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
