@@ -451,6 +451,81 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cubic bound `|arctan z − z| ≤ |z|³`** (step 1(e) of the box inclusions in the proof of
+Simon 7.3.3).  `g(t) = arctan t − t` has `g(0) = 0` and
+`g'(t) = 1/(1 + t²) − 1 = −t²/(1 + t²)`, so `|g'(t)| ≤ t²`.  The mean value theorem on
+`[min 0 z, max 0 z]` gives `arctan z − z = g'(ξ) z` for some `ξ` strictly between `0` and `z`,
+hence `|arctan z − z| ≤ ξ² |z| ≤ |z|³`. -/
+theorem Submission.idtp_cse_bml_rbi_abs_arctan_sub_self_le : ∀ z : ℝ, |Real.arctan z - z| ≤ |z| ^ 3 := by
+  intro z
+  -- step 1: both sides vanish at `z = 0`
+  rcases eq_or_ne z 0 with rfl | hz
+  · simp
+  -- step 2: `g(t) = arctan t − t` is differentiable with `g'(t) = 1/(1 + t²) − 1`
+  have hg : ∀ t : ℝ, HasDerivAt (fun t => Real.arctan t - t) (1 / (1 + t ^ 2) - 1) t :=
+    fun t => (Real.hasDerivAt_arctan t).sub (hasDerivAt_id t)
+  -- step 3: `|g'(ξ)| = ξ²/(1 + ξ²) ≤ ξ²`
+  have hg' : ∀ ξ : ℝ, |1 / (1 + ξ ^ 2) - 1| ≤ ξ ^ 2 := by
+    intro ξ
+    have hpos : 0 < 1 + ξ ^ 2 := by positivity
+    rw [show 1 / (1 + ξ ^ 2) - 1 = -(ξ ^ 2 / (1 + ξ ^ 2)) by field_simp; ring, abs_neg,
+      abs_of_nonneg (by positivity)]
+    exact div_le_self (sq_nonneg ξ) (le_add_of_nonneg_right (sq_nonneg ξ))
+  -- step 4: the mean value theorem on `[min 0 z, max 0 z]` gives `arctan z − z = g'(ξ) z`
+  obtain ⟨ξ, hξ, hslope⟩ := exists_hasDerivAt_eq_slope (fun t => Real.arctan t - t)
+    (fun t => 1 / (1 + t ^ 2) - 1) (min_lt_max.2 hz.symm)
+    (fun t _ => (hg t).continuousAt.continuousWithinAt) (fun t _ => hg t)
+  have hval : Real.arctan z - z = (1 / (1 + ξ ^ 2) - 1) * z := by
+    rw [hslope]
+    rcases hz.lt_or_gt with h | h
+    · rw [min_eq_right h.le, max_eq_left h.le, Real.arctan_zero]
+      field_simp
+      ring
+    · rw [min_eq_left h.le, max_eq_right h.le, Real.arctan_zero]
+      field_simp
+      ring
+  -- step 5: `ξ` lies strictly between `0` and `z`, so `ξ² ≤ |z|²`
+  have hξz : ξ ^ 2 ≤ |z| ^ 2 := by
+    have h := Set.abs_sub_left_of_mem_uIcc (Set.Ioo_subset_Icc_self hξ)
+    rw [sub_zero, sub_zero] at h
+    rw [← sq_abs ξ]
+    exact pow_le_pow_left₀ (abs_nonneg ξ) h 2
+  -- step 6: `|arctan z − z| = |g'(ξ)| |z| ≤ ξ² |z| ≤ |z|³`
+  calc |Real.arctan z - z| = |1 / (1 + ξ ^ 2) - 1| * |z| := by rw [hval, abs_mul]
+    _ ≤ ξ ^ 2 * |z| := mul_le_mul_of_nonneg_right (hg' ξ) (abs_nonneg z)
+    _ ≤ |z| ^ 2 * |z| := mul_le_mul_of_nonneg_right hξz (abs_nonneg z)
+    _ = |z| ^ 3 := by ring
+
+/-- Arctangent of a perturbed quotient: if `0 < s'`, `20s' < 1` and `|p|, |q| ≤ 3s'`, then
+`|arctan(q/(1 + p)) − q| ≤ 30s'²`.  Here `1 + p > 17/20`, so `z = q/(1 + p)` has `|z| ≤ 4s'` and
+`|z − q| = |q||p|/(1 + p) ≤ 11s'²`, while the cubic bound `|arctan z − z| ≤ |z|³` gives
+`|arctan z − z| ≤ 64s'³ ≤ 4s'²`. -/
+theorem Submission.idtp_cse_bml_rbi_arctan_quotient_estimate : ∀ (p q s' : ℝ), 0 < s' → 20 * s' < 1 → |p| ≤ 3 * s' → |q| ≤ 3 * s' → |Real.arctan (q / (1 + p)) - q| ≤ 30 * s' ^ 2 := by
+  intro p q s' hs h20 hp hq
+  -- `1 + p ≥ 1 − 3s' > 17/20`, so `z = q/(1 + p)` is a genuine quotient
+  have hd : 17 / 20 < 1 + p := by linarith [neg_abs_le p]
+  have hd0 : 0 < 1 + p := by linarith
+  set z := q / (1 + p) with hz
+  -- `|z| = |q|/(1 + p) ≤ 60s'/17 ≤ 4s'`
+  have hz4 : |z| ≤ 4 * s' := by
+    rw [hz, abs_div, abs_of_pos hd0, div_le_iff₀ hd0]
+    nlinarith [mul_lt_mul_of_pos_left hd hs]
+  -- `z − q = −qp/(1 + p)`, so `|z − q| = |q||p|/(1 + p) ≤ 180s'²/17 ≤ 11s'²`
+  have hzq : |z - q| ≤ 11 * s' ^ 2 := by
+    have hqp : |q| * |p| ≤ 3 * s' * (3 * s') := mul_le_mul hq hp (abs_nonneg p) (by linarith)
+    rw [show z - q = -(q * p) / (1 + p) by rw [hz]; field_simp; ring, abs_div, abs_neg, abs_mul,
+      abs_of_pos hd0, div_le_iff₀ hd0]
+    nlinarith [mul_lt_mul_of_pos_left hd (by positivity : (0 : ℝ) < 11 * s' ^ 2), sq_nonneg s']
+  -- the cubic bound: `|arctan z − z| ≤ |z|³ ≤ 64s'³ ≤ 4s'²`, as `s' < 1/20`
+  have hat : |Real.arctan z - z| ≤ 4 * s' ^ 2 := by
+    refine (Submission.idtp_cse_bml_rbi_abs_arctan_sub_self_le z).trans ?_
+    have h3 : |z| ^ 3 ≤ (4 * s') ^ 3 := pow_le_pow_left₀ (abs_nonneg z) hz4 3
+    nlinarith [mul_le_mul_of_nonneg_left (by linarith : 16 * s' ≤ 1) (sq_nonneg s')]
+  -- triangle inequality: `|arctan z − q| ≤ 4s'² + 11s'² ≤ 30s'²`
+  calc |Real.arctan z - q| ≤ |Real.arctan z - z| + |z - q| := abs_sub_le _ _ _
+    _ ≤ 4 * s' ^ 2 + 11 * s' ^ 2 := add_le_add hat hzq
+    _ ≤ 30 * s' ^ 2 := by nlinarith [sq_nonneg s']
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

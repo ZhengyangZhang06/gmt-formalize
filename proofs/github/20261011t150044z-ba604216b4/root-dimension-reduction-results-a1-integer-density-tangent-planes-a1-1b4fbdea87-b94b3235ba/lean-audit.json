@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2744a45f7136372428608b22b71f20b7039694ccbde036d48c33085e149aebc7",
+  "git_delta": {
+    "base_commit": "0d256576eb5964b5a2e5d404e611c6c733873990",
+    "candidate_commit": "6c3a03dc7958232c7b1cd77e1a0a5109896cc6d2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_bml_rbi_arctan_quotient_estimate",
+    "diff_sha256": "90808929c09c1d9b315d01e13e7ac0c549b12763a146905e27d1fc1655865792",
+    "source_sha256": "c27bb998d2904563831f46e94f21459be5cceb03d0d444406b76fd1cb44f9aff",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_bml_rbi_arctan_quotient_estimate",
+      "statement": "∀ (p q s' : ℝ), 0 < s' → 20 * s' < 1 → |p| ≤ 3 * s' → |q| ≤ 3 * s' → |Real.arctan (q / (1 + p)) - q| ≤ 30 * s' ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
