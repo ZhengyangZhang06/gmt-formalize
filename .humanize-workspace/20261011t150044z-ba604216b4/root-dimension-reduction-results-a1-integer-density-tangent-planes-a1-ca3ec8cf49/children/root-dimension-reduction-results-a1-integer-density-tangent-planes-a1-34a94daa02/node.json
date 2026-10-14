@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.blowup_limit_cycle-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1",
+  "depth": 4,
+  "title": "Weak limits of blow-ups of a cycle are cycles",
+  "statement": "For all P, n ∈ ℕ, every open U ⊆ ℝ^P = Euclid P, every T ∈ 𝒟_n(U) (GeometricCurrentOn U n), every x ∈ U, every sequence λ_i > 0 (i ∈ ℕ) with λ_i → 0 and every C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n): if ∂T = 0 in U (BoundaryVanishes T) and the blow-ups η_{x,λ_i#}T = blowUp T x λ_i ∈ 𝒟_n(η_{x,λ_i}(U)) converge weakly to C (ConvergesWeakly: currentEval(blowUp T x λ_i, ω) → C(ω) for every ω ∈ 𝒟^n(ℝ^P)), then ∂C = 0 (BoundaryVanishes C). Here BoundaryVanishes S is True in degree 0 and ∂S = 0 in degree m + 1, with (∂S)(ω) = S(dω).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), IsOpen U → x ∈ U → BoundaryVanishes T → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T x (lams i) (hlams i).ne') C → BoundaryVanishes C",
+  "lean_name": "idtp_tpf_blowUp_limit_boundaryVanishes",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.blowup_domain_eventually-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.blowup_domain_eventually-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-34a94daa02-a1"
+}

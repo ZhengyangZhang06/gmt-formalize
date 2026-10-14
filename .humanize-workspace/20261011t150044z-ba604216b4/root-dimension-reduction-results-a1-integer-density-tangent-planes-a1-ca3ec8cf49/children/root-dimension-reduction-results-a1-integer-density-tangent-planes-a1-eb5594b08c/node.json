@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.blowup_support_slab-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1",
+  "depth": 4,
+  "title": "Blow-up of a flat slab: flatness of spt T at scale σ rescales to flatness of the blow-up at scale 1",
+  "statement": "For all P, n ∈ ℕ, every set U ⊆ ℝ^P = Euclid P, every T ∈ 𝒟_n(U) (GeometricCurrentOn U n), every x ∈ ℝ^P, all reals σ > 0 and β, and every linear subspace Q ⊆ ℝ^P (Submodule ℝ (Euclid P)), with p_Q = Q.starProjection the orthogonal projection onto Q: if |(y − x) − p_Q(y − x)| < β·σ for every y ∈ spt T with |y − x| < σ (dist y x < σ), then every u ∈ spt(η_{x,σ#}T) = spt(blowUp T x σ) with |u| < 1 satisfies |u − p_Q(u)| < β.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (σ β : ℝ) (hσ : 0 < σ) (Q : Submodule ℝ (Euclid P)), (∀ y ∈ T.support, dist y x < σ → ‖(y - x) - Q.starProjection (y - x)‖ < β * σ) → ∀ u ∈ (blowUp T x σ hσ.ne').support, ‖u‖ < 1 → ‖u - Q.starProjection u‖ < β",
+  "lean_name": "idtp_tpf_blowUp_support_slab",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-eb5594b08c-a1"
+}
