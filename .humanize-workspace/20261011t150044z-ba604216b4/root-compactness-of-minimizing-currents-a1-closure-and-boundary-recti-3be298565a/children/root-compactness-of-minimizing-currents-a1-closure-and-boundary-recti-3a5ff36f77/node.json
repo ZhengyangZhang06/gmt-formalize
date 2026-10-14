@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.good_parameters-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1",
+  "depth": 4,
+  "title": "A.e. finiteness of liminf of slice-mass majorants on all balls (V4(ii), step 7)",
+  "statement": "Assume (MM), the exact frozen third conjunct of the sibling theorem cbr_measure_convergence_tools: for all P ∈ ℕ, Borel measures μ_j on ℝ^P (j ∈ ℕ), continuous f : ℝ^P → ℝ, G ⊆ ℝ^P, a, b ∈ ℝ, L ∈ ℝ≥0 and Z_j : ℝ → [0, ∞] with μ_j(G ∩ {a < f < b}) < ∞ for all j and Z_j(t) ≤ L · liminf_{h↓0} ofReal(h⁻¹) μ_j(G ∩ {t − h < f < t}) for all j and t ∈ (a, b), there is a measurable g : ℝ → [0, ∞] with liminf_j Z_j(t) ≤ g(t) for L¹-a.e. t ∈ (a, b) and ∫_{(a,b)} g dL¹ ≤ L · liminf_j μ_j(G ∩ {a < f < b}). Let P ∈ ℕ, μ_i (i ∈ ℕ) Borel measures on ℝ^P, f : ℝ^P → ℝ continuous, L ∈ ℝ≥0 and Z : ℕ → ℕ → ℝ → [0, ∞], (i, k, t) ↦ Z_{i,k}(t). Suppose that sup_i μ_i(B_{k+1}(0)) < ∞ for every k ∈ ℕ, and that Z_{i,k}(t) ≤ L · liminf_{h↓0} ofReal(h⁻¹) μ_i(B_{k+1}(0) ∩ {t − h < f < t}) for all i, k ∈ ℕ and all t ∈ ℝ. Then for L¹-a.e. t ∈ ℝ, liminf_{i→∞} Z_{i,k}(t) < ∞ for every k ∈ ℕ.",
+  "lean_statement": "(∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop) → ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (L : NNReal) (Z : ℕ → ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ k : ℕ, ⨆ i, μs i (ball (0 : Euclid P) ((k : ℝ) + 1)) < ∞) → (∀ (i k : ℕ) (t : ℝ), Z i k t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs i (ball (0 : Euclid P) ((k : ℝ) + 1) ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∀ᵐ t ∂(volume : Measure ℝ), ∀ k : ℕ, liminf (fun i => Z i k t) atTop < ∞",
+  "lean_name": "cbrsl_ae_liminf_lt_top",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3a5ff36f77-a1"
+}

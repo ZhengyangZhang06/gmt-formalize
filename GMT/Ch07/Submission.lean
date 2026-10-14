@@ -451,6 +451,106 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Integer multiplicity of a weak limit from liminf mass bounds on balls** (closure step on the
+balls `W_k = B_{k+1}(0)` in the slice-limit argument for the closure theorem, Simon Ch. 6, 8.2–8.3,
+used in 7.2.4).  Assume CL(d): weak limits in an open `U` of integer multiplicity `d`-currents `T_j`
+with `sup_j (M_W(T_j) + M_W(∂T_j)) < ∞` for all open `W ⊂⊂ U` are integer multiplicity; and LOC:
+integer multiplicity is local for currents of locally finite mass and passes to open subdomains.
+If integer multiplicity `Z_i ∈ 𝒟_d(ℝᴾ)` converge weakly to `Z` and
+`liminf_i (M_{W_k}(Z_i) + M_{W_k}(∂Z_i)) < ∞` for every `k`, then `Z` is integer multiplicity.
+For each `k` a subsequence has `M_{W_k}(Z_i) + M_{W_k}(∂Z_i) ≤ C_k < ∞` (cf. 8.3(1)); its
+restrictions to `W_k` (restriction does not increase mass or boundary mass) and CL(d) in `W_k`
+make `Z|_{W_k}` integer multiplicity, lower semicontinuity of mass gives `M_W(Z) ≤ C_k` for
+`W ⊆ W_k`, and LOC in `ℝᴾ` concludes. -/
+theorem Submission.cbrsl_isIntegerMultiplicity_of_local_liminf_bounds : ∀ d : ℕ, (∀ (P : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) → (∀ (P k : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U k), IsOpen U → ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → X.massOn W < ∞) → (∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ ∃ h : ball x r ⊆ U, IsIntegerMultiplicity (X.restrictDomain h)) → IsIntegerMultiplicity X) ∧ (∀ (V : Set (Euclid P)) (h : V ⊆ U), IsOpen V → IsIntegerMultiplicity X → IsIntegerMultiplicity (X.restrictDomain h))) → ∀ (P : ℕ) (Zs : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) d) (Z : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ i, IsIntegerMultiplicity (Zs i)) → WeaklyConvergesOn Zs Z → (∀ k : ℕ, liminf (fun i => (Zs i).massOn (ball (0 : Euclid P) ((k : ℝ) + 1)) + boundaryMassOn (Zs i) (ball (0 : Euclid P) ((k : ℝ) + 1))) atTop < ∞) → IsIntegerMultiplicity Z := by
+  intro d hCL hLOC P Zs Z hZs hZ hlim
+  -- Step 1: for each `k`, a subsequence `ψ_k` with
+  -- `M_{W_k}(Z_{ψ_k(l)}) + M_{W_k}(∂Z_{ψ_k(l)}) ≤ C_k < ∞`, from `liminf < C_k`
+  have hsub : ∀ k : ℕ, ∃ C : ℝ≥0∞, C < ∞ ∧ ∃ ψ : ℕ → ℕ, StrictMono ψ ∧
+      ∀ l, (Zs (ψ l)).massOn (ball (0 : Euclid P) ((k : ℝ) + 1)) +
+        boundaryMassOn (Zs (ψ l)) (ball (0 : Euclid P) ((k : ℝ) + 1)) ≤ C := by
+    intro k
+    obtain ⟨C, hlC, hC⟩ := exists_between (hlim k)
+    obtain ⟨ψ, hψ, hψC⟩ :=
+      extraction_of_frequently_atTop (frequently_lt_of_liminf_lt (by isBoundedDefault) hlC)
+    exact ⟨C, hC, ψ, hψ, fun l => (hψC l).le⟩
+  choose C hC ψ hψ hψC using hsub
+  -- Step 2(a): restricting the domain does not increase mass (admissible forms in `V` are
+  -- admissible in `U`, with the same values)
+  have hmass : ∀ {n : ℕ} {U V : Set (Euclid P)} (h : V ⊆ U) (T : GeometricCurrentOn U n)
+      (W : Set (Euclid P)), (T.restrictDomain h).massOn W ≤ T.massOn W := by
+    intro n U V h T W
+    refine sSup_le ?_
+    rintro r ⟨ω, hω, rfl⟩
+    exact T.le_massOn (omega := testFormOnInclusion h n ω) hω
+  -- Step 2(b, c): nor boundary mass, as `∂(T|_V)(η) = T(dη) = ∂T(η)` for `η ∈ 𝒟ⁿ⁻¹(V)`
+  have hbdry : ∀ {n : ℕ} {U V : Set (Euclid P)} (h : V ⊆ U) (T : GeometricCurrentOn U n)
+      (W : Set (Euclid P)), boundaryMassOn (T.restrictDomain h) W ≤ boundaryMassOn T W := by
+    intro n U V h T W
+    cases n with
+    | zero => exact le_rfl
+    | succ n =>
+      refine sSup_le ?_
+      rintro r ⟨ω, hω, rfl⟩
+      exact T.boundary.le_massOn (omega := testFormOnInclusion h n ω) hω
+  -- Step 2(d): boundary mass is monotone in the region
+  have hbmono : ∀ {n : ℕ} {U : Set (Euclid P)} (T : GeometricCurrentOn U n)
+      {W₁ W₂ : Set (Euclid P)}, W₁ ⊆ W₂ → boundaryMassOn T W₁ ≤ boundaryMassOn T W₂ := by
+    intro n U T W₁ W₂ hW
+    cases n with
+    | zero => exact le_rfl
+    | succ n => exact T.boundary.massOn_mono hW
+  -- Step 3: `Z` is integer multiplicity in every `W_k = B_{k+1}(0)`, by CL(d) in `W_k` applied
+  -- to the restrictions `Z_{ψ_k(l)}|_{W_k} ⇀ Z|_{W_k}`
+  have hIMk : ∀ k : ℕ, IsIntegerMultiplicity
+      (Z.restrictDomain (subset_univ (ball (0 : Euclid P) ((k : ℝ) + 1)))) := by
+    intro k
+    refine hCL P (ball (0 : Euclid P) ((k : ℝ) + 1))
+      (fun l => (Zs (ψ k l)).restrictDomain (subset_univ _)) _ isOpen_ball
+      (fun l => (hLOC P d univ (Zs (ψ k l)) isOpen_univ).2 _ (subset_univ _) isOpen_ball
+        (hZs _)) ?_ ?_
+    · intro W _ hWc
+      have hWk : W ⊆ ball (0 : Euclid P) ((k : ℝ) + 1) := subset_closure.trans hWc.2
+      refine lt_of_le_of_lt (iSup_le fun l => ?_) (hC k)
+      calc ((Zs (ψ k l)).restrictDomain (subset_univ _)).massOn W +
+            boundaryMassOn ((Zs (ψ k l)).restrictDomain (subset_univ _)) W
+          ≤ (Zs (ψ k l)).massOn W + boundaryMassOn (Zs (ψ k l)) W :=
+            add_le_add (hmass _ _ _) (hbdry _ _ _)
+        _ ≤ (Zs (ψ k l)).massOn (ball (0 : Euclid P) ((k : ℝ) + 1)) +
+            boundaryMassOn (Zs (ψ k l)) (ball (0 : Euclid P) ((k : ℝ) + 1)) :=
+            add_le_add ((Zs (ψ k l)).massOn_mono hWk) (hbmono _ hWk)
+        _ ≤ C k := hψC k l
+    · intro ω
+      exact (hZ (testFormOnInclusion (subset_univ _) d ω)).comp (hψ k).tendsto_atTop
+  -- Step 4: `Z` has locally finite mass, by lower semicontinuity of mass along `ψ_k`
+  have hfin : ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → Z.massOn W < ∞ := by
+    intro W _ hWc
+    obtain ⟨r, hr⟩ := hWc.1.isBounded.subset_ball (0 : Euclid P)
+    obtain ⟨k, hk⟩ := exists_nat_gt r
+    have hWk : W ⊆ ball (0 : Euclid P) ((k : ℝ) + 1) :=
+      subset_closure.trans (hr.trans (ball_subset_ball (by linarith)))
+    have hconv : WeaklyConvergesOn (fun l => Zs (ψ k l)) Z :=
+      fun ω => (hZ ω).comp (hψ k).tendsto_atTop
+    refine lt_of_le_of_lt ((hconv.massOn_le_liminf W).trans
+      (liminf_le_of_frequently_le' (Frequently.of_forall fun l => ?_))) (hC k)
+    exact ((Zs (ψ k l)).massOn_mono hWk).trans (le_self_add.trans (hψC k l))
+  -- Step 5: for `k > |x|`, `B_1(x) ⊆ W_k` and `Z|_{B_1(x)} = (Z|_{W_k})|_{B_1(x)}` is integer
+  -- multiplicity by LOC(2) in `W_k`; LOC(1) in `ℝᴾ` concludes
+  refine (hLOC P d univ Z isOpen_univ).1 hfin fun x _ => ?_
+  obtain ⟨k, hk⟩ := exists_nat_gt ‖x‖
+  have hx : ball x 1 ⊆ ball (0 : Euclid P) ((k : ℝ) + 1) :=
+    ball_subset_ball' (by rw [dist_zero_right]; linarith)
+  have heq : (Z.restrictDomain (subset_univ (ball (0 : Euclid P) ((k : ℝ) + 1)))).restrictDomain
+      hx = Z.restrictDomain (subset_univ (ball x 1)) := by
+    refine GeometricCurrentOn.ext fun ω => ?_
+    rw [GeometricCurrentOn.restrictDomain_apply, GeometricCurrentOn.restrictDomain_apply,
+      GeometricCurrentOn.restrictDomain_apply]
+    exact congrArg Z.toCurrent (Subtype.ext ((testFormOnInclusion_coe _ d _).trans
+      ((testFormOnInclusion_coe hx d ω).trans (testFormOnInclusion_coe _ d ω).symm)))
+  refine ⟨1, one_pos, subset_univ _, ?_⟩
+  rw [← heq]
+  exact (hLOC P d _ _ isOpen_ball).2 (ball x 1) hx isOpen_ball (hIMk k)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
