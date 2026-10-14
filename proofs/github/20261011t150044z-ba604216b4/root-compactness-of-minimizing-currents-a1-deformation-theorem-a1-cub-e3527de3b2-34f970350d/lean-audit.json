@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "502cbb3973b3fbbb202e10e2d24d6db7b6cd1313895b0e76abe43cc2bb1138f6",
+  "git_delta": {
+    "base_commit": "f34fb7fcbf1bb390a5bafc60eaeccd743f2ec31f",
+    "candidate_commit": "9801d9038732706c54ccda43c775e576631d1564",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_sa_ml_compact_support_approx",
+    "diff_sha256": "6cca89a0fd181b3393a4b96b4f778c6256a6e8b955402272c2fa4cc0eb365dbf",
+    "source_sha256": "9bf3100ead14910a7b34763a2a7b4b4dc32b8bc07754af5dad9ecb07bc6189dc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_sa_ml_compact_support_approx",
+      "statement": "∀ (n : ℕ) (h : Euclid n → ℝ), Continuous h → HasCompactSupport h → ∀ ε : ℝ, 0 < ε → ∃ r : ℝ, 0 < r ∧ ∀ ρ : Euclid n → ℝ, (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → support ρ ⊆ ball (0 : Euclid n) r → ∫⁻ x, ‖convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x - h x‖ₑ ≤ ENNReal.ofReal ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
