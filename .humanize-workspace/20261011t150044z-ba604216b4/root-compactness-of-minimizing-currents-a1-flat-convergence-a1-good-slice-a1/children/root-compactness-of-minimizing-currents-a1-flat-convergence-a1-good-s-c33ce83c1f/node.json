@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1.helly_no_concentration-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.good_slice-a1",
+  "depth": 4,
+  "title": "Helly selection: no limiting mass concentration at levels outside a countable set",
+  "statement": "Let μ_j (j ∈ ℕ) be Borel measures on ℝ, let a, b ∈ ℝ and let Λ ∈ [0, ∞) satisfy μ_j([a, b]) ≤ Λ for every j. Then there exist a strictly increasing φ : ℕ → ℕ and a countable set N ⊆ ℝ such that for every s ∈ (a, b) with s ∉ N and every ε ∈ (0, ∞] there is δ > 0 with μ_{φ(j)}([s − δ, s]) ≤ ε for all sufficiently large j.",
+  "lean_statement": "∀ (μ : ℕ → Measure ℝ) (a b : ℝ) (Λ : ℝ≥0∞), Λ ≠ ∞ → (∀ j, μ j (Icc a b) ≤ Λ) → ∃ (φ : ℕ → ℕ) (N : Set ℝ), StrictMono φ ∧ N.Countable ∧ ∀ s ∈ Ioo a b, s ∉ N → ∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, μ (φ j) (Icc (s - δ) s) ≤ ε",
+  "lean_name": "cmc_fc_gs_helly_no_concentration",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-good-s-c33ce83c1f-a1"
+}
