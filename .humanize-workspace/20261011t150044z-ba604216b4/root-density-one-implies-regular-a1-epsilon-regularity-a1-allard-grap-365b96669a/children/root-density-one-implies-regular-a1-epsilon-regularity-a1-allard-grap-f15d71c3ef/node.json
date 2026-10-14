@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.interior_estimates-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1",
+  "depth": 5,
+  "title": "Interior estimates and second-order Taylor bound for harmonic functions (Simon 5.3.2–5.3.4)",
+  "statement": "For every n ≥ 1 there is C_H > 0 such that the following holds for every R > 0 and every h : ℝⁿ → ℝ (ℝⁿ = Euclid n) satisfying: h is C^m on the open ball B := B̆_R(0) for every m ∈ ℕ; Δh(y) = Σ_i D²h(y)(e_i, e_i) = 0 for all y ∈ B (D²h(y)(a, b) = iteratedFDeriv ℝ 2 h y ![a, b], e_i = EuclideanSpace.single i 1); ‖Dh‖² is integrable on B with ∫_B ‖Dh‖² ≤ Rⁿ; and h² is integrable on B (Dh = fderiv ℝ h, ‖·‖ the operator norm). Then (a) |h(0)| ≤ C_H·√((∫_B h²)/Rⁿ); (b) ‖Dh(0)‖ ≤ C_H; (c) |h(v) − h(0) − Dh(0)v| ≤ C_H‖v‖²/R for every v ∈ ℝⁿ with ‖v‖ ≤ R/4.",
+  "lean_statement": "∀ n : ℕ, 0 < n → ∃ CH : ℝ, 0 < CH ∧ ∀ (R : ℝ) (h : Euclid n → ℝ), 0 < R → (∀ m : ℕ, ContDiffOn ℝ m h (ball (0 : Euclid n) R)) → (∀ y ∈ ball (0 : Euclid n) R, ∑ i : Fin n, iteratedFDeriv ℝ 2 h y ![EuclideanSpace.single i (1 : ℝ), EuclideanSpace.single i (1 : ℝ)] = 0) → IntegrableOn (fun y => ‖fderiv ℝ h y‖ ^ 2) (ball (0 : Euclid n) R) → ∫ y in ball (0 : Euclid n) R, ‖fderiv ℝ h y‖ ^ 2 ≤ R ^ n → IntegrableOn (fun y => h y ^ 2) (ball (0 : Euclid n) R) → |h 0| ≤ CH * Real.sqrt ((∫ y in ball (0 : Euclid n) R, h y ^ 2) / R ^ n) ∧ ‖fderiv ℝ h 0‖ ≤ CH ∧ ∀ v : Euclid n, ‖v‖ ≤ R / 4 → |h v - h 0 - fderiv ℝ h 0 v| ≤ CH * ‖v‖ ^ 2 / R",
+  "lean_name": "dorag_ha_interior_estimates",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.mean_value-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-f15d71c3ef-a1"
+}
