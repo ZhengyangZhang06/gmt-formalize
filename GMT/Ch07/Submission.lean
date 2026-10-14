@@ -451,6 +451,59 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Top-dimensional density from a sign** (steps 5–7 of the top-density proof).  If
+`R = (M, θ, ξ)` is an integer multiplicity representation in an open `V ⊆ ℝⁿ` whose orientation is
+`ξ = σ·(e₁ ∧ ⋯ ∧ eₙ)` `Hⁿ`-a.e. on `M` for a measurable sign `σ = ±1`, then `g = σθ` on `M`, `0`
+off `M` is a locally Lebesgue-integrable integer density with `R.action ω = ∫ g ⟨ω, e⟩ dLⁿ` for
+every `n`-form `ω`. -/
+theorem Submission.dtc_bc_cz_top_density_of_sign : ∀ (n : ℕ) (V : Set (Euclid n)) (R : IMRep V n) (σ : Euclid n → ℝ), IsOpen V → Measurable σ → (∀ᵐ y ∂(μHE[n].restrict R.carrier), (σ y = 1 ∨ σ y = -1) ∧ ∀ α : Covector (Euclid n) n, R.orient y α = σ y * α ⇑(EuclideanSpace.basisFun (Fin n) ℝ)) → ∃ g : Euclid n → ℤ, LocallyIntegrableOn (fun y => (g y : ℝ)) V volume ∧ ∀ ω : DifferentialForm (Euclid n) n, R.action ω = ∫ y, (g y : ℝ) * ω y ⇑(EuclideanSpace.basisFun (Fin n) ℝ) := by
+  classical
+  intro n V R σ hV hσ hR
+  have hM : MeasurableSet R.carrier := R.measurableSet_carrier
+  -- Step 1: `g = θ` on `M ∩ {σ ≥ 0}`, `-θ` on `M ∩ {σ < 0}`, `0` off `M`
+  obtain ⟨g, hg⟩ : ∃ g : Euclid n → ℤ, g = fun y =>
+      if y ∈ R.carrier then (if 0 ≤ σ y then (R.mult y : ℤ) else -(R.mult y : ℤ)) else 0 :=
+    ⟨_, rfl⟩
+  -- Step 2: measurability
+  have hgm : Measurable fun y => (g y : ℝ) := by
+    refine Measurable.of_discrete.comp ?_
+    rw [hg]
+    refine Measurable.ite hM (Measurable.ite (measurableSet_le measurable_const hσ) ?_ ?_)
+      measurable_const
+    · exact Measurable.of_discrete.comp R.measurable_mult
+    · exact (Measurable.of_discrete.comp R.measurable_mult).neg
+  -- Step 3: `|g| ≤ θ 1_M` and `g = 0` off `M`
+  have hbound : ∀ y, ‖(g y : ℝ)‖ₑ ≤ R.carrier.indicator (fun y => (R.mult y : ℝ≥0∞)) y := by
+    intro y
+    by_cases hy : y ∈ R.carrier
+    · rw [indicator_of_mem hy, hg]
+      simp only [hy, ↓reduceIte]
+      split_ifs <;> simp
+    · simp [hg, hy]
+  have hzero : ∀ y, y ∉ R.carrier → g y = 0 := fun y hy => by simp [hg, hy]
+  refine ⟨g, ?_, fun ω => ?_⟩
+  · -- Step 4: integrable on every compact `K ⊆ V`
+    rw [locallyIntegrableOn_iff hV.isLocallyClosed]
+    intro K hKV hK
+    refine ⟨hgm.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm]
+    calc ∫⁻ y in K, ‖(g y : ℝ)‖ₑ
+        ≤ ∫⁻ y in K, R.carrier.indicator (fun y => (R.mult y : ℝ≥0∞)) y := lintegral_mono hbound
+      _ = ∫⁻ y in R.carrier ∩ K, (R.mult y : ℝ≥0∞) := by
+          rw [lintegral_indicator hM, Measure.restrict_restrict hM]
+      _ = ∫⁻ y in R.carrier ∩ K, (R.mult y : ℝ≥0∞) ∂μHE[n] := by
+          rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      _ < ∞ := (R.locallyIntegrable_mult K hK hKV).lt_top
+  · -- Steps 5–6: `θ ξ(ω) = g ω(e)` `Hⁿ⌞M`-a.e., `g = 0` off `M`, and `Hⁿ = Lⁿ`
+    have hae : ∀ᵐ y ∂(μHE[n].restrict R.carrier), (R.mult y : ℝ) * R.orient y (ω y) =
+        (g y : ℝ) * ω y ⇑(EuclideanSpace.basisFun (Fin n) ℝ) := by
+      filter_upwards [hR, ae_restrict_mem hM] with y hy hyM
+      rw [hy.2 (ω y), hg]
+      rcases hy.1 with h1 | h1 <;> simp [hyM, h1]
+    rw [IMRep.action, integral_congr_ae hae,
+      setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by simp [hzero y hy],
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
