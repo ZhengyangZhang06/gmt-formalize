@@ -993,6 +993,197 @@ theorem Submission.cmcsd_massOn_le_measure_inter : ∀ (P d : ℕ) (U : Set (Euc
     _ = μ (tsupport (ω : DifferentialForm (Euclid P) d) ∩ E) := by
         rw [lintegral_indicator_one hS, Measure.restrict_apply hS]
     _ ≤ μ (E ∩ V) := measure_mono fun x hx => ⟨hx.2, hω.1 hx.1⟩
+/-- **Left slopes at a point of differentiability** (Simon Ch. 6, 4.9 and (2) in the proof of
+8.2).  If `F : ℝ → ℝ` is differentiable at `t`, then
+`liminf_{h → 0+} ofReal (h⁻¹) * ofReal (F(t) - F(t - h)) ≤ ofReal (F′(t))`.  The left difference
+quotients `h⁻¹ (F(t) - F(t - h))` tend to `F′(t)` as `h ↓ 0`; for `h > 0` the product above is
+`ofReal` of the quotient, so it tends to `ofReal (F′(t))`, and along `𝓝[>] 0` the liminf of a
+convergent function is its limit.  Monotonicity of `F` is not needed. -/
+theorem Submission.cbr_smm_liminf_left_slope_le_deriv : ∀ (F : ℝ → ℝ) (t : ℝ), DifferentiableAt ℝ F t → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ENNReal.ofReal (F t - F (t - h))) (𝓝[>] 0) ≤ ENNReal.ofReal (deriv F t) := by
+  intro F t hF
+  -- `h ↦ -h` maps `𝓝[>] 0` into `𝓝[<] 0`, turning left slopes into the quotients above
+  have hneg : Tendsto (fun h : ℝ => -h) (𝓝[>] 0) (𝓝[<] 0) := by
+    simpa using tendsto_neg_nhdsGT (a := (0 : ℝ))
+  have hlim : Tendsto (fun h : ℝ => h⁻¹ * (F t - F (t - h))) (𝓝[>] 0) (𝓝 (deriv F t)) := by
+    refine (hF.hasDerivAt.tendsto_slope_zero_left.comp hneg).congr fun h => ?_
+    simp only [Function.comp_apply, smul_eq_mul]
+    rw [← sub_eq_add_neg, inv_neg]
+    ring
+  -- for `h > 0`, `ofReal h⁻¹ * ofReal (F t - F (t - h)) = ofReal (h⁻¹ * (F t - F (t - h)))`
+  have hlim' : Tendsto (fun h : ℝ => ENNReal.ofReal h⁻¹ * ENNReal.ofReal (F t - F (t - h)))
+      (𝓝[>] 0) (𝓝 (ENNReal.ofReal (deriv F t))) := by
+    refine (ENNReal.tendsto_ofReal hlim).congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+    exact ENNReal.ofReal_mul (inv_nonneg.2 hh.le)
+  exact hlim'.liminf_eq.le
+/-- **Lebesgue's inequality for monotone functions** (Simon Ch. 6, remark before 4.10): if `F` is
+nondecreasing, then `∫⁻_{(a,b)} F′ ≤ F(b) − F(a)`.  Let `G = F(·⁺)` be the Stieltjes function of
+`F`, with measure `μ_G`; then `μ_G (a, b) = G(b⁻) − G(a) ≤ F(b) − F(a)`.  By Lebesgue's theorem
+(`Monotone.ae_hasDerivAt`), `F′ = dμ_G/dt` a.e., and `∫⁻_{(a,b)} dμ_G/dt ≤ μ_G (a, b)` since
+`(dμ_G/dt) dt ≤ μ_G` (Lebesgue decomposition). -/
+theorem Submission.cmcs_smi_lintegral_ofReal_deriv_le : ∀ (F : ℝ → ℝ) (a b : ℝ), Monotone F → ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t) ≤ ENNReal.ofReal (F b - F a) := by
+  intro F a b hF
+  set G := hF.stieltjesFunction
+  -- `F(a) ≤ F(a⁺) = G(a)`, and `G(b⁻) ≤ F(b)` because `G(y) = F(y⁺) ≤ F(b)` for `y < b`
+  have hGa : F a ≤ G a := hF.le_rightLim le_rfl
+  have hGb : leftLim G b ≤ F b := by
+    refine le_of_tendsto (G.mono.tendsto_leftLim b) ?_
+    filter_upwards [self_mem_nhdsWithin] with y (hy : y < b)
+    exact hF.rightLim_le hy
+  calc ∫⁻ t in Ioo a b, ENNReal.ofReal (deriv F t)
+      ≤ ∫⁻ t in Ioo a b, G.measure.rnDeriv volume t := by
+        -- a.e. `F′(t) = (dμ_G/dt)(t).toReal`
+        refine lintegral_mono_ae (ae_restrict_of_ae ?_)
+        filter_upwards [hF.ae_hasDerivAt] with t ht
+        rw [ht.deriv]
+        exact ENNReal.ofReal_toReal_le
+    _ ≤ volume.withDensity (G.measure.rnDeriv volume) (Ioo a b) := withDensity_apply_le _ _
+    _ ≤ G.measure (Ioo a b) := Measure.le_iff'.1 (Measure.withDensity_rnDeriv_le _ _) _
+    _ = ENNReal.ofReal (leftLim G b - G a) := G.measure_Ioo
+    _ ≤ ENNReal.ofReal (F b - F a) := ENNReal.ofReal_le_ofReal (by linarith)
+
+/-- **Left slice density at a point of differentiability of the distribution function** (Simon
+Ch. 6, remark after 4.9 and (10) in the proof of 5.1).  For a finite measure `μ`, a measurable
+`f` and `F(s) = (μ {f < s}).toReal`: if `F` is differentiable at `t`, then
+`liminf_{h → 0+} ofReal (h⁻¹) * μ {t - h < f < t} ≤ ofReal (F′(t))`.  For `h > 0`,
+`{t - h < f < t} ⊆ {f < t} \ {f < t - h}`, whose measure is `ofReal (F(t) - F(t - h))` since `μ`
+is finite; so the claim follows from `Submission.cbr_smm_liminf_left_slope_le_deriv`. -/
+theorem Submission.cmcsd_gr_liminf_slice_le_deriv : ∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) (t : ℝ), IsFiniteMeasure μ → Measurable f → DifferentiableAt ℝ (fun s : ℝ => (μ {x | f x < s}).toReal) t → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | t - h < f x ∧ f x < t}) (𝓝[>] 0) ≤ ENNReal.ofReal (deriv (fun s : ℝ => (μ {x | f x < s}).toReal) t) := by
+  intro α _ μ f t _ hf hF
+  -- `μ` is finite, so `μ {f < s} = ofReal F(s)` with `F(s) = (μ {f < s}).toReal ≥ 0`
+  have hA : ∀ s : ℝ, μ {x | f x < s} = ENNReal.ofReal (μ {x | f x < s}).toReal := fun s =>
+    (ENNReal.ofReal_toReal (measure_ne_top μ _)).symm
+  -- for `h > 0`, `{t - h < f < t} ⊆ {f < t} \ {f < t - h}`, of measure `ofReal (F(t) - F(t - h))`
+  have hslice : ∀ h : ℝ, 0 < h → ENNReal.ofReal h⁻¹ * μ {x | t - h < f x ∧ f x < t} ≤
+      ENNReal.ofReal h⁻¹ *
+        ENNReal.ofReal ((μ {x | f x < t}).toReal - (μ {x | f x < t - h}).toReal) := by
+    intro h hh
+    gcongr
+    calc μ {x | t - h < f x ∧ f x < t}
+        ≤ μ ({x | f x < t} \ {x | f x < t - h}) :=
+          measure_mono fun x hx => ⟨hx.2, fun hx' => lt_asymm hx.1 hx'⟩
+      _ = μ {x | f x < t} - μ {x | f x < t - h} :=
+          measure_sdiff (fun x (hx : f x < t - h) => hx.trans (by linarith))
+            (measurableSet_lt hf measurable_const).nullMeasurableSet (measure_ne_top μ _)
+      _ = ENNReal.ofReal ((μ {x | f x < t}).toReal - (μ {x | f x < t - h}).toReal) := by
+          rw [ENNReal.ofReal_sub _ ENNReal.toReal_nonneg, ← hA, ← hA]
+  -- compare the liminfs along `𝓝[>] 0`, then use the left slopes of `F` at `t`
+  calc liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | t - h < f x ∧ f x < t}) (𝓝[>] 0)
+      ≤ liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ *
+          ENNReal.ofReal ((μ {x | f x < t}).toReal - (μ {x | f x < t - h}).toReal)) (𝓝[>] 0) :=
+        liminf_le_liminf (eventually_nhdsWithin_of_forall hslice)
+    _ ≤ ENNReal.ofReal (deriv (fun s : ℝ => (μ {x | f x < s}).toReal) t) :=
+        Submission.cbr_smm_liminf_left_slope_le_deriv (fun s => (μ {x | f x < s}).toReal) t hF
+/-- **Markov choice of a radius off a null set** (Simon Ch. 6, proof of 5.1 (10)): if `F` is
+nondecreasing, `ρ > 0` and `F(ρ) − F(ρ/2) ≤ B`, then outside any Lebesgue-null set `N` there is
+`r ∈ (ρ/2, ρ)` with `F′(r) ≤ (4/ρ) B`.  By Lebesgue's inequality `∫⁻_{(ρ/2,ρ)} F′ ≤ B`, so by
+Markov's inequality `{t ∈ (ρ/2, ρ) : F′(t) > (4/ρ) B}` has measure `≤ ρ/4 < ρ/2`; hence
+`S = {t ∈ (ρ/2, ρ) : F′(t) ≤ (4/ρ) B}` has positive measure and meets the complement of `N`. -/
+theorem Submission.cmcsd_gr_exists_deriv_le_off_null : ∀ (F : ℝ → ℝ) (ρ : ℝ) (B : ℝ≥0∞) (N : Set ℝ), Monotone F → 0 < ρ → ENNReal.ofReal (F ρ - F (ρ / 2)) ≤ B → (volume : Measure ℝ) N = 0 → ∃ r ∈ Ioo (ρ / 2) ρ, r ∉ N ∧ ENNReal.ofReal (deriv F r) ≤ ENNReal.ofReal (4 / ρ) * B := by
+  intro F ρ B N hF hρ hB hN
+  -- `g = ofReal ∘ F′`, `c = (4/ρ) B`, `I = (ρ/2, ρ)`, `S = {t ∈ I : g t ≤ c}`
+  set g : ℝ → ℝ≥0∞ := fun t => ENNReal.ofReal (deriv F t)
+  set c := ENNReal.ofReal (4 / ρ) * B with hc
+  set I := Ioo (ρ / 2) ρ with hI
+  set S := {t ∈ I | g t ≤ c}
+  have hI_meas : MeasurableSet I := measurableSet_Ioo
+  have hI_vol : volume I = ENNReal.ofReal (ρ / 2) := by
+    rw [hI, Real.volume_Ioo]
+    congr 1
+    ring
+  have hI_pos : 0 < volume I := by
+    rw [hI_vol]
+    exact ENNReal.ofReal_pos.2 (half_pos hρ)
+  have h4 : ENNReal.ofReal (4 / ρ) ≠ 0 := (ENNReal.ofReal_pos.2 (by positivity)).ne'
+  have hg : Measurable g := (measurable_deriv F).ennreal_ofReal
+  -- Lebesgue's inequality: `∫⁻_I g ≤ F(ρ) − F(ρ/2) ≤ B`
+  have hint : ∫⁻ t in I, g t ≤ B :=
+    (Submission.cmcs_smi_lintegral_ofReal_deriv_le F (ρ / 2) ρ hF).trans hB
+  have hcover : volume I ≤ volume S + volume (I \ S) :=
+    calc volume I ≤ volume (S ∪ (I \ S)) := measure_mono fun t ht => by
+          by_cases h : t ∈ S
+          · exact Or.inl h
+          · exact Or.inr ⟨ht, h⟩
+      _ ≤ volume S + volume (I \ S) := measure_union_le S (I \ S)
+  have hS_pos : 0 < volume S := by
+    rcases eq_or_ne B ∞ with hBt | hBt
+    · -- `c = ∞`, so `S = I`
+      have hS_eq : S = I := by
+        refine Subset.antisymm (fun t ht => ht.1) fun t ht => ⟨ht, ?_⟩
+        rw [hc, hBt, ENNReal.mul_top h4]
+        exact le_top
+      rw [hS_eq]
+      exact hI_pos
+    rcases eq_or_ne B 0 with hB0 | hB0
+    · -- `∫⁻_I g = 0`, so `g = 0` a.e. on `I` and `I \ S` is null
+      have hae : g =ᵐ[volume.restrict I] 0 :=
+        (lintegral_eq_zero_iff hg).1 (le_antisymm (hint.trans hB0.le) zero_le)
+      rw [Filter.EventuallyEq, ae_iff, Measure.restrict_apply' hI_meas] at hae
+      have hnull : volume (I \ S) = 0 := by
+        refine measure_mono_null (fun t ht => ?_) hae
+        refine ⟨fun h => ht.2 ⟨ht.1, ?_⟩, ht.1⟩
+        rw [h]
+        exact zero_le
+      rw [hnull, add_zero] at hcover
+      exact hI_pos.trans_le hcover
+    · -- Markov: `c · |E| ≤ B` for `E = {c ≤ g} ∩ I`, so `|I \ S| ≤ |E| ≤ ρ/4 < ρ/2 = |I|`
+      have hmarkov := mul_meas_ge_le_lintegral₀ (μ := volume.restrict I) hg.aemeasurable c
+      rw [Measure.restrict_apply' hI_meas] at hmarkov
+      have hE : volume ({t | c ≤ g t} ∩ I) ≤ ENNReal.ofReal (ρ / 4) := by
+        have h1 : B * (ENNReal.ofReal (4 / ρ) * volume ({t | c ≤ g t} ∩ I)) ≤ B * 1 :=
+          calc B * (ENNReal.ofReal (4 / ρ) * volume ({t | c ≤ g t} ∩ I))
+              = c * volume ({t | c ≤ g t} ∩ I) := by rw [hc]; ring
+            _ ≤ ∫⁻ t in I, g t := hmarkov
+            _ ≤ B := hint
+            _ = B * 1 := (mul_one B).symm
+        rw [ENNReal.mul_le_mul_iff_right hB0 hBt, mul_comm, ← ENNReal.le_inv_iff_mul_le,
+          ← ENNReal.ofReal_inv_of_pos (by positivity), inv_div] at h1
+        exact h1
+      have hsub : I \ S ⊆ {t | c ≤ g t} ∩ I := fun t ht =>
+        ⟨(not_le.1 fun h => ht.2 ⟨ht.1, h⟩).le, ht.1⟩
+      have hdiff : volume (I \ S) ≤ ENNReal.ofReal (ρ / 4) := (measure_mono hsub).trans hE
+      refine pos_iff_ne_zero.2 fun h0 => ?_
+      have hle := hcover.trans (add_le_add h0.le hdiff)
+      rw [zero_add, hI_vol, ENNReal.ofReal_le_ofReal_iff (by positivity)] at hle
+      linarith
+  -- `S \ N` has the measure of `S`, so it is nonempty
+  have hSN : volume (S \ N) ≠ 0 := by
+    rw [measure_sdiff_null hN]
+    exact hS_pos.ne'
+  obtain ⟨r, ⟨hrI, hrc⟩, hrN⟩ := nonempty_of_measure_ne_zero hSN
+  exact ⟨r, hrI, hrN, hrc⟩
+
+/-- **Choice of a good slicing radius** (Simon Ch. 6, proof of 5.1, (8)–(10)).  If `μ`, `μ'` are
+finite and `μ {f < ρ} ≤ B`, some `r ∈ (ρ/2, ρ)` has
+`liminf_{h → 0+} h⁻¹ μ {r - h < f < r} ≤ (4/ρ) B` and `liminf_{h → 0+} h⁻¹ μ' {r - h < f < r} < ∞`.
+The distribution functions `F(t) = μ {f < t}` and `G(t) = μ' {f < t}` are monotone, hence
+differentiable off a Lebesgue null set `N`.  As `F(ρ) - F(ρ/2) ≤ F(ρ) ≤ B`, a Markov argument on
+`(ρ/2, ρ)` gives `r ∉ N` with `F′(r) ≤ (4/ρ) B`; at such `r` the liminfs are at most `F′(r)` and
+`G′(r) < ∞`. -/
+theorem Submission.cmcsd_good_radius : ∀ (P : ℕ) (μ μ' : Measure (Euclid P)) (f : Euclid P → ℝ) (ρ : ℝ) (B : ℝ≥0∞), IsFiniteMeasure μ → IsFiniteMeasure μ' → Measurable f → 0 < ρ → μ {x | f x < ρ} ≤ B → ∃ r ∈ Ioo (ρ / 2) ρ, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | r - h < f x ∧ f x < r}) (𝓝[>] 0) ≤ ENNReal.ofReal (4 / ρ) * B ∧ liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ' {x | r - h < f x ∧ f x < r}) (𝓝[>] 0) < ∞ := by
+  intro P μ μ' f ρ B hμ hμ' hf hρ hB
+  set F : ℝ → ℝ := fun s => (μ {x | f x < s}).toReal
+  set G : ℝ → ℝ := fun s => (μ' {x | f x < s}).toReal
+  have hFm : Monotone F := fun s t hst =>
+    ENNReal.toReal_mono (measure_ne_top _ _) (measure_mono fun x (hx : f x < s) => hx.trans_le hst)
+  have hGm : Monotone G := fun s t hst =>
+    ENNReal.toReal_mono (measure_ne_top _ _) (measure_mono fun x (hx : f x < s) => hx.trans_le hst)
+  -- Lebesgue: `F` and `G` are differentiable off a null set `N`
+  set N : Set ℝ := {t | ¬(DifferentiableAt ℝ F t ∧ DifferentiableAt ℝ G t)}
+  have hN : (volume : Measure ℝ) N = 0 :=
+    ae_iff.1 (hFm.ae_differentiableAt.and hGm.ae_differentiableAt)
+  have hFB : ENNReal.ofReal (F ρ - F (ρ / 2)) ≤ B :=
+    calc ENNReal.ofReal (F ρ - F (ρ / 2)) ≤ ENNReal.ofReal (F ρ) :=
+          ENNReal.ofReal_le_ofReal (sub_le_self _ ENNReal.toReal_nonneg)
+      _ = μ {x | f x < ρ} := ENNReal.ofReal_toReal (measure_ne_top _ _)
+      _ ≤ B := hB
+  -- Markov on `(ρ/2, ρ)`: some `r ∉ N` has `F′(r) ≤ (4/ρ) B`
+  obtain ⟨r, hr, hrN, hrF⟩ := Submission.cmcsd_gr_exists_deriv_le_off_null F ρ B N hFm hρ hFB hN
+  have hrd : DifferentiableAt ℝ F r ∧ DifferentiableAt ℝ G r := not_not.1 hrN
+  refine ⟨r, hr, ?_, ?_⟩
+  · exact (Submission.cmcsd_gr_liminf_slice_le_deriv (Euclid P) μ f r hμ hf hrd.1).trans hrF
+  · exact (Submission.cmcsd_gr_liminf_slice_le_deriv (Euclid P) μ' f r hμ' hf hrd.2).trans_lt
+      ENNReal.ofReal_lt_top
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
