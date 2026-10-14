@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d820294f3fbc385a9c6217b44aa6da3da85cd03b1bf3e0025c1c4e0919a65a42",
+  "git_delta": {
+    "base_commit": "d6ebe0c7d26db492fc9bc4f4bda7b942617d69f9",
+    "candidate_commit": "4d7197e3a5713277d4487759d937db52335e2df1",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "48a7c008216922e6666d9622d0529cd5661bae22b4192b5ada9d26cdf3007baa",
+    "source_sha256": "23a7e6f27152ed3be0caa498998a8a1b8fd1340e2b80863f760f21fc1ae49393",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_ah_countable_separating_tests",
+      "statement": "∀ c d : ℝ, ∃ F : ℕ → ℝ → ℝ, (∀ n, ContDiff ℝ 1 (F n)) ∧ (∀ n, tsupport (F n) ⊆ Ioo c d) ∧ ∀ w : ℝ → ℝ, IntegrableOn w (Ioo c d) → (∀ n, ∫ α, F n α * w α = 0) → ∀ᵐ α, α ∈ Ioo c d → w α = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
