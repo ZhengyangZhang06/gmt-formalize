@@ -592,4 +592,59 @@ theorem Submission.idtp_cse_ah_cst_ae_zero_of_rat_intervals : ∀ (c d : ℝ) (w
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
+/-- **Countable separating `C¹` tests on an interval** (replaces the separability of `C([−s, s])`
+in the `α`-homogeneity step of the cone-sector endpoint density argument for Simon 7.3.3).  For
+reals `c, d` there are `C¹` functions `Fₙ` with `tsupport Fₙ ⊆ (c, d)` such that every `w`
+integrable on `(c, d)` with `∫ Fₙ w = 0` for all `n` vanishes a.e. on `(c, d)`.  Enumerate the
+triples `(p, q, k) ∈ ℚ × ℚ × ℕ` by a surjection `e : ℕ → ℚ × ℚ × ℕ`, and let `Fₙ` be the `k`-th
+`C¹` plateau `χ_{p,q,k}` (`tsupport ⊆ [p, q]`) if `c < p < q < d`, and `0` otherwise.  For such
+`p, q` the plateaus vanish off `(c, d)`, so with `w̄ = 1_{(c,d)} w` integrable,
+`∫_{(p,q)} w = ∫_{(p,q)} w̄ = lim_k ∫ χ_{p,q,k} w̄ = lim_k ∫ χ_{p,q,k} w = 0`; vanishing on all
+rational subintervals gives `w = 0` a.e. on `(c, d)`. -/
+theorem Submission.idtp_cse_ah_countable_separating_tests : ∀ c d : ℝ, ∃ F : ℕ → ℝ → ℝ, (∀ n, ContDiff ℝ 1 (F n)) ∧ (∀ n, tsupport (F n) ⊆ Ioo c d) ∧ ∀ w : ℝ → ℝ, IntegrableOn w (Ioo c d) → (∀ n, ∫ α, F n α * w α = 0) → ∀ᵐ α, α ∈ Ioo c d → w α = 0 := by
+  intro c d
+  classical
+  -- plateaus `χ p q k`: `C¹`, `tsupport ⊆ [p, q]`, and `∫ χ p q k · g → ∫_{(p,q)} g`
+  choose χ hχC hχS hχT using Submission.idtp_cse_ah_cst_plateau_weak_limit
+  -- an enumeration `e` of the triples `(p, q, k)`; `A t` says `c < p < q < d`
+  obtain ⟨e, he⟩ := exists_surjective_nat (ℚ × ℚ × ℕ)
+  let A : ℚ × ℚ × ℕ → Prop := fun t => c < (t.1 : ℝ) ∧ (t.1 : ℝ) < t.2.1 ∧ (t.2.1 : ℝ) < d
+  refine ⟨fun n => if A (e n) then χ (e n).1 (e n).2.1 (e n).2.2 else 0, fun n => ?_, fun n => ?_,
+    ?_⟩
+  · dsimp only
+    split_ifs
+    · exact hχC _ _ _
+    · exact contDiff_zero_fun
+  -- `tsupport Fₙ ⊆ [p, q] ⊆ (c, d)`, or `Fₙ = 0`
+  · dsimp only
+    split_ifs with h
+    · exact (hχS _ _ _).trans (Icc_subset_Ioo h.1 h.2.2)
+    · simp
+  -- it suffices that `∫_{(p,q)} w = 0` for rationals `c < p < q < d`
+  · intro w hw hF
+    refine Submission.idtp_cse_ah_cst_ae_zero_of_rat_intervals c d w hw fun p q hcp hpq hqd => ?_
+    have hg : Integrable ((Ioo c d).indicator w) := hw.integrable_indicator measurableSet_Ioo
+    -- `∫ χ p q k · w̄ = ∫ Fₙ w = 0` for `e n = (p, q, k)`, since `χ p q k = 0` off `(c, d)`
+    have hzero : ∀ k, ∫ α, χ p q k α * (Ioo c d).indicator w α = 0 := by
+      intro k
+      obtain ⟨n, hn⟩ := he (p, q, k)
+      have hA : A (e n) := by rw [hn]; exact ⟨hcp, hpq, hqd⟩
+      have h := hF n
+      dsimp only at h
+      rw [ite_eq_left hA, hn] at h
+      rw [← h]
+      congr 1
+      funext α
+      by_cases hα : α ∈ Ioo c d
+      · rw [indicator_of_mem hα]
+      · have hα' : α ∉ tsupport (χ p q k) :=
+          fun h' => hα ((hχS _ _ _).trans (Icc_subset_Ioo hcp hqd) h')
+        simp [image_eq_zero_of_notMem_tsupport hα']
+    -- so `∫_{(p,q)} w̄ = lim_k ∫ χ p q k · w̄ = 0`, and `w̄ = w` on `(p, q)`
+    have hlim := hχT p q _ hg
+    simp only [hzero] at hlim
+    rw [← tendsto_nhds_unique hlim tendsto_const_nhds]
+    exact (setIntegral_congr_fun measurableSet_Ioo fun α hα =>
+      indicator_of_mem (Ioo_subset_Ioo hcp.le hqd.le hα) w).symm
+
 end GMT.Ch07
