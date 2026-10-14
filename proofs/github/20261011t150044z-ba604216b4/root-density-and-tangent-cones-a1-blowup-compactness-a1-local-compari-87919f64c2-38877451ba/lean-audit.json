@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4e743582e3ff6c619d64870506c6abe8c6abf4647325832f5ff3c36b40188c57",
+  "git_delta": {
+    "base_commit": "5e21029a04e493832a69fbaeb9dc65c2e80923ba",
+    "candidate_commit": "d147b24af581bf5254a438af94d2c7b10dece382",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_co_chart_gradient",
+    "diff_sha256": "fa88afcf5d028ac3ba4e7e3494145b45562973879fa94a375c909f3ce0f6ac56",
+    "source_sha256": "b77a8444165499ccc0aa76b36443ca3be0142344d0156751f389c34313091d39",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_co_chart_gradient",
+      "statement": "∀ (P d : ℕ) (ψ : Euclid d → Euclid P) (F : Euclid d → ℝ) (V : Set (Euclid d)), ContDiff ℝ 1 ψ → ContDiff ℝ 1 F → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ∃ h : Euclid d → Euclid P, ContinuousOn h V ∧ ∀ y ∈ V, h y ∈ LinearMap.range (fderiv ℝ ψ y : Euclid d →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid d, inner ℝ (h y) (fderiv ℝ ψ y e) = fderiv ℝ F y e",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
