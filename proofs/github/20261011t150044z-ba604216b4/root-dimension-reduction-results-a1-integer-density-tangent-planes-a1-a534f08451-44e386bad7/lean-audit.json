@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "55d4b235e86744339898f37b3ae67b5e58e181f9868f54f9c61643bccd4e0e78",
+  "git_delta": {
+    "base_commit": "07d921c2a0706b8be9765c3a5d41803d476fe243",
+    "candidate_commit": "b75c5c61b5b64102b7e91c285a94fd8c5db95378",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "cc9ccf3b65bfa8c85ce7d9954d6224ada3e5d6f17a47a35eaba0c2519080e5fe",
+    "source_sha256": "bb0b8aba307d54c8367c67b99518fbd902ba811eb740af9003f3f1ede4befa3e",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cc_tangent_measures",
+      "statement": "DensityAndTangentCones → (∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N G : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (R : IMRep U n) (p : Euclid (n + k)) (lams : ℕ → ℝ), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → R.Represents T → IsOpen G → p ∈ U → p ∈ G → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RC : IMRep (univ : Set (Euclid (n + k))) n), StrictMono sub ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ RC.Represents C ∧ (∀ t : ℝ, 0 < t → ∀ w : Euclid (n + k), limsup (fun ρ : ℝ => RC.measure (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => RC.measure (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)) ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • (R.measure.restrict G).map (dilation p (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂RC.measure))) ∧ ∀ (n k : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (R : IMRep (univ : Set (Euclid (n + k))) n) (y : Euclid (n + k)) (lams : ℕ → ℝ), 1 ≤ n → IsMinimizingIn S univ → BoundaryVanishes S → R.Represents S → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RC : IMRep (univ : Set (Euclid (n + k))) n), StrictMono sub ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ RC.Represents C ∧ (∀ t : ℝ, 0 < t → ∀ w : Euclid (n + k), limsup (fun ρ : ℝ => RC.measure (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => RC.measure (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)) ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • R.measure.map (dilation y (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂RC.measure))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
