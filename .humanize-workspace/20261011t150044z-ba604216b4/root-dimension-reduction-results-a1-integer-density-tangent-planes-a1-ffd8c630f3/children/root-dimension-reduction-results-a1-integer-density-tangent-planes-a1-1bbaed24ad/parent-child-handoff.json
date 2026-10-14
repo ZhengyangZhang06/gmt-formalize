@@ -1,0 +1,97 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (compared with manifest.json)",
+        "python3 -I scans of dag.json (lean_name, lean_statement, status): the 9 cited lemmas imrep_carrier_sdiff_support_null, rsd_ae_hasMassDensity_mult, dimred_cs_mi_hasMassDensity_unique, regcomp_atl_local_density_zero, rsd_massOn_eq_measure, dtc_approxTangent_of_null_diff, approxTangent_le_submanifold_tangentSpace, chart_tangentSpace_eq_range_fderiv, dpf_itt_approxTangentPlane_eq; statements mentioning tangentSpace together with finrank or span; approxTangentPlane; firstVariation; conclusions of the form 'R.mult x = …' together with HasMassDensity; support-minus-carrier null sets; children of cone_constant_density_planar",
+        "grep -o 'idtp_ccd_[A-Za-z0-9_]*' dag.json; grep -rl 'idtp_ccd_sfv' in run nodes/, decomposition-reopenings/, operator-dependency-edits/, cluster-state/verification and .swarm-worktrees/*/gmt-ch07/GMT/Ch07/Submission.lean (no match)",
+        "grep -n 'def support|def zeroRegion|def VanishesOn|isOpen_zeroRegion' simongmt Chapter06/CurrentLocalEquality.lean and Chapter06/Currents.lean; grep -n 'def HasApproximateTangentSpaceAt|HasApproximateTangentSpaceAt.unique|HasApproximateTangentSpaceAt.finrank_eq' simongmt Chapter03/Rectifiable.lean",
+        "grep -rn in pinned Mathlib for setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, setIntegral_congr_set, integral_const_mul, integral_congr_ae, ae_eq_set, support_fderiv_subset, withDensity_absolutelyContinuous', ENNReal.mul_div_mul_comm, Submodule.eq_of_le_of_finrank_eq, LinearMap.finrank_range_of_inj, finrank_euclideanSpace_fin, setLIntegral_mono', setLIntegral_one, ENNReal.Tendsto.const_mul, le_of_tendsto_of_tendsto, measure_ball_lt_top, measure_ball_pos, ball_subset_ball', Ioo_mem_nhdsGT and ENNReal.ofReal_pow; cmp of the 12 containing files between local-references/123e8435b4a2469b/mathlib and .lake/packages/mathlib (all identical)",
+        "grep -n 'theorem Submission.dpf_itt_approxTangentPlane_eq' and the namespace/open lines in .swarm-worktrees/71cd69b7a778a035ba27/gmt-ch07/GMT/Ch07/Submission.lean (declaration convention)",
+        "grep -n and sed in book/chapter-01.txt (3.6 Theorem, 3.7 Remarks, lines 700–711), chapter-02.txt (§4, (4.3), lines 845–871), chapter-03.txt (1.4 Definition, 1.5 Remarks lines 86–90, 1.8 Remarks lines 298–313), chapter-04.txt (line 350, Remark 1.8(2)) and chapter-06.txt (3.2 Remarks (3), lines 755–770)",
+        "sed of the sibling parent-supplied-natural-proof.md files of regular_of_const_density (…-1948384b6f) and stationary_cone_sheet_planar (…-3876084c61), to check reuse",
+        "lake env lean /tmp/sfv_check/Children.lean: the 4 child types elaborate after import GMT.Ch07.Submission",
+        "lake env lean on /tmp/sfv_check/Assembly.lean, ChildDC.lean, ChildA.lean and ChildB.lean: each child and the parent proved from stub hypotheses, with axioms propext, Classical.choice, Quot.sound",
+        "python3 -I /tmp/sfv_scripts/gen_defs.py dag.json children.json defs.inc, then lake env lean /tmp/sfv_check/Combined.lean: #print axioms chk_end_to_end and chk_parent = [propext, Classical.choice, Quot.sound]",
+        "independent reviewer agent re-ran Combined.lean and /tmp/sfv_review/Sim.lean (Submission.* axiom stubs) and ran a byte-identity check (/tmp/sfv_review/check_bytes.py)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ffd8c630f3/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ffd8c630f3/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ffd8c630f3/parent-supplied-natural-proof.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1948384b6f/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3876084c61/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/71cd69b7a778a035ba27/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/sfv_check/Children.lean",
+        "/tmp/sfv_check/Assembly.lean",
+        "/tmp/sfv_check/ChildDC.lean",
+        "/tmp/sfv_check/ChildA.lean",
+        "/tmp/sfv_check/ChildB.lean",
+        "/tmp/sfv_check/Combined.lean",
+        "/tmp/sfv_check/children.json",
+        "/tmp/sfv_check/draft.json",
+        "/tmp/sfv_scripts/gen_defs.py",
+        "/tmp/sfv_review/Sim.lean"
+      ],
+      "conclusion": "The pins match the manifest. Project HEAD is b4d606d, Mathlib is 25730c7c and SimonGMT is 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. The 12 Mathlib files consulted are identical between the snapshot and .lake/packages/mathlib.\n\nAll 9 lemmas cited by the children and the parent assembly are DAG nodes with status `accepted`, and each child applies them with hypotheses that match their dag.json types:\n- imrep_carrier_sdiff_support_null\n- rsd_ae_hasMassDensity_mult\n- dimred_cs_mi_hasMassDensity_unique\n- regcomp_atl_local_density_zero\n- rsd_massOn_eq_measure\n- dtc_approxTangent_of_null_diff\n- approxTangent_le_submanifold_tangentSpace\n- chart_tangentSpace_eq_range_fderiv\n- dpf_itt_approxTangentPlane_eq\n\nNo accepted lemma already states any child:\n- Nothing gives finrank or carrier equality of span(tangentSpace M x).\n- Nothing gives Hⁿ-a.e. constancy of mult from constant density on the support.\n- Nothing gives Hⁿ((spt T ∩ B) ∖ carrier) = 0 under constant positive density; dorag_support_sdiff_carrier_null needs a bounded mean curvature hypothesis instead.\n- Nothing gives a.e. equality of approxTangentPlane with the tangent span of a containing C¹ submanifold; dsmc_approxTangentPlane_subset_tangentSpace and approxTangent_le_submanifold_tangentSpace give only containment.\n\nThe siblings regular_of_const_density (its step 4) and stationary_cone_sheet_planar (its step 1) re-derive mult_const(a) and tangent_space_dim, so the children are reusable.\n\nThe SimonGMT facts used hold as cited:\n- HasApproximateTangentSpaceAt includes finrank = n as its first component.\n- HasApproximateTangentSpaceAt.unique and HasApproximateTangentSpaceAt.finrank_eq exist.\n- spt T = U ∖ zeroRegion with zeroRegion open.\nAll cited Mathlib names exist at the pinned revision.\n\nThe proposed names idtp_ccd_sfv_* are unreserved: they appear nowhere in dag.json, the run directories, cluster-state verification or any worktree Submission.lean.\n\nLean checks: the 4 child types elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07 with the contract's opens. Combined.lean takes the verbatim accepted-lemma, child and frozen-parent types and proves each child and then the parent; its axioms are propext, Classical.choice and Quot.sound. The independent reviewer re-ran it, confirmed byte identity, and found no defects.\n\nBook sources:\n- Ch. 1, Theorem 3.6 and Remark 3.7(2)\n- Ch. 2, (4.3)\n- Ch. 3, Remarks 1.5(2) and 1.8(2)\n- Ch. 6, Remark 3.2(3)"
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1",
+  "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1.approx_tangent_eq-a1",
+  "subproblem": {
+    "key": "approx_tangent_eq",
+    "title": "On a carrier lying a.e. inside a C¹ submanifold, the approximate tangent planes are the submanifold's tangent planes",
+    "statement": "For all P, n ∈ ℕ, every U ⊆ ℝ^P, every integer multiplicity triple R = (S, θ, ξ) ∈ IMRep U n and all M, V ⊆ ℝ^P, assume three things: M is an embedded C¹ n-dimensional submanifold (IsEmbeddedSubmanifold 1 n M); V is open; and Hⁿ((S ∩ V) ∖ M) = 0, where Hⁿ := μHE[n]. Then approxTangentPlane n S x = span(tangentSpace M x) for Hⁿ⌞(S ∩ V)-a.e. x.",
+    "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (M V : Set (Euclid P)), IsEmbeddedSubmanifold 1 n M → IsOpen V → μHE[n] ((R.carrier ∩ V) \\ M) = 0 → ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ V)), approxTangentPlane n R.carrier x = Submodule.span ℝ (tangentSpace M x)",
+    "lean_name": "idtp_ccd_sfv_approxTangentPlane_eq_span_ae",
+    "depends_on": [
+      "tangent_space_dim"
+    ],
+    "natural_proof": "Source: parent proof, step 5. This is Simon Ch. 3, Remark 1.5(2) (chapter-03.txt, lines 86–90): TₓM = TₓN_j for Hⁿ-a.e. x ∈ M_j when M_j ⊆ N_j and N_j is a C¹ n-submanifold. Conventions: Hⁿ := μHE[n]; Hⁿ⌞A := μHE[n].restrict A; S := R.carrier.\n1. (Measurability.) S ∩ V is measurable: S by the field measurableSet_carrier, and V because it is open.\n2. (Approximate tangent planes exist.) By the field orients of R, for Hⁿ⌞S-a.e. x there is a subspace Q with HasApproximateTangentSpaceAt n S x Q. (The field also gives IsUnitOrientationOf (R.orient x) Q, which is not needed.) Since S ∩ V ⊆ S, Hⁿ⌞(S ∩ V) ≤ Hⁿ⌞S (Measure.restrict_mono), so this holds Hⁿ⌞(S ∩ V)-a.e.\n3. (Points of S ∩ V.) By step 1, Hⁿ⌞(S ∩ V)-a.e. x lies in S ∩ V (ae_restrict_mem).\n4. (Points of M.) Since S ∩ V is measurable, Measure.restrict_apply' gives (Hⁿ⌞(S ∩ V))(Mᶜ) = Hⁿ(Mᶜ ∩ (S ∩ V)) = Hⁿ((S ∩ V) ∖ M) = 0 by hypothesis. So Hⁿ⌞(S ∩ V)-a.e. x lies in M.\n5. (Pointwise identification.) Fix x satisfying steps 2–4: a subspace Q with HasApproximateTangentSpaceAt n S x Q, x ∈ S ∩ V and x ∈ M.\n   (a) approxTangentPlane n S x = Q by the accepted lemma `Submission.dpf_itt_approxTangentPlane_eq`. Equivalently: Q witnesses the existential in the definition of approxTangentPlane; the chosen plane is an approximate tangent space at x, so it equals Q by `HasApproximateTangentSpaceAt.unique`.\n   (b) finrank Q = n. This is the first component of HasApproximateTangentSpaceAt (`HasApproximateTangentSpaceAt.finrank_eq`).\n   (c) (Localization.) Apply the accepted lemma `Submission.dtc_approxTangent_of_null_diff` with M := S, M' := S ∩ V ⊆ S, the open set V and x ∈ V. Its null-set hypothesis holds because (S ∖ (S ∩ V)) ∩ V = ∅. It gives HasApproximateTangentSpaceAt n (S ∩ V) x Q.\n   (d) (Containment.) Apply the accepted lemma `Submission.approxTangent_le_submanifold_tangentSpace` with these inputs: d := n; N := M, an embedded C¹ n-dimensional submanifold; the set S ∩ V in the role of its M; the point x ∈ M; the hypothesis Hⁿ((S ∩ V) ∖ M) = 0; and (c). It gives Q ⊆ tangentSpace M x. Since tangentSpace M x ⊆ span(tangentSpace M x) (Submodule.subset_span), Q ≤ span(tangentSpace M x).\n   (e) (Equal dimensions.) By the sibling lemma `Submission.idtp_ccd_sfv_span_tangentSpace_finrank` (d := n, x ∈ M), finrank span(tangentSpace M x) = n, which equals finrank Q by (b). A submodule contained in a finite-dimensional submodule of the same finrank equals it (Submodule.eq_of_le_of_finrank_eq). So Q = span(tangentSpace M x).\n   (f) By (a) and (e), approxTangentPlane n S x = span(tangentSpace M x).\n6. (Conclusion.) Steps 2–4 hold together for Hⁿ⌞(S ∩ V)-a.e. x, since a finite intersection of a.e. sets is a.e. Step 5 proves the claimed identity at each such x. ∎",
+    "proof_key_steps": [
+      "For Hⁿ⌞(S ∩ V)-a.e. x: S has an approximate tangent plane Q at x (field orients), x ∈ S ∩ V, and x ∈ M (since Hⁿ((S ∩ V) ∖ M) = 0).",
+      "At such x, approxTangentPlane n S x = Q (dpf_itt_approxTangentPlane_eq) and finrank Q = n.",
+      "Localize to S ∩ V (dtc_approxTangent_of_null_diff). Then approxTangent_le_submanifold_tangentSpace gives Q ⊆ tangentSpace M x ⊆ span(tangentSpace M x).",
+      "Sibling tangent_space_dim gives finrank span(tangentSpace M x) = n = finrank Q, so Q = span(tangentSpace M x)."
+    ]
+  },
+  "audit": {
+    "key": "approx_tangent_eq",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proof correctly obtains almost-everywhere membership and approximate tangent existence, localizes to the open set, and applies tangent containment. The declared tangent_space_dim dependency supplies equal dimensions, proving equality with the chosen plane. No extra measurability assumption on M is needed."
+  },
+  "resolved_dependencies": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1.tangent_space_dim-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1bbaed24ad/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1bbaed24ad/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-1bbaed24ad/parent-supplied-natural-proof.json"
+}

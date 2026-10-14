@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1.tangent_space_dim-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.sheet_first_variation-a1",
+  "depth": 5,
+  "title": "The tangent space of an embedded C¹ d-submanifold is a d-dimensional subspace",
+  "statement": "For all P, d ∈ ℕ, every M ⊆ ℝ^P that is an embedded C¹ d-dimensional submanifold (IsEmbeddedSubmanifold 1 d M) and every x ∈ M, tangentSpace M x is a linear subspace. Precisely, the linear span of tangentSpace M x has carrier exactly tangentSpace M x, and this span has dimension d.",
+  "lean_statement": "∀ (P d : ℕ) (M : Set (Euclid P)) (x : Euclid P), IsEmbeddedSubmanifold 1 d M → x ∈ M → (Submodule.span ℝ (tangentSpace M x) : Set (Euclid P)) = tangentSpace M x ∧ Module.finrank ℝ (Submodule.span ℝ (tangentSpace M x)) = d",
+  "lean_name": "idtp_ccd_sfv_span_tangentSpace_finrank",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-46c36a0580-a1"
+}
