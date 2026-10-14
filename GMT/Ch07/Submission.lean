@@ -2031,6 +2031,125 @@ theorem Submission.dpfir_imrep_pairing_continuous_integrable : ∀ (P n : ℕ) (
   /- Step 6: dominated by an integrable function. -/
   exact hg.mono' hF hbound
 
+/-- **Cutoff defect estimate** (Simon Ch. 6, 4.11: `T(γ∘f dω) − T(d(γ∘f ω)) = −T(d(γ∘f) ∧ ω)`,
+used where `∂S = 0`).  Let `S = τ(M, θ, ξ)` be an integer multiplicity `(m + 1)`-current in `U`
+with `∂S(ω) = 0` for every `ω ∈ 𝒟ᵐ(U)` with `spt ω ⊆ V`, let `g` be `C^∞` with `spt g ⊆ U ∩ V`
+and let `β ∈ 𝒟ᵐ(ℝᴾ)`.  Then `|∫_M g θ ⟨dβ, ξ⟩ dHⁿ| ≤ ∫ ‖Dg‖ |β| dμ`, `μ = θ Hⁿ⌞M`.  Indeed
+`gβ ∈ 𝒟ᵐ(U)` with `spt (gβ) ⊆ V`, so `0 = ∂S(gβ) = ∫_M θ ⟨d(gβ), ξ⟩ dHⁿ`; by the Leibniz rule
+`d(gβ) = g dβ + dg ∧ β`, hence `∫_M g θ ⟨dβ, ξ⟩ dHⁿ = −∫_M θ ⟨dg ∧ β, ξ⟩ dHⁿ`, and
+`|⟨dg ∧ β, ξ⟩| ≤ |dg ∧ β| ≤ ‖Dg‖ |β|` `Hⁿ`-a.e. on `M`. -/
+theorem Submission.dtc_bc_tc_rs_cutoff_defect : ∀ (P m : ℕ) (U V : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (Rp : IMRep U (m + 1)) (g : Euclid P → ℝ) (β : TestFormOn (univ : Set (Euclid P)) m), Rp.Represents S → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ V → S.boundary ω = 0) → ContDiff ℝ (⊤ : ℕ∞) g → tsupport g ⊆ U → tsupport g ⊆ V → ENNReal.ofReal |∫ x in Rp.carrier, g x * ((Rp.mult x : ℝ) * Rp.orient x (exteriorDerivative (β : DifferentialForm (Euclid P) m) x)) ∂μHE[m + 1]| ≤ ∫⁻ x, ENNReal.ofReal (‖fderiv ℝ g x‖ * covectorEuclideanNorm ((β : DifferentialForm (Euclid P) m) x)) ∂Rp.measure := by
+  intro P m U V S Rp g β hRep hbd hg hgU hgV
+  set b : DifferentialForm (Euclid P) m := (β : DifferentialForm (Euclid P) m)
+  have hbT : IsTestForm b := β.property.1
+  have hbs : ContDiff ℝ (⊤ : ℕ∞) b := hbT.1
+  /- Step 1: `gβ` is a test form in `U` with `spt (gβ) ⊆ spt g ⊆ V` (supports compared
+  pointwise). -/
+  have hgbs : ContDiff ℝ (⊤ : ℕ∞) (fun y => g y • b y) := hg.smul hbs
+  have hgb_b : support (fun y => g y • b y) ⊆ support b := by
+    intro y hy
+    rw [mem_support] at hy ⊢
+    intro h
+    exact hy (by rw [h, smul_zero])
+  have hgb_g : support (fun y => g y • b y) ⊆ support g := by
+    intro y hy
+    rw [mem_support] at hy ⊢
+    intro h
+    exact hy (by rw [h, zero_smul])
+  have hgbT : IsTestForm (fun y => g y • b y) := ⟨hgbs, hbT.2.mono hgb_b⟩
+  have hgb_tsupp : tsupport (fun y => g y • b y) ⊆ tsupport g := closure_mono hgb_g
+  let ω : TestFormOn U m := ⟨fun y => g y • b y, hgbT, hgb_tsupp.trans hgU⟩
+  /- Step 2: `0 = ∂S(gβ) = S(d(gβ)) = ∫_M θ ⟨d(gβ), ξ⟩ dHⁿ`. -/
+  have h0 := hbd ω (hgb_tsupp.trans hgV)
+  rw [GeometricCurrentOn.boundary_apply, hRep] at h0
+  have h1 : ∫ x in Rp.carrier, (Rp.mult x : ℝ) *
+      Rp.orient x (exteriorDerivative (fun y => g y • b y) x) ∂μHE[m + 1] = 0 := h0
+  /- Step 3: Leibniz rule `d(gβ) = g dβ + A`, `A = dg ∧ β`, paired with `θ ξ`. -/
+  have hgd : Differentiable ℝ g := hg.differentiable (by simp)
+  have hbd' : Differentiable ℝ b := hbs.differentiable (by simp)
+  set A : Euclid P → Covector (Euclid P) (m + 1) := fun x =>
+    ContinuousAlternatingMap.alternatizeUncurryFin ((fderiv ℝ g x).smulRight (b x))
+  have hsplit : ∀ x, (Rp.mult x : ℝ) * Rp.orient x (exteriorDerivative (fun y => g y • b y) x) =
+      (Rp.mult x : ℝ) * Rp.orient x (g x • exteriorDerivative b x) +
+        (Rp.mult x : ℝ) * Rp.orient x (A x) := by
+    intro x
+    rw [Submission.cmcs_cd_extDeriv_smul_leibniz P m g b x (hgd x) (hbd' x), map_add, mul_add]
+  /- Step 4: integrability of the pairings with `g dβ` and `d(gβ)` (continuous, compactly
+  supported in `U`), hence of their difference, the pairing with `A`. -/
+  have hdbT : IsTestForm (exteriorDerivative b) := exteriorDerivative_isTestForm hbT
+  have hdbs : ContDiff ℝ (⊤ : ℕ∞) (exteriorDerivative b) := hdbT.1
+  have hF_db : support (fun x => g x • exteriorDerivative b x) ⊆
+      support (exteriorDerivative b) := by
+    intro y hy
+    rw [mem_support] at hy ⊢
+    intro h
+    exact hy (by rw [h, smul_zero])
+  have hF_g : support (fun x => g x • exteriorDerivative b x) ⊆ support g := by
+    intro y hy
+    rw [mem_support] at hy ⊢
+    intro h
+    exact hy (by rw [h, zero_smul])
+  have hI₁ : Integrable (fun x => (Rp.mult x : ℝ) * Rp.orient x (g x • exteriorDerivative b x))
+      (μHE[m + 1].restrict Rp.carrier) :=
+    Submission.dpfir_imrep_pairing_continuous_integrable P (m + 1) U Rp _
+      (hg.continuous.smul hdbs.continuous) (hdbT.2.mono hF_db) ((closure_mono hF_g).trans hgU)
+  have hdgbT : IsTestForm (exteriorDerivative (fun y => g y • b y)) :=
+    exteriorDerivative_isTestForm hgbT
+  have hdgbs : ContDiff ℝ (⊤ : ℕ∞) (exteriorDerivative (fun y => g y • b y)) := hdgbT.1
+  have hI₀ : Integrable (fun x => (Rp.mult x : ℝ) *
+      Rp.orient x (exteriorDerivative (fun y => g y • b y) x)) (μHE[m + 1].restrict Rp.carrier) :=
+    Submission.dpfir_imrep_pairing_continuous_integrable P (m + 1) U Rp _ hdgbs.continuous
+      hdgbT.2 ((tsupport_exteriorDerivative_subset _).trans (hgb_tsupp.trans hgU))
+  have hI₂ : Integrable (fun x => (Rp.mult x : ℝ) * Rp.orient x (A x))
+      (μHE[m + 1].restrict Rp.carrier) := by
+    refine (hI₀.sub hI₁).congr (Eventually.of_forall fun x => ?_)
+    simp only [Pi.sub_apply]
+    rw [hsplit x]
+    ring
+  /- Step 5: `∫_M g θ ⟨dβ, ξ⟩ dHⁿ = −∫_M θ ⟨A, ξ⟩ dHⁿ`. -/
+  have hint : ∫ x in Rp.carrier, (Rp.mult x : ℝ) *
+      Rp.orient x (exteriorDerivative (fun y => g y • b y) x) ∂μHE[m + 1] =
+      (∫ x in Rp.carrier, (Rp.mult x : ℝ) * Rp.orient x (g x • exteriorDerivative b x)
+        ∂μHE[m + 1]) + ∫ x in Rp.carrier, (Rp.mult x : ℝ) * Rp.orient x (A x) ∂μHE[m + 1] := by
+    rw [← integral_add hI₁ hI₂]
+    exact integral_congr_ae (Eventually.of_forall hsplit)
+  have hlhs : ∫ x in Rp.carrier, g x * ((Rp.mult x : ℝ) * Rp.orient x (exteriorDerivative b x))
+      ∂μHE[m + 1] =
+      ∫ x in Rp.carrier, (Rp.mult x : ℝ) * Rp.orient x (g x • exteriorDerivative b x)
+        ∂μHE[m + 1] := by
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp only
+    rw [map_smul, smul_eq_mul]
+    ring
+  have key : ∫ x in Rp.carrier, g x * ((Rp.mult x : ℝ) * Rp.orient x (exteriorDerivative b x))
+      ∂μHE[m + 1] = -∫ x in Rp.carrier, (Rp.mult x : ℝ) * Rp.orient x (A x) ∂μHE[m + 1] := by
+    rw [hlhs]
+    linarith [h1, hint]
+  /- Steps 6–8: `‖∫ f‖ₑ ≤ ∫⁻ ‖f‖ₑ`; `|θ ⟨A, ξ⟩| ≤ θ |A| ≤ θ ‖Dg‖ |β|` `Hⁿ`-a.e. on `M` (orientation
+  bound and wedge-norm bound); and `∫⁻ θ φ dHⁿ⌞M = ∫⁻ φ dμ` for `μ = (Hⁿ⌞M).withDensity θ`. -/
+  have hθm : Measurable fun x => (Rp.mult x : ℝ≥0∞) := measurable_from_nat.comp Rp.measurable_mult
+  rw [key, abs_neg]
+  calc ENNReal.ofReal |∫ x in Rp.carrier, (Rp.mult x : ℝ) * Rp.orient x (A x) ∂μHE[m + 1]|
+      = ‖∫ x in Rp.carrier, (Rp.mult x : ℝ) * Rp.orient x (A x) ∂μHE[m + 1]‖ₑ :=
+        (Real.enorm_eq_ofReal_abs _).symm
+    _ ≤ ∫⁻ x in Rp.carrier, ‖(Rp.mult x : ℝ) * Rp.orient x (A x)‖ₑ ∂μHE[m + 1] :=
+        enorm_integral_le_lintegral_enorm _
+    _ ≤ ∫⁻ x in Rp.carrier, (Rp.mult x : ℝ≥0∞) *
+          ENNReal.ofReal (‖fderiv ℝ g x‖ * covectorEuclideanNorm (b x)) ∂μHE[m + 1] := by
+        refine lintegral_mono_ae ?_
+        filter_upwards [Submission.cmc_imRep_locality_restrict_sub.2.2.2 P (m + 1) U Rp] with x hx
+        rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_natCast,
+          ← ENNReal.ofReal_mul (Nat.cast_nonneg _)]
+        refine ENNReal.ofReal_le_ofReal ?_
+        rw [abs_mul, Nat.abs_cast]
+        exact mul_le_mul_of_nonneg_left
+          ((hx (A x)).trans (Submission.cmcs_wedge_norm_le P m (fderiv ℝ g x) (b x)))
+          (Nat.cast_nonneg _)
+    _ = ∫⁻ x, ENNReal.ofReal (‖fderiv ℝ g x‖ * covectorEuclideanNorm (b x)) ∂Rp.measure := by
+        rw [IMRep.measure, lintegral_withDensity_eq_lintegral_mul_non_measurable _ hθm
+          (Eventually.of_forall fun x => ENNReal.natCast_lt_top _)]
+        rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
