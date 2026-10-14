@@ -519,6 +519,30 @@ theorem Submission.cbrld_ns_ball_current_mass_le : ∀ (P n : ℕ) (μ : Measure
       _ ≤ 1 * μ.real (ball x ρ) := norm_setIntegral_le_of_norm_le_const_ae hfin hbound
       _ = (μ (ball x ρ)).toReal := by rw [one_mul, measureReal_def]
   exact (ENNReal.ofReal_le_iff_le_toReal hfin.ne).2 hle
+/-- `spt A ⊆ B̄_ρ(x)` when `A(ω) = ∫_{B_ρ(x)} ⟨ω(y), ξ(y)⟩ dμ(y)` for every test form `ω`.  If
+`|y − x| > ρ`, then `W = B_r(y)`, `r = (|y − x| − ρ)/2 > 0`, is open with compact closure and
+misses `B_ρ(x)`, so every test form supported in `W` vanishes on `B_ρ(x)` and `A` vanishes on `W`;
+hence `y` lies in the zero region of `A` (Simon 6.2.11). -/
+theorem Submission.cbrld_ns_ball_current_support_subset : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (A : GeometricCurrentOn (univ : Set (Euclid P)) n) (x : Euclid P) (ρ : ℝ), (∀ ω : TestFormOn (univ : Set (Euclid P)) n, A ω = ∫ y in ball x ρ, ξ y ((ω : DifferentialForm (Euclid P) n) y) ∂μ) → A.support ⊆ closedBall x ρ := by
+  intro P n μ ξ A x ρ hA y hy
+  by_contra hyx
+  rw [mem_closedBall, not_le] at hyx
+  -- `A` vanishes on `B_r(y)`, `r = (|y − x| − ρ)/2 > 0`, so `y` lies in the zero region of `A`
+  have hr : 0 < (dist y x - ρ) / 2 := by linarith
+  refine hy.2 (mem_sUnion_of_mem (mem_ball_self hr) ⟨isOpen_ball, ?_, subset_univ _, ?_⟩)
+  · -- `closure B_r(y) ⊆ B̄_r(y)`, which is compact in the proper space `ℝᴾ`
+    exact (isCompact_closedBall y _).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall
+  · -- a test form supported in `B_r(y)` vanishes at every `z ∈ B_ρ(x)`, since `|z − y| > r`
+    intro ω hω
+    rw [hA ω]
+    refine setIntegral_eq_zero_of_forall_eq_zero fun z hz => ?_
+    have hzω : z ∉ tsupport (ω : DifferentialForm (Euclid P) n) := by
+      intro hz'
+      have hzy := hω hz'
+      rw [mem_ball] at hz hzy
+      linarith [dist_triangle y z x, dist_comm z y]
+    rw [image_eq_zero_of_notMem_tsupport hzω, map_zero]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
