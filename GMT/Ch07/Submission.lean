@@ -452,6 +452,46 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The sector box is open and the polar map is `C¹`** (fibre-sum area identities for
+`F̃(x) = (|x|, arctan(⟨x, e⟩ / ⟨x, a⟩))` at the edge of a planar sector of a cone): let `Q ⊆ ℝᴾ` be
+a subspace with orthogonal projection `π`, `a, e ∈ ℝᴾ`, `s ∈ ℝ`, `f(x) = arctan(⟨x, e⟩ / ⟨x, a⟩)`
+and `Ω = {x : ⟨x, a⟩ > 0}`.  Then `Z_s = {x ∈ Ω : ||x| − 1| < s, |f(x)| < s, |x − πx| < s|x|}` is
+open and `F̃ = (|·|, f)` is `C¹` on `Ω`.  On `Ω`, `⟨x, a⟩ ≠ 0` and `x ≠ 0`, so the quotient `f` and
+the norm are `C¹` there, and `Z_s = (Ω ∩ |f|⁻¹(−∞, s)) ∩ {||x| − 1| < s} ∩ {|x − πx| < s|x|}`. -/
+theorem Submission.idtp_cse_fa_sector_open_contDiffOn : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ), IsOpen {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∧ ContDiffOn ℝ 1 (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) {x : Euclid P | 0 < inner ℝ x a} := by
+  intro P Q a e s
+  -- Step 1: `Ω = {⟨x, a⟩ > 0}` is open
+  have hΩ : IsOpen {x : Euclid P | 0 < inner ℝ x a} :=
+    isOpen_lt continuous_const (continuous_id.inner continuous_const)
+  -- Steps 2–3: `⟨x, a⟩ ≠ 0` on `Ω`, so `f = arctan (⟨x, e⟩ / ⟨x, a⟩)` is `C¹` on `Ω`
+  have hf : ContDiffOn ℝ 1 (fun x : Euclid P => Real.arctan (inner ℝ x e / inner ℝ x a))
+      {x : Euclid P | 0 < inner ℝ x a} := fun x hx =>
+    (Real.contDiff_arctan.contDiffAt.comp x
+      ((contDiff_id.inner ℝ contDiff_const).contDiffAt.div
+        (contDiff_id.inner ℝ contDiff_const).contDiffAt (ne_of_gt hx))).contDiffWithinAt
+  -- Step 4: `x ≠ 0` on `Ω`, so `|·|` is `C¹` there and `F̃ = (|·|, f)` is `C¹` on `Ω`
+  have hF : ContDiffOn ℝ 1 (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)))
+      {x : Euclid P | 0 < inner ℝ x a} := by
+    intro x hx
+    have hx0 : x ≠ 0 := by
+      rintro rfl
+      simp at hx
+    exact (contDiffAt_norm ℝ hx0).contDiffWithinAt.prodMk (hf x hx)
+  refine ⟨?_, hF⟩
+  -- Step 5: `Z_s = (Ω ∩ |f|⁻¹(−∞, s)) ∩ {||x| − 1| < s} ∩ {|x − πx| < s|x|}` is open
+  have hB : IsOpen ({x : Euclid P | 0 < inner ℝ x a} ∩
+      (fun x : Euclid P => |Real.arctan (inner ℝ x e / inner ℝ x a)|) ⁻¹' Iio s) :=
+    hf.continuousOn.abs.isOpen_inter_preimage hΩ isOpen_Iio
+  have hA₁ : IsOpen {x : Euclid P | |‖x‖ - 1| < s} :=
+    isOpen_lt (continuous_norm.sub continuous_const).abs continuous_const
+  have hA₃ : IsOpen {x : Euclid P | ‖x - Q.starProjection x‖ < s * ‖x‖} :=
+    isOpen_lt (continuous_id.sub Q.starProjection.continuous).norm
+      (continuous_const.mul continuous_norm)
+  convert (hB.inter hA₁).inter hA₃ using 1
+  ext x
+  simp only [mem_ofPred_eq, mem_inter_iff, mem_preimage, mem_Iio]
+  tauto
+
 /-- Countable Lipschitz localization of a `C¹` map (Simon Ch. 3, §2 works with locally Lipschitz
 `f`).  If `Z ⊆ ℝᴾ` is open and `F : ℝᴾ → ℝⁿ` is `C¹` on `Z`, then countably many open balls
 `V l ⊆ Z` cover `Z`, `F` agrees on `V l` with a Lipschitz `G l : ℝᴾ → ℝⁿ`, and the Borel sets
