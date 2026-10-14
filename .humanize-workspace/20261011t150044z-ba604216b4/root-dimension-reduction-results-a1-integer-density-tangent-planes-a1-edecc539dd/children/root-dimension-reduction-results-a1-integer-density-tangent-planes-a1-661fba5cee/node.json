@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1",
+  "depth": 4,
+  "title": "Euclidean Hausdorff measure of a disc in a linear subspace",
+  "statement": "Let P, n ∈ ℕ, let Q ⊆ ℝ^P be a linear subspace with dim Q = n (Module.finrank ℝ Q = n), let y ∈ Q and ρ > 0. Then H^n(Q ∩ B_ρ(y)) = ω_n·ofReal(ρ^n), where H^n = μHE[n] is Mathlib's Euclidean-normalized n-dimensional Hausdorff measure on ℝ^P and ω_n = unitBallVolume n is the Lebesgue measure of the open unit ball of ℝ^n.",
+  "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (y : Euclid P) (ρ : ℝ), Module.finrank ℝ Q = n → y ∈ Q → 0 < ρ → μHE[n] ((Q : Set (Euclid P)) ∩ ball y ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n)",
+  "lean_name": "idtp_tdc_subspace_ball_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-661fba5cee-a1"
+}

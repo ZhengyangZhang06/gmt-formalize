@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "79d5ad6277019014de75ebf101e3a61eb233060c350a60860d54af63d3530060",
+  "git_delta": {
+    "base_commit": "db2ba67d5b7f8cd11ee26d2befa1d74402f2360e",
+    "candidate_commit": "684084e97272858fd3d8437c9b52f57f850d492a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_atm_liminf_density_le_atom",
+    "diff_sha256": "3c2e9c1a2542a629541496d91edb101aa76503f670d175fef023c31182a05b8e",
+    "source_sha256": "3942d2db93b33a4a78ef8f46cfa7674306ed4f4374f08ec3fed2393aea018f10",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_atm_liminf_density_le_atom",
+      "statement": "∀ (P n : ℕ) (σ : Measure (Euclid P)) (z : Euclid P) (f : ℝ → ℝ≥0∞), (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) → (∀ r : ℝ, 0 < r → f r ≤ unitBallVolume n * ENNReal.ofReal (r ^ n) * σ (ball z r)) → liminf (fun r : ℝ => f r / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ σ {z}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
