@@ -7093,6 +7093,222 @@ theorem Submission.dor_lmb_int_combination_imrep : ∀ (P n : ℕ) (U : Set (Euc
   -- Step 7: integrating (†) against `ω` gives `τ(R)(ω) = p₁T₁(ω) + p₂T₂(ω) = S(ω)`
   rw [hS ω, h₁ ω, h₂ ω, Submission.rsdic_imrep_action_int_combination P n U R₁ R₂ R p₁ p₂ hR ω]
 
+/-- **Comparison with the projected competitor** (Simon 7.2.4, proof of (8)–(9),
+chapter-07.txt lines 222–246, with the competitor projected into `N` by `π`; README erratum 5,
+`Nᵢ = N`).  Assume (C1): `M_W(T) = μ_R(W)` for open `W` and `spt T = U ∩ spt μ_R` whenever `R`
+represents `T`.  Put `F = B̄_t(y)`, `G = B_{3ρ}(y)`, `Λ = 1 + 3cρ`; if `t < 0` then `F = ∅`.
+1. `π(y) = y`, and the mean value inequality with `‖Dπ‖ ≤ 1 + ct` on `F` gives
+   `|π(x) − y| ≤ (1 + ct)t < 3ρ` on `F` (as `4cρ ≤ 1`), so `π(F) ⊆ (U ∩ N) ∩ G`.
+2. By (C1), `X = 0` off `F` gives `Hⁿ(M_X \ F) = 0`, and `spt Z ⊆ N` gives `Hⁿ(M_Z \ N) = 0`.
+3. `π(x) = x` and `ξ_Z(x)(α ∘ Dπ(x)) = ξ_Z(x)(α)` for `Hⁿ`-a.e. `x ∈ M_Z ∩ G` (`fix_orient`).
+4. `Q_π = π_#X` is an integer multiplicity cycle with compact support in `π(F)` (`pf_current`,
+   `pf_integer`, `pf_boundary`).
+5. `Z' = Z + Q_π` is integer multiplicity (`int_combination`), `∂Z' = ∂Z` and
+   `spt(Z' − Z) = spt Q_π`, so minimality of `Z` in `U ∩ N` gives `M_G(Z) ≤ M_G(Z')`.
+6. `M_G(Z') ≤ Λⁿ μ_Y(G)` (`competitor_mass`), hence `μ_Z(G) ≤ Λⁿ μ_Y(G)` by (C1).
+7. `Y = Z` on the open set `G \ F`, so `μ_Y(G \ F) = μ_Z(G \ F) < ∞`.  Splitting
+   `G = F ∪ (G \ F)` and cancelling `μ_Z(G \ F)` gives
+   `μ_Z(F) ≤ Λⁿ μ_Y(F) + (Λⁿ − 1) μ_Z(G \ F) ≤ Λⁿ μ_Y(F) + (Λⁿ − 1) μ_Z(G)`. -/
+theorem Submission.dor_lmb_projected_competitor_comparison : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P d n : ℕ) (U N : Set (Euclid P)) (Z X Y : GeometricCurrentOn U n) (RZ RY : IMRep U n) (proj : Euclid P → Euclid P) (y : Euclid P) (r c ρ t : ℝ), IsOpen U → 0 < n → IsEmbeddedSubmanifold 2 d N → IsMinimizingIn Z (U ∩ N) → Z.support ⊆ N → BoundaryVanishes Z → RZ.Represents Z → IsIntegerMultiplicity X → BoundaryVanishes X → (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (closedBall y t) → X ω = 0) → (∀ ω : TestFormOn U n, Y ω = Z ω + X ω) → RY.Represents Y → y ∈ N → 0 ≤ c → 0 < ρ → 3 * ρ < r → 4 * c * ρ ≤ 1 → t < 2 * ρ → closedBall y (3 * ρ) ⊆ U → ContDiffOn ℝ 1 proj (ball y r) → MapsTo proj (ball y r) N → (∀ x ∈ N ∩ ball y r, proj x = x) → (∀ x ∈ N ∩ ball y r, ∀ v ∈ tangentSpace N x, fderiv ℝ proj x v = v) → (∀ x ∈ ball y r, ‖fderiv ℝ proj x‖ ≤ 1 + c * dist x y) → RZ.measure (closedBall y t) ≤ ENNReal.ofReal ((1 + 3 * c * ρ) ^ n) * RY.measure (closedBall y t) + ENNReal.ofReal ((1 + 3 * c * ρ) ^ n - 1) * RZ.measure (ball y (3 * ρ)) := by
+  intro hC1 P d n U N Z X Y RZ RY proj y r c ρ t hU hn hN hZmin hZsupp _hZbd hRZ hXim hXbd hXvan
+    hY hRY hyN hc hρ hρr hcρ ht hGU hproj hmaps hfix hdfix hnorm
+  -- If `t < 0` then `F = B̄_t(y) = ∅`
+  rcases lt_or_ge t 0 with ht0 | ht0
+  · rw [closedBall_eq_empty.2 ht0, measure_empty]
+    exact zero_le
+  obtain ⟨RX, hRX⟩ := hXim
+  -- `F ⊆ G ⊆ B_r(y)`, `G ⊆ U`, and `G ⊂⊂ U`
+  have hFG : closedBall y t ⊆ ball y (3 * ρ) := closedBall_subset_ball (by linarith)
+  have hGr : ball y (3 * ρ) ⊆ ball y r := ball_subset_ball hρr.le
+  have hFr : closedBall y t ⊆ ball y r := hFG.trans hGr
+  have hGU' : ball y (3 * ρ) ⊆ U := ball_subset_closedBall.trans hGU
+  have hFU : closedBall y t ⊆ U := hFG.trans hGU'
+  have hclG : closure (ball y (3 * ρ)) = closedBall y (3 * ρ) :=
+    closure_ball y (by linarith : (0 : ℝ) < 3 * ρ).ne'
+  have hGcc : CompactlyContained (ball y (3 * ρ)) U := by
+    refine ⟨?_, ?_⟩ <;> rw [hclG]
+    · exact isCompact_closedBall y _
+    · exact hGU
+  -- Step 1: `π(y) = y` and `|π(x) − y| ≤ (1 + ct)t < 3ρ` on `F`, so `π(F) ⊆ (U ∩ N) ∩ G`
+  have hdiff : ∀ z ∈ ball y r, DifferentiableAt ℝ proj z := fun z hz =>
+    (hproj.differentiableOn one_ne_zero).differentiableAt (isOpen_ball.mem_nhds hz)
+  have hprojy : proj y = y := hfix y ⟨hyN, mem_ball_self (by linarith)⟩
+  have hπF : ∀ x ∈ closedBall y t, proj x ∈ ball y (3 * ρ) := by
+    intro x hx
+    have hbound : ∀ z ∈ closedBall y t, ‖fderiv ℝ proj z‖ ≤ 1 + c * t := fun z hz =>
+      (hnorm z (hFr hz)).trans
+        (by nlinarith [mul_le_mul_of_nonneg_left (mem_closedBall.1 hz) hc])
+    have hmvt := (convex_closedBall y t).norm_image_sub_le_of_norm_fderiv_le
+      (fun z hz => hdiff z (hFr hz)) hbound (mem_closedBall_self ht0) hx
+    have hxy : ‖x - y‖ ≤ t := by
+      rw [← dist_eq_norm]
+      exact mem_closedBall.1 hx
+    rw [mem_ball, dist_eq_norm]
+    calc ‖proj x - y‖ = ‖proj x - proj y‖ := by rw [hprojy]
+      _ ≤ (1 + c * t) * ‖x - y‖ := hmvt
+      _ ≤ (1 + c * t) * t := mul_le_mul_of_nonneg_left hxy (by nlinarith)
+      _ < 3 * ρ := by
+        nlinarith [mul_nonneg (mul_nonneg hc ht0) (by linarith : (0 : ℝ) ≤ 2 * ρ - t),
+          mul_nonneg ht0 (by linarith : (0 : ℝ) ≤ 1 - 4 * c * ρ)]
+  have hπFG : proj '' closedBall y t ⊆ ball y (3 * ρ) := by
+    rintro _ ⟨x, hx, rfl⟩
+    exact hπF x hx
+  have hπFU : proj '' closedBall y t ⊆ U := hπFG.trans hGU'
+  have hπFN : proj '' closedBall y t ⊆ N := by
+    rintro _ ⟨x, hx, rfl⟩
+    exact hmaps (hFr hx)
+  -- `Hⁿ(M ∩ S) ≤ μ_R(S)` for Borel `S`, since `θ ≥ 1` on `M`
+  have hcarrier_le : ∀ (R : IMRep U n) (S : Set (Euclid P)), MeasurableSet S →
+      μHE[n] (R.carrier ∩ S) ≤ R.measure S := by
+    intro R S hS
+    rw [IMRep.measure, withDensity_apply _ hS, Measure.restrict_restrict hS]
+    calc μHE[n] (R.carrier ∩ S) = ∫⁻ _ in S ∩ R.carrier, (1 : ℝ≥0∞) ∂μHE[n] := by
+          rw [setLIntegral_one, inter_comm]
+      _ ≤ ∫⁻ x in S ∩ R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
+          setLIntegral_mono' (hS.inter R.measurableSet_carrier) fun x hx =>
+            Nat.one_le_cast.2 (R.mult_pos x hx.2)
+  -- `μ_R(K) < ∞` for compact `K ⊆ U`
+  have hfin : ∀ (R : IMRep U n) (K : Set (Euclid P)), IsCompact K → K ⊆ U → R.measure K ≠ ∞ := by
+    intro R K hK hKU
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact R.locallyIntegrable_mult K hK hKU
+  -- Step 2(a): by (C1), `μ_X(U \ F) = M_{U \ F}(X) = 0`, so `Hⁿ(M_X \ F) = 0`
+  have hXF : μHE[n] (RX.carrier \ closedBall y t) = 0 := by
+    have hopen : IsOpen (U \ closedBall y t) := hU.sdiff isClosed_closedBall
+    have hmass : X.massOn (U \ closedBall y t) = 0 := by
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro _ ⟨ω, hω, rfl⟩
+      show ENNReal.ofReal (X ω) ≤ 0
+      rw [hXvan ω (Disjoint.mono_left hω.1 Set.disjoint_sdiff_left), ENNReal.ofReal_zero]
+    have hmeas : RX.measure (U \ closedBall y t) = 0 := by
+      rw [← (hC1 P n U X RX hU hRX).1 _ hopen, hmass]
+    have hsub : RX.carrier \ closedBall y t ⊆ RX.carrier ∩ (U \ closedBall y t) :=
+      fun x hx => ⟨hx.1, RX.carrier_subset hx.1, hx.2⟩
+    refine measure_mono_null hsub (le_antisymm ?_ zero_le)
+    exact (hcarrier_le RX _ hopen.measurableSet).trans hmeas.le
+  -- Step 2(b): by (C1), `U ∩ spt μ_Z = spt Z ⊆ N`, so `Hⁿ(M_Z \ N) = 0`
+  have hZN : μHE[n] (RZ.carrier \ N) = 0 := by
+    have hsupp := (hC1 P n U Z RZ hU hRZ).2
+    have hsub : RZ.carrier \ N ⊆ RZ.carrier ∩ RZ.measure.supportᶜ := by
+      intro x hx
+      refine ⟨hx.1, fun hxs => hx.2 (hZsupp ?_)⟩
+      rw [hsupp]
+      exact ⟨RZ.carrier_subset hx.1, hxs⟩
+    refine measure_mono_null hsub (le_antisymm ?_ zero_le)
+    calc μHE[n] (RZ.carrier ∩ RZ.measure.supportᶜ) ≤ RZ.measure RZ.measure.supportᶜ :=
+          hcarrier_le RZ _ Measure.isClosed_support.isOpen_compl.measurableSet
+      _ = 0 := Measure.measure_compl_support
+  -- Step 3 (`fix_orient`): `π` fixes `Z` on `G`
+  have hN1 : IsEmbeddedSubmanifold 1 d N := by
+    intro z hz
+    obtain ⟨V, W, ψ, hV, hW, hzW, hψ, hinj, himg, hprop, hrank⟩ := hN z hz
+    exact ⟨V, W, ψ, hV, hW, hzW, hψ.of_le (by exact_mod_cast (show (1 : ℕ) ≤ 2 by norm_num)),
+      hinj, himg, hprop, hrank⟩
+  have hfixZ := Submission.dor_lmb_pc_imrep_orient_fixed_by_retraction P n d U N (ball y (3 * ρ))
+    RZ proj hN1 isOpen_ball.measurableSet hZN (fun x hx => hfix x ⟨hx.1, hGr hx.2⟩)
+    (fun x hx v hv => hdfix x ⟨hx.1, hGr hx.2⟩ v hv)
+  -- Step 4 (`pf_current`, `pf_integer`, `pf_boundary`): the projected cycle `Q_π = π_#X`
+  obtain ⟨Q, hQ, hQcpt, hQsupp⟩ := Submission.dor_lmb_pc_pushforward_current_exists P n U
+    (closedBall y t) (ball y r) RX proj hU (isCompact_closedBall y t) hFU hXF isOpen_ball hFr hproj
+    hπFU
+  have hQim : IsIntegerMultiplicity Q :=
+    Submission.dor_lmb_pc_pushforward_isIntegerMultiplicity
+      Submission.dor_lmb_approx_tangent_locality P n U (closedBall y t) (ball y r) RX proj Q hU hn
+      (isCompact_closedBall y t) hFU hXF isOpen_ball hFr hproj hπFU hQ
+  have hQbd : BoundaryVanishes Q :=
+    Submission.dor_lmb_pc_pushforward_boundaryVanishes P n U (closedBall y t) (ball y r) RX proj X Q
+      hU (isCompact_closedBall y t) hFU hXF isOpen_ball hFr hproj hRX hXbd hQ
+  -- Step 5: the competitor `Z' = Z + Q_π`
+  obtain ⟨Z', hZ'⟩ : ∃ Z' : GeometricCurrentOn U n, ∀ ω, Z' ω = Z ω + Q ω :=
+    ⟨{ toCurrent := Z.toCurrent + Q.toCurrent
+       continuous' := fun ωs h => by
+         simpa using (Z.continuous' ωs h).add (Q.continuous' ωs h) }, fun ω => rfl⟩
+  -- (a) `Z'` is integer multiplicity (`int_combination` with `p₁ = p₂ = 1`)
+  obtain ⟨RQ, hRQ⟩ := hQim
+  obtain ⟨RZ', hRZ', -⟩ := Submission.dor_lmb_int_combination_imrep P n U Z Q Z' RZ RQ 1 1 hU hRZ
+    hRQ fun ω => by rw [hZ' ω]; push_cast; ring
+  -- (b) `∂Z' = ∂Z`, as `∂Q_π = 0`
+  have hSB : SameBoundary Z' Z := by
+    obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+    have hQ0 : Q.boundary = 0 := hQbd
+    show Z'.boundary = Z.boundary
+    ext η
+    have h0 : Q (exteriorDerivativeTestOn U m η) = 0 := by
+      rw [← GeometricCurrentOn.boundary_apply, hQ0, GeometricCurrentOn.zero_apply]
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply, hZ', h0, add_zero]
+  -- (c) `Z' − Z = Q_π`, with compact support in `π(F) ⊆ (U ∩ N) ∩ G`
+  have hZ'Z : Z' - Z = Q := by
+    ext ω
+    show Z' ω - Z ω = Q ω
+    rw [hZ' ω]
+    ring
+  -- (d) minimality of `Z` in `U ∩ N`, tested on `W = G`
+  have hmin : Z.massOn (ball y (3 * ρ)) ≤ Z'.massOn (ball y (3 * ρ)) := by
+    refine hZmin.2 (ball y (3 * ρ)) Z' isOpen_ball hGcc ⟨RZ', hRZ'⟩ hSB ?_ ?_
+    · rw [hZ'Z]
+      exact hQcpt
+    · rw [hZ'Z]
+      intro z hz
+      have hz' := hQsupp hz
+      exact ⟨⟨hπFU hz', hπFN hz'⟩, hπFG hz'⟩
+  -- Step 6 (`competitor_mass`): `M_G(Z') ≤ Λⁿ μ_Y(G)`, so `μ_Z(G) ≤ Λⁿ μ_Y(G)` by (C1)
+  have hmass := Submission.dor_lmb_pc_competitor_massOn_le P n U (ball y (3 * ρ)) (ball y r) RZ RX
+    RY Y Z' proj (1 + 3 * c * ρ) hU isOpen_ball hGcc isOpen_ball hGr hproj
+    (by nlinarith [mul_nonneg hc hρ.le])
+    (fun x hx => (hnorm x (hGr hx)).trans
+      (by nlinarith [mul_le_mul_of_nonneg_left (mem_ball.1 hx).le hc]))
+    hRY (fun ω => by rw [hY ω, hRZ ω, hRX ω]) hfixZ
+    (measure_mono_null (sdiff_subset_sdiff_right hFG) hXF) (fun ω => by rw [hZ' ω, hRZ ω, hQ ω])
+  have hmain : RZ.measure (ball y (3 * ρ)) ≤
+      ENNReal.ofReal ((1 + 3 * c * ρ) ^ n) * RY.measure (ball y (3 * ρ)) := by
+    rw [← (hC1 P n U Z RZ hU hRZ).1 (ball y (3 * ρ)) isOpen_ball]
+    exact hmin.trans hmass
+  -- Step 7: `Y = Z` on forms supported in the open set `G \ F`, so `μ_Y(G \ F) = μ_Z(G \ F)`
+  have hGFopen : IsOpen (ball y (3 * ρ) \ closedBall y t) := isOpen_ball.sdiff isClosed_closedBall
+  have hYZ : RY.measure (ball y (3 * ρ) \ closedBall y t) =
+      RZ.measure (ball y (3 * ρ) \ closedBall y t) := by
+    rw [← (hC1 P n U Y RY hU hRY).1 _ hGFopen, ← (hC1 P n U Z RZ hU hRZ).1 _ hGFopen]
+    unfold GeometricCurrentOn.massOn
+    congr 1
+    refine Set.image_congr fun ω hω => ?_
+    show ENNReal.ofReal (Y ω) = ENNReal.ofReal (Z ω)
+    rw [hY ω, hXvan ω (Disjoint.mono_left hω.1 Set.disjoint_sdiff_left), add_zero]
+  -- split `G = F ∪ (G \ F)` and cancel the finite `μ_Z(G \ F)`
+  have hFm : MeasurableSet (closedBall y t) := measurableSet_closedBall
+  have hZsplit := measure_inter_add_sdiff (μ := RZ.measure) (ball y (3 * ρ)) hFm
+  have hYsplit := measure_inter_add_sdiff (μ := RY.measure) (ball y (3 * ρ)) hFm
+  rw [inter_eq_right.2 hFG] at hZsplit hYsplit
+  have hbfin : RZ.measure (ball y (3 * ρ) \ closedBall y t) ≠ ∞ :=
+    ne_top_of_le_ne_top (hfin RZ _ (isCompact_closedBall y (3 * ρ)) hGU)
+      (measure_mono (sdiff_subset.trans ball_subset_closedBall))
+  have hL : ENNReal.ofReal ((1 + 3 * c * ρ) ^ n) =
+      ENNReal.ofReal ((1 + 3 * c * ρ) ^ n - 1) + 1 := by
+    have h1 : (1 : ℝ) ≤ (1 + 3 * c * ρ) ^ n := one_le_pow₀ (by nlinarith [mul_nonneg hc hρ.le])
+    rw [← ENNReal.ofReal_one, ← ENNReal.ofReal_add (sub_nonneg.2 h1) zero_le_one, sub_add_cancel]
+  have hLb : ENNReal.ofReal ((1 + 3 * c * ρ) ^ n) * RZ.measure (ball y (3 * ρ) \ closedBall y t) =
+      ENNReal.ofReal ((1 + 3 * c * ρ) ^ n - 1) * RZ.measure (ball y (3 * ρ) \ closedBall y t) +
+        RZ.measure (ball y (3 * ρ) \ closedBall y t) := by
+    rw [hL, add_mul, one_mul]
+  have key : RZ.measure (closedBall y t) + RZ.measure (ball y (3 * ρ) \ closedBall y t) ≤
+      (ENNReal.ofReal ((1 + 3 * c * ρ) ^ n) * RY.measure (closedBall y t) +
+        ENNReal.ofReal ((1 + 3 * c * ρ) ^ n - 1) * RZ.measure (ball y (3 * ρ) \ closedBall y t)) +
+      RZ.measure (ball y (3 * ρ) \ closedBall y t) := by
+    calc RZ.measure (closedBall y t) + RZ.measure (ball y (3 * ρ) \ closedBall y t)
+        = RZ.measure (ball y (3 * ρ)) := hZsplit
+      _ ≤ ENNReal.ofReal ((1 + 3 * c * ρ) ^ n) * RY.measure (ball y (3 * ρ)) := hmain
+      _ = ENNReal.ofReal ((1 + 3 * c * ρ) ^ n) * RY.measure (closedBall y t) +
+          ENNReal.ofReal ((1 + 3 * c * ρ) ^ n) * RZ.measure (ball y (3 * ρ) \ closedBall y t) := by
+        rw [← hYsplit, hYZ, mul_add]
+      _ = _ := by rw [hLb, add_assoc]
+  calc RZ.measure (closedBall y t)
+      ≤ ENNReal.ofReal ((1 + 3 * c * ρ) ^ n) * RY.measure (closedBall y t) +
+        ENNReal.ofReal ((1 + 3 * c * ρ) ^ n - 1) * RZ.measure (ball y (3 * ρ) \ closedBall y t) :=
+        ENNReal.le_of_add_le_add_right hbfin key
+    _ ≤ _ := by
+        gcongr
+        exact sdiff_subset
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
