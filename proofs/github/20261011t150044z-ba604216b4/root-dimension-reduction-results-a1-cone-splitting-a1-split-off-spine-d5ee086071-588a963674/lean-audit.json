@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fca4fe87b4890fbf51398ae1cd60b6bac775ec80e1797d04866ec709c242ee87",
+  "git_delta": {
+    "base_commit": "77e7ccfcf761b1e7bfb9c4952eb700117efd2b24",
+    "candidate_commit": "7cf6cc011495d0c3b1463bc2051734b15ccd127f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_product_box_measure",
+    "diff_sha256": "6c27466c3c59878a6c1b2f01be05cfc25abd500ab5fdd3b9b7786e099a53ae97",
+    "source_sha256": "1b8af9973a2607bffae1f8c0b0311ccb3ec4a292bb2acbd777763e153e5f9825",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_product_box_measure",
+      "statement": "∀ (P k : ℕ) (G : Submodule ℝ (Euclid P)) (ν σ : Measure (Euclid P)) (E : Set (Euclid P)), σ (Gᗮ : Set (Euclid P))ᶜ = 0 → MeasurableSet E → E ⊆ (G : Set (Euclid P)) → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in E, σ ((fun y => t + y) ⁻¹' A) ∂μHE[k]) → ∀ C B : Set (Euclid P), MeasurableSet C → MeasurableSet B → ν (G.starProjection ⁻¹' C ∩ Gᗮ.starProjection ⁻¹' B) = μHE[k] (E ∩ C) * σ B",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
