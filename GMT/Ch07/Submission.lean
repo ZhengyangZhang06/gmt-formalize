@@ -451,6 +451,32 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Weights at least one with total at most one force a single plane.**  If every weight
+`αᵢ ≥ 1`, `∑ᵢ αᵢ ≤ 1` and `w i₀ = 0`, then two distinct indices would give
+`2 ≤ α i + α i₀ ≤ ∑ⱼ αⱼ ≤ 1`; so `i₀` is the only index, `α i₀ = 1`, and
+`ν = ofReal 1 • m⌞{y | y - 0 ∈ V} = m⌞V`. -/
+theorem Submission.cbr_ci_pw_single_plane_of_unit_weights : ∀ (P N : ℕ) (m ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (w : Fin N → Euclid P) (α : Fin N → ℝ), (∀ i, 1 ≤ α i) → ∑ i, α i ≤ 1 → (∃ i, w i = 0) → ν = ∑ i, ENNReal.ofReal (α i) • m.restrict {y : Euclid P | y - w i ∈ V} → ν = m.restrict (V : Set (Euclid P)) := by
+  intro P N m ν V w α hα hsum hw hν
+  -- Step 1: choose `i₀` with `w i₀ = 0`
+  obtain ⟨i₀, hi₀⟩ := hw
+  -- Step 2: every index is `i₀`, since `i ≠ i₀` gives `α i + α i₀ ≤ ∑ⱼ αⱼ ≤ 1` with `α ≥ 1`
+  have huniq : ∀ i, i = i₀ := by
+    intro i
+    by_contra hne
+    have hpair : α i + α i₀ ≤ ∑ j, α j := by
+      rw [← Finset.sum_pair hne]
+      exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _)
+        fun j _ _ => zero_le_one.trans (hα j)
+    linarith [hα i, hα i₀]
+  -- Step 3: the index set is `{i₀}`, so `∑ⱼ αⱼ = α i₀`, hence `α i₀ = 1`
+  have huniv : (Finset.univ : Finset (Fin N)) = {i₀} :=
+    Finset.eq_singleton_iff_unique_mem.mpr ⟨Finset.mem_univ _, fun j _ => huniq j⟩
+  rw [huniv, Finset.sum_singleton] at hsum hν
+  have hαi₀ : α i₀ = 1 := le_antisymm hsum (hα i₀)
+  -- Step 4: `ν = ofReal 1 • m⌞{y | y - 0 ∈ V} = m⌞V`
+  rw [hν, hαi₀, hi₀, ENNReal.ofReal_one, one_smul]
+  simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
