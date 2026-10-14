@@ -451,6 +451,35 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Weights at least one with total at most one force a single plane through the origin.**
+If `αᵢ ≥ 1` for every `i`, `∑ᵢ αᵢ ≤ 1`, `w_{i₀} = 0` for some `i₀` and
+`ν = ∑ᵢ αᵢ m⌞{y : y - wᵢ ∈ V}`, then `ν = m⌞V`.  Two distinct indices `i ≠ i₀` would give
+`2 ≤ αᵢ + α_{i₀} ≤ ∑ⱼ αⱼ ≤ 1`, so `i₀` is the only index; hence `α_{i₀} = ∑ⱼ αⱼ = 1` and the sum
+collapses to `ofReal 1 • m⌞{y : y - 0 ∈ V} = m⌞V`. -/
+theorem Submission.dmcbr_ci_pw_single_plane_of_unit_weights : ∀ (P N : ℕ) (m ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (w : Fin N → Euclid P) (α : Fin N → ℝ), (∀ i, 1 ≤ α i) → ∑ i, α i ≤ 1 → (∃ i, w i = 0) → ν = ∑ i, ENNReal.ofReal (α i) • m.restrict {y : Euclid P | y - w i ∈ V} → ν = m.restrict (V : Set (Euclid P)) := by
+  intro P N m ν V w α hα hsum hw hν
+  -- Step 1: an index `i₀` with `w i₀ = 0`
+  obtain ⟨i₀, hi₀⟩ := hw
+  -- Step 2: every index is `i₀`: for `i ≠ i₀`, `αᵢ + α_{i₀} = ∑_{j ∈ {i, i₀}} αⱼ ≤ ∑ⱼ αⱼ ≤ 1`
+  -- (all `αⱼ ≥ 1 ≥ 0`), contradicting `αᵢ + α_{i₀} ≥ 2`
+  have hall : ∀ i, i = i₀ := by
+    intro i
+    by_contra hne
+    have hpair : ∑ j ∈ ({i, i₀} : Finset (Fin N)), α j ≤ ∑ j, α j :=
+      Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _)
+        fun j _ _ => zero_le_one.trans (hα j)
+    rw [Finset.sum_pair hne] at hpair
+    linarith [hα i, hα i₀]
+  -- Step 3: every sum over the indices is its `i₀`-term, so `∑ⱼ αⱼ = α_{i₀}` and `α_{i₀} = 1`
+  have hα₀ : α i₀ = 1 := by
+    rw [Finset.sum_eq_single i₀ (fun j _ hj => absurd (hall j) hj)
+      fun h => absurd (Finset.mem_univ i₀) h] at hsum
+    exact le_antisymm hsum (hα i₀)
+  -- Step 4: `ν = ofReal α_{i₀} • m⌞{y | y - w i₀ ∈ V} = 1 • m⌞{y | y - 0 ∈ V} = m⌞V`
+  rw [hν, Finset.sum_eq_single i₀ (fun j _ hj => absurd (hall j) hj)
+    fun h => absurd (Finset.mem_univ i₀) h, hα₀, hi₀, ENNReal.ofReal_one, one_smul]
+  simp only [sub_zero, SetLike.setOfPred_mem_eq]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
