@@ -704,6 +704,58 @@ theorem Submission.cmcdt_lpi_cyl_pullback_integrable : ∀ (Q n : ℕ) (L : NNRe
       _ = M * (L : ℝ) ^ n := by simp
   exact hg.mul_bdd hmeas.aestronglyMeasurable (Eventually.of_forall hbd)
 
+/-- **Simon Ch. 6, 2.17 and 2.24(3)**, one piece of the cylinder `[[(0, 1)]] × T`: if `(G, A, w)`
+is a Lipschitz piece (`G` `L`-Lipschitz and differentiable on the Borel set `A`, `w` integrable on
+`A`), then so is its suspension `Ĝ(t, u) = (t, G u)` on `Â = (0, 1) × A` with weight
+`ŵ(t, u) = w(u)` (`Ĝ` is `max(1, L)`-Lipschitz), and it acts on `ω` as `(G, A, w)` acts on the
+slice form `η(x) = ∫₀¹ ⟨ω(t, x), e₀ ∧ J ·⟩ dt` (2.17 with `S = [[(0, 1)]]`).  Tonelli gives
+`∫⁻_Â |ŵ| = ∫⁻_A |w| < ∞`; Fubini gives `∫_Â = ∫_A ∫₀¹`, and on each fibre `ŵ = w(u)`,
+`Ĝ(t, u) = (t, G u)` and `DĜ(t, u)ê = (e₀, J ∘ DG(u)e)`. -/
+theorem Submission.cmcdt_lpi_cyl_piece_action : ∀ (N n : ℕ) (L : NNReal) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (w : Euclid n → ℤ) (Gh : Euclid (n + 1) → Euclid (N + 1)) (Ah : Set (Euclid (n + 1))) (wh : Euclid (n + 1) → ℤ), LipschitzWith L G → MeasurableSet A → Measurable w → IntegrableOn (fun u => (w u : ℝ)) A → (∀ u ∈ A, DifferentiableAt ℝ G u) → (∀ z, Gh z = WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0) (WithLp.ofLp (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))))) → Ah = {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} → (∀ z, wh z = w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) → LipschitzWith (max 1 L) Gh ∧ MeasurableSet Ah ∧ Measurable wh ∧ IntegrableOn (fun z => (wh z : ℝ)) Ah ∧ ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (n + 1)) (η : DifferentialForm (Euclid N) n), (∀ (x : Euclid N) (v : Fin n → Euclid N), η x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (n + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → ∫ u in A, (w u : ℝ) * η (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) = ∫ z in Ah, (wh z : ℝ) * (ω : DifferentialForm (Euclid (N + 1)) (n + 1)) (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1)) := by
+  intro N n L G A w Gh Ah wh hGL hA hw hwi hGd hGh hAh hwh
+  obtain ⟨hAhm, hTon, hFub⟩ := Submission.cmcdt_lpi_cyl_fubini n A hA
+  obtain ⟨hLip, hval, hder⟩ := Submission.cmcdt_lpi_cyl_suspension_map N n G Gh hGh
+  -- `ŵ = w ∘ tail` is measurable, `tail` being continuous
+  have htail : Continuous fun z : Euclid (n + 1) =>
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) := by
+    fun_prop
+  have hwh' : wh = fun z => w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) := funext hwh
+  have hwhm : Measurable wh := by
+    rw [hwh']
+    exact hw.comp htail.measurable
+  -- Tonelli: `∫⁻_Â |ŵ| = ∫⁻_A ∫⁻_{(0,1)} |w(u)| dt du = ∫⁻_A |w| < ∞`
+  have hwhi : IntegrableOn (fun z => (wh z : ℝ)) Ah := by
+    have hm : Measurable fun z => ‖((wh z : ℤ) : ℝ)‖ₑ :=
+      (measurable_from_top (f := fun k : ℤ => ‖(k : ℝ)‖ₑ)).comp hwhm
+    refine ⟨((measurable_from_top (f := fun k : ℤ => (k : ℝ))).comp hwhm).aestronglyMeasurable, ?_⟩
+    rw [HasFiniteIntegral, hAh, hTon _ hm]
+    have hfib : ∀ u : Euclid n, (∫⁻ t in Ioo (0 : ℝ) 1,
+        ‖((wh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) : ℤ) : ℝ)‖ₑ) = ‖((w u : ℤ) : ℝ)‖ₑ := by
+      intro u
+      simp [hwh, Real.volume_Ioo]
+    simp_rw [hfib]
+    exact hwi.2
+  refine ⟨hLip L hGL, hAh ▸ hAhm, hwhm, hwhi, ?_⟩
+  intro ω η hη
+  -- the integrand is integrable on `Â`, so Fubini gives `∫_Â = ∫_A ∫_{(0,1)}`
+  have hint := Submission.cmcdt_lpi_cyl_pullback_integrable (N + 1) (n + 1) (max 1 L) Gh Ah
+    (fun z => (wh z : ℝ)) ω (hLip L hGL) hwhi
+  rw [hAh] at hint ⊢
+  rw [hFub _ hint]
+  apply setIntegral_congr_fun hA
+  intro u hu
+  -- `w(u) η(Gu)(DG(u)e) = ∫_{(0,1)} w(u) ω(t, Gu)(e₀, J ∘ DG(u)e) dt` by the slice formula
+  simp only
+  rw [hη (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)),
+    intervalIntegral.integral_of_le zero_le_one, integral_Ioc_eq_integral_Ioo,
+    ← integral_const_mul]
+  apply setIntegral_congr_fun measurableSet_Ioo
+  intro t _
+  -- on the fibre: `ŵ(t, u) = w(u)`, `Ĝ(t, u) = (t, G u)`, `DĜ(t, u)ê = (e₀, J ∘ DG(u)e)`
+  simp only
+  rw [hwh, hval, hder t u (hGd u hu)]
+  simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
