@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0cb924cc925179942c03e21ca5c0d8cf49e76b0532b0873d72b2f7be67c98c88",
+  "git_delta": {
+    "base_commit": "91e357d551be6f5bd5b5e7c48780ba61ab421d8f",
+    "candidate_commit": "8c93b1d05aa266e3eefc018e20748e18266a3ac6",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcl_good_level",
+    "diff_sha256": "6c1b5f7b42d77b1cdbbe9447473e55b59ba4a4a00b64e8c2581bf1b24c2de92b",
+    "source_sha256": "1ba4546103237f8b0b611388f3a4fd3b9df0d948228a201a0775d8cb4ec87b8b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcl_good_level",
+      "statement": "∀ (ν : ℕ → Measure ℝ) (F : ℕ → ℝ → ℝ≥0∞) (Good : ℕ → ℝ → Prop) (a b : ℝ) (Λ : ℝ≥0∞), a < b → Λ ≠ ∞ → (∀ j, ν j (Icc a b) ≤ Λ) → (∀ j, AEMeasurable (F j)) → (∀ j, ∫⁻ t, F j t ≤ Λ) → (∀ j, ∀ᵐ t, Good j t) → ∃ s ∈ Ioo a b, ∃ (φ : ℕ → ℕ) (C : ℝ≥0∞), StrictMono φ ∧ C ≠ ∞ ∧ (∀ j, Good j s) ∧ (∀ j, F (φ j) s ≤ C) ∧ ∀ ε : ℝ≥0∞, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ j in atTop, ν (φ j) (Icc (s - δ) s) ≤ ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
