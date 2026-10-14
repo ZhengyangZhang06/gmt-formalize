@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ccba2da85f7cf1c8cb0435aeb12a219fe2f8b9ab959a5901a258d4db073458e9",
+  "git_delta": {
+    "base_commit": "07583810c0571bfba72d6345d8b84f0bc240fab9",
+    "candidate_commit": "afad0070cd68de36da51517dedd5e99e04a2e739",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrbv_cutoff_field",
+    "diff_sha256": "423734922c54bd684823221add13fd6c1fd3e351d6ba5939175f4b7a3988d3cb",
+    "source_sha256": "16d0a48f79a89ba204bc9cea5c82ac949c5700ea336a5decc4ceffa91ee43041",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrbv_cutoff_field",
+      "statement": "∀ (P m : ℕ) (p : (Fin (m + 1) → Fin P) × (Fin P → ℤ)) (N : Set (Euclid P)) (g : Euclid (m + 1) → Euclid (m + 1)), StrictMono p.1 → IsOpen N → (∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ N) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∃ G : Euclid P → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) G ∧ HasCompactSupport G ∧ tsupport G ⊆ N ∧ (∀ x, ‖G x‖ ≤ 1) ∧ ∀ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) → ∑ a, fderiv ℝ (fun x => G x a) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (EuclideanSpace.single (p.1 a) (1 : ℝ)) = LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
