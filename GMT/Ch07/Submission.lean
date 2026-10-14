@@ -790,6 +790,32 @@ theorem Submission.dpf_pushforward_formula_boundaryVanishes : ∀ (P n : ℕ) (U
   -- Step 7: the limit of the vanishing integrals is `0`
   exact tendsto_nhds_unique hlim (tendsto_const_nhds.congr fun k => (hI k).symm)
 
+/-- Simon 6.2.24(1), `∂f_#T = f_#∂T`, for a `C¹` map `f` on an open `O ⊇ K` (step 5(d) of the
+projected comparison): if `X = τ(M, θ, ξ)` has `∂X = 0` in `U`, `Hⁿ(M ∖ K) = 0` for a compact
+`K ⊆ U`, and `Q(ω) = ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ⟩ dHⁿ`, then `∂Q = 0` in `U`.  Replace `f` by a
+`C¹` map `φ` equal to `f` on an open `V ⊇ K` and to the identity off a compact `K' ⊆ O ∩ U`.
+Since `φ = f` and `Dφ = Df` on `K`, which carries `Hⁿ`-almost all of `M`,
+`Q(ω) = ∫_M θ ⟨ω(φ(x)) ∘ Dφ(x), ξ⟩ dHⁿ`, and the push-forward formula for `φ` gives `∂Q = 0`. -/
+theorem Submission.dor_lmb_pc_pushforward_boundaryVanishes : ∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P) (X Q : GeometricCurrentOn U n), IsOpen U → IsCompact K → K ⊆ U → μHE[n] (R.carrier \ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → R.Represents X → BoundaryVanishes X → (∀ ω : TestFormOn U n, Q ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → BoundaryVanishes Q := by
+  intro P n U K O R f X Q hU hK hKU hMK hO hKO hf hRX hX hQ
+  -- Step 1: a `C¹` map `φ` with `φ = f`, `Dφ = Df` on an open `V ⊇ K` and `φ = id` off a
+  -- compact `K' ⊆ O ∩ U`
+  obtain ⟨φ, V, K', -, hKV, hK', hK'OU, hφ, hφf, hφK'⟩ :=
+    Submission.dimred_mbl_pfb_c1_compact_perturbation P (O ∩ U) K f (hO.inter hU) hK
+      (subset_inter hKO hKU) (hf.mono inter_subset_left)
+  -- Step 2: `Hⁿ`-almost every point of `M` lies in `K`
+  have hae : ∀ᵐ x ∂μHE[n], x ∈ R.carrier → x ∈ K := by
+    rw [ae_iff]
+    refine measure_mono_null (fun x hx => ?_) hMK
+    exact not_imp.1 hx
+  -- Step 3: `Q(ω) = ∫_M θ ⟨ω(φ(x)) ∘ Dφ(x), ξ⟩ dHⁿ`, so `∂Q = 0` by the push-forward formula
+  refine Submission.dpf_pushforward_formula_boundaryVanishes P n U K' X Q R φ hU hRX hK'
+    (hK'OU.trans inter_subset_right) hφ hφK' (fun ω => ?_) hX
+  rw [hQ ω]
+  refine setIntegral_congr_ae R.measurableSet_carrier (hae.mono fun x hx hxM => ?_)
+  obtain ⟨h1, h2⟩ := hφf x (hKV (hx hxM))
+  simp only [h1, h2]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
