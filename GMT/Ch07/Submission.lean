@@ -605,37 +605,6 @@ theorem Submission.idtp_ccd_scsp_tf_profile_deriv : ∀ (P : ℕ) (u e x : Eucli
     rw [real_inner_comm h u, real_inner_comm h e]
     field_simp
     ring
-/-- **Simon Ch. 2, (4.18)–(4.20)** (tangential divergence in an orthonormal frame): if `τ₁, …, τₙ`
-is an orthonormal basis of `Q`, then `trace(p_Q ∘ B) = Σₐ τₐ · Bτₐ`.  The orthogonality
-characterization of the projection gives `p_Q z = Σₐ (τₐ · z) τₐ`, so `p_Q ∘ B` is the sum of the
-rank-one maps `z ↦ (τₐ · Bz) τₐ`, and the trace of `z ↦ ℓ(z) v` is `ℓ(v)`. -/
-theorem Submission.fvmb_trace_starProjection_comp_eq_sum_inner : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (τ : Fin n → Euclid P) (B : Euclid P →L[ℝ] Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ B.toLinearMap) = ∑ a, inner ℝ (τ a) (B (τ a)) := by
-  intro P n Q τ B hτ hQ
-  -- `p_Q z = Σₐ ⟪τₐ, z⟫ τₐ`: the right side lies in `Q` and `z` minus it is orthogonal to `Q`
-  have hproj : ∀ z : Euclid P, Q.starProjection z = ∑ a, inner ℝ (τ a) z • τ a := by
-    intro z
-    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
-    · rw [← hQ]
-      exact Submodule.sum_mem _ fun a _ =>
-        Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
-    · intro q hq
-      rw [← hQ] at hq
-      induction hq using Submodule.span_induction with
-      | mem x hx =>
-        obtain ⟨b, rfl⟩ := hx
-        rw [inner_sub_left, hτ.inner_left_fintype, real_inner_comm]
-        simp
-      | zero => simp
-      | add x y _ _ hx hy => rw [inner_add_right, hx, hy, add_zero]
-      | smul c x _ hx => rw [inner_smul_right, hx, mul_zero]
-  -- `p_Q ∘ B = Σₐ (z ↦ ⟪τₐ, Bz⟫ τₐ)`
-  have hdecomp : Q.starProjection.toLinearMap ∘ₗ B.toLinearMap =
-      ∑ a, ((innerₛₗ ℝ (τ a)) ∘ₗ B.toLinearMap).smulRight (τ a) := by
-    ext z
-    simp [hproj]
-  -- `trace (z ↦ ℓ(z) v) = ℓ(v)` (`LinearMap.trace_smulRight`), summed over `a`
-  rw [hdecomp, map_sum]
-  simp
 /-- **Tangential divergence of the rotation field** (steps 4–5 of the parent proof).  With the
 skew map `A y = ⟨y, u⟩ e − ⟨y, e⟩ u`, the field is `X = g • A`, so the product rule gives
 `DX(x) h = g(x) A h + (Dg(x) h) A x` at `x = t v`.  The frame formula in the orthonormal frame
