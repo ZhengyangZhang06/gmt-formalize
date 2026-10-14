@@ -35,28 +35,6 @@ the book's `n` as `m + 1`.  The ambient space is `ℝ^P` (book: `ℝ^P` in §2, 
 elsewhere); in §5–§6, where constants are `c(n, ℓ)`, the ambient space is `ℝ^{(m+1)+ℓ}`.
 -/
 
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 6 "Currents" (pp. 131–180)
-
-Frozen contract.  Currents, boundary, mass and weak convergence are the clean SimonGMT
-objects (`Poincare.SimonGMT.Chapter06`):
-
-* `GeometricCurrentOn U n`: sequentially continuous linear functionals on `𝒟ⁿ(U)` (Simon 2.1);
-* `T.boundary` (2.3), `T.massOn W` (2.5, Euclidean coefficient norm of Remark 2.6),
-  `T.mass = T.massOn U` (2.4), `T.support` (2.11), `WeaklyConvergesOn` (2.13).
-
-Integer multiplicity currents `τ(M, θ, ξ)` (3.1), restriction `T ⌞ A` (2.9), slices (4.6),
-the Lipschitz push-forward (3.6), lattice polyhedral chains (§5) and the flat pseudometric
-`d_W` (7.1) are defined below from primitive data.  Hausdorff measure `Hⁿ` is Mathlib's
-normalized `μHE[n]` (equal to Lebesgue measure on `ℝⁿ`).
-
-**Degree convention.**  `GeometricCurrentOn.boundary` is defined on degree `m + 1`.  Whenever
-the book's statement involves `∂T` for an `n`-current with `n ≥ 1`, the Lean statement writes
-the book's `n` as `m + 1`.  The ambient space is `ℝ^P` (book: `ℝ^P` in §2, §8, `ℝ^{n+ℓ}`
-elsewhere); in §5–§6, where constants are `c(n, ℓ)`, the ambient space is `ℝ^{(m+1)+ℓ}`.
--/
-
 open MeasureTheory Filter Set Metric
 open scoped ENNReal NNReal Topology
 
