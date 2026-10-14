@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1.good_radius-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1",
+  "depth": 6,
+  "title": "Good slicing radius and subsequence: Fatou applied to the integrated slice bound 4.10 (parent steps 3(c), 4)",
+  "statement": "Let P ∈ ℕ, let μ_j (j ∈ ℕ) be measures on ℝ^P, r₀ ∈ ℝ and Λ₀ ∈ [0, ∞) (NNReal). Assume μ_j(B_r) < ∞ for every j and every r ∈ ℝ, and μ_j(B_{r₀+1}) ≤ Λ₀ for every j, where B_r := ball(0, r). For t ∈ ℝ put D_j(t) := liminf_{h→0+} ofReal(h⁻¹)·μ_j({x : t − h < |x| < t}), the liminf along 𝓝[>]0 in [0, ∞]. Then there are t₀ ∈ (r₀, r₀ + 1), a strictly increasing φ : ℕ → ℕ and C ∈ [0, ∞) (NNReal) with D_{φ(j)}(t₀) ≤ C for every j.",
+  "lean_statement": "∀ (P : ℕ) (μ : ℕ → Measure (Euclid P)) (r₀ : ℝ) (Λ₀ : NNReal), (∀ (j : ℕ) (r : ℝ), μ j (ball (0 : Euclid P) r) < ∞) → (∀ j, μ j (ball (0 : Euclid P) (r₀ + 1)) ≤ (Λ₀ : ℝ≥0∞)) → ∃ t₀ ∈ Ioo r₀ (r₀ + 1), ∃ (φ : ℕ → ℕ) (C : NNReal), StrictMono φ ∧ ∀ j, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (φ j) {x : Euclid P | t₀ - h < ‖x‖ ∧ ‖x‖ < t₀}) (𝓝[>] 0) ≤ (C : ℝ≥0∞)",
+  "lean_name": "dtc_bc_lc_fd_lz_good_radius",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1.dini_measurable-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1.dini_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-integral-a1-a1",
+      "result_commit": "9dfa6578ac37c7b726ddad9a7e894ee3466d0cc4",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-b4bb58c8c4-a1"
+}
