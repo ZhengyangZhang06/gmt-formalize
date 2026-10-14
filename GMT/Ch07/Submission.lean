@@ -610,6 +610,80 @@ theorem Submission.dor_lmbsf_interior_product_orientation : ∀ (P n : ℕ) (ζ 
   · exact Or.inl fun α => by rw [hζ' α, h, hwedge]
   · exact Or.inr fun α => by rw [hζ' α, h, hwedge]
 
+/-- Signed co-area integral (Simon Ch. 2, 6.6, used for the slices in 7.4): if the slice
+measures `ν t` satisfy the co-area identity `∫ (∫ φ dν_t) dt = ∫ w φ dμ` for every Borel
+`φ ≥ 0`, and `∫ w |q| dμ < ∞`, then `t ↦ ∫ q dν_t` is integrable and
+`∫ (∫ q dν_t) dt = ∫ w q dμ`.  Apply the identity to `q⁺` and `q⁻` and subtract; where
+`w = ∞`, finiteness of `∫ w |q| dμ` forces `q = 0` `μ`-a.e. -/
+theorem Submission.dor_lmbsf_si_coarea_signed_integral : ∀ (P : ℕ) (μ : Measure (Euclid P)) (ν : ℝ → Measure (Euclid P)) (w : Euclid P → ℝ≥0∞) (q : Euclid P → ℝ), (∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t => ∫⁻ x, φ x ∂(ν t)) ∧ ∫⁻ t, ∫⁻ x, φ x ∂(ν t) = ∫⁻ x, w x * φ x ∂μ) → Measurable w → Measurable q → ∫⁻ x, w x * ‖q x‖ₑ ∂μ ≠ ∞ → Integrable (fun t => ∫ x, q x ∂(ν t)) ∧ ∫ t, ∫ x, q x ∂(ν t) = ∫ x, (w x).toReal * q x ∂μ := by
+  intro P μ ν w q hco hw hq hfin
+  -- `q⁺ = ofReal q` and `q⁻ = ofReal (-q)` are Borel and bounded by `|q|`
+  have hqp : Measurable fun x => ENNReal.ofReal (q x) := hq.ennreal_ofReal
+  have hqn : Measurable fun x => ENNReal.ofReal (-q x) := hq.neg.ennreal_ofReal
+  have hle_p : ∀ x, ENNReal.ofReal (q x) ≤ ‖q x‖ₑ := fun x => by
+    rw [← ofReal_norm, Real.norm_eq_abs]; exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+  have hle_n : ∀ x, ENNReal.ofReal (-q x) ≤ ‖q x‖ₑ := fun x => by
+    rw [← ofReal_norm, Real.norm_eq_abs]; exact ENNReal.ofReal_le_ofReal (neg_le_abs _)
+  -- the co-area identity for `q⁺`, `q⁻` and `|q|`, all with finite total integral
+  obtain ⟨haeP, heqP⟩ := hco _ hqp
+  obtain ⟨haeN, heqN⟩ := hco _ hqn
+  obtain ⟨haeA, heqA⟩ := hco _ hq.enorm
+  have hfinP : ∫⁻ t, ∫⁻ x, ENNReal.ofReal (q x) ∂(ν t) ≠ ∞ := by
+    rw [heqP]; exact ne_top_of_le_ne_top hfin (lintegral_mono fun x => mul_le_mul_right (hle_p x) _)
+  have hfinN : ∫⁻ t, ∫⁻ x, ENNReal.ofReal (-q x) ∂(ν t) ≠ ∞ := by
+    rw [heqN]; exact ne_top_of_le_ne_top hfin (lintegral_mono fun x => mul_le_mul_right (hle_n x) _)
+  have hfinA : ∫⁻ t, ∫⁻ x, ‖q x‖ₑ ∂(ν t) ≠ ∞ := by rw [heqA]; exact hfin
+  -- `q` is `ν t`-integrable for a.e. `t`, where `∫ q dν_t = ∫ q⁺ dν_t - ∫ q⁻ dν_t`
+  have hint : ∀ᵐ t, Integrable q (ν t) := by
+    filter_upwards [ae_lt_top' haeA hfinA] with t ht
+    exact ⟨hq.aestronglyMeasurable, ht⟩
+  have hrepr : (fun t => ∫ x, q x ∂(ν t)) =ᵐ[volume] fun t =>
+      (∫⁻ x, ENNReal.ofReal (q x) ∂(ν t)).toReal - (∫⁻ x, ENNReal.ofReal (-q x) ∂(ν t)).toReal := by
+    filter_upwards [hint] with t ht
+    exact integral_eq_lintegral_pos_part_sub_lintegral_neg_part ht
+  have hIP : Integrable (fun t => (∫⁻ x, ENNReal.ofReal (q x) ∂(ν t)).toReal) :=
+    integrable_toReal_of_lintegral_ne_top haeP hfinP
+  have hIN : Integrable (fun t => (∫⁻ x, ENNReal.ofReal (-q x) ∂(ν t)).toReal) :=
+    integrable_toReal_of_lintegral_ne_top haeN hfinN
+  refine ⟨(hIP.sub hIN).congr hrepr.symm, ?_⟩
+  -- the left side is `(∫ w q⁺ dμ).toReal - (∫ w q⁻ dμ).toReal`
+  rw [integral_congr_ae hrepr, integral_sub hIP hIN, integral_toReal haeP (ae_lt_top' haeP hfinP),
+    integral_toReal haeN (ae_lt_top' haeN hfinN), heqP, heqN]
+  -- `h = w q` is `μ`-integrable since `|h| ≤ w |q|`; split `∫ h dμ` into its two parts
+  have hh : Integrable (fun x => (w x).toReal * q x) μ := by
+    refine ⟨(hw.ennreal_toReal.mul hq).aestronglyMeasurable, ?_⟩
+    refine lt_of_le_of_lt (lintegral_mono fun x => ?_) hfin.lt_top
+    rw [enorm_mul]
+    gcongr
+    rw [Real.enorm_eq_ofReal ENNReal.toReal_nonneg]
+    exact ENNReal.ofReal_toReal_le
+  rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hh]
+  -- `w |q| < ∞` `μ`-a.e., and there `ofReal (w r) = w ofReal r` whenever `|r| ≤ |q|`
+  -- (if `w = ∞` then `q = 0`, so `r = 0`)
+  have hnull : ∀ᵐ x ∂μ, w x * ‖q x‖ₑ < ∞ := ae_lt_top (hw.mul hq.enorm) hfin
+  have key : ∀ x, w x * ‖q x‖ₑ < ∞ → ∀ r : ℝ, |r| ≤ |q x| →
+      ENNReal.ofReal ((w x).toReal * r) = w x * ENNReal.ofReal r := by
+    intro x hx r hr
+    by_cases hwx : w x = ∞
+    · have hq0 : q x = 0 := by
+        by_contra hq0
+        rw [hwx, ENNReal.top_mul (by simpa using hq0)] at hx
+        exact lt_irrefl _ hx
+      have : r = 0 := by rw [hq0, abs_zero] at hr; exact abs_nonpos_iff.mp hr
+      simp [this]
+    · rw [ENNReal.ofReal_mul ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hwx]
+  have e1 : ∫⁻ x, ENNReal.ofReal ((w x).toReal * q x) ∂μ = ∫⁻ x, w x * ENNReal.ofReal (q x) ∂μ := by
+    refine lintegral_congr_ae ?_
+    filter_upwards [hnull] with x hx
+    exact key x hx (q x) le_rfl
+  have e2 : ∫⁻ x, ENNReal.ofReal (-((w x).toReal * q x)) ∂μ =
+      ∫⁻ x, w x * ENNReal.ofReal (-q x) ∂μ := by
+    refine lintegral_congr_ae ?_
+    filter_upwards [hnull] with x hx
+    rw [← mul_neg]
+    exact key x hx (-q x) (by rw [abs_neg])
+  rw [e1, e2]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
