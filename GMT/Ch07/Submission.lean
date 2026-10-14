@@ -451,6 +451,98 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Interior product with a frame; translated test forms.**  (a) For `g = (g₁, …, g_k)` in
+`ℝᴾ` and `n' = k + m`, `♭α(v) = α(g₁, …, g_k, v₁, …, v_m)` defines a continuous linear map
+`♭ : Λ^{n'} → Λ^m`.  Updating `vⱼ` updates only the entry `natAdd k j` of `(g, v)`, so `♭α` is
+multilinear; it is alternating because equal entries of `v` stay at distinct indices; it is
+continuous; and `‖♭α‖ ≤ (∏ᵢ ‖gᵢ‖) ‖α‖`, so `α ↦ ♭α` is bounded (`LinearMap.mkContinuous`).
+(b) For a continuous linear `Φ : Λᵃ → Λᵇ`, a test `a`-form `ω` and `t ∈ ℝᴾ`, `y ↦ Φ(ω(t + y))`
+is smooth and vanishes off the closed set `{y : t + y ∈ spt ω}`, the compact translate
+`spt ω − t`; hence it is a test form supported there.  This is the interior product `♭_g` of
+the product construction `[[E]] ×_g A` used to split off the spine of a cone. -/
+theorem Submission.dimred_cs_sos_mt_interior_product : ∀ P : ℕ, (∀ (k m n' : ℕ) (g : Fin k → Euclid P) (h : n' = k + m), ∃ flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m, ∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) ∧ ∀ (a b : ℕ) (flat : Covector (Euclid P) a →L[ℝ] Covector (Euclid P) b) (ω : DifferentialForm (Euclid P) a) (t : Euclid P), IsTestForm ω → IsTestForm (fun y => flat (ω (t + y))) ∧ tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω := by
+  intro P
+  refine ⟨fun k m n' g h => ?_, fun a b flat ω t hω => ?_⟩
+  · -- (a) the interior product with the frame `g`; first identify `n'` with `k + m`
+    subst h
+    -- the entries `castAdd m i` (from `g`) and `natAdd k j` (from `v`) are distinct
+    have hne : ∀ (i : Fin k) (j : Fin m), Fin.castAdd m i ≠ Fin.natAdd k j := by
+      intro i j hc
+      have hv := congrArg Fin.val hc
+      have hi := i.isLt
+      simp only [Fin.val_castAdd, Fin.val_natAdd] at hv
+      omega
+    -- updating `v` at `j` updates `Fin.append g v` at `natAdd k j` (for any `DecidableEq`)
+    have hupd : ∀ (_ : DecidableEq (Fin m)) (v : Fin m → Euclid P) (j : Fin m) (x : Euclid P),
+        Fin.append g (Function.update v j x) =
+          Function.update (Fin.append g v) (Fin.natAdd k j) x := by
+      intro _ v j x
+      funext z
+      induction z using Fin.addCases with
+      | left i => rw [Fin.append_left, Function.update_of_ne (hne i j), Fin.append_left]
+      | right j' =>
+        rw [Fin.append_right, Function.update_apply_of_injective _ (Fin.natAdd_injective m k)]
+        congr 1
+        funext i
+        rw [Fin.append_right]
+    -- `v ↦ Fin.append g v` is continuous: each entry is a constant `gᵢ` or a projection `vⱼ`
+    have hcont : Continuous fun v : Fin m → Euclid P => Fin.append g v := by
+      refine continuous_pi fun z => ?_
+      induction z using Fin.addCases with
+      | left i => simp only [Fin.append_left]; exact continuous_const
+      | right j => simp only [Fin.append_right]; exact continuous_apply j
+    -- `♭α (v) = α (g, v)` is a continuous alternating map
+    let φ : Covector (Euclid P) (k + m) → Covector (Euclid P) m := fun α =>
+      { toFun := fun v => α (Fin.append g v)
+        map_update_add' := fun v j x y => by
+          simp only [hupd _ v j, α.map_update_add]
+        map_update_smul' := fun v j c x => by
+          simp only [hupd _ v j, α.map_update_smul]
+        cont := α.cont.comp hcont
+        map_eq_zero_of_eq' := fun v i j hv hij =>
+          α.map_eq_zero_of_eq (Fin.append g v) (i := Fin.natAdd k i) (j := Fin.natAdd k j)
+            (by rw [Fin.append_right, Fin.append_right]; exact hv)
+            ((Fin.natAdd_injective m k).ne hij) }
+    have hφ : ∀ α v, φ α v = α (Fin.append g v) := fun α v => rfl
+    -- `α ↦ ♭α` is linear
+    let L : Covector (Euclid P) (k + m) →ₗ[ℝ] Covector (Euclid P) m :=
+      { toFun := φ
+        map_add' := fun α β => by
+          ext v
+          simp only [hφ, ContinuousAlternatingMap.add_apply]
+        map_smul' := fun c α => by
+          ext v
+          simp only [hφ, ContinuousAlternatingMap.smul_apply, RingHom.id_apply] }
+    -- and bounded: `|α (g, v)| ≤ ‖α‖ ∏ᵢ ‖gᵢ‖ ∏ⱼ ‖vⱼ‖`, so `‖♭α‖ ≤ (∏ᵢ ‖gᵢ‖) ‖α‖`
+    have hbound : ∀ α, ‖L α‖ ≤ (∏ i, ‖g i‖) * ‖α‖ := by
+      intro α
+      refine ContinuousAlternatingMap.opNorm_le_bound _ (by positivity) fun v => ?_
+      calc ‖L α v‖ = ‖α (Fin.append g v)‖ := rfl
+        _ ≤ ‖α‖ * ∏ z, ‖Fin.append g v z‖ := α.le_opNorm _
+        _ = (∏ i, ‖g i‖) * ‖α‖ * ∏ j, ‖v j‖ := by
+          rw [Fin.prod_univ_add]
+          simp only [Fin.append_left, Fin.append_right]
+          ring
+    refine ⟨L.mkContinuous (∏ i, ‖g i‖) hbound, fun α v => ?_⟩
+    rw [LinearMap.mkContinuous_apply, Fin.cast_refl, Function.comp_id]
+    rfl
+  · -- (b) off `{y : t + y ∈ spt ω}` the form `ω (t + y)` vanishes, hence so does its image
+    have hsub : tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω := by
+      refine closure_minimal (fun y hy => ?_)
+        ((isClosed_tsupport ω).preimage (continuous_const.add continuous_id))
+      by_contra hy'
+      apply hy
+      show flat (ω (t + y)) = 0
+      rw [image_eq_zero_of_notMem_tsupport (f := ω) (x := t + y) hy', map_zero]
+    have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω := hω.1
+    -- `{y : t + y ∈ spt ω}` is the compact translate `spt ω − t`
+    have hK : IsCompact ((fun y => t + y) ⁻¹' tsupport ω) := by
+      have hK' := (Homeomorph.addLeft t).isCompact_preimage.mpr hω.2
+      rwa [Homeomorph.coe_addLeft] at hK'
+    refine ⟨⟨?_, ?_⟩, hsub⟩
+    · exact flat.contDiff.comp (hs.comp (contDiff_const.add contDiff_id))
+    · exact hK.of_isClosed_subset (isClosed_tsupport _) hsub
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
