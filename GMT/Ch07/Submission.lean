@@ -990,6 +990,25 @@ theorem Submission.cbr_cidc_dilation_massOn_image : ∀ (P m : ℕ) (a : Euclid 
     exact ⟨testFormOnInclusion hsub m φ₁, hφ₁,
       congrArg ENNReal.ofReal (hblow (testFormOnInclusion hsub m φ₁) φ₁ rfl)⟩
 
+/-- **Dilation calculus for currents in `ℝᴾ`** for `η = η_{a,λ}`, `η(y) = λ⁻¹(y − a)`, `λ > 0`
+(`η_{x,λ}` of Simon Ch. 3, 1.4, chapter-03.txt line 85; push-forward 6.2.23, chapter-06.txt
+lines 403–413; used for `η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt lines 329–337).
+`X' ∈ 𝒟ₘ(ℝᴾ)` is a dilation of `X` if `X'(ω) = λ⁻ᵐ X(ω')` whenever `ω' = ω ∘ η`.
+(1) every `X` has a dilation, `η_{a,λ#}X` (`cbr_cidc_dilation_exists_eq_blowUp`); (2) `∂X'` is a
+dilation of `∂X` (`cbr_cidc_dilation_boundary`); (3) a dilation of an integer multiplicity
+current is integer multiplicity (`cbr_cidc_dilation_isIntegerMultiplicity`); (4) if
+`X(ω) = ∫ ⟨ω(x), ξ(x)⟩ dμ(x)` then `X'(ω) = ∫ ⟨ω(y), ξ(a + λy)⟩ d(λ⁻ᵐ η_*μ)(y)`
+(`cbr_cidc_dilation_integral_rep`); (5) `M_{η(W)}(X') = λ⁻ᵐ M_W(X)`
+(`cbr_cidc_dilation_massOn_image`); (6) `Hᵐ(η(A)) = λ⁻ᵐ Hᵐ(A)` (`dtc_hausdorff_dilation` (i)). -/
+theorem Submission.dmcbr_ci_dilation_calculus : ∀ (P m : ℕ) (a : Euclid P) (lam : ℝ), 0 < lam → (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) m, ∃ X' : GeometricCurrentOn (univ : Set (Euclid P)) m, (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X' ω = lam⁻¹ ^ m * X ω')) ∧ (∀ X X' : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) (m + 1), (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) (m + 1)) y = (ω : DifferentialForm (Euclid P) (m + 1)) (dilation a lam y)) → X' ω = lam⁻¹ ^ (m + 1) * X ω') → ∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X'.boundary ω = lam⁻¹ ^ m * X.boundary ω') ∧ (∀ X X' : GeometricCurrentOn (univ : Set (Euclid P)) m, (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X' ω = lam⁻¹ ^ m * X ω') → IsIntegerMultiplicity X → IsIntegerMultiplicity X') ∧ (∀ (X X' : GeometricCurrentOn (univ : Set (Euclid P)) m) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P m), (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X' ω = lam⁻¹ ^ m * X ω') → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μ) → ∀ ω : TestFormOn (univ : Set (Euclid P)) m, X' ω = ∫ y, ξ (a + lam • y) ((ω : DifferentialForm (Euclid P) m) y) ∂(ENNReal.ofReal (lam⁻¹ ^ m) • Measure.map (dilation a lam) μ)) ∧ (∀ X X' : GeometricCurrentOn (univ : Set (Euclid P)) m, (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) m, (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) m) y = (ω : DifferentialForm (Euclid P) m) (dilation a lam y)) → X' ω = lam⁻¹ ^ m * X ω') → ∀ W : Set (Euclid P), X'.massOn (dilation a lam '' W) = ENNReal.ofReal (lam⁻¹ ^ m) * X.massOn W) ∧ (∀ A : Set (Euclid P), μHE[m] (dilation a lam '' A) = ENNReal.ofReal (lam⁻¹ ^ m) * μHE[m] A) := by
+  intro P m a lam hlam
+  exact ⟨(Submission.cbr_cidc_dilation_exists_eq_blowUp P m a lam hlam).1,
+    Submission.cbr_cidc_dilation_boundary P m a lam hlam,
+    Submission.cbr_cidc_dilation_isIntegerMultiplicity P m a lam hlam,
+    Submission.cbr_cidc_dilation_integral_rep P m a lam hlam,
+    Submission.cbr_cidc_dilation_massOn_image P m a lam hlam,
+    (Submission.dtc_hausdorff_dilation P m a lam hlam).1⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
