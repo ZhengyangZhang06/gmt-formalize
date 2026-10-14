@@ -578,6 +578,36 @@ theorem Submission.cbr_ci_cp_fp_tsum_weight_le_one : ∀ (P n : ℕ) (ν : Measu
         rw [← same_add_div (sub_pos.mpr hR).ne', sub_add_cancel])
     simpa using ENNReal.tendsto_ofReal (h2.pow n)
   exact ge_of_tendsto hlim ((eventually_gt_atTop M).mono key)
+/-- A finite sum `ν = ∑ᵢ (αᵢ)₊ Hⁿ⌞(wᵢ + V)` of planes parallel to `V`, with offsets `wᵢ ∈ Vᗮ`,
+that charges every ball `B_r(0)` has a plane through `0`: some `wᵢ = 0` (used in the proof that
+the limit in Simon 7.2.4 is integer multiplicity, Remark 7.2.5(1)).  Otherwise pick
+`0 < r < ‖wᵢ‖` for all `i`; for `y ∈ wᵢ + V`, Pythagoras gives `‖y‖² = ‖y - wᵢ‖² + ‖wᵢ‖² > r²`,
+so every plane misses `B_r(0)` and `ν(B_r(0)) = 0`. -/
+theorem Submission.cbr_ci_cp_fp_exists_offset_eq_zero : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (N : ℕ) (w : Fin N → Euclid P) (α : Fin N → ℝ), (∀ i, w i ∈ Vᗮ) → ν = ∑ i, ENNReal.ofReal (α i) • (μHE[n]).restrict {y : Euclid P | y - w i ∈ V} → (∀ r : ℝ, 0 < r → 0 < ν (ball 0 r)) → ∃ i, w i = 0 := by
+  intro P n ν V N w α hw hν hpos
+  by_contra hne
+  -- a radius `0 < r < ‖w i‖` for each of the finitely many offsets `w i ≠ 0`
+  obtain ⟨r, hr, hrw⟩ : ∃ r : ℝ, 0 < r ∧ ∀ i, r < ‖w i‖ :=
+    ((eventually_mem_nhdsWithin : ∀ᶠ r in 𝓝[>] (0 : ℝ), r ∈ Ioi 0).and
+      (eventually_all.2 fun i => nhdsWithin_le_nhds
+        (eventually_lt_nhds (norm_pos_iff.2 fun hi => hne ⟨i, hi⟩)))).exists
+  -- by Pythagoras (`w i ∈ Vᗮ`), every plane `{y | y - w i ∈ V}` misses `B_r(0)`
+  have hmiss : ∀ i, ball (0 : Euclid P) r ∩ {y : Euclid P | y - w i ∈ V} = ∅ := by
+    intro i
+    refine eq_empty_iff_forall_notMem.2 fun y ⟨hy, ht⟩ => ?_
+    rw [mem_ball_zero_iff] at hy
+    have hpyth := norm_add_sq_eq_norm_sq_add_norm_sq_real
+      (Submodule.inner_right_of_mem_orthogonal (show y - w i ∈ V from ht) (hw i))
+    rw [sub_add_cancel] at hpyth
+    have hlt : ‖y‖ < ‖w i‖ := hy.trans (hrw i)
+    nlinarith [norm_nonneg y, mul_self_nonneg ‖y - w i‖]
+  -- hence `ν(B_r(0)) = 0`, contradicting the positivity hypothesis
+  have hzero : ν (ball 0 r) = 0 := by
+    rw [hν, Measure.finsetSum_apply]
+    refine Finset.sum_eq_zero fun i _ => ?_
+    rw [Measure.smul_apply, Measure.restrict_apply measurableSet_ball, hmiss i, measure_empty,
+      smul_zero]
+  exact (hpos r hr).ne' hzero
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
