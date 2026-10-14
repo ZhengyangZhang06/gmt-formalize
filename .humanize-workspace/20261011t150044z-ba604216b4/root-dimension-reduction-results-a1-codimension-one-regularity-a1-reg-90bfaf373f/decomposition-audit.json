@@ -1,0 +1,119 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "de.?giorgi|bv.*compactness|compactness.*bv|halfspace.*rigid|rectifiable.*flat",
+        "theorem (simon_theorem_4_14|.*aemeasurable_of_caratheodory)|def (CountablyRectifiable|HasApproximateTangentSpaceAt|blowUpMap)|theorem countablyRectifiable|theorem CountablyRectifiable.mono|sorry|axiom",
+        "theorem (ae_tendsto_average|ae_tendsto_rnDeriv|ae_tendsto_measure_inter_div|exists_disjoint_subfamily_covering_enlargement_closedBall|eLpNorm_le_eLpNorm_fderiv_one)|def euclideanHausdorffMeasure|theorem euclideanHausdorffMeasure_smul|unitBallVolume",
+        "codim1_rdo_dg_",
+        "codim1_rdo_rectifiable_ae_density_one",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/dg-independent-audit-ydhj7mxv/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/dg-independent-audit-ydhj7mxv/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/dg-independent-audit-ydhj7mxv/Sources.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/GeneralDifferentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/FinitePerimeter.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-90bfaf373f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-90bfaf373f/decomposition-v1.json",
+        "/tmp/dg-independent-audit-ydhj7mxv/Types.lean",
+        "/tmp/dg-independent-audit-ydhj7mxv/Assembly.lean",
+        "/tmp/dg-independent-audit-ydhj7mxv/Sources.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected De Giorgi theorem. Project, Mathlib and SimonGMT revisions match the pins. The snapshot supplies the required Riesz representation, differentiation, Sobolev inequality and Hausdorff normalization; the other chapter contracts merely specify BV compactness and De Giorgi behind sorry-backed main declarations, which were not reused. All twelve exact one-line propositions independently elaborate as Prop without declaring any child. Their types contain no implementation-dependent references. Names are bare, distinct and unreserved: no collisions in the 720-node DAG or 171 inspected active-branch proposal files, and no accepted-type reuse is proposed. Dependencies are acyclic and correctly directed. The immutable handoff already declares rectifiable_density_one as a prerequisite; its exact specialization supplies RD. An independently compiled assembly derives the exact selected parent from explicit child and prerequisite hypotheses, including local finiteness and Gauss–Green. That assembly and the checked library results use only propext, Classical.choice and Quot.sound. Euclidean norms, divergence, scalar powers and μHE normalization match the prose; no Matrix/IsUnit construction occurs. Public mathematical cross-check: [Simon, Chapter 3 §4, Theorem 4.3](https://web.stanford.edu/class/math285/ts-gmt.pdf#page=44)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "gauss_green_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches all hypotheses and conclusions. Controlled mollification constructs the locally bounded functional; Riesz on D, Borel representative transfer and unit modification establish the exact representation. Dimension m+1 guarantees the required unit vector."
+    },
+    {
+      "key": "normal_average_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact exhaustion correctly reduces to finite measures, avoiding an unjustified global local-finiteness assumption. Differentiation and small-ball localization prove the exact closed-ball, toReal-normalized average assertion."
+    },
+    {
+      "key": "cutoff_estimates",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The C¹ cutoff and signed layer-cake argument justify both annular bounds. The complement has normal −ν, and choosing δ=ρ yields the stated upper density with valid constants and radii."
+    },
+    {
+      "key": "sobolev_perimeter",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The product-rule estimate and symmetric-convolution duality establish the derivative bound. GNS and Fatou give the exact real-power inequality; m≥1 ensures valid exponents, and the chosen constant is strictly positive."
+    },
+    {
+      "key": "volume_density_lower",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both declared dependencies apply with their exact hypotheses. Positivity, the finite-difference inequality and the telescoping AM–GM argument rigorously yield the lower bound; repeating for the complement proves the second conclusion."
+    },
+    {
+      "key": "bv_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The eventual uniform test-field bound gives the stated mollification estimate. Total boundedness, diagonal extraction and compatible Borel indicator representatives produce a strictly increasing subsequence and convergence for every real R, including R≤0."
+    },
+    {
+      "key": "halfspace_rigidity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Translation identities correctly establish tangential invariance and upward normal monotonicity. The density-point argument supplies a finite threshold when neither trivial alternative holds, with the correct inward-normal sign and global null symmetric difference."
+    },
+    {
+      "key": "blowup_halfspace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The r⁻ᵐ rescaling and normal-defect estimates are correct. Compactness and rigidity classify subsequential limits; two-sided volume bounds exclude trivial and displaced half-spaces. The final sequence argument proves convergence of the entire family using the four declared dependencies."
+    },
+    {
+      "key": "tangent_measure_ae",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The good-point set is independent of the test function, matching the quantified a.e. conclusion. Half-space Gauss–Green, rescaling and the normal-defect estimate give scalar convergence; uniform approximation extends it to every continuous compactly supported test with the correct μHE normalization."
+    },
+    {
+      "key": "flat_tangent_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local finiteness makes the cutoff integrals legitimate. The ball sandwiches prove both extended-real density limits; the cone-neighborhood estimate tends to zero because m≥1. All hypotheses and normalizations match the frozen type."
+    },
+    {
+      "key": "rectifiable_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite-measure localization justifies Borel parameter estimates and inner regularity. Rational-radius uniformization, the explicit cone contradiction, Lipschitz graph extensions and iterative halving construct the required Borel rectifiable carrier without invoking the parent theorem."
+    },
+    {
+      "key": "hausdorff_identification",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The covering arguments establish local Hausdorff finiteness and absolute continuity before identification. Explicit RD and localized Radon–Nikodym differentiation yield μ=μHE[m].restrict B without circularity. Similarity scaling then proves the exact Simon approximate-tangent predicate."
+    }
+  ],
+  "required_changes": []
+}
