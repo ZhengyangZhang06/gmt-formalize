@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b14270ebec39922137dc1a1cda7d2c7123fbeefaa8e6e8ac0a554e1e51fa3ce1",
+  "git_delta": {
+    "base_commit": "0f7001246bf47865a89615b42645431b64b6fef4",
+    "candidate_commit": "aba2f0e1b9d685ca378d7966c9df35f4052de765",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_proj_pullback_extension",
+    "diff_sha256": "d1d65fad093c94b017ceec37f9042636dc9de0c2b3a532ddcbc428e45bd9136a",
+    "source_sha256": "11409771c4de7a35683e632debe2b042bcc4ea3405c47b9f9b745495b3eeb342",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_proj_pullback_extension",
+      "statement": "∀ (P m l : ℕ) (pL : Euclid P →L[ℝ] Euclid m) (S O : Set (Euclid P)) (γ : DifferentialForm (Euclid m) l), ContDiff ℝ (⊤ : ℕ∞) γ → IsOpen O → IsCompact (S ∩ pL ⁻¹' tsupport γ) → S ∩ pL ⁻¹' tsupport γ ⊆ O → ∃ γ' : TestFormOn (univ : Set (Euclid P)) l, tsupport (γ' : DifferentialForm (Euclid P) l) ⊆ O ∧ (∀ x, covectorEuclideanNorm ((γ' : DifferentialForm (Euclid P) l) x) ≤ covectorEuclideanNorm ((γ (pL x)).compContinuousLinearMap pL)) ∧ (∀ x ∈ S, (γ' : DifferentialForm (Euclid P) l) x = (γ (pL x)).compContinuousLinearMap pL) ∧ ∀ x ∈ S, exteriorDerivative (γ' : DifferentialForm (Euclid P) l) x = (exteriorDerivative γ (pL x)).compContinuousLinearMap pL",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
