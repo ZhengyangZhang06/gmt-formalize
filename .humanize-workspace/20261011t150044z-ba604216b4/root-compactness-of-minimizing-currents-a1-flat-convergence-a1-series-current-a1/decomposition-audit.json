@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'covectorEuclideanNorm|massAdmissibleOn|TestFormOnConverges|GeometricCurrentOn.mass' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT --glob '*.lean'",
+        "rg -n -A 35 -B 5 'def covectorEuclideanNorm|def massAdmissibleOn|def massOn|def mass |theorem le_massOn' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "rg -n -A 28 -B 6 'def testFormOnSubmodule|def TestFormOnConverges|abbrev CurrentOn|structure GeometricCurrentOn|instance.*GeometricCurrentOn|def IsSmoothForm|def IsTestForm|abbrev Covector' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "summable_toReal|tsum_toReal_eq|ne_top_of_tsum_ne_top|ofReal_tsum_of_nonneg|ofReal_le_iff_le_toReal|ofReal_max|of_norm_bounded|tsum_le_tsum|norm_tsum_le_tsum_norm|bounded_above_of_compact_support",
+        "git diff bfb7b24d1fcd2b1d9024388b8bb4a12bef38429b f492ba4a003c8f1324077e050d48667ae23c7100 -- GMT/Ch07/Submission.lean",
+        "git diff e402436da01b2f74514afe11aa446d6a1e509b06 8d68dfd93a5a51671384c6648f0ebabf56bd95bd -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmc_fc_sc_independent_audit_i_j9ae2u/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmc_fc_sc_independent_audit_i_j9ae2u/AllAxioms.lean",
+        "sed -n '168,180p;218,253p;2107,2130p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/InfiniteSum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-current-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-current-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-456fc8281b/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmc_fc_series_current_decomposition/FullFromJson.lean",
+        "/tmp/cmc_fc_sc_independent_audit_i_j9ae2u/FrozenTypes.lean",
+        "/tmp/cmc_fc_sc_independent_audit_i_j9ae2u/AllAxioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+      ],
+      "conclusion": "The split is appropriate for the selected series-current theorem. The snapshot project search returned no matching definitions; the pinned SimonGMT package supplies precisely the stated coefficient norm, test-form convergence, currents and mass. Snapshot/workspace contracts and inspected snapshot/installed Mathlib files agree. Both reused declarations have successful comparator records, identical frozen types and proofs matching their immutable candidates; the three new names have no DAG occurrences. All names are bare identifiers. Dependencies are correctly directed and acyclic: coeff_bound and abs_le_mass require norm_props; bounded_current requires norm_props and uniform_small. Every frozen proposition independently elaborates without child implementations. Coercion checks confirm real absolute value, the intended scalar action, current evaluation through toCurrent, and the exact linear-map field type. The supplied proofs and conditional assembly compile, proving the exact selected parent, including HasSum and its mass bound. Each child and the assembled parent depend only on propext, Classical.choice and Quot.sound. No circular reliance, missing hypothesis, or further proof-planning obligation was found."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches all four Lean conjuncts. The coefficient-vector construction proves additivity and homogeneity; the operator-norm estimate gives the stated nonnegative constant, and the difference estimate proves continuity. The argument covers all P and n without dimensional restrictions. Reuse is valid: the frozen type is identical to the comparator-accepted declaration, whose proof has no parent dependency."
+    },
+    {
+      "key": "uniform_small",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact convergence hypothesis supplies the compact set and support containment. Vanishing outside that set, together with uniform convergence of order-zero derivatives and their norm identity, proves the global eventual bound. All conclusion conjuncts are established for arbitrary U. The reused declaration has an identical comparator-accepted type and no dependencies."
+    },
+    {
+      "key": "coeff_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly states the positive global coefficient bound. Smoothness gives continuity; norm_props gives continuity of the coefficient norm; its value at zero preserves compact support. The cited boundedness lemma then supplies C, and max(C,0)+1 is a positive bound. Only the declared norm_props dependency is needed."
+    },
+    {
+      "key": "abs_le_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type contain all required hypotheses, particularly c>0 and finite mass. Homogeneity makes both signed rescalings admissible, le_massOn bounds their evaluations, and finite mass justifies conversion to toReal. Linearity and multiplication by positive c yield both inequalities required for the absolute-value bound. No series-current theorem is used."
+    },
+    {
+      "key": "bounded_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the bounded-functional statement; no extra A≥0 hypothesis is needed because the proof derives it from the zero form. The declared dependencies provide the coefficient/operator-norm comparison and global uniform smallness. The explicit positive epsilon gives the required convergence to zero, supplying exactly GeometricCurrentOn.continuous'. Constructing Y with toCurrent=L proves the evaluation equality definitionally."
+    }
+  ],
+  "required_changes": []
+}
