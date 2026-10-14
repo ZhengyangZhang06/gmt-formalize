@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "bd60a8765f1ed003a218c4ed4db061eea236f3417e9b44c07d52ddbb5e0d26d5",
+  "git_delta": {
+    "base_commit": "bb1a53d4cb0b3de74389f7ecb377b99ea6733e71",
+    "candidate_commit": "594767533a275ee5cf34ab7fbe3fea03af4d081a",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "5a4b08dbaf79467bfc70c57c11445e40a8488b6440c478f43cab8f10d21c9251",
+    "source_sha256": "5b75e21c9c13e8a504ca3cb1debe8064c150f028a830dfb16ace301091eb9633",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_cc_zero_current_finite_sum",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) 0), IsIntegerMultiplicity S → IsCompact S.support → ∃ (F : Finset (Euclid P)) (m : Euclid P → ℤ), (↑F : Set (Euclid P)) ⊆ S.support ∧ ∀ g : TestFormOn (univ : Set (Euclid P)) 0, S g = ∑ x ∈ F, (m x : ℝ) * (g : DifferentialForm (Euclid P) 0) x (fun i => i.elim0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
