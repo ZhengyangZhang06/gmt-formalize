@@ -2779,6 +2779,175 @@ theorem Submission.codim1_hcp_sc_fderivWithin_tangent_eq : ∀ (P : ℕ) (E : Ty
   exact LinearMap.eqOn_span (f := (fderivWithin ℝ f M x : Euclid P →ₗ[ℝ] E))
     (g := (f' : Euclid P →ₗ[ℝ] E)) (fun w hw => huniq (hcone hw)) hv
 
+/-- **Weingarten map and Codazzi equations of a hypersurface** (Simon, Appendix B, B.4–B.5,
+p. 231; cf. Ch. 2, 4.26).  Let `M ⊆ A₀` be an `m`-dimensional submanifold of the
+`(m + 1)`-dimensional subspace `A₀`, `C^r` for every `r`, with unit normal `ν` in `A₀` that is
+`C^∞` on an open `O ⊇ M`, and let `C(y) = Dν(y) ∘ P_y`.  For `x ∈ M` and `a, b, d ∈ T_xM`:
+(i) `Dν(x)a ∈ T_xM`; (ii) `Dν(x)a · b = Dν(x)b · a` (B.4); (iii) `(D_aC)(b) · d = (D_bC)(a) · d`
+(Codazzi, B.5); (iv) `(D_aC)(b) · d = (D_aC)(d) · b`.
+(i): differentiate `ν(γ(t)) ∈ A₀` and `|ν(γ(t))|² = 1` along a curve `γ` with `γ'(0) = a`, and
+use `T_xM = A₀ ∩ ν(x)^⊥` (`Submission.codim1_hcp_sc_tangent_normal_complement`).  (ii): in a
+`C²` chart `ψ`, differentiate `ν(ψ(v)) · Dψ(v)e = 0` and use the symmetry of `D²ψ`.  On `M`,
+`C = C̃ := Dν ∘ (Π − ν ⊗ ν)`, which is differentiable at `x`, so `D_aC = DC̃(x)a`
+(`Submission.codim1_hcp_sc_fderivWithin_tangent_eq`) and
+`(D_aC)(b) = D²ν(x)(a, b) − (Dν(x)a · b) Dν(x)ν(x)`; (iii) follows from the symmetry of
+`D²ν(x)` and (ii).  (iv): by (i) and (ii), `C(y)u · w = C(y)w · u` for `y ∈ M`; differentiate
+this identity along `M`. -/
+theorem Submission.codim1_hcp_sc_weingarten_codazzi : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, ∀ a ∈ tangentSpace M x, ∀ b ∈ tangentSpace M x, fderiv ℝ ν x a ∈ tangentSpace M x ∧ inner ℝ (fderiv ℝ ν x a) b = inner ℝ (fderiv ℝ ν x b) a ∧ ∀ d ∈ tangentSpace M x, inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x a b) d = inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x b a) d ∧ inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x a b) d = inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x a d) b := by
+  intro P m A₀ M ν hA hMA hM hO hν x hx a ha b hb
+  obtain ⟨O, hOo, hMO, hνO⟩ := hO
+  -- Step 0: `T_y = {v ∈ A₀ : ν(y) · v = 0}` and `P_y w = Π w − (ν(y) · w) ν(y)` on `M`
+  have hNC := Submission.codim1_hcp_sc_tangent_normal_complement P m A₀ M ν hA hMA (hM 1) hν
+  -- `ν` is `C^∞` near every point of `M`
+  have hνc : ∀ y ∈ M, ContDiffAt ℝ (⊤ : ℕ∞) ν y := fun y hy =>
+    hνO.contDiffAt (hOo.mem_nhds (hMO hy))
+  have hνd : ∀ y ∈ M, HasFDerivAt ν (fderiv ℝ ν y) y := fun y hy =>
+    ((hνc y hy).differentiableAt (by simp)).hasFDerivAt
+  -- `T_y` is a linear subspace, so `span T_y = T_y`
+  have hspan : ∀ y ∈ M, ∀ v ∈ Submodule.span ℝ (tangentSpace M y), v ∈ tangentSpace M y := by
+    intro y hy v hv
+    rw [(hNC y hy).1] at hv ⊢
+    induction hv using Submodule.span_induction with
+    | mem w hw => exact hw
+    | zero => exact ⟨A₀.zero_mem, inner_zero_right _⟩
+    | add u w _ _ hu hw =>
+      exact ⟨A₀.add_mem hu.1 hw.1, by rw [inner_add_right, hu.2, hw.2, add_zero]⟩
+    | smul c u _ hu => exact ⟨A₀.smul_mem c hu.1, by rw [inner_smul_right, hu.2, mul_zero]⟩
+  -- Step 1 (i): `Dν(y) a ∈ T_y`, differentiating `ν(γ(t)) ∈ A₀` and `|ν(γ(t))|² = 1`
+  have hi : ∀ y ∈ M, ∀ a ∈ tangentSpace M y, fderiv ℝ ν y a ∈ tangentSpace M y := by
+    intro y hy a ha
+    obtain ⟨γ, -, hγM, hγ0, hγa⟩ := ha
+    have hc : HasDerivAt (ν ∘ γ) (fderiv ℝ ν y a) 0 :=
+      (hνd y hy).comp_hasDerivAt_of_eq 0 hγa hγ0.symm
+    have hI : Ioo (-1 : ℝ) 1 ∈ 𝓝 (0 : ℝ) := Ioo_mem_nhds (by norm_num) (by norm_num)
+    have h0I : (0 : ℝ) ∈ Ioo (-1 : ℝ) 1 := ⟨by norm_num, by norm_num⟩
+    rw [(hNC y hy).1]
+    refine ⟨?_, ?_⟩
+    · -- the difference quotients of `ν ∘ γ` lie in the closed subspace `A₀`
+      refine A₀.closed_of_finiteDimensional.mem_of_tendsto hc.tendsto_slope ?_
+      filter_upwards [nhdsWithin_le_nhds hI] with t ht
+      rw [slope_def_module]
+      exact A₀.smul_mem _ (A₀.sub_mem (hν _ (hγM ht)).1 (hν _ (hγM h0I)).1)
+    · -- `|ν ∘ γ|² = 1` near `0`, so `2 ν(y) · Dν(y) a = 0`
+      have hconst : (fun t => ‖(ν ∘ γ) t‖ ^ 2) =ᶠ[𝓝 0] fun _ => (1 : ℝ) := by
+        filter_upwards [hI] with t ht
+        simp [(hν _ (hγM ht)).2.1]
+      have h0 := hc.norm_sq.unique ((hasDerivAt_const (0 : ℝ) (1 : ℝ)).congr_of_eventuallyEq hconst)
+      simp only [Function.comp_apply, hγ0] at h0
+      linarith
+  -- Step 2 (ii): `Dν(y) a · b = Dν(y) b · a`, from a `C²` chart and the symmetry of `D²ψ`
+  have hii : ∀ y ∈ M, ∀ a ∈ tangentSpace M y, ∀ b ∈ tangentSpace M y,
+      inner ℝ (fderiv ℝ ν y a) b = inner ℝ (fderiv ℝ ν y b) a := by
+    intro y hy a ha b hb
+    obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himg, hprop, hder⟩ := hM 2 y hy
+    obtain ⟨v₀, hv₀, rfl⟩ : y ∈ ψ '' V := by rw [himg]; exact ⟨hyW, hy⟩
+    have hT : ∀ v ∈ V, tangentSpace M (ψ v) = range (fderiv ℝ ψ v) := fun v hv =>
+      Submission.chart_tangentSpace_eq_range_fderiv P m 2 M W V ψ v (by norm_num) hV hW hψ hinj
+        himg hprop hder hv
+    rw [hT v₀ hv₀] at ha hb
+    obtain ⟨e₁, rfl⟩ := ha
+    obtain ⟨e₂, rfl⟩ := hb
+    have hψc := hψ.contDiffAt (hV.mem_nhds hv₀)
+    have hψd : HasFDerivAt ψ (fderiv ℝ ψ v₀) v₀ := (hψc.differentiableAt (by simp)).hasFDerivAt
+    have hDψd : HasFDerivAt (fderiv ℝ ψ) (fderiv ℝ (fderiv ℝ ψ) v₀) v₀ :=
+      ((hψc.fderiv_right (m := 1) (by norm_num)).differentiableAt (by simp)).hasFDerivAt
+    have hsymm : IsSymmSndFDerivAt ℝ ψ v₀ := hψc.isSymmSndFDerivAt (by simp)
+    -- `v ↦ ν(ψ(v)) · Dψ(v) e` vanishes on `V`; its derivative in direction `e'` at `v₀`
+    have key : ∀ e e' : Euclid m, inner ℝ (ν (ψ v₀)) (fderiv ℝ (fderiv ℝ ψ) v₀ e' e) +
+        inner ℝ (fderiv ℝ ν (ψ v₀) (fderiv ℝ ψ v₀ e')) (fderiv ℝ ψ v₀ e) = 0 := by
+      intro e e'
+      have hzero : (fun v => inner ℝ ((ν ∘ ψ) v) (fderiv ℝ ψ v e)) =ᶠ[𝓝 v₀] fun _ => (0 : ℝ) := by
+        filter_upwards [hV.mem_nhds hv₀] with v hv
+        have hvM : ψ v ∈ M := (himg ▸ mem_image_of_mem ψ hv : ψ v ∈ W ∩ M).2
+        exact (hν (ψ v) hvM).2.2 _ (by rw [hT v hv]; exact mem_range_self e)
+      have hd := ((hνd (ψ v₀) hy).comp v₀ hψd).inner ℝ (hDψd.clm_apply (hasFDerivAt_const e v₀))
+      have h0 := congrArg (fun L => L e')
+        (hd.unique ((hasFDerivAt_const (0 : ℝ) v₀).congr_of_eventuallyEq hzero))
+      simpa using h0
+    have h1 := key e₂ e₁
+    have h2 := key e₁ e₂
+    rw [hsymm e₁ e₂] at h1
+    linarith
+  -- Step 3: `C = C̃` on `M`, where `C̃(y) = Dν(y) ∘ (Π − ν(y) ⊗ ν(y))` is differentiable at `x`
+  set Ct : Euclid P → (Euclid P →L[ℝ] Euclid P) := fun y =>
+    (fderiv ℝ ν y).comp (A₀.starProjection - (innerSL ℝ (ν y)).smulRight (ν y)) with hCt
+  have hCeq : ∀ y ∈ M,
+      (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection = Ct y := by
+    intro y hy
+    refine ContinuousLinearMap.ext fun w => ?_
+    simp [hCt, (hNC y hy).2 w]
+  have hν1 : ContDiffAt ℝ 1 ν x := (hνc x hx).of_le (by simp)
+  have hDν1 : ContDiffAt ℝ 1 (fderiv ℝ ν) x := (hνc x hx).fderiv_right (by simp)
+  have hD2 : HasFDerivAt (fderiv ℝ ν) (fderiv ℝ (fderiv ℝ ν) x) x :=
+    (hDν1.differentiableAt (by simp)).hasFDerivAt
+  have hCtd : HasFDerivAt Ct (fderiv ℝ Ct x) x := by
+    have hCt1 : ContDiffAt ℝ 1 Ct x := hDν1.clm_comp (contDiffAt_const.sub
+      ((((innerSL ℝ : Euclid P →L[ℝ] Euclid P →L[ℝ] ℝ).contDiff.contDiffAt).comp x hν1).smulRight
+        hν1))
+    exact (hCt1.differentiableAt (by simp)).hasFDerivAt
+  -- `D_a C = DC̃(x) a` for `a ∈ T_x` (sibling `tangent_fderiv`)
+  have hDC : ∀ a' ∈ tangentSpace M x, fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp
+      (Submodule.span ℝ (tangentSpace M y)).starProjection) M x a' = fderiv ℝ Ct x a' :=
+    fun a' ha' => Submission.codim1_hcp_sc_fderivWithin_tangent_eq P (Euclid P →L[ℝ] Euclid P) M _ _
+      x (hCtd.hasFDerivWithinAt.congr hCeq (hCeq x hx)) a' (Submodule.subset_span ha')
+  have hmemT : ∀ v ∈ tangentSpace M x, v ∈ A₀ ∧ inner ℝ (ν x) v = 0 := fun v hv => by
+    rw [(hNC x hx).1] at hv
+    exact hv
+  -- `(D_a C)(b) = D²ν(x)(a, b) − (Dν(x) a · b) Dν(x) ν(x)` for `b ∈ A₀` with `ν(x) · b = 0`
+  have hformula : ∀ a' b', b' ∈ A₀ → inner ℝ (ν x) b' = 0 → fderiv ℝ Ct x a' b' =
+      fderiv ℝ (fderiv ℝ ν) x a' b' - inner ℝ (fderiv ℝ ν x a') b' • fderiv ℝ ν x (ν x) := by
+    intro a' b' hbA hbν
+    have hF : (fun y => Ct y b') =
+        fun y => fderiv ℝ ν y b' - inner ℝ (ν y) b' • fderiv ℝ ν y (ν y) := by
+      funext y
+      simp [hCt, Submodule.starProjection_eq_self_iff.mpr hbA]
+    have h1 := hCtd.clm_apply (hasFDerivAt_const b' x)
+    rw [hF] at h1
+    have h2 := (hD2.clm_apply (hasFDerivAt_const b' x)).sub
+      (((hνd x hx).inner ℝ (hasFDerivAt_const b' x)).smul (hD2.clm_apply (hνd x hx)))
+    have h3 := congrArg (fun L => L a') (h1.unique h2)
+    simpa [hbν] using h3
+  have hsymmν : IsSymmSndFDerivAt ℝ ν x := (hνc x hx).isSymmSndFDerivAt (by simp)
+  refine ⟨hi x hx a ha, hii x hx a ha b hb, fun d hd => ⟨?_, ?_⟩⟩
+  · -- Step 4 (iii), Codazzi: symmetry of `D²ν(x)` and (ii)
+    rw [hDC a ha, hDC b hb, hformula a b (hmemT b hb).1 (hmemT b hb).2,
+      hformula b a (hmemT a ha).1 (hmemT a ha).2, hsymmν a b, hii x hx a ha b hb]
+  · -- Step 5 (iv): `C(y) u · w = C(y) w · u` on `M`; differentiate along `M`
+    have hsymC : ∀ y ∈ M, ∀ u w : Euclid P, inner ℝ (Ct y u) w = inner ℝ (Ct y w) u := by
+      intro y hy u w
+      rw [← hCeq y hy]
+      set K := Submodule.span ℝ (tangentSpace M y)
+      have hPu : K.starProjection u ∈ tangentSpace M y :=
+        hspan y hy _ (K.starProjection_apply_mem u)
+      have hPw : K.starProjection w ∈ tangentSpace M y :=
+        hspan y hy _ (K.starProjection_apply_mem w)
+      have h1 : fderiv ℝ ν y (K.starProjection u) ∈ K := Submodule.subset_span (hi y hy _ hPu)
+      have h2 : fderiv ℝ ν y (K.starProjection w) ∈ K := Submodule.subset_span (hi y hy _ hPw)
+      simp only [ContinuousLinearMap.comp_apply]
+      calc inner ℝ (fderiv ℝ ν y (K.starProjection u)) w
+          = inner ℝ (K.starProjection (fderiv ℝ ν y (K.starProjection u))) w := by
+            rw [Submodule.starProjection_eq_self_iff.mpr h1]
+        _ = inner ℝ (fderiv ℝ ν y (K.starProjection u)) (K.starProjection w) :=
+            K.inner_starProjection_left_eq_right _ _
+        _ = inner ℝ (fderiv ℝ ν y (K.starProjection w)) (K.starProjection u) :=
+            hii y hy _ hPu _ hPw
+        _ = inner ℝ (K.starProjection (fderiv ℝ ν y (K.starProjection w))) u :=
+            (K.inner_starProjection_left_eq_right _ _).symm
+        _ = inner ℝ (fderiv ℝ ν y (K.starProjection w)) u := by
+            rw [Submodule.starProjection_eq_self_iff.mpr h2]
+    have hs0 : EqOn (fun y => inner ℝ (Ct y b) d - inner ℝ (Ct y d) b) (fun _ => (0 : ℝ)) M :=
+      fun y hy => sub_eq_zero.mpr (hsymC y hy b d)
+    have hsd : HasFDerivAt (fun y => inner ℝ (Ct y b) d - inner ℝ (Ct y d) b) _ x :=
+      ((hCtd.clm_apply (hasFDerivAt_const b x)).inner ℝ (hasFDerivAt_const d x)).sub
+        ((hCtd.clm_apply (hasFDerivAt_const d x)).inner ℝ (hasFDerivAt_const b x))
+    have e1 := Submission.codim1_hcp_sc_fderivWithin_tangent_eq P ℝ M _ _ x
+      ((hasFDerivWithinAt_const (0 : ℝ) x M).congr hs0 (hs0 hx)) a (Submodule.subset_span ha)
+    have e2 := Submission.codim1_hcp_sc_fderivWithin_tangent_eq P ℝ M _ _ x
+      hsd.hasFDerivWithinAt a (Submodule.subset_span ha)
+    rw [e1] at e2
+    rw [hDC a ha]
+    exact sub_eq_zero.mp (by simpa using e2.symm)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
