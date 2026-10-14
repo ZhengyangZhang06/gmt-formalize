@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aae9449c8647998cdd811940e047215b88855759675f4891970e468169170945",
+  "git_delta": {
+    "base_commit": "4120fab5f791ccbdb41c6d04e4ab5b600376fb30",
+    "candidate_commit": "c4815756d14ca48beff1e6ad5c2c26fda1831451",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbrz_approxTangent_finite_zero",
+    "diff_sha256": "3dfc41db9c6dae1a637af31a8cd245bc7d769162cb65f648682d041720a592e2",
+    "source_sha256": "612d9b3188372863fb4760b4e87c59f2511fea713339e0d3f70e3e80ecc2a543",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbrz_approxTangent_finite_zero",
+      "statement": "∀ (P : ℕ) (F : Set (Euclid P)) (y : Euclid P), F.Finite → y ∈ F → HasApproximateTangentSpaceAt 0 F y ⊥",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
