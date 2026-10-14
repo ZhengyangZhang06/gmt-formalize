@@ -1297,6 +1297,173 @@ theorem Submission.cbr_ci_cp_eval_comp_starProjection_eq : ∀ (P d : ℕ) (ζ :
   · rw [hcoef I hI]
   · obtain ⟨k, hk⟩ := not_forall.mp hI
     rw [hkill I k ((he (I k)).resolve_left hk), mul_zero, mul_zero]
+/-- `(2M+1)^r` lattice points of a subspace `V ⊆ ℝᴾ` of dimension `r`, pairwise at distance
+`≥ 2` and of norm `≤ 2M√r` (the packing step of the growth bound for the dimension of `V`).
+For an orthonormal basis `e` of `V`, `c ↦ Σⱼ cⱼ eⱼ` is a linear isometry `ℓ²(ℝʳ) ≃ V`; take
+`u_k = 2 Σⱼ kⱼ eⱼ` for `k` in the box `([−M, M] ∩ ℤ)ʳ`.  Distinct integer vectors differ by
+`≥ 1` in some coordinate, so `‖u_k − u_l‖ ≥ 2`, and `‖u_k‖² = Σⱼ (2kⱼ)² ≤ r(2M)²`. -/
+theorem Submission.cbr_ci_cp_gd_subspace_lattice_packing : ∀ (P : ℕ) (V : Submodule ℝ (Euclid P)) (M : ℕ), ∃ S : Finset (Euclid P), S.card = (2 * M + 1) ^ Module.finrank ℝ V ∧ (∀ x ∈ S, x ∈ V) ∧ (∀ x ∈ S, ‖x‖ ≤ 2 * M * Real.sqrt (Module.finrank ℝ V)) ∧ (∀ x ∈ S, ∀ y ∈ S, x ≠ y → 2 ≤ dist x y) := by
+  intro P V M
+  classical
+  -- orthonormal coordinates `e.repr.symm : ℓ²(ℝʳ) ≃ₗᵢ V` and the points `u_k = e.repr.symm (2k)`
+  let e := stdOrthonormalBasis ℝ V
+  let c : (Fin (Module.finrank ℝ V) → ℤ) → EuclideanSpace ℝ (Fin (Module.finrank ℝ V)) :=
+    fun k => WithLp.toLp 2 fun j => 2 * (k j : ℝ)
+  let u : (Fin (Module.finrank ℝ V) → ℤ) → Euclid P := fun k => (e.repr.symm (c k) : Euclid P)
+  have hnorm : ∀ k, ‖u k‖ = ‖c k‖ := fun k => by
+    simp only [u, Submodule.norm_coe, LinearIsometryEquiv.norm_map]
+  have hdist : ∀ k l, dist (u k) (u l) = dist (c k) (c l) := fun k l => by
+    simp only [dist_eq_norm, u, ← Submodule.coe_sub, ← map_sub, Submodule.norm_coe,
+      LinearIsometryEquiv.norm_map]
+  -- distinct integer vectors give points at distance `≥ 2`
+  have hsep : ∀ k l, k ≠ l → 2 ≤ dist (u k) (u l) := by
+    intro k l hkl
+    obtain ⟨j, hj⟩ := Function.ne_iff.mp hkl
+    have h1 : (1 : ℝ) ≤ |(k j : ℝ) - l j| := by
+      rw [← Int.cast_sub, ← Int.cast_abs]
+      exact_mod_cast Int.one_le_abs (sub_ne_zero.mpr hj)
+    calc (2 : ℝ) ≤ dist (c k j) (c l j) := by
+          simp only [c, Real.dist_eq, ← mul_sub, abs_mul, abs_two]
+          linarith
+      _ ≤ dist (c k) (c l) := PiLp.dist_apply_le _ _ _
+      _ = dist (u k) (u l) := (hdist k l).symm
+  have hinj : Function.Injective u := fun k l hkl => by
+    by_contra h
+    have := hsep k l h
+    rw [hkl, dist_self] at this
+    norm_num at this
+  -- the box `Λ_M = ([−M, M] ∩ ℤ)ʳ`
+  refine ⟨(Fintype.piFinset fun _ => Finset.Icc (-(M : ℤ)) M).image u, ?_, ?_, ?_, ?_⟩
+  · rw [Finset.card_image_of_injective _ hinj, Fintype.card_piFinset, Int.card_Icc,
+      Fin.prod_const]
+    congr 1
+    omega
+  · simp only [Finset.mem_image]
+    rintro x ⟨k, -, rfl⟩
+    exact (e.repr.symm (c k)).2
+  · simp only [Finset.mem_image, Fintype.mem_piFinset, Finset.mem_Icc]
+    rintro x ⟨k, hk, rfl⟩
+    rw [hnorm]
+    have hM : (0 : ℝ) ≤ 2 * M * Real.sqrt (Module.finrank ℝ V) := by positivity
+    refine (pow_le_pow_iff_left₀ (norm_nonneg _) hM two_ne_zero).mp ?_
+    rw [EuclideanSpace.norm_sq_eq, mul_pow, Real.sq_sqrt (Nat.cast_nonneg _)]
+    calc ∑ j, ‖c k j‖ ^ 2 ≤ ∑ _j : Fin (Module.finrank ℝ V), (2 * (M : ℝ)) ^ 2 := by
+          refine Finset.sum_le_sum fun j _ => ?_
+          rw [Real.norm_eq_abs, sq_abs]
+          have hkj : -(M : ℝ) ≤ k j ∧ (k j : ℝ) ≤ M :=
+            ⟨by exact_mod_cast (hk j).1, by exact_mod_cast (hk j).2⟩
+          simp only [c]
+          nlinarith [hkj.1, hkj.2]
+      _ = (2 * M) ^ 2 * Module.finrank ℝ V := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_comm]
+  · simp only [Finset.mem_image]
+    rintro x ⟨k, -, rfl⟩ y ⟨l, -, rfl⟩ hxy
+    exact hsep k l fun h => hxy (h ▸ rfl)
+/-- Packing count for unit balls translated along a subspace `V` (used in the proof of Simon 7.2.4,
+p. 184, to show that a measure with `ν(B_R(0)) ≤ C Rⁿ` that is invariant under the translations of
+`V` has `dim V ≤ n`): if `ν` is invariant under translation by every `v ∈ V`, and `S ⊆ V` is finite
+with `‖x‖ ≤ ρ` for `x ∈ S` and `dist x y ≥ 2` for distinct `x, y ∈ S`, then
+`#S · ν(B_1(0)) ≤ ν(B_{ρ+1}(0))`.  Each `B_1(x) = {y : -x + y ∈ B_1(0)}` has measure `ν(B_1(0))`
+(as `-x ∈ V`), and these balls are pairwise disjoint (triangle inequality) and lie in
+`B_{ρ+1}(0)`. -/
+theorem Submission.cbr_ci_cp_gd_translated_ball_count : ∀ (P : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (S : Finset (Euclid P)) (ρ : ℝ), (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A) → (∀ x ∈ S, x ∈ V) → (∀ x ∈ S, ‖x‖ ≤ ρ) → (∀ x ∈ S, ∀ y ∈ S, x ≠ y → 2 ≤ dist x y) → (S.card : ℝ≥0∞) * ν (ball 0 1) ≤ ν (ball 0 (ρ + 1)) := by
+  intro P ν V S ρ hinv hSV hSρ hsep
+  -- equal mass: `B_1(x)` is the preimage of `B_1(0)` under `y ↦ -x + y`, and `-x ∈ V`
+  have hmass : ∀ x ∈ S, ν (ball x 1) = ν (ball 0 1) := by
+    intro x hx
+    have hpre : (fun y => -x + y) ⁻¹' ball (0 : Euclid P) 1 = ball x 1 := by
+      ext y
+      simp only [mem_preimage, mem_ball_iff_norm, sub_zero, neg_add_eq_sub]
+    rw [← hpre]
+    exact hinv (-x) (V.neg_mem (hSV x hx)) _ measurableSet_ball
+  -- disjointness: a common point `z` would give `2 ≤ dist x y ≤ dist z x + dist z y < 2`
+  have hdisj : (S : Set (Euclid P)).PairwiseDisjoint fun x => ball x 1 := by
+    intro x hx y hy hxy
+    refine Set.disjoint_left.mpr fun z hzx hzy => ?_
+    rw [mem_ball] at hzx hzy
+    linarith [hsep x hx y hy hxy, dist_triangle_left x y z]
+  -- containment: `‖z‖ ≤ ‖x‖ + ‖z - x‖ < ρ + 1`
+  have hsub : (⋃ x ∈ S, ball x 1) ⊆ ball (0 : Euclid P) (ρ + 1) := by
+    refine iUnion₂_subset fun x hx z hz => ?_
+    rw [mem_ball_iff_norm] at hz
+    rw [mem_ball_zero_iff]
+    linarith [hSρ x hx, norm_le_norm_add_norm_sub' z x]
+  -- counting: `#S · ν(B_1(0)) = Σ_{x ∈ S} ν(B_1(x)) = ν(⋃_{x ∈ S} B_1(x)) ≤ ν(B_{ρ+1}(0))`
+  calc (S.card : ℝ≥0∞) * ν (ball 0 1) = ∑ x ∈ S, ν (ball x 1) := by
+        rw [Finset.sum_congr rfl hmass, Finset.sum_const, nsmul_eq_mul]
+    _ = ν (⋃ x ∈ S, ball x 1) :=
+        (measure_biUnion_finset hdisj fun x _ => measurableSet_ball).symm
+    _ ≤ ν (ball 0 (ρ + 1)) := measure_mono hsub
+/-- Final step of the growth-forces-dimension argument in the proof of Simon 7.2.4 (packing
+`(2M+1)ʳ` disjoint unit balls of an `r`-plane into `B_{3M√r}(0)`): if `a > 0` and
+`a·Mʳ ≤ b·Mⁿ` for every integer `M ≥ 1`, then `r ≤ n`.  Otherwise `n + 1 ≤ r`; the Archimedean
+property gives `N > b/a`, and `M = N + 1` has `a·M > b`, while
+`a·M·Mⁿ = a·Mⁿ⁺¹ ≤ a·Mʳ ≤ b·Mⁿ` gives `a·M ≤ b` after cancelling `Mⁿ > 0`. -/
+theorem Submission.cbr_ci_cp_gd_le_of_pow_bound : ∀ (r n : ℕ) (a b : ℝ), 0 < a → (∀ M : ℕ, 1 ≤ M → a * (M : ℝ) ^ r ≤ b * (M : ℝ) ^ n) → r ≤ n := by
+  intro r n a b ha h
+  -- suppose `n + 1 ≤ r`
+  by_contra hrn
+  have hr : n + 1 ≤ r := Nat.lt_iff_add_one_le.mp (not_le.mp hrn)
+  -- Archimedean choice `N > b / a`; `M := N + 1 ≥ 1` has `a * M > b`
+  obtain ⟨N, hN⟩ := exists_nat_gt (b / a)
+  have hM : (1 : ℝ) ≤ ((N + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.le_add_left 1 N
+  have hbM : b < ((N + 1 : ℕ) : ℝ) * a := by
+    rw [← div_lt_iff₀ ha]
+    push_cast
+    linarith
+  -- `a * M * Mⁿ = a * Mⁿ⁺¹ ≤ a * Mʳ ≤ b * Mⁿ`, then cancel `Mⁿ > 0`
+  have hle : a * ((N + 1 : ℕ) : ℝ) * ((N + 1 : ℕ) : ℝ) ^ n ≤ b * ((N + 1 : ℕ) : ℝ) ^ n :=
+    calc a * ((N + 1 : ℕ) : ℝ) * ((N + 1 : ℕ) : ℝ) ^ n = a * ((N + 1 : ℕ) : ℝ) ^ (n + 1) := by
+          ring
+      _ ≤ a * ((N + 1 : ℕ) : ℝ) ^ r := mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hM hr) ha.le
+      _ ≤ b * ((N + 1 : ℕ) : ℝ) ^ n := h (N + 1) (Nat.le_add_left 1 N)
+  have hMa := le_of_mul_le_mul_right hle (pow_pos (zero_lt_one.trans_le hM) n)
+  linarith
+
+/-- **Growth forces `dim V ≤ n`** (step 4 of the constant-planes argument, with `ωₙ` replaced by an
+arbitrary finite constant `C`).  Let `r = dim V` and `m₀ = ν(B₁(0))`, so `0 < m₀ ≤ C < ∞` (growth at
+`R = 1`).  Fix `M ≥ 1`.  The sibling `lattice_packing` gives `(2M+1)ʳ` points of `V` of norm
+`≤ 2M√r` with pairwise distances `≥ 2`; by the sibling `ball_count` (translation invariance and
+disjointness of their unit balls) and the growth bound at `R = 2M√r + 1`,
+`(2M+1)ʳ m₀ ≤ ν(B_{2M√r+1}(0)) ≤ C (2M√r+1)ⁿ`.  As `M ≤ 2M+1` and `2M√r + 1 ≤ (2√r+1)M`, this gives
+`m₀ Mʳ ≤ C (2√r+1)ⁿ Mⁿ` for every `M ≥ 1`, and the sibling `pow_bound` yields `r ≤ n`. -/
+theorem Submission.cbr_ci_cp_finrank_le_of_growth : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (C : ℝ≥0∞), C ≠ ∞ → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A) → (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ C * ENNReal.ofReal (R ^ n)) → 0 < ν (ball 0 1) → Module.finrank ℝ V ≤ n := by
+  intro P n ν V C hC hinv hgrowth hpos
+  -- Step 1: `m₀ = ν(B₁(0))` is finite, by the growth bound at `R = 1`
+  have hfin : ν (ball 0 1) ≠ ∞ :=
+    ne_top_of_le_ne_top (ENNReal.mul_ne_top hC ENNReal.ofReal_ne_top) (hgrowth 1 one_pos)
+  -- Step 2: by the sibling `pow_bound` it suffices that `m₀ Mʳ ≤ C (2√r+1)ⁿ Mⁿ` for all `M ≥ 1`
+  refine Submission.cbr_ci_cp_gd_le_of_pow_bound (Module.finrank ℝ V) n (ν (ball 0 1)).toReal
+    (C.toReal * (2 * Real.sqrt (Module.finrank ℝ V) + 1) ^ n)
+    (ENNReal.toReal_pos hpos.ne' hfin) fun M hM => ?_
+  -- Step 3: `(2M+1)ʳ` points of `V` of norm `≤ 2M√r`, pairwise `2`-separated (`lattice_packing`)
+  obtain ⟨S, hcard, hSV, hSnorm, hSsep⟩ := Submission.cbr_ci_cp_gd_subspace_lattice_packing P V M
+  -- Step 4: `(2M+1)ʳ m₀ ≤ ν(B_{2M√r+1}(0)) ≤ C (2M√r+1)ⁿ` (`ball_count`, then growth)
+  have hρ : 0 ≤ 2 * (M : ℝ) * Real.sqrt (Module.finrank ℝ V) := by positivity
+  have hle := (Submission.cbr_ci_cp_gd_translated_ball_count P ν V S _ hinv hSV hSnorm hSsep).trans
+    (hgrowth (2 * M * Real.sqrt (Module.finrank ℝ V) + 1) (by linarith))
+  have hpow : 0 ≤ (2 * (M : ℝ) * Real.sqrt (Module.finrank ℝ V) + 1) ^ n := by positivity
+  have hreal := ENNReal.toReal_mono (ENNReal.mul_ne_top hC ENNReal.ofReal_ne_top) hle
+  rw [ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_ofReal hpow, hcard,
+    ENNReal.toReal_natCast] at hreal
+  push_cast at hreal
+  -- Step 5: `Mʳ ≤ (2M+1)ʳ` and `2M√r + 1 ≤ (2√r+1)M`, since `M ≥ 1`
+  have hM1 : (1 : ℝ) ≤ M := by exact_mod_cast hM
+  have h1 : (M : ℝ) ^ Module.finrank ℝ V ≤ (2 * M + 1) ^ Module.finrank ℝ V :=
+    pow_le_pow_left₀ (by positivity) (by linarith) _
+  have h2 : (2 * M * Real.sqrt (Module.finrank ℝ V) + 1) ^ n ≤
+      (2 * Real.sqrt (Module.finrank ℝ V) + 1) ^ n * (M : ℝ) ^ n := by
+    rw [← mul_pow]
+    exact pow_le_pow_left₀ (by positivity)
+      (by nlinarith [Real.sqrt_nonneg (Module.finrank ℝ V : ℝ)]) _
+  calc (ν (ball 0 1)).toReal * (M : ℝ) ^ Module.finrank ℝ V
+      ≤ (2 * M + 1) ^ Module.finrank ℝ V * (ν (ball 0 1)).toReal := by
+        rw [mul_comm]
+        exact mul_le_mul_of_nonneg_right h1 ENNReal.toReal_nonneg
+    _ ≤ C.toReal * (2 * M * Real.sqrt (Module.finrank ℝ V) + 1) ^ n := hreal
+    _ ≤ C.toReal * ((2 * Real.sqrt (Module.finrank ℝ V) + 1) ^ n * (M : ℝ) ^ n) :=
+        mul_le_mul_of_nonneg_left h2 ENNReal.toReal_nonneg
+    _ = C.toReal * (2 * Real.sqrt (Module.finrank ℝ V) + 1) ^ n * (M : ℝ) ^ n := by ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

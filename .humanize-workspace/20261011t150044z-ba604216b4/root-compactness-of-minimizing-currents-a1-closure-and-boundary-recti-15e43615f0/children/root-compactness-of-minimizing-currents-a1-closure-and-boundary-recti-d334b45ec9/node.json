@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.growth_dimension-a1.ball_count-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.growth_dimension-a1",
+  "depth": 6,
+  "title": "Counting disjoint V-translates of the unit ball inside B_{ρ+1}(0)",
+  "statement": "Let P ∈ ℕ, ν a Borel measure on ℝ^P and V ⊆ ℝ^P a linear subspace such that ν({x : v + x ∈ A}) = ν(A) for every v ∈ V and every Borel set A ⊆ ℝ^P. Let S ⊆ ℝ^P be a finite set and ρ ∈ ℝ such that every x ∈ S lies in V and satisfies ‖x‖ ≤ ρ, and dist(x, y) ≥ 2 for all distinct x, y ∈ S. Then (#S)·ν(B_1(0)) ≤ ν(B_{ρ+1}(0)) in [0, ∞] (open balls).",
+  "lean_statement": "∀ (P : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (S : Finset (Euclid P)) (ρ : ℝ), (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A) → (∀ x ∈ S, x ∈ V) → (∀ x ∈ S, ‖x‖ ≤ ρ) → (∀ x ∈ S, ∀ y ∈ S, x ≠ y → 2 ≤ dist x y) → (S.card : ℝ≥0∞) * ν (ball 0 1) ≤ ν (ball 0 (ρ + 1))",
+  "lean_name": "cbr_ci_cp_gd_translated_ball_count",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d334b45ec9-a1"
+}
