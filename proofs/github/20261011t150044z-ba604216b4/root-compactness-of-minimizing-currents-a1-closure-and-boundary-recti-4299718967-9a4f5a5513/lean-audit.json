@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ca112f3d0b301688190161ccf4c5e8d071e330603b9a9f1723f62201e7baeaae",
+  "git_delta": {
+    "base_commit": "0f8b84332ea7aa7515b3373d2fb0c8182fc4c853",
+    "candidate_commit": "db36555669d67dd31adba6108cc10b2d2941544f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_bl_db_weight_le_enorm",
+    "diff_sha256": "b1a6fb828086e9f7d039914930bb2fedb31dea2edb144fa994f5aef30ddc7d77",
+    "source_sha256": "606565c2d2a371f133302ae34038220da827bc8d94cd3f946218eaca3e1f815a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_bl_db_weight_le_enorm",
+      "statement": "∀ (P n : ℕ) (ζx ζa : MultiVector P n) (t t₀ C : ℝ), 0 ≤ t₀ → 0 ≤ C → (∀ α : Covector (Euclid P) n, ‖α‖ ≤ C * covectorEuclideanNorm α) → (∀ α : Covector (Euclid P) n, |ζa α| ≤ covectorEuclideanNorm α) → (∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζx β = 1) → ENNReal.ofReal t ≤ ENNReal.ofReal t₀ + ENNReal.ofReal C * ‖t • ζx - t₀ • ζa‖ₑ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
