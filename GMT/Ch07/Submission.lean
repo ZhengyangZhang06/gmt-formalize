@@ -24467,6 +24467,67 @@ theorem Submission.codim1_subspace_ball_euclideanHausdorff : ∀ (P m : ℕ) (H�
     unitBallVolume]
   exact mul_comm _ _
 
+/-- **Simons' theorem** (Simon, Appendix B, B.2) for a minimizing hypercone `C` that is regular
+with density one off the vertex: `Θᵐ(μ_C, 0) ≤ 1`.  `M = spt C ∖ {0}` is a multiplicity-one
+oriented `C¹` cone with `C = [[M]]`, so `M_W(C) ≤ Hᵐ(M ∩ W)`, with equality when the right side
+is finite.  Minimality of `C` makes `M` area-minimizing under deformations supported off `0`, and
+for `2 ≤ m ≤ 6` Simons' theorem gives `M = H₀ ∖ {0}` for an `m`-plane `H₀`.  Hence
+`M_{B_ρ(0)}(C) ≤ Hᵐ(H₀ ∩ B_ρ(0)) = ωₘρᵐ` (trivially if `M = ∅`), and the density ratio is `≤ 1`. -/
+theorem Submission.codim1_simons_regular_cone_density : ∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (A₀ : Submodule ℝ (Euclid P)), 2 ≤ m → m ≤ 6 → Module.finrank ℝ A₀ = m + 1 → IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → C.support ⊆ (A₀ : Set (Euclid P)) → (∀ y ∈ C.support, y ≠ 0 → y ∈ regularSet C ∧ HasMassDensity C y 1) → ∀ θ : ℝ, HasMassDensity C 0 θ → θ ≤ 1 := by
+  intro P m C A₀ hm2 hm6 hA₀ hmin hbdry hcone hsptA hreg θ hθ
+  have hm1 : 1 ≤ m := by omega
+  -- `M = spt C ∖ {0}` is an embedded `C¹` cone oriented by `ξ`, of locally finite `Hᵐ`-measure,
+  -- and `C(ω) = ∫_M ⟨ω, ξ⟩ dHᵐ` for every test form `ω`
+  obtain ⟨ξ, hMsub, hξ, hMcone, hMfin, hrep⟩ :=
+    Submission.codim1_cone_offvertex_unit_multiplicity_rep P m C hm1 hmin.1 hcone hreg
+  set M : Set (Euclid P) := C.support \ {0}
+  -- `spt C` is closed, so `M` is Borel
+  have hsptC : IsClosed C.support := isClosed_univ.sdiff C.isOpen_zeroRegion
+  have hMmeas : MeasurableSet M := hsptC.measurableSet.diff (measurableSet_singleton (0 : Euclid P))
+  -- `Λₘ` is a normed space, hence pseudo-metrizable, so the orientation `ξ`, continuous on the
+  -- Borel set `M`, is a.e. strongly measurable for `Hᵐ⌞M`
+  have : TopologicalSpace.PseudoMetrizableSpace (MultiVector P m) :=
+    @UniformSpace.pseudoMetrizableSpace (MultiVector P m) PseudoMetricSpace.toUniformSpace
+      (@EMetric.instIsCountablyGeneratedUniformity (MultiVector P m)
+        PseudoMetricSpace.toPseudoEMetricSpace)
+  -- multiplicity `θ' ≡ 1`: `M_W(C) ≤ Hᵐ(M ∩ W)`, with equality when `Hᵐ(M ∩ W) < ∞`
+  have hmass : ∀ W : Set (Euclid P), IsOpen W →
+      C.massOn W ≤ μHE[m] (M ∩ W) ∧ (μHE[m] (M ∩ W) ≠ ∞ → C.massOn W = μHE[m] (M ∩ W)) := by
+    intro W hW
+    have h := Submission.codim1_massOn_eq_lintegral_of_oriented_rep P m univ univ M C
+      (fun _ => 1) ξ isOpen_univ subset_rfl hMmeas (subset_univ M) measurable_const
+      (fun _ => zero_le_one) (hξ.1.aestronglyMeasurable hMmeas)
+      (ae_restrict_of_forall_mem hMmeas fun y hy => (hξ.2 y hy).imp fun _ hQ => hQ.2)
+      (fun ω _ => by simpa only [one_mul] using hrep ω) W hW (subset_univ W)
+    simpa only [ENNReal.ofReal_one, setLIntegral_one] using h
+  -- `M_{B_ρ(0)}(C) ≤ ωₘρᵐ` for every `ρ > 0`
+  have hball : ∀ ρ : ℝ, 0 < ρ →
+      C.massOn (ball 0 ρ) ≤ unitBallVolume m * ENNReal.ofReal (ρ ^ m) := by
+    intro ρ hρ
+    refine (hmass (ball 0 ρ) isOpen_ball).1.trans ?_
+    rcases M.eq_empty_or_nonempty with hM | hM
+    · -- `M = ∅`: the mass of `C` near the vertex vanishes
+      rw [hM, empty_inter, measure_empty]
+      exact zero_le
+    · -- minimality: `Hᵐ(M ∩ spt Z) ≤ Hᵐ((id + tZ)(M ∩ spt Z))` for small `|t|`, `0 ∉ spt Z`
+      have hdef := Submission.codim1_minimizing_piece_area_comparison P m C {0}ᶜ M ξ hm1 hmin
+        hbdry isOpen_compl_singleton (fun x hx => hx.2) hMsub hξ (fun K hK _ => hMfin K hK)
+        (fun ω _ => hrep ω) (fun W hW _ hfin => ((hmass W hW).2 hfin).ge)
+      -- Simons' theorem: `M = H₀ ∖ {0}` for an `m`-dimensional subspace `H₀ ⊆ A₀`
+      obtain ⟨H₀, hH₀, hMH₀⟩ := Submission.codim1_deformation_minimal_hypercone_is_plane P m A₀
+        M hm2 hm6 hA₀ hM (sdiff_subset.trans hsptA) (fun h => h.2 (mem_singleton _)) hMsub
+        ((closure_minimal sdiff_subset hsptC).trans
+          (subset_insert_sdiff_singleton (0 : Euclid P) C.support))
+        hMcone ⟨ξ, hξ⟩ hMfin fun Z hZ hZc h0 => hdef Z hZ hZc (subset_compl_singleton_iff.mpr h0)
+      -- `Hᵐ(M ∩ B_ρ(0)) ≤ Hᵐ(H₀ ∩ B_ρ(0)) = ωₘρᵐ`
+      rw [← Submission.codim1_subspace_ball_euclideanHausdorff P m H₀ hH₀ ρ hρ, hMH₀]
+      exact measure_mono (inter_subset_inter_left _ sdiff_subset)
+  -- the density ratio `M_{B_ρ(0)}(C) / (ωₘρᵐ)` is `≤ 1` for every `ρ > 0`, so `θ ≤ 1`
+  refine ENNReal.ofReal_le_one.mp (le_of_tendsto hθ.2 (eventually_nhdsWithin_of_forall
+    fun ρ hρ => ENNReal.div_le_of_le_mul ?_))
+  rw [one_mul]
+  exact hball ρ hρ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
