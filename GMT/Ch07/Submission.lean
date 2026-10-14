@@ -1738,6 +1738,46 @@ theorem Submission.dor_lmbsf_lipschitz_c1_approx : ∀ (m : ℕ) (u : Euclid m �
         exact ENNReal.add_lt_add hBC hCA
     _ = ε := ENNReal.add_halves ε
 
+/-- **Simon Ch. 3, Lemma 1.2, "only if" part** (chapter-03.txt lines 22–65): a countably
+`m`-rectifiable `M ⊆ ℝᴾ` lies in `N₀ ∪ ⋃ₗ Nₗ` with `Hᵐ(N₀) = 0` and each `Nₗ` an embedded
+`m`-dimensional `C¹` submanifold.  Write `M ⊆ M₀ ∪ ⋃ⱼ Fⱼ(ℝᵐ)` with `Hᵐ(M₀) = 0` and `Fⱼ`
+Lipschitz.  The `C¹` approximation theorem (Simon Ch. 2, Theorem 1.5) gives `C¹` maps `G_{ji}`
+with `Fⱼ(ℝᵐ) ⊆ Eⱼ ∪ ⋃ᵢ G_{ji}(ℝᵐ)` and `Hᵐ(Eⱼ) = 0`.  Each `G_{ji}(ℝᵐ)` lies in an `Hᵐ`-null set
+`N₀_{ji}` (the critical image, by the area formula) together with countably many submanifolds
+`N_{jis}` (images of small balls about regular points).  Take
+`N₀ = M₀ ∪ ⋃ⱼ Eⱼ ∪ ⋃_{j,i} N₀_{ji}` and `Nₗ = N_{jis}` for `l = Nat.pair j (Nat.pair i s)`. -/
+theorem Submission.dor_lmbsf_rectifiable_c1_cover : ∀ (P m : ℕ) (M : Set (Euclid P)), CountablyRectifiable m M → ∃ (N₀ : Set (Euclid P)) (N : ℕ → Set (Euclid P)), μHE[m] N₀ = 0 ∧ (∀ l, IsEmbeddedSubmanifold 1 m (N l)) ∧ M ⊆ N₀ ∪ ⋃ l, N l := by
+  intro P m M hM
+  -- Step 1: `M ⊆ M₀ ∪ ⋃ⱼ Fⱼ(ℝᵐ)` with `Hᵐ(M₀) = 0` and `Fⱼ` `Kⱼ`-Lipschitz
+  obtain ⟨M₀, hM₀, F, hF, hMF⟩ := hM
+  choose K hK using hF
+  -- Steps 2–3: `Fⱼ(ℝᵐ) ⊆ Eⱼ ∪ ⋃ᵢ G_{ji}(ℝᵐ)` with `Hᵐ(Eⱼ) = 0` and `G_{ji}` `C¹`
+  choose E G hE hG hFG using fun j =>
+    Submission.dor_lmbsf_c1c_lipschitz_range_c1_pieces P m (F j) (K j) (hK j)
+      (Submission.dor_lmbsf_lipschitz_c1_approx m)
+  -- Steps 4–6: `G_{ji}(ℝᵐ) ⊆ N₀_{ji} ∪ ⋃ₛ N_{jis}` with `Hᵐ(N₀_{ji}) = 0` and `N_{jis}`
+  -- embedded `C¹` submanifolds
+  choose N₀' N' hN₀' hN' hGN using fun j i =>
+    Submission.dor_lmbsf_c1c_c1_range_cover P m (G j i) (hG j i)
+  -- Step 7: collect the null sets and enumerate the submanifolds by `l = ⟨j, ⟨i, s⟩⟩`
+  refine ⟨M₀ ∪ (⋃ j, E j) ∪ ⋃ j, ⋃ i, N₀' j i,
+    fun l => N' l.unpair.1 l.unpair.2.unpair.1 l.unpair.2.unpair.2,
+    measure_union_null (measure_union_null hM₀ (measure_iUnion_null hE))
+      (measure_iUnion_null fun j => measure_iUnion_null (hN₀' j)),
+    fun l => hN' _ _ _, ?_⟩
+  intro y hy
+  rcases hMF hy with hy | hy
+  · exact Or.inl (Or.inl (Or.inl hy))
+  obtain ⟨j, hj⟩ := mem_iUnion.1 hy
+  rcases hFG j hj with hy | hy
+  · exact Or.inl (Or.inl (Or.inr (mem_iUnion.2 ⟨j, hy⟩)))
+  obtain ⟨i, hi⟩ := mem_iUnion.1 hy
+  rcases hGN j i hi with hy | hy
+  · exact Or.inl (Or.inr (mem_iUnion₂.2 ⟨j, i, hy⟩))
+  obtain ⟨s, hs⟩ := mem_iUnion.1 hy
+  refine Or.inr (mem_iUnion.2 ⟨Nat.pair j (Nat.pair i s), ?_⟩)
+  simpa only [Nat.unpair_pair] using hs
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
