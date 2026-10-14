@@ -1992,6 +1992,34 @@ theorem Submission.cbr_cc_current_algebra : (∀ (P n : ℕ) (U : Set (Euclid P)
     _ ≤ ∑ i ∈ F, ((m i).natAbs : ℝ≥0∞) * (S i).massOn W :=
         Finset.sum_le_sum fun i _ => hterm P n U (S i) (m i) W ω hω
 
+/-- **Integer combinations of oriented grid cubes in `ℝⁿ` are integer multiplicity** (Simon Ch. 6,
+2.2, 2.4 and 3.2(1)), `n = m + 1`.  Each grid cube `G_z = ρ(z + [0, 1]ⁿ)` is closed, hence Borel,
+so `[[G_z]](ω) = ∫_{G_z} ω(x)(e₀, …, eₘ) dHⁿ(x)` is an integer multiplicity current; the finite
+integer combination `Σ_{z ∈ s} β_z [[G_z]]` is integer multiplicity (differences of integer
+multiplicity currents being integer multiplicity) and agrees with `X` on every test form. -/
+theorem Submission.dor_lmb_fc_dtop_cube_chain_im : ∀ (m : ℕ) (ρ : ℝ) (s : Finset (Fin (m + 1) → ℤ)) (β : (Fin (m + 1) → ℤ) → ℤ) (X : GeometricCurrentOn (univ : Set (Euclid (m + 1))) (m + 1)), 0 < ρ → (∀ ω : TestFormOn (univ : Set (Euclid (m + 1))) (m + 1), X ω = ∑ z ∈ s, (β z : ℝ) * ∫ x in {x : Euclid (m + 1) | ∀ i : Fin (m + 1), ρ * z i ≤ x i ∧ x i ≤ ρ * (z i + 1)}, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) x (fun k => EuclideanSpace.single k (1 : ℝ)) ∂μHE[m + 1]) → IsIntegerMultiplicity X := by
+  intro m ρ s β X _ hX
+  -- the grid cube `G_z = ρ(z + [0, 1]ⁿ)` is closed, hence Borel
+  have hG : ∀ z : Fin (m + 1) → ℤ, MeasurableSet
+      {x : Euclid (m + 1) | ∀ i : Fin (m + 1), ρ * z i ≤ x i ∧ x i ≤ ρ * (z i + 1)} := by
+    intro z
+    refine IsClosed.measurableSet ?_
+    simp only [ofPred_forall, ofPred_and]
+    exact isClosed_iInter fun i =>
+      (isClosed_le continuous_const (PiLp.continuous_apply _ _ i)).inter
+        (isClosed_le (PiLp.continuous_apply _ _ i) continuous_const)
+  -- the integer multiplicity cube currents `[[G_z]]`
+  choose A hA hAω using fun z => Submission.dor_lmb_fc_dtop_cci_borel_current_im (m + 1) _ (hG z)
+  -- `Y = Σ_{z ∈ s} β_z [[G_z]]` is integer multiplicity
+  obtain ⟨Y, hY, hYω, -⟩ := Submission.cbr_cc_current_algebra.2.2
+    Submission.cmc_imRep_locality_restrict_sub.2.2.1 (m + 1) (m + 1) univ (Fin (m + 1) → ℤ) s A β
+    isOpen_univ fun z _ => hA z
+  -- `X = Y` on every test form
+  have hXY : X = Y := GeometricCurrentOn.ext fun ω => by
+    rw [hX ω, hYω ω]
+    exact Finset.sum_congr rfl fun z _ => by rw [hAω]
+  exact hXY ▸ hY
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
