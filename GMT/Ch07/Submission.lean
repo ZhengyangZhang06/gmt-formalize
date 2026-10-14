@@ -479,6 +479,7 @@ theorem Submission.codim1_lur_det_laplace_first_column : ∀ (n : ℕ) (p : Eucl
     obtain ⟨r₀, hr₀⟩ := Fin.exists_succAbove_eq (Ne.symm hij)
     rw [Matrix.det_eq_zero_of_row_eq_zero r₀ fun k => by simp [hMs, hr₀], mul_zero]
   · intro h; exact absurd (Finset.mem_univ j) h
+
 /-- **Geometry of the graph chart** (Simon 7.5.2, used in 7.5.8).  Let `ι : ℝ^{n+1} → ℝᴾ` be a
 linear isometry with adjoint `A = ι*`, `D = B_{δ₁}(0)`, `u` be `C²` on `D` with values in
 `(range ι)ᗮ`, `|u| < δ₂/2` and `G(y) = x + ιy + u(y) ∈ N` on `D`, and let `u` be the only such graph
