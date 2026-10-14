@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'dor_lmb_pc_pushforward_current_exists|dpf_pfc_|rsd_cmr_support_subset_of_vanish|compContinuousLinearMap|pushforward' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT --glob '*.lean'",
+        "rg -n 'le_opNorm|norm_compContinuousLinearMap_le|continuous_compContinuousLinearMapCLM' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "rg -n 'norm_iteratedFDeriv_zero|continuousOn_fderiv_of_isOpen' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus --glob '*.lean'",
+        "git show 056f1b9b0f63f29ad638c335a0b984ac1606c017:GMT/Ch07/Submission.lean",
+        "git show 5c8c6597411e77948b224fda014774beaa21ebaf:GMT/Ch07/Submission.lean",
+        "git show 8d68dfd93a5a51671384c6648f0ebabf56bd95bd:GMT/Ch07/Submission.lean",
+        "git show 02c6122c94d0280a6288d299659b2dab7b59e109:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pfcur-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pfcur-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pfcur-independent-audit/Verified.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-e449328bc3/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-e449328bc3/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/pfcur-independent-audit/Types.lean",
+        "/tmp/pfcur-independent-audit/Assembly.lean",
+        "/tmp/pfcur-independent-audit/Verified.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected push-forward-current theorem. Verified the pinned revisions and byte-identical contract context. The snapshot contains no declaration matching the parent or proposed helper names. All four names are bare identifiers with unique comparator-accepted owners; their frozen types, candidate commits and source hashes match the acceptance records. Every child type is a standalone one-line proposition and elaborates without implemented children, with autoImplicit disabled. Dependencies are acyclic, with pairing_bound depending only on orient_bound. Covector norms and continuous-linear-map constructions have the intended instances. Independently compiled the conditional assembly and the accepted proofs extracted from their commits: they establish the exact selected parent type, including its integral formula and both support conclusions. All checked proofs use only propext, Classical.choice and Quot.sound. Each supplied natural proof is complete and requires no further planning."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "orient_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match exactly. R.orients supplies an orthonormal frame and a uniform choice of sign on one almost-everywhere set. The operator-norm inequality and unit frame norms prove the bound for every covector, including n = 0. No circular reliance occurs."
+    },
+    {
+      "key": "pairing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All measurability, support and boundedness hypotheses match the exact restricted-measure statement. Local integrability makes B·1_Cθ integrable; continuous evaluation gives measurability; orient_bound supplies domination. The restriction identity and nonnegative-integral formula yield precisely the stated toReal bound. The sole dependency on orient_bound is correctly directed."
+    },
+    {
+      "key": "uniform_small",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof extracts the common compact support from TestFormOnConverges. Uniform convergence of the zeroth derivative, whose norm equals the form's norm, gives the eventual bound on that compact set; vanishing outside extends it globally. All quantifiers and hypotheses match, without circular dependencies."
+    },
+    {
+      "key": "support_of_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Open U and compact K provide relatively compact zero neighborhoods of every point in U minus K, proving support containment. Using K ⊆ U gives support = K minus zeroRegion; openness of zeroRegion proves compactness. This proves the exact statement without assuming ambient closedness of the current support or invoking the parent."
+    }
+  ],
+  "required_changes": []
+}
