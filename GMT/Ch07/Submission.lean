@@ -2780,6 +2780,106 @@ theorem Submission.codim1_hcp_lipschitz_smooth_approx : ∀ (P m : ℕ) (M : Set
       simpa using this
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun k => zero_le) hint
 
+/-- **A minimum of the area at `t = 0` forces a nonnegative second variation** (Simon,
+Appendix B, before B.1: `d²/dt² Hⁿ(M_t)|_{t=0} ≥ 0` because `Hⁿ(M_t)` is minimal at `t = 0`;
+abstract form, with `Hⁿ(M_t) = ∫ J_t dHⁿ` as in Ch. 2, §5).  Let `μ(E) < ∞` and `|q| ≤ B` on
+`E`, and for `|t| < t₀` let `μ(E) ≤ ∫⁻_E J_t dμ` and `J_t ≤ 1 + (t²/2) q + C|t|³` on `E`.  Then
+`∫_E q dμ ≥ 0`.  For small `0 < t < t₀` the bound `f_t = 1 + (t²/2) q + Ct³` is nonnegative on
+`E`, so `μ(E) ≤ ∫_E f_t dμ = μ(E) + (t²/2) ∫_E q dμ + Ct³μ(E)`, i.e. `∫_E q dμ + 2Ctμ(E) ≥ 0`;
+if `∫_E q dμ < 0`, a small enough `t` contradicts this. -/
+theorem Submission.codim1_hcp_stab_second_variation_nonneg : ∀ (P : ℕ) (μ : Measure (Euclid P)) (E : Set (Euclid P)) (J : ℝ → Euclid P → ℝ) (q : Euclid P → ℝ) (B C t₀ : ℝ), MeasurableSet E → μ E ≠ ∞ → 0 < t₀ → AEStronglyMeasurable q (μ.restrict E) → (∀ x ∈ E, |q x| ≤ B) → (∀ t : ℝ, |t| < t₀ → μ E ≤ ∫⁻ x in E, ENNReal.ofReal (J t x) ∂μ) → (∀ t : ℝ, |t| < t₀ → ∀ x ∈ E, J t x ≤ 1 + t ^ 2 / 2 * q x + C * |t| ^ 3) → 0 ≤ ∫ x in E, q x ∂μ := by
+  intro P μ E J q B C t₀ hE hμE ht₀ hq hqB hJ hJle
+  -- step 1: `q` is integrable on `E`, being bounded by `B` there with `μ(E) < ∞`
+  have : IsFiniteMeasure (μ.restrict E) := isFiniteMeasure_restrict.2 hμE
+  have hqi : Integrable q (μ.restrict E) :=
+    (integrable_const B).mono' hq (ae_restrict_of_forall_mem hE fun x hx => by
+      rw [Real.norm_eq_abs]; exact hqB x hx)
+  obtain ⟨m, hm_def⟩ : ∃ m : ℝ, μ.real E = m := ⟨_, rfl⟩
+  obtain ⟨I, hI_def⟩ : ∃ I : ℝ, ∫ x in E, q x ∂μ = I := ⟨_, rfl⟩
+  have hm : 0 ≤ m := hm_def ▸ measureReal_nonneg
+  rw [hI_def]
+  -- steps 3–5: for `0 < t < t₀` with `t (|B| + |C| + 1) ≤ 1`, comparing the area with the
+  -- integral of the second-order bound `f = 1 + (t² / 2) q + C |t|³` gives `0 ≤ I + 2 C t m`
+  have key : ∀ t : ℝ, 0 < t → t < t₀ → t * (|B| + |C| + 1) ≤ 1 → 0 ≤ I + 2 * C * t * m := by
+    intro t ht htt₀ htK
+    have hat : |t| = t := abs_of_pos ht
+    have htt₀' : |t| < t₀ := by rw [hat]; exact htt₀
+    have ht1 : t ≤ 1 := by
+      nlinarith [mul_nonneg ht.le (abs_nonneg B), mul_nonneg ht.le (abs_nonneg C)]
+    -- `f ≥ 1 - t (|B| + |C|) ≥ t > 0` on `E`
+    have hf_nonneg : ∀ x ∈ E, 0 ≤ 1 + t ^ 2 / 2 * q x + C * |t| ^ 3 := by
+      intro x hx
+      rw [hat]
+      have hqx := abs_le.mp (hqB x hx)
+      have hB0 : 0 ≤ B := (abs_nonneg _).trans (hqB x hx)
+      have ht2 : t ^ 2 ≤ t := pow_le_of_le_one ht.le ht1 (by norm_num)
+      have ht3 : t ^ 3 ≤ t := pow_le_of_le_one ht.le ht1 (by norm_num)
+      have h1 : t ^ 2 / 2 * (-B) ≤ t ^ 2 / 2 * q x :=
+        mul_le_mul_of_nonneg_left hqx.1 (by positivity)
+      have h2 : t ^ 2 / 2 * B ≤ t * B :=
+        mul_le_mul_of_nonneg_right (by nlinarith [sq_nonneg t]) hB0
+      have h3 : t * B ≤ t * |B| := mul_le_mul_of_nonneg_left (le_abs_self B) ht.le
+      have h4 : -|C| * t ^ 3 ≤ C * t ^ 3 :=
+        mul_le_mul_of_nonneg_right (neg_abs_le C) (by positivity)
+      have h5 : |C| * t ^ 3 ≤ |C| * t := mul_le_mul_of_nonneg_left ht3 (abs_nonneg C)
+      nlinarith
+    -- `f` is integrable on `E`, with `∫_E f = m + (t² / 2) I + C |t|³ m`
+    have hf1 : Integrable (fun x => 1 + t ^ 2 / 2 * q x) (μ.restrict E) :=
+      (integrable_const 1).add (hqi.const_mul (t ^ 2 / 2))
+    have hf2 : Integrable (fun _ : Euclid P => C * |t| ^ 3) (μ.restrict E) := integrable_const _
+    have hfi : Integrable (fun x => 1 + t ^ 2 / 2 * q x + C * |t| ^ 3) (μ.restrict E) :=
+      hf1.add hf2
+    have hf_int : ∫ x in E, (1 + t ^ 2 / 2 * q x + C * |t| ^ 3) ∂μ =
+        m + t ^ 2 / 2 * I + C * |t| ^ 3 * m := by
+      rw [integral_add hf1 hf2, integral_add (integrable_const 1) (hqi.const_mul (t ^ 2 / 2)),
+        integral_const_mul, setIntegral_const, setIntegral_const, smul_eq_mul, smul_eq_mul,
+        hm_def, hI_def]
+      ring
+    -- area comparison: `μ(E) ≤ ∫⁻_E ofReal J_t ≤ ∫⁻_E ofReal f = ofReal (∫_E f)`
+    have hle : μ E ≤ ENNReal.ofReal (m + t ^ 2 / 2 * I + C * |t| ^ 3 * m) := by
+      calc μ E ≤ ∫⁻ x in E, ENNReal.ofReal (J t x) ∂μ := hJ t htt₀'
+        _ ≤ ∫⁻ x in E, ENNReal.ofReal (1 + t ^ 2 / 2 * q x + C * |t| ^ 3) ∂μ :=
+          setLIntegral_mono' hE fun x hx => ENNReal.ofReal_le_ofReal (hJle t htt₀' x hx)
+        _ = ENNReal.ofReal (∫ x in E, (1 + t ^ 2 / 2 * q x + C * |t| ^ 3) ∂μ) :=
+          (ofReal_integral_eq_lintegral_ofReal hfi (ae_restrict_of_forall_mem hE hf_nonneg)).symm
+        _ = ENNReal.ofReal (m + t ^ 2 / 2 * I + C * |t| ^ 3 * m) := by rw [hf_int]
+    have hval : 0 ≤ m + t ^ 2 / 2 * I + C * |t| ^ 3 * m := by
+      rw [← hf_int]; exact setIntegral_nonneg hE hf_nonneg
+    have hmle : m ≤ m + t ^ 2 / 2 * I + C * |t| ^ 3 * m :=
+      calc m = μ.real E := hm_def.symm
+        _ ≤ _ := ENNReal.toReal_le_of_le_ofReal hval hle
+    rw [hat] at hmle
+    have h' : 0 ≤ t ^ 2 / 2 * (I + 2 * C * t * m) := by nlinarith
+    exact (mul_nonneg_iff_of_pos_left (by positivity)).mp h'
+  -- step 6: if `I < 0`, then `t = min (t₀ / 2, 1 / (|B| + |C| + 1), -I / (4 (|C| + 1) (m + 1)))`
+  -- gives `0 ≤ I + 2 C t m ≤ I / 2 < 0`
+  by_contra hI
+  replace hI : I < 0 := not_le.mp hI
+  have hK : 0 < |B| + |C| + 1 := by positivity
+  have hL : 0 < 4 * (|C| + 1) * (m + 1) := by positivity
+  obtain ⟨t, ht_def⟩ : ∃ t : ℝ,
+      t = min (min (t₀ / 2) (1 / (|B| + |C| + 1))) (-I / (4 * (|C| + 1) * (m + 1))) := ⟨_, rfl⟩
+  have ht_pos : 0 < t := by
+    rw [ht_def]
+    exact lt_min (lt_min (by linarith) (by positivity)) (div_pos (by linarith) hL)
+  have ht_t₀ : t < t₀ := by
+    rw [ht_def]
+    exact (min_le_left _ _).trans_lt ((min_le_left _ _).trans_lt (by linarith))
+  have ht_K : t * (|B| + |C| + 1) ≤ 1 := by
+    have : t ≤ 1 / (|B| + |C| + 1) := by
+      rw [ht_def]; exact (min_le_left _ _).trans (min_le_right _ _)
+    rwa [le_div_iff₀ hK] at this
+  have ht_I : t * (4 * (|C| + 1) * (m + 1)) ≤ -I := by
+    have : t ≤ -I / (4 * (|C| + 1) * (m + 1)) := by
+      rw [ht_def]; exact min_le_right _ _
+    rwa [le_div_iff₀ hL] at this
+  have hkey := key t ht_pos ht_t₀ ht_K
+  have h1 : C * t * m ≤ |C| * t * m :=
+    mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_abs_self C) ht_pos.le) hm
+  have h2 : |C| * t * m ≤ (|C| + 1) * (m + 1) * t := by
+    nlinarith [mul_nonneg (abs_nonneg C) ht_pos.le, mul_nonneg hm ht_pos.le]
+  nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
