@@ -1,0 +1,51 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_contDiff_support_eq_eq_one_iff|exists_cthickening_subset_open|theorem IsCompact.cthickening|closure_thickening_subset_cthickening|theorem extDeriv_pullback|norm_compContinuousLinearMap_le|continuous_compContinuousLinearMapCLM|analyticOnNhd_compContinuousLinearMapCLM",
+        "hasFDerivAt_convolution_right|contDiff_convolution_left|convolution_tendsto_right_of_continuous|nonneg_normed|integral_normed|EventuallyEq.fderiv_eq|tendsto_integral_of_dominated_convergence|theorem setIntegral_congr_ae",
+        "dimred_mbl_pfb_c1_compact_perturbation|dpf_pushforward_formula_boundaryVanishes|dor_lmb_pc_pushforward_boundaryVanishes",
+        "git show 0869ad75:GMT/Ch07/Submission.lean",
+        "git show 74a1c6be:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/pf-boundary-independent-audit-9f4zseoj/Replay.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-37b1b9b07b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-37b1b9b07b/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-bd3a078c57/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-b3d596d026/isolated-comparator-result.json",
+        "/tmp/pf-boundary-independent-audit-9f4zseoj/Replay.lean"
+      ],
+      "conclusion": "The split appropriately separates localization by cutoff from boundary preservation for compact perturbations. Applying the first child to O ∩ U, transferring the formula using μHE[n](R.carrier \\ K) = 0, and applying the second child proves exactly the selected parent. Both names are bare identifiers with one comparator-accepted owner each; proposed types are byte-identical to those records. Their dependency closures are acyclic and do not reach the selected parent. No matching declarations occur in the snapshot project. The frozen contract, build configuration, and inspected Mathlib sources match the compilation environment. A fresh Lean replay succeeded: both child types elaborate as Prop before their implementations, both exact-type checks pass, and the supplied assembly proves the exact frozen parent type. The replay contains no sorry; both children and the parent depend only on propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_perturbation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including all hypotheses and both value and derivative agreement on V. The proof supplies the compact thickening margin, smooth cutoff, compact support, germ equality, and C¹ regularity on an open cover. It needs no regularity of f outside O and handles empty K. This is a genuine localization obligation, independent of boundary preservation. Reuse is valid at the identical accepted type."
+    },
+    {
+      "key": "perturbed_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the stated compact-perturbation theorem. The supplied proof establishes the degree-zero case, smooth approximation with fixed compact support and bounded derivatives, admissibility of pulled-back test forms, naturality, and vanishing approximating integrals. Measurability, the orientation norm estimate, nonnegative multiplicity, local integrability on the fixed compact set, and pointwise convergence justify dominated convergence. The formula for S then proves its boundary vanishes. No assumption φ(U) ⊆ U is needed because test forms are ambient forms supported in U. The proof is complete and non-circular; reuse and its existing prerequisites are compatible."
+    }
+  ],
+  "required_changes": []
+}
