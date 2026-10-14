@@ -1,0 +1,106 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "IsRectifiableTriple|def tauAction|def IsIntegerMultiplicity|lpf_pi_",
+        "abbrev NVector|def nVectorPushforward|def covectorPullback|def simpleNVector|nVectorPushforward_simple",
+        "def CountablyRectifiable|theorem CountablyRectifiable.mono|theorem countablyRectifiable_range|theorem countablyRectifiable_iUnion|def HasWeightedApproximateTangentSpaceAt|theorem HasWeightedApproximateTangentSpaceAt.unique",
+        "LocallyLipschitzOn.comp|exists_lipschitzOnWith_of_compact|def LocallyLipschitzOn",
+        "python3 /tmp/audit_pushforward_integrality.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Audit/Challenges.lean > Audit/challenges.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Audit/AllChildrenAndAssembly.lean > Audit/all-children.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean Audit/Instances.lean > Audit/instances.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/decomposition-v3.json",
+        "/tmp/audit_pushforward_integrality.py",
+        "/tmp/independent-lpf-audit-nm4fdwmq/Audit/Challenges.lean",
+        "/tmp/independent-lpf-audit-nm4fdwmq/Audit/AllChildrenAndAssembly.lean",
+        "/tmp/independent-lpf-audit-nm4fdwmq/Audit/all-children.log",
+        "/tmp/independent-lpf-audit-nm4fdwmq/Audit/instances.log"
+      ],
+      "conclusion": "The split appropriately separates obligations needed for the selected integrality theorem. The handoff matches the frozen parent; dependencies are acyclic, including the existing external branches. All eleven names are bare identifiers and unreserved. Explicit external antecedents match their frozen DAG types exactly. Every child type is a standalone one-line proposition and elaborates without child declarations present. In a fresh scratch project using the pinned sources, all supplied child scripts compiled unchanged; the supplied assembly also compiled with the eight external contracts as explicit parameters. All twelve axiom reports contain only propext, Classical.choice and Quot.sound. Instance probes confirm operator norms, the corresponding extended norm, Euclidean volume and correctly typed Matrix.of constructions. No existing lpf_pi_ declarations or reservations were found; LocallyLipschitzOn.comp was absent from the searched pinned topology sources."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "simple_unit_facts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. The Gram identity proves unit norm; finite coordinate expansion and determinant scaling prove sign rigidity. The complete proof uses only the explicit SNA assumption."
+    },
+    {
+      "key": "induced_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Nonzero pushforward implies linear independence because alternating maps annihilate dependent families. Gram–Schmidt, determinant scaling and the declared sibling give exactly the normalized orientation conclusion, including degree zero."
+    },
+    {
+      "key": "jacobian_local_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactness supplies a uniform local Lipschitz bound. The directional derivative hypothesis bounds each tangent-frame image, and the simple-vector norm estimate yields the stated a.e. bound. No ambient bound on L is assumed."
+    },
+    {
+      "key": "measurability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local integrability on compact neighborhoods proves multiplicity measurability. Joint continuity of pushforward and the two given strongly measurable fields prove the second conclusion. The proof is direct and matches the exact type."
+    },
+    {
+      "key": "local_finite_weight",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Properness gives a compact preimage intersected with support inside U. RSN removes the remaining source points; the declared Jacobian bound and local integrability prove the precise lintegral finiteness statement."
+    },
+    {
+      "key": "signed_fibre_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive and negative fibre sums establish summability and target integrability. The proof correctly handles J = infinity by showing g vanishes there a.e., then derives the signed integral identity without additional measure hypotheses."
+    },
+    {
+      "key": "covector_finite_dimensional",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Evaluation on standard-basis tuples gives an injective linear map into a finite coordinate space. Multilinear expansion proves injectivity, including degenerate dimensions. The proof establishes the exact finite-dimensionality proposition."
+    },
+    {
+      "key": "chart_image_rectifiable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "A compact cover of the open domain, local C¹ Lipschitzness and finite-dimensional Lipschitz extensions give a countable Lipschitz cover of the image. The proof requires precisely the stated ContDiffOn hypothesis."
+    },
+    {
+      "key": "source_charts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The external antecedents match the frozen contracts. Inverse-chart null estimates, the chain rule, tangent uniqueness, rank–nullity and immersion pieces establish the full a.e. chart conclusion. The only child dependency is the declared induced-orientation lemma."
+    },
+    {
+      "key": "image_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All AF, LF, CH and null-image hypotheses are accounted for. Positive integer weights yield finite fibres; coordinate fibre sums establish strong measurability; local bounds and the signed fibre lemma prove the representation. Exceptional sets and restricted measurability are handled explicitly."
+    },
+    {
+      "key": "im_of_chart_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "WTC for (Y,1) identifies the contributing planes; sign rigidity produces an integer coefficient. Removing null and zero-density points, then applying WTC to the new multiplicity, verifies every rectifiable-triple field and the current representation without circularity."
+    }
+  ],
+  "required_changes": []
+}

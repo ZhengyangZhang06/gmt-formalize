@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.signed_fibre_sum-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1",
+  "depth": 3,
+  "title": "Signed (Bochner) version of a fibre-sum area identity",
+  "statement": "Let (X, μ) and (Y, ν) be measure spaces (X, Y : Type with measurable-space structures), f : X → Y, A ⊆ X, and J : X → [0, ∞] μ⌞A-a.e. measurable. Assume the area identity: for every μ⌞A-a.e. measurable h : X → [0, ∞], the fibre sum y ↦ Σ'_{x ∈ A, f(x) = y} h(x) (an unordered sum in [0, ∞] over the subtype {x // x ∈ A ∧ f x = y}) is ν-a.e. measurable and ∫⁻_A h·J dμ = ∫⁻ Σ'_{x ∈ A, f(x) = y} h(x) dν(y). Then for every μ⌞A-a.e. strongly measurable g : X → ℝ with ∫⁻_A |g|·J dμ < ∞ (|g| as the extended norm):\n(i) for ν-a.e. y the real family (g(x))_{x ∈ A, f(x) = y} is summable;\n(ii) y ↦ Σ'_{x ∈ A, f(x) = y} g(x) is ν-integrable;\n(iii) ∫_A g(x)·J(x).toReal dμ(x) = ∫ Σ'_{x ∈ A, f(x) = y} g(x) dν(y), where J(x).toReal is J(x) as a real number (0 if J(x) = ∞).",
+  "lean_statement": "∀ (X Y : Type) [MeasurableSpace X] [MeasurableSpace Y] (μ : Measure X) (ν : Measure Y) (f : X → Y) (A : Set X) (J : X → ℝ≥0∞), AEMeasurable J (μ.restrict A) → (∀ h : X → ℝ≥0∞, AEMeasurable h (μ.restrict A) → AEMeasurable (fun y => ∑' x : {x : X // x ∈ A ∧ f x = y}, h x) ν ∧ ∫⁻ x in A, h x * J x ∂μ = ∫⁻ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, h x ∂ν) → ∀ g : X → ℝ, AEStronglyMeasurable g (μ.restrict A) → ∫⁻ x in A, ‖g x‖ₑ * J x ∂μ < ∞ → (∀ᵐ y ∂ν, Summable (fun x : {x : X // x ∈ A ∧ f x = y} => g x)) ∧ Integrable (fun y => ∑' x : {x : X // x ∈ A ∧ f x = y}, g x) ν ∧ ∫ x in A, g x * (J x).toReal ∂μ = ∫ y, ∑' x : {x : X // x ∈ A ∧ f x = y}, g x ∂ν",
+  "lean_name": "lpf_pi_signed_fibre_sum",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1-signed-fibre-sum-a1-a1"
+}
