@@ -543,6 +543,36 @@ theorem Submission.dimred_cs_sos_mt_interior_product : ∀ P : ℕ, (∀ (k m n'
     · exact flat.contDiff.comp (hs.comp (contDiff_const.add contDiff_id))
     · exact hK.of_isClosed_subset (isClosed_tsupport _) hsub
 
+/-- **Boundary on translated forms.**  If `∂Y = X` in `ℝᴾ`, `γ` is a test `m`-form and
+`t ∈ ℝᴾ`, then `Y(d(γ(t + ·))) = X(γ(t + ·))`, both sides read by `currentEval`.  The translate
+`γₜ = γ(t + ·)` is a test form (`dimred_cs_sos_mt_interior_product` (b) with `Φ = id`), and
+translation commutes with `d`: `D(γ(t + ·))(y) = Dγ(t + y)` (`fderiv_comp_add_left`), so
+`dγₜ = (dγ)(t + ·)`.  Hence both arguments are test forms supported in `ℝᴾ`, `currentEval`
+evaluates the currents on them, and `Y(dγₜ) = ∂Y(γₜ) = X(γₜ)`. -/
+theorem Submission.dimred_cs_sos_mt_cs_translate_boundary_eval : ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (γ : DifferentialForm (Euclid P) m) (t : Euclid P), Y.boundary = X → IsTestForm γ → currentEval Y (fun y => exteriorDerivative γ (t + y)) = currentEval X (fun y => γ (t + y)) := by
+  intro P m X Y γ t hYX hγ
+  subst hYX
+  -- the translate `γₜ = γ(t + ·)` is a test form (interior product (b) with `Φ = id`)
+  have hγt : IsTestForm (fun y => γ (t + y)) :=
+    ((Submission.dimred_cs_sos_mt_interior_product P).2 m m
+      (ContinuousLinearMap.id ℝ (Covector (Euclid P) m)) γ t hγ).1
+  -- translation commutes with `d`, since `D(γ(t + ·))(y) = Dγ(t + y)`
+  have hd : exteriorDerivative (fun y => γ (t + y)) = fun y => exteriorDerivative γ (t + y) := by
+    funext y
+    show ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ (fun y => γ (t + y)) y) =
+      ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ γ (t + y))
+    rw [fderiv_comp_add_left]
+  -- both forms are test forms supported in `ℝᴾ`, so `currentEval` evaluates on them
+  have hmem : IsTestForm (fun y => γ (t + y)) ∧ tsupport (fun y => γ (t + y)) ⊆ univ :=
+    ⟨hγt, subset_univ _⟩
+  have hdmem : IsTestForm (fun y => exteriorDerivative γ (t + y)) ∧
+      tsupport (fun y => exteriorDerivative γ (t + y)) ⊆ univ :=
+    ⟨hd ▸ exteriorDerivative_isTestForm hγt, subset_univ _⟩
+  -- unfold `currentEval`; `∂Y(γₜ) = Y(dγₜ)` and `dγₜ = (dγ)(t + ·)` as test forms
+  rw [currentEval, currentEval, dite_eq_left hdmem, dite_eq_left hmem,
+    GeometricCurrentOn.boundary_apply]
+  exact congrArg Y (Subtype.ext hd.symm)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
