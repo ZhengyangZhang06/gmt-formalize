@@ -574,6 +574,72 @@ theorem Submission.cbrcs_ce_leibniz_smul_bound : ∀ (P k n : ℕ) (f : Euclid P
       rw [ContinuousLinearMap.lsmul_apply, norm_smul, one_mul]) hf hg
   simpa only [ContinuousLinearMap.lsmul_apply, one_mul] using h
 
+/-- **Multiplication by a smooth cutoff is continuous on test forms** (the map `M_k` in the closure
+step of Simon 7.2.4).  For `ζ ∈ C^∞_c(ℝᴾ)` with `spt ζ ⊆ U`, `ω ↦ ζω` is an `ℝ`-linear map
+`𝒟ᵏ(ℝᴾ) → 𝒟ᵏ(U)` taking `ωⱼ → 0` to `ζωⱼ → 0`.  All `ζωⱼ` are supported in the compact set
+`spt ζ ⊆ U`; each `Dˡζ` is bounded, each `Dˡωⱼ → 0` uniformly on all of `ℝᴾ` (it vanishes off
+a compact set containing every `spt ωⱼ`), and the Leibniz estimate
+`‖Dⁱ(ζωⱼ)‖ ≤ ∑ₗ C(i, l) ‖Dˡζ‖ ‖Dⁱ⁻ˡωⱼ‖` gives `Dⁱ(ζωⱼ) → 0` uniformly. -/
+theorem Submission.cbrcs_ce_cutoff_multiplier : ∀ (P k : ℕ) (U : Set (Euclid P)) (ζ : Euclid P → ℝ), ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → ∃ M : TestFormOn (univ : Set (Euclid P)) k →ₗ[ℝ] TestFormOn U k, (∀ (ω : TestFormOn (univ : Set (Euclid P)) k) (x : Euclid P), (M ω : DifferentialForm (Euclid P) k) x = ζ x • (ω : DifferentialForm (Euclid P) k) x) ∧ ∀ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) k, TestFormOnConverges ωs 0 → TestFormOnConverges (fun j => M (ωs j)) 0 := by
+  intro P k U ζ hζ hζc hζU
+  -- Steps 1–2: `ζω` is a test form in `U` and `ω ↦ ζω` is `ℝ`-linear
+  obtain ⟨M, hM⟩ : ∃ M : TestFormOn (univ : Set (Euclid P)) k →ₗ[ℝ] TestFormOn U k,
+      ∀ (ω : TestFormOn (univ : Set (Euclid P)) k) (x : Euclid P),
+        (M ω : DifferentialForm (Euclid P) k) x = ζ x • (ω : DifferentialForm (Euclid P) k) x :=
+    ⟨{ toFun := fun ω => ⟨fun x => ζ x • (ω : DifferentialForm (Euclid P) k) x,
+          ⟨⟨hζ.smul ω.property.1.1, hζc.smul_right⟩, (tsupport_smul_subset_left _ _).trans hζU⟩⟩
+       map_add' := fun ω η => Subtype.ext <| funext fun x => smul_add _ _ _
+       map_smul' := fun c ω => Subtype.ext <| funext fun x => smul_comm (ζ x) c _ }, fun _ _ => rfl⟩
+  refine ⟨M, hM, fun ωs hωs => ?_⟩
+  have hMfun : ∀ ω : TestFormOn (univ : Set (Euclid P)) k, (M ω : DifferentialForm (Euclid P) k) =
+      fun x => ζ x • (ω : DifferentialForm (Euclid P) k) x :=
+    fun ω => funext (hM ω)
+  -- Step 3: a compact set `K'` carries all `spt ωⱼ`, and `Dˡωⱼ → 0` uniformly on `K'`
+  obtain ⟨K', -, -, hK', -, hconv⟩ := hωs
+  -- Step 4: every `Dˡζ` is bounded by some `B l ≥ 0`
+  have hBex : ∀ l : ℕ, ∃ B : ℝ, 0 ≤ B ∧ ∀ x, ‖iteratedFDeriv ℝ l ζ x‖ ≤ B := by
+    intro l
+    obtain ⟨B, hB⟩ := (hζ.continuous_iteratedFDeriv (m := l) (by exact_mod_cast le_top)
+      ).bounded_above_of_compact_support (hζc.iteratedFDeriv l)
+    exact ⟨max B 0, le_max_right _ _, fun x => (hB x).trans (le_max_left _ _)⟩
+  choose B hB0 hB using hBex
+  -- Step 5: eventually `‖Dˡωⱼ(x)‖ < δ` for all `x ∈ ℝᴾ` (`Dˡωⱼ` vanishes off `spt ωⱼ ⊆ K'`)
+  have hsmall : ∀ l : ℕ, ∀ δ > 0, ∀ᶠ j in atTop, ∀ x,
+      ‖iteratedFDeriv ℝ l (ωs j : DifferentialForm (Euclid P) k) x‖ < δ := by
+    intro l δ hδ
+    filter_upwards [Metric.tendstoUniformlyOn_iff.1 (hconv l) δ hδ] with j hj x
+    by_cases hx : x ∈ K'
+    · simpa using hj x hx
+    · rw [notMem_support.1 fun h => hx (hK' j (support_iteratedFDeriv_subset l h)), norm_zero]
+      exact hδ
+  -- Step 3 (cont.): the compact set `spt ζ ⊆ U` contains every `spt (ζωⱼ)` and `spt 0 = ∅`
+  refine ⟨tsupport ζ, hζc, hζU, fun j => ?_, by simp, fun i => ?_⟩
+  · rw [hMfun]
+    exact tsupport_smul_subset_left _ _
+  -- Step 6: the Leibniz estimate gives `‖Dⁱ(ζωⱼ)(x)‖ < ε` for all large `j`
+  refine Metric.tendstoUniformlyOn_iff.2 fun ε hε => ?_
+  set C : ℝ := ∑ l ∈ Finset.range (i + 1), (i.choose l : ℝ) * B l with hC
+  have hC0 : 0 ≤ C := Finset.sum_nonneg fun l _ => mul_nonneg (Nat.cast_nonneg _) (hB0 l)
+  have hδ : 0 < ε / (C + 1) := div_pos hε (by linarith)
+  have hev : ∀ᶠ j in atTop, ∀ l ∈ Finset.range (i + 1), ∀ x,
+      ‖iteratedFDeriv ℝ (i - l) (ωs j : DifferentialForm (Euclid P) k) x‖ < ε / (C + 1) :=
+    (eventually_all_finset _).2 fun l _ => hsmall (i - l) _ hδ
+  filter_upwards [hev] with j hj x _
+  have h0 : ((0 : TestFormOn U k) : DifferentialForm (Euclid P) k) = 0 := rfl
+  rw [h0, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left, hMfun]
+  calc ‖iteratedFDeriv ℝ i (fun y => ζ y • (ωs j : DifferentialForm (Euclid P) k) y) x‖
+      ≤ ∑ l ∈ Finset.range (i + 1), (i.choose l : ℝ) * ‖iteratedFDeriv ℝ l ζ x‖ *
+          ‖iteratedFDeriv ℝ (i - l) (ωs j : DifferentialForm (Euclid P) k) x‖ :=
+        Submission.cbrcs_ce_leibniz_smul_bound P k i ζ _ x hζ (ωs j).property.1.1
+    _ ≤ ∑ l ∈ Finset.range (i + 1), (i.choose l : ℝ) * B l * (ε / (C + 1)) :=
+        Finset.sum_le_sum fun l hl => mul_le_mul
+          (mul_le_mul_of_nonneg_left (hB l x) (Nat.cast_nonneg _)) (hj l hl x).le
+          (norm_nonneg _) (mul_nonneg (Nat.cast_nonneg _) (hB0 l))
+    _ = C * (ε / (C + 1)) := by rw [hC, Finset.sum_mul]
+    _ < ε := by
+        rw [← mul_div_assoc, div_lt_iff₀ (by linarith)]
+        nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
