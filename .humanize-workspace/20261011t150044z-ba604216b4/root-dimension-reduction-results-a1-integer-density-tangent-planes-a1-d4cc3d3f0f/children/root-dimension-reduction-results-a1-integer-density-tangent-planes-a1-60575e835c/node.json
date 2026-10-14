@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.param_continuity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1",
+  "depth": 6,
+  "title": "Continuity of the rescaled integrals ∫ f d(ofReal(λ⁻¹^n)•μ₀.map(dilation x λ)) in the parameters (x, λ), λ > 0, for a finite μ₀ and continuous compactly supported f (parent step 5a)",
+  "statement": "Let P, n ∈ ℕ, μ₀ a measure on ℝ^P with μ₀(ℝ^P) ≠ ∞, f : ℝ^P → ℝ continuous with compact support, and x_i ∈ ℝ^P, λ_i > 0 (i ∈ ℕ), x ∈ ℝ^P, λ > 0 with x_i → x and λ_i → λ. Then ∫ f d(ofReal(λ_i⁻¹^n)•μ₀.map(dilation x_i λ_i)) → ∫ f d(ofReal(λ⁻¹^n)•μ₀.map(dilation x λ)) as i → ∞.",
+  "lean_statement": "∀ (P n : ℕ) (μ₀ : Measure (Euclid P)) (f : Euclid P → ℝ) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (x : Euclid P) (lam : ℝ), μ₀ univ ≠ ∞ → Continuous f → HasCompactSupport f → (∀ i, 0 < lams i) → 0 < lam → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 lam) → Tendsto (fun i => ∫ v, f v ∂(ENNReal.ofReal ((lams i)⁻¹ ^ n) • μ₀.map (dilation (xs i) (lams i)))) atTop (𝓝 (∫ v, f v ∂(ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam))))",
+  "lean_name": "idtp_fons_cc_psf_param_continuity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-60575e835c-a1"
+}
