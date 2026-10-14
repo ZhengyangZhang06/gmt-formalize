@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1.coarea_glue-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1",
+  "depth": 6,
+  "title": "Countable additivity of the co-area identity over disjoint Borel pieces of an injective continuous chart",
+  "statement": "Let P, n ∈ ℕ, Z ⊆ ℝ^{n+1}, and let Z_q (q ∈ ℕ) be pairwise disjoint Borel subsets of ℝ^{n+1} with ⋃_q Z_q = Z. Let ψ : ℝ^{n+1} → ℝ^P be continuous on Z and injective on Z, F : ℝ^{n+1} → ℝ Borel, and φ, g : ℝ^P → [0, ∞] arbitrary. Suppose that for every q the function t ↦ ∫_{ψ(Z_q ∩ F^{−1}(t))} φ dHⁿ is a.e.-measurable for Lebesgue measure on ℝ and ∫_ℝ ∫_{ψ(Z_q ∩ F^{−1}(t))} φ dHⁿ dt = ∫_{ψ(Z_q)} g dH^{n+1}. Then t ↦ ∫_{ψ(Z ∩ F^{−1}(t))} φ dHⁿ is a.e.-measurable and ∫_ℝ ∫_{ψ(Z ∩ F^{−1}(t))} φ dHⁿ dt = ∫_{ψ(Z)} g dH^{n+1}. Here Hᵏ = μHE[k] and all integrals are lower integrals in [0, ∞].",
+  "lean_statement": "∀ (P n : ℕ) (Z : Set (Euclid (n + 1))) (Zs : ℕ → Set (Euclid (n + 1))) (ψ : Euclid (n + 1) → Euclid P) (F : Euclid (n + 1) → ℝ) (φ g : Euclid P → ℝ≥0∞), ContinuousOn ψ Z → InjOn ψ Z → Measurable F → (∀ q, MeasurableSet (Zs q)) → Pairwise (fun p q => Disjoint (Zs p) (Zs q)) → (⋃ q, Zs q) = Z → (∀ q, AEMeasurable (fun t : ℝ => ∫⁻ x in ψ '' (Zs q ∩ F ⁻¹' {t}), φ x ∂μHE[n]) ∧ ∫⁻ t : ℝ, (∫⁻ x in ψ '' (Zs q ∩ F ⁻¹' {t}), φ x ∂μHE[n]) = ∫⁻ x in ψ '' Zs q, g x ∂μHE[n + 1]) → AEMeasurable (fun t : ℝ => ∫⁻ x in ψ '' (Z ∩ F ⁻¹' {t}), φ x ∂μHE[n]) ∧ ∫⁻ t : ℝ, (∫⁻ x in ψ '' (Z ∩ F ⁻¹' {t}), φ x ∂μHE[n]) = ∫⁻ x in ψ '' Z, g x ∂μHE[n + 1]",
+  "lean_name": "dor_lmbsf_pc_coarea_glue",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-3a32662d91-a1"
+}
