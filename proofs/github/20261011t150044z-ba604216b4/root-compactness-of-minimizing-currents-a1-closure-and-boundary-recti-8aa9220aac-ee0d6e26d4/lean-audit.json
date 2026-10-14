@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aff912c2d0cdb33ef75a4dc0f7a65f97ee7c479c19596a12eeee4c8152145d54",
+  "git_delta": {
+    "base_commit": "5ca2d39434b6f3f723f7bcea1961988b0352a915",
+    "candidate_commit": "afb7e9c724f35eb0b0057a8562e01227a253d039",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_fp_tsum_weight_le_one",
+    "diff_sha256": "be3c28d5e7f1dfab7607ec5fb793c5b3932d4683478e536cab7272d6828b93f5",
+    "source_sha256": "3e259c5c1a68d5e9b5c3b8ab7f03c12618ff29f94ce45390b3ee6957bd612e0d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_fp_tsum_weight_le_one",
+      "statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)) (a : Euclid P → ℝ≥0∞), Module.finrank ℝ V = n → Z ⊆ (Vᗮ : Set (Euclid P)) → ν = Measure.sum (fun w : Z => a w • (μHE[n]).restrict {y : Euclid P | y - w ∈ V}) → (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ unitBallVolume n * ENNReal.ofReal (R ^ n)) → ∑' w : Z, a w ≤ 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
