@@ -8870,6 +8870,42 @@ theorem Submission.dtc_isIntegerMultiplicity_sub : ∀ (P n : ℕ) (U : Set (Euc
   push_cast
   ring
 
+/-- **Simon Ch. 6, 2.30–2.32 and 3.10**, cone filling in a subspace: let `m ≥ 1`, `V ⊆ ℝᴾ` a
+linear subspace, and `X ∈ 𝒟_m(ℝᴾ)` integer multiplicity with `∂X = 0`, `spt X` compact and
+`spt X ⊆ V`.  Then the cone `Y = 0 ⨯ X ∈ 𝒟_{m+1}(ℝᴾ)` is integer multiplicity, `∂Y = X`, and
+`spt Y` is compact and contained in `V`.  Write `m = q + 1`.  `X` has a representation with carrier
+in `spt X` and finite mass, and an integral Lipschitz parametrization `(Gᵢ, Aᵢ, wᵢ, cᵢ)` with
+`Gᵢ(Aᵢ) ⊆ spt X` (`dimred_cs_sos_cfs_compact_im_param`).  The cone `Y(ω) = X(ζ Kω)` has `∂Y = X`
+and compact support in `{s x : s ∈ [0, 1], x ∈ spt X}` (`dimred_cs_sos_cfs_cone_current`).  The
+maps `(s, u) ↦ s Gᵢ(u)` parametrize `Y` (`dimred_cs_sos_cfs_cone_param`), so `Y` is integer
+multiplicity (`dimred_cs_sos_cfs_param_series_im`; Simon 6.3.9 applied to the cone gives 6.3.10).
+Finally `s x ∈ V` for `x ∈ spt X ⊆ V`, since `V` is a subspace. -/
+theorem Submission.dimred_cs_sos_cone_filling_in_subspace : ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), 0 < m → IsIntegerMultiplicity X → BoundaryVanishes X → IsCompact X.support → X.support ⊆ (V : Set (Euclid P)) → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ Y.boundary = X ∧ IsCompact Y.support ∧ Y.support ⊆ (V : Set (Euclid P)) := by
+  intro P m X V hm hX hbX hcX hXV
+  -- write `m = q + 1`; then `BoundaryVanishes X` reads `∂X = 0`
+  obtain ⟨q, rfl⟩ : ∃ q, m = q + 1 := ⟨m - 1, by omega⟩
+  have hbX' : X.boundary = 0 := hbX
+  -- step 7: a representation `R` of `X` with carrier in `spt X` and finite mass, and an integral
+  -- Lipschitz parametrization `(Gᵢ, Aᵢ, wᵢ, cᵢ)` of `X` with `Gᵢ(Aᵢ) ⊆ spt X`
+  obtain ⟨R, hRX, hRsub, hRfin, G, A, w, c, hG, hA, hw, hc, hGd, hGA, hwi, hcb, hfin, hXG⟩ :=
+    Submission.dimred_cs_sos_cfs_compact_im_param P (q + 1) X hX hcX
+  -- steps 0 and 3–6: the cone `Y = 0 ⨯ X`, with `∂Y = X`, compact support in the cone over
+  -- `spt X`, and `Y(ω) = X(η)` for a test form `η` equal to `Kω` on `spt X`
+  obtain ⟨Y, hYb, hYc, hYsub, hYX⟩ :=
+    Submission.dimred_cs_sos_cfs_cone_current P q X R hRX hRsub hRfin hbX' hcX
+  -- step 8: the maps `(s, u) ↦ s Gᵢ(u)` give an integral Lipschitz parametrization of `Y`
+  obtain ⟨H, B, w', c', hH, hB, hw', hc', hwi', hcb', hfin', hYH⟩ :=
+    Submission.dimred_cs_sos_cfs_cone_param P q X Y G A w c hcX hG hA hw hc hGd hGA hwi hcb hfin
+      hXG hYX
+  -- step 9 (Simon 6.3.10): `Y` is integer multiplicity
+  have hYim : IsIntegerMultiplicity Y :=
+    Submission.dimred_cs_sos_cfs_param_series_im P (q + 1) Y H B w' c' hH hB hw' hc' hwi' hcb'
+      hfin' hYH
+  -- step 10: `spt Y ⊆ {s x : s ∈ [0, 1], x ∈ spt X} ⊆ V`, since `V` is a subspace
+  refine ⟨Y, hYim, hYb, hYc, fun y hy => ?_⟩
+  obtain ⟨s, -, x, hx, rfl⟩ := hYsub hy
+  exact V.smul_mem s (hXV hx)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
