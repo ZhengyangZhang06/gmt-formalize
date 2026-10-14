@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "detRowAlternating|^theorem det_apply|^theorem det_transpose|^theorem det_one|det_eq_zero_of_row_eq_zero",
+        "theorem eq_of_subset_of_ncard_le|theorem ncard_range_of_injective",
+        "theorem norm_apply_le|theorem single_apply",
+        "theorem basisFun_apply",
+        "decidablePiFintype|decidableEqPiFintype",
+        "cmr_cc_det_covector_exists|cmr_cc_det_covector_basis_kronecker",
+        "Python checks of DAG reservations, dependency closure, frozen-type equality, snapshot compatibility, and public import reachability",
+        "validate_lean_statement on both exact child propositions",
+        "lake env lean /tmp/cc-independent-audit-u2pdeuib/CheckTypes.lean",
+        "axiom|sorry|kernel|accepted|passed"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/WellFounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Card.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-17702f4d24/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-cov-64249b6f60/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa43/20261012T034335Z-ch07-root.minimizing_implies_stationary-a1.covector_gram_bounds-a1-wekynz07/comparator.log"
+      ],
+      "conclusion": "The pinned definitions and cited APIs support both proofs. Matrix.of gives the intended matrix construction; Fintype.decidablePiFintype supplies equality decidability in the second contract. Both exact one-line propositions pass contract-syntax validation and use declarations reachable through the frozen imports. Neither proposed name occurs in the searched snapshot or DAG. The split is appropriate: existence establishes part (a), while Kronecker evaluations and the parent's already recorded norm-equivalence dependency give expansion and hence part (b). The dependency closure is acyclic; the inherited accepted Gram-bound contract matches its retained acceptance record, whose kernel export excludes sorryAx. Workspace sources checked against the snapshot agree. Fresh Lean execution was unavailable because lake was not installed on PATH; the proposer's compilation claims were not independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "det_covector_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree for arbitrary P, n and I, without an injectivity assumption. Each construction is justified: linear coordinate projection, alternating determinant composition, transpose identity, explicit factorial bound, and mkContinuous. The argument also handles n = 0 and contains no circular reliance or deferred proof search. The bare name is unreserved, and the empty dependency list is correct."
+    },
+    {
+      "key": "det_covector_kronecker",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition include both strict-monotonicity hypotheses and the determinant identity for arbitrary θ. The proof correctly reduces to basis coordinates, obtains the identity matrix when I = J, and otherwise derives a missing coordinate using finite range cardinalities and uniqueness of increasing enumerations, yielding a zero row. Degenerate cases are valid. This conditional theorem requires no existence-child dependency. Its bare name is unreserved; the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,93 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.representation_core-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Part (REP), steps 1–5 (Simon 6.2.7–2.8). Two substitutions are forced by the import closure of GMT.Ch07.Submission, where SimonGMT Chapter01's vector Riesz theorem (simon_theorem_4_14_caratheodory) and its positive-envelope identity (simon_theorem_4_14_positive_envelope) are unavailable. The Riesz representation of step 3 is the sibling vector_riesz, followed by an explicit polar normalization (which is what makes ‖ν‖ = 1 a.e. in the parent), and the lower mass bound of step 5 uses the sibling testform_l1_approx instead of the positive-envelope identity (3a). The extension of step 2 is the sibling testform_extension and the coefficient isometry c of the Notation paragraph is the sibling covector_euclidean_equiv. No case distinction n > P (parent step 1) is needed: the argument below is uniform in n and P (for n > P the coefficient space has dimension 0 and the construction yields μ = 0, ξ = 0).
+Notation: |α| := covectorEuclideanNorm α; M_W(T) := T.massOn W; val : ↥U → ℝ^P is the inclusion; H := EuclideanSpace ℝ (Fin d).
+1. (Coordinates.) By the sibling covector_euclidean_equiv choose d and c : Covector (Euclid P) n ≃L[ℝ] H with |α| = ‖c α‖. Thus |·| is a norm on covectors, and c, c⁻¹ are continuous linear.
+2. (Extension.) By the sibling testform_extension (with P, n, U, T, d, c and the hypotheses) there is a linear L : C_c(U, H) → ℝ with (i) L(g) = T(ω) whenever g(x) = c(ω(x)) for all x ∈ U, and (ii) local boundedness on compact subsets of ↥U.
+3. (Representation.) ↥U is locally compact (IsOpen.locallyCompactSpace), Hausdorff and second countable, and carries its Borel σ-algebra (Subtype.borelSpace). Apply the sibling vector_riesz to X := ↥U, d and L; its hypothesis is (ii). This gives a measure μ₀ on ↥U, finite on compact sets, and a measurable ν : ↥U → H, integrable on compact sets, with L(g) = ∫ ⟨g(x), ν(x)⟩ dμ₀(x) for all g ∈ C_c(U, H).
+4. (Normalization and definitions.)
+ - ρ(x) := ‖ν(x)‖ and ν̂(x) := ρ(x)⁻¹•ν(x), with 0⁻¹ = 0. Both are measurable, ν(x) = ρ(x)•ν̂(x) for all x, ‖ν̂(x)‖ ≤ 1, and ‖ν̂(x)‖ = 1 when ρ(x) ≠ 0.
+ - μ₁ := μ₀.withDensity (x ↦ ofReal ρ(x)) on ↥U, and μ := μ₁.map val. Since U is open, hence measurable, val is a measurable embedding. So μ(A) = μ₁(val⁻¹A) for measurable A, and ∫ F dμ = ∫ F(val x) dμ₁(x) (MeasurableEmbedding.integral_map).
+ - ν̂_e : ℝ^P → H is ν̂(⟨y, h⟩) for y ∈ U and 0 for y ∉ U. It is measurable, being measurable on the measurable set U and constant on Uᶜ.
+ - ξ(y) := (innerSL ℝ (ν̂_e y)).comp c, so ξ(y)(α) = ⟨ν̂_e(y), c α⟩ and ξ(y) = 0 for y ∉ U.
+ - β(y) := c⁻¹(ν̂_e(y)).
+5. (Property 1.) μ(Uᶜ) = μ₁(val⁻¹(Uᶜ)) = μ₁(∅) = 0.
+6. (Property 2.) Let K ⊆ U be compact. val⁻¹(K) is compact in ↥U, because val is an embedding and K ⊆ range val (Topology.IsInducing.isCompact_preimage_iff). So μ(K) = μ₁(val⁻¹K) = ∫⁻_{val⁻¹K} ofReal ρ dμ₀ < ∞, since ν is integrable on val⁻¹K.
+7. (Properties 4 and 5.) The map Φ : H → MultiVector P n, Φ(v) := (innerSL ℝ v).comp c, is continuous linear, and ξ = Φ ∘ ν̂_e. ν̂_e is measurable into the second-countable space H, hence strongly measurable. So ξ is strongly measurable, in particular AEStronglyMeasurable for μ. For every y and α, |ξ(y)(α)| = |⟨ν̂_e(y), c α⟩| ≤ ‖ν̂_e(y)‖·‖c α‖ ≤ |α| (Cauchy–Schwarz). Likewise β = c⁻¹ ∘ ν̂_e is strongly measurable, and |β(y)| = ‖ν̂_e(y)‖ ≤ 1.
+8. (Property 6.) Let ω ∈ TestFormOn U n and g_ω : ↥U → H, g_ω(x) := c(ω(val x)). g_ω is continuous. Its support is contained in val⁻¹(tsupport ω), which is compact because tsupport ω is a compact subset of U = range val. Hence g_ω ∈ C_c(U, H), and by step 2(i), T(ω) = L(g_ω). By step 3:
+ L(g_ω) = ∫ ⟨c(ω x), ν x⟩ dμ₀
+ = ∫ ρ(x)⟨ν̂(x), c(ω x)⟩ dμ₀(x)   (ν = ρ•ν̂, and the inner product is symmetric)
+ = ∫ ⟨ν̂(x), c(ω x)⟩ dμ₁(x)   (integral_withDensity_eq_integral_toReal_smul, with (ofReal ρ).toReal = ρ)
+ = ∫ ξ(val x)(ω(val x)) dμ₁(x)
+ = ∫ ξ(y)(ω y) dμ(y).
+9. (μ-a.e. normalization.) The set Z := Uᶜ ∪ val''{x : ρ x = 0} is measurable, and μ(Z) ≤ μ(Uᶜ) + μ₁({ρ = 0}) = 0 + ∫⁻_{ρ=0} ofReal ρ dμ₀ = 0. For y = val x ∉ Z, ξ(y)(β y) = ⟨ν̂ x, c(c⁻¹(ν̂ x))⟩ = ‖ν̂ x‖² = 1. So ξ(y)(β(y)) = 1 for μ-a.e. y.
+10. (Property 3, upper bound.) Let W be open and ω ∈ massAdmissibleOn U n W. If μ(W) = ∞ there is nothing to prove. Otherwise y ↦ ξ(y)(ω y) vanishes off W (ω(y) = 0 for y ∉ tsupport ω), and |ξ(y)(ω y)| ≤ |ω y| ≤ 1. By step 8, T(ω) = ∫_W ξ(ω) dμ ≤ (μ W).toReal, so ofReal(T ω) ≤ μ(W). Taking the supremum over ω, M_W(T) ≤ μ(W).
+11. (Property 3, lower bound on relatively compact pieces.) Let W be open and W' an open set with W' ⊂⊂ U and W' ⊆ W.
+ - ν' := μ.restrict W' is a finite measure (μ(W') ≤ μ(closure W') < ∞ by step 6) with ν'(W'ᶜ) = 0. β is integrable for ν', being strongly measurable and bounded, and |β| ≤ 1.
+ - Let ε > 0. The sibling testform_l1_approx (with P, n, ν', V := W', β, ε) gives a test form ω₀ with tsupport ω₀ ⊆ W', |ω₀| ≤ 1 and ∫⁻ ofReal|ω₀ − β| dν' < ofReal ε. Since W' ⊆ U, ω₀ defines ω ∈ TestFormOn U n, and ω ∈ massAdmissibleOn U n W because W' ⊆ W.
+ - By step 8, since ω vanishes off W', T(ω) = ∫_{W'} ξ(ω) dμ = ∫_{W'} ξ(β) dμ + ∫_{W'} ξ(ω − β) dμ; both integrands are bounded on the finite-measure set W'. By step 9 the first integral is μ.real(W'). The second has absolute value ≤ ∫_{W'} |ω − β| dμ < ε, since |ξ(y)(α)| ≤ |α|.
+ - Hence M_W(T) ≥ ofReal(T ω) ≥ ofReal(μ.real(W') − ε). Letting ε ↓ 0, M_W(T) ≥ μ(W').
+12. (Property 3, lower bound.) Let W be open and O := W ∩ U. Since μ(Uᶜ) = 0, μ(W) = μ(O). The open set O is the increasing union of the open sets W'_j (j ≥ 1), where W'_j := ball(0, j) if O = ℝ^P, and W'_j := {y : ‖y‖ < j and infDist(y, Oᶜ) > 1/j} otherwise. The closure of each W'_j lies in the compact set {‖y‖ ≤ j, infDist(y, Oᶜ) ≥ 1/j} ⊆ O (resp. closedBall(0, j)), so W'_j ⊂⊂ U and W'_j ⊆ W. By step 11 and continuity from below, μ(W) = sup_j μ(W'_j) ≤ M_W(T).
+13. Steps 5–12 give all six properties for μ and ξ.
+
+## Key steps
+
+1. Get the coordinates c (covector_euclidean_equiv) and the extension L of T to C_c(U, ℝ^d) (testform_extension).
+2. vector_riesz on X = U gives μ₀ and a locally integrable ν with L(g) = ∫⟨g, ν⟩ dμ₀.
+3. Normalize polarly: μ := val_*(|ν|μ₀) and ξ(x)(α) := ⟨ν(x)/|ν(x)|, c α⟩; this gives properties (1), (2), (4), (5) and (6).
+4. M_W(T) ≤ μ(W) because |ξ(ω)| ≤ |ω| ≤ 1.
+5. M_W(T) ≥ μ(W') for open W' ⊂⊂ U with W' ⊆ W, via testform_l1_approx applied to β = c⁻¹(ν/|ν|); then exhaust W ∩ U.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean and Submission.lean against workspace GMT/Ch07/Contract.lean and Submission.lean  (identical)`
+- `rg -n 'dimred_mbl_fnd' <snapshot>/project -g '*.lean'  (no match, rc=1)`
+- `rg -n 'cmr_|cmc_imRep|rsd_mw_exists|dor_ims_sua' <snapshot>/project -g '*.lean'  (no match, rc=1)`
+- `rg -n -i 'massRepresentation|vector_riesz|vectorRiesz' <snapshot>/project -g '*.lean'  (no match, rc=1)`
+- `rg -n 'structure IMRep|def IsIntegerMultiplicity|def boundaryMassOn|def CompactlyContained|abbrev MultiVector' <snapshot>/project/GMT/Ch07/Contract.lean  (lines 61, 92, 120, 127, 48)`
+- `rg -n 'def rieszMeasure|theorem integral_rieszMeasure|def toRealPositiveLinear|theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem tendsto_measure_cthickening_of_isCompact|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem integral_withDensity_eq_integral_toReal_smul|theorem exists_contDiff_tsupport_subset|theorem eLpNorm_le_eLpNorm_fderiv_one|theorem extDeriv_apply|theorem monotone_sort' <snapshot>/mathlib/Mathlib -g '*.lean'`
+- `python3 walk of `import` lines from the contract's SimonGMT imports through lake-packages simongmt (closure: Chapter01.{Basic,Hausdorff,MetricCriterion}, Chapter02.Lipschitz, Chapter03.Rectifiable, Chapter04.Basic, Chapter06.{Forms,Currents,Mass,CurrentLocalEquality,AffineCurrentPushforward})`
+- `lake env lean /tmp/fnd-split/Probe2.lean and Probe3.lean  (#check of every cited name after `import GMT.Ch07.Submission`; unknown: simon_theorem_4_14_caratheodory, eLpNorm_le_eLpNorm_fderiv_one, ContDiffBump.normed, SignedMeasure.toJordanDecomposition, ContinuousAlternatingMap.map_perm, Measure.withDensity_rnDeriv_eq; all other cited names resolve)`
+- `lake env lean /tmp/fnd-split/check/Final.lean  (12 child types + parent type in the replayed comparator scope; conditional assembly; #print axioms)`
+- `python3 scans of dag.json: selected node, string identity parent = '(' + REP + ') ∧ (' + IMC + ')', statuses/candidate commits of reused nodes, dependency closures of reused nodes, lean_name collisions; lean_contract.validate_lean_statement on all 12 child types`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py; contract_scope/child_modules in verifier/gmt-compare.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/Tuple/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/isolated-comparator-result.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/fnd-split/check/Final.lean`
+
+The snapshot pins match: project b4d606db and mathlib 25730c7c. The snapshot Contract.lean and Submission.lean are byte-identical to the workspace's. The snapshot contains no dimred_mbl_fnd_*, cmr_*, cmc_imRep*, rsd_mw_exists* or dor_ims_sua* declaration and no mass-representation or vector-Riesz theorem, so no snapshot declaration is reused and no fresh name collides. The snapshot mathlib has the in-scope replacement tools the children cite: RealRMK.rieszMeasure/integral_rieszMeasure, toRealPositiveLinear, IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero, tendsto_measure_cthickening_of_isCompact, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, integral_withDensity_eq_integral_toReal_smul, extDeriv_apply and Tuple.monotone_sort. eLpNorm_le_eLpNorm_fderiv_one exists in the snapshot (SobolevInequality.lean:439) but is outside the import closure of GMT.Ch07.Submission, as are SimonGMT's simon_theorem_4_14_caratheodory and ContDiffBump.normed (Lean probe: unknown identifiers). Five DAG declarations are reused with byte-identical frozen types. All are accepted, with candidate commits and passed comparators, and their closures are fully accepted: cmc_imRep_locality_restrict_sub, cmr_abs_apply_le_massOn, cmr_covector_euclidean_equiv, dor_ims_sua_mollify_unit_field and rsd_mw_exists_testForm_approx. All 12 child types and the parent type elaborate in the replayed comparator scope. The conditional assembly proves the exact selected type with axioms propext, Classical.choice and Quot.sound.
