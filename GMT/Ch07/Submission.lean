@@ -2234,6 +2234,62 @@ theorem Submission.dpf_approxTangent_ae_bilipschitz_piece : ∀ (P n : ℕ) (U Y
   filter_upwards [hpull _ hloc,
     Submission.ptd_piece_image_approxTangent_ae P n F B L m hF hB hm hbi hdiff] with b hYA hA'
   exact (hYA _).2 hA'
+/-- Orientation of a cylinder: let `e₀` be the first basis vector of `ℝᴺ⁺¹` and `J v = (0, v)`
+for `v ∈ ℝᴺ`.  If `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` orients `Q ⊆ ℝᴺ` and the `(n+1)`-vector `ξ'` pairs with each
+`α` as `ξ` pairs with `α(e₀, J ·)`, then `ξ' = ±e₀ ∧ Jτ₁ ∧ ⋯ ∧ Jτₙ` orients `ℝe₀ ⊕ J(Q)`
+(Simon 6.1.1, 6.1.7).  The frame `(e₀, Jτ₁, …, Jτₙ)` is orthonormal because `J` is a linear
+isometry onto `e₀^⊥`. -/
+theorem Submission.dimred_mbl_dt_lp_imc_orientation : ∀ (N n : ℕ) (ξ : MultiVector N n) (ξ' : MultiVector (N + 1) (n + 1)) (Q : Submodule ℝ (Euclid N)), IsUnitOrientationOf ξ Q → (∀ (α : Covector (Euclid (N + 1)) (n + 1)) (β : Covector (Euclid N) n), (∀ v : Fin n → Euclid N, β v = α (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → ξ' α = ξ β) → IsUnitOrientationOf ξ' (Submodule.span ℝ (insert (EuclideanSpace.single 0 1) ((fun v : Euclid N => (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)) : Euclid (N + 1))) '' (Q : Set (Euclid N))))) := by
+  intro N n ξ ξ' Q hξ hrel
+  obtain ⟨τ, hτon, hτspan, hτsign⟩ := hξ
+  set e₀ : Euclid (N + 1) := EuclideanSpace.single 0 1 with he₀
+  -- Step 1: `J` is linear and isometric, `J(ℝᴺ) ⊥ e₀` and `‖e₀‖ = 1`
+  let J : Euclid N →ₗ[ℝ] Euclid (N + 1) :=
+    { toFun := fun v => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))
+      map_add' := fun v w => by
+        ext i
+        refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      map_smul' := fun c v => by
+        ext i
+        refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+  have hJ : (fun v : Euclid N => (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)) : Euclid (N + 1))) =
+      ⇑J := rfl
+  have hJJ : ∀ v w, inner ℝ (J v) (J w) = inner ℝ v w := by
+    intro v w
+    simp [J, PiLp.inner_apply, Fin.sum_univ_succ]
+  have he₀J : ∀ v, inner ℝ e₀ (J v) = 0 := by
+    intro v
+    simp [he₀, J, EuclideanSpace.inner_single_left]
+  have he₀e₀ : inner ℝ e₀ e₀ = (1 : ℝ) := by
+    simp [he₀]
+  -- Step 2: the frame `τ' = (e₀, Jτ₁, …, Jτₙ)` is orthonormal
+  set τ' : Fin (n + 1) → Euclid (N + 1) := Fin.cons e₀ (fun i => J (τ i)) with hτ'
+  have hτ'on : Orthonormal ℝ τ' := by
+    rw [orthonormal_iff_ite] at hτon ⊢
+    intro i j
+    refine Fin.cases ?_ (fun i => ?_) i <;> refine Fin.cases ?_ (fun j => ?_) j
+    · rw [hτ', Fin.cons_zero, ite_eq_left rfl]
+      exact he₀e₀
+    · simp [hτ', he₀J, (Fin.succ_ne_zero j).symm]
+    · simp [hτ', real_inner_comm, he₀J, Fin.succ_ne_zero i]
+    · simp [hτ', hJJ, hτon]
+  -- Step 3: `span τ' = ℝe₀ ⊔ J(span τ) = ℝe₀ ⊔ J(Q)`
+  have hspan : Submodule.span ℝ (range τ') =
+      Submodule.span ℝ (insert e₀ (J '' (Q : Set (Euclid N)))) := by
+    rw [hτ', Fin.range_cons, Submodule.span_insert, Submodule.span_insert, range_comp',
+      ← Submodule.map_span, hτspan, ← Submodule.map_span, Submodule.span_eq]
+  -- Step 4: `ξ' α = ξ β` for `β = α(e₀, J ·)`, and `β(τ) = α(τ')`
+  let Jc : Euclid N →L[ℝ] Euclid (N + 1) := LinearMap.toContinuousLinearMap J
+  have hval : ∀ α : Covector (Euclid (N + 1)) (n + 1),
+      ξ' α = ξ ((α.curryLeft e₀).compContinuousLinearMap Jc) :=
+    fun α => hrel α _ fun v => rfl
+  have hβτ : ∀ α : Covector (Euclid (N + 1)) (n + 1),
+      (α.curryLeft e₀).compContinuousLinearMap Jc τ = α τ' := fun α => rfl
+  rw [hJ]
+  refine ⟨τ', hτ'on, hspan, ?_⟩
+  rcases hτsign with h | h
+  · exact Or.inl fun α => by rw [hval, h, hβτ]
+  · exact Or.inr fun α => by rw [hval, h, hβτ]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
