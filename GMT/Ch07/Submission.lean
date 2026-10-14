@@ -566,6 +566,19 @@ theorem Submission.dtc_bc_cz_top_density_of_sign : ∀ (n : ℕ) (V : Set (Eucli
     rw [IMRep.action, integral_congr_ae hae,
       setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by simp [hzero y hy],
       EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+/-- **Top-dimensional integer multiplicity currents are integer densities** (density part of the
+Constancy Theorem, Simon Ch. 6, 2.34): an integer multiplicity `n`-current `X` in an open
+`V ⊆ ℝⁿ` is `X(ω) = ∫ g ⟨ω, e₁ ∧ ⋯ ∧ eₙ⟩ dLⁿ` for a locally Lebesgue-integrable `g : ℝⁿ → ℤ`.
+Choose `R = (M, θ, ξ)` representing `X`; then `ξ = σ (e₁ ∧ ⋯ ∧ eₙ)` `Hⁿ⌞M`-a.e. for a measurable
+sign `σ = ±1`, and `g = σθ` on `M`, `0` off `M`. -/
+theorem Submission.dtc_bc_cz_top_density : ∀ (n : ℕ) (V : Set (Euclid n)) (X : GeometricCurrentOn V n), 0 < n → IsOpen V → IsIntegerMultiplicity X → ∃ g : Euclid n → ℤ, LocallyIntegrableOn (fun y => (g y : ℝ)) V volume ∧ ∀ ω : TestFormOn V n, X ω = ∫ y, (g y : ℝ) * (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ) := by
+  rintro n V X - hV ⟨R, hR⟩
+  -- `ξ = σ (e₁ ∧ ⋯ ∧ eₙ)` a.e. on `M`, with a measurable sign `σ = ±1`
+  obtain ⟨σ, hσ, hσR⟩ := Submission.dtc_bc_cz_top_density_orient_sign n V R
+  -- `g = σθ 1_M` is locally integrable and `R.action ω = ∫ g ⟨ω, e⟩ dLⁿ` for every `n`-form
+  obtain ⟨g, hg, hact⟩ := Submission.dtc_bc_cz_top_density_of_sign n V R σ hV hσ hσR
+  -- `X ω = R.action ω` for test forms
+  exact ⟨g, hg, fun ω => (hR ω).trans (hact ω)⟩
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
