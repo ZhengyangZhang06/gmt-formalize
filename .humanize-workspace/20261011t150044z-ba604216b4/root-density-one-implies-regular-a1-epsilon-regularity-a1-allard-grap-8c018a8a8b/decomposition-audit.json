@@ -1,0 +1,100 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "ae_tendsto_average_norm_sub|ae_differentiableAt|measurable_fderiv|setIntegral_comp_smul_of_pos|euclideanHausdorffMeasure_def|euclideanHausdorffMeasure_eq_volume",
+        "def blowUpMap|def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|theorem weighted_area_formula_lipschitz_injOn|def areaJacobianAt|euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "rg -n 'doraggt_|dorag_lipschitz_graph_approxTangent|regcomp_atl_upper_density_zero|regcomp_atl_blowUp_measure_scaling|graph.*[tT]angent|[tT]angent.*graph' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "git show 031b5125695febe04a82aacb729a15164ef02960:GMT/Ch07/Submission.lean",
+        "git show 0591fd7c22a234ab017bc833decdcebac31fa572:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/graph-tangent-independent-audit-oy5jo9w8/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/graph-tangent-independent-audit-oy5jo9w8/KidsAudit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/graph-tangent-independent-audit-oy5jo9w8/FullAudit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-8c018a8a8b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-8c018a8a8b/decomposition-v2.json",
+        "/tmp/graph-tangent-independent-audit-oy5jo9w8/Contracts.lean",
+        "/tmp/graph-tangent-independent-audit-oy5jo9w8/KidsAudit.lean",
+        "/tmp/graph-tangent-independent-audit-oy5jo9w8/FullAudit.lean"
+      ],
+      "conclusion": "The split is appropriate: its graph-analysis and density-transfer obligations, together with the parent's area-formula argument, establish exactly dorag_lipschitz_graph_approxTangent. Dependencies are acyclic and match the proof references. All ten statements are standalone one-line propositions matching their prose; their inline constructions use the intended instances. All names are bare identifiers; eight are unreserved, and both reused declarations have identical accepted frozen types. Relevant compiler sources match the pinned snapshot. The project search found no matching declaration. Independent contract, children-only and integrated builds all passed; every child and the exact selected parent use only propext, Classical.choice and Quot.sound. All eight new proofs pass the leaf source-delta check."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "graph_gram_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean identity agree. Adjoint duality, preservation of inner products and vanishing cross terms prove the identity without circular reliance or additional dimension assumptions."
+    },
+    {
+      "key": "graph_map_basics",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five conjuncts match the prose. Pythagoras and the triangle inequality give the metric bounds; completeness gives closed range; the normalized Hausdorff image bound proves compact-local finiteness and preservation of arbitrary null sets."
+    },
+    {
+      "key": "graph_blowup_rescaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The affine substitution proves both set inclusions. The derivative argument correctly treats differentiability and nondifferentiability separately, establishing the unconditional fderiv equality for every nonzero r."
+    },
+    {
+      "key": "lebesgue_rescaled",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Lebesgue-point exceptional set is chosen before quantifying over R. Haar dilation and translation convert the integral into a fixed finite ball volume times a vanishing average. This proves the exact statement, including n = 0."
+    },
+    {
+      "key": "weighted_blowup_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The weight is fixed before the almost-everywhere quantifier, as required. The proof establishes integrability, localizes all integrands using orthogonality, and combines uniform derivative approximation with the declared Lebesgue-point dependency. The resulting good-parameter set works for every test function."
+    },
+    {
+      "key": "upper_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reuse is valid at the identical accepted frozen type. Independently, the threshold-set reduction, countable Vitali selection, Hausdorff covering estimate and closed approximation under the finite restricted measure prove the stated ambient almost-everywhere implication."
+    },
+    {
+      "key": "local_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh name is unreserved. The countable ball cover gives finite-measure pieces, and eventual equality inside sufficiently small balls transfers their density limits to S. The proof uses only the declared upper_density_zero dependency."
+    },
+    {
+      "key": "blowup_measure_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reuse is valid at the identical accepted frozen type. The norm-based set identity and translation/homothety measure laws establish the formula for arbitrary S and every real R, including negative radii."
+    },
+    {
+      "key": "tangent_iff_density_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and equivalence match exactly. Borel images and local finiteness justify splitting the integrals; scaling and both density limits make their difference vanish. The unchanged dimension condition then gives both directions for every Q."
+    },
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both set differences satisfy the localized density theorem. At almost every overlap point, openness supplies a compact neighborhood with finite measures, providing every hypothesis of tangent_iff_density_zero. Dependencies are correctly directed and non-circular."
+    }
+  ],
+  "required_changes": []
+}

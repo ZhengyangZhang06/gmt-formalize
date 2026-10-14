@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def blowUpMap|def HasApproximateTangentSpaceAt",
+        "setIntegral_union|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|norm_setIntegral_le_of_norm_le_const",
+        "of_forall_sdiff_eq_zero|integrableOn_of_bounded",
+        "tendsto_toReal|protected theorem Tendsto.const_mul",
+        "regcomp_atl_pc_",
+        "python3 -I /tmp/pcmp-independent-audit-m9dthke6/check.py Types.lean",
+        "python3 -I /tmp/pcmp-independent-audit-m9dthke6/check.py blowup_integral_comparison.lean",
+        "python3 -I /tmp/pcmp-independent-audit-m9dthke6/check.py density_rescale.lean",
+        "python3 -I /tmp/pcmp-independent-audit-m9dthke6/check.py tangent_transfer.lean",
+        "python3 -I /tmp/pcmp-independent-audit-m9dthke6/check.py Assembly.lean",
+        "python3 -I /tmp/pcmp-independent-audit-m9dthke6/check.py Scaling.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/CompactlySupported.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-bead2f32d3/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-bead2f32d3/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-c8e28598f4/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/pcmp-independent-audit-m9dthke6/Types.lean",
+        "/tmp/pcmp-independent-audit-m9dthke6/blowup_integral_comparison.lean",
+        "/tmp/pcmp-independent-audit-m9dthke6/density_rescale.lean",
+        "/tmp/pcmp-independent-audit-m9dthke6/tangent_transfer.lean",
+        "/tmp/pcmp-independent-audit-m9dthke6/Assembly.lean",
+        "/tmp/pcmp-independent-audit-m9dthke6/Scaling.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected pointwise comparison theorem. The three independent obligations isolate the integral estimate, ENNReal rescaling, and definitional tangent transfer. Their dependency lists are correctly empty and acyclic. The supplied assembly proves the exact frozen parent using these contracts and the already accepted scaling contract; this was independently kernel-checked with the four obligations supplied only as hypotheses. The reused scaling type is identical to its accepted contract, and package revisions match the pinned manifest. Each child type elaborates in comparator-derived frozen scope without any child declaration present, and each supplied prototype proof compiles independently. The accepted scaling proof also compiles independently. All axiom checks report only propext, Classical.choice, and Quot.sound. All proposed names are bare identifiers; searches found no reservations in the 230-node DAG or frozen project. The types contain no placeholders, implementation-dependent aliases, or matrix-unit constructions; their integral instances agree with the frozen tangent definition."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_integral_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose and hypotheses. The proof establishes injectivity and Borel images, then finite localized mass and integrability before applying disjoint-union additivity. Vanishing outside the ball justifies localization, and the finite-measure integral bound gives precisely the stated toReal inequality. Arbitrary R and C require no additional hypotheses. Every step is supplied without circular reliance."
+    },
+    {
+      "key": "density_rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line ENNReal proposition agree. Positive R makes r ↦ rR preserve the right-neighborhood filter. Composition and multiplication by the finite constant ofReal(R)^n give the limit; cancellation uses explicitly nonzero finite factors and transfers by eventual equality. The argument remains valid for n = 0 and infinite values of g. No undeclared dependency or missing proof step occurs."
+    },
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose for arbitrary sets and all compactly supported continuous real test functions. Unfolding the pinned definition gives the stated common dimension condition and integral limits. Subtracting the vanishing difference proves the forward implication; adding it proves the reverse. No measurability or integrability assumption is needed for this definitional transfer, and the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

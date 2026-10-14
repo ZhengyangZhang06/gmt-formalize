@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.localized_besicovitch-a1",
+  "parent_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1",
+  "depth": 3,
+  "title": "Localized Besicovitch–Lebesgue differentiation of a density",
+  "statement": "Let P ∈ ℕ and let U ⊆ ℝ^P be open. Let μ be a Borel measure on ℝ^P, θ : ℝ^P → [0, ∞] Borel measurable, and ν := μ.withDensity θ (ν(A) = ∫_A θ dμ). Assume μ(K) < ∞ and ν(K) < ∞ for every compact K ⊆ U. Then for μ-a.e. x ∈ ℝ^P with x ∈ U, ν(B̄_ρ(x))/μ(B̄_ρ(x)) → θ(x) in [0, ∞] as ρ ↓ 0. Here B̄_ρ(x) is the closed ball and the quotient is taken in [0, ∞].",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (μ : Measure (Euclid P)) (θ : Euclid P → ℝ≥0∞), IsOpen U → Measurable θ → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K ≠ ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ.withDensity θ K ≠ ∞) → ∀ᵐ x ∂μ, x ∈ U → Tendsto (fun ρ : ℝ => μ.withDensity θ (closedBall x ρ) / μ (closedBall x ρ)) (𝓝[>] 0) (𝓝 (θ x))",
+  "lean_name": "rsd_ae_tendsto_withDensity_div_closedBall",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-localized-besicovitch-a1-a1"
+}

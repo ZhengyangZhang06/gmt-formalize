@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.graph_blowup_rescaling-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1",
+  "depth": 5,
+  "title": "Blow-ups of a graph are graphs of difference quotients",
+  "statement": "Let n, k ∈ ℕ, ι : ℝⁿ → ℝ^{n+k} and ι' : ℝᵏ → ℝ^{n+k} linear isometries, a ∈ ℝ^{n+k}, f : ℝⁿ → ℝᵏ any map, v ∈ ℝⁿ and r ≠ 0; put Φ(u) := a + ιu + ι'(f u) and f_{v,r}(w) := r⁻¹(f(v + rw) − f(v)). Then (1) η_{Φ(v),r}(Φ(ℝⁿ)) = {ιw + ι'(f_{v,r}(w)) : w ∈ ℝⁿ}, where η_{x,r}(y) = r⁻¹(y − x) is SimonGMT's blowUpMap; (2) for every w ∈ ℝⁿ the Fréchet derivatives satisfy Df_{v,r}(w) = Df(v + rw) (Mathlib's fderiv, which is 0 at points of non-differentiability).",
+  "lean_statement": "∀ (n k : ℕ) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (a : Euclid (n + k)) (f : Euclid n → Euclid k) (v : Euclid n) (r : ℝ), r ≠ 0 → Poincare.SimonGMT.Chapter03.blowUpMap (a + ι v + ι' (f v)) r '' Set.range (fun u => a + ι u + ι' (f u)) = Set.range (fun w => ι w + ι' (r⁻¹ • (f (v + r • w) - f v))) ∧ ∀ w : Euclid n, fderiv ℝ (fun w' => r⁻¹ • (f (v + r • w') - f v)) w = fderiv ℝ f (v + r • w)",
+  "lean_name": "doraggt_graph_blowup_rescaling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-2aec892c09-a1"
+}

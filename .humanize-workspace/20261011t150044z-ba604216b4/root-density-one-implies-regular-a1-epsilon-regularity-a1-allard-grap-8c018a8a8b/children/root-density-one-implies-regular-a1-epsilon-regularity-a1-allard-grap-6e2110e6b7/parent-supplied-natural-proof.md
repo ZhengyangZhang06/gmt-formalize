@@ -1,0 +1,62 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.graph_tangent-a1.tangent_transfer-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof Steps 3–4 (the densities of Hⁿ⌞(M∖F) and Hⁿ⌞(F∖M) vanish at Hⁿ-a.e. x ∈ M ∩ F ∩ W, and at such x the approximate tangent plane transfers between M and F); Simon Ch. 3, Remark 1.5(2) and the proof of Theorem 1.6 "⇒" (chapter-03.txt lines 86–90 and 113–146), stated symmetrically for two sets.
+1. (Vanishing densities.) A∖B and B∖A are Borel, and for compact K ⊆ W, Hⁿ((A∖B) ∩ K) ≤ Hⁿ(A ∩ K) < ∞ and Hⁿ((B∖A) ∩ K) ≤ Hⁿ(B ∩ K) < ∞. Applying the sibling `local_density_zero` (whose open set is called U; take U := W) to S = A∖B and to S = B∖A gives an Hⁿ-null set outside of which: if x ∈ W and x ∉ A∖B then Hⁿ((A∖B) ∩ closedBall(x, ρ))/ρⁿ → 0, and if x ∈ W and x ∉ B∖A then Hⁿ((B∖A) ∩ closedBall(x, ρ))/ρⁿ → 0.
+2. (At a good point.) Let x lie outside this null set with x ∈ W, x ∈ A and x ∈ B. Then x ∉ A∖B (because x ∈ B) and x ∉ B∖A (because x ∈ A), so both density quotients tend to 0 as ρ ↓ 0.
+3. (Finiteness near x.) Since W is open, choose ε > 0 with ball(x, ε) ⊆ W and put r₀ := ε/2 > 0. Then closedBall(x, r₀) ⊆ ball(x, ε) ⊆ W and closedBall(x, r₀) is compact (ℝ^P is proper), so Hⁿ(A ∩ closedBall(x, r₀)) < ∞ and Hⁿ(B ∩ closedBall(x, r₀)) < ∞ by hypothesis.
+4. (Conclusion.) The sibling `tangent_iff_density_zero`, applied to A, B, x, r₀ with Steps 2–3, gives HasApproximateTangentSpaceAt n A x Q ↔ HasApproximateTangentSpaceAt n B x Q for every Q. This holds for every x outside an Hⁿ-null set, which is the statement. ∎
+
+## Key steps
+
+1. A∖B and B∖A are Borel and locally Hⁿ-finite in W, so their densities vanish Hⁿ-a.e. on W outside them (local_density_zero).
+2. At x ∈ W ∩ A ∩ B outside the exceptional set both densities vanish, and a small closed ball around x lies in W, giving finite measure near x.
+3. tangent_iff_density_zero then transfers every approximate tangent plane between A and B at x.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json  (mode local-project; project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean  (both identical)`
+- `rg -n 'approxTangentPlane|HasApproximateTangentSpaceAt|area_formula|graph' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `rg -n 'theorem LipschitzWith.ae_differentiableAt' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean; rg -n 'theorem ae_tendsto_average_norm_sub' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/*.lean; rg -n 'theorem countable_cover_nhdsWithin' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib; rg -n 'theorem setIntegral_comp_smul_of_pos' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n 'theorem weighted_area_formula_lipschitz_injOn|def areaJacobianAt' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/*.lean; rg -n 'def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|def blowUpMap' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean; rg -n 'theorem simon_theorem_3_6' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/*.lean  (simongmt rev 2b3663083f3fe399b6296fb8eaee52169170e197 from the snapshot lake-manifest.json)`
+- `lake env lean /tmp/gtan3/api/Api.lean (import GMT.Ch07.Submission, contract scope): weighted_area_formula_lipschitz_injOn, areaJacobianAt, LinearMap.normDet, simon_theorem_3_6 unknown; LipschitzWith.ae_differentiableAt, IsUnifLocDoublingMeasure.ae_tendsto_average_norm_sub, euclideanHausdorffMeasure_image_le_of_lipschitzOn, HasApproximateTangentSpaceAt.unique, blowUpMap, TopologicalSpace.countable_cover_nhdsWithin, euclideanHausdorffMeasure_homothety_image available`
+- `python3 -I scans of dag.json: status/lean_statement/candidate_commit of regcomp_atl_upper_density_zero, regcomp_atl_local_density_zero, regcomp_atl_blowUp_measure_scaling; lean_name collision scan of the 8 doraggt_* names over dag.json and nodes/*/*.json; accepted candidates whose Submission.lean adds imports (dtc_isIntegerMultiplicity_sub); git grep doraggt_ over refs (no match)`
+- `sed runtime gmt-claude-52228cbc47b2/_recursive_lean/runtime.py (_existing_lean_name_problem, _accepted_checkpoint, _decompose, _solve_children, _install_parent_supplied_child_handoff), store.py (refresh), leaf_verification.py (check_source_delta), parent_verification.py (check_parent_git_delta); verifier/gmt-compare.py (child_modules, contract_scope)`
+- `python3 -I /tmp/gtan3-scripts/gen_challenges.py + lake env lean /tmp/gtan3/ch/AllStmts.lean; lake env lean /tmp/gtan3/Full3.lean and /tmp/gtan3/Kids3.lean with #print axioms; python3 -I /tmp/gtan3-scripts/check_full.py; python3 -I /tmp/gtan3-scripts/leafsim3.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-8c018a8a8b/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-8c018a8a8b/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-a0cdf4fb59/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-65b9043b0e/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-52228cbc47b2/_recursive_lean/leaf_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/gtan3/ch/AllStmts.lean`
+- `/tmp/gtan3/Full3.lean`
+- `/tmp/gtan3/Kids3.lean`
+
+The snapshot pins project b4d606d and Mathlib 25730c7c. Its GMT/Ch07/Contract.lean is byte-identical to the workspace contract and Submission, the compiler context of every child type. Nothing in the snapshot or in SimonGMT proves this node. The Lipschitz area formula lives in SimonGMT Chapter02: AreaLipschitz.lean has weighted_area_formula_lipschitz_injOn, and AreaDomain, AreaLiteral and AreaCompletion have variants. All of them are outside the contract import closure: areaJacobianAt, LinearMap.normDet and the area formula are unknown after `import GMT.Ch07.Submission`, and so is simon_theorem_3_6. Machine leaves cannot add imports, so the area-formula step stays in this parent, which may add `import Poincare.SimonGMT.Chapter02.AreaLipschitz` (precedent: the accepted parent dtc_isIntegerMultiplicity_sub added a SimonGMT import). All other ingredients are in scope for leaves: Rademacher, the Haar change of variables, Lebesgue differentiation, the Hausdorff Lipschitz-image bound, homothety scaling, the Lindelöf cover and HasApproximateTangentSpaceAt.unique. Two accepted declarations are reused at byte-identical types: regcomp_atl_upper_density_zero and regcomp_atl_blowUp_measure_scaling, both accepted with candidate commits. regcomp_atl_local_density_zero is not reused, as the correction requires; its statement is re-proved under the fresh name doraggt_local_density_zero. Every child type elaborates in comparator scope, and every child compiles without the extra import. The integrated build proves the exact frozen parent type with axioms propext, Classical.choice and Quot.sound only.

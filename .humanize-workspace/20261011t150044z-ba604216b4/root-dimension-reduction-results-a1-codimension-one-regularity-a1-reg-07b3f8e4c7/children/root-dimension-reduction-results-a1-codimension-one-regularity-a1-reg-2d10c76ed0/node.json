@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1.lusin_closed-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1",
+  "depth": 6,
+  "title": "Lusin's theorem for Lebesgue measure on ℝ^n with a closed set, sets of infinite measure allowed (step 2 of Simon's proof of Ch. 2, 1.5)",
+  "statement": "Let n ∈ ℕ and let Y be a second-countable topological space with a σ-algebra containing every open set. Let g : ℝ^n → Y be measurable, where ℝ^n = Euclid n carries its Borel σ-algebra. Let B ⊆ ℝ^n be measurable, possibly with L^n(B) = ∞, and let ε ∈ (0, ∞]. Then there is a closed set C ⊆ B such that g is continuous on C (ContinuousOn g C) and L^n(B ∖ C) < ε, where L^n = volume.",
+  "lean_statement": "∀ (n : ℕ) {Y : Type} [TopologicalSpace Y] [SecondCountableTopology Y] [MeasurableSpace Y] [OpensMeasurableSpace Y] (g : Euclid n → Y) (B : Set (Euclid n)), Measurable g → MeasurableSet B → ∀ ε : ℝ≥0∞, 0 < ε → ∃ C : Set (Euclid n), C ⊆ B ∧ IsClosed C ∧ ContinuousOn g C ∧ volume (B \\ C) < ε",
+  "lean_name": "codim1_rdo_c1a_lusin_isClosed",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.lusin_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.lusin_measurable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9-a1",
+      "result_commit": "e4172a7b3e6ff6905ecff6f6d729752746d19ff0",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-2d10c76ed0-a1"
+}

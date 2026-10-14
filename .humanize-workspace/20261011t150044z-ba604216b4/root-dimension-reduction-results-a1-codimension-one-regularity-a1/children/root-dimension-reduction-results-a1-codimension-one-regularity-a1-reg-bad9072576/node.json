@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_support_cycle-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1",
+  "depth": 3,
+  "title": "Boundaries of regions in class 𝒪: dimension, support and cycle condition (Simon 7.5.1)",
+  "statement": "Let P, n ∈ ℕ, U, N, E ⊆ ℝ^P, ξ_N : ℝ^P → Λ_{n+1}(ℝ^P) (MultiVector P (n+1)) and T ∈ 𝒟_n(U). Assume U is open, InClassO n U N ξ_N (N an embedded C² (n+1)-dimensional submanifold of ℝ^P, ξ_N a continuous unit orientation of its tangent spaces, (closure N ∖ N) ∩ U = ∅ and N ∩ U ≠ ∅), E ⊆ N ∩ U, and T(ω) = ∫_E ξ_N(x)(dω(x)) dH^{n+1}(x) for every ω ∈ 𝒟^n(U) (IsBoundaryOfRegion T E ξ_N, H^{n+1} = μHE[n+1]). Then n + 1 ≤ P, spt T ⊆ U ∩ N, and ∂T = 0 in U (BoundaryVanishes T; vacuous for n = 0).",
+  "lean_statement": "∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), IsOpen U → InClassO n U N ξN → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → n + 1 ≤ P ∧ T.support ⊆ U ∩ N ∧ BoundaryVanishes T",
+  "lean_name": "codim1_region_support_cycle",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-bad9072576-a1"
+}

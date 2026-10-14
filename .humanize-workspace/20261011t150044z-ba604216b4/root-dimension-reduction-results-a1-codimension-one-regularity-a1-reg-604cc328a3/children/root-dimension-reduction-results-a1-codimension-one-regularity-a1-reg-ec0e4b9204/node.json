@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1.local_lower_lipschitz-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1",
+  "depth": 6,
+  "title": "Lower Lipschitz bound for a C¹ map near a point where its derivative is injective",
+  "statement": "Let P, n ∈ ℕ, let G : ℝ^n → ℝ^P be a C¹ map and let x ∈ ℝ^n be a point at which the derivative DG(x) : ℝ^n → ℝ^P is injective. Then there are δ > 0 and μ > 0 such that μ|a − b| ≤ |G(a) − G(b)| for all a, b in the open ball B_δ(x). Here ℝ^k = Euclid k carries the Euclidean norm |·|.",
+  "lean_statement": "∀ (P n : ℕ) (G : Euclid n → Euclid P) (x : Euclid n), ContDiff ℝ 1 G → Injective (fderiv ℝ G x) → ∃ δ μ : ℝ, 0 < δ ∧ 0 < μ ∧ ∀ a ∈ ball x δ, ∀ b ∈ ball x δ, μ * ‖a - b‖ ≤ ‖G a - G b‖",
+  "lean_name": "codim1_rdo_c1cov_local_lower_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-ec0e4b9204-a1"
+}

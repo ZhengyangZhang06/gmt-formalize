@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.pointwise_comparison-a1.density_rescale-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.pointwise_comparison-a1",
+  "depth": 4,
+  "title": "Rescaling a vanishing n-density quotient: (ofReal r)⁻ⁿ · g(r·R) → 0",
+  "statement": "Let n ∈ ℕ, g : ℝ → [0, ∞] and R > 0. If g(ρ)/ENNReal.ofReal(ρ)^n → 0 in [0, ∞] as ρ → 0⁺ (filter 𝓝[>]0), then (ENNReal.ofReal r)⁻¹^n · g(r·R) → 0 in [0, ∞] as r → 0⁺.",
+  "lean_statement": "∀ (n : ℕ) (g : ℝ → ℝ≥0∞) (R : ℝ), 0 < R → Tendsto (fun ρ : ℝ => g ρ / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => (ENNReal.ofReal r)⁻¹ ^ n * g (r * R)) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "regcomp_atl_pc_density_rescale_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-9c088428ae-a1"
+}

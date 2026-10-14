@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "c1cov|local_lower_lipschitz|regular_ball_cover|image_ball_borel_finite|lipschitz_range_c1_cover",
+        "injective_iff_antilipschitz|bound_of_antilipschitz|approximates_deriv_on_nhds|theorem.*antilipschitzWith|theorem ContDiffOn.exists_lipschitzOnWith|theorem contDiff_piLp|theorem dist_apply_le|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem exists_dense_seq|exists_inv_nat_lt",
+        "area_image_criticalSet_eq_zero|def CountablyRectifiable|euclideanHausdorffMeasure_image_le_of_lipschitzOn|only if|sorry|axiom",
+        "rg -n 'codim1_rdo_c1cov_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/c1cover-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/c1cover-independent-audit/ChildrenAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/c1cover-independent-audit/Library.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-604cc328a3/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/c1cover-independent-audit/Types.lean",
+        "/tmp/c1cover-independent-audit/ChildrenAndAssembly.lean",
+        "/tmp/c1cover-independent-audit/Library.lean"
+      ],
+      "conclusion": "The pinned revisions match, and the workspace contract is byte-identical to the snapshot. The four proposed names have no matches in the snapshot or DAG and are valid bare identifiers. Each frozen proposition elaborates independently before any child implementation. Rechecked child proofs, exact-type comparisons, and assembly of the selected parent conclusion all compile; scalar approximation was supplied as an explicit assumption matching the parent's existing dependency, without a stub. Axiom checks report only propext, Classical.choice, and Quot.sound. AreaCritical provides the required critical-image theorem with the stated extra import. The split is appropriate: all four obligations contribute to this selected contract, and the sole child dependency, regular_ball_cover → local_lower_lipschitz, is correctly directed and acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_lower_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree. Finite-dimensional coercivity, C¹ derivative control, and the mean-value inequality establish the positive lower bound on a ball, including n = 0. The supplied proof is complete and non-circular."
+    },
+    {
+      "key": "regular_ball_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The critical-image theorem applies because G is differentiable everywhere. Dense centres, reciprocal radii, and zero-radius padding give exactly the claimed countable cover and bounds. The proof uses only its declared child dependency and established library results; no dimension hypothesis is missing."
+    },
+    {
+      "key": "image_ball_borel_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Closed-ball exhaustion proves Borelness. Compactness and convexity give a finite Lipschitz constant, and the normalized Hausdorff image bound proves finiteness. The argument covers every real radius and zero-dimensional spaces without requiring injectivity."
+    },
+    {
+      "key": "lipschitz_range_c1_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The scalar approximation hypothesis exactly matches the frozen dependency at dimension n. Coordinatewise approximation, finite subadditivity, the null intersection, and Lipschitz preservation of nullity prove the stated range cover, including P = 0. This is a genuine conditional obligation whose hypothesis the parent discharges."
+    }
+  ],
+  "required_changes": []
+}

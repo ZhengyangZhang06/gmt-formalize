@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.uniform_compact-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1",
+  "depth": 6,
+  "title": "Egoroff-type uniformization: a compact set of almost full measure with uniform density and cone bounds (Simon Ch. 3, 1.6 ⇐, (7)–(9))",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, μ a finite Borel measure on E, ν : E → E Borel, ε > 0 real and η ∈ (0, ∞]. Put ω_m := unitBallVolume m and C(x) := {z ∈ E : ¼|z − x| ≤ |⟨z − x, ν(x)⟩|}. Assume that for μ-a.e. y ∈ E, as r ↓ 0, μ(B̄_r(y))/(ω_m r^m) → 1 and μ(C(y) ∩ B̄_r(y))/r^m → 0 in [0, ∞]. Then there are a compact K ⊆ E and δ > 0 with μ(E \\ K) ≤ η such that for every x ∈ K and every ρ ∈ (0, δ): (1 − ε)⁺ ω_m ρ^m ≤ μ(B̄_ρ(x)) and μ(C(x) ∩ B̄_ρ(x)) ≤ ε ω_m ρ^m (in [0, ∞], with (1 − ε)⁺ := max(1 − ε, 0), i.e. ENNReal.ofReal (1 − ε)).",
+  "lean_statement": "∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (ε : ℝ) (η : ℝ≥0∞), IsFiniteMeasure μ → Measurable ν → 0 < ε → 0 < η → (∀ᵐ y ∂μ, Tendsto (fun r : ℝ => μ (closedBall y r) / (unitBallVolume m * ENNReal.ofReal (r ^ m))) (𝓝[>] 0) (𝓝 1) ∧ Tendsto (fun r : ℝ => μ ({z | (1 / 4 : ℝ) * ‖z - y‖ ≤ |inner ℝ (z - y) (ν y)|} ∩ closedBall y r) / ENNReal.ofReal (r ^ m)) (𝓝[>] 0) (𝓝 0)) → ∃ K : Set (Euclid (m + 1)), ∃ δ : ℝ, IsCompact K ∧ 0 < δ ∧ μ Kᶜ ≤ η ∧ (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) ∧ (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x ρ) ≤ ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal (ρ ^ m))",
+  "lean_name": "codim1_rdo_dg_rc_uniform_compact",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.ball_cone_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.ball_cone_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-04b34d66cc-a1"
+}
