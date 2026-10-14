@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4c7b700521090edd62a994f76afbaf1f45c00d5aee7b17e8547c19bbdf6d1ff4",
+  "git_delta": {
+    "base_commit": "2e0977f70c0902bd872b81113bdf5a8c2f132c98",
+    "candidate_commit": "4cc2eb450f665d8766d65379994a725e973f544d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_cbm_bvt_cube_exhaust",
+    "diff_sha256": "3ccd23a39f3ddc2eb90866f09b078d95a182fb4371e9a6d75a04c9fe439db421",
+    "source_sha256": "46e0c0da46371e56e514ded46eb0bb49faf78b135b9ba2cb3f276131702238b6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_cbm_bvt_cube_exhaust",
+      "statement": "∀ (k : ℕ) (f : Euclid k → ℝ), IntegrableOn f {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} → Tendsto (fun δ : ℝ => ∫ y in {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ}, f y) (𝓝[>] 0) (𝓝 (∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, f y))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
