@@ -369,6 +369,57 @@ theorem Submission.cmb_abs_apply_le_of_massOn_le :
   intro P n U W T ω B C hB hM hW hC
   -- Homogeneity of the Euclidean coefficient norm: `|t α| = |t| |α|`.
   have hsmul : ∀ (t : ℝ) (α : Covector (Eucl P) n),
+      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+    intro t α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg t), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · simp
+  -- `C ≥ 0`, by evaluating the pointwise bound at `0`.
+  have hC0 : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hC 0)
+  -- For every `c > C`, both `±c⁻¹ ω` are mass-admissible for `W`, hence `|T ω| ≤ B c`.
+  have key : ∀ c, C < c → |T ω| ≤ B * c := by
+    intro c hc
+    have hc0 : 0 < c := hC0.trans_lt hc
+    have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * T ω ≤ B := by
+      intro s hs
+      have hadm : s • ω ∈ massAdmissibleOn U n W := by
+        refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hW, fun x => ?_⟩
+        change covectorEuclideanNorm (s • (ω : DifferentialForm (Eucl P) n) x) ≤ 1
+        rw [hsmul, hs, inv_mul_le_iff₀ hc0, mul_one]
+        exact (hC x).trans hc.le
+      have hle := (T.le_massOn hadm).trans hM
+      rw [ENNReal.ofReal_le_ofReal_iff hB] at hle
+      have hlin : T (s • ω) = s * T ω := by
+        rw [map_smul, smul_eq_mul]
+      rwa [hlin] at hle
+    have h1 := hbound c⁻¹ (abs_of_pos (inv_pos.mpr hc0))
+    have h2 := hbound (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc0)])
+    have e1 : c * (c⁻¹ * T ω) = T ω := by field_simp
+    have e2 : c * (-c⁻¹ * T ω) = -T ω := by field_simp
+    rw [abs_le]
+    constructor
+    · have := mul_le_mul_of_nonneg_left h2 hc0.le
+      rw [e2] at this
+      linarith
+    · have := mul_le_mul_of_nonneg_left h1 hc0.le
+      rw [e1] at this
+      linarith
+  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  have hB1 : 0 < B + 1 := by linarith
+  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
+  have hBδ : B * (ε / (B + 1)) ≤ ε := by
+    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
+          mul_le_mul_of_nonneg_right (by linarith) hδ.le
+      _ = ε := by field_simp
+  have := key (C + ε / (B + 1)) (by linarith)
+  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
+    _ = B * C + B * (ε / (B + 1)) := by ring
+    _ ≤ B * C + ε := by linarith
 /-- The Euclidean coefficient norm of an `n`-covector on `ℝ^P` is at most `√(P^n)` times its
 operator norm: each of the `P^n` coefficients `α(b_{I(0)}, …, b_{I(n-1)})` (`b` the standard
 orthonormal basis) is bounded by `‖α‖ · ∏ ‖b_{I(i)}‖ = ‖α‖`. -/
@@ -533,48 +584,26 @@ theorem Submission.fiw_ims_mass_bound :
     split_ifs
     · simp only [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
     · simp
-  -- `C ≥ 0`, by evaluating the pointwise bound at `0`.
-  have hC0 : 0 ≤ C := (covectorEuclideanNorm_nonneg _).trans (hC 0)
-  -- For every `c > C`, both `±c⁻¹ ω` are mass-admissible for `W`, hence `|T ω| ≤ B c`.
-  have key : ∀ c, C < c → |T ω| ≤ B * c := by
-    intro c hc
-    have hc0 : 0 < c := hC0.trans_lt hc
-    have hbound : ∀ s : ℝ, |s| = c⁻¹ → s * T ω ≤ B := by
-      intro s hs
-      have hadm : s • ω ∈ massAdmissibleOn U n W := by
-        refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hW, fun x => ?_⟩
-        change covectorEuclideanNorm (s • (ω : DifferentialForm (Eucl P) n) x) ≤ 1
-        rw [hsmul, hs, inv_mul_le_iff₀ hc0, mul_one]
-        exact (hC x).trans hc.le
-      have hle := (T.le_massOn hadm).trans hM
-      rw [ENNReal.ofReal_le_ofReal_iff hB] at hle
-      have hlin : T (s • ω) = s * T ω := by
-        rw [map_smul, smul_eq_mul]
-      rwa [hlin] at hle
-    have h1 := hbound c⁻¹ (abs_of_pos (inv_pos.mpr hc0))
-    have h2 := hbound (-c⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.mpr hc0)])
-    have e1 : c * (c⁻¹ * T ω) = T ω := by field_simp
-    have e2 : c * (-c⁻¹ * T ω) = -T ω := by field_simp
-    rw [abs_le]
-    constructor
-    · have := mul_le_mul_of_nonneg_left h2 hc0.le
-      rw [e2] at this
-      linarith
-    · have := mul_le_mul_of_nonneg_left h1 hc0.le
-      rw [e1] at this
-      linarith
-  -- Let `c ↓ C`: take `c = C + ε / (B + 1)`.
-  refine le_of_forall_pos_le_add fun ε hε => ?_
-  have hB1 : 0 < B + 1 := by linarith
-  have hδ : 0 < ε / (B + 1) := div_pos hε hB1
-  have hBδ : B * (ε / (B + 1)) ≤ ε := by
-    calc B * (ε / (B + 1)) ≤ (B + 1) * (ε / (B + 1)) :=
-          mul_le_mul_of_nonneg_right (by linarith) hδ.le
-      _ = ε := by field_simp
-  have := key (C + ε / (B + 1)) (by linarith)
-  calc |T ω| ≤ B * (C + ε / (B + 1)) := this
-    _ = B * C + B * (ε / (B + 1)) := by ring
-    _ ≤ B * C + ε := by linarith
+  -- A sign `s = ±C⁻¹` with `s X(η) = C⁻¹ |X(η)|`.
+  obtain ⟨s, hs, hsX⟩ : ∃ s : ℝ, |s| = C⁻¹ ∧ s * X η = C⁻¹ * |X η| := by
+    rcases le_or_gt 0 (X η) with h | h
+    · exact ⟨C⁻¹, abs_of_pos (inv_pos.mpr hC), by rw [abs_of_nonneg h]⟩
+    · exact ⟨-C⁻¹, by rw [abs_neg, abs_of_pos (inv_pos.mpr hC)], by rw [abs_of_neg h]; ring⟩
+  -- `s η` is mass-admissible for `V`: supported in `V`, pointwise norm `≤ C⁻¹ C = 1`.
+  have hadm : s • η ∈ massAdmissibleOn U k V := by
+    refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hV, fun x => ?_⟩
+    change covectorEuclideanNorm (s • (η : DifferentialForm (Eucl P) k) x) ≤ 1
+    rw [hsmul, hs, inv_mul_le_iff₀ hC, mul_one]
+    exact hη x
+  -- Definition of mass and linearity of `X`: `ofReal (C⁻¹ |X(η)|) ≤ M_V(X)`.
+  have hle := X.le_massOn hadm
+  rw [map_smul, smul_eq_mul, hsX] at hle
+  -- Undo the scaling by `C⁻¹`.
+  calc ENNReal.ofReal |X η| = ENNReal.ofReal (C⁻¹ * |X η| * C) := by
+        rw [mul_comm C⁻¹, mul_assoc, inv_mul_cancel₀ hC.ne', mul_one]
+    _ = ENNReal.ofReal (C⁻¹ * |X η|) * ENNReal.ofReal C :=
+        ENNReal.ofReal_mul (mul_nonneg (inv_nonneg.mpr hC.le) (abs_nonneg _))
+    _ ≤ X.massOn V * ENNReal.ofReal C := by gcongr
 /-- Exhaustion of an open `U ⊆ ℝ^P` by open sets `W i ⊂⊂ U` such that every compact `K ⊆ U`
 lies in some `W i`: `W i = {x : |x| < i, (i + 1)⁻¹ < infEDist x (ℝ^P ∖ U)}`. -/
 theorem Submission.cmb_exists_compactly_contained_exhaustion :
@@ -680,26 +709,6 @@ theorem Submission.fiw_flat_to_weak :
     _ = ε / (C₀ + C₁ + 1) * (C₀ + C₁ + 1) - ε / (C₀ + C₁ + 1) := by ring
     _ < ε / (C₀ + C₁ + 1) * (C₀ + C₁ + 1) := by linarith
     _ = ε := div_mul_cancel₀ ε hC.ne'
-  -- A sign `s = ±C⁻¹` with `s X(η) = C⁻¹ |X(η)|`.
-  obtain ⟨s, hs, hsX⟩ : ∃ s : ℝ, |s| = C⁻¹ ∧ s * X η = C⁻¹ * |X η| := by
-    rcases le_or_gt 0 (X η) with h | h
-    · exact ⟨C⁻¹, abs_of_pos (inv_pos.mpr hC), by rw [abs_of_nonneg h]⟩
-    · exact ⟨-C⁻¹, by rw [abs_neg, abs_of_pos (inv_pos.mpr hC)], by rw [abs_of_neg h]; ring⟩
-  -- `s η` is mass-admissible for `V`: supported in `V`, pointwise norm `≤ C⁻¹ C = 1`.
-  have hadm : s • η ∈ massAdmissibleOn U k V := by
-    refine ⟨(tsupport_smul_subset_right (fun _ => s) _).trans hV, fun x => ?_⟩
-    change covectorEuclideanNorm (s • (η : DifferentialForm (Eucl P) k) x) ≤ 1
-    rw [hsmul, hs, inv_mul_le_iff₀ hC, mul_one]
-    exact hη x
-  -- Definition of mass and linearity of `X`: `ofReal (C⁻¹ |X(η)|) ≤ M_V(X)`.
-  have hle := X.le_massOn hadm
-  rw [map_smul, smul_eq_mul, hsX] at hle
-  -- Undo the scaling by `C⁻¹`.
-  calc ENNReal.ofReal |X η| = ENNReal.ofReal (C⁻¹ * |X η| * C) := by
-        rw [mul_comm C⁻¹, mul_assoc, inv_mul_cancel₀ hC.ne', mul_one]
-    _ = ENNReal.ofReal (C⁻¹ * |X η|) * ENNReal.ofReal C :=
-        ENNReal.ofReal_mul (mul_nonneg (inv_nonneg.mpr hC.le) (abs_nonneg _))
-    _ ≤ X.massOn V * ENNReal.ofReal C := by gcongr
 
 /-- Series of currents: if `∑' r, |c_r| M_W(T_r) < ∞` for every `W ⊂⊂ U`, then `∑ c_r T_r`
 converges unconditionally on every test form to a current `S` with
