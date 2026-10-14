@@ -1961,6 +1961,40 @@ theorem Submission.cmcdt_lpo_pf_congr : ∀ (lpush : ∀ (N N' k : ℕ), (Euclid
   have h2 := hPA N N' k Λ Λ G Fs X ω ηs hG hX1 hX2 hX3 hFs (fun j x _ => hD j x) hUG hη'
   exact tendsto_nhds_unique h1 h2
 
+/-- **Simon 6.2.24(1) and 6.2.29: the Lipschitz push-forward commutes with the boundary** on
+currents `X` with `spt X` compact and `M(X), M(∂X) < ∞`.  Suppose `lpush` has the approximation
+property (PA): `X(ηⱼ) → f#X(ω)` whenever smooth `Fⱼ → F` uniformly on `spt X`, `‖DFⱼ‖ ≤ Λ'`
+there, and `ηⱼ = Fⱼ^#ω` on an open `W ⊇ spt X`.  Then `∂f#X = f#∂X`.  `∂X` is again such a
+current, with `spt ∂X ⊆ spt X` (`cmcdt_lpo_pf_normal_closure`).  One approximating sequence
+`Fⱼ`, `ηⱼ` for `K = spt X` (`cmcdt_lpo_pf_approx_data`, `Λ' = Λ`) also has `dηⱼ = Fⱼ^#(dω)` near
+`spt X`.  So (PA) for `∂X` with `ω` and for `X` with `dω` concern the same sequence
+`∂X(ηⱼ) = X(dηⱼ)`; its limits `f#∂X(ω)` and `f#X(dω) = ∂f#X(ω)` agree. -/
+theorem Submission.cmcdt_lpo_pf_boundary : ∀ (lpush : ∀ (N N' k : ℕ), (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid N')) k), (∀ (N N' k : ℕ) (Λ : NNReal) (Λ' : ℝ) (F : Euclid N → Euclid N') (Fs : ℕ → Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ω : TestFormOn (univ : Set (Euclid N')) k) (ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) → (∀ j, ∀ x ∈ X.support, ‖fderiv ℝ (Fs j) x‖ ≤ Λ') → TendstoUniformlyOn Fs F atTop X.support → (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (lpush N N' k F X ω))) → ∀ (N N' k : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → X.boundary.mass < ∞ → (lpush N N' (k + 1) F X).boundary = lpush N N' k F X.boundary := by
+  intro lpush hPA N N' k Λ F X hF hX1 hX2 hX3
+  -- `∂X` is normal, with `spt ∂X ⊆ spt X`; `boundaryMassOn X univ` is `M(∂X)`
+  obtain ⟨hbsupp, hbX1, hbX3⟩ := Submission.cmcdt_lpo_pf_normal_closure.2 N k X hX1
+  have hX3' : boundaryMassOn X univ < ∞ := hX3
+  have hbX3' : boundaryMassOn X.boundary univ < ∞ := by
+    rw [hbX3]
+    exact ENNReal.zero_lt_top
+  ext ω
+  -- one approximation `Fⱼ → F` with `ηⱼ = Fⱼ^#ω` and `dηⱼ = Fⱼ^#(dω)` near `K = spt X`
+  obtain ⟨Fs, hFs, -, hD, -, hU, hη⟩ :=
+    Submission.cmcdt_lpo_pf_approx_data N N' Λ F X.support hF hX1
+  obtain ⟨ηs, hηs⟩ := hη k ω
+  -- (PA) for `∂X` with `ω`, `ηⱼ` and for `X` with `dω`, `dηⱼ`, both with `Λ' = Λ`
+  have h1 := hPA N N' k Λ Λ F Fs X.boundary ω ηs hF hbX1 hX3 hbX3' hFs (fun j x _ => hD j x)
+    hU.tendstoUniformlyOn (fun j => by
+      obtain ⟨W, hW, hKW, h1, -⟩ := hηs j
+      exact ⟨W, hW, hbsupp.trans hKW, h1⟩)
+  have h2 := hPA N N' (k + 1) Λ Λ F Fs X (exteriorDerivativeTestOn univ k ω)
+    (fun j => exteriorDerivativeTestOn univ k (ηs j)) hF hX1 hX2 hX3' hFs
+    (fun j x _ => hD j x) hU.tendstoUniformlyOn (fun j => by
+      obtain ⟨W, hW, hKW, -, h2⟩ := hηs j
+      exact ⟨W, hW, hKW, h2⟩)
+  -- `∂X(ηⱼ) = X(dηⱼ)` and `∂(f#X)(ω) = f#X(dω)` by definition; limits are unique
+  exact tendsto_nhds_unique h2 h1
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
