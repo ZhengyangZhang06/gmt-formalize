@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9871be48a5a516ef2e7d15183831745577b6254e8f0399ab1a6b594b5e4569d0",
+  "git_delta": {
+    "base_commit": "b036d7c287a5bb1ccbb6d5a24d204af2ef1ac930",
+    "candidate_commit": "ec5c6feb9abba7a0e4450c9fbb81f470695efdd4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_dr_bounded_stronglyMeasurable_modification",
+    "diff_sha256": "02c086f5d87eaf672d01f3f701556c88cdd48f251f5a043ab593341973609fc9",
+    "source_sha256": "3ba6560dded3e3e10cf8d8d2cce07baf1c40983412e0b835fc1f57fb8ef2d399",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_dr_bounded_stronglyMeasurable_modification",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → ∃ ζ : Euclid P → MultiVector P n, StronglyMeasurable ζ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) ∧ ζ =ᵐ[μ] ξ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
