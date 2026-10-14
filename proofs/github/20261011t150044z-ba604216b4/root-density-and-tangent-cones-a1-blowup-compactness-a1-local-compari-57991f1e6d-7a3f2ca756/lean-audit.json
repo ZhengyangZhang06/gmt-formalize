@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "a9d57b58fb0e9afbe170d985dd390bf368d20df11316bed62d22566eb7fdd3b2",
+  "git_delta": {
+    "base_commit": "c79ccb08be2dd48149786572a11dfcbe36f85267",
+    "candidate_commit": "9b1b842378bc8395156947458e556e2b3c776aac",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "065878b6240106e17e3b5491a77d612d0597ba0f9d204a70cec252f9d788f0d4",
+    "source_sha256": "2b84e9a7f549ec8f5f57211a1f1b45aaf5756c67403fda6be78409219eae4afe",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_deformation",
+      "statement": "∀ (P m : ℕ), m + 1 < P → ∃ c : NNReal, ∀ (K : Set (Euclid P)) (Λ : NNReal) (ε : ℝ≥0∞), IsCompact K → 0 < ε → ∃ 𝒬 : Set (GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), 𝒬.Finite ∧ ∀ A : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity A → A.support ⊆ K → A.mass ≤ Λ → A.boundary.mass ≤ Λ → ∃ Q ∈ 𝒬, ∃ (R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity R ∧ IsIntegerMultiplicity Q.boundary ∧ A - Q - S = R.boundary ∧ R.mass + S.mass ≤ ε ∧ Q.boundary.mass ≤ c * A.boundary.mass ∧ R.support ⊆ cthickening 1 K",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
