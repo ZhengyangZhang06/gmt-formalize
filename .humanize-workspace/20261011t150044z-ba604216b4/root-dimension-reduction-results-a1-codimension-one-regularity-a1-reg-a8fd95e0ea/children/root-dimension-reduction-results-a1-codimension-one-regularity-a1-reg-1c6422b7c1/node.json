@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.piece_tangent-a1.area_jacobian-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.piece_tangent-a1",
+  "depth": 6,
+  "title": "Area formula with a bounded Borel Jacobian on an injective Lipschitz piece",
+  "statement": "Let P, n ∈ ℕ, L ≥ 0, F : ℝ^n → ℝ^P L-Lipschitz and B ⊆ ℝ^n Borel with F injective on B. Write H^n := μHE[n] on ℝ^P, λ for Lebesgue measure on ℝ^n and DF(a) := fderiv ℝ F a (the zero map where F is not differentiable). Then there is a Borel function J : ℝ^n → ℝ such that (1) 0 ≤ J(a) ≤ L^n for every a ∈ ℝ^n; (2) ∫⁻_{F(B)} g dH^n = ∫⁻_B ofReal(J(x))·g(F(x)) dλ(x) for every g : ℝ^P → [0, ∞]; (3) H^n(DF(a)(S)) = ofReal(J(a))·λ(S) for every a ∈ ℝ^n and every S ⊆ ℝ^n.",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal), LipschitzWith L F → MeasurableSet B → InjOn F B → ∃ J : Euclid n → ℝ, Measurable J ∧ (∀ a, 0 ≤ J a ∧ J a ≤ (L : ℝ) ^ n) ∧ (∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in F '' B, g y ∂μHE[n] = ∫⁻ x in B, ENNReal.ofReal (J x) * g (F x) ∂volume) ∧ ∀ (a : Euclid n) (S : Set (Euclid n)), μHE[n] (fderiv ℝ F a '' S) = ENNReal.ofReal (J a) * volume S",
+  "lean_name": "codim1_lurpt_piece_area_jacobian",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-1c6422b7c1-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.pushforward_rep-a1.ae_image_transfer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.pushforward_rep-a1",
+  "depth": 6,
+  "title": "An a.e. property on B transfers to a.e. points of G(B′) under an injective continuous map satisfying the area formula",
+  "statement": "Let m, d, P ∈ ℕ, let B′ ⊆ B ⊆ ℝ^d be Borel sets, let G : ℝ^d → ℝ^P be continuous on B and injective on B, let J : ℝ^d → ℝ, and let p be a property of points of ℝ^d. Write H^m := μHE[m] (normalized m-dimensional Hausdorff measure). Assume:\n- (area formula) ∫⁻_{G(B)} g dH^m = ∫⁻_B ofReal(J(v))·g(G(v)) dH^m(v) for every g : ℝ^P → [0, ∞];\n- p(v) holds for H^m⌞B-a.e. v.\nThen for H^m⌞G(B′)-a.e. w there is v ∈ B′ with G(v) = w and p(v).",
+  "lean_statement": "∀ (m d P : ℕ) (B B' : Set (Euclid d)) (G : Euclid d → Euclid P) (J : Euclid d → ℝ) (p : Euclid d → Prop), MeasurableSet B → MeasurableSet B' → B' ⊆ B → ContinuousOn G B → InjOn G B → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ w in G '' B, g w ∂μHE[m] = ∫⁻ v in B, ENNReal.ofReal (J v) * g (G v) ∂μHE[m]) → (∀ᵐ v ∂(μHE[m].restrict B), p v) → ∀ᵐ w ∂(μHE[m].restrict (G '' B')), ∃ v ∈ B', G v = w ∧ p v",
+  "lean_name": "codim1_pfr_ae_transfer_to_image",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-9891e50343-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.coeff_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1",
+  "depth": 6,
+  "title": "Euclidean coefficient bound |α| ≤ (n+1)!·√(P^n) for the determinant covector (supplied step 8)",
+  "statement": "Let P, n ∈ ℕ, let A : ℝ^P → ℝ^{n+1} be a continuous linear map with operator norm ‖A‖ ≤ 1, let p ∈ ℝ^{n+1} with |p| ≤ 1, and let α be an n-covector on ℝ^P (Covector (Euclid P) n) with α(a_0, …, a_{n−1}) = det[p, Aa_0, …, Aa_{n−1}] for all a_0, …, a_{n−1} ∈ ℝ^P (the determinant of the (n+1)×(n+1) matrix with column 0 equal to p and column k+1 equal to Aa_k). Then covectorEuclideanNorm(α) ≤ (n+1)!·√(P^n), where covectorEuclideanNorm(α) = (Σ_{I : Fin n → Fin P strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²)^{1/2} and e_0, …, e_{P−1} is the standard basis of ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (A : Euclid P →L[ℝ] Euclid (n + 1)) (p : Euclid (n + 1)) (α : Covector (Euclid P) n), ‖A‖ ≤ 1 → ‖p‖ ≤ 1 → (∀ a : Fin n → Euclid P, α a = Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons p (fun k : Fin n => A (a k)) : Fin (n + 1) → Euclid (n + 1)) c r)) → covectorEuclideanNorm α ≤ ((n + 1).factorial : ℝ) * Real.sqrt ((P : ℝ) ^ n)",
+  "lean_name": "codim1_lur_det_covector_norm_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-b5de93fa0a-a1"
+}

@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "measurable_fderiv_apply_const|flipAlternating|image_of_continuousOn_injOn",
+        "exists_measurable_superset_of_null|measure_eq_zero_iff_ae_notMem|ae_restrict_iff.|ae_restrict_mem|restrict_apply.|restrict_restrict|lintegral_indicator_one|theorem integral_indicator",
+        "abbrev Euclid|abbrev MultiVector|def IsUnitOrientationOf|def IsEmbeddedSubmanifold|axiom|namespace Submission|codim1_pfr_|dgce_left_inverse_chart_embedded",
+        "codim1_pfr_normal_multivector_measurable|codim1_pfr_ae_transfer_to_image|codim1_pfr_setIntegral_image_transfer",
+        "git diff b4d606db1da5da8fa2c0292ad4924d97de8b3c4b b481398838284784de357885d0dcb4166d11434a -- GMT/Ch07/Submission.lean",
+        "python3 /tmp/pushforward-independent-audit-anye74ar/compile.py /tmp/pushforward-independent-audit-anye74ar/Types.lean",
+        "python3 /tmp/pushforward-independent-audit-anye74ar/compile.py /tmp/pushforward-independent-audit-anye74ar/Combined.lean",
+        "python3 /tmp/pushforward-independent-audit-anye74ar/compile.py /tmp/pushforward-independent-audit-anye74ar/Candidate.lean",
+        "python3 /tmp/pushforward-independent-audit-anye74ar/compile.py /tmp/pushforward-independent-audit-anye74ar/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a1fc53b3a3/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a1fc53b3a3/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-60926cd991/accepted-candidate.json",
+        "/tmp/pushforward-independent-audit-anye74ar/Types.lean",
+        "/tmp/pushforward-independent-audit-anye74ar/Combined.lean",
+        "/tmp/pushforward-independent-audit-anye74ar/Candidate.lean",
+        "/tmp/pushforward-independent-audit-anye74ar/Instances.lean"
+      ],
+      "conclusion": "The split appropriately separates chart injectivity, multivector measurability, a.e. image transfer and integral transfer for the selected pushforward theorem. All four children have independent one-line proposition types, bare declaration names and complete non-circular proofs. The dependency graph is correctly directed and acyclic. No project declaration or DAG reservation matches the three new names. The reused declaration is comparator-accepted with an identical frozen type and matching candidate-source hash. Project, mathlib and SimonGMT revisions match the pins. The snapshot supplies derivative measurability, continuous alternating evaluation, Lusin–Souslin, measurable null hulls and unconditional indicator-integral identities. Fresh pinned-compiler checks all exited successfully: the child types elaborate before their implementations; all four child proofs use only propext, Classical.choice and Quot.sound; their assembly proves the exact frozen parent type using only the three retained sibling contracts and those standard axioms, without sorryAx. Instance checks confirm the intended Borel structures, Set.indicator, Euclidean inner product and multivector evaluation. No child contains a matrix-unit construction."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "left_inverse_chart",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree, including all embedded-chart conditions. Differentiating the affine left-inverse identity on the open ball proves derivative injectivity; the compact maximum argument proves properness without requiring an additional radius hypothesis. The proof is complete and independent. Reuse is valid: the accepted declaration has exactly this type and only standard axioms. Its injectivity conclusions supply the parent's chart facts."
+    },
+    {
+      "key": "normal_field_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly permits arbitrary G and requires only measurable ν. The pinned measurable_fderiv_apply_const theorem applies to the complete Euclidean codomain. Continuous alternating evaluation, measurable frames and coefficients, scalar multiplication, finite summation and negation prove strong measurability. The supplied local continuity instances are valid. Evaluation gives exactly the stated sign, basis ordering and coefficients, with no measurable frame-selection gap."
+    },
+    {
+      "key": "ae_image_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the Lean proposition. The proof converts the restricted exceptional set into an ambient null set, takes a Borel null hull inside B, and obtains Borel images by Lusin–Souslin. Injectivity and the assumed nonnegative area formula make its image null. Every remaining image point has a preimage satisfying p. No measurability of p or J, positivity of J, or unstated finiteness assumption is needed."
+    },
+    {
+      "key": "integral_image_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose indicator identity exactly matches Set.indicator in the frozen type. Injectivity establishes its pullback identity on B; a.e. congruence, the assumed Bochner area formula, integral_indicator and restrict_restrict yield the conclusion. These steps remain valid for non-integrable functions under Lean's integral convention, so no hypothesis is missing. The proof supplies precisely the parent's final integral-transfer step."
+    }
+  ],
+  "required_changes": []
+}

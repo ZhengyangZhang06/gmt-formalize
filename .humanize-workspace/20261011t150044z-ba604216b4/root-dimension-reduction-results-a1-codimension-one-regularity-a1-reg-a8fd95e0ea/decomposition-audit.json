@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ae_tendsto_average_norm_sub|euclideanHausdorffMeasure_image_eq_normDet_mul_volume|theorem LinearMap.exists_antilipschitzWith|integral_withDensity_eq_integral_smul|theorem integral_map|theorem integral_smul_measure",
+        "codim1_lurpt|pit_blowUp_image_setIntegral_eq_rescaled|pit_setIntegral_range_linear|doraggt_ae_rescaled_lebesgue_point|dorwbl_diff_quotient_tendstoUniformlyOn|def HasApproximateTangentSpaceAt|def blowUpMap",
+        "areaJacobianAt_eq_normDet|areaJacobianAt_nonneg|measurable_areaJacobianAt|euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "git show 3e383ca4:GMT/Ch07/Submission.lean",
+        "git show ed6259bb:GMT/Ch07/Submission.lean",
+        "git show af5e0757:GMT/Ch07/Submission.lean",
+        "git show 6858d683:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/cpt-independent-audit/IsolatedReplay.lean",
+        "#print axioms GMT.Ch07.Submission.codim1_lur_piece_image_approxTangent_ae"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a8fd95e0ea/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-a8fd95e0ea/decomposition-v1.json",
+        "/tmp/cpt-independent-audit/IsolatedReplay.lean",
+        "/tmp/cpt-independent-audit/IsolatedReplay.out"
+      ],
+      "conclusion": "The split is appropriate and assembles into exactly codim1_lur_piece_image_approxTangent_ae. Project, Mathlib and SimonGMT pins match, and tracked trees are clean. The snapshot project search found none of the proposed declaration names. Inspected library results support the stated differentiation, Jacobian and integral-transport arguments. All four reused frozen types match comparator-accepted records; candidate source hashes and proof bodies match. Both new names are unreserved, all six names are bare identifiers, and the augmented DAG is acyclic, including the retained scaling dependency. Full-header reruns were stopped for memory pressure. A successful isolated module replay retained the exact frozen Euclid definition, every contract and every supplied proof body: all types elaborated before child declarations, and every child plus the selected parent used only propext, Classical.choice and Quot.sound. Unannotated integrals were checked by rfl to use volume. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "area_jacobian",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and standalone one-line type agree. Choosing areaJacobianAt proves all properties: measurability, nonnegativity, the Lipschitz bound by cancellation on a positive finite unit ball, the arbitrary-set linear formula, and the weighted area formula. No unstated differentiability or weight-measurability assumption is needed, including when n = 0."
+    },
+    {
+      "key": "rescaled_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the accepted declaration and matches every prose hypothesis. The supplied scaling, measure-identity, density-transfer and affine-substitution steps prove the exact equality. The cited integral identities cover nonintegrable cases. The existing accepted scaling dependency is correctly directed and acyclic."
+    },
+    {
+      "key": "range_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted frozen type matches the prose exactly. Applying the image-measure hypothesis to preimages of Borel sets establishes the restricted pushforward measure identity; scalar integration and integral_map give the conclusion. Neither injectivity nor integrability is silently assumed, and j = 0 is covered."
+    },
+    {
+      "key": "lebesgue_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted one-line type matches the statement. Lebesgue differentiation supplies one exceptional null set valid for every positive radius. The dilation, translation and finite ball-volume calculation prove the stated unnormalized integral limit, including dimension zero."
+    },
+    {
+      "key": "diff_quotient_uniform",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted frozen type matches the prose, including every real radius. The explicit little-o estimate with max(R, 1), positive-radius neighborhood and linearity identity proves uniform convergence. Empty and zero-radius balls require no additional hypothesis; there is no circular dependence."
+    },
+    {
+      "key": "rescaled_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type includes exactly the stated hypotheses. Coercivity and the lower Lipschitz bound give common compact localization; bounded Borel integrands provide the required integrability. The Lebesgue-point hypothesis and declared diff_quotient_uniform dependency yield the complete epsilon estimate. The argument correctly requires no membership assumption b ∈ B and does not invoke the parent."
+    }
+  ],
+  "required_changes": []
+}
