@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1.imrep_restrict-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1",
+  "depth": 4,
+  "title": "Measure and action of the Borel restriction of an integer multiplicity representation",
+  "statement": "Let P, n ∈ ℕ and U ⊆ ℝ^P. Let R = (M, θ, ξ) and R' be IMReps in U (IMRep U n), let A ∈ 𝒟_n(U), and let E ⊆ ℝ^P be a Borel set. Assume R' represents A, carrier(R') = M ∩ E, mult(R') = θ and orient(R') = ξ. Then R'.measure = R.measure⌞E (the restriction R.measure.restrict E), and A(ω) = ∫_E ⟨ω(x), ξ(x)⟩ dR.measure(x) for every ω ∈ 𝒟ⁿ(U), where ⟨ω(x), ξ(x)⟩ = ξ(x)(ω(x)).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R R' : IMRep U n) (A : GeometricCurrentOn U n) (E : Set (Euclid P)), MeasurableSet E → R'.Represents A → R'.carrier = R.carrier ∩ E → R'.mult = R.mult → R'.orient = R.orient → R'.measure = R.measure.restrict E ∧ ∀ ω : TestFormOn U n, A ω = ∫ x in E, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂R.measure",
+  "lean_name": "cmc_fcl_imrep_restrict_formula",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1.imrep_data-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.localize-a1.imrep_data-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-locali-a5cfc87778-a1"
+}

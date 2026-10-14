@@ -956,6 +956,46 @@ theorem Submission.dimred_mbl_dtsd_support_calculus : ∀ (P n : ℕ), (∀ (E :
     refine hx.2 (mem_sUnion_of_mem hxW ⟨hWo, hWc, hWU, fun η hη => ?_⟩)
     rw [GeometricCurrentOn.boundary_apply]
     exact hWv _ ((tsupport_exteriorDerivative_subset (η : DifferentialForm (Euclid P) n)).trans hη)
+/-- **Mass of a current given by integration against a measure** (Simon 6.2.5; the estimate
+`∫_B ⟨ω, ξ⟩ dμ ≤ μ(B)` for `|ω| ≤ 1` used to localize in the proof of 7.2.4): if
+`X(ω) = ∫_E ⟨ω(x), ξ(x)⟩ dμ(x)` for every `ω ∈ 𝒟^d(U)` and `|⟨α, ξ(x)⟩| ≤ |α|` for `μ`-a.e. `x`,
+then `M_V(X) ≤ μ(E ∩ V)`.  For an admissible `ω`,
+`X(ω) ≤ |∫_E ⟨ω, ξ⟩ dμ| ≤ ∫_E |⟨ω, ξ⟩| dμ`; the integrand is at most `|ω| ≤ 1` on `spt ω ⊆ V` and
+vanishes off `spt ω`, so `X(ω) ≤ μ(spt ω ∩ E) ≤ μ(E ∩ V)`.  The Bochner integral of a
+non-integrable integrand is `0`, so no integrability assumption is needed. -/
+theorem Submission.cmc_fcl_massOn_le_measure_inter : ∀ (P d : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U d) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P d) (E V : Set (Euclid P)), (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) d, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U d, X ω = ∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ) → X.massOn V ≤ μ (E ∩ V) := by
+  intro P d U X μ ξ E V hξ hX
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  show ENNReal.ofReal (X ω) ≤ _
+  rw [hX ω]
+  -- `spt ω` is closed, hence Borel
+  have hS : MeasurableSet (tsupport (ω : DifferentialForm (Euclid P) d)) :=
+    (isClosed_tsupport _).measurableSet
+  calc ENNReal.ofReal (∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ)
+        ≤ ‖∫ x in E, ξ x ((ω : DifferentialForm (Euclid P) d) x) ∂μ‖ₑ := by
+        rw [Real.enorm_eq_ofReal_abs]
+        exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+    _ ≤ ∫⁻ x in E, ‖ξ x ((ω : DifferentialForm (Euclid P) d) x)‖ₑ ∂μ :=
+        enorm_integral_le_lintegral_enorm _
+    -- a.e. on `E`: `|⟨ω, ξ⟩| ≤ |ω| ≤ 1` on `spt ω`, and `ω = 0` off `spt ω`
+    _ ≤ ∫⁻ x in E, (tsupport (ω : DifferentialForm (Euclid P) d)).indicator 1 x ∂μ := by
+        apply lintegral_mono_ae
+        filter_upwards [ae_restrict_of_ae hξ] with x hx
+        by_cases hxs : x ∈ tsupport (ω : DifferentialForm (Euclid P) d)
+        · rw [indicator_of_mem hxs, Pi.one_apply, Real.enorm_eq_ofReal_abs]
+          calc ENNReal.ofReal |ξ x ((ω : DifferentialForm (Euclid P) d) x)|
+              ≤ ENNReal.ofReal (covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) d) x)) :=
+                ENNReal.ofReal_le_ofReal (hx _)
+            _ ≤ ENNReal.ofReal 1 := ENNReal.ofReal_le_ofReal (hω.2 x)
+            _ = 1 := ENNReal.ofReal_one
+        · rw [indicator_of_notMem hxs]
+          have h0 : (ω : DifferentialForm (Euclid P) d) x = 0 :=
+            image_eq_zero_of_notMem_tsupport hxs
+          simp [h0]
+    _ = μ.restrict E (tsupport (ω : DifferentialForm (Euclid P) d)) := lintegral_indicator_one hS
+    _ = μ (tsupport (ω : DifferentialForm (Euclid P) d) ∩ E) := Measure.restrict_apply hS
+    _ ≤ μ (E ∩ V) := measure_mono fun x hx => ⟨hx.2, hω.1 hx.1⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

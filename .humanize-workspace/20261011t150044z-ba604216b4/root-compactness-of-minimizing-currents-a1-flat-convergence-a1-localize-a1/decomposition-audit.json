@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmc_fcl_|cmc_fc_localize|weakConverges_sublevel|rsd_cmr_support_subset_of_vanish",
+        "integral_withDensity_eq_integral_smul|enorm_integral_le_lintegral_enorm|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|norm_setIntegral_le_of_norm_le_const_ae|setIntegral_eq_integral_of_forall_compl_eq_zero|integrableOn_of_bounded",
+        "theorem (restrict_withDensity|withDensity_absolutelyContinuous|tendsto_measure_iInter_atTop|exists_contMDiffMap_one_nhds_of_subset_interior|_root_.IsCompact.cthickening|_root_.IsCompact.exists_cthickening_subset_open|infEDist_ne_top|lipschitz_infDist_pt)",
+        "git show 02c6122c94d0280a6288d299659b2dab7b59e109:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmc-localize-independent-audit-7__q1101/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmc-localize-independent-audit-7__q1101/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-localize-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-localize-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/accepted-candidate.json",
+        "/tmp/cmc-localize-independent-audit-7__q1101/Types.lean",
+        "/tmp/cmc-localize-independent-audit-7__q1101/Assembly.lean"
+      ],
+      "conclusion": "Verified project b4d606db and Mathlib 25730c7c compatibility; the frozen Contract and workspace Contract/Submission are byte-identical. No proposed declarations occur in the snapshot project. All seven frozen types independently elaborate as propositions before child implementations. The six supplied Lean proof appendices and the accepted support proof compile using only propext, Classical.choice and Quot.sound. The supplied assembly proves the exact selected parent type conditional solely on its existing good_slice dependency. The split is appropriate: every child contributes, imrep_restrict depends only on imrep_data, and existing dependencies do not reach the selected node. All names are bare identifiers; six are unreserved, and the support declaration has comparator acceptance with an identical frozen type."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dist_sublevel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match, including all real r ≤ δ₀. Nonemptiness justifies finite infEDist; continuity and containment in a compact thickening prove compactness and containment in U. The proof is complete and independent."
+    },
+    {
+      "key": "imrep_data",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four conclusions match the type. Local finiteness follows from locallyIntegrable_mult; absolute continuity transfers measurability and the conditional orientation bound. The measurable NNReal density justifies the integral identity without additional integrability assumptions."
+    },
+    {
+      "key": "imrep_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Borel hypothesis and carrier, multiplicity and orientation equalities are explicit. Restriction commutes with withDensity, and imrep_data supplies the action formula. This sole child dependency is correctly directed and non-circular."
+    },
+    {
+      "key": "mass_le_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the exact bound for arbitrary E and V. It bounds the integral by a lintegral supported on the measurable topological support of each admissible form. No omitted measurability, finiteness or integrability assumption is needed."
+    },
+    {
+      "key": "mass_add",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The evaluation identity and conclusion match exactly. ENNReal.ofReal_add_le and the common admissible test set give the bound before taking the supremum. The fresh name avoids the active branch's reserved declaration."
+    },
+    {
+      "key": "support_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reuse has comparator acceptance and an identical frozen type. The supplied ball argument excludes U ∖ K from support; support equals K ∖ zeroRegion, yielding compactness. The accepted implementation independently compiles without additional axioms."
+    },
+    {
+      "key": "weak_conv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose includes every typed hypothesis, including ε = ∞. The proof establishes measurability, integrability, shrinking-layer control, a smooth cutoff and the final ε estimate. Compact support comes from ω, so openness of U or compactness of G is unnecessary. No parent theorem is invoked."
+    }
+  ],
+  "required_changes": []
+}
