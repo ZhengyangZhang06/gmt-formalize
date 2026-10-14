@@ -22622,14 +22622,15 @@ theorem Submission.dmcbr_isoperimetric_filling : (∀ (P m : ℕ), ∃ c : NNRea
     ext ω
     show Z ω - 0 - 0 = Z ω
     ring
-  rcases hρ with h | rfl
+  rcases hρ.symm with rfl | h
+  · -- `z > 0`: `Y = R` has the bounds of (DT) at `ρ = (2cz)^{1/(m+1)}`
+    refine ⟨R, hR, hRZ, hRm.trans (le_of_eq ?_), subset_union_right.trans hQR⟩
+    rw [ENNReal.ofReal_mul hcρ, ENNReal.ofReal_mul hc0, ENNReal.ofReal_coe_nnreal, hZmz]
   · -- `z = 0`: `M(R) ≤ cρ · 0 = 0`, so `R = 0`
     rw [hZmz, h, ENNReal.ofReal_zero, mul_zero, nonpos_iff_eq_zero] at hRm
     refine ⟨R, hR, hRZ, hRm.trans_le zero_le, ?_⟩
     rw [hzero _ R hRm, hsupp0]
     exact empty_subset _
-  · refine ⟨R, hR, hRZ, hRm.trans (le_of_eq ?_), subset_union_right.trans hQR⟩
-    rw [ENNReal.ofReal_mul hcρ, ENNReal.ofReal_mul hc0, ENNReal.ofReal_coe_nnreal, hZmz]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
