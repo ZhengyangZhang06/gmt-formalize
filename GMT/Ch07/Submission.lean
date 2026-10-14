@@ -451,6 +451,41 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Shear invariance of the Gram determinant: `Γ(a − Σₗ cₗwₗ, w) = Γ(a, w)`, where
+`Γ(v) = det (⟨vᵢ, vⱼ⟩)ᵢⱼ` and `(x, w) = (x, w₀, …, w_{k−1})`.  Let `E` be the matrix whose column
+`0` is `(1, −c₀, …, −c_{k−1})` and whose other columns are those of the identity.  Then
+`(a − Σₗ cₗwₗ, w)ⱼ = Σₗ Eₗⱼ (a, w)ₗ`, so by bilinearity `M(a − Σₗ cₗwₗ, w) = Eᵀ M(a, w) E`; `E` is
+lower triangular with unit diagonal, so `det E = 1`. -/
+theorem Submission.ecf_cp_gc_det_shear : ∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P) (c : Fin k → ℝ), Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons (a - ∑ l, c l • w l) w : Fin (k + 1) → Euclid P) i) ((Fin.cons (a - ∑ l, c l • w l) w : Fin (k + 1) → Euclid P) j)) = Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j)) := by
+  intro P k a w c
+  set v : Fin (k + 1) → Euclid P := Fin.cons a w
+  -- column `0` of `E` is `(1, -c₀, …, -c_{k-1})`, the other columns are those of the identity
+  set E : Matrix (Fin (k + 1)) (Fin (k + 1)) ℝ := Matrix.of fun l j =>
+    if j = 0 then (Fin.cons 1 (-c) : Fin (k + 1) → ℝ) l else if l = j then 1 else 0
+  -- `(a - ∑ c_l w_l, w)` is `v` recombined by the columns of `E`
+  have hcomb : ∀ j, (Fin.cons (a - ∑ l, c l • w l) w : Fin (k + 1) → Euclid P) j =
+      ∑ l, E l j • v l := by
+    intro j
+    refine Fin.cases ?_ (fun i => ?_) j
+    · simp [E, v, Fin.sum_univ_succ, sub_eq_add_neg, neg_smul]
+    · simp [E, v, Fin.succ_ne_zero]
+  -- `E` is lower triangular with unit diagonal
+  have hdetE : E.det = 1 := by
+    rw [Matrix.det_of_isLowerTriangular E fun l j hlj => ?_]
+    · refine Finset.prod_eq_one fun i _ => ?_
+      by_cases hi : i = 0 <;> simp [E, hi]
+    · have hlj' : l < j := OrderDual.toDual_lt_toDual.mp hlj
+      have hj : j ≠ 0 := ((Fin.zero_le l).trans_lt hlj').ne'
+      simp [E, hj, hlj'.ne]
+  -- bilinearity: `M(a - ∑ c_l w_l, w) = Eᵀ M(a, w) E`
+  calc _ = (E.transpose * (Matrix.of fun i j : Fin (k + 1) => inner ℝ (v i) (v j)) * E).det := by
+        congr 1
+        ext i j
+        simp only [Matrix.of_apply, hcomb, sum_inner, inner_sum, real_inner_smul_left,
+          real_inner_smul_right, Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul]
+        exact Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun l _ => by ring
+    _ = _ := by rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hdetE, one_mul, mul_one]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
