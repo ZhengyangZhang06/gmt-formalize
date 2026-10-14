@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7cd5f2d399d4e039ea61b5229e5d167b1aca8da2005d677a2047fed0fc51a108",
+  "git_delta": {
+    "base_commit": "8720e2233e20be8c75008b78e7f921d11a477666",
+    "candidate_commit": "2626c7a33b0710ef02dabb5fabccd7f228531ad1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cs_sos_lipschitz_approx_tangent",
+    "diff_sha256": "61cbcf7f50dba040656dcf3ab9670f988d2be545fd6ec9b7321e9fc992bc3378",
+    "source_sha256": "f594307c3570dc3e798e11126ce4525ffbd721c8d7a556571461deda580b654b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cs_sos_lipschitz_approx_tangent",
+      "statement": "∀ (P k : ℕ) (F : Euclid k → Euclid P) (Y : Set (Euclid P)) (K : NNReal), 0 < k → LipschitzWith K F → MeasurableSet Y → (∀ C : Set (Euclid P), IsCompact C → μHE[k] (Y ∩ C) ≠ ∞) → ∀ᵐ u ∂(volume : Measure (Euclid k)), F u ∈ Y → DifferentiableAt ℝ F u → Function.Injective (fderiv ℝ F u) → HasApproximateTangentSpaceAt k Y (F u) (LinearMap.range (fderiv ℝ F u : Euclid k →ₗ[ℝ] Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
