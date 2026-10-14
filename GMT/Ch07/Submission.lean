@@ -497,6 +497,33 @@ theorem Submission.dtc_cone_euler_cartan : ∀ (P m : ℕ) (β : DifferentialFor
       Finset.sum_neg_distrib]
     abel
 
+/-- **Radial Cartan identity**, the integrand of the radial homotopy formula for forms (the
+homotopy `h(t, x) = t x` of Simon Ch. 6, 2.26).  For a `(q+1)`-form `β` differentiable at `t • x`,
+`d(y ↦ t^q ι_y β(t y))(x) + t^(q+1) ι_x dβ(t x) = (q + 1) t^q β(t x) + t^(q+1) Dβ(t x)[x]`.  This
+is Cartan's formula `Submission.dtc_cone_euler_cartan` for `β_t = β (t • ·)` at `x`, rewritten
+with `Dβ_t(x) = t • Dβ(t x)` (`fderiv_comp_smul`) and multiplied by the constant `t^q`. -/
+theorem Submission.dimred_cs_sos_cfs_rh_radial_cartan : ∀ (P q : ℕ) (β : DifferentialForm (Euclid P) (q + 1)) (t : ℝ) (x : Euclid P), DifferentiableAt ℝ β (t • x) → exteriorDerivative (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x + t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x = (((q : ℝ) + 1) * t ^ q) • β (t • x) + t ^ (q + 1) • fderiv ℝ β (t • x) x := by
+  intro P q β t x hβ
+  -- Cartan's formula for `β_t = β (t • ·)`, which is differentiable at `x`
+  have hβt : DifferentiableAt ℝ (fun y : Euclid P => β (t • y)) x :=
+    hβ.comp x (differentiableAt_id.const_smul t)
+  have hC := Submission.dtc_cone_euler_cartan P q (fun y => β (t • y)) x hβt
+  -- dilation chain rule `Dβ_t(x) = t • Dβ(t x)`, hence `dβ_t(x) = t • dβ(t x)`
+  have hD : fderiv ℝ (fun y : Euclid P => β (t • y)) x = t • fderiv ℝ β (t • x) :=
+    fderiv_comp_smul t
+  have hd : exteriorDerivative (fun y : Euclid P => β (t • y)) x =
+      t • exteriorDerivative β (t • x) := by
+    show ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ (fun y : Euclid P => β (t • y)) x) =
+      t • ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ β (t • x))
+    rw [hD, ContinuousAlternatingMap.alternatizeUncurryFin_smul]
+  -- `d` commutes with the constant factor `t ^ q`
+  have hs : exteriorDerivative (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x =
+      t ^ q • exteriorDerivative (fun y : Euclid P => (β (t • y)).curryLeft y) x :=
+    extDeriv_fun_smul (t ^ q) (fun y : Euclid P => (β (t • y)).curryLeft y)
+  rw [hd, hD, ContinuousAlternatingMap.curryLeft_smul, smul_apply, smul_apply] at hC
+  rw [hs, eq_sub_of_add_eq hC]
+  module
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
