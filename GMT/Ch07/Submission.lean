@@ -4953,6 +4953,38 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **Integral Lipschitz parametrization of a compactly supported integer multiplicity current**
+(Simon 6.3.1, 6.2.11; Ch. 3, 1.4): an integer multiplicity `X ∈ 𝒟ₙ(ℝᴾ)` with `spt X` compact has a
+representation `X = τ(M, θ, ξ)` with `M ⊆ spt X` and `μ_X(ℝᴾ) < ∞`, together with countably many
+Lipschitz pieces `Gᵢ : ℝⁿ → ℝᴾ` on Borel sets `Aᵢ`, with integer weights `wᵢ` and covector bounds
+`cᵢ`, such that `X(γ) = Σᵢ ∫_{Aᵢ} wᵢ(u) γ(Gᵢ(u))(DGᵢ(u)e₀, …, DGᵢ(u)eₙ₋₁) du` for every test form `γ`.
+Take the normalized representation `X = τ(M, θ, ξ)`, `M ⊆ spt X`.  Then
+`μ_X(ℝᴾ) = ∫_M θ dHⁿ = ∫_{M ∩ spt X} θ dHⁿ < ∞` by the local integrability of `θ` on the compact
+set `spt X`.  The Lipschitz pieces of `(M, θ, ξ)` have `Gᵢ(Aᵢ) ⊆ M ⊆ spt X`,
+`Σᵢ ∫_{Aᵢ} |wᵢ| cᵢ ≤ μ_X(ℝᴾ) < ∞`, and their series converges to `τ(M, θ, ξ)(η)` for every continuous
+compactly supported `η`, in particular to `X(γ)` for every test form `γ`. -/
+theorem Submission.dimred_cs_sos_cfs_compact_im_param : ∀ (P n : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) n), IsIntegerMultiplicity X → IsCompact X.support → ∃ R : IMRep (univ : Set (Euclid P)) n, R.Represents X ∧ R.carrier ⊆ X.support ∧ R.measure univ ≠ ∞ ∧ ∃ (G : ℕ → Euclid n → Euclid P) (A : ℕ → Set (Euclid n)) (w : ℕ → Euclid n → ℤ) (c : ℕ → Euclid n → ℝ), (∀ i, ∃ L : NNReal, LipschitzWith L (G i)) ∧ (∀ i, MeasurableSet (A i)) ∧ (∀ i, Measurable (w i)) ∧ (∀ i, Measurable (c i)) ∧ (∀ i, ∀ u ∈ A i, DifferentiableAt ℝ (G i) u) ∧ (∀ i, G i '' A i ⊆ X.support) ∧ (∀ i, IntegrableOn (fun u => (w i u : ℝ)) (A i)) ∧ (∀ i, ∀ u ∈ A i, 0 ≤ c i u ∧ ∀ α : Covector (Euclid P) n, |α (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))| ≤ c i u * covectorEuclideanNorm α) ∧ ∑' i, ∫⁻ u in A i, ENNReal.ofReal (|(w i u : ℝ)| * c i u) ≠ ∞ ∧ ∀ γ : TestFormOn (univ : Set (Euclid P)) n, HasSum (fun i => ∫ u in A i, (w i u : ℝ) * (γ : DifferentialForm (Euclid P) n) (G i u) (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))) (X γ) := by
+  intro P n X hX hcpt
+  -- the normalized representation `X = τ(M, θ, ξ)`, `M ⊆ spt X`
+  obtain ⟨R, hRX, hRsub, -⟩ := Submission.dimred_mbl_dt_lpip_normalized_rep
+    Submission.dtc_vanish_off_support Submission.cmc_massOn_eq_imRep_measure
+    Submission.cmc_imRep_locality_restrict_sub P n univ X isOpen_univ hX
+  -- `μ_X(ℝᴾ) = ∫_M θ dHⁿ = ∫_{M ∩ spt X} θ dHⁿ < ∞`, `spt X` being compact
+  have hRfin : R.measure univ ≠ ∞ := by
+    have hθ := R.locallyIntegrable_mult X.support hcpt (subset_univ _)
+    rw [inter_eq_left.2 hRsub] at hθ
+    rwa [IMRep.measure, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+  -- the Lipschitz pieces of `(M, θ, ξ)`
+  obtain ⟨G, A, w, c, hLip, hA, hw, hc, hdiff, hGA, hint, hcov, hsum, hser⟩ :=
+    Submission.dimred_mbl_dt_lpip_piece_representation Submission.dpf_rectifiable_bilipschitz_pieces
+      Submission.covectorEuclideanNorm_gram_bounds Submission.cmc_imRep_locality_restrict_sub P n R
+      hRfin
+  refine ⟨R, hRX, hRsub, hRfin, G, A, w, c, hLip, hA, hw, hc, hdiff,
+    fun i => (hGA i).trans hRsub, hint, hcov, ne_top_of_le_ne_top hRfin hsum, fun γ => ?_⟩
+  -- a test form is continuous with compact support, and `X(γ) = τ(M, θ, ξ)(γ)`
+  rw [hRX γ]
+  exact hser _ γ.property.1.1.continuous γ.property.1.2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
