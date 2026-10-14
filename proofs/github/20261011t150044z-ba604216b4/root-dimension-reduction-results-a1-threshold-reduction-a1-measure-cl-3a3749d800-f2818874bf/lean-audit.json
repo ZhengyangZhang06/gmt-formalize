@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "68de7c0f1de02731a21f4c0188d29c82889d671dd2abca9261ce749d7e344aca",
+  "git_delta": {
+    "base_commit": "1db8bf98cab39dd2d6487557086e53dd221886ac",
+    "candidate_commit": "ef35c96ca7955f92918c0cde03dc9e0f7936c6a4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_tr_mcr_tl_density_lower_bound",
+    "diff_sha256": "f46c84b2f1f6f3c5d0e64f71568ca0651cc969e1f6dabf9f89da8810caadde1f",
+    "source_sha256": "9826e5380ebee0f45ce4d03f975fb311ef1f8ed902ab1e173f845aebc00f32b7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_tr_mcr_tl_density_lower_bound",
+      "statement": "∀ (n : ℕ) (Λ c s : ℝ) (m : ℝ → ℝ≥0∞) (L : ℝ≥0∞), 0 < s → (∀ t ∈ Ioo 0 s, unitBallVolume n * ENNReal.ofReal c * ENNReal.ofReal (t ^ n * Real.exp (-(Λ * t))) ≤ m t) → Tendsto (fun t : ℝ => m t / (unitBallVolume n * ENNReal.ofReal (t ^ n))) (𝓝[>] 0) (𝓝 L) → ENNReal.ofReal c ≤ L",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
