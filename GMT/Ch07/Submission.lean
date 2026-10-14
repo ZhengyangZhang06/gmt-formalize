@@ -451,6 +451,80 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Compactly supported normal currents in `ℝᴺ` are closed under differences and boundaries.
+(a) If `X, Y ∈ 𝒟ₖ(ℝᴺ)` have compact support, finite mass and finite boundary mass, then
+`spt(X − Y) ⊆ spt X ∪ spt Y` is compact and `X − Y` has finite mass and boundary mass.
+(b) If `X ∈ 𝒟ₖ₊₁(ℝᴺ)` has compact support, then `spt ∂X ⊆ spt X` is compact and `M(∂∂X) = 0`.
+Mass is subadditive on differences since `−ω` is admissible with `ω`; supports are closed;
+`X − Y` vanishes where `X` and `Y` both vanish; `spt dω ⊆ spt ω`; and `∂∂ = 0`. -/
+theorem Submission.cmcdt_lpo_pf_normal_closure : (∀ (N k : ℕ) (X Y : GeometricCurrentOn (univ : Set (Euclid N)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → IsCompact Y.support → Y.mass < ∞ → boundaryMassOn Y univ < ∞ → (X - Y).support ⊆ X.support ∪ Y.support ∧ IsCompact (X - Y).support ∧ (X - Y).mass < ∞ ∧ boundaryMassOn (X - Y) univ < ∞) ∧ ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)), IsCompact X.support → X.boundary.support ⊆ X.support ∧ IsCompact X.boundary.support ∧ boundaryMassOn X.boundary univ = 0 := by
+  -- `M(A − B) ≤ M(A) + M(B)`: `(A − B)(ω) = A(ω) + B(−ω)` and `−ω` is admissible with `ω`
+  have key : ∀ (N m : ℕ) (A B : GeometricCurrentOn (univ : Set (Euclid N)) m),
+      (A - B).massOn univ ≤ A.massOn univ + B.massOn univ := by
+    intro N m A B
+    refine sSup_le ?_
+    rintro r ⟨ω, hω, rfl⟩
+    have hneg : -ω ∈ massAdmissibleOn univ m univ :=
+      ⟨subset_univ _, fun x => by simpa using hω.2 x⟩
+    have hval : (A - B) ω = A ω + B (-ω) := by
+      show A ω - B ω = A ω + B (-ω)
+      have h := B.toCurrent.map_neg ω
+      linarith
+    dsimp only
+    rw [hval]
+    exact ENNReal.ofReal_add_le.trans (add_le_add (A.le_massOn hω) (B.le_massOn hneg))
+  -- supports in `ℝᴺ` are closed: `spt T` is the complement of the open zero region
+  have hclosed : ∀ (N m : ℕ) (A : GeometricCurrentOn (univ : Set (Euclid N)) m),
+      IsClosed A.support := by
+    intro N m A
+    rw [GeometricCurrentOn.support, ← compl_eq_univ_sdiff]
+    exact A.isOpen_zeroRegion.isClosed_compl
+  refine ⟨?_, ?_⟩
+  · intro N k X Y hX1 hX2 hX3 hY1 hY2 hY3
+    -- `X − Y` vanishes on `W₁ ∩ W₂` when `X` vanishes on `W₁` and `Y` on `W₂`
+    have hsupp : (X - Y).support ⊆ X.support ∪ Y.support := by
+      rintro x ⟨-, hx⟩
+      by_contra hxy
+      simp only [mem_union, not_or] at hxy
+      obtain ⟨W₁, ⟨hW₁o, hW₁c, -, hW₁v⟩, hxW₁⟩ : x ∈ X.zeroRegion :=
+        not_not.1 fun h => hxy.1 ⟨mem_univ x, h⟩
+      obtain ⟨W₂, ⟨hW₂o, -, -, hW₂v⟩, hxW₂⟩ : x ∈ Y.zeroRegion :=
+        not_not.1 fun h => hxy.2 ⟨mem_univ x, h⟩
+      refine hx ⟨W₁ ∩ W₂, ⟨hW₁o.inter hW₂o, ?_, subset_univ _, fun ω hω => ?_⟩, hxW₁, hxW₂⟩
+      · exact hW₁c.of_isClosed_subset isClosed_closure (closure_mono inter_subset_left)
+      · show X ω - Y ω = 0
+        rw [hW₁v ω (hω.trans inter_subset_left), hW₂v ω (hω.trans inter_subset_right), sub_zero]
+    refine ⟨hsupp, (hX1.union hY1).of_isClosed_subset (hclosed N k _) hsupp,
+      (key N k X Y).trans_lt (ENNReal.add_lt_top.2 ⟨hX2, hY2⟩), ?_⟩
+    cases k with
+    | zero => exact ENNReal.zero_lt_top
+    | succ k' =>
+      -- `∂(X − Y) = ∂X − ∂Y`
+      have hb : (X - Y).boundary = X.boundary - Y.boundary := by
+        ext ω
+        rfl
+      show (X - Y).boundary.massOn univ < ∞
+      rw [hb]
+      exact (key N k' _ _).trans_lt (ENNReal.add_lt_top.2 ⟨hX3, hY3⟩)
+  · intro N k X hX
+    -- `∂X` vanishes wherever `X` does, since `spt dω ⊆ spt ω`
+    have hsupp : X.boundary.support ⊆ X.support := by
+      rintro x ⟨-, hx⟩
+      refine ⟨mem_univ x, fun hxX => hx ?_⟩
+      obtain ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hxW⟩ := hxX
+      exact ⟨W, ⟨hWo, hWc, hWU, fun ω hω =>
+        hWv _ ((tsupport_exteriorDerivative_subset _).trans hω)⟩, hxW⟩
+    refine ⟨hsupp, hX.of_isClosed_subset (hclosed N k _) hsupp, ?_⟩
+    cases k with
+    | zero => rfl
+    | succ k' =>
+      -- `∂∂X = 0`, and the zero current has zero mass
+      show X.boundary.boundary.massOn univ = 0
+      rw [X.boundary_boundary]
+      refine le_antisymm (sSup_le ?_) bot_le
+      rintro r ⟨ω, -, rfl⟩
+      simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
