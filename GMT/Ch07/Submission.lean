@@ -4819,6 +4819,95 @@ theorem Submission.dor_lmb_fcd_imp_parametric_rep : ∀ (N k : ℕ) (R : IMRep (
     hwint, ?_, hsum, hae⟩
   simpa only [hJ] using hmassle
 
+/-- **Simon Ch. 6, 3.1, 3.3–3.6 and 2.11–2.12** (Lipschitz parametrization of a compactly supported
+integer multiplicity current): if `S = τ(M, θ, ξ) ∈ 𝒟ₖ(ℝᴾ)` with `spt S` compact, then
+`M(S) < ∞`, and there are Lipschitz `Fⱼ : ℝᵏ → ℝᴾ`, Borel `Aⱼ ⊆ ℝᵏ` and integer weights `gⱼ`,
+integrable on `Aⱼ`, with `Fⱼ` differentiable on `Aⱼ`, `Fⱼ(Aⱼ) ⊆ spt S`,
+`Σⱼ ∫_{Aⱼ} |gⱼ| J_{Fⱼ} < ∞` and `S(ω) = Σⱼ ∫_{Aⱼ} gⱼ ω(Fⱼ)(DFⱼ e)` for every `ω ∈ 𝒟ᵏ(ℝᴾ)`.
+With `μ = θ Hᵏ⌞M`, `M_W(S) = μ(W)` for open `W` and `spt S = spt μ`
+(`dor_imrep_massOn_eq_measure_and_support`), so `μ((spt S)ᶜ) = 0` and
+`M(S) = μ(spt S) = ∫_{M ∩ spt S} θ dHᵏ < ∞`; as `θ ≥ 1` on `M`, `Hᵏ(M \ spt S) = 0`.  The pieces
+`Gⱼ, Bⱼ, wⱼ` of `dor_lmb_fcd_imp_parametric_rep` are shrunk to `Aⱼ = Bⱼ ∩ Gⱼ⁻¹(spt S)`, a null
+change, and `gⱼ = ⌊wⱼ⌋ = wⱼ`. -/
+theorem Submission.ecf_im_lipschitz_parametrization : ∀ (k P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) k), IsIntegerMultiplicity S → IsCompact S.support → S.mass ≠ ∞ ∧ ∃ (F : ℕ → Euclid k → Euclid P) (A : ℕ → Set (Euclid k)) (g : ℕ → Euclid k → ℤ), (∀ j, ∃ K : NNReal, LipschitzWith K (F j)) ∧ (∀ j, MeasurableSet (A j)) ∧ (∀ j, Measurable (g j)) ∧ (∀ j, IntegrableOn (fun u => (g j u : ℝ)) (A j)) ∧ (∀ j, ∀ u ∈ A j, DifferentiableAt ℝ (F j) u) ∧ (∀ j, F j '' A j ⊆ S.support) ∧ ∑' j, ∫⁻ u in A j, ‖(g j u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ (F j) u (EuclideanSpace.single a 1)) (fderiv ℝ (F j) u (EuclideanSpace.single b 1))))) ≠ ∞ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) k, HasSum (fun j => ∫ u in A j, (g j u : ℝ) * (ω : DifferentialForm (Euclid P) k) (F j u) (fun a => fderiv ℝ (F j) u (EuclideanSpace.single a 1))) (S ω) := by
+  intro k P S hS hcpt
+  obtain ⟨R, hR⟩ := hS
+  have hθm : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+    (measurable_from_nat (f := fun j : ℕ => (j : ℝ≥0∞))).comp R.measurable_mult
+  -- Step 1: `M_W(S) = μ(W)` for open `W` and `spt S = spt μ`, `μ = θ Hᵏ⌞M`
+  obtain ⟨hmassOn, hsupp⟩ :=
+    Submission.dor_imrep_massOn_eq_measure_and_support P k univ S R isOpen_univ hR
+  have hsm : MeasurableSet S.support := hcpt.isClosed.measurableSet
+  -- Step 2: `μ((spt S)ᶜ) = 0`
+  have hcompl : R.measure S.supportᶜ = 0 := by
+    rw [hsupp, univ_inter]
+    exact Measure.measure_compl_support
+  -- Step 3: `M(S) = μ(ℝᴾ) = μ(spt S) = ∫_{M ∩ spt S} θ dHᵏ < ∞`
+  have hfin : R.measure univ ≠ ∞ := by
+    rw [← measure_add_measure_compl hsm, hcompl, add_zero, IMRep.measure,
+      withDensity_apply _ hsm, Measure.restrict_restrict hsm, inter_comm]
+    exact R.locallyIntegrable_mult S.support hcpt (subset_univ _)
+  refine ⟨?_, ?_⟩
+  · show S.massOn univ ≠ ∞
+    rw [hmassOn univ isOpen_univ]
+    exact hfin
+  -- Step 4: `Hᵏ(M \ spt S) ≤ ∫_{M \ spt S} θ dHᵏ = μ((spt S)ᶜ) = 0`, since `θ ≥ 1` on `M`
+  have hE1 : ∀ᵐ x ∂(μHE[k].restrict R.carrier), x ∈ S.support := by
+    rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+    refine nonpos_iff_eq_zero.mp ?_
+    calc μHE[k] ({x | ¬x ∈ S.support} ∩ R.carrier)
+        = ∫⁻ _ in {x | ¬x ∈ S.support} ∩ R.carrier, (1 : ℝ≥0∞) ∂μHE[k] := by
+          rw [setLIntegral_one]
+      _ ≤ ∫⁻ x in {x | ¬x ∈ S.support} ∩ R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[k] := by
+          refine setLIntegral_mono hθm fun x hx => ?_
+          exact_mod_cast R.mult_pos x hx.2
+      _ = R.measure S.supportᶜ := by
+          rw [IMRep.measure, withDensity_apply _ hsm.compl, Measure.restrict_restrict hsm.compl]
+          rfl
+      _ = 0 := hcompl
+  -- Step 5: the pieces `Gⱼ, Bⱼ, wⱼ` of the parametric representation of `τ(M, θ, ξ)`
+  obtain ⟨G, B, w, hLip, hBm, hdiff, hwm, hwz, -, hwint, hmassle, hsum, hae⟩ :=
+    Submission.dor_lmb_fcd_imp_parametric_rep P k R hfin
+  have hGc : ∀ j, Continuous (G j) := fun j => by
+    obtain ⟨L, hL⟩ := hLip j
+    exact hL.continuous
+  -- `gⱼ = ⌊wⱼ⌋` is Borel (`gⱼ⁻¹{z} = wⱼ⁻¹[z, z + 1)`) and equals `wⱼ`, which is integer-valued
+  have hgm : ∀ j, Measurable fun u => ⌊w j u⌋ := fun j => measurable_to_countable' fun z => by
+    rw [show (fun u => ⌊w j u⌋) ⁻¹' {z} = w j ⁻¹' (Int.floor ⁻¹' {z}) from rfl,
+      Int.preimage_floor_singleton]
+    exact hwm j measurableSet_Ico
+  have hgw : ∀ j u, ((⌊w j u⌋ : ℤ) : ℝ) = w j u := by
+    intro j u
+    obtain ⟨z, hz⟩ := hwz j u
+    rw [hz, Int.floor_intCast]
+  -- Step 6: `Aⱼ = Bⱼ ∩ Gⱼ⁻¹(spt S)` is Borel and differs from `Bⱼ` by a null set
+  have hAm : ∀ j, MeasurableSet (B j ∩ G j ⁻¹' S.support) :=
+    fun j => (hBm j).inter (hsm.preimage (hGc j).measurable)
+  have hAB : ∀ j, (B j ∩ G j ⁻¹' S.support : Set (Euclid k)) =ᵐ[volume] B j := by
+    intro j
+    have h := hae (fun x => x ∈ S.support) hE1 j
+    rw [ae_iff, Measure.restrict_apply' (hBm j)] at h
+    rw [ae_eq_set, sdiff_eq_empty.mpr inter_subset_left, measure_empty]
+    refine ⟨rfl, measure_mono_null ?_ h⟩
+    intro u hu
+    exact ⟨fun h' => hu.2 ⟨hu.1, h'⟩, hu.1⟩
+  -- Step 7: assemble, with `Fⱼ = Gⱼ`, `Aⱼ = Bⱼ ∩ Gⱼ⁻¹(spt S)` and `gⱼ = ⌊wⱼ⌋ = wⱼ`
+  refine ⟨G, fun j => B j ∩ G j ⁻¹' S.support, fun j u => ⌊w j u⌋, hLip, hAm, hgm, fun j => ?_,
+    fun j u hu => hdiff j u hu.1, fun j => image_subset_iff.mpr inter_subset_right, ?_,
+    fun ω => ?_⟩
+  · simp only [hgw]
+    exact (hwint j).mono_set inter_subset_left
+  · simp only [hgw]
+    refine ne_top_of_le_ne_top hfin (le_trans (ENNReal.tsum_le_tsum fun j => ?_) hmassle)
+    exact lintegral_mono_set inter_subset_left
+  · have hωc : Continuous (ω : DifferentialForm (Euclid P) k) := ω.property.1.1.continuous
+    rw [hR ω]
+    convert hsum (ω : DifferentialForm (Euclid P) k) hωc
+      (hωc.bounded_above_of_compact_support ω.property.1.2) using 1
+    funext j
+    rw [setIntegral_congr_set (hAB j)]
+    simp only [hgw]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
