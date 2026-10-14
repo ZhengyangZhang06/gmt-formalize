@@ -3309,6 +3309,23 @@ theorem Submission.cmr_null_of_representation : ∀ (P n : ℕ) (U : Set (Euclid
     exact Submission.cmr_measure_null_of_orient_ae_zero P (m + 1) U (thickening δ C) C T μ ξ
       hWo.measurableSet hC.measurableSet hCW hμW hTW hξ hT hξC
 
+/-- **The mass measure and orientation of a current of locally finite mass** (Simon Ch. 6,
+2.7–2.8, with the absolute continuity 2.36; `|·|` is `covectorEuclideanNorm`).  Part I is the
+Riesz representation `Submission.cmr_exists_massRepresentation_core`.  It gives a Borel measure
+`μ = μ_T` with `μ(ℝᴾ ∖ U) = 0`, `μ` finite on compact subsets of `U` and `μ(W) = M_W(T)` for open
+`W`, and an a.e. strongly measurable field `ξ` of `n`-vectors with `|⟨α, ξ(x)⟩| ≤ |α|` and
+`T(ω) = ∫ ⟨ω, ξ⟩ dμ`.  Part II is `Submission.cmr_null_of_representation`, Simon's projection
+argument.  If moreover `M_W(∂T) < ∞` for every open `W ⊂⊂ U`, every such pair `(μ, ξ)` satisfies
+`μ(E) = 0` whenever `Hⁿ(E) = 0`. -/
+theorem Submission.cmc_exists_massRepresentation : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0) := by
+  intro P n U T hU hmass
+  -- Part I (Simon 6.2.7–2.8): `T = ξ μ` with `μ(W) = M_W(T)` for every open `W`
+  obtain ⟨μ, ξ, hμU, hμK, hμW, hξm, hξ1, hTξ⟩ :=
+    Submission.cmr_exists_massRepresentation_core P n U T hU hmass
+  refine ⟨μ, ξ, hμU, hμK, hμW, hξm, hξ1, hTξ, fun hbd => ?_⟩
+  -- Part II (Simon 6.2.36): if also `M_W(∂T) < ∞` for all open `W ⊂⊂ U`, then `μ ≪ Hⁿ`
+  exact Submission.cmr_null_of_representation P n U T μ ξ hU hbd hμU hμK hμW hξm hξ1 hTξ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
