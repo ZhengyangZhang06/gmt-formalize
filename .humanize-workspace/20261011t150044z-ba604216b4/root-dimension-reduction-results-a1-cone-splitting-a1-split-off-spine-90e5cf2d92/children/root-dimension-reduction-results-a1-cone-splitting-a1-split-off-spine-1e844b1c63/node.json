@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.frame_box_compact-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1",
+  "depth": 6,
+  "title": "The closed frame box {t ∈ span g : |⟨g_i, t⟩| ≤ r ∀ i} is compact",
+  "statement": "Let P, k ∈ ℕ, let g = (g_1, …, g_k) (g : Fin k → Euclid P) be an orthonormal family in ℝ^P and r ∈ ℝ. Then the set {t ∈ span{g_1, …, g_k} : |⟨g_i, t⟩| ≤ r for all i} is compact.",
+  "lean_statement": "∀ (P k : ℕ) (g : Fin k → Euclid P) (r : ℝ), Orthonormal ℝ g → IsCompact {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}",
+  "lean_name": "dimred_cs_sos_mt_cs_frame_box_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-1e844b1c63-a1"
+}
