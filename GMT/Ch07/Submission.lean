@@ -780,6 +780,44 @@ theorem Submission.cmcdt_lpi_pr_imrep_in_support : (∀ (P n : ℕ) (U : Set (Eu
     exact ⟨hxM, fun hxS => hxMS ⟨hxM, hxS⟩⟩
   · rw [sdiff_eq_empty.mpr inter_subset_left, measure_empty]
 
+/-- **Pulling back integrals from a Lipschitz piece** (Simon Ch. 6, 3.6–3.9, using Ch. 2,
+1.8(i)): if `G` is `L`-Lipschitz and `m|a − a'| ≤ |G(a) − G(a')|` on a Borel set `A ⊆ ℝⁿ`,
+`m > 0`, then the image of `Lⁿ⌞A` under `G` is at most `m⁻ⁿ Hⁿ⌞G(A)`, so
+`∫_A f ∘ G dLⁿ ≤ m⁻ⁿ ∫_{G(A)} f dHⁿ` for every Borel `f ≥ 0`.  The bound
+`Lⁿ(E) ≤ m⁻ⁿ Hⁿ(G(E))` for `E ⊆ A` is the lower half of
+`Submission.dimred_rpd_bilipschitz_image_measure`. -/
+theorem Submission.cmcdt_lpi_pr_lintegral_pullback : ∀ (P n : ℕ) (G : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L G → MeasurableSet A → 0 < m → (∀ a ∈ A, ∀ a' ∈ A, m * ‖a - a'‖ ≤ ‖G a - G a'‖) → ∀ f : Euclid P → ℝ≥0∞, Measurable f → ∫⁻ u in A, f (G u) ≤ ENNReal.ofReal ((m ^ n)⁻¹) * ∫⁻ x in G '' A, f x ∂μHE[n] := by
+  intro P n G A L m hL hA hm hlow f hf
+  have hGm : Measurable G := hL.continuous.measurable
+  -- `Lⁿ(E) ≤ m⁻ⁿ Hⁿ(G(E))` for `E ⊆ A`
+  have hbound : ∀ E ⊆ A, volume E ≤ ENNReal.ofReal ((m ^ n)⁻¹) * μHE[n] (G '' E) := by
+    intro E hE
+    have h := (Submission.dimred_rpd_bilipschitz_image_measure P n G E m L hm L.coe_nonneg
+      (fun a ha b hb => ⟨hlow a (hE ha) b (hE hb), by
+        have := hL.dist_le_mul a b
+        rwa [dist_eq_norm, dist_eq_norm] at this⟩)).1
+    have hpos : (0 : ℝ) < m ^ n := pow_pos hm n
+    calc volume E = ENNReal.ofReal ((m ^ n)⁻¹) * (ENNReal.ofReal (m ^ n) * volume E) := by
+          rw [← mul_assoc, ← ENNReal.ofReal_mul (inv_nonneg.mpr hpos.le),
+            inv_mul_cancel₀ hpos.ne', ENNReal.ofReal_one, one_mul]
+      _ ≤ ENNReal.ofReal ((m ^ n)⁻¹) * μHE[n] (G '' E) := by gcongr
+  -- the image of `Lⁿ⌞A` under `G` is at most `m⁻ⁿ Hⁿ⌞G(A)`
+  have hle : Measure.map G (volume.restrict A) ≤
+      ENNReal.ofReal ((m ^ n)⁻¹) • μHE[n].restrict (G '' A) := by
+    rw [Measure.le_iff]
+    intro S hS
+    rw [Measure.map_apply hGm hS, Measure.restrict_apply' hA, Measure.smul_apply,
+      Measure.restrict_apply hS, smul_eq_mul]
+    refine (hbound _ inter_subset_right).trans ?_
+    gcongr
+    rintro _ ⟨u, ⟨hu1, hu2⟩, rfl⟩
+    exact ⟨hu1, mem_image_of_mem G hu2⟩
+  calc ∫⁻ u in A, f (G u) = ∫⁻ x, f x ∂(Measure.map G (volume.restrict A)) :=
+        (lintegral_map hf hGm).symm
+    _ ≤ ∫⁻ x, f x ∂(ENNReal.ofReal ((m ^ n)⁻¹) • μHE[n].restrict (G '' A)) :=
+        lintegral_mono' hle le_rfl
+    _ = _ := by rw [lintegral_smul_measure, smul_eq_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
