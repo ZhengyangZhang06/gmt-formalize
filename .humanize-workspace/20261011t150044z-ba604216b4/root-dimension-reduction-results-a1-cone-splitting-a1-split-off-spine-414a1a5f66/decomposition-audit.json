@@ -1,0 +1,88 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'structure IMRep|locallyIntegrable_mult|def IMRep.measure|def IMRep.Represents|def IsIntegerMultiplicity|def IMRep.action|IsUnitOrientationOf' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "rg -n 'dimred_mbl_dt_lpip|dpf_rectifiable_bilipschitz_pieces|covectorEuclideanNorm_gram_bounds|dtc_vanish_off_support|cmc_massOn_eq_imRep_measure|cmc_imRep_locality_restrict_sub|dimred_cs_sos_cfs' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt",
+        "areaRegularSet|measurableSet_areaRegularSet|area_image_compl_regularSet_eq_zero",
+        "simon_theorem_3_6|simon_remark_3_7_hausdorff",
+        "MeasurableSet.image_of_continuousOn_injOn|hasSum_integral_iUnion|measurable_fderiv",
+        "python3 /tmp/compact-param-independent-audit/Audit.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/compact-param-independent-audit/Assembly.lean > /tmp/compact-param-independent-audit/assembly.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/compact-param-independent-audit/Merged.lean > /tmp/compact-param-independent-audit/merged.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-414a1a5f66/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-414a1a5f66/decomposition-v1.json",
+        "/tmp/compact-param-independent-audit/Audit.py",
+        "/tmp/compact-param-independent-audit/structural-checks.json",
+        "/tmp/compact-param-independent-audit/Assembly.lean",
+        "/tmp/compact-param-independent-audit/assembly.log",
+        "/tmp/compact-param-independent-audit/Merged.lean",
+        "/tmp/compact-param-independent-audit/merged.log"
+      ],
+      "conclusion": "The split is appropriate for the selected compact parametrization theorem. Project, mathlib and SimonGMT pins match. The snapshot contains the required definitions and supporting APIs; searches found none of the seven reuse declarations there. All seven are uniquely identified comparator-accepted DAG nodes with byte-identical frozen types and bare names. Their retained dependency closures are accepted, acyclic, and exclude the selected node and its ancestors. Empty proposed sibling dependencies are correct because the relevant antecedents are explicit hypotheses. Each supplied proof was independently checked. A fresh assembly using the seven literal child types proves the exact frozen parent type; the combined accepted implementations also compile successfully. All seven declarations and the assembled parent use only propext, Classical.choice and Quot.sound. The parent binding digest was independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "normalized_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches the prose, including VO, MR and all IMC hypotheses. Vanishing on the zero region, mass equality and positive multiplicity make the discarded carrier null. Restriction therefore preserves the represented current, and MR supplies the final mass equality. The argument is complete and non-circular."
+    },
+    {
+      "key": "piece_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The conditional type matches every stated hypothesis and conclusion. The four cited auxiliary results have matching accepted declarations in the retained dependency closure. Measurable signs define the integer weights; quantitative measure comparison proves their integrability; Gram and area formulas establish the bounds; integrable countable additivity proves HasSum. Every required property is justified."
+    },
+    {
+      "key": "bilipschitz_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the Borel rectifiable-set statement. The regular locus and quantitative differentiability partition yield positive lower Lipschitz bounds. Lusin–Souslin gives Borel images, and first-index disjointification preserves coverage outside the explicitly null exceptional images. The proof also handles n = 0 and n > P."
+    },
+    {
+      "key": "gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The alternating expansion, Cauchy–Binet identity and Cauchy–Schwarz prove the first inequality. The determinant covector proves the orthonormal attainment statement, including the dimension edge cases. The Lean type matches both clauses and correctly uses Matrix.of for the Gram matrix; no pointwise matrix-unit construction occurs."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly allows arbitrary U. Compact support and disjointness place the form's support in the zero region. A finite subordinate smooth partition splits it into valid test forms annihilated by the current, and linearity finishes. No openness assumption on U or circular support theorem is used."
+    },
+    {
+      "key": "mass_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the representation and openness hypotheses. The orientation estimate proves the upper bound. Compact exhaustion, local finiteness, Lusin, continuous extension and norm-preserving smoothing establish the reverse bound with explicit error control. The proof covers arbitrary open W, infinite total mass and the dimension edge cases."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four clauses and their hypotheses match the prose. Density-zero estimates give tangent locality with a common exceptional set for all subspaces. Restriction preserves every representation field and defines a continuous current. Signed multiplicity combination handles differences and cancellation, including n = 0. The orientation bound follows independently from Cauchy–Binet, so the internal proof order is non-circular."
+    }
+  ],
+  "required_changes": []
+}
