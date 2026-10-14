@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3f2e9e8ece527ea4290da515bb2d9655e99872c6e5afe685bb48a2d9367a6d71",
+  "git_delta": {
+    "base_commit": "b5b1e0607e6811120fa0939fb9cc9a95e2f3f7ce",
+    "candidate_commit": "b26985c8121503e681e5d738e667088a1120868d",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcdp_smooth_homotopy",
+    "diff_sha256": "86aa7236207724a0c7dec6a7b2e767c272109e3239ef8ccdf42f2987127aac4e",
+    "source_sha256": "e04b4459028b5117bc595e3d288bf744c90cf82d6a64b37a062432f5f7d4a352",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcdp_smooth_homotopy",
+      "statement": "(∀ (N N' m : ℕ) (Φ : Euclid N → Euclid N') (α : DifferentialForm (Euclid N') m), ContDiff ℝ (⊤ : ℕ∞) Φ → IsSmoothForm α → IsSmoothForm (fun x => (α (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x))) ∧ ∀ (P k : ℕ) (F G : Euclid P → Euclid P) (ω : DifferentialForm (Euclid P) (k + 1)), ContDiff ℝ (⊤ : ℕ∞) F → ContDiff ℝ (⊤ : ℕ∞) G → IsSmoothForm ω → IsSmoothForm (fun x => ∫ t in (0 : ℝ)..1, ((ω (F x + t • (G x - F x))).curryLeft (G x - F x)).compContinuousLinearMap (fderiv ℝ F x + t • (fderiv ℝ G x - fderiv ℝ F x))) ∧ ∀ x, (ω (G x)).compContinuousLinearMap (fderiv ℝ G x) - (ω (F x)).compContinuousLinearMap (fderiv ℝ F x) = exteriorDerivative (fun x' => ∫ t in (0 : ℝ)..1, ((ω (F x' + t • (G x' - F x'))).curryLeft (G x' - F x')).compContinuousLinearMap (fderiv ℝ F x' + t • (fderiv ℝ G x' - fderiv ℝ F x'))) x + ∫ t in (0 : ℝ)..1, ((exteriorDerivative ω (F x + t • (G x - F x))).curryLeft (G x - F x)).compContinuousLinearMap (fderiv ℝ F x + t • (fderiv ℝ G x - fderiv ℝ F x))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
