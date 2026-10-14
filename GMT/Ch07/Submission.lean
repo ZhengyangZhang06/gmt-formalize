@@ -2252,6 +2252,44 @@ theorem Submission.dimred_cs_sos_mt_measure_comparison : ∀ (P j : ℕ) (S₁ S
     inter_eq_right.mpr (hKW.trans hWB), inter_eq_right.mpr hKW, hBK, hWK]
   ring
 
+/-- Box cancellation in the competitor mass bound of the minimality transfer of **Simon Lemma
+7.3.5**.  Let `S₀ = τ(R₀)` and `S₀′ = τ(R₀′)` in `ℝᴾ` with weights `μ₀ = θ₀ Hᵐ⌞M₀` and `μ₀′`, let
+`W₀ ⊆ B` be open with `B` bounded and `spt(S₀′ − S₀) ⊆ W₀`, and let `a, b, e ∈ [0, ∞]` with
+`b ≤ a < ∞`.  If `a μ₀(B) ≤ (a − b) μ₀(B) + b μ₀′(B) + e`, then `b M_{W₀}(S₀) ≤ b M_{W₀}(S₀′) + e`.
+The measure comparison (`dimred_cs_sos_mt_measure_comparison`) gives
+`μ₀′(B) + μ₀(W₀) = μ₀(B) + μ₀′(W₀)`, and `M_{W₀}(S₀) = μ₀(W₀)`, `M_{W₀}(S₀′) = μ₀′(W₀)`
+(`imrep_represents_massOn_eq_measure`).  `closure B` is compact, so `μ₀(B) < ∞` by the local
+integrability of `θ₀`.  Adding `b μ₀(W₀)` to the hypothesis and using `(a − b) + b = a` gives
+`a μ₀(B) + b μ₀(W₀) ≤ a μ₀(B) + (b μ₀′(W₀) + e)`; cancel the finite `a μ₀(B)`. -/
+theorem Submission.dimred_cs_sos_mt_cm_box_cancellation : ∀ (P m : ℕ) (S₀ S₀' : GeometricCurrentOn (univ : Set (Euclid P)) m) (R₀ R₀' : IMRep (univ : Set (Euclid P)) m) (W₀ B : Set (Euclid P)) (a b e : ℝ≥0∞), R₀.Represents S₀ → R₀'.Represents S₀' → IsOpen W₀ → IsOpen B → Bornology.IsBounded B → (S₀' - S₀).support ⊆ W₀ → W₀ ⊆ B → b ≤ a → a ≠ ∞ → a * R₀.measure B ≤ (a - b) * R₀.measure B + b * R₀'.measure B + e → b * S₀.massOn W₀ ≤ b * S₀'.massOn W₀ + e := by
+  intro P m S₀ S₀' R₀ R₀' W₀ B a b e hR₀ hR₀' hW₀ hB hBb hKW hWB hba ha hineq
+  -- measure comparison: `μ₀′(B) + μ₀(W₀) = μ₀(B) + μ₀′(W₀)`
+  have hcmp := Submission.dimred_cs_sos_mt_measure_comparison P m S₀' S₀ R₀' R₀ W₀ B hR₀' hR₀
+    hW₀ hB hKW hWB
+  -- `M_{W₀}(S₀) = μ₀(W₀)` and `M_{W₀}(S₀′) = μ₀′(W₀)`
+  rw [Submission.imrep_represents_massOn_eq_measure P m univ W₀ S₀ R₀ isOpen_univ hR₀ hW₀
+      (subset_univ W₀),
+    Submission.imrep_represents_massOn_eq_measure P m univ W₀ S₀' R₀' isOpen_univ hR₀' hW₀
+      (subset_univ W₀)]
+  -- `μ₀(B) ≤ μ₀(closure B) = ∫_{M₀ ∩ closure B} θ₀ dHᵐ < ∞`, `closure B` being compact
+  have hfin : R₀.measure B ≠ ∞ := by
+    have hc : MeasurableSet (closure B) := isClosed_closure.measurableSet
+    have hint := R₀.locallyIntegrable_mult (closure B) hBb.isCompact_closure (subset_univ _)
+    have hcl : R₀.measure (closure B) =
+        ∫⁻ x in R₀.carrier ∩ closure B, (R₀.mult x : ℝ≥0∞) ∂μHE[m] := by
+      unfold IMRep.measure
+      rw [withDensity_apply _ hc, Measure.restrict_restrict hc, inter_comm]
+    rw [← hcl] at hint
+    exact ne_top_of_le_ne_top hint (measure_mono subset_closure)
+  -- add `b μ₀(W₀)` to the hypothesis and cancel the finite `a μ₀(B)`
+  refine ENNReal.le_of_add_le_add_left (ENNReal.mul_ne_top ha hfin) ?_
+  calc a * R₀.measure B + b * R₀.measure W₀
+      ≤ (a - b) * R₀.measure B + b * R₀'.measure B + e + b * R₀.measure W₀ := by gcongr
+    _ = (a - b) * R₀.measure B + b * (R₀'.measure B + R₀.measure W₀) + e := by ring
+    _ = (a - b) * R₀.measure B + b * (R₀.measure B + R₀'.measure W₀) + e := by rw [hcmp]
+    _ = (a - b + b) * R₀.measure B + (b * R₀'.measure W₀ + e) := by ring
+    _ = a * R₀.measure B + (b * R₀'.measure W₀ + e) := by rw [tsub_add_cancel_of_le hba]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
