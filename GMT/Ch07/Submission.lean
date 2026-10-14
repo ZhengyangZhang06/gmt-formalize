@@ -482,6 +482,24 @@ theorem Submission.cbr_ci_cp_pr_adapted_orthonormalBasis : ∀ (P : ℕ) (V : Su
     exact Or.inr hmem
   · intro hmem
     exact Or.inl hmem
+/-- The determinant `n`-covector of `g₀, …, g_{n-1} ∈ ℝᴾ`: `u ↦ det(⟨g_b, u_a⟩)_{a,b}`, with
+`⟨g_b, u_a⟩` in row `a` and column `b` (for an orthonormal basis `e'`, the dual covectors `e'^I`
+of the projection reduction in White's proof that limits are integer multiplicity, Simon 6.3.11).
+Row `a` is `L u_a` for the linear map `L x = (⟨g_b, x⟩)_b`, so this is the row determinant
+`detRowAlternating` composed with `L`, an alternating `n`-linear map.  It is continuous, the
+determinant being a polynomial in the continuous entries `⟨g_b, u_a⟩`.  For `n = 0` it is the
+constant `1`. -/
+theorem Submission.cbr_ci_cp_pr_inner_det_covector : ∀ (P n : ℕ) (g : Fin n → Euclid P), ∃ γ : Covector (Euclid P) n, ∀ u : Fin n → Euclid P, γ u = Matrix.det (Matrix.of fun a b => inner ℝ (g b) (u a)) := by
+  intro P n g
+  -- the alternating map `u ↦ D(L u₀, …, L u_{n-1})`, `D` the row determinant
+  let f : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ :=
+    Matrix.detRowAlternating.compLinearMap (LinearMap.pi fun b => innerₛₗ ℝ (g b))
+  have hf : ∀ u, f u = Matrix.det (Matrix.of fun a b => inner ℝ (g b) (u a)) := fun _ => rfl
+  -- continuity: a polynomial in the continuous entries `⟨g_b, u_a⟩`
+  have hc : Continuous fun u : Fin n → Euclid P =>
+      Matrix.det (Matrix.of fun a b => inner ℝ (g b) (u a)) := by
+    fun_prop
+  exact ⟨⟨⟨f.toMultilinearMap, hc.congr fun u => (hf u).symm⟩, f.map_eq_zero_of_eq'⟩, hf⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
