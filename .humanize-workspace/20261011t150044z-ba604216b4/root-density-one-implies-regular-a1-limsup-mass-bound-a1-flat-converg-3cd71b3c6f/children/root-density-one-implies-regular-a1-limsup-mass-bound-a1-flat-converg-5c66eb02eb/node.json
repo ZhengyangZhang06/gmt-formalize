@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1.piece_orientation_sign-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1",
+  "depth": 6,
+  "title": "Orientation of an IM representation along a bi-Lipschitz parametrised piece: J_G·ξ∘G = s·(DG e) with a Borel sign s (Simon 6.3.4–3.5; step 3, (B2′), of the selected proof)",
+  "statement": "Let N, k ∈ ℕ and let R = (M, θ, ξ) be an IMRep of degree k in univ ⊆ ℝ^N with Hᵏ(M) < ∞ (Hᵏ = μHE[k]). Let G : ℝᵏ → ℝ^N be L-Lipschitz, B ⊆ ℝᵏ Borel and κ > 0 with κ|a − a'| ≤ |G(a) − G(a')| for a, a' ∈ B, G differentiable with injective derivative at every point of B, and G(B) ⊆ M. Then there is a Borel function s : ℝᵏ → ℝ with s(u) ∈ {1, −1} for every u such that, for Lebesgue-a.e. u ∈ B and every k-covector α on ℝ^N, J_G(u)·ξ(G(u))(α) = s(u)·α(DG(u)e_0, …, DG(u)e_{k−1}), where e_a := EuclideanSpace.single a 1 and J_G(u) := (det[⟨DG(u)e_a, DG(u)e_b⟩]_{a,b})^{1/2}.",
+  "lean_statement": "∀ (N k : ℕ) (R : IMRep (univ : Set (Euclid N)) k) (G : Euclid k → Euclid N) (B : Set (Euclid k)) (L : NNReal) (κ : ℝ), μHE[k] R.carrier ≠ ∞ → LipschitzWith L G → MeasurableSet B → 0 < κ → (∀ a ∈ B, ∀ a' ∈ B, κ * ‖a - a'‖ ≤ ‖G a - G a'‖) → (∀ a ∈ B, DifferentiableAt ℝ G a ∧ Injective (fderiv ℝ G a)) → G '' B ⊆ R.carrier → ∃ s : Euclid k → ℝ, Measurable s ∧ (∀ u, s u = 1 ∨ s u = -1) ∧ ∀ᵐ u ∂(volume.restrict B), ∀ α : Covector (Euclid N) k, Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ G u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ G u (EuclideanSpace.single b (1 : ℝ))))) * R.orient (G u) α = s u * α (fun a => fderiv ℝ G u (EuclideanSpace.single a (1 : ℝ)))",
+  "lean_name": "dor_lmb_fcd_imp_piece_orientation_sign",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.wedge_orientation-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9-a1",
+      "result_commit": "a21680472b6919972de04d02dc3e1395a15d4171",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.wedge_orientation-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-828dc69c10-a1",
+      "result_commit": "6057bc9f0af7e624ac82e56dc0bef1991ba13181",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-5c66eb02eb-a1"
+}
