@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9f60aba332ec77dca74e1cde6c7fab0cb3ee5d0a83ae9637981bec0cc3c9f8c9",
+  "git_delta": {
+    "base_commit": "e2a00c21c7aef3b1c1935c93bbdd10c16b8ba2b8",
+    "candidate_commit": "a961348c8f2ac4e1521e90ac8e437073263fb77b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cc_psf_domain_geometry",
+    "diff_sha256": "d44c0282cd9b8fb306f8c15f27ae4658e39df48f32ffa215e21d1002de2f80e3",
+    "source_sha256": "fe0ce94916c04af79f7ab65fb8d9ba8dd3e4d900d959bfd49448115ca634af8b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cc_psf_domain_geometry",
+      "statement": "∀ (P : ℕ) (x : Euclid P) (lam : ℝ), 0 < lam → (∀ v : Euclid P, v ∈ dilation x lam '' ball 0 2 ↔ ‖x + lam • v‖ < 2) ∧ IsOpen (dilation x lam '' ball 0 2) ∧ (lam ≤ 1 → ‖x‖ ≤ 1 - lam → ball 0 2 ⊆ dilation x lam '' ball 0 2 ∧ ∀ R : ℝ, lam * R ≤ 1 → closedBall 0 R ⊆ dilation x lam '' ball 0 2)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
