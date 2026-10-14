@@ -3366,6 +3366,134 @@ theorem Submission.dtc_bc_lc_sl_c1_tangent : ∀ (P d : ℕ) (g : Euclid d → E
   exact (Submission.codim1_rdo_c1pt_rescaled_area_formula P d g (closedBall c r) z s f
     measurableSet_closedBall (fun a ha => hdiff a (hBU ha)) hinj hreg hs).symm
 
+/-- **Flattening atlas of the regular part of a `C¹` function** (local straightening of `F` by the
+inverse function theorem, and a countable choice of charts by second countability).  Fix `y₀ ∈ V`
+with `DF(y₀) ≠ 0` and a coordinate direction `e_j` with `DF(y₀)e_j ≠ 0`.  Let `Q` be the
+coordinate map of the orthonormal basis obtained from the standard one by swapping `e₀` and `e_j`.
+Then `Φ(y) = Q y + (F(y) − (Q y)₀) e₀` is `C¹` with `Φ(y)₀ = F(y)`, and `DΦ(y₀)` is injective:
+`DΦ(y₀)h = 0` forces `DF(y₀)h = 0` and `Q h ∈ ℝe₀`, so `h ∈ ℝe_j` and hence `h = 0`.  The inverse
+function theorem makes `Φ` a local homeomorphism `e` near `y₀`; on
+`W = source ∩ V ∩ {DΦ invertible}` put `Ω = Φ(W)` and `Θ = Φ⁻¹`, which is `C¹` on `Ω` with
+derivative `DΦ(Θz)⁻¹`, satisfies `Θ(Ω) = W`, and `F(Θz) = Φ(Θz)₀ = z₀`.  Away from the regular
+points take the empty chart; the open sets `Θ(Ω)` cover `{y ∈ V | DF(y) ≠ 0}`, and countably many
+of them suffice. -/
+theorem Submission.dtc_bc_lc_sl_cc_flattening_atlas : ∀ (n : ℕ) (F : Euclid (n + 1) → ℝ) (V : Set (Euclid (n + 1))), IsOpen V → ContDiff ℝ 1 F → ∃ (Ω : ℕ → Set (Euclid (n + 1))) (Θ : ℕ → Euclid (n + 1) → Euclid (n + 1)), (∀ k, IsOpen (Ω k) ∧ ContDiffOn ℝ 1 (Θ k) (Ω k) ∧ InjOn (Θ k) (Ω k) ∧ (∀ z ∈ Ω k, Injective (fderiv ℝ (Θ k) z)) ∧ IsOpen (Θ k '' Ω k) ∧ Θ k '' Ω k ⊆ V ∧ ∀ z ∈ Ω k, F (Θ k z) = z 0) ∧ {y | y ∈ V ∧ fderiv ℝ F y ≠ 0} ⊆ ⋃ k, Θ k '' Ω k := by
+  intro n F V hV hF
+  -- a flattening chart `(Ω, Θ)` around every regular point `y₀` (the empty chart elsewhere)
+  have hchart : ∀ y₀ : Euclid (n + 1), ∃ (Ω : Set (Euclid (n + 1)))
+      (Θ : Euclid (n + 1) → Euclid (n + 1)), (IsOpen Ω ∧ ContDiffOn ℝ 1 Θ Ω ∧ InjOn Θ Ω ∧
+        (∀ z ∈ Ω, Injective (fderiv ℝ Θ z)) ∧ IsOpen (Θ '' Ω) ∧ Θ '' Ω ⊆ V ∧
+        ∀ z ∈ Ω, F (Θ z) = z 0) ∧ (y₀ ∈ V → fderiv ℝ F y₀ ≠ 0 → y₀ ∈ Θ '' Ω) := by
+    intro y₀
+    by_cases hy₀ : y₀ ∈ V ∧ fderiv ℝ F y₀ ≠ 0
+    swap
+    · refine ⟨∅, id, ⟨isOpen_empty, contDiffOn_empty, injOn_empty _, fun z hz => hz.elim,
+        by rw [image_empty]; exact isOpen_empty, by rw [image_empty]; exact empty_subset _,
+        fun z hz => hz.elim⟩, fun h₁ h₂ => (hy₀ ⟨h₁, h₂⟩).elim⟩
+    obtain ⟨hy₀V, hL₀⟩ := hy₀
+    -- a coordinate direction `e_j` with `DF(y₀) e_j ≠ 0`
+    obtain ⟨j, hj⟩ : ∃ j : Fin (n + 1), fderiv ℝ F y₀ (EuclideanSpace.single j 1) ≠ 0 := by
+      by_contra! h
+      exact hL₀ (ContinuousLinearMap.coe_injective
+        ((EuclideanSpace.basisFun (Fin (n + 1)) ℝ).toBasis.ext fun i => by simpa using h i))
+    -- the orthonormal basis `b` with `b 0 = e_j`, and its coordinate map `Q = b.repr`
+    let b := (EuclideanSpace.basisFun (Fin (n + 1)) ℝ).reindex (Equiv.swap 0 j)
+    have hb0 : b 0 = EuclideanSpace.single j 1 := by
+      simp [b, OrthonormalBasis.reindex_apply]
+    let Q : Euclid (n + 1) →L[ℝ] Euclid (n + 1) := b.repr.toContinuousLinearEquiv
+    let p : Euclid (n + 1) →L[ℝ] ℝ := (EuclideanSpace.proj 0).comp Q
+    let e₀ : Euclid (n + 1) := EuclideanSpace.single 0 1
+    -- the flattening map `Φ(y) = Q y + (F y - (Q y)₀) e₀`, so that `Φ(y)₀ = F(y)`
+    let Φ : Euclid (n + 1) → Euclid (n + 1) := fun y => Q y + (F y - p y) • e₀
+    have hΦ0 : ∀ y, Φ y 0 = F y := fun y => by
+      simp [Φ, p, e₀]
+    have hΦ : ContDiff ℝ 1 Φ := Q.contDiff.add ((hF.sub p.contDiff).smul contDiff_const)
+    have hΦd : ∀ y, HasFDerivAt Φ (Q + (fderiv ℝ F y - p).smulRight e₀) y := fun y =>
+      Q.hasFDerivAt.add
+        (((hF.differentiable one_ne_zero y).hasFDerivAt.sub p.hasFDerivAt).smul_const e₀)
+    -- `DΦ(y₀)` is injective: `DΦ(y₀)h = 0` gives `DF(y₀)h = 0` and `Q h ∈ ℝe₀`, so `h ∈ ℝe_j`
+    have hinj : Injective (fderiv ℝ Φ y₀) := by
+      rw [(hΦd y₀).fderiv, injective_iff_map_eq_zero]
+      intro h hh
+      simp only [add_apply, ContinuousLinearMap.smulRight_apply, sub_apply] at hh
+      have hL : fderiv ℝ F y₀ h = 0 := by
+        have := congrArg (fun z : Euclid (n + 1) => z 0) hh
+        simpa [p, e₀] using this
+      have hQh : Q h = Q h 0 • e₀ := by
+        rw [hL, zero_sub, add_eq_zero_iff_eq_neg, ← neg_smul, neg_neg] at hh
+        simpa [p] using hh
+      have hhb : h = Q h 0 • b 0 := by
+        apply b.repr.injective
+        rw [map_smul, b.repr_self]
+        exact hQh
+      have hc : Q h 0 = 0 := by
+        have := congrArg (fderiv ℝ F y₀) hhb
+        rw [map_smul, hL, hb0, smul_eq_mul] at this
+        exact (mul_eq_zero.1 this.symm).resolve_right hj
+      rw [hhb, hc, zero_smul]
+    -- hence `DΦ(y₀)` is invertible and `Φ` is strictly differentiable at `y₀`
+    let A₀ : Euclid (n + 1) ≃L[ℝ] Euclid (n + 1) :=
+      (LinearEquiv.ofInjectiveEndo (fderiv ℝ Φ y₀ : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1))
+        hinj).toContinuousLinearEquiv
+    have hA₀ : (A₀ : Euclid (n + 1) →L[ℝ] Euclid (n + 1)) = fderiv ℝ Φ y₀ := by
+      ext1 h
+      rfl
+    have hstrict : HasStrictFDerivAt Φ (A₀ : Euclid (n + 1) →L[ℝ] Euclid (n + 1)) y₀ := by
+      rw [hA₀]
+      exact hΦ.contDiffAt.hasStrictFDerivAt one_ne_zero
+    -- the inverse function theorem: a local homeomorphism `e` with `e = Φ` and `y₀ ∈ e.source`
+    let e := hstrict.toOpenPartialHomeomorph Φ
+    have he : (e : Euclid (n + 1) → Euclid (n + 1)) = Φ := hstrict.toOpenPartialHomeomorph_coe
+    -- shrink the source to `W = source ∩ V ∩ {DΦ invertible}`; `Ω = Φ(W)`, `Θ = Φ⁻¹`
+    let W := e.source ∩ V ∩ {y | ∃ A : Euclid (n + 1) ≃L[ℝ] Euclid (n + 1),
+      (A : Euclid (n + 1) →L[ℝ] Euclid (n + 1)) = fderiv ℝ Φ y}
+    have hWo : IsOpen W := (e.open_source.inter hV).inter
+      (ContinuousLinearEquiv.isOpen.preimage (hΦ.continuous_fderiv one_ne_zero))
+    have hWs : W ⊆ e.source := fun y hy => hy.1.1
+    have hΘΩ : e.symm '' (e '' W) = W := by
+      rw [image_image, image_congr fun y hy => e.left_inv (hWs hy), image_id']
+    -- at `y ∈ W`, `e` has an invertible derivative `A`
+    have hderiv : ∀ y ∈ W, ∃ A : Euclid (n + 1) ≃L[ℝ] Euclid (n + 1),
+        HasFDerivAt e (A : Euclid (n + 1) →L[ℝ] Euclid (n + 1)) (e.symm (e y)) := by
+      intro y hy
+      obtain ⟨A, hA⟩ := hy.2
+      refine ⟨A, ?_⟩
+      rw [e.left_inv (hWs hy), he, hA]
+      exact (hΦ.differentiable one_ne_zero y).hasFDerivAt
+    refine ⟨e '' W, e.symm, ⟨e.isOpen_image_of_subset_source hWo hWs, ?_, ?_, ?_, ?_, ?_, ?_⟩,
+      fun _ _ => ?_⟩
+    · -- `Θ` is `C¹` at `z = Φ(y)`, since `Φ` is `C¹` at `y` with invertible derivative
+      rintro _ ⟨y, hy, rfl⟩
+      obtain ⟨A, hA⟩ := hderiv y hy
+      refine (e.contDiffAt_symm (e.map_source (hWs hy)) hA ?_).contDiffWithinAt
+      rw [he]
+      exact hΦ.contDiffAt
+    · exact e.symm.injOn.mono (by rintro _ ⟨y, hy, rfl⟩; exact e.map_source (hWs hy))
+    · -- `DΘ(z) = DΦ(Θz)⁻¹` is injective
+      rintro _ ⟨y, hy, rfl⟩
+      obtain ⟨A, hA⟩ := hderiv y hy
+      rw [(e.hasFDerivAt_symm (e.map_source (hWs hy)) hA).fderiv]
+      exact A.symm.injective
+    · rw [hΘΩ]
+      exact hWo
+    · rw [hΘΩ]
+      exact fun y hy => hy.1.2
+    · -- `F(Θz) = Φ(Θz)₀ = z₀`
+      rintro _ ⟨y, hy, rfl⟩
+      rw [e.left_inv (hWs hy), he, hΦ0]
+    · rw [hΘΩ]
+      exact ⟨⟨hstrict.mem_toOpenPartialHomeomorph_source, hy₀V⟩, A₀, hA₀⟩
+  -- countably many charts suffice (second countability); enumerate them
+  choose Ωf Θf hΩf hmem using hchart
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable (fun y => Θf y '' Ωf y)
+    fun y => (hΩf y).2.2.2.2.1
+  obtain ⟨f, hf⟩ := (hTc.insert (0 : Euclid (n + 1))).exists_eq_range (insert_nonempty _ _)
+  refine ⟨fun k => Ωf (f k), fun k => Θf (f k), fun k => hΩf (f k), ?_⟩
+  rintro y ⟨hyV, hy⟩
+  have hyU : y ∈ ⋃ i ∈ T, Θf i '' Ωf i := hTU ▸ mem_iUnion.2 ⟨y, hmem y hyV hy⟩
+  obtain ⟨i, hiT, hyi⟩ := mem_iUnion₂.1 hyU
+  obtain ⟨k, rfl⟩ : i ∈ range f := hf ▸ mem_insert_of_mem _ hiT
+  exact mem_iUnion.2 ⟨k, hyi⟩
 /-- **Gradient of `F` along a `C¹` parametrisation** (step 0(b) of the chart co-area formula).
 Let `ψ : ℝᴺ → ℝᴾ` and `F : ℝᴺ → ℝ` be `C¹`, with `Dψ(y)` injective on the open set `V`.  With
 `M(y) = Dψ(y)* Dψ(y)` and `∇F(y)` the Riesz representative of `DF(y)`, put
@@ -4335,6 +4463,74 @@ theorem Submission.dtc_bc_lc_sl_cc_piece_coarea : ∀ (P n : ℕ) (ψ : Euclid (
   rw [hfun, hIeq, harea (n + 1) ψ V hV hψ.contDiffOn hψinj hDψ Y' hY'V hY' _]
   refine setLIntegral_congr_fun hY' fun y hy => ?_
   simp only [hfdef, hGG y hy]
+
+/-- Co-area formula on the regular part of an embedded `C¹` chart (Simon Ch. 2, 6.3 and 6.6, for
+`F ∘ ψ⁻¹` on `ψ(V)`, where `DF ≠ 0`).  Let `ψ` be `C¹`, injective on the open `V ⊆ ℝ^{n+1}` with
+injective derivative, `F` be `C¹`, `Y' ⊆ V` be Borel with `DF ≠ 0` on `Y'`, and on `Y'` let
+`G(ψ(y)) ∈ Dψ(y)(ℝ^{n+1})` with `⟨G(ψ(y)), Dψ(y)e⟩ = DF(y)e`.  Then for Borel `g ≥ 0`,
+`t ↦ ∫_{ψ(Y' ∩ F⁻¹(t))} g dHⁿ` is Borel and
+`∫_ℝ ∫_{ψ(Y' ∩ F⁻¹(t))} g dHⁿ dt = ∫_{ψ(Y')} |G| g dHⁿ⁺¹`.
+
+Proof sketch:
+* Flattening charts `Wₖ = Θₖ(Ωₖ)` (open, `⊆ V`, `F(Θₖ(z)) = z₀`) cover `{y ∈ V : DF(y) ≠ 0}`,
+  hence `Y'`.
+* `Yₖ = disjointed (Y' ∩ Wₖ)` are Borel, pairwise disjoint, `Yₖ ⊆ Wₖ`, and `⋃ₖ Yₖ = Y'`.
+* The one-chart formula holds on each `Yₖ`.
+* `ψ` is continuous and injective on `V ⊇ Y'`, so it maps Borel subsets of the `Yₖ` to pairwise
+  disjoint Borel sets (Lusin–Souslin).  Hence the slice integral over `ψ(Y' ∩ F⁻¹(t))` is the sum
+  of those over `ψ(Yₖ ∩ F⁻¹(t))`, a Borel function of `t`.
+* Integrate the sum termwise (`lintegral_tsum`) and reassemble the disjoint union
+  `ψ(Y') = ⋃ₖ ψ(Yₖ)` (`lintegral_iUnion`). -/
+theorem Submission.dtc_bc_lc_sl_cc_regular_coarea : ∀ (P n : ℕ) (ψ : Euclid (n + 1) → Euclid P) (V Y' : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (G : Euclid P → Euclid P), IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → MeasurableSet Y' → Y' ⊆ V → (∀ y ∈ Y', fderiv ℝ F y ≠ 0) → (∀ y ∈ Y', G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e, inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → ∀ g : Euclid P → ℝ≥0∞, Measurable g → Measurable (fun t => ∫⁻ x in ψ '' (Y' ∩ F ⁻¹' {t}), g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in ψ '' (Y' ∩ F ⁻¹' {t}), g x ∂μHE[n] = ∫⁻ x in ψ '' Y', ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] := by
+  intro P n ψ V Y' F G hV hψ hψV hDψ hF hY' hY'V hDF hG g hg
+  -- flattening charts `Wₖ = Θₖ(Ωₖ)` covering `{y ∈ V : DF(y) ≠ 0} ⊇ Y'`
+  obtain ⟨Ω, Θ, hΘ, hcover⟩ := Submission.dtc_bc_lc_sl_cc_flattening_atlas n F V hV hF
+  have hY'W : Y' ⊆ ⋃ k, Θ k '' Ω k := fun y hy => hcover ⟨hY'V hy, hDF y hy⟩
+  -- disjoint Borel pieces `Yₖ = disjointed (Y' ∩ Wₖ)` with union `Y'`
+  obtain ⟨Y, hYm, hYsub, hYdisj, hYunion⟩ : ∃ Y : ℕ → Set (Euclid (n + 1)),
+      (∀ k, MeasurableSet (Y k)) ∧ (∀ k, Y k ⊆ Y' ∩ Θ k '' Ω k) ∧ Pairwise (Disjoint on Y) ∧
+        ⋃ k, Y k = Y' :=
+    ⟨disjointed fun k => Y' ∩ Θ k '' Ω k,
+      MeasurableSet.disjointed fun k => hY'.inter (hΘ k).2.2.2.2.1.measurableSet,
+      disjointed_subset _, disjoint_disjointed _,
+      by rw [iUnion_disjointed, ← inter_iUnion, inter_eq_left.mpr hY'W]⟩
+  have hYY' : ∀ k, Y k ⊆ Y' := fun k => hYunion ▸ subset_iUnion Y k
+  -- the one-chart formula on each piece
+  have hpiece : ∀ k, Measurable (fun t => ∫⁻ x in ψ '' (Y k ∩ F ⁻¹' {t}), g x ∂μHE[n]) ∧
+      ∫⁻ t, ∫⁻ x in ψ '' (Y k ∩ F ⁻¹' {t}), g x ∂μHE[n] =
+        ∫⁻ x in ψ '' Y k, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] := by
+    intro k
+    obtain ⟨hΩ, hΘc, hΘi, hDΘ, -, hWV, hFΘ⟩ := hΘ k
+    exact Submission.dtc_bc_lc_sl_cc_piece_coarea P n ψ V (Ω k) (Y k) F (Θ k) G
+      hV hψ hψV hDψ hF hΩ hΘc hΘi hDΘ hWV hFΘ (hYm k) (fun y hy => (hYsub k hy).2)
+      (fun y hy => hG y (hYsub k hy).1) g hg
+  -- `ψ` maps Borel subsets of `Y'` to Borel sets (Lusin–Souslin) ...
+  have himg : ∀ A ⊆ Y', MeasurableSet A → MeasurableSet (ψ '' A) := fun A hA hAm =>
+    hAm.image_of_continuousOn_injOn hψ.continuous.continuousOn (hψV.mono (hA.trans hY'V))
+  -- ... and subsets of the disjoint pieces to disjoint sets
+  have hdisj : ∀ A : ℕ → Set (Euclid (n + 1)), (∀ k, A k ⊆ Y k) →
+      Pairwise (Disjoint on fun k => ψ '' A k) := by
+    intro A hA i j hij
+    refine disjoint_image_image fun a ha b hb hab => ?_
+    obtain rfl := hψV (hY'V (hYY' i (hA i ha))) (hY'V (hYY' j (hA j hb))) hab
+    exact disjoint_left.1 (hYdisj hij) (hA i ha) (hA j hb)
+  -- the slice integral over `ψ(Y' ∩ F⁻¹(t))` is the sum of the piece slice integrals
+  have hslice : ∀ t, ∫⁻ x in ψ '' (Y' ∩ F ⁻¹' {t}), g x ∂μHE[n] =
+      ∑' k, ∫⁻ x in ψ '' (Y k ∩ F ⁻¹' {t}), g x ∂μHE[n] := by
+    intro t
+    have hFt : MeasurableSet (F ⁻¹' {t}) :=
+      (isClosed_singleton.preimage hF.continuous).measurableSet
+    rw [← hYunion, iUnion_inter, image_iUnion]
+    exact lintegral_iUnion
+      (fun k => himg _ (inter_subset_left.trans (hYY' k)) ((hYm k).inter hFt))
+      (hdisj _ fun k => inter_subset_left) g
+  refine ⟨?_, ?_⟩
+  · simp only [hslice]
+    exact Measurable.tsum fun k => (hpiece k).1
+  · simp only [hslice]
+    rw [lintegral_tsum fun k => (hpiece k).1.aemeasurable, tsum_congr fun k => (hpiece k).2,
+      ← lintegral_iUnion (fun k => himg _ (hYY' k) (hYm k)) (hdisj Y fun k => subset_rfl),
+      ← image_iUnion, hYunion]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
