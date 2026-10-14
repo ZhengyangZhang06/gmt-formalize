@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1",
+  "depth": 2,
+  "title": "The weight of a cone current is homogeneous of degree n (parent step 3, first half)",
+  "statement": "Let C ∈ 𝒟_n(ℝ^P) be a cone, i.e. η_{0,λ#}C = C for every λ > 0 (IsConeCurrent C), and let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (IMRep univ n) representing C, with weight μ = θH^n⌞M (R.measure). Then for every λ > 0 and every Borel set A ⊆ ℝ^P, μ(λA) = λ^n μ(A), where λA = {λa : a ∈ A}.",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsConeCurrent C → R.Represents C → ∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → R.measure ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * R.measure A",
+  "lean_name": "cone_current_imrep_measure_smul_image",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-a1"
+}

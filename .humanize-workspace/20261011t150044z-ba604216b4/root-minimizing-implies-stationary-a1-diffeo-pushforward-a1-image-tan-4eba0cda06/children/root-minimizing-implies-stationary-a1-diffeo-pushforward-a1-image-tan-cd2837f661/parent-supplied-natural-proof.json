@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c)",
+        "rg -n 'approxTangentPlane' project/GMT --glob '*.lean'",
+        "rg -n 'AntilipschitzWith|hausdorffMeasure_image_le|image_of_continuousOn_injOn|ae_imp_of_ae_restrict' project/GMT --glob '*.lean' (no match)",
+        "rg -n 'dpf_itt|approxTangentPlane_eq|ae_of_ae_pieces|bilipschitz_image' project --glob '*.lean' (no match)",
+        "rg -n 'euclideanHausdorffMeasure' mathlib/Mathlib --glob '*.lean'",
+        "rg -n 'hausdorffMeasure_image_le' mathlib/Mathlib --glob '*.lean' -A6",
+        "sed -n 60,240p mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean (le_mul_dist, injective, isBounded_preimage)",
+        "rg -n 'theorem MeasurableSet.image_of_continuousOn_injOn|theorem ae_imp_of_ae_restrict|theorem ae_restrict_iff|theorem measure_union_null|theorem measure_iUnion_null_iff|theorem ae_iff' mathlib/Mathlib --glob '*.lean'",
+        "rg -n 'theorem toLinearMap_comp|theorem coe_comp|theorem range_comp |theorem fderiv_comp |theorem isCompact_of_isClosed_isBounded|theorem image_inter_preimage' in ContinuousLinearMap/Basic.lean, Submodule/Range.lean, FDeriv/Comp.lean, MetricSpace/Bounded.lean, Data/Set/Image.lean",
+        "grep -n 'def CountablyRectifiable|def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|def blowUpMap' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "python3 -I scan of dag.json (509 nodes) and all nodes/*/decomposition-v*.json for lean names and statements matching approxTangent|Lipschitz|null|bilipschitz|antilipschitz and for dpf_* names",
+        "grep -c dpf_itt dag.json DAG.md dag.mmd issue-workers.json github-workflow.json (all 0); git for-each-ref | grep image-tan; git diff --stat problems/ch07 <node branch> -- GMT (no Lean changes)",
+        "python3 -I: importlib-load verifier/gmt-compare.py, contract_scope(GMT/Ch07/Contract.lean, 'GMT.Ch07.main_theorem')",
+        "lake env lean /tmp/itt-decomp/Types.lean; lake env lean /tmp/itt-decomp/Assembly.lean; lake env lean /tmp/itt-decomp/Children.lean",
+        "lake env lean /tmp/itt-decomp-final/Final.lean (#print axioms for the 4 children and assembly_conditional)",
+        "lake env lean /tmp/itt-decomp-final2/D.lean (#check @dite_eq_left; proof via dite_eq_left)",
+        "independent reviewer subagent: re-ran Final.lean, byte-compared statements with dag.json, simulated the comparator NodeSolution step, and probed the volume instance and CLM coercions in /tmp/itt-review-qtYkT3/"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Range.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Image.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-4eba0cda06/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-4eba0cda06/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v3.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-tangent-projection-measurable-a1/decomposition-audit-v4.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/itt-decomp/Types.lean",
+        "/tmp/itt-decomp/Assembly.lean",
+        "/tmp/itt-decomp/Children.lean",
+        "/tmp/itt-decomp-final/Final.lean",
+        "/tmp/itt-decomp-final2/D.lean"
+      ],
+      "conclusion": "The snapshot holds no proof of the selected statement or of any proposed child. In the project, approxTangentPlane appears only in its Ch07 definition (Contract/Submission line 259) and in the unrelated 4-argument Ch03 variant; no lemma relates it to HasApproximateTangentSpaceAt, and project/GMT has no antilipschitz, Hausdorff-image or a.e.-transfer lemma. The DAG has no node with a dpf_itt_ name or any of the four child types. One proposal in an accepted leaf node's decomposition (mis_tpm_approxTangentPlane_eq_of_hasApproxTangent) has the same type as chosen_tangent_plane but was never instantiated, so a new name is used.\nEvery library fact the child proofs cite exists in the pinned Mathlib 25730c7c or SimonGMT 2b36630 with compatible hypotheses:\n- MeasurableSet.image_of_continuousOn_injOn (Polish/Basic.lean:821);\n- AntilipschitzWith.injective, le_mul_dist and isBounded_preimage;\n- Metric.isCompact_of_isClosed_isBounded and Set.image_inter_preimage;\n- LipschitzWith.hausdorffMeasure_image_le (Hausdorff.lean:745);\n- Measure.euclideanHausdorffMeasure_def, addHaarScalarFactor_volume_hausdorffMeasure_ne_zero and EuclideanSpace.euclideanHausdorffMeasure_eq_volume;\n- ae_imp_of_ae_restrict (Restrict.lean:619, no measurability needed), ae_restrict_iff', measure_iUnion_null and measure_union_null;\n- fderiv_comp, ContinuousLinearMap.coe_comp (function version) and toLinearMap_comp (linear-map version), LinearMap.range_comp;\n- dite_eq_left (dif_pos is deprecated);\n- SimonGMT HasApproximateTangentSpaceAt.unique (Rectifiable.lean:232).\nAll four child types elaborate in the comparator's replayed GMT.Ch07 scope. The parent's exact frozen type is proved from the two sibling types plus the four children using only propext, Classical.choice and Quot.sound, and each child was proved in scratch Lean using only those same axioms."
+    }
+  ],
+  "proof": "Source: step 2 of the parent proof (the identification Q(F_i b) = range DF_i(b) by Exists.choose_spec and uniqueness), i.e. Simon Ch. 3, Remark 1.5(1) (uniqueness of the approximate tangent space), applied to the contract's choice function. No hypothesis on M, x, n or P is used.\n1. Definition. In GMT/Ch07/Contract.lean, approxTangentPlane n M x is defined (classically) as h.choose if h : ∃ Q', HasApproximateTangentSpaceAt n M x Q' holds, and as ⊥ otherwise.\n2. The condition holds. From hQ : HasApproximateTangentSpaceAt n M x Q we get h := ⟨Q, hQ⟩ : ∃ Q', HasApproximateTangentSpaceAt n M x Q'. Unfolding approxTangentPlane and taking the positive branch of the dependent if-then-else (rw [dite_eq_left h]; dite_eq_left is the current name of the deprecated dif_pos) gives approxTangentPlane n M x = h.choose.\n3. The chosen plane is an approximate tangent plane. By Exists.choose_spec, HasApproximateTangentSpaceAt n M x h.choose.\n4. Uniqueness. SimonGMT's Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt.unique (Simon Ch. 3, Remark 1.5(1)) states: if HasApproximateTangentSpaceAt n M x Q₁ and HasApproximateTangentSpaceAt n M x Q₂, then Q₁ = Q₂. (Its proof: the limits ∫_{Q₁} f dH^n and ∫_{Q₂} f dH^n of the same net coincide for every f ∈ C_c, so H^n⌞Q₁ = H^n⌞Q₂ as regular measures, and the support of H^n⌞Q_k is Q_k because finrank Q_k = n.) It needs no further hypotheses on Euclid P. Applied to step 3 and hQ it gives h.choose = Q.\n5. By steps 2 and 4, approxTangentPlane n M x = Q.",
+  "key_steps": [
+    "The hypothesis provides the witness ⟨Q, hQ⟩ of the existential in approxTangentPlane, so the definition returns the chosen plane h.choose.",
+    "Exists.choose_spec: h.choose is an approximate tangent plane of M at x.",
+    "HasApproximateTangentSpaceAt.unique (Simon 3.1.5(1)) identifies h.choose with Q."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}

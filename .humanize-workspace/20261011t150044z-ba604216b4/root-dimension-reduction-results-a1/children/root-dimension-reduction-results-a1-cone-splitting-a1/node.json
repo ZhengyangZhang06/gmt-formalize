@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1",
+  "parent_id": "root.dimension_reduction_results-a1",
+  "depth": 2,
+  "title": "Invariant minimizing cones split off their spine (Simon Lemma 7.3.5 with the invariance and density step)",
+  "statement": "Let P, n ∈ ℕ, let S ∈ 𝒟_n(ℝ^P) be minimizing in ℝ^P (IsMinimizingIn S univ) with ∂S = 0, and let L ⊆ ℝ^P be a linear subspace with d := dim L < n. Assume the density function of S is invariant under the maps w ↦ y + λw (y ∈ L, λ > 0): whenever HasMassDensity S w θ, also HasMassDensity S (y + λw) θ. Then: (a) S is a cone (IsConeCurrent S); (b) S is invariant under translations by L: S(ω(· + v)) = S(ω), i.e. currentEval (blowUp S (−v) 1) ω = S ω, for v ∈ L and ω ∈ 𝒟^n(ℝ^P); (c) there is S₀ ∈ 𝒟_{n−d}(ℝ^P) which is minimizing in ℝ^P, has ∂S₀ = 0, is a cone, has spt S₀ ⊆ L^⊥, and satisfies, for all t ∈ L and y ∈ L^⊥: t + y ∈ spt S ⟺ y ∈ spt S₀, and HasMassDensity S (t + y) θ ⟺ HasMassDensity S₀ y θ for every θ ∈ ℝ. (For d ≥ 1, S = [[L]] × S₀.)",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), Module.finrank ℝ L < n → IsMinimizingIn S univ → BoundaryVanishes S → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → IsConeCurrent S ∧ (∀ v ∈ L, ∀ ω : TestFormOn (univ : Set (Euclid P)) n, currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω) ∧ ∃ S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L), IsMinimizingIn S₀ univ ∧ BoundaryVanishes S₀ ∧ IsConeCurrent S₀ ∧ S₀.support ⊆ (Lᗮ : Set (Euclid P)) ∧ (∀ t ∈ L, ∀ y ∈ Lᗮ, (t + y ∈ S.support ↔ y ∈ S₀.support)) ∧ ∀ t ∈ L, ∀ y ∈ Lᗮ, ∀ θ : ℝ, (HasMassDensity S (t + y) θ ↔ HasMassDensity S₀ y θ)",
+  "lean_name": "dimred_invariant_cone_splitting",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-a1"
+}

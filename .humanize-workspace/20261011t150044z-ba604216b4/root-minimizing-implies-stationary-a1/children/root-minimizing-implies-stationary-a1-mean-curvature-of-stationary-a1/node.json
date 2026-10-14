@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.mean_curvature_of_stationary-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "depth": 2,
+  "title": "Simon Ch. 4, 2.7 and 3.14: stationarity in N ∩ U gives locally bounded generalized mean curvature",
+  "statement": "Let U ⊆ ℝ^P be open, N an embedded C² d-dimensional submanifold with (N̄ ∖ N) ∩ U = ∅, and R = (M, θ, ξ) an integer multiplicity triple in U with H^n(M ∖ N) = 0 whose varifold v(M, θ) is stationary in N ∩ U (R.IsStationaryAlong N). Then v(M, θ) has a generalized mean curvature H in U (Simon Ch. 4, 3.14): H is μ_V-measurable, bounded on every compact subset of U, and ∫_M θ div_M X dH^n = −∫ X·H dμ_V for every X ∈ C¹_c(U; ℝ^P), μ_V = θH^n⌞M (R.HasLocallyBoundedMeanCurvature).",
+  "lean_statement": "∀ (P n d : ℕ) (U N : Set (Euclid P)) (R : IMRep U n), IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → μHE[n] (R.carrier \\ N) = 0 → R.IsStationaryAlong N → R.HasLocallyBoundedMeanCurvature",
+  "lean_name": "meanCurvature_bounded_of_stationaryAlong",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1",
+    "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1",
+    "root.minimizing_implies_stationary-a1.tangent_projection_extension-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.tangent_projection_extension-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1-a1"
+}

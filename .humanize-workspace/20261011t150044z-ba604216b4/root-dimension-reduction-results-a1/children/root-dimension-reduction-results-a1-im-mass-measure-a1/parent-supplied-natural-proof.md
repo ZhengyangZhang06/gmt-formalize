@@ -1,0 +1,80 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.im_mass_measure-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 6, 2.4–2.8 and Remark 3.2(3) (chapter-06.txt lines 224–300 and 733–775), which state these facts as evident; this is the identity "μ_S = R.measure for every representation R, M_W(S) = μ_S(W), spt S = spt μ_S" used throughout the parent proof (its Notation paragraph). Notation: H^n := μHE[n]; for an n-covector α on ℝ^P, |α| := covectorEuclideanNorm α = (Σ_I α(e_{i_1}, …, e_{i_n})²)^{1/2}, the sum over strictly increasing multi-indices I = (i_1 < ⋯ < i_n) (for n = 0, |α| = |α()|); dx^I is the dual basis covector.
+1. (Pointwise duality.) Let τ_1, …, τ_n ∈ ℝ^P be orthonormal and let α be an n-covector. By multilinearity and alternation, α(τ_1, …, τ_n) = Σ_I α(e_I)·det(τ^I), where τ^I is the n × n matrix (⟨e_{i_a}, τ_b⟩)_{a,b}. By the Cauchy–Binet formula, Σ_I det(τ^I)² = det(τᵀτ) = det(I_n) = 1. Hence |α(τ_1, …, τ_n)| ≤ |α| by the Cauchy–Schwarz inequality, with equality for α_τ := Σ_I det(τ^I) dx^I, which satisfies |α_τ| = 1 and α_τ(τ_1, …, τ_n) = 1. (For n = 0 both sides equal |α()| and α_τ := 1.)
+2. (Consequences for R.) By the field `orients` of IMRep, for H^n-a.e. x ∈ M there are an orthonormal family τ(x) and a sign σ(x) ∈ {±1} with ξ(x)(α) = σ(x)·α(τ(x)) for every n-covector α (IsUnitOrientationOf). Hence, for H^n-a.e. x ∈ M, |ξ(x)(α)| ≤ |α| for all α. Moreover β(x) := Σ_I ξ(x)(dx^I)·dx^I equals σ(x)·α_{τ(x)} for H^n-a.e. x ∈ M, so |β(x)| = 1 and ξ(x)(β(x)) = 1 there. The coefficients ξ(·)(dx^I) of β are H^n⌞M-measurable because ξ is AEStronglyMeasurable for H^n⌞M (field aestronglyMeasurable_orient); as μ_R ≪ H^n⌞M, β is μ_R-measurable.
+3. (Radon property.) μ_R is a Borel measure on ℝ^P with μ_R(ℝ^P ∖ U) = 0 (M ⊆ U) and μ_R(K) = ∫_{M∩K} θ dH^n < ∞ for every compact K ⊆ U (field locallyIntegrable_mult). Since U is an open subset of ℝ^P, hence σ-compact, locally compact and second countable, the restriction of μ_R to U is a locally finite Borel measure on U and therefore outer regular by open sets and inner regular by compact sets on Borel subsets of U.
+4. (Upper bound in (a).) Let W ⊆ U be open and let ω be admissible for M_W(T) (ω ∈ 𝒟^n(U), tsupport ω ⊆ W, |ω| ≤ 1 everywhere). By R.Represents T and step 2, T(ω) = ∫_M θ·ξ(ω) dH^n ≤ ∫_M θ·|ω| dH^n ≤ ∫_{M∩W} θ dH^n = μ_R(W), because ω vanishes off W. Taking ofReal and the supremum, M_W(T) ≤ μ_R(W).
+5. (Lower bound in (a).) Let W ⊆ U be open, K ⊆ W compact and ε > 0. By step 3 choose an open V with K ⊆ V, closure V compact and contained in W, and μ_R(V ∖ K) < ε. By Lusin's theorem (for the finite Radon measure μ_R⌞V and the μ_R-measurable map β of step 2, with values in the finite-dimensional space Λ^n of n-covectors) choose a compact K' ⊆ K with μ_R(K ∖ K') < ε and β|_{K'} continuous. Extend β|_{K'} to a continuous map ℝ^P → Λ^n (Tietze, coordinatewise) and compose with the retraction r(α) := α / max(1, |α|) (continuous, |r(α)| ≤ 1, r = id on the closed unit ball) to obtain a continuous β̃ with |β̃| ≤ 1 and β̃ = β on K'. Take χ ∈ C_c(V; [0, 1]) with χ = 1 on K, and put γ := χ·β̃ (continuous, |γ| ≤ 1, compact support in V). Let γ_j := γ * ϱ_{1/j} be the coordinatewise convolution with a standard mollifier. For all large j, γ_j is C^∞, tsupport γ_j is a compact subset of V ⊆ W ⊆ U, |γ_j| ≤ 1 everywhere (Jensen's inequality for the convex function |·|), and γ_j → γ uniformly. So γ_j is admissible for M_W(T) and M_W(T) ≥ ofReal T(γ_j). By dominated convergence (dominating function θ·1_{closure V}, integrable by step 3), T(γ_j) = ∫_M θ·ξ(γ_j) dH^n → ∫_M θ·ξ(γ) dH^n. On K', ξ(γ) = ξ(β) = 1 μ_R-a.e.; on V ∖ K', |ξ(γ)| ≤ 1; off V, γ = 0. Hence ∫_M θ·ξ(γ) dH^n ≥ μ_R(K') − μ_R(V ∖ K') ≥ (μ_R(K) − ε) − 2ε, since μ_R(V ∖ K') ≤ μ_R(V ∖ K) + μ_R(K ∖ K') < 2ε. Therefore M_W(T) ≥ μ_R(K) − 3ε for every compact K ⊆ W and every ε > 0, and inner regularity of μ_R on the open set W (step 3) gives M_W(T) ≥ μ_R(W) (also when μ_R(W) = ∞). Together with step 4, M_W(T) = μ_R(W).
+6. ((b), "if".) Let x ∈ U with μ_R(B_ε(x)) ≠ 0 for every ε > 0, and suppose x ∉ spt T = U ∖ zeroRegion(T). Then x ∈ W for some open W with closure W compact and contained in U on which T vanishes, i.e. T(ω) = 0 whenever tsupport ω ⊆ W. Every admissible value in the definition of M_W(T) is ofReal 0 = 0 (and the zero form is admissible), so M_W(T) = 0, and by (a) μ_R(W) = 0. For ε > 0 so small that B_ε(x) ⊆ W we get μ_R(B_ε(x)) = 0, a contradiction. Hence x ∈ spt T.
+7. ((b), "only if".) Let x ∈ spt T and suppose μ_R(B_ε(x)) = 0 for some ε > 0. Choose ε' ∈ (0, ε) with closedBall x ε' ⊆ U (U is open). W := B_{ε'}(x) is open, its closure closedBall x ε' is compact and contained in U, and for every ω ∈ 𝒟^n(U) with tsupport ω ⊆ W, step 2 gives |T(ω)| ≤ ∫_{M∩W} θ·|ω| dH^n ≤ (sup_x |ω(x)|)·μ_R(W) = 0. So T vanishes on W, W belongs to the family defining zeroRegion(T), x ∈ zeroRegion(T), i.e. x ∉ spt T: a contradiction. Hence μ_R(B_ε(x)) ≠ 0 for every ε > 0.
+8. ((c).) Let R' be another representation of T. By (a) applied to R and to R', R'.measure(W) = M_W(T) = R.measure(W) for every open W ⊆ U. Both measures vanish on ℝ^P ∖ U (both carriers lie in U) and are finite on every open W whose closure is a compact subset of U (step 3). The open subsets of U with compact closure in U form a π-system (closed under finite intersections) generating the Borel σ-algebra of U (every open subset of U is a countable union of them), and U is the union of an increasing sequence of them on which both measures are finite. By the uniqueness theorem for measures agreeing on such a generating π-system, R'.measure(A ∩ U) = R.measure(A ∩ U) for every Borel A, hence R'.measure = R.measure.
+
+## Key steps
+
+1. Cauchy–Binet duality: |ξ(x)(α)| ≤ |α| for the unit simple orientation ξ(x), with equality for the dual covector β(x).
+2. Upper bound M_W(T) ≤ μ_R(W) directly from the representation.
+3. Lower bound by Lusin, Tietze extension, retraction to the unit ball, mollification and inner regularity of the Radon measure μ_R.
+4. Support: T vanishes on W ⇔ M_W(T) = 0 ⇔ μ_R(W) = 0, giving spt T = spt μ_R inside U.
+5. Representation independence: two representations agree on open subsets of U, hence (π-system uniqueness, σ-finiteness on U) everywhere.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD (compared with manifest.json)`
+- `grep -n 'μHE\|euclideanHausdorffMeasure' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; rg -n addHaarScalarFactor_volume_hausdorffMeasure_ne_zero (same file)`
+- `grep -rn 'theorem massOn_le_liminf\|theorem boundary_affinePushforward\|exp_normalizedBallMass_monotoneOn\|theorem bvVariationOn_le_liminf_of_locallyL1\|theorem cone_simonsDefect_lower_bound' simongmt/Poincare`
+- `grep -n 'def support\|zeroRegion\|def massOn' simongmt/Poincare/SimonGMT/Chapter06/*.lean`
+- `grep -rn dimred --include=*.lean GMT .lake/packages/simongmt/Poincare; grep -c dimred dag.json; grep -rln dimred_ .swarm-worktrees/*/gmt-ch07/GMT (no match anywhere)`
+- `python3 inspection of dag.json: sibling lean_statements (abstract_dimension_reduction, density_and_tangent_cones, density_one_implies_regular, compactness_of_minimizing_currents, minimizing_implies_stationary) and similar lemma nodes in other branches (dtc_mass_eq_measure, dor_imrep_massOn_eq_measure_and_support, dtc_dim_zero_eq_zero, imrep_measure_eq_of_represents_same_current, rsd_massOn_eq_measure)`
+- `lean -R /tmp/dr-v2-check/src /tmp/dr-v2-check/src/CheckV2Types.lean (private olean of GMT.Ch07.Submission; 12 child types declared as Submission.X in namespace GMT.Ch07 with the contract opens; assembly ⟨A, B, C⟩; #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/AppendixB/ConeDefect.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1/decomposition-review-receipt-v1.json`
+- `/tmp/dr-v2-check/src/CheckV2Types.lean`
+
+Pins match. The snapshot has project b4d606d (equal to workspace HEAD), mathlib 25730c7c and simongmt 2b36630. The snapshot contract is byte-identical to the workspace Contract.lean and Submission.lean; its only sorry is the frozen main_theorem.
+
+Normalization (decides correction R1). Mathlib defines μHE[d] = addHaarScalarFactor(volume, μH[d]) • μH[d] (Measure.lean, lines 68–101). The scalar is in ℝ≥0 and nonzero (addHaarScalarFactor_volume_hausdorffMeasure_ne_zero), so μ_A = ϑ_A·μHE[n] gives ∫_K ϑ_A dμH[n] = c_n⁻¹·μ_A(K).
+
+SimonGMT definitions used:
+- massOn is the sSup over admissible forms with Euclidean coefficient norm ≤ 1 (Mass.lean).
+- support = U \ zeroRegion (CurrentLocalEquality.lean, lines 108–117).
+- WeaklyConvergesOn.massOn_le_liminf (Mass.lean:100) gives the lower semicontinuity used for the new mass bounds.
+
+Other cited library facts exist:
+- GeometricCurrentOn.boundary_affinePushforward (AffineCurrentPushforward.lean:188);
+- HasGeneralizedMeanCurvatureIn.exp_normalizedBallMass_monotoneOn (Chapter04/MeanCurvature.lean:361);
+- bvVariationOn_le_liminf_of_locallyL1 (Chapter02/BV.lean:225);
+- cone_simonsDefect_lower_bound (AppendixB/ConeDefect.lean:228).
+
+The library provides none of the following for the contract's IMRep currents: the mass–measure identity, product currents, Federer–Fleming compactness, or Appendix A.4. These are children or sibling prerequisites.
+
+Lean check. All twelve child types elaborate after import GMT.Ch07.Submission, in namespace GMT.Ch07 with the contract opens, with only the stub sorry warnings. The assembly ⟨A, B, C⟩ proves IntegerDensityAndTangentPlanes ∧ SingularSetSmallWhereDensityBelowTwo ∧ CodimensionOneRegularity, and the conditional assembly depends only on propext, Classical.choice and Quot.sound.
+
+Names. No dimred_ identifier occurs in the workspace, SimonGMT, any speculative worktree or dag.json. Similar lemmas in other branches have different types and names, so there is neither reuse nor collision.
