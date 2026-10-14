@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "14ae9dfd0cd8b60a964a691f9376d6beb0d32dda607cf1b2e0364719ab58831e",
+  "git_delta": {
+    "base_commit": "1767386d10f6dbaa628cc519510c46bd3b6d8d60",
+    "candidate_commit": "c9157a9bcd5b4c6bcb1251ed9d3944eff9c6b113",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dtsd_gr_liminf_slice_le_deriv",
+    "diff_sha256": "bb306e7e439235dbe7080396ed245da7805d4d8c553ec30c2fd08846e8c8a501",
+    "source_sha256": "44209f35079e48affaccf480dcd2351038291b6496a41f338a6e87be7d70c471",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dtsd_gr_liminf_slice_le_deriv",
+      "statement": "∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) (t : ℝ), IsFiniteMeasure μ → Measurable f → DifferentiableAt ℝ (fun s : ℝ => (μ {x | f x < s}).toReal) t → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | t - h < f x ∧ f x < t}) (𝓝[>] 0) ≤ ENNReal.ofReal (deriv (fun s : ℝ => (μ {x | f x < s}).toReal) t)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
