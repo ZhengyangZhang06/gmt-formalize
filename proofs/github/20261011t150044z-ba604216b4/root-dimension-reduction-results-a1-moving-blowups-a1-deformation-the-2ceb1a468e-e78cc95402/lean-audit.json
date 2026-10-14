@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "630812615cae582f6b2f2e0f1dc57db05196fe0a3772061398aefd74e8edbe6d",
+  "git_delta": {
+    "base_commit": "521da8a64e606cdfdc28047c564a556a319c7e1d",
+    "candidate_commit": "27f05e0b2d1acad0a301cf559365903f241b3c17",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_cbm_sp_cube_geometry",
+    "diff_sha256": "3ad7d1716cd5ee738ca9dd801050a67495c0a83a228f6397d9d343f773cb77be",
+    "source_sha256": "e9be07082b3abae7b64fbb35818830bbcd252834c561d4e16d3632533513fb6b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_cbm_sp_cube_geometry",
+      "statement": "∀ (n : ℕ) (δ : ℝ), 0 ≤ δ → Convex ℝ {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ} ∧ MeasurableSet {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ} ∧ (∀ x ∈ {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ}, ∀ y ∈ {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖x - y‖ ≤ Real.sqrt n) ∧ volume {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ} ≤ 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
