@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "65227813541a7b2345462d2eb6bcbe17995fda862345ad804a2e8980c92caf22",
+  "git_delta": {
+    "base_commit": "377372ed82a64c8200b68c8f1d7e667f269f255b",
+    "candidate_commit": "ce5ad406ee0378748bd68ea86583609bee5485ff",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_imp_parametric_rep",
+    "diff_sha256": "88277bb3a25d6c1f102567c01adbd3f5a473fe51b981a6026eee08f9490c63a2",
+    "source_sha256": "69e30443ec78931a2c99a33005cca436908ca4749e0b693f67f9390b9e83e120",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_imp_parametric_rep",
+      "statement": "∀ (N k : ℕ) (R : IMRep (univ : Set (Euclid N)) k), R.measure univ ≠ ∞ → ∃ (G : ℕ → Euclid k → Euclid N) (B : ℕ → Set (Euclid k)) (w : ℕ → Euclid k → ℝ), (∀ i, ∃ L : NNReal, LipschitzWith L (G i)) ∧ (∀ i, MeasurableSet (B i)) ∧ (∀ i, ∀ u ∈ B i, DifferentiableAt ℝ (G i) u) ∧ (∀ i, Measurable (w i)) ∧ (∀ i u, ∃ z : ℤ, w i u = z) ∧ (∀ i, ∀ u ∈ B i, w i u ≠ 0) ∧ (∀ i, IntegrableOn (w i) (B i)) ∧ ∑' i, ∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ (G i) u (EuclideanSpace.single b (1 : ℝ)))))) ≤ R.measure univ ∧ (∀ γ : Euclid N → Covector (Euclid N) k, Continuous γ → (∃ C : ℝ, ∀ x, ‖γ x‖ ≤ C) → HasSum (fun i => ∫ u in B i, w i u * γ (G i u) (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ)))) (R.action γ)) ∧ ∀ p : Euclid N → Prop, (∀ᵐ x ∂(μHE[k].restrict R.carrier), p x) → ∀ i, ∀ᵐ u ∂(volume.restrict (B i)), p (G i u)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
