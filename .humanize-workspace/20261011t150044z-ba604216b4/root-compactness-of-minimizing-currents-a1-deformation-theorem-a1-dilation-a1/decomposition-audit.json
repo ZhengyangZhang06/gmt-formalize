@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def dilation|structure IMRep|def IMRep.action|def IsIntegerMultiplicity|instance : Sub",
+        "affinePullbackForm|affinePushforward|boundary_affinePushforward",
+        "euclideanHausdorffMeasure_smul₀",
+        "restrict_map",
+        "MeasurableEmbedding.lintegral_map",
+        "MeasurableEmbedding.integral_map|theorem integral_const_mul|theorem integral_smul_measure",
+        "aestronglyMeasurable_map_iff|theorem AEStronglyMeasurable.smul_measure",
+        "ae_ennreal_smul_measure_iff",
+        "map_smul_univ",
+        "cmcdt_dil_pullback_testForm|cmcdt_dil_mass_eq|cmcdt_dil_support_eq|cmcdt_dil_isIntegerMultiplicity|euclid_hausdorff_dilation_change_of_variables|dtc_approxTangent_dilation",
+        "git show 22204a6d923d28f1c362798e3e4f529019c709a5:GMT/Ch07/Submission.lean",
+        "git show 2b0c51405c3f7d305798214e74d0447c1d210ae1:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcdt-dilation-independent-audit-bg1h5t3e/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcdt-dilation-independent-audit-bg1h5t3e/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcdt-dilation-independent-audit-bg1h5t3e/FullChain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcdt-dilation-independent-audit-bg1h5t3e/ReusedCandidates.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Module.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-dilation-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-dilation-a1/decomposition-v2.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-862a12a643/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1/isolated-comparator-result.json",
+        "GMT/Scratch/cmcdt_dilation_decomposition/FullChain.lean",
+        "/tmp/cmcdt-dilation-independent-audit-bg1h5t3e/Types.lean",
+        "/tmp/cmcdt-dilation-independent-audit-bg1h5t3e/Assembly.lean",
+        "/tmp/cmcdt-dilation-independent-audit-bg1h5t3e/FullChain.log",
+        "/tmp/cmcdt-dilation-independent-audit-bg1h5t3e/ReusedCandidates.log"
+      ],
+      "conclusion": "The split is appropriate for the selected cmcdt_dilation_pushforward contract. Dependencies are acyclic and exactly match the supplied proofs. The affine push-forward construction and child conclusions establish all six parent properties, including degree zero. All frozen child types independently elaborate as propositions; scalar-action instances and pointwise current subtraction were checked. All names are bare identifiers. The four new names are unreserved; both reused declarations have identical frozen types, compatible definitions and passed comparators. No proposed declaration was found in the reference libraries. Snapshot revisions and relevant installed sources match. Independent compilation of the supplied full chain, parent assembly from child hypotheses, and exact reused candidate proofs succeeded; axiom checks report only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pullback_testform",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches all stated hypotheses and conclusions. Properness supplies the test-form witness, and multilinearity proves the pointwise formula, including the empty product at degree zero. The inferred scalar actions are the intended ones."
+    },
+    {
+      "key": "mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both normalized pull-back constructions are admissible and justify the two mass inequalities. ENNReal supremum and multiplication arguments cover infinite mass without an unstated finiteness assumption. Only the declared pullback_testform dependency is used."
+    },
+    {
+      "key": "support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof derives the inverse evaluation relation, transports relatively compact open zero regions in both directions, and takes complements under the dilation bijection. This proves exact support equality without circular reliance on support scaling."
+    },
+    {
+      "key": "hausdorff_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable-embedding APIs justify restriction and both integral identities for arbitrary sets and integrands. Positivity gives the correct finite, nonzero inverse scaling factor. The reused declaration is comparator-accepted with exactly the proposed frozen type."
+    },
+    {
+      "key": "approx_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The blow-up image identity and positive reparameterization of the right-hand neighborhood filter prove the precise tangent-space predicate. Applying the result with center zero and scale lam⁻¹ supplies the parent's required dilation. Reuse preserves the accepted frozen type exactly."
+    },
+    {
+      "key": "integer_multiplicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies every IMRep field, including rectifiability, local integrability, a.e. strong measurability and tangent orientation. Change of variables and covector linearity then prove the representation identity. All three declared dependencies are used correctly, and the argument includes degree zero."
+    }
+  ],
+  "required_changes": []
+}
