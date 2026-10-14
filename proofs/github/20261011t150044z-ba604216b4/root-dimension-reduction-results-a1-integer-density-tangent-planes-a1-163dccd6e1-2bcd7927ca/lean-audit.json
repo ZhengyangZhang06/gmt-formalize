@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9a674e48d1bf99fa46191250a7b6c52a7e760f7a072a6bc622f32b61cba0e7be",
+  "git_delta": {
+    "base_commit": "383cd6e345e06368e754fe4426b579963d31e3a0",
+    "candidate_commit": "2226eb1316525d4da2ba78c4a35523bbf75c3940",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_etp_blowup_vague_limit",
+    "diff_sha256": "7bfd59d2da742e9680dea9d617a505b43648493b0b010a1c008c4cc3a43ef3ba",
+    "source_sha256": "48c0a192be9451bb15a77c8df4b679e99d4fb2f7da2edf69c313e68de9d8af54",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_etp_blowup_vague_limit",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (a : Euclid P) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j) (C' : GeometricCurrentOn (univ : Set (Euclid P)) n) (τ : Fin n → Euclid P) (c : ℤ), Orthonormal ℝ τ → c ≠ 0 → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, C' ω = (c : ℝ) * ∫ x in (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), (ω : DifferentialForm (Euclid P) n) x τ ∂μHE[n]) → MassMeasuresConverge (fun j => blowUp C a (lams j) (hlams j).ne') C' → ∀ R : IMRep (univ : Set (Euclid P)) n, R.Represents C → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams j)⁻¹ ^ n * ∫ x, g (dilation a (lams j) x) ∂R.measure) atTop (𝓝 ((c.natAbs : ℝ) * ∫ x in (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), g x ∂μHE[n]))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
