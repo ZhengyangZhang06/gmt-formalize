@@ -1,0 +1,202 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1.weighted_lebesgue_point-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps 1–3 of the parent proof (the bound on ξ, the weighted measure λ, and Lebesgue–Besicovitch differentiation; Simon Ch. 1, 3.23 with 3.11(3)). Here the conclusion is stated as an ENNReal quotient.
+
+Notation:
+- Hⁿ := μHE[n] on ℝ^P, and ν := Hⁿ⌞M = (μHE[n]).restrict M;
+- w(y) := ofReal(θ(y)) ∈ [0, ∞);
+- a_x(s) := ∫⁻_{M∩B̄_s(x)} w(y)‖ξ(y) − ξ(x)‖ₑ dHⁿ(y);
+- b_x(s) := ∫⁻_{M∩B̄_s(x)} w dHⁿ.
+
+1. ‖ξ‖ ≤ 1 ν-a.e. By the field orients, for ν-a.e. y there is an orthonormal family τ : Fin n → ℝ^P with ξ(y) = simpleNVector τ or ξ(y) = −simpleNVector τ. For every n-covector α, simpleNVector τ (α) = α(τ), and
+  |α(τ)| ≤ ‖α‖·∏_i ‖τ_i‖ = ‖α‖   (ContinuousAlternatingMap.le_opNorm, with ‖τ_i‖ = 1).
+The same bound holds for −simpleNVector τ. So |ξ(y)(α)| ≤ 1·‖α‖ for all α, and the operator norm satisfies ‖ξ(y)‖ ≤ 1 (ContinuousLinearMap.opNorm_le_bound). The accepted Submission.fiw_ims_tt_unit_bound gives the same bound.
+
+2. Measurability of θ. For k ∈ ℕ the ball B̄_k(0) is compact. By the field integrableOn (with K := B̄_k(0) ⊆ ℝ^P), θ is Hⁿ-integrable, hence AE-strongly measurable, on M ∩ B̄_k(0). Since M = ⋃_k (M ∩ B̄_k(0)) is a countable union, θ is AE-strongly measurable for ν (aestronglyMeasurable_iUnion_iff). Hence w is AE-measurable for ν.
+
+3. The measure λ. Let λ := ν.withDensity w. For all z and s:
+  λ(B̄_s(z)) = ∫⁻_{B̄_s(z)} w dν = ∫⁻_{B̄_s(z)∩M} w dHⁿ = b_z(s)
+(withDensity_apply on the measurable ball, then Measure.restrict_restrict). θ is integrable on M ∩ B̄_s(z), since the ball is compact, so b_z(s) < ∞ (Integrable.lintegral_lt_top). In particular λ(B̄_1(z)) < ∞, and B̄_1(z) is a neighbourhood of z, so λ is locally finite. As ℝ^P is second countable, λ is σ-finite (sigmaFinite_of_locallyFinite), hence s-finite.
+
+4. Absolute continuity in both directions.
+- λ ≪ ν (withDensity_absolutelyContinuous).
+- ν ≪ λ: M is Hⁿ-null-measurable, so ν-a.e. y lies in M (ae_restrict_mem₀). For y ∈ M, θ(y) > 0, so w(y) ≠ 0. With step 2, withDensity_absolutelyContinuous' gives ν ≪ λ.
+
+5. ξ is locally λ-integrable.
+- ξ is AE-strongly measurable for ν (field aestronglyMeasurable), hence for λ, since λ ≪ ν.
+- By step 1 and λ ≪ ν, ‖ξ‖ ≤ 1 λ-a.e.
+- For each z, λ(B̄_1(z)) < ∞.
+So ξ is λ-integrable on B̄_1(z) (Measure.integrableOn_of_bounded), and B̄_1(z) is a neighbourhood of z.
+
+6. Differentiation. ℝ^P is a finite-dimensional normed space, so it has the Besicovitch covering property. Since λ is s-finite, the Besicovitch Vitali family v := Besicovitch.vitaliFamily λ exists. Apply the Lebesgue differentiation theorem along Vitali families (VitaliFamily.ae_tendsto_lintegral_enorm_sub_div). Its hypotheses hold: λ is locally finite, ℝ^P is second countable and Borel, and ξ is locally λ-integrable. It gives, for λ-a.e. x,
+  (∫⁻_A ‖ξ(y) − ξ(x)‖ₑ dλ(y))/λ(A) → 0 along v.filterAt x.
+By Besicovitch.tendsto_filterAt, s ↦ B̄_s(x) tends to v.filterAt x as s → 0⁺. Composing, for λ-a.e. x:
+  q_x(s) := (∫⁻_{B̄_s(x)} ‖ξ(y) − ξ(x)‖ₑ dλ(y))/λ(B̄_s(x)) → 0 as s → 0⁺.
+By step 4 (ν ≪ λ), this also holds for ν-a.e. x.
+
+7. Identification. Fix such an x and any s. The ball is measurable, and w is AE-measurable for ν and finite everywhere. So by setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀ and Measure.restrict_restrict,
+  ∫⁻_{B̄_s(x)} ‖ξ − ξ(x)‖ₑ dλ = ∫⁻_{B̄_s(x)} w·‖ξ − ξ(x)‖ₑ dν = ∫⁻_{B̄_s(x)∩M} w(y)‖ξ(y) − ξ(x)‖ₑ dHⁿ(y) = a_x(s).
+Together with λ(B̄_s(x)) = b_x(s) from step 3, q_x(s) = a_x(s)/b_x(s) for every s. Hence a_x(s)/b_x(s) → 0 as s → 0⁺ for ν-a.e. x, which is the claim. ∎
+
+Formalization note (instance paths). In the contract, the field aestronglyMeasurable of ξ is elaborated with ContinuousLinearMap.topologicalSpace on NVector. LocallyIntegrable needs the normed-group instances, and writing `LocallyIntegrable ξ λ` directly fails to synthesize ContinuousENorm. The fix:
+- elaborate the Vitali lemma as VitaliFamily.ae_tendsto_lintegral_enorm_sub_div (E := NVector (Eucl P) n) (Besicovitch.vitaliFamily λ) (f := ξ) and prove its LocallyIntegrable argument in place;
+- close the measurability goal by `exact h.aestronglyMeasurable.mono_ac hac1`; definitional unfolding bridges the two topologies.
+
+Appendix (formalization aid; not part of the mathematical argument). The following script was kernel-checked in scratch against the frozen environment (Lean v4.35.0-rc3, Mathlib 25730c7c, `import GMT.Ch06.Submission`, inside `namespace GMT.Ch06` with the contract's `open`s) and depends only on propext, Classical.choice and Quot.sound:
+
+theorem Submission.ind_ab_weighted_lebesgue_point :
+    ∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple (univ : Set (Eucl P)) n M θ ξ → ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), Tendsto (fun s : ℝ => (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) * ‖ξ y - ξ x‖ₑ ∂(μHE[n] : Measure (Eucl P))) / (∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)))) (𝓝[>] 0) (𝓝 0) := by
+  intro P n M θ ξ h
+  -- Step 1: ‖ξ‖ ≤ 1 a.e. on M
+  have hunit : ∀ᵐ y ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ y‖ ≤ 1 := by
+    filter_upwards [h.orients] with y hy
+    obtain ⟨τ, hτ, -, hξ⟩ := hy
+    have hs : ∀ α : Covector (Eucl P) n, |α τ| ≤ ‖α‖ := by
+      intro α
+      have h1 := ContinuousAlternatingMap.le_opNorm α τ
+      have h2 : ∏ i, ‖τ i‖ = 1 := by simp [hτ.1]
+      simpa [h2] using h1
+    refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one (fun α => ?_)
+    rw [one_mul]
+    rcases hξ with hξ | hξ
+    · rw [hξ, simpleNVector_apply, Real.norm_eq_abs]; exact hs α
+    · rw [hξ, ContinuousLinearMap.neg_apply, simpleNVector_apply, norm_neg, Real.norm_eq_abs]
+      exact hs α
+  -- Step 2: θ is AE-strongly measurable for Hⁿ⌞M
+  have hθm : AEStronglyMeasurable θ ((μHE[n] : Measure (Eucl P)).restrict M) := by
+    have hM : M = ⋃ k : ℕ, M ∩ closedBall (0 : Eucl P) k := by
+      ext y
+      simp only [mem_iUnion, mem_inter_iff, mem_closedBall, dist_zero_right]
+      constructor
+      · intro hy
+        obtain ⟨k, hk⟩ := exists_nat_ge ‖y‖
+        exact ⟨k, hy, hk⟩
+      · rintro ⟨k, hy, -⟩
+        exact hy
+    rw [hM, aestronglyMeasurable_iUnion_iff]
+    intro k
+    exact (h.integrableOn _ (isCompact_closedBall 0 k) (subset_univ _)).aestronglyMeasurable
+  have hwm : AEMeasurable (fun y => ENNReal.ofReal (θ y)) ((μHE[n] : Measure (Eucl P)).restrict M) :=
+    ENNReal.measurable_ofReal.comp_aemeasurable hθm.aemeasurable
+  -- Step 3: the weighted measure λ
+  obtain ⟨lam, hlam⟩ : ∃ lam : Measure (Eucl P),
+      lam = ((μHE[n] : Measure (Eucl P)).restrict M).withDensity (fun y => ENNReal.ofReal (θ y)) :=
+    ⟨_, rfl⟩
+  have hball : ∀ (z : Eucl P) (s : ℝ), lam (closedBall z s) =
+      ∫⁻ y in M ∩ closedBall z s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)) := by
+    intro z s
+    rw [hlam, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+  have hfin : ∀ (z : Eucl P) (s : ℝ), lam (closedBall z s) < ⊤ := by
+    intro z s
+    rw [hball]
+    exact (h.integrableOn _ (isCompact_closedBall z s) (subset_univ _)).lintegral_lt_top
+  haveI : IsLocallyFiniteMeasure lam :=
+    ⟨fun z => ⟨closedBall z 1, closedBall_mem_nhds z one_pos, hfin z 1⟩⟩
+  -- Step 4: mutual absolute continuity
+  have hac1 : lam ≪ (μHE[n] : Measure (Eucl P)).restrict M := by
+    rw [hlam]; exact withDensity_absolutelyContinuous _ _
+  have hac2 : (μHE[n] : Measure (Eucl P)).restrict M ≪ lam := by
+    rw [hlam]
+    refine withDensity_absolutelyContinuous' hwm ?_
+    filter_upwards [ae_restrict_mem₀ h.nullMeasurableSet] with y hy
+    exact (ENNReal.ofReal_pos.2 (h.pos y hy)).ne'
+  -- Steps 5–6: ξ is locally λ-integrable; Lebesgue–Besicovitch differentiation
+  have hdiff := VitaliFamily.ae_tendsto_lintegral_enorm_sub_div (E := NVector (Eucl P) n)
+    (Besicovitch.vitaliFamily lam) (f := ξ) (by
+      intro z
+      refine ⟨closedBall z 1, closedBall_mem_nhds z one_pos, ?_⟩
+      refine Measure.integrableOn_of_bounded (M := 1) (hfin z 1).ne ?_ ?_
+      · exact h.aestronglyMeasurable.mono_ac hac1
+      · exact ae_restrict_of_ae (hac1.ae_le hunit))
+  filter_upwards [hac2.ae_le hdiff] with x hx
+  have hx' := hx.comp (Besicovitch.tendsto_filterAt lam x)
+  -- Step 7: identification of the quotient
+  refine hx'.congr (fun s => ?_)
+  simp only [Function.comp]
+  rw [hball x s]
+  congr 1
+  rw [hlam, setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀ _ hwm.restrict _
+      measurableSet_closedBall (Eventually.of_forall fun _ => ENNReal.ofReal_lt_top),
+    Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+  rfl
+
+## Key steps
+
+1. ‖ξ‖ ≤ 1 Hⁿ⌞M-a.e., from orients and |α(τ)| ≤ ‖α‖∏‖τ_i‖ = ‖α‖.
+2. θ is AE-strongly measurable for Hⁿ⌞M: it is integrable on each M ∩ B̄_k(0), and these sets form a countable cover of M.
+3. λ := (Hⁿ⌞M).withDensity(ofReal ∘ θ) has λ(B̄_s(z)) = ∫⁻_{M∩B̄_s(z)} ofReal θ < ∞, so λ is locally finite (hence σ-finite).
+4. λ ≪ Hⁿ⌞M, and Hⁿ⌞M ≪ λ because θ > 0 on M.
+5. ξ is locally λ-integrable: AE-strongly measurable, ‖ξ‖ ≤ 1 λ-a.e., and λ is finite on balls.
+6. Besicovitch–Vitali differentiation along closed balls: for λ-a.e. (hence Hⁿ⌞M-a.e.) x, (∫⁻_{B̄_s(x)}‖ξ − ξ(x)‖ₑ dλ)/λ(B̄_s(x)) → 0.
+7. Rewrite the λ-integrals as weighted Hⁿ-integrals over M ∩ B̄_s(x).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `diff project/GMT/Ch06/Contract.lean project/GMT/Ch06/Submission.lean (identical); diff snapshot Contract.lean vs workspace GMT/Ch06/Contract.lean (identical)`
+- `rg -n 'ind_ab_' project/ and simongmt/Poincare (no match); python3 scan of dag.json lean_name and theorems lists for ind_ab_* (362 nodes, no match); git grep -l 'ind_ab_' over all local branch heads (no match)`
+- `python3 scan of dag.json for the accepted lpf_wtc_blowup_setIntegral_image, fiw_ims_tt_unit_bound, ltg_tau_integrable, lpf_wtc_density_bound_of_tangent, lpf_wtc_wtt_remainder_vanishes and lpf_wtc_wtt_blowup_integral_split, and for the sibling ind_* statements`
+- `sed -n '/def blowUpMap/,/^$/p;/def HasWeightedApproximateTangentSpaceAt/,/^$/p' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'abbrev NVector|def simpleNVector|abbrev Covector|abbrev DifferentialForm' simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean Chapter06/Forms.lean`
+- `rg -n 'HasWeightedApproximateTangentSpaceAt|theorem .*blowUp|ae_tendsto_lintegral_enorm_sub_div|vitaliFamily|Besicovitch|withDensity' simongmt/Poincare -g '*.lean'`
+- `rg -n 'protected def vitaliFamily|theorem tendsto_filterAt' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean; rg -n 'theorem ae_tendsto_lintegral_enorm_sub_div' mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `rg -n 'lemma withDensity_absolutelyContinuous|setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀|theorem withDensity_apply' mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `rg -n 'aestronglyMeasurable_iUnion_iff|Continuous.comp_aestronglyMeasurable₂|IntegrableOn.of_ae_sdiff_eq_zero|Measure.integrableOn_of_bounded|Integrable.lintegral_lt_top|enorm_integral_le_lintegral_enorm|ofReal_integral_eq_lintegral_ofReal|sigmaFinite_of_locallyFinite|isBoundedBilinearMap_apply|HasCompactMulSupport.exists_bound_of_continuous|div_le_iff|div_mul_cancel|div_zero|instHasBesicovitchCovering' in the snapshot mathlib/Mathlib files listed`
+- `git show <lpf blow-up branch>:GMT/Ch06/Submission.lean (accepted proof of Submission.lpf_wtc_blowup_setIntegral_image)`
+- `sed -n 2400,2440p book/chapter-06.txt (printed Proof of 8.2, display (7))`
+- `verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') and lean_contract.validate_lean_statement on the 4 child statements`
+- `lake env lean /tmp/ab-decomp-scratch/{Stmts,Pairing,Enorm,C1,C24,C3,Assembly,Full}.lean (#synth, #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/WeightedBlowUp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-integer-density-a1-ae-blowup-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ab-decomp-scratch/Stmts.lean`
+- `/tmp/ab-decomp-scratch/Assembly.lean`
+- `/tmp/ab-decomp-scratch/Full.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) has the frozen Ch06 Contract, byte-identical to its Submission and to the workspace Contract.
+
+Available API and reuse:
+- The contract's own scope opens only CountablyRectifiable and HasWeightedApproximateTangentSpaceAt from Chapter03. The statements therefore spell blow-ups as r⁻¹ • (y - x), not blowUpMap.
+- SimonGMT Chapter03/Rectifiable.lean supplies blowUpMap and the definition of HasWeightedApproximateTangentSpaceAt (finrank plus a C_c blow-up limit).
+- Chapter06 supplies NVector = Covector →L ℝ and simpleNVector (built with mkContinuous, bound ∏‖v_i‖).
+- SimonGMT has no weighted Lebesgue-point or rescaled-tangent lemma for general (M, θ). Chapter04/WeightedBlowUp.lean (tendsto_rescaled_weight_of_weighted_approximateTangent) is a varifold-specific analogue of child 1. It is not imported by the contract and does not apply to arbitrary M and θ.
+- The snapshot Mathlib supplies everything children 3 and 4 need: Besicovitch.vitaliFamily, Besicovitch.tendsto_filterAt, VitaliFamily.ae_tendsto_lintegral_enorm_sub_div, withDensity_apply, withDensity_absolutelyContinuous(') and setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀; aestronglyMeasurable_iUnion_iff, IntegrableOn.of_ae_sdiff_eq_zero, Measure.integrableOn_of_bounded, Integrable.lintegral_lt_top, enorm_integral_le_lintegral_enorm, ofReal_integral_eq_lintegral_ofReal and sigmaFinite_of_locallyFinite; instHasBesicovitchCovering, isBoundedBilinearMap_apply, the ENNReal division lemmas and HasCompactSupport.exists_bound_of_continuous.
+- Accepted DAG declarations reused with identical frozen types: Submission.lpf_wtc_blowup_setIntegral_image (child 1; its proof was inspected on its branch). Optionally Submission.fiw_ims_tt_unit_bound (unit bound, child 3 and the parent).
+- No ind_ab_* names exist in the DAG, the snapshot, SimonGMT or the local branches.
+
+Scratch kernel checks:
+- All 4 child statements pass validate_lean_statement and elaborate in the contract_scope replay.
+- The parent assembly and complete proofs of all 4 children check with only propext, Classical.choice and Quot.sound. So do the comparator-style `exact Submission.X` replays of all 4 children and of the parent ind_ae_blowup_limit.

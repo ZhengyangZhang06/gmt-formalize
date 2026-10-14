@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.ray_ftc-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+  "depth": 4,
+  "title": "Fundamental theorem of calculus along a ray: ∫_0^∞ Da(y − rθ)θ dr = a(y) (Step 4(a))",
+  "statement": "Let n ∈ ℕ, let a : ℝⁿ → ℝ (ℝⁿ = Eucl n) be C¹ with compact support, and let y, θ ∈ ℝⁿ with θ ≠ 0. Then ∫_{(0,∞)} Da(y − rθ)θ dr = a(y).",
+  "lean_statement": "∀ (n : ℕ) (a : Eucl n → ℝ), ContDiff ℝ 1 a → HasCompactSupport a → ∀ y θ : Eucl n, θ ≠ 0 → ∫ r in Ioi (0 : ℝ), fderiv ℝ a (y - r • θ) θ = a y",
+  "lean_name": "rpn_pe_ray_ftc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-ray-ftc-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.kernel_local_integrable-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+  "depth": 4,
+  "title": "The kernels w_j/(c·|w|ⁿ) are locally integrable (Step 2)",
+  "statement": "Let m ∈ ℕ, n := m + 1, j ∈ Fin n and c ∈ ℝ. Define K(w) := w_j/(c·|w|^{m+1}) on ℝⁿ = Eucl n, where w_j is the j-th coordinate and division by 0 gives 0 (so K(0) = 0, and K ≡ 0 if c = 0). Then K is locally integrable with respect to Lebesgue measure: every point has a neighbourhood on which K is integrable.",
+  "lean_statement": "∀ (m : ℕ) (j : Fin (m + 1)) (c : ℝ), LocallyIntegrable (fun t : Eucl (m + 1) => t j / (c * ‖t‖ ^ (m + 1)))",
+  "lean_name": "rpn_pe_kernel_locallyIntegrable",
+  "depends_on": [
+    "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.radial_ball_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.radial_ball_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-kerne-c743f8cc19-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1.radial_ball_integral-a1",
+  "parent_id": "root.rectifiability-a1.projection_null-a1.potential_estimate-a1",
+  "depth": 4,
+  "title": "The radial integral ∫_{B_ρ(0)} |w|^{1−n} dw = nωρ (formula (R) of Step 1)",
+  "statement": "Let m ∈ ℕ and n := m + 1, and let ω := Lⁿ(B_1(0)) ∈ (0,∞), taken as a real number ((volume (ball 0 1)).toReal). Here B_ρ(0) ⊆ ℝⁿ = Eucl n is the open ball and Lⁿ = volume. For every ρ > 0, the function w ↦ (|w|^m)⁻¹ is Lebesgue integrable on B_ρ(0), and ∫_{B_ρ(0)} (|w|^m)⁻¹ dw = (m + 1)·ω·ρ. The function is |w|^{1−n}; since 0⁻¹ = 0, its value at w = 0 is 0 if m ≥ 1 and 1 if m = 0.",
+  "lean_statement": "∀ (m : ℕ) (ρ : ℝ), 0 < ρ → IntegrableOn (fun t : Eucl (m + 1) => (‖t‖ ^ m)⁻¹) (ball (0 : Eucl (m + 1)) ρ) ∧ ∫ t in ball (0 : Eucl (m + 1)) ρ, (‖t‖ ^ m)⁻¹ = ((m : ℝ) + 1) * (volume (ball (0 : Eucl (m + 1)) 1)).toReal * ρ",
+  "lean_name": "rpn_pe_inv_norm_pow_ball",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-rectifiability-a1-projection-null-a1-potential-estimate-a1-radia-39c55ed54b-a1"
+}

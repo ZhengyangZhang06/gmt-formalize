@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1.weighted_ball_growth-a1",
+  "parent_id": "root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1",
+  "depth": 4,
+  "title": "Weighted ball growth at a weighted approximate tangent space (Step 5)",
+  "statement": "Let P, n ∈ ℕ and Hⁿ = μHE[n] on ℝ^P. Let M ⊆ ℝ^P be Hⁿ-null-measurable, and let θ : ℝ^P → ℝ satisfy θ(y) ≥ 0 for y ∈ M, with θ Hⁿ-integrable on M ∩ K for every compact K ⊆ ℝ^P. Let x ∈ ℝ^P and let Q be a linear subspace with HasWeightedApproximateTangentSpaceAt n M θ x Q. Then there is C ∈ ℝ≥0 such that ∫⁻_{M ∩ B̄_s(x)} ofReal(θ) dHⁿ ≤ C·ofReal(sⁿ) for all sufficiently small s > 0 (eventually in 𝓝[>] 0).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (Q : Submodule ℝ (Eucl P)), NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ y ∈ M, 0 ≤ θ y) → (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[n] : Measure (Eucl P))) → HasWeightedApproximateTangentSpaceAt n M θ x Q → ∃ C : ℝ≥0, ∀ᶠ s in 𝓝[>] (0 : ℝ), ∫⁻ y in M ∩ closedBall x s, ENNReal.ofReal (θ y) ∂(μHE[n] : Measure (Eucl P)) ≤ C * ENNReal.ofReal (s ^ n)",
+  "lean_name": "ind_ab_weighted_ball_growth",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1.rescaled_tangent_limit-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.integer_density-a1.ae_blowup-a1.rescaled_tangent_limit-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-integer-density-a1-ae-blowup-a1-weigh-e45cd9e0ed-a1"
+}
