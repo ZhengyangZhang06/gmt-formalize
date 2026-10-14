@@ -451,6 +451,47 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The support of `Z = X ∘ S` lies in the cylinder `C = ι([0, 1] × spt X)`, `ι(t, x) = (t, x)`,
+and is compact (step 7 of the cylinder construction, Simon 6.2.17–2.21).  `C` is the continuous
+image of the compact `[0, 1] × spt X`, hence compact and closed.  For `y ∉ C` pick
+`B(y, r) ⊆ Cᶜ`; it is open with compact closure, and if `tsupport ω ⊆ B(y, r)` then
+`tsupport S(ω)` misses `spt X` (a point `x` of both gives `ι(t, x) ∈ tsupport ω ∩ C`), so (VO)
+gives `Z(ω) = X(S(ω)) = 0`.  Hence `y` lies in the zero region of `Z`, i.e. `spt Z ⊆ C`, and
+`spt Z = (zero region)ᶜ` is closed, so compact. -/
+theorem Submission.cmcdt_lpo_cyl_support : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (Z : GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1)) (S : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1) → TestFormOn (univ : Set (Euclid N)) k), IsCompact X.support → (∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), tsupport (S ω : DifferentialForm (Euclid N) k) ⊆ {x : Euclid N | ∃ t ∈ Icc (0 : ℝ) 1, (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) ∈ tsupport (ω : DifferentialForm (Euclid (N + 1)) (k + 1))}) → (∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), Z ω = X (S ω)) → IsCompact Z.support ∧ Z.support ⊆ {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))} := by
+  intro hVO N k X Z S hXc hS hZ
+  set C : Set (Euclid (N + 1)) := {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support,
+    y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))}
+  -- `C = ι([0, 1] × spt X)` is compact
+  have hCc : IsCompact C := by
+    have hCι : C = (fun p : ℝ × Euclid N =>
+        (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) ''
+          (Icc (0 : ℝ) 1 ×ˢ X.support) := by
+      ext y
+      constructor
+      · rintro ⟨t, ht, x, hx, rfl⟩
+        exact ⟨(t, x), ⟨ht, hx⟩, rfl⟩
+      · rintro ⟨⟨t, x⟩, ⟨ht, hx⟩, rfl⟩
+        exact ⟨t, ht, x, hx, rfl⟩
+    rw [hCι]
+    exact (isCompact_Icc.prod hXc).image (by fun_prop)
+  -- `spt Z ⊆ C`: a ball `B(y, r) ⊆ Cᶜ` lies in the zero region of `Z`
+  have hsub : Z.support ⊆ C := by
+    intro y hy
+    by_contra hyC
+    obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.mp hCc.isClosed.isOpen_compl y hyC
+    refine hy.2 (Set.mem_sUnion.mpr ⟨ball y r, ⟨isOpen_ball, ?_, subset_univ _, ?_⟩,
+      mem_ball_self hr⟩)
+    · exact (isCompact_closedBall y r).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall
+    · intro ω hω
+      rw [hZ ω]
+      refine hVO N k univ X (S ω) (Set.disjoint_left.mpr fun x hx hxX => ?_)
+      obtain ⟨t, ht, hmem⟩ := hS ω hx
+      exact hball (hω hmem) ⟨t, ht, x, hxX, rfl⟩
+  -- `spt Z = (zero region)ᶜ` is closed, so compact
+  exact ⟨hCc.of_isClosed_subset (isClosed_univ.sdiff Z.isOpen_zeroRegion) hsub, hsub⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
