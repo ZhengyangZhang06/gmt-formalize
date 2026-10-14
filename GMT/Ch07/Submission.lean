@@ -451,6 +451,50 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Vanishing on the carrier and the `C⁰` bound for `T = τ(M, θ, ξ)`** (Simon 6.3.1 (‡); step 0
+of the construction of the cone `0 ⨯ X`, Simon 6.2.30, in the dimension reduction argument).  By
+`R.Represents X`, `X(γ) = ∫_M θ ⟨γ, ξ⟩ dHⁿ`.  (a) If `γ = 0` on `M`, the integrand vanishes at
+every point of `M`.  (b) `Hⁿ`-a.e. on `M`, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal, so
+`|⟨α, ξ(x)⟩| = |α(τ)| ≤ ‖α‖`.  If `μ_R(ℝᴾ) = ∫_M θ dHⁿ < ∞`, then `θ` is `Hⁿ⌞M`-integrable
+with integral `μ_R(ℝᴾ)`, and `|X(γ)| ≤ ∫_M θ b dHⁿ = μ_R(ℝᴾ) b`. -/
+theorem Submission.dimred_cs_sos_cfs_cc_imrep_vanish_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n) (R : IMRep U n), R.Represents X → (∀ γ : TestFormOn U n, (∀ x ∈ R.carrier, (γ : DifferentialForm (Euclid P) n) x = 0) → X γ = 0) ∧ (R.measure univ ≠ ∞ → ∀ (γ : TestFormOn U n) (b : ℝ), (∀ x, ‖(γ : DifferentialForm (Euclid P) n) x‖ ≤ b) → |X γ| ≤ (R.measure univ).toReal * b) := by
+  intro P n U X R hR
+  refine ⟨fun γ hγ => ?_, fun hfin γ b hb => ?_⟩
+  · -- Step 1: the integrand `θ(x) ⟨γ(x), ξ(x)⟩` vanishes at every point of `M`
+    rw [hR γ, IMRep.action]
+    refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+    rw [hγ x hx, map_zero, mul_zero]
+  · -- Step 2: `Hⁿ`-a.e. on `M`, `|⟨α, ξ(x)⟩| ≤ ‖α‖`, since `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ`, `τ` orthonormal
+    have hξ : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+        ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ ‖α‖ := by
+      filter_upwards [R.orients] with x hx α
+      obtain ⟨Q, -, τ, hτ, -, hsign⟩ := hx
+      have hα : |α τ| ≤ ‖α‖ := by
+        simpa [hτ.1] using α.le_opNorm τ
+      rcases hsign with h | h
+      · rw [h α]
+        exact hα
+      · rw [h α, abs_neg]
+        exact hα
+    -- Step 3: `μ_R(ℝᴾ) = ∫⁻_M θ dHⁿ`
+    have hmass : R.measure univ = ∫⁻ x in R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+      rw [IMRep.measure, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+    -- Step 4: `θ` is `Hⁿ⌞M`-integrable with integral `μ_R(ℝᴾ)`
+    have hθm : AEMeasurable (fun x => (R.mult x : ℝ≥0∞)) (μHE[n].restrict R.carrier) :=
+      (measurable_from_nat.comp R.measurable_mult).aemeasurable
+    have hθi : Integrable (fun x => (R.mult x : ℝ)) (μHE[n].restrict R.carrier) := by
+      simpa only [ENNReal.toReal_natCast] using
+        integrable_toReal_of_lintegral_ne_top hθm (by rwa [← hmass])
+    have hθ : ∫ x in R.carrier, (R.mult x : ℝ) ∂μHE[n] = (R.measure univ).toReal := by
+      rw [hmass, ← integral_toReal hθm (Eventually.of_forall fun x => ENNReal.natCast_lt_top _)]
+      simp only [ENNReal.toReal_natCast]
+    -- Step 5: `|X(γ)| ≤ ∫_M θ b dHⁿ = μ_R(ℝᴾ) b`
+    rw [hR γ, IMRep.action, ← Real.norm_eq_abs, ← hθ, ← integral_mul_const]
+    refine norm_integral_le_of_norm_le (hθi.mul_const b) ?_
+    filter_upwards [hξ] with x hx
+    rw [norm_mul, Real.norm_eq_abs, Nat.abs_cast]
+    exact mul_le_mul_of_nonneg_left ((hx _).trans (hb x)) (Nat.cast_nonneg _)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
