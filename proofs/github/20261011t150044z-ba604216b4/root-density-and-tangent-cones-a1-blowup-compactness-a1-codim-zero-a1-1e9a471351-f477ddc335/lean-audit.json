@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "3343a5c212f4b298f5302342b30e26a0c42b27bbda6eee25a09277936cbdf909",
+  "git_delta": {
+    "base_commit": "bfa9ab9c2a0ce53340e8be872cead00ef0b61f68",
+    "candidate_commit": "0849914eae09aa8f24d7dcd346b0fb428ef39ee1",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "3761e7879d7457b8301096e3f0d96c7c79f655f2742a853c22e21ea84d2d152e",
+    "source_sha256": "eaafb978b13cd6fc69d67b5719a9938294173629bb6b7837d0a9fde8ccea04d0",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_cz_unit_current",
+      "statement": "∀ (n : ℕ) (c : ℤ), 0 < n → ∃ C : GeometricCurrentOn (univ : Set (Euclid n)) n, IsIntegerMultiplicity C ∧ ∀ ω : TestFormOn (univ : Set (Euclid n)) n, C ω = (c : ℝ) * ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
