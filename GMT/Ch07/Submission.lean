@@ -1496,6 +1496,148 @@ theorem Submission.cmc_massOn_le_of_le_near_support : ∀ (P n : ℕ) (U : Set (
   rw [hμT W hW, hμS W hW] at hle
   rw [hμT W' hW', hμS W' hW', hsplit RT.measure, hsplit RS.measure, ← hdiff]
   exact add_le_add hle le_rfl
+/-- **Convergence of superlevel-set measures at almost every level** (the "standard
+approximation argument" ending Simon's proof of 7.2.4, from (13) and (14)).  Let `μ` be finite
+on compact subsets of `U`, with `limsup μⱼ(K) ≤ μ(K)` for compact `K ⊆ U` and
+`μ(G) ≤ liminf μⱼ(G)` for open `G ⊆ U`.  If `g` is continuous with compact support in `U`,
+then `μⱼ{g > t} → μ{g > t}` for a.e. `t > 0`.  Only countably many levels `{g = t}` carry
+positive mass for the finite measure `μ⌞tsupport g`.  For any other `t > 0`, `{g > t}` is open,
+`{g ≥ t}` is compact, both lie in `tsupport g ⊆ U`, and they have the same `μ`-measure. -/
+theorem Submission.cmc_rcc_ae_tendsto_measure_superlevel : ∀ (P : ℕ) (U : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ μ K) → (∀ G : Set (Euclid P), IsOpen G → G ⊆ U → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → tsupport g ⊆ U → ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), Tendsto (fun j => μs j {x | t < g x}) atTop (𝓝 (μ {x | t < g x})) := by
+  intro P U μs μ hfin hsup hinf g hg hgc hgU
+  -- step 1: `μ⌞tsupport g` is a finite measure
+  have : IsFiniteMeasure (μ.restrict (tsupport g)) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact hfin _ hgc.isCompact hgU⟩
+  -- step 2: only countably many levels `{g = s}` have positive `μ⌞tsupport g`-measure
+  have hD := Measure.countable_meas_level_set_pos (μ := μ.restrict (tsupport g)) hg.measurable
+  -- step 3: a.e. `t` is positive and outside that countable set
+  filter_upwards [hD.ae_notMem _, ae_restrict_mem measurableSet_Ioi] with t htD ht
+  have ht0 : (0 : ℝ) < t := ht
+  -- step 4: `G = {g > t}` is open, `K = {g ≥ t}` is compact, `G ⊆ K ⊆ tsupport g ⊆ U`
+  have hKC : {x | t ≤ g x} ⊆ tsupport g := fun x (hx : t ≤ g x) =>
+    subset_tsupport g (show g x ≠ 0 from (ht0.trans_le hx).ne')
+  have hGK : {x | t < g x} ⊆ {x | t ≤ g x} := fun x (hx : t < g x) => hx.le
+  have hGo : IsOpen {x | t < g x} := isOpen_lt continuous_const hg
+  have hKc : IsCompact {x | t ≤ g x} :=
+    hgc.isCompact.of_isClosed_subset (isClosed_le continuous_const hg) hKC
+  -- step 5: `μ K = μ G`, because `K \ G = {g = t}` is `μ`-null
+  have hLC : {x | g x = t} ⊆ tsupport g := fun x (hx : g x = t) =>
+    subset_tsupport g (show g x ≠ 0 by rw [hx]; exact ht0.ne')
+  have hlev : μ {x | g x = t} = 0 := by
+    rw [← Measure.restrict_eq_self μ hLC]
+    exact nonpos_iff_eq_zero.1 (not_lt.1 htD)
+  have hKG : μ {x | t ≤ g x} = μ {x | t < g x} := by
+    refine le_antisymm ?_ (measure_mono hGK)
+    calc μ {x | t ≤ g x} ≤ μ ({x | t < g x} ∪ {x | g x = t}) :=
+          measure_mono fun x (hx : t ≤ g x) => hx.lt_or_eq.imp id Eq.symm
+      _ ≤ μ {x | t < g x} + μ {x | g x = t} := measure_union_le _ _
+      _ = μ {x | t < g x} := by rw [hlev, add_zero]
+  -- step 6: squeeze `limsup μⱼ G ≤ limsup μⱼ K ≤ μ K = μ G ≤ liminf μⱼ G`
+  refine tendsto_of_le_liminf_of_limsup_le (hinf _ hGo (hGK.trans (hKC.trans hgU))) ?_
+  calc limsup (fun j => μs j {x | t < g x}) atTop
+      ≤ limsup (fun j => μs j {x | t ≤ g x}) atTop :=
+        limsup_le_limsup (Eventually.of_forall fun j => measure_mono hGK)
+    _ ≤ μ {x | t ≤ g x} := hsup _ hKc (hKC.trans hgU)
+    _ = μ {x | t < g x} := hKG
+/-- **Layer-cake convergence** (the "standard approximation argument" ending Simon's proof of
+7.2.4, chapter-07.txt lines 284–289).  Let `g ≥ 0` be continuous with compact support,
+`C = tsupport g`, `μ(C) < ∞` and `limsup_j μ_j(C) < ∞`.  If `μ_j{g > t} → μ{g > t}` for a.e.
+`t > 0`, then `∫ g dμ_j → ∫ g dμ`.  For `ν(C) < ∞`, `g` is `ν`-integrable and
+`∫ g dν = ∫_{(0,∞)} ν{g > t} dt` (layer cake).  Pick `Λ` with `limsup_j μ_j(C) < Λ < ∞`; for
+large `j` the distribution functions are dominated by `Λ·1_{t ≤ b}` (`g ≤ b`), so dominated
+convergence applies. -/
+theorem Submission.cmc_rcc_tendsto_integral_of_ae_tendsto_superlevel : ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)) (g : Euclid P → ℝ), Continuous g → HasCompactSupport g → (∀ x, 0 ≤ g x) → μ (tsupport g) < ∞ → limsup (fun j => μs j (tsupport g)) atTop < ∞ → (∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), Tendsto (fun j => μs j {x | t < g x}) atTop (𝓝 (μ {x | t < g x}))) → Tendsto (fun j => ∫ x, g x ∂(μs j)) atTop (𝓝 (∫ x, g x ∂μ)) := by
+  intro P μs μ g hg hgc hg0 hμ hlim hae
+  -- `g ≤ ‖g‖ ≤ b`
+  obtain ⟨b, hb⟩ := hg.bounded_above_of_compact_support hgc
+  -- `μ_j(C) < Λ < ∞` for all large `j`
+  obtain ⟨Λ, hΛ, hΛtop⟩ := exists_between hlim
+  have hev : ∀ᶠ j in atTop, μs j (tsupport g) < Λ := eventually_lt_of_limsup_lt hΛ
+  -- layer cake for every `ν` with `ν(C) < ∞`, for which `g` is integrable
+  have hlc : ∀ ν : Measure (Euclid P), ν (tsupport g) < ∞ →
+      ∫ x, g x ∂ν = ∫ t in Ioi 0, ν.real {x | t < g x} := fun ν hν =>
+    ((integrableOn_iff_integrable_of_support_subset (subset_tsupport g)).mp
+      (hg.continuousOn.integrableOn_of_subset_isCompact hgc (isClosed_tsupport g).measurableSet
+        subset_rfl hν.ne)).integral_eq_integral_meas_lt (Eventually.of_forall hg0)
+  -- `{g > t} ⊆ C` for `t > 0`
+  have hsub : ∀ t : ℝ, 0 < t → {x | t < g x} ⊆ tsupport g := fun t ht x hx =>
+    subset_tsupport g (ht.trans (show t < g x from hx)).ne'
+  rw [hlc μ hμ]
+  refine Tendsto.congr' (f₁ := fun j => ∫ t in Ioi 0, (μs j).real {x | t < g x}) ?_ ?_
+  · filter_upwards [hev] with j hj
+    exact (hlc (μs j) (hj.trans hΛtop)).symm
+  -- dominated convergence with the bound `Λ·1_{(-∞, b]}`
+  refine tendsto_integral_filter_of_dominated_convergence (indicator (Iic b) fun _ => Λ.toReal)
+    ?_ ?_ ?_ ?_
+  · refine Eventually.of_forall fun j => ?_
+    have hanti : Antitone fun t : ℝ => μs j {x | t < g x} := fun s t hst =>
+      measure_mono fun x hx => lt_of_le_of_lt hst hx
+    exact hanti.measurable.ennreal_toReal.aestronglyMeasurable
+  · filter_upwards [hev] with j hj
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    rw [Real.norm_eq_abs, abs_of_nonneg measureReal_nonneg]
+    by_cases htb : t ≤ b
+    · rw [indicator_of_mem (show t ∈ Iic b from htb)]
+      exact ENNReal.toReal_mono hΛtop.ne ((measure_mono (hsub t ht)).trans hj.le)
+    · have hempty : {x | t < g x} = ∅ := eq_empty_of_forall_notMem fun x hx =>
+        htb (((show t < g x from hx).le.trans (Real.le_norm_self _)).trans (hb x))
+      rw [hempty, measureReal_empty, indicator_of_notMem (show t ∉ Iic b from htb)]
+  · rw [integrable_indicator_iff measurableSet_Iic]
+    refine integrableOn_const ?_
+    rw [Measure.restrict_apply measurableSet_Iic]
+    exact ((measure_mono fun t ht => ⟨ht.2, ht.1⟩ :
+      volume (Iic b ∩ Ioi 0) ≤ volume (Ioc 0 b)).trans_lt measure_Ioc_lt_top).ne
+  · filter_upwards [hae, ae_restrict_mem measurableSet_Ioi] with t ht htpos
+    exact (ENNReal.tendsto_toReal ((measure_mono (hsub t htpos)).trans_lt hμ).ne).comp ht
+
+/-- **Simon 7.2.4** (proof, last sentence: from (13) and (14) "it now easily follows (by a
+standard approximation argument) that `∫ f dμ_{Tⱼ} → ∫ f dμ_T`"): if `μ(K) < ∞` and
+`limsup_j μ_j(K) ≤ μ(K)` for compact `K ⊆ U`, and `μ(G) ≤ liminf_j μ_j(G)` for open `G ⊆ U`, then
+`∫ f dμ_j → ∫ f dμ` for every continuous `f` with compact support in `U`.  Split `f = f⁺ − f⁻`;
+for each part the superlevel-set measures converge at a.e. level
+(`cmc_rcc_ae_tendsto_measure_superlevel`), hence so do the integrals (layer cake and dominated
+convergence, `cmc_rcc_tendsto_integral_of_ae_tendsto_superlevel`). -/
+theorem Submission.cmc_tendsto_integral_of_limsup_liminf : ∀ (P : ℕ) (U : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ μ K) → (∀ G : Set (Euclid P), IsOpen G → G ⊆ U → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ)) := by
+  intro P U μs μ hfin hsup hinf f hf hfc hfU
+  -- Step 1: `C = spt f` is compact and `C ⊆ U`, so `μ(C) < ∞` and `limsup_j μ_j(C) < ∞`;
+  -- hence `μ_j(C) < ∞` for all large `j`
+  have hμC : μ (tsupport f) < ∞ := hfin _ hfc hfU
+  have hlimC : limsup (fun j => μs j (tsupport f)) atTop < ∞ := (hsup _ hfc hfU).trans_lt hμC
+  have hμsC : ∀ᶠ j in atTop, μs j (tsupport f) < ∞ := eventually_lt_of_limsup_lt hlimC
+  -- a continuous function vanishing outside `C` is `ν`-integrable whenever `ν(C) < ∞`
+  have hint : ∀ (ν : Measure (Euclid P)) (g : Euclid P → ℝ), ν (tsupport f) < ∞ → Continuous g →
+      support g ⊆ support f → Integrable g ν := by
+    intro ν g hν hg hgf
+    have : IsFiniteMeasure (ν.restrict (tsupport f)) := ⟨by rwa [Measure.restrict_apply_univ]⟩
+    exact (integrableOn_iff_integrable_of_support_subset (hgf.trans (subset_tsupport f))).1
+      (hg.integrable_of_hasCompactSupport (hfc.mono hgf))
+  -- Steps 3–5: for continuous `g ≥ 0` vanishing outside `C`, `∫ g dμ_j → ∫ g dμ`
+  have hpos : ∀ g : Euclid P → ℝ, Continuous g → (∀ x, 0 ≤ g x) → support g ⊆ support f →
+      Tendsto (fun j => ∫ x, g x ∂(μs j)) atTop (𝓝 (∫ x, g x ∂μ)) := by
+    intro g hg hg0 hgf
+    have hgC : tsupport g ⊆ tsupport f := closure_mono hgf
+    have hgc : HasCompactSupport g := hfc.mono hgf
+    exact Submission.cmc_rcc_tendsto_integral_of_ae_tendsto_superlevel P μs μ g hg hgc hg0
+      ((measure_mono hgC).trans_lt hμC)
+      ((limsup_le_limsup (Eventually.of_forall fun j => measure_mono hgC)).trans_lt hlimC)
+      (Submission.cmc_rcc_ae_tendsto_measure_superlevel P U μs μ hfin hsup hinf g hg hgc
+        (hgC.trans hfU))
+  -- Steps 2 and 6: `f = f⁺ − f⁻`, with `∫ f dν = ∫ f⁺ dν − ∫ f⁻ dν` whenever `ν(C) < ∞`
+  have hfp : Continuous fun x => max (f x) 0 := hf.max continuous_const
+  have hfm : Continuous fun x => max (-f x) 0 := hf.neg.max continuous_const
+  have hsupp_pos : support (fun x => max (f x) 0) ⊆ support f :=
+    support_comp_subset (g := fun y : ℝ => max y 0) (max_self 0) f
+  have hsupp_neg : support (fun x => max (-f x) 0) ⊆ support f :=
+    support_comp_subset (g := fun y : ℝ => max (-y) 0) (by simp) f
+  have hsplit : ∀ ν : Measure (Euclid P), ν (tsupport f) < ∞ →
+      ∫ x, max (f x) 0 ∂ν - ∫ x, max (-f x) 0 ∂ν = ∫ x, f x ∂ν := by
+    intro ν hν
+    rw [← integral_sub (hint ν _ hν hfp hsupp_pos) (hint ν _ hν hfm hsupp_neg)]
+    simp only [max_zero_sub_max_neg_zero_eq_self]
+  have hlim := (hpos _ hfp (fun x => le_max_right _ _) hsupp_pos).sub
+    (hpos _ hfm (fun x => le_max_right _ _) hsupp_neg)
+  rw [hsplit μ hμC] at hlim
+  exact hlim.congr' (hμsC.mono fun j hj => hsplit (μs j) hj)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
