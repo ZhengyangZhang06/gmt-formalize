@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6392a70f9b7673408e129f79c697a61cdc4f0330c45878f7ec38c55acafdb65c",
+  "git_delta": {
+    "base_commit": "68f91bbe474ce1e25a0bfda829ce76439c729dc7",
+    "candidate_commit": "48bfb0086a128ebe2a4fe17a8db0721e29c27fd9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_cp_median_deviation",
+    "diff_sha256": "7f6bfce3adb25cacf046449f1e2869797974279b85024b122ea8d150e8a3139a",
+    "source_sha256": "15d805b63a5cc50c535d7d9254ebfb2f5ac8269d85ec47734749c3b0bd21b07a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_cp_median_deviation",
+      "statement": "∀ (P : ℕ) (W : Set (Euclid P)) (v : Euclid P → ℝ) (β θ : ℝ), MeasurableSet W → volume W ≠ ∞ → IntegrableOn v W → 0 < θ → θ * (volume W).toReal ≤ (volume (W ∩ {y | β ≤ v y})).toReal → θ * (volume W).toReal ≤ (volume (W ∩ {y | v y ≤ β})).toReal → ∫ y in W, |v y - β| ≤ (1 + θ⁻¹) * ((volume W).toReal)⁻¹ * ∫ x in W, ∫ y in W, |v x - v y|",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
