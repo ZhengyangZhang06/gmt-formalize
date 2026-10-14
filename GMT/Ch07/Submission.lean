@@ -776,6 +776,226 @@ theorem Submission.dgcr_bwd_extDeriv_smul_const : ∀ (P m : ℕ) (a : Euclid P 
     simp [ContinuousAlternatingMap.smul_apply, smul_eq_mul]
   rw [h1, fderiv_mul_const ha]
   simp [zsmul_eq_mul, mul_comm]
+/-- **Translation invariance on smooth tests** (steps 1–3 of the translation argument): if `ν` is
+finite on compact sets and `∫ Dφ(y)[v] dν(y) = 0` for every `φ ∈ C_c^∞(ℝᴾ)`, then
+`∫ φ(v + y) dν(y) = ∫ φ dν` for every `φ ∈ C_c^∞(ℝᴾ)`.  `F(s) = ∫ φ(y + sv) dν(y)` is
+differentiable with `F'(s₀) = ∫ Dφ(y + s₀v)[v] dν(y)` (differentiation under the integral sign;
+for `|s − s₀| < 1` the derivative is dominated by `C‖v‖ 1_{K₀}`, `K₀ = B̄_{R + (|s₀| + 1)‖v‖}(0)`,
+`tsupport φ ⊆ B̄_R(0)`, `‖Dφ‖ ≤ C`), and `F'(s₀) = 0` by the hypothesis applied to the translate
+`φ(· + s₀v)`.  So `F` is constant and `F(1) = F(0)`. -/
+theorem Submission.cbr_ci_cp_tr_smooth_translate_integral_eq : ∀ (P : ℕ) (ν : Measure (Euclid P)) (v : Euclid P), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, φ (v + y) ∂ν = ∫ y, φ y ∂ν := by
+  intro P ν v hν hD φ hφ hφs
+  -- step 1: `ν` is finite on compact sets
+  have hνK : IsFiniteMeasureOnCompacts ν := ⟨fun K hK => hν K hK⟩
+  -- step 2: `Dφ` is continuous, vanishes off `tsupport φ` and is bounded by `C`;
+  -- `tsupport φ ⊆ B̄_R(0)`
+  have hφd : Differentiable ℝ φ := hφ.differentiable (by simp)
+  have hφc : Continuous (fderiv ℝ φ) := hφ.continuous_fderiv (by simp)
+  obtain ⟨C, hC⟩ := hφc.bounded_above_of_compact_support (hφs.fderiv ℝ)
+  obtain ⟨R, hR⟩ := hφs.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  -- step 5: `F(s) = ∫ φ(y + s v) dν` has derivative `∫ Dφ(y + s v)[v] dν` at every `s₀`
+  have hF : ∀ s₀ : ℝ, HasDerivAt (fun s : ℝ => ∫ y, φ (y + s • v) ∂ν)
+      (∫ y, fderiv ℝ φ (y + s₀ • v) v ∂ν) s₀ := by
+    intro s₀
+    have hK₀ : IsCompact (closedBall (0 : Euclid P) (R + (|s₀| + 1) * ‖v‖)) :=
+      isCompact_closedBall _ _
+    refine (hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := ν)
+      (F := fun (s : ℝ) (y : Euclid P) => φ (y + s • v))
+      (F' := fun (s : ℝ) (y : Euclid P) => fderiv ℝ φ (y + s • v) v)
+      (bound := (closedBall (0 : Euclid P) (R + (|s₀| + 1) * ‖v‖)).indicator fun _ => C * ‖v‖)
+      (ball_mem_nhds s₀ one_pos) ?_ ?_ ?_ ?_ ?_ ?_).2
+    · -- (a) `y ↦ φ(y + s v)` is continuous
+      exact Eventually.of_forall fun s =>
+        (hφ.continuous.comp (continuous_id.add continuous_const)).aestronglyMeasurable
+    · -- (b) `y ↦ φ(y + s₀ v)` is continuous with compact support
+      exact (hφ.continuous.comp (continuous_id.add continuous_const)).integrable_of_hasCompactSupport
+        (hφs.comp_homeomorph (Homeomorph.addRight (s₀ • v)))
+    · -- (c) `y ↦ Dφ(y + s₀ v)[v]` is continuous
+      exact ((ContinuousLinearMap.apply ℝ ℝ v).continuous.comp
+        (hφc.comp (continuous_id.add continuous_const))).aestronglyMeasurable
+    · -- (d) the domination `|Dφ(y + s v)[v]| ≤ C ‖v‖ 1_{K₀}(y)` for `|s - s₀| < 1`
+      refine Eventually.of_forall fun y s hs => ?_
+      by_cases hy : y ∈ closedBall (0 : Euclid P) (R + (|s₀| + 1) * ‖v‖)
+      · rw [indicator_of_mem hy]
+        exact (ContinuousLinearMap.le_opNorm _ _).trans
+          (mul_le_mul_of_nonneg_right (hC _) (norm_nonneg _))
+      · rw [indicator_of_notMem hy]
+        -- step 4: `y ∉ K₀` forces `y + s v ∉ tsupport φ`
+        have hys : y + s • v ∉ tsupport φ := by
+          intro h
+          apply hy
+          have h1 := hR h
+          rw [mem_closedBall_zero_iff] at h1 ⊢
+          rw [mem_ball, Real.dist_eq] at hs
+          have hs' : |s| ≤ |s₀| + 1 := by
+            linarith [abs_sub_abs_le_abs_sub s s₀]
+          calc ‖y‖ = ‖(y + s • v) - s • v‖ := by rw [add_sub_cancel_right]
+            _ ≤ ‖y + s • v‖ + ‖s • v‖ := norm_sub_le _ _
+            _ = ‖y + s • v‖ + |s| * ‖v‖ := by rw [norm_smul, Real.norm_eq_abs]
+            _ ≤ R + (|s₀| + 1) * ‖v‖ :=
+              add_le_add h1 (mul_le_mul_of_nonneg_right hs' (norm_nonneg _))
+        rw [fderiv_of_notMem_tsupport ℝ hys]
+        simp
+    · -- (e) `C ‖v‖ 1_{K₀}` is integrable since `ν(K₀) < ∞`
+      exact IntegrableOn.integrable_indicator (integrableOn_const hK₀.measure_lt_top.ne)
+        measurableSet_closedBall
+    · -- (f) chain rule for `s ↦ φ(y + s v)`
+      refine Eventually.of_forall fun y s _ => ?_
+      have h1 : HasDerivAt (fun s : ℝ => y + s • v) v s := by
+        simpa using ((hasDerivAt_id s).smul_const v).const_add y
+      exact (hφd (y + s • v)).hasFDerivAt.comp_hasDerivAt s h1
+  -- step 6: `F' ≡ 0`, by the hypothesis applied to the translate `φ(· + s₀ v)`
+  have hF0 : ∀ s₀ : ℝ, ∫ y, fderiv ℝ φ (y + s₀ • v) v ∂ν = 0 := by
+    intro s₀
+    have h := hD (fun y => φ (y + s₀ • v)) (hφ.comp (contDiff_id.add contDiff_const))
+      (hφs.comp_homeomorph (Homeomorph.addRight (s₀ • v)))
+    simpa only [fderiv_comp_add_right] using h
+  -- step 7: `F` is constant, so `F(1) = F(0)`
+  have h := is_const_of_deriv_eq_zero (fun s => (hF s).differentiableAt)
+    (fun s => by rw [(hF s).deriv, hF0 s]) 1 0
+  simpa [add_comm] using h
+/-- **Normalized mollifier** (step 2 of the smooth-to-`C¹` test reduction): for `r > 0` there is
+a `C^∞` function `ρ ≥ 0` on `ℝⁿ` with compact support in `B_r(0)` and `∫ ρ = 1`.  Take the
+`ContDiffBump` `B` centred at `0` with `rIn = r/2`, `rOut = r`, so `support B = B_r(0)`; its
+integral `I` is positive since `B ≥ 0` and `volume (B_r(0)) > 0`, and `ρ = I⁻¹ B`.  (Mathlib's
+`ContDiffBump.normed` is outside the import closure, so the normalization is done by hand.) -/
+theorem Submission.dgcr_stc_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ), 0 < r → ∃ ρ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ HasCompactSupport ρ ∧ (∀ x, 0 ≤ ρ x) ∧ ∫ x, ρ x = 1 ∧ support ρ ⊆ ball (0 : Euclid n) r := by
+  intro n r hr
+  -- the bump `B` with `rIn = r/2`, `rOut = r`
+  let B : ContDiffBump (0 : Euclid n) := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
+  have hBs : HasCompactSupport B := B.hasCompactSupport
+  have hBi : Integrable B := B.continuous.integrable_of_hasCompactSupport hBs
+  -- `I = ∫ B > 0`: `B ≥ 0` and `support B = B_r(0)` has positive measure
+  have hI : 0 < ∫ x, B x := by
+    rw [integral_pos_iff_support_of_nonneg (fun x => B.nonneg' x) hBi, B.support_eq]
+    exact measure_ball_pos volume 0 hr
+  refine ⟨fun x => (∫ y, B y)⁻¹ * B x, contDiff_const.mul B.contDiff, hBs.mul_left,
+    fun x => mul_nonneg (inv_nonneg.2 hI.le) (B.nonneg' x), ?_, ?_⟩
+  · rw [integral_const_mul, inv_mul_cancel₀ hI.ne']
+  · exact (support_mul_subset_right _ _).trans B.support_eq.subset
+
+/-- **Smooth approximation of `g ∈ C_c(ℝᴾ)`** (steps 4–5 of the translation-invariance proof):
+mollify, `u_k = ρ_k ⋆ g` with `ρ_k` the normalized mollifier of radius `1/(k+1)`.  Each `u_k` is
+`C^∞` (smooth compactly supported kernel against a locally integrable `g`), vanishes off
+`K = B̄_{R₀+1}(0)` where `tsupport g ⊆ B̄_{R₀}(0)`, and the averaging estimate
+`dist_convolution_le` gives `|u_k| ≤ M = sup ‖g‖` and, by continuity of `g`, `u_k(x) → g(x)`. -/
+theorem Submission.cbr_ci_cp_tr_smooth_approx_of_continuous : ∀ (P : ℕ) (g : Euclid P → ℝ), Continuous g → HasCompactSupport g → ∃ (K : Set (Euclid P)) (C : ℝ) (u : ℕ → Euclid P → ℝ), IsCompact K ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (u k)) ∧ (∀ k x, x ∉ K → u k x = 0) ∧ (∀ k x, |u k x| ≤ C) ∧ ∀ x, Tendsto (fun k => u k x) atTop (𝓝 (g x)) := by
+  intro P g hg hgc
+  -- mollifiers `ρ k ≥ 0`, `∫ ρ k = 1`, supported in `B_{1/(k+1)}(0)`
+  choose ρ hρs hρc hρn hρi hρb using fun k : ℕ =>
+    Submission.dgcr_stc_exists_normalized_mollifier P (1 / ((k : ℝ) + 1)) Nat.one_div_pos_of_nat
+  -- `tsupport g ⊆ B̄_{R₀}(0)` and `‖g‖ ≤ M`
+  obtain ⟨R₀, hR₀⟩ := hgc.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  obtain ⟨M, hM⟩ := hg.bounded_above_of_compact_support hgc
+  have hgm : AEStronglyMeasurable g volume := hg.aestronglyMeasurable
+  refine ⟨closedBall 0 (R₀ + 1), M,
+    fun k => convolution (ρ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume,
+    isCompact_closedBall 0 (R₀ + 1),
+    fun k => (hρc k).contDiff_convolution_left _ (hρs k) hg.locallyIntegrable, ?_, ?_, ?_⟩
+  · -- vanishing off `K = B̄_{R₀+1}(0)`
+    intro k x hx
+    show convolution (ρ k) g (ContinuousLinearMap.lsmul ℝ ℝ) volume x = 0
+    rw [convolution_def]
+    have h0 : ∀ t, ContinuousLinearMap.lsmul ℝ ℝ (ρ k t) (g (x - t)) = 0 := by
+      intro t
+      by_cases ht : ρ k t = 0
+      · simp [ht]
+      · have ht' : ‖t‖ < 1 / ((k : ℝ) + 1) := mem_ball_zero_iff.1 (hρb k ht)
+        have hk : 1 / ((k : ℝ) + 1) ≤ 1 := by
+          rw [div_le_one (by positivity)]
+          linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+        have hxt : x - t ∉ tsupport g := by
+          intro hmem
+          have h1 : ‖x - t‖ ≤ R₀ := mem_closedBall_zero_iff.1 (hR₀ hmem)
+          apply hx
+          rw [mem_closedBall_zero_iff]
+          calc ‖x‖ = ‖(x - t) + t‖ := by rw [sub_add_cancel]
+            _ ≤ ‖x - t‖ + ‖t‖ := norm_add_le _ _
+            _ ≤ R₀ + 1 := by linarith
+        simp [image_eq_zero_of_notMem_tsupport hxt]
+    simp only [h0, integral_zero]
+  · -- uniform bound `|u k| ≤ M`
+    intro k x
+    have h := dist_convolution_le (μ := volume) (x₀ := x) (z₀ := (0 : ℝ))
+      ((norm_nonneg _).trans (hM 0)) (hρb k) (hρn k) (hρi k) hgm
+      (fun y _ => by rw [dist_zero_right]; exact hM y)
+    rw [Real.dist_eq, sub_zero] at h
+    exact h
+  · -- pointwise convergence `u k x → g x`
+    intro x
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨δ, hδ, hgδ⟩ := Metric.continuous_iff.1 hg x (ε / 2) (half_pos hε)
+    obtain ⟨N, hN⟩ := exists_nat_one_div_lt hδ
+    refine ⟨N, fun k hk => ?_⟩
+    have hkN : 1 / ((k : ℝ) + 1) ≤ 1 / ((N : ℝ) + 1) := Nat.one_div_le_one_div hk
+    have h := dist_convolution_le (μ := volume) (x₀ := x) (z₀ := g x)
+      (half_pos hε).le (hρb k) (hρn k) (hρi k) hgm
+      (fun y hy => (hgδ y ((mem_ball.1 hy).trans_le hkN |>.trans hN)).le)
+    exact h.trans_lt (half_lt_self hε)
+
+/-- **Smooth test functions determine measures finite on compacts** (steps 6–7 of the
+translation-invariance argument): if `μ, ν` on `ℝᴾ` are finite on compact sets and
+`∫ φ dμ = ∫ φ dν` for every `C^∞` `φ` with compact support, then `μ = ν`.  Both measures are
+locally finite, hence regular on the `σ`-compact metric space `ℝᴾ`, so by Riesz uniqueness it
+suffices to compare `∫ f` for `f ∈ C_c(ℝᴾ, ℝ)`.  Approximate `f` by `C^∞` functions `uₖ`
+vanishing off a compact `K`, with `|uₖ| ≤ C` and `uₖ → f` pointwise
+(`cbr_ci_cp_tr_smooth_approx_of_continuous`): then `∫ uₖ dμ = ∫ uₖ dν`, and dominated
+convergence with the bound `C·1_K` gives `∫ uₖ dμ → ∫ f dμ` and `∫ uₖ dν → ∫ f dν`. -/
+theorem Submission.cbr_ci_cp_tr_measure_eq_of_smooth_integral_eq : ∀ (P : ℕ) (μ ν : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, φ y ∂μ = ∫ y, φ y ∂ν) → μ = ν := by
+  intro P μ ν hμ hν hφ
+  -- step 1: `μ, ν` are finite on compacts, hence locally finite and regular on `ℝᴾ`
+  have : IsFiniteMeasureOnCompacts μ := ⟨fun K hK => hμ K hK⟩
+  have : IsFiniteMeasureOnCompacts ν := ⟨fun K hK => hν K hK⟩
+  -- step 2: by Riesz uniqueness it suffices to compare `∫ f` for `f ∈ C_c(ℝᴾ, ℝ)`
+  refine Measure.ext_of_integral_eq_on_compactlySupported fun f => ?_
+  -- step 3: `C^∞` approximants `uₖ → f`, vanishing off a compact `K`, with `|uₖ| ≤ C`
+  obtain ⟨K, C, u, hK, hu, huK, huC, hlim⟩ :=
+    Submission.cbr_ci_cp_tr_smooth_approx_of_continuous P f f.continuous f.hasCompactSupport
+  -- step 5: dominated convergence with the bound `C·1_K`, for `m = μ` and `m = ν`
+  have hdom : ∀ m : Measure (Euclid P), m K < ∞ →
+      Tendsto (fun k => ∫ x, u k x ∂m) atTop (𝓝 (∫ x, f x ∂m)) := fun m hm =>
+    tendsto_integral_of_dominated_convergence (K.indicator fun _ => C)
+      (fun k => (hu k).continuous.aestronglyMeasurable)
+      ((integrableOn_const hm.ne).integrable_indicator hK.measurableSet)
+      (fun k => Eventually.of_forall fun x => by
+        by_cases hx : x ∈ K
+        · rw [indicator_of_mem hx, Real.norm_eq_abs]
+          exact huC k x
+        · rw [indicator_of_notMem hx, huK k x hx, norm_zero])
+      (Eventually.of_forall hlim)
+  -- step 4: each `uₖ` is a `C^∞` test function, so `∫ uₖ dμ = ∫ uₖ dν`
+  have heq : (fun k => ∫ x, u k x ∂μ) = fun k => ∫ x, u k x ∂ν :=
+    funext fun k => hφ (u k) (hu k) (HasCompactSupport.intro hK (huK k))
+  -- step 6: limits in `ℝ` are unique
+  have hlimμ := hdom μ (hμ K hK)
+  rw [heq] at hlimμ
+  exact tendsto_nhds_unique hlimμ (hdom ν (hν K hK))
+
+/-- **Translation invariance from vanishing directional derivatives** (step 2 of the
+constant-planes argument): if `ν` on `ℝᴾ` is finite on compact sets and `∫ Dφ(y)[v] dν(y) = 0`
+for every `C^∞` `φ` with compact support, then `ν(τ⁻¹A) = ν(A)` for every Borel `A`, where
+`τ(x) = v + x`.  `τ` is a homeomorphism, so `τ_#ν` is finite on compact sets
+(`τ_#ν(K) = ν(τ⁻¹K)`, `τ⁻¹K = K − v` compact) and `∫ φ d(τ_#ν) = ∫ φ(v + y) dν(y)`, which is
+`∫ φ dν` for `φ ∈ C_c^∞(ℝᴾ)` (`cbr_ci_cp_tr_smooth_translate_integral_eq`).  Hence `τ_#ν = ν`
+(`cbr_ci_cp_tr_measure_eq_of_smooth_integral_eq`), and `ν(τ⁻¹A) = τ_#ν(A) = ν(A)`. -/
+theorem Submission.cbr_ci_cp_translation_invariant_of_fderiv : ∀ (P : ℕ) (ν : Measure (Euclid P)) (v : Euclid P), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A := by
+  intro P ν v hν hD A hA
+  -- `τ(x) = v + x` is a homeomorphism of `ℝᴾ`, hence a measurable embedding
+  have hτ : MeasurableEmbedding (fun x : Euclid P => v + x) :=
+    (Homeomorph.addLeft v).measurableEmbedding
+  -- steps 4–7: `τ_#ν = ν`, both being finite on compacts with equal `C_c^∞` integrals
+  have hμ : Measure.map (fun x : Euclid P => v + x) ν = ν := by
+    refine Submission.cbr_ci_cp_tr_measure_eq_of_smooth_integral_eq P
+      (Measure.map (fun x : Euclid P => v + x) ν) ν (fun K hK => ?_) hν (fun φ hφ hφs => ?_)
+    · -- `τ_#ν(K) = ν(τ⁻¹K) < ∞`, `τ⁻¹K = K − v` being compact
+      rw [hτ.map_apply]
+      exact hν _ ((Homeomorph.addLeft v).isCompact_preimage.2 hK)
+    · -- steps 1–3: `∫ φ d(τ_#ν) = ∫ φ(v + y) dν(y) = ∫ φ dν` for `φ ∈ C_c^∞(ℝᴾ)`
+      rw [hτ.integral_map]
+      exact Submission.cbr_ci_cp_tr_smooth_translate_integral_eq P ν v hν hD φ hφ hφs
+  -- step 8: `ν(τ⁻¹A) = τ_#ν(A) = ν(A)` for Borel `A`
+  rw [← Measure.map_apply hτ.measurable hA, hμ]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
