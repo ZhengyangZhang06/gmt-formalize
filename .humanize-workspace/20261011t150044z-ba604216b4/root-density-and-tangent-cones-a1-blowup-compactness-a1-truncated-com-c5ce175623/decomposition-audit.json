@@ -1,0 +1,90 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "restrictDomain|massOn|boundaryMassOn|IsIntegerMultiplicity|CompactlyContained",
+        "countable_meas_level_set_pos|sigmaFinite_of_locallyFinite|isLocallyFiniteMeasure_of_isFiniteMeasureOnCompacts|theorem ae_lt_top |theorem ae_restrict_iff.|theorem ae_all_iff|theorem Countable.measure_zero",
+        "extraction_of_frequently_atTop|frequently_lt_of_liminf_lt|liminf_eq_iSup_iInf|biSup_add_biSup_le.|limsup_le_limsup_of_le|liminf_le_of_frequently_le.|^theorem limsup_comp|^theorem liminf_le_liminf",
+        "dtc_bc_tc_cl_sl_ae_level_set_null|dtc_bc_tc_cl_sl_ae_liminf_lt_top|dtc_bc_tc_cl_sl_slice_sum_mass_bound|dtc_bc_tc_cl_sl_slices_weakly_converge|dtc_bc_tc_cl_sl_isIntegerMultiplicity_of_liminf_bounds|dmcbr_sl_sb_",
+        "git show f782bc92534a1603cd2fa0ae721fce7c24bb4608:GMT/Ch07/Submission.lean",
+        "git show d058af94f483f3e29b42ad8dde99786c24dc17d1:GMT/Ch07/Submission.lean",
+        "git show e1842e9536a825f70723711ef3c5fe73f9f51aa0:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/slice_limit_independent_audit_yst601lp/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-c5ce175623/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-c5ce175623/decomposition-v1.json",
+        "/tmp/slice_limit_independent_audit_yst601lp/Audit.lean",
+        "/tmp/slice_limit_independent_audit_yst601lp/Audit.log"
+      ],
+      "conclusion": "The split is appropriate for the selected dtc_bc_tc_cl_slice_property_of_weak_limit contract. Snapshot definitions and inspected Mathlib sources match the compiler environment. All eight statements are standalone one-line propositions matching their prose; inline constructions use the intended instances. Dependency checks found no cycles. The five new bare names are unreserved, including in other active decomposition proposals. The three reuses are accepted declarations with byte-identical frozen and implemented types. Independent Lean replay of all children, comparator-style exact-type checks, and assembly of the exact selected parent from its existing slicing and foundations dependencies passed with exit 0. Axiom checks returned only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "level_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Compact finiteness supplies sigma-finiteness; measurability gives countably many charged levels, whose Lebesgue measure is zero. The proof establishes the exact almost-everywhere conclusion without additional assumptions."
+    },
+    {
+      "key": "ae_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The MM hypothesis matches the dependency exactly. Uniform ball bounds make each majorant integral finite; restriction and countable intersections over intervals and balls give the stated conclusion. No measurability of Z is silently required."
+    },
+    {
+      "key": "slice_sum_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All representation and slicing hypotheses are present. The proof correctly handles degree zero, identifies slice boundary mass using boundary squared zero and mass_neg, applies boundary_slice, and combines the bounds with the correctly directed ENNReal liminf inequality. Its three dependency edges are necessary and acyclic."
+    },
+    {
+      "key": "slice_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type records all representation, compact-finiteness, limsup-domination and null-level hypotheses. Applying T2 separately to currents and boundaries, then testing on exterior derivatives and subtracting limits, proves precisely the stated weak convergence."
+    },
+    {
+      "key": "local_closure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "CL and IML are explicit hypotheses. Restriction bounds, lower semicontinuity, and bounded subsequence extraction justify applying CL on each unit ball. Locally finite limit mass then permits IML gluing. No simultaneous subsequence across all balls or circular closure assertion is needed."
+    },
+    {
+      "key": "boundary_slice",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of the accepted declaration. The proof handles degree zero directly; in positive degree it verifies the zero representation of the second boundary, applies SL, and identifies the resulting currents by their evaluations."
+    },
+    {
+      "key": "mass_neg",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of the accepted declaration. Negation preserves admissible test forms, and linearity gives both mass inequalities. Arbitrary U and W require no omitted openness assumptions."
+    },
+    {
+      "key": "liminf_add",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse of the accepted declaration. The supremum-infimum argument uses intersections of filter sets and nonempty indexing families. It covers infinite values, the trivial filter, and the exact stated Type universe without extra hypotheses."
+    }
+  ],
+  "required_changes": []
+}
