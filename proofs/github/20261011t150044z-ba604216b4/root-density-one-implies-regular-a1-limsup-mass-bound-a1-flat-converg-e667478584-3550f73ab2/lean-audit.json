@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b13cf8ead4e914fc68eba9c8c3083a44024c6b2260495b60f65672e9d4fd64b2",
+  "git_delta": {
+    "base_commit": "23b8a44f741e5861d9abc82635cb5d22f5687db2",
+    "candidate_commit": "ebc5b08df0e8fca95c85b95df847957b4a05129a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_imp_piece_current",
+    "diff_sha256": "0dbb2e9d1ed130714a0cab18a961afad60bad71c0c247f4a2c9bfb55abf19cb4",
+    "source_sha256": "04f22e55362ac93c2c95aa354af88fc7da4c1dbb37c65fc05239ce87c348d98a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_imp_piece_current",
+      "statement": "((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (k N' : ℕ) (H : Euclid k → Euclid N') (A : Set (Euclid k)) (L : NNReal) (κ : ℝ) (g : Euclid k → ℝ), LipschitzWith L H → MeasurableSet A → 0 < κ → (∀ a ∈ A, ∀ a' ∈ A, κ * ‖a - a'‖ ≤ ‖H a - H a'‖) → (∀ a ∈ A, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) → Measurable g → (∀ u, ∃ z : ℤ, g u = z) → (∀ u ∈ A, g u ≠ 0) → ∫⁻ u in A, ‖g u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ H u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ H u (EuclideanSpace.single b (1 : ℝ)))))) ≠ ∞ → ∃ Φ : GeometricCurrentOn (univ : Set (Euclid N')) k, IsIntegerMultiplicity Φ ∧ Φ.mass ≤ ∫⁻ u in A, ‖g u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ H u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ H u (EuclideanSpace.single b (1 : ℝ)))))) ∧ ∀ ω : TestFormOn (univ : Set (Euclid N')) k, Φ ω = ∫ u in A, g u * (ω : DifferentialForm (Euclid N') k) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a (1 : ℝ)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
