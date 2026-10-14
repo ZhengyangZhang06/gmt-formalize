@@ -5822,6 +5822,30 @@ theorem Submission.codim1_hcp_sc_simons_hardy_inequality : ∀ (P m : ℕ) (A₀
   show 2 * (∫ x in M, ψ x ^ 2 * A2 x / ‖x‖ ^ 2 ∂μHE[m]) ≤
     ∫ x in M, A2 x * ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2 ∂μHE[m]
   linarith
+/-- **Simons' theorem for smooth stable minimal hypercones** (Simon, Appendix B, Theorem B.2 for
+smooth cones, `2 ≤ m ≤ 6`).  Let `M ⊆ A₀`, `dim A₀ = m + 1`, be a smooth embedded `m`-dimensional
+cone with `0 ∉ M` and `closure M ⊆ M ∪ {0}`, of locally finite `Hᵐ`-measure and stationary away
+from `0`, with smooth unit normal `ν` in `A₀`, zero mean curvature `trace(Pₓ ∘ Dν(x)) = 0`, and
+stable in the sense of B.1.  Then `Dν(x)v = 0` for `x ∈ M` and `v ∈ TₓM`: the second fundamental
+form vanishes.  As in the printed proof of B.2, Simons' identity B.8 and Lemma B.11 give
+(1) `½Δ_M|A|² + |A|⁴ ≥ 2|x|⁻²|A|² + |∇^M|A||²`; B.1 with `ζ = |A|ψ`, integration by parts on `M`
+(smooth approximation of Lipschitz functions on `M`) and (1) give
+(3) `2∫_M ψ²|A|²|x|⁻² ≤ ∫_M |A|²|∇^Mψ|²` for locally Lipschitz `ψ` vanishing off a compact subset
+of `M`.  Cut-offs and `ψ = r^{1+ε} max(1, r)^{1−m/2−2ε}`, `ε = 1/10`, whose integrals are finite
+by dyadic scaling of `Hᵐ` on the cone, give `|A| = 0` `Hᵐ`-a.e. on `M`, hence everywhere, since
+`Hᵐ⌞M` has density one at every point of `M`. -/
+theorem Submission.codim1_hcp_stable_minimal_cone_flat : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), 2 ≤ m → m ≤ 6 → Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (0 : Euclid P) ∉ M → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → (0 : Euclid P) ∉ tsupport X → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[m] = 0) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap) = 0) → (∀ ζ : Euclid P → ℝ, LocallyLipschitzOn M ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∫ x in M, (∑ j : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))‖ ^ 2) * ζ x ^ 2 ∂μHE[m] ≤ ∫ x in M, ∑ j : Fin P, (fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2 ∂μHE[m]) → ∀ x ∈ M, ∀ v ∈ tangentSpace M x, fderiv ℝ ν x v = 0 := by
+  intro P m A₀ M ν hm2 hm6 hdim hMA h0 hM hcl hcone hfin hstat hνO hν hH hstab
+  -- smooth approximation of locally Lipschitz functions on the embedded `C¹` submanifold `M`
+  have hL := Submission.codim1_hcp_lipschitz_smooth_approx P m M (hM 1)
+  -- (3): Simons' inequality (1) (B.8, B.11), stability B.1 for `ζ = |A|ψ`, integration by parts
+  have h3 := Submission.codim1_hcp_sc_simons_hardy_inequality P m A₀ M ν hdim hMA h0 hM hcl
+    hcone hfin hstat hνO hν hH hstab hL
+  -- (3) with cut-offs and `ψ = r^{1+ε} max(1, r)^{1−m/2−2ε}` gives `|A| = 0` a.e. on `M`, hence
+  -- everywhere by density one of `Hᵐ⌞M`
+  exact Submission.codim1_hcp_sc_hardy_cone_flat P m A₀ M ν hm2 hm6 hdim hMA h0 hM hcl hcone
+    hfin hνO hν (fun z hz => Submission.dimred_rpd_submanifold_density_one P m M z (hM 1) hz) h3
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
