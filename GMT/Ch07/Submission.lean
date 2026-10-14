@@ -451,6 +451,32 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Splitting the ray integral of a test `1`-form at `t = 1`.**  For a test `1`-form `ω` on `ℝᴾ`
+and a unit vector `e`, `∫_{(0,∞)} ω(te)(e) dt = ∫_{(0,1)} ω(te)(e) dt + ∫_{(1,∞)} ω(te)(e) dt`.
+The line `γ(t) = te` is an isometry (`|e| = 1`), hence a closed embedding of `ℝ`, so
+`t ↦ ω(te)(e)` is continuous with compact support and therefore integrable; then
+`(0, ∞) = (0, 1] ⊔ (1, ∞)` and the endpoint `{1}` is null. -/
+theorem Submission.idtp_fons_odc_antipodal_ray_split : ∀ (P : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) 1) (e : Euclid P), ‖e‖ = 1 → ∫ t in Ioi (0 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e) = (∫ t in Ioo (0 : ℝ) 1, (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) + ∫ t in Ioi (1 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e) := by
+  intro P ω e he
+  obtain ⟨⟨hsm, hcs⟩, -⟩ := ω.2
+  -- (1) `γ(t) = te` is an isometry (`|e| = 1`), hence a closed embedding of `ℝ`
+  have hγ : Isometry fun t : ℝ => t • e := Isometry.of_dist_eq fun x y => by
+    simp only [dist_eq_norm, ← sub_smul, norm_smul, he, mul_one]
+  -- (2) `f(t) = ω(te)(e)` is `ev_e ∘ ω ∘ γ`, hence continuous
+  have hcont : Continuous fun t : ℝ => (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e) :=
+    (ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e)).continuous.comp
+      (hsm.continuous.comp hγ.continuous)
+  -- (3) `ω ∘ γ` has compact support since `γ` is a closed embedding, and `ev_e 0 = 0`
+  have hsupp : HasCompactSupport fun t : ℝ =>
+      (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e) :=
+    (hcs.comp_isClosedEmbedding hγ.isClosedEmbedding).comp_left
+      (map_zero (ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e)))
+  -- (4) so `f` is integrable on `ℝ`
+  have hint := hcont.integrable_of_hasCompactSupport hsupp (μ := volume)
+  -- (5) `(0, ∞) = (0, 1] ⊔ (1, ∞)`, and (6) `{1}` is null, so `∫_{(0,1]} = ∫_{(0,1)}`
+  rw [← Ioc_union_Ioi_eq_Ioi (zero_le_one' ℝ), setIntegral_union Ioc_disjoint_Ioi_same
+    measurableSet_Ioi hint.integrableOn hint.integrableOn, integral_Ioc_eq_integral_Ioo]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
