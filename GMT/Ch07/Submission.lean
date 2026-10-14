@@ -2979,6 +2979,30 @@ theorem Submission.lcmp_measure_le_add_of_open_nhds : ∀ (P : ℕ) (U E : Set (
     rwa [hinter] at this
   exact ge_of_tendsto' (htend.add_const c) hle
 
+/-- **Cancelling the finite mass outside `F`** (Simon 7.2.4 with Remark 7.2.5(2), index
+comparison, step 8).  Let `a, b, s, e, M ∈ [0, ∞]`, `L ≥ 1` and `b ≤ M < ∞`, and write
+`λ = ofReal(Lⁿ)`, `κ = ofReal(Lⁿ - 1)`.  If `a + b ≤ λ(s + e + e + b)`, then
+`a ≤ λ(s + 2e) + κM`.  As `Lⁿ ≥ 1`, `λ = ofReal(1) + ofReal(Lⁿ - 1) = 1 + κ`, so
+`λ(s + e + e + b) = (λ(s + 2e) + κb) + b`; the finite `b` cancels in `[0, ∞]`, and `κb ≤ κM`. -/
+theorem Submission.dimred_mbl_lc_ic_cancel : ∀ (a b s e M : ℝ≥0∞) (L : ℝ) (n : ℕ), 1 ≤ L → b ≤ M → M ≠ ∞ → a + b ≤ ENNReal.ofReal (L ^ n) * (s + e + e + b) → a ≤ ENNReal.ofReal (L ^ n) * (s + 2 * e) + ENNReal.ofReal (L ^ n - 1) * M := by
+  intro a b s e M L n hL hbM hM h
+  -- Step 1: `b ≤ M < ∞`
+  have hb : b ≠ ∞ := ne_top_of_le_ne_top hM hbM
+  -- Step 2: `λ = 1 + κ`, since `Lⁿ = 1 + (Lⁿ - 1)` with `1, Lⁿ - 1 ≥ 0`
+  have hLn : ENNReal.ofReal (L ^ n) = 1 + ENNReal.ofReal (L ^ n - 1) := by
+    rw [← ENNReal.ofReal_one, ← ENNReal.ofReal_add zero_le_one (sub_nonneg.2 (one_le_pow₀ hL)),
+      add_sub_cancel]
+  -- Step 3: `λ(s + e + e + b) = (λ(s + 2e) + κb) + b` in the semiring `[0, ∞]`
+  have hrhs : ENNReal.ofReal (L ^ n) * (s + e + e + b) =
+      ENNReal.ofReal (L ^ n) * (s + 2 * e) + ENNReal.ofReal (L ^ n - 1) * b + b := by
+    rw [hLn]
+    ring
+  rw [hrhs] at h
+  -- Step 4: cancel the finite `b`; Step 5: `κb ≤ κM`
+  calc a ≤ ENNReal.ofReal (L ^ n) * (s + 2 * e) + ENNReal.ofReal (L ^ n - 1) * b :=
+        ENNReal.le_of_add_le_add_right hb h
+    _ ≤ ENNReal.ofReal (L ^ n) * (s + 2 * e) + ENNReal.ofReal (L ^ n - 1) * M := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
