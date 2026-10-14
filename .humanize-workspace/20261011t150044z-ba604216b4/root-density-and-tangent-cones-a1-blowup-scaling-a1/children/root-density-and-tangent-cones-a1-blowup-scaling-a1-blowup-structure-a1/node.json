@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.blowup_structure-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+  "depth": 3,
+  "title": "η_{x,λ#} commutes with differences and boundaries, is injective, and maps supports by η",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P, x ∈ ℝ^P, λ > 0, η = η_{x,λ} and η_# = η_{x,λ#} (blowUp · x λ). Then (i) η_#(S − T) = η_#S − η_#T for all n and S, T ∈ 𝒟_n(U); (ii) η_#S = η_#T implies S = T for all n and S, T ∈ 𝒟_n(U); (iii) spt(η_#T) = η(spt T) for all n and T ∈ 𝒟_n(U), where for a current Y with domain V, spt Y = V ∖ ⋃{W : W open, closure W compact, closure W ⊆ V, Y(ω) = 0 for all ω ∈ 𝒟ⁿ(V) with tsupport ω ⊆ W} (SimonGMT support); (iv) ∂(η_#T) = η_#(∂T) for all m and T ∈ 𝒟_{m+1}(U).",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp (S - T) x lam hlam.ne' = blowUp S x lam hlam.ne' - blowUp T x lam hlam.ne') ∧ (∀ (n : ℕ) (S T : GeometricCurrentOn U n), blowUp S x lam hlam.ne' = blowUp T x lam hlam.ne' → S = T) ∧ (∀ (n : ℕ) (T : GeometricCurrentOn U n), (blowUp T x lam hlam.ne').support = dilation x lam '' T.support) ∧ ∀ (m : ℕ) (T : GeometricCurrentOn U (m + 1)), (blowUp T x lam hlam.ne').boundary = blowUp T.boundary x lam hlam.ne'",
+  "lean_name": "dtc_blowUp_algebra",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-blowup-structure-a1-a1"
+}
