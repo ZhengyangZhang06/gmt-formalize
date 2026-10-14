@@ -628,6 +628,93 @@ theorem Submission.cmcdtfr_face_geometry : ∀ (P k : ℕ), volume {y : Euclid k
   -- `(c)`: the open face of `p` against the closed face of `q ≠ p`
   exact ⟨hiso, hdiam, Submission.cmcdtfrfg_face_separation P k p q hp hq⟩
 
+/-- **Disjoint neighbourhoods of the open unit faces** (Simon Ch. 6, §5, proof of 5.1: the open
+faces `F̆` get pairwise disjoint neighbourhoods `N_F`).  For `p = (ι, b)` with `ι` strictly
+increasing, `π_p(x) = (x_{ι(j)} − b_{ι(j)})ⱼ` is a continuous left inverse of the face map
+`Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}`; put `d_p(x) = |x − Φ_p(π_p x)|`.  `N_p` is the set of `x` with
+`π_p(x) ∈ (0,1)ᵏ`, `2 d_p(x) < 1` and `2 d_p(x) < min(π_p(x)ⱼ, 1 − π_p(x)ⱼ)` for all `j`: a finite
+intersection of strict inequalities between continuous functions, hence open, and it contains
+`Φ_p((0,1)ᵏ)`, where `d_p = 0`.  The separation hypothesis gives `2 d_p(x) < |Φ_p(π_p x) − Φ_q(y')|`
+for `x ∈ N_p`, `q ≠ p` and `y' ∈ [0,1]ᵏ`.  For `x = Φ_q(y')` this reads `2 d_p(x) < d_p(x)`, so
+`Φ_q([0,1]ᵏ)` misses `N_p`; for `x ∈ N_p ∩ N_q` the bounds for `(p, q)` and `(q, p)` contradict the
+triangle inequality. -/
+theorem Submission.cmcdtfrbv_face_neighbourhoods : ∀ (P k : ℕ), (∀ p q : (Fin k → Fin P) × (Fin P → ℤ), StrictMono p.1 → StrictMono q.1 → p ≠ q → ∀ y y' : Euclid k, (∀ j, 0 < y j ∧ y j < 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → 1 ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)) ∨ ∃ j, min (y j) (1 - y j) ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ))) → ∃ N : (Fin k → Fin P) × (Fin P → ℤ) → Set (Euclid P), ∀ p : (Fin k → Fin P) × (Fin P → ℤ), StrictMono p.1 → IsOpen (N p) ∧ (∀ y : Euclid k, (∀ i, 0 < y i ∧ y i < 1) → (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ N p) ∧ ∀ q : (Fin k → Fin P) × (Fin P → ℤ), StrictMono q.1 → q ≠ p → (∀ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) → (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) ∉ N p) ∧ Disjoint (N p) (N q) := by
+  intro P k hS
+  -- the face maps `Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}`
+  obtain ⟨Φ, hΦ⟩ : ∃ Φ : (Fin k → Fin P) × (Fin P → ℤ) → Euclid k → Euclid P, ∀ p y,
+      Φ p y = WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+        ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) := ⟨_, fun _ _ => rfl⟩
+  simp only [← hΦ] at hS ⊢
+  -- the projections `π_p(x) = (x_{ι(j)} − b_{ι(j)})ⱼ`
+  obtain ⟨π, hπ⟩ : ∃ π : (Fin k → Fin P) × (Fin P → ℤ) → Euclid P → Euclid k, ∀ p x,
+      π p x = WithLp.toLp 2 (fun j => x (p.1 j) - (p.2 (p.1 j) : ℝ)) := ⟨_, fun _ _ => rfl⟩
+  -- step 1: `Φ_p` and `π_p` are continuous
+  have hΦc : ∀ p, Continuous (Φ p) := fun p => by
+    rw [show Φ p = _ from funext (hΦ p)]
+    exact continuous_const.add (continuous_finsetSum _ fun j _ =>
+      (PiLp.continuous_apply 2 _ j).smul continuous_const)
+  have hπc : ∀ p, Continuous (π p) := fun p => by
+    rw [show π p = _ from funext (hπ p)]
+    exact (PiLp.continuous_toLp 2 _).comp
+      (continuous_pi fun j => (PiLp.continuous_apply 2 _ (p.1 j)).sub continuous_const)
+  -- step 2: `π_p(Φ_p y) = y`, as `Φ_p(y)_{ι(m)} = b_{ι(m)} + yₘ` for injective `ι`
+  have hleft : ∀ p : (Fin k → Fin P) × (Fin P → ℤ), StrictMono p.1 → ∀ y, π p (Φ p y) = y := by
+    intro p hp y
+    have hcoord : ∀ l : Fin P, Φ p y l = (p.2 l : ℝ) + ∑ j, if p.1 j = l then y j else 0 := by
+      intro l
+      rw [hΦ, PiLp.add_apply, PiLp.toLp_apply, WithLp.ofLp_sum, Finset.sum_apply]
+      congr 1
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [PiLp.smul_apply, PiLp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero]
+      exact if_congr eq_comm rfl rfl
+    ext m
+    rw [hπ, PiLp.toLp_apply, hcoord,
+      Fintype.sum_eq_single m fun j hj => ite_eq_right (hp.injective.ne hj), ite_eq_left rfl]
+    ring
+  -- step 3: `N_p = {x : π_p(x) ∈ (0,1)ᵏ, 2 d_p(x) < 1, 2 d_p(x) < min(π_p(x)ⱼ, 1 − π_p(x)ⱼ)}`
+  obtain ⟨N, hN⟩ : ∃ N : (Fin k → Fin P) × (Fin P → ℤ) → Set (Euclid P), ∀ p, N p =
+      {x | (∀ j, 0 < π p x j ∧ π p x j < 1) ∧ 2 * dist x (Φ p (π p x)) < 1 ∧
+        ∀ j, 2 * dist x (Φ p (π p x)) < min (π p x j) (1 - π p x j)} := ⟨_, fun _ => rfl⟩
+  -- step 6: `2 d_p(x) < |Φ_p(π_p x) − Φ_q(y')|` for `x ∈ N_p`, `q ≠ p` and `y' ∈ [0,1]ᵏ`
+  have hkey : ∀ p q : (Fin k → Fin P) × (Fin P → ℤ), StrictMono p.1 → StrictMono q.1 → p ≠ q →
+      ∀ x ∈ N p, ∀ y' : Euclid k, (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) →
+        2 * dist x (Φ p (π p x)) < dist (Φ p (π p x)) (Φ q y') := by
+    intro p q hp hq hpq x hx y' hy'
+    rw [hN] at hx
+    obtain ⟨ht, hd₁, hd⟩ := hx
+    rcases hS p q hp hq hpq (π p x) y' ht hy' with h | ⟨j, h⟩
+    · linarith
+    · linarith [hd j]
+  -- points of `N_r` project into `[0,1]ᵏ`
+  have hmem : ∀ r x, x ∈ N r → ∀ j, 0 ≤ π r x j ∧ π r x j ≤ 1 := fun r x hx j => by
+    rw [hN] at hx
+    exact ⟨(hx.1 j).1.le, (hx.1 j).2.le⟩
+  refine ⟨N, fun p hp => ⟨?_, fun y hy => ?_, fun q hq hqp => ⟨fun y hy hx => ?_, ?_⟩⟩⟩
+  · -- step 4: `N_p` is a finite intersection of open sets `{f < h}`, `f`, `h` continuous
+    have hcj : ∀ j, Continuous fun x => π p x j := fun j =>
+      (PiLp.continuous_apply 2 _ j).comp (hπc p)
+    have hd : Continuous fun x => 2 * dist x (Φ p (π p x)) :=
+      continuous_const.mul (continuous_id.dist ((hΦc p).comp (hπc p)))
+    rw [hN]
+    simp only [ofPred_and, ofPred_forall]
+    exact (isOpen_iInter_of_finite fun j => (isOpen_lt continuous_const (hcj j)).inter
+      (isOpen_lt (hcj j) continuous_const)).inter ((isOpen_lt hd continuous_const).inter
+      (isOpen_iInter_of_finite fun j => isOpen_lt hd ((hcj j).min (continuous_const.sub (hcj j)))))
+  · -- step 5: `π_p(Φ_p y) = y`, so `d_p(Φ_p y) = 0`
+    rw [hN, Set.mem_ofPred_eq, hleft p hp y, dist_self, mul_zero]
+    exact ⟨hy, one_pos, fun j => lt_min (hy j).1 (sub_pos.mpr (hy j).2)⟩
+  · -- step 7: for `x = Φ_q(y)`, step 6 with `y' = y` gives `2 d_p(x) < d_p(x)`
+    have h := hkey p q hp hq hqp.symm (Φ q y) hx y hy
+    linarith [dist_comm (Φ q y) (Φ p (π p (Φ q y))),
+      dist_nonneg (x := Φ q y) (y := Φ p (π p (Φ q y)))]
+  · -- step 8: step 6 for `(p, q)` and `(q, p)` contradicts the triangle inequality
+    rw [Set.disjoint_left]
+    intro x hxp hxq
+    have h₁ := hkey p q hp hq hqp.symm x hxp (π q x) (hmem q x hxq)
+    have h₂ := hkey q p hq hp hqp x hxq (π p x) (hmem p x hxp)
+    have h₃ := dist_triangle (Φ p (π p x)) x (Φ q (π q x))
+    linarith [dist_comm (Φ p (π p x)) x, dist_comm (Φ q (π q x)) (Φ p (π p x))]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
