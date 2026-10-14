@@ -2473,6 +2473,66 @@ theorem Submission.dimred_mbl_bh_local_retraction : ∀ (P d : ℕ) (N : Set (Eu
   exact ⟨δ, fun y => ψ (k (A (y - x))), hδ, hπC, hπN, hπfix, fun η hη =>
     Submission.dtc_bc_lr_lipschitz_near_point P _ x δ 1 hδ hπC hDπ η hη⟩
 
+/-- **The moving blow-ups `S_j = η_{x_j,λ_j#}T`** (Simon 7.2.5(2), chapter-07.txt lines 166–173,
+and the proof of 7.3.1, lines 326–337; Ch. 6, 2.23–2.24, 3.3–3.9), for `x_j → x ∈ U` and
+`λ_j > 0`, `λ_j → 0`.  (1) `η_j = η_{x_j,λ_j}` is an affine homeomorphism, so `U_j = η_j(U)` is
+open.  (2) If `B_r(x) ⊆ U`, eventually `|x_j − x| + λ_j R < r`; then every `z ∈ B̄_R(0)` is
+`η_j(x_j + λ_j z)` with `x_j + λ_j z ∈ B_r(x)`.  (3), (4), (6): minimality, support and boundary
+transport along one dilation (`dtc_blowUp_isMinimizingIn`, `dtc_blowUp_algebra`), and
+`η_{j#}0 = 0`.  (5) is the mass bound for moving centres from the monotonicity hypothesis, and
+(7) rescales along `η_j` the local retraction onto `N` at `x`, needed only when `x ∈ N`. -/
+theorem Submission.dimred_mbl_blowUp_hypotheses : ∀ (m k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (m + 1 + k))) (T : GeometricCurrentOn U (m + 1)), IsOpen U → IsEmbeddedSubmanifold 2 (m + 1 + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → (∀ K : Set (Euclid (m + 1 + k)), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid (m + 1 + k)) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ (m + 1)) * T.massOn (ball y ρ)) (Ioo 0 R)) → ∀ (x : Euclid (m + 1 + k)) (xs : ℕ → Euclid (m + 1 + k)) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∀ j, IsOpen (dilation (xs j) (lams j) '' U)) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid (m + 1 + k)) R ⊆ dilation (xs j) (lams j) '' U) ∧ (∀ j, IsMinimizingIn (blowUp T (xs j) (lams j) (hlams j).ne') (dilation (xs j) (lams j) '' (U ∩ N))) ∧ (∀ j, (blowUp T (xs j) (lams j) (hlams j).ne').support ⊆ dilation (xs j) (lams j) '' (U ∩ N)) ∧ (∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop, (blowUp T (xs j) (lams j) (hlams j).ne').massOn (ball 0 R) ≤ c) ∧ (∀ j, (blowUp T (xs j) (lams j) (hlams j).ne').boundary = 0) ∧ ∀ G : ℝ, 0 < G → ∃ (πs : ℕ → Euclid (m + 1 + k) → Euclid (m + 1 + k)) (G' : ℝ), (∀ᶠ j in atTop, dilation (xs j) (lams j) '' (U ∩ N) ∩ ball 0 G = ∅ ∨ (ContDiffOn ℝ 1 (πs j) (ball 0 G) ∧ MapsTo (πs j) (ball 0 G) (dilation (xs j) (lams j) '' (U ∩ N) ∩ ball 0 G') ∧ ∀ y ∈ dilation (xs j) (lams j) '' (U ∩ N) ∩ ball 0 G, πs j y = y)) ∧ ∀ η : ℝ, 0 < η → ∀ᶠ j in atTop, dilation (xs j) (lams j) '' (U ∩ N) ∩ ball 0 G = ∅ ∨ ∀ y ∈ ball 0 G, ∀ z ∈ ball 0 G, ‖πs j y - πs j z‖ ≤ (1 + η) * ‖y - z‖ := by
+  intro m k ℓ _ U N T hU hN hcl hmin hspt hbv hmon x xs lams hlams hxU hxs hlam0
+  refine ⟨fun j => ?_, fun R => ?_, fun j => ?_, fun j => ?_, ?_, fun j => ?_, ?_⟩
+  · -- (1) `η_j` is a homeomorphism, so `U_j = η_j(U)` is open
+    obtain ⟨e, he⟩ : ∃ e : Euclid (m + 1 + k) ≃ₜ Euclid (m + 1 + k),
+        ⇑e = dilation (xs j) (lams j) :=
+      ⟨(Homeomorph.smulOfNeZero (lams j)⁻¹ (inv_ne_zero (hlams j).ne')).trans
+        (Homeomorph.addLeft (-((lams j)⁻¹ • xs j))), by
+          funext y
+          simp [dilation, dilationCLM]⟩
+    rw [← he]
+    exact e.isOpenMap U hU
+  · -- (2) `B_r(x) ⊆ U`; eventually `|x_j − x| + λ_j R < r`, and then `z ∈ B̄_R(0)` is
+    -- `η_j(x_j + λ_j z)` with `|x_j + λ_j z − x| ≤ λ_j R + |x_j − x| < r`
+    obtain ⟨r, hr, hrU⟩ := Metric.isOpen_iff.1 hU x hxU
+    have h0 : Tendsto (fun j => dist (xs j) x + lams j * R) atTop (𝓝 0) := by
+      have h1 : Tendsto (fun j => dist (xs j) x) atTop (𝓝 0) :=
+        tendsto_iff_dist_tendsto_zero.1 hxs
+      have h2 : Tendsto (fun j => lams j * R) atTop (𝓝 0) := by
+        simpa using hlam0.mul_const R
+      simpa using h1.add h2
+    filter_upwards [(tendsto_order.1 h0).2 r hr] with j hj
+    intro z hz
+    have hlam := hlams j
+    rw [mem_closedBall, dist_zero_right] at hz
+    refine ⟨xs j + lams j • z, hrU ?_, ?_⟩
+    · rw [mem_ball]
+      calc dist (xs j + lams j • z) x ≤ dist (xs j + lams j • z) (xs j) + dist (xs j) x :=
+            dist_triangle _ _ _
+        _ = lams j * ‖z‖ + dist (xs j) x := by
+            rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]
+        _ ≤ lams j * R + dist (xs j) x := by gcongr
+        _ < r := by linarith
+    · simp [dilation, dilationCLM, smul_add, smul_smul, hlam.ne']
+  · -- (3) minimality in `A_j = η_j(U ∩ N)`
+    exact Submission.dtc_blowUp_isMinimizingIn _ _ U (U ∩ N) T (xs j) (lams j) (hlams j) hmin
+  · -- (4) `spt S_j = η_j(spt T) ⊆ η_j(U ∩ N)`
+    rw [(Submission.dtc_blowUp_algebra _ U (xs j) (lams j) (hlams j)).2.2.1 (m + 1) T]
+    exact image_mono hspt
+  · -- (5) the mass bound for moving centres
+    exact Submission.dimred_mbl_bh_moving_blowUp_mass_bound _ _ U T hU hmin.1 hmon x xs lams
+      hlams hxU hxs hlam0
+  · -- (6) `∂S_j = η_{j#}(∂T) = η_{j#}0 = 0`
+    rw [(Submission.dtc_blowUp_algebra _ U (xs j) (lams j) (hlams j)).2.2.2 m T]
+    have hb : T.boundary = 0 := hbv
+    rw [hb]
+    ext ω
+    simp [blowUp]
+  · -- (7) the local retraction onto `N` at `x` (if `x ∈ N`), rescaled along `η_j`
+    exact Submission.dimred_mbl_bh_moving_rescaled_retractions _ U N x xs lams hU hcl hxU
+      (fun hxN => Submission.dimred_mbl_bh_local_retraction _ _ N x hN hxN) hlams hxs hlam0
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
