@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "depth": 2,
+  "title": "The tangent space of an embedded submanifold is the range of the derivative of any local representation",
+  "statement": "Let ψ : ℝ^d → ℝ^P be a local representation of N ⊆ ℝ^P in the sense of Simon Ch. 2 §4 (4.1): V ⊆ ℝ^d and W ⊆ ℝ^P open, ψ of class C^r on V with r ≥ 1, ψ injective on V, ψ(V) = W ∩ N, V ∩ ψ^{-1}(K) compact for every compact K ⊆ W, and Dψ(z) injective for every z ∈ V. Then for every v ∈ V the tangent space T_{ψ(v)}N = {γ'(0) : γ ∈ C¹((−1,1); ℝ^P), γ((−1,1)) ⊆ N, γ(0) = ψ(v)} (tangentSpace N (ψ v)) equals the range of Dψ(v).",
+  "lean_statement": "∀ (P d r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v : Euclid d), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v ∈ V → tangentSpace N (ψ v) = Set.range (fderiv ℝ ψ v)",
+  "lean_name": "chart_tangentSpace_eq_range_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1"
+}

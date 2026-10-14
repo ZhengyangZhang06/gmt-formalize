@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Theorem 7.4.2: the regular set is dense in the support",
+  "statement": "Let ℓ ≤ k, U ⊆ ℝ^{n+k} open, N an embedded C² (n+ℓ)-submanifold with (N̄∖N) ∩ U = ∅, and T ∈ 𝒟_n(U) minimizing in U ∩ N with spt T ⊆ U ∩ N and ∂T = 0 in U. Then spt T ⊆ closure(reg T).",
+  "lean_statement": "RegularSetDense",
+  "lean_name": "regular_set_dense",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1",
+    "root.density_one_implies_regular-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-a1"
+}

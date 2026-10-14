@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.tangent_projection_extension-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "depth": 2,
+  "title": "The tangent-plane projection of a C² submanifold extends to a C¹ field on a neighbourhood",
+  "statement": "Let N ⊆ ℝ^P be an embedded C² d-dimensional submanifold. Then there are an open set O ⊇ N and a map pr : ℝ^P → L(ℝ^P, ℝ^P), C¹ on O, with pr(z) equal to the orthogonal projection onto span(T_zN) (= T_zN) for every z ∈ N.",
+  "lean_statement": "∀ (P d : ℕ) (N : Set (Euclid P)), IsEmbeddedSubmanifold 2 d N → ∃ (O : Set (Euclid P)) (pr : Euclid P → (Euclid P →L[ℝ] Euclid P)), IsOpen O ∧ N ⊆ O ∧ ContDiffOn ℝ 1 pr O ∧ ∀ z ∈ N, pr z = (Submodule.span ℝ (tangentSpace N z)).starProjection",
+  "lean_name": "submanifold_tangentProjection_c1_extension",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-tangent-projection-extension-a1-a1"
+}

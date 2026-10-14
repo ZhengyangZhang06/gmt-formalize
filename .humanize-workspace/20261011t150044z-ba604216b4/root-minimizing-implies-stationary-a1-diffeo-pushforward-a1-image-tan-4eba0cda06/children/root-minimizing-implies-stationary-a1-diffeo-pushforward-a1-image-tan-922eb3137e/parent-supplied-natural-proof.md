@@ -1,0 +1,90 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1`
+- Child DAG node: `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1.image_regularity-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 3 of the parent proof, with the details filled in; openness of U is not used, and Lipschitz and antilipschitz constants may differ.
+1. Continuity and injectivity. φ is Lipschitz, hence continuous (LipschitzWith.continuous). φ is injective: if φ(x) = φ(y) then |x − y| ≤ Λ'|φ(x) − φ(y)| = 0 (AntilipschitzWith.injective; this also covers Λ' = 0).
+2. φ(M) is Borel. ℝ^P is a Polish space with its Borel σ-algebra, M is Borel, and φ is continuous on M and injective on M, so φ(M) is Borel by the Lusin–Souslin theorem (MeasurableSet.image_of_continuousOn_injOn).
+3. φ(M) ⊆ U. Let y ∈ φ(M), y = φ(x) with x ∈ M. Then x ∈ U = φ^{-1}(U) (M ⊆ U and φ^{-1}(U) = U), i.e. y = φ(x) ∈ U.
+4. Compact preimages. Fix a compact C ⊆ U and put K := φ^{-1}(C). C is closed and φ is continuous, so K is closed. C is bounded and diam φ^{-1}(C) ≤ Λ' diam C, so K is bounded (AntilipschitzWith.isBounded_preimage). ℝ^P is proper, so K is compact (Metric.isCompact_of_isClosed_isBounded). Moreover K ⊆ φ^{-1}(U) = U (preimage_mono). Hence H^n(M ∩ K) < ∞ by hypothesis.
+5. Lipschitz image bound for H^n. By definition μHE[n] = c·μH[n], with c := addHaarScalarFactor(volume on ℝ^n, μH[n]) ∈ [0, ∞) (Measure.euclideanHausdorffMeasure_def; the smul is multiplication by the coercion of c). For every S ⊆ ℝ^P, μH[n](φ(S)) ≤ Λ^n μH[n](S) (LipschitzWith.hausdorffMeasure_image_le with exponent d = n ≥ 0), hence H^n(φ(S)) = c·μH[n](φ(S)) ≤ c·Λ^n·μH[n](S) = Λ^n H^n(S).
+6. Conclusion. φ(M) ∩ C = φ(M ∩ φ^{-1}(C)) = φ(M ∩ K) (Set.image_inter_preimage). By steps 5 and 4, H^n(φ(M) ∩ C) ≤ Λ^n H^n(M ∩ K) < ∞, since Λ^n < ∞. Together with steps 2 and 3 this proves all three claims, uniformly in n ≥ 0 and P ≥ 0.
+
+## Key steps
+
+1. φ is continuous (Lipschitz) and injective (antilipschitz), so φ(M) is Borel by Lusin–Souslin.
+2. M ⊆ U = φ^{-1}(U) gives φ(M) ⊆ U.
+3. For compact C ⊆ U, K = φ^{-1}(C) is closed and bounded (antilipschitz), hence compact, and K ⊆ φ^{-1}(U) = U.
+4. μHE[n] = c·μH[n] and the Hausdorff Lipschitz bound give H^n(φ(S)) ≤ Λ^n H^n(S).
+5. φ(M) ∩ C = φ(M ∩ K), so H^n(φ(M) ∩ C) ≤ Λ^n H^n(M ∩ K) < ∞.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606db, mathlib 25730c7c)`
+- `rg -n 'approxTangentPlane' project/GMT --glob '*.lean'`
+- `rg -n 'AntilipschitzWith|hausdorffMeasure_image_le|image_of_continuousOn_injOn|ae_imp_of_ae_restrict' project/GMT --glob '*.lean' (no match)`
+- `rg -n 'dpf_itt|approxTangentPlane_eq|ae_of_ae_pieces|bilipschitz_image' project --glob '*.lean' (no match)`
+- `rg -n 'euclideanHausdorffMeasure' mathlib/Mathlib --glob '*.lean'`
+- `rg -n 'hausdorffMeasure_image_le' mathlib/Mathlib --glob '*.lean' -A6`
+- `sed -n 60,240p mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean (le_mul_dist, injective, isBounded_preimage)`
+- `rg -n 'theorem MeasurableSet.image_of_continuousOn_injOn|theorem ae_imp_of_ae_restrict|theorem ae_restrict_iff|theorem measure_union_null|theorem measure_iUnion_null_iff|theorem ae_iff' mathlib/Mathlib --glob '*.lean'`
+- `rg -n 'theorem toLinearMap_comp|theorem coe_comp|theorem range_comp |theorem fderiv_comp |theorem isCompact_of_isClosed_isBounded|theorem image_inter_preimage' in ContinuousLinearMap/Basic.lean, Submodule/Range.lean, FDeriv/Comp.lean, MetricSpace/Bounded.lean, Data/Set/Image.lean`
+- `grep -n 'def CountablyRectifiable|def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|def blowUpMap' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `python3 -I scan of dag.json (509 nodes) and all nodes/*/decomposition-v*.json for lean names and statements matching approxTangent|Lipschitz|null|bilipschitz|antilipschitz and for dpf_* names`
+- `grep -c dpf_itt dag.json DAG.md dag.mmd issue-workers.json github-workflow.json (all 0); git for-each-ref | grep image-tan; git diff --stat problems/ch07 <node branch> -- GMT (no Lean changes)`
+- `python3 -I: importlib-load verifier/gmt-compare.py, contract_scope(GMT/Ch07/Contract.lean, 'GMT.Ch07.main_theorem')`
+- `lake env lean /tmp/itt-decomp/Types.lean; lake env lean /tmp/itt-decomp/Assembly.lean; lake env lean /tmp/itt-decomp/Children.lean`
+- `lake env lean /tmp/itt-decomp-final/Final.lean (#print axioms for the 4 children and assembly_conditional)`
+- `lake env lean /tmp/itt-decomp-final2/D.lean (#check @dite_eq_left; proof via dite_eq_left)`
+- `independent reviewer subagent: re-ran Final.lean, byte-compared statements with dag.json, simulated the comparator NodeSolution step, and probed the volume instance and CLM coercions in /tmp/itt-review-qtYkT3/`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/ContinuousLinearMap/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Range.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-4eba0cda06/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-4eba0cda06/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-tangent-projection-measurable-a1/decomposition-audit-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/itt-decomp/Types.lean`
+- `/tmp/itt-decomp/Assembly.lean`
+- `/tmp/itt-decomp/Children.lean`
+- `/tmp/itt-decomp-final/Final.lean`
+- `/tmp/itt-decomp-final2/D.lean`
+
+The snapshot holds no proof of the selected statement or of any proposed child. In the project, approxTangentPlane appears only in its Ch07 definition (Contract/Submission line 259) and in the unrelated 4-argument Ch03 variant; no lemma relates it to HasApproximateTangentSpaceAt, and project/GMT has no antilipschitz, Hausdorff-image or a.e.-transfer lemma. The DAG has no node with a dpf_itt_ name or any of the four child types. One proposal in an accepted leaf node's decomposition (mis_tpm_approxTangentPlane_eq_of_hasApproxTangent) has the same type as chosen_tangent_plane but was never instantiated, so a new name is used.
+Every library fact the child proofs cite exists in the pinned Mathlib 25730c7c or SimonGMT 2b36630 with compatible hypotheses:
+- MeasurableSet.image_of_continuousOn_injOn (Polish/Basic.lean:821);
+- AntilipschitzWith.injective, le_mul_dist and isBounded_preimage;
+- Metric.isCompact_of_isClosed_isBounded and Set.image_inter_preimage;
+- LipschitzWith.hausdorffMeasure_image_le (Hausdorff.lean:745);
+- Measure.euclideanHausdorffMeasure_def, addHaarScalarFactor_volume_hausdorffMeasure_ne_zero and EuclideanSpace.euclideanHausdorffMeasure_eq_volume;
+- ae_imp_of_ae_restrict (Restrict.lean:619, no measurability needed), ae_restrict_iff', measure_iUnion_null and measure_union_null;
+- fderiv_comp, ContinuousLinearMap.coe_comp (function version) and toLinearMap_comp (linear-map version), LinearMap.range_comp;
+- dite_eq_left (dif_pos is deprecated);
+- SimonGMT HasApproximateTangentSpaceAt.unique (Rectifiable.lean:232).
+All four child types elaborate in the comparator's replayed GMT.Ch07 scope. The parent's exact frozen type is proved from the two sibling types plus the four children using only propext, Classical.choice and Quot.sound, and each child was proved in scratch Lean using only those same axioms.

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_jacobian_first_order-a1.scalar_sqrt_exp_first_order-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_jacobian_first_order-a1",
+  "depth": 4,
+  "title": "Scalar first-order bound √g ≤ 1 + tD + ε|t| from an exponential bound",
+  "statement": "Let n ∈ ℕ, A ≥ 0 and ε > 0. Then there exist real numbers η and δ with 0 < η ≤ 1 and δ > 0 with the following property. For all real t, D, g with |t| < δ, |D| ≤ nA and g ≤ exp(2tD + 2nη|t| + n(A + 1)²t²), one has √g ≤ 1 + tD + ε|t|. Here √ is the real square root (Real.sqrt, which is 0 on negative numbers).",
+  "lean_statement": "∀ (n : ℕ) (A ε : ℝ), 0 ≤ A → 0 < ε → ∃ η : ℝ, 0 < η ∧ η ≤ 1 ∧ ∃ δ : ℝ, 0 < δ ∧ ∀ t D g : ℝ, |t| < δ → |D| ≤ (n : ℝ) * A → g ≤ Real.exp (2 * t * D + 2 * (n : ℝ) * η * |t| + (n : ℝ) * (A + 1) ^ 2 * t ^ 2) → Real.sqrt g ≤ 1 + t * D + ε * |t|",
+  "lean_name": "fvmb_sqrt_le_first_order_of_le_exp",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-91b8a11902-a1"
+}
