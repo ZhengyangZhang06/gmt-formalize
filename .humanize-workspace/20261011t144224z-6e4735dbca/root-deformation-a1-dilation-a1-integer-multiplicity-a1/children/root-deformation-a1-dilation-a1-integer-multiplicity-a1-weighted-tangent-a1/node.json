@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.dilation-a1.integer_multiplicity-a1.weighted_tangent-a1",
+  "parent_id": "root.deformation-a1.dilation-a1.integer_multiplicity-a1",
+  "depth": 4,
+  "title": "Dilation invariance of weighted approximate tangent spaces",
+  "statement": "Let N, k ∈ ℕ, let ρ ∈ ℝ with ρ > 0, let M ⊆ ℝ^N (Eucl N), θ : ℝ^N → ℝ, x ∈ ℝ^N, and let Q be a linear subspace of ℝ^N. Suppose Q is a weighted approximate tangent space of (M, θ) at x in the sense of Simon Ch. 3, 1.7 (HasWeightedApproximateTangentSpaceAt k M θ x Q). Then Q is a weighted approximate tangent space of the dilated pair (ρM, θ(ρ⁻¹·)) at ρx, where ρM = {ρz : z ∈ M}. In Lean: HasWeightedApproximateTangentSpaceAt k ((fun y => ρ • y) '' M) (fun y => θ (ρ⁻¹ • y)) (ρ • x) Q.",
+  "lean_statement": "∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (x : Eucl N) (Q : Submodule ℝ (Eucl N)), 0 < ρ → HasWeightedApproximateTangentSpaceAt k M θ x Q → HasWeightedApproximateTangentSpaceAt k ((fun y : Eucl N => ρ • y) '' M) (fun y : Eucl N => θ (ρ⁻¹ • y)) (ρ • x) Q",
+  "lean_name": "deformation_dilation_im_weightedTangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-dilation-a1-integer-multiplicity-a1-weighted-tangent-a1-a1"
+}

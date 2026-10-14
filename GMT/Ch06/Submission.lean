@@ -30614,6 +30614,438 @@ theorem Submission.deformation_im_combination : ∀ (N k : ℕ) (X Y Z : Geometr
   rw [Finset.sum_pair zero_ne_one] at hfs
   rw [hZ ω, hX ω, hY ω]
   exact hfs.unique (hS ω)
+/-- Weighted approximate tangent spaces (Simon Ch. 3, 1.7) are invariant under the dilation
+`y ↦ ρ y`, `ρ > 0`: if `Q` is the approximate tangent space of `(M, θ)` at `x`, it is the
+approximate tangent space of `(ρ M, θ(ρ⁻¹ ·))` at `ρ x`.  The blow-up of `ρ M` at `ρ x` with
+ratio `s` is the blow-up of `M` at `x` with ratio `ρ⁻¹ s`, and `s ↦ ρ⁻¹ s` preserves `𝓝[>] 0`. -/
+theorem Submission.deformation_dilation_im_weightedTangent :
+    ∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (x : Eucl N)
+      (Q : Submodule ℝ (Eucl N)), 0 < ρ → HasWeightedApproximateTangentSpaceAt k M θ x Q →
+        HasWeightedApproximateTangentSpaceAt k ((fun y : Eucl N => ρ • y) '' M)
+          (fun y : Eucl N => θ (ρ⁻¹ • y)) (ρ • x) Q := by
+  intro N k ρ M θ x Q hρ hQ
+  -- The new multiplicity at `ρ x` is `θ(x)`.
+  have hval : θ (ρ⁻¹ • ρ • x) = θ x := by rw [inv_smul_smul₀ hρ.ne']
+  -- Blow-ups of `ρ M` at `ρ x` with ratio `s` are blow-ups of `M` at `x` with ratio `ρ⁻¹ s`.
+  have hset : ∀ s : ℝ,
+      Poincare.SimonGMT.Chapter03.blowUpMap (ρ • x) s '' ((fun y : Eucl N => ρ • y) '' M) =
+        Poincare.SimonGMT.Chapter03.blowUpMap x (ρ⁻¹ * s) '' M := by
+    intro s
+    rw [Set.image_image]
+    refine Set.image_congr fun z _ => ?_
+    simp only [Poincare.SimonGMT.Chapter03.blowUpMap]
+    rw [← smul_sub, smul_smul, mul_inv_rev, inv_inv]
+  have hweight : ∀ (s : ℝ) (u : Eucl N),
+      θ (ρ⁻¹ • (ρ • x + s • u)) = θ (x + (ρ⁻¹ * s) • u) := by
+    intro s u
+    rw [smul_add, inv_smul_smul₀ hρ.ne', smul_smul]
+  -- `s ↦ ρ⁻¹ s` maps `𝓝[>] 0` to itself.
+  have hlim : Tendsto (fun s : ℝ => ρ⁻¹ * s) (𝓝[>] 0) (𝓝[>] 0) := by
+    have h0 : Tendsto (fun s : ℝ => ρ⁻¹ * s) (𝓝 0) (𝓝 (ρ⁻¹ * 0)) :=
+      (continuous_const_mul ρ⁻¹).tendsto 0
+    rw [mul_zero] at h0
+    exact tendsto_nhdsWithin_iff.2 ⟨h0.mono_left nhdsWithin_le_nhds,
+      eventually_nhdsWithin_of_forall fun s hs => mul_pos (inv_pos.2 hρ) hs⟩
+  refine ⟨hQ.1, fun f => ?_⟩
+  show Tendsto _ _ (𝓝 (θ (ρ⁻¹ • ρ • x) * _))
+  rw [hval]
+  refine ((hQ.2 f).comp hlim).congr fun s => ?_
+  simp only [Function.comp_apply, hset, hweight]
+
+/-- Rectifiable triples are invariant under the dilation `φ(x) = ρ x`, `ρ > 0`:
+`(φ(M), θ ∘ φ⁻¹, ξ ∘ φ⁻¹)` is again a rectifiable triple, where `φ⁻¹(y) = ρ⁻¹ y`.
+`φ` is a measurable embedding pushing `c Hᵏ`, `c = ρᵏ`, forward to `Hᵏ`, so
+`Hᵏ(φ(S)) = c Hᵏ(S)` for every `S` and `Hᵏ ⌞ φ(M) = φ_#(c Hᵏ ⌞ M)`; an approximate tangent
+space of `(M, θ)` at `x` is one of `(φ(M), θ ∘ φ⁻¹)` at `φ(x)`. -/
+theorem Submission.deformation_dilation_im_rectifiableTriple :
+    ∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (ξ : Eucl N → NVector (Eucl N) k),
+      0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) →
+      MeasurePreserving (fun x : Eucl N => ρ • x)
+        (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N)) →
+      IsRectifiableTriple (univ : Set (Eucl N)) k M θ ξ →
+      IsRectifiableTriple (univ : Set (Eucl N)) k ((fun x : Eucl N => ρ • x) '' M)
+        (fun y : Eucl N => θ (ρ⁻¹ • y)) (fun y : Eucl N => ξ (ρ⁻¹ • y)) := by
+  intro N k ρ M θ ξ hρ hemb hmp hT
+  set φ : Eucl N → Eucl N := fun x => ρ • x
+  set c : ℝ≥0∞ := ENNReal.ofReal (ρ ^ k)
+  -- `ρ⁻¹ • φ(x) = x`, so `θ(ρ⁻¹ • ·) ∘ φ = θ` and `ξ(ρ⁻¹ • ·) ∘ φ = ξ`.
+  have hinv : ∀ x, ρ⁻¹ • φ x = x := fun x => inv_smul_smul₀ hρ.ne' x
+  -- `Hᵏ(φ(S)) = c Hᵏ(S)` for every `S`; in particular `φ` maps `Hᵏ`-null sets to null sets.
+  have hnull : ∀ S : Set (Eucl N), (μHE[k] : Measure (Eucl N)) S = 0 →
+      (μHE[k] : Measure (Eucl N)) (φ '' S) = 0 := by
+    intro S hS
+    rw [← hmp.map_eq, hemb.map_apply, preimage_image_eq _ hemb.injective, Measure.smul_apply, hS,
+      smul_zero]
+  -- `Hᵏ ⌞ φ(M) = φ_#(c Hᵏ ⌞ M)`.
+  have hres : MeasurePreserving φ (c • (μHE[k] : Measure (Eucl N)).restrict M)
+      ((μHE[k] : Measure (Eucl N)).restrict (φ '' M)) := by
+    rw [← Measure.restrict_smul]
+    exact hmp.restrict_image_emb hemb M
+  refine ⟨subset_univ _, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- `φ(M) =ᵐ φ(B)` for the measurable hull `B` of `M`.
+    have hB := hT.nullMeasurableSet.toMeasurable_ae_eq
+    rw [ae_eq_set] at hB
+    refine (hemb.measurableSet_image.2
+      (measurableSet_toMeasurable (μHE[k] : Measure (Eucl N)) M)).nullMeasurableSet.congr ?_
+    rw [ae_eq_set, ← image_sdiff hemb.injective, ← image_sdiff hemb.injective]
+    exact ⟨hnull _ hB.1, hnull _ hB.2⟩
+  · -- `φ(M) ⊆ φ(M₀) ∪ ⋃ⱼ range (φ ∘ Fⱼ)` with `φ` Lipschitz.
+    obtain ⟨M₀, hM₀, F, hF, hMF⟩ := hT.countablyRectifiable
+    have hφL : LipschitzWith ‖ρ‖₊ φ := LipschitzWith.of_dist_le_mul fun a b => by
+      show dist (ρ • a) (ρ • b) ≤ ‖ρ‖₊ * dist a b
+      rw [dist_smul₀, coe_nnnorm]
+    refine ⟨φ '' M₀, hnull M₀ hM₀, fun j => φ ∘ F j, fun j => ?_, ?_⟩
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨‖ρ‖₊ * K, hφL.comp hK⟩
+    · rintro _ ⟨y, hy, rfl⟩
+      rcases hMF hy with hy₀ | hy₁
+      · exact Or.inl (mem_image_of_mem φ hy₀)
+      · obtain ⟨j, w, rfl⟩ := mem_iUnion.1 hy₁
+        exact Or.inr (mem_iUnion.2 ⟨j, w, rfl⟩)
+  · rintro _ ⟨y, hy, rfl⟩
+    show 0 < θ (ρ⁻¹ • φ y)
+    rw [hinv]
+    exact hT.pos y hy
+  · -- `φ(M) ∩ K = φ(M ∩ φ⁻¹(K))` with `φ⁻¹(K)` compact, and `φ_#(c Hᵏ) = Hᵏ`.
+    intro K hK _
+    have hK' : IsCompact (φ ⁻¹' K) :=
+      (Homeomorph.smulOfNeZero ρ hρ.ne').isCompact_preimage.2 hK
+    have hθ : (fun y => θ (ρ⁻¹ • y)) ∘ φ = θ := funext fun y => by
+      simp only [Function.comp_apply, hinv]
+    rw [← image_inter_preimage, hmp.integrableOn_image hemb, hθ, IntegrableOn,
+      Measure.restrict_smul]
+    exact Integrable.smul_measure (hT.integrableOn _ hK' (subset_univ _)) ENNReal.ofReal_ne_top
+  · have hξ : (fun y => ξ (ρ⁻¹ • y)) ∘ φ = ξ := funext fun y => by
+      simp only [Function.comp_apply, hinv]
+    rw [← hres.map_eq, hemb.aestronglyMeasurable_map_iff, hξ]
+    exact hT.aestronglyMeasurable.smul_measure c
+  · -- At `φ(x)` the frame `τ` of `(M, θ, ξ)` at `x` still orients `(φ(M), θ', ξ')`.
+    rw [← hres.map_eq, hemb.ae_map_iff]
+    filter_upwards [Measure.ae_smul_measure hT.orients c] with y hy
+    obtain ⟨τ, hτ, htan, hξy⟩ := hy
+    refine ⟨τ, hτ, Submission.deformation_dilation_im_weightedTangent N k ρ M θ y _ hρ htan, ?_⟩
+    show ξ (ρ⁻¹ • φ y) = _ ∨ ξ (ρ⁻¹ • φ y) = _
+    rw [hinv]
+    exact hξy
+/-- `τ(M, θ, ξ)` tested against `x ↦ ρᵏ ω(ρx)` equals `τ(φ(M), θ ∘ φ⁻¹, ξ ∘ φ⁻¹)` tested against
+`ω`, `φ(x) = ρx`, `ρ > 0`, when `φ` is a measurable embedding pushing `ρᵏ Hᵏ` forward to `Hᵏ`:
+change variables and pull `ρᵏ` out of the linear `ξ(x)`. -/
+theorem Submission.deformation_dilation_im_tauAction :
+    ∀ (N k : ℕ) (ρ : ℝ) (M : Set (Eucl N)) (θ : Eucl N → ℝ) (ξ : Eucl N → NVector (Eucl N) k)
+      (ω : DifferentialForm (Eucl N) k), 0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) →
+      MeasurePreserving (fun x : Eucl N => ρ • x)
+        (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N)) →
+      tauAction k M θ ξ (fun x : Eucl N => ρ ^ k • ω (ρ • x)) =
+        tauAction k ((fun x : Eucl N => ρ • x) '' M) (fun y : Eucl N => θ (ρ⁻¹ • y))
+          (fun y : Eucl N => ξ (ρ⁻¹ • y)) ω := by
+  intro N k ρ M θ ξ ω hρ hemb hmp
+  -- Change variables `y = ρx` on the right: `∫_{φ(M)} g dHᵏ = ∫_M g ∘ φ d(ρᵏ Hᵏ)`.
+  simp only [tauAction]
+  rw [hmp.setIntegral_image_emb hemb (fun y => θ (ρ⁻¹ • y) * ξ (ρ⁻¹ • y) (ω y)) M,
+    Measure.restrict_smul, integral_smul_measure, ENNReal.toReal_ofReal (by positivity),
+    smul_eq_mul, ← integral_const_mul]
+  -- Pointwise, `ρ⁻¹ • ρx = x`, and `ξ(x)` is linear.
+  congr 1
+  funext x
+  simp only [inv_smul_smul₀ hρ.ne', map_smul, smul_eq_mul]
+  ring
+/-- Dilation calculus on `ℝ^N` for `η_ρ(x) = ρ x`, `ρ > 0` (Simon Ch. 6, 2.23, 2.24(1) and
+§1, 1.14): `η_ρ^# ω = ρ^k ω(ρ ·)` is a test form; every current `X` has the push-forward
+`Y = X ∘ η_ρ^#`, i.e. `Y(ω) = X(η_ρ^# ω)`; and push-forward commutes with `∂`, because
+`d(η_ρ^# ω) = η_ρ^#(dω)`. -/
+theorem Submission.deformation_dilation_calculus :
+    ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, (∀ ω : TestFormOn (univ : Set (Eucl N)) k, ∃ η : TestFormOn (univ : Set (Eucl N)) k, ∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) ∧ (∀ X : GeometricCurrentOn (univ : Set (Eucl N)) k, ∃ Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η)) ∧ ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) (k + 1), (∀ ω η : TestFormOn (univ : Set (Eucl N)) (k + 1), (∀ x, (η : DifferentialForm (Eucl N) (k + 1)) x = ρ ^ (k + 1) • (ω : DifferentialForm (Eucl N) (k + 1)) (ρ • x)) → Y ω = X η) → ∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y.boundary ω = X.boundary η := by
+  intro N ρ hρ k
+  -- Step 2: `x ↦ ρ • x` is a homeomorphism, so preimages of compact sets are compact.
+  have hcpt : ∀ K : Set (Eucl N), IsCompact K → IsCompact ((fun x : Eucl N => ρ • x) ⁻¹' K) :=
+    fun K hK => (Homeomorph.smulOfNeZero ρ hρ.ne').isCompact_preimage.2 hK
+  -- Step 3(b): `tsupport (ρ ^ k • ω(ρ ·)) ⊆ (ρ ·)⁻¹ (tsupport ω)`.
+  have hsupp : ∀ ω : TestFormOn (univ : Set (Eucl N)) k,
+      tsupport (fun x => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) ⊆
+        (fun x : Eucl N => ρ • x) ⁻¹' tsupport (ω : DifferentialForm (Eucl N) k) := fun ω =>
+    (tsupport_smul_subset_right (fun _ => ρ ^ k) _).trans
+      (tsupport_comp_subset_preimage _ (continuous_const_smul ρ))
+  -- Step 3: `ρ ^ k • ω(ρ ·)` is again a test form.
+  have hmem : ∀ ω : TestFormOn (univ : Set (Eucl N)) k,
+      (fun x => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) ∈
+        testFormOnSubmodule (univ : Set (Eucl N)) k := fun ω =>
+    ⟨⟨(ω.property.1.1.comp (contDiff_const_smul ρ)).const_smul (ρ ^ k),
+      (hcpt _ ω.property.1.2).of_isClosed_subset (isClosed_tsupport _) (hsupp ω)⟩, subset_univ _⟩
+  -- Step 4: the pull-back operator `P ω = ρ ^ k • ω(ρ ·)`.
+  let P : TestFormOn (univ : Set (Eucl N)) k →ₗ[ℝ] TestFormOn (univ : Set (Eucl N)) k :=
+    { toFun := fun ω => ⟨fun x => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x), hmem ω⟩
+      map_add' := fun ω η => by
+        apply Subtype.ext
+        funext x
+        simp [smul_add]
+      map_smul' := fun c ω => by
+        apply Subtype.ext
+        funext x
+        simp [smul_comm c] }
+  -- Iterated derivatives: `D^i (P ω) x = (ρ ^ k * ρ ^ i) • D^i ω (ρ • x)`.
+  have hD : ∀ (ω : TestFormOn (univ : Set (Eucl N)) k) (i : ℕ) (x : Eucl N),
+      iteratedFDeriv ℝ i (P ω : DifferentialForm (Eucl N) k) x =
+        (ρ ^ k * ρ ^ i) • iteratedFDeriv ℝ i (ω : DifferentialForm (Eucl N) k) (ρ • x) := by
+    intro ω i x
+    have hωi : ContDiff ℝ i (ω : DifferentialForm (Eucl N) k) := ω.property.1.1.of_le (by simp)
+    have hc : ContDiff ℝ i (fun y => (ω : DifferentialForm (Eucl N) k) (ρ • y)) :=
+      hωi.comp (contDiff_const_smul ρ)
+    show iteratedFDeriv ℝ i (fun y => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • y)) x = _
+    rw [iteratedFDeriv_const_smul_apply' hc.contDiffAt, iteratedFDeriv_comp_const_smul ρ hωi,
+      mul_smul]
+  -- Step 4(b): `P` is sequentially continuous at `0` for Simon's test-form topology.
+  have hconv : ∀ ωseq : ℕ → TestFormOn (univ : Set (Eucl N)) k,
+      TestFormOnConverges ωseq 0 → TestFormOnConverges (fun j => P (ωseq j)) 0 := by
+    rintro ωseq ⟨K, hK, -, hseq, -, hderiv⟩
+    refine ⟨(fun x : Eucl N => ρ • x) ⁻¹' K, hcpt K hK, subset_univ _,
+      fun j => (hsupp (ωseq j)).trans (preimage_mono (hseq j)), by simp, fun i => ?_⟩
+    have hcomp := (uniformContinuous_const_smul (ρ ^ k * ρ ^ i)).comp_tendstoUniformlyOn
+      ((hderiv i).comp (fun x : Eucl N => ρ • x))
+    refine (hcomp.congr (Eventually.of_forall fun j x _ => (hD (ωseq j) i x).symm)).congr_right
+      fun x _ => ?_
+    simp
+  -- Step 1: scaling identity `α (ρ v₁, …, ρ v_j) = ρ ^ j α (v₁, …, v_j)`.
+  have hscale : ∀ (j : ℕ) (α : Covector (Eucl N) j),
+      α.compContinuousLinearMap (ρ • ContinuousLinearMap.id ℝ (Eucl N)) = ρ ^ j • α := by
+    intro j α
+    ext v
+    have h := α.map_smul_univ (fun _ => ρ) v
+    rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin] at h
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply,
+      ContinuousAlternatingMap.smul_apply, ← h]
+    rfl
+  refine ⟨fun ω => ⟨P ω, fun x => rfl⟩,
+    fun X => ⟨⟨X.toCurrent.comp P, fun ωseq h => X.continuous' _ (hconv ωseq h)⟩,
+      fun ω η hη => ?_⟩, ?_⟩
+  · -- Step 5: `Y ω = X (P ω) = X η`.
+    show X.toCurrent (P ω) = X.toCurrent η
+    congr 1
+    exact Subtype.ext (funext fun x => (hη x).symm)
+  · -- Step 7: apply the degree `k + 1` pair property to `(dω, dη)`.
+    intro X Y hXY ω η hη
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply]
+    apply hXY
+    intro x
+    show extDeriv (η : DifferentialForm (Eucl N) k) x =
+      ρ ^ (k + 1) • extDeriv (ω : DifferentialForm (Eucl N) k) (ρ • x)
+    -- Step 6: `d` commutes with the pull-back by `L = ρ • id`.
+    set L : Eucl N →L[ℝ] Eucl N := ρ • ContinuousLinearMap.id ℝ (Eucl N)
+    have hη' : (η : DifferentialForm (Eucl N) k) =
+        fun y => ((ω : DifferentialForm (Eucl N) k) (L y)).compContinuousLinearMap
+          (fderiv ℝ L y) := by
+      funext y
+      rw [hη y, L.fderiv, hscale]
+      rfl
+    rw [hη', extDeriv_pullback (r := ((⊤ : ℕ∞) : WithTop ℕ∞))
+      ((ω.property.1.1.differentiable (by simp)).differentiableAt)
+      L.contDiff.contDiffAt (by simp), L.fderiv, hscale]
+    rfl
+/-- `Hᵏ` scaling law for the dilation `φ(x) = ρ • x`, `ρ > 0`: `φ` is a measurable embedding and
+pushes `ρᵏ Hᵏ` forward to `Hᵏ`, i.e. `Hᵏ(φ⁻¹(B)) = ρ⁻ᵏ Hᵏ(B)`. -/
+theorem Submission.deformation_dilation_hausdorff : ∀ (N k : ℕ) (ρ : ℝ), 0 < ρ → MeasurableEmbedding (fun x : Eucl N => ρ • x) ∧ MeasurePreserving (fun x : Eucl N => ρ • x) (ENNReal.ofReal (ρ ^ k) • (μHE[k] : Measure (Eucl N))) (μHE[k] : Measure (Eucl N)) := by
+  intro N k ρ hρ
+  -- `φ` is the homeomorphism `Homeomorph.smulOfNeZero ρ`, hence a measurable embedding.
+  have hemb : MeasurableEmbedding (fun x : Eucl N => ρ • x) :=
+    (Homeomorph.smulOfNeZero ρ hρ.ne').measurableEmbedding
+  refine ⟨hemb, hemb.measurable, ?_⟩
+  -- For measurable `B`: `φ⁻¹(B) = ρ⁻¹ • B` and `Hᵏ(ρ⁻¹ • B) = ‖ρ⁻¹‖₊ᵏ Hᵏ(B)`.
+  ext B hB
+  rw [Measure.map_apply hemb.measurable hB, Measure.smul_apply, Set.preimage_smul₀ hρ.ne',
+    Measure.euclideanHausdorffMeasure_smul₀ k (inv_ne_zero hρ.ne') B, ENNReal.smul_def,
+    smul_eq_mul, smul_eq_mul, ← mul_assoc]
+  -- `ofReal(ρᵏ) ‖ρ⁻¹‖₊ᵏ = ofReal((ρ ρ⁻¹)ᵏ) = 1`.
+  have hc : ENNReal.ofReal (ρ ^ k) * ((‖ρ⁻¹‖₊ ^ k : ℝ≥0) : ℝ≥0∞) = 1 := by
+    rw [← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (pow_nonneg hρ.le k), NNReal.coe_pow,
+      coe_nnnorm, Real.norm_of_nonneg (inv_nonneg.mpr hρ.le), ← mul_pow, mul_inv_cancel₀ hρ.ne',
+      one_pow, ENNReal.ofReal_one]
+  rw [hc, one_mul]
+
+/-- Mass scaling under dilation (Simon Ch. 6, 2.23 for `η_ρ(x) = ρx`, where
+`|η_ρ^# ω|(x) = ρᵏ |ω(ρx)|`): if `Y(ω) = X(η)` whenever `η(x) = ρᵏ ω(ρx)`, then `M(Y) = ρᵏ M(X)`.
+For a `σ`-pair `(A, B)` and `ω` admissible for `M(B)`, the pull-back `η = σᵏ ω(σ ·)` gives the
+admissible form `σ⁻ᵏ η = ω(σ ·)` for `M(A)` and `B(ω) = σᵏ A(σ⁻ᵏ η)`, so `M(B) ≤ σᵏ M(A)`.  As
+`(Y, X)` is a `ρ⁻¹`-pair, also `M(X) ≤ ρ⁻ᵏ M(Y)`, and the two bounds give equality in `[0, ∞]`. -/
+theorem Submission.deformation_dilation_mass : ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → Y.mass = ENNReal.ofReal (ρ ^ k) * X.mass := by
+  intro N ρ hρ k X Y hXY
+  -- `M(B) ≤ σᵏ M(A)` for every `σ`-pair `(A, B)`, `σ > 0`.
+  have half : ∀ σ : ℝ, 0 < σ → ∀ A B : GeometricCurrentOn (univ : Set (Eucl N)) k,
+      (∀ ω η : TestFormOn (univ : Set (Eucl N)) k,
+        (∀ x, (η : DifferentialForm (Eucl N) k) x =
+          σ ^ k • (ω : DifferentialForm (Eucl N) k) (σ • x)) → B ω = A η) →
+      B.mass ≤ ENNReal.ofReal (σ ^ k) * A.mass := by
+    intro σ hσ A B hAB
+    have hσk : σ ^ k ≠ 0 := pow_ne_zero k hσ.ne'
+    apply sSup_le
+    rintro _ ⟨ω, hω, rfl⟩
+    show ENNReal.ofReal (B ω) ≤ _
+    obtain ⟨η, hη⟩ := (Submission.deformation_dilation_calculus N σ hσ k).1 ω
+    -- `σ⁻ᵏ η = ω(σ ·)` is admissible for `M(A)`.
+    have hη' : ∀ x, (((σ ^ k)⁻¹ • η : TestFormOn (univ : Set (Eucl N)) k) :
+        DifferentialForm (Eucl N) k) x = (ω : DifferentialForm (Eucl N) k) (σ • x) := by
+      intro x
+      rw [Submodule.coe_smul, Pi.smul_apply, hη x, smul_smul, inv_mul_cancel₀ hσk, one_smul]
+    have hadm : (σ ^ k)⁻¹ • η ∈ massAdmissibleOn univ k univ := by
+      refine ⟨subset_univ _, fun x => ?_⟩
+      rw [hη' x]
+      exact hω.2 _
+    -- `B ω = A η = σᵏ A(σ⁻ᵏ η)`.
+    have hB : B ω = σ ^ k * A ((σ ^ k)⁻¹ • η) := by
+      rw [hAB ω η hη, map_smul, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hσk, one_mul]
+    rw [hB, ENNReal.ofReal_mul (pow_nonneg hσ.le k)]
+    exact mul_le_mul_right (A.le_massOn hadm) _
+  -- `(Y, X)` is a `ρ⁻¹`-pair: `η(x) = ρ⁻ᵏ ω(ρ⁻¹x)` for all `x` gives `ω(x) = ρᵏ η(ρx)`.
+  have hYX : ∀ ω η : TestFormOn (univ : Set (Eucl N)) k,
+      (∀ x, (η : DifferentialForm (Eucl N) k) x =
+        ρ⁻¹ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ⁻¹ • x)) → X ω = Y η := by
+    intro ω η hη
+    refine (hXY η ω fun x => ?_).symm
+    rw [hη (ρ • x), inv_smul_smul₀ hρ.ne', smul_smul, ← mul_pow, mul_inv_cancel₀ hρ.ne',
+      one_pow, one_smul]
+  -- `M(Y) ≤ ρᵏ M(X)` and `ρᵏ M(X) ≤ ρᵏ ρ⁻ᵏ M(Y) = M(Y)`.
+  refine le_antisymm (half ρ hρ X Y hXY) ?_
+  calc ENNReal.ofReal (ρ ^ k) * X.mass
+      ≤ ENNReal.ofReal (ρ ^ k) * (ENNReal.ofReal (ρ⁻¹ ^ k) * Y.mass) :=
+        mul_le_mul_right (half ρ⁻¹ (inv_pos.2 hρ) Y X hYX) _
+    _ = Y.mass := by
+        rw [← mul_assoc, ← ENNReal.ofReal_mul (pow_nonneg hρ.le k), ← mul_pow,
+          mul_inv_cancel₀ hρ.ne', one_pow, ENNReal.ofReal_one, one_mul]
+
+/-- Support scaling under dilation (Simon Ch. 6, 2.11, for the change of scale `x ↦ ρx` used
+to pass from 5.1 to 5.3).  Call `(A, B)` a `σ`-pair if `B(ω) = A(η)` whenever
+`η(x) = σᵏ ω(σx)`.  If `(A, B)` is a `σ`-pair and `A` vanishes on an open `W` with compact
+closure, then `B` vanishes on `σW`: the pull-back `η` of `ω` (first conjunct of
+`Submission.deformation_dilation_calculus`) has `tsupport η ⊆ σ⁻¹ tsupport ω ⊆ W`.
+Hence `σ zeroRegion(A) ⊆ zeroRegion(B)`.  Since `(Y, X)` is a `ρ⁻¹`-pair,
+`zeroRegion(Y) = ρ zeroRegion(X)`, and complements commute with the bijection `x ↦ ρx`. -/
+theorem Submission.deformation_dilation_support : ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → Y.support = (fun x => ρ • x) '' X.support := by
+  intro N ρ hρ k X Y hXY
+  -- Step 1: for a `σ`-pair `(A, B)`, `σ zeroRegion(A) ⊆ zeroRegion(B)`.
+  have hzero_image : ∀ σ : ℝ, 0 < σ → ∀ A B : GeometricCurrentOn (univ : Set (Eucl N)) k,
+      (∀ ω η : TestFormOn (univ : Set (Eucl N)) k,
+        (∀ x, (η : DifferentialForm (Eucl N) k) x =
+          σ ^ k • (ω : DifferentialForm (Eucl N) k) (σ • x)) → B ω = A η) →
+      (fun x => σ • x) '' A.zeroRegion ⊆ B.zeroRegion := by
+    intro σ hσ A B hAB
+    let φ : Eucl N ≃ₜ Eucl N := Homeomorph.smulOfNeZero σ hσ.ne'
+    rintro _ ⟨x, ⟨W, ⟨hWo, hWc, -, hWv⟩, hxW⟩, rfl⟩
+    refine ⟨φ '' W, ⟨φ.isOpenMap W hWo, ?_, subset_univ _, ?_⟩, mem_image_of_mem φ hxW⟩
+    · rw [← φ.image_closure]
+      exact hWc.image φ.continuous
+    · -- `B(ω) = A(η)` for the pull-back `η = σᵏ ω(σ ·)`, and `tsupport η ⊆ σ⁻¹ tsupport ω ⊆ W`.
+      intro ω hω
+      obtain ⟨η, hη⟩ := (Submission.deformation_dilation_calculus N σ hσ k).1 ω
+      rw [hAB ω η hη]
+      apply hWv η
+      have hηω : (η : DifferentialForm (Eucl N) k) =
+          fun x => σ ^ k • ((ω : DifferentialForm (Eucl N) k) ∘ φ) x := funext hη
+      calc tsupport (η : DifferentialForm (Eucl N) k)
+          ⊆ tsupport ((ω : DifferentialForm (Eucl N) k) ∘ φ) := by
+            rw [hηω]
+            exact tsupport_smul_subset_right (fun _ => σ ^ k) _
+        _ ⊆ φ ⁻¹' tsupport (ω : DifferentialForm (Eucl N) k) :=
+            tsupport_comp_subset_preimage _ φ.continuous
+        _ ⊆ φ ⁻¹' (φ '' W) := preimage_mono hω
+        _ = W := preimage_image_eq W φ.injective
+  -- Step 2: `(Y, X)` is a `ρ⁻¹`-pair.
+  have hYX : ∀ ω η : TestFormOn (univ : Set (Eucl N)) k,
+      (∀ x, (η : DifferentialForm (Eucl N) k) x =
+        ρ⁻¹ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ⁻¹ • x)) → X ω = Y η := by
+    intro ω η hη
+    refine (hXY η ω fun x => ?_).symm
+    rw [hη, inv_smul_smul₀ hρ.ne', smul_smul, ← mul_pow, mul_inv_cancel₀ hρ.ne', one_pow,
+      one_smul]
+  -- Step 3: `zeroRegion(Y) = ρ zeroRegion(X)`.
+  have hzero : Y.zeroRegion = (fun x => ρ • x) '' X.zeroRegion :=
+    Subset.antisymm
+      (fun y hy => ⟨ρ⁻¹ • y, hzero_image ρ⁻¹ (inv_pos.2 hρ) Y X hYX (mem_image_of_mem _ hy),
+        smul_inv_smul₀ hρ.ne' y⟩)
+      (hzero_image ρ hρ X Y hXY)
+  -- Step 4: `x ↦ ρx` is bijective, so it maps `univ \ zeroRegion(X)` onto `univ \ zeroRegion(Y)`.
+  have hbij : Function.Bijective fun x : Eucl N => ρ • x :=
+    (Homeomorph.smulOfNeZero ρ hρ.ne').bijective
+  rw [GeometricCurrentOn.support, GeometricCurrentOn.support, ← compl_eq_univ_sdiff,
+    ← compl_eq_univ_sdiff, hzero, image_compl_eq hbij]
+/-- Dilation preserves integer multiplicity (Simon Ch. 6, 2.23 and Lemma 3.9 for the dilation
+`η_ρ(x) = ρx`, `ρ > 0`): if `X = τ(M, θ, ξ)` is integer multiplicity and `Y(ω) = X(η)` whenever
+`η(x) = ρᵏ ω(ρx)`, then `Y = τ(ρM, θ(ρ⁻¹ ·), ξ(ρ⁻¹ ·))` with natural-valued `θ(ρ⁻¹ ·)`. -/
+theorem Submission.deformation_dilation_integer_multiplicity : ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → IsIntegerMultiplicity X → IsIntegerMultiplicity Y := by
+  intro N ρ hρ k X Y hXY hX
+  obtain ⟨M, θ, ξ, hT, hθ, hrep⟩ := hX
+  -- `φ(x) = ρ • x` is a measurable embedding pushing `ρᵏ Hᵏ` forward to `Hᵏ`.
+  obtain ⟨hemb, hmp⟩ := Submission.deformation_dilation_hausdorff N k ρ hρ
+  refine ⟨(fun x : Eucl N => ρ • x) '' M, fun y => θ (ρ⁻¹ • y), fun y => ξ (ρ⁻¹ • y),
+    Submission.deformation_dilation_im_rectifiableTriple N k ρ M θ ξ hρ hemb hmp hT, ?_, ?_⟩
+  · -- The multiplicity at `ρ • x` is `θ(ρ⁻¹ • ρ • x) = θ x ∈ ℕ`.
+    rintro _ ⟨x, hx, rfl⟩
+    simpa only [inv_smul_smul₀ hρ.ne'] using hθ x hx
+  · -- `Y ω = X η = τ(M, θ, ξ)(η) = τ(ρM, θ(ρ⁻¹ ·), ξ(ρ⁻¹ ·))(ω)` for the pull-back `η = ρᵏ ω(ρ ·)`.
+    intro ω
+    obtain ⟨η, hη⟩ := (Submission.deformation_dilation_calculus N ρ hρ k).1 ω
+    rw [hXY ω η hη, hrep η, show (η : DifferentialForm (Eucl N) k) =
+      fun x => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x) from funext hη]
+    exact Submission.deformation_dilation_im_tauAction N k ρ M θ ξ ω hρ hemb hmp
+/-- Dilation of lattice chains (the rescaling `x ↦ ρx` behind Simon Ch. 6, 5.3, p. 160).
+If `Y(ω) = X(η)` whenever `η(x) = ρᵏ ω(ρx)`, and `X = ∑'_F β_F [[F]]` on the unit lattice, then
+`Y = ∑'_F β_F [[ρF]]` on the `ρ`-lattice: `ρF` is the image of `F` under `x ↦ ρ • x` and
+`∫_{ρF} g dHᵏ = ρᵏ ∫_F g(ρx) dHᵏ(x)`, so the two sums agree term by term. -/
+theorem Submission.deformation_dilation_lattice_chain :
+    ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k,
+      (∀ ω η : TestFormOn (univ : Set (Eucl N)) k,
+        (∀ x, (η : DifferentialForm (Eucl N) k) x =
+          ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) →
+      ∀ β : LatticeFaceIndex k N → ℝ, IsLatticeChain 1 β X → IsLatticeChain ρ β Y := by
+  intro N ρ hρ k X Y hXY β hX ω
+  -- Step 1: `latticeFace ρ F = ρ • latticeFace 1 F`, coordinatewise.
+  have hface : ∀ F : LatticeFaceIndex k N,
+      latticeFace ρ F = (fun x : Eucl N => ρ • x) '' latticeFace 1 F := by
+    intro F
+    ext y
+    constructor
+    · intro hy
+      refine ⟨ρ⁻¹ • y, fun i => ?_, smul_inv_smul₀ hρ.ne' y⟩
+      rw [PiLp.smul_apply, smul_eq_mul, one_mul, one_mul]
+      refine ⟨fun hi => ?_, fun hi => ?_⟩
+      · obtain ⟨h₁, h₂⟩ := (hy i).1 hi
+        exact ⟨(le_inv_mul_iff₀ hρ).2 h₁, (inv_mul_le_iff₀ hρ).2 h₂⟩
+      · rw [(hy i).2 hi, inv_mul_cancel_left₀ hρ.ne']
+    · rintro ⟨x, hx, rfl⟩ i
+      rw [PiLp.smul_apply, smul_eq_mul]
+      refine ⟨fun hi => ?_, fun hi => ?_⟩
+      · obtain ⟨h₁, h₂⟩ := (hx i).1 hi
+        rw [one_mul] at h₁ h₂
+        exact ⟨mul_le_mul_of_nonneg_left h₁ hρ.le, mul_le_mul_of_nonneg_left h₂ hρ.le⟩
+      · rw [(hx i).2 hi, one_mul]
+  -- Step 2: `[[F]](ρᵏ ω(ρ ·)) = [[ρF]](ω)`, by the scaling `Hᵏ(ρ S) = ρᵏ Hᵏ(S)`.
+  obtain ⟨hemb, hmp⟩ := Submission.deformation_dilation_hausdorff N k ρ hρ
+  have hact : ∀ F : LatticeFaceIndex k N,
+      latticeFaceAction 1 F (fun x => ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) =
+        latticeFaceAction ρ F ω := by
+    intro F
+    rw [latticeFaceAction, latticeFaceAction, hface F, hmp.setIntegral_image_emb hemb,
+      Measure.restrict_smul, integral_smul_measure, ENNReal.toReal_ofReal (by positivity),
+      smul_eq_mul, ← integral_const_mul]
+    rfl
+  -- Step 3: compare the two chains term by term at the pulled-back test form `η`.
+  obtain ⟨η, hη⟩ := (Submission.deformation_dilation_calculus N ρ hρ k).1 ω
+  rw [hXY ω η hη, hX η, funext hη]
+  exact tsum_congr fun F => by rw [hact F]
+
+/-- Dilation of currents (Simon Ch. 6, 2.23 and 2.24(1) for `η_ρ(x) = ρx`), the change of scale
+used to pass from 5.1 to 5.3.  For `ρ > 0` call `(X, Y)` a `ρ`-pair in degree `k` if
+`Y(ω) = X(η)` whenever `η(x) = ρᵏ ω(ρx)`, i.e. `η = η_ρ^# ω`.  Then: (1) `η_ρ^# ω` is a test form;
+(2) every `X ∈ 𝒟ₖ(ℝᴺ)` has a push-forward `Y = η_ρ# X`; (3) every `ρ`-pair has `M(Y) = ρᵏ M(X)`
+and `spt Y = ρ spt X`, `Y` is integer multiplicity if `X` is, and `Y = ∑ β_F [[ρF]]` if
+`X = ∑ β_F [[F]]`; (4) `∂` commutes with `η_ρ#`. -/
+theorem Submission.deformation_dilation : ∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, (∀ ω : TestFormOn (univ : Set (Eucl N)) k, ∃ η : TestFormOn (univ : Set (Eucl N)) k, ∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) ∧ (∀ X : GeometricCurrentOn (univ : Set (Eucl N)) k, ∃ Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η)) ∧ (∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → Y.mass = ENNReal.ofReal (ρ ^ k) * X.mass ∧ Y.support = (fun x => ρ • x) '' X.support ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity Y) ∧ ∀ β : LatticeFaceIndex k N → ℝ, IsLatticeChain 1 β X → IsLatticeChain ρ β Y) ∧ ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) (k + 1), (∀ ω η : TestFormOn (univ : Set (Eucl N)) (k + 1), (∀ x, (η : DifferentialForm (Eucl N) (k + 1)) x = ρ ^ (k + 1) • (ω : DifferentialForm (Eucl N) (k + 1)) (ρ • x)) → Y ω = X η) → ∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y.boundary ω = X.boundary η := by
+  intro N ρ hρ k
+  -- (1), (2), (4): pull-back of test forms, push-forward of currents, commutation with `∂`.
+  obtain ⟨hpull, hpush, hbdry⟩ := Submission.deformation_dilation_calculus N ρ hρ k
+  -- (3): mass, support, integer multiplicity and lattice chains of an arbitrary `ρ`-pair.
+  exact ⟨hpull, hpush, fun X Y hXY =>
+    ⟨Submission.deformation_dilation_mass N ρ hρ k X Y hXY,
+      Submission.deformation_dilation_support N ρ hρ k X Y hXY,
+      Submission.deformation_dilation_integer_multiplicity N ρ hρ k X Y hXY,
+      Submission.deformation_dilation_lattice_chain N ρ hρ k X Y hXY⟩, hbdry⟩
 
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
