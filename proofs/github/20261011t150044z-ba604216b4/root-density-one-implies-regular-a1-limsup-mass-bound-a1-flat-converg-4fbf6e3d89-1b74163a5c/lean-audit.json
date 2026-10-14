@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f1e6d4d689a1b82a190b8d41e64b4316e736470ce934016eec1bf8b8006f9008",
+  "git_delta": {
+    "base_commit": "e15f0f60615186c3d073fb779216a68710a993b4",
+    "candidate_commit": "ef7968c4cfb43fa203ec7f522696cead4c5839bf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_dtop_cp_cutoff_pullback_converges",
+    "diff_sha256": "919d0615f5f07bf7631fbeed459651ed25066bae4040f433783b087b0ee78cb7",
+    "source_sha256": "93423ea03a4755325aa75bb6729c38be489410a5d6d9bcdcc6f65ea917dde6ae",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_dtop_cp_cutoff_pullback_converges",
+      "statement": "∀ (P Q d : ℕ) (L : Euclid Q →L[ℝ] Euclid P) (ζ : Euclid Q → ℝ), ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → ∀ (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) d) (ηs : ℕ → TestFormOn (univ : Set (Euclid Q)) d), (∀ (j : ℕ) (y : Euclid Q), (ηs j : DifferentialForm (Euclid Q) d) y = ζ y • ((ωs j : DifferentialForm (Euclid P) d) (L y)).compContinuousLinearMap L) → TestFormOnConverges ωs 0 → TestFormOnConverges ηs 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
