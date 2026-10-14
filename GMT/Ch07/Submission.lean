@@ -1032,6 +1032,128 @@ theorem Submission.dtc_bc_lc_pfi_unitOrientation_algebra : ∀ (P n : ℕ), (∀
       hA (LinearMap.injective_of_linearIndependent (f := (A : Euclid n →ₗ[ℝ] Euclid P)) he_span hli)
     exact β.toAlternatingMap.map_linearDependent _ hdep
 
+/-- **Area change of variables for injective maps.**  Write `J_T = √det(⟨T eₖ, T eₗ⟩)` for linear
+`T : ℝⁿ → ℝᴾ`.  (I) For injective `T` the area formula gives `Hⁿ(T(S)) = J_T |S|`; on the unit
+ball the Lipschitz bound `Hⁿ(L(X)) ≤ ‖L‖ⁿ Hⁿ(X)` gives `J_{L∘A} ≤ ‖L‖ⁿ J_A`.  (II) Let `F` be
+differentiable with injective `DF` at every point of the Borel set `B` and injective on `B`, and
+`J(x) = J_{DF(x)}`.  `F(B)` is Borel (Lusin–Souslin).  For Borel `S`, `(invFunOn F B)⁻¹(S)` is
+`F(B ∩ S)` together with `F(B)ᶜ` if `S` contains the default value, so `invFunOn F B` is Borel.
+A Borel `Hⁿ⌞F(B)`-null `Z` has `∫_B J · 1_Z ∘ F = Hⁿ(Z ∩ F(B)) = 0`, and `J > 0` on `B`, so
+`F⁻¹(Z)` is null in `B`.  The area formula for `‖h‖ₑ`, `h⁺` and `h⁻` gives the integrability
+criterion and the integral identity; if `h` is not integrable both integrals vanish. -/
+theorem Submission.dtc_bc_lc_pfi_area_change_of_variables : ∀ (P n : ℕ), (∀ (A : Euclid n →L[ℝ] Euclid P) (L : Euclid P →L[ℝ] Euclid P), Injective (L.comp A) → Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ ((L.comp A) (EuclideanSpace.single k 1)) ((L.comp A) (EuclideanSpace.single l 1)))) ≤ ‖L‖ ^ n * Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (A (EuclideanSpace.single k 1)) (A (EuclideanSpace.single l 1))))) ∧ ∀ (F : Euclid n → Euclid P) (B : Set (Euclid n)), MeasurableSet B → (∀ x ∈ B, DifferentiableAt ℝ F x ∧ Injective (fderiv ℝ F x)) → InjOn F B → MeasurableSet (F '' B) ∧ Measurable (Function.invFunOn F B) ∧ (∀ p : Euclid P → Prop, (∀ᵐ y ∂(μHE[n].restrict (F '' B)), p y) → ∀ᵐ x ∂(volume.restrict B), p (F x)) ∧ ∀ h : Euclid P → ℝ, AEStronglyMeasurable h (μHE[n].restrict (F '' B)) → (IntegrableOn h (F '' B) μHE[n] ↔ IntegrableOn (fun x => Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (fderiv ℝ F x (EuclideanSpace.single k 1)) (fderiv ℝ F x (EuclideanSpace.single l 1)))) * h (F x)) B) ∧ ∫ y in F '' B, h y ∂μHE[n] = ∫ x in B, Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (fderiv ℝ F x (EuclideanSpace.single k 1)) (fderiv ℝ F x (EuclideanSpace.single l 1)))) * h (F x) := by
+  intro P n
+  -- `G T = √det(⟨T eₖ, T eₗ⟩)`, the Gram-determinant Jacobian of a linear `T : ℝⁿ → ℝᴾ`
+  obtain ⟨G, hG⟩ : ∃ G : (Euclid n →L[ℝ] Euclid P) → ℝ, ∀ T, G T = Real.sqrt (Matrix.det
+      (Matrix.of fun k l : Fin n => inner ℝ (T (EuclideanSpace.single k 1)) (T (EuclideanSpace.single l 1)))) :=
+    ⟨_, fun T => rfl⟩
+  have harea := Submission.codim1_lura_gram_area_formula n P
+  simp only [← hG] at harea ⊢
+  have hG0 : ∀ T, 0 ≤ G T := fun T => by rw [hG]; exact Real.sqrt_nonneg _
+  -- `J_T > 0` for injective `T` (orient_algebra (c))
+  have hGpos : ∀ T : Euclid n →L[ℝ] Euclid P, Injective T → 0 < G T := fun T hT => by
+    rw [hG]
+    exact ((Submission.dtc_bc_lc_pfi_unitOrientation_algebra P n).2.2.1 T hT).1
+  -- linear area identity: `Hⁿ(T(S)) = J_T |S|` for injective `T` and Borel `S`
+  have hlin : ∀ T : Euclid n →L[ℝ] Euclid P, Injective T → ∀ S : Set (Euclid n),
+      MeasurableSet S → μHE[n] (T '' S) = ENNReal.ofReal (G T) * volume S := by
+    intro T hT S hS
+    simpa only [ContinuousLinearMap.fderiv, mul_one, setLIntegral_one, setLIntegral_const] using
+      (harea T).2 S hS (fun x _ => T.differentiableAt) (fun x _ => by rwa [T.fderiv]) hT.injOn
+        fun _ => 1
+  refine ⟨fun A L hLA => ?_, fun F B hB hF hinj => ?_⟩
+  · -- (I): compare the images of the unit ball under `L ∘ A` and `A`
+    have hA : Injective A := fun x y hxy => hLA (by
+      rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, hxy])
+    have hle : μHE[n] ((L.comp A) '' ball 0 1) ≤ (‖L‖₊ : ℝ≥0∞) ^ n * μHE[n] (A '' ball 0 1) := by
+      rw [ContinuousLinearMap.coe_comp, image_comp]
+      exact Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+        L.lipschitzWith.lipschitzOnWith
+    rw [hlin _ hLA _ measurableSet_ball, hlin _ hA _ measurableSet_ball, ← mul_assoc,
+      ENNReal.mul_le_mul_iff_left (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+        measure_ball_lt_top.ne] at hle
+    refine (ENNReal.ofReal_le_ofReal_iff (mul_nonneg (pow_nonneg (norm_nonneg L) n) (hG0 A))).1 ?_
+    rw [ENNReal.ofReal_mul (pow_nonneg (norm_nonneg L) n), ENNReal.ofReal_pow (norm_nonneg L),
+      ofReal_norm, enorm_eq_nnnorm]
+    exact hle
+  have hcont : ContinuousOn F B := fun x hx => (hF x hx).1.continuousAt.continuousWithinAt
+  have hFae : AEMeasurable F (volume.restrict B) := hcont.aemeasurable hB
+  have hJ : Measurable fun x => G (fderiv ℝ F x) := (harea F).1
+  have hAF := (harea F).2 B hB (fun x hx => (hF x hx).1) (fun x hx => (hF x hx).2) hinj
+  -- (i) Lusin–Souslin: images of Borel subsets of `B` are Borel
+  have himage : ∀ S, MeasurableSet S → S ⊆ B → MeasurableSet (F '' S) :=
+    fun S hS hSB => hS.image_of_continuousOn_injOn (hcont.mono hSB) (hinj.mono hSB)
+  -- (ii) `(invFunOn F B)⁻¹(S) = F(B ∩ S) ∪ (F(B)ᶜ ∩ {_ | c ∈ S})`, `c` the default value
+  have hψ : Measurable (Function.invFunOn F B) := by
+    intro S hS
+    obtain ⟨c, hc⟩ : ∃ c, ∀ y, y ∉ F '' B → Function.invFunOn F B y = c :=
+      ⟨_, fun y hy => Function.invFunOn_neg hy⟩
+    have heq : Function.invFunOn F B ⁻¹' S = F '' (B ∩ S) ∪ (F '' B)ᶜ ∩ {_y | c ∈ S} := by
+      ext y
+      by_cases hy : y ∈ F '' B
+      · obtain ⟨x, hx, rfl⟩ := hy
+        rw [mem_preimage, hinj.leftInvOn_invFunOn hx]
+        constructor
+        · exact fun hxS => Or.inl ⟨x, ⟨hx, hxS⟩, rfl⟩
+        · rintro (⟨x', ⟨hx', hx'S⟩, hx'x⟩ | ⟨hFx, -⟩)
+          · rwa [← hinj hx' hx hx'x]
+          · exact absurd (mem_image_of_mem F hx) hFx
+      · rw [mem_preimage, hc y hy]
+        constructor
+        · exact fun hcS => Or.inr ⟨hy, hcS⟩
+        · rintro (⟨x', ⟨hx', -⟩, rfl⟩ | ⟨-, hcS⟩)
+          · exact absurd (mem_image_of_mem F hx') hy
+          · exact hcS
+    rw [heq]
+    exact (himage _ (hB.inter hS) inter_subset_left).union
+      ((himage B hB Subset.rfl).compl.inter (MeasurableSet.const _))
+  -- (iii) `Hⁿ⌞F(B)`-null sets pull back to null subsets of `B`, since `J > 0` on `B`
+  have hnull : ∀ p : Euclid P → Prop, (∀ᵐ y ∂(μHE[n].restrict (F '' B)), p y) →
+      ∀ᵐ x ∂(volume.restrict B), p (F x) := by
+    intro p hp
+    obtain ⟨Z, hpZ, hZ, hZ0⟩ := exists_measurable_superset_of_null (ae_iff.1 hp)
+    have h0 : ∫⁻ x in B, ENNReal.ofReal (G (fderiv ℝ F x)) * Z.indicator 1 (F x) = 0 := by
+      rw [← hAF (Z.indicator 1), lintegral_indicator_one hZ, hZ0]
+    have h1 := (lintegral_eq_zero_iff' (hJ.ennreal_ofReal.aemeasurable.mul
+      ((measurable_one.indicator hZ).comp_aemeasurable hFae))).1 h0
+    filter_upwards [h1, ae_restrict_mem hB] with x hx hxB
+    by_contra hpx
+    have hZx : Z.indicator (1 : Euclid P → ℝ≥0∞) (F x) = 1 := indicator_of_mem (hpZ hpx) _
+    simp only [Pi.mul_apply, Pi.zero_apply, comp_apply, hZx, mul_one, ENNReal.ofReal_eq_zero] at hx
+    exact absurd hx (not_le.2 (hGpos _ (hF x hxB).2))
+  refine ⟨himage B hB Subset.rfl, hψ, hnull, fun h hh => ?_⟩
+  -- `x ↦ J(x) h(F(x))` is a.e. strongly measurable on `B`: replace `h` by a Borel version
+  have hmeas : AEStronglyMeasurable (fun x => G (fderiv ℝ F x) * h (F x)) (volume.restrict B) := by
+    refine (hJ.aemeasurable.mul (hh.stronglyMeasurable_mk.measurable.comp_aemeasurable
+      hFae)).aestronglyMeasurable.congr ?_
+    filter_upwards [hnull (fun y => hh.mk h y = h y) hh.ae_eq_mk.symm] with x hx
+    simp only [Pi.mul_apply, comp_apply, hx]
+  -- `∫⁻_{F(B)} ‖h‖ₑ dHⁿ = ∫⁻_B ‖J · h ∘ F‖ₑ`
+  have hnorm : ∫⁻ y in F '' B, ‖h y‖ₑ ∂μHE[n] = ∫⁻ x in B, ‖G (fderiv ℝ F x) * h (F x)‖ₑ := by
+    rw [hAF]
+    refine lintegral_congr fun x => ?_
+    rw [enorm_mul, Real.enorm_of_nonneg (hG0 _)]
+  have hint : IntegrableOn h (F '' B) μHE[n] ↔
+      IntegrableOn (fun x => G (fderiv ℝ F x) * h (F x)) B := by
+    refine ⟨fun hi => ⟨hmeas, ?_⟩, fun hi => ⟨hh, ?_⟩⟩
+    · rw [hasFiniteIntegral_iff_enorm, ← hnorm]
+      exact hi.2
+    · rw [hasFiniteIntegral_iff_enorm, hnorm]
+      exact hi.2
+  refine ⟨hint, ?_⟩
+  by_cases hi : IntegrableOn h (F '' B) μHE[n]
+  · -- area formula for `h⁺` and `h⁻`
+    rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hi.integrable,
+      integral_eq_lintegral_pos_part_sub_lintegral_neg_part (hint.1 hi).integrable, hAF, hAF]
+    have e1 : ∀ x, ENNReal.ofReal (G (fderiv ℝ F x)) * ENNReal.ofReal (h (F x)) =
+        ENNReal.ofReal (G (fderiv ℝ F x) * h (F x)) := fun x =>
+      (ENNReal.ofReal_mul (hG0 _)).symm
+    have e2 : ∀ x, ENNReal.ofReal (G (fderiv ℝ F x)) * ENNReal.ofReal (-h (F x)) =
+        ENNReal.ofReal (-(G (fderiv ℝ F x) * h (F x))) := fun x => by
+      rw [← ENNReal.ofReal_mul (hG0 _), mul_neg]
+    simp only [e1, e2]
+  · rw [integral_undef hi, integral_undef fun h' => hi (hint.2 h')]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
