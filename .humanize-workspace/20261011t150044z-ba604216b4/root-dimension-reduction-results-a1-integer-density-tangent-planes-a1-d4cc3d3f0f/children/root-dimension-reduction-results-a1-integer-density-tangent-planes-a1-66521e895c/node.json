@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.nonhomogeneous-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1",
+  "depth": 6,
+  "title": "A measure of finite positive total mass is not of the form Hⁿ.withDensity f with f(t·w) = f(w) for all t > 0, when n ≥ 1 (parent step 6)",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, ν a measure on ℝ^P with ν(ℝ^P) ≠ 0 and ν(ℝ^P) ≠ ∞, and f : ℝ^P → [0, ∞] an arbitrary function (no measurability assumed) with f(t·w) = f(w) for every t > 0 and w ∈ ℝ^P. Then ν ≠ μHE[n].withDensity f.",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (f : Euclid P → ℝ≥0∞), 1 ≤ n → ν univ ≠ 0 → ν univ ≠ ∞ → (∀ t : ℝ, 0 < t → ∀ w : Euclid P, f (t • w) = f w) → ν ≠ (μHE[n] : Measure (Euclid P)).withDensity f",
+  "lean_name": "idtp_fons_cc_psf_nonhomogeneous",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.dilate_homogeneity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.dilate_homogeneity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-4622bb5be6-a1",
+      "result_commit": "fc55b7480dccf7e48261ad5b085ddd0c0cc9f1d6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-66521e895c-a1"
+}

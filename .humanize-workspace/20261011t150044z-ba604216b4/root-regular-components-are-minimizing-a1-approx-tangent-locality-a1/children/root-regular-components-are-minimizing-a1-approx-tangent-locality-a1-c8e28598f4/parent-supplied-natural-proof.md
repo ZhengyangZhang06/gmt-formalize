@@ -1,0 +1,81 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.regular_components_are_minimizing-a1.approx_tangent_locality-a1`
+- Child DAG node: `root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.blowup_measure_scaling-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the scaling identity H^n(B_R(0) ∩ η_{x,λ}(M∖N_j)) = λ^{-n} H^n(B_{λR}(x) ∩ (M∖N_j)) in Simon's proof of Ch. 3, Theorem 1.6 "⇒" (chapter-03.txt lines 126-134), and Step 2 of the parent proof ("translation invariance and H^n(cS) = |c|^n H^n(S)"), here with closed balls. Notation: η := Poincare.SimonGMT.Chapter03.blowUpMap x r, i.e. η(z) = r⁻¹·(z − x); μ := μHE[n]; r > 0 throughout.
+
+1. (Set identity.) η(S) ∩ closedBall(0, R) = η(S ∩ closedBall(x, r·R)). Indeed ‖η(z)‖ = |r⁻¹|·‖z − x‖ = r⁻¹‖z − x‖.
+- If y = η(z) with z ∈ S and ‖y‖ ≤ R, then ‖z − x‖ = r·(r⁻¹‖z − x‖) ≤ r·R. So z ∈ S ∩ closedBall(x, rR) and y ∈ η(S ∩ closedBall(x, rR)).
+- Conversely, if z ∈ S and ‖z − x‖ ≤ rR, then ‖η(z)‖ = r⁻¹‖z − x‖ ≤ r⁻¹(rR) = R. So η(z) ∈ η(S) ∩ closedBall(0, R).
+- If R < 0 both sides are empty, consistently with the computation.
+
+2. (Decomposition of η.) Let h := AffineMap.homothety x r⁻¹, so h(z) = r⁻¹·(z − x) + x, and let τ(y) := y + (−x). Then η(z) = τ(h(z)) for every z, hence η(T) = τ(h(T)) for every T ⊆ ℝ^P.
+
+3. (Scaling of μ.)
+- τ is an isometry, so μ(τ(h(T))) = μ(h(T)) (Mathlib `Isometry.euclideanHausdorffMeasure_image` with `isometry_add_right`).
+- The homothety rule (Mathlib `MeasureTheory.euclideanHausdorffMeasure_homothety_image`, applicable since r⁻¹ ≠ 0) gives μ(h(T)) = ‖r⁻¹‖₊^n · μ(T).
+- Since r > 0, ‖r⁻¹‖₊ = ‖r‖₊⁻¹ with ‖r‖₊ = r. The coercion to [0, ∞] of the inverse of the nonzero nonnegative real r is (ENNReal.ofReal r)⁻¹.
+Therefore μ(η(T)) = (ENNReal.ofReal r)⁻¹^n · μ(T) for every T ⊆ ℝ^P.
+
+4. (Conclusion.) Apply Step 3 to T := S ∩ closedBall(x, r·R) and use Step 1: μ(η(S) ∩ closedBall(0, R)) = μ(η(S ∩ closedBall(x, rR))) = (ENNReal.ofReal r)⁻¹^n · μ(S ∩ closedBall(x, r·R)). This is the statement.
+
+## Key steps
+
+1. η_{x,r}(S) ∩ closedBall(0,R) = η_{x,r}(S ∩ closedBall(x, rR)) since ‖η_{x,r}(z)‖ = r⁻¹‖z − x‖.
+2. η_{x,r} is a translation composed with the homothety of centre x and ratio r⁻¹.
+3. Translations preserve μHE[n] and the homothety multiplies it by ‖r⁻¹‖₊^n = (ENNReal.ofReal r)⁻¹^n.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/{parent-child-handoff.json,parent-supplied-natural-proof.md,parent-supplied-plan.md}`
+- `sed -n 1,160p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (blowUpMap, HasApproximateTangentSpaceAt definition)`
+- `grep -n 'simon_theorem_3_6|simon_remark_3_7|dimensionalUpperDensity|dimensionalDensityQuotient' simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean Densities.lean`
+- `grep -n 'simonHausdorffOuterMeasureReal_eq_scaled_hausdorffMeasure|IsBorelRegularOuterMeasure|measure_toOuterMeasure_isBorelRegular|realUnitBallVolume_pos' simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean Basic.lean GeneralDensity.lean`
+- `lake env lean Mods.lean: #eval env.header.moduleNames filtered by `Poincare` and `Mathlib.MeasureTheory.Covering` after import GMT.Ch07.Submission`
+- `#check Poincare.SimonGMT.Chapter01.simon_theorem_3_6 after import GMT.Ch07.Submission (unknown identifier)`
+- `grep -n 'euclideanHausdorffMeasure_homothety_image|Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero' mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `#check Vitali.exists_disjoint_subfamily_covering_enlargement, Measure.hausdorffMeasure_le_liminf_tsum, Set.PairwiseDisjoint.countable_of_nonempty_interior, MeasurableSet.exists_isClosed_sdiff_lt, Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure, TopologicalSpace.countable_cover_nhdsWithin, setIntegral_union, IntegrableOn.of_forall_diff_eq_zero, Measure.integrableOn_of_bounded, norm_setIntegral_le_of_norm_le_const, ENNReal.tendsto_nhds_zero, ENNReal.exists_inv_nat_lt`
+- `grep -n 'mul_lt_mul_left|mul_lt_mul_iff_right' mathlib/Mathlib/Basic/ENNReal/Operations.lean; grep -n 'ediam_le_of_forall_dist_le' mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `python3 scan of dag.json lean_name/lean_statement (132 nodes): no regcomp_atl_* names; byte-identical type at rsdic_ae_tangent_iff_of_subset`
+- `grep -n 'import|byte|frozen' verifier/gmt-compare.py (contract_scope, candidate_inputs); per-branch count of import lines in GMT/Ch07/Submission.lean (all branches keep the 8 contract imports)`
+- `lake env lean /tmp/atl-split-check/StmtCheck.lean (exact four child statements elaborate)`
+- `lake env lean /tmp/atl-split-check/Full.lean (four children + parent assembly; #print axioms: propext, Classical.choice, Quot.sound; 0 errors)`
+- `sed -n 560,725p book/chapter-01.txt (Simon 3.1-3.7); sed -n 60,150p book/chapter-03.txt (Definition 1.4, Remark 1.5, proof of 1.6)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/github-workflow.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/c025f76e99e37e80afe1/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/.swarm-worktrees/52370b77ab02e1bcef03/gmt-ch07/GMT/Ch07/Submission/HumanizeSpeculativeChildren.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Densities.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/GeneralDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/atl-split-check/StmtCheck.lean`
+- `/tmp/atl-split-check/Full.lean`
+
+The workspace Submission.lean is the frozen contract (project b4d606d, mathlib 25730c7c). Its import closure contains these SimonGMT modules only: Ch01.Basic/Hausdorff/MetricCriterion, Ch02.Lipschitz, Ch03.Rectifiable, Ch04.Basic and Ch06.{AffineCurrentPushforward,CurrentLocalEquality,Currents,Forms,Mass}. The parent proof cites simon_theorem_3_6 and simon_remark_3_7_*, which live in Chapter01/DensityComparison.lean and are therefore NOT available (unknown identifier). No branch in the run modifies the Submission header. Child upper_density_zero therefore reproves Simon 1.3.6 for μHE[n] from Mathlib tools that are in scope: Vitali.exists_disjoint_subfamily_covering_enlargement, Set.PairwiseDisjoint.countable_of_nonempty_interior, Measure.hausdorffMeasure_le_liminf_tsum, MeasurableSet.exists_isClosed_sdiff_lt (weak regularity of finite measures) and euclideanHausdorffMeasure_def (μHE[n] = c • μH[n] with c an ℝ≥0). The other children use the following Mathlib lemmas. Scaling: euclideanHausdorffMeasure_homothety_image, Isometry.euclideanHausdorffMeasure_image. Localization: TopologicalSpace.countable_cover_nhdsWithin, ae_ball_iff. Blow-up comparison: setIntegral_union, Measure.integrableOn_of_bounded, IntegrableOn.of_forall_sdiff_eq_zero, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, norm_setIntegral_le_of_norm_le_const. They also use SimonGMT's Chapter03 blowUpMap/HasApproximateTangentSpaceAt definitions, which are in scope. A complete Lean prototype of all four children plus the parent assembly compiles with only propext, Classical.choice and Quot.sound. The DAG reserves no regcomp_atl_* names. Node rsdic_ae_tangent_iff_of_subset has a frozen type byte-identical to the selected node.
