@@ -8165,6 +8165,56 @@ theorem Submission.dimred_cs_sos_mt_frame_measure : ∀ (P k : ℕ) (g : Fin k �
   -- (i): the affine plane measure at `a = 0`, where `0 + ι(u) = ι(u)` and `y − 0 = y`
   simpa using (Submission.cbr_cipi_affine_plane_measure P k g 0 hg).1
 
+/-- **One face current: the product of a closed coordinate box with a translate** (Simon Ch. 6,
+2.17–2.20 and 3.9; the faces of the split-off box, Ch. 7, 3.5).  Let `f` be orthonormal,
+`F = span f`, `w ∈ F^⊥`, `Q = {s ∈ F : |⟨f_c, s⟩| ≤ r for all c}` and `Y = τ(R_Y)` with
+`μ_Y(ℝᴾ ∖ F^⊥) = 0`.  By `Submission.dimred_cs_sos_mt_fc_translate_imrep` the translate `Y^w`,
+`Y^w(φ) = Y(φ(· + w))`, has an `IMRep` `R^w` with `μ_{R^w}(C) = μ_Y(C − w)`; as `w ∈ F^⊥`,
+`(ℝᴾ ∖ F^⊥) − w = ℝᴾ ∖ F^⊥`, so `R^w` is carried by `F^⊥`.  `Q ⊆ F` is closed, so
+`Submission.idtp_fons_cs_sos_product_current` gives `B = [[Q]] ×_f Y^w` with an `IMRep` `R_B`,
+`μ_B(C) = ∫_Q μ_{R^w}(C − t) dHᵏ(t)` and `B(ω) = ∫_Q Y^w(♭ω(t + ·)) dHᵏ(t)`, which is
+`∫_Q Y(♭ω(t + w + ·)) dHᵏ(t)`.  By `Submission.imrep_represents_massOn_eq_measure` and
+`Submission.dimred_cs_sos_mt_frame_measure`, `M(B) = μ_B(ℝᴾ) = Hᵏ(Q) μ_Y(ℝᴾ) = (2r)ᵏ μ_Y(ℝᴾ)`. -/
+theorem Submission.dimred_cs_sos_mt_fc_box_face : ∀ (P k m' n' : ℕ) (f : Fin k → Euclid P) (h : n' = k + m') (w : Euclid P) (Y : GeometricCurrentOn (univ : Set (Euclid P)) m') (RY : IMRep (univ : Set (Euclid P)) m') (r : ℝ), 0 < m' → Orthonormal ℝ f → w ∈ (Submodule.span ℝ (Set.range f))ᗮ → RY.Represents Y → RY.measure ((Submodule.span ℝ (Set.range f))ᗮ : Set (Euclid P))ᶜ = 0 → 0 < r → ∃ B : GeometricCurrentOn (univ : Set (Euclid P)) n', IsIntegerMultiplicity B ∧ B.mass = ENNReal.ofReal ((2 * r) ^ k) * RY.measure univ ∧ ∀ flat : Covector (Euclid P) n' → Covector (Euclid P) m', (∀ (α : Covector (Euclid P) n') (v : Fin m' → Euclid P), flat α v = α (Fin.append f v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n', B ω = ∫ s in {s | s ∈ Submodule.span ℝ (Set.range f) ∧ ∀ c, |inner ℝ (f c) s| ≤ r}, currentEval Y (fun y => flat ((ω : DifferentialForm (Euclid P) n') (s + w + y))) ∂μHE[k] := by
+  intro P k m' n' f h w Y RY r hm' hf hw hRY hRYF hr
+  -- (1) the translate `Y^w` of `Y` by `w`, with its `IMRep` `R^w`
+  obtain ⟨Yw, Rw, hRw, hYw, hRwμ⟩ :=
+    Submission.dimred_cs_sos_mt_fc_translate_imrep P m' Y RY w hRY
+  -- (2) `R^w` is carried by `F^⊥`: `y + w ∈ F^⊥ ↔ y ∈ F^⊥` as `w ∈ F^⊥`
+  have hFc : MeasurableSet ((Submodule.span ℝ (Set.range f))ᗮ : Set (Euclid P))ᶜ :=
+    (Submodule.isClosed_orthogonal _).measurableSet.compl
+  have hpre : (fun y => y + w) ⁻¹' ((Submodule.span ℝ (Set.range f))ᗮ : Set (Euclid P))ᶜ =
+      ((Submodule.span ℝ (Set.range f))ᗮ : Set (Euclid P))ᶜ := by
+    ext y
+    simp only [mem_preimage, mem_compl_iff, SetLike.mem_coe, Submodule.add_mem_iff_left _ hw]
+  have hRwF : Rw.measure ((Submodule.span ℝ (Set.range f))ᗮ : Set (Euclid P))ᶜ = 0 := by
+    rw [hRwμ _ hFc, hpre, hRYF]
+  -- (3) the closed box `Q ⊆ F` is Borel
+  have hQm : MeasurableSet
+      {s : Euclid P | s ∈ Submodule.span ℝ (Set.range f) ∧ ∀ c, |inner ℝ (f c) s| ≤ r} := by
+    rw [ofPred_and, ofPred_forall]
+    exact (Submodule.span ℝ (Set.range f)).closed_of_finiteDimensional.measurableSet.inter
+      (MeasurableSet.iInter fun c =>
+        (isClosed_le (continuous_const.inner continuous_id).abs continuous_const).measurableSet)
+  -- (4) the product `B = [[Q]] ×_f Y^w`, represented by an `IMRep` `R_B`
+  obtain ⟨B, RB, hRB, hRBμ, hBact⟩ :=
+    Submission.idtp_fons_cs_sos_product_current P k m' n' f h _ Yw Rw hm' hf hQm
+      (fun s hs => hs.1) hRw hRwF
+  refine ⟨B, ⟨RB, hRB⟩, ?_, fun flat hflat ω => ?_⟩
+  -- (5) mass: `M(B) = μ_B(ℝᴾ) = Hᵏ(Q) μ_{R^w}(ℝᴾ) = (2r)ᵏ μ_Y(ℝᴾ)`
+  · rw [GeometricCurrentOn.mass, Submission.imrep_represents_massOn_eq_measure P n' univ univ B RB
+      isOpen_univ hRB isOpen_univ subset_rfl, hRBμ univ MeasurableSet.univ]
+    simp only [preimage_univ]
+    rw [lintegral_const, Measure.restrict_apply_univ, hRwμ univ MeasurableSet.univ, preimage_univ,
+      ((Submission.dimred_cs_sos_mt_frame_measure P k f hf).2 r hr).1, mul_comm]
+  -- (6) action: `Y^w(φ) = Y(φ(· + w))` at each `s ∈ Q`, and `s + (y + w) = s + w + y`
+  · rw [hBact flat hflat ω]
+    refine setIntegral_congr_fun hQm fun s _ => ?_
+    rw [hYw]
+    congr 1
+    funext y
+    rw [add_comm y w, ← add_assoc]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
