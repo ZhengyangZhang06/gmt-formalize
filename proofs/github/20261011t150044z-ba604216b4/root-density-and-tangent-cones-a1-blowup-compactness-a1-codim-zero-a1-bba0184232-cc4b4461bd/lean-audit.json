@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3854044aa93239092545855fe667b51310a0f26377e7456487f389c36cc46ad9",
+  "git_delta": {
+    "base_commit": "5b63e8c398310cd517d4533a9fa52b918fbcd465",
+    "candidate_commit": "cd68cfffda2295b5d9cfac4335fa444c46588a9b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_cz_isMinimizingIn_const_eq_zero",
+    "diff_sha256": "619c291a727393b8f847b148b6462ff5b9f4a372b56a315da818cd3ce875ef2a",
+    "source_sha256": "4c35538db6fb3baaf9f90e9147d7eb4338c324df9721a27e03870b05e1b78346",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_cz_isMinimizingIn_const_eq_zero",
+      "statement": "∀ (n : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid n)) n) (c : ℝ), 0 < n → IsCompact X.support → (∀ ω : TestFormOn (univ : Set (Euclid n)) n, X ω = c * ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)) → c = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

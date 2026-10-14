@@ -451,6 +451,140 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A top-degree test form with positive integral**: for `p ∈ ℝⁿ` and `r > 0` some
+`ω ∈ 𝒟ⁿ(ℝⁿ)` has `spt ω ⊆ B̄_r(p)` and `∫ ω(y)(e₁, …, eₙ) dy > 0`, `e` the standard basis.
+Take `ω = a e*`: `e* = det_e` is continuous (`det_e v = det (vⱼ(k))_{k,j}`) with `e*(e) = 1`,
+and `a` is a smooth bump with `a = 1` on `B̄_{r/2}(p)` and `tsupport a = B̄_r(p)`.  Then
+`ω(y)(e) = a(y)`, and `∫ a > 0` as `a ≥ 0` is continuous, compactly supported, `a(p) = 1`. -/
+theorem Submission.dtc_bc_cz_isMinimizingIn_bump_form : ∀ (n : ℕ) (p : Euclid n) (r : ℝ), 0 < r → ∃ ω : TestFormOn (univ : Set (Euclid n)) n, tsupport (ω : DifferentialForm (Euclid n) n) ⊆ closedBall p r ∧ 0 < ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ) := by
+  intro n p r hr
+  -- Step 1: the covector `e* = det_e`; `det_e v = det (vⱼ(k))_{k,j}` is continuous in `v`
+  let e := EuclideanSpace.basisFun (Fin n) ℝ
+  let D : Euclid n [⋀^Fin n]→ₗ[ℝ] ℝ := e.toBasis.det
+  have hD : ∀ v : Fin n → Euclid n, D v = (Matrix.of fun k j => v j k).det := by
+    intro v
+    have hM : e.toBasis.toMatrix v = Matrix.of fun k j => v j k := by
+      ext k j
+      simp [e, Module.Basis.toMatrix_apply]
+    rw [Module.Basis.det_apply, hM]
+  have hDcont : Continuous fun v : Fin n → Euclid n => D v := by
+    simp_rw [hD]
+    exact Continuous.matrix_det (continuous_matrix fun k j =>
+      (PiLp.continuous_apply 2 _ k).comp (continuous_apply j))
+  let estar : Covector (Euclid n) n := { D with cont := hDcont }
+  have hestar : estar ⇑e = 1 := by
+    change D ⇑e = 1
+    rw [← OrthonormalBasis.coe_toBasis]
+    exact e.toBasis.det_self
+  -- Step 2: a smooth bump `a` with `a = 1` on `B̄_{r/2}(p)` and `tsupport a = B̄_r(p)`
+  let a : ContDiffBump p := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
+  -- Step 3: the test form `ω = a e*`, with `tsupport ω ⊆ tsupport a = B̄_r(p)`
+  let ω : DifferentialForm (Euclid n) n := fun y => a y • estar
+  have hωsmooth : IsSmoothForm ω := (a.contDiff (n := ⊤)).smul contDiff_const
+  have hωcpt : HasCompactSupport ω := a.hasCompactSupport.smul_right
+  have hωsupp : tsupport ω ⊆ closedBall p r :=
+    (tsupport_smul_subset_left (fun y => a y) fun _ => estar).trans a.tsupport_eq.subset
+  refine ⟨⟨ω, ⟨hωsmooth, hωcpt⟩, subset_univ _⟩, hωsupp, ?_⟩
+  -- Step 4: `ω(y)(e) = a(y) e*(e) = a(y)`, and `∫ a > 0` since `a ≥ 0` is continuous with
+  -- compact support and `a(p) = 1`
+  have hωe : ∀ y, ω y ⇑e = a y := by
+    intro y
+    simp only [ω, ContinuousAlternatingMap.smul_apply, hestar, smul_eq_mul, mul_one]
+  have hap : a p ≠ 0 := by
+    rw [a.one_of_mem_closedBall (mem_closedBall_self (half_pos hr).le)]
+    exact one_ne_zero
+  change 0 < ∫ y, ω y ⇑e
+  simp_rw [hωe]
+  exact a.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero a.hasCompactSupport
+    (fun _ => a.nonneg) hap
+/-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
+`spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
+`S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
+unity `ψ₁, …, ψₘ` on `K` subordinate to them splits `ω = Σᵢ ψᵢω` into test forms with
+`spt (ψᵢω) ⊆ Wᵢ`, each annihilated by `S`. -/
+theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0 := by
+  intro P n U S ω hdisj
+  classical
+  -- `K = spt ω` is a compact subset of `U`
+  set K := tsupport (ω : DifferentialForm (Euclid P) n)
+  have hKc : IsCompact K := ω.property.1.2
+  have hKU : K ⊆ U := ω.property.2
+  -- `K` lies in the zero region `⋃₀ 𝒲`, hence in finitely many members of `𝒲`
+  let 𝒲 : Set (Set (Euclid P)) :=
+    {W | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ S.VanishesOn W}
+  have hKZ : K ⊆ ⋃ W : 𝒲, (W : Set (Euclid P)) := by
+    intro x hx
+    have hxZ : x ∈ S.zeroRegion := by
+      by_contra hxZ
+      exact Set.disjoint_left.mp hdisj hx ⟨hKU hx, hxZ⟩
+    rwa [GeometricCurrentOn.zeroRegion, Set.sUnion_eq_iUnion] at hxZ
+  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun W : 𝒲 => (W : Set (Euclid P)))
+    (fun W => W.2.1) hKZ
+  let Wt : t → Set (Euclid P) := fun i => ((i : 𝒲) : Set (Euclid P))
+  have hKt : K ⊆ ⋃ i, Wt i := by
+    intro x hx
+    obtain ⟨W, hW, hxW⟩ := Set.mem_iUnion₂.mp (ht hx)
+    exact Set.mem_iUnion.mpr ⟨⟨W, hW⟩, hxW⟩
+  -- a smooth partition of unity `ψᵢ` on `K` with `spt ψᵢ ⊆ Wᵢ`
+  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Wt (fun i => (i : 𝒲).2.1) hKt
+  -- each `ψᵢω` is a test form in `U` supported in `Wᵢ`
+  have hmem : ∀ i, (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n ∧
+      tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ Wt i := by
+    intro i
+    have hsK : tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ K :=
+      tsupport_smul_subset_right _ _
+    refine ⟨⟨⟨?_, ?_⟩, hsK.trans hKU⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
+    · exact (contMDiff_iff_contDiff.mp (ψ i).contMDiff).smul ω.property.1.1
+    · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
+  let ωi : t → TestFormOn U n := fun i => ⟨_, (hmem i).1⟩
+  -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
+  have hsum : ω = ∑ i, ωi i := by
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    change (ω : DifferentialForm (Euclid P) n) x =
+      ∑ i, ψ i x • (ω : DifferentialForm (Euclid P) n) x
+    by_cases hx : x ∈ K
+    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
+    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
+      simp [h0]
+  -- linearity: `S(ω) = Σᵢ S(ψᵢω) = 0`
+  change S.toCurrent ω = 0
+  rw [hsum, map_sum]
+  exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
+
+/-- A constant multiple `X = c[[ℝⁿ]]` (`n ≥ 1`) with compact support is zero (step 6 of
+`dtc_bc_cz_isMinimizingIn`): if `X(ω) = c ∫ ω(y)(e₁, …, eₙ) dy` for every `ω ∈ 𝒟ⁿ(ℝⁿ)` and
+`spt X` is compact, then `c = 0`.  Take `r₀` with `spt X ⊆ B̄_{r₀}(0)` and `p = (|r₀| + 2)e₁`,
+so `‖p‖ = |r₀| + 2`.  A test form `ω` with `spt ω ⊆ B̄₁(p)` and `∫ ω(y)(e₁, …, eₙ) dy > 0` has
+`spt ω ∩ spt X = ∅`, since `‖p‖ ≤ ‖y‖ + ‖y − p‖ ≤ r₀ + 1` for `y` in both.  Hence `X(ω) = 0`
+(Simon 6.2.11), so `c ∫ ω(y)(e₁, …, eₙ) dy = 0` and `c = 0`. -/
+theorem Submission.dtc_bc_cz_isMinimizingIn_const_eq_zero : ∀ (n : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid n)) n) (c : ℝ), 0 < n → IsCompact X.support → (∀ ω : TestFormOn (univ : Set (Euclid n)) n, X ω = c * ∫ y, (ω : DifferentialForm (Euclid n) n) y ⇑(EuclideanSpace.basisFun (Fin n) ℝ)) → c = 0 := by
+  intro n X c hn hX hXc
+  -- Step 1: `spt X ⊆ B̄(0, r₀)`, `spt X` being compact
+  obtain ⟨r₀, hr₀⟩ := hX.isBounded.subset_closedBall (0 : Euclid n)
+  -- Step 2: `p = (|r₀| + 2) e₁` (`n ≥ 1`) has `‖p‖ = |r₀| + 2`
+  obtain ⟨p, hpn⟩ : ∃ p : Euclid n, ‖p‖ = |r₀| + 2 :=
+    ⟨(|r₀| + 2) • EuclideanSpace.single (⟨0, hn⟩ : Fin n) (1 : ℝ), by
+      rw [norm_smul, PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs,
+        abs_of_pos (by positivity)]⟩
+  -- Step 3 (child `bump_form`): `ω` with `spt ω ⊆ B̄(p, 1)` and `∫ ω(y)(e) dy > 0`
+  obtain ⟨ω, hωs, hωI⟩ := Submission.dtc_bc_cz_isMinimizingIn_bump_form n p 1 one_pos
+  -- Step 4: `spt ω ∩ spt X = ∅`, as `‖p‖ ≤ ‖y‖ + ‖y − p‖ ≤ r₀ + 1 < |r₀| + 2` on it
+  have hdisj : Disjoint (tsupport (ω : DifferentialForm (Euclid n) n)) X.support := by
+    refine Set.disjoint_left.mpr fun y hyω hyX => ?_
+    have h1 : ‖y - p‖ ≤ 1 := mem_closedBall_iff_norm.mp (hωs hyω)
+    have h2 : ‖y‖ ≤ r₀ := mem_closedBall_zero_iff.mp (hr₀ hyX)
+    have h3 : ‖p‖ ≤ ‖y‖ + ‖y - p‖ := by
+      simpa only [sub_sub_cancel] using norm_sub_le y (y - p)
+    linarith [le_abs_self r₀]
+  -- Step 5 (`dtc_vanish_off_support`): `X(ω) = 0`
+  have hX0 : X ω = 0 := Submission.dtc_vanish_off_support n n univ X ω hdisj
+  -- Step 6: `c ∫ ω(y)(e) dy = 0` with a positive integral, so `c = 0`
+  rw [hXc ω] at hX0
+  exact (mul_eq_zero.mp hX0).resolve_right hωI.ne'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
