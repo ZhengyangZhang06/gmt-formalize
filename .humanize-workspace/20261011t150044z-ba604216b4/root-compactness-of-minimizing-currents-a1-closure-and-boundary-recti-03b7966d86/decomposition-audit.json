@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "intervalIntegral_deriv_mem_uIcc|intervalIntegrable_deriv|ae_differentiableAt|deriv_nonneg|countable_meas_pos_of_disjoint_iUnion|tendsto_slope_zero_left|ofReal_sub|theorem measure_sdiff|theorem liminf_le_liminf",
+        "lintegral.*deriv|annulus.*liminf|liminf.*annulus|good.*radius",
+        "git show cbce4763f17082f947c2646bc235268cc4f8d1fc:GMT/Ch07/Submission.lean",
+        "git show 6efe397f182ee5f93e5be9c4b09eb298c3f56ad8:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/radius-audit-root-b77kdd0x/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/radius-audit-root-b77kdd0x/Wiring.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Pow/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-03b7966d86/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-03b7966d86/decomposition-v1.json",
+        "/tmp/radius-audit-root-b77kdd0x/good_radius_accepted.lean",
+        "/tmp/radius-audit-root-b77kdd0x/lebesgue_deriv_accepted.lean",
+        "/tmp/radius-audit-root-b77kdd0x/Types.lean",
+        "/tmp/radius-audit-root-b77kdd0x/Wiring.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected radius theorem. All three one-line propositions elaborate independently before child declarations; explicit checks confirm Lebesgue-measure defaults, the Borel instance, real inversion inside ofReal, and the nontrivial right-neighborhood filter. Both reused declarations have identical frozen types and accepted proof bodies; the new name has no DAG reservation. Dependencies are acyclic. The supplied assembly proves the exact selected parent, including n = 1 and zero ball mass. Compilation and axiom checks pass for all children and the parent using only propext, Classical.choice and Quot.sound. The annulus proof passes the single-theorem source-delta check. Targeted snapshot searches found supporting analytic lemmas but no direct annulus-liminf theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "good_radius",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the Lean type. Restricting μ to the finite closed ball justifies countability of charged spheres without assuming global sigma-finiteness. The proof correctly handles I = 0, I = ∞ and positive finite I, then excludes the three exceptional sets by the interval-measure contradiction. Reuse is valid at the identical accepted type; there is no circular dependence."
+    },
+    {
+      "key": "lebesgue_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The empty-interval case, nonnegative derivative, integrability, endpoint-null conversions and interval-integral bound prove the exact lower-integral statement. No ordering hypothesis is missing. The accepted declaration is reused at its identical frozen type, and its verified Stieltjes proof requires no added import; the copied historical import instruction is unnecessary for this reuse."
+    },
+    {
+      "key": "annulus_liminf",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree, and the supplied proof is complete. For every h > 0, the smaller ball has finite measure and the annulus lies in the measurable ball difference. Finite-measure subtraction and ofReal multiplication give the quotient comparison; the backward derivative limit, continuity of ofReal and liminf monotonicity finish. Neither positive ρ nor a null sphere is needed. The bare name is unreserved and the proof is independent of the parent."
+    }
+  ],
+  "required_changes": []
+}

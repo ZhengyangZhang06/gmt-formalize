@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1.pullback_divergence-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1",
+  "depth": 5,
+  "title": "Exterior derivative along an affine coordinate cube equals the divergence of its coefficient field",
+  "statement": "Let P, m ∈ ℕ, ι : Fin (m+1) → Fin P arbitrary, a ∈ Euclid P, and let γ : Euclid P → Covector(Euclid P, m) be a C¹ m-form. Put Φ(y) := a + Σ_j y_j e_{ι(j)} (y ∈ Euclid (m+1)), E := (e_{ι(j)})_{j∈Fin(m+1)}, and for i ∈ Fin (m+1), F_i(y) := (−1)^i γ(Φ(y))(e_{ι(succAbove i l)})_{l∈Fin m}. Then every F_i is C¹, and for every y ∈ Euclid (m+1): dγ(Φ(y))(E) = Σ_i DF_i(y)(e_i), where e_i = EuclideanSpace.single i 1 and d is SimonGMT's exteriorDerivative.",
+  "lean_statement": "∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P) (a : Euclid P) (γ : DifferentialForm (Euclid P) m), ContDiff ℝ 1 γ → (∀ i : Fin (m + 1), ContDiff ℝ 1 (fun y : Euclid (m + 1) => (-1 : ℝ) ^ (i : ℕ) * γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)))) ∧ ∀ y : Euclid (m + 1), exteriorDerivative γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = ∑ i : Fin (m + 1), fderiv ℝ (fun z : Euclid (m + 1) => (-1 : ℝ) ^ (i : ℕ) * γ (a + ∑ j, z j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ))) y (EuclideanSpace.single i (1 : ℝ))",
+  "lean_name": "cmcdtfrcb_pullback_divergence",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-ca3ede2887-a1"
+}

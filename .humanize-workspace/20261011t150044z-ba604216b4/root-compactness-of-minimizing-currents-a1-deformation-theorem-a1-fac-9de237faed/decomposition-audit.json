@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IMRep|IsUnitOrientationOf|IsLatticeChain|cmcdtfrpi_|cmcdtfr_polyhedral_im|cmcdtfr_face_geometry",
+        "CountablyRectifiable|HasApproximateTangentSpaceAt|blowUpMap|hasApproximateTangentSpaceAt_submodule",
+        "cmcdtfrpi_|isometry_image_integral|local_plane_tangent|coord_plane_orientation|face_union_local_plane|finite_piece_imrep",
+        "theorem Isometry\\.(euclideanHausdorffMeasure_image|map_euclideanHausdorffMeasure)|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem restrict_restrict|theorem restrict_map|MeasurableEmbedding.integral_map|setIntegral_eq_integral_of_forall_compl_eq_zero|integral_biUnion_finset|lintegral_biUnion_finset",
+        "python3 /tmp/pim-review-62_pyw6m/AuditContracts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/pim-review-62_pyw6m/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/pim-review-62_pyw6m/ProofsAndAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-9de237faed/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-9de237faed/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/pim-review-62_pyw6m/AuditContracts.py",
+        "/tmp/pim-review-62_pyw6m/ChallengeTypes.lean",
+        "/tmp/pim-review-62_pyw6m/ProofsAndAssembly.lean"
+      ],
+      "conclusion": "The five-way split is appropriate and establishes the selected contract using its existing face_geometry dependency. Snapshot and workspace contracts are byte-identical; Mathlib and SimonGMT revisions match their pins. Local declarations validate the measure, tangent-space and IMRep arguments. No proposed names or matching child lemmas were found in the searched libraries, and none of the five names is reserved among 1644 DAG nodes. Dependencies are acyclic; FG has no path back to the selected node. MR and FG antecedents match their frozen types byte-for-byte. All five single-line propositions elaborate independently before implementation. Rechecked proofs under the intended Submission names and the exact parent assembly compile with only propext, Classical.choice and Quot.sound. Explicit checks confirm Euclidean coordinates, norms, blow-ups and continuous-linear-map negation; the orientation list fold compiles. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "isometry_image_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and exact type agree. The measurable embedding and restricted pushforward identity justify change of variables for arbitrary h, including nonintegrable functions. The supplied proof is complete, independent and valid for k = 0."
+    },
+    {
+      "key": "local_plane_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes equality of localized blow-ups and eventual equality of all required integrals. Restriction by the measurable ball works for arbitrary M, so no measurability hypothesis is missing. Dimension and positivity hypotheses are used correctly."
+    },
+    {
+      "key": "coord_plane_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Strict monotonicity gives an orthonormal coordinate frame and the stated dimension. The operator-norm bound constructs the required continuous evaluation functional; pointwise negation supplies the second orientation. The exact type and proof include k = 0."
+    },
+    {
+      "key": "face_union_local_plane",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The FG antecedent is exactly the frozen dependency type. Separation proves disjointness and excludes other faces nearby; finite-span coefficients and isometry prove the converse inclusion. The positive minimum also handles k = 0. No circular dependency occurs."
+    },
+    {
+      "key": "finite_piece_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses are present and every IMRep field is constructed. The list fold supplies strong measurability, finite total weight gives local integrability, and integrability on each finite-measure piece justifies Bochner additivity. The action and measure formulas follow without invoking the selected theorem or MR."
+    }
+  ],
+  "required_changes": []
+}
