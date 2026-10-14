@@ -1355,6 +1355,70 @@ theorem Submission.dimred_rpd_embedded_locally_closed : ∀ (P r d : ℕ) (M : S
     exact ⟨r' / 2, by linarith,
       hcpt _ ((closedBall_subset_ball (by linarith)).trans hball) (isCompact_closedBall y _)⟩
 
+/-- **Area formula on an embedded `C¹` submanifold** (Simon Ch. 2, 4.11–4.13, as used in Ch. 2,
+5.1–5.2).  Let `M ⊂ ℝᴾ` be an embedded `m`-dimensional `C¹` submanifold, `E ⊆ M` Borel, and
+`Φ : ℝᴾ → ℝᴾ` a `C¹` map that is injective on `E` with `DΦ(x)` injective for `x ∈ E`.  Then
+`Hᵐ(Φ(E)) = ∫_E J^M Φ dHᵐ`, where `J^M Φ(x) = √det((DΦ(x) ∘ ι_x)*(DΦ(x) ∘ ι_x))` and
+`ι_x : span T_xM → ℝᴾ` is the inclusion.  By Lindelöf countably many charts `W_k` cover `M`; on
+each of the disjoint Borel pieces `E_k = (E ∩ W_k) \ ⋃_{j<k} (E ∩ W_j)` this is the area formula
+in one chart.  Summing over `k` gives the claim: the integral is countably additive over the
+`E_k`, and so is `Hᵐ(Φ(·))`, since the images `Φ(E_k)` are Borel (Lusin–Souslin) and pairwise
+disjoint (`Φ` is injective on `E`). -/
+theorem Submission.codim1_hcp_submanifold_area_formula : ∀ (P m : ℕ) (M E : Set (Euclid P)) (Φ : Euclid P → Euclid P), IsEmbeddedSubmanifold 1 m M → MeasurableSet E → E ⊆ M → ContDiff ℝ 1 Φ → InjOn Φ E → (∀ x ∈ E, Injective (fderiv ℝ Φ x)) → μHE[m] (Φ '' E) = ∫⁻ x in E, ENNReal.ofReal (Real.sqrt ((((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL).adjoint ∘L ((fderiv ℝ Φ x).comp (Submodule.span ℝ (tangentSpace M x)).subtypeL)).det)) ∂μHE[m] := by
+  intro P m M E Φ hM hE hEM hΦ hΦinj hDΦ
+  -- step 2: countably many charts `(V_k, W_k, ψ_k)` of `M` as in (4.1) and pairwise disjoint
+  -- Borel pieces `E_k ⊆ W_k ∩ M` with `⋃_k E_k = E`
+  obtain ⟨Es, Vs, Ws, ψs, hEs, hdisj, hunion, hcharts⟩ : ∃ (Es : ℕ → Set (Euclid P)) (Vs : ℕ → Set (Euclid m)) (Ws : ℕ → Set (Euclid P)) (ψs : ℕ → Euclid m → Euclid P), (∀ k, MeasurableSet (Es k)) ∧ Pairwise (fun i j => Disjoint (Es i) (Es j)) ∧ (⋃ k, Es k) = E ∧ ∀ k, IsOpen (Vs k) ∧ IsOpen (Ws k) ∧ ContDiffOn ℝ 1 (ψs k) (Vs k) ∧ InjOn (ψs k) (Vs k) ∧ ψs k '' Vs k = Ws k ∩ M ∧ (∀ K ⊆ Ws k, IsCompact K → IsCompact (Vs k ∩ ψs k ⁻¹' K)) ∧ (∀ z ∈ Vs k, Injective (fderiv ℝ (ψs k) z)) ∧ Es k ⊆ Ws k ∩ M := by
+    -- every `y ∈ M` has a chart `(V_y, W_y, ψ_y)` with `y ∈ W_y`; every `y ∉ M` gets the empty
+    -- chart `(∅, ∅, 0)`, which satisfies all chart conditions
+    have hchart : ∀ y : Euclid P, ∃ (V : Set (Euclid m)) (W : Set (Euclid P))
+        (ψ : Euclid m → Euclid P), IsOpen V ∧ IsOpen W ∧ ContDiffOn ℝ 1 ψ V ∧ InjOn ψ V ∧
+          ψ '' V = W ∩ M ∧ (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) ∧
+          (∀ z ∈ V, Injective (fderiv ℝ ψ z)) ∧ (y ∈ M → y ∈ W) := by
+      intro y
+      by_cases hy : y ∈ M
+      · obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himg, hprop, hD⟩ := hM y hy
+        exact ⟨V, W, ψ, hV, hW, by exact_mod_cast hψ, hinj, himg, hprop, hD, fun _ => hyW⟩
+      · exact ⟨∅, ∅, 0, isOpen_empty, isOpen_empty, contDiffOn_empty, injOn_empty _, by simp,
+          by simp, by simp, fun h => absurd h hy⟩
+    choose V W ψ hV hW hψ hinj himg hprop hD hyW using hchart
+    -- Lindelöf: the `W_y` with `y` in a countable set `T ⊆ {y_0, y_1, …}` already cover `M`
+    obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable W hW
+    obtain ⟨f, hf⟩ := Set.countable_iff_exists_subset_range.1 hTc
+    have hcover : M ⊆ ⋃ k, W (f k) := by
+      intro y hy
+      have hyT : y ∈ ⋃ i ∈ T, W i := by
+        rw [hTU]
+        exact mem_iUnion.2 ⟨y, hyW y hy⟩
+      obtain ⟨i, hiT, hyi⟩ := mem_iUnion₂.1 hyT
+      obtain ⟨k, rfl⟩ := hf hiT
+      exact mem_iUnion.2 ⟨k, hyi⟩
+    -- `E_k = (E ∩ W_{y_k}) \ ⋃_{j<k} (E ∩ W_{y_j})`, with the chart at `y_k`
+    refine ⟨disjointed fun k => E ∩ W (f k), fun k => V (f k), fun k => W (f k),
+      fun k => ψ (f k), MeasurableSet.disjointed fun k => hE.inter (hW (f k)).measurableSet,
+      disjoint_disjointed _, ?_, fun k => ⟨hV (f k), hW (f k), hψ (f k), hinj (f k), himg (f k),
+        hprop (f k), hD (f k), fun x hx => ?_⟩⟩
+    -- `⋃_k E_k = E ∩ ⋃_k W_{y_k} = E`, as `E ⊆ M ⊆ ⋃_k W_{y_k}`
+    · rw [iUnion_disjointed, ← inter_iUnion]
+      exact inter_eq_left.2 (hEM.trans hcover)
+    -- `E_k ⊆ E ∩ W_{y_k} ⊆ W_{y_k} ∩ M`
+    · have hx' := disjointed_subset _ k hx
+      exact ⟨hx'.2, hEM hx'.1⟩
+  choose hV hW hψ hinj himg hprop hD hEW using hcharts
+  have hEsE : ∀ k, Es k ⊆ E := fun k => (subset_iUnion Es k).trans hunion.subset
+  -- steps 4–8 on each piece `E_k ⊆ W_k ∩ M`: the area formula inside the chart `ψ_k`
+  have hpiece := fun k => Submission.codim1_hcp_af_chart_area_formula P m M (Es k) (Ws k) (Vs k)
+    (ψs k) Φ (hV k) (hW k) (hψ k) (hinj k) (himg k) (hprop k) (hD k) (hEs k) (hEW k) hΦ
+    (hΦinj.mono (hEsE k)) fun x hx => hDΦ x (hEsE k hx)
+  -- step 9: the images `Φ(E_k)` are Borel (Lusin–Souslin) and pairwise disjoint (`Φ` is
+  -- injective on `E`), so `Hᵐ(Φ(E)) = Σ_k Hᵐ(Φ(E_k))`; the integral over `E` splits likewise
+  have hΦEs : ∀ k, MeasurableSet (Φ '' Es k) := fun k =>
+    (hEs k).image_of_continuousOn_injOn hΦ.continuous.continuousOn (hΦinj.mono (hEsE k))
+  have hΦdisj : Pairwise (Disjoint on fun k => Φ '' Es k) := fun i j hij =>
+    (hdisj hij).image hΦinj (hEsE i) (hEsE j)
+  rw [← hunion, image_iUnion, measure_iUnion hΦdisj hΦEs, lintegral_iUnion hEs hdisj]
+  exact tsum_congr hpiece
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
