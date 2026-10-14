@@ -451,6 +451,34 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Uniqueness of planes**: fact (b) in the proof of `idtp_tdc_density_locally_constant`, the
+local constancy of the density of a two-dimensional minimizing cone away from `0`.  There it
+identifies the plane of a planar piece of `spt C` near a point.  Let `Q₁, Q₂` be linear subspaces
+of `ℝᴾ`, `x ∈ Q₁` and `t > 0`.  If `Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`, then `Q₁ = Q₂`.  First,
+`x ∈ Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`, so `x ∈ Q₂`.  Next, let `x ∈ Q`, `x ∈ Q'` and `Q ∩ B_t(x) ⊆ Q'`.
+For `v ∈ Q` and `s = t / (2(‖v‖ + 1)) > 0`, the point `x + s v` lies in `Q ∩ B_t(x) ⊆ Q'`, so
+`s v ∈ Q'` and `v ∈ Q'`.  This gives `Q₁ ≤ Q₂` and `Q₂ ≤ Q₁`. -/
+theorem Submission.idtp_tdc_dlc_subspace_eq_of_inter_ball_eq : ∀ (P : ℕ) (Q₁ Q₂ : Submodule ℝ (Euclid P)) (x : Euclid P) (t : ℝ), x ∈ Q₁ → 0 < t → (Q₁ : Set (Euclid P)) ∩ ball x t = (Q₂ : Set (Euclid P)) ∩ ball x t → Q₁ = Q₂ := by
+  intro P Q₁ Q₂ x t hx ht h
+  -- Step 1: `x ∈ Q₂`, as `x ∈ Q₁ ∩ B_t(x) = Q₂ ∩ B_t(x)`.
+  have hx₂ : x ∈ Q₂ := (h.subset ⟨hx, Metric.mem_ball_self ht⟩).1
+  -- Step 2: if `x ∈ Q`, `x ∈ Q'` and `Q ∩ B_t(x) ⊆ Q'`, then `Q ≤ Q'`.  For `v ∈ Q` and
+  -- `s = t / (2(‖v‖ + 1)) > 0`, `x + s • v ∈ Q` and `dist (x + s • v) x = s‖v‖ < t`, so
+  -- `x + s • v ∈ Q'`; then `s • v = (x + s • v) - x ∈ Q'` and `v ∈ Q'` as `s ≠ 0`.
+  have key : ∀ Q Q' : Submodule ℝ (Euclid P), x ∈ Q → x ∈ Q' →
+      (Q : Set (Euclid P)) ∩ ball x t ⊆ Q' → Q ≤ Q' := by
+    intro Q Q' hxQ hxQ' hsub v hv
+    have hs : 0 < t / (2 * (‖v‖ + 1)) := div_pos ht (by positivity)
+    have hball : x + (t / (2 * (‖v‖ + 1))) • v ∈ ball x t := by
+      rw [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hs.le,
+        div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+      nlinarith [norm_nonneg v]
+    have h₁ : x + (t / (2 * (‖v‖ + 1))) • v ∈ Q' := hsub ⟨Q.add_mem hxQ (Q.smul_mem _ hv), hball⟩
+    exact (Q'.smul_mem_iff hs.ne').1 ((Q'.add_mem_iff_right hxQ').1 h₁)
+  -- Step 3: `Q₁ ∩ B_t(x) ⊆ Q₂` and `Q₂ ∩ B_t(x) ⊆ Q₁`; conclude by antisymmetry.
+  exact le_antisymm (key Q₁ Q₂ hx hx₂ (h.subset.trans inter_subset_left))
+    (key Q₂ Q₁ hx₂ hx (h.symm.subset.trans inter_subset_left))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
