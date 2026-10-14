@@ -451,6 +451,39 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.17, 2.20** (the cylinder `[[(0, 1)]] × X` as `X ∘ S`): given the mass bound (MSB)
+`|X(ψ)| ≤ c M(X)` for `|ψ| ≤ c` on `spt X` and the bounded-current constructor (BC), a linear
+`S : 𝒟^{k+1}(ℝ^{N+1}) → 𝒟^k(ℝ^N)` with `|S ω| ≤ c` whenever `|ω| ≤ c` induces
+`cyl : 𝒟_k(ℝ^N) → 𝒟_{k+1}(ℝ^{N+1})` with `cyl X = X ∘ S` and `M(cyl X) ≤ M(X)` if `M(X) < ∞`,
+and `cyl (X − Y) = cyl X − cyl Y` if `M(X), M(Y) < ∞`.  (MSB) bounds `X ∘ S` by `M(X)` and (BC)
+realizes it as a current; `M(X − Y) < ∞` by (MSB) with `c = 1`. -/
+theorem Submission.cmcdt_lpo_cyl_current : (∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ψ : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), X.mass < ∞ → (∀ x ∈ X.support, covectorEuclideanNorm ((ψ : DifferentialForm (Euclid N) k) x) ≤ c) → |X ψ| ≤ c * X.mass.toReal) → (∀ (N k : ℕ) (T₀ : TestFormOn (univ : Set (Euclid N)) k →ₗ[ℝ] ℝ) (C : ℝ), (∀ (ω : TestFormOn (univ : Set (Euclid N)) k) (c : ℝ), (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N) k) x) ≤ c) → |T₀ ω| ≤ C * c) → ∃ T : GeometricCurrentOn (univ : Set (Euclid N)) k, (∀ ω, T ω = T₀ ω) ∧ T.mass ≤ ENNReal.ofReal C) → ∀ (N k : ℕ) (S : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1) →ₗ[ℝ] TestFormOn (univ : Set (Euclid N)) k), (∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (c : ℝ), (∀ y : Euclid (N + 1), covectorEuclideanNorm ((ω : DifferentialForm (Euclid (N + 1)) (k + 1)) y) ≤ c) → ∀ x : Euclid N, covectorEuclideanNorm ((S ω : DifferentialForm (Euclid N) k) x) ≤ c) → ∃ cyl : GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1), (∀ X : GeometricCurrentOn (univ : Set (Euclid N)) k, X.mass < ∞ → (∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), cyl X ω = X (S ω)) ∧ (cyl X).mass ≤ X.mass) ∧ ∀ X Y : GeometricCurrentOn (univ : Set (Euclid N)) k, X.mass < ∞ → Y.mass < ∞ → cyl (X - Y) = cyl X - cyl Y := by
+  intro hMSB hBC N k S hS
+  -- `X ∘ S` is a current of mass `≤ M(X)` when `M(X) < ∞`
+  have hT : ∀ X : GeometricCurrentOn (univ : Set (Euclid N)) k, X.mass < ∞ →
+      ∃ T : GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1),
+        (∀ ω, T ω = X (S ω)) ∧ T.mass ≤ X.mass := by
+    intro X hX
+    obtain ⟨T, hTω, hTM⟩ := hBC (N + 1) (k + 1) (X.toCurrent ∘ₗ S) X.mass.toReal
+      fun ω c hω => (hMSB N k X (S ω) c hX fun x _ => hS ω c hω x).trans_eq (mul_comm _ _)
+    exact ⟨T, hTω, by rwa [ENNReal.ofReal_toReal hX.ne] at hTM⟩
+  choose! cyl hcylω hcylM using hT
+  refine ⟨cyl, fun X hX => ⟨hcylω X hX, hcylM X hX⟩, fun X Y hX hY => ?_⟩
+  -- `M(X − Y) ≤ M(X) + M(Y) < ∞`, by (MSB) with `c = 1` on each admissible form
+  have hXY : (X - Y).mass < ∞ := by
+    refine lt_of_le_of_lt (sSup_le ?_) (ENNReal.ofReal_lt_top (r := X.mass.toReal + Y.mass.toReal))
+    rintro _ ⟨ω, hω, rfl⟩
+    have h1 := hMSB N k X ω 1 hX fun x _ => hω.2 x
+    have h2 := hMSB N k Y ω 1 hY fun x _ => hω.2 x
+    rw [one_mul] at h1 h2
+    apply ENNReal.ofReal_le_ofReal
+    show X ω - Y ω ≤ _
+    linarith [le_abs_self (X ω), neg_abs_le (Y ω)]
+  ext ω
+  rw [hcylω _ hXY]
+  show X (S ω) - Y (S ω) = cyl X ω - cyl Y ω
+  rw [hcylω X hX, hcylω Y hY]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
