@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.filling-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1",
+  "depth": 4,
+  "title": "Compactly supported finite-mass IM filling of an IM boundary (V3)",
+  "statement": "Assume (MR), (IMC)(c), (VO) and (ISO). (MR) is the exact frozen statement of cmc_massOn_eq_imRep_measure: M_W(X) = R.measure(W) whenever R is an IMRep representing X ∈ 𝒟_n(U), U open, W open. (IMC)(c): for all P, n, every open U ⊆ ℝ^P and integer multiplicity A, B ∈ 𝒟_n(U), the difference A − B is integer multiplicity. (VO) is the exact frozen statement of dtc_vanish_off_support: S(ω) = 0 for every current S ∈ 𝒟_n(U) and every ω ∈ 𝒟ⁿ(U) whose topological support is disjoint from spt S. (ISO) is the conclusion of the frozen statement of the sibling cbr_isoperimetric_filling (after its (DT) hypothesis): for all P, m ∈ ℕ there is a real c ≥ 1 such that every integer multiplicity Z ∈ 𝒟_{m+1}(ℝ^P) with compact support, ∂Z = 0 and M(Z) < ∞ equals ∂Y for an integer multiplicity Y ∈ 𝒟_{m+2}(ℝ^P) with M(Y) ≤ c(2cM(Z))^{1/(m+1)}M(Z) and spt Y ⊆ {x : dist(x, spt Z) < 3√P(2cM(Z))^{1/(m+1)}}. Let d, P ∈ ℕ and T ∈ 𝒟_{d+1}(ℝ^P) with spt T compact, M(∂T) < ∞ and ∂T integer multiplicity. Then there is an integer multiplicity Y ∈ 𝒟_{d+1}(ℝ^P) with ∂Y = ∂T, M(Y) < ∞ and spt Y compact.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P m : ℕ), ∃ c : ℝ, 1 ≤ c ∧ ∀ Z : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Z → IsCompact Z.support → Z.boundary = 0 → Z.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity Y ∧ Y.boundary = Z ∧ Y.mass ≤ ENNReal.ofReal (c * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1)) * Z.mass.toReal) ∧ Y.support ⊆ thickening (3 * Real.sqrt P * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1))) Z.support) → ∀ (d P : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), IsCompact T.support → T.boundary.mass < ∞ → IsIntegerMultiplicity T.boundary → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1), IsIntegerMultiplicity Y ∧ Y.boundary = T.boundary ∧ Y.mass < ∞ ∧ IsCompact Y.support",
+  "lean_name": "cbr_cc_compact_im_filling",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.zero_current_sum-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.current_algebra-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.zero_current_sum-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.current_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81-a1",
+      "result_commit": "02c6122c94d0280a6288d299659b2dab7b59e109",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9d4156d510-a1"
+}
