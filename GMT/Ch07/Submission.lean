@@ -1207,6 +1207,48 @@ theorem Submission.dor_lmbsf_cit_approxTangent_of_subset : ∀ (P n : ℕ) (M M'
     ← dist_eq_norm, dist_comm, inv_mul_eq_div, le_div_iff₀ hr0]
   linarith [hρM z hz]
 
+/-- **Approximate tangent space of an injective `C¹` image** (Simon Ch. 3, 1.4; the step "since
+`x ∈ Nⱼ` and `Nⱼ` is a `C¹` submanifold, `lim_{λ↓0} ∫_{η_{x,λ}(Nⱼ)} f dHⁿ = ∫_{TₓNⱼ} f dHⁿ`" of
+the proof of 1.6 "⇒", chapter-03.txt lines 113–125).  Let `χ` be `C¹` on the open `V ⊇ C`, `C`
+compact, `χ` injective on `C`, `y ∈ int C` and `Dχ(y)` injective.  On a ball
+`B_ε(y) ⊆ V ∩ int C`, `χ` agrees with a globally `C¹` map `g`, so `Dg(y) = Dχ(y)` and `g` has a
+lower Lipschitz bound on some `B_δ(y) ⊆ B_ε(y)`.  Hence `χ(B_δ(y)) = g(B_δ(y))` has approximate
+tangent space `Q = Dχ(y)(ℝᵏ)` at `χ(y)`.  The rest of `χ(C)` lies in the compact set
+`χ(C \ B_δ(y))`, which misses `χ(y)` by injectivity, so it does not change the blow-up limits. -/
+theorem Submission.dor_lmbsf_c1_image_approxTangent : ∀ (k P : ℕ) (V C : Set (Euclid k)) (χ : Euclid k → Euclid P) (y : Euclid k), IsOpen V → ContDiffOn ℝ 1 χ V → IsCompact C → C ⊆ V → InjOn χ C → y ∈ interior C → Injective (fderiv ℝ χ y) → HasApproximateTangentSpaceAt k (χ '' C) (χ y) (LinearMap.range (fderiv ℝ χ y : Euclid k →ₗ[ℝ] Euclid P)) := by
+  intro k P V C χ y hV hχ hC hCV hinj hy hDχ
+  -- Step 1, `χ` agrees on `B_ε(y) ⊆ W = V ∩ int C` with a globally `C¹` map `g`
+  obtain ⟨g, ε, hε, hεW, hg, hgχ⟩ := Submission.dor_lmbsf_cit_c1_local_extension P k
+    (V ∩ interior C) χ y (hV.inter isOpen_interior) (hχ.mono inter_subset_left)
+    ⟨hCV (interior_subset hy), hy⟩
+  -- Step 2, `g(y) = χ(y)` and `Dg(y) = Dχ(y)`, since `g = χ` near `y`
+  have hgy : g y = χ y := hgχ (mem_ball_self hε)
+  have hDg : fderiv ℝ g y = fderiv ℝ χ y :=
+    (hgχ.eventuallyEq_of_mem (ball_mem_nhds y hε)).fderiv_eq
+  -- Step 3, `μ|a − b| ≤ |g(a) − g(b)|` on `B_δ₀(y)`; take `δ = min(ε, δ₀)`
+  obtain ⟨δ₀, μ, hδ₀, hμ, hlip⟩ :=
+    Submission.codim1_rdo_c1cov_local_lower_lipschitz P k g y hg (by rwa [hDg])
+  obtain ⟨δ, hδ, hδε, hδδ₀⟩ : ∃ δ : ℝ, 0 < δ ∧ ball y δ ⊆ ball y ε ∧ ball y δ ⊆ ball y δ₀ :=
+    ⟨min ε δ₀, lt_min hε hδ₀, ball_subset_ball (min_le_left _ _),
+      ball_subset_ball (min_le_right _ _)⟩
+  -- Step 4, `M' = g(B_δ(y)) = χ(B_δ(y))` has approximate tangent space `Q` at `χ(y)`
+  have hpiece := Submission.codim1_rdo_c1_piece_approxTangent P k g y δ μ hg hμ
+    (fun a ha b hb => hlip a (hδδ₀ ha) b (hδδ₀ hb)) y (mem_ball_self hδ)
+  rw [(hgχ.mono hδε).image_eq, hgy, hDg] at hpiece
+  -- Step 5, `M = χ(C)` is compact, `M' ⊆ M`, and `M \ M' ⊆ χ(C \ B_δ(y))`, a compact set that
+  -- misses `χ(y)` because `χ` is injective on `C`
+  have hδC : ball y δ ⊆ C := hδε.trans (hεW.trans (inter_subset_right.trans interior_subset))
+  have hχC : ContinuousOn χ C := hχ.continuousOn.mono hCV
+  have hfar : χ y ∉ closure (χ '' C \ χ '' ball y δ) := by
+    intro hcl
+    obtain ⟨z, ⟨hzC, hzδ⟩, hzy⟩ := closure_minimal (subset_image_sdiff χ C (ball y δ))
+      ((hC.diff isOpen_ball).image_of_continuousOn (hχC.mono sdiff_subset)).isClosed hcl
+    rw [hinj hzC (interior_subset hy) hzy] at hzδ
+    exact hzδ (mem_ball_self hδ)
+  -- Step 6, the part of `χ(C)` away from `χ(y)` does not change the blow-up limits
+  exact Submission.dor_lmbsf_cit_approxTangent_of_subset P k (χ '' C) (χ '' ball y δ) (χ y) _
+    (hC.image_of_continuousOn hχC).isClosed.measurableSet (image_mono hδC) hfar hpiece
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
