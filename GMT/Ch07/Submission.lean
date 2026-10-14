@@ -661,6 +661,34 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
   exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
+/-- **`C¹` cut-off of a chart**: if `ψ` is `C¹` on an open `V ⊆ ℝᵐ` and `v₀ ∈ V`, then `ψ`
+agrees on some ball `B_ρ(v₀) ⊆ V` with a map `g` that is `C¹` on all of `ℝᵐ`.  Take
+`B_ε(v₀) ⊆ V`, a smooth bump `φ` with `φ = 1` on `B̄_{ε/4}(v₀)` and `φ = 0` off `B_{ε/2}(v₀)`,
+`g = φ ψ` and `ρ = ε/4`.  At points of `B_ε(v₀) ⊆ V`, `g` is a product of `C¹` maps; at points
+with `|v − v₀| ≥ ε`, `g` vanishes on the neighbourhood `{w : |w − v₀| > ε/2}`. -/
+theorem Submission.codim1_ac_sat_c1_local_extension : ∀ (P m : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m), IsOpen V → ContDiffOn ℝ 1 ψ V → v₀ ∈ V → ∃ (g : Euclid m → Euclid P) (ρ : ℝ), 0 < ρ ∧ ball v₀ ρ ⊆ V ∧ ContDiff ℝ 1 g ∧ EqOn g ψ (ball v₀ ρ) := by
+  intro P m V ψ v₀ hV hψ hv₀
+  -- Step 1: `B_ε(v₀) ⊆ V`
+  obtain ⟨ε, hε, hεV⟩ := Metric.isOpen_iff.mp hV v₀ hv₀
+  -- Step 2: a smooth bump `φ` with `φ = 1` on `B̄_{ε/4}(v₀)` and `φ = 0` off `B_{ε/2}(v₀)`
+  let φ : ContDiffBump v₀ := ⟨ε / 4, ε / 2, by positivity, by linarith⟩
+  -- Step 3: `g = φ ψ` and `ρ = ε / 4`, so `B_ρ(v₀) ⊆ B_ε(v₀) ⊆ V`
+  refine ⟨fun v => φ v • ψ v, ε / 4, by positivity,
+    (ball_subset_ball (by linarith)).trans hεV, ?_, fun v hv => ?_⟩
+  · -- Step 5: `g` is `C¹` at every point `v`
+    refine contDiff_iff_contDiffAt.mpr fun v => ?_
+    by_cases hv : dist v v₀ < ε
+    · -- (a) `v ∈ B_ε(v₀) ⊆ V`: `φ` and `ψ` are `C¹` at `v`
+      exact (φ.contDiffAt (n := 1)).smul (hψ.contDiffAt (hV.mem_nhds (hεV (mem_ball.mpr hv))))
+    · -- (b) `|v − v₀| ≥ ε`: `g = 0` on the neighbourhood `{w : |w − v₀| > ε/2}` of `v`
+      have hO : ∀ᶠ w in 𝓝 v, ε / 2 < dist w v₀ :=
+        continuousAt_const.eventually_lt (continuous_id.dist continuous_const).continuousAt
+          (by linarith [not_lt.mp hv])
+      refine (contDiffAt_const (c := (0 : Euclid P))).congr_of_eventuallyEq ?_
+      filter_upwards [hO] with w hw
+      rw [φ.zero_of_le_dist hw.le, zero_smul]
+  · -- Step 4: `φ = 1` on `B̄_{ε/4}(v₀)`, so `g = ψ` on `B_ρ(v₀)`
+    simp only [φ.one_of_mem_closedBall (ball_subset_closedBall hv), one_smul]
 /-- **Simon Ch. 3, Lemma 1.2** (the inverse-function step of the "only if" part): if `G` is `C¹`
 and `DG(x)` is injective, then `μ |a − b| ≤ |G(a) − G(b)|` on some ball `B_δ(x)`.  With
 `|v| ≤ K |DG(x) v|` and `μ = 1/(2K)`, strict differentiability gives
@@ -1372,6 +1400,37 @@ theorem Submission.codim1_ac_sat_c1_local_extension : ∀ (P m : ℕ) (V : Set (
       rw [φ.zero_of_le_dist hw.le, zero_smul]
   · -- Step 4: `φ = 1` on `B̄_{ε/4}(v₀)`, so `g = ψ` on `B_ρ(v₀)`
     simp only [φ.one_of_mem_closedBall (ball_subset_closedBall hv), one_smul]
+
+/-- **Simon Ch. 3, proof of 1.6 "⇒"** (p. 71, "since `x ∈ Nⱼ` and `Nⱼ` is a `C¹` submanifold"):
+if `ψ` is `C¹` on the open `V ⊆ ℝᵐ`, `v₀ ∈ V` and `Dψ(v₀)` is injective, then for some `ρ > 0`
+with `B_ρ(v₀) ⊆ V`, `T = Dψ(v₀)(ℝᵐ)` is the approximate tangent space of `ψ(B_ρ(v₀))` at
+`ψ(v₀)`.  A globally `C¹` map `g` equals `ψ` on some `B_{ρ₁}(v₀) ⊆ V`, so `g(v₀) = ψ(v₀)` and
+`Dg(v₀) = Dψ(v₀)` (equal germs).  `Dg(v₀)` is injective, so `μ|a − b| ≤ |g(a) − g(b)|` on some
+`B_δ(v₀)` (Ch. 3, Lemma 1.2), and the `C¹`-piece argument applies to `g` on `B_ρ(v₀)`,
+`ρ = min(ρ₁, δ)`, where `g(B_ρ(v₀)) = ψ(B_ρ(v₀))`. -/
+theorem Submission.codim1_ac_sat_chart_ball_approxTangent : ∀ (P m : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m), IsOpen V → ContDiffOn ℝ 1 ψ V → v₀ ∈ V → Injective (fderiv ℝ ψ v₀) → ∃ ρ : ℝ, 0 < ρ ∧ ball v₀ ρ ⊆ V ∧ HasApproximateTangentSpaceAt m (ψ '' ball v₀ ρ) (ψ v₀) (LinearMap.range (fderiv ℝ ψ v₀ : Euclid m →ₗ[ℝ] Euclid P)) := by
+  intro P m V ψ v₀ hV hψ hv₀ hinj
+  -- Step 1, a globally `C¹` map `g` with `g = ψ` on `B_{ρ₁}(v₀) ⊆ V`
+  obtain ⟨g, ρ₁, hρ₁, hρ₁V, hg, hgψ⟩ :=
+    Submission.codim1_ac_sat_c1_local_extension P m V ψ v₀ hV hψ hv₀
+  -- Step 2, `g = ψ` near `v₀`, so `g(v₀) = ψ(v₀)` and `Dg(v₀) = Dψ(v₀)`
+  have hv₀ρ₁ : v₀ ∈ ball v₀ ρ₁ := mem_ball_self hρ₁
+  have hgv₀ : g v₀ = ψ v₀ := hgψ hv₀ρ₁
+  have hDg : fderiv ℝ g v₀ = fderiv ℝ ψ v₀ :=
+    (hgψ.eventuallyEq_of_mem (isOpen_ball.mem_nhds hv₀ρ₁)).fderiv_eq
+  -- Step 3, `Dg(v₀)` is injective, so `μ|a − b| ≤ |g(a) − g(b)|` on `B_δ(v₀)`
+  obtain ⟨δ, μ, hδ, hμ, hlip⟩ :=
+    Submission.codim1_rdo_c1cov_local_lower_lipschitz P m g v₀ hg (by rwa [hDg])
+  -- Step 4, `ρ = min(ρ₁, δ)`: `B_ρ(v₀) ⊆ B_{ρ₁}(v₀) ⊆ V` and `B_ρ(v₀) ⊆ B_δ(v₀)`
+  have hρ : 0 < min ρ₁ δ := lt_min hρ₁ hδ
+  have hρρ₁ : ball v₀ (min ρ₁ δ) ⊆ ball v₀ ρ₁ := ball_subset_ball (min_le_left ρ₁ δ)
+  have hρδ : ball v₀ (min ρ₁ δ) ⊆ ball v₀ δ := ball_subset_ball (min_le_right ρ₁ δ)
+  refine ⟨min ρ₁ δ, hρ, hρρ₁.trans hρ₁V, ?_⟩
+  -- Step 5, the `C¹` piece `g(B_ρ(v₀))` has approximate tangent space `Dg(v₀)(ℝᵐ)` at `g(v₀)`
+  have h := Submission.codim1_rdo_c1_piece_approxTangent P m g v₀ (min ρ₁ δ) μ hg hμ
+    (fun a ha b hb => hlip a (hρδ ha) b (hρδ hb)) v₀ (mem_ball_self hρ)
+  -- Step 6, `g(B_ρ(v₀)) = ψ(B_ρ(v₀))`, `g(v₀) = ψ(v₀)` and `Dg(v₀) = Dψ(v₀)`
+  rwa [(hgψ.mono hρρ₁).image_eq, hgv₀, hDg] at h
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
