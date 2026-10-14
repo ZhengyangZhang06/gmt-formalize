@@ -2871,6 +2871,103 @@ theorem Submission.codim1_hcp_stab_tangent_projection : ∀ (P m : ℕ) (A₀ : 
     continuousOn_const.fun_sub ((hνc.inner continuousOn_const).fun_smul hνc)
   exact hc.congr fun x hx => hproj x hx u
 
+/-- **Shape operator of a hypersurface in `A₀`** (Simon Ch. 2, 4.23–4.26, with the single unit
+normal `ν`).  Let `M ⊆ A₀` be an embedded `C²` `m`-submanifold, `dim A₀ = m + 1`, and let the unit
+normal `ν(y) ∈ A₀ ∩ (T_yM)^⊥` be `C¹` on an open `O ⊇ M`.  Then `Dν(x)` maps `S_x = span T_xM`
+into itself and is symmetric there.  If `γ` is a `C¹` curve in `M` with `γ(0) = x`, `γ'(0) = τ`,
+then `ν ∘ γ` stays in `A₀` and on the unit sphere, so `Dν(x)τ ∈ A₀` and `ν(x) · Dν(x)τ = 0`; the
+tangent-projection formula `P_x u = Π_{A₀} u − (ν(x) · u) ν(x)` gives `P_x(Dν(x)τ) = Dν(x)τ`.
+In a `C²` chart `ψ` with `x = ψ(v₀)`, `ν(ψ(v)) · Dψ(v)a = 0` on `V` since `Dψ(v)a ∈ T_{ψ(v)}M`;
+differentiating at `v₀` in direction `b` gives `(Dν(x)Dψ(v₀)b) · Dψ(v₀)a = −ν(x) · D²ψ(v₀)(b, a)`,
+which is symmetric in `a, b` by Schwarz, and `S_x = Dψ(v₀)(ℝᵐ)`. -/
+theorem Submission.codim1_hcp_stab_shape_operator : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M O : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 2 m M → IsOpen O → M ⊆ O → ContDiffOn ℝ 1 ν O → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, ∀ τ ∈ Submodule.span ℝ (tangentSpace M x), fderiv ℝ ν x τ ∈ Submodule.span ℝ (tangentSpace M x) ∧ ∀ η ∈ Submodule.span ℝ (tangentSpace M x), inner ℝ η (fderiv ℝ ν x τ) = inner ℝ τ (fderiv ℝ ν x η) := by
+  intro P m A₀ M O ν hdim hMA hM hO hMO hν hνM x hx
+  -- step 0: `M` is also an embedded `C¹` submanifold, and `ν` is differentiable at `x ∈ O`
+  have hM1 : IsEmbeddedSubmanifold 1 m M := by
+    intro y hy
+    obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himg, hprop, hD⟩ := hM y hy
+    exact ⟨V, W, ψ, hV, hW, hyW, hψ.of_le (by norm_num), hinj, himg, hprop, hD⟩
+  have hνx : HasFDerivAt ν (fderiv ℝ ν x) x :=
+    ((hν.differentiableOn one_ne_zero).differentiableAt (hO.mem_nhds (hMO hx))).hasFDerivAt
+  -- step 1: a `C²` chart `ψ` with `x = ψ(v₀)`; `T_{ψ(v)}M = Dψ(v)(ℝᵐ)` for `v ∈ V`, so
+  -- `S_x = Dψ(v₀)(ℝᵐ)`
+  obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hinj, himg, hprop, hD⟩ := hM x hx
+  obtain ⟨v₀, hv₀, rfl⟩ : x ∈ ψ '' V := himg ▸ ⟨hxW, hx⟩
+  have hT : ∀ v ∈ V, tangentSpace M (ψ v) = Set.range (fderiv ℝ ψ v) := fun v hv =>
+    Submission.chart_tangentSpace_eq_range_fderiv P m 2 M W V ψ v (by norm_num) hV hW hψ hinj
+      himg hprop hD hv
+  have hS : Submodule.span ℝ (tangentSpace M (ψ v₀)) =
+      LinearMap.range (fderiv ℝ ψ v₀ : Euclid m →ₗ[ℝ] Euclid P) := by
+    rw [hT v₀ hv₀]
+    exact Submodule.span_eq (LinearMap.range (fderiv ℝ ψ v₀ : Euclid m →ₗ[ℝ] Euclid P))
+  -- the velocity at `0` of a curve staying in a (closed) subspace `K` near `0` lies in `K`
+  have hvel : ∀ (K : Submodule ℝ (Euclid P)) (f : ℝ → Euclid P) (f' : Euclid P),
+      HasDerivAt f f' 0 → (∀ᶠ s in 𝓝 0, f s ∈ K) → f' ∈ K := by
+    intro K f f' hf hK
+    refine K.closed_of_finiteDimensional.mem_of_tendsto hf.tendsto_slope ?_
+    filter_upwards [nhdsWithin_le_nhds hK] with s hs
+    rw [slope_def_module]
+    exact K.smul_mem _ (K.sub_mem hs hK.self_of_nhds)
+  intro τ hτ
+  obtain ⟨a, rfl⟩ : ∃ a, fderiv ℝ ψ v₀ a = τ := LinearMap.mem_range.mp (hS ▸ hτ)
+  refine ⟨?_, ?_⟩
+  · -- step 2: a `C¹` curve `γ` in `M` with `γ(0) = x`, `γ'(0) = τ`, so `(ν ∘ γ)'(0) = Dν(x)τ`
+    obtain ⟨γ, -, hγM, hγ0, hγ⟩ : fderiv ℝ ψ v₀ a ∈ tangentSpace M (ψ v₀) := by
+      rw [hT v₀ hv₀]
+      exact ⟨a, rfl⟩
+    have hνγ : HasDerivAt (fun s => ν (γ s)) (fderiv ℝ ν (ψ v₀) (fderiv ℝ ψ v₀ a)) 0 :=
+      hνx.comp_hasDerivAt_of_eq 0 hγ hγ0.symm
+    have hI : ∀ᶠ s in 𝓝 (0 : ℝ), γ s ∈ M :=
+      Filter.mem_of_superset (Ioo_mem_nhds (by norm_num) (by norm_num)) fun s hs => hγM hs
+    -- (a) `ν ∘ γ` stays in `A₀`, so `Dν(x)τ ∈ A₀`
+    have hA : fderiv ℝ ν (ψ v₀) (fderiv ℝ ψ v₀ a) ∈ A₀ :=
+      hvel A₀ _ _ hνγ (hI.mono fun s hs => (hνM _ hs).1)
+    -- (b) `(ν ∘ γ) · (ν ∘ γ) = 1`, so `ν(x) · Dν(x)τ = 0`
+    have h1 := hνγ.inner ℝ hνγ
+    have h2 : HasDerivAt (fun s => inner ℝ (ν (γ s)) (ν (γ s))) 0 0 :=
+      (hasDerivAt_const (0 : ℝ) (1 : ℝ)).congr_of_eventuallyEq (hI.mono fun s hs => by
+        simp only [real_inner_self_eq_norm_sq, (hνM _ hs).2.1, one_pow])
+    have hn : inner ℝ (ν (ψ v₀)) (fderiv ℝ ν (ψ v₀) (fderiv ℝ ψ v₀ a)) = 0 := by
+      have h3 := h1.unique h2
+      rw [hγ0] at h3
+      have h4 := real_inner_comm (ν (ψ v₀)) (fderiv ℝ ν (ψ v₀) (fderiv ℝ ψ v₀ a))
+      linarith
+    -- (c) `tangent_projection`: `P_x(Dν(x)τ) = Π(Dν(x)τ) − (ν(x) · Dν(x)τ) ν(x) = Dν(x)τ`
+    have hP := (Submission.codim1_hcp_stab_tangent_projection P m A₀ M ν hdim hMA hM1 hνM).1
+      (ψ v₀) hx (fderiv ℝ ν (ψ v₀) (fderiv ℝ ψ v₀ a))
+    rw [Submodule.starProjection_eq_self_iff.mpr hA, hn, zero_smul, sub_zero] at hP
+    exact Submodule.starProjection_eq_self_iff.mp hP
+  · intro η hη
+    obtain ⟨b, rfl⟩ : ∃ b, fderiv ℝ ψ v₀ b = η := LinearMap.mem_range.mp (hS ▸ hη)
+    -- `ψ` is `C²` on the open set `V`, so `ψ` and `Dψ` are differentiable at `v₀`
+    have hψd : HasFDerivAt ψ (fderiv ℝ ψ v₀) v₀ :=
+      ((hψ.differentiableOn (by norm_num)).differentiableAt (hV.mem_nhds hv₀)).hasFDerivAt
+    have hψ2 : HasFDerivAt (fderiv ℝ ψ) (fderiv ℝ (fderiv ℝ ψ) v₀) v₀ :=
+      (((hψ.fderiv_of_isOpen hV (m := 1) (by norm_num)).differentiableOn
+        one_ne_zero).differentiableAt (hV.mem_nhds hv₀)).hasFDerivAt
+    -- steps 3–4: `f_c(v) = ν(ψ(v)) · Dψ(v)c` vanishes on `V`; differentiate at `v₀` along `d`
+    have hstar : ∀ c d : Euclid m, inner ℝ (ν (ψ v₀)) (fderiv ℝ (fderiv ℝ ψ) v₀ d c) +
+        inner ℝ (fderiv ℝ ν (ψ v₀) (fderiv ℝ ψ v₀ d)) (fderiv ℝ ψ v₀ c) = 0 := by
+      intro c d
+      have hf := (hνx.comp v₀ hψd).inner ℝ (hψ2.clm_apply (hasFDerivAt_const c v₀))
+      have h0 : HasFDerivAt (fun v => inner ℝ ((ν ∘ ψ) v) (fderiv ℝ ψ v c))
+          (0 : Euclid m →L[ℝ] ℝ) v₀ := by
+        refine (hasFDerivAt_const (0 : ℝ) v₀).congr_of_eventuallyEq ?_
+        filter_upwards [hV.mem_nhds hv₀] with v hv
+        have hvM : ψ v ∈ M := (himg ▸ mem_image_of_mem ψ hv : ψ v ∈ W ∩ M).2
+        exact (hνM (ψ v) hvM).2.2 _ (by rw [hT v hv]; exact ⟨c, rfl⟩)
+      simpa using congrArg (fun L => L d) (hf.unique h0)
+    -- step 5 (Schwarz): `D²ψ(v₀)` is symmetric
+    have hsymm : IsSymmSndFDerivAt ℝ ψ v₀ :=
+      (hψ.contDiffAt (hV.mem_nhds hv₀)).isSymmSndFDerivAt (by simp)
+    -- step 6: `(Dν(x)Dψ(v₀)b) · Dψ(v₀)a = −ν(x) · D²ψ(v₀)(b, a)` is symmetric in `a, b`
+    have hab := hstar a b
+    have hba := hstar b a
+    rw [hsymm.eq b a] at hab
+    have e1 := real_inner_comm (fderiv ℝ ν (ψ v₀) (fderiv ℝ ψ v₀ a)) (fderiv ℝ ψ v₀ b)
+    have e2 := real_inner_comm (fderiv ℝ ν (ψ v₀) (fderiv ℝ ψ v₀ b)) (fderiv ℝ ψ v₀ a)
+    linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
