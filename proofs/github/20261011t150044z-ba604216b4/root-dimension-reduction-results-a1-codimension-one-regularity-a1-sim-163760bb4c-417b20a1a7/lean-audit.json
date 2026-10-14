@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "15f4f0694391125a96d1f33442e8305a44525d53b7b23a9347c77de6e5116142",
+  "git_delta": {
+    "base_commit": "9d3abac38724a5517950c825fc2dff915c602a98",
+    "candidate_commit": "3e88ea35abb7619b4cc64c589cb8c257fe9f3c25",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_lsa_lipschitz_image_lintegral_le",
+    "diff_sha256": "a0ffc582c9af9d4fec109574348c19f82e4631944fc076cefb9cc46e6b70b5b7",
+    "source_sha256": "334203fd85caf1b76270f0369a362bd7bbe2ff35351b5266bbf52d4a173c0c53",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_lsa_lipschitz_image_lintegral_le",
+      "statement": "∀ (m P : ℕ) (G : Euclid m → Euclid P) (D : Set (Euclid m)) (Λ : NNReal), LipschitzOnWith Λ G D → (∀ N ⊆ D, μHE[m] (G '' N) ≤ (Λ : ℝ≥0∞) ^ m * volume N) ∧ (MeasurableSet D → ∀ H : Euclid P → ℝ≥0∞, Measurable H → ∫⁻ x in G '' D, H x ∂μHE[m] ≤ (Λ : ℝ≥0∞) ^ m * ∫⁻ a in D, H (G a))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
