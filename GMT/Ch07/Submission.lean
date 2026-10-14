@@ -1673,41 +1673,6 @@ theorem Submission.cmc_tendsto_integral_of_limsup_liminf : ∀ (P : ℕ) (U : Se
     (hpos _ hfm (fun x => le_max_right _ _) hsupp_neg)
   rw [hsplit μ hμC] at hlim
   exact hlim.congr' (hμsC.mono fun j hj => hsplit (μs j) hj)
-/-- **Simon 6.2.14** (lower semicontinuity of mass) for currents `Sⱼ ∈ 𝒟ₙ(Uⱼ)` on domains
-exhausting `ℝᴾ`, along any subsequence: if `Sⱼ ⇀ C` then `M_O(C) ≤ liminf_i M_O(S_{φ(i)})`.
-`M_O(C)` is a supremum over admissible `ω ∈ 𝒟ⁿ(ℝᴾ)`.  Each such `spt ω` is compact, so it lies in
-a closed ball `B̄_R(0) ⊆ U_{φ(i)}` for all large `i`; there `ω` is admissible for `S_{φ(i)}` in
-`O`, whence `S_{φ(i)}(ω) ≤ M_O(S_{φ(i)})`, and `S_{φ(i)}(ω) → C(ω)`. -/
-theorem Submission.dimred_mbl_mm_massOn_le_liminf : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → ∀ φ : ℕ → ℕ, StrictMono φ → ∀ O : Set (Euclid P), C.massOn O ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := by
-  intro P n Us Ss C hU hconv φ hφ O
-  -- `M_O(C)` is the supremum of `C(ω)` over the admissible `ω`
-  apply sSup_le
-  rintro r ⟨ω, hω, rfl⟩
-  -- `spt ω` is compact, hence contained in a closed ball `B̄_R(0)`
-  have hK : IsCompact (tsupport (ω : DifferentialForm (Euclid P) n)) := ω.property.1.2
-  obtain ⟨R, hR⟩ := hK.isBounded.subset_closedBall 0
-  -- so `spt ω ⊆ U_{φ(i)}` for all large `i`
-  have hev : ∀ᶠ i in atTop, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Us (φ i) :=
-    (hφ.tendsto_atTop.eventually (hU R)).mono fun i hi => hR.trans hi
-  -- `S_{φ(i)}(ω) → C(ω)`
-  have hlim : Tendsto (fun i => currentEval (Ss (φ i)) (ω : DifferentialForm (Euclid P) n))
-      atTop (𝓝 (C ω)) :=
-    (hconv ω).comp hφ.tendsto_atTop
-  calc ENNReal.ofReal (C ω)
-      = liminf (fun i => ENNReal.ofReal
-          (currentEval (Ss (φ i)) (ω : DifferentialForm (Euclid P) n))) atTop :=
-        (ENNReal.tendsto_ofReal hlim).liminf_eq.symm
-    _ ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := by
-        refine liminf_le_liminf (hev.mono fun i hi => ?_)
-        -- for such `i`, `ω` is an admissible form for `S_{φ(i)}` in `O`
-        have hmem : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
-            tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Us (φ i) := ⟨ω.property.1, hi⟩
-        have heval : currentEval (Ss (φ i)) (ω : DifferentialForm (Euclid P) n) =
-            Ss (φ i) ⟨(ω : DifferentialForm (Euclid P) n), hmem⟩ := by
-          unfold currentEval
-          exact dite_eq_left hmem
-        rw [heval]
-        exact (Ss (φ i)).le_massOn (omega := ⟨(ω : DifferentialForm (Euclid P) n), hmem⟩) hω
 /-- **Upper bound on compact sets from sub-subsequence comparisons** (Simon 7.2.4 (13) and the
 remark after it).  Let `μ` be finite on compact sets.  Suppose that for every compact `K`, every
 `ε > 0` and every subsequence `ψ` there are `K ⊆ W ⊆ thickening ε K` and a further subsequence
@@ -1767,63 +1732,6 @@ theorem Submission.dimred_mbl_mm_isMinimizingIn_univ : ∀ (P n : ℕ) (Us : ℕ
   -- minimality localizes from `W'` to `W ⊇ W'`, as `K ⊆ W'` and `W ⊂⊂ ℝᴾ`
   exact Submission.cmc_massOn_le_of_le_near_support P n univ S C (S - C).support W' W
     isOpen_univ hS hC hKc subset_rfl hW' hW hKW'' (hW'ε.trans hεW) hWU hle
-/-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
-`spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
-`S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
-unity `ψ₁, …, ψₘ` on `K` subordinate to them splits `ω = Σᵢ ψᵢω` into test forms with
-`spt (ψᵢω) ⊆ Wᵢ`, each annihilated by `S`. -/
-theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0 := by
-  intro P n U S ω hdisj
-  classical
-  -- `K = spt ω` is a compact subset of `U`
-  set K := tsupport (ω : DifferentialForm (Euclid P) n)
-  have hKc : IsCompact K := ω.property.1.2
-  have hKU : K ⊆ U := ω.property.2
-  -- `K` lies in the zero region `⋃₀ 𝒲`, hence in finitely many members of `𝒲`
-  let 𝒲 : Set (Set (Euclid P)) :=
-    {W | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ S.VanishesOn W}
-  have hKZ : K ⊆ ⋃ W : 𝒲, (W : Set (Euclid P)) := by
-    intro x hx
-    have hxZ : x ∈ S.zeroRegion := by
-      by_contra hxZ
-      exact Set.disjoint_left.mp hdisj hx ⟨hKU hx, hxZ⟩
-    rwa [GeometricCurrentOn.zeroRegion, Set.sUnion_eq_iUnion] at hxZ
-  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun W : 𝒲 => (W : Set (Euclid P)))
-    (fun W => W.2.1) hKZ
-  let Wt : t → Set (Euclid P) := fun i => ((i : 𝒲) : Set (Euclid P))
-  have hKt : K ⊆ ⋃ i, Wt i := by
-    intro x hx
-    obtain ⟨W, hW, hxW⟩ := Set.mem_iUnion₂.mp (ht hx)
-    exact Set.mem_iUnion.mpr ⟨⟨W, hW⟩, hxW⟩
-  -- a smooth partition of unity `ψᵢ` on `K` with `spt ψᵢ ⊆ Wᵢ`
-  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
-    (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Wt (fun i => (i : 𝒲).2.1) hKt
-  -- each `ψᵢω` is a test form in `U` supported in `Wᵢ`
-  have hmem : ∀ i, (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n ∧
-      tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ Wt i := by
-    intro i
-    have hsK : tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ K :=
-      tsupport_smul_subset_right _ _
-    refine ⟨⟨⟨?_, ?_⟩, hsK.trans hKU⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
-    · exact (contMDiff_iff_contDiff.mp (ψ i).contMDiff).smul ω.property.1.1
-    · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
-  let ωi : t → TestFormOn U n := fun i => ⟨_, (hmem i).1⟩
-  -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
-  have hsum : ω = ∑ i, ωi i := by
-    apply Subtype.ext
-    funext x
-    rw [Submodule.coe_sum, Finset.sum_apply]
-    change (ω : DifferentialForm (Euclid P) n) x =
-      ∑ i, ψ i x • (ω : DifferentialForm (Euclid P) n) x
-    by_cases hx : x ∈ K
-    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
-    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
-      simp [h0]
-  -- linearity: `S(ω) = Σᵢ S(ψᵢω) = 0`
-  change S.toCurrent ω = 0
-  rw [hsum, map_sum]
-  exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
-
 /-- **Simon 7.2.4 (13), (14)** (chapter-07.txt lines 264–284): for the weights
 `μⱼ = θⱼ Hⁿ⌞Mⱼ` of `Sⱼ = τ(Mⱼ, θⱼ, ξⱼ)` and `μ = θ Hⁿ⌞M` of `C = τ(M, θ, ξ)`, (a) `μ(K) < ∞` and
 (b) `limsup_j μⱼ(K) ≤ μ(K)` for compact `K`, and (c) `μ(G) ≤ liminf_j μⱼ(G)` for open `G`.
