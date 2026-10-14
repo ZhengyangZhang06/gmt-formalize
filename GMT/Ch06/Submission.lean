@@ -69519,5 +69519,12 @@ theorem Submission.federer_fleming_compactness : FedererFlemingCompactness := by
     (fun W hW => (hB W hW).trans_le'
       (iSup_comp_le (fun j => (T j).massOn W + (T j).boundary.massOn W) φ))
     hconv, hconv⟩
+theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by
+  exact ⟨Submission.compactness_under_mass_bounds, Submission.constancy_theorem,
+    Submission.lipschitz_pushforward_integer_multiplicity, Submission.federer_fleming_compactness,
+    Submission.slicing_theorem, Submission.deformation_theorem, Submission.isoperimetric_theorem,
+    Submission.polyhedral_approximation, Submission.boundary_rectifiability,
+    Submission.flat_convergence_iff_weak_convergence, Submission.rectifiability_theorem,
+    Submission.integrality_of_weak_limits⟩
 
 end GMT.Ch06
