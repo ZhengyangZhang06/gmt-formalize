@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ea480af079702685c514b01105c5d8d44025441a8d1a4abb1ff0cc0a4be15d26",
+  "git_delta": {
+    "base_commit": "a81c80e51d3a1b34d3e02b169c7035baf98aed70",
+    "candidate_commit": "96c3252827cee127ffddcdafaf2251e3ecce4509",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_lc_rc_measure_le_add_of_closed",
+    "diff_sha256": "e72117fe1f526863a17484e022283607d1c1415c2dec6e9ed4086574daf67458",
+    "source_sha256": "a486c0b88ebc887998f180bddc0ff9f67374b850118f7fbfc4460e74fabe992f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_lc_rc_measure_le_add_of_closed",
+      "statement": "∀ (P n : ℕ) (V F : Set (Euclid P)) (X X₁ X₂ : GeometricCurrentOn V n) (R R₁ R₂ : IMRep V n), IsOpen V → R.Represents X → R₁.Represents X₁ → R₂.Represents X₂ → (∀ ω : TestFormOn V n, X ω = X₁ ω + X₂ ω) → IsClosed F → F ⊆ V → R.measure F ≤ R₁.measure F + R₂.measure F",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
