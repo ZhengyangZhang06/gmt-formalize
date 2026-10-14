@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "d77cc1606fff8ffe68324cdf516e2301c4ab683586d715a4f934ffe08cdd34f7",
+  "git_delta": {
+    "base_commit": "4b22db22ea9cd027c7a084e8555fbfc392f10bf4",
+    "candidate_commit": "cc31afa2e9b9693c6dce0a1cf6280c0e58b03072",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "1cb82733e20df364b5f2cf94b3579b8ec12d963db9f0d8f05d6dc1f63943483a",
+    "source_sha256": "bbdef429cac8e26510d1cdf4e12071c20fa2317bac0c8151b8ef933bdd793237",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_cfs_param_series_im",
+      "statement": "∀ (P k : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)) (G : ℕ → Euclid (k + 1) → Euclid P) (A : ℕ → Set (Euclid (k + 1))) (w : ℕ → Euclid (k + 1) → ℤ) (c : ℕ → Euclid (k + 1) → ℝ), (∀ i, ∃ L : NNReal, LipschitzWith L (G i)) → (∀ i, MeasurableSet (A i)) → (∀ i, Measurable (w i)) → (∀ i, Measurable (c i)) → (∀ i, IntegrableOn (fun u => (w i u : ℝ)) (A i)) → (∀ i, ∀ u ∈ A i, 0 ≤ c i u ∧ ∀ α : Covector (Euclid P) (k + 1), |α (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))| ≤ c i u * covectorEuclideanNorm α) → ∑' i, ∫⁻ u in A i, ENNReal.ofReal (|(w i u : ℝ)| * c i u) ≠ ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => ∫ u in A i, (w i u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (G i u) (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))) (T ω)) → IsIntegerMultiplicity T",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
