@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.ball_retraction-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1",
+  "depth": 4,
+  "title": "The radial retraction onto a closed ball is 1-Lipschitz",
+  "statement": "Let P ∈ ℕ and ρ ∈ ℝ with ρ > 0, and give ℝ^P = Euclid P the Euclidean norm. Then there is a map r : ℝ^P → ℝ^P such that (1) r is 1-Lipschitz, i.e. ‖r(x) − r(y)‖ ≤ ‖x − y‖ for all x, y (LipschitzWith 1 r); (2) ‖r(y)‖ ≤ ρ for every y ∈ ℝ^P; (3) r(y) = y for every y with ‖y‖ ≤ ρ. (For example the nearest-point retraction r(y) = y for ‖y‖ ≤ ρ and r(y) = (ρ/‖y‖)·y otherwise.)",
+  "lean_statement": "∀ (P : ℕ) (ρ : ℝ), 0 < ρ → ∃ r : Euclid P → Euclid P, LipschitzWith 1 r ∧ (∀ y, ‖r y‖ ≤ ρ) ∧ ∀ y, ‖y‖ ≤ ρ → r y = y",
+  "lean_name": "ecf_cp_ball_retraction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-234a484b7e-a1"
+}
