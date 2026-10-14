@@ -1429,6 +1429,59 @@ theorem Submission.dimred_cs_sos_mt_interior_product : ∀ P : ℕ, (∀ (k m n'
     · exact flat.contDiff.comp (hs.comp (contDiff_const.add contDiff_id))
     · exact hK.of_isClosed_subset (isClosed_tsupport _) hsub
 
+/-- **Slices of an integer multiplicity current are continuous and integrable over a frame span**
+(the product construction of the splitting lemma, Ch. 7, 3.5).  Let `G = span g`, `η = Φ ∘ ω`
+and `F(t) = T(η(t + ·))`.  By `Submission.dimred_cs_sos_mt_interior_product` (b) each
+`η(t + ·)` is a test form, so `F(t) = τ(M, θ, ξ)(η(t + ·))` as `R_T` represents `T`.  (i) is
+`Submission.dimred_cs_sos_mt_si_translate_action_continuous`, `η` being continuous with compact
+support.  (ii) A bounded `E ⊆ G` has compact closure, on which the continuous `F` is bounded,
+and finite `Hᵏ`-measure by `Submission.dimred_cs_sos_mt_si_span_bounded_measure_ne_top`.
+(iii) If `μ_{R_T}(ℝᴾ \ Gᗮ) = 0`, then
+`Submission.dimred_cs_sos_mt_si_translate_action_eq_zero_of_concentrated` gives a compact `K`
+with `F = 0` on `G \ K`; `F` is integrable on the bounded set `E ∩ K` by (ii) and vanishes on
+`E \ K`. -/
+theorem Submission.dimred_cs_sos_mt_slice_integrable : ∀ (P k j n' : ℕ) (g : Fin k → Euclid P) (T : GeometricCurrentOn (univ : Set (Euclid P)) j) (RT : IMRep (univ : Set (Euclid P)) j) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) j) (ω : TestFormOn (univ : Set (Euclid P)) n'), Orthonormal ℝ g → RT.Represents T → Continuous (fun t => currentEval T (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y)))) ∧ (∀ E : Set (Euclid P), MeasurableSet E → E ⊆ (Submodule.span ℝ (Set.range g) : Set (Euclid P)) → Bornology.IsBounded E → IntegrableOn (fun t => currentEval T (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y)))) E μHE[k]) ∧ (RT.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → ∀ E : Set (Euclid P), MeasurableSet E → E ⊆ (Submodule.span ℝ (Set.range g) : Set (Euclid P)) → IntegrableOn (fun t => currentEval T (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y)))) E μHE[k]) := by
+  intro P k j n' g T RT flat ω hg hRT
+  -- Step 1: `η = Φ ∘ ω` is continuous with compact support
+  have hω : IsTestForm (ω : DifferentialForm (Euclid P) n') := ω.2.1
+  have hωs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (ω : DifferentialForm (Euclid P) n') := hω.1
+  set η : DifferentialForm (Euclid P) j := fun z => flat ((ω : DifferentialForm (Euclid P) n') z)
+  have hηc : Continuous η := flat.continuous.comp hωs.continuous
+  have hηs : HasCompactSupport η := hω.2.comp_left flat.map_zero
+  -- Step 2: `F(t) = T(η(t + ·)) = τ(M, θ, ξ)(η(t + ·))`, as `η(t + ·)` is a test form
+  have hF : (fun t => currentEval T (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))))
+      = fun t => RT.action (fun y => η (t + y)) := by
+    funext t
+    have hmem : IsTestForm (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) ∧
+        tsupport (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) ⊆ univ :=
+      ⟨((Submission.dimred_cs_sos_mt_interior_product P).2 n' j flat ω t hω).1, subset_univ _⟩
+    rw [currentEval, dite_eq_left hmem]
+    exact hRT _
+  rw [hF]
+  -- Step 3 (i): continuity of translates
+  have hcont : Continuous fun t => RT.action (fun y => η (t + y)) :=
+    Submission.dimred_cs_sos_mt_si_translate_action_continuous P j RT η hηc hηs
+  -- Step 4 (ii): `F` is bounded on the compact closure of `E`, and `Hᵏ(E) < ∞`
+  have hii : ∀ E : Set (Euclid P), MeasurableSet E →
+      E ⊆ (Submodule.span ℝ (Set.range g) : Set (Euclid P)) → Bornology.IsBounded E →
+      IntegrableOn (fun t => RT.action (fun y => η (t + y))) E μHE[k] := by
+    intro E hEm hEG hEb
+    obtain ⟨C, hC⟩ := hEb.isCompact_closure.exists_bound_of_continuousOn hcont.continuousOn
+    refine Measure.integrableOn_of_bounded (M := C)
+      (Submission.dimred_cs_sos_mt_si_span_bounded_measure_ne_top P k g hg E hEG hEb)
+      hcont.aestronglyMeasurable ?_
+    filter_upwards [ae_restrict_mem hEm] with t ht
+    exact hC t (subset_closure ht)
+  refine ⟨hcont, hii, fun hconc E hEm hEG => ?_⟩
+  -- Step 5 (iii): `F = 0` on `G \ K`, so integrability on `E` reduces to the bounded `E ∩ K`
+  obtain ⟨K, hK, hK0⟩ := Submission.dimred_cs_sos_mt_si_translate_action_eq_zero_of_concentrated
+    P j (Submodule.span ℝ (Set.range g)) RT η hηs hconc
+  refine IntegrableOn.of_forall_sdiff_eq_zero
+    (hii (E ∩ K) (hEm.inter hK.isClosed.measurableSet) (inter_subset_left.trans hEG)
+      (hK.isBounded.subset inter_subset_right)) hEm ?_
+  rintro t ⟨htE, htEK⟩
+  exact hK0 t (hEG htE) fun htK => htEK ⟨htE, htK⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
