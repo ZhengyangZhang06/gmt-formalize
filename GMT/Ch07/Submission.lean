@@ -649,6 +649,58 @@ theorem Submission.cmcdtfrfic_current_exists : ∀ (P m : ℕ) (s : Finset ((Fin
         rw [mul_div_assoc', div_lt_iff₀ (by linarith)]
         nlinarith
   exact ⟨hI, ⟨L, hseq⟩, fun ω => rfl⟩
+/-- **Simon Ch. 6, proof of Theorem 5.1** (the face currents of (29)–(30)): let
+`D(ω) = Σ_{p ∈ s} ∫_{Q₁} w_p(y) ω(Φ_p(y))(e_{ι_p(0)}, …, e_{ι_p(m)}) dy` for every test form `ω`,
+where `p = (ι_p, b_p)`, `Q₁ = (0, 1)ⁿ`, `Φ_p(y) = b_p + Σ_j y_j e_{ι_p(j)}` and each `w_p` is
+integrable on `Q₁`.  Then every `x ∈ spt D` is `Φ_p(y)` for some `p ∈ s` with `∫_{Q₁} |w_p| ≠ 0` and
+some `y ∈ [0, 1]ⁿ`.  Otherwise `x` lies outside the compact union `Z` of the closed faces
+`Φ_p([0, 1]ⁿ)` with `∫_{Q₁} |w_p| ≠ 0`, so a ball `B_r(x)` misses `Z`.  If `spt ω ⊆ B_r(x)`, every
+summand vanishes: `w_p = 0` a.e. on `Q₁` when `∫_{Q₁} |w_p| = 0`, and `ω = 0` on `Φ_p(Q₁) ⊆ Z`
+otherwise.  So `D` vanishes on `B_r(x)` and `x ∈ zeroRegion D`, contradicting `x ∈ spt D`. -/
+theorem Submission.cmcdtfrfic_support_faces : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (w : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ) (D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, IntegrableOn (w p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∀ x ∈ D.support, ∃ p ∈ s, (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) ≠ 0 ∧ ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) = x := by
+  classical
+  intro P m s w D hw hD x hx
+  by_contra hne
+  -- `Z`: the union of the closed faces `Φ_p([0, 1]ⁿ)` over the `p ∈ s` with `∫_{Q₁} |w_p| ≠ 0`
+  let Z : Set (Euclid P) :=
+    ⋃ p ∈ s.filter fun p => (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) ≠ 0,
+      (fun z : Fin (m + 1) → ℝ =>
+        WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, z j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ''
+        Set.univ.pi fun _ => Set.Icc (0 : ℝ) 1
+  -- `Z` is compact: a finite union of continuous images of the compact cube
+  have hZ : IsCompact Z := Finset.isCompact_biUnion _ fun p _ =>
+    (isCompact_univ_pi fun _ => isCompact_Icc).image (by fun_prop)
+  -- by assumption, `x ∉ Z`
+  have hxZ : x ∉ Z := by
+    intro hxZ
+    obtain ⟨p, hp, z, hz, hzx⟩ := Set.mem_iUnion₂.mp hxZ
+    obtain ⟨hps, hpw⟩ := Finset.mem_filter.mp hp
+    exact hne ⟨p, hps, hpw, WithLp.toLp 2 z, fun i => hz i (Set.mem_univ i), hzx⟩
+  -- a ball `B_r(x)` disjoint from the closed set `Z`
+  obtain ⟨r, hr, hrZ⟩ := Metric.isOpen_iff.mp hZ.isClosed.isOpen_compl x hxZ
+  -- `D` vanishes on `B_r(x)`, so `x ∈ zeroRegion D`, contradicting `x ∈ spt D`
+  refine hx.2 (Set.mem_sUnion.mpr ⟨Metric.ball x r, ⟨Metric.isOpen_ball,
+    (isCompact_closedBall x r).of_isClosed_subset isClosed_closure
+      Metric.closure_ball_subset_closedBall, Set.subset_univ _, fun ω hω => ?_⟩,
+    Metric.mem_ball_self hr⟩)
+  rw [hD ω]
+  refine Finset.sum_eq_zero fun p hp => ?_
+  by_cases hpw : (∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) = 0
+  · -- `∫_{Q₁} |w_p| = 0`: `w_p = 0` a.e. on `Q₁`, so the integrand vanishes a.e.
+    have h0 := (integral_eq_zero_iff_of_nonneg (fun y => abs_nonneg (w p y)) (hw p hp).abs).mp hpw
+    refine integral_eq_zero_of_ae (h0.mono fun y hy => ?_)
+    have hy' : w p y = 0 := abs_eq_zero.mp hy
+    show w p y * _ = 0
+    rw [hy', zero_mul]
+  · -- `∫_{Q₁} |w_p| ≠ 0`: `Φ_p(Q₁) ⊆ Z` misses `B_r(x) ⊇ spt ω`, so the integrand vanishes on `Q₁`
+    refine setIntegral_eq_zero_of_forall_eq_zero fun y hy => ?_
+    have hyZ : WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) ∈ Z :=
+      Set.mem_biUnion (Finset.mem_filter.mpr ⟨hp, hpw⟩)
+        ⟨WithLp.ofLp y, fun i _ => ⟨(hy i).1.le, (hy i).2.le⟩, rfl⟩
+    have hω0 : (ω : DifferentialForm (Euclid P) (m + 1))
+        (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) = 0 :=
+      image_eq_zero_of_notMem_tsupport fun h => hrZ (hω h) hyZ
+    rw [hω0, ContinuousAlternatingMap.coe_zero, Pi.zero_apply, mul_zero]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
