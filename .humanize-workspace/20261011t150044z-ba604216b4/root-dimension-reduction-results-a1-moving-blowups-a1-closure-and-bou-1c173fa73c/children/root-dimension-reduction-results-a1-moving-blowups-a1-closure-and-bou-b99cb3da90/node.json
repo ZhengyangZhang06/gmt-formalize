@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.slice_bound-a1.liminf_add-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.slice_limit-a1.slice_bound-a1",
+  "depth": 6,
+  "title": "Superadditivity of liminf in [0, ∞]",
+  "statement": "For every type ι (in Lean's universe Type), every filter F on ι and all functions u, v : ι → [0, ∞] (ℝ≥0∞), liminf_F u + liminf_F v ≤ liminf_F (i ↦ u(i) + v(i)), where liminf is Mathlib's Filter.liminf in the complete lattice ℝ≥0∞.",
+  "lean_statement": "∀ (ι : Type) (F : Filter ι) (u v : ι → ℝ≥0∞), liminf u F + liminf v F ≤ liminf (fun i => u i + v i) F",
+  "lean_name": "dmcbr_sl_sb_ennreal_liminf_add_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-b99cb3da90-a1"
+}

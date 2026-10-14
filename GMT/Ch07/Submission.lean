@@ -451,6 +451,25 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Local mass is invariant under negation of a current: if `T₁(ω) = -T₂(ω)` for every
+`ω ∈ 𝒟ⁿ(U)`, then `M_W(T₁) = M_W(T₂)`.  The admissible forms of `M_W` are closed under negation
+(`tsupport_neg`, `covectorEuclideanNorm_neg`) and `T₁(ω) = T₂(-ω)` by linearity, so every
+admissible value of `T₁` is one of `T₂`; by symmetry and antisymmetry the suprema agree. -/
+theorem Submission.dmcbr_sl_sb_massOn_eq_of_apply_eq_neg : ∀ (P n : ℕ) (U : Set (Euclid P)) (T₁ T₂ : GeometricCurrentOn U n) (W : Set (Euclid P)), (∀ ω : TestFormOn U n, T₁ ω = -T₂ ω) → T₁.massOn W = T₂.massOn W := by
+  intro P n U T₁ T₂ W h
+  have key : ∀ S₁ S₂ : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, S₁ ω = -S₂ ω) →
+      S₁.massOn W ≤ S₂.massOn W := by
+    intro S₁ S₂ hS
+    refine sSup_le ?_
+    rintro r ⟨ω, ⟨hsupp, hnorm⟩, rfl⟩
+    have hadm : -ω ∈ massAdmissibleOn U n W :=
+      ⟨by simpa only [Submodule.coe_neg, tsupport_neg] using hsupp, fun x => by
+        simpa only [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg] using hnorm x⟩
+    calc ENNReal.ofReal (S₁ ω) = ENNReal.ofReal (S₂ (-ω)) := by
+          rw [hS ω]; exact congrArg ENNReal.ofReal (map_neg S₂.toCurrent ω).symm
+      _ ≤ S₂.massOn W := S₂.le_massOn hadm
+  exact le_antisymm (key T₁ T₂ h) (key T₂ T₁ fun ω => by rw [h ω, neg_neg])
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
