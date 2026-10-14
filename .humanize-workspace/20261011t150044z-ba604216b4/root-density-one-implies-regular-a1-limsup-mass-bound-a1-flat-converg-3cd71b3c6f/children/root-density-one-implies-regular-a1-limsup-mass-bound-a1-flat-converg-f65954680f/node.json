@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1.degree_zero-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1",
+  "depth": 6,
+  "title": "Degree zero: Lipschitz push-forward of a finite-mass 0-dimensional IM representation is integer multiplicity, is the limit of smooth push-forwards, and is local (Simon 6.3.6–3.9 and 2.29 for n = 0; step 1 of the selected proof)",
+  "statement": "Conventions as in the selected statement (ℝ^P = Euclid P, H⁰ = μHE[0], 𝒟^0(U) = TestFormOn U 0, 𝒟_0(U) = GeometricCurrentOn U 0, R.action(β) = ∫_M θ ξ(β) dH⁰). For all N, N' ∈ ℕ and every IMRep R = (M, θ, ξ) of degree 0 in univ ⊆ ℝ^N with R.measure(ℝ^N) ≠ ∞ there is a map Y assigning to every F : ℝ^N → ℝ^{N'} a current Y(F) ∈ 𝒟_0(ℝ^{N'}) (domain univ) such that: (a) for every Λ ∈ ℝ≥0 and every Λ-Lipschitz F, Y(F) is integer multiplicity and, for every sequence of C¹ Λ-Lipschitz maps F_j : ℝ^N → ℝ^{N'} converging uniformly to F and every ω ∈ 𝒟^0(ℝ^{N'}), R.action(F_j^#ω) → Y(F)(ω), where F_j^#ω(x) := (ω(F_j x)).compContinuousLinearMap(DF_j(x)); (b) if F, F' are Λ-Lipschitz and F(x) = F'(x) for H⁰-a.e. x ∈ M (μHE[0].restrict R.carrier), then Y(F) = Y(F'). (This is the selected statement for k = 0; the (IMS) antecedent is not needed in degree 0.)",
+  "lean_statement": "∀ (N N' : ℕ) (R : IMRep (univ : Set (Euclid N)) 0), R.measure univ ≠ ∞ → ∃ Y : (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N')) 0, (∀ (F : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → IsIntegerMultiplicity (Y F) ∧ ∀ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ 1 (Fs j)) → (∀ j, LipschitzWith Λ (Fs j)) → TendstoUniformly Fs F atTop → ∀ ω : TestFormOn (univ : Set (Euclid N')) 0, Tendsto (fun j => R.action (fun x => ((ω : DifferentialForm (Euclid N') 0) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x))) atTop (𝓝 (Y F ω))) ∧ ∀ (F F' : Euclid N → Euclid N') (Λ : NNReal), LipschitzWith Λ F → LipschitzWith Λ F' → (∀ᵐ x ∂(μHE[0].restrict R.carrier), F x = F' x) → Y F = Y F'",
+  "lean_name": "dor_lmb_fcd_imp_degree_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f65954680f-a1"
+}
