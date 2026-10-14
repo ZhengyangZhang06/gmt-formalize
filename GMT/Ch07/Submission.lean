@@ -557,6 +557,86 @@ theorem dor_lmb_fcd_cp_integer_median : ∀ (m : ℕ) (u : Euclid (m + 1) → �
     rwa [hhalf, ← measureReal_def] at h
   have h4 := hmarkov |(β : ℝ)|
   nlinarith [abs_nonneg (β : ℝ)]
+/-- Deviation from a `θ`-median `β` is controlled by the double-integral oscillation (Simon Ch. 2,
+Lemma 2.7, proof): `∫_W |v − β| ≤ (1 + θ⁻¹) |W|⁻¹ ∫_W ∫_W |v(x) − v(y)|`.  With the mean
+`v̄ = |W|⁻¹ ∫_W v`, `|v x − v̄| ≤ |W|⁻¹ ∫_W |v x − v y| dy`; Markov's inequality on the half
+`{β ≤ v}` or `{v ≤ β}` on the far side of `β` from `v̄` gives `|W| |v̄ − β| ≤ θ⁻¹ ∫_W |v − v̄|`. -/
+theorem dor_lmb_fcd_cp_median_deviation : ∀ (P : ℕ) (W : Set (Euclid P)) (v : Euclid P → ℝ) (β θ : ℝ), MeasurableSet W → volume W ≠ ∞ → IntegrableOn v W → 0 < θ → θ * (volume W).toReal ≤ (volume (W ∩ {y | β ≤ v y})).toReal → θ * (volume W).toReal ≤ (volume (W ∩ {y | v y ≤ β})).toReal → ∫ y in W, |v y - β| ≤ (1 + θ⁻¹) * ((volume W).toReal)⁻¹ * ∫ x in W, ∫ y in W, |v x - v y| := by
+  intro P W v β θ hW hWfin hv hθ hge hle
+  -- `volume⌞W` is a finite measure; write `m = |W|`
+  have : IsFiniteMeasure (volume.restrict W) := isFiniteMeasure_restrict.mpr hWfin
+  set m := (volume W).toReal
+  -- Step 0: if `|W| = 0`, then `volume⌞W = 0` and both sides vanish
+  rcases (ENNReal.toReal_nonneg : 0 ≤ m).eq_or_lt with hm | hm
+  · have hW0 : volume W = 0 :=
+      ((ENNReal.toReal_eq_zero_iff _).mp hm.symm).resolve_right hWfin
+    simp [Measure.restrict_eq_zero.mpr hW0]
+  -- Step 1: integrability; the partial integral is integrable by Fubini
+  have hvi : Integrable v (volume.restrict W) := hv
+  have hint : ∀ c : ℝ, Integrable (fun x => |v x - c|) (volume.restrict W) := fun c =>
+    (hvi.sub (integrable_const c)).abs
+  have hprod : Integrable (fun p : Euclid P × Euclid P => |v p.1 - v p.2|)
+      ((volume.restrict W).prod (volume.restrict W)) :=
+    ((hvi.comp_fst _).sub (hvi.comp_snd _)).abs
+  have hG : Integrable (fun x => ∫ y in W, |v x - v y|) (volume.restrict W) :=
+    hprod.integral_prod_left
+  -- Step 2: with the mean `v̄ = |W|⁻¹ ∫_W v`, `|v x − v̄| ≤ |W|⁻¹ ∫_W |v x − v y| dy`
+  set vbar := m⁻¹ * ∫ y in W, v y with hvbar
+  have hpt : ∀ x, |v x - vbar| ≤ m⁻¹ * ∫ y in W, |v x - v y| := by
+    intro x
+    have h1 : ∫ y in W, (v x - v y) = m * v x - ∫ y in W, v y := by
+      rw [integral_sub (integrable_const _) hvi, integral_const, measureReal_restrict_apply_univ,
+        smul_eq_mul]
+      rfl
+    have h2 : v x - vbar = m⁻¹ * ∫ y in W, (v x - v y) := by
+      rw [h1, hvbar, mul_sub, ← mul_assoc, inv_mul_cancel₀ hm.ne', one_mul]
+    rw [h2, abs_mul, abs_of_pos (inv_pos.mpr hm)]
+    exact mul_le_mul_of_nonneg_left abs_integral_le_integral_abs (inv_nonneg.mpr hm.le)
+  have hJ : ∫ x in W, |v x - vbar| ≤ m⁻¹ * ∫ x in W, ∫ y in W, |v x - v y| := by
+    rw [← integral_const_mul]
+    exact integral_mono (hint vbar) (hG.const_mul _) hpt
+  -- Step 3: `|v − v̄| ≥ |β − v̄|` on the half on the far side of `β`, which has measure `≥ θ|W|`
+  set I := ∫ x in W, |v x - vbar| with hI
+  have hmeas : θ * m ≤ (volume.restrict W).real {x | |β - vbar| ≤ |v x - vbar|} := by
+    rcases le_total vbar β with hb | hb
+    · refine hge.trans ?_
+      rw [show (volume (W ∩ {y | β ≤ v y})).toReal = (volume.restrict W).real {y | β ≤ v y} by
+        rw [Measure.real, Measure.restrict_apply' hW, Set.inter_comm]]
+      refine measureReal_mono (fun x (hx : β ≤ v x) => ?_)
+      show |β - vbar| ≤ |v x - vbar|
+      rw [abs_of_nonneg (sub_nonneg.mpr hb), abs_of_nonneg (by linarith)]
+      linarith
+    · refine hle.trans ?_
+      rw [show (volume (W ∩ {y | v y ≤ β})).toReal = (volume.restrict W).real {y | v y ≤ β} by
+        rw [Measure.real, Measure.restrict_apply' hW, Set.inter_comm]]
+      refine measureReal_mono (fun x (hx : v x ≤ β) => ?_)
+      show |β - vbar| ≤ |v x - vbar|
+      rw [abs_of_nonpos (sub_nonpos.mpr hb), abs_of_nonpos (by linarith)]
+      linarith
+  -- Markov's inequality for `|v − v̄|` at level `|β − v̄|`
+  have hM : |β - vbar| * (volume.restrict W).real {x | |β - vbar| ≤ |v x - vbar|} ≤ I :=
+    mul_meas_ge_le_integral_of_nonneg (ae_of_all _ fun x => abs_nonneg _) (hint vbar) _
+  have hmed : m * |vbar - β| ≤ θ⁻¹ * I := by
+    rw [abs_sub_comm, le_inv_mul_iff₀ hθ]
+    calc θ * (m * |β - vbar|) = |β - vbar| * (θ * m) := by ring
+      _ ≤ |β - vbar| * (volume.restrict W).real {x | |β - vbar| ≤ |v x - vbar|} :=
+        mul_le_mul_of_nonneg_left hmeas (abs_nonneg _)
+      _ ≤ I := hM
+  -- Step 4: triangle inequality `|v − β| ≤ |v − v̄| + |v̄ − β|`
+  have htri : ∫ y in W, |v y - β| ≤ I + m * |vbar - β| := by
+    have h3 : ∫ y in W, (|v y - vbar| + |vbar - β|) = I + m * |vbar - β| := by
+      rw [integral_add (hint vbar) (integrable_const _), integral_const,
+        measureReal_restrict_apply_univ, smul_eq_mul]
+      rfl
+    rw [← h3]
+    exact integral_mono (hint β) ((hint vbar).add (integrable_const _))
+      fun y => abs_sub_le (v y) vbar β
+  calc ∫ y in W, |v y - β| ≤ I + m * |vbar - β| := htri
+    _ ≤ I + θ⁻¹ * I := by linarith
+    _ = (1 + θ⁻¹) * I := by ring
+    _ ≤ (1 + θ⁻¹) * (m⁻¹ * ∫ x in W, ∫ y in W, |v x - v y|) :=
+        mul_le_mul_of_nonneg_left hJ (by positivity)
+    _ = (1 + θ⁻¹) * m⁻¹ * ∫ x in W, ∫ y in W, |v x - v y| := by ring
 
 end Submission
 
