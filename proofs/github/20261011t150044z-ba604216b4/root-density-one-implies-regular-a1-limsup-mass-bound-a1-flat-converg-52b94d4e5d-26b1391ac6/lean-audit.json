@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4231da29f1c60e77a999cd8628f59996d7ce01c7616d203b08634fc162e745a4",
+  "git_delta": {
+    "base_commit": "8e51aca039ef86e3bcb1ac2c1d3a50a843959b4b",
+    "candidate_commit": "6703a59ab22cd9b2924e55d0daa2e9c6fa749b46",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_dtop_ip_approxTangent_isometry",
+    "diff_sha256": "39ff679ee7f479a6eeb1e80c035da7cf8967ab39f4904df56048c8867421d2f7",
+    "source_sha256": "c403d56da42062e1d4f1e7a4beca5d57323631fda99215068406725a35d93253",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_dtop_ip_approxTangent_isometry",
+      "statement": "∀ (P Q d : ℕ) (L : Euclid P →L[ℝ] Euclid Q) (M : Set (Euclid P)) (x : Euclid P) (S : Submodule ℝ (Euclid P)), Isometry L → HasApproximateTangentSpaceAt d M x S → HasApproximateTangentSpaceAt d (L '' M) (L x) (Submodule.map (L : Euclid P →ₗ[ℝ] Euclid Q) S)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
