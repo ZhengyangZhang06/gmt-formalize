@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.normal_local_smooth-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1",
+  "depth": 6,
+  "title": "A continuous unit normal in A₀ of a C^∞ hypersurface of A₀ is locally the restriction of a C^∞ map (parent steps 4–6)",
+  "statement": "Local smoothness of the unit normal. Data: P, m ∈ ℕ; a linear subspace A₀ ⊆ ℝ^P with dim A₀ = m + 1; M ⊆ ℝ^P; ν₀ : ℝ^P → ℝ^P. Hypotheses: M ⊆ A₀; M has C^∞ charts: every y ∈ M has open V ⊆ ℝ^m, open W ⊆ ℝ^P with y ∈ W and ψ : ℝ^m → ℝ^P that is C^∞ on V (ContDiffOn ℝ (⊤ : ℕ∞) ψ V) and injective on V, with ψ(V) = W ∩ M, V ∩ ψ⁻¹(K) compact for every compact K ⊆ W, and Dψ(z) injective for every z ∈ V; ν₀ is continuous on M; and for every x ∈ M, ν₀(x) ∈ A₀, |ν₀(x)| = 1 and ν₀(x)·v = 0 for every v ∈ tangentSpace M x. Conclusion: every y ∈ M has an open set O ∋ y and a map g : ℝ^P → ℝ^P that is C^∞ on O with g(z) = ν₀(z) for every z ∈ M ∩ O.",
+  "lean_statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν₀ : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (∀ y ∈ M, ∃ (V : Set (Euclid m)) (W : Set (Euclid P)) (ψ : Euclid m → Euclid P), IsOpen V ∧ IsOpen W ∧ y ∈ W ∧ ContDiffOn ℝ (⊤ : ℕ∞) ψ V ∧ InjOn ψ V ∧ ψ '' V = W ∩ M ∧ (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) ∧ ∀ z ∈ V, Injective (fderiv ℝ ψ z)) → ContinuousOn ν₀ M → (∀ x ∈ M, ν₀ x ∈ A₀ ∧ ‖ν₀ x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν₀ x) v = 0) → ∀ y ∈ M, ∃ (O : Set (Euclid P)) (g : Euclid P → Euclid P), IsOpen O ∧ y ∈ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) g O ∧ ∀ z ∈ M ∩ O, g z = ν₀ z",
+  "lean_name": "codim1_hcp_un_normal_local_smooth",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.tangent_subspace-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.cross_product-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.chart_retraction-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.hyperplane_projection-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.tangent_subspace-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.cross_product-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.chart_retraction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.unit_normal-a1.hyperplane_projection-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-1a34e0dcf9-a1"
+}

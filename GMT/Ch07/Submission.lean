@@ -13066,6 +13066,754 @@ theorem Submission.codim1_hcp_lipschitz_smooth_approx : ∀ (P m : ℕ) (M : Set
       simpa using this
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun k => zero_le) hint
 
+/-- **Tangent spaces of a submanifold lying in a linear subspace** (Simon Ch. 2, §4; step 1 of
+the unit normal of a minimal hypercone plane): if `A₀ ⊆ ℝᴾ` is a linear subspace and `M ⊆ A₀` is
+an embedded `C¹` `m`-dimensional submanifold, then every `T_xM`, `x ∈ M`, is an `m`-dimensional
+linear subspace of `A₀`.  For a chart `ψ` with `ψ(v) = x`, `T_xM = Dψ(v)(ℝᵐ)`
+(`Submission.chart_tangentSpace_eq_range_fderiv`), of dimension `m` as `Dψ(v)` is injective.  A
+vector `γ'(0) ∈ T_xM` is the limit of the difference quotients `s⁻¹(γ(s) − γ(0)) ∈ A₀`,
+`0 < |s| < 1`, so it lies in the closed subspace `A₀`. -/
+theorem Submission.codim1_hcp_un_tangent_subspace : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → M ⊆ (A₀ : Set (Euclid P)) → ∀ x ∈ M, ∃ Q : Submodule ℝ (Euclid P), (Q : Set (Euclid P)) = tangentSpace M x ∧ Module.finrank ℝ Q = m ∧ Q ≤ A₀ := by
+  intro P m A₀ M hM hMA x hx
+  -- Step 1: a chart `(V, W, ψ)` at `x`, and `v ∈ V` with `ψ(v) = x`
+  obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hinj, himg, hprop, hD⟩ := hM x hx
+  obtain ⟨v, hv, rfl⟩ : x ∈ ψ '' V := himg ▸ ⟨hxW, hx⟩
+  -- Step 2: `T_{ψ(v)}M = Dψ(v)(ℝᵐ)`, the underlying set of `Q = range Dψ(v)`
+  have hT : tangentSpace M (ψ v) = Set.range (fderiv ℝ ψ v) :=
+    Submission.chart_tangentSpace_eq_range_fderiv P m 1 M W V ψ v le_rfl hV hW hψ hinj himg
+      hprop hD hv
+  have hQ : (LinearMap.range (fderiv ℝ ψ v : Euclid m →ₗ[ℝ] Euclid P) : Set (Euclid P)) =
+      tangentSpace M (ψ v) := by
+    rw [hT, LinearMap.coe_range, ContinuousLinearMap.coe_coe]
+  refine ⟨_, hQ, ?_, fun w hw => ?_⟩
+  · -- Step 3: `Dψ(v)` is injective, so `dim Q = dim ℝᵐ = m`
+    rw [LinearMap.finrank_range_of_inj (hD v hv), finrank_euclideanSpace_fin]
+  · -- Step 4: `w = γ'(0)` for a `C¹` curve `γ` in `M` with `γ(0) = ψ(v)`
+    obtain ⟨γ, -, hγM, hγ0, hγw⟩ : w ∈ tangentSpace M (ψ v) := hQ ▸ hw
+    -- the difference quotients `s⁻¹(γ(s) − γ(0))`, `0 < |s| < 1`, lie in `A₀` as `M ⊆ A₀`
+    have hev : ∀ᶠ s in 𝓝[≠] (0 : ℝ), s⁻¹ • (γ (0 + s) - γ 0) ∈ A₀ := by
+      filter_upwards [mem_nhdsWithin_of_mem_nhds (Ioo_mem_nhds (neg_lt_zero.2 one_pos) one_pos)]
+        with s hs
+      refine A₀.smul_mem _ (A₀.sub_mem (hMA (hγM ?_)) (hMA (hγ0 ▸ hx)))
+      rwa [zero_add]
+    -- they tend to `w = γ'(0)`, and `A₀` is closed (finite-dimensional), so `w ∈ A₀`
+    exact A₀.closed_of_finiteDimensional.mem_of_tendsto hγw.tendsto_slope_zero hev
+/-- **Orthogonal projection onto a hyperplane of `A₀`** (Simon Ch. 2, §4, the splitting
+`X = X^⊤ + X^⊥` with `X^⊥ = Σ_α (ν_α · X) ν_α` before 4.29, here with one unit normal inside
+`A₀`; step 1 of the unit normal construction for the hypercone in Simon Appendix B, B.2, giving
+`P_x = P_{A₀} − ν(x) ⊗ ν(x)`).  Let `Q ⊆ A₀ ⊆ ℝᴾ` be subspaces with `dim A₀ = m + 1` and
+`dim Q = m`, and let `n ∈ A₀` be a unit vector orthogonal to `Q`.  Then
+`P_Q w = P_{A₀} w − ⟪n, w⟫ n` for every `w`.  The line `ℝ ∙ n` lies in `A₀`, so
+`(ℝ ∙ n)ᗮ ⊓ A₀` has dimension `m` and contains `Q`; hence `Q = (ℝ ∙ n)ᗮ ⊓ A₀`.  Now
+`u = P_{A₀} w − ⟪n, w⟫ n` lies in `A₀` with `⟪n, u⟫ = ⟪P_{A₀} n, w⟫ − ⟪n, w⟫ = 0`, so `u ∈ Q`, and
+`w − u = (w − P_{A₀} w) + ⟪n, w⟫ n` is orthogonal to `Q ⊆ A₀`; so `u = P_Q w`. -/
+theorem Submission.codim1_hcp_un_hyperplane_projection : ∀ (P m : ℕ) (A₀ Q : Submodule ℝ (Euclid P)) (n : Euclid P), Module.finrank ℝ A₀ = m + 1 → Module.finrank ℝ Q = m → Q ≤ A₀ → n ∈ A₀ → ‖n‖ = 1 → (∀ v ∈ Q, inner ℝ n v = 0) → ∀ w : Euclid P, Q.starProjection w = A₀.starProjection w - inner ℝ n w • n := by
+  intro P m A₀ Q n hA₀ hQ hQA hnA hn hnQ w
+  -- Step 1: `Q = (ℝ ∙ n)ᗮ ⊓ A₀`, since `Q ≤ (ℝ ∙ n)ᗮ ⊓ A₀` and both have dimension `m`
+  have hn0 : n ≠ 0 := by
+    rintro rfl
+    simp at hn
+  have hle : Q ≤ (ℝ ∙ n)ᗮ ⊓ A₀ := fun v hv =>
+    ⟨Submodule.mem_orthogonal_singleton_iff_inner_right.2 (hnQ v hv), hQA hv⟩
+  have hdim : Module.finrank ℝ ((ℝ ∙ n)ᗮ ⊓ A₀ : Submodule ℝ (Euclid P)) = m := by
+    have h := Submodule.finrank_add_inf_finrank_orthogonal
+      ((Submodule.span_singleton_le_iff_mem n A₀).2 hnA)
+    rw [finrank_span_singleton hn0, hA₀] at h
+    omega
+  have hQeq : Q = (ℝ ∙ n)ᗮ ⊓ A₀ := Submodule.eq_of_le_of_finrank_eq hle (hQ.trans hdim.symm)
+  -- Step 2: `u := P_{A₀} w − ⟪n, w⟫ n` lies in `A₀` and is orthogonal to `n`, so `u ∈ Q`
+  have hu : A₀.starProjection w - inner ℝ n w • n ∈ Q := by
+    rw [hQeq]
+    refine ⟨Submodule.mem_orthogonal_singleton_iff_inner_right.2 ?_,
+      A₀.sub_mem (A₀.starProjection_apply_mem w) (A₀.smul_mem _ hnA)⟩
+    rw [inner_sub_right, real_inner_smul_right, ← Submodule.inner_starProjection_left_eq_right,
+      Submodule.starProjection_eq_self_iff.2 hnA, real_inner_self_eq_norm_sq, hn]
+    ring
+  -- Steps 3–4: `w − u = (w − P_{A₀} w) + ⟪n, w⟫ n` is orthogonal to `Q`, so `P_Q w = u`
+  refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero hu fun v hv => ?_
+  have h₁ : inner ℝ (w - A₀.starProjection w) v = 0 :=
+    Submodule.inner_left_of_mem_orthogonal (hQA hv) (A₀.sub_starProjection_mem_orthogonal w)
+  have h₂ : w - (A₀.starProjection w - inner ℝ n w • n) =
+      (w - A₀.starProjection w) + inner ℝ n w • n := by
+    abel
+  rw [h₂, inner_add_left, real_inner_smul_left, h₁, hnQ v hv, mul_zero, add_zero]
+/-- **Generalized cross product in an `(m + 1)`-dimensional subspace `A₀ ⊆ ℝᴾ`** (the volume
+form of `A₀` and its `A₀`-representative; Simon Appendix B, the unit normal of a hypersurface of
+`A₀ ≅ ℝ^{m+1}` with the orientation induced from `C`, used in B.2).  Fix an orthonormal basis
+`a₀, …, a_m` of `A₀`, put `Ω(v₀, …, v_m) = det_a(P_{A₀} v₀, …, P_{A₀} v_m)`, an alternating
+`(m + 1)`-form that only sees the `A₀`-components of its arguments, and
+`N(w) = ∑ᵢ Ω(aᵢ, w) aᵢ ∈ A₀`; `N` is continuous because a multilinear map on `ℝᴾ` is a finite sum
+of products of coordinates.  Expanding `P_{A₀} u = ∑ᵢ ⟪aᵢ, u⟫ aᵢ` gives `⟪N(w), u⟫ = Ω(u, w)`, so
+`⟪N(w), w_j⟫ = Ω(w_j, w) = 0`.  For linearly independent `w_j ∈ A₀` some `u ∈ A₀` makes `(u, w)`
+a basis of `A₀`, so `⟪N(w), u⟫ = Ω(u, w) ≠ 0`.  For orthonormal `w_j ∈ A₀`, extend them to an
+orthonormal basis `(b₀, w)` of `A₀`; then `N(w) = ⟪N(w), b₀⟫ b₀` and `⟪N(w), b₀⟫ = Ω(b₀, w) = ±1`,
+the determinant of a change of orthonormal basis. -/
+theorem Submission.codim1_hcp_un_cross_product : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)), Module.finrank ℝ A₀ = m + 1 → ∃ N : Euclid P [⋀^Fin m]→L[ℝ] Euclid P, (∀ w : Fin m → Euclid P, N w ∈ A₀) ∧ (∀ (w : Fin m → Euclid P) (j : Fin m), inner ℝ (N w) (w j) = 0) ∧ (∀ w : Fin m → Euclid P, Orthonormal ℝ w → (∀ j, w j ∈ A₀) → ‖N w‖ = 1) ∧ ∀ w : Fin m → Euclid P, LinearIndependent ℝ w → (∀ j, w j ∈ A₀) → N w ≠ 0 := by
+  intro P m A₀ hA
+  -- step 1: an orthonormal basis `a` of `A₀` and the volume form `Ω(v) = det_a (P_{A₀} v)`
+  let a : OrthonormalBasis (Fin (m + 1)) ℝ A₀ := (stdOrthonormalBasis ℝ A₀).reindex (finCongr hA)
+  let pr : Euclid P →ₗ[ℝ] A₀ := (A₀.orthogonalProjectionOnto : Euclid P →ₗ[ℝ] A₀)
+  let Ω : Euclid P [⋀^Fin (m + 1)]→ₗ[ℝ] ℝ := a.toBasis.det.compLinearMap pr
+  have hΩ : ∀ v, Ω v = a.toBasis.det (fun j => pr (v j)) := fun v => rfl
+  -- step 2: `N(w) = ∑ᵢ Ω(aᵢ, w) aᵢ`
+  let N₀ : Euclid P [⋀^Fin m]→ₗ[ℝ] Euclid P :=
+    ∑ i, (Ω.curryLeft (a i : Euclid P)).smulRight (a i : Euclid P)
+  have hN₀ : ∀ w, N₀ w = ∑ i, Ω (Fin.cons (a i : Euclid P) w) • (a i : Euclid P) := fun w =>
+    map_sum (AddMonoidHom.mk' (fun f : Euclid P [⋀^Fin m]→ₗ[ℝ] Euclid P => f w) fun _ _ => rfl) _ _
+  -- continuity of `N₀`: expand every `w j` in the standard basis `e` of `ℝᴾ`
+  have hcont : Continuous N₀ := by
+    let e := EuclideanSpace.basisFun (Fin P) ℝ
+    have hexp : (N₀ : (Fin m → Euclid P) → Euclid P) = fun w => ∑ r : Fin m → Fin P,
+        (∏ j, inner ℝ (e (r j)) (w j)) • N₀ (fun j => e (r j)) := by
+      funext w
+      have h1 : N₀ w = N₀.toMultilinearMap (fun j => ∑ k, inner ℝ (e k) (w j) • e k) := by
+        simp only [e.sum_repr']
+        rfl
+      rw [h1, MultilinearMap.map_sum]
+      exact Finset.sum_congr rfl fun r _ => N₀.toMultilinearMap.map_smul_univ _ _
+    rw [hexp]
+    fun_prop
+  let N : Euclid P [⋀^Fin m]→L[ℝ] Euclid P := { N₀ with cont := hcont }
+  have hN : ∀ w, N w = N₀ w := fun w => rfl
+  -- `u ↦ Ω(u, w)` is linear
+  let ℓ : (Fin m → Euclid P) → Euclid P →ₗ[ℝ] ℝ := fun w =>
+    { toFun := fun u => Ω (Fin.cons u w)
+      map_add' := fun u v => Ω.map_vecCons_add w u v
+      map_smul' := fun c u => Ω.map_vecCons_smul w c u }
+  -- step 3: `⟨N(w), u⟩ = Ω(u, w)`
+  have key : ∀ w u, inner ℝ (N₀ w) u = Ω (Fin.cons u w) := by
+    intro w u
+    -- `Ω(u, w) = Ω(P_{A₀} u, w)` and `P_{A₀} u = ∑ᵢ ⟨aᵢ, u⟩ aᵢ`
+    have hproj : Ω (Fin.cons u w) = Ω (Fin.cons (pr u : Euclid P) w) := by
+      rw [hΩ, hΩ]
+      congr 1
+      funext j
+      refine Fin.cases ?_ (fun k => ?_) j
+      · rw [Fin.cons_zero, Fin.cons_zero]
+        exact (A₀.orthogonalProjectionOnto_mem_subspace_eq_self (pr u)).symm
+      · simp
+    have hsum : (pr u : Euclid P) = ∑ i, inner ℝ (a i : Euclid P) u • (a i : Euclid P) := by
+      conv_lhs => rw [← a.sum_repr' (pr u)]
+      simp [pr]
+    rw [hproj, hsum, hN₀, sum_inner]
+    change _ = ℓ w (∑ i, _)
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [map_smul, real_inner_smul_left, smul_eq_mul, mul_comm]
+    rfl
+  -- step 4 (i): `N(w) ∈ A₀`
+  have hmem : ∀ w, N₀ w ∈ A₀ := by
+    intro w
+    rw [hN₀]
+    exact A₀.sum_mem fun i _ => A₀.smul_mem _ (a i).2
+  -- step 5 (ii): `⟨N(w), w_j⟩ = Ω(w_j, w) = 0`
+  have horth : ∀ w (j : Fin m), inner ℝ (N₀ w) (w j) = 0 := by
+    intro w j
+    rw [key]
+    exact Ω.map_eq_zero_of_eq (Fin.cons (w j) w) (i := 0) (j := j.succ) (by simp)
+      (Fin.succ_ne_zero j).symm
+  refine ⟨N, hmem, horth, ?_, ?_⟩
+  · -- step 8 (iii)
+    intro w hon hw
+    let w' : Fin m → A₀ := fun j => ⟨w j, hw j⟩
+    have hon' : Orthonormal ℝ w' := hon.codRestrict A₀ hw
+    -- extend `w'` to an orthonormal basis `b` of `A₀` with `b (j + 1) = w' j`
+    let v : Fin (m + 1) → A₀ := Fin.cons 0 w'
+    have hdr : Orthonormal ℝ ((range (Fin.succ : Fin m → Fin (m + 1))).domRestrict v) := by
+      have : (range (Fin.succ : Fin m → Fin (m + 1))).domRestrict v =
+          w' ∘ (Equiv.ofInjective Fin.succ (Fin.succ_injective m)).symm := by
+        funext x
+        obtain ⟨_, j, rfl⟩ := x
+        simp [v, Set.domRestrict]
+      rw [this]
+      exact hon'.comp _ (Equiv.injective _)
+    obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (by simp [hA]) hdr
+    have hbs : ∀ j, b j.succ = w' j := fun j =>
+      (hb _ (mem_range_self j)).trans (Fin.cons_succ _ _ _)
+    -- `Ω(b₀, w) = det_a b = ±1`
+    have hpb : (fun j => pr ((Fin.cons (b 0 : Euclid P) w : Fin (m + 1) → Euclid P) j)) = ⇑b := by
+      funext j
+      refine Fin.cases ?_ (fun k => ?_) j
+      · simp [pr]
+      · rw [Fin.cons_succ, hbs]
+        exact A₀.orthogonalProjectionOnto_mem_subspace_eq_self (w' k)
+    have hdet : Ω (Fin.cons (b 0 : Euclid P) w) = 1 ∨ Ω (Fin.cons (b 0 : Euclid P) w) = -1 := by
+      rw [hΩ, hpb]
+      exact a.det_to_matrix_orthonormalBasis_real b
+    -- `N(w) = ⟨b₀, N(w)⟩ b₀`
+    obtain ⟨n', hn'⟩ : ∃ n' : A₀, (n' : Euclid P) = N₀ w := ⟨⟨N₀ w, hmem w⟩, rfl⟩
+    have hexp : n' = inner ℝ (b 0) n' • b 0 := by
+      conv_lhs => rw [← b.sum_repr' n']
+      rw [Fin.sum_univ_succ]
+      have : ∀ j : Fin m, inner ℝ (b j.succ) n' = 0 := by
+        intro j
+        rw [hbs, Submodule.coe_inner, hn', real_inner_comm]
+        exact horth w j
+      simp [this]
+    have hn : ‖N₀ w‖ = |Ω (Fin.cons (b 0 : Euclid P) w)| := by
+      rw [← hn', Submodule.norm_coe, hexp, norm_smul, b.orthonormal.1 0, mul_one, Real.norm_eq_abs,
+        Submodule.coe_inner, hn', real_inner_comm, key]
+    rw [hN, hn]
+    rcases hdet with h | h <;> simp [h]
+  · -- step 7 (iv)
+    intro w hli hw hzero
+    let w' : Fin m → A₀ := fun j => ⟨w j, hw j⟩
+    have hli' : LinearIndependent ℝ w' := LinearIndependent.of_comp A₀.subtype hli
+    -- a vector `u ∈ A₀ \ span w'`
+    obtain ⟨u, hu⟩ : ∃ u : A₀, u ∉ Submodule.span ℝ (range w') := by
+      by_contra! hcon
+      have h1 := finrank_span_eq_card hli'
+      have htop : Submodule.span ℝ (range w') = ⊤ := eq_top_iff.2 fun x _ => hcon x
+      rw [htop, finrank_top, hA, Fintype.card_fin] at h1
+      omega
+    have hli2 : LinearIndependent ℝ (Fin.cons u w' : Fin (m + 1) → A₀) := hli'.finCons hu
+    have hdet : IsUnit (a.toBasis.det (Fin.cons u w' : Fin (m + 1) → A₀)) :=
+      (a.toBasis.is_basis_iff_det).1
+        ⟨hli2, hli2.span_eq_top_of_card_eq_finrank' (by simp [hA])⟩
+    apply hdet.ne_zero
+    have h1 : (fun j => pr ((Fin.cons (u : Euclid P) w : Fin (m + 1) → Euclid P) j)) =
+        (Fin.cons u w' : Fin (m + 1) → A₀) := by
+      funext j
+      refine Fin.cases ?_ (fun k => ?_) j
+      · simp [pr]
+      · rw [Fin.cons_succ, Fin.cons_succ]
+        exact A₀.orthogonalProjectionOnto_mem_subspace_eq_self (w' k)
+    rw [← h1, ← hΩ, ← key, ← hN, hzero, inner_zero_left]
+
+/-- **Continuous unit normal from an orientation** (Simon 6.2.2; the normal `ν` of a hypersurface
+in an `(m+1)`-plane `A₀`).  If `T_xM ⊆ A₀` for `x ∈ M`, `dim A₀ = m + 1` and `ξ` orients `M`, then
+`ν₀(x) = Σ_k ξ(x)(β_k) e_k` is a continuous unit normal of `M` in `A₀`.  Here `N` is the cross
+product of `A₀` (an alternating `m`-linear map into `A₀`, orthogonal to its arguments, unit on
+orthonormal families in `A₀`) and `β_k = e_k · N(·)` are `m`-covectors, so `ν₀` is a continuous
+linear image of `ξ`.  At `x ∈ M`, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τ_m` for an orthonormal basis `τ` of `T_xM`
+gives `ν₀(x) = ±N(τ)`: a unit vector of `A₀` orthogonal to `span τ = T_xM`. -/
+theorem Submission.codim1_hcp_un_orientation_normal : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), Module.finrank ℝ A₀ = m + 1 → (∀ x ∈ M, tangentSpace M x ⊆ (A₀ : Set (Euclid P))) → IsOrientation m M ξ → ∃ ν₀ : Euclid P → Euclid P, ContinuousOn ν₀ M ∧ ∀ x ∈ M, ν₀ x ∈ A₀ ∧ ‖ν₀ x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν₀ x) v = 0 := by
+  intro P m A₀ M ξ hA₀ hTA hξ
+  obtain ⟨hξc, hξo⟩ := hξ
+  -- step 1: the cross product `N` of `A₀`
+  obtain ⟨N, hNA, hNorth, hNunit, -⟩ := Submission.codim1_hcp_un_cross_product P m A₀ hA₀
+  -- step 2: the `m`-covectors `β_k = e_k · N(·)`
+  let β : Fin P → Covector (Euclid P) m := fun k =>
+    (EuclideanSpace.proj k : Euclid P →L[ℝ] ℝ).compContinuousAlternatingMap N
+  -- step 3: `ν₀(x)` has coordinates `ξ(x)(β_k)`; it is continuous on `M` since `ξ` is
+  let ν₀ : Euclid P → Euclid P := fun x =>
+    (EuclideanSpace.equiv (Fin P) ℝ).symm fun k => ξ x (β k)
+  refine ⟨ν₀, ?_, fun x hx => ?_⟩
+  · exact (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp_continuousOn
+      (continuousOn_pi.2 fun k => hξc.clm_apply continuousOn_const)
+  -- step 4: `ξ(x) = ±τ₁ ∧ ⋯ ∧ τ_m` for an orthonormal basis `τ` of `Q = T_xM`, so `ν₀(x) = ±N(τ)`
+  obtain ⟨Q, hQ, τ, hτ, hspan, hor⟩ := hξo x hx
+  have hν : ν₀ x = N τ ∨ ν₀ x = -N τ := by
+    rcases hor with h | h
+    · left
+      ext k
+      simp [ν₀, β, h]
+    · right
+      ext k
+      simp [ν₀, β, h]
+  -- step 5: `τ_j ∈ Q = T_xM ⊆ A₀`, so `N(τ)` is a unit vector of `A₀`; it is orthogonal to
+  -- every `τ_j`, hence to `span τ = Q = T_xM`
+  have hτA : ∀ j, τ j ∈ A₀ := fun j => hTA x hx <| by
+    rw [← hQ, ← hspan]
+    exact Submodule.subset_span ⟨j, rfl⟩
+  have hNspan : ∀ v ∈ Submodule.span ℝ (range τ), inner ℝ (N τ) v = 0 := by
+    intro v hv
+    induction hv using Submodule.span_induction with
+    | mem y hy =>
+      obtain ⟨j, rfl⟩ := hy
+      exact hNorth τ j
+    | zero => exact inner_zero_right _
+    | add y z _ _ hy hz => rw [inner_add_right, hy, hz, add_zero]
+    | smul c y _ hy => rw [inner_smul_right, hy, mul_zero]
+  have hNT : ∀ v ∈ tangentSpace M x, inner ℝ (N τ) v = 0 := fun v hv => hNspan v <| by
+    rw [hspan, ← SetLike.mem_coe, hQ]
+    exact hv
+  rcases hν with hν | hν <;> rw [hν]
+  · exact ⟨hNA τ, hNunit τ hτ hτA, hNT⟩
+  · refine ⟨neg_mem (hNA τ), by rw [norm_neg, hNunit τ hτ hτA], fun v hv => ?_⟩
+    rw [inner_neg_left, hNT v hv, neg_zero]
+/-- **A `C^∞` chart has a `C^∞` ambient left inverse near each of its points** (Simon Ch. 2, §4,
+4.4, inverse function theorem; steps 4 and 6 of the unit normal of the hypercone plane).  Let `ψ`
+be `C^∞`, 1:1 and proper on the open set `V`, with `ψ(V) = W ∩ M` for an open `W` and every
+`Dψ(z)` injective, and let `v₀ ∈ V`.  With `π` a linear left inverse of `Dψ(v₀)`, `φ = π ∘ ψ` has
+`Dφ(v₀) = id`, so the inverse function theorem gives open sets `S ∋ v₀`, inside
+`{z ∈ V : Dφ(z) injective}`, and `T ∋ φ(v₀)` with a `C^∞` inverse `φ⁻¹ : T → S`.  For
+`B̄_r(ψ(v₀)) ⊆ W`, `C = V ∩ ψ⁻¹(B̄_r(ψ(v₀)))` is compact, so `ψ(C \ S)` is closed, and it misses
+`ψ(v₀)` by injectivity.  Take `O = (B_r(ψ(v₀)) ∩ π⁻¹(T)) \ ψ(C \ S)` and `ρ = φ⁻¹ ∘ π`: every
+`z ∈ M ∩ O` is `ψ(c)` with `c ∈ S`, and `ρ(z) = φ⁻¹(φ(c)) = c`. -/
+theorem Submission.codim1_hcp_un_chart_retraction : ∀ (P d : ℕ) (M W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen V → IsOpen W → ContDiffOn ℝ (⊤ : ℕ∞) ψ V → InjOn ψ V → ψ '' V = W ∩ M → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v₀ ∈ V → ∃ (O : Set (Euclid P)) (ρ : Euclid P → Euclid d), IsOpen O ∧ ψ v₀ ∈ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ρ O ∧ MapsTo ρ O V ∧ ∀ z ∈ M ∩ O, ψ (ρ z) = z := by
+  intro P d M W V ψ v₀ hV hW hψ hinj hψV hprop hDψ hv₀
+  -- the exponent `∞` satisfies `1 ≤ ∞`, in particular `∞ ≠ 0`
+  have h1 : (1 : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by exact_mod_cast le_top
+  have h0 : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0 := (zero_lt_one.trans_le h1).ne'
+  -- Step 2: a continuous linear left inverse `π` of the injective `Dψ(v₀)`
+  obtain ⟨π₀, hπ₀⟩ := (fderiv ℝ ψ v₀ : Euclid d →ₗ[ℝ] Euclid P).exists_leftInverse_of_injective
+    (LinearMap.ker_eq_bot.2 (hDψ v₀ hv₀))
+  set π : Euclid P →L[ℝ] Euclid d := LinearMap.toContinuousLinearMap π₀
+  -- Step 3: `φ = π ∘ ψ` is `C^∞` on `V`, and `Dφ(v₀) = π ∘ Dψ(v₀) = id`
+  set φ : Euclid d → Euclid d := fun v => π (ψ v)
+  have hφ : ContDiffOn ℝ (⊤ : ℕ∞) φ V := π.contDiff.comp_contDiffOn hψ
+  have hdiff : ∀ z ∈ V, HasFDerivAt φ (fderiv ℝ φ z) z := fun z hz =>
+    ((hφ.contDiffAt (hV.mem_nhds hz)).differentiableAt h0).hasFDerivAt
+  have hDφ₀ : fderiv ℝ φ v₀ = ContinuousLinearMap.id ℝ (Euclid d) := by
+    have hψv₀ : HasFDerivAt ψ (fderiv ℝ ψ v₀) v₀ :=
+      ((hψ.contDiffAt (hV.mem_nhds hv₀)).differentiableAt h0).hasFDerivAt
+    have h : HasFDerivAt φ (π ∘L fderiv ℝ ψ v₀) v₀ := π.hasFDerivAt.comp v₀ hψv₀
+    rw [h.fderiv]
+    exact ContinuousLinearMap.ext fun u => LinearMap.congr_fun hπ₀ u
+  -- an injective endomorphism of `ℝᵈ` is a continuous linear equivalence
+  have equivOf : ∀ L : Euclid d →L[ℝ] Euclid d, Injective L →
+      ∃ E : Euclid d ≃L[ℝ] Euclid d, (E : Euclid d →L[ℝ] Euclid d) = L := by
+    intro L hL
+    exact ⟨(LinearEquiv.ofBijective (L : Euclid d →ₗ[ℝ] Euclid d)
+      ⟨hL, LinearMap.injective_iff_surjective.mp hL⟩).toContinuousLinearEquiv, by ext; rfl⟩
+  -- `G = {z ∈ V : Dφ(z) injective}` is open (`Dφ` is continuous on `V`) and contains `v₀`
+  set G := V ∩ (fderiv ℝ φ) ⁻¹' {L | Injective L}
+  have hG : IsOpen G := (hφ.continuousOn_fderiv_of_isOpen hV h1).isOpen_inter_preimage hV
+    ContinuousLinearMap.isOpen_injective
+  have hv₀G : v₀ ∈ G := ⟨hv₀, show Injective (fderiv ℝ φ v₀) by
+    rw [hDφ₀]; exact fun a b hab => hab⟩
+  -- the inverse function theorem at `v₀`: an open partial homeomorphism `Φ = φ` with
+  -- `v₀ ∈ Φ.source`
+  obtain ⟨E₀, hE₀⟩ := equivOf _ hv₀G.2
+  have hstrict : HasStrictFDerivAt φ (E₀ : Euclid d →L[ℝ] Euclid d) v₀ := by
+    rw [hE₀]; exact (hφ.contDiffAt (hV.mem_nhds hv₀)).hasStrictFDerivAt h0
+  set Φ := hstrict.toOpenPartialHomeomorph φ
+  -- `S = Φ.source ∩ G ∋ v₀` and `T = Φ.target ∩ Φ⁻¹(S)` are open, and `φ(v₀) ∈ T`
+  set S := Φ.source ∩ G
+  have hS : IsOpen S := Φ.open_source.inter hG
+  have hv₀S : v₀ ∈ S := ⟨hstrict.mem_toOpenPartialHomeomorph_source, hv₀G⟩
+  set T := Φ.target ∩ Φ.symm ⁻¹' S
+  have hT : IsOpen T := Φ.continuousOn_symm.isOpen_inter_preimage Φ.open_target hS
+  have hφv₀T : π (ψ v₀) ∈ T := ⟨Φ.map_source hv₀S.1, show Φ.symm (Φ v₀) ∈ S by
+    rw [Φ.left_inv hv₀S.1]; exact hv₀S⟩
+  -- `Φ⁻¹` is `C^∞` at every `a ∈ T`, since `Dφ(Φ⁻¹(a))` is invertible
+  have hsymm : ∀ a ∈ T, ContDiffAt ℝ (⊤ : ℕ∞) Φ.symm a := by
+    intro a ha
+    have hz : Φ.symm a ∈ G := ha.2.2
+    obtain ⟨E, hE⟩ := equivOf _ hz.2
+    exact Φ.contDiffAt_symm (f₀' := E) ha.1 (by rw [hE]; exact hdiff _ hz.1)
+      (hφ.contDiffAt (hV.mem_nhds hz.1))
+  -- Step 1 near `ψ(v₀)`: for `B̄_r(ψ(v₀)) ⊆ W`, `C = V ∩ ψ⁻¹(B̄_r(ψ(v₀)))` is compact by
+  -- properness, so `ψ(C \ S)` is compact, hence closed
+  have hψv₀W : ψ v₀ ∈ W := (hψV ▸ mem_image_of_mem ψ hv₀ : ψ v₀ ∈ W ∩ M).1
+  obtain ⟨r, hr, hrW⟩ := nhds_basis_closedBall.mem_iff.1 (hW.mem_nhds hψv₀W)
+  have hC : IsCompact (V ∩ ψ ⁻¹' closedBall (ψ v₀) r) := hprop _ hrW (isCompact_closedBall _ _)
+  have hF : IsClosed (ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ v₀) r) \ S)) :=
+    ((hC.diff hS).image_of_continuousOn (hψ.continuousOn.mono fun z hz => hz.1.1)).isClosed
+  -- Step 4: `O = (B_r(ψ(v₀)) ∩ π⁻¹(T)) \ ψ(C \ S)` and `ρ = Φ⁻¹ ∘ π`, which maps `O` into `S ⊆ V`
+  refine ⟨(ball (ψ v₀) r ∩ π ⁻¹' T) \ ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ v₀) r) \ S),
+    fun z => Φ.symm (π z), (isOpen_ball.inter (hT.preimage π.continuous)).sdiff hF,
+    ⟨⟨mem_ball_self hr, hφv₀T⟩, ?_⟩, fun z hz => ?_, fun z hz => hz.1.2.2.2.1, ?_⟩
+  · -- `ψ(v₀) ∉ ψ(C \ S)`, by injectivity of `ψ` on `V`
+    rintro ⟨c, ⟨⟨hcV, -⟩, hcS⟩, hc⟩
+    exact hcS (hinj hcV hv₀ hc ▸ hv₀S)
+  · -- `ρ` is `C^∞` at `z ∈ O`, as `π(z) ∈ T`
+    exact ((hsymm (π z) hz.1.2).comp z π.contDiff.contDiffAt).contDiffWithinAt
+  · -- `z ∈ M ∩ O` lies in `W ∩ M`, so `z = ψ(c)` with `c ∈ C`; `c ∈ S` as `z ∉ ψ(C \ S)`
+    rintro z ⟨hzM, ⟨hzB, -⟩, hzF⟩
+    obtain ⟨c, hcV, rfl⟩ : z ∈ ψ '' V := hψV ▸ ⟨hrW (ball_subset_closedBall hzB), hzM⟩
+    have hcS : c ∈ S := by
+      by_contra hcS
+      exact hzF ⟨c, ⟨⟨hcV, ball_subset_closedBall hzB⟩, hcS⟩, rfl⟩
+    -- `π(ψ(c)) = Φ(c)` and `Φ⁻¹(Φ(c)) = c`
+    show ψ (Φ.symm (Φ c)) = ψ c
+    rw [Φ.left_inv hcS.1]
+/-- **Local smoothness of the unit normal** (the step "`ν₀` is smooth along `M`" in the
+construction of the smooth unit normal of a hypersurface of `A₀`, for Simons' theorem, Simon B.2).
+Let `M ⊆ A₀`, `dim A₀ = m + 1`, have `C^∞` charts and let `ν₀` be a continuous unit normal of `M` in
+`A₀`.  Take a chart `ψ` with `ψ(v₀) = y` and the cross product `N` of `A₀`.  Then
+`n(v) = N(Dψ(v)e₁, …, Dψ(v)eₘ)` is `C^∞` on `V`, lies in `A₀`, is nonzero and is normal to
+`T_{ψ(v)}M = Dψ(v)(ℝᵐ)`, an `m`-plane `Q ⊆ A₀`.  With `n̂ = n(v)/|n(v)|`,
+`P_Q w = P_{A₀} w − (n̂ · w) n̂`, so `ν₀(ψ(v)) = σ n̂` with `σ = ν₀(ψ(v)) · n̂ = ±1`.
+A `C^∞` retraction `ρ` (`ψ(ρ(z)) = z` on `M ∩ O₁`) makes `s(z) = ν₀(z) · n(ρ(z))/|n(ρ(z))|` a
+continuous `±1`-valued function on `M ∩ O₁`, so `s = s(y)` on `M ∩ O₁ ∩ B_δ(y)`, and
+`g = s(y) n∘ρ/|n∘ρ|` is `C^∞` on `O = O₁ ∩ B_δ(y)` and equals `ν₀` on `M ∩ O`. -/
+theorem Submission.codim1_hcp_un_normal_local_smooth : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν₀ : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (∀ y ∈ M, ∃ (V : Set (Euclid m)) (W : Set (Euclid P)) (ψ : Euclid m → Euclid P), IsOpen V ∧ IsOpen W ∧ y ∈ W ∧ ContDiffOn ℝ (⊤ : ℕ∞) ψ V ∧ InjOn ψ V ∧ ψ '' V = W ∩ M ∧ (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) ∧ ∀ z ∈ V, Injective (fderiv ℝ ψ z)) → ContinuousOn ν₀ M → (∀ x ∈ M, ν₀ x ∈ A₀ ∧ ‖ν₀ x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν₀ x) v = 0) → ∀ y ∈ M, ∃ (O : Set (Euclid P)) (g : Euclid P → Euclid P), IsOpen O ∧ y ∈ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) g O ∧ ∀ z ∈ M ∩ O, g z = ν₀ z := by
+  intro P m A₀ M ν₀ hA₀ hMA hcharts hν₀c hν₀ y hy
+  -- step 0: the `C^∞` charts are `C¹` charts, so `M` is an embedded `C¹` submanifold
+  have hM1 : IsEmbeddedSubmanifold 1 m M := by
+    intro x hx
+    obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hinj, himg, hprop, hder⟩ := hcharts x hx
+    exact ⟨V, W, ψ, hV, hW, hxW, hψ.of_le (WithTop.coe_le_coe.2 le_top), hinj, himg, hprop, hder⟩
+  -- step 1: a chart `(V, W, ψ)` with `ψ(v₀) = y`, and the cross product `N` of `A₀`
+  obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, himg, hprop, hder⟩ := hcharts y hy
+  obtain ⟨v₀, hv₀V, hψv₀⟩ : y ∈ ψ '' V := by rw [himg]; exact ⟨hyW, hy⟩
+  obtain ⟨N, hNA, hNorth, -, hNne⟩ := Submission.codim1_hcp_un_cross_product P m A₀ hA₀
+  set b := EuclideanSpace.basisFun (Fin m) ℝ
+  -- `n(v) = N(Dψ(v)e₁, …, Dψ(v)eₘ)`
+  set n : Euclid m → Euclid P := fun v => N fun j => fderiv ℝ ψ v (b j)
+  have hψ1 : ContDiffOn ℝ (1 : ℕ) ψ V := hψ.of_le (WithTop.coe_le_coe.2 le_top)
+  have hψM : ∀ v ∈ V, ψ v ∈ M := fun v hv => (himg ▸ mem_image_of_mem ψ hv : ψ v ∈ W ∩ M).2
+  -- step 2: `T_{ψ(v)}M = Dψ(v)(ℝᵐ)` for `v ∈ V`
+  have htan : ∀ v ∈ V, tangentSpace M (ψ v) = range (fderiv ℝ ψ v) := fun v hv =>
+    Submission.chart_tangentSpace_eq_range_fderiv P m 1 M W V ψ v le_rfl hV hW hψ1 hinj himg
+      hprop hder hv
+  -- step 3: `n` is `C^∞` on `V` ...
+  have hn : ContDiffOn ℝ (⊤ : ℕ∞) n V := by
+    have hfd : ContDiffOn ℝ (⊤ : ℕ∞) (fderiv ℝ ψ) V :=
+      ((contDiffOn_infty_iff_fderiv_of_isOpen hV).1 hψ).2
+    have hN : ContDiff ℝ (⊤ : ℕ∞) N := by
+      have h := N.toContinuousMultilinearMap.contDiff (n := ((⊤ : ℕ∞) : WithTop ℕ∞))
+      rwa [ContinuousAlternatingMap.coe_toContinuousMultilinearMap] at h
+    have hw : ContDiffOn ℝ (⊤ : ℕ∞) (fun v (j : Fin m) => fderiv ℝ ψ v (b j)) V :=
+      contDiffOn_pi.2 fun j => hfd.clm_apply contDiffOn_const
+    exact hN.comp_contDiffOn hw
+  -- ... and, for `v ∈ V`, `T_{ψ(v)}M` is an `m`-plane `Q ⊆ A₀` with `0 ≠ n(v) ∈ A₀`, `n(v) ⊥ Q`
+  have hnormal : ∀ v ∈ V, ∃ Q : Submodule ℝ (Euclid P), (Q : Set (Euclid P)) = tangentSpace M (ψ v) ∧
+      Module.finrank ℝ Q = m ∧ Q ≤ A₀ ∧ n v ∈ A₀ ∧ n v ≠ 0 ∧ ∀ t ∈ Q, inner ℝ (n v) t = 0 := by
+    intro v hv
+    obtain ⟨Q, hQ, hQm, hQA⟩ :=
+      Submission.codim1_hcp_un_tangent_subspace P m A₀ M hM1 hMA (ψ v) (hψM v hv)
+    have hQr : ∀ t, t ∈ Q ↔ t ∈ range (fderiv ℝ ψ v) := fun t => by
+      rw [← htan v hv, ← hQ, SetLike.mem_coe]
+    -- `Dψ(v)e₁, …, Dψ(v)eₘ` are linearly independent vectors of `Q ⊆ A₀`
+    have hli : LinearIndependent ℝ fun j => fderiv ℝ ψ v (b j) :=
+      b.orthonormal.linearIndependent.map' (fderiv ℝ ψ v : Euclid m →ₗ[ℝ] Euclid P)
+        (LinearMap.ker_eq_bot.2 (hder v hv))
+    have hwA : ∀ j, fderiv ℝ ψ v (b j) ∈ A₀ := fun j => hQA ((hQr _).2 (mem_range_self _))
+    refine ⟨Q, hQ, hQm, hQA, hNA _, hNne _ hli hwA, fun t ht => ?_⟩
+    -- `t = Dψ(v)a = Σⱼ aⱼ Dψ(v)eⱼ` and `n(v) ⊥ Dψ(v)eⱼ`
+    obtain ⟨a, rfl⟩ := (hQr t).1 ht
+    rw [← b.sum_repr a, map_sum, inner_sum]
+    refine Finset.sum_eq_zero fun j _ => ?_
+    rw [map_smul, inner_smul_right, hNorth (fun j => fderiv ℝ ψ v (b j)) j, mul_zero]
+  have hn0V : ∀ v ∈ V, n v ≠ 0 := fun v hv => by
+    obtain ⟨-, -, -, -, -, h, -⟩ := hnormal v hv
+    exact h
+  -- step 4: `ν₀(ψ(v)) = σ n(v)/|n(v)|` with `σ = ν₀(ψ(v)) · n(v)/|n(v)| = ±1`, for `v ∈ V`
+  have hline : ∀ v ∈ V, ν₀ (ψ v) = inner ℝ (‖n v‖⁻¹ • n v) (ν₀ (ψ v)) • (‖n v‖⁻¹ • n v) ∧
+      |inner ℝ (‖n v‖⁻¹ • n v) (ν₀ (ψ v))| = 1 := by
+    intro v hv
+    obtain ⟨Q, hQ, hQm, hQA, hnA, hn0, hnQ⟩ := hnormal v hv
+    obtain ⟨huA, hu1, huT⟩ := hν₀ (ψ v) (hψM v hv)
+    -- `n(v)/|n(v)|` is a unit vector of `A₀` normal to `Q`
+    have he1 : ‖‖n v‖⁻¹ • n v‖ = 1 := norm_smul_inv_norm hn0
+    have heQ : ∀ t ∈ Q, inner ℝ (‖n v‖⁻¹ • n v) t = 0 := fun t ht => by
+      rw [real_inner_smul_left, hnQ t ht, mul_zero]
+    have hproj := Submission.codim1_hcp_un_hyperplane_projection P m A₀ Q (‖n v‖⁻¹ • n v) hA₀
+      hQm hQA (A₀.smul_mem _ hnA) he1 heQ (ν₀ (ψ v))
+    -- `P_Q ν₀(ψ(v)) = 0`, as `ν₀(ψ(v)) ⊥ T_{ψ(v)}M = Q`, and `P_{A₀} ν₀(ψ(v)) = ν₀(ψ(v))`
+    have hQ0 : ν₀ (ψ v) ∈ Qᗮ := (Submodule.mem_orthogonal' Q _).2 fun t ht =>
+      huT t (by rw [← hQ]; exact ht)
+    rw [(Submodule.starProjection_apply_eq_zero_iff Q).2 hQ0,
+      Submodule.starProjection_eq_self_iff.2 huA, eq_comm, sub_eq_zero] at hproj
+    refine ⟨hproj, ?_⟩
+    have h := congrArg norm hproj
+    rwa [norm_smul, he1, mul_one, hu1, Real.norm_eq_abs, eq_comm] at h
+  -- step 5: a `C^∞` retraction `ρ : O₁ → V` with `ψ(ρ(z)) = z` for `z ∈ M ∩ O₁`
+  obtain ⟨O₁, ρ, hO₁, hyO₁, hρ, hρV, hψρ⟩ :=
+    Submission.codim1_hcp_un_chart_retraction P m M W V ψ v₀ hV hW hψ hinj himg hprop hder hv₀V
+  rw [hψv₀] at hyO₁
+  -- `n̂ = n∘ρ/|n∘ρ|` is `C^∞` on `O₁`
+  set nh : Euclid P → Euclid P := fun z => ‖n (ρ z)‖⁻¹ • n (ρ z)
+  have hnρ : ContDiffOn ℝ (⊤ : ℕ∞) (fun z => n (ρ z)) O₁ := hn.comp hρ hρV
+  have hnh : ContDiffOn ℝ (⊤ : ℕ∞) nh O₁ :=
+    ((hnρ.norm ℝ fun z hz => hn0V _ (hρV hz)).inv fun z hz =>
+      norm_ne_zero_iff.2 (hn0V _ (hρV hz))).smul hnρ
+  -- step 6: on `M ∩ O₁`, `ν₀ = s n̂` with `s = ν₀ · n̂ = ±1`; `s` is continuous at `y` ...
+  have hrep : ∀ z ∈ M ∩ O₁, ν₀ z = inner ℝ (nh z) (ν₀ z) • nh z ∧ |inner ℝ (nh z) (ν₀ z)| = 1 := by
+    intro z hz
+    have h := hline (ρ z) (hρV hz.2)
+    rw [hψρ z hz] at h
+    exact h
+  have hs : ContinuousWithinAt (fun z => inner ℝ (nh z) (ν₀ z)) (M ∩ O₁) y :=
+    (hnh.continuousOn.continuousAt (hO₁.mem_nhds hyO₁)).continuousWithinAt.inner
+      ((hν₀c y hy).mono inter_subset_left)
+  obtain ⟨δ, hδ, hδs⟩ := Metric.continuousWithinAt_iff.1 hs 1 one_pos
+  -- ... so `s(z) = s(y)` for `z ∈ M ∩ O₁ ∩ B_δ(y)`: two values `±1` closer than `1` agree
+  have hsign : ∀ z ∈ M ∩ O₁, dist z y < δ → inner ℝ (nh z) (ν₀ z) = inner ℝ (nh y) (ν₀ y) := by
+    intro z hz hzy
+    have h1 : |inner ℝ (nh z) (ν₀ z) - inner ℝ (nh y) (ν₀ y)| < 1 := by
+      simpa only [Real.dist_eq] using hδs hz hzy
+    rcases (abs_eq zero_le_one).1 (hrep z hz).2 with h | h <;>
+      rcases (abs_eq zero_le_one).1 (hrep y ⟨hy, hyO₁⟩).2 with h' | h' <;>
+      rw [h, h'] at h1 ⊢ <;> norm_num at h1
+  -- step 7: `g = s(y) n̂` is `C^∞` on `O = O₁ ∩ B_δ(y)` and equals `ν₀` on `M ∩ O`
+  refine ⟨O₁ ∩ ball y δ, fun z => inner ℝ (nh y) (ν₀ y) • nh z, hO₁.inter isOpen_ball,
+    ⟨hyO₁, mem_ball_self hδ⟩, (hnh.mono inter_subset_left).const_smul _, ?_⟩
+  rintro z ⟨hzM, hzO₁, hzy⟩
+  rw [← hsign z ⟨hzM, hzO₁⟩ hzy]
+  exact (hrep z ⟨hzM, hzO₁⟩).1.symm
+/-- **Gluing local `C^∞` extensions** (Simon 7.5.8 via Appendix B: the step that makes the unit
+normal of the hypercone plane `C^∞` on a neighbourhood of `M`; smooth partitions of unity, cf.
+Simon Ch. 1, 4.5).  If every `y ∈ M` has an open `O_y ∋ y` and a map `g_y` that is `C^∞` on `O_y`
+with `g_y = f` on `M ∩ O_y`, then some `ν` is `C^∞` on the open set `O = ⋃_{y ∈ M} O_y ⊇ M` and
+`ν = f` on `M`.  `O` is open in `ℝᴾ`, hence a σ-compact Hausdorff `C^∞` manifold, and a smooth
+partition of unity `(λᵢ)` on `O` subordinate to `{O_y}` glues the `g_y` to
+`G = ∑ᵢ λᵢ g_{y(i)}`, which is `C^∞` on `O` with `G(x) = ∑ᵢ λᵢ(x) f(x) = f(x)` for `x ∈ M`
+(`exists_contMDiffMap_forall_mem_convex_of_local` with the convex constraints `{f(p)}` for
+`p ∈ M` and `F` otherwise).  Take `ν = G` on `O` and `ν = 0` off `O`. -/
+theorem Submission.codim1_hcp_un_smooth_glue : ∀ (P : ℕ) (F : Type) [NormedAddCommGroup F] [NormedSpace ℝ F] (M : Set (Euclid P)) (f : Euclid P → F), (∀ y ∈ M, ∃ (O : Set (Euclid P)) (g : Euclid P → F), IsOpen O ∧ y ∈ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) g O ∧ ∀ z ∈ M ∩ O, g z = f z) → ∃ (ν : Euclid P → F) (O : Set (Euclid P)), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O ∧ ∀ x ∈ M, ν x = f x := by
+  intro P F _ _ M f hloc
+  classical
+  -- step 1: the local extensions `g_y` on `O_y ∋ y`, and the open set `O = ⋃_{y ∈ M} O_y ⊇ M`
+  choose! Oy g hOy hyO hg hgf using hloc
+  let O : TopologicalSpace.Opens (Euclid P) := ⟨⋃ y ∈ M, Oy y, isOpen_biUnion hOy⟩
+  have hMO : M ⊆ O := fun x hx => mem_biUnion hx (hyO x hx)
+  -- step 2: `O` is locally compact (open in `ℝᴾ`), so it is a σ-compact Hausdorff `C^∞`
+  -- manifold modelled on `ℝᴾ`
+  have : LocallyCompactSpace O := O.isOpen.locallyCompactSpace
+  -- step 3: a smooth partition of unity on `O` subordinate to `{O_y}` glues the `g_y` to a
+  -- `C^∞` map `G` on `O` with `G p ∈ {f p}` for `p ∈ M`
+  obtain ⟨G, hG⟩ := exists_contMDiffMap_forall_mem_convex_of_local
+    (modelWithCornersSelf ℝ (Euclid P)) (M := O) (n := ⊤)
+    (t := fun p => if (p : Euclid P) ∈ M then {f p} else univ)
+    (fun p => by split_ifs <;> [exact convex_singleton _; exact convex_univ])
+    (fun p => by
+      -- near `p ∈ O_y`, `g_y` is `C^∞` on the open set `O ∩ O_y` and equals `f` on `M ∩ O_y`
+      obtain ⟨y, hy, hpy⟩ := mem_iUnion₂.1 p.2
+      refine ⟨Subtype.val ⁻¹' Oy y, (hOy y hy).preimage continuous_subtype_val |>.mem_nhds hpy,
+        fun q => g y q, fun q hq => ?_, fun q hq => ?_⟩
+      · exact (contMDiffAt_subtype_iff.2 (contMDiffAt_iff_contDiffAt.2
+          ((hg y hy).contDiffAt ((hOy y hy).mem_nhds hq)))).contMDiffWithinAt
+      · split_ifs with hqM
+        · exact hgf y hy q ⟨hqM, hq⟩
+        · exact mem_univ _)
+  -- step 4: extend `G` by `0` off `O`, so `ν = G` on `O`
+  set ν : Euclid P → F := fun z => if hz : z ∈ O then G ⟨z, hz⟩ else 0
+  have hνG : ∀ p : O, ν p = G p := fun p => dite_eq_left p.2
+  refine ⟨ν, O, O.isOpen, hMO, fun z hz => ?_, fun x hx => ?_⟩
+  · -- `ν` is `C^∞` at `z ∈ O`, because it agrees with `G` on the open submanifold `O`
+    have h : ContMDiffAt (modelWithCornersSelf ℝ (Euclid P)) (modelWithCornersSelf ℝ F) (⊤ : ℕ∞)
+        (fun p : O => ν p) ⟨z, hz⟩ :=
+      G.contMDiff.contMDiffAt.congr_of_eventuallyEq (Eventually.of_forall hνG)
+    exact (contMDiffAt_iff_contDiffAt.1 (contMDiffAt_subtype_iff.1 h)).contDiffWithinAt
+  · -- for `x ∈ M`, `ν x = G x ∈ {f x}`
+    have h := hG ⟨x, hMO hx⟩
+    rw [ite_eq_left hx] at h
+    exact (hνG ⟨x, hMO hx⟩).trans h
+/-- **Fundamental lemma of the calculus of variations on `M`** (step (7c) of the zero mean
+curvature argument for `codim1_hcp_minimal_unit_normal`, with `div_M ν` replaced by `h`).  Let
+`U` be open, `M ⊆ U` measurable, `h` continuous on `M`, `μ(M ∩ K) < ∞` for compact `K ⊆ U` and
+`μ(M ∩ B_s(x)) > 0` for `x ∈ M`, `s > 0`.  If `∫_M φ h dμ = 0` for every `C^∞` function `φ` with
+compact support and `tsupport φ ⊆ U`, then `h = 0` on `M`.  Otherwise, replacing `h` by `-h`,
+`c < h < 3c` on `M ∩ B_δ(x₀)`, `c = h(x₀) / 2 > 0`.  A bump `φ ∈ [0, 1]` equal to `1` on
+`B_{r/4}(x₀)` with `tsupport φ = K := closedBall(x₀, r/2) ⊆ U` (`r ≤ δ`) satisfies
+`0 ≤ φ h ≤ 3c·1_K` on `M`, so `φ h` is integrable and `∫_M φ h dμ ≥ c μ(M ∩ B_{r/4}(x₀)) > 0`. -/
+theorem Submission.codim1_hcp_un_fundamental_lemma : ∀ (P : ℕ) (μ : Measure (Euclid P)) (U M : Set (Euclid P)) (h : Euclid P → ℝ), IsOpen U → M ⊆ U → MeasurableSet M → ContinuousOn h M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ (M ∩ K) ≠ ∞) → (∀ x ∈ M, ∀ s : ℝ, 0 < s → 0 < μ (M ∩ ball x s)) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in M, φ x * h x ∂μ = 0) → ∀ x ∈ M, h x = 0 := by
+  intro P μ U M h hU hMU hM hh hfin hpos hint x₀ hx₀
+  by_contra hne
+  -- step 1: replacing `h` by `-h` if necessary, `0 < h x₀`; put `c = h x₀ / 2`
+  wlog hx₀pos : 0 < h x₀ generalizing h
+  · refine this (-h) hh.neg (fun φ hφ hφc hφU => ?_) (by simpa using hne) ?_
+    · simp only [Pi.neg_apply, mul_neg, integral_neg, hint φ hφ hφc hφU, neg_zero]
+    · simpa using lt_of_le_of_ne (not_lt.1 hx₀pos) hne
+  set c := h x₀ / 2 with hc_def
+  have hc : 0 < c := half_pos hx₀pos
+  -- step 2: `c < h < 3c` on `M ∩ B_δ(x₀)`, and `B_r(x₀) ⊆ U` for some `r ∈ (0, δ]`
+  obtain ⟨δ, hδ, hδh⟩ := Metric.continuousWithinAt_iff.1 (hh x₀ hx₀) c hc
+  have hbound : ∀ x ∈ M, dist x x₀ < δ → c < h x ∧ h x < 3 * c := by
+    intro x hx hxδ
+    have hx' := hδh hx hxδ
+    rw [Real.dist_eq, abs_lt] at hx'
+    constructor <;> linarith
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x₀ (hMU hx₀)
+  obtain ⟨r, hr, hrδ, hrU⟩ : ∃ r, 0 < r ∧ r ≤ δ ∧ ball x₀ r ⊆ U :=
+    ⟨min δ ε, lt_min hδ hε, min_le_left _ _, (ball_subset_ball (min_le_right _ _)).trans hεU⟩
+  -- step 3: the bump `φ` (radii `r/4 < r/2`) is admissible, so `∫_M φ h dμ = 0`
+  let φ : ContDiffBump x₀ := ⟨r / 4, r / 2, by positivity, by linarith⟩
+  have hKU : closedBall x₀ (r / 2) ⊆ U := (closedBall_subset_ball (by linarith)).trans hrU
+  have hzero := hint φ φ.contDiff φ.hasCompactSupport (φ.tsupport_eq.trans_subset hKU)
+  -- step 4: `μ(M ∩ K) < ∞` and `0 ≤ φ h ≤ 3c·1_K` on `M`, so `φ h` is integrable on `M`
+  have hKfin : μ (M ∩ closedBall x₀ (r / 2)) ≠ ∞ := hfin _ (isCompact_closedBall x₀ _) hKU
+  have hKh : ∀ x ∈ M, x ∈ closedBall x₀ (r / 2) → 0 < h x ∧ h x < 3 * c := by
+    intro x hx hxK
+    have hx' := hbound x hx (lt_of_le_of_lt hxK (by linarith))
+    exact ⟨hc.trans hx'.1, hx'.2⟩
+  have hφK : ∀ x, x ∉ closedBall x₀ (r / 2) → φ x = 0 := fun x hxK =>
+    φ.zero_of_le_dist (not_le.1 hxK).le
+  have hnn : ∀ x ∈ M, 0 ≤ φ x * h x := by
+    intro x hx
+    by_cases hxK : x ∈ closedBall x₀ (r / 2)
+    · exact mul_nonneg φ.nonneg (hKh x hx hxK).1.le
+    · rw [hφK x hxK, zero_mul]
+  have hdom : Integrable ((closedBall x₀ (r / 2)).indicator fun _ => 3 * c) (μ.restrict M) := by
+    refine (integrable_indicator_iff measurableSet_closedBall).2 (integrableOn_const ?_)
+    rw [Measure.restrict_apply measurableSet_closedBall, inter_comm]
+    exact hKfin
+  have hInt : IntegrableOn (fun x => φ x * h x) M μ := by
+    refine hdom.mono' ((φ.continuous.continuousOn.mul hh).aestronglyMeasurable hM)
+      (ae_restrict_of_forall_mem hM fun x hx => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (hnn x hx)]
+    by_cases hxK : x ∈ closedBall x₀ (r / 2)
+    · rw [indicator_of_mem hxK]
+      exact (mul_le_of_le_one_left (hKh x hx hxK).1.le φ.le_one).trans (hKh x hx hxK).2.le
+    · rw [indicator_of_notMem hxK, hφK x hxK, zero_mul]
+  -- step 5: `∫_M φ h ≥ ∫_{M ∩ B_{r/4}} φ h ≥ c μ(M ∩ B_{r/4}) > 0`, contradicting step 3
+  have hBfin : μ (M ∩ ball x₀ (r / 4)) ≠ ∞ := ne_top_of_le_ne_top hKfin
+    (measure_mono (inter_subset_inter_right _
+      (ball_subset_closedBall.trans (closedBall_subset_closedBall (by linarith)))))
+  have h₁ : ∫ x in M ∩ ball x₀ (r / 4), φ x * h x ∂μ ≤ ∫ x in M, φ x * h x ∂μ :=
+    setIntegral_mono_set hInt (ae_restrict_of_forall_mem hM hnn)
+      (Eventually.of_forall fun x hx => hx.1)
+  have h₂ : c * μ.real (M ∩ ball x₀ (r / 4)) ≤ ∫ x in M ∩ ball x₀ (r / 4), φ x * h x ∂μ := by
+    refine setIntegral_ge_of_const_le_real (hM.inter measurableSet_ball) hBfin (fun x hx => ?_)
+      (hInt.mono_set inter_subset_left)
+    rw [φ.one_of_mem_closedBall (ball_subset_closedBall hx.2), one_mul]
+    exact (hbound x hx.1 ((mem_ball.1 hx.2).trans (by linarith))).1.le
+  have h₃ : 0 < μ.real (M ∩ ball x₀ (r / 4)) :=
+    ENNReal.toReal_pos (hpos x₀ hx₀ _ (by positivity)).ne' hBfin
+  linarith [mul_pos hc h₃]
+
+/-- **Zero mean curvature** of an embedded `C¹` hypersurface `M` of a subspace `A₀`: `div_M ν`
+is, up to sign, the mean curvature of `M` (Simon Ch. 2, 4.28), and it vanishes when `M` is
+stationary (cf. Ch. 2, 5.5).  Here `M ⊆ U ∩ A₀` is `m`-dimensional, `dim A₀ = m + 1`,
+`Hᵐ(M ∩ K) < ∞` for compact `K ⊆ U`, `∫_M div_M X dHᵐ = 0` for `X ∈ C¹_c(U; ℝᴾ)`, and `ν` is
+`C^∞` on an open `O ⊇ M` with `ν(x) ∈ A₀` a unit normal of `T_xM` for `x ∈ M`; then
+`div_M ν(x) = trace(P_x ∘ Dν(x)) = 0` on `M`.  `T_xM` is an `m`-dimensional subspace of `A₀`, so
+`P_x = P_{A₀} − ν(x) ⊗ ν(x)` and `div_M ν(x) = trace(P_{A₀} ∘ Dν(x)) − ν(x) · Dν(x)ν(x)` is
+continuous on `M`.  For `C^∞` `φ` with compact support in `O ∩ U`, `X = φν` is `C¹` with compact
+support in `U` and `div_M X = φ div_M ν` on `M` (`P_xν(x) = 0`), so `∫_M φ div_M ν dHᵐ = 0`.  As
+`M` is Borel and `Hᵐ(M ∩ B_s(x)) > 0` (density one), the fundamental lemma gives
+`div_M ν ≡ 0` on `M`. -/
+theorem Submission.codim1_hcp_un_zero_mean_curvature : ∀ (P m : ℕ) (U : Set (Euclid P)) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), IsOpen U → M ⊆ U → Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[m] = 0) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap) = 0 := by
+  intro P m U A₀ M ν hU hMU hA₀ hMA₀ hM hfin hstat hνO hνM
+  obtain ⟨O, hO, hMO, hν⟩ := hνO
+  -- Steps 1–2: `P_x w = P_{A₀} w − (ν(x) · w) ν(x)` for `x ∈ M`, as `span T_xM = T_xM ≤ A₀` has
+  -- dimension `m`
+  have hproj : ∀ x ∈ M, ∀ w : Euclid P, (Submodule.span ℝ (tangentSpace M x)).starProjection w =
+      A₀.starProjection w - inner ℝ (ν x) w • ν x := by
+    intro x hx w
+    obtain ⟨hνA, hν1, hνT⟩ := hνM x hx
+    obtain ⟨Q, hQ, hQm, hQA⟩ := Submission.codim1_hcp_un_tangent_subspace P m A₀ M hM hMA₀ x hx
+    have hspan : Submodule.span ℝ (tangentSpace M x) = Q := by rw [← hQ, Submodule.span_eq]
+    subst hspan
+    exact Submission.codim1_hcp_un_hyperplane_projection P m A₀ _ (ν x) hA₀ hQm hQA hνA hν1
+      (fun v hv => hνT v (by rw [← hQ]; exact hv)) w
+  -- `P_x ν(x) = ν(x) − |ν(x)|² ν(x) = 0`
+  have hPν : ∀ x ∈ M, (Submodule.span ℝ (tangentSpace M x)).starProjection (ν x) = 0 := by
+    intro x hx
+    obtain ⟨hνA, hν1, -⟩ := hνM x hx
+    rw [hproj x hx, Submodule.starProjection_eq_self_iff.2 hνA, real_inner_self_eq_norm_sq, hν1]
+    simp
+  -- Step 3: on `M`, `div_M ν(x) = trace(P_{A₀} ∘ Dν(x)) − ν(x) · Dν(x)ν(x)`, the trace of
+  -- `w ↦ (ν(x) · Dν(x)w) ν(x)` being `ν(x) · Dν(x)ν(x)`
+  have hhF : ∀ x ∈ M, LinearMap.trace ℝ (Euclid P)
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+        (fderiv ℝ ν x).toLinearMap) =
+      LinearMap.trace ℝ (Euclid P) (A₀.starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap) -
+        inner ℝ (ν x) (fderiv ℝ ν x (ν x)) := by
+    intro x hx
+    have hlin : (Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+        (fderiv ℝ ν x).toLinearMap =
+        A₀.starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap -
+          (innerₛₗ ℝ (ν x) ∘ₗ (fderiv ℝ ν x).toLinearMap).smulRight (ν x) := by
+      refine LinearMap.ext fun w => ?_
+      rw [LinearMap.comp_apply, ContinuousLinearMap.coe_coe, hproj x hx]
+      simp
+    rw [hlin, map_sub, LinearMap.trace_smulRight]
+    simp
+  -- the right-hand side is continuous on `O`: `ν` and `Dν` are continuous there, and
+  -- `L ↦ trace(P_{A₀} ∘ L)` is linear on the finite-dimensional space of operators
+  have htr : Continuous fun L : Euclid P →L[ℝ] Euclid P =>
+      LinearMap.trace ℝ (Euclid P) (A₀.starProjection.toLinearMap ∘ₗ L.toLinearMap) := by
+    let T : (Euclid P →L[ℝ] Euclid P) →ₗ[ℝ] ℝ :=
+      { toFun := fun L =>
+          LinearMap.trace ℝ (Euclid P) (A₀.starProjection.toLinearMap ∘ₗ L.toLinearMap)
+        map_add' := fun L₁ L₂ => by simp [LinearMap.comp_add]
+        map_smul' := fun c L => by simp [LinearMap.comp_smul] }
+    exact T.continuous_of_finiteDimensional
+  have hDν : ContinuousOn (fderiv ℝ ν) O := hν.continuousOn_fderiv_of_isOpen hO (by simp)
+  have hνc : ContinuousOn ν O := hν.continuousOn
+  have hcont : ContinuousOn (fun x => LinearMap.trace ℝ (Euclid P)
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+        (fderiv ℝ ν x).toLinearMap)) M :=
+    (((htr.comp_continuousOn hDν).sub (hνc.inner (hDν.clm_apply hνc))).mono hMO).congr hhF
+  -- Step 4: `∫_M φ div_M ν dHᵐ = 0` for `C^∞` `φ` with compact support in `O ∩ U`, testing
+  -- stationarity with `X = φν`
+  have hMmeas : MeasurableSet M := (Submission.dimred_rpd_embedded_locally_closed P 1 m M hM).1
+  have htest : ∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ O ∩ U → ∫ x in M, φ x * LinearMap.trace ℝ (Euclid P)
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+          (fderiv ℝ ν x).toLinearMap) ∂μHE[m] = 0 := by
+    intro φ hφ hφc hφU
+    -- (a) `X` is `C¹`: a product of `C^∞` maps on `O`, and `0` near each point off `O ⊇ tsupport φ`
+    have hX : ContDiff ℝ 1 fun z => φ z • ν z := by
+      refine contDiff_iff_contDiffAt.2 fun z => ?_
+      by_cases hz : z ∈ O
+      · exact (hφ.of_le (by simp)).contDiffAt.smul
+          ((hν.of_le (by simp)).contDiffAt (hO.mem_nhds hz))
+      · have hz' : z ∉ tsupport φ := fun h => hz (hφU h).1
+        refine (contDiffAt_const (c := (0 : Euclid P))).congr_of_eventuallyEq ?_
+        filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hz'] with y hy
+        simp [hy]
+    -- (b) `tsupport X ⊆ tsupport φ`, compact and contained in `U`
+    have hXc : HasCompactSupport fun z => φ z • ν z := hφc.smul_right (f' := ν)
+    have hXU : tsupport (fun z => φ z • ν z) ⊆ U :=
+      (tsupport_smul_subset_left φ ν).trans (hφU.trans inter_subset_right)
+    -- (c) `DX(x) = φ(x) Dν(x) + Dφ(x) ⊗ ν(x)` and `P_x ν(x) = 0`, so `div_M X = φ div_M ν` on `M`
+    have hdiv : ∀ x ∈ M, φ x * LinearMap.trace ℝ (Euclid P)
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+          (fderiv ℝ ν x).toLinearMap) = LinearMap.trace ℝ (Euclid P)
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+          (fderiv ℝ (fun z => φ z • ν z) x).toLinearMap) := by
+      intro x hx
+      have hνx : DifferentiableAt ℝ ν x :=
+        (hν.differentiableOn (by simp)).differentiableAt (hO.mem_nhds (hMO hx))
+      rw [fderiv_fun_smul ((hφ.differentiable (by simp)) x) hνx]
+      have hlin : (Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+          (φ x • fderiv ℝ ν x + (fderiv ℝ φ x).smulRight (ν x)).toLinearMap =
+          φ x • ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+            (fderiv ℝ ν x).toLinearMap) := by
+        refine LinearMap.ext fun w => ?_
+        simp [hPν x hx]
+      rw [hlin, map_smul, smul_eq_mul]
+    -- (d) stationarity
+    exact (setIntegral_congr_fun hMmeas hdiv).trans (hstat _ hX hXc hXU)
+  -- Step 5: `Hᵐ(M ∩ B_s(x)) > 0`, since `Hᵐ(M ∩ B_t(x)) / (ωₘtᵐ) → 1` as `t ↓ 0`
+  have hpos : ∀ x ∈ M, ∀ s : ℝ, 0 < s → 0 < μHE[m] (M ∩ ball x s) := by
+    intro x hx s hs
+    refine pos_iff_ne_zero.2 fun h0 => ?_
+    have hzero : Tendsto (fun t : ℝ => μHE[m] (M ∩ ball x t) /
+        (unitBallVolume m * ENNReal.ofReal (t ^ m))) (𝓝[>] 0) (𝓝 0) := by
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [Ioo_mem_nhdsGT hs] with t ht
+      rw [measure_mono_null (inter_subset_inter_right M (ball_subset_ball ht.2.le)) h0,
+        ENNReal.zero_div]
+    exact zero_ne_one (tendsto_nhds_unique hzero
+      (Submission.dimred_rpd_submanifold_density_one P m M x hM hx))
+  -- Step 6: the fundamental lemma on the open set `O ∩ U ⊇ M`
+  exact Submission.codim1_hcp_un_fundamental_lemma P μHE[m] (O ∩ U) M _ (hO.inter hU)
+    (fun x hx => ⟨hMO hx, hMU hx⟩) hMmeas hcont
+    (fun K hK hKU => hfin K hK (hKU.trans inter_subset_right)) hpos htest
+
+/-- **Unit normal and minimality** (Simon, Appendix B, p. 229: `M` is "orientable, with
+orientation induced from `C`"; Ch. 2, 4.23–4.29: `H = trace B` and, for a unit normal `ν`,
+`H = −(div_M ν) ν`).  Let `M ⊆ U` be an embedded `C^∞` `m`-dimensional submanifold contained in
+the `(m + 1)`-dimensional subspace `A₀`, oriented by `ξ`, with `Hᵐ(M ∩ K) < ∞` for compact
+`K ⊆ U`, and stationary in `U`.  The tangent spaces of `M` lie in `A₀`, so `ξ` and a volume form
+of `A₀` give a continuous unit normal `ν₀` of `M` in `A₀`.  In the `C^∞` charts of `M`, `ν₀` is
+`±` the normalized cross product of the coordinate vectors, hence the restriction to `M` of a
+`C^∞` map near each point of `M`, and a smooth partition of unity glues these maps into `ν`,
+`C^∞` on an open `O ⊇ M`.  Testing stationarity with `X = φν` gives `∫_M φ div_M ν dHᵐ = 0` for
+every test function `φ`, so the continuous function `div_M ν = trace(P_x ∘ Dν(x))` vanishes on
+`M`. -/
+theorem Submission.codim1_hcp_minimal_unit_normal : ∀ (P m : ℕ) (U : Set (Euclid P)) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), IsOpen U → M ⊆ U → Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → (∃ ξ : Euclid P → MultiVector P m, IsOrientation m M ξ) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[m] = 0) → ∃ (ν : Euclid P → Euclid P) (O : Set (Euclid P)), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O ∧ (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) ∧ ∀ x ∈ M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap) = 0 := by
+  intro P m U A₀ M hU hMU hA₀ hMA₀ hr hξ hfin hstat
+  -- step 1: `M` is in particular `C¹`, and each tangent space `TₓM` lies in `A₀`
+  have h1 : IsEmbeddedSubmanifold 1 m M := hr 1
+  have htan : ∀ x ∈ M, tangentSpace M x ⊆ (A₀ : Set (Euclid P)) := by
+    intro x hx v hv
+    obtain ⟨Q, hQ, -, hQA⟩ := Submission.codim1_hcp_un_tangent_subspace P m A₀ M h1 hMA₀ x hx
+    rw [← hQ] at hv
+    exact hQA hv
+  -- steps 2-3: the orientation `ξ` and a volume form of `A₀` give a continuous unit normal `ν₀`
+  obtain ⟨ξ, hξ⟩ := hξ
+  obtain ⟨ν₀, hν₀c, hν₀⟩ := Submission.codim1_hcp_un_orientation_normal P m A₀ M ξ hA₀ htan hξ
+  -- steps 4-5: in the `C^∞` charts of `M`, `ν₀` is locally the restriction of a `C^∞` map
+  have hloc := Submission.codim1_hcp_un_normal_local_smooth P m A₀ M ν₀ hA₀ hMA₀
+    (Submission.codim1_hcp_smooth_charts P m M hr) hν₀c hν₀
+  -- step 6: a smooth partition of unity glues these into `ν`, `C^∞` on an open `O ⊇ M`
+  obtain ⟨ν, O, hO, hMO, hνO, hνM⟩ := Submission.codim1_hcp_un_smooth_glue P (Euclid P) M ν₀ hloc
+  have hν : ∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0 := by
+    intro x hx
+    rw [hνM x hx]
+    exact hν₀ x hx
+  -- step 7: stationarity tested with `X = φν` gives `div_M ν = trace(P_x ∘ Dν(x)) = 0` on `M`
+  exact ⟨ν, O, hO, hMO, hνO, hν, Submission.codim1_hcp_un_zero_mean_curvature P m U A₀ M ν hU
+    hMU hA₀ hMA₀ h1 hfin hstat ⟨O, hO, hMO, hνO⟩ hν⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
