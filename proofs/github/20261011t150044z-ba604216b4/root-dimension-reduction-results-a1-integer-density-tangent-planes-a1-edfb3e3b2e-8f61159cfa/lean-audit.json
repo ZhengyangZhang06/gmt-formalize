@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ab85b81e18020668c2e2c2c9885e48115ab53f56896dc5ca1d3222b3dbe2404e",
+  "git_delta": {
+    "base_commit": "1f6183921b35252e6bfa1c923595378df3d35f35",
+    "candidate_commit": "4ca0b7ef99797aeed366f88205799f70e69ad25b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cs_sos_boundary_cone_transfer",
+    "diff_sha256": "c446fb8d6f6e6b42ca279a7a611c1513445afd1e568009495f990ceb186d9279",
+    "source_sha256": "7f0140dcbbcfce5b7b47c7cede217358986c23656c357fde81cd297da4b5f6aa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cs_sos_boundary_cone_transfer",
+      "statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)) (f : Fin (Module.finrank ℝ L) → Euclid P) (S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (R₀ : IMRep (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (hd : Module.finrank ℝ L < n), 0 < Module.finrank ℝ L → Orthonormal ℝ f → (∀ i, f i ∈ L) → R₀.Represents S₀ → R₀.measure (Lᗮ : Set (Euclid P))ᶜ = 0 → (∀ flat : Covector (Euclid P) n → Covector (Euclid P) (n - Module.finrank ℝ L), (∀ (α : Covector (Euclid P) n) (v : Fin (n - Module.finrank ℝ L) → Euclid P), flat α v = α (Fin.append f v ∘ Fin.cast (Nat.add_sub_of_le hd.le).symm)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = ∫ t in (L : Set (Euclid P)), currentEval S₀ (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[Module.finrank ℝ L]) → (BoundaryVanishes S → BoundaryVanishes S₀) ∧ (IsConeCurrent S → IsConeCurrent S₀)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
