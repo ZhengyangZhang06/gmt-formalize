@@ -480,6 +480,38 @@ theorem Submission.dtc_bc_cz_top_density_det_covector : ∀ n : ℕ, ∃ ε : Co
     rw [OrthonormalBasis.coe_mk] at h
     rwa [hε]
 
+/-- **Orientation of a top-dimensional integer multiplicity triple** (density part of the
+Constancy Theorem, Simon Ch. 6, 2.34): for `R = (M, θ, ξ) : IMRep V n` in `ℝⁿ`,
+`ξ = σ · (e₁ ∧ ⋯ ∧ eₙ)` `Hⁿ⌞M`-a.e. for a measurable sign `σ = ±1`.  `TₓM` has dimension `n`,
+so it is `ℝⁿ` and `ξ(x) = ±τ` for an orthonormal basis `τ` of `ℝⁿ`, where `α(τ) = ε(τ) α(e)` and
+`ε(τ) = ±1` for the determinant covector `ε`; `σ` is a measurable version of `x ↦ ξ(x)(ε)`. -/
+theorem Submission.dtc_bc_cz_top_density_orient_sign : ∀ (n : ℕ) (V : Set (Euclid n)) (R : IMRep V n), ∃ σ : Euclid n → ℝ, Measurable σ ∧ ∀ᵐ y ∂(μHE[n].restrict R.carrier), (σ y = 1 ∨ σ y = -1) ∧ ∀ α : Covector (Euclid n) n, R.orient y α = σ y * α ⇑(EuclideanSpace.basisFun (Fin n) ℝ) := by
+  intro n V R
+  obtain ⟨ε, hεe, hfac, hsign⟩ := Submission.dtc_bc_cz_top_density_det_covector n
+  -- `σ₀ = ξ(·)(ε)` is a.e. strongly measurable (evaluation at `ε` is continuous linear);
+  -- `σ` is its strongly measurable version
+  have hσ₀ : AEStronglyMeasurable (fun y => R.orient y ε) (μHE[n].restrict R.carrier) :=
+    (ContinuousLinearMap.apply ℝ ℝ ε).continuous.comp_aestronglyMeasurable
+      R.aestronglyMeasurable_orient
+  refine ⟨hσ₀.mk _, hσ₀.stronglyMeasurable_mk.measurable, ?_⟩
+  filter_upwards [R.orients, hσ₀.ae_eq_mk] with y hy hσy
+  obtain ⟨Q, hQ, τ, hτ, hspan, hξ⟩ := hy
+  -- `TₓM = Q` has dimension `n`, so `τ` spans `ℝⁿ`
+  have hτtop : Submodule.span ℝ (Set.range τ) = ⊤ := hspan.trans <|
+    Submodule.eq_top_of_finrank_eq (by rw [hQ.finrank_eq, finrank_euclideanSpace_fin])
+  -- `ξ(y) = ±τ = s · (e₁ ∧ ⋯ ∧ eₙ)` with `s = ±ε(τ) = ±1`
+  obtain ⟨s, hs, hξs⟩ : ∃ s : ℝ, (s = 1 ∨ s = -1) ∧
+      ∀ α : Covector (Euclid n) n, R.orient y α = s * α ⇑(EuclideanSpace.basisFun (Fin n) ℝ) := by
+    rcases hξ with hξ | hξ
+    · exact ⟨ε τ, hsign τ hτ hτtop, fun α => (hξ α).trans (hfac α τ)⟩
+    · refine ⟨-ε τ, ?_, fun α => by rw [hξ α, hfac α τ, neg_mul]⟩
+      rcases hsign τ hτ hτtop with h | h <;> norm_num [h]
+  -- `σ(y) = σ₀(y) = ξ(y)(ε) = s · ε(e) = s`
+  have hσs : hσ₀.mk _ y = s := by
+    rw [← hσy, hξs ε, hεe, mul_one]
+  rw [hσs]
+  exact ⟨hs, hξs⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
