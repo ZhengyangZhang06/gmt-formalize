@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "998795c46a4581981256659160bf9ffbdcbed51644eb23d1e03f83848ac069c4",
+  "git_delta": {
+    "base_commit": "7a6fc4e504f56557f46d57d447b9eed01bc5177f",
+    "candidate_commit": "9c23a8689b5d772991bcd8e3328b98292e9cc753",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_fr_divergence_form",
+    "diff_sha256": "3494ba600d65ed997f79af253af6de0a7c8e15a773f649485ba1af1a04d6f0b7",
+    "source_sha256": "9883626de3916de7661b0895f3b95ed5489e168574b0fb251721ffd53516197e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_fr_divergence_form",
+      "statement": "∀ (P m : ℕ) (p : (Fin P → ℤ) × (Fin (m + 1) → Fin P)) (g : Euclid (m + 1) → Euclid (m + 1)) (δ : ℝ), StrictMono p.2 → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → (∀ y, ‖g y‖ ≤ 1) → 0 < δ → ∃ ω : TestFormOn (univ : Set (Euclid P)) m, (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) m) x) ≤ 1) ∧ (∀ x ∈ tsupport (ω : DifferentialForm (Euclid P) m), ∃ y ∈ tsupport g, dist x (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) ≤ δ) ∧ ∀ y : Euclid (m + 1), exteriorDerivative (ω : DifferentialForm (Euclid P) m) (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) = LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
