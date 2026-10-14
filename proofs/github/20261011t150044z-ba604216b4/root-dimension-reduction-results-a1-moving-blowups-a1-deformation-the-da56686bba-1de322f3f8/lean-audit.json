@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c3eea170d1395b59e51b1534dfc6fe1edcb0c52ce5413cfecf31db2734e80c51",
+  "git_delta": {
+    "base_commit": "201792569ab322f85e99c0636ad8f2f1b8bc47b0",
+    "candidate_commit": "a0a820966a4622e6375d9bcf075954ac4bd66404",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_lp_jc_mollify_fderiv_eq",
+    "diff_sha256": "b0d7ac08f01c4185de4311c532a092847c2886674ae0066b84da46920b961bb7",
+    "source_sha256": "d50183536e84875cc6b7265b1b6944828f440d1d5ea93482f56bd1636fd93609",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_lp_jc_mollify_fderiv_eq",
+      "statement": "∀ (k : ℕ) (L : NNReal) (f ρ : Euclid k → ℝ), LipschitzWith L f → ContDiff ℝ 1 ρ → HasCompactSupport ρ → ∀ x v : Euclid k, fderiv ℝ (fun y => ∫ t, ρ t * f (y - t)) x v = ∫ t, ρ t * fderiv ℝ f (x - t) v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
