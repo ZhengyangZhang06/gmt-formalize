@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1",
+  "depth": 2,
+  "title": "Lemma M: upper mass bound in the limit for minimizing sequences in N",
+  "statement": "Let ℓ ≤ k and n ≥ 1, U ⊆ ℝ^{n+k} open, N an embedded C² (n+ℓ)-dimensional submanifold of ℝ^{n+k} with (N̄ ∖ N) ∩ U = ∅. Let T_j ∈ 𝒟_n(U) (j ∈ ℕ) be minimizing in U ∩ N with spt T_j ⊆ N and ∂T_j = 0 in U, such that every integer multiplicity representation of every T_j has its varifold stationary in U ∩ N; let T ∈ 𝒟_n(U) be integer multiplicity with ∂T = 0 in U. Assume sup_j M_W(T_j) < ∞ for every open W with W̄ compact ⊆ U, and T_j ⇀ T in U. Let y ∈ N ∩ U. Then there are r₁ > 0 and c, c₁ ≥ 0 such that for all 0 < ε < ρ < r₁: limsup_j M_{B_ρ(y)}(T_j) ≤ (1 + cρ)ⁿ M_{B_{ρ+ε}(y)}(T) + c₁ρ^{n+1} (in [0, ∞], open balls).",
+  "lean_statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → 0 < n → ∀ (U N : Set (Euclid (n + k))) (Ts : ℕ → GeometricCurrentOn U n) (T : GeometricCurrentOn U n) (y : Euclid (n + k)), IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → (∀ j, IsMinimizingIn (Ts j) (U ∩ N)) → IsIntegerMultiplicity T → (∀ j, (Ts j).support ⊆ N) → (∀ j, BoundaryVanishes (Ts j)) → BoundaryVanishes T → (∀ j, ∀ R : IMRep U n, R.Represents (Ts j) → R.IsStationaryAlong N) → (∀ W : Set (Euclid (n + k)), IsOpen W → CompactlyContained W U → ⨆ j, (Ts j).massOn W < ∞) → WeaklyConvergesOn Ts T → y ∈ N ∩ U → ∃ r₁ c c₁ : ℝ, 0 < r₁ ∧ 0 ≤ c ∧ 0 ≤ c₁ ∧ ∀ ρ ε : ℝ, 0 < ε → ε < ρ → ρ < r₁ → limsup (fun j => (Ts j).massOn (ball y ρ)) atTop ≤ ENNReal.ofReal ((1 + c * ρ) ^ n) * T.massOn (ball y (ρ + ε)) + ENNReal.ofReal (c₁ * ρ ^ (n + 1))",
+  "lean_name": "dor_minimizing_limsup_mass_bound",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-a1"
+}

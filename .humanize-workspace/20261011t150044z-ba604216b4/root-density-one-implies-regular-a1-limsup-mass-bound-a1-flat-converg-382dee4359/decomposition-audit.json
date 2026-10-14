@@ -1,0 +1,69 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dtop_ip_|isometry_change_of_variables|approxTangent_isometry|unitOrientation_isometry|image_imrep",
+        "map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_image",
+        "theorem restrict_map|lemma ae_map_iff|theorem ae_map_iff|namespace MeasurableEmbedding",
+        "MeasurableEmbedding.integral_map|MeasurableEmbedding.lintegral_map|aestronglyMeasurable_map_iff",
+        "CountablyRectifiable|def blowUpMap|def HasApproximateTangentSpaceAt",
+        "def affinePullbackForm|def affinePullbackTestOn|def affinePushforward|theorem affinePushforward_apply",
+        "compContinuousLinearMapCLM",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/isopf-independent-audit-yxkdh9un/CheckedAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-382dee4359/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-382dee4359/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/isopf-decomp/lean/Full.lean",
+        "/tmp/isopf-independent-audit-yxkdh9un/CheckedAssembly.lean"
+      ],
+      "conclusion": "Verified pinned revisions and compatibility with the compiled sources. No proposed declaration name matched the snapshot project, SimonGMT, or another DAG reservation. All four names are bare identifiers; all four exact one-line propositions passed validation and independently elaborated as comparator challenges without their implementations. Replayed child proofs use only propext, Classical.choice and Quot.sound. The accepted mass lemma has the identical frozen type and a successful comparator record permitting only those axioms; its dependency closure excludes the selected node. The split is appropriate and acyclic. A checked assembly, parametrized only by that accepted mass lemma, derives the exact selected parent: image_imrep supplies integer multiplicity, and its measure identity at univ supplies mass equality."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type agree, including arbitrary sets and integrands. Closed embedding, Hausdorff-measure transport, restriction, and both integral identities follow from the checked APIs without hidden measurability or integrability assumptions. The proof is complete and independent."
+    },
+    {
+      "key": "tangent_transport",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact approximate-tangent definition is preserved: injectivity gives the dimension, linearity commutes with blow-ups, properness preserves compact support, and change_of_variables transports both integrals in the limit. Its sole sibling dependency is correctly directed."
+    },
+    {
+      "key": "orientation_transport",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pullback composition has the intended continuous-linear-map type. The proof transports the orthonormal frame, its span, and the global sign alternative, including degree zero. All hypotheses match the prose, with no circular dependency."
+    },
+    {
+      "key": "image_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The adjoint supplies a continuous left inverse. The proof checks every IMRep field, correctly transfers almost-everywhere properties, establishes representation using the definitional univ-domain identification, and proves the measure identity for every measurable set. All three declared sibling dependencies are used correctly; neither parent nor mass equality is assumed."
+    }
+  ],
+  "required_changes": []
+}

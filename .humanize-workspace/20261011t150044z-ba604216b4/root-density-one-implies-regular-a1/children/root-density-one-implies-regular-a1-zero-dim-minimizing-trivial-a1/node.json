@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.zero_dim_minimizing_trivial-a1",
+  "parent_id": "root.density_one_implies_regular-a1",
+  "depth": 2,
+  "title": "Minimizing 0-currents do not meet the constraint set",
+  "statement": "Let P be a natural number, U ⊆ ℝ^P open, A ⊆ ℝ^P, and T ∈ 𝒟₀(U) minimizing in A in the sense of Simon 7.1.1 as frozen in the contract (T is integer multiplicity, and M_W(T) ≤ M_W(S) for every open W with W̄ compact ⊆ U and every integer multiplicity S ∈ 𝒟₀(U) such that spt(S − T) is a compact subset of A ∩ W; the condition ∂S = ∂T is vacuous in degree 0). Then spt T ∩ A = ∅.",
+  "lean_statement": "∀ (P : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U 0), IsOpen U → IsMinimizingIn T A → T.support ∩ A = ∅",
+  "lean_name": "dor_zero_dim_minimizing_support_disjoint",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-zero-dim-minimizing-trivial-a1-a1"
+}
