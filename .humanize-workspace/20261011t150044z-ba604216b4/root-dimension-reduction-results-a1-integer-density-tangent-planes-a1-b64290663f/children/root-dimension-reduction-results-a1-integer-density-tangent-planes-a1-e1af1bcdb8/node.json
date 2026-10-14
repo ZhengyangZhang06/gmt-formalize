@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.angle_fderiv-a1.plane_projection-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.angle_fderiv-a1",
+  "depth": 6,
+  "title": "Orthogonal projection onto a 2-plane in an orthonormal frame",
+  "statement": "Let P ∈ ℕ, let Q ⊆ ℝ^P be a linear subspace with finrank Q = 2, and let a, e ∈ Q with |a| = |e| = 1 and ⟨a,e⟩ = 0. Let π := Q.starProjection be the orthogonal projection of ℝ^P onto Q. Then for every y ∈ ℝ^P, πy = ⟨y,a⟩a + ⟨y,e⟩e and |πy|² = ⟨y,a⟩² + ⟨y,e⟩².",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → ∀ y : Euclid P, Q.starProjection y = inner ℝ y a • a + inner ℝ y e • e ∧ ‖Q.starProjection y‖ ^ 2 = inner ℝ y a ^ 2 + inner ℝ y e ^ 2",
+  "lean_name": "idtp_cse_rc_af_plane_projection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-e1af1bcdb8-a1"
+}

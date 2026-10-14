@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "1ce2498d3737a62ff391b1009c267d6e44a7eb5b811aeb28ac342742f89dd39b",
+  "git_delta": {
+    "base_commit": "3e1780601591d45ddba3c736ee23bed13c641ac7",
+    "candidate_commit": "9b39b003a2ada37f8dd55c6465bf465811ac81f1",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "d594c51f99c2027d6ef9345382444156b1d00a6a35ee5277605c1b77c34ac581",
+    "source_sha256": "2eb264a40f729e3bf555d55bb3b30a4d2873ff7d37f7ac119ce1226ed5afb4ea",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_rc_test_function",
+      "statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ) (ψ l : ℝ → ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s → s ≤ 1 / 4 → ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo (-s) s → tsupport l ⊆ Ioo (1 - s) (1 + s) → ∃ g : Euclid P → ℝ, ContDiff ℝ 1 g ∧ HasCompactSupport g ∧ (∀ x v : Euclid P, inner ℝ x v = 0 → (0 < inner ℝ x a → |‖x‖ - 1| < s → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s → ‖x - Q.starProjection x‖ < s / 2 * ‖x‖ ∨ 2 * s * ‖x‖ < ‖x - Q.starProjection x‖) → x ∈ {y : Euclid P | 0 < inner ℝ y a ∧ |‖y‖ - 1| < s ∧ |Real.arctan (inner ℝ y e / inner ℝ y a)| < s ∧ ‖y - Q.starProjection y‖ < s * ‖y‖} → fderiv ℝ g x v = deriv ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) * l ‖x‖ * (inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / ‖Q.starProjection x‖ ^ 2)) ∧ (∀ x v : Euclid P, inner ℝ x v = 0 → (0 < inner ℝ x a → |‖x‖ - 1| < s → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s → ‖x - Q.starProjection x‖ < s / 2 * ‖x‖ ∨ 2 * s * ‖x‖ < ‖x - Q.starProjection x‖) → x ∉ {y : Euclid P | 0 < inner ℝ y a ∧ |‖y‖ - 1| < s ∧ |Real.arctan (inner ℝ y e / inner ℝ y a)| < s ∧ ‖y - Q.starProjection y‖ < s * ‖y‖} → fderiv ℝ g x v = 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
