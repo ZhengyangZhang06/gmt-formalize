@@ -754,6 +754,45 @@ theorem Submission.cbr_ci_pw_noi_setIntegral_eq_preimage : ∀ (P n : ℕ) (U : 
   rw [hL, hR]
   linarith
 
+/-- Null-off-image bound for the density `u` (step 10 of the weight-at-least-one argument): if
+`∫_U b u = ∫ (b ∘ q) h dσ` for every `b ∈ C_c^∞(U)` and `σ` is carried by `A`, then `u = 0`
+`Lⁿ`-a.e. on `U \ q(A)`, i.e. `Lⁿ(B ∩ {u ≠ 0}) ≤ Lⁿ(B ∩ q(A))` for measurable `B ⊆ U`.  With
+`E` a measurable hull of `q(A)`, every measurable `B' ⊆ U \ E` has `σ`-null preimage `q⁻¹(B')`,
+so `∫_{B'} u = ∫_{q⁻¹(B')} h dσ = 0` (`cbr_ci_pw_noi_setIntegral_eq_preimage`); hence `u = 0`
+a.e. on `U \ E` and `Lⁿ(B ∩ {u ≠ 0}) ≤ Lⁿ(B ∩ E) = Lⁿ(B ∩ q(A))`. -/
+theorem Submission.cbr_ci_pw_density_null_off_image : ∀ (P n : ℕ) (U : Set (Euclid n)) (u : Euclid n → ℝ) (σ : Measure (Euclid P)) (q : Euclid P → Euclid n) (h : Euclid P → ℝ) (A : Set (Euclid P)), IsOpen U → Continuous q → IntegrableOn u U → σ univ < ∞ → Integrable h σ → σ Aᶜ = 0 → (∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → ∫ y in U, b y * u y = ∫ x, b (q x) * h x ∂σ) → ∀ B : Set (Euclid n), MeasurableSet B → B ⊆ U → volume (B ∩ {y | u y ≠ 0}) ≤ volume (B ∩ q '' A) := by
+  intro P n U u σ q h A hU hq hu _hσ hh hA htest B hB hBU
+  -- the measurable hull `E` of `q '' A`
+  set E : Set (Euclid n) := toMeasurable volume (q '' A) with hE
+  have hUE : MeasurableSet (U \ E) := hU.measurableSet.diff (measurableSet_toMeasurable _ _)
+  -- `∫_s u = 0` for measurable `s ⊆ U \ E`, because `q ⁻¹' s ⊆ Aᶜ` is `σ`-null
+  have hzero : ∀ s : Set (Euclid n), MeasurableSet s → s ⊆ U \ E → ∫ y in s, u y = 0 := by
+    intro s hs hsUE
+    rw [Submission.cbr_ci_pw_noi_setIntegral_eq_preimage P n U u σ q h hU hq.measurable hu hh
+      htest s hs (hsUE.trans sdiff_subset)]
+    refine setIntegral_measure_zero _ (measure_mono_null ?_ hA)
+    intro x hx hxA
+    exact (hsUE hx).2 (subset_toMeasurable _ _ ⟨x, hxA, rfl⟩)
+  -- hence `u = 0` a.e. on `U \ E`
+  have hae : u =ᵐ[volume.restrict (U \ E)] 0 :=
+    (hu.mono_set sdiff_subset).ae_eq_zero_of_forall_setIntegral_eq_zero fun s hs _ => by
+      rw [Measure.restrict_restrict hs]
+      exact hzero _ (hs.inter hUE) inter_subset_right
+  have hnull : volume ({y | u y ≠ 0} ∩ (U \ E)) = 0 := by
+    rw [← Measure.restrict_apply' hUE]
+    exact hae
+  -- `B ∩ {u ≠ 0} ⊆ (B ∩ E) ∪ ({u ≠ 0} ∩ (U \ E))` and `Lⁿ(B ∩ E) = Lⁿ(B ∩ q '' A)`
+  calc volume (B ∩ {y | u y ≠ 0})
+      ≤ volume (B ∩ E ∪ {y | u y ≠ 0} ∩ (U \ E)) := by
+        refine measure_mono fun y hy => ?_
+        by_cases hyE : y ∈ E
+        · exact Or.inl ⟨hy.1, hyE⟩
+        · exact Or.inr ⟨hy.2, hBU hy.1, hyE⟩
+    _ ≤ volume (B ∩ E) + volume ({y | u y ≠ 0} ∩ (U \ E)) := measure_union_le _ _
+    _ = volume (B ∩ q '' A) := by
+        rw [hnull, add_zero, inter_comm, hE,
+          Measure.measure_toMeasurable_inter_of_sFinite hB, inter_comm]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
