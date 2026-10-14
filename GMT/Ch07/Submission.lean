@@ -6149,6 +6149,83 @@ theorem Submission.dimred_mbl_current_foundations : (∀ (P n : ℕ) (U : Set (E
   exact ⟨μ, ξ, hμU, hμK, hμW, hξ, hξα, hTξ, fun hbd =>
     Submission.dimred_mbl_fnd_null_of_representation P n U T μ ξ hU hbd hμU hμK hμW hξ hξα hTξ⟩
 
+/-- **Integer multiplicity is local, and passes to open subdomains** (Simon Ch. 6, 3.1 and
+6.3.1; T4 of the closure theorem for the moving blow-ups).  Assume (REP), (MR) and (IMC).
+
+(2) If `T = τ(M, θ, ξ)` in `U` and `V ⊆ U` is open, then `T⌞V = τ(M ∩ V, θ, ξ)` in `V`
+(`dtc_restrictDomain_isIntegerMultiplicity`).
+
+(1) Let `(μ, ξ)` be the (REP) representation of `X`: `μ(G) = M_G(X)` for open `G`, `|ξ| ≤ 1` and
+`X(ω) = ∫ ⟨ω, ξ⟩ dμ`.  Fix `x ∈ U`, a ball `B = B_r(x) ⊆ U` and a triple `R = (M_B, θ_B, ξ_B)` in
+`B` representing `X|_B`, with weight `μ_B = θ_B Hᵏ⌞M_B`.
+* For open `G ⊆ B`, `μ(G) = M_G(X) = M_G(X|_B) = μ_B(G)` by (REP), `dtc_massOn_eq_of_agreeOn` and
+  (MR) in `B`.  As `μ` is finite on compact subsets of `B`, `μ = μ_B` on Borel subsets of `B`
+  (`cmc_ml_measure_eq_of_eq_on_open_subsets`), and `μ_B` is carried by `M_B ⊆ B`; so
+  `μ⌞B = μ_B`.
+* For `ω ∈ 𝒟ᵏ(B)`, `∫ ⟨ω, ξ⟩ dμ = X(ω) = X|_B(ω) = ∫ ⟨ω, ξ_B⟩ dμ_B` (`cbr_imRep_measure_basic`).
+  By `dmcbr_setIntegral_eq_of_integral_eq` (third measure `0`) the integrals over every Borel set
+  agree too, and as `|ξ_B| ≤ 1` `μ_B`-a.e. by (IMC)(d), `ξ = ξ_B` `μ`-a.e. on `B`
+  (`cbr_orient_ae_eq_of_setIntegral_eq`).
+Gluing these local triples over a countable disjoint Borel refinement of the balls
+(`dmcbr_isIntegerMultiplicity_of_local_reps`, using (IMC)(a)) shows that `X` is integer
+multiplicity. -/
+theorem Submission.dmcbr_isIntegerMultiplicity_of_local : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P k : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U k), IsOpen U → ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → X.massOn W < ∞) → (∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ ∃ h : ball x r ⊆ U, IsIntegerMultiplicity (X.restrictDomain h)) → IsIntegerMultiplicity X) ∧ (∀ (V : Set (Euclid P)) (h : V ⊆ U), IsOpen V → IsIntegerMultiplicity X → IsIntegerMultiplicity (X.restrictDomain h)) := by
+  intro hREP hMR hIMC P k U X hU
+  -- (2): restriction to an open `V ⊆ U`
+  refine ⟨fun hXfin hloc => ?_, fun V hVU hV hX =>
+    Submission.dtc_restrictDomain_isIntegerMultiplicity P k U V hVU X hV hX⟩
+  -- (1): the (REP) representation `(μ, ξ)` of `X`
+  obtain ⟨μ, ξ, hμU, hμK, hμmass, hξm, hξb, hXrep, -⟩ := hREP P k U X hU hXfin
+  -- it suffices to match `(μ, ξ)` with an integer multiplicity triple near each `x ∈ U`
+  refine Submission.dmcbr_isIntegerMultiplicity_of_local_reps hIMC.1 P k U X μ ξ hU hμU hμK hξm
+    hXrep fun x hx => ?_
+  -- a ball `B = B_r(x) ⊆ U` and a triple `R` in `B` representing `X|_B`
+  obtain ⟨r, hr, hBU, R, hR⟩ := hloc x hx
+  obtain ⟨hac, -, -, hRc, hRK, hRm, hRact⟩ := Submission.cbr_imRep_measure_basic P k (ball x r) R
+  have hμKB : ∀ K : Set (Euclid P), IsCompact K → K ⊆ ball x r → μ K < ∞ :=
+    fun K hK hKB => hμK K hK (hKB.trans hBU)
+  -- Step 1: `μ(G) = M_G(X) = M_G(X|_B) = μ_B(G)` for open `G ⊆ B`
+  have hopen : ∀ G : Set (Euclid P), IsOpen G → G ⊆ ball x r → μ G = R.measure G := by
+    intro G hG hGB
+    rw [← hμmass G hG, ← hMR P k (ball x r) (X.restrictDomain hBU) R isOpen_ball hR G hG]
+    exact Submission.dtc_massOn_eq_of_agreeOn P k U (ball x r) G hBU X (X.restrictDomain hBU) hGB
+      fun ω _ => (GeometricCurrentOn.restrictDomain_apply X hBU ω).symm
+  -- Step 2: `μ = μ_B` on Borel subsets of `B`; `μ_B` is carried by `M_B ⊆ B`, so `μ⌞B = μ_B`
+  have hborel := Submission.cmc_ml_measure_eq_of_eq_on_open_subsets P (ball x r) μ R.measure
+    isOpen_ball (fun C hC hCB => (hμKB C hC hCB).ne) hopen
+  have hres : μ.restrict (ball x r) = R.measure.restrict (ball x r) := by
+    refine Measure.ext fun A hA => ?_
+    rw [Measure.restrict_apply hA, Measure.restrict_apply hA]
+    exact hborel _ (hA.inter measurableSet_ball) inter_subset_right
+  have hRB : R.measure.restrict (ball x r) = R.measure :=
+    Measure.restrict_eq_self_of_ae_mem
+      (ae_iff.2 (measure_mono_null (fun y hy hyM => hy (R.carrier_subset hyM)) hRc))
+  -- Step 3: `|ξ(α)| ≤ |α|` everywhere, and `|ξ_B(α)| ≤ |α|` `μ_B`-a.e. by (IMC)(d)
+  have hξb' : ∀ᵐ y ∂μ, ∀ α : Covector (Euclid P) k, |ξ y α| ≤ covectorEuclideanNorm α :=
+    Eventually.of_forall hξb
+  have hRb : ∀ᵐ y ∂R.measure, ∀ α : Covector (Euclid P) k,
+      |R.orient y α| ≤ covectorEuclideanNorm α :=
+    hac.ae_le (hIMC.2.2.2 P k (ball x r) R)
+  -- Step 4: for `ω ∈ 𝒟ᵏ(B)`, `∫ ⟨ω, ξ⟩ dμ = X(ω) = X|_B(ω) = ∫ ⟨ω, ξ_B⟩ dμ_B`
+  have hint : ∀ ω : TestFormOn (ball x r) k,
+      ∫ y, ξ y ((ω : DifferentialForm (Euclid P) k) y) ∂μ =
+        ∫ y, R.orient y ((ω : DifferentialForm (Euclid P) k) y) ∂R.measure +
+          ∫ y, (0 : Euclid P → MultiVector P k) y ((ω : DifferentialForm (Euclid P) k) y)
+            ∂(0 : Measure (Euclid P)) := by
+    intro ω
+    rw [integral_zero_measure, add_zero, ← hRact (ω : DifferentialForm (Euclid P) k), ← hR ω,
+      GeometricCurrentOn.restrictDomain_apply, hXrep, testFormOnInclusion_coe]
+  -- Step 5: so the integrals over Borel sets agree (third measure `0`) ...
+  have hset := Submission.dmcbr_setIntegral_eq_of_integral_eq P k (ball x r) μ R.measure 0 ξ
+    R.orient 0 isOpen_ball hμKB hRK (fun K _ _ => by simp) hξm hRm
+    (aestronglyMeasurable_zero_measure _) hξb' hRb (by simp) hint
+  -- ... and `ξ = ξ_B` `μ`-a.e. on `B`
+  refine ⟨ball x r, R, isOpen_ball, mem_ball_self hr, hBU, hres.trans hRB, ?_⟩
+  refine Submission.cbr_orient_ae_eq_of_setIntegral_eq P k (ball x r) μ R.measure ξ R.orient
+    isOpen_ball hμKB hres hξm hRm hξb' hRb fun E ω hE => ?_
+  rw [hset E ω hE]
+  simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
