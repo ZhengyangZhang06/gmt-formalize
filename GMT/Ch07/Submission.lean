@@ -526,6 +526,61 @@ theorem Submission.cmcs_ls_mollify_lipschitz : ∀ (P : ℕ) (ψ g : Euclid P �
           ← dist_sub_right x x' y]
         exact mul_le_mul_of_nonneg_left (hg.dist_le_mul _ _) (hψ0 y)
     _ = K * dist x x' := by rw [integral_mul_const, hψ1, one_mul]
+/-- **Coordinate expansion of a `k`-covector** (the pointwise identity behind
+`H^#ω(u)(e) = Σ_I ω_I(H(u)) det D(H^I)(u)`): for `f ∈ Λᵏ(ℝ^{N'})` and `u ∈ (ℝ^{N'})ᵏ`,
+`k! f(u) = Σ_I f(e'_{I 0}, …, e'_{I (k-1)}) det (u_b (I c))_{c,b}`, the sum over all maps
+`I : Fin k → Fin N'`.  Expand each `u_b = Σ_i u_b(i) e'_i` and use multilinearity; for each
+permutation `σ` reindex `J = I ∘ σ` and use `f (v ∘ σ) = sign σ • f v`; average over the `k!`
+permutations and recognize the Leibniz formula for the determinant. -/
+theorem Submission.dor_lmb_fcd_jwc_covector_det_expansion : ∀ (N' k : ℕ) (f : Covector (Euclid N') k) (u : Fin k → Euclid N'), (k.factorial : ℝ) * f u = ∑ I : Fin k → Fin N', f (fun c => EuclideanSpace.single (I c) (1 : ℝ)) * Matrix.det (Matrix.of fun c b => u b (I c)) := by
+  intro N' k f u
+  set e : Fin N' → Euclid N' := fun i => EuclideanSpace.single i (1 : ℝ) with he
+  -- step 1: multilinear expansion in the standard basis
+  have h1 : f u = ∑ J : Fin k → Fin N', (∏ b, u b (J b)) * f (fun b => e (J b)) := by
+    have hu : u = fun b => ∑ i, u b i • e i := by
+      funext b
+      conv_lhs => rw [← (EuclideanSpace.basisFun (Fin N') ℝ).sum_repr (u b)]
+      simp [he]
+    conv_lhs => rw [hu]
+    rw [show f (fun b => ∑ i, u b i • e i) = f.toMultilinearMap (fun b => ∑ i, u b i • e i) from rfl,
+      MultilinearMap.map_sum]
+    refine Finset.sum_congr rfl fun J _ => ?_
+    rw [MultilinearMap.map_smul_univ]
+    simp [smul_eq_mul]
+  -- step 2: reindex by a permutation `σ`, using alternation
+  have h2 : ∀ σ : Equiv.Perm (Fin k), f u = ∑ I : Fin k → Fin N',
+      ((Equiv.Perm.sign σ : ℤ) : ℝ) * (∏ b, u b (I (σ b))) * f (fun c => e (I c)) := by
+    intro σ
+    rw [h1]
+    rw [← Equiv.sum_comp ((σ.symm).arrowCongr (Equiv.refl (Fin N')))]
+    refine Finset.sum_congr rfl fun I _ => ?_
+    have hperm : f (fun b => e (I (σ b))) = ((Equiv.Perm.sign σ : ℤ) : ℝ) * f (fun c => e (I c)) := by
+      have := f.toAlternatingMap.map_perm (fun c => e (I c)) σ
+      simp only [Function.comp_def] at this
+      rw [show f (fun b => e (I (σ b))) = f.toAlternatingMap (fun b => e (I (σ b))) from rfl, this,
+        Units.smul_def, zsmul_eq_mul]
+      rfl
+    simp only [Equiv.arrowCongr_apply, Equiv.refl_apply, Equiv.symm_symm, Function.comp_apply]
+    rw [hperm]
+    ring
+  -- step 3: average over `σ` and recognize the Leibniz formula
+  have h3 : (k.factorial : ℝ) * f u = ∑ σ : Equiv.Perm (Fin k), f u := by
+    rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+  rw [h3]
+  calc ∑ σ : Equiv.Perm (Fin k), f u
+      = ∑ σ : Equiv.Perm (Fin k), ∑ I : Fin k → Fin N',
+          ((Equiv.Perm.sign σ : ℤ) : ℝ) * (∏ b, u b (I (σ b))) * f (fun c => e (I c)) :=
+        Finset.sum_congr rfl fun σ _ => h2 σ
+    _ = ∑ I : Fin k → Fin N', ∑ σ : Equiv.Perm (Fin k),
+          ((Equiv.Perm.sign σ : ℤ) : ℝ) * (∏ b, u b (I (σ b))) * f (fun c => e (I c)) :=
+        Finset.sum_comm
+    _ = _ := ?_
+  refine Finset.sum_congr rfl fun I _ => ?_
+  rw [Matrix.det_apply, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun σ _ => ?_
+  rw [Units.smul_def, zsmul_eq_mul]
+  simp only [Matrix.of_apply, he]
+  ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

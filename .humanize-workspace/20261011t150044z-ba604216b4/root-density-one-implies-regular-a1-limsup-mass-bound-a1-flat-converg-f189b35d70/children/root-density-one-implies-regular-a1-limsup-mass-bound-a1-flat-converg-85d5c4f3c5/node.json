@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.minor_bound-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1",
+  "depth": 6,
+  "title": "Jacobian minors of Lipschitz maps are measurable and bounded by r!(L·Σ|V_b|)^r",
+  "statement": "Let k, r ∈ ℕ, L ∈ ℝ≥0, g_0, …, g_{r−1} : ℝᵏ → ℝ L-Lipschitz (ℝᵏ = Euclid k) and V_0, …, V_{r−1} ∈ ℝᵏ. Let D(x) := det(Dg_c(x)V_b)_{c,b ∈ Fin r}, where Dg(x) := fderiv ℝ g x (the zero map where g is not differentiable). Then x ↦ D(x) is measurable and |D(x)| ≤ r!·(L·Σ_b ‖V_b‖)^r for every x ∈ ℝᵏ.",
+  "lean_statement": "∀ (k r : ℕ) (L : NNReal) (g : Fin r → Euclid k → ℝ) (V : Fin r → Euclid k), (∀ c, LipschitzWith L (g c)) → Measurable (fun x => Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b))) ∧ ∀ x, |Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b))| ≤ (r.factorial : ℝ) * ((L : ℝ) * ∑ b, ‖V b‖) ^ r",
+  "lean_name": "dor_lmb_fcd_jwc_minor_measurable_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-85d5c4f3c5-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.covector_det_expansion-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1",
+  "depth": 6,
+  "title": "Coordinate expansion of a k-covector: k!·f(u) = Σ_I f(e'_I)·det(u_b(I_c))",
+  "statement": "Let N', k ∈ ℕ, f a k-covector on ℝ^{N'} (f ∈ Covector (Euclid N') k: a continuous alternating k-linear map (ℝ^{N'})^k → ℝ, ℝ^{N'} = Euclid N') and u = (u_0, …, u_{k−1}) ∈ (ℝ^{N'})^k. Write e'_i := EuclideanSpace.single i 1 (i ∈ Fin N') for the standard basis of ℝ^{N'} and z(i) for the i-th coordinate of z ∈ ℝ^{N'}. Then k!·f(u) = Σ_{I : Fin k → Fin N'} f(e'_{I(0)}, …, e'_{I(k−1)})·det(M_I), where the sum runs over all maps I (no monotonicity or injectivity) and M_I is the k×k matrix with entry u_b(I(c)) in row c and column b (Lean: Matrix.of fun c b => u b (I c)).",
+  "lean_statement": "∀ (N' k : ℕ) (f : Covector (Euclid N') k) (u : Fin k → Euclid N'), (k.factorial : ℝ) * f u = ∑ I : Fin k → Fin N', f (fun c => EuclideanSpace.single (I c) (1 : ℝ)) * Matrix.det (Matrix.of fun c b => u b (I c))",
+  "lean_name": "dor_lmb_fcd_jwc_covector_det_expansion",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-0bb9e2d51a-a1"
+}
