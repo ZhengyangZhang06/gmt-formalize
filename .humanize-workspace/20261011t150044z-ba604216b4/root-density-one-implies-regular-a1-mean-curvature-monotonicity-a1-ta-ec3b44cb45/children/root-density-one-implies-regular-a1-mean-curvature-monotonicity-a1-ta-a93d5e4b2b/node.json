@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.tangent_projection_measurable-a1.blowup_integral_measurable-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.tangent_projection_measurable-a1",
+  "depth": 4,
+  "title": "Borel measurability of the blow-up integrals in the definition of approximate tangent planes",
+  "statement": "Let P, n ∈ ℕ, and let M ⊆ ℝ^P be any set such that ν := Hⁿ⌞M (μHE[n].restrict M) is s-finite. Let f : ℝ^P → ℝ be continuous with f(y) ≥ 0 for all y, and let r > 0. For x ∈ ℝ^P let η_x(y) := r⁻¹(y − x) (SimonGMT blowUpMap x r). Then the real function x ↦ ∫_{η_x(M)} f dHⁿ is Borel measurable on ℝ^P. This is the Bochner integral of f against Hⁿ⌞η_x(M), the integral in Simon's Definition 1.4 of approximate tangent planes, and it is 0 when f is not integrable there.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)), SFinite (μHE[n].restrict M) → ∀ f : Euclid P → ℝ, Continuous f → (∀ y, 0 ≤ f y) → ∀ r : ℝ, 0 < r → Measurable (fun x : Euclid P => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n])",
+  "lean_name": "dsmc_measurable_blowUp_image_setIntegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ta-a93d5e4b2b-a1"
+}
