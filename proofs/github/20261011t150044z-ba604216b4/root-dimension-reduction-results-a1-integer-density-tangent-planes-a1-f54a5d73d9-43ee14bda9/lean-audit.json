@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "55d6bf601fe13ae23485fcebb97105f9bea45a5f69ec570752cbd78289d25aee",
+  "git_delta": {
+    "base_commit": "e6db0fa1bb62a137b0de5be3a49cfa6dc60a36d8",
+    "candidate_commit": "6ddba22e52c260574327b4e425c489c8ca905bda",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_fr_card_le",
+    "diff_sha256": "c0352481148404524e002729f9ee98d94c61606c5ef5c583095f71e45710213d",
+    "source_sha256": "dbaca9ce41fe5618a0b356f6ea35b4f717c729014573f36bba2153d1947c741f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_fr_card_le",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → μ (ball (0 : Euclid P) 1) ≠ ∞ → ∀ T : Finset (Euclid P), (∀ σ ∈ T, ‖σ‖ = 1) → (∀ σ ∈ T, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal ρ ≤ μ (ball σ ρ)) → (T.card : ℝ≥0∞) ≤ 2 * μ (ball 0 1)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
