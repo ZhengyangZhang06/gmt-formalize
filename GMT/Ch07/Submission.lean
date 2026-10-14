@@ -451,6 +451,34 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Integral data of an integer multiplicity representation** (Simon 6.3.1, 6.3.2(3)).  If
+`R = (M, θ, ξ)` represents `Z`, then `μ = R.measure = (Hⁿ⌞M).withDensity θ` is finite on compact
+subsets of `U`, `ξ` is `μ`-a.e. strongly measurable, an `Hⁿ⌞M`-a.e. bound
+`|⟨α, ξ(x)⟩| ≤ |α|` also holds `μ`-a.e., and `Z(ω) = ∫ ⟨ω(x), ξ(x)⟩ dμ(x)`.  The first three
+follow from `μ ≪ Hⁿ⌞M` and the field `locallyIntegrable_mult`; the last from
+`∫ F d((Hⁿ⌞M).withDensity θ) = ∫ θ F d(Hⁿ⌞M)`. -/
+theorem Submission.cmc_fcl_imrep_integral_data : ∀ (P n : ℕ) (U : Set (Euclid P)) (Z : GeometricCurrentOn U n) (R : IMRep U n), R.Represents Z → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → R.measure K < ∞) ∧ AEStronglyMeasurable R.orient R.measure ∧ ((∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α) → ∀ᵐ x ∂R.measure, ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α) ∧ ∀ ω : TestFormOn U n, Z ω = ∫ x, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂R.measure := by
+  intro P n U Z R hZ
+  -- Step 1: `R.measure = (Hⁿ⌞M).withDensity θ ≪ Hⁿ⌞M`
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  -- Steps 3–4: a.e. strong measurability of `ξ` and the a.e. bound transfer along `≪`
+  refine ⟨?_, R.aestronglyMeasurable_orient.mono_ac hac, fun h => hac.ae_le h, ?_⟩
+  -- Step 2: for compact (hence Borel) `K ⊆ U`, `R.measure K = ∫⁻_{M ∩ K} θ dHⁿ < ∞`
+  · intro K hK hKU
+    have hKm : MeasurableSet K := hK.isClosed.measurableSet
+    rw [IMRep.measure, withDensity_apply _ hKm, Measure.restrict_restrict hKm, inter_comm]
+    exact lt_top_iff_ne_top.2 (R.locallyIntegrable_mult K hK hKU)
+  -- Step 5: `Z(ω) = ∫_M θ ⟨ω, ξ⟩ dHⁿ = ∫ ⟨ω, ξ⟩ d((Hⁿ⌞M).withDensity θ)`, with the density
+  -- `θ` written as the measurable `ℝ≥0`-valued `x ↦ (θ(x) : ℝ≥0)`
+  · intro ω
+    rw [hZ ω, IMRep.action, IMRep.measure]
+    have hf : Measurable fun x => (R.mult x : NNReal) :=
+      (measurable_from_nat (f := fun k : ℕ => (k : NNReal))).comp R.measurable_mult
+    have hcoe : (fun x => (R.mult x : ℝ≥0∞)) = fun x => ((R.mult x : NNReal) : ℝ≥0∞) :=
+      funext fun x => (ENNReal.coe_natCast (R.mult x)).symm
+    rw [hcoe, integral_withDensity_eq_integral_smul hf]
+    simp only [NNReal.smul_def, NNReal.coe_natCast, smul_eq_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
