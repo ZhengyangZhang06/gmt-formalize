@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "15a2ec9a3dca0a54fe53eec22671546105cc275e2d5272fc28c9c469653bbf59",
+  "git_delta": {
+    "base_commit": "f24de4990d0d093c0bbffc43faad1ce91c8aa89f",
+    "candidate_commit": "13c27c02f3eee8981e717677f18409f4e7055774",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_cc_chart_gradient",
+    "diff_sha256": "8410bc5c75d8367f0c07ca4f3d85f1a0a935b1adfb2c49b23c219d5d98b5f109",
+    "source_sha256": "228821fc79fda3e5c9ef64c074d3a82646075970db6daf458fed3b54dfb34625",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_cc_chart_gradient",
+      "statement": "∀ (P N : ℕ) (ψ : Euclid N → Euclid P) (V : Set (Euclid N)) (F : Euclid N → ℝ), IsOpen V → ContDiff ℝ 1 ψ → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → ∃ Gh : Euclid N → Euclid P, Measurable Gh ∧ ContinuousOn Gh V ∧ ∀ y ∈ V, Gh y ∈ LinearMap.range (fderiv ℝ ψ y : Euclid N →ₗ[ℝ] Euclid P) ∧ (∀ e, inner ℝ (Gh y) (fderiv ℝ ψ y e) = fderiv ℝ F y e) ∧ (∀ v ∈ LinearMap.range (fderiv ℝ ψ y : Euclid N →ₗ[ℝ] Euclid P), (∀ e, inner ℝ v (fderiv ℝ ψ y e) = fderiv ℝ F y e) → v = Gh y) ∧ (Gh y = 0 ↔ fderiv ℝ F y = 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
