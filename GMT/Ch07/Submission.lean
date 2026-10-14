@@ -451,6 +451,358 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Orthonormal partner of a unit vector `u` in a 2-plane `Q`: pick `w ∈ Q \ span {u}`
+(`dim span {u} = 1 < 2`), put `e = e'/‖e'‖` with `e' = w - ⟨w, u⟩u`; then `(u, e)` is
+orthonormal, so `span {u, e} = Q` by dimension, and `v = au + be` gives `a = ⟨v, u⟩`,
+`b = ⟨v, e⟩`. -/
+theorem Submission.idtp_ccd_scsp_cc_plane_orthonormal : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (u : Euclid P), Module.finrank ℝ Q = 2 → u ∈ Q → ‖u‖ = 1 → ∃ e : Euclid P, e ∈ Q ∧ ‖e‖ = 1 ∧ inner ℝ u e = 0 ∧ ∀ v ∈ Q, v = inner ℝ v u • u + inner ℝ v e • e := by
+  intro P Q u hQ huQ hu
+  have hu0 : u ≠ 0 := by
+    rintro rfl
+    simp at hu
+  have huu : inner ℝ u u = (1 : ℝ) := by
+    rw [real_inner_self_eq_norm_sq, hu]; norm_num
+  -- some `w ∈ Q` lies outside `span {u}`
+  obtain ⟨w, hwQ, hw⟩ : ∃ w ∈ Q, w ∉ Submodule.span ℝ {u} := by
+    rw [← IsConcreteLE.not_le_iff_exists]
+    intro h
+    have h1 := Submodule.finrank_mono h
+    rw [hQ, finrank_span_singleton hu0] at h1
+    omega
+  -- Gram–Schmidt step
+  set e' := w - inner ℝ w u • u with he'
+  have he'Q : e' ∈ Q := Q.sub_mem hwQ (Q.smul_mem _ huQ)
+  have he'0 : e' ≠ 0 := by
+    intro h
+    apply hw
+    have : w = inner ℝ w u • u := sub_eq_zero.mp h
+    rw [this]
+    exact Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self u)
+  have hue' : inner ℝ u e' = (0 : ℝ) := by
+    rw [he', inner_sub_right, real_inner_smul_right, huu, real_inner_comm]; ring
+  have hne : ‖e'‖ ≠ 0 := norm_ne_zero_iff.mpr he'0
+  set e := ‖e'‖⁻¹ • e' with he
+  have heQ : e ∈ Q := Q.smul_mem _ he'Q
+  have hen : ‖e‖ = 1 := by
+    rw [he, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hne]
+  have hue : inner ℝ u e = (0 : ℝ) := by
+    rw [he, real_inner_smul_right, hue', mul_zero]
+  have hee : inner ℝ e e = (1 : ℝ) := by
+    rw [real_inner_self_eq_norm_sq, hen]; norm_num
+  have heu : inner ℝ e u = (0 : ℝ) := by rw [real_inner_comm, hue]
+  -- `span {u, e} = Q`
+  have hon : Orthonormal ℝ ![u, e] := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    fin_cases i <;> fin_cases j <;> simp [hu, hen, hue, heu]
+  have hspan : Submodule.span ℝ {u, e} = Q := by
+    apply Submodule.eq_of_le_of_finrank_eq
+    · rw [Submodule.span_le]
+      rintro x (rfl | rfl)
+      · exact huQ
+      · exact heQ
+    · have := finrank_span_eq_card hon.linearIndependent
+      rw [Matrix.range_cons, Matrix.range_cons, Matrix.range_empty, Set.union_empty,
+        Set.singleton_union] at this
+      rw [this, hQ, Fintype.card_fin]
+  refine ⟨e, heQ, hen, hue, ?_⟩
+  intro v hv
+  rw [← hspan] at hv
+  obtain ⟨a, b, rfl⟩ := Submodule.mem_span_pair.mp hv
+  simp only [inner_add_left, real_inner_smul_left, huu, heu, hue, hee]
+  simp
+/-- Polar coordinates `F(x) = (‖x‖, arctan(⟨x, e⟩/⟨x, u⟩))` on the half-space
+`H = {x | 0 < ⟨x, u⟩}`: both coordinates are `C¹` on `H`, since `0 ∉ H` and `⟨x, u⟩ ≠ 0` on `H`.
+At `p = r₀u` the norm `√(‖x‖²)` has derivative `⟨u, ·⟩`, and the product rule for
+`⟨x, e⟩ · ⟨x, u⟩⁻¹` with `⟨p, e⟩ = 0` and `arctan' 0 = 1` gives `⟨e, ·⟩/r₀`; the coordinate
+projections and uniqueness of the derivative identify `DF(p)`. -/
+theorem Submission.idtp_ccd_scsp_cc_polar_map : ∀ (P : ℕ) (u e : Euclid P) (r₀ : ℝ), ‖u‖ = 1 → inner ℝ u e = 0 → 0 < r₀ → ContDiffOn ℝ 1 (fun x : Euclid P => (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2)) {x : Euclid P | 0 < inner ℝ x u} ∧ ∀ h : Euclid P, fderiv ℝ (fun x : Euclid P => (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2)) (r₀ • u) h = !₂[inner ℝ u h, inner ℝ e h / r₀] := by
+  intro P u e r₀ hu hue hr₀
+  -- `H = {0 < ⟨x, u⟩}` is open and does not contain `0`
+  have hHopen : IsOpen {x : Euclid P | 0 < inner ℝ x u} :=
+    isOpen_lt continuous_const (continuous_id.inner continuous_const)
+  have hc0 : ∀ x ∈ {x : Euclid P | 0 < inner ℝ x u},
+      ContDiffAt ℝ 1 (fun x : Euclid P => ‖x‖) x := by
+    intro x hx
+    refine contDiffAt_norm ℝ ?_
+    rintro rfl
+    simp only [mem_ofPred_eq, inner_zero_left, lt_self_iff_false] at hx
+  have hc1 : ∀ x ∈ {x : Euclid P | 0 < inner ℝ x u},
+      ContDiffAt ℝ 1 (fun x : Euclid P => Real.arctan (inner ℝ x e / inner ℝ x u)) x := by
+    intro x hx
+    have ha : ContDiff ℝ 1 (fun x : Euclid P => inner ℝ x e) := contDiff_id.inner ℝ contDiff_const
+    have hb : ContDiff ℝ 1 (fun x : Euclid P => inner ℝ x u) := contDiff_id.inner ℝ contDiff_const
+    exact Real.contDiff_arctan.contDiffAt.comp x (ha.contDiffAt.div hb.contDiffAt (ne_of_gt hx))
+  -- `F` is `C¹` on `H` coordinatewise
+  have hCD : ContDiffOn ℝ 1 (fun x : Euclid P =>
+      (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2))
+      {x : Euclid P | 0 < inner ℝ x u} := by
+    rw [contDiffOn_piLp]
+    intro i
+    fin_cases i
+    · simp only [Fin.zero_eta, Matrix.cons_val_zero]
+      exact fun x hx => (hc0 x hx).contDiffWithinAt
+    · simp only [Fin.mk_one, Matrix.cons_val_one, Matrix.cons_val_zero]
+      exact fun x hx => (hc1 x hx).contDiffWithinAt
+  refine ⟨hCD, fun h => ?_⟩
+  -- values at `p = r₀ • u`
+  have hpu : inner ℝ (r₀ • u) u = r₀ := by
+    rw [real_inner_smul_left, real_inner_self_eq_norm_sq, hu]; ring
+  have hpe : inner ℝ (r₀ • u) e = (0 : ℝ) := by
+    rw [real_inner_smul_left, hue, mul_zero]
+  have hpn : ‖r₀ • u‖ = r₀ := by
+    rw [norm_smul, hu, Real.norm_eq_abs, abs_of_pos hr₀, mul_one]
+  have hpH : r₀ • u ∈ {x : Euclid P | 0 < inner ℝ x u} := by
+    show 0 < inner ℝ (r₀ • u) u
+    rw [hpu]; exact hr₀
+  have hdiff : DifferentiableAt ℝ (fun x : Euclid P =>
+      (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2)) (r₀ • u) :=
+    (hCD.contDiffAt (hHopen.mem_nhds hpH)).differentiableAt one_ne_zero
+  -- the norm `√(‖x‖²)` has derivative `⟨p, ·⟩ / ‖p‖ = ⟨u, ·⟩` at `p`
+  have hd0 : HasFDerivAt (fun x : Euclid P => ‖x‖) (innerSL ℝ u) (r₀ • u) := by
+    have h2 : HasFDerivAt (fun x : Euclid P => ‖x‖ ^ 2) (2 • innerSL ℝ (r₀ • u)) (r₀ • u) :=
+      (hasStrictFDerivAt_norm_sq (r₀ • u)).hasFDerivAt
+    have h3 := h2.sqrt (by rw [hpn]; positivity)
+    simp only [Real.sqrt_sq (norm_nonneg _)] at h3
+    convert h3 using 1
+    ext v
+    simp only [coe_innerSL_apply, hpn, one_div, mul_inv_rev, map_smul, smul_apply, smul_eq_mul,
+      nsmul_eq_mul, Nat.cast_ofNat]
+    field_simp
+  -- `⟨x, e⟩ · ⟨x, u⟩⁻¹` has derivative `⟨e, ·⟩ / r₀` at `p`, as `⟨p, e⟩ = 0`
+  have ha : HasFDerivAt (fun x : Euclid P => inner ℝ x e) (innerSL ℝ e) (r₀ • u) := by
+    convert (innerSL ℝ e).hasFDerivAt using 1
+    ext x; simp [real_inner_comm]
+  have hb : HasFDerivAt (fun x : Euclid P => inner ℝ x u) (innerSL ℝ u) (r₀ • u) := by
+    convert (innerSL ℝ u).hasFDerivAt using 1
+    ext x; simp [real_inner_comm]
+  have hbinv : HasFDerivAt (fun x : Euclid P => (inner ℝ x u)⁻¹)
+      ((-(r₀ ^ 2)⁻¹) • innerSL ℝ u) (r₀ • u) := by
+    have h1 := hasDerivAt_inv (show r₀ ≠ 0 from ne_of_gt hr₀)
+    rw [← hpu] at h1
+    have h2 := h1.comp_hasFDerivAt (r₀ • u) hb
+    rw [hpu] at h2
+    exact h2
+  have hq : HasFDerivAt (fun x : Euclid P => inner ℝ x e / inner ℝ x u)
+      (r₀⁻¹ • innerSL ℝ e) (r₀ • u) := by
+    have h1 := ha.fun_mul hbinv
+    simp only [hpe, hpu, zero_smul, zero_add] at h1
+    simpa only [div_eq_mul_inv] using h1
+  -- `arctan' 0 = 1`
+  have hd1 : HasFDerivAt (fun x : Euclid P => Real.arctan (inner ℝ x e / inner ℝ x u))
+      (r₀⁻¹ • innerSL ℝ e) (r₀ • u) := by
+    convert hq.arctan using 1
+    simp [hpe, hpu]
+  -- identify `fderiv` through the two coordinate projections
+  have hproj : ∀ i : Fin 2, HasFDerivAt (fun x : Euclid P =>
+      (EuclideanSpace.proj i : StrongDual ℝ (Euclid 2))
+        (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2))
+      ((EuclideanSpace.proj i : StrongDual ℝ (Euclid 2)).comp (fderiv ℝ (fun x : Euclid P =>
+        (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2)) (r₀ • u))) (r₀ • u) :=
+    fun i => (EuclideanSpace.proj i : StrongDual ℝ (Euclid 2)).hasFDerivAt.comp (r₀ • u)
+      hdiff.hasFDerivAt
+  have e0 := (hproj 0).unique (by simpa only [Fin.isValue, PiLp.proj_apply,
+    Matrix.cons_val_zero] using hd0)
+  have e1 := (hproj 1).unique (by simpa only [Fin.isValue, PiLp.proj_apply,
+    Matrix.cons_val_one, Matrix.cons_val_fin_one] using hd1)
+  have v0 := congrArg (fun f => f h) e0
+  have v1 := congrArg (fun f => f h) e1
+  simp only [Fin.isValue, ContinuousLinearMap.comp_apply, PiLp.proj_apply, coe_innerSL_apply,
+    smul_apply, smul_eq_mul] at v0 v1
+  ext i
+  fin_cases i
+  · simpa [real_inner_comm] using v0
+  · simp only [Fin.mk_one, Matrix.cons_val_one, Matrix.cons_val_zero]
+    rw [v1, div_eq_inv_mul]
+/-- **Shrinking a local inverse chart to a coordinate square.**  Choose `ε > 0` with
+`B_ε(F p) ⊆ O` and put `s = min(ε, r₀)/4`, so `0 < s < r₀`.  The open square
+`R_s = (r₀ - s, r₀ + s) × (-s, s)` lies in `B_ε((r₀, 0)) ⊆ O`, since every `w ∈ R_s` has
+`|w - (r₀, 0)|² < 2s² < ε²`.  `N = N₀ ∩ (U ∩ F⁻¹(R_s))` is open because `F` is continuous on the
+open set `U`, and it contains `p`; as `G(O) = M ∩ N₀` and `F ∘ G = id` on `O`, `M ∩ N = G(R_s)`. -/
+theorem Submission.idtp_ccd_scsp_cc_square_shrink : ∀ (P : ℕ) (M U N₀ : Set (Euclid P)) (O : Set (Euclid 2)) (F : Euclid P → Euclid 2) (G : Euclid 2 → Euclid P) (p : Euclid P) (r₀ : ℝ), 0 < r₀ → IsOpen U → ContinuousOn F U → IsOpen O → IsOpen N₀ → F p = !₂[r₀, 0] → F p ∈ O → p ∈ N₀ → N₀ ⊆ U → G '' O = M ∩ N₀ → (∀ w ∈ O, F (G w) = w) → ∃ (s : ℝ) (N : Set (Euclid P)), 0 < s ∧ s < r₀ ∧ IsOpen N ∧ p ∈ N ∧ N ⊆ U ∧ {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s} ⊆ O ∧ M ∩ N = G '' {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s} := by
+  intro P M U N₀ O F G p r₀ hr₀ hU hF hO hN₀ hFp hFpO hpN₀ hN₀U hGO hFG
+  -- Step 1: a ball `B_ε(F p) ⊆ O`
+  obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hO (F p) hFpO
+  -- Step 2: `s = min(ε, r₀)/4`, so `0 < s < r₀` and `s ≤ ε/4`
+  set s := min ε r₀ / 4 with hs_def
+  have hs : 0 < s := div_pos (lt_min hε hr₀) four_pos
+  have hsr : s < r₀ := by linarith [min_le_right ε r₀]
+  have hsε : s ≤ ε / 4 := by linarith [min_le_left ε r₀]
+  set R : Set (Euclid 2) := {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s}
+    with hR_def
+  -- Step 3: `R_s ⊆ B_ε(F p) ⊆ O`, since `(w₀ - r₀)² + w₁² < 2s² ≤ ε²/8 < ε²` on `R_s`
+  have hRO : R ⊆ O := by
+    rintro w ⟨⟨h0l, h0r⟩, h1l, h1r⟩
+    apply hball
+    rw [Metric.mem_ball, EuclideanSpace.dist_eq, hFp, Real.sqrt_lt' hε]
+    simp only [Real.dist_eq, sq_abs, Fin.sum_univ_two, Fin.isValue, Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.cons_val_fin_one, sub_zero]
+    have h0 : (w 0 - r₀) ^ 2 < s ^ 2 := sq_lt_sq' (by linarith) (by linarith)
+    have h1 : w 1 ^ 2 < s ^ 2 := sq_lt_sq' (by linarith) (by linarith)
+    have h2 : s ^ 2 ≤ (ε / 4) ^ 2 := pow_le_pow_left₀ hs.le hsε 2
+    nlinarith [pow_pos hε 2]
+  -- Step 4: `R_s` is open (preimages of open intervals under the coordinate maps)
+  have hRopen : IsOpen R :=
+    (isOpen_Ioo.preimage (PiLp.continuous_apply 2 _ 0)).inter
+      (isOpen_Ioo.preimage (PiLp.continuous_apply 2 _ 1))
+  -- Step 5: `N = N₀ ∩ (U ∩ F⁻¹(R_s))` is open and lies in `U`
+  refine ⟨s, N₀ ∩ (U ∩ F ⁻¹' R), hs, hsr, hN₀.inter (hF.isOpen_inter_preimage hU hRopen), ?_,
+    fun x hx => hx.2.1, hRO, ?_⟩
+  -- Step 6: `p ∈ N`, as `F p = (r₀, 0) ∈ R_s`
+  · refine ⟨hpN₀, hN₀U hpN₀, ?_⟩
+    show F p ∈ R
+    rw [hFp, hR_def]
+    simp only [Fin.isValue, mem_Ioo, mem_ofPred_eq, Matrix.cons_val_zero, Matrix.cons_val_one,
+      Matrix.cons_val_fin_one]
+    exact ⟨⟨by linarith, by linarith⟩, by linarith, hs⟩
+  · ext x
+    constructor
+    -- Step 7: `M ∩ N ⊆ G(R_s)`: `x = G w` with `w ∈ O`, and `w = F x ∈ R_s`
+    · rintro ⟨hxM, hxN₀, -, hxR⟩
+      obtain ⟨w, hwO, rfl⟩ : x ∈ G '' O := hGO ▸ ⟨hxM, hxN₀⟩
+      refine ⟨w, ?_, rfl⟩
+      rw [← hFG w hwO]
+      exact hxR
+    -- Step 8: `G(R_s) ⊆ M ∩ N`: `w ∈ O`, so `G w ∈ M ∩ N₀ ⊆ U` and `F (G w) = w ∈ R_s`
+    · rintro ⟨w, hwR, rfl⟩
+      have hwO := hRO hwR
+      have hmem : G w ∈ M ∩ N₀ := hGO ▸ mem_image_of_mem G hwO
+      refine ⟨hmem.1, hmem.2, hN₀U hmem.2, ?_⟩
+      show F (G w) ∈ R
+      rw [hFG w hwO]
+      exact hwR
+/-- **Radial extension of the cone chart** (step 8 of the parent proof).  Fix `α ∈ (-s, s)` and
+let `A = {t ∈ (r₀ - s, r₀ + s) : G (t, α) = t γ(α)}`, which contains `r₀`.  `A` is open: for `t ∈ A`
+and `t′` near `t`, the point `t′ γ(α)` stays in the open set `N`, lies in `M` by radial invariance
+(`t′ γ(α) = (t′ / t) • t γ(α)`), so it is `G w` for some `w` in the square, and `F ∘ G = id`
+together with `F (t′ γ(α)) = (t′, α)` forces `w = (t′, α)`.  `A` is relatively closed since
+`t ↦ G (t, α)` and `t ↦ t γ(α)` are continuous on the open interval and limits are unique.  The
+interval is preconnected, so `G (t, α) = t γ(α)` on the whole square, which gives both
+conclusions. -/
+theorem Submission.idtp_ccd_scsp_cc_radial_extension : ∀ (P : ℕ) (M N : Set (Euclid P)) (p : Euclid P) (ρ r₀ s : ℝ) (F : Euclid P → Euclid 2) (G : Euclid 2 → Euclid P) (γ : ℝ → Euclid P), 0 < s → s < r₀ → IsOpen N → N ⊆ ball p ρ → (∀ x ∈ M ∩ ball p ρ, ∀ t : ℝ, 0 < t → t • x ∈ ball p ρ → t • x ∈ M) → ContinuousOn G {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s} → M ∩ N = G '' {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s} → (∀ w : Euclid 2, w 0 ∈ Ioo (r₀ - s) (r₀ + s) → w 1 ∈ Ioo (-s) s → F (G w) = w) → (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ G !₂[r₀, α] = r₀ • γ α ∧ ∀ t : ℝ, 0 < t → F (t • γ α) = !₂[t, α]) → (∀ w : Euclid 2, w 0 ∈ Ioo (r₀ - s) (r₀ + s) → w 1 ∈ Ioo (-s) s → G w = w 0 • γ (w 1)) ∧ M ∩ N = (fun q : ℝ × ℝ => q.1 • γ q.2) '' (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s) := by
+  intro P M N p ρ r₀ s F G γ hs hsr hN hNb hrad hGc hMN hFG hγ
+  -- the radial identity on each horizontal segment `J × {α}` of the coordinate square
+  have key : ∀ α ∈ Ioo (-s) s, ∀ t ∈ Ioo (r₀ - s) (r₀ + s), G !₂[t, α] = t • γ α := by
+    intro α hα
+    obtain ⟨hγn, hG0, hF⟩ := hγ α hα
+    -- `t ↦ G (t, α)` is continuous on `J`
+    have hmaps : MapsTo (fun t : ℝ => (!₂[t, α] : Euclid 2)) (Ioo (r₀ - s) (r₀ + s))
+        {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s} := by
+      intro t ht
+      exact ⟨by simpa using ht, by simpa using hα⟩
+    have hφ : ContinuousOn (fun t : ℝ => G !₂[t, α]) (Ioo (r₀ - s) (r₀ + s)) :=
+      hGc.comp (by fun_prop) hmaps
+    -- `A = {t ∈ J : G (t, α) = t γ(α)}`
+    set A : Set ℝ := {t | t ∈ Ioo (r₀ - s) (r₀ + s) ∧ G !₂[t, α] = t • γ α}
+    -- `A` is open: nearby `t′ γ(α)` stay in `N`, lie in `M` by radial invariance, and `F ∘ G = id`
+    -- identifies their chart coordinates as `(t′, α)`
+    have hAo : IsOpen A := by
+      rw [Metric.isOpen_iff]
+      rintro t ⟨htJ, hGt⟩
+      have hx : t • γ α ∈ M ∩ N := by
+        rw [hMN, ← hGt]
+        exact mem_image_of_mem G (hmaps htJ)
+      obtain ⟨η₀, hη₀, hball⟩ := Metric.isOpen_iff.1 hN _ hx.2
+      refine ⟨min η₀ (t - (r₀ - s)), lt_min hη₀ (by linarith [htJ.1]), fun t' ht' => ?_⟩
+      rw [Metric.mem_ball, Real.dist_eq] at ht'
+      have h1 : |t' - t| < η₀ := lt_of_lt_of_le ht' (min_le_left _ _)
+      have h2 : |t' - t| < t - (r₀ - s) := lt_of_lt_of_le ht' (min_le_right _ _)
+      have h3 := neg_abs_le (t' - t)
+      have ht0 : 0 < t := by linarith [htJ.1]
+      have ht'0 : 0 < t' := by linarith
+      have hyN : t' • γ α ∈ N := by
+        apply hball
+        rw [Metric.mem_ball, dist_eq_norm, ← sub_smul, norm_smul, hγn, mul_one, Real.norm_eq_abs]
+        exact h1
+      have hyM : t' • γ α ∈ M := by
+        have h := hrad _ ⟨hx.1, hNb hx.2⟩ (t' / t) (div_pos ht'0 ht0)
+        rw [smul_smul, div_mul_cancel₀ _ ht0.ne'] at h
+        exact h (hNb hyN)
+      have hy : t' • γ α ∈ G '' {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s} := by
+        rw [← hMN]
+        exact ⟨hyM, hyN⟩
+      obtain ⟨w, hwR, hGw⟩ := hy
+      have hw : w = !₂[t', α] := by
+        rw [← hFG w hwR.1 hwR.2, hGw, hF t' ht'0]
+      subst hw
+      refine ⟨?_, hGw⟩
+      simpa using hwR.1
+    -- `closure A ∩ J ⊆ A`: both sides are continuous on the open interval `J`
+    have hAc : closure A ∩ Ioo (r₀ - s) (r₀ + s) ⊆ A := by
+      rintro t ⟨htc, htJ⟩
+      refine ⟨htJ, ?_⟩
+      have : (𝓝[A] t).NeBot := mem_closure_iff_nhdsWithin_neBot.1 htc
+      have t1 : Tendsto (fun u : ℝ => G !₂[u, α]) (𝓝[A] t) (𝓝 (G !₂[t, α])) :=
+        ((hφ.continuousAt (isOpen_Ioo.mem_nhds htJ)).tendsto).mono_left nhdsWithin_le_nhds
+      have t2 : Tendsto (fun u : ℝ => G !₂[u, α]) (𝓝[A] t) (𝓝 (t • γ α)) := by
+        refine (((continuous_id.smul continuous_const).tendsto t).mono_left
+          nhdsWithin_le_nhds).congr' ?_
+        filter_upwards [self_mem_nhdsWithin] with u hu
+        exact hu.2.symm
+      exact tendsto_nhds_unique t1 t2
+    -- `J` is preconnected and meets `A` at `r₀`
+    have hr₀ : r₀ ∈ Ioo (r₀ - s) (r₀ + s) := ⟨by linarith, by linarith⟩
+    have hJA := isPreconnected_Ioo.subset_of_closure_inter_subset hAo ⟨r₀, hr₀, hr₀, hG0⟩ hAc
+    exact fun t ht => (hJA ht).2
+  -- first conclusion: every `w ∈ R` is `(w₀, w₁)`
+  have hfirst : ∀ w : Euclid 2, w 0 ∈ Ioo (r₀ - s) (r₀ + s) → w 1 ∈ Ioo (-s) s →
+      G w = w 0 • γ (w 1) := by
+    intro w hw0 hw1
+    have hw : w = !₂[w 0, w 1] := by
+      ext i
+      fin_cases i <;> simp
+    rw [← key (w 1) hw1 (w 0) hw0, ← hw]
+  -- second conclusion: `M ∩ N = G(R)` is the image of `J × I` under `(t, α) ↦ t γ(α)`
+  refine ⟨hfirst, ?_⟩
+  rw [hMN]
+  ext x
+  constructor
+  · rintro ⟨w, ⟨hw0, hw1⟩, rfl⟩
+    exact ⟨(w 0, w 1), ⟨hw0, hw1⟩, (hfirst w hw0 hw1).symm⟩
+  · rintro ⟨⟨t, α⟩, ⟨ht, hα⟩, rfl⟩
+    refine ⟨!₂[t, α], ⟨?_, ?_⟩, key α hα t ht⟩
+    · simpa using ht
+    · simpa using hα
+/-- **Range of the derivative of `(t, α) ↦ t γ(α)`.**  If `G(w) = w₀ γ(w₁)` on an open
+neighbourhood `S` of `ω = (t, α)`, `γ` is differentiable at `α` and `t ≠ 0`, then
+`DG(ω) h = h₀ γ(α) + (t h₁) γ'(α)`, so `range DG(ω) = span {γ(α), γ'(α)}`; the vector
+`a γ(α) + b γ'(α)` is the value at `h = (a, b / t)`. -/
+theorem Submission.idtp_ccd_scsp_cc_scaled_curve_range : ∀ (P : ℕ) (γ : ℝ → Euclid P) (G : Euclid 2 → Euclid P) (S : Set (Euclid 2)) (t α : ℝ), IsOpen S → !₂[t, α] ∈ S → (∀ w ∈ S, G w = w 0 • γ (w 1)) → DifferentiableAt ℝ γ α → t ≠ 0 → Set.range (fderiv ℝ G !₂[t, α]) = (Submodule.span ℝ {γ α, deriv γ α} : Set (Euclid P)) := by
+  intro P γ G S t α hS hω hG hγ ht
+  -- Step 1: `G = G̃` on the open neighbourhood `S` of `ω = (t, α)`, so `DG(ω) = DG̃(ω)`
+  have hloc : G =ᶠ[𝓝 !₂[t, α]] fun w => w 0 • γ (w 1) :=
+    Filter.eventually_of_mem (hS.mem_nhds hω) hG
+  -- Steps 2–3: the coordinate maps are their own derivatives; chain rule for `w ↦ γ(w₁)`
+  have h0 : HasFDerivAt (fun w : Euclid 2 => w 0) (EuclideanSpace.proj (𝕜 := ℝ) (0 : Fin 2))
+      !₂[t, α] :=
+    (EuclideanSpace.proj (𝕜 := ℝ) (0 : Fin 2)).hasFDerivAt
+  have h1 : HasFDerivAt (fun w : Euclid 2 => w 1) (EuclideanSpace.proj (𝕜 := ℝ) (1 : Fin 2))
+      !₂[t, α] :=
+    (EuclideanSpace.proj (𝕜 := ℝ) (1 : Fin 2)).hasFDerivAt
+  have hγ1 : HasFDerivAt (fun w : Euclid 2 => γ (w 1))
+      ((ContinuousLinearMap.toSpanSingleton ℝ (deriv γ α)).comp
+        (EuclideanSpace.proj (𝕜 := ℝ) (1 : Fin 2))) !₂[t, α] :=
+    hγ.hasDerivAt.hasFDerivAt.comp _ h1
+  -- Step 4: product rule, `DG(ω) h = h₀ γ(α) + (t h₁) γ'(α)`
+  have hG' : HasFDerivAt (fun w : Euclid 2 => w 0 • γ (w 1)) _ !₂[t, α] := h0.smul hγ1
+  have hval : ∀ h : Euclid 2, fderiv ℝ G !₂[t, α] h = h 0 • γ α + (t * h 1) • deriv γ α := by
+    intro h
+    rw [hloc.fderiv_eq, hG'.fderiv]
+    simp only [Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one,
+      add_apply, smul_apply, ContinuousLinearMap.comp_apply, PiLp.proj_apply,
+      ContinuousLinearMap.toSpanSingleton_apply, ContinuousLinearMap.smulRight_apply]
+    rw [smul_smul, add_comm]
+  -- Steps 5–7: both inclusions, via `Submodule.mem_span_pair`
+  ext v
+  simp only [Set.mem_range, SetLike.mem_coe, Submodule.mem_span_pair]
+  constructor
+  · rintro ⟨h, rfl⟩
+    exact ⟨h 0, t * h 1, (hval h).symm⟩
+  · rintro ⟨a, b, rfl⟩
+    refine ⟨!₂[a, b / t], ?_⟩
+    rw [hval]
+    simp only [Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one,
+      mul_div_cancel₀ b ht]
 /-- **Simon Ch. 2, §4 (tangent plane of a locally conical surface).**  Let `M ⊆ ℝᴾ` be an
 embedded `C¹` surface, `p ∈ M`, and let `M ∩ B_ρ(p)` be closed under positive dilations `x ↦ tx`
 that stay in `B_ρ(p)`.  Then `span T_pM` is `2`-dimensional and contains `p`.  For a chart
@@ -966,6 +1318,139 @@ theorem Submission.idtp_ccd_scsp_angle_curve : ∀ (P : ℕ) (u e : Euclid P) (s
   refine ⟨horth, hkey, fun h => ?_⟩
   rw [h, inner_zero_left, inner_zero_left, mul_zero, mul_zero, sub_zero] at hkey
   exact hpos.ne' hkey.symm
+
+/-- **Cone chart** (steps 1–6 of the parent proof).  `Q = span T_pM` (`p = r₀u`) is a plane
+containing `u`; pick a unit `e ∈ Q` with `⟨u, e⟩ = 0`, so `Q = span {u, e}`.  The polar
+coordinates `F x = (‖x‖, arctan (⟨x, e⟩ / ⟨x, u⟩))` on `U = B_ρ(p) ∩ {⟨x, u⟩ > 0}` have `DF(p)`
+injective on `Q`, so `F` has a local inverse `G` on `M` near `p`.  Shrinking to a square
+`R_s = (r₀ − s, r₀ + s) × (−s, s)`, put `γ(α) = r₀⁻¹ G(r₀, α)`.  Radial invariance gives
+`G(t, α) = tγ(α)` on `R_s`, hence `span T_{tγ(α)}M = span {γ(α), γ′(α)}`; then `γ′(0) ∈ Q`,
+`⟨γ′(0), u⟩ = 0` and `⟨γ′(0), e⟩ = 1` (angle curve) give `γ′(0) = e`. -/
+theorem Submission.idtp_ccd_scsp_cone_chart : ∀ (P : ℕ) (M : Set (Euclid P)) (u : Euclid P) (r₀ ρ : ℝ), IsEmbeddedSubmanifold 1 2 M → ‖u‖ = 1 → 0 < r₀ → r₀ • u ∈ M → 0 < ρ → (∀ x ∈ M ∩ ball (r₀ • u) ρ, ∀ t : ℝ, 0 < t → t • x ∈ ball (r₀ • u) ρ → t • x ∈ M) → ∃ (e : Euclid P) (s : ℝ) (N : Set (Euclid P)) (γ : ℝ → Euclid P), ‖e‖ = 1 ∧ inner ℝ u e = 0 ∧ 0 < s ∧ s < r₀ ∧ IsOpen N ∧ r₀ • u ∈ N ∧ N ⊆ ball (r₀ • u) ρ ∧ (∀ x ∈ N, 0 < inner ℝ x u) ∧ ContDiffOn ℝ 1 γ (Ioo (-s) s) ∧ γ 0 = u ∧ deriv γ 0 = e ∧ (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ 0 < inner ℝ (γ α) u ∧ Real.arctan (inner ℝ (γ α) e / inner ℝ (γ α) u) = α) ∧ M ∩ N = (fun q : ℝ × ℝ => q.1 • γ q.2) '' (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s) ∧ ∀ t ∈ Ioo (r₀ - s) (r₀ + s), ∀ α ∈ Ioo (-s) s, Submodule.span ℝ (tangentSpace M (t • γ α)) = Submodule.span ℝ {γ α, deriv γ α} := by
+  intro P M u r₀ ρ hM hu hr₀ hp hρ hrad
+  have huu : inner ℝ u u = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, hu, one_pow]
+  -- Step 1: `Q = span T_pM` is a plane containing `p = r₀u`, hence `u`
+  obtain ⟨hQ2, hpQ⟩ := Submission.idtp_ccd_scsp_tangent_plane_mem P M (r₀ • u) ρ hM hp hρ hrad
+  have huQ : u ∈ Submodule.span ℝ (tangentSpace M (r₀ • u)) := by
+    simpa [inv_smul_smul₀ hr₀.ne'] using Submodule.smul_mem _ r₀⁻¹ hpQ
+  -- Step 2: a unit `e ∈ Q` with `⟨u, e⟩ = 0`, so that `v = ⟨v, u⟩u + ⟨v, e⟩e` on `Q`
+  obtain ⟨e, -, he1, hue, hdec⟩ :=
+    Submission.idtp_ccd_scsp_cc_plane_orthonormal P _ u hQ2 huQ hu
+  -- Step 3: polar coordinates `F` on `U = B_ρ(p) ∩ {⟨x, u⟩ > 0}`, `DF(p)h = (⟨u, h⟩, ⟨e, h⟩/r₀)`
+  obtain ⟨hFcd, hDF⟩ := Submission.idtp_ccd_scsp_cc_polar_map P u e r₀ hu hue hr₀
+  set F : Euclid P → Euclid 2 := fun x => !₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)]
+    with hF
+  set U : Set (Euclid P) := ball (r₀ • u) ρ ∩ {x | 0 < inner ℝ x u}
+  have hUo : IsOpen U := isOpen_ball.inter (isOpen_lt continuous_const (by fun_prop))
+  have hpU : r₀ • u ∈ U := by
+    refine ⟨mem_ball_self hρ, show 0 < inner ℝ (r₀ • u) u from ?_⟩
+    rw [real_inner_smul_left, huu, mul_one]
+    exact hr₀
+  have hUball : U ⊆ ball (r₀ • u) ρ := inter_subset_left
+  have hFU : ContDiffOn ℝ 1 F U := hFcd.mono fun x hx => hx.2
+  have hFp : F (r₀ • u) = !₂[r₀, 0] := by
+    simp only [hF, norm_smul, Real.norm_eq_abs, abs_of_pos hr₀, hu, mul_one, real_inner_smul_left,
+      hue, mul_zero, zero_div, Real.arctan_zero]
+  -- Step 4: `DF(p)` is injective on `Q`
+  have htrans : ∀ v ∈ Submodule.span ℝ (tangentSpace M (r₀ • u)),
+      fderiv ℝ F (r₀ • u) v = 0 → v = 0 := by
+    intro v hv hv0
+    rw [hDF v] at hv0
+    have h0 : inner ℝ u v = (0 : ℝ) := congrArg (fun w : Euclid 2 => w 0) hv0
+    have h1 : inner ℝ e v = (0 : ℝ) := by
+      have h := congrArg (fun w : Euclid 2 => w 1) hv0
+      simpa [hr₀.ne'] using h
+    calc v = inner ℝ v u • u + inner ℝ v e • e := hdec v hv
+      _ = 0 := by rw [real_inner_comm u v, real_inner_comm e v, h0, h1, zero_smul, zero_smul,
+        add_zero]
+  -- Step 5: a local inverse `G` of `F` on `M` near `p`
+  obtain ⟨O, N₀, G, hO, hN₀, hFpO, hpN₀, hN₀U, hGcd, hGO, hFG, hTG⟩ :=
+    Submission.idtp_ccd_scsp_local_inverse P M (r₀ • u) U F hM hp hUo hpU hFU htrans
+  have hGp : G (F (r₀ • u)) = r₀ • u := by
+    obtain ⟨w, hw, hGw⟩ : r₀ • u ∈ G '' O := by rw [hGO]; exact ⟨hp, hpN₀⟩
+    rw [← hGw, hFG w hw]
+  -- Step 6: the square `R_s ⊆ O` and `N ⊆ U` with `M ∩ N = G(R_s)`
+  obtain ⟨s, N, hs0, hsr₀, hNo, hpN, hNU, hRO, hMN⟩ :=
+    Submission.idtp_ccd_scsp_cc_square_shrink P M U N₀ O F G (r₀ • u) r₀ hr₀ hUo
+      hFU.continuousOn hO hN₀ hFp hFpO hpN₀ hN₀U hGO hFG
+  set R : Set (Euclid 2) := {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s}
+  have hRo : IsOpen R :=
+    (isOpen_Ioo.preimage (by fun_prop)).inter (isOpen_Ioo.preimage (by fun_prop))
+  have hlineR : ∀ α ∈ Ioo (-s) s, (!₂[r₀, α] : Euclid 2) ∈ R := fun α hα =>
+    ⟨show r₀ ∈ Ioo (r₀ - s) (r₀ + s) from ⟨by linarith, by linarith⟩, hα⟩
+  -- Step 7: the curve `γ(α) = r₀⁻¹ G(r₀, α)`
+  set γ : ℝ → Euclid P := fun α => r₀⁻¹ • G !₂[r₀, α]
+  have hline : ContDiff ℝ 1 fun α : ℝ => (!₂[r₀, α] : Euclid 2) := by
+    rw [contDiff_piLp]
+    intro i
+    fin_cases i
+    · exact contDiff_const
+    · exact contDiff_id
+  have hγcd : ContDiffOn ℝ 1 γ (Ioo (-s) s) :=
+    (hGcd.comp hline.contDiffOn fun α hα => hRO (hlineR α hα)).const_smul r₀⁻¹
+  have hγ1 : ∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ 0 < inner ℝ (γ α) u ∧
+      Real.arctan (inner ℝ (γ α) e / inner ℝ (γ α) u) = α := by
+    intro α hα
+    have hxN : G !₂[r₀, α] ∈ M ∩ N := by rw [hMN]; exact mem_image_of_mem G (hlineR α hα)
+    have hFx : F (G !₂[r₀, α]) = !₂[r₀, α] := hFG _ (hRO (hlineR α hα))
+    have hn : ‖G !₂[r₀, α]‖ = r₀ := congrArg (fun z : Euclid 2 => z 0) hFx
+    have ha : Real.arctan (inner ℝ (G !₂[r₀, α]) e / inner ℝ (G !₂[r₀, α]) u) = α :=
+      congrArg (fun z : Euclid 2 => z 1) hFx
+    have hpos : 0 < inner ℝ (G !₂[r₀, α]) u := (hNU hxN.2).2
+    refine ⟨?_, ?_, ?_⟩
+    · show ‖r₀⁻¹ • G !₂[r₀, α]‖ = 1
+      rw [norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hr₀, hn, inv_mul_cancel₀ hr₀.ne']
+    · show 0 < inner ℝ (r₀⁻¹ • G !₂[r₀, α]) u
+      rw [real_inner_smul_left]
+      exact mul_pos (inv_pos.mpr hr₀) hpos
+    · show Real.arctan (inner ℝ (r₀⁻¹ • G !₂[r₀, α]) e / inner ℝ (r₀⁻¹ • G !₂[r₀, α]) u) = α
+      rw [real_inner_smul_left, real_inner_smul_left,
+        mul_div_mul_left _ _ (inv_ne_zero hr₀.ne'), ha]
+  have hγ0 : γ 0 = u := by
+    show r₀⁻¹ • G !₂[r₀, 0] = u
+    rw [← hFp, hGp, inv_smul_smul₀ hr₀.ne']
+  -- Step 8: radial structure `G(t, α) = tγ(α)` on `R_s`, so `M ∩ N = {tγ(α)}`
+  have hγrad : ∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ G !₂[r₀, α] = r₀ • γ α ∧
+      ∀ t : ℝ, 0 < t → F (t • γ α) = !₂[t, α] := by
+    intro α hα
+    obtain ⟨hn, -, ha⟩ := hγ1 α hα
+    refine ⟨hn, (smul_inv_smul₀ hr₀.ne' _).symm, fun t ht => ?_⟩
+    show !₂[‖t • γ α‖, Real.arctan (inner ℝ (t • γ α) e / inner ℝ (t • γ α) u)] = !₂[t, α]
+    rw [norm_smul, Real.norm_eq_abs, abs_of_pos ht, hn, mul_one, real_inner_smul_left (γ α) e t,
+      real_inner_smul_left (γ α) u t, mul_div_mul_left _ _ ht.ne', ha]
+  obtain ⟨hGrad, hMNimg⟩ :=
+    Submission.idtp_ccd_scsp_cc_radial_extension P M N (r₀ • u) ρ r₀ s F G γ hs0 hsr₀ hNo
+      (hNU.trans hUball) hrad (hGcd.continuousOn.mono hRO) hMN
+      (fun w h0 h1 => hFG w (hRO ⟨h0, h1⟩)) hγrad
+  -- Step 9: tangent planes `span T_{tγ(α)}M = span {γ(α), γ′(α)}`
+  have hTan : ∀ t ∈ Ioo (r₀ - s) (r₀ + s), ∀ α ∈ Ioo (-s) s,
+      Submodule.span ℝ (tangentSpace M (t • γ α)) = Submodule.span ℝ {γ α, deriv γ α} := by
+    intro t ht α hα
+    have hwR : (!₂[t, α] : Euclid 2) ∈ R := ⟨ht, hα⟩
+    have hGw : G !₂[t, α] = t • γ α := hGrad _ ht hα
+    have hγd : DifferentiableAt ℝ γ α :=
+      (hγcd.differentiableOn one_ne_zero).differentiableAt (Ioo_mem_nhds hα.1 hα.2)
+    have ht0 : t ≠ 0 := (show 0 < t by linarith [ht.1]).ne'
+    rw [← hGw, hTG _ (hRO hwR),
+      Submission.idtp_ccd_scsp_cc_scaled_curve_range P γ G R t α hRo hwR
+        (fun w hw => hGrad w hw.1 hw.2) hγd ht0, Submodule.span_eq]
+  -- Step 10: `γ′(0) ∈ Q = span {u, e}` with `⟨γ′(0), u⟩ = 0` and `⟨γ′(0), e⟩ = 1`, so `γ′(0) = e`
+  have h0I : (0 : ℝ) ∈ Ioo (-s) s := ⟨by linarith, hs0⟩
+  obtain ⟨horth, hkey, -⟩ := Submission.idtp_ccd_scsp_angle_curve P u e s γ hγcd hγ1 0 h0I
+  rw [hγ0, huu, hue] at hkey
+  rw [hγ0] at horth
+  have hde : inner ℝ (deriv γ 0) e = (1 : ℝ) := by linarith
+  have hdQ : deriv γ 0 ∈ Submodule.span ℝ (tangentSpace M (r₀ • u)) := by
+    have h := hTan r₀ ⟨by linarith, by linarith⟩ 0 h0I
+    rw [hγ0] at h
+    rw [h]
+    exact Submodule.subset_span (mem_insert_of_mem _ (mem_singleton _))
+  have hγ'0 : deriv γ 0 = e := by
+    calc deriv γ 0 = inner ℝ (deriv γ 0) u • u + inner ℝ (deriv γ 0) e • e := hdec _ hdQ
+      _ = e := by rw [real_inner_comm u, horth, hde, zero_smul, one_smul, zero_add]
+  -- Step 11: collect
+  exact ⟨e, s, N, γ, he1, hue, hs0, hsr₀, hNo, hpN, hNU.trans hUball, fun x hx => (hNU hx).2,
+    hγcd, hγ0, hγ'0, hγ1, hMNimg, hTan⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

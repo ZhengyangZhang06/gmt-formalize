@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_chart-a1.polar_map-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_chart-a1",
+  "depth": 6,
+  "title": "Smoothness and derivative at r₀u of the polar map x ↦ (‖x‖, arctan(⟨x,e⟩/⟨x,u⟩))",
+  "statement": "For every P ∈ ℕ, all u, e ∈ ℝ^P and r₀ ∈ ℝ with ‖u‖ = 1, ⟨u, e⟩ = 0 and r₀ > 0, the map F : ℝ^P → ℝ² (Euclid 2), F(x) := (‖x‖, arctan(⟨x,e⟩/⟨x,u⟩)), is C¹ on the open half-space H := {x : ⟨x, u⟩ > 0}, and its Fréchet derivative at r₀u is DF(r₀u)h = (⟨u, h⟩, ⟨e, h⟩/r₀) for every h ∈ ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (u e : Euclid P) (r₀ : ℝ), ‖u‖ = 1 → inner ℝ u e = 0 → 0 < r₀ → ContDiffOn ℝ 1 (fun x : Euclid P => (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2)) {x : Euclid P | 0 < inner ℝ x u} ∧ ∀ h : Euclid P, fderiv ℝ (fun x : Euclid P => (!₂[‖x‖, Real.arctan (inner ℝ x e / inner ℝ x u)] : Euclid 2)) (r₀ • u) h = !₂[inner ℝ u h, inner ℝ e h / r₀]",
+  "lean_name": "idtp_ccd_scsp_cc_polar_map",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3cc24bdb3d-a1"
+}

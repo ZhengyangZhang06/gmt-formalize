@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "idtp_ccd_scsp_cc_",
+        "theorem IsPreconnected.subset_of_closure_inter_subset",
+        "theorem ContinuousOn.isOpen_inter_preimage",
+        "theorem contDiffOn_piLp",
+        "theorem hasStrictFDerivAt_norm_sq",
+        "theorem HasFDerivAt.sqrt",
+        "theorem HasFDerivAt.arctan",
+        "theorem Filter.EventuallyEq.fderiv_eq",
+        "theorem HasFDerivAt.smul",
+        "theorem mem_span_pair",
+        "abbrev EuclideanSpace",
+        "lake env lean /tmp/cone_chart_independent_audit_zsz2j7k0/Challenge.lean",
+        "lake env lean /tmp/cone_chart_independent_audit_zsz2j7k0/Children.lean",
+        "lake env lean /tmp/cone_chart_independent_audit_zsz2j7k0/ParentAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Sqrt.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Connected/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Span/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7262430116/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-7262430116/decomposition-v1.json",
+        "/tmp/cc_chart_dec_q41/Combined.lean",
+        "/tmp/cc_chart_dec_q41/Assembly.lean"
+      ],
+      "conclusion": "The project and mathlib revisions match the manifest; the frozen Contract and inspected mathlib files match their workspace counterparts. The cited calculus, dimension and connectedness lemmas support the supplied arguments. PiL2.lean confirms that !₂ constructs WithLp.toLp 2 vectors, so the inline constructions use Euclidean geometry; no matrix-unit construction occurs. All five types are standalone one-line propositions without placeholders, implementation-dependent aliases or child references. Their bare names have no conflicting reservations in the DAG, 1,242 decomposition records or 1,436 worktree submissions. The split appropriately isolates parent steps 2, 3, 6, 8 and 9. Each proof is independent, so empty child dependency lists are correct; the parent's existing sibling dependencies are acyclic. Reading the assembly confirms that these conclusions and the three exact frozen sibling contracts establish the selected parent, including γ′(0) = e. The assembly's parent, child and sibling types are byte-identical to their frozen contracts. Fresh compiler and axiom checks could not run because lake is unavailable; this audit does not independently certify the proposal's reported compilation results."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_orthonormal",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean type match, including membership in Q and the coordinate expansion. The proof establishes a vector outside span{u}, constructs and normalizes its nonzero orthogonal component, proves that the resulting pair spans Q by dimension, and derives both coefficients. All hypotheses are used correctly, with no circular dependence."
+    },
+    {
+      "key": "polar_map",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type precisely states the half-space smoothness and pointwise derivative formula. The proof excludes zero and vanishing denominators, computes both derivatives with the required positivity assumptions, and identifies fderiv through coordinate projections and uniqueness. It correctly needs no unit-length hypothesis on e."
+    },
+    {
+      "key": "square_shrink",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every local-inverse hypothesis appears in both statements. The explicit choice s = min(ε,r₀)/4 gives the required square containment. The constructed N is open, contains p and lies in U; both image inclusions follow from the stated inverse identities. No extra continuity of G or manifold hypothesis is assumed."
+    },
+    {
+      "key": "radial_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statements agree exactly. The proof establishes nonemptiness, openness and relative closedness of A before invoking connectedness. Nearby points enter M through positive radial scaling; chart membership and F∘G identify their coordinates without assuming radial extension. Both conclusions follow. The parent establishes the strong F(tγ(α)) hypothesis independently by homogeneity."
+    },
+    {
+      "key": "scaled_curve_range",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated equality of sets. Openness yields local equality with the model map, differentiability of γ justifies the chain and product rules, and t ≠ 0 supplies the explicit preimage (a,b/t). Both range inclusions are proved without requiring independence of γ(α) and γ′(α)."
+    }
+  ],
+  "required_changes": []
+}
