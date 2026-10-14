@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean (identical); cmp GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean (identical)",
+        "rg -n 'theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero' mathlib/Mathlib",
+        "rg -n 'theorem isOpen_sUnion_countable' mathlib/Mathlib/Topology/Bases.lean",
+        "rg -n 'theorem .*ext_multilinear' mathlib/Mathlib/LinearAlgebra/Multilinear/ mathlib/Mathlib/LinearAlgebra/Basis/",
+        "rg -n 'theorem of_injective' mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+        "rg -n 'theorem ae_restrict_mem₀' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "rg -n 'theorem measure_biUnion_null_iff' mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "rg -n 'theorem Integrable.mul_bdd|theorem Integrable.bdd_mul' mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "rg -n 'theorem opNorm_zero|theorem opNorm_neg|theorem opNorm_nonneg' mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean mathlib/Mathlib/Analysis/Normed/Operator/NormedSpace.lean",
+        "rg -n 'Module.Finite.multilinearMap' mathlib/Mathlib/LinearAlgebra/Multilinear/FiniteDimensional.lean",
+        "rg -n 'theorem restrict_restrict ' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean; rg -n 'theorem IntegrableOn.locallyIntegrableOn' mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "grep -n -E '^(theorem|lemma|def|abbrev|structure|class|instance|noncomputable def)' simongmt/Poincare/SimonGMT/Chapter06/{Currents,Forms,FormsDuality}.lean; sed -n 1,200p simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "grep -rn -E 'FiniteDimensional ℝ \\(Covector|FiniteDimensional .*Covector|zeroRegion|VanishesOn' simongmt/Poincare/SimonGMT/Chapter06/*.lean",
+        "lake env lean Scratch/Probe1.lean (#check IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero, TopologicalSpace.isOpen_sUnion_countable, wedgeCovectors_apply_det; 'example : FiniteDimensional ℝ (Covector (Eucl P) n) := by infer_instance' fails)",
+        "lake env lean Scratch/Probe2.lean (Module.Finite.multilinearMap unknown after import GMT.Ch06.Submission; #synth Module.Finite ℝ (MultilinearMap ℝ (fun _ : Fin n => Eucl P) ℝ) fails)",
+        "lake env lean Scratch/Probe3.lean (Module.Basis.ext_multilinear, MultilinearMap.map_sum, EuclideanSpace.basisFun, Module.finBasis, FiniteDimensional.of_injective available)",
+        "python3 listing of lean_name fields in dag.json; grep -rl 'lpf_rsn' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca (no match)",
+        "verifier/gmt-compare.py contract_scope + child_modules (contract mode) for the four children and the parent; lean_contract.validate_lean_statement on all statements",
+        "lake env lean Scratch/RSNStmts.lean; lake env lean -o (scratch Submission with child proofs); lake env lean Scratch/Node/NodeChallenge_*.lean and Scratch/Node/Ax_NodeSolution_*.lean; lake env lean Scratch/RSNSufficiency.lean",
+        "grep -n -i -E 'spt T|support' book/chapter-06.txt; sed -n 292,310p book/chapter-06.txt (Simon 2.11–2.12)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/Basis.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Multilinear/FiniteDimensional.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/rsn_scratch_lpf/Scratch/RSNStmts.lean",
+        "/tmp/rsn_scratch_lpf/Scratch/RSNProofs.lean",
+        "/tmp/rsn_scratch_lpf/GMT/Ch06/Submission.lean",
+        "/tmp/rsn_scratch_lpf/Scratch/RSNSufficiency.lean",
+        "/tmp/rsn_scratch_lpf/Scratch/Node/NodeSolution_lpf_rsn_local_null.lean"
+      ],
+      "conclusion": "Snapshot and environment.\n- The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 Contract. It is byte-identical to the workspace Contract and Submission.\n- In the child scope (`import GMT.Ch06.Submission` plus the replayed namespace and opens), the support is SimonGMT's `GeometricCurrentOn.support = U \\\\ zeroRegion`. The zero region is the union over W open with compact closure inside U and `T.VanishesOn W`, matching Simon 2.11.\n- No SimonGMT lemma packages a support-null statement or finite-dimensionality of covectors.\n\nAvailable Mathlib lemmas (all at the pinned snapshot):\n- `IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero` (AEEqOfIntegralContDiff.lean:205), needing only `LocallyIntegrableOn`, no local finiteness;\n- `TopologicalSpace.isOpen_sUnion_countable` (Bases.lean:948) and `measure_biUnion_null_iff` (OuterMeasure/Basic.lean:107);\n- `ae_restrict_mem₀` (Restrict.lean:637) and `Measure.restrict_restrict` (Restrict.lean:205);\n- `Integrable.mul_bdd` (Integrable.lean:1072) and `IntegrableOn.locallyIntegrableOn` (LocallyIntegrable.lean:113);\n- `Module.Basis.ext_multilinear` (Multilinear/Basis.lean:30) and `FiniteDimensional.of_injective` (FiniteDimensional/Defs.lean:84);\n- `ContinuousLinearMap.opNorm_zero`, `opNorm_neg`, `opNorm_nonneg` (Operator/Basic.lean:214–220).\n\nWhat is not available.\n- `FiniteDimensional ℝ (Covector (Eucl P) n)` is not inferred.\n- `Module.Finite.multilinearMap` (Multilinear/FiniteDimensional.lean:66) is outside the import closure.\n- Hence the separate covector child, proved with an `ext_multilinear` injection.\n- Generic `norm_zero`/`norm_neg`/`norm_nonneg` do not rewrite against the `ContinuousLinearMap.hasOpNorm` norm on NVector; the `opNorm_*` lemmas do.\n\nChecks run.\n- All four child statements pass the validator and elaborate in the comparator child scope.\n- Their scratch Lean proofs compile, and the NodeSolution modules typecheck with standard axioms only.\n- The parent assembly and the hypothesis-only sufficiency theorems are kernel-checked with standard axioms; the parent check uses a sorry stub only for the existing sibling dependency `lpf_simple_nvector_algebra`.\n- No `lpf_rsn_*` name is reserved anywhere in the run."
+    }
+  ],
+  "parent_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1",
+  "child_id": "root.lipschitz_pushforward_im-a1.rectifiable_support_null-a1.covector_separating_family-a1",
+  "subproblem": {
+    "key": "covector_separating_family",
+    "title": "Finitely many n-covectors separate n-vectors",
+    "statement": "For all P, n ∈ ℕ there are N ∈ ℕ and n-covectors b₁, …, b_N on ℝ^P (elements of Covector (Eucl P) n, the continuous alternating n-linear maps (ℝ^P)ⁿ → ℝ) such that every n-vector w (an element of NVector (Eucl P) n, i.e. a continuous linear functional on n-covectors) with w(b_i) = 0 for all i is the zero functional.",
+    "lean_statement": "∀ (P n : ℕ), ∃ (N : ℕ) (b : Fin N → Covector (Eucl P) n), ∀ w : NVector (Eucl P) n, (∀ i, w (b i) = 0) → w = 0",
+    "lean_name": "lpf_rsn_covector_separating_family",
+    "depends_on": [],
+    "natural_proof": "Conventions. Covector (Eucl P) n = (ℝ^P)[⋀^Fin n]→L[ℝ] ℝ is the space of continuous alternating n-linear maps (ℝ^P)ⁿ → ℝ; its addition and scalar multiplication are pointwise. NVector (Eucl P) n = Covector (Eucl P) n →L[ℝ] ℝ is the space of continuous linear functionals on covectors. Let e₁, …, e_P be the standard basis of ℝ^P (Mathlib `(EuclideanSpace.basisFun (Fin P) ℝ).toBasis`). This is the basis argument of step 7 of the parent proof; finite-dimensionality of the space of covectors is proved here because it is not an available instance in the frozen import closure.\n\n1. (Evaluation on basis tuples.) Define Φ : Covector (Eucl P) n → ℝ^(Fin n → Fin P) by Φ(α)(r) := α(e_{r(1)}, …, e_{r(n)}) for r : Fin n → Fin P. Since (α + β)(v) = α(v) + β(v) and (c·α)(v) = c·α(v) for all tuples v, Φ is ℝ-linear (both identities hold by definition).\n\n2. (Φ is injective.) Suppose Φ(α) = Φ(β). Then the underlying multilinear maps of α and β (`α.toContinuousMultilinearMap.toMultilinearMap`) agree on every tuple (e_{r(1)}, …, e_{r(n)}) of basis vectors. A multilinear map on a finite family of modules with bases is determined by its values on tuples of basis vectors: writing v_i = Σ_k v_i(k)·e_k and expanding by multilinearity, α(v₁, …, v_n) = Σ_{r : Fin n → Fin P} (Π_i v_i(r(i)))·α(e_{r(1)}, …, e_{r(n)}), and likewise for β (Mathlib `Module.Basis.ext_multilinear`). Hence α(v) = β(v) for every v ∈ (ℝ^P)ⁿ, so α = β.\n\n3. (The covectors form a finite-dimensional space.) ℝ^(Fin n → Fin P) is a finite-dimensional real vector space (a finite product of copies of ℝ) and Φ is an injective linear map into it, so Covector (Eucl P) n is finite-dimensional (Mathlib `FiniteDimensional.of_injective`). (Mathlib's instance `Module.Finite.multilinearMap` would also yield this, but its module is not imported by `GMT.Ch06.Submission`; the injection Φ avoids it.) Let N := dim_ℝ Covector (Eucl P) n and let b₁, …, b_N be a basis of Covector (Eucl P) n (Mathlib `Module.finBasis`).\n\n4. (Separation.) Let w be an n-vector with w(b_i) = 0 for every i. Every covector α can be written α = Σ_i c_i·b_i with real c_i, so by linearity of w, w(α) = Σ_i c_i·w(b_i) = 0. (Equivalently, the linear maps w and 0 agree on a basis and are therefore equal, Mathlib `Basis.ext`.) Hence w(α) = 0 for every covector α, i.e. w = 0 as a continuous linear map. ∎\n\nFormalization aid (not part of the mathematical argument). The following Lean proof of exactly this frozen statement compiled (Lean v4.35.0-rc3, Mathlib 25730c7c, frozen project d8d46c9, shared pinned packages) when placed inside `namespace Submission` immediately before `theorem main_theorem` in a scratch copy of GMT/Ch06/Submission.lean; `#print axioms` gives [propext, Classical.choice, Quot.sound], and the comparator's generated NodeSolution module (`exact Submission.lpf_rsn_covector_separating_family`) typechecks:\n\n```lean\ntheorem lpf_rsn_covector_separating_family : ∀ (P n : ℕ), ∃ (N : ℕ) (b : Fin N → Covector (Eucl P) n), ∀ w : NVector (Eucl P) n, (∀ i, w (b i) = 0) → w = 0 := by\n  intro P n\n  let e : Module.Basis (Fin P) ℝ (Eucl P) := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis\n  let Φ : Covector (Eucl P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=\n    { toFun := fun α r => α (fun i => e (r i))\n      map_add' := fun _ _ => rfl\n      map_smul' := fun _ _ => rfl }\n  have hΦ : Function.Injective Φ := by\n    intro α β h\n    have hm : α.toContinuousMultilinearMap.toMultilinearMap =\n        β.toContinuousMultilinearMap.toMultilinearMap :=\n      Module.Basis.ext_multilinear (fun _ => e) (fun r => congrFun h r)\n    ext v\n    exact congrArg (fun m : MultilinearMap ℝ (fun _ : Fin n => Eucl P) ℝ => m v) hm\n  haveI : FiniteDimensional ℝ (Covector (Eucl P) n) := FiniteDimensional.of_injective Φ hΦ\n  let b := Module.finBasis ℝ (Covector (Eucl P) n)\n  refine ⟨Module.finrank ℝ (Covector (Eucl P) n), b, ?_⟩\n  intro w hw\n  have hlin : (w : Covector (Eucl P) n →ₗ[ℝ] ℝ) = 0 := b.ext (fun i => by simpa using hw i)\n  ext α\n  simpa using congrArg (fun l : Covector (Eucl P) n →ₗ[ℝ] ℝ => l α) hlin\n```",
+    "proof_key_steps": [
+      "Φ(α)(r) := α(e_{r(1)}, …, e_{r(n)}) is a linear map from covectors to the finite-dimensional space ℝ^(Fin n → Fin P).",
+      "Φ is injective because a multilinear map is determined by its values on tuples of basis vectors (Module.Basis.ext_multilinear).",
+      "Hence Covector (Eucl P) n is finite-dimensional (FiniteDimensional.of_injective); take a basis b₁, …, b_N (Module.finBasis).",
+      "A linear functional vanishing on a basis is zero."
+    ]
+  },
+  "audit": {
+    "key": "covector_separating_family",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The exact finite-separation statement follows from the injective evaluation map on basis tuples, finite-dimensionality and basis extensionality. The supplied proof covers degenerate dimensions and requires neither the parent nor another child."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1-covector-84c64c5778/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1-covector-84c64c5778/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-support-null-a1-covector-84c64c5778/parent-supplied-natural-proof.json"
+}

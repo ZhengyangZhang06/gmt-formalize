@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.simple_unit_facts-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.pushforward_integrality-a1",
+  "depth": 3,
+  "title": "Unit norm and sign rigidity of orthonormal simple n-vectors",
+  "statement": "Assume (SNA) [the frozen statement of the uncle lemma lpf_simple_nvector_algebra]: for all P, n and v : Fin n → ℝ^P, ‖simpleNVector v‖² = det(⟨v_i, v_j⟩)_{i,j}; and for all P, n, every real n×n matrix B and τ : Fin n → ℝ^P, simpleNVector(i ↦ Σ_j B_ij τ_j) = det(B) • simpleNVector τ. Then:\n(a) for every Q, n and every orthonormal family σ : Fin n → ℝ^Q, ‖simpleNVector σ‖ = 1;\n(b) for every Q, n and every pair of orthonormal families σ, σ′ : Fin n → ℝ^Q with span{σ_1,…,σ_n} = span{σ′_1,…,σ′_n}, simpleNVector σ′ = simpleNVector σ or simpleNVector σ′ = −simpleNVector σ.",
+  "lean_statement": "((∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ) → (∀ (Q n : ℕ) (σ : Fin n → Eucl Q), Orthonormal ℝ σ → ‖simpleNVector σ‖ = 1) ∧ ∀ (Q n : ℕ) (σ σ' : Fin n → Eucl Q), Orthonormal ℝ σ → Orthonormal ℝ σ' → Submodule.span ℝ (range σ) = Submodule.span ℝ (range σ') → simpleNVector σ' = simpleNVector σ ∨ simpleNVector σ' = -simpleNVector σ",
+  "lean_name": "lpf_pi_simple_unit_facts",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1-simple-unit-facts-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.density_bound_of_tangent-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1",
+  "depth": 3,
+  "title": "Approximate tangent plane at a point of local finiteness gives a bounded density ratio (Simon Ch. 3, Remark 1.5(3))",
+  "statement": "Let S ⊆ ℝ^Q, y ∈ ℝ^Q and T a linear subspace of ℝ^Q such that T is the (unweighted, Def. 1.4) approximate tangent space of S at y, and suppose Hⁿ(S ∩ B̄_r(y)) < ∞ for some r > 0. Then there is K ∈ ℝ≥0 such that Hⁿ(S ∩ B̄_ρ(y)) ≤ K · ENNReal.ofReal(ρⁿ) for all sufficiently small ρ > 0.",
+  "lean_statement": "∀ (Q n : ℕ) (S : Set (Eucl Q)) (y : Eucl Q) (T : Submodule ℝ (Eucl Q)), Poincare.SimonGMT.Chapter03.HasApproximateTangentSpaceAt n S y T → (∃ r : ℝ, 0 < r ∧ (μHE[n] : Measure (Eucl Q)) (S ∩ closedBall y r) < ∞) → ∃ K : ℝ≥0, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), (μHE[n] : Measure (Eucl Q)) (S ∩ closedBall y ρ) ≤ K * ENNReal.ofReal (ρ ^ n)",
+  "lean_name": "lpf_wtc_density_bound_of_tangent",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.blowup_change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-dens-cc0a8b304d-a1"
+}

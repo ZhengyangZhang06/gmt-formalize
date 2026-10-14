@@ -1,0 +1,113 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_pushforward_im-a1.chart_chain_rule-a1`
+- Child DAG node: `root.lipschitz_pushforward_im-a1.chart_chain_rule-a1.line_deriv_comp-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝ^k = Eucl k = EuclideanSpace ℝ (Fin k) with norm |·|; DΦ(w) := fderiv ℝ Φ w and D(f∘Φ)(w) := fderiv ℝ (f ∘ Φ) w; “f is K-Lipschitz on V” means |f(y) − f(z)| ≤ K|y − z| for all y, z ∈ V; o(t) denotes a function of t ∈ ℝ that is little-o of t as t → 0.
+
+This is the fact (DD) used in step 5 of the parent proof (lpf_chart_chain_rule; Simon Ch. 2, 4.7 and 4.10): for small |t| both Φ(w) + t·DΦ(w)s and Φ(w + ts) lie in V, so |f(Φ(w) + t·DΦ(w)s) − f(Φ(w + ts))| ≤ K|Φ(w) + t·DΦ(w)s − Φ(w + ts)| = o(t), while f(Φ(w + ts)) = f(Φ(w)) + t·D(f∘Φ)(w)s + o(t).
+
+Fix s ∈ ℝⁿ and put x := Φ(w), v := DΦ(w)s, b := D(f∘Φ)(w)s, g₁(t) := f(x + t v), g₂(t) := f(Φ(w + t s)) and h := g₁ − g₂ (t ∈ ℝ).
+
+1. (Derivatives along the line.) The affine line ℓ(t) := w + t s satisfies ℓ(0) = w and has derivative s at t = 0. Since Φ is differentiable at w = ℓ(0), the chain rule (HasFDerivAt.comp_hasDerivAt) shows that t ↦ Φ(w + t s) has derivative DΦ(w)s = v at t = 0. Since f∘Φ is differentiable at w, the chain rule likewise shows that g₂ = (f∘Φ)∘ℓ has derivative D(f∘Φ)(w)s = b at t = 0.
+
+2. (First-order expansion of Φ along the line.) By step 1 and the little-o characterization of derivatives (hasDerivAt_iff_isLittleO), using Φ(w + 0·s) = x: Φ(w + t s) − x − t v = o(t) as t → 0.
+
+3. (Both points eventually lie in V.) As t → 0, x + t v → x (continuity of t ↦ x + t v) and Φ(w + t s) → Φ(w) = x (the map t ↦ Φ(w + t s) is differentiable, hence continuous, at 0). Since V is a neighbourhood of x, there is a neighbourhood of t = 0 on which x + t v ∈ V and Φ(w + t s) ∈ V. For such t, because f is K-Lipschitz on V,
+|h(t)| = |f(x + t v) − f(Φ(w + t s))| ≤ K|x + t v − Φ(w + t s)| = K|Φ(w + t s) − x − t v|.
+
+4. (h has derivative 0 at 0.) By step 3, h(t) = O(|Φ(w + t s) − x − t v|) as t → 0, and by step 2 the latter is o(t); hence h(t) = o(t) (Asymptotics.IsBigO.trans_isLittleO). Moreover h(0) = f(x) − f(Φ(w)) = 0. So h(t) − h(0) − t·0 = o(t), i.e. h has derivative 0 at t = 0 (hasDerivAt_iff_isLittleO).
+
+5. (Conclusion.) g₁ = g₂ + h pointwise, since g₂(t) + (g₁(t) − g₂(t)) = g₁(t). By steps 1 and 4 and the sum rule (HasDerivAt.add), g₁ has derivative b + 0 = b at t = 0, that is, HasDerivAt (fun t => f (Φ w + t • fderiv ℝ Φ w s)) (fderiv ℝ (f ∘ Φ) w s) 0. ∎
+
+## Key steps
+
+1. Chain rule along ℓ(t) = w + ts: t ↦ Φ(w + ts) has derivative DΦ(w)s and g₂(t) = f(Φ(w + ts)) has derivative D(f∘Φ)(w)s at t = 0.
+2. Φ(w + ts) − Φ(w) − t·DΦ(w)s = o(t).
+3. For t near 0 both Φ(w) + t·DΦ(w)s and Φ(w + ts) lie in V, so |g₁(t) − g₂(t)| ≤ K|Φ(w + ts) − Φ(w) − t·DΦ(w)s| = o(t).
+4. h = g₁ − g₂ has h(0) = 0 and derivative 0 at 0, so g₁ = g₂ + h has derivative D(f∘Φ)(w)s at 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean (identical)`
+- `python3 scan of dag.json: lean_name, status, candidate_commit and parent of lpf_raf_chart_preimage_null, lpf_lli_countable_lipschitz_cover, lpf_lipschitz_localization and lpf_weighted_tangent_on_c1_chart; no node uses an lpf_ccr_* name; children of local_lipschitz_area-a1 and skeleton_polyhedral-a1 (cross-branch reuse precedents)`
+- `python3 read of nodes/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1/{parent-child-handoff.json,decomposition-v1.json} and of the parent-child-handoff.json, accepted-candidate.json and isolated-comparator-result.json of the two reused nodes (passed=true for both)`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint|_install_parent_supplied_child_handoff|existing_by_name' /runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/runtime.py; sed -n 60,215p store.py (reuse requires an identical type plus accepted status with a candidate_commit; reused children skip handoff installation)`
+- `python3 replay of _existing_lean_name_problem and _topological on the 5 proposed children against the current dag.json (no problem; order chart_preimage_null, countable_lipschitz_cover, line_deriv_comp, ae_diff_comp, ae_pullback)`
+- `git show 9080c178c7e23350ae33476f7bfa68f0965fe15e 6941b70febfeca396a5e8105097428578fe61416 -- GMT/Ch06/Submission.lean (accepted Lean proofs of the reused declarations)`
+- `grep -n '^theorem' mathlib/Mathlib/Analysis/Calculus/Rademacher.lean (LipschitzOnWith.ae_differentiableWithinAt_of_mem l.361; LipschitzWith.ae_differentiableAt l.385; no LocallyLipschitzOn version)`
+- `grep in mathlib for ContDiff.locallyLipschitz, ae_restrict_iff'₀, le_restrict_apply, exists_measurable_subset_ae_eq, HasDerivAt.unique, HasFDerivAt.comp_hasDerivAt_of_eq, LipschitzOnWith.extend_finite_dimension, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, DifferentiableWithinAt.differentiableAt, ae_all_iff, HereditarilyLindelofSpace.isLindelof`
+- `grep -n 'theorem rademacher_ae_differentiableAt|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn' simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean (l.192, l.216)`
+- `grep -n 'structure IsRectifiableTriple' -A 25 GMT/Ch06/Contract.lean (fields subset, nullMeasurableSet, pos, integrableOn used by the assembly)`
+- `contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py (child scope prefix); lean_contract.validate_lean_statement on all 5 child statements`
+- `lake env lean /tmp/ccr2_scratch/Integrated.lean (accepted proofs, full proofs of the 3 new children and the assembly of Submission.lpf_chart_chain_rule; #print axioms)`
+- `lake env lean /tmp/ccr2_scratch/stmts/Challenge_{chart_preimage_null,countable_lipschitz_cover,ae_pullback,ae_diff_comp,line_deriv_comp}.lean and /tmp/ccr2_scratch/IntegratedSol.lean (comparator challenge and solution forms; only sorry warnings)`
+- `sed -n 28,70p and 905,960p book/chapter-02.txt (Simon Ch. 2: 1.2 Lipschitz extension, 1.4 Rademacher, 4.5–4.10 directional derivatives)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-chart-chain-rule-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-pr-b8935c5987/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-pr-b8935c5987/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-chart-pr-b8935c5987/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-countable-dc002d2f60/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-countable-dc002d2f60/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-countable-dc002d2f60/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Compactness/Lindelof.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-07a3972eec1d/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/ccr2_scratch/scope_prefix.txt`
+- `/tmp/ccr2_scratch/Integrated.lean`
+- `/tmp/ccr2_scratch/IntegratedSol.lean`
+- `/tmp/ccr2_scratch/stmts/Challenge_ae_pullback.lean`
+- `/tmp/ccr2_scratch/stmts/Challenge_ae_diff_comp.lean`
+- `/tmp/ccr2_scratch/stmts/Challenge_line_deriv_comp.lean`
+- `/tmp/ccr2_scratch/stmts/Challenge_chart_preimage_null.lean`
+- `/tmp/ccr2_scratch/stmts/Challenge_countable_lipschitz_cover.lean`
+
+Snapshot. The snapshot (project d8d46c95, Mathlib 25730c7c) carries the frozen Ch06 Contract, byte-identical to the workspace copy.
+
+Reuse.
+- Reused: lpf_raf_chart_preimage_null (accepted 2026-10-12T05:20:13Z, candidate 9080c178) and lpf_lli_countable_lipschitz_cover (accepted 08:47:11Z, candidate 6941b70f). Both passed the isolated comparator, their frozen types are byte-identical to the proposed ones, and both already have cross-branch reuse precedents (skeleton_polyhedral-a1 and local_lipschitz_area-a1).
+- lpf_lipschitz_localization is no longer proposed, following the correction.
+- No DAG node uses lpf_ccr_ae_pullback, lpf_ccr_ae_differentiableAt_comp or lpf_ccr_hasDerivAt_line_of_comp.
+- Replaying the runtime name check on dag.json passes, and the dependency graph is acyclic.
+
+Available library support.
+- Mathlib: Rademacher on a set (LipschitzOnWith.ae_differentiableWithinAt_of_mem) and globally (LipschitzWith.ae_differentiableAt), ContDiff.locallyLipschitz, ae_restrict_iff'₀, Measure.le_restrict_apply, NullMeasurableSet.exists_measurable_subset_ae_eq, HasDerivAt.unique, HasFDerivAt.comp_hasDerivAt_of_eq and LipschitzOnWith.extend_finite_dimension.
+- SimonGMT Ch02/Lipschitz: rademacher_ae_differentiableAt and the Hⁿ Lipschitz image bound.
+- No packaged a.e.-differentiability exists for LocallyLipschitzOn maps on open sets, nor any a.e. pullback along antilipschitz charts; these become the new children.
+
+Kernel check under the exact comparator child scope:
+- The accepted proofs, complete proofs of the three new children, and the assembly of lpf_chart_chain_rule against its byte-identical frozen type all typecheck.
+- Every child depends only on propext, Classical.choice and Quot.sound.
+- The parent picks up sorryAx only through the stubbed sibling dependency lpf_weighted_tangent_on_c1_chart.
+- All five statements pass validate_lean_statement and elaborate as comparator challenges.
+- `exact Submission.X` closes each child's frozen type and the parent's.
+
+Printed source. Simon Ch. 2, 1.2 (Lipschitz extension), 1.4 (Rademacher) and 4.7/4.10 (directional derivatives of Lipschitz maps along curves and lines) supply the printed mathematics for ae_diff_comp and line_deriv_comp.

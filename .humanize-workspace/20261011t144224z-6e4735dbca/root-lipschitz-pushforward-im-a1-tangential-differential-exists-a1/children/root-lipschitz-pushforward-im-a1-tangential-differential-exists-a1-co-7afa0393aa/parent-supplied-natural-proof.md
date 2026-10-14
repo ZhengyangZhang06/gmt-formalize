@@ -1,0 +1,97 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1`
+- Child DAG node: `root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.continuous_left_inverse-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝ^m = EuclideanSpace ℝ (Fin m) (Lean `Eucl m`) with Euclidean norm |·| = ‖·‖; L(E, F) is the space of (continuous) linear maps with the operator norm; Hⁿ = μHE[n] is Mathlib's normalized n-dimensional Hausdorff measure (on ℝⁿ it equals Lebesgue measure Lⁿ = volume); B_ρ(x) is the open ball. This is the linear-algebra input to Step 2 of the parent proof (the Moore–Penrose left inverse A⁺ = (A*A)⁻¹A* of an injective A, Step 2: A⁺A = id and AA⁺ = orthogonal projection onto range A). Fix n, P. For A ∈ L(ℝⁿ, ℝ^P) let A* ∈ L(ℝ^P, ℝⁿ) be its adjoint (⟨A*y, s⟩ = ⟨y, As⟩; Mathlib ContinuousLinearMap.adjoint). Let R := L(ℝⁿ, ℝⁿ), a complete normed ring under composition, and let inv : R → R be the ring inverse (inv(T) = T⁻¹ if T is a unit of R, inv(T) = 0 otherwise; Mathlib Ring.inverse). Define
+   Λ(A) := inv(A*A) ∘ A* ∈ L(ℝ^P, ℝⁿ).
+
+1. (A*A is a unit when A is injective.) Let A be injective. If A*As = 0 then |As|² = ⟨As, As⟩ = ⟨A*As, s⟩ = 0, so As = 0 and s = 0. Thus A*A is an injective linear endomorphism of the finite-dimensional space ℝⁿ, hence surjective (rank–nullity; Mathlib LinearMap.injective_iff_surjective), hence a linear bijection whose inverse is automatically continuous (finite dimension; LinearEquiv.ofBijective, LinearEquiv.toContinuousLinearEquiv). So A*A is a unit of R, and inv(A*A)(A*A) = 1 = (A*A)inv(A*A) (Ring.inverse_mul_cancel, Ring.mul_inverse_cancel). (Mathlib also records ker(A*A) = ker A as adjoint_comp_self_injective_iff.)
+
+2. (Left inverse.) For injective A: Λ(A)∘A = inv(A*A)∘(A*A) = id_{ℝⁿ}.
+
+3. (Continuity on the injective maps.) Let A₀ be injective. The map A ↦ A* is continuous (it is a linear isometric equivalence), and composition (S, T) ↦ S∘T is continuous (bounded bilinear), so a(A) := A*A is continuous in A. By step 1, a(A₀) is a unit of the complete normed ring R, and the ring inverse is continuous at every unit (Mathlib NormedRing.inverse_continuousAt), so A ↦ inv(a(A)) is continuous at A₀. Composing again with the continuous A ↦ A* (continuity of composition), Λ(A) = inv(a(A))∘A* is continuous at A₀. Continuity at each point of the set I := {A : A injective} gives continuity of Λ on I.
+
+4. (Projection bound.) Let A be injective, v ∈ ℝ^P, and p := AΛ(A)v. Then A*p = (A*A)inv(A*A)A*v = A*v by step 1, so A*(v − p) = 0. Hence for every s ∈ ℝⁿ, ⟨v − p, As⟩ = ⟨A*(v − p), s⟩ = 0. Taking s := Λ(A)v gives ⟨v − p, p⟩ = 0, so by Pythagoras |v|² = |(v − p) + p|² = |v − p|² + |p|² ≥ |p|², i.e. |AΛ(A)v| = |p| ≤ |v|.
+
+Steps 2–4 give the three required properties of Λ. ∎ (Degenerate cases are covered: for n = 0, R is the zero ring, every A is injective and Λ(A) = 0 works with the same proof; for n > P there is no injective A and only the existence of Λ is asserted.)
+
+## Key steps
+
+1. Define Λ(A) := Ring.inverse(A*A) ∘ A* (Moore–Penrose left inverse).
+2. For injective A, A*A is injective (|As|² = ⟨A*As, s⟩), hence invertible in finite dimension.
+3. Λ(A)A = (A*A)⁻¹(A*A) = id.
+4. Adjoint, composition and ring inverse (continuous at units) are continuous, so Λ is continuous at every injective A.
+5. A*(v − AΛ(A)v) = 0, so v − AΛ(A)v ⊥ AΛ(A)v and Pythagoras gives |AΛ(A)v| ≤ |v|.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp snapshot project/GMT/Ch06/Contract.lean vs workspace GMT/Ch06/Contract.lean and Submission.lean (all identical)`
+- `python3 over dag.json: list lean_name/lean_statement of root.lipschitz_pushforward_im-a1 children and all 235 lean_names; check lpf_tde_* candidates (no match); inspect lpf_c1_local_antilipschitz, lpf_lipschitz_localization, lpf_lli_countable_lipschitz_cover, lpf_raf_chart_preimage_null, lpf_raf_lla_disjoint_lipschitz_pieces, lpf_wtc_cat_fderiv_lower_bound (none has an identical type)`
+- `grep -rn lpf_tde GMT/ issue-workers.json DAG.md /tmp/all_names.json (no match)`
+- `verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') -> child scope prefix; verifier/lean_contract.validate_lean_statement on the 5 child statements (all valid)`
+- `grep -n 'def |theorem ' simongmt Chapter03/Rectifiable.lean (CountablyRectifiable, HasWeightedApproximateTangentSpaceAt, HasWeightedApproximateTangentSpaceAt.unique), Chapter03/Differential.lean, Chapter02/Lipschitz.lean (rademacher_ae_differentiableAt, euclideanHausdorffMeasure_image_le_of_lipschitzOn)`
+- `grep Mathlib/Analysis/Calculus/Rademacher.lean (LipschitzOnWith.ae_differentiableWithinAt_of_mem); rg 'LocallyLipschitzOn' (LocallyLipschitzOn.exists_lipschitzOnWith_of_compact)`
+- `grep measurable_fderiv Mathlib/Analysis/Calculus/FDeriv/Measurable.lean; ContinuousLinearMap.instMeasurableSpace (borel) in MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean; Measurable.find in MeasureTheory/MeasurableSpace/Constructions.lean`
+- `grep NormedRing.inverse_continuousAt (Analysis/Normed/Ring/Units.lean); adjoint API incl. adjoint_comp_self_injective_iff (Analysis/InnerProductSpace/Adjoint.lean)`
+- `grep IsCompact.exists_cthickening_subset_open (Topology/MetricSpace/Thickening.lean); TopologicalSpace.isOpen_biUnion_countable (Topology/Bases.lean); EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Geometry/Euclidean/Volume/Measure.lean)`
+- `grep MeasurableSet.image_of_continuousOn_injOn (MeasureTheory/Constructions/Polish/Basic.lean); ContinuousOn.measurable_piecewise, Continuous.measurable2 (BorelSpace/Basic.lean); hasDerivAt_iff_isLittleO, HasDerivAt.le_of_lip' (Deriv/Basic.lean); HasFDerivAt.comp_hasDerivAt_of_eq (Deriv/Comp.lean); hasDerivAt_iff_tendsto_slope (Deriv/Slope.lean)`
+- `no-match: rg 'IsOpen.isSigmaCompact|IsSigmaCompact.measurableSet' in Mathlib snapshot (absent; Lusin–Souslin used instead)`
+- `sed -n 320,400p book/chapter-03.txt (Simon Ch. 3 §2, 2.1–2.2)`
+- `lake build GMT.Ch06.Submission; lake env lean /tmp/tde-decomp/{Stmts,Assembly,Proofs,ProofC1,ProofC3,ProofC5,Combined,FinalCheck,AssemblyExact}.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Ring/Units.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/tmp/tde-decomp/scope_prefix.txt`
+- `/tmp/tde-decomp/Stmts.lean`
+- `/tmp/tde-decomp/AssemblyExact.lean`
+- `/tmp/tde-decomp/FinalCheck.lean`
+- `/tmp/tde-decomp/Combined.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) holds the frozen Ch06 Contract. It is byte-identical to the workspace Contract and Submission.
+
+In the comparator child scope (import GMT.Ch06.Submission plus the namespace and opens from contract_scope), the five proposed child statements elaborate and pass the lexical validator. The lpf_tde_* names are unused in the DAG, and no existing node has an identical type.
+
+What the proofs rely on:
+- **SimonGMT:** HasWeightedApproximateTangentSpaceAt and its .unique, Rademacher, and the Lipschitz image bound for μHE (Chapter02/Lipschitz euclideanHausdorffMeasure_image_le_of_lipschitzOn).
+- **Mathlib, analysis:** LipschitzOnWith.ae_differentiableWithinAt_of_mem, LocallyLipschitzOn.exists_lipschitzOnWith_of_compact, IsCompact.exists_cthickening_subset_open, hasDerivAt_iff_isLittleO, HasDerivAt.le_of_lip'.
+- **Mathlib, measurability:** measurable_fderiv (valid for an arbitrary f), the Borel instance on continuous linear maps, Measurable.find, Lusin–Souslin MeasurableSet.image_of_continuousOn_injOn, and μHE[n] = volume on Eucl n.
+- **Mathlib, linear algebra:** NormedRing.inverse_continuousAt and the adjoint API.
+
+IsOpen.isSigmaCompact and IsSigmaCompact.measurableSet are absent from this snapshot, so the C5 proof uses Lusin–Souslin (or the elementary rational-ball σ-compact argument) instead.
+
+Kernel checks: the parent's exact frozen type was derived from the 5 child types plus the 2 uncle DAG types, with sorryAx coming only from those stubs. All 5 child statements were proved in scratch Lean using only propext, Classical.choice and Quot.sound.
