@@ -8,107 +8,107 @@ import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
 import Poincare.SimonGMT.Chapter02.AreaLipschitz
 import Mathlib.Analysis.Calculus.BumpFunction.Convolution
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
-
-/-!
-# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
-(printed pp. 181–204)
-
-Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
-objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
-(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
-`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
-`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
-minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
-varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
-statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
-
-**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
-present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
-misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
-`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
--/
-
 import Poincare.SimonGMT.Chapter03.SubmanifoldCover
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
+
+/-!
+# Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
+(printed pp. 181–204)
+
+Frozen contract.  Currents, boundary, mass, support and weak convergence are the clean SimonGMT
+objects of `Poincare.SimonGMT.Chapter06`: `GeometricCurrentOn U n` (Simon 6.2.1), `T.boundary`
+(6.2.3), `T.massOn W` = `M_W(T)` (6.2.5, Euclidean coefficient norm), `T.mass` (6.2.4),
+`T.support` (6.2.11), `WeaklyConvergesOn` (6.2.13), and the proper affine push-forward
+`GeometricCurrentOn.affinePushforward` (6.2.23).  Everything else (integer multiplicity currents,
+minimizing currents, densities, blow-ups, tangent cones, `reg T`, `sing T`, the associated
+varifold) is defined below from primitive data.  `Hⁿ` is Mathlib's normalized `μHE[n]`; null-set
+statements use Mathlib's `μH[s]` (same null sets as Simon's `Hˢ`).
+
+**Conventions.**  The ambient space is `ℝ^{n+k}` (`Euclid (n + k)`); when a submanifold `N` is
+present it has dimension `n + ℓ`, `ℓ ≤ k` (Simon writes `N^{n+ℓ} ⊂ ℝ^{n+ℓ}`, `ℓ ≤ k`, a
+misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-current, `∂T = 0`,
+`∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
+-/
+
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -7376,68 +7376,6 @@ theorem Submission.dor_ims_lusin_covector_finiteDimensional : ∀ (P n : ℕ), F
   refine FiniteDimensional.of_injective L fun α β h => ?_
   apply ContinuousAlternatingMap.toAlternatingMap_injective
   exact e.ext_alternating fun v _ => congrFun h v
-/-- **Lusin's theorem**, compact form (Simon 1.17), for a measurable `g : ℝᴾ → Y` into a
-second-countable `Y`.  If `μ(A) < ∞` and `ε ≠ 0`, there is a compact `K ⊆ A` with
-`μ(A \ K) < ε` on which `g` is continuous.  `μ⌞A` is finite, hence inner regular on `ℝᴾ`.  For a
-countable basis `(O_k)` of `Y` and weights `η_k > 0` with `∑ η_k < ε`, choose compact
-`C_k ⊆ A ∩ g⁻¹(O_k)` and `D_k ⊆ A \ g⁻¹(O_k)` with defects `< η_k / 2`, and put
-`K = ⋂ₖ (C_k ∪ D_k)`.  On `K`, `g x ∈ O_k ↔ x ∉ D_k`, so every `g⁻¹(O_k) ∩ K` is relatively
-open. -/
-theorem Submission.dor_ims_lusin_measurable_continuousOn : ∀ (P : ℕ) {Y : Type} [TopologicalSpace Y] [SecondCountableTopology Y] [MeasurableSpace Y] [OpensMeasurableSpace Y] (μ : Measure (Euclid P)) (A : Set (Euclid P)) (g : Euclid P → Y) (ε : ℝ≥0∞), Measurable g → MeasurableSet A → μ A ≠ ∞ → ε ≠ 0 → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \ K) < ε ∧ ContinuousOn g K := by
-  intro P Y _ _ _ _ μ A g ε hg hA hμA hε
-  -- `μ⌞A` is finite, hence regular on the σ-compact metric space `ℝᴾ`, so every measurable
-  -- `B ⊆ A` contains a compact `C` with `μ (B \ C) = μ⌞A (B \ C)` arbitrarily small
-  have : IsFiniteMeasure (μ.restrict A) := isFiniteMeasure_restrict.mpr hμA
-  have approx : ∀ B, B ⊆ A → MeasurableSet B → ∀ η : ℝ≥0∞, η ≠ 0 →
-      ∃ C ⊆ B, IsCompact C ∧ μ (B \ C) < η := by
-    intro B hBA hB η hη
-    obtain ⟨C, hCB, hC, hlt⟩ :=
-      hB.exists_isCompact_sdiff_lt (μ := μ.restrict A) (measure_ne_top _ _) hη
-    exact ⟨C, hCB, hC, by rwa [Measure.restrict_eq_self _ (sdiff_subset.trans hBA)] at hlt⟩
-  -- a countable basis `(O_k)` of `Y`, and weights `η_k > 0` with `∑ η_k < ε`
-  obtain ⟨O, hO⟩ := TopologicalSpace.exists_seq_basis Y
-  obtain ⟨η, hη, hηε⟩ := ENNReal.exists_pos_sum_of_countable' hε ℕ
-  have hS : ∀ k, MeasurableSet (g ⁻¹' O k) :=
-    fun k => hg (hO.isOpen (mem_range_self k)).measurableSet
-  -- compact `C_k ⊆ A ∩ g⁻¹(O_k)` and `D_k ⊆ A \ g⁻¹(O_k)`, each with defect `< η_k / 2`
-  choose C hCA hC hCμ using fun k =>
-    approx (A ∩ g ⁻¹' O k) inter_subset_left (hA.inter (hS k)) (η k / 2)
-      (ENNReal.half_pos (hη k).ne').ne'
-  choose D hDA hD hDμ using fun k =>
-    approx (A \ g ⁻¹' O k) sdiff_subset (hA.diff (hS k)) (η k / 2)
-      (ENNReal.half_pos (hη k).ne').ne'
-  -- `E_k = C_k ∪ D_k` misses less than `η_k` of `A`
-  have hE : ∀ k, μ (A \ (C k ∪ D k)) < η k := by
-    intro k
-    calc μ (A \ (C k ∪ D k))
-        ≤ μ ((A ∩ g ⁻¹' O k) \ C k ∪ (A \ g ⁻¹' O k) \ D k) := by
-          refine measure_mono fun x hx => ?_
-          by_cases hxO : g x ∈ O k
-          · exact Or.inl ⟨⟨hx.1, hxO⟩, fun hxC => hx.2 (Or.inl hxC)⟩
-          · exact Or.inr ⟨⟨hx.1, hxO⟩, fun hxD => hx.2 (Or.inr hxD)⟩
-      _ ≤ μ ((A ∩ g ⁻¹' O k) \ C k) + μ ((A \ g ⁻¹' O k) \ D k) := measure_union_le _ _
-      _ < η k / 2 + η k / 2 := ENNReal.add_lt_add (hCμ k) (hDμ k)
-      _ = η k := ENNReal.add_halves _
-  -- `K = ⋂ₖ E_k` is closed inside the compact `E_0 ⊆ A`
-  refine ⟨⋂ k, (C k ∪ D k), ?_, ?_, ?_, ?_⟩
-  · exact ((hC 0).union (hD 0)).of_isClosed_subset
-      (isClosed_iInter fun k => ((hC k).union (hD k)).isClosed) (iInter_subset _ 0)
-  · exact (iInter_subset _ 0).trans
-      (union_subset ((hCA 0).trans inter_subset_left) ((hDA 0).trans sdiff_subset))
-  · calc μ (A \ ⋂ k, (C k ∪ D k)) = μ (⋃ k, A \ (C k ∪ D k)) := by rw [sdiff_iInter]
-      _ ≤ ∑' k, μ (A \ (C k ∪ D k)) := measure_iUnion_le _
-      _ ≤ ∑' k, η k := ENNReal.tsum_le_tsum fun k => (hE k).le
-      _ < ε := hηε
-  -- on `K`, `g x ∈ O_k ↔ x ∉ D_k`, so `g⁻¹(O_k) ∩ K = D_kᶜ ∩ K` is relatively open
-  · rw [hO.continuousOn_iff]
-    rintro _ ⟨k, rfl⟩
-    refine ⟨(D k)ᶜ, (hD k).isClosed.isOpen_compl, ?_⟩
-    ext x
-    refine ⟨fun ⟨hxO, hxK⟩ => ⟨fun hxD => (hDA k hxD).2 hxO, hxK⟩, fun ⟨hxD, hxK⟩ => ⟨?_, hxK⟩⟩
-    rcases mem_iInter.mp hxK k with hxC | hxD'
-    · exact (hCA k hxC).2
-    · exact absurd hxD' hxD
-
 /-- **Lusin's theorem** (Simon 1.17) for a `μ`-a.e. strongly measurable covector field
 `f : ℝᴾ → Λⁿ(ℝᴾ)`.  `Λⁿ(ℝᴾ)` is finite-dimensional, hence second countable; give it the Borel
 σ-algebra.  `f` agrees with the Borel modification `f' = hf.mk f` off a measurable `μ`-null set
@@ -19833,18 +19771,6 @@ theorem Submission.dor_lmb_fc_series_limit : ∀ (P m : ℕ) (U : Set (Euclid P)
       _ = ∑' r, ((R (ℓ + r)).mass + (S (ℓ + r)).mass) := ENNReal.tsum_add.symm
       _ ≤ ∑' r, (2⁻¹ : ℝ≥0∞) ^ (ℓ + r) := ENNReal.tsum_le_tsum fun r => (hRS (ℓ + r)).2.2.2
       _ = 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ := hgeom
-    · rintro ⟨x, ⟨u, hu, rfl⟩, rfl⟩
-      exact ⟨hu, ⟨u, u.property, rfl⟩⟩
-    · rintro ⟨hy, x, hx, rfl⟩
-      exact ⟨x, ⟨⟨x, hx⟩, hy, rfl⟩, rfl⟩
-  rw [← hmap, hemb.lintegral_map]
-  change (∫⁻ x : s, (fun x : Euclid m => g (f x)) x ∂((volume.withDensity
-    (fun x => ENNReal.ofReal (G (fderiv ℝ f x)))).comap (Subtype.val : s → Euclid m))) = _
-  rw [lintegral_subtype_comap hs (fun x : Euclid m => g (f x)),
-    setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀ _ _ _ hs]
-  · rfl
-  · simp only [eventually_true, ENNReal.ofReal_lt_top]
-  · exact (hGc.measurable.comp (measurable_fderiv ℝ f)).ennreal_ofReal.aemeasurable
 /-- **Simon Ch. 2, (3.1)** in integral form (area formula for an injective linear map): for an
 injective linear `L : ℝⁿ → ℝᴾ` and every `f`, `∫_{L(ℝⁿ)} f dHⁿ = √det(L* ∘ L) ∫_{ℝⁿ} f(Lb) dLⁿ(b)`.
 Write `L = W ∘ A` with `W` a linear isometry of `ℝⁿ` onto `L(ℝⁿ)` and `A` an automorphism of `ℝⁿ`;
@@ -22334,44 +22260,6 @@ theorem Submission.dor_lmbsf_io_adapted_frame : ∀ (P n : ℕ) (Q : Submodule �
   · simp [hνσ j', (Fin.succ_ne_zero j').symm]
   · simp [real_inner_comm, hνσ i', Fin.succ_ne_zero i']
   · simp [hσ i' j']
-/-- Step 3(i) of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3, via
-Allard's theorem; `n`-covectors as in Ch. 6, §1): if `τ` is an orthonormal `n`-frame and every
-`bⱼ` lies in `L = span τ`, then `α(b₁, …, bₙ) = det(⟨τᵢ, bⱼ⟩) α(τ₁, …, τₙ)` for every
-`n`-covector `α`.  The restriction of `α` to `L` is `α(τ) det_τ`, and the coordinates of `bⱼ` in
-the basis `τ` of `L` are `⟨τᵢ, bⱼ⟩`. -/
-theorem Submission.dgoj_covector_eq_det_mul_of_mem_span : ∀ (P n : ℕ) (τ b : Fin n → Euclid P), Orthonormal ℝ τ → (∀ j, b j ∈ Submodule.span ℝ (Set.range τ)) → ∀ α : Covector (Euclid P) n, α b = (Matrix.of fun i j => inner ℝ (τ i) (b j)).det * α τ := by
-  intro P n τ b hτ hb α
-  set L := Submodule.span ℝ (Set.range τ)
-  -- `τ` is a basis `e` of `L`
-  let e : Module.Basis (Fin n) ℝ L := Module.Basis.span hτ.linearIndependent
-  have he : ∀ i, (e i : Euclid P) = τ i := fun i => by
-    rw [Module.Basis.span_apply hτ.linearIndependent i]
-  -- the restriction `α_L` of `α` to `L`
-  let αL : L [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap L.subtype
-  let b' : Fin n → L := fun j => ⟨b j, hb j⟩
-  have h1 : α b = αL b' := rfl
-  have h2 : α τ = αL e := by
-    show α τ = α (fun i => (e i : Euclid P))
-    congr 1
-    funext i
-    exact (he i).symm
-  -- coordinates of `b'` in `e` are the inner products with `τ`
-  have hrepr : ∀ i j, e.repr (b' j) i = inner ℝ (τ i) (b j) := by
-    intro i j
-    have hs : (b j : Euclid P) = ∑ l, e.repr (b' j) l • τ l := by
-      have := congrArg (Subtype.val) (e.sum_repr (b' j))
-      simp only [Submodule.coe_sum, Submodule.coe_smul, he] at this
-      exact this.symm
-    rw [hs, hτ.inner_right_fintype]
-  have hmat : e.toMatrix b' = Matrix.of fun i j => inner ℝ (τ i) (b j) := by
-    ext i j
-    rw [Module.Basis.toMatrix_apply, hrepr, Matrix.of_apply]
-  -- `α_L = α_L(e) • det_e`
-  have h3 : αL b' = αL e * e.det b' := by
-    conv_lhs => rw [AlternatingMap.eq_smul_basis_det e αL]
-    rfl
-  rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
-
 /-- Sign lemma for unit orientations (Simon 6.1.1; used for the slice orientation
 `ξ ⌞ ∇^M f/|∇^M f|` of 6.4.3 in the slicing step of the proof of 7.4.3): if
 `ζ = ±τ₁ ∧ ⋯ ∧ τₘ` is a unit orientation of `Q` and `ρ` is an orthonormal `m`-frame in `Q`, then
@@ -22473,34 +22361,6 @@ theorem Submission.dgcr_stc_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ
     fun x => mul_nonneg (inv_nonneg.2 hI.le) (B.nonneg' x), ?_, ?_⟩
   · rw [integral_const_mul, inv_mul_cancel₀ hI.ne']
   · exact (support_mul_subset_right _ _).trans B.support_eq.subset
-/-- **Mollification preserves the Lipschitz constant** (step 4 of the Lipschitz smoothing): if
-`ψ ≥ 0` is continuous with compact support and `∫ ψ = 1`, and `g` is `K`-Lipschitz, then
-`G x = ∫ ψ(y) g(x - y) dy` is `K`-Lipschitz.  Indeed `G x - G x'` is the integral of
-`ψ(y) (g(x - y) - g(x' - y))`, whose absolute value is at most `ψ(y) K ‖x - x'‖`, and
-`∫ ψ = 1`. -/
-theorem Submission.cmcs_ls_mollify_lipschitz : ∀ (P : ℕ) (ψ g : Euclid P → ℝ) (K : NNReal), Continuous ψ → HasCompactSupport ψ → (∀ x, 0 ≤ ψ x) → ∫ x, ψ x = 1 → LipschitzWith K g → LipschitzWith K (fun x => ∫ y, ψ y * g (x - y)) := by
-  intro P ψ g K hψc hψs hψ0 hψ1 hg
-  -- step 1: `y ↦ ψ y * g (x - y)` is continuous with support in `support ψ`, hence integrable
-  have hint : ∀ x : Euclid P, Integrable (fun y => ψ y * g (x - y)) := fun x =>
-    (hψc.mul (hg.continuous.comp (continuous_const.sub continuous_id))).integrable_of_hasCompactSupport
-      hψs.mul_right
-  -- step 5: it suffices to show `dist (G x) (G x') ≤ K * dist x x'`
-  refine LipschitzWith.of_dist_le_mul fun x x' => ?_
-  -- step 2: `G x - G x'` is a single integral
-  rw [Real.dist_eq, ← integral_sub (hint x) (hint x'), ← Real.norm_eq_abs]
-  calc ‖∫ y, (ψ y * g (x - y) - ψ y * g (x' - y))‖
-      ≤ ∫ y, ψ y * (K * dist x x') := by
-        -- step 4: integrate the pointwise bound of step 3 against the integrable majorant
-        refine norm_integral_le_of_norm_le
-          ((hψc.integrable_of_hasCompactSupport (μ := volume) hψs).mul_const _)
-          (Eventually.of_forall fun y => ?_)
-        -- step 3: `|ψ y (g (x - y) - g (x' - y))| = ψ y dist (g (x - y)) (g (x' - y))`
-        -- `≤ ψ y (K dist (x - y) (x' - y)) = ψ y (K dist x x')`
-        rw [← mul_sub, Real.norm_eq_abs, abs_mul, abs_of_nonneg (hψ0 y), ← Real.dist_eq,
-          ← dist_sub_right x x' y]
-        exact mul_le_mul_of_nonneg_left (hg.dist_le_mul _ _) (hψ0 y)
-    _ = K * dist x x' := by rw [integral_mul_const, hψ1, one_mul]
-
 /-- **Smoothing of Lipschitz functions** (Simon Ch. 6, 4.8–4.9: use `f^{(σ)}` in place of a
 Lipschitz `f`): a `K`-Lipschitz `g` on `ℝᴾ` and `σ > 0` give a `C^∞` function `g'` with
 `‖Dg'‖ ≤ K`, `|g' − g| ≤ Kσ`, and `g'(x) = c` whenever `g ≡ c` on `B_σ(x)`.  Take the normalized
@@ -22998,20 +22858,6 @@ theorem Submission.fvmb_imrep_ae_unitOrientation_approxTangentPlane : ∀ (P n :
     exact h.choose_spec.unique hQ
   rw [hT]
   exact hξ
-/-- A unit orientation has norm at most `1` (step 1(c) of the proof of Simon Ch. 6, 3.2(3)).
-If `ξ α = ±α(τ₁, …, τₙ)` for an orthonormal family `τ`, then `|ξ α| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
-for every `n`-covector `α`, so the operator norm of `ξ` is at most `1`. -/
-theorem Submission.unit_orientation_norm_le_one : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1 := by
-  rintro P n Q ξ ⟨τ, hτ, -, hξ⟩
-  refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_
-  -- `|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`, as `‖τᵢ‖ = 1`
-  have hbound : ‖α τ‖ ≤ ‖α‖ := by
-    simpa [hτ.1] using α.le_opNorm τ
-  rcases hξ with h | h
-  · rw [h, one_mul]
-    exact hbound
-  · rw [h, norm_neg, one_mul]
-    exact hbound
 /-- The vector representing `β ↦ ζ(β ∧ α)` (steps 4(a), 4(b) of the parent proof; Simon Ch. 6,
 proof of Lemma 4.5(2), display (3)).  Write `β ∧ α` for `alternatizeUncurryFin (β.smulRight α)`,
 `eₗ` for the standard basis of `ℝᴾ` and `V = Σₗ ζ(⟨eₗ, ·⟩ ∧ α) eₗ`.  Then `ζ(β ∧ α) = β(V)` for
@@ -23952,571 +23798,6 @@ theorem Submission.dor_lmbs_slice_identity_of_averages : ∀ (P n : ℕ) (U : Se
       (fun x hx => image_eq_zero_of_notMem_tsupport fun h => hx (hωK h))
       (fun j x hx => image_eq_zero_of_notMem_tsupport fun h => hx (hωsK j h)) hconv)
   exact tendsto_nhds_unique hA (hB.congr fun j => (ht (ωs j) (hωsD j)).symm)
-/-- Local finiteness of an integer multiplicity representation `(M, θ, ξ)` in `U` (Simon Ch. 6,
-Definition 3.1).  For compact `K ⊆ U`, `μ_R(K) = ∫_{M ∩ K} θ dHⁿ < ∞` by the local integrability
-of `θ`, and `Hⁿ(M ∩ K) = ∫_{M ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ < ∞` since `θ ≥ 1` on `M`. -/
-theorem Submission.rsd_imrep_compact_measure_ne_top : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (K : Set (Euclid P)), IsCompact K → K ⊆ U → μHE[n] (R.carrier ∩ K) ≠ ∞ ∧ R.measure K ≠ ∞ := by
-  intro P n U R K hK hKU
-  have hint := R.locallyIntegrable_mult K hK hKU
-  -- `μ_R(K) = ∫_K θ d(Hⁿ⌞M) = ∫_{M ∩ K} θ dHⁿ`, `K` being closed, hence Borel
-  have hmeas : R.measure K = ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
-    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
-      Measure.restrict_restrict hK.measurableSet, inter_comm]
-  refine ⟨?_, by rw [hmeas]; exact hint⟩
-  refine ne_top_of_le_ne_top hint ?_
-  -- `Hⁿ(M ∩ K) = ∫_{M ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ`, as `1 ≤ θ` on `M`
-  calc μHE[n] (R.carrier ∩ K) = ∫⁻ _ in R.carrier ∩ K, (1 : ℝ≥0∞) ∂μHE[n] := by
-        rw [setLIntegral_one]
-    _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
-        refine setLIntegral_mono (measurable_from_nat.comp R.measurable_mult) ?_
-        intro x hx
-        exact_mod_cast R.mult_pos x hx.1
-/-- Restricting an integer multiplicity triple `R = (C, θ, ξ)` to a Borel sub-carrier `C' ⊆ C`
-with multiplicity `0 < θ' ≤ θ` on `C'`, keeping the orientation `ξ`, gives again a triple in `U`,
-provided `Hⁿ`-a.e. point of `C'` inherits the approximate tangent spaces of `C` (Simon Ch. 6, 3.1).
-
-Every field of `IMRep` for `(C', θ', ξ)` is inherited from `R`: `C' ⊆ C ⊆ U` is countably
-rectifiable, `∫_{C' ∩ K} θ' dHⁿ ≤ ∫_{C' ∩ K} θ dHⁿ ≤ ∫_{C ∩ K} θ dHⁿ < ∞`, `Hⁿ⌞C' ≤ Hⁿ⌞C` carries
-the measurability of `ξ`, and `R.orients` restricted to `C'` gives the orientation condition once
-`T_x C = Q` is transferred to `T_x C' = Q`. -/
-theorem Submission.regcomp_rim_sub_imrep : ∀ (P n : ℕ) (U C' : Set (Euclid P)) (R : IMRep U n) (θ' : Euclid P → ℕ), MeasurableSet C' → C' ⊆ R.carrier → Measurable θ' → (∀ x ∈ C', 0 < θ' x) → (∀ x ∈ C', θ' x ≤ R.mult x) → (∀ᵐ x ∂(μHE[n].restrict C'), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n R.carrier x Q → HasApproximateTangentSpaceAt n C' x Q) → ∃ R' : IMRep U n, R'.carrier = C' ∧ R'.mult = θ' ∧ R'.orient = R.orient := by
-  intro P n U C' R θ' hC' hC'C hθ' hpos hle htan
-  -- Step 6: `∫_{C' ∩ K} θ' ≤ ∫_{C' ∩ K} θ ≤ ∫_{C ∩ K} θ < ∞`
-  have hint : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
-      ∫⁻ x in C' ∩ K, (θ' x : ℝ≥0∞) ∂μHE[n] ≠ ∞ := by
-    intro K hK hKU
-    have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) :=
-      (measurable_from_nat (f := fun k : ℕ => (k : ℝ≥0∞))).comp R.measurable_mult
-    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU) ?_
-    calc ∫⁻ x in C' ∩ K, (θ' x : ℝ≥0∞) ∂μHE[n]
-        ≤ ∫⁻ x in C' ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
-          setLIntegral_mono hθ fun x hx => by exact_mod_cast hle x hx.1
-      _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
-          lintegral_mono_set (inter_subset_inter_left K hC'C)
-  -- Step 7: `ξ` is a.e. strongly measurable for `Hⁿ⌞C' ≤ Hⁿ⌞C`
-  have hmeas : AEStronglyMeasurable R.orient (μHE[n].restrict C') :=
-    R.aestronglyMeasurable_orient.mono_measure (Measure.restrict_mono hC'C le_rfl)
-  -- Step 8: restrict `R.orients` to `C'` and transfer the approximate tangent space
-  have hor : ∀ᵐ x ∂(μHE[n].restrict C'), ∃ Q : Submodule ℝ (Euclid P),
-      HasApproximateTangentSpaceAt n C' x Q ∧ IsUnitOrientationOf (R.orient x) Q := by
-    filter_upwards [ae_restrict_of_ae_restrict_of_subset hC'C R.orients, htan] with x hx hxt
-    obtain ⟨Q, hQ, hξ⟩ := hx
-    exact ⟨Q, hxt Q hQ, hξ⟩
-  -- Step 9: assemble `R' = (C', θ', ξ)`
-  exact ⟨IMRep.mk C' θ' R.orient hC' (hC'C.trans R.carrier_subset) (R.rectifiable.mono hC'C) hθ'
-    hpos hint hmeas hor, rfl, rfl, rfl⟩
-/-- **An integer multiplicity triple defines a current** (Simon 6.3.1 (‡)): for an `IMRep`
-`R = (M, θ, ξ)` in `U`, `ω ↦ ∫_M θ⟨ω, ξ⟩ dHⁿ` is a current `T ∈ 𝒟ₙ(U)`, so `T = τ(M, θ, ξ)`.
-
-Write `μ = Hⁿ⌞M`.  A unit orientation has `|ξ(x)(α)| = |α(τ₁, …, τₙ)| ≤ ‖α‖` (`τ` orthonormal),
-the integrand is a.e. strongly measurable, and `1_K θ` is `μ`-integrable for compact `K ⊆ U`.
-Hence for a test form `ω` the integrand is dominated by `sup|ω| · 1_{spt ω} θ`, so the functional
-is defined and linear.  If `ωⱼ → 0` in `𝒟ⁿ(U)` with supports in the compact `K`, then
-`|T(ωⱼ)| ≤ sup_K |ωⱼ| · ∫_K θ dμ → 0`. -/
-theorem Submission.dtc_imrep_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∃ T : GeometricCurrentOn U n, R.Represents T := by
-  intro P n U R
-  set μ := μHE[n].restrict R.carrier with hμ
-  -- (1) a unit orientation has norm at most one
-  have hbound : ∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ ‖α‖ := by
-    filter_upwards [R.orients] with x hx
-    obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
-    intro α
-    have hτn : ∀ i, ‖τ i‖ = 1 := fun i => hτ.1 i
-    have hατ : |α τ| ≤ ‖α‖ := by
-      have h := α.le_opNorm τ
-      simp only [hτn, Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
-      exact h
-    rcases hξ with h | h
-    · rw [h]; exact hατ
-    · rw [h, abs_neg]; exact hατ
-  have hθmeas : AEStronglyMeasurable (fun x => (R.mult x : ℝ)) μ :=
-    ((measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult).aestronglyMeasurable
-  -- (2) measurability of the integrand
-  have hmeas : ∀ ω : DifferentialForm (Euclid P) n, Continuous ω →
-      AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (ω x)) μ := by
-    intro ω hω
-    have h2 : AEStronglyMeasurable (fun x => R.orient x (ω x)) μ :=
-      Continuous.comp_aestronglyMeasurable₂
-        (g := fun (L : MultiVector P n) (α : Covector (Euclid P) n) => L α)
-        (isBoundedBilinearMap_apply (𝕜 := ℝ) (E := Covector (Euclid P) n) (F := ℝ)).continuous
-        R.aestronglyMeasurable_orient hω.aestronglyMeasurable
-    exact hθmeas.mul h2
-  -- (3) `θ` is integrable over compact subsets of `U`
-  have hθK : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
-      Integrable (K.indicator fun x => (R.mult x : ℝ)) μ := by
-    intro K hK hKU
-    rw [integrable_indicator_iff hK.isClosed.measurableSet]
-    refine ⟨hθmeas.restrict, ?_⟩
-    show ∫⁻ x, ‖(R.mult x : ℝ)‖ₑ ∂(μ.restrict K) < ∞
-    rw [hμ, Measure.restrict_restrict hK.isClosed.measurableSet, inter_comm]
-    simp only [Real.enorm_natCast]
-    exact lt_top_iff_ne_top.mpr (R.locallyIntegrable_mult K hK hKU)
-  -- (4) integrability of the integrand for test forms
-  have hint : ∀ ω : TestFormOn U n,
-      Integrable (fun x => (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x))
-        μ := by
-    intro ω
-    have hωc : Continuous (ω : DifferentialForm (Euclid P) n) := ω.property.1.1.continuous
-    obtain ⟨C, hC⟩ := HasCompactSupport.exists_bound_of_continuous ω.property.1.2 hωc
-    have hK : IsCompact (tsupport (ω : DifferentialForm (Euclid P) n)) := ω.property.1.2
-    refine Integrable.mono' ((hθK _ hK ω.property.2).const_mul C) (hmeas _ hωc) ?_
-    filter_upwards [hbound] with x hx
-    by_cases hxK : x ∈ tsupport (ω : DifferentialForm (Euclid P) n)
-    · rw [indicator_of_mem hxK, norm_mul, Real.norm_natCast, Real.norm_eq_abs]
-      calc (R.mult x : ℝ) * |R.orient x ((ω : DifferentialForm (Euclid P) n) x)|
-          ≤ (R.mult x : ℝ) * ‖(ω : DifferentialForm (Euclid P) n) x‖ := by
-            gcongr; exact hx _
-        _ ≤ (R.mult x : ℝ) * C := by gcongr; exact hC x
-        _ = C * (R.mult x : ℝ) := mul_comm _ _
-    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hxK
-      simp [h0, indicator_of_notMem hxK]
-  -- (5) the linear functional `ω ↦ ∫_M θ ⟨ω, ξ⟩ dHⁿ`
-  let L : TestFormOn U n →ₗ[ℝ] ℝ :=
-    { toFun := fun ω => R.action (ω : DifferentialForm (Euclid P) n)
-      map_add' := by
-        intro ω η
-        simp only [IMRep.action, Submodule.coe_add, Pi.add_apply, map_add, mul_add]
-        exact integral_add (hint ω) (hint η)
-      map_smul' := by
-        intro c ω
-        simp only [IMRep.action, Submodule.coe_smul, Pi.smul_apply, map_smul, smul_eq_mul,
-          RingHom.id_apply]
-        rw [← integral_const_mul]
-        congr 1
-        funext x
-        ring }
-  refine ⟨⟨L, ?_⟩, fun ω => rfl⟩
-  -- (6) sequential continuity
-  intro ωs hconv
-  obtain ⟨K, hK, hKU, hsupp, -, hderiv⟩ := hconv
-  have h0 := hderiv 0
-  rw [Metric.tendstoUniformlyOn_iff] at h0
-  set CK := ∫ x, K.indicator (fun x => (R.mult x : ℝ)) x ∂μ with hCKdef
-  have hCK : 0 ≤ CK := integral_nonneg fun x => indicator_nonneg (fun _ _ => Nat.cast_nonneg _) x
-  rw [Metric.tendsto_atTop]
-  intro ε hε
-  have hε' : 0 < ε / (CK + 1) := div_pos hε (by linarith)
-  obtain ⟨N, hN⟩ := eventually_atTop.mp (h0 (ε / (CK + 1)) hε')
-  refine ⟨N, fun j hj => ?_⟩
-  have hptw : ∀ x ∈ K, ‖(ωs j : DifferentialForm (Euclid P) n) x‖ < ε / (CK + 1) := by
-    intro x hx
-    have h := hN j hj x hx
-    rw [dist_comm, dist_eq_norm] at h
-    simpa [norm_iteratedFDeriv_zero] using h
-  rw [Real.dist_eq, sub_zero]
-  have hle : |L (ωs j)| ≤ ∫ x, (ε / (CK + 1)) * K.indicator (fun x => (R.mult x : ℝ)) x ∂μ := by
-    refine (Real.norm_eq_abs _).symm.le.trans (norm_integral_le_of_norm_le
-      ((hθK K hK hKU).const_mul _) ?_)
-    filter_upwards [hbound] with x hx
-    by_cases hxK : x ∈ K
-    · rw [indicator_of_mem hxK, norm_mul, Real.norm_natCast, Real.norm_eq_abs]
-      calc (R.mult x : ℝ) * |R.orient x ((ωs j : DifferentialForm (Euclid P) n) x)|
-          ≤ (R.mult x : ℝ) * ‖(ωs j : DifferentialForm (Euclid P) n) x‖ := by
-            gcongr; exact hx _
-        _ ≤ (R.mult x : ℝ) * (ε / (CK + 1)) := by gcongr; exact (hptw x hxK).le
-        _ = ε / (CK + 1) * (R.mult x : ℝ) := mul_comm _ _
-    · have h0 : (ωs j : DifferentialForm (Euclid P) n) x = 0 :=
-        image_eq_zero_of_notMem_tsupport (fun h => hxK (hsupp j h))
-      simp [h0, indicator_of_notMem hxK]
-  rw [integral_const_mul, ← hCKdef] at hle
-  calc |L (ωs j)| ≤ ε / (CK + 1) * CK := hle
-    _ < ε := by
-      rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
-      nlinarith
-/-- **Upper density theorem for `Hⁿ` off a Borel set of finite measure** (Simon Ch. 1, 3.3 and
-3.6, with the crude covering constant `6ⁿ`; chapter-01.txt lines 602–721).  If `S ⊆ ℝᴾ` is Borel
-with `Hⁿ(S) < ∞`, then for `Hⁿ`-a.e. `x ∉ S`, `Hⁿ(S ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`.  A failure
-at `x` puts `x` in a threshold set `{x ∉ S : Hⁿ(S ∩ B̄_ρ(x)) > t ρⁿ frequently as ρ ↓ 0}` with
-`t = (k + 1)⁻¹`.  Vitali's lemma (factor `2`, enlarged radius `3ρ`) and separability give
-`t · μH[n](E) ≤ 6ⁿ Hⁿ(G)` whenever each `x ∈ E` has arbitrarily small `ρ` with
-`t ρⁿ ≤ Hⁿ(G ∩ B̄_ρ(x))`.  Taking `G = S \ F` for a closed `F ⊆ S` with `Hⁿ(S \ F)` small (weak
-regularity of the finite measure `Hⁿ⌞S`), which agrees with `S` near `x ∉ F`, every threshold set
-is `μH[n]`-null, hence `Hⁿ`-null. -/
-theorem Submission.regcomp_atl_upper_density_zero : ∀ (P n : ℕ) (S : Set (Euclid P)), MeasurableSet S → μHE[n] S ≠ ∞ → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
-  intro P n S hS hfin
-  -- Step 2, Vitali selection (Simon 1.3.4): a countable disjoint subfamily whose
-  -- 3-fold enlargements cover the centres.
-  have vitali : ∀ (E : Set (Euclid P)) (p : Euclid P → ℝ → Prop) (δ : ℝ),
-      (∀ x ∈ E, ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧ p x ρ) →
-      ∃ u : Set (Euclid P × ℝ), u.Countable ∧ (∀ a ∈ u, a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < δ ∧ p a.1 a.2) ∧
-        u.PairwiseDisjoint (fun a => closedBall a.1 a.2) ∧
-        E ⊆ ⋃ a ∈ u, closedBall a.1 (3 * a.2) := by
-    intro E p δ hE
-    obtain ⟨u, huT, hdisj, hcov⟩ := Vitali.exists_disjoint_subfamily_covering_enlargement
-      (fun a : Euclid P × ℝ => closedBall a.1 a.2)
-      {a : Euclid P × ℝ | a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < δ ∧ p a.1 a.2} (fun a => a.2) 2 (by norm_num)
-      (fun a ha => ha.2.1.le) δ (fun a ha => ha.2.2.1.le)
-      (fun a ha => nonempty_closedBall.2 ha.2.1.le)
-    refine ⟨u, ?_, fun a ha => huT ha, hdisj, ?_⟩
-    · apply hdisj.countable_of_nonempty_interior
-      intro a ha
-      refine ⟨a.1, interior_mono ball_subset_closedBall ?_⟩
-      rw [isOpen_ball.interior_eq]
-      exact mem_ball_self (huT ha).2.1
-    · intro x hx
-      obtain ⟨ρ, hρ0, hρδ, hp⟩ := hE x hx
-      obtain ⟨b, hbu, ⟨w, hw1, hw2⟩, hle⟩ := hcov (x, ρ) ⟨hx, hρ0, hρδ, hp⟩
-      refine mem_iUnion₂.2 ⟨b, hbu, ?_⟩
-      rw [mem_closedBall]
-      have h1 : dist w x ≤ ρ := hw1
-      have h2 : dist w b.1 ≤ b.2 := hw2
-      have hle' : ρ ≤ 2 * b.2 := hle
-      calc dist x b.1 ≤ dist x w + dist w b.1 := dist_triangle _ _ _
-        _ ≤ ρ + b.2 := add_le_add (by rw [dist_comm]; exact h1) h2
-        _ ≤ 3 * b.2 := by linarith
-  -- Step 2, comparison (Simon 1.3.3 with the crude constant 6 ^ n).
-  have comparison : ∀ (t : ℝ≥0∞) (E G : Set (Euclid P)), t ≠ 0 → t ≠ ∞ → MeasurableSet G →
-      (∀ x ∈ E, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
-        t * ENNReal.ofReal ρ ^ n ≤ μHE[n] (G ∩ closedBall x ρ)) →
-      t * μH[(n : ℝ)] E ≤ 6 ^ n * μHE[n] G := by
-    intro t E G ht0 httop hG hE
-    have hfam : ∀ j : ℕ, ∃ u : Set (Euclid P × ℝ), u.Countable ∧
-        (∀ a ∈ u, a.1 ∈ E ∧ 0 < a.2 ∧ a.2 < 1 / ((j : ℝ) + 1) ∧
-          t * ENNReal.ofReal a.2 ^ n ≤ μHE[n] (G ∩ closedBall a.1 a.2)) ∧
-        u.PairwiseDisjoint (fun a => closedBall a.1 a.2) ∧
-        E ⊆ ⋃ a ∈ u, closedBall a.1 (3 * a.2) :=
-      fun j => vitali E (fun c ρ => t * ENNReal.ofReal ρ ^ n ≤ μHE[n] (G ∩ closedBall c ρ))
-        (1 / ((j : ℝ) + 1)) (fun x hx => hE x hx _ (by positivity))
-    choose u hucount hu hdisj hcover using hfam
-    have : ∀ j, Countable (u j) := fun j => (hucount j).to_subtype
-    -- packing estimate
-    have hsum : ∀ j, t * ∑' a : u j, ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n ≤ μHE[n] G := by
-      intro j
-      rw [← ENNReal.tsum_mul_left]
-      calc ∑' a : u j, t * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n
-          ≤ ∑' a : u j, μHE[n] (G ∩ closedBall (a : Euclid P × ℝ).1 (a : Euclid P × ℝ).2) :=
-            ENNReal.tsum_le_tsum fun a => (hu j a a.2).2.2.2
-        _ = μHE[n] (⋃ a ∈ u j, G ∩ closedBall a.1 a.2) :=
-            (measure_biUnion (hucount j) ((hdisj j).mono fun a => inter_subset_right)
-              fun a _ => hG.inter measurableSet_closedBall).symm
-        _ ≤ μHE[n] G := measure_mono (iUnion₂_subset fun a _ => inter_subset_left)
-    -- diameter estimate
-    have hdiam : ∀ j (a : u j), ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2))
-        ≤ ENNReal.ofReal (6 * (a : Euclid P × ℝ).2) := by
-      intro j a
-      apply ediam_le_of_forall_dist_le
-      intro y hy z hz
-      rw [mem_closedBall] at hy hz
-      calc dist y z ≤ dist y (a : Euclid P × ℝ).1 + dist z (a : Euclid P × ℝ).1 :=
-            dist_triangle_right _ _ _
-        _ ≤ 6 * (a : Euclid P × ℝ).2 := by linarith
-    have hterm : ∀ j, t * ∑' a : u j,
-        ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ) ≤
-          6 ^ n * μHE[n] G := by
-      intro j
-      calc t * ∑' a : u j, ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ)
-          ≤ t * ∑' a : u j, 6 ^ n * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n := by
-            gcongr with a
-            rw [ENNReal.rpow_natCast]
-            calc ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ n
-                ≤ ENNReal.ofReal (6 * (a : Euclid P × ℝ).2) ^ n := by gcongr; exact hdiam j a
-              _ = 6 ^ n * ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n := by
-                rw [ENNReal.ofReal_mul (show (0 : ℝ) ≤ 6 by norm_num), mul_pow]
-                norm_num
-        _ = 6 ^ n * (t * ∑' a : u j, ENNReal.ofReal (a : Euclid P × ℝ).2 ^ n) := by
-            rw [ENNReal.tsum_mul_left]; ring
-        _ ≤ 6 ^ n * μHE[n] G := by gcongr; exact hsum j
-    have hH := MeasureTheory.Measure.hausdorffMeasure_le_liminf_tsum (X := Euclid P)
-      (ι := fun j => (u j)) (n : ℝ) E (l := atTop)
-      (fun j : ℕ => ENNReal.ofReal (6 * (1 / ((j : ℝ) + 1))))
-      (by
-        rw [← ENNReal.ofReal_zero]
-        apply ENNReal.tendsto_ofReal
-        have := tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)
-        simpa using this.const_mul 6)
-      (fun j a => closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2))
-      (Eventually.of_forall fun j a => (hdiam j a).trans (ENNReal.ofReal_le_ofReal (by
-        have := (hu j a a.2).2.2.1
-        linarith)))
-      (Eventually.of_forall fun j x hx => by
-        obtain ⟨a, ha, hxa⟩ := mem_iUnion₂.1 (hcover j hx)
-        exact mem_iUnion.2 ⟨⟨a, ha⟩, hxa⟩)
-    have hbound : ∀ j, ∑' a : u j,
-        ediam (closedBall (a : Euclid P × ℝ).1 (3 * (a : Euclid P × ℝ).2)) ^ (n : ℝ) ≤
-          6 ^ n * μHE[n] G / t := by
-      intro j
-      rw [ENNReal.le_div_iff_mul_le (Or.inl ht0) (Or.inl httop), mul_comm]
-      exact hterm j
-    have hlim : μH[(n : ℝ)] E ≤ 6 ^ n * μHE[n] G / t :=
-      hH.trans (liminf_le_of_frequently_le' (Frequently.of_forall hbound))
-    calc t * μH[(n : ℝ)] E ≤ t * (6 ^ n * μHE[n] G / t) := by gcongr
-      _ = 6 ^ n * μHE[n] G := ENNReal.mul_div_cancel ht0 httop
-  -- Step 3, each threshold set is null (Simon 1.3.6).
-  have threshold : ∀ t : ℝ≥0∞, t ≠ 0 → t ≠ ∞ →
-      μHE[n] {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
-        t < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n} = 0 := by
-    intro t ht0 httop
-    set N := {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
-      t < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n} with hN
-    have key : ∀ ε : ℝ≥0∞, ε ≠ 0 → μH[(n : ℝ)] N < ε := by
-      intro ε hε
-      have : IsFiniteMeasure ((μHE[n] : Measure (Euclid P)).restrict S) :=
-        ⟨by rw [Measure.restrict_apply_univ]; exact hfin.lt_top⟩
-      have : ((μHE[n] : Measure (Euclid P)).restrict S).WeaklyRegular :=
-        Measure.WeaklyRegular.of_pseudoMetrizableSpace_of_isFiniteMeasure _
-      have hpos : t * ε / 6 ^ n ≠ 0 := by
-        apply ENNReal.div_ne_zero.2
-        exact ⟨mul_ne_zero ht0 hε, ENNReal.pow_ne_top (by norm_num)⟩
-      obtain ⟨F, hFS, hFc, hFlt⟩ := hS.exists_isClosed_sdiff_lt
-        (μ := (μHE[n] : Measure (Euclid P)).restrict S)
-        (by rw [Measure.restrict_apply hS, inter_self]; exact hfin) hpos
-      have hG : MeasurableSet (S \ F) := hS.diff hFc.measurableSet
-      have hμG : μHE[n] (S \ F) < t * ε / 6 ^ n := by
-        rwa [Measure.restrict_apply hG, inter_eq_left.2 sdiff_subset] at hFlt
-      have hhyp : ∀ x ∈ N, ∀ δ : ℝ, 0 < δ → ∃ ρ : ℝ, 0 < ρ ∧ ρ < δ ∧
-          t * ENNReal.ofReal ρ ^ n ≤ μHE[n] ((S \ F) ∩ closedBall x ρ) := by
-        intro x hx δ hδ
-        obtain ⟨hxS, hfreq⟩ := hx
-        have hxF : x ∉ F := fun h => hxS (hFS h)
-        obtain ⟨r₁, hr₁, hball⟩ := Metric.isOpen_iff.1 hFc.isOpen_compl x hxF
-        have hev : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ρ ∈ Ioo 0 (min δ (r₁ / 2)) :=
-          Ioo_mem_nhdsGT (by positivity)
-        obtain ⟨ρ, hρq, hρ⟩ := (hfreq.and_eventually hev).exists
-        refine ⟨ρ, hρ.1, lt_of_lt_of_le hρ.2 (min_le_left _ _), ?_⟩
-        have hρpos : ENNReal.ofReal ρ ^ n ≠ 0 :=
-          pow_ne_zero _ (ENNReal.ofReal_pos.2 hρ.1).ne'
-        have hρtop : ENNReal.ofReal ρ ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
-        have h1 : t * ENNReal.ofReal ρ ^ n < μHE[n] (S ∩ closedBall x ρ) :=
-          (ENNReal.lt_div_iff_mul_lt (Or.inl hρpos) (Or.inl hρtop)).1 hρq
-        have h2 : S ∩ closedBall x ρ = (S \ F) ∩ closedBall x ρ := by
-          ext y
-          constructor
-          · rintro ⟨hyS, hyB⟩
-            refine ⟨⟨hyS, fun hyF => hball ?_ hyF⟩, hyB⟩
-            rw [mem_ball]
-            have := mem_closedBall.1 hyB
-            have := hρ.2
-            have := min_le_right δ (r₁ / 2)
-            linarith
-          · rintro ⟨⟨hyS, _⟩, hyB⟩
-            exact ⟨hyS, hyB⟩
-        rw [← h2]
-        exact h1.le
-      have hcomp := comparison t N (S \ F) ht0 httop hG hhyp
-      have h6 : (6 : ℝ≥0∞) ^ n ≠ 0 := pow_ne_zero _ (by norm_num)
-      have h6' : (6 : ℝ≥0∞) ^ n ≠ ∞ := ENNReal.pow_ne_top (by norm_num)
-      have hlt : t * μH[(n : ℝ)] N < t * ε := by
-        calc t * μH[(n : ℝ)] N ≤ 6 ^ n * μHE[n] (S \ F) := hcomp
-          _ < 6 ^ n * (t * ε / 6 ^ n) := ENNReal.mul_lt_mul_right h6 h6' hμG
-          _ = t * ε := ENNReal.mul_div_cancel h6 h6'
-      exact (ENNReal.mul_lt_mul_iff_right ht0 httop).1 hlt
-    have hH : μH[(n : ℝ)] N = 0 := by
-      by_contra h
-      exact lt_irrefl _ (key _ h)
-    rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, hH, smul_zero]
-  -- Steps 1 and 4, every failure of convergence lies in a threshold set.
-  rw [ae_iff]
-  apply measure_mono_null (t := ⋃ k : ℕ, {x : Euclid P | x ∉ S ∧ ∃ᶠ ρ in 𝓝[>] (0 : ℝ),
-    ((k : ℝ≥0∞) + 1)⁻¹ < μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n})
-  · intro x hx
-    simp only [mem_ofPred_eq, Classical.not_imp] at hx
-    obtain ⟨hxS, hnt⟩ := hx
-    rw [ENNReal.tendsto_nhds_zero] at hnt
-    push Not at hnt
-    obtain ⟨ε, hε, hfreq⟩ := hnt
-    obtain ⟨k, hk⟩ := ENNReal.exists_inv_nat_lt hε.ne'
-    refine mem_iUnion.2 ⟨k, hxS, hfreq.mono fun ρ hρ => ?_⟩
-    calc ((k : ℝ≥0∞) + 1)⁻¹ ≤ (k : ℝ≥0∞)⁻¹ := ENNReal.inv_le_inv.2 le_self_add
-      _ < ε := hk
-      _ < _ := hρ
-  · exact measure_iUnion_null fun k => threshold _ (by simp) (by simp)
-
-/-- **Upper density theorem for `Hⁿ` off a Borel set of locally finite measure in `U`** (Simon
-Ch. 1, Remark 3.7(2); chapter-01.txt lines 705–711).  If `U ⊆ ℝᴾ` is open and `S` is Borel with
-`Hⁿ(S ∩ K) < ∞` for every compact `K ⊆ U`, then for `Hⁿ`-a.e. `x ∈ U ∖ S`,
-`Hⁿ(S ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`.  Countably many balls `B_{r_y}(y)` with
-`B̄_{r_y}(y) ⊆ U` cover `U` (Lindelöf); the finite-measure version applies to each piece
-`S ∩ B_{r_y}(y)`, and near `x ∈ B_{r_y}(y)` the piece agrees with `S`. -/
-theorem Submission.regcomp_atl_local_density_zero : ∀ (P n : ℕ) (U S : Set (Euclid P)), IsOpen U → MeasurableSet S → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (S ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), x ∈ U → x ∉ S → Tendsto (fun ρ : ℝ => μHE[n] (S ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) := by
-  intro P n U S hU hS hfin
-  -- Step 1, a countable cover of `U` by balls `B(y, r y)` with `B̄(y, r y) ⊆ U`.
-  have hr : ∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ closedBall x r ⊆ U := by
-    intro x hx
-    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hU x hx
-    exact ⟨ε / 2, half_pos hε, (closedBall_subset_ball (half_lt_self hε)).trans hball⟩
-  choose! r hr0 hrU using hr
-  obtain ⟨D, hDU, hDc, hcov⟩ := TopologicalSpace.countable_cover_nhdsWithin
-    (f := fun y => ball y (r y)) (s := U)
-    fun x hx => mem_nhdsWithin_of_mem_nhds (ball_mem_nhds x (hr0 x hx))
-  -- Steps 2 and 3, the finite-measure theorem on each piece `S ∩ B(y, r y)`, simultaneously
-  -- for the countably many `y ∈ D`.
-  have hpiece : ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), ∀ y ∈ D, x ∉ S ∩ ball y (r y) →
-      Tendsto (fun ρ : ℝ => μHE[n] (S ∩ ball y (r y) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n)
-        (𝓝[>] 0) (𝓝 0) := by
-    rw [ae_ball_iff hDc]
-    intro y hy
-    apply Submission.regcomp_atl_upper_density_zero P n _ (hS.inter measurableSet_ball)
-    exact ne_top_of_le_ne_top (hfin _ (isCompact_closedBall y (r y)) (hrU y (hDU hy)))
-      (measure_mono (inter_subset_inter_right S ball_subset_closedBall))
-  -- Step 4, localization: for small `ρ`, `B̄(x, ρ) ⊆ B(y, r y)`, so the piece agrees with `S`.
-  filter_upwards [hpiece] with x hx hxU hxS
-  obtain ⟨y, hyD, hxy⟩ := mem_iUnion₂.1 (hcov hxU)
-  obtain ⟨ε, hε, hεy⟩ := Metric.isOpen_iff.1 isOpen_ball x hxy
-  refine (hx y hyD fun h => hxS h.1).congr' ?_
-  filter_upwards [Ioo_mem_nhdsGT hε] with ρ hρ
-  rw [inter_assoc, inter_eq_right.2 ((closedBall_subset_ball hρ.2).trans hεy)]
-/-- Comparison of blow-up integrals (proof of Simon 3.1.6): for Borel `A ⊆ B`, `r > 0` and a
-continuous `f` with `|f| ≤ C` vanishing off `B̄_R(0)`,
-`|∫_{η_{x,r}(B)} f dHⁿ − ∫_{η_{x,r}(A)} f dHⁿ| ≤ C Hⁿ(η_{x,r}(B \ A) ∩ B̄_R(0))`.  Since `η_{x,r}` is
-injective, `η_{x,r}(B)` is the disjoint union of `η_{x,r}(A)` and `η_{x,r}(B \ A)`, both Borel
-(`η_{x,r}(T)` is the preimage of `T` under `y ↦ x + ry`); the difference of the integrals is the
-integral over `η_{x,r}(B \ A)`, which equals the integral over `η_{x,r}(B \ A) ∩ B̄_R(0)`. -/
-theorem Submission.regcomp_atl_pc_blowUp_setIntegral_sub_le : ∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r R C : ℝ) (f : Euclid P → ℝ), Continuous f → MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' B ∩ closedBall 0 R) ≠ ∞ → (∀ y : Euclid P, ‖f y‖ ≤ C) → (∀ y : Euclid P, y ∉ closedBall (0 : Euclid P) R → f y = 0) → ‖(∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]‖ ≤ C * (μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R)).toReal := by
-  intro P n A B x r R C f hf hA hB hAB hr hfin hC hzero
-  -- Step 1: `η = η_{x,r}` is injective
-  have hinj : Injective (Poincare.SimonGMT.Chapter03.blowUpMap x r : Euclid P → Euclid P) := by
-    intro z w h
-    have h' : z - x = w - x :=
-      smul_right_injective (Euclid P) (inv_ne_zero hr.ne') h
-    simpa using h'
-  -- Step 2: `η(T) = g⁻¹(T)` for `g y = x + r • y`, so `η` maps Borel sets to Borel sets
-  have himage : ∀ T : Set (Euclid P),
-      Poincare.SimonGMT.Chapter03.blowUpMap x r '' T = (fun y : Euclid P => x + r • y) ⁻¹' T := by
-    intro T
-    ext y
-    constructor
-    · rintro ⟨z, hz, rfl⟩
-      simpa [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, mul_inv_cancel₀ hr.ne'] using hz
-    · intro hy
-      refine ⟨x + r • y, hy, ?_⟩
-      simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, inv_mul_cancel₀ hr.ne']
-  have hmeas : ∀ T : Set (Euclid P), MeasurableSet T →
-      MeasurableSet (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) := by
-    intro T hT
-    rw [himage T]
-    exact (by fun_prop : Continuous fun y : Euclid P => x + r • y).measurable hT
-  -- Step 3: `f` is integrable on `η(T)` for Borel `T ⊆ B`
-  have hint : ∀ T : Set (Euclid P), MeasurableSet T → T ⊆ B →
-      IntegrableOn f (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) μHE[n] := by
-    intro T hT hTB
-    have hfinT : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T ∩ closedBall 0 R) ≠ ∞ :=
-      ne_top_of_le_ne_top hfin (measure_mono (inter_subset_inter_left _ (image_mono hTB)))
-    exact (Measure.integrableOn_of_bounded hfinT hf.aestronglyMeasurable
-      (Eventually.of_forall hC)).of_forall_sdiff_eq_zero (hmeas T hT)
-      fun y hy => hzero y fun h => hy.2 ⟨hy.1, h⟩
-  -- Step 4: `∫_{η(B)} f − ∫_{η(A)} f = ∫_{η(B∖A)} f`
-  have hBA : MeasurableSet (B \ A) := hB.diff hA
-  have hunion : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' B, f y ∂μHE[n] =
-      (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n]) +
-        ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A), f y ∂μHE[n] := by
-    rw [← setIntegral_union ((disjoint_image_iff hinj).mpr disjoint_sdiff_right) (hmeas _ hBA)
-      (hint A hA hAB) (hint _ hBA sdiff_subset), ← image_union, union_sdiff_cancel hAB]
-  -- Step 5: localization to `B̄_R(0)`
-  have hloc : ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A), f y ∂μHE[n] =
-      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R, f y ∂μHE[n] :=
-    setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (hmeas _ hBA) inter_subset_left
-      fun y hy => hzero y fun h => hy.2 ⟨hy.1, h⟩
-  -- Step 6: the estimate
-  have hfinS : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (B \ A) ∩ closedBall 0 R) < ∞ :=
-    (measure_mono (inter_subset_inter_left _ (image_mono sdiff_subset))).trans_lt hfin.lt_top
-  rw [hunion, add_sub_cancel_left, hloc, ← measureReal_def]
-  exact norm_setIntegral_le_of_norm_le_const hfinS fun y _ => hC y
-/-- Rescaling a vanishing `n`-density quotient (the final limit in the proof of Simon 3.1.6): if
-`g(ρ)/ρⁿ → 0` as `ρ ↓ 0` and `R > 0`, then `r⁻ⁿ g(rR) → 0` as `r ↓ 0`.  The substitution
-`ρ = rR` maps `𝓝[>] 0` to itself, multiplying by the finite constant `Rⁿ` keeps the limit `0`,
-and `Rⁿ · g(rR)/(rR)ⁿ = r⁻ⁿ g(rR)` for `r > 0`. -/
-theorem Submission.regcomp_atl_pc_density_rescale_tendsto : ∀ (n : ℕ) (g : ℝ → ℝ≥0∞) (R : ℝ), 0 < R → Tendsto (fun ρ : ℝ => g ρ / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → Tendsto (fun r : ℝ => (ENNReal.ofReal r)⁻¹ ^ n * g (r * R)) (𝓝[>] 0) (𝓝 0) := by
-  intro n g R hR hg
-  -- Step 1: `r ↦ r * R` maps `𝓝[>] 0` to `𝓝[>] 0`
-  have hmap : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
-    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
-    · exact ((continuous_mul_const R).tendsto' 0 0 (zero_mul R)).mono_left nhdsWithin_le_nhds
-    · filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
-      exact mul_pos hr hR
-  -- Step 2: `g (r * R) / ofReal (r * R) ^ n → 0`
-  have hcomp : Tendsto (fun r : ℝ => g (r * R) / ENNReal.ofReal (r * R) ^ n) (𝓝[>] 0) (𝓝 0) :=
-    hg.comp hmap
-  -- Step 3: multiplication by the finite constant `ofReal R ^ n`
-  have hbtop : ENNReal.ofReal R ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
-  have hconst : Tendsto
-      (fun r : ℝ => ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n))
-      (𝓝[>] 0) (𝓝 0) := by
-    have h := ENNReal.Tendsto.const_mul hcomp (Or.inr hbtop)
-    rwa [mul_zero] at h
-  -- Step 4: for `r > 0`, `Rⁿ · g(rR)/(rR)ⁿ = r⁻ⁿ g(rR)`
-  have heq : (fun r : ℝ => ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n))
-      =ᶠ[𝓝[>] 0] fun r : ℝ => (ENNReal.ofReal r)⁻¹ ^ n * g (r * R) := by
-    filter_upwards [self_mem_nhdsWithin] with r (hr : 0 < r)
-    have ha0 : ENNReal.ofReal r ^ n ≠ 0 := ENNReal.pow_ne_zero (ENNReal.ofReal_pos.mpr hr).ne' n
-    have hatop : ENNReal.ofReal r ^ n ≠ ∞ := ENNReal.pow_ne_top ENNReal.ofReal_ne_top
-    have hb0 : ENNReal.ofReal R ^ n ≠ 0 := ENNReal.pow_ne_zero (ENNReal.ofReal_pos.mpr hR).ne' n
-    calc ENNReal.ofReal R ^ n * (g (r * R) / ENNReal.ofReal (r * R) ^ n)
-        = ENNReal.ofReal R ^ n *
-            ((ENNReal.ofReal r ^ n)⁻¹ * (ENNReal.ofReal R ^ n)⁻¹ * g (r * R)) := by
-          rw [ENNReal.ofReal_mul hr.le, mul_pow, ENNReal.div_eq_inv_mul,
-            ENNReal.mul_inv (Or.inl ha0) (Or.inl hatop)]
-      _ = ENNReal.ofReal R ^ n * (ENNReal.ofReal R ^ n)⁻¹ *
-            ((ENNReal.ofReal r ^ n)⁻¹ * g (r * R)) := by ring
-      _ = (ENNReal.ofReal r)⁻¹ ^ n * g (r * R) := by
-          rw [ENNReal.mul_inv_cancel hb0 hbtop, one_mul, ENNReal.inv_pow]
-  -- Step 5: the two functions agree eventually along `𝓝[>] 0`
-  exact hconst.congr' heq
-/-- Asymptotically equal blow-up integrals give equal approximate tangent spaces (Simon Ch. 3,
-Definition 1.4; last step of the proof of 3.1.6).  With `η_r = η_{x,r}`, `I(r) = ∫_{η_r(M)} f dHⁿ`,
-`I'(r) = ∫_{η_r(M')} f dHⁿ` and `I(r) − I'(r) → 0` as `r ↓ 0` for every `f ∈ C_c(ℝᴾ)`:
-`I' = I − (I − I')` and `I = I' + (I − I')` have the same limit `∫_Q f dHⁿ` as `I`, resp. `I'`,
-while the condition `dim Q = n` does not involve `M`, `M'`. -/
-theorem Submission.regcomp_atl_pc_tangent_iff_of_integral_sub_tendsto : ∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P), (∀ f : CompactlySupportedContinuousMap (Euclid P) ℝ, Tendsto (fun r : ℝ => (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M', f y ∂μHE[n]) (𝓝[>] 0) (𝓝 0)) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q := by
-  intro P n M M' x hD Q
-  constructor
-  · -- (⇒) `I' = I − (I − I') → L − 0 = L`
-    rintro ⟨hQ, hM⟩
-    refine ⟨hQ, fun f => ?_⟩
-    have h := (hM f).sub (hD f)
-    rw [sub_zero] at h
-    exact h.congr fun r => sub_sub_cancel _ _
-  · -- (⇐) `I = I' + (I − I') → L + 0 = L`
-    rintro ⟨hQ, hM'⟩
-    refine ⟨hQ, fun f => ?_⟩
-    have h := (hM' f).add (hD f)
-    rw [add_zero] at h
-    exact h.congr fun r => add_sub_cancel _ _
-/-- Scaling of `Hⁿ` under the blow-up `η_{x,r}(z) = r⁻¹(z − x)`, `r > 0` (proof of Simon 3.1.6):
-`Hⁿ(η_{x,r}(S) ∩ B̄_R(0)) = r⁻ⁿ Hⁿ(S ∩ B̄_{rR}(x))`.  Since `‖η_{x,r}(z)‖ = r⁻¹‖z − x‖`, the left
-side is `Hⁿ(η_{x,r}(S ∩ B̄_{rR}(x)))`; `η_{x,r}` is the homothety of centre `x` and ratio `r⁻¹`
-followed by the translation by `−x`, which preserves `Hⁿ`, while the homothety multiplies it by
-`‖r⁻¹‖₊ⁿ = r⁻ⁿ`. -/
-theorem Submission.regcomp_atl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R)) := by
-  intro P n x r R S hr
-  -- `‖η(z)‖ = r⁻¹‖z − x‖`
-  have hnorm : ∀ z : Euclid P,
-      ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ = r⁻¹ * ‖z - x‖ := by
-    intro z
-    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
-      abs_of_pos (inv_pos.mpr hr)]
-  -- Step 1: `η(S) ∩ B̄(0, R) = η(S ∩ B̄(x, rR))`
-  have hset : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R =
-      Poincare.SimonGMT.Chapter03.blowUpMap x r '' (S ∩ closedBall x (r * R)) := by
-    ext y
-    constructor
-    · rintro ⟨⟨z, hz, rfl⟩, hy⟩
-      refine ⟨z, ⟨hz, ?_⟩, rfl⟩
-      rw [mem_closedBall_zero_iff, hnorm] at hy
-      rw [mem_closedBall, dist_eq_norm]
-      calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by field_simp
-        _ ≤ r * R := mul_le_mul_of_nonneg_left hy hr.le
-    · rintro ⟨z, ⟨hz, hzx⟩, rfl⟩
-      refine ⟨⟨z, hz, rfl⟩, ?_⟩
-      rw [mem_closedBall, dist_eq_norm] at hzx
-      rw [mem_closedBall_zero_iff, hnorm]
-      calc r⁻¹ * ‖z - x‖ ≤ r⁻¹ * (r * R) := mul_le_mul_of_nonneg_left hzx (inv_pos.mpr hr).le
-        _ = R := by field_simp
-  -- Step 2: `η = τ ∘ h` with `h = homothety x r⁻¹` and `τ y = y + (-x)`
-  have hcomp : Poincare.SimonGMT.Chapter03.blowUpMap x r =
-      (fun y : Euclid P => y + -x) ∘ AffineMap.homothety x r⁻¹ := by
-    funext z
-    simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
-  -- Step 3: `μ(η(T)) = (ENNReal.ofReal r)⁻¹ ^ n * μ(T)`
-  have hscale : ∀ T : Set (Euclid P), μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) =
-      (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] T := by
-    intro T
-    rw [hcomp, Set.image_comp, (isometry_add_right (-x)).euclideanHausdorffMeasure_image,
-      euclideanHausdorffMeasure_homothety_image n x (inv_ne_zero hr.ne') T, ENNReal.smul_def,
-      smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
-      Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
-  -- Step 4: conclusion
-  rw [hset, hscale]
-
 /-- Locality of approximate tangent spaces (Simon 3.1.5(2), from the proof of 3.1.6 "⇒"): if
 `A ⊆ B` are Borel, `Hⁿ(B ∩ B̄_{r₀}(x)) < ∞` and `Hⁿ((B \ A) ∩ B̄_ρ(x))/ρⁿ → 0` as `ρ ↓ 0`, then
 `B` and `A` have the same approximate tangent spaces at `x`.  For `f ∈ C_c(ℝᴾ)` with `|f| ≤ C`
