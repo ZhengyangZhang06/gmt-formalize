@@ -1,0 +1,73 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdtfrfg_|dimred_mbl_dtfr_face_geometry|face_separation|face_coord|cube_volume",
+        "volume_preserving_ofLp",
+        "theorem volume_preserving_ofLp|theorem volume_pi_Ioo",
+        "theorem EuclideanSpace.dist_eq|theorem dist_apply_le|theorem single_apply|lemma ofLp_sum",
+        "theorem orderEmbOfFin_unique|theorem StrictMono.range_inj|theorem card_le_of_injective|theorem one_le_abs|lemma prod_of_injective",
+        "cmcdtfrfg_cube_volume",
+        "cmcdtfrfg_face_coord",
+        "cmcdtfrfg_face_isometry_diam",
+        "cmcdtfrfg_face_separation",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/face_geometry_independent_audit_rnho1trl/TypesAndAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/face_geometry_independent_audit_rnho1trl/EndToEnd.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/WithLp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Finset/Sort.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fintype/Card.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Group/Unbundled/Int.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/WellFounded.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-49d3450570/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-49d3450570/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-f53301754d/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-90c7d102a6/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-a79669a7f0/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-fd3d8e3830/accepted-candidate.json",
+        "/tmp/face_geometry_independent_audit_rnho1trl/TypesAndAssembly.lean",
+        "/tmp/face_geometry_independent_audit_rnho1trl/EndToEnd.lean"
+      ],
+      "conclusion": "The pinned project and Mathlib revisions match the manifest; accepted candidates have identical frozen Contract and compiler inputs. The project/GMT search found no matching face declarations. Inspected Mathlib sources support the measure, coordinate, distance, finite-order and integer-gap arguments. Each proposed bare name has exactly one existing owner, comparator-accepted with a byte-identical frozen type; acceptance receipts, candidate identities and source hashes agree. Dependencies are correctly directed and acyclic. Independent Lean checks elaborated all four standalone propositions before introducing their implementations, verified the Euclidean L² metric and standard volume instances, and assembled the extracted accepted proofs into the exact selected dimred_mbl_dtfr_face_geometry contract. Both checks passed; all four proofs and the assembled parent use only propext, Classical.choice and Quot.sound. The split appropriately separates volume, shared coordinate computation, metric bounds and separation."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cube_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose in every dimension. The proof identifies the cube as a measurable box preimage under measure-preserving ofLp and evaluates its product volume, including the empty product for k = 0. It is complete and independent."
+    },
+    {
+      "key": "face_coord",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All parameters and the injectivity hypothesis are present in both statements. Coordinate linearity and the single-vector formula give the finite sum; injectivity isolates the selected coordinate, and every summand vanishes off the range. This is a genuine shared obligation with no circular dependency."
+    },
+    {
+      "key": "face_isometry_diam",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches both prose conclusions and their hypotheses. Using only face_coord, reindexing squared coordinate distances proves isometry. Closed-cube bounds give distance at most sqrt k, and injectivity gives k ≤ P. Every step is justified, and the declared dependency is correct."
+    },
+    {
+      "key": "face_separation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type includes both strict-monotonicity assumptions, distinctness and both cube conditions. The exhaustive cases prove the required alternatives: an escaped coordinate gives the boundary-distance bound; otherwise equal finite ranges identify the increasing maps, integer squeezing identifies bases on the range, and distinctness supplies an off-range integer gap. The proof handles k = 0 and depends only on face_coord, without invoking itself or the parent."
+    }
+  ],
+  "required_changes": []
+}
