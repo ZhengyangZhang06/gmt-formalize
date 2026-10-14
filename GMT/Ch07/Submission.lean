@@ -984,6 +984,26 @@ theorem Submission.idtp_fons_odc_ray_orientation : ∀ (P : ℕ) (R : IMRep (uni
   -- Step 5: the unit orientations of `ℝe` are `±e` (line_orientation).
   exact Submission.idtp_fons_odc_ro_line_orientation P e (R.orient (t₀ • e)) he1 hQo
 
+/-- **A `1`-dimensional current carried by finitely many rays** (Simon Ch. 7, proof of 3.3(2),
+(10)).  Let `R = (M, θ, ξ)` be a `1`-dimensional integer multiplicity triple in `ℝᴾ` and `F` a
+finite set of unit vectors such that `H¹`-almost all of `M` lies on the open rays
+`ray(e) = {t e : t > 0}`, `e ∈ F`.  Then there are densities `g_e`, locally integrable and
+a.e. integer-valued on `(0, ∞)`, with `τ(M, θ, ξ)(ω) = Σ_{e ∈ F} ∫_0^∞ g_e(t) ⟨ω(t e), e⟩ dt` for
+every `ω ∈ 𝒟¹(ℝᴾ)`: `ξ = ±e` `H¹`-a.e. on `M ∩ ray(e)`, which makes the action on `M ∩ ray(e)`
+such a ray integral, and these pieces split the action. -/
+theorem Submission.idtp_fons_odc_ray_action : ∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → (μHE[1] : Measure (Euclid P)) (R.carrier ∩ (⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0)ᶜ) = 0 → ∃ g : Euclid P → ℝ → ℝ, (∀ e ∈ F, LocallyIntegrableOn (g e) (Ioi 0)) ∧ (∀ e ∈ F, ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), ∃ k : ℤ, g e t = k) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, R.action (ω : DifferentialForm (Euclid P) 1) = ∑ e ∈ F, ∫ t in Ioi (0 : ℝ), g e t * (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e) := by
+  intro P R F hF hnull
+  /- Step 1: for `e ∈ F`, `ξ = ±e` `H¹`-a.e. on `M ∩ ray(e)`, so the action on `M ∩ ray(e)` is
+  `∫_0^∞ g_e(t) ⟨ω(t e), e⟩ dt` for a locally integrable, a.e. integer-valued `g_e`. -/
+  choose! g hloc hint hray using fun (e : Euclid P) (he : e ∈ F) =>
+    Submission.idtp_fons_odc_ra_single_ray P R e (hF e he)
+      (Submission.idtp_fons_odc_ray_orientation P R F hF hnull e he)
+  refine ⟨g, hloc, hint, fun ω => ?_⟩
+  /- Step 2: `τ(M, θ, ξ)(ω) = Σ_{e ∈ F} ∫_{M ∩ ray(e)} θ ⟨ω, ξ⟩ dH¹`, and each summand is the ray
+  integral of step 1. -/
+  rw [Submission.idtp_fons_odc_ra_action_split P R F hF hnull ω]
+  exact Finset.sum_congr rfl fun e he => hray e he ω
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
