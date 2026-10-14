@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.finite_planes-a1.plane_ball-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.finite_planes-a1",
+  "depth": 6,
+  "title": "Hⁿ of an offset parallel n-plane inside a ball centred at 0",
+  "statement": "Let P, n ∈ ℕ, let V ⊆ ℝ^P be a linear subspace with dim V = n (Module.finrank ℝ V = n), let w ∈ V^⊥ and R ∈ ℝ with ‖w‖ < R. Then Hⁿ({y ∈ ℝ^P : y − w ∈ V} ∩ B_R(0)) = ω_n·ofReal((√(R² − ‖w‖²))ⁿ), where Hⁿ = μHE[n] is Mathlib's Euclidean-normalized n-dimensional Hausdorff measure on ℝ^P = Euclid P, B_R(0) is the open ball, ω_n = unitBallVolume n is the Lebesgue measure of the open unit ball of ℝⁿ, and √ = Real.sqrt.",
+  "lean_statement": "∀ (P n : ℕ) (V : Submodule ℝ (Euclid P)) (w : Euclid P) (R : ℝ), Module.finrank ℝ V = n → w ∈ Vᗮ → ‖w‖ < R → μHE[n] ({y : Euclid P | y - w ∈ V} ∩ ball 0 R) = unitBallVolume n * ENNReal.ofReal (Real.sqrt (R ^ 2 - ‖w‖ ^ 2) ^ n)",
+  "lean_name": "cbr_ci_cp_fp_offset_plane_ball_measure",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-661fba5cee-a1",
+      "result_commit": "a029156d2b71053da5c6d27b9abcc46011c9cfac",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-73bda2fb7d-a1"
+}

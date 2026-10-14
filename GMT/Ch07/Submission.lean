@@ -2137,6 +2137,182 @@ theorem Submission.cbr_ci_cp_atomic_transversal : ∀ (P n : ℕ) (ν σ : Measu
   exact ⟨Z, hZc, fun w hw => hw.1, fun w hw => hw.2,
     Submission.cbr_ci_cp_atm_sum_planes_of_carried P n ν σ V Z hZc hσZ hD⟩
 
+/-- `Hⁿ({y : y - w ∈ V} ∩ B_R(0)) = ωₙ(√(R² - ‖w‖²))ⁿ` for an `n`-dimensional linear subspace `V`
+of `ℝᴾ`, an offset `w ∈ V^⊥` and `‖w‖ < R` (a plane in a ball, used in the proof of Simon 7.2.4,
+p. 184, for measures carried by finitely many parallel `n`-planes).  Put `ρ = √(R² - ‖w‖²) > 0`.
+By Pythagoras `‖t + w‖² = ‖t‖² + ‖w‖²` for `t ∈ V`, so the translation `t ↦ t + w`, an isometry,
+maps `V ∩ B_ρ(0)` onto the set; isometry invariance of `μHE[n]` and the subspace-ball formula
+`Hⁿ(V ∩ B_ρ(0)) = ωₙρⁿ` conclude. -/
+theorem Submission.cbr_ci_cp_fp_offset_plane_ball_measure : ∀ (P n : ℕ) (V : Submodule ℝ (Euclid P)) (w : Euclid P) (R : ℝ), Module.finrank ℝ V = n → w ∈ Vᗮ → ‖w‖ < R → μHE[n] ({y : Euclid P | y - w ∈ V} ∩ ball 0 R) = unitBallVolume n * ENNReal.ofReal (Real.sqrt (R ^ 2 - ‖w‖ ^ 2) ^ n) := by
+  intro P n V w R hn hw hR
+  -- the radius `ρ = √(R² - ‖w‖²)` is positive and `ρ² = R² - ‖w‖²`
+  have hpos : 0 < R ^ 2 - ‖w‖ ^ 2 := by nlinarith [norm_nonneg w]
+  have hρ : 0 < Real.sqrt (R ^ 2 - ‖w‖ ^ 2) := Real.sqrt_pos.2 hpos
+  have hρsq : Real.sqrt (R ^ 2 - ‖w‖ ^ 2) ^ 2 = R ^ 2 - ‖w‖ ^ 2 := Real.sq_sqrt hpos.le
+  -- Pythagoras: `‖t + w‖² = ‖t‖² + ‖w‖²` for `t ∈ V`, as `w ⊥ V`
+  have hpyth : ∀ t ∈ V, ‖t + w‖ ^ 2 = ‖t‖ ^ 2 + ‖w‖ ^ 2 := fun t ht => by
+    rw [sq, sq, sq]
+    exact norm_add_sq_eq_norm_sq_add_norm_sq_real (Submodule.inner_right_of_mem_orthogonal ht hw)
+  -- the translation `t ↦ t + w` maps `V ∩ B_ρ(0)` onto `{y | y - w ∈ V} ∩ B_R(0)`
+  have himage : (fun t => t + w) '' ((V : Set (Euclid P)) ∩ ball 0 (Real.sqrt (R ^ 2 - ‖w‖ ^ 2))) =
+      {y : Euclid P | y - w ∈ V} ∩ ball 0 R := by
+    ext y
+    simp only [Set.mem_image, Set.mem_inter_iff, SetLike.mem_coe, mem_ball_zero_iff,
+      Set.mem_ofPred_eq]
+    constructor
+    · rintro ⟨t, ⟨ht, htρ⟩, rfl⟩
+      refine ⟨by simpa using ht, ?_⟩
+      have h := hpyth t ht
+      nlinarith [norm_nonneg t, norm_nonneg w, norm_nonneg (t + w)]
+    · rintro ⟨hy, hyR⟩
+      refine ⟨y - w, ⟨hy, ?_⟩, sub_add_cancel y w⟩
+      have h := hpyth (y - w) hy
+      rw [sub_add_cancel] at h
+      nlinarith [norm_nonneg (y - w), norm_nonneg y]
+  -- isometry invariance of `μHE[n]`, then the subspace-ball formula with centre `0 ∈ V`
+  rw [← himage, (isometry_add_right w).euclideanHausdorffMeasure_image]
+  exact Submission.idtp_tdc_subspace_ball_measure P n V 0 _ hn V.zero_mem hρ
+
+/-- Weighted parallel `n`-planes with at most Euclidean volume growth have total weight `≤ 1`.
+Let `V ⊆ ℝᴾ` be an `n`-dimensional subspace, `Z ⊆ V^⊥` and `a : ℝᴾ → [0, ∞]`.  If
+`ν = Σ_{w ∈ Z} a(w) Hⁿ⌞{y : y − w ∈ V}` satisfies `ν(B_R(0)) ≤ ωₙRⁿ` for every `R > 0`, then
+`Σ_{w ∈ Z} a(w) ≤ 1`.  For a finite set `s` of offsets put `M = Σ_{z ∈ s} ‖z‖` and let `R > M`.
+Each plane `z + V` meets `B_R(0)` in an `n`-ball of radius `√(R² − ‖z‖²) ≥ R − M`, so
+`ωₙ(R − M)ⁿ Σ_{z ∈ s} a(z) ≤ ν(B_R(0)) ≤ ωₙRⁿ`, i.e. `Σ_{z ∈ s} a(z) ≤ (R / (R − M))ⁿ`; let
+`R → ∞`. -/
+theorem Submission.cbr_ci_cp_fp_tsum_weight_le_one : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)) (a : Euclid P → ℝ≥0∞), Module.finrank ℝ V = n → Z ⊆ (Vᗮ : Set (Euclid P)) → ν = Measure.sum (fun w : Z => a w • (μHE[n]).restrict {y : Euclid P | y - w ∈ V}) → (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ unitBallVolume n * ENNReal.ofReal (R ^ n)) → ∑' w : Z, a w ≤ 1 := by
+  intro P n ν V Z a hn hZ hν hνR
+  -- `0 < ωₙ < ∞`
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- `ν(B_R(0)) = Σ_{z ∈ Z} a(z) Hⁿ({y : y − z ∈ V} ∩ B_R(0))`
+  have hball : ∀ R : ℝ, ν (ball 0 R) =
+      ∑' z : Z, a z * μHE[n] ({y : Euclid P | y - z ∈ V} ∩ ball 0 R) := by
+    intro R
+    rw [hν, Measure.sum_apply _ measurableSet_ball]
+    refine tsum_congr fun z => ?_
+    rw [Measure.smul_apply, smul_eq_mul, Measure.restrict_apply measurableSet_ball, inter_comm]
+  -- it suffices to bound every finite partial sum; `M` bounds the offsets in `s`
+  refine ENNReal.summable.tsum_le_of_sum_le fun s => ?_
+  obtain ⟨M, hM, hzM⟩ : ∃ M : ℝ, 0 ≤ M ∧ ∀ z ∈ s, ‖(z : Euclid P)‖ ≤ M :=
+    ⟨∑ z ∈ s, ‖(z : Euclid P)‖, Finset.sum_nonneg fun _ _ => norm_nonneg _, fun z hz =>
+      Finset.single_le_sum (f := fun z : Z => ‖(z : Euclid P)‖) (fun _ _ => norm_nonneg _) hz⟩
+  -- for `R > M`: `Σ_{z ∈ s} a(z) ≤ (R / (R − M))ⁿ`
+  have key : ∀ R : ℝ, M < R → ∑ z ∈ s, a z ≤ ENNReal.ofReal ((R / (R - M)) ^ n) := by
+    intro R hR
+    have hRM : 0 < R - M := sub_pos.mpr hR
+    -- each plane meets `B_R(0)` in an `n`-ball of radius `√(R² − ‖z‖²) ≥ R − M`
+    have hplane : ∀ z ∈ s, unitBallVolume n * ENNReal.ofReal ((R - M) ^ n) ≤
+        μHE[n] ({y : Euclid P | y - z ∈ V} ∩ ball 0 R) := by
+      intro z hz
+      have hzR := hzM z hz
+      have hr : R - M ≤ Real.sqrt (R ^ 2 - ‖(z : Euclid P)‖ ^ 2) := by
+        refine Real.le_sqrt_of_sq_le ?_
+        nlinarith [mul_nonneg hRM.le hM, mul_nonneg (sub_nonneg.mpr hzR) hM,
+          mul_nonneg (sub_nonneg.mpr hzR) (norm_nonneg (z : Euclid P))]
+      rw [Submission.cbr_ci_cp_fp_offset_plane_ball_measure P n V z R hn (hZ z.2)
+        (hzR.trans_lt hR)]
+      gcongr
+    have hsum : unitBallVolume n * ((∑ z ∈ s, a z) * ENNReal.ofReal ((R - M) ^ n)) ≤
+        unitBallVolume n * ENNReal.ofReal (R ^ n) :=
+      calc unitBallVolume n * ((∑ z ∈ s, a z) * ENNReal.ofReal ((R - M) ^ n))
+          = ∑ z ∈ s, a z * (unitBallVolume n * ENNReal.ofReal ((R - M) ^ n)) := by
+            rw [Finset.sum_mul, Finset.mul_sum]
+            exact Finset.sum_congr rfl fun z _ => mul_left_comm _ _ _
+        _ ≤ ∑ z ∈ s, a z * μHE[n] ({y : Euclid P | y - z ∈ V} ∩ ball 0 R) := by
+            gcongr with z hz
+            exact hplane z hz
+        _ ≤ ∑' z : Z, a z * μHE[n] ({y : Euclid P | y - z ∈ V} ∩ ball 0 R) :=
+            ENNReal.sum_le_tsum s
+        _ = ν (ball 0 R) := (hball R).symm
+        _ ≤ unitBallVolume n * ENNReal.ofReal (R ^ n) := hνR R (hM.trans_lt hR)
+    have hpow : 0 < (R - M) ^ n := pow_pos hRM n
+    rwa [ENNReal.mul_le_mul_iff_right hω0 hωtop,
+      ← ENNReal.le_div_iff_mul_le (Or.inl (ENNReal.ofReal_pos.mpr hpow).ne')
+        (Or.inl ENNReal.ofReal_ne_top), ← ENNReal.ofReal_div_of_pos hpow, ← div_pow] at hsum
+  -- `(R / (R − M))ⁿ → 1` as `R → ∞`
+  have hlim : Tendsto (fun R : ℝ => ENNReal.ofReal ((R / (R - M)) ^ n)) atTop (𝓝 1) := by
+    have hsub : Tendsto (fun R : ℝ => R - M) atTop atTop :=
+      tendsto_atTop_atTop.2 fun b => ⟨b + M, fun R hR => by linarith⟩
+    have h1 : Tendsto (fun R : ℝ => 1 + M / (R - M)) atTop (𝓝 1) := by
+      simpa using tendsto_const_nhds.add (tendsto_const_nhds.div_atTop hsub)
+    have h2 : Tendsto (fun R : ℝ => R / (R - M)) atTop (𝓝 1) :=
+      h1.congr' ((eventually_gt_atTop M).mono fun R hR => by
+        rw [← same_add_div (sub_pos.mpr hR).ne', sub_add_cancel])
+    simpa using ENNReal.tendsto_ofReal (h2.pow n)
+  exact ge_of_tendsto hlim ((eventually_gt_atTop M).mono key)
+/-- A finite sum `ν = ∑ᵢ (αᵢ)₊ Hⁿ⌞(wᵢ + V)` of planes parallel to `V`, with offsets `wᵢ ∈ Vᗮ`,
+that charges every ball `B_r(0)` has a plane through `0`: some `wᵢ = 0` (used in the proof that
+the limit in Simon 7.2.4 is integer multiplicity, Remark 7.2.5(1)).  Otherwise pick
+`0 < r < ‖wᵢ‖` for all `i`; for `y ∈ wᵢ + V`, Pythagoras gives `‖y‖² = ‖y - wᵢ‖² + ‖wᵢ‖² > r²`,
+so every plane misses `B_r(0)` and `ν(B_r(0)) = 0`. -/
+theorem Submission.cbr_ci_cp_fp_exists_offset_eq_zero : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (N : ℕ) (w : Fin N → Euclid P) (α : Fin N → ℝ), (∀ i, w i ∈ Vᗮ) → ν = ∑ i, ENNReal.ofReal (α i) • (μHE[n]).restrict {y : Euclid P | y - w i ∈ V} → (∀ r : ℝ, 0 < r → 0 < ν (ball 0 r)) → ∃ i, w i = 0 := by
+  intro P n ν V N w α hw hν hpos
+  by_contra hne
+  -- a radius `0 < r < ‖w i‖` for each of the finitely many offsets `w i ≠ 0`
+  obtain ⟨r, hr, hrw⟩ : ∃ r : ℝ, 0 < r ∧ ∀ i, r < ‖w i‖ :=
+    ((eventually_mem_nhdsWithin : ∀ᶠ r in 𝓝[>] (0 : ℝ), r ∈ Ioi 0).and
+      (eventually_all.2 fun i => nhdsWithin_le_nhds
+        (eventually_lt_nhds (norm_pos_iff.2 fun hi => hne ⟨i, hi⟩)))).exists
+  -- by Pythagoras (`w i ∈ Vᗮ`), every plane `{y | y - w i ∈ V}` misses `B_r(0)`
+  have hmiss : ∀ i, ball (0 : Euclid P) r ∩ {y : Euclid P | y - w i ∈ V} = ∅ := by
+    intro i
+    refine eq_empty_iff_forall_notMem.2 fun y ⟨hy, ht⟩ => ?_
+    rw [mem_ball_zero_iff] at hy
+    have hpyth := norm_add_sq_eq_norm_sq_add_norm_sq_real
+      (Submodule.inner_right_of_mem_orthogonal (show y - w i ∈ V from ht) (hw i))
+    rw [sub_add_cancel] at hpyth
+    have hlt : ‖y‖ < ‖w i‖ := hy.trans (hrw i)
+    nlinarith [norm_nonneg y, mul_self_nonneg ‖y - w i‖]
+  -- hence `ν(B_r(0)) = 0`, contradicting the positivity hypothesis
+  have hzero : ν (ball 0 r) = 0 := by
+    rw [hν, Measure.finsetSum_apply]
+    refine Finset.sum_eq_zero fun i _ => ?_
+    rw [Measure.smul_apply, Measure.restrict_apply measurableSet_ball, hmiss i, measure_empty,
+      smul_zero]
+  exact (hpos r hr).ne' hzero
+
+/-- Let `ν = Σ_{w ∈ Z} a(w) Hⁿ⌞{y : y − w ∈ V}` be a sum of parallel translates of the `n`-plane
+`V`, with offsets `Z ⊆ V^⊥` and weights `a(w) ≥ c > 0`.  If `ν(B_R(0)) ≤ ωₙRⁿ` for all `R > 0`
+and `ν(B_r(0)) > 0` for all `r > 0`, then `ν = Σᵢ αᵢ Hⁿ⌞{y : y − wᵢ ∈ V}` for finitely many
+distinct `wᵢ ∈ V^⊥` and `αᵢ ≥ c` with `Σᵢ αᵢ ≤ 1` and some `wᵢ = 0` (the constant-plane step
+of the closure argument for Simon 7.2.4).  The growth bound gives `Σ_{w ∈ Z} a(w) ≤ 1`, so `Z`
+is finite; enumerating `Z` gives the finite sum, and positivity near `0` forces a plane through
+`0`. -/
+theorem Submission.cbr_ci_cp_finite_parallel_planes : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)) (a : Euclid P → ℝ≥0∞) (c : ℝ), 0 < c → Module.finrank ℝ V = n → Z ⊆ (Vᗮ : Set (Euclid P)) → (∀ w ∈ Z, ENNReal.ofReal c ≤ a w) → ν = Measure.sum (fun w : Z => a w • (μHE[n]).restrict {y : Euclid P | y - w ∈ V}) → (∀ R : ℝ, 0 < R → ν (ball 0 R) ≤ unitBallVolume n * ENNReal.ofReal (R ^ n)) → (∀ r : ℝ, 0 < r → 0 < ν (ball 0 r)) → ∃ (N : ℕ) (w : Fin N → Euclid P) (α : Fin N → ℝ), Injective w ∧ (∀ i, w i ∈ Vᗮ) ∧ (∀ i, c ≤ α i) ∧ ∑ i, α i ≤ 1 ∧ (∃ i, w i = 0) ∧ ν = ∑ i, ENNReal.ofReal (α i) • (μHE[n]).restrict {y : Euclid P | y - w i ∈ V} := by
+  intro P n ν V Z a c hc hn hZ ha hν hgrowth hpos
+  -- the total weight is at most `1`
+  have htsum : ∑' w : Z, a w ≤ 1 :=
+    Submission.cbr_ci_cp_fp_tsum_weight_le_one P n ν V Z a hn hZ hν hgrowth
+  -- every weight is at least `ofReal c ≠ 0`, so `Z` is finite
+  have hZfin : Finite Z := by
+    by_contra hinf
+    have : Infinite Z := not_finite_iff_infinite.1 hinf
+    have hle : ∑' _ : Z, ENNReal.ofReal c ≤ ∑' w : Z, a w :=
+      ENNReal.tsum_le_tsum fun w => ha w w.2
+    rw [ENNReal.tsum_const_eq_top_of_ne_zero (ENNReal.ofReal_pos.2 hc).ne'] at hle
+    exact ENNReal.one_ne_top (top_le_iff.1 (hle.trans htsum))
+  have : Fintype Z := Fintype.ofFinite Z
+  -- every weight is finite
+  have hfin : ∀ w : Z, a w ≠ ∞ := fun w =>
+    ne_top_of_le_ne_top ENNReal.one_ne_top ((ENNReal.le_tsum w).trans htsum)
+  -- enumerate `Z` as `w₁, …, w_N` and put `αᵢ := a(wᵢ)`
+  obtain ⟨e⟩ : Nonempty (Fin (Fintype.card Z) ≃ Z) := ⟨(Fintype.equivFin Z).symm⟩
+  have hw : ∀ i, (e i : Euclid P) ∈ Vᗮ := fun i => hZ (e i).2
+  have hνsum : ν = ∑ i, ENNReal.ofReal (a (e i)).toReal •
+      (μHE[n]).restrict {y : Euclid P | y - (e i : Euclid P) ∈ V} := by
+    rw [hν, Measure.sum_fintype, ← e.sum_comp]
+    exact Finset.sum_congr rfl fun i _ => by rw [ENNReal.ofReal_toReal (hfin (e i))]
+  refine ⟨Fintype.card Z, fun i => e i, fun i => (a (e i)).toReal,
+    Subtype.val_injective.comp e.injective, hw,
+    fun i => (ENNReal.ofReal_le_iff_le_toReal (hfin (e i))).1 (ha _ (e i).2), ?_,
+    Submission.cbr_ci_cp_fp_exists_offset_eq_zero P n ν V (Fintype.card Z) (fun i => e i)
+      (fun i => (a (e i)).toReal) hw hνsum hpos, hνsum⟩
+  -- `Σᵢ αᵢ = (Σ_{w ∈ Z} a(w)).toReal ≤ 1`
+  rw [tsum_fintype] at htsum
+  rw [← ENNReal.toReal_sum fun i _ => hfin (e i), e.sum_comp (fun w : Z => a w)]
+  exact (ENNReal.toReal_mono ENNReal.one_ne_top htsum).trans_eq ENNReal.toReal_one
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
