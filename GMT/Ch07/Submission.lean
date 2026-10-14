@@ -1911,6 +1911,75 @@ theorem Submission.idtp_tdc_no_infinite_planar_pieces : ∀ (P : ℕ) (C : Geome
   rw [dist_zero_right]
   linarith [hR i]
 
+/-- Planar discs of a fixed radius accumulating at an unstable point contradict finite mass
+(proof of Simon 7.3.3(1), chapter-07.txt lines 497–510, where the book cites [Whi82] for the
+classification of 2-dimensional minimizing cones; steps 11–14 of the proof that the density of
+such a cone is locally constant off `0`).  Two discs `Dᵢ = Qᵢ ∩ B_ρ(zᵢ)` on distinct planes are
+disjoint: near a common point both planes coincide with `spt C`.  A plane `Q'` with `Qᵢ = Q'` for
+infinitely many `i` contains `b = lim zᵢ`, so `b` lies in one of its discs and `Θ²(μ_C, ·)` is
+constant near `b`.  Hence infinitely many distinct planes occur; their discs are pairwise disjoint,
+have bounded centres and carry the mass bound `H²(W ∩ Qᵢ) ≤ M_W(C)`, which
+`idtp_tdc_no_infinite_planar_pieces` excludes. -/
+theorem Submission.idtp_tdc_dlc_accumulating_discs : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : ℕ → Submodule ℝ (Euclid P)) (z : ℕ → Euclid P) (k : ℕ → ℕ) (b : Euclid P) (ρ : ℝ), IsIntegerMultiplicity C → 0 < ρ → (∀ i, Module.finrank ℝ (Q i) = 2) → (∀ i, z i ∈ Q i) → Tendsto z atTop (𝓝 b) → (∀ i, ∀ x ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧ C.support ∩ ball x ε = (Q i : Set (Euclid P)) ∩ ball x ε ∧ (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y (k i)) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε → μHE[2] (W ∩ (Q i : Set (Euclid P))) ≤ C.massOn W) → (¬ ∃ (ε : ℝ) (m : ℕ), 0 < ε ∧ ∀ y ∈ C.support, y ∈ ball b ε → HasMassDensity C y m) → False := by
+  intro P C Q z k b ρ hIM hρ hdim hzQ hz hgood hunst
+  -- `spt C ∩ B_ε(x) = Q' ∩ B_ε(x)` persists on the smaller balls `B_t(x)`, `t ≤ ε`
+  have hrestr : ∀ (Q' : Submodule ℝ (Euclid P)) (x : Euclid P) (ε t : ℝ), t ≤ ε →
+      C.support ∩ ball x ε = (Q' : Set (Euclid P)) ∩ ball x ε →
+      C.support ∩ ball x t = (Q' : Set (Euclid P)) ∩ ball x t := by
+    intro Q' x ε t htε h
+    have hball : ball x ε ∩ ball x t = ball x t := Set.inter_eq_right.mpr (ball_subset_ball htε)
+    rw [← hball, ← inter_assoc, h, inter_assoc]
+  -- (1) discs on distinct planes are disjoint: near a common point both planes equal `spt C`
+  have hdisj : ∀ i j, Q i ≠ Q j →
+      Disjoint ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) ((Q j : Set (Euclid P)) ∩ ball (z j) ρ) := by
+    intro i j hij
+    refine Set.disjoint_left.mpr fun x hxi hxj => hij ?_
+    obtain ⟨ε₁, hε₁, hspt₁, -⟩ := hgood i x hxi
+    obtain ⟨ε₂, hε₂, hspt₂, -⟩ := hgood j x hxj
+    exact Submission.idtp_tdc_dlc_subspace_eq_of_inter_ball_eq P (Q i) (Q j) x (min ε₁ ε₂) hxi.1
+      (lt_min hε₁ hε₂) ((hrestr (Q i) x ε₁ _ (min_le_left ε₁ ε₂) hspt₁).symm.trans
+        (hrestr (Q j) x ε₂ _ (min_le_right ε₁ ε₂) hspt₂))
+  -- (2) each plane occurs for only finitely many `i`
+  have hfin : ∀ Q' : Submodule ℝ (Euclid P), (Q ⁻¹' {Q'}).Finite := by
+    intro Q'
+    by_contra hinf
+    have hclose : ∀ η > 0, ∃ i, Q i = Q' ∧ dist (z i) b < η := by
+      intro η hη
+      obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp hz η hη
+      obtain ⟨i, hi, hNi⟩ := Set.Infinite.exists_gt hinf N
+      exact ⟨i, hi, hN i hNi.le⟩
+    -- (2a) `b ∈ Q'`: the closed subspace `Q'` contains `zᵢ` for infinitely many `i`, and `zᵢ → b`
+    have hbQ : b ∈ (Q' : Set (Euclid P)) := by
+      refine (Submodule.closed_of_finiteDimensional Q').closure_subset
+        (Metric.mem_closure_iff.mpr fun η hη => ?_)
+      obtain ⟨i, hi, hd⟩ := hclose η hη
+      exact ⟨z i, hi ▸ hzQ i, by rwa [dist_comm]⟩
+    -- (2b) then `b` lies in a disc `Dᵢ` with `Qᵢ = Q'`, so `Θ²(μ_C, ·) = kᵢ` on `spt C` near `b`,
+    -- against the instability of `b`
+    obtain ⟨i, hi, hd⟩ := hclose ρ hρ
+    obtain ⟨ε, hε, -, hdens, -⟩ := hgood i b ⟨hi ▸ hbQ, mem_ball'.mpr hd⟩
+    exact hunst ⟨ε, k i, hε, hdens⟩
+  -- (3) hence infinitely many distinct planes occur: indices `iₗ` with pairwise distinct `Q iₗ`
+  have hrange : (range Q).Infinite := by
+    intro hfinr
+    have h := hfinr.preimage' fun Q' _ => hfin Q'
+    rw [preimage_range] at h
+    exact Set.infinite_univ h
+  obtain ⟨e⟩ : Nonempty (ℕ ↪ range Q) := ⟨hrange.natEmbedding _⟩
+  choose idx hidx using fun l => Set.mem_range.mp (e l).2
+  have hne : ∀ l l', l ≠ l' → Q (idx l) ≠ Q (idx l') := fun l l' hll' h =>
+    hll' (e.injective (Subtype.ext ((hidx l).symm.trans (h.trans (hidx l')))))
+  -- (4) the centres converge, so they are bounded
+  obtain ⟨R, hR⟩ := isBounded_iff_forall_norm_le.mp (Metric.isBounded_range_of_tendsto z hz)
+  -- (5) infinitely many pairwise disjoint discs of radius `ρ` with bounded centres, each carrying
+  -- the mass bound `H²(W ∩ Qᵢ) ≤ M_W(C)`, contradict the local finiteness of `μ_C`
+  exact Submission.idtp_tdc_no_infinite_planar_pieces P C (fun l => Q (idx l))
+    (fun l => z (idx l)) ρ R hIM hρ (fun l => hdim (idx l)) (fun l => hzQ (idx l))
+    (fun l => hR _ (mem_range_self (idx l))) (fun l l' hll' => hdisj _ _ (hne l l' hll'))
+    (fun l w hw => by
+      obtain ⟨ε, hε, -, -, hmass⟩ := hgood (idx l) w hw
+      exact ⟨ε, hε, hmass⟩)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
