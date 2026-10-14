@@ -495,6 +495,34 @@ theorem Submission.idtp_caf_lipschitz_localization : ∀ (P n : ℕ) (Z : Set (E
     MeasurableSet.disjointed fun _ => isOpen_ball.measurableSet, disjointed_subset _,
     disjoint_disjointed _, iUnion_disjointed.trans hVU, fun l => ⟨_, hG l⟩, hGF⟩
 
+/-- **Simon Ch. 2, 1.8(i)**, for a `C¹` map: if `Z ⊆ ℝᴾ` is open, `F : ℝᴾ → ℝⁿ` is `C¹` on `Z`
+and `S ⊆ Z` has `Hⁿ(S) = 0`, then `Lⁿ(F(S)) = 0`.  Split `Z` into Borel pieces `Zₗ ⊆ Vₗ` with
+`F = Gₗ` on `Vₗ` for Lipschitz `Gₗ`; then `F(S) ⊆ ⋃ₗ Gₗ(S ∩ Zₗ)`,
+`Hⁿ(Gₗ(S ∩ Zₗ)) ≤ Kₗⁿ Hⁿ(S ∩ Zₗ) = 0`, and `Hⁿ = Lⁿ` on `ℝⁿ`. -/
+theorem Submission.idtp_caf_null_image : ∀ (P n : ℕ) (Z S : Set (Euclid P)) (F : Euclid P → Euclid n), IsOpen Z → ContDiffOn ℝ 1 F Z → S ⊆ Z → μHE[n] S = 0 → volume (F '' S) = 0 := by
+  intro P n Z S F hZ hF hSZ hS
+  have hvol : (μHE[n] : Measure (Euclid n)) = volume :=
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume n
+  -- Step 1: Lipschitz localization, `F = Gₗ` on `Vₗ ⊇ Zₗ` and `⋃ₗ Zₗ = Z`
+  obtain ⟨V, Zs, G, -, -, -, hZsV, -, hZs, hG, hFG⟩ :=
+    Submission.idtp_caf_lipschitz_localization P n Z F hZ hF
+  -- Step 2: `F(S) ⊆ ⋃ₗ Gₗ(S ∩ Zₗ)`
+  have hcover : F '' S ⊆ ⋃ l, G l '' (S ∩ Zs l) := by
+    rintro _ ⟨x, hxS, rfl⟩
+    obtain ⟨l, hxl⟩ := mem_iUnion.mp (hZs.symm.subset (hSZ hxS))
+    exact mem_iUnion.mpr ⟨l, x, ⟨hxS, hxl⟩, (hFG l (hZsV l hxl)).symm⟩
+  -- Step 3: `Hⁿ(Gₗ(S ∩ Zₗ)) ≤ Kₗⁿ Hⁿ(S ∩ Zₗ) = 0`
+  have hpiece : ∀ l, μHE[n] (G l '' (S ∩ Zs l)) = 0 := by
+    intro l
+    obtain ⟨K, hK⟩ := hG l
+    have hle := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n
+      (hK.lipschitzOnWith (s := S ∩ Zs l))
+    rw [measure_mono_null inter_subset_left hS, mul_zero] at hle
+    exact le_antisymm hle bot_le
+  -- Step 4: `Hⁿ = Lⁿ` on `ℝⁿ` and countable subadditivity
+  rw [← hvol]
+  exact measure_mono_null hcover (measure_iUnion_null hpiece)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
