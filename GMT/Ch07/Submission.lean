@@ -1284,6 +1284,53 @@ theorem Submission.cmcdt_lpi_mwc_coordinate_minor_continuity : ∀ (k r : ℕ) (
     rw [zero_add] at hsum
     exact hsum.congr fun j => (hsplit j).symm
 
+/-- **Weak continuity of Jacobian minors of Lipschitz maps** (step 6(v) of the integrality of
+Lipschitz push-forwards; Simon Ch. 6, 2.29): if `v_j, v₀ : ℝᵐ → ℝᵖ` are `L`-Lipschitz, `v_j → v₀`
+uniformly and `c ∈ L¹`, then `∫ c M^{a,b}(v_j) → ∫ c M^{a,b}(v₀)`, where
+`M^{a,b}(v)(u) = det ((Dv(u) e_{b_t})_{a_s})_{s,t}`.  The coordinate projection `p_i y = y_i` is
+`1`-Lipschitz, so the rows `v^{a_s} = p_{a_s} ∘ v` are `L`-Lipschitz and `v_j^{a_s} → v₀^{a_s}`
+uniformly; the coordinate version `cmcdt_lpi_mwc_coordinate_minor_continuity` (with
+`V_t = e_{b_t}`, `φ = c`) gives the convergence for the minors `det (D(v^{a_s}) e_{b_t})_{s,t}`.
+At every point where `v` is differentiable, hence a.e. by Rademacher,
+`D(v^{a_s})(u) = p_{a_s} ∘ Dv(u)`, so these minors have the same integrals as `M^{a,b}(v)`. -/
+theorem Submission.cmcdt_lpi_minor_weak_continuity : ∀ (m p r : ℕ) (L : NNReal) (v : ℕ → Euclid m → Euclid p) (v₀ : Euclid m → Euclid p) (a : Fin r → Fin p) (b : Fin r → Fin m) (c : Euclid m → ℝ), (∀ j, LipschitzWith L (v j)) → LipschitzWith L v₀ → TendstoUniformly v v₀ atTop → Integrable c → Tendsto (fun j => ∫ u, c u * Matrix.det (Matrix.of fun s t => fderiv ℝ (v j) u (EuclideanSpace.single (b t) 1) (a s))) atTop (𝓝 (∫ u, c u * Matrix.det (Matrix.of fun s t => fderiv ℝ v₀ u (EuclideanSpace.single (b t) 1) (a s)))) := by
+  intro m p r L v v₀ a b c hv hv₀ hvv₀ hc
+  -- step 1: the coordinate projection `y ↦ y i` is `1`-Lipschitz, so the rows
+  -- `v^{a_s} = (· (a s)) ∘ v` are `L`-Lipschitz and converge uniformly
+  have hproj : ∀ i : Fin p, LipschitzWith 1 (fun y : Euclid p => y i) := fun i =>
+    LipschitzWith.of_dist_le_mul fun y y' => by
+      rw [NNReal.coe_one, one_mul]
+      exact PiLp.dist_apply_le y y' i
+  have hrow : ∀ f : Euclid m → Euclid p, LipschitzWith L f → ∀ s,
+      LipschitzWith L (fun u => f u (a s)) := fun f hf s => by
+    have h := (hproj (a s)).comp hf
+    rw [one_mul] at h
+    exact h
+  -- step 2: by Rademacher, a.e. `D(v^{a_s})(u) e_{b_t} = (Dv(u) e_{b_t})_{a_s}`, so the
+  -- coordinate minors have the same integrals as the minors of the statement
+  have hcoord : ∀ f : Euclid m → Euclid p, LipschitzWith L f →
+      ∫ u, c u * Matrix.det (Matrix.of fun s t =>
+        fderiv ℝ (fun y => f y (a s)) u (EuclideanSpace.single (b t) 1)) =
+      ∫ u, c u * Matrix.det (Matrix.of fun s t =>
+        fderiv ℝ f u (EuclideanSpace.single (b t) 1) (a s)) := by
+    intro f hf
+    refine integral_congr_ae ?_
+    filter_upwards [hf.ae_differentiableAt] with u hu
+    have hent : ∀ (i : Fin p) (w : Euclid m),
+        fderiv ℝ (fun y => f y i) u w = fderiv ℝ f u w i := by
+      intro i w
+      have h := (PiLp.hasFDerivAt_apply (𝕜 := ℝ) 2 (f u) i).comp u hu.hasFDerivAt
+      rw [show (fun y => f y i) = (fun g : Euclid p => g i) ∘ f from rfl, h.fderiv]
+      rfl
+    simp only [hent]
+  -- step 3: the coordinate statement for `g_s = v^{a_s}`, `V_t = e_{b_t}` and `φ = c`
+  have h := Submission.cmcdt_lpi_mwc_coordinate_minor_continuity m r L
+    (fun j s u => v j u (a s)) (fun s u => v₀ u (a s)) (fun t => EuclideanSpace.single (b t) 1) c
+    hc (fun j => hrow (v j) (hv j)) (hrow v₀ hv₀)
+    (fun s => (hproj (a s)).uniformContinuous.comp_tendstoUniformly hvv₀)
+  rw [hcoord v₀ hv₀] at h
+  exact h.congr fun j => hcoord (v j) (hv j)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
