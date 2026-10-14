@@ -1,0 +1,115 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsIntegerMultiplicity|pushforward_isIntegerMultiplicity",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|measurable_fderiv",
+        "weighted_area_formula_volume_of_injective_derivative|area_image_compl_regularSet_eq_zero|def areaRegularSet|measurableSet_areaRegularSet",
+        "def CountablyRectifiable|def HasApproximateTangentSpaceAt|HasApproximateTangentSpaceAt.unique|countablyRectifiable_iUnion",
+        "normDet_sq_eq_det_gram|normDet_nonneg|normDet_of_subsingleton|euclideanHausdorffMeasure_image_eq_normDet_mul_volume",
+        "exists_contDiff_support_eq_eq_one_iff|def invFunOn|theorem invFunOn_neg",
+        "git show 7efe0b7556b232a023474dc8be98e363d9ca2d97:GMT/Ch07/Submission.lean",
+        "sed -n '770,862p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Function.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-2271e9d0fc/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-2271e9d0fc/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/pfi-independent-audit/reuse-report.json",
+        "/tmp/pfi-independent-audit/dag-report.json",
+        "/tmp/pfi-independent-audit/comparator-evidence.json",
+        "/tmp/pfi-independent-audit/challenge-evidence.json",
+        "/tmp/pfi-independent-audit/source-dependencies.json",
+        "/tmp/pfi-independent-audit/Full.lean"
+      ],
+      "conclusion": "The split appropriately factors the selected push-forward theorem, and the supplied assembly establishes its exact frozen conclusion. Verified project, Mathlib and SimonGMT revisions and unchanged contract definitions. Every child name is bare, has one accepted owner, and reuses an identical frozen type and committed declaration. The 36-node proof dependency closure is acyclic and contains no ancestor or alternate copy of the selected target. Retained comparator artifacts independently checked against source hashes, types, scopes and revisions record Lean kernel acceptance permitting only propext, Quot.sound and Classical.choice. Each challenge contains the literal standalone type without referencing its implementation. All ten Gram-matrix constructions use Matrix.of. Fresh Lean replays were stopped after sustained container memory paging; no fresh compilation success is claimed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "bilipschitz_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree in every dimension. Removing nonregular null images, applying the coercivity-radius partition, and disjointifying by least index establish all properties, including Borel images and null coverage."
+    },
+    {
+      "key": "piece_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement requires no TL assumption: the proof independently establishes density, the o(r^n) excess estimate, and the rescaled area-formula limit. Null-set pull-back, local finiteness and dimension zero are addressed."
+    },
+    {
+      "key": "gram_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pointwise Gram/normDet identity proves measurability and identifies the Jacobian. The inspected weighted area theorem permits arbitrary nonnegative weights without measurability, matching the frozen type exactly."
+    },
+    {
+      "key": "imrep_of_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The nonzero-density carrier, natural multiplicity and signed orientation satisfy every IMRep field. Tangent locality is an accepted inherited dependency. The pointwise indicator identity proves the action formula for arbitrary forms without requiring integrability."
+    },
+    {
+      "key": "cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact margin and smooth cutoff give global C1 regularity and agreement near K. Bounding the derivative on compact support and using its identity value outside proves global Lipschitz continuity and the stated first-order agreement."
+    },
+    {
+      "key": "orient_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The orthonormal-coordinate determinant calculation proves sign uniqueness and normalization. The operator-norm estimate and dependent-frame vanishing prove the remaining clauses, including dimension zero. The inline matrix constructions are correctly typed."
+    },
+    {
+      "key": "change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The linear image-measure comparison proves the Jacobian bound. Lusin–Souslin and invFunOn's constant default prove measurability; positive Jacobians transfer null sets. Norm and positive/negative-part formulas establish integrability equivalence and signed equality, including nonintegrable functions."
+    },
+    {
+      "key": "refined_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof partitions the Borel regular locus and retains the critical locus. Enumeration preserves source injectivity, Borel images, disjointness and null coverage, while proving exactly the stated regular/critical dichotomy."
+    },
+    {
+      "key": "piece_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive locally integrable multiplicity supplies local finiteness. The tangent theorem and null-set pull-back apply with all hypotheses satisfied; tangent uniqueness and orientation algebra produce one sign valid for every covector almost everywhere."
+    },
+    {
+      "key": "piece_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both cases are fully constructed. Critical contributions vanish; regular pieces have measurable transported data, the required tangent orientation and mass bound. Signed change of variables proves the identity for every strongly measurable covector field without an unstated boundedness assumption."
+    },
+    {
+      "key": "int_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive and negative NNReal sums give a measurable, everywhere integer-valued density. Finite support of summable natural-number families proves integrality; the pointwise bound and finite total integral yield the required almost-everywhere summability and sum identity."
+    },
+    {
+      "key": "glue_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite total mass gives a finite-measure rectifiable union. The explicit TL hypothesis identifies tangents; measurable orientation selection and signs give the integer density. Absolute integral summability justifies the action identity, and imrep_of_density removes cancellation points and represents Q."
+    }
+  ],
+  "required_changes": []
+}
