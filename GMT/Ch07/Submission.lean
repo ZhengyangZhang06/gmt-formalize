@@ -451,6 +451,85 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Good radius** (Simon 7.2.4, choice of the slicing level; the factor-2 averaging of Ch. 2,
+6.7(1)).  If `ρ < ρ'`, `μ(B̄_{ρ'}(y)) < ∞`, `∫ g dL¹ ≤ I` and `p` holds `L¹`-a.e., then some
+`t ∈ (ρ, ρ')` has `p t`, `μ(∂B_t(y)) = 0` and `g t ≤ (2 / (ρ' - ρ)) I`: the levels failing `p` and
+the (countably many) levels whose sphere charges the finite measure `μ⌞B̄_{ρ'}(y)` are `L¹`-null,
+and by Markov's inequality the levels with `g t > (2 / (ρ' - ρ)) I` have `L¹`-measure at most
+`(ρ' - ρ) / 2 < L¹((ρ, ρ'))`. -/
+theorem Submission.dor_lmb_glc_good_radius : ∀ (P : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (ρ ρ' : ℝ) (g : ℝ → ℝ≥0∞) (I : ℝ≥0∞) (p : ℝ → Prop), ρ < ρ' → μ (closedBall y ρ') ≠ ∞ → AEMeasurable g → ∫⁻ t, g t ≤ I → (∀ᵐ t, p t) → ∃ t : ℝ, ρ < t ∧ t < ρ' ∧ p t ∧ μ (sphere y t) = 0 ∧ g t ≤ ENNReal.ofReal (2 / (ρ' - ρ)) * I := by
+  intro P μ y ρ ρ' g I p hρ hμ hg hI hp
+  have hδ : 0 < ρ' - ρ := sub_pos.mpr hρ
+  set c := ENNReal.ofReal (2 / (ρ' - ρ)) with hc_def
+  have hc0 : c ≠ 0 := by
+    rw [hc_def, Ne, ENNReal.ofReal_eq_zero, not_le]
+    positivity
+  have hctop : c ≠ ∞ := ENNReal.ofReal_ne_top
+  have hcinv : c⁻¹ = ENNReal.ofReal ((ρ' - ρ) / 2) := by
+    rw [hc_def, ← ENNReal.ofReal_inv_of_pos (by positivity), inv_div]
+  -- `N₁`: the exceptional set of `p` is Lebesgue-null
+  have hN₁ : volume {t : ℝ | ¬ p t} = 0 := ae_iff.mp hp
+  -- `N₂`: only countably many spheres charge the finite measure `μ⌞B̄_{ρ'}(y)`
+  have hfin : IsFiniteMeasure (μ.restrict (closedBall y ρ')) := isFiniteMeasure_restrict.mpr hμ
+  have hcount : {s : ℝ | 0 < μ.restrict (closedBall y ρ') (sphere y s)}.Countable :=
+    Measure.countable_meas_pos_of_disjoint_iUnion (fun s => isClosed_sphere.measurableSet)
+      (fun s s' hss' => Set.disjoint_left.mpr fun x hx hx' =>
+        hss' ((mem_sphere.mp hx).symm.trans (mem_sphere.mp hx')))
+  have hN₂ : volume {s : ℝ | 0 < μ.restrict (closedBall y ρ') (sphere y s)} = 0 :=
+    hcount.measure_zero volume
+  -- `N₃`: Markov's inequality gives `L¹(N₃) ≤ (ρ' - ρ) / 2`
+  have hN₃ : volume {t : ℝ | c * I < g t} ≤ ENNReal.ofReal ((ρ' - ρ) / 2) := by
+    rcases eq_or_ne I 0 with h0 | h0
+    · have hzero : ∫⁻ t, g t = 0 := le_antisymm (hI.trans h0.le) zero_le
+      have hae : g =ᵐ[volume] 0 := (lintegral_eq_zero_iff' hg).mp hzero
+      have hnull : volume {t : ℝ | c * I < g t} = 0 := by
+        refine measure_mono_null (fun t ht => ?_) (ae_iff.mp hae)
+        simp only [Set.mem_ofPred_eq, h0, mul_zero] at ht ⊢
+        exact ht.ne'
+      rw [hnull]
+      exact zero_le
+    rcases eq_or_ne I ∞ with htop | htop
+    · have hempty : {t : ℝ | c * I < g t} = ∅ := by
+        ext t
+        simp [htop, ENNReal.mul_top hc0]
+      rw [hempty, measure_empty]
+      exact zero_le
+    have hε0 : c * I ≠ 0 := mul_ne_zero hc0 h0
+    have hεtop : c * I ≠ ∞ := ENNReal.mul_ne_top hctop htop
+    calc volume {t : ℝ | c * I < g t} ≤ volume {t : ℝ | c * I ≤ g t} :=
+          measure_mono fun t (ht : c * I < g t) => show c * I ≤ g t from ht.le
+      _ ≤ (∫⁻ t, g t) / (c * I) := meas_ge_le_lintegral_div hg hε0 hεtop
+      _ ≤ I / (c * I) := ENNReal.div_le_div_right hI _
+      _ = c⁻¹ := by
+        rw [ENNReal.div_eq_inv_mul, ENNReal.mul_inv (Or.inl hc0) (Or.inl hctop), mul_assoc,
+          ENNReal.inv_mul_cancel h0 htop, mul_one]
+      _ = ENNReal.ofReal ((ρ' - ρ) / 2) := hcinv
+  -- covering: if no good `t` existed, then `(ρ, ρ') ⊆ N₁ ∪ N₂ ∪ N₃`
+  by_contra hcon
+  have hcover : Ioo ρ ρ' ⊆ {t : ℝ | ¬ p t} ∪
+      {s : ℝ | 0 < μ.restrict (closedBall y ρ') (sphere y s)} ∪ {t : ℝ | c * I < g t} := by
+    intro t ht
+    by_contra hnot
+    simp only [Set.mem_union, Set.mem_ofPred_eq, not_or, not_not, not_lt, nonpos_iff_eq_zero]
+      at hnot
+    obtain ⟨⟨hpt, hνt⟩, hgt⟩ := hnot
+    have hμt : μ (sphere y t) = 0 := by
+      rwa [Measure.restrict_apply isClosed_sphere.measurableSet, Set.inter_eq_left.mpr
+        (sphere_subset_closedBall.trans (closedBall_subset_closedBall ht.2.le))] at hνt
+    exact hcon ⟨t, ht.1, ht.2, hpt, hμt, hgt⟩
+  have hle : ENNReal.ofReal (ρ' - ρ) ≤ ENNReal.ofReal ((ρ' - ρ) / 2) :=
+    calc ENNReal.ofReal (ρ' - ρ) = volume (Ioo ρ ρ') := Real.volume_Ioo.symm
+      _ ≤ volume ({t : ℝ | ¬ p t} ∪ {s : ℝ | 0 < μ.restrict (closedBall y ρ') (sphere y s)} ∪
+          {t : ℝ | c * I < g t}) := measure_mono hcover
+      _ ≤ volume {t : ℝ | ¬ p t} + volume {s : ℝ | 0 < μ.restrict (closedBall y ρ') (sphere y s)} +
+          volume {t : ℝ | c * I < g t} :=
+        (measure_union_le _ _).trans (add_le_add (measure_union_le _ _) le_rfl)
+      _ ≤ ENNReal.ofReal ((ρ' - ρ) / 2) := by
+        rw [hN₁, hN₂, zero_add, zero_add]
+        exact hN₃
+  rw [ENNReal.ofReal_le_ofReal_iff (by positivity)] at hle
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

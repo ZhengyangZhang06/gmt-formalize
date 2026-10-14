@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def contract_scope|def validate_lean_statement",
+        "massAdmissibleOn|def massOn|le_massOn|massOn_mono|covectorEuclideanNorm_neg|exteriorDerivative_sq|tsupport_exteriorDerivative_subset",
+        "countable_meas_pos_of_disjoint_iUnion|meas_ge_le_lintegral_div|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|setIntegral_eq_zero_of_forall_eq_zero|isFiniteMeasure_restrict|lintegral_eq_zero_iff\\x27",
+        "\"lean_name\": \"dor_lmb_glc_(good_radius|massOn_sub_le|cut_cycle)\"",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/glc-independent-audit-4v43b9o2/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/glc-independent-audit-4v43b9o2/Checked.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/glc-independent-audit-4v43b9o2/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-level-cut-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-level-cut-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/glc-independent-audit-4v43b9o2/Types.lean",
+        "/tmp/glc-independent-audit-4v43b9o2/Checked.lean",
+        "/tmp/glc-independent-audit-4v43b9o2/Instances.lean"
+      ],
+      "conclusion": "The three-way split is appropriate for the selected level-cut theorem. Verified compatibility with project b4d606d, mathlib 25730c7c and simongmt 2b36630. All three frozen types pass validation unchanged and elaborate independently in the comparator scope. The supplied child proofs and exact-type comparison targets compile using only propext, Classical.choice and Quot.sound. The supplied assembly also compiles to the exact selected parent conclusion when its three registered sibling contracts are explicit hypotheses, with no sorryAx. Implicit measures in good_radius were independently checked to be Lebesgue volume. All names are bare identifiers; no collisions were found in the DAG or other branch proposals and handoffs. The children have no dependencies, and the selected node's existing dependency graph is acyclic."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "good_radius",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone Lean proposition. Restricting μ to the finite closed ball makes charged spheres countable. The proof correctly treats I = 0, I = ∞ and finite positive I separately, then combines the Markov estimate with the two null exceptional sets. The covering contradiction proves the exact conclusion without circularity. The frozen slicing contract supplies the required global integral bound in the parent assembly."
+    },
+    {
+      "key": "mass_difference",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree for arbitrary U and W. Negation preserves test-form membership, support and the specified coefficient norm. Linearity, ENNReal.ofReal_add_le and the defining mass supremum give the claimed inequality, including infinite masses. The proof is complete, independent and directly supplies the parent's open-ball estimate."
+    },
+    {
+      "key": "cut_cycle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree, including arbitrary radii, no relation between RB and R, and the degree-zero boundary convention. Constructing X from the two given continuous currents establishes continuity before using integral cancellation. The remaining conclusions follow from d² = 0 and support containment. The pinned integral-restriction lemma requires no additional integrability hypothesis here. This proves all four conclusions without assuming the child or parent theorem."
+    }
+  ],
+  "required_changes": []
+}
