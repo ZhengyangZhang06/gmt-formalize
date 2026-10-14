@@ -3381,6 +3381,137 @@ theorem Submission.dmcbr_ci_bl_blowup_scale : ∀ (P d : ℕ) (Γ Γ' : Geometri
     simp only [hηinv x, ENNReal.toReal_ofReal (hθpos x hx).le, _root_.smul_apply]
   exact ⟨hP0, hP7, hP1, hP2, (hζ.comp_measurable hAmeas).aestronglyMeasurable, hP5, hP6, hP8⟩
 
+/-- **Two-sided density bounds at a good point of `μ = θ Hⁿ⌞M`** (step 1 of the blow-up argument
+in the integer multiplicity criterion for cycles; Simon 6.2.8, 7.3.1; `|·|_E` is
+`covectorEuclideanNorm`).  Put `θ₀ = θ(a) > 0`, `τ = θζ`, `τ₀ = τ(a)`, `V(r) = ωₙ rⁿ` and
+`o(r) = ∫_{M ∩ B̄_r(a)} ‖τ − τ₀‖ dHⁿ`.  (F2) For `x ∈ M` choose `β` with `|β|_E ≤ 1` and
+`⟨β, ζ(x)⟩ = 1`, and put `δ = τ(x) − τ₀`.  Then `⟨β, δ⟩ = θ(x) − θ₀ ⟨β, ζ(a)⟩ ≥ θ(x) − θ₀` and
+`⟨β, δ⟩ ≤ ‖δ‖ ‖β‖ ≤ Pⁿ ‖δ‖`, as `‖β‖ ≤ Pⁿ |β|_E` (`Submission.dmcbr_ci_bl_covector_opNorm_le`);
+so `θ(x) ≤ θ₀ + Pⁿ ‖τ(x) − τ₀‖`.  Integrating (F2) over `M ∩ B_r(a) ⊆ M ∩ B̄_r(a)` gives
+`μ(B_r(a)) ≤ θ₀ Hⁿ(M ∩ B_r(a)) + Pⁿ o(r)`.  For small `r`, the lower density bound gives
+`μ(B_r(a)) ≥ (η₁/2) V(r)`, `o(r)/V(r) → 0` gives `Pⁿ o(r) ≤ (η₁/4) V(r)` and the upper density
+bound gives `Hⁿ(M ∩ B̄_r(a)) ≤ 2 V(r)`.  Cancelling the finite `(η₁/4) V(r)` and dividing by
+`θ₀` yields `Hⁿ(M ∩ B_r(a)) ≥ (η₁/(4θ₀)) V(r)`. -/
+theorem Submission.dmcbr_ci_bl_density_bounds : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n) (a : Euclid P) (η₁ : ℝ), MeasurableSet M → Measurable θ → StronglyMeasurable ζ → μ = (μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) → (∀ x ∈ M, 0 < θ x) → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) → (∀ x ∈ M, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζ x β = 1) → a ∈ M → 0 < η₁ → ENNReal.ofReal η₁ ≤ liminf (fun r : ℝ => μ (ball a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) → limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1 → Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0) → ∃ r₀ : ℝ, 0 < r₀ ∧ ∀ r : ℝ, 0 < r → r < r₀ → ENNReal.ofReal (η₁ / (4 * θ a)) * (unitBallVolume n * ENNReal.ofReal (r ^ n)) ≤ μHE[n] (M ∩ ball a r) ∧ μHE[n] (M ∩ closedBall a r) ≤ 2 * (unitBallVolume n * ENNReal.ofReal (r ^ n)) := by
+  intro P n μ M θ ζ a η₁ hM _ _ hμ hθ hζ hβ ha hη₁ hL hU hD
+  have hθa : 0 < θ a := hθ a ha
+  have hPn : (0 : ℝ) ≤ (P : ℝ) ^ n := by positivity
+  -- `K = ofReal(Pⁿ)` is finite
+  have hK : ENNReal.ofReal ((P : ℝ) ^ n) ≠ ∞ := ENNReal.ofReal_ne_top
+  -- Step 1: `V(r) = ωₙ rⁿ` is nonzero for `r > 0` and always finite
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωt : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hV0 : ∀ r : ℝ, 0 < r → unitBallVolume n * ENNReal.ofReal (r ^ n) ≠ 0 := fun r hr =>
+    mul_ne_zero hω0 (ENNReal.ofReal_pos.2 (pow_pos hr n)).ne'
+  have hVt : ∀ r : ℝ, unitBallVolume n * ENNReal.ofReal (r ^ n) ≠ ∞ := fun r =>
+    ENNReal.mul_ne_top hωt ENNReal.ofReal_ne_top
+  -- Step 2 (F2): `θ(x) ≤ θ(a) + Pⁿ ‖θ(x)ζ(x) − θ(a)ζ(a)‖` on `M`, read in `[0, ∞]`
+  have hF2 : ∀ x ∈ M, ENNReal.ofReal (θ x) ≤
+      ENNReal.ofReal (θ a) + ENNReal.ofReal ((P : ℝ) ^ n) * ‖θ x • ζ x - θ a • ζ a‖ₑ := by
+    intro x hx
+    obtain ⟨β, hβ1, hζβ⟩ := hβ x hx
+    set δ : MultiVector P n := θ x • ζ x - θ a • ζ a with hδ
+    -- (a) `⟨β, δ⟩ = θ(x) − θ(a) ⟨β, ζ(a)⟩`
+    have hδβ : δ β = θ x - θ a * ζ a β := by
+      rw [hδ, _root_.sub_apply, _root_.smul_apply, _root_.smul_apply, smul_eq_mul, smul_eq_mul,
+        hζβ, mul_one]
+    -- (b) `θ(a) ⟨β, ζ(a)⟩ ≤ θ(a)`, as `⟨β, ζ(a)⟩ ≤ |β|_E ≤ 1`
+    have hζaβ : θ a * ζ a β ≤ θ a :=
+      mul_le_of_le_one_right hθa.le ((le_abs_self _).trans ((hζ a β).trans hβ1))
+    -- (c) `‖β‖ ≤ Pⁿ |β|_E ≤ Pⁿ`
+    have hβP : ‖β‖ ≤ (P : ℝ) ^ n :=
+      (Submission.dmcbr_ci_bl_covector_opNorm_le P n β).trans (mul_le_of_le_one_right hPn hβ1)
+    -- (d) `⟨β, δ⟩ ≤ ‖δ‖ ‖β‖ ≤ Pⁿ ‖δ‖`
+    have hδle : δ β ≤ (P : ℝ) ^ n * ‖δ‖ :=
+      calc δ β ≤ ‖δ β‖ := Real.le_norm_self _
+        _ ≤ ‖δ‖ * ‖β‖ := δ.le_opNorm β
+        _ ≤ ‖δ‖ * (P : ℝ) ^ n := mul_le_mul_of_nonneg_left hβP (norm_nonneg δ)
+        _ = (P : ℝ) ^ n * ‖δ‖ := mul_comm _ _
+    -- (e) `θ(x) ≤ θ(a) + Pⁿ ‖δ‖`; (f) pass to `[0, ∞]`
+    have hθx : θ x ≤ θ a + (P : ℝ) ^ n * ‖δ‖ := by linarith
+    calc ENNReal.ofReal (θ x) ≤ ENNReal.ofReal (θ a + (P : ℝ) ^ n * ‖δ‖) :=
+          ENNReal.ofReal_le_ofReal hθx
+      _ = ENNReal.ofReal (θ a) + ENNReal.ofReal ((P : ℝ) ^ n) * ‖δ‖ₑ := by
+          rw [ENNReal.ofReal_add hθa.le (mul_nonneg hPn (norm_nonneg δ)), ENNReal.ofReal_mul hPn,
+            ofReal_norm δ]
+  -- Step 3: `μ(B_r(a)) ≤ θ(a) Hⁿ(M ∩ B_r(a)) + Pⁿ o(r)`, integrating (F2) over `M ∩ B_r(a)`
+  have hmass : ∀ r : ℝ, μ (ball a r) ≤ ENNReal.ofReal (θ a) * μHE[n] (M ∩ ball a r) +
+      ENNReal.ofReal ((P : ℝ) ^ n) *
+        ∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n] := by
+    intro r
+    have hμB : μ (ball a r) = ∫⁻ x in M ∩ ball a r, ENNReal.ofReal (θ x) ∂μHE[n] := by
+      rw [hμ, withDensity_apply _ measurableSet_ball, Measure.restrict_restrict measurableSet_ball,
+        inter_comm]
+    rw [hμB]
+    calc ∫⁻ x in M ∩ ball a r, ENNReal.ofReal (θ x) ∂μHE[n]
+        ≤ ∫⁻ x in M ∩ ball a r, (ENNReal.ofReal (θ a) +
+            ENNReal.ofReal ((P : ℝ) ^ n) * ‖θ x • ζ x - θ a • ζ a‖ₑ) ∂μHE[n] :=
+          setLIntegral_mono' (hM.inter measurableSet_ball) fun x hx => hF2 x hx.1
+      _ = ENNReal.ofReal (θ a) * μHE[n] (M ∩ ball a r) + ENNReal.ofReal ((P : ℝ) ^ n) *
+            ∫⁻ x in M ∩ ball a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n] := by
+          rw [lintegral_add_left measurable_const, setLIntegral_const,
+            lintegral_const_mul' _ _ hK]
+      _ ≤ ENNReal.ofReal (θ a) * μHE[n] (M ∩ ball a r) + ENNReal.ofReal ((P : ℝ) ^ n) *
+            ∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n] := by
+          gcongr ENNReal.ofReal (θ a) * μHE[n] (M ∩ ball a r) + ENNReal.ofReal ((P : ℝ) ^ n) * ?_
+          exact lintegral_mono_set (inter_subset_inter_right M ball_subset_closedBall)
+  -- Step 4: (a) `ofReal (η₁/2) < μ(B_r(a)) / V(r)` eventually, by (L)
+  have hea : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      ENNReal.ofReal (η₁ / 2) < μ (ball a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n)) :=
+    eventually_lt_of_lt_liminf
+      (((ENNReal.ofReal_lt_ofReal_iff hη₁).2 (half_lt_self hη₁)).trans_le hL)
+  -- (b) `Pⁿ o(r) / V(r) < ofReal (η₁/4)` eventually, since `Pⁿ o(r) / V(r) → Pⁿ · 0 = 0` by (D)
+  have heb : ∀ᶠ r in 𝓝[>] (0 : ℝ), ENNReal.ofReal ((P : ℝ) ^ n) *
+      ((∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) /
+        (unitBallVolume n * ENNReal.ofReal (r ^ n))) < ENNReal.ofReal (η₁ / 4) := by
+    have hK0 := ENNReal.Tendsto.const_mul hD (Or.inr hK)
+    rw [mul_zero] at hK0
+    exact (tendsto_order.1 hK0).2 _ (ENNReal.ofReal_pos.2 (by positivity))
+  -- (c) `Hⁿ(M ∩ B̄_r(a)) / V(r) < 2` eventually, by (U)
+  have hec : ∀ᶠ r in 𝓝[>] (0 : ℝ),
+      μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n)) < 2 :=
+    eventually_lt_of_limsup_lt (hU.trans_lt ENNReal.one_lt_two)
+  -- all three hold on some interval `(0, r₀)`
+  obtain ⟨r₀, hr₀, hsub⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 (hea.and (heb.and hec))
+  refine ⟨r₀, hr₀, fun r hr hrr₀ => ?_⟩
+  obtain ⟨ha', hb', hc'⟩ := hsub ⟨hr, hrr₀⟩
+  set V := unitBallVolume n * ENNReal.ofReal (r ^ n)
+  -- Step 5: clearing denominators; this already gives `Hⁿ(M ∩ B̄_r(a)) ≤ 2 V(r)`
+  have hmV : ENNReal.ofReal (η₁ / 2) * V ≤ μ (ball a r) :=
+    ((ENNReal.lt_div_iff_mul_lt (Or.inl (hV0 r hr)) (Or.inl (hVt r))).1 ha').le
+  have hoV : ENNReal.ofReal ((P : ℝ) ^ n) *
+      ∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n] ≤
+        ENNReal.ofReal (η₁ / 4) * V := by
+    rw [← mul_div_assoc] at hb'
+    exact ((ENNReal.div_lt_iff (Or.inl (hV0 r hr)) (Or.inl (hVt r))).1 hb').le
+  refine ⟨?_, ((ENNReal.div_lt_iff (Or.inl (hV0 r hr)) (Or.inl (hVt r))).1 hc').le⟩
+  -- Step 6: split `ofReal (η₁/2) V` into two quarters and cancel the finite quarter
+  have hq4 : 0 ≤ η₁ / 4 := by positivity
+  have hsplit : ENNReal.ofReal (η₁ / 2) * V =
+      ENNReal.ofReal (η₁ / 4) * V + ENNReal.ofReal (η₁ / 4) * V := by
+    rw [show η₁ / 2 = η₁ / 4 + η₁ / 4 by ring, ENNReal.ofReal_add hq4 hq4, add_mul]
+  have hq : ENNReal.ofReal (η₁ / 4) * V ≤ ENNReal.ofReal (θ a) * μHE[n] (M ∩ ball a r) := by
+    have hfin : ENNReal.ofReal (η₁ / 4) * V ≠ ∞ := ENNReal.mul_ne_top ENNReal.ofReal_ne_top (hVt r)
+    refine (ENNReal.add_le_add_iff_right hfin).1 ?_
+    calc ENNReal.ofReal (η₁ / 4) * V + ENNReal.ofReal (η₁ / 4) * V
+        = ENNReal.ofReal (η₁ / 2) * V := hsplit.symm
+      _ ≤ μ (ball a r) := hmV
+      _ ≤ ENNReal.ofReal (θ a) * μHE[n] (M ∩ ball a r) + ENNReal.ofReal ((P : ℝ) ^ n) *
+            ∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n] := hmass r
+      _ ≤ ENNReal.ofReal (θ a) * μHE[n] (M ∩ ball a r) + ENNReal.ofReal (η₁ / 4) * V := by
+          gcongr
+  -- Step 7: divide by `ofReal θ(a) ∈ (0, ∞)`
+  have hθ0 : ENNReal.ofReal (θ a) ≠ 0 := (ENNReal.ofReal_pos.2 hθa).ne'
+  have heq : ENNReal.ofReal (η₁ / (4 * θ a)) =
+      (ENNReal.ofReal (θ a))⁻¹ * ENNReal.ofReal (η₁ / 4) := by
+    rw [← ENNReal.ofReal_inv_of_pos hθa, ← ENNReal.ofReal_mul (inv_nonneg.2 hθa.le)]
+    congr 1
+    field_simp
+  calc ENNReal.ofReal (η₁ / (4 * θ a)) * V
+      = (ENNReal.ofReal (θ a))⁻¹ * (ENNReal.ofReal (η₁ / 4) * V) := by rw [heq, mul_assoc]
+    _ ≤ (ENNReal.ofReal (θ a))⁻¹ * (ENNReal.ofReal (θ a) * μHE[n] (M ∩ ball a r)) := by gcongr
+    _ = μHE[n] (M ∩ ball a r) := ENNReal.inv_mul_cancel_left hθ0 ENNReal.ofReal_ne_top
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
