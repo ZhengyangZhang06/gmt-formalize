@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1.density_imrep-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1",
+  "depth": 4,
+  "title": "An integer-valued density on an oriented rectifiable set gives an IMRep",
+  "statement": "Let P, n ∈ ℕ and U ⊆ ℝ^P open. Let N ⊆ U be Borel and countably n-rectifiable with Hⁿ(N ∩ K) < ∞ for every compact K ⊆ U. Let η : ℝ^P → Λ_n(ℝ^P) (MultiVector P n) be strongly measurable. Let m : ℝ^P → ℝ be measurable with m(x) ∈ ℤ for every x and ∫_{N∩K} |m| dHⁿ < ∞ for every compact K ⊆ U. Assume that for Hⁿ-a.e. x ∈ N there is a linear subspace Q with HasApproximateTangentSpaceAt n N x Q and IsUnitOrientationOf (η(x)) Q. Then there is an IMRep R in U such that R.action(ω) = ∫_N m(x)·η(x)(ω(x)) dHⁿ(x) for every n-form ω : ℝ^P → Λⁿ(ℝ^P) (DifferentialForm (Euclid P) n, no regularity required).",
+  "lean_statement": "∀ (P n : ℕ) (U N : Set (Euclid P)) (η : Euclid P → MultiVector P n) (m : Euclid P → ℝ), IsOpen U → MeasurableSet N → N ⊆ U → CountablyRectifiable n N → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (N ∩ K) ≠ ∞) → StronglyMeasurable η → Measurable m → (∀ x, ∃ z : ℤ, m x = z) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∫⁻ x in N ∩ K, ‖m x‖ₑ ∂μHE[n] ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict N), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n N x Q ∧ IsUnitOrientationOf (η x) Q) → ∃ R : IMRep U n, ∀ ω : DifferentialForm (Euclid P) n, R.action ω = ∫ x in N, m x * η x (ω x) ∂μHE[n]",
+  "lean_name": "cmcdt_ims_imrep_of_int_density",
+  "depends_on": [
+    "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1-a1",
+      "result_commit": "a157a5f4f62ba1c354a3b0cc070d947560abf2e6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-74efcb8c6f-a1"
+}

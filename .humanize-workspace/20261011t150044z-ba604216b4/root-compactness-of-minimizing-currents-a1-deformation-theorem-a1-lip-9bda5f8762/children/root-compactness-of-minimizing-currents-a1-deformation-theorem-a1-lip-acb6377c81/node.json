@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.span_orientation-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1",
+  "depth": 5,
+  "title": "Unit orientation of the span of independent vectors and the Gram-Jacobian identity (Simon 6.3.4–3.5; supplied (0a)–(0b))",
+  "statement": "For all P, n ∈ ℕ and every linearly independent family v = (v_0, …, v_{n−1}) in ℝ^P (Euclid P), let G := (⟨v_a, v_b⟩)_{a,b} be its Gram matrix and J := √det G. Then: (i) det G > 0; (ii) J ≤ ∏_a |v_a|; (iii) there is ξ ∈ Λ_n(ℝ^P) (MultiVector P n, a continuous linear functional on n-covectors) that is a unit orientation of V := span{v_a} (IsUnitOrientationOf ξ V) and satisfies α(v_0, …, v_{n−1}) = J·ξ(α) for every n-covector α; (iv) every unit orientation ζ of V equals ξ or −ξ.",
+  "lean_statement": "∀ (P n : ℕ) (v : Fin n → Euclid P), LinearIndependent ℝ v → 0 < Matrix.det (Matrix.of fun a b => inner ℝ (v a) (v b)) ∧ Real.sqrt (Matrix.det (Matrix.of fun a b => inner ℝ (v a) (v b))) ≤ ∏ a, ‖v a‖ ∧ ∃ ξ : MultiVector P n, IsUnitOrientationOf ξ (Submodule.span ℝ (Set.range v)) ∧ (∀ α : Covector (Euclid P) n, α v = Real.sqrt (Matrix.det (Matrix.of fun a b => inner ℝ (v a) (v b))) * ξ α) ∧ ∀ ζ : MultiVector P n, IsUnitOrientationOf ζ (Submodule.span ℝ (Set.range v)) → ζ = ξ ∨ ζ = -ξ",
+  "lean_name": "cmcdt_lpi_unit_orientation_span",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-acb6377c81-a1"
+}
