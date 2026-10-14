@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a9dc9db0cd6cf1549c43496a3afe6dac05e4ede313fca234b216390a8747e254",
+  "git_delta": {
+    "base_commit": "f0e031db55b7be05acd4ab23af301c8ae505246a",
+    "candidate_commit": "034afa7480c258544c142e449325f15bd46c526f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_pc_imrep_orient_fixed_by_retraction",
+    "diff_sha256": "1627ea00dee28aa22740991d73948c767204a65a52b3054983b35655d21ed31c",
+    "source_sha256": "e5bda6fe10eef672c58f3f2ac1510de9e6f4ceaafc1d99f0733885f9720194f7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_pc_imrep_orient_fixed_by_retraction",
+      "statement": "∀ (P n d : ℕ) (U N O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P), IsEmbeddedSubmanifold 1 d N → MeasurableSet O → μHE[n] (R.carrier \\ N) = 0 → (∀ x ∈ N ∩ O, f x = x) → (∀ x ∈ N ∩ O, ∀ v ∈ tangentSpace N x, fderiv ℝ f x v = v) → ∀ᵐ x ∂(μHE[n].restrict (R.carrier ∩ O)), f x = x ∧ ∀ α : Covector (Euclid P) n, R.orient x (α.compContinuousLinearMap (fderiv ℝ f x)) = R.orient x α",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
