@@ -451,6 +451,103 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **One-dimensional constancy theorem** (du Bois-Reymond; Simon Ch. 6, 2.34 for `n = 1`): if `g`
+is locally integrable on `U = (0, ∞)` and `∫_U g φ' = 0` for every `C^∞` function `φ` with compact
+support in `U`, then `g` is a.e. constant on `U`.  Fix a bump `b` supported in `[1/2, 3/2]`.  A
+test `f` with `∫ f = 0` is the derivative of the test `Ψ(t) = ∫_0^t f`, so `∫ g f = 0`; applied
+to `f = ψ − (∫ ψ / ∫ b) b` this gives `∫ ψ (g − c) = 0` with `c = ∫ g b / ∫ b`, so by the
+fundamental lemma of the calculus of variations `g = c` a.e. on `U`. -/
+theorem Submission.idtp_fons_odc_du_bois_reymond : ∀ g : ℝ → ℝ, LocallyIntegrableOn g (Ioi 0) → (∀ φ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ Ioi 0 → ∫ t in Ioi (0 : ℝ), g t * deriv φ t = 0) → ∃ c : ℝ, ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), g t = c := by
+  intro g hg h
+  -- Step 1: a bump `b` with `b(1) = 1` and `tsupport b = [1/2, 3/2] ⊆ U`, so `∫ b > 0`
+  obtain ⟨b, hb⟩ : ∃ b : ContDiffBump (1 : ℝ), b.rOut = 1 / 2 :=
+    ⟨⟨1 / 4, 1 / 2, by norm_num, by norm_num⟩, rfl⟩
+  have hbs : tsupport b ⊆ Ioi 0 := by
+    rw [b.tsupport_eq, hb, Real.closedBall_eq_Icc]
+    exact fun x hx => show (0 : ℝ) < x by linarith [hx.1]
+  have hI : 0 < ∫ t, b t :=
+    b.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero (μ := volume)
+      b.hasCompactSupport (fun x => b.nonneg' x) (x := 1)
+      (by rw [b.one_of_mem_closedBall (mem_closedBall_self b.rIn_pos.le)]; exact one_ne_zero)
+  have hbi := b.continuous.integrable_of_hasCompactSupport (μ := volume) b.hasCompactSupport
+  -- Step 2: `g ψ` is integrable for continuous `ψ` with compact support in `U`
+  have hint : ∀ ψ : ℝ → ℝ, Continuous ψ → HasCompactSupport ψ → tsupport ψ ⊆ Ioi 0 →
+      Integrable (fun t => g t * ψ t) := by
+    intro ψ hψ hψc hψs
+    rw [← integrableOn_iff_integrable_of_support_subset (s := tsupport ψ)]
+    · exact (hg.integrableOn_compact_subset hψs hψc).mul_continuousOn hψ.continuousOn hψc
+    · exact (support_mul_subset_right _ _).trans (subset_tsupport ψ)
+  have hgb := hint b b.continuous b.hasCompactSupport hbs
+  -- Step 3: a test `f` with `∫ f = 0` and `tsupport f ⊆ [α, β]` has the primitive
+  -- `Ψ(t) = ∫_0^t f`, which is `C^∞` with `Ψ' = f` and vanishes off `[α, β]`
+  have hprim : ∀ f : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f →
+      tsupport f ⊆ Ioi 0 → ∫ t, f t = 0 → ∃ Ψ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) Ψ ∧
+        HasCompactSupport Ψ ∧ tsupport Ψ ⊆ Ioi 0 ∧ deriv Ψ = f := by
+    intro f hf hfc hfs hf0
+    obtain ⟨α, hα, hαf⟩ := hfc.isCompact.exists_forall_le' continuousOn_id fun x hx => hfs hx
+    obtain ⟨β, hβ⟩ := hfc.isCompact.bddAbove
+    have hderiv : ∀ t, HasDerivAt (fun u => ∫ x in (0 : ℝ)..u, f x) (f t) t :=
+      fun t => (hf.continuous.integral_hasStrictDerivAt 0 t).hasDerivAt
+    have hd : deriv (fun u => ∫ x in (0 : ℝ)..u, f x) = f := funext fun t => (hderiv t).deriv
+    have hvan : ∀ t ∉ Icc α β, ∫ x in (0 : ℝ)..t, f x = 0 := by
+      intro t ht
+      by_cases htα : t < α
+      · rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)),
+          intervalIntegral.integral_zero]
+        intro x hx
+        refine image_eq_zero_of_notMem_tsupport fun hxs => ?_
+        rw [uIcc, mem_Icc] at hx
+        exact (hαf x hxs).not_gt (hx.2.trans_lt (max_lt hα htα))
+      · have hβt : β < t := not_le.1 fun h' => ht ⟨not_lt.1 htα, h'⟩
+        rw [intervalIntegral.integral_of_le (hα.le.trans (not_lt.1 htα)),
+          setIntegral_eq_integral_of_forall_compl_eq_zero, hf0]
+        intro x hx
+        exact image_eq_zero_of_notMem_tsupport fun hxs => hx ⟨hfs hxs, (hβ hxs).trans hβt.le⟩
+    refine ⟨fun u => ∫ x in (0 : ℝ)..u, f x, ?_, HasCompactSupport.intro isCompact_Icc hvan,
+      ?_, hd⟩
+    · exact contDiff_infty_iff_deriv.2 ⟨fun t => (hderiv t).differentiableAt, by rwa [hd]⟩
+    · exact (closure_minimal (support_subset_iff'.2 hvan) isClosed_Icc).trans
+        fun x hx => hα.trans_le hx.1
+  -- Step 4: `g` annihilates tests with zero integral: `∫ g f = ∫_U g Ψ' = 0`
+  have key : ∀ f : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → HasCompactSupport f →
+      tsupport f ⊆ Ioi 0 → ∫ t, f t = 0 → ∫ t, g t * f t = 0 := by
+    intro f hf hfc hfs hf0
+    obtain ⟨Ψ, hΨ, hΨc, hΨs, rfl⟩ := hprim f hf hfc hfs hf0
+    rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := Ioi 0)]
+    · exact h Ψ hΨ hΨc hΨs
+    · intro x hx
+      rw [image_eq_zero_of_notMem_tsupport (fun h' => hx (hfs h')), mul_zero]
+  -- the constant `c = ∫ g b / ∫ b`
+  refine ⟨(∫ t, g t * b t) / ∫ t, b t, ?_⟩
+  -- Steps 6–7: by the fundamental lemma on the open set `U` and `ae_restrict_iff'`, it suffices
+  -- that `∫ ψ (g − c) = 0` for every `C^∞` test `ψ` with compact support in `U`
+  have hU := isOpen_Ioi.ae_eq_zero_of_integral_contDiff_smul_eq_zero (μ := volume)
+    (f := fun t => g t - (∫ t, g t * b t) / ∫ t, b t) (hg.sub (locallyIntegrableOn_const _)) ?_
+  · exact (ae_restrict_iff' measurableSet_Ioi).2 (hU.mono fun t ht ht' => sub_eq_zero.1 (ht ht'))
+  -- Step 5: with `a = ∫ ψ / ∫ b`, the test `f = ψ − a b` has `∫ f = 0`, so Step 4 gives
+  -- `0 = ∫ g f = ∫ g ψ − a ∫ g b = ∫ ψ (g − c)`
+  intro ψ hψ hψc hψs
+  have hψi := hψ.continuous.integrable_of_hasCompactSupport (μ := volume) hψc
+  have hgψ := hint ψ hψ.continuous hψc hψs
+  set a := (∫ t, ψ t) / ∫ t, b t with ha
+  have hs : tsupport (fun t => ψ t - a * b t) ⊆ Ioi 0 := by
+    refine (closure_minimal (support_subset_iff'.2 fun x hx => ?_)
+      ((isClosed_tsupport ψ).union (isClosed_tsupport b))).trans (union_subset hψs hbs)
+    simp only [mem_union, not_or] at hx
+    simp [image_eq_zero_of_notMem_tsupport hx.1, image_eq_zero_of_notMem_tsupport hx.2]
+  have H : ∫ t, g t * (ψ t - a * b t) = 0 :=
+    key _ (hψ.sub (contDiff_const.mul b.contDiff)) (hψc.sub b.hasCompactSupport.mul_left) hs
+      (by rw [integral_sub hψi (hbi.const_mul a), integral_const_mul, ha,
+        div_mul_cancel₀ _ hI.ne', sub_self])
+  have e1 : (fun t => g t * (ψ t - a * b t)) = fun t => g t * ψ t - a * (g t * b t) := by
+    funext t; ring
+  have e2 : (fun t => ψ t • (g t - (∫ t, g t * b t) / ∫ t, b t)) =
+      fun t => g t * ψ t - (∫ t, g t * b t) / (∫ t, b t) * ψ t := by
+    funext t; rw [smul_eq_mul]; ring
+  rw [e1, integral_sub hgψ (hgb.const_mul a), integral_const_mul] at H
+  rw [e2, integral_sub hgψ (hψi.const_mul _), integral_const_mul, ← H, ha]
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
