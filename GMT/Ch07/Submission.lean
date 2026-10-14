@@ -1632,6 +1632,37 @@ theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : Multi
     refine Finset.sum_congr rfl fun I _ => ?_
     rw [map_smul, smul_eq_mul, hξ2, sq]
 
+/-- **Approximate tangent space of an embedded `C¹` submanifold** (Simon Ch. 3, 1.4; the step
+"since `x ∈ Nⱼ` and `Nⱼ` is a `C¹` submanifold, `lim_{λ↓0} ∫_{η_{x,λ}(Nⱼ)} f dHⁿ = ∫_{TₓNⱼ} f dHⁿ`"
+of the proof of 1.6 "⇒", chapter-03.txt lines 113–126).  Let `ψ : V → W₀` be a local
+representation of `N` (Ch. 2, (4.1)) with `x = ψ(v₀)`, so that `Q = TₓN = Dψ(v₀)(ℝᵐ)` (Ch. 2,
+(4.3)).  For a small ball `B_ρ(v₀) ⊆ V`, `Dψ(v₀)(ℝᵐ)` is the approximate tangent space of
+`ψ(B_ρ(v₀))` at `x` (area formula and dominated convergence).  As `ψ` is proper and 1:1,
+`N ∩ W` and `ψ(B_ρ(v₀))` agree on some ball `B_δ(x)`, and approximate tangent spaces at `x` only
+depend on the set near `x`. -/
+theorem Submission.codim1_ac_submanifold_approxTangent : ∀ (P m : ℕ) (N W : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 1 ≤ m → IsEmbeddedSubmanifold 1 m N → IsOpen W → x ∈ N ∩ W → (Q : Set (Euclid P)) = tangentSpace N x → HasApproximateTangentSpaceAt m (N ∩ W) x Q := by
+  intro P m N W x Q _ hN hW hx hQ
+  -- Step 1, a local representation `ψ : V → W₀` of `N` with `x = ψ(v₀)`
+  obtain ⟨V, W₀, ψ, hV, hW₀, hxW₀, hψ, hinj, hψV, hproper, hDψ⟩ := hN x hx.1
+  obtain ⟨v₀, hv₀, rfl⟩ : x ∈ ψ '' V := hψV ▸ ⟨hxW₀, hx.1⟩
+  have hψ1 : ContDiffOn ℝ 1 ψ V := by exact_mod_cast hψ
+  -- `Q = T_{ψ(v₀)}N = Dψ(v₀)(ℝᵐ)`
+  have hQA : Q = LinearMap.range (fderiv ℝ ψ v₀ : Euclid m →ₗ[ℝ] Euclid P) := by
+    refine SetLike.ext' ?_
+    rw [hQ, LinearMap.coe_range, Submission.chart_tangentSpace_eq_range_fderiv P m 1 N W₀ V ψ v₀
+      le_rfl hV hW₀ hψ hinj hψV hproper hDψ hv₀]
+    rfl
+  subst hQA
+  -- Step 2, `Dψ(v₀)(ℝᵐ)` is the approximate tangent space of `ψ(B_ρ(v₀))` at `ψ(v₀)`
+  obtain ⟨ρ, hρ, hρV, hT⟩ :=
+    Submission.codim1_ac_sat_chart_ball_approxTangent P m V ψ v₀ hV hψ1 hv₀ (hDψ v₀ hv₀)
+  -- Step 3, `N ∩ W` and `ψ(B_ρ(v₀))` agree on a ball `B_δ(ψ(v₀))`
+  obtain ⟨δ, hδ, hloc⟩ := Submission.codim1_ac_sat_chart_localization P m N W W₀ V ψ v₀ ρ hW hW₀
+    hψ.continuousOn hinj hψV hproper hv₀ hx.2 hρ hρV
+  -- Step 4, approximate tangent spaces only depend on the set near the point
+  exact Submission.codim1_ac_sat_approxTangent_of_local_eq P m (N ∩ W) (ψ '' ball v₀ ρ) (ψ v₀) _ δ
+    hδ hloc hT
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
