@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "61f74d3dabebce5c7a2eb13974095ebf6d1a5f7ce604ba1bcdaa4419a3f93197",
+  "git_delta": {
+    "base_commit": "b09fcbc7d2d4722cb94cb3da03d20cba7f4ae30d",
+    "candidate_commit": "3d6871fec5523c0ed19a2a680989747547b208f8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_bl_cvl_pairing_error_le",
+    "diff_sha256": "39266b9a6678b85dedbe987fc948e7cda247e6b85a4caa06aac29a2248a4b93d",
+    "source_sha256": "7f91163f3b27a8565dccf83c61ac245cfab017f4636ea9e454582e8c92fd2313",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_bl_cvl_pairing_error_le",
+      "statement": "∀ (P n : ℕ) (ν' : Measure (Euclid P)) (τ : Euclid P → MultiVector P n) (ζ₀ : MultiVector P n) (w : Euclid P → Covector (Euclid P) n) (A R : ℝ), AEStronglyMeasurable τ ν' → Continuous w → (∀ x, ‖w x‖ ≤ A) → (∀ x, x ∉ closedBall (0 : Euclid P) R → w x = 0) → Integrable (fun x => ζ₀ (w x)) ν' → ENNReal.ofReal A * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν' ≠ ∞ → |∫ x, τ x (w x) ∂ν' - ∫ x, ζ₀ (w x) ∂ν'| ≤ (ENNReal.ofReal A * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν').toReal",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
