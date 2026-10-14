@@ -515,6 +515,39 @@ theorem Submission.cmcdt_lpo_slice_param_integral : ∀ (N : ℕ) (V : Type) [No
   intro V _ _ _ h hh
   exact ⟨contDiff_infty.2 fun n => hind n V h hh, hderiv V h hh⟩
 
+/-- The exterior derivative commutes with parametric integrals over `[0, 1]`, used for the radial
+homotopy formula `β = d(Kβ) + K(dβ)` (Simon 6.2.25–2.26).  If `h : ℝ × ℝᴺ → Λᵏ(ℝᴺ)` is `C^∞`, then
+`d(y ↦ ∫₀¹ h(t, y) dt)(x) = ∫₀¹ d(y ↦ h(t, y))(x) dt`.  By `param_integral` the derivative of
+`y ↦ ∫₀¹ h(t, y) dt` at `x` is `∫₀¹ D[y ↦ h(t, y)](x) dt`; its integrand `Dh(t, x) ∘L inr` is
+continuous in `t`, and `d = alternatizeUncurryFin ∘ D` with `alternatizeUncurryFin` continuous
+linear, so it commutes with the interval integral. -/
+theorem Submission.dimred_cs_sos_cfs_rh_extDeriv_param_integral : ∀ (N k : ℕ) (h : ℝ × Euclid N → Covector (Euclid N) k), ContDiff ℝ (⊤ : ℕ∞) h → ∀ x : Euclid N, exteriorDerivative (fun y : Euclid N => ∫ t in (0 : ℝ)..1, h (t, y)) x = ∫ t in (0 : ℝ)..1, exteriorDerivative (fun y : Euclid N => h (t, y)) x := by
+  intro N k h hh x
+  -- Step 1: `DF(x) = ∫₀¹ D[y ↦ h (t, y)](x) dt` for `F y = ∫₀¹ h (t, y) dt`.
+  have hpi := (Submission.cmcdt_lpo_slice_param_integral N (Covector (Euclid N) k) h hh).2 x
+  have hdiff : Differentiable ℝ h := hh.differentiable (by simp)
+  -- Step 2: `D[y ↦ h (t, y)](x) = Dh (t, x) ∘L inr`, by the chain rule.
+  have hpart : ∀ t : ℝ, fderiv ℝ (fun y : Euclid N => h (t, y)) x =
+      (fderiv ℝ h (t, x)).comp (ContinuousLinearMap.inr ℝ ℝ (Euclid N)) := fun t =>
+    ((hdiff (t, x)).hasFDerivAt.comp x (hasFDerivAt_prodMk_right t x)).fderiv
+  -- Step 3: the partial derivative is continuous in `t`, hence interval integrable on `[0, 1]`.
+  have hcont : Continuous fun t : ℝ => fderiv ℝ (fun y : Euclid N => h (t, y)) x := by
+    simp_rw [hpart]
+    exact ((hh.continuous_fderiv (by simp)).comp (continuous_id.prodMk continuous_const)).clm_comp
+      continuous_const
+  have hint := Continuous.intervalIntegrable (μ := volume)
+    (E := Euclid N →L[ℝ] Covector (Euclid N) k) hcont 0 1
+  -- Step 4: the continuous linear map `alternatizeUncurryFin` commutes with the integral.
+  have hcomm := ContinuousLinearMap.intervalIntegral_comp_comm (𝕜 := ℝ)
+    (E := Euclid N →L[ℝ] Covector (Euclid N) k) (F := Covector (Euclid N) (k + 1))
+    (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Euclid N) ℝ (n := k)) hint
+  -- Step 5: `dF(x) = alt (DF(x)) = alt (∫₀¹ Dhₜ(x) dt) = ∫₀¹ alt (Dhₜ(x)) dt = ∫₀¹ dhₜ(x) dt`.
+  show ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ _ x) =
+    ∫ t in (0 : ℝ)..1, ContinuousAlternatingMap.alternatizeUncurryFin
+      (fderiv ℝ (fun y : Euclid N => h (t, y)) x)
+  rw [hpi.fderiv]
+  simpa using hcomm.symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
