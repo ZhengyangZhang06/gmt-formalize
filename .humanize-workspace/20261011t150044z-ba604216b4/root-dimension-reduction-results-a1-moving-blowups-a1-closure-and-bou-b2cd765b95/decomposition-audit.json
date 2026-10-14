@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "setIntegral_map|setIntegral_map_equiv",
+        "aestronglyMeasurable_map_iff|theorem AEStronglyMeasurable.smul_measure|aestronglyMeasurable_zero_measure",
+        "theorem integral_smul_measure|theorem integral_zero_measure",
+        "comp_homeomorph",
+        "cbr_ci_dsp|dmcbr_ci_dsp|dmcbr_ci_dilation",
+        "git show --format=fuller --unified=3 40b97a081c8a6bd695fef31025894a636e445c66 -- GMT/Ch07/Submission.lean",
+        "git show --format=oneline --unified=3 e7e69ec54f3d6b2477c0ae8c9bd09ce9eee5b343 -- GMT/Ch07/Submission.lean",
+        "git show --format=oneline --unified=3 b7f786d456d74a6ac75f8c6b4042b122362a6006 -- GMT/Ch07/Submission.lean",
+        "git show --format=oneline --unified=3 64b1a25a47379fa492c1d592b13204c85dd69546 -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dilation_isp_independent_audit/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-b2cd765b95/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-b2cd765b95/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-36d85accd9/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-bf6ac3d2a2/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-081b148e23/isolated-comparator-result.json",
+        "/tmp/dilation_isp_independent_audit/Full.lean"
+      ],
+      "conclusion": "Independently verified the selected handoff and contract digest. Project and Mathlib revisions match the manifest; the snapshot contract matches Submission.lean, and inspected Mathlib files match the compiler package. The declaration-name search found no matches in the snapshot project, GMT, or SimonGMT. Each proposed bare name uniquely identifies a comparator-accepted leaf with a byte-identical frozen type. All three types are standalone one-line propositions and pass lexical validation. Their proofs and the assembly were freshly checked with autoImplicit false against the frozen imports and definitions; all use only propext, Classical.choice, and Quot.sound. The assembly derives the exact selected parent contract from these children and its already-declared dilation_calculus dependency. Dependencies are correctly directed and acyclic. The split appropriately isolates three genuine obligations of the supplied proof. Measure scaling and current subtraction use the intended instances; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pushforward_pair",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including arbitrary sets S and forms without regularity assumptions. Positivity establishes the dilation homeomorphism; the inverse identity transfers compact-finiteness, a.e. strong measurability, and the bound. Restriction, measure scaling, and MeasurableEmbedding.setIntegral_map prove the exact integral identity without additional integrability assumptions. The proof is complete and independent of the parent and other children. Reuse has an identical accepted type."
+    },
+    {
+      "key": "testform_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match. The supplied proof establishes smoothness by affine composition, compact support through the dilation homeomorphism, and the support condition in univ, then constructs the required test form with the exact pointwise identity. No circular reliance or missing construction remains. The bare name reuses an identical comparator-accepted declaration."
+    },
+    {
+      "key": "cycle_slices",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The SL hypothesis is verbatim, and the remaining prose matches the frozen type. The zero pair admissibly represents the vanishing boundary. SL supplies slice families; ISP applied to precisely those representations gives integer multiplicity almost everywhere. The boundary slice vanishes, and extensionality with the contract's subtraction instance yields integer multiplicity of the slice boundary. ISP is an explicit hypothesis, so this is non-circular. The proof is complete and the reused accepted type is identical."
+    }
+  ],
+  "required_changes": []
+}
