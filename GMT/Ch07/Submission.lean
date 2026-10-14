@@ -451,6 +451,105 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Restricted representing integrals are determined by the represented current (closure theorem
+for the moving blow-ups of the dimension-reduction argument): if
+`∫ ⟨ω, ξ₁⟩ dμ₁ = ∫ ⟨ω, ξ₂⟩ dμ₂ + ∫ ⟨ω, ξ₃⟩ dμ₃` for every `ω ∈ 𝒟ᵏ(U)`, the same identity holds
+for the integrals over every Borel set `B`.  For fixed `ω` the integrands are integrable (bounded
+by `|ω|`, which vanishes off the compact `spt ω ⊆ U`).  Testing the hypothesis with `gω`, `g`
+smooth, and letting `g = (1 - f)ʲ ↓ 𝟙_F` (`f` smooth, `0 ≤ f ≤ 1`, with support `ℝᴾ \ F`) gives
+the identity on closed sets `F` by dominated convergence; Dynkin's π-λ theorem extends it to all
+Borel sets. -/
+theorem Submission.dmcbr_setIntegral_eq_of_integral_eq : ∀ (P k : ℕ) (U : Set (Euclid P)) (μ₁ μ₂ μ₃ : Measure (Euclid P)) (ξ₁ ξ₂ ξ₃ : Euclid P → MultiVector P k), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₁ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₂ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₃ K < ∞) → AEStronglyMeasurable ξ₁ μ₁ → AEStronglyMeasurable ξ₂ μ₂ → AEStronglyMeasurable ξ₃ μ₃ → (∀ᵐ x ∂μ₁, ∀ α : Covector (Euclid P) k, |ξ₁ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₂, ∀ α : Covector (Euclid P) k, |ξ₂ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₃, ∀ α : Covector (Euclid P) k, |ξ₃ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U k, ∫ x, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃) → ∀ (B : Set (Euclid P)) (ω : TestFormOn U k), MeasurableSet B → ∫ x in B, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x in B, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x in B, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃ := by
+  intro P k U μ₁ μ₂ μ₃ ξ₁ ξ₂ ξ₃ _hU hμ₁ hμ₂ hμ₃ hξ₁ hξ₂ hξ₃ hb₁ hb₂ hb₃ heq B ω hB
+  set w : DifferentialForm (Euclid P) k := (ω : DifferentialForm (Euclid P) k)
+  have hws : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) w := ω.property.1.1
+  have hwc : HasCompactSupport w := ω.property.1.2
+  have hwU : tsupport w ⊆ U := ω.property.2
+  -- Step 1: `x ↦ ξ x (w x)` is integrable: it vanishes off the compact set `tsupport w ⊆ U` and
+  -- is bounded by `sup |w|`.
+  obtain ⟨C, hC⟩ : ∃ C, ∀ x, ‖covectorEuclideanNorm (w x)‖ ≤ C := by
+    refine Continuous.bounded_above_of_compact_support ?_
+      (hwc.comp_left (g := fun α : Covector (Euclid P) k => covectorEuclideanNorm α)
+        (covectorEuclideanNorm_zero P k))
+    unfold covectorEuclideanNorm
+    refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+    exact Continuous.if_const _ ((hws.continuous.eval_const _).pow 2) continuous_const
+  have hint : ∀ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P k),
+      (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ →
+      (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) k, |ξ x α| ≤ covectorEuclideanNorm α) →
+      Integrable (fun x => ξ x (w x)) μ := by
+    intro μ ξ hμ hξ hb
+    have hsupp : support (fun x => ξ x (w x)) ⊆ tsupport w := by
+      intro x hx
+      by_contra hxw
+      exact hx (by simp [image_eq_zero_of_notMem_tsupport hxw])
+    rw [← integrableOn_iff_integrable_of_support_subset hsupp]
+    refine Measure.integrableOn_of_bounded (M := C) (hμ _ hwc hwU).ne
+      (isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable₂ hξ
+        hws.continuous.aestronglyMeasurable) ?_
+    filter_upwards [ae_restrict_of_ae hb] with x hx
+    rw [Real.norm_eq_abs]
+    exact (hx (w x)).trans ((le_abs_self _).trans ((Real.norm_eq_abs _) ▸ hC x))
+  have hi₁ := hint μ₁ ξ₁ hμ₁ hξ₁ hb₁
+  have hi₂ := hint μ₂ ξ₂ hμ₂ hξ₂ hb₂
+  have hi₃ := hint μ₃ ξ₃ hμ₃ hξ₃ hb₃
+  -- Step 2: testing the hypothesis with the test form `g • w`, `g` smooth.
+  have hmul : ∀ g : Euclid P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g →
+      ∫ x, g x * ξ₁ x (w x) ∂μ₁ = ∫ x, g x * ξ₂ x (w x) ∂μ₂ + ∫ x, g x * ξ₃ x (w x) ∂μ₃ := by
+    intro g hg
+    have hmem : (fun x => g x • w x) ∈ testFormOnSubmodule U k :=
+      ⟨⟨hg.smul hws, hwc.mono' ((subset_tsupport _).trans (tsupport_smul_subset_right g w))⟩,
+        (tsupport_smul_subset_right g w).trans hwU⟩
+    simpa only [Submodule.coe_mk, map_smul, smul_eq_mul] using heq ⟨fun x => g x • w x, hmem⟩
+  -- Step 3: closed sets, by smooth approximation of the indicator and dominated convergence.
+  have hclosed : ∀ F : Set (Euclid P), IsClosed F →
+      ∫ x in F, ξ₁ x (w x) ∂μ₁ = ∫ x in F, ξ₂ x (w x) ∂μ₂ + ∫ x in F, ξ₃ x (w x) ∂μ₃ := by
+    intro F hF
+    obtain ⟨f, hfs, hfd, hfr⟩ := hF.isOpen_compl.exists_contDiff_support_eq (n := ⊤)
+    have hgd : ∀ n : ℕ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun x => (1 - f x) ^ n) :=
+      fun n => (contDiff_const.sub hfd).pow n
+    have hf01 : ∀ x, 0 ≤ f x ∧ f x ≤ 1 := fun x => hfr ⟨x, rfl⟩
+    have hgb : ∀ (n : ℕ) x, ‖(1 - f x) ^ n‖ ≤ 1 := by
+      intro n x
+      rw [norm_pow, Real.norm_eq_abs, abs_of_nonneg (by linarith [(hf01 x).2])]
+      exact pow_le_one₀ (by linarith [(hf01 x).2]) (by linarith [(hf01 x).1])
+    have hlim : ∀ (μ : Measure (Euclid P)) (h : Euclid P → ℝ), Integrable h μ →
+        Tendsto (fun n : ℕ => ∫ x, (1 - f x) ^ n * h x ∂μ) atTop (𝓝 (∫ x in F, h x ∂μ)) := by
+      intro μ h hh
+      rw [← integral_indicator hF.measurableSet]
+      refine tendsto_integral_of_dominated_convergence (fun x => ‖h x‖) (fun n => ?_) hh.norm
+        (fun n => Eventually.of_forall fun x => ?_) (Eventually.of_forall fun x => ?_)
+      · exact (hgd n).continuous.aestronglyMeasurable.mul hh.aestronglyMeasurable
+      · rw [norm_mul]
+        exact mul_le_of_le_one_left (norm_nonneg _) (hgb n x)
+      · by_cases hx : x ∈ F
+        · have hfx : f x = 0 := Function.notMem_support.mp (by rw [hfs]; exact fun h => h hx)
+          simp [hfx, hx]
+        · have hfx : f x ≠ 0 := Function.mem_support.mp (by rw [hfs]; exact hx)
+          have hpos : 0 < f x := lt_of_le_of_ne (hf01 x).1 (Ne.symm hfx)
+          have := (tendsto_pow_atTop_nhds_zero_of_lt_one (r := 1 - f x)
+            (by linarith [(hf01 x).2]) (by linarith)).mul_const (h x)
+          simpa [hx] using this
+    exact tendsto_nhds_unique (hlim μ₁ _ hi₁)
+      (((hlim μ₂ _ hi₂).add (hlim μ₃ _ hi₃)).congr fun n => (hmul _ (hgd n)).symm)
+  -- Step 4: Dynkin's π-λ theorem extends the identity from closed sets to all Borel sets.
+  have hall : ∀ (t : Set (Euclid P)) (_ : MeasurableSet t),
+      ∫ x in t, ξ₁ x (w x) ∂μ₁ = ∫ x in t, ξ₂ x (w x) ∂μ₂ + ∫ x in t, ξ₃ x (w x) ∂μ₃ := by
+    refine MeasurableSpace.induction_on_inter (s := {s | IsClosed s})
+      (C := fun t _ =>
+        ∫ x in t, ξ₁ x (w x) ∂μ₁ = ∫ x in t, ξ₂ x (w x) ∂μ₂ + ∫ x in t, ξ₃ x (w x) ∂μ₃)
+      ((BorelSpace.measurable_eq).trans borel_eq_generateFrom_isClosed) isPiSystem_isClosed
+      (by simp) (fun t ht => hclosed t ht) (fun t htm ht => ?_) (fun f hfd hfm hf => ?_)
+    · have e₁ := integral_add_compl htm hi₁
+      have e₂ := integral_add_compl htm hi₂
+      have e₃ := integral_add_compl htm hi₃
+      have e := heq ω
+      linarith
+    · exact (hasSum_integral_iUnion hfm hfd hi₁.integrableOn).unique
+        (((hasSum_integral_iUnion hfm hfd hi₂.integrableOn).add
+          (hasSum_integral_iUnion hfm hfd hi₃.integrableOn)).congr_fun fun n => hf n)
+  exact hall B hB
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
