@@ -2880,6 +2880,47 @@ theorem Submission.dor_lmb_fc_tb_eq_of_vanish_off : ∀ (P d : ℕ) (U K : Set (
     _ = Y ιη := rfl
     _ = Y ω := hYω.symm
 
+/-- **Extension by zero of `A` and `∂A`** (Simon Ch. 6, proof of Theorem 7.2, where the
+deformation theorem is applied to currents in `ℝᴾ`).  Let `U` be open, `K ⊆ U` compact, and let
+`A ∈ 𝒟_{m+1}(U)` and `∂A` be integer multiplicity, with `A` vanishing off `K`.  Extending `A` and
+`∂A` by zero gives `Y` and `Z` in `ℝᴾ` with `Y⌞U = A`, `Z⌞U = ∂A`, both vanishing off `K`,
+`M(Y) ≤ M(A)` and `M(Z) ≤ M(∂A)`.  Since `spt dω ⊆ spt ω`, `∂Y` vanishes off `K`, and `d` commutes
+with the inclusion of test forms, so `(∂Y)⌞U = ∂A = Z⌞U`.  Hence `∂Y = Z`. -/
+theorem Submission.dor_lmb_fc_tb_extend_univ_boundary : ∀ (P m : ℕ) (U K : Set (Euclid P)) (A : GeometricCurrentOn U (m + 1)), IsOpen U → IsCompact K → K ⊆ U → IsIntegerMultiplicity A → IsIntegerMultiplicity A.boundary → (∀ ω : TestFormOn U (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → A ω = 0) → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ IsIntegerMultiplicity Y.boundary ∧ Y.restrictDomain (subset_univ U) = A ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → Y ω = 0) ∧ Y.mass ≤ A.mass ∧ Y.boundary.mass ≤ A.boundary.mass := by
+  intro P m U K A hU hK hKU hA hbA hAK
+  -- Step 1: `∂A` vanishes off `K`, as `∂A(ω) = A(dω)` and `spt dω ⊆ spt ω`
+  have hbAK : ∀ ω : TestFormOn U m,
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) K → A.boundary ω = 0 := by
+    intro ω hω
+    rw [GeometricCurrentOn.boundary_apply]
+    exact hAK _ (hω.mono_left (tsupport_exteriorDerivative_subset _))
+  -- Step 2: extend `A` by zero to `Y ∈ 𝒟_{m+1}(ℝᴾ)`
+  obtain ⟨Y, hYim, hYA, hYK, hYmass⟩ :=
+    Submission.dor_lmb_fc_tb_extend_univ P (m + 1) U K A hU hK hKU hA hAK
+  -- Step 3: extend `∂A` by zero to `Z ∈ 𝒟_m(ℝᴾ)`
+  obtain ⟨Z, hZim, hZA, hZK, hZmass⟩ :=
+    Submission.dor_lmb_fc_tb_extend_univ P m U K A.boundary hU hK hKU hbA hbAK
+  -- Step 4: `∂Y` vanishes off `K`, as `∂Y(ω) = Y(dω)` and `spt dω ⊆ spt ω`
+  have hbYK : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) K → Y.boundary ω = 0 := by
+    intro ω hω
+    rw [GeometricCurrentOn.boundary_apply]
+    exact hYK _ (hω.mono_left (tsupport_exteriorDerivative_subset _))
+  -- Step 5: `(∂Y)⌞U = Z⌞U`: for `ω ∈ 𝒟^m(U)`, `d(ιω) = ι(dω)` (both have underlying form `dω`),
+  -- so `(∂Y)⌞U(ω) = Y(ι(dω)) = (Y⌞U)(dω) = A(dω) = ∂A(ω) = (Z⌞U)(ω)`
+  have hbYZ : Y.boundary.restrictDomain (subset_univ U) = Z.restrictDomain (subset_univ U) := by
+    ext ω
+    have hdι : exteriorDerivativeTestOn univ m (testFormOnInclusion (subset_univ U) m ω) =
+        testFormOnInclusion (subset_univ U) (m + 1) (exteriorDerivativeTestOn U m ω) :=
+      Subtype.ext rfl
+    rw [GeometricCurrentOn.restrictDomain_apply, GeometricCurrentOn.boundary_apply, hdι, hZA,
+      ← hYA, GeometricCurrentOn.boundary_apply, GeometricCurrentOn.restrictDomain_apply]
+  -- Step 6: `∂Y = Z`, as both vanish off `K` and agree in `U`
+  have hYZ : Y.boundary = Z :=
+    Submission.dor_lmb_fc_tb_eq_of_vanish_off P m U K Y.boundary Z hU hK hKU hbYK hZK hbYZ
+  -- Step 7: hence `∂Y` is integer multiplicity and `M(∂Y) = M(Z) ≤ M(∂A)`
+  exact ⟨Y, hYim, hYZ ▸ hZim, hYA, hYK, hYmass, hYZ ▸ hZmass⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
