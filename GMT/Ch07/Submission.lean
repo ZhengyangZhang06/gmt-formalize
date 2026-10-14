@@ -1679,6 +1679,49 @@ theorem Submission.abstract_dimension_reduction : ∀ (P n Q : ℕ) (F : Set (Eu
     have h1 := hdim φ hφ 1 one_pos
     rwa [Nat.cast_zero, zero_add] at h1
 
+/-- **Simon 7.3.3**, step 1 of the class reduction (Remark 3.4, proof of 3.3(2)): for any measure
+`μ` on `ℝᴾ` the upper density `limsup_{ρ↓0} μ(B_ρ(x))/(ωₙρⁿ)` is Borel in `x`.  `x ↦ μ(B_ρ(x))`
+is lower semicontinuous by continuity from below on the balls `B_{ρ−1/(m+1)}(x) ↑ B_ρ(x)`;
+dividing by `ωₙρⁿ ≠ 0` and taking suprema over `ρ ∈ (0, 1/(m+1))` keeps lower semicontinuity,
+and the `limsup` along `𝓝[>] 0` is the infimum over `m ∈ ℕ` of these suprema. -/
+theorem Submission.idtp_fons_cr_density_measurable : ∀ (P n : ℕ) (μ : Measure (Euclid P)), Measurable (fun x : Euclid P => (limsup (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) := by
+  intro P n μ
+  -- `x ↦ μ(B_ρ(x))` is lower semicontinuous: `B_ρ(x)` is the increasing union of the balls
+  -- `B_{ρ - 1/(m+1)}(x)`, each contained in `B_ρ(x')` for `|x' - x| < 1/(m+1)`
+  have hball : ∀ ρ : ℝ, LowerSemicontinuous fun x : Euclid P => μ (ball x ρ) := by
+    intro ρ x t ht
+    have hU : ⋃ m : ℕ, ball x (ρ - 1 / ((m : ℝ) + 1)) = ball x ρ := by
+      ext z
+      simp only [mem_iUnion, mem_ball]
+      constructor
+      · rintro ⟨m, hm⟩
+        linarith [Nat.one_div_pos_of_nat (α := ℝ) (n := m)]
+      · intro hz
+        obtain ⟨m, hm⟩ := exists_nat_one_div_lt (sub_pos.2 hz)
+        exact ⟨m, by linarith⟩
+    have hmono : Monotone fun m : ℕ => ball x (ρ - 1 / ((m : ℝ) + 1)) := fun a b hab =>
+      ball_subset_ball (sub_le_sub_left (Nat.one_div_le_one_div hab) ρ)
+    have ht' : t < μ (⋃ m : ℕ, ball x (ρ - 1 / ((m : ℝ) + 1))) := by
+      rw [hU]
+      exact ht
+    obtain ⟨m, hm⟩ := ((tendsto_measure_iUnion_atTop (μ := μ) hmono).eventually
+      (lt_mem_nhds ht')).exists
+    filter_upwards [ball_mem_nhds x (Nat.one_div_pos_of_nat (α := ℝ) (n := m))] with x' hx'
+    refine hm.trans_le (measure_mono (ball_subset_ball' ?_))
+    rw [mem_ball, dist_comm] at hx'
+    linarith
+  -- dividing by `ωₙρⁿ ≠ 0` preserves lower semicontinuity
+  have hω : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hg : ∀ ρ : ℝ, 0 < ρ → LowerSemicontinuous fun x : Euclid P =>
+      μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) := fun ρ hρ =>
+    (ENNReal.continuous_div_const _ (mul_ne_zero hω (ENNReal.ofReal_pos.2 (pow_pos hρ n)).ne')
+      ).comp_lowerSemicontinuous (hball ρ) fun a b hab => ENNReal.div_le_div_right hab _
+  -- the `limsup` along `𝓝[>] 0` is the countable infimum over the basis `(0, 1/(m+1))`
+  have hbasis := nhdsWithin_hasBasis (nhds_basis_ball_inv_nat_succ (x := (0 : ℝ))) (Ioi 0)
+  simp_rw [hbasis.limsup_eq_iInf_iSup]
+  exact Measurable.ennreal_toReal (Measurable.iInf fun m => Measurable.iInf fun _ =>
+    (lowerSemicontinuous_biSup fun ρ hρ => hg ρ hρ.2).measurable)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
