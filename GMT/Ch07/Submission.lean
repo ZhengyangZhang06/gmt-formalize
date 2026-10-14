@@ -1137,6 +1137,60 @@ theorem Submission.cbr_cipi_affine_plane_measure : ∀ (P m : ℕ) (w : Fin m �
     rw [← hmapJ, Measure.map_apply hJm measurableSet_ball]
     exact (isOpen_ball.preimage hJ.continuous).measure_pos _ ⟨0, by simp [J, hr]⟩
 
+/-- **Coordinate boxes in the span of an orthonormal frame have `Hᵏ`-measure `(2r)ᵏ`** (Simon
+Ch. 1, 2.9, `Hᵏ = Lᵏ` on `ℝᵏ`; box volumes for the splitting lemma, Ch. 7, 3.5).  Let
+`G = span g` and `ι(u) = Σᵢ uᵢ gᵢ` for `u : Fin k → ℝ` with the sup norm.  By
+`Submission.cbr_cipi_affine_plane_measure` at `a = 0`, `ι_*(Lᵏ) = Hᵏ⌞G`.  Both boxes are Borel
+subsets of the closed subspace `G`, so `Hᵏ(S) = (Hᵏ⌞G)(S) = Lᵏ(ι⁻¹S)`.  Orthonormality gives
+`ι(u) ∈ G` and `⟨gᵢ, ι(u)⟩ = uᵢ`, so the closed and open boxes pull back to the sup-norm balls
+`closedBall 0 r` and `ball 0 r` of `ℝᵏ`, both of volume `(2r)ᵏ`. -/
+theorem Submission.dimred_cs_sos_mt_fm_box_measure : ∀ (P k : ℕ) (g : Fin k → Euclid P), Orthonormal ℝ g → ∀ r : ℝ, 0 < r → μHE[k] {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} = ENNReal.ofReal ((2 * r) ^ k) ∧ μHE[k] {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| < r} = ENNReal.ofReal ((2 * r) ^ k) := by
+  intro P k g hg r hr
+  set G : Set (Euclid P) := (Submodule.span ℝ (Set.range g) : Set (Euclid P))
+  set ι : (Fin k → ℝ) → Euclid P := fun u => ∑ i, u i • g i
+  -- Step 1: `ι_*(Lᵏ) = Hᵏ⌞G`, the affine plane measure at `a = 0`
+  have hmap : Measure.map ι volume = (μHE[k] : Measure (Euclid P)).restrict G := by
+    simpa [ι, G] using (Submission.cbr_cipi_affine_plane_measure P k g 0 hg).1
+  -- Step 2: `ι` is continuous, `G` is closed, and the coordinates `|⟨gᵢ, ·⟩|` are continuous
+  have hιm : Measurable ι :=
+    (continuous_finsetSum _ fun i _ => (continuous_apply i).smul continuous_const).measurable
+  have hGc : IsClosed G := (Submodule.span ℝ (Set.range g)).closed_of_finiteDimensional
+  have hcont : ∀ i, Continuous fun t : Euclid P => |inner ℝ (g i) t| := fun i =>
+    (continuous_const.inner continuous_id).abs
+  -- Step 3: `Hᵏ(S) = (Hᵏ⌞G)(S) = Lᵏ(ι⁻¹S)` for Borel `S ⊆ G`
+  have key : ∀ S : Set (Euclid P), MeasurableSet S → S ⊆ G → μHE[k] S = volume (ι ⁻¹' S) := by
+    intro S hS hSG
+    rw [← Measure.map_apply hιm hS, hmap, Measure.restrict_apply hS, inter_eq_left.mpr hSG]
+  -- Step 4: `ι(u) ∈ G` and `⟨gᵢ, ι(u)⟩ = uᵢ` by orthonormality
+  have hmemG : ∀ u, ι u ∈ Submodule.span ℝ (Set.range g) := fun u =>
+    Submodule.sum_mem _ fun i _ => Submodule.smul_mem _ _ (Submodule.subset_span (mem_range_self i))
+  have hcoord : ∀ u i, inner ℝ (g i) (ι u) = u i := fun u i => hg.inner_right_fintype u i
+  refine ⟨?_, ?_⟩
+  -- Step 5: the closed box pulls back to the sup-norm `closedBall 0 r`, of volume `(2r)ᵏ`
+  · rw [key _ ?_ fun t ht => ht.1]
+    · have hpre : ι ⁻¹' {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} =
+          closedBall 0 r := by
+        ext u
+        simp only [mem_preimage, mem_ofPred_eq, hcoord, mem_closedBall_zero_iff,
+          pi_norm_le_iff_of_nonneg hr.le, Real.norm_eq_abs]
+        exact ⟨fun h => h.2, fun h => ⟨hmemG u, h⟩⟩
+      rw [hpre, Real.volume_pi_closedBall _ hr.le, Fintype.card_fin]
+    · rw [ofPred_and, ofPred_forall]
+      exact hGc.measurableSet.inter (MeasurableSet.iInter fun i =>
+        (isClosed_le (hcont i) continuous_const).measurableSet)
+  -- Step 6: the open box pulls back to the sup-norm `ball 0 r`, of volume `(2r)ᵏ`
+  · rw [key _ ?_ fun t ht => ht.1]
+    · have hpre : ι ⁻¹' {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| < r} =
+          ball 0 r := by
+        ext u
+        simp only [mem_preimage, mem_ofPred_eq, hcoord, mem_ball_zero_iff, pi_norm_lt_iff hr,
+          Real.norm_eq_abs]
+        exact ⟨fun h => h.2, fun h => ⟨hmemG u, h⟩⟩
+      rw [hpre, Real.volume_pi_ball _ hr, Fintype.card_fin]
+    · rw [ofPred_and, ofPred_forall]
+      exact hGc.measurableSet.inter (MeasurableSet.iInter fun i =>
+        (isOpen_lt (hcont i) continuous_const).measurableSet)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
