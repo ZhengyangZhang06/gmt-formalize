@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -e 'pit_ril' -e 'pit_rescaled_integral_tendsto' -e 'pit_integral_closedBall_rescale_tendsto' project --glob '*.lean'",
+        "norm_setIntegral_le_of_norm_le_const",
+        "hasFDerivAt_iff_isLittleO_nhds_zero",
+        "measureReal_inter_add_sdiff",
+        "integrableOn_of_bounded",
+        "uniformContinuous_of_continuous",
+        "sed -n '580,620p' mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ril-decomp-q3/A/ChildA.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ril-decomp-q3/B/ChildB.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ril-decomp-q3/C/ChildC.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ril-independent-audit-hzky7rtm/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ril-independent-audit-hzky7rtm/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Average.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-666e5eebda/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-666e5eebda/decomposition-v1.json",
+        "/tmp/ril-decomp-q3/A/ChildA.lean",
+        "/tmp/ril-decomp-q3/B/ChildB.lean",
+        "/tmp/ril-decomp-q3/C/ChildC.lean",
+        "/tmp/ril-independent-audit-hzky7rtm/FrozenTypes.lean",
+        "/tmp/ril-independent-audit-hzky7rtm/Assembly.lean"
+      ],
+      "conclusion": "The split is appropriate for this selected analytic theorem. The three independent obligations, together with the already-declared rescaled_ball_average sibling, imply the exact frozen parent type; an independently constructed conditional assembly compiles. Dependency direction is correct and introduces no cycle. Snapshot project searches found no declarations with the parent, sibling or proposed child names. Workspace contract files equal the snapshot, and the installed mathlib revision matches the manifest. All three frozen types elaborate before their declarations exist, with the intended real scalar, ENNReal quotient and Bochner-integral instances. Their names are bare identifiers; scans of 2,878 DAG nodes and 2,901 decomposition files found no competing reservations. Each supplied scratch proof has exactly its proposed type and recompiles with only propext, Classical.choice and Quot.sound; the independent assembly has the same axiom set. The pinned integral bound explicitly requires no integrand measurability."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "diff_quot_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition match, including arbitrary real R and no measurability assumption on F. Differentiability gives a uniform small-o bound on the fixed ball; uniform continuity then bounds the integrand. The pinned integral estimate applies without measurability, consistently with the explicitly stated zero convention. S = |R| + 1 and ε/(V + 1) cover empty balls and zero volume. The complete, non-circular argument supplies exactly the parent's third error-term limit."
+    },
+    {
+      "key": "compl_average",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and correctly identifies the ENNReal ratio and real-valued average. Positive finite ball measure justifies division; measurable additivity gives the complement-average identity. Continuity of toReal at 1 and eventual positivity of the radius yield the exact limit, including dimension zero. The proof is complete and independent, and supplies the hypothesis needed for the sibling rescaling lemma."
+    },
+    {
+      "key": "three_term_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean inequality match all hypotheses and terms. The proof derives nonnegativity of K and M, correctly localizes both integrands using the two lower bounds, and establishes all integrability needed for linearity. Both membership cases give the claimed pointwise estimate; integrating proves the exact conclusion. Arbitrary real R causes no gap. This complete, non-circular obligation supplies the parent's squeeze bound."
+    }
+  ],
+  "required_changes": []
+}

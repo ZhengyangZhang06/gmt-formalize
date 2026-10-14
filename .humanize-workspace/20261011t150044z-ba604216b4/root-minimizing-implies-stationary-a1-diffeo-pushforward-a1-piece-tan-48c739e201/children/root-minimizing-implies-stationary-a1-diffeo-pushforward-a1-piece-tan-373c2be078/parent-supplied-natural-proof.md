@@ -1,0 +1,96 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1`
+- Child DAG node: `root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1.blowup_scaling-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1 of the parent-supplied proof (blow-up scaling), the scaling fact used in Simon Ch. 3, proof of Theorem 1.6 "⇒" (chapter-03.txt lines 113–143). Notation: E := Euclid P = ℝ^P, H^n := μHE[n], η := blowUpMap x r, so η(z) = r⁻¹ • (z − x).
+1. Norm of the blow-up. For z ∈ E, ‖η(z)‖ = |r⁻¹|·‖z − x‖ = r⁻¹‖z − x‖, because r > 0.
+2. Set identity η(S) ∩ B̄_R(0) = η(S ∩ B̄_{rR}(x)).
+(⊆) Let y ∈ η(S) ∩ B̄_R(0), so y = η(z) with z ∈ S. Then r⁻¹‖z − x‖ = ‖y‖ ≤ R. Multiplying by r > 0 gives dist(z, x) = ‖z − x‖ ≤ rR. So z ∈ S ∩ B̄_{rR}(x) and y = η(z).
+(⊇) Let z ∈ S ∩ B̄_{rR}(x). Then ‖η(z)‖ = r⁻¹‖z − x‖ ≤ r⁻¹(rR) = R, so η(z) ∈ η(S) ∩ B̄_R(0).
+If R < 0, both sides are empty, and the argument above covers this case.
+3. Factorization. Let h := AffineMap.homothety x r⁻¹, so h(z) = x + r⁻¹ • (z − x), and let τ(y) := y + (−x) be the translation by −x. Then τ(h(z)) = r⁻¹ • (z − x) = η(z) for every z. Thus η = τ ∘ h, and η(T) = τ(h(T)) for every T ⊆ E.
+4. Scaling of H^n under η. Let T ⊆ E be arbitrary.
+- τ is an isometry (isometry_add_right), so H^n(τ(W)) = H^n(W) for every W (Isometry.euclideanHausdorffMeasure_image).
+- h is a homothety of ratio r⁻¹ ≠ 0, so H^n(h(T)) = ‖r⁻¹‖₊^n • H^n(T) (MeasureTheory.euclideanHausdorffMeasure_homothety_image).
+- ‖r⁻¹‖₊ = ‖r‖₊⁻¹ (nnnorm_inv), and ‖r‖₊ = Real.toNNReal r ≠ 0 because r > 0 (Real.nnnorm_of_nonneg). Coercion to [0, ∞] commutes with the inverse of a nonzero element (ENNReal.coe_inv) and with powers (ENNReal.coe_pow), and ↑(Real.toNNReal r) = ENNReal.ofReal r. Hence the factor ‖r⁻¹‖₊^n, viewed in [0, ∞], equals ((ENNReal.ofReal r)⁻¹)^n.
+Consequently H^n(η(T)) = H^n(τ(h(T))) = H^n(h(T)) = ((ENNReal.ofReal r)⁻¹)^n · H^n(T).
+5. Conclusion. Apply step 2, then step 4 with T := S ∩ B̄_{rR}(x):
+H^n(η(S) ∩ B̄_R(0)) = H^n(η(S ∩ B̄_{rR}(x))) = ((ENNReal.ofReal r)⁻¹)^n · H^n(S ∩ B̄_{rR}(x)).
+No measurability of S is needed: steps 2–4 are identities of sets and of the measure H^n evaluated on arbitrary sets. ∎
+
+## Key steps
+
+1. ‖η_{x,r}(z)‖ = r⁻¹‖z − x‖ because r > 0.
+2. Set identity η(S) ∩ B̄_R(0) = η(S ∩ B̄_{rR}(x)).
+3. η = (translation by −x) ∘ (homothety with centre x and ratio r⁻¹).
+4. H^n(η(T)) = ‖r⁻¹‖₊^n H^n(T) = ((ofReal r)⁻¹)^n H^n(T), by isometry invariance and homothety scaling of μHE[n].
+5. Combine the set identity with the scaling for T = S ∩ B̄_{rR}(x).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `rg -n 'HasApproximateTangentSpaceAt|blowUpMap|ae_tendsto_measure_inter_div|approxTangent|tangent_iff' project --glob '*.lean'`
+- `rg -n 'ptd_|rsdic_|regcomp_|dor_lmb_' project --glob '*.lean' (no match)`
+- `rg -n 'notation.*μHE|def euclideanHausdorffMeasure|theorem euclideanHausdorffMeasure_homothety_image|theorem Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_smul₀|theorem ae_tendsto_measure_inter_div|instance.*HasBesicovitchCovering|theorem countable_cover_nhdsWithin' mathlib/Mathlib`
+- `rg -n 'theorem setIntegral_sdiff|theorem norm_setIntegral_le_of_norm_le_const |theorem tendsto_nhds_zero|theorem ofReal_integral_eq_lintegral_ofReal|theorem mem_nhdsGT_iff_exists_Ioo_subset|theorem squeeze_zero_norm'|theorem bounded_above_of_compact_support|theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|theorem lintegral_indicator_one|theorem ae_restrict_mem|theorem ae_ball_iff|theorem div_le_of_le_mul|theorem le_of_add_le_add_right' mathlib/Mathlib`
+- `grep -rn 'def HasApproximateTangentSpaceAt|def blowUpMap|abbrev Euclid' lake-packages-25730c7c/simongmt/Poincare/SimonGMT (SimonGMT 2b3663083f)`
+- `git show a157a5f4f62ba1c354a3b0cc070d947560abf2e6:GMT/Ch07/Submission.lean; python3 -I exact-string comparison of the five child types with the accepted rsdic_* lean_statements in dag.json (all identical)`
+- `python3 -I scans of dag.json lean_names (604) and all nodes/*/decomposition-v*.json proposal names (850) for the five ptd_tl_* names; grep -c ptd_tl over the eight chapter dag.json files; git for-each-ref (2,895 refs) | xargs git grep -l ptd_tl -- GMT; git log --all -S ptd_tl (all no match)`
+- `python3 -I gmt-compare.py contract_scope(GMT/Ch07/Contract.lean, 'GMT.Ch07.main_theorem'); lake env lean /tmp/ptd-tl-decomp/Challenge_{blowup_scaling,ae_excess,tangent_growth,excess_density,pointwise_comparison,parent}.lean`
+- `lake env lean /tmp/ptd-tl-decomp/Full.lean (#print axioms); Assembly.lean; GrowthVariant.lean; Instances.lean (pp.explicit)`
+- `python3 -I verifier/lean_contract.py validate_lean_statement on the five child types and the parent type`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-48c739e201/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1/decomposition-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ptd-tl-decomp/Full.lean`
+- `/tmp/ptd-tl-decomp/Assembly.lean`
+- `/tmp/ptd-tl-decomp/GrowthVariant.lean`
+- `/tmp/ptd-tl-decomp/Instances.lean`
+- `/tmp/ptd-tl-decomp/Challenge_parent.lean`
+
+No proof of this statement or of any child is in the snapshot.
+- GMT/Ch07/Contract.lean and GMT/Ch07/Submission.lean are byte-identical. They supply only the definitions: HasApproximateTangentSpaceAt (opened from SimonGMT) and approxTangentPlane.
+- GMT/Ch03/Contract.lean records Simon 3.1.6 only as an unproved Prop.
+- The rg search for ptd_/rsdic_/regcomp_/dor_lmb_ in project finds nothing.
+- SimonGMT 2b3663083f (Chapter03/Rectifiable.lean) defines blowUpMap x r y = r⁻¹ • (y − x). It defines HasApproximateTangentSpaceAt as finrank P = n ∧ ∀ f : C_c(E, ℝ), Tendsto (r ↦ ∫ y in blowUpMap x r '' M, f y ∂μHE[n]) (𝓝[>] 0) (𝓝 (∫ y in P, f y ∂μHE[n])).
+
+Every library fact the child proofs cite exists in the pinned Mathlib 25730c7c with compatible hypotheses:
+- density and covers: Besicovitch.ae_tendsto_measure_inter_div (Covering/Besicovitch.lean:1105, needs IsLocallyFiniteMeasure), instHasBesicovitchCovering, TopologicalSpace.countable_cover_nhdsWithin;
+- Hausdorff measure: μHE[d] := euclideanHausdorffMeasure (Geometry/Euclidean/Volume/Measure.lean:72), Isometry.euclideanHausdorffMeasure_image, MeasureTheory.euclideanHausdorffMeasure_homothety_image (‖c‖₊ ^ d •), Measure.euclideanHausdorffMeasure_smul₀;
+- set integrals: setIntegral_sdiff, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, norm_setIntegral_le_of_norm_le_const, ofReal_integral_eq_lintegral_ofReal, lintegral_indicator_one;
+- filters and limits: mem_nhdsGT_iff_exists_Ioo_subset, ENNReal.tendsto_nhds_zero;
+- ENNReal arithmetic: ENNReal.div_le_of_le_mul, ENNReal.le_of_add_le_add_right;
+- a.e. bookkeeping: ae_restrict_mem, ae_ball_iff.
+
+The identical frozen type has a complete, comparator-accepted Lean proof in commit a157a5f4. Its five helper types match the proposed children character for character. Porting them under fresh ptd_tl_ names compiles in the replayed comparator scope with only propext, Classical.choice and Quot.sound.
