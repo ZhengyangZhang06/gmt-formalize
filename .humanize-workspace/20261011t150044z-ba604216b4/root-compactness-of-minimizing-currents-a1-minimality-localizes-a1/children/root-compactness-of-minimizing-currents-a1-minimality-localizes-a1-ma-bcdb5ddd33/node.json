@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.minimality_localizes-a1.mass_agree_off_support-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.minimality_localizes-a1",
+  "depth": 3,
+  "title": "Masses of S and T agree on every set disjoint from a set containing spt(S − T)",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, let S, T ∈ 𝒟_n(U) be currents in U (SimonGMT GeometricCurrentOn U n), and let K, G ⊆ ℝ^P be sets with spt(S − T) ⊆ K and G ∩ K = ∅. Here S − T is the difference current of the frozen contract, (S − T)(ω) = S(ω) − T(ω) for ω ∈ 𝒟ⁿ(U); spt R = U ∖ Z_R is the support of a current R ∈ 𝒟_n(U), where Z_R is the union of all open W ⊆ ℝ^P with closure(W) compact, closure(W) ⊆ U and R(η) = 0 for every η ∈ 𝒟ⁿ(U) with tsupport η ⊆ W (GeometricCurrentOn.support, Simon Ch. 6, 2.11); and for a current R ∈ 𝒟_n(U) and a set G, M_G(R) := sup{max(R(ω), 0) : ω ∈ 𝒟ⁿ(U), tsupport ω ⊆ G, |ω(x)| ≤ 1 for all x} ∈ [0, ∞] (SimonGMT GeometricCurrentOn.massOn, |·| the Euclidean coefficient norm of n-covectors, Simon 6.2.5). Then M_G(S) = M_G(T).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S T : GeometricCurrentOn U n) (K G : Set (Euclid P)), (S - T).support ⊆ K → Disjoint G K → S.massOn G = T.massOn G",
+  "lean_name": "cmc_ml_massOn_eq_of_disjoint_sub_support",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-minimality-localizes-a1-ma-bcdb5ddd33-a1"
+}
