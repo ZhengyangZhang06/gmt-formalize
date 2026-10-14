@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0970825efc102548f3aa752eab0b202d8d2b564bf1cf4cb9805105c6e47c025f",
+  "git_delta": {
+    "base_commit": "771dda08d68b9c8a854fec4de024c641814d3efd",
+    "candidate_commit": "0b8ad3e3cfb1fc45a8c966d854553980b55cd040",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_fd_gap_ae",
+    "diff_sha256": "d51204b807f86977e0cca5cf0218d6361c95c3f0802dbfb8f30e8f949ccde7ef",
+    "source_sha256": "b6766f6518dcf45227fd51a511b75cbf4b61c7c45858336650e19aaa60cbe158",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_fd_gap_ae",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (R : IMRep (univ : Set (Euclid P)) 2) (s : ℝ), R.Represents C → 0 < s → (∀ s' : ℝ, 0 < s' → s' ≤ s → ∀ x ∈ C.support, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s') → ∀ᵐ x ∂R.measure, 0 < inner ℝ x a → |‖x‖ - 1| < s → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s → ‖x - Q.starProjection x‖ < s / 2 * ‖x‖ ∨ 2 * s * ‖x‖ < ‖x - Q.starProjection x‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
