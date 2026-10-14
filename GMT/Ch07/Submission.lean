@@ -1416,6 +1416,27 @@ theorem Submission.cbr_cipi_plane_boundary_zero : ∀ (P d : ℕ) (v : Fin (d + 
     rw [image_eq_zero_of_notMem_tsupport hy0]
     rfl
 
+/-- **Stokes' formula for an oriented plane and its coordinate half-planes** (Simon 6.2.3,
+`∂T(ω) = T(dω)`, for the plane currents `[[V₀]]` and `[[V₀ ∩ Hₜ]]`; steps 0, 1 and 3 of the
+integer multiplicity criterion for plane cycles).  Let `v = (v₀, …, v_d)` be orthonormal,
+`V₀ = span v`, `Hₜ = {y | ⟨y, v₀⟩ < t}` and `Lₜ = {y | y − t v₀ ∈ span (v₁, …, v_d)}`.
+(b) The parametrisation `ι(z) = Σᵢ zᵢ vᵢ` pushes `L^{d+1}` to `H^{d+1}⌞V₀`
+(`cbr_cipi_affine_plane_measure`), `⟨ι z, v₀⟩ = z₀`, and `dφ(ι z)(v) = Σᵢ (−1)ⁱ ∂ᵢgᵢ(z)` with
+`gᵢ = φ(ι ·)(v₀, …, v̂ᵢ, …, v_d)`.  Over `{z₀ < t}` only `∫ ∂₀g₀ = ∫ g₀(t, z′) dz′` survives
+(`cbr_cipi_halfspace_partial_integral`), and this is the integral of `φ(·)(v₁, …, v_d)` over `Lₜ`
+(`cbr_cipi_plane_halfspace_boundary`).  (a) For `T` beyond `⟨·, v₀⟩` on `spt φ`, `dφ = 0` on
+`V₀ \ H_T` and `φ = 0` on `L_T`, so (b) at `t = T` gives `∫_{V₀} dφ(v) dH^{d+1} = 0`
+(`cbr_cipi_plane_boundary_zero`). -/
+theorem Submission.cbr_cipi_plane_halfspace_stokes : ∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P), Orthonormal ℝ v → ∀ φ : TestFormOn (univ : Set (Euclid P)) d, (∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)), exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = 0) ∧ ∀ t : ℝ, ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)) ∩ {y : Euclid P | inner ℝ y (v 0) < t}, exteriorDerivative (φ : DifferentialForm (Euclid P) d) y v ∂μHE[(d + 1)] = ∫ y in {y : Euclid P | y - t • v 0 ∈ Submodule.span ℝ (Set.range (Fin.tail v))}, (φ : DifferentialForm (Euclid P) d) y (Fin.tail v) ∂μHE[d] := by
+  intro P d v hv φ
+  -- (b): parametrise `V₀` and `Lₜ` by `cbr_cipi_affine_plane_measure` and integrate the
+  -- coordinate partial derivatives over `{z₀ < t}` by `cbr_cipi_halfspace_partial_integral`
+  have hb := Submission.cbr_cipi_plane_halfspace_boundary Submission.cbr_cipi_affine_plane_measure
+    Submission.cbr_cipi_halfspace_partial_integral P d v hv φ
+  -- (a): cut `V₀` at a level `T` beyond `⟨·, v₀⟩` on `spt φ`; (b) at `t = T` leaves an integral
+  -- over `L_T`, where `φ = 0`
+  exact ⟨Submission.cbr_cipi_plane_boundary_zero P d v hv φ hb, hb⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
