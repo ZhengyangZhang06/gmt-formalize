@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.pullback_integrable-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1",
+  "depth": 6,
+  "title": "An integrable weight times a test form pulled back by a Lipschitz map is integrable (supplied step 3, third item)",
+  "statement": "Let Q, n ∈ ℕ, L ≥ 0 (NNReal), H : ℝⁿ → ℝ^Q L-Lipschitz, S ⊆ ℝⁿ any set, g : ℝⁿ → ℝ integrable on S (Lebesgue measure), and ω ∈ 𝒟ⁿ(ℝ^Q) a test form (TestFormOn univ n: a smooth n-form with compact support). Then the function z ↦ g(z)·ω(H(z))(DH(z)e_0, …, DH(z)e_{n−1}) is integrable on S, where DH(z) := fderiv ℝ H z and e_a := EuclideanSpace.single a 1 ∈ ℝⁿ.",
+  "lean_statement": "∀ (Q n : ℕ) (L : NNReal) (H : Euclid n → Euclid Q) (S : Set (Euclid n)) (g : Euclid n → ℝ) (ω : TestFormOn (univ : Set (Euclid Q)) n), LipschitzWith L H → IntegrableOn g S → IntegrableOn (fun z => g z * (ω : DifferentialForm (Euclid Q) n) (H z) (fun a => fderiv ℝ H z (EuclideanSpace.single a 1))) S",
+  "lean_name": "cmcdt_lpi_cyl_pullback_integrable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-c728da6cee-a1"
+}
