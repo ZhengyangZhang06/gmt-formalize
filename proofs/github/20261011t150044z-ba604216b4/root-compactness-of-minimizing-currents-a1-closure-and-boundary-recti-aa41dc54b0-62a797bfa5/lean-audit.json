@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5345d9145ca1f778e49634d7ea4af4f1e427490ab5b7e404917161429774c88e",
+  "git_delta": {
+    "base_commit": "1bef9c3e917a2e047a8133344f8bd3f82ddc1a36",
+    "candidate_commit": "7107dbdf5ccf966eb9f546b782f4d92a21be5c6f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_iso_volume_le_ediam_pow",
+    "diff_sha256": "23bc348ef2d6ee5a87a7b5cf3ffcbc08fb24df95ae7022d6be2084b571cab585",
+    "source_sha256": "2dc60ffd9138e77cc2c40b5c6bb75d4d3658c506a238eeba03c2226dbfea096c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_iso_volume_le_ediam_pow",
+      "statement": "∀ (d : ℕ) (A : Set (Euclid d)), volume A ≤ unitBallVolume d * (ediam A / 2) ^ d",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
