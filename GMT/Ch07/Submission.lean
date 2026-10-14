@@ -1016,75 +1016,6 @@ theorem Submission.dimred_mbl_dt_lpo_smooth_homotopy_identity : (∀ (P n : ℕ)
   have hH0 : ∀ x : Euclid N, H (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))) = F x := by
     intro x
     rw [hHF]
-/-- Coordinate functionals of a locally bounded `L : C_c(X, ℝᵈ) → ℝ`: `Λᵢ(f) = L(f • eᵢ)` is
-linear and locally bounded with the same constants.  `T f := f.compLeft (t ↦ t • eᵢ)` is linear
-with `(T f)(x) = f(x) • eᵢ`, `tsupport (T f) ⊆ tsupport f` and `‖(T f)(x)‖ = |f(x)|`;
-take `Λᵢ := L ∘ T`. -/
-theorem Submission.cmr_vr_coordinate_functional : ∀ (X : Type) [TopologicalSpace X] (d : ℕ) (L : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)), tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → |L g| ≤ M) → ∀ i : Fin d, ∃ Λ : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ] ℝ, (∀ (f : CompactlySupportedContinuousMap X ℝ) (g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d))), (∀ x, g x = f x • EuclideanSpace.single i (1 : ℝ)) → L g = Λ f) ∧ ∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, tsupport f ⊆ K → (∀ x, |f x| ≤ 1) → |Λ f| ≤ M := by
-  intro X _ d L hL i
-  -- `c t = t • eᵢ` is continuous and `c 0 = 0`, so `T f := f.compLeft c` has `(T f) x = f x • eᵢ`
-  let c : C(ℝ, EuclideanSpace ℝ (Fin d)) :=
-    ⟨fun t => t • EuclideanSpace.single i (1 : ℝ), continuous_id.smul continuous_const⟩
-  have hc0 : c 0 = 0 := zero_smul ℝ _
-  have hT : ∀ (f : CompactlySupportedContinuousMap X ℝ) (x : X),
-      f.compLeft c x = f x • EuclideanSpace.single i (1 : ℝ) :=
-    fun f x => CompactlySupportedContinuousMap.compLeft_apply hc0 f x
-  -- `T` is linear (pointwise, then extensionality); `Λ := L ∘ T`
-  let T : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ]
-      CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) :=
-    { toFun := fun f => f.compLeft c
-      map_add' := fun f₁ f₂ => CompactlySupportedContinuousMap.ext fun x => by
-        simp only [hT, CompactlySupportedContinuousMap.add_apply, add_smul]
-      map_smul' := fun r f => CompactlySupportedContinuousMap.ext fun x => by
-        simp only [hT, CompactlySupportedContinuousMap.smul_apply, RingHom.id_apply, smul_eq_mul,
-          mul_smul] }
-  refine ⟨L ∘ₗ T, fun f g hg => ?_, fun K hK => ?_⟩
-  · -- `g = T f` by extensionality
-    exact congrArg L (CompactlySupportedContinuousMap.ext fun x => (hg x).trans (hT f x).symm)
-  · -- `tsupport (T f) ⊆ tsupport f ⊆ K` and `‖(T f) x‖ = |f x| ≤ 1`: same constant `M`
-    obtain ⟨M, hM⟩ := hL K hK
-    refine ⟨M, fun f hf hf1 => hM (T f) ?_ fun x => ?_⟩
-    · have hTf : ⇑(T f) = fun x => f x • EuclideanSpace.single i (1 : ℝ) := funext (hT f)
-      rw [hTf]
-      exact (tsupport_smul_subset_left _ _).trans hf
-    · show ‖f.compLeft c x‖ ≤ 1
-      rw [hT, norm_smul, PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs]
-      exact hf1 x
-/-- Jordan decomposition of a locally bounded `Λ : C_c(X, ℝ) → ℝ`.  For `f : C_c(X, ℝ≥0)` put
-`V f := sup {Λ h : |h| ≤ f}` (bounded above by rescaling the local bound on `tsupport f`).  `V` is
-additive (clamp `h₁ := (h ⊓ f) ⊔ (-f)`) and `ℝ≥0`-homogeneous, so `V̂ := toRealPositiveLinear V`
-is positive; `V̂ + Λ` is positive since `-k` is admissible for `k ≥ 0`, and `Λ = (V̂ + Λ) - V̂`. -/
-theorem Submission.cmr_vr_jordan_decomposition : ∀ (X : Type) [TopologicalSpace X] (Λ : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, tsupport f ⊆ K → (∀ x, |f x| ≤ 1) → |Λ f| ≤ M) → ∃ Λ₁ Λ₂ : CompactlySupportedContinuousMap X ℝ →ₚ[ℝ] ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, Λ f = Λ₁ f - Λ₂ f := by
-  intro X _ Λ hΛ
-  -- scaled bound: `tsupport f ⊆ K`, `|f| ≤ s` give `|Λ f| ≤ s * M_K` (`s = 0`, else rescale)
-  have hscale : ∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ (f : CompactlySupportedContinuousMap X ℝ)
-      (s : ℝ), tsupport f ⊆ K → 0 ≤ s → (∀ x, |f x| ≤ s) → |Λ f| ≤ s * M := by
-    intro K hK
-    obtain ⟨M, hM⟩ := hΛ K hK
-    refine ⟨M, fun f s hfK hs hfs => ?_⟩
-    rcases hs.eq_or_lt with rfl | hspos
-    · have hf0 : f = 0 := by
-        ext x
-        simpa using hfs x
-      simp [hf0]
-    · have hsub : tsupport (s⁻¹ • f) ⊆ K :=
-        (tsupport_smul_subset_right (fun _ : X => s⁻¹) f).trans hfK
-      have hbd : ∀ x, |(s⁻¹ • f) x| ≤ 1 := by
-        intro x
-        rw [CompactlySupportedContinuousMap.smul_apply, smul_eq_mul, abs_mul,
-          abs_of_pos (inv_pos.mpr hspos)]
-        calc s⁻¹ * |f x| ≤ s⁻¹ * s := mul_le_mul_of_nonneg_left (hfs x) (inv_pos.mpr hspos).le
-          _ = 1 := inv_mul_cancel₀ hspos.ne'
-      have h1 := hM _ hsub hbd
-      rw [map_smul, smul_eq_mul, abs_mul, abs_of_pos (inv_pos.mpr hspos)] at h1
-      have := (inv_mul_le_iff₀ hspos).mp h1
-      linarith
-  -- `A f = {h : |h| ≤ f}` contains `0`, and `Λ '' A f` is bounded above: members of `A f` have
-  -- `tsupport h ⊆ tsupport f` and `|h| ≤ max C 0` with `C` a bound for `f`
-  let A : CompactlySupportedContinuousMap X NNReal → Set (CompactlySupportedContinuousMap X ℝ) :=
-    fun f => {h | ∀ x, |h x| ≤ (f x : ℝ)}
-  have hA0 : ∀ f, (0 : CompactlySupportedContinuousMap X ℝ) ∈ A f := by
-    intro f x
     simp
   have hH1 : ∀ x : Euclid N, H (WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp x))) = G x := by
     intro x
@@ -1146,6 +1077,40 @@ theorem Submission.cmr_vr_jordan_decomposition : ∀ (X : Type) [TopologicalSpac
       hW'' hSW'' hθ''eq hH0 hDH0 hη₀ hηF, hslice (k + 1) X ω θ'' W'' 1 G η₁ ηG
       (right_mem_Icc.2 zero_le_one) hW'' hSW'' hθ''eq hH1 hDH1 hη₁ hηG]
     ring
+/-- Coordinate functionals of a locally bounded `L : C_c(X, ℝᵈ) → ℝ`: `Λᵢ(f) = L(f • eᵢ)` is
+linear and locally bounded with the same constants.  `T f := f.compLeft (t ↦ t • eᵢ)` is linear
+with `(T f)(x) = f(x) • eᵢ`, `tsupport (T f) ⊆ tsupport f` and `‖(T f)(x)‖ = |f(x)|`;
+take `Λᵢ := L ∘ T`. -/
+theorem Submission.cmr_vr_coordinate_functional : ∀ (X : Type) [TopologicalSpace X] (d : ℕ) (L : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)), tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → |L g| ≤ M) → ∀ i : Fin d, ∃ Λ : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ] ℝ, (∀ (f : CompactlySupportedContinuousMap X ℝ) (g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d))), (∀ x, g x = f x • EuclideanSpace.single i (1 : ℝ)) → L g = Λ f) ∧ ∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, tsupport f ⊆ K → (∀ x, |f x| ≤ 1) → |Λ f| ≤ M := by
+  intro X _ d L hL i
+  -- `c t = t • eᵢ` is continuous and `c 0 = 0`, so `T f := f.compLeft c` has `(T f) x = f x • eᵢ`
+  let c : C(ℝ, EuclideanSpace ℝ (Fin d)) :=
+    ⟨fun t => t • EuclideanSpace.single i (1 : ℝ), continuous_id.smul continuous_const⟩
+  have hc0 : c 0 = 0 := zero_smul ℝ _
+  have hT : ∀ (f : CompactlySupportedContinuousMap X ℝ) (x : X),
+      f.compLeft c x = f x • EuclideanSpace.single i (1 : ℝ) :=
+    fun f x => CompactlySupportedContinuousMap.compLeft_apply hc0 f x
+  -- `T` is linear (pointwise, then extensionality); `Λ := L ∘ T`
+  let T : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ]
+      CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) :=
+    { toFun := fun f => f.compLeft c
+      map_add' := fun f₁ f₂ => CompactlySupportedContinuousMap.ext fun x => by
+        simp only [hT, CompactlySupportedContinuousMap.add_apply, add_smul]
+      map_smul' := fun r f => CompactlySupportedContinuousMap.ext fun x => by
+        simp only [hT, CompactlySupportedContinuousMap.smul_apply, RingHom.id_apply, smul_eq_mul,
+          mul_smul] }
+  refine ⟨L ∘ₗ T, fun f g hg => ?_, fun K hK => ?_⟩
+  · -- `g = T f` by extensionality
+    exact congrArg L (CompactlySupportedContinuousMap.ext fun x => (hg x).trans (hT f x).symm)
+  · -- `tsupport (T f) ⊆ tsupport f ⊆ K` and `‖(T f) x‖ = |f x| ≤ 1`: same constant `M`
+    obtain ⟨M, hM⟩ := hL K hK
+    refine ⟨M, fun f hf hf1 => hM (T f) ?_ fun x => ?_⟩
+    · have hTf : ⇑(T f) = fun x => f x • EuclideanSpace.single i (1 : ℝ) := funext (hT f)
+      rw [hTf]
+      exact (tsupport_smul_subset_left _ _).trans hf
+    · show ‖f.compLeft c x‖ ≤ 1
+      rw [hT, norm_smul, PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs]
+      exact hf1 x
 /-- **Mass bound for the affine homotopy current** (Simon Ch. 6, 2.25–2.27, p. 140).  Let
 `H(t, x) = F(x) + t(G(x) − F(x))` be the affine homotopy (2.26) of the `C^∞` maps `F, G`, and let
 `C ∈ 𝒟_{k+1}(ℝ^{N+1})` be given by `C(ω) = ∫₀¹ X(η_t) dt`, `η_t(x)(v) = ω(t, x)(e₀, Jv)`.  If
@@ -2069,131 +2034,9 @@ theorem Submission.ptd_tl_ae_excess_le : ∀ (P n : ℕ) (U A B : Set (Euclid P)
         _ = (ε + (1 - ε)) * β := by rw [add_tsub_cancel_of_le hε1.le, one_mul]
         _ = ε * β + (1 - ε) * β := add_mul _ _ _
     exact ENNReal.le_of_add_le_add_right (ENNReal.mul_ne_top (by simp) hβtop) h1
-
 /-- **Simon Ch. 3, Remark 1.5(3)** (the upper bound, with `ε = 1`): if `D` has approximate
 tangent space `Q` at `x` and `Hⁿ(D ∩ B̄_{r₀}(x)) < ∞`, then `Hⁿ(D ∩ B̄_ρ(x)) ≤ Cρⁿ` for all
 small `ρ > 0`.
-/-- **Riesz representation of locally bounded functionals on `C_c(X, ℝ^d)`** (Simon Ch. 1, 4.14,
-in the form used for currents in Ch. 6, 2.7).  If `X` is locally compact Hausdorff and second
-countable and `L : C_c(X, ℝ^d) → ℝ` is linear with `|L g| ≤ M_K` whenever `spt g ⊆ K` and
-`|g| ≤ 1`, then `L g = ∫ ⟨g, ν⟩ dμ₀` for a Borel measure `μ₀` finite on compact sets and a
-measurable `ν : X → ℝ^d` integrable on compact sets.  The coordinate functionals
-`Λᵢ f = L(f eᵢ)` are locally bounded, each splits as a difference `Pᵢ − Nᵢ` of positive
-functionals (total variation), the Riesz–Markov–Kakutani measures of all `Pᵢ, Nᵢ` have densities
-`ρᵢ` against one common `μ₀`, and `ν = Σᵢ ρᵢ eᵢ`. -/
-theorem Submission.cmr_vector_riesz_representation : ∀ (X : Type) [TopologicalSpace X] [T2Space X] [LocallyCompactSpace X] [SecondCountableTopology X] [MeasurableSpace X] [BorelSpace X] (d : ℕ) (L : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)), tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → |L g| ≤ M) → ∃ (μ₀ : Measure X) (ν : X → EuclideanSpace ℝ (Fin d)), IsFiniteMeasureOnCompacts μ₀ ∧ Measurable ν ∧ (∀ K : Set X, IsCompact K → IntegrableOn ν K μ₀) ∧ ∀ g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)), L g = ∫ x, inner ℝ (g x) (ν x) ∂μ₀ := by
-  intro X _ _ _ _ _ _ d L hL
-  -- step 1: the coordinate functionals `Λᵢ f = L(f eᵢ)`, locally bounded
-  choose Λ hΛL hΛbd using Submission.cmr_vr_coordinate_functional X d L hL
-  -- steps 2–3: Jordan decomposition `Λᵢ = Pᵢ − Nᵢ` into positive functionals
-  choose Pos Neg hΛ using fun i => Submission.cmr_vr_jordan_decomposition X (Λ i) (hΛbd i)
-  -- steps 4–6 and 8: one measure `μ₀` with `Pᵢ f − Nᵢ f = ∫ f ρᵢ dμ₀`
-  obtain ⟨μ₀, ρ, hμ₀, hρm, hρint, hρ⟩ := Submission.cmr_vr_common_density X d Pos Neg
-  -- steps 7 and 9: `ν = Σᵢ ρᵢ eᵢ` and `L g = Σᵢ ∫ gᵢ ρᵢ dμ₀ = ∫ ⟨g, ν⟩ dμ₀`
-  obtain ⟨ν, hνm, hνint, hν⟩ := Submission.cmr_vr_coordinate_assembly X d L μ₀ ρ hρm hρint
-    fun i f g hg => by rw [hΛL i f g hg, hΛ i f, hρ i f]
-  exact ⟨μ₀, ν, hμ₀, hνm, hνint, hν⟩
-/-- **The Euclidean coefficient norm is a continuous seminorm dominated by the operator norm**
-(Simon Ch. 6, 1.15 and 2.4; used by the smooth approximation of test forms behind the mass of
-`τ(M, θ, ξ)`).  With `e` the standard basis of `ℝᴾ`, let `c_I α = α(e_{I(0)}, …, e_{I(n-1)})`
-for strictly increasing `I : Fin n → Fin P` and `c_I α = 0` otherwise.  Then
-`covectorEuclideanNorm α = ‖v α‖` for the coefficient vector
-`v α = (c_I α)_I ∈ EuclideanSpace ℝ (Fin n → Fin P)`, which is linear in `α`; this gives the
-triangle inequality and homogeneity.  `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖` gives the bound with
-`C = √(card (Fin n → Fin P))`, and then the norm is `C`-Lipschitz, hence continuous. -/
-theorem Submission.rsd_mw_tfa_norm_props : ∀ (P n : ℕ), (∀ α α' : Covector (Euclid P) n, covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α') ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∃ C : ℝ, 0 ≤ C ∧ ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ C * ‖α‖) ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α) := by
-  intro P n
-  classical
-  -- Step 1: the coefficients `c_I α` and the coefficient vector `v α`, with `N α = ‖v α‖`
-  let e := EuclideanSpace.basisFun (Fin P) ℝ
-  let c : (Fin n → Fin P) → Covector (Euclid P) n → ℝ := fun I α =>
-    if StrictMono I then α (fun i => e (I i)) else 0
-  let v : Covector (Euclid P) n → EuclideanSpace ℝ (Fin n → Fin P) := fun α =>
-    WithLp.toLp 2 (fun I => c I α)
-  have hN : ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖v α‖ := by
-    intro α
-    rw [EuclideanSpace.norm_eq]
-    unfold covectorEuclideanNorm
-    congr 1
-    refine Finset.sum_congr rfl fun I _ => ?_
-    by_cases hI : StrictMono I <;> simp [v, c, e, hI]
-  -- Step 2: `v` is additive and `ℝ`-homogeneous
-  have hadd : ∀ α α' : Covector (Euclid P) n, v (α + α') = v α + v α' := by
-    intro α α'
-    simp only [v, ← WithLp.toLp_add]
-    congr 1
-    funext I
-    by_cases hI : StrictMono I <;> simp [c, hI]
-  have hsmul : ∀ (t : ℝ) (α : Covector (Euclid P) n), v (t • α) = t • v α := by
-    intro t α
-    simp only [v, ← WithLp.toLp_smul]
-    congr 1
-    funext I
-    by_cases hI : StrictMono I <;> simp [c, hI]
-  -- Step 3: (i), the triangle inequality in `EuclideanSpace ℝ (Fin n → Fin P)`
-  have h1 : ∀ α α' : Covector (Euclid P) n,
-      covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α' := by
-    intro α α'
-    rw [hN, hN, hN, hadd]
-    exact norm_add_le _ _
-  -- Step 4: (ii), homogeneity of the Euclidean norm
-  have h2 : ∀ (t : ℝ) (α : Covector (Euclid P) n),
-      covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
-    intro t α
-    rw [hN, hN, hsmul, norm_smul, Real.norm_eq_abs]
-  -- Step 5: `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖`
-  have hc : ∀ (I : Fin n → Fin P) (α : Covector (Euclid P) n), |c I α| ≤ ‖α‖ := by
-    intro I α
-    by_cases hI : StrictMono I
-    · simpa [c, e, hI, Real.norm_eq_abs] using α.le_opNorm (fun i => e (I i))
-    · simp [c, hI]
-  -- Step 6: (iii) with `C = √(card (Fin n → Fin P))`
-  have h3 : ∀ α : Covector (Euclid P) n,
-      covectorEuclideanNorm α ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
-    intro α
-    have hsum : ∑ I, ‖(v α).ofLp I‖ ^ 2 ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 :=
-      Finset.sum_le_sum fun I _ => by
-        simpa [v, Real.norm_eq_abs] using pow_le_pow_left₀ (abs_nonneg _) (hc I α) 2
-    rw [hN, EuclideanSpace.norm_eq]
-    calc Real.sqrt (∑ I, ‖(v α).ofLp I‖ ^ 2) ≤ Real.sqrt (∑ _I : Fin n → Fin P, ‖α‖ ^ 2) :=
-          Real.sqrt_le_sqrt hsum
-      _ = Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
-          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
-            Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
-  -- Step 7: (iv), `|N α - N α'| ≤ N (α - α') ≤ C ‖α - α'‖`, so `N` is Lipschitz
-  have hlip : ∀ α α' : Covector (Euclid P) n, dist (covectorEuclideanNorm α)
-      (covectorEuclideanNorm α') ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * dist α α' := by
-    intro α α'
-    have ha : covectorEuclideanNorm α ≤
-        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α' := by
-      simpa only [sub_add_cancel] using h1 (α - α') α'
-    have hb : covectorEuclideanNorm α' ≤
-        covectorEuclideanNorm (α - α') + covectorEuclideanNorm α := by
-      have h := h1 (α' - α) α
-      rwa [sub_add_cancel, ← neg_sub, covectorEuclideanNorm_neg] at h
-    have hC := h3 (α - α')
-    rw [Real.dist_eq, dist_eq_norm, abs_le]
-    constructor <;> linarith
-  exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
-    (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
-/-- **Simon §6.1** (the test-form topology, the case `β = 0`): if `ωⱼ → 0` in `𝒟ⁿ(U)`, the
-`ωⱼ` vanish outside one compact `C ⊆ U`, and `supₓ ‖ωⱼ(x)‖ → 0`.  The compact set is the one in
-`TestFormOnConverges`; uniform convergence of the `0`-th iterated derivatives on `C` gives the
-bound on `C`, and `ωⱼ = 0` off `C`. -/
-theorem Submission.dpf_pfc_testFormOnConverges_zero_uniform : ∀ (P n : ℕ) (U : Set (Euclid P)) (ωs : ℕ → TestFormOn U n), TestFormOnConverges ωs 0 → ∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ U ∧ (∀ j x, x ∉ C → (ωs j : DifferentialForm (Euclid P) n) x = 0) ∧ ∀ ε : ℝ, 0 < ε → ∀ᶠ j in atTop, ∀ x, ‖(ωs j : DifferentialForm (Euclid P) n) x‖ ≤ ε := by
-  intro P n U ωs h
-  obtain ⟨C, hC, hCU, hsupp, -, hderiv⟩ := h
-  have hzero : ∀ j x, x ∉ C → (ωs j : DifferentialForm (Euclid P) n) x = 0 := fun j x hx =>
-    image_eq_zero_of_notMem_tsupport fun hx' => hx (hsupp j hx')
-  refine ⟨C, hC, hCU, hzero, fun ε hε => ?_⟩
-  filter_upwards [Metric.tendstoUniformlyOn_iff.mp (hderiv 0) ε hε] with j hj x
-  by_cases hx : x ∈ C
-  · have hjx := hj x hx
-    simp only [ZeroMemClass.coe_zero, iteratedFDeriv_zero, Pi.zero_apply, dist_zero_left,
-      norm_iteratedFDeriv_zero] at hjx
-    exact hjx.le
-  · rw [hzero j x hx, norm_zero]
-    exact hε.le
 
 * Test Definition 1.4 with `φ = max(0, min(1, 2 − |w|)) ∈ C_c`, `1_{B̄₁(0)} ≤ φ ≤ 1_{B̄₂(0)}`:
   `∫_{η_{x,ρ}(D)} φ dHⁿ → Λ := ∫_Q φ dHⁿ`, so for `0 < ρ < r₁` it is `< C := |Λ| + 1`, and
@@ -14229,40 +14072,6 @@ theorem Submission.dimred_mbl_fnd_testForm_extension_functional : ∀ (P n : ℕ
     show |Φ (ext g)| ≤ (T.massOn W).toReal
     simpa only [one_mul] using hΦbd W (ext g) 1 hW ⟨hWc, hWU⟩ (hcont g) (hcpt g)
       ((hspt g).trans ((image_mono hgK).trans hKW)) hg1'
-/-- Coordinate functionals of a locally bounded `L : C_c(X, ℝᵈ) → ℝ`: `Λᵢ(f) = L(f • eᵢ)` is
-linear and locally bounded with the same constants.  `T f := f.compLeft (t ↦ t • eᵢ)` is linear
-with `(T f)(x) = f(x) • eᵢ`, `tsupport (T f) ⊆ tsupport f` and `‖(T f)(x)‖ = |f(x)|`;
-take `Λᵢ := L ∘ T`. -/
-theorem Submission.cmr_vr_coordinate_functional : ∀ (X : Type) [TopologicalSpace X] (d : ℕ) (L : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) →ₗ[ℝ] ℝ), (∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)), tsupport g ⊆ K → (∀ x, ‖g x‖ ≤ 1) → |L g| ≤ M) → ∀ i : Fin d, ∃ Λ : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ] ℝ, (∀ (f : CompactlySupportedContinuousMap X ℝ) (g : CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d))), (∀ x, g x = f x • EuclideanSpace.single i (1 : ℝ)) → L g = Λ f) ∧ ∀ K : Set X, IsCompact K → ∃ M : ℝ, ∀ f : CompactlySupportedContinuousMap X ℝ, tsupport f ⊆ K → (∀ x, |f x| ≤ 1) → |Λ f| ≤ M := by
-  intro X _ d L hL i
-  -- `c t = t • eᵢ` is continuous and `c 0 = 0`, so `T f := f.compLeft c` has `(T f) x = f x • eᵢ`
-  let c : C(ℝ, EuclideanSpace ℝ (Fin d)) :=
-    ⟨fun t => t • EuclideanSpace.single i (1 : ℝ), continuous_id.smul continuous_const⟩
-  have hc0 : c 0 = 0 := zero_smul ℝ _
-  have hT : ∀ (f : CompactlySupportedContinuousMap X ℝ) (x : X),
-      f.compLeft c x = f x • EuclideanSpace.single i (1 : ℝ) :=
-    fun f x => CompactlySupportedContinuousMap.compLeft_apply hc0 f x
-  -- `T` is linear (pointwise, then extensionality); `Λ := L ∘ T`
-  let T : CompactlySupportedContinuousMap X ℝ →ₗ[ℝ]
-      CompactlySupportedContinuousMap X (EuclideanSpace ℝ (Fin d)) :=
-    { toFun := fun f => f.compLeft c
-      map_add' := fun f₁ f₂ => CompactlySupportedContinuousMap.ext fun x => by
-        simp only [hT, CompactlySupportedContinuousMap.add_apply, add_smul]
-      map_smul' := fun r f => CompactlySupportedContinuousMap.ext fun x => by
-        simp only [hT, CompactlySupportedContinuousMap.smul_apply, RingHom.id_apply, smul_eq_mul,
-          mul_smul] }
-  refine ⟨L ∘ₗ T, fun f g hg => ?_, fun K hK => ?_⟩
-  · -- `g = T f` by extensionality
-    exact congrArg L (CompactlySupportedContinuousMap.ext fun x => (hg x).trans (hT f x).symm)
-  · -- `tsupport (T f) ⊆ tsupport f ⊆ K` and `‖(T f) x‖ = |f x| ≤ 1`: same constant `M`
-    obtain ⟨M, hM⟩ := hL K hK
-    refine ⟨M, fun f hf hf1 => hM (T f) ?_ fun x => ?_⟩
-    · have hTf : ⇑(T f) = fun x => f x • EuclideanSpace.single i (1 : ℝ) := funext (hT f)
-      rw [hTf]
-      exact (tsupport_smul_subset_left _ _).trans hf
-    · show ‖f.compLeft c x‖ ≤ 1
-      rw [hT, norm_smul, PiLp.norm_single, norm_one, mul_one, Real.norm_eq_abs]
-      exact hf1 x
 /-- Jordan decomposition of a locally bounded `Λ : C_c(X, ℝ) → ℝ`.  For `f : C_c(X, ℝ≥0)` put
 `V f := sup {Λ h : |h| ≤ f}` (bounded above by rescaling the local bound on `tsupport f`).  `V` is
 additive (clamp `h₁ := (h ⊓ f) ⊔ (-f)`) and `ℝ≥0`-homogeneous, so `V̂ := toRealPositiveLinear V`
@@ -23510,40 +23319,6 @@ theorem Submission.dtc_bc_lc_fd_dfm_skeleton_deformation : (∀ (P n : ℕ) (U :
       (fun ω => sk_tendsto_of_mass (m + 1) _ ω hKlim) hQsum hSsum hRsum,
     fun x hx => (hsuppQ hx).1, hQm.trans hVsum, hbQ, hRm.trans hHsum, hSm.trans hEsum,
     union_subset (fun x hx => (hsuppQ hx).2) hsuppR, union_subset hsuppbQ hsuppS⟩
-/-- **Series of currents of finite total mass** (the closing step of B3 in the proof of the
-deformation theorem, Simon 6.5.1, where it replaces the completeness theorem 6.3.13).
-Let `Wᵢ ∈ 𝒟ₖ₊₁(ℝᴾ)` with `Σᵢ M(Wᵢ) < ∞`.  The series `S(ω) = Σᵢ Wᵢ(ω)` defines a current with
-`M(S) ≤ Σᵢ M(Wᵢ)` and, by (VO), `spt S ⊆ closure ⋃ᵢ spt Wᵢ`.  If every `Wᵢ = τ(Mᵢ, θᵢ, ξᵢ)` is
-integer multiplicity, then (MR) with `U = W = ℝᴾ` gives `∫_{Mᵢ} θᵢ dH^{k+1} = M(Wᵢ)`, so the
-representations have finite total weight and their actions sum to the action of one `IMRep`
-`R'`; by uniqueness of sums `S(ω) = R'(ω)` for every test form `ω`.  (IMC) is not used: the
-tangent locality and orientation bound it provides enter the series of `IMRep`s through the
-accepted lemmas `rsdic_ae_tangent_iff_of_subset` and `unit_orientation_norm_le_one`. -/
-theorem Submission.cmcdt_im_series : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P k : ℕ) (W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), ∑' i, (W i).mass < ∞ → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => W i ω) (S ω)) ∧ S.mass ≤ ∑' i, (W i).mass ∧ S.support ⊆ closure (⋃ i, (W i).support) ∧ ((∀ i, IsIntegerMultiplicity (W i)) → IsIntegerMultiplicity S) := by
-  intro hVO hMR _hIMC P k W hW
-  -- Steps 1–4: the series current `S`, `M(S) ≤ Σᵢ M(Wᵢ)` and `spt S ⊆ closure ⋃ᵢ spt Wᵢ`
-  obtain ⟨S, hS, hmass, hsupp⟩ :=
-    Submission.cmcdt_ims_series_current hVO P (k + 1) univ W isOpen_univ hW.ne
-  refine ⟨S, hS, hmass, hsupp, ?_⟩
-  -- Step 5: choose representations `Wᵢ = τ(Mᵢ, θᵢ, ξᵢ)`
-  intro hIM
-  choose R hR using hIM
-  -- (MR) with `U = W = ℝᴾ`: `M(Wᵢ) = ∫_{Mᵢ} θᵢ dH^{k+1}`, so the total weight is finite
-  have hmeas : ∀ i, (W i).mass = (R i).measure univ := fun i =>
-    hMR P (k + 1) univ (W i) (R i) isOpen_univ (hR i) univ isOpen_univ
-  have hsum : ∑' i, (R i).measure univ ≠ ∞ := by
-    simp_rw [← hmeas]
-    exact hW.ne
-  -- one `IMRep` `R'` whose action is the sum of the actions of the `Rᵢ`
-  obtain ⟨R', hR'⟩ := Submission.cmcdt_ims_imrep_tsum P (k + 1) univ R isOpen_univ hsum
-  -- `Σᵢ Wᵢ(ω) = Σᵢ τ(Mᵢ, θᵢ, ξᵢ)(ω)` has the two sums `S(ω)` and `R'(ω)`
-  refine ⟨R', fun ω => (hS ω).unique ?_⟩
-  have hWR : (fun i => W i ω) =
-      fun i => (R i).action (ω : DifferentialForm (Euclid P) (k + 1)) :=
-    funext fun i => hR i ω
-  rw [hWR]
-  exact hR' ω
-
 /-- **Representation of a current of locally finite mass by its mass measure** (Simon Ch. 6,
 2.7–2.8, without the absolute-continuity clause; `|·|` is `covectorEuclideanNorm`).  `|α| = ‖A α‖`
 for the coefficient map `A` (`dor_ims_sua_coeff_norm_rep`), and `|α| = 0` forces every `α(e_j)` to
