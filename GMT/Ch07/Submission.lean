@@ -451,6 +451,42 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Real induction on `[0, L)`** (the first-failure argument of the arc continuation): if
+`G 0`, `G` propagates a little to the right of every `φ ∈ [0, L)` where it holds, and `G φ`
+holds at every `φ ∈ (0, L)` such that `G` holds on `[0, φ)`, then `G` holds on `[0, L)`.  At
+`s = inf {φ ∈ [0, L) : ¬G φ}`, `G` holds on `[0, s)`, hence at `s`, hence on `[s, s + ε)`, so
+`s + ε` would be a lower bound of the failure set. -/
+theorem Submission.idtp_tdc_acont_real_induction : ∀ (G : ℝ → Prop) (L : ℝ), G 0 → (∀ φ : ℝ, 0 ≤ φ → φ < L → G φ → ∃ ε : ℝ, 0 < ε ∧ ∀ ψ : ℝ, φ < ψ → ψ < φ + ε → G ψ) → (∀ φ : ℝ, 0 < φ → φ < L → (∀ ψ : ℝ, 0 ≤ ψ → ψ < φ → G ψ) → G φ) → ∀ φ : ℝ, 0 ≤ φ → φ < L → G φ := by
+  intro G L h0 hright hleft φ₁ hφ₁0 hφ₁L
+  by_contra hφ₁
+  -- step 1: the failure set `A ⊆ [0, L)` is nonempty and bounded below by `0`; `s := inf A`
+  let A : Set ℝ := {φ | 0 ≤ φ ∧ φ < L ∧ ¬G φ}
+  have hAne : A.Nonempty := ⟨φ₁, hφ₁0, hφ₁L, hφ₁⟩
+  have hAbdd : BddBelow A := ⟨0, fun φ hφ => hφ.1⟩
+  have hsA : ∀ φ ∈ A, sInf A ≤ φ := fun φ hφ => csInf_le hAbdd hφ
+  -- step 2: `0 ≤ s < L`
+  have hs0 : 0 ≤ sInf A := le_csInf hAne fun φ hφ => hφ.1
+  have hsL : sInf A < L := (hsA φ₁ ⟨hφ₁0, hφ₁L, hφ₁⟩).trans_lt hφ₁L
+  -- step 3: `G` holds on `[0, s)`
+  have hbelow : ∀ ψ : ℝ, 0 ≤ ψ → ψ < sInf A → G ψ := fun ψ hψ0 hψs =>
+    by_contra fun hψ => (hsA ψ ⟨hψ0, hψs.trans hsL, hψ⟩).not_gt hψs
+  -- step 4: `G s`, by (a) if `s = 0` and by (c) if `s > 0`
+  have hGs : G (sInf A) := by
+    rcases hs0.eq_or_lt with h | h
+    · exact h ▸ h0
+    · exact hleft (sInf A) h hsL hbelow
+  -- step 5: (b) at `s`
+  obtain ⟨ε, hε, hεG⟩ := hright (sInf A) hs0 hsL hGs
+  -- step 6: `s + ε` is a lower bound of `A`
+  have hlb : ∀ φ ∈ A, sInf A + ε ≤ φ := by
+    intro φ hφ
+    by_contra hlt
+    rcases (hsA φ hφ).eq_or_lt with h | h
+    · exact hφ.2.2 (h ▸ hGs)
+    · exact hφ.2.2 (hεG φ h (not_le.mp hlt))
+  -- step 7: `s + ε ≤ inf A = s`, contradicting `ε > 0`
+  linarith [le_csInf hAne hlb]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
