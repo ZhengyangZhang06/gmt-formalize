@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.extderiv_split-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1",
+  "depth": 6,
+  "title": "Coordinate splitting of dβ along ℝ × ℝ^N (pointwise slice identity)",
+  "statement": "Let N, k ∈ ℕ and let β : ℝ^{N+1} → Λ^{k+1}(ℝ^{N+1})* (β : DifferentialForm (Euclid (N + 1)) (k + 1)) be differentiable; no support assumption is made. Write ι(t, x) := (t, x_1, …, x_N) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)), Jv := ι(0, v), e₀ := EuclideanSpace.single 0 1 and d := exteriorDerivative (Mathlib extDeriv). Then for all t ∈ ℝ, x ∈ ℝ^N and v = (v_0, …, v_k) ∈ (ℝ^N)^{k+1}:\ndβ(ι(t, x))(e₀, Jv_0, …, Jv_k) = d/ds|_{s=t} [β(ι(s, x))(Jv_0, …, Jv_k)] − Σ_{j=0}^{k} (−1)^j · D[x' ↦ β(ι(t, x'))(e₀, J(Fin.removeNth j v))](x)(v_j).\nHere d/ds is Mathlib's deriv, D is fderiv ℝ, Fin.removeNth j v is v with v_j deleted, and (−1)^j ∈ ℤ acts by ℤ-scalar multiplication.",
+  "lean_statement": "∀ (N k : ℕ) (β : DifferentialForm (Euclid (N + 1)) (k + 1)), Differentiable ℝ β → ∀ (t : ℝ) (x : Euclid N) (v : Fin (k + 1) → Euclid N), exteriorDerivative β (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) = deriv (fun s : ℝ => β (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) t - ∑ j : Fin (k + 1), (-1 : ℤ) ^ (j : ℕ) • fderiv ℝ (fun x' : Euclid N => β (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x'))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (Fin.removeNth j v i)))))) x (v j)",
+  "lean_name": "cmcdt_lpo_slice_extDeriv_split",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.coords-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.coords-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-db1d01a9c5-a1"
+}

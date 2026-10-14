@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.fiber_form-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1",
+  "depth": 6,
+  "title": "Part (a): the fiber-integral slice form η is a test form with the stated values and support",
+  "statement": "Let N, k ∈ ℕ and ω ∈ 𝒟^{k+1}(ℝ^{N+1}), i.e. ω : TestFormOn univ (k + 1), a C^∞ compactly supported (k+1)-form on ℝ^{N+1}. Write ι(t, x) := (t, x_1, …, x_N) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)), Jv := ι(0, v) and e₀ := EuclideanSpace.single 0 1. Then there exists η ∈ 𝒟^k(ℝ^N) (η : TestFormOn univ k) such that η(x)(v_1, …, v_k) = ∫_0^1 ω(ι(t, x))(e₀, Jv_1, …, Jv_k) dt for all x ∈ ℝ^N and v ∈ (ℝ^N)^k, and tsupport η ⊆ {x ∈ ℝ^N : ∃ t ∈ [0, 1], ι(t, x) ∈ tsupport ω}.",
+  "lean_statement": "∀ (N k : ℕ) (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)), ∃ η : TestFormOn (univ : Set (Euclid N)) k, (∀ (x : Euclid N) (v : Fin k → Euclid N), (η : DifferentialForm (Euclid N) k) x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ tsupport (η : DifferentialForm (Euclid N) k) ⊆ {x : Euclid N | ∃ t ∈ Icc (0 : ℝ) 1, (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) ∈ tsupport (ω : DifferentialForm (Euclid (N + 1)) (k + 1))}",
+  "lean_name": "cmcdt_lpo_slice_fiber_form",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.coords-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.param_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.coords-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.param_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-e0980515df-a1"
+}

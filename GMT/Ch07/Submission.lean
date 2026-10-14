@@ -451,6 +451,32 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Coordinates for the products `[[(0,1)]] × T` and `{p} × T` (Simon 6.2.17, 6.2.21–2.22),
+`ℝ × ℝᴺ ≅ ℝᴺ⁺¹`, `(t, x) ↦ (t, x₁, …, x_N)`: the composite of `id × ofLp`, `Fin.consLinearEquiv`
+and `toLp` is a linear equivalence, continuous in finite dimension, with `L(1, 0) = e₀` and
+`‖L(0, x)‖ = ‖x‖`. -/
+theorem Submission.cmcdt_lpo_slice_coords : ∀ N : ℕ, ∃ L : (ℝ × Euclid N) ≃L[ℝ] Euclid (N + 1), (∀ (t : ℝ) (x : Euclid N), L (t, x) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) ∧ L (1, 0) = EuclideanSpace.single 0 1 ∧ ∀ x : Euclid N, ‖L (0, x)‖ = ‖x‖ := by
+  intro N
+  -- `(t, x) ↦ (t, ofLp x) ↦ Fin.cons t (ofLp x) ↦ toLp 2 (Fin.cons t (ofLp x))`
+  let e : (ℝ × Euclid N) ≃ₗ[ℝ] Euclid (N + 1) :=
+    ((LinearEquiv.refl ℝ ℝ).prodCongr (WithLp.linearEquiv 2 ℝ (Fin N → ℝ))).trans
+      ((Fin.consLinearEquiv ℝ (fun _ : Fin (N + 1) => ℝ)).trans
+        (WithLp.linearEquiv 2 ℝ (Fin (N + 1) → ℝ)).symm)
+  -- `e` is continuous in finite dimension; (i) holds by unfolding the three maps
+  have hL : ∀ (t : ℝ) (x : Euclid N),
+      e.toContinuousLinearEquiv (t, x) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) :=
+    fun _ _ => rfl
+  refine ⟨e.toContinuousLinearEquiv, hL, ?_, fun x => ?_⟩
+  · -- (ii): compare coordinates, splitting the index into `0` and `j.succ`
+    rw [hL]
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i
+    · simp
+    · simp [Fin.succ_ne_zero]
+  · -- (iii): `‖L (0, x)‖² = ‖0‖² + ∑ⱼ ‖xⱼ‖² = ‖x‖²`
+    rw [hL, EuclideanSpace.norm_eq, EuclideanSpace.norm_eq x, Fin.sum_univ_succ]
+    simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

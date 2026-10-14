@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.coords-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1",
+  "depth": 6,
+  "title": "Coordinate isomorphism ℝ × ℝ^N ≅ ℝ^{N+1}, (t, x) ↦ (t, x_1, …, x_N)",
+  "statement": "For every N ∈ ℕ there is a continuous linear equivalence L : ℝ × ℝ^N → ℝ^{N+1} with the following three properties. Here ℝ^P = EuclideanSpace ℝ (Fin P) = Euclid P, and ℝ × ℝ^N carries the product normed-space structure. (i) L(t, x) = (t, x_1, …, x_N), i.e. L (t, x) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)), for all t ∈ ℝ and x ∈ ℝ^N. (ii) L(1, 0) = e₀ := EuclideanSpace.single 0 1. (iii) ‖L(0, x)‖ = ‖x‖ for every x ∈ ℝ^N.",
+  "lean_statement": "∀ N : ℕ, ∃ L : (ℝ × Euclid N) ≃L[ℝ] Euclid (N + 1), (∀ (t : ℝ) (x : Euclid N), L (t, x) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) ∧ L (1, 0) = EuclideanSpace.single 0 1 ∧ ∀ x : Euclid N, ‖L (0, x)‖ = ‖x‖",
+  "lean_name": "cmcdt_lpo_slice_coords",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-e3c28eb395-a1"
+}

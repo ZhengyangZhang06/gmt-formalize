@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.covector_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1",
+  "depth": 6,
+  "title": "Part (e): integral bound for the Euclidean coefficient norm of covectors",
+  "statement": "Let N, k ∈ ℕ, α a k-covector on ℝ^N (α : Covector (Euclid N) k), f : ℝ → Λ^k(ℝ^N)* continuous, and c ∈ ℝ. Assume α(v) = ∫_0^1 f(t)(v) dt for all v ∈ (ℝ^N)^k, and covectorEuclideanNorm (f t) ≤ c for all t ∈ [0, 1]. Then covectorEuclideanNorm α ≤ c. Here covectorEuclideanNorm is SimonGMT's Euclidean coefficient norm √(Σ_{I strictly increasing} α(e_{I_1}, …, e_{I_k})²).",
+  "lean_statement": "∀ (N k : ℕ) (α : Covector (Euclid N) k) (f : ℝ → Covector (Euclid N) k) (c : ℝ), Continuous f → (∀ v : Fin k → Euclid N, α v = ∫ t in (0 : ℝ)..1, f t v) → (∀ t ∈ Icc (0 : ℝ) 1, covectorEuclideanNorm (f t) ≤ c) → covectorEuclideanNorm α ≤ c",
+  "lean_name": "cmcdt_lpo_slice_covector_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-f92df94753-a1"
+}
