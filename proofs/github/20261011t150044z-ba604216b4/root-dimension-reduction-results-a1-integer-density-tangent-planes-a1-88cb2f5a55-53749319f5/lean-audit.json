@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2f7939dbca8034d79ed79f9af8ad01ed559ea47ec6ff52a2afb7e7082574e028",
+  "git_delta": {
+    "base_commit": "a4c154f1a4787b7ae965102630a68b5106e31104",
+    "candidate_commit": "1dcdf1cd4dfecb4e6b6280877e9650124c6309cc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_rc_ray_cutoff",
+    "diff_sha256": "4b2115f11658f18c0a1be7079e29a19fb76cbd1273e304cdb2c64501baeea313",
+    "source_sha256": "8c6a1d5c15f62685f9dc23f2727daa63573a8098f250bea8a5dfe5aebca50c36",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_rc_ray_cutoff",
+      "statement": "∀ (P : ℕ) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ e₀ : Euclid P, ‖e₀‖ = 1 → ∀ ψ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ Ioi 0 → ∃ f : Euclid P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f ∧ HasCompactSupport f ∧ (∀ s : ℝ, f (s • e₀) = ψ s) ∧ ∀ e ∈ F, e ≠ e₀ → ∀ t : ℝ, 0 < t → f (t • e) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
