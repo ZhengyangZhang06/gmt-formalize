@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "05a9d826c078fc449332fcd1f53e882f22b7f277174cebcff63428af4feb9f6c",
+  "git_delta": {
+    "base_commit": "62c45415039c8378e1b73153ad9de0eb3fb2e58a",
+    "candidate_commit": "8f0b0e1be6bef24ec412aeb75730dfcadc7ccca0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_pc_local_plane_tangent",
+    "diff_sha256": "3f6ac4899cd20c505c9e3f98a949e1a69dc1d7de9b1db15ac1aeeafbfe0515b7",
+    "source_sha256": "430b5aa5b04723f820c92fccead66bb76548d5ae48c3908eab1c8bb33794d902",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_pc_local_plane_tangent",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (r : ℝ), MeasurableSet M → Module.finrank ℝ Q = n → 0 < r → M ∩ ball x r = {y | y - x ∈ Q} ∩ ball x r → HasApproximateTangentSpaceAt n M x Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
