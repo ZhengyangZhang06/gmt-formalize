@@ -2835,6 +2835,50 @@ theorem Submission.dor_lmb_fc_tb_extend_univ : ∀ (P d : ℕ) (U K : Set (Eucli
       Measure.restrict_univ, Measure.restrict_restrict hU.measurableSet,
       inter_eq_self_of_subset_right R.carrier_subset, hcar₂, hmult₂]
     exact lintegral_mono_set inter_subset_left
+/-- **Simon Ch. 6, proof of Theorem 7.2** (total boundedness; the cutoff behind `∂Ǎ = Ž` for the
+extension by zero): two currents in `ℝᴾ` that vanish off a compact `K ⊆ U`, `U` open, and agree
+in `U` are equal.  Choose `δ > 0` with `cthickening δ K ⊆ U` and a smooth `ζ : ℝᴾ → [0, 1]` with
+`support ζ = thickening δ K` and `ζ = 1` exactly on `cthickening (δ / 2) K`.  For a test form
+`ω`, `ζω` is a test form in `U`, and `ω - ζω` vanishes on the open set `thickening (δ / 2) K ⊇ K`,
+so its support misses `K`; hence `X ω = X (ζω) = (X⌞U)(ζω) = (Y⌞U)(ζω) = Y (ζω) = Y ω`. -/
+theorem Submission.dor_lmb_fc_tb_eq_of_vanish_off : ∀ (P d : ℕ) (U K : Set (Euclid P)) (X Y : GeometricCurrentOn (univ : Set (Euclid P)) d), IsOpen U → IsCompact K → K ⊆ U → (∀ ω : TestFormOn (univ : Set (Euclid P)) d, Disjoint (tsupport (ω : DifferentialForm (Euclid P) d)) K → X ω = 0) → (∀ ω : TestFormOn (univ : Set (Euclid P)) d, Disjoint (tsupport (ω : DifferentialForm (Euclid P) d)) K → Y ω = 0) → X.restrictDomain (subset_univ U) = Y.restrictDomain (subset_univ U) → X = Y := by
+  intro P d U K X Y hU hK hKU hX hY hXY
+  -- the cutoff `ζ`: smooth, `support ζ = thickening δ K`, `ζ = 1` on `cthickening (δ / 2) K`
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hKU
+  obtain ⟨ζ, hζ, -, hζs, hζ1⟩ := exists_contDiff_support_eq_eq_one_iff (n := ⊤)
+    (isOpen_thickening (δ := δ) (E := K)) (isClosed_cthickening (δ := δ / 2) (E := K))
+    (cthickening_subset_thickening' hδ (half_lt_self hδ) K)
+  have hζU : tsupport ζ ⊆ U := by
+    rw [tsupport, hζs]
+    exact (closure_thickening_subset_cthickening δ K).trans hδU
+  -- `ζ = 1` on the open set `thickening (δ / 2) K ⊇ K`
+  have hKV : K ⊆ thickening (δ / 2) K := self_subset_thickening (half_pos hδ) K
+  have hζV : ∀ x ∈ thickening (δ / 2) K, ζ x = 1 := fun x hx =>
+    (hζ1 x).1 (thickening_subset_cthickening _ _ hx)
+  refine GeometricCurrentOn.ext fun ω => ?_
+  -- `ζω` as a test form in `U`, and its inclusion `ιη` into `ℝᴾ`
+  let η : TestFormOn U d := ⟨ζ • (ω : DifferentialForm (Euclid P) d),
+    ⟨hζ.smul ω.property.1.1, ω.property.1.2.smul_left⟩,
+    (tsupport_smul_subset_left ζ (ω : DifferentialForm (Euclid P) d)).trans hζU⟩
+  let ιη : TestFormOn (univ : Set (Euclid P)) d := testFormOnInclusion (subset_univ U) d η
+  -- `ω - ιη = (1 - ζ)ω` vanishes on `thickening (δ / 2) K`, so its support misses `K`
+  have hdisj : Disjoint (tsupport ((ω - ιη : TestFormOn (univ : Set (Euclid P)) d) :
+      DifferentialForm (Euclid P) d)) K := by
+    refine Disjoint.mono_right hKV (Set.disjoint_left.2 fun x hx hxV => ?_)
+    refine (notMem_tsupport_iff_eventuallyEq.2 ?_) hx
+    filter_upwards [isOpen_thickening.mem_nhds hxV] with y hy
+    change (ω : DifferentialForm (Euclid P) d) y - ζ y • (ω : DifferentialForm (Euclid P) d) y = 0
+    rw [hζV y hy, one_smul, sub_self]
+  -- `X ω = X ιη` and `Y ω = Y ιη`, by linearity and vanishing off `K`
+  have hXω : X ω = X ιη :=
+    sub_eq_zero.1 ((map_sub X.toCurrent ω ιη).symm.trans (hX _ hdisj))
+  have hYω : Y ω = Y ιη :=
+    sub_eq_zero.1 ((map_sub Y.toCurrent ω ιη).symm.trans (hY _ hdisj))
+  calc X ω = X ιη := hXω
+    _ = X.restrictDomain (subset_univ U) η := rfl
+    _ = Y.restrictDomain (subset_univ U) η := by rw [hXY]
+    _ = Y ιη := rfl
+    _ = Y ω := hYω.symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
