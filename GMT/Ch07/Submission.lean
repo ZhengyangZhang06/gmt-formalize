@@ -451,6 +451,71 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- An orthonormal partner of a unit vector in a 2-plane (Gram–Schmidt in `Q`, used in the proof of
+Simon 7.3.3(1), p. 191, for 2-dimensional minimizing cones): if `Q ⊆ ℝᴾ` is a subspace with
+`dim Q = 2` and `z ∈ Q` has `‖z‖ = 1`, there is `e ∈ Q` with `‖e‖ = 1` and `⟪z, e⟫ = 0`, and
+`w = ⟪w, z⟫ z + ⟪w, e⟫ e` for every `w ∈ Q`.  As `dim Q = 2 > 1 = dim ℝz`, some `u ∈ Q` lies off
+the line `ℝz`, and `e` is the normalization of `u - ⟪z, u⟫ z`.  `(z, e)` is orthonormal, so
+`span {z, e} ⊆ Q` has dimension `2` and equals `Q`; the residual `w - ⟪w, z⟫ z - ⟪w, e⟫ e` lies in
+it and is orthogonal to `z` and `e`, hence vanishes. -/
+theorem Submission.idtp_tdc_dlc_ld_orthonormal_partner : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (z : Euclid P), Module.finrank ℝ Q = 2 → z ∈ Q → ‖z‖ = 1 → ∃ e : Euclid P, e ∈ Q ∧ ‖e‖ = 1 ∧ inner ℝ z e = 0 ∧ ∀ w ∈ Q, w = inner ℝ w z • z + inner ℝ w e • e := by
+  intro P Q z hQ hzQ hz
+  have hzz : inner ℝ z z = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, hz, one_pow]
+  -- `Q ⊄ ℝ ∙ z`, since `finrank (ℝ ∙ z) = 1 < 2 = finrank Q`
+  have hz0 : z ≠ 0 := by
+    rintro rfl
+    rw [norm_zero] at hz
+    exact zero_ne_one hz
+  obtain ⟨u, huQ, hu⟩ : ∃ u ∈ Q, u ∉ ℝ ∙ z := by
+    refine IsConcreteLE.not_le_iff_exists.mp fun hle => ?_
+    have h := Submodule.finrank_mono hle
+    rw [hQ, finrank_span_singleton hz0] at h
+    omega
+  -- `v = u - ⟪z, u⟫ z` is a nonzero vector of `Q` orthogonal to `z`
+  obtain ⟨v, hvQ, hv0, hzv⟩ : ∃ v ∈ Q, v ≠ 0 ∧ inner ℝ z v = (0 : ℝ) := by
+    refine ⟨u - inner ℝ z u • z, Q.sub_mem huQ (Q.smul_mem _ hzQ), fun h => ?_, ?_⟩
+    · exact hu (Submodule.mem_span_singleton.mpr ⟨inner ℝ z u, (sub_eq_zero.mp h).symm⟩)
+    · rw [inner_sub_right, real_inner_smul_right, hzz, mul_one, sub_self]
+  -- `e = ‖v‖⁻¹ • v` is a unit vector of `Q` orthogonal to `z`
+  obtain ⟨e, heQ, he, hze⟩ : ∃ e ∈ Q, ‖e‖ = 1 ∧ inner ℝ z e = (0 : ℝ) := by
+    refine ⟨‖v‖⁻¹ • v, Q.smul_mem _ hvQ, ?_, ?_⟩
+    · rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ (norm_ne_zero_iff.mpr hv0)]
+    · rw [real_inner_smul_right, hzv, mul_zero]
+  have hez : inner ℝ e z = (0 : ℝ) := by rw [real_inner_comm, hze]
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, he, one_pow]
+  refine ⟨e, heQ, he, hze, fun w hwQ => ?_⟩
+  -- `(z, e)` is orthonormal, so `span {z, e} ≤ Q` has dimension `2` and equals `Q`
+  have hon : Orthonormal ℝ ![z, e] := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    fin_cases i <;> fin_cases j <;> simp [hz, he, hze, hez]
+  have hspan : Submodule.span ℝ (range ![z, e]) = Q := by
+    refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
+    · rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      fin_cases i
+      · exact hzQ
+      · exact heQ
+    · rw [finrank_span_eq_card hon.linearIndependent, Fintype.card_fin, hQ]
+  -- the residual `d = w - ⟪w, z⟫ z - ⟪w, e⟫ e` lies in `Q = span {z, e}` and is orthogonal to `z`
+  -- and `e`, so `⟪d, d⟫ = 0`
+  obtain ⟨d, hd⟩ : ∃ d, d = w - (inner ℝ w z • z + inner ℝ w e • e) := ⟨_, rfl⟩
+  have hdz : inner ℝ d z = (0 : ℝ) := by
+    rw [hd, inner_sub_left, inner_add_left, real_inner_smul_left, real_inner_smul_left, hzz, hez,
+      mul_one, mul_zero, add_zero, sub_self]
+  have hde : inner ℝ d e = (0 : ℝ) := by
+    rw [hd, inner_sub_left, inner_add_left, real_inner_smul_left, real_inner_smul_left, hze, hee,
+      mul_zero, mul_one, zero_add, sub_self]
+  have hdQ : d ∈ Q := hd ▸ Q.sub_mem hwQ (Q.add_mem (Q.smul_mem _ hzQ) (Q.smul_mem _ heQ))
+  rw [← hspan] at hdQ
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp hdQ
+  rw [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_zero] at hc
+  have hdd : inner ℝ d d = (0 : ℝ) := by
+    rw [← hc, inner_add_left, real_inner_smul_left, real_inner_smul_left, real_inner_comm,
+      real_inner_comm (c 0 • z + c 1 • e) e, hc, hdz, hde, mul_zero, mul_zero, add_zero]
+  rw [← sub_eq_zero, ← hd]
+  exact inner_self_eq_zero.mp hdd
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
