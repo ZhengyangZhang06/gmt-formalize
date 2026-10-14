@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "52bd5fd5abaedccd5984f7ea6bdda615257d97bad8a7f21fef688e0d284d58f2",
+  "git_delta": {
+    "base_commit": "157eb7ef64895208be1d86551271aba520be002b",
+    "candidate_commit": "f9cde8ecdae249b2b5d2676812ddfcfa55455ae7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_pfi_c1_lipschitz_cutoff",
+    "diff_sha256": "87af126bd021505d725a1651af6ae06d4ba187da241e6bdecf50a02ea686973c",
+    "source_sha256": "b9b36d6ec748cb4925ccdf3362b5a396a203365df8d43005de8d303464147584",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_pfi_c1_lipschitz_cutoff",
+      "statement": "∀ (P : ℕ) (K O : Set (Euclid P)) (f : Euclid P → Euclid P), IsCompact K → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → ∃ (g : Euclid P → Euclid P) (L : NNReal), ContDiff ℝ 1 g ∧ LipschitzWith L g ∧ ∀ x ∈ K, g x = f x ∧ fderiv ℝ g x = fderiv ℝ f x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
