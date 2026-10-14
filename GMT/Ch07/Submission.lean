@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Subsequence criterion for an approximate tangent plane** (Simon Ch. 3, Definition 1.4).
+If `dim Q = n` and every sequence `λᵢ ↓ 0` (`λᵢ > 0`) has a subsequence along which
+`∫_{η_{a,λ} M} f dHⁿ → ∫_Q f dHⁿ` for all `f ∈ C_c(ℝᴾ)`, then `TₐM = Q`.  The filter `𝓝[>] 0` is
+countably generated, so convergence along it may be tested on sequences `r_j → 0⁺`; such a
+sequence is positive from some `j₀` on, and the hypothesis applied to `λᵢ = r_{i+j₀}` yields the
+subsequence `k ↦ φ(k) + j₀` of `r`. -/
+theorem Submission.cbr_ci_pw_approxTangent_of_subseq : ∀ (P n : ℕ) (M : Set (Euclid P)) (a : Euclid P) (Q : Submodule ℝ (Euclid P)), Module.finrank ℝ Q = n → (∀ lams : ℕ → ℝ, (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M, f y ∂μHE[n]) atTop (𝓝 (∫ y in (Q : Set (Euclid P)), f y ∂μHE[n]))) → HasApproximateTangentSpaceAt n M a Q := by
+  intro P n M a Q hQ hsub
+  -- Step 1: `dim Q = n` is given; fix `f ∈ C_c(ℝᴾ)`
+  refine ⟨hQ, fun f => ?_⟩
+  -- Step 2: `𝓝[>] 0` is countably generated, so it suffices to treat sequences `r_j → 0⁺`
+  refine tendsto_of_subseq_tendsto fun r hr => ?_
+  -- Step 3: `r_j > 0` for `j ≥ j₀`, and `r_j → 0` in `ℝ`
+  obtain ⟨j₀, hj₀⟩ := eventually_atTop.1 (hr.eventually self_mem_nhdsWithin)
+  have hpos : ∀ i, 0 < r (i + j₀) := fun i => hj₀ (i + j₀) (Nat.le_add_left j₀ i)
+  have hlim : Tendsto (fun i => r (i + j₀)) atTop (𝓝 0) :=
+    (tendsto_add_atTop_iff_nat j₀).2 (tendsto_nhds_of_tendsto_nhdsWithin hr)
+  -- Step 4: the hypothesis for `λᵢ = r_{i+j₀}` gives `φ`, applied to `f`
+  obtain ⟨φ, -, hφ⟩ := hsub (fun i => r (i + j₀)) hpos hlim
+  -- Step 5: `k ↦ φ(k) + j₀` is the required subsequence of `r`
+  exact ⟨fun k => φ k + j₀, hφ f f.continuous f.hasCompactSupport⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
