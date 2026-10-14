@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8c0af0e1153ce1e898f054b802029da4ff649f9711a8df1ffbee6de1f966f7b8",
+  "git_delta": {
+    "base_commit": "6766f39d14a84e61747d75cd653c6fbe02e7b218",
+    "candidate_commit": "0714338893a4e2bca764d8572493d837c2f54566",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cdg_or_ball_graph_to_cylinder_graph",
+    "diff_sha256": "5b109670c01e84cba4f2b19213289c2a1ca33839e289e423864d96a6f9045940",
+    "source_sha256": "6e72929b354212f8ae33b58cb469948b2a923111808425d09707deda14eecd4e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cdg_or_ball_graph_to_cylinder_graph",
+      "statement": "∀ (n k : ℕ) (S : Set (Euclid (n + k))) (ι : Euclid n →ₗᵢ[ℝ] Euclid (n + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (n + k)) (u : Euclid n → Euclid k) (z : Euclid (n + k)) (r : ℝ), 0 < r → (∀ v w, inner ℝ (ι v) (ι' w) = 0) → u 0 = 0 → ContDiffOn ℝ 1 u (ball 0 r) → (∀ v ∈ ball (0 : Euclid n) r, ‖fderiv ℝ u v‖ ≤ 1 / 4) → S ∩ ball z r = ((fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) r) ∩ ball z r → S ∩ {x | ∃ v ∈ ball (0 : Euclid n) (r / 4), ∃ w ∈ ball (0 : Euclid k) (r / 4), x = z + ι v + ι' w} = (fun v => z + ι v + ι' (u v)) '' ball (0 : Euclid n) (r / 4)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
