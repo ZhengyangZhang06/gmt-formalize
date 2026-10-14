@@ -608,6 +608,40 @@ theorem Submission.cmcdt_lpo_pf_approx_data : ∀ (N N' : ℕ) (Λ : NNReal) (F 
       Submission.cmcdt_lpo_cutoff_pullback N N' k (Fs j) ω K (hFs j) hK
     exact ⟨ηs, fun j => ⟨W j, hW j⟩⟩
 
+/-- **The Lipschitz push-forward depends only on `F|spt X`** (Simon Ch. 6, 2.28–2.29).  Suppose
+`lpush` has the approximation property (PA): whenever `F` is `Λ`-Lipschitz, the `Fⱼ` are `C^∞`
+with `‖DFⱼ‖ ≤ Λ'` on `spt X`, `Fⱼ → F` uniformly on `spt X`, and `ηⱼ = Fⱼ^#ω` on an open set
+containing `spt X`, then `X(ηⱼ) → lpush(F, X)(ω)` (`spt X` compact, `M(X), M(∂X) < ∞`).  If the
+`Λ`-Lipschitz maps `F`, `G` agree on `spt X`, then `lpush(F, X) = lpush(G, X)`.
+
+Fix `ω ∈ 𝒟ᵏ(ℝ^{N'})`.  The approximation data for `F` on `K = spt X` give `C^∞` maps `Fⱼ` with
+`‖DFⱼ‖ ≤ Λ` and `Fⱼ → F` uniformly, and test forms `ηⱼ` equal to `Fⱼ^#ω` on open `Wⱼ ⊇ spt X`.
+As `F = G` on `spt X`, also `Fⱼ → G` uniformly on `spt X`.  So (PA) for `F` and for `G`, with the
+same `Fⱼ` and `ηⱼ`, gives `X(ηⱼ) → lpush(F, X)(ω)` and `X(ηⱼ) → lpush(G, X)(ω)`, and limits in
+`ℝ` are unique.  This is 2.28 (`f#T = g#T` for `C¹` maps with `f = g` on `spt T`) for the
+Lipschitz push-forward of 2.29, the limit of push-forwards by smooth approximations of `f`. -/
+theorem Submission.cmcdt_lpo_pf_congr : ∀ (lpush : ∀ (N N' k : ℕ), (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid N')) k), (∀ (N N' k : ℕ) (Λ : NNReal) (Λ' : ℝ) (F : Euclid N → Euclid N') (Fs : ℕ → Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ω : TestFormOn (univ : Set (Euclid N')) k) (ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) → (∀ j, ∀ x ∈ X.support, ‖fderiv ℝ (Fs j) x‖ ≤ Λ') → TendstoUniformlyOn Fs F atTop X.support → (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (lpush N N' k F X ω))) → ∀ (N N' k : ℕ) (Λ : NNReal) (F G : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → EqOn F G X.support → lpush N N' k F X = lpush N N' k G X := by
+  intro lpush hPA N N' k Λ F G X hF hG hX1 hX2 hX3 hFG
+  -- currents are determined by their values on test forms: fix `ω ∈ 𝒟ᵏ(ℝ^{N'})`
+  ext ω
+  -- `C^∞` maps `Fⱼ → F` with `‖DFⱼ‖ ≤ Λ`, and forms `ηⱼ = Fⱼ^#ω` on open `Wⱼ ⊇ spt X`
+  obtain ⟨Fs, hFs, -, hD, -, hU, hη⟩ :=
+    Submission.cmcdt_lpo_pf_approx_data N N' Λ F X.support hF hX1
+  obtain ⟨ηs, hηs⟩ := hη k ω
+  have hη' : ∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W,
+      (ηs j : DifferentialForm (Euclid N) k) x =
+        ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap
+          (fderiv ℝ (Fs j) x) := fun j => by
+    obtain ⟨W, hW, hKW, h1, -⟩ := hηs j
+    exact ⟨W, hW, hKW, h1⟩
+  -- `Fⱼ → F` uniformly on `spt X`, hence `Fⱼ → G` there, as `F = G` on `spt X`
+  have hUF : TendstoUniformlyOn Fs F atTop X.support := hU.tendstoUniformlyOn
+  have hUG : TendstoUniformlyOn Fs G atTop X.support := hUF.congr_right hFG
+  -- (PA) for `F` and for `G` with the same data (`Λ' = Λ`); limits in `ℝ` are unique
+  have h1 := hPA N N' k Λ Λ F Fs X ω ηs hF hX1 hX2 hX3 hFs (fun j x _ => hD j x) hUF hη'
+  have h2 := hPA N N' k Λ Λ G Fs X ω ηs hG hX1 hX2 hX3 hFs (fun j x _ => hD j x) hUG hη'
+  exact tendsto_nhds_unique h1 h2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
