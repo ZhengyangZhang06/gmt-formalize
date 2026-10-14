@@ -789,6 +789,14 @@ theorem Submission.dimred_mbl_dt_lp_cb_curryLeft_le : ∀ (N k : ℕ) (v : Eucli
   exact (pow_le_pow_iff_left₀ (covectorEuclideanNorm_nonneg _) (covectorEuclideanNorm_nonneg _)
     two_ne_zero).mp (le_of_mul_le_mul_left key (by exact_mod_cast Nat.factorial_pos _))
 
+/-- **Covector bounds for the Lipschitz push-forward** (Simon 6.1, (L1)–(L2)): the pull-back
+estimate `|A^#β|_E ≤ ‖A‖ᵏ |β|_E` for a linear map `A : ℝᴺ → ℝᴺ'` and a `k`-covector `β` on `ℝᴺ'`
+(Simon 6.1.8, `dimred_mbl_dt_lp_cb_pullback_le`), and the interior product estimate
+`|ι_v β|_E ≤ ‖v‖ |β|_E` for `v ∈ ℝᴺ` and a `(k+1)`-covector `β` on `ℝᴺ`
+(`dimred_mbl_dt_lp_cb_curryLeft_le`). -/
+theorem Submission.dimred_mbl_dt_lp_covector_bounds : (∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β := by
+  exact ⟨Submission.dimred_mbl_dt_lp_cb_pullback_le, Submission.dimred_mbl_dt_lp_cb_curryLeft_le⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
