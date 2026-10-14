@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f5b1601ec707f3037ce60080f74764782e4bcc2771425cf6351874e5a0b74068",
+  "git_delta": {
+    "base_commit": "40fe70e9dfa8d8bdc20a563d72f895e43726d23e",
+    "candidate_commit": "14da0a5d6f3c63ce8d7075fad44e40889d86fe8f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_sd_markov_point",
+    "diff_sha256": "738cd0e739e583e9e8ec14c5130522baabbff24ec8809e39f9c387344b6e9f64",
+    "source_sha256": "b2badf50b402a51ad886a545efbdb1c3a25abd08611961ca1b6a9ee4a4a1a2e5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_sd_markov_point",
+      "statement": "∀ (g : ℝ → ℝ≥0∞) (p : ℝ → Prop) (a b : ℝ) (I : ℝ≥0∞), a < b → AEMeasurable g → (∀ᵐ t, p t) → ∫⁻ t in Ioo a b, g t ≤ I → ∃ t ∈ Ioo a b, p t ∧ ENNReal.ofReal (b - a) * g t ≤ 2 * I",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
