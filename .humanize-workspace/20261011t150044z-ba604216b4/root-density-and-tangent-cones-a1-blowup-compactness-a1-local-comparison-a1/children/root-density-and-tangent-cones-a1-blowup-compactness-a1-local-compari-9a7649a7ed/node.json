@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.measure_subadditive-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1",
+  "depth": 4,
+  "title": "Subadditivity of the weights of integer multiplicity currents: μ_{X + cY} ≤ μ_X + μ_Y for |c| ≤ 1",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, and X, Y, Z ∈ 𝒟_n(U) with integer multiplicity representations R_X, R_Y, R_Z in U (IMRep U n). Let c ∈ ℝ with |c| ≤ 1, and suppose Z(ω) = X(ω) + c·Y(ω) for every ω ∈ 𝒟ⁿ(U). Then the weights satisfy μ_Z ≤ μ_X + μ_Y as measures on ℝ^P, where μ_• := R_•.measure = θ_•Hⁿ⌞M_•. That is, μ_Z(E) ≤ μ_X(E) + μ_Y(E) for every E ⊆ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (X Y Z : GeometricCurrentOn U n) (RX RY RZ : IMRep U n) (c : ℝ), IsOpen U → |c| ≤ 1 → RX.Represents X → RY.Represents Y → RZ.Represents Z → (∀ ω : TestFormOn U n, Z ω = X ω + c * Y ω) → RZ.measure ≤ RX.measure + RY.measure",
+  "lean_name": "dtc_bc_lc_measure_le_add",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-mass-eq-measure-a1-a1",
+      "result_commit": "bff81d31ecb43002d1bfc77f510d3463c6be155f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9a7649a7ed-a1"
+}
