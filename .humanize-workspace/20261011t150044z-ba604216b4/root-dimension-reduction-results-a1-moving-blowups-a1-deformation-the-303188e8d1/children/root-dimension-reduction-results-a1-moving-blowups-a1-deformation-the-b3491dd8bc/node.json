@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.shell_decomposition-a1.null_off_support-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.skeleton_deformation-a1.shell_decomposition-a1",
+  "depth": 6,
+  "title": "The mass measure of a current on ℝ^P vanishes off the support of the current",
+  "statement": "Assume, as a hypothesis of the statement, (VO) (verbatim the antecedent (VO) of the selected statement): for all P, n ∈ ℕ, U ⊆ ℝ^P, S ∈ 𝒟_n(U) and ω ∈ 𝒟ⁿ(U) whose tsupport is disjoint from spt S, S(ω) = 0. Let P, k ∈ ℕ, let X ∈ 𝒟_k(ℝ^P) (a current on U = univ) and let μ be a measure on ℝ^P such that M_W(X) = μ(W) for every open set W ⊆ ℝ^P. Then μ(ℝ^P \\ spt X) = 0, i.e. μ((spt X)ᶜ) = 0. Conventions (as in the frozen contract and SimonGMT Chapter06): ℝ^P = Euclid P (EuclideanSpace ℝ (Fin P)). For U ⊆ ℝ^P, 𝒟^k(U) = TestFormOn U k (smooth k-forms on ℝ^P whose compact tsupport lies in U) and 𝒟_k(U) = GeometricCurrentOn U k; X(ω) is the value of X on ω; X − Y is the contract subtraction, (X − Y)(ω) = X(ω) − Y(ω) (definitional); 0 is the zero current; ∂X = X.boundary with ∂X(η) = X(dη) (GeometricCurrentOn.boundary_apply); currents with equal values are equal (GeometricCurrentOn.ext). Λ_k = MultiVector P k (continuous linear functionals on k-covectors) and |α| = covectorEuclideanNorm α (Euclidean coefficient norm of a covector). M_G(X) = X.massOn G ∈ [0, ∞] is the supremum of ENNReal.ofReal X(ω) over the ω ∈ 𝒟^k(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x (massAdmissibleOn U k G); M(X) = X.mass = M_U(X); boundaryMassOn X G = M_G(∂X) if k ≥ 1 and 0 if k = 0. spt X = X.support = U \\ X.zeroRegion, where X.zeroRegion is the union of the open W with compact closure contained in U on which X vanishes (X(ω) = 0 whenever tsupport ω ⊆ W). Integrals ∫_E g dμ are Bochner integrals over μ⌞E; {d < t} abbreviates {x : d(x) < t}.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (μ : Measure (Euclid P)), (∀ W : Set (Euclid P), IsOpen W → X.massOn W = μ W) → μ X.supportᶜ = 0",
+  "lean_name": "dimred_mbl_dtsd_sh_measure_compl_support_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b3491dd8bc-a1"
+}
