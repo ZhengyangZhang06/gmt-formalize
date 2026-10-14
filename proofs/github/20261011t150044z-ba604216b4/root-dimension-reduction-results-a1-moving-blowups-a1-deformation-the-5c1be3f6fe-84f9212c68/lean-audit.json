@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "32a61ebe4a0b5c13a05fc0c5612a697a64f5dcb44eff8a89c6d4bd973e0f87ca",
+  "git_delta": {
+    "base_commit": "09803a1740b0f271ae64f15788ed6d866ea68ef5",
+    "candidate_commit": "88331d5cfcb4856bf29ae9be8d7963d45e4c79cb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dtsd_dyadic_series_bounds",
+    "diff_sha256": "ed318d6f406e9e3d22f9df934e74b0429cf3efa5bb41669b9600364d9b64ae29",
+    "source_sha256": "632aaa866b5328e78cdb15ffa533396705a93e94997cae50784aadfeae5780e4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dtsd_dyadic_series_bounds",
+      "statement": "∀ (c₄ : NNReal) (Λ : ℕ → NNReal), (∀ j, (Λ j : ℝ) ≤ c₄ * 2 ^ j) → (∀ (C : NNReal) (A : ℝ≥0∞) (p q : ℕ) (a : ℕ → ℝ≥0∞), p ≤ q → a 0 ≤ A → (∀ j, a (j + 1) ≤ C * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (q + 1))) * A) → ∑' j, (2 * (Λ j : ℝ≥0∞)) ^ p * a j ≤ (2 * (c₄ : ℝ≥0∞)) ^ p * (1 + C) * A) ∧ (∀ (K A : ℝ≥0∞) (p : ℕ) (z : ℕ → ℝ≥0∞), K ≠ ∞ → A ≠ ∞ → (∀ j, z j ≤ K * ENNReal.ofReal ((1 / 2 : ℝ) ^ ((j + 2) * (p + 1))) * A) → Tendsto (fun j => (2 * (Λ j : ℝ≥0∞)) ^ p * z j) atTop (𝓝 0))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
