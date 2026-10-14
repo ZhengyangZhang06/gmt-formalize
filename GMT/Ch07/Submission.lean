@@ -451,6 +451,45 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The mass measure of a current vanishes off its support**: assume (VO), i.e. every current
+`S ∈ 𝒟ₙ(U)` kills the test forms whose support is disjoint from `spt S`.  If `X ∈ 𝒟ₖ(ℝᴾ)` and `μ`
+is a measure with `M_W(X) = μ(W)` for every open `W`, then `μ(ℝᴾ \ spt X) = 0`.
+`(spt X)ᶜ` is the open zero region `Z` of `X`, so `μ((spt X)ᶜ) = M_Z(X)`.  Every form admissible
+for `M_Z` is supported in `Z`, away from `spt X`, so `X` kills it by (VO), and `M_Z(X) = 0`. -/
+theorem Submission.dimred_mbl_dtsd_sh_measure_compl_support_eq_zero : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (μ : Measure (Euclid P)), (∀ W : Set (Euclid P), IsOpen W → X.massOn W = μ W) → μ X.supportᶜ = 0 := by
+  intro hVO P k X μ hμ
+  -- `(spt X)ᶜ = Z`, the open zero region of `X`
+  have hcompl : X.supportᶜ = X.zeroRegion := by
+    ext x; simp [GeometricCurrentOn.support]
+  -- `μ((spt X)ᶜ) = M_Z(X)`, the supremum of `ofReal X(ω)` over the `ω` admissible for `M_Z`
+  rw [hcompl, ← hμ _ X.isOpen_zeroRegion]
+  refine le_antisymm (sSup_le ?_) zero_le
+  -- an admissible `ω` has `tsupport ω ⊆ Z = (spt X)ᶜ`, so `X(ω) = 0` by (VO)
+  rintro _ ⟨ω, hω, rfl⟩
+  have h0 : X ω = 0 := by
+    apply hVO
+    refine Set.disjoint_of_subset_left hω.1 ?_
+    rw [← hcompl]
+    exact disjoint_compl_left
+  simp [h0]
+
+/-- **A finite-mass current on `ℝᴾ` is represented by a finite measure concentrated on its
+support** (Simon 6.5.1, displays (8)–(10): the measure `(μ_∂, ξ_∂)` of `∂T`).  Assume (VO) and
+(REP).  If `X ∈ 𝒟_k(ℝᴾ)` has `M(X) < ∞`, then `M_W(X) ≤ M(X) < ∞` for every `W`, so (REP) with
+`U = ℝᴾ` gives `μ`, `ξ` with `M_W(X) = μ(W)` for open `W`, `ξ` `μ`-a.e. strongly measurable,
+`|⟨α, ξ(x)⟩| ≤ |α|` for every `x` and `X(ω) = ∫ ⟨ω(x), ξ(x)⟩ dμ(x)`.  Then
+`μ(ℝᴾ) = M(X) < ∞`, and `μ(ℝᴾ \ spt X) = 0` by `null_off_support`. -/
+theorem Submission.dimred_mbl_dtsd_sh_finite_mass_measure : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), X.mass < ∞ → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P k), IsFiniteMeasure μ ∧ AEStronglyMeasurable ξ μ ∧ (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) k, |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) k, X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ) ∧ (∀ W : Set (Euclid P), IsOpen W → X.massOn W = μ W) ∧ μ X.supportᶜ = 0 := by
+  intro hVO hREP P k X hX
+  -- (REP) with `U = ℝᴾ`: `M_W(X) ≤ M(X) < ∞` for every `W`
+  obtain ⟨μ, ξ, -, -, hmass, hξm, hξb, hrep, -⟩ := hREP P k univ X isOpen_univ
+    (fun W _ _ => (X.massOn_mono (subset_univ W)).trans_lt hX)
+  -- `μ(ℝᴾ) = M_{ℝᴾ}(X) = M(X) < ∞`
+  have hfin : IsFiniteMeasure μ := ⟨by rw [← hmass univ isOpen_univ]; exact hX⟩
+  -- the everywhere bound holds `μ`-a.e.; `μ(ℝᴾ \ spt X) = 0` by `null_off_support`
+  exact ⟨μ, ξ, hfin, hξm, Filter.Eventually.of_forall (fun x α => hξb x α), hrep, hmass,
+    Submission.dimred_mbl_dtsd_sh_measure_compl_support_eq_zero hVO P k X μ hmass⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
