@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f2b3264849f306ae3b2ff167e7d1f7670375c5036fad3ed83e1cd685e0f13736",
+  "git_delta": {
+    "base_commit": "1c74e321e3ac685bc905e1a4d433cb573eed2209",
+    "candidate_commit": "d06328b02ec0dbbefa77630c1141b6f5bd58446a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_ims_density_series",
+    "diff_sha256": "f328696beea52e2fc42c0fcae30304d98021da80e0a294999b93d981f08bd41d",
+    "source_sha256": "5a25d173ad3c68b7f464539bd70f991b6d3cd7e17670992c3fe7d6f17482299c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_ims_density_series",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n), ∑' r, (R r).measure U ≠ ∞ → ∃ η : Euclid P → MultiVector P n, (∀ᵐ x ∂μHE[n], HasSum (fun r => (R r).carrier.indicator (fun y => ((R r).mult y : ℝ) • (R r).orient y) x) (η x)) ∧ ∀ ω : TestFormOn U n, HasSum (fun r => (R r).action (ω : DifferentialForm (Euclid P) n)) (∫ x, η x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n])",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

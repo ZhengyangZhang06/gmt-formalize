@@ -451,6 +451,129 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A unit orientation has norm at most `1` (step 1(c) of the proof of Simon Ch. 6, 3.2(3)).
+If `ξ α = ±α(τ₁, …, τₙ)` for an orthonormal family `τ`, then `|ξ α| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+for every `n`-covector `α`, so the operator norm of `ξ` is at most `1`. -/
+theorem Submission.unit_orientation_norm_le_one : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1 := by
+  rintro P n Q ξ ⟨τ, hτ, -, hξ⟩
+  refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_
+  -- `|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`, as `‖τᵢ‖ = 1`
+  have hbound : ‖α τ‖ ≤ ‖α‖ := by
+    simpa [hτ.1] using α.le_opNorm τ
+  rcases hξ with h | h
+  · rw [h, one_mul]
+    exact hbound
+  · rw [h, norm_neg, one_mul]
+    exact hbound
+
+/-- A mass-summable series of integer multiplicity densities converges `Hⁿ`-a.e. and integrates
+termwise against test forms (the `L¹` convergence of the densities `θ_q ξ_q` in the proof of
+Simon Ch. 6, Lemma 3.13).  With `g_r = 1_{M_r} θ_r`, `∫ g_r dHⁿ = μ_{R_r}(M_r) ≤ μ_{R_r}(U)`, so
+`Σ_r g_r < ∞` `Hⁿ`-a.e.; as `‖ξ_r‖ ≤ 1` `Hⁿ`-a.e. on `M_r`, the densities `D_r = 1_{M_r} θ_r ξ_r`
+satisfy `‖D_r‖ ≤ g_r`, so `η = Σ_r D_r` converges absolutely `Hⁿ`-a.e., and dominated convergence
+for series with the bounds `(sup ‖ω‖) g_r` gives `Σ_r τ(M_r, θ_r, ξ_r)(ω) = ∫ ⟨ω, η⟩ dHⁿ`. -/
+theorem Submission.dor_lmb_fc_ims_density_series : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n), ∑' r, (R r).measure U ≠ ∞ → ∃ η : Euclid P → MultiVector P n, (∀ᵐ x ∂μHE[n], HasSum (fun r => (R r).carrier.indicator (fun y => ((R r).mult y : ℝ) • (R r).orient y) x) (η x)) ∧ ∀ ω : TestFormOn U n, HasSum (fun r => (R r).action (ω : DifferentialForm (Euclid P) n)) (∫ x, η x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) := by
+  have hnorm := Submission.unit_orientation_norm_le_one
+  intro P n U R hfin
+  set D : ℕ → Euclid P → MultiVector P n := fun r x =>
+    (R r).carrier.indicator (fun y => ((R r).mult y : ℝ) • (R r).orient y) x
+  set g : ℕ → Euclid P → ℝ := fun r x =>
+    (R r).carrier.indicator (fun y => ((R r).mult y : ℝ)) x
+  have hg_nonneg : ∀ r x, 0 ≤ g r x := fun r x =>
+    Set.indicator_nonneg (fun y _ => Nat.cast_nonneg _) x
+  have hmult_meas : ∀ r, Measurable (fun y => ((R r).mult y : ℝ)) := fun r =>
+    measurable_from_nat.comp (R r).measurable_mult
+  have hg_meas : ∀ r, Measurable (g r) := fun r =>
+    (hmult_meas r).indicator (R r).measurableSet_carrier
+  -- ∫⁻ g_r dHⁿ = μ_{R_r}(M_r) ≤ μ_{R_r}(U)
+  have hg_lint : ∀ r, ∫⁻ x, ENNReal.ofReal (g r x) ∂μHE[n] ≤ (R r).measure U := by
+    intro r
+    have hM := (R r).measurableSet_carrier
+    have h1 : (fun x => ENNReal.ofReal (g r x)) =
+        (R r).carrier.indicator (fun y => ((R r).mult y : ℝ≥0∞)) := by
+      funext x
+      by_cases hx : x ∈ (R r).carrier <;> simp [g, hx]
+    calc ∫⁻ x, ENNReal.ofReal (g r x) ∂μHE[n]
+        = ∫⁻ x in (R r).carrier, ((R r).mult x : ℝ≥0∞) ∂μHE[n] := by
+          rw [h1, lintegral_indicator hM]
+      _ = (R r).measure (R r).carrier := by
+          rw [IMRep.measure, withDensity_apply _ hM, Measure.restrict_restrict hM, inter_self]
+      _ ≤ (R r).measure U := measure_mono (R r).carrier_subset
+  have hsum_lint : ∫⁻ x, ∑' r, ENNReal.ofReal (g r x) ∂μHE[n] ≠ ∞ := by
+    rw [lintegral_tsum (fun r => (hg_meas r).ennreal_ofReal.aemeasurable)]
+    exact ne_top_of_le_ne_top hfin (ENNReal.tsum_le_tsum hg_lint)
+  have hfinite : ∀ᵐ x ∂μHE[n], ∑' r, ENNReal.ofReal (g r x) < ∞ :=
+    ae_lt_top (Measurable.tsum fun r => (hg_meas r).ennreal_ofReal) hsum_lint
+  have hg_summ : ∀ᵐ x ∂μHE[n], Summable (fun r => g r x) := by
+    filter_upwards [hfinite] with x hx
+    have := ENNReal.summable_toReal hx.ne
+    simpa [ENNReal.toReal_ofReal (hg_nonneg _ x)] using this
+  -- ‖D_r(x)‖ ≤ g_r(x) a.e., from ‖ξ‖ ≤ 1 for unit orientations
+  have hD_bound : ∀ r, ∀ᵐ x ∂μHE[n], ‖D r x‖ ≤ g r x := by
+    intro r
+    have h := (R r).orients
+    rw [ae_restrict_iff' (R r).measurableSet_carrier] at h
+    filter_upwards [h] with x hx
+    by_cases hxM : x ∈ (R r).carrier
+    · obtain ⟨Q, -, hQ⟩ := hx hxM
+      have h1 := hnorm P n Q _ hQ
+      simp only [D, g, Set.indicator_of_mem hxM]
+      calc ‖((R r).mult x : ℝ) • (R r).orient x‖
+          ≤ ‖((R r).mult x : ℝ)‖ * ‖(R r).orient x‖ := ContinuousLinearMap.opNorm_smul_le _ _
+        _ ≤ ‖((R r).mult x : ℝ)‖ * 1 := mul_le_mul_of_nonneg_left h1 (norm_nonneg _)
+        _ = ((R r).mult x : ℝ) := by rw [mul_one, Real.norm_natCast]
+    · simp only [D, g, Set.indicator_of_notMem hxM]
+      exact ContinuousLinearMap.opNorm_zero.le
+  have hD_bound' : ∀ᵐ x ∂μHE[n], ∀ r, ‖D r x‖ ≤ g r x := ae_all_iff.2 hD_bound
+  have hD_summ : ∀ᵐ x ∂μHE[n], Summable (fun r => D r x) := by
+    filter_upwards [hD_bound', hg_summ] with x h1 h2
+    exact Summable.of_norm_bounded (E := MultiVector P n) h2 h1
+  refine ⟨fun x => ∑' r, D r x, ?_, ?_⟩
+  · filter_upwards [hD_summ] with x hx
+    exact hx.hasSum
+  · intro ω
+    set w : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n)
+    have hw_cont : Continuous w := ContDiff.continuous ω.property.1.1
+    obtain ⟨B, hB⟩ : ∃ B, ∀ x, ‖w x‖ ≤ B :=
+      hw_cont.bounded_above_of_compact_support ω.property.1.2
+    have hDr_meas : ∀ r, AEStronglyMeasurable (D r) μHE[n] := by
+      intro r
+      refine (aestronglyMeasurable_indicator_iff (R r).measurableSet_carrier).2 ?_
+      exact (hmult_meas r).aestronglyMeasurable.smul (R r).aestronglyMeasurable_orient
+    have hF_meas : ∀ r, AEStronglyMeasurable (fun x => D r x (w x)) μHE[n] := fun r =>
+      isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable
+        ((hDr_meas r).prodMk hw_cont.aestronglyMeasurable)
+    have h_bound : ∀ r, ∀ᵐ x ∂μHE[n], ‖D r x (w x)‖ ≤ B * g r x := by
+      intro r
+      filter_upwards [hD_bound r] with x hx
+      calc ‖D r x (w x)‖ ≤ ‖D r x‖ * ‖w x‖ := (D r x).le_opNorm _
+        _ ≤ g r x * B := mul_le_mul hx (hB x) (norm_nonneg _) (hg_nonneg r x)
+        _ = B * g r x := mul_comm _ _
+    have h_summ : ∀ᵐ x ∂μHE[n], Summable (fun r => B * g r x) :=
+      hg_summ.mono fun x hx => hx.mul_left B
+    have h_int : Integrable (fun x => ∑' r, B * g r x) μHE[n] := by
+      have hG : Integrable (fun x => (∑' r, ENNReal.ofReal (g r x)).toReal) μHE[n] :=
+        integrable_toReal_of_lintegral_ne_top
+          (Measurable.tsum fun r => (hg_meas r).ennreal_ofReal).aemeasurable hsum_lint
+      refine (hG.const_mul B).congr ?_
+      filter_upwards [hg_summ] with x hx
+      rw [tsum_mul_left, ← ENNReal.ofReal_tsum_of_nonneg (fun r => hg_nonneg r x) hx,
+        ENNReal.toReal_ofReal (tsum_nonneg fun r => hg_nonneg r x)]
+    have hlim : ∀ᵐ x ∂μHE[n], HasSum (fun r => D r x (w x)) ((∑' r, D r x) (w x)) := by
+      filter_upwards [hD_summ] with x hx
+      exact hx.hasSum.mapL (ContinuousLinearMap.apply ℝ ℝ (w x))
+    have hHS := hasSum_integral_of_dominated_convergence (fun r x => B * g r x) hF_meas
+      h_bound h_summ h_int hlim
+    convert hHS using 1
+    funext r
+    have hM := (R r).measurableSet_carrier
+    have h1 : (fun x => D r x (w x)) =
+        (R r).carrier.indicator (fun x => ((R r).mult x : ℝ) * (R r).orient x (w x)) := by
+      funext x
+      by_cases hx : x ∈ (R r).carrier <;> simp [D, hx]
+    rw [h1, integral_indicator hM]
+    rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
