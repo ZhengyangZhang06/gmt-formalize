@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmcdt_lpo_slice_' project mathlib/Mathlib -g '*.lean'",
+        "git -C mathlib rev-parse HEAD",
+        "sed -n '180,260p' mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "sed -n '175,215p' mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "sed -n '1110,1128p' mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "sed -n '1160,1188p' mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "sed -n '25,130p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "sed -n '1,85p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "sed -n '22,75p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-independent-audit-02sxotex/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-decomp-q7w3/AllProof.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-4aef1082ec/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-4aef1082ec/decomposition-v1.json",
+        "/tmp/slice-independent-audit-02sxotex/Types.lean",
+        "/tmp/slice-decomp-q7w3/AllProof.lean"
+      ],
+      "conclusion": "The split is appropriate: five children are exactly the selected parent's conjuncts, and all three auxiliaries are used. Their conjunction is textually identical to the immutable parent type. Independent checks found acyclic, correctly directed dependencies matching both prose and Lean proofs. All eight names are bare identifiers; scanning 2,113 DAG nodes found no reserved-name collision or identical declaration to reuse, and the snapshot search found no cmcdt_lpo_slice_* declaration. Snapshot and compiler references are compatible. All eight frozen types elaborate without child implementations, and independent parent assembly compiles. Rerunning the supplied complete proofs succeeds; every child and the assembled parent depend only on propext, Classical.choice and Quot.sound. Euclidean norms, continuous-linear-map integrals, smoothness order and alternating signs have the intended interpretations; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coords",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. The explicit linear equivalence, finite-dimensional continuity, coordinate calculation and Euclidean norm calculation establish all three properties, including N = 0, without circularity."
+    },
+    {
+      "key": "param_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The complete-space generalization is valid and matches the type. Compact domain bounds discharge differentiation-under-integral hypotheses; induction over all complete value spaces applies to the complete continuous-linear-map space and establishes every finite smoothness order."
+    },
+    {
+      "key": "extderiv_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Differentiability suffices for the stated pointwise formula. The proof explicitly checks both coordinate chain rules, removal of tuple entries and the successor-index sign, using only the declared coords dependency."
+    },
+    {
+      "key": "fiber_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly conjunct (a). Continuous linear contraction and parametric integration provide smoothness and values; the explicitly identified compact projection contains the support and its closure, proving the precise support bound and compact support."
+    },
+    {
+      "key": "end_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly conjunct (b). The norm estimate proves properness through compact preimages, satisfying the frozen affine-pullback lemma's hypotheses. Evaluation gives the required formula."
+    },
+    {
+      "key": "homotopy_succ",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly conjunct (c), retaining the universal hypothesis on θ. Differentiating that identity, commuting evaluation with integration, expanding dθ and applying the FTC yields the stated boundary terms and minus sign. All integration hypotheses and declared dependencies are justified."
+    },
+    {
+      "key": "homotopy_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly conjunct (d). The proof handles the empty tuple explicitly, reduces the exterior-derivative sum to its sole term, identifies the path derivative and verifies the FTC hypotheses."
+    },
+    {
+      "key": "covector_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly conjunct (e). The coefficient vector realizes the specified Euclidean coefficient norm. Continuity and coordinatewise integration establish its integral identity, and the unit-interval norm estimate proves the bound without an omitted positivity or dimensional assumption."
+    }
+  ],
+  "required_changes": []
+}
