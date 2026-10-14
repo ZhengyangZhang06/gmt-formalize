@@ -669,6 +669,85 @@ theorem Submission.dtc_blowUp_algebra : ∀ (P : ℕ) (U : Set (Euclid P)) (x : 
     rw [GeometricCurrentOn.boundary_affinePushforward]
     rfl
 
+/-- **Blow-up domains and boundaries near `x ∉ spt ∂T`** (Simon 7.3.1, proof, chapter-07.txt
+lines 334–335: "`∂η_{x,λⱼ#}T = 0` in `B_R(0)` for sufficiently large `j` (because
+`x ∉ spt ∂T`)").  `ηⱼ = η_{x,λⱼ}` is an affine homeomorphism with `ηⱼ(x + λⱼz) = z`, so (1) `ηⱼ(U)`
+is open.  As `x ∈ U ∩ Z(∂T)` (`Z` the zero region, `spt ∂T = U \ Z(∂T)`), some `B_r(x)` lies in
+`U ∩ Z(∂T)`, and `λⱼR < r` for all large `j`; then (2) `B̄_R(0) ⊆ ηⱼ(B_r(x)) ⊆ ηⱼ(U)`, and (3)
+`∂(ηⱼ#T) = ηⱼ#(∂T)` has support `ηⱼ(spt ∂T)`, which misses `B_R(0) ⊆ ηⱼ(B_r(x))`, so `∂(ηⱼ#T)`
+annihilates every test form supported in `B_R(0)` (`dtc_blowUp_algebra`,
+`dtc_vanish_off_support`). -/
+theorem Submission.dtc_bc_bh_blowUp_domain_boundary : ∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (x : Euclid P), IsOpen U → x ∈ U → x ∉ boundarySupport T → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → (∀ j, IsOpen (dilation x (lams j) '' U)) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ dilation x (lams j) '' U) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, ∀ ω : TestFormOn (dilation x (lams j) '' U) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → (blowUp T x (lams j) (hlams j).ne').boundary ω = 0) := by
+  intro P m U T x hU hxU hxb lams hlams hlim
+  -- `η_{x,λ}(y) = λ⁻¹ • (y - x)`
+  have hdil : ∀ (lam : ℝ) (y : Euclid P), dilation x lam y = lam⁻¹ • (y - x) := by
+    intro lam y
+    simp only [dilation, dilationCLM, FunLike.coe_smul, Pi.smul_apply,
+      ContinuousLinearMap.coe_id', id_eq, smul_sub]
+    abel
+  -- `η_{x,λ}(x + λz) = z`, and `η_{x,λ}(y) = z` forces `y = x + λz`
+  have hdil_inv : ∀ (lam : ℝ) (z : Euclid P), lam ≠ 0 → dilation x lam (x + lam • z) = z := by
+    intro lam z hlam
+    rw [hdil, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hlam, one_smul]
+  have hdil_eq : ∀ (lam : ℝ) (y z : Euclid P), lam ≠ 0 → dilation x lam y = z →
+      y = x + lam • z := by
+    intro lam y z hlam h
+    rw [← h, hdil, smul_smul, mul_inv_cancel₀ hlam, one_smul, add_sub_cancel]
+  -- `λⱼR` is eventually below any positive bound
+  have hsmall : ∀ (R t : ℝ), 0 < t → ∀ᶠ j in atTop, lams j * R < t := by
+    intro R t ht
+    have h0 : Tendsto (fun j => lams j * R) atTop (𝓝 0) := by
+      simpa using hlim.mul_const R
+    exact (tendsto_order.1 h0).2 t ht
+  -- (1) `ηⱼ(U)` is the image of the open `U` under a homeomorphism
+  have hopen : ∀ j, IsOpen (dilation x (lams j) '' U) := by
+    intro j
+    have hlam : lams j ≠ 0 := (hlams j).ne'
+    have hfun : dilation x (lams j) =
+        ((Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero (lams j)⁻¹ (inv_ne_zero hlam)) :
+          Euclid P → Euclid P) := by
+      funext y
+      rw [hdil]
+      rfl
+    rw [hfun]
+    exact ((Homeomorph.subRight x).trans
+      (Homeomorph.smulOfNeZero (lams j)⁻¹ (inv_ne_zero hlam))).isOpenMap U hU
+  -- a ball `B_r(x)` inside `U` and inside the zero region of `∂T`
+  have hxZ : x ∈ T.boundary.zeroRegion := by
+    by_contra h
+    exact hxb ⟨hxU, h⟩
+  obtain ⟨r, hr, hrU⟩ :=
+    Metric.isOpen_iff.1 (hU.inter T.boundary.isOpen_zeroRegion) x ⟨hxU, hxZ⟩
+  refine ⟨hopen, ?_, ?_⟩
+  · -- (2) `B̄_R(0) ⊆ ηⱼ(U)` once `λⱼR < r`
+    intro R
+    filter_upwards [hsmall R r hr] with j hj
+    intro z hz
+    have hlam := hlams j
+    refine ⟨x + lams j • z, (hrU ?_).1, hdil_inv (lams j) z hlam.ne'⟩
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]
+    rw [mem_closedBall, dist_zero_right] at hz
+    calc lams j * ‖z‖ ≤ lams j * R := mul_le_mul_of_nonneg_left hz hlam.le
+      _ < r := hj
+  · -- (3) `∂(ηⱼ#T)(ω) = 0` for `spt ω ⊆ B_R(0)` once `λⱼR < r`
+    intro R
+    filter_upwards [hsmall R r hr] with j hj ω hω
+    have hlam := hlams j
+    have hALG := Submission.dtc_blowUp_algebra P U x (lams j) hlam
+    rw [hALG.2.2.2 m T]
+    apply Submission.dtc_vanish_off_support
+    rw [hALG.2.2.1 m T.boundary, Set.disjoint_left]
+    rintro z hz ⟨y, hy, hyz⟩
+    have hyx : y = x + lams j • z := hdil_eq (lams j) y z hlam.ne' hyz
+    have hzR := hω hz
+    rw [mem_ball, dist_zero_right] at hzR
+    have hyball : y ∈ ball x r := by
+      rw [hyx, mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul,
+        Real.norm_of_nonneg hlam.le]
+      calc lams j * ‖z‖ ≤ lams j * R := mul_le_mul_of_nonneg_left hzR.le hlam.le
+        _ < r := hj
+    exact hy.2 (hrU hyball).2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
