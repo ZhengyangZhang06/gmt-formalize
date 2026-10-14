@@ -451,6 +451,98 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Adjoint identity for mollification** (Simon Ch. 2, 2.5).  If `η : ℝᴾ → ℝ` is `C¹` with
+compact support, `η̌(z) = η(−z)`, and `u`, `s` are integrable, then
+`∫ D(η ⋆ u)(x)(s x) dx = −∫ u div(η̌ ⋆ s)`, where `div G = trace DG`.  Differentiating under the
+integral, `D(η ⋆ u)(x)(s x) = ∫ Dη(x − z)(s x) u(z) dz` and, since `Dη̌(y) = −Dη(−y)`,
+`div(η̌ ⋆ s)(z) = −∫ Dη(x − z)(s x) dx`; Fubini applies to `Dη(x − z)(s x) u(z)`, which is
+dominated by `C ‖s x‖ |u z|` with `C = sup ‖Dη‖`. -/
+theorem Submission.cmcdt_cbm_sa_mollify_adjoint : ∀ (P : ℕ) (η u : Euclid P → ℝ) (s : Euclid P → Euclid P), ContDiff ℝ 1 η → HasCompactSupport η → Integrable u → Integrable s → ∫ x, fderiv ℝ (convolution η u (ContinuousLinearMap.lsmul ℝ ℝ) volume) x (s x) = -∫ z, u z * LinearMap.trace ℝ (Euclid P) (fderiv ℝ (convolution (fun z => η (-z)) s (ContinuousLinearMap.lsmul ℝ ℝ) volume) z : Euclid P →ₗ[ℝ] Euclid P) := by
+  intro P η u s hη hηc hu hs
+  -- Step 1: `Dη` is continuous with compact support, hence bounded by some `C`.
+  have hDc : Continuous (fderiv ℝ η) := hη.continuous_fderiv one_ne_zero
+  have hDcs : HasCompactSupport (fderiv ℝ η) := hηc.fderiv ℝ
+  obtain ⟨C, hC⟩ := hDc.bounded_above_of_compact_support hDcs
+  -- Step 2: `η̌ = η ∘ (−id)` is `C¹` with compact support, and `Dη̌(y) = −Dη(−y)` (chain rule).
+  set ηr : Euclid P → ℝ := fun z => η (-z)
+  have hηr : ContDiff ℝ 1 ηr := hη.comp contDiff_neg
+  have hηrc : HasCompactSupport ηr := hηc.comp_homeomorph (Homeomorph.neg (Euclid P))
+  have hDrc : Continuous (fderiv ℝ ηr) := hηr.continuous_fderiv one_ne_zero
+  have hDrcs : HasCompactSupport (fderiv ℝ ηr) := hηrc.fderiv ℝ
+  have hDr : ∀ y, fderiv ℝ ηr y = -fderiv ℝ η (-y) := by
+    intro y
+    have h1 : HasFDerivAt ηr ((fderiv ℝ η (-y)).comp (-ContinuousLinearMap.id ℝ (Euclid P))) y :=
+      ((hη.differentiable one_ne_zero) (-y)).hasFDerivAt.comp y (hasFDerivAt_id y).neg
+    rw [h1.fderiv]
+    ext v
+    simp
+  -- Step 3: `D(η ⋆ u)(x) = (Dη ⋆ u)(x)`, so `D(η ⋆ u)(x)(s x) = ∫ Dη(x − z)(s x) u(z) dz`.
+  have hLHS : ∀ x, fderiv ℝ (convolution η u (ContinuousLinearMap.lsmul ℝ ℝ) volume) x (s x) =
+      ∫ z, fderiv ℝ η (x - z) (s x) * u z := by
+    intro x
+    rw [(hηc.hasFDerivAt_convolution_left _ hη hu.locallyIntegrable x).fderiv, convolution_eq_swap,
+      ContinuousLinearMap.integral_apply
+        ((hDcs.convolutionExists_left _ hDc hu.locallyIntegrable x).integrable_swap)]
+    simp
+  -- Step 4: `div(η̌ ⋆ s)(z) = trace D(η̌ ⋆ s)(z) = ∫ Dη̌(z − x)(s x) dx`: the trace `T` is a
+  -- continuous linear functional, and the trace of the rank-one map `v ↦ a(v) w` is `a(w)`.
+  have hRHS : ∀ z, LinearMap.trace ℝ (Euclid P)
+      (fderiv ℝ (convolution ηr s (ContinuousLinearMap.lsmul ℝ ℝ) volume) z :
+        Euclid P →ₗ[ℝ] Euclid P) = ∫ x, fderiv ℝ ηr (z - x) (s x) := by
+    let T : (Euclid P →L[ℝ] Euclid P) →L[ℝ] ℝ := LinearMap.toContinuousLinearMap
+      (LinearMap.trace ℝ (Euclid P) ∘ₗ ContinuousLinearMap.coeLM ℝ)
+    have hTA : ∀ A : Euclid P →L[ℝ] Euclid P,
+        T A = LinearMap.trace ℝ (Euclid P) (A : Euclid P →ₗ[ℝ] Euclid P) := fun A => rfl
+    have hrk : ∀ (a : Euclid P →L[ℝ] ℝ) (w : Euclid P), T (ContinuousLinearMap.precompL (Euclid P)
+        (ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] Euclid P →L[ℝ] Euclid P) a w) = a w := by
+      intro a w
+      have h : ((ContinuousLinearMap.precompL (Euclid P)
+          (ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] Euclid P →L[ℝ] Euclid P) a w :
+            Euclid P →L[ℝ] Euclid P) : Euclid P →ₗ[ℝ] Euclid P) =
+          (a : Euclid P →ₗ[ℝ] ℝ).smulRight w := by
+        ext v
+        simp
+      rw [hTA, h, LinearMap.trace_smulRight]
+      rfl
+    intro z
+    rw [(hηrc.hasFDerivAt_convolution_left _ hηr hs.locallyIntegrable z).fderiv,
+      convolution_eq_swap]
+    have hT := ContinuousLinearMap.integral_comp_comm T
+      ((hDrcs.convolutionExists_left (ContinuousLinearMap.precompL (Euclid P)
+        (ContinuousLinearMap.lsmul ℝ ℝ : ℝ →L[ℝ] Euclid P →L[ℝ] Euclid P)) hDrc
+          hs.locallyIntegrable z).integrable_swap)
+    simp_rw [hrk] at hT
+    exact hT.symm
+  -- Step 5: Fubini for `H(x, z) = Dη(x − z)(s x) u(z)`, dominated by `C ‖s x‖ |u z|`.
+  have hint : Integrable (uncurry fun x z => fderiv ℝ η (x - z) (s x) * u z)
+      ((volume : Measure (Euclid P)).prod volume) := by
+    refine Integrable.mono' ((hs.norm.mul_prod hu.norm).const_mul C) ?_ (Eventually.of_forall ?_)
+    · exact ((ContinuousLinearMap.apply ℝ ℝ).aestronglyMeasurable_comp₂
+        hs.aestronglyMeasurable.comp_fst
+        (hDc.comp (continuous_fst.sub continuous_snd)).aestronglyMeasurable).mul
+        hu.aestronglyMeasurable.comp_snd
+    · rintro ⟨x, z⟩
+      simp only [uncurry_apply_pair, norm_mul]
+      calc ‖fderiv ℝ η (x - z) (s x)‖ * ‖u z‖ ≤ (C * ‖s x‖) * ‖u z‖ := by
+            gcongr
+            exact ((fderiv ℝ η (x - z)).le_opNorm (s x)).trans (by gcongr; exact hC _)
+        _ = C * (‖s x‖ * ‖u z‖) := by ring
+  -- Step 6: combine, using `Dη̌(z − x) = −Dη(x − z)` to identify the swapped integral.
+  calc ∫ x, fderiv ℝ (convolution η u (ContinuousLinearMap.lsmul ℝ ℝ) volume) x (s x)
+      = ∫ x, ∫ z, fderiv ℝ η (x - z) (s x) * u z := by simp_rw [hLHS]
+    _ = ∫ z, ∫ x, fderiv ℝ η (x - z) (s x) * u z := integral_integral_swap hint
+    _ = -∫ z, u z * LinearMap.trace ℝ (Euclid P)
+          (fderiv ℝ (convolution ηr s (ContinuousLinearMap.lsmul ℝ ℝ) volume) z :
+            Euclid P →ₗ[ℝ] Euclid P) := by
+      rw [← integral_neg]
+      congr 1
+      funext z
+      rw [hRHS z, ← integral_const_mul, ← integral_neg]
+      congr 1
+      funext x
+      rw [hDr, neg_sub, neg_apply]
+      ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
