@@ -451,6 +451,153 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Support calculus** for currents in `ℝᴾ` (Simon 6.2.11): (i) if `E` is closed and `X(ω) = 0`
+whenever `spt ω ∩ E = ∅`, then `spt X ⊆ E`; (ii) `spt X` is closed; (iii)
+`spt(A − B) ⊆ spt A ∪ spt B`; (iv) `spt 0 = ∅`; (v) `spt ∂A ⊆ spt A`.  A point lies off `spt X`
+iff it has an open neighbourhood with compact closure on which `X` vanishes.  Small balls are such
+neighbourhoods in the proper space `ℝᴾ`; zero neighbourhoods of `A` and `B` intersect to one of
+`A − B`; and since `spt dη ⊆ spt η`, a zero neighbourhood of `A` is one of `∂A`. -/
+theorem Submission.cmcsd_support_calculus : ∀ (P n : ℕ), (∀ (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) n), IsClosed E → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) E → X ω = 0) → X.support ⊆ E) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) n, IsClosed X.support) ∧ (∀ A B : GeometricCurrentOn (univ : Set (Euclid P)) n, (A - B).support ⊆ A.support ∪ B.support) ∧ (0 : GeometricCurrentOn (univ : Set (Euclid P)) n).support = ∅ ∧ (∀ A : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1), A.boundary.support ⊆ A.support) := by
+  intro P n
+  -- `B_ε(x)` is open, and its closure lies in the compact `closedBall x ε` (`ℝᴾ` is proper)
+  have hball : ∀ (x : Euclid P) (ε : ℝ), IsOpen (ball x ε) ∧ IsCompact (closure (ball x ε)) ∧
+      closure (ball x ε) ⊆ univ := fun x ε =>
+    ⟨isOpen_ball, (isCompact_closedBall x ε).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall, subset_univ _⟩
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
+  · -- (i) for `x ∉ E`, a ball around `x` inside the open set `Eᶜ` is a zero neighbourhood of `x`
+    intro E X hE hX x hx
+    by_contra hxE
+    obtain ⟨ε, hε, hεE⟩ := Metric.isOpen_iff.mp hE.isOpen_compl x hxE
+    refine hx.2 (mem_sUnion_of_mem (mem_ball_self hε)
+      ⟨(hball x ε).1, (hball x ε).2.1, (hball x ε).2.2, fun ω hω => hX ω ?_⟩)
+    exact subset_compl_iff_disjoint_right.mp (hω.trans hεE)
+  · -- (ii) `spt X = univ \ X.zeroRegion`, and the zero region is open
+    intro X
+    exact isClosed_univ.sdiff X.isOpen_zeroRegion
+  · -- (iii) the intersection of zero neighbourhoods of `A` and `B` is one of `A − B`
+    intro A B x hx
+    by_contra hAB
+    have hxA : x ∈ A.zeroRegion := by
+      by_contra h
+      exact hAB (mem_union_left _ ⟨mem_univ x, h⟩)
+    have hxB : x ∈ B.zeroRegion := by
+      by_contra h
+      exact hAB (mem_union_right _ ⟨mem_univ x, h⟩)
+    obtain ⟨WA, ⟨hWAo, hWAc, -, hWAv⟩, hxWA⟩ := mem_sUnion.mp hxA
+    obtain ⟨WB, ⟨hWBo, -, -, hWBv⟩, hxWB⟩ := mem_sUnion.mp hxB
+    refine hx.2 (mem_sUnion_of_mem (⟨hxWA, hxWB⟩ : x ∈ WA ∩ WB) ⟨hWAo.inter hWBo,
+      hWAc.of_isClosed_subset isClosed_closure (closure_mono inter_subset_left), subset_univ _,
+      fun ω hω => ?_⟩)
+    change A ω - B ω = 0
+    rw [hWAv ω (hω.trans inter_subset_left), hWBv ω (hω.trans inter_subset_right), sub_zero]
+  · -- (iv) every ball is a zero neighbourhood of the zero current
+    exact eq_empty_iff_forall_notMem.mpr fun x hx => hx.2 (mem_sUnion_of_mem
+      (mem_ball_self one_pos) ⟨(hball x 1).1, (hball x 1).2.1, (hball x 1).2.2,
+        fun ω _ => GeometricCurrentOn.zero_apply ω⟩)
+  · -- (v) `∂A(η) = A(dη)` with `spt dη ⊆ spt η`: a zero neighbourhood of `A` is one of `∂A`
+    intro A x hx
+    refine ⟨mem_univ x, fun hxA => hx.2 ?_⟩
+    obtain ⟨W, ⟨hWo, hWc, hWU, hWv⟩, hxW⟩ := mem_sUnion.mp hxA
+    refine mem_sUnion_of_mem hxW ⟨hWo, hWc, hWU, fun η hη => ?_⟩
+    rw [GeometricCurrentOn.boundary_apply]
+    exact hWv _ ((tsupport_exteriorDerivative_subset (η : DifferentialForm (Euclid P) n)).trans hη)
+/-- **Mass of a difference** (Simon (6.2.5), chapter-06.txt line 231; this subadditivity makes the
+flat distances `d_W` of 7.1 (lines 2018–2022) pseudometrics and is used in the proof of 7.2):
+`M_G(A − B) ≤ M_G(A) + M_G(B)` for every set `G`.  If `ω` is admissible for `M_G` then so is `−ω`
+(same support, same coefficient norm), and `(A − B)(ω) = A(ω) + B(−ω)`, so
+`ofReal ((A − B)(ω)) ≤ ofReal (A(ω)) + ofReal (B(−ω)) ≤ M_G(A) + M_G(B)`. -/
+theorem Submission.cmc_fc_cs_massOn_sub_le : ∀ (P n : ℕ) (U G : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).massOn G ≤ A.massOn G + B.massOn G := by
+  intro P n U G A B
+  -- Step 1: it suffices to bound `ofReal ((A − B)(ω))` for each admissible `ω`
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  -- Step 2: `−ω` is admissible: same support, same coefficient norm
+  have hneg : -ω ∈ massAdmissibleOn U n G := by
+    refine ⟨?_, fun x => ?_⟩
+    · rw [Submodule.coe_neg, tsupport_neg]
+      exact hω.1
+    · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- Step 3: `(A − B)(ω) = A(ω) − B(ω) = A(ω) + B(−ω)`, by linearity of `B`
+  have hsplit : (A - B) ω = A ω + B (-ω) := by
+    have hB : B (-ω) = -B ω := B.toCurrent.map_neg ω
+    change A ω - B ω = A ω + B (-ω)
+    rw [hB, sub_eq_add_neg]
+  -- Steps 4–5: `ofReal` is subadditive, and each term is bounded by the corresponding mass
+  calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [hsplit]
+    _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+    _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hneg)
+/-- **Simon 6.2.5** (evaluation bound by local mass): if `M_W(T) < ∞`, `spt ω ⊆ W` and
+`|ω(x)| ≤ r` for every `x`, then `|T(ω)| ≤ r · M_W(T)`.  The Euclidean coefficient norm is
+homogeneous, `|cα| = |c| |α|`, so for `s > 0` with `r ≤ s` both forms `±s⁻¹ω` are admissible for
+`M_W(T)`; hence `|T(ω)| ≤ s · M_W(T)`, and `s ↓ r` gives the claim. -/
+theorem Submission.cmr_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (r : ℝ), T.massOn W ≠ ∞ → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * (T.massOn W).toReal := by
+  intro P n U W T ω r hM hW hr
+  -- homogeneity of the Euclidean coefficient norm
+  have hsmul : ∀ (c : ℝ) (α : Covector (Euclid P) n),
+      covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+    intro c α
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · rw [mul_zero]
+  have hr0 : 0 ≤ r := (covectorEuclideanNorm_nonneg _).trans (hr 0)
+  -- `|T(ω)| ≤ s M_W(T)` for `0 < s`, `r ≤ s`: every `c • ω` with `|c| ≤ s⁻¹` is admissible
+  have hbound : ∀ s : ℝ, 0 < s → r ≤ s → |T ω| ≤ s * (T.massOn W).toReal := by
+    intro s hs hrs
+    have hadm : ∀ c : ℝ, |c| ≤ s⁻¹ → c * T ω ≤ (T.massOn W).toReal := by
+      intro c hc
+      have hmem : c • ω ∈ massAdmissibleOn U n W := by
+        refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hW, fun x => ?_⟩
+        show covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
+        rw [hsmul]
+        calc |c| * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ s⁻¹ * s :=
+              mul_le_mul hc ((hr x).trans hrs) (covectorEuclideanNorm_nonneg _)
+                (inv_nonneg.2 hs.le)
+          _ = 1 := inv_mul_cancel₀ hs.ne'
+      have h := (ENNReal.ofReal_le_iff_le_toReal hM).1 (T.le_massOn hmem)
+      rwa [show T (c • ω) = c * T ω from T.toCurrent.map_smul c ω] at h
+    have h1 := hadm s⁻¹ (abs_of_pos (inv_pos.2 hs)).le
+    have h2 := hadm (-s⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.2 hs)])
+    rw [neg_mul, ← mul_neg] at h2
+    rw [abs_le]
+    exact ⟨neg_le.1 ((inv_mul_le_iff₀ hs).1 h2), (inv_mul_le_iff₀ hs).1 h1⟩
+  -- let `s ↓ r`
+  have hlim : Tendsto (fun s : ℝ => s * (T.massOn W).toReal) (𝓝[>] r)
+      (𝓝 (r * (T.massOn W).toReal)) :=
+    ((continuous_mul_const _).tendsto r).mono_left nhdsWithin_le_nhds
+  exact ge_of_tendsto hlim
+    (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
+
+/-- **Telescoping series** (Simon Ch. 6, proof of 5.1: the passage from the limits (19) to the
+identity (21), chapter-06.txt lines 1792–1820): if `∑ⱼ aⱼ = s`, `a₀ = −k₀`, `aⱼ₊₁ = kⱼ − kⱼ₊₁`
+and `kⱼ → 0`, then `s = 0`.  The partial sums telescope, `∑_{i ≤ N} aᵢ = −k_N`; they tend to `s`
+because the series converges, and to `−0 = 0` because `k_N → 0`, so `s = 0` by uniqueness of
+limits. -/
+theorem Submission.cmcsdtd_hasSum_telescoping_eq_zero : ∀ (a k : ℕ → ℝ) (s : ℝ), HasSum a s → a 0 = -k 0 → (∀ j, a (j + 1) = k j - k (j + 1)) → Tendsto k atTop (𝓝 0) → s = 0 := by
+  intro a k s hs h0 hsucc hk
+  -- Step 1: the partial sums telescope, `∑_{i ≤ N} aᵢ = −k_N`
+  have hpart : ∀ N, ∑ i ∈ Finset.range (N + 1), a i = -k N := by
+    intro N
+    induction N with
+    | zero => simp [h0]
+    | succ N ih =>
+      rw [Finset.sum_range_succ, ih, hsucc]
+      ring
+  -- Step 2: the series converges, so its partial sums `∑_{i ≤ N} aᵢ` tend to `s`
+  have h1 : Tendsto (fun N => ∑ i ∈ Finset.range (N + 1), a i) atTop (𝓝 s) :=
+    hs.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
+  -- Step 3: by step 1 they are `−k_N`, which tends to `−0 = 0`
+  have h2 : Tendsto (fun N => ∑ i ∈ Finset.range (N + 1), a i) atTop (𝓝 0) := by
+    simp_rw [hpart]
+    simpa using hk.neg
+  -- Step 4: limits in `ℝ` are unique
+  exact tendsto_nhds_unique h1 h2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
