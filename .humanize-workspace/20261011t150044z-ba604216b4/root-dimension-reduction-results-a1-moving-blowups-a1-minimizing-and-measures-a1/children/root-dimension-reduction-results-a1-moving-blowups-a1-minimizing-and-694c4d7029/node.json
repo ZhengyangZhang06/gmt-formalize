@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.minimizing_and_measures-a1.limsup_criterion-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.minimizing_and_measures-a1",
+  "depth": 4,
+  "title": "Upper bound on compact sets from sub-subsequence comparisons on thin neighbourhoods (Simon 7.2.4 (13))",
+  "statement": "Let P ∈ ℕ and let μ and μ_j (j ∈ ℕ) be measures on the Borel σ-algebra of ℝ^P (evaluated on arbitrary sets as outer measures, values in [0, ∞]). Assume (a) μ(K) < ∞ for every compact K ⊆ ℝ^P, and (s) for every compact K ⊆ ℝ^P, every ε > 0 and every strictly increasing ψ : ℕ → ℕ there are a set W with K ⊆ W ⊆ thickening(ε, K) = {x : inf_{y∈K} |x − y| < ε} and a strictly increasing φ' : ℕ → ℕ with limsup_{i→∞} μ_{ψ(φ'(i))}(W) ≤ μ(W). Then limsup_{j→∞} μ_j(K) ≤ μ(K) for every compact K ⊆ ℝ^P (lim sup in [0, ∞]).",
+  "lean_statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ (K : Set (Euclid P)) (ε : ℝ), IsCompact K → 0 < ε → ∀ ψ : ℕ → ℕ, StrictMono ψ → ∃ W : Set (Euclid P), K ⊆ W ∧ W ⊆ thickening ε K ∧ ∃ φ' : ℕ → ℕ, StrictMono φ' ∧ limsup (fun i => μs (ψ (φ' i)) W) atTop ≤ μ W) → ∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K",
+  "lean_name": "dimred_mbl_mm_limsup_le_of_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-minimizing-and-694c4d7029-a1"
+}
