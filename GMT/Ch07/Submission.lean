@@ -1156,6 +1156,35 @@ theorem Submission.codim1_lur_cd_injective_area_formula_gram : ∀ (P m : ℕ) (
   rw [NNReal.smul_def, Real.coe_toNNReal _ (Real.sqrt_nonneg _)]
   rfl
 
+/-- **Area formulas for an integer-weighted oriented piece** (Simon Ch. 6, 3.1 (‡), via Ch. 2,
+(3.3)-(3.5)).  Let `G : ℝⁿ → ℝᴺ` be differentiable with injective `DG(u)` at every point of the
+Borel set `A` and injective on `A`, `J(u) = √det(⟨DG(u)e_a, DG(u)e_b⟩)`, `s = ±1`, and suppose
+`J(u) ⟨α, ξ(G u)⟩ = s(u) α(DG(u)e₁, …, DG(u)eₙ)` for a.e. `u ∈ A` and every `n`-covector `α`.
+With `w = (θ ∘ G) s`: (i) `∫_A |w| J = ∫_{G(A)} θ dHⁿ`; (ii) every `n`-form `ω` has
+`∫_A w ω(G u)(DG(u)e₁, …, DG(u)eₙ) du = ∫_{G(A)} θ ⟨ω, ξ⟩ dHⁿ`.  Since `|w| = θ ∘ G`, (i) is the
+area formula `codim1_lura_gram_area_formula` with `g = θ`; (ii) is
+`codim1_lur_cd_injective_area_formula_gram` with `h = θ ⟨ω, ξ⟩`, whose integrand `J · h ∘ G`
+equals `w ω(G u)(DG(u)e)` a.e. on `A` by the orientation identity with `α = ω(G u)`. -/
+theorem Submission.cmcdt_lpi_pr_oriented_piece_area : ∀ (N n : ℕ) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (θ : Euclid N → ℕ) (ξ : Euclid N → MultiVector N n) (s : Euclid n → ℤ), MeasurableSet A → (∀ u ∈ A, DifferentiableAt ℝ G u) → (∀ u ∈ A, Injective (fderiv ℝ G u)) → InjOn G A → (∀ u, s u = 1 ∨ s u = -1) → (∀ᵐ u ∂(volume.restrict A), ∀ α : Covector (Euclid N) n, Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ G u (EuclideanSpace.single a 1)) (fderiv ℝ G u (EuclideanSpace.single b 1)))) * ξ (G u) α = (s u : ℝ) * α (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))) → ∫⁻ u in A, ENNReal.ofReal (|(((θ (G u) : ℤ) * s u : ℤ) : ℝ)| * Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ G u (EuclideanSpace.single a 1)) (fderiv ℝ G u (EuclideanSpace.single b 1))))) = ∫⁻ x in G '' A, (θ x : ℝ≥0∞) ∂μHE[n] ∧ ∀ ω : DifferentialForm (Euclid N) n, ∫ u in A, (((θ (G u) : ℤ) * s u : ℤ) : ℝ) * ω (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) = ∫ x in G '' A, (θ x : ℝ) * ξ x (ω x) ∂μHE[n] := by
+  intro N n G A θ ξ s hA hdiff hinj hInjOn hs hstar
+  constructor
+  · rw [(Submission.codim1_lura_gram_area_formula n N G).2 A hA hdiff hinj hInjOn
+      (fun x => (θ x : ℝ≥0∞))]
+    apply lintegral_congr
+    intro u
+    have habs : |((((θ (G u) : ℤ) * s u : ℤ)) : ℝ)| = (θ (G u) : ℝ) := by
+      rcases hs u with h | h <;> simp [h]
+    rw [habs, ENNReal.ofReal_mul (Nat.cast_nonneg _), ENNReal.ofReal_natCast, mul_comm]
+  · intro ω
+    rw [Submission.codim1_lur_cd_injective_area_formula_gram N n G A hA hdiff hinj hInjOn]
+    refine integral_congr_ae ?_
+    filter_upwards [hstar] with u hu
+    have h1 := hu (ω (G u))
+    push_cast
+    calc ((θ (G u) : ℝ) * (s u : ℝ)) * ω (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))
+        = (θ (G u) : ℝ) * ((s u : ℝ) * ω (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))) := by ring
+      _ = _ := by rw [← h1]; ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
