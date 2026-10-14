@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cb51fb3d7101d9ace3334f95d1298f890ae72e46359ea68773e222c52592681d",
+  "git_delta": {
+    "base_commit": "d6e40fae9ac1b6c4857d493cb48b74f9dad770ce",
+    "candidate_commit": "68cf7dcb1813356c587aa7eea5e397365b33024e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_ll_orient_interior",
+    "diff_sha256": "4199abe19ff885379849c595fc4072464d6e426d13f678894279d1743ccd8ca1",
+    "source_sha256": "5c80f26e8bd6de3b7d6b64a5cf9be3b6fb1f5fcc6a5dbc947368b1e8d2664488",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_ll_orient_interior",
+      "statement": "∀ (P n : ℕ) (ξ : MultiVector P (n + 1)) (α : Covector (Euclid P) n), (∀ β : Euclid P →L[ℝ] ℝ, ξ (ContinuousAlternatingMap.alternatizeUncurryFin (β.smulRight α)) = β (∑ i : Fin P, ξ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single i (1 : ℝ) : Euclid P)).smulRight α)) • (EuclideanSpace.single i (1 : ℝ) : Euclid P))) ∧ ∀ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf ξ Q → (∑ i : Fin P, ξ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (EuclideanSpace.single i (1 : ℝ) : Euclid P)).smulRight α)) • (EuclideanSpace.single i (1 : ℝ) : Euclid P)) ∈ Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "slice|slicing|cmcs_|regcomp_covector_sq_sum",
+        "def covectorEuclideanNorm|def massAdmissibleOn|def GeometricCurrentOn.massOn|def TestFormOnConverges|structure GeometricCurrentOn|theorem boundary_apply|tsupport_exteriorDerivative_subset|exteriorDerivative_isTestForm|abbrev Covector|def exteriorDerivative",
+        "reflection_sub|exists_contDiff_zero_iff_one_iff_of_isClosed|alternatizeUncurryFin_apply|def alternatizeUncurryFin|fderiv_fun_smul",
+        "Monotone.ae_differentiableAt|MonotoneOn.intervalIntegrable_deriv|MonotoneOn.intervalIntegral_deriv_mem_uIcc|Monotone.deriv_nonneg|liminf_const_mul_of_ne_top|lintegral_indicator_const_le|setIntegral_eq_integral_of_forall_compl_eq_zero|setIntegral_eq_zero_of_forall_eq_zero",
+        "theorem Integrable.restrict|lemma Integrable.restrict|theorem restrict_le_self",
+        "git show 16144a475b272196ba8b2bd15f104028282dbcfc:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/slicing-independent-audit-f5hp5qbf/TypeChecks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/slicing-independent-audit-f5hp5qbf/AcceptedReuse.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Reflection.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1/parent-child-handoff.json",
+        "/tmp/slicing-independent-audit-f5hp5qbf/TypeChecks.lean",
+        "/tmp/slicing-independent-audit-f5hp5qbf/AcceptedReuse.lean"
+      ],
+      "conclusion": "The split appropriately separates construction, support, exterior-algebra estimates, smoothing, and the two mass bounds. Dependencies are correctly directed and acyclic, including the reused theorem's dependency closure. All nine frozen types independently elaborate as propositions without child implementations; coercions give the intended real bounds and smoothness order. A separate assembly proves the exact handoff parent from child contracts using only propext, Classical.choice and Quot.sound. The accepted square-sum declaration has the identical frozen type and recompiles with those same standard axioms. The final 539-node DAG scan finds no reservations for the eight new bare names. The snapshot's Chapter 6 slicing result is only a statement with sorry, not reusable proof evidence. Pinned Mathlib and SimonGMT revisions match the compiler packages."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "restrict_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including arbitrary U and E. Compact-support domination proves integrability; restriction preserves it without measurability of E. Linearity and zeroth-order uniform convergence establish the required sequential continuity."
+    },
+    {
+      "key": "slice_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact separation and smooth Urysohn splitting produce the two required support regions. Exterior differentiation preserves support, and the stated representations prove the identity without additional integrability or measurability assumptions."
+    },
+    {
+      "key": "covector_sq_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reuse satisfies exact-type and acceptance requirements. Independently, slotwise Parseval, vanishing on repeated indices, and permutation counting prove the normalization, including degree zero and degrees exceeding dimension."
+    },
+    {
+      "key": "wedge_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inline alternating-map construction matches the stated wedge convention. The adapted orthonormal basis, tuple estimate, and removeNth bijections give the claimed constant one using the declared square-sum dependency."
+    },
+    {
+      "key": "cutoff_defect",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Leibniz and current linearity establish the defect identity before applying the integral estimate. This avoids unjustified integral additivity without integrability. The wedge bound then proves the exact ENNReal inequality."
+    },
+    {
+      "key": "lipschitz_smoothing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normalized compactly supported convolution supplies smoothness, preserves the Lipschitz constant, and gives both uniform approximation and open-ball locality. All needed measure and finite-dimensional hypotheses hold, including P = 0."
+    },
+    {
+      "key": "level_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit profile and smoothing scale give the stated gradient and magnitude bounds. Locality makes the smoothed function constant near each plateau point, proving derivative vanishing outside the strict strip, also when L = 0."
+    },
+    {
+      "key": "mass_pointwise",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact domination justifies filter dominated convergence. The cutoff defect bounds every admissible evaluation; the ENNReal liminf argument removes the extra factor correctly, including zero constants and infinite measures. Taking the supremum gives exactly massOn."
+    },
+    {
+      "key": "mass_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite truncated distribution function supplies the strip bound and an almost-everywhere derivative majorant. Monotone differentiation and derivative integrability prove the stated lower-integral estimate without assuming measurability of m. Degenerate cases are covered."
+    }
+  ],
+  "required_changes": []
+}
