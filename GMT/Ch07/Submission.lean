@@ -451,6 +451,68 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The slice operator `S ω = ∫₀¹ ω(ι(t, ·))(e₀, J ·) dt`** (the operator behind the cylinder
+`[[(0, 1)]] × X` of Simon Ch. 6, 2.18–2.21 and the homotopy formula 2.25, as used for the
+Lipschitz push-forward in the deformation theorem).  Choose for every `ω` the slice `η ω` given by
+(SA).  Since `t ↦ ω(ι(t, x))` is continuous, every evaluated integrand is interval integrable, and
+a test form with the slice formula of `ω` equals `η ω` (`ContinuousAlternatingMap.ext`,
+`Subtype.ext`); linearity of the interval integral then makes `S = η` additive and homogeneous.
+(i) and (ii) are the chosen properties of `η ω`, and (iii) is (SE) for the continuous
+`f t = Φ (ω (ι(t, x)))`, `Φ` from (R1), whose bound `|Φ γ| ≤ |γ|` gives `|f t| ≤ c`. -/
+theorem Submission.cmcdt_lpo_cyl_slice_operator : (∀ (N k : ℕ) (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)), ∃ η : TestFormOn (univ : Set (Euclid N)) k, (∀ (x : Euclid N) (v : Fin k → Euclid N), (η : DifferentialForm (Euclid N) k) x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ tsupport (η : DifferentialForm (Euclid N) k) ⊆ {x : Euclid N | ∃ t ∈ Icc (0 : ℝ) 1, (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) ∈ tsupport (ω : DifferentialForm (Euclid (N + 1)) (k + 1))}) → (∀ (N k : ℕ) (α : Covector (Euclid N) k) (f : ℝ → Covector (Euclid N) k) (c : ℝ), Continuous f → (∀ v : Fin k → Euclid N, α v = ∫ t in (0 : ℝ)..1, f t v) → (∀ t ∈ Icc (0 : ℝ) 1, covectorEuclideanNorm (f t) ≤ c) → covectorEuclideanNorm α ≤ c) → (∀ N k : ℕ, ∃ Φ : Covector (Euclid (N + 1)) (k + 1) →L[ℝ] Covector (Euclid N) k, (∀ (γ : Covector (Euclid (N + 1)) (k + 1)) (v : Fin k → Euclid N), Φ γ v = γ (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ ∀ γ : Covector (Euclid (N + 1)) (k + 1), covectorEuclideanNorm (Φ γ) ≤ covectorEuclideanNorm γ) → ∀ N k : ℕ, ∃ S : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1) →ₗ[ℝ] TestFormOn (univ : Set (Euclid N)) k, (∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (x : Euclid N) (v : Fin k → Euclid N), (S ω : DifferentialForm (Euclid N) k) x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ (∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1), tsupport (S ω : DifferentialForm (Euclid N) k) ⊆ {x : Euclid N | ∃ t ∈ Icc (0 : ℝ) 1, (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) ∈ tsupport (ω : DifferentialForm (Euclid (N + 1)) (k + 1))}) ∧ ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (c : ℝ), (∀ y : Euclid (N + 1), covectorEuclideanNorm ((ω : DifferentialForm (Euclid (N + 1)) (k + 1)) y) ≤ c) → ∀ x : Euclid N, covectorEuclideanNorm ((S ω : DifferentialForm (Euclid N) k) x) ≤ c := by
+  intro hSA hSE hR1 N k
+  -- Step 2: choose a slice `η ω` for every `ω`, with the formula (i) and the support bound (ii)
+  choose η hηf hηs using hSA N k
+  -- Step 1: `t ↦ ω(ι(t, x))` is continuous, so every evaluated integrand is interval integrable
+  have hcont : ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (x : Euclid N),
+      Continuous fun t : ℝ => (ω : DifferentialForm (Euclid (N + 1)) (k + 1))
+        (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) := by
+    intro ω x
+    have hι : Continuous fun t : ℝ =>
+        (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) := by
+      fun_prop
+    exact ω.property.1.1.continuous.comp hι
+  have hint : ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (x : Euclid N)
+      (w : Fin (k + 1) → Euclid (N + 1)),
+      IntervalIntegrable (fun t : ℝ => (ω : DifferentialForm (Euclid (N + 1)) (k + 1))
+        (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) w) volume 0 1 :=
+    fun ω x w => ((continuous_eval_const w).comp (hcont ω x)).intervalIntegrable 0 1
+  -- Step 3: a test form satisfying the slice formula of `ω` is `η ω`
+  have huniq : ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1))
+      (θ : TestFormOn (univ : Set (Euclid N)) k),
+      (∀ (x : Euclid N) (v : Fin k → Euclid N), (θ : DifferentialForm (Euclid N) k) x v =
+        ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (k + 1))
+          (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))
+          (Fin.cons (EuclideanSpace.single 0 1)
+            (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → θ = η ω := by
+    intro ω θ hθ
+    refine Subtype.ext (funext fun x => ContinuousAlternatingMap.ext fun v => ?_)
+    rw [hθ, hηf]
+  -- Step 4: `S ω := η ω` is additive and homogeneous
+  have hadd : ∀ ω₁ ω₂ : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1),
+      η (ω₁ + ω₂) = η ω₁ + η ω₂ := by
+    intro ω₁ ω₂
+    refine (huniq (ω₁ + ω₂) (η ω₁ + η ω₂) fun x v => ?_).symm
+    simp only [Submodule.coe_add, Pi.add_apply, ContinuousAlternatingMap.add_apply]
+    rw [hηf, hηf, ← intervalIntegral.integral_add (hint _ _ _) (hint _ _ _)]
+  have hsmul : ∀ (a : ℝ) (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)),
+      η (a • ω) = a • η ω := by
+    intro a ω
+    refine (huniq (a • ω) (a • η ω) fun x v => ?_).symm
+    simp only [Submodule.coe_smul, Pi.smul_apply, ContinuousAlternatingMap.smul_apply,
+      smul_eq_mul]
+    rw [hηf, ← intervalIntegral.integral_const_mul]
+  refine ⟨{ toFun := η, map_add' := hadd, map_smul' := hsmul }, fun ω x v => hηf ω x v,
+    fun ω => hηs ω, fun ω c hc x => ?_⟩
+  -- Step 6: (iii) from (SE) applied to `f t = Φ (ω (ι(t, x)))`
+  obtain ⟨Φ, hΦ, hΦb⟩ := hR1 N k
+  refine hSE N k _ (fun t => Φ ((ω : DifferentialForm (Euclid (N + 1)) (k + 1))
+      (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))))) c (Φ.continuous.comp (hcont ω x))
+      (fun v => ?_) fun t _ => (hΦb _).trans (hc _)
+  change (η ω : DifferentialForm (Euclid N) k) x v = _
+  rw [hηf]
+  simp only [hΦ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
