@@ -7,6 +7,8 @@ import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
 import Poincare.SimonGMT.Chapter02.AreaLipschitz
+import Mathlib.Analysis.FunctionalSpaces.SobolevInequality
+import Mathlib.Analysis.Calculus.BumpFunction.Convolution
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -27,8 +29,6 @@ misprint for `ℝ^{n+k}`; `N = ℝ^{n+k}` is the case `ℓ = k`).  For an `n`-cu
 `∂S = ∂T`, `spt ∂T`, `M_W(∂T)` are read with Simon's convention `∂T = 0` if `n = 0` (6.2.3).
 -/
 
-import Mathlib.Analysis.FunctionalSpaces.SobolevInequality
-import Mathlib.Analysis.Calculus.BumpFunction.Convolution
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -16889,25 +16889,6 @@ theorem Submission.cbr_ci_cp_tr_smooth_translate_integral_eq : ∀ (P : ℕ) (ν
   have h := is_const_of_deriv_eq_zero (fun s => (hF s).differentiableAt)
     (fun s => by rw [(hF s).deriv, hF0 s]) 1 0
   simpa [add_comm] using h
-/-- **Normalized mollifier** (step 2 of the smooth-to-`C¹` test reduction): for `r > 0` there is
-a `C^∞` function `ρ ≥ 0` on `ℝⁿ` with compact support in `B_r(0)` and `∫ ρ = 1`.  Take the
-`ContDiffBump` `B` centred at `0` with `rIn = r/2`, `rOut = r`, so `support B = B_r(0)`; its
-integral `I` is positive since `B ≥ 0` and `volume (B_r(0)) > 0`, and `ρ = I⁻¹ B`.  (Mathlib's
-`ContDiffBump.normed` is outside the import closure, so the normalization is done by hand.) -/
-theorem Submission.dgcr_stc_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ), 0 < r → ∃ ρ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ HasCompactSupport ρ ∧ (∀ x, 0 ≤ ρ x) ∧ ∫ x, ρ x = 1 ∧ support ρ ⊆ ball (0 : Euclid n) r := by
-  intro n r hr
-  -- the bump `B` with `rIn = r/2`, `rOut = r`
-  let B : ContDiffBump (0 : Euclid n) := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
-  have hBs : HasCompactSupport B := B.hasCompactSupport
-  have hBi : Integrable B := B.continuous.integrable_of_hasCompactSupport hBs
-  -- `I = ∫ B > 0`: `B ≥ 0` and `support B = B_r(0)` has positive measure
-  have hI : 0 < ∫ x, B x := by
-    rw [integral_pos_iff_support_of_nonneg (fun x => B.nonneg' x) hBi, B.support_eq]
-    exact measure_ball_pos volume 0 hr
-  refine ⟨fun x => (∫ y, B y)⁻¹ * B x, contDiff_const.mul B.contDiff, hBs.mul_left,
-    fun x => mul_nonneg (inv_nonneg.2 hI.le) (B.nonneg' x), ?_, ?_⟩
-  · rw [integral_const_mul, inv_mul_cancel₀ hI.ne']
-  · exact (support_mul_subset_right _ _).trans B.support_eq.subset
 /-- **Mollification preserves the Lipschitz constant** (step 4 of the Lipschitz smoothing): if
 `ψ ≥ 0` is continuous with compact support and `∫ ψ = 1`, and `g` is `K`-Lipschitz, then
 `G x = ∫ ψ(y) g(x - y) dy` is `K`-Lipschitz.  Indeed `G x - G x'` is the integral of
@@ -33022,56 +33003,6 @@ theorem Submission.rsdic_imrep_ae_tangent_orient_of_subset : ∀ (P n : ℕ) (U 
   filter_upwards [hM, hC', ae_restrict_of_ae_restrict_of_subset hBM R.orients]
     with x hxM hxC ⟨Q, hQ, hξ⟩
   exact ⟨Q, (hxC Q).2 ((hxM Q).1 hQ), hξ⟩
-/-- **Simon Ch. 6, Remark 3.2(1)**, step 3 (orientations `±τ₁ ∧ ⋯ ∧ τₙ` as in 2.1–2.2): two unit
-orientations `v = ±τ₁ ∧ ⋯ ∧ τₙ`, `w = ±τ'₁ ∧ ⋯ ∧ τ'ₙ` of the same subspace `Q` differ by a sign.
-`τ` and `τ'` are orthonormal bases `b`, `b'` of `Q`; every alternating `n`-form on `Q` is a
-multiple of `det_b`, so `α(τ') = det_b(b') α(τ)` for every `n`-covector `α`, and
-`det_b(b') = ±1`, the change of orthonormal basis being orthogonal. -/
-theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf v Q → IsUnitOrientationOf w Q → w = v ∨ w = -v := by
-  rintro P n v w Q ⟨τ, hτ, hspan, hv⟩ ⟨τ', hτ', hspan', hw⟩
-  -- an orthonormal frame spanning `Q` is an orthonormal basis of `Q`
-  have frame : ∀ σ : Fin n → Euclid P, Orthonormal ℝ σ → Submodule.span ℝ (range σ) = Q →
-      ∃ c : OrthonormalBasis (Fin n) ℝ Q, ∀ i, (c i : Euclid P) = σ i := by
-    intro σ hσ hσspan
-    have hmem : ∀ i, σ i ∈ Q := fun i => hσspan ▸ Submodule.subset_span (mem_range_self i)
-    let u : Fin n → Q := fun i => ⟨σ i, hmem i⟩
-    have hu : Orthonormal ℝ u := by
-      rw [← Q.subtypeₗᵢ.orthonormal_comp_iff (v := u)]
-      exact hσ
-    have huspan : ⊤ ≤ Submodule.span ℝ (range u) := by
-      rintro ⟨y, hy⟩ -
-      rw [← hσspan, Submodule.mem_span_range_iff_exists_fun] at hy
-      obtain ⟨c, hc⟩ := hy
-      rw [Submodule.mem_span_range_iff_exists_fun]
-      exact ⟨c, Subtype.ext (by simpa [u] using hc)⟩
-    exact ⟨OrthonormalBasis.mk hu huspan, fun i => by simp [u]⟩
-  obtain ⟨b, hb⟩ := frame τ hτ hspan
-  obtain ⟨b', hb'⟩ := frame τ' hτ' hspan'
-  -- `det_b(b') = ±1`
-  have hd := b.det_to_matrix_orthonormalBasis_real b'
-  -- `α(τ') = det_b(b') α(τ)`: the restriction `α_Q` of `α` to `Q` is `α_Q(b) det_b`
-  have hτ'τ : ∀ α : Covector (Euclid P) n, α τ' = b.toBasis.det b' * α τ := by
-    intro α
-    let f : Q [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap Q.subtype
-    have hf : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (σ : Fin n → Euclid P),
-        (∀ i, (c i : Euclid P) = σ i) → f c = α σ := by
-      intro c σ hc
-      have hcσ : (fun i => Q.subtype (c i)) = σ := funext hc
-      rw [AlternatingMap.compLinearMap_apply, hcσ, ContinuousAlternatingMap.coe_toAlternatingMap]
-    have h := congrArg (fun g : Q [⋀^Fin n]→ₗ[ℝ] ℝ => g b') (f.eq_smul_basis_det b.toBasis)
-    simp only [AlternatingMap.smul_apply, smul_eq_mul, OrthonormalBasis.coe_toBasis] at h
-    rw [← hf b' τ' hb', h, hf b τ hb, mul_comm]
-  -- `w = ±v`
-  rcases hd with hd | hd <;> rcases hv with hv | hv <;> rcases hw with hw | hw
-  · left; ext α; rw [hw, hv, hτ'τ, hd, one_mul]
-  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, one_mul]
-  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, one_mul, neg_neg]
-  · left; ext α; rw [hw, hv, hτ'τ, hd, one_mul]
-  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul]
-  · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
-  · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
-  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
-
 /-- **Simon 6.3.2(1)**, agreement on the overlap (step 3 of the proof that `p₁T₁ + p₂T₂` is
 integer multiplicity).  Let `R₁ = (M₁, θ₁, ξ₁)` and `R₂ = (M₂, θ₂, ξ₂)` be integer multiplicity
 triples in the open set `U`.  `M₂` is Borel and locally `Hⁿ`-finite in `U`:
