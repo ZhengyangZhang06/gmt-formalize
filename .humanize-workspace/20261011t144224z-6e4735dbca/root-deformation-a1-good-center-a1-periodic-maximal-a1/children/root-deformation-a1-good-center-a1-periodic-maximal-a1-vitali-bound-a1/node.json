@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.good_center-a1.periodic_maximal-a1.vitali_bound-a1",
+  "parent_id": "root.deformation-a1.good_center-a1.periodic_maximal-a1",
+  "depth": 4,
+  "title": "5-times covering packing bound: L^k(S) ≤ 10^k M (printed (4) and L^{n+1}(B_j) ≤ β⁻¹5^{n+1}ω_{n+1})",
+  "statement": "Let ι be a finite index set with k := |ι| elements, and E := ℝ^ι = EuclideanSpace ℝ ι with its Euclidean distance and Lebesgue outer measure L^k (Mathlib's volume, evaluated on arbitrary sets). Let S ⊆ E be any set (not assumed measurable), r : E → ℝ, and R, M ∈ ℝ with 0 < r(b) ≤ R for every b ∈ S. Write ofReal(t) := max(t, 0) ∈ [0, ∞). Assume the packing condition: for every u ⊆ S such that the closed balls B̄_{r(b)}(b) = {w : |w − b| ≤ r(b)}, b ∈ u, are pairwise disjoint (distinct b, b′ ∈ u give disjoint balls), u is countable and Σ_{b∈u} ofReal(r(b)^k) ≤ ofReal(M) in [0, ∞]. Then L^k(S) ≤ ofReal(10^k · M).",
+  "lean_statement": "∀ (ι : Type) [Fintype ι] (S : Set (EuclideanSpace ℝ ι)) (r : EuclideanSpace ℝ ι → ℝ) (R M : ℝ), (∀ b ∈ S, 0 < r b ∧ r b ≤ R) → (∀ u ⊆ S, u.PairwiseDisjoint (fun b => closedBall b (r b)) → u.Countable ∧ ∑' b : u, ENNReal.ofReal (r b ^ Fintype.card ι) ≤ ENNReal.ofReal M) → volume S ≤ ENNReal.ofReal (10 ^ Fintype.card ι * M)",
+  "lean_name": "dgc_pm_vitali_volume_bound",
+  "depends_on": [
+    "root.deformation-a1.good_center-a1.periodic_maximal-a1.ball_volume-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.good_center-a1.periodic_maximal-a1.ball_volume-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-good-center-a1-periodic-maximal-a1-vitali-bound-a1-a1"
+}
