@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bf2c19b2889af641aec4e607d41fcb2741d84602363e51780b2bbf46ded3b084",
+  "git_delta": {
+    "base_commit": "cfc72986cbf6e059239f3d5a7de3d073a560d174",
+    "candidate_commit": "20590a7cd22241568e5bde7f09531f8cd79f3870",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_pfi_unitOrientation_algebra",
+    "diff_sha256": "3371ad37ee154cdc68ad9cbe83756143bbb76a4637da087af5f086e8923a9217",
+    "source_sha256": "b7ce7eeb88868678883e3ba36a54576b44f660b4a617d5edf4bc97e00a1351b4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_pfi_unitOrientation_algebra",
+      "statement": "∀ (P n : ℕ), (∀ (ξ ξ' : MultiVector P n) (T : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ T → IsUnitOrientationOf ξ' T → ξ' = ξ ∨ ξ' = -ξ) ∧ (∀ (ξ : MultiVector P n) (T : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ T → ∀ β : Covector (Euclid P) n, |ξ β| ≤ ‖β‖) ∧ (∀ A : Euclid n →L[ℝ] Euclid P, Injective A → 0 < Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (A (EuclideanSpace.single k 1)) (A (EuclideanSpace.single l 1)))) ∧ IsUnitOrientationOf ((Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (A (EuclideanSpace.single k 1)) (A (EuclideanSpace.single l 1)))))⁻¹ • ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun k : Fin n => A (EuclideanSpace.single k 1))) (LinearMap.range (A : Euclid n →ₗ[ℝ] Euclid P))) ∧ ∀ A : Euclid n →L[ℝ] Euclid P, ¬ Injective A → ∀ β : Covector (Euclid P) n, β (fun k : Fin n => A (EuclideanSpace.single k 1)) = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
