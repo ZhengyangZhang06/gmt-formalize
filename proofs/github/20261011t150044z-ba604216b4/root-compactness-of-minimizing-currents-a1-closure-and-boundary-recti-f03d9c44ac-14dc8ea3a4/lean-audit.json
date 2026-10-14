@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "46fee17b0880d8d0d1b6d14c43ac5d225bc0012f01535e1d5f50e088960d733e",
+  "git_delta": {
+    "base_commit": "0f4f62367dfec99b6921fb3cf201da11d8edd1e5",
+    "candidate_commit": "70ae7764b584f2bb37328ba885f82a60ae44b11e",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "8f78e890d061564ac024dc3cbec65493b1ca9b69a437c249000c9fc71ff141d5",
+    "source_sha256": "a848ef724d4e719fed568a4adf54970c7249ac306c322b62605b9c59efbe8e66",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_rectifiable_of_approx_tangent",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), MeasurableSet M → μHE[n] M ≠ ∞ → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → CountablyRectifiable n M",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
