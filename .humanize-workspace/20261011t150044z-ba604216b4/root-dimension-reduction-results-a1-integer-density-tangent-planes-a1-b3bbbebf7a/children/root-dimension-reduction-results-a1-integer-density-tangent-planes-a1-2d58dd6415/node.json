@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.cone_cutoff-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1",
+  "depth": 5,
+  "title": "Conical C¹ cutoff around a subspace",
+  "statement": "Let P ∈ ℕ, let Q be a linear subspace of ℝ^P with orthogonal projection π := Q.starProjection, and let s > 0. Then there is ζ : ℝ^P → ℝ with four properties. (a) ζ is C¹ on a neighbourhood of every x ≠ 0. (b) ζ(x) = 1 whenever x ≠ 0 and |x − πx| ≤ (s/2)|x|. (c) ζ(x) = 0 whenever x ≠ 0 and s|x| ≤ |x − πx|. (d) Dζ(x) = 0 whenever x ≠ 0 and either |x − πx| < (s/2)|x| or s|x| < |x − πx|.",
+  "lean_statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (s : ℝ), 0 < s → ∃ ζ : Euclid P → ℝ, (∀ x : Euclid P, x ≠ 0 → ContDiffAt ℝ 1 ζ x) ∧ (∀ x : Euclid P, x ≠ 0 → ‖x - Q.starProjection x‖ ≤ s / 2 * ‖x‖ → ζ x = 1) ∧ (∀ x : Euclid P, x ≠ 0 → s * ‖x‖ ≤ ‖x - Q.starProjection x‖ → ζ x = 0) ∧ (∀ x : Euclid P, x ≠ 0 → (‖x - Q.starProjection x‖ < s / 2 * ‖x‖ ∨ s * ‖x‖ < ‖x - Q.starProjection x‖) → fderiv ℝ ζ x = 0)",
+  "lean_name": "idtp_cse_rc_cone_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2d58dd6415-a1"
+}
