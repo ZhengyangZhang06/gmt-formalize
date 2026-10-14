@@ -1180,6 +1180,33 @@ theorem Submission.cbrr_uniform_density_on_large_set : ∀ (P n : ℕ) (M : Set 
     _ < ENNReal.ofReal (ε / 2) + ENNReal.ofReal (ε / 2) := ENNReal.add_lt_add hMK hKE
     _ = ENNReal.ofReal ε := by
         rw [← ENNReal.ofReal_add (half_pos hε).le (half_pos hε).le, add_halves]
+/-- Finite `ε`-net of `n`-planes in the projection operator norm (Simon Ch. 3, proof of 1.6, the
+choice of `π₁, …, π_N`): there are `n`-dimensional subspaces `T₁, …, T_N` of `ℝᴾ` such that every
+`n`-dimensional `Q` has `‖p_Q − p_{T_j}‖ < ε` for some `j`.  The rank-`n` orthogonal projections
+lie in the closed unit ball of the finite-dimensional space `L(ℝᴾ)`, so they are totally bounded
+and finitely many of them are `ε`-dense among them; write those as `p_{T_j}`. -/
+theorem Submission.cbrr_projection_net : ∀ (P n : ℕ) (ε : ℝ), 0 < ε → ∃ (N : ℕ) (T : Fin N → Submodule ℝ (Euclid P)), (∀ j, Module.finrank ℝ (T j) = n) ∧ ∀ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n → ∃ j, ‖Q.starProjection - (T j).starProjection‖ < ε := by
+  intro P n ε hε
+  -- the rank-`n` orthogonal projections lie in the closed unit ball, so they form a totally
+  -- bounded set
+  have hS : TotallyBounded ((fun Q : Submodule ℝ (Euclid P) => Q.starProjection) ''
+      {Q | Module.finrank ℝ Q = n}) :=
+    (isCompact_closedBall (0 : Euclid P →L[ℝ] Euclid P) 1).totallyBounded.subset (by
+      rintro _ ⟨Q, -, rfl⟩
+      simpa using Q.starProjection_norm_le)
+  -- finitely many of them are `ε`-dense among them
+  obtain ⟨t, htS, htfin, hcover⟩ := finite_approx_of_totallyBounded hS ε hε
+  have ht : ∀ L ∈ t, ∃ T : Submodule ℝ (Euclid P), Module.finrank ℝ T = n ∧ T.starProjection = L :=
+    fun L hL => htS hL
+  choose! T hT using ht
+  -- enumerate them
+  obtain ⟨N, ⟨e⟩⟩ := @Finite.exists_equiv_fin t htfin.to_subtype
+  refine ⟨N, fun j => T (e.symm j), fun j => (hT _ (e.symm j).2).1, fun Q hQ => ?_⟩
+  obtain ⟨L, hL, hQL⟩ := mem_iUnion₂.1 (hcover ⟨Q, hQ, rfl⟩)
+  refine ⟨e ⟨L, hL⟩, ?_⟩
+  simp only [Equiv.symm_apply_apply]
+  rw [(hT L hL).2, ← dist_eq_norm]
+  exact hQL
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
