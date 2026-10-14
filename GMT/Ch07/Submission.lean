@@ -669,6 +669,43 @@ theorem Submission.idtp_cse_rc_tf_support_bound : ∀ (P : ℕ) (Q : Submodule �
   refine ⟨?_, by linarith⟩
   have hα2 : (1 / 2 : ℝ) ^ 2 < inner ℝ y a ^ 2 := by nlinarith
   exact (pow_lt_pow_iff_left₀ (by norm_num) ha.le two_ne_zero).1 hα2
+/-- **Extension by zero of a `C¹` function vanishing off a compact subset of `U`** (steps 5–7 of
+the test-function construction for the rotation argument of Simon 7.3).  Let `U` be open,
+`K ⊆ U` compact, `h` `C¹` at every point of `U`, and `h y ≠ 0`, `y ∈ U` force `y ∈ K`.  Then
+`g = U.indicator h` is `C¹` with compact support, `Dg(x) = Dh(x)` on `U` and `Dg(x) = 0` off `U`.
+* `g y ≠ 0` forces `y ∈ U` and `h y ≠ 0`, so `support g ⊆ K`; `K` is closed, so `tsupport g ⊆ K`,
+  and `g` vanishes off the compact set `K`.
+* For `x ∈ U`, `g = h` on the neighbourhood `U` of `x`; for `x ∉ U`, `x ∉ K ⊇ tsupport g`, so
+  `g = 0` near `x`.  Either way `g` is `C¹` at `x` with the stated derivative. -/
+theorem Submission.idtp_cse_rc_tf_indicator_extension : ∀ (P : ℕ) (U K : Set (Euclid P)) (h : Euclid P → ℝ), IsOpen U → IsCompact K → K ⊆ U → (∀ x ∈ U, ContDiffAt ℝ 1 h x) → (∀ y ∈ U, h y ≠ 0 → y ∈ K) → ContDiff ℝ 1 (U.indicator h) ∧ HasCompactSupport (U.indicator h) ∧ (∀ x ∈ U, fderiv ℝ (U.indicator h) x = fderiv ℝ h x) ∧ (∀ x ∉ U, fderiv ℝ (U.indicator h) x = 0) := by
+  intro P U K h hU hK hKU hh hhK
+  -- Step 1: `support g ⊆ K`: `g y ≠ 0` forces `y ∈ U` (else `g y = 0`) and then `h y = g y ≠ 0`
+  have hsupp : ∀ y, U.indicator h y ≠ 0 → y ∈ K := by
+    intro y hy
+    by_cases hyU : y ∈ U
+    · rw [Set.indicator_of_mem hyU] at hy
+      exact hhK y hyU hy
+    · exact absurd (Set.indicator_of_notMem hyU h) hy
+  -- Step 2: `K` is compact, hence closed, so `tsupport g = closure (support g) ⊆ K`
+  have htsupp : tsupport (U.indicator h) ⊆ K :=
+    closure_minimal (fun y hy => hsupp y hy) hK.isClosed
+  -- Step 4: for `x ∈ U`, `g = h` on the neighbourhood `U` of `x`
+  have hin : ∀ x ∈ U, U.indicator h =ᶠ[𝓝 x] h := fun x hx => by
+    filter_upwards [hU.mem_nhds hx] with y hy using Set.indicator_of_mem hy h
+  -- Step 5: for `x ∉ U`, `x ∉ K ⊇ tsupport g`, so `g = 0` near `x`
+  have hout : ∀ x ∉ U, U.indicator h =ᶠ[𝓝 x] fun _ => (0 : ℝ) := fun x hx =>
+    notMem_tsupport_iff_eventuallyEq.1 fun hxs => hx (hKU (htsupp hxs))
+  refine ⟨contDiff_iff_contDiffAt.2 fun x => ?_, HasCompactSupport.intro hK fun y hy => ?_,
+    fun x hx => (hin x hx).fderiv_eq, fun x hx => ?_⟩
+  · -- Step 6: `g` is `C¹` at every point, by Steps 4 and 5
+    by_cases hx : x ∈ U
+    · exact (hh x hx).congr_of_eventuallyEq (hin x hx)
+    · exact contDiffAt_const.congr_of_eventuallyEq (hout x hx)
+  · -- Step 3: `g` vanishes off the compact set `K`
+    by_contra hy'
+    exact hy (hsupp y hy')
+  · -- Step 5: `Dg(x) = D0(x) = 0`
+    rw [(hout x hx).fderiv_eq, fderiv_const_apply]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
