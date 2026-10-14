@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "55fa56ee8ddef72a584e75b5a7ba08a683fe7674625918735619ea4802b87748",
+  "git_delta": {
+    "base_commit": "a8caa2df33e62ad33377a72a60cbd42045c34875",
+    "candidate_commit": "2dd6d09aee695a9e05429018c00270dfe687adb4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_si_coarea_ae_transfer",
+    "diff_sha256": "30c3c18f1f95b43f720b5cda52d732b45114c6a49ea1014d0ea2f70effa5020e",
+    "source_sha256": "0fe063be6720784c71e8e558b453f0da79b71ff7c8cc6050ab73f852df00944e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_si_coarea_ae_transfer",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (ν : ℝ → Measure (Euclid P)) (w : Euclid P → ℝ≥0∞) (p : Euclid P → Prop), (∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t => ∫⁻ x, φ x ∂(ν t)) ∧ ∫⁻ t, ∫⁻ x, φ x ∂(ν t) = ∫⁻ x, w x * φ x ∂μ) → (∀ᵐ x ∂μ, p x) → ∀ᵐ t, ∀ᵐ x ∂(ν t), p x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
