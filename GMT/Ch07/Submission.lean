@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Mathlib.Analysis.Calculus.BumpFunction.Normed
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -942,6 +943,107 @@ theorem dimred_mbl_dt_cbm_sa_mollify_l1 : ∀ (n : ℕ) (f : Euclid n → ℝ), 
           ← ENNReal.ofReal_add (by positivity) (by positivity)]
         ring_nf
     _ ≤ ENNReal.ofReal ε := ENNReal.ofReal_le_ofReal (by linarith)
+
+/-- `C¹` approximation on `Q_δ` with total variation at most `V` (Simon Ch. 2, 2.5 as used in
+2.7): the mollifications `v_k = φ_k * 1_{Q₁} u` by the even normalized bumps `φ_k` of radius
+`σ_k = δ / (k + 2) < δ` satisfy `∫_{Q_δ} ‖Dv_k‖ ≤ V` (duality with smoothed unit fields, which are
+admissible test fields since `σ_k < δ`), and `v_k → 1_{Q₁} u` in `L¹`, where `1_{Q₁} u = u` on
+`Q_δ`. -/
+theorem dimred_mbl_dt_cbm_smooth_approx : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (V δ : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → 0 < δ → ∃ v : ℕ → Euclid (m + 1) → ℝ, (∀ k, ContDiff ℝ 1 (v k)) ∧ (∀ k, ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖fderiv ℝ (v k) x‖ ≤ V) ∧ Tendsto (fun k => ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v k x - u x|) atTop (𝓝 0) := by
+  have grad_bound := Submission.dimred_mbl_dt_cbm_sa_grad_bound
+  have mollify_l1 := Submission.dimred_mbl_dt_cbm_sa_mollify_l1
+  intro m u V δ hu hyp hδ
+  set Q1 : Set (Euclid (m + 1)) := {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}
+  set Qd : Set (Euclid (m + 1)) := {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}
+  -- Step 1: `Q₁` and `Q_δ ⊆ Q₁` are measurable, and `ū = 1_{Q₁} u` is integrable.
+  have hQ1m : MeasurableSet Q1 := by
+    have : Q1 = ⋂ i, ({y : Euclid (m + 1) | 0 < y i} ∩ {y : Euclid (m + 1) | y i < 1}) := by
+      ext y; simp [Q1]
+    rw [this]
+    refine MeasurableSet.iInter fun i => ?_
+    exact (measurableSet_lt measurable_const (by fun_prop)).inter
+      (measurableSet_lt (by fun_prop) measurable_const)
+  have hQdm : MeasurableSet Qd := by
+    have : Qd = ⋂ i, ({y : Euclid (m + 1) | δ < y i} ∩ {y : Euclid (m + 1) | y i < 1 - δ}) := by
+      ext y; simp [Qd]
+    rw [this]
+    refine MeasurableSet.iInter fun i => ?_
+    exact (measurableSet_lt measurable_const (by fun_prop)).inter
+      (measurableSet_lt (by fun_prop) measurable_const)
+  have hQdQ1 : Qd ⊆ Q1 := by
+    intro y hy i
+    obtain ⟨h1, h2⟩ := hy i
+    exact ⟨by linarith, by linarith⟩
+  set ubar : Euclid (m + 1) → ℝ := Q1.indicator u
+  have hubar : Integrable ubar := (integrable_indicator_iff hQ1m).2 hu
+  -- The radii `σ_k = δ / (k + 2) ∈ (0, δ)` and the even normalized bumps `φ_k ≥ 0`, `∫ φ_k = 1`,
+  -- with support `B_{σ_k}(0)`.
+  set σ : ℕ → ℝ := fun k => δ / ((k : ℝ) + 2)
+  have hσpos : ∀ k, 0 < σ k := fun k => by
+    simp only [σ]; positivity
+  have hσlt : ∀ k, σ k < δ := fun k => by
+    simp only [σ]
+    rw [div_lt_iff₀ (by positivity)]
+    have : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+    nlinarith
+  let φ : ℕ → ContDiffBump (0 : Euclid (m + 1)) := fun k =>
+    ⟨σ k / 2, σ k, by linarith [hσpos k], by linarith [hσpos k]⟩
+  set ρ : ℕ → Euclid (m + 1) → ℝ := fun k => (φ k).normed volume
+  have hρc : ∀ k, HasCompactSupport (ρ k) := fun k => (φ k).hasCompactSupport_normed (μ := volume)
+  have hρs : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (ρ k) := fun k => (φ k).contDiff_normed (μ := volume)
+  have hρ1 : ∀ k, ContDiff ℝ (1 : ℕ∞) (ρ k) := fun k => (φ k).contDiff_normed (μ := volume)
+  have hρcont : ∀ k, Continuous (ρ k) := fun k => (φ k).continuous_normed (μ := volume)
+  have hρnn : ∀ k z, 0 ≤ ρ k z := fun k z => (φ k).nonneg_normed (μ := volume) z
+  have hρeven : ∀ k z, ρ k (-z) = ρ k z := fun k z => (φ k).normed_neg (μ := volume) z
+  have hρint : ∀ k, ∫ z, ρ k z = 1 := fun k => (φ k).integral_normed (μ := volume)
+  have hρsupp : ∀ k, support (ρ k) = ball (0 : Euclid (m + 1)) (σ k) := fun k =>
+    (φ k).support_normed_eq (μ := volume)
+  -- Step 5: `v_k = φ_k * ū`.
+  refine ⟨fun k => convolution (ρ k) ubar (ContinuousLinearMap.lsmul ℝ ℝ) volume, ?_, ?_, ?_⟩
+  · -- Step 2: `v_k` is `C¹` (differentiation under the integral sign).
+    intro k
+    have h := (hρc k).contDiff_convolution_left
+      (ContinuousLinearMap.lsmul ℝ ℝ) (hρ1 k) hubar.locallyIntegrable (μ := volume)
+    simpa using h
+  · -- Step 3: the gradient bound on `Q_δ`, since `σ_k < δ`.
+    intro k
+    exact grad_bound m u V δ (σ k) (ρ k) hu hyp (hσpos k) (hσlt k) (hρs k)
+      (hρnn k) (hρeven k) (hρint k) (hρsupp k).le
+  · -- Step 4: `∫_{Q_δ} |v_k − u| = ∫_{Q_δ} |v_k − ū| ≤ ∫ |v_k − ū| ≤ ε / 2` once `σ_k < r`.
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨r, hr, hρr⟩ := mollify_l1 (m + 1) ubar hubar (ε / 2) (by positivity)
+    obtain ⟨N, hN⟩ := exists_nat_gt (δ / r)
+    refine ⟨N, fun k hk => ?_⟩
+    have hσr : σ k < r := by
+      simp only [σ]
+      rw [div_lt_iff₀ (by positivity)]
+      have hkN : (N : ℝ) ≤ k := by exact_mod_cast hk
+      have : δ < r * N := by
+        rw [div_lt_iff₀ hr] at hN; linarith
+      nlinarith
+    have hl := hρr (ρ k) (hρcont k) (hρnn k) (hρint k)
+      (by rw [hρsupp k]; exact ball_subset_ball hσr.le)
+    set w : Euclid (m + 1) → ℝ := convolution (ρ k) ubar (ContinuousLinearMap.lsmul ℝ ℝ) volume
+    have hwc : Continuous w :=
+      (hρc k).continuous_convolution_left _ (hρcont k) hubar.locallyIntegrable
+    have heq : ∫ x in Qd, |w x - u x| = ∫ x in Qd, |w x - ubar x| := by
+      refine setIntegral_congr_fun hQdm fun x hx => ?_
+      simp only [ubar, indicator_of_mem (hQdQ1 hx)]
+    have hmeas : AEStronglyMeasurable (fun x => |w x - ubar x|) (volume.restrict Qd) :=
+      ((hwc.aestronglyMeasurable.sub hubar.aestronglyMeasurable).norm).restrict
+    have hlin : ∫ x in Qd, |w x - ubar x| =
+        (∫⁻ x in Qd, ENNReal.ofReal |w x - ubar x|).toReal :=
+      integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall fun x => abs_nonneg _) hmeas
+    have hle : (∫⁻ x in Qd, ENNReal.ofReal |w x - ubar x|) ≤ ENNReal.ofReal (ε / 2) := by
+      refine le_trans (setLIntegral_le_lintegral _ _) ?_
+      refine le_trans (le_of_eq ?_) hl
+      congr 1; funext x; rw [Real.enorm_eq_ofReal_abs]
+    have hnn : 0 ≤ ∫ x in Qd, |w x - u x| := integral_nonneg fun x => abs_nonneg _
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg hnn, heq, hlin]
+    calc (∫⁻ x in Qd, ENNReal.ofReal |w x - ubar x|).toReal ≤ ε / 2 :=
+          ENNReal.toReal_le_of_le_ofReal (by positivity) hle
+      _ < ε := by linarith
 
 end Submission
 
