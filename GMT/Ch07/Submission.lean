@@ -1025,6 +1025,125 @@ theorem Submission.idtp_cse_bml_rescaled_portmanteau : ∀ (P : ℕ) (μ ν : Me
       hset j U hUo.measurableSet
     simpa only [hS] using hU U hUo (subset_univ U)
 
+/-- **Box mass limit** at the edge point of a planar sector of a 2-dimensional minimizing cone
+(the rigidity behind the classification of 2-dimensional minimizing cones used in Simon 7.3.3(1),
+case `n − d = 2`, chapter-07.txt lines 497–510; the book cites [Whi82] and gives no proof).
+Let `μ` be finite on compact sets, `Q` a `2`-plane with orthonormal `a, e ∈ Q`, and
+`Z(s, s') = {⟨x, a⟩ > 0, ||x| − 1| < s', |arctan(⟨x, e⟩/⟨x, a⟩)| < s', |x − πx| < s|x|}`.
+Suppose (L) `μ(Z(s, s') \ B_{3s'}(a)) = 0` for `0 < s' ≤ s`, and (V) every null sequence
+`λⱼ > 0` has a subsequence along which `λ⁻² ∫ g ∘ dilation a λ dμ → m ∫_Q g dH²` for continuous
+compactly supported `g`.  Then `μ(Z(s, s')) / s'² → 4m` as `s' ↓ 0`.
+By the subsequence criterion it suffices to treat a subsequence `tⱼ` given by (V).  For
+`0 < η < 1/2` the open square `U_η` (`‖w‖ < 3`, `|⟨w, a⟩|, |⟨w, e⟩| < 1 − η`) and the compact
+square `K_η` (`≤ 3`, `≤ 1 + η`) satisfy `(dilation a tⱼ)⁻¹ U_η ⊆ Z(s, tⱼ)` and
+`Z(s, tⱼ) ∩ B_{3tⱼ}(a) ⊆ (dilation a tⱼ)⁻¹ K_η` for large `j`; with (L) and the portmanteau
+inequalities for `ν = m H²⌞Q` this gives `4m(1 − η)² ≤ liminf ≤ limsup ≤ 4m(1 + η)²`.
+Let `η ↓ 0`. -/
+theorem Submission.idtp_cse_bml_box_mass_limit : ∀ (P : ℕ) (μ : Measure (Euclid P)) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (m : ℕ) (s : ℝ), IsFiniteMeasureOnCompacts μ → Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s → (∀ s' : ℝ, 0 < s' → s' ≤ s → μ ({x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} \ ball a (3 * s')) = 0) → (∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams (φ j))⁻¹ ^ 2 * ∫ x, g (dilation a (lams (φ j)) x) ∂μ) atTop (𝓝 ((m : ℝ) * ∫ x in (Q : Set (Euclid P)), g x ∂μHE[2]))) → Tendsto (fun s' : ℝ => μ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} / ENNReal.ofReal (s' ^ 2)) (𝓝[>] 0) (𝓝 (4 * (m : ℝ≥0∞))) := by
+  intro P μ Q a e m s hμ hQ haQ heQ ha he hae hs hL hV
+  set Z : ℝ → Set (Euclid P) := fun s' => {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧
+    |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}
+  -- Steps 2–8, along a null sequence `tⱼ > 0` for which (V) holds
+  have key : ∀ t : ℕ → ℝ, (∀ j, 0 < t j) → Tendsto t atTop (𝓝 0) →
+      (∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g →
+        Tendsto (fun j => (t j)⁻¹ ^ 2 * ∫ x, g (dilation a (t j) x) ∂μ) atTop
+          (𝓝 ((m : ℝ) * ∫ x in (Q : Set (Euclid P)), g x ∂μHE[2]))) →
+      Tendsto (fun j => μ (Z (t j)) / ENNReal.ofReal (t j ^ 2)) atTop (𝓝 (4 * (m : ℝ≥0∞))) := by
+    intro t ht0 ht hVt
+    -- Step 3: `ν = m H²⌞Q` is finite on compact sets, and `∫ g dν = m ∫_Q g dH²`
+    obtain ⟨hQfin, hsq⟩ :=
+      Submission.idtp_cse_bml_plane_square_measure P Q a e hQ haQ heQ ha he hae
+    set ν : Measure (Euclid P) := (m : ℝ≥0∞) • μHE[2].restrict (Q : Set (Euclid P)) with hν
+    have hνfin : IsFiniteMeasureOnCompacts ν := ⟨fun K hK => by
+      rw [hν, Measure.smul_apply, smul_eq_mul]
+      exact ENNReal.mul_lt_top (ENNReal.natCast_lt_top m) (hQfin.lt_top_of_isCompact hK)⟩
+    have hconv : ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g →
+        Tendsto (fun j => (t j)⁻¹ ^ 2 * ∫ x, g (dilation a (t j) x) ∂μ) atTop
+          (𝓝 (∫ x, g x ∂ν)) := by
+      intro g hg hgc
+      rw [hν, integral_smul_measure, ENNReal.toReal_natCast, smul_eq_mul]
+      exact hVt g hg hgc
+    -- Step 4: limsup on compact sets and liminf on open sets of the rescaled masses
+    -- `ofReal (tⱼ⁻²) μ((dilation a tⱼ)⁻¹ ·)`
+    obtain ⟨hC, hO⟩ :=
+      Submission.idtp_cse_bml_rescaled_portmanteau P μ ν a t hμ hνfin ht0 hconv
+    -- Step 5: `c / ofReal (tⱼ²) = ofReal (tⱼ⁻²) c`
+    have hdiv : ∀ j (c : ℝ≥0∞),
+        c / ENNReal.ofReal (t j ^ 2) = ENNReal.ofReal ((t j)⁻¹ ^ 2) * c := by
+      intro j c
+      rw [ENNReal.div_eq_inv_mul, inv_pow, ENNReal.ofReal_inv_of_pos (pow_pos (ht0 j) 2)]
+    -- Steps 6–7: for `0 < η < 1/2`, `4m(1 − η)² ≤ liminf` and `limsup ≤ 4m(1 + η)²`
+    have hη : ∀ η : ℝ, 0 < η → η < 1 / 2 →
+        (m : ℝ≥0∞) * ENNReal.ofReal (4 * (1 - η) ^ 2) ≤
+            liminf (fun j => μ (Z (t j)) / ENNReal.ofReal (t j ^ 2)) atTop ∧
+          limsup (fun j => μ (Z (t j)) / ENNReal.ofReal (t j ^ 2)) atTop ≤
+            (m : ℝ≥0∞) * ENNReal.ofReal (4 * (1 + η) ^ 2) := by
+      intro η hη0 hη1
+      -- the open square `U_η` and the compact square `K_η`, and their `ν`-measures
+      have hUo : IsOpen {w : Euclid P | ‖w‖ < 3 ∧ |inner ℝ w a| < 1 - η ∧ |inner ℝ w e| < 1 - η} :=
+        (isOpen_lt (by fun_prop) (by fun_prop)).and
+          ((isOpen_lt (by fun_prop) (by fun_prop)).and (isOpen_lt (by fun_prop) (by fun_prop)))
+      have hKc : IsCompact
+          {w : Euclid P | ‖w‖ ≤ 3 ∧ |inner ℝ w a| ≤ 1 + η ∧ |inner ℝ w e| ≤ 1 + η} := by
+        refine (isCompact_closedBall (0 : Euclid P) 3).of_isClosed_subset ?_
+          fun w hw => mem_closedBall_zero_iff.mpr hw.1
+        exact (isClosed_le (by fun_prop) (by fun_prop)).and
+          ((isClosed_le (by fun_prop) (by fun_prop)).and (isClosed_le (by fun_prop) (by fun_prop)))
+      have hνU : ν {w : Euclid P | ‖w‖ < 3 ∧ |inner ℝ w a| < 1 - η ∧ |inner ℝ w e| < 1 - η} =
+          (m : ℝ≥0∞) * ENNReal.ofReal (4 * (1 - η) ^ 2) := by
+        rw [hν, Measure.smul_apply, smul_eq_mul, (hsq (1 - η) (by linarith) (by linarith)).1]
+      have hνK : ν {w : Euclid P | ‖w‖ ≤ 3 ∧ |inner ℝ w a| ≤ 1 + η ∧ |inner ℝ w e| ≤ 1 + η} =
+          (m : ℝ≥0∞) * ENNReal.ofReal (4 * (1 + η) ^ 2) := by
+        rw [hν, Measure.smul_apply, smul_eq_mul, (hsq (1 + η) (by linarith) (by linarith)).2]
+      -- Step 6: once `20 tⱼ < 1`, `30 tⱼ < η` and `6 tⱼ < s`, the box inclusions and (L)
+      -- sandwich `μ(Z(s, tⱼ)) / ofReal (tⱼ²)` between the rescaled masses of `U_η` and `K_η`
+      have hsand : ∀ᶠ j in atTop,
+          ENNReal.ofReal ((t j)⁻¹ ^ 2) * μ (dilation a (t j) ⁻¹'
+              {w : Euclid P | ‖w‖ < 3 ∧ |inner ℝ w a| < 1 - η ∧ |inner ℝ w e| < 1 - η}) ≤
+            μ (Z (t j)) / ENNReal.ofReal (t j ^ 2) ∧
+          μ (Z (t j)) / ENNReal.ofReal (t j ^ 2) ≤
+            ENNReal.ofReal ((t j)⁻¹ ^ 2) * μ (dilation a (t j) ⁻¹'
+              {w : Euclid P | ‖w‖ ≤ 3 ∧ |inner ℝ w a| ≤ 1 + η ∧ |inner ℝ w e| ≤ 1 + η}) := by
+        filter_upwards [ht.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 20)),
+          ht.eventually (gt_mem_nhds (by positivity : (0 : ℝ) < η / 30)),
+          ht.eventually (gt_mem_nhds (by positivity : (0 : ℝ) < s / 6))] with j hj1 hj2 hj3
+        obtain ⟨hin, hout⟩ := Submission.idtp_cse_bml_rescaled_box_inclusions P Q a e s η (t j)
+          haQ ha he hae hη0 (ht0 j) (by linarith) (by linarith) (by linarith)
+        have hnull : μ (Z (t j) \ ball a (3 * t j)) = 0 := hL (t j) (ht0 j) (by linarith)
+        rw [hdiv]
+        refine ⟨mul_le_mul_right (measure_mono hin) _, mul_le_mul_right ?_ _⟩
+        calc μ (Z (t j)) ≤ μ (Z (t j) ∩ ball a (3 * t j)) + μ (Z (t j) \ ball a (3 * t j)) :=
+              measure_le_inter_add_sdiff μ _ _
+          _ = μ (Z (t j) ∩ ball a (3 * t j)) := by rw [hnull, add_zero]
+          _ ≤ _ := measure_mono hout
+      -- Step 7
+      constructor
+      · rw [← hνU]
+        exact (hO _ hUo).trans (liminf_le_liminf (hsand.mono fun j hj => hj.1))
+      · rw [← hνK]
+        exact (limsup_le_limsup (hsand.mono fun j hj => hj.2)).trans (hC _ hKc)
+    -- Step 8: `m ofReal (4(1 ∓ η)²) → 4m` as `η ↓ 0`
+    have hlim : ∀ c : ℝ, Tendsto (fun η : ℝ => (m : ℝ≥0∞) * ENNReal.ofReal (4 * (1 + c * η) ^ 2))
+        (𝓝[>] 0) (𝓝 (4 * (m : ℝ≥0∞))) := by
+      intro c
+      have h : Tendsto (fun η : ℝ => ENNReal.ofReal (4 * (1 + c * η) ^ 2)) (𝓝 0)
+          (𝓝 (ENNReal.ofReal (4 * (1 + c * 0) ^ 2))) :=
+        (ENNReal.continuous_ofReal.comp (by fun_prop)).tendsto 0
+      convert (ENNReal.Tendsto.const_mul h (Or.inr (ENNReal.natCast_ne_top m))).mono_left
+        nhdsWithin_le_nhds using 2
+      simp [mul_comm]
+    refine tendsto_of_le_liminf_of_limsup_le ?_ ?_
+    · refine le_of_tendsto (hlim (-1)) ?_
+      filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < 1 / 2 by norm_num)] with η hη'
+      simpa [← sub_eq_add_neg] using (hη η hη'.1 hη'.2).1
+    · refine ge_of_tendsto (hlim 1) ?_
+      filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < 1 / 2 by norm_num)] with η hη'
+      simpa using (hη η hη'.1 hη'.2).2
+  -- Step 1: the subsequence criterion, the subsequence being supplied by (V)
+  refine Submission.idtp_cse_bml_tendsto_nhdsGT_of_subseq _ _ fun lams hl0 hl => ?_
+  obtain ⟨φ, hφ, hVφ⟩ := hV lams hl0 hl
+  exact ⟨φ, hφ, key (fun j => lams (φ j)) (fun j => hl0 (φ j)) (hl.comp hφ.tendsto_atTop) hVφ⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
