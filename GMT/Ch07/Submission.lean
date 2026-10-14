@@ -451,6 +451,65 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The polar parametrization `(t, α) ↦ t (cos α a + sin α e)` of the plane of an orthonormal pair
+`a, e` pulls `μHE[2]`-null sets back to Lebesgue-null subsets of `{t > 0, -π < α < π}`.  The map
+`v ↦ v₀ a + v₁ e` is a linear isometry `ℝ² → ℝᴾ`, so `N` pulls back to a Lebesgue-null set of `ℝ²`;
+the polar change of variables (Jacobian `t > 0`) applied to the indicator of a measurable null
+superset gives the claim. -/
+theorem Submission.idtp_cse_sp_polar_null_preimage : ∀ (P : ℕ) (a e : Euclid P) (N : Set (Euclid P)), ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → μHE[2] N = 0 → ∀ᵐ p : ℝ × ℝ, 0 < p.1 → -Real.pi < p.2 → p.2 < Real.pi → p.1 • (Real.cos p.2 • a + Real.sin p.2 • e) ∉ N := by
+  intro P a e N ha he hae hN
+  -- the linear isometry `ι v = v₀ a + v₁ e` of `ℝ²` onto the plane of `a, e`
+  let ι : Euclid 2 →ₗ[ℝ] Euclid P :=
+    { toFun := fun v => v 0 • a + v 1 • e
+      map_add' := fun v w => by simp only [PiLp.add_apply, add_smul]; abel
+      map_smul' := fun c v => by
+        simp only [PiLp.smul_apply, smul_eq_mul, mul_smul, smul_add, RingHom.id_apply] }
+  have hι : ∀ v, ι v = v 0 • a + v 1 • e := fun v => rfl
+  have hiso : Isometry ι := by
+    refine AddMonoidHomClass.isometry_of_norm ι fun v => ?_
+    have h1 : ‖ι v‖ ^ 2 = v 0 ^ 2 + v 1 ^ 2 := by
+      rw [hι, norm_add_sq_real, norm_smul, norm_smul, ha, he, real_inner_smul_left,
+        real_inner_smul_right, hae, Real.norm_eq_abs, Real.norm_eq_abs]
+      simp only [mul_one, mul_zero, add_zero, sq_abs]
+    have h2 : ‖v‖ ^ 2 = v 0 ^ 2 + v 1 ^ 2 := by
+      rw [PiLp.norm_sq_eq_of_L2, Fin.sum_univ_two, Real.norm_eq_abs, Real.norm_eq_abs, sq_abs,
+        sq_abs]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1 (h1.trans h2.symm)
+  -- `ι⁻¹ N` is Lebesgue-null in `ℝ²`
+  have hN2 : volume (ι ⁻¹' N) = 0 := by
+    rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume 2,
+      hiso.euclideanHausdorffMeasure_preimage]
+    exact measure_mono_null Set.inter_subset_left hN
+  -- transfer to `ℝ × ℝ` and take a measurable null superset `T`
+  let κ : ℝ × ℝ → Euclid 2 := fun q => WithLp.toLp 2 (MeasurableEquiv.finTwoArrow.symm q)
+  have hκ : MeasurePreserving κ volume volume :=
+    (PiLp.volume_preserving_toLp (Fin 2)).comp ((volume_preserving_finTwoArrow ℝ).symm _)
+  have hN3 : volume (κ ⁻¹' (ι ⁻¹' N)) = 0 := hκ.quasiMeasurePreserving.preimage_null hN2
+  obtain ⟨T, hT_sub, hT_meas, hT0⟩ := exists_measurable_superset_of_null hN3
+  -- polar coordinates: `t • 1_T (polarCoord.symm (t, α))` vanishes a.e. on the polar target
+  have hmeas : Measurable fun p : ℝ × ℝ =>
+      ENNReal.ofReal p.1 • T.indicator (1 : ℝ × ℝ → ℝ≥0∞) (polarCoord.symm p) :=
+    (ENNReal.measurable_ofReal.comp measurable_fst).smul
+      ((measurable_one.indicator hT_meas).comp continuous_polarCoord_symm.measurable)
+  have hint : ∫⁻ p in polarCoord.target,
+      ENNReal.ofReal p.1 • T.indicator 1 (polarCoord.symm p) = 0 := by
+    rw [lintegral_comp_polarCoord_symm (T.indicator 1), lintegral_indicator_one hT_meas, hT0]
+  have htarget : MeasurableSet polarCoord.target := polarCoord.open_target.measurableSet
+  have hae0 := (ae_restrict_iff' htarget).1 ((lintegral_eq_zero_iff hmeas).1 hint)
+  filter_upwards [hae0] with p hp h1 h2 h3 hmem
+  have hpt : p ∈ polarCoord.target := by
+    rw [polarCoord_target]; exact ⟨h1, h2, h3⟩
+  have hq : polarCoord.symm p ∈ T := by
+    apply hT_sub
+    show ι (κ (polarCoord.symm p)) ∈ N
+    convert hmem using 1
+    rw [hι]
+    simp [κ, polarCoord_symm_apply, smul_add, smul_smul]
+  have h0 := hp hpt
+  simp only [Set.indicator_of_mem hq, Pi.one_apply, smul_eq_mul, mul_one, Pi.zero_apply,
+    ENNReal.ofReal_eq_zero] at h0
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
