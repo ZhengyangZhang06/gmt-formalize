@@ -659,6 +659,37 @@ theorem Submission.dimred_mbl_pf_oc_multilinear_hs_comp_le : ∀ (N N' n : ℕ) 
           rw [← Finset.mul_sum, Finset.sum_comm]
           ring
 
+/-- **The Euclidean coefficient norm under pull-back** (Simon 6.1.15, step (L1) behind the
+push-forward of oriented tangent planes): for a linear map `A : ℝᴺ → ℝᴺ'` and a `k`-covector `β`
+on `ℝᴺ'`, `|β ∘ A|_E ≤ ‖A‖ᵏ |β|_E`.  In the standard bases `e`, `e'` the Hilbert–Schmidt sum
+`Σ_j β(Ae_{j(0)}, …, Ae_{j(k−1)})²` is at most `(‖A‖²)ᵏ Σ_j β(e'_{j(0)}, …, e'_{j(k−1)})²`
+(`dimred_mbl_pf_oc_multilinear_hs_comp_le`), and the two sums are `k! |β ∘ A|_E²` and `k! |β|_E²`
+(`regcomp_covector_sq_sum_orthonormalBasis`); cancel `k! > 0` and take square roots. -/
+theorem Submission.dimred_mbl_pf_oc_covectorEuclideanNorm_comp_le : ∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β := by
+  intro N N' k A β
+  -- Hilbert–Schmidt comparison for `β`, forgetting alternation and continuity
+  have hHS := Submission.dimred_mbl_pf_oc_multilinear_hs_comp_le N N' k A
+    β.toContinuousMultilinearMap.toMultilinearMap
+  -- both sums are `k!` times squared coefficient norms; `(β ∘ A)(e ∘ j) = β(Ae ∘ j)` by definition
+  have hL : ∑ j : Fin k → Fin N,
+      (β.toContinuousMultilinearMap.toMultilinearMap
+        (fun m => A (EuclideanSpace.basisFun (Fin N) ℝ (j m)))) ^ 2 =
+      (k.factorial : ℝ) * covectorEuclideanNorm (β.compContinuousLinearMap A) ^ 2 :=
+    Submission.regcomp_covector_sq_sum_orthonormalBasis N k (β.compContinuousLinearMap A)
+      (EuclideanSpace.basisFun (Fin N) ℝ)
+  have hR : ∑ j : Fin k → Fin N',
+      (β.toContinuousMultilinearMap.toMultilinearMap
+        (fun m => EuclideanSpace.basisFun (Fin N') ℝ (j m))) ^ 2 =
+      (k.factorial : ℝ) * covectorEuclideanNorm β ^ 2 :=
+    Submission.regcomp_covector_sq_sum_orthonormalBasis N' k β (EuclideanSpace.basisFun (Fin N') ℝ)
+  rw [hL, hR] at hHS
+  -- `k! |β ∘ A|_E² ≤ (‖A‖²)ᵏ k! |β|_E² = k! (‖A‖ᵏ |β|_E)²`; cancel `k! > 0`
+  have hsq : covectorEuclideanNorm (β.compContinuousLinearMap A) ^ 2 ≤
+      (‖A‖ ^ k * covectorEuclideanNorm β) ^ 2 :=
+    le_of_mul_le_mul_left (hHS.trans_eq (by ring)) (Nat.cast_pos.mpr k.factorial_pos)
+  exact (pow_le_pow_iff_left₀ (covectorEuclideanNorm_nonneg _)
+    (mul_nonneg (pow_nonneg (norm_nonneg A) k) (covectorEuclideanNorm_nonneg β)) two_ne_zero).mp hsq
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
