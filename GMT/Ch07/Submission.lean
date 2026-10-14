@@ -2553,6 +2553,96 @@ theorem Submission.idtp_tpf_blowUp_limit_boundaryVanishes : ∀ (P n : ℕ) (U :
     exact tendsto_nhds_unique (hconv (exteriorDerivativeTestOn univ m ω))
       (tendsto_const_nhds.congr' (hzero.mono fun i hi => hi.symm))
 
+/-- **The ambient space and the calculus of the dilations** `η_{a,s}(v) = s⁻¹(v − a)`, `s > 0`,
+and of the rescaled measures `ν^{a,s} = s⁻ⁿ η_{a,s#}ν` (used tacitly by Simon in the proof of
+7.3.3(1), cf. (10) there, chapter-07.txt line 472): (1) `ℝᴾ` is an embedded `C²` submanifold of
+itself (Simon Ch. 2, (4.1), with `ψ = id`); (2) `ν^{a,s}(A) = s⁻ⁿ ν(η_{a,s}⁻¹(A))` for Borel `A`;
+(3) `η_{a,s}⁻¹(B_ρ(w)) = B_{sρ}(a + sw)`; (4) `η_{a,s}(B_ρ(c)) = B_{ρ/s}(η_{a,s}(c))`;
+(5) `η_{a,s}(ℝᴾ) = ℝᴾ` and `η_{a,s}` is open; (6) `η_{y,t}(η_{a,s}(A)) = η_{a+sy,st}(A)`;
+(7) `(ν^{a,s})^{y,t} = ν^{a+sy,st}`; (8) `ν^{0,1} = ν` and `η_{0,1}(A) = A`;
+(9) `s⁻ⁿ η_{a,s#}(ν⌞B) = ν^{a,s}⌞η_{a,s}(B)` for Borel `B`.  All of this follows from `η_{a,s}`
+being the affine homeomorphism `v ↦ −s⁻¹a + s⁻¹v` with inverse `u ↦ a + su`. -/
+theorem Submission.idtp_fons_cc_ambient_calculus : (∀ P : ℕ, IsEmbeddedSubmanifold 2 P (univ : Set (Euclid P))) ∧ (∀ (P n : ℕ) (ν : Measure (Euclid P)) (a : Euclid P) (s : ℝ) (A : Set (Euclid P)), 0 < s → MeasurableSet A → (ENNReal.ofReal (s⁻¹ ^ n) • ν.map (dilation a s)) A = ENNReal.ofReal (s⁻¹ ^ n) * ν (dilation a s ⁻¹' A)) ∧ (∀ (P : ℕ) (a w : Euclid P) (s ρ : ℝ), 0 < s → dilation a s ⁻¹' ball w ρ = ball (a + s • w) (s * ρ)) ∧ (∀ (P : ℕ) (a c : Euclid P) (s ρ : ℝ), 0 < s → dilation a s '' ball c ρ = ball (dilation a s c) (ρ / s)) ∧ (∀ (P : ℕ) (a : Euclid P) (s : ℝ), 0 < s → dilation a s '' univ = univ ∧ ∀ A : Set (Euclid P), IsOpen A → IsOpen (dilation a s '' A)) ∧ (∀ (P : ℕ) (a y : Euclid P) (s t : ℝ) (A : Set (Euclid P)), 0 < s → 0 < t → dilation y t '' (dilation a s '' A) = dilation (a + s • y) (s * t) '' A) ∧ (∀ (P n : ℕ) (ν : Measure (Euclid P)) (a y : Euclid P) (s t : ℝ), 0 < s → 0 < t → ENNReal.ofReal (t⁻¹ ^ n) • (ENNReal.ofReal (s⁻¹ ^ n) • ν.map (dilation a s)).map (dilation y t) = ENNReal.ofReal ((s * t)⁻¹ ^ n) • ν.map (dilation (a + s • y) (s * t))) ∧ (∀ (P n : ℕ) (ν : Measure (Euclid P)), ENNReal.ofReal ((1 : ℝ)⁻¹ ^ n) • ν.map (dilation 0 1) = ν ∧ ∀ A : Set (Euclid P), dilation (0 : Euclid P) 1 '' A = A) ∧ (∀ (P n : ℕ) (ν : Measure (Euclid P)) (a : Euclid P) (s : ℝ) (B : Set (Euclid P)), 0 < s → MeasurableSet B → ENNReal.ofReal (s⁻¹ ^ n) • (ν.restrict B).map (dilation a s) = (ENNReal.ofReal (s⁻¹ ^ n) • ν.map (dilation a s)).restrict (dilation a s '' B)) := by
+  -- Step 0: `η_{a,s}(v) = s⁻¹(v − a)`; for `s > 0` it is the affine homeomorphism
+  -- `v ↦ −s⁻¹a + s⁻¹v` with inverse `u ↦ a + su`, hence measurable, injective and open
+  have hdil : ∀ (P : ℕ) (a : Euclid P) (s : ℝ) (v : Euclid P), dilation a s v = s⁻¹ • (v - a) := by
+    intro P a s v
+    show -(s⁻¹ • a) + s⁻¹ • v = s⁻¹ • (v - a)
+    rw [smul_sub, neg_add_eq_sub]
+  have hmeas : ∀ (P : ℕ) (a : Euclid P) (s : ℝ), Measurable (dilation a s) := fun P a s =>
+    (continuous_const.add (dilationCLM P s).continuous).measurable
+  have hhomeo : ∀ (P : ℕ) (a : Euclid P) (s : ℝ), 0 < s →
+      ∃ h : Euclid P ≃ₜ Euclid P, ⇑h = dilation a s := by
+    intro P a s hs
+    refine ⟨(Homeomorph.smulOfNeZero s⁻¹ (inv_ne_zero hs.ne')).trans
+      (Homeomorph.addLeft (-(s⁻¹ • a))), ?_⟩
+    funext v
+    simp [dilation, dilationCLM]
+  -- Step 6 (pointwise): `η_{y,t} ∘ η_{a,s} = η_{a+sy,st}`, as `(st)⁻¹ = t⁻¹s⁻¹`
+  have hcomp : ∀ (P : ℕ) (a y : Euclid P) (s t : ℝ), 0 < s → 0 < t →
+      dilation y t ∘ dilation a s = dilation (a + s • y) (s * t) := by
+    intro P a y s t hs ht
+    funext v
+    rw [Function.comp_apply, hdil, hdil, hdil, mul_inv_rev, mul_smul, sub_add_eq_sub_sub,
+      smul_sub s⁻¹ (v - a) (s • y), inv_smul_smul₀ hs.ne']
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · -- (1) `ℝᴾ` is a `C²` submanifold of itself: `V = W = ℝᴾ`, `ψ = id`
+    intro P y _
+    refine ⟨univ, univ, id, isOpen_univ, isOpen_univ, mem_univ y, contDiffOn_id, injOn_id univ,
+      by simp, fun K _ hK => by simpa using hK, fun z _ => ?_⟩
+    rw [fderiv_id, ContinuousLinearMap.coe_id']
+    exact injective_id
+  · -- (2) `ν^{a,s}(A) = s⁻ⁿ ν(η_{a,s}⁻¹(A))` for Borel `A`
+    intro P n ν a s A _ hA
+    rw [Measure.smul_apply, smul_eq_mul, Measure.map_apply (hmeas P a s) hA]
+  · -- (3) `η_{a,s}⁻¹(B_ρ(w)) = B_{sρ}(a + sw)`, as `η_{a,s}(v) − w = s⁻¹(v − (a + sw))`
+    intro P a w s ρ hs
+    ext v
+    have hv : dilation a s v - w = s⁻¹ • (v - (a + s • w)) := by
+      rw [hdil, sub_add_eq_sub_sub, smul_sub s⁻¹ (v - a) (s • w), inv_smul_smul₀ hs.ne']
+    rw [mem_preimage, mem_ball, mem_ball, dist_eq_norm, dist_eq_norm, hv, norm_smul, norm_inv,
+      Real.norm_of_nonneg hs.le, inv_mul_lt_iff₀ hs]
+  · -- (4) `η_{a,s}(B_ρ(c)) = B_{ρ/s}(η_{a,s}(c))`: the image under `η_{a,s}` is the preimage
+    -- under its inverse `u ↦ a + su`, and `a + su − c = s(u − η_{a,s}(c))`
+    intro P a c s ρ hs
+    rw [image_eq_preimage_of_inverse (f := dilation a s) (g := fun u => a + s • u)
+      (fun v => show a + s • dilation a s v = v by rw [hdil, smul_inv_smul₀ hs.ne', add_sub_cancel])
+      (fun u => show dilation a s (a + s • u) = u by
+        rw [hdil, add_sub_cancel_left, inv_smul_smul₀ hs.ne'])]
+    ext u
+    have hu : a + s • u - c = s • (u - dilation a s c) := by
+      rw [hdil, smul_sub, smul_inv_smul₀ hs.ne']
+      abel
+    rw [mem_preimage, mem_ball, mem_ball, dist_eq_norm, dist_eq_norm, hu, norm_smul,
+      Real.norm_of_nonneg hs.le, lt_div_iff₀ hs, mul_comm]
+  · -- (5) `η_{a,s}` is a homeomorphism: surjective and open
+    intro P a s hs
+    obtain ⟨h, hh⟩ := hhomeo P a s hs
+    rw [← hh]
+    exact ⟨image_univ_of_surjective h.surjective, fun A hA => h.isOpenMap A hA⟩
+  · -- (6) `η_{y,t}(η_{a,s}(A)) = η_{a+sy,st}(A)`
+    intro P a y s t A hs ht
+    rw [← image_comp, hcomp P a y s t hs ht]
+  · -- (7) `(ν^{a,s})^{y,t} = ν^{a+sy,st}`: `map_smul`, `map_map` and `t⁻ⁿs⁻ⁿ = (st)⁻ⁿ`
+    intro P n ν a y s t hs ht
+    rw [Measure.map_smul _ (hmeas P y t).aemeasurable, Measure.map_map (hmeas P y t) (hmeas P a s),
+      hcomp P a y s t hs ht, smul_smul, ← ENNReal.ofReal_mul (pow_nonneg (inv_nonneg.2 ht.le) n),
+      ← mul_pow, mul_inv_rev]
+  · -- (8) `η_{0,1} = id`
+    intro P n ν
+    have h01 : dilation (0 : Euclid P) 1 = id := by
+      funext v
+      rw [hdil, inv_one, one_smul, sub_zero, id]
+    refine ⟨?_, fun A => ?_⟩
+    · rw [h01, Measure.map_id, inv_one, one_pow, ENNReal.ofReal_one, one_smul]
+    · rw [h01, image_id]
+  · -- (9) restriction commutes with the push-forward by the measurable embedding `η_{a,s}`,
+    -- and `η_{a,s}⁻¹(η_{a,s}(B)) = B` by injectivity
+    intro P n ν a s B hs _
+    obtain ⟨h, hh⟩ := hhomeo P a s hs
+    have hemb : MeasurableEmbedding (dilation a s) := hh ▸ h.measurableEmbedding
+    rw [Measure.restrict_smul, hemb.restrict_map, hemb.injective.preimage_image]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
