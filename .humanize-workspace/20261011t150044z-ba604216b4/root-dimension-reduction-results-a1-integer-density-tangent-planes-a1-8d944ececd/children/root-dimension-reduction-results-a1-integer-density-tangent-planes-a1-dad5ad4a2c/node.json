@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1.cone_scaling-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.finite_rays-a1",
+  "depth": 6,
+  "title": "Open cones scale linearly under a 1-homogeneous measure (parent step 2)",
+  "statement": "Let P ∈ ℕ and let μ be a measure on the Borel sets of ℝ^P such that μ(λW) = λ·μ(W) for every λ > 0 and every open W ⊆ ℝ^P, where λW := {λx : x ∈ W}. Let K ⊆ ℝ^P be an open set such that cx ∈ K whenever c > 0 and x ∈ K. Then for every r > 0, μ(K ∩ B_r(0)) = r·μ(K ∩ B_1(0)), where B_r(0) := {y ∈ ℝ^P : |y| < r}.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → ∀ K : Set (Euclid P), IsOpen K → (∀ c : ℝ, 0 < c → ∀ x ∈ K, c • x ∈ K) → ∀ r : ℝ, 0 < r → μ (K ∩ ball 0 r) = ENNReal.ofReal r * μ (K ∩ ball 0 1)",
+  "lean_name": "idtp_fons_odc_fr_cone_scaling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-dad5ad4a2c-a1"
+}
