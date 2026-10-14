@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c17eb483c5ee4026286f43239579b87c042213e586bb300396664d2112df5648",
+  "git_delta": {
+    "base_commit": "f4beccb56f146537114ff33f8f1a85234adfafe5",
+    "candidate_commit": "9c8442bb3f5ddda98cee8d340c3535ec660f49f4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ac_sat_chart_ball_approxTangent",
+    "diff_sha256": "1121888ff8157a45e90964b228558046b59ebbd8d682e2117c14ecbbb6b62bb1",
+    "source_sha256": "79ce0cde0b9f50a534049dbbea110e1675ca8c3a193804ba4ce392c7c60c6b47",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ac_sat_chart_ball_approxTangent",
+      "statement": "∀ (P m : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (v₀ : Euclid m), IsOpen V → ContDiffOn ℝ 1 ψ V → v₀ ∈ V → Injective (fderiv ℝ ψ v₀) → ∃ ρ : ℝ, 0 < ρ ∧ ball v₀ ρ ⊆ V ∧ HasApproximateTangentSpaceAt m (ψ '' ball v₀ ρ) (ψ v₀) (LinearMap.range (fderiv ℝ ψ v₀ : Euclid m →ₗ[ℝ] Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
