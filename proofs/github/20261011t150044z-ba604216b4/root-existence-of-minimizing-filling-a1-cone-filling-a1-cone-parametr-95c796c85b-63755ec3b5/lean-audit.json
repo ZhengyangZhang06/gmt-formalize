@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ada4d5eb0b5a9085dfdd2f6de8297658681ac0c376cb9d2131028c42a9ab9069",
+  "git_delta": {
+    "base_commit": "cf7932963f51687c6352e740ae5c888796b824e5",
+    "candidate_commit": "dfe3fe9bb666f0a6b0c4c1968eced94467a0c834",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "ecf_cp_gc_orth_residual",
+    "diff_sha256": "dd0bc25b4a03071b08ba8d97961e5ff0402c3c804be7ab39962d6c503d82a094",
+    "source_sha256": "8a37623c5cd02f59a66b8db9ff9b16a059cf1108878d43f0214ef6aba4e23436",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ecf_cp_gc_orth_residual",
+      "statement": "∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P), ∃ c : Fin k → ℝ, (∀ j : Fin k, inner ℝ (a - ∑ l, c l • w l) (w j) = 0) ∧ ‖a - ∑ l, c l • w l‖ ≤ ‖a‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
