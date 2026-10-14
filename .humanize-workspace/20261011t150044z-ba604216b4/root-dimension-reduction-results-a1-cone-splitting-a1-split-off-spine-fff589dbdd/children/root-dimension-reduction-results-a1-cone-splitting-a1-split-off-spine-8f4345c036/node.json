@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1.translate_vanish-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1",
+  "depth": 6,
+  "title": "Translates along G of an action carried by G^⊥ vanish outside a compact set",
+  "statement": "Let P, j ∈ ℕ and let G be a linear subspace of ℝ^P (G : Submodule ℝ (Euclid P)). Let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (R : IMRep univ j) whose measure R.measure = θ·μHE[j]⌞M is concentrated on G^⊥: R.measure(ℝ^P ∖ G^⊥) = 0. Let η : ℝ^P → Λ^j (η : DifferentialForm (Euclid P) j) be a j-form with compact support. Then there is a compact set K ⊆ ℝ^P such that R.action(y ↦ η(t + y)) = 0 for every t ∈ G with t ∉ K.",
+  "lean_statement": "∀ (P j : ℕ) (G : Submodule ℝ (Euclid P)) (R : IMRep (univ : Set (Euclid P)) j) (η : DifferentialForm (Euclid P) j), HasCompactSupport η → R.measure (Gᗮ : Set (Euclid P))ᶜ = 0 → ∃ K : Set (Euclid P), IsCompact K ∧ ∀ t ∈ G, t ∉ K → R.action (fun y => η (t + y)) = 0",
+  "lean_name": "dimred_cs_sos_mt_si_translate_action_eq_zero_of_concentrated",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8f4345c036-a1"
+}
