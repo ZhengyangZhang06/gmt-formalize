@@ -451,6 +451,62 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.2.11** (a current vanishes off its support).  If `ω ∈ 𝒟ⁿ(U)` and
+`spt ω ∩ spt S = ∅`, then `S(ω) = 0`.  The compact set `K = spt ω ⊆ U` lies in the zero region of
+`S`, so finitely many open `W₁, …, Wₘ` on which `S` vanishes cover `K`.  A smooth partition of
+unity `ψ₁, …, ψₘ` on `K` subordinate to them splits `ω = Σᵢ ψᵢω` into test forms with
+`spt (ψᵢω) ⊆ Wᵢ`, each annihilated by `S`. -/
+theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0 := by
+  intro P n U S ω hdisj
+  classical
+  -- `K = spt ω` is a compact subset of `U`
+  set K := tsupport (ω : DifferentialForm (Euclid P) n)
+  have hKc : IsCompact K := ω.property.1.2
+  have hKU : K ⊆ U := ω.property.2
+  -- `K` lies in the zero region `⋃₀ 𝒲`, hence in finitely many members of `𝒲`
+  let 𝒲 : Set (Set (Euclid P)) :=
+    {W | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ S.VanishesOn W}
+  have hKZ : K ⊆ ⋃ W : 𝒲, (W : Set (Euclid P)) := by
+    intro x hx
+    have hxZ : x ∈ S.zeroRegion := by
+      by_contra hxZ
+      exact Set.disjoint_left.mp hdisj hx ⟨hKU hx, hxZ⟩
+    rwa [GeometricCurrentOn.zeroRegion, Set.sUnion_eq_iUnion] at hxZ
+  obtain ⟨t, ht⟩ := hKc.elim_finite_subcover (fun W : 𝒲 => (W : Set (Euclid P)))
+    (fun W => W.2.1) hKZ
+  let Wt : t → Set (Euclid P) := fun i => ((i : 𝒲) : Set (Euclid P))
+  have hKt : K ⊆ ⋃ i, Wt i := by
+    intro x hx
+    obtain ⟨W, hW, hxW⟩ := Set.mem_iUnion₂.mp (ht hx)
+    exact Set.mem_iUnion.mpr ⟨⟨W, hW⟩, hxW⟩
+  -- a smooth partition of unity `ψᵢ` on `K` with `spt ψᵢ ⊆ Wᵢ`
+  obtain ⟨ψ, hψ⟩ := SmoothPartitionOfUnity.exists_isSubordinate
+    (modelWithCornersSelf ℝ (Euclid P)) hKc.isClosed Wt (fun i => (i : 𝒲).2.1) hKt
+  -- each `ψᵢω` is a test form in `U` supported in `Wᵢ`
+  have hmem : ∀ i, (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ∈ TestFormOn U n ∧
+      tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ Wt i := by
+    intro i
+    have hsK : tsupport (fun x => ψ i x • (ω : DifferentialForm (Euclid P) n) x) ⊆ K :=
+      tsupport_smul_subset_right _ _
+    refine ⟨⟨⟨?_, ?_⟩, hsK.trans hKU⟩, (tsupport_smul_subset_left _ _).trans (hψ i)⟩
+    · exact (contMDiff_iff_contDiff.mp (ψ i).contMDiff).smul ω.property.1.1
+    · exact IsCompact.of_isClosed_subset hKc (isClosed_tsupport _) hsK
+  let ωi : t → TestFormOn U n := fun i => ⟨_, (hmem i).1⟩
+  -- `ω = Σᵢ ψᵢω`, since `Σᵢ ψᵢ = 1` on `K` and `ω = 0` off `K`
+  have hsum : ω = ∑ i, ωi i := by
+    apply Subtype.ext
+    funext x
+    rw [Submodule.coe_sum, Finset.sum_apply]
+    change (ω : DifferentialForm (Euclid P) n) x =
+      ∑ i, ψ i x • (ω : DifferentialForm (Euclid P) n) x
+    by_cases hx : x ∈ K
+    · rw [← Finset.sum_smul, ← finsum_eq_sum_of_fintype, ψ.sum_eq_one hx, one_smul]
+    · have h0 : (ω : DifferentialForm (Euclid P) n) x = 0 := image_eq_zero_of_notMem_tsupport hx
+      simp [h0]
+  -- linearity: `S(ω) = Σᵢ S(ψᵢω) = 0`
+  change S.toCurrent ω = 0
+  rw [hsum, map_sum]
+  exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
 /-- **Test forms and the blow-up under the dilation `η_{x,λ}(y) = λ⁻¹(y − x)`, `λ > 0`** (Simon
 Ch. 3, 1.4, chapter-03.txt line 85; push-forward 6.2.23, chapter-06.txt lines 403–413; used for
 `η_{x,λⱼ#}T` in the proof of 7.3.1, chapter-07.txt lines 329–337).  `η = η_{x,λ}` is an affine
@@ -1042,6 +1098,85 @@ theorem Submission.dtc_bc_bh_blowUp_massOn_ball_bounded : ∀ (P n : ℕ) (U : S
         rw [mul_left_comm, ← ENNReal.ofReal_mul (by positivity)]
         congr 2
         rw [mul_pow, ← mul_assoc, ← mul_pow, inv_mul_cancel₀ hlam.ne', one_pow, one_mul]
+
+/-- **Blow-up domains and boundaries near `x ∉ spt ∂T`** (Simon 7.3.1, proof, chapter-07.txt
+lines 334–335: "`∂η_{x,λⱼ#}T = 0` in `B_R(0)` for sufficiently large `j` (because
+`x ∉ spt ∂T`)").  `ηⱼ = η_{x,λⱼ}` is an affine homeomorphism with `ηⱼ(x + λⱼz) = z`, so (1) `ηⱼ(U)`
+is open.  As `x ∈ U ∩ Z(∂T)` (`Z` the zero region, `spt ∂T = U \ Z(∂T)`), some `B_r(x)` lies in
+`U ∩ Z(∂T)`, and `λⱼR < r` for all large `j`; then (2) `B̄_R(0) ⊆ ηⱼ(B_r(x)) ⊆ ηⱼ(U)`, and (3)
+`∂(ηⱼ#T) = ηⱼ#(∂T)` has support `ηⱼ(spt ∂T)`, which misses `B_R(0) ⊆ ηⱼ(B_r(x))`, so `∂(ηⱼ#T)`
+annihilates every test form supported in `B_R(0)` (`dtc_blowUp_algebra`,
+`dtc_vanish_off_support`). -/
+theorem Submission.dtc_bc_bh_blowUp_domain_boundary : ∀ (P m : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (x : Euclid P), IsOpen U → x ∈ U → x ∉ boundarySupport T → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → (∀ j, IsOpen (dilation x (lams j) '' U)) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ dilation x (lams j) '' U) ∧ (∀ R : ℝ, ∀ᶠ j in atTop, ∀ ω : TestFormOn (dilation x (lams j) '' U) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → (blowUp T x (lams j) (hlams j).ne').boundary ω = 0) := by
+  intro P m U T x hU hxU hxb lams hlams hlim
+  -- `η_{x,λ}(y) = λ⁻¹ • (y - x)`
+  have hdil : ∀ (lam : ℝ) (y : Euclid P), dilation x lam y = lam⁻¹ • (y - x) := by
+    intro lam y
+    simp only [dilation, dilationCLM, FunLike.coe_smul, Pi.smul_apply,
+      ContinuousLinearMap.coe_id', id_eq, smul_sub]
+    abel
+  -- `η_{x,λ}(x + λz) = z`, and `η_{x,λ}(y) = z` forces `y = x + λz`
+  have hdil_inv : ∀ (lam : ℝ) (z : Euclid P), lam ≠ 0 → dilation x lam (x + lam • z) = z := by
+    intro lam z hlam
+    rw [hdil, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hlam, one_smul]
+  have hdil_eq : ∀ (lam : ℝ) (y z : Euclid P), lam ≠ 0 → dilation x lam y = z →
+      y = x + lam • z := by
+    intro lam y z hlam h
+    rw [← h, hdil, smul_smul, mul_inv_cancel₀ hlam, one_smul, add_sub_cancel]
+  -- `λⱼR` is eventually below any positive bound
+  have hsmall : ∀ (R t : ℝ), 0 < t → ∀ᶠ j in atTop, lams j * R < t := by
+    intro R t ht
+    have h0 : Tendsto (fun j => lams j * R) atTop (𝓝 0) := by
+      simpa using hlim.mul_const R
+    exact (tendsto_order.1 h0).2 t ht
+  -- (1) `ηⱼ(U)` is the image of the open `U` under a homeomorphism
+  have hopen : ∀ j, IsOpen (dilation x (lams j) '' U) := by
+    intro j
+    have hlam : lams j ≠ 0 := (hlams j).ne'
+    have hfun : dilation x (lams j) =
+        ((Homeomorph.subRight x).trans (Homeomorph.smulOfNeZero (lams j)⁻¹ (inv_ne_zero hlam)) :
+          Euclid P → Euclid P) := by
+      funext y
+      rw [hdil]
+      rfl
+    rw [hfun]
+    exact ((Homeomorph.subRight x).trans
+      (Homeomorph.smulOfNeZero (lams j)⁻¹ (inv_ne_zero hlam))).isOpenMap U hU
+  -- a ball `B_r(x)` inside `U` and inside the zero region of `∂T`
+  have hxZ : x ∈ T.boundary.zeroRegion := by
+    by_contra h
+    exact hxb ⟨hxU, h⟩
+  obtain ⟨r, hr, hrU⟩ :=
+    Metric.isOpen_iff.1 (hU.inter T.boundary.isOpen_zeroRegion) x ⟨hxU, hxZ⟩
+  refine ⟨hopen, ?_, ?_⟩
+  · -- (2) `B̄_R(0) ⊆ ηⱼ(U)` once `λⱼR < r`
+    intro R
+    filter_upwards [hsmall R r hr] with j hj
+    intro z hz
+    have hlam := hlams j
+    refine ⟨x + lams j • z, (hrU ?_).1, hdil_inv (lams j) z hlam.ne'⟩
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]
+    rw [mem_closedBall, dist_zero_right] at hz
+    calc lams j * ‖z‖ ≤ lams j * R := mul_le_mul_of_nonneg_left hz hlam.le
+      _ < r := hj
+  · -- (3) `∂(ηⱼ#T)(ω) = 0` for `spt ω ⊆ B_R(0)` once `λⱼR < r`
+    intro R
+    filter_upwards [hsmall R r hr] with j hj ω hω
+    have hlam := hlams j
+    have hALG := Submission.dtc_blowUp_algebra P U x (lams j) hlam
+    rw [hALG.2.2.2 m T]
+    apply Submission.dtc_vanish_off_support
+    rw [hALG.2.2.1 m T.boundary, Set.disjoint_left]
+    rintro z hz ⟨y, hy, hyz⟩
+    have hyx : y = x + lams j • z := hdil_eq (lams j) y z hlam.ne' hyz
+    have hzR := hω hz
+    rw [mem_ball, dist_zero_right] at hzR
+    have hyball : y ∈ ball x r := by
+      rw [hyx, mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul,
+        Real.norm_of_nonneg hlam.le]
+      calc lams j * ‖z‖ ≤ lams j * R := mul_le_mul_of_nonneg_left hzR.le hlam.le
+        _ < r := hj
+    exact hy.2 (hrU hyball).2
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
