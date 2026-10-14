@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "58219b42dc5aa33ef768d5782d83fd54182a606e477a17536b2c968b6e606dd2",
+  "git_delta": {
+    "base_commit": "640476801ddeee04ebe46b22534e249b3cfc2c25",
+    "candidate_commit": "92a1246d741b39a3446859c16cfe18596fd60742",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_rc_tf_support_bound",
+    "diff_sha256": "4855e2793cc4cc1497530fddbb3d01e80ba8bc0d429c14e8cae87a08f2a8c454",
+    "source_sha256": "9193efdd39936f0c30f3adaae717191b6915e885812873874f26d13fb6ddaedd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_rc_tf_support_bound",
+      "statement": "∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e y : Euclid P) (s : ℝ), 0 < s → s ≤ 1 / 4 → ‖Q.starProjection y‖ ^ 2 = inner ℝ y a ^ 2 + inner ℝ y e ^ 2 → 0 < inner ℝ y a → |‖y‖ - 1| < s → |Real.arctan (inner ℝ y e / inner ℝ y a)| < s → ‖y - Q.starProjection y‖ < s * ‖y‖ → 1 / 2 < inner ℝ y a ∧ ‖y‖ < 5 / 4",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
