@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "67b15fc67281d5bb280d4add3b1262d46cab6d0dee526bb4431d6f3edeee70fd",
+  "git_delta": {
+    "base_commit": "be834b94d44e175ff3fe38b1eab0be40a4c363f0",
+    "candidate_commit": "aeef3b0d08d051c251ab69de32143a3657b4164e",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "9a50cc8d483480a598ffade7090f8ad05a5149861bc9ed1c2958e6cca27287ec",
+    "source_sha256": "00b9e277b216b13da73a4297f2065fc860bba8de6e68645f55aa079646c3dfb6",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sp_imrep_linear_pushforward",
+      "statement": "∀ (P m : ℕ) (R : IMRep (univ : Set (Euclid P)) m) (L : Euclid P →L[ℝ] Euclid P) (K : Set (Euclid P)), 0 < m → IsCompact K → R.measure Kᶜ = 0 → ∃ R' : IMRep (univ : Set (Euclid P)) m, R'.carrier ⊆ L '' K ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, R'.action (ω : DifferentialForm (Euclid P) m) = R.action (affinePullbackForm L 0 (ω : DifferentialForm (Euclid P) m))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
