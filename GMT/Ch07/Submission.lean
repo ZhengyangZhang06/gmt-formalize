@@ -628,6 +628,62 @@ theorem Submission.cmcdtfr_face_geometry : ∀ (P k : ℕ), volume {y : Euclid k
   -- `(c)`: the open face of `p` against the closed face of `q ≠ p`
   exact ⟨hiso, hdiam, Submission.cmcdtfrfg_face_separation P k p q hp hq⟩
 
+/-- **A set that agrees with `x + V` near `x` has approximate tangent space `V` at `x`** (Simon
+Ch. 3, Definition 1.4; applied to the open unit lattice faces carrying an integer polyhedral chain
+in the deformation theorem, Simon Ch. 6, §5).  Let `f ∈ C_c(ℝᴾ)` vanish off the ball
+`B = B(0, R)` and `0 < r < δ / R`.  For `y ∈ B`, both a `z` with `η_{x,r}(z) = y` and
+`z = x + r y` satisfy `|z − x| = r|y| < rR < δ`, so the hypothesis gives
+`B ∩ η_{x,r}(M) = B ∩ V`.  As `f = 0` off the Borel ball `B`, `∫_S f dHⁿ = ∫_{B ∩ S} f dHⁿ` for
+every set `S`; hence `∫_{η_{x,r}(M)} f dHⁿ = ∫_V f dHⁿ` for `r ∈ (0, δ / R)`, and the blow-up
+integrals are eventually constant as `r ↓ 0`.  No measurability of `M` is used. -/
+theorem Submission.cmcdtfrpi_local_plane_tangent : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (V : Submodule ℝ (Euclid P)) (δ : ℝ), Module.finrank ℝ V = n → 0 < δ → (∀ z : Euclid P, dist z x < δ → (z ∈ M ↔ z - x ∈ V)) → HasApproximateTangentSpaceAt n M x V := by
+  intro P n M x V δ hV hδ hM
+  -- step 1: `dim V = n` is a hypothesis; fix `f ∈ C_c(ℝᴾ)`
+  refine ⟨hV, fun f => ?_⟩
+  -- step 2: `tsupport f ⊆ B̄(0, R₀)`, so `f` vanishes off `B = B(0, R)` for `R = max R₀ 0 + 1`
+  obtain ⟨R₀, hR₀⟩ := f.hasCompactSupport.isCompact.isBounded.subset_closedBall 0
+  obtain ⟨R, hR, hf⟩ : ∃ R : ℝ, 0 < R ∧ ∀ y ∉ ball (0 : Euclid P) R, f y = 0 :=
+    ⟨max R₀ 0 + 1, by positivity, fun y hy => image_eq_zero_of_notMem_tsupport fun hyf =>
+      hy (mem_ball.2 ((mem_closedBall.1 (hR₀ hyf)).trans_lt (by linarith [le_max_left R₀ 0])))⟩
+  -- step 4: `∫_S f dHⁿ = ∫_{B ∩ S} f dHⁿ` for every set `S`, as `(Hⁿ⌞S)⌞B = Hⁿ⌞(B ∩ S)`
+  have hB : ∀ S : Set (Euclid P), ∫ y in S, f y ∂μHE[n] = ∫ y in ball 0 R ∩ S, f y ∂μHE[n] :=
+    fun S => by
+      rw [← Measure.restrict_restrict (measurableSet_ball : MeasurableSet (ball (0 : Euclid P) R)),
+        setIntegral_eq_integral_of_forall_compl_eq_zero hf]
+  -- step 6: the blow-up integrals are constant for `r ∈ (0, δ / R) ∈ 𝓝[>] 0`
+  refine (tendsto_congr' ?_).2 tendsto_const_nhds
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR)] with r ⟨hr, hrR⟩
+  have hrδ : r * R < δ := (lt_div_iff₀ hR).1 hrR
+  -- step 3: `B ∩ η_{x,r}(M) = B ∩ V`
+  have hset : ball (0 : Euclid P) R ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r '' M =
+      ball 0 R ∩ (V : Set (Euclid P)) := by
+    ext y
+    constructor
+    · -- `y = r⁻¹ (z − x)` with `z ∈ M`: `|z − x| = r|y| < rR < δ`, so `z − x ∈ V` and `y ∈ V`
+      rintro ⟨hyB, z, hz, rfl⟩
+      have hy : ‖r⁻¹ • (z - x)‖ < R := mem_ball_zero_iff.1 hyB
+      have hzx : dist z x < δ :=
+        calc dist z x = ‖r • r⁻¹ • (z - x)‖ := by rw [smul_inv_smul₀ hr.ne', dist_eq_norm]
+          _ = r * ‖r⁻¹ • (z - x)‖ := by rw [norm_smul, Real.norm_of_nonneg hr.le]
+          _ < r * R := mul_lt_mul_of_pos_left hy hr
+          _ < δ := hrδ
+      exact ⟨hyB, V.smul_mem r⁻¹ ((hM z hzx).1 hz)⟩
+    · -- `y ∈ V`: `z = x + r y` has `z − x = r y ∈ V` and `|z − x| = r|y| < rR < δ`, so `z ∈ M`
+      rintro ⟨hyB, hyV⟩
+      have hzx : dist (x + r • y) x < δ :=
+        calc dist (x + r • y) x = r * ‖y‖ := by
+              rw [dist_self_add_left, norm_smul, Real.norm_of_nonneg hr.le]
+          _ < r * R := mul_lt_mul_of_pos_left (mem_ball_zero_iff.1 hyB) hr
+          _ < δ := hrδ
+      refine ⟨hyB, x + r • y, (hM _ hzx).2 ?_, ?_⟩
+      · rw [add_sub_cancel_left]
+        exact V.smul_mem r hyV
+      -- `η_{x,r}(x + r y) = r⁻¹ (r y) = y`
+      · change r⁻¹ • (x + r • y - x) = y
+        rw [add_sub_cancel_left, inv_smul_smul₀ hr.ne']
+  -- step 5: `∫_{η_{x,r}(M)} f = ∫_{B ∩ η_{x,r}(M)} f = ∫_{B ∩ V} f = ∫_V f`
+  rw [hB, hB (V : Set (Euclid P)), hset]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
