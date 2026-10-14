@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "HasApproximateTangentSpaceAt|blowUpMap|support_euclideanHausdorffMeasure_restrict_submodule|regular_euclideanHausdorffMeasure_restrict_submodule",
+        "integral_withDensity_eq_integral_smul|integrable_withDensity_iff_integrable_smul|withDensity_absolutelyContinuous|restrict_apply|euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|class Regular|starProjection_eq_self_iff",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|map_euclideanHausdorffMeasure",
+        "cbr_imRep_measure_basic",
+        "atsm_approxTangent_le_of_flat",
+        "dtc_bc_lc_unitOrientation_comp_eq",
+        "git show d37eb4dfabd4fb449ac71a0682db55be0cc13023:GMT/Ch07/Submission.lean | tail -n 115",
+        "git show 038573e401c107149b7c1ae80dd1bc7621b035f5:GMT/Ch07/Submission.lean | sed -n '450,630p'",
+        "git show 8245a8ab2bd1e5d5a3667b1aede6dd59667a6f78:GMT/Ch07/Submission.lean | sed -n '450,510p'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pi-independent-audit-7qj9vdvp/Audit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-549c88619a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa29/20261013T112914Z-ch07-root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a-zrsh__m8/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa59/20261013T031011Z-ch07-root.minimizing_implies_stationary-a1.approx_tangent_in_submanifold-a1.approx_ta-uev6uygy/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa12/20261013T181856Z-ch07-root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.orie-dw6n03dw/comparator.log",
+        "/tmp/pi-independent-audit-7qj9vdvp/Audit.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected projection-invariance contract. Reverse absolute continuity transfers the null-set hypothesis; R.orients and flat_tangent give Q ≤ V almost everywhere; orientation_fixed and qx = x identify the integrands; integral_congr_ae proves the exact selected conclusion for arbitrary forms. Each bare identifier uniquely names an accepted leaf with a byte-identical frozen type, empty dependencies and empty children, so reuse introduces no cycle or active-name conflict. All three one-line propositions are independent of their implementations. The pinned project, mathlib and SimonGMT revisions match; inspected candidate sources preserve the frozen definitions and imports. Original isolated comparator logs confirm kernel acceptance with only propext, Classical.choice and Quot.sound. The normalized Hausdorff scaling/isometry search found no match under MeasureTheory/Measure; the declarations occur in Geometry/Euclidean/Volume/Measure.lean. Relevant density, restriction, regularity, projection and alternating-map APIs support the supplied proofs. No matrix-unit construction occurs. The optional fresh combined replay was stopped after more than ten minutes under sustained memory pressure; its compilation success is not claimed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "imrep_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match all seven conclusions for an IMRep on arbitrary W. Steps 1–8 correctly prove the measure formula, concentration, compact-set finiteness, both absolute-continuity directions, orientation measurability and action conversion. Positive multiplicity supplies the reverse absolute continuity; the cited density-integral theorem permits arbitrary forms without integrability assumptions. The proof is complete and non-circular. Its accepted declaration has the identical frozen type, and conclusion (b) supplies the parent's null-set transfer."
+    },
+    {
+      "key": "flat_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and quantifiers match exactly, including arbitrary x and potentially nonmeasurable M and N. Plane regularity and support justify the strictly positive bump integral. The explicit constants make the bump vanish on the blow-up of M ∩ N, while translation and nonzero scaling preserve the exceptional null set. Restriction is evaluated on the measurable nonzero set of the bump, avoiding any missing measurability assumption. Uniqueness of the one-sided limit completes the contradiction. The proof covers every n, is non-circular, and its accepted type is identical."
+    },
+    {
+      "key": "orientation_fixed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly expresses invariance of a unit orientation under a continuous linear map fixing its plane. The proof correctly unpacks a spanning orthonormal frame with one fixed sign, proves that L fixes every frame vector, and evaluates continuous alternating-map composition on that frame. Both signs and the empty frame at n = 0 are handled. No additional hypothesis or unresolved construction is needed. The accepted declaration has the identical type and supplies the parent's pointwise pairing identity."
+    }
+  ],
+  "required_changes": []
+}
