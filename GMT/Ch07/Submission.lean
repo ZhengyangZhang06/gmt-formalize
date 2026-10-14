@@ -451,6 +451,48 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Slice-mass majorants are finite for a.e. level** (Simon 7.2.4, slicing step via 6.4).
+Assume the majorant lemma (MM).  Let `μᵢ` be measures on `ℝᴾ` with `supᵢ μᵢ(W_k) < ∞`,
+`W_k = B_{k+1}(0)`, for every `k`, let `f` be continuous and
+`Z_{i,k}(t) ≤ L · liminf_{h ↓ 0} h⁻¹ μᵢ(W_k ∩ {t − h < f < t})`.  Then for `L¹`-a.e. `t`,
+`liminf_i Z_{i,k}(t) < ∞` for every `k`.  For fixed `k, m`, (MM) with `G = W_k` and
+`(a, b) = (−m, m)` gives a measurable `g` with `liminf_i Z_{i,k} ≤ g` a.e. on `(−m, m)` and
+`∫_{(−m,m)} g ≤ L · liminf_i μᵢ(W_k ∩ {−m < f < m}) ≤ L · supᵢ μᵢ(W_k) < ∞`, so `g < ∞` a.e. on
+`(−m, m)`; intersect over `m ∈ ℕ` (the intervals exhaust `ℝ`) and then over `k ∈ ℕ`. -/
+theorem Submission.dtc_bc_tc_cl_sl_ae_liminf_lt_top : (∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop) → ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (L : NNReal) (Z : ℕ → ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ k : ℕ, ⨆ i, μs i (ball (0 : Euclid P) ((k : ℝ) + 1)) < ∞) → (∀ (i k : ℕ) (t : ℝ), Z i k t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs i (ball (0 : Euclid P) ((k : ℝ) + 1) ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∀ᵐ t ∂(volume : Measure ℝ), ∀ k : ℕ, liminf (fun i => Z i k t) atTop < ∞ := by
+  intro MM P μs f L Z hf hbd hZ
+  rw [ae_all_iff]
+  intro k
+  /- Steps 1–3, for each `m`: (MM) on `E = W_k ∩ {−m < f < m}` gives, for a.e. `t ∈ (−m, m)`,
+  `liminf_i Z_{i,k}(t) ≤ g(t) < ∞`. -/
+  have hm : ∀ m : ℕ, ∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo (-(m : ℝ)) m →
+      liminf (fun i => Z i k t) atTop < ∞ := by
+    intro m
+    -- Step 1: `μ_j(E) ≤ μ_j(W_k) ≤ Λ_k = supᵢ μᵢ(W_k)`
+    have hE : ∀ j, μs j (ball (0 : Euclid P) ((k : ℝ) + 1) ∩ {x | -(m : ℝ) < f x ∧ f x < m}) ≤
+        ⨆ i, μs i (ball (0 : Euclid P) ((k : ℝ) + 1)) := fun j =>
+      (measure_mono inter_subset_left).trans
+        (le_iSup (fun i => μs i (ball (0 : Euclid P) ((k : ℝ) + 1))) j)
+    obtain ⟨g, hgm, hae, hint⟩ := MM P μs f (ball (0 : Euclid P) ((k : ℝ) + 1)) (-(m : ℝ)) m L
+      (fun j t => Z j k t) hf (fun j => (hE j).trans_lt (hbd k)) (fun j t _ => hZ j k t)
+    -- Step 2: `∫_{(−m,m)} g ≤ L · liminf_j μ_j(E) ≤ L · Λ_k < ∞`, so `g < ∞` a.e. on `(−m, m)`
+    have hlim : liminf (fun j => μs j (ball (0 : Euclid P) ((k : ℝ) + 1) ∩
+        {x | -(m : ℝ) < f x ∧ f x < m})) atTop ≤ ⨆ i, μs i (ball (0 : Euclid P) ((k : ℝ) + 1)) :=
+      liminf_le_of_frequently_le' (Frequently.of_forall hE)
+    have hint_ne : ∫⁻ t in Ioo (-(m : ℝ)) m, g t ≠ ∞ :=
+      ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.coe_ne_top
+        (ne_top_of_le_ne_top (hbd k).ne hlim)) hint
+    have hgfin := ae_lt_top hgm hint_ne
+    rw [ae_restrict_iff' measurableSet_Ioo] at hgfin
+    -- Step 3: intersect the two full-measure sets
+    filter_upwards [hae, hgfin] with t ht1 ht2 htm
+    exact (ht1 htm).trans_lt (ht2 htm)
+  /- Step 4: intersect over `m ∈ ℕ`; every `t` lies in `(−m, m)` for some `m > |t|`. -/
+  rw [← ae_all_iff] at hm
+  filter_upwards [hm] with t ht
+  obtain ⟨m, hmt⟩ := exists_nat_gt |t|
+  exact ht m ⟨by linarith [neg_abs_le t], by linarith [le_abs_self t]⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
