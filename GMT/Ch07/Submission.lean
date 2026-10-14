@@ -451,6 +451,48 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Tube about the shifted dual skeleton** (Simon Ch. 6, proof of 5.1, the identity before
+display (6), inclusion `⊆`).  Let `L*(a)` be the set of `w` with `w_i − a_i ∈ ℤ` for at least
+`m + 2` indices `i`.  It contains `a`, so `infDist x L*(a) < r` gives `w ∈ L*(a)` with
+`|x − w| < r`.  Enumerate `m + 2` of the indices of `w` by `e`, and put
+`z_k = w_{e(k)} − a_{e(k)} ∈ ℤ`.  Then
+`Σ_k (x_{e(k)} − a_{e(k)} − z_k)² = Σ_k (x_{e(k)} − w_{e(k)})² ≤ |x − w|² < r²`. -/
+theorem Submission.dor_lmb_fcd_gc_tube_cover : ∀ (P m : ℕ), m + 1 < P → ∀ (a x : Euclid P) (r : ℝ), infDist x {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z} < r → ∃ e : Fin (m + 2) → Fin P, Function.Injective e ∧ ∃ z : Fin (m + 2) → ℤ, ∑ k, (x (e k) - a (e k) - z k) ^ 2 < r ^ 2 := by
+  classical
+  intro P m hPm a x r hx
+  set L := {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z}
+  -- Steps 1–2: `a ∈ L*(a)` (all `P ≥ m + 2` indices), so some `w ∈ L*(a)` has `|x − w| < r`
+  have hne : L.Nonempty := ⟨a, Finset.univ, by simp; omega, fun i _ => ⟨0, by simp⟩⟩
+  obtain ⟨w, ⟨s, hs, hsz⟩, hxw⟩ := (infDist_lt_iff hne).1 hx
+  -- Step 3: `m + 2` of the indices in `s`, enumerated injectively by `e`
+  obtain ⟨J, hJs, hJ⟩ := Finset.exists_subset_card_eq hs
+  let e : Fin (m + 2) → Fin P := fun k => J.orderEmbOfFin hJ k
+  have he : Function.Injective e := (J.orderEmbOfFin hJ).injective
+  have hes : ∀ k, e k ∈ s := fun k => hJs (J.orderEmbOfFin_mem hJ k)
+  -- Step 4: `z_k = w_{e(k)} − a_{e(k)} ∈ ℤ`
+  choose z hz using fun k => hsz (e k) (hes k)
+  refine ⟨e, he, z, ?_⟩
+  have hterm : ∀ k, x (e k) - a (e k) - z k = x (e k) - w (e k) := fun k => by
+    rw [← hz k]; ring
+  -- Step 5: the `m + 2` selected squares are among the `P` nonnegative squares
+  have hsub : ∑ k, (x (e k) - w (e k)) ^ 2 ≤ ∑ i, (x i - w i) ^ 2 := by
+    have := Finset.sum_map Finset.univ ⟨e, he⟩ (fun i => (x i - w i) ^ 2)
+    simp only [Function.Embedding.coeFn_mk] at this
+    rw [← this]
+    exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _)
+      fun i _ _ => sq_nonneg _
+  -- Step 6: `Σ_i (x_i − w_i)² = |x − w|²`
+  have hdist : ∑ i, (x i - w i) ^ 2 = dist x w ^ 2 := by
+    rw [EuclideanSpace.dist_eq, Real.sq_sqrt (Finset.sum_nonneg fun i _ => sq_nonneg _)]
+    simp [Real.dist_eq, sq_abs]
+  have h0 : 0 ≤ dist x w := dist_nonneg
+  -- Step 7
+  calc ∑ k, (x (e k) - a (e k) - z k) ^ 2 = ∑ k, (x (e k) - w (e k)) ^ 2 := by
+        simp_rw [hterm]
+    _ ≤ ∑ i, (x i - w i) ^ 2 := hsub
+    _ = dist x w ^ 2 := hdist
+    _ < r ^ 2 := by nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
