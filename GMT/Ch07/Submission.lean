@@ -2661,6 +2661,51 @@ theorem Submission.dimred_rpd_submanifold_density_one : ∀ (P n : ℕ) (M : Set
     filter_upwards [hbounds ε hε0 hε1] with s hs
     exact lt_of_le_of_lt hs.2 hεb
 
+/-- **Tangential derivatives are well defined** (Simon Ch. 2, §4, p. 55; the tangential gradient
+of the Simons cone step): for any set `M ⊆ ℝᴾ` and real normed space `E`, if `f : ℝᴾ → E` has
+derivative `f'` within `M` at `x`, then `fderivWithin ℝ f M x` agrees with `f'` on the span of
+`T_xM`.  `L = fderivWithin ℝ f M x` is itself a derivative of `f` within `M` at `x`, and two
+derivatives within `M` agree on the tangent cone of `M` at `x`.  Each `w = γ'(0) ∈ T_xM` lies in
+that cone: with `sₙ = 1/(n+2) ∈ (−1, 1)` and `dₙ = γ(sₙ) − x`, `dₙ → 0`, `x + dₙ = γ(sₙ) ∈ M` and
+`(n+2) dₙ = sₙ⁻¹(γ(sₙ) − γ(0)) → w`.  So `L = f'` on `T_xM`, hence on its linear span. -/
+theorem Submission.codim1_hcp_sc_fderivWithin_tangent_eq : ∀ (P : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (M : Set (Euclid P)) (f : Euclid P → E) (f' : Euclid P →L[ℝ] E) (x : Euclid P), HasFDerivWithinAt f f' M x → ∀ v ∈ Submodule.span ℝ (tangentSpace M x), fderivWithin ℝ f M x v = f' v := by
+  intro P E _ _ M f f' x hf v hv
+  -- steps 2–3: `L = fderivWithin ℝ f M x` and `f'` are both derivatives of `f` within `M` at
+  -- `x`, so they agree on the tangent cone of `M` at `x`
+  have huniq : EqOn (fderivWithin ℝ f M x) f' (tangentConeAt ℝ M x) :=
+    hf.differentiableWithinAt.hasFDerivWithinAt.unique_on hf
+  -- step 1: the velocity `w = γ'(0)` of a curve `γ` in `M` through `x` lies in the tangent cone
+  have hcone : tangentSpace M x ⊆ tangentConeAt ℝ M x := by
+    rintro w ⟨γ, -, hγM, hγ0, hγw⟩
+    -- `sₙ = 1/(n+2)` tends to `0` through nonzero values and lies in `(−1, 1)`
+    have hs : Tendsto (fun n : ℕ => 1 / ((n : ℝ) + 2)) atTop (𝓝[≠] 0) :=
+      tendsto_nhdsWithin_iff.2 ⟨tendsto_const_nhds.div_atTop
+        (tendsto_atTop_add_const_right _ 2 tendsto_natCast_atTop_atTop),
+        Eventually.of_forall fun n => by simp only [mem_compl_singleton_iff]; positivity⟩
+    have hsI : ∀ n : ℕ, 1 / ((n : ℝ) + 2) ∈ Ioo (-1 : ℝ) 1 := fun n => by
+      have hn : (0 : ℝ) ≤ n := n.cast_nonneg
+      have hpos : 0 < 1 / ((n : ℝ) + 2) := by positivity
+      refine ⟨by linarith, ?_⟩
+      rw [div_lt_one (by positivity)]
+      linarith
+    -- `cₙ = n + 2` and `dₙ = γ(sₙ) − x`
+    refine mem_tangentConeAt_of_seq atTop (fun n : ℕ => (n : ℝ) + 2)
+      (fun n => γ (1 / ((n : ℝ) + 2)) - x) ?_ ?_ ?_
+    · -- `dₙ → γ(0) − x = 0`, since `γ` is continuous at `0`
+      rw [tendsto_sub_nhds_zero_iff, ← hγ0]
+      exact hγw.continuousAt.tendsto.comp (hs.mono_right nhdsWithin_le_nhds)
+    · -- `x + dₙ = γ(sₙ) ∈ M`, as `sₙ ∈ (−1, 1)`
+      refine Eventually.of_forall fun n => ?_
+      simp only [add_sub_cancel]
+      exact hγM (hsI n)
+    · -- `cₙ dₙ = sₙ⁻¹(γ(0 + sₙ) − γ(0)) → γ'(0) = w`
+      refine (hγw.tendsto_slope_zero.comp hs).congr fun n => ?_
+      simp [hγ0]
+  -- step 4: `L = f'` on `T_xM`; the set where the linear maps `L` and `f'` agree is a subspace,
+  -- so it contains the linear span of `T_xM`
+  exact LinearMap.eqOn_span (f := (fderivWithin ℝ f M x : Euclid P →ₗ[ℝ] E))
+    (g := (f' : Euclid P →ₗ[ℝ] E)) (fun w hw => huniq (hcone hw)) hv
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
