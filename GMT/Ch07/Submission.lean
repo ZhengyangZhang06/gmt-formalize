@@ -688,6 +688,49 @@ theorem Submission.idtp_fons_odc_ro_line_orientation : ∀ (P : ℕ) (e : Euclid
   · exact Or.inl (ContinuousLinearMap.ext fun α => by
       rw [hξ, hev, neg_one_mul, neg_neg, ContinuousAlternatingMap.apply_apply])
 
+/-- **Orientation along the rays of a `1`-dimensional carrier** (for Simon 7.3.3, proof of (2),
+(10): `1`-dimensional minimizing cones are `m[[ℓ]]`; Ch. 3, 1.4 and Ch. 6, 3.1).  Let
+`R = (M, θ, ξ)` be a `1`-dimensional integer multiplicity triple in `ℝᴾ` and `F` a finite set of
+unit vectors with `H¹(M \ ⋃_{e ∈ F} ray(e)) = 0`, `ray(e) = {t e : t > 0}`.  Then for each
+`e ∈ F`, `ξ(x) = ±e` for `H¹`-a.e. `x ∈ M ∩ ray(e)`: near `x = t₀ e` the other rays stay away,
+so `M` lies on the line `x + ℝe` up to an `H¹`-null set, the approximate tangent line `TₓM` is
+`ℝe`, and the unit orientations of `ℝe` are `±e`. -/
+theorem Submission.idtp_fons_odc_ray_orientation : ∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → (μHE[1] : Measure (Euclid P)) (R.carrier ∩ (⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0)ᶜ) = 0 → ∀ e ∈ F, ∀ᵐ x ∂((μHE[1] : Measure (Euclid P)).restrict (R.carrier ∩ (fun t : ℝ => t • e) '' Ioi 0)), R.orient x = ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) ∨ R.orient x = -ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) := by
+  intro P R F hF hnull e he
+  have he1 : ‖e‖ = 1 := hF e he
+  have he0 : e ≠ 0 := by
+    rintro rfl
+    simp at he1
+  -- Step 1: `ray(e)` is the image of `(0, ∞)` under the measurable embedding `t ↦ 0 + t e`
+  -- (line_param), so `M ∩ ray(e)` is measurable.
+  have hray : MeasurableSet ((fun t : ℝ => t • e) '' Ioi 0) := by
+    have h := (Submission.idtp_fons_odc_line_hausdorff.2 P 0 e he1).1.measurableSet_image.2
+      (measurableSet_Ioi (a := (0 : ℝ)))
+    simpa only [zero_add] using h
+  -- Step 6: `R.orients` holds a.e. on `M`, hence a.e. on `M ∩ ray(e)`, and a.e. point of
+  -- `M ∩ ray(e)` is `t₀ e` with `t₀ > 0`.
+  filter_upwards [ae_restrict_mem (R.measurableSet_carrier.inter hray),
+    ae_restrict_of_ae_restrict_of_subset inter_subset_left R.orients] with x hx hxQ
+  obtain ⟨-, t₀, ht₀ : 0 < t₀, hxe⟩ := hx
+  simp only at hxe
+  subst hxe
+  obtain ⟨Q, hQ, hQo⟩ := hxQ
+  -- Step 2: near `t₀ e`, every point on a ray of `F` lies on `ray(e)` (ray_isolation).
+  obtain ⟨δ, hδ, hball⟩ := Submission.idtp_fons_odc_ro_ray_isolation P F e t₀ hF he1 ht₀
+  -- Step 3: `M ∩ B_δ(t₀ e) ⊆ (t₀ e + ℝe) ∪ N` with `N = M \ ⋃_{e' ∈ F} ray(e')`.
+  have hloc : R.carrier ∩ ball (t₀ • e) δ ⊆ range (fun s : ℝ => t₀ • e + s • e) ∪
+      (R.carrier ∩ (⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0)ᶜ) := by
+    rintro y ⟨hyM, hyB⟩
+    by_cases hy : y ∈ ⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0
+    · obtain ⟨t, -, rfl⟩ := hball ⟨hyB, hy⟩
+      exact Or.inl ⟨t - t₀, by simp only [← add_smul, add_sub_cancel]⟩
+    · exact Or.inr ⟨hyM, hy⟩
+  -- Step 4: the approximate tangent line of `M` at `t₀ e` is `ℝe` (tangent_line).
+  obtain rfl := Submission.idtp_fons_odc_ro_tangent_line P R.carrier _ (t₀ • e) e δ Q he0 hδ
+    hnull hloc hQ
+  -- Step 5: the unit orientations of `ℝe` are `±e` (line_orientation).
+  exact Submission.idtp_fons_odc_ro_line_orientation P e (R.orient (t₀ • e)) he1 hQo
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
