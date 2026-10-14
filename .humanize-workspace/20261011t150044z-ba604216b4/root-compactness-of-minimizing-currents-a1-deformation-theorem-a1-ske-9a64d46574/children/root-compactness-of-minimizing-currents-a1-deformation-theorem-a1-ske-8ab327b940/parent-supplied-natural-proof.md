@@ -1,0 +1,69 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.good_radius-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 5 of the parent's supplied proof (Simon Ch. 6, proof of 5.1, (8)–(10): Lebesgue differentiation of t ↦ μ_T({d < t}) and a Markov argument on (ρ_ν/2, ρ_ν)), isolated for general finite measures. Throughout, ofReal := ENNReal.ofReal and λ is Lebesgue measure on ℝ (volume).
+
+1. (Distribution functions.) Put F(t) := (μ({f < t})).toReal and G(t) := (μ'({f < t})).toReal. Since μ, μ' are finite, μ({f < t}) = ofReal(F(t)) and μ'({f < t}) = ofReal(G(t)) (ENNReal.ofReal_toReal, measure_ne_top). F and G are monotone (measure_mono and ENNReal.toReal_mono) and nonnegative. The sets {f < t} are measurable because f is (measurableSet_lt).
+2. (Slice bound.) Let t ∈ ℝ and h > 0. Then {f < t − h} ⊆ {f < t} and {t − h < f < t} ⊆ {f < t} \ {f < t − h}. Hence μ({t − h < f < t}) ≤ μ({f < t}) − μ({f < t − h}) (measure_mono, measure_sdiff with finite measure) = ofReal(F(t)) − ofReal(F(t − h)) = ofReal(F(t) − F(t − h)) (ENNReal.ofReal_sub, F(t − h) ≥ 0). Multiplying by ofReal(h⁻¹) and using ofReal(a)·ofReal(b) = ofReal(a·b) for a ≥ 0 (ENNReal.ofReal_mul): ofReal(h⁻¹)·μ({t − h < f < t}) ≤ ofReal((F(t) − F(t − h))/h). The same holds for μ' and G.
+3. (Derivative bound.) If F is differentiable at t, then liminf_{h→0+} ofReal(h⁻¹)·μ({t − h < f < t}) ≤ ofReal(deriv F t). Indeed, HasDerivAt F (deriv F t) t gives s⁻¹(F(t + s) − F(t)) → deriv F t as s → 0 with s < 0 (HasDerivAt.tendsto_slope_zero_left). The map h ↦ −h sends the filter 𝓝[>] 0 into 𝓝[<] 0, and for s = −h we have s⁻¹(F(t + s) − F(t)) = (F(t) − F(t − h))/h. Hence (F(t) − F(t − h))/h → deriv F t as h → 0+, and by continuity of ofReal, ofReal((F(t) − F(t − h))/h) → ofReal(deriv F t), so the liminf of this function equals ofReal(deriv F t) (Tendsto.liminf_eq; the filter is not trivial). By step 2, eventually in 𝓝[>] 0 (namely for h > 0) our function is ≤ this one, so its liminf is ≤ ofReal(deriv F t) (liminf_le_liminf; in the complete lattice [0, ∞] no boundedness side conditions are needed). Likewise, if G is differentiable at t then liminf_{h→0+} ofReal(h⁻¹)·μ'({t − h < f < t}) ≤ ofReal(deriv G t) < ∞.
+4. (Exceptional set.) By Lebesgue's theorem for monotone functions (Monotone.ae_differentiableAt), the set N := {t : ¬ DifferentiableAt ℝ F t} ∪ {t : ¬ DifferentiableAt ℝ G t} has λ(N) = 0.
+5. (Many good t.) Let I := Ioo(ρ/2, ρ), so λ(I) = ofReal(ρ/2) > 0, and c := ofReal(4/ρ)·B. Let S := {t ∈ I : ofReal(deriv F t) ≤ c}. We show λ(S) > 0.
+   (a) If B = ∞ then c = ∞ (ofReal(4/ρ) > 0 because 4/ρ > 0), so S = I and λ(S) > 0.
+   (b) Let B < ∞. The function g(t) := ofReal(deriv F t) is measurable (measurable_deriv, ENNReal.measurable_ofReal). By the accepted sibling cmcs_smi_lintegral_ofReal_deriv_le (∫⁻_{Ioo a b} ofReal(deriv F) ≤ ofReal(F(b) − F(a)) for monotone F), ∫⁻_I g ≤ ofReal(F(ρ) − F(ρ/2)) ≤ ofReal(F(ρ)) = μ({f < ρ}) ≤ B, using F(ρ/2) ≥ 0 and monotonicity of ofReal.
+   (c) If B = 0, then ∫⁻_I g = 0, so g = 0 λ-a.e. on I (lintegral_eq_zero_iff, g measurable); as c = 0, I \ S ⊆ {t ∈ I : g(t) ≠ 0} is λ-null, and λ(S) = λ(I) > 0.
+   (d) If 0 < B < ∞, then 0 < c < ∞. By Markov's inequality on λ⌞I (mul_meas_ge_le_lintegral₀), c·λ({t ∈ I : c ≤ g(t)}) ≤ ∫⁻_I g ≤ B. Since c = ofReal(4/ρ)·B with 0 < B < ∞, dividing by B gives ofReal(4/ρ)·λ({t ∈ I : c ≤ g(t)}) ≤ 1, i.e. λ({t ∈ I : c ≤ g(t)}) ≤ ofReal(ρ/4). Now I \ S = {t ∈ I : c < g(t)} ⊆ {t ∈ I : c ≤ g(t)}, so λ(I \ S) ≤ ofReal(ρ/4) < ofReal(ρ/2) = λ(I). Since λ(I) ≤ λ(S) + λ(I \ S) (measure_union_le with I ⊆ S ∪ (I \ S)), λ(S) > 0.
+6. (Choice of r.) Since λ(N) = 0 < λ(S), the set S \ N is not null (λ(S) ≤ λ(S \ N) + λ(N) = λ(S \ N)), hence nonempty. Pick r ∈ S \ N. Then ρ/2 < r < ρ, F and G are differentiable at r, and by step 3: liminf_{h→0+} ofReal(h⁻¹)·μ({r − h < f < r}) ≤ ofReal(deriv F r) ≤ c = ofReal(4/ρ)·B (as r ∈ S), and liminf_{h→0+} ofReal(h⁻¹)·μ'({r − h < f < r}) ≤ ofReal(deriv G r) < ∞. ∎
+
+## Key steps
+
+1. F(t) := μ({f < t}), G(t) := μ'({f < t}) are finite and monotone; μ({t − h < f < t}) ≤ F(t) − F(t − h).
+2. At a differentiability point, the left difference quotient tends to F′(t), so the liminf of h⁻¹μ({t − h < f < t}) is ≤ ofReal(F′(t)); likewise for μ' and G.
+3. F and G are differentiable off a null set (Lebesgue).
+4. ∫⁻_{(ρ/2,ρ)} ofReal(F′) ≤ F(ρ) ≤ B (accepted cmcs_smi_lintegral_ofReal_deriv_le); Markov gives F′ ≤ (4/ρ)B on a subset of (ρ/2, ρ) of positive measure (cases B = ∞, B = 0, 0 < B < ∞).
+5. Pick r in that set outside the null set.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest)`
+- `rg -n -i 'deformation|skeleton|telescop' project/GMT -g '*.lean'`
+- `rg -n 'theorem LipschitzOnWith.extend_real|theorem LipschitzOnWith.extend_pi' mathlib/Mathlib`
+- `rg -n 'theorem Monotone.ae_differentiableAt|theorem measurable_deriv|theorem hasDerivAt_iff_tendsto_slope_zero|theorem HasDerivAt.tendsto_slope_zero_left|theorem mul_meas_ge_le_lintegral₀|theorem enorm_integral_le_lintegral_enorm|theorem ENNReal.tsum_geometric|theorem isClosedEmbedding_coe_real|theorem lipschitz_infDist_pt|theorem isClosed_cthickening' mathlib/Mathlib`
+- `rg -n 'cmcsd_' over the snapshot project, mathlib and lake-packages-25730c7c/simongmt (no match)`
+- `rg -n 'theorem countablyRectifiable_of_measure_zero|theorem GeometricCurrentOn.isOpen_zeroRegion|theorem tsupport_exteriorDerivative_subset' lake-packages-25730c7c/simongmt/Poincare/SimonGMT`
+- `python3 -I scan of runs/20261011T150044Z-ba604216b4/dag.json (961 nodes): frozen types of the selected node and of siblings RET/GC/PF/IMS, accepted reusable declarations (support, mass, IMRep, Lebesgue-derivative lemmas), name collisions for the cmcsd_ prefix (none)`
+- `git show ae810e9b / 7a706164 / ea5c1199 / 6efe397f (accepted proofs of lcmp_imRep_measure_restrict, cmr_abs_apply_le_massOn, cmc_fc_cs_massOn_sub_le, cmcs_smi_lintegral_ofReal_deriv_le)`
+- `lean Types.lean (16 stub types elaborate); lean InstCheck.lean (coercions, rfl checks); lean AssemblyAx.lean (selected type from stubs; axioms propext, Classical.choice, Quot.sound + named stubs); lean ReusedCheck.lean (reused proofs, standard axioms); lean Probe3/Probe4.lean (lemma names: measure_sdiff, setIntegral_sdiff, image_eq_zero_of_notMem_tsupport)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Slope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/Int.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-9a64d46574/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcsd_skeleton_deformation_decomposition/Types.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcsd_skeleton_deformation_decomposition/AssemblyAx.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcsd_skeleton_deformation_decomposition/ReusedCheck.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same contract as the workspace Contract.lean and Submission.lean. Its only deformation-theorem material is the separate, unsolved Ch06 specification (project/GMT/Ch06/Contract.lean, DeformationTheorem with IsLatticeChain/Eucl). Those types are incompatible with Ch07, so nothing there is reusable. Mathlib supplies every tool the child proofs cite: LipschitzOnWith.extend_real/extend_pi (McShane), Monotone.ae_differentiableAt, measurable_deriv, HasDerivAt.tendsto_slope_zero_left, Markov (mul_meas_ge_le_lintegral₀), enorm_integral_le_lintegral_enorm, ENNReal.tsum_geometric, lipschitz_infDist_pt, isClosed_cthickening and Int.isClosedEmbedding_coe_real. SimonGMT supplies countablyRectifiable_of_measure_zero, isOpen_zeroRegion and tsupport_exteriorDerivative_subset. The DAG yields four accepted, reusable declarations with identical types: cmcs_smi_lintegral_ofReal_deriv_le, cmc_fc_cs_massOn_sub_le, cmr_abs_apply_le_massOn and lcmp_imRep_measure_restrict. Their proofs recompile with standard axioms. The prefix cmcsd_ has no match anywhere. All child types elaborate, and the assembly of the selected frozen type from the sibling and child types compiles with only propext, Classical.choice and Quot.sound beyond the named stubs.
