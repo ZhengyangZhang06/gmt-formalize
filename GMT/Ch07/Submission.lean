@@ -1654,6 +1654,279 @@ theorem Submission.cbr_ci_cp_eval_eq_orthonormal_frame : ∀ (P d : ℕ) (ζ₀ 
   · obtain ⟨w, hw, hwspan, hwβ⟩ := Submission.cbr_ci_cp_exists_orthonormal_frame_eval_neg P d v hv
     exact ⟨w, hw, hwspan.trans hspan, fun β => by rw [hζ β, hs, hwβ β, mul_neg_one]⟩
 
+/-- A measure `m` on `ℝᴾ` carried by an `n`-dimensional linear subspace `V`, finite on compact
+sets and invariant under the translations by `V`, is a constant multiple of `Hⁿ⌞V` (used for the
+product structure of translation invariant measures in the integer multiplicity part of Simon
+7.2.4, Remark 7.2.5(1)).  The orthogonal projection `π : ℝᴾ → V` pushes `m` forward to a
+translation invariant measure on `V`, finite on compact sets, hence `c • vol_V` by uniqueness of
+Haar measure.  As `m` is carried by `V`, it is the image of `π_# m` under the inclusion
+`V → ℝᴾ`, an isometry, and `μHE[n] = vol_V` on `V`. -/
+theorem Submission.cbr_ci_cp_prod_subspace_haar : ∀ (P n : ℕ) (m : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → m (V : Set (Euclid P))ᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → m K < ∞) → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → m ((fun x => v + x) ⁻¹' A) = m A) → ∃ c : ℝ≥0∞, m = c • (μHE[n]).restrict (V : Set (Euclid P)) := by
+  intro P n m V hn hVc hcpt hinv
+  subst hn
+  -- the orthogonal projection `π` onto `V` fixes `V` pointwise
+  have hπ : ∀ x ∈ V, ((V.orthogonalProjectionOnto x : V) : Euclid P) = x := fun x hx => by
+    simpa using congrArg Subtype.val (V.orthogonalProjectionOnto_mem_subspace_eq_self ⟨x, hx⟩)
+  have hπm : Measurable V.orthogonalProjectionOnto :=
+    V.orthogonalProjectionOnto.continuous.measurable
+  -- invariance of `m` under the translations by `V`, as an identity of measures
+  have htr : ∀ v ∈ V, m.map (fun x => v + x) = m := fun v hv => by
+    ext A hA
+    rw [Measure.map_apply (measurable_const_add v) hA, hinv v hv A hA]
+  -- `m' = π_# m` is translation invariant on `V`, as `(g + ·) ∘ π = π ∘ (g + ·)` for `g ∈ V`
+  set m' : Measure V := m.map V.orthogonalProjectionOnto with hm'
+  have hinv' : m'.IsAddLeftInvariant := ⟨fun g => by
+    have hcomm : (fun x : V => g + x) ∘ V.orthogonalProjectionOnto =
+        V.orthogonalProjectionOnto ∘ (fun x => (g : Euclid P) + x) := by
+      funext x; simp
+    rw [hm', Measure.map_map (measurable_const_add g) hπm, hcomm,
+      ← Measure.map_map hπm (measurable_const_add _), htr _ g.2]⟩
+  -- `m'` is finite on compact sets, as `π⁻¹ K ⊆ ι K ∪ Vᶜ` and `m Vᶜ = 0`
+  have hfin' : IsFiniteMeasureOnCompacts m' := ⟨fun K hK => by
+    rw [hm', Measure.map_apply hπm hK.isClosed.measurableSet]
+    calc m (V.orthogonalProjectionOnto ⁻¹' K)
+        ≤ m (Subtype.val '' K ∪ (V : Set (Euclid P))ᶜ) := by
+          refine measure_mono fun x hx => ?_
+          by_cases hxV : x ∈ V
+          · exact Or.inl ⟨_, hx, hπ x hxV⟩
+          · exact Or.inr hxV
+      _ ≤ m (Subtype.val '' K) + m (V : Set (Euclid P))ᶜ := measure_union_le _ _
+      _ < ∞ := by
+          rw [hVc, add_zero]
+          exact hcpt _ (hK.image continuous_subtype_val)⟩
+  -- uniqueness of Haar measure on `V`
+  obtain ⟨c, hc⟩ : ∃ c : NNReal, m' = c • (volume : Measure V) :=
+    ⟨_, Measure.isAddLeftInvariant_eq_smul m' volume⟩
+  -- `m = ι_# m'` for the inclusion `ι : V → ℝᴾ`, as `ι ∘ π = id` on `V`, which carries `m`
+  have hm : m = m'.map Subtype.val := by
+    rw [hm', Measure.map_map continuous_subtype_val.measurable hπm]
+    conv_lhs => rw [← Measure.map_id (μ := m)]
+    refine Measure.map_congr (measure_mono_null (fun x hx => ?_) hVc)
+    exact fun hxV => hx (hπ x hxV).symm
+  -- `ι_# vol_V = Hⁿ⌞V`, as `μHE[n] = vol_V` on `V` and `ι` is an isometry with range `V`
+  have hvol : (volume : Measure V).map Subtype.val =
+      (μHE[Module.finrank ℝ V]).restrict (V : Set (Euclid P)) := by
+    rw [← InnerProductSpace.euclideanHausdorffMeasure_eq_volume,
+      isometry_subtype_coe.map_euclideanHausdorffMeasure, Subtype.range_coe]
+  refine ⟨c, ?_⟩
+  rw [hm, hc, Measure.map_smul _ continuous_subtype_val.aemeasurable, hvol,
+    Measure.coe_nnreal_smul]
+
+/-- Let `ν` be a measure on `ℝᴾ`, finite on compact sets and invariant under the translations by
+an `n`-dimensional linear subspace `V`, and let `p`, `q` be the orthogonal projections onto `V`
+and `Vᗮ`.  Then `ν(p⁻¹ A ∩ q⁻¹ B) = σ(B) Hⁿ(A ∩ V)` for all Borel `A`, `B`, for a measure `σ`
+carried by `Vᗮ` and finite on compact sets (used for the product structure of translation
+invariant measures in the integer multiplicity part of Simon 7.2.4, Remark 7.2.5(1)).  Take
+`σ = ωₙ⁻¹ q_#(ν⌞p⁻¹ B_1(0))`.  For bounded `B`, `p_#(ν⌞q⁻¹ B)` is carried by `V`, finite on
+compact sets and invariant under the translations by `V`, hence equal to `c Hⁿ⌞V`; evaluating at
+`B_1(0)`, where `Hⁿ(V ∩ B_1(0)) = ωₙ`, gives `c = σ(B)`.  Exhausting `B` by the bounded sets
+`B ∩ B_j(0)` gives the general case. -/
+theorem Submission.cbr_ci_cp_prod_rectangle_formula : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A) → ∃ σ : Measure (Euclid P), σ (Vᗮ : Set (Euclid P))ᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) ∧ ∀ A B : Set (Euclid P), MeasurableSet A → MeasurableSet B → ν (V.starProjection ⁻¹' A ∩ Vᗮ.starProjection ⁻¹' B) = σ B * μHE[n] (A ∩ (V : Set (Euclid P))) := by
+  intro P n ν V hn hcpt hinv
+  -- `p = V.starProjection` and `q = Vᗮ.starProjection` are continuous linear, hence measurable
+  have hpm : Measurable V.starProjection := V.starProjection.continuous.measurable
+  have hqm : Measurable Vᗮ.starProjection := Vᗮ.starProjection.continuous.measurable
+  -- for `v ∈ V`, `p (v + y) = v + p y` and `q (v + y) = q y`
+  have hpv : ∀ v ∈ V, ∀ y, V.starProjection (v + y) = v + V.starProjection y := fun v hv y => by
+    rw [map_add, Submodule.starProjection_eq_self_iff.2 hv]
+  have hqv : ∀ v ∈ V, ∀ y, Vᗮ.starProjection (v + y) = Vᗮ.starProjection y := fun v hv y => by
+    rw [map_add, Submodule.starProjection_orthogonal_apply_eq_zero hv, zero_add]
+  -- boxes `{y : p y ∈ E, q y ∈ F}` with `E`, `F` bounded lie in a compact ball, as `y = p y + q y`
+  have hbox : ∀ E F : Set (Euclid P), Bornology.IsBounded E → Bornology.IsBounded F →
+      ν (V.starProjection ⁻¹' E ∩ Vᗮ.starProjection ⁻¹' F) < ∞ := by
+    intro E F hE hF
+    obtain ⟨R, hR⟩ := hE.subset_closedBall 0
+    obtain ⟨S, hS⟩ := hF.subset_closedBall 0
+    refine lt_of_le_of_lt (measure_mono fun y hy => ?_) (hcpt _ (isCompact_closedBall 0 (R + S)))
+    rw [mem_closedBall_zero_iff, ← V.starProjection_add_starProjection_orthogonal y]
+    exact (norm_add_le _ _).trans
+      (add_le_add (mem_closedBall_zero_iff.1 (hR hy.1)) (mem_closedBall_zero_iff.1 (hS hy.2)))
+  -- `Hⁿ(B_1(0) ∩ V) = ωₙ`, and `0 < ωₙ < ∞`
+  have hω : μHE[n] (ball (0 : Euclid P) 1 ∩ V) = unitBallVolume n := by
+    rw [Set.inter_comm, Submission.idtp_tdc_subspace_ball_measure P n V 0 1 hn V.zero_mem one_pos]
+    simp
+  have hω0 : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- `σ = ωₙ⁻¹ q_#(ν⌞p⁻¹ B_1(0))`, so `σ(B) = ωₙ⁻¹ ν(q⁻¹ B ∩ p⁻¹ B_1(0))` for Borel `B`
+  obtain ⟨σ, hσB⟩ : ∃ σ : Measure (Euclid P), ∀ B, MeasurableSet B → σ B =
+      (unitBallVolume n)⁻¹ * ν (Vᗮ.starProjection ⁻¹' B ∩ V.starProjection ⁻¹' ball 0 1) :=
+    ⟨(unitBallVolume n)⁻¹ • (ν.restrict (V.starProjection ⁻¹' ball 0 1)).map Vᗮ.starProjection,
+      fun B hB => by
+        rw [Measure.smul_apply, Measure.map_apply hqm hB, Measure.restrict_apply (hqm hB),
+          smul_eq_mul]⟩
+  -- the rectangle formula for bounded Borel `B`
+  have hbdd : ∀ A B : Set (Euclid P), MeasurableSet A → MeasurableSet B → Bornology.IsBounded B →
+      ν (V.starProjection ⁻¹' A ∩ Vᗮ.starProjection ⁻¹' B) = σ B * μHE[n] (A ∩ V) := by
+    intro A B hA hB hBb
+    -- `m = p_#(ν⌞q⁻¹ B)`, with `m(E) = ν(p⁻¹ E ∩ q⁻¹ B)` for Borel `E`
+    obtain ⟨m, hmE⟩ : ∃ m : Measure (Euclid P), ∀ E, MeasurableSet E →
+        m E = ν (V.starProjection ⁻¹' E ∩ Vᗮ.starProjection ⁻¹' B) :=
+      ⟨(ν.restrict (Vᗮ.starProjection ⁻¹' B)).map V.starProjection, fun E hE => by
+        rw [Measure.map_apply hpm hE, Measure.restrict_apply (hpm hE)]⟩
+    -- `m` is carried by `V`, as `p y ∈ V`
+    have hmV : m (V : Set (Euclid P))ᶜ = 0 := by
+      rw [hmE _ (Submodule.closed_of_finiteDimensional V).measurableSet.compl]
+      exact measure_mono_null (fun y hy => absurd (V.starProjection_apply_mem y) hy.1) measure_empty
+    -- `m` is finite on compact sets, as compact sets are bounded
+    have hmcpt : ∀ K : Set (Euclid P), IsCompact K → m K < ∞ := fun K hK => by
+      rw [hmE K hK.isClosed.measurableSet]
+      exact hbox K B hK.isBounded hBb
+    -- `m` is invariant under the translations by `V`, as `ν` is
+    have hminv : ∀ v ∈ V, ∀ E : Set (Euclid P), MeasurableSet E →
+        m ((fun x => v + x) ⁻¹' E) = m E := by
+      intro v hv E hE
+      have hpre : V.starProjection ⁻¹' ((fun x => v + x) ⁻¹' E) ∩ Vᗮ.starProjection ⁻¹' B =
+          (fun x => v + x) ⁻¹' (V.starProjection ⁻¹' E ∩ Vᗮ.starProjection ⁻¹' B) := by
+        ext y
+        simp only [mem_inter_iff, mem_preimage, hpv v hv, hqv v hv]
+      rw [hmE _ (hE.preimage (measurable_const_add v)), hmE E hE, hpre,
+        hinv v hv _ ((hpm hE).inter (hqm hB))]
+    -- `m = c • Hⁿ⌞V`; evaluating at `B_1(0)` gives `c = σ(B)`
+    obtain ⟨c, hc⟩ := Submission.cbr_ci_cp_prod_subspace_haar P n m V hn hmV hmcpt hminv
+    have hball : ν (V.starProjection ⁻¹' ball 0 1 ∩ Vᗮ.starProjection ⁻¹' B) =
+        unitBallVolume n * c := by
+      rw [← hmE (ball 0 1) measurableSet_ball, hc, Measure.smul_apply,
+        Measure.restrict_apply measurableSet_ball, hω, smul_eq_mul, mul_comm]
+    have hσc : σ B = c := by
+      rw [hσB B hB, Set.inter_comm, hball, ENNReal.inv_mul_cancel_left hω0 hωtop]
+    rw [← hmE A hA, hc, Measure.smul_apply, Measure.restrict_apply hA, hσc, smul_eq_mul]
+  refine ⟨σ, ?_, fun K hK => ?_, fun A B hA hB => ?_⟩
+  · -- `σ` is carried by `Vᗮ`, as `q y ∈ Vᗮ`
+    rw [hσB _ V.isClosed_orthogonal.measurableSet.compl,
+      measure_mono_null (fun y hy => absurd (Vᗮ.starProjection_apply_mem y) hy.1) measure_empty,
+      mul_zero]
+  · -- `σ` is finite on compact sets, as compact sets are bounded and `ωₙ ≠ 0`
+    rw [hσB K hK.isClosed.measurableSet, Set.inter_comm]
+    exact ENNReal.mul_lt_top (ENNReal.inv_lt_top.2 (pos_iff_ne_zero.2 hω0))
+      (hbox _ _ isBounded_ball hK.isBounded)
+  · -- exhaust `B` by the bounded sets `B ∩ B_j(0)`, by continuity from below for `ν` and `σ`
+    have hmono : Monotone fun j : ℕ => B ∩ ball (0 : Euclid P) j := fun i j hij =>
+      inter_subset_inter_right _ (ball_subset_ball (Nat.cast_le.2 hij))
+    have hU : ⋃ j : ℕ, B ∩ ball (0 : Euclid P) j = B := by
+      rw [← inter_iUnion, iUnion_ball_nat, inter_univ]
+    have hmono' : Monotone fun j : ℕ =>
+        V.starProjection ⁻¹' A ∩ Vᗮ.starProjection ⁻¹' (B ∩ ball (0 : Euclid P) j) :=
+      fun i j hij => inter_subset_inter_right _ (preimage_mono (hmono hij))
+    have hνU := hmono'.measure_iUnion (μ := ν)
+    have hσU := hmono.measure_iUnion (μ := σ)
+    rw [← inter_iUnion, ← preimage_iUnion, hU] at hνU
+    rw [hU] at hσU
+    rw [hνU, hσU, ENNReal.iSup_mul]
+    exact iSup_congr fun j => hbdd A _ hA (hB.inter measurableSet_ball)
+      (isBounded_ball.subset inter_subset_right)
+/-- If `σ` is carried by `Vᗮ` and finite on compact sets, and `ν` has the rectangle values
+`ν(p⁻¹(A) ∩ q⁻¹(B)) = σ(B) Hⁿ(A ∩ V)` for Borel `A`, `B` (`p`, `q` the orthogonal projections onto
+the `n`-dimensional subspace `V` and onto `Vᗮ`), then `ν(A) = ∫_V σ({y : t + y ∈ A}) dHⁿ(t)`, i.e.
+`ν` is the image of `(Hⁿ⌞V) ⊗ σ` under `(t, y) ↦ t + y` (used, via the closure theorem, in the
+proof of Simon 7.2.4).  The rectangles form a π-system generating the Borel sets (`y = p y + q y`),
+the image measure takes the same values on them because `σ` is carried by `Vᗮ`, and the rectangles
+over the balls `B_{j+1}(0)` cover `ℝᴾ` and have finite `ν`-measure, so the two measures agree. -/
+theorem Submission.cbr_ci_cp_prod_of_rectangles : ∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → σ (Vᗮ : Set (Euclid P))ᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) → (∀ A B : Set (Euclid P), MeasurableSet A → MeasurableSet B → ν (V.starProjection ⁻¹' A ∩ Vᗮ.starProjection ⁻¹' B) = σ B * μHE[n] (A ∩ (V : Set (Euclid P)))) → ∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n] := by
+  intro P n ν σ V hn hσ hσfin hrect A hA
+  -- `σ` is finite on compact sets, hence locally finite and σ-finite on `ℝᴾ`
+  have : IsFiniteMeasureOnCompacts σ := ⟨hσfin⟩
+  have hp : Measurable V.starProjection := V.starProjection.continuous.measurable
+  have hq : Measurable Vᗮ.starProjection := Vᗮ.starProjection.continuous.measurable
+  have hV : MeasurableSet (V : Set (Euclid P)) := V.closed_of_finiteDimensional.measurableSet
+  -- the candidate `λ = s_#((Hⁿ⌞V) ⊗ σ)` with `s(t, y) = t + y`
+  have hs : Measurable fun z : Euclid P × Euclid P => z.1 + z.2 := measurable_fst.add measurable_snd
+  have hlam : ∀ A : Set (Euclid P), MeasurableSet A →
+      ((μHE[n].restrict (V : Set (Euclid P))).prod σ).map (fun z => z.1 + z.2) A =
+        ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n] := by
+    intro A hA
+    rw [Measure.map_apply hs hA, Measure.prod_apply (hs hA)]
+    rfl
+  rw [← hlam A hA]
+  congr 1
+  -- rectangles `p⁻¹(A) ∩ q⁻¹(B)` form a π-system generating the Borel σ-algebra
+  let C : Set (Set (Euclid P)) := {S | ∃ A B : Set (Euclid P), MeasurableSet A ∧ MeasurableSet B ∧
+    S = V.starProjection ⁻¹' A ∩ Vᗮ.starProjection ⁻¹' B}
+  have hgen : (inferInstance : MeasurableSpace (Euclid P)) = MeasurableSpace.generateFrom C := by
+    refine le_antisymm ?_ (MeasurableSpace.generateFrom_le ?_)
+    · have hp' : Measurable[MeasurableSpace.generateFrom C] V.starProjection := fun A hA =>
+        MeasurableSpace.measurableSet_generateFrom ⟨A, univ, hA, MeasurableSet.univ, by
+          rw [preimage_univ, inter_univ]⟩
+      have hq' : Measurable[MeasurableSpace.generateFrom C] Vᗮ.starProjection := fun B hB =>
+        MeasurableSpace.measurableSet_generateFrom ⟨univ, B, MeasurableSet.univ, hB, by
+          rw [preimage_univ, univ_inter]⟩
+      have hid := @Measurable.add _ _ _ _ (MeasurableSpace.generateFrom C)
+        (fun y => V.starProjection y) (fun y => Vᗮ.starProjection y) _ hp' hq'
+      have hfun : ((fun y => V.starProjection y) + fun y => Vᗮ.starProjection y) = id :=
+        funext V.starProjection_add_starProjection_orthogonal
+      rw [hfun] at hid
+      exact fun S hS => hid hS
+    · rintro _ ⟨A, B, hA, hB, rfl⟩
+      exact (hp hA).inter (hq hB)
+  have hpi : IsPiSystem C := by
+    rintro _ ⟨A, B, hA, hB, rfl⟩ _ ⟨A', B', hA', hB', rfl⟩ _
+    exact ⟨A ∩ A', B ∩ B', hA.inter hA', hB.inter hB', by
+      rw [preimage_inter, preimage_inter, inter_inter_inter_comm]⟩
+  -- the rectangles `p⁻¹(B_{j+1}(0)) ∩ q⁻¹(B_{j+1}(0))` cover `ℝᴾ` and have finite `ν`-measure
+  refine Measure.ext_of_generateFrom_of_iUnion C
+    (fun j : ℕ => V.starProjection ⁻¹' ball 0 (j + 1) ∩ Vᗮ.starProjection ⁻¹' ball 0 (j + 1))
+    hgen hpi ?_ ?_ ?_ ?_
+  · refine eq_univ_of_forall fun y => mem_iUnion.2 ?_
+    obtain ⟨j, hj⟩ := exists_nat_gt (max ‖V.starProjection y‖ ‖Vᗮ.starProjection y‖)
+    exact ⟨j, mem_ball_zero_iff.2 ((le_max_left _ _).trans_lt (hj.trans (lt_add_one _))),
+      mem_ball_zero_iff.2 ((le_max_right _ _).trans_lt (hj.trans (lt_add_one _)))⟩
+  · exact fun j => ⟨_, _, measurableSet_ball, measurableSet_ball, rfl⟩
+  · intro j
+    rw [hrect _ _ measurableSet_ball measurableSet_ball, inter_comm,
+      Submission.idtp_tdc_subspace_ball_measure P n V 0 (j + 1) hn V.zero_mem (by positivity)]
+    exact ENNReal.mul_ne_top measure_ball_lt_top.ne
+      (ENNReal.mul_ne_top (measure_ball_lt_top (μ := volume)).ne ENNReal.ofReal_ne_top)
+  -- `ν` and `λ` agree on rectangles because `σ` is carried by `Vᗮ`
+  · rintro _ ⟨A, B, hA, hB, rfl⟩
+    rw [hrect A B hA hB, hlam _ ((hp hA).inter (hq hB))]
+    have key : EqOn (fun t => σ ((fun y => t + y) ⁻¹'
+        (V.starProjection ⁻¹' A ∩ Vᗮ.starProjection ⁻¹' B))) (A.indicator fun _ => σ B) V := by
+      intro t ht
+      have hsec : ∀ y ∈ (Vᗮ : Set (Euclid P)),
+          V.starProjection (t + y) = t ∧ Vᗮ.starProjection (t + y) = y := by
+        intro y hy
+        refine ⟨?_, ?_⟩
+        · rw [map_add, V.starProjection_eq_self_iff.mpr ht,
+            V.starProjection_apply_eq_zero_iff.mpr hy, add_zero]
+        · rw [map_add, V.starProjection_orthogonal_apply_eq_zero ht,
+            Vᗮ.starProjection_eq_self_iff.mpr hy, zero_add]
+      simp only
+      rw [← measure_inter_conull hσ]
+      by_cases htA : t ∈ A
+      · rw [indicator_of_mem htA, ← measure_inter_conull (s := B) hσ]
+        congr 1
+        ext y
+        simp only [mem_inter_iff, mem_preimage]
+        constructor
+        · rintro ⟨⟨-, hyB⟩, hy⟩
+          rw [(hsec y hy).2] at hyB
+          exact ⟨hyB, hy⟩
+        · rintro ⟨hyB, hy⟩
+          rw [(hsec y hy).1, (hsec y hy).2]
+          exact ⟨⟨htA, hyB⟩, hy⟩
+      · rw [indicator_of_notMem htA]
+        convert measure_empty (μ := σ)
+        ext y
+        simp only [mem_inter_iff, mem_preimage, mem_empty_iff_false, iff_false]
+        rintro ⟨⟨hyA, -⟩, hy⟩
+        exact htA ((hsec y hy).1 ▸ hyA)
+    rw [setLIntegral_congr_fun hV key, lintegral_indicator_const hA, Measure.restrict_apply hA]
+
+/-- A measure `ν` on `ℝᴾ`, finite on compact sets and invariant under the translations by an
+`n`-dimensional linear subspace `V`, is the image of `(Hⁿ⌞V) ⊗ σ` under `(t, y) ↦ t + y` for a
+measure `σ` carried by `V^⊥` and finite on compact sets (used for the product structure of
+translation invariant measures in the integer multiplicity part of Simon 7.2.4, Remark
+7.2.5(1)).  With `p = V.starProjection` and `q = Vᗮ.starProjection`, uniqueness of Haar measure
+on `V` gives such a `σ` with `ν(p⁻¹(A) ∩ q⁻¹(B)) = σ(B)·Hⁿ(A ∩ V)` for Borel `A`, `B`; the image
+of `(Hⁿ⌞V) ⊗ σ` under addition has the same values on these rectangles, which form a generating
+π-system covered by countably many rectangles of finite measure, so it equals `ν`. -/
+theorem Submission.cbr_ci_cp_invariant_measure_product : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)), Module.finrank ℝ V = n → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ v ∈ V, ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => v + x) ⁻¹' A) = ν A) → ∃ σ : Measure (Euclid P), σ (Vᗮ : Set (Euclid P))ᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → σ K < ∞) ∧ ∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n] := by
+  intro P n ν V hn hcpt hinv
+  -- the transverse measure `σ` on `V^⊥` and the rectangle formula (Haar uniqueness on `V`)
+  obtain ⟨σ, hσV, hσcpt, hrect⟩ :=
+    Submission.cbr_ci_cp_prod_rectangle_formula P n ν V hn hcpt hinv
+  -- `ν` agrees with the image of `(Hⁿ⌞V) ⊗ σ` on rectangles, hence on all Borel sets
+  exact ⟨σ, hσV, hσcpt, Submission.cbr_ci_cp_prod_of_rectangles P n ν σ V hn hσV hσcpt hrect⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
