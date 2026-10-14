@@ -9348,6 +9348,43 @@ followed by the translation by `−x`, which preserves `Hⁿ`, while the homothe
 theorem Submission.regcomp_atl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R)) := by
   intro P n x r R S hr
   -- `‖η(z)‖ = r⁻¹‖z − x‖`
+  have hnorm : ∀ z : Euclid P,
+      ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z‖ = r⁻¹ * ‖z - x‖ := by
+    intro z
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (inv_pos.mpr hr)]
+  -- Step 1: `η(S) ∩ B̄(0, R) = η(S ∩ B̄(x, rR))`
+  have hset : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R =
+      Poincare.SimonGMT.Chapter03.blowUpMap x r '' (S ∩ closedBall x (r * R)) := by
+    ext y
+    constructor
+    · rintro ⟨⟨z, hz, rfl⟩, hy⟩
+      refine ⟨z, ⟨hz, ?_⟩, rfl⟩
+      rw [mem_closedBall_zero_iff, hnorm] at hy
+      rw [mem_closedBall, dist_eq_norm]
+      calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by field_simp
+        _ ≤ r * R := mul_le_mul_of_nonneg_left hy hr.le
+    · rintro ⟨z, ⟨hz, hzx⟩, rfl⟩
+      refine ⟨⟨z, hz, rfl⟩, ?_⟩
+      rw [mem_closedBall, dist_eq_norm] at hzx
+      rw [mem_closedBall_zero_iff, hnorm]
+      calc r⁻¹ * ‖z - x‖ ≤ r⁻¹ * (r * R) := mul_le_mul_of_nonneg_left hzx (inv_pos.mpr hr).le
+        _ = R := by field_simp
+  -- Step 2: `η = τ ∘ h` with `h = homothety x r⁻¹` and `τ y = y + (-x)`
+  have hcomp : Poincare.SimonGMT.Chapter03.blowUpMap x r =
+      (fun y : Euclid P => y + -x) ∘ AffineMap.homothety x r⁻¹ := by
+    funext z
+    simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
+  -- Step 3: `μ(η(T)) = (ENNReal.ofReal r)⁻¹ ^ n * μ(T)`
+  have hscale : ∀ T : Set (Euclid P), μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) =
+      (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] T := by
+    intro T
+    rw [hcomp, Set.image_comp, (isometry_add_right (-x)).euclideanHausdorffMeasure_image,
+      euclideanHausdorffMeasure_homothety_image n x (inv_ne_zero hr.ne') T, ENNReal.smul_def,
+      smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
+      Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
+  -- Step 4: conclusion
+  rw [hset, hscale]
 /-- Localized Besicovitch density (Simon Ch. 1, Theorem 3.16; Mathlib's
 `Besicovitch.ae_tendsto_measure_inter_div`).  Let `U` be open, `A ⊆ B ⊆ U` Borel, and
 `Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e. `x` and every `ε > 0`,
@@ -9531,7 +9568,6 @@ theorem Submission.rsdic_tl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid
     intro z
     rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, Real.norm_eq_abs,
       abs_of_pos (inv_pos.mpr hr)]
-  -- Step 1: `η(S) ∩ B̄(0, R) = η(S ∩ B̄(x, rR))`
   -- `η(S) ∩ B̄_R(0) = η(S ∩ B̄_{rR}(x))`
   have hset : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R =
       Poincare.SimonGMT.Chapter03.blowUpMap x r '' (S ∩ closedBall x (r * R)) := by
@@ -9540,16 +9576,6 @@ theorem Submission.rsdic_tl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid
     · rintro ⟨⟨z, hz, rfl⟩, hy⟩
       refine ⟨z, ⟨hz, ?_⟩, rfl⟩
       rw [mem_closedBall_zero_iff, hnorm] at hy
-      rw [mem_closedBall, dist_eq_norm]
-      calc ‖z - x‖ = r * (r⁻¹ * ‖z - x‖) := by field_simp
-        _ ≤ r * R := mul_le_mul_of_nonneg_left hy hr.le
-    · rintro ⟨z, ⟨hz, hzx⟩, rfl⟩
-      refine ⟨⟨z, hz, rfl⟩, ?_⟩
-      rw [mem_closedBall, dist_eq_norm] at hzx
-      rw [mem_closedBall_zero_iff, hnorm]
-      calc r⁻¹ * ‖z - x‖ ≤ r⁻¹ * (r * R) := mul_le_mul_of_nonneg_left hzx (inv_pos.mpr hr).le
-        _ = R := by field_simp
-  -- Step 2: `η = τ ∘ h` with `h = homothety x r⁻¹` and `τ y = y + (-x)`
       rw [mem_closedBall, dist_eq_norm, ← mul_inv_cancel_left₀ hr.ne' ‖z - x‖]
       exact mul_le_mul_of_nonneg_left hy hr.le
     · rintro ⟨z, ⟨hz, hzx⟩, rfl⟩
@@ -9562,7 +9588,6 @@ theorem Submission.rsdic_tl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid
       (fun y : Euclid P => y + -x) ∘ AffineMap.homothety x r⁻¹ := by
     funext z
     simp [Poincare.SimonGMT.Chapter03.blowUpMap, AffineMap.homothety_apply]
-  -- Step 3: `μ(η(T)) = (ENNReal.ofReal r)⁻¹ ^ n * μ(T)`
   -- `μ(η(T)) = μ(h(T)) = ‖r⁻¹‖₊ⁿ μ(T) = (ofReal r)⁻¹ⁿ μ(T)`
   have hscale : ∀ T : Set (Euclid P), μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' T) =
       (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] T := by
@@ -9571,7 +9596,6 @@ theorem Submission.rsdic_tl_blowUp_measure_scaling : ∀ (P n : ℕ) (x : Euclid
       euclideanHausdorffMeasure_homothety_image n x (inv_ne_zero hr.ne') T, ENNReal.smul_def,
       smul_eq_mul, ENNReal.coe_pow, nnnorm_inv, ENNReal.coe_inv (nnnorm_ne_zero_iff.mpr hr.ne'),
       Real.nnnorm_of_nonneg hr.le, ← ENNReal.ofReal_eq_coe_nnreal hr.le]
-  -- Step 4: conclusion
   rw [hset, hscale]
 /-- Changing a set by parts of vanishing `n`-density at `x` does not change its approximate
 tangent spaces at `x` (Simon Ch. 3, Definition 1.4 and Remark 1.5(2); proof of 3.1.6).  For
@@ -10616,7 +10640,6 @@ theorem Submission.codim1_massOn_eq_lintegral_of_oriented_rep : ∀ (P k : ℕ) 
   exact ⟨hle, fun hI => le_antisymm hle
     (Submission.codim1_oriented_rep_lintegral_le_massOn P k U V M' T θ' ξ' hVU hθ hθ0 hξ hξQ hT W hW
       hWV hI)⟩
-  rw [hset, hscale]
 
 /-- **Simon Ch. 3, Remark 1.5(2)** (locality of approximate tangent spaces): if `A ⊆ B` are Borel,
 `Hⁿ(B ∩ B̄_{r₀}(x)) < ∞` and `Hⁿ((B ∖ A) ∩ B̄_ρ(x)) / ρⁿ → 0` as `ρ ↓ 0`, then `B` and `A` have
