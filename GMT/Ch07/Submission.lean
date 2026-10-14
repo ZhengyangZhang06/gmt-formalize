@@ -10919,6 +10919,75 @@ theorem Submission.dtc_bc_lc_sl_slice_identity : ∀ (P m : ℕ) (RT : IMRep (un
   simp only [inter_univ] at e1
   exact tendsto_nhds_unique e1 ((e2.sub e3).congr fun k => (ht (ωs k) (hωsD k)).symm)
 
+/-- **Simon Ch. 6, Lemma 4.5 and 4.8** (slicing an integer multiplicity current by a Lipschitz
+function).  Let `T = τ(M, θ, ξ) ∈ 𝒟_{m+2}(ℝᴾ)`, `∂T = τ(M', θ', ξ')` and `f` `L`-Lipschitz.  Then
+`P_t := ∂(T ⌞ {f < t}) − (∂T) ⌞ {f < t}` (4.6) has `t ↦ M_W(P_t)` a.e.-measurable with
+`∫ M_W(P_t) dt ≤ L M_W(T)` for open `W` (4.5(1)), and for a.e. `t` it is integer multiplicity and
+vanishes on forms supported off `f⁻¹(t)` (4.5(2), 4.8).  The hypothesis `m + 1 < P` is not used.
+
+Proof sketch:
+* For every `t`, the restrictions `A_t = T ⌞ {f < t}` and `B_t = (∂T) ⌞ {f < t}` are represented by
+  `(M ∩ {f < t}, θ, ξ)` and `(M' ∩ {f < t}, θ', ξ')`; then `P_t = ∂A_t − B_t` is given by the
+  stated integral formula for every `t`.
+* The slices `⟨T, f, t⟩ = τ(R_t)` (4.3–4.4) are carried by `f⁻¹(t)`, with
+  `∫ μ_{R_t}(W) dt ≤ L μ_T(W)` and the averaged identity of the proof of 4.5(2).
+* Remark 4.2 and a countable dense family of forms give `τ(R_t) = P_t` for a.e. `t`.
+* Hence `P_t` is integer multiplicity and vanishes on forms supported off `f⁻¹(t)` for a.e.
+  `t`, and `M_W(P_t) = μ_{R_t}(W)` (6.3.2(3)) gives the mass bound. -/
+theorem Submission.dtc_bc_lc_slice : ∀ (P m : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (RT : IMRep (univ : Set (Euclid P)) (m + 2)) (RB : IMRep (univ : Set (Euclid P)) (m + 1)) (f : Euclid P → ℝ) (L : NNReal), m + 1 < P → RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → ∃ Ps : ℝ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), (∀ W : Set (Euclid P), IsOpen W → AEMeasurable (fun t => (Ps t).massOn W) ∧ ∫⁻ t, (Ps t).massOn W ≤ (L : ℝ≥0∞) * T.massOn W) ∧ ∀ᵐ t, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (f ⁻¹' {t}) → Ps t ω = 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 2]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] := by
+  intro P m T RT RB f L _ hRT hRB hf
+  have hfm : Measurable f := hf.continuous.measurable
+  have hE : ∀ t : ℝ, MeasurableSet {x | f x < t} := fun t =>
+    (isOpen_lt hf.continuous continuous_const).measurableSet
+  -- (1) the restrictions `A_t = T ⌞ {f < t}` and `B_t = (∂T) ⌞ {f < t}`, for every `t`
+  have hres := Submission.cmc_imRep_locality_restrict_sub.2.1
+  choose A RA hRA hRAc hRAm hRAo using fun t : ℝ =>
+    hres P (m + 2) univ RT {x | f x < t} isOpen_univ (hE t)
+  choose B RB' hRB' hRB'c hRB'm hRB'o using fun t : ℝ =>
+    hres P (m + 1) univ RB {x | f x < t} isOpen_univ (hE t)
+  -- `P_t = ∂A_t − B_t` is given by the integral formula for every `t`
+  have hPs : ∀ (t : ℝ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)),
+      ((A t).boundary - B t) ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) *
+        RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 2]) -
+        ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) *
+          RB.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] := by
+    intro t ω
+    change (A t).boundary ω - B t ω = _
+    rw [GeometricCurrentOn.boundary_apply, hRA t, hRB' t]
+    simp only [IMRep.action]
+    rw [hRAc t, hRAm t, hRAo t, hRB'c t, hRB'm t, hRB'o t]
+    rfl
+  -- (2) the slices `R_t`, and `τ(R_t) = P_t` for a.e. `t`
+  obtain ⟨Rs, hRsc, hRsm, hRsi, hRsa⟩ :=
+    Submission.dtc_bc_lc_sl_slice_family P m T RT RB f L hRT hRB hf
+  have hid := Submission.dtc_bc_lc_sl_slice_identity P m RT RB Rs f hfm
+    (fun ω => (hRsi ω).locallyIntegrable) hRsa
+  have hrep : ∀ᵐ t, (Rs t).Represents ((A t).boundary - B t) := by
+    filter_upwards [hid] with t ht ω
+    rw [hPs t ω, ht ω]
+  refine ⟨fun t => (A t).boundary - B t, fun W hW => ?_, ?_⟩
+  · -- (3) mass: `M_W(P_t) = μ_{R_t}(W)` for a.e. `t` and `M_W(T) = μ_T(W)`
+    have hmeq : (fun t => (Rs t).measure W) =ᵐ[volume]
+        fun t => ((A t).boundary - B t).massOn W := by
+      filter_upwards [hrep] with t ht
+      exact (Submission.dtc_mass_eq_measure P (m + 1) univ W _ (Rs t) isOpen_univ hW
+        (subset_univ W) ht).symm
+    refine ⟨(hRsm W hW.measurableSet).1.congr hmeq, ?_⟩
+    calc ∫⁻ t, ((A t).boundary - B t).massOn W = ∫⁻ t, (Rs t).measure W :=
+          (lintegral_congr_ae hmeq).symm
+      _ ≤ (L : ℝ≥0∞) * RT.measure W := (hRsm W hW.measurableSet).2
+      _ = (L : ℝ≥0∞) * T.massOn W := by
+          rw [Submission.dtc_mass_eq_measure P (m + 2) univ W T RT isOpen_univ hW
+            (subset_univ W) hRT]
+  · -- (4) integer multiplicity, support in `f⁻¹(t)` and the slice formula, for a.e. `t`
+    filter_upwards [hrep] with t ht
+    refine ⟨⟨Rs t, ht⟩, fun ω hω => (ht ω).trans ?_, hPs t⟩
+    rw [IMRep.action]
+    refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+    have hx' : x ∉ tsupport (ω : DifferentialForm (Euclid P) (m + 1)) :=
+      fun h => Set.disjoint_left.mp hω h (hRsc t hx)
+    rw [image_eq_zero_of_notMem_tsupport hx', map_zero, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
