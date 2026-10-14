@@ -1835,6 +1835,70 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- **Bi-Lipschitz charts** (step 1 of the co-area argument for the slicing in the local
+comparison of blow-ups): if `ψ : ℝᵈ → ℝᴾ` is `C¹`, `K ⊆ ℝᵈ` is compact, `ψ` is injective on `K`
+and `Dψ(y)` is injective for every `y ∈ K`, then `m |a − b| ≤ |ψ(a) − ψ(b)| ≤ Λ |a − b|` on `K`
+for some `m > 0` and `Λ`.  The upper bound is the mean value inequality on a closed ball
+containing `K`, on which `‖Dψ‖` is bounded.  For the lower bound, pairs `aₖ, bₖ ∈ K` with
+`|ψ(aₖ) − ψ(bₖ)| < (k + 1)⁻¹ |aₖ − bₖ|` have a subsequence converging to some `(a, b)` in
+`K × K`; continuity gives `ψ(a) = ψ(b)`, hence `a = b` by injectivity on `K`, and the local lower
+Lipschitz bound of `codim1_rdo_c1cov_local_lower_lipschitz` near `a` gives a contradiction. -/
+theorem Submission.dtc_bc_lc_sl_co_chart_bilipschitz : ∀ (P d : ℕ) (ψ : Euclid d → Euclid P) (K : Set (Euclid d)), ContDiff ℝ 1 ψ → IsCompact K → InjOn ψ K → (∀ y ∈ K, Injective (fderiv ℝ ψ y)) → ∃ m Λ : ℝ, 0 < m ∧ ∀ a ∈ K, ∀ b ∈ K, m * ‖a - b‖ ≤ ‖ψ a - ψ b‖ ∧ ‖ψ a - ψ b‖ ≤ Λ * ‖a - b‖ := by
+  intro P d ψ K hψ hK hinj hD
+  -- upper bound: mean value inequality on a closed ball containing `K`, where `‖Dψ‖ ≤ C`
+  obtain ⟨R, hR⟩ : ∃ R, K ⊆ closedBall (0 : Euclid d) R := hK.isBounded.subset_closedBall 0
+  have hcont : Continuous (fun y => fderiv ℝ ψ y) := hψ.continuous_fderiv one_ne_zero
+  obtain ⟨C, hC⟩ := (isCompact_closedBall (0 : Euclid d) R).exists_bound_of_continuousOn
+    hcont.continuousOn
+  have hdiff : Differentiable ℝ ψ := hψ.differentiable one_ne_zero
+  have hup : ∀ a ∈ K, ∀ b ∈ K, ‖ψ a - ψ b‖ ≤ C * ‖a - b‖ := fun a ha b hb =>
+    (convex_closedBall (0 : Euclid d) R).norm_image_sub_le_of_norm_fderiv_le
+      (fun x _ => hdiff x) hC (hR hb) (hR ha)
+  -- lower bound by contradiction
+  have hlow : ∃ m : ℝ, 0 < m ∧ ∀ a ∈ K, ∀ b ∈ K, m * ‖a - b‖ ≤ ‖ψ a - ψ b‖ := by
+    by_contra hcon
+    push Not at hcon
+    -- `aₖ, bₖ ∈ K` with `|ψ(aₖ) − ψ(bₖ)| < (k + 1)⁻¹ |aₖ − bₖ|`
+    have hseq : ∀ k : ℕ, ∃ a ∈ K, ∃ b ∈ K, ‖ψ a - ψ b‖ < 1 / ((k : ℝ) + 1) * ‖a - b‖ :=
+      fun k => hcon _ (by positivity)
+    choose a ha b hb hab using hseq
+    -- a subsequence `(a (φ i), b (φ i)) → (a0, b0) ∈ K × K`
+    obtain ⟨⟨a0, b0⟩, ⟨ha0, hb0⟩, φ, hφ, hlim⟩ := (hK.prod hK).tendsto_subseq
+      (x := fun k => (a k, b k)) fun k => Set.mk_mem_prod (ha k) (hb k)
+    have hA : Tendsto (fun i => a (φ i)) atTop (𝓝 a0) := (continuous_fst.tendsto _).comp hlim
+    have hB : Tendsto (fun i => b (φ i)) atTop (𝓝 b0) := (continuous_snd.tendsto _).comp hlim
+    have hinv : Tendsto (fun i => 1 / ((φ i : ℝ) + 1)) atTop (𝓝 0) :=
+      tendsto_one_div_add_atTop_nhds_zero_nat.comp hφ.tendsto_atTop
+    -- the two limit points coincide: `ψ a0 = ψ b0` and `ψ` is injective on `K`
+    have hψc : Continuous ψ := hψ.continuous
+    have h1 : Tendsto (fun i => ‖ψ (a (φ i)) - ψ (b (φ i))‖) atTop (𝓝 ‖ψ a0 - ψ b0‖) :=
+      (((hψc.tendsto a0).comp hA).sub ((hψc.tendsto b0).comp hB)).norm
+    have h2 : Tendsto (fun i => 1 / ((φ i : ℝ) + 1) * ‖a (φ i) - b (φ i)‖) atTop
+        (𝓝 (0 * ‖a0 - b0‖)) := hinv.mul (hA.sub hB).norm
+    have h3 : ‖ψ a0 - ψ b0‖ ≤ 0 * ‖a0 - b0‖ :=
+      le_of_tendsto_of_tendsto' h1 h2 (fun i => (hab (φ i)).le)
+    have h4 : ψ a0 = ψ b0 := by
+      rw [zero_mul] at h3
+      exact sub_eq_zero.mp (norm_le_zero_iff.mp h3)
+    have hab0 : a0 = b0 := hinj ha0 hb0 h4
+    rw [← hab0] at hB
+    -- the local lower Lipschitz bound `μ |u − v| ≤ |ψ(u) − ψ(v)|` on `B_δ(a0)`
+    obtain ⟨δ, μ, hδ, hμ, hloc⟩ :=
+      Submission.codim1_rdo_c1cov_local_lower_lipschitz P d ψ a0 hψ (hD a0 ha0)
+    have e1 : ∀ᶠ i in atTop, a (φ i) ∈ ball a0 δ := hA.eventually_mem (ball_mem_nhds a0 hδ)
+    have e2 : ∀ᶠ i in atTop, b (φ i) ∈ ball a0 δ := hB.eventually_mem (ball_mem_nhds a0 hδ)
+    have e3 : ∀ᶠ i in atTop, 1 / ((φ i : ℝ) + 1) ∈ Iio μ :=
+      hinv.eventually_mem (Iio_mem_nhds hμ)
+    obtain ⟨i, hi1, hi2, hi3⟩ := (e1.and (e2.and e3)).exists
+    -- `μ |u − v| ≤ |ψ(u) − ψ(v)| < (φ i + 1)⁻¹ |u − v| ≤ μ |u − v|`
+    have k1 := hloc _ hi1 _ hi2
+    have k2 := hab (φ i)
+    have k3 : 1 / ((φ i : ℝ) + 1) * ‖a (φ i) - b (φ i)‖ ≤ μ * ‖a (φ i) - b (φ i)‖ :=
+      mul_le_mul_of_nonneg_right (Set.mem_Iio.mp hi3).le (norm_nonneg _)
+    linarith
+  obtain ⟨m, hm, hm'⟩ := hlow
+  exact ⟨m, C, hm, fun a ha b hb => ⟨hm' a ha b hb, hup a ha b hb⟩⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
