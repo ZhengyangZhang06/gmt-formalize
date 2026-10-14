@@ -3335,6 +3335,132 @@ theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P))
   change S.toCurrent ω = 0
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
+/-- **Retraction comparison** (Simon 7.2.4 (8)–(9), with competitors pushed into `A` as in
+Remark 7.2.5(2)).  Let `U` be open and `T ∈ 𝒟ₙ(U)` (`n = m + 1`) minimizing in `A`, with
+`spt T ⊆ A`, `0 < G ≤ G₃`, `B̄_{G₃} ⊆ U` and `M_{B_{G₃}}(T) < ∞`.  Let `π` be `C¹` on `B_{2G}`,
+with `π(B_{2G}) ⊆ A ∩ B_{G₃}`, `π = id` on `A ∩ B_{2G}` and `‖Dπ‖ ≤ L`.  Let `Y ∈ 𝒟ₙ(ℝᴾ)` be an
+integer multiplicity cycle with compact support in `B_G`, and `Z = T + Y` on `𝒟ⁿ(U)`.  Then
+`M_{B_G}(T) ≤ Lⁿ M_{B_G}(Z)`.  Take `π_#` on `B_{2G}` from the push-forward hypothesis and split
+`T = Q + T₁` with `Q = T⌞B_G ∈ 𝒟ₙ(ℝᴾ)`.  As `spt Q ⊆ B̄_G ∩ spt T ⊆ A ∩ B_{2G}`, `π_# Q = Q`, so
+`S = Q + Y` has `π_# S = Q + π_# Y` and `M(π_# S) ≤ Lⁿ M(S)`.  Minimality on `B_{G₃}` against
+`T + π_# Y = T₁ + π_# S` gives `μ_T(B_G) + μ_T(B_{G₃} ∖ B_G) ≤ μ_T(B_{G₃} ∖ B_G) + Lⁿ M(S)`, and
+the finite term `μ_T(B_{G₃} ∖ B_G)` cancels.  Finally `μ_S(ℝᴾ ∖ B_G) ≤ μ_Q(ℝᴾ ∖ B_G) +
+μ_Y(ℝᴾ ∖ B_G) = 0`, so `M(S) = M_{B_G}(S) ≤ M_{B_G}(Z)`, since `S = Z` on forms supported in
+`B_G`. -/
+theorem Submission.dimred_mbl_lc_retraction_comparison : ∀ (P m : ℕ) (U A : Set (Euclid P)) (T Z : GeometricCurrentOn U (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (π : Euclid P → Euclid P) (G G₃ L : ℝ), IsOpen U → IsMinimizingIn T A → T.support ⊆ A → 0 < G → G ≤ G₃ → closedBall (0 : Euclid P) G₃ ⊆ U → T.massOn (ball 0 G₃) ≠ ∞ → ContDiffOn ℝ 1 π (ball 0 (2 * G)) → MapsTo π (ball 0 (2 * G)) (A ∩ ball 0 G₃) → (∀ y ∈ A ∩ ball 0 (2 * G), π y = y) → (∀ y ∈ ball (0 : Euclid P) (2 * G), ‖fderiv ℝ π y‖ ≤ L) → IsIntegerMultiplicity Y → Y.boundary = 0 → IsCompact Y.support → Y.support ⊆ ball 0 G → (∀ ω : TestFormOn U (m + 1), Z ω = T ω + Y (testFormOnInclusion (subset_univ U) (m + 1) ω)) → (∀ (O : Set (Euclid P)) (f : Euclid P → Euclid P) (c : ℝ), IsOpen O → ContDiffOn ℝ 1 f O → (∀ y ∈ O, ‖fderiv ℝ f y‖ ≤ c) → ∃ push : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), (∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : IMRep (univ : Set (Euclid P)) (m + 1)), R.Represents X → IsCompact X.support → X.support ⊆ O → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), push X ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) (m + 1)) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[m + 1]) ∧ IsIntegerMultiplicity (push X) ∧ (push X).support ⊆ f '' X.support ∧ (push X).mass ≤ ENNReal.ofReal (c ^ (m + 1)) * X.mass ∧ (X.boundary = 0 → (push X).boundary = 0) ∧ ((∀ y ∈ X.support, f y = y) → push X = X)) ∧ ∀ X₁ X₂ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity X₁ → IsIntegerMultiplicity X₂ → IsCompact X₁.support → X₁.support ⊆ O → IsCompact X₂.support → X₂.support ⊆ O → push (X₁ - X₂) = push X₁ - push X₂) → T.massOn (ball 0 G) ≤ ENNReal.ofReal (L ^ (m + 1)) * Z.massOn (ball 0 G) := by
+  intro P m U A T Z Y π G G₃ L hU hT hTA hG hGG₃ hG₃U hTfin hπ hπA hπid hπL hYim hYb hYc hYG hZ
+    hPF
+  have hMR := Submission.dor_imrep_massOn_eq_measure_and_support
+  -- Step 1: `π_#` on `O = B_{2G}` (PF); an integer multiplicity representation `R` of `T`; and
+  -- `T = Q + T₁` along `B_G ⊆ B̄_G ⊆ U`, with `Q = T⌞B_G ∈ 𝒟ₙ(ℝᴾ)`, `μ_Q = μ_T⌞B_G` and
+  -- `μ_{T₁} = μ_T⌞(ℝᴾ ∖ B_G)`
+  obtain ⟨push, hpush, hpushsub⟩ := hPF (ball 0 (2 * G)) π L isOpen_ball hπ hπL
+  obtain ⟨R, hR⟩ := hT.1
+  have hGU : closedBall (0 : Euclid P) G ⊆ U := (closedBall_subset_closedBall hGG₃).trans hG₃U
+  obtain ⟨Q, RQ, T₁, R₁, hRQ, hRQmeas, hR₁, hR₁meas, hsplit, hQT, hQsupp, hQc⟩ :=
+    Submission.dimred_mbl_lc_rc_restrict_to_univ P (m + 1) U (ball 0 G) (closedBall 0 G) T R hU
+      hR measurableSet_ball (isCompact_closedBall 0 G) ball_subset_closedBall hGU
+  have hGO : closedBall (0 : Euclid P) G ⊆ ball 0 (2 * G) := closedBall_subset_ball (by linarith)
+  -- Step 2: `spt Q ⊆ B̄_G ∩ spt T ⊆ A ∩ B_{2G}`, where `π` is the identity, so `π_# Q = Q`
+  have hQA : Q.support ⊆ A ∩ ball 0 (2 * G) := fun x hx =>
+    ⟨hTA (hQsupp hx).2, hGO (closure_ball_subset_closedBall (hQsupp hx).1)⟩
+  have hQO : Q.support ⊆ ball 0 (2 * G) := fun x hx => (hQA hx).2
+  have hpQ : push Q = Q := (hpush Q RQ hRQ hQc hQO).2.2.2.2.2 fun y hy => hπid y (hQA hy)
+  -- Step 3: `π_# Y` is an integer multiplicity cycle; `spt π_# Y` is closed and contained in the
+  -- compact set `π(spt Y) ⊆ π(B_{2G}) ⊆ A ∩ B_{G₃}`
+  obtain ⟨RY, hRY⟩ := hYim
+  have hYO : Y.support ⊆ ball 0 (2 * G) := hYG.trans (ball_subset_closedBall.trans hGO)
+  obtain ⟨-, hpYim, hpYsupp, -, hpYb, -⟩ := hpush Y RY hRY hYc hYO
+  have hpYc : IsCompact (push Y).support :=
+    (hYc.image_of_continuousOn (hπ.continuousOn.mono hYO)).of_isClosed_subset
+      (isClosed_univ.sdiff (push Y).isOpen_zeroRegion) hpYsupp
+  have hpYA : (push Y).support ⊆ A ∩ ball 0 G₃ :=
+    hpYsupp.trans ((image_mono hYO).trans hπA.image_subset)
+  -- Step 4: `S = Q + Y` is integer multiplicity with compact `spt S ⊆ spt Q ∪ spt Y ⊆ B_{2G}`,
+  -- `π_# S = π_# Q + π_# Y`, and `M(π_# S) ≤ Lⁿ M(S)` (PF)
+  obtain ⟨S, hSim, hSω, hSsupp, hSc, hpS⟩ :=
+    Submission.dimred_mbl_lc_rc_push_add P (m + 1) (ball 0 (2 * G)) push Q Y hpushsub ⟨RQ, hRQ⟩
+      ⟨RY, hRY⟩ hQc hQO hYc hYO
+  obtain ⟨RS, hRS⟩ := hSim
+  have hpSmass : (push S).mass ≤ ENNReal.ofReal (L ^ (m + 1)) * S.mass :=
+    (hpush S RS hRS hSc (hSsupp.trans (union_subset hQO hYO))).2.2.2.1
+  -- Step 5: the competitor `Z₁ = T − (0 − (π_# Y)|_U) = T + π_# Y`; minimality of `T` in `A` on
+  -- `B_{G₃} ⊂⊂ U` gives `M_{B_{G₃}}(T) ≤ M_{B_{G₃}}(Z₁)`
+  obtain ⟨Z₁, hZ₁⟩ : ∃ Z₁ : GeometricCurrentOn U (m + 1), ∀ ω : TestFormOn U (m + 1),
+      Z₁ ω = T ω + push Y (testFormOnInclusion (subset_univ U) (m + 1) ω) :=
+    ⟨T - (0 - (push Y).restrictDomain (subset_univ U)), fun ω => by
+      show T ω - (0 - push Y (testFormOnInclusion (subset_univ U) (m + 1) ω)) = _
+      ring⟩
+  have hG₃U' : CompactlyContained (ball (0 : Euclid P) G₃) U :=
+    ⟨(isCompact_closedBall 0 G₃).of_isClosed_subset isClosed_closure
+      closure_ball_subset_closedBall, closure_ball_subset_closedBall.trans hG₃U⟩
+  have hmin : T.massOn (ball 0 G₃) ≤ Z₁.massOn (ball 0 G₃) :=
+    Submission.dimred_mbl_lc_rc_cycle_competitor P m U A (ball 0 G₃) T Z₁ (push Y) hU hT
+      isOpen_ball hG₃U' hpYim (hpYb hYb) hpYc hpYA hZ₁
+  -- Step 6: `Z₁ = T₁ + Q + π_# Y = T₁ + (π_# S)|_U` on `𝒟ⁿ(U)`, so by (MT), (MR) and the
+  -- comparison of domains, `M_{B_{G₃}}(Z₁) ≤ μ_T(B_{G₃} ∖ B_G) + Lⁿ M(S)`
+  have hT₁ : T₁.massOn (ball 0 G₃) = R.measure (ball 0 G₃ \ ball 0 G) := by
+    rw [(hMR P (m + 1) U T₁ R₁ hU hR₁).1 _ isOpen_ball, hR₁meas,
+      Measure.restrict_apply measurableSet_ball, Set.sdiff_eq]
+  have hZ₁le : Z₁.massOn (ball 0 G₃) ≤
+      R.measure (ball 0 G₃ \ ball 0 G) + ENNReal.ofReal (L ^ (m + 1)) * S.mass := by
+    calc Z₁.massOn (ball 0 G₃)
+        ≤ T₁.massOn (ball 0 G₃) +
+            ((push S).restrictDomain (subset_univ U)).massOn (ball 0 G₃) :=
+          Submission.lcmp_massOn_le_add_of_eval_eq P (m + 1) U (ball 0 G₃) T₁
+            ((push S).restrictDomain (subset_univ U)) Z₁ 1 (by rw [abs_one]) fun ω _ => by
+              rw [hZ₁, hsplit, GeometricCurrentOn.restrictDomain_apply, hpS, hpQ, one_mul]
+              ring
+      _ ≤ R.measure (ball 0 G₃ \ ball 0 G) + (push S).mass := by
+          rw [hT₁]
+          gcongr
+          exact ((Submission.dimred_mbl_lc_rc_massOn_restrict_univ P (m + 1) U (ball 0 G₃)
+            (push S) Z).1).trans ((push S).massOn_mono (subset_univ _))
+      _ ≤ R.measure (ball 0 G₃ \ ball 0 G) + ENNReal.ofReal (L ^ (m + 1)) * S.mass := by
+          gcongr
+  -- Step 7: `M_{B_{G₃}}(T) = μ_T(B_G) + μ_T(B_{G₃} ∖ B_G)` is finite; cancelling the second
+  -- term, `M_{B_G}(T) = μ_T(B_G) ≤ Lⁿ M(S)`
+  have hTG₃ : T.massOn (ball 0 G₃) = R.measure (ball 0 G) + R.measure (ball 0 G₃ \ ball 0 G) := by
+    rw [(hMR P (m + 1) U T R hU hR).1 _ isOpen_ball, ← measure_inter_add_sdiff (ball 0 G₃)
+      (measurableSet_ball : MeasurableSet (ball (0 : Euclid P) G)),
+      inter_eq_right.2 (ball_subset_ball hGG₃)]
+  have hfin : R.measure (ball 0 G₃ \ ball 0 G) ≠ ∞ := by
+    refine ne_top_of_le_ne_top hTfin ?_
+    rw [hTG₃]
+    exact le_add_self
+  have hTG : T.massOn (ball 0 G) ≤ ENNReal.ofReal (L ^ (m + 1)) * S.mass := by
+    rw [(hMR P (m + 1) U T R hU hR).1 _ isOpen_ball]
+    refine (ENNReal.add_le_add_iff_right hfin).1 ?_
+    rw [← hTG₃, add_comm (ENNReal.ofReal (L ^ (m + 1)) * S.mass)]
+    exact hmin.trans hZ₁le
+  -- Step 8: `μ_S(ℝᴾ ∖ B_G) ≤ μ_Q(ℝᴾ ∖ B_G) + μ_Y(ℝᴾ ∖ B_G) = 0`, as `μ_Q = μ_T⌞B_G` and
+  -- `spt μ_Y = spt Y ⊆ B_G`; so `M(S) = μ_S(B_G) = M_{B_G}(S) ≤ M_{B_G}(Z)`, because
+  -- `S = Q + Y = T + Y = Z` on forms supported in `B_G ⊆ U`
+  have hRQout : RQ.measure (ball 0 G)ᶜ = 0 := by
+    rw [hRQmeas, Measure.restrict_apply measurableSet_ball.compl, compl_inter_self, measure_empty]
+  have hRYout : RY.measure (ball 0 G)ᶜ = 0 := by
+    have hYsupp := (hMR P (m + 1) univ Y RY isOpen_univ hRY).2
+    rw [univ_inter] at hYsupp
+    have hsub : (ball (0 : Euclid P) G)ᶜ ⊆ RY.measure.supportᶜ := by
+      rw [compl_subset_compl, ← hYsupp]
+      exact hYG
+    exact measure_mono_null hsub Measure.measure_compl_support
+  have hRSout : RS.measure (ball 0 G)ᶜ = 0 := by
+    have h := Submission.dimred_mbl_lc_rc_measure_le_add_of_closed P (m + 1) univ (ball 0 G)ᶜ S Q
+      Y RS RQ RY isOpen_univ hRS hRQ hRY hSω isOpen_ball.isClosed_compl (subset_univ _)
+    rw [hRQout, hRYout, add_zero] at h
+    exact le_antisymm h zero_le
+  have hSmass : S.mass = S.massOn (ball 0 G) := by
+    rw [GeometricCurrentOn.mass, (hMR P (m + 1) univ S RS isOpen_univ hRS).1 _ isOpen_univ,
+      (hMR P (m + 1) univ S RS isOpen_univ hRS).1 _ isOpen_ball,
+      ← measure_add_measure_compl (measurableSet_ball : MeasurableSet (ball (0 : Euclid P) G)),
+      hRSout, add_zero]
+  have hSZ : S.massOn (ball 0 G) ≤ Z.massOn (ball 0 G) :=
+    (Submission.dimred_mbl_lc_rc_massOn_restrict_univ P (m + 1) U (ball 0 G) S Z).2
+      (ball_subset_closedBall.trans hGU) fun ω hω => by rw [hSω, hQT ω hω, hZ]
+  calc T.massOn (ball 0 G) ≤ ENNReal.ofReal (L ^ (m + 1)) * S.mass := hTG
+    _ = ENNReal.ofReal (L ^ (m + 1)) * S.massOn (ball 0 G) := by rw [hSmass]
+    _ ≤ ENNReal.ofReal (L ^ (m + 1)) * Z.massOn (ball 0 G) := by gcongr
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
