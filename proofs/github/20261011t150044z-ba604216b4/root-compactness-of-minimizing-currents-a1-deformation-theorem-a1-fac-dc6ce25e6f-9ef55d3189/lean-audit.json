@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "234ea658958569bb7ac34371a6864c73f1e6e9ecde14b4fd9017ab81cc225e9e",
+  "git_delta": {
+    "base_commit": "d058d40b026eaeee898d14dbd82001dfe3ebfdc0",
+    "candidate_commit": "3cd6267ed53650ba055ce2023ec369345285aa2a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrpi_coord_plane_orientation",
+    "diff_sha256": "d5430557f3b808113ed9bcc6ef5bafc3301f6f19bf38432c01cebb3306e38ee0",
+    "source_sha256": "e41438cfa2c898181532ffe3bf2757cfba54f292c768b0bf9c5c6436825ab4e6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrpi_coord_plane_orientation",
+      "statement": "∀ (P k : ℕ) (ι : Fin k → Fin P), StrictMono ι → Module.finrank ℝ (Submodule.span ℝ (range (fun j => EuclideanSpace.single (ι j) (1 : ℝ) : Fin k → Euclid P))) = k ∧ ∃ e : MultiVector P k, (∀ α : Covector (Euclid P) k, e α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∧ IsUnitOrientationOf e (Submodule.span ℝ (range (fun j => EuclideanSpace.single (ι j) (1 : ℝ) : Fin k → Euclid P))) ∧ IsUnitOrientationOf (-e) (Submodule.span ℝ (range (fun j => EuclideanSpace.single (ι j) (1 : ℝ) : Fin k → Euclid P)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
