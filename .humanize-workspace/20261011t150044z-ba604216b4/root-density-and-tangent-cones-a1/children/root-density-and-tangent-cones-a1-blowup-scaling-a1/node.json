@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+  "parent_id": "root.density_and_tangent_cones-a1",
+  "depth": 2,
+  "title": "Dilation invariance: masses scale by λ^{−n}, representations push forward, minimality is preserved",
+  "statement": "Let P ∈ ℕ, n ≥ 1, U ⊆ ℝ^P open, A ⊆ ℝ^P, T ∈ 𝒟_n(U), x ∈ ℝ^P, λ > 0, η := η_{x,λ} = dilation x λ (η(y) = λ⁻¹(y − x)) and S := η_{x,λ#}T = blowUp T x λ ∈ 𝒟_n(η(U)). Then (1) M_{η(W)}(S) = λ^{−n}·M_W(T) for every W ⊆ ℝ^P; (2) for every IMRep R of T in U there is an IMRep R' of S in η(U) with μ_{R'}(B) = λ^{−n}·μ_R(η⁻¹(B)) for every Borel B ⊆ ℝ^P; (3) if T is minimizing in A (Simon 7.1.1, IsMinimizingIn), then S is minimizing in η(A).",
+  "lean_statement": "∀ (P n : ℕ) (U A : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), IsOpen U → 0 < n → (∀ W : Set (Euclid P), (blowUp T x lam hlam.ne').massOn (dilation x lam '' W) = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn W) ∧ (∀ R : IMRep U n, R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s)) ∧ (IsMinimizingIn T A → IsMinimizingIn (blowUp T x lam hlam.ne') (dilation x lam '' A))",
+  "lean_name": "dtc_blowUp_scaling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-a1"
+}
