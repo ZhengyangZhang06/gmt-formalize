@@ -1306,6 +1306,58 @@ theorem Submission.cmcs_slice_mass_integral : ∀ (P : ℕ) (μ : Measure (Eucli
         mul_le_mul_right (Submission.cmcs_smi_lintegral_left_density_le ν a b) _
     _ = (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}) := by rw [hνI]
 
+/-- **A good slicing radius** (Simon Ch. 6, proof of 7.2, via 4.10 and the argument of Ch. 2,
+6.7(2)).  Let `μ_j(B_r) < ∞` and `μ_j(B_{r₀+1}) ≤ Λ₀`, and put
+`D_j(t) = liminf_{h↓0} h⁻¹ μ_j({t − h < |x| < t})`.  Each `D_j` is measurable
+(`dtc_bc_lc_fd_lz_dini_measurable`), and 4.10 (`cmcs_slice_mass_integral` with `f = |·|`,
+`W = ℝᴾ`, `L = 1`) gives `∫_{(r₀, r₀+1)} D_j ≤ μ_j(B_{r₀+1}) ≤ Λ₀`.  By Fatou,
+`G = liminf_j D_j` has `∫_{(r₀, r₀+1)} G ≤ Λ₀ < ∞`, so `G(t₀) < ∞` for some `t₀ ∈ (r₀, r₀ + 1)`.
+With `C = G(t₀) + 1`, `D_j(t₀) < C` for infinitely many `j`; extract these as `φ`. -/
+theorem Submission.dtc_bc_lc_fd_lz_good_radius : ∀ (P : ℕ) (μ : ℕ → Measure (Euclid P)) (r₀ : ℝ) (Λ₀ : NNReal), (∀ (j : ℕ) (r : ℝ), μ j (ball (0 : Euclid P) r) < ∞) → (∀ j, μ j (ball (0 : Euclid P) (r₀ + 1)) ≤ (Λ₀ : ℝ≥0∞)) → ∃ t₀ ∈ Ioo r₀ (r₀ + 1), ∃ (φ : ℕ → ℕ) (C : NNReal), StrictMono φ ∧ ∀ j, liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (φ j) {x : Euclid P | t₀ - h < ‖x‖ ∧ ‖x‖ < t₀}) (𝓝[>] 0) ≤ (C : ℝ≥0∞) := by
+  intro P μ r₀ Λ₀ hfin hΛ
+  -- `D j t = liminf_{h → 0+} h⁻¹ μ_j({t − h < |x| < t})`, measurable in `t`
+  set D : ℕ → ℝ → ℝ≥0∞ := fun j t =>
+    liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ j {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t})
+      (𝓝[>] 0)
+  have hDm : ∀ j, Measurable (D j) := fun j =>
+    Submission.dtc_bc_lc_fd_lz_dini_measurable P (μ j) (hfin j)
+  -- 4.10 with `f = |·|`, `W = ℝᴾ`, `L = 1`: `∫_{(r₀, r₀+1)} D j ≤ μ_j(B_{r₀+1}) ≤ Λ₀`
+  have hint : ∀ j, ∫⁻ t in Ioo r₀ (r₀ + 1), D j t ≤ Λ₀ := by
+    intro j
+    calc ∫⁻ t in Ioo r₀ (r₀ + 1), D j t
+        ≤ ((1 : NNReal) : ℝ≥0∞) * μ j (univ ∩ {x | r₀ < ‖x‖ ∧ ‖x‖ < r₀ + 1}) :=
+          Submission.cmcs_slice_mass_integral P (μ j) (fun x => ‖x‖) univ 1 (D j) r₀ (r₀ + 1)
+            measurable_norm MeasurableSet.univ fun t _ => by
+              rw [ENNReal.coe_one, one_mul]
+              simp only [univ_inter]
+              exact le_rfl
+      _ ≤ μ j (ball (0 : Euclid P) (r₀ + 1)) := by
+          rw [ENNReal.coe_one, one_mul, univ_inter]
+          exact measure_mono fun x hx => mem_ball_zero_iff.2 hx.2
+      _ ≤ Λ₀ := hΛ j
+  -- Fatou: `G = liminf_j D j` has `∫_{(r₀, r₀+1)} G ≤ liminf_j ∫_{(r₀, r₀+1)} D j ≤ Λ₀`
+  set G : ℝ → ℝ≥0∞ := fun t => liminf (fun j => D j t) atTop
+  have hGm : Measurable G := Measurable.liminf hDm
+  have hGint : ∫⁻ t in Ioo r₀ (r₀ + 1), G t ≤ Λ₀ :=
+    (lintegral_liminf_le hDm).trans (liminf_le_of_frequently_le' (Frequently.of_forall hint))
+  -- `G < ∞` a.e. on `(r₀, r₀ + 1)`, which is not null, so `G(t₀) < ∞` for some `t₀` there
+  obtain ⟨t₀, ht₀, hGt₀⟩ : ∃ t₀ ∈ Ioo r₀ (r₀ + 1), G t₀ < ∞ := by
+    have hae := ae_lt_top hGm (ne_top_of_le_ne_top ENNReal.coe_ne_top hGint)
+    rw [ae_restrict_iff' measurableSet_Ioo] at hae
+    by_contra! hcon
+    have hnull : volume (Ioo r₀ (r₀ + 1)) = 0 := by
+      refine measure_mono_null (fun t ht => ?_) (ae_iff.1 hae)
+      intro hlt
+      exact not_lt.2 (hcon t ht) (hlt ht)
+    simp [Real.volume_Ioo] at hnull
+  -- `C = G(t₀) + 1`: `D j t₀ < C` for infinitely many `j`, which we extract
+  have hGC : G t₀ < ((G t₀).toNNReal + 1 : NNReal) :=
+    calc G t₀ = ((G t₀).toNNReal : ℝ≥0∞) := (ENNReal.coe_toNNReal hGt₀.ne).symm
+      _ < ((G t₀).toNNReal + 1 : NNReal) := ENNReal.coe_lt_coe.2 (lt_add_one _)
+  obtain ⟨φ, hφ, hφC⟩ :=
+    extraction_of_frequently_atTop (frequently_lt_of_liminf_lt (by isBoundedDefault) hGC)
+  exact ⟨t₀, ht₀, φ, (G t₀).toNNReal + 1, hφ, fun j => (hφC j).le⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
