@@ -3057,6 +3057,406 @@ theorem Submission.codim1_hcp_stab_variation_field : ∀ (P : ℕ) (U O M C : Se
     | zero => simp
     | add a b _ _ ha hb => rw [map_add, ha, hb, add_zero]
     | smul c a _ ha => rw [map_smul, ha, smul_zero]
+/-- **Uniform second-order expansion of `det (1 + tX + t²Y)`** (the expansion
+`det (I + E) = 1 + tr E + ((tr E)² - tr (E²)) / 2 + O(|E|³)` behind the Taylor expansion of the
+Jacobian in the second variation, Simon Ch. 2, 5.2–5.4).  With `A = X + tY`,
+`det (1 + tA) = Σₖ eₖ(A) tᵏ`, where `eₖ(A)`, the `𝐗ᵏ`-coefficient of `det (1 + 𝐗A)`, is the sum of
+the `k × k` principal minors: `e₀ = 1`, `e₁ = tr A`, and comparing `𝐗²`-coefficients in
+`det (1 + 𝐗A) det (1 - 𝐗A) = det (1 - 𝐗²A²)` gives `e₂ = ((tr A)² - tr (A A)) / 2`.  The Leibniz
+bound `|eₖ(A)| ≤ 2ᴺ N! bᴺ` (entries of `A` bounded by `b = 1 + 2|κ|`) controls the terms of order
+`≥ 3`, and expanding `tr A`, `tr (A A)` in `t` costs at most `3 (N|κ|)² |t|³`. -/
+theorem Submission.codim1_hcp_stab_det_second_order : ∀ (N : ℕ) (κ : ℝ), ∃ C : ℝ, ∀ n : ℕ, n ≤ N → ∀ X Y : Matrix (Fin n) (Fin n) ℝ, (∀ i j, |X i j| ≤ κ) → (∀ i j, |Y i j| ≤ κ) → ∀ t : ℝ, |t| ≤ 1 → |(1 + t • X + t ^ 2 • Y).det - (1 + t * X.trace + t ^ 2 * (Y.trace + (X.trace ^ 2 - (X * X).trace) / 2))| ≤ C * |t| ^ 3 := by
+  intro N κ
+  -- `b` bounds the entries of `X + tY`, `β` bounds every coefficient of `det (1 + 𝐗 (X + tY))`
+  obtain ⟨b, hb⟩ : ∃ b : ℝ, b = 1 + 2 * |κ| := ⟨_, rfl⟩
+  have hb1 : 1 ≤ b := by have := abs_nonneg κ; linarith
+  have hb0 : 0 ≤ b := zero_le_one.trans hb1
+  obtain ⟨β, hβ⟩ : ∃ β : ℝ, β = 2 ^ N * ((N.factorial : ℝ) * b ^ N) := ⟨_, rfl⟩
+  have hβ0 : 0 ≤ β := by
+    rw [hβ]; exact mul_nonneg (by positivity) (mul_nonneg (by positivity) (pow_nonneg hb0 N))
+  refine ⟨N * β + 3 * (N * |κ|) ^ 2, ?_⟩
+  intro n hn X Y hX hY t ht
+  have hnN : (n : ℝ) ≤ N := by exact_mod_cast hn
+  have hXk : ∀ i j, |X i j| ≤ |κ| := fun i j => (hX i j).trans (le_abs_self κ)
+  have hYk : ∀ i j, |Y i j| ≤ |κ| := fun i j => (hY i j).trans (le_abs_self κ)
+  -- Leibniz: a `k × k` determinant with entries bounded by `b` is at most `k! bᵏ`
+  have hdet : ∀ (ι : Type) [Fintype ι] [DecidableEq ι] (M : Matrix ι ι ℝ),
+      (∀ i j, |M i j| ≤ b) → |M.det| ≤ (Fintype.card ι).factorial * b ^ Fintype.card ι := by
+    intro ι _ _ M hM
+    rw [Matrix.det_apply]
+    calc |∑ σ : Equiv.Perm ι, Equiv.Perm.sign σ • ∏ i, M (σ i) i|
+        ≤ ∑ σ : Equiv.Perm ι, |Equiv.Perm.sign σ • ∏ i, M (σ i) i| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _σ : Equiv.Perm ι, b ^ Fintype.card ι := by
+          refine Finset.sum_le_sum fun σ _ => ?_
+          have hs : |Equiv.Perm.sign σ • ∏ i, M (σ i) i| = |∏ i, M (σ i) i| := by
+            rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h
+            · rw [h, one_smul]
+            · rw [h, Units.neg_smul, one_smul, abs_neg]
+          rw [hs, Finset.abs_prod]
+          calc ∏ i, |M (σ i) i| ≤ ∏ _i : ι, b :=
+                Finset.prod_le_prod₀ (fun i _ => abs_nonneg _) fun i _ => hM _ _
+            _ = b ^ Fintype.card ι := by rw [Finset.prod_const, Finset.card_univ]
+      _ = (Fintype.card ι).factorial * b ^ Fintype.card ι := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, nsmul_eq_mul]
+  -- the coefficients of `det (1 + 𝐗 A)` are sums of principal minors, hence bounded by `β`
+  have hcoeff : ∀ A : Matrix (Fin n) (Fin n) ℝ, (∀ i j, |A i j| ≤ b) → ∀ k : ℕ,
+      |((1 + (Polynomial.X : Polynomial ℝ) • A.map Polynomial.C).det).coeff k| ≤ β := by
+    intro A hA k
+    rw [Matrix.coeff_det_one_add_X_smul_eq_sum_minors]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    refine (Finset.sum_le_sum (g := fun _ => (N.factorial : ℝ) * b ^ N) fun s _ => ?_).trans ?_
+    · have hcard : Fintype.card s ≤ N :=
+        (Fintype.card_le_of_injective _ Subtype.val_injective).trans (by simpa using hn)
+      refine (hdet _ _ fun i j => hA _ _).trans ?_
+      exact mul_le_mul (by exact_mod_cast Nat.factorial_le hcard) (pow_le_pow_right₀ hb1 hcard)
+        (pow_nonneg hb0 _) (by positivity)
+    · rw [Finset.sum_const, nsmul_eq_mul, Finset.card_powersetCard, Finset.card_univ,
+        Fintype.card_fin, hβ]
+      refine mul_le_mul_of_nonneg_right ?_ (mul_nonneg (by positivity) (pow_nonneg hb0 N))
+      exact_mod_cast (Nat.choose_le_two_pow n k).trans (Nat.pow_le_pow_right two_pos hn)
+  -- low coefficients: `e₀ = 1`, `e₁ = tr`, `e₂ = ((tr A)² - tr (A A)) / 2`
+  have hc0 : ∀ M : Matrix (Fin n) (Fin n) ℝ,
+      ((1 + (Polynomial.X : Polynomial ℝ) • M.map Polynomial.C).det).coeff 0 = 1 := by
+    intro M
+    rw [Matrix.det_one_add_X_smul]
+    simp
+  have hc2 : ∀ M : Matrix (Fin n) (Fin n) ℝ,
+      ((1 + (Polynomial.X : Polynomial ℝ) • M.map Polynomial.C).det).coeff 2 =
+        (M.trace ^ 2 - (M * M).trace) / 2 := by
+    intro M
+    -- `e₂(-M) = e₂(M)`: each `2 × 2` principal minor is unchanged by `M ↦ -M`
+    have hneg : ((1 + (Polynomial.X : Polynomial ℝ) • (-M).map Polynomial.C).det).coeff 2 =
+        ((1 + (Polynomial.X : Polynomial ℝ) • M.map Polynomial.C).det).coeff 2 := by
+      rw [Matrix.coeff_det_one_add_X_smul_eq_sum_minors,
+        Matrix.coeff_det_one_add_X_smul_eq_sum_minors]
+      refine Finset.sum_congr rfl fun s hs => ?_
+      have hs2 : s.card = 2 := (Finset.mem_powersetCard.1 hs).2
+      have : (-M).submatrix (Subtype.val : s → Fin n) (Subtype.val : s → Fin n) =
+          -(M.submatrix (Subtype.val : s → Fin n) (Subtype.val : s → Fin n)) := by
+        ext i j; rfl
+      rw [this, Matrix.det_neg, Fintype.card_coe, hs2]
+      norm_num
+    -- `det (1 + 𝐗 M) * det (1 + 𝐗 (-M)) = det (1 - 𝐗² M²)`
+    have hprod : (1 + (Polynomial.X : Polynomial ℝ) • M.map Polynomial.C).det *
+        (1 + (Polynomial.X : Polynomial ℝ) • (-M).map Polynomial.C).det =
+          (1 + (-(Polynomial.X : Polynomial ℝ) ^ 2) • (M * M).map Polynomial.C).det := by
+      rw [← Matrix.det_mul]
+      congr 1
+      rw [Matrix.map_mul, Matrix.map_neg _ (fun _ => Polynomial.C_neg)]
+      simp only [add_mul, mul_add, one_mul, mul_one, Matrix.smul_mul, Matrix.mul_smul, smul_neg,
+        mul_neg, smul_smul]
+      module
+    -- the `𝐗²` coefficient of `det (1 - 𝐗² M²)` is `-tr (M M)`
+    have hrhs :
+        ((1 + (-(Polynomial.X : Polynomial ℝ) ^ 2) • (M * M).map Polynomial.C).det).coeff 2 =
+          -(M * M).trace := by
+      rw [Matrix.det_one_add_smul, ← AddMonoidHom.map_trace Polynomial.C]
+      simp [Polynomial.coeff_mul_X_pow', Polynomial.coeff_one, ← pow_mul]
+    -- the `𝐗²` coefficient of the product is `e₂(M) + e₁(M) e₁(-M) + e₂(-M)`
+    have hlhs := congrArg (fun p : Polynomial ℝ => p.coeff 2) hprod
+    simp only [hrhs] at hlhs
+    rw [Polynomial.coeff_mul, Finset.Nat.sum_antidiagonal_eq_sum_range_succ_mk] at hlhs
+    simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add] at hlhs
+    norm_num at hlhs
+    rw [hc0, hc0, hneg, Matrix.coeff_det_one_add_X_smul_one,
+      Matrix.coeff_det_one_add_X_smul_one, Matrix.trace_neg] at hlhs
+    linarith
+  -- traces of `X`, `Y` and of their products
+  have htr1 : ∀ U : Matrix (Fin n) (Fin n) ℝ, (∀ i j, |U i j| ≤ |κ|) →
+      |U.trace| ≤ N * |κ| := by
+    intro U hU
+    calc |U.trace| = |∑ i, U i i| := rfl
+      _ ≤ ∑ i, |U i i| := Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _i : Fin n, |κ| := Finset.sum_le_sum fun i _ => hU i i
+      _ = n * |κ| := by rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+      _ ≤ N * |κ| := mul_le_mul_of_nonneg_right hnN (abs_nonneg κ)
+  have htr2 : ∀ U V : Matrix (Fin n) (Fin n) ℝ, (∀ i j, |U i j| ≤ |κ|) →
+      (∀ i j, |V i j| ≤ |κ|) → |(U * V).trace| ≤ (N * |κ|) ^ 2 := by
+    intro U V hU hV
+    calc |(U * V).trace| = |∑ i, ∑ j, U i j * V j i| := by simp [Matrix.trace, Matrix.mul_apply]
+      _ ≤ ∑ i, |∑ j, U i j * V j i| := Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ i, ∑ j, |U i j * V j i| := Finset.sum_le_sum fun i _ => Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _i : Fin n, ∑ _j : Fin n, |κ| * |κ| := by
+          refine Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun j _ => ?_
+          rw [abs_mul]
+          exact mul_le_mul (hU i j) (hV j i) (abs_nonneg _) (abs_nonneg _)
+      _ = (n * |κ|) ^ 2 := by
+          simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]; ring
+      _ ≤ (N * |κ|) ^ 2 := by gcongr
+  -- `1 + tX + t²Y = 1 + tA` with `A = X + tY`, whose entries are bounded by `b`
+  obtain ⟨A, hA⟩ : ∃ A : Matrix (Fin n) (Fin n) ℝ, A = X + t • Y := ⟨_, rfl⟩
+  have hsplit : 1 + t • X + t ^ 2 • Y = 1 + t • A := by
+    rw [hA]; module
+  have hAb : ∀ i j, |A i j| ≤ b := by
+    intro i j
+    rw [hA, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, hb]
+    calc |X i j + t * Y i j| ≤ |X i j| + |t * Y i j| := abs_add_le _ _
+      _ = |X i j| + |t| * |Y i j| := by rw [abs_mul]
+      _ ≤ |κ| + 1 * |κ| :=
+          add_le_add (hXk i j) (mul_le_mul ht (hYk i j) (abs_nonneg _) zero_le_one)
+      _ ≤ 1 + 2 * |κ| := by linarith
+  -- `det (1 + tA) = 1 + t tr A + t² (e₂(A) + R)` with `|R| ≤ N β |t|`
+  obtain ⟨p, hp⟩ : ∃ p : Polynomial ℝ,
+      p = (1 + (Polynomial.X : Polynomial ℝ) • A.map Polynomial.C).det := ⟨_, rfl⟩
+  have hq_coeff : ∀ k, p.divX.divX.coeff k = p.coeff (k + 2) := by
+    intro k; simp only [Polynomial.coeff_divX]
+  have hq_deg : p.divX.divX.natDegree < n + 1 := by
+    rw [Nat.lt_succ_iff, Polynomial.natDegree_le_iff_coeff_eq_zero]
+    intro m hm
+    rw [hq_coeff, hp, Matrix.coeff_det_one_add_X_smul_eq_sum_minors,
+      Finset.powersetCard_eq_empty.2 (by rw [Finset.card_univ, Fintype.card_fin]; omega),
+      Finset.sum_empty]
+  have heval : Polynomial.eval t p.divX.divX = p.coeff 2 +
+      ∑ i ∈ Finset.range n, p.divX.divX.coeff (i + 1) * t ^ (i + 1) := by
+    rw [Polynomial.eval_eq_sum_range' hq_deg, Finset.sum_range_succ', pow_zero, mul_one,
+      add_comm, hq_coeff]
+  have hrem :
+      |∑ i ∈ Finset.range n, p.divX.divX.coeff (i + 1) * t ^ (i + 1)| ≤ N * β * |t| := by
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    calc ∑ i ∈ Finset.range n, |p.divX.divX.coeff (i + 1) * t ^ (i + 1)|
+        ≤ ∑ _i ∈ Finset.range n, β * |t| := by
+          refine Finset.sum_le_sum fun i _ => ?_
+          rw [abs_mul, abs_pow, hq_coeff, hp]
+          exact mul_le_mul (hcoeff A hAb _)
+            (pow_le_of_le_one (abs_nonneg t) ht (Nat.succ_ne_zero i)) (by positivity) hβ0
+      _ = n * (β * |t|) := by rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+      _ ≤ N * β * |t| := by
+          rw [← mul_assoc]
+          exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hnN hβ0) (abs_nonneg t)
+  -- traces of `A` and `A A`
+  have htrA : A.trace = X.trace + t * Y.trace := by
+    rw [hA, Matrix.trace_add, Matrix.trace_smul, smul_eq_mul]
+  have htrAA : (A * A).trace = (X * X).trace + t * ((X * Y).trace + (Y * X).trace) +
+      t ^ 2 * (Y * Y).trace := by
+    rw [hA]
+    simp only [add_mul, mul_add, Matrix.smul_mul, Matrix.mul_smul, Matrix.trace_add,
+      Matrix.trace_smul, smul_eq_mul, smul_smul]
+    ring
+  -- the difference is `t² R + t³ S`
+  have hD : (1 + t • X + t ^ 2 • Y).det - (1 + t * X.trace + t ^ 2 * (Y.trace +
+      (X.trace ^ 2 - (X * X).trace) / 2)) =
+        t ^ 2 * ∑ i ∈ Finset.range n, p.divX.divX.coeff (i + 1) * t ^ (i + 1) +
+          t ^ 3 * ((2 * X.trace * Y.trace - (X * Y).trace - (Y * X).trace) / 2 +
+            t * (Y.trace ^ 2 - (Y * Y).trace) / 2) := by
+    rw [hsplit, Matrix.det_one_add_smul, ← hp, heval, hp, hc2 A, htrA, htrAA]
+    ring
+  -- `|S| ≤ 3 (N |κ|)²`
+  have hS : |(2 * X.trace * Y.trace - (X * Y).trace - (Y * X).trace) / 2 +
+      t * (Y.trace ^ 2 - (Y * Y).trace) / 2| ≤ 3 * (N * |κ|) ^ 2 := by
+    have hx := htr1 X hXk
+    have hy := htr1 Y hYk
+    have hxy := htr2 X Y hXk hYk
+    have hyx := htr2 Y X hYk hXk
+    have hyy := htr2 Y Y hYk hYk
+    have ha : 0 ≤ (N : ℝ) * |κ| := by positivity
+    have h1 : |X.trace * Y.trace| ≤ (N * |κ|) ^ 2 := by
+      rw [abs_mul, sq]; exact mul_le_mul hx hy (abs_nonneg _) ha
+    have h2 : |t * Y.trace ^ 2| ≤ (N * |κ|) ^ 2 := by
+      rw [abs_mul, abs_pow]
+      calc |t| * |Y.trace| ^ 2 ≤ 1 * (N * |κ|) ^ 2 :=
+            mul_le_mul ht (pow_le_pow_left₀ (abs_nonneg _) hy 2) (by positivity) zero_le_one
+        _ = (N * |κ|) ^ 2 := one_mul _
+    have h3 : |t * (Y * Y).trace| ≤ (N * |κ|) ^ 2 := by
+      rw [abs_mul]
+      calc |t| * |(Y * Y).trace| ≤ 1 * (N * |κ|) ^ 2 :=
+            mul_le_mul ht hyy (abs_nonneg _) zero_le_one
+        _ = (N * |κ|) ^ 2 := one_mul _
+    obtain ⟨h1l, h1r⟩ := abs_le.mp h1
+    obtain ⟨h2l, h2r⟩ := abs_le.mp h2
+    obtain ⟨h3l, h3r⟩ := abs_le.mp h3
+    obtain ⟨hxyl, hxyr⟩ := abs_le.mp hxy
+    obtain ⟨hyxl, hyxr⟩ := abs_le.mp hyx
+    rw [abs_le]
+    constructor <;> linarith
+  rw [hD]
+  calc _ ≤ |t ^ 2 * ∑ i ∈ Finset.range n, p.divX.divX.coeff (i + 1) * t ^ (i + 1)| +
+        |t ^ 3 * ((2 * X.trace * Y.trace - (X * Y).trace - (Y * X).trace) / 2 +
+          t * (Y.trace ^ 2 - (Y * Y).trace) / 2)| := abs_add_le _ _
+    _ = |t| ^ 2 * |∑ i ∈ Finset.range n, p.divX.divX.coeff (i + 1) * t ^ (i + 1)| +
+        |t| ^ 3 * |(2 * X.trace * Y.trace - (X * Y).trace - (Y * X).trace) / 2 +
+          t * (Y.trace ^ 2 - (Y * Y).trace) / 2| := by rw [abs_mul, abs_mul, abs_pow, abs_pow]
+    _ ≤ |t| ^ 2 * (N * β * |t|) + |t| ^ 3 * (3 * (N * |κ|) ^ 2) := by gcongr
+    _ = (N * β + 3 * (N * |κ|) ^ 2) * |t| ^ 3 := by ring
+
+/-- Second-order bound for the area Jacobian (Simon Ch. 2, 5.2–5.4, in the second variation of
+area, Appendix B): if `‖L‖ ≤ Λ`, `trace(P_S L) = 0` and `|t| ≤ 1`, then
+`√det(((I + tL)ι_S)*((I + tL)ι_S)) ≤ 1 + (t²/2) Σⱼ (|L uⱼ − P_S L uⱼ|² − uⱼ · L(P_S L uⱼ)) + C|t|³`,
+`uⱼ = P_S eⱼ`.  In an orthonormal basis `τ` of `S` the Gram matrix of `T = (I + tL)ι_S` is
+`1 + tX + t²Y` with `Xᵢⱼ = τᵢ · Lτⱼ + Lτᵢ · τⱼ`, `Yᵢⱼ = Lτᵢ · Lτⱼ`, entries bounded by `2|Λ| + Λ²`,
+so `det_second_order` expands its determinant to second order.  Computing `trace(P_S R)` in the
+bases `τ` and `(eⱼ)` gives `tr X = 2 trace(P_S L) = 0` and identifies the `t²`-coefficient with
+the sum above (`R = L*L − L*P_S L − L P_S L`).  Finally `det(T*T) ≥ 0` (its eigenvalues are
+`|Tv|² ≥ 0`) and `√y ≤ (1 + y)/2`. -/
+theorem Submission.codim1_hcp_stab_jacobian_bound : ∀ (P : ℕ) (Λ : ℝ), ∃ C : ℝ, ∀ (S : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), ‖L‖ ≤ Λ → LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ L.toLinearMap) = 0 → ∀ t : ℝ, |t| ≤ 1 → Real.sqrt ((((ContinuousLinearMap.id ℝ (Euclid P) + t • L).comp S.subtypeL).adjoint ∘L ((ContinuousLinearMap.id ℝ (Euclid P) + t • L).comp S.subtypeL)).det) ≤ 1 + t ^ 2 / 2 * ∑ j : Fin P, (‖L (S.starProjection (EuclideanSpace.single j 1)) - S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))‖ ^ 2 - inner ℝ (S.starProjection (EuclideanSpace.single j 1)) (L (S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))))) + C * |t| ^ 3 := by
+  intro P Λ
+  -- step 1: the constant `C₁` of `det_second_order` for `N = P`, `κ = 2|Λ| + Λ²`; `C = C₁ / 2`
+  obtain ⟨C₁, hC₁⟩ := Submission.codim1_hcp_stab_det_second_order P (2 * |Λ| + Λ ^ 2)
+  refine ⟨C₁ / 2, ?_⟩
+  intro S L hL htr t ht
+  have hΛ : 0 ≤ Λ := (norm_nonneg L).trans hL
+  -- step 2: an orthonormal basis `τ` of `S` (`dim S ≤ P`), and `P_S w = ∑ₖ (τₖ · w) τₖ`
+  set n := Module.finrank ℝ S
+  have hnP : n ≤ P := (Submodule.finrank_le S).trans_eq finrank_euclideanSpace_fin
+  let τ : OrthonormalBasis (Fin n) ℝ S := stdOrthonormalBasis ℝ S
+  have hτn : ∀ i, ‖(τ i : Euclid P)‖ = 1 := fun i => by
+    rw [Submodule.norm_coe]; exact τ.norm_eq_one i
+  have hτδ : ∀ i j, inner ℝ (τ i : Euclid P) (τ j : Euclid P) = if i = j then 1 else 0 :=
+    fun i j => by rw [← Submodule.coe_inner]; exact τ.inner_eq_ite i j
+  have hPexp : ∀ w : Euclid P,
+      S.starProjection w = ∑ k, inner ℝ (τ k : Euclid P) w • (τ k : Euclid P) := by
+    intro w
+    rw [Submodule.starProjection_apply]
+    conv_lhs => rw [← τ.sum_repr' (S.orthogonalProjectionOnto w)]
+    simp only [Submodule.coe_sum, Submodule.coe_smul,
+      Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left]
+  -- step 3: `trace(P_S ∘ R) = ∑ᵢ τᵢ · Rτᵢ = ∑ⱼ uⱼ · R uⱼ` for every linear `R` (`uⱼ = P_S eⱼ`)
+  have htrτ : ∀ R : Euclid P →ₗ[ℝ] Euclid P,
+      LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ R) =
+        ∑ i, inner ℝ (τ i : Euclid P) (R (τ i)) := by
+    intro R
+    -- `P_S = ι_S ∘ π_S`, so `trace(P_S ∘ R) = trace_S(π_S ∘ R ∘ ι_S)`
+    have h1 : S.starProjection.toLinearMap ∘ₗ R =
+        S.subtype ∘ₗ (S.orthogonalProjectionOnto.toLinearMap ∘ₗ R) :=
+      LinearMap.ext fun _ => rfl
+    rw [h1, LinearMap.trace_comp_comm', LinearMap.trace_eq_sum_inner _ τ]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    simp only [LinearMap.comp_apply, Submodule.subtype_apply, ContinuousLinearMap.coe_coe,
+      Submodule.inner_orthogonalProjectionOnto_eq_of_mem_left]
+  have htrE : ∀ R : Euclid P →ₗ[ℝ] Euclid P,
+      LinearMap.trace ℝ (Euclid P) (S.starProjection.toLinearMap ∘ₗ R) =
+        ∑ j : Fin P, inner ℝ (S.starProjection (EuclideanSpace.single j 1))
+          (R (S.starProjection (EuclideanSpace.single j 1))) := by
+    intro R
+    -- `P_S ∘ R = P_S ∘ (P_S ∘ R)`, so `trace(P_S ∘ R) = trace(P_S ∘ R ∘ P_S)`
+    have hPP : S.starProjection.toLinearMap ∘ₗ R =
+        S.starProjection.toLinearMap ∘ₗ (S.starProjection.toLinearMap ∘ₗ R) :=
+      LinearMap.ext fun x => by
+        simp [Submodule.starProjection_eq_self_iff.mpr (S.starProjection_apply_mem (R x))]
+    rw [hPP, LinearMap.trace_comp_comm',
+      LinearMap.trace_eq_sum_inner _ (EuclideanSpace.basisFun (Fin P) ℝ)]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    simp only [LinearMap.comp_apply, ContinuousLinearMap.coe_coe, EuclideanSpace.basisFun_apply]
+    exact (Submodule.inner_starProjection_left_eq_right S _ _).symm
+  have hstar : ∀ R : Euclid P →ₗ[ℝ] Euclid P,
+      ∑ j : Fin P, inner ℝ (S.starProjection (EuclideanSpace.single j 1))
+          (R (S.starProjection (EuclideanSpace.single j 1))) =
+        ∑ i, inner ℝ (τ i : Euclid P) (R (τ i)) :=
+    fun R => (htrE R).symm.trans (htrτ R)
+  -- step 4: the matrix of `G = T*T`, `T = (I + tL)ι_S`, in the basis `τ` is `1 + tX + t²Y`
+  set T : S →L[ℝ] Euclid P := (ContinuousLinearMap.id ℝ (Euclid P) + t • L).comp S.subtypeL
+  let M : Fin n → Fin n → ℝ := fun a b => inner ℝ (τ a : Euclid P) (L (τ b))
+  let X : Matrix (Fin n) (Fin n) ℝ := Matrix.of fun i j => M i j + M j i
+  let Y : Matrix (Fin n) (Fin n) ℝ := Matrix.of fun i j => inner ℝ (L (τ i)) (L (τ j))
+  have hTapp : ∀ x : S, T x = (x : Euclid P) + t • L x := fun x => rfl
+  have hmat : LinearMap.toMatrix τ.toBasis τ.toBasis (T.adjoint ∘L T).toLinearMap =
+      1 + t • X + t ^ 2 • Y := by
+    ext i j
+    rw [LinearMap.toMatrix_apply, τ.coe_toBasis, τ.coe_toBasis_repr_apply, τ.repr_apply_apply]
+    simp only [ContinuousLinearMap.coe_coe, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.adjoint_inner_right, hTapp, inner_add_left, inner_add_right,
+      real_inner_smul_left, real_inner_smul_right, hτδ, Matrix.add_apply, Matrix.smul_apply,
+      Matrix.one_apply, smul_eq_mul, X, Y, M, Matrix.of_apply,
+      real_inner_comm (L (τ i)) (τ j : Euclid P)]
+    ring
+  have hdetG : (T.adjoint ∘L T).det = (1 + t • X + t ^ 2 • Y).det := by
+    rw [← hmat, LinearMap.det_toMatrix]
+  -- step 5: `|Xᵢⱼ| ≤ 2Λ ≤ κ`, `|Yᵢⱼ| ≤ Λ² ≤ κ`, and the expansion of `det_second_order`
+  have hLτ : ∀ i, ‖L (τ i)‖ ≤ Λ := fun i => by
+    have := L.le_opNorm (τ i : Euclid P)
+    rw [hτn i, mul_one] at this
+    exact this.trans hL
+  have hM : ∀ a b, |M a b| ≤ Λ := fun a b => by
+    refine (abs_real_inner_le_norm _ _).trans ?_
+    rw [hτn a, one_mul]; exact hLτ b
+  have hX : ∀ i j, |X i j| ≤ 2 * |Λ| + Λ ^ 2 := fun i j => by
+    have h1 := abs_add_le (M i j) (M j i)
+    have h2 := hM i j
+    have h3 := hM j i
+    have h4 : Λ ≤ |Λ| := le_abs_self Λ
+    simp only [X, Matrix.of_apply]
+    nlinarith [sq_nonneg Λ]
+  have hY : ∀ i j, |Y i j| ≤ 2 * |Λ| + Λ ^ 2 := fun i j => by
+    have h1 := abs_real_inner_le_norm (L (τ i)) (L (τ j))
+    have h2 : ‖L (τ i)‖ * ‖L (τ j)‖ ≤ Λ * Λ :=
+      mul_le_mul (hLτ i) (hLτ j) (norm_nonneg _) hΛ
+    have h4 : 0 ≤ |Λ| := abs_nonneg Λ
+    simp only [Y, Matrix.of_apply]
+    nlinarith
+  have hexp := hC₁ n hnP X Y hX hY t ht
+  -- step 6: `tr X = 2 ∑ᵢ τᵢ · Lτᵢ = 2 trace(P_S ∘ L) = 0`
+  have htrX : X.trace = 0 := by
+    have h1 := htrτ L.toLinearMap
+    rw [htr] at h1
+    simp only [Matrix.trace, Matrix.diag, X, Matrix.of_apply, M]
+    simp only [ContinuousLinearMap.coe_coe] at h1
+    rw [Finset.sum_add_distrib, ← h1, add_zero]
+  -- step 7: the `t²`-coefficient equals `Q`; `|w − P_S w|² = |w|² − w · P_S w`, and
+  -- `R = L*L − L*P_S L − L P_S L` has `v · Rv = |Lv − P_S Lv|² − v · L(P_S Lv)`
+  have hproj : ∀ w : Euclid P,
+      ‖w - S.starProjection w‖ ^ 2 = ‖w‖ ^ 2 - inner ℝ w (S.starProjection w) := by
+    intro w
+    have h0 := Submodule.starProjection_inner_eq_zero (K := S) w (S.starProjection w)
+      (S.starProjection_apply_mem w)
+    rw [← real_inner_self_eq_norm_sq, ← real_inner_self_eq_norm_sq, inner_sub_right, h0,
+      sub_zero, inner_sub_left, real_inner_comm (S.starProjection w) w]
+  let R : Euclid P →ₗ[ℝ] Euclid P :=
+    (L.adjoint ∘L L - L.adjoint ∘L (S.starProjection ∘L L) -
+      L ∘L (S.starProjection ∘L L)).toLinearMap
+  have hR : ∀ v : Euclid P, inner ℝ v (R v) =
+      ‖L v - S.starProjection (L v)‖ ^ 2 - inner ℝ v (L (S.starProjection (L v))) := by
+    intro v
+    simp only [R, ContinuousLinearMap.coe_coe, sub_apply,
+      ContinuousLinearMap.comp_apply, inner_sub_right, ContinuousLinearMap.adjoint_inner_right,
+      hproj, real_inner_self_eq_norm_sq]
+  -- by `(★)`, `Q = ∑ᵢ τᵢ · Rτᵢ = ∑ᵢ (|Lτᵢ|² − ∑ₖ Mₖᵢ² − ∑ₖ MₖᵢMᵢₖ)`, `Mₐᵦ = τₐ · Lτᵦ`
+  have hQ : ∑ j : Fin P, (‖L (S.starProjection (EuclideanSpace.single j 1)) -
+        S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))‖ ^ 2 -
+        inner ℝ (S.starProjection (EuclideanSpace.single j 1))
+          (L (S.starProjection (L (S.starProjection (EuclideanSpace.single j 1)))))) =
+      ∑ i, (‖L (τ i)‖ ^ 2 - ∑ k, M k i * M k i - ∑ k, M k i * M i k) := by
+    rw [Finset.sum_congr rfl fun j _ => (hR _).symm, hstar R]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [hR, hproj, hPexp (L (τ i))]
+    simp only [inner_sum, map_sum, map_smul, real_inner_smul_right, M,
+      real_inner_comm (L (τ i))]
+  -- `tr Y = ∑ᵢ |Lτᵢ|²` and `tr(X·X) = 2 ∑ᵢⱼ Mᵢⱼ² + 2 ∑ᵢⱼ MᵢⱼMⱼᵢ`
+  have hc : Y.trace + (X.trace ^ 2 - (X * X).trace) / 2 =
+      ∑ i, (‖L (τ i)‖ ^ 2 - ∑ k, M k i * M k i - ∑ k, M k i * M i k) := by
+    have hYtr : Y.trace = ∑ i, ‖L (τ i)‖ ^ 2 := by
+      simp only [Matrix.trace, Matrix.diag, Y, Matrix.of_apply, real_inner_self_eq_norm_sq]
+    have hXX : (X * X).trace = ∑ i, ∑ j, (M i j + M j i) * (M j i + M i j) := by
+      simp only [Matrix.trace, Matrix.diag, Matrix.mul_apply, X, Matrix.of_apply]
+    have hswap : ∑ i, ∑ j, M i j * M i j = ∑ i, ∑ j, M j i * M j i := Finset.sum_comm
+    have hexpand : ∑ i, ∑ j, (M i j + M j i) * (M j i + M i j) =
+        ∑ i, ∑ j, M i j * M i j + ∑ i, ∑ j, M j i * M j i + 2 * ∑ i, ∑ j, M j i * M i j := by
+      simp only [← Finset.sum_add_distrib, Finset.mul_sum]
+      exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+    rw [htrX, hYtr, hXX, hexpand, hswap]
+    simp only [Finset.sum_sub_distrib]
+    ring
+  -- step 8: `det G ≥ 0`: `G` is symmetric and its eigenvalues are `v · Gv = |Tv|² ≥ 0`
+  have hsymm : (T.adjoint ∘L T).toLinearMap.IsSymmetric := by
+    intro x y
+    simp only [ContinuousLinearMap.coe_coe, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.adjoint_inner_left, ContinuousLinearMap.adjoint_inner_right]
+  have hdet0 : 0 ≤ (T.adjoint ∘L T).det := by
+    show 0 ≤ LinearMap.det (T.adjoint ∘L T).toLinearMap
+    rw [hsymm.det_eq_prod_eigenvalues rfl]
+    refine Finset.prod_nonneg fun i _ => ?_
+    have := eigenvalue_nonneg_of_nonneg (hsymm.hasEigenvalue_eigenvalues rfl i) fun x => by
+      simp only [ContinuousLinearMap.coe_coe, ContinuousLinearMap.comp_apply,
+        ContinuousLinearMap.adjoint_inner_right, RCLike.re_to_real]
+      exact real_inner_self_nonneg
+    simpa using this
+  -- step 9: `det G ≤ 1 + t²Q + C₁|t|³` and `√y ≤ (1 + y)/2` for `y ≥ 0`
+  rw [hdetG] at hdet0 ⊢
+  rw [hQ]
+  rw [hc, htrX] at hexp
+  have h1 := (abs_le.mp hexp).2
+  have h2 : Real.sqrt (1 + t • X + t ^ 2 • Y).det ≤ (1 + (1 + t • X + t ^ 2 • Y).det) / 2 := by
+    nlinarith [Real.sq_sqrt hdet0, sq_nonneg (Real.sqrt (1 + t • X + t ^ 2 • Y).det - 1)]
+  linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
