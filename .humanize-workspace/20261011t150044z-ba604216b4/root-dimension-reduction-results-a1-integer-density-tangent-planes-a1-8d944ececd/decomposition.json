@@ -1,0 +1,132 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git show bdf34f91edfa2642928ed59a139dd914ab9326d5:GMT/Ch07/Submission.lean | cmp - GMT/Ch07/Submission.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "rg -n \"theorem measure_null_of_locally_null|theorem smul_ball |theorem image_smul |theorem eventually_all_finset|theorem measure_biUnion_finset |theorem Infinite.exists_subset_card_eq|theorem exists_nat_gt|theorem norm_sub_sq_real|theorem Ioo_mem_nhdsGT |theorem mem_ball_zero_iff|theorem dist_smul₀|lemma dist_smul₀|lemma smul_ball |lemma Ioo_mem_nhdsGT \" <snapshot>/mathlib/Mathlib",
+        "rg -n \"(theorem|lemma) (Ioo_mem_nhdsGT|image_smul|mem_ball_zero_iff|measure_union_null|measure_mono_null|ENNReal.tendsto_ofReal|tendsto_ofReal)\\b\" <snapshot>/mathlib/Mathlib; rg -n \"Ioo_mem_nhdsGT|theorem mem_ball_zero_iff|lemma mem_ball_zero_iff\" <snapshot>/mathlib/Mathlib",
+        "rg -n -i \"homogeneous|finite.?rays|cone_inter_ball|\\bray\\b\" <snapshot>/project/GMT; rg -n -il \"IsCone|cone\" <snapshot>/project/GMT",
+        "python3 -I /tmp/fr_split_check/scan.py dag.json (selected node record: depth 5, status decomposing, children []; lean_name and node-id collisions for idtp_fons_odc_fr_{cone_scaling,cone_disjoint,cone_mass,card_le,origin_null}; nodes whose lean_statement contains the homogeneity hypothesis)",
+        "git log --all --oneline -S idtp_fons_odc_fr_ (no match)",
+        "git show 75f499358:GMT/Ch07/Submission.lean | sed -n 860,1073p (speculative draft Submission.odc_finiterays_* helpers of the identical theorem)",
+        "grep -n _machine_leaf|leaf_lean_agent_review|max_depth|max_nodes in /runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py, prompts.py, config.github-theorems.example.yaml; grep -n helper|set_option|declaration leaf_verification.py; grep -n 'def check_parent_git_delta' -A 60 parent_verification.py",
+        "grep -n \"1-dimensional minimizing cone|union of rays|rays\" book/chapter-07.txt; sed -n 555,580p book/chapter-07.txt",
+        "lake env lean /tmp/fr_split_check/Types.lean; lake env lean /tmp/fr_split_check/Assembly.lean (with #print axioms for all six declarations)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Ball/Pointwise.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Group/Pointwise/Set/Scalar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/MulAction.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8d944ececd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-8d944ececd/parent-supplied-plan.md",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/parent_verification.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/prompts.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/config.github-theorems.example.yaml",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/fr_split_check/Types.lean",
+        "/tmp/fr_split_check/Assembly.lean",
+        "/tmp/fr_split_check/scan.py"
+      ],
+      "conclusion": "Version pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c. At the node's proof base bdf34f91, Submission.lean is byte-identical to Contract.lean, so children elaborate in namespace GMT.Ch07 with the contract's opens. The snapshot Mathlib supplies every library fact used: measure_null_of_locally_null (MeasureTheory/OuterMeasure/Basic.lean:150), measure_mono_null (:54), measure_union_null (:128), smul_ball (Analysis/Normed/Module/Ball/Pointwise.lean:79), Set image_smul (Algebra/Group/Pointwise/Set/Scalar.lean:155), eventually_all_finset (Order/Filter/Finite.lean:258), measure_biUnion_finset (MeasureTheory/Measure/Basic.lean:150), Set.Infinite.exists_subset_card_eq (Data/Set/Finite/Basic.lean:862), ENNReal.exists_nat_gt (Basic/ENNReal/Basic.lean:622), norm_sub_sq_real (Analysis/InnerProductSpace/Basic.lean:437), dist_smul₀ (Analysis/Normed/MulAction.lean:153), ENNReal.tendsto_ofReal (Topology/Instances/ENNReal/Lemmas.lean:72), and Ioo_mem_nhdsGT (used at MeasureTheory/Integral/DominatedConvergence.lean:527). No project or library declaration states any of the five child statements: the project/GMT search for homogeneous-measure and cone lemmas found nothing relevant. dag.json has no node with these names or ids, and the only node with the homogeneity hypothesis is the selected one. git log --all -S idtp_fons_odc_fr_ found nothing. The speculative draft 75f499358 proves the identical theorem using the same five-lemma structure (as Submission.odc_finiterays_* helpers, which were never reserved as nodes). runtime.py:3966 and leaf_verification.py:98-108, with leaf_lean_agent_review false, make a childless node a single-theorem leaf with no helpers or set_option, and depth 5 < max_depth 6 permits this split. Lean: all five child types elaborate. Each child is proved as one theorem referencing only its listed siblings, and the frozen parent type follows from card_le and origin_null, with only the axioms propext, Classical.choice and Quot.sound. The book (chapter-07.txt:563-566) only says the 1-dimensional cone form m[[ℓ]] is 'easy to check'."
+    }
+  ],
+  "should_split": true,
+  "rationale": "Split into five children. The selected node is at depth 5 and max_depth is 6, so every child will be a machine leaf. Left unsplit, this node would itself be a machine leaf: per leaf_verification.py (forbidden-token regex, line 106) it could append only one theorem, with no helper declarations and no set_option. Also, problem.md:471 requires every named helper to have its own node. The supplied proof is a chain of genuine, reusable lemmas plus a short assembly. Children: (a) cone_scaling, parent step 2: for an open cone K, mu(K ∩ B_r(0)) = r·mu(K ∩ B_1(0)). (b) cone_disjoint, step 4: pure Euclidean geometry; thin cones around 2ρ-separated unit directions are disjoint. (c) cone_mass, step 3, uses (a): a thin cone around a unit direction with ρ ≤ mu(B_ρ(σ)) has mass at least 1/2 in B_1(0). (d) card_le, counting part of step 5, uses (b) and (c): a finite set T of unit directions with eventual lower density bounds has #T ≤ 2·mu(B_1(0)). (e) origin_null, step 6: mu({0}) = 0. The remaining parent steps are short and stay in the parent: step 1, the finiteness half of step 5, step 7 and step 8. The assembly runs as follows. (1) By (i), mu(B_1(0)) ≤ mu(closedBall(0,1)) < ∞. (2) Suppose Σ = {σ : |σ| = 1, σ ∈ spt mu} were infinite. Then it would contain a finite T with #T = n > 2·mu(B_1(0)). Hypothesis (iii) supplies card_le's eventual bounds on T, which gives a contradiction. So F := Σ is a finite set of unit vectors. (3) Let x ≠ 0 lie off the rays. Then x/|x| ∉ Σ, so some ball B(x/|x|, ε) is null. Hypothesis (ii) with λ = |x|⁻¹ maps the open ball B(x, |x|ε) onto it, so x ∉ spt mu. (4) mu({0}) = 0 by origin_null, and mu(ℝ^P ∖ spt mu) = 0 by measure_null_of_locally_null. Lean check of the implication: /tmp/fr_split_check/Assembly.lean imports GMT.Ch07.Submission and works inside namespace GMT.Ch07 with the contract's opens. In it, each child is proved as a single theorem that references only its listed siblings. Submission.idtp_fons_odc_finite_rays, with a type byte-identical to the frozen one, is proved using only Submission.idtp_fons_odc_fr_card_le and Submission.idtp_fons_odc_fr_origin_null. #print axioms reports only propext, Classical.choice and Quot.sound for all six declarations. Dependencies (cone_scaling → cone_mass → card_le ← cone_disjoint; origin_null independent) are acyclic. No child solves another DAG node: none of the names, node ids or statements appear in dag.json or in git history (git log --all -S idtp_fons_odc_fr_), and no accepted node carries the homogeneity hypothesis. Source: Simon, Introduction to GMT, Ch. 7, proof of 7.3.3, display (10) (book/chapter-07.txt:563-566), only says it is 'easy to check' that a 1-dimensional minimizing cone has the form m[[ℓ]]. There is no printed proof to copy, so each child's proof is extracted from the numbered steps of the parent-supplied proof.",
+  "subproblems": [
+    {
+      "key": "cone_scaling",
+      "title": "Open cones scale linearly under a 1-homogeneous measure (parent step 2)",
+      "statement": "Let P ∈ ℕ and let μ be a measure on the Borel sets of ℝ^P such that μ(λW) = λ·μ(W) for every λ > 0 and every open W ⊆ ℝ^P, where λW := {λx : x ∈ W}. Let K ⊆ ℝ^P be an open set such that cx ∈ K whenever c > 0 and x ∈ K. Then for every r > 0, μ(K ∩ B_r(0)) = r·μ(K ∩ B_1(0)), where B_r(0) := {y ∈ ℝ^P : |y| < r}.",
+      "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → ∀ K : Set (Euclid P), IsOpen K → (∀ c : ℝ, 0 < c → ∀ x ∈ K, c • x ∈ K) → ∀ r : ℝ, 0 < r → μ (K ∩ ball 0 r) = ENNReal.ofReal r * μ (K ∩ ball 0 1)",
+      "lean_name": "idtp_fons_odc_fr_cone_scaling",
+      "depends_on": [],
+      "natural_proof": "Source: parent step 2 (\"Open cones scale\").\n1. Fix r > 0 and put W := K ∩ B_1(0). W is open as the intersection of the open set K with the open ball B_1(0). The homogeneity hypothesis with λ = r gives μ(rW) = r·μ(W), where rW = {rx : x ∈ W}. So it suffices to prove rW = K ∩ B_r(0).\n2. (K ∩ B_r(0) ⊆ rW.) Let y ∈ K ∩ B_r(0) and put x := r⁻¹y. Since r⁻¹ > 0 and y ∈ K, the cone property gives x ∈ K. Also |x| = r⁻¹|y| < r⁻¹·r = 1, so x ∈ B_1(0). Hence x ∈ W, and y = r·(r⁻¹y) = rx ∈ rW.\n3. (rW ⊆ K ∩ B_r(0).) Let y = rx with x ∈ W. Since r > 0 and x ∈ K, the cone property gives y ∈ K. Also |y| = r|x| < r·1 = r, because |x| < 1 and r > 0, so y ∈ B_r(0).\n4. By steps 2 and 3, K ∩ B_r(0) = rW. By step 1, μ(K ∩ B_r(0)) = μ(rW) = r·μ(W) = r·μ(K ∩ B_1(0)). ∎",
+      "proof_key_steps": [
+        "W := K ∩ B_1(0) is open, so homogeneity with λ = r gives μ(rW) = r·μ(W).",
+        "If y ∈ K ∩ B_r(0), then r⁻¹y ∈ K ∩ B_1(0) by the cone property, so y ∈ rW.",
+        "If x ∈ K ∩ B_1(0), then rx ∈ K and |rx| < r, so rW ⊆ K ∩ B_r(0).",
+        "Hence K ∩ B_r(0) = rW and μ(K ∩ B_r(0)) = r·μ(K ∩ B_1(0))."
+      ]
+    },
+    {
+      "key": "cone_disjoint",
+      "title": "Thin cones around 2ρ-separated unit directions are disjoint (parent step 4)",
+      "statement": "Let P ∈ ℕ, let σ, σ' ∈ ℝ^P be unit vectors (|σ| = |σ'| = 1), and let ρ ∈ ℝ satisfy 0 < ρ ≤ 1 and 2ρ ≤ |σ − σ'|. Write B(z, s) := {y : |y − z| < s} and K_ρ(e) := ⋃_{t>0} B(te, tρ). Then the sets K_ρ(σ) and K_ρ(σ') are disjoint.",
+      "lean_statement": "∀ (P : ℕ) (σ σ' : Euclid P) (ρ : ℝ), ‖σ‖ = 1 → ‖σ'‖ = 1 → 0 < ρ → ρ ≤ 1 → 2 * ρ ≤ ‖σ - σ'‖ → Disjoint (⋃ (t : ℝ) (_ : 0 < t), ball (t • σ) (t * ρ)) (⋃ (s : ℝ) (_ : 0 < s), ball (s • σ') (s * ρ))",
+      "lean_name": "idtp_fons_odc_fr_cone_disjoint",
+      "depends_on": [],
+      "natural_proof": "Source: parent step 4 (\"Separated directions give disjoint cones\").\n1. Suppose, for contradiction, that x ∈ K_ρ(σ) ∩ K_ρ(σ'). Then there are t > 0 and s > 0 with |x − tσ| < tρ and |x − sσ'| < sρ.\n2. Since tσ − sσ' = (x − sσ') − (x − tσ), the triangle inequality gives |tσ − sσ'| ≤ |x − sσ'| + |x − tσ| < sρ + tρ = (t + s)ρ.\n3. Expand the inner products using |σ| = |σ'| = 1. Then |tσ − sσ'|² = t² − 2ts⟨σ, σ'⟩ + s², and |σ − σ'|² = 2 − 2⟨σ, σ'⟩. Hence |tσ − sσ'|² = (t − s)² + 2ts − 2ts⟨σ, σ'⟩ = (t − s)² + ts·|σ − σ'|².\n4. Since 0 < ρ ≤ 1, we have ρ² ≤ 1, so (t − s)²ρ² ≤ (t − s)². Since 0 < 2ρ ≤ |σ − σ'|, squaring gives 4ρ² ≤ |σ − σ'|², and as ts > 0, 4tsρ² ≤ ts·|σ − σ'|². By step 3, |tσ − sσ'|² ≥ (t − s)²ρ² + 4tsρ² = (t² + 2ts + s²)ρ² = ((t + s)ρ)².\n5. Both |tσ − sσ'| and (t + s)ρ are nonnegative, so step 4 gives |tσ − sσ'| ≥ (t + s)ρ. This contradicts step 2. Hence no such x exists, and K_ρ(σ) ∩ K_ρ(σ') = ∅. ∎",
+      "proof_key_steps": [
+        "A common point x of B(tσ, tρ) and B(sσ', sρ) gives |tσ − sσ'| < (t + s)ρ by the triangle inequality.",
+        "For unit σ, σ': |tσ − sσ'|² = (t − s)² + ts·|σ − σ'|².",
+        "With ρ² ≤ 1 and |σ − σ'|² ≥ 4ρ², this is at least (t − s)²ρ² + 4tsρ² = ((t + s)ρ)², a contradiction."
+      ]
+    },
+    {
+      "key": "cone_mass",
+      "title": "A thin cone around a direction of density at least 1 has mass at least 1/2 in the unit ball (parent step 3)",
+      "statement": "Let P ∈ ℕ and let μ be a measure on the Borel sets of ℝ^P such that μ(λW) = λ·μ(W) for every λ > 0 and every open W ⊆ ℝ^P (where λW := {λx : x ∈ W}), and μ(B_1(0)) < ∞. Let σ ∈ ℝ^P be a unit vector, and let 0 < ρ < 1 satisfy ρ ≤ μ(B_ρ(σ)). Put K_ρ(σ) := ⋃_{t>0} B(tσ, tρ). Then 1 ≤ 2·μ(K_ρ(σ) ∩ B_1(0)).",
+      "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → μ (ball (0 : Euclid P) 1) ≠ ∞ → ∀ σ : Euclid P, ‖σ‖ = 1 → ∀ ρ : ℝ, 0 < ρ → ρ < 1 → ENNReal.ofReal ρ ≤ μ (ball σ ρ) → 1 ≤ 2 * μ ((⋃ (t : ℝ) (_ : 0 < t), ball (t • σ) (t * ρ)) ∩ ball 0 1)",
+      "lean_name": "idtp_fons_odc_fr_cone_mass",
+      "depends_on": [
+        "cone_scaling"
+      ],
+      "natural_proof": "Source: parent step 3 (\"A thin cone around a direction carrying density has mass at least 1/2\"). Write K := K_ρ(σ).\n1. (K is an open cone.) K is open as a union of open balls. If x ∈ K, say |x − tσ| < tρ with t > 0, and c > 0, then |cx − (ct)σ| = c|x − tσ| < c·tρ = (ct)ρ with ct > 0, so cx ∈ K.\n2. (Scaling.) Apply the sibling lemma cone_scaling (Submission.idtp_fons_odc_fr_cone_scaling) to μ, the homogeneity hypothesis and the open cone K of step 1. It gives μ(K ∩ B_r(0)) = r·μ(K ∩ B_1(0)) for every r > 0. Put a := μ(K ∩ B_1(0)). Then a ≤ μ(B_1(0)) < ∞, so a is a finite nonnegative real number.\n3. (Inclusions.) Taking t = 1 shows B_ρ(σ) ⊆ K. If |x − σ| < ρ, then |x| ≤ |x − σ| + |σ| < ρ + 1, so B_ρ(σ) ⊆ B_{1+ρ}(0). Since 1 − ρ < 1 + ρ, K ∩ B_{1−ρ}(0) ⊆ K ∩ B_{1+ρ}(0). Hence B_ρ(σ) ∪ (K ∩ B_{1−ρ}(0)) ⊆ K ∩ B_{1+ρ}(0).\n4. (Disjointness.) B_ρ(σ) ∩ B_{1−ρ}(0) = ∅: if |x − σ| < ρ, then |x| ≥ |σ| − |x − σ| > 1 − ρ. In particular, B_ρ(σ) and K ∩ B_{1−ρ}(0) are disjoint.\n5. (Estimate.) K ∩ B_{1−ρ}(0) is open, hence Borel. Chain the following facts: the hypothesis ρ ≤ μ(B_ρ(σ)); step 2 with r = 1 − ρ > 0; additivity of μ on the disjoint sets of step 4; monotonicity with the inclusion of step 3; and step 2 with r = 1 + ρ > 0. This gives ρ + (1 − ρ)a ≤ μ(B_ρ(σ)) + μ(K ∩ B_{1−ρ}(0)) = μ(B_ρ(σ) ∪ (K ∩ B_{1−ρ}(0))) ≤ μ(K ∩ B_{1+ρ}(0)) = (1 + ρ)a.\n6. Every quantity in step 5 is a finite real, because a < ∞. Subtracting (1 − ρ)a gives ρ ≤ 2ρa, and dividing by ρ > 0 gives 1 ≤ 2a = 2·μ(K_ρ(σ) ∩ B_1(0)). ∎",
+      "proof_key_steps": [
+        "K_ρ(σ) is an open cone, so by cone_scaling μ(K ∩ B_r(0)) = r·a, where a := μ(K ∩ B_1(0)) ≤ μ(B_1(0)) < ∞.",
+        "B_ρ(σ) ⊆ K ∩ B_{1+ρ}(0) and B_ρ(σ) ∩ B_{1−ρ}(0) = ∅.",
+        "ρ + (1 − ρ)a ≤ μ(B_ρ(σ)) + μ(K ∩ B_{1−ρ}(0)) ≤ μ(K ∩ B_{1+ρ}(0)) = (1 + ρ)a.",
+        "Since a < ∞ and ρ > 0, it follows that 1 ≤ 2a."
+      ]
+    },
+    {
+      "key": "card_le",
+      "title": "Counting unit directions with density at least 1 via disjoint thin cones (parent step 5)",
+      "statement": "Let P ∈ ℕ and let μ be a measure on the Borel sets of ℝ^P such that μ(λW) = λ·μ(W) for every λ > 0 and every open W ⊆ ℝ^P (where λW := {λx : x ∈ W}), and μ(B_1(0)) < ∞. Let T be a finite set of unit vectors of ℝ^P such that, for each σ ∈ T, ρ ≤ μ(B_ρ(σ)) holds for all sufficiently small ρ > 0 (eventually as ρ ↓ 0). Then #T ≤ 2·μ(B_1(0)).",
+      "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → μ (ball (0 : Euclid P) 1) ≠ ∞ → ∀ T : Finset (Euclid P), (∀ σ ∈ T, ‖σ‖ = 1) → (∀ σ ∈ T, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal ρ ≤ μ (ball σ ρ)) → (T.card : ℝ≥0∞) ≤ 2 * μ (ball 0 1)",
+      "lean_name": "idtp_fons_odc_fr_card_le",
+      "depends_on": [
+        "cone_disjoint",
+        "cone_mass"
+      ],
+      "natural_proof": "Source: parent step 5 (first part: \"#T ≤ 2·μ(B_1(0))\"). For a unit vector e and ρ > 0, write K_ρ(e) := ⋃_{t>0} B(te, tρ).\n1. (Density bounds hold together.) T is finite, so the finitely many eventual statements \"ρ ≤ μ(B_ρ(σ))\" (σ ∈ T) hold simultaneously for all sufficiently small ρ > 0.\n2. (Separation.) For distinct σ, σ' ∈ T, |σ − σ'| > 0, so 2ρ ≤ |σ − σ'| for every ρ ∈ (0, |σ − σ'|/2). There are finitely many pairs, so eventually as ρ ↓ 0, 2ρ ≤ |σ − σ'| holds for all distinct σ, σ' ∈ T. Also, eventually ρ ∈ (0, 1).\n3. (Fix ρ.) The filter of right neighbourhoods of 0 in ℝ is proper: every interval (0, δ) with δ > 0 is nonempty. So the conjunction of the eventual statements in steps 1–2 is satisfied by some ρ. Fix ρ with 0 < ρ < 1, ρ ≤ μ(B_ρ(σ)) for every σ ∈ T, and 2ρ ≤ |σ − σ'| for all distinct σ, σ' ∈ T.\n4. For σ ∈ T, put C_σ := K_ρ(σ) ∩ B_1(0). Each C_σ is open (a union of open balls intersected with an open ball), hence Borel, and C_σ ⊆ B_1(0).\n5. (Disjointness.) Let σ, σ' ∈ T be distinct. Apply the sibling lemma cone_disjoint (Submission.idtp_fons_odc_fr_cone_disjoint) with |σ| = |σ'| = 1, 0 < ρ ≤ 1 and 2ρ ≤ |σ − σ'|. It gives K_ρ(σ) ∩ K_ρ(σ') = ∅, hence C_σ ∩ C_σ' = ∅.\n6. (Mass.) Let σ ∈ T. Apply the sibling lemma cone_mass (Submission.idtp_fons_odc_fr_cone_mass) with the homogeneity hypothesis, μ(B_1(0)) < ∞, |σ| = 1, 0 < ρ < 1 and ρ ≤ μ(B_ρ(σ)). It gives 1 ≤ 2·μ(C_σ).\n7. (Count.) Work in [0, ∞]. Use step 6, then finite additivity of μ on the pairwise disjoint Borel sets C_σ (steps 4–5), then monotonicity (C_σ ⊆ B_1(0)). This gives #T = Σ_{σ∈T} 1 ≤ Σ_{σ∈T} 2·μ(C_σ) = 2·μ(⋃_{σ∈T} C_σ) ≤ 2·μ(B_1(0)). ∎",
+      "proof_key_steps": [
+        "Choose one ρ ∈ (0, 1) such that ρ ≤ μ(B_ρ(σ)) for every σ ∈ T and 2ρ ≤ |σ − σ'| for all distinct σ, σ' ∈ T; this conjoins finitely many eventual statements in a proper filter.",
+        "By cone_disjoint, the sets C_σ := K_ρ(σ) ∩ B_1(0), σ ∈ T, are pairwise disjoint open subsets of B_1(0).",
+        "By cone_mass, 1 ≤ 2·μ(C_σ) for each σ ∈ T.",
+        "#T ≤ Σ_σ 2·μ(C_σ) = 2·μ(⋃_σ C_σ) ≤ 2·μ(B_1(0))."
+      ]
+    },
+    {
+      "key": "origin_null",
+      "title": "A 1-homogeneous measure finite on the unit ball has no atom at the origin (parent step 6)",
+      "statement": "Let P ∈ ℕ and let μ be a measure on the Borel sets of ℝ^P such that μ(λW) = λ·μ(W) for every λ > 0 and every open W ⊆ ℝ^P (where λW := {λx : x ∈ W}), and μ(B_1(0)) < ∞. Then μ({0}) = 0.",
+      "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → μ (ball (0 : Euclid P) 1) ≠ ∞ → μ {0} = 0",
+      "lean_name": "idtp_fons_odc_fr_origin_null",
+      "depends_on": [],
+      "natural_proof": "Source: parent step 6 (\"μ({0}) = 0\"), using the ball scaling of parent step 1.\n1. (Balls about 0 scale.) Let r > 0. The map x ↦ rx sends B_1(0) onto B_r(0). Indeed, if |x| < 1 then |rx| = r|x| < r; and if |y| < r then y = r(r⁻¹y) with |r⁻¹y| = r⁻¹|y| < 1. So rB_1(0) = B_r(0). Since B_1(0) is open, the homogeneity hypothesis gives μ(B_r(0)) = r·μ(B_1(0)).\n2. For every r > 0, 0 ∈ B_r(0). By monotonicity and step 1, μ({0}) ≤ μ(B_r(0)) = r·μ(B_1(0)).\n3. μ(B_1(0)) is a finite constant, so r·μ(B_1(0)) → 0 as r ↓ 0. A constant that is bounded above by a quantity tending to 0 is ≤ 0. Hence μ({0}) ≤ 0, i.e. μ({0}) = 0. ∎",
+      "proof_key_steps": [
+        "rB_1(0) = B_r(0) for r > 0, so homogeneity on the open ball B_1(0) gives μ(B_r(0)) = r·μ(B_1(0)).",
+        "μ({0}) ≤ r·μ(B_1(0)) for every r > 0.",
+        "Since μ(B_1(0)) < ∞, letting r ↓ 0 gives μ({0}) = 0."
+      ]
+    }
+  ]
+}
