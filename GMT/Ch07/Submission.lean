@@ -6226,6 +6226,88 @@ theorem Submission.dmcbr_isIntegerMultiplicity_of_local : (∀ (P n : ℕ) (U : 
   rw [hset E ω hE]
   simp
 
+/-- **Integer multiplicity of a weak limit with locally bounded `liminf` of masses** (local
+closure step of the slice limit in the closure theorem for the moving blow-ups; Simon 6.2.14,
+6.3.1).  Assume CL(d), the closure theorem for integer multiplicity `d`-currents in an open set,
+and IML(d): integer multiplicity is local (1) and passes to open subdomains (2).  Let
+`Zᵢ ∈ 𝒟_d(ℝᴾ)` be integer multiplicity with `Zᵢ ⇀ Z` and
+`liminfᵢ (M_{B_k}(Zᵢ) + M_{B_k}(∂Zᵢ)) < ∞` for every `k ∈ ℕ`, `B_k = B_k(0)`.  For each `k` pick
+`C_k < ∞` above this `liminf` and a subsequence `φ_k` along which these sums are `≤ C_k`
+(`extraction_of_frequently_atTop`); still `Z_{φ_k(l)} ⇀ Z`.
+* If `W ⊂⊂ ℝᴾ`, then `W ⊆ B_k` for some `k`, and lower semicontinuity of mass gives
+  `M_W(Z) ≤ liminf_l M_{B_k}(Z_{φ_k(l)}) ≤ C_k < ∞`.
+* For `x ∈ ℝᴾ` take `B_1(x) ⊆ B_k`.  Domain restriction does not increase `M_W`, and
+  `∂(T|_V) = (∂T)|_V`.  So the restrictions `Z_{φ_k(l)}|_{B_1(x)}`, integer multiplicity by
+  IML(d)(2), have `M_W + M_W(∂) ≤ C_k` for `W ⊂⊂ B_1(x)` and converge weakly to `Z|_{B_1(x)}`,
+  which is therefore integer multiplicity by CL(d) in `B_1(x)`.
+IML(d)(1) in `ℝᴾ` glues these local statements: `Z` is integer multiplicity. -/
+theorem Submission.dmcbr_sl_isIntegerMultiplicity_of_liminf_bounded : ∀ d : ℕ, (∀ (P : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) → (∀ (P : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U d), IsOpen U → ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → X.massOn W < ∞) → (∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ ∃ h : ball x r ⊆ U, IsIntegerMultiplicity (X.restrictDomain h)) → IsIntegerMultiplicity X) ∧ (∀ (V : Set (Euclid P)) (h : V ⊆ U), IsOpen V → IsIntegerMultiplicity X → IsIntegerMultiplicity (X.restrictDomain h))) → ∀ (P : ℕ) (Zs : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) d) (Z : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ i, IsIntegerMultiplicity (Zs i)) → WeaklyConvergesOn Zs Z → (∀ k : ℕ, liminf (fun i => (Zs i).massOn (ball (0 : Euclid P) k) + boundaryMassOn (Zs i) (ball (0 : Euclid P) k)) atTop < ∞) → IsIntegerMultiplicity Z := by
+  intro d hCL hIML P Zs Z hZs hconv hlim
+  -- Step 1: `M_W(T|_V) ≤ M_W(T)`: a form admissible in `V` is admissible in `ℝᴾ`
+  have hmass : ∀ (n : ℕ) (V : Set (Euclid P)) (hV : V ⊆ univ)
+      (T : GeometricCurrentOn (univ : Set (Euclid P)) n) (W : Set (Euclid P)),
+      (T.restrictDomain hV).massOn W ≤ T.massOn W := by
+    intro n V hV T W
+    refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    exact T.le_massOn (omega := testFormOnInclusion hV n ω) hω
+  -- Step 2: `∂(T|_V) = (∂T)|_V`, so `M_W(∂(T|_V)) ≤ M_{W'}(∂T)` for `W ⊆ W'` (`0` if `n = 0`)
+  have hbdry : ∀ (n : ℕ) (V : Set (Euclid P)) (hV : V ⊆ univ)
+      (T : GeometricCurrentOn (univ : Set (Euclid P)) n) (W W' : Set (Euclid P)), W ⊆ W' →
+      boundaryMassOn (T.restrictDomain hV) W ≤ boundaryMassOn T W' := by
+    intro n V hV T W W' hWW'
+    cases n with
+    | zero => exact le_rfl
+    | succ m =>
+      have hbd : (T.restrictDomain hV).boundary = T.boundary.restrictDomain hV :=
+        GeometricCurrentOn.ext fun ω => rfl
+      change (T.restrictDomain hV).boundary.massOn W ≤ T.boundary.massOn W'
+      rw [hbd]
+      exact (hmass m V hV T.boundary W).trans (T.boundary.massOn_mono hWW')
+  -- Step 3: for each `k`, `C_k < ∞` and a subsequence `φ_k` with
+  -- `M_{B_k}(Z_{φ_k(l)}) + M_{B_k}(∂Z_{φ_k(l)}) ≤ C_k` ...
+  have hsub : ∀ k : ℕ, ∃ C : ℝ≥0∞, C < ∞ ∧ ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ l,
+      (Zs (φ l)).massOn (ball (0 : Euclid P) k) +
+        boundaryMassOn (Zs (φ l)) (ball (0 : Euclid P) k) ≤ C := by
+    intro k
+    obtain ⟨C, hC, hC'⟩ := exists_between (hlim k)
+    obtain ⟨φ, hφ, hφC⟩ :=
+      extraction_of_frequently_atTop (frequently_lt_of_liminf_lt (by isBoundedDefault) hC)
+    exact ⟨C, hC', φ, hφ, fun l => (hφC l).le⟩
+  choose C hC φ hφ hφC using hsub
+  -- ... and `Z_{φ_k(l)} ⇀ Z`
+  have hconvφ : ∀ k : ℕ, WeaklyConvergesOn (fun l => Zs (φ k l)) Z :=
+    fun k ω => (hconv ω).comp (hφ k).tendsto_atTop
+  -- Step 4: every bounded set lies in some `B_k`, `k ∈ ℕ`
+  have hball : ∀ S : Set (Euclid P), Bornology.IsBounded S →
+      ∃ k : ℕ, S ⊆ ball (0 : Euclid P) k := by
+    intro S hS
+    obtain ⟨r, -, hr⟩ := hS.subset_ball_lt 0 0
+    obtain ⟨k, hk⟩ := exists_nat_ge r
+    exact ⟨k, hr.trans (ball_subset_ball hk)⟩
+  -- Step 7: IML(d)(1) in `ℝᴾ`, with `r = 1` at every `x`
+  refine (hIML P univ Z isOpen_univ).1 (fun W _ hW => ?_)
+    (fun x _ => ⟨1, one_pos, subset_univ _, ?_⟩)
+  · -- Step 5: for `W ⊆ B_k`, `M_W(Z) ≤ M_{B_k}(Z) ≤ liminf_l M_{B_k}(Z_{φ_k(l)}) ≤ C_k < ∞`
+    obtain ⟨k, hk⟩ := hball W (hW.1.isBounded.subset subset_closure)
+    calc Z.massOn W ≤ Z.massOn (ball (0 : Euclid P) k) := Z.massOn_mono hk
+      _ ≤ liminf (fun l => (Zs (φ k l)).massOn (ball (0 : Euclid P) k)) atTop :=
+        (hconvφ k).massOn_le_liminf _
+      _ ≤ C k := liminf_le_of_frequently_le'
+        (Frequently.of_forall fun l => le_self_add.trans (hφC k l))
+      _ < ∞ := hC k
+  · -- Step 6: CL(d) in `B_1(x) ⊆ B_k` for `Z_{φ_k(l)}|_{B_1(x)} ⇀ Z|_{B_1(x)}`, whose terms
+    -- are integer multiplicity by IML(d)(2)
+    obtain ⟨k, hk⟩ := hball (ball x 1) isBounded_ball
+    refine hCL P (ball x 1) (fun l => (Zs (φ k l)).restrictDomain (subset_univ _)) _ isOpen_ball
+      (fun l => (hIML P univ (Zs (φ k l)) isOpen_univ).2 _ _ isOpen_ball (hZs _))
+      (fun W _ hW => ?_) (fun ω => hconvφ k (testFormOnInclusion (subset_univ _) d ω))
+    -- `W ⊆ B_1(x) ⊆ B_k`, so steps 1 and 2 bound the masses of the restrictions by `C_k`
+    have hWk : W ⊆ ball (0 : Euclid P) k := subset_closure.trans (hW.2.trans hk)
+    refine lt_of_le_of_lt (iSup_le fun l => ?_) (hC k)
+    exact (add_le_add ((hmass _ _ _ _ W).trans ((Zs (φ k l)).massOn_mono hWk))
+      (hbdry _ _ _ _ _ _ hWk)).trans (hφC k l)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
