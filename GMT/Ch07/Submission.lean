@@ -3316,6 +3316,218 @@ theorem Submission.dtc_bc_lc_sl_sf_imrep_of_subset : ∀ (P n : ℕ) (A S : Set 
   exact ⟨IMRep.mk A θ ζ hA (subset_univ A) (hrect.mono hAS) hθ (fun x hx => hpos x (hAS hx))
     hAint hζ horA, rfl, rfl, rfl⟩
 
+/-- **Integer multiplicity current of an integer-weighted bi-Lipschitz image piece** (Simon Ch. 6,
+3.3–3.9, for one piece `H|_A` of a Lipschitz push-forward).  Assume (MR) (`M_W(T) = μ_T(W)` for
+`T = τ(M, θ, ξ)`) and (IMC) (locality/restriction/difference/orientation bound of `IMRep`s).  Let
+`H : ℝⁿ → ℝᴾ` be `L`-Lipschitz, `A ⊆ ℝⁿ` Borel with `κ|a − a'| ≤ |H a − H a'|` on `A` (`κ > 0`),
+`H` differentiable on `A` with injective derivative, and `g : ℝⁿ → ℤ` Borel, nonzero on `A` and
+integrable over `A`.  Then `Φ(ω) = ∫_A g(u) ω(H u)(DH(u)e₁, …, DH(u)eₙ) du` is an integer
+multiplicity current in `ℝᴾ` with `M(Φ) ≤ Lⁿ ∫_A |g|`.
+
+`N = H(A)` is Borel and `H|_A` is a Borel isomorphism onto `N` (Lusin–Souslin).  With
+`v(u) = (DH(u)e_a)_a` and `J = √det(⟨v_a, v_b⟩) > 0` on `A`, put `θ(H u) = |g(u)|` and
+`ζ(H u) = sign(g u) J(u)⁻¹ v₁(u) ∧ ⋯ ∧ vₙ(u)`, a unit orientation of `range DH(u)`; this is the
+approximate tangent space of `N` at `H u` for a.e. `u ∈ A`, and `Hⁿ(H(Z)) ≤ Lⁿ λ(Z)` makes the
+exceptional set `Hⁿ`-null.  `τ(N, θ, ζ)` is the current; the area formula
+`∫_N f dHⁿ = ∫_A J f(H u) du` gives the action, and (MR) with `Hⁿ⌞N ≤ Lⁿ H_#(λ⌞A)` the mass. -/
+theorem Submission.dimred_mbl_dt_lpip_bilipschitz_image_current : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P n : ℕ) (L : NNReal) (κ : ℝ) (H : Euclid n → Euclid P) (A : Set (Euclid n)) (g : Euclid n → ℤ), LipschitzWith L H → MeasurableSet A → 0 < κ → (∀ a ∈ A, ∀ a' ∈ A, κ * ‖a - a'‖ ≤ ‖H a - H a'‖) → (∀ a ∈ A, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) → Measurable g → (∀ a ∈ A, g a ≠ 0) → IntegrableOn (fun u => (g u : ℝ)) A → ∃ Φ : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity Φ ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Φ ω = ∫ u in A, (g u : ℝ) * (ω : DifferentialForm (Euclid P) n) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))) ∧ Φ.mass ≤ (L : ℝ≥0∞) ^ n * ∫⁻ u in A, ‖(g u : ℝ)‖ₑ := by
+  intro hMR hIMC P n L κ H A g hH hA hκ hbi hreg hg hg0 hgint
+  -- Step 1: `H` is continuous and injective on `A`, so `N = H(A)` is Borel and `H|_A` is a
+  -- measurable embedding (Lusin–Souslin)
+  have hHc : Continuous H := hH.continuous
+  have hinj : InjOn H A := by
+    intro a ha a' ha' haa'
+    have h := hbi a ha a' ha'
+    rw [haa', sub_self, norm_zero] at h
+    have h' : ‖a - a'‖ ≤ 0 := by
+      by_contra hc
+      exact absurd h (not_le.2 (mul_pos hκ (not_le.1 hc)))
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 h')
+  have hN : MeasurableSet (H '' A) := hA.image_of_continuousOn_injOn hHc.continuousOn hinj
+  have hemb : MeasurableEmbedding (A.domRestrict H) :=
+    ContinuousOn.measurableEmbedding hA hHc.continuousOn hinj
+  -- `Hⁿ(H(Z)) ≤ Lⁿ λ(Z)` for `Z ⊆ A`
+  have hbilip := Submission.dimred_mbl_dt_lpip_bilipschitz_measure_bounds P n H A L κ hH hκ hbi
+  -- Step 2: the frame `v(u) = (DH(u)e_a)_a` and its Gram Jacobian `J(u) = √det(⟨v_a, v_b⟩)`
+  obtain ⟨v, hv⟩ : ∃ v : Euclid n → Fin n → Euclid P,
+      v = fun u a => fderiv ℝ H u (EuclideanSpace.single a 1) := ⟨_, rfl⟩
+  obtain ⟨J, hJ⟩ : ∃ J : Euclid n → ℝ,
+      J = fun u => Real.sqrt (Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (v u i) (v u j))) :=
+    ⟨_, rfl⟩
+  have hJm : Measurable J := by
+    subst hJ hv
+    exact (Submission.codim1_lura_gram_area_formula n P H).1
+  -- the injective area formula `∫_{H(A)} f dHⁿ = ∫_A J f(H u) du`
+  have harea : ∀ f : Euclid P → ℝ, ∫ w in H '' A, f w ∂μHE[n] = ∫ u in A, J u * f (H u) := by
+    intro f
+    subst hJ hv
+    exact Submission.codim1_lur_cd_injective_area_formula_gram P n H A hA
+      (fun u hu => (hreg u hu).1) (fun u hu => (hreg u hu).2) hinj f
+  -- `v(u)` is a basis of `range DH(u)` for `u ∈ A`, as `DH(u)` is injective
+  have hbf : ⇑(EuclideanSpace.basisFun (Fin n) ℝ) =
+      fun a : Fin n => (EuclideanSpace.single a (1 : ℝ) : Euclid n) :=
+    funext fun a => EuclideanSpace.basisFun_apply (Fin n) ℝ a
+  have hsingle : Submodule.span ℝ (Set.range fun a : Fin n => (EuclideanSpace.single a (1 : ℝ) :
+      Euclid n)) = ⊤ := by
+    have h := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis.span_eq
+    rwa [OrthonormalBasis.coe_toBasis, hbf] at h
+  have hli : ∀ u ∈ A, LinearIndependent ℝ (v u) := by
+    intro u hu
+    have hb := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis.linearIndependent
+    rw [OrthonormalBasis.coe_toBasis, hbf] at hb
+    rw [hv]
+    exact hb.map' (fderiv ℝ H u : Euclid n →ₗ[ℝ] Euclid P) (LinearMap.ker_eq_bot.2 (hreg u hu).2)
+  have hspan : ∀ u, Submodule.span ℝ (Set.range (v u)) =
+      LinearMap.range (fderiv ℝ H u : Euclid n →ₗ[ℝ] Euclid P) := by
+    intro u
+    have h1 : Set.range (v u) = (fderiv ℝ H u : Euclid n →ₗ[ℝ] Euclid P) ''
+        Set.range fun a : Fin n => (EuclideanSpace.single a (1 : ℝ) : Euclid n) := by
+      rw [hv, ← Set.range_comp]
+      rfl
+    rw [h1, Submodule.span_image, hsingle, Submodule.map_top]
+  have hJpos : ∀ u ∈ A, 0 < J u := fun u hu => by
+    rw [hJ]
+    exact Real.sqrt_pos.2
+      (Submission.codim1_lur_normalized_wedge_orientation P n (v u) (hli u hu)).1
+  -- Step 3: `Ψ(u) = sign(g u) J(u)⁻¹ v₁(u) ∧ ⋯ ∧ vₙ(u)` is strongly measurable, as
+  -- `w ↦ (α ↦ α(w))` is a continuous multilinear map `(ℝᴾ)ⁿ → Λₙ(ℝᴾ)`
+  obtain ⟨Ψ, hΨm, hΨ⟩ : ∃ Ψ : Euclid n → MultiVector P n, StronglyMeasurable Ψ ∧
+      ∀ u (α : Covector (Euclid P) n), Ψ u α = ((g u).sign : ℝ) * ((J u)⁻¹ * α (v u)) := by
+    let ev : ContinuousMultilinearMap ℝ (fun _ : Fin n => Euclid P) (MultiVector P n) :=
+      ContinuousLinearMap.flipMultilinear (ContinuousAlternatingMap.toContinuousMultilinearMapCLM ℝ)
+    have hvm : Measurable v := by
+      rw [hv]
+      exact Measurable.of_eval fun a =>
+        measurable_fderiv_apply_const ℝ H (EuclideanSpace.single a 1)
+    refine ⟨fun u => (((g u).sign : ℝ) * (J u)⁻¹) • ev (v u), ?_, fun u α => ?_⟩
+    · exact (((Measurable.of_discrete (f := fun z : ℤ => (z.sign : ℝ))).comp hg).mul
+        hJm.inv).stronglyMeasurable.smul (ev.coe_continuous.comp_stronglyMeasurable
+          hvm.stronglyMeasurable)
+    · simp only [smul_apply, smul_eq_mul, ev,
+        ContinuousLinearMap.flipMultilinear_apply_apply,
+        ContinuousAlternatingMap.toContinuousMultilinearMapCLM_apply,
+        ContinuousAlternatingMap.coe_toContinuousMultilinearMap]
+      ring
+  -- multiplicity `θ(H u) = |g(u)|` and orientation `ζ(H u) = Ψ(u)` on `N`, extended by `0`
+  obtain ⟨θ, hθm, hθH⟩ : ∃ θ : Euclid P → ℕ, Measurable θ ∧ ∀ u ∈ A, θ (H u) = (g u).natAbs :=
+    ⟨Function.extend (A.domRestrict H) (fun a => (g a).natAbs) fun _ => 0,
+      hemb.measurable_extend ((Measurable.of_discrete (f := Int.natAbs)).comp
+        (hg.comp measurable_subtype_coe)) measurable_const,
+      fun u hu => hemb.injective.extend_apply _ _ ⟨u, hu⟩⟩
+  obtain ⟨ζ, hζm, hζH⟩ : ∃ ζ : Euclid P → MultiVector P n, StronglyMeasurable ζ ∧
+      ∀ u ∈ A, ζ (H u) = Ψ u :=
+    ⟨Function.extend (A.domRestrict H) (fun a => Ψ a) fun _ => 0,
+      hemb.stronglyMeasurable_extend (hΨm.comp_measurable measurable_subtype_coe)
+        stronglyMeasurable_const,
+      fun u hu => hemb.injective.extend_apply _ _ ⟨u, hu⟩⟩
+  have hθpos : ∀ y ∈ H '' A, 0 < θ y := by
+    rintro _ ⟨u, hu, rfl⟩
+    rw [hθH u hu]
+    exact Int.natAbs_pos.2 (hg0 u hu)
+  -- Step 4: `Hⁿ⌞N ≤ Lⁿ H_#(λ⌞A)`, hence `∫_N θ dHⁿ ≤ Lⁿ ∫_A |g| < ∞`
+  have hle : μHE[n].restrict (H '' A) ≤ ((L : ℝ≥0∞) ^ n) • (volume.restrict A).map H := by
+    refine Measure.le_iff.2 fun B hB => ?_
+    rw [Measure.restrict_apply hB, Measure.smul_apply, Measure.map_apply hHc.measurable hB,
+      Measure.restrict_apply (hHc.measurable hB), smul_eq_mul]
+    have hset : B ∩ H '' A = H '' (H ⁻¹' B ∩ A) := by
+      ext y
+      constructor
+      · rintro ⟨hyB, u, hu, rfl⟩
+        exact ⟨u, ⟨hyB, hu⟩, rfl⟩
+      · rintro ⟨u, ⟨huB, hu⟩, rfl⟩
+        exact ⟨huB, u, hu, rfl⟩
+    rw [hset]
+    exact (hbilip _ inter_subset_right).2
+  have hθint : ∫⁻ y in H '' A, (θ y : ℝ≥0∞) ∂μHE[n] ≤
+      (L : ℝ≥0∞) ^ n * ∫⁻ u in A, ‖(g u : ℝ)‖ₑ := by
+    have hθm' : Measurable fun y => (θ y : ℝ≥0∞) :=
+      (Measurable.of_discrete (f := fun k : ℕ => (k : ℝ≥0∞))).comp hθm
+    calc ∫⁻ y in H '' A, (θ y : ℝ≥0∞) ∂μHE[n]
+        ≤ ∫⁻ y, (θ y : ℝ≥0∞) ∂(((L : ℝ≥0∞) ^ n) • (volume.restrict A).map H) :=
+          lintegral_mono' hle le_rfl
+      _ = (L : ℝ≥0∞) ^ n * ∫⁻ u in A, (θ (H u) : ℝ≥0∞) := by
+          rw [lintegral_smul_measure, lintegral_map hθm' hHc.measurable, smul_eq_mul]
+      _ = (L : ℝ≥0∞) ^ n * ∫⁻ u in A, ‖(g u : ℝ)‖ₑ := by
+          congr 1
+          refine setLIntegral_congr_fun hA fun u hu => ?_
+          show (θ (H u) : ℝ≥0∞) = ‖(g u : ℝ)‖ₑ
+          rw [hθH u hu, Real.enorm_eq_ofReal_abs, ← Int.cast_abs, Int.abs_eq_natAbs,
+            Int.cast_natCast, ENNReal.ofReal_natCast]
+  have hfin : ∫⁻ u in A, ‖(g u : ℝ)‖ₑ < ∞ := hgint.2
+  have hθloc : ∀ K : Set (Euclid P), IsCompact K →
+      ∫⁻ x in H '' A ∩ K, (θ x : ℝ≥0∞) ∂μHE[n] ≠ ∞ := fun K _ =>
+    ne_top_of_le_ne_top (ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top) hfin.ne)
+      ((lintegral_mono_set inter_subset_left).trans hθint)
+  -- Step 5: `ζ(H u) = ±J(u)⁻¹ v₁(u) ∧ ⋯ ∧ vₙ(u)` orients `range DH(u)` for every `u ∈ A`
+  have horH : ∀ u ∈ A, IsUnitOrientationOf (ζ (H u))
+      (LinearMap.range (fderiv ℝ H u : Euclid n →ₗ[ℝ] Euclid P)) := by
+    intro u hu
+    have hJu : J u =
+        Real.sqrt (Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (v u i) (v u j))) := by
+      rw [hJ]
+    have hw := (Submission.codim1_lur_normalized_wedge_orientation P n (v u) (hli u hu)).2
+    rw [hspan u] at hw
+    rw [hζH u hu]
+    rcases (hg0 u hu).lt_or_gt with hlt | hgt
+    · -- `-ζ(H u)` is the normalized wedge; a unit orientation may carry either sign
+      obtain ⟨τ, hτ, hτQ, h | h⟩ := hw (-Ψ u) fun α => by
+        rw [neg_apply, hΨ, Int.sign_eq_neg_one_of_neg hlt, hJu]
+        push_cast
+        ring
+      · refine ⟨τ, hτ, hτQ, Or.inr fun α => ?_⟩
+        have h' := h α
+        rw [neg_apply] at h'
+        linarith
+      · refine ⟨τ, hτ, hτQ, Or.inl fun α => ?_⟩
+        have h' := h α
+        rw [neg_apply] at h'
+        linarith
+    · exact hw (Ψ u) fun α => by
+        rw [hΨ, Int.sign_eq_one_of_pos hgt, hJu]
+        push_cast
+        ring
+  -- the approximate tangent space of `N` at `H u` is `range DH(u)` for a.e. `u ∈ A`; the
+  -- exceptional parameters form a `λ`-null `Z ⊆ A` with `Hⁿ(H(Z)) ≤ Lⁿ λ(Z) = 0`
+  have hor : ∀ᵐ y ∂(μHE[n].restrict (H '' A)), ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n (H '' A) y Q ∧ IsUnitOrientationOf (ζ y) Q := by
+    have htan := Submission.ptd_piece_image_approxTangent_ae P n H A L κ hH hA hκ hbi hreg
+    rw [ae_restrict_iff' hA, ae_iff] at htan
+    have hHZ := (hbilip {u | ¬(u ∈ A → HasApproximateTangentSpaceAt n (H '' A) (H u)
+      (LinearMap.range (fderiv ℝ H u : Euclid n →ₗ[ℝ] Euclid P)))} fun u hu => (not_imp.1 hu).1).2
+    rw [htan, mul_zero, nonpos_iff_eq_zero] at hHZ
+    rw [ae_iff, Measure.restrict_apply' hN]
+    refine measure_mono_null ?_ hHZ
+    rintro _ ⟨hy, u, hu, rfl⟩
+    exact ⟨u, fun hT => hy ⟨_, hT hu, horH u hu⟩, rfl⟩
+  -- Step 6: the `IMRep` `(N, θ, ζ)` in `ℝᴾ`
+  obtain ⟨R₁, hR₁c, hR₁m, hR₁o⟩ := Submission.dtc_bc_lc_sl_sf_imrep_of_subset P n (H '' A) (H '' A)
+    θ ζ hN hN subset_rfl
+    ((Poincare.SimonGMT.Chapter03.countablyRectifiable_range hH).mono (image_subset_range H A))
+    hθm hθpos hθloc hζm.aestronglyMeasurable hor
+  -- Step 7: the current `Φ = τ(N, θ, ζ)`, by (IMC)(b) with `E = ℝᴾ`
+  obtain ⟨Φ, R, hRep, hRc, hRm, hRo⟩ := hIMC.2.1 P n univ R₁ univ isOpen_univ MeasurableSet.univ
+  refine ⟨Φ, ⟨R, hRep⟩, fun ω => ?_, ?_⟩
+  · -- Step 8: `Φ(ω) = ∫_N θ⟨ω, ζ⟩ dHⁿ = ∫_A J θ(H u)⟨ω(H u), ζ(H u)⟩ du = ∫_A g⟨ω(H u), v(u)⟩ du`
+    rw [hRep ω, IMRep.action, hRc, hRm, hRo, hR₁c, hR₁m, hR₁o, inter_univ, harea]
+    refine setIntegral_congr_fun hA fun u hu => ?_
+    show J u * ((θ (H u) : ℝ) * ζ (H u) ((ω : DifferentialForm (Euclid P) n) (H u))) =
+      (g u : ℝ) * (ω : DifferentialForm (Euclid P) n) (H u)
+        (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))
+    have hvu : v u = fun a => fderiv ℝ H u (EuclideanSpace.single a 1) := by rw [hv]
+    have hgs : ((g u).natAbs : ℝ) * ((g u).sign : ℝ) = (g u : ℝ) := by
+      rw [Nat.cast_natAbs, Int.cast_abs, mul_comm]
+      exact_mod_cast Int.sign_mul_abs (g u)
+    have key : ∀ s a b X : ℝ, s ≠ 0 → s * (a * (b * (s⁻¹ * X))) = a * b * X := by
+      intro s a b X hs
+      field_simp
+    rw [hθH u hu, hζH u hu, hΨ, hvu, key _ _ _ _ (hJpos u hu).ne', hgs]
+  · -- Step 9: `M(Φ) = μ_Φ(ℝᴾ) = ∫_N θ dHⁿ ≤ Lⁿ ∫_A |g|` by (MR)
+    show Φ.massOn univ ≤ _
+    rw [hMR P n univ Φ R isOpen_univ hRep univ isOpen_univ, IMRep.measure,
+      withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ, hRc, hRm, hR₁c, hR₁m,
+      inter_univ]
+    exact hθint
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
