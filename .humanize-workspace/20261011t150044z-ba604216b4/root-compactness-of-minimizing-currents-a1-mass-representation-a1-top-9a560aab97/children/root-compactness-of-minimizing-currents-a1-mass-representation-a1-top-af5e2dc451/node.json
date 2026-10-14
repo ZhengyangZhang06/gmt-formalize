@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1.ball_average_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1",
+  "depth": 4,
+  "title": "Ball-averaging estimate for test functions (parent step 3)",
+  "statement": "Let n ∈ ℕ, let (X, ν) be a finite measure space, let q : X → ℝⁿ (Euclid n) be measurable, h : X → ℝ ν-integrable, Λ ≥ 0, a : ℝⁿ → ℝ continuous (smoothness is not required) with compact support and 0 ≤ a(y) ≤ 1 for all y, and r > 0. Assume |∫ h(x)·(a(q(x) + z) − a(q(x))) dν(x)| ≤ Λ‖z‖ for every z ∈ ℝⁿ. Then |∫ h(x)·a(q(x)) dν(x)| ≤ r·Λ + (λ(ball(0, r)).toReal)⁻¹·(∫ |h| dν)·∫ a dλ, where λ is Lebesgue measure (volume) on ℝⁿ.",
+  "lean_statement": "∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ) (Λ : ℝ) (a : Euclid n → ℝ) (r : ℝ), IsFiniteMeasure ν → Measurable q → Integrable h ν → 0 ≤ Λ → Continuous a → HasCompactSupport a → (∀ y, 0 ≤ a y) → (∀ y, a y ≤ 1) → (∀ z : Euclid n, |∫ x, h x * (a (q x + z) - a (q x)) ∂ν| ≤ Λ * ‖z‖) → 0 < r → |∫ x, h x * a (q x) ∂ν| ≤ r * Λ + (volume (ball (0 : Euclid n) r)).toReal⁻¹ * (∫ x, |h x| ∂ν) * ∫ y, a y",
+  "lean_name": "cmr_tdn_ball_average_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-af5e2dc451-a1"
+}

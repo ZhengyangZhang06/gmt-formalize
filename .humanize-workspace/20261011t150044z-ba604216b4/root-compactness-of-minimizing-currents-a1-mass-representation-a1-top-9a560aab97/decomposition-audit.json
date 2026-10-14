@@ -1,0 +1,64 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "trace_smulRight|theorem integral_integral_swap|lemma intervalIntegral_integral_swap|theorem integral_eq_sub_of_hasDerivAt|theorem tendsto_measure_cthickening_of_isCompact|theorem closure_eq_iInter_cthickening|theorem tendsto_integral_of_dominated_convergence|theorem Integrable.mul_prod|theorem Integrable.integral_prod_left|theorem Integrable.prod_right_ae|lemma Integrable.comp_snd|theorem hasFDerivAt_comp_add_right|theorem integral_add_left_eq_self|theorem exists_contDiff_support_eq_eq_one_iff|structure ContDiffBump",
+        "cmr_tdn_(directional_bound|ball_average_bound|null_set_cutoffs|null_of_average_bound)",
+        "integral_add_left_eq_self|integral_mul_left_eq_self|comp_add_left",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tdn_independent_audit/Contracts.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tdn_independent_audit/VerifiedProofs.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tdn2/Assembly.lean",
+        "../../toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tdn2/C/S.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Integral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-9a560aab97/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-9a560aab97/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/tmp/tdn_independent_audit/Contracts.lean",
+        "/tmp/tdn_independent_audit/VerifiedProofs.lean",
+        "/tmp/tdn2/Assembly.lean",
+        "/tmp/tdn2/C/S.lean"
+      ],
+      "conclusion": "The pinned contract matches the workspace Contract and Submission byte-for-byte; the active mathlib revision and inspected sources match the snapshot. All four exact one-line propositions independently elaborate in the comparator's replayed scope without child implementations. Volume, Haar-measure, proper-space, bump-function, smoothness-order and rank-one trace checks pass. Independently rerun complete child proofs and parent assembly compile with only propext, Classical.choice and Quot.sound. All names are bare identifiers; source searches and the final 780-node DAG scan find no collisions. The four-way split is appropriate and acyclic: A, B and C are independent, and D depends only on C. Applying the divergence hypothesis to zero gives Λ ≥ 0; choosing r = ε/(Λ+1), A and B establish D's premise, yielding exactly the selected frozen parent conclusion."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "directional_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree, including finiteness, measurability and integrability hypotheses. The supplied proof correctly handles z = 0, constructs admissible translated fields, computes their rank-one trace, and applies FTC and Fubini with the explicit integrable majorant M‖z‖|h|. The final bound follows without circular reliance or an additional sign hypothesis."
+    },
+    {
+      "key": "ball_average_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the continuous-test-function statement. Positive finite ball volume justifies normalization in every dimension. The product majorant |h(x)|ψ(z) validates Fubini and the splitting identity. The proof correctly uses Λ ≥ 0 for the radius estimate and translation invariance for the remaining term. Its directional estimate is an explicit hypothesis, so no dependency on A is required."
+    },
+    {
+      "key": "null_set_cutoffs",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every claimed cutoff property. The supplied finite-cover and bump construction proves smoothness, range bounds, equality on K and compact support. Shrinking closed thickenings give eventual vanishing outside K; their finite measures and continuity of toReal at zero justify integral convergence. Empty K and dimension zero are covered. Both the main construction and optional shortcut check independently."
+    },
+    {
+      "key": "null_of_average_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type correctly allow arbitrary ν and unrestricted real C. The sole dependency on null_set_cutoffs is correctly directed. Measurability of q⁻¹(K), domination by |h| and pointwise cutoff convergence justify dominated convergence without a finite-measure assumption. For each fixed ε, C∫a_k tends to zero regardless of C's sign; taking limits and then ε → 0 proves the exact conclusion."
+    }
+  ],
+  "required_changes": []
+}
