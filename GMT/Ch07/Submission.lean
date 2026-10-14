@@ -451,6 +451,34 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A unit orientation of the line `ℝe`, `‖e‖ = 1`, is `±e`, i.e. `ξ = ±(α ↦ α(e))` (Simon 6.1.1,
+6.2.2 with `n = 1`).  An orthonormal `τ : Fin 1 → ℝᴾ` spanning `ℝe` has `τ₀ = c e` with
+`|c| = ‖τ₀‖ = 1`, and `α(τ) = c α(e)` by multilinearity, so `⟨α, ξ⟩ = ±α(τ) = ±α(e)`. -/
+theorem Submission.idtp_fons_odc_ro_line_orientation : ∀ (P : ℕ) (e : Euclid P) (ξ : MultiVector P 1), ‖e‖ = 1 → IsUnitOrientationOf ξ (Submodule.span ℝ {e}) → ξ = ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) ∨ ξ = -ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) := by
+  intro P e ξ he ⟨τ, hτ, hspan, hξ⟩
+  -- `τ 0 ∈ span (range τ) = ℝe`, so `τ 0 = c • e`
+  obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.mp
+    (hspan ▸ Submodule.subset_span (Set.mem_range_self 0) : τ 0 ∈ Submodule.span ℝ {e})
+  -- `1 = ‖τ 0‖ = |c| ‖e‖ = |c|`, so `c = ±1`
+  have hc1 : |c| = 1 := by
+    have h := hτ.1 0
+    rwa [← hc, norm_smul, he, mul_one, Real.norm_eq_abs] at h
+  -- `Fin 1 = {0}`, so `α τ = α (fun _ => c • e) = c * α (fun _ => e)`
+  have hev : ∀ α : Covector (Euclid P) 1, α τ = c * α (fun _ => e) := by
+    intro α
+    have hτc : τ = fun _ => c • e := funext fun i => by rw [Subsingleton.elim i 0, hc]
+    rw [hτc, α.map_smul_univ (fun _ => c) (fun _ => e)]
+    simp
+  rcases (abs_eq zero_le_one).mp hc1 with rfl | rfl <;> rcases hξ with hξ | hξ
+  · exact Or.inl (ContinuousLinearMap.ext fun α => by
+      rw [hξ, hev, one_mul, ContinuousAlternatingMap.apply_apply])
+  · exact Or.inr (ContinuousLinearMap.ext fun α => by
+      rw [hξ, hev, one_mul, neg_apply, ContinuousAlternatingMap.apply_apply])
+  · exact Or.inr (ContinuousLinearMap.ext fun α => by
+      rw [hξ, hev, neg_one_mul, neg_apply, ContinuousAlternatingMap.apply_apply])
+  · exact Or.inl (ContinuousLinearMap.ext fun α => by
+      rw [hξ, hev, neg_one_mul, neg_neg, ContinuousAlternatingMap.apply_apply])
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
