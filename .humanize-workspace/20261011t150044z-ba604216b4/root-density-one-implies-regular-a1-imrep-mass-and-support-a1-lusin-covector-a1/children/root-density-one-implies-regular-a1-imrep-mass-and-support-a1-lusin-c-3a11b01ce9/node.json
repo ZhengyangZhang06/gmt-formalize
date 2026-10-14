@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.lusin_measurable-a1",
+  "parent_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1",
+  "depth": 4,
+  "title": "Lusin's theorem (compact form) for measurable maps from ℝ^P into a second-countable space",
+  "statement": "Let P ∈ ℕ, and let Y be a second-countable topological space with a σ-algebra in which every open set is measurable. Let μ be any measure on ℝ^P = EuclideanSpace ℝ (Fin P) (Borel σ-algebra), let A ⊆ ℝ^P be a measurable set with μ(A) < ∞, let g : ℝ^P → Y be measurable, and let ε ∈ (0, ∞] be an extended nonnegative real with ε ≠ 0. Then there is a compact set K ⊆ A with μ(A ∖ K) < ε such that g is continuous on K (ContinuousOn g K).",
+  "lean_statement": "∀ (P : ℕ) {Y : Type} [TopologicalSpace Y] [SecondCountableTopology Y] [MeasurableSpace Y] [OpensMeasurableSpace Y] (μ : Measure (Euclid P)) (A : Set (Euclid P)) (g : Euclid P → Y) (ε : ℝ≥0∞), Measurable g → MeasurableSet A → μ A ≠ ∞ → ε ≠ 0 → ∃ K : Set (Euclid P), IsCompact K ∧ K ⊆ A ∧ μ (A \\ K) < ε ∧ ContinuousOn g K",
+  "lean_name": "dor_ims_lusin_measurable_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9-a1"
+}

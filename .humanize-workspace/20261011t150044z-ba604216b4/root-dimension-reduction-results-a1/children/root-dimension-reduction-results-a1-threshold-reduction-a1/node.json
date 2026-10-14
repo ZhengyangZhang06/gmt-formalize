@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1",
+  "parent_id": "root.dimension_reduction_results-a1",
+  "depth": 2,
+  "title": "Dimension reduction for density superlevel sets of minimizing currents (Appendix A.4 applied to density thresholds)",
+  "statement": "Let n, k, ℓ ∈ ℕ with 1 ≤ n and ℓ ≤ k, let U ⊆ ℝ^{n+k} be open, let N be an embedded C² (n+ℓ)-dimensional submanifold with (closure N ∖ N) ∩ U = ∅, and let T ∈ 𝒟_n(U) be minimizing in U ∩ N with spt T ⊆ U ∩ N and ∂T = 0 in U. Let c > 0, d₀ ∈ ℕ, z ∈ ℝ^{n+k} and r > 0 with closedBall z (2r) ⊆ U. Call S ∈ 𝒟_n(ℝ^{n+k}) an admissible zero-scale limit if S is the weak limit in ℝ^{n+k} (ConvergesWeakly) of the blow-ups η_{x_i,λ_i#}T (blowUp T x_i λ_i) for some points x_i ∈ B_r(z) and scales λ_i > 0 with λ_i → 0, and S is minimizing in ℝ^{n+k} with ∂S = 0. Assume (H1): no admissible zero-scale limit S has Θ^n(μ_S, y) = c'·1_Q(y) for all y (HasMassDensity S y (indicator of Q with value c')) for some n-dimensional linear subspace Q and some real c' ≥ c; and (H2): no admissible zero-scale limit S admits a linear subspace L with d₀ ≤ dim L < n such that HasMassDensity S w θ implies HasMassDensity S (y + λw) θ for all y ∈ L, λ > 0, w, θ, and such that {y : ∃θ ≥ c, HasMassDensity S y θ} = L. Let Z(s) := {x ∈ B_s(z) : ∃θ ≥ c, HasMassDensity T x θ} (the points of B_s(z) with Θ^n(μ_T, x) ≥ c). Then μH[d₀ − 1 + α](Z(r)) = 0 for every real α > 0; Z(r) = ∅ if d₀ = 0; and Z(r/2) is finite if d₀ = 1.",
+  "lean_statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (c : ℝ) (d₀ : ℕ) (z : Euclid (n + k)) (r : ℝ), 0 < c → 0 < r → closedBall z (2 * r) ⊆ U → (∀ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (Q : Submodule ℝ (Euclid (n + k))) (c' : ℝ), (∀ i, xs i ∈ ball z r) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → IsMinimizingIn S univ → BoundaryVanishes S → Module.finrank ℝ Q = n → c ≤ c' → (∀ y, HasMassDensity S y (Set.indicator (Q : Set (Euclid (n + k))) (fun _ => c') y)) → False) → (∀ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (L : Submodule ℝ (Euclid (n + k))), (∀ i, xs i ∈ ball z r) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → IsMinimizingIn S univ → BoundaryVanishes S → d₀ ≤ Module.finrank ℝ L → Module.finrank ℝ L < n → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid (n + k)) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → (∀ y, (∃ θ : ℝ, c ≤ θ ∧ HasMassDensity S y θ) ↔ y ∈ L) → False) → (∀ α : ℝ, 0 < α → μH[(d₀ : ℝ) - 1 + α] {x | x ∈ ball z r ∧ ∃ θ : ℝ, c ≤ θ ∧ HasMassDensity T x θ} = 0) ∧ (d₀ = 0 → {x | x ∈ ball z r ∧ ∃ θ : ℝ, c ≤ θ ∧ HasMassDensity T x θ} = ∅) ∧ (d₀ = 1 → {x | x ∈ ball z (r / 2) ∧ ∃ θ : ℝ, c ≤ θ ∧ HasMassDensity T x θ}.Finite)",
+  "lean_name": "dimred_threshold_reduction",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.monotonicity-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-a1"
+}
