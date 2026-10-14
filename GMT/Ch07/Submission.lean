@@ -592,6 +592,79 @@ theorem Submission.cbrld_radius_liminf_annulus_le_of_hasDerivAt : ∀ (P : ℕ) 
           ENNReal.ofReal_toReal hfin]
     _ = ENNReal.ofReal (h⁻¹ * ((μ (ball x₁ ρ)).toReal - (μ (ball x₁ (ρ - h))).toReal)) :=
         (ENNReal.ofReal_mul (inv_nonneg.mpr hh.le)).symm
+/-- **Good slicing radius** (Simon Ch. 6, 8.2 (2)–(3): radii where `(F^{1/n})′` is controlled,
+and `F′ = nF^{(n−1)/n}(F^{1/n})′`).  If `μ` is finite on compact sets, `n ≥ 1`, `a, s > 0`,
+`μ(B_s(x₁)) < (as)ⁿ` and `L¹(N) = 0`, then some `ρ ∈ (0, s) \ N` has `μ(∂B_ρ(x₁)) = 0` and
+`liminf_{h ↓ 0} h⁻¹ μ{ρ − h < |x − x₁| < ρ} ≤ 2na μ(B_ρ(x₁))^{(n−1)/n}`.  Let `F(r) = μ(B_r(x₁))`
+and `G = F^{1/n}`: both are nondecreasing, `G(0) = 0` and `G(s) ≤ as`, so `∫_{(0,s)} G′ ≤ as`
+(Lebesgue's inequality).  The good-radius lemma applied to `1_{(0,s)} G′` avoids `N`, the
+non-differentiability points of `G` and the spheres charged by `μ`, with `G′(ρ) ≤ (2/s)·as = 2a`.
+Then `F = Gⁿ` has derivative `nG(ρ)^{n−1}G′(ρ) ≤ 2na F(ρ)^{(n−1)/n}` at `ρ`, which bounds the
+inner-annulus liminf. -/
+theorem Submission.dmcbrld_exists_good_slice_radius : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (x₁ : Euclid P) (a s : ℝ) (N : Set ℝ), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → 1 ≤ n → 0 < a → 0 < s → μ (ball x₁ s) < ENNReal.ofReal ((a * s) ^ n) → volume N = 0 → ∃ ρ : ℝ, 0 < ρ ∧ ρ < s ∧ ρ ∉ N ∧ μ (sphere x₁ ρ) = 0 ∧ liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | ρ - h < dist x x₁ ∧ dist x x₁ < ρ}) (𝓝[>] 0) ≤ ENNReal.ofReal (2 * n * a * (μ (ball x₁ ρ)).toReal ^ (((n : ℝ) - 1) / n)) := by
+  intro P n μ x₁ a s N hμ hn ha hs hμs hN
+  have hn0 : n ≠ 0 := Nat.one_le_iff_ne_zero.mp hn
+  have hn0' : (0 : ℝ) < n := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hn0)
+  have hinv : (0 : ℝ) ≤ (n : ℝ)⁻¹ := inv_nonneg.mpr hn0'.le
+  -- `μ` is finite on balls (closed balls are compact)
+  have hball : ∀ r : ℝ, μ (ball x₁ r) ≠ ∞ := fun r =>
+    ne_top_of_le_ne_top (hμ _ (isCompact_closedBall x₁ r)).ne (measure_mono ball_subset_closedBall)
+  -- `F(r) = μ(B_r(x₁))` and `G = F^{1/n}` are nondecreasing, `G(0) = 0`, `Gⁿ = F`, `G(s) ≤ as`
+  set F : ℝ → ℝ := fun r => (μ (ball x₁ r)).toReal with hF_def
+  set G : ℝ → ℝ := fun r => F r ^ (n : ℝ)⁻¹ with hG_def
+  have hF0 : ∀ r, 0 ≤ F r := fun r => ENNReal.toReal_nonneg
+  have hFmono : Monotone F := fun r r' hrr' =>
+    ENNReal.toReal_mono (hball r') (measure_mono (ball_subset_ball hrr'))
+  have hGmono : Monotone G := fun r r' hrr' => Real.rpow_le_rpow (hF0 r) (hFmono hrr') hinv
+  have hFG : ∀ r, G r ^ n = F r := fun r => Real.rpow_inv_natCast_pow (hF0 r) hn0
+  have hG0 : G 0 = 0 := by
+    simp only [hG_def, hF_def, ball_zero, measure_empty, ENNReal.toReal_zero]
+    exact Real.zero_rpow (inv_ne_zero hn0'.ne')
+  have hGs : G s ≤ a * s :=
+    calc G s ≤ ((a * s) ^ n) ^ (n : ℝ)⁻¹ :=
+          Real.rpow_le_rpow (hF0 s) (ENNReal.toReal_lt_of_lt_ofReal hμs).le hinv
+      _ = a * s := Real.pow_rpow_inv_natCast (mul_pos ha hs).le hn0
+  -- Lebesgue's inequality: `∫⁻_{(0,s)} G′ ≤ G(s) − G(0) ≤ as`
+  have hgm : AEMeasurable ((Ioo 0 s).indicator fun t => ENNReal.ofReal (deriv G t)) :=
+    ((ENNReal.measurable_ofReal.comp (measurable_deriv G)).indicator measurableSet_Ioo).aemeasurable
+  have hgI : ∫⁻ t, (Ioo 0 s).indicator (fun t => ENNReal.ofReal (deriv G t)) t ≤
+      ENNReal.ofReal (a * s) := by
+    rw [lintegral_indicator measurableSet_Ioo]
+    refine (Submission.cmcs_smi_lintegral_ofReal_deriv_le G 0 s hGmono).trans ?_
+    rw [hG0, sub_zero]
+    exact ENNReal.ofReal_le_ofReal hGs
+  -- the exceptional radii: `N` and the points where `G` is not differentiable
+  have hp : ∀ᵐ t, t ∉ N ∧ DifferentiableAt ℝ G t :=
+    (measure_eq_zero_iff_ae_notMem.mp hN).and hGmono.ae_differentiableAt
+  obtain ⟨ρ, hρ0, hρs, ⟨hρN, hρd⟩, hρsph, hρg⟩ :=
+    Submission.dor_lmb_glc_good_radius P μ x₁ 0 s _ _ _ hs (hμ _ (isCompact_closedBall x₁ s)).ne
+      hgm hgI hp
+  -- `G′(ρ) ≤ (2/s) · as = 2a`
+  have hGd : deriv G ρ ≤ 2 * a := by
+    rw [indicator_of_mem (mem_Ioo.mpr ⟨hρ0, hρs⟩), sub_zero,
+      ← ENNReal.ofReal_mul (div_nonneg zero_le_two hs.le),
+      show 2 / s * (a * s) = 2 * a by field_simp,
+      ENNReal.ofReal_le_ofReal_iff (mul_pos two_pos ha).le] at hρg
+    exact hρg
+  refine ⟨ρ, hρ0, hρs, hρN, hρsph, ?_⟩
+  -- `F = Gⁿ` has derivative `nG(ρ)^{n−1}G′(ρ)` at `ρ`
+  have hFd : HasDerivAt F (n * G ρ ^ (n - 1) * deriv G ρ) ρ := by
+    have h := hρd.hasDerivAt.fun_pow n
+    rwa [show (fun r => G r ^ n) = F from funext hFG] at h
+  refine (Submission.cbrld_radius_liminf_annulus_le_of_hasDerivAt P μ x₁ ρ _ (hball ρ) hFd).trans
+    (ENNReal.ofReal_le_ofReal ?_)
+  -- `G(ρ)^{n−1} = F(ρ)^{(n−1)/n}`, and `G′(ρ) ≤ 2a`
+  have hpow : G ρ ^ (n - 1) = (μ (ball x₁ ρ)).toReal ^ (((n : ℝ) - 1) / n) := by
+    rw [hG_def, hF_def]
+    dsimp only
+    rw [← Real.rpow_natCast, ← Real.rpow_mul ENNReal.toReal_nonneg, Nat.cast_sub hn,
+      Nat.cast_one, inv_mul_eq_div]
+  rw [hpow]
+  have hX : 0 ≤ (μ (ball x₁ ρ)).toReal ^ (((n : ℝ) - 1) / n) :=
+    Real.rpow_nonneg ENNReal.toReal_nonneg _
+  calc (n : ℝ) * (μ (ball x₁ ρ)).toReal ^ (((n : ℝ) - 1) / n) * deriv G ρ
+      ≤ n * (μ (ball x₁ ρ)).toReal ^ (((n : ℝ) - 1) / n) * (2 * a) := by gcongr
+    _ = 2 * n * a * (μ (ball x₁ ρ)).toReal ^ (((n : ℝ) - 1) / n) := by ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
