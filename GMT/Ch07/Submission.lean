@@ -768,6 +768,139 @@ theorem dor_lmb_fcd_cp_mixed_point_integral : ∀ (m : ℕ) (δ : ℝ) (k : Fin 
     simp only [integral_const, Measure.real, smul_eq_mul, Measure.restrict_apply MeasurableSet.univ,
       univ_inter]
     rw [integral_const_mul]
+/-- Fubini along the `k`-th coordinate of the cube `Q_δ = (δ, 1 − δ)^{m+1}` (Simon Ch. 2,
+proof of Lemma 2.7): for `h` integrable on `Q_δ`,
+`∫_{Q_δ} ∫_δ^{1−δ} h(x[k ↦ t]) dt dx = (1 − 2δ) ∫_{Q_δ} h`.  The slice swap
+`ρ(x, t) = (x[k ↦ t], x_k)` is a measure-preserving involution of `Euclid (m + 1) × ℝ` that maps
+`Q_δ × (δ, 1 − δ)` onto itself. -/
+theorem dor_lmb_fcd_cp_slice_integral : ∀ (m : ℕ) (δ : ℝ) (k : Fin (m + 1)) (h : Euclid (m + 1) → ℝ), IntegrableOn h {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ} → ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ∫ t in Ioo δ (1 - δ), h (WithLp.toLp 2 (Function.update (WithLp.ofLp x) k t)) = (1 - 2 * δ) * ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, h x := by
+  intro m δ k h hh
+  set Q : Set (Euclid (m + 1)) := {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ} with hQ
+  -- Step 0: if `δ ≥ 1/2` the cube is empty and both sides vanish.
+  rcases le_or_gt (1 / 2) δ with hδ | hδ
+  · have hQe : Q = ∅ := by
+      ext y
+      simp only [hQ, mem_ofPred_eq, mem_empty_iff_false, iff_false, not_forall]
+      exact ⟨0, fun h0 => by linarith [h0.1, h0.2]⟩
+    simp [hQe]
+  -- Step 2: the slice swap on `(Fin (m + 1) → ℝ) × ℝ` preserves volume.  Under
+  -- `piFinSuccAbove` it is `((a, b), c) ↦ ((c, b), a)`, a composition of swaps and
+  -- reassociations.
+  have hρ : MeasurePreserving (fun p : (Fin (m + 1) → ℝ) × ℝ => (Function.update p.1 k p.2, p.1 k))
+      (volume.prod volume) (volume.prod volume) := by
+    set e := MeasurableEquiv.piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) k
+    have he : MeasurePreserving e (volume : Measure (Fin (m + 1) → ℝ))
+        ((volume : Measure ℝ).prod (volume : Measure (Fin m → ℝ))) :=
+      volume_preserving_piFinSuccAbove (fun _ : Fin (m + 1) => ℝ) k
+    set T : (ℝ × (Fin m → ℝ)) × ℝ → (ℝ × (Fin m → ℝ)) × ℝ := fun q => ((q.2, q.1.2), q.1.1) with hTdef
+    have hT : MeasurePreserving T (((volume : Measure ℝ).prod (volume : Measure (Fin m → ℝ))).prod volume)
+        (((volume : Measure ℝ).prod (volume : Measure (Fin m → ℝ))).prod volume) := by
+      have s1 : MeasurePreserving (Prod.map Prod.swap id : (ℝ × (Fin m → ℝ)) × ℝ → ((Fin m → ℝ) × ℝ) × ℝ)
+          (((volume : Measure ℝ).prod (volume : Measure (Fin m → ℝ))).prod volume)
+          (((volume : Measure (Fin m → ℝ)).prod (volume : Measure ℝ)).prod volume) :=
+        Measure.measurePreserving_swap.prod (MeasurePreserving.id _)
+      have s2 := measurePreserving_prodAssoc (volume : Measure (Fin m → ℝ)) (volume : Measure ℝ)
+        (volume : Measure ℝ)
+      have s3 : MeasurePreserving (Prod.map id Prod.swap : (Fin m → ℝ) × (ℝ × ℝ) → (Fin m → ℝ) × (ℝ × ℝ))
+          ((volume : Measure (Fin m → ℝ)).prod ((volume : Measure ℝ).prod volume))
+          ((volume : Measure (Fin m → ℝ)).prod ((volume : Measure ℝ).prod volume)) :=
+        (MeasurePreserving.id _).prod Measure.measurePreserving_swap
+      have s4 := (measurePreserving_prodAssoc (volume : Measure (Fin m → ℝ)) (volume : Measure ℝ)
+        (volume : Measure ℝ)).symm
+      have s5 : MeasurePreserving (Prod.map Prod.swap id : ((Fin m → ℝ) × ℝ) × ℝ → (ℝ × (Fin m → ℝ)) × ℝ)
+          (((volume : Measure (Fin m → ℝ)).prod (volume : Measure ℝ)).prod volume)
+          (((volume : Measure ℝ).prod (volume : Measure (Fin m → ℝ))).prod volume) :=
+        Measure.measurePreserving_swap.prod (MeasurePreserving.id _)
+      have := s5.comp (s4.comp (s3.comp (s2.comp s1)))
+      convert this using 1
+      funext q
+      rfl
+    have hE2 : MeasurePreserving (e.prodCongr (MeasurableEquiv.refl ℝ))
+        ((volume : Measure (Fin (m + 1) → ℝ)).prod (volume : Measure ℝ))
+        (((volume : Measure ℝ).prod (volume : Measure (Fin m → ℝ))).prod volume) :=
+      he.prod (MeasurePreserving.id _)
+    have hfull := (hE2.symm.comp hT).comp hE2
+    convert hfull using 1
+    funext p
+    ext j
+    · simp only [Function.comp, e, T]
+      simp [MeasurableEquiv.prodCongr, MeasurableEquiv.piFinSuccAbove_symm_apply,
+        MeasurableEquiv.piFinSuccAbove_apply]
+    · simp [e, T, MeasurableEquiv.prodCongr, MeasurableEquiv.piFinSuccAbove_symm_apply,
+        MeasurableEquiv.piFinSuccAbove_apply]
+  -- Steps 1–2: the same map `ρ` on `Euclid (m + 1) × ℝ` (via `ofLp`/`toLp`) is a
+  -- measure-preserving involution, hence a measurable embedding.
+  set ρ : Euclid (m + 1) × ℝ → Euclid (m + 1) × ℝ := fun p =>
+    (WithLp.toLp 2 (Function.update (WithLp.ofLp p.1) k p.2), p.1 k) with hρdef
+  have hρE : MeasurePreserving ρ (volume.prod volume) (volume.prod volume) := by
+    have h1 := (PiLp.volume_preserving_ofLp (Fin (m + 1))).prod (MeasurePreserving.id (volume : Measure ℝ))
+    have h2 := (PiLp.volume_preserving_toLp (Fin (m + 1))).prod (MeasurePreserving.id (volume : Measure ℝ))
+    have := (h2.comp hρ).comp h1
+    convert this using 1
+    funext p
+    rfl
+  have hρρ : ∀ p, ρ (ρ p) = p := by
+    intro p
+    ext j
+    · by_cases hj : j = k
+      · subst hj; simp [hρdef]
+      · simp [hρdef]
+    · simp [hρdef]
+  let ρe : (Euclid (m + 1) × ℝ) ≃ᵐ (Euclid (m + 1) × ℝ) :=
+    { toFun := ρ
+      invFun := ρ
+      left_inv := hρρ
+      right_inv := hρρ
+      measurable_toFun := hρE.measurable
+      measurable_invFun := hρE.measurable }
+  have hemb : MeasurableEmbedding ρ := ρe.measurableEmbedding
+  -- Step 3: `ρ⁻¹(Q × I) = Q × I`, so `ρ` preserves `(vol⌞Q) ⊗ (vol⌞I)`.
+  set I : Set ℝ := Ioo δ (1 - δ) with hI
+  have hpre : ρ ⁻¹' (Q ×ˢ I) = Q ×ˢ I := by
+    ext p
+    simp only [mem_preimage, mem_prod, hQ, mem_ofPred_eq, hρdef, hI, mem_Ioo]
+    constructor
+    · rintro ⟨h1, h2⟩
+      refine ⟨fun i => ?_, ?_⟩
+      · by_cases hi : i = k
+        · subst hi; simpa using h2
+        · simpa [hi] using h1 i
+      · simpa using h1 k
+    · rintro ⟨h1, h2⟩
+      refine ⟨fun i => ?_, ?_⟩
+      · by_cases hi : i = k
+        · subst hi; simpa using h2
+        · simpa [hi] using h1 i
+      · exact h1 k
+  have hρQ : MeasurePreserving ρ ((volume.prod volume).restrict (Q ×ˢ I))
+      ((volume.prod volume).restrict (Q ×ˢ I)) := by
+    have := hρE.restrict_preimage_emb hemb (Q ×ˢ I)
+    rwa [hpre] at this
+  have hrestr : (volume.restrict Q).prod (volume.restrict I) =
+      ((volume : Measure (Euclid (m + 1))).prod (volume : Measure ℝ)).restrict (Q ×ˢ I) :=
+    Measure.prod_restrict Q I
+  -- Step 4: `(x, t) ↦ h x` and `(x, t) ↦ h (x[k ↦ t])` are integrable on `Q × I`.
+  have hfinI : IsFiniteMeasure (volume.restrict I) := isFiniteMeasure_restrict.2 (by simp [hI])
+  have hint1 : Integrable (fun p : Euclid (m + 1) × ℝ => h p.1)
+      ((volume.restrict Q).prod (volume.restrict I)) := hh.comp_fst (volume.restrict I)
+  have hint2 : Integrable (fun p => h (ρ p).1) ((volume.restrict Q).prod (volume.restrict I)) := by
+    rw [hrestr] at hint1 ⊢
+    exact (hρQ.integrable_comp_emb hemb).2 hint1
+  -- Step 5: Fubini, the change of variables `ρ`, and `vol(I) = 1 − 2δ`.
+  have e1 : ∫ x in Q, ∫ t in I, h (WithLp.toLp 2 (Function.update (WithLp.ofLp x) k t)) =
+      ∫ p, h (ρ p).1 ∂((volume.restrict Q).prod (volume.restrict I)) := by
+    rw [integral_prod _ hint2]
+  have e2 : ∫ p, h (ρ p).1 ∂((volume.restrict Q).prod (volume.restrict I)) =
+      ∫ p, h p.1 ∂((volume.restrict Q).prod (volume.restrict I)) := by
+    rw [hrestr]
+    exact hρQ.integral_comp hemb (fun p => h p.1)
+  have e3 : ∫ p, h p.1 ∂((volume.restrict Q).prod (volume.restrict I)) =
+      (1 - 2 * δ) * ∫ x in Q, h x := by
+    rw [integral_prod _ hint1]
+    simp only [integral_const, Measure.real, smul_eq_mul, Measure.restrict_apply MeasurableSet.univ,
+      univ_inter, hI, Real.volume_Ioo]
+    rw [integral_const_mul, ENNReal.toReal_ofReal (by linarith)]
+    ring
   rw [e1, e2, e3]
 
 end Submission
