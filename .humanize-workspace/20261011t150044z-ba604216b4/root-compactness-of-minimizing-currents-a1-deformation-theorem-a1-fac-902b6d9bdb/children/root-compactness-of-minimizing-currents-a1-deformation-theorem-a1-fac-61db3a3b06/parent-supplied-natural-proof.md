@@ -1,0 +1,77 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_integral_current-a1.current_exists-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 6, proof of Theorem 5.1, displays (29)–(30) and (34) (book/chapter-06.txt lines 1862–1906), as written out in the parent-supplied proof of cmcdtfr_face_integral_current (its facts (F1)–(F2) and steps 1–5). This child is steps 1 (I) and 2 (II) of that proof, using its fact (F2). The operator-norm bound |α(e_I)| ≤ ‖α‖ of (F1) is used, so no monotonicity of ι is needed.
+1. Continuity. Put h_{p,ω}(y) := ω(Φ_p(y))(E_p). The map Φ_p is continuous: it is a constant plus the finite sum of the maps y ↦ y_j e_{ι(j)}, and each coordinate y ↦ y_j is continuous (PiLp.continuous_apply). Evaluation at the fixed tuple E_p is a continuous linear map on covectors (ContinuousAlternatingMap.apply), and ω is continuous because it is C^∞. So h_{p,ω} is continuous, hence a.e.-strongly measurable for volume restricted to Q₁.
+2. Pointwise bound. For every x, |ω(x)(E_p)| ≤ ‖ω(x)‖·Π_j ‖e_{ι(j)}‖ = ‖ω(x)‖ (ContinuousAlternatingMap.le_opNorm; ‖e_l‖ = 1 by PiLp.norm_single), where ‖ω(x)‖ is the operator norm. Since ω is continuous with compact support, there is C ∈ ℝ with ‖ω(x)‖ ≤ C for all x (HasCompactSupport.exists_bound_of_continuous). Hence |h_{p,ω}(y)| ≤ C for all y.
+3. Proof of (I). For p ∈ s, w_p is integrable on Q₁ and h_{p,ω} is a.e.-strongly measurable with |h_{p,ω}| ≤ C. So the product y ↦ w_p(y)·h_{p,ω}(y) is integrable on Q₁ (Integrable.mul_bdd).
+4. Linearity. For ω ∈ TestFormOn univ n set L(ω) := Σ_{p∈s} ∫_{Q₁} w_p(y)·h_{p,ω}(y) dy. The coercion of ω + η to a form is the pointwise sum and covectors are additive, so h_{p,ω+η} = h_{p,ω} + h_{p,η}; by (I) both products are integrable on Q₁, so ∫_{Q₁} w_p h_{p,ω+η} = ∫_{Q₁} w_p h_{p,ω} + ∫_{Q₁} w_p h_{p,η} (integral_add), and summing over p ∈ s (Finset.sum_add_distrib) gives L(ω + η) = L(ω) + L(η). Likewise h_{p,cω} = c·h_{p,ω}, so ∫_{Q₁} w_p h_{p,cω} = c·∫_{Q₁} w_p h_{p,ω} (integral_const_mul) and L(cω) = c·L(ω) (Finset.mul_sum). Thus L is an ℝ-linear map TestFormOn univ n → ℝ.
+5. Uniform estimate. Let A := Σ_{p∈s} ∫_{Q₁} |w_p| ≥ 0. Let δ ∈ ℝ with ‖ω(x)‖ ≤ δ for all x. By step 2, |w_p(y) h_{p,ω}(y)| ≤ |w_p(y)|·δ for all y, and y ↦ |w_p(y)|·δ is integrable on Q₁. Hence |∫_{Q₁} w_p h_{p,ω}| ≤ ∫_{Q₁} |w_p|·δ = δ ∫_{Q₁} |w_p| (norm_integral_le_of_norm_le, integral_mul_const), and |L(ω)| ≤ Σ_{p∈s} |∫_{Q₁} w_p h_{p,ω}| ≤ A·δ (Finset.abs_sum_le_sum_abs).
+6. Sequential continuity. Let (ω_j) be a sequence of test forms with TestFormOnConverges ω_j 0. Then there is a compact K with tsupport ω_j ⊆ K for all j and, for each order k, iteratedFDeriv ℝ k ω_j → iteratedFDeriv ℝ k 0 uniformly on K. Take k = 0. The coercion of the zero test form is the zero form, whose 0-th iterated derivative is 0, and ‖iteratedFDeriv ℝ 0 ω_j x‖ = ‖ω_j(x)‖ (norm_iteratedFDeriv_zero). Let ε > 0 and δ := ε/(A + 1) > 0. By uniform convergence (Metric.tendstoUniformlyOn_iff) there is N such that ‖ω_j(x)‖ < δ for all j ≥ N and x ∈ K. If x ∉ K then x ∉ tsupport ω_j, so ω_j(x) = 0 (image_eq_zero_of_notMem_tsupport). Hence ‖ω_j(x)‖ ≤ δ for all x and all j ≥ N, and by step 5, |L(ω_j)| ≤ A·ε/(A + 1) < ε for j ≥ N. So L(ω_j) → 0.
+7. Conclusion. The pair ⟨L, step 6⟩ is an element D of GeometricCurrentOn univ n (a linear map on TestFormOn univ n with the sequential continuity of the structure). By construction D(ω) = L(ω) = Σ_{p∈s} ∫_{Q₁} w_p(y)·ω(Φ_p(y))(E_p) dy for every ω (definitional). With (I) from step 3 this proves the statement. ∎
+
+## Key steps
+
+1. h_{p,ω}(y) = ω(Φ_p y)(E_p) is continuous and |h_{p,ω}| ≤ ‖ω(·)‖ ≤ C (le_opNorm, unit basis vectors, compact support).
+2. (I): w_p·h_{p,ω} is integrable on Q₁ by Integrable.mul_bdd.
+3. L(ω) := Σ_p ∫_{Q₁} w_p h_{p,ω} is linear by integral_add / integral_const_mul, using (I).
+4. |L(ω)| ≤ (Σ_p ∫_{Q₁}|w_p|)·δ whenever ‖ω(x)‖ ≤ δ for all x.
+5. Order-0 uniform convergence on the common compact K and vanishing off K give L(ω_j) → 0, so ⟨L, cont⟩ is the required D.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d, matches manifest)`
+- `rg -n 'cmcdtfrfic_' project mathlib/Mathlib -g '*.lean' (no match); grep -rn cmcdtfrfic lake-packages-25730c7c/simongmt (no match); python3 scan of runs/20261011T150044Z-ba604216b4/dag.json lean_name fields (1613 nodes, no cmcdtfrfic_ name)`
+- `python3 scan of dag.json lean_statement fields containing covectorEuclideanNorm (accepted cmc_fc_sc_current_of_coeff_bound, cmc_fc_sc_testForm_coeff_bound, regcomp_covector_eval_orthonormal_le, cmr_coordinate_divergence_form, codim1_zsl_fl_divergence_lift found; none states coeff_bounds (ii) or the face divergence field)`
+- `rg -n 'theorem (norm_integral_le_of_norm_le|integral_eq_zero_iff_of_nonneg|setIntegral_eq_zero_of_forall_eq_zero|norm_iteratedFDeriv_zero|basisFun_apply|abs_le_sqrt)' mathlib/Mathlib`
+- `grep -rn 'trace_eq_sum_inner|succAbove_left_injective|strictMono_succAbove|Finset.isCompact_biUnion|contDiff_euclidean|hasFDerivAt_apply|def homeomorph|def apply|theorem le_opNorm|Integrable.mul_bdd' mathlib/Mathlib (all found; to_additive-generated names such as HasCompactSupport.exists_bound_of_continuous, image_eq_zero_of_notMem_tsupport and Finset.sum_le_sum_of_subset_of_nonneg confirmed by #check in Api.lean/Api2.lean)`
+- `grep in lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,Mass,CurrentLocalEquality}.lean for exteriorDerivative_apply, exteriorDerivativeTestOn, GeometricCurrentOn.boundary_apply, TestFormOnConverges, covectorEuclideanNorm, massAdmissibleOn, massOn, VanishesOn, zeroRegion, support (all found)`
+- `sed -n 1840,1910p book/chapter-06.txt (Simon 5.1 displays (26)-(35))`
+- `lake env lean /tmp/fic_decomp_q4/Types.lean and /tmp/fic_decomp_q4/Assembly4.lean (child types elaborate in the replayed contract scope; the four child types imply the selected frozen type; #print axioms: propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/fic_decomp_q4/C1.lean, C2.lean, C3.lean, C6.lean (complete scratch proofs of all four child types, C2 from C1; only standard axioms)`
+- `validate_lean_statement from verifier/lean_contract.py (identical to the flow copy) on the four child types: accepted unchanged`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/WithLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Fin/SuccPred.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Fin/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-902b6d9bdb/parent-child-handoff.json`
+- `/tmp/fic_decomp_q4/Types.lean`
+- `/tmp/fic_decomp_q4/Assembly4.lean`
+- `/tmp/fic_decomp_q4/C1.lean`
+- `/tmp/fic_decomp_q4/C2.lean`
+- `/tmp/fic_decomp_q4/C3.lean`
+- `/tmp/fic_decomp_q4/C6.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same Ch07 contract as the workspace, and Submission.lean equals the contract, so no face-current lemma exists at the proof base. No declaration, SimonGMT file or DAG node uses the prefix cmcdtfrfic_. Accepted declarations in other branches overlap only in part: cmc_fc_sc_current_of_coeff_bound, cmc_fc_sc_testForm_coeff_bound and regcomp_covector_eval_orthonormal_le would give coeff_bounds (i) and shorten the continuity step of current_exists. They are not reused, because coeff_bounds (ii) and divergence_field are new anyway. Mathlib and SimonGMT supply every tool the child proofs cite: trace_eq_sum_inner, contDiff_euclidean, PiLp.hasFDerivAt_apply, ContinuousAlternatingMap.apply and le_opNorm, exteriorDerivative_apply, Integrable.mul_bdd, norm_integral_le_of_norm_le, norm_iteratedFDeriv_zero, integral_eq_zero_iff_of_nonneg, setIntegral_eq_zero_of_forall_eq_zero, PiLp.homeomorph, Finset.isCompact_biUnion, Fin.succAbove_left_injective and Fin.strictMono_succAbove. All four child types elaborate in the comparator's replayed scope and pass the workflow validator. Scratch Lean proofs of all four children, and the assembly into the selected frozen type, compile with only propext, Classical.choice and Quot.sound.
