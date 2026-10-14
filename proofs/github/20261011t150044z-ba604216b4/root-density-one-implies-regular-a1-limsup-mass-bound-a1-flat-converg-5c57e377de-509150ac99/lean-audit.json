@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a161be00ef0448674587ac21dfb4911abab99e3baa489fe14ccb80c86f8e9411",
+  "git_delta": {
+    "base_commit": "bdedeb7b15a276f9f3eebc8144fdf6bed99a5b63",
+    "candidate_commit": "d79481dec0921df7c4a6992aaf9634373974dfd5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_tb_zero_isIntegerMultiplicity",
+    "diff_sha256": "fd3405a1e96a14691b3650ab2d60f9936d1216dbd3367927ab451b2277921608",
+    "source_sha256": "0baa1a4d168358391e26551d073003b13e2c69ee1b3ef583bcfe8562a74cbb22",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_tb_zero_isIntegerMultiplicity",
+      "statement": "∀ (P d : ℕ) (U : Set (Euclid P)), IsIntegerMultiplicity (0 : GeometricCurrentOn U d)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
