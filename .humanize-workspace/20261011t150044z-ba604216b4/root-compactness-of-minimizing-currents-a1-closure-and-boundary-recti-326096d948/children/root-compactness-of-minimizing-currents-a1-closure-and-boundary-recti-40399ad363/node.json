@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.isp_of_im-a1.ae_mass_finite-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.isp_of_im-a1",
+  "depth": 5,
+  "title": "Almost every slice defect has finite mass on bounded sets",
+  "statement": "Assume (MM), the third conjunct of the frozen statement of the sibling cbr_measure_convergence_tools: for every P ∈ ℕ, all measures μ_j (j ∈ ℕ) on ℝ^P, every continuous f : ℝ^P → ℝ, every G ⊆ ℝ^P, all a, b ∈ ℝ, every L ∈ ℝ≥0 and all Z_j : ℝ → [0, ∞] (j ∈ ℕ) with μ_j(G ∩ {a < f < b}) < ∞ for every j and Z_j(t) ≤ L·liminf_{h→0+} h⁻¹·μ_j(G ∩ {t − h < f < t}) for every j and every t ∈ (a, b), there is a measurable g : ℝ → [0, ∞] with liminf_{j→∞} Z_j(t) ≤ g(t) for L¹-a.e. t ∈ (a, b) and ∫_{(a,b)} g dt ≤ L·liminf_{j→∞} μ_j(G ∩ {a < f < b}). Let P, q ∈ ℕ, U ⊆ ℝ^P, Z : ℝ → 𝒟_q(U) (t ↦ Z_t), a measure μ on ℝ^P with μ(K) < ∞ for every compact K ⊆ ℝ^P, a continuous f : ℝ^P → ℝ and L ∈ ℝ≥0, and assume M_W(Z_t) ≤ L·liminf_{h→0+} h⁻¹·μ(W ∩ {t − h < f < t}) for every open W ⊆ ℝ^P and every t ∈ ℝ. Here M_W(T) := T.massOn W, h⁻¹ is read as ENNReal.ofReal h⁻¹, and the liminf is taken along 𝓝[>] 0 in [0, ∞]. Then for L¹-a.e. t ∈ ℝ one has M_W(Z_t) < ∞ for every bounded W ⊆ ℝ^P.",
+  "lean_statement": "(∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop) → ∀ (P q : ℕ) (U : Set (Euclid P)) (Z : ℝ → GeometricCurrentOn U q) (μ : Measure (Euclid P)) (f : Euclid P → ℝ) (L : NNReal), Continuous f → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → (Z t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∀ᵐ t ∂(volume : Measure ℝ), ∀ W : Set (Euclid P), Bornology.IsBounded W → (Z t).massOn W < ∞",
+  "lean_name": "cbr_ccisp_ae_massOn_lt_top",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-40399ad363-a1"
+}
