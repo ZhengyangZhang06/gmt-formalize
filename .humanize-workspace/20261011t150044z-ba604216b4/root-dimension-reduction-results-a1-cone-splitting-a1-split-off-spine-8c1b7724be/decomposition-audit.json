@@ -1,0 +1,55 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'dimred_cs_sos_lipschitz_approx_tangent|dor_lmb_fcd_imp_regular_partition|dpf_approxTangent_ae_bilipschitz_piece' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|theorem measurableSet_of_differentiableAt|theorem measurable_fderiv|theorem ContinuousLinearMap.isOpen_injective|theorem LinearMap.exists_antilipschitzWith|theorem ae_tendsto_rnDeriv|theorem ae_tendsto_measure_inter_div|theorem ae_tendsto_average_norm_sub|theorem euclideanHausdorffMeasure_image|theorem euclideanHausdorffMeasure_homothety_image",
+        "weighted_area_formula_lipschitz_injOn|areaJacobianAt|linear_area_formula|euclideanHausdorffMeasure_image_le_of_lipschitzOn",
+        "git show 7e15fe6177015a9444dd9a61fa02419e31124478:GMT/Ch07/Submission.lean",
+        "git show a21680472b6919972de04d02dc3e1395a15d4171:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lipschitz-tangent-independent-audit-h4phpx5q/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lipschitz-tangent-independent-audit-h4phpx5q/VerifiedAssembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8c1b7724be/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8c1b7724be/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-8b47895ec1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9/isolated-comparator-result.json",
+        "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py",
+        "/tmp/lipschitz-tangent-independent-audit-h4phpx5q/ChallengeTypes.lean",
+        "/tmp/lipschitz-tangent-independent-audit-h4phpx5q/VerifiedAssembly.lean"
+      ],
+      "conclusion": "The project and mathlib revisions match the snapshot; SimonGMT matches lake-manifest.json. Snapshot Contract.lean and workspace Contract.lean/Submission.lean are byte-identical. The three searched declaration names have no snapshot-project matches; the reused declarations come from the independently inspected accepted candidates. Both have unique DAG owners, passing isolated comparators, and byte-identical frozen types. Their prerequisite closures contain respectively 1 and 18 accepted nodes, with no cycles or selected-node ancestors. Candidate diffs preserve the frozen definitions; the piece candidate supplies the required AreaLipschitz import. Both child propositions independently elaborate under the contract imports. A fresh assembly reconstructed from the real candidate proofs proves the exact selected parent type and compiles without placeholders; both children and the parent depend only on propext, Classical.choice and Quot.sound. The split is appropriate: partition F⁻¹(Y), apply the piece theorem with U = univ, then combine restricted almost-everywhere conclusions countably. Derivative coercions and measure instances are correct; no Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "regular_partition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bare name validly reuses the accepted declaration with identical type. The one-line proposition exactly matches the prose, including arbitrary H and k = 0. The proof establishes Borel regular points, positive coercivity tolerances, the measurable disjoint partition, its lower bounds and covering. It requires no unstated global continuity or Lipschitz hypothesis and contains no circular reliance."
+    },
+    {
+      "key": "dpf_piece",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bare name validly reuses the accepted declaration with identical type. The one-line proposition includes every hypothesis and the correct restricted-volume conclusion. The proof supplies compact-ball localization inside U, Borel image and null-set pullback, differentiation of finite mutually singular measures, almost-everywhere good points, the derivative lower bound, integrable signed area transport, rescaling and convergence, and the range dimension. The n = 0 case is valid. These steps prove the exact child statement without relying on the partition child or selected parent, and are sufficiently detailed for formalization."
+    }
+  ],
+  "required_changes": []
+}
