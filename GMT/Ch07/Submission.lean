@@ -836,6 +836,58 @@ theorem Submission.dor_lmb_fcd_jwc_lipschitz_smooth_approx : ∀ (k : ℕ) (L : 
       simpa using this
     simpa using this
 
+/-- **The Piola identity** (the Jacobian minors are null Lagrangians): for `C²` functions
+`g₀, …, g_{r-1}` on `ℝᵏ` and directions `V₀, …, V_r`, the minors
+`M_b(y) = det (Dg_c(y) V_{s_b(b')})_{c,b'}` (`s_b = Fin.succAbove b`, so `V_b` is deleted) satisfy
+`∑_b (-1)^b DM_b(x) V_b = 0`.  With `G = (g₀, …, g_{r-1})` and the constant determinant form
+`θ = dy⁰ ∧ ⋯ ∧ dy^{r-1}` one has `M_b(y) = (G^*θ)(y)(V ∘ s_b)`, so the left side is
+`d(G^*θ)(x)(V)`, and `d(G^*θ) = G^*(dθ) = 0` by the naturality of `d` (which is where the symmetry
+of `D²G` enters). -/
+theorem Submission.dor_lmb_fcd_jwc_piola_identity : ∀ (k r : ℕ) (g : Fin r → Euclid k → ℝ) (V : Fin (r + 1) → Euclid k) (x : Euclid k), (∀ c, ContDiff ℝ 2 (g c)) → ∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * fderiv ℝ (fun y => Matrix.det (Matrix.of fun (c b' : Fin r) => fderiv ℝ (g c) y (V (b.succAbove b')))) x (V b) = 0 := by
+  intro k r g V x hg
+  -- Step 1: the map `G = (g₀, …, g_{r-1}) : ℝᵏ → ℝʳ` is `C²`, and `(DG(y) w)_c = Dg_c(y) w`
+  set e : (Fin r → ℝ) ≃L[ℝ] Euclid r := (EuclideanSpace.equiv (Fin r) ℝ).symm with he
+  set G : Euclid k → Euclid r := fun y => e (fun c => g c y) with hG
+  have hGc : ContDiff ℝ 2 G := e.contDiff.comp (contDiff_pi.2 hg)
+  have hGd : ∀ y w (c : Fin r), fderiv ℝ G y w c = fderiv ℝ (g c) y w := by
+    intro y w c
+    have hpi : HasFDerivAt (fun y => fun c => g c y)
+        (ContinuousLinearMap.pi fun c => fderiv ℝ (g c) y) y :=
+      hasFDerivAt_pi.2 fun c => ((hg c).differentiable (by norm_num) y).hasFDerivAt
+    have h := e.hasFDerivAt.comp y hpi
+    rw [show G = e ∘ (fun y => fun c => g c y) from rfl, h.fderiv]
+    simp [he]
+  -- Step 2: the constant determinant form `Θ ≡ θ`, `θ(w) = det (w_b(c))_{c,b}`
+  obtain ⟨θ, hθ⟩ := Submission.cmr_cc_det_covector_exists r r id
+  set Θ : Euclid r → Covector (Euclid r) r := fun _ => θ with hΘ
+  -- Step 3: `dΘ = 0`, since `DΘ = 0` and the alternatization is linear
+  have hdΘ : extDeriv Θ (G x) = 0 := by
+    simp [extDeriv, hΘ, ← ContinuousAlternatingMap.alternatizeUncurryFinCLM_apply]
+  -- Step 4: naturality of `d` gives `d(G^*Θ)(x) = (dΘ)(G x) ∘ DG(x) = 0`
+  have hpull := extDeriv_pullback (ω := Θ) (f := G) (x := x) (r := 2) (differentiableAt_const θ)
+    hGc.contDiffAt (by simp)
+  rw [hdΘ] at hpull
+  -- Step 5: the coordinate formula `d(G^*Θ)(x)(V) = ∑_b (-1)^b D[(G^*Θ)(·)(V ∘ s_b)](x) V_b`
+  have hβd : DifferentiableAt ℝ (fun y => (Θ (G y)).compContinuousLinearMap (fderiv ℝ G y)) x :=
+    (differentiableAt_const θ).continuousAlternatingMapCompContinuousLinearMap
+      ((hGc.fderiv_right (m := 1) (by norm_num)).differentiable (by norm_num) x)
+  have happ := extDeriv_apply hβd V
+  rw [hpull] at happ
+  -- Step 6: `(G^*Θ)(y)(V ∘ s_b) = M_b(y)` by Steps 1 and 2
+  have hβ : ∀ i : Fin (r + 1), (fun y => (Θ (G y)).compContinuousLinearMap (fderiv ℝ G y)
+      (i.removeNth V)) = fun y => Matrix.det (Matrix.of fun (c b' : Fin r) =>
+        fderiv ℝ (g c) y (V (i.succAbove b'))) := by
+    intro i
+    funext y
+    simp only [hΘ, ContinuousAlternatingMap.compContinuousLinearMap_apply, hθ]
+    congr 1
+    ext c b'
+    simp [Matrix.of_apply, Fin.removeNth, hGd]
+  -- Step 7: hence `0 = d(G^*Θ)(x)(V) = ∑_b (-1)^b DM_b(x) V_b`
+  simp only [hβ] at happ
+  rw [eq_comm] at happ
+  simpa [zsmul_eq_mul] using happ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
