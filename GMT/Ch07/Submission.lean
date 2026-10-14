@@ -572,6 +572,110 @@ theorem Submission.dimred_mbl_dt_cbm_st_interval_bound : ∀ (φ γ : ℝ → �
         have : 2 / (b - a) = (b - a)⁻¹ + (b - a)⁻¹ := by ring
         rw [this]; linarith
 
+/-- **One-coordinate divergence estimate on the cube** `Q_δ = {z : δ < z_j < 1 − δ ∀ j}` (the
+`i`-th term of the smooth trace estimate behind Simon Ch. 2, 2.8–2.9, on a cube of side
+`1 − 2δ ≥ 1/2`): for `C¹` functions `v, g` with `|g| ≤ 1`,
+`|∫_{Q_δ} D(vg)(x)eᵢ dx| ≤ 4 ∫_{Q_δ} |v| + 2 ∫_{Q_δ} ‖Dv‖`.  Slice `Q_δ` into the lines
+`t ↦ ι(t, y) = toLp 2 (insertNth i t y)`, `y ∈ Q'`, whose velocity is `eᵢ`.  On each line,
+`(vg)∘ι` has derivative `D(vg)(ι)eᵢ`, so the one-dimensional estimate, `2/(1 − 2δ) ≤ 4` and
+`|Dv(x)eᵢ| ≤ ‖Dv(x)‖` give `|∫_δ^{1−δ} D(vg)(ι)eᵢ| ≤ ∫_δ^{1−δ} (4|v| + 2‖Dv‖)(ι)`; then
+integrate over `y ∈ Q'`. -/
+theorem Submission.dimred_mbl_dt_cbm_st_coord_bound : ∀ (m : ℕ) (v g : Euclid (m + 1) → ℝ) (i : Fin (m + 1)) (δ : ℝ), ContDiff ℝ 1 v → ContDiff ℝ 1 g → (∀ y, |g y| ≤ 1) → 0 ≤ δ → δ ≤ 1 / 4 → |∫ x in {z : Euclid (m + 1) | ∀ j, δ < z j ∧ z j < 1 - δ}, fderiv ℝ (fun y => v y * g y) x (EuclideanSpace.single i 1)| ≤ 4 * (∫ x in {z : Euclid (m + 1) | ∀ j, δ < z j ∧ z j < 1 - δ}, |v x|) + 2 * ∫ x in {z : Euclid (m + 1) | ∀ j, δ < z j ∧ z j < 1 - δ}, ‖fderiv ℝ v x‖ := by
+  intro m v g i δ hv hg hgb _ hδ
+  set Q : Set (Euclid (m + 1)) := {z : Euclid (m + 1) | ∀ j, δ < z j ∧ z j < 1 - δ}
+  set Q' : Set (Fin m → ℝ) := {y : Fin m → ℝ | ∀ j, δ < y j ∧ y j < 1 - δ}
+  have hab : δ < 1 - δ := by linarith
+  -- the line `t ↦ ι t y` through the slice point `y` in direction `eᵢ`
+  set ι : ℝ → (Fin m → ℝ) → Euclid (m + 1) := fun t y => WithLp.toLp 2 (Fin.insertNth i t y)
+  have hι_affine : ∀ y,
+      (fun s => ι s y) = fun s => ι 0 y + s • EuclideanSpace.single i (1 : ℝ) := by
+    intro y
+    funext s
+    ext j
+    induction j using Fin.succAboveCases i with
+    | x => simp [ι]
+    | p j => simp [ι, Fin.succAbove_ne]
+  have hι_deriv : ∀ t y, HasDerivAt (fun s => ι s y) (EuclideanSpace.single i 1) t := by
+    intro t y
+    rw [hι_affine y]
+    simpa using ((hasDerivAt_id t).smul_const (EuclideanSpace.single i (1 : ℝ))).const_add (ι 0 y)
+  have hι_cd : ∀ y, ContDiff ℝ 1 (fun s => ι s y) := by
+    intro y
+    rw [hι_affine y]
+    exact contDiff_const.add (contDiff_id.smul contDiff_const)
+  have hvg : ContDiff ℝ 1 (fun y => v y * g y) := hv.mul hg
+  -- `F = D(vg)(·)eᵢ` and the majorant `H = 4|v| + 2‖Dv‖`, both continuous
+  set F : Euclid (m + 1) → ℝ := fun x => fderiv ℝ (fun y => v y * g y) x (EuclideanSpace.single i 1)
+  set H : Euclid (m + 1) → ℝ := fun x => 4 * |v x| + 2 * ‖fderiv ℝ v x‖
+  have hFc : Continuous F := (hvg.continuous_fderiv one_ne_zero).clm_apply continuous_const
+  have hvc : Continuous fun x => |v x| := hv.continuous.abs
+  have hDvc : Continuous fun x => ‖fderiv ℝ v x‖ := (hv.continuous_fderiv one_ne_zero).norm
+  have hHc : Continuous H := (continuous_const.mul hvc).add (continuous_const.mul hDvc)
+  -- slice `Q` along the `i`-th coordinate
+  obtain ⟨-, hFslice⟩ := Submission.dimred_mbl_dt_cbm_st_slice_integral m i δ (1 - δ) F hab.le
+    (Submission.dimred_mbl_dt_cbm_st_box_integrableOn _ _ _ _ hFc)
+  obtain ⟨hHint, hHslice⟩ := Submission.dimred_mbl_dt_cbm_st_slice_integral m i δ (1 - δ) H hab.le
+    (Submission.dimred_mbl_dt_cbm_st_box_integrableOn _ _ _ _ hHc)
+  have hHsplit : ∫ x in Q, H x = 4 * (∫ x in Q, |v x|) + 2 * ∫ x in Q, ‖fderiv ℝ v x‖ := by
+    rw [integral_add ((Submission.dimred_mbl_dt_cbm_st_box_integrableOn _ _ _ _ hvc).const_mul 4)
+      ((Submission.dimred_mbl_dt_cbm_st_box_integrableOn _ _ _ _ hDvc).const_mul 2),
+      integral_const_mul, integral_const_mul]
+  -- the one-dimensional estimate on each line
+  have hline : ∀ y, |∫ t in δ..(1 - δ), F (ι t y)| ≤ ∫ t in δ..(1 - δ), H (ι t y) := by
+    intro y
+    have hφ : ContDiff ℝ 1 (fun s => v (ι s y)) := hv.comp (hι_cd y)
+    have hγ : ContDiff ℝ 1 (fun s => g (ι s y)) := hg.comp (hι_cd y)
+    -- chain rule along the line: `((vg)∘ι)' = D(vg)(ι)eᵢ` and `(v∘ι)' = Dv(ι)eᵢ`
+    have hderiv_prod : ∀ t, deriv (fun s => v (ι s y) * g (ι s y)) t = F (ι t y) := by
+      intro t
+      have := (hvg.differentiable one_ne_zero (ι t y)).hasFDerivAt.comp_hasDerivAt t (hι_deriv t y)
+      exact this.deriv
+    have hderiv_v : ∀ t, deriv (fun s => v (ι s y)) t =
+        fderiv ℝ v (ι t y) (EuclideanSpace.single i 1) := by
+      intro t
+      have := (hv.differentiable one_ne_zero (ι t y)).hasFDerivAt.comp_hasDerivAt t (hι_deriv t y)
+      exact this.deriv
+    have h1 := Submission.dimred_mbl_dt_cbm_st_interval_bound (fun s => v (ι s y))
+      (fun s => g (ι s y)) δ (1 - δ) hφ hγ (fun t => hgb _) hab
+    simp only [hderiv_prod, hderiv_v] at h1
+    have hcoef : 2 / (1 - δ - δ) ≤ 4 := by
+      rw [div_le_iff₀ (by linarith)]; linarith
+    have hint_nonneg : 0 ≤ ∫ t in δ..(1 - δ), |v (ι t y)| :=
+      intervalIntegral.integral_nonneg hab.le fun t _ => abs_nonneg _
+    have hcont_v : Continuous fun t => |v (ι t y)| := hφ.continuous.abs
+    have hcont_Dv : Continuous fun t => ‖fderiv ℝ v (ι t y)‖ := hDvc.comp (hι_cd y).continuous
+    have hcont_dv : Continuous fun t => |fderiv ℝ v (ι t y) (EuclideanSpace.single i 1)| :=
+      (((hv.continuous_fderiv one_ne_zero).comp (hι_cd y).continuous).clm_apply
+        continuous_const).abs
+    -- `|Dv(x)eᵢ| ≤ ‖Dv(x)‖ ‖eᵢ‖ = ‖Dv(x)‖`
+    have hmono : ∫ t in δ..(1 - δ), |fderiv ℝ v (ι t y) (EuclideanSpace.single i 1)| ≤
+        ∫ t in δ..(1 - δ), ‖fderiv ℝ v (ι t y)‖ := by
+      refine intervalIntegral.integral_mono_on hab.le (hcont_dv.intervalIntegrable _ _)
+        (hcont_Dv.intervalIntegrable _ _) fun t _ => ?_
+      have := (fderiv ℝ v (ι t y)).le_opNorm (EuclideanSpace.single i 1)
+      rwa [Real.norm_eq_abs, PiLp.norm_single, norm_one, mul_one] at this
+    have hHline : ∫ t in δ..(1 - δ), H (ι t y) =
+        4 * (∫ t in δ..(1 - δ), |v (ι t y)|) + 2 * ∫ t in δ..(1 - δ), ‖fderiv ℝ v (ι t y)‖ := by
+      simp only [H]
+      rw [intervalIntegral.integral_add ((hcont_v.intervalIntegrable _ _).const_mul 4)
+        ((hcont_Dv.intervalIntegrable _ _).const_mul 2), intervalIntegral.integral_const_mul,
+        intervalIntegral.integral_const_mul]
+    rw [hHline]
+    calc |∫ t in δ..(1 - δ), F (ι t y)|
+        ≤ 2 / (1 - δ - δ) * (∫ t in δ..(1 - δ), |v (ι t y)|) +
+            2 * ∫ t in δ..(1 - δ), |fderiv ℝ v (ι t y) (EuclideanSpace.single i 1)| := h1
+      _ ≤ 4 * (∫ t in δ..(1 - δ), |v (ι t y)|) + 2 * ∫ t in δ..(1 - δ), ‖fderiv ℝ v (ι t y)‖ := by
+        gcongr
+  -- integrate the line estimate over the face variable `y ∈ Q'`
+  calc |∫ x in Q, F x|
+      = |∫ y in Q', ∫ t in δ..(1 - δ), F (ι t y)| := by rw [hFslice]
+    _ ≤ ∫ y in Q', |∫ t in δ..(1 - δ), F (ι t y)| := abs_integral_le_integral_abs
+    _ ≤ ∫ y in Q', ∫ t in δ..(1 - δ), H (ι t y) :=
+        integral_mono_of_nonneg (Eventually.of_forall fun y => abs_nonneg _) hHint
+          (Eventually.of_forall hline)
+    _ = ∫ x in Q, H x := hHslice.symm
+    _ = 4 * (∫ x in Q, |v x|) + 2 * ∫ x in Q, ‖fderiv ℝ v x‖ := hHsplit
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
