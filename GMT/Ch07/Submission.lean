@@ -3163,4 +3163,67 @@ theorem Submission.idtp_tdc_puvd_density_of_ball_mass : ∀ (P n : ℕ) (U : Set
     (mul_ne_zero hω₀ (ENNReal.ofReal_pos.2 (pow_pos hρ.1 n)).ne')
     (ENNReal.mul_ne_top hω ENNReal.ofReal_ne_top)]
 
+/-- **An integer multiplicity 2-cycle carried by finitely many 2-planes through `0` has integer
+density at `0`** (the density of a 2-dimensional minimizing cone at its vertex, in the proof of
+Simon 7.3.3(1), pp. 191–192, where `Θ` is constant on each `Pᵢ ∖ {0}` by the Constancy Theorem,
+Ch. 6, 2.34).  Let `C = τ(M, θ, ξ) ∈ 𝒟₂(ℝᴾ)` with `∂C = 0`, let `P₁, …, P_q` be 2-planes with
+`Pᵢ ∩ Pⱼ = {0}` for `i ≠ j`, and let `spt C ∖ {0} ⊆ ⋃ᵢ Pᵢ`.  An open `Vᵢ ⊇ Pᵢ ∖ {0}` missing
+the other planes, with `Vᵢ ∩ Pᵢ` connected, has `spt C ∩ Vᵢ ⊆ Pᵢ`, so `μ_C = cᵢ H²⌞Pᵢ` on Borel
+subsets of `Pᵢ ∖ {0}` for some `cᵢ ∈ ℕ`.  `μ_C` splits over the punctured planes and
+`H²({0}) = 0`, so `M_{B_ρ(0)}(C) = Σᵢ cᵢ H²(Pᵢ ∩ B_ρ(0)) = (Σᵢ cᵢ) ω₂ρ²` for every `ρ > 0`, and
+`Θ²(μ_C, 0) = Σᵢ cᵢ`. -/
+theorem Submission.idtp_tdc_planes_union_vertex_density : ∀ (P q : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Ps : Fin q → Submodule ℝ (Euclid P)), IsIntegerMultiplicity C → BoundaryVanishes C → (∀ i, Module.finrank ℝ (Ps i) = 2) → (∀ i j, i ≠ j → Ps i ⊓ Ps j = ⊥) → (∀ x ∈ C.support, x ≠ 0 → ∃ i, x ∈ Ps i) → ∃ m : ℕ, HasMassDensity C 0 m := by
+  intro P q C Ps hIM hbd h2 hdisj hspt
+  obtain ⟨R, hR⟩ := hIM
+  -- `H²({0}) = 0`: otherwise `H⁰({0}) = ∞`, while `H⁰({0}) = 1`
+  have hH0 : μHE[2] ({0} : Set (Euclid P)) = 0 := by
+    refine (Measure.euclideanHausdorffMeasure_zero_or_top (d₁ := 0) two_pos _).resolve_right ?_
+    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+    exact ENNReal.one_ne_top
+  -- on each punctured plane `Pᵢ ∖ {0}`, `μ_C = cᵢ H²⌞Pᵢ` for some `cᵢ ∈ ℕ`
+  have hpiece : ∀ i, ∃ c : ℕ, ∀ E : Set (Euclid P), MeasurableSet E →
+      E ⊆ (Ps i : Set (Euclid P)) \ {0} →
+        R.measure E = (c : ℝ≥0∞) * μHE[2] (E ∩ (Ps i : Set (Euclid P))) := by
+    intro i
+    -- an open `Vᵢ ⊇ Pᵢ ∖ {0}` missing the other planes, with `Vᵢ ∩ Pᵢ` connected
+    obtain ⟨V, hV, hconn, hPV, hVdisj⟩ :=
+      Submission.idtp_tdc_puvd_plane_domain P q Ps i (h2 i) fun j hj => hdisj i j (Ne.symm hj)
+    -- `spt C ∩ Vᵢ ⊆ Pᵢ`: a nonzero point of `spt C` lies in some `Pⱼ`, and `Vᵢ` misses `Pⱼ`
+    -- for `j ≠ i`
+    have hsupp : C.support ∩ V ⊆ (Ps i : Set (Euclid P)) := by
+      rintro x ⟨hxC, hxV⟩
+      by_cases hx0 : x = 0
+      · rw [hx0]
+        exact (Ps i).zero_mem
+      obtain ⟨j, hj⟩ := hspt x hxC hx0
+      by_cases hji : j = i
+      · rw [← hji]
+        exact hj
+      · exact absurd hj (Set.disjoint_left.1 (hVdisj j hji) hxV)
+    obtain ⟨c, hc⟩ := Submission.idtp_tdc_puvd_planar_piece_measure P 2 C R V (Ps i) one_le_two
+      hV hbd hR (h2 i) hconn hsupp
+    exact ⟨c, fun E hE hEP => hc E hE (hEP.trans hPV)⟩
+  choose c hc using hpiece
+  -- `M_{B_ρ(0)}(C) = μ_C(B_ρ(0)) = Σᵢ μ_C(B_ρ(0) ∩ (Pᵢ ∖ {0})) = Σᵢ cᵢ H²(Pᵢ ∩ B_ρ(0))
+  -- = (Σᵢ cᵢ) ω₂ρ²` for every `ρ > 0`
+  refine ⟨∑ i, c i, Submission.idtp_tdc_puvd_density_of_ball_mass P 2 univ C 0 _ 1
+    (Nat.cast_nonneg _) one_pos fun ρ hρ _ => ?_⟩
+  rw [(Submission.dimred_im_mass_measure P 2 univ C R isOpen_univ hR).1 _ isOpen_ball
+      (subset_univ _),
+    Submission.idtp_tdc_puvd_measure_eq_sum_planes P 2 q C R Ps one_le_two hR hdisj hspt _
+      measurableSet_ball,
+    ENNReal.ofReal_natCast, Nat.cast_sum, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  have hm : MeasurableSet (ball (0 : Euclid P) ρ ∩ ((Ps i : Set (Euclid P)) \ {0})) :=
+    measurableSet_ball.inter
+      ((Ps i).closed_of_finiteDimensional.measurableSet.diff (measurableSet_singleton 0))
+  -- `(B_ρ(0) ∩ (Pᵢ ∖ {0})) ∩ Pᵢ = (Pᵢ ∩ B_ρ(0)) ∖ {0}`, and `H²({0}) = 0`
+  have hset : ball (0 : Euclid P) ρ ∩ ((Ps i : Set (Euclid P)) \ {0}) ∩ (Ps i : Set (Euclid P)) =
+      ((Ps i : Set (Euclid P)) ∩ ball 0 ρ) \ {0} := by
+    ext x
+    simp only [mem_inter_iff, Set.mem_sdiff]
+    tauto
+  rw [hc i _ hm inter_subset_right, hset, measure_sdiff_null hH0,
+    Submission.idtp_tdc_subspace_ball_measure P 2 (Ps i) 0 ρ (h2 i) (Ps i).zero_mem hρ]
+
 end GMT.Ch07
