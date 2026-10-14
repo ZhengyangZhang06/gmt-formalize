@@ -451,6 +451,49 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Exhaustion of the open unit cube `Q₁ = {0 < yᵢ < 1}` by the shrunken cubes
+`Q_δ = {δ < zᵢ < 1 - δ}`: if `f` is integrable on `Q₁`, then `∫_{Q_δ} f → ∫_{Q₁} f` as `δ → 0⁺`.
+For `δ > 0`, `∫_{Q_δ} f = ∫_{Q₁} 1_{Q_δ} f`, and every `y ∈ Q₁` lies in `Q_δ` for all small
+`δ > 0`; dominated convergence on `Q₁` with bound `|f|` concludes. -/
+theorem Submission.cmcdt_cbm_bvt_cube_exhaust : ∀ (k : ℕ) (f : Euclid k → ℝ), IntegrableOn f {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} → Tendsto (fun δ : ℝ => ∫ y in {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ}, f y) (𝓝[>] 0) (𝓝 (∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, f y)) := by
+  intro k f hf
+  -- each `{z | ∀ i, a < z i ∧ z i < b}` is a finite intersection of open half-spaces
+  have hmeas : ∀ a b : ℝ, MeasurableSet {z : Euclid k | ∀ i, a < z i ∧ z i < b} := by
+    intro a b
+    have h : {z : Euclid k | ∀ i, a < z i ∧ z i < b} =
+        ⋂ i, ({z : Euclid k | a < z i} ∩ {z : Euclid k | z i < b}) := by
+      ext z
+      simp
+    rw [h]
+    refine IsOpen.measurableSet (isOpen_iInter_of_finite fun i => ?_)
+    exact (isOpen_lt continuous_const (PiLp.continuous_apply _ _ i)).inter
+      (isOpen_lt (PiLp.continuous_apply _ _ i) continuous_const)
+  -- for `δ > 0`, `∫_{Q_δ} f = ∫_{Q₁} 1_{Q_δ} f`
+  have heq : (fun δ : ℝ => ∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1},
+      {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ}.indicator f y) =ᶠ[𝓝[>] 0]
+      fun δ : ℝ => ∫ y in {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ}, f y := by
+    filter_upwards [self_mem_nhdsWithin] with δ (hδ : 0 < δ)
+    rw [setIntegral_indicator (hmeas _ _), inter_eq_right.2]
+    intro z hz i
+    exact ⟨hδ.trans (hz i).1, (hz i).2.trans (by linarith)⟩
+  refine Tendsto.congr' heq ?_
+  -- dominated convergence on `Q₁` with bound `|f|`
+  refine tendsto_integral_filter_of_dominated_convergence (fun y => ‖f y‖)
+    (Eventually.of_forall fun δ => hf.aestronglyMeasurable.indicator (hmeas _ _))
+    (Eventually.of_forall fun δ => Eventually.of_forall fun y => norm_indicator_le_norm_self _ _)
+    hf.norm ?_
+  rw [ae_restrict_iff' (by simpa using hmeas 0 1)]
+  refine Eventually.of_forall fun y hy => tendsto_const_nhds.congr' ?_
+  -- every `y ∈ Q₁` lies in `Q_δ` for all small `δ > 0`
+  have hev : ∀ᶠ δ in 𝓝[>] (0 : ℝ), ∀ i, δ < y i ∧ y i < 1 - δ := by
+    rw [Filter.eventually_all]
+    intro i
+    have h1 : ∀ᶠ δ in 𝓝 (0 : ℝ), δ < y i := eventually_lt_nhds (hy i).1
+    have h2 : ∀ᶠ δ in 𝓝 (0 : ℝ), δ < 1 - y i := eventually_lt_nhds (by linarith [(hy i).2])
+    exact nhdsWithin_le_nhds ((h1.and h2).mono fun δ h => ⟨h.1, by linarith [h.2]⟩)
+  filter_upwards [hev] with δ hδ
+  exact (indicator_of_mem (show y ∈ {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ} from hδ) f).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
