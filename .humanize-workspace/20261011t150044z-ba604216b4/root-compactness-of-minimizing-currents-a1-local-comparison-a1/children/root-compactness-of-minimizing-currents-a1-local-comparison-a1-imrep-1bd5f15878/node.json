@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.imrep_restriction-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1",
+  "depth": 3,
+  "title": "Measure calculus of integer multiplicity representations and of their restrictions to Borel sets",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, and let R = (M, θ, ξ) be an integer multiplicity representation in U (contract IMRep U n) with weight μ_R := θ Hⁿ⌞M (contract R.measure = (Hⁿ⌞M).withDensity θ, Hⁿ = μHE[n]). Then (a) μ_R is absolutely continuous with respect to Hⁿ⌞M; (b) ξ is μ_R-a.e. strongly measurable; (c) for every Borel set E and every IMRep R′ in U with carrier M ∩ E, multiplicity θ and orientation ξ: μ_{R′} = μ_R⌞E, and for every n-form ω : ℝ^P → Λⁿ (no regularity assumed) the action R′(ω) = ∫_{M∩E} θ ⟨ω, ξ⟩ dHⁿ (contract IMRep.action) equals ∫_E ⟨ω(x), ξ(x)⟩ dμ_R(x) (Bochner integrals).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), R.measure ≪ μHE[n].restrict R.carrier ∧ AEStronglyMeasurable R.orient R.measure ∧ ∀ (E : Set (Euclid P)) (R' : IMRep U n), MeasurableSet E → R'.carrier = R.carrier ∩ E → R'.mult = R.mult → R'.orient = R.orient → R'.measure = R.measure.restrict E ∧ ∀ ω : DifferentialForm (Euclid P) n, R'.action ω = ∫ x in E, R.orient x (ω x) ∂R.measure",
+  "lean_name": "lcmp_imRep_measure_restrict",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-imrep-1bd5f15878-a1"
+}

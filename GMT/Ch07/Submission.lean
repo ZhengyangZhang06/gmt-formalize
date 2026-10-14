@@ -451,6 +451,35 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Restriction of an integer multiplicity representation** (Simon Ch. 6, 3.1).  For
+`R = (M, θ, ξ)` with weight `μ_R = θ Hⁿ⌞M`: (a) `μ_R ≪ Hⁿ⌞M`; (b) `ξ` is `μ_R`-a.e. strongly
+measurable; (c) for Borel `E` and `R' = (M ∩ E, θ, ξ)`, `μ_{R'} = μ_R⌞E` and
+`R'(ω) = ∫_E ⟨ω, ξ⟩ dμ_R` for every `n`-form `ω`. -/
+theorem Submission.lcmp_imRep_measure_restrict : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), R.measure ≪ μHE[n].restrict R.carrier ∧ AEStronglyMeasurable R.orient R.measure ∧ ∀ (E : Set (Euclid P)) (R' : IMRep U n), MeasurableSet E → R'.carrier = R.carrier ∩ E → R'.mult = R.mult → R'.orient = R.orient → R'.measure = R.measure.restrict E ∧ ∀ ω : DifferentialForm (Euclid P) n, R'.action ω = ∫ x in E, R.orient x (ω x) ∂R.measure := by
+  intro P n U R
+  -- (a) a measure with a density is absolutely continuous; (b) so `ξ` is `μ_R`-measurable
+  have hac : R.measure ≪ μHE[n].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  refine ⟨hac, R.aestronglyMeasurable_orient.mono_ac hac, ?_⟩
+  intro E R' hE hc hm ho
+  -- (c), weights: `((Hⁿ⌞M).withDensity θ)⌞E = (Hⁿ⌞(E ∩ M)).withDensity θ = μ_{R'}`
+  have hmeasEq : R'.measure = R.measure.restrict E := by
+    unfold IMRep.measure
+    rw [restrict_withDensity hE, Measure.restrict_restrict hE, hc, hm, inter_comm]
+  refine ⟨hmeasEq, fun ω => ?_⟩
+  -- (c), actions: `∫ h d(λ.withDensity θ) = ∫ θ h dλ` for the Borel density `θ : ℝᴾ → [0, ∞)`
+  have hmult : (fun x => (R'.mult x : ℝ≥0∞)) = fun x => (((R'.mult x : NNReal)) : ℝ≥0∞) := by
+    funext x
+    simp
+  have hmeas : Measurable fun x => ((R'.mult x : ℕ) : NNReal) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : NNReal))).comp R'.measurable_mult
+  rw [← hmeasEq]
+  unfold IMRep.action IMRep.measure
+  rw [hmult, integral_withDensity_eq_integral_smul hmeas]
+  congr 1
+  funext x
+  rw [ho, NNReal.smul_def, smul_eq_mul]
+  norm_cast
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
