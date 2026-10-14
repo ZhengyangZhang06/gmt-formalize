@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'cbrcs_|dtc_bc_tc_cl' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "integral_withDensity_eq_integral_smul|enorm_integral_le_lintegral_enorm",
+        "norm_iteratedFDeriv_smul_le|support_iteratedFDeriv_subset",
+        "exists_contDiff_support_eq_eq_one_iff",
+        "git show f4980c5ce7ad7e7e32d244ac020de361f8cf830f:GMT/Ch07/Submission.lean",
+        "git show d54b954a7ab7afbe9083f65d43cfe046c687232a:GMT/Ch07/Submission.lean",
+        "python3 -I /tmp/closure_succ_independent_audit/run_lean.py /tmp/closure_succ_independent_audit/Types.lean",
+        "python3 -I /tmp/closure_succ_independent_audit/run_lean.py /tmp/closure_succ_independent_audit/Assembly.lean",
+        "python3 -I /tmp/closure_succ_independent_audit/run_lean.py /tmp/closure_succ_independent_audit/localize_axioms.lean",
+        "python3 -I /tmp/closure_succ_independent_audit/run_lean.py /tmp/closure_succ_independent_audit/cutoff_extension_axioms.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-3c6d827b12/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-3c6d827b12/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f9e8023a0d/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c14d29cb77/isolated-comparator-result.json",
+        "/tmp/closure_succ_independent_audit/Types.lean",
+        "/tmp/closure_succ_independent_audit/Assembly.lean",
+        "/tmp/closure_succ_independent_audit/localize_axioms.lean",
+        "/tmp/closure_succ_independent_audit/cutoff_extension_axioms.lean"
+      ],
+      "conclusion": "Pinned revisions and frozen headers match. The snapshot search found no cbrcs_* or dtc_bc_tc_cl_* implementation; reuse was independently checked against the accepted commits and comparator records. Both proposed types exactly equal their committed types, and each name has one accepted owner. The combined dependency graph is acyclic. All four fresh Lean checks passed. Both reused declarations and the assembly depend only on propext, Classical.choice and Quot.sound. The reuse split is appropriate: together with the existing slicing and foundations dependencies, the children establish the exact selected parent through BR, compact-support closure, restriction and local gluing. Neither an ancestor theorem nor an additional unaccounted hypothesis is used."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "localize",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes the five named hypotheses and all quantified data, matching the standalone one-line Lean proposition. Independently checked L1–L6 and steps 0–12: admissible representations, good-radius selection, bounded subsequence extraction, total boundary-mass control, preservation of the compact-set limsup bounds, convergence and local agreement establish every conclusion. REP supplies boundary representations without a hidden BR assumption. The bare name validly reuses the identical comparator-accepted declaration; its dependencies are non-circular."
+    },
+    {
+      "key": "cutoff_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses are exactly openness of U, compactness of K and K ⊆ U. Steps 1–11 construct a single cutoff and prove continuity, agreement, weak convergence, mass control, support containment, boundary-mass control and IM transfer. In particular, the boundary commutator vanishes near K, and compact carrier containment justifies global local integrability of the lifted IMRep. The proof is complete and non-circular. The standalone one-line type matches the prose and accepted declaration exactly, so reuse of the bare name is valid."
+    }
+  ],
+  "required_changes": []
+}
