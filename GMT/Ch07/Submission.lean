@@ -1597,6 +1597,825 @@ theorem Submission.codim1_rdo_dg_vdl_discrete_growth : ∀ (m : ℕ) (K ρ₁ : 
     have e2 := mul_le_mul_of_nonneg_left hfin hKm.le
     have e3 : 0 ≤ K * (m + 1) * m * δ * w₀ := by positivity
     linarith
+/-- **Rescaled Gauss–Green identity** (Simon Ch. 3, 4.3 (8), for a general field and centre).
+Let `F ⊆ ℝ^{m+1}` be Borel and suppose `∫_F div φ = −∫ ⟨φ, ν⟩ dμ` for every `C¹` compactly
+supported `φ` with `tsupport φ ⊆ D`.  If `r > 0` and `B̄_{rR}(y) ⊆ D`, then for every `C¹`
+compactly supported `g` with `tsupport g ⊆ B_R(0)` the blow-up `F_{y,r} = {w : y + rw ∈ F}`
+satisfies `∫_{F_{y,r}} div g = −(r^m)⁻¹ ∫ ⟨g(r⁻¹(z − y)), ν(z)⟩ dμ(z)`.  Apply the hypothesis to
+`φ = g ∘ S`, `S z = r⁻¹(z − y)`: `div φ = r⁻¹ (div g) ∘ S` by the chain rule,
+`tsupport φ ⊆ S⁻¹(tsupport g) ⊆ B̄_{rR}(y)`, and the substitution `z = y + rw` (Jacobian
+`r^{m+1}`) gives `∫_F div φ = r^m ∫_{F_{y,r}} div g`. -/
+theorem Submission.codim1_rdo_dg_bh_rescaled_gauss_green : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y : Euclid (m + 1)) (r R : ℝ), MeasurableSet F → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < r → closedBall y (r * R) ⊆ D → ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R → ∫ w in (fun w => y + r • w) ⁻¹' F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -(r ^ m)⁻¹ * ∫ z, inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ := by
+  intro m D F μ ν y r R hF hGG hr hball g hg hgc hgs
+  have hr0 : r ≠ 0 := hr.ne'
+  -- Step 1: the affine map `S z = r⁻¹(z − y)`, inverse to `w ↦ y + rw`.
+  set S : Euclid (m + 1) → Euclid (m + 1) := fun z => r⁻¹ • (z - y) with hS_def
+  have hS_cont : Continuous S := (continuous_id.sub continuous_const).const_smul r⁻¹
+  have hS_deriv : ∀ z, HasFDerivAt S (r⁻¹ • ContinuousLinearMap.id ℝ (Euclid (m + 1))) z :=
+    fun z => ((hasFDerivAt_id (𝕜 := ℝ) z).sub_const y).const_smul r⁻¹
+  -- Step 2: `φ = g ∘ S` is `C¹` and `div φ = r⁻¹ (div g) ∘ S`.
+  have hφ : ContDiff ℝ 1 (fun z => g (S z)) :=
+    hg.comp ((contDiff_id.sub contDiff_const).const_smul r⁻¹)
+  have hdiv : ∀ z, LinearMap.trace ℝ (Euclid (m + 1))
+      (fderiv ℝ (fun z => g (S z)) z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) =
+      r⁻¹ * LinearMap.trace ℝ (Euclid (m + 1))
+        (fderiv ℝ g (S z) : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) := by
+    intro z
+    have hgd : HasFDerivAt g (fderiv ℝ g (S z)) (S z) :=
+      ((hg.differentiable one_ne_zero) (S z)).hasFDerivAt
+    rw [show (fun z => g (S z)) = g ∘ S from rfl, (hgd.comp z (hS_deriv z)).fderiv]
+    have : (fderiv ℝ g (S z)).comp (r⁻¹ • ContinuousLinearMap.id ℝ (Euclid (m + 1))) =
+        r⁻¹ • fderiv ℝ g (S z) := by
+      ext x; simp
+    rw [this, ContinuousLinearMap.toLinearMap_smul, map_smul, smul_eq_mul]
+  -- Step 3: `φ` has compact support and `tsupport φ ⊆ S⁻¹(tsupport g) ⊆ B̄_{rR}(y) ⊆ D`.
+  let e : Euclid (m + 1) ≃ₜ Euclid (m + 1) :=
+    (Homeomorph.subRight y).trans (Homeomorph.smulOfNeZero r⁻¹ (inv_ne_zero hr0))
+  have he : ⇑e = S := by funext z; rfl
+  have hφc : HasCompactSupport (fun z => g (S z)) := by
+    have := hgc.comp_homeomorph e
+    rwa [he] at this
+  have hφs : tsupport (fun z => g (S z)) ⊆ D := by
+    intro z hz
+    have hmem := hgs (tsupport_comp_subset_preimage g hS_cont hz)
+    rw [mem_ball_zero_iff, hS_def, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr] at hmem
+    apply hball
+    rw [mem_closedBall, dist_eq_norm]
+    have := (inv_mul_lt_iff₀ hr).mp hmem
+    linarith
+  -- Step 4: the Gauss–Green hypothesis for `φ`.
+  have hGGφ := hGG (fun z => g (S z)) hφ hφc hφs
+  -- Step 5: the substitution `z = y + rw`: `∫_F div φ = r^m ∫_{F_{y,r}} div g`.
+  set Tg : Euclid (m + 1) → ℝ := fun w => LinearMap.trace ℝ (Euclid (m + 1))
+    (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1))
+  have hpre : MeasurableSet ((fun w => y + r • w) ⁻¹' F) :=
+    (measurable_const.add (measurable_id.const_smul r)) hF
+  have hcv : ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1))
+      (fderiv ℝ (fun z => g (S z)) z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) =
+      r ^ m * ∫ w in (fun w => y + r • w) ⁻¹' F, Tg w := by
+    simp_rw [hdiv]
+    rw [← integral_indicator hF, ← integral_indicator hpre]
+    have h1 : ∫ z, F.indicator (fun z => r⁻¹ * Tg (S z)) z =
+        ∫ u, F.indicator (fun z => r⁻¹ * Tg (S z)) (y + u) :=
+      (integral_add_left_eq_self _ y).symm
+    have h2 := Measure.integral_comp_smul (μ := volume)
+      (fun u => F.indicator (fun z => r⁻¹ * Tg (S z)) (y + u)) r
+    rw [finrank_euclideanSpace_fin] at h2
+    have h3 : ∫ u, F.indicator (fun z => r⁻¹ * Tg (S z)) (y + u) =
+        r ^ (m + 1) * ∫ x, F.indicator (fun z => r⁻¹ * Tg (S z)) (y + r • x) := by
+      rw [h2, smul_eq_mul, ← mul_assoc, abs_inv, abs_of_pos (pow_pos hr _),
+        mul_inv_cancel₀ (pow_ne_zero _ hr0), one_mul]
+    rw [h1, h3]
+    have h4 : ∀ x, F.indicator (fun z => r⁻¹ * Tg (S z)) (y + r • x) =
+        r⁻¹ * ((fun w => y + r • w) ⁻¹' F).indicator Tg x := by
+      intro x
+      by_cases hx : y + r • x ∈ F
+      · have hx' : x ∈ (fun w => y + r • w) ⁻¹' F := hx
+        rw [Set.indicator_of_mem hx, Set.indicator_of_mem hx']
+        simp [hS_def, smul_smul, inv_mul_cancel₀ hr0]
+      · have hx' : x ∉ (fun w => y + r • w) ⁻¹' F := hx
+        rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem hx', mul_zero]
+    simp_rw [h4]
+    rw [integral_const_mul, ← mul_assoc, pow_succ, mul_assoc (r ^ m), mul_inv_cancel₀ hr0, mul_one]
+  -- Step 6: divide by `r^m > 0`.
+  rw [hcv] at hGGφ
+  calc ∫ w in (fun w => y + r • w) ⁻¹' F, Tg w
+      = (r ^ m)⁻¹ * (r ^ m * ∫ w in (fun w => y + r • w) ⁻¹' F, Tg w) := by field_simp
+    _ = -(r ^ m)⁻¹ * ∫ z, inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ := by rw [hGGφ]; ring
+
+/-- **Directional rescaled Gauss–Green identity** (Simon Ch. 3, 4.3, (8), for an arbitrary
+direction `w` in place of `eᵢ`).  Let `(μ, ν)` satisfy the Gauss–Green identity
+`∫_F div φ dL^{m+1} = −∫ ⟨φ, ν⟩ dμ` for `φ ∈ C¹_c` with `spt φ ⊆ D`, and let `r > 0`,
+`B̄_{rR}(y) ⊆ D`.  For `ζ ∈ C¹_c` with `spt ζ ⊆ B_R(0)` and `w ∈ ℝ^{m+1}`, the field `g = ζ w` is
+`C¹` with `spt g ⊆ spt ζ ⊆ B_R(0)`, `div g = Dζ(·)(w)` (the trace of the rank-one map
+`h ↦ Dζ(h) w` is `Dζ(w)`) and `⟨g, ν⟩ = ζ ⟨w, ν⟩`.  The rescaled Gauss–Green identity for `g`
+thus reads `∫_{F_{y,r}} Dζ(w) dL^{m+1} = −r⁻ᵐ ∫ ζ(r⁻¹(z − y)) ⟨w, ν(z)⟩ dμ(z)`, where
+`F_{y,r} = {x : y + r x ∈ F}`. -/
+theorem Submission.codim1_rdo_dg_bh_directional_gauss_green : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y : Euclid (m + 1)) (r R : ℝ), MeasurableSet F → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < r → closedBall y (r * R) ⊆ D → ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid (m + 1)) R → ∀ w : Euclid (m + 1), ∫ z in (fun z => y + r • z) ⁻¹' F, fderiv ℝ ζ z w = -(r ^ m)⁻¹ * ∫ z, ζ (r⁻¹ • (z - y)) * inner ℝ w (ν z) ∂μ := by
+  intro m D F μ ν y r R hF hGG hr hball ζ hζ hζc hζs w
+  -- Step 1: `g = ζ w` is `C¹` with compact support and `spt g ⊆ spt ζ ⊆ B_R(0)`
+  have hg : ContDiff ℝ 1 (fun z => ζ z • w) := hζ.smul contDiff_const
+  have hgc : HasCompactSupport (fun z => ζ z • w) := hζc.smul_right (f' := fun _ => w)
+  have hgs : tsupport (fun z => ζ z • w) ⊆ ball (0 : Euclid (m + 1)) R :=
+    (tsupport_smul_subset_left ζ (fun _ => w)).trans hζs
+  -- Step 2: `div g = Dζ(·)(w)`, the trace of the rank-one map `h ↦ Dζ(h) w`
+  have h1 : ∀ z, LinearMap.trace ℝ (Euclid (m + 1))
+      (fderiv ℝ (fun z => ζ z • w) z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = fderiv ℝ ζ z w := by
+    intro z
+    rw [fderiv_smul_const ((hζ.differentiable one_ne_zero) z) w]
+    have : ((fderiv ℝ ζ z).smulRight w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) =
+        (fderiv ℝ ζ z : Euclid (m + 1) →ₗ[ℝ] ℝ).smulRight w := by
+      ext x; simp
+    rw [this, LinearMap.trace_smulRight]
+    rfl
+  -- Step 3: `⟨g(r⁻¹(z − y)), ν(z)⟩ = ζ(r⁻¹(z − y)) ⟨w, ν(z)⟩`
+  have h2 : ∀ z, inner ℝ (ζ (r⁻¹ • (z - y)) • w) (ν z) = ζ (r⁻¹ • (z - y)) * inner ℝ w (ν z) :=
+    fun z => real_inner_smul_left _ _ _
+  -- Step 4: the rescaled Gauss–Green identity for `g`, with both integrands rewritten
+  have key := Submission.codim1_rdo_dg_bh_rescaled_gauss_green m D F μ ν y r R hF hGG hr hball
+    (fun z => ζ z • w) hg hgc hgs
+  simp_rw [h1, h2] at key
+  exact key
+/-- **Small normal defect** (Simon Ch. 3, proof of Theorem 4.3 (De Giorgi), printed (1)–(2),
+chapter-03.txt lines 609–619).  Let `ν` be a measurable unit vector field and `v` a unit vector,
+let `μ(B̄_ρ₀(y)) < ∞` for some `ρ₀ > 0`, and let the averages `A(ρ) = μ(B̄_ρ(y))⁻¹ ∫_{B̄_ρ(y)} ν dμ`
+tend to `v` as `ρ ↓ 0`.  Then for every `δ > 0` and all small `ρ > 0`,
+`∫_{B̄_ρ(y)} (1 - ⟨ν, v⟩) dμ ≤ δ μ(B̄_ρ(y))` and `∫_{B̄_ρ(y)} |⟨ν, w⟩| dμ ≤ δ |w| μ(B̄_ρ(y))` for
+every `w ⊥ v`.  The first bound is `∫_{B̄_ρ(y)} (1 - ⟨ν, v⟩) dμ = μ(B̄_ρ(y)) (1 - ⟨A(ρ), v⟩)`; the
+second integrates `|⟨ν, w⟩| ≤ |w| |ν - v| ≤ |w| (δ/2 + (1 - ⟨ν, v⟩)/δ)`, where
+`|ν - v|² = 2 (1 - ⟨ν, v⟩)`. -/
+theorem Submission.codim1_rdo_dg_bh_normal_defect_small : ∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)), Measurable ν → (∀ z, ‖ν z‖ = 1) → ‖v‖ = 1 → (∃ ρ₀ : ℝ, 0 < ρ₀ ∧ μ (closedBall y ρ₀) ≠ ∞) → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∀ δ : ℝ, 0 < δ → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ∫ z in closedBall y ρ, (1 - inner ℝ (ν z) v) ∂μ ≤ δ * (μ (closedBall y ρ)).toReal ∧ ∀ w : Euclid (m + 1), inner ℝ w v = 0 → ∫ z in closedBall y ρ, |inner ℝ (ν z) w| ∂μ ≤ δ * ‖w‖ * (μ (closedBall y ρ)).toReal := by
+  intro m μ ν y v hν hν1 hv ⟨ρ₀, hρ₀, hfin⟩ hA δ hδ
+  -- `⟨A(ρ), v⟩ → ⟨v, v⟩ = 1`
+  have hε : Tendsto (fun ρ : ℝ => inner ℝ ((μ (closedBall y ρ)).toReal⁻¹ •
+      ∫ z in closedBall y ρ, ν z ∂μ) v) (𝓝[>] 0) (𝓝 1) := by
+    have hcont : Continuous (fun x : Euclid (m + 1) => inner ℝ x v) :=
+      continuous_id.inner continuous_const
+    have := (hcont.tendsto v).comp hA
+    rwa [real_inner_self_eq_norm_sq, hv, one_pow] at this
+  -- eventually `ρ < ρ₀` and `1 - ⟨A(ρ), v⟩ < η = min δ (δ² / 2)`
+  set η := min δ (δ ^ 2 / 2) with hη_def
+  have hη : 0 < η := lt_min hδ (by positivity)
+  have hηδ : η ≤ δ := min_le_left _ _
+  have hηδ2 : η ≤ δ ^ 2 / 2 := min_le_right _ _
+  have hev1 : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), 1 - η < inner ℝ ((μ (closedBall y ρ)).toReal⁻¹ •
+      ∫ z in closedBall y ρ, ν z ∂μ) v :=
+    hε.eventually (lt_mem_nhds (by linarith))
+  have hev2 : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ρ ∈ Ioo 0 ρ₀ := Ioo_mem_nhdsGT hρ₀
+  filter_upwards [hev1, hev2] with ρ h1 h2
+  -- `μ(B̄_ρ(y)) < ∞`, so the bounded measurable integrands are integrable
+  set B := closedBall y ρ with hB
+  have hfinρ : μ B ≠ ∞ :=
+    ne_top_of_le_ne_top hfin (measure_mono (closedBall_subset_closedBall h2.2.le))
+  have : IsFiniteMeasure (μ.restrict B) := isFiniteMeasure_restrict.mpr hfinρ
+  set M := (μ B).toReal with hM
+  have hM0 : 0 ≤ M := ENNReal.toReal_nonneg
+  have hνint : Integrable ν (μ.restrict B) :=
+    Integrable.of_bound hν.aestronglyMeasurable 1 (Eventually.of_forall fun z => (hν1 z).le)
+  have hνv_meas : Measurable (fun z => inner ℝ (ν z) v) :=
+    (continuous_id.inner continuous_const).measurable.comp hν
+  have hνv : Integrable (fun z => inner ℝ (ν z) v) (μ.restrict B) := by
+    refine Integrable.of_bound hνv_meas.aestronglyMeasurable 1 (Eventually.of_forall fun z => ?_)
+    calc ‖inner ℝ (ν z) v‖ = |inner ℝ (ν z) v| := Real.norm_eq_abs _
+      _ ≤ ‖ν z‖ * ‖v‖ := abs_real_inner_le_norm _ _
+      _ = 1 := by rw [hν1, hv, one_mul]
+  have hdefint : Integrable (fun z => 1 - inner ℝ (ν z) v) (μ.restrict B) :=
+    (integrable_const 1).sub hνv
+  -- `∫_{B̄_ρ(y)} (1 - ⟨ν, v⟩) dμ = M (1 - ⟨A(ρ), v⟩) ≤ M η`
+  have hdef : ∫ z in B, (1 - inner ℝ (ν z) v) ∂μ ≤ M * η := by
+    rcases eq_or_ne M 0 with hM0' | hMne
+    · have hμB : μ B = 0 := by
+        rcases (ENNReal.toReal_eq_zero_iff _).mp hM0' with h | h
+        · exact h
+        · exact absurd h hfinρ
+      rw [Measure.restrict_eq_zero.mpr hμB, integral_zero_measure, hM0', zero_mul]
+    · have hinner : ∫ z in B, inner ℝ (ν z) v ∂μ = inner ℝ (∫ z in B, ν z ∂μ) v := by
+        simp_rw [real_inner_comm v]
+        have := (innerSL ℝ v).integral_comp_comm hνint
+        simpa using this
+      rw [integral_sub (integrable_const 1) hνv, hinner, integral_const, smul_eq_mul, mul_one]
+      simp only [Measure.real, Measure.restrict_apply_univ]
+      have hA' : inner ℝ (∫ z in B, ν z ∂μ) v = M * inner ℝ (M⁻¹ • ∫ z in B, ν z ∂μ) v := by
+        rw [real_inner_smul_left, ← mul_assoc, mul_inv_cancel₀ hMne, one_mul]
+      rw [hA']
+      have : 1 - inner ℝ (M⁻¹ • ∫ z in B, ν z ∂μ) v ≤ η := by linarith
+      nlinarith
+  refine ⟨?_, ?_⟩
+  · calc ∫ z in B, (1 - inner ℝ (ν z) v) ∂μ ≤ M * η := hdef
+      _ ≤ M * δ := mul_le_mul_of_nonneg_left hηδ hM0
+      _ = δ * M := mul_comm _ _
+  · intro w hw
+    -- pointwise `|⟨ν, w⟩| ≤ |w| |ν - v| ≤ |w| (δ/2 + (1 - ⟨ν, v⟩)/δ)` for `w ⊥ v`
+    have hpt : ∀ z, |inner ℝ (ν z) w| ≤ ‖w‖ * (δ / 2 + (1 - inner ℝ (ν z) v) / δ) := by
+      intro z
+      have e1 : inner ℝ (ν z) w = inner ℝ (ν z - v) w := by
+        rw [inner_sub_left, real_inner_comm w v, hw, sub_zero]
+      have e2 : ‖ν z - v‖ ^ 2 = 2 - 2 * inner ℝ (ν z) v := by
+        rw [norm_sub_sq_real, hν1, hv]; ring
+      have e3 : ‖ν z - v‖ ≤ δ / 2 + (1 - inner ℝ (ν z) v) / δ := by
+        have ht := sq_nonneg (‖ν z - v‖ - δ)
+        have : (1 - inner ℝ (ν z) v) / δ = ‖ν z - v‖ ^ 2 / (2 * δ) := by
+          rw [e2]; field_simp
+        rw [this, div_add_div _ _ (two_ne_zero) (by positivity), le_div_iff₀ (by positivity)]
+        nlinarith
+      rw [e1]
+      calc |inner ℝ (ν z - v) w| ≤ ‖ν z - v‖ * ‖w‖ := abs_real_inner_le_norm _ _
+        _ ≤ (δ / 2 + (1 - inner ℝ (ν z) v) / δ) * ‖w‖ :=
+            mul_le_mul_of_nonneg_right e3 (norm_nonneg _)
+        _ = _ := mul_comm _ _
+    have hint1 : Integrable (fun z => |inner ℝ (ν z) w|) (μ.restrict B) := by
+      refine Integrable.of_bound
+        ((continuous_abs.comp (continuous_id.inner continuous_const)).measurable.comp
+          hν).aestronglyMeasurable ‖w‖
+        (Eventually.of_forall fun z => ?_)
+      rw [Real.norm_eq_abs, abs_abs]
+      calc |inner ℝ (ν z) w| ≤ ‖ν z‖ * ‖w‖ := abs_real_inner_le_norm _ _
+        _ = ‖w‖ := by rw [hν1, one_mul]
+    have hint2 : Integrable (fun z => ‖w‖ * (δ / 2 + (1 - inner ℝ (ν z) v) / δ)) (μ.restrict B) :=
+      ((integrable_const (δ / 2)).add (hdefint.div_const δ)).const_mul ‖w‖
+    -- integrate, then use `∫_{B̄_ρ(y)} (1 - ⟨ν, v⟩) dμ ≤ M η ≤ M δ² / 2`
+    calc ∫ z in B, |inner ℝ (ν z) w| ∂μ
+        ≤ ∫ z in B, ‖w‖ * (δ / 2 + (1 - inner ℝ (ν z) v) / δ) ∂μ :=
+          integral_mono hint1 hint2 hpt
+      _ = ‖w‖ * (δ / 2 * M + (∫ z in B, (1 - inner ℝ (ν z) v) ∂μ) / δ) := by
+          rw [integral_const_mul, integral_add (integrable_const _) (hdefint.div_const δ),
+            integral_const, integral_div, smul_eq_mul]
+          simp only [Measure.real, Measure.restrict_apply_univ]
+          ring
+      _ ≤ ‖w‖ * (δ / 2 * M + M * η / δ) := by
+          gcongr
+      _ ≤ ‖w‖ * (δ / 2 * M + M * (δ ^ 2 / 2) / δ) := by
+          gcongr
+      _ = δ * ‖w‖ * M := by
+          field_simp
+          ring
+/-- **Uniform perimeter bound for the blow-ups** (Simon Ch. 3, 4.3 (6)–(8): the bound that lets
+the compactness theorem Ch. 2, 2.6 select an `L¹_loc`-convergent sequence of blow-ups).  Let
+`∫_F div φ = -∫ ⟨φ, ν⟩ dμ` for `φ ∈ C¹_c` with `spt φ ⊆ D`, where `|ν| = 1`, and let
+`B̄_{ρ₁}(y) ⊆ D` and `μ(B̄_ρ(y)) ≤ C₁ρᵐ` for `0 < ρ < ρ₁`.  If `rR < ρ₁`, `g ∈ C¹_c(B_R(0))` and
+`|g| ≤ 1`, then `∫_{F_{y,r}} div g ≤ C₁Rᵐ`, where `F_{y,r} = {w : y + rw ∈ F}`.  As
+`B̄_{rR}(y) ⊆ D`, the rescaled Gauss–Green identity gives `∫_{F_{y,r}} div g = -r⁻ᵐ ∫ h dμ` with
+`h(z) = ⟨g(r⁻¹(z - y)), ν(z)⟩`; `|h| ≤ 1` and `h` vanishes off `K = B̄_{rR}(y)`, so
+`|∫ h dμ| ≤ μ(K) ≤ C₁(rR)ᵐ` and `-r⁻ᵐ ∫ h dμ ≤ C₁Rᵐ`. -/
+theorem Submission.codim1_rdo_dg_bh_perimeter_bound : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y : Euclid (m + 1)) (ρ₁ C₁ : ℝ), MeasurableSet F → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < ρ₁ → 0 ≤ C₁ → closedBall y ρ₁ ⊆ D → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → μ (closedBall y ρ) ≤ ENNReal.ofReal (C₁ * ρ ^ m)) → ∀ R r : ℝ, 0 < R → 0 < r → r * R < ρ₁ → ∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R → (∀ z, ‖g z‖ ≤ 1) → ∫ w in (fun w => y + r • w) ⁻¹' F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g w : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C₁ * R ^ m := by
+  intro m D F μ ν y ρ₁ C₁ hF hν hν1 hGG hρ₁ hC₁ hball hmass R r hR hr hrR g hg hgc hgs hg1
+  -- Step 1: `B̄_{rR}(y) ⊆ B̄_{ρ₁}(y) ⊆ D`, so the rescaled Gauss–Green identity applies to `g`
+  have hsub : closedBall y (r * R) ⊆ D := (closedBall_subset_closedBall hrR.le).trans hball
+  rw [Submission.codim1_rdo_dg_bh_rescaled_gauss_green m D F μ ν y r R hF hGG hr hsub g hg hgc hgs]
+  -- Step 2: `h(z) = ⟨g(r⁻¹(z - y)), ν(z)⟩` vanishes off `B̄_{rR}(y)`, as `spt g ⊆ B_R(0)`
+  have hzero : ∀ z, z ∉ closedBall y (r * R) → inner ℝ (g (r⁻¹ • (z - y))) (ν z) = 0 := by
+    intro z hz
+    have hgz : g (r⁻¹ • (z - y)) = 0 := by
+      by_contra hne
+      apply hz
+      have hmem : r⁻¹ • (z - y) ∈ ball (0 : Euclid (m + 1)) R := hgs (subset_tsupport _ hne)
+      rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr,
+        inv_mul_lt_iff₀ hr] at hmem
+      rw [mem_closedBall, dist_eq_norm]
+      exact hmem.le
+    rw [hgz, inner_zero_left]
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero]
+  -- Step 3: `μ(B̄_{rR}(y)) ≤ C₁(rR)ᵐ < ∞` and `|h| ≤ |g| |ν| ≤ 1`, so `|∫ h dμ| ≤ C₁(rR)ᵐ`
+  have hK : μ (closedBall y (r * R)) ≤ ENNReal.ofReal (C₁ * (r * R) ^ m) :=
+    hmass _ (mul_pos hr hR) hrR
+  have hbound : ‖∫ z in closedBall y (r * R), inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ‖ ≤
+      1 * μ.real (closedBall y (r * R)) := by
+    refine norm_setIntegral_le_of_norm_le_const (hK.trans_lt ENNReal.ofReal_lt_top) fun z _ => ?_
+    calc ‖inner ℝ (g (r⁻¹ • (z - y))) (ν z)‖ = |inner ℝ (g (r⁻¹ • (z - y))) (ν z)| :=
+          Real.norm_eq_abs _
+      _ ≤ ‖g (r⁻¹ • (z - y))‖ * ‖ν z‖ := abs_real_inner_le_norm _ _
+      _ ≤ 1 := by rw [hν1, mul_one]; exact hg1 _
+  have hμK : μ.real (closedBall y (r * R)) ≤ C₁ * (r * R) ^ m :=
+    ENNReal.toReal_le_of_le_ofReal (by positivity) hK
+  rw [Real.norm_eq_abs, one_mul] at hbound
+  have hneg := (abs_le.mp hbound).1
+  -- Step 4: `-r⁻ᵐ ∫ h dμ ≤ r⁻ᵐ C₁(rR)ᵐ = C₁Rᵐ`
+  have hrm : 0 < r ^ m := pow_pos hr m
+  calc -(r ^ m)⁻¹ * ∫ z in closedBall y (r * R), inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ
+      = (r ^ m)⁻¹ * -∫ z in closedBall y (r * R), inner ℝ (g (r⁻¹ • (z - y))) (ν z) ∂μ := by
+        ring
+    _ ≤ (r ^ m)⁻¹ * (C₁ * (r * R) ^ m) :=
+        mul_le_mul_of_nonneg_left (by linarith) (inv_nonneg.mpr hrm.le)
+    _ = C₁ * R ^ m := by rw [mul_pow]; field_simp
+
+/-- **Simon Ch. 3, proof of 4.3, (8)** ("so that `∫_{λ_k⁻¹E} Dᵢζ dL^{n+1} → 0` by (2) for
+`i = 1, …, n`"): derivatives of `ζ ∈ C¹_c(ℝ^{m+1})` in directions `w ⊥ v` integrate to `0` over
+the blow-ups `F_{y,r} = {x : y + rx ∈ F}` as `r ↓ 0`.  Take `R > 0` with `spt ζ ⊆ B_R(0)` and
+`M = sup |ζ|`.  For small `r`, `ρ = rR < ρ₁`, so `B̄_ρ(y) ⊆ D` and the directional Gauss–Green
+identity (`codim1_rdo_dg_bh_directional_gauss_green`) gives
+`∫_{F_{y,r}} Dζ(w) = −r⁻ᵐ ∫ ζ(r⁻¹(z − y)) ⟨w, ν(z)⟩ dμ(z)`, whose integrand vanishes off `B̄_ρ(y)`
+and is bounded by `M |⟨ν, w⟩|`.  The normal-defect estimate (2)
+(`codim1_rdo_dg_bh_normal_defect_small`, applicable as `μ(B̄_{ρ₁/2}(y)) ≤ C₁(ρ₁/2)ᵐ < ∞`) gives
+`∫_{B̄_ρ(y)} |⟨ν, w⟩| dμ ≤ δ|w| μ(B̄_ρ(y)) ≤ δ|w|C₁ρᵐ` for small `ρ`, hence
+`|∫_{F_{y,r}} Dζ(w)| ≤ δM|w|C₁Rᵐ`, which is `< η` for `δ = η/(1 + M|w|C₁Rᵐ)`. -/
+theorem Submission.codim1_rdo_dg_bh_tangential_vanish : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)) (ρ₁ C₁ : ℝ), MeasurableSet F → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ‖v‖ = 1 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → 0 < ρ₁ → 0 ≤ C₁ → closedBall y ρ₁ ⊆ D → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → μ (closedBall y ρ) ≤ ENNReal.ofReal (C₁ * ρ ^ m)) → ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → ∀ w : Euclid (m + 1), inner ℝ w v = 0 → Tendsto (fun r : ℝ => ∫ z in (fun z => y + r • z) ⁻¹' F, fderiv ℝ ζ z w) (𝓝[>] 0) (𝓝 0) := by
+  intro m D F μ ν y v ρ₁ C₁ hF hν hν1 hGG hv hA hρ₁ hC₁ hball hmass ζ hζ hζc w hw
+  -- Step 1: `spt ζ ⊆ B_R(0)` with `R > 0`, and `|ζ| ≤ M`
+  obtain ⟨R₀, hR₀⟩ := hζc.isCompact.isBounded.subset_ball (0 : Euclid (m + 1))
+  set R := max R₀ 1
+  have hRpos : 0 < R := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hR : tsupport ζ ⊆ ball (0 : Euclid (m + 1)) R :=
+    hR₀.trans (ball_subset_ball (le_max_left _ _))
+  obtain ⟨M, hM⟩ : ∃ M, ∀ z, ‖ζ z‖ ≤ M := hζ.continuous.bounded_above_of_compact_support hζc
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  have hM' : ∀ z, |ζ z| ≤ M := fun z => by simpa [Real.norm_eq_abs] using hM z
+  -- Step 2: `μ(B̄_{ρ₁/2}(y)) < ∞`, and `r ↦ rR` maps `𝓝[>] 0` into `𝓝[>] 0`
+  have hfin : ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ μ (closedBall y ρ₀) ≠ ∞ :=
+    ⟨ρ₁ / 2, half_pos hρ₁, ne_top_of_le_ne_top ENNReal.ofReal_ne_top
+      (hmass _ (half_pos hρ₁) (half_lt_self hρ₁))⟩
+  have htend : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
+    · have : Tendsto (fun r : ℝ => r * R) (𝓝 0) (𝓝 (0 * R)) := tendsto_id.mul_const R
+      rw [zero_mul] at this
+      exact this.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hr hRpos
+  have hsmall : ∀ᶠ r in 𝓝[>] (0 : ℝ), r * R < ρ₁ :=
+    (htend.mono_right nhdsWithin_le_nhds).eventually (gt_mem_nhds hρ₁)
+  -- Step 3: given `η > 0`, apply (2) with `δ = η/(1 + K)`, `K = M|w|C₁Rᵐ`, at `ρ = rR`
+  set K := M * ‖w‖ * C₁ * R ^ m with hK
+  have hK0 : 0 ≤ K := by positivity
+  rw [Metric.tendsto_nhds]
+  intro η hη
+  set δ := η / (1 + K) with hδ_def
+  have hδ : 0 < δ := div_pos hη (by linarith)
+  have hnd := htend.eventually
+    (Submission.codim1_rdo_dg_bh_normal_defect_small m μ ν y v hν hν1 hv hfin hA δ hδ)
+  filter_upwards [hnd, hsmall, self_mem_nhdsWithin] with r h1 h2 h3
+  have hr : 0 < r := h3
+  have hrR : 0 < r * R := mul_pos hr hRpos
+  -- Step 4: `B̄_{rR}(y) ⊆ D` and `μ(B̄_{rR}(y)) ≤ C₁(rR)ᵐ < ∞`
+  have hsub : closedBall y (r * R) ⊆ D := (closedBall_subset_closedBall h2.le).trans hball
+  have hBfin : μ (closedBall y (r * R)) ≤ ENNReal.ofReal (C₁ * (r * R) ^ m) := hmass _ hrR h2
+  have hBlt : μ (closedBall y (r * R)) < ∞ := hBfin.trans_lt ENNReal.ofReal_lt_top
+  have : IsFiniteMeasure (μ.restrict (closedBall y (r * R))) :=
+    isFiniteMeasure_restrict.mpr hBlt.ne
+  have hμB : (μ (closedBall y (r * R))).toReal ≤ C₁ * (r * R) ^ m :=
+    ENNReal.toReal_le_of_le_ofReal (by positivity) hBfin
+  -- Step 5: the directional Gauss–Green identity; its integrand vanishes off `B̄_{rR}(y)`
+  have hζz : ∀ z, z ∉ closedBall y (r * R) → ζ (r⁻¹ • (z - y)) = 0 := by
+    intro z hz
+    by_contra hne
+    apply hz
+    have hmem : r⁻¹ • (z - y) ∈ ball (0 : Euclid (m + 1)) R := hR (subset_tsupport _ hne)
+    rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr] at hmem
+    rw [mem_closedBall, dist_eq_norm]
+    have := (inv_mul_lt_iff₀ hr).mp hmem
+    linarith
+  have hrm : 0 < r ^ m := pow_pos hr m
+  rw [dist_zero_right, Submission.codim1_rdo_dg_bh_directional_gauss_green m D F μ ν y r R hF hGG hr
+    hsub ζ hζ hζc hR w]
+  have hzero : ∀ z, z ∉ closedBall y (r * R) → ζ (r⁻¹ • (z - y)) * inner ℝ w (ν z) = 0 := by
+    intro z hz
+    rw [hζz z hz, zero_mul]
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero]
+  -- Step 6: `|∫ ζ(r⁻¹(z − y)) ⟨w, ν⟩ dμ| ≤ M ∫_{B̄_{rR}(y)} |⟨ν, w⟩| dμ ≤ Mδ|w|C₁(rR)ᵐ`
+  have hνw : Measurable (fun z => |inner ℝ (ν z) w|) :=
+    (continuous_abs.comp (continuous_id.inner continuous_const)).measurable.comp hν
+  have hint : Integrable (fun z => M * |inner ℝ (ν z) w|) (μ.restrict (closedBall y (r * R))) := by
+    refine (Integrable.of_bound hνw.aestronglyMeasurable ‖w‖
+      (Eventually.of_forall fun z => ?_)).const_mul M
+    rw [Real.norm_eq_abs, abs_abs]
+    calc |inner ℝ (ν z) w| ≤ ‖ν z‖ * ‖w‖ := abs_real_inner_le_norm _ _
+      _ = ‖w‖ := by rw [hν1, one_mul]
+  have hb1 : ‖∫ z in closedBall y (r * R), ζ (r⁻¹ • (z - y)) * inner ℝ w (ν z) ∂μ‖ ≤
+      ∫ z in closedBall y (r * R), M * |inner ℝ (ν z) w| ∂μ := by
+    apply norm_integral_le_of_norm_le hint
+    refine Eventually.of_forall fun z => ?_
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, real_inner_comm]
+    exact mul_le_mul_of_nonneg_right (hM' _) (abs_nonneg _)
+  have hb2 : ∫ z in closedBall y (r * R), M * |inner ℝ (ν z) w| ∂μ ≤
+      M * (δ * ‖w‖ * (C₁ * (r * R) ^ m)) := by
+    rw [integral_const_mul]
+    apply mul_le_mul_of_nonneg_left _ hM0
+    calc ∫ z in closedBall y (r * R), |inner ℝ (ν z) w| ∂μ
+        ≤ δ * ‖w‖ * (μ (closedBall y (r * R))).toReal := h1.2 w hw
+      _ ≤ δ * ‖w‖ * (C₁ * (r * R) ^ m) := by gcongr
+  -- Step 7: `r⁻ᵐ · Mδ|w|C₁(rR)ᵐ = δK < η`
+  have hnorm : ‖-(r ^ m)⁻¹ * ∫ z in closedBall y (r * R), ζ (r⁻¹ • (z - y)) * inner ℝ w (ν z) ∂μ‖ =
+      (r ^ m)⁻¹ * ‖∫ z in closedBall y (r * R), ζ (r⁻¹ • (z - y)) * inner ℝ w (ν z) ∂μ‖ := by
+    rw [norm_mul, norm_neg, norm_inv, Real.norm_eq_abs (r ^ m), abs_of_pos hrm]
+  rw [hnorm]
+  calc (r ^ m)⁻¹ * ‖∫ z in closedBall y (r * R), ζ (r⁻¹ • (z - y)) * inner ℝ w (ν z) ∂μ‖
+      ≤ (r ^ m)⁻¹ * (M * (δ * ‖w‖ * (C₁ * (r * R) ^ m))) := by
+        gcongr
+        exact hb1.trans hb2
+    _ = δ * K := by rw [hK, mul_pow]; field_simp
+    _ < η := by
+        rw [hδ_def, div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+        nlinarith
+
+/-- Simon Ch. 3, 4.3, proof of (9): the normal derivatives of the blow-ups `F_{y,r}` are
+asymptotically nonpositive.  Take `tsupport ζ ⊆ B_R(0)`, `M ≥ sup ζ` and `δ' = δ / (1 + M C₁ Rᵐ)`.
+For small `r`, `directional_gauss_green` (with `w = v`, `ρ = rR`) and the pointwise bound
+`-ζ⟨v, ν⟩ ≤ M (1 - ⟨ν, v⟩)` on `B̄_ρ(y)` give
+`∫_{F_{y,r}} Dζ(v) ≤ r⁻ᵐ M ∫_{B̄_ρ(y)} (1 - ⟨ν, v⟩) dμ ≤ r⁻ᵐ M δ' μ(B̄_ρ(y)) ≤ M δ' C₁ Rᵐ ≤ δ`,
+by `normal_defect_small` and `μ(B̄_ρ(y)) ≤ C₁ρᵐ`. -/
+theorem Submission.codim1_rdo_dg_bh_normal_limsup : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)) (ρ₁ C₁ : ℝ), MeasurableSet F → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → ‖v‖ = 1 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → 0 < ρ₁ → 0 ≤ C₁ → closedBall y ρ₁ ⊆ D → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → μ (closedBall y ρ) ≤ ENNReal.ofReal (C₁ * ρ ^ m)) → ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → (∀ z, 0 ≤ ζ z) → ∀ δ : ℝ, 0 < δ → ∀ᶠ r in 𝓝[>] (0 : ℝ), ∫ z in (fun z => y + r • z) ⁻¹' F, fderiv ℝ ζ z v ≤ δ := by
+  intro m D F μ ν y v ρ₁ C₁ hF hν hν1 hGG hv hA hρ₁ hC₁ hball hmass ζ hζ hζc hζ0 δ hδ
+  -- Step 1: `tsupport ζ ⊆ B_R(0)` with `R ≥ 1`, `|ζ| ≤ M`, and `δ' = δ / (1 + M C₁ Rᵐ)`
+  obtain ⟨R₀, hR₀⟩ := hζc.isCompact.isBounded.subset_ball (0 : Euclid (m + 1))
+  set R := max R₀ 1 with hR_def
+  have hRpos : 0 < R := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hR : tsupport ζ ⊆ ball (0 : Euclid (m + 1)) R :=
+    hR₀.trans (ball_subset_ball (le_max_left _ _))
+  obtain ⟨M, hM⟩ : ∃ M, ∀ z, ‖ζ z‖ ≤ M := hζ.continuous.bounded_above_of_compact_support hζc
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+  have hM' : ∀ z, |ζ z| ≤ M := fun z => by simpa [Real.norm_eq_abs] using hM z
+  set K := M * C₁ * R ^ m with hK
+  have hK0 : 0 ≤ K := by positivity
+  set δ' := δ / (1 + K) with hδ'_def
+  have hδ' : 0 < δ' := div_pos hδ (by linarith)
+  -- Step 2: the normal defect on `B̄_ρ(y)` is at most `δ' μ(B̄_ρ(y))` for small `ρ = rR`
+  have hfin : ∃ ρ₀ : ℝ, 0 < ρ₀ ∧ μ (closedBall y ρ₀) ≠ ∞ :=
+    ⟨ρ₁ / 2, half_pos hρ₁, ne_top_of_le_ne_top ENNReal.ofReal_ne_top
+      (hmass _ (half_pos hρ₁) (half_lt_self hρ₁))⟩
+  have htend : Tendsto (fun r : ℝ => r * R) (𝓝[>] 0) (𝓝[>] 0) := by
+    apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
+    · have : Tendsto (fun r : ℝ => r * R) (𝓝 0) (𝓝 (0 * R)) := tendsto_id.mul_const R
+      rw [zero_mul] at this
+      exact this.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with r hr
+      exact mul_pos hr hRpos
+  have hsmall : ∀ᶠ r in 𝓝[>] (0 : ℝ), r * R < ρ₁ :=
+    (htend.mono_right nhdsWithin_le_nhds).eventually (gt_mem_nhds hρ₁)
+  have hnd := htend.eventually
+    (Submission.codim1_rdo_dg_bh_normal_defect_small m μ ν y v hν hν1 hv hfin hA δ' hδ')
+  filter_upwards [hnd, hsmall, self_mem_nhdsWithin] with r h1 h2 h3
+  have hr : 0 < r := h3
+  have hrR : 0 < r * R := mul_pos hr hRpos
+  have hsub : closedBall y (r * R) ⊆ D := (closedBall_subset_closedBall h2.le).trans hball
+  have hBfin : μ (closedBall y (r * R)) ≤ ENNReal.ofReal (C₁ * (r * R) ^ m) := hmass _ hrR h2
+  have hBlt : μ (closedBall y (r * R)) < ∞ := hBfin.trans_lt ENNReal.ofReal_lt_top
+  have : IsFiniteMeasure (μ.restrict (closedBall y (r * R))) :=
+    isFiniteMeasure_restrict.mpr hBlt.ne
+  have hμB : (μ (closedBall y (r * R))).toReal ≤ C₁ * (r * R) ^ m :=
+    ENNReal.toReal_le_of_le_ofReal (by positivity) hBfin
+  -- Step 3: the rescaled identity, with `s(z) = ζ(r⁻¹(z - y))` vanishing off `B̄_ρ(y)`
+  have hζz : ∀ z, z ∉ closedBall y (r * R) → ζ (r⁻¹ • (z - y)) = 0 := by
+    intro z hz
+    by_contra hne
+    apply hz
+    have hmem : r⁻¹ • (z - y) ∈ ball (0 : Euclid (m + 1)) R := hR (subset_tsupport _ hne)
+    rw [mem_ball_zero_iff, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos hr] at hmem
+    rw [mem_closedBall, dist_eq_norm]
+    have := (inv_mul_lt_iff₀ hr).mp hmem
+    linarith
+  have hζmeas : Measurable (fun z : Euclid (m + 1) => ζ (r⁻¹ • (z - y))) :=
+    (hζ.continuous.comp ((continuous_id.sub continuous_const).const_smul r⁻¹)).measurable
+  have hrm : 0 < r ^ m := pow_pos hr m
+  rw [Submission.codim1_rdo_dg_bh_directional_gauss_green m D F μ ν y r R hF hGG hr
+    hsub ζ hζ hζc hR v]
+  have hzero : ∀ z, z ∉ closedBall y (r * R) → ζ (r⁻¹ • (z - y)) * inner ℝ v (ν z) = 0 := by
+    intro z hz
+    rw [hζz z hz, zero_mul]
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hzero]
+  -- Step 4: `-s⟨v, ν⟩ ≤ M (1 - ⟨ν, v⟩)`, both sides bounded on the finite ball
+  have hνv : Measurable (fun z => inner ℝ (ν z) v) :=
+    (continuous_id.inner continuous_const).measurable.comp hν
+  have hνv' : Measurable (fun z => inner ℝ v (ν z)) :=
+    (continuous_const.inner continuous_id).measurable.comp hν
+  have hint_l : Integrable (fun z => ζ (r⁻¹ • (z - y)) * inner ℝ v (ν z))
+      (μ.restrict (closedBall y (r * R))) := by
+    refine Integrable.of_bound (hζmeas.mul hνv').aestronglyMeasurable M
+      (Eventually.of_forall fun z => ?_)
+    rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
+    have : |inner ℝ v (ν z)| ≤ 1 :=
+      (abs_real_inner_le_norm _ _).trans (by rw [hν1, hv, one_mul])
+    calc |ζ (r⁻¹ • (z - y))| * |inner ℝ v (ν z)| ≤ M * 1 := by
+          gcongr
+          exact hM' _
+      _ = M := mul_one M
+  have hint_d : Integrable (fun z => 1 - inner ℝ (ν z) v) (μ.restrict (closedBall y (r * R))) := by
+    refine (integrable_const 1).sub (Integrable.of_bound hνv.aestronglyMeasurable 1
+      (Eventually.of_forall fun z => ?_))
+    rw [Real.norm_eq_abs]
+    exact (abs_real_inner_le_norm _ _).trans (by rw [hν1, hv, one_mul])
+  have hpt : ∀ z, -(ζ (r⁻¹ • (z - y)) * inner ℝ v (ν z)) ≤ M * (1 - inner ℝ (ν z) v) := by
+    intro z
+    have hs0 := hζ0 (r⁻¹ • (z - y))
+    have hsM : ζ (r⁻¹ • (z - y)) ≤ M := (le_abs_self _).trans (hM' _)
+    have hin : inner ℝ (ν z) v ≤ 1 :=
+      (le_abs_self _).trans ((abs_real_inner_le_norm _ _).trans (by rw [hν1, hv, one_mul]))
+    rw [real_inner_comm]
+    nlinarith
+  -- Step 5: integrate and use `μ(B̄_ρ(y)) ≤ C₁ρᵐ`
+  have hmain : -∫ z in closedBall y (r * R), ζ (r⁻¹ • (z - y)) * inner ℝ v (ν z) ∂μ ≤
+      M * ∫ z in closedBall y (r * R), (1 - inner ℝ (ν z) v) ∂μ := by
+    rw [← integral_neg, ← integral_const_mul]
+    exact integral_mono hint_l.neg (hint_d.const_mul M) hpt
+  have hdef : ∫ z in closedBall y (r * R), (1 - inner ℝ (ν z) v) ∂μ ≤ δ' * (C₁ * (r * R) ^ m) :=
+    h1.1.trans (by gcongr)
+  -- Step 6: `r⁻ᵐ M δ' C₁ (rR)ᵐ = δ' M C₁ Rᵐ ≤ δ`
+  calc -(r ^ m)⁻¹ * ∫ z in closedBall y (r * R), ζ (r⁻¹ • (z - y)) * inner ℝ v (ν z) ∂μ
+      = (r ^ m)⁻¹ * (-∫ z in closedBall y (r * R), ζ (r⁻¹ • (z - y)) * inner ℝ v (ν z) ∂μ) := by
+        ring
+    _ ≤ (r ^ m)⁻¹ * (M * (δ' * (C₁ * (r * R) ^ m))) := by
+        gcongr
+        exact hmain.trans (mul_le_mul_of_nonneg_left hdef hM0)
+    _ = δ' * K := by rw [hK, mul_pow]; field_simp
+    _ ≤ δ := by
+        rw [hδ'_def, div_mul_eq_mul_div, div_le_iff₀ (by linarith)]
+        nlinarith
+/-- **Scale invariance of the two-sided volume density bounds** (Simon Ch. 3, 4.3 (10)–(11)): if
+`L(F ∩ B_ρ(y)) ≥ c₂ρ^{m+1}` and `L(B_ρ(y) \ F) ≥ c₂ρ^{m+1}` for `0 < ρ < ρ₂`, then the rescaled set
+`F_{y,r} = {w : y + rw ∈ F}` satisfies the same bounds on `B_s(0)` whenever `rs < ρ₂`.  The map
+`w ↦ y + rw` scales Lebesgue measure by `r^{m+1}` and pulls `B_{rs}(y)` back to `B_s(0)`. -/
+theorem Submission.codim1_rdo_dg_bh_rescaled_volume_lower : ∀ (m : ℕ) (F : Set (Euclid (m + 1))) (y : Euclid (m + 1)) (c₂ ρ₂ : ℝ), MeasurableSet F → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₂ → ENNReal.ofReal (c₂ * ρ ^ (m + 1)) ≤ volume (F ∩ ball y ρ) ∧ ENNReal.ofReal (c₂ * ρ ^ (m + 1)) ≤ volume (ball y ρ \ F)) → ∀ s r : ℝ, 0 < s → 0 < r → r * s < ρ₂ → ENNReal.ofReal (c₂ * s ^ (m + 1)) ≤ volume ((fun w => y + r • w) ⁻¹' F ∩ ball (0 : Euclid (m + 1)) s) ∧ ENNReal.ofReal (c₂ * s ^ (m + 1)) ≤ volume (ball (0 : Euclid (m + 1)) s \ (fun w => y + r • w) ⁻¹' F) := by
+  intro m F y c₂ ρ₂ _ hvol s r hs hr hrs
+  -- `L((y + r ·)⁻¹' S) = r^{-(m+1)} L(S)`: Haar scaling, then translation invariance
+  have hscale : ∀ S : Set (Euclid (m + 1)), volume ((fun w => y + r • w) ⁻¹' S) =
+      ENNReal.ofReal (|r ^ (m + 1)|⁻¹) * volume S := by
+    intro S
+    have : (fun w => y + r • w) ⁻¹' S = (r • ·) ⁻¹' ((fun u => y + u) ⁻¹' S) := rfl
+    rw [this, Measure.addHaar_preimage_smul volume hr.ne', finrank_euclideanSpace_fin,
+      measure_preimage_add, abs_inv]
+  -- `|(y + rw) − y| = r|w|`, so `(y + r ·)⁻¹' B_{rs}(y) = B_s(0)`
+  have hball : (fun w => y + r • w) ⁻¹' ball y (r * s) = ball (0 : Euclid (m + 1)) s := by
+    ext w
+    simp only [Set.mem_preimage, mem_ball, dist_eq_norm, add_sub_cancel_left, sub_zero, norm_smul,
+      Real.norm_eq_abs, abs_of_pos hr]
+    exact mul_lt_mul_iff_right₀ hr
+  -- the hypothesis at `ρ = rs`, and both sets as preimages of the unscaled ones
+  obtain ⟨h1, h2⟩ := hvol (r * s) (mul_pos hr hs) hrs
+  have e1 : (fun w => y + r • w) ⁻¹' F ∩ ball (0 : Euclid (m + 1)) s =
+      (fun w => y + r • w) ⁻¹' (F ∩ ball y (r * s)) := by rw [Set.preimage_inter, hball]
+  have e2 : ball (0 : Euclid (m + 1)) s \ (fun w => y + r • w) ⁻¹' F =
+      (fun w => y + r • w) ⁻¹' (ball y (r * s) \ F) := by rw [Set.preimage_sdiff, hball]
+  -- `r^{-(m+1)} · c₂(rs)^{m+1} = c₂s^{m+1}` in `[0, ∞]` (both sides `0` if `c₂ ≤ 0`)
+  have hfac : ENNReal.ofReal (c₂ * s ^ (m + 1)) =
+      ENNReal.ofReal (|r ^ (m + 1)|⁻¹) * ENNReal.ofReal (c₂ * (r * s) ^ (m + 1)) := by
+    rw [← ENNReal.ofReal_mul (by positivity)]
+    congr 1
+    rw [abs_of_pos (pow_pos hr _), mul_pow]
+    field_simp
+  rw [e1, e2, hscale, hscale, hfac]
+  exact ⟨by gcongr, by gcongr⟩
+/-- **`L¹_loc` transfer** (the passage to the blow-up limit in Simon Ch. 3, 4.3 (7), and in the
+volume bounds fixing `λ = 0` after (9)): if `L^{m+1}((F_k Δ F₀) ∩ B_R(0)) → 0` for every `R`,
+then `∫_{F_k} f → ∫_{F₀} f` for continuous compactly supported `f`
+(`|∫_{F_k} f − ∫_{F₀} f| ≤ sup |f| · L^{m+1}((F_k Δ F₀) ∩ B_R(0))` once `spt f ⊆ B_R(0)`), and
+`L^{m+1}(F_k ∩ B_s(0))`, `L^{m+1}(B_s(0) \ F_k)` converge to the values for `F₀`, each differing
+from its limit by at most `L^{m+1}((F_k Δ F₀) ∩ B_s(0))`. -/
+theorem Submission.codim1_rdo_dg_bh_l1loc_transfer : ∀ (m : ℕ) (Fs : ℕ → Set (Euclid (m + 1))) (F₀ : Set (Euclid (m + 1))), (∀ k, MeasurableSet (Fs k)) → MeasurableSet F₀ → (∀ R : ℝ, Tendsto (fun k => volume (symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) R)) atTop (𝓝 0)) → (∀ f : Euclid (m + 1) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ z in Fs k, f z) atTop (𝓝 (∫ z in F₀, f z))) ∧ (∀ s : ℝ, Tendsto (fun k => volume (Fs k ∩ ball (0 : Euclid (m + 1)) s)) atTop (𝓝 (volume (F₀ ∩ ball (0 : Euclid (m + 1)) s)))) ∧ ∀ s : ℝ, Tendsto (fun k => volume (ball (0 : Euclid (m + 1)) s \ Fs k)) atTop (𝓝 (volume (ball (0 : Euclid (m + 1)) s \ F₀))) := by
+  intro m Fs F₀ hFs hF₀ hconv
+  -- `a k → b` in `[0, ∞]` once `b < ∞` and `a k ≤ b + e k`, `b ≤ a k + e k` with `e k → 0`
+  have key : ∀ (a : ℕ → ℝ≥0∞) (b : ℝ≥0∞) (e : ℕ → ℝ≥0∞), b ≠ ∞ → Tendsto e atTop (𝓝 0) →
+      (∀ k, a k ≤ b + e k) → (∀ k, b ≤ a k + e k) → Tendsto a atTop (𝓝 b) := by
+    intro a b e hb he h1 h2
+    rw [ENNReal.tendsto_nhds hb]
+    intro ε hε
+    filter_upwards [he.eventually (gt_mem_nhds hε)] with k hk
+    constructor
+    · rw [tsub_le_iff_right]
+      exact (h2 k).trans (by gcongr)
+    · exact (h1 k).trans (by gcongr)
+  refine ⟨?_, ?_, ?_⟩
+  · intro f hf hfc
+    obtain ⟨R, hR⟩ : ∃ R, tsupport f ⊆ ball (0 : Euclid (m + 1)) R :=
+      hfc.isCompact.isBounded.subset_ball 0
+    obtain ⟨M, hM⟩ : ∃ M, ∀ z, ‖f z‖ ≤ M := hf.bounded_above_of_compact_support hfc
+    have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0)
+    have hM' : ∀ z, |f z| ≤ M := fun z => by rw [← Real.norm_eq_abs]; exact hM z
+    have hfi : Integrable f := hf.integrable_of_hasCompactSupport hfc
+    set E : ℕ → Set (Euclid (m + 1)) := fun k => symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) R
+    have hEm : ∀ k, MeasurableSet (E k) := fun k =>
+      ((hFs k).symmDiff hF₀).inter measurableSet_ball
+    have hEfin : ∀ k, volume (E k) ≠ ∞ := fun k =>
+      ne_top_of_le_ne_top measure_ball_lt_top.ne (measure_mono Set.inter_subset_right)
+    -- `|1_{F_k} f − 1_{F₀} f| ≤ M · 1_{E k}`, as `f = 0` off `B_R(0)`
+    have hbound : ∀ k, ‖(∫ z in Fs k, f z) - ∫ z in F₀, f z‖ ≤ M * (volume (E k)).toReal := by
+      intro k
+      rw [← integral_indicator (hFs k), ← integral_indicator hF₀,
+        ← integral_sub (hfi.indicator (hFs k)) (hfi.indicator hF₀)]
+      have hgi : Integrable ((E k).indicator (fun _ => M)) :=
+        (integrableOn_const (hEfin k)).integrable_indicator (hEm k)
+      calc ‖∫ z, ((Fs k).indicator f z - F₀.indicator f z)‖
+          ≤ ∫ z, (E k).indicator (fun _ => M) z := by
+            refine norm_integral_le_of_norm_le hgi (Eventually.of_forall fun z => ?_)
+            by_cases hz : z ∈ E k
+            · rw [Set.indicator_of_mem hz]
+              by_cases h1 : z ∈ Fs k <;> by_cases h2 : z ∈ F₀ <;>
+                simp [Set.indicator_of_mem, Set.indicator_of_notMem, h1, h2, hM0, hM' z]
+            · rw [Set.indicator_of_notMem hz, norm_le_zero_iff, sub_eq_zero]
+              by_cases hzR : z ∈ ball (0 : Euclid (m + 1)) R
+              · -- `z ∉ F_k Δ F₀`, so `z ∈ F_k ↔ z ∈ F₀`
+                have hzs : z ∉ symmDiff (Fs k) F₀ := fun h => hz ⟨h, hzR⟩
+                rw [Set.mem_symmDiff, not_or, not_and_not_right, not_and_not_right] at hzs
+                by_cases h1 : z ∈ Fs k
+                · rw [Set.indicator_of_mem h1, Set.indicator_of_mem (hzs.1 h1)]
+                · rw [Set.indicator_of_notMem h1,
+                    Set.indicator_of_notMem fun h2 => h1 (hzs.2 h2)]
+              · have hfz : f z = 0 := image_eq_zero_of_notMem_tsupport fun h => hzR (hR h)
+                rw [Set.indicator_apply_eq_zero.2 fun _ => hfz,
+                  Set.indicator_apply_eq_zero.2 fun _ => hfz]
+        _ = M * (volume (E k)).toReal := by
+            rw [integral_indicator_const _ (hEm k), smul_eq_mul, mul_comm, measureReal_def]
+    have hlim : Tendsto (fun k => M * (volume (E k)).toReal) atTop (𝓝 0) := by
+      simpa using ((ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp (hconv R)).const_mul M
+    rw [← tendsto_sub_nhds_zero_iff]
+    exact squeeze_zero_norm hbound hlim
+  · intro s
+    have hb : volume (F₀ ∩ ball (0 : Euclid (m + 1)) s) ≠ ∞ :=
+      ne_top_of_le_ne_top measure_ball_lt_top.ne (measure_mono Set.inter_subset_right)
+    refine key _ _ _ hb (hconv s) (fun k => ?_) (fun k => ?_)
+    · calc volume (Fs k ∩ ball (0 : Euclid (m + 1)) s)
+          ≤ volume ((F₀ ∩ ball (0 : Euclid (m + 1)) s) ∪
+              (symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) s)) := by
+            refine measure_mono fun z hz => ?_
+            by_cases h : z ∈ F₀
+            · exact Or.inl ⟨h, hz.2⟩
+            · exact Or.inr ⟨Set.mem_symmDiff.mpr (Or.inl ⟨hz.1, h⟩), hz.2⟩
+        _ ≤ _ := measure_union_le _ _
+    · calc volume (F₀ ∩ ball (0 : Euclid (m + 1)) s)
+          ≤ volume ((Fs k ∩ ball (0 : Euclid (m + 1)) s) ∪
+              (symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) s)) := by
+            refine measure_mono fun z hz => ?_
+            by_cases h : z ∈ Fs k
+            · exact Or.inl ⟨h, hz.2⟩
+            · exact Or.inr ⟨Set.mem_symmDiff.mpr (Or.inr ⟨hz.1, h⟩), hz.2⟩
+        _ ≤ _ := measure_union_le _ _
+  · intro s
+    have hb : volume (ball (0 : Euclid (m + 1)) s \ F₀) ≠ ∞ :=
+      ne_top_of_le_ne_top measure_ball_lt_top.ne (measure_mono Set.sdiff_subset)
+    refine key _ _ _ hb (hconv s) (fun k => ?_) (fun k => ?_)
+    · calc volume (ball (0 : Euclid (m + 1)) s \ Fs k)
+          ≤ volume ((ball (0 : Euclid (m + 1)) s \ F₀) ∪
+              (symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) s)) := by
+            refine measure_mono fun z hz => ?_
+            by_cases h : z ∈ F₀
+            · exact Or.inr ⟨Set.mem_symmDiff.mpr (Or.inr ⟨h, hz.2⟩), hz.1⟩
+            · exact Or.inl ⟨hz.1, h⟩
+        _ ≤ _ := measure_union_le _ _
+    · calc volume (ball (0 : Euclid (m + 1)) s \ F₀)
+          ≤ volume ((ball (0 : Euclid (m + 1)) s \ Fs k) ∪
+              (symmDiff (Fs k) F₀ ∩ ball (0 : Euclid (m + 1)) s)) := by
+            refine measure_mono fun z hz => ?_
+            by_cases h : z ∈ Fs k
+            · exact Or.inr ⟨Set.mem_symmDiff.mpr (Or.inl ⟨h, hz.2⟩), hz.1⟩
+            · exact Or.inl ⟨hz.1, h⟩
+        _ ≤ _ := measure_union_le _ _
+/-- **The blow-up half-space passes through the origin** (Simon Ch. 3, 4.3: "(10) and (11)
+evidently tell us that `λ = 0` in (9)").  If `F₀` and its complement have positive measure in
+every `B_s(0)`, and `F₀` is null, conull, or a.e. equal to `{⟨z, v⟩ > c}` with `|v| = 1`, then
+`F₀ = {⟨z, v⟩ > 0}` a.e.  Since `|⟨z, v⟩| ≤ |z|`, `B_c(0)` misses `{⟨z, v⟩ > c}` if `c > 0`, and
+`B_{−c}(0)` lies inside it if `c < 0`. -/
+theorem Submission.codim1_rdo_dg_bh_offset_zero : ∀ (m : ℕ) (F₀ : Set (Euclid (m + 1))) (v : Euclid (m + 1)), ‖v‖ = 1 → (∀ s : ℝ, 0 < s → 0 < volume (F₀ ∩ ball (0 : Euclid (m + 1)) s) ∧ 0 < volume (ball (0 : Euclid (m + 1)) s \ F₀)) → (volume F₀ = 0 ∨ volume F₀ᶜ = 0 ∨ ∃ c : ℝ, volume (symmDiff F₀ {z | c < inner ℝ z v}) = 0) → volume (symmDiff F₀ {z | 0 < inner ℝ z v}) = 0 := by
+  intro m F₀ v hv hpos htri
+  rcases htri with h | h | ⟨c, hc⟩
+  -- `L(F₀) = 0` would give `L(F₀ ∩ B_1(0)) = 0`
+  · exact ((hpos 1 one_pos).1.ne' (measure_mono_null Set.inter_subset_left h)).elim
+  -- `L(F₀ᶜ) = 0` would give `L(B_1(0) \ F₀) = 0`
+  · exact ((hpos 1 one_pos).2.ne' (measure_mono_null (fun x hx => hx.2) h)).elim
+  · rcases lt_trichotomy c 0 with hneg | rfl | hcpos
+    -- `c < 0`: `⟨z, v⟩ ≥ −|z| > c` on `B_{−c}(0)`, so `B_{−c}(0) \ F₀ ⊆ F₀ Δ {⟨z, v⟩ > c}`
+    · have hsub : ball (0 : Euclid (m + 1)) (-c) \ F₀ ⊆ symmDiff F₀ {z | c < inner ℝ z v} := by
+        intro z hz
+        refine Set.mem_symmDiff.mpr (Or.inr ⟨?_, hz.2⟩)
+        have h1 : |inner ℝ z v| ≤ ‖z‖ * ‖v‖ := abs_real_inner_le_norm z v
+        have h2 := mem_ball_zero_iff.mp hz.1
+        rw [hv, mul_one] at h1
+        show c < inner ℝ z v
+        linarith [neg_abs_le (inner ℝ z v)]
+      exact ((hpos (-c) (neg_pos.mpr hneg)).2.ne' (measure_mono_null hsub hc)).elim
+    · exact hc
+    -- `c > 0`: `⟨z, v⟩ ≤ |z| < c` on `B_c(0)`, so `F₀ ∩ B_c(0) ⊆ F₀ Δ {⟨z, v⟩ > c}`
+    · have hsub : F₀ ∩ ball (0 : Euclid (m + 1)) c ⊆ symmDiff F₀ {z | c < inner ℝ z v} := by
+        intro z hz
+        refine Set.mem_symmDiff.mpr (Or.inl ⟨hz.1, ?_⟩)
+        have h1 : |inner ℝ z v| ≤ ‖z‖ * ‖v‖ := abs_real_inner_le_norm z v
+        have h2 := mem_ball_zero_iff.mp hz.2
+        rw [hv, mul_one] at h1
+        show ¬ c < inner ℝ z v
+        linarith [le_abs_self (inner ℝ z v)]
+      exact ((hpos c hcpos).1.ne' (measure_mono_null hsub hc)).elim
+/-- **Discrete growth** (Simon Ch. 3, 4.3, (10), integrated in discrete steps).  If `V > 0` on
+`(0, ρ₁)` and `V(ρ)^{m/(m+1)} ≤ (K/δ)(V(ρ+δ) − V(ρ))` whenever `ρ, δ > 0`, `ρ + δ < ρ₁`, then
+`(ρ/(2K(m+1)))^{m+1} ≤ V(ρ)` for `0 < ρ < ρ₁`.  With `W = V^{1/(m+1)}` and the Bernoulli bound
+`xⁿ(x + n(y − x)) ≤ x yⁿ` (`x, y ≥ 0`), one step of length `δ` gives
+`δw ≤ (W(r+δ) − W(r))(K(m+1)w + mδ)` for `0 ≤ w ≤ W(r)`.  Summing `N` such steps with
+`δ = ρ/(2N)` from `ρ/2`, `w = W(ρ/2)` and `N > mρ²/(4K²(m+1)²W(ρ/2)²)` gives
+`W(ρ) ≥ ρ/(2K(m+1))`. -/
+theorem Submission.codim1_rdo_dg_vdl_discrete_growth : ∀ (m : ℕ) (K ρ₁ : ℝ) (V : ℝ → ℝ), 0 < K → (∀ r : ℝ, 0 < r → r < ρ₁ → 0 < V r) → (∀ ρ δ : ℝ, 0 < ρ → 0 < δ → ρ + δ < ρ₁ → V ρ ^ ((m : ℝ) / (m + 1)) ≤ K / δ * (V (ρ + δ) - V ρ)) → ∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → (ρ / (2 * K * (m + 1))) ^ (m + 1) ≤ V ρ := by
+  intro m K ρ₁ V hK hV hdiff ρ hρ hρ₁
+  have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
+  have hm1 : (m : ℝ) + 1 ≠ 0 := by positivity
+  have hKm : 0 < K * (m + 1) := by positivity
+  -- Bernoulli's inequality `xⁿ (x + n (y − x)) ≤ x yⁿ` for `x, y ≥ 0`
+  have bern : ∀ n : ℕ, ∀ x y : ℝ, 0 ≤ x → 0 ≤ y → x ^ n * (x + n * (y - x)) ≤ x * y ^ n := by
+    intro n
+    induction n with
+    | zero => intro x y _ _; simp
+    | succ n ih =>
+      intro x y hx hy
+      have h1 := mul_le_mul_of_nonneg_left (ih x y hx hy) hy
+      have h2 : 0 ≤ x ^ n * (n * (y - x) ^ 2) :=
+        mul_nonneg (pow_nonneg hx n) (mul_nonneg (Nat.cast_nonneg n) (sq_nonneg (y - x)))
+      rw [pow_succ, pow_succ]
+      push_cast
+      linarith
+  -- Step 2: `W = V^{1/(m+1)}`, so `W > 0`, `W^{m+1} = V` and `W^m = V^{m/(m+1)}`
+  obtain ⟨W, hWpos, hWpow, hWpowm⟩ : ∃ W : ℝ → ℝ, (∀ r, 0 < r → r < ρ₁ → 0 < W r) ∧
+      (∀ r, 0 < r → r < ρ₁ → W r ^ (m + 1) = V r) ∧
+      (∀ r, 0 < r → r < ρ₁ → W r ^ m = V r ^ ((m : ℝ) / (m + 1))) := by
+    refine ⟨fun r => V r ^ ((1 : ℝ) / (m + 1)), fun r h1 h2 => Real.rpow_pos_of_pos (hV r h1 h2) _,
+      fun r h1 h2 => ?_, fun r h1 h2 => ?_⟩
+    · show (V r ^ ((1 : ℝ) / (m + 1))) ^ (m + 1) = V r
+      rw [← Real.rpow_natCast, ← Real.rpow_mul (hV r h1 h2).le, Nat.cast_add_one,
+        one_div_mul_cancel hm1, Real.rpow_one]
+    · show (V r ^ ((1 : ℝ) / (m + 1))) ^ m = V r ^ ((m : ℝ) / (m + 1))
+      rw [← Real.rpow_natCast, ← Real.rpow_mul (hV r h1 h2).le, one_div_mul_eq_div]
+  -- Step 3, algebra: `δ bᵐ ≤ K (a^{m+1} − b^{m+1})` and `0 ≤ w ≤ b` give
+  -- `δ w ≤ (a − b) (K (m+1) w + m δ)`
+  have alg : ∀ a b δ w : ℝ, 0 < a → 0 < b → 0 < δ → 0 ≤ w → w ≤ b →
+      δ * b ^ m ≤ K * (a ^ (m + 1) - b ^ (m + 1)) →
+      δ * w ≤ (a - b) * (K * (m + 1) * w + m * δ) := by
+    intro a b δ w ha hb hδ hw0 hwb hd
+    rw [pow_succ, pow_succ] at hd
+    have hP : 0 < a ^ m := pow_pos ha m
+    have hQ : 0 < b ^ m := pow_pos hb m
+    have hB1 := bern (m + 1) a b ha.le hb.le
+    rw [pow_succ, pow_succ] at hB1
+    push_cast at hB1
+    have hB0 := bern m a b ha.le hb.le
+    -- `a^{m+1} − b^{m+1} ≤ (m+1) aᵐ (a − b)`
+    have h1 : a ^ m * a - b ^ m * b ≤ (m + 1) * a ^ m * (a - b) := by
+      have h : a * (a ^ m * a - b ^ m * b) ≤ a * ((m + 1) * a ^ m * (a - b)) := by linarith
+      exact le_of_mul_le_mul_left h ha
+    have h2 : δ * b ^ m ≤ K * (m + 1) * a ^ m * (a - b) := by
+      have := mul_le_mul_of_nonneg_left h1 hK.le
+      linarith
+    have hab : 0 ≤ a - b := by
+      by_contra hcon
+      have : K * (m + 1) * a ^ m * (a - b) ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos (mul_nonneg hKm.le hP.le) (not_le.mp hcon).le
+      have : 0 < δ * b ^ m := mul_pos hδ hQ
+      linarith
+    -- `δ (a − m (a − b)) ≤ K (m+1) a (a − b)`
+    have h3 : δ * (a + m * (b - a)) ≤ K * (m + 1) * a * (a - b) := by
+      have e1 := mul_le_mul_of_nonneg_left hB0 hδ.le
+      have e2 := mul_le_mul_of_nonneg_left h2 ha.le
+      have h4 : a ^ m * (δ * (a + m * (b - a))) ≤ a ^ m * (K * (m + 1) * a * (a - b)) := by
+        linarith
+      exact le_of_mul_le_mul_left h4 hP
+    have h5 : a * (δ * w) ≤ a * ((a - b) * (K * (m + 1) * w + m * δ)) := by
+      have e1 := mul_le_mul_of_nonneg_left h3 hw0
+      have e2 : 0 ≤ (a - b) * m * δ * (a - w) :=
+        mul_nonneg (mul_nonneg (mul_nonneg hab hm0) hδ.le) (by linarith)
+      linarith
+    exact le_of_mul_le_mul_left h5 ha
+  -- Step 3: one step of length `δ`
+  have step : ∀ r δ w : ℝ, 0 < r → 0 < δ → r + δ < ρ₁ → 0 ≤ w → w ≤ W r →
+      δ * w ≤ (W (r + δ) - W r) * (K * (m + 1) * w + m * δ) := by
+    intro r δ w hr hδ hrδ hw0 hwb
+    have hr1 : r < ρ₁ := by linarith
+    have hrδ0 : 0 < r + δ := by linarith
+    have hd := hdiff r δ hr hδ hrδ
+    rw [← hWpowm r hr hr1, ← hWpow r hr hr1, ← hWpow (r + δ) hrδ0 hrδ] at hd
+    refine alg _ _ δ w (hWpos _ hrδ0 hrδ) (hWpos r hr hr1) hδ hw0 hwb ?_
+    have hδne : δ ≠ 0 := hδ.ne'
+    calc δ * W r ^ m ≤ δ * (K / δ * (W (r + δ) ^ (m + 1) - W r ^ (m + 1))) :=
+          mul_le_mul_of_nonneg_left hd hδ.le
+      _ = K * (W (r + δ) ^ (m + 1) - W r ^ (m + 1)) := by field_simp
+  -- Step 4′: `N` steps of length `δ = ρ/(2N)` from `ρ/2`
+  have hρ2 : 0 < ρ / 2 := by linarith
+  obtain ⟨w₀, hw₀⟩ : ∃ w₀, w₀ = W (ρ / 2) := ⟨_, rfl⟩
+  have hw₀pos : 0 < w₀ := by rw [hw₀]; exact hWpos _ hρ2 (by linarith)
+  obtain ⟨N, hN⟩ := exists_nat_gt ((m : ℝ) * ρ ^ 2 / (4 * (K * (m + 1)) ^ 2 * w₀ ^ 2))
+  have hNpos : (0 : ℝ) < N := lt_of_le_of_lt (by positivity) hN
+  have hNne : (N : ℝ) ≠ 0 := hNpos.ne'
+  obtain ⟨δ, hδ⟩ : ∃ δ : ℝ, δ = ρ / (2 * N) := ⟨_, rfl⟩
+  have hδpos : 0 < δ := by rw [hδ]; positivity
+  have hNδ : (N : ℝ) * δ = ρ / 2 := by
+    rw [hδ]
+    field_simp
+  have ind : ∀ j : ℕ, j ≤ N →
+      (j : ℝ) * δ * w₀ ≤ (K * (m + 1) * w₀ + m * δ) * (W (ρ / 2 + j * δ) - w₀) := by
+    intro j
+    induction j with
+    | zero => intro _; simp [hw₀]
+    | succ j ih =>
+      intro hj
+      have ih' := ih (Nat.le_of_succ_le hj)
+      have hjN : (j : ℝ) + 1 ≤ N := by exact_mod_cast hj
+      have hr : 0 < ρ / 2 + j * δ := by positivity
+      have hrδ : ρ / 2 + j * δ + δ < ρ₁ := by
+        have := mul_le_mul_of_nonneg_right hjN hδpos.le
+        linarith
+      have hcoef : 0 < K * (m + 1) * w₀ + m * δ := by positivity
+      have hwb : w₀ ≤ W (ρ / 2 + j * δ) := by
+        by_contra hcon
+        have h1 : (K * (m + 1) * w₀ + m * δ) * (W (ρ / 2 + j * δ) - w₀) < 0 :=
+          mul_neg_of_pos_of_neg hcoef (by linarith [not_le.mp hcon])
+        have h2 : 0 ≤ (j : ℝ) * δ * w₀ := by positivity
+        linarith
+      have hs := step (ρ / 2 + j * δ) δ w₀ hr hδpos hrδ hw₀pos.le hwb
+      have heq : ρ / 2 + ((j + 1 : ℕ) : ℝ) * δ = ρ / 2 + j * δ + δ := by push_cast; ring
+      rw [heq]
+      push_cast
+      linarith
+  have hfin := ind N le_rfl
+  have hρN : ρ / 2 + (N : ℝ) * δ = ρ := by rw [hNδ]; ring
+  rw [hρN, hNδ] at hfin
+  -- `N` is large: `m δ ρ < 2 (K (m+1))² w₀²`
+  have hmδ : (m : ℝ) * δ * ρ < 2 * (K * (m + 1)) ^ 2 * w₀ ^ 2 := by
+    have h1 : (m : ℝ) * ρ ^ 2 < N * (4 * (K * (m + 1)) ^ 2 * w₀ ^ 2) := by
+      rwa [div_lt_iff₀ (by positivity)] at hN
+    have h2 : (2 * N) * ((m : ℝ) * δ * ρ) = m * ρ ^ 2 := by
+      have : (2 * N) * ((m : ℝ) * δ * ρ) = 2 * m * ρ * (N * δ) := by ring
+      rw [this, hNδ]; ring
+    have h3 : (2 * N) * ((m : ℝ) * δ * ρ) < (2 * N) * (2 * (K * (m + 1)) ^ 2 * w₀ ^ 2) := by
+      rw [h2]; linarith
+    exact lt_of_mul_lt_mul_left h3 (by positivity)
+  -- Steps 4′(c) and 6: `ρ/(2K(m+1)) ≤ W(ρ)`, so `(ρ/(2K(m+1)))^{m+1} ≤ W(ρ)^{m+1} = V(ρ)`
+  have hA : ρ / (2 * K * (m + 1)) ≤ W ρ := by
+    rw [div_le_iff₀ (by positivity)]
+    by_contra hcon
+    have hcoef : 0 < K * (m + 1) * w₀ + m * δ := by positivity
+    have e1 := mul_lt_mul_of_pos_left (not_le.mp hcon) hcoef
+    have e2 := mul_le_mul_of_nonneg_left hfin hKm.le
+    have e3 : 0 ≤ K * (m + 1) * m * δ * w₀ := by positivity
+    linarith
   calc (ρ / (2 * K * (m + 1))) ^ (m + 1) ≤ W ρ ^ (m + 1) :=
         pow_le_pow_left₀ (by positivity) hA (m + 1)
     _ = V ρ := hWpow ρ hρ hρ₁
@@ -4510,5 +5329,110 @@ theorem codim1_rdo_dg_volume_density_lower : ∀ (m : ℕ) (D F : Set (Euclid (m
       (pow_nonneg hρ.le _))).trans (h₂ ρ hρ hρρ₁)
 
 end Submission
+
+/-- **Blow-up of `F` at `y` is the half-space `{⟨w, v⟩ > 0}`** (Simon Ch. 3, proof of Theorem 4.3
+(De Giorgi), printed (7)–(11) and the paragraph "Now given any sequence `λ_k ↓ 0` …",
+chapter-03.txt lines 652–744; for the inward normal the limit is `{⟨w, v⟩ > 0}`, the OCR's
+inequality being reversed).  Given `r_k ↓ 0`, the rescaled sets `F_{y,r_k}` have locally bounded
+perimeter (`μ(B̄_ρ(y)) ≤ C₁ ρ^m`), so a subsequence converges in `L¹_loc` to some `F₀`; since the
+normal averages tend to `v`, `F₀` has vanishing tangential and nonpositive normal distributional
+derivative, hence is (a.e.) `∅`, `ℝ^{m+1}` or `{⟨w, v⟩ > c}`; the scale-invariant two-sided volume
+bounds force `c = 0`.  The limit being independent of the sequence, the whole family converges. -/
+theorem Submission.codim1_rdo_dg_blowup_halfspace : ∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)), 1 ≤ m → IsOpen D → MeasurableSet F → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → y ∈ D → ‖v‖ = 1 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∀ R : ℝ, Tendsto (fun r : ℝ => volume (symmDiff ((fun w => y + r • w) ⁻¹' F) {w | 0 < inner ℝ w v} ∩ ball (0 : Euclid (m + 1)) R)) (𝓝[>] 0) (𝓝 0) := by
+  intro m D F μ ν y v hm hD hF hμD hμK hν hν1 hGG hy hv hA R
+  -- step 1: `μ(B̄_ρ(y)) ≤ C₁ ρ^m` for `ρ < ρ₁`, and `L(F ∩ B_ρ(y)), L(B_ρ(y) \ F) ≥ c₂ ρ^{m+1}`
+  -- for `ρ < ρ₂`
+  obtain ⟨ρ₁, C₁, hρ₁, hC₁, hball, -, hmass⟩ :=
+    Submission.codim1_rdo_dg_cutoff_estimates m D F μ ν y v hD hF hμD hμK hν hν1 hGG hy hv hA
+  obtain ⟨c₂, ρ₂, hc₂, hρ₂, hvol⟩ :=
+    Submission.codim1_rdo_dg_volume_density_lower m D F μ ν y v hm hD hF hμD hμK hν hν1 hGG hy
+      hv hA
+  -- step 7: it suffices that every sequence `r_k → 0⁺` has a subsequence along which the
+  -- quantity tends to `0`
+  apply Filter.tendsto_of_subseq_tendsto
+  intro rs hrs
+  have hrs0 : Tendsto rs atTop (𝓝 0) := hrs.mono_right nhdsWithin_le_nhds
+  have hrs_pos : ∀ᶠ k in atTop, 0 < rs k := hrs.eventually self_mem_nhdsWithin
+  set Fs : ℕ → Set (Euclid (m + 1)) := fun k => (fun w => y + rs k • w) ⁻¹' F with hFs_def
+  have hFs : ∀ k, MeasurableSet (Fs k) := fun k =>
+    (measurable_const.add (measurable_id.const_smul (rs k))) hF
+  -- step 4: perimeter bounds `C₁ R^m` on `B_R`, hence an `L¹_loc` limit `F₀` of a subsequence
+  have hper : ∀ R' : ℝ, 0 < R' → ∃ C : ℝ, ∀ᶠ k in atTop, ∀ g : Euclid (m + 1) → Euclid (m + 1),
+      ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ ball (0 : Euclid (m + 1)) R' →
+      (∀ z, ‖g z‖ ≤ 1) →
+      ∫ z in Fs k, LinearMap.trace ℝ (Euclid (m + 1))
+        (fderiv ℝ g z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) ≤ C := by
+    intro R' hR'
+    refine ⟨C₁ * R' ^ m, ?_⟩
+    have h1 : ∀ᶠ k in atTop, rs k * R' < ρ₁ := by
+      have : Tendsto (fun k => rs k * R') atTop (𝓝 0) := by simpa using hrs0.mul_const R'
+      exact this.eventually (gt_mem_nhds hρ₁)
+    filter_upwards [hrs_pos, h1] with k hk1 hk2
+    intro g hg hgc hgs hg1
+    exact Submission.codim1_rdo_dg_bh_perimeter_bound m D F μ ν y ρ₁ C₁ hF hν hν1 hGG hρ₁ hC₁
+      hball hmass R' (rs k) hR' hk1 hk2 g hg hgc hgs hg1
+  obtain ⟨ψ, F₀, hψ, hF₀, hconv⟩ := Submission.codim1_rdo_dg_bv_set_compactness m Fs hFs hper
+  refine ⟨ψ, ?_⟩
+  have hrsψ : Tendsto (fun j => rs (ψ j)) atTop (𝓝[>] 0) := hrs.comp hψ.tendsto_atTop
+  obtain ⟨hint, hin, hout⟩ :=
+    Submission.codim1_rdo_dg_bh_l1loc_transfer m (fun j => Fs (ψ j)) F₀ (fun j => hFs _) hF₀ hconv
+  -- step 5: `F₀` has vanishing tangential and nonpositive normal derivative
+  have htan : ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      ∀ w : Euclid (m + 1), inner ℝ w v = 0 → ∫ z in F₀, fderiv ℝ ζ z w = 0 := by
+    intro ζ hζ hζc w hw
+    have h1 := (Submission.codim1_rdo_dg_bh_tangential_vanish m D F μ ν y v ρ₁ C₁ hF hν hν1 hGG hv
+      hA hρ₁ hC₁ hball hmass ζ hζ hζc w hw).comp hrsψ
+    have h2 := hint (fun z => fderiv ℝ ζ z w)
+      ((hζ.continuous_fderiv one_ne_zero).clm_apply continuous_const) (hζc.fderiv_apply (𝕜 := ℝ) w)
+    exact tendsto_nhds_unique h2 h1
+  have hnor : ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ →
+      (∀ z, 0 ≤ ζ z) → ∫ z in F₀, fderiv ℝ ζ z v ≤ 0 := by
+    intro ζ hζ hζc hζ0
+    have h2 := hint (fun z => fderiv ℝ ζ z v)
+      ((hζ.continuous_fderiv one_ne_zero).clm_apply continuous_const) (hζc.fderiv_apply (𝕜 := ℝ) v)
+    refine le_of_forall_pos_le_add fun δ hδ => ?_
+    have h1 := Submission.codim1_rdo_dg_bh_normal_limsup m D F μ ν y v ρ₁ C₁ hF hν hν1 hGG hv hA
+      hρ₁ hC₁ hball hmass ζ hζ hζc hζ0 δ hδ
+    have h3 : ∀ᶠ j in atTop, ∫ z in Fs (ψ j), fderiv ℝ ζ z v ≤ δ := hrsψ.eventually h1
+    simpa using le_of_tendsto h2 h3
+  -- so `F₀` is a.e. `∅`, `ℝ^{m+1}` or `{⟨w, v⟩ > c}`
+  have htri := Submission.codim1_rdo_dg_halfspace_rigidity m F₀ v hv hF₀ htan hnor
+  -- step 6: the scale-invariant two-sided volume bounds pass to the limit, which forces `c = 0`
+  have hpos : ∀ s : ℝ, 0 < s → 0 < volume (F₀ ∩ ball (0 : Euclid (m + 1)) s) ∧
+      0 < volume (ball (0 : Euclid (m + 1)) s \ F₀) := by
+    intro s hs
+    have hpos' : ∀ᶠ j in atTop, 0 < rs (ψ j) := hrsψ.eventually self_mem_nhdsWithin
+    have hsmall : ∀ᶠ j in atTop, rs (ψ j) * s < ρ₂ := by
+      have : Tendsto (fun j => rs (ψ j) * s) atTop (𝓝 0) := by
+        simpa using (hrsψ.mono_right nhdsWithin_le_nhds).mul_const s
+      exact this.eventually (gt_mem_nhds hρ₂)
+    have hlow : ∀ᶠ j in atTop,
+        ENNReal.ofReal (c₂ * s ^ (m + 1)) ≤ volume (Fs (ψ j) ∩ ball (0 : Euclid (m + 1)) s) ∧
+          ENNReal.ofReal (c₂ * s ^ (m + 1)) ≤ volume (ball (0 : Euclid (m + 1)) s \ Fs (ψ j)) := by
+      filter_upwards [hpos', hsmall] with j h1 h2
+      exact Submission.codim1_rdo_dg_bh_rescaled_volume_lower m F y c₂ ρ₂ hF hvol s (rs (ψ j)) hs
+        h1 h2
+    have hc : 0 < ENNReal.ofReal (c₂ * s ^ (m + 1)) :=
+      ENNReal.ofReal_pos.mpr (mul_pos hc₂ (pow_pos hs _))
+    exact ⟨lt_of_lt_of_le hc (ge_of_tendsto (hin s) (hlow.mono fun j h => h.1)),
+      lt_of_lt_of_le hc (ge_of_tendsto (hout s) (hlow.mono fun j h => h.2))⟩
+  have hH := Submission.codim1_rdo_dg_bh_offset_zero m F₀ v hv hpos htri
+  -- step 7: `L((F_{r_{ψ j}} Δ H) ∩ B_R) ≤ L((F_{r_{ψ j}} Δ F₀) ∩ B_R) + L(F₀ Δ H) → 0`
+  have hle : ∀ j, volume (symmDiff (Fs (ψ j)) {w | 0 < inner ℝ w v} ∩ ball (0 : Euclid (m + 1)) R) ≤
+      volume (symmDiff (Fs (ψ j)) F₀ ∩ ball (0 : Euclid (m + 1)) R) := by
+    intro j
+    calc volume (symmDiff (Fs (ψ j)) {w | 0 < inner ℝ w v} ∩ ball (0 : Euclid (m + 1)) R)
+        ≤ volume (symmDiff (Fs (ψ j)) F₀ ∩ ball (0 : Euclid (m + 1)) R ∪
+            symmDiff F₀ {w | 0 < inner ℝ w v}) := by
+          apply measure_mono
+          intro x hx
+          rcases symmDiff_triangle (Fs (ψ j)) F₀ {w | 0 < inner ℝ w v} hx.1 with h | h
+          · exact Or.inl ⟨h, hx.2⟩
+          · exact Or.inr h
+      _ ≤ volume (symmDiff (Fs (ψ j)) F₀ ∩ ball (0 : Euclid (m + 1)) R) +
+            volume (symmDiff F₀ {w | 0 < inner ℝ w v}) :=
+          measure_union_le _ _
+      _ = volume (symmDiff (Fs (ψ j)) F₀ ∩ ball (0 : Euclid (m + 1)) R) := by rw [hH, add_zero]
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds (hconv R) (fun j => by simp) hle
 
 end GMT.Ch07

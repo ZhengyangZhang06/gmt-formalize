@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1.directional_gauss_green-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1",
+  "depth": 6,
+  "title": "Directional form of the rescaled Gauss–Green identity (fields ζ·w)",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, D ⊆ E, F ⊆ E Borel, μ a measure on E and ν : E → E satisfying the Gauss–Green identity (GG) ∫_F div φ dL^{m+1} = −∫⟨φ, ν⟩ dμ for every C¹ compactly supported φ : E → E with tsupport φ ⊆ D (div φ = trace Dφ). Let y ∈ E, r > 0 and R ∈ ℝ with B̄_{rR}(y) ⊆ D. Then for every C¹ compactly supported ζ : E → ℝ with tsupport ζ ⊆ B_R(0) and every w ∈ E, ∫_{F_{y,r}} Dζ(z)(w) dL^{m+1}(z) = −(r^m)^{-1} ∫ ζ(r^{-1}(z − y))·⟨w, ν(z)⟩ dμ(z), where F_{y,r} := {x : y + r x ∈ F}.",
+  "lean_statement": "∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y : Euclid (m + 1)) (r R : ℝ), MeasurableSet F → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → 0 < r → closedBall y (r * R) ⊆ D → ∀ ζ : Euclid (m + 1) → ℝ, ContDiff ℝ 1 ζ → HasCompactSupport ζ → tsupport ζ ⊆ ball (0 : Euclid (m + 1)) R → ∀ w : Euclid (m + 1), ∫ z in (fun z => y + r • z) ⁻¹' F, fderiv ℝ ζ z w = -(r ^ m)⁻¹ * ∫ z, ζ (r⁻¹ • (z - y)) * inner ℝ w (ν z) ∂μ",
+  "lean_name": "codim1_rdo_dg_bh_directional_gauss_green",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1.rescaled_gauss_green-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.blowup_halfspace-a1.rescaled_gauss_green-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-91ffc5f547-a1"
+}
