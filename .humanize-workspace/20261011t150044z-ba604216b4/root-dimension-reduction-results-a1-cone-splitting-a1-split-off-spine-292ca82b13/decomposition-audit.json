@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "dimred_cs_sos_cfs_cp_|cmcdt_lpi_cyl_fubini|cmcdt_lpi_cyl_pullback_integrable|cmcdt_lp_covector_curryLeft_norm_le",
+        "lipschitzWith_of_hasCompactSupport|one_of_mem_closedBall|zero_of_le_dist|curryLeft_apply_apply|curryLeftLI|intervalIntegral_comp_comm|measurable_fderiv_apply_const|norm_fderiv_le_of_lipschitz|volume_preserving_piFinSuccAbove|volume_preserving_symm_measurableEquiv_toLp",
+        "map_smul_univ|def apply|theorem apply_apply",
+        "git show 8597f3f04cb72a70e4b11d91699ec1f9f45dfc0f:GMT/Ch07/Submission.lean",
+        "git show ed778d442d1b72dff54c498f15fa5d5bac2d6f0f:GMT/Ch07/Submission.lean",
+        "git show 0ea228e4341594546bf57438f6b9c6dbb180422d:GMT/Ch07/Submission.lean",
+        "python3 /tmp/cone-param-audit/check.py /tmp/cone-param-audit/Types.lean",
+        "python3 /tmp/cone-param-audit/check.py /tmp/cone-param-audit/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-292ca82b13/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-292ca82b13/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/tmp/cone-param-audit/Types.lean",
+        "/tmp/cone-param-audit/Full.lean",
+        "/tmp/cone-param-audit/Full.log"
+      ],
+      "conclusion": "The split is appropriate: three genuine one-piece obligations and three exact accepted reuses establish the selected cone-parametrization theorem. Project, Mathlib and SimonGMT revisions match the pins; the snapshot contract equals the workspace contract. The declaration-name search found no matches in the pinned project; DAG inspection confirms the three new names are unreserved and the three reused declarations are accepted with byte-identical frozen types. Dependencies, including the reused curry lemma's existing square-sum dependencies, are acyclic and do not return to the selected parent. All six names are bare identifiers. All frozen types elaborate independently before any child implementation. The unchanged supplied proof bodies, accepted reuse proofs and unchanged parent assembly compile together against the exact frozen types. All six children and the selected parent depend only on propext, Classical.choice and Quot.sound. Euclidean norms, volume measures and covector constructions have the intended instances; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cone_map",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including arbitrary radius and conditional differentiability. The bounded smooth cutoff and clamp give global Lipschitz continuity; equality on an open neighborhood justifies the derivative and its exact basis tuple. The proof is complete and independent."
+    },
+    {
+      "key": "piece_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and all three conclusions match. Tonelli proves weight integrability; multilinearity and curry_le prove the coefficient bound; the radius bound and t^n ≤ 1 prove the ENNReal mass estimate. Positivity is justified locally, including the empty-set case. Both declared dependencies are used correctly."
+    },
+    {
+      "key": "piece_action",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement permits arbitrary G and η, and the proof needs no additional regularity. The Lipschitz pullback lemma supplies integrability before Fubini. The assumed value and derivative identities, continuous covector evaluation through the interval integral, and null endpoints establish the claimed equality. Dependencies are correctly directed."
+    },
+    {
+      "key": "cyl_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is an exact accepted reuse. The explicit measurable equivalence preserves the specified volume measures and has the asserted cylinder preimage. Change of variables, integrability transfer, Tonelli and Fubini prove every conclusion, including dimension zero."
+    },
+    {
+      "key": "curry_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is an exact accepted reuse for the Euclidean coefficient norm. Homogeneity, orthonormal-basis extension, permutation invariance and the position-counting inequality prove the sharp bound. The accepted square-sum dependencies remain available and introduce no circularity."
+    },
+    {
+      "key": "pullback_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is an exact accepted reuse. Compact support bounds the form, Lipschitz continuity bounds fderiv everywhere, and measurable derivative evaluation makes the pullback Borel. Multiplication by this bounded function preserves integrability for the restricted measure on arbitrary S. The proof also covers degree zero."
+    }
+  ],
+  "required_changes": []
+}

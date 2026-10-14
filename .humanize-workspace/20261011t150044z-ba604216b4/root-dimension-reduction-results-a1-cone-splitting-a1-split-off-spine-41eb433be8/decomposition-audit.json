@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "git -C . rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "euclideanHausdorffMeasure_eq_volume|map_euclideanHausdorffMeasure",
+        "volume_preserving_toLp",
+        "volume_pi_closedBall|volume_pi_ball",
+        "pi_norm_le_iff_of_nonneg|pi_norm_lt_iff",
+        "theorem.*inner_right_fintype|theorem.*inner_sum|lemma.*inner_right_fintype|lemma.*inner_sum",
+        "euclideanHausdorffMeasure.*(Orthonormal|pi_closedBall|box)|Orthonormal.*euclideanHausdorffMeasure|euclideanHausdorffMeasure.*span",
+        "cbr_cipi_affine_plane_measure",
+        "dimred_cs_sos_mt_fm_box_measure",
+        "git show 21dd628cfe1c8277775119a1cc5660485ede7dfc:GMT/Ch07/Submission.lean",
+        "python3 /tmp/frame-measure-independent-audit-a45ed17a/run_check.py"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Constructions.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-41eb433be8/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6a8bb251d9/lean-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa65/20261013T193324Z-ch07-root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a-j8tpmtf9/comparator.log",
+        "/tmp/frame-measure-independent-audit-a45ed17a/Focused.lean",
+        "/tmp/frame-measure-independent-audit-a45ed17a/Focused.log",
+        "/tmp/frame-measure-independent-audit-a45ed17a/run_check.py"
+      ],
+      "conclusion": "Project and mathlib revisions match the manifest; inspected compiler sources match the snapshot. The cited isometry, measure-preserving toLp, coordinate, restriction and ball-volume lemmas have the required hypotheses, including the empty-coordinate case. No direct frame-box theorem matched the recorded search. The reused declaration has one accepted DAG owner; its proposed, DAG, candidate-source and comparator types are byte-identical. The new name is unreserved. The supplied parent digest was independently recomputed and matches. A focused Lean check using the unchanged Euclid abbreviation and pinned Mathlib successfully elaborated both frozen propositions before either implementation, proved both children along their supplied arguments, and assembled the exact frozen parent. All three proofs depend only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "affine_plane_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line proposition match all hypotheses and four conclusions. The bare name validly reuses the comparator-accepted declaration with an identical frozen type. Independently checked steps establish the frame norm identity, translated isometry, exact range, Hausdorff push-forward and measure-preserving coordinate conversion. Closedness, compact-set finiteness and positive ball measure are also fully proved, including m = 0. There is no reliance on the selected parent or an undeclared obligation."
+    },
+    {
+      "key": "box_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type exactly matches the parent's second conjunct, and its bare name is unreserved. The proof correctly uses only the declared sibling at a = 0, establishes measurable boxes contained in the span, computes their preimages using orthonormality, and applies the product-space sup-norm ball volumes. The distinct Euclidean and product-space instances are handled correctly; r > 0 covers k = 0. The sole dependency is correctly directed and acyclic. The split is appropriate: this conclusion and the sibling's first conjunct at a = 0 prove precisely the selected parent."
+    }
+  ],
+  "required_changes": []
+}
