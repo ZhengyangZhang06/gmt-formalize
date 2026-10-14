@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a248d6bc3a041431960300adf6ce4cf4185e9e2c774df29e7fbf23465bbe0823",
+  "git_delta": {
+    "base_commit": "8a78f28f7d7bb83da4e6671612c0388354193948",
+    "candidate_commit": "4dda8a1f3606cfad99ff67452fd109583123425c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_pf_oc_multilinear_hs_comp_le",
+    "diff_sha256": "c64d3abed7c37b01f1a5bbc9113b4fa903683f63daf0c62474c0009a3ee209b8",
+    "source_sha256": "e653193285da0b8a56e084e5ecf309c96998777f5b5be5f174188b606a590d7f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_pf_oc_multilinear_hs_comp_le",
+      "statement": "∀ (N N' n : ℕ) (A : Euclid N →L[ℝ] Euclid N') (γ : MultilinearMap ℝ (fun _ : Fin n => Euclid N') ℝ), ∑ j : Fin n → Fin N, (γ (fun k => A (EuclideanSpace.basisFun (Fin N) ℝ (j k)))) ^ 2 ≤ (‖A‖ ^ 2) ^ n * ∑ j : Fin n → Fin N', (γ (fun k => EuclideanSpace.basisFun (Fin N') ℝ (j k))) ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
