@@ -1,0 +1,110 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'dtc_hausdorff_dilation|dtc_blowUp_testForm_corr|cbr_cidc_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|MeasurableEmbedding.integral_map|theorem integral_smul_measure|Homeomorph.measurableEmbedding",
+        "CountablyRectifiable|def HasApproximateTangentSpaceAt|def blowUpMap",
+        "massOn|massAdmissibleOn|def support|def zeroRegion|def VanishesOn",
+        "python3 -I /tmp/dilcalc-independent-audit/prepare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dilcalc-independent-audit/TypesAndAssemblyChecked.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dilcalc-independent-audit/LeafChecksChecked.lean > /tmp/dilcalc-independent-audit/LeafChecksChecked.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/dilcalc-independent-audit/CompleteChecked.lean > /tmp/dilcalc-independent-audit/CompleteChecked.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3e82e4b03e/parent-child-handoff.json",
+        "/tmp/dilcalc-decomp/decomp.json",
+        "/tmp/dilcalc-decomp/Full.lean",
+        "/tmp/dilcalc-independent-audit/prepare.py",
+        "/tmp/dilcalc-independent-audit/TypesAndAssemblyChecked.lean",
+        "/tmp/dilcalc-independent-audit/LeafChecksChecked.log",
+        "/tmp/dilcalc-independent-audit/CompleteChecked.log"
+      ],
+      "conclusion": "The split is appropriate for the selected cbr_ci_dilation_calculus contract. Its children establish all six frozen conjuncts through correctly directed, acyclic dependencies. The snapshot contract matches the workspace contract and Submission; compiler dependencies match the pinned revisions. The project search found no matching helper declarations. Independently checked DAG reservations and comparator records confirm six accepted reuses with byte-identical types and five fresh names; all names are bare identifiers. Each supplied natural proof was checked against its exact statement and local definitions. All 11 types elaborate independently as propositions without child implementations. Dependency-isolated proof checks and the complete parent assembly compile successfully, with only propext, Classical.choice and Quot.sound. No circular reliance, missing hypothesis, placeholder type, or incorrect inline typeclass construction was found."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hausdorff_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Translation invariance and positive homothety prove image scaling for arbitrary sets; applying this established identity to the inverse dilation proves the push-forward identity without circularity."
+    },
+    {
+      "key": "testform_correspondence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both composition constructions preserve smoothness, compact support and the specified arbitrary domains. Multilinearity gives exactly the degree-n evaluation factor, including n = 0. All three typed clauses are proved."
+    },
+    {
+      "key": "tangent_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact blow-up image identity transfers the defining integrals by the positive rescaling r ↦ λr; the dimension condition is unchanged. No additional measurability or regularity hypothesis on M is needed."
+    },
+    {
+      "key": "rep_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies every IMRep field, including local integrability on compact subsets of the target domain and a.e. orientation. Restricted-measure transport proves both representation and the stated Borel weight identity using precisely the three declared dependencies."
+    },
+    {
+      "key": "mass_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two admissible-form constructions preserve support and coefficient-norm bounds. Their evaluation identities and ENNReal supremum scaling prove the exact equality for arbitrary U and W, without finiteness assumptions."
+    },
+    {
+      "key": "blowup_structure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four clauses are proved: linearity, injectivity, transport of zero regions and supports, and boundary commutation. Clause (iv) serves the selected parent; retaining the other clauses preserves the identical comparator-accepted type."
+    },
+    {
+      "key": "dilation_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Surjectivity justifies restricting the blow-up to univ. Test-form correspondence proves both existence and equality of evaluations for every pair with equal underlying forms, exactly matching the two conclusions."
+    },
+    {
+      "key": "dilation_boundary",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof applies dilation_blowup in degree m + 1 to exterior derivatives, then boundary commutation and degree-m evaluation. Domain identifications and the λ⁻ᵐ factor are correct."
+    },
+    {
+      "key": "dilation_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The transported representation becomes an IMRep on univ because the dilation is surjective, including the compact-set integrability condition. Evaluation comparison then proves that it represents X'."
+    },
+    {
+      "key": "dilation_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The composed test form gives the initial integral identity. The pinned measurable-embedding integral_map theorem applies to arbitrary integrands, and integral_smul_measure supplies the exact measure factor. No hypothesis on measurability or integrability of ξ is missing."
+    },
+    {
+      "key": "dilation_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Copies of the same underlying form across the equal domains preserve admissibility and evaluations in both directions. Equality of the supremum sets followed by mass_scaling proves the exact conclusion for every W."
+    }
+  ],
+  "required_changes": []
+}
