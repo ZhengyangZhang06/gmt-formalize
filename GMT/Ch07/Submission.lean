@@ -1856,6 +1856,75 @@ theorem Submission.imrep_represents_massOn_eq_measure : ∀ (P n : ℕ) (U W : S
       _ ≤ T.massOn W := iSup_le fun k => hKbound _ (hKkc k) (hKkW k)
   exact le_antisymm hupper (hlowerGen R.measure R.orient hrep hfin hmeas hH1 hH2)
 
+/-- **Simon 7.3.5, proof (masses in a projection box)**: let `g` be orthonormal with span `G`,
+`p = p_G`, `q = p_{G^⊥}`, `0 < r < s`, `Q_r = {t ∈ G : |⟨gᵢ, t⟩| ≤ r ∀ i}`,
+`C_s = {x : |⟨gᵢ, x⟩| < s ∀ i}`, `B` open and `W = p⁻¹(C_s) ∩ q⁻¹(B)`.  Let `S`, `A₁`, `A₂` be
+represented by `R`, `R_{A₁}`, `R_{A₂}`, whose measures are `A ↦ ∫_E μ(A − t) dHᵏ(t)` for
+`(E, μ) = (G, μ₀)`, `(G ∖ Q_r, μ₀)`, `(Q_r, μ₀′)` with `μ₀`, `μ₀′` carried by `G^⊥`.  Then
+`M_W(S) = (2s)ᵏ μ₀(B)`, `M_W(A₁) = ((2s)ᵏ − (2r)ᵏ) μ₀(B)` and `M_W(A₂) = (2r)ᵏ μ₀′(B)`.  `W` is
+open, so each mass is the measure of `W` (`Submission.imrep_represents_massOn_eq_measure`), and
+`Submission.dimred_cs_sos_mt_product_box_measure` turns it into `Hᵏ(E ∩ C_s) μ(B)`.  Here
+`G ∩ C_s` is the open box of half-width `s`, while `r < s` gives `Q_r ∩ C_s = Q_r` and
+`(G ∖ Q_r) ∩ C_s = (G ∩ C_s) ∖ Q_r`; the box volumes `(2s)ᵏ`, `(2r)ᵏ`
+(`Submission.dimred_cs_sos_mt_frame_measure`) and `measure_sdiff` finish. -/
+theorem Submission.dimred_cs_sos_mt_cm_box_masses : ∀ (P k m n : ℕ) (g : Fin k → Euclid P) (S A₁ A₂ : GeometricCurrentOn (univ : Set (Euclid P)) n) (R RA₁ RA₂ : IMRep (univ : Set (Euclid P)) n) (R₀ R₀' : IMRep (univ : Set (Euclid P)) m) (r s : ℝ) (B : Set (Euclid P)), Orthonormal ℝ g → 0 < r → r < s → IsOpen B → R.Represents S → RA₁.Represents A₁ → RA₂.Represents A₂ → R₀.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → R₀'.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (Submodule.span ℝ (Set.range g) : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[k]) → (∀ A : Set (Euclid P), MeasurableSet A → RA₁.measure A = ∫⁻ t in (Submodule.span ℝ (Set.range g) : Set (Euclid P)) \ {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[k]) → (∀ A : Set (Euclid P), MeasurableSet A → RA₂.measure A = ∫⁻ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, R₀'.measure ((fun y => t + y) ⁻¹' A) ∂μHE[k]) → S.massOn ((Submodule.span ℝ (Set.range g)).starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' B) = ENNReal.ofReal ((2 * s) ^ k) * R₀.measure B ∧ A₁.massOn ((Submodule.span ℝ (Set.range g)).starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' B) = (ENNReal.ofReal ((2 * s) ^ k) - ENNReal.ofReal ((2 * r) ^ k)) * R₀.measure B ∧ A₂.massOn ((Submodule.span ℝ (Set.range g)).starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' B) = ENNReal.ofReal ((2 * r) ^ k) * R₀'.measure B := by
+  intro P k m n g S A₁ A₂ R RA₁ RA₂ R₀ R₀' r s B hg hr hrs hB hR hRA₁ hRA₂ hR₀c hR₀'c hRμ hμA₁ hμA₂
+  -- Step 1: `G` and `Q_r` are closed, `C_s` is open, hence `W = p⁻¹(C_s) ∩ q⁻¹(B)` is open
+  have hGc : IsClosed (Submodule.span ℝ (Set.range g) : Set (Euclid P)) :=
+    (Submodule.span ℝ (Set.range g)).closed_of_finiteDimensional
+  have hcont : ∀ i, Continuous fun t : Euclid P => |inner ℝ (g i) t| := fun i =>
+    (continuous_const.inner continuous_id).abs
+  have hQc : IsClosed
+      {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} := by
+    rw [ofPred_and, ofPred_forall]
+    exact hGc.inter (isClosed_iInter fun i => isClosed_le (hcont i) continuous_const)
+  have hCo : IsOpen {x : Euclid P | ∀ i, |inner ℝ (g i) x| < s} := by
+    rw [ofPred_forall]
+    exact isOpen_iInter_of_finite fun i => isOpen_lt (hcont i) continuous_const
+  have hWo : IsOpen ((Submodule.span ℝ (Set.range g)).starProjection ⁻¹'
+      {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' B) :=
+    (hCo.preimage (Submodule.span ℝ (Set.range g)).starProjection.continuous).inter
+      (hB.preimage (Submodule.span ℝ (Set.range g))ᗮ.starProjection.continuous)
+  -- Step 2: the box volumes `Hᵏ(Q_r) = (2r)ᵏ` and `Hᵏ(G ∩ C_s) = (2s)ᵏ`
+  obtain ⟨-, hfm⟩ := Submission.dimred_cs_sos_mt_frame_measure P k g hg
+  have hQμ := (hfm r hr).1
+  have hOμ := (hfm s (hr.trans hrs)).2
+  have hGC : (Submodule.span ℝ (Set.range g) : Set (Euclid P)) ∩
+      {x : Euclid P | ∀ i, |inner ℝ (g i) x| < s} =
+      {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| < s} := rfl
+  -- Step 3: `Q_r ⊆ C_s`, hence `Q_r ⊆ G ∩ C_s`, because `r < s`
+  have hQC : {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} ⊆
+      {x : Euclid P | ∀ i, |inner ℝ (g i) x| < s} := fun t ht i => (ht.2 i).trans_lt hrs
+  have hQO : {t : Euclid P | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} ⊆
+      {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| < s} :=
+    fun t ht => ⟨ht.1, hQC ht⟩
+  -- Step 4: each mass is the measure of the open `W`, which is `Hᵏ(E ∩ C_s) μ(B)`; here
+  -- `G ∩ C_s` is the open box of half-width `s` and `Q_r ∩ C_s = Q_r`
+  have mS := Submission.imrep_represents_massOn_eq_measure P n univ _ S R isOpen_univ hR hWo
+    (subset_univ _)
+  have mA₁ := Submission.imrep_represents_massOn_eq_measure P n univ _ A₁ RA₁ isOpen_univ hRA₁ hWo
+    (subset_univ _)
+  have mA₂ := Submission.imrep_represents_massOn_eq_measure P n univ _ A₂ RA₂ isOpen_univ hRA₂ hWo
+    (subset_univ _)
+  rw [Submission.dimred_cs_sos_mt_product_box_measure P k _ R.measure R₀.measure _ hR₀c
+    hGc.measurableSet subset_rfl hRμ _ B hCo.measurableSet hB.measurableSet, hGC, hOμ] at mS
+  rw [Submission.dimred_cs_sos_mt_product_box_measure P k _ RA₂.measure R₀'.measure _ hR₀'c
+    hQc.measurableSet (fun t ht => ht.1) hμA₂ _ B hCo.measurableSet hB.measurableSet,
+    inter_eq_left.mpr hQC, hQμ] at mA₂
+  -- Step 5: `(G ∖ Q_r) ∩ C_s = (G ∩ C_s) ∖ Q_r` has measure `(2s)ᵏ − (2r)ᵏ`
+  have hdiff : ((Submodule.span ℝ (Set.range g) : Set (Euclid P)) \
+      {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}) ∩
+      {x | ∀ i, |inner ℝ (g i) x| < s} =
+      {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| < s} \
+      {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} := by
+    rw [← hGC]
+    exact sdiff_inter_right_comm _ _ _
+  rw [Submission.dimred_cs_sos_mt_product_box_measure P k _ RA₁.measure R₀.measure _ hR₀c
+    (hGc.measurableSet.diff hQc.measurableSet) sdiff_subset hμA₁ _ B hCo.measurableSet
+    hB.measurableSet, hdiff, measure_sdiff hQO hQc.measurableSet.nullMeasurableSet
+    (by rw [hQμ]; exact ENNReal.ofReal_ne_top), hOμ, hQμ] at mA₁
+  exact ⟨mS, mA₁, mA₂⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
