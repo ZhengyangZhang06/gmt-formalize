@@ -3010,6 +3010,21 @@ theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set
   rw [heq]
   exact hK.diff F.isOpen_zeroRegion
 
+/-- **Simon 6.2.5 and 6.2.11** (local mass vanishes off the support).  If `V ∩ spt T = ∅`, then
+`M_V(T) = 0`.  Every `ω` admissible for `M_V(T)` has `spt ω ⊆ V`, which misses `spt T`, so
+`T(ω) = 0` by `dtc_vanish_off_support`.  Every term `ofReal(T(ω))` of the supremum defining
+`M_V(T)` is therefore `0`, and `M_V(T) ≤ 0` means `M_V(T) = 0` in `[0, ∞]`.  `U` and `V` are
+arbitrary sets. -/
+theorem Submission.dimred_mbl_lc_ic_massOn_eq_zero_of_disjoint : ∀ (P n : ℕ) (U V : Set (Euclid P)) (T : GeometricCurrentOn U n), Disjoint V T.support → T.massOn V = 0 := by
+  intro P n U V T hV
+  -- Step 3: `M_V(T) = 0` once every term `ofReal(T(ω))` of the supremum is `≤ 0`
+  refine nonpos_iff_eq_zero.mp (sSup_le ?_)
+  -- Step 1: an admissible `ω` has `spt ω ⊆ V`, so `spt ω` misses `spt T`
+  rintro r ⟨ω, hω, rfl⟩
+  -- Step 2: `T(ω) = 0` by `dtc_vanish_off_support`, so `ofReal(T(ω)) = 0`
+  change ENNReal.ofReal (T ω) ≤ 0
+  rw [Submission.dtc_vanish_off_support P n U T ω (hV.mono_left hω.1), ENNReal.ofReal_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

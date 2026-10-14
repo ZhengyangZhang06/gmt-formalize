@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1.add_restrict-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1",
+  "depth": 5,
+  "title": "An integer multiplicity current in U plus the restriction of one in ℝ^P (parent step 3, construction of Z)",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, let T ∈ 𝒟_n(U) be integer multiplicity and let Y ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) be integer multiplicity. Then there is an integer multiplicity Z ∈ 𝒟_n(U) with Z(ω) = T(ω) + Y(ιω) for every ω ∈ 𝒟ⁿ(U). Here ιω = testFormOnInclusion (subset_univ U) n ω is ω regarded as a test form in ℝ^P (same underlying form).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (Y : GeometricCurrentOn (univ : Set (Euclid P)) n), IsOpen U → IsIntegerMultiplicity T → IsIntegerMultiplicity Y → ∃ Z : GeometricCurrentOn U n, IsIntegerMultiplicity Z ∧ ∀ ω : TestFormOn U n, Z ω = T ω + Y (testFormOnInclusion (subset_univ U) n ω)",
+  "lean_name": "dimred_mbl_lc_ic_add_restrict",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-restrict-im-a1-a1",
+      "result_commit": "8f3bacb2e7f68423e88b488e5939a0d419c646fb",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-d9223591d6-a1"
+}

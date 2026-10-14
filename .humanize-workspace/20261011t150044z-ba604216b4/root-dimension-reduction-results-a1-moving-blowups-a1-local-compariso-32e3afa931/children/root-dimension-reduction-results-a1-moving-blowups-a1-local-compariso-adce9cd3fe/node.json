@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1.cycle-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1",
+  "depth": 5,
+  "title": "The comparison cycle Y = (S − C) + Ŷ (parent step 2; Simon 7.2.4 with Remark 7.2.5(2))",
+  "statement": "Let P, m ∈ ℕ, let F ⊆ ℝ^P be compact and let C, S, Ŷ ∈ 𝒟_{m+1}(ℝ^P) (GeometricCurrentOn univ (m + 1)). Assume that C and S are integer multiplicity (contract IsIntegerMultiplicity), ∂S = ∂C (S.boundary = C.boundary), spt(S − C) ⊆ F, Ŷ is integer multiplicity, ∂Ŷ = 0 and spt Ŷ ⊆ F. Then some Y ∈ 𝒟_{m+1}(ℝ^P) is integer multiplicity, has ∂Y = 0, has compact support spt Y ⊆ F, and satisfies Y(ω) = (S − C)(ω) + Ŷ(ω) for every ω ∈ 𝒟^{m+1}(ℝ^P). Here S − C is the contract's difference of currents, (S − C)(ω) = S(ω) − C(ω), and spt is GeometricCurrentOn.support.",
+  "lean_statement": "∀ (P m : ℕ) (F : Set (Euclid P)) (C S Ŷ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact F → IsIntegerMultiplicity C → IsIntegerMultiplicity S → S.boundary = C.boundary → (S - C).support ⊆ F → IsIntegerMultiplicity Ŷ → Ŷ.boundary = 0 → Ŷ.support ⊆ F → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ Y.boundary = 0 ∧ IsCompact Y.support ∧ Y.support ⊆ F ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Y ω = (S - C) ω + Ŷ ω",
+  "lean_name": "dimred_mbl_lc_ic_cycle",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81-a1",
+      "result_commit": "02c6122c94d0280a6288d299659b2dab7b59e109",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-adce9cd3fe-a1"
+}
