@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.homotopy-a1.interp_calculus-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.homotopy-a1",
+  "depth": 6,
+  "title": "Calculus of the straight-line interpolation map y ↦ f(tail y) + y_0 (g(tail y) − f(tail y))",
+  "statement": "For all N, N' ∈ ℕ and C^∞ maps f, g : ℝ^N → ℝ^{N'} (ContDiff ℝ (⊤ : ℕ∞)) there is a C^∞ map h : ℝ^{N+1} → ℝ^{N'} such that, with ι(t, x) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)), Jv := ι(0, v), e₀ := EuclideanSpace.single 0 1 and D = fderiv ℝ, for all t ∈ ℝ and x, v ∈ ℝ^N: (a) h(ι(t, x)) = f(x) + t(g(x) − f(x)); (b) Dh(ι(t, x))e₀ = g(x) − f(x); (c) Dh(ι(t, x))(Jv) = Df(x)v + t(Dg(x)v − Df(x)v); (d) ‖Dh(ι(t, x))‖ ≤ ‖g(x) − f(x)‖ + ‖Df(x)‖ + |t|(‖Dg(x)‖ + ‖Df(x)‖) (operator norms).",
+  "lean_statement": "∀ (N N' : ℕ) (f g : Euclid N → Euclid N'), ContDiff ℝ (⊤ : ℕ∞) f → ContDiff ℝ (⊤ : ℕ∞) g → ∃ h : Euclid (N + 1) → Euclid N', ContDiff ℝ (⊤ : ℕ∞) h ∧ (∀ (t : ℝ) (x : Euclid N), h (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = f x + t • (g x - f x)) ∧ (∀ (t : ℝ) (x : Euclid N), fderiv ℝ h (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (EuclideanSpace.single 0 1) = g x - f x) ∧ (∀ (t : ℝ) (x v : Euclid N), fderiv ℝ h (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = fderiv ℝ f x v + t • (fderiv ℝ g x v - fderiv ℝ f x v)) ∧ ∀ (t : ℝ) (x : Euclid N), ‖fderiv ℝ h (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))‖ ≤ ‖g x - f x‖ + ‖fderiv ℝ f x‖ + |t| * (‖fderiv ℝ g x‖ + ‖fderiv ℝ f x‖)",
+  "lean_name": "cmcdt_lpoh_interp_calculus",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-4205e839c5-a1"
+}
