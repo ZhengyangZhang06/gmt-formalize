@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "b74d365a6d664afc54236ed5d7eec0ead2ea551f9e8a658216e3476823be320f",
+  "git_delta": {
+    "base_commit": "eee79180662a91f6a4463c8ceedd23e83924c83f",
+    "candidate_commit": "61ae59339db4719dcd42a4071334c22364d6c418",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "0f656500035c4c99259c50bd74cfa5a4b17b324ef24065ab2b8df9084052d1c9",
+    "source_sha256": "69729b34a54a74bbcbae805a391d09129ac42fbd39fb387bd268bd292a482592",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_dtop_cutoff_pullback",
+      "statement": "∀ (P d : ℕ) (p : Euclid (P + 1) →L[ℝ] Euclid P), (∀ (y : Euclid (P + 1)) (i : Fin P), p y i = y (Fin.castSucc i)) → ∀ K : Set (Euclid (P + 1)), IsCompact K → ∃ (V : Set (Euclid (P + 1))) (E : TestFormOn (univ : Set (Euclid P)) d →ₗ[ℝ] TestFormOn (univ : Set (Euclid (P + 1))) d), IsOpen V ∧ K ⊆ V ∧ (∀ (ω : TestFormOn (univ : Set (Euclid P)) d) (y : Euclid (P + 1)), y ∈ V → (E ω : DifferentialForm (Euclid (P + 1)) d) y = ((ω : DifferentialForm (Euclid P) d) (p y)).compContinuousLinearMap p) ∧ (∀ (ω : TestFormOn (univ : Set (Euclid P)) d) (y : Euclid (P + 1)), y ∈ V → exteriorDerivative (E ω : DifferentialForm (Euclid (P + 1)) d) y = (exteriorDerivative (ω : DifferentialForm (Euclid P) d) (p y)).compContinuousLinearMap p) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) d, tsupport (E ω : DifferentialForm (Euclid (P + 1)) d) ⊆ p ⁻¹' tsupport (ω : DifferentialForm (Euclid P) d)) ∧ (∀ (ω : TestFormOn (univ : Set (Euclid P)) d) (y : Euclid (P + 1)), covectorEuclideanNorm ((E ω : DifferentialForm (Euclid (P + 1)) d) y) ≤ covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) d) (p y))) ∧ ∀ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) d, TestFormOnConverges ωs 0 → TestFormOnConverges (fun j => E (ωs j)) 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
