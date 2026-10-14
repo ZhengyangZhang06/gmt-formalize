@@ -451,6 +451,121 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Splitting the contracted exterior derivative** (Step 1 of the cube Stokes formula in the proof
+of Simon 7.3.5, where minimality passes from `[[L]] × S₀` to `S₀`).  Let `g = (g₀, …, g_j)` be
+vectors in `ℝᴾ` and let `flatD`, `flat`, `flatF a` contract covectors with `g`, resp. with `g`
+without `g_a`: `flatD α v = α(g, v)`, `flat α v = α(g, v)`, `flatF a α v = α(g ∘ a.succAbove, v)`.
+If the `n'`-form `ω` is differentiable at `x`, then
+`flatD(dω(x)) = Σₐ (−1)ᵃ D[flatF a ∘ ω](x)[g_a] + (−1)^{j+1} d[flat ∘ ω](x)`.
+Evaluate at a tuple `w` and put `V = (g, w)`.  As `dω(x)(V) = Σᵢ (−1)ⁱ (Dω(x)[Vᵢ])(V without Vᵢ)`,
+`D[flatF a ∘ ω](x) = flatF a ∘ Dω(x)` and `D[flat ∘ ω](x) = flat ∘ Dω(x)`, both sides are
+alternating sums of values of `Dω(x)`.  Split the sum over `i < n' + 1` at `j + 1`: the index
+`a < j + 1` carries `g_a`, and omitting it leaves `(g ∘ a.succAbove, w)`; the index `j + 1 + l`
+carries `w_l`, and omitting it leaves `(g, w without w_l)`, with sign `(−1)^{j+1}(−1)ˡ`. -/
+theorem Submission.dimred_cs_sos_mt_cs_flat_extDeriv_split : ∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h : n' = (j + 1) + m) (h₁ : n' + 1 = (j + 1) + (m + 1)) (h₂ : n' = j + (m + 1)) (flatD : Covector (Euclid P) (n' + 1) →L[ℝ] Covector (Euclid P) (m + 1)) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m) (flatF : Fin (j + 1) → Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) (m + 1)) (ω : DifferentialForm (Euclid P) n') (x : Euclid P), DifferentiableAt ℝ ω x → (∀ (α : Covector (Euclid P) (n' + 1)) (v : Fin (m + 1) → Euclid P), flatD α v = α (Fin.append g v ∘ Fin.cast h₁)) → (∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → flatD (exteriorDerivative ω x) = ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) • fderiv ℝ (fun z => flatF a (ω z)) x (g a) + (-1 : ℝ) ^ (j + 1) • exteriorDerivative (fun z => flat (ω z)) x := by
+  intro P j m n' g h h₁ h₂ flatD flat flatF ω x hω hflatD hflat hflatF
+  -- Step 1: chain rule, `D[flatF a ∘ ω](x) = flatF a ∘ Dω(x)` and `D[flat ∘ ω](x) = flat ∘ Dω(x)`
+  have hβ : ∀ a, fderiv ℝ (fun z => flatF a (ω z)) x = (flatF a).comp (fderiv ℝ ω x) := fun a =>
+    ((flatF a).hasFDerivAt.comp x hω.hasFDerivAt).fderiv
+  have hγ : fderiv ℝ (fun z => flat (ω z)) x = flat.comp (fderiv ℝ ω x) :=
+    (flat.hasFDerivAt.comp x hω.hasFDerivAt).fderiv
+  -- Step 5: value formulas for `Fin.append` and `Fin.succAbove`
+  have happL : ∀ {p q : ℕ} (u : Fin p → Euclid P) (v : Fin q → Euclid P) (k : Fin (p + q))
+      (hk : (k : ℕ) < p), Fin.append u v k = u ⟨k, hk⟩ := fun u v k hk =>
+    Fin.append_left u v ⟨k, hk⟩
+  have happR : ∀ {p q : ℕ} (u : Fin p → Euclid P) (v : Fin q → Euclid P) (k : Fin (p + q))
+      (hk : p ≤ (k : ℕ)), Fin.append u v k = v ⟨k - p, by have := k.isLt; omega⟩ := by
+    intro p q u v k hk
+    rw [← Fin.append_right u v ⟨k - p, by have := k.isLt; omega⟩]
+    congr 1
+    ext
+    simp only [Fin.val_natAdd]
+    omega
+  have hsA : ∀ {N : ℕ} (p : Fin (N + 1)) (i : Fin N),
+      ((p.succAbove i : Fin (N + 1)) : ℕ) = if (i : ℕ) < p then (i : ℕ) else i + 1 := by
+    intro N p i
+    rcases Nat.lt_or_ge (i : ℕ) p with hip | hip
+    · rw [Fin.succAbove_of_castSucc_lt _ _ (Fin.lt_def.2 hip), ite_eq_left hip]
+      rfl
+    · rw [Fin.succAbove_of_le_castSucc _ _ (Fin.le_def.2 hip), ite_eq_right (by omega)]
+      rfl
+  -- Steps 2–4: evaluate at `w`; both sides become alternating sums of values of `Dω(x)`
+  ext w
+  rw [hflatD]
+  simp only [exteriorDerivative, extDeriv, ContinuousAlternatingMap.alternatizeUncurryFin_apply,
+    ContinuousAlternatingMap.add_apply, ContinuousAlternatingMap.sum_apply,
+    ContinuousAlternatingMap.smul_apply, hβ, hγ, ContinuousLinearMap.comp_apply, hflatF, hflat]
+  -- Step 7: omitting the index of value `a` from `V = (g, w)` leaves `(g ∘ a.succAbove, w)`
+  have e2 : ∀ (a : Fin (j + 1)) (i : Fin (n' + 1)), (i : ℕ) = a →
+      i.removeNth (Fin.append g w ∘ Fin.cast h₁) =
+        Fin.append (g ∘ a.succAbove) w ∘ Fin.cast h₂ := by
+    intro a i hi
+    funext l
+    have ha := a.isLt
+    have hs := hsA i l
+    rw [hi] at hs
+    simp only [Fin.removeNth, Function.comp_apply]
+    rcases Nat.lt_or_ge (l : ℕ) j with hlj | hlj
+    · have hk1 : (Fin.cast h₂ l : ℕ) < j := by simpa using hlj
+      have hk2 : (Fin.cast h₁ (i.succAbove l) : ℕ) < j + 1 := by
+        rw [Fin.val_cast, hs]; split_ifs <;> omega
+      rw [happL _ _ _ hk1, happL _ _ _ hk2, Function.comp_apply]
+      congr 1
+      ext
+      simp only [Fin.val_cast, hs, hsA]
+    · have hla : ¬ (l : ℕ) < a := by omega
+      rw [ite_eq_right hla] at hs
+      have hk1 : j ≤ (Fin.cast h₂ l : ℕ) := by simpa using hlj
+      have hk2 : j + 1 ≤ (Fin.cast h₁ (i.succAbove l) : ℕ) := by
+        rw [Fin.val_cast, hs]; omega
+      rw [happR _ _ _ hk1, happR _ _ _ hk2]
+      congr 1
+      ext
+      simp only [Fin.val_cast, hs]
+      omega
+  -- Step 8: omitting the index of value `j + 1 + l` from `V = (g, w)` leaves `(g, w without w_l)`
+  have e4 : ∀ (l : Fin (m + 1)) (i : Fin (n' + 1)), (i : ℕ) = j + 1 + l →
+      i.removeNth (Fin.append g w ∘ Fin.cast h₁) = Fin.append g (l.removeNth w) ∘ Fin.cast h := by
+    intro l i hi
+    funext k
+    have hs := hsA i k
+    rw [hi] at hs
+    simp only [Fin.removeNth, Function.comp_apply]
+    rcases Nat.lt_or_ge (k : ℕ) (j + 1) with hkj | hkj
+    · rw [ite_eq_left (by omega)] at hs
+      have hk1 : (Fin.cast h k : ℕ) < j + 1 := by simpa using hkj
+      have hk2 : (Fin.cast h₁ (i.succAbove k) : ℕ) < j + 1 := by
+        rw [Fin.val_cast, hs]; omega
+      rw [happL _ _ _ hk1, happL _ _ _ hk2]
+      congr 1
+      ext
+      simp only [Fin.val_cast, hs]
+    · have hk1 : j + 1 ≤ (Fin.cast h k : ℕ) := by simpa using hkj
+      have hk2 : j + 1 ≤ (Fin.cast h₁ (i.succAbove k) : ℕ) := by
+        rw [Fin.val_cast, hs]; split_ifs <;> omega
+      rw [happR _ _ _ hk1, happR _ _ _ hk2]
+      congr 1
+      ext
+      simp only [Fin.val_cast, hs, hsA]
+      split_ifs <;> omega
+  -- Step 6: reindex along `Fin.cast h₁` and split the sum at `j + 1`
+  rw [← Fin.sum_congr' _ h₁.symm, Fin.sum_univ_add (a := j + 1) (b := m + 1)]
+  congr 1
+  · refine Finset.sum_congr rfl fun a _ => ?_
+    have hi : (((Fin.castAdd (m + 1) a).cast h₁.symm : Fin (n' + 1)) : ℕ) = a := by simp
+    rw [e2 a _ hi]
+    simp only [Function.comp_apply, Fin.cast_cast, Fin.cast_eq_self, Fin.append_left, hi,
+      zsmul_eq_mul, smul_eq_mul, Int.cast_pow, Int.cast_neg, Int.cast_one]
+  · -- the sign `(−1)^{(j+1)+l} = (−1)^{j+1}(−1)^l`
+    rw [Finset.smul_sum]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    have hi : (((Fin.natAdd (j + 1) l).cast h₁.symm : Fin (n' + 1)) : ℕ) = j + 1 + l := by simp
+    rw [e4 l _ hi]
+    simp only [Function.comp_apply, Fin.cast_cast, Fin.cast_eq_self, Fin.append_right, hi,
+      zsmul_eq_mul, smul_eq_mul]
+    push_cast
+    ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
