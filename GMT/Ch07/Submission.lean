@@ -1673,6 +1673,46 @@ theorem Submission.dor_lmb_ic_measure_le_of_weighted_orient_eq : ∀ (P n : ℕ)
   rw [Set.indicator_of_mem hxM]
   exact_mod_cast hnat
 
+/-- **Representations of the partial sums** (Simon Ch. 6, Lemma 3.13, steps 3–4): for integer
+multiplicity triples `R r = (M_r, θ_r, ξ_r)` in an open `U` and every `q`, there is a triple
+`R' = (M', θ', ξ')` with `1_{M'} θ' ξ' = ∑_{r<q} 1_{M_r} θ_r ξ_r` `Hⁿ`-a.e. and
+`μ_{R'} ≤ ∑_{r<q} μ_{R r}`.  Induction on `q`: for `q = 0` take the empty triple `(∅, 0, 0)`; for
+`q → q + 1`, `rsdic_exists_imrep_int_combination` with `p₁ = p₂ = 1` combines `R'` and `R q`, and
+`dor_lmb_ic_measure_le_of_weighted_orient_eq` bounds the weight of the combination by
+`μ_{R'} + μ_{R q}`. -/
+theorem Submission.dor_lmb_fc_ims_partial_sum_reps : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n), IsOpen U → ∀ q : ℕ, ∃ R' : IMRep U n, (∀ᵐ x ∂μHE[n], R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x = ∑ r ∈ Finset.range q, (R r).carrier.indicator (fun y => ((R r).mult y : ℝ) • (R r).orient y) x) ∧ R'.measure ≤ ∑ r ∈ Finset.range q, (R r).measure := by
+  intro P n U R hU q
+  induction q with
+  | zero =>
+    -- the empty triple `(∅, 0, 0)` has density `0` and weight `0`
+    let R₀ : IMRep U n :=
+      { carrier := ∅
+        mult := fun _ => 0
+        orient := fun _ => 0
+        measurableSet_carrier := MeasurableSet.empty
+        carrier_subset := empty_subset U
+        rectifiable :=
+          Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+        measurable_mult := measurable_const
+        mult_pos := fun x hx => absurd hx (notMem_empty x)
+        locallyIntegrable_mult := fun K _ _ => by simp
+        aestronglyMeasurable_orient := aestronglyMeasurable_const
+        orients := by simp }
+    refine ⟨R₀, Eventually.of_forall fun x => by simp [R₀], ?_⟩
+    simp [R₀, IMRep.measure]
+  | succ q ih =>
+    obtain ⟨R', hR', hR'μ⟩ := ih
+    -- `R''` represents `1 • (density of R') + 1 • (density of R q)`
+    obtain ⟨R'', hR''⟩ := Submission.rsdic_exists_imrep_int_combination P n U R' (R q) 1 1 hU
+    refine ⟨R'', ?_, ?_⟩
+    · filter_upwards [hR'', hR'] with x h₁ h₂
+      rw [h₁, h₂, Finset.sum_range_succ]
+      simp
+    · have h := Submission.dor_lmb_ic_measure_le_of_weighted_orient_eq P n U R' (R q) R'' 1 1 hR''
+      simp only [Int.natAbs_one, Nat.cast_one, one_smul] at h
+      rw [Finset.sum_range_succ]
+      exact h.trans (add_le_add hR'μ le_rfl)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
