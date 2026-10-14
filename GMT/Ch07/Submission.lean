@@ -4187,6 +4187,24 @@ theorem Submission.dimred_cs_sp_orient_projection_le : ∀ (P m : ℕ) (V Q : Su
         mul_le_of_le_one_right (covectorEuclideanNorm_nonneg α) (Real.sqrt_le_one.mpr
           (Submission.dimred_cs_sp_op_gram_det_starProjection_le_one P m V τ hτ))
 
+/-- **Orthogonal projection does not increase mass, `spt X` compact** (Simon 7.3.1, footnote 2;
+dimension reduction for 7.3.3).  Let `q` be the orthogonal projection onto `V`,
+`T = τ(M_T, θ_T, ξ_T)` with `μ_T(ℝᴾ \ V) = 0`, `X = τ(M_X, θ_X, ξ_X)` with `spt X` compact, and
+`S'(ω) = T(ω) + τ(M_X, θ_X, ξ_X)(q^# ω)`.  Then some integer multiplicity triple `R` represents
+`T + X` and `M_O(S') ≤ μ_R(q⁻¹(O))` for every `O`.  By Ch. 6, 3.2(3) and 2.12, `spt X = spt μ_X`,
+and `μ_X(ℝᴾ \ spt μ_X) = 0` as `ℝᴾ` is second countable; so `μ_X` is carried by the compact set
+`K = spt X`, which is the case proved above. -/
+theorem Submission.dimred_cs_sp_projected_massOn_le : ∀ (P m : ℕ) (T X S' : GeometricCurrentOn (univ : Set (Euclid P)) m) (RT RX : IMRep (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), RT.Represents T → RX.Represents X → RT.measure ((V : Set (Euclid P))ᶜ) = 0 → IsCompact X.support → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, S' ω = T ω + RX.action (affinePullbackForm V.starProjection 0 (ω : DifferentialForm (Euclid P) m))) → ∃ R : IMRep (univ : Set (Euclid P)) m, (∀ ω : TestFormOn (univ : Set (Euclid P)) m, R.action (ω : DifferentialForm (Euclid P) m) = T ω + X ω) ∧ ∀ O : Set (Euclid P), S'.massOn O ≤ R.measure (V.starProjection ⁻¹' O) := by
+  intro P m T X S' RT RX V hRT hRX hTV hK hS'
+  -- `spt X = ℝᴾ ∩ spt μ_X`, and `μ_X` vanishes off its support (`ℝᴾ` is second countable)
+  have hXK : RX.measure (X.support)ᶜ = 0 := by
+    rw [(Submission.dor_imrep_massOn_eq_measure_and_support P m univ X RX isOpen_univ hRX).2,
+      univ_inter]
+    exact Measure.measure_compl_support
+  -- the compactly carried case, with `K = spt X`
+  exact Submission.idtp_fons_cs_sp_projected_massOn_le P m T X S' RT RX V X.support hRT hRX hTV hK
+    hXK hS'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
