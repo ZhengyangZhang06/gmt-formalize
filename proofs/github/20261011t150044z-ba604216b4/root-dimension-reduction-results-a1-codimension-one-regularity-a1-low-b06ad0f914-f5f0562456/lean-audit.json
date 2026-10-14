@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "46ba311fe2432610f1f2b26dcec57008d0bda6b89f2cedea296acc0d491d7794",
+  "git_delta": {
+    "base_commit": "d57494853c70fc8a70680e3e96f49911b0dc4d84",
+    "candidate_commit": "29dc65eb03ec67eacbf718b67f33ea319768175b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "f33e4bf8bdf010938d626e8f67f798dcdc0cd383e4b39dd08c7fc19ce1bafc95",
+    "source_sha256": "eac3817e578c43612b06021bb5395a06f2616e430ca87add7c04ad26b0d5ad33",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_low_density_points_regular",
+      "statement": "(∀ (P n : ℕ), 1 ≤ n → ∃ δ : ℝ, 0 < δ ∧ ∀ (d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n), n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ x ∈ T.support, ∀ θ : ℝ, HasMassDensity T x θ → θ < 1 + δ → x ∈ regularSet T)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

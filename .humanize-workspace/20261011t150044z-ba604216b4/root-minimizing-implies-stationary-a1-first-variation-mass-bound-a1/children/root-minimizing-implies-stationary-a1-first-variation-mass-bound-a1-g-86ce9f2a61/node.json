@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_jacobian_first_order-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1",
+  "depth": 3,
+  "title": "Uniform first-order upper bound for the Jacobian of a perturbation of the identity (Simon Ch. 2, §5)",
+  "statement": "Let P, n ∈ ℕ, A ≥ 0 and ε > 0. Then there exist η > 0 and δ > 0 such that the following holds for every real t with |t| < δ, all continuous linear maps B, L : ℝ^P → ℝ^P with ‖B‖ ≤ A and ‖L − I − tB‖ ≤ η|t| (operator norms), and every orthonormal family τ_1, …, τ_n in ℝ^P: (det(Lτ_i·Lτ_j)_{i,j=1}^n)^{1/2} ≤ 1 + t Σ_{a=1}^n τ_a·Bτ_a + ε|t|. The square root is the real square root (Real.sqrt).",
+  "lean_statement": "∀ (P n : ℕ) (A ε : ℝ), 0 ≤ A → 0 < ε → ∃ η : ℝ, 0 < η ∧ ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ B L : Euclid P →L[ℝ] Euclid P, ‖B‖ ≤ A → ‖L - ContinuousLinearMap.id ℝ (Euclid P) - t • B‖ ≤ η * |t| → ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ → Real.sqrt (Matrix.det (Matrix.of fun i j => inner ℝ (L (τ i)) (L (τ j)))) ≤ 1 + t * ∑ a, inner ℝ (τ a) (B (τ a)) + ε * |t|",
+  "lean_name": "fvmb_orthonormal_gram_sqrt_det_le_first_order",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_det_exp_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_det_exp_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-86ce9f2a61-a1"
+}
