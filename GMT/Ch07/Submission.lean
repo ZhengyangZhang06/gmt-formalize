@@ -677,6 +677,58 @@ theorem Submission.cmcdt_cbm_sp_convex_poincare : ∀ (n : ℕ) (Q : Set (Euclid
         rw [hrhs, ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_pow,
           ENNReal.toReal_ofNat, ENNReal.toReal_ofReal hd]
         ring
+/-- **Geometry of the open cube** `Q_δ = {z : δ < zᵢ < 1 − δ for all i} ⊂ ℝⁿ`, `δ ≥ 0`.  `Q_δ` is
+convex (coordinatewise convex combinations), measurable (a finite intersection of sets cut out by
+the continuous coordinates), has diameter at most `√n` (`|xᵢ − yᵢ| < 1 − 2δ ≤ 1`), and
+`Lⁿ(Q_δ) ≤ 1`, since `Q_δ ⊆ ofLp⁻¹(∏ᵢ (0, 1))` and `ofLp` is measure preserving. -/
+theorem Submission.cmcdt_cbm_sp_cube_geometry : ∀ (n : ℕ) (δ : ℝ), 0 ≤ δ → Convex ℝ {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ} ∧ MeasurableSet {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ} ∧ (∀ x ∈ {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ}, ∀ y ∈ {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖x - y‖ ≤ Real.sqrt n) ∧ volume {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ} ≤ 1 := by
+  intro n δ hδ
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · -- convexity: `a xᵢ + b yᵢ − δ = a (xᵢ − δ) + b (yᵢ − δ) > 0`, and likewise below `1 − δ`
+    refine convex_iff_forall_pos.2 fun x hx y hy a b ha hb hab i => ?_
+    have hxi := hx i
+    have hyi := hy i
+    simp only [PiLp.add_apply, PiLp.smul_apply, smul_eq_mul]
+    have hb' : b = 1 - a := by linarith
+    subst hb'
+    constructor
+    · nlinarith [mul_pos ha (sub_pos.2 hxi.1), mul_pos hb (sub_pos.2 hyi.1)]
+    · nlinarith [mul_pos ha (sub_pos.2 hxi.2), mul_pos hb (sub_pos.2 hyi.2)]
+  · -- measurability: `Q_δ = ⋂ᵢ {δ < zᵢ} ∩ {zᵢ < 1 − δ}` with continuous coordinates
+    have hc : ∀ i : Fin n, Continuous fun z : Euclid n => z i := fun i => by fun_prop
+    have : {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ} =
+        ⋂ i, ({z : Euclid n | δ < z i} ∩ {z : Euclid n | z i < 1 - δ}) := by
+      ext z; simp
+    rw [this]
+    exact MeasurableSet.iInter fun i =>
+      (measurableSet_lt measurable_const (hc i).measurable).inter
+        (measurableSet_lt (hc i).measurable measurable_const)
+  · -- diameter: `(xᵢ − yᵢ)² ≤ 1` for each `i`, so `‖x − y‖ ≤ √(∑ᵢ 1) = √n`
+    intro x hx y hy
+    rw [EuclideanSpace.norm_eq]
+    apply Real.sqrt_le_sqrt
+    calc ∑ i, ‖(x - y) i‖ ^ 2 ≤ ∑ _i : Fin n, (1 : ℝ) := by
+          apply Finset.sum_le_sum
+          intro i _
+          have hxi := hx i
+          have hyi := hy i
+          simp only [PiLp.sub_apply, Real.norm_eq_abs, sq_abs]
+          nlinarith
+      _ = n := by simp
+  · -- volume: `Q_δ ⊆ ofLp⁻¹(∏ᵢ (0, 1))`, and `ofLp` is measure preserving
+    have hsub : {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ} ⊆
+        WithLp.ofLp ⁻¹' (Set.univ.pi fun _ : Fin n => Ioo (0 : ℝ) 1) := by
+      intro z hz
+      simp only [mem_preimage, mem_univ_pi, mem_Ioo]
+      intro i
+      exact ⟨by linarith [(hz i).1], by linarith [(hz i).2]⟩
+    calc volume {z : Euclid n | ∀ i, δ < z i ∧ z i < 1 - δ}
+        ≤ volume (WithLp.ofLp ⁻¹' (Set.univ.pi fun _ : Fin n => Ioo (0 : ℝ) 1) : Set (Euclid n)) :=
+          measure_mono hsub
+      _ = volume (Set.univ.pi fun _ : Fin n => Ioo (0 : ℝ) 1) :=
+          (PiLp.volume_preserving_ofLp (Fin n)).measure_preimage
+            (MeasurableSet.univ_pi fun _ => measurableSet_Ioo).nullMeasurableSet
+      _ = 1 := by rw [Real.volume_pi_Ioo]; simp
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
