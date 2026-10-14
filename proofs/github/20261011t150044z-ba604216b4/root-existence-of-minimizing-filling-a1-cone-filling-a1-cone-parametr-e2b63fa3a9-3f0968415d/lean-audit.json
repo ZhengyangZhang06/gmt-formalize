@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "537918d2eb2add736733bceb2f006befa05fd312a6165d56a6324cfad4d4f9e0",
+  "git_delta": {
+    "base_commit": "d814e99508ad55b023d3559ff6e2b6bcf599bbec",
+    "candidate_commit": "da589fb311068379a2ab90b3571708848695a662",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "f4db5e3d3321a95eb97bc68370dc1410d35e05c61e52392bf41d1c37e94fde60",
+    "source_sha256": "b07abccac6f7e21a89ccde2115c3ae97664fa0e4ab05f3fbba7dabbbed174142",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ecf_cp_gram_cone",
+      "statement": "∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P), (∀ t : ℝ, 0 ≤ t → Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) i) ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) j))) = t ^ k * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j)))) ∧ Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j))) ≤ ‖a‖ * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (w i) (w j)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
