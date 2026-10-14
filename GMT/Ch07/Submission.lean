@@ -451,6 +451,82 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The `(n − 1)`-skeleton of the unit cubical lattice is `Hⁿ`-null** (Simon Ch. 6, proof of the
+deformation theorem 5.1, where `spt Q ⊆ Lₙ` (22) is split over the open `n`-faces (26)–(28):
+`Hⁿ(L_{n−1}) = 0`, here `n = m + 1`).  The points of `ℝᴾ` with at least `P − m` integer
+coordinates lie in the countably many coordinate planes `A(s, z) = {x : xᵢ = zᵢ for i ∈ s}`,
+`P ≤ m + |s|`, `z ∈ ℤᴾ`.  Each `A(s, z)` is the image of an isometry `ψ : ℝʳ → ℝᴾ`,
+`r = P − |s| ≤ m`, and `ℝʳ` is `μHE[m + 1]`-null: it is a countable union of balls of finite
+`μHE[r]` (= Lebesgue) measure, and `r < m + 1`. -/
+theorem Submission.dimred_mbl_dtfr_skeleton_null : ∀ (P m : ℕ), μHE[m + 1] {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} = 0 := by
+  intro P m
+  -- (3) `ℝʳ`, `r ≤ m`, is a countable union of closed balls of finite `μHE[r]` = Lebesgue measure,
+  -- so each ball, and hence `ℝʳ`, is `μHE[m + 1]`-null
+  have hnull : ∀ r : ℕ, r ≤ m → (μHE[m + 1] : Measure (Euclid r)) univ = 0 := by
+    intro r hr
+    rw [← Metric.iUnion_closedBall_nat (0 : Euclid r)]
+    refine measure_iUnion_null fun k => ?_
+    refine (Measure.euclideanHausdorffMeasure_zero_or_top (d₁ := r) (d₂ := m + 1) (by omega)
+      _).resolve_right ?_
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    exact measure_closedBall_lt_top.ne
+  -- (2), (4) each plane `A(s, z)` with `P ≤ m + |s|` is the image of an isometry `ψ : ℝʳ → ℝᴾ`,
+  -- `r = P − |s| ≤ m`, hence `μHE[m + 1]`-null
+  have hplane : ∀ s : Finset (Fin P), P ≤ m + s.card → ∀ z : Fin P → ℤ,
+      μHE[m + 1] {x : Euclid P | ∀ i ∈ s, x i = z i} = 0 := by
+    intro s hs z
+    obtain ⟨r, hr⟩ : ∃ r, sᶜ.card = r := ⟨_, rfl⟩
+    have hrm : r ≤ m := by
+      rw [← hr, Finset.card_compl, Fintype.card_fin]
+      omega
+    -- `κ : Fin r ↪ Fin P` enumerates the coordinates outside `s`
+    obtain ⟨κ, hκs, hκ⟩ : ∃ κ : Fin r ↪ Fin P, (∀ l, κ l ∉ s) ∧ Finset.univ.map κ = sᶜ :=
+      ⟨(sᶜ.orderEmbOfFin hr).toEmbedding,
+        fun l => Finset.mem_compl.1 (sᶜ.orderEmbOfFin_mem hr l), sᶜ.map_orderEmbOfFin_univ hr⟩
+    -- `ψ t = (zᵢ on s, 0 off s) + Σₗ tₗ e_{κ l}` has `ψ t = z` on `s` and `ψ t (κ l) = t l`
+    obtain ⟨ψ, hψs, hψκ⟩ : ∃ ψ : Euclid r → Euclid P,
+        (∀ t, ∀ i ∈ s, ψ t i = z i) ∧ ∀ t l, ψ t (κ l) = t l := by
+      refine ⟨fun t => WithLp.toLp 2 (fun i => if i ∈ s then (z i : ℝ) else 0) +
+        ∑ l, t l • EuclideanSpace.single (κ l) (1 : ℝ), fun t i hi => ?_, fun t l => ?_⟩
+      · have h0 : ∀ l, i ≠ κ l := fun l h => hκs l (h ▸ hi)
+        simp [hi, h0]
+      · simp [Pi.single_apply, hκs l]
+    -- `ψ` is an isometry: `ψ t − ψ t'` has coordinate `tₗ − t'ₗ` at `κ l` and `0` on `s`
+    have hiso : Isometry ψ := by
+      refine Isometry.of_dist_eq fun t t' => ?_
+      rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq]
+      congr 1
+      rw [← Finset.sum_subset (Finset.subset_univ sᶜ), ← hκ, Finset.sum_map]
+      · simp only [hψκ]
+      · intro i _ hi
+        have hi' : i ∈ s := by simpa using hi
+        simp [hψs t i hi', hψs t' i hi']
+    -- `A(s, z) ⊆ ψ '' univ`: `x = ψ (x ∘ κ)` for `x ∈ A(s, z)`
+    have hsub : {x : Euclid P | ∀ i ∈ s, x i = z i} ⊆ ψ '' univ := by
+      intro x hx
+      refine ⟨WithLp.toLp 2 fun l => x (κ l), mem_univ _, ?_⟩
+      ext i
+      by_cases hi : i ∈ s
+      · rw [hψs _ i hi, hx i hi]
+      · have hi' : i ∈ Finset.univ.map κ := by
+          rw [hκ]
+          exact Finset.mem_compl.2 hi
+        obtain ⟨l, -, rfl⟩ := Finset.mem_map.1 hi'
+        rw [hψκ, PiLp.toLp_apply]
+    exact measure_mono_null hsub (by rw [hiso.euclideanHausdorffMeasure_image]; exact hnull r hrm)
+  -- (1) `L_m ⊆ ⋃ A(s, z)` over the countably many `s` with `P ≤ m + |s|` and `z ∈ ℤᴾ`
+  -- (`zᵢ = ⌊xᵢ⌋`)
+  have hcover : {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} ⊆
+      ⋃ (s : {s : Finset (Fin P) // P ≤ m + s.card}) (z : Fin P → ℤ),
+        {x : Euclid P | ∀ i ∈ s.1, x i = z i} := by
+    rintro x ⟨s, hs, hx⟩
+    refine mem_iUnion₂.2 ⟨⟨s, hs⟩, fun i => ⌊x i⌋, fun i hi => ?_⟩
+    obtain ⟨w, hw⟩ := hx i hi
+    simp [hw]
+  -- (5) countable subadditivity
+  exact measure_mono_null hcover
+    (measure_iUnion_null fun s => measure_iUnion_null fun z => hplane s.1 s.2 z)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
