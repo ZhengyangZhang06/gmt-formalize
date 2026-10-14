@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "709e6e2644f75cdb61018ad91f78bf453e98b2d85f05605582e953e0108b6076",
+  "git_delta": {
+    "base_commit": "75dc9e4a270dccd529f840a9c14d5b9aa7d63057",
+    "candidate_commit": "3ffee734c18e06ddd7eefddda04c32f45eae1678",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_jwc_minor_weak_continuity",
+    "diff_sha256": "fcb666890468d49a051a95e5213d40db0575bdea555cf3e289bf676eaed0cae8",
+    "source_sha256": "63f194e7dfddc113f730abca783dfdb3e6bf28fa0cdf5d85494e90edcffa2f67",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_jwc_minor_weak_continuity",
+      "statement": "∀ (k r : ℕ) (L : NNReal) (gs : ℕ → Fin r → Euclid k → ℝ) (g : Fin r → Euclid k → ℝ) (V : Fin r → Euclid k) (φ : Euclid k → ℝ), Integrable φ → (∀ j c, LipschitzWith L (gs j c)) → (∀ c, LipschitzWith L (g c)) → (∀ c, TendstoUniformly (fun j => gs j c) (g c) atTop) → Tendsto (fun j => ∫ x, φ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (gs j c) x (V b))) atTop (𝓝 (∫ x, φ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b))))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
