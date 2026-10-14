@@ -6829,8 +6829,8 @@ theorem Submission.idtp_fons_cs_sos_product_current : ∀ (P k m' n' : ℕ) (g :
     rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hBT l, mul_zero] at h1
     exact nonpos_iff_eq_zero.1 h1
   -- the product pieces `G_l(z) = ι(z₁) + Φ_l(z₂)` on `S_l = spl⁻¹(E' × T_l)`, `E' = ι⁻¹(E)`
-  obtain ⟨E', hE'def⟩ : ∃ E' : Set (Euclid k), E' = ι ⁻¹' E := ⟨_, rfl⟩
-  have hE'meas : MeasurableSet E' := hE'def ▸ hEm.preimage ι.continuous.measurable
+  obtain ⟨E', hE'eq⟩ : ∃ E' : Set (Euclid k), E' = ι ⁻¹' E := ⟨_, rfl⟩
+  have hE'meas : MeasurableSet E' := hE'eq ▸ hEm.preimage ι.continuous.measurable
   obtain ⟨fstL, hfst⟩ : ∃ fstL : Euclid (k + m') →L[ℝ] Euclid k, ∀ z, fstL z = (spl z).1 :=
     ⟨(ContinuousLinearMap.fst ℝ (Euclid k) (Euclid m')).comp
       (spl : Euclid (k + m') →L[ℝ] Euclid k × Euclid m'), fun z => rfl⟩
@@ -7258,7 +7258,7 @@ theorem Submission.idtp_fons_cs_sos_product_current : ∀ (P k m' n' : ℕ) (g :
   have hιemb : MeasurableEmbedding ι := hιiso.isClosedEmbedding.measurableEmbedding
   have hEmeas_eq : (μHE[k] : Measure (Euclid P)).restrict E =
       ((volume : Measure (Euclid k)).restrict E').map ι := by
-    rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hE'def, ← hιemb.restrict_map,
+    rw [← EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hE'eq, ← hιemb.restrict_map,
       hιiso.map_euclideanHausdorffMeasure, Measure.restrict_restrict hEm,
       inter_eq_left.2 (show E ⊆ range ι from fun t ht => hιsurj t (hEG ht))]
   refine ⟨B, RB, hB, fun C hC => ?_, fun flat hflat ω => ?_⟩
