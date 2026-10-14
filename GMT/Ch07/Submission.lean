@@ -2897,6 +2897,193 @@ theorem Submission.codim1_hcp_sc_cone_normal_homogeneous : ∀ (P m : ℕ) (A₀
         with s hs using hhom (γ s) (hγM hs) t ht
     rw [← map_smul]
     exact h1.unique h2
+/-- **Hausdorff measure on a cone** (Simon, Appendix B, proof of B.2: the finiteness that the
+polar formula (5) provides, obtained here by dyadic scaling of `Hᵐ`).  Let `M ⊆ ℝᴾ` with `0 ∉ M`,
+`M̄ ⊆ M ∪ {0}`, `tM ⊆ M` for `t > 0` and `Hᵐ(M ∩ K) < ∞` for compact `K`.  Then `tM = M`, so
+`Hᵐ(M ∩ tS) = Hᵐ(t(M ∩ S)) = tᵐHᵐ(M ∩ S)`, and `M = M̄ \ {0}` is Borel.  (a) The sets
+`M ∩ ∂B_{cₙ}(0)`, `cₙ = 1 + 1/(n+1) ∈ (1, 2]`, are disjoint subsets of `M ∩ B̄₂(0)` of measure
+`cₙᵐHᵐ(M ∩ ∂B₁(0)) ≥ Hᵐ(M ∩ ∂B₁(0))`, so `Hᵐ(M ∩ ∂B₁(0)) = 0`; scale to radius `c`.  (b), (c) With
+`B = Hᵐ(M ∩ B̄₁(0)) < ∞`, the shell `{x ∈ M : asᵏ ≤ |x| ≤ bsᵏ}` has measure `≤ (bsᵏ)ᵐB`, and
+`|x|^γ ≤ (asᵏ)^γ` on it for `γ ≤ 0`, so the integral over a union of such shells is at most a
+geometric series of ratio `s^γsᵐ`.  The shells `2⁻ᵏ⁻¹ ≤ |x| ≤ 2⁻ᵏ` cover `M ∩ B₁(0)` (ratio
+`2^{-(m+α)} < 1` for `−m < α < 0`; for `α ≥ 0` use `|x|^α ≤ 1`), and `2ᵏ ≤ |x| ≤ 2ᵏ⁺¹` cover
+`M \ B₁(0)` (ratio `2^{m+β} < 1`, as `β < −m ≤ 0`). -/
+theorem Submission.codim1_hcp_sc_cone_annuli_measure : ∀ (P m : ℕ) (M : Set (Euclid P)), (0 : Euclid P) ∉ M → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ c : ℝ, 0 < c → μHE[m] (M ∩ sphere (0 : Euclid P) c) = 0) ∧ (∀ α : ℝ, -(m : ℝ) < α → ∫⁻ x in M ∩ ball (0 : Euclid P) 1, ENNReal.ofReal (‖x‖ ^ α) ∂μHE[m] ≠ ∞) ∧ (∀ β : ℝ, β < -(m : ℝ) → ∫⁻ x in M \ ball (0 : Euclid P) 1, ENNReal.ofReal (‖x‖ ^ β) ∂μHE[m] ≠ ∞) := by
+  intro P m M h0 hcl hcone hfin
+  open scoped Pointwise in
+  -- Step 1: `tM = M`, hence `M ∩ tS = t(M ∩ S)`, for `t > 0`
+  have hMt : ∀ t : ℝ, 0 < t → ∀ S : Set (Euclid P), M ∩ t • S = t • (M ∩ S) := by
+    intro t ht S
+    ext x
+    simp only [mem_inter_iff, mem_smul_set_iff_inv_smul_mem₀ ht.ne']
+    constructor
+    · rintro ⟨hx, hS⟩
+      exact ⟨hcone _ (inv_pos.2 ht) x hx, hS⟩
+    · rintro ⟨hx, hS⟩
+      refine ⟨?_, hS⟩
+      simpa [smul_inv_smul₀ ht.ne'] using hcone t ht _ hx
+  -- Step 2: `M = M̄ \ {0}` is Borel
+  have hMeas : MeasurableSet M := by
+    have hM : M = closure M \ {0} := by
+      ext x
+      constructor
+      · intro hx
+        refine ⟨subset_closure hx, ?_⟩
+        rintro rfl
+        exact h0 hx
+      · rintro ⟨hx, hx0⟩
+        rcases hcl hx with h | h
+        · exact absurd h hx0
+        · exact h
+    rw [hM]
+    exact isClosed_closure.measurableSet.diff (measurableSet_singleton 0)
+  -- Step 3: `Hᵐ(tS) = tᵐHᵐ(S)` (`hausdorffMeasure_smul₀`), so `Hᵐ(M ∩ tS) = tᵐHᵐ(M ∩ S)`
+  have hsc : ∀ t : ℝ, 0 < t → ∀ S : Set (Euclid P),
+      μHE[m] (M ∩ t • S) = ENNReal.ofReal (t ^ m) * μHE[m] (M ∩ S) := by
+    intro t ht S
+    have hc : ((‖t‖₊ ^ (m : ℝ) : NNReal) : ℝ≥0∞) = ENNReal.ofReal (t ^ m) := by
+      rw [NNReal.rpow_natCast, ENNReal.ofReal_pow ht.le, ENNReal.coe_pow, Real.nnnorm_of_nonneg ht.le,
+        ENNReal.ofReal_eq_coe_nnreal ht.le]
+    rw [hMt t ht S, Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, Measure.smul_apply,
+      Measure.hausdorffMeasure_smul₀ (Nat.cast_nonneg m) ht.ne', smul_comm, ENNReal.smul_def,
+      smul_eq_mul, hc]
+  -- Step 4: `Hᵐ(M ∩ B̄ᵣ(0)) = rᵐB` with `B = Hᵐ(M ∩ B̄₁(0)) < ∞`
+  set B := μHE[m] (M ∩ closedBall (0 : Euclid P) 1)
+  have hBfin : B ≠ ∞ := hfin _ (isCompact_closedBall 0 1)
+  have hball : ∀ r : ℝ, 0 < r →
+      μHE[m] (M ∩ closedBall (0 : Euclid P) r) = ENNReal.ofReal (r ^ m) * B := by
+    intro r hr
+    have : closedBall (0 : Euclid P) r = r • closedBall (0 : Euclid P) 1 := by
+      rw [smul_closedBall' hr.ne', smul_zero, Real.norm_of_nonneg hr.le, mul_one]
+    rw [this, hsc r hr]
+  -- Step 5: on the shell `{x ∈ M : asᵏ ≤ |x| ≤ bsᵏ}`, `|x|^γ ≤ (asᵏ)^γ` (`γ ≤ 0`) and the shell
+  -- lies in `M ∩ B̄_{bsᵏ}(0)`; summing over `k` gives a geometric series of ratio `s^γsᵐ < 1`
+  have hgeo : ∀ (γ a b s : ℝ) (Ω : Set (Euclid P)), γ ≤ 0 → 0 < a → 0 < b → 0 < s →
+      s ^ γ * s ^ m < 1 → Ω ⊆ ⋃ k : ℕ, M ∩ {x | a * s ^ k ≤ ‖x‖ ∧ ‖x‖ ≤ b * s ^ k} →
+      ∫⁻ x in Ω, ENNReal.ofReal (‖x‖ ^ γ) ∂μHE[m] ≠ ∞ := by
+    intro γ a b s Ω hγ ha hb hs hρ hΩ
+    have hterm : ∀ k : ℕ, ∫⁻ x in M ∩ {x | a * s ^ k ≤ ‖x‖ ∧ ‖x‖ ≤ b * s ^ k},
+        ENNReal.ofReal (‖x‖ ^ γ) ∂μHE[m] ≤
+          ENNReal.ofReal (a ^ γ * b ^ m) * B * ENNReal.ofReal (s ^ γ * s ^ m) ^ k := by
+      intro k
+      have hsk : 0 < s ^ k := pow_pos hs k
+      calc ∫⁻ x in M ∩ {x | a * s ^ k ≤ ‖x‖ ∧ ‖x‖ ≤ b * s ^ k}, ENNReal.ofReal (‖x‖ ^ γ) ∂μHE[m]
+          ≤ ∫⁻ x in M ∩ {x | a * s ^ k ≤ ‖x‖ ∧ ‖x‖ ≤ b * s ^ k},
+              ENNReal.ofReal ((a * s ^ k) ^ γ) ∂μHE[m] := by
+            apply setLIntegral_mono measurable_const
+            rintro x ⟨-, hx1, -⟩
+            exact ENNReal.ofReal_le_ofReal (Real.rpow_le_rpow_of_nonpos (mul_pos ha hsk) hx1 hγ)
+        _ = ENNReal.ofReal ((a * s ^ k) ^ γ) *
+              μHE[m] (M ∩ {x | a * s ^ k ≤ ‖x‖ ∧ ‖x‖ ≤ b * s ^ k}) := setLIntegral_const _ _
+        _ ≤ ENNReal.ofReal ((a * s ^ k) ^ γ) * μHE[m] (M ∩ closedBall 0 (b * s ^ k)) := by
+            gcongr
+            intro x hx
+            exact mem_closedBall_zero_iff.2 hx.2
+        _ = ENNReal.ofReal ((a * s ^ k) ^ γ) * (ENNReal.ofReal ((b * s ^ k) ^ m) * B) := by
+            rw [hball _ (mul_pos hb hsk)]
+        _ = ENNReal.ofReal (a ^ γ * b ^ m) * B * ENNReal.ofReal (s ^ γ * s ^ m) ^ k := by
+            rw [← ENNReal.ofReal_pow (by positivity), ← mul_assoc,
+              ← ENNReal.ofReal_mul (by positivity), mul_right_comm,
+              ← ENNReal.ofReal_mul (by positivity)]
+            congr 2
+            rw [Real.mul_rpow ha.le hsk.le, ← Real.rpow_pow_comm hs.le]
+            ring
+    have hρ' : ENNReal.ofReal (s ^ γ * s ^ m) < 1 := ENNReal.ofReal_lt_one.2 hρ
+    refine ne_top_of_le_ne_top ?_ ((lintegral_mono_set hΩ).trans
+      ((lintegral_iUnion_le _ _).trans (ENNReal.tsum_le_tsum hterm)))
+    rw [ENNReal.tsum_mul_left, ENNReal.tsum_geometric]
+    exact ENNReal.mul_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hBfin)
+      (ENNReal.inv_ne_top.2 (tsub_pos_iff_lt.2 hρ').ne')
+  refine ⟨?_, ?_, ?_⟩
+  · -- (a) `Hᵐ(M ∩ ∂B_c(0)) = cᵐHᵐ(M ∩ ∂B₁(0))`, and `Hᵐ(M ∩ ∂B₁(0)) = 0`
+    have hsph : ∀ c : ℝ, 0 < c → μHE[m] (M ∩ sphere (0 : Euclid P) c) =
+        ENNReal.ofReal (c ^ m) * μHE[m] (M ∩ sphere (0 : Euclid P) 1) := by
+      intro c hc
+      have : sphere (0 : Euclid P) c = c • sphere (0 : Euclid P) 1 := by
+        rw [smul_sphere' hc.ne', smul_zero, Real.norm_of_nonneg hc.le, mul_one]
+      rw [this, hsc c hc]
+    have h1 : μHE[m] (M ∩ sphere (0 : Euclid P) 1) = 0 := by
+      by_contra hne
+      -- the radii `cₙ = 1 + 1/(n+1) ∈ (1, 2]` are distinct
+      set c : ℕ → ℝ := fun n => 1 + 1 / ((n : ℝ) + 1) with hc_def
+      have hc1 : ∀ n, 1 ≤ c n := fun n => by
+        have : (0 : ℝ) ≤ 1 / ((n : ℝ) + 1) := by positivity
+        simp only [hc_def]; linarith
+      have hc2 : ∀ n, c n ≤ 2 := fun n => by
+        have : 1 / ((n : ℝ) + 1) ≤ 1 := by
+          rw [div_le_one (by positivity)]; linarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
+        simp only [hc_def]; linarith
+      have hcinj : Function.Injective c := by
+        intro i j hij
+        simp only [hc_def, add_right_inj, one_div, inv_inj, add_left_inj, Nat.cast_inj] at hij
+        exact hij
+      -- so the spheres `M ∩ ∂B_{cₙ}(0) ⊆ M ∩ B̄₂(0)` are disjoint Borel sets
+      have hdisj : Pairwise (Disjoint on fun n => M ∩ sphere (0 : Euclid P) (c n)) := by
+        intro i j hij
+        rw [Function.onFun, Set.disjoint_left]
+        rintro x ⟨-, hxi⟩ ⟨-, hxj⟩
+        rw [mem_sphere_zero_iff_norm] at hxi hxj
+        exact hij (hcinj (hxi.symm.trans hxj))
+      have hmeas : ∀ n, MeasurableSet (M ∩ sphere (0 : Euclid P) (c n)) := fun n =>
+        hMeas.inter isClosed_sphere.measurableSet
+      have hsum : ∑' n, μHE[m] (M ∩ sphere (0 : Euclid P) (c n)) ≤
+          μHE[m] (M ∩ closedBall (0 : Euclid P) 2) := by
+        rw [← measure_iUnion hdisj hmeas]
+        refine measure_mono (iUnion_subset fun n => ?_)
+        exact inter_subset_inter_right _
+          (sphere_subset_closedBall.trans (closedBall_subset_closedBall (hc2 n)))
+      -- each has measure `cₙᵐHᵐ(M ∩ ∂B₁(0)) ≥ Hᵐ(M ∩ ∂B₁(0)) > 0`, so their sum is infinite
+      have htop : ∑' n, μHE[m] (M ∩ sphere (0 : Euclid P) (c n)) = ∞ := by
+        refine top_unique ?_
+        rw [← ENNReal.tsum_const_eq_top_of_ne_zero (α := ℕ) hne]
+        refine ENNReal.tsum_le_tsum fun n => ?_
+        rw [hsph (c n) (by linarith [hc1 n])]
+        calc μHE[m] (M ∩ sphere (0 : Euclid P) 1) = 1 * μHE[m] (M ∩ sphere (0 : Euclid P) 1) :=
+              (one_mul _).symm
+          _ ≤ _ := by gcongr; exact ENNReal.one_le_ofReal.2 (one_le_pow₀ (hc1 n))
+      exact hfin _ (isCompact_closedBall 0 2) (top_unique (htop ▸ hsum))
+    intro c hc
+    rw [hsph c hc, h1, mul_zero]
+  · -- (b) for `α ≥ 0`, `|x|^α ≤ 1` on `B₁(0)`; for `−m < α < 0`, shells `2⁻ᵏ⁻¹ ≤ |x| ≤ 2⁻ᵏ`
+    intro α hα
+    rcases le_or_gt 0 α with hα0 | hα0
+    · refine ne_top_of_le_ne_top (hfin _ (isCompact_closedBall (0 : Euclid P) 1)) ?_
+      calc ∫⁻ x in M ∩ ball (0 : Euclid P) 1, ENNReal.ofReal (‖x‖ ^ α) ∂μHE[m]
+          ≤ ∫⁻ x in M ∩ ball (0 : Euclid P) 1, 1 ∂μHE[m] := by
+            apply setLIntegral_mono measurable_const
+            rintro x ⟨-, hx⟩
+            rw [mem_ball_zero_iff] at hx
+            exact ENNReal.ofReal_le_one.2 (Real.rpow_le_one (norm_nonneg x) hx.le hα0)
+        _ = μHE[m] (M ∩ ball (0 : Euclid P) 1) := by rw [setLIntegral_const, one_mul]
+        _ ≤ μHE[m] (M ∩ closedBall (0 : Euclid P) 1) :=
+            measure_mono (inter_subset_inter_right _ ball_subset_closedBall)
+    · refine hgeo α (1 / 2) 1 (1 / 2) _ hα0.le (by norm_num) one_pos (by norm_num) ?_ ?_
+      · -- `2^{-α}2^{-m} = 2^{-(m+α)} < 1`
+        rw [← Real.rpow_natCast, ← Real.rpow_add (by norm_num)]
+        exact Real.rpow_lt_one (by norm_num) (by norm_num) (by linarith)
+      · -- `0 < |x| < 1` as `0 ∉ M`, so `2⁻ᵏ⁻¹ < |x| ≤ 2⁻ᵏ` for some `k`
+        rintro x ⟨hxM, hx⟩
+        rw [mem_ball_zero_iff] at hx
+        have hxpos : 0 < ‖x‖ := norm_pos_iff.2 (by rintro rfl; exact h0 hxM)
+        obtain ⟨k, hk1, hk2⟩ := exists_nat_pow_near_of_lt_one hxpos hx.le
+          (by norm_num : (0 : ℝ) < 1 / 2) (by norm_num : (1 / 2 : ℝ) < 1)
+        refine mem_iUnion.2 ⟨k, hxM, ?_, ?_⟩
+        · rw [← pow_succ']; exact hk1.le
+        · rw [one_mul]; exact hk2
+  · -- (c) `β < −m ≤ 0`; shells `2ᵏ ≤ |x| ≤ 2ᵏ⁺¹`
+    intro β hβ
+    have hβ0 : β < 0 := by linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)]
+    refine hgeo β 1 2 2 _ hβ0.le one_pos two_pos two_pos ?_ ?_
+    · -- `2^β2^m = 2^{m+β} < 1`
+      rw [← Real.rpow_natCast, ← Real.rpow_add two_pos]
+      exact Real.rpow_lt_one_of_one_lt_of_neg one_lt_two (by linarith)
+    · -- `|x| ≥ 1`, so `2ᵏ ≤ |x| < 2ᵏ⁺¹` for some `k`
+      rintro x ⟨hxM, hx⟩
+      rw [mem_ball_zero_iff, not_lt] at hx
+      obtain ⟨k, hk1, hk2⟩ := exists_nat_pow_near hx one_lt_two
+      refine mem_iUnion.2 ⟨k, hxM, ?_, ?_⟩
+      · rw [one_mul]; exact hk1
+      · rw [← pow_succ']; exact hk2.le
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
