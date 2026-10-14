@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5356e85e043161205399ef6f8e0a2b616ac3d7bb8a19208274dc9d6722bf9dab",
+  "git_delta": {
+    "base_commit": "6e8922a63928a1b5980d75a5f1e55fb4b8e68417",
+    "candidate_commit": "ca73d99e39b455a43df67388b0f447d52245edef",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_jwc_lipschitz_smooth_approx",
+    "diff_sha256": "d84a548a93c8579bea2b51c7ab54dcb1c79b0976b12868546441a477bcd33938",
+    "source_sha256": "54ffe2e7fafea90806bd6e3afb3784f46a4fd7ee7ab2de439e72e3141b6eecf1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_jwc_lipschitz_smooth_approx",
+      "statement": "∀ (k : ℕ) (L : NNReal) (f : Euclid k → ℝ), LipschitzWith L f → ∃ fs : ℕ → Euclid k → ℝ, (∀ n, ContDiff ℝ (⊤ : ℕ∞) (fs n)) ∧ (∀ n, LipschitzWith L (fs n)) ∧ TendstoUniformly fs f atTop ∧ ∀ᵐ x ∂(volume : Measure (Euclid k)), Tendsto (fun n => fderiv ℝ (fs n) x) atTop (𝓝 (fderiv ℝ f x))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
