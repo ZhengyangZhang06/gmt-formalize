@@ -565,6 +565,129 @@ theorem Submission.ecf_cp_ball_retraction : ∀ (P : ℕ) (ρ : ℝ), 0 < ρ →
   -- Cauchy–Schwarz, then cancel `‖r x - r y‖` (the case `r x = r y` is trivial)
   have hcs : inner ℝ (x - y) (r x - r y) ≤ ‖x - y‖ * ‖r x - r y‖ := real_inner_le_norm _ _
   nlinarith [norm_nonneg (r x - r y), norm_nonneg (x - y)]
+/-- **Gram determinant of a scaled cone frame** (the cone Jacobian behind Simon 6.2.30 and 6.3.10
+for `h(t, x) = t x`).  For `a ∈ ℝᴾ`, `w = (w₀, …, w_{k-1})` and every real `t`,
+`Γ(a, t w) = (tᵏ)² Γ(a, w)`, where `Γ(v) = det (⟨vᵢ, vⱼ⟩)ᵢⱼ`.  With `d = (1, t, …, t)` and
+`D = diag d`, `(a, t w)ₗ = dₗ (a, w)ₗ`, so bilinearity of the inner product gives
+`M(a, t w) = D M(a, w) D` for the Gram matrices, and `det D = ∏ₗ dₗ = tᵏ`. -/
+theorem Submission.ecf_cp_gc_det_smul : ∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P) (t : ℝ), Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) i) ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) j)) = (t ^ k) ^ 2 * Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j)) := by
+  intro P k a w t
+  -- Step 1: with `d = (1, t, …, t)`, `(a, t • w)_l = d_l • (a, w)_l` for every `l`
+  let d : Fin (k + 1) → ℝ := Fin.cons 1 fun _ => t
+  have hscale : ∀ l : Fin (k + 1), (Fin.cons a (t • w) : Fin (k + 1) → Euclid P) l =
+      d l • (Fin.cons a w : Fin (k + 1) → Euclid P) l := by
+    intro l
+    refine Fin.cases ?_ (fun i => ?_) l
+    · simp only [d, Fin.cons_zero, one_smul]
+    · simp only [d, Fin.cons_succ, Pi.smul_apply]
+  -- Step 2: `M(a, t • w) = D * M(a, w) * D` with `D = diagonal d`, by bilinearity
+  have hcong : (Matrix.of fun i j : Fin (k + 1) =>
+        inner ℝ ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) i)
+          ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) j)) =
+      Matrix.diagonal d * (Matrix.of fun i j : Fin (k + 1) =>
+        inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i)
+          ((Fin.cons a w : Fin (k + 1) → Euclid P) j)) * Matrix.diagonal d := by
+    ext l m
+    simp only [Matrix.mul_diagonal, Matrix.diagonal_mul, Matrix.of_apply]
+    rw [hscale l, hscale m, real_inner_smul_left, real_inner_smul_right]
+    ring
+  -- Step 3: `det D = ∏ₗ dₗ = d₀ * ∏_{i < k} t = tᵏ`
+  have hD : (Matrix.diagonal d).det = t ^ k := by
+    rw [Matrix.det_diagonal, Fin.prod_univ_succ]
+    simp only [d, Fin.cons_zero, Fin.cons_succ, Finset.prod_const, Finset.card_fin, one_mul]
+  -- Step 4: `Γ(a, t • w) = tᵏ * Γ(a, w) * tᵏ = (tᵏ)² * Γ(a, w)`
+  rw [hcong, Matrix.det_mul, Matrix.det_mul, hD]
+  ring
+/-- Shear invariance of the Gram determinant: `Γ(a − Σₗ cₗwₗ, w) = Γ(a, w)`, where
+`Γ(v) = det (⟨vᵢ, vⱼ⟩)ᵢⱼ` and `(x, w) = (x, w₀, …, w_{k−1})`.  Let `E` be the matrix whose column
+`0` is `(1, −c₀, …, −c_{k−1})` and whose other columns are those of the identity.  Then
+`(a − Σₗ cₗwₗ, w)ⱼ = Σₗ Eₗⱼ (a, w)ₗ`, so by bilinearity `M(a − Σₗ cₗwₗ, w) = Eᵀ M(a, w) E`; `E` is
+lower triangular with unit diagonal, so `det E = 1`. -/
+theorem Submission.ecf_cp_gc_det_shear : ∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P) (c : Fin k → ℝ), Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons (a - ∑ l, c l • w l) w : Fin (k + 1) → Euclid P) i) ((Fin.cons (a - ∑ l, c l • w l) w : Fin (k + 1) → Euclid P) j)) = Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j)) := by
+  intro P k a w c
+  set v : Fin (k + 1) → Euclid P := Fin.cons a w
+  -- column `0` of `E` is `(1, -c₀, …, -c_{k-1})`, the other columns are those of the identity
+  set E : Matrix (Fin (k + 1)) (Fin (k + 1)) ℝ := Matrix.of fun l j =>
+    if j = 0 then (Fin.cons 1 (-c) : Fin (k + 1) → ℝ) l else if l = j then 1 else 0
+  -- `(a - ∑ c_l w_l, w)` is `v` recombined by the columns of `E`
+  have hcomb : ∀ j, (Fin.cons (a - ∑ l, c l • w l) w : Fin (k + 1) → Euclid P) j =
+      ∑ l, E l j • v l := by
+    intro j
+    refine Fin.cases ?_ (fun i => ?_) j
+    · simp [E, v, Fin.sum_univ_succ, sub_eq_add_neg, neg_smul]
+    · simp [E, v, Fin.succ_ne_zero]
+  -- `E` is lower triangular with unit diagonal
+  have hdetE : E.det = 1 := by
+    rw [Matrix.det_of_isLowerTriangular E fun l j hlj => ?_]
+    · refine Finset.prod_eq_one fun i _ => ?_
+      by_cases hi : i = 0 <;> simp [E, hi]
+    · have hlj' : l < j := OrderDual.toDual_lt_toDual.mp hlj
+      have hj : j ≠ 0 := ((Fin.zero_le l).trans_lt hlj').ne'
+      simp [E, hj, hlj'.ne]
+  -- bilinearity: `M(a - ∑ c_l w_l, w) = Eᵀ M(a, w) E`
+  calc _ = (E.transpose * (Matrix.of fun i j : Fin (k + 1) => inner ℝ (v i) (v j)) * E).det := by
+        congr 1
+        ext i j
+        simp only [Matrix.of_apply, hcomb, sum_inner, inner_sum, real_inner_smul_left,
+          real_inner_smul_right, Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul]
+        exact Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun l _ => by ring
+    _ = _ := by rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hdetE, one_mul, mul_one]
+/-- If `b` is orthogonal to every `w j`, the Gram determinant of `(b, w 0, …, w (k - 1))` is
+`‖b‖²` times that of `w`.  Row 0 of the Gram matrix `M` is `(‖b‖², 0, …, 0)`, so the Laplace
+expansion along row 0 leaves only `‖b‖² · det (M.submatrix Fin.succ Fin.succ)`, and this minor
+is the Gram matrix of `w` (for `k = 0` it is the empty matrix, of determinant `1`). -/
+theorem Submission.ecf_cp_gc_det_orth : ∀ (P k : ℕ) (b : Euclid P) (w : Fin k → Euclid P), (∀ j : Fin k, inner ℝ b (w j) = 0) → Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons b w : Fin (k + 1) → Euclid P) i) ((Fin.cons b w : Fin (k + 1) → Euclid P) j)) = ‖b‖ ^ 2 * Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (w i) (w j)) := by
+  intro P k b w hbw
+  -- Laplace expansion along row 0, with the `j = 0` term split off
+  rw [Matrix.det_succ_row_zero, Fin.sum_univ_succ]
+  -- `M 0 0 = ‖b‖²` and `M 0 (j + 1) = ⟪b, w j⟫ = 0`, so only the `j = 0` term survives
+  simp only [Matrix.of_apply, Fin.cons_zero, Fin.cons_succ, hbw, mul_zero, zero_mul,
+    Finset.sum_const_zero, add_zero, Fin.val_zero, pow_zero, one_mul, Fin.succAbove_zero,
+    real_inner_self_eq_norm_sq]
+  -- the `j = 0` minor `M.submatrix Fin.succ Fin.succ` has entries `⟪w i, w j⟫` (`Fin.cons_succ`)
+  rfl
+/-- **Orthogonal residual against a finite family.**  For `a ∈ ℝᴾ` and any `w₀, …, w_{k-1} ∈ ℝᴾ`
+(not necessarily independent) there are `c₀, …, c_{k-1} ∈ ℝ` such that `a' = a - ∑ₗ cₗ wₗ` is
+orthogonal to every `w_j` and `‖a'‖ ≤ ‖a‖`.  Take `∑ₗ cₗ wₗ = π a` for the orthogonal projection
+`π` onto the (finite-dimensional, hence complete) span `W` of the `wₗ`: then `a - π a ⊥ W`, and
+Pythagoras for `a = (a - π a) + π a` gives `‖a - π a‖² ≤ ‖a‖²`. -/
+theorem Submission.ecf_cp_gc_orth_residual : ∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P), ∃ c : Fin k → ℝ, (∀ j : Fin k, inner ℝ (a - ∑ l, c l • w l) (w j) = 0) ∧ ‖a - ∑ l, c l • w l‖ ≤ ‖a‖ := by
+  intro P k a w
+  -- `π a ∈ W = span (range w)` is a linear combination `∑ₗ cₗ wₗ`
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp
+    ((Submodule.span ℝ (range w)).starProjection_apply_mem a)
+  refine ⟨c, fun j => ?_, ?_⟩
+  · -- `a - π a ⊥ w_j`, since `w_j ∈ W`
+    rw [hc]
+    exact Submodule.starProjection_inner_eq_zero a (w j) (Submodule.subset_span (mem_range_self j))
+  · -- Pythagoras: `‖a‖² = ‖a - π a‖² + ‖π a‖²`
+    rw [hc]
+    have hp := norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero _ _
+      (Submodule.starProjection_inner_eq_zero a _
+        ((Submodule.span ℝ (range w)).starProjection_apply_mem a))
+    rw [sub_add_cancel] at hp
+    rw [mul_self_le_mul_self_iff (norm_nonneg _) (norm_nonneg _), hp]
+    exact le_add_of_nonneg_right (mul_self_nonneg _)
+
+/-- The cone Jacobian (Simon 6.2.30, 6.3.10 for `h(t, x) = t x`).  Write `Γ(v) = det[⟨vᵢ, vⱼ⟩]`
+for the Gram determinant of a family `v`, `J = √Γ`, and `(a, w) = Fin.cons a w`.
+(i) `Γ(a, t·w) = (tᵏ)²·Γ(a, w)`, so `J(a, t·w) = tᵏ·J(a, w)` for `t ≥ 0`.
+(ii) For the residual `a' = a - ∑ cₗ wₗ` of `a` orthogonal to every `wⱼ`, with `‖a'‖ ≤ ‖a‖`, shear
+invariance and the orthogonal block formula give `Γ(a, w) = Γ(a', w) = ‖a'‖²·Γ(w)`, so
+`J(a, w) = ‖a'‖·J(w) ≤ ‖a‖·J(w)`.  No independence of `w` is needed. -/
+theorem Submission.ecf_cp_gram_cone : ∀ (P k : ℕ) (a : Euclid P) (w : Fin k → Euclid P), (∀ t : ℝ, 0 ≤ t → Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) i) ((Fin.cons a (t • w) : Fin (k + 1) → Euclid P) j))) = t ^ k * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j)))) ∧ Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons a w : Fin (k + 1) → Euclid P) i) ((Fin.cons a w : Fin (k + 1) → Euclid P) j))) ≤ ‖a‖ * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (w i) (w j))) := by
+  intro P k a w
+  refine ⟨fun t ht => ?_, ?_⟩
+  · -- (i): `√((tᵏ)²·Γ) = √((tᵏ)²)·√Γ = tᵏ·√Γ`, as `tᵏ ≥ 0`
+    have h := congrArg Real.sqrt (Submission.ecf_cp_gc_det_smul P k a w t)
+    rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (pow_nonneg ht k)] at h
+    exact h
+  · -- (ii): `Γ(a, w) = Γ(a', w) = ‖a'‖²·Γ(w)`, then `√(‖a'‖²·Γ(w)) = ‖a'‖·√Γ(w)`
+    obtain ⟨c, horth, hle⟩ := Submission.ecf_cp_gc_orth_residual P k a w
+    have h := congrArg Real.sqrt ((Submission.ecf_cp_gc_det_shear P k a w c).symm.trans
+      (Submission.ecf_cp_gc_det_orth P k _ w horth))
+    rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (norm_nonneg _)] at h
+    exact h.trans_le (mul_le_mul_of_nonneg_right hle (Real.sqrt_nonneg _))
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
