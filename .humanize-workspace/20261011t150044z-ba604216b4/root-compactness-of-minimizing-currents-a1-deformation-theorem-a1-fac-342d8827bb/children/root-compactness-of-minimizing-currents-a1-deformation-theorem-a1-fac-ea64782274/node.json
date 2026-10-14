@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1.tangent_le_plane-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1",
+  "depth": 5,
+  "title": "Approximate tangent planes of a set lying in an affine plane x + V are contained in V",
+  "statement": "Let P, n ∈ ℕ, A ⊆ ℝ^P (= Euclid P), x ∈ ℝ^P, and let Q, V be linear subspaces of ℝ^P. Assume a − x ∈ V for every a ∈ A.\n\nAssume also that Q is an approximate tangent space of A at x in the sense of HasApproximateTangentSpaceAt n A x Q (Simon Ch. 3, Definition 1.4). This means:\n- finrank Q = n, and\n- for every compactly supported continuous f : ℝ^P → ℝ, ∫_{η_{x,r}(A)} f dHⁿ → ∫_Q f dHⁿ as r → 0⁺.\nHere η_{x,r}(y) = r⁻¹(y − x) is blowUpMap x r, Hⁿ = μHE[n], each integral is taken against the restriction of Hⁿ to the indicated set, and no measurability of A is assumed.\n\nThen Q ⊆ V.",
+  "lean_statement": "∀ (P n : ℕ) (A : Set (Euclid P)) (x : Euclid P) (Q V : Submodule ℝ (Euclid P)), (∀ a ∈ A, a - x ∈ V) → HasApproximateTangentSpaceAt n A x Q → Q ≤ V",
+  "lean_name": "cmcdtfrpo_approxTangent_le_of_sub_mem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-ea64782274-a1"
+}
