@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1",
+  "depth": 5,
+  "title": "Approximate tangent planes and unit orientations of subsets of a coordinate plane are ±e_ι",
+  "statement": "Let P, n ∈ ℕ, ι : Fin n → Fin P strictly increasing, A ⊆ Euclid P, x ∈ Euclid P, Q a linear subspace of Euclid P, and ξ an n-vector (MultiVector P n, a continuous linear functional on n-covectors). Assume a_i = x_i for every a ∈ A and every coordinate i outside the range of ι. Assume also that Q is an approximate tangent space of A at x (HasApproximateTangentSpaceAt n A x Q, Simon Ch. 3, 1.4) and that ξ is a unit orientation of Q (IsUnitOrientationOf ξ Q). Then either ξ(α) = α(e_{ι(0)}, …, e_{ι(n−1)}) for every n-covector α, or ξ(α) = −α(e_{ι(0)}, …, e_{ι(n−1)}) for every n-covector α.",
+  "lean_statement": "∀ (P n : ℕ) (ι : Fin n → Fin P) (A : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), StrictMono ι → (∀ a ∈ A, ∀ i, (∀ j, ι j ≠ i) → a i = x i) → HasApproximateTangentSpaceAt n A x Q → IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, ξ α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∨ (∀ α : Covector (Euclid P) n, ξ α = -α (fun j => EuclideanSpace.single (ι j) (1 : ℝ)))",
+  "lean_name": "dimred_mbl_dtfr_plane_orientation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b895663c5c-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.finite_family-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1",
+  "depth": 5,
+  "title": "Finitely many bounded integer polyhedral chains meet a compact set",
+  "statement": "Let P, k ∈ ℕ, let K ⊆ Euclid P be compact, and let Λ ∈ ℝ. Consider the currents T ∈ 𝒟_k(Euclid P) (domain univ) for which there are a finite set s of index pairs p = (ι, b) (ι : Fin k → Fin P strictly increasing, b : Fin P → ℤ) and integers β_p such that: Φ_p(y) ∈ K for some y ∈ [0,1]^k, for each p ∈ s; Σ_{p∈s}|β_p| ≤ Λ; and T(ω) = Σ_{p∈s} β_p ∫_{(0,1)^k} ω(Φ_p y)(e_{ι(0)}, …, e_{ι(k−1)}) dy for all test k-forms ω, where Φ_p(y) := b + Σ_j y_j e_{ι(j)}. The set of such T is finite.",
+  "lean_statement": "∀ (P k : ℕ) (K : Set (Euclid P)) (Λ : ℝ), IsCompact K → {T : GeometricCurrentOn (univ : Set (Euclid P)) k | ∃ (s : Finset ((Fin k → Fin P) × (Fin P → ℤ))) (β : (Fin k → Fin P) × (Fin P → ℤ) → ℤ), (∀ p ∈ s, StrictMono p.1) ∧ (∀ p ∈ s, ∃ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ K) ∧ ∑ p ∈ s, |(β p : ℝ)| ≤ Λ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) k, T ω = ∑ p ∈ s, (β p : ℝ) * ∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, (ω : DifferentialForm (Euclid P) k) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))}.Finite",
+  "lean_name": "dimred_mbl_dtfr_finite_family",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b213555d2c-a1"
+}

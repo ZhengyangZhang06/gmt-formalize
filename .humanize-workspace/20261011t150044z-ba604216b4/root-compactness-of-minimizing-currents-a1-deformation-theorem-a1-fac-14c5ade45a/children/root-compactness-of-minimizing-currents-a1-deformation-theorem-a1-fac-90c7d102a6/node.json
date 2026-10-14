@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1.face_coord-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.face_geometry-a1",
+  "depth": 5,
+  "title": "Coordinates of the lattice face map b + Σ_j y_j e_{ι(j)}",
+  "statement": "Let P, k ∈ ℕ, let ι : Fin k → Fin P be injective, let b : Fin P → ℤ and let y ∈ Euclid k. Put e_i := EuclideanSpace.single i 1 ∈ Euclid P and Φ(y) := toLp(b) + Σ_{j : Fin k} y_j • e_{ι(j)} ∈ Euclid P, where toLp(b) is the vector with coordinates (b_i : ℝ). Then (i) Φ(y)_{ι(m)} = b_{ι(m)} + y_m for every m : Fin k, and (ii) Φ(y)_l = b_l for every l : Fin P with ι(m) ≠ l for all m : Fin k.",
+  "lean_statement": "∀ (P k : ℕ) (ι : Fin k → Fin P) (b : Fin P → ℤ) (y : Euclid k), Function.Injective ι → (∀ m, (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (ι m) = (b (ι m) : ℝ) + y m) ∧ (∀ l, (∀ m, ι m ≠ l) → (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) l = (b l : ℝ))",
+  "lean_name": "cmcdtfrfg_face_coord",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-90c7d102a6-a1"
+}

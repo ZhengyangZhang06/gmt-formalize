@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.skeleton_null-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1",
+  "depth": 5,
+  "title": "The (n−1)-skeleton of the unit lattice is Hⁿ-null",
+  "statement": "For all P, m ∈ ℕ the set L_m := {x ∈ Euclid P : there is a finite set s of coordinates with P ≤ m + |s| and x_i ∈ ℤ for all i ∈ s} (the points with at least P − m integer coordinates) satisfies μHE[m+1](L_m) = 0.",
+  "lean_statement": "∀ (P m : ℕ), μHE[m + 1] {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} = 0",
+  "lean_name": "dimred_mbl_dtfr_skeleton_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-e0e047b833-a1"
+}
