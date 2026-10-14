@@ -39653,4 +39653,88 @@ theorem Submission.dtc_bc_tc_closure : ∀ (P m : ℕ) (Ts : ℕ → GeometricCu
   refine hCL (m + 1) hmP univ Ts T isOpen_univ hTs (fun W hW hWU => ?_) hconv
   exact hmass W hW (isBounded_closure_iff.mp hWU.1.isBounded)
 
+/-- **Truncated compactness** (Simon Ch. 6, 4.9–4.10 and 3.11, as used for 7.3.1(2)).  Let
+`n = m + 1 < P` and let `Sⱼ ∈ 𝒟ₙ(Uⱼ)` be integer multiplicity such that, for every `R`, eventually
+`B̄_R(0) ⊆ Uⱼ`, `M_{B_R(0)}(Sⱼ) ≤ c_R < ∞` and `∂Sⱼ = 0` in `B_R(0)`.  Choose `ψ` strictly
+increasing with `B̄_{k+1}(0) ⊆ U_{ψ(k)}` and `∂S_{ψ(k)} = 0` in `B_{k+1}(0)`.  Truncating
+`S_{ψ(k)}` at a good slicing radius `ρ'_k ∈ ((k + 1)/4, (k + 1)/2)` gives integer multiplicity
+`T_k ∈ 𝒟ₙ(ℝᴾ)` which agree with `S_{ψ(k)}` and have no boundary in `B_{ρ'_k}(0)`, with
+`M_O(T_k) ≤ M_O(S_{ψ(k)})` and `M(T_k), M(∂T_k) < ∞`; hence `sup_k (M_W(T_k) + M_W(∂T_k)) < ∞` for
+bounded open `W`.  A weakly convergent subsequence `T_{φ'(j)} ⇀ C` has an integer multiplicity
+limit (Federer–Fleming), and agreement on `B_{ρ_j}(0)` with `ρ_j → ∞` gives `∂C = 0` and
+`S_{φ(j)} ⇀ C`. -/
+theorem Submission.dtc_bc_truncated_compactness : ∀ (P m : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)), m + 1 < P → (∀ j, IsOpen (Us j)) → (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → (∀ j, IsIntegerMultiplicity (Ss j)) → (∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop, (Ss j).massOn (ball 0 R) ≤ c) → (∀ R : ℝ, ∀ᶠ j in atTop, ∀ ω : TestFormOn (Us j) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → (Ss j).boundary ω = 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (Ŝ : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ρ : ℕ → ℝ), StrictMono φ ∧ IsIntegerMultiplicity C ∧ C.boundary = 0 ∧ ConvergesWeakly (fun j => Ss (φ j)) C ∧ (∀ j, IsIntegerMultiplicity (Ŝ j)) ∧ (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, ((Ŝ j).massOn W + (Ŝ j).boundary.massOn W) < ∞) ∧ WeaklyConvergesOn Ŝ C ∧ Tendsto ρ atTop atTop ∧ (∀ j, closedBall (0 : Euclid P) (ρ j) ⊆ Us (φ j)) ∧ ∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 (ρ j) → Ŝ j ω = currentEval (Ss (φ j)) (ω : DifferentialForm (Euclid P) (m + 1)) := by
+  intro P m Us Ss hmP hUo hUs hIM hmass hbd
+  -- Step 1: `ψ` strictly increasing, `B̄_{k+1}(0) ⊆ U_{ψ(k)}` and `∂S_{ψ(k)} = 0` on `B_{k+1}(0)`.
+  obtain ⟨ψ, hψ, hψk⟩ := Filter.extraction_forall_of_eventually fun k : ℕ =>
+    (hUs ((k : ℝ) + 1)).and (hbd ((k : ℝ) + 1))
+  -- Steps 2–3: truncate `S_{ψ(k)}` at a good radius `ρ'_k ∈ ((k + 1)/4, (k + 1)/2)`.
+  choose ρ' T hρlo hρhi hTIM hTeq hTbd hTmass hTfin hTbfin using fun k : ℕ =>
+    Submission.dtc_bc_tc_truncation P m (Us (ψ k)) (Ss (ψ k)) ((k : ℝ) + 1) (hUo (ψ k))
+      (by positivity) (hψk k).1 (hIM (ψ k)) (hψk k).2
+  have hρ' : Tendsto ρ' atTop atTop := by
+    refine tendsto_atTop_atTop.2 fun b => ⟨⌈4 * b⌉₊, fun k hk => ?_⟩
+    have : 4 * b ≤ k := (Nat.le_ceil _).trans (Nat.cast_le.2 hk)
+    linarith [hρlo k]
+  -- Step 4: `sup_k (M_W(T_k) + M_W(∂T_k)) < ∞` for every bounded open `W`.
+  have hbound : ∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W →
+      ⨆ k, ((T k).massOn W + (T k).boundary.massOn W) < ∞ := by
+    intro W hWo hWb
+    obtain ⟨r, hWr⟩ := hWb.subset_ball (0 : Euclid P)
+    obtain ⟨c, hc, hcev⟩ := hmass r
+    -- for large `k`: `M_W(T_k) ≤ M_{B_r(0)}(S_{ψ(k)}) ≤ c` and `M_W(∂T_k) = 0` (`W ⊆ B_{ρ'_k}(0)`)
+    have hev : ∀ᶠ k in atTop, (T k).massOn W + (T k).boundary.massOn W ≤ c := by
+      filter_upwards [hψ.tendsto_atTop.eventually hcev, hρ'.eventually_ge_atTop r] with k hk hkr
+      have hb : (T k).boundary.massOn W ≤ 0 := by
+        refine sSup_le ?_
+        rintro _ ⟨β, hβ, rfl⟩
+        dsimp only
+        rw [hTbd k β (hβ.1.trans (hWr.trans (ball_subset_ball hkr))), ENNReal.ofReal_zero]
+      calc (T k).massOn W + (T k).boundary.massOn W ≤ c + 0 :=
+            add_le_add (((hTmass k W hWo).trans ((Ss (ψ k)).massOn_mono hWr)).trans hk) hb
+        _ = c := add_zero c
+    obtain ⟨K, hK⟩ := eventually_atTop.1 hev
+    -- the finitely many earlier terms are finite, as `M(T_k) < ∞` and `M(∂T_k) < ∞`
+    have hfin : ∀ k, (T k).massOn W + (T k).boundary.massOn W < ∞ := fun k =>
+      ENNReal.add_lt_top.2 ⟨((T k).massOn_mono (subset_univ W)).trans_lt (hTfin k),
+        ((T k).boundary.massOn_mono (subset_univ W)).trans_lt (hTbfin k)⟩
+    calc ⨆ k, ((T k).massOn W + (T k).boundary.massOn W)
+        ≤ c + ∑ k ∈ Finset.range K, ((T k).massOn W + (T k).boundary.massOn W) := by
+          refine iSup_le fun k => ?_
+          rcases le_or_gt K k with hKk | hkK
+          · exact (hK k hKk).trans le_self_add
+          · exact (Finset.single_le_sum (f := fun k => (T k).massOn W + (T k).boundary.massOn W)
+              (fun _ _ => zero_le) (Finset.mem_range.2 hkK)).trans le_add_self
+      _ < ∞ := ENNReal.add_lt_top.2 ⟨hc.lt_top, ENNReal.sum_lt_top.2 fun k _ => hfin k⟩
+  -- Step 5: a weakly convergent subsequence (Simon 6.2.15) with integer multiplicity limit
+  -- (Simon 6.3.11).
+  obtain ⟨φ', C, hφ', hconv⟩ := Submission.dtc_bc_tc_weak_compactness P (m + 1) T
+    fun W hWo hWb => lt_of_le_of_lt (iSup_mono fun k => le_self_add) (hbound W hWo hWb)
+  have hsub : ∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W →
+      ⨆ j, ((T (φ' j)).massOn W + (T (φ' j)).boundary.massOn W) < ∞ := fun W hWo hWb =>
+    lt_of_le_of_lt (iSup_le fun j =>
+      le_iSup (fun k => (T k).massOn W + (T k).boundary.massOn W) (φ' j)) (hbound W hWo hWb)
+  have hρ : Tendsto (fun j => ρ' (φ' j)) atTop atTop := hρ'.comp hφ'.tendsto_atTop
+  -- Step 6: `φ = ψ ∘ φ'`, `Ŝ_j = T_{φ'(j)}`, `ρ_j = ρ'_{φ'(j)}`.
+  refine ⟨fun j => ψ (φ' j), C, fun j => T (φ' j), fun j => ρ' (φ' j), hψ.comp hφ',
+    Submission.dtc_bc_tc_closure P m (fun j => T (φ' j)) C hmP (fun j => hTIM (φ' j)) hsub hconv,
+    ?_, ?_, fun j => hTIM (φ' j), hsub, hconv, hρ, fun j => ?_, fun j => hTeq (φ' j)⟩
+  · -- `∂C = 0`: `∂C(β) = lim_j ∂T_{φ'(j)}(β)`, and `∂T_{φ'(j)}(β) = 0` once `spt β ⊆ B_{ρ_j}(0)`
+    ext β
+    have hβc : HasCompactSupport (β : DifferentialForm (Euclid P) m) := β.property.1.2
+    obtain ⟨r, hr⟩ := hβc.isCompact.isBounded.subset_ball (0 : Euclid P)
+    refine tendsto_nhds_unique (hconv.boundary β) (tendsto_const_nhds.congr' ?_)
+    filter_upwards [hρ.eventually_ge_atTop r] with j hj
+    exact (hTbd (φ' j) β (hr.trans (ball_subset_ball hj))).symm
+  · -- `S_{φ(j)} ⇀ C`: `currentEval(S_{φ(j)}, ω) = T_{φ'(j)}(ω)` once `spt ω ⊆ B_{ρ_j}(0)`
+    intro ω
+    have hωc : HasCompactSupport (ω : DifferentialForm (Euclid P) (m + 1)) := ω.property.1.2
+    obtain ⟨r, hr⟩ := hωc.isCompact.isBounded.subset_ball (0 : Euclid P)
+    refine (hconv ω).congr' ?_
+    filter_upwards [hρ.eventually_ge_atTop r] with j hj
+    exact hTeq (φ' j) ω (hr.trans (ball_subset_ball hj))
+  · -- `B̄_{ρ_j}(0) ⊆ B̄_{φ'(j)+1}(0) ⊆ U_{φ(j)}`
+    have h0 : (0 : ℝ) ≤ φ' j := Nat.cast_nonneg _
+    exact (closedBall_subset_closedBall (by linarith [hρhi (φ' j)])).trans (hψk (φ' j)).1
+
 end GMT.Ch07
