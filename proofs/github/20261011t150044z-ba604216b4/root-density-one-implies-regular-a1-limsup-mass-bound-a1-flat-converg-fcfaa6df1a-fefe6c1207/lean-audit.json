@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3e4f08ee9d6e84ea6cbf0a84b8033d953d8d3b98dbc513bb08a30b5107208ee8",
+  "git_delta": {
+    "base_commit": "7e91fe30e2ffd73d8fd9022e1a74e69718aa3353",
+    "candidate_commit": "d3f54a913cc3aaf8939fb2ec4def8124d664bdd9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcdr_grid_segment",
+    "diff_sha256": "f56bd22461a8ac1d57e961591789c727164fb2a8f0a6019528275af20a12ed01",
+    "source_sha256": "bb6b0245d3e6d998c842a3eb893264da4e2c8a2082656d38949c8c41ce3fcd46",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcdr_grid_segment",
+      "statement": "∀ (P : ℕ) (f : Euclid P → Euclid P) (S : Set (Euclid P)) (K : ℝ), 0 ≤ K → (∀ (z : Fin P → ℤ) (x y : Euclid P), x ∈ S → y ∈ S → (∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1) → (∀ i, (z i : ℝ) ≤ y i ∧ y i ≤ z i + 1) → dist (f x) (f y) ≤ K * dist x y) → ∀ x y : Euclid P, segment ℝ x y ⊆ S → dist (f x) (f y) ≤ K * dist x y",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
