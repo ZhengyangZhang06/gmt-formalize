@@ -1934,6 +1934,49 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
+/-- **Simon 7.3.5** (proof left to the reader, chapter-07.txt lines 407–417), the carrier of a
+competitor: let `S₁ = τ(M₁, θ₁, ξ₁)` and `S₂ = τ(M₂, θ₂, ξ₂)` in `ℝᴾ`, `μᵢ = θᵢHʲ⌞Mᵢ`, and let
+`F` be closed.  If `μ₂(ℝᴾ ∖ F) = 0` and `spt(S₁ − S₂) ⊆ F`, then `μ₁(ℝᴾ ∖ F) = 0`.  A point off
+`F` has a `μ₂`-null ball, so `spt S₂ ⊆ F` (`dimred_im_mass_measure`); off `F` both `S₂` and
+`S₁ − S₂` vanish on open sets `W ⊂⊂ ℝᴾ`, so `S₁ = S₂ + (S₁ − S₂)` vanishes on their intersection
+and `spt S₁ ⊆ F`; finally `μ₁(ℝᴾ ∖ spt S₁) = 0` (`imrep_carrier_sdiff_support_null`). -/
+theorem Submission.dimred_cs_sos_mt_cm_carried_transfer : ∀ (P j : ℕ) (S₁ S₂ : GeometricCurrentOn (univ : Set (Euclid P)) j) (R₁ R₂ : IMRep (univ : Set (Euclid P)) j) (F : Set (Euclid P)), R₁.Represents S₁ → R₂.Represents S₂ → IsClosed F → R₂.measure Fᶜ = 0 → (S₁ - S₂).support ⊆ F → R₁.measure Fᶜ = 0 := by
+  intro P j S₁ S₂ R₁ R₂ F hR₁ hR₂ hF hR₂F hsupp
+  -- `spt S₂ ⊆ F`: a point `x ∉ F` has a ball `B_ε(x) ⊆ ℝᴾ ∖ F`, which is `μ₂`-null
+  have h2 : S₂.support ⊆ F := by
+    intro x hx
+    by_contra hxF
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hF.isOpen_compl x hxF
+    exact ((Submission.dimred_im_mass_measure P j univ S₂ R₂ isOpen_univ hR₂).2.1 x (mem_univ x)).1
+      hx ε hε (measure_mono_null hball hR₂F)
+  -- `spt S₁ ⊆ F`: off `F`, `S₂` vanishes on some `W₁ ⊂⊂ ℝᴾ` and `S₁ − S₂` on some `W₂ ⊂⊂ ℝᴾ`
+  -- about `x`, so `S₁` vanishes on `W₁ ∩ W₂ ⊂⊂ ℝᴾ`
+  have h1 : S₁.support ⊆ F := by
+    intro x hx
+    by_contra hxF
+    have hz2 : x ∈ S₂.zeroRegion := by
+      by_contra hc
+      exact hxF (h2 ⟨mem_univ x, hc⟩)
+    have hz3 : x ∈ (S₁ - S₂).zeroRegion := by
+      by_contra hc
+      exact hxF (hsupp ⟨mem_univ x, hc⟩)
+    obtain ⟨W₁, ⟨hW₁o, hW₁c, hW₁U, hW₁v⟩, hxW₁⟩ := mem_sUnion.mp hz2
+    obtain ⟨W₂, ⟨hW₂o, -, -, hW₂v⟩, hxW₂⟩ := mem_sUnion.mp hz3
+    have hcl : closure (W₁ ∩ W₂) ⊆ closure W₁ := closure_mono inter_subset_left
+    apply hx.2
+    refine mem_sUnion.mpr ⟨W₁ ∩ W₂, ⟨hW₁o.inter hW₂o, hW₁c.of_isClosed_subset isClosed_closure hcl,
+      hcl.trans hW₁U, ?_⟩, hxW₁, hxW₂⟩
+    intro ω hω
+    have e1 : S₂ ω = 0 := hW₁v ω (hω.trans inter_subset_left)
+    have e2 : S₁ ω - S₂ ω = 0 := hW₂v ω (hω.trans inter_subset_right)
+    linarith
+  -- `μ₁(ℝᴾ ∖ spt S₁) = 0`: `μ₁ ≪ Hʲ⌞M₁` and `Hʲ(M₁ ∖ spt S₁) = 0`
+  have h3 : R₁.measure (S₁.support)ᶜ = 0 := by
+    apply withDensity_absolutelyContinuous
+    rw [Measure.restrict_apply' R₁.measurableSet_carrier, inter_comm, ← Set.sdiff_eq]
+    exact Submission.imrep_carrier_sdiff_support_null P j univ S₁ R₁ isOpen_univ hR₁
+  exact measure_mono_null (compl_subset_compl.mpr h1) h3
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
