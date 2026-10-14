@@ -2970,6 +2970,47 @@ theorem Submission.covectorEuclideanNorm_gram_bounds : ∀ (P n : ℕ), (∀ (α
     unfold covectorEuclideanNorm
     rw [← he, hsum, Real.sqrt_one]
 
+/-- **Radial slicing bound** (Simon Ch. 6, 4.9–4.11 for `f(y) = |y|`, chapter-06.txt
+lines 1335–1403, with the a.e. differentiation of 4.10 replaced by Tonelli and Fatou).  If
+`S = τ(M, θ, ξ)`, `B̄_R(0) ⊆ U` and `∂S = 0` in `B_R(0)`, then some `t ∈ (R/4, R/2)` and `σ`
+satisfy `|∫_{M ∩ B_t(0)} θ⟨dβ, ξ⟩ dHⁿ| ≤ σ s` for every `β ∈ 𝒟ᵐ(ℝᴾ)` with `|β| ≤ s`.  With
+`μ = θ Hⁿ⌞M`, `μ(B̄_{R/2}(0)) < ∞`, so the radial image `ν = |·|_# μ` has `ν([R/4, R/2]) < ∞` and
+`cmc_fc_good_slice` (for the constant sequence `ν`) gives `t ∈ (R/4, R/2)` and `C < ∞` with
+`liminf_{h↓0} h⁻¹ μ({t − h < |x| < t}) ≤ C`.  As `t < R`, `dtc_bc_tc_rs_radius_bound` bounds the
+truncated integral by `s C`; take `σ = C`. -/
+theorem Submission.dtc_bc_tc_radial_slice_bound : ∀ (P m : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (Rp : IMRep U (m + 1)) (R : ℝ), IsOpen U → 0 < R → closedBall (0 : Euclid P) R ⊆ U → Rp.Represents S → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → S.boundary ω = 0) → ∃ t σ : ℝ, R / 4 < t ∧ t < R / 2 ∧ ∀ (β : TestFormOn (univ : Set (Euclid P)) m) (s : ℝ), (∀ x, covectorEuclideanNorm ((β : DifferentialForm (Euclid P) m) x) ≤ s) → |∫ x in Rp.carrier ∩ ball 0 t, (Rp.mult x : ℝ) * Rp.orient x (exteriorDerivative (β : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]| ≤ σ * s := by
+  intro P m U S Rp R _hU hR hRU hrep hbd
+  -- `μ(B̄_{R/2}(0)) = ∫_{M ∩ B̄_{R/2}(0)} θ dHⁿ < ∞`, `B̄_{R/2}(0)` being a compact subset of `U`
+  have hfin : Rp.measure (closedBall (0 : Euclid P) (R / 2)) ≠ ∞ := by
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact Rp.locallyIntegrable_mult _ (isCompact_closedBall 0 (R / 2))
+      ((closedBall_subset_closedBall (by linarith)).trans hRU)
+  -- the radial image `ν = |·|_# μ`: `ν((t − h, t)) = μ({t − h < |x| < t})` and
+  -- `ν([R/4, R/2]) ≤ μ(B̄_{R/2}(0))`
+  have hνIoo : ∀ t h : ℝ, Rp.measure.map (fun x : Euclid P => ‖x‖) (Ioo (t - h) t) =
+      Rp.measure {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t} :=
+    fun t h => Measure.map_apply measurable_norm measurableSet_Ioo
+  have hνIcc : Rp.measure.map (fun x : Euclid P => ‖x‖) (Icc (R / 4) (R / 2)) ≤
+      Rp.measure (closedBall (0 : Euclid P) (R / 2)) := by
+    rw [Measure.map_apply measurable_norm measurableSet_Icc]
+    exact measure_mono fun x hx => mem_closedBall_zero_iff.2 hx.2
+  -- a good radius `t ∈ (R/4, R/2)`: `liminf_{h↓0} h⁻¹ μ({t − h < |x| < t}) ≤ C < ∞`
+  obtain ⟨t, _φ, C, hat, htb, -, hC, hlim, -⟩ := Submission.cmc_fc_good_slice
+    (fun _ => Rp.measure.map (fun x : Euclid P => ‖x‖)) (R / 4) (R / 2) _ (by linarith) hfin
+    fun _ => hνIcc
+  have hliminf : liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ *
+      Rp.measure {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t}) (𝓝[>] 0) ≤ C := by
+    simpa only [hνIoo] using hlim 0
+  -- `σ = C`: as `t < R`, the bound at the fixed radius `t` gives `|I_t(β)| ≤ s C`
+  refine ⟨t, C.toReal, hat, htb, fun β s hs => ?_⟩
+  have hs0 : 0 ≤ s := (covectorEuclideanNorm_nonneg _).trans (hs 0)
+  rw [← ENNReal.ofReal_le_ofReal_iff (mul_nonneg ENNReal.toReal_nonneg hs0),
+    ENNReal.ofReal_mul ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hC, mul_comm C]
+  calc _ ≤ _ := Submission.dtc_bc_tc_rs_radius_bound P m U S Rp R t hRU hrep hbd
+        (by linarith) β s hs
+    _ ≤ ENNReal.ofReal s * C := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
