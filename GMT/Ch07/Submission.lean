@@ -451,6 +451,28 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Compact distance sublevel sets** (Simon Ch. 6, proof of 7.2, localization): if `U ⊆ ℝᴾ` is
+open and `C ⊆ U` is compact and nonempty, there is `δ₀ > 0` such that for every `r ≤ δ₀` the
+sublevel set `{x : dist(x, C) ≤ r}` is compact and contained in `U`.  Take `δ₀` with
+`cthickening δ₀ C ⊆ U`; each such sublevel set is closed (`dist(·, C)` is continuous) and lies in
+the compact set `cthickening δ₀ C`. -/
+theorem Submission.cmc_fcl_dist_sublevel_compact : ∀ (P : ℕ) (U C : Set (Euclid P)), IsOpen U → IsCompact C → C ⊆ U → C.Nonempty → ∃ δ₀ : ℝ, 0 < δ₀ ∧ ∀ r : ℝ, r ≤ δ₀ → IsCompact {x | infDist x C ≤ r} ∧ {x | infDist x C ≤ r} ⊆ U := by
+  intro P U C hU hC hCU hCne
+  -- some closed thickening `cthickening δ₀ C` of `C` lies in `U`
+  obtain ⟨δ₀, hδ₀, hsub⟩ := hC.exists_cthickening_subset_open hU hCU
+  refine ⟨δ₀, hδ₀, fun r hr => ?_⟩
+  -- `{dist(·, C) ≤ r} ⊆ cthickening δ₀ C`, since `infEDist x C = ofReal (dist(x, C))` for `C ≠ ∅`
+  have hsubset : {x | infDist x C ≤ r} ⊆ cthickening δ₀ C := by
+    intro x hx
+    have hx' : infDist x C ≤ δ₀ := le_trans hx hr
+    rw [mem_cthickening_iff, ← ENNReal.ofReal_toReal (infEDist_ne_top hCne)]
+    exact ENNReal.ofReal_le_ofReal hx'
+  -- the sublevel set of the continuous function `dist(·, C)` is closed
+  have hclosed : IsClosed {x | infDist x C ≤ r} :=
+    isClosed_le (continuous_infDist_pt C) continuous_const
+  -- a closed subset of the compact set `cthickening δ₀ C ⊆ U`
+  exact ⟨hC.cthickening.of_isClosed_subset hclosed hsubset, hsubset.trans hsub⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
