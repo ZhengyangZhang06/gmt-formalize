@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "depth": 2,
+  "title": "Simon 6.2.23–2.24 and 6.3.3–3.9: push-forward of an integer multiplicity current by a C¹ diffeomorphism",
+  "statement": "Let U ⊆ ℝ^P be open, R = (M, θ, ξ) an integer multiplicity triple representing T ∈ 𝒟_n(U), K ⊆ U compact, and φ : ℝ^P → ℝ^P a C¹ bijection with Dφ(x) injective for every x and φ(x) = x for x ∉ K. Then there is an integer multiplicity S ∈ 𝒟_n(U) with S(ω) = ∫_M θ(x)·ξ(x)(φ^#ω(x)) dH^n(x) for all ω ∈ 𝒟^n(U), where φ^#ω(x) = ω(φ(x))∘Dφ(x) is the pulled-back covector (so S = φ_#T), and ∂S = 0 whenever ∂T = 0 (BoundaryVanishes; vacuous for n = 0).",
+  "lean_statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (φ : Euclid P → Euclid P), IsOpen U → R.Represents T → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → (∀ x, x ∉ K → φ x = x) → ∃ S : GeometricCurrentOn U n, IsIntegerMultiplicity S ∧ (BoundaryVanishes T → BoundaryVanishes S) ∧ ∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]",
+  "lean_name": "imrep_c1_diffeo_pushforward_im",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-a1"
+}
