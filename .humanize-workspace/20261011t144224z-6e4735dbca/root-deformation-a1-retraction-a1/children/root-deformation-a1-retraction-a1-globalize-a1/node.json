@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.retraction-a1.globalize-a1",
+  "parent_id": "root.deformation-a1.retraction-a1",
+  "depth": 3,
+  "title": "From cube-wise pointwise bounds to the Lipschitz constant c/σ on {dist(·, L) ≥ σ}",
+  "statement": "Let N ∈ ℕ and c₁ ≥ 0. There is c ∈ [0,∞), depending only on N and c₁, such that for every set L ⊆ ℝ^N = Eucl N and every map ψ : ℝ^N → ℝ^N satisfying (H1) for every z ∈ ℤ^N and x ∉ L with z_i ≤ x_i ≤ z_i + 1 for all i, also z_i ≤ ψ(x)_i ≤ z_i + 1 for all i, and (H2) for every z ∈ ℤ^N, every x ∉ L with z_i ≤ x_i ≤ z_i + 1 for all i and every ε > 0 there is δ > 0 with |ψ(x′) − ψ(x)| ≤ (c₁/dist(x, L) + ε)|x′ − x| for all x′ ∉ L with z_i ≤ x′_i ≤ z_i + 1 for all i and |x′ − x| < δ, the following holds: for every σ with 0 < σ ≤ 1/4, ψ is Lipschitz with constant c/σ on {x : dist(x, L) ≥ σ} (dist(x, L) = infDist x L, which is 0 when L = ∅; as in Lean, c₁/0 is read as 0 in (H2), a case never used in the proof).",
+  "lean_statement": "∀ (N : ℕ) (c₁ : ℝ), 0 ≤ c₁ → ∃ c : ℝ≥0, ∀ (L : Set (Eucl N)) (ψ : Eucl N → Eucl N), (∀ (z : Fin N → ℤ) (x : Eucl N), x ∉ L → (∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1) → ∀ i, (z i : ℝ) ≤ ψ x i ∧ ψ x i ≤ z i + 1) → (∀ (z : Fin N → ℤ) (x : Eucl N), x ∉ L → (∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' : Eucl N, x' ∉ L → (∀ i, (z i : ℝ) ≤ x' i ∧ x' i ≤ z i + 1) → dist x' x < δ → dist (ψ x') (ψ x) ≤ (c₁ / infDist x L + ε) * dist x' x) → ∀ σ : ℝ, 0 < σ → σ ≤ 1 / 4 → LipschitzOnWith (c / Real.toNNReal σ) ψ {x | σ ≤ infDist x L}",
+  "lean_name": "deformation_retraction_globalize",
+  "depends_on": [
+    "root.deformation-a1.retraction-a1.dini_segment-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.retraction-a1.dini_segment-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-retraction-a1-globalize-a1-a1"
+}

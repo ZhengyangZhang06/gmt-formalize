@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.existence-a1.bounded_compatible-a1",
+  "parent_id": "root.deformation-a1.onto_skeleton-a1.pushforward_homotopy-a1.lipschitz_pushforward-a1.existence-a1",
+  "depth": 6,
+  "title": "Bounded compatible pull-back forms for a C^∞ map that is proper on A and has ‖Df‖ ≤ Λ on an open O ⊇ A (supplied Steps 2–3)",
+  "statement": "Notation: ℝ^p := Eucl p; D^q(ℝ^p) := TestFormOn univ q; |γ| := covectorEuclideanNorm γ; for a covector γ on ℝ^{m′} and a continuous linear map T : ℝ^m → ℝ^{m′}, γ∘T := γ.compContinuousLinearMap T; C^∞ means ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞). Let m, m′, k ∈ ℕ, let f : ℝ^m → ℝ^{m′} be C^∞, let A ⊆ O ⊆ ℝ^m with O open, and let Λ ∈ ℝ≥0 with ‖fderiv ℝ f x‖ ≤ Λ for every x ∈ O. Assume that f is proper on A: f⁻¹(K) ∩ A is compact for every compact K ⊆ ℝ^{m′}. Then for every ω ∈ D^k(ℝ^{m′}) there is η ∈ D^k(ℝ^m) such that (i) η is compatible with (f, ω) near A: there is an open N ⊆ ℝ^m with A ⊆ N and η(x) = ω(f(x))∘(fderiv ℝ f x) for every x ∈ N; and (ii) for every C ∈ ℝ with |ω(y)| ≤ C for all y ∈ ℝ^{m′}, one has |η(x)| ≤ Λ^k·C for all x ∈ ℝ^m.",
+  "lean_statement": "∀ (m m' k : ℕ) (f : Eucl m → Eucl m') (A O : Set (Eucl m)) (Λ : ℝ≥0), IsOpen O → A ⊆ O → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ x ∈ O, ‖fderiv ℝ f x‖ ≤ Λ) → (∀ K : Set (Eucl m'), IsCompact K → IsCompact (f ⁻¹' K ∩ A)) → ∀ ω : TestFormOn (univ : Set (Eucl m')) k, ∃ η : TestFormOn (univ : Set (Eucl m)) k, (∃ N : Set (Eucl m), IsOpen N ∧ A ⊆ N ∧ ∀ x ∈ N, (η : DifferentialForm (Eucl m) k) x = ((ω : DifferentialForm (Eucl m') k) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∧ ∀ C : ℝ, (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Eucl m') k) y) ≤ C) → ∀ x, covectorEuclideanNorm ((η : DifferentialForm (Eucl m) k) x) ≤ (Λ : ℝ) ^ k * C",
+  "lean_name": "dph_lpfex_bounded_compatible_form",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.compatible_form-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.compatible_form-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-compatible-form-a1-a1",
+      "result_commit": "fd5f1e29719e3bfa62df774678e3c6879599f8f9",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.pullback_norm-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-pullback-norm-a1-a1",
+      "result_commit": "3e52d3e816fb507ab732d7ad15590fb7280bc981",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-onto-skeleton-a1-pushforward-homotopy-a1-lipschit-77970eab9a-a1"
+}

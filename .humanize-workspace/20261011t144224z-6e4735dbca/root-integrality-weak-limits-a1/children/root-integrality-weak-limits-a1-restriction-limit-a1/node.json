@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.restriction_limit-a1",
+  "parent_id": "root.integrality_weak_limits-a1",
+  "depth": 2,
+  "title": "Weak convergence of restrictions to sublevel sets (Helly selection, P6)",
+  "statement": "Let U ⊆ ℝ^P be open, X_j ⇀ X in D_k(U), W ⊆ U open with sup_j M_W(X_j) < ∞, and φ : ℝ^P → ℝ continuous on U. Then there are a strictly increasing ψ : ℕ → ℕ and a countable E ⊆ ℝ such that for every s ∉ E and all restrictions R_j of X_{ψ(j)} and R of X to {x ∈ U : φ(x) < s}: (A) R_j(ω) → R(ω) for every test form ω with tsupport ω ⊆ W; (B) if {x ∈ U : φ(x) ≤ s} ⊆ K for some compact K ⊆ W, then R_j ⇀ R.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ (Xj : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (W : Set (Eucl P)) (φ : Eucl P → ℝ), WeaklyConvergesOn Xj X → IsOpen W → W ⊆ U → (⨆ j, (Xj j).massOn W) < ∞ → ContinuousOn φ U → ∃ (ψ : ℕ → ℕ) (E : Set ℝ), StrictMono ψ ∧ E.Countable ∧ ∀ s ∉ E, ∀ (Rj : ℕ → GeometricCurrentOn U k) (R : GeometricCurrentOn U k), (∀ j, IsRestriction (Xj (ψ j)) {x | x ∈ U ∧ φ x < s} (Rj j)) → IsRestriction X {x | x ∈ U ∧ φ x < s} R → (∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ W → Tendsto (fun j => Rj j ω) atTop (𝓝 (R ω))) ∧ (∀ K : Set (Eucl P), IsCompact K → K ⊆ W → {x | x ∈ U ∧ φ x ≤ s} ⊆ K → WeaklyConvergesOn Rj R)",
+  "lean_name": "iwl_restriction_weak_limit",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.restriction_theory-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.restriction_theory-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-restriction-limit-a1-a1"
+}

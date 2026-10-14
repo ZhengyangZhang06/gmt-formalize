@@ -1,0 +1,85 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.deformation-a1.retraction-a1`
+- Child DAG node: `root.deformation-a1.retraction-a1.dini_segment-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 5 of the parent proof (passage from the pointwise upper Lipschitz constant to a bound along a segment, used in Step 6(a), i.e. the last sentence of the parent's B3), with the factor |p′ − p| of the parent absorbed into K.
+
+1. Continuity. Let s ∈ [0,1]. The hypothesis with ε = 1 gives δ > 0 such that ‖γ(s′) − γ(s)‖ ≤ (K + 1)|s′ − s| ≤ |K + 1|·|s′ − s| for all s′ ∈ [0,1] with |s′ − s| < δ. Hence γ is continuous within [0,1] at s, i.e. γ is continuous on [0,1].
+2. Fix ε > 0 and let S := {s ∈ [0,1] : ‖γ(s) − γ(0)‖ ≤ (K + ε)s}. Then 0 ∈ S, and S = {s ∈ [0,1] : g(s) ≤ 0} for g(s) := ‖γ(s) − γ(0)‖ − (K + ε)s, which is continuous on the closed set [0,1] by Step 1. Hence S is a closed subset of the compact set [0,1], nonempty, and s* := max S exists.
+3. Suppose s* < 1. Let δ > 0 be given by the hypothesis at s* for this ε, and put s′ := min{1, s* + δ/2}. Then s* < s′ ≤ 1 and |s′ − s*| < δ, so ‖γ(s′) − γ(s*)‖ ≤ (K + ε)(s′ − s*). By the triangle inequality and s* ∈ S, ‖γ(s′) − γ(0)‖ ≤ ‖γ(s′) − γ(s*)‖ + ‖γ(s*) − γ(0)‖ ≤ (K + ε)(s′ − s*) + (K + ε)s* = (K + ε)s′, i.e. s′ ∈ S although s′ > max S, a contradiction. Hence s* = 1, that is, ‖γ(1) − γ(0)‖ ≤ K + ε.
+4. Since ε > 0 was arbitrary, ‖γ(1) − γ(0)‖ ≤ K. (If K < 0 the hypothesis cannot hold, because for ε := −K/2 it would force ‖γ(s′) − γ(s)‖ < 0 for points s′ ≠ s of [0,1] arbitrarily close to s; the argument above covers every real K uniformly.) ∎
+
+Formalization notes (optional, not needed for the proof above): (1) Steps 1–3 can be shortened: with t := sup S (S nonempty, bounded by 1), the hypothesis at t applied to a point s ∈ S ∩ (t − δ, t] gives ‖γ(t) − γ(0)‖ ≤ (K + ε)(t − s) + (K + ε)s = (K + ε)t, so t ∈ S without any continuity argument, and Step 3 then forces t = 1. (2) Steps 2–3 are an instance of Mathlib's fencing theorem image_norm_le_of_liminf_right_slope_norm_lt_deriv_boundary (Mathlib/Analysis/Calculus/MeanValue.lean) on [0,1] with f(s) := γ(s) − γ(0), f′ :≡ K + ε/2, B(s) := (K + ε)s, B′ :≡ K + ε; its right-slope hypothesis follows from the assumption because ‖f(z)‖ − ‖f(s)‖ ≤ ‖γ(z) − γ(s)‖, and its continuity hypothesis is Step 1.
+
+## Key steps
+
+1. Continuity of γ on [0,1] from the hypothesis with ε = 1.
+2. For fixed ε > 0 the set S = {s ∈ [0,1] : ‖γ(s) − γ(0)‖ ≤ (K + ε)s} is closed, contains 0 and has a maximum s*.
+3. If s* < 1, the hypothesis at s* gives s′ = min{1, s* + δ/2} ∈ S with s′ > s*, a contradiction; hence ‖γ(1) − γ(0)‖ ≤ K + ε.
+4. Let ε ↓ 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d; workspace HEAD = d8d46c9, lake-manifest mathlib 25730c7c, simongmt 2b366308)`
+- `cmp project/GMT/Ch06/Contract.lean <workspace>/GMT/Ch06/Contract.lean; cmp <workspace>/GMT/Ch06/Submission.lean <workspace>/GMT/Ch06/Contract.lean (both byte-identical)`
+- `sha256 of the handoff natural_proof = f9b0bcb279bf1f28ada1344b4844ae5656e9881b857082eece03bd18e8da3a36 (= proof_sha256 of decomposition-scope-v1.json; also contained verbatim in parent-supplied-natural-proof.md)`
+- `rg -n -i 'retract|radial|gauge|skeleton' project/GMT (only Ch04 normalRadialSq; no cubical or radial retraction, no skeleton lemma)`
+- `rg -n 'deformation_retraction_' project .lake/packages/simongmt/Poincare; grep -rn 'deformation_retraction_' GMT .lake/packages/simongmt/Poincare (no match)`
+- `rg -l -i 'retraction|radialRetraction' .lake/packages/simongmt/Poincare (only unrelated Chapter08 ConstancyNormalCharts/PolarNorm/ConstancyRemarks)`
+- `rg -n 'abbrev SimonMultiIndex' simongmt Poincare/SimonGMT/Chapter06 (FormsDuality.lean:22, Fin n ↪o Fin p)`
+- `rg -n 'theorem image_norm_le_of_liminf_right_slope_norm_lt_deriv_boundary' mathlib/Mathlib/Analysis/Calculus/MeanValue.lean (line 223)`
+- `rg -n 'def orderEmbOfFin|theorem range_orderEmbOfFin' mathlib/Mathlib/Data/Finset/Sort.lean (194, 216)`
+- `rg -n 'theorem infDist_image|theorem infDist_le_infDist_add_dist|theorem infDist_zero_of_mem|lemma le_infDist|theorem lipschitz_infDist_pt' mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean (596, 518, 492, 508, 547)`
+- `rg -n 'of_dist_le_mul' mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean (57); grep -n nhdsLE_sup_nhdsGE mathlib/Mathlib/Topology/Order/LeftRight.lean (97); grep -n 'lt_floor_add_one|floor_intCast' mathlib/Mathlib/Algebra/Order/Floor/Ring.lean (128, 164); grep -n dist_eq mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean (158)`
+- `python3 over dag.json (263 nodes): the five proposed deformation_retraction_* names vs all lean_name reservations (no collision); no existing node has a reusable identical statement`
+- `sed -n '1440,1680p' book/chapter-06.txt (printed Lemma 5.4 and its proof, pp. 160–163)`
+- `cat nodes/root-deformation-a1-retraction-a1/decomposition-v1.json, decomposition-audit-v1.json, decomposition-review-receipt-v1.json (prior accepted five-child proposal of attempt 1; its /tmp scratch files no longer exist, so every check was re-run)`
+- `python3 -I: verifier/lean_contract.py validate_lean_statement and verifier/gmt-compare.py contract_scope on the five lean_statements (all valid; NodeChallenge scope replayed)`
+- `lake env lean /tmp/retraction-a2-scratch/stmts/NC_<key>.lean for the five keys (exit 0; only the expected sorry warning)`
+- `lake env lean /tmp/retraction-a2-scratch/Assembly.lean (skeleton_mem, cube_core, periodic_extension, globalize types ⇒ parent type; #print axioms = [propext, Classical.choice, Quot.sound])`
+- `lake env lean /tmp/retraction-a2-scratch/AllProofs.lean (complete proofs of dini_segment, skeleton_mem, periodic_extension, globalize against the exact frozen strings, and deformation_retraction_of_cube_core : cube_core type → parent type; all axioms [propext, Classical.choice, Quot.sound])`
+- `python3 -I /tmp/retraction-a2-scratch/numeric/stress.py and stress_nearL.py (numeric stress test of ψ₀ = R^ℓ for (m,ℓ) up to (2,2), (1,3), (0,4), (3,1): (α), (β) and the similarity bound hold; ratio·dist(x, La) ≤ 5 ≪ c₁)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/ConstancyNormalCharts.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/PolarNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Finset/Sort.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Order/LeftRight.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Algebra/Order/Floor/Ring.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-retraction-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-retraction-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-retraction-a1/decomposition-scope-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-retraction-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-retraction-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/retraction-a2-scratch/stmts/statements.json`
+- `/tmp/retraction-a2-scratch/stmts/NC_cube_core.lean`
+- `/tmp/retraction-a2-scratch/Assembly.lean`
+- `/tmp/retraction-a2-scratch/AllProofs.lean`
+- `/tmp/retraction-a2-scratch/proofs/DiniSkeleton.lean`
+- `/tmp/retraction-a2-scratch/proofs/Periodic.lean`
+- `/tmp/retraction-a2-scratch/proofs/Globalize.lean`
+- `/tmp/retraction-a2-scratch/numeric/stress.py`
+- `/tmp/retraction-a2-scratch/numeric/stress_nearL.py`
+
+The pinned revisions are confirmed, and the frozen Contract (= Submission) is byte-identical to the snapshot. The handoff proof matches the frozen proof_sha256. Neither the project nor SimonGMT contains a cubical or radial retraction or a lattice-skeleton lemma; the only relevant declarations are the frozen latticeFace/LatticeFaceIndex, with SimonMultiIndex = Fin n ↪o Fin p. Lemma 5.4 is therefore built from pinned Mathlib primitives: the fencing theorem or a sup argument (dini_segment), Finset.orderEmbOfFin/range_orderEmbOfFin and Int.floor (skeleton_mem), IsometryEquiv.subRight with Metric.infDist_image (periodic_extension), and LipschitzOnWith.of_dist_le_mul, infDist_le_infDist_add_dist and nhdsLE_sup_nhdsGE (globalize). All five child types pass validate_lean_statement and elaborate in the exact comparator challenge scope. dini_segment, skeleton_mem, periodic_extension and globalize were fully proved in scratch against the exact frozen strings. The parent type was kernel-checked from the cube_core type plus those four, with axioms [propext, Classical.choice, Quot.sound], so cube_core is the only open obligation; it is supported by numeric stress tests and an independent line-by-line review. The five names collide with none of the 263 DAG reservations or with any project/SimonGMT declaration. No Matrix/IsUnit construction occurs.

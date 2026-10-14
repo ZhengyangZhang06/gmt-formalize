@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.boundary_rectifiability-a1.localization-a1.tau_current-a1",
+  "parent_id": "root.boundary_rectifiability-a1.localization-a1",
+  "depth": 3,
+  "title": "τ(M, θ, ξ) of a rectifiable triple is a current",
+  "statement": "Let P, n ∈ ℕ, V, M ⊆ ℝ^P (V arbitrary, not necessarily open), θ : ℝ^P → ℝ and ξ : ℝ^P → Λₙ(ℝ^P) (n-vectors, NVector (Eucl P) n = continuous linear functionals on n-covectors). Assume (M, θ, ξ) satisfies the triple conditions of Simon Ch. 6, 3.1 relative to V (IsRectifiableTriple V n M θ ξ): M ⊆ V is Hⁿ-null-measurable and countably n-rectifiable, θ > 0 on M, θ is Hⁿ-integrable on M ∩ K for every compact K ⊆ V, ξ is Hⁿ⌞M-a.e. strongly measurable, and for Hⁿ⌞M-a.e. x, ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ for an orthonormal τ spanning a weighted approximate tangent space of (M, θ) at x (Hⁿ = μHE[n]). Then τ(M, θ, ξ)(ω) = ∫_M θ(x)⟨ω(x), ξ(x)⟩ dHⁿ(x) (tauAction n M θ ξ ω) defines a current: there is X ∈ Dₙ(V) (GeometricCurrentOn V n: an ℝ-linear functional on the test forms Dⁿ(V) that is sequentially continuous in Simon's test-form topology) with X(ω) = τ(M, θ, ξ)(ω) for every ω ∈ Dⁿ(V).",
+  "lean_statement": "∀ (P n : ℕ) (V M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple V n M θ ξ → ∃ X : GeometricCurrentOn V n, ∀ ω : TestFormOn V n, X ω = tauAction n M θ ξ ω",
+  "lean_name": "br_loc_tauAction_current",
+  "depends_on": [
+    "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_integrable-a1",
+    "root.flat_iff_weak-a1.im_series-a1.tsum_tau-a1.unit_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.boundary_rectifiability-a1.local_to_global_im-a1.tau_integrable-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-local-to-global-im-a1-tau-integrable-a1-a1",
+      "result_commit": "1d327e46e1cf94e149261ae6958c7053533007af",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.im_series-a1.tsum_tau-a1.unit_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-im-series-a1-tsum-tau-a1-unit-bound-a1-a1",
+      "result_commit": "27af9b191b732eae73e3d693d8903e52f89962ce",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-boundary-rectifiability-a1-localization-a1-tau-current-a1-a1"
+}

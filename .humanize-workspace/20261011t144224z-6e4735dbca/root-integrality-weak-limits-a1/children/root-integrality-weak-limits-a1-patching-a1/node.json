@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.patching-a1",
+  "parent_id": "root.integrality_weak_limits-a1",
+  "depth": 2,
+  "title": "Patching lemma: integer multiplicity is a local property",
+  "statement": "Let U ⊆ ℝ^P be open, k ∈ ℕ and X ∈ D_k(U). If every x ∈ U has an open neighbourhood V ⊆ U and an integer multiplicity Y ∈ D_k(U) such that X(ω) = Y(ω) for every test form ω with tsupport ω ⊆ V, then X is integer multiplicity.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)), IsOpen U → ∀ X : GeometricCurrentOn U k, (∀ x ∈ U, ∃ V : Set (Eucl P), IsOpen V ∧ x ∈ V ∧ V ⊆ U ∧ ∃ Y : GeometricCurrentOn U k, IsIntegerMultiplicity Y ∧ ∀ ω : TestFormOn U k, tsupport (ω : DifferentialForm (Eucl P) k) ⊆ V → X ω = Y ω) → IsIntegerMultiplicity X",
+  "lean_name": "iwl_im_patching",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.tangent_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.tangent_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-patching-a1-a1"
+}

@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsRectifiableTriple|IsIntegerMultiplicity|tauAction",
+        "analyticOnNhd_compContinuousLinearMapCLM|compContinuousLinearMapCLM",
+        "def curryLeft|curryLeft_apply_apply|curryLeftLI",
+        "theorem integral_integral_swap|theorem Integrable.mul_prod|theorem AEStronglyMeasurable.snd|quasiMeasurePreserving_snd|integrable_prod_iff",
+        "exists_isSubordinate|contMDiff_iff_contDiff",
+        "git show 3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone_independent_audit/AllFrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone_independent_audit/AssemblyFromHypotheses.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone_independent_audit/AcceptedReuse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cone_independent_audit/AnalyticChecks.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Analytic/CPolynomial.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-vanish-off-support-a1/accepted-candidate.json",
+        "/tmp/cone_independent_audit/AllFrozenTypes.lean",
+        "/tmp/cone_independent_audit/AssemblyFromHypotheses.lean",
+        "/tmp/cone_independent_audit/AcceptedReuse.lean",
+        "/tmp/cone_independent_audit/AnalyticChecks.lean"
+      ],
+      "conclusion": "Confirmed pinned revisions and contract compatibility. All seven exact one-line propositions elaborate individually and together without requiring their implementations. All names are bare identifiers; the six new names have no conflicting DAG or decomposition reservations. The reused declaration has the identical comparator-accepted frozen type, and recompilation confirms only propext, Classical.choice and Quot.sound. Dependencies are correctly directed and acyclic, including the parent's prerequisites. A separate assembly using the frozen child and prerequisite types as explicit hypotheses proves the selected parent conclusion without sorry or additional axioms. Direct analytic checks validate pullback smoothness, covector completeness, product measurability and the orientation bound. The split is appropriate and establishes this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the accepted declaration. The finite-subcover and subordinate partition-of-unity argument proves vanishing for arbitrary U using precisely the stated support condition. Reuse and axiom checks pass."
+    },
+    {
+      "key": "slice_forms",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The continuous linear contraction constructs the stated slices. Affine composition proves smoothness, the closed preimage and norm bound prove compact support, and composition proves joint continuity. All quantifiers and formulas match the Lean proposition."
+    },
+    {
+      "key": "product_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The product identity is stated exactly as needed. The declared slice and vanishing dependencies prove annihilation off L; relatively compact balls then establish the support inclusion. Compactness and the case R < 0 are covered without integrality assumptions."
+    },
+    {
+      "key": "cutoff_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All smoothness and compact-support hypotheses are explicit. Smoothness of Df and the analytic precomposition operator establishes the pullback's smoothness; multiplication by χ supplies compact support. The supplied construction was independently checked in Lean."
+    },
+    {
+      "key": "cone_map",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate calculation proves smoothness and h(Φ(s,x)) = s•x. The derivative sends e₀ to x and ι(v) to s•v; multilinearity gives exactly the stated s^m factor, including m = 0."
+    },
+    {
+      "key": "product_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Smooth coordinate projections prove smoothness of χ. Bounds on both compact supports and the Euclidean norm decomposition bound its support in a compact ball. The proof establishes the full conjunction with no undeclared dependency."
+    },
+    {
+      "key": "integral_exchange",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Positive integer multiplicity makes the localized Hausdorff measure finite. Common support and the orientation bound provide integrable domination; product measurability, Fubini and continuous-linear evaluation yield the exact identity. The projection-lifting step is supplied by the pinned API AEStronglyMeasurable.comp_snd. No circular reliance or missing analytic hypothesis remains."
+    }
+  ],
+  "required_changes": []
+}

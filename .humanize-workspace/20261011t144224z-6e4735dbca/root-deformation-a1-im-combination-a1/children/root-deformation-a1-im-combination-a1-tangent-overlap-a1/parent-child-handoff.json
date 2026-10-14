@@ -1,0 +1,87 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp snapshot project/GMT/Ch06/Contract.lean vs workspace GMT/Ch06/Contract.lean; cmp snapshot Submission.lean vs Contract.lean; cmp workspace Submission.lean vs Contract.lean (all byte-identical)",
+        "python3 -I scans of dag.json: lean_name/status/candidate_commit/lean_statement of nodes matching tangent|density|weight|locality|orient|combin|triple|tau|lincomb; duplicate lean_name scan (none); reuse-closure scan of all parents with reused children",
+        "python3 -I: parent-child-handoff.json of the 9 reused nodes (key, depends_on, title/statement/lean_statement equality with dag.json) and their isolated-comparator-result.json (passed = true)",
+        "sed -n 6557,6597p and 2365,2369p /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_existing_lean_name_problem, _accepted_checkpoint: identical-type reuse of accepted nodes allowed, unaccepted names reserved)",
+        "rg -n 'deformation_imcomb' project lake-packages-25730c7c/simongmt dag.json (no match)",
+        "rg -n 'def HasWeightedApproximateTangentSpaceAt|def HasApproximateTangentSpaceAt|def blowUpMap' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean (lines 330, 102, 96)",
+        "rg -n 'theorem hasProd_prod_of_ne_finset_one|theorem lintegral_indicator₀|theorem restrict_restrict₀ |theorem ae_restrict_mem₀|theorem ae_restrict_iUnion_iff|theorem ae_restrict_iff'₀|theorem ofReal_inv_of_pos|aestronglyMeasurable_iUnion_iff|theorem iUnion_closedBall_nat|exists_nat_one_div_lt|theorem integral_const_mul|theorem lintegral_add_left'|theorem lintegral_const_mul' ' in the snapshot mathlib/Mathlib",
+        "sed -n 750,770p book/chapter-06.txt (3.2 Remarks); sed -n 284,330p book/chapter-03.txt (1.7, 1.8(1), 1.9); sed -n 698,735p and 920,940p book/chapter-01.txt (3.6, 3.7(2), 3.17)",
+        "python3 -I scripts/challenges.py: verifier/lean_contract.validate_lean_statement and gmt-compare.child_modules (contract mode) for the 12 child types and the parent type",
+        "lake env lean (toolchain v4.35.0-rc3, frozen workspace build) on nc/NC_*.lean (13 files, exit 0, only the sorry warning), src/Assembly.lean, src/ChildA.lean, src/ChildB.lean, src/ChildC.lean and src/Integrated.lean with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-combination-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-im-combine-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-im-combine-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-tangent-locality-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1-lebesgue-points-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-zero-3299c8304e/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-im-closure-a1/decomposition-v2.json",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/InfiniteSum/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/imcomb-decomp-k7q2/src/Integrated.lean",
+        "/tmp/imcomb-decomp-k7q2/logs/integrated.log",
+        "/tmp/imcomb-decomp-k7q2/src/Assembly.lean"
+      ],
+      "conclusion": "Pinned revisions confirmed; the frozen contract is byte-identical to the snapshot and Submission = Contract. Nine needed results are already comparator-accepted with identical-type reuse allowed: fiw_ims_combine (Steps 4–8 for an integer series, hence for a·X + b·Y) with its DAG dependencies orientation_sign, frame_sign, overlap_finite, tsum_tau; iwl_weighted_tangent_locality (TL); lpf_wtc_ae_zero_density_off_set (Upper Density Theorem); and iwl_imc_normalized_lebesgue_points with its dependency rectifiability_density_comparison. All passed their isolated comparators. No accepted node gives the tangent comparison on overlaps for positive multiplicities; fiw_tangent_locality and iwl_imc_tangent_overlap are unaccepted and stay untouched. So it is supplied by three new, unreserved lemmas. The 12 child types and the parent type validate and elaborate in the exact comparator scope. Complete Lean proofs of the three new lemmas plus the parent assembly compile against stubs of the reused types, with axioms [propext, Classical.choice, Quot.sound] plus exactly the intended stubs. The Mathlib facts used (finite HasSum, null-measurable indicator integrals, countable a.e. unions, ofReal_inv_of_pos, aestronglyMeasurable_iUnion_iff) are located in the snapshot."
+    }
+  ],
+  "parent_id": "root.deformation-a1.im_combination-a1",
+  "child_id": "root.deformation-a1.im_combination-a1.tangent_overlap-a1",
+  "subproblem": {
+    "key": "tangent_overlap",
+    "title": "Weighted approximate tangent spaces of two carriers agree almost everywhere on their overlap",
+    "statement": "Let N, k ∈ ℕ and H := μHE[k] on ℝ^N = Eucl N. Let M₁, M₂ ⊆ ℝ^N be H-null-measurable and let θ₁, θ₂ : ℝ^N → ℝ satisfy θ_i > 0 on M_i and θ_i H-integrable on M_i ∩ K for every compact K ⊆ ℝ^N (i = 1, 2). Then for H-a.e. x ∈ M₁ ∩ M₂ (H⌞(M₁ ∩ M₂)-almost every x) and every linear subspace Q ⊆ ℝ^N: if Q is a weighted approximate tangent space of (M₁, θ₁) at x (HasWeightedApproximateTangentSpaceAt k M₁ θ₁ x Q, Simon Ch. 3, 1.7), then Q is a weighted approximate tangent space of (M₂, θ₂) at x.",
+    "lean_statement": "∀ (N k : ℕ) (M₁ M₂ : Set (Eucl N)) (θ₁ θ₂ : Eucl N → ℝ), NullMeasurableSet M₁ (μHE[k] : Measure (Eucl N)) → NullMeasurableSet M₂ (μHE[k] : Measure (Eucl N)) → (∀ x ∈ M₁, 0 < θ₁ x) → (∀ x ∈ M₂, 0 < θ₂ x) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ₁ (M₁ ∩ K) (μHE[k] : Measure (Eucl N))) → (∀ K : Set (Eucl N), IsCompact K → IntegrableOn θ₂ (M₂ ∩ K) (μHE[k] : Measure (Eucl N))) → ∀ᵐ x ∂((μHE[k] : Measure (Eucl N)).restrict (M₁ ∩ M₂)), ∀ Q : Submodule ℝ (Eucl N), HasWeightedApproximateTangentSpaceAt k M₁ θ₁ x Q → HasWeightedApproximateTangentSpaceAt k M₂ θ₂ x Q",
+    "lean_name": "deformation_imcomb_tangent_overlap",
+    "depends_on": [
+      "subset_locality",
+      "weight_change"
+    ],
+    "natural_proof": "Source: Corollary 3 of the parent proof and the tangent-space transfer chains of its Steps 4 and 7. The parent's chain HasWATS(M₁, θ₁) ⇒ tangent space of M₁ ⇒ of M₁ ∩ M₂ ⇒ of M₂ ⇒ HasWATS(M₂, θ₂) uses Lemma 2, Lemma 1, Lemma 1, Lemma 2. Here it runs with the weighted siblings subset_locality (Lemma 1) and weight_change (Lemma 2). Two things differ from the parent's Corollary 3:\n   - The reused im_combine needs this comparison for all positive multiplicities, not only integer ones.\n   - Lemma 2 needs locally finite Hᵏ measure. So the overlap is first cut into the pieces E_j on which both multiplicities are ≥ 1/(j+1). This is the device of Simon Ch. 3, Remark 1.8(1), whose compact pieces M_j carry a positive lower bound for θ.\nHasWATS(A, ϑ, x, Q) abbreviates HasWeightedApproximateTangentSpaceAt k A ϑ x Q, and B̄_m(0) := closedBall 0 m.\n\n1. (θ_i is a.e.-measurable on M_i.) Fix i.\n   - ℝ^N = ⋃_{m∈ℕ} B̄_m(0) (iUnion_closedBall_nat), so M_i = ⋃_m (M_i ∩ B̄_m(0)).\n   - B̄_m(0) is compact, so θ_i is integrable, hence a.e.-strongly measurable, on each M_i ∩ B̄_m(0).\n   - By countable gluing (aestronglyMeasurable_iUnion_iff), θ_i is a.e.-strongly measurable for H⌞M_i.\n\n2. (Superlevel sets.) For t ∈ ℝ, M_i ∩ {θ_i ≥ t} is H-null-measurable.\n   - By step 1 choose a strongly measurable g with θ_i = g H⌞M_i-a.e.\n   - M_i is null-measurable, so ae_restrict_iff′₀ gives: for H-a.e. y, y ∈ M_i implies θ_i(y) = g(y).\n   - Hence M_i ∩ {θ_i ≥ t} and M_i ∩ {g ≥ t} agree outside an H-null set. The latter is null-measurable (null-measurable ∩ measurable), so the former is too (NullMeasurableSet.congr).\n\n3. (Truncated overlaps.) For j ∈ ℕ let c_j := 1/(j+1) > 0 and E_j := (M₁ ∩ {θ₁ ≥ c_j}) ∩ (M₂ ∩ {θ₂ ≥ c_j}).\n   - Each E_j is H-null-measurable (step 2) and E_j ⊆ M₁ ∩ M₂.\n   - Conversely, let y ∈ M₁ ∩ M₂. Then min(θ₁(y), θ₂(y)) > 0, so some j has 1/(j+1) < min(θ₁(y), θ₂(y)) (exists_nat_one_div_lt), i.e. y ∈ E_j.\n   - Hence M₁ ∩ M₂ = ⋃_j E_j.\n\n4. (Hᵏ⌞E_j is locally finite.) Let K be compact. On E_j ∩ K we have ofReal θ₁ ≥ ofReal c_j, and E_j ∩ K is null-measurable. Hence\n   ofReal(c_j)·H(E_j ∩ K) = ∫⁻_{E_j∩K} ofReal(c_j) dH ≤ ∫⁻_{E_j∩K} ofReal(θ₁) dH ≤ ∫⁻_{M₁∩K} ofReal(θ₁) dH < ∞,\n   by setLIntegral_const, lintegral_mono_ae with ae_restrict_mem₀, lintegral_mono_set, and integrability of θ₁ on M₁ ∩ K. Since ofReal(c_j) > 0, H(E_j ∩ K) < ∞ (ENNReal.mul_lt_top_iff).\n\n5. (Comparison on E_j.) Fix j. Then θ₁ > 0 on E_j, and for every compact K the sets E_j ∩ K ⊆ M_i ∩ K carry integrable θ_i (IntegrableOn.mono_set). Apply:\n   (a) subset_locality to E_j ⊆ M₁ with θ₁: H⌞E_j-a.e., HasWATS(M₁, θ₁, x, Q) ↔ HasWATS(E_j, θ₁, x, Q) for every Q;\n   (b) weight_change to E_j with (θ, θ′) := (θ₁, θ₂), using step 4 for H(E_j ∩ K) < ∞: H⌞E_j-a.e., HasWATS(E_j, θ₁, x, Q) → HasWATS(E_j, θ₂, x, Q) for every Q;\n   (c) subset_locality to E_j ⊆ M₂ with θ₂: H⌞E_j-a.e., HasWATS(M₂, θ₂, x, Q) ↔ HasWATS(E_j, θ₂, x, Q) for every Q.\n   Intersect the three a.e. statements. For H⌞E_j-a.e. x and every Q:\n   HasWATS(M₁, θ₁, x, Q) ⇒ (a) HasWATS(E_j, θ₁, x, Q) ⇒ (b) HasWATS(E_j, θ₂, x, Q) ⇒ (c) HasWATS(M₂, θ₂, x, Q).\n\n6. (Countable union.)\n   - By step 3, H⌞(M₁ ∩ M₂) = H⌞(⋃_j E_j).\n   - A property holds H⌞(⋃_j E_j)-a.e. iff it holds H⌞E_j-a.e. for every j (ae_restrict_iUnion_iff, countable index set ℕ).\n   - Step 5 gives the latter, which proves the claim. ∎",
+    "proof_key_steps": [
+      "θ_i is a.e.-measurable on M_i (σ-compactness), so the sets M_i ∩ {θ_i ≥ t} are H-null-measurable",
+      "E_j := M₁ ∩ M₂ ∩ {θ₁ ≥ 1/(j+1)} ∩ {θ₂ ≥ 1/(j+1)} exhaust M₁ ∩ M₂",
+      "H(E_j ∩ K) ≤ (j+1)·∫_{M₁∩K} θ₁ dH < ∞",
+      "on E_j: subset_locality for E_j ⊆ M₁, weight_change θ₁ → θ₂, subset_locality for E_j ⊆ M₂",
+      "countable union over j (ae_restrict_iUnion_iff)"
+    ]
+  },
+  "audit": {
+    "key": "tangent_overlap",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proof establishes measurability of the truncated overlaps, proves their local finiteness using the positive lower bound, and shows they exhaust the overlap. The subset–weight-change–subset chain has the correct directions, and countable almost-everywhere gluing proves the full conclusion."
+  },
+  "resolved_dependencies": [
+    "root.deformation-a1.im_combination-a1.subset_locality-a1",
+    "root.deformation-a1.im_combination-a1.weight_change-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-combination-a1-tangent-overlap-a1/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-combination-a1-tangent-overlap-a1/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-combination-a1-tangent-overlap-a1/parent-supplied-natural-proof.json"
+}
