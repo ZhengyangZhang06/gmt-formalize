@@ -1770,6 +1770,47 @@ theorem Submission.idtp_fons_cr_density_rescale : ∀ (P n : ℕ) (μ : Measure 
       rwa [mul_div_cancel₀ δ ht.ne'] at this
     · intro h ε hε
       exact h (t * ε) (mul_pos ht hε)
+/-- **Normalization** (Simon 7.3.3, proof of 3.3(2); Remark 3.4): `μHE[n] = a • μH[n]` with
+`a = addHaarScalarFactor(volume, μH[n]) ≠ 0` depending only on `n`, so `c = a⁻¹`.  If
+`μ = μHE[n]⌞g` is finite on compact sets, then `∫⁻_K g dμH[n] = a⁻¹ μ(K) < ∞` for compact `K`,
+so `g • e` is locally `μH[n]`-integrable, and
+`∫ f (g • e) dμH[n] = (∫ f g dμH[n]) • e = (a⁻¹ ∫ f g dμHE[n]) • e = (a⁻¹ ∫ f dμ) • e`. -/
+theorem Submission.idtp_fons_cr_density_normalization : ∀ (P n : ℕ), ∃ c : ℝ, 0 < c ∧ ∀ (Q : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (e : Euclid Q), Measurable g → (∀ x, 0 ≤ g x) → (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → μ = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal (g x)) → LocallyIntegrable (fun x => g x • e) μH[(n : ℝ)] ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → ∫ x, f x • (g x • e) ∂μH[(n : ℝ)] = (c * ∫ x, f x ∂μ) • e := by
+  intro P n
+  -- `μHE[n] = a • μH[n]`, where `a ≠ 0` depends only on `n`
+  obtain ⟨a, ha0, hE⟩ : ∃ a : NNReal, a ≠ 0 ∧
+      (μHE[n] : Measure (Euclid P)) = a • μH[(n : ℝ)] :=
+    ⟨_, Measure.addHaarScalarFactor_volume_hausdorffMeasure_ne_zero n,
+      Measure.euclideanHausdorffMeasure_def n⟩
+  refine ⟨(a : ℝ)⁻¹, inv_pos.2 (NNReal.coe_pos.2 (pos_iff_ne_zero.2 ha0)), ?_⟩
+  intro Q μ g e hg hg0 hμK hμ
+  -- `μ = a • μH[n]⌞g`
+  have hμ' : μ = (a : ℝ≥0∞) • (μH[(n : ℝ)] : Measure (Euclid P)).withDensity
+      (fun x => ENNReal.ofReal (g x)) := by
+    rw [hμ, hE, ← withDensity_smul_measure]
+    rfl
+  refine ⟨?_, fun f hf hfc => ?_⟩
+  · -- local integrability: `∫⁻_K g dμH[n] = a⁻¹ μ(K) < ∞` for compact `K`
+    rw [locallyIntegrable_iff]
+    intro K hK
+    refine Integrable.smul_const ⟨hg.aestronglyMeasurable, ?_⟩ e
+    rw [hasFiniteIntegral_iff_ofReal (ae_of_all _ hg0), ← withDensity_apply _ hK.measurableSet]
+    have hK' := hμK K hK
+    rw [hμ', Measure.smul_apply, smul_eq_mul] at hK'
+    exact ENNReal.lt_top_of_mul_ne_top_right hK' (by exact_mod_cast ha0)
+  · -- pull out `e`, then pass from `μH[n]` to `μHE[n] = a • μH[n]` and to `μ = μHE[n]⌞g`
+    have h1 : ∀ x, f x • (g x • e) = (f x * g x) • e := fun x => smul_smul _ _ _
+    simp_rw [h1]
+    rw [integral_smul_const]
+    congr 1
+    have h2 : ∫ x, f x ∂μ = (a : ℝ) * ∫ x, f x * g x ∂μH[(n : ℝ)] := by
+      rw [hμ, hE, integral_withDensity_eq_integral_toReal_smul (by fun_prop)
+        (ae_of_all _ fun x => ENNReal.ofReal_lt_top), integral_smul_nnreal_measure,
+        NNReal.smul_def, smul_eq_mul]
+      congr 1
+      refine integral_congr_ae (ae_of_all _ fun x => ?_)
+      simp only [ENNReal.toReal_ofReal (hg0 x), smul_eq_mul, mul_comm]
+    rw [h2, ← mul_assoc, inv_mul_cancel₀ (NNReal.coe_ne_zero.2 ha0), one_mul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
