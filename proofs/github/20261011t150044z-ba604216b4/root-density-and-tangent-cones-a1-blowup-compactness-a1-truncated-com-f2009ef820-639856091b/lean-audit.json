@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "657912673eb2cca34b4f07b76f679cd78ae533f9b8ffbce062af4b7547c4b5f2",
+  "git_delta": {
+    "base_commit": "ada54a220d2d1c67433dc98c93350f9f91940859",
+    "candidate_commit": "3e418abc934d9fb02fbb10394d0f6c3af020afca",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "32f9a5de16ada44d5982d3825b536301432f63fec5e6c0c4ecf948013b81cba7",
+    "source_sha256": "21c737f0317b4e04f3cab380f883dbb4489f795c898e89229fc92031ee50a8db",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_tc_weak_compactness",
+      "statement": "∀ (P n : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, (Ts j).massOn W < ∞) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), StrictMono φ ∧ WeaklyConvergesOn (fun j => Ts (φ j)) C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
