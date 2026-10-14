@@ -576,6 +576,50 @@ theorem Submission.cbr_cc_zcs_setIntegral_finset_hausdorff_zero : ∀ (P : ℕ) 
   refine Finset.sum_congr rfl fun x _ => ?_
   rw [measureReal_def, hpt, ENNReal.toReal_one, one_smul]
 
+/-- **Compactly supported integer multiplicity `0`-currents are finite sums of point masses**
+(Simon Ch. 6, 2.11 and 3.1; `H⁰` is counting measure, Ch. 2).  Let `S = τ(M, θ, ξ) ∈ 𝒟₀(ℝᴾ)` with
+`spt S` compact.  By (VO), `S` kills every form supported in the open set `ℝᴾ \ spt S`, so
+`M_{ℝᴾ \ spt S}(S) = 0`, and by (MR) `μ_S(ℝᴾ \ spt S) = 0`; as `M ⊆ spt μ_S`, `M ⊆ spt S`.  So
+`M = M ∩ spt S` is finite by local integrability, `ξ(x) = ±⟨·⟩` at every `x ∈ M`, and
+`S(g) = ∫_M θ ⟨g, ξ⟩ dH⁰ = Σ_{x ∈ M} ±θ(x) g(x)⟨⟩`. -/
+theorem Submission.cbr_cc_zero_current_finite_sum : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) 0), IsIntegerMultiplicity S → IsCompact S.support → ∃ (F : Finset (Euclid P)) (m : Euclid P → ℤ), (↑F : Set (Euclid P)) ⊆ S.support ∧ ∀ g : TestFormOn (univ : Set (Euclid P)) 0, S g = ∑ x ∈ F, (m x : ℝ) * (g : DifferentialForm (Euclid P) 0) x (fun i => i.elim0) := by
+  rintro hMR hVO P S ⟨R, hR⟩ hS
+  obtain ⟨-, hloc, horient, hsupp⟩ := Submission.dor_zdm_imrep_zero_structure P univ R
+  -- (VO): `S` kills every admissible form supported in the zero region `ℝᴾ \ spt S`
+  have hmass : S.massOn S.zeroRegion = 0 := by
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro r ⟨ω, hω, rfl⟩
+    have h0 : S ω = 0 :=
+      hVO P 0 univ S ω (Set.disjoint_left.2 fun x hx hxS => hxS.2 (hω.1 hx))
+    simp [h0]
+  -- (MR): `μ_S(ℝᴾ \ spt S) = 0`, while every carrier point lies in `spt μ_S`
+  have hsub : R.carrier ⊆ S.support := by
+    intro x hx
+    refine ⟨mem_univ x, fun hxz => ?_⟩
+    have h0 := (Measure.mem_support_iff_forall x).1 ((hsupp isOpen_univ).ge hx).2 _
+      (S.isOpen_zeroRegion.mem_nhds hxz)
+    rw [← hMR P 0 univ S R isOpen_univ hR _ S.isOpen_zeroRegion, hmass] at h0
+    exact lt_irrefl 0 h0
+  -- `M = M ∩ spt S` is finite
+  obtain ⟨F, hF⟩ :=
+    ((hloc _ hS (subset_univ _)).1.subset fun x hx => ⟨hx, hsub hx⟩).exists_finset_coe
+  -- `θ(x) ⟨·, ξ(x)⟩ = m(x) ⟨·⟩` with `m(x) = ±θ(x) ∈ ℤ` at every carrier point
+  have hm : ∀ x, ∃ k : ℤ, x ∈ R.carrier → ∀ α : Covector (Euclid P) 0,
+      (R.mult x : ℝ) * R.orient x α = (k : ℝ) * α (fun i => i.elim0) := by
+    intro x
+    by_cases hx : x ∈ R.carrier
+    · obtain ⟨Q, -, hQ⟩ := (horient x hx).1
+      obtain ⟨s, hs, hξ⟩ := Submission.regcomp_cop_zdr_unitOrientation_zero P (R.orient x) Q hQ
+      rcases (abs_eq zero_le_one).1 hs with rfl | rfl
+      · exact ⟨R.mult x, fun _ α => by rw [hξ α]; push_cast; ring⟩
+      · exact ⟨-(R.mult x : ℤ), fun _ α => by rw [hξ α]; push_cast; ring⟩
+    · exact ⟨0, fun h => absurd h hx⟩
+  choose m hm using hm
+  refine ⟨F, m, by rw [hF]; exact hsub, fun g => ?_⟩
+  -- `S(g) = ∫_M θ ⟨g, ξ⟩ dH⁰ = Σ_{x ∈ M} θ(x) ⟨g(x), ξ(x)⟩`
+  rw [hR g, IMRep.action, ← hF, Submission.cbr_cc_zcs_setIntegral_finset_hausdorff_zero]
+  exact Finset.sum_congr rfl fun x hx => hm x (by rw [← hF]; exact hx) _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
