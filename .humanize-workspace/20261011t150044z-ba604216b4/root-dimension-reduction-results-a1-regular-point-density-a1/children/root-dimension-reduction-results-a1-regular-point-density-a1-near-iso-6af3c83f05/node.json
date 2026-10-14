@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.near_isometric_chart-a1",
+  "parent_id": "root.dimension_reduction_results-a1.regular_point_density-a1",
+  "depth": 3,
+  "title": "Near-isometric local parametrizations of an embedded C¹ submanifold",
+  "statement": "Let P, n ∈ ℕ, let M ⊆ ℝ^P satisfy IsEmbeddedSubmanifold 1 n M (embedded n-dimensional C¹ submanifold), let z ∈ M and ε > 0. Then there are χ : ℝ^n → ℝ^P and δ, δ' > 0 such that χ(0) = z; (1 − ε)|a − b| ≤ |χ(a) − χ(b)| ≤ (1 + ε)|a − b| for all a, b ∈ B_δ(0) ⊆ ℝ^n; χ(B_δ(0)) ⊆ M; and M ∩ B_{δ'}(z) ⊆ χ(B_δ(0)).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (z : Euclid P), IsEmbeddedSubmanifold 1 n M → z ∈ M → ∀ ε : ℝ, 0 < ε → ∃ (χ : Euclid n → Euclid P) (δ δ' : ℝ), 0 < δ ∧ 0 < δ' ∧ χ 0 = z ∧ (∀ a ∈ ball (0 : Euclid n) δ, ∀ b ∈ ball (0 : Euclid n) δ, (1 - ε) * ‖a - b‖ ≤ ‖χ a - χ b‖ ∧ ‖χ a - χ b‖ ≤ (1 + ε) * ‖a - b‖) ∧ χ '' ball 0 δ ⊆ M ∧ M ∩ ball z δ' ⊆ χ '' ball 0 δ",
+  "lean_name": "dimred_rpd_near_isometric_chart",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.inverse_continuity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.inverse_continuity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9-a1",
+      "result_commit": "5e4b215846243d699169f3e42b95b8e007ea2d70",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-near-iso-6af3c83f05-a1"
+}
