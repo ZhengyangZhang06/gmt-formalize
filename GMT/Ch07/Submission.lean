@@ -1566,6 +1566,93 @@ theorem Submission.codim1_hcp_un_orientation_normal : ∀ (P m : ℕ) (A₀ : Su
   · exact ⟨hNA τ, hNunit τ hτ hτA, hNT⟩
   · refine ⟨neg_mem (hNA τ), by rw [norm_neg, hNunit τ hτ hτA], fun v hv => ?_⟩
     rw [inner_neg_left, hNT v hv, neg_zero]
+/-- **A `C^∞` chart has a `C^∞` ambient left inverse near each of its points** (Simon Ch. 2, §4,
+4.4, inverse function theorem; steps 4 and 6 of the unit normal of the hypercone plane).  Let `ψ`
+be `C^∞`, 1:1 and proper on the open set `V`, with `ψ(V) = W ∩ M` for an open `W` and every
+`Dψ(z)` injective, and let `v₀ ∈ V`.  With `π` a linear left inverse of `Dψ(v₀)`, `φ = π ∘ ψ` has
+`Dφ(v₀) = id`, so the inverse function theorem gives open sets `S ∋ v₀`, inside
+`{z ∈ V : Dφ(z) injective}`, and `T ∋ φ(v₀)` with a `C^∞` inverse `φ⁻¹ : T → S`.  For
+`B̄_r(ψ(v₀)) ⊆ W`, `C = V ∩ ψ⁻¹(B̄_r(ψ(v₀)))` is compact, so `ψ(C \ S)` is closed, and it misses
+`ψ(v₀)` by injectivity.  Take `O = (B_r(ψ(v₀)) ∩ π⁻¹(T)) \ ψ(C \ S)` and `ρ = φ⁻¹ ∘ π`: every
+`z ∈ M ∩ O` is `ψ(c)` with `c ∈ S`, and `ρ(z) = φ⁻¹(φ(c)) = c`. -/
+theorem Submission.codim1_hcp_un_chart_retraction : ∀ (P d : ℕ) (M W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen V → IsOpen W → ContDiffOn ℝ (⊤ : ℕ∞) ψ V → InjOn ψ V → ψ '' V = W ∩ M → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v₀ ∈ V → ∃ (O : Set (Euclid P)) (ρ : Euclid P → Euclid d), IsOpen O ∧ ψ v₀ ∈ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ρ O ∧ MapsTo ρ O V ∧ ∀ z ∈ M ∩ O, ψ (ρ z) = z := by
+  intro P d M W V ψ v₀ hV hW hψ hinj hψV hprop hDψ hv₀
+  -- the exponent `∞` satisfies `1 ≤ ∞`, in particular `∞ ≠ 0`
+  have h1 : (1 : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by exact_mod_cast le_top
+  have h0 : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0 := (zero_lt_one.trans_le h1).ne'
+  -- Step 2: a continuous linear left inverse `π` of the injective `Dψ(v₀)`
+  obtain ⟨π₀, hπ₀⟩ := (fderiv ℝ ψ v₀ : Euclid d →ₗ[ℝ] Euclid P).exists_leftInverse_of_injective
+    (LinearMap.ker_eq_bot.2 (hDψ v₀ hv₀))
+  set π : Euclid P →L[ℝ] Euclid d := LinearMap.toContinuousLinearMap π₀
+  -- Step 3: `φ = π ∘ ψ` is `C^∞` on `V`, and `Dφ(v₀) = π ∘ Dψ(v₀) = id`
+  set φ : Euclid d → Euclid d := fun v => π (ψ v)
+  have hφ : ContDiffOn ℝ (⊤ : ℕ∞) φ V := π.contDiff.comp_contDiffOn hψ
+  have hdiff : ∀ z ∈ V, HasFDerivAt φ (fderiv ℝ φ z) z := fun z hz =>
+    ((hφ.contDiffAt (hV.mem_nhds hz)).differentiableAt h0).hasFDerivAt
+  have hDφ₀ : fderiv ℝ φ v₀ = ContinuousLinearMap.id ℝ (Euclid d) := by
+    have hψv₀ : HasFDerivAt ψ (fderiv ℝ ψ v₀) v₀ :=
+      ((hψ.contDiffAt (hV.mem_nhds hv₀)).differentiableAt h0).hasFDerivAt
+    have h : HasFDerivAt φ (π ∘L fderiv ℝ ψ v₀) v₀ := π.hasFDerivAt.comp v₀ hψv₀
+    rw [h.fderiv]
+    exact ContinuousLinearMap.ext fun u => LinearMap.congr_fun hπ₀ u
+  -- an injective endomorphism of `ℝᵈ` is a continuous linear equivalence
+  have equivOf : ∀ L : Euclid d →L[ℝ] Euclid d, Injective L →
+      ∃ E : Euclid d ≃L[ℝ] Euclid d, (E : Euclid d →L[ℝ] Euclid d) = L := by
+    intro L hL
+    exact ⟨(LinearEquiv.ofBijective (L : Euclid d →ₗ[ℝ] Euclid d)
+      ⟨hL, LinearMap.injective_iff_surjective.mp hL⟩).toContinuousLinearEquiv, by ext; rfl⟩
+  -- `G = {z ∈ V : Dφ(z) injective}` is open (`Dφ` is continuous on `V`) and contains `v₀`
+  set G := V ∩ (fderiv ℝ φ) ⁻¹' {L | Injective L}
+  have hG : IsOpen G := (hφ.continuousOn_fderiv_of_isOpen hV h1).isOpen_inter_preimage hV
+    ContinuousLinearMap.isOpen_injective
+  have hv₀G : v₀ ∈ G := ⟨hv₀, show Injective (fderiv ℝ φ v₀) by
+    rw [hDφ₀]; exact fun a b hab => hab⟩
+  -- the inverse function theorem at `v₀`: an open partial homeomorphism `Φ = φ` with
+  -- `v₀ ∈ Φ.source`
+  obtain ⟨E₀, hE₀⟩ := equivOf _ hv₀G.2
+  have hstrict : HasStrictFDerivAt φ (E₀ : Euclid d →L[ℝ] Euclid d) v₀ := by
+    rw [hE₀]; exact (hφ.contDiffAt (hV.mem_nhds hv₀)).hasStrictFDerivAt h0
+  set Φ := hstrict.toOpenPartialHomeomorph φ
+  -- `S = Φ.source ∩ G ∋ v₀` and `T = Φ.target ∩ Φ⁻¹(S)` are open, and `φ(v₀) ∈ T`
+  set S := Φ.source ∩ G
+  have hS : IsOpen S := Φ.open_source.inter hG
+  have hv₀S : v₀ ∈ S := ⟨hstrict.mem_toOpenPartialHomeomorph_source, hv₀G⟩
+  set T := Φ.target ∩ Φ.symm ⁻¹' S
+  have hT : IsOpen T := Φ.continuousOn_symm.isOpen_inter_preimage Φ.open_target hS
+  have hφv₀T : π (ψ v₀) ∈ T := ⟨Φ.map_source hv₀S.1, show Φ.symm (Φ v₀) ∈ S by
+    rw [Φ.left_inv hv₀S.1]; exact hv₀S⟩
+  -- `Φ⁻¹` is `C^∞` at every `a ∈ T`, since `Dφ(Φ⁻¹(a))` is invertible
+  have hsymm : ∀ a ∈ T, ContDiffAt ℝ (⊤ : ℕ∞) Φ.symm a := by
+    intro a ha
+    have hz : Φ.symm a ∈ G := ha.2.2
+    obtain ⟨E, hE⟩ := equivOf _ hz.2
+    exact Φ.contDiffAt_symm (f₀' := E) ha.1 (by rw [hE]; exact hdiff _ hz.1)
+      (hφ.contDiffAt (hV.mem_nhds hz.1))
+  -- Step 1 near `ψ(v₀)`: for `B̄_r(ψ(v₀)) ⊆ W`, `C = V ∩ ψ⁻¹(B̄_r(ψ(v₀)))` is compact by
+  -- properness, so `ψ(C \ S)` is compact, hence closed
+  have hψv₀W : ψ v₀ ∈ W := (hψV ▸ mem_image_of_mem ψ hv₀ : ψ v₀ ∈ W ∩ M).1
+  obtain ⟨r, hr, hrW⟩ := nhds_basis_closedBall.mem_iff.1 (hW.mem_nhds hψv₀W)
+  have hC : IsCompact (V ∩ ψ ⁻¹' closedBall (ψ v₀) r) := hprop _ hrW (isCompact_closedBall _ _)
+  have hF : IsClosed (ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ v₀) r) \ S)) :=
+    ((hC.diff hS).image_of_continuousOn (hψ.continuousOn.mono fun z hz => hz.1.1)).isClosed
+  -- Step 4: `O = (B_r(ψ(v₀)) ∩ π⁻¹(T)) \ ψ(C \ S)` and `ρ = Φ⁻¹ ∘ π`, which maps `O` into `S ⊆ V`
+  refine ⟨(ball (ψ v₀) r ∩ π ⁻¹' T) \ ψ '' ((V ∩ ψ ⁻¹' closedBall (ψ v₀) r) \ S),
+    fun z => Φ.symm (π z), (isOpen_ball.inter (hT.preimage π.continuous)).sdiff hF,
+    ⟨⟨mem_ball_self hr, hφv₀T⟩, ?_⟩, fun z hz => ?_, fun z hz => hz.1.2.2.2.1, ?_⟩
+  · -- `ψ(v₀) ∉ ψ(C \ S)`, by injectivity of `ψ` on `V`
+    rintro ⟨c, ⟨⟨hcV, -⟩, hcS⟩, hc⟩
+    exact hcS (hinj hcV hv₀ hc ▸ hv₀S)
+  · -- `ρ` is `C^∞` at `z ∈ O`, as `π(z) ∈ T`
+    exact ((hsymm (π z) hz.1.2).comp z π.contDiff.contDiffAt).contDiffWithinAt
+  · -- `z ∈ M ∩ O` lies in `W ∩ M`, so `z = ψ(c)` with `c ∈ C`; `c ∈ S` as `z ∉ ψ(C \ S)`
+    rintro z ⟨hzM, ⟨hzB, -⟩, hzF⟩
+    obtain ⟨c, hcV, rfl⟩ : z ∈ ψ '' V := hψV ▸ ⟨hrW (ball_subset_closedBall hzB), hzM⟩
+    have hcS : c ∈ S := by
+      by_contra hcS
+      exact hzF ⟨c, ⟨⟨hcV, ball_subset_closedBall hzB⟩, hcS⟩, rfl⟩
+    -- `π(ψ(c)) = Φ(c)` and `Φ⁻¹(Φ(c)) = c`
+    show ψ (Φ.symm (Φ c)) = ψ c
+    rw [Φ.left_inv hcS.1]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
