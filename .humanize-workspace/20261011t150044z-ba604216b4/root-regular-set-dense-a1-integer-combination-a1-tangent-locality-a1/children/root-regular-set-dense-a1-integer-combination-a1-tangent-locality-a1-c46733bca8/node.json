@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1.pointwise_comparison-a1",
+  "parent_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1",
+  "depth": 4,
+  "title": "Zero n-density of B ∖ A at x forces equal approximate tangent spaces (Simon Ch. 3, Remark 1.5(2))",
+  "statement": "Let P, n ∈ ℕ, let A ⊆ B ⊆ ℝ^P be Borel sets, x ∈ ℝ^P and r₀ > 0 with μ(B ∩ B̄_{r₀}(x)) < ∞, where μ := μHE[n]. Suppose (†): μ((B ∖ A) ∩ B̄_ρ(x)) / ENNReal.ofReal(ρ)ⁿ → 0 in [0, ∞] as ρ → 0 in 𝓝[>]0. Then for every linear subspace Q of ℝ^P, B has approximate tangent space Q at x (HasApproximateTangentSpaceAt n B x Q, Simon Ch. 3, Definition 1.4) if and only if A has approximate tangent space Q at x.",
+  "lean_statement": "∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ : ℝ), MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r₀ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → Tendsto (fun ρ : ℝ => μHE[n] ((B \\ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q",
+  "lean_name": "rsdic_tl_tangent_iff_of_density_zero",
+  "depends_on": [
+    "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1.blowup_scaling-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.tangent_locality-a1.blowup_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1-c46733bca8-a1"
+}
