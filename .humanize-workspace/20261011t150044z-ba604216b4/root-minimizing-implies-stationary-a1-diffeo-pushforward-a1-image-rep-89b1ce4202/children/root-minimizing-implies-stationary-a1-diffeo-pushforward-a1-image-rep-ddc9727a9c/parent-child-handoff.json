@@ -1,0 +1,91 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)",
+        "python3 -I: read nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-89b1ce4202/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}",
+        "python3 -I: nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v{1,2,3}.json sibling keys, lean_names and frozen lean_statements",
+        "python3 -I: dag.json status of the 12 diffeo_pushforward nodes; regex scan of all 509 lean_names for integrab|change_of_var|imrep|lipschitz|hausdorff|quasi|pushforward|image",
+        "grep -rl '\"dpfir_bilipschitz_image_imrep_exists\"|\"dpfir_imrep_pairing_continuous_integrable\"|\"dpfir_integral_eq_of_area_lintegral\"' dag.json nodes/*/decomposition-v*.json (no hits)",
+        "rg -n 'μHE\\[|def euclideanHausdorffMeasure' mathlib/Mathlib; rg -n hausdorffMeasure_image_le mathlib/Mathlib",
+        "rg -n 'theorem to_rightInverse|absolutelyContinuous_of_le_smul|comp_quasiMeasurePreserving|integral_eq_lintegral_pos_part_sub_lintegral_neg_part|def compContinuousLinearMapCLM|continuous_compContinuousLinearMapCLM|bounded_above_of_compact_support|image_eq_preimage_of_inverse|enorm_eq_ofReal' mathlib/Mathlib",
+        "rg -n 'theorem ContDiff.continuous_fderiv|clm_comp|clm_apply|apply_continuousLinearMap|comp_aestronglyMeasurable₂|zero_compContinuousLinearMap' mathlib/Mathlib",
+        "rg -n 'def CountablyRectifiable|def HasApproximateTangentSpaceAt|HasApproximateTangentSpaceAt.unique' simongmt/Poincare/SimonGMT/Chapter03; rg -n 'abbrev Covector|abbrev DifferentialForm|def IsTestForm|testFormOnSubmodule' simongmt/Poincare/SimonGMT/Chapter06",
+        "rg -n 'euclideanHausdorffMeasure_image_le_of_lipschitzOn|weighted_area_formula|QuasiMeasurePreserving' simongmt/Poincare/SimonGMT",
+        "rg -n 'Integrable|bilipschitz|QuasiMeasurePreserving|image.*IMRep' project/GMT --glob '*.lean'; rg -n dpfir_ project mathlib (no match)",
+        "git show <solution ref of rsd_mw_wlm_integrable_clm_comp>:GMT/Ch07/Submission.lean (handling of MultiVector topology)",
+        "python3 -I: gmt-compare.py contract_scope(GMT/Ch07/Contract.lean, GMT.Ch07.main_theorem)",
+        "sed -n 420,445p and 810,865p book/chapter-06.txt (Simon 6.2.24(3), 6.3.6–3.9)",
+        "lake env lean /tmp/dpfir-scratch/Types.lean (child types elaborate)",
+        "lake env lean /tmp/dpfir-scratch/Inst.lean, Inst2.lean, Comp.lean (#synth PseudoMetrizableSpace probes; ζ measurability idiom)",
+        "lake env lean /tmp/dpfir-scratch/AssemblyCond3.lean (#print axioms assembly_conditional3)",
+        "lake env lean /tmp/dpfir-scratch/Final.lean (#print axioms TestC2, TestA, TestB, assembly_conditional3)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-89b1ce4202/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-89b1ce4202/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1/decomposition-v3.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Antilipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Image.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/dpfir-scratch/Types.lean",
+        "/tmp/dpfir-scratch/AssemblyCond3.lean",
+        "/tmp/dpfir-scratch/ChildC2.lean",
+        "/tmp/dpfir-scratch/ChildA.lean",
+        "/tmp/dpfir-scratch/ChildB.lean",
+        "/tmp/dpfir-scratch/Final.lean",
+        "/tmp/dpfir-scratch/Comp.lean"
+      ],
+      "conclusion": "The local snapshot proves neither this statement nor any of the three children. The project GMT tree has no bi-Lipschitz IMRep image lemma, no pairing-integrability lemma for continuous covector fields, and no area-to-Bochner transfer, and no dpfir_ name occurs anywhere. The accepted DAG lemmas regcomp_rim_action_integrable and rsd_cmr_ic_action_integrable cover only test forms ω ∈ TestFormOn U n, so pairing_integrable is a new generalization.\n\nEvery library fact the child proofs use exists at the pinned revisions:\n- Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn, importable from GMT.Ch07.Submission;\n- LipschitzWith.hausdorffMeasure_image_le and AntilipschitzWith.to_rightInverse;\n- Measure.absolutelyContinuous_of_le_smul and AEStronglyMeasurable.comp_quasiMeasurePreserving;\n- integral_eq_lintegral_pos_part_sub_lintegral_neg_part;\n- ContinuousAlternatingMap.le_opNorm and continuous_compContinuousLinearMapCLM;\n- Continuous.bounded_above_of_compact_support and Set.image_eq_preimage_of_inverse.\n\nThe definitions of CountablyRectifiable (null M₀ plus Lipschitz F_j : ℝ^n → E) and HasApproximateTangentSpaceAt (with its uniqueness lemma) match the child proofs.\n\nTypeclass pitfall: PseudoMetrizableSpace cannot be synthesized for MultiVector P n or for Covector →L Covector. Measurability of ζ in the parent therefore goes through continuous_fst.clm_comp continuous_snd composed with prodMk and id, which compiles.\n\nIn Lean, the three child types elaborate in the comparator's replayed scope. A conditional proof of the exact frozen parent type from the four frozen sibling types plus the three child types compiles using only propext, Classical.choice and Quot.sound, and complete proofs of all three children compile with the same axioms."
+    }
+  ],
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1",
+  "child_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.area_integral_transfer-a1",
+  "subproblem": {
+    "key": "area_integral_transfer",
+    "title": "From a lintegral area identity to the Bochner change of variables, with integrability",
+    "statement": "Let μ, ν be measures on ℝ^P, φ : ℝ^P → ℝ^P, and J : ℝ^P → ℝ with J ≥ 0, such that ∫⁻ g dν = ∫⁻ J(x)·g(φ(x)) dμ(x) for every g : ℝ^P → [0, ∞]. Let h, f : ℝ^P → ℝ, where h is ν-a.e. strongly measurable, f is μ-integrable, and J(x)·h(φ(x)) = f(x) for μ-a.e. x. Then h is ν-integrable and ∫ h dν = ∫ f dμ.",
+    "lean_statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)) (φ : Euclid P → Euclid P) (J h f : Euclid P → ℝ), (∀ x, 0 ≤ J x) → (∀ g : Euclid P → ℝ≥0∞, ∫⁻ y, g y ∂ν = ∫⁻ x, ENNReal.ofReal (J x) * g (φ x) ∂μ) → AEStronglyMeasurable h ν → Integrable f μ → (∀ᵐ x ∂μ, J x * h (φ x) = f x) → Integrable h ν ∧ ∫ y, h y ∂ν = ∫ x, f x ∂μ",
+    "lean_name": "dpfir_integral_eq_of_area_lintegral",
+    "depends_on": [],
+    "natural_proof": "Source: steps 6(c)–(d) of the parent proof, stated for an abstract identity. In the parent, ν = H^n⌞φ(M), μ = H^n⌞M, J is the Gram Jacobian, h = θ'·ξ'(ω), f = g_ω, and the identity is the area formula of the sibling dpf_area_formula_bilipschitz_rectifiable.\nFor t ∈ ℝ write |t|ₑ ∈ [0, ∞] for its absolute value and ofReal(t) := max(t, 0) ∈ [0, ∞].\n1. Pointwise identities. Let x be a point with f(x) = J(x)h(φ(x)); this holds for μ-a.e. x. Since J(x) ≥ 0:\n- |f(x)|ₑ = |J(x)|ₑ·|h(φ(x))|ₑ = ofReal(J(x))·|h(φ(x))|ₑ;\n- ofReal(f(x)) = ofReal(J(x)h(φ(x))) = ofReal(J(x))·ofReal(h(φ(x))) (ENNReal.ofReal_mul, valid because J(x) ≥ 0);\n- ofReal(−f(x)) = ofReal(J(x)·(−h(φ(x)))) = ofReal(J(x))·ofReal(−h(φ(x))).\n2. h is ν-integrable. Apply the identity with g(y) := |h(y)|ₑ: ∫⁻ |h|ₑ dν = ∫⁻ ofReal(J(x))·|h(φ(x))|ₑ dμ(x) = ∫⁻ |f|ₑ dμ, because the integrands agree μ-a.e. by step 1. The right side is finite because f is μ-integrable. Since h is ν-a.e. strongly measurable by hypothesis, h is ν-integrable.\n3. Positive parts. Apply the identity with g(y) := ofReal(h(y)): ∫⁻ ofReal(h) dν = ∫⁻ ofReal(J(x))·ofReal(h(φ(x))) dμ(x) = ∫⁻ ofReal(f) dμ, by step 1 (μ-a.e. equality of integrands).\n4. Negative parts. Apply the identity with g(y) := ofReal(−h(y)): ∫⁻ ofReal(−h) dν = ∫⁻ ofReal(J(x))·ofReal(−h(φ(x))) dμ(x) = ∫⁻ ofReal(−f) dμ, by step 1.\n5. For a real integrable function F, ∫F = (∫⁻ ofReal(F))_ℝ − (∫⁻ ofReal(−F))_ℝ (integral_eq_lintegral_pos_part_sub_lintegral_neg_part). Apply this to h and ν (integrable by step 2) and to f and μ (integrable by hypothesis), then substitute steps 3 and 4. This gives ∫ h dν = ∫ f dμ, which together with step 2 proves both conclusions. No measurability of g, φ or J is needed, because the identity is assumed for every g : ℝ^P → [0, ∞].",
+    "proof_key_steps": [
+      "Multiplication by J(x) ≥ 0 commutes with |·|, positive part and negative part, so a.e. on μ: ofReal(J)·|h∘φ|ₑ = |f|ₑ and ofReal(J)·ofReal(±h∘φ) = ofReal(±f).",
+      "The identity with g = |h|ₑ gives ∫⁻|h|ₑ dν = ∫⁻|f|ₑ dμ < ∞; with a.e. strong measurability, h is ν-integrable.",
+      "The identity with g = ofReal(h) and with g = ofReal(−h) gives equal positive-part and negative-part lintegrals.",
+      "∫F = ∫⁻F⁺ − ∫⁻F⁻ for integrable F, so ∫ h dν = ∫ f dμ."
+    ]
+  },
+  "audit": {
+    "key": "area_integral_transfer",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The one-line proposition matches all hypotheses and both conclusions. Nonnegativity of J yields the absolute-value and positive/negative-part identities a.e. Applying the assumed lintegral identity first proves integrability of h, then equality of its positive and negative lintegrals with those of f. The real-integral decomposition gives the claimed equality. No additional measurability of J or φ is required because the area identity quantifies over every weight. The proof is complete and non-circular."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-ddc9727a9c/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-ddc9727a9c/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-ddc9727a9c/parent-supplied-natural-proof.json"
+}
