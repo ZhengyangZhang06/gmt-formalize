@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IMRep|IsUnitOrientationOf|MultiVector|namespace|open |locallyIntegrable_mult|def action|aestronglyMeasurable_orient",
+        "ofSubsingleton|def apply|le_opNorm",
+        "^theorem .*integral_map|^theorem .*integrable_map_iff|^theorem ae_map_iff|^theorem integral_biUnion_finset|^theorem integral_indicator |^theorem setIntegral_congr_set|^theorem integrable_indicator_iff |^theorem locallyIntegrable_iff|^theorem LocallyIntegrable.locallyIntegrableOn|^theorem restrict_restrict |^theorem ae_restrict_iff",
+        "\"lean_name\": \"(idtp_fons_odc_ra_action_split|idtp_fons_odc_ra_single_ray)\"",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ray_action_independent_types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ray_action_check/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ray_action_check/RegcompCand.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ray_action_check/LcnCand.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-cfede44f2a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-cfede44f2a/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-restriction-integer-multipl-1450eb50b9/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-0cfdbb9466/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/leaf_verification.py",
+        "/tmp/ray_action_independent_types.lean",
+        "/tmp/ray_action_check/Assembly.lean",
+        "/tmp/ray_action_check/RegcompCand.lean",
+        "/tmp/ray_action_check/LcnCand.lean"
+      ],
+      "conclusion": "Independently confirmed the pinned revisions and equality of the snapshot Contract with the working contract. All four child propositions and the selected parent proposition elaborate without any child declarations. The supplied two new proofs and exact parent assembly compile with only standard axioms and their explicitly named modular inputs. Both reused candidate sources match their recorded commits, have byte-identical frozen types and passed comparator receipts, and recompile with only propext, Classical.choice and Quot.sound. The new-name search found no DAG reservations. The pinned measure-transport, restriction, domination and finite-union APIs have the hypotheses used in the proofs; covector evaluation and default Lebesgue measures infer correctly. The dependency closure is acyclic, and inherited.py supplies the explicitly cited line_param prerequisite. Splitting is appropriate: the two new obligations isolate finite additivity and single-ray transport while reusing established integrability results. Choosing the single-ray densities and applying action_split proves the exact selected parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "action_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree, including arbitrary U and degree n. The proof derives the orientation bound directly, establishes measurable evaluation, constructs an integrable compact-support majorant, and applies domination. It covers n = 0 and uses no circular dependency. The bare name validly reuses the comparator-accepted declaration at its identical frozen type."
+    },
+    {
+      "key": "compact_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition includes exactly compactness, K ⊆ U, the IMRep data and an arbitrary covector. Finite multiplicity integral, restriction of the orientation bound and measurability, and domination prove the stated IntegrableOn conclusion. The supplied direct orientation argument needs no new sibling. Reuse is valid at the identical accepted type, with a clean axiom check."
+    },
+    {
+      "key": "action_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh bare name and one-line proposition are valid. Unit directions give measurable rays and pairwise disjointness; action_integrable supplies all required integrability. The null-complement hypothesis identifies the carrier with their union almost everywhere, so finite additivity proves precisely the stated action identity, including F empty. Its dependency is correctly directed."
+    },
+    {
+      "key": "single_ray",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes the exact unit-vector and restricted almost-everywhere orientation hypotheses. The proof explicitly constructs β and g, establishes β[e] = 1, transports compact integrability and almost-everywhere integrality, and proves the integral identity using indicators and measurable-embedding transport. The inline covector constructions have the intended types. Only compact_integrable and the registered inherited line_param are used; neither the child nor parent conclusion is assumed."
+    }
+  ],
+  "required_changes": []
+}
