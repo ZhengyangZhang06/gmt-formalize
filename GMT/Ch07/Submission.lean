@@ -451,6 +451,26 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The zero current is integer multiplicity.**  The triple `(∅, 0, 0)` is an `IMRep` in `U`:
+`∅` is Borel and `Hᵈ`-null, hence countably `d`-rectifiable, and the positivity, local
+integrability and orientation conditions over `∅` hold vacuously (`Hᵈ⌞∅ = 0`).  Its action is an
+integral over `∅`, i.e. `0`, so it represents the zero current. -/
+theorem Submission.dor_lmb_fc_tb_zero_isIntegerMultiplicity : ∀ (P d : ℕ) (U : Set (Euclid P)), IsIntegerMultiplicity (0 : GeometricCurrentOn U d) := by
+  intro P d U
+  refine ⟨{ carrier := ∅
+            mult := fun _ => 0
+            orient := fun _ => 0
+            measurableSet_carrier := MeasurableSet.empty
+            carrier_subset := empty_subset U
+            rectifiable :=
+              Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+            measurable_mult := measurable_const
+            mult_pos := fun x hx => absurd hx (notMem_empty x)
+            locallyIntegrable_mult := fun K _ _ => by simp
+            aestronglyMeasurable_orient := aestronglyMeasurable_const
+            orients := by simp }, fun ω => ?_⟩
+  simp [IMRep.action]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
