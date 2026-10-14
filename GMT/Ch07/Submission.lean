@@ -963,6 +963,130 @@ theorem Submission.codim1_hcp_fcp_local_plane : ∀ (P m : ℕ) (A₀ : Submodul
   · rintro y ⟨hyO, hyH⟩
     obtain ⟨v, hv, rfl⟩ : y ∈ ψ '' ball v₀ δ := hO'H ▸ ⟨hyO.2, hyH⟩
     exact ⟨hyO, hψM v (hBV hv)⟩
+/-- **Globalization of local planarity** (the passage from `|A| ≡ 0` to a plane closing the proof
+of Simon, Appendix B, Theorem B.2).  Let `M ⊆ ℝᴾ` be nonempty with `0 ∉ M` and
+`closure M ⊆ M ∪ {0}`, and let `M` agree near each `x ∈ M` with some `m`-dimensional subspace
+`H ⊆ A₀`, where `m ≥ 2` and `dim A₀ = m + 1`.  Then `M = H₀ \ {0}` with `dim H₀ = m`.
+
+Two local planes at one point of `M` coincide (move from the point along `h ∈ H₁` inside both
+neighbourhoods).  Let `U_H` be the union of all open `O` with `O ∩ M = O ∩ H`; it is open and
+`U_H ∩ M = U_H ∩ H`.  If `dim H ≥ 2` and `U_H` meets `M`, then `U_H` and the open set
+`G = ℝᴾ \ closure (U_H ∩ M)` cover the connected set `H \ {0}` (a point of `H \ {0}` in
+`closure (U_H ∩ M)` lies in `M`, and its local plane is `H` by uniqueness at a nearby point of
+`U_H ∩ M`) and are disjoint on it; `H \ {0}` contains a point of `U_H ∩ M`, which is not in `G`,
+so `H \ {0} ⊆ U_H`.  Hence `H₀ \ {0} ⊆ M` for the local plane `H₀` at some `x₀ ∈ M`.  For `y ∈ M`
+with local plane `H_y`, `dim (H₀ ∩ H_y) ≥ 2m − (m + 1) ≥ 1` inside `A₀`, so the two planes share
+some `w ≠ 0`, and uniqueness at `w` gives `H_y = H₀`. -/
+theorem Submission.codim1_hcp_fcp_locally_planar_is_plane : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), 2 ≤ m → Module.finrank ℝ A₀ = m + 1 → M.Nonempty → (0 : Euclid P) ∉ M → closure M ⊆ insert 0 M → (∀ x ∈ M, ∃ H : Submodule ℝ (Euclid P), Module.finrank ℝ H = m ∧ H ≤ A₀ ∧ ∃ O : Set (Euclid P), IsOpen O ∧ x ∈ O ∧ O ∩ M = O ∩ (H : Set (Euclid P))) → ∃ H₀ : Submodule ℝ (Euclid P), Module.finrank ℝ H₀ = m ∧ M = (H₀ : Set (Euclid P)) \ {0} := by
+  intro P m A₀ M hm hA₀ hMne h0M hcl hloc
+  have hM0 : ∀ y ∈ M, y ∉ ({0} : Set (Euclid P)) := fun y hy h0 => h0M (h0 ▸ hy)
+  -- Step 1: two local planes of `M` at the same point `y ∈ M` coincide
+  have uniq_le : ∀ y ∈ M, ∀ (H₁ H₂ : Submodule ℝ (Euclid P)) (O₁ O₂ : Set (Euclid P)),
+      IsOpen O₁ → IsOpen O₂ → y ∈ O₁ → y ∈ O₂ → O₁ ∩ M = O₁ ∩ (H₁ : Set (Euclid P)) →
+      O₂ ∩ M = O₂ ∩ (H₂ : Set (Euclid P)) → H₁ ≤ H₂ := by
+    intro y hy H₁ H₂ O₁ O₂ hO₁ hO₂ hy₁ hy₂ hM₁ hM₂ h hh
+    have hyH₁ : y ∈ H₁ := (hM₁.subset ⟨hy₁, hy⟩).2
+    have hyH₂ : y ∈ H₂ := (hM₂.subset ⟨hy₂, hy⟩).2
+    -- `z = y + s h` with `0 < s`, `s |h| < ε` lies in `B_ε(y) ⊆ O₁ ∩ O₂`
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 (hO₁.inter hO₂) y ⟨hy₁, hy₂⟩
+    obtain ⟨s, hs, hsε⟩ : ∃ s : ℝ, 0 < s ∧ s * ‖h‖ < ε := by
+      refine ⟨ε / (2 * (‖h‖ + 1)), by positivity, ?_⟩
+      rw [div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+      nlinarith [mul_nonneg hε.le (norm_nonneg h)]
+    have hz : y + s • h ∈ O₁ ∩ O₂ := hball <| by
+      rwa [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul,
+        Real.norm_of_nonneg hs.le]
+    -- `z ∈ O₁ ∩ H₁ = O₁ ∩ M`, hence `z ∈ O₂ ∩ M = O₂ ∩ H₂`
+    have hzM : y + s • h ∈ M :=
+      (hM₁.symm.subset ⟨hz.1, H₁.add_mem hyH₁ (H₁.smul_mem s hh)⟩).2
+    have hzH₂ : y + s • h ∈ H₂ := (hM₂.subset ⟨hz.2, hzM⟩).2
+    -- `h = s⁻¹ ((y + s h) − y) ∈ H₂`
+    have := H₂.smul_mem s⁻¹ (H₂.sub_mem hzH₂ hyH₂)
+    rwa [add_sub_cancel_left, inv_smul_smul₀ hs.ne'] at this
+  have uniq : ∀ y ∈ M, ∀ (H₁ H₂ : Submodule ℝ (Euclid P)) (O₁ O₂ : Set (Euclid P)),
+      IsOpen O₁ → IsOpen O₂ → y ∈ O₁ → y ∈ O₂ → O₁ ∩ M = O₁ ∩ (H₁ : Set (Euclid P)) →
+      O₂ ∩ M = O₂ ∩ (H₂ : Set (Euclid P)) → H₁ = H₂ :=
+    fun y hy H₁ H₂ O₁ O₂ hO₁ hO₂ hy₁ hy₂ hM₁ hM₂ =>
+      le_antisymm (uniq_le y hy H₁ H₂ O₁ O₂ hO₁ hO₂ hy₁ hy₂ hM₁ hM₂)
+        (uniq_le y hy H₂ H₁ O₂ O₁ hO₂ hO₁ hy₂ hy₁ hM₂ hM₁)
+  -- Step 2: `U_H`, the union of all open `O` with `O ∩ M = O ∩ H`, is open, contains each such
+  -- `O`, and satisfies `U_H ∩ M = U_H ∩ H`
+  obtain ⟨U, hUopen, hUsub, hUeq⟩ : ∃ U : Submodule ℝ (Euclid P) → Set (Euclid P),
+      (∀ H, IsOpen (U H)) ∧
+      (∀ (H : Submodule ℝ (Euclid P)) (O : Set (Euclid P)), IsOpen O →
+        O ∩ M = O ∩ (H : Set (Euclid P)) → O ⊆ U H) ∧
+      ∀ H, U H ∩ M = U H ∩ (H : Set (Euclid P)) := by
+    refine ⟨fun H => ⋃₀ {O | IsOpen O ∧ O ∩ M = O ∩ (H : Set (Euclid P))},
+      fun H => isOpen_sUnion fun O hO => hO.1, fun H O hO hOM => subset_sUnion_of_mem ⟨hO, hOM⟩,
+      fun H => Subset.antisymm ?_ ?_⟩
+    · rintro z ⟨hzU, hzM⟩
+      obtain ⟨O, ⟨-, hOM⟩, hzO⟩ := mem_sUnion.1 hzU
+      exact ⟨hzU, (hOM.subset ⟨hzO, hzM⟩).2⟩
+    · rintro z ⟨hzU, hzH⟩
+      obtain ⟨O, ⟨-, hOM⟩, hzO⟩ := mem_sUnion.1 hzU
+      exact ⟨hzU, (hOM.symm.subset ⟨hzO, hzH⟩).2⟩
+  -- Step 3: if `dim H ≥ 2` and `U_H ∩ M ≠ ∅`, then `H \ {0} ⊆ U_H`
+  have hfill : ∀ H : Submodule ℝ (Euclid P), 2 ≤ Module.finrank ℝ H → (U H ∩ M).Nonempty →
+      (H : Set (Euclid P)) \ {0} ⊆ U H := by
+    rintro H hH ⟨y₀, hy₀U, hy₀M⟩
+    -- (a) `H \ {0} ⊆ U_H ∪ G`, where `G = ℝᴾ \ closure (U_H ∩ M)`
+    have hcover : (H : Set (Euclid P)) \ {0} ⊆ U H ∪ (closure (U H ∩ M))ᶜ := by
+      rintro z ⟨-, hz0⟩
+      by_cases hzc : z ∈ closure (U H ∩ M)
+      · -- `z ∈ closure M \ {0} ⊆ M`; its local plane is `H`, by uniqueness at a nearby point
+        refine Or.inl ?_
+        have hzM : z ∈ M :=
+          (Set.mem_insert_iff.1 (hcl (closure_mono inter_subset_right hzc))).resolve_left hz0
+        obtain ⟨Hz, -, -, Oz, hOz, hzOz, hOzM⟩ := hloc z hzM
+        obtain ⟨y, hyOz, hyU, hyM⟩ := _root_.mem_closure_iff.1 hzc Oz hOz hzOz
+        rw [uniq y hyM Hz H Oz (U H) hOz (hUopen H) hyOz hyU hOzM (hUeq H)] at hOzM
+        exact hUsub H Oz hOz hOzM hzOz
+      · exact Or.inr hzc
+    -- (b) `(H \ {0}) ∩ U_H ∩ G = ∅`, as `U_H ∩ H = U_H ∩ M`
+    have hdisj : ((H : Set (Euclid P)) \ {0}) ∩ (U H ∩ (closure (U H ∩ M))ᶜ) = ∅ :=
+      eq_empty_iff_forall_notMem.2 fun z ⟨hz, hzU, hzG⟩ =>
+        hzG (subset_closure ((hUeq H).symm.subset ⟨hzU, hz.1⟩))
+    -- (c) `H \ {0}` is connected and contains `y₀ ∈ U_H ∩ M`, which is not in `G`
+    rcases isPreconnected_iff_subset_of_disjoint.1
+      (Submission.codim1_hcp_fcp_punctured_subspace_isConnected P H hH).isPreconnected
+      (U H) _ (hUopen H) isClosed_closure.isOpen_compl hcover hdisj with h | h
+    · exact h
+    · have hy₀ : y₀ ∈ (H : Set (Euclid P)) \ {0} :=
+        ⟨((hUeq H).subset ⟨hy₀U, hy₀M⟩).2, hM0 y₀ hy₀M⟩
+      exact absurd (subset_closure (show y₀ ∈ U H ∩ M from ⟨hy₀U, hy₀M⟩)) (h hy₀)
+  -- each local plane `H` (`dim H = m ≥ 2`) of `M` at a point of `M` has `H \ {0} ⊆ U_H`
+  have hplane : ∀ y ∈ M, ∀ (H : Submodule ℝ (Euclid P)) (O : Set (Euclid P)),
+      Module.finrank ℝ H = m → IsOpen O → y ∈ O → O ∩ M = O ∩ (H : Set (Euclid P)) →
+      (H : Set (Euclid P)) \ {0} ⊆ U H :=
+    fun y hy H O hH hO hyO hOM => hfill H (hH ▸ hm) ⟨y, hUsub H O hO hOM hyO, hy⟩
+  -- Step 4: the local plane `H₀` at some `x₀ ∈ M` has `H₀ \ {0} ⊆ U_{H₀} ∩ H₀ ⊆ M`
+  obtain ⟨x₀, hx₀⟩ := hMne
+  obtain ⟨H₀, hH₀, hH₀A, O₀, hO₀, hx₀O₀, hO₀M⟩ := hloc x₀ hx₀
+  have hH₀U := hplane x₀ hx₀ H₀ O₀ hH₀ hO₀ hx₀O₀ hO₀M
+  refine ⟨H₀, hH₀, Subset.antisymm ?_ fun z hz => ((hUeq H₀).symm.subset ⟨hH₀U hz, hz.1⟩).2⟩
+  -- Step 5: `M ⊆ H₀ \ {0}`
+  intro y hy
+  obtain ⟨Hy, hHy, hHyA, Oy, hOy, hyOy, hOyM⟩ := hloc y hy
+  have hHyU := hplane y hy Hy Oy hHy hOy hyOy hOyM
+  -- `dim (H₀ ⊓ H_y) ≥ 2m − (m + 1) ≥ 1`, since `H₀ ⊔ H_y ≤ A₀`
+  have hne : H₀ ⊓ Hy ≠ ⊥ := by
+    intro hbot
+    have hdim := Submodule.finrank_sup_add_finrank_inf_eq H₀ Hy
+    rw [hbot, finrank_bot, add_zero, hH₀, hHy] at hdim
+    have hle : m + m ≤ m + 1 :=
+      calc m + m = Module.finrank ℝ ↥(H₀ ⊔ Hy) := hdim.symm
+        _ ≤ Module.finrank ℝ ↥A₀ := Submodule.finrank_mono (sup_le hH₀A hHyA)
+        _ = m + 1 := hA₀
+    omega
+  obtain ⟨w, hw, hw0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hne
+  obtain ⟨hw₀, hwy⟩ := Submodule.mem_inf.1 hw
+  -- `w ∈ M` lies in `U_{H₀}` and `U_{H_y}`, so `H_y = H₀` by uniqueness at `w`
+  have hwU₀ : w ∈ U H₀ := hH₀U (show w ∈ (H₀ : Set (Euclid P)) \ {0} from ⟨hw₀, hw0⟩)
+  have hwUy : w ∈ U Hy := hHyU (show w ∈ (Hy : Set (Euclid P)) \ {0} from ⟨hwy, hw0⟩)
+  have hwM : w ∈ M := ((hUeq H₀).symm.subset ⟨hwU₀, hw₀⟩).2
+  have hHy₀ : Hy = H₀ :=
+    uniq w hwM Hy H₀ (U Hy) (U H₀) (hUopen Hy) (hUopen H₀) hwUy hwU₀ (hUeq Hy) (hUeq H₀)
+  exact ⟨hHy₀ ▸ (hOyM.subset ⟨hyOy, hy⟩).2, hM0 y hy⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
