@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "25b50bede99ad5f3d8bf8f314d621406281799956787c545ee8cd2e958651f3f",
+  "git_delta": {
+    "base_commit": "d45bf8a145f011fc501fe1305c5516c4cdd06548",
+    "candidate_commit": "b85ae47837b35ac330e94972288c8a442fedaa15",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_ll_chart_pullback",
+    "diff_sha256": "39f083fb1b3b39a7f9703037762c0f617dbb7db91258dbbdf6cb3796a4e94fb4",
+    "source_sha256": "6af704c7b82c31c1f46668182b1fd3a7a92dffd33ca36897ccbbdba3e53f2da8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_ll_chart_pullback",
+      "statement": "∀ (P n : ℕ) (ψ : Euclid (n + 1) → Euclid P) (V Y : Set (Euclid (n + 1))), IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → MeasurableSet Y → IsCompact (closure Y) → closure Y ⊆ V → (∀ p : Euclid P → Prop, (∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), p x) → ∀ᵐ y ∂(volume.restrict Y), p (ψ y)) ∧ ∀ w : Euclid P → Euclid P, IntegrableOn w (ψ '' Y) μHE[n + 1] → (∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → w x ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P)) → ∃ W : Euclid (n + 1) → Euclid (n + 1), Integrable W ∧ (∀ y, y ∉ Y → W y = 0) ∧ ∀ ℓ : Euclid P → (Euclid P →L[ℝ] ℝ), ∫ x in ψ '' Y, ℓ x (w x) ∂μHE[n + 1] = ∫ y, ℓ (ψ y) (fderiv ℝ ψ y (W y))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
