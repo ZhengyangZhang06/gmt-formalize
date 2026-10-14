@@ -1476,6 +1476,94 @@ theorem Submission.dor_lmb_fc_dtop_ip_unitOrientation_isometry : ∀ (P Q d : �
     · exact Or.inl fun β => h (β.compContinuousLinearMap L)
     · exact Or.inr fun β => h (β.compContinuousLinearMap L)
 
+/-- **Simon Ch. 6, 2.23–2.24 and 3.3–3.9 for a linear isometric embedding `L : ℝᴾ → ℝ^Q`**: if
+`R = (M, θ, ξ)` represents `T` in `ℝᴾ`, then `R' = (L(M), θ ∘ L*, L_#ξ ∘ L*)`, where
+`L_#ξ(x) = ξ(x) ∘ L^#` and `L*` is the adjoint, represents `L_#T` in `ℝ^Q`, and
+`μ_{R'}(B) = μ_R(L⁻¹(B))` for Borel `B`.  The Jacobian of `L` is `1`, so the area formula is the
+change of variables `Hᵈ⌞L(A) = L_#(Hᵈ⌞A)` (`dor_lmb_fc_dtop_ip_isometry_change_of_variables`).
+`L` preserves inner products, so `L*` is a continuous linear left inverse of `L`; `L(M)` is
+rectifiable as `L` is `1`-Lipschitz; `L_#ξ(x)` orients `T_{Lx}L(M) = L(TₓM)`
+(`dor_lmb_fc_dtop_ip_approxTangent_isometry`, `dor_lmb_fc_dtop_ip_unitOrientation_isometry`); and
+`L_#T(ω) = T(L^#ω)` with `⟨L^#ω(x), ξ(x)⟩ = ⟨ω(Lx), L_#ξ(x)⟩`. -/
+theorem Submission.dor_lmb_fc_dtop_ip_image_imrep : ∀ (P Q d : ℕ) (L : Euclid P →L[ℝ] Euclid Q) (hL : IsProperMap (fun x => (0 : Euclid Q) + L x)) (T : GeometricCurrentOn (univ : Set (Euclid P)) d) (R : IMRep (univ : Set (Euclid P)) d), Isometry L → R.Represents T → ∃ R' : IMRep (univ : Set (Euclid Q)) d, R'.Represents (GeometricCurrentOn.affinePushforward (V := (univ : Set (Euclid Q))) L 0 hL T) ∧ ∀ s : Set (Euclid Q), MeasurableSet s → R'.measure s = R.measure (L ⁻¹' s) := by
+  intro P Q d L hL T R hLi hR
+  obtain ⟨hme, hmap, hint, hlint⟩ :=
+    Submission.dor_lmb_fc_dtop_ip_isometry_change_of_variables P Q d L hLi
+  -- `L` preserves inner products, so `⟨L*(Lx), y⟩ = ⟨Lx, Ly⟩ = ⟨x, y⟩`: `L*` is a left inverse
+  have hAL : ∀ x, ContinuousLinearMap.adjoint L (L x) = x := by
+    let Li : Euclid P →ₗᵢ[ℝ] Euclid Q :=
+      { toLinearMap := L, norm_map' := (AddMonoidHomClass.isometry_iff_norm L).mp hLi }
+    refine fun x => ext_inner_right ℝ fun y => ?_
+    rw [ContinuousLinearMap.adjoint_inner_left]
+    exact Li.inner_map_map x y
+  -- `ζ ↦ ζ ∘ L^#` is continuous on `d`-vectors
+  have hΦ : Continuous fun ζ : MultiVector P d =>
+      ζ.comp (ContinuousAlternatingMap.compContinuousLinearMapCLM L) :=
+    continuous_id.clm_comp continuous_const
+  refine ⟨{ carrier := L '' R.carrier
+            mult := fun y => R.mult (ContinuousLinearMap.adjoint L y)
+            orient := fun y => (R.orient (ContinuousLinearMap.adjoint L y)).comp
+              (ContinuousAlternatingMap.compContinuousLinearMapCLM L)
+            measurableSet_carrier := hme.measurableSet_image.mpr R.measurableSet_carrier
+            carrier_subset := subset_univ _
+            rectifiable := ?_
+            measurable_mult :=
+              R.measurable_mult.comp (ContinuousLinearMap.adjoint L).continuous.measurable
+            mult_pos := ?_
+            locallyIntegrable_mult := ?_
+            aestronglyMeasurable_orient := ?_
+            orients := ?_ }, ?_, ?_⟩
+  · -- `L(M) ⊆ L(M₀) ∪ ⋃ⱼ range (L ∘ Fⱼ)` with `Hᵈ(L(M₀)) = Hᵈ(M₀) = 0` and `L ∘ Fⱼ` Lipschitz
+    obtain ⟨M₀, hM₀, F, hF, hcover⟩ := R.rectifiable
+    refine ⟨L '' M₀, by rw [hLi.euclideanHausdorffMeasure_image, hM₀], fun j => L ∘ F j,
+      fun j => ?_, ?_⟩
+    · obtain ⟨K, hK⟩ := hF j
+      exact ⟨_, hLi.lipschitzWith.comp hK⟩
+    · rintro _ ⟨x, hx, rfl⟩
+      rcases hcover hx with h0 | h1
+      · exact Or.inl ⟨x, h0, rfl⟩
+      · obtain ⟨j, v, rfl⟩ := mem_iUnion.mp h1
+        exact Or.inr (mem_iUnion.mpr ⟨j, v, rfl⟩)
+  · rintro _ ⟨x, hx, rfl⟩
+    show 0 < R.mult (ContinuousLinearMap.adjoint L (L x))
+    rw [hAL]
+    exact R.mult_pos x hx
+  · -- `L(M) ∩ K = L(M ∩ L⁻¹(K))`, and `L⁻¹(K)` is compact as `L` is a closed embedding
+    intro K hK _
+    rw [← image_inter_preimage, hlint]
+    simp only [hAL]
+    exact R.locallyIntegrable_mult _
+      (hLi.isClosedEmbedding.isProperMap.isCompact_preimage hK) (subset_univ _)
+  · -- `Hᵈ⌞L(M) = L_#(Hᵈ⌞M)` and `ξ' ∘ L = L_#ξ`
+    rw [← hmap]
+    refine hme.aestronglyMeasurable_map_iff.mpr ?_
+    simp only [Function.comp_def, hAL]
+    exact hΦ.comp_aestronglyMeasurable R.aestronglyMeasurable_orient
+  · -- for `Hᵈ⌞M`-a.e. `x`, `L_#ξ(x)` orients `L(TₓM)`, the approximate tangent of `L(M)` at `Lx`
+    rw [← hmap]
+    refine hme.ae_map_iff.mpr (R.orients.mono fun x hx => ?_)
+    obtain ⟨S, hS, hξ⟩ := hx
+    refine ⟨S.map (L : Euclid P →ₗ[ℝ] Euclid Q),
+      Submission.dor_lmb_fc_dtop_ip_approxTangent_isometry P Q d L R.carrier x S hLi hS, ?_⟩
+    simpa only [hAL] using
+      Submission.dor_lmb_fc_dtop_ip_unitOrientation_isometry P Q d L (R.orient x) S hLi hξ
+  · -- `L_#T(ω) = T(L^#ω) = ∫_M θ ⟨L^#ω, ξ⟩ dHᵈ = ∫_M θ'(Lx) ⟨ω(Lx), ξ'(Lx)⟩ dHᵈ(x) = R'(ω)`
+    intro ω
+    have h1 : (GeometricCurrentOn.affinePushforward (V := (univ : Set (Euclid Q))) L 0 hL T) ω =
+        R.action (affinePullbackForm L 0 (ω : DifferentialForm (Euclid Q) d)) :=
+      hR (affinePullbackTestOn L 0 hL univ d ω)
+    rw [h1]
+    simp only [IMRep.action]
+    rw [hint]
+    refine setIntegral_congr_fun R.measurableSet_carrier fun x _ => ?_
+    simp [affinePullbackForm, hAL]
+  · -- `μ_{R'}(B) = ∫_{L⁻¹(B)} θ'(Lx) d(Hᵈ⌞M)(x) = μ_R(L⁻¹(B))`
+    intro s hs
+    simp only [IMRep.measure]
+    rw [withDensity_apply _ hs, withDensity_apply _ (hme.measurable hs), ← hmap,
+      hme.restrict_map, hme.lintegral_map]
+    simp only [hAL]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
