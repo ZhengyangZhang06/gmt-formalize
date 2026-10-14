@@ -692,6 +692,73 @@ theorem Submission.idtp_fons_odc_du_bois_reymond : ∀ g : ℝ → ℝ, LocallyI
   rw [e2, integral_sub hgψ (hψi.const_mul _), integral_const_mul, ← H, ha]
   ring
 
+/-- **Simon Ch. 6, 2.34 (constancy theorem) on finitely many rays.**  Let `C ∈ 𝒟₁(ℝᴾ)` with
+`∂C = 0` be given on the open rays `{te : t > 0}`, `e ∈ F` (unit vectors), by densities `g_e` that
+are locally integrable and a.e. integer-valued on `(0, ∞)`.  Testing `∂C = 0` with `f ∈ C^∞_c(ℝᴾ)`
+gives `Σ_e ∫₀^∞ g_e(t) (d/dt) f(te) dt = 0`.  A cutoff `f` equal to `ψ ∈ C^∞_c((0, ∞))` on `ℝe₀`
+and vanishing on the other open rays reduces this to `∫₀^∞ g_{e₀} ψ' = 0`, so `g_{e₀}` is a.e. a
+constant (du Bois-Reymond), which is an integer `m(e₀)` by integrality.  A bump `b` with
+`b(0) = 1` and `∫₀^∞ (d/dt) b(te) dt = −b(0)` then gives `Σ_e m(e) = 0`. -/
+theorem Submission.idtp_fons_odc_ray_constancy : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1), C.boundary = 0 → ∀ F : Finset (Euclid P), (∀ e ∈ F, ‖e‖ = 1) → ∀ g : Euclid P → ℝ → ℝ, (∀ e ∈ F, LocallyIntegrableOn (g e) (Ioi 0)) → (∀ e ∈ F, ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), ∃ k : ℤ, g e t = k) → (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, ∫ t in Ioi (0 : ℝ), g e t * (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∃ m : Euclid P → ℤ, ∑ e ∈ F, m e = 0 ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, (m e : ℝ) * ∫ t in Ioi (0 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e) := by
+  intro P C hC F hF g hg hgZ hrep
+  -- (1.1) `Σ_e ∫₀^∞ g_e(t) (d/dt) f(te) dt = 0` for every `f ∈ C^∞_c(ℝᴾ)`
+  have htest := Submission.idtp_fons_odc_rc_boundary_ray_test P C hC F g hrep
+  -- `(0, ∞)` has positive measure, so an a.e. property on it holds at some point
+  have : (ae (volume.restrict (Ioi (0 : ℝ)))).NeBot :=
+    ae_neBot.2 (by rw [Ne, Measure.restrict_eq_zero, Real.volume_Ioi]; exact ENNReal.top_ne_zero)
+  -- each density is a.e. an integer constant on `(0, ∞)`
+  have hconst : ∀ e₀ ∈ F, ∃ k : ℤ, ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))), g e₀ t = k := by
+    intro e₀ he₀
+    -- `∫₀^∞ g_{e₀} ψ' = 0` for every `ψ ∈ C^∞_c((0, ∞))`
+    have hdbr : ∀ ψ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ →
+        tsupport ψ ⊆ Ioi 0 → ∫ t in Ioi (0 : ℝ), g e₀ t * deriv ψ t = 0 := by
+      intro ψ hψ hψc hψs
+      obtain ⟨f, hf, hfc, hfe₀, hfe⟩ :=
+        Submission.idtp_fons_odc_rc_ray_cutoff P F hF e₀ (hF e₀ he₀) ψ hψ hψc hψs
+      -- on the other rays `t ↦ f(te)` vanishes on the open set `(0, ∞)`, so does its derivative
+      have hother : ∀ e ∈ F, e ≠ e₀ →
+          ∫ t in Ioi (0 : ℝ), g e t * deriv (fun s : ℝ => f (s • e)) t = 0 := by
+        intro e he hne
+        refine setIntegral_eq_zero_of_forall_eq_zero fun t ht => ?_
+        have hzero : (fun s : ℝ => f (s • e)) =ᶠ[𝓝 t] fun _ => (0 : ℝ) :=
+          eventually_of_mem (Ioi_mem_nhds ht) fun s hs => hfe e he hne s hs
+        rw [hzero.deriv_eq, deriv_const, mul_zero]
+      have h := htest f hf hfc
+      rw [Finset.sum_eq_single_of_mem e₀ he₀ hother,
+        show (fun s : ℝ => f (s • e₀)) = ψ from funext hfe₀] at h
+      exact h
+    obtain ⟨c, hc⟩ := Submission.idtp_fons_odc_du_bois_reymond (g e₀) (hg e₀ he₀) hdbr
+    obtain ⟨t, htc, k, hk⟩ := (hc.and (hgZ e₀ he₀)).exists
+    exact ⟨k, hc.mono fun s hs => hs.trans (htc.symm.trans hk)⟩
+  choose! m hm using hconst
+  refine ⟨m, ?_, fun ω => ?_⟩
+  · -- a bump `b ∈ C^∞_c(ℝᴾ)` with `b(0) = 1`; `∫₀^∞ (d/dt) b(te) dt = −b(0)` on each ray
+    let b : ContDiffBump (0 : Euclid P) := ⟨1, 2, one_pos, one_lt_two⟩
+    have hb0 : b 0 = 1 := b.eventuallyEq_one.eq_of_nhds
+    have hterm : ∀ e ∈ F,
+        ∫ t in Ioi (0 : ℝ), g e t * deriv (fun s : ℝ => b (s • e)) t = -(m e : ℝ) := by
+      intro e he
+      calc ∫ t in Ioi (0 : ℝ), g e t * deriv (fun s : ℝ => b (s • e)) t
+          = ∫ t in Ioi (0 : ℝ), (m e : ℝ) * deriv (fun s : ℝ => b (s • e)) t := by
+            refine integral_congr_ae ?_
+            filter_upwards [hm e he] with t ht
+            rw [ht]
+        _ = (m e : ℝ) * -b 0 := by
+            rw [integral_const_mul, Submission.idtp_fons_odc_rc_ray_ftc P b b.contDiff
+              b.hasCompactSupport e (hF e he)]
+        _ = -(m e : ℝ) := by rw [hb0, mul_neg, mul_one]
+    have hsum : ∑ e ∈ F, -(m e : ℝ) = 0 :=
+      (Finset.sum_congr rfl hterm).symm.trans (htest b b.contDiff b.hasCompactSupport)
+    rw [Finset.sum_neg_distrib, neg_eq_zero] at hsum
+    exact_mod_cast hsum
+  · -- `g_e = m(e)` a.e. on `(0, ∞)`, and the constant comes out of the integral
+    rw [hrep ω]
+    refine Finset.sum_congr rfl fun e he => ?_
+    rw [← integral_const_mul]
+    refine integral_congr_ae ?_
+    filter_upwards [hm e he] with t ht
+    rw [ht]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
