@@ -568,6 +568,143 @@ theorem Submission.cbrg_ae_orient_iUnion : (∀ (P n : ℕ) (U M M' : Set (Eucli
   rw [hxξ]
   exact hQo
 
+/-- **Gluing integer multiplicity triples over disjoint pieces** (Simon Ch. 6, 3.1).  Assume
+(IMC)(a), as in `cbrg_ae_orient_iUnion`.  Let `Rᵢ = (Mᵢ, θᵢ, ξᵢ)` (`i` in a countable type) be
+integer multiplicity triples in open `Wᵢ ⊆ U`, and `Aᵢ` pairwise disjoint Borel sets.  Let `μ` be
+carried by `⋃ᵢ Aᵢ`, with `μ⌞Aᵢ = (θᵢHᵏ⌞Mᵢ)⌞Aᵢ` and `μ(K) < ∞` for compact `K ⊆ U`, and let `ξ` be
+`μ`-measurable with `ξ = ξᵢ` `Hᵏ`-a.e. on `Mᵢ ∩ Aᵢ`.  Then `M = ⋃ᵢ Mᵢ ∩ Aᵢ`, with `θ = θᵢ` on `Aᵢ`
+(`0` off `⋃ᵢ Aᵢ`) and orientation `ξ`, is an integer multiplicity triple in `U` of weight `μ`:
+`θHᵏ⌞M = Σᵢ (θᵢHᵏ⌞Mᵢ)⌞Aᵢ = μ`, so `θ` is locally integrable, `Hᵏ⌞M` is locally finite and
+`Hᵏ⌞M ≪ μ`, and `ξ` orients `M` a.e. by `cbrg_ae_orient_iUnion`. -/
+theorem Submission.cbrg_imRep_glue_disjoint : (∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) → ∀ (ι : Type) [Countable ι] (P k : ℕ) (U : Set (Euclid P)) (W A : ι → Set (Euclid P)) (R : (i : ι) → IMRep (W i) k) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P k), IsOpen U → (∀ i, IsOpen (W i)) → (∀ i, W i ⊆ U) → (∀ i, MeasurableSet (A i)) → Pairwise (fun i j => Disjoint (A i) (A j)) → μ (⋃ i, A i)ᶜ = 0 → (∀ i, μ.restrict (A i) = (R i).measure.restrict (A i)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ i, ∀ᵐ y ∂(μHE[k].restrict ((R i).carrier ∩ A i)), ξ y = (R i).orient y) → ∃ R' : IMRep U k, R'.carrier = ⋃ i, (R i).carrier ∩ A i ∧ R'.orient = ξ ∧ R'.measure = μ := by
+  classical
+  intro hIMC ι _ P k U W A R μ ξ hU hWo hWU hAm hAd hAc hμA hfin hξm hξ
+  -- pieces `Nᵢ = Mᵢ ∩ Aᵢ` and multiplicities `mᵢ = θᵢ`
+  let N : ι → Set (Euclid P) := fun i => (R i).carrier ∩ A i
+  let m : ι → Euclid P → ℕ := fun i => (R i).mult
+  -- glued multiplicity: `θ = θᵢ` on `Aᵢ`, `0` off `⋃ᵢ Aᵢ`
+  let θ : Euclid P → ℕ := fun x => if h : ∃ i, x ∈ A i then m h.choose x else 0
+  have hθA : ∀ i, ∀ x ∈ A i, θ x = (R i).mult x := by
+    intro i x hx
+    have h : ∃ j, x ∈ A j := ⟨i, hx⟩
+    have hj : h.choose = i := by
+      by_contra hne
+      exact (Set.disjoint_left.1 (hAd hne)) h.choose_spec hx
+    show (if h' : ∃ j, x ∈ A j then m h'.choose x else 0) = m i x
+    rw [dite_eq_left h, hj]
+  have hθ0 : ∀ x, (¬ ∃ i, x ∈ A i) → θ x = 0 := by
+    intro x hx
+    show (if h' : ∃ j, x ∈ A j then m h'.choose x else 0) = 0
+    rw [dite_eq_right hx]
+  -- the carrier `M = ⋃ᵢ Nᵢ` is Borel and lies in `U`
+  have hNm : ∀ i, MeasurableSet (N i) := fun i => (R i).measurableSet_carrier.inter (hAm i)
+  have hMm : MeasurableSet (⋃ i, N i) := MeasurableSet.iUnion hNm
+  have hMU : (⋃ i, N i) ⊆ U :=
+    iUnion_subset fun i => inter_subset_left.trans ((R i).carrier_subset.trans (hWU i))
+  -- `θ` is measurable: its fibres are Borel
+  have hθm : Measurable θ := by
+    refine measurable_to_countable' fun n => ?_
+    have hpre : θ ⁻¹' {n} = (⋃ i, A i ∩ (R i).mult ⁻¹' {n}) ∪ ((⋃ i, A i)ᶜ ∩ {_x | 0 = n}) := by
+      ext x
+      simp only [mem_preimage, mem_singleton_iff, mem_union, mem_iUnion, mem_inter_iff,
+        mem_compl_iff, mem_ofPred_eq]
+      constructor
+      · intro hx
+        by_cases h : ∃ i, x ∈ A i
+        · obtain ⟨i, hi⟩ := h
+          exact Or.inl ⟨i, hi, by rw [← hθA i x hi]; exact hx⟩
+        · exact Or.inr ⟨h, by rw [← hθ0 x h]; exact hx⟩
+      · rintro (⟨i, hi, hx⟩ | ⟨h, hn⟩)
+        · rw [hθA i x hi]; exact hx
+        · rw [hθ0 x h]; exact hn
+    rw [hpre]
+    refine (MeasurableSet.iUnion fun i =>
+      (hAm i).inter ((R i).measurable_mult (measurableSet_singleton n))).union
+      ((MeasurableSet.iUnion hAm).compl.inter ?_)
+    by_cases hn : 0 = n
+    · simp [hn]
+    · simp [hn]
+  -- `θ ≥ 1` on `M`
+  have hθpos : ∀ x ∈ ⋃ i, N i, 0 < θ x := by
+    intro x hx
+    obtain ⟨i, hxi⟩ := mem_iUnion.1 hx
+    rw [hθA i x hxi.2]
+    exact (R i).mult_pos x hxi.1
+  -- `M` is countably `k`-rectifiable (reindex the pieces by `ℕ`)
+  have hMrect : CountablyRectifiable k (⋃ i, N i) := by
+    rcases isEmpty_or_nonempty ι with hι | hι
+    · rw [iUnion_of_empty]
+      exact Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+    · obtain ⟨s, hs⟩ := exists_surjective_nat ι
+      rw [← hs.iUnion_comp N]
+      exact Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _
+        fun n => (R (s n)).rectifiable.mono inter_subset_left
+  -- `μ = Σᵢ μ⌞Aᵢ = Σᵢ (θᵢHᵏ⌞Mᵢ)⌞Aᵢ`
+  have hμsum : μ = Measure.sum (fun i => ((R i).measure).restrict (A i)) := by
+    have h1 : μ.restrict (⋃ i, A i) = μ := by
+      refine Measure.restrict_eq_self_of_ae_mem ?_
+      rw [ae_iff]
+      simpa [compl_def] using hAc
+    calc μ = μ.restrict (⋃ i, A i) := h1.symm
+      _ = Measure.sum (fun i => μ.restrict (A i)) := Measure.restrict_iUnion hAd hAm
+      _ = Measure.sum (fun i => ((R i).measure).restrict (A i)) := by
+          congr 1
+          funext i
+          exact hμA i
+  -- the measure identity `θHᵏ⌞M = μ`
+  have hmeas : (μHE[k].restrict (⋃ i, N i)).withDensity (fun x => (θ x : ℝ≥0∞)) = μ := by
+    have hNd : Pairwise (fun i j => Disjoint (N i) (N j)) :=
+      fun i j hij => (hAd hij).mono inter_subset_right inter_subset_right
+    rw [hμsum, Measure.restrict_iUnion hNd hNm, withDensity_sum]
+    congr 1
+    funext i
+    rw [IMRep.measure, restrict_withDensity (hAm i), Measure.restrict_restrict (hAm i),
+      inter_comm (A i)]
+    refine withDensity_congr_ae ?_
+    filter_upwards [ae_restrict_mem (hNm i)] with x hx
+    rw [hθA i x hx.2]
+  -- local integrability of `θ`: `∫_{M ∩ K} θ dHᵏ = μ(K) < ∞`
+  have hlint : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      ∫⁻ x in (⋃ i, N i) ∩ K, (θ x : ℝ≥0∞) ∂μHE[k] ≠ ∞ := by
+    intro K hK hKU
+    have h1 : ∫⁻ x in (⋃ i, N i) ∩ K, (θ x : ℝ≥0∞) ∂μHE[k] =
+        ((μHE[k].restrict (⋃ i, N i)).withDensity (fun x => (θ x : ℝ≥0∞))) K := by
+      rw [withDensity_apply _ hK.measurableSet, Measure.restrict_restrict hK.measurableSet,
+        inter_comm]
+    rw [h1, hmeas]
+    exact (hfin K hK hKU).ne
+  -- local finiteness of `Hᵏ⌞M`: `Hᵏ(M ∩ K) ≤ ∫_{M ∩ K} θ dHᵏ`
+  have hMfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[k] ((⋃ i, N i) ∩ K) ≠ ∞ := by
+    intro K hK hKU
+    refine ne_top_of_le_ne_top (hlint K hK hKU) ?_
+    calc μHE[k] ((⋃ i, N i) ∩ K) = ∫⁻ _ in (⋃ i, N i) ∩ K, (1 : ℝ≥0∞) ∂μHE[k] := by
+          rw [setLIntegral_one]
+      _ ≤ ∫⁻ x in (⋃ i, N i) ∩ K, (θ x : ℝ≥0∞) ∂μHE[k] := by
+          refine setLIntegral_mono (measurable_from_nat.comp hθm) ?_
+          intro x hx
+          exact_mod_cast hθpos x hx.1
+  -- `Hᵏ⌞M ≪ θHᵏ⌞M = μ`, so `ξ` is `Hᵏ⌞M`-measurable
+  have hac : μHE[k].restrict (⋃ i, N i) ≪ μ := by
+    rw [← hmeas]
+    refine withDensity_absolutelyContinuous' (measurable_from_nat.comp hθm).aemeasurable ?_
+    filter_upwards [ae_restrict_mem hMm] with x hx
+    exact_mod_cast (hθpos x hx).ne'
+  have hξM : AEStronglyMeasurable ξ (μHE[k].restrict (⋃ i, N i)) := hξm.mono_ac hac
+  -- orientation: `ξ` orients `M` a.e., by `cbrg_ae_orient_iUnion` for the pieces `Nᵢ ⊆ Mᵢ`
+  have horient := Submission.cbrg_ae_orient_iUnion hIMC ι P k U W N R ξ hU hWo hNm
+    (fun i => inter_subset_left) hMU hMfin hξ
+  exact ⟨{ carrier := ⋃ i, N i
+           mult := θ
+           orient := ξ
+           measurableSet_carrier := hMm
+           carrier_subset := hMU
+           rectifiable := hMrect
+           measurable_mult := hθm
+           mult_pos := hθpos
+           locallyIntegrable_mult := hlint
+           aestronglyMeasurable_orient := hξM
+           orients := horient }, rfl, rfl, hmeas⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
