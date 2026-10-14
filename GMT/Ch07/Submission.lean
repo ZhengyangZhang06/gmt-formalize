@@ -972,6 +972,63 @@ theorem Submission.codim1_lur_cd_pullback_field_trace : ∀ (P n : ℕ) (D : Set
     ContinuousLinearMap.toLinearMap_sum, map_sum]
   refine Finset.sum_congr rfl fun j _ => (LinearMap.trace_smulRight _ (e j)).trans ?_
   simp [ContinuousAlternatingMap.apply_apply, zsmul_eq_mul]
+/-- **Chart divergence formula** (Simon 7.5.2, steps (1a)–(1e), with Ch. 6, 2.35).  Let
+`T = ∂[[E]]` in `U` for a Borel `E ⊆ N ∩ U`, and let `N` be, near `x`, the graph
+`G(y) = x + ιy + u(y)` over `D = B_{δ₁}(0)` of a `C²` map `u` into `(range ι)ᗮ` with `|u| < δ₂/2`,
+unique within `δ₂`, along which `ξN(G v) · J(v) = DG(v)e₀ ∧ ⋯ ∧ DG(v)eₙ` for the Gram Jacobian
+`J(v) = √det(⟨DG(v)eᵢ, DG(v)eⱼ⟩)`.  If `spt ω ⊆ Z = {w : |A(w − x)| < δ₁, |w − x − ιA(w − x)| < δ₂}`
+(`A = ι*`), the field `Φ = 1_D · Σⱼ (−1)ʲ ω(G)(DG e_{j.succAbove 0}, …, DG e_{j.succAbove (n−1)}) eⱼ`
+is `C¹` with compact support in `D`, and `T(ω) = ∫_{D ∩ G⁻¹E} div Φ`.  Since `spt dω ⊆ spt ω ⊆ Z`
+and `E ∩ Z = G(D ∩ G⁻¹E)`, the area formula for the injective immersion `G` gives
+`T(ω) = ∫_{D ∩ G⁻¹E} J · ξN(G)(dω(G))`, and the orientation identity turns the integrand into
+`dω(G)(DG e₀, …, DG eₙ) = div Φ`. -/
+theorem Submission.codim1_lur_chart_divergence_formula : ∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid P) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ₁ δ₂ : ℝ), MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → 0 < δ₁ → 0 < δ₂ → ContDiffOn ℝ 2 u (ball 0 δ₁) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, (∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) ∧ ‖fderiv ℝ u v‖ ≤ 1 ∧ ‖u v‖ < δ₂ / 2 ∧ x + ι v + u v ∈ N ∧ ∀ α : Covector (Euclid P) (n + 1), ξN (x + ι v + u v) α * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (n + 1) => inner ℝ (ι (EuclideanSpace.single i 1) + fderiv ℝ u v (EuclideanSpace.single i 1)) (ι (EuclideanSpace.single j 1) + fderiv ℝ u v (EuclideanSpace.single j 1)))) = α (fun i => ι (EuclideanSpace.single i 1) + fderiv ℝ u v (EuclideanSpace.single i 1))) → (∀ (v : Euclid (n + 1)) (h : Euclid P), ‖v‖ < δ₁ → ‖h‖ < δ₂ → (∀ w : Euclid (n + 1), inner ℝ (ι w) h = 0) → x + ι v + h ∈ N → h = u v) → ∀ (ω : TestFormOn U n) (Φ : Euclid (n + 1) → Euclid (n + 1)), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ ∧ ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂} → Φ = (ball (0 : Euclid (n + 1)) δ₁).indicator (fun v => ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * (ω : DifferentialForm (Euclid P) n) (x + ι v + u v) (fun k => fderiv ℝ (fun y => x + ι y + u y) v (EuclideanSpace.single (j.succAbove k) 1))) • EuclideanSpace.single j (1 : ℝ)) → ContDiff ℝ 1 Φ ∧ HasCompactSupport Φ ∧ tsupport Φ ⊆ ball 0 δ₁ ∧ T ω = ∫ v in ball 0 δ₁ ∩ (fun y => x + ι y + u y) ⁻¹' E, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ Φ v : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1)) := by
+  intro P n U N E ξN T x ι u δ₁ δ₂ hE hEN hT _ _ hu hchart huniq ω Φ hωZ hΦ
+  -- the graph chart `G` on `D = B_{δ₁}(0)`: a `C²` injective immersion with `N ∩ Z = G(D)`
+  obtain ⟨hG2, hDG, hDGinj, hGinj, -, hcpt, himg, hmeas⟩ :=
+    Submission.codim1_lur_cd_graph_chart_geometry P n N x ι u δ₁ δ₂ hu
+      (fun v hv => (hchart v hv).1) (fun v hv => (hchart v hv).2.2.1)
+      (fun v hv => (hchart v hv).2.2.2.1) huniq
+  set G : Euclid (n + 1) → Euclid P := fun y => x + ι y + u y
+  set Z := {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ ∧
+    ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂}
+  have hωs : ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) n) := ω.property.1.1
+  -- `Φ` is `C¹` with compact support in `D`, since `D ∩ G⁻¹(spt ω)` is compact
+  obtain ⟨hΦ1, hΦc, hΦD⟩ := Submission.codim1_lur_cd_pullback_field_regularity P n _ G _ Φ
+    isOpen_ball hG2 hωs (hcpt _ ω.property.1.2.isCompact hωZ) hΦ
+  refine ⟨hΦ1, hΦc, hΦD, ?_⟩
+  set F := ball (0 : Euclid (n + 1)) δ₁ ∩ G ⁻¹' E
+  have hF : MeasurableSet F := hmeas E hE
+  -- localization: `E ∩ Z = G(F)`, and `ξN(dω)` vanishes on `E \ Z` since `spt dω ⊆ spt ω ⊆ Z`
+  have hEZ : E ∩ Z = G '' F := himg E fun w hw => (hEN hw).1
+  have hvanish : ∀ w ∈ E \ G '' F,
+      ξN w (exteriorDerivative (ω : DifferentialForm (Euclid P) n) w) = 0 := by
+    rintro w ⟨hwE, hwG⟩
+    have hwZ : w ∉ Z := fun hwZ => hwG (hEZ ▸ ⟨hwE, hwZ⟩)
+    rw [image_eq_zero_of_notMem_tsupport
+      fun h => hwZ (hωZ (tsupport_exteriorDerivative_subset _ h)), map_zero]
+  calc T ω = ∫ w in E, ξN w (exteriorDerivative (ω : DifferentialForm (Euclid P) n) w)
+        ∂μHE[n + 1] := hT ω
+    _ = ∫ w in G '' F, ξN w (exteriorDerivative (ω : DifferentialForm (Euclid P) n) w)
+        ∂μHE[n + 1] :=
+      setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hE (hEZ ▸ inter_subset_left) hvanish
+    -- area formula for the injective immersion `G` on `F`
+    _ = ∫ v in F, Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (n + 1) =>
+          inner ℝ (fderiv ℝ G v (EuclideanSpace.single i 1))
+            (fderiv ℝ G v (EuclideanSpace.single j 1)))) *
+          ξN (G v) (exteriorDerivative (ω : DifferentialForm (Euclid P) n) (G v)) :=
+      Submission.codim1_lur_cd_injective_area_formula_gram P (n + 1) G F hF
+        (fun v hv => (hG2.differentiableOn (by norm_num) v hv.1).differentiableAt
+          (isOpen_ball.mem_nhds hv.1))
+        (fun v hv => hDGinj v hv.1) (hGinj.mono inter_subset_left) _
+    -- orientation `J · ξN(G)(α) = α(DG e)` and `trace DΦ = dω(G)(DG e)` on `F ⊆ D`
+    _ = ∫ v in F, LinearMap.trace ℝ (Euclid (n + 1))
+          (fderiv ℝ Φ v : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1)) := by
+      refine setIntegral_congr_fun hF fun v hv => ?_
+      rw [Submission.codim1_lur_cd_pullback_field_trace P n _ G _ Φ isOpen_ball hG2 hωs hΦ v hv.1]
+      simp only [hDG v hv.1]
+      rw [mul_comm]
+      exact (hchart v hv.1).2.2.2.2 _
 /-- Orientation normal form (Simon Ch. 6, 1.1 and 2.2; step 1 of the graph chart in Ch. 7, §5):
 a unit orientation `ξ = ±τ₀ ∧ ⋯ ∧ τₘ` of `Q` equals `ι(e₀) ∧ ⋯ ∧ ι(eₘ)` for a linear isometry
 `ι : ℝ^{m+1} → ℝᴾ` with range `Q`.  If the sign is `−`, replace `τ₀` by `−τ₀`: the family stays
