@@ -1,0 +1,102 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.null_off_carrier-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof ("Θ = 0 for H^n-a.e. x ∉ M"). In Simon this is the Upper Density Theorem, Ch. 1, Theorem 3.6 with Remark 3.7(2) (chapter-01.txt lines 700–722), which is derived from the comparison Theorem 3.3 (line 602) and the 5-times covering Lemma 3.4. The three ingredients of step 4 are reused accepted declarations:
+- the Vitali 5r-covering estimate μH[n]_{10δ}(A) ≤ 10^n (tω_n)^{-1} μ(U') (letting δ ↓ 0) is the sibling lower_density_comparison (Submission.dorag_sn_hausdorff_le_mul_of_lower_density);
+- "by outer regularity there is an open U' ⊇ A with μ(U') < ε" is the sibling null_open_superset (Submission.dorag_sn_open_superset_measure_lt);
+- the identity S.massOn(B_ρ(x)) = μ(B_ρ(x)) of step 1 (im_mass_measure (a)) is the sibling mass_eq_measure (Submission.rsd_massOn_eq_measure, which states exactly im_mass_measure (a)).
+Notation: M = R.carrier (Borel), θ = R.mult, H^n = μHE[n], μ := R.measure = (H^n⌞M).withDensity θ, ω_n := unitBallVolume n = Lebesgue measure of the open unit ball of ℝ^n. B_ρ(x) is the open ball and B̄_ρ(x) the closed ball.
+1. Constants. 0 < ω_n < ∞: the open unit ball of ℝ^n is nonempty, open and bounded, and Lebesgue measure is positive on nonempty open sets and finite on bounded sets. This includes n = 0, where ℝ^0 is a point and ω_0 = 1.
+2. Mass equals measure on balls. For every x ∈ ℝ^P and ρ ∈ ℝ, B_ρ(x) is an open subset of ℝ^P. So the sibling mass_eq_measure with U := ℝ^P (open), T := S and W := B_ρ(x) gives S.massOn(B_ρ(x)) = μ(B_ρ(x)).
+3. μ vanishes off M. Since M is Borel, μ(ℝ^P ∖ M) = ∫⁻_{ℝ^P∖M} θ d(H^n⌞M) = ∫⁻ θ d(H^n⌞((ℝ^P ∖ M) ∩ M)) = 0, because (ℝ^P ∖ M) ∩ M = ∅.
+4. μ is locally finite. Let x ∈ ℝ^P. The closed ball B̄_1(x) is compact (ℝ^P is proper) and contained in ℝ^P = U. So μ(B_1(x)) ≤ μ(B̄_1(x)) = ∫⁻_{M∩B̄_1(x)} θ dH^n < ∞ by the axiom locallyIntegrable_mult.
+5. Fix k ∈ ℕ and put t := 1/(k+1) > 0 and A := {x ∉ M : Θ(x) > t}. By step 3 and monotonicity, μ(A) ≤ μ(ℝ^P ∖ M) = 0.
+6. Lower density bound on A. Put c := t·ω_n, a positive real number by step 1. Let x ∈ A and write f(s) := S.massOn(B_s(x)) / (ω_n · ofReal(s^n)).
+- Since HasMassDensity S x Θ(x), f(s) → ofReal Θ(x) as s → 0⁺. As 0 ≤ t < Θ(x), ofReal t < ofReal Θ(x), so (ofReal t, ∞] is a neighbourhood of the limit. Hence there is t₀ > 0 with f(s) > ofReal t for every s ∈ (0, t₀).
+- Fix s ∈ (0, t₀). The denominator d := ω_n · ofReal(s^n) satisfies 0 < d < ∞ (step 1 and s^n > 0). So ofReal t < S.massOn(B_s(x))/d gives ofReal t · d ≤ S.massOn(B_s(x)) (ENNReal.le_div_iff_mul_le).
+- Since t, ω_n and s^n are nonnegative and ω_n < ∞, ofReal t · d = ofReal(t · ω_n · s^n) = ofReal(c s^n).
+- With step 2 and B_s(x) ⊆ B̄_s(x): ofReal(c s^n) ≤ S.massOn(B_s(x)) = μ(B_s(x)) ≤ μ(B̄_s(x)) for all s ∈ (0, t₀).
+7. Comparison. The sibling lower_density_comparison with N := P, this n, and c > 0 gives a constant C ∈ [0, ∞) (C ≠ ∞) such that, for the measure ν := μ, every open O ⊇ A satisfies H^n(A) ≤ C · μ(O); its density hypothesis is step 6.
+8. Small open neighbourhoods. Let ε ∈ (0, ∞]. By step 5, μ(A) = 0, and by step 4 every x ∈ A has a radius r = 1 with μ(B_r(x)) < ∞. So the sibling null_open_superset gives an open O ⊇ A with μ(O) < ε. By step 7, H^n(A) ≤ C · μ(O) ≤ C · ε.
+9. Take ε := 1/j for j ∈ ℕ (in [0, ∞], 1/0 = ∞ > 0 and 1/j > 0 for every j). Since C < ∞, C · (1/j) → C · 0 = 0 as j → ∞ (ENNReal.Tendsto.const_mul with ENNReal.tendsto_inv_nat_nhds_zero). Passing to the limit in H^n(A) ≤ C · (1/j) gives H^n(A) ≤ 0, hence H^n(A) = 0.
+10. Union over t. If x ∉ M and Θ(x) > 0, the Archimedean property gives k ∈ ℕ with 1/(k+1) < Θ(x). So {x ∉ M : Θ(x) > 0} ⊆ ⋃_{k∈ℕ} {x ∉ M : Θ(x) > 1/(k+1)}. By step 9 each set in the union is H^n-null, and countable subadditivity together with monotonicity gives H^n({x ∉ M : Θ(x) > 0}) = 0. ∎
+
+## Key steps
+
+1. μ_R vanishes off M, is locally finite, and S.massOn = μ_R on open balls (sibling mass_eq_measure).
+2. On A_t = {x ∉ M : Θ(x) > t} the density hypothesis gives μ_R(B̄_s(x)) ≥ t ω_n s^n for small s.
+3. Vitali comparison (sibling lower_density_comparison) gives H^n(A_t) ≤ C μ_R(O) for every open O ⊇ A_t, and outer regularity at the μ_R-null set A_t (sibling null_open_superset) makes μ_R(O) arbitrarily small, so H^n(A_t) = 0.
+4. A countable union over t = 1/(k+1) gives H^n({x ∉ M : Θ(x) > 0}) = 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n "lemma withDensity_absolutelyContinuous'|theorem lintegral_inter_add_sdiff|theorem IsometryEquiv.measurePreserving_euclideanHausdorffMeasure|theorem setLIntegral_comp_preimage_emb|theorem withDensity_apply \(|lemma exists_nat_one_div_lt|protected theorem Tendsto.const_mul|theorem mem_nhdsGT_iff_exists_Ioo_subset \[|theorem ofReal_lt_ofReal_iff_of_nonneg|protected theorem le_div_iff_mul_le|theorem ae_restrict_of_ae_restrict_of_subset|protected theorem tendsto_inv_nat_nhds_zero|def smulOfNeZero" local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `sed -n 60,180p local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (μHE[d] definition, IsometryEquiv.measurePreserving_euclideanHausdorffMeasure, euclideanHausdorffMeasure_smul₀)`
+- `python3 scans of dag.json: accepted lean_statements mentioning HasMassDensity/withDensity/density/Hausdorff dilation; byte-identity of the five reused types; uniqueness of each reused lean_name; reuse precedents (nodes appearing as children of several parents)`
+- `python3 dump of decomposition-v1.json for nodes/root-dimension-reduction-results-a1-cone-splitting-a1 and nodes/root-dimension-reduction-results-a1-im-mass-measure-a1 (reuse format, depends_on = [] for reused nodes, leaf-gate rationale)`
+- `git show <candidate>:GMT/Ch07/Submission.lean for 591230fd, 71a35e92, 72f84801, 9e9ed910, 22204a6d (header lines 1–452 equal to the contract; added theorem names pairwise disjoint); git merge-base --is-ancestor 591230fd 71a35e92`
+- `grep -c dimred_cs_mi_ dag.json; grep -rl dimred_cs_mi_ GMT .lake/packages/simongmt/Poincare; git log --all --oneline -S'dimred_cs_mi_' (all empty)`
+- `sed -n 596,735p book/chapter-01.txt (Simon 3.3, 3.4, 3.6, 3.7); sed -n 270,340p book/chapter-03.txt (1.7–1.9); sed -n 330,360p book/chapter-04.txt (3.12)`
+- `lake env lean /tmp/mi-decomp/Types.lean; lake env lean /tmp/mi-decomp/Proofs1.lean; lake env lean /tmp/mi-decomp/Proofs2.lean; lake env lean /tmp/mi-decomp/Composed2.lean (#print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Archimedean/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invariance-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-density-eq-multiplicity-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-4410d992f1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-e3e222819e/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-862a12a643/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/tmp/mi-decomp/Types.lean`
+- `/tmp/mi-decomp/Proofs1.lean`
+- `/tmp/mi-decomp/Proofs2.lean`
+- `/tmp/mi-decomp/Composed2.lean`
+
+Pins match. The snapshot is at project b4d606d (= workspace HEAD) and Mathlib 25730c7c. Its Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+No match in the frozen contract or SimonGMT for the needed density facts. Neither has uniqueness of HasMassDensity, density = multiplicity for IMRep, an upper-density theorem for μHE[n], or μ_R = Θ·H^n.
+
+Five comparator-accepted declarations in other branches cover the heavy steps, with types byte-identical to dag.json:
+- rsd_massOn_eq_measure (candidate 591230fd);
+- rsd_ae_hasMassDensity_mult (71a35e92, which descends from 591230fd);
+- dorag_sn_hausdorff_le_mul_of_lower_density (72f84801);
+- dorag_sn_open_superset_measure_lt (9e9ed910);
+- euclid_hausdorff_dilation_change_of_variables (22204a6d).
+They are reused. dimred_im_mass_measure is not needed: rsd_massOn_eq_measure states the same mass identity.
+
+The snapshot Mathlib provides every API used by the six new children:
+- withDensity_apply and withDensity_absolutelyContinuous';
+- lintegral_inter_add_sdiff and ae_restrict_of_ae_restrict_of_subset;
+- IsometryEquiv.measurePreserving_euclideanHausdorffMeasure and MeasurePreserving.setLIntegral_comp_preimage_emb;
+- Homeomorph.smulOfNeZero;
+- mem_nhdsGT_iff_exists_Ioo_subset, ENNReal.le_div_iff_mul_le, ENNReal.Tendsto.const_mul, ENNReal.tendsto_inv_nat_nhds_zero and exists_nat_one_div_lt.
+
+Lean evidence: all 11 child types elaborate in the contract scope, and the parent assembles from them. The six new children were fully proved in scratch files. A composed file with the verbatim accepted blocks proves the exact frozen parent type with axioms [propext, Classical.choice, Quot.sound] only.

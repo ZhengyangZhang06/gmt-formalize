@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "06e3737ab7e51dd8fcf89d4c9e74f828d67a4ade58d14911ff5fe035b9d11c38",
+  "git_delta": {
+    "base_commit": "4932d471a36ec708549b7995bae5f45ac069420e",
+    "candidate_commit": "c98a00e91e93e5c5ad9ef3d48b4e2c699e254e39",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cc_psf_injective",
+    "diff_sha256": "613de127120dd9c26e9c20405e213354c5ecec86d14ca059b66d15a01136011c",
+    "source_sha256": "31ca526d2e4d9f34d3442127752dae07a6445aa499fd6b8f5902e4e72e854b84",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cc_psf_injective",
+      "statement": "∀ (P n : ℕ) (μ₀ : Measure (Euclid P)), 1 ≤ n → μ₀ univ ≠ 0 → μ₀ univ ≠ ∞ → μ₀ (ball (0 : Euclid P) 2)ᶜ = 0 → ∀ (x x' : Euclid P) (lam lam' : ℝ), 0 < lam → 0 < lam' → ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam) = ENNReal.ofReal (lam'⁻¹ ^ n) • μ₀.map (dilation x' lam') → x = x' ∧ lam = lam'",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

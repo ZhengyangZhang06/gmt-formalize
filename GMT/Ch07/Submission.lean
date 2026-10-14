@@ -451,6 +451,131 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Change of variables for `Hⁿ` under the dilation `T(x) = cx`, `c > 0`**: formula (1.1) for the
+scaling of the mass measure of a cone (proof of Simon 7.4.5, chapter-07.txt lines 697–699, "by
+virtue of the fact that `C` is a cone").  For every `M ⊆ ℝᴾ`: (i) `T_#(Hⁿ⌞T⁻¹(M)) = c⁻ⁿ Hⁿ⌞M`;
+(ii) `∫⁻_{T⁻¹(M)} g(cz) dHⁿ(z) = c⁻ⁿ ∫⁻_M g dHⁿ` for every `g : ℝᴾ → [0, ∞]`; (iii) the same for
+the Bochner integral of every `g : ℝᴾ → ℝ`.  `T` is a homeomorphism, hence a measurable embedding,
+and `T⁻¹(B) = c⁻¹B` with `Hⁿ(c⁻¹B) = c⁻ⁿ Hⁿ(B)` gives `T_#Hⁿ = c⁻ⁿ Hⁿ`; restriction and integrals
+commute with the push-forward along `T`. -/
+theorem Submission.euclid_hausdorff_dilation_change_of_variables : ∀ (P n : ℕ) (c : ℝ), 0 < c → ∀ M : Set (Euclid P), Measure.map (fun x : Euclid P => c • x) (μHE[n].restrict ((fun x => c • x) ⁻¹' M)) = ENNReal.ofReal (c⁻¹ ^ n) • μHE[n].restrict M ∧ (∀ g : Euclid P → ℝ≥0∞, ∫⁻ z in (fun x => c • x) ⁻¹' M, g (c • z) ∂μHE[n] = ENNReal.ofReal (c⁻¹ ^ n) * ∫⁻ y in M, g y ∂μHE[n]) ∧ ∀ g : Euclid P → ℝ, ∫ z in (fun x => c • x) ⁻¹' M, g (c • z) ∂μHE[n] = c⁻¹ ^ n * ∫ y in M, g y ∂μHE[n] := by
+  intro P n c hc M
+  -- Step 1: `T(x) = cx` is a homeomorphism, hence a measurable embedding.
+  have hT : MeasurableEmbedding (fun x : Euclid P => c • x) :=
+    (Homeomorph.smulOfNeZero c hc.ne').measurableEmbedding
+  -- Step 2: `T_#Hⁿ = c⁻ⁿ Hⁿ`, since `Hⁿ(T⁻¹(B)) = Hⁿ(c⁻¹B) = ‖c⁻¹‖ⁿ Hⁿ(B)` for Borel `B`.
+  have hmap : Measure.map (fun x : Euclid P => c • x) (μHE[n] : Measure (Euclid P)) =
+      ENNReal.ofReal (c⁻¹ ^ n) • (μHE[n] : Measure (Euclid P)) := by
+    ext B hB
+    rw [Measure.map_apply hT.measurable hB, Set.preimage_smul₀ hc.ne',
+      Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hc.ne'), Measure.smul_apply,
+      ENNReal.smul_def, smul_eq_mul, smul_eq_mul, ← ENNReal.ofReal_coe_nnreal]
+    congr 2
+    simp [abs_of_pos hc]
+  -- Step 3, (i): `T_#(Hⁿ⌞T⁻¹(M)) = (T_#Hⁿ)⌞M = c⁻ⁿ Hⁿ⌞M`.
+  have h1 : Measure.map (fun x : Euclid P => c • x) (μHE[n].restrict ((fun x => c • x) ⁻¹' M)) =
+      ENNReal.ofReal (c⁻¹ ^ n) • μHE[n].restrict M := by
+    rw [← hT.restrict_map, hmap, Measure.restrict_smul]
+  refine ⟨h1, fun g => ?_, fun g => ?_⟩
+  -- Step 4, (ii): `∫⁻ g ∘ T dν = ∫⁻ g d(T_#ν)` for `ν = Hⁿ⌞T⁻¹(M)`, then (i).
+  · have h := hT.lintegral_map (μ := μHE[n].restrict ((fun x => c • x) ⁻¹' M)) g
+    rw [h1, lintegral_smul_measure, smul_eq_mul] at h
+    exact h.symm
+  -- Step 5, (iii): the same for Bochner integrals, with `(ofReal c⁻ⁿ).toReal = c⁻ⁿ`.
+  · have h := hT.integral_map (μ := μHE[n].restrict ((fun x => c • x) ⁻¹' M)) g
+    rw [h1, integral_smul_measure, ENNReal.toReal_ofReal (by positivity), smul_eq_mul] at h
+    exact h.symm
+
+/-- **`n`-homogeneity of `f Hⁿ` for a dilation-invariant density `f`** (Simon Lemma 7.3.5,
+chapter-07.txt lines 407–420, whose proof is "left to the reader": part (ii) of the invariance of
+the mass measure `μ = Θ Hⁿ` of `S` when its density `Θ` is invariant under `w ↦ λw`, with an
+arbitrary `f : ℝᴾ → [0, ∞]` in place of `ofReal ∘ Θ`).  If `λ > 0` and `f(λx) = f(x)` for all `x`,
+then `(f Hⁿ)(λA) = λⁿ (f Hⁿ)(A)` for every Borel `A ⊆ ℝᴾ`.  `δ(x) = λx` is a homeomorphism, so
+`λA = δ(A)` is Borel and `δ⁻¹(λA) = A`; the change of variables (ii) of
+`Submission.euclid_hausdorff_dilation_change_of_variables` with `g = f` and `f ∘ δ = f` gives
+`(f Hⁿ)(A) = λ⁻ⁿ (f Hⁿ)(λA)`, and `λⁿ λ⁻ⁿ = 1`. -/
+theorem Submission.dimred_cs_mi_withDensity_dilate : ∀ (P n : ℕ) (f : Euclid P → ℝ≥0∞) (lam : ℝ), 0 < lam → (∀ x : Euclid P, f (lam • x) = f x) → ∀ A : Set (Euclid P), MeasurableSet A → (μHE[n] : Measure (Euclid P)).withDensity f ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * (μHE[n] : Measure (Euclid P)).withDensity f A := by
+  intro P n f lam hlam hf A hA
+  -- Step 1: `δ(x) = λx` is a homeomorphism, hence a measurable embedding: `D = δ(A)` is Borel and
+  -- `δ⁻¹(D) = A` by injectivity.
+  have hδ : MeasurableEmbedding (fun x : Euclid P => lam • x) :=
+    (Homeomorph.smulOfNeZero lam hlam.ne').measurableEmbedding
+  have hD : MeasurableSet ((fun x : Euclid P => lam • x) '' A) := hδ.measurableSet_image.2 hA
+  have hpre : (fun x : Euclid P => lam • x) ⁻¹' ((fun x : Euclid P => lam • x) '' A) = A :=
+    Set.preimage_image_eq A hδ.injective
+  -- Steps 2–3: change of variables (ii) with `c = λ`, `M = D`, `g = f`; with `δ⁻¹(D) = A` and
+  -- `f(λz) = f(z)` it reads `∫⁻_A f dHⁿ = λ⁻ⁿ ∫⁻_D f dHⁿ`.
+  have h := (Submission.euclid_hausdorff_dilation_change_of_variables P n lam hlam
+    ((fun x : Euclid P => lam • x) '' A)).2.1 f
+  rw [hpre] at h
+  simp only [hf] at h
+  -- Steps 4–5: `ν(A) = λ⁻ⁿ ν(D)` by `withDensity_apply` (`A`, `D` Borel), and
+  -- `ofReal(λⁿ) ofReal(λ⁻ⁿ) = ofReal((λλ⁻¹)ⁿ) = 1`.
+  rw [withDensity_apply _ hD, withDensity_apply _ hA, h, ← mul_assoc,
+    ← ENNReal.ofReal_mul (pow_nonneg hlam.le n), ← mul_pow, mul_inv_cancel₀ hlam.ne', one_pow,
+    ENNReal.ofReal_one, one_mul]
+
+/-- **Injectivity of the positive-scale family `(x, λ) ↦ ofReal(λ⁻ⁿ) η_{x,λ#}μ₀`** (proof of Simon
+7.3.3(2), p. 189: clause (2) of the positive-scale family of rescalings; total masses recover `λ`,
+barycenters recover `x`).  Let `n ≥ 1` and let `μ₀` be a measure on `ℝᴾ` with `0 < μ₀(ℝᴾ) < ∞` and
+`μ₀(B_2(0)ᶜ) = 0`.  If `x, x' ∈ ℝᴾ`, `λ, λ' > 0` and
+`ofReal(λ⁻ⁿ) η_{x,λ#}μ₀ = ofReal(λ'⁻ⁿ) η_{x',λ'#}μ₀`, then `x = x'` and `λ = λ'`.  The dilations
+are continuous, so the total masses are `ofReal(λ⁻ⁿ) μ₀(ℝᴾ)` and `ofReal(λ'⁻ⁿ) μ₀(ℝᴾ)`; cancelling
+`μ₀(ℝᴾ) ∈ (0, ∞)` and using that `t ↦ tⁿ` is injective on `[0, ∞)` gives `λ = λ'`.  The identity
+is `μ₀`-integrable (`‖v‖ ≤ 2` `μ₀`-a.e.), and the barycenter
+`∫ v d(ofReal(λ⁻ⁿ) η_{a,λ#}μ₀) = λ⁻ⁿ (m₀ (−λ⁻¹a) + λ⁻¹ ∫ v dμ₀)`, `m₀ = μ₀(ℝᴾ) ≠ 0`, determines
+`a`. -/
+theorem Submission.idtp_fons_cc_psf_injective : ∀ (P n : ℕ) (μ₀ : Measure (Euclid P)), 1 ≤ n → μ₀ univ ≠ 0 → μ₀ univ ≠ ∞ → μ₀ (ball (0 : Euclid P) 2)ᶜ = 0 → ∀ (x x' : Euclid P) (lam lam' : ℝ), 0 < lam → 0 < lam' → ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam) = ENNReal.ofReal (lam'⁻¹ ^ n) • μ₀.map (dilation x' lam') → x = x' ∧ lam = lam' := by
+  intro P n μ₀ hn h0 htop hball x x' lam lam' hlam hlam' heq
+  -- Step 1: `η_{a,s}(u) = −(s⁻¹a) + s⁻¹u` is continuous, hence measurable, so the total mass of
+  -- `ofReal(s⁻ⁿ) η_{a,s#}μ₀` is `ofReal(s⁻ⁿ) μ₀(ℝᴾ)`.
+  have hmeas : ∀ (a : Euclid P) (s : ℝ), Measurable (dilation a s) := fun a s =>
+    (continuous_const.add (dilationCLM P s).continuous).measurable
+  have hmass : ∀ (a : Euclid P) (s : ℝ),
+      (ENNReal.ofReal (s⁻¹ ^ n) • μ₀.map (dilation a s)) univ =
+        ENNReal.ofReal (s⁻¹ ^ n) * μ₀ univ := fun a s => by
+    rw [Measure.smul_apply, Measure.map_apply (hmeas a s) MeasurableSet.univ, preimage_univ,
+      smul_eq_mul]
+  -- Step 2: equal total masses; cancel `μ₀(ℝᴾ) ∈ (0, ∞)`, then `ofReal` and `t ↦ tⁿ` (`n ≠ 0`)
+  -- are injective on `[0, ∞)`, so `λ⁻¹ = λ'⁻¹` and `λ = λ'`.
+  have hlam_eq : lam = lam' := by
+    have h1 : (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) univ =
+        (ENNReal.ofReal (lam'⁻¹ ^ n) • μ₀.map (dilation x' lam')) univ := by
+      rw [heq]
+    rw [hmass, hmass, ENNReal.mul_left_inj h0 htop,
+      ENNReal.ofReal_eq_ofReal_iff (by positivity) (by positivity),
+      pow_left_inj₀ (inv_nonneg.2 hlam.le) (inv_nonneg.2 hlam'.le) (by omega)] at h1
+    exact inv_injective h1
+  rw [← hlam_eq] at heq
+  refine ⟨?_, hlam_eq⟩
+  -- Step 3: `μ₀` is finite and `‖v‖ ≤ 2` `μ₀`-a.e., so the identity is `μ₀`-integrable, and
+  -- `m₀ = μ₀(ℝᴾ).toReal ≠ 0`.
+  have : IsFiniteMeasure μ₀ := ⟨lt_top_iff_ne_top.2 htop⟩
+  have hball_ae : ∀ᵐ v ∂μ₀, v ∈ ball (0 : Euclid P) 2 := mem_ae_iff.2 hball
+  have hid : Integrable (fun v : Euclid P => v) μ₀ :=
+    (integrable_const (2 : ℝ)).mono' continuous_id.aestronglyMeasurable
+      (hball_ae.mono fun v hv => (mem_ball_zero_iff.1 hv).le)
+  have hid' : Integrable (fun v : Euclid P => lam⁻¹ • v) μ₀ := hid.smul lam⁻¹
+  have hm : μ₀.real univ ≠ 0 := ENNReal.toReal_ne_zero.2 ⟨h0, htop⟩
+  -- Step 4: the barycenter of `ofReal(λ⁻ⁿ) η_{a,λ#}μ₀` is `λ⁻ⁿ (m₀ (−λ⁻¹a) + λ⁻¹ ∫ v dμ₀)`.
+  have hbar : ∀ a : Euclid P, ∫ v, v ∂(ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation a lam)) =
+      lam⁻¹ ^ n • (μ₀.real univ • -(lam⁻¹ • a) + lam⁻¹ • ∫ v, v ∂μ₀) := by
+    intro a
+    rw [integral_smul_measure, ENNReal.toReal_ofReal (by positivity),
+      integral_map (f := fun v : Euclid P => v) (hmeas a lam).aemeasurable
+        continuous_id.aestronglyMeasurable]
+    simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply]
+    rw [integral_add (integrable_const _) hid', integral_const, integral_smul]
+  -- Step 5: equal measures have equal barycenters; cancel `λ⁻ⁿ ≠ 0`, the common summand
+  -- `λ⁻¹ ∫ v dμ₀`, `m₀ ≠ 0`, the negation and `λ⁻¹ ≠ 0`.
+  have h1 : ∫ v, v ∂(ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) =
+      ∫ v, v ∂(ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x' lam)) := by
+    rw [heq]
+  rw [hbar, hbar] at h1
+  exact smul_right_injective (Euclid P) (inv_ne_zero hlam.ne') (neg_injective
+    (smul_right_injective (Euclid P) hm (add_right_cancel
+      (smul_right_injective (Euclid P) (pow_ne_zero n (inv_ne_zero hlam.ne')) h1))))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
