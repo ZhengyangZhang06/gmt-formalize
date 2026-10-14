@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0639843f844e7e897207d136759a09dbc9dd14be2d557628871e6bfafae01929",
+  "git_delta": {
+    "base_commit": "a0e24f5040f4622ec3956279530d14e5af18c0cf",
+    "candidate_commit": "73c5748e47ed849319ce6b7a23eaccf1b5df6bb9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cm_box_masses",
+    "diff_sha256": "c8b7b39c5e34211e4989928d0b76a9f55f13e15dcf06afdc3393fe8515bbdd99",
+    "source_sha256": "d59001ca21e0b1efa79045b090b658eeb92c666ef6c56342990c632f2f61cd2d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cm_box_masses",
+      "statement": "∀ (P k m n : ℕ) (g : Fin k → Euclid P) (S A₁ A₂ : GeometricCurrentOn (univ : Set (Euclid P)) n) (R RA₁ RA₂ : IMRep (univ : Set (Euclid P)) n) (R₀ R₀' : IMRep (univ : Set (Euclid P)) m) (r s : ℝ) (B : Set (Euclid P)), Orthonormal ℝ g → 0 < r → r < s → IsOpen B → R.Represents S → RA₁.Represents A₁ → RA₂.Represents A₂ → R₀.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → R₀'.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (Submodule.span ℝ (Set.range g) : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[k]) → (∀ A : Set (Euclid P), MeasurableSet A → RA₁.measure A = ∫⁻ t in (Submodule.span ℝ (Set.range g) : Set (Euclid P)) \\ {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[k]) → (∀ A : Set (Euclid P), MeasurableSet A → RA₂.measure A = ∫⁻ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, R₀'.measure ((fun y => t + y) ⁻¹' A) ∂μHE[k]) → S.massOn ((Submodule.span ℝ (Set.range g)).starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' B) = ENNReal.ofReal ((2 * s) ^ k) * R₀.measure B ∧ A₁.massOn ((Submodule.span ℝ (Set.range g)).starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' B) = (ENNReal.ofReal ((2 * s) ^ k) - ENNReal.ofReal ((2 * r) ^ k)) * R₀.measure B ∧ A₂.massOn ((Submodule.span ℝ (Set.range g)).starProjection ⁻¹' {x | ∀ i, |inner ℝ (g i) x| < s} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' B) = ENNReal.ofReal ((2 * r) ^ k) * R₀'.measure B",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
