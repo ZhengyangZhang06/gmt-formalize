@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.covector_euclidean_equiv-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1",
+  "depth": 3,
+  "title": "Covectors with the coefficient norm form a Euclidean space",
+  "statement": "For all P, n ∈ ℕ there are d ∈ ℕ and a continuous linear equivalence c from the space of n-covectors on ℝ^P (Covector (Euclid P) n, with its operator-norm topology) onto ℝ^d = EuclideanSpace ℝ (Fin d) such that covectorEuclideanNorm α = ‖c(α)‖ for every n-covector α. Here covectorEuclideanNorm α = (Σ_{I strictly increasing} α(e_I)²)^{1/2}, with e_I = (e_{I(0)}, …, e_{I(n−1)}) for the standard basis e of ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ), ∃ (d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)), ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖",
+  "lean_name": "cmr_covector_euclidean_equiv",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1-a1",
+      "result_commit": "2fd8f6ff9db8d5c94835632a4abd3e7d37106715",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-cov-64249b6f60-a1"
+}
