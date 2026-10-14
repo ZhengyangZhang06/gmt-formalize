@@ -1,0 +1,56 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def rieszMeasure|integral_rieszMeasure|regular_rieszMeasure|IsFiniteMeasureOnCompacts|variable",
+        "integrable_of_hasCompactSupport|integrableOn_iff_integrable_of_support_subset",
+        "extend_one|extend_zero|mulTSupport_comp_subset_preimage|isClosed_mulTSupport|hasCompactSupport",
+        "class Regular|class IsFiniteMeasureOnCompacts|theorem subtype_coe|theorem _root_.MeasurableEmbedding.integral_map|theorem map_apply|def mk₀",
+        "cbr_vl_integrable_of_tsupport_subset|cbr_vl_riesz_measure_on_open",
+        "git for-each-ref --format=%(refname)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/vague-limit-audit-zpjfx0fa/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/vague-limit-audit-zpjfx0fa/CheckedAssembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/vague-limit-audit-zpjfx0fa/CheckedSuppliedProofs.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Module/PositiveLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-74b9d7da9c/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-74b9d7da9c/decomposition-v1.json",
+        "/tmp/vague-limit-audit-zpjfx0fa/Types.lean",
+        "/tmp/vague-limit-audit-zpjfx0fa/CheckedAssembly.lean",
+        "/tmp/vague-limit-audit-zpjfx0fa/CheckedSuppliedProofs.lean"
+      ],
+      "conclusion": "Confirmed pinned project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and mathlib 25730c7c759d108ef87ab70af2342a196760f79d; snapshot Contract and workspace Contract/Submission are byte-identical. The cited integrability, extension-by-zero, RMK, compactness and measurable-embedding APIs support the supplied proofs. Regular includes finiteness on compact sets. Both exact child types pass lexical validation and elaborate independently before child declarations; pointwise addition and scalar multiplication match the prose. Checked supplied implementations and hypothesis-only assembly compile with only propext, Classical.choice and Quot.sound. No name collisions were found in the current DAG, other recorded decompositions, snapshot sources, SimonGMT or 4410 git refs. The split is appropriate: both independent children support the limit-functional argument, which proves the exact selected parent contract. The RMK step also agrees with [Espejo, Theorem 1.1](https://www.math.uchicago.edu/~may/REU2023/REUPapers/Espejo.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "integrable_cc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches every prose hypothesis and conclusion; U may indeed be arbitrary. Compactness and support containment give finite mass on tsupport f. Restricting there yields a finite measure, continuous compact support gives integrability, and vanishing outside transfers integrability to ν. The proof is complete and non-circular. This independent obligation supplies the integrability needed for the parent's integral_add step. Its bare name is unreserved."
+    },
+    {
+      "key": "riesz_open",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly expresses openness and restricted additivity, real homogeneity and positivity, with all three required measure conclusions. The proof establishes continuous compactly supported zero extensions, constructs the positive linear functional on the subtype, applies RMK, and verifies the push-forward's complement mass, compact-set finiteness and integral identity. Compact preimages correctly use K ⊆ U. Empty U and P = 0 introduce no missing assumptions. No child or parent theorem is invoked circularly; the empty dependency list is accurate. Its bare name is unreserved."
+    }
+  ],
+  "required_changes": []
+}
