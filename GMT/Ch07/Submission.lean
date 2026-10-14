@@ -451,6 +451,38 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Agreement on expanding balls** (truncated compactness for moving blow-ups; Simon 6.2.13):
+if `Ŝⱼ ⇀ C` in `ℝᴾ`, `ρⱼ → ∞`, and `Ŝⱼ` agrees with `Sⱼ ∈ 𝒟_{m+1}(Uⱼ)` (via `currentEval`) and
+has vanishing boundary on forms supported in `B_{ρⱼ}(0)`, then `∂C = 0` and `Sⱼ ⇀ C` in `ℝᴾ`.
+Every test form has compact, hence bounded, support, which lies in `B_{ρⱼ}(0)` for all large `j`;
+so `Sⱼ(ω)` eventually equals `Ŝⱼ(ω) → C(ω)`, and `∂Ŝⱼ(β)` tends both to `∂C(β)` and to `0`. -/
+theorem Submission.dimred_mbl_tc_limit_of_agreement : ∀ (P m : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)) (Ŝ : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ρ : ℕ → ℝ), Tendsto ρ atTop atTop → WeaklyConvergesOn Ŝ C → (∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 (ρ j) → Ŝ j ω = currentEval (Ss j) (ω : DifferentialForm (Euclid P) (m + 1))) → (∀ (j : ℕ) (β : TestFormOn (univ : Set (Euclid P)) m), tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 (ρ j) → (Ŝ j).boundary β = 0) → C.boundary = 0 ∧ ConvergesWeakly Ss C := by
+  intro P m Us Ss Ŝ C ρ hρ hconv hagree hbd
+  -- every test form on `ℝᴾ` has tsupport in some ball, eventually inside `ball 0 (ρ j)`
+  have hev : ∀ {k : ℕ} (ω : TestFormOn (univ : Set (Euclid P)) k), ∀ᶠ j in atTop,
+      tsupport (ω : DifferentialForm (Euclid P) k) ⊆ ball 0 (ρ j) := by
+    intro k ω
+    obtain ⟨r, hr⟩ := ω.property.1.2.isCompact.isBounded.subset_ball (0 : Euclid P)
+    filter_upwards [hρ.eventually_ge_atTop r] with j hj
+    exact hr.trans (ball_subset_ball hj)
+  constructor
+  · -- `∂Ŝⱼ(β) → ∂C(β)` and `∂Ŝⱼ(β) = 0` eventually, so `∂C(β) = 0`
+    apply GeometricCurrentOn.ext
+    intro β
+    have h1 : Tendsto (fun j => (Ŝ j).boundary β) atTop (𝓝 (C.boundary β)) :=
+      hconv.boundary β
+    have h2 : Tendsto (fun j => (Ŝ j).boundary β) atTop (𝓝 0) := by
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [hev β] with j hj
+      exact (hbd j β hj).symm
+    rw [tendsto_nhds_unique h1 h2]
+    rfl
+  · -- `currentEval (Ss j) ω` eventually equals `Ŝ j ω → C ω`
+    intro ω
+    refine (hconv ω).congr' ?_
+    filter_upwards [hev ω] with j hj
+    exact hagree j ω hj
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
