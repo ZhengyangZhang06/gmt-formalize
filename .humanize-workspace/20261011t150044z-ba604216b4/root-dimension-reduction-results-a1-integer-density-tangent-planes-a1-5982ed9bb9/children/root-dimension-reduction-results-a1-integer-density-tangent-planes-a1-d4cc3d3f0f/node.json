@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1",
+  "depth": 5,
+  "title": "The positive-scale members μ₀^{x,λ} built from one rescaled ball of a measure: support relation, injectivity (mass and barycenter), finite positive mass, domains, domain recovery under vague limits, non-homogeneity, transferred lower bound (parent steps 2, 3, 7, 12–14)",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, μ a measure on ℝ^P, z ∈ ℝ^P and r > 0 with μ(B_{2r}(z)) ≠ 0 and μ(B_{2r}(z)) ≠ ∞, and let μ₀ be the measure μ₀ = ofReal(r^{−n})•(μ⌞B_{2r}(z)).map(dilation z r). For x ∈ ℝ^P and λ > 0 write μ₀^{x,λ} := ofReal(λ^{−n})•μ₀.map(dilation x λ) and G_{x,λ} := dilation x λ '' B_2(0); call (x, λ) admissible if 0 < λ ≤ 1 and ‖x‖ ≤ 1 − λ; 'f_i → ν vaguely' means ∫ f dν_i → ∫ f dν for every continuous compactly supported f : ℝ^P → ℝ. Then: (1) for every w ∈ B_2(0): (μ₀(B_ε(w)) ≠ 0 for all ε > 0) ⟺ (μ(B_ε(z + r·w)) ≠ 0 for all ε > 0); (2) if λ, λ' > 0 and μ₀^{x,λ} = μ₀^{x',λ'}, then x = x' and λ = λ'; (3) for λ > 0, μ₀^{x,λ}(ℝ^P) ≠ 0 and μ₀^{x,λ}(ℝ^P) ≠ ∞; (4) for admissible (x, λ), G_{x,λ} is open and B_2(0) ⊆ G_{x,λ}; (5) if (x_i, λ_i) (i ∈ ℕ) are admissible, ν is a measure with ν(K') ≠ ∞ for every compact K', μ₀^{x_i,λ_i} → ν vaguely, K ⊆ ℝ^P is compact and K ⊄ G_{x_i,λ_i} for every i, then there is an admissible (x, λ) with ν = μ₀^{x,λ} and K ⊄ G_{x,λ}; (6) for λ > 0 and every f : ℝ^P → [0, ∞] with f(t·w) = f(w) for all t > 0 and w, μ₀^{x,λ} ≠ μHE[n].withDensity f; (7) if Λ₀ ≥ 0 and μ satisfies ofReal(e^{−(Λ₀σ)})·(ω_n·ofReal(σ^n)) ≤ μ(B_σ(p)) whenever μ(B_ε(p)) ≠ 0 for all ε > 0, closedBall p ρ ⊆ closedBall z (2r) and 0 < σ < ρ (ω_n = unitBallVolume n), then for all x, y ∈ ℝ^P, 0 < λ ≤ 1 and ρ > 0 with closedBall y ρ ⊆ G_{x,λ} and μ₀^{x,λ}(B_ε(y)) ≠ 0 for all ε > 0: ofReal(e^{−(r·Λ₀·ρ)})·(ω_n·ofReal(ρ^n)) ≤ μ₀^{x,λ}(B_ρ(y)).",
+  "lean_statement": "∀ (P n : ℕ) (μ μ₀ : Measure (Euclid P)) (z : Euclid P) (r : ℝ), 1 ≤ n → 0 < r → μ (ball z (2 * r)) ≠ 0 → μ (ball z (2 * r)) ≠ ∞ → μ₀ = ENNReal.ofReal (r⁻¹ ^ n) • (μ.restrict (ball z (2 * r))).map (dilation z r) → (∀ w ∈ ball (0 : Euclid P) 2, (∀ ε : ℝ, 0 < ε → μ₀ (ball w ε) ≠ 0) ↔ ∀ ε : ℝ, 0 < ε → μ (ball (z + r • w) ε) ≠ 0) ∧ (∀ (x x' : Euclid P) (lam lam' : ℝ), 0 < lam → 0 < lam' → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) = (ENNReal.ofReal (lam'⁻¹ ^ n) • μ₀.map (dilation x' lam')) → x = x' ∧ lam = lam') ∧ (∀ (x : Euclid P) (lam : ℝ), 0 < lam → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) univ ≠ 0 ∧ (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) univ ≠ ∞) ∧ (∀ (x : Euclid P) (lam : ℝ), 0 < lam → lam ≤ 1 → ‖x‖ ≤ 1 - lam → IsOpen (dilation x lam '' ball 0 2) ∧ ball 0 2 ⊆ dilation x lam '' ball 0 2) ∧ (∀ (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (ν : Measure (Euclid P)) (K : Set (Euclid P)), (∀ i, 0 < lams i ∧ lams i ≤ 1 ∧ ‖xs i‖ ≤ 1 - lams i) → (∀ K' : Set (Euclid P), IsCompact K' → ν K' ≠ ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun i => ∫ x, f x ∂(ENNReal.ofReal ((lams i)⁻¹ ^ n) • μ₀.map (dilation (xs i) (lams i)))) atTop (𝓝 (∫ x, f x ∂ν))) → IsCompact K → (∀ i, ¬ K ⊆ dilation (xs i) (lams i) '' ball 0 2) → ∃ (x : Euclid P) (lam : ℝ), (0 < lam ∧ lam ≤ 1 ∧ ‖x‖ ≤ 1 - lam) ∧ ν = (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) ∧ ¬ K ⊆ dilation x lam '' ball 0 2) ∧ (∀ (x : Euclid P) (lam : ℝ) (f : Euclid P → ℝ≥0∞), 0 < lam → (∀ t : ℝ, 0 < t → ∀ w : Euclid P, f (t • w) = f w) → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) ≠ (μHE[n] : Measure (Euclid P)).withDensity f) ∧ ∀ Λ₀ : ℝ, 0 ≤ Λ₀ → (∀ p : Euclid P, (∀ ε : ℝ, 0 < ε → μ (ball p ε) ≠ 0) → ∀ σ ρ : ℝ, closedBall p ρ ⊆ closedBall z (2 * r) → 0 < σ → σ < ρ → ENNReal.ofReal (Real.exp (-(Λ₀ * σ))) * (unitBallVolume n * ENNReal.ofReal (σ ^ n)) ≤ μ (ball p σ)) → ∀ (x y : Euclid P) (lam ρ : ℝ), 0 < lam → lam ≤ 1 → 0 < ρ → closedBall y ρ ⊆ dilation x lam '' ball 0 2 → (∀ ε : ℝ, 0 < ε → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) (ball y ε) ≠ 0) → ENNReal.ofReal (Real.exp (-(r * Λ₀ * ρ))) * (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ≤ (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) (ball y ρ)",
+  "lean_name": "idtp_fons_cc_positive_scale_family",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.ambient_calculus-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.dilate_homogeneity-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.ambient_calculus-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.measure_invariance-a1.dilate_homogeneity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-measure-invaria-4622bb5be6-a1",
+      "result_commit": "fc55b7480dccf7e48261ad5b085ddd0c0cc9f1d6",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d4cc3d3f0f-a1"
+}
