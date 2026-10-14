@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.local_inverse-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1",
+  "depth": 4,
+  "title": "Inverse function theorem with a C¹ inverse on an open neighbourhood",
+  "statement": "Let d ∈ ℕ, h : ℝ^d → ℝ^d, V ⊆ ℝ^d open and v₀ ∈ V. Suppose h is C¹ on V and its Fréchet derivative at v₀ is the identity, Dh(v₀) = id_{ℝ^d}. Then there are open sets V₀, O ⊆ ℝ^d and a map k : ℝ^d → ℝ^d such that V₀ ⊆ V, v₀ ∈ V₀, h(V₀) ⊆ O, k(O) ⊆ V₀, k(h(v)) = v for all v ∈ V₀, h(k(u)) = u for all u ∈ O, k is C¹ on O, and the Fréchet derivative of k at h(v₀) is the identity.",
+  "lean_statement": "∀ (d : ℕ) (h : Euclid d → Euclid d) (V : Set (Euclid d)) (v₀ : Euclid d), IsOpen V → v₀ ∈ V → ContDiffOn ℝ 1 h V → fderiv ℝ h v₀ = ContinuousLinearMap.id ℝ (Euclid d) → ∃ (V₀ O : Set (Euclid d)) (k : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ V₀ ⊆ V ∧ v₀ ∈ V₀ ∧ MapsTo h V₀ O ∧ MapsTo k O V₀ ∧ (∀ v ∈ V₀, k (h v) = v) ∧ (∀ u ∈ O, h (k u) = u) ∧ ContDiffOn ℝ 1 k O ∧ fderiv ℝ k (h v₀) = ContinuousLinearMap.id ℝ (Euclid d)",
+  "lean_name": "dtc_bc_lr_local_inverse",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-cbf66c02ea-a1"
+}
