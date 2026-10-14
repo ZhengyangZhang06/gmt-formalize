@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dd8bd92689880419b87dcd83bc66d2306e4147091a923d21b0ea37efe79c9b7d",
+  "git_delta": {
+    "base_commit": "b9701aeaec3636e61d4c9e78c1440ae260f05550",
+    "candidate_commit": "d058af94f483f3e29b42ad8dde99786c24dc17d1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbr_sl_sb_massOn_eq_of_apply_eq_neg",
+    "diff_sha256": "4f2a04bc4ee47f201d902e4a49953f72407434c89714c702df9b49b3a4a5d2aa",
+    "source_sha256": "95b51ecc6441668474ebce0d35e6c61ed2326bfa1763a4e9701a5d3f23bda397",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_sl_sb_massOn_eq_of_apply_eq_neg",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T₁ T₂ : GeometricCurrentOn U n) (W : Set (Euclid P)), (∀ ω : TestFormOn U n, T₁ ω = -T₂ ω) → T₁.massOn W = T₂.massOn W",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
