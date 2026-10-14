@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1.pairing_uniform_limit-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.smooth_to_c1_tests-a1",
+  "depth": 5,
+  "title": "An L¹ pairing that vanishes on uniform approximants vanishes in the limit",
+  "statement": "Let n ∈ ℕ, K ⊆ ℝⁿ measurable, G : ℝⁿ → ℝ integrable on K, f : ℝⁿ → ℝ AE-strongly measurable for Lebesgue measure restricted to K with |f(x)| ≤ C for all x ∈ K. Suppose that for every ε > 0 there is g : ℝⁿ → ℝ, AE-strongly measurable for Lebesgue measure restricted to K, with |f(x) − g(x)| ≤ ε for all x ∈ K and ∫_K G·g = 0. Then ∫_K G·f = 0.",
+  "lean_statement": "∀ (n : ℕ) (K : Set (Euclid n)) (G f : Euclid n → ℝ) (C : ℝ), MeasurableSet K → IntegrableOn G K volume → AEStronglyMeasurable f (volume.restrict K) → (∀ x ∈ K, |f x| ≤ C) → (∀ ε : ℝ, 0 < ε → ∃ g : Euclid n → ℝ, AEStronglyMeasurable g (volume.restrict K) ∧ (∀ x ∈ K, |f x - g x| ≤ ε) ∧ ∫ x in K, G x * g x = 0) → ∫ x in K, G x * f x = 0",
+  "lean_name": "dgcr_stc_setIntegral_mul_eq_zero_of_uniform_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-7c9bddfc2c-a1"
+}
