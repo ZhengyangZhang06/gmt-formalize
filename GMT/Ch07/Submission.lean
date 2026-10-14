@@ -1160,6 +1160,46 @@ theorem Submission.dtc_massOn_eq_of_agreeOn : ∀ (P n : ℕ) (U V W : Set (Eucl
     refine ⟨testFormOnInclusion hVU n ω', hω', ?_⟩
     dsimp only
     rw [hagree ω' hω'.1]
+/-- **Extension of a compactly supported integer multiplicity current to `ℝᴾ`** (Simon 7.3.1,
+proof, step 3(c); 6.2.5, 6.2.11).  Let `X = τ(M, θ, ξ) ∈ 𝒟ₘ₊₁(U)`, `U` open, with `spt X ⊆ K`,
+`K ⊆ U` compact.  Then `Hᵐ⁺¹(M \ K) ≤ Hᵐ⁺¹(M \ spt X) = 0`
+(`imrep_carrier_sdiff_support_null`), so extension by zero (`dtc_extend_by_zero`) gives an
+integer multiplicity `Y ∈ 𝒟ₘ₊₁(ℝᴾ)` with `Y⌞U = X` and `spt Y ⊆ K`.  `Y` and `∂Y` kill every
+form whose support misses `K` (`dtc_vanish_off_support`; `spt dω ⊆ spt ω`), so their masses
+are attained in `U` (`lcmp_massOn_le_of_vanish_off_compact`), where they agree with `X` and `∂X`
+(`dtc_massOn_eq_of_agreeOn`; `d` commutes with the inclusion `𝒟(U) ⊆ 𝒟(ℝᴾ)`):
+`M(Y) ≤ M_U(Y) = M_U(X) = M(X)` and `M(∂Y) ≤ M_U(∂Y) = M_U(∂X) = M(∂X)`. -/
+theorem Submission.dimred_mbl_fc_extend_to_univ : (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P m : ℕ) (U K : Set (Euclid P)) (X : GeometricCurrentOn U (m + 1)), IsOpen U → IsCompact K → K ⊆ U → IsIntegerMultiplicity X → X.support ⊆ K → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ Y.restrictDomain (subset_univ U) = X ∧ Y.support ⊆ K ∧ Y.mass ≤ X.mass ∧ Y.boundary.mass ≤ X.boundary.mass := by
+  rintro - - P m U K X hU hK hKU ⟨R, hRX⟩ hXK
+  -- Step 1: `Hᵐ⁺¹(M \ K) = 0`, since `M \ K ⊆ M \ spt X`
+  have hnull : μHE[m + 1] (R.carrier \ K) = 0 :=
+    measure_mono_null (sdiff_subset_sdiff_right hXK)
+      (Submission.imrep_carrier_sdiff_support_null P (m + 1) U X R hU hRX)
+  -- Step 2: extend `X` by zero to an integer multiplicity `Y ∈ 𝒟ₘ₊₁(ℝᴾ)` with `spt Y ⊆ K`
+  obtain ⟨Y, hres, hspt, -, -, hIM⟩ := Submission.dtc_extend_by_zero P (m + 1) univ U K
+    (subset_univ U) X R isOpen_univ hU hK hKU hRX hnull
+  -- Step 3: `Y` and `∂Y` kill every form whose support misses `K ⊇ spt Y`
+  have hvan : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) K → Y ω = 0 :=
+    fun ω hω => Submission.dtc_vanish_off_support P (m + 1) univ Y ω (hω.mono_right hspt)
+  have hvan' : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) K → Y.boundary ω = 0 :=
+    fun ω hω => hvan _ (hω.mono_left (tsupport_exteriorDerivative_subset _))
+  refine ⟨Y, hIM, hres, hspt, ?_, ?_⟩
+  -- Step 4: `M(Y) ≤ M_U(Y) = M_U(X) = M(X)`
+  · calc Y.mass ≤ Y.massOn U :=
+          Submission.lcmp_massOn_le_of_vanish_off_compact P (m + 1) univ U K Y hK hU hKU hvan univ
+      _ = X.mass := Submission.dtc_massOn_eq_of_agreeOn P (m + 1) univ U U (subset_univ U) Y X
+          subset_rfl fun ω _ => by rw [← hres, GeometricCurrentOn.restrictDomain_apply]
+  -- Step 5: `M(∂Y) ≤ M_U(∂Y) = M_U(∂X) = M(∂X)`, as `d` commutes with `𝒟ᵐ(U) ⊆ 𝒟ᵐ(ℝᴾ)`
+  · calc Y.boundary.mass ≤ Y.boundary.massOn U :=
+          Submission.lcmp_massOn_le_of_vanish_off_compact P m univ U K Y.boundary hK hU hKU hvan'
+            univ
+      _ = X.boundary.mass := Submission.dtc_massOn_eq_of_agreeOn P m univ U U (subset_univ U)
+          Y.boundary X.boundary subset_rfl fun ω _ => by
+            rw [← hres, GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply,
+              GeometricCurrentOn.restrictDomain_apply]
+            rfl
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
