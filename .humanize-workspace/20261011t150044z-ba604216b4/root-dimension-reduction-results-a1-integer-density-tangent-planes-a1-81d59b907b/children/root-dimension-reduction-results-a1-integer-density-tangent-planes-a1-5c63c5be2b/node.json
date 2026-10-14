@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_area-a1.cone_map-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_constant_density_planar-a1.stationary_cone_sheet_planar-a1.cone_area-a1",
+  "depth": 6,
+  "title": "The cone parametrization (t, α) ↦ tγ(α) is an injective immersion on the box",
+  "statement": "Let P ∈ ℕ and r₀, s ∈ ℝ with 0 < s < r₀. Let γ : ℝ → ℝ^P be C¹ and injective on I := (−s, s), and for every α ∈ I assume ‖γ(α)‖ = 1, ⟨γ(α), γ′(α)⟩ = 0 and γ′(α) ≠ 0, where γ′ = deriv γ. Put R := (r₀ − s, r₀ + s) × I ⊆ ℝ × ℝ and G : ℝ × ℝ → ℝ^P, G(t, α) := tγ(α).\n\nThen G is injective on R. Moreover, for every z = (t, α) ∈ R, G is (Fréchet) differentiable at z, its derivative DG(z) : ℝ × ℝ → ℝ^P is injective, DG(z)(1, 0) = γ(α) and DG(z)(0, 1) = tγ′(α).",
+  "lean_statement": "∀ (P : ℕ) (r₀ s : ℝ) (γ : ℝ → Euclid P), 0 < s → s < r₀ → ContDiffOn ℝ 1 γ (Ioo (-s) s) → InjOn γ (Ioo (-s) s) → (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ inner ℝ (γ α) (deriv γ α) = 0 ∧ deriv γ α ≠ 0) → InjOn (fun q : ℝ × ℝ => q.1 • γ q.2) (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s) ∧ ∀ z ∈ Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s, DifferentiableAt ℝ (fun q : ℝ × ℝ => q.1 • γ q.2) z ∧ Injective (fderiv ℝ (fun q : ℝ × ℝ => q.1 • γ q.2) z) ∧ fderiv ℝ (fun q : ℝ × ℝ => q.1 • γ q.2) z (1, 0) = γ z.2 ∧ fderiv ℝ (fun q : ℝ × ℝ => q.1 • γ q.2) z (0, 1) = z.1 • deriv γ z.2",
+  "lean_name": "idtp_ccd_scsp_ca_cone_map_regular",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5c63c5be2b-a1"
+}
