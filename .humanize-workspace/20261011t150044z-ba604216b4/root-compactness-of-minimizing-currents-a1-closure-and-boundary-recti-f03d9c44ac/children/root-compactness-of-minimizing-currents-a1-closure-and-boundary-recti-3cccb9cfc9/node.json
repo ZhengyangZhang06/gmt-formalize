@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.lipschitz_cover-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1",
+  "depth": 4,
+  "title": "A set on which p_T is co-Lipschitz lies in one Lipschitz image of ℝⁿ (Simon Ch. 3, proof of 1.6, Lipschitz graphs; Ch. 2, 1.2)",
+  "statement": "Let P, n ∈ ℕ, T a linear subspace of ℝ^P with dim T = n, D ⊆ ℝ^P and C ∈ ℝ such that |y − x| ≤ C|p_T(y − x)| for all x, y ∈ D. Then there is a Lipschitz map F : ℝⁿ → ℝ^P with D ⊆ F(ℝⁿ).",
+  "lean_statement": "∀ (P n : ℕ) (T : Submodule ℝ (Euclid P)) (D : Set (Euclid P)) (C : ℝ), Module.finrank ℝ T = n → (∀ x ∈ D, ∀ y ∈ D, ‖y - x‖ ≤ C * ‖T.starProjection (y - x)‖) → ∃ F : Euclid n → Euclid P, (∃ K : NNReal, LipschitzWith K F) ∧ D ⊆ range F",
+  "lean_name": "cbrr_lipschitz_cover_of_cone_condition",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-3cccb9cfc9-a1"
+}

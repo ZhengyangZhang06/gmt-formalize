@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.uniform_density-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1",
+  "depth": 4,
+  "title": "Lusin–Egorov: uniform lower density and cone bounds on a subset of almost full measure (Simon Ch. 3, proof of 1.6 ⇐, (4)–(9))",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, M ⊆ ℝ^P Borel with Hⁿ(M) < ∞ (Hⁿ = μHE[n], μ := Hⁿ⌞M), and Q : ℝ^P → linear subspaces of ℝ^P such that x ↦ p_{Q(x)} (orthogonal projection, an element of L(ℝ^P) with the operator norm) is μ-a.e. strongly measurable and M has approximate tangent space Q(x) at μ-a.e. x. Let a, b, ε be real numbers with ofReal(a) < ωₙ = unitBallVolume n, b > 0 and ε > 0. Then there are E ⊆ M and δ > 0 such that Hⁿ(M ∖ E) < ε, dim Q(x) = n for every x ∈ E, and for all x, y ∈ E and 0 < ρ < δ: ofReal(aρⁿ) ≤ μ(B̄_ρ(y)) and μ(X(x) ∩ B_ρ(x)) ≤ ofReal(bρⁿ), where X(x) := {z : 2|p_{Q(x)}(z − x)| < |z − x|}.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), 0 < n → MeasurableSet M → μHE[n] M ≠ ∞ → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → ∀ (a b ε : ℝ), ENNReal.ofReal a < unitBallVolume n → 0 < b → 0 < ε → ∃ (E : Set (Euclid P)) (δ : ℝ), E ⊆ M ∧ 0 < δ ∧ μHE[n] (M \\ E) < ENNReal.ofReal ε ∧ (∀ x ∈ E, Module.finrank ℝ (Q x) = n) ∧ (∀ y ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (a * ρ ^ n) ≤ (μHE[n].restrict M) (closedBall y ρ)) ∧ ∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → (μHE[n].restrict M) ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)",
+  "lean_name": "cbrr_uniform_density_on_large_set",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.tangent_lower_density-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.cone_density-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.lusin_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.monotonicity-a1.tangent_lower_density-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-8e1dc92fc2-a1",
+      "result_commit": "a0c1e365af0639f2f1429dcadfe841c2b3b2da44",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.cone_density-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.lusin_covector-a1.lusin_measurable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9-a1",
+      "result_commit": "e4172a7b3e6ff6905ecff6f6d729752746d19ff0",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-563e1f6277-a1"
+}

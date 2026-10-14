@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.cone_claim-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1",
+  "depth": 4,
+  "title": "Cone claim (10) with the corrected constant b·16ⁿ < a (Simon Ch. 3, proof of 1.6)",
+  "statement": "Let P, n ∈ ℕ, μ a measure on ℝ^P, E ⊆ ℝ^P, Q : ℝ^P → linear subspaces, T a linear subspace and a, b, δ real numbers with a > 0 and b·16ⁿ < a. Assume ofReal(aρⁿ) ≤ μ(B̄_ρ(y)) for all y ∈ E and 0 < ρ < δ, and μ(X(x) ∩ B_ρ(x)) ≤ ofReal(bρⁿ) for all x ∈ E and 0 < ρ < δ, where X(x) := {z : 2|p_{Q(x)}(z − x)| < |z − x|}. Then for all x, y ∈ E with ‖p_{Q(x)} − p_T‖ < 1/16 and |y − x| < δ/2 we have |y − x| ≤ 4|p_T(y − x)|.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (E : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (T : Submodule ℝ (Euclid P)) (a b δ : ℝ), 0 < a → b * 16 ^ n < a → (∀ y ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (a * ρ ^ n) ≤ μ (closedBall y ρ)) → (∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → ∀ x ∈ E, ∀ y ∈ E, ‖(Q x).starProjection - T.starProjection‖ < 1 / 16 → ‖y - x‖ < δ / 2 → ‖y - x‖ ≤ 4 * ‖T.starProjection (y - x)‖",
+  "lean_name": "cbrr_cone_claim",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a695b4890e-a1"
+}
