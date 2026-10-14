@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0df1b0abb255689c06b4075000dd6133978fe9ad73c639f4b33733821abf504c",
+  "git_delta": {
+    "base_commit": "085e715b11523b772891a268b256a27a811acad2",
+    "candidate_commit": "e06c6a7bbe69ec7f888270e219c81fbadaba7d99",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_cc_regular_coarea",
+    "diff_sha256": "aa02a250267e3c0d8d13a9bef93067da8ef0d6330dc6721af48b4876b362229e",
+    "source_sha256": "4e75bd716e4c7f1e827355c10f440a7664f9908b08870a88feb7790d8a2d3d87",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_cc_regular_coarea",
+      "statement": "∀ (P n : ℕ) (ψ : Euclid (n + 1) → Euclid P) (V Y' : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (G : Euclid P → Euclid P), IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → MeasurableSet Y' → Y' ⊆ V → (∀ y ∈ Y', fderiv ℝ F y ≠ 0) → (∀ y ∈ Y', G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e, inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → ∀ g : Euclid P → ℝ≥0∞, Measurable g → Measurable (fun t => ∫⁻ x in ψ '' (Y' ∩ F ⁻¹' {t}), g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in ψ '' (Y' ∩ F ⁻¹' {t}), g x ∂μHE[n] = ∫⁻ x in ψ '' Y', ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
