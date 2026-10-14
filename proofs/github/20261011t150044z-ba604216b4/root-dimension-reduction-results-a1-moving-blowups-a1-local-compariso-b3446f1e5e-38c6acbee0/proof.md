@@ -1,0 +1,70 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1.region_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, steps 4–7 (parent 8(b)–(d); Simon 7.2.4 (8)–(11), chapter-07.txt lines 223–260, with the modification of Remark 7.2.5(2), lines 166–175). An arbitrary open B replaces B_G, and Y, Z are given through their defining identities. Siblings used: (VO) vanish_off_support; (MR) mass_and_support, part (i): if R′ represents a current A in an open domain, then M_G(A) = μ_{R′}(G) for every open G; (COB) compact_outer_bound.
+The argument is self-contained apart from these three siblings. The needed triangle inequalities for local masses are proved inline by supremum arguments. On Σ = F ∖ W, (COB) is applied in the open set U′ := U ∖ spt(S − C), so no representation of S − C is needed.
+Notation. μ_T := R.measure; X := S − C; Σ := F ∖ W; O′ := B ∖ F. For ω ∈ 𝒟ⁿ(U), ω′ := ιω ∈ 𝒟ⁿ(ℝ^P) has the same underlying form as ω (testFormOnInclusion_coe), hence the same tsupport and the same pointwise norms. A test form ω of the domain of a current A is admissible for M_G(A) if tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x, where |·| is the Euclidean coefficient norm covectorEuclideanNorm. M_G(A) is the supremum of ofReal(A(ω)) over admissible ω. So ofReal(A(ω)) ≤ M_G(A) for admissible ω (le_massOn), and M_G(A) ≤ c follows once ofReal(A(ω)) ≤ c for every admissible ω (sSup_le). By the definition of mass, M(Sr) = M_{ℝ^P}(Sr).
+0. Preliminaries.
+ (a) Z and Ŷ are integer multiplicity: choose an IMRep R_Z of Z in U and an IMRep R_Ŷ of Ŷ in ℝ^P. (MR)(i) in the open sets U and ℝ^P gives, for every open G ⊆ ℝ^P: M_G(T) = μ_T(G), M_G(Z) = μ_{R_Z}(G) and M_G(Ŷ) = μ_{R_Ŷ}(G).
+ (b) F is compact, hence closed and Borel; W and B are open. So Σ = F ∖ W and O′ = B ∖ F are Borel and O′ is open. Σ = F ∩ (ℝ^P ∖ W) is compact, being a closed subset of the compact F.
+ (c) Every measure μ on ℝ^P satisfies μ(B) = μ(W) + μ(Σ) + μ(O′). Indeed F = W ∪ Σ (W ⊆ F) and B = F ∪ O′ (F ⊆ B) are disjoint unions of Borel sets, so μ(F) = μ(W) + μ(Σ) and μ(B) = μ(F) + μ(O′).
+ (d) If R′ = (M′, θ′, ξ′) is an IMRep in a set V and K ⊆ V is compact, then μ_{R′}(K) < ∞. Indeed K is Borel, so μ_{R′}(K) = ∫_K θ′ d(Hⁿ⌞M′) = ∫_{M′∩K} θ′ dHⁿ (withDensity_apply, Measure.restrict_restrict), which is finite by the IMRep field locallyIntegrable_mult.
+ (e) Let ω ∈ 𝒟ⁿ(U). If tsupport ω ∩ W = ∅, then X(ω′) = 0, by (VO) and spt X ⊆ W. If tsupport ω ∩ F = ∅, then also Ŷ(ω′) = 0, by (VO) and spt Ŷ ⊆ F.
+1. (The T side.) Put b := μ_T(O′). By 0(a) for the open sets B and W, and 0(c) for μ_T: M_B(T) = μ_T(B) = μ_T(W) + μ_T(Σ) + μ_T(O′) = M_W(T) + 0 + b = M_W(T) + b, since μ_T(Σ) = μ_T(F ∖ W) = 0.
+2. (Region O′; parent 8(b).) Let ω be admissible for M_{O′}(Z). tsupport ω ⊆ O′ misses F, hence also W ⊆ F, so X(ω′) = 0 and Ŷ(ω′) = 0 by 0(e). Thus Y(ω′) = 0 and Z(ω) = T(ω). Since ω is admissible for M_{O′}(T), ofReal(Z(ω)) = ofReal(T(ω)) ≤ M_{O′}(T). Hence M_{O′}(Z) ≤ M_{O′}(T), i.e. μ_{R_Z}(O′) ≤ μ_T(O′) = b by 0(a) (O′ is open).
+3. (Region W; parent 8(d).) Let ω be admissible for M_W(Z). Then ω′ ∈ 𝒟ⁿ(ℝ^P) and tsupport ω′ = tsupport ω ⊆ W, so by hypothesis C(ω′) = currentEval(T, ω′) + Ŷ(ω′) + Sr(ω′). The underlying form of ω′ is that of ω, a test form with tsupport in U. So the first branch of the definition of currentEval applies, the test form of 𝒟ⁿ(U) built there is ω itself, and currentEval(T, ω′) = T(ω). Hence Z(ω) = T(ω) + Y(ω′) = T(ω) + S(ω′) − C(ω′) + Ŷ(ω′) = S(ω′) − Sr(ω′). Now ω′ is admissible for M_W(S) in ℝ^P (same tsupport and norms). Also −ω′ is admissible for M_{ℝ^P}(Sr) (tsupport ⊆ ℝ^P, and |−α| = |α| by covectorEuclideanNorm_neg), and Sr(−ω′) = −Sr(ω′) by linearity. Therefore ofReal(Z(ω)) = ofReal(S(ω′) + Sr(−ω′)) ≤ ofReal(S(ω′)) + ofReal(Sr(−ω′)) ≤ M_W(S) + M_{ℝ^P}(Sr) = M_W(S) + M(Sr) ≤ M_W(S) + e (ENNReal.ofReal_add_le). Hence M_W(Z) ≤ M_W(S) + e, and μ_{R_Z}(W) = M_W(Z) ≤ M_W(S) + e by 0(a) (W is open).
+4. (Region Σ; parent 8(c).) spt X = ℝ^P ∖ 𝒵(X), where the zero region 𝒵(X) (GeometricCurrentOn.zeroRegion) is open (isOpen_zeroRegion); so spt X is closed and U′ := U ∩ (ℝ^P ∖ spt X) is open. Σ ⊆ U′, because Σ ⊆ F ⊆ B ⊆ U and a point of Σ ∩ spt X would lie in (F ∖ W) ∩ W = ∅. Let ν := μ_T + μ_{R_Ŷ}. For compact K ⊆ U′, ν(K) = μ_T(K) + μ_{R_Ŷ}(K) < ∞ by 0(d), using K ⊆ U for R and K ⊆ ℝ^P for R_Ŷ. Now let G′ be open with Σ ⊆ G′, closure(G′) compact and closure(G′) ⊆ U′; then G′ ⊆ U′. Let ω be admissible for M_{G′}(Z). Then tsupport ω ⊆ G′ misses spt X, so X(ω′) = 0 by (VO) and Z(ω) = T(ω) + Ŷ(ω′). Since ω is admissible for M_{G′}(T) and ω′ for M_{G′}(Ŷ), ofReal(Z(ω)) ≤ ofReal(T(ω)) + ofReal(Ŷ(ω′)) ≤ M_{G′}(T) + M_{G′}(Ŷ). Hence M_{G′}(Z) ≤ M_{G′}(T) + M_{G′}(Ŷ), i.e. μ_{R_Z}(G′) ≤ μ_T(G′) + μ_{R_Ŷ}(G′) = ν(G′) + 0 by 0(a) (G′ is open). Apply (COB) with the open set U′, the compact set E := Σ ⊆ U′, μ := μ_{R_Z}, ν and c := 0. It gives μ_{R_Z}(Σ) ≤ ν(Σ) + 0 = μ_T(F ∖ W) + μ_{R_Ŷ}(F ∖ W) = 0 + μ_{R_Ŷ}(F ∖ W) ≤ e, the last step by the hypothesis on representations of Ŷ applied to R′ := R_Ŷ.
+5. (Conclusion.) By 0(a) (B is open), 0(c) for μ_{R_Z} and steps 3, 4, 2: M_B(Z) = μ_{R_Z}(B) = μ_{R_Z}(W) + μ_{R_Z}(Σ) + μ_{R_Z}(O′) ≤ (M_W(S) + e) + e + b. With step 1, b has both required properties. ∎
+
+## Key steps
+
+1. b := μ_T(B ∖ F). B = W ⊔ (F ∖ W) ⊔ (B ∖ F), μ_T(F ∖ W) = 0 and mass_and_support give M_B(T) = M_W(T) + b.
+2. On B ∖ F both S − C and Ŷ vanish (vanish_off_support), so Z = T there and μ_Z(B ∖ F) ≤ b.
+3. On W, currentEval(T, ιω) = T(ω) gives Z(ω) = S(ιω) − Sr(ιω), so μ_Z(W) = M_W(Z) ≤ M_W(S) + M(Sr) ≤ M_W(S) + e.
+4. On F ∖ W, inside the open U′ = U ∖ spt(S − C), Z = T + Ŷ; compact_outer_bound with ν = μ_T + μ_Ŷ gives μ_Z(F ∖ W) ≤ 0 + μ_Ŷ(F ∖ W) ≤ e.
+5. Add the three regional bounds: M_B(Z) = μ_Z(B) ≤ M_W(S) + e + e + b.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD (b4d606d), mathlib 25730c7c, simongmt 2b366308; cmp local-references/.../project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean`
+- `python3 over RUN/dag.json: status, lean_name and lean_statement of the selected node, its parent local_comparison-a1, the sibling retraction_comparison and the seven resolved dependencies`
+- `python3 over RUN/dag.json: accepted nodes with candidate_commit whose lean_statement mentions massOn, support, restrictDomain, IsIntegerMultiplicity or Disjoint (found rsd_cmr_support_subset_of_vanish, regcomp_integer_multiplicity_sub, rsd_isIntegerMultiplicity_int_combination, dtc_massOn_eq_of_agreeOn, cmc_ml_massOn_eq_of_disjoint_sub_support, dtc_bc_lc_measure_le_add); regex search for zero-mass lemmas (only dtc_dim_zero_eq_zero); collision scan for dimred_mbl_lc_ic_* (no match)`
+- `python3 over nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-comparison-a1/decomposition-v1.json (texts of reused children) and nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/parent-child-handoff.json`
+- `grep -n 'def GeometricCurrentOn.massOn|def GeometricCurrentOn.mass|massAdmissibleOn|le_massOn|massOn_mono|def GeometricCurrentOn.support|zeroRegion|def testFormOnInclusion|restrictDomain_apply|boundary_apply|zero_apply' in lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality}.lean`
+- `grep -rn 'theorem mul_le_mul_right|protected theorem le_of_add_le_add_right|lemma one_le_pow₀' in local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `grep -n '_existing_lean_name_problem|_overlay_accepted_children|_accepted_checkpoint' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py; contract_scope/child_modules in verifier/gmt-compare.py`
+- `sed -n 150,275p book/chapter-07.txt (Simon 7.2.4, Remark 7.2.5(2), (8)–(12) at lines 223–260)`
+- `lake env lean /tmp/ic_dec/Types.lean (all child and dependency types as _root_ theorems after import GMT.Ch07.Submission in the replayed contract scope); lake env lean /tmp/ic_dec/Proofs.lean (conditional proofs n1–n5_check and assembly_check, #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-32e3afa931/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-32e3afa931/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-comparison-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Monoid/Unbundled/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/ic_dec/Types.lean`
+- `/tmp/ic_dec/Proofs.lean`
+
+The pins match the manifest: project b4d606d, Mathlib 25730c7c, SimonGMT 2b366308. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical. Neither the pinned libraries nor the accepted DAG nodes contain the cycle construction, the T + Y|_U construction, the three-region estimate or the [0, ∞] cancellation. These four are new, as is the zero-mass lemma: the only accepted zero-mass statement is dtc_dim_zero_eq_zero, for 0-dimensional minimizers. Six accepted declarations are reused with byte-identical types: dtc_vanish_off_support, dor_imrep_massOn_eq_measure_and_support, cmc_imRep_locality_restrict_sub, dtc_restrictDomain_isIntegerMultiplicity, lcmp_measure_le_add_of_open_nhds (already prerequisites of this node) and rsd_cmr_support_subset_of_vanish (= (p2)). SimonGMT provides massOn/le_massOn/massOn_mono, support/zeroRegion/isOpen_zeroRegion, restrictDomain_apply, testFormOnInclusion_coe and boundary_apply/zero_apply. Mathlib provides ENNReal.le_of_add_le_add_right, ENNReal.ofReal_add(_le), one_le_pow₀ and measure_union. Lean checks: all child types elaborate in the comparator scope. Each new child is proved from its declared siblings. The exact frozen parent type is proved from the five new child types and the frozen type of retraction_comparison. Only propext, Classical.choice and Quot.sound are used. The names dimred_mbl_lc_ic_* are unused in the DAG and the project.
