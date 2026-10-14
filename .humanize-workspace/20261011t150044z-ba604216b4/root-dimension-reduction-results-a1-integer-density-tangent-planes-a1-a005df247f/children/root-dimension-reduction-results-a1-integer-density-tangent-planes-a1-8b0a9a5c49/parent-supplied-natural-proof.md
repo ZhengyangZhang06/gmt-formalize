@@ -1,0 +1,104 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_constancy-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_constancy-a1.ray_ftc-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the fundamental-theorem-of-calculus computation in parent step 5 ('for a unit vector e, h(t) := b(te) is C^∞ with compact support (t ↦ te is a closed embedding), so h' is integrable on (0, ∞), h is continuous at 0 and h(t) → 0 as t → ∞; by integral_Ioi_of_hasDerivAt_of_tendsto, ∫_{(0,∞)} h'(t) dt = 0 − h(0)'). Here it is stated for an arbitrary smooth compactly supported f.
+C^∞ means ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞). Let P, f, e be as in the statement.
+1. (The ray is an isometric embedding.) For s, t ∈ ℝ, |s e − t e| = |(s − t) e| = |s − t|·|e| = |s − t|. So s ↦ s e is an isometry ℝ → ℝ^P, hence a closed embedding.
+2. (Properties of h(s) := f(s e).)
+ - h is C^∞, as the composition of the C^∞ map f with the C^∞ map s ↦ s e.
+ - h has compact support, since f has compact support and s ↦ s e is a closed embedding (HasCompactSupport.comp_isClosedEmbedding).
+ Consequently:
+ (a) h is continuous; in particular h is continuous within [0, ∞) at 0.
+ (b) h is differentiable at every t, with HasDerivAt h (deriv h t) t.
+ (c) deriv h is continuous (h is C^∞ of order ≥ 1, ContDiff.continuous_deriv) and has compact support (HasCompactSupport.deriv). Hence deriv h is integrable on ℝ (Continuous.integrable_of_hasCompactSupport), and a fortiori on (0, ∞).
+ (d) h(t) → 0 as t → +∞. A compactly supported function tends to 0 along the cocompact filter (HasCompactSupport.is_zero_at_infty), and atTop ≤ cocompact on ℝ.
+3. (FTC on a half-line.) Apply integral_Ioi_of_hasDerivAt_of_tendsto with a = 0, derivative deriv h and limit m = 0; its hypotheses are (a)–(d). It gives ∫_{(0,∞)} deriv h (t) dt = 0 − h(0) = −f(0·e) = −f(0). Since deriv h (t) = deriv (fun s => f(s•e)) t, this is the claim. ∎
+
+## Key steps
+
+1. s ↦ s e is an isometry, hence a closed embedding, so h(s) = f(s e) is C^∞ with compact support.
+2. h' is continuous with compact support and hence integrable on (0,∞); h is continuous at 0 and h → 0 as t → +∞.
+3. integral_Ioi_of_hasDerivAt_of_tendsto gives ∫_{(0,∞)} h' = 0 − h(0) = −f(0).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n "theorem extDeriv_constOfIsEmpty|def constOfIsEmptyLIE|theorem integral_Ioi_of_hasDerivAt_of_tendsto |theorem HasCompactSupport.comp_isClosedEmbedding|structure ContDiffBump|theorem contDiff_norm_sq|theorem IsCompact.exists_forall_le'|theorem setIntegral_eq_zero_of_forall_eq_zero|theorem Filter.EventuallyEq.deriv_eq|theorem ae_restrict_neBot|theorem HasCompactSupport.is_zero_at_infty|theorem Continuous.integrable_of_hasCompactSupport|theorem HasCompactSupport.deriv|theorem norm_sub_sq_real|theorem ContDiff.continuous_deriv |theorem eventually_all_finset|theorem one_of_mem_closedBall|theorem zero_of_le_dist|theorem integral_congr_ae|theorem Finset.sum_eq_single_of_mem" <snapshot>/mathlib/Mathlib`
+- `rg -n "comp_isClosedEmbedding|is_zero_at_infty" <snapshot>/mathlib/Mathlib/Topology/Algebra/Support.lean; rg -n "is_one_at_infty" <snapshot>/mathlib/Mathlib`
+- `rg -n -i "constancy|du_bois|duBois|ray_ftc|ray_cutoff|boundary_ray" <snapshot>/project/GMT`
+- `rg -n "extDeriv_constOfIsEmpty|constOfIsEmptyLIE|exteriorDerivativeTestOn" <snapshot>/project/GMT (no match)`
+- `grep -n "boundary_apply" .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/*.lean; sed -n 100,345p .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; sed -n 1,140p .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `python3 -I scans of dag.json: nodes under the parent one_dim_cones-a1 (status, lean_name, lean_statement, depends_on); lean_statement substrings 'deriv (fun s', 'constOfIsEmpty', 'exteriorDerivativeTestOn', 'TestFormOn (univ : Set (Euclid P)) 0', 'fderiv ℝ f x v', 'C.boundary', 'HasCompactSupport f →'; membership of idtp_fons_odc_rc_boundary_ray_test / idtp_fons_odc_rc_ray_cutoff / idtp_fons_odc_rc_ray_ftc among the 2106 lean_names (all absent); grep -rl idtp_fons_odc_rc_ nodes GMT .lake/packages/simongmt/Poincare (no match)`
+- `git show 75f499358:GMT/Ch07/Submission.lean (odc_zero_testForm, odc_constancy_deriv_ray, odc_constancy_exact, odc_constancy_integral_deriv, odc_constancy_cutoff, odc_ray_constancy)`
+- `grep -n in /runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/{leaf_verification.py,runtime.py,prompts.py,lean_contract.py}: check_source_delta, _decompose max_depth, _existing_lean_name_problem, validate_lean_statement`
+- `sed -n 569,604p book/chapter-06.txt (Simon 2.34 Constancy Theorem)`
+- `lake env lean /tmp/rc_split/check/Types.lean; lake env lean /tmp/rc_split/check/Assembly.lean; lake env lean /tmp/rc_split/check/Candidate.lean; python3 -I /tmp/rc_split/scripts/leafcheck2.py GMT/Ch07/Submission.lean /tmp/rc_split/check/Assembly.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Deriv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a005df247f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/lean_contract.py`
+- `/tmp/rc_split/draft.lean`
+- `/tmp/rc_split/check/Types.lean`
+- `/tmp/rc_split/check/Assembly.lean`
+- `/tmp/rc_split/check/Candidate.lean`
+
+Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, which are the workspace HEAD and .lake/packages/mathlib; SimonGMT is 2b366308. The workspace Contract.lean and Submission.lean are byte-identical.
+The snapshot Mathlib supplies every library fact the children need:
+- extDeriv_constOfIsEmpty (Analysis/Calculus/DifferentialForm/Basic.lean:143)
+- constOfIsEmptyLIE (Analysis/Normed/Module/Alternating/Basic.lean:319)
+- integral_Ioi_of_hasDerivAt_of_tendsto (MeasureTheory/Integral/IntegralEqImproper.lean:786)
+- HasCompactSupport.comp_isClosedEmbedding (Topology/Algebra/Support.lean:290), and is_zero_at_infty via to_additive of is_one_at_infty (:352)
+- ContDiffBump with one_of_mem_closedBall and zero_of_le_dist (Analysis/Calculus/BumpFunction/Basic.lean:70, :137, :163)
+- contDiff_norm_sq (Analysis/InnerProductSpace/Calculus.lean:140)
+- IsCompact.exists_forall_le' (Topology/Order/Compact.lean:236)
+- setIntegral_eq_zero_of_forall_eq_zero (MeasureTheory/Integral/Bochner/Set.lean:357)
+- Filter.EventuallyEq.deriv_eq (Analysis/Calculus/Deriv/Basic.lean:638)
+- HasCompactSupport.deriv (Analysis/Calculus/Deriv/Support.lean:60)
+- ContDiff.continuous_deriv (Analysis/Calculus/ContDiff/Deriv.lean:108)
+- Continuous.integrable_of_hasCompactSupport (MeasureTheory/Function/LocallyIntegrable.lean:622)
+- ae_restrict_neBot (MeasureTheory/Measure/Restrict.lean:710)
+- norm_sub_sq_real (Analysis/InnerProductSpace/Basic.lean:437)
+- eventually_all_finset (Order/Filter/Finite.lean:258)
+SimonGMT supplies GeometricCurrentOn.boundary_apply (Chapter06/Currents.lean:333), exteriorDerivativeTestOn (:193) and TestFormOn (:123).
+The snapshot project has no usable lemma for any child. GMT/Ch06/Contract.lean:213 only states the top-dimensional ConstancyTheorem Prop under a sorry'd main_theorem, and GMT/Ch08 has only a varifold constancy Prop. Searches for constOfIsEmpty and exteriorDerivativeTestOn in project/GMT found nothing. No DAG node, accepted or active, states any of the three child types; the closest, idtp_pc_boundary_weak_derivative, concerns plane representations and has a different type. The three proposed names are unused.
+Lean results:
+- All three child types elaborate in the frozen context.
+- All three are proved inside the frozen Submission.lean with axioms [propext, Classical.choice, Quot.sound] only.
+- Each passes a copy of the workflow's leaf-delta checker as a single appended theorem.
+- The selected frozen type follows from the three children plus the frozen sibling type idtp_fons_odc_du_bois_reymond (stubbed); the only sorryAx comes from that stub.
