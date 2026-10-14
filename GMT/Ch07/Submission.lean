@@ -8336,6 +8336,74 @@ theorem Submission.dimred_cs_sp_measure_restrict_eq_of_agree : ∀ (P m : ℕ) (
     BorelSpace.measurable_eq isPiSystem_isOpen (iUnion_ball_nat 0)
     (fun j => (isOpen_ball : IsOpen (ball (0 : Euclid P) j))) hball hopen
 
+/-- **Simon Ch. 6, 2.11–2.12**: if `Y = τ(M, θ, ξ)` in `ℝᴾ` and `F ⊇ M` is closed, then
+`spt Y ⊆ F`.  The open set `ℝᴾ ∖ F` misses `M`, so `μ_R(ℝᴾ ∖ F) = ∫_{(ℝᴾ ∖ F) ∩ M} θ dHⁿ = 0`;
+an open `μ_R`-null set misses `spt μ_R`, and `spt Y = spt μ_R`. -/
+theorem Submission.dimred_cs_sp_cp_support_subset_of_carrier_subset : ∀ (P n : ℕ) (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (F : Set (Euclid P)), R.Represents Y → IsClosed F → R.carrier ⊆ F → Y.support ⊆ F := by
+  intro P n Y R F hR hF hMF
+  have hG : MeasurableSet Fᶜ := hF.isOpen_compl.measurableSet
+  -- Step 1: `μ_R(ℝᴾ ∖ F) = ∫_{(ℝᴾ ∖ F) ∩ M} θ dHⁿ = 0`, because `(ℝᴾ ∖ F) ∩ M = ∅`
+  have h0 : R.measure Fᶜ = 0 := by
+    rw [IMRep.measure, withDensity_apply _ hG, Measure.restrict_restrict hG,
+      (disjoint_compl_left_iff_subset.mpr hMF).inter_eq, Measure.restrict_empty,
+      lintegral_zero_measure]
+  -- Step 2: the open null set `ℝᴾ ∖ F` misses `spt μ_R`
+  have hsupp : Fᶜ ⊆ R.measure.supportᶜ :=
+    Measure.subset_compl_support_of_isOpen hF.isOpen_compl h0
+  -- Step 3: `spt Y = ℝᴾ ∩ spt μ_R`
+  have hY : Y.support = univ ∩ R.measure.support :=
+    (Submission.dor_imrep_massOn_eq_measure_and_support P n univ Y R isOpen_univ hR).2
+  intro x hx
+  rw [hY] at hx
+  by_contra hxF
+  exact hsupp hxF hx.2
+/-- **A compactly carried integer multiplicity cycle annihilates exact forms** (the cut-off step of
+Simon Ch. 6, 2.23–2.24).  Let `X = τ(M, θ, ξ) ∈ 𝒟_{k+1}(ℝᴾ)` with `∂X = 0`, and let `K` be compact
+with `μ_R(ℝᴾ ∖ K) = 0`, `μ_R = θ H^{k+1}⌞M`.  Then `∫_M θ ⟨dη, ξ⟩ dH^{k+1} = 0` for every smooth
+`k`-form `η` (no support condition).  As `θ ≥ 1` on `M`, `H^{k+1}(M ∖ K) = 0`.  A bump function
+`ζ ≡ 1` on a ball `B ⊇ K` makes `ψ = ζη` a test form with `dψ = dη` on `B`, so the integral equals
+`X(dψ) = ∂X(ψ) = 0`. -/
+theorem Submission.dimred_cs_sp_cp_action_extDeriv_eq_zero : ∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)) (R : IMRep (univ : Set (Euclid P)) (k + 1)) (K : Set (Euclid P)) (η : DifferentialForm (Euclid P) k), R.Represents X → IsCompact K → R.measure Kᶜ = 0 → X.boundary = 0 → IsSmoothForm η → R.action (exteriorDerivative η) = 0 := by
+  intro P k X R K η hR hK hμK hX hη
+  -- Step 1: `θ ≥ 1` on `M`, so `H^{k+1}(M ∖ K) ≤ μ_R(ℝᴾ ∖ K) = 0`
+  have hKc : MeasurableSet Kᶜ := hK.isClosed.measurableSet.compl
+  have hnull : μHE[k + 1] (Kᶜ ∩ R.carrier) = 0 := by
+    refine le_antisymm ?_ zero_le
+    calc μHE[k + 1] (Kᶜ ∩ R.carrier) = ∫⁻ _ in Kᶜ ∩ R.carrier, 1 ∂μHE[k + 1] :=
+          (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in Kᶜ ∩ R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[k + 1] :=
+          setLIntegral_mono' (hKc.inter R.measurableSet_carrier) fun x hx => by
+            exact_mod_cast R.mult_pos x hx.2
+      _ = R.measure Kᶜ := by
+          rw [IMRep.measure, withDensity_apply _ hKc, Measure.restrict_restrict hKc]
+      _ = 0 := hμK
+  have hae : ∀ᵐ x ∂(μHE[k + 1].restrict R.carrier), x ∈ K := by
+    rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+    exact hnull
+  -- Step 2: a bump function `ζ ≡ 1` on a ball `B ⊇ K` makes `ψ = ζη` a test form
+  obtain ⟨r, hr⟩ := hK.isBounded.subset_ball (0 : Euclid P)
+  let ζ : ContDiffBump (0 : Euclid P) :=
+    ⟨max r 1, max r 1 + 1, zero_lt_one.trans_le (le_max_right r 1), lt_add_one _⟩
+  have hKζ : K ⊆ ball (0 : Euclid P) ζ.rIn := hr.trans (ball_subset_ball (le_max_left r 1))
+  let ψ : DifferentialForm (Euclid P) k := fun x => ζ x • η x
+  have hψ : IsTestForm ψ := ⟨ζ.contDiff.smul hη, ζ.hasCompactSupport.smul_right⟩
+  let ψt : TestFormOn (univ : Set (Euclid P)) k := ⟨ψ, hψ, subset_univ _⟩
+  -- Step 3: `ψ = η` near each point of `B`, so `dψ = dη` on `B`
+  have hloc : ∀ x ∈ ball (0 : Euclid P) ζ.rIn, exteriorDerivative ψ x = exteriorDerivative η x := by
+    intro x hx
+    refine Filter.EventuallyEq.extDeriv_eq ?_
+    filter_upwards [ζ.eventuallyEq_one_of_mem_ball hx] with y hy
+    simp only [ψ, hy, Pi.one_apply, one_smul]
+  -- Step 4: the two integrals agree, as `H^{k+1}⌞M`-a.e. point lies in `K`
+  have h4 : R.action (exteriorDerivative η) = R.action (exteriorDerivative ψ) := by
+    simp only [IMRep.action]
+    refine integral_congr_ae ?_
+    filter_upwards [hae] with x hx
+    rw [hloc x (hKζ hx)]
+  -- Step 5: `R.action (dψ) = X(dψ) = ∂X(ψ) = 0`
+  have h5 : R.action (exteriorDerivative ψ) = X (exteriorDerivativeTestOn univ k ψt) :=
+    (hR (exteriorDerivativeTestOn univ k ψt)).symm
+  rw [h4, h5, ← GeometricCurrentOn.boundary_apply, hX, GeometricCurrentOn.zero_apply]
 /-- **Integral form of the push-forward along one fixed sequence of test forms** (Simon Ch. 6,
 2.23–2.24(2)).  For `f` of class `C¹` on an open `O ⊇ K` (`K` compact) and `ω ∈ 𝒟ⁿ(ℝᴾ)` there
 are `ω_j ∈ 𝒟ⁿ(ℝᴾ)`, chosen before any current, with `Y(ω_j) → ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ⟩ dHⁿ`
@@ -8828,6 +8896,45 @@ theorem Submission.dimred_cs_sp_imrep_linear_pushforward : ∀ (P m : ℕ) (R : 
   refine ⟨R', hR'K, fun ω => ?_⟩
   rw [hR' ω, ← hR₁ ω, hform ω]
   simp only [IMRep.action, affinePullbackForm, zero_add, ContinuousLinearMap.fderiv]
+
+/-- **Simon Ch. 6, 2.23–2.24 and 3.9, for a linear map `L`**: if `X = τ(M, θ, ξ)` in `ℝᴾ` has
+compact support `K`, then the push-forward `L_#X` is an integer multiplicity current `Y` with
+`spt Y ⊆ L(K)`, `∂Y = 0` if `∂X = 0`, and `Y(ω) = τ(M, θ, ξ)(L^#ω)`.  Since `K = spt μ_R`, the
+measure `μ_R` is carried by `K`; push `(M, θ, ξ)` forward to a triple `R'` carried by `L(K)` and
+let `Y = τ(R')`.  `L(K)` is compact, hence closed, so `spt Y ⊆ L(K)`; and if `∂X = 0` then
+`∂Y(φ) = τ(M, θ, ξ)(L^#dφ) = τ(M, θ, ξ)(d(L^#φ)) = 0`. -/
+theorem Submission.dimred_cs_sp_linear_pushforward : ∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (R : IMRep (univ : Set (Euclid P)) m) (L : Euclid P →L[ℝ] Euclid P), 0 < m → R.Represents X → IsCompact X.support → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) m, IsIntegerMultiplicity Y ∧ Y.support ⊆ L '' X.support ∧ (BoundaryVanishes X → BoundaryVanishes Y) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, Y ω = R.action (affinePullbackForm L 0 (ω : DifferentialForm (Euclid P) m)) := by
+  intro P m X R L hm hR hK
+  -- Step 1: `spt X = spt μ_R`, so `μ_R(ℝᴾ \ spt X) = 0`
+  have hnull : R.measure X.supportᶜ = 0 := by
+    rw [(Submission.dor_imrep_massOn_eq_measure_and_support P m univ X R isOpen_univ hR).2,
+      univ_inter]
+    exact Measure.measure_compl_support
+  -- Step 2: push `(M, θ, ξ)` forward to a triple `R'` carried by `L(spt X)`
+  obtain ⟨R', hR'sub, hR'act⟩ :=
+    Submission.dimred_cs_sp_imrep_linear_pushforward P m R L X.support hm hK hnull
+  -- Step 3: `Y = τ(R')`, so `Y(ω) = τ(R')(ω) = τ(M, θ, ξ)(L^#ω)`
+  obtain ⟨Y, hY⟩ := Submission.dtc_imrep_current P m univ R'
+  have hact : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+      Y ω = R.action (affinePullbackForm L 0 (ω : DifferentialForm (Euclid P) m)) :=
+    fun ω => (hY ω).trans (hR'act ω)
+  refine ⟨Y, ⟨R', hY⟩, ?_, ?_, hact⟩
+  · -- Step 4: `L(spt X)` is compact, hence closed, and contains the carrier of `R'`
+    exact Submission.dimred_cs_sp_cp_support_subset_of_carrier_subset P m Y R' (L '' X.support)
+      hY (hK.image L.continuous).isClosed hR'sub
+  · -- Step 5: for `m = k + 1`, `∂Y(φ) = τ(M, θ, ξ)(L^#dφ) = τ(M, θ, ξ)(d(L^#φ)) = 0`
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_add_one_of_ne_zero hm.ne'
+    intro hX
+    change X.boundary = 0 at hX
+    change Y.boundary = 0
+    ext φ
+    have hφ : IsSmoothForm (φ : DifferentialForm (Euclid P) k) := φ.property.1.1
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply, hact]
+    change R.action (affinePullbackForm L 0
+      (exteriorDerivative (φ : DifferentialForm (Euclid P) k))) = 0
+    rw [← exteriorDerivative_affinePullbackForm L 0 hφ]
+    exact Submission.dimred_cs_sp_cp_action_extDeriv_eq_zero P k X R X.support _ hR hK hnull hX
+      (affinePullbackForm_isSmoothForm L 0 hφ)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
