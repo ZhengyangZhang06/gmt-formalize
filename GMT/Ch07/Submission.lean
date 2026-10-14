@@ -496,6 +496,36 @@ theorem Submission.idtp_cse_bml_rbi_abs_arctan_sub_self_le : ∀ z : ℝ, |Real.
     _ ≤ |z| ^ 2 * |z| := mul_le_mul_of_nonneg_right hξz (abs_nonneg z)
     _ = |z| ^ 3 := by ring
 
+/-- Arctangent of a perturbed quotient: if `0 < s'`, `20s' < 1` and `|p|, |q| ≤ 3s'`, then
+`|arctan(q/(1 + p)) − q| ≤ 30s'²`.  Here `1 + p > 17/20`, so `z = q/(1 + p)` has `|z| ≤ 4s'` and
+`|z − q| = |q||p|/(1 + p) ≤ 11s'²`, while the cubic bound `|arctan z − z| ≤ |z|³` gives
+`|arctan z − z| ≤ 64s'³ ≤ 4s'²`. -/
+theorem Submission.idtp_cse_bml_rbi_arctan_quotient_estimate : ∀ (p q s' : ℝ), 0 < s' → 20 * s' < 1 → |p| ≤ 3 * s' → |q| ≤ 3 * s' → |Real.arctan (q / (1 + p)) - q| ≤ 30 * s' ^ 2 := by
+  intro p q s' hs h20 hp hq
+  -- `1 + p ≥ 1 − 3s' > 17/20`, so `z = q/(1 + p)` is a genuine quotient
+  have hd : 17 / 20 < 1 + p := by linarith [neg_abs_le p]
+  have hd0 : 0 < 1 + p := by linarith
+  set z := q / (1 + p) with hz
+  -- `|z| = |q|/(1 + p) ≤ 60s'/17 ≤ 4s'`
+  have hz4 : |z| ≤ 4 * s' := by
+    rw [hz, abs_div, abs_of_pos hd0, div_le_iff₀ hd0]
+    nlinarith [mul_lt_mul_of_pos_left hd hs]
+  -- `z − q = −qp/(1 + p)`, so `|z − q| = |q||p|/(1 + p) ≤ 180s'²/17 ≤ 11s'²`
+  have hzq : |z - q| ≤ 11 * s' ^ 2 := by
+    have hqp : |q| * |p| ≤ 3 * s' * (3 * s') := mul_le_mul hq hp (abs_nonneg p) (by linarith)
+    rw [show z - q = -(q * p) / (1 + p) by rw [hz]; field_simp; ring, abs_div, abs_neg, abs_mul,
+      abs_of_pos hd0, div_le_iff₀ hd0]
+    nlinarith [mul_lt_mul_of_pos_left hd (by positivity : (0 : ℝ) < 11 * s' ^ 2), sq_nonneg s']
+  -- the cubic bound: `|arctan z − z| ≤ |z|³ ≤ 64s'³ ≤ 4s'²`, as `s' < 1/20`
+  have hat : |Real.arctan z - z| ≤ 4 * s' ^ 2 := by
+    refine (Submission.idtp_cse_bml_rbi_abs_arctan_sub_self_le z).trans ?_
+    have h3 : |z| ^ 3 ≤ (4 * s') ^ 3 := pow_le_pow_left₀ (abs_nonneg z) hz4 3
+    nlinarith [mul_le_mul_of_nonneg_left (by linarith : 16 * s' ≤ 1) (sq_nonneg s')]
+  -- triangle inequality: `|arctan z − q| ≤ 4s'² + 11s'² ≤ 30s'²`
+  calc |Real.arctan z - q| ≤ |Real.arctan z - z| + |z - q| := abs_sub_le _ _ _
+    _ ≤ 4 * s' ^ 2 + 11 * s' ^ 2 := add_le_add hat hzq
+    _ ≤ 30 * s' ^ 2 := by nlinarith [sq_nonneg s']
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
