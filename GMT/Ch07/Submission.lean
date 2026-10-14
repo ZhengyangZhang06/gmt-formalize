@@ -2571,6 +2571,51 @@ theorem Submission.idtp_fons_cc_ambient_calculus : (∀ P : ℕ, IsEmbeddedSubma
     have hemb : MeasurableEmbedding (dilation a s) := hh ▸ h.measurableEmbedding
     rw [Measure.restrict_smul, hemb.restrict_map, hemb.injective.preimage_image]
 
+/-- **Blow-ups of minimizing cycles of `ℝᴾ`** (proof of Simon 7.3.3, chapter-07.txt lines
+454–467; push-forward 6.2.23–6.2.24): if `S` is minimizing in `ℝᴾ`, `∂S = 0` and
+`S = τ(M, θ, ξ)`, then for `y ∈ ℝᴾ` and `t > 0` the blow-up `η_{y,t#}S` is again a minimizing
+cycle of `ℝᴾ`, with an integer multiplicity representation of weight `t⁻ⁿ η_{y,t#}μ_S`.  As
+`η = η_{y,t}` maps `ℝᴾ` onto itself, `η_#S ∈ 𝒟ₙ(η(ℝᴾ)) = 𝒟ₙ(ℝᴾ)`; minimality and the
+representation come from `dtc_blowUp_scaling`, the weight is identified on Borel sets
+(`idtp_fons_cc_ambient_calculus`), and `∂` commutes with the restriction of the domain and with
+the affine push-forward, so `∂(η_#S) = η_#(∂S) = 0`. -/
+theorem Submission.idtp_fons_cc_cycle_rescale : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (y : Euclid P) (t : ℝ), 1 ≤ n → 0 < t → IsMinimizingIn S univ → BoundaryVanishes S → R.Represents S → ∃ (S' : GeometricCurrentOn (univ : Set (Euclid P)) n) (R' : IMRep (univ : Set (Euclid P)) n), IsMinimizingIn S' univ ∧ BoundaryVanishes S' ∧ R'.Represents S' ∧ R'.measure = ENNReal.ofReal (t⁻¹ ^ n) • R.measure.map (dilation y t) := by
+  intro P n S R y t hn ht hS hbS hR
+  obtain ⟨-, hmeas, -, -, hdom, -⟩ := Submission.idtp_fons_cc_ambient_calculus
+  -- (1) `η = η_{y,t}` maps `ℝᴾ` onto `ℝᴾ`
+  have hV : dilation y t '' (univ : Set (Euclid P)) = univ := (hdom P y t ht).1
+  -- (2), (3) `η_#S` is minimizing in `η(ℝᴾ)` and is represented by some `R₁` with
+  -- `μ_{R₁}(s) = t⁻ⁿ μ_R(η⁻¹(s))` for Borel `s`, i.e. `μ_{R₁} = t⁻ⁿ η_#μ_R`
+  obtain ⟨-, hrep, hmin⟩ := Submission.dtc_blowUp_scaling P n univ univ S y t ht isOpen_univ hn
+  obtain ⟨R₁, hR₁, hR₁s⟩ := hrep R hR
+  have hR₁m : R₁.measure = ENNReal.ofReal (t⁻¹ ^ n) • R.measure.map (dilation y t) := by
+    ext s hs
+    rw [hR₁s s hs, hmeas P n R.measure y t s ht hs]
+  -- (4) `∂(η_#S) = η_#(∂S) = 0`: `∂` commutes with the restriction of the domain and with the
+  -- affine push-forward
+  have hbd : BoundaryVanishes (blowUp S y t ht.ne') := by
+    obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+    change S.boundary = 0 at hbS
+    have hres : ∀ (W : Set (Euclid P)) (h : W ⊆ univ), (S.restrictDomain h).boundary = 0 := by
+      intro W h
+      ext ω
+      show S.boundary (testFormOnInclusion h m ω) = 0
+      rw [hbS, GeometricCurrentOn.zero_apply]
+    show (blowUp S y t ht.ne').boundary = 0
+    unfold blowUp
+    rw [GeometricCurrentOn.boundary_affinePushforward, hres]
+    exact GeometricCurrentOn.ext fun ω => rfl
+  -- (5) transport along `η(ℝᴾ) = ℝᴾ`
+  have key : ∀ (V : Set (Euclid P)) (B : GeometricCurrentOn V n) (R₂ : IMRep V n), V = univ →
+      IsMinimizingIn B V → BoundaryVanishes B → R₂.Represents B →
+      R₂.measure = ENNReal.ofReal (t⁻¹ ^ n) • R.measure.map (dilation y t) →
+      ∃ (S' : GeometricCurrentOn (univ : Set (Euclid P)) n) (R' : IMRep (univ : Set (Euclid P)) n),
+        IsMinimizingIn S' univ ∧ BoundaryVanishes S' ∧ R'.Represents S' ∧
+          R'.measure = ENNReal.ofReal (t⁻¹ ^ n) • R.measure.map (dilation y t) := by
+    rintro V B R₂ rfl hBmin hBbd hR₂ hR₂m
+    exact ⟨B, R₂, hBmin, hBbd, hR₂, hR₂m⟩
+  exact key _ _ R₁ hV (hmin hS) hbd hR₁ hR₁m
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
