@@ -453,6 +453,64 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Flat Fubini in product coordinates** (step 3(a) of the chart co-area argument).  Put
+`S = Ω ∩ Θ⁻¹(Y')` and `H = 𝟙_S |det DΘ| f ∘ Θ`, where `Θ` is `C¹` and injective on the open set
+`Ω` and `Y' ⊆ Θ(Ω)` is Borel.  `S` is Borel (`Θ` is continuous on `Ω`) and `Θ(S) = Y'`, so the
+injective change of variables gives `∫_{Y'} f = ∫ H`.  The map `(t, w) ↦ c(t, w) = (t, w₀, …)`
+is a measure-preserving equivalence `ℝ × ℝⁿ ≅ ℝⁿ⁺¹`, so by Tonelli `t ↦ ∫ H(c(t, w)) dw` is Borel
+and `∫∫ H(c(t, w)) dw dt = ∫ H`. -/
+theorem Submission.dtc_bc_lc_sl_cc_flat_fubini : ∀ (n : ℕ) (c : ℝ → Euclid n → Euclid (n + 1)) (Ω Y' : Set (Euclid (n + 1))) (Θ : Euclid (n + 1) → Euclid (n + 1)) (f : Euclid (n + 1) → ℝ≥0∞), (∀ s w, c s w 0 = s ∧ ∀ i : Fin n, c s w i.succ = w i) → IsOpen Ω → ContDiffOn ℝ 1 Θ Ω → InjOn Θ Ω → Measurable f → MeasurableSet Y' → Y' ⊆ Θ '' Ω → Measurable (fun t => ∫⁻ w, (Ω ∩ Θ ⁻¹' Y').indicator (fun z => ENNReal.ofReal |(fderiv ℝ Θ z).det| * f (Θ z)) (c t w)) ∧ ∫⁻ t, ∫⁻ w, (Ω ∩ Θ ⁻¹' Y').indicator (fun z => ENNReal.ofReal |(fderiv ℝ Θ z).det| * f (Θ z)) (c t w) = ∫⁻ y in Y', f y := by
+  intro n c Ω Y' Θ f hc hΩ hΘ hinj hf hY hYΩ
+  classical
+  -- the extension of `Θ` by `0` off `Ω` is Borel and agrees with `Θ` on `Ω`
+  have hΘ' : Measurable (Ω.piecewise Θ 0) :=
+    hΘ.continuousOn.measurable_piecewise continuousOn_const hΩ.measurableSet
+  -- `S = Ω ∩ Θ⁻¹(Y')` is Borel
+  have hS : MeasurableSet (Ω ∩ Θ ⁻¹' Y') := by
+    have : Ω ∩ Θ ⁻¹' Y' = Ω ∩ Ω.piecewise Θ 0 ⁻¹' Y' := by
+      ext z
+      simp only [mem_inter_iff, mem_preimage]
+      exact and_congr_right fun hz => by rw [piecewise_eq_of_mem _ _ _ hz]
+    rw [this]
+    exact hΩ.measurableSet.inter (hΘ' hY)
+  -- `Θ(S) = Y'`, since `Y' ⊆ Θ(Ω)`
+  have himage : Θ '' (Ω ∩ Θ ⁻¹' Y') = Y' := by
+    refine Subset.antisymm (by rintro _ ⟨z, ⟨-, hz⟩, rfl⟩; exact hz) fun y hy => ?_
+    obtain ⟨z, hz, rfl⟩ := hYΩ hy
+    exact ⟨z, ⟨hz, hy⟩, rfl⟩
+  -- injective change of variables: `∫_{Y'} f = ∫_S |det DΘ| f ∘ Θ`
+  have hcov := lintegral_image_eq_lintegral_abs_det_fderiv_mul volume hS
+    (fun z hz => ((hΘ.differentiableOn one_ne_zero z hz.1).differentiableAt
+      (hΩ.mem_nhds hz.1)).hasFDerivAt.hasFDerivWithinAt) (hinj.mono inter_subset_left) f
+  rw [himage] at hcov
+  -- `H` is Borel: on `S`, `Θ` agrees with its Borel extension, and `DΘ` is Borel
+  have hH : Measurable ((Ω ∩ Θ ⁻¹' Y').indicator
+      fun z => ENNReal.ofReal |(fderiv ℝ Θ z).det| * f (Θ z)) := by
+    rw [indicator_congr (g := fun z => ENNReal.ofReal |(fderiv ℝ Θ z).det| *
+      f (Ω.piecewise Θ 0 z)) fun z hz => by simp only [piecewise_eq_of_mem _ _ _ hz.1]]
+    exact ((ENNReal.measurable_ofReal.comp (continuous_abs.measurable.comp
+      (ContinuousLinearMap.continuous_det.measurable.comp (measurable_fderiv ℝ Θ)))).mul
+        (hf.comp hΘ')).indicator hS
+  -- `(t, w) ↦ c(t, w)` is measure preserving, as the composite of the coordinate equivalences
+  -- `ℝ × ℝⁿ ≅ ℝ × (Fin n → ℝ) ≅ (Fin (n + 1) → ℝ) ≅ ℝⁿ⁺¹`
+  have hcoord : MeasurePreserving (fun p : ℝ × Euclid n => c p.1 p.2)
+      (volume.prod volume) volume := by
+    convert (PiLp.volume_preserving_toLp (Fin (n + 1))).comp
+      ((volume_preserving_piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) 0).symm.comp
+        ((MeasurePreserving.id volume).prod
+          (EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp (Fin n)))) using 1
+    funext ⟨t, w⟩
+    ext i
+    refine Fin.cases ?_ (fun i => ?_) i
+    · simp [(hc t w).1]
+    · simp [(hc t w).2 i]
+  -- Tonelli on `ℝ × ℝⁿ`, then the change of coordinates and the change of variables
+  have hG : Measurable fun p : ℝ × Euclid n => (Ω ∩ Θ ⁻¹' Y').indicator
+      (fun z => ENNReal.ofReal |(fderiv ℝ Θ z).det| * f (Θ z)) (c p.1 p.2) :=
+    hH.comp hcoord.measurable
+  refine ⟨hG.lintegral_prod_right', ?_⟩
+  rw [← lintegral_prod _ hG.aemeasurable, hcoord.lintegral_comp hH, lintegral_indicator hS,
+    hcov]
 /-- **Eilenberg's covering estimate at one scale** (Simon Ch. 2, proof of Theorem 1.9: (1), `gᵢ`
 and (2), case `m = 1`).  Choose a `δ`-cover `(Cᵢ)` of `A` with `∑ᵢ (diam Cᵢ)^(d+1)` below
 `μH[d+1] A + ε`.  Then `ψ = ∑ᵢ (diam Cᵢ)ᵈ 𝟙_{f (closure Cᵢ)}` is Borel (the images are
