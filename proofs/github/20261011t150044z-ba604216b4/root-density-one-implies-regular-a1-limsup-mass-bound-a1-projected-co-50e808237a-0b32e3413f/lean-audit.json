@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e5750c9378af7659e31f0ea712be724e71b44e796272ef8284288ae5fa9bbbf1",
+  "git_delta": {
+    "base_commit": "c2c49041818f34ad345879a04c86209d783f08ea",
+    "candidate_commit": "bc5204c8423549694cee0090ed92feaf2484f682",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_pc_unitOrientation_comp",
+    "diff_sha256": "75d438acbedd6b92a278043539af757298c07906cb4a5fb0c34e31712c072e6b",
+    "source_sha256": "6cedec40ebc2a500544c94d64a55c2200d7f6d257cbcb52ec5f89c1c665d3790",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_pc_unitOrientation_comp",
+      "statement": "∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ (α.compContinuousLinearMap L)| ≤ covectorEuclideanNorm α * ‖L‖ ^ n) ∧ ((∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
