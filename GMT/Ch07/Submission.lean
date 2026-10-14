@@ -1804,6 +1804,132 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- Approximate differentiability along `C¹` chart pieces (Simon Ch. 3, Definition 2.1 and
+Remark 1.8(1)).  Let `M ⊆ ℝᴾ` be Borel with `Hᵈ(M ∩ K) < ∞` for compact `K`, covered up to an
+`Hᵈ`-null set by the Borel pieces `Aⱼ = ψⱼ(Yⱼ) ⊆ M`, where `ψⱼ` is `C¹`, injective with injective
+differential on `Vⱼ ⊇ closure Yⱼ` and `closure Yⱼ` is compact.  Suppose that for `y ∈ Yⱼ`:
+`f(ψⱼ(y)) = Fⱼ(y)` with `Fⱼ` of class `C¹`, `M` has approximate tangent space `Dψⱼ(y)(ℝᵈ)` at
+`ψⱼ(y)`, `G(ψⱼ(y)) ∈ Dψⱼ(y)(ℝᵈ)` and `⟨G(ψⱼ(y)), Dψⱼ(y)e⟩ = DFⱼ(y)e`.  Then for `Hᵈ`-a.e.
+`x ∈ M`, `TₓM` exists, `G(x) ∈ TₓM` and for every `ε > 0` the points `y ∈ M ∩ B_r(x)` with
+`ε|y − x| < |f(y) − f(x) − ⟨G(x), y − x⟩|` have `Hᵈ`-measure `o(rᵈ)`.
+
+Proof sketch:
+* `approxTangentPlane d M x` is the approximate tangent plane whenever one exists (choice and
+  `HasApproximateTangentSpaceAt.unique`).
+* `ψⱼ` has a lower Lipschitz bound `mⱼ|a − b| ≤ |ψⱼ(a) − ψⱼ(b)|` on `closure Yⱼ`.
+* For `Hᵈ`-a.e. `x = ψⱼ(y) ∈ Aⱼ`, `Aⱼ` and `M` have the same approximate tangent planes at `x`,
+  hence `Hᵈ((M \ Aⱼ) ∩ B_r(x)) = o(rᵈ)`.
+* Differentiability of `Fⱼ`, `ψⱼ` at `y` and the gradient identity give, for `x' = ψⱼ(y') ∈ Aⱼ`
+  near `x`, `|f(x') − f(x) − ⟨G(x), x' − x⟩| ≤ εmⱼ|y' − y| ≤ ε|x' − x|`; so for small `r` the
+  exceptional set lies in `(M \ Aⱼ) ∩ B_r(x)`.
+* The countably many pieces and the null set `M \ ⋃ⱼ Aⱼ` give the statement a.e. on `M`. -/
+theorem Submission.dtc_bc_lc_sl_co_approx_differentiable : ∀ (P d : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (ψ : ℕ → Euclid d → Euclid P) (V Y : ℕ → Set (Euclid d)) (F : ℕ → Euclid d → ℝ), MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → μHE[d] (M ∩ K) ≠ ∞) → (∀ j, ContDiff ℝ 1 (ψ j)) → (∀ j, InjOn (ψ j) (V j)) → (∀ j, ∀ y ∈ V j, Injective (fderiv ℝ (ψ j) y)) → (∀ j, ContDiff ℝ 1 (F j)) → (∀ j, IsCompact (closure (Y j))) → (∀ j, closure (Y j) ⊆ V j) → (∀ j, MeasurableSet (ψ j '' Y j)) → (∀ j, ψ j '' Y j ⊆ M) → (∀ j, ∀ y ∈ Y j, f (ψ j y) = F j y) → (∀ j, ∀ y ∈ Y j, HasApproximateTangentSpaceAt d M (ψ j y) (LinearMap.range (fderiv ℝ (ψ j) y : Euclid d →ₗ[ℝ] Euclid P))) → (∀ j, ∀ y ∈ Y j, G (ψ j y) ∈ LinearMap.range (fderiv ℝ (ψ j) y : Euclid d →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid d, inner ℝ (G (ψ j y)) (fderiv ℝ (ψ j) y e) = fderiv ℝ (F j) y e) → μHE[d] (M \ ⋃ j, ψ j '' Y j) = 0 → ∀ᵐ x ∂(μHE[d].restrict M), HasApproximateTangentSpaceAt d M x (approxTangentPlane d M x) ∧ G x ∈ approxTangentPlane d M x ∧ ∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[d] (M ∩ ball x r ∩ {y | ε * ‖y - x‖ < |f y - f x - inner ℝ (G x) (y - x)|}) / ENNReal.ofReal (r ^ d)) (𝓝[>] 0) (𝓝 0) := by
+  have h_chart_bilipschitz : (∀ (P d : ℕ) (ψ : Euclid d → Euclid P) (K : Set (Euclid d)), ContDiff ℝ 1 ψ → IsCompact K → InjOn ψ K → (∀ y ∈ K, Injective (fderiv ℝ ψ y)) → ∃ m Λ : ℝ, 0 < m ∧ ∀ a ∈ K, ∀ b ∈ K, m * ‖a - b‖ ≤ ‖ψ a - ψ b‖ ∧ ‖ψ a - ψ b‖ ≤ Λ * ‖a - b‖) :=
+    Submission.dtc_bc_lc_sl_co_chart_bilipschitz
+  have h_tangent_complement_density : (∀ (P N : ℕ) (A M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (s : ℝ), MeasurableSet A → A ⊆ M → 0 < s → μHE[N] (M ∩ closedBall x s) ≠ ∞ → HasApproximateTangentSpaceAt N M x Q → HasApproximateTangentSpaceAt N A x Q → Tendsto (fun r : ℝ => μHE[N] ((M \ A) ∩ ball x r) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0)) :=
+    Submission.dtc_bc_lc_sl_co_tangent_complement_density
+  -- tangent locality, part (a) of `cmc_imRep_locality_restrict_sub`
+  have h_tangent_locality : ∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q :=
+    Submission.cmc_imRep_locality_restrict_sub.1
+  intro P d M f G ψ V Y F hM hfin hψ hinj hDinj hF hYc hYV hAmeas hAM hfF htan hG hnull
+  -- `approxTangentPlane d M x` is the approximate tangent plane whenever one exists
+  have h_approxTangentPlane_of : ∀ (x : Euclid P) (Q : Submodule ℝ (Euclid P)),
+      HasApproximateTangentSpaceAt d M x Q → approxTangentPlane d M x = Q ∧
+        HasApproximateTangentSpaceAt d M x (approxTangentPlane d M x) := by
+    intro x Q h
+    have hex : ∃ Q', HasApproximateTangentSpaceAt d M x Q' := ⟨Q, h⟩
+    have h1 : approxTangentPlane d M x = hex.choose := by
+      rw [approxTangentPlane, dite_eq_left hex]
+    have h2 : HasApproximateTangentSpaceAt d M x hex.choose := hex.choose_spec
+    rw [h1]
+    exact ⟨h2.unique h, h2⟩
+  -- first-order expansion of `Fⱼ(y') − Fⱼ(y) − ⟨g, ψⱼ(y') − ψⱼ(y)⟩` near `y`
+  have h_expansion : ∀ (j : ℕ) (g : Euclid P) (y : Euclid d),
+      (∀ e : Euclid d, inner ℝ g (fderiv ℝ (ψ j) y e) = fderiv ℝ (F j) y e) →
+      ∀ η : ℝ, 0 < η → ∃ δ > 0, ∀ y' : Euclid d, ‖y' - y‖ < δ →
+        |F j y' - F j y - inner ℝ g (ψ j y' - ψ j y)| ≤ 2 * η * ‖y' - y‖ := by
+    intro j g y hg η hη
+    have hκ : 0 < η / (‖g‖ + 1) := div_pos hη (by positivity)
+    have h1 := (((hF j).differentiable one_ne_zero) y).hasFDerivAt.isLittleO.def hη
+    have h2 := (((hψ j).differentiable one_ne_zero) y).hasFDerivAt.isLittleO.def hκ
+    obtain ⟨δ, hδ, hδ'⟩ := Metric.eventually_nhds_iff.mp (h1.and h2)
+    refine ⟨δ, hδ, fun y' hy' => ?_⟩
+    have hdist : dist y' y < δ := by rwa [dist_eq_norm]
+    obtain ⟨hF', hψ'⟩ := hδ' hdist
+    have e1 : inner ℝ g (ψ j y' - ψ j y - fderiv ℝ (ψ j) y (y' - y)) =
+        inner ℝ g (ψ j y' - ψ j y) - inner ℝ g (fderiv ℝ (ψ j) y (y' - y)) :=
+      inner_sub_right _ _ _
+    have key : F j y' - F j y - inner ℝ g (ψ j y' - ψ j y) =
+        (F j y' - F j y - fderiv ℝ (F j) y (y' - y))
+          - inner ℝ g (ψ j y' - ψ j y - fderiv ℝ (ψ j) y (y' - y)) := by
+      rw [e1, hg (y' - y)]; ring
+    rw [key]
+    have hgκ : ‖g‖ * (η / (‖g‖ + 1)) ≤ η := by
+      rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+      nlinarith [norm_nonneg g]
+    calc |(F j y' - F j y - fderiv ℝ (F j) y (y' - y))
+            - inner ℝ g (ψ j y' - ψ j y - fderiv ℝ (ψ j) y (y' - y))|
+        ≤ |F j y' - F j y - fderiv ℝ (F j) y (y' - y)|
+            + |inner ℝ g (ψ j y' - ψ j y - fderiv ℝ (ψ j) y (y' - y))| := abs_sub _ _
+      _ ≤ η * ‖y' - y‖ + ‖g‖ * ‖ψ j y' - ψ j y - fderiv ℝ (ψ j) y (y' - y)‖ :=
+          add_le_add (by rw [← Real.norm_eq_abs]; exact hF') (abs_real_inner_le_norm _ _)
+      _ ≤ η * ‖y' - y‖ + ‖g‖ * (η / (‖g‖ + 1) * ‖y' - y‖) :=
+          add_le_add le_rfl (mul_le_mul_of_nonneg_left hψ' (norm_nonneg g))
+      _ ≤ 2 * η * ‖y' - y‖ := by
+          nlinarith [mul_le_mul_of_nonneg_right hgκ (norm_nonneg (y' - y)), norm_nonneg (y' - y)]
+  -- reduce to the null set `M \ ⋃ⱼ Aⱼ` and the pieces `Aⱼ = ψ j '' Y j`
+  refine ae_restrict_of_ae_restrict_of_subset
+    (t := (M \ ⋃ j, ψ j '' Y j) ∪ ⋃ j, ψ j '' Y j) (fun x hx => ?_) ?_
+  · by_cases hx' : x ∈ ⋃ j, ψ j '' Y j
+    · exact Or.inr hx'
+    · exact Or.inl ⟨hx, hx'⟩
+  rw [ae_restrict_union_iff, ae_restrict_iUnion_iff]
+  refine ⟨?_, fun j => ?_⟩
+  · rw [ae_restrict_eq_bot.mpr hnull]
+    exact eventually_bot
+  -- lower Lipschitz bound of `ψ j` on `closure (Y j)`
+  obtain ⟨m, Λ, hm, hbi⟩ := h_chart_bilipschitz P d (ψ j) (closure (Y j)) (hψ j) (hYc j)
+    ((hinj j).mono (hYV j)) (fun y hy => hDinj j y (hYV j hy))
+  -- `Aⱼ` and `M` have the same approximate tangent planes a.e. on `Aⱼ`
+  have h3 := h_tangent_locality P d univ (ψ j '' Y j) M isOpen_univ (hAmeas j) hM (hAM j)
+    (subset_univ _) (fun K hK _ => hfin K hK)
+  filter_upwards [h3, ae_restrict_mem (hAmeas j)] with x hx hxA
+  obtain ⟨y, hyY, rfl⟩ := hxA
+  have hMQ := htan j y hyY
+  obtain ⟨hTeq, hT⟩ := h_approxTangentPlane_of _ _ hMQ
+  have hAQ := (hx _).mpr hMQ
+  refine ⟨hT, ?_, ?_⟩
+  · rw [hTeq]; exact (hG j y hyY).1
+  intro ε hε
+  -- `Hᵈ((M \ Aⱼ) ∩ B_r(x)) = o(rᵈ)`
+  have hdens := h_tangent_complement_density P d (ψ j '' Y j) M (ψ j y) _ 1 (hAmeas j) (hAM j)
+    one_pos (hfin _ (isCompact_closedBall _ _)) hMQ hAQ
+  have hη : 0 < ε * m / 2 := by positivity
+  obtain ⟨δ, hδ, hexp⟩ := h_expansion j (G (ψ j y)) y (hG j y hyY).2 (ε * m / 2) hη
+  have hr₀ : 0 < m * δ := mul_pos hm hδ
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hdens
+    (Eventually.of_forall fun _ => bot_le) ?_
+  -- for `0 < r < mδ` the exceptional set lies in `(M \ Aⱼ) ∩ B_r(x)`
+  filter_upwards [Ioo_mem_nhdsGT hr₀] with r hr
+  refine ENNReal.div_le_div_right (measure_mono ?_) _
+  rintro z ⟨⟨hzM, hzB⟩, hzε⟩
+  refine ⟨⟨hzM, fun hzA => ?_⟩, hzB⟩
+  obtain ⟨y', hy'Y, rfl⟩ := hzA
+  simp only [mem_ofPred_eq] at hzε
+  rw [mem_ball, dist_eq_norm] at hzB
+  have hlow := (hbi y' (subset_closure hy'Y) y (subset_closure hyY)).1
+  have hy'δ : ‖y' - y‖ < δ := by
+    by_contra hcon
+    have hcon' : δ ≤ ‖y' - y‖ := not_lt.mp hcon
+    have : m * δ ≤ m * ‖y' - y‖ := mul_le_mul_of_nonneg_left hcon' hm.le
+    linarith [hr.2]
+  have hup := hexp y' hy'δ
+  rw [hfF j y' hy'Y, hfF j y hyY] at hzε
+  have hcmp : 2 * (ε * m / 2) * ‖y' - y‖ ≤ ε * ‖ψ j y' - ψ j y‖ := by
+    calc 2 * (ε * m / 2) * ‖y' - y‖ = ε * (m * ‖y' - y‖) := by ring
+      _ ≤ ε * ‖ψ j y' - ψ j y‖ := mul_le_mul_of_nonneg_left hlow hε.le
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
