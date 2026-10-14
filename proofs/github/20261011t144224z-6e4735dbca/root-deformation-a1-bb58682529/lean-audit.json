@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "7e49a1188d7b84d1ecaa9ce8d0eb609215aae10a6a34c3fb8e2f68366dcbb972",
+  "git_delta": {
+    "base_commit": "6b65fd043368d5f4d3b89f898f22fe8e00dca1b6",
+    "candidate_commit": "4efd922c99dc95f6b10b7a027c6d83adeaf3802f",
+    "target": "GMT/Ch06/Submission.lean",
+    "changed_files": [
+      "GMT/Ch06/Submission.lean"
+    ],
+    "diff_sha256": "beaa34c32488084618b2216e1dcf75231da0158c33bc451755e072827ef476b1",
+    "source_sha256": "9a764c89fadea1c721845a8bfec41b8ce0cfa1ef7e203ee58fffd65b91ac74ec",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.deformation_theorem",
+      "statement": "DeformationTheorem",
+      "lean_file": "GMT/Ch06/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
