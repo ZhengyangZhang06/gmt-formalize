@@ -544,6 +544,32 @@ theorem Submission.cbr_vague_portmanteau : ∀ (P : ℕ) (U : Set (Euclid P)) (�
         hCG G hG hGU _ ((isCompact_closedBall 0 n).inter_left (hFc n))
           (inter_subset_left.trans (hFG n))
 
+/-- **Lower bounds on balls with moving centres pass to the limit measure.**  This is the
+moving-centre semicontinuity behind Simon 7.3.3, proof of 3.3(1), display (12)
+(chapter-07.txt lines 478–482: `Θⁿ(S, y) ≥ lim sup Θⁿ(Sᵢ, yᵢ)`).  Let `limsup μⱼ(K) ≤ μ(K)` for
+compact `K`, `wⱼ → w`, and `h` continuous with, for all large `j`, `h(ρ) ≤ μⱼ(B_ρ(wⱼ))` for
+`ρ ∈ (0, s)`.  Then `h(t) ≤ μ(B_t(w))` for `t ∈ (0, s)`.  For `ρ ∈ (0, t)`, eventually
+`B_ρ(wⱼ) ⊆ B̄_{(t+ρ)/2}(w) ⊆ B_t(w)`, so `h(ρ) ≤ μ(B_t(w))`; let `ρ → t⁻`. -/
+theorem Submission.dimred_tr_mcr_tl_lower_bound_transfer : ∀ (P : ℕ) (μ : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (ws : ℕ → Euclid P) (w : Euclid P) (s : ℝ) (h : ℝ → ℝ≥0∞), (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K) → Tendsto ws atTop (𝓝 w) → Continuous h → (∀ᶠ j in atTop, ∀ ρ ∈ Ioo 0 s, h ρ ≤ μs j (ball (ws j) ρ)) → ∀ t ∈ Ioo 0 s, h t ≤ μ (ball w t) := by
+  intro P μ μs ws w s h hK hws hh hlow t ht
+  -- Steps 1–3: for `ρ ∈ (0, t)`, once `|wⱼ - w| < (t - ρ)/2` the ball `B_ρ(wⱼ)` lies in the
+  -- compact ball `K = B̄_{(t+ρ)/2}(w) ⊆ B_t(w)`, so `h ρ ≤ limsup μⱼ(K) ≤ μ(K) ≤ μ(B_t(w))`
+  have hclaim : ∀ ρ ∈ Ioo 0 t, h ρ ≤ μ (ball w t) := by
+    intro ρ hρ
+    calc h ρ ≤ limsup (fun j => μs j (closedBall w ((t + ρ) / 2))) atTop := by
+          refine le_limsup_of_frequently_le (Eventually.frequently ?_)
+          filter_upwards [hlow, Metric.tendsto_nhds.mp hws ((t - ρ) / 2) (by linarith [hρ.2])]
+            with j hj hjw
+          refine (hj ρ ⟨hρ.1, hρ.2.trans ht.2⟩).trans (measure_mono fun z hz => ?_)
+          rw [mem_ball] at hz
+          rw [mem_closedBall]
+          linarith [dist_triangle z (ws j) w]
+      _ ≤ μ (closedBall w ((t + ρ) / 2)) := hK _ (isCompact_closedBall w _)
+      _ ≤ μ (ball w t) := measure_mono (closedBall_subset_ball (by linarith [hρ.2]))
+  -- Step 4: `h` is continuous and `(0, t) ∈ 𝓝[<] t`, so the claim passes to the limit `ρ → t⁻`
+  exact le_of_tendsto ((hh.tendsto t).mono_left nhdsWithin_le_nhds)
+    (eventually_of_mem (Ioo_mem_nhdsLT ht.1) hclaim)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
