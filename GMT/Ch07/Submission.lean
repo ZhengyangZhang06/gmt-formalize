@@ -451,6 +451,135 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Change of variables for `Hⁿ` under the dilation `T(x) = cx`, `c > 0`**: formula (1.1) for the
+scaling of the mass measure of a cone (proof of Simon 7.4.5, chapter-07.txt lines 697–699, "by
+virtue of the fact that `C` is a cone").  For every `M ⊆ ℝᴾ`: (i) `T_#(Hⁿ⌞T⁻¹(M)) = c⁻ⁿ Hⁿ⌞M`;
+(ii) `∫⁻_{T⁻¹(M)} g(cz) dHⁿ(z) = c⁻ⁿ ∫⁻_M g dHⁿ` for every `g : ℝᴾ → [0, ∞]`; (iii) the same for
+the Bochner integral of every `g : ℝᴾ → ℝ`.  `T` is a homeomorphism, hence a measurable embedding,
+and `T⁻¹(B) = c⁻¹B` with `Hⁿ(c⁻¹B) = c⁻ⁿ Hⁿ(B)` gives `T_#Hⁿ = c⁻ⁿ Hⁿ`; restriction and integrals
+commute with the push-forward along `T`. -/
+theorem Submission.euclid_hausdorff_dilation_change_of_variables : ∀ (P n : ℕ) (c : ℝ), 0 < c → ∀ M : Set (Euclid P), Measure.map (fun x : Euclid P => c • x) (μHE[n].restrict ((fun x => c • x) ⁻¹' M)) = ENNReal.ofReal (c⁻¹ ^ n) • μHE[n].restrict M ∧ (∀ g : Euclid P → ℝ≥0∞, ∫⁻ z in (fun x => c • x) ⁻¹' M, g (c • z) ∂μHE[n] = ENNReal.ofReal (c⁻¹ ^ n) * ∫⁻ y in M, g y ∂μHE[n]) ∧ ∀ g : Euclid P → ℝ, ∫ z in (fun x => c • x) ⁻¹' M, g (c • z) ∂μHE[n] = c⁻¹ ^ n * ∫ y in M, g y ∂μHE[n] := by
+  intro P n c hc M
+  -- Step 1: `T(x) = cx` is a homeomorphism, hence a measurable embedding.
+  have hT : MeasurableEmbedding (fun x : Euclid P => c • x) :=
+    (Homeomorph.smulOfNeZero c hc.ne').measurableEmbedding
+  -- Step 2: `T_#Hⁿ = c⁻ⁿ Hⁿ`, since `Hⁿ(T⁻¹(B)) = Hⁿ(c⁻¹B) = ‖c⁻¹‖ⁿ Hⁿ(B)` for Borel `B`.
+  have hmap : Measure.map (fun x : Euclid P => c • x) (μHE[n] : Measure (Euclid P)) =
+      ENNReal.ofReal (c⁻¹ ^ n) • (μHE[n] : Measure (Euclid P)) := by
+    ext B hB
+    rw [Measure.map_apply hT.measurable hB, Set.preimage_smul₀ hc.ne',
+      Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hc.ne'), Measure.smul_apply,
+      ENNReal.smul_def, smul_eq_mul, smul_eq_mul, ← ENNReal.ofReal_coe_nnreal]
+    congr 2
+    simp [abs_of_pos hc]
+  -- Step 3, (i): `T_#(Hⁿ⌞T⁻¹(M)) = (T_#Hⁿ)⌞M = c⁻ⁿ Hⁿ⌞M`.
+  have h1 : Measure.map (fun x : Euclid P => c • x) (μHE[n].restrict ((fun x => c • x) ⁻¹' M)) =
+      ENNReal.ofReal (c⁻¹ ^ n) • μHE[n].restrict M := by
+    rw [← hT.restrict_map, hmap, Measure.restrict_smul]
+  refine ⟨h1, fun g => ?_, fun g => ?_⟩
+  -- Step 4, (ii): `∫⁻ g ∘ T dν = ∫⁻ g d(T_#ν)` for `ν = Hⁿ⌞T⁻¹(M)`, then (i).
+  · have h := hT.lintegral_map (μ := μHE[n].restrict ((fun x => c • x) ⁻¹' M)) g
+    rw [h1, lintegral_smul_measure, smul_eq_mul] at h
+    exact h.symm
+  -- Step 5, (iii): the same for Bochner integrals, with `(ofReal c⁻ⁿ).toReal = c⁻ⁿ`.
+  · have h := hT.integral_map (μ := μHE[n].restrict ((fun x => c • x) ⁻¹' M)) g
+    rw [h1, integral_smul_measure, ENNReal.toReal_ofReal (by positivity), smul_eq_mul] at h
+    exact h.symm
+
+/-- **`n`-homogeneity of `f Hⁿ` for a dilation-invariant density `f`** (Simon Lemma 7.3.5,
+chapter-07.txt lines 407–420, whose proof is "left to the reader": part (ii) of the invariance of
+the mass measure `μ = Θ Hⁿ` of `S` when its density `Θ` is invariant under `w ↦ λw`, with an
+arbitrary `f : ℝᴾ → [0, ∞]` in place of `ofReal ∘ Θ`).  If `λ > 0` and `f(λx) = f(x)` for all `x`,
+then `(f Hⁿ)(λA) = λⁿ (f Hⁿ)(A)` for every Borel `A ⊆ ℝᴾ`.  `δ(x) = λx` is a homeomorphism, so
+`λA = δ(A)` is Borel and `δ⁻¹(λA) = A`; the change of variables (ii) of
+`Submission.euclid_hausdorff_dilation_change_of_variables` with `g = f` and `f ∘ δ = f` gives
+`(f Hⁿ)(A) = λ⁻ⁿ (f Hⁿ)(λA)`, and `λⁿ λ⁻ⁿ = 1`. -/
+theorem Submission.dimred_cs_mi_withDensity_dilate : ∀ (P n : ℕ) (f : Euclid P → ℝ≥0∞) (lam : ℝ), 0 < lam → (∀ x : Euclid P, f (lam • x) = f x) → ∀ A : Set (Euclid P), MeasurableSet A → (μHE[n] : Measure (Euclid P)).withDensity f ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * (μHE[n] : Measure (Euclid P)).withDensity f A := by
+  intro P n f lam hlam hf A hA
+  -- Step 1: `δ(x) = λx` is a homeomorphism, hence a measurable embedding: `D = δ(A)` is Borel and
+  -- `δ⁻¹(D) = A` by injectivity.
+  have hδ : MeasurableEmbedding (fun x : Euclid P => lam • x) :=
+    (Homeomorph.smulOfNeZero lam hlam.ne').measurableEmbedding
+  have hD : MeasurableSet ((fun x : Euclid P => lam • x) '' A) := hδ.measurableSet_image.2 hA
+  have hpre : (fun x : Euclid P => lam • x) ⁻¹' ((fun x : Euclid P => lam • x) '' A) = A :=
+    Set.preimage_image_eq A hδ.injective
+  -- Steps 2–3: change of variables (ii) with `c = λ`, `M = D`, `g = f`; with `δ⁻¹(D) = A` and
+  -- `f(λz) = f(z)` it reads `∫⁻_A f dHⁿ = λ⁻ⁿ ∫⁻_D f dHⁿ`.
+  have h := (Submission.euclid_hausdorff_dilation_change_of_variables P n lam hlam
+    ((fun x : Euclid P => lam • x) '' A)).2.1 f
+  rw [hpre] at h
+  simp only [hf] at h
+  -- Steps 4–5: `ν(A) = λ⁻ⁿ ν(D)` by `withDensity_apply` (`A`, `D` Borel), and
+  -- `ofReal(λⁿ) ofReal(λ⁻ⁿ) = ofReal((λλ⁻¹)ⁿ) = 1`.
+  rw [withDensity_apply _ hD, withDensity_apply _ hA, h, ← mul_assoc,
+    ← ENNReal.ofReal_mul (pow_nonneg hlam.le n), ← mul_pow, mul_inv_cancel₀ hlam.ne', one_pow,
+    ENNReal.ofReal_one, one_mul]
+
+/-- **A measure of finite positive mass is not `f Hⁿ` with `f` dilation-invariant** (`n ≥ 1`;
+non-homogeneity of the positive-scale members `η_{x,λ#}T`, `λ > 0`, of the class `𝒯` in the proof
+of Simon 7.3.3(1), chapter-07.txt lines 444–472).  If `f(tw) = f(w)` for all `t > 0`, then
+`ρ = f Hⁿ` has `ρ(B_t(0)) = tⁿ ρ(B_1(0))` for `t > 0`, by
+`Submission.dimred_cs_mi_withDensity_dilate` with `A = B_1(0)` and `tB_1(0) = B_t(0)`.  If
+`ρ(B_1(0)) = 0`, the null balls `B_{m+1}(0)` cover `ℝᴾ` and `ρ(ℝᴾ) = 0`; otherwise
+`t ρ(B_1(0)) ≤ tⁿ ρ(B_1(0)) ≤ ρ(ℝᴾ)` for `t ≥ 1`, with `t ρ(B_1(0)) → ∞`, so `ρ(ℝᴾ) = ∞`.  Either
+way `ρ ≠ ν` when `0 < ν(ℝᴾ) < ∞`. -/
+theorem Submission.idtp_fons_cc_psf_nonhomogeneous : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (f : Euclid P → ℝ≥0∞), 1 ≤ n → ν univ ≠ 0 → ν univ ≠ ∞ → (∀ t : ℝ, 0 < t → ∀ w : Euclid P, f (t • w) = f w) → ν ≠ (μHE[n] : Measure (Euclid P)).withDensity f := by
+  intro P n ν f hn h0 htop hf hν
+  -- Step 1: suppose `ν = ρ := f Hⁿ`; then `ρ(ℝᴾ) ≠ 0` and `ρ(ℝᴾ) ≠ ∞`.
+  subst hν
+  set ρ := (μHE[n] : Measure (Euclid P)).withDensity f
+  -- Step 2: `ρ(B_t(0)) = ofReal(tⁿ) ρ(B_1(0))` for `t > 0`, by the dilation homogeneity with
+  -- `A = B_1(0)` and `(w ↦ tw)(B_1(0)) = tB_1(0) = B_t(0)`.
+  have hball : ∀ t : ℝ, 0 < t → ρ (ball 0 t) = ENNReal.ofReal (t ^ n) * ρ (ball 0 1) := by
+    intro t ht
+    have h := Submission.dimred_cs_mi_withDensity_dilate P n f t ht (hf t ht) (ball 0 1)
+      measurableSet_ball
+    rwa [Set.image_smul, smul_unitBall_of_pos ht] at h
+  by_cases h1 : ρ (ball 0 1) = 0
+  -- Step 3: if `ρ(B_1(0)) = 0`, every ball `B_{m+1}(0)` is null, and these balls cover `ℝᴾ`.
+  · refine h0 ?_
+    rw [← iUnion_ball_nat_succ (0 : Euclid P)]
+    refine measure_iUnion_null fun m => ?_
+    rw [hball (m + 1) (by positivity), h1, mul_zero]
+  -- Step 4: otherwise `ofReal(t) ρ(B_1(0)) → ∞ · ρ(B_1(0)) = ∞`, while for `t ≥ 1` (and `n ≥ 1`)
+  -- `ofReal(t) ρ(B_1(0)) ≤ ofReal(tⁿ) ρ(B_1(0)) = ρ(B_t(0)) ≤ ρ(ℝᴾ)`; so `ρ(ℝᴾ) = ∞`.
+  · have hlim : Tendsto (fun t : ℝ => ENNReal.ofReal t * ρ (ball 0 1)) atTop (𝓝 ∞) := by
+      have h := ENNReal.Tendsto.mul_const ENNReal.tendsto_ofReal_atTop
+        (Or.inl ENNReal.top_ne_zero) (b := ρ (ball 0 1))
+      rwa [ENNReal.top_mul h1] at h
+    refine htop (top_le_iff.mp (le_of_tendsto hlim ?_))
+    filter_upwards [eventually_ge_atTop 1] with t ht
+    calc ENNReal.ofReal t * ρ (ball 0 1) ≤ ENNReal.ofReal (t ^ n) * ρ (ball 0 1) := by
+          gcongr
+          simpa only [pow_one] using pow_le_pow_right₀ ht hn
+      _ = ρ (ball 0 t) := (hball t (by linarith)).symm
+      _ ≤ ρ univ := measure_mono (subset_univ _)
+
+/-- **A measure `g Hⁿ` whose own density `g` is dilation-invariant and positive somewhere has
+infinite mass** (`n ≥ 1`; used for the density-threshold `sing` in the dimension-reducing argument
+of Simon Appendix A for 7.3.3: hypothesis A.3(1), chapter-A.txt lines 26–27, and the final step
+`ν(B_{tR}(0)) = tⁿ ν(B_R(0)) → ∞`).  Let `g(x) = (limsup_{ρ↓0} μ(B_ρ(x))/(ωₙρⁿ)).toReal` for every
+`x`, `μ = (ofReal ∘ g) Hⁿ`, `g(tx) = g(x)` for `t > 0`, and `g(x₀) > 0`.  If `μ(ℝᴾ) = 0`, then
+`μ = 0`, every ratio `μ(B_ρ(x₀))/(ωₙρⁿ)` is `0` and `g(x₀) = 0`; so `μ(ℝᴾ) ≠ 0`, and
+`Submission.idtp_fons_cc_psf_nonhomogeneous` with the dilation-invariant `f = ofReal ∘ g` excludes
+`μ(ℝᴾ) < ∞`. -/
+theorem Submission.dimred_tr_mcr_homogeneous_infinite_mass : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (x₀ : Euclid P), 1 ≤ n → (∀ x, g x = (limsup (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) → μ = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal (g x)) → (∀ t : ℝ, 0 < t → ∀ x, g (t • x) = g x) → 0 < g x₀ → μ univ = ∞ := by
+  intro P n μ g x₀ hn hg hμ hhom hx₀
+  -- Step 1: `μ(ℝᴾ) ≠ 0`.  Otherwise `μ = 0`, so every ratio `μ(B_ρ(x₀))/(ωₙρⁿ)` is `0`, its
+  -- limsup along the nontrivial filter `𝓝[>] 0` is `0`, and `g(x₀) = 0 < g(x₀)`.
+  have h0 : μ univ ≠ 0 := by
+    intro h
+    rw [Measure.measure_univ_eq_zero] at h
+    have hgx₀ : g x₀ = 0 := by
+      rw [hg x₀, h]
+      simp
+    exact hx₀.ne' hgx₀
+  -- Step 2: `μ(ℝᴾ) = ∞`.  Otherwise `0 < μ(ℝᴾ) < ∞` while `μ = f Hⁿ` with `f = ofReal ∘ g` and
+  -- `f(tw) = f(w)` for `t > 0`, which the sibling non-homogeneity lemma excludes.
+  by_contra htop
+  exact Submission.idtp_fons_cc_psf_nonhomogeneous P n μ (fun x => ENNReal.ofReal (g x)) hn h0
+    htop (fun t ht w => congrArg ENNReal.ofReal (hhom t ht w)) hμ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

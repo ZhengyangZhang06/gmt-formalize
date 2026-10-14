@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.support-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1",
+  "depth": 6,
+  "title": "Support relation: for w ∈ B_2(0), w ∈ spt μ₀ ⟺ z + r·w ∈ spt μ (parent steps 0(d),(e), 1)",
+  "statement": "Let P, n ∈ ℕ, μ a measure on ℝ^P, z ∈ ℝ^P, r > 0 and μ₀ := ofReal(r⁻¹^n)•(μ⌞B_{2r}(z)).map(dilation z r). Then for every w ∈ B_2(0): (μ₀(B_ε(w)) ≠ 0 for every ε > 0) ⟺ (μ(B_ε(z + r·w)) ≠ 0 for every ε > 0).",
+  "lean_statement": "∀ (P n : ℕ) (μ μ₀ : Measure (Euclid P)) (z : Euclid P) (r : ℝ), 0 < r → μ₀ = ENNReal.ofReal (r⁻¹ ^ n) • (μ.restrict (ball z (2 * r))).map (dilation z r) → ∀ w ∈ ball (0 : Euclid P) 2, (∀ ε : ℝ, 0 < ε → μ₀ (ball w ε) ≠ 0) ↔ ∀ ε : ℝ, 0 < ε → μ (ball (z + r • w) ε) ≠ 0",
+  "lean_name": "idtp_fons_cc_psf_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a36399a32f-a1"
+}
