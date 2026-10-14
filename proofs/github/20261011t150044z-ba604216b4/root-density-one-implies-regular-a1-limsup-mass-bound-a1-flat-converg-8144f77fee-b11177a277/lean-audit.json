@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a67d6e33bcdc9799430800a757fbb0b2786c2c3fefcf003ac59f8752ad2d4458",
+  "git_delta": {
+    "base_commit": "7e91fe30e2ffd73d8fd9022e1a74e69718aa3353",
+    "candidate_commit": "af4a1e53b5121652c578b77986b5cf60dc8e0d67",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcdr_cube_skeleton",
+    "diff_sha256": "69310383802c3ba1a13802b054161c7d25b5a6a2de9a349e1b5b8578c0f5dd6a",
+    "source_sha256": "9bb7665e6bf8e4a478baf09513f92b02a09dd73b68ac4fc97a88d8cd3470a169",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcdr_cube_skeleton",
+      "statement": "∀ (P m : ℕ) (a : Euclid P), (∀ i, |a i - 1 / 2| < 1 / 4) → ∀ κ : (Fin P → ℝ) → ℝ, (∀ u : Fin P → ℝ, ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, κ u ≤ u i) → ∀ Φ : Euclid P → Euclid P, (∀ (y : Euclid P) (i : Fin P), Φ y i = a i + (y i - a i) / max (max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) (κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)))) → ∀ y : Euclid P, 0 < κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) → (∀ i, 0 ≤ Φ y i ∧ Φ y i ≤ 1) ∧ ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, Φ y i = 0 ∨ Φ y i = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
