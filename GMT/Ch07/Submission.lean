@@ -1207,6 +1207,75 @@ theorem Submission.cbrr_projection_net : ∀ (P n : ℕ) (ε : ℝ), 0 < ε → 
   simp only [Equiv.symm_apply_apply]
   rw [(hT L hL).2, ← dist_eq_norm]
   exact hQL
+/-- **Cone claim (10) in the proof of Simon Ch. 3, Theorem 1.6 "⇐"**, with the corrected constant
+`b·16ⁿ < a`.  Suppose `μ(B̄_ρ(y)) ≥ aρⁿ` for `y ∈ E` and `μ(X(x) ∩ B_ρ(x)) ≤ bρⁿ` for `x ∈ E`,
+`0 < ρ < δ`, where `X(x) = {z : 2|p_{Q(x)}(z − x)| < |z − x|}`.  If `x, y ∈ E`,
+`‖p_{Q(x)} − p_T‖ < 1/16` and `|y − x| < δ/2`, then `|y − x| ≤ 4|p_T(y − x)|`.  Otherwise
+`σ = |y − x|` has `B̄_{σ/8}(y) ⊆ X(x) ∩ B_{2σ}(x)`, so `a(σ/8)ⁿ ≤ b(2σ)ⁿ = b·16ⁿ(σ/8)ⁿ`. -/
+theorem Submission.cbrr_cone_claim : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (E : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (T : Submodule ℝ (Euclid P)) (a b δ : ℝ), 0 < a → b * 16 ^ n < a → (∀ y ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (a * ρ ^ n) ≤ μ (closedBall y ρ)) → (∀ x ∈ E, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ) ≤ ENNReal.ofReal (b * ρ ^ n)) → ∀ x ∈ E, ∀ y ∈ E, ‖(Q x).starProjection - T.starProjection‖ < 1 / 16 → ‖y - x‖ < δ / 2 → ‖y - x‖ ≤ 4 * ‖T.starProjection (y - x)‖ := by
+  intro P n μ E Q T a b δ ha hab hlow hup x hx y hy hQT hyx
+  -- Step 1: suppose `4|p_T(y − x)| < σ := |y − x|`; then `0 < σ < δ/2`.
+  refine not_lt.mp fun hcon => ?_
+  set σ := ‖y - x‖
+  have hσ0 : 0 < σ := lt_of_le_of_lt (by positivity) hcon
+  -- `|p_{Q(x)}(y − x)| ≤ |p_T(y − x)| + ‖p_{Q(x)} − p_T‖σ < σ/4 + σ/16`.
+  have hQy : ‖(Q x).starProjection (y - x)‖ < σ / 4 + σ / 16 := by
+    have hsplit : (Q x).starProjection (y - x) =
+        T.starProjection (y - x) + ((Q x).starProjection - T.starProjection) (y - x) := by
+      simp
+    have hop : ‖((Q x).starProjection - T.starProjection) (y - x)‖ < σ / 16 := by
+      calc ‖((Q x).starProjection - T.starProjection) (y - x)‖
+          ≤ ‖(Q x).starProjection - T.starProjection‖ * σ := ContinuousLinearMap.le_opNorm _ _
+        _ < 1 / 16 * σ := by gcongr
+        _ = σ / 16 := by ring
+    rw [hsplit]
+    calc ‖T.starProjection (y - x) + ((Q x).starProjection - T.starProjection) (y - x)‖
+        ≤ ‖T.starProjection (y - x)‖ + ‖((Q x).starProjection - T.starProjection) (y - x)‖ :=
+          norm_add_le _ _
+      _ < σ / 4 + σ / 16 := by linarith
+  -- Step 2: `B̄_{σ/8}(y) ⊆ X(x) ∩ B_{2σ}(x)`.
+  have hsub : closedBall y (σ / 8) ⊆
+      {z | 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖} ∩ ball x (2 * σ) := by
+    intro z hz
+    have hzy : ‖z - y‖ ≤ σ / 8 := by rwa [mem_closedBall, dist_eq_norm] at hz
+    have hdecomp : z - x = (y - x) + (z - y) := by abel
+    -- `|p_{Q(x)}(z − x)| ≤ |p_{Q(x)}(y − x)| + |z − y| < 7σ/16`.
+    have hQz : ‖(Q x).starProjection (z - x)‖ < 7 * σ / 16 := by
+      calc ‖(Q x).starProjection (z - x)‖
+          = ‖(Q x).starProjection (y - x) + (Q x).starProjection (z - y)‖ := by
+            rw [hdecomp, map_add]
+        _ ≤ ‖(Q x).starProjection (y - x)‖ + ‖(Q x).starProjection (z - y)‖ := norm_add_le _ _
+        _ ≤ ‖(Q x).starProjection (y - x)‖ + ‖z - y‖ := by
+            gcongr; exact (Q x).norm_starProjection_apply_le _
+        _ < 7 * σ / 16 := by linarith
+    -- `7σ/8 ≤ |z − x| ≤ 9σ/8 < 2σ`.
+    have hlow' : σ - ‖z - y‖ ≤ ‖z - x‖ := by
+      have := norm_sub_le (z - x) (z - y)
+      have h' : (z - x) - (z - y) = y - x := by abel
+      rw [h'] at this
+      linarith
+    have hup' : ‖z - x‖ ≤ σ + ‖z - y‖ := by
+      rw [hdecomp]; exact norm_add_le _ _
+    refine ⟨?_, ?_⟩
+    · show 2 * ‖(Q x).starProjection (z - x)‖ < ‖z - x‖
+      linarith
+    · rw [mem_ball, dist_eq_norm]
+      linarith
+  -- Step 3: the density bounds at `y` (radius `σ/8`) and at `x` (radius `2σ`).
+  have key : ENNReal.ofReal (a * (σ / 8) ^ n) ≤ ENNReal.ofReal (b * (2 * σ) ^ n) :=
+    (hlow y hy (σ / 8) (by positivity) (by linarith)).trans
+      ((measure_mono hsub).trans (hup x hx (2 * σ) (by positivity) (by linarith)))
+  -- Step 4: `a(σ/8)ⁿ > 0` forces `a(σ/8)ⁿ ≤ b(2σ)ⁿ = b·16ⁿ(σ/8)ⁿ`, so `a ≤ b·16ⁿ`.
+  have hs : 0 < (σ / 8) ^ n := by positivity
+  have key' : a * (σ / 8) ^ n ≤ b * (2 * σ) ^ n :=
+    (ENNReal.ofReal_le_ofReal_iff'.mp key).resolve_right (not_le.mpr (by positivity))
+  have h16 : b * (2 * σ) ^ n = b * 16 ^ n * (σ / 8) ^ n := by
+    rw [mul_assoc, ← mul_pow]
+    congr 2
+    ring
+  rw [h16] at key'
+  have : a ≤ b * 16 ^ n := le_of_mul_le_mul_right key' hs
+  linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
