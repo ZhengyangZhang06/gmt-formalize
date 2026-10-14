@@ -2992,6 +2992,122 @@ theorem Submission.lcmp_measure_le_add_of_open_nhds : ∀ (P : ℕ) (U E : Set (
       (fun k => (hGo k).measurableSet.nullMeasurableSet) hanti ⟨0, hfin0⟩
     rwa [hinter] at this
   exact ge_of_tendsto' (htend.add_const c) hle
+/-- **Restriction of `T = τ(M, θ, ξ)` to a relatively compact Borel set, as a current in `ℝᴾ`**
+(Simon Ch. 6, 3.1–3.2 and 2.11).  Let `U` be open, `μ = θ Hⁿ⌞M` and `E` Borel with `E ⊆ K ⊆ U`,
+`K` compact.  By the restriction calculus, `R' = (M ∩ E, θ, ξ)` and `R₁ = (M ∖ E, θ, ξ)` are
+integer multiplicity triples in `U`, with weights `μ⌞E`, `μ⌞(ℝᴾ ∖ E)` and actions
+`∫_E ⟨ω, ξ⟩ dμ`, `∫_{ℝᴾ∖E} ⟨ω, ξ⟩ dμ`; let `T₁` be the current of `R₁`.  As `E ⊆ K`, `M ∩ E` is
+locally `Hⁿ`-finite in all of `ℝᴾ`, so `R'` is also a triple in `ℝᴾ` and defines `Q`.  For
+`ω ∈ 𝒟ⁿ(U)` the function `⟨ω, ξ⟩` is `μ`-integrable (bounded by `sup |ω|` and supported in the
+compact `spt ω`), so `T(ω) = ∫_E + ∫_{ℝᴾ∖E} = Q(ω) + T₁(ω)`, and `T₁(ω) = 0` if `spt ω ⊆ E`.
+Finally `spt Q = spt(μ⌞E) ⊆ closure E ∩ spt μ`, `closure E ⊆ K ⊆ U` and `spt T = U ∩ spt μ`;
+`spt Q` is closed in the compact `K`, hence compact. -/
+theorem Submission.dimred_mbl_lc_rc_restrict_to_univ : ∀ (P n : ℕ) (U E K : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → MeasurableSet E → IsCompact K → E ⊆ K → K ⊆ U → ∃ (Q : GeometricCurrentOn (univ : Set (Euclid P)) n) (RQ : IMRep (univ : Set (Euclid P)) n) (T₁ : GeometricCurrentOn U n) (R₁ : IMRep U n), RQ.Represents Q ∧ RQ.measure = R.measure.restrict E ∧ R₁.Represents T₁ ∧ R₁.measure = R.measure.restrict Eᶜ ∧ (∀ ω : TestFormOn U n, T ω = Q (testFormOnInclusion (subset_univ U) n ω) + T₁ ω) ∧ (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ E → Q (testFormOnInclusion (subset_univ U) n ω) = T ω) ∧ Q.support ⊆ closure E ∩ T.support ∧ IsCompact Q.support := by
+  intro P n U E K T R hU hR hE hK hEK hKU
+  obtain ⟨-, hrestrict, -, horient⟩ := Submission.cmc_imRep_locality_restrict_sub
+  obtain ⟨hac, hξmeas, hIR⟩ := Submission.lcmp_imRep_measure_restrict P n U R
+  -- Step 1: `R' = (M ∩ E, θ, ξ)` and `R₁ = (M ∖ E, θ, ξ)` in `U`, with `R₁` representing `T₁`;
+  -- `μ_{R'} = μ⌞E`, `μ_{R₁} = μ⌞(ℝᴾ ∖ E)`, and the actions are integrals against `μ`
+  obtain ⟨_, R', -, hR'c, hR'm, hR'o⟩ := hrestrict P n U R E hU hE
+  obtain ⟨T₁, R₁, hR₁, hR₁c, hR₁m, hR₁o⟩ := hrestrict P n U R Eᶜ hU hE.compl
+  obtain ⟨hR'meas, hR'act⟩ := hIR E R' hE hR'c hR'm hR'o
+  obtain ⟨hR₁meas, hR₁act⟩ := hIR Eᶜ R₁ hE.compl hR₁c hR₁m hR₁o
+  have hRact := (hIR univ R MeasurableSet.univ (inter_univ _).symm rfl rfl).2
+  -- Step 2: `(M ∩ E, θ, ξ)` is a triple in `ℝᴾ`: for compact `K'`, `(M ∩ E) ∩ K' ⊆ (M ∩ E) ∩ K`
+  obtain ⟨R₂, hR₂c, hR₂m, hR₂o⟩ : ∃ R₂ : IMRep (univ : Set (Euclid P)) n,
+      R₂.carrier = R'.carrier ∧ R₂.mult = R'.mult ∧ R₂.orient = R'.orient :=
+    ⟨{ carrier := R'.carrier
+       mult := R'.mult
+       orient := R'.orient
+       measurableSet_carrier := R'.measurableSet_carrier
+       carrier_subset := subset_univ _
+       rectifiable := R'.rectifiable
+       measurable_mult := R'.measurable_mult
+       mult_pos := R'.mult_pos
+       locallyIntegrable_mult := fun K' _ _ =>
+         ne_top_of_le_ne_top (R'.locallyIntegrable_mult K hK hKU)
+           (lintegral_mono_set fun x hx => ⟨hx.1, hEK (hR'c.subset hx.1).2⟩)
+       aestronglyMeasurable_orient := R'.aestronglyMeasurable_orient
+       orients := R'.orients }, rfl, rfl, rfl⟩
+  -- the current `Q = τ(M ∩ E, θ, ξ)` in `ℝᴾ`, with the same triple as `R'`
+  obtain ⟨Q, RQ, hRQ, hRQc, hRQm, hRQo⟩ :=
+    hrestrict P n univ R₂ univ isOpen_univ MeasurableSet.univ
+  have hQc : RQ.carrier = R'.carrier := by rw [hRQc, inter_univ, hR₂c]
+  have hQm : RQ.mult = R'.mult := by rw [hRQm, hR₂m]
+  have hQo : RQ.orient = R'.orient := by rw [hRQo, hR₂o]
+  -- (1) `μ_{R_Q} = μ_{R'} = μ⌞E`, and `Q(ω) = R'(ω) = ∫_E ⟨ω, ξ⟩ dμ`
+  have hQmeas : RQ.measure = R.measure.restrict E := by
+    rw [← hR'meas]
+    unfold IMRep.measure
+    rw [hQc, hQm]
+  have hQact : ∀ ω : TestFormOn U n, Q (testFormOnInclusion (subset_univ U) n ω) =
+      ∫ x in E, R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂R.measure := by
+    intro ω
+    rw [hRQ, testFormOnInclusion_coe, ← hR'act (ω : DifferentialForm (Euclid P) n)]
+    unfold IMRep.action
+    rw [hQc, hQm, hQo]
+  -- Step 3: for `ω ∈ 𝒟ⁿ(U)`, `⟨ω, ξ⟩` is `μ`-integrable
+  have hint : ∀ ω : TestFormOn U n,
+      Integrable (fun x => R.orient x ((ω : DifferentialForm (Euclid P) n) x)) R.measure := by
+    intro ω
+    obtain ⟨⟨hsmooth, hcpt⟩, hωU⟩ := ω.2
+    set f : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n)
+    -- (a) `x ↦ ξ(x)(ω(x))` is `μ`-a.e. strongly measurable
+    have hmeas : AEStronglyMeasurable (fun x => R.orient x (f x)) R.measure :=
+      isBoundedBilinearMap_apply.continuous.comp_aestronglyMeasurable₂ hξmeas
+        hsmooth.continuous.aestronglyMeasurable
+    -- (b) `|ξ(x)(ω(x))| ≤ |ω(x)| ≤ c` for `μ`-a.e. `x`, and it vanishes off `spt ω`
+    have hcont : Continuous fun α : Covector (Euclid P) n => covectorEuclideanNorm α := by
+      unfold covectorEuclideanNorm
+      refine Continuous.sqrt (continuous_finsetSum _ fun I _ => ?_)
+      exact continuous_if_const _ (fun _ => (continuous_eval_const _).pow 2)
+        fun _ => continuous_const
+    obtain ⟨c, hc⟩ := (hcont.comp hsmooth.continuous).bounded_above_of_compact_support
+      (hcpt.comp_left (covectorEuclideanNorm_zero P n))
+    have hKm : MeasurableSet (tsupport f) := (isClosed_tsupport f).measurableSet
+    have hbound : ∀ᵐ x ∂R.measure, ‖R.orient x (f x)‖ ≤ (tsupport f).indicator (fun _ => c) x := by
+      filter_upwards [hac.ae_le (horient P n U R)] with x hx
+      by_cases hxK : x ∈ tsupport f
+      · rw [indicator_of_mem hxK, Real.norm_eq_abs]
+        exact (hx (f x)).trans ((Real.le_norm_self _).trans (hc x))
+      · rw [indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport hxK, map_zero, norm_zero]
+    -- (c) `μ(spt ω) = ∫_{M ∩ spt ω} θ dHⁿ < ∞`
+    have hKfin : R.measure (tsupport f) ≠ ∞ := by
+      rw [IMRep.measure, withDensity_apply _ hKm, Measure.restrict_restrict hKm,
+        inter_comm (tsupport f) R.carrier]
+      exact R.locallyIntegrable_mult _ hcpt hωU
+    exact ((integrable_indicator_iff hKm).2 (integrableOn_const hKfin)).mono' hmeas hbound
+  -- Step 4, (3): `T(ω) = ∫ ⟨ω, ξ⟩ dμ = ∫_E ⟨ω, ξ⟩ dμ + ∫_{ℝᴾ∖E} ⟨ω, ξ⟩ dμ = Q(ω) + T₁(ω)`
+  have hsplit : ∀ ω : TestFormOn U n,
+      T ω = Q (testFormOnInclusion (subset_univ U) n ω) + T₁ ω := by
+    intro ω
+    rw [hR ω, hRact, Measure.restrict_univ, hQact ω, hR₁ ω, hR₁act]
+    exact (integral_add_compl hE (hint ω)).symm
+  -- Step 5, (4): if `spt ω ⊆ E`, then `ω = 0` off `E`, so `T₁(ω) = 0`
+  have hEω : ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ E →
+      Q (testFormOnInclusion (subset_univ U) n ω) = T ω := by
+    intro ω hωE
+    have hT₁ : T₁ ω = 0 := by
+      rw [hR₁ ω, hR₁act]
+      refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+      rw [image_eq_zero_of_notMem_tsupport fun h => hx (hωE h), map_zero]
+    rw [hsplit ω, hT₁, add_zero]
+  -- Step 6, (5): `spt Q = spt(μ⌞E) ⊆ closure E ∩ spt μ`, `closure E ⊆ K ⊆ U`, `spt T = U ∩ spt μ`
+  have hQsupp :=
+    (Submission.dor_imrep_massOn_eq_measure_and_support P n univ Q RQ isOpen_univ hRQ).2
+  have hTsupp := (Submission.dor_imrep_massOn_eq_measure_and_support P n U T R hU hR).2
+  have hclK : closure E ⊆ K := closure_minimal hEK hK.isClosed
+  have hsub : Q.support ⊆ closure E ∩ T.support := by
+    intro x hx
+    rw [hQsupp, hQmeas] at hx
+    obtain ⟨hxE, hxμ⟩ := Measure.support_restrict_subset hx.2
+    rw [hTsupp]
+    exact ⟨hxE, hKU (hclK hxE), hxμ⟩
+  refine ⟨Q, RQ, T₁, R₁, hRQ, hQmeas, hR₁, hR₁meas, hsplit, hEω, hsub, ?_⟩
+  -- Step 7, (6): `spt Q` is closed and lies in the compact `K`
+  refine hK.of_isClosed_subset ?_ fun x hx => hclK (hsub hx).1
+  rw [hQsupp]
+  exact isClosed_univ.inter Measure.isClosed_support
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
