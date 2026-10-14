@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "242cc6df999ce565165ff1d49556a6762e5fdb9425f24819cb8adb36cfc34210",
+  "git_delta": {
+    "base_commit": "a45a61b7bc19476dc645f70c8fd78bf5e239c6a3",
+    "candidate_commit": "d7f25773e7be857656df49d2d6b65dcfba6a32fb",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrbv_face_covectors",
+    "diff_sha256": "2d2d008cc71e876cc89479911b7b49bda73d8c3bd26dff4da5fea87a2ccb5ec6",
+    "source_sha256": "81d7fcf6e611963ab1e45e5b2fe3b90e808e25fa7b317f6863d9830ce973c3e2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrbv_face_covectors",
+      "statement": "∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P), StrictMono ι → ∃ ε : Fin (m + 1) → Covector (Euclid P) m, (∀ c : Fin (m + 1) → ℝ, covectorEuclideanNorm (∑ j, c j • ε j) = Real.sqrt (∑ j, c j ^ 2)) ∧ ∀ (c : Fin (m + 1) → ℝ) (j : Fin (m + 1)), (∑ j', c j' • ε j') (fun k => EuclideanSpace.single (ι (j.succAbove k)) (1 : ℝ)) = (-1) ^ (j : ℕ) * c j",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
