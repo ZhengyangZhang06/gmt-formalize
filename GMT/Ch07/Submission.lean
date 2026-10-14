@@ -804,6 +804,107 @@ theorem Submission.dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn : (∀ (d : ℕ) (Z : Set 
       · simpa using h
   exact sub_eq_zero.1 hL
 
+/-- **Chain rule for the cutoff `γ ∘ F`, a.e. on a Borel set.**  Let `a < b`,
+`γ(s) = min{1, max{0, (b - s)/(b - a)}}`, `F : ℝᵈ → ℝ` differentiable and `u` Lipschitz with
+`u = γ ∘ F` on a Borel set `Z`.  Assuming the density-directions lemma (DD), for a.e. `y ∈ Z`,
+`Du(y) = γ'(F(y)) DF(y)`, where `γ' = -(b - a)⁻¹` on `(a, b)` and `γ' = 0` elsewhere.  By
+Rademacher `u` is differentiable a.e.  On the kink levels `Z ∩ {F = a}` and `Z ∩ {F = b}`, `u` agrees
+with the constants `γ(a) = 1` and `γ(b) = 0`; off them `γ ∘ F` is, near `y`, identically `1`,
+`(b - F)/(b - a)` or `0`, hence differentiable with derivative `γ'(F(y)) DF(y)`.  In each case the
+agreement lemma `dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn` transfers the derivative to `u`. -/
+theorem Submission.dor_lmbsf_pwl_fderiv_cutoff_comp_ae : (∀ (d : ℕ) (Z : Set (Euclid d)) (y : Euclid d), Tendsto (fun r => volume (Z ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ v : Euclid d, ‖v‖ = 1 → ∃ ys : ℕ → Euclid d, (∀ i, ys i ∈ Z ∧ ys i ≠ y) ∧ Tendsto ys atTop (𝓝 y) ∧ Tendsto (fun i => ‖ys i - y‖⁻¹ • (ys i - y)) atTop (𝓝 v)) → ∀ (d : ℕ) (Z : Set (Euclid d)) (F u : Euclid d → ℝ) (K : NNReal) (a b : ℝ), MeasurableSet Z → Differentiable ℝ F → LipschitzWith K u → a < b → (∀ y ∈ Z, u y = min 1 (max 0 ((b - F y) / (b - a)))) → ∀ᵐ y ∂(volume : Measure (Euclid d)), y ∈ Z → fderiv ℝ u y = (if a < F y ∧ F y < b then -(b - a)⁻¹ else 0) • fderiv ℝ F y := by
+  intro hDD d Z F u K a b hZ hF hu hab hEq
+  have hFc : Continuous F := hF.continuous
+  have hba : 0 < b - a := sub_pos.2 hab
+  set g : Euclid d → ℝ := fun y => min 1 (max 0 ((b - F y) / (b - a))) with hgdef
+  -- the Borel pieces `Z ∩ {F ∉ {a, b}}`, `Z ∩ {F = a}`, `Z ∩ {F = b}`
+  have hZ0 : MeasurableSet (Z ∩ {y | F y ≠ a ∧ F y ≠ b}) := by
+    refine hZ.inter ?_
+    have h1 : MeasurableSet {y | F y ≠ a} :=
+      (measurableSet_singleton a).compl.preimage hFc.measurable
+    have h2 : MeasurableSet {y | F y ≠ b} :=
+      (measurableSet_singleton b).compl.preimage hFc.measurable
+    exact h1.inter h2
+  have hZa : MeasurableSet (Z ∩ F ⁻¹' {a}) :=
+    hZ.inter ((measurableSet_singleton a).preimage hFc.measurable)
+  have hZb : MeasurableSet (Z ∩ F ⁻¹' {b}) :=
+    hZ.inter ((measurableSet_singleton b).preimage hFc.measurable)
+  -- Rademacher: `u` is differentiable a.e.
+  have hdiff : ∀ᵐ y ∂(volume : Measure (Euclid d)), DifferentiableAt ℝ u y :=
+    hu.ae_differentiableAt
+  -- `u = γ ∘ F` off the kinks, `u = γ(a) = 1` on `{F = a}` and `u = γ(b) = 0` on `{F = b}`
+  have h0 := Submission.dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn hDD d (Z ∩ {y | F y ≠ a ∧ F y ≠ b}) u g
+    hZ0 (fun y hy => hEq y hy.1)
+  have ha := Submission.dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn hDD d (Z ∩ F ⁻¹' {a}) u (fun _ => 1)
+    hZa (by
+      intro y hy
+      have hFy : F y = a := hy.2
+      simp only [hEq y hy.1, hFy, div_self hba.ne']
+      simp)
+  have hb := Submission.dor_lmbsf_pwl_fderiv_eq_ae_of_eqOn hDD d (Z ∩ F ⁻¹' {b}) u (fun _ => 0)
+    hZb (by
+      intro y hy
+      have hFy : F y = b := hy.2
+      simp only [hEq y hy.1, hFy, sub_self, zero_div]
+      simp)
+  filter_upwards [hdiff, h0, ha, hb] with y hyd hy0 hya hyb hyZ
+  -- kink levels: `Du(y) = 0 = γ'(F(y)) DF(y)`
+  by_cases hFa : F y = a
+  · have h := hya ⟨hyZ, hFa⟩ hyd (differentiableAt_const _)
+    rw [h, fderiv_const_apply]
+    simp [hFa]
+  by_cases hFb : F y = b
+  · have h := hyb ⟨hyZ, hFb⟩ hyd (differentiableAt_const _)
+    rw [h, fderiv_const_apply]
+    simp [hFb]
+  -- off the kinks `g = γ ∘ F` is locally `1`, `(b - F)/(b - a)` or `0`
+  have hgd : HasFDerivAt g ((if a < F y ∧ F y < b then -(b - a)⁻¹ else 0) • fderiv ℝ F y) y := by
+    have hFd : HasFDerivAt F (fderiv ℝ F y) y := (hF y).hasFDerivAt
+    rcases lt_or_gt_of_ne hFa with h | h
+    · -- `F y < a`: `g = 1` near `y`
+      have hev : g =ᶠ[𝓝 y] fun _ => (1 : ℝ) := by
+        filter_upwards [hFc.continuousAt.eventually (gt_mem_nhds h)] with z hz
+        have : 1 < (b - F z) / (b - a) := by
+          rw [one_lt_div hba]; linarith
+        simp only [hgdef]
+        rw [max_eq_right (by linarith), min_eq_left this.le]
+      have hn : ¬ (a < F y ∧ F y < b) := fun h' => absurd h'.1 (not_lt.2 h.le)
+      simp only [hn, ite_false, zero_smul]
+      exact (hasFDerivAt_const (1 : ℝ) y).congr_of_eventuallyEq hev
+    · rcases lt_or_gt_of_ne hFb with h' | h'
+      · -- `a < F y < b`: `g = (b - F)/(b - a)` near `y`
+        have hev : g =ᶠ[𝓝 y] fun z => (b - F z) / (b - a) := by
+          filter_upwards [hFc.continuousAt.eventually (lt_mem_nhds h),
+            hFc.continuousAt.eventually (gt_mem_nhds h')] with z hz1 hz2
+          have hpos : 0 < (b - F z) / (b - a) := div_pos (by linarith) hba
+          have hlt : (b - F z) / (b - a) < 1 := by
+            rw [div_lt_one hba]; linarith
+          simp only [hgdef]
+          rw [max_eq_right hpos.le, min_eq_right hlt.le]
+        have hy' : a < F y ∧ F y < b := ⟨h, h'⟩
+        simp only [hy', and_self, ite_true]
+        have hlin : HasFDerivAt (fun z => (b - F z) / (b - a))
+            (-(b - a)⁻¹ • fderiv ℝ F y) y := by
+          have := ((hasFDerivAt_const b y).sub hFd).const_mul (b - a)⁻¹
+          convert this using 1
+          · funext z
+            simp only [Pi.sub_apply]
+            rw [div_eq_inv_mul]
+          · rw [zero_sub, smul_neg, neg_smul]
+        exact hlin.congr_of_eventuallyEq hev
+      · -- `F y > b`: `g = 0` near `y`
+        have hev : g =ᶠ[𝓝 y] fun _ => (0 : ℝ) := by
+          filter_upwards [hFc.continuousAt.eventually (lt_mem_nhds h')] with z hz
+          have : (b - F z) / (b - a) < 0 := div_neg_of_neg_of_pos (by linarith) hba
+          simp only [hgdef]
+          rw [max_eq_left this.le]
+          simp
+        have hn : ¬ (a < F y ∧ F y < b) := fun h'' => absurd h''.2 (not_lt.2 h'.le)
+        simp only [hn, ite_false, zero_smul]
+        exact (hasFDerivAt_const (0 : ℝ) y).congr_of_eventuallyEq hev
+  have h := hy0 ⟨hyZ, hFa, hFb⟩ hyd hgd.differentiableAt
+  rw [h, hgd.fderiv]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
