@@ -2336,6 +2336,40 @@ theorem Submission.dgcr_bwd_coordinate_form : ∀ (m : ℕ) (a : Euclid (m + 1) 
     simp
   · intro hj
     exact absurd (Finset.mem_univ j) hj
+/-- **Weak derivatives of a top-dimensional density vanish** (steps 3–5 of the Constancy Theorem,
+Simon Ch. 6, 2.34).  Let `X(ω) = ∫ G ⟨ω, e₁ ∧ ⋯ ∧ e_{m+1}⟩ dL^{m+1}` on `V ⊆ ℝ^{m+1}` with `∂X = 0`
+on test forms supported in `B ⊆ V`.  Then `∫_B G ∂ⱼa = 0` for every `a ∈ C_c^∞` with `spt a ⊆ B`:
+`ψ = a γⱼ` is an `m`-test form with `spt ψ ⊆ spt a ⊆ B` and `dψ(e₁, …, e_{m+1}) = ∂ⱼa`, so
+`0 = ∂X(ψ) = X(dψ) = ∫ G ∂ⱼa`, and `G ∂ⱼa` vanishes off `spt a ⊆ B`. -/
+theorem Submission.dtc_bc_cz_tc_weak_derivs : ∀ (m : ℕ) (V B : Set (Euclid (m + 1))) (X : GeometricCurrentOn V (m + 1)) (G : Euclid (m + 1) → ℝ), B ⊆ V → (∀ β : TestFormOn V m, tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ B → X.boundary β = 0) → (∀ ω : TestFormOn V (m + 1), X ω = ∫ y, G y * (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) y ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ)) → ∀ a : Euclid (m + 1) → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → tsupport a ⊆ B → ∀ j : Fin (m + 1), ∫ v in B, G v * fderiv ℝ a v (EuclideanSpace.single j (1 : ℝ)) = 0 := by
+  intro m V B X G hBV hbdry hrep a ha hacpt haB j
+  -- `ψ = a γⱼ` is smooth, `spt ψ ⊆ spt a` and `dψ(e₁, …, e_{m+1}) = ∂ⱼa`
+  obtain ⟨ψ, hψs, hψsupp, hψd⟩ := Submission.dgcr_bwd_coordinate_form m a j ha
+  -- `spt ψ` is a closed subset of the compact set `spt a ⊆ B ⊆ V`: `ψ` is a test form in `V`
+  have hψc : HasCompactSupport ψ :=
+    IsCompact.of_isClosed_subset hacpt (isClosed_tsupport ψ) hψsupp
+  let β : TestFormOn V m := ⟨ψ, ⟨⟨hψs, hψc⟩, hψsupp.trans (haB.trans hBV)⟩⟩
+  -- `0 = ∂X(ψ) = X(dψ) = ∫ G ⟨dψ, e₁ ∧ ⋯ ∧ e_{m+1}⟩`
+  have h0 : X.boundary β = 0 := hbdry β (hψsupp.trans haB)
+  rw [GeometricCurrentOn.boundary_apply, hrep] at h0
+  have hbasis : ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ) =
+      fun i => EuclideanSpace.single i (1 : ℝ) := by
+    funext i
+    simp
+  -- hence `∫ G ∂ⱼa = 0`
+  have h1 : ∫ y, G y * fderiv ℝ a y (EuclideanSpace.single j (1 : ℝ)) = 0 := by
+    rw [← h0]
+    congr 1
+    funext y
+    change G y * fderiv ℝ a y (EuclideanSpace.single j (1 : ℝ)) =
+      G y * exteriorDerivative ψ y ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ)
+    rw [hbasis, hψd y]
+  -- `G ∂ⱼa` vanishes off `spt a ⊆ B`, so `∫_B G ∂ⱼa = ∫ G ∂ⱼa`
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero]
+  · exact h1
+  · intro v hv
+    have hva : v ∉ tsupport a := fun h => hv (haB h)
+    simp [fderiv_of_notMem_tsupport ℝ hva]
 /-- **Mollification approximates a `C¹_c` function in a directional derivative** (step 3 of the
 extension from smooth to `C¹` tests in the graph-cycle regularity step of Simon 7.4.3).  For
 `φ ∈ C¹_c(ℝⁿ)`, `δ > 0`, a direction `v` and `ε > 0` there is `ψ ∈ C^∞_c(ℝⁿ)` with `spt ψ` in the
