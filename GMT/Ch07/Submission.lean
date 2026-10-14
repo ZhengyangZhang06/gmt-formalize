@@ -7125,6 +7125,34 @@ theorem Submission.doraggt_ae_approxTangent_transfer : ∀ (P n : ℕ) (W A B : 
     (hBfin _ (isCompact_closedBall x (ε / 2)) hsub) (hxAB hxW fun h => h.2 hxB)
     (hxBA hxW fun h => h.2 hxA)
 
+/-- **Approximate tangent planes along a bi-Lipschitz piece** (Simon Ch. 3, 1.4–1.5).  Let
+`M ⊆ ℝᴾ` be Borel with `Hⁿ(M ∩ K) < ∞` for compact `K`, and `g : ℝⁿ → ℝᴾ` Lipschitz with
+`c‖a − a'‖ ≤ ‖g a − g a'‖` on the Borel set `A`, differentiable with injective derivative on `A`,
+and `g(A) ⊆ M`.  Then `T_{g(a)}M = range Dg(a)` for Lebesgue-a.e. `a ∈ A`: `g(A) ⊆ M` is Borel and
+locally `Hⁿ`-finite, so `g(A)` and `M` have the same approximate tangent planes `Hⁿ`-a.e. on
+`g(A)`; this pulls back to a.e. `a ∈ A`, where `g(A)` has approximate tangent space
+`range Dg(a)` at `g(a)`. -/
+theorem Submission.idtp_caf_piece_approxTangentPlane_ae : ∀ (P n : ℕ) (M : Set (Euclid P)) (g : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (c : ℝ), 1 ≤ n → MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → LipschitzWith L g → MeasurableSet A → 0 < c → (∀ a ∈ A, ∀ a' ∈ A, c * ‖a - a'‖ ≤ ‖g a - g a'‖) → (∀ a ∈ A, DifferentiableAt ℝ g a ∧ Injective (fderiv ℝ g a)) → g '' A ⊆ M → ∀ᵐ a ∂(volume.restrict A), approxTangentPlane n M (g a) = LinearMap.range (fderiv ℝ g a : Euclid n →ₗ[ℝ] Euclid P) := by
+  intro P n M g A L c hn hM hMfin hg hA hc hlow hdiff hAM
+  -- Step 1: `g(A)` is Borel, and `Hⁿ⌞g(A)`-a.e. properties hold at `g a` for a.e. `a ∈ A`
+  obtain ⟨hgA, hpull⟩ :=
+    Submission.ptd_piece_image_measurable_ae_pullback P n g A L c hg hA hc hlow
+  -- Step 2: `g(A) ⊆ M` is locally `Hⁿ`-finite
+  have hgAfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ univ → μHE[n] (g '' A ∩ K) ≠ ∞ :=
+    fun K hK _ => ne_top_of_le_ne_top (hMfin K hK) (measure_mono (inter_subset_inter_left K hAM))
+  -- Step 3: `g(A)` and `M` have the same approximate tangent planes `Hⁿ⌞g(A)`-a.e.
+  have htrans : ∀ᵐ y ∂(μHE[n].restrict (g '' A)), ∀ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n (g '' A) y Q ↔ HasApproximateTangentSpaceAt n M y Q := by
+    rw [ae_restrict_iff' hgA]
+    filter_upwards [Submission.doraggt_ae_approxTangent_transfer P n univ (g '' A) M isOpen_univ
+      hgA hM hgAfin fun K hK _ => hMfin K hK] with y hy hyA using hy (mem_univ y) hyA (hAM hyA)
+  -- Step 4: pull back to a.e. `a ∈ A`; step 5: the tangent plane of the piece at `g a`
+  filter_upwards [hpull _ htrans,
+    Submission.idtp_caf_piece_image_approxTangent_ae P n g A L c hn hg hA hc hlow hdiff]
+    with a hQ hT
+  -- Step 6: `range Dg(a)` is the approximate tangent space of `M` at `g a`
+  exact Submission.dpf_itt_approxTangentPlane_eq P n M (g a) _ ((hQ _).1 hT)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
