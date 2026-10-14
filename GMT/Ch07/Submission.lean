@@ -849,6 +849,36 @@ theorem Submission.dmcbr_ci_iso_exists_symmetric_replacement : ∀ (d : ℕ) (A 
   ext k
   simp
 
+/-- **Simon, Ch. 1, Theorem 2.10** (isodiametric inequality, pp. 11–12): every `A ⊆ ℝᵈ` (no
+measurability or boundedness assumed) has `Lᵈ(A) ≤ ω_d (½ diam A)ᵈ`.  If `diam A = ∞` then
+`d ≥ 1` (`ℝ⁰` is a point) and the right-hand side is `ω_d · ∞ = ∞`, as `ω_d > 0`.  Otherwise, as in
+Simon's reduction to compact sets, the closure `Ā` is compact with `diam Ā = diam A` and
+`Lᵈ(A) ≤ Lᵈ(Ā)`; Steiner symmetrization gives a centrally symmetric compact `K` with
+`Lᵈ(K) = Lᵈ(Ā)` and `diam K ≤ diam Ā`, and the bound for `K` is monotone in the diameter. -/
+theorem Submission.dmcbr_ci_iso_volume_le_ediam_pow : ∀ (d : ℕ) (A : Set (Euclid d)), volume A ≤ unitBallVolume d * (ediam A / 2) ^ d := by
+  intro d A
+  by_cases hA : ediam A = ∞
+  · -- unbounded `A`: then `d ≥ 1` (`ℝ⁰` is a point), and the right-hand side is `ω_d · ∞ = ∞`
+    have hd : d ≠ 0 := by
+      rintro rfl
+      exact ENNReal.zero_ne_top ((ediam_subsingleton Set.subsingleton_of_subsingleton).symm.trans hA)
+    have hω : unitBallVolume d ≠ 0 := (measure_ball_pos volume (0 : Euclid d) one_pos).ne'
+    have h2 : ediam A / 2 = ∞ := by
+      rw [hA]
+      exact ENNReal.top_div_of_ne_top ENNReal.ofNat_ne_top
+    rw [h2, ENNReal.top_pow hd, ENNReal.mul_top hω]
+    exact le_top
+  · -- bounded `A`: pass to the compact closure `Ā` (same diameter, at least the same measure),
+    -- then to a centrally symmetric compact replacement of `Ā`
+    have hc : IsCompact (closure A) := (isBounded_iff_ediam_ne_top.2 hA).isCompact_closure
+    obtain ⟨K, -, hKA, hKd, hKs⟩ :=
+      Submission.dmcbr_ci_iso_exists_symmetric_replacement d (closure A) hc
+    rw [ediam_closure] at hKd
+    calc volume A ≤ volume (closure A) := measure_mono subset_closure
+      _ = volume K := hKA.symm
+      _ ≤ unitBallVolume d * (ediam K / 2) ^ d := Submission.cbr_ci_iso_volume_le_of_neg_mem d K hKs
+      _ ≤ unitBallVolume d * (ediam A / 2) ^ d := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
