@@ -671,6 +671,98 @@ theorem Submission.idtp_ccd_scsp_cc_square_shrink : ∀ (P : ℕ) (M U N₀ : Se
       show F (G w) ∈ R
       rw [hFG w hwO]
       exact hwR
+/-- **Radial extension of the cone chart** (step 8 of the parent proof).  Fix `α ∈ (-s, s)` and
+let `A = {t ∈ (r₀ - s, r₀ + s) : G (t, α) = t γ(α)}`, which contains `r₀`.  `A` is open: for `t ∈ A`
+and `t′` near `t`, the point `t′ γ(α)` stays in the open set `N`, lies in `M` by radial invariance
+(`t′ γ(α) = (t′ / t) • t γ(α)`), so it is `G w` for some `w` in the square, and `F ∘ G = id`
+together with `F (t′ γ(α)) = (t′, α)` forces `w = (t′, α)`.  `A` is relatively closed since
+`t ↦ G (t, α)` and `t ↦ t γ(α)` are continuous on the open interval and limits are unique.  The
+interval is preconnected, so `G (t, α) = t γ(α)` on the whole square, which gives both
+conclusions. -/
+theorem Submission.idtp_ccd_scsp_cc_radial_extension : ∀ (P : ℕ) (M N : Set (Euclid P)) (p : Euclid P) (ρ r₀ s : ℝ) (F : Euclid P → Euclid 2) (G : Euclid 2 → Euclid P) (γ : ℝ → Euclid P), 0 < s → s < r₀ → IsOpen N → N ⊆ ball p ρ → (∀ x ∈ M ∩ ball p ρ, ∀ t : ℝ, 0 < t → t • x ∈ ball p ρ → t • x ∈ M) → ContinuousOn G {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s} → M ∩ N = G '' {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s} → (∀ w : Euclid 2, w 0 ∈ Ioo (r₀ - s) (r₀ + s) → w 1 ∈ Ioo (-s) s → F (G w) = w) → (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ G !₂[r₀, α] = r₀ • γ α ∧ ∀ t : ℝ, 0 < t → F (t • γ α) = !₂[t, α]) → (∀ w : Euclid 2, w 0 ∈ Ioo (r₀ - s) (r₀ + s) → w 1 ∈ Ioo (-s) s → G w = w 0 • γ (w 1)) ∧ M ∩ N = (fun q : ℝ × ℝ => q.1 • γ q.2) '' (Ioo (r₀ - s) (r₀ + s) ×ˢ Ioo (-s) s) := by
+  intro P M N p ρ r₀ s F G γ hs hsr hN hNb hrad hGc hMN hFG hγ
+  -- the radial identity on each horizontal segment `J × {α}` of the coordinate square
+  have key : ∀ α ∈ Ioo (-s) s, ∀ t ∈ Ioo (r₀ - s) (r₀ + s), G !₂[t, α] = t • γ α := by
+    intro α hα
+    obtain ⟨hγn, hG0, hF⟩ := hγ α hα
+    -- `t ↦ G (t, α)` is continuous on `J`
+    have hmaps : MapsTo (fun t : ℝ => (!₂[t, α] : Euclid 2)) (Ioo (r₀ - s) (r₀ + s))
+        {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s} := by
+      intro t ht
+      exact ⟨by simpa using ht, by simpa using hα⟩
+    have hφ : ContinuousOn (fun t : ℝ => G !₂[t, α]) (Ioo (r₀ - s) (r₀ + s)) :=
+      hGc.comp (by fun_prop) hmaps
+    -- `A = {t ∈ J : G (t, α) = t γ(α)}`
+    set A : Set ℝ := {t | t ∈ Ioo (r₀ - s) (r₀ + s) ∧ G !₂[t, α] = t • γ α}
+    -- `A` is open: nearby `t′ γ(α)` stay in `N`, lie in `M` by radial invariance, and `F ∘ G = id`
+    -- identifies their chart coordinates as `(t′, α)`
+    have hAo : IsOpen A := by
+      rw [Metric.isOpen_iff]
+      rintro t ⟨htJ, hGt⟩
+      have hx : t • γ α ∈ M ∩ N := by
+        rw [hMN, ← hGt]
+        exact mem_image_of_mem G (hmaps htJ)
+      obtain ⟨η₀, hη₀, hball⟩ := Metric.isOpen_iff.1 hN _ hx.2
+      refine ⟨min η₀ (t - (r₀ - s)), lt_min hη₀ (by linarith [htJ.1]), fun t' ht' => ?_⟩
+      rw [Metric.mem_ball, Real.dist_eq] at ht'
+      have h1 : |t' - t| < η₀ := lt_of_lt_of_le ht' (min_le_left _ _)
+      have h2 : |t' - t| < t - (r₀ - s) := lt_of_lt_of_le ht' (min_le_right _ _)
+      have h3 := neg_abs_le (t' - t)
+      have ht0 : 0 < t := by linarith [htJ.1]
+      have ht'0 : 0 < t' := by linarith
+      have hyN : t' • γ α ∈ N := by
+        apply hball
+        rw [Metric.mem_ball, dist_eq_norm, ← sub_smul, norm_smul, hγn, mul_one, Real.norm_eq_abs]
+        exact h1
+      have hyM : t' • γ α ∈ M := by
+        have h := hrad _ ⟨hx.1, hNb hx.2⟩ (t' / t) (div_pos ht'0 ht0)
+        rw [smul_smul, div_mul_cancel₀ _ ht0.ne'] at h
+        exact h (hNb hyN)
+      have hy : t' • γ α ∈ G '' {w : Euclid 2 | w 0 ∈ Ioo (r₀ - s) (r₀ + s) ∧ w 1 ∈ Ioo (-s) s} := by
+        rw [← hMN]
+        exact ⟨hyM, hyN⟩
+      obtain ⟨w, hwR, hGw⟩ := hy
+      have hw : w = !₂[t', α] := by
+        rw [← hFG w hwR.1 hwR.2, hGw, hF t' ht'0]
+      subst hw
+      refine ⟨?_, hGw⟩
+      simpa using hwR.1
+    -- `closure A ∩ J ⊆ A`: both sides are continuous on the open interval `J`
+    have hAc : closure A ∩ Ioo (r₀ - s) (r₀ + s) ⊆ A := by
+      rintro t ⟨htc, htJ⟩
+      refine ⟨htJ, ?_⟩
+      have : (𝓝[A] t).NeBot := mem_closure_iff_nhdsWithin_neBot.1 htc
+      have t1 : Tendsto (fun u : ℝ => G !₂[u, α]) (𝓝[A] t) (𝓝 (G !₂[t, α])) :=
+        ((hφ.continuousAt (isOpen_Ioo.mem_nhds htJ)).tendsto).mono_left nhdsWithin_le_nhds
+      have t2 : Tendsto (fun u : ℝ => G !₂[u, α]) (𝓝[A] t) (𝓝 (t • γ α)) := by
+        refine (((continuous_id.smul continuous_const).tendsto t).mono_left
+          nhdsWithin_le_nhds).congr' ?_
+        filter_upwards [self_mem_nhdsWithin] with u hu
+        exact hu.2.symm
+      exact tendsto_nhds_unique t1 t2
+    -- `J` is preconnected and meets `A` at `r₀`
+    have hr₀ : r₀ ∈ Ioo (r₀ - s) (r₀ + s) := ⟨by linarith, by linarith⟩
+    have hJA := isPreconnected_Ioo.subset_of_closure_inter_subset hAo ⟨r₀, hr₀, hr₀, hG0⟩ hAc
+    exact fun t ht => (hJA ht).2
+  -- first conclusion: every `w ∈ R` is `(w₀, w₁)`
+  have hfirst : ∀ w : Euclid 2, w 0 ∈ Ioo (r₀ - s) (r₀ + s) → w 1 ∈ Ioo (-s) s →
+      G w = w 0 • γ (w 1) := by
+    intro w hw0 hw1
+    have hw : w = !₂[w 0, w 1] := by
+      ext i
+      fin_cases i <;> simp
+    rw [← key (w 1) hw1 (w 0) hw0, ← hw]
+  -- second conclusion: `M ∩ N = G(R)` is the image of `J × I` under `(t, α) ↦ t γ(α)`
+  refine ⟨hfirst, ?_⟩
+  rw [hMN]
+  ext x
+  constructor
+  · rintro ⟨w, ⟨hw0, hw1⟩, rfl⟩
+    exact ⟨(w 0, w 1), ⟨hw0, hw1⟩, (hfirst w hw0 hw1).symm⟩
+  · rintro ⟨⟨t, α⟩, ⟨ht, hα⟩, rfl⟩
+    refine ⟨!₂[t, α], ⟨?_, ?_⟩, key α hα t ht⟩
+    · simpa using ht
+    · simpa using hα
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
