@@ -451,6 +451,111 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Change of variables for `Hⁿ` under the dilation `T(x) = cx`, `c > 0`**: formula (1.1) for the
+scaling of the mass measure of a cone (proof of Simon 7.4.5, chapter-07.txt lines 697–699, "by
+virtue of the fact that `C` is a cone").  For every `M ⊆ ℝᴾ`: (i) `T_#(Hⁿ⌞T⁻¹(M)) = c⁻ⁿ Hⁿ⌞M`;
+(ii) `∫⁻_{T⁻¹(M)} g(cz) dHⁿ(z) = c⁻ⁿ ∫⁻_M g dHⁿ` for every `g : ℝᴾ → [0, ∞]`; (iii) the same for
+the Bochner integral of every `g : ℝᴾ → ℝ`.  `T` is a homeomorphism, hence a measurable embedding,
+and `T⁻¹(B) = c⁻¹B` with `Hⁿ(c⁻¹B) = c⁻ⁿ Hⁿ(B)` gives `T_#Hⁿ = c⁻ⁿ Hⁿ`; restriction and integrals
+commute with the push-forward along `T`. -/
+theorem Submission.euclid_hausdorff_dilation_change_of_variables : ∀ (P n : ℕ) (c : ℝ), 0 < c → ∀ M : Set (Euclid P), Measure.map (fun x : Euclid P => c • x) (μHE[n].restrict ((fun x => c • x) ⁻¹' M)) = ENNReal.ofReal (c⁻¹ ^ n) • μHE[n].restrict M ∧ (∀ g : Euclid P → ℝ≥0∞, ∫⁻ z in (fun x => c • x) ⁻¹' M, g (c • z) ∂μHE[n] = ENNReal.ofReal (c⁻¹ ^ n) * ∫⁻ y in M, g y ∂μHE[n]) ∧ ∀ g : Euclid P → ℝ, ∫ z in (fun x => c • x) ⁻¹' M, g (c • z) ∂μHE[n] = c⁻¹ ^ n * ∫ y in M, g y ∂μHE[n] := by
+  intro P n c hc M
+  -- Step 1: `T(x) = cx` is a homeomorphism, hence a measurable embedding.
+  have hT : MeasurableEmbedding (fun x : Euclid P => c • x) :=
+    (Homeomorph.smulOfNeZero c hc.ne').measurableEmbedding
+  -- Step 2: `T_#Hⁿ = c⁻ⁿ Hⁿ`, since `Hⁿ(T⁻¹(B)) = Hⁿ(c⁻¹B) = ‖c⁻¹‖ⁿ Hⁿ(B)` for Borel `B`.
+  have hmap : Measure.map (fun x : Euclid P => c • x) (μHE[n] : Measure (Euclid P)) =
+      ENNReal.ofReal (c⁻¹ ^ n) • (μHE[n] : Measure (Euclid P)) := by
+    ext B hB
+    rw [Measure.map_apply hT.measurable hB, Set.preimage_smul₀ hc.ne',
+      Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hc.ne'), Measure.smul_apply,
+      ENNReal.smul_def, smul_eq_mul, smul_eq_mul, ← ENNReal.ofReal_coe_nnreal]
+    congr 2
+    simp [abs_of_pos hc]
+  -- Step 3, (i): `T_#(Hⁿ⌞T⁻¹(M)) = (T_#Hⁿ)⌞M = c⁻ⁿ Hⁿ⌞M`.
+  have h1 : Measure.map (fun x : Euclid P => c • x) (μHE[n].restrict ((fun x => c • x) ⁻¹' M)) =
+      ENNReal.ofReal (c⁻¹ ^ n) • μHE[n].restrict M := by
+    rw [← hT.restrict_map, hmap, Measure.restrict_smul]
+  refine ⟨h1, fun g => ?_, fun g => ?_⟩
+  -- Step 4, (ii): `∫⁻ g ∘ T dν = ∫⁻ g d(T_#ν)` for `ν = Hⁿ⌞T⁻¹(M)`, then (i).
+  · have h := hT.lintegral_map (μ := μHE[n].restrict ((fun x => c • x) ⁻¹' M)) g
+    rw [h1, lintegral_smul_measure, smul_eq_mul] at h
+    exact h.symm
+  -- Step 5, (iii): the same for Bochner integrals, with `(ofReal c⁻ⁿ).toReal = c⁻ⁿ`.
+  · have h := hT.integral_map (μ := μHE[n].restrict ((fun x => c • x) ⁻¹' M)) g
+    rw [h1, integral_smul_measure, ENNReal.toReal_ofReal (by positivity), smul_eq_mul] at h
+    exact h.symm
+
+/-- **`n`-homogeneity of `f Hⁿ` for a dilation-invariant density `f`** (Simon Lemma 7.3.5,
+chapter-07.txt lines 407–420, whose proof is "left to the reader": part (ii) of the invariance of
+the mass measure `μ = Θ Hⁿ` of `S` when its density `Θ` is invariant under `w ↦ λw`, with an
+arbitrary `f : ℝᴾ → [0, ∞]` in place of `ofReal ∘ Θ`).  If `λ > 0` and `f(λx) = f(x)` for all `x`,
+then `(f Hⁿ)(λA) = λⁿ (f Hⁿ)(A)` for every Borel `A ⊆ ℝᴾ`.  `δ(x) = λx` is a homeomorphism, so
+`λA = δ(A)` is Borel and `δ⁻¹(λA) = A`; the change of variables (ii) of
+`Submission.euclid_hausdorff_dilation_change_of_variables` with `g = f` and `f ∘ δ = f` gives
+`(f Hⁿ)(A) = λ⁻ⁿ (f Hⁿ)(λA)`, and `λⁿ λ⁻ⁿ = 1`. -/
+theorem Submission.dimred_cs_mi_withDensity_dilate : ∀ (P n : ℕ) (f : Euclid P → ℝ≥0∞) (lam : ℝ), 0 < lam → (∀ x : Euclid P, f (lam • x) = f x) → ∀ A : Set (Euclid P), MeasurableSet A → (μHE[n] : Measure (Euclid P)).withDensity f ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * (μHE[n] : Measure (Euclid P)).withDensity f A := by
+  intro P n f lam hlam hf A hA
+  -- Step 1: `δ(x) = λx` is a homeomorphism, hence a measurable embedding: `D = δ(A)` is Borel and
+  -- `δ⁻¹(D) = A` by injectivity.
+  have hδ : MeasurableEmbedding (fun x : Euclid P => lam • x) :=
+    (Homeomorph.smulOfNeZero lam hlam.ne').measurableEmbedding
+  have hD : MeasurableSet ((fun x : Euclid P => lam • x) '' A) := hδ.measurableSet_image.2 hA
+  have hpre : (fun x : Euclid P => lam • x) ⁻¹' ((fun x : Euclid P => lam • x) '' A) = A :=
+    Set.preimage_image_eq A hδ.injective
+  -- Steps 2–3: change of variables (ii) with `c = λ`, `M = D`, `g = f`; with `δ⁻¹(D) = A` and
+  -- `f(λz) = f(z)` it reads `∫⁻_A f dHⁿ = λ⁻ⁿ ∫⁻_D f dHⁿ`.
+  have h := (Submission.euclid_hausdorff_dilation_change_of_variables P n lam hlam
+    ((fun x : Euclid P => lam • x) '' A)).2.1 f
+  rw [hpre] at h
+  simp only [hf] at h
+  -- Steps 4–5: `ν(A) = λ⁻ⁿ ν(D)` by `withDensity_apply` (`A`, `D` Borel), and
+  -- `ofReal(λⁿ) ofReal(λ⁻ⁿ) = ofReal((λλ⁻¹)ⁿ) = 1`.
+  rw [withDensity_apply _ hD, withDensity_apply _ hA, h, ← mul_assoc,
+    ← ENNReal.ofReal_mul (pow_nonneg hlam.le n), ← mul_pow, mul_inv_cancel₀ hlam.ne', one_pow,
+    ENNReal.ofReal_one, one_mul]
+
+/-- **Continuity of the rescaled push-forward integrals in the parameters `(x, λ)`, `λ > 0`** (proof
+of Simon 7.3.3, chapter-07.txt lines 443–467: weak limits of `η_{xᵢ,λᵢ#}T` with `lim xᵢ = x` and
+`lim λᵢ = λ > 0`).  Let `μ₀` be a finite measure on `ℝᴾ` and `f` continuous with compact support.
+If `xᵢ → x` and `λᵢ → λ`, with `λᵢ > 0` and `λ > 0`, then
+`∫ f d(λᵢ⁻ⁿ η_{xᵢ,λᵢ#}μ₀) → ∫ f d(λ⁻ⁿ η_{x,λ#}μ₀)`.  By `integral_smul_measure` and `integral_map`,
+`∫ f d(s⁻ⁿ η_{a,s#}μ₀) = s⁻ⁿ ∫ f ∘ η_{a,s} dμ₀` for `s > 0`; `η_{xᵢ,λᵢ}(v) → η_{x,λ}(v)` pointwise
+and `|f| ≤ C`, a constant that is `μ₀`-integrable, so dominated convergence and `λᵢ⁻ⁿ → λ⁻ⁿ`
+conclude. -/
+theorem Submission.idtp_fons_cc_psf_param_continuity : ∀ (P n : ℕ) (μ₀ : Measure (Euclid P)) (f : Euclid P → ℝ) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (x : Euclid P) (lam : ℝ), μ₀ univ ≠ ∞ → Continuous f → HasCompactSupport f → (∀ i, 0 < lams i) → 0 < lam → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 lam) → Tendsto (fun i => ∫ v, f v ∂(ENNReal.ofReal ((lams i)⁻¹ ^ n) • μ₀.map (dilation (xs i) (lams i)))) atTop (𝓝 (∫ v, f v ∂(ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)))) := by
+  intro P n μ₀ f xs lams x lam hμ₀ hf hfc hlams hlam hxs hlim
+  have : IsFiniteMeasure μ₀ := ⟨lt_top_iff_ne_top.2 hμ₀⟩
+  -- `η_{a,s}(u) = −s⁻¹a + s⁻¹u` is continuous, hence measurable.
+  have hcont : ∀ (a : Euclid P) (s : ℝ), Continuous (dilation a s) := fun a s => by
+    unfold dilation
+    fun_prop
+  -- Step 1: `∫ f d(ofReal(s⁻ⁿ) • η_{a,s#}μ₀) = s⁻ⁿ ∫ f ∘ η_{a,s} dμ₀` for `s > 0`, by
+  -- `integral_smul_measure`, `toReal_ofReal` (`s⁻ⁿ ≥ 0`) and `integral_map`.
+  have hformula : ∀ (a : Euclid P) (s : ℝ), 0 < s →
+      ∫ v, f v ∂(ENNReal.ofReal (s⁻¹ ^ n) • μ₀.map (dilation a s)) =
+        s⁻¹ ^ n * ∫ v, f (dilation a s v) ∂μ₀ := by
+    intro a s hs
+    rw [integral_smul_measure, ENNReal.toReal_ofReal (by positivity), smul_eq_mul,
+      integral_map (hcont a s).aemeasurable hf.aestronglyMeasurable]
+  rw [funext fun i => hformula (xs i) (lams i) (hlams i), hformula x lam hlam]
+  -- Step 2: `λᵢ⁻¹ → λ⁻¹`, as `λ ≠ 0`.
+  have hinv : Tendsto (fun i => (lams i)⁻¹) atTop (𝓝 lam⁻¹) := hlim.inv₀ hlam.ne'
+  -- Steps 3–5: `f(η_{xᵢ,λᵢ}(v)) → f(η_{x,λ}(v))` for every `v`, and `|f| ≤ C` with the constant
+  -- `C` integrable for the finite measure `μ₀`; dominated convergence.
+  obtain ⟨C, hC⟩ := hf.bounded_above_of_compact_support hfc
+  have hdct : Tendsto (fun i => ∫ v, f (dilation (xs i) (lams i) v) ∂μ₀) atTop
+      (𝓝 (∫ v, f (dilation x lam v) ∂μ₀)) := by
+    refine tendsto_integral_of_dominated_convergence (fun _ => C)
+      (fun i => (hf.comp (hcont _ _)).aestronglyMeasurable) (integrable_const C)
+      (fun i => Eventually.of_forall fun v => hC _) (Eventually.of_forall fun v => ?_)
+    have h1 : Tendsto (fun i => -((lams i)⁻¹ • xs i) + (lams i)⁻¹ • v) atTop
+        (𝓝 (-(lam⁻¹ • x) + lam⁻¹ • v)) :=
+      (hinv.smul hxs).neg.add (hinv.smul tendsto_const_nhds)
+    exact (hf.tendsto _).comp h1
+  -- Step 6: `λᵢ⁻ⁿ ∫ f ∘ η_{xᵢ,λᵢ} dμ₀ → λ⁻ⁿ ∫ f ∘ η_{x,λ} dμ₀`.
+  exact (hinv.pow n).mul hdct
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
