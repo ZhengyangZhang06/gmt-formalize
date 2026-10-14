@@ -903,6 +903,153 @@ theorem dor_lmb_fcd_cp_slice_integral : ∀ (m : ℕ) (δ : ℝ) (k : Fin (m + 1
     rw [integral_const_mul, ENNReal.toReal_ofReal (by linarith)]
     ring
   rw [e1, e2, e3]
+/-- One coordinate step of the Poincaré inequality on the cube `Q_δ`: the points
+`a_k(x, y)`, `b_k(x, y)` differ only in the `k`-th coordinate, so by the fundamental theorem of
+calculus `|v(a_k) − v(b_k)| ≤ Φ(a_k) := ∫_{(δ, 1−δ)} |∂_k v(a_k[t])| dt`.  Integrating, the
+mixed-point identity gives `∫∫ Φ(a_k) = |Q_δ| ∫_{Q_δ} Φ` and the slice identity gives
+`∫_{Q_δ} Φ = (1 − 2δ) ∫_{Q_δ} |∂_k v|`. -/
+theorem dor_lmb_fcd_cp_coordinate_step : ∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (δ : ℝ) (k : Fin (m + 1)), ContDiff ℝ 1 v → 0 ≤ δ → δ < 1 / 2 → ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ∫ y in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, |v (WithLp.toLp 2 (fun j => if j < k then y j else x j)) - v (WithLp.toLp 2 (fun j => if j ≤ k then y j else x j))| ≤ (1 - 2 * δ) * (volume {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}).toReal * ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, |fderiv ℝ v x (EuclideanSpace.single k 1)| := by
+  intro m v δ k hv _ _
+  set Q : Set (Euclid (m + 1)) := {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ} with hQ
+  -- `Q` is open, and contained in the compact cube `K = [δ, 1 − δ]^{m+1}`.
+  have hQo : IsOpen Q := by
+    have hQi : Q = ⋂ i, ({y : Euclid (m + 1) | δ < y i} ∩ {y | y i < 1 - δ}) := by
+      ext y
+      simp [hQ]
+    rw [hQi]
+    exact isOpen_iInter_of_finite fun i =>
+      (isOpen_lt continuous_const (PiLp.continuous_apply 2 _ i)).inter
+        (isOpen_lt (PiLp.continuous_apply 2 _ i) continuous_const)
+  have hQm : MeasurableSet Q := hQo.measurableSet
+  set K : Set (Euclid (m + 1)) := WithLp.toLp 2 '' Set.pi univ fun _ => Icc δ (1 - δ)
+  have hKc : IsCompact K :=
+    (isCompact_univ_pi fun _ => isCompact_Icc).image (PiLp.continuous_toLp 2 _)
+  have hQK : Q ⊆ K := fun y hy => ⟨WithLp.ofLp y, fun i _ => ⟨(hy i).1.le, (hy i).2.le⟩, rfl⟩
+  -- `∂_k v` is continuous.
+  have hfd : Continuous (fderiv ℝ v) := hv.continuous_fderiv one_ne_zero
+  have hgc : Continuous fun p : Euclid (m + 1) => |fderiv ℝ v p (EuclideanSpace.single k 1)| :=
+    (hfd.clm_apply continuous_const).abs
+  -- `p[t]`, the point `p` with `k`-th coordinate `t`, is `p + (t − p_k) e_k`.
+  have hupd : ∀ (p : Euclid (m + 1)) (t : ℝ),
+      WithLp.toLp 2 (Function.update (WithLp.ofLp p) k t) =
+        p + (t - p k) • EuclideanSpace.single k (1 : ℝ) := by
+    intro p t
+    ext j
+    by_cases hj : j = k
+    · subst hj
+      simp
+    · simp [hj]
+  -- `Φ(p) = ∫_{(δ, 1−δ)} |∂_k v(p[t])| dt` is continuous.
+  set Φ : Euclid (m + 1) → ℝ := fun p => ∫ t in Ioo δ (1 - δ),
+    |fderiv ℝ v (WithLp.toLp 2 (Function.update (WithLp.ofLp p) k t)) (EuclideanSpace.single k 1)|
+    with hΦ
+  have hΦc : Continuous Φ := by
+    have hGc : Continuous fun z : Euclid (m + 1) × ℝ =>
+        |fderiv ℝ v (WithLp.toLp 2 (Function.update (WithLp.ofLp z.1) k z.2))
+          (EuclideanSpace.single k 1)| := by
+      simp_rw [hupd]
+      exact hgc.comp (by fun_prop)
+    have hΦ' : Φ = fun p => ∫ t in Icc δ (1 - δ),
+        |fderiv ℝ v (WithLp.toLp 2 (Function.update (WithLp.ofLp p) k t))
+          (EuclideanSpace.single k 1)| := by
+      funext p
+      exact integral_Icc_eq_integral_Ioo.symm
+    rw [hΦ']
+    exact continuous_parametric_integral_of_continuous
+      (f := fun p t => |fderiv ℝ v (WithLp.toLp 2 (Function.update (WithLp.ofLp p) k t))
+        (EuclideanSpace.single k 1)|) hGc isCompact_Icc
+  -- `(x, y) ↦ Φ(a_k(x, y))` is continuous.
+  have hac : Continuous fun z : Euclid (m + 1) × Euclid (m + 1) =>
+      (WithLp.toLp 2 (fun j => if j < k then z.2 j else z.1 j) : Euclid (m + 1)) := by
+    refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun j => ?_)
+    exact continuous_if_const _ (fun _ => by fun_prop) (fun _ => by fun_prop)
+  have hFc : Continuous fun z : Euclid (m + 1) × Euclid (m + 1) =>
+      Φ (WithLp.toLp 2 (fun j => if j < k then z.2 j else z.1 j)) := hΦc.comp hac
+  -- Integrability: continuous functions are integrable on the compact `K ⊇ Q`.
+  have hI1 : IntegrableOn (fun p => |fderiv ℝ v p (EuclideanSpace.single k 1)|) Q :=
+    (hgc.continuousOn.integrableOn_compact hKc).mono_set hQK
+  have hI2 : IntegrableOn Φ Q := (hΦc.continuousOn.integrableOn_compact hKc).mono_set hQK
+  have hI3 : ∀ x : Euclid (m + 1), IntegrableOn
+      (fun y : Euclid (m + 1) => Φ (WithLp.toLp 2 (fun j => if j < k then y j else x j))) Q :=
+    fun x => ((hFc.comp (continuous_const.prodMk continuous_id)).continuousOn.integrableOn_compact
+      hKc).mono_set hQK
+  have hI4 : IntegrableOn (fun x : Euclid (m + 1) =>
+      ∫ y in Q, Φ (WithLp.toLp 2 (fun j => if j < k then y j else x j))) Q := by
+    have hprod : Integrable (fun z : Euclid (m + 1) × Euclid (m + 1) =>
+        Φ (WithLp.toLp 2 (fun j => if j < k then z.2 j else z.1 j)))
+        ((volume.restrict Q).prod (volume.restrict Q)) := by
+      rw [Measure.prod_restrict]
+      exact (hFc.continuousOn.integrableOn_compact (hKc.prod hKc)).mono_set (prod_mono hQK hQK)
+    exact hprod.integral_prod_left
+  -- Step 1: the fundamental theorem of calculus along `t ↦ a_k[t]`.
+  have hpt : ∀ x ∈ Q, ∀ y ∈ Q,
+      |v (WithLp.toLp 2 (fun j => if j < k then y j else x j)) -
+        v (WithLp.toLp 2 (fun j => if j ≤ k then y j else x j))| ≤
+        Φ (WithLp.toLp 2 (fun j => if j < k then y j else x j)) := by
+    intro x hx y hy
+    set a : Euclid (m + 1) := WithLp.toLp 2 (fun j => if j < k then y j else x j) with ha
+    set ℓ : ℝ → Euclid (m + 1) := fun t => a + (t - a k) • EuclideanSpace.single k (1 : ℝ)
+      with hℓ
+    have hak : a k = x k := by simp [ha]
+    have hℓx : ℓ (x k) = a := by simp [hℓ, hak]
+    have hℓy : ℓ (y k) = WithLp.toLp 2 (fun j => if j ≤ k then y j else x j) := by
+      ext j
+      rcases lt_trichotomy j k with h | h | h
+      · simp [hℓ, ha, h, le_of_lt h, ne_of_lt h]
+      · subst h
+        simp [hℓ, ha]
+      · simp [hℓ, ha, not_lt.2 (le_of_lt h), not_le.2 h, (ne_of_lt h).symm]
+    have hℓd : ∀ t, HasDerivAt ℓ (EuclideanSpace.single k (1 : ℝ)) t := by
+      intro t
+      have := (((hasDerivAt_id' t).sub_const (a k)).smul_const
+        (EuclideanSpace.single k (1 : ℝ))).const_add a
+      rw [one_smul] at this
+      exact this
+    have hderiv : ∀ t, HasDerivAt (fun t => v (ℓ t))
+        (fderiv ℝ v (ℓ t) (EuclideanSpace.single k 1)) t := fun t =>
+      ((hv.differentiable one_ne_zero (ℓ t)).hasFDerivAt).comp_hasDerivAt t (hℓd t)
+    have hcont : Continuous fun t => fderiv ℝ v (ℓ t) (EuclideanSpace.single k 1) :=
+      (hfd.comp (by fun_prop)).clm_apply continuous_const
+    have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hderiv t)
+      (hcont.intervalIntegrable (x k) (y k))
+    simp only [hℓx, hℓy] at hftc
+    have hsub : Set.uIoc (x k) (y k) ⊆ Ioo δ (1 - δ) := by
+      intro t ht
+      rcases Set.mem_uIoc.1 ht with ⟨h1, h2⟩ | ⟨h1, h2⟩
+      · exact ⟨by linarith [(hx k).1], by linarith [(hy k).2]⟩
+      · exact ⟨by linarith [(hy k).1], by linarith [(hx k).2]⟩
+    rw [abs_sub_comm, ← hftc]
+    calc |∫ t in x k..y k, fderiv ℝ v (ℓ t) (EuclideanSpace.single k 1)|
+        = ‖∫ t in x k..y k, fderiv ℝ v (ℓ t) (EuclideanSpace.single k 1)‖ :=
+          (Real.norm_eq_abs _).symm
+      _ ≤ ∫ (t : ℝ) in Set.uIoc (x k) (y k), ‖fderiv ℝ v (ℓ t) (EuclideanSpace.single k 1)‖ :=
+          intervalIntegral.norm_integral_le_integral_norm_uIoc
+      _ ≤ ∫ (t : ℝ) in Ioo δ (1 - δ), ‖fderiv ℝ v (ℓ t) (EuclideanSpace.single k 1)‖ :=
+          setIntegral_mono_set
+            (hcont.norm.continuousOn.integrableOn_Icc.mono_set Ioo_subset_Icc_self)
+            (Eventually.of_forall fun t => norm_nonneg _) hsub.eventuallyLE
+      _ = Φ a := by
+          simp only [hΦ, hℓ, ← hupd, Real.norm_eq_abs]
+  -- Step 3: integrate the pointwise bound.
+  have hstep : ∫ x in Q, ∫ y in Q, |v (WithLp.toLp 2 (fun j => if j < k then y j else x j)) -
+        v (WithLp.toLp 2 (fun j => if j ≤ k then y j else x j))| ≤
+      ∫ x in Q, ∫ y in Q, Φ (WithLp.toLp 2 (fun j => if j < k then y j else x j)) := by
+    refine integral_mono_of_nonneg
+      (Eventually.of_forall fun x => integral_nonneg fun y => abs_nonneg _) hI4 ?_
+    filter_upwards [ae_restrict_mem hQm] with x hx
+    refine integral_mono_of_nonneg (Eventually.of_forall fun y => abs_nonneg _) (hI3 x) ?_
+    filter_upwards [ae_restrict_mem hQm] with y hy
+    exact hpt x hx y hy
+  -- Steps 4–6: the mixed-point and slice identities.
+  calc _ ≤ ∫ x in Q, ∫ y in Q, Φ (WithLp.toLp 2 (fun j => if j < k then y j else x j)) := hstep
+    _ = (volume Q).toReal * ∫ x in Q, Φ x :=
+        Submission.dor_lmb_fcd_cp_mixed_point_integral m δ k Φ hI2
+    _ = (volume Q).toReal *
+        ((1 - 2 * δ) * ∫ x in Q, |fderiv ℝ v x (EuclideanSpace.single k 1)|) := by
+        congr 1
+        exact Submission.dor_lmb_fcd_cp_slice_integral m δ k
+          (fun p => |fderiv ℝ v p (EuclideanSpace.single k 1)|) hI1
+    _ = _ := by ring
 
 end Submission
 
