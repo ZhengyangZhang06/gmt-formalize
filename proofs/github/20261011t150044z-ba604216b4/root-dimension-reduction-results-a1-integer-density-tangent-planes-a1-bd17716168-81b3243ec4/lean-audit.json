@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e6069f628687cfdb20b6058fe95c7d959d1b5e4e2ba544d8ff73e1c444d14f44",
+  "git_delta": {
+    "base_commit": "60469f4baac16615d031940e4b8fbbb8a0cf8371",
+    "candidate_commit": "16c03ed3b83c3f82143f215551af6160522a4a38",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_fr_cone_mass",
+    "diff_sha256": "ac2abf482192521c99bc7d1a31b77d7b70949b5ccdfd8338a10f993215c8e299",
+    "source_sha256": "deb35f3955b5939db3bbf088f37d85fb06909c5460b49a3b9b00a3b05c624b9b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_fr_cone_mass",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → μ (ball (0 : Euclid P) 1) ≠ ∞ → ∀ σ : Euclid P, ‖σ‖ = 1 → ∀ ρ : ℝ, 0 < ρ → ρ < 1 → ENNReal.ofReal ρ ≤ μ (ball σ ρ) → 1 ≤ 2 * μ ((⋃ (t : ℝ) (_ : 0 < t), ball (t • σ) (t * ρ)) ∩ ball 0 1)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
