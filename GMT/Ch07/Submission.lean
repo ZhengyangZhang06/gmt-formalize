@@ -1553,6 +1553,26 @@ theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : Multi
     refine Finset.sum_congr rfl fun I _ => ?_
     rw [map_smul, smul_eq_mul, hξ2, sq]
 
+/-- **Area formula on an embedded `C¹` submanifold** (Simon Ch. 2, 4.11–4.13, from the parametric
+area formula 3.2).  Let `N ⊆ ℝᴾ` be an embedded `m`-dimensional `C¹` submanifold, `Q(x) = T_xN`
+for `x ∈ N`, and `Φ : ℝᴾ → ℝᴾ` injective and `C¹` with `DΦ(x)` injective.  Put
+`J(x) = √det(⟨DΦ(x)eᵢ, DΦ(x)eⱼ⟩)`, `e` the standard orthonormal basis of `Q(x)`.  Then `J` is
+continuous on `N`, and `∫_{Φ(B)} g dHᵐ = ∫_B J · (g ∘ Φ) dHᵐ` for every Borel `B ⊆ N` and every
+`g ≥ 0`.  Each `y ∈ N` lies in the open set `W` of a local representation `ψ : V → W` (4.1), and
+the chart area formula gives the identity for every Borel `B ⊆ W ∩ N` and every `g`; as `Φ` is
+continuous and injective, these local identities glue over a countable subcover of `N`. -/
+theorem Submission.codim1_ac_submanifold_area_formula : ∀ (P m : ℕ) (N : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (Φ : Euclid P → Euclid P), 1 ≤ m → IsEmbeddedSubmanifold 1 m N → (∀ x ∈ N, (Q x : Set (Euclid P)) = tangentSpace N x) → ContDiff ℝ 1 Φ → Injective Φ → (∀ x, Injective (fderiv ℝ Φ x)) → ContinuousOn (fun x => Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) j))))) N ∧ ∀ B : Set (Euclid P), B ⊆ N → MeasurableSet B → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in Φ '' B, g y ∂μHE[m] = ∫⁻ x in B, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) j))))) * g (Φ x) ∂μHE[m] := by
+  intro P m N Q Φ _ hN hQ hΦ hΦinj hDΦ
+  -- `J` is continuous on `N`
+  refine ⟨Submission.codim1_ac_saf_jacobian_continuousOn P m N Q Φ hN hQ hΦ, ?_⟩
+  -- the area formula on `N` glues from its restrictions to the chart sets `W ∩ N`
+  refine Submission.codim1_ac_saf_lintegral_image_of_local P μHE[m] N Φ _ hΦ.continuous hΦinj ?_
+  intro y hy
+  -- `y` lies in the open set `W` of a local representation `ψ : V → W` of `N` (`r = 1`)
+  obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hψinj, hψV, hproper, hDψ⟩ := hN y hy
+  exact ⟨W, hW, hyW, Submission.codim1_ac_saf_chart_area_formula P m 1 N W V ψ Q Φ le_rfl hV hW
+    hψ hψinj hψV hproper hDψ hQ hΦ hΦinj hDΦ⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
