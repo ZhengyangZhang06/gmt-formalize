@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "61edcc4945b4e9b55246639d3052612d3ff6e73c75c76a9042110d3f777f0e6e",
+  "git_delta": {
+    "base_commit": "921d0a5aaabb7888dbd27fbfc08b2370e8cc1f91",
+    "candidate_commit": "c2cfae606ccb8809dc095e0286a6db97640f2e54",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_iso_volume_le_smul_hausdorff",
+    "diff_sha256": "2760ab49eb0524b29a2b1de5203d409f67e2af2429969881cee9613fc037467c",
+    "source_sha256": "9606dd37b3638263e9db9958035911f97b67725b4841ec8b8aa43a06a1014bf7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_iso_volume_le_smul_hausdorff",
+      "statement": "∀ (d : ℕ), (volume : Measure (Euclid d)) ≤ (unitBallVolume d / 2 ^ d) • (μH[(d : ℝ)] : Measure (Euclid d))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
