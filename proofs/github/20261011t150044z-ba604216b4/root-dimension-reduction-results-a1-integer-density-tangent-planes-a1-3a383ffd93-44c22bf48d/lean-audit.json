@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6dc85335fab6daebcde6a712c34be33f74c6af7f40ab3b75a4e1eae9bd8c01e3",
+  "git_delta": {
+    "base_commit": "756856ff154de26ddf753d98e3bf06ae32c5e9b9",
+    "candidate_commit": "3b427dd9ab71440bfca39068f4fd5c8c649437df",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cr_density_rescale",
+    "diff_sha256": "66d8f3577ecddc6141ecf7ecd7054c8d6a3222e005cbdf061aa9c60154fe26d8",
+    "source_sha256": "7b7ab1b6c40eefc1a86d0d6fcfe75e9f23a483fa4faed4ae557a030385dd3e7c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cr_density_rescale",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (t : ℝ), 0 < t → (∀ w : Euclid P, limsup (fun ρ : ℝ => (ENNReal.ofReal (t⁻¹ ^ n) • μ.map (dilation y t)) (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => μ (ball (y + t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)) ∧ ∀ w : Euclid P, (∀ ε : ℝ, 0 < ε → (ENNReal.ofReal (t⁻¹ ^ n) • μ.map (dilation y t)) (ball w ε) ≠ 0) ↔ ∀ ε : ℝ, 0 < ε → μ (ball (y + t • w) ε) ≠ 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
