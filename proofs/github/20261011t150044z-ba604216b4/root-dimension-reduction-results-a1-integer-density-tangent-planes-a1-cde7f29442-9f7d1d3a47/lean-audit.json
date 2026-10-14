@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0ee39a748e5e67873e50479d7f3e865a161a37119686baed478691d94511d71f",
+  "git_delta": {
+    "base_commit": "62c45415039c8378e1b73153ad9de0eb3fb2e58a",
+    "candidate_commit": "1abaa638429137f6ddb27486b75ddcf9fb0e4f61",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_pc_line_current",
+    "diff_sha256": "c100c5a2ecd7db328c4b08a65798f2ca8e30115e7b0f3a49bbee20e8e42fd6a9",
+    "source_sha256": "0f66659bf9f1309f9549bf510c848fd51850c0186c8ac8c13b348b5c175079de",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_pc_line_current",
+      "statement": "∀ (P : ℕ) (ι : Type) [Fintype ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (c : ι → ℝ), (∀ k, ‖v k‖ = 1) → ∃ X : GeometricCurrentOn (univ : Set (Euclid P)) 1, ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, X ω = ∑ k, c k * ∫ t in I k, (ω : DifferentialForm (Euclid P) 1) (p k + t • v k) (fun _ => v k)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
