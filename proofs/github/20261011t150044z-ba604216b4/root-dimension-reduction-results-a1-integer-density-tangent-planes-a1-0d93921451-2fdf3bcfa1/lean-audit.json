@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dc18867babf2ab9aacbc2c2074f4135c5a8731937a0a9dc258d0d799ee6f22e0",
+  "git_delta": {
+    "base_commit": "46e08b79eddadd5b7a691c9c1309499187443216",
+    "candidate_commit": "9e7b1602f4546bf3ebdc7ab93e8ce182b26182d3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_ro_line_integral_pos",
+    "diff_sha256": "cfbc21ae563af26883c858b734b3a6983a3480e621b51282e9ea12b9fa878ff2",
+    "source_sha256": "e689f83121eac66f8a7856ce8bef2e439dbf6a76ff165b1c168404fe1405340c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_ro_line_integral_pos",
+      "statement": "∀ (P : ℕ) (u : Euclid P) (f : Euclid P → ℝ), ‖u‖ = 1 → Continuous f → HasCompactSupport f → (∀ y, 0 ≤ f y) → 0 < f u → 0 < ∫ y in (Submodule.span ℝ {u} : Set (Euclid P)), f y ∂(μHE[1] : Measure (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
