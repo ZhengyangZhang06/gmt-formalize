@@ -1831,6 +1831,59 @@ theorem Submission.idtp_tdc_nipp_disjoint_packing : ∀ (P : ℕ) (μ : Measure 
     _ ≤ μ (closedBall 0 r) :=
       measure_mono (iUnion_subset fun i => (hball i).trans ball_subset_closedBall)
 
+/-- Finite-mass count in the proof of Simon 7.3.3(1) (pp. 191–192), for discs in 2-planes: an
+integer multiplicity 2-current `C` in `ℝᴾ` admits no infinite pairwise disjoint family of discs
+`Dᵢ = Qᵢ ∩ B_ρ(zᵢ)` (`Qᵢ` a 2-plane, `zᵢ ∈ Qᵢ`, `|zᵢ| ≤ R`) such that every `w ∈ Dᵢ` has a ball
+`B_ε(w)` with `H²(W ∩ Qᵢ) ≤ M_W(C)` for its open subsets `W`.  For `C = τ(M, θ, ξ)` and
+`μ = θH²⌞M`, `M_W(C) = μ(W)` on open sets and `μ` is finite on compact sets, so local-to-global
+comparison of `H²⌞Qᵢ` with `μ` gives `μ(Dᵢ) ≥ H²(Dᵢ) = ω₂ρ² > 0`; all `Dᵢ` lie in `B_{R+ρ}(0)`,
+which contradicts the disjoint packing bound. -/
+theorem Submission.idtp_tdc_no_infinite_planar_pieces : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : ℕ → Submodule ℝ (Euclid P)) (z : ℕ → Euclid P) (ρ R : ℝ), IsIntegerMultiplicity C → 0 < ρ → (∀ i, Module.finrank ℝ (Q i) = 2) → (∀ i, z i ∈ Q i) → (∀ i, ‖z i‖ ≤ R) → (∀ i j, i ≠ j → Disjoint ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) ((Q j : Set (Euclid P)) ∩ ball (z j) ρ)) → (∀ i, ∀ w ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → μHE[2] (W ∩ (Q i : Set (Euclid P))) ≤ C.massOn W) → False := by
+  intro P C Q z ρ R hC hρ hdim hz hR hdisj hloc
+  -- (1) `C = τ(M, θ, ξ)`; `μ = θH²⌞M` has `M_W(C) = μ(W)` for open `W` and is finite on compacts
+  obtain ⟨RC, hRC⟩ := hC
+  have hmass : ∀ W : Set (Euclid P), IsOpen W → C.massOn W = RC.measure W := fun W hW =>
+    (Submission.dimred_im_mass_measure P 2 univ C RC isOpen_univ hRC).1 W hW (subset_univ W)
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → RC.measure K ≠ ∞ := by
+    intro K hK
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact RC.locallyIntegrable_mult K hK (subset_univ K)
+  -- the discs `Dᵢ = Qᵢ ∩ B_ρ(zᵢ)` are Borel, `Qᵢ` being closed
+  have hQm : ∀ i, MeasurableSet (Q i : Set (Euclid P)) := fun i =>
+    (Submodule.closed_of_finiteDimensional (Q i)).measurableSet
+  have hDm : ∀ i, MeasurableSet ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) := fun i =>
+    (hQm i).inter measurableSet_ball
+  -- (2) `H²(Dᵢ) ≤ μ(Dᵢ)`: local-to-global comparison of `H²⌞Qᵢ` with `μ`
+  have hle : ∀ i, μHE[2] ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) ≤
+      RC.measure ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) := by
+    intro i
+    have hloc' : ∀ w ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧
+        ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε →
+          μHE[2].restrict (Q i : Set (Euclid P)) W ≤ RC.measure W := by
+      intro w hw
+      obtain ⟨ε, hε, hW⟩ := hloc i w hw
+      refine ⟨ε, hε, fun W hWo hWB => ?_⟩
+      rw [Measure.restrict_apply' (hQm i), ← hmass W hWo]
+      exact hW W hWo hWB
+    have h := Submission.idtp_tdc_nipp_local_comparison P RC.measure
+      (μHE[2].restrict (Q i : Set (Euclid P))) _ hfin (hDm i) hloc'
+    rwa [Measure.restrict_apply' (hQm i), inter_eq_left.mpr inter_subset_left] at h
+  -- (3) `H²(Dᵢ) = ω₂ρ² =: c > 0`
+  have hc0 : unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2) ≠ 0 :=
+    mul_ne_zero (measure_ball_pos volume (0 : Euclid 2) one_pos).ne'
+      (ENNReal.ofReal_pos.mpr (pow_pos hρ 2)).ne'
+  have hcD : ∀ i, unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2) ≤
+      RC.measure ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) := fun i =>
+    (Submission.idtp_tdc_subspace_ball_measure P 2 (Q i) (z i) ρ (hdim i) (hz i)
+      hρ).symm.le.trans (hle i)
+  -- (4) all `Dᵢ` lie in `B_{R+ρ}(0)`, and infinitely many disjoint ones force `μ(B_{R+ρ}(0)) = ∞`
+  refine Submission.idtp_tdc_nipp_disjoint_packing P RC.measure
+    (fun i => (Q i : Set (Euclid P)) ∩ ball (z i) ρ) (R + ρ) _ hfin hc0 hDm hdisj
+    (fun i => inter_subset_right.trans (ball_subset_ball' ?_)) hcD
+  rw [dist_zero_right]
+  linarith [hR i]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
