@@ -3833,6 +3833,106 @@ theorem Submission.dtc_bc_lc_sl_cc_critical_null : ∀ (n : ℕ) (C : NNReal), (
   filter_upwards [(lintegral_eq_zero_iff (Measurable.iInf hΦm)).1 hΨ] with t ht
   exact le_antisymm ((le_iInf fun k => hΦle k t).trans_eq ht) zero_le
 
+/-- Level parametrisations of a straightened chart (Simon Ch. 2, §6, co-area formula 6.3/6.6;
+step 2 of the chart co-area argument).  Let `c(s, w) = (s, w₀, …, wₙ₋₁)`, let `ψ : ℝⁿ⁺¹ → ℝᴾ` be
+`C¹` and injective with injective derivative on `V`, `F : ℝⁿ⁺¹ → ℝ` be `C¹`, and `Θ` be `C¹` and
+injective with injective derivative on the open `Ω`, with `Θ(Ω) ⊆ V` and `F ∘ Θ = (·)₀` on `Ω`.
+Fix `t`.  Then `Ωᵗ = {w | c(t, w) ∈ Ω}` is open and `χ = ψ ∘ Θ ∘ c(t, ·)` is `C¹` and injective
+on `Ωᵗ`.  At `w ∈ Ωᵗ`, with `z = c(t, w)` and `y = Θ(z)`: `DF(y) ≠ 0`, `Dχ(w)` is injective,
+and for every `v ∈ Dψ(y)(ℝⁿ⁺¹)` with `⟨v, Dψ(y)e⟩ = DF(y)e` for all `e`,
+`Dχ(w)(ℝⁿ) = Dψ(y)(ℝⁿ⁺¹) ∩ (ℝv)^⊥` and `J(Dχ(w)) = |v| J(Dψ(y)) |det DΘ(z)|`, where
+`J(X) = √det(X*X)`.
+
+Proof sketch:
+* `ι w := c(t, w) − c(t, 0)` is linear with `(ι w)₀ = 0`, `(ι w)ᵢ₊₁ = wᵢ` (compare coordinates),
+  so `c(t, ·) = c(t, 0) + ι` is a `C¹` affine injection; hence `Ωᵗ` is open and `χ` is `C¹` on it.
+* `χ` is injective on `Ωᵗ`: `ψ` is injective on `V ⊇ Θ(Ω)`, `Θ` on `Ω`, and `c(t, ·)` everywhere.
+* Chain rule: `Dχ(w) = Dψ(y) ∘ DΘ(z) ∘ ι`.  As `F ∘ Θ = (·)₀` on the neighbourhood `Ω` of `z`,
+  `DF(y)(DΘ(z) z') = z'₀` for all `z'`; at `z' = e₀` this gives `DF(y) ≠ 0`.
+* `Dχ(w)` is injective as a composite of injective maps; the range and the Jacobian identity are
+  `dtc_bc_lc_sl_cc_jacobian_identity` for `Dψ(y)`, `DF(y)`, `v`, `DΘ(z)` and `ι`. -/
+theorem Submission.dtc_bc_lc_sl_cc_slice_param : ∀ (P n : ℕ) (c : ℝ → Euclid n → Euclid (n + 1)) (ψ : Euclid (n + 1) → Euclid P) (V Ω : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (Θ : Euclid (n + 1) → Euclid (n + 1)) (t : ℝ), (∀ s w, c s w 0 = s ∧ ∀ i : Fin n, c s w i.succ = w i) → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → IsOpen Ω → ContDiffOn ℝ 1 Θ Ω → InjOn Θ Ω → (∀ z ∈ Ω, Injective (fderiv ℝ Θ z)) → Θ '' Ω ⊆ V → (∀ z ∈ Ω, F (Θ z) = z 0) → IsOpen {w | c t w ∈ Ω} ∧ ContDiffOn ℝ 1 (fun w => ψ (Θ (c t w))) {w | c t w ∈ Ω} ∧ InjOn (fun w => ψ (Θ (c t w))) {w | c t w ∈ Ω} ∧ ∀ w, c t w ∈ Ω → fderiv ℝ F (Θ (c t w)) ≠ 0 ∧ Injective (fderiv ℝ (fun w' => ψ (Θ (c t w'))) w) ∧ ∀ v ∈ LinearMap.range (fderiv ℝ ψ (Θ (c t w)) : Euclid (n + 1) →ₗ[ℝ] Euclid P), (∀ e, inner ℝ v (fderiv ℝ ψ (Θ (c t w)) e) = fderiv ℝ F (Θ (c t w)) e) → LinearMap.range (fderiv ℝ (fun w' => ψ (Θ (c t w'))) w : Euclid n →ₗ[ℝ] Euclid P) = LinearMap.range (fderiv ℝ ψ (Θ (c t w)) : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ v)ᗮ ∧ Real.sqrt (((fderiv ℝ (fun w' => ψ (Θ (c t w'))) w).adjoint ∘L fderiv ℝ (fun w' => ψ (Θ (c t w'))) w).det) = ‖v‖ * Real.sqrt (((fderiv ℝ ψ (Θ (c t w))).adjoint ∘L fderiv ℝ ψ (Θ (c t w))).det) * |(fderiv ℝ Θ (c t w)).det| := by
+  intro P n c ψ V Ω F Θ t hc hψ hψinj hψd hF hΩ hΘ hΘinj hΘd hΘV hFΘ
+  have hc0 : ∀ s w, c s w 0 = s := fun s w => (hc s w).1
+  have hcs : ∀ s w (i : Fin n), c s w i.succ = w i := fun s w => (hc s w).2
+  -- Step 1: `ι w := c(t, w) − c(t, 0)` is linear, `(ι w)₀ = 0`, `(ι w)ᵢ₊₁ = wᵢ`
+  let ιₗ : Euclid n →ₗ[ℝ] Euclid (n + 1) :=
+    { toFun := fun w => c t w - c t 0
+      map_add' := fun w w' => by
+        ext i
+        refine Fin.cases ?_ (fun i => ?_) i
+        · simp [hc0]
+        · simp [hcs]
+      map_smul' := fun a w => by
+        ext i
+        refine Fin.cases ?_ (fun i => ?_) i
+        · simp [hc0]
+        · simp [hcs] }
+  let ι : Euclid n →L[ℝ] Euclid (n + 1) := LinearMap.toContinuousLinearMap ιₗ
+  have hιapp : ∀ w, ι w = c t w - c t 0 := fun w => rfl
+  have hιcoord : ∀ w, ι w 0 = 0 ∧ ∀ i : Fin n, ι w i.succ = w i := fun w =>
+    ⟨by simp [hιapp, hc0], fun i => by simp [hιapp, hcs]⟩
+  have hιinj : Injective ι := fun w w' h => by
+    ext i
+    rw [← (hιcoord w).2 i, ← (hιcoord w').2 i, h]
+  -- `c(t, ·) = c(t, 0) + ι` is a `C¹` affine map with derivative `ι`
+  have hcfun : (fun w => c t w) = fun w => c t 0 + ι w := by
+    funext w
+    rw [hιapp, add_sub_cancel]
+  have hcd : ∀ w, HasFDerivAt (fun w => c t w) ι w := fun w => by
+    rw [hcfun]
+    exact ι.hasFDerivAt.const_add (c t 0)
+  have hccd : ContDiff ℝ 1 (fun w => c t w) := by
+    rw [hcfun]
+    exact contDiff_const.add ι.contDiff
+  -- Step 2: `Ωᵗ` is open
+  have hopen : IsOpen {w | c t w ∈ Ω} := hccd.continuous.isOpen_preimage Ω hΩ
+  -- Step 3: `χ` is `C¹` on `Ωᵗ`
+  have hcda : ∀ w, c t w ∈ Ω → ContDiffAt ℝ 1 (fun w' => ψ (Θ (c t w'))) w := fun w hw =>
+    hψ.contDiffAt.comp w ((hΘ.contDiffAt (hΩ.mem_nhds hw)).comp w hccd.contDiffAt)
+  refine ⟨hopen, fun w hw => (hcda w hw).contDiffWithinAt, ?_, ?_⟩
+  · -- Step 4: `χ` is injective on `Ωᵗ`
+    intro w hw w' hw' h
+    have h₁ : Θ (c t w) = Θ (c t w') :=
+      hψinj (hΘV (mem_image_of_mem Θ hw)) (hΘV (mem_image_of_mem Θ hw')) h
+    apply hιinj
+    rw [hιapp, hιapp, hΘinj hw hw' h₁]
+  -- Step 5: derivatives at `w ∈ Ωᵗ`, with `z = c(t, w)` and `y = Θ(z)`
+  intro w hw
+  have hΘz : HasFDerivAt Θ (fderiv ℝ Θ (c t w)) (c t w) :=
+    (hΘ.contDiffAt (hΩ.mem_nhds hw)).differentiableAt_one.hasFDerivAt
+  have hψy : HasFDerivAt ψ (fderiv ℝ ψ (Θ (c t w))) (Θ (c t w)) :=
+    hψ.contDiffAt.differentiableAt_one.hasFDerivAt
+  have hFy : HasFDerivAt F (fderiv ℝ F (Θ (c t w))) (Θ (c t w)) :=
+    hF.contDiffAt.differentiableAt_one.hasFDerivAt
+  -- chain rule: `Dχ(w) = Dψ(y) ∘ DΘ(z) ∘ ι`
+  have hχ : HasFDerivAt (fun w' => ψ (Θ (c t w')))
+      (fderiv ℝ ψ (Θ (c t w)) ∘L fderiv ℝ Θ (c t w) ∘L ι) w :=
+    hψy.comp w (hΘz.comp w (hcd w))
+  rw [hχ.fderiv]
+  -- `F ∘ Θ = (·)₀` on the neighbourhood `Ω` of `z`, so `DF(y) ∘ DΘ(z) = (·)₀`
+  have hproj : HasFDerivAt (fun z' : Euclid (n + 1) => z' 0)
+      (EuclideanSpace.proj (0 : Fin (n + 1)) : Euclid (n + 1) →L[ℝ] ℝ) (c t w) :=
+    (EuclideanSpace.proj (0 : Fin (n + 1)) : Euclid (n + 1) →L[ℝ] ℝ).hasFDerivAt
+  have hℓD : fderiv ℝ F (Θ (c t w)) ∘L fderiv ℝ Θ (c t w) = EuclideanSpace.proj 0 :=
+    ((hFy.comp (c t w) hΘz).congr_of_eventuallyEq
+      (Filter.eventually_of_mem (hΩ.mem_nhds hw) fun z' hz' => (hFΘ z' hz').symm)).unique hproj
+  have hℓDz : ∀ z', fderiv ℝ F (Θ (c t w)) (fderiv ℝ Θ (c t w) z') = z' 0 := fun z' =>
+    congrArg (fun L : Euclid (n + 1) →L[ℝ] ℝ => L z') hℓD
+  -- Step 6: `DF(y) ≠ 0`, since `DF(y)(DΘ(z) e₀) = 1`
+  have hFne : fderiv ℝ F (Θ (c t w)) ≠ 0 := by
+    intro h0
+    have h₁ := hℓDz (EuclideanSpace.single 0 1)
+    rw [h0] at h₁
+    simp at h₁
+  -- Step 7: `Dχ(w)` is injective as a composite of injective maps
+  have hAinj : Injective (fderiv ℝ ψ (Θ (c t w))) := hψd _ (hΘV (mem_image_of_mem Θ hw))
+  have hDinj : Injective (fderiv ℝ Θ (c t w)) := hΘd _ hw
+  refine ⟨hFne, hAinj.comp (hDinj.comp hιinj), fun v hv hvℓ => ?_⟩
+  -- Step 8: the range and the Jacobian identity, from `jacobian_identity`
+  exact (Submission.dtc_bc_lc_sl_cc_jacobian_identity n P (fderiv ℝ ψ (Θ (c t w)))
+    (fderiv ℝ F (Θ (c t w))) v (fderiv ℝ Θ (c t w)) ι hAinj hv hvℓ hDinj hℓDz hιcoord).2
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
