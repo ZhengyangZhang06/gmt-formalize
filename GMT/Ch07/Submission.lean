@@ -1383,6 +1383,105 @@ theorem Submission.dor_lmbsf_pc_coarea_glue : ∀ (P n : ℕ) (Z : Set (Euclid (
   rw [lintegral_tsum (fun q => (hq q).1), hrhs]
   exact tsum_congr (fun q => (hq q).2)
 
+/-- **Co-area formula on one `C¹` chart piece** (Simon Ch. 3, 2.8–2.9; Ch. 2, 3.5).  Let `ψ` be a
+`C¹` injective immersion of the open `V ⊆ ℝⁿ⁺¹` into `ℝᴾ`, `Y ⊆ C ⊆ V` Borel, `F` a `C¹` function
+with `f ∘ ψ = F` on `Y`, and `G` the tangential gradient of `f` along `ψ(Y)`.  On `Y`, `G(ψ(y)) = 0`
+iff `DF(y) = 0` (write `G(ψ(y)) = Dψ(y)v`, so `|G(ψ(y))|² = DF(y)v`), hence for `Y' = Y ∩ {DF ≠ 0}`
+every slice is `ψ(Y) ∩ {G ≠ 0} ∩ f⁻¹{t} = ψ(Y' ∩ F⁻¹{t})`, and `ψ(Y ∖ Y')` contributes nothing to
+`∫_{ψ(Y)} |G| φ dHⁿ⁺¹`.  The straightening charts `Ψ_q(B_q)` cover `{DF ≠ 0}`; the Borel pieces
+`Z_q = Y' ∩ disjointed (Ψ_q(B_q)) q` are pairwise disjoint with union `Y'`, each satisfies the
+co-area identity on its chart, and gluing the pieces gives the identity on `Y'`. -/
+theorem Submission.dor_lmbsf_piece_coarea : ∀ (P n : ℕ) (V C Y : Set (Euclid (n + 1))) (ψ : Euclid (n + 1) → Euclid P) (F : Euclid (n + 1) → ℝ) (f : Euclid P → ℝ) (G : Euclid P → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → IsCompact C → C ⊆ V → MeasurableSet Y → Y ⊆ C → ContDiff ℝ 1 F → (∀ y ∈ Y, f (ψ y) = F y) → (∀ y ∈ Y, G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → Measurable G → ∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t => ∫⁻ x in ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂μHE[n]) ∧ ∫⁻ t, (∫⁻ x in ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂μHE[n]) = ∫⁻ x in ψ '' Y, ‖G x‖ₑ * φ x ∂μHE[n + 1] := by
+  intro P n V C Y ψ F f G hV hψ hψinj hDψ _ hCV hY hYC hF hfF hG _ φ hφ
+  have hYV : Y ⊆ V := hYC.trans hCV
+  -- on `Y`, the tangential gradient vanishes exactly where `DF` does
+  have hG0 : ∀ y ∈ Y, G (ψ y) = 0 ↔ fderiv ℝ F y = 0 := by
+    intro y hy
+    obtain ⟨⟨v, hv⟩, he⟩ := hG y hy
+    constructor
+    · intro h0
+      refine ContinuousLinearMap.ext fun e => ?_
+      rw [← he e, h0, inner_zero_left, zero_apply]
+    · intro h0
+      have hvv : inner ℝ (G (ψ y)) (G (ψ y)) = fderiv ℝ F y v := by
+        rw [← he v]
+        exact congrArg (inner ℝ (G (ψ y))) hv.symm
+      rw [h0, zero_apply] at hvv
+      exact inner_self_eq_zero.mp hvv
+  -- the regular part `Y' = Y ∩ {DF ≠ 0}` is Borel
+  obtain ⟨Y', hY'⟩ : ∃ Y' : Set (Euclid (n + 1)), Y' = Y ∩ {y | fderiv ℝ F y ≠ 0} := ⟨_, rfl⟩
+  have hY'Y : Y' ⊆ Y := hY' ▸ inter_subset_left
+  have hY'V : Y' ⊆ V := hY'Y.trans hYV
+  have hY'm : MeasurableSet Y' := hY' ▸
+    hY.inter (isOpen_ne_fun (hF.continuous_fderiv one_ne_zero) continuous_const).measurableSet
+  have hmemY' : ∀ y ∈ Y, (y ∈ Y' ↔ fderiv ℝ F y ≠ 0) := fun y hy => by
+    rw [hY']
+    exact ⟨fun h => h.2, fun h => ⟨hy, h⟩⟩
+  -- every slice is the image of a slice of the regular part
+  have hslice : ∀ t : ℝ, ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t} = ψ '' (Y' ∩ F ⁻¹' {t}) := by
+    intro t
+    ext x
+    simp only [mem_inter_iff, mem_image, mem_ofPred_eq, mem_preimage, mem_singleton_iff]
+    constructor
+    · rintro ⟨⟨⟨y, hy, rfl⟩, hGx⟩, hft⟩
+      exact ⟨y, ⟨(hmemY' y hy).mpr fun h => hGx ((hG0 y hy).mpr h), (hfF y hy).symm.trans hft⟩,
+        rfl⟩
+    · rintro ⟨y, ⟨hy, hFt⟩, rfl⟩
+      exact ⟨⟨⟨y, hY'Y hy, rfl⟩, fun h => (hmemY' y (hY'Y hy)).mp hy ((hG0 y (hY'Y hy)).mp h)⟩,
+        (hfF y (hY'Y hy)).trans hFt⟩
+  -- the critical part `ψ(Y ∖ Y')` carries no `|G| φ`-mass
+  have hrhs : ∫⁻ x in ψ '' Y, ‖G x‖ₑ * φ x ∂μHE[n + 1] =
+      ∫⁻ x in ψ '' Y', ‖G x‖ₑ * φ x ∂μHE[n + 1] := by
+    have hcrit : MeasurableSet (ψ '' (Y \ Y')) :=
+      (hY.diff hY'm).image_of_continuousOn_injOn (hψ.continuousOn.mono (sdiff_subset.trans hYV))
+        (hψinj.mono (sdiff_subset.trans hYV))
+    have hdisj : Disjoint (ψ '' Y') (ψ '' (Y \ Y')) := by
+      rw [Set.disjoint_left]
+      rintro x ⟨a, ha, rfl⟩ ⟨b, hb, hab⟩
+      have := hψinj (hYV hb.1) (hY'V ha) hab
+      exact hb.2 (this ▸ ha)
+    have hzero : ∫⁻ x in ψ '' (Y \ Y'), ‖G x‖ₑ * φ x ∂μHE[n + 1] = 0 := by
+      refine setLIntegral_eq_zero₀ hcrit.nullMeasurableSet ?_
+      rintro x ⟨y, ⟨hy, hy'⟩, rfl⟩
+      have hDF : fderiv ℝ F y = 0 := not_not.mp fun h => hy' ((hmemY' y hy).mpr h)
+      simp [(hG0 y hy).mpr hDF]
+    rw [← union_sdiff_cancel hY'Y, image_union, lintegral_union hcrit hdisj, hzero, add_zero]
+  -- countably many straightening charts cover `{DF ≠ 0}`; cut `Y'` into disjoint Borel pieces
+  obtain ⟨B, Ψ, hBo, hΨc, hΨinj, hΨbij, hFΨ, hΨo, hcover⟩ :=
+    Submission.dor_lmbsf_pc_straightening_cover n F hF
+  obtain ⟨Zs, hZs⟩ : ∃ Zs : ℕ → Set (Euclid (n + 1)),
+      ∀ q, Zs q = Y' ∩ disjointed (fun q => Ψ q '' B q) q := ⟨_, fun _ => rfl⟩
+  have hZsm : ∀ q, MeasurableSet (Zs q) := fun q => by
+    rw [hZs]
+    exact hY'm.inter (MeasurableSet.disjointed (fun p => (hΨo p).measurableSet) q)
+  have hZsd : Pairwise (fun p q => Disjoint (Zs p) (Zs q)) := by
+    intro p q hpq
+    rw [hZs, hZs]
+    exact Disjoint.mono inter_subset_right inter_subset_right (disjoint_disjointed _ hpq)
+  have hZsU : (⋃ q, Zs q) = Y' := by
+    simp only [hZs]
+    rw [← inter_iUnion, iUnion_disjointed, inter_eq_left]
+    intro y hy
+    exact hcover ((hmemY' y (hY'Y hy)).mp hy)
+  have hZsY' : ∀ q, Zs q ⊆ Y' := fun q => by
+    rw [hZs]
+    exact inter_subset_left
+  have hZsΨ : ∀ q, Zs q ⊆ Ψ q '' B q := fun q => by
+    rw [hZs]
+    exact inter_subset_right.trans (disjointed_subset _ q)
+  -- the co-area identity on each chart piece
+  have hpatch : ∀ q, AEMeasurable (fun t : ℝ => ∫⁻ x in ψ '' (Zs q ∩ F ⁻¹' {t}), φ x ∂μHE[n]) ∧
+      ∫⁻ t : ℝ, (∫⁻ x in ψ '' (Zs q ∩ F ⁻¹' {t}), φ x ∂μHE[n]) =
+        ∫⁻ x in ψ '' Zs q, ‖G x‖ₑ * φ x ∂μHE[n + 1] := fun q =>
+    Submission.dor_lmbsf_pc_chart_patch_coarea P n V (B q) (Zs q) ψ F (Ψ q) G hV hψ hψinj hDψ hF
+      (hBo q) (hΨc q) (hΨinj q) (hΨbij q) (hFΨ q) (hZsm q) ((hZsY' q).trans hY'V) (hZsΨ q)
+      (fun y hy => hG y (hY'Y (hZsY' q hy))) φ hφ
+  -- glue the pieces
+  have hglue := Submission.dor_lmbsf_pc_coarea_glue P n Y' Zs ψ F φ (fun x => ‖G x‖ₑ * φ x)
+    (hψ.continuousOn.mono hY'V) (hψinj.mono hY'V) hF.continuous.measurable hZsm hZsd hZsU hpatch
+  simp only [hslice, hrhs]
+  exact hglue
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
