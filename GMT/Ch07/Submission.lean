@@ -451,6 +451,34 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon, Appendix A, A.3(3) (p. 226)**, as used in the proof of 7.3.3 (p. 191): if every limit
+of points `z_k ∈ B_1(0) ∩ S_{sub(k)}` along a strictly increasing `sub` lies in `S`, then for each
+`ε > 0` the sets `B_1(0) ∩ S_k` lie in the `ε`-neighbourhood of `S` for all large `k`.  Otherwise
+there are a strictly increasing `sub` and points `w_j ∈ B_1(0) ∩ S_{sub(j)}` at distance `≥ ε` from
+every point of `S`; a subsequence converges in the compact `B̄_1(0)` to some `x`, which lies in `S`
+by hypothesis, and then `dist(w_j, x) < ε` for some `j` of that subsequence. -/
+theorem Submission.dimred_tr_mcr_eventually_near : ∀ (P : ℕ) (S : Set (Euclid P)) (Ss : ℕ → Set (Euclid P)), (∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub → (∀ k, z k ∈ ball (0 : Euclid P) 1 ∩ Ss (sub k)) → Tendsto z atTop (𝓝 x) → x ∈ S) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ Ss k ⊆ {x | ∃ z ∈ S, dist x z < ε} := by
+  intro P S Ss hS ε hε
+  by_contra hcon
+  simp only [not_exists, not_forall, exists_prop] at hcon
+  -- step 1: for arbitrarily large `k` some `x ∈ B_1(0) ∩ S_k` is `ε`-far from every point of `S`
+  have hfreq : ∃ᶠ k in atTop, ∃ x ∈ ball (0 : Euclid P) 1 ∩ Ss k, ∀ z ∈ S, ε ≤ dist x z := by
+    refine frequently_atTop.2 fun k₀ => ?_
+    obtain ⟨k, hk, hsub⟩ := hcon k₀
+    obtain ⟨x, hx, hxn⟩ := Set.not_subset.1 hsub
+    exact ⟨k, hk, x, hx, fun z hz => not_lt.1 fun h => hxn ⟨z, hz, h⟩⟩
+  -- step 2: a strictly increasing `sub` and far points `w j ∈ B_1(0) ∩ S_{sub(j)}`
+  obtain ⟨sub, hsub, hbad⟩ := extraction_of_frequently_atTop hfreq
+  choose w hw hwfar using hbad
+  -- step 3: `B̄_1(0)` is compact, so `w ∘ ψ → x` for some strictly increasing `ψ`
+  obtain ⟨x, -, ψ, hψ, hlim⟩ := (isCompact_closedBall (0 : Euclid P) 1).tendsto_subseq
+    fun j => ball_subset_closedBall (hw j).1
+  -- step 4: the hypothesis along the indices `sub ∘ ψ` gives `x ∈ S`
+  have hxS : x ∈ S := hS (sub ∘ ψ) (w ∘ ψ) x (hsub.comp hψ) (fun i => hw (ψ i)) hlim
+  -- step 5: `dist (w (ψ i)) x < ε` for large `i`, contradicting step 2
+  obtain ⟨i, hi⟩ := Metric.tendsto_atTop.1 hlim ε hε
+  exact (hwfar (ψ i) x hxS).not_gt (hi i le_rfl)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
