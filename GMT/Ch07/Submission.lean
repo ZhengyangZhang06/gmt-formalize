@@ -510,6 +510,61 @@ theorem Submission.dtc_approxTangent_of_null_diff : ∀ (P n : ℕ) (M M' V : Se
     · exact measure_mono_null hsub hnullimg
   rw [hcut, hcut ((fun y : Euclid P => r⁻¹ • (y - x)) '' M'), Measure.restrict_congr_set hae]
 
+/-- **Simon Ch. 6, 3.1 and 2.16** (with Ch. 3, 1.4): if `T = τ(M, θ, ξ)` is integer multiplicity
+in `U` and `V ⊆ U` is open, then `T⌞V = τ(M ∩ V, θ, ξ)` is integer multiplicity in `V`.  The
+restricted triple inherits measurability, rectifiability, positivity and local integrability from
+`(M, θ, ξ)`.  At `Hⁿ`-a.e. `x ∈ M ∩ V` the approximate tangent space of `M` is also that of
+`M ∩ V`, as the removed set `M ∖ (M ∩ V)` misses the open set `V ∋ x`
+(`dtc_approxTangent_of_null_diff`).  A test form supported in `V` vanishes on `M ∖ V`, so its
+integrals over `M` and over `M ∩ V` agree.  Openness of `U` is not used. -/
+theorem Submission.dtc_restrictDomain_isIntegerMultiplicity : ∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n), IsOpen V → IsIntegerMultiplicity T → IsIntegerMultiplicity (T.restrictDomain hVU) := by
+  rintro P n U V hVU T hV ⟨R, hR⟩
+  -- Step 1: `M ∩ V` is Borel
+  have hMV : MeasurableSet (R.carrier ∩ V) := R.measurableSet_carrier.inter hV.measurableSet
+  -- the restricted triple `R' = (M ∩ V, θ, ξ)` in `V`
+  let R' : IMRep V n :=
+    { carrier := R.carrier ∩ V
+      mult := R.mult
+      orient := R.orient
+      measurableSet_carrier := hMV
+      -- Step 2: `M ∩ V ⊆ V`
+      carrier_subset := inter_subset_right
+      -- Step 3: a subset of a countably `n`-rectifiable set is countably `n`-rectifiable
+      rectifiable := R.rectifiable.mono inter_subset_left
+      -- Step 4: `θ` is measurable, and positive on `M ∩ V ⊆ M`
+      measurable_mult := R.measurable_mult
+      mult_pos := fun x hx => R.mult_pos x hx.1
+      -- Step 5: for compact `K ⊆ V`, `(M ∩ V) ∩ K = M ∩ K` and `K ⊆ V ⊆ U`
+      locallyIntegrable_mult := fun K hK hKV => by
+        rw [inter_assoc, inter_eq_right.2 hKV]
+        exact R.locallyIntegrable_mult K hK (hKV.trans hVU)
+      -- Step 6: `Hⁿ⌞(M ∩ V) ≤ Hⁿ⌞M`
+      aestronglyMeasurable_orient :=
+        R.aestronglyMeasurable_orient.mono_measure (Measure.restrict_mono inter_subset_left le_rfl)
+      -- Step 7: at `Hⁿ⌞(M ∩ V)`-a.e. `x`, the plane `Q` oriented by `ξ(x)` stays the approximate
+      -- tangent space, since `(M ∖ (M ∩ V)) ∩ V = ∅`
+      orients := by
+        filter_upwards [ae_restrict_of_ae_restrict_of_subset
+          (inter_subset_left : R.carrier ∩ V ⊆ R.carrier) R.orients, ae_restrict_mem hMV]
+          with x hx hxMV
+        obtain ⟨Q, hQ, hξQ⟩ := hx
+        have hnull : μHE[n] ((R.carrier \ (R.carrier ∩ V)) ∩ V) = 0 := by
+          rw [sdiff_self_inter, sdiff_inter_self, measure_empty]
+        exact ⟨Q, Submission.dtc_approxTangent_of_null_diff P n R.carrier (R.carrier ∩ V) V x Q
+          inter_subset_left hV hxMV.2 hnull hQ, hξQ⟩ }
+  -- Step 8: `T⌞V(ω) = T(ιω) = ∫_M θ⟨ω, ξ⟩ dHⁿ = ∫_{M ∩ V} θ⟨ω, ξ⟩ dHⁿ`, as `ω = 0` off `V`
+  refine ⟨R', fun ω => ?_⟩
+  rw [GeometricCurrentOn.restrictDomain_apply, hR, testFormOnInclusion_coe]
+  change ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)
+      ∂μHE[n] =
+    ∫ x in R.carrier ∩ V, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) n) x)
+      ∂μHE[n]
+  refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero R.measurableSet_carrier
+    inter_subset_left fun x hx => ?_
+  have hxω : x ∉ tsupport (ω : DifferentialForm (Euclid P) n) :=
+    fun h => hx.2 ⟨hx.1, ω.property.2 h⟩
+  rw [image_eq_zero_of_notMem_tsupport hxω, map_zero, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
