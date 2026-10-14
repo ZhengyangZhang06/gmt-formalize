@@ -512,4 +512,49 @@ theorem Submission.idtp_cse_ah_normalized_bump : ∀ c d : ℝ, c < d → ∃ χ
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
+/-- Test functions for the `α`-independence step of the cone-sector endpoint density argument
+(Simon 7.3.3): the primitive of a mean-zero continuous test function is a `C¹` test function.
+Let `ψ(x) = ∫_c^x g`, so `ψ' = g` by the fundamental theorem of calculus and `ψ` is `C¹`.  If
+`spt g ≠ ∅`, let `p = min spt g` and `q = max spt g`, so `c < p ≤ q < d`.  Then `ψ = 0` on
+`(-∞, p)`, as `g` vanishes between `c` and `x`, and `ψ(x) = ∫ g = 0` for `x > q`.  Hence
+`spt ψ ⊆ [p, q] ⊆ (c, d)`. -/
+theorem Submission.idtp_cse_ah_antiderivative_test : ∀ (c d : ℝ) (g : ℝ → ℝ), Continuous g → tsupport g ⊆ Ioo c d → ∫ α, g α = 0 → ∃ ψ : ℝ → ℝ, ContDiff ℝ 1 ψ ∧ tsupport ψ ⊆ Ioo c d ∧ deriv ψ = g := by
+  intro c d g hg hgcd hg0
+  -- step 3: `ψ(x) = ∫_c^x g` has derivative `g x` at every `x` (FTC for the continuous `g`)
+  have hψ : ∀ x, HasDerivAt (fun y => ∫ α in c..y, g α) (g x) x := fun x =>
+    intervalIntegral.integral_hasDerivAt_right (hg.intervalIntegrable c x)
+      (hg.stronglyMeasurableAtFilter _ _) hg.continuousAt
+  have hdψ : deriv (fun y => ∫ α in c..y, g α) = g := funext fun x => (hψ x).deriv
+  -- step 4: `ψ` is differentiable with continuous derivative `g`, hence `C¹`
+  refine ⟨fun y => ∫ α in c..y, g α,
+    contDiff_one_iff_deriv.2 ⟨fun x => (hψ x).differentiableAt, hdψ.symm ▸ hg⟩, ?_, hdψ⟩
+  -- step 2: if `spt g = ∅`, then `g = 0` and `ψ = 0`
+  rcases (tsupport g).eq_empty_or_nonempty with he | hne
+  · obtain rfl := tsupport_eq_empty_iff.1 he
+    simp
+  -- step 1: `spt g` is a closed subset of `[c, d]`, hence compact; `p = min spt g` and
+  -- `q = max spt g` lie in `spt g ⊆ (c, d)`, and `g = 0` off `[p, q]`
+  have hK : IsCompact (tsupport g) :=
+    isCompact_Icc.of_isClosed_subset (isClosed_tsupport g) (hgcd.trans Ioo_subset_Icc_self)
+  have hp := hgcd (hK.sInf_mem hne)
+  have hq := hgcd (hK.sSup_mem hne)
+  have hpq : sInf (tsupport g) ≤ sSup (tsupport g) := csInf_le hK.bddBelow (hK.sSup_mem hne)
+  have hgpq : ∀ α ∉ Icc (sInf (tsupport g)) (sSup (tsupport g)), g α = 0 := fun α hα =>
+    image_eq_zero_of_notMem_tsupport fun h =>
+      hα ⟨csInf_le hK.bddBelow h, le_csSup hK.bddAbove h⟩
+  -- step 6: `spt ψ ⊆ [p, q] ⊆ (c, d)`, once `ψ = 0` off `[p, q]`
+  refine (closure_minimal (support_subset_iff'.2 fun x hx => ?_) isClosed_Icc).trans
+    (Icc_subset_Ioo hp.1 hq.2)
+  show ∫ α in c..x, g α = 0
+  -- step 5: `ψ = 0` off `[p, q]`
+  rcases not_and_or.1 hx with hx | hx <;> rw [not_le] at hx
+  · -- `x < p`: `g` vanishes on `Ι c x`, which lies left of `p`
+    refine intervalIntegral.integral_zero_ae
+      (Eventually.of_forall fun α hα => hgpq α fun h => ?_)
+    exact lt_irrefl _ ((h.1.trans hα.2).trans_lt (max_lt hp.1 hx))
+  · -- `x > q`: `ψ(x) = ∫_{(c, x]} g = ∫ g = 0`, as `g` vanishes off `[p, q] ⊆ (c, x]`
+    rw [intervalIntegral.integral_of_le (hp.1.trans_le (hpq.trans hx.le)).le,
+      setIntegral_eq_integral_of_forall_compl_eq_zero, hg0]
+    exact fun α hα => hgpq α fun h => hα ⟨hp.1.trans_le h.1, h.2.trans hx.le⟩
+
 end GMT.Ch07
