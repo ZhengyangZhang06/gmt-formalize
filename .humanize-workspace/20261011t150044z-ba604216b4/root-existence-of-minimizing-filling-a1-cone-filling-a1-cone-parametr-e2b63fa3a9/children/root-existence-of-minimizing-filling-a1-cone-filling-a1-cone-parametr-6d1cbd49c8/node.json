@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.gram_cone-a1.det_orth-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.gram_cone-a1",
+  "depth": 5,
+  "title": "Gram determinant with first vector orthogonal to the rest: Γ(b, w) = ‖b‖²·Γ(w)",
+  "statement": "Let P, k ∈ ℕ, b ∈ ℝ^P (Euclid P) and w = (w_0, …, w_{k−1}) with every w_i ∈ ℝ^P, and assume ⟨b, w_j⟩ = 0 for every j < k. For a finite family v of vectors of ℝ^P let Γ(v) := det[⟨v_i, v_j⟩]_{i,j}, i.e. Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) (Γ of the empty family is 1). Write (b, w) := Fin.cons b w = (b, w_0, …, w_{k−1}) (a family indexed by Fin (k+1)). Then Γ(b, w) = ‖b‖²·Γ(w).",
+  "lean_statement": "∀ (P k : ℕ) (b : Euclid P) (w : Fin k → Euclid P), (∀ j : Fin k, inner ℝ b (w j) = 0) → Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons b w : Fin (k + 1) → Euclid P) i) ((Fin.cons b w : Fin (k + 1) → Euclid P) j)) = ‖b‖ ^ 2 * Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (w i) (w j))",
+  "lean_name": "ecf_cp_gc_det_orth",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-6d1cbd49c8-a1"
+}

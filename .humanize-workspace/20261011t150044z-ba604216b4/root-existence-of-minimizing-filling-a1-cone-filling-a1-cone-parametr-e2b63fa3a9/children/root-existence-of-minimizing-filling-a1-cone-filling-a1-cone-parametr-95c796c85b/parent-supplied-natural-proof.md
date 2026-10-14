@@ -1,0 +1,103 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.gram_cone-a1`
+- Child DAG node: `root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.gram_cone-a1.orth_residual-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 5 of the parent's supplied proof (orthogonal projection onto W = span w, followed by Pythagoras).
+
+1. (Projection.) Let W := span_ℝ{w_0, …, w_{k−1}} = Submodule.span ℝ (Set.range w) ⊆ ℝ^P.
+   Since ℝ^P = Euclid P is finite-dimensional, W is finite-dimensional, hence complete. So W has an orthogonal projection (the Mathlib instance HasOrthogonalProjection is inferred automatically).
+   Let π := W.starProjection : ℝ^P → ℝ^P.
+
+2. (Coefficients.) π(a) ∈ W (Submodule.starProjection_apply_mem).
+   By Submodule.mem_span_range_iff_exists_fun there is c : Fin k → ℝ with Σ_l c_l w_l = π(a). Fix this c.
+   Then a' := a − Σ_l c_l w_l = a − π(a).
+
+3. (Orthogonality.) a − π(a) ∈ W^⊥ (Submodule.sub_starProjection_mem_orthogonal).
+   For each j < k, w_j ∈ W (Submodule.subset_span applied to Set.mem_range_self j).
+   Since u ∈ W and x ∈ W^⊥ imply ⟨x, u⟩ = 0 (Submodule.inner_left_of_mem_orthogonal), ⟨a − π(a), w_j⟩ = 0.
+   By step 2 this is ⟨a', w_j⟩ = 0, the first conclusion.
+
+4. (Pythagoras.) Since π(a) ∈ W, the same lemma gives ⟨a − π(a), π(a)⟩ = 0.
+   As (a − π(a)) + π(a) = a (sub_add_cancel), norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero gives
+   ‖a‖·‖a‖ = ‖a − π(a)‖·‖a − π(a)‖ + ‖π(a)‖·‖π(a)‖.
+   Because ‖π(a)‖·‖π(a)‖ ≥ 0, this implies ‖a'‖·‖a'‖ ≤ ‖a‖·‖a‖.
+
+5. (Conclusion.) Both norms are ≥ 0 (norm_nonneg), so mul_self_le_mul_self_iff turns ‖a'‖·‖a'‖ ≤ ‖a‖·‖a‖ into ‖a'‖ ≤ ‖a‖. This is the second conclusion.
+   Linear independence of w is never used.
+   For k = 0: W = {0}, π(a) = 0, c is the empty family and a' = a. The orthogonality condition is vacuous and the bound reads ‖a‖ ≤ ‖a‖. ∎
+
+## Key steps
+
+1. W = span(range w) is finite-dimensional, so π = W.starProjection exists. Since π(a) ∈ W, π(a) = Σ_l c_l w_l for some c (Submodule.mem_span_range_iff_exists_fun).
+2. a − π(a) ∈ W^⊥ and w_j ∈ W give ⟨a − Σ_l c_l w_l, w_j⟩ = 0 for every j (Submodule.inner_left_of_mem_orthogonal).
+3. ⟨a − π(a), π(a)⟩ = 0, so Pythagoras gives ‖a‖² = ‖a − π(a)‖² + ‖π(a)‖² ≥ ‖a − π(a)‖².
+4. Since both norms are nonnegative, ‖a − Σ_l c_l w_l‖ ≤ ‖a‖ (mul_self_le_mul_self_iff).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json`
+- `sha256sum local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git show fe459a5a5bca60181bfad6b54943c4001fe016b0:GMT/Ch07/Submission.lean | sha256sum`
+- `python3 -I over dag.json: nodes whose lean_statement contains 'Matrix.det' and 'inner' (63); then those containing 'Matrix.det' but none of fderiv/μH/volume/∫/HasSum/Measurable/Lipschitz (36), printed with lean_name/status/depth`
+- `python3 -I over dag.json: lean_name in {ecf_cp_gc_det_smul, ecf_cp_gc_det_shear, ecf_cp_gc_det_orth, ecf_cp_gc_orth_residual} (rechecked before submission); rg -l -F 'ecf_cp_gc_' runs/20261011T150044Z-ba604216b4/nodes; rg -n -F 'ecf_cp_gc_' GMT .lake/packages/simongmt -g '*.lean'`
+- `rg -n 'theorem det_mul_row|theorem det_mul_column|theorem det_succ_row_zero|theorem det_succ_column_zero|theorem det_of_lowerTriangular|theorem det_of_upperTriangular|theorem det_transpose|theorem det_diagonal|theorem det_mul \(|theorem det_fin_zero|theorem det_isEmpty' mathlib/Mathlib -g '*.lean'`
+- `rg -n 'def IsLowerTriangular|abbrev IsLowerTriangular|theorem det_of_isLowerTriangular|def BlockTriangular' mathlib/Mathlib -g '*.lean'`
+- `rg -n 'mem_span_range_iff_exists_fun|starProjection_apply_mem|theorem sub_starProjection_mem_orthogonal|theorem inner_left_of_mem_orthogonal|theorem norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero|theorem mul_self_le_mul_self_iff|theorem sqrt_mul |theorem sqrt_sq ' mathlib/Mathlib -g '*.lean'`
+- `grep -n 'theorem\|lemma\|def ' mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `lake env lean /tmp/gram-cone-split/Stubs.lean (four child types as sorry stubs + exact frozen parent type assembled from them + #print axioms)`
+- `lake env lean /tmp/gram-cone-split/Dev.lean; lake env lean /tmp/gram-cone-split/Full.lean (complete child proofs + parent assembly under import GMT.Ch07.Submission, #print axioms for all five)`
+- `sed -n 1380,1560p and def _existing_lean_name_problem in /runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py; DECOMPOSITION_AUDIT in /runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/prompts.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-e2b63fa3a9/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-e2b63fa3a9/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-e2b63fa3a9/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Block.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Ring/Unbundled/Basic.lean`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/prompts.py`
+- `/tmp/gram-cone-split/Stubs.lean`
+- `/tmp/gram-cone-split/Dev.lean`
+- `/tmp/gram-cone-split/Full.lean`
+
+Snapshot and contract:
+- The manifest pins project b4d606db1 and Mathlib 25730c7c.
+- The snapshot Contract.lean, the workspace Contract.lean and Submission.lean, and this node's proof-base Submission.lean (fe459a5a5) are byte-identical (sha256 e4148e7f…). So the proof base contains no helper lemmas.
+
+DAG search:
+- 36 pure-algebra Matrix.det statements turned up.
+- None has an identical type to any proposed child, so nothing is reused.
+- The closest accepted lemmas are different statements: dor_lmbsf_pc_gram_det_succ_eq (cofactor identity via a dual vector u, with span hypotheses), dtc_bc_lc_pf_gram_det_le_prod_norm_sq (Hadamard), fvmb_gram_det_le_exp_sum_norm_sq_sub and cmcdt_lpi_unit_orientation_span.
+- The new names ecf_cp_gc_det_smul, ecf_cp_gc_det_shear, ecf_cp_gc_det_orth and ecf_cp_gc_orth_residual occur nowhere in dag.json, nodes/, GMT or simongmt. This was rechecked immediately before submission.
+
+Pinned Mathlib:
+- It provides every lemma the child proofs cite: Matrix.det_mul, det_diagonal, det_transpose, det_succ_row_zero, det_fin_zero and det_mul_row/det_mul_column.
+- Matrix.det_of_isLowerTriangular is present. IsLowerTriangular M := M.BlockTriangular toDual, i.e. M i j = 0 whenever i < j; det_of_lowerTriangular is a deprecated alias.
+- Also present: Submodule.mem_span_range_iff_exists_fun (R explicit), Submodule.starProjection_apply_mem, Submodule.sub_starProjection_mem_orthogonal, Submodule.inner_left_of_mem_orthogonal, norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero (stated as ‖x+y‖*‖x+y‖ = …), mul_self_le_mul_self_iff, Real.sqrt_mul (needs only the first factor ≥ 0) and Real.sqrt_sq.
+- Mathlib's Matrix.gram API (GramMatrix.lean) has no shear or orthogonal-block determinant lemma, which justifies the new children.
+
+Lean checks (lake env lean, pinned toolchain):
+- Stubs.lean: the four child types elaborate under import GMT.Ch07.Submission in namespace GMT.Ch07 with the contract's opens, and the exact frozen parent type compiles from them with 0 errors.
+- Full.lean: complete proofs of all four children and the parent assembly compile. Axioms are only propext, Classical.choice and Quot.sound, with no sorryAx.
+
+Runtime:
+- runtime.py confirms depth 4 < max_depth.
+- It also confirms the collision rule: a reused name must carry an identical type and must not be owned by an active node under another parent.

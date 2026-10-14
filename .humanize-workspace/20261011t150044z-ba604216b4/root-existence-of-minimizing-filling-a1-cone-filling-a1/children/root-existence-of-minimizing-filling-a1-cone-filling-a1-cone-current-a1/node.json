@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_current-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1",
+  "depth": 3,
+  "title": "Simon 6.2.25 and 6.2.30–6.2.32: the cone over a finite-mass compactly supported cycle, its boundary, its support and its form-level formula",
+  "statement": "Let n, P ∈ ℕ and let S ∈ 𝒟_{n+1}(ℝ^P) (a GeometricCurrentOn univ (n + 1) on ℝ^P = Euclid P) have finite mass (S.mass ≠ ∞), compact support spt S (S.support) and ∂S = 0 (S.boundary = 0). Then there is R ∈ 𝒟_{n+2}(ℝ^P) (GeometricCurrentOn univ (n + 2)) such that spt R is compact, ∂R = S (R.boundary = S), and for every test (n+2)-form ω (TestFormOn univ (n + 2)) there is a test (n+1)-form γ (TestFormOn univ (n + 1)) with R(ω) = S(γ) and γ(x)(v_1, …, v_{n+1}) = ∫_0^1 t^{n+1} ω(tx)(x, v_1, …, v_{n+1}) dt for every x ∈ spt S and all v_1, …, v_{n+1} ∈ ℝ^P (here (x, v_1, …, v_{n+1}) is Fin.cons x v and the integral is the interval integral over [0, 1]). (R is Simon's cone 0 ⨯ S = h_#([[(0,1)]] × S), h(t, x) = tx, written as R(ω) = S(ζ·K_{n+2}ω) with the Poincaré homotopy operator K and a smooth cutoff ζ ≡ 1 near spt S.)",
+  "lean_statement": "∀ (n P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)), S.mass ≠ ∞ → IsCompact S.support → S.boundary = 0 → ∃ R : GeometricCurrentOn (univ : Set (Euclid P)) (n + 2), IsCompact R.support ∧ R.boundary = S ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (n + 2), ∃ γ : TestFormOn (univ : Set (Euclid P)) (n + 1), R ω = S γ ∧ ∀ x ∈ S.support, ∀ v : Fin (n + 1) → Euclid P, (γ : DifferentialForm (Euclid P) (n + 1)) x v = ∫ t in (0 : ℝ)..1, t ^ (n + 1) * (ω : DifferentialForm (Euclid P) (n + 2)) (t • x) (Fin.cons x v)",
+  "lean_name": "ecf_cone_current",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.param_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.param_integral-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9310c84433-a1",
+      "result_commit": "445fb9017470896594b24d5d23bf892b8796493b",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-current-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1.piece_integral-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_parametrization-a1",
+  "depth": 4,
+  "title": "One piece of the cone parametrization: measurability, integrability, and ∫_{Cyl(A)} g(τ)·ω(G)(∂G) = ∫_A g(u) ∫_0^1 t^k ω(tF(u))(F(u), ∂F(u)) dt du",
+  "statement": "Let k, P ∈ ℕ, F : ℝ^k → ℝ^P, A ⊆ ℝ^k Borel, g : ℝ^k → ℤ measurable with (g : ℝ) Lebesgue-integrable on A, and G : ℝ^{k+1} → ℝ^P Lipschitz. Notation: ι(t, u) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)); τ(z) := WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) ∈ ℝ^k; Cyl(A) := {z ∈ ℝ^{k+1} : (WithLp.ofLp z) 0 ∈ (0, 1), τ(z) ∈ A}; DH(z) := fderiv ℝ H z; e_a := EuclideanSpace.single a 1; ∂H(z) := (DH(z)e_a)_a. Assume that for all u ∈ A and t ∈ (0, 1), G(ι(t, u)) = t·F(u) and ∂G(ι(t, u)) = Fin.cons (F(u)) (t·∂F(u)). Then: (a) z ↦ g(τ(z)) is measurable; (b) z ↦ (g(τ(z)) : ℝ) is integrable on Cyl(A); (c) let ω : ℝ^P → Λ^{k+1}(ℝ^P) be continuous with compact support (ω : DifferentialForm (Euclid P) (k + 1), Continuous ω, HasCompactSupport ω). Then ∫_{Cyl(A)} g(τ z)·ω(G z)(∂G(z)) dz = ∫_A g(u)·(∫_0^1 t^k·ω(t·F(u))(Fin.cons (F(u)) (∂F(u))) dt) du, where the inner integral is the interval integral ∫ t in 0..1.",
+  "lean_statement": "∀ (k P : ℕ) (F : Euclid k → Euclid P) (A : Set (Euclid k)) (g : Euclid k → ℤ) (G : Euclid (k + 1) → Euclid P), MeasurableSet A → Measurable g → IntegrableOn (fun u => (g u : ℝ)) A → (∃ K : NNReal, LipschitzWith K G) → (∀ u ∈ A, ∀ t ∈ Ioo (0 : ℝ) 1, G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = t • F u ∧ (fun a => fderiv ℝ G (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = (Fin.cons (F u) (t • fun b => fderiv ℝ F u (EuclideanSpace.single b 1)) : Fin (k + 1) → Euclid P)) → Measurable (fun z : Euclid (k + 1) => g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) ∧ IntegrableOn (fun z : Euclid (k + 1) => (g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)) {z : Euclid (k + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) ∈ A} ∧ ∀ ω : DifferentialForm (Euclid P) (k + 1), Continuous ω → HasCompactSupport ω → ∫ z in {z : Euclid (k + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid k) ∈ A}, (g (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ) * ω (G z) (fun a => fderiv ℝ G z (EuclideanSpace.single a 1)) = ∫ u in A, (g u : ℝ) * ∫ t in (0 : ℝ)..1, t ^ k * ω (t • F u) (Fin.cons (F u) (fun b => fderiv ℝ F u (EuclideanSpace.single b 1)))",
+  "lean_name": "ecf_cp_piece_integral",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-36d21f0b90-a1",
+      "result_commit": "8597f3f04cb72a70e4b11d91699ec1f9f45dfc0f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-parametr-a4431a9e11-a1"
+}

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2fbc21c342e737b9878bc4d761f92c6e4dec4e3ad942614b1ca98135e24efe59",
+  "git_delta": {
+    "base_commit": "67e20408e6a0c4e0c3e78a3201dcb5bd03a5101a",
+    "candidate_commit": "dc2d57cd2aa8f6f8f2d5ffccedd4550315f6a9b2",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "1057a7ec3ec11f7aa1d93f4678e58b697ceb77cb565e591775c4b95630348194",
+    "source_sha256": "1fcb29ec9692baf17b432d9c9f5fe0a28d48b051d3a4e6d0c2f08605acac3acd",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.emf_exists_cone_filling",
+      "statement": "∀ (n P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)), IsIntegerMultiplicity S → IsCompact S.support → S.boundary = 0 → ∃ R : GeometricCurrentOn (univ : Set (Euclid P)) (n + 2), IsIntegerMultiplicity R ∧ IsCompact R.support ∧ R.boundary = S",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

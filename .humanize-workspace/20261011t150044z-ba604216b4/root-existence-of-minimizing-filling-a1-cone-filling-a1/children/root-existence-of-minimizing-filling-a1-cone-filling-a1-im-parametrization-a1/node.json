@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.im_parametrization-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1",
+  "depth": 3,
+  "title": "Simon 6.3.1–3.6 and 6.2.12: an integer multiplicity current with compact support has finite mass and an integral Lipschitz parametrization carried by its support",
+  "statement": "Let k, P ∈ ℕ and let S ∈ 𝒟_k(ℝ^P) (GeometricCurrentOn univ k on ℝ^P = Euclid P) be integer multiplicity (IsIntegerMultiplicity S) with spt S (S.support) compact. For F : ℝ^k → ℝ^P write DF(u) := fderiv ℝ F u (the zero map where F is not differentiable), e_a := EuclideanSpace.single a 1, ∂F(u) := (DF(u)e_a)_{a<k} and JF(u) := (det[⟨DF(u)e_a, DF(u)e_b⟩]_{a,b})^{1/2}. Then S.mass ≠ ∞, and there are maps F_j : ℝ^k → ℝ^P, sets A_j ⊆ ℝ^k and functions g_j : ℝ^k → ℤ (j ∈ ℕ) such that: each F_j is Lipschitz; each A_j is Borel; each g_j is measurable and (g_j : ℝ) is Lebesgue integrable on A_j; F_j is differentiable at every point of A_j; F_j(A_j) ⊆ spt S; Σ_j ∫⁻_{A_j} |g_j(u)|·JF_j(u) du < ∞; and for every test k-form ω (TestFormOn univ k) the series Σ_j ∫_{A_j} g_j(u)·ω(F_j(u))(∂F_j(u)) du has sum S(ω) (HasSum).",
+  "lean_statement": "∀ (k P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) k), IsIntegerMultiplicity S → IsCompact S.support → S.mass ≠ ∞ ∧ ∃ (F : ℕ → Euclid k → Euclid P) (A : ℕ → Set (Euclid k)) (g : ℕ → Euclid k → ℤ), (∀ j, ∃ K : NNReal, LipschitzWith K (F j)) ∧ (∀ j, MeasurableSet (A j)) ∧ (∀ j, Measurable (g j)) ∧ (∀ j, IntegrableOn (fun u => (g j u : ℝ)) (A j)) ∧ (∀ j, ∀ u ∈ A j, DifferentiableAt ℝ (F j) u) ∧ (∀ j, F j '' A j ⊆ S.support) ∧ ∑' j, ∫⁻ u in A j, ‖(g j u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ (F j) u (EuclideanSpace.single a 1)) (fderiv ℝ (F j) u (EuclideanSpace.single b 1))))) ≠ ∞ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) k, HasSum (fun j => ∫ u in A j, (g j u : ℝ) * (ω : DifferentialForm (Euclid P) k) (F j u) (fun a => fderiv ℝ (F j) u (EuclideanSpace.single a 1))) (S ω)",
+  "lean_name": "ecf_im_lipschitz_parametrization",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1.parametric_rep-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1.parametric_rep-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-1df3e47686-a1",
+      "result_commit": "ce5ad406ee0378748bd68ea86583609bee5485ff",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-im-parametrization-a1-a1"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_current-a1.homotopy_formula-a1",
+  "parent_id": "root.existence_of_minimizing_filling-a1.cone_filling-a1.cone_current-a1",
+  "depth": 4,
+  "title": "Radial Poincaré homotopy formula (Simon 6.2.25 for h(t, x) = tx at the level of forms): K_{m+1}β is C^∞ and d(K_{m+1}β) + K_{m+2}(dβ) = β",
+  "statement": "Let P, m ∈ ℕ and let β : ℝ^P → Λ^{m+1}(ℝ^P) be a C^∞ (m+1)-form on ℝ^P = Euclid P (β : DifferentialForm (Euclid P) (m + 1) with ContDiff ℝ ∞ β, written ContDiff ℝ (⊤ : ℕ∞) β). For x ∈ ℝ^P and a (k+1)-covector α let ι_xα := α.curryLeft x, the k-covector (v_1, …, v_k) ↦ α(x, v_1, …, v_k). Define the m-form Kβ and the (m+1)-form K(dβ) by the interval integrals over [0, 1] (in the complete normed spaces Covector (Euclid P) m and Covector (Euclid P) (m + 1)):\n(Kβ)(x) := ∫_0^1 t^m • ι_x(β(t x)) dt and (K dβ)(x) := ∫_0^1 t^{m+1} • ι_x(dβ(t x)) dt,\nwhere d = exteriorDerivative (Mathlib extDeriv). Then (i) Kβ is C^∞ (ContDiff ℝ (⊤ : ℕ∞)), and (ii) d(Kβ)(x) + (K dβ)(x) = β(x) for every x ∈ ℝ^P. (This is the radial Poincaré homotopy formula β = d(K_pβ) + K_{p+1}(dβ), p = m + 1 ≥ 1.)",
+  "lean_statement": "∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x) ∧ ∀ x : Euclid P, exteriorDerivative (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ m • (β (t • y)).curryLeft y) x + ∫ t in (0 : ℝ)..1, t ^ (m + 1) • (exteriorDerivative β (t • x)).curryLeft x = β x",
+  "lean_name": "ecf_cc_radial_homotopy_formula",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.param_integral-a1",
+    "root.density_and_tangent_cones-a1.cone-a1.euler_cartan-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.slice-a1.param_integral-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-9310c84433-a1",
+      "result_commit": "445fb9017470896594b24d5d23bf892b8796493b",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.cone-a1.euler_cartan-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-euler-cartan-a1-a1",
+      "result_commit": "77ba6718296797531c46092c9edeed99a93d1890",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-existence-of-minimizing-filling-a1-cone-filling-a1-cone-current-b726621c4e-a1"
+}
