@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "5daf853c4148dc876864e6a6f0d593e7d10fd82206df2d849a9f6aa6d81c7ebf",
+  "git_delta": {
+    "base_commit": "9ac3fc2278dbef08d79cfb6665872f84519f33ab",
+    "candidate_commit": "3662d9ef0b11b26ca3b1d88b7675f6a350256236",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_si_span_bounded_measure_ne_top",
+    "diff_sha256": "52912c54983ed07e4a39775c9eea5ff5c1ddaf08ae1e58df6a2f105b44bbe277",
+    "source_sha256": "3baadfff3a63f8c0bc4db3b91d4541c54ef5c8d72eeb1d51e3a357fef19640d6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_si_span_bounded_measure_ne_top",
+      "statement": "∀ (P k : ℕ) (g : Fin k → Euclid P), Orthonormal ℝ g → ∀ E : Set (Euclid P), E ⊆ (Submodule.span ℝ (Set.range g) : Set (Euclid P)) → Bornology.IsBounded E → μHE[k] E ≠ ∞",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
