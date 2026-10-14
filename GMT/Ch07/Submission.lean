@@ -2779,6 +2779,88 @@ theorem Submission.dor_lmb_fcd_sd_im_concentrated : ∀ (P k : ℕ) (X : Geometr
     _ = X.massOn W := by
         rw [measure_mono_null (Set.compl_subset_compl.mpr hFW) hFc, add_zero, hmass W hW]
 
+/-- **Restriction of an integer multiplicity current to a Borel set** (Simon Ch. 6, 2.9, 3.1 and
+3.2(3)), for `R = (M, θ, ξ)` in `ℝᴾ`.
+(A) For a test form `β`, `x ↦ θ(x) ξ(x)(β(x))` is `Hᵏ`-integrable on `M`: `Hᵏ`-a.e. on `M`,
+`|ξ(x)(α)| ≤ |α|`, so the integrand is bounded by `s θ 1_{spt β}` with `s = sup |β|`, and
+`∫_{M ∩ spt β} θ dHᵏ < ∞`.
+(B) If `X = τ(M, θ, ξ)` vanishes off the closed `F` and `B` is Borel, then `Y = τ(M ∩ B, θ, ξ)`
+is integer multiplicity with `M(Y) = ∫_{M ∩ B} θ dHᵏ = μ_R(B)`, and `Y(ω) = 0` whenever `spt ω`
+misses `F ∩ B`: `μ_R(Fᶜ) = 0` and `θ ≥ 1` on `M` give `Hᵏ(M ∖ F) = 0`, while the integrand
+vanishes on `M ∩ B ∩ F`. -/
+theorem Submission.dor_lmb_fcd_sd_im_restrict : ∀ (P k : ℕ) (R : IMRep (univ : Set (Euclid P)) k), (∀ β : DifferentialForm (Euclid P) k, IsTestForm β → IntegrableOn (fun x => (R.mult x : ℝ) * R.orient x (β x)) R.carrier μHE[k]) ∧ ∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) k) (F B : Set (Euclid P)), R.Represents X → IsClosed F → (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (F) → X ω = 0) → MeasurableSet B → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) k, IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) k, Y ω = ∫ x in R.carrier ∩ B, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k]) ∧ Y.mass = R.measure B ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) k, Disjoint (tsupport (ω : DifferentialForm (Euclid P) k)) (F ∩ B) → Y ω = 0 := by
+  intro P k R
+  have hθm : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+  refine ⟨fun β hβ => ?_, fun X F B hX hF hXF hB => ?_⟩
+  · -- (A), step 1: `x ↦ |β(x)|` is continuous with compact support, hence `|β| ≤ s`
+    obtain ⟨hsmooth, hcpt⟩ := hβ
+    have hSm : MeasurableSet (tsupport β) := (isClosed_tsupport β).measurableSet
+    have hcont : Continuous fun α : Covector (Euclid P) k => covectorEuclideanNorm α := by
+      unfold covectorEuclideanNorm
+      refine Real.continuous_sqrt.comp (continuous_finsetSum _ fun I _ => ?_)
+      split_ifs
+      · exact (continuous_eval_const _).pow 2
+      · exact continuous_const
+    obtain ⟨s, hs⟩ := (hcont.comp hsmooth.continuous).bddAbove_range_of_hasCompactSupport
+      (hcpt.comp_left (covectorEuclideanNorm_zero P k))
+    -- step 4: `x ↦ θ(x) ξ(x)(β(x))` is `Hᵏ⌞M`-a.e. strongly measurable
+    have hev : Continuous fun p : MultiVector P k × Covector (Euclid P) k => p.1 p.2 :=
+      continuous_fst.clm_apply continuous_snd
+    have hmeas : AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (β x))
+        (μHE[k].restrict R.carrier) :=
+      (measurable_from_nat.comp R.measurable_mult).aestronglyMeasurable.mul
+        (hev.comp_aestronglyMeasurable
+          (R.aestronglyMeasurable_orient.prodMk hsmooth.continuous.aestronglyMeasurable))
+    -- step 3: `s θ 1_{spt β}` is integrable on `M`, as `∫_{M ∩ spt β} θ dHᵏ < ∞`
+    have hint : Integrable (fun x => s * (tsupport β).indicator (fun x => (R.mult x : ℝ)) x)
+        (μHE[k].restrict R.carrier) := by
+      refine Integrable.const_mul ?_ s
+      rw [integrable_indicator_iff hSm, IntegrableOn, Measure.restrict_restrict hSm]
+      have h := integrable_toReal_of_lintegral_ne_top
+        (μ := μHE[k].restrict (tsupport β ∩ R.carrier)) (f := fun x => (R.mult x : ℝ≥0∞))
+        hθm.aemeasurable
+        (by rw [inter_comm]; exact R.locallyIntegrable_mult _ hcpt (subset_univ _))
+      simpa using h
+    -- step 2: `|θ ξ(β)| ≤ θ |β| ≤ s θ 1_{spt β}` `Hᵏ⌞M`-a.e., by (IMC)(d)
+    refine hint.mono' hmeas ?_
+    filter_upwards [Submission.cmc_imRep_locality_restrict_sub.2.2.2 P k univ R] with x hx
+    by_cases hxS : x ∈ tsupport β
+    · rw [indicator_of_mem hxS, norm_mul, Real.norm_natCast, Real.norm_eq_abs, mul_comm s]
+      exact mul_le_mul_of_nonneg_left ((hx (β x)).trans (hs (mem_range_self x)))
+        (Nat.cast_nonneg _)
+    · simp [indicator_of_notMem hxS, image_eq_zero_of_notMem_tsupport hxS]
+  · -- (B), step 5: `θ Hᵏ⌞M` does not charge `Fᶜ`, so `Hᵏ(M ∖ F) = 0` as `θ ≥ 1` on `M`
+    have hnull : μHE[k] (R.carrier ∩ Fᶜ) = 0 := by
+      have h0 := (Submission.dor_lmb_fcd_sd_im_concentrated P k X R F hX hF hXF).1
+      rw [IMRep.measure, withDensity_apply_eq_zero' hθm.aemeasurable,
+        Measure.restrict_apply' R.measurableSet_carrier] at h0
+      refine measure_mono_null ?_ h0
+      intro x hx
+      exact ⟨⟨by simpa using (R.mult_pos x hx.1).ne', hx.2⟩, hx.1⟩
+    -- step 6: `Y = τ(M ∩ B, θ, ξ)` by (IMC)(b)
+    obtain ⟨Y, R', hY, hcar, hmult, horient⟩ :=
+      Submission.cmc_imRep_locality_restrict_sub.2.1 P k univ R B isOpen_univ hB
+    have hrep : ∀ ω : TestFormOn (univ : Set (Euclid P)) k, Y ω = ∫ x in R.carrier ∩ B,
+        (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) k) x) ∂μHE[k] := by
+      intro ω
+      rw [hY ω, IMRep.action, hcar, hmult, horient]
+    refine ⟨Y, ⟨R', hY⟩, hrep, ?_, fun ω hω => ?_⟩
+    · -- step 7: `M(Y) = μ_{R'}(ℝᴾ) = ∫_{M ∩ B} θ dHᵏ = μ_R(B)` by (C1)
+      rw [GeometricCurrentOn.mass, (Submission.dor_imrep_massOn_eq_measure_and_support P k univ
+        Y R' isOpen_univ hY).1 univ isOpen_univ]
+      simp only [IMRep.measure, hcar, hmult]
+      rw [withDensity_apply _ MeasurableSet.univ, withDensity_apply _ hB, Measure.restrict_univ,
+        Measure.restrict_restrict hB, inter_comm]
+    · -- step 8: the integrand vanishes on `M ∩ B ∩ F`, and `(M ∩ B) ∖ F` is `Hᵏ`-null
+      rw [hrep ω]
+      refine integral_eq_zero_of_ae ?_
+      rw [EventuallyEq, ae_restrict_iff' (R.measurableSet_carrier.inter hB)]
+      refine ae_iff.2 (measure_mono_null (fun x hx => ?_) hnull)
+      obtain ⟨⟨hxM, hxB⟩, hne⟩ := Classical.not_imp.1 hx
+      refine ⟨hxM, fun hxF => hne ?_⟩
+      rw [image_eq_zero_of_notMem_tsupport (disjoint_right.1 hω ⟨hxF, hxB⟩), map_zero, mul_zero,
+        Pi.zero_apply]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
