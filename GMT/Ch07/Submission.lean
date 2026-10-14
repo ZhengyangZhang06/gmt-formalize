@@ -595,6 +595,112 @@ theorem Submission.idtp_cse_bml_rbi_projection_residual_le : ∀ (P : ℕ) (Q : 
   rw [hres, norm_smul, Real.norm_of_nonneg hs']
   exact mul_le_mul_of_nonneg_left hle hs'
 
+/-- **Rescaled box inclusions** (box-mass limits in the proof of Simon 7.3.3).  With the open box
+`U = {w : ‖w‖ < 3, |⟨w, a⟩| < 1 − η, |⟨w, e⟩| < 1 − η}`, the closed box
+`K = {w : ‖w‖ ≤ 3, |⟨w, a⟩| ≤ 1 + η, |⟨w, e⟩| ≤ 1 + η}` and the sector
+`Z(s, s') = {x : ⟨x, a⟩ > 0, |‖x‖ − 1| < s', |arctan(⟨x, e⟩/⟨x, a⟩)| < s', ‖x − πx‖ < s‖x‖}`,
+`η_{a,s'}⁻¹(U) ⊆ Z(s, s')` and `Z(s, s') ∩ B_{3s'}(a) ⊆ η_{a,s'}⁻¹(K)`.  Write `x = a + s'w` with
+`w = η_{a,s'}(x) = s'⁻¹(x − a)`; then `⟨x, a⟩ = 1 + p`, `⟨x, e⟩ = q` for `p = s'⟨w, a⟩`,
+`q = s'⟨w, e⟩`, and for `‖w‖ ≤ 3`: `|‖x‖ − 1 − p| ≤ 30s'²`, `|arctan(q/(1 + p)) − q| ≤ 30s'²` and
+`‖x − πx‖ ≤ s'‖w‖`.  If `w ∈ U` then `|p|, |q| < s'(1 − η)`, so `x ∈ Z(s, s')` as `30s' < η` and
+`6s' < s`; if `x ∈ Z(s, s')` and `|x − a| < 3s'` then `‖w‖ < 3` and
+`|p|, |q| < s' + 30s'² < s'(1 + η)`. -/
+theorem Submission.idtp_cse_bml_rescaled_box_inclusions : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s η s' : ℝ), a ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < η → 0 < s' → 20 * s' < 1 → 30 * s' < η → 6 * s' < s → dilation a s' ⁻¹' {w : Euclid P | ‖w‖ < 3 ∧ |inner ℝ w a| < 1 - η ∧ |inner ℝ w e| < 1 - η} ⊆ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∧ {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} ∩ ball a (3 * s') ⊆ dilation a s' ⁻¹' {w : Euclid P | ‖w‖ ≤ 3 ∧ |inner ℝ w a| ≤ 1 + η ∧ |inner ℝ w e| ≤ 1 + η} := by
+  intro P Q a e s η s' haQ ha he hae hη hs h20 h30 h6
+  -- `η_{a,s'}(y) = −s'⁻¹a + s'⁻¹y`, so `η_{a,s'}(a + s'w) = w` and `x = a + s'η_{a,s'}(x)`
+  have hdil : ∀ w : Euclid P, dilation a s' (a + s' • w) = w := by
+    intro w
+    simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_add,
+      smul_smul, inv_mul_cancel₀ hs.ne', one_smul, neg_add_cancel_left]
+  have hrep : ∀ x : Euclid P, ∃ w : Euclid P, x = a + s' • w := by
+    intro x
+    refine ⟨dilation a s' x, ?_⟩
+    simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_add,
+      smul_neg, smul_smul, mul_inv_cancel₀ hs.ne', one_smul, add_neg_cancel_left]
+  -- `⟨x, a⟩ = 1 + p` and `⟨x, e⟩ = q`, as `‖a‖ = 1` and `⟨a, e⟩ = 0`
+  have hxa : ∀ w : Euclid P, inner ℝ (a + s' • w) a = 1 + s' * inner ℝ w a := by
+    intro w
+    rw [inner_add_left, real_inner_self_eq_norm_sq, ha, one_pow, real_inner_smul_left]
+  have hxe : ∀ w : Euclid P, inner ℝ (a + s' • w) e = s' * inner ℝ w e := by
+    intro w
+    rw [inner_add_left, hae, real_inner_smul_left, zero_add]
+  -- `|s't| ≤ 3s'` whenever `|t| ≤ 3`
+  have h3 : ∀ t : ℝ, |t| ≤ 3 → |s' * t| ≤ 3 * s' := by
+    intro t ht
+    rw [abs_mul, abs_of_pos hs, mul_comm]
+    exact mul_le_mul_of_nonneg_right ht hs.le
+  -- the error `30s'²` is less than `s'η`
+  have hsη : 30 * s' ^ 2 < s' * η := by nlinarith
+  constructor
+  · -- step 2: `η_{a,s'}⁻¹(U) ⊆ Z(s, s')`
+    intro x hx
+    obtain ⟨w, rfl⟩ := hrep x
+    rw [Set.mem_preimage, hdil] at hx
+    obtain ⟨hw3, hwa, hwe⟩ := hx
+    -- `|p|, |q| < s'(1 − η) < s'`
+    have hp : |s' * inner ℝ w a| < s' * (1 - η) := by
+      rw [abs_mul, abs_of_pos hs]
+      exact mul_lt_mul_of_pos_left hwa hs
+    have hq : |s' * inner ℝ w e| < s' * (1 - η) := by
+      rw [abs_mul, abs_of_pos hs]
+      exact mul_lt_mul_of_pos_left hwe hs
+    have hp3 : |s' * inner ℝ w a| ≤ 3 * s' := h3 _ (by linarith)
+    have hq3 : |s' * inner ℝ w e| ≤ 3 * s' := h3 _ (by linarith)
+    have hN := Submission.idtp_cse_bml_rbi_norm_expansion P a w s' ha hw3.le hs h20
+    have hA := Submission.idtp_cse_bml_rbi_arctan_quotient_estimate _ _ s' hs h20 hp3 hq3
+    have hR := Submission.idtp_cse_bml_rbi_projection_residual_le P Q a w s' haQ hs.le
+    -- `|‖x‖ − 1| ≤ |p| + 30s'² < s'(1 − η) + s'η = s'`
+    have hnorm : |‖a + s' • w‖ - 1| < s' := by
+      rw [abs_le] at hN
+      rw [abs_lt] at hp ⊢
+      constructor <;> linarith
+    simp only [Set.mem_ofPred_eq]
+    rw [hxa, hxe]
+    refine ⟨?_, hnorm, ?_, ?_⟩
+    · -- `⟨x, a⟩ = 1 + p > 1 − s' > 0`
+      have := (abs_lt.1 hp).1
+      nlinarith
+    · -- `|arctan(q/(1 + p))| ≤ |q| + 30s'² < s'(1 − η) + s'η = s'`
+      rw [abs_le] at hA
+      rw [abs_lt] at hq ⊢
+      constructor <;> linarith
+    · -- `‖x − πx‖ ≤ s'‖w‖ < 3s' < s‖x‖`, as `‖x‖ > 1 − s' > 1/2` and `s > 6s'`
+      have hx1 := (abs_lt.1 hnorm).1
+      have hxpos : 0 < ‖a + s' • w‖ := by linarith
+      calc ‖a + s' • w - Q.starProjection (a + s' • w)‖ ≤ s' * ‖w‖ := hR
+        _ < 3 * s' := by nlinarith
+        _ < s * ‖a + s' • w‖ := by nlinarith [mul_pos (sub_pos.2 h6) hxpos]
+  · -- step 3: `Z(s, s') ∩ B_{3s'}(a) ⊆ η_{a,s'}⁻¹(K)`
+    rintro x ⟨hx, hxB⟩
+    obtain ⟨w, rfl⟩ := hrep x
+    simp only [Set.mem_ofPred_eq] at hx
+    rw [hxa, hxe] at hx
+    obtain ⟨-, hx1, hxat, -⟩ := hx
+    rw [Set.mem_preimage, hdil]
+    -- `s'‖w‖ = ‖x − a‖ < 3s'`, so `‖w‖ < 3`
+    have hw3 : ‖w‖ < 3 := by
+      rw [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+        abs_of_pos hs] at hxB
+      nlinarith
+    -- Cauchy–Schwarz: `|p|, |q| ≤ s'‖w‖ ≤ 3s'`
+    have hp3 : |s' * inner ℝ w a| ≤ 3 * s' :=
+      h3 _ ((abs_real_inner_le_norm w a).trans (by rw [ha, mul_one]; exact hw3.le))
+    have hq3 : |s' * inner ℝ w e| ≤ 3 * s' :=
+      h3 _ ((abs_real_inner_le_norm w e).trans (by rw [he, mul_one]; exact hw3.le))
+    have hN := Submission.idtp_cse_bml_rbi_norm_expansion P a w s' ha hw3.le hs h20
+    have hA := Submission.idtp_cse_bml_rbi_arctan_quotient_estimate _ _ s' hs h20 hp3 hq3
+    rw [abs_le] at hN hA
+    rw [abs_lt] at hx1 hxat
+    refine ⟨hw3.le, ?_, ?_⟩
+    · -- `|p| ≤ |‖x‖ − 1| + 30s'² < s' + s'η`, so `|⟨w, a⟩| < 1 + η`
+      have hu : s' * inner ℝ w a < s' * (1 + η) := by linarith
+      have hl : s' * -(1 + η) < s' * inner ℝ w a := by linarith
+      exact abs_le.2 ⟨(lt_of_mul_lt_mul_left hl hs.le).le, (lt_of_mul_lt_mul_left hu hs.le).le⟩
+    · -- `|q| ≤ |arctan(q/(1 + p))| + 30s'² < s' + s'η`, so `|⟨w, e⟩| < 1 + η`
+      have hu : s' * inner ℝ w e < s' * (1 + η) := by linarith
+      have hl : s' * -(1 + η) < s' * inner ℝ w e := by linarith
+      exact abs_le.2 ⟨(lt_of_mul_lt_mul_left hl hs.le).le, (lt_of_mul_lt_mul_left hu hs.le).le⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
