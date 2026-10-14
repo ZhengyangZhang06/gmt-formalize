@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "582b5329a6ae4286c2b7175b71de453a95c3859f2c3d0b40e8f589c96ab3bf4b",
+  "git_delta": {
+    "base_commit": "c608787c3dbde1d59429c7b6f4bf3c0ea829c7f8",
+    "candidate_commit": "afdaff27bcb5ef566e87f48213e97d2b44e254b7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_dtop_cp_proj_covector_norm",
+    "diff_sha256": "81f873fc2fad93d3bb60dafefd06f82ed8c5016ae0ac6ea321a4ee3ed3b4270f",
+    "source_sha256": "7a6f1117f2fa7e271cddc36b4592456396b5c28b1340c4a38eb74f3dfbc0c87f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_dtop_cp_proj_covector_norm",
+      "statement": "∀ (P d : ℕ) (p : Euclid (P + 1) →L[ℝ] Euclid P), (∀ (y : Euclid (P + 1)) (i : Fin P), p y i = y (Fin.castSucc i)) → ∀ α : Covector (Euclid P) d, covectorEuclideanNorm (α.compContinuousLinearMap p) = covectorEuclideanNorm α",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
