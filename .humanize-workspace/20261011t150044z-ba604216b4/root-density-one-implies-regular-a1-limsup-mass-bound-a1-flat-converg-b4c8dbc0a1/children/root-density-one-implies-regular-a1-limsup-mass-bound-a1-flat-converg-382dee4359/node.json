@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.isometric_pushforward-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1",
+  "depth": 5,
+  "title": "Push-forward of an integer multiplicity current by a linear isometric embedding is integer multiplicity and keeps its mass (parent steps 1–2)",
+  "statement": "Conventions: ℝ^P = Euclid P and Hᵈ = μHE[d] (Mathlib's normalized Euclidean Hausdorff measure). For U ⊆ ℝ^P, 𝒟^d(U) = TestFormOn U d (smooth d-forms on ℝ^P with compact support contained in U) and 𝒟_d(U) = GeometricCurrentOn U d; ∂X = X.boundary (∂X(ω) = X(dω), d = exteriorDerivative); X − Y is the contract subtraction (pointwise on test forms). For G ⊆ ℝ^P, M_G(X) = X.massOn G is the supremum of max(X(ω), 0) over ω ∈ 𝒟^d(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x, where |·| is the Euclidean coefficient norm of covectors (covectorEuclideanNorm: |α|² = Σ_I α(e_{I(0)}, …, e_{I(d−1)})² over strictly increasing I); M(X) = X.mass = M_U(X). An IMRep R = (M, θ, ξ) in U is the contract structure IMRep U d; R represents X when X(ω) = ∫_M θ⟨ω, ξ⟩ dHᵈ for every ω ∈ 𝒟^d(U), where ⟨ω, ξ⟩(x) = ξ(x)(ω(x)); μ_R = θ·Hᵈ⌞M is R.measure; X is integer multiplicity (IM, IsIntegerMultiplicity X) if some IMRep represents it. e_i = EuclideanSpace.single i 1 denotes the standard basis vector of the respective space; castSucc : Fin P → Fin (P + 1) and last = Fin.last P. Let P, Q, d ∈ ℕ, let L : ℝ^P → ℝ^Q be a continuous linear map which is an isometry (|Lx − Lx'| = |x − x'|), let hL be a proof that x ↦ 0 + Lx is a proper map (automatic for an isometry; it is only needed to form the push-forward), and let T ∈ 𝒟_d(ℝ^P) (domain univ) be integer multiplicity. Let L#T := GeometricCurrentOn.affinePushforward L 0 hL T ∈ 𝒟_d(ℝ^Q) (domain univ = preimage of univ; Simon Ch. 6, 2.23 for the proper linear map L), i.e. L#T(ω) = T(L^#ω) with L^#ω(x) = ω(Lx)(L·, …, L·). Then L#T is integer multiplicity and M(L#T) = M(T) in [0, ∞].",
+  "lean_statement": "∀ (P Q d : ℕ) (L : Euclid P →L[ℝ] Euclid Q) (hL : IsProperMap (fun x => (0 : Euclid Q) + L x)) (T : GeometricCurrentOn (univ : Set (Euclid P)) d), Isometry L → IsIntegerMultiplicity T → IsIntegerMultiplicity (GeometricCurrentOn.affinePushforward (V := (univ : Set (Euclid Q))) L 0 hL T) ∧ (GeometricCurrentOn.affinePushforward (V := (univ : Set (Euclid Q))) L 0 hL T).mass = T.mass",
+  "lean_name": "dor_lmb_fc_dtop_isometric_pushforward_im",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-382dee4359-a1"
+}
