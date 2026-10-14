@@ -451,6 +451,89 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The flat current `c[[Q']]`, `Q' = span τ` (Simon 6.2.2 for a plane, as in the proof of 7.3.3):
+`R = (Q', |c|, sgn c · τ₁ ∧ ⋯ ∧ τₙ)` is an integer multiplicity triple in `ℝᴾ` with
+`τ(R)(ω) = c ∫_{Q'} ω(τ) dHⁿ` and `μ_R = |c| Hⁿ⌞Q'`.  `Q'` is an `n`-plane (`τ` is linearly
+independent), closed, the range of a linear isometry `ℝⁿ → ℝᴾ` (so countably `n`-rectifiable),
+locally `Hⁿ`-finite, and is its own approximate tangent space at each of its points. -/
+theorem Submission.idtp_cse_etp_plane_imrep : ∀ (P n : ℕ) (τ : Fin n → Euclid P) (c : ℤ), Orthonormal ℝ τ → c ≠ 0 → ∃ R : IMRep (univ : Set (Euclid P)) n, (∀ ω : DifferentialForm (Euclid P) n, R.action ω = (c : ℝ) * ∫ x in (Submodule.span ℝ (Set.range τ) : Set (Euclid P)), ω x τ ∂μHE[n]) ∧ R.measure = (c.natAbs : ℝ≥0∞) • (μHE[n] : Measure (Euclid P)).restrict (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) := by
+  intro P n τ c hτ hc
+  -- the plane `Q = span τ` has dimension `n` and is closed, hence Borel
+  have hQrank : Module.finrank ℝ (Submodule.span ℝ (Set.range τ)) = n := by
+    rw [finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  have hQmeas : MeasurableSet (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) :=
+    (Submodule.span ℝ (Set.range τ)).closed_of_finiteDimensional.measurableSet
+  set Q := Submodule.span ℝ (Set.range τ)
+  -- `Q` is the range of a linear isometry `ℝⁿ → ℝᴾ`, hence countably `n`-rectifiable
+  have hrect : CountablyRectifiable n (Q : Set (Euclid P)) := by
+    let e : EuclideanSpace ℝ (Fin n) ≃ₗᵢ[ℝ] Q :=
+      ((stdOrthonormalBasis ℝ Q).reindex (finCongr hQrank)).repr.symm
+    have hrange : Set.range (Q.subtypeₗᵢ.comp e.toLinearIsometry) = (Q : Set (Euclid P)) := by
+      ext y
+      constructor
+      · rintro ⟨v, rfl⟩
+        exact (e v).2
+      · intro hy
+        exact ⟨e.symm ⟨y, hy⟩, by simp⟩
+    rw [← hrange]
+    exact Poincare.SimonGMT.Chapter03.countablyRectifiable_range
+      (Q.subtypeₗᵢ.comp e.toLinearIsometry).lipschitzWith
+  -- the orientation `sgn c · τ₁ ∧ ⋯ ∧ τₙ`, i.e. `α ↦ sgn c · α(τ)`
+  let ξ : MultiVector P n := ((Int.sign c : ℤ) : ℝ) • ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ τ
+  have hξ : ∀ α : Covector (Euclid P) n, ξ α = ((Int.sign c : ℤ) : ℝ) * α τ := fun α => rfl
+  have hcs : ((c.natAbs : ℕ) : ℝ) * ((Int.sign c : ℤ) : ℝ) = (c : ℝ) := by
+    have h : ((c.sign * (c.natAbs : ℤ) : ℤ) : ℝ) = (c : ℝ) := by rw [Int.sign_mul_natAbs]
+    rw [Int.cast_mul, Int.cast_natCast, mul_comm] at h
+    exact h
+  refine ⟨{ carrier := (Q : Set (Euclid P))
+            mult := fun _ => c.natAbs
+            orient := fun _ => ξ
+            measurableSet_carrier := hQmeas
+            carrier_subset := subset_univ _
+            rectifiable := hrect
+            measurable_mult := measurable_const
+            mult_pos := fun _ _ => Int.natAbs_pos.mpr hc
+            locallyIntegrable_mult := ?_
+            aestronglyMeasurable_orient := aestronglyMeasurable_const
+            orients := ?_ }, ?_, ?_⟩
+  · -- local finiteness: `Hⁿ⌞Q` is finite on compact sets
+    intro K hK _
+    have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule
+      (E := Euclid P) hQrank
+    have hfin : (μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P)) K < ∞ :=
+      hK.measure_lt_top
+    rw [Measure.restrict_apply' hQmeas, Set.inter_comm] at hfin
+    simp only [lintegral_const, Measure.restrict_apply_univ]
+    exact ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) hfin.ne
+  · -- every point of `Q` has approximate tangent space `Q`, oriented by `±τ`
+    filter_upwards [Poincare.SimonGMT.Chapter03.ae_hasApproximateTangentSpaceAt_submodule
+      (E := Euclid P) hQrank] with x hx
+    refine ⟨Q, hx, τ, hτ, rfl, ?_⟩
+    rcases lt_or_gt_of_ne hc with hneg | hpos
+    · right
+      intro α
+      show ξ α = -α τ
+      rw [hξ, Int.sign_eq_neg_one_of_neg hneg]
+      push_cast
+      ring
+    · left
+      intro α
+      show ξ α = α τ
+      rw [hξ, Int.sign_eq_one_of_pos hpos]
+      push_cast
+      ring
+  · -- the action: `|c| · sgn c = c`
+    intro ω
+    show ∫ x in (Q : Set (Euclid P)), ((c.natAbs : ℕ) : ℝ) * ξ (ω x) ∂μHE[n] = _
+    rw [← integral_const_mul]
+    congr 1
+    funext x
+    rw [hξ, ← mul_assoc, hcs]
+  · -- the measure: a constant density
+    show ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P))).withDensity
+      (fun _ => ((c.natAbs : ℕ) : ℝ≥0∞)) = _
+    exact withDensity_const _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
