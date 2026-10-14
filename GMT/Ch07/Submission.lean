@@ -4568,6 +4568,414 @@ theorem Submission.codim1_hcp_sc_stationary_integration_by_parts : ∀ (P m : �
     exact tendsto_nhds_unique hTA ((tendsto_congr h1).2 hTB.neg)
   exact ⟨hIφA, hIφB, hEq⟩
 
+/-- **Simons' Hardy-type inequality on a stable minimal hypercone** (Simon, Appendix B, proof of
+B.2, inequalities (1)–(3)).  `P_x` is the orthogonal projection onto `T_xM`, `δ_j g(x)` the
+tangential derivative `fderivWithin ℝ g M x (P_x e_j)`, `|A|²(x) = Σ_j |Dν(x)(P_x e_j)|²` and
+`|A| = √|A|²`.  For `ψ` locally Lipschitz on `M` and vanishing on `M` off a compact `C ⊆ M`:
+* `M = closure M \ {0}` is Borel; on `M`, `P_x = Π_{A₀} − ν(x) ⊗ ν(x)` (normal complement), so
+  `|A|²` agrees on `M` with the `C²` function `Σ_j |Dν(Π_{A₀}e_j − (ν·e_j)ν)|²` on `O`, and
+  `|A|` is the `ℓ²` norm of a `C¹` map, hence locally Lipschitz on `M`;
+* by Rademacher, `ψ` and `|A|` are differentiable within `M` at a.e. point; there
+  `δ_j(|A|ψ) = |A|δ_jψ + ψδ_j|A|`, `δ_jψ² = 2ψδ_jψ`, `δ_j|A|² = 2|A|δ_j|A|`, and `δ_j|A| = 0` where
+  `|A| = 0` (`|A| ≥ 0` is minimal along tangent curves);  the Simons identity and the cone defect
+  give `½Δ_M|A|² + |A|⁴ ≥ 2|A|²/|x|² + Σ_j(δ_j|A|)²` (B.2 (1)), hence a.e.
+  `2Σ_j(δ_j(|A|ψ))² ≤ 2|A|²Σ_j(δ_jψ)² + ψ²Δ_M|A|² + 2ψ²|A|⁴ − 4ψ²|A|²/|x|² + Σ_jδ_jψ²δ_j|A|²`;
+* every term on the right is integrable (`Σ_j(δ_jψ)² ∈ L¹` by the smooth approximations (HL)),
+  stability with `ζ = |A|ψ` gives `∫|A|⁴ψ² ≤ ∫Σ_j(δ_j(|A|ψ))²` (B.2 (2)), and integration by parts
+  gives `∫Σ_jδ_jψ²δ_j|A|² = −∫ψ²Δ_M|A|²`; combining, `2∫ψ²|A|²/|x|² ≤ ∫|A|²Σ_j(δ_jψ)²`
+  (B.2 (3)). -/
+theorem Submission.codim1_hcp_sc_simons_hardy_inequality : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (0 : Euclid P) ∉ M → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → closure M ⊆ insert 0 M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → (0 : Euclid P) ∉ tsupport X → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[m] = 0) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap) = 0) → (∀ ζ : Euclid P → ℝ, LocallyLipschitzOn M ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∫ x in M, (∑ j : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))‖ ^ 2) * ζ x ^ 2 ∂μHE[m] ≤ ∫ x in M, ∑ j : Fin P, (fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2 ∂μHE[m]) → ((∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → ∀ j : Fin P, AEStronglyMeasurable (fun x => fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) (μHE[m].restrict M)) ∧ ∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∃ (C' : Set (Euclid P)) (ζs : ℕ → Euclid P → ℝ), IsCompact C' ∧ C' ⊆ M ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ζs k) ∧ HasCompactSupport (ζs k)) ∧ (∀ k, ∀ x ∈ M, x ∉ C' → ζs k x = 0) ∧ TendstoUniformlyOn ζs ζ atTop M ∧ Tendsto (fun k => ∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P, (fderiv ℝ (ζs k) x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)) - fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2) ∂μHE[m]) atTop (𝓝 0)) → ∀ ψ : Euclid P → ℝ, LocallyLipschitzOn M ψ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ψ x = 0) → 2 * (∫ x in M, ψ x ^ 2 * (∑ j : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))‖ ^ 2) / ‖x‖ ^ 2 ∂μHE[m]) ≤ ∫ x in M, (∑ j : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))‖ ^ 2) * (∑ j : Fin P, (fderivWithin ℝ ψ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2) ∂μHE[m] := by
+  intro P m A₀ M ν hA₀ hMA h0 hM hcl hcone hfin hstat hνO hν hH hstab hHL ψ hψ hψC
+  obtain ⟨O, hO, hMO, hνC⟩ := hνO
+  obtain ⟨C, hCc, hCM, hψ0⟩ := hψC
+  -- `Pe x j = P_x e_j` and `A2 = |A|²`
+  set Pe : Euclid P → Fin P → Euclid P := fun x j =>
+    (Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)
+  set A2 : Euclid P → ℝ := fun z => ∑ i : Fin P, ‖fderiv ℝ ν z (Pe z i)‖ ^ 2
+  have hA2nn : ∀ y, 0 ≤ A2 y := fun y => Finset.sum_nonneg fun i _ => sq_nonneg _
+  have hmem : ∀ x j, Pe x j ∈ Submodule.span ℝ (tangentSpace M x) := fun x j =>
+    Submodule.starProjection_apply_mem _ _
+  -- Step 0(a): `M = closure M \ {0}` is Borel, and `μ⌞M (C) < ∞`
+  have hMmeas : MeasurableSet M := by
+    have hMeq : M = closure M \ {0} := by
+      ext x
+      refine ⟨fun hx => ⟨subset_closure hx, fun hx0 => h0 ?_⟩, fun hx => ?_⟩
+      · rwa [Set.mem_singleton_iff.mp hx0] at hx
+      · rcases Set.mem_insert_iff.mp (hcl hx.1) with hx' | hx'
+        · exact absurd (Set.mem_singleton_iff.mpr hx') hx.2
+        · exact hx'
+    rw [hMeq]
+    exact isClosed_closure.measurableSet.diff (measurableSet_singleton 0)
+  have hCmeas : MeasurableSet C := hCc.isClosed.measurableSet
+  have hμMC : (μHE[m].restrict M) C ≠ ∞ := by
+    rw [Measure.restrict_apply hCmeas, Set.inter_eq_left.mpr hCM]
+    have h := hfin C hCc
+    rwa [Set.inter_eq_right.mpr hCM] at h
+  -- integrability on `M` of a.e.-strongly measurable functions bounded on `C`, zero on `M \ C`
+  have hint : ∀ g : Euclid P → ℝ, AEStronglyMeasurable g (μHE[m].restrict M) →
+      (∃ B, ∀ x ∈ C, ‖g x‖ ≤ B) → (∀ x ∈ M, x ∉ C → g x = 0) →
+      Integrable g (μHE[m].restrict M) := by
+    rintro g hg ⟨B, hB⟩ hg0
+    refine ((integrableOn_const (C := B) hμMC).integrable_indicator hCmeas).mono' hg ?_
+    filter_upwards [ae_restrict_mem hMmeas] with x hx
+    by_cases hxC : x ∈ C
+    · rw [Set.indicator_of_mem hxC]
+      exact hB x hxC
+    · simp [Set.indicator_of_notMem hxC, hg0 x hx hxC]
+  have hintc : ∀ g : Euclid P → ℝ, ContinuousOn g M → (∀ x ∈ M, x ∉ C → g x = 0) →
+      Integrable g (μHE[m].restrict M) := fun g hg hg0 =>
+    hint g (hg.aestronglyMeasurable hMmeas) (hCc.exists_bound_of_continuousOn (hg.mono hCM)) hg0
+  -- Step 0(c2): tangential derivatives of functions vanishing on `M \ C` vanish there
+  have hzero : ∀ g : Euclid P → ℝ, (∀ x ∈ M, x ∉ C → g x = 0) →
+      ∀ x ∈ M, x ∉ C → fderivWithin ℝ g M x = 0 := by
+    intro g hg x hx hxC
+    have hloc : g =ᶠ[𝓝[M] x] fun _ => (0 : ℝ) := by
+      filter_upwards [inter_mem_nhdsWithin M (hCc.isClosed.isOpen_compl.mem_nhds hxC)] with y hy
+      exact hg y hy.1 hy.2
+    rw [hloc.fderivWithin_eq (hg x hx hxC), fderivWithin_const_apply]
+  -- products of locally Lipschitz real functions are locally Lipschitz
+  have hprod : ∀ f g : Euclid P → ℝ, LocallyLipschitzOn M f → LocallyLipschitzOn M g →
+      LocallyLipschitzOn M (fun y => f y * g y) := by
+    intro f g hf hg x hx
+    obtain ⟨Kf, t, ht, hKf⟩ := hf hx
+    obtain ⟨Kg, u, hu, hKg⟩ := hg hx
+    have hbf : ∀ᶠ y in 𝓝[M] x, ‖f y‖ < ‖f x‖ + 1 :=
+      Filter.Tendsto.eventually (hf.continuousOn x hx).norm (gt_mem_nhds (lt_add_one _))
+    have hbg : ∀ᶠ y in 𝓝[M] x, ‖g y‖ < ‖g x‖ + 1 :=
+      Filter.Tendsto.eventually (hg.continuousOn x hx).norm (gt_mem_nhds (lt_add_one _))
+    refine ⟨Real.toNNReal ((‖g x‖ + 1) * Kf + (‖f x‖ + 1) * Kg),
+      t ∩ u ∩ {y | ‖f y‖ < ‖f x‖ + 1 ∧ ‖g y‖ < ‖g x‖ + 1},
+      inter_mem (inter_mem ht hu) (hbf.and hbg), ?_⟩
+    refine LipschitzOnWith.of_dist_le_mul fun y hy z hz => ?_
+    obtain ⟨⟨hyt, hyu⟩, hyf, -⟩ := hy
+    obtain ⟨⟨hzt, hzu⟩, -, hzg⟩ := hz
+    have h1 := hKf.dist_le_mul y hyt z hzt
+    have h2 := hKg.dist_le_mul y hyu z hzu
+    rw [Real.dist_eq] at h1 h2 ⊢
+    have e : f y * g y - f z * g z = g z * (f y - f z) + f y * (g y - g z) := by ring
+    calc |f y * g y - f z * g z| = |g z * (f y - f z) + f y * (g y - g z)| := by rw [e]
+      _ ≤ |g z| * |f y - f z| + |f y| * |g y - g z| := by
+          rw [← abs_mul, ← abs_mul]
+          exact abs_add_le _ _
+      _ ≤ (‖g x‖ + 1) * (Kf * dist y z) + (‖f x‖ + 1) * (Kg * dist y z) := by
+          rw [← Real.norm_eq_abs (g z), ← Real.norm_eq_abs (f y)]
+          exact add_le_add (mul_le_mul hzg.le h1 (abs_nonneg _) (by positivity))
+            (mul_le_mul hyf.le h2 (abs_nonneg _) (by positivity))
+      _ = _ := by
+          rw [Real.coe_toNNReal _ (by positivity)]
+          ring
+  -- Step 0(b): on `M`, `P_y = Π_{A₀} − ν(y) ⊗ ν(y)`; the `C²` extension of `|A|²` to `O`
+  have hNC := Submission.codim1_hcp_sc_tangent_normal_complement P m A₀ M ν hA₀ hMA (hM 1) hν
+  have hPeq : ∀ y ∈ M, ∀ i : Fin P, Pe y i = A₀.starProjection (EuclideanSpace.single i 1) -
+      inner ℝ (ν y) (EuclideanSpace.single i 1) • ν y := fun y hy i => (hNC y hy).2 _
+  have hνc : ContDiffOn ℝ 2 ν O := contDiffOn_infty.1 hνC 2
+  have hDν : ContDiffOn ℝ 2 (fun y => fderiv ℝ ν y) O :=
+    (contDiffOn_infty.1 hνC 3).fderiv_of_isOpen hO (by norm_num)
+  have hV : ∀ i : Fin P, ContDiffOn ℝ 2 (fun y => fderiv ℝ ν y
+      (A₀.starProjection (EuclideanSpace.single i 1) -
+        inner ℝ (ν y) (EuclideanSpace.single i 1) • ν y)) O := fun i =>
+    hDν.clm_apply (contDiffOn_const.sub ((hνc.inner ℝ contDiffOn_const).smul hνc))
+  have hF : ContDiffOn ℝ 2 (fun y => ∑ i : Fin P, ‖fderiv ℝ ν y
+      (A₀.starProjection (EuclideanSpace.single i 1) -
+        inner ℝ (ν y) (EuclideanSpace.single i 1) • ν y)‖ ^ 2) O :=
+    ContDiffOn.sum fun i _ => (hV i).norm_sq ℝ
+  have hAeq : ∀ y ∈ M, A2 y = ∑ i : Fin P, ‖fderiv ℝ ν y
+      (A₀.starProjection (EuclideanSpace.single i 1) -
+        inner ℝ (ν y) (EuclideanSpace.single i 1) • ν y)‖ ^ 2 := fun y hy =>
+    Finset.sum_congr rfl fun i _ => by rw [hPeq y hy i]
+  have hAcont : ContinuousOn A2 M := (hF.continuousOn.mono hMO).congr fun y hy => hAeq y hy
+  -- `|A| = √|A|²` is the `ℓ²` norm of a `C¹` map on `O`, hence locally Lipschitz on `M`
+  have hsLip : LocallyLipschitzOn M (fun y => Real.sqrt (A2 y)) := by
+    intro x hx
+    have hW : ContDiffOn ℝ 2 (fun y => WithLp.toLp 2 (fun i : Fin P => fderiv ℝ ν y
+        (A₀.starProjection (EuclideanSpace.single i 1) -
+          inner ℝ (ν y) (EuclideanSpace.single i 1) • ν y))) O :=
+      PiLp.contDiff_toLp.comp_contDiffOn (contDiffOn_pi.mpr hV)
+    obtain ⟨K, t, ht, hK⟩ :=
+      ((hW.contDiffAt (hO.mem_nhds (hMO hx))).of_le (by norm_num)).exists_lipschitzOnWith
+    refine ⟨K, t ∩ M, inter_mem (nhdsWithin_le_nhds ht) self_mem_nhdsWithin, ?_⟩
+    have hnorm : ∀ y ∈ M, Real.sqrt (A2 y) = ‖WithLp.toLp 2 (fun i : Fin P => fderiv ℝ ν y
+        (A₀.starProjection (EuclideanSpace.single i 1) -
+          inner ℝ (ν y) (EuclideanSpace.single i 1) • ν y))‖ := fun y hy => by
+      rw [PiLp.norm_eq_of_L2, hAeq y hy]
+    refine LipschitzOnWith.of_dist_le_mul fun y hy z hz => ?_
+    show dist (Real.sqrt (A2 y)) (Real.sqrt (A2 z)) ≤ K * dist y z
+    rw [hnorm y hy.2, hnorm z hz.2]
+    exact (dist_norm_norm_le _ _).trans ((dist_eq_norm _ _).symm.le.trans
+      (hK.dist_le_mul y hy.1 z hz.1))
+  have hψc : ContinuousOn ψ M := hψ.continuousOn
+  have hζLip : LocallyLipschitzOn M (fun y => Real.sqrt (A2 y) * ψ y) := hprod _ _ hsLip hψ
+  have hφLip : LocallyLipschitzOn M (fun y => ψ y ^ 2) := by
+    simpa only [sq] using hprod ψ ψ hψ hψ
+  have hζ0 : ∀ x ∈ M, x ∉ C → Real.sqrt (A2 x) * ψ x = 0 := fun x hx hxC => by
+    rw [hψ0 x hx hxC, mul_zero]
+  have hφ0 : ∀ x ∈ M, x ∉ C → ψ x ^ 2 = 0 := fun x hx hxC => by
+    rw [hψ0 x hx hxC]
+    ring
+  -- Step 3 (integrability): `Σ_j (δ_jψ)²` is integrable, by the smooth approximations (HL)
+  have hSint : Integrable (fun x => ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2)
+      (μHE[m].restrict M) := by
+    obtain ⟨C', ζs, -, -, hζs, -, -, hlim⟩ := hHL.2 ψ hψ ⟨C, hCc, hCM, hψ0⟩
+    obtain ⟨k, hk⟩ := (hlim.eventually (gt_mem_nhds zero_lt_one)).exists
+    obtain ⟨B, hB⟩ := ((hζs k).1.continuous_fderiv (by simp)).bounded_above_of_compact_support
+      ((hζs k).2.fderiv ℝ)
+    have hsupp : IsCompact (tsupport (ζs k)) := (hζs k).2
+    refine ⟨Finset.aestronglyMeasurable_fun_sum _ fun j _ => (hHL.1 ψ hψ j).pow 2,
+      (hasFiniteIntegral_iff_ofReal (Eventually.of_forall fun x =>
+        Finset.sum_nonneg fun j _ => sq_nonneg _)).mpr ?_⟩
+    have h2mul : ∀ X : ℝ, ENNReal.ofReal (2 * X) = 2 * ENNReal.ofReal X := fun X => by
+      rw [ENNReal.ofReal_mul zero_le_two, ENNReal.ofReal_ofNat]
+    have hpt : ∀ x, ENNReal.ofReal (∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2) ≤
+        (tsupport (ζs k)).indicator (fun _ => ENNReal.ofReal (2 * P * B ^ 2)) x +
+          2 * ENNReal.ofReal (∑ j : Fin P,
+            (fderiv ℝ (ζs k) x (Pe x j) - fderivWithin ℝ ψ M x (Pe x j)) ^ 2) := by
+      intro x
+      have h1 : ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2 ≤
+          2 * ∑ j : Fin P, (fderiv ℝ (ζs k) x (Pe x j)) ^ 2 + 2 * ∑ j : Fin P,
+            (fderiv ℝ (ζs k) x (Pe x j) - fderivWithin ℝ ψ M x (Pe x j)) ^ 2 := by
+        rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+        exact Finset.sum_le_sum fun j _ => by
+          nlinarith [sq_nonneg (2 * fderiv ℝ (ζs k) x (Pe x j) - fderivWithin ℝ ψ M x (Pe x j))]
+      have h2 : ENNReal.ofReal (2 * ∑ j : Fin P, (fderiv ℝ (ζs k) x (Pe x j)) ^ 2) ≤
+          (tsupport (ζs k)).indicator (fun _ => ENNReal.ofReal (2 * P * B ^ 2)) x := by
+        by_cases hx : x ∈ tsupport (ζs k)
+        · rw [Set.indicator_of_mem hx]
+          refine ENNReal.ofReal_le_ofReal ?_
+          have hb : ∀ j, (fderiv ℝ (ζs k) x (Pe x j)) ^ 2 ≤ B ^ 2 := fun j => by
+            have hPj : ‖Pe x j‖ ≤ 1 :=
+              (Submodule.norm_starProjection_apply_le _ _).trans (by simp)
+            have hle : |fderiv ℝ (ζs k) x (Pe x j)| ≤ B := by
+              rw [← Real.norm_eq_abs]
+              exact ((fderiv ℝ (ζs k) x).le_opNorm _).trans
+                ((mul_le_mul (hB x) hPj (norm_nonneg _) ((norm_nonneg _).trans (hB x))).trans
+                  (mul_one B).le)
+            exact sq_le_sq' (abs_le.mp hle).1 (abs_le.mp hle).2
+          have hsum := Finset.sum_le_sum fun j (_ : j ∈ Finset.univ) => hb j
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at hsum
+          linarith
+        · rw [Set.indicator_of_notMem hx, fderiv_of_notMem_tsupport ℝ hx]
+          simp
+      calc ENNReal.ofReal (∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2)
+          ≤ ENNReal.ofReal (2 * ∑ j : Fin P, (fderiv ℝ (ζs k) x (Pe x j)) ^ 2 + 2 * ∑ j : Fin P,
+              (fderiv ℝ (ζs k) x (Pe x j) - fderivWithin ℝ ψ M x (Pe x j)) ^ 2) :=
+            ENNReal.ofReal_le_ofReal h1
+        _ = ENNReal.ofReal (2 * ∑ j : Fin P, (fderiv ℝ (ζs k) x (Pe x j)) ^ 2) +
+              2 * ENNReal.ofReal (∑ j : Fin P,
+                (fderiv ℝ (ζs k) x (Pe x j) - fderivWithin ℝ ψ M x (Pe x j)) ^ 2) := by
+            rw [ENNReal.ofReal_add (by positivity) (by positivity), h2mul (∑ j : Fin P,
+              (fderiv ℝ (ζs k) x (Pe x j) - fderivWithin ℝ ψ M x (Pe x j)) ^ 2)]
+        _ ≤ _ := add_le_add h2 le_rfl
+    calc ∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2) ∂μHE[m]
+        ≤ ∫⁻ x in M, ((tsupport (ζs k)).indicator (fun _ => ENNReal.ofReal (2 * P * B ^ 2)) x +
+          2 * ENNReal.ofReal (∑ j : Fin P,
+            (fderiv ℝ (ζs k) x (Pe x j) - fderivWithin ℝ ψ M x (Pe x j)) ^ 2)) ∂μHE[m] :=
+          lintegral_mono hpt
+      _ = ENNReal.ofReal (2 * P * B ^ 2) * (μHE[m].restrict M) (tsupport (ζs k)) +
+          2 * ∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P,
+            (fderiv ℝ (ζs k) x (Pe x j) - fderivWithin ℝ ψ M x (Pe x j)) ^ 2) ∂μHE[m] := by
+          rw [lintegral_add_left (measurable_const.indicator (isClosed_tsupport _).measurableSet),
+            lintegral_indicator_const (isClosed_tsupport _).measurableSet,
+            lintegral_const_mul' _ _ ENNReal.ofNat_ne_top]
+      _ < ∞ := by
+          refine ENNReal.add_lt_top.mpr ⟨ENNReal.mul_lt_top ENNReal.ofReal_lt_top ?_,
+            ENNReal.mul_lt_top ENNReal.ofNat_lt_top (hk.trans ENNReal.one_lt_top)⟩
+          rw [Measure.restrict_apply (isClosed_tsupport _).measurableSet, Set.inter_comm]
+          exact (hfin _ hsupp).lt_top
+  -- the integrands of the final combination
+  have hxne : ∀ x ∈ M, ‖x‖ ^ 2 ≠ 0 := fun x hx =>
+    pow_ne_zero 2 (norm_ne_zero_iff.mpr fun h => h0 (h ▸ hx))
+  have hIa : Integrable (fun x => A2 x * ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2)
+      (μHE[m].restrict M) := by
+    obtain ⟨B, hB⟩ := hCc.exists_bound_of_continuousOn (hAcont.mono hCM)
+    refine (hSint.const_mul B).mono' ((hAcont.aestronglyMeasurable hMmeas).mul hSint.1) ?_
+    filter_upwards [ae_restrict_mem hMmeas] with x hx
+    have hS0 : 0 ≤ ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2 :=
+      Finset.sum_nonneg fun j _ => sq_nonneg _
+    by_cases hxC : x ∈ C
+    · rw [norm_mul, Real.norm_of_nonneg hS0]
+      exact mul_le_mul_of_nonneg_right (hB x hxC) hS0
+    · have hS : ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2 = 0 := by
+        simp [hzero ψ hψ0 x hx hxC]
+      simp [hS]
+  have hIe : Integrable (fun x => ψ x ^ 2 * A2 x ^ 2) (μHE[m].restrict M) :=
+    hintc _ ((hψc.pow 2).mul (hAcont.pow 2)) fun x hx hxC => by simp [hψ0 x hx hxC]
+  have hIf : Integrable (fun x => ψ x ^ 2 * A2 x / ‖x‖ ^ 2) (μHE[m].restrict M) :=
+    hintc _ (((hψc.pow 2).mul hAcont).div (continuous_norm.pow 2).continuousOn hxne)
+      fun x hx hxC => by simp [hψ0 x hx hxC]
+  -- Step 4: integration by parts (stationary_ibp) with `φ = ψ²`, `f = |A|²`
+  obtain ⟨hibp1, hibp2, hibp3⟩ :=
+    Submission.codim1_hcp_sc_stationary_integration_by_parts P m A₀ M ν hA₀ hMA h0 (hM 1) hMmeas
+      hfin hstat ⟨O, hO, hMO, hνC⟩ hν hHL A2 _ O hO hMO hF (fun y hy => (hAeq y hy).symm)
+      (fun y => ψ y ^ 2) hφLip ⟨C, hCc, hCM, hφ0⟩
+  have hIb : Integrable (fun x => ∑ j : Fin P, fderivWithin ℝ (fun y => ψ y ^ 2) M x (Pe x j) *
+      fderivWithin ℝ A2 M x (Pe x j)) (μHE[m].restrict M) := hibp1
+  have hId : Integrable (fun x => ψ x ^ 2 * ∑ j : Fin P,
+      fderivWithin ℝ (fun y => fderivWithin ℝ A2 M y (Pe y j)) M x (Pe x j))
+      (μHE[m].restrict M) := hibp2
+  have hIbd : ∫ x in M, (∑ j : Fin P, fderivWithin ℝ (fun y => ψ y ^ 2) M x (Pe x j) *
+      fderivWithin ℝ A2 M x (Pe x j)) ∂μHE[m] = -(∫ x in M, ψ x ^ 2 * (∑ j : Fin P,
+      fderivWithin ℝ (fun y => fderivWithin ℝ A2 M y (Pe y j)) M x (Pe x j)) ∂μHE[m]) := hibp3
+  -- the pointwise algebra of steps 1–2 (`a = |A|`, `p = ψ`, `L = Δ_M|A|²`, `N = |∇A|²`)
+  have alg : ∀ (a p A N L r2 : ℝ) (u v w z1 z2 : Fin P → ℝ), A = a ^ 2 → 0 < r2 →
+      L = 2 * N - 2 * A ^ 2 → 0 ≤ N →
+      (0 < A → 2 * A ^ 2 / r2 + (∑ k, w k ^ 2) / 4 ≤ A * N) → (A = 0 → ∀ k, v k = 0) →
+      (∀ j, w j = 2 * a * v j) → (∀ j, z1 j = a * u j + p * v j) → (∀ j, z2 j = 2 * p * u j) →
+      2 * ∑ j, z1 j ^ 2 ≤ 2 * (A * ∑ j, u j ^ 2) + p ^ 2 * L + 2 * (p ^ 2 * A ^ 2) -
+        4 * (p ^ 2 * A / r2) + ∑ j, z2 j * w j := by
+    intro a p A N L r2 u v w z1 z2 hAa hr2 hL hN hcd hv0 hw hz1 hz2
+    subst hAa hL
+    simp only [hw, hz1, hz2] at hcd ⊢
+    -- the pointwise Simons inequality (1): `2|A|²/r² + Σ_k (δ_k|A|)² ≤ |∇A|²`
+    have hI : 2 * a ^ 2 / r2 + ∑ k, v k ^ 2 ≤ N := by
+      rcases (sq_nonneg a).lt_or_eq with hA | hA
+      · refine le_of_mul_le_mul_left ?_ hA
+        have e : (∑ k, (2 * a * v k) ^ 2) / 4 = a ^ 2 * ∑ k, v k ^ 2 := by
+          rw [Finset.mul_sum, Finset.sum_div]
+          exact Finset.sum_congr rfl fun k _ => by ring
+        calc a ^ 2 * (2 * a ^ 2 / r2 + ∑ k, v k ^ 2)
+            = 2 * (a ^ 2) ^ 2 / r2 + (∑ k, (2 * a * v k) ^ 2) / 4 := by rw [e]; ring
+          _ ≤ a ^ 2 * N := hcd hA
+      · have hv := hv0 hA.symm
+        simp only [hv, ← hA]
+        simpa using hN
+    have e1 : ∑ j, (a * u j + p * v j) ^ 2 =
+        a ^ 2 * ∑ j, u j ^ 2 + 2 * a * p * ∑ j, u j * v j + p ^ 2 * ∑ j, v j ^ 2 := by
+      rw [Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib,
+        ← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun j _ => by ring
+    have e2 : ∑ j, 2 * p * u j * (2 * a * v j) = 4 * a * p * ∑ j, u j * v j := by
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun j _ => by ring
+    have key : 2 * (a ^ 2 * ∑ j, u j ^ 2) + p ^ 2 * (2 * N - 2 * (a ^ 2) ^ 2) +
+        2 * (p ^ 2 * (a ^ 2) ^ 2) - 4 * (p ^ 2 * a ^ 2 / r2) + 4 * a * p * ∑ j, u j * v j -
+        2 * (a ^ 2 * ∑ j, u j ^ 2 + 2 * a * p * ∑ j, u j * v j + p ^ 2 * ∑ j, v j ^ 2) =
+        2 * p ^ 2 * (N - (2 * a ^ 2 / r2 + ∑ k, v k ^ 2)) := by ring
+    rw [e1, e2]
+    linarith [key, mul_nonneg (mul_nonneg zero_le_two (sq_nonneg p)) (sub_nonneg.mpr hI)]
+  -- Steps 1–2: the a.e. pointwise inequality
+  have hSI := Submission.codim1_hcp_sc_simons_identity P m A₀ M ν hA₀ hMA hM ⟨O, hO, hMO, hνC⟩ hν hH
+  have hCD := Submission.codim1_hcp_sc_cone_simons_defect P m A₀ M ν hA₀ hMA h0 hM hcone
+    ⟨O, hO, hMO, hνC⟩ hν
+  have hmin : ∀ (g : Euclid P → ℝ) (g' : Euclid P →L[ℝ] ℝ) (x : Euclid P), (∀ y, 0 ≤ g y) →
+      g x = 0 → HasFDerivWithinAt g g' M x →
+      ∀ w ∈ Submodule.span ℝ (tangentSpace M x), g' w = 0 := by
+    intro g g' x hg hgx hd w hw
+    have hT : tangentSpace M x ⊆ (LinearMap.ker (g' : Euclid P →ₗ[ℝ] ℝ) : Set (Euclid P)) := by
+      rintro τ ⟨γ, -, hγM, hγ0, hγd⟩
+      have h1 : HasDerivWithinAt (g ∘ γ) (g' τ) (Set.Ioo (-1) 1) 0 :=
+        HasFDerivWithinAt.comp_hasDerivWithinAt (0 : ℝ) (by rw [hγ0]; exact hd)
+          hγd.hasDerivWithinAt hγM
+      have h2 : HasDerivAt (g ∘ γ) (g' τ) 0 :=
+        h1.hasDerivAt (Ioo_mem_nhds (by norm_num) (by norm_num))
+      have h3 : IsLocalMin (g ∘ γ) 0 := Eventually.of_forall fun t => by
+        show g (γ 0) ≤ g (γ t)
+        rw [hγ0, hgx]
+        exact hg _
+      exact LinearMap.mem_ker.mpr (h3.hasDerivAt_eq_zero h2)
+    exact LinearMap.mem_ker.mp ((Submodule.span_le.mpr hT) hw)
+  have hrad_ψ := Submission.codim1_hcp_sc_rademacher_submanifold P m M ψ (hM 1) hψ
+  have hrad_s := Submission.codim1_hcp_sc_rademacher_submanifold P m M
+    (fun y => Real.sqrt (A2 y)) (hM 1) hsLip
+  have hpt : ∀ᵐ x ∂(μHE[m].restrict M),
+      2 * ∑ j : Fin P, (fderivWithin ℝ (fun y => Real.sqrt (A2 y) * ψ y) M x (Pe x j)) ^ 2 ≤
+        2 * (A2 x * ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2) +
+          ψ x ^ 2 * ∑ j : Fin P,
+            fderivWithin ℝ (fun y => fderivWithin ℝ A2 M y (Pe y j)) M x (Pe x j) +
+          2 * (ψ x ^ 2 * A2 x ^ 2) - 4 * (ψ x ^ 2 * A2 x / ‖x‖ ^ 2) +
+          ∑ j : Fin P, fderivWithin ℝ (fun y => ψ y ^ 2) M x (Pe x j) *
+            fderivWithin ℝ A2 M x (Pe x j) := by
+    filter_upwards [ae_restrict_mem hMmeas, hrad_ψ, hrad_s] with x hx hψd hsd
+    have hψd' := hψd.hasFDerivWithinAt
+    have hsd' := hsd.hasFDerivWithinAt
+    -- Step 1(a)–(c): product rules within `M` and `tangent_fderiv`
+    have hζd : ∀ j, fderivWithin ℝ (fun y => Real.sqrt (A2 y) * ψ y) M x (Pe x j) =
+        Real.sqrt (A2 x) * fderivWithin ℝ ψ M x (Pe x j) +
+          ψ x * fderivWithin ℝ (fun y => Real.sqrt (A2 y)) M x (Pe x j) := fun j => by
+      have hd : HasFDerivWithinAt (fun y => Real.sqrt (A2 y) * ψ y)
+          (Real.sqrt (A2 x) • fderivWithin ℝ ψ M x +
+            ψ x • fderivWithin ℝ (fun y => Real.sqrt (A2 y)) M x) M x := hsd'.mul hψd'
+      rw [Submission.codim1_hcp_sc_fderivWithin_tangent_eq P ℝ M _ _ x hd (Pe x j) (hmem x j)]
+      simp only [add_apply, smul_apply, smul_eq_mul]
+    have hφd : ∀ j, fderivWithin ℝ (fun y => ψ y ^ 2) M x (Pe x j) =
+        2 * ψ x * fderivWithin ℝ ψ M x (Pe x j) := fun j => by
+      have hd : HasFDerivWithinAt (fun y => ψ y ^ 2)
+          (ψ x • fderivWithin ℝ ψ M x + ψ x • fderivWithin ℝ ψ M x) M x :=
+        (hψd'.mul hψd').congr (fun y _ => sq (ψ y)) (sq (ψ x))
+      rw [Submission.codim1_hcp_sc_fderivWithin_tangent_eq P ℝ M _ _ x hd (Pe x j) (hmem x j)]
+      simp only [add_apply, smul_apply, smul_eq_mul]
+      ring
+    have hAd : ∀ j, fderivWithin ℝ A2 M x (Pe x j) =
+        2 * Real.sqrt (A2 x) * fderivWithin ℝ (fun y => Real.sqrt (A2 y)) M x (Pe x j) :=
+      fun j => by
+        have hd : HasFDerivWithinAt A2
+            (Real.sqrt (A2 x) • fderivWithin ℝ (fun y => Real.sqrt (A2 y)) M x +
+              Real.sqrt (A2 x) • fderivWithin ℝ (fun y => Real.sqrt (A2 y)) M x) M x :=
+          (hsd'.mul hsd').congr (fun y _ => (Real.mul_self_sqrt (hA2nn y)).symm)
+            (Real.mul_self_sqrt (hA2nn x)).symm
+        rw [Submission.codim1_hcp_sc_fderivWithin_tangent_eq P ℝ M _ _ x hd (Pe x j) (hmem x j)]
+        simp only [add_apply, smul_apply, smul_eq_mul]
+        ring
+    -- Step 1(d): `δ_j|A| = 0` where `|A|² = 0`
+    have hv0 : A2 x = 0 → ∀ k, fderivWithin ℝ (fun y => Real.sqrt (A2 y)) M x (Pe x k) = 0 :=
+      fun hA k => hmin (fun y => Real.sqrt (A2 y)) _ x (fun y => Real.sqrt_nonneg _)
+        (by simp only [hA, Real.sqrt_zero]) hsd' (Pe x k) (hmem x k)
+    have hr2 : 0 < ‖x‖ ^ 2 := pow_pos (norm_pos_iff.mpr fun h => h0 (h ▸ hx)) 2
+    exact alg (Real.sqrt (A2 x)) (ψ x) (A2 x) _ _ (‖x‖ ^ 2)
+      (fun j => fderivWithin ℝ ψ M x (Pe x j))
+      (fun j => fderivWithin ℝ (fun y => Real.sqrt (A2 y)) M x (Pe x j))
+      (fun j => fderivWithin ℝ A2 M x (Pe x j))
+      (fun j => fderivWithin ℝ (fun y => Real.sqrt (A2 y) * ψ y) M x (Pe x j))
+      (fun j => fderivWithin ℝ (fun y => ψ y ^ 2) M x (Pe x j))
+      (Real.sq_sqrt (hA2nn x)).symm hr2 (hSI x hx)
+      (Finset.sum_nonneg fun i _ => Finset.sum_nonneg fun j _ =>
+        Finset.sum_nonneg fun k _ => sq_nonneg _)
+      (hCD x hx) hv0 hAd hζd hφd
+  -- Step 3: stability with `ζ = |A|ψ` (B.2 (2)), where `|A|²ζ² = ψ²|A|⁴`
+  have hstabζ : ∫ x in M, ψ x ^ 2 * A2 x ^ 2 ∂μHE[m] ≤
+      ∫ x in M, ∑ j : Fin P,
+        (fderivWithin ℝ (fun y => Real.sqrt (A2 y) * ψ y) M x (Pe x j)) ^ 2 ∂μHE[m] := by
+    have h := hstab _ hζLip ⟨C, hCc, hCM, hζ0⟩
+    have e : ∫ x in M, ψ x ^ 2 * A2 x ^ 2 ∂μHE[m] =
+        ∫ x in M, A2 x * (Real.sqrt (A2 x) * ψ x) ^ 2 ∂μHE[m] := by
+      congr 1
+      funext x
+      rw [mul_pow, Real.sq_sqrt (hA2nn x)]
+      ring
+    rw [e]
+    exact h
+  -- Step 5: integrate the pointwise inequality and combine (B.2 (3))
+  have i1 : Integrable (fun x => 2 * (A2 x * ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2))
+      (μHE[m].restrict M) := hIa.const_mul 2
+  have i2 : Integrable (fun x => 2 * (A2 x * ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2) +
+      ψ x ^ 2 * ∑ j : Fin P,
+        fderivWithin ℝ (fun y => fderivWithin ℝ A2 M y (Pe y j)) M x (Pe x j))
+      (μHE[m].restrict M) := i1.add hId
+  have i3 : Integrable (fun x => 2 * (A2 x * ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2) +
+      ψ x ^ 2 * ∑ j : Fin P,
+        fderivWithin ℝ (fun y => fderivWithin ℝ A2 M y (Pe y j)) M x (Pe x j) +
+      2 * (ψ x ^ 2 * A2 x ^ 2)) (μHE[m].restrict M) := i2.add (hIe.const_mul 2)
+  have i4 : Integrable (fun x => 2 * (A2 x * ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2) +
+      ψ x ^ 2 * ∑ j : Fin P,
+        fderivWithin ℝ (fun y => fderivWithin ℝ A2 M y (Pe y j)) M x (Pe x j) +
+      2 * (ψ x ^ 2 * A2 x ^ 2) - 4 * (ψ x ^ 2 * A2 x / ‖x‖ ^ 2)) (μHE[m].restrict M) :=
+    i3.sub (hIf.const_mul 4)
+  have hmono : ∫ x in M, 2 * ∑ j : Fin P,
+        (fderivWithin ℝ (fun y => Real.sqrt (A2 y) * ψ y) M x (Pe x j)) ^ 2 ∂μHE[m] ≤
+      ∫ x in M, (2 * (A2 x * ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2) +
+          ψ x ^ 2 * ∑ j : Fin P,
+            fderivWithin ℝ (fun y => fderivWithin ℝ A2 M y (Pe y j)) M x (Pe x j) +
+          2 * (ψ x ^ 2 * A2 x ^ 2) - 4 * (ψ x ^ 2 * A2 x / ‖x‖ ^ 2) +
+          ∑ j : Fin P, fderivWithin ℝ (fun y => ψ y ^ 2) M x (Pe x j) *
+            fderivWithin ℝ A2 M x (Pe x j)) ∂μHE[m] :=
+    integral_mono_of_nonneg (Eventually.of_forall fun x => mul_nonneg zero_le_two
+      (Finset.sum_nonneg fun j _ => sq_nonneg _)) (i4.add hIb) hpt
+  rw [integral_add i4 hIb, integral_sub i3 (hIf.const_mul 4), integral_add i2 (hIe.const_mul 2),
+    integral_add i1 hId, integral_const_mul, integral_const_mul, integral_const_mul,
+    integral_const_mul, hIbd] at hmono
+  show 2 * (∫ x in M, ψ x ^ 2 * A2 x / ‖x‖ ^ 2 ∂μHE[m]) ≤
+    ∫ x in M, A2 x * ∑ j : Fin P, (fderivWithin ℝ ψ M x (Pe x j)) ^ 2 ∂μHE[m]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
