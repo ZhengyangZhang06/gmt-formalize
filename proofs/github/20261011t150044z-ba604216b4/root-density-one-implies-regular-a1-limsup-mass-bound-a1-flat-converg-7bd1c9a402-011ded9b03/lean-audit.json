@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b94718988549fafe5c7665ef8fe4793163b73ceff89381f05cb047786099fb59",
+  "git_delta": {
+    "base_commit": "bdedeb7b15a276f9f3eebc8144fdf6bed99a5b63",
+    "candidate_commit": "3e0ef272f54dcfb7210e797b6156dd3a7c8ce57b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_tb_cell_chains_finite",
+    "diff_sha256": "a48dc33eb024e4a8df7baef3f2bd2334fe1da8d8b5b1c22cd5cf6d5e42d2a596",
+    "source_sha256": "ef16ecb5f7d2d9a0a6ca4a1ad84cd4b420cfce0391e1a9a45cb6b3f63c7d29f9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_tb_cell_chains_finite",
+      "statement": "∀ (P m : ℕ) (U K : Set (Euclid P)) (ρ : ℝ) (B : ℕ), 0 < ρ → IsCompact K → {X : GeometricCurrentOn U (m + 1) | ∃ (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (b : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℤ), (∀ p ∈ s, {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧ (i ∉ Set.range p.2 → x i = ρ * p.1 i)} ⊆ K) ∧ (∀ p ∈ s, (b p).natAbs ≤ B) ∧ ∀ ω : TestFormOn U (m + 1), X ω = ∑ p ∈ s, (b p : ℝ) * ∫ x in {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧ (i ∉ Set.range p.2 → x i = ρ * p.1 i)}, (ω : DifferentialForm (Euclid P) (m + 1)) x (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) ∂μHE[m + 1]}.Finite",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
