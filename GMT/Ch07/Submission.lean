@@ -451,6 +451,67 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Orthonormal partner of a unit vector `u` in a 2-plane `Q`: pick `w ∈ Q \ span {u}`
+(`dim span {u} = 1 < 2`), put `e = e'/‖e'‖` with `e' = w - ⟨w, u⟩u`; then `(u, e)` is
+orthonormal, so `span {u, e} = Q` by dimension, and `v = au + be` gives `a = ⟨v, u⟩`,
+`b = ⟨v, e⟩`. -/
+theorem Submission.idtp_ccd_scsp_cc_plane_orthonormal : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (u : Euclid P), Module.finrank ℝ Q = 2 → u ∈ Q → ‖u‖ = 1 → ∃ e : Euclid P, e ∈ Q ∧ ‖e‖ = 1 ∧ inner ℝ u e = 0 ∧ ∀ v ∈ Q, v = inner ℝ v u • u + inner ℝ v e • e := by
+  intro P Q u hQ huQ hu
+  have hu0 : u ≠ 0 := by
+    rintro rfl
+    simp at hu
+  have huu : inner ℝ u u = (1 : ℝ) := by
+    rw [real_inner_self_eq_norm_sq, hu]; norm_num
+  -- some `w ∈ Q` lies outside `span {u}`
+  obtain ⟨w, hwQ, hw⟩ : ∃ w ∈ Q, w ∉ Submodule.span ℝ {u} := by
+    rw [← IsConcreteLE.not_le_iff_exists]
+    intro h
+    have h1 := Submodule.finrank_mono h
+    rw [hQ, finrank_span_singleton hu0] at h1
+    omega
+  -- Gram–Schmidt step
+  set e' := w - inner ℝ w u • u with he'
+  have he'Q : e' ∈ Q := Q.sub_mem hwQ (Q.smul_mem _ huQ)
+  have he'0 : e' ≠ 0 := by
+    intro h
+    apply hw
+    have : w = inner ℝ w u • u := sub_eq_zero.mp h
+    rw [this]
+    exact Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self u)
+  have hue' : inner ℝ u e' = (0 : ℝ) := by
+    rw [he', inner_sub_right, real_inner_smul_right, huu, real_inner_comm]; ring
+  have hne : ‖e'‖ ≠ 0 := norm_ne_zero_iff.mpr he'0
+  set e := ‖e'‖⁻¹ • e' with he
+  have heQ : e ∈ Q := Q.smul_mem _ he'Q
+  have hen : ‖e‖ = 1 := by
+    rw [he, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hne]
+  have hue : inner ℝ u e = (0 : ℝ) := by
+    rw [he, real_inner_smul_right, hue', mul_zero]
+  have hee : inner ℝ e e = (1 : ℝ) := by
+    rw [real_inner_self_eq_norm_sq, hen]; norm_num
+  have heu : inner ℝ e u = (0 : ℝ) := by rw [real_inner_comm, hue]
+  -- `span {u, e} = Q`
+  have hon : Orthonormal ℝ ![u, e] := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    fin_cases i <;> fin_cases j <;> simp [hu, hen, hue, heu]
+  have hspan : Submodule.span ℝ {u, e} = Q := by
+    apply Submodule.eq_of_le_of_finrank_eq
+    · rw [Submodule.span_le]
+      rintro x (rfl | rfl)
+      · exact huQ
+      · exact heQ
+    · have := finrank_span_eq_card hon.linearIndependent
+      rw [Matrix.range_cons, Matrix.range_cons, Matrix.range_empty, Set.union_empty,
+        Set.singleton_union] at this
+      rw [this, hQ, Fintype.card_fin]
+  refine ⟨e, heQ, hen, hue, ?_⟩
+  intro v hv
+  rw [← hspan] at hv
+  obtain ⟨a, b, rfl⟩ := Submodule.mem_span_pair.mp hv
+  simp only [inner_add_left, real_inner_smul_left, huu, heu, hue, hee]
+  simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
