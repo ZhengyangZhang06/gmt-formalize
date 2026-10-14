@@ -2858,6 +2858,66 @@ theorem Submission.idtp_fons_cc_tm_support_blowup : DensityAndTangentCones → �
   refine ⟨φ, C, RC, hφ, hCmin, hCb, hCcone, hRC, fun f hf hfc => ?_⟩
   exact (hmass Rs hRs RC hRC f hf hfc (subset_univ _)).congr fun j => by rw [hRsμ' j]
 
+/-- **Tangent measures of minimizing cycles** (Simon 7.3.1(2) and the proof of 7.3.3(1),
+chapter-07.txt lines 302–310 and 454–466).  Assume (DTC) = `DensityAndTangentCones` and write
+`ν^{a,s} = s⁻ⁿ η_{a,s#}ν` and `r_ν(w, ρ) = ν(B_ρ(w))/(ωₙρⁿ)`.  (A) Let `T` be minimizing in
+`U ∩ N`, `spt T ⊆ U ∩ N`, `∂T = 0` in `U`, `R` represent `T` with weight `μ`, `p ∈ U ∩ G` with
+`G` open and `λⱼ > 0`, `λⱼ → 0`.  Then along a subsequence `(μ⌞G)^{p,λⱼ}` converges vaguely to
+the weight `μ_C` of a minimizing cycle `C` of `ℝ^{n+k}`, and
+`limsup_{ρ↓0} r_{μ_C}(tw, ρ) = limsup_{ρ↓0} r_{μ_C}(w, ρ)` for `t > 0`.  If `p ∉ spt T`, some ball
+`B_ε(p)` is `μ`-null, so the blow-up integrals are eventually `0` and `C = 0` (zero weight) works.
+If `p ∈ spt T`, (DTC) gives a minimizing cone cycle `C` with `μ^{p,λⱼ} → μ_C`; the weight of a
+cone is homogeneous of degree `n`, and `(μ⌞G)^{p,λ}` and `μ^{p,λ}` have the same integrals
+against a fixed `f ∈ C_c` for small `λ`.  (B) is the case `U = N = G = ℝ^{n+k}` of (A). -/
+theorem Submission.idtp_fons_cc_tangent_measures : DensityAndTangentCones → (∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N G : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (R : IMRep U n) (p : Euclid (n + k)) (lams : ℕ → ℝ), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → R.Represents T → IsOpen G → p ∈ U → p ∈ G → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RC : IMRep (univ : Set (Euclid (n + k))) n), StrictMono sub ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ RC.Represents C ∧ (∀ t : ℝ, 0 < t → ∀ w : Euclid (n + k), limsup (fun ρ : ℝ => RC.measure (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => RC.measure (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)) ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • (R.measure.restrict G).map (dilation p (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂RC.measure))) ∧ ∀ (n k : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (R : IMRep (univ : Set (Euclid (n + k))) n) (y : Euclid (n + k)) (lams : ℕ → ℝ), 1 ≤ n → IsMinimizingIn S univ → BoundaryVanishes S → R.Represents S → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RC : IMRep (univ : Set (Euclid (n + k))) n), StrictMono sub ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ RC.Represents C ∧ (∀ t : ℝ, 0 < t → ∀ w : Euclid (n + k), limsup (fun ρ : ℝ => RC.measure (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => RC.measure (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)) ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • R.measure.map (dilation y (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂RC.measure)) := by
+  intro hDTC
+  -- Part (B) is the case `U = N = G = ℝ^{n+k}` of Part (A), so it suffices to prove (A)
+  refine (and_iff_left_of_imp fun hA => ?_).2 ?_
+  · -- (B) (step 8): apply (A) with `ℓ = k` and `U = N = G = ℝ^{n+k}`; `μ⌞ℝ^{n+k} = μ`
+    intro n k S R y lams hn hS hbd hR hlams hlim
+    obtain ⟨sub, C, RC, hsub, hCmin, hCbd, hRC, hhom, hconv⟩ :=
+      hA n k k le_rfl univ univ univ S R y lams hn isOpen_univ
+        (Submission.idtp_fons_cc_ambient_calculus.1 (n + k)) (by simp) (by rwa [inter_self])
+        (by simp) hbd hR isOpen_univ (mem_univ y) (mem_univ y) hlams hlim
+    refine ⟨sub, C, RC, hsub, hCmin, hCbd, hRC, hhom, ?_⟩
+    simpa only [Measure.restrict_univ] using hconv
+  · -- (A)
+    intro n k ℓ hℓ U N G T R p lams hn hU hN hNU hT hspt hbd hR hG hpU hpG hlams hlim
+    by_cases hp : p ∈ T.support
+    · -- Case `p ∈ spt T` (steps 3–6): by (DTC) there are a minimizing cone cycle `C`, an
+      -- integer multiplicity representation `R_C` of `C` and `sub` with
+      -- `∫ f dμ^{p,λ_{sub(j)}} → ∫ f dμ_C`
+      obtain ⟨sub, C, RC, hsub, hCmin, hCbd, hCcone, hRC, hconv⟩ :=
+        Submission.idtp_fons_cc_tm_support_blowup hDTC n k ℓ hℓ U N T R p lams hn hU hN hNU hT
+          hspt hbd hR hp hlams hlim
+      refine ⟨sub, C, RC, hsub, hCmin, hCbd, hRC, ?_, fun f hf hfc => ?_⟩
+      · -- the weight of the cone `C` is homogeneous of degree `n` (step 6)
+        exact Submission.idtp_fons_cc_tm_density_homogeneous (n + k) n RC.measure
+          (Submission.cone_current_imrep_measure_smul_image (n + k) n C RC hCcone hRC)
+      · -- for large `j`, `(μ⌞G)^{p,λ_{sub(j)}}` and `μ^{p,λ_{sub(j)}}` have the same integral
+        -- against `f`, as `λ_{sub(j)} → 0` (step 1)
+        refine (hconv f hf hfc).congr' ?_
+        filter_upwards [Submission.idtp_fons_cc_tm_blowup_integrals.1 (n + k) n R.measure G p
+          (lams ∘ sub) f hG hpG (fun j => hlams (sub j)) (hlim.comp hsub.tendsto_atTop) hfc]
+          with j hj
+        exact hj.symm
+    · -- Case `p ∉ spt T` (step 2): some ball `B_ε(p)` is `μ`-null, hence `μ⌞G`-null
+      obtain ⟨ε, hε, hball⟩ : ∃ ε : ℝ, 0 < ε ∧ R.measure (ball p ε) = 0 := by
+        by_contra! h
+        exact hp (((Submission.dimred_im_mass_measure (n + k) n U T R hU hR).2.1 p hpU).2 h)
+      have hballG : R.measure.restrict G (ball p ε) = 0 :=
+        nonpos_iff_eq_zero.1 ((Measure.restrict_apply_le G _).trans hball.le)
+      -- take `sub = id` and the zero cycle `C = 0` with zero weight: both density ratios
+      -- vanish, and the blow-up integrals are eventually `0 = ∫ f d0`
+      obtain ⟨C, RC, hCmin, hCbd, hRC, hRC0⟩ := Submission.idtp_fons_cc_tm_zero_cycle (n + k) n
+      refine ⟨id, C, RC, strictMono_id, hCmin, hCbd, hRC, fun t _ w => by simp [hRC0],
+        fun f _ hfc => ?_⟩
+      rw [hRC0, integral_zero_measure]
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [Submission.idtp_fons_cc_tm_blowup_integrals.2 (n + k) n
+        (R.measure.restrict G) p ε lams f hε hballG hlams hlim hfc] with j hj
+      exact hj.symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
