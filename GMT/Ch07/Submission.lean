@@ -572,6 +572,73 @@ theorem Submission.cbr_ci_cp_pr_factorial_mul_eq_sum_det : ∀ (P n : ℕ) (e : 
   simp only [Matrix.of_apply, Function.comp_apply]
   ring
 
+/-- Projection reduction for the constant-planes step of the cycle case of closure and boundary
+rectifiability: if an `n`-vector `ζ` (`n = d + 1`) vanishes on every `n`-covector `w♭ ∧ α` with
+`w ∈ Vᗮ` and `α` a `d`-covector, then `ζ(β) = ζ(β ∘ p_V)` for every `n`-covector `β`, where `p_V`
+is the orthogonal projection onto `V`.  Take an orthonormal basis `e` of `ℝᴾ` with each `eᵢ` in
+`V` or in `Vᗮ` (subordinate to `ℝᴾ = V ⊕ Vᗮ`) and the covectors `e^I(u) = det(⟨e_{I b}, u_a⟩)`,
+`I : Fin n → Fin P` (`cbr_ci_cp_pr_inner_det_covector`), so that `n! β = ∑_I β(e_I) e^I`
+(`cbr_ci_cp_pr_factorial_mul_eq_sum_det`).  If `e_{I k} ∈ Vᗮ` for some `k`, Laplace expansion along
+column `k` writes `e^I = e_{I k}♭ ∧ α` (`cbr_ci_cp_pr_det_covector_laplace`), so `ζ(e^I) = 0`;
+otherwise `p_V e_{I b} = e_{I b}` for every `b`, and `β ∘ p_V` has the same coefficient `β(e_I)`. -/
+theorem Submission.cbr_ci_cp_eval_comp_starProjection_eq : ∀ (P d : ℕ) (ζ : MultiVector P (d + 1)) (V : Submodule ℝ (Euclid P)), (∀ w ∈ Vᗮ, ∀ (α : Covector (Euclid P) d) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → ζ γ = 0) → ∀ β : Covector (Euclid P) (d + 1), ζ β = ζ (β.compContinuousLinearMap V.starProjection) := by
+  have hdet := Submission.cbr_ci_cp_pr_inner_det_covector
+  have hlap := Submission.cbr_ci_cp_pr_det_covector_laplace
+  have hexp := Submission.cbr_ci_cp_pr_factorial_mul_eq_sum_det
+  intro P d ζ V hζ β
+  -- Step 1: an orthonormal basis of `ℝᴾ` subordinate to `ℝᴾ = V ⊕ Vᗮ`
+  obtain ⟨e, he⟩ : ∃ e : OrthonormalBasis (Fin P) ℝ (Euclid P), ∀ i, e i ∈ V ∨ e i ∈ Vᗮ := by
+    have hV' := V.orthogonalFamily_self
+    have hint : DirectSum.IsInternal (fun b : Bool => cond b V Vᗮ) := by
+      refine DirectSum.isInternal_submodule_of_iSupIndep_of_iSup_eq_top hV'.independent ?_
+      rw [iSup_bool_eq]
+      exact Submodule.sup_orthogonal_of_hasOrthogonalProjection
+    refine ⟨hint.subordinateOrthonormalBasis finrank_euclideanSpace_fin hV', fun i => ?_⟩
+    have hi := hint.subordinateOrthonormalBasis_subordinate finrank_euclideanSpace_fin i hV'
+    revert hi
+    cases hint.subordinateOrthonormalBasisIndex finrank_euclideanSpace_fin i hV'
+    · exact Or.inr
+    · exact Or.inl
+  -- Step 2: the determinant covectors `e^I(u) = det(⟨e_{I b}, u_a⟩)`
+  choose γ hγ using fun I : Fin (d + 1) → Fin P => hdet P (d + 1) fun b => e (I b)
+  -- Step 3: `(d+1)! ζ(β') = ∑_I β'(e_I) ζ(e^I)` for every `(d+1)`-covector `β'`
+  have hsum : ∀ β' : Covector (Euclid P) (d + 1), ((d + 1).factorial : ℝ) * ζ β' =
+      ∑ I : Fin (d + 1) → Fin P, β' (fun a => e (I a)) * ζ (γ I) := by
+    intro β'
+    have hcov : ((d + 1).factorial : ℝ) • β' =
+        ∑ I : Fin (d + 1) → Fin P, β' (fun a => e (I a)) • γ I := by
+      ext u
+      rw [ContinuousAlternatingMap.smul_apply, ContinuousAlternatingMap.sum_apply, smul_eq_mul,
+        hexp P (d + 1) e β' u]
+      refine Finset.sum_congr rfl fun I _ => ?_
+      rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, hγ]
+    have := congrArg ζ hcov
+    rw [map_smul, map_sum, smul_eq_mul] at this
+    rw [this]
+    simp only [map_smul, smul_eq_mul]
+  -- Step 4: `ζ(e^I) = 0` if some `e_{I k} ∈ Vᗮ` (Laplace expansion along column `k`)
+  have hkill : ∀ (I : Fin (d + 1) → Fin P) (k : Fin (d + 1)), e (I k) ∈ Vᗮ → ζ (γ I) = 0 := by
+    intro I k hk
+    obtain ⟨α, hα⟩ := hlap P d (fun b => e (I b)) k (γ I) (hγ I)
+    exact hζ (e (I k)) hk α (γ I) hα
+  -- Step 5: `β ∘ p_V` and `β` agree on `e_I` if every `e_{I b} ∈ V`
+  have hcoef : ∀ I : Fin (d + 1) → Fin P, (∀ b, e (I b) ∈ V) →
+      β.compContinuousLinearMap V.starProjection (fun a => e (I a)) = β (fun a => e (I a)) := by
+    intro I hI
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply]
+    congr 1
+    funext a
+    exact Submodule.starProjection_eq_self_iff.mpr (hI a)
+  -- Step 6: compare the two expansions term by term
+  have hfact : ((d + 1).factorial : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero _)
+  apply mul_left_cancel₀ hfact
+  rw [hsum β, hsum (β.compContinuousLinearMap V.starProjection)]
+  refine Finset.sum_congr rfl fun I _ => ?_
+  by_cases hI : ∀ b, e (I b) ∈ V
+  · rw [hcoef I hI]
+  · obtain ⟨k, hk⟩ := not_forall.mp hI
+    rw [hkill I k ((he (I k)).resolve_left hk), mul_zero, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
