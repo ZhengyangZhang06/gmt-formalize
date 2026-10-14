@@ -497,6 +497,84 @@ theorem Submission.idtp_fons_odc_line_hausdorff : unitBallVolume 1 = 2 ∧ ∀ (
         hemb.injective.preimage_image]
     · rw [(hiso P p v hv).euclideanHausdorffMeasure_image, hR]
 
+/-- **Simon 7.3.3, proof of (2)**, the polygonal integer multiplicity current (steps 4–5): let
+`R` be a 1-dimensional integer multiplicity triple in `ℝᴾ` carried by `⋃_{cₖ ≠ 0} Sₖ`, where
+`Sₖ = γₖ(Iₖ)`, `γₖ(t) = pₖ + t vₖ`, `‖vₖ‖ = 1`, with `θ = Σₖ |cₖ| 1_{Sₖ}` and
+`θ ⟨α, ξ⟩ = Σₖ cₖ 1_{Sₖ} α(vₖ)`.  Then `τ(R)(ω) = Σₖ cₖ ∫_{Iₖ} ω(γₖ(t))(vₖ) dt` and
+`μ_R(A) = Σₖ |cₖ| ℒ¹(Iₖ ∩ γₖ⁻¹(A))`, since `H¹⌞Sₖ = γₖ#(ℒ¹⌞Iₖ)` and `Sₖ ⊆ M` when `cₖ ≠ 0`. -/
+theorem Submission.idtp_fons_odc_pc_imrep_formulas : ∀ (P : ℕ) (ι : Type) [Fintype ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (c : ι → ℤ), (∀ k, ‖v k‖ = 1) → (∀ k, MeasurableSet (I k)) → ∀ R : IMRep (univ : Set (Euclid P)) 1, R.carrier = (⋃ k, ⋃ (_ : c k ≠ 0), (fun t : ℝ => p k + t • v k) '' I k) → (∀ x, R.mult x = ∑ k, ((fun t : ℝ => p k + t • v k) '' I k).indicator (fun _ => (c k).natAbs) x) → (∀ (x : Euclid P) (α : Covector (Euclid P) 1), (R.mult x : ℝ) * R.orient x α = ∑ k, ((fun t : ℝ => p k + t • v k) '' I k).indicator (fun _ => (c k : ℝ)) x * α (fun _ => v k)) → (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, R.action (ω : DifferentialForm (Euclid P) 1) = ∑ k, (c k : ℝ) * ∫ t in I k, (ω : DifferentialForm (Euclid P) 1) (p k + t • v k) (fun _ => v k)) ∧ ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ k, ENNReal.ofReal |(c k : ℝ)| * volume (I k ∩ (fun t : ℝ => p k + t • v k) ⁻¹' A) := by
+  intro P ι _ p v I c hv hI R hC hmult horient
+  -- `γₖ(t) = pₖ + t vₖ` is a measurable embedding, `H¹⌞γₖ(J) = γₖ#(ℒ¹⌞J)` and `H¹(γₖ(J)) = ℒ¹(J)`
+  have hline := fun k => Submission.idtp_fons_odc_line_hausdorff.2 P (p k) (v k) (hv k)
+  -- `Sₖ = γₖ(Iₖ)` is measurable, and `Sₖ ⊆ C` when `cₖ ≠ 0`
+  have hS : ∀ k, MeasurableSet ((fun t : ℝ => p k + t • v k) '' I k) := fun k =>
+    (hline k).1.measurableSet_image.mpr (hI k)
+  have hSC : ∀ k, c k ≠ 0 → (fun t : ℝ => p k + t • v k) '' I k ⊆ R.carrier := fun k hk => by
+    rw [hC]
+    exact Set.subset_iUnion₂ (s := fun k (_ : c k ≠ 0) => (fun t : ℝ => p k + t • v k) '' I k) k hk
+  refine ⟨fun ω => ?_, fun A hA => ?_⟩
+  · -- `1_{Sₖ}(x) cₖ ω(x)(vₖ)` is the indicator of `x ↦ cₖ ω(x)(vₖ)`
+    have hmul : ∀ k x, ((fun t : ℝ => p k + t • v k) '' I k).indicator (fun _ => (c k : ℝ)) x *
+        (ω : DifferentialForm (Euclid P) 1) x (fun _ => v k) =
+        ((fun t : ℝ => p k + t • v k) '' I k).indicator
+          (fun x => (c k : ℝ) * (ω : DifferentialForm (Euclid P) 1) x (fun _ => v k)) x :=
+      fun k x => (Set.indicator_mul_left _ (fun _ => (c k : ℝ))
+        (fun x => (ω : DifferentialForm (Euclid P) 1) x (fun _ => v k))).symm
+    -- `x ↦ ω(x)(vₖ)` is continuous with compact support along `γₖ`, hence `H¹`-integrable on `Sₖ`
+    have hint : ∀ k, Integrable (fun x => ((fun t : ℝ => p k + t • v k) '' I k).indicator
+        (fun _ => (c k : ℝ)) x * (ω : DifferentialForm (Euclid P) 1) x (fun _ => v k))
+        (μHE[1].restrict R.carrier) := by
+      intro k
+      have hiso : Isometry (fun t : ℝ => p k + t • v k) := Isometry.of_dist_eq fun s t => by
+        show dist (p k + s • v k) (p k + t • v k) = dist s t
+        rw [dist_add_left, dist_eq_norm, ← sub_smul, norm_smul, hv k, mul_one, Real.dist_eq,
+          Real.norm_eq_abs]
+      have hcont : Continuous fun t : ℝ =>
+          (ω : DifferentialForm (Euclid P) 1) (p k + t • v k) (fun _ => v k) :=
+        (continuous_eval_const (fun _ : Fin 1 => v k)).comp (ω.2.1.1.continuous.comp hiso.continuous)
+      have hcs : HasCompactSupport fun t : ℝ =>
+          (ω : DifferentialForm (Euclid P) 1) (p k + t • v k) (fun _ => v k) :=
+        (ω.2.1.2.comp_isClosedEmbedding hiso.isClosedEmbedding).comp_left
+          (g := fun α : Covector (Euclid P) 1 => α (fun _ => v k)) rfl
+      have h1 : Integrable (fun x => (ω : DifferentialForm (Euclid P) 1) x (fun _ => v k))
+          (μHE[1].restrict ((fun t : ℝ => p k + t • v k) '' I k)) := by
+        rw [((hline k).2 (I k)).1, (hline k).1.integrable_map_iff]
+        exact (hcont.integrable_of_hasCompactSupport hcs).integrableOn
+      simp only [hmul k]
+      rw [integrable_indicator_iff (hS k)]
+      refine (h1.const_mul (c k : ℝ)).mono_measure ?_
+      rw [Measure.restrict_restrict (hS k)]
+      exact Measure.restrict_mono Set.inter_subset_left le_rfl
+    show ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) 1) x)
+      ∂μHE[1] = _
+    simp only [horient]
+    rw [integral_finsetSum _ fun k _ => hint k]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    simp only [hmul k]
+    rw [integral_indicator (hS k), Measure.restrict_restrict (hS k), integral_const_mul]
+    by_cases hk : c k = 0
+    · simp [hk]
+    · rw [Set.inter_eq_left.mpr (hSC k hk), ((hline k).2 (I k)).1, (hline k).1.integral_map]
+  · -- `θ = Σₖ |cₖ| 1_{Sₖ}` as `ℝ≥0∞`-valued functions
+    have hθ : ∀ x, ((R.mult x : ℕ) : ℝ≥0∞) = ∑ k, ((fun t : ℝ => p k + t • v k) '' I k).indicator
+        (fun _ => ((c k).natAbs : ℝ≥0∞)) x := by
+      intro x
+      rw [hmult x, Nat.cast_sum]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      by_cases hx : x ∈ (fun t : ℝ => p k + t • v k) '' I k
+      · rw [Set.indicator_of_mem hx, Set.indicator_of_mem hx]
+      · rw [Set.indicator_of_notMem hx, Set.indicator_of_notMem hx, Nat.cast_zero]
+    rw [IMRep.measure, withDensity_apply _ hA, Measure.restrict_restrict hA]
+    simp only [hθ]
+    rw [lintegral_finsetSum _ fun k _ => measurable_const.indicator (hS k)]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [lintegral_indicator_const (hS k), Measure.restrict_apply (hS k)]
+    by_cases hk : c k = 0
+    · simp [hk]
+    · rw [Set.inter_comm A, ← Set.inter_assoc, Set.inter_eq_left.mpr (hSC k hk),
+        ← Set.image_inter_preimage, ((hline k).2 _).2, ← ENNReal.ofReal_natCast, Nat.cast_natAbs,
+        Int.cast_abs]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
