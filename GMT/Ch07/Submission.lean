@@ -491,6 +491,51 @@ theorem Submission.cmcdtfrfg_face_coord : ∀ (P k : ℕ) (ι : Fin k → Fin P)
   -- step 4: for `l` outside the range of `ι` every summand vanishes
   · rw [hcoord, Finset.sum_eq_zero fun j _ => ite_eq_right (hl j), add_zero]
 
+/-- **Isometry and diameter of the lattice face map** (Simon Ch. 6 §5, deformation theorem: a face
+of the cube lattice parametrised over `ℝᵏ`).  For injective `ι : Fin k → Fin P` and `b ∈ ℤᴾ`, the
+map `Φ(y) = b + Σⱼ yⱼ e_{ι(j)}` is an isometry `ℝᵏ → ℝᴾ`: by `face_coord` the coordinate gap of
+`Φ(y)` and `Φ(y')` is `yₘ - y'ₘ` at `ι(m)` and `0` off the range of `ι`, so reindexing the sum of
+squared gaps along `ι` gives `|Φ(y) - Φ(y')| = |y - y'|`.  On the closed unit cube every squared gap
+is at most `1`, so `|y - y'| ≤ √k ≤ √P`, as `k ≤ P` by injectivity of `ι`. -/
+theorem Submission.cmcdtfrfg_face_isometry_diam : ∀ (P k : ℕ) (ι : Fin k → Fin P) (b : Fin P → ℤ), Function.Injective ι → (∀ y y' : Euclid k, dist (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (ι j) (1 : ℝ)) = dist y y') ∧ (∀ y y' : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → dist (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (ι j) (1 : ℝ)) ≤ Real.sqrt P) := by
+  intro P k ι b hι
+  -- (a), steps 1-5: `|Φ(y) - Φ(y')|² = Σₗ |Φ(y)ₗ - Φ(y')ₗ|² = Σₘ |yₘ - y'ₘ|² = |y - y'|²`
+  have hiso : ∀ y y' : Euclid k,
+      dist (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ))
+        (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (ι j) (1 : ℝ)) =
+      dist y y' := by
+    intro y y'
+    -- step 2: the coordinates of `Φ(y)` and `Φ(y')`
+    obtain ⟨hy, hyc⟩ := Submission.cmcdtfrfg_face_coord P k ι b y hι
+    obtain ⟨hy', hy'c⟩ := Submission.cmcdtfrfg_face_coord P k ι b y' hι
+    rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq]
+    congr 1
+    -- steps 3-4: reindex the sum of squared gaps along the injective `ι`
+    symm
+    refine Fintype.sum_of_injective ι hι _ _ (fun l hl => ?_) fun m => ?_
+    -- off the range of `ι` the gap is `bₗ - bₗ = 0`
+    · have hl' : ∀ m, ι m ≠ l := fun m hm => hl ⟨m, hm⟩
+      rw [hyc l hl', hy'c l hl', dist_self, sq, mul_zero]
+    -- at `ι(m)` the gap is `(b_{ι(m)} + yₘ) - (b_{ι(m)} + y'ₘ) = yₘ - y'ₘ`
+    · rw [hy m, hy' m, dist_add_left]
+  refine ⟨hiso, fun y y' hy hy' => ?_⟩
+  -- (b), step 6: on the unit cube `-1 ≤ yₘ - y'ₘ ≤ 1`, so every squared gap is at most `1`
+  have hgap : ∀ m, dist (y m) (y' m) ^ 2 ≤ 1 := by
+    intro m
+    obtain ⟨hy₀, hy₁⟩ := hy m
+    obtain ⟨hy'₀, hy'₁⟩ := hy' m
+    rw [Real.dist_eq, sq_abs, sq_le_one_iff_abs_le_one, abs_le]
+    constructor <;> linarith
+  -- step 7: `k = #(Fin k) ≤ #(Fin P) = P`, as `ι` is injective
+  have hkP : k ≤ P := by
+    simpa only [Fintype.card_fin] using Fintype.card_le_of_injective ι hι
+  -- step 8: `|Φ(y) - Φ(y')| = |y - y'| = √(Σₘ |yₘ - y'ₘ|²) ≤ √k ≤ √P`
+  rw [hiso, EuclideanSpace.dist_eq]
+  refine Real.sqrt_le_sqrt ?_
+  calc ∑ m, dist (y m) (y' m) ^ 2 ≤ ∑ _m : Fin k, (1 : ℝ) := Finset.sum_le_sum fun m _ => hgap m
+    _ = k := by simp
+    _ ≤ P := by exact_mod_cast hkP
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
