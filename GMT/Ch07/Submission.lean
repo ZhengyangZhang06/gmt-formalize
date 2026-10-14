@@ -451,6 +451,60 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Pairing error for a non-constant multivector field** (the error estimate of steps 4 and 10
+of the proof of `Submission.dmcbr_ci_blowup_limit`, for a single measure).  Let `w` be a
+continuous covector field with `‖w‖ ≤ A` that vanishes outside `B̄_R = closedBall 0 R`, and
+suppose `E = A ∫_{B̄_R} ‖τ − ζ₀‖ dν'` is finite.  The error `g(x) = ⟨w(x), τ(x) − ζ₀⟩` is a.e.
+strongly measurable, being the continuous evaluation of `τ − ζ₀` at `w`.  By `le_opENorm`, and
+since `w = 0` off `B̄_R`, `‖g(x)‖ ≤ 1_{B̄_R}(x) A ‖τ(x) − ζ₀‖`.  Hence `∫ ‖g‖ dν' ≤ E < ∞` and
+`g` is integrable.  As `⟨w, τ⟩ = ⟨w, ζ₀⟩ + g`, the difference of the two integrals is
+`∫ g dν'`, and `|∫ g dν'| ≤ ∫ ‖g‖ dν' ≤ E`. -/
+theorem Submission.dmcbr_ci_bl_pairing_error_le : ∀ (P n : ℕ) (ν' : Measure (Euclid P)) (τ : Euclid P → MultiVector P n) (ζ₀ : MultiVector P n) (w : Euclid P → Covector (Euclid P) n) (A R : ℝ), AEStronglyMeasurable τ ν' → Continuous w → (∀ x, ‖w x‖ ≤ A) → (∀ x, x ∉ closedBall (0 : Euclid P) R → w x = 0) → Integrable (fun x => ζ₀ (w x)) ν' → ENNReal.ofReal A * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν' ≠ ∞ → |∫ x, τ x (w x) ∂ν' - ∫ x, ζ₀ (w x) ∂ν'| ≤ (ENNReal.ofReal A * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν').toReal := by
+  intro P n ν' τ ζ₀ w A R hτ hw hwA hw0 hζ hE
+  -- the error integrand `g(x) = ⟨w(x), τ(x) − ζ₀⟩`
+  set g : Euclid P → ℝ := fun x => (τ x - ζ₀) (w x) with hg
+  -- Step 1: `g` is a.e. strongly measurable (continuous evaluation of `τ − ζ₀` at `w`)
+  have hgm : AEStronglyMeasurable g ν' :=
+    Continuous.comp_aestronglyMeasurable₂ (g := fun (L : MultiVector P n) v => L v)
+      isBoundedBilinearMap_apply.continuous (hτ.sub aestronglyMeasurable_const)
+      hw.aestronglyMeasurable
+  -- Step 2: `‖g(x)‖ₑ ≤ 1_{B̄_R}(x) A ‖τ(x) − ζ₀‖ₑ`
+  have hpt : ∀ x, ‖g x‖ₑ ≤
+      (closedBall (0 : Euclid P) R).indicator (fun x => ENNReal.ofReal A * ‖τ x - ζ₀‖ₑ) x := by
+    intro x
+    by_cases hx : x ∈ closedBall (0 : Euclid P) R
+    · rw [indicator_of_mem hx, mul_comm]
+      calc ‖g x‖ₑ ≤ ‖τ x - ζ₀‖ₑ * ‖w x‖ₑ := (τ x - ζ₀).le_opENorm (w x)
+        _ ≤ ‖τ x - ζ₀‖ₑ * ENNReal.ofReal A := by
+          gcongr
+          rw [← ofReal_norm]
+          exact ENNReal.ofReal_le_ofReal (hwA x)
+    · rw [indicator_of_notMem hx, hg]
+      simp [hw0 x hx]
+  -- Step 3: `∫⁻ ‖g‖ₑ ≤ A ∫⁻_{B̄_R} ‖τ − ζ₀‖ₑ = E < ∞`
+  have hlint : ∫⁻ x, ‖g x‖ₑ ∂ν' ≤
+      ENNReal.ofReal A * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν' := by
+    calc ∫⁻ x, ‖g x‖ₑ ∂ν'
+        ≤ ∫⁻ x, (closedBall (0 : Euclid P) R).indicator
+            (fun x => ENNReal.ofReal A * ‖τ x - ζ₀‖ₑ) x ∂ν' := lintegral_mono hpt
+      _ = ∫⁻ x in closedBall (0 : Euclid P) R, ENNReal.ofReal A * ‖τ x - ζ₀‖ₑ ∂ν' :=
+          lintegral_indicator measurableSet_closedBall _
+      _ = ENNReal.ofReal A * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν' :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+  -- Step 4: `g` is integrable
+  have hgi : Integrable g ν' := ⟨hgm, hasFiniteIntegral_iff_enorm.2 (hlint.trans_lt hE.lt_top)⟩
+  -- Step 5: `⟨w, τ⟩ = ⟨w, ζ₀⟩ + g`, so the difference of the integrals is `∫ g`
+  have hint : ∫ x, τ x (w x) ∂ν' - ∫ x, ζ₀ (w x) ∂ν' = ∫ x, g x ∂ν' := by
+    have hsplit : (fun x => τ x (w x)) = fun x => ζ₀ (w x) + g x := by
+      funext x
+      simp [hg]
+    rw [hsplit, integral_add hζ hgi, add_sub_cancel_left]
+  -- Step 6: `|∫ g| ≤ (∫⁻ ‖g‖ₑ).toReal ≤ E.toReal`
+  rw [hint, ← Real.norm_eq_abs, ← toReal_enorm]
+  calc (‖∫ x, g x ∂ν'‖ₑ).toReal ≤ (∫⁻ x, ‖g x‖ₑ ∂ν').toReal :=
+        ENNReal.toReal_mono (hlint.trans_lt hE.lt_top).ne (enorm_integral_le_lintegral_enorm _)
+    _ ≤ _ := ENNReal.toReal_mono hE hlint
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
