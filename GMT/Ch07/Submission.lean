@@ -4081,6 +4081,111 @@ theorem Submission.dor_imrep_massOn_eq_measure_and_support : ∀ (P n : ℕ) (U 
     le_antisymm (Submission.dor_ims_massOn_le_measure P n U T R hR W)
       (Submission.dor_ims_measure_le_massOn P n U T R hU hR W hW)
   exact ⟨hmass, Submission.dor_ims_support_of_massOn_eq P n U T R.measure hU hmass⟩
+/-- **Orthogonal projection does not increase `m`-dimensional area** (Simon Ch. 7 §3, footnote 2;
+Gram-determinant form, cf. 6.3.4–3.5).  If `τ₁, …, τₘ` is orthonormal in `ℝᴾ` and `q` is the
+orthogonal projection onto a subspace `V`, then `det(⟨qτᵢ, qτⱼ⟩) ≤ 1`.  With `U eᵢ = τᵢ` (an
+isometry) and `T = q ∘ U` (a contraction), the Gram matrix is the matrix of `S = T* T` in the
+standard basis, whose eigenvalues `λₖ = ‖T uₖ‖²` lie in `[0, 1]`; so `det G = ∏ₖ λₖ ≤ 1`. -/
+theorem Submission.dimred_cs_sp_op_gram_det_starProjection_le_one : ∀ (P m : ℕ) (V : Submodule ℝ (Euclid P)) (τ : Fin m → Euclid P), Orthonormal ℝ τ → Matrix.det (Matrix.of fun i j => inner ℝ (V.starProjection (τ i)) (V.starProjection (τ j))) ≤ 1 := by
+  intro P m V τ hτ
+  classical
+  let b := EuclideanSpace.basisFun (Fin m) ℝ
+  let v : Fin m → Euclid P := fun i => V.starProjection (τ i)
+  -- `U eᵢ = τᵢ` (an isometry since `τ` is orthonormal), `T eᵢ = q τᵢ`, so `T = q ∘ U`
+  let U : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Euclid P := b.toBasis.constr ℝ τ
+  let T : EuclideanSpace ℝ (Fin m) →ₗ[ℝ] Euclid P := b.toBasis.constr ℝ v
+  let S := LinearMap.adjoint T ∘ₗ T
+  have hS : S.IsSymmetric := LinearMap.isSymmetric_adjoint_comp_self T
+  have hn : Module.finrank ℝ (EuclideanSpace ℝ (Fin m)) = m := finrank_euclideanSpace_fin
+  have hUe : ∀ a, U (b a) = τ a := by
+    intro a
+    have := b.toBasis.constr_basis ℝ τ a
+    rw [OrthonormalBasis.coe_toBasis] at this
+    exact this
+  have hTe : ∀ a, T (b a) = v a := by
+    intro a
+    have := b.toBasis.constr_basis ℝ v a
+    rw [OrthonormalBasis.coe_toBasis] at this
+    exact this
+  have hTU : ∀ c, T c = V.starProjection (U c) := by
+    have hlin : T = (V.starProjection : Euclid P →L[ℝ] Euclid P).toLinearMap ∘ₗ U := by
+      apply b.toBasis.ext
+      intro a
+      rw [OrthonormalBasis.coe_toBasis, LinearMap.comp_apply, hTe, hUe]
+      rfl
+    intro c
+    rw [hlin]
+    rfl
+  have hUiso : ∀ c, ‖U c‖ = ‖c‖ := by
+    intro c
+    have hb : Orthonormal ℝ (b.toBasis : Fin m → EuclideanSpace ℝ (Fin m)) := by
+      rw [OrthonormalBasis.coe_toBasis]; exact b.orthonormal
+    have hf : Orthonormal ℝ (U ∘ b.toBasis) := by
+      have hcomp : (U ∘ b.toBasis) = τ := by
+        funext a
+        simp only [Function.comp_apply, OrthonormalBasis.coe_toBasis, hUe]
+      rw [hcomp]; exact hτ
+    exact (U.isometryOfOrthonormal hb hf).norm_map c
+  -- the orthogonal projection is a contraction, so `‖T c‖ ≤ ‖c‖`
+  have hcontr : ∀ c, ‖T c‖ ≤ ‖c‖ := by
+    intro c
+    rw [hTU, ← hUiso c]
+    exact V.norm_starProjection_apply_le (U c)
+  have hSinner : ∀ x y, inner ℝ x (S y) = inner ℝ (T x) (T y) := by
+    intro x y
+    simp [S, LinearMap.adjoint_inner_right]
+  -- the matrix of `S` in the standard basis is the Gram matrix `G`
+  have hmat :
+      LinearMap.toMatrix b.toBasis b.toBasis S = Matrix.of fun i j => inner ℝ (v i) (v j) := by
+    ext i j
+    rw [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+      OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, hSinner, hTe, hTe]
+    rfl
+  have hdet : LinearMap.det S = Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) := by
+    rw [← LinearMap.det_toMatrix b.toBasis, hmat]
+  -- spectral theorem: `λₖ = ⟪uₖ, S uₖ⟫ = ‖T uₖ‖² ∈ [0, 1]`
+  have hbounds : ∀ k, 0 ≤ hS.eigenvalues hn k ∧ hS.eigenvalues hn k ≤ 1 := by
+    intro k
+    have h1 := hS.apply_eigenvectorBasis hn k
+    have hu : ‖hS.eigenvectorBasis hn k‖ = 1 := (hS.eigenvectorBasis hn).orthonormal.1 k
+    have h2 : inner ℝ (hS.eigenvectorBasis hn k) (S (hS.eigenvectorBasis hn k)) =
+        hS.eigenvalues hn k := by
+      rw [h1, inner_smul_right, real_inner_self_eq_norm_sq, hu]
+      simp
+    rw [← h2, hSinner, real_inner_self_eq_norm_sq]
+    have h3 := hcontr (hS.eigenvectorBasis hn k)
+    rw [hu] at h3
+    have h4 := norm_nonneg (T (hS.eigenvectorBasis hn k))
+    exact ⟨by positivity, pow_le_one₀ h4 h3⟩
+  change Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) ≤ 1
+  rw [← hdet, hS.det_eq_prod_eigenvalues hn]
+  simp only [RCLike.ofReal_real_eq_id, id]
+  exact Finset.prod_le_one₀ (fun k _ => (hbounds k).1) (fun k _ => (hbounds k).2)
+
+/-- **Simon 7.3.1, footnote 2; 6.3.4–3.5** (orthogonal projection does not increase area): if
+`ξ = ±τ₁ ∧ ⋯ ∧ τₘ` is a unit orientation of `Q` and `q` is the orthogonal projection onto `V`,
+then `|⟨α ∘ q, ξ⟩| = |α(qτ₁, …, qτₘ)| ≤ |α|_E · det(⟨qτᵢ, qτⱼ⟩)^{1/2} ≤ |α|_E`, by the Gram bound
+of `covectorEuclideanNorm_gram_bounds` and `det(⟨qτᵢ, qτⱼ⟩) ≤ 1` (`q` is a contraction). -/
+theorem Submission.dimred_cs_sp_orient_projection_le : ∀ (P m : ℕ) (V Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P m) (α : Covector (Euclid P) m), IsUnitOrientationOf ξ Q → |ξ (α.compContinuousLinearMap V.starProjection)| ≤ covectorEuclideanNorm α := by
+  intro P m V Q ξ α hξ
+  obtain ⟨τ, hτ, -, hsign⟩ := hξ
+  -- `ξ(α ∘ q) = ±(α ∘ q)(τ) = ±α(qτ₁, …, qτₘ)`
+  have hcomp : α.compContinuousLinearMap V.starProjection τ =
+      α fun i => V.starProjection (τ i) := rfl
+  have hval : |ξ (α.compContinuousLinearMap V.starProjection)| =
+      |α fun i => V.starProjection (τ i)| := by
+    rcases hsign with h | h
+    · rw [h, hcomp]
+    · rw [h, abs_neg, hcomp]
+  -- the Gram bound for `v = qτ`, then `det(⟨qτᵢ, qτⱼ⟩) ≤ 1`
+  rw [hval]
+  calc |α fun i => V.starProjection (τ i)|
+      ≤ covectorEuclideanNorm α * Real.sqrt (Matrix.det (Matrix.of fun i j =>
+          inner ℝ (V.starProjection (τ i)) (V.starProjection (τ j)))) :=
+        (Submission.covectorEuclideanNorm_gram_bounds P m).1 α _
+    _ ≤ covectorEuclideanNorm α :=
+        mul_le_of_le_one_right (covectorEuclideanNorm_nonneg α) (Real.sqrt_le_one.mpr
+          (Submission.dimred_cs_sp_op_gram_det_starProjection_le_one P m V τ hτ))
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
