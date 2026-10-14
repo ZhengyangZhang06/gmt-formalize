@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9130e407db5a6eaa22a1d278987d0aded2740fc3e106e25d4a733231de6c1d39",
+  "git_delta": {
+    "base_commit": "51ef82903e12bd15b4808f689d0afadf1fe741e6",
+    "candidate_commit": "59eb60544135f3995672618bf5817d50af261b21",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "c1b34d2cae492fcbc0613c910df24c8e5e086bac7fd7845af998d8d14e624911",
+    "source_sha256": "50e06214722e39b037f844ebd38ab062561b42b875cfad0352bdf09abb9a64bd",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_dtop_isometric_pushforward_im",
+      "statement": "∀ (P Q d : ℕ) (L : Euclid P →L[ℝ] Euclid Q) (hL : IsProperMap (fun x => (0 : Euclid Q) + L x)) (T : GeometricCurrentOn (univ : Set (Euclid P)) d), Isometry L → IsIntegerMultiplicity T → IsIntegerMultiplicity (GeometricCurrentOn.affinePushforward (V := (univ : Set (Euclid Q))) L 0 hL T) ∧ (GeometricCurrentOn.affinePushforward (V := (univ : Set (Euclid Q))) L 0 hL T).mass = T.mass",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
