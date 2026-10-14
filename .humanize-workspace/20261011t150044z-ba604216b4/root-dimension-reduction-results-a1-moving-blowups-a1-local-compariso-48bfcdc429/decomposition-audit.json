@@ -1,0 +1,110 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "support_restrict_subset|measure_compl_support|integrableOn_of_bounded|integrableOn_iff_integrable_of_support_subset|integral_add_compl|measure_inter_add_sdiff|add_le_add_iff_right",
+        "def GeometricCurrentOn.(massOn|mass|support|zeroRegion|restrictDomain)|def massAdmissibleOn|def testFormOnInclusion|def exteriorDerivativeTestOn|def covectorEuclideanNorm|abbrev Covector|def IsTestForm|theorem GeometricCurrentOn.ext",
+        "theorem simon_theorem_3_6|theorem simon_remark_3_7_hausdorff|HasApproximateTangentSpaceAt.unique|def HasApproximateTangentSpaceAt|integral_withDensity_eq_integral_smul",
+        "dimred_mbl_lc_rc_(restrict_to_univ|push_add|cycle_competitor|measure_le_add_of_closed|massOn_restrict_univ)|dor_imrep_massOn_eq_measure_and_support|cmc_imRep_locality_restrict_sub|dtc_restrictDomain_isIntegerMultiplicity|lcmp_imRep_measure_restrict|lcmp_massOn_le_add_of_eval_eq|lcmp_measure_le_add_of_open_nhds",
+        "contract_scope|child_modules|axiom",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/retraction_decomposition_audit/Types.lean > /tmp/retraction_decomposition_audit/types.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/tmp/retraction_decomposition_audit/Types.lean",
+        "/tmp/retraction_decomposition_audit/types.log",
+        "/tmp/retraction_decomposition_audit/reuse-evidence.json",
+        "/tmp/retraction_decomposition_audit/reuse-compatibility.json"
+      ],
+      "conclusion": "The split appropriately establishes the selected retraction-comparison theorem. All 11 one-line propositions and the frozen parent type independently elaborate in comparator scope without child implementations. Current subtraction, derivative inclusion, and the required Euclidean properness and Lindelöf instances were checked. All names are bare identifiers; the five new names are unused. The six reused types are byte-identical to accepted contracts, and candidate source hashes match retained comparator evidence under the pinned project, Mathlib and SimonGMT revisions, permitting only propext, Quot.sound and Classical.choice. Proposed dependencies and reused dependency closures are acyclic and have no reliance on the selected parent. No named declaration was found in the pinned libraries; reuse comes from the accepted DAG candidates. The supplied assembly obtains the exact parent inequality through the admissible competitor, finite cancellation, zero mass on the closed complement of the ball, and domain comparison. No matrix-unit construction occurs. The advertised /tmp/rc_dec/Final.lean was unavailable and was not relied upon."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "mass_and_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type reused. The proof derives the orientation dual norm, integrability, both mass inequalities through smooth approximation, and the support identity through the zero region. Openness and local finiteness are used correctly."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four prose clauses match the accepted type. Density-zero locality, restricted triples, signed overlap cancellation and Cauchy–Binet establish the conclusions without circularity. The cited density theorem permits n = 0."
+    },
+    {
+      "key": "restrict_open_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type reused. Only V needs to be open: local blow-up agreement transfers tangent spaces, all representation fields restrict, and test forms vanish outside V. No openness of U is silently assumed."
+    },
+    {
+      "key": "imrep_restriction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type reused. Absolute continuity, measurability transfer and commuting density with restriction prove the stated identities. The pinned finite nonnegative-density integral theorem applies to arbitrary forms without an integrability assumption."
+    },
+    {
+      "key": "mass_triangle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the local agreement hypothesis and |c| ≤ 1. Negating admissible forms controls both signs of Y's evaluation; the ofReal inequality and supremum give the exact conclusion."
+    },
+    {
+      "key": "compact_outer_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted type reused. Compactness and openness provide shrinking relatively compact neighbourhoods; local finiteness supplies the finite initial measure required for continuity from above. The empty-set case is handled."
+    },
+    {
+      "key": "restrict_to_univ",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All witnesses and conclusions match the prose. The fixed compact K supplies ambient local integrability; the proved integrability justifies splitting the action. The support-restriction lemma and closure(E) ⊆ K ⊆ U establish the support and compactness conclusions using precisely the declared dependencies."
+    },
+    {
+      "key": "push_add",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The difference construction supplies integer multiplicity and the sum evaluation. Intersecting zero-region neighbourhoods proves the support bound and compactness. Applying difference preservation to S and Y after verifying admissibility proves push additivity; O need not be open."
+    },
+    {
+      "key": "cycle_competitor",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof verifies integer multiplicity, boundary equality, support containment and compactness before invoking the exact minimizing contract. Derivative inclusion commutes definitionally, and CompactlyContained W U ensures the compact ambient support lies in U."
+    },
+    {
+      "key": "measure_subadditive",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The open-set inequality follows from mass_and_support and mass_triangle. Local finiteness permits compact_outer_bound on compact subsets of V; increasing compact exhaustion proves the exact closed-set conclusion without additional regularity assumptions."
+    },
+    {
+      "key": "mass_domain_compare",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both inequalities follow by transporting admissible test forms with unchanged evaluations and norms. The reverse transport uses precisely G ⊆ U. The proof works for arbitrary U and G and requires no undeclared dependency."
+    }
+  ],
+  "required_changes": []
+}

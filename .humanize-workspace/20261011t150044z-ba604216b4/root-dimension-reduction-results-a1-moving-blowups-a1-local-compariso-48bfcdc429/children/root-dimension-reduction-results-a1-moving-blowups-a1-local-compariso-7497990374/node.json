@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.mass_domain_compare-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1",
+  "depth": 5,
+  "title": "Local masses of a current in ℝ^P versus its restriction to U and versus a current in U agreeing with it near G (the parent's (p4) and step 8(c))",
+  "statement": "Let P, n ∈ ℕ, let U, G ⊆ ℝ^P be arbitrary sets, X ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) and Z ∈ 𝒟_n(U) (GeometricCurrentOn U n). For a current D in a domain V, M_G(D) = D.massOn G is the supremum in [0, ∞] of ofReal(D(ω)) over all ω ∈ 𝒟ⁿ(V) with tsupport ω ⊆ G and Euclidean coefficient norm |ω(x)| ≤ 1 for every x (SimonGMT massAdmissibleOn). Then: (a) M_G(X|_U) ≤ M_G(X), where X|_U := X.restrictDomain(U ⊆ ℝ^P), X|_U(ω) = X(ω) for ω ∈ 𝒟ⁿ(U); (b) if G ⊆ U and X(ω) = Z(ω) for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ G (on the left, ω is regarded as a test form on ℝ^P via testFormOnInclusion (subset_univ U)), then M_G(X) ≤ M_G(Z).",
+  "lean_statement": "∀ (P n : ℕ) (U G : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) n) (Z : GeometricCurrentOn U n), (X.restrictDomain (subset_univ U)).massOn G ≤ X.massOn G ∧ (G ⊆ U → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ G → X (testFormOnInclusion (subset_univ U) n ω) = Z ω) → X.massOn G ≤ Z.massOn G)",
+  "lean_name": "dimred_mbl_lc_rc_massOn_restrict_univ",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-7497990374-a1"
+}

@@ -1,0 +1,51 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.mass_domain_compare-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: (p4) of the parent proof (M_G(X|_U) ≤ M_G(X): a form admissible for M_G(X|_U) is admissible for M_G(X), with the same value) and step 8(c) (a form admissible for M_{B_G}(QY) is admissible for M_{B_G}(Z), and QY agrees with Z on it), stated for arbitrary X, Z, U and G.
+Call ω ∈ 𝒟ⁿ(V) admissible for M_G in the domain V if tsupport ω ⊆ G and |ω(x)| ≤ 1 for every x. For ω ∈ 𝒟ⁿ(U), ι(ω) ∈ 𝒟ⁿ(ℝ^P) denotes the same form regarded on ℝ^P (testFormOnInclusion); its topological support and its pointwise values are those of ω.
+1. (Proof of (a).) Let ω ∈ 𝒟ⁿ(U) be admissible for M_G in U. Then ι(ω) is admissible for M_G in ℝ^P (same support and same pointwise norms), and X|_U(ω) = X(ι(ω)) by the definition of restrictDomain. So ofReal(X|_U(ω)) = ofReal(X(ι(ω))) ≤ M_G(X). Taking the supremum over all such ω gives M_G(X|_U) ≤ M_G(X).
+2. (Proof of (b).) Assume G ⊆ U and the agreement hypothesis, and let ω ∈ 𝒟ⁿ(ℝ^P) be admissible for M_G in ℝ^P. The underlying form of ω is smooth with compact support, and tsupport ω ⊆ G ⊆ U, so it defines an element ω′ ∈ 𝒟ⁿ(U) with ι(ω′) = ω (same underlying form). ω′ is admissible for M_G in U (tsupport ω′ = tsupport ω ⊆ G, same pointwise norms), and by hypothesis X(ω) = X(ι(ω′)) = Z(ω′). Hence ofReal(X(ω)) = ofReal(Z(ω′)) ≤ M_G(Z). Taking the supremum over all such ω gives M_G(X) ≤ M_G(Z). ∎
+
+## Key steps
+
+1. (a): an admissible ω ∈ 𝒟ⁿ(U) gives the admissible ι(ω) ∈ 𝒟ⁿ(ℝ^P) with X|_U(ω) = X(ι(ω)); take the supremum.
+2. (b): an admissible ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ G ⊆ U equals ι(ω′) for an admissible ω′ ∈ 𝒟ⁿ(U), and X(ω) = Z(ω′); take the supremum.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean`
+- `python3 over RUN/dag.json: lean_statement/status/candidate_commit of the seven resolved dependencies of the selected node; accepted nodes (status accepted + candidate_commit) whose lean_statement matches '\.support ⊆', 'restrictDomain', 'IsMinimizingIn T A', 'IsIntegerMultiplicity', 'R\.measure K (<|≠) ∞'; lean_name collisions for dimred_mbl_lc_rc_restrict_to_univ / _push_add / _cycle_competitor / _measure_le_add_of_closed / _massOn_restrict_univ (none); byte comparison of the six reused lean_statements with their accepted DAG nodes (identical)`
+- `grep -n 'def GeometricCurrentOn.massOn|def massAdmissibleOn|def GeometricCurrentOn.support|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.restrictDomain|def testFormOnInclusion|def exteriorDerivativeTestOn|def covectorEuclideanNorm|abbrev Covector|def IsTestForm' in .lake/packages/simongmt/Poincare/SimonGMT/Chapter06`
+- `grep -rn 'support_restrict_subset|measure_compl_support|Monotone.measure_iUnion|integrableOn_of_bounded|integrableOn_iff_integrable_of_support_subset|isBoundedBilinearMap_apply|bounded_above_of_compact_support|integral_add_compl|measure_inter_add_sdiff|compl_eq_univ_sdiff|ENNReal.add_le_add_iff_right' in .lake/packages/mathlib/Mathlib`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint|def _solve_children|def ensure' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py store.py; sed -n 540,640p verifier/gmt-compare.py (contract_scope, child_modules)`
+- `sed -n 150,275p book/chapter-07.txt is cited through the parent proof (Simon 7.2.4 (8)–(9), Remark 7.2.5(2)); lake env lean /tmp/rc_dec/Final.lean (11 child types, 5 child proofs from declared deps, assembly_check, end_to_end_check, #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-comparison-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+- `/tmp/rc_dec/Final.lean`
+
+Pins match the manifest: project b4d606db1, Mathlib 25730c7c, and SimonGMT 2b366308 per lakefile.toml. Submission.lean is byte-identical to the frozen contract. Six comparator-accepted declarations supply the proof's foundational facts and are reused with byte-identical types (checked against dag.json; all are accepted with candidate commits): dor_imrep_massOn_eq_measure_and_support (MR), cmc_imRep_locality_restrict_sub (IMC), dtc_restrictDomain_isIntegerMultiplicity (RO), lcmp_imRep_measure_restrict (IR), lcmp_massOn_le_add_of_eval_eq (MT) and lcmp_measure_le_add_of_open_nhds (COB). Some related accepted lemmas were found and deliberately not used. cmc_fc_extend_to_univ and dtc_extend_by_zero extend a current to ℝ^P, but they give neither the weight μ_T⌞E nor T = Q + T₁. rsd_cmr_support_subset_of_vanish, cbrld_ns_support_sub_subset, cbr_imRep_measure_basic, rsd_imrep_compact_measure_ne_top and cbr_cc_current_algebra are covered inside the new children's short proofs. No pinned library file or accepted node contains the five new statements, and their names are unused. Mathlib supplies Measure.support_restrict_subset, Measure.measure_compl_support, Monotone.measure_iUnion, Measure.integrableOn_of_bounded and integral_add_compl. The Lean checks in Final.lean all passed: the 11 child types elaborate in comparator scope; each new child is proved from exactly its declared dependencies; assembly_check gives the exact parent type from the new children together with MR and MT; end_to_end_check gives it from the six reused types alone. The only axioms are propext, Classical.choice and Quot.sound.
