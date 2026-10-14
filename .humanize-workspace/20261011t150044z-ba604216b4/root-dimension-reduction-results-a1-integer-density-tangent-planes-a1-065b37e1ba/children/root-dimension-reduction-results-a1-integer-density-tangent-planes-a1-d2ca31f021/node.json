@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1.fiber_sum_ae_congr-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1",
+  "depth": 5,
+  "title": "Fibre sums of H^n-a.e. equal weights agree L^n-a.e. (Lipschitz null images; parent step 2)",
+  "statement": "Let P, n ∈ ℕ; S, V ⊆ ℝ^P with S ⊆ V; G : ℝ^P → ℝ^n Lipschitz (constant L_G); F : ℝ^P → ℝ^n with F = G on V; and h, h' : ℝ^P → [0, ∞] with h = h' almost everywhere for H^n⌞S (H^n = μHE[n] on ℝ^P; no measurability of S, h or h' is assumed). Then the fibre-sum functions y ↦ Σ_{x ∈ S, F(x) = y} h(x) and y ↦ Σ_{x ∈ S, F(x) = y} h'(x) on ℝ^n (tsums over the subtype S ∩ F^{−1}{y}) agree for L^n-a.e. y, where L^n = volume on ℝ^n.",
+  "lean_statement": "∀ (P n : ℕ) (S V : Set (Euclid P)) (F G : Euclid P → Euclid n) (LG : NNReal) (h h' : Euclid P → ℝ≥0∞), S ⊆ V → LipschitzWith LG G → EqOn F G V → h =ᵐ[μHE[n].restrict S] h' → (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h x) =ᵐ[volume] (fun y : Euclid n => ∑' x : ↥(S ∩ F ⁻¹' {y}), h' x)",
+  "lean_name": "idtp_caf_paf_fiberSum_ae_congr",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d2ca31f021-a1"
+}
