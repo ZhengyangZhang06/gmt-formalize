@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1.open_segment_tangent-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1",
+  "depth": 5,
+  "title": "Every point of an open segment has approximate tangent line span{τ}",
+  "statement": "Let P ∈ ℕ, a, τ ∈ ℝ^P with |τ| = 1, ℓ ∈ ℝ, and I := {a + uτ : 0 < u < ℓ} (the image of the open interval (0, ℓ) under u ↦ a + uτ). For every x ∈ I, the subspace Q := span{τ} is the 1-dimensional approximate tangent space of I at x in Simon's sense (Ch. 3, 1.4), i.e. HasApproximateTangentSpaceAt 1 I x Q: finrank Q = 1, and for every f ∈ C_c(ℝ^P, ℝ), ∫_{η_{x,r}(I)} f dH¹ → ∫_Q f dH¹ as r → 0⁺. Here η_{x,r}(y) = r⁻¹(y − x) is blowUpMap x r and H¹ = μHE[1].",
+  "lean_statement": "∀ (P : ℕ) (a τ : Euclid P) (ℓ : ℝ), ‖τ‖ = 1 → ∀ x ∈ (fun u : ℝ => a + u • τ) '' Ioo 0 ℓ, HasApproximateTangentSpaceAt 1 ((fun u : ℝ => a + u • τ) '' Ioo 0 ℓ) x (Submodule.span ℝ {τ})",
+  "lean_name": "cbr_cc_seg_open_segment_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-31cea87a30-a1"
+}

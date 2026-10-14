@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.constant_mult_im-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1",
+  "depth": 3,
+  "title": "The scaled restriction is integer multiplicity when the multiplicity is constant",
+  "statement": "Let P, n ∈ ℕ and V ⊆ U ⊆ ℝ^P with V open. Let T ∈ 𝒟_n(U) be represented by an IMRep R = (M, θ, ξ) in U, let N₀ ≥ 1 be an integer such that θ(x) = N₀ for μ_T-a.e. x ∈ V, where μ_T = R.measure = θHⁿ⌞M, and let T₀ ∈ 𝒟_n(V) satisfy T(ι ω) = N₀·T₀(ω) for every ω ∈ 𝒟^n(V) (ι = testFormOnInclusion). Then T₀ is integer multiplicity in V (IsIntegerMultiplicity T₀); in fact (M ∩ V, 1, ξ) represents T₀.",
+  "lean_statement": "∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n) (R : IMRep U n) (T₀ : GeometricCurrentOn V n) (N₀ : ℕ), IsOpen V → 0 < N₀ → R.Represents T → (∀ᵐ x ∂R.measure, x ∈ V → R.mult x = N₀) → (∀ ω : TestFormOn V n, T (testFormOnInclusion hVU n ω) = (N₀ : ℝ) * T₀ ω) → IsIntegerMultiplicity T₀",
+  "lean_name": "rsd_cmr_isIntegerMultiplicity_of_const_mult",
+  "depends_on": [
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-constant-mult-im-a1-a1"
+}
