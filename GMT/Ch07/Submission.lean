@@ -3763,6 +3763,59 @@ theorem Submission.dimred_mbl_lc_retraction_comparison : ∀ (P m : ℕ) (U A : 
     _ = ENNReal.ofReal (L ^ (m + 1)) * S.massOn (ball 0 G) := by rw [hSmass]
     _ ≤ ENNReal.ofReal (L ^ (m + 1)) * Z.massOn (ball 0 G) := by gcongr
 
+/-- **Local comparison at a single index** (Simon 7.2.4, proof, (9)–(11), with Remark 7.2.5(2)).
+Let `T ∈ 𝒟ₙ(U)`, `n = m + 1`, be minimizing in `A` with `spt T ⊆ A` and `T = τ(R)`; let `W ⊆ F ⊆
+B_G(0)` with `W` open, `F` compact and `μ_T(F ∖ W) = 0`, and let `0 < G`, `2G ≤ G₃`,
+`B̄_{G₃}(0) ⊆ U`, `M_{B_{G₃}(0)}(T) < ∞` and `L ≥ 1`.  Let `S`, `C` be integer multiplicity with
+`∂S = ∂C` and `spt(S − C) ⊆ W`, `Ŷ` an integer multiplicity cycle with `spt Ŷ ⊆ F` and
+`μ_Ŷ(F ∖ W) ≤ e`, `M(Sr) ≤ e`, and `C = T + Ŷ + Sr` on forms supported in `W`.  Then
+`M_W(T) ≤ Lⁿ(M_W(S) + 2e) + (Lⁿ − 1) M_{B_{G₃}(0)}(T)`.  If `A ∩ B_{2G}(0) = ∅`, then `W` misses
+`spt T` and `M_W(T) = 0`.  Otherwise `Y = (S − C) + Ŷ` is an integer multiplicity cycle with
+`spt Y ⊆ F ⊆ B_G(0)` and `Z = T + Y⌞U` is integer multiplicity, so the retraction comparison
+gives `M_{B_G}(T) ≤ Lⁿ M_{B_G}(Z)`.  Splitting `B_G(0) = W ⊔ (F ∖ W) ⊔ (B_G(0) ∖ F)` gives
+`M_{B_G}(T) = M_W(T) + b` and `M_{B_G}(Z) ≤ M_W(S) + e + e + b`, where
+`b ≤ M_{B_{G₃}(0)}(T) < ∞`; cancelling `b` gives the claim. -/
+theorem Submission.dimred_mbl_lc_index_comparison : ∀ (P m : ℕ) (U A W F : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (R : IMRep U (m + 1)) (C S Ŷ Sr : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (π : Euclid P → Euclid P) (G G₃ L : ℝ) (e : ℝ≥0∞), IsOpen U → IsMinimizingIn T A → T.support ⊆ A → R.Represents T → 0 < G → 2 * G ≤ G₃ → closedBall (0 : Euclid P) G₃ ⊆ U → T.massOn (ball 0 G₃) ≠ ∞ → 1 ≤ L → (A ∩ ball 0 (2 * G) = ∅ ∨ (ContDiffOn ℝ 1 π (ball 0 (2 * G)) ∧ MapsTo π (ball 0 (2 * G)) (A ∩ ball 0 G₃) ∧ (∀ y ∈ A ∩ ball 0 (2 * G), π y = y) ∧ ∀ y ∈ ball (0 : Euclid P) (2 * G), ‖fderiv ℝ π y‖ ≤ L)) → IsOpen W → IsCompact F → W ⊆ F → F ⊆ ball 0 G → R.measure (F \ W) = 0 → IsIntegerMultiplicity C → IsIntegerMultiplicity S → S.boundary = C.boundary → (S - C).support ⊆ W → IsIntegerMultiplicity Ŷ → Ŷ.boundary = 0 → Ŷ.support ⊆ F → (∀ R' : IMRep (univ : Set (Euclid P)) (m + 1), R'.Represents Ŷ → R'.measure (F \ W) ≤ e) → Sr.mass ≤ e → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ W → C ω = currentEval T (ω : DifferentialForm (Euclid P) (m + 1)) + Ŷ ω + Sr ω) → (∀ (O : Set (Euclid P)) (f : Euclid P → Euclid P) (c : ℝ), IsOpen O → ContDiffOn ℝ 1 f O → (∀ y ∈ O, ‖fderiv ℝ f y‖ ≤ c) → ∃ push : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), (∀ (X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R : IMRep (univ : Set (Euclid P)) (m + 1)), R.Represents X → IsCompact X.support → X.support ⊆ O → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), push X ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) (m + 1)) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[m + 1]) ∧ IsIntegerMultiplicity (push X) ∧ (push X).support ⊆ f '' X.support ∧ (push X).mass ≤ ENNReal.ofReal (c ^ (m + 1)) * X.mass ∧ (X.boundary = 0 → (push X).boundary = 0) ∧ ((∀ y ∈ X.support, f y = y) → push X = X)) ∧ ∀ X₁ X₂ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity X₁ → IsIntegerMultiplicity X₂ → IsCompact X₁.support → X₁.support ⊆ O → IsCompact X₂.support → X₂.support ⊆ O → push (X₁ - X₂) = push X₁ - push X₂) → T.massOn W ≤ ENNReal.ofReal (L ^ (m + 1)) * (S.massOn W + 2 * e) + ENNReal.ofReal (L ^ (m + 1) - 1) * T.massOn (ball 0 G₃) := by
+  intro P m U A W F T R C S Ŷ Sr π G G₃ L e hU hmin hTA hR hG hGG₃ hG₃U hfin hL hπ hW hF hWF hFG
+    hRFW hC hS hbd hSCW hŶ hŶbd hŶF hŶe hSr hCT hPF
+  -- `B_G(0) ⊆ B_{2G}(0)` and `B_G(0) ⊆ B_{G₃}(0) ⊆ B̄_{G₃}(0) ⊆ U`, as `0 < G` and `2G ≤ G₃`
+  have hGG₃' : G ≤ G₃ := by linarith
+  have hB₂ : ball (0 : Euclid P) G ⊆ ball 0 (2 * G) := ball_subset_ball (by linarith)
+  have hB₃ : ball (0 : Euclid P) G ⊆ ball 0 G₃ := ball_subset_ball hGG₃'
+  have hBU : ball (0 : Euclid P) G ⊆ U := (hB₃.trans ball_subset_closedBall).trans hG₃U
+  rcases hπ with hA | ⟨hπC, hπA, hπfix, hπL⟩
+  -- Step 1 (case `A ∩ B_{2G}(0) = ∅`): `W ⊆ B_{2G}(0)` misses `A ⊇ spt T`, so `M_W(T) = 0`
+  · have hWT : Disjoint W T.support := by
+      refine Set.disjoint_left.2 fun x hxW hxT => ?_
+      have hx : x ∈ A ∩ ball 0 (2 * G) := ⟨hTA hxT, hB₂ (hFG (hWF hxW))⟩
+      rw [hA] at hx
+      exact hx
+    rw [Submission.dimred_mbl_lc_ic_massOn_eq_zero_of_disjoint P (m + 1) U W T hWT]
+    exact zero_le
+  -- Step 2: `Y = (S − C) + Ŷ` is an integer multiplicity cycle with `spt Y ⊆ F` compact
+  obtain ⟨Y, hYim, hYbd, hYc, hYF, hY⟩ := Submission.dimred_mbl_lc_ic_cycle P m F C S Ŷ hF hC hS
+    hbd (hSCW.trans hWF) hŶ hŶbd hŶF
+  -- Step 3: `Z = T + Y⌞U` is integer multiplicity in `U` (`T = τ(R)`)
+  obtain ⟨Z, hZim, hZ⟩ :=
+    Submission.dimred_mbl_lc_ic_add_restrict P (m + 1) U T Y hU ⟨R, hR⟩ hYim
+  -- Step 4: the retraction comparison gives (I) `M_{B_G}(T) ≤ Lⁿ M_{B_G}(Z)`
+  have hI := Submission.dimred_mbl_lc_retraction_comparison P m U A T Z Y π G G₃ L hU hmin hTA hG
+    hGG₃' hG₃U hfin hπC hπA hπfix hπL hYim hYbd hYc (hYF.trans hFG) hZ hPF
+  -- Step 5: with `B = B_G(0)`, `M_B(T) = M_W(T) + b` and `M_B(Z) ≤ M_W(S) + e + e + b`
+  obtain ⟨b, hTb, hZb⟩ := Submission.dimred_mbl_lc_ic_region_bound P (m + 1) U W F (ball 0 G) T Z
+    R C S Ŷ Sr Y e hU hR hZim isOpen_ball hBU hW hF hWF hFG hRFW hSCW hŶ hŶF hŶe hSr hCT hY hZ
+  -- Step 6: `b ≤ M_{B_G}(T) ≤ M_{B_{G₃}}(T) < ∞`
+  have hbM : b ≤ T.massOn (ball 0 G₃) :=
+    calc b ≤ T.massOn W + b := le_add_self
+      _ = T.massOn (ball 0 G) := hTb.symm
+      _ ≤ T.massOn (ball 0 G₃) := T.massOn_mono hB₃
+  -- Step 7: `M_W(T) + b = M_{B_G}(T) ≤ Lⁿ(M_W(S) + e + e + b)`; cancel the finite `b`
+  refine Submission.dimred_mbl_lc_ic_cancel (T.massOn W) b (S.massOn W) e
+    (T.massOn (ball 0 G₃)) L (m + 1) hL hbM hfin ?_
+  calc T.massOn W + b = T.massOn (ball 0 G) := hTb.symm
+    _ ≤ ENNReal.ofReal (L ^ (m + 1)) * Z.massOn (ball 0 G) := hI
+    _ ≤ ENNReal.ofReal (L ^ (m + 1)) * (S.massOn W + e + e + b) := by gcongr
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
