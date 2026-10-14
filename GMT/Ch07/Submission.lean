@@ -2298,8 +2298,8 @@ theorem Submission.dtc_bc_lc_sl_ll_piece_gradient : ∀ (P n : ℕ) (M : Set (Eu
     have hψd : HasFDerivAt ψ (fderiv ℝ ψ y) y := (hψ.differentiable one_ne_zero y).hasFDerivAt
     have hε₁ : 0 < c * ε / 2 := by positivity
     have hε₂ : 0 < c * ε / (2 * (‖g‖ + 1)) := by positivity
-    obtain ⟨δ₁, hδ₁, hF1⟩ := Metric.eventually_nhds_iff.1 (hFd.isLittleO.def hε₁)
-    obtain ⟨δ₂, hδ₂, hψ1⟩ := Metric.eventually_nhds_iff.1 (hψd.isLittleO.def hε₂)
+    obtain ⟨δ₁, hδ₁, hF1⟩ := Metric.eventually_nhds_iff.1 (hFd.isLittleO.bound hε₁)
+    obtain ⟨δ₂, hδ₂, hψ1⟩ := Metric.eventually_nhds_iff.1 (hψd.isLittleO.bound hε₂)
     refine ⟨c * min δ₁ δ₂, by positivity, ?_⟩
     rintro x' ⟨y', hy', rfl⟩ hx'
     -- `c‖y' − y‖ ≤ ‖ψ y' − ψ y‖ < c min(δ₁, δ₂)`
