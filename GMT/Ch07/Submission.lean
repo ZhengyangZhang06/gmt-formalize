@@ -9240,10 +9240,63 @@ theorem Submission.codim1_lur_chart_test_form_exists : ∀ (P n : ℕ) (U : Set 
   refine ⟨ω, htsS.trans hSZ, (htsS.trans hSZ).trans hZB, ?_, ?_⟩
   · -- coefficient bound: `ω(w) = Λ(p)` with `|p| = ζ(w) |φ(π(w))| ≤ 1`
     intro w
-    apply Submission.codim1_lur_det_covector_norm_le P n A (ζ w • φ (π w)) _ hA _ (hΛ _)
-    rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (hζ0 w)]
-    calc ζ w * ‖φ (π w)‖ ≤ 1 * 1 := mul_le_mul (hζ1 w) (hφ1 _) (norm_nonneg _) zero_le_one
-      _ = 1 := one_mul 1
+    -- Leibniz: a real `m × m` matrix with entries of absolute value `≤ 1` has `|det| ≤ m!`
+    have hleib : ∀ (m : ℕ) (M : Matrix (Fin m) (Fin m) ℝ), (∀ r c, |M r c| ≤ 1) →
+        |M.det| ≤ (m.factorial : ℝ) := by
+      intro m M hM
+      rw [Matrix.det_apply]
+      calc |∑ σ : Equiv.Perm (Fin m), Equiv.Perm.sign σ • ∏ i, M (σ i) i|
+          ≤ ∑ σ : Equiv.Perm (Fin m), |Equiv.Perm.sign σ • ∏ i, M (σ i) i| :=
+            Finset.abs_sum_le_sum_abs _ _
+        _ ≤ ∑ _σ : Equiv.Perm (Fin m), (1 : ℝ) := by
+            refine Finset.sum_le_sum fun σ _ => ?_
+            rw [Units.smul_def, zsmul_eq_mul, abs_mul]
+            have hs : |((Equiv.Perm.sign σ : ℤ) : ℝ)| = 1 := by
+              rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
+            rw [hs, one_mul, Finset.abs_prod]
+            exact Finset.prod_le_one₀ (fun i _ => abs_nonneg _) (fun i _ => hM _ _)
+        _ = (m.factorial : ℝ) := by
+            simp [Finset.card_univ, Fintype.card_perm]
+    -- `|Λ(p)(e_I)| = |det[p, Ae_{I(1)}, …, Ae_{I(n)}]| ≤ (n+1)!` for every index tuple `I`
+    have hcoef : ∀ (p : Euclid (n + 1)), ‖p‖ ≤ 1 → ∀ I : Fin n → Fin P,
+        |Λ p (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))| ≤ ((n + 1).factorial : ℝ) := by
+      intro p hp I
+      rw [hΛ]
+      apply hleib
+      intro r c
+      refine Fin.cases ?_ (fun k => ?_) c
+      · simpa [Real.norm_eq_abs] using (PiLp.norm_apply_le p r).trans hp
+      · simp only [Matrix.of_apply, Fin.cons_succ]
+        have h1 := PiLp.norm_apply_le (A (EuclideanSpace.basisFun (Fin P) ℝ (I k))) r
+        have h2 : ‖A (EuclideanSpace.basisFun (Fin P) ℝ (I k))‖ ≤ 1 := by
+          calc ‖A (EuclideanSpace.basisFun (Fin P) ℝ (I k))‖
+              ≤ ‖A‖ * ‖EuclideanSpace.basisFun (Fin P) ℝ (I k)‖ := A.le_opNorm _
+            _ = ‖A‖ := by simp
+            _ ≤ 1 := hA
+        rw [← Real.norm_eq_abs]
+        exact h1.trans h2
+    have hp : ‖ζ w • φ (π w)‖ ≤ 1 := by
+      rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg (hζ0 w)]
+      calc ζ w * ‖φ (π w)‖ ≤ 1 * 1 := mul_le_mul (hζ1 w) (hφ1 _) (norm_nonneg _) zero_le_one
+        _ = 1 := one_mul 1
+    -- sum the squared coefficients over the `Pⁿ` index tuples
+    show covectorEuclideanNorm (Λ (ζ w • φ (π w))) ≤ _
+    unfold covectorEuclideanNorm
+    have hF : (0 : ℝ) ≤ ((n + 1).factorial : ℝ) := by positivity
+    calc Real.sqrt (∑ I : Fin n → Fin P, if StrictMono I then
+          (Λ (ζ w • φ (π w)) (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))) ^ 2 else 0)
+        ≤ Real.sqrt (∑ _I : Fin n → Fin P, ((n + 1).factorial : ℝ) ^ 2) := by
+          apply Real.sqrt_le_sqrt
+          refine Finset.sum_le_sum fun I _ => ?_
+          split_ifs
+          · exact sq_le_sq' (abs_le.1 (hcoef _ hp I)).1 (abs_le.1 (hcoef _ hp I)).2
+          · positivity
+      _ = ((n + 1).factorial : ℝ) * Real.sqrt ((P : ℝ) ^ n) := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fun, Fintype.card_fin,
+            Fintype.card_fin, nsmul_eq_mul, Real.sqrt_mul (by positivity), Real.sqrt_sq hF,
+            mul_comm]
+          push_cast
+          ring
   · -- the pulled-back field is `φ`: both sides vanish off `B_{δ₁}(0)`
     funext v
     by_cases hv : v ∈ ball (0 : Euclid (n + 1)) δ₁
