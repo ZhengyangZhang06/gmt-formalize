@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1.regular_reduction-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1",
+  "depth": 6,
+  "title": "Regular part of a Lipschitz parametrization: A⁺ is Borel, the pulled-back integrand is integrable and vanishes off A⁺ (supplied steps 1–2)",
+  "statement": "Let P, n ∈ ℕ, L ≥ 0, let H : ℝⁿ → ℝ^P be L-Lipschitz (LipschitzWith L H), let A ⊆ ℝⁿ be Borel, and let g : ℝⁿ → ℤ be measurable with g Lebesgue integrable on A (IntegrableOn (fun u => (g u : ℝ)) A). Write DH(u) := fderiv ℝ H u (the zero map where H is not differentiable), e_a := EuclideanSpace.single a 1 (a ∈ Fin n) and A⁺ := {u ∈ A : H is differentiable at u, DH(u) is injective and g(u) ≠ 0}. Then A⁺ is Borel, and for every test form ω ∈ 𝒟ⁿ(ℝ^P) (ω : TestFormOn univ n) the function Ψ_ω(u) := g(u)·ω(H(u))(DH(u)e_0, …, DH(u)e_{n−1}) is Lebesgue integrable on A and ∫_A Ψ_ω dλ = ∫_{A⁺} Ψ_ω dλ (λ = Lebesgue measure on ℝⁿ).",
+  "lean_statement": "∀ (P n : ℕ) (L : NNReal) (H : Euclid n → Euclid P) (A : Set (Euclid n)) (g : Euclid n → ℤ), LipschitzWith L H → MeasurableSet A → Measurable g → IntegrableOn (fun u => (g u : ℝ)) A → MeasurableSet {u | u ∈ A ∧ DifferentiableAt ℝ H u ∧ Injective (fderiv ℝ H u) ∧ g u ≠ 0} ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) n, IntegrableOn (fun u => (g u : ℝ) * (ω : DifferentialForm (Euclid P) n) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))) A ∧ ∫ u in A, (g u : ℝ) * (ω : DifferentialForm (Euclid P) n) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)) = ∫ u in {u | u ∈ A ∧ DifferentiableAt ℝ H u ∧ Injective (fderiv ℝ H u) ∧ g u ≠ 0}, (g u : ℝ) * (ω : DifferentialForm (Euclid P) n) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))",
+  "lean_name": "cmcdt_lpi_pc_regular_part_reduction",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-835779a080-a1"
+}

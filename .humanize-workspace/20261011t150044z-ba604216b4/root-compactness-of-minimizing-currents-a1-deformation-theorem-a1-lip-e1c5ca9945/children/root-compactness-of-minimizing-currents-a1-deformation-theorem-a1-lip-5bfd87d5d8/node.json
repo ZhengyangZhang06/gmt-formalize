@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1.pullback_le-a1.hs_sum-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1.pullback_le-a1",
+  "depth": 6,
+  "title": "Hilbert–Schmidt inequality for the pull-back on all index tuples: Σ_j (A^#γ)(e∘j)² ≤ (‖A‖²)^m·Σ_j γ(e'∘j)²",
+  "statement": "Let N, N', m ∈ ℕ, let A : ℝ^N → ℝ^{N'} be a continuous linear map (A : Euclid N →L[ℝ] Euclid N') with operator norm ‖A‖, and let γ be an m-covector on ℝ^{N'} (Covector (Euclid N') m). Let e_a := EuclideanSpace.basisFun (Fin N) ℝ a (a ∈ Fin N) and e'_b := EuclideanSpace.basisFun (Fin N') ℝ b (b ∈ Fin N') be the standard orthonormal bases. Let A^#γ := γ.compContinuousLinearMap A, so (A^#γ)(w_0, …, w_{m−1}) = γ(Aw_0, …, Aw_{m−1}). Then Σ_{j : Fin m → Fin N} ((A^#γ)(e_{j(0)}, …, e_{j(m−1)}))² ≤ (‖A‖²)^m · Σ_{j : Fin m → Fin N'} (γ(e'_{j(0)}, …, e'_{j(m−1)}))². Both sums run over all index maps j, not only the increasing ones.",
+  "lean_statement": "∀ (N N' m : ℕ) (A : Euclid N →L[ℝ] Euclid N') (γ : Covector (Euclid N') m), ∑ j : Fin m → Fin N, ((γ.compContinuousLinearMap A) (fun i => EuclideanSpace.basisFun (Fin N) ℝ (j i))) ^ 2 ≤ (‖A‖ ^ 2) ^ m * ∑ j : Fin m → Fin N', (γ (fun i => EuclideanSpace.basisFun (Fin N') ℝ (j i))) ^ 2",
+  "lean_name": "cmcdt_lp_pullback_basis_sq_sum_le",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.energy_lsc-a1.grad_norm_sq-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.energy_lsc-a1.grad_norm_sq-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6113d5ce09-a1",
+      "result_commit": "f2fb0a2b140ff1416c89e7eb125bac070f45f8fc",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-5bfd87d5d8-a1"
+}

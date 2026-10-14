@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.piece_action-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1",
+  "depth": 6,
+  "title": "One product piece: admissibility for piece_current and the slice representation (supplied steps 2–3, per piece)",
+  "statement": "Let N, n ∈ ℕ, L ≥ 0 (NNReal), G : ℝⁿ → ℝ^N L-Lipschitz, A ⊆ ℝⁿ Borel, w : ℝⁿ → ℤ measurable with w Lebesgue integrable on A, and G differentiable at every u ∈ A. Let Ĝ : ℝ^{n+1} → ℝ^{N+1}, Â ⊆ ℝ^{n+1} and ŵ : ℝ^{n+1} → ℤ satisfy Ĝ(z) = ι(z_0, G(tail z)) for all z, Â = {z : z_0 ∈ (0, 1) and tail z ∈ A} and ŵ(z) = w(tail z) for all z, where ι(t, x) := (t, x) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))), z_0 := WithLp.ofLp z 0 and tail z := WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)). Then Ĝ is max(1, L)-Lipschitz, Â is Borel, ŵ is measurable, ŵ is integrable on Â, and for every test form ω ∈ 𝒟^{n+1}(ℝ^{N+1}) and every n-form η on ℝ^N satisfying η(x)(v) = ∫_0^1 ω(ι(t, x))(e₀, Jv_0, …, Jv_{n−1}) dt for all x ∈ ℝ^N and v ∈ (ℝ^N)ⁿ (e₀ := EuclideanSpace.single 0 1, J x := ι(0, x)), ∫_A w(u)·η(G(u))(DG(u)e_0, …, DG(u)e_{n−1}) du = ∫_Â ŵ(z)·ω(Ĝ(z))(DĜ(z)ê_0, …, DĜ(z)ê_n) dz, with D = fderiv ℝ and e_a, ê_a the standard bases.",
+  "lean_statement": "∀ (N n : ℕ) (L : NNReal) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (w : Euclid n → ℤ) (Gh : Euclid (n + 1) → Euclid (N + 1)) (Ah : Set (Euclid (n + 1))) (wh : Euclid (n + 1) → ℤ), LipschitzWith L G → MeasurableSet A → Measurable w → IntegrableOn (fun u => (w u : ℝ)) A → (∀ u ∈ A, DifferentiableAt ℝ G u) → (∀ z, Gh z = WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0) (WithLp.ofLp (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))))) → Ah = {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} → (∀ z, wh z = w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) → LipschitzWith (max 1 L) Gh ∧ MeasurableSet Ah ∧ Measurable wh ∧ IntegrableOn (fun z => (wh z : ℝ)) Ah ∧ ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (n + 1)) (η : DifferentialForm (Euclid N) n), (∀ (x : Euclid N) (v : Fin n → Euclid N), η x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (n + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → ∫ u in A, (w u : ℝ) * η (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) = ∫ z in Ah, (wh z : ℝ) * (ω : DifferentialForm (Euclid (N + 1)) (n + 1)) (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1))",
+  "lean_name": "cmcdt_lpi_cyl_piece_action",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.suspension_map-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.pullback_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.suspension_map-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.pullback_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-2849cb9c10-a1"
+}

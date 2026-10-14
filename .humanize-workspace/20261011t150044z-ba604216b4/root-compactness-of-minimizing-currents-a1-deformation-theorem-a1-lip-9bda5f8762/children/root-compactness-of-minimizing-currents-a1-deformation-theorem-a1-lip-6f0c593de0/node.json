@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.minor_continuity-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1",
+  "depth": 5,
+  "title": "Weak continuity of Jacobian minors under uniform convergence with bounded Lipschitz constants (supplied step 6(v))",
+  "statement": "Let m, p, r ∈ ℕ, L ≥ 0, and let v_j, v₀ : ℝ^m → ℝ^p (j ∈ ℕ) be L-Lipschitz maps with v_j → v₀ uniformly on ℝ^m. Let a : Fin r → Fin p (rows) and b : Fin r → Fin m (columns), and let c ∈ L¹(ℝ^m) (Lebesgue). For a map v put M^{a,b}(v)(u) := det((Dv(u)e_{b(t)})_{a(s)})_{s,t ∈ Fin r}, where Dv(u) := fderiv ℝ v u (the zero map where v is not differentiable) and e_t is the standard basis of ℝ^m. Then ∫ c·M^{a,b}(v_j) dλ → ∫ c·M^{a,b}(v₀) dλ as j → ∞.",
+  "lean_statement": "∀ (m p r : ℕ) (L : NNReal) (v : ℕ → Euclid m → Euclid p) (v₀ : Euclid m → Euclid p) (a : Fin r → Fin p) (b : Fin r → Fin m) (c : Euclid m → ℝ), (∀ j, LipschitzWith L (v j)) → LipschitzWith L v₀ → TendstoUniformly v v₀ atTop → Integrable c → Tendsto (fun j => ∫ u, c u * Matrix.det (Matrix.of fun s t => fderiv ℝ (v j) u (EuclideanSpace.single (b t) 1) (a s))) atTop (𝓝 (∫ u, c u * Matrix.det (Matrix.of fun s t => fderiv ℝ v₀ u (EuclideanSpace.single (b t) 1) (a s))))",
+  "lean_name": "cmcdt_lpi_minor_weak_continuity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-6f0c593de0-a1"
+}
