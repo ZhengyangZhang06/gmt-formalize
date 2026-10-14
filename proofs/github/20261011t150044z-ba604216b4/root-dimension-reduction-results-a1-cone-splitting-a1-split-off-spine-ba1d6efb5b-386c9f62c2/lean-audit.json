@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "52565ab21cd3db1c59ff10768393565a9d6fbbe0eebda2bfa21b24629dae8459",
+  "git_delta": {
+    "base_commit": "794c2310dfe84efb6e9efb50f0d202b390e8d0cc",
+    "candidate_commit": "9ffa52af57b20ec2dcb1b308f30bfebb325d6d14",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_cfs_cc_cutoff_homotopy",
+    "diff_sha256": "84501c5f52bdf75df1e8267dbaea6145010ad0da8aba477d9a4d5475557857fd",
+    "source_sha256": "71205157daa8ed8b800ff3eedd570f26e3d8acb9eb7273f5f51600c40a85bc76",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_cfs_cc_cutoff_homotopy",
+      "statement": "∀ (P q : ℕ) (ρ : ℝ), (∀ β : DifferentialForm (Euclid P) (q + 1), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • x)).curryLeft x) ∧ ∀ x : Euclid P, exteriorDerivative (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • y)).curryLeft y) x + (∫ t in (0 : ℝ)..1, t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x) = β x) → ∀ γ : TestFormOn (univ : Set (Euclid P)) (q + 1), ∃ ψ : TestFormOn (univ : Set (Euclid P)) q, ∀ x : Euclid P, ‖x‖ < ρ → (∫ t in (0 : ℝ)..1, t ^ (q + 1) • (exteriorDerivative (γ : DifferentialForm (Euclid P) (q + 1)) (t • x)).curryLeft x) = (γ : DifferentialForm (Euclid P) (q + 1)) x - exteriorDerivative (ψ : DifferentialForm (Euclid P) q) x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
