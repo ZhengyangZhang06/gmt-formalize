@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ba9efea900ac2824cf13cb4db24c3f09c7fdfe4a34ee7c0104fa12719f7e855a",
+  "git_delta": {
+    "base_commit": "c64d60968be0739bb7fcd54d8c90582c4d9e65ff",
+    "candidate_commit": "1622d6a690b15c306f09735a21d91a16463979da",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "f1dc857ca22d99275b73aacaeb90ad50544ae28b4e7ea5be4a7ada48b67e6068",
+    "source_sha256": "51addd62797d18e1b45d4286fd0db80a68d78d0416ae35302ec29d9eb3b8c7ab",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_codim_zero",
+      "statement": "∀ (n : ℕ) (U : Set (Euclid n)) (T : GeometricCurrentOn U n) (x : Euclid n), 0 < n → IsOpen U → IsIntegerMultiplicity T → x ∈ U → x ∉ boundarySupport T → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ C : GeometricCurrentOn (univ : Set (Euclid n)) n, ConvergesWeakly (fun j => blowUp T x (lams j) (hlams j).ne') C ∧ MassMeasuresConverge (fun j => blowUp T x (lams j) (hlams j).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
