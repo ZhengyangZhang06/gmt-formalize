@@ -2780,6 +2780,59 @@ theorem Submission.codim1_hcp_lipschitz_smooth_approx : ∀ (P m : ℕ) (M : Set
       simpa using this
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun k => zero_le) hint
 
+/-- Small perturbations of the identity (Simon Ch. 2, §5, 5.1–5.2; step (1c) of the stability
+proof for Appendix B.1).  Let `Z : ℝᴾ → ℝᴾ` be `C¹` with `‖DZ(x)‖ ≤ Λ` everywhere and `|t|Λ < 1`.
+Then `Φ(x) = x + tZ(x)` has derivative `DΦ(x) = I + tDZ(x)`.  By the mean value inequality
+`|Z(b) − Z(a)| ≤ Λ|b − a|`, so `Φ(a) = Φ(b)` gives `|a − b| = |t||Z(b) − Z(a)| ≤ |t|Λ|a − b|`,
+forcing `a = b`.  Likewise `(I + tDZ(x))u = 0` gives `|u| ≤ |t|‖DZ(x)‖|u| ≤ |t|Λ|u|`, forcing
+`u = 0`, so `DΦ(x)` is injective. -/
+theorem Submission.codim1_hcp_stab_perturbation_injective : ∀ (P : ℕ) (Z : Euclid P → Euclid P) (Λ t : ℝ), ContDiff ℝ 1 Z → (∀ x, ‖fderiv ℝ Z x‖ ≤ Λ) → |t| * Λ < 1 → Injective (fun x => x + t • Z x) ∧ (∀ x, fderiv ℝ (fun x => x + t • Z x) x = ContinuousLinearMap.id ℝ (Euclid P) + t • fderiv ℝ Z x) ∧ ∀ x, Injective (fderiv ℝ (fun x => x + t • Z x) x) := by
+  intro P Z Λ t hZ hDZ htΛ
+  -- `Z` is `C¹`, hence differentiable everywhere
+  have hZd : Differentiable ℝ Z := hZ.differentiable one_ne_zero
+  -- step 1: `DΦ(x) = I + t DZ(x)` by the sum and constant-multiple rules
+  have hderiv : ∀ x, fderiv ℝ (fun x => x + t • Z x) x =
+      ContinuousLinearMap.id ℝ (Euclid P) + t • fderiv ℝ Z x := fun x =>
+    ((hasFDerivAt_id x).fun_add ((hZd x).hasFDerivAt.fun_const_smul t)).fderiv
+  -- step 2: mean value inequality on the convex set `ℝᴾ`, `|Z b - Z a| ≤ Λ |b - a|`
+  have hlip : ∀ a b, ‖Z b - Z a‖ ≤ Λ * ‖b - a‖ := fun a b =>
+    convex_univ.norm_image_sub_le_of_norm_fderiv_le (fun x _ => hZd x) (fun x _ => hDZ x)
+      (mem_univ a) (mem_univ b)
+  refine ⟨fun a b hab => ?_, hderiv, fun x => ?_⟩
+  · -- step 3: `Φ a = Φ b` gives `a - b = t (Z b - Z a)`, so `|a - b| ≤ |t| Λ |a - b|`
+    have h1 : a - b = t • (Z b - Z a) := by
+      rw [smul_sub, sub_eq_sub_iff_add_eq_add, add_comm (t • Z b)]
+      exact hab
+    have h2 : ‖a - b‖ ≤ (|t| * Λ) * ‖a - b‖ :=
+      calc ‖a - b‖ = |t| * ‖Z b - Z a‖ := by rw [h1, norm_smul, Real.norm_eq_abs]
+        _ ≤ |t| * (Λ * ‖b - a‖) := mul_le_mul_of_nonneg_left (hlip a b) (abs_nonneg t)
+        _ = (|t| * Λ) * ‖a - b‖ := by rw [norm_sub_rev b a, mul_assoc]
+    -- if `a ≠ b`, dividing by `|a - b| > 0` gives `1 ≤ |t| Λ`
+    by_contra hne
+    have hpos : 0 < ‖a - b‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hne)
+    have : 1 ≤ |t| * Λ := le_of_mul_le_mul_right (by rwa [one_mul]) hpos
+    linarith
+  · -- step 4: `DΦ(x) = I + t DZ(x)` is linear, so it suffices that its kernel is trivial
+    rw [hderiv x]
+    refine (injective_iff_map_eq_zero _).mpr fun u hu => ?_
+    -- `(I + t DZ(x)) u = 0` gives `u = -t DZ(x) u`, so `|u| ≤ |t| ‖DZ(x)‖ |u| ≤ |t| Λ |u|`
+    have h1 : u = -(t • fderiv ℝ Z x u) := eq_neg_of_add_eq_zero_left hu
+    have h2 : ‖u‖ ≤ (|t| * Λ) * ‖u‖ :=
+      calc ‖u‖ = |t| * ‖fderiv ℝ Z x u‖ := by
+            conv_lhs => rw [h1]
+            rw [norm_neg, norm_smul, Real.norm_eq_abs]
+        _ ≤ |t| * (‖fderiv ℝ Z x‖ * ‖u‖) :=
+            mul_le_mul_of_nonneg_left ((fderiv ℝ Z x).le_opNorm u) (abs_nonneg t)
+        _ ≤ |t| * (Λ * ‖u‖) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right (hDZ x) (norm_nonneg u))
+              (abs_nonneg t)
+        _ = (|t| * Λ) * ‖u‖ := (mul_assoc _ _ _).symm
+    -- if `u ≠ 0`, dividing by `|u| > 0` gives `1 ≤ |t| Λ`
+    by_contra hne
+    have hpos : 0 < ‖u‖ := norm_pos_iff.mpr hne
+    have : 1 ≤ |t| * Λ := le_of_mul_le_mul_right (by rwa [one_mul]) hpos
+    linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
