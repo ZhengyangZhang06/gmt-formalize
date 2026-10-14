@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1.alpha_beta-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1",
+  "depth": 5,
+  "title": "The flux density satisfies the rotation (α) and dilation (β) test identities",
+  "statement": "Let P ∈ ℕ, C ∈ 𝒟_2(ℝ^P) a cone (IsConeCurrent C), R = (M, θ, ξ) an IMRep univ 2 representing C, μ := R.measure, Q a linear subspace of ℝ^P with orthogonal projection π, a, e ∈ ℝ^P, 0 < s ≤ 1/4 and H : ℝ² → ℝ. Let T_x := approxTangentPlane 2 M x with projection p_{T_x}, Ax := ⟨x,a⟩e − ⟨x,e⟩a, G(x) := |p_{T_x}(Ax)|²/|πx|², f(x) := arctan(⟨x,e⟩/⟨x,a⟩) and Z := {x : ⟨x,a⟩ > 0, ||x| − 1| < s, |f(x)| < s, |x − πx| < s|x|}. Assume (TS) for every r > 0, T_{rx} = T_x for μ-a.e. x; (SI) for every Borel b : ℝ² → ℝ with sup|b| < ∞, ∫ b(p)H(p) dp = ∫_Z b(|x|, f(x))G(x) dμ(x); (RC) for all C¹ functions ψ, l : ℝ → ℝ with tsupport ψ ⊆ (−s, s) and tsupport l ⊆ (1 − s, 1 + s), ∫_Z ψ'(f(x))l(|x|)G(x) dμ(x) = 0. Then (α) for all C¹ ψ, l with tsupport ψ ⊆ (−s, s) and tsupport l ⊆ (1 − s, 1 + s), ∫ ψ'(p_2)l(p_1)H(p) dp = 0; and (β) for all C¹ l, ψ with tsupport l ⊆ (1 − s/2, 1 + s/2), tsupport ψ ⊆ (−s, s) and every r ∈ ℝ with |r − 1| < s/4, ∫ l(p_1/r)ψ(p_2)H(p) dp = r² ∫ l(p_1)ψ(p_2)H(p) dp.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ) (H : ℝ × ℝ → ℝ), IsConeCurrent C → R.Represents C → 0 < s → s ≤ 1 / 4 → (∀ r : ℝ, 0 < r → ∀ᵐ x ∂R.measure, approxTangentPlane 2 R.carrier (r • x) = approxTangentPlane 2 R.carrier x) → (∀ b : ℝ × ℝ → ℝ, Measurable b → (∃ M : ℝ, ∀ p, |b p| ≤ M) → ∫ p : ℝ × ℝ, b p * H p = ∫ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, b (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure) → (∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo (-s) s → tsupport l ⊆ Ioo (1 - s) (1 + s) → ∫ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, deriv ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) * l ‖x‖ * (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure = 0) → (∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo (-s) s → tsupport l ⊆ Ioo (1 - s) (1 + s) → ∫ p : ℝ × ℝ, deriv ψ p.2 * l p.1 * H p = 0) ∧ (∀ (l ψ : ℝ → ℝ) (r : ℝ), ContDiff ℝ 1 l → ContDiff ℝ 1 ψ → tsupport l ⊆ Ioo (1 - s / 2) (1 + s / 2) → tsupport ψ ⊆ Ioo (-s) s → |r - 1| < s / 4 → ∫ p : ℝ × ℝ, l (p.1 / r) * ψ p.2 * H p = r ^ 2 * ∫ p : ℝ × ℝ, l p.1 * ψ p.2 * H p)",
+  "lean_name": "idtp_cse_fd_alpha_beta",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1.cone_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1.cone_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-e72fde5799-a1"
+}
