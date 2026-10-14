@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9fa808f10d00c8f18163a0436e6d3ae01ff15d14de6e4e704344d124a1288294",
+  "git_delta": {
+    "base_commit": "1def667a29d5a1d3b885d07a4ea101e693597837",
+    "candidate_commit": "3c19d447bdc009f3df426c0cdaa8af6a127bb972",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_un_tangent_subspace",
+    "diff_sha256": "8b71b340c7eb758e6487ccd19be6c879f5d88d9fbe1ba52981a3c80539901a2e",
+    "source_sha256": "c660fbdc48f5b0b89116ad6e34fa2bbde4686ed10624d1054f3b7a13c5fd97aa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_un_tangent_subspace",
+      "statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), IsEmbeddedSubmanifold 1 m M → M ⊆ (A₀ : Set (Euclid P)) → ∀ x ∈ M, ∃ Q : Submodule ℝ (Euclid P), (Q : Set (Euclid P)) = tangentSpace M x ∧ Module.finrank ℝ Q = m ∧ Q ≤ A₀",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
