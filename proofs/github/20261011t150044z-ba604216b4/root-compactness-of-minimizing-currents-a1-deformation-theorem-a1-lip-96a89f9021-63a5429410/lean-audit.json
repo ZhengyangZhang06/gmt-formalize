@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0cf55b42dde9ca72c336cbae33db31655ada2a507ecc6baee8401363b6a234ac",
+  "git_delta": {
+    "base_commit": "ffa13f1041a1ac1485094c6f8fbc385b482aaa2c",
+    "candidate_commit": "617e36dc77029f14887b547c7502f0da5d96fef1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpi_pc_measurable_inverse",
+    "diff_sha256": "03da1297c5e72d1e6afc474094aa3e90737064e6bb60a7bc88e0e0a54a3b6a92",
+    "source_sha256": "e0f7daf5217ce4d79400fefd9fca898849722fcbcd15fa66e2e9f60f0ee7e1e6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpi_pc_measurable_inverse",
+      "statement": "∀ (P n : ℕ) (H : Euclid n → Euclid P) (B : Set (Euclid n)), ContinuousOn H B → MeasurableSet B → InjOn H B → MeasurableSet (H '' B) ∧ ∃ h : Euclid P → Euclid n, Measurable h ∧ ∀ u ∈ B, h (H u) = u",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
