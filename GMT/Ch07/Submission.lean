@@ -1461,6 +1461,153 @@ theorem Submission.dmcbr_measure_convergence_tools : (∀ (P : ℕ) (U : Set (Eu
     Submission.cbr_vague_portmanteau P U (fun j => μs (φ j)) μ hU hfin hμK hμconv
   exact ⟨φ, μ, hφ, hμU, hμK, hμconv, hlimsup, hliminf⟩
 
+/-- **Slicing localization of an integer multiplicity current** (Simon Ch. 6, 4.6–4.10 and the
+general case of the proof of 6.2, used for 6.3).  Assume (REP), (IMC)(b), (IMC)(d) and (SL).  If
+`R = τ(M, θ, ξ) ∈ 𝒟_{d+1}(U)` has `M_W(∂R) < ∞` for every open `W ⊂⊂ U` and `x₀ ∈ U`, there are
+`r > 0` with `B̄_r(x₀) ⊆ U` and `R' = R⌞B_r(x₀)`, represented by `(M ∩ B_r(x₀), θ, ξ)`, with
+`M(R') < ∞`, `M(∂R') < ∞` and `∂R' = ∂R` on forms supported in `B_r(x₀)`.  Represent `R` by its
+weight `μ = θ Hᵈ⁺¹⌞M` and `∂R` by `(μ', ξ')` from (REP), and slice by `f = |· − x₀|`, which is
+`1`-Lipschitz.  As `∫_{(0, r₀)} M_{B_{r₀}(x₀)}(∂A_t − B_t) dt ≤ μ(B̄_{r₀}(x₀)) < ∞`, some
+`r ∈ (0, r₀)` has `M_{B_{r₀}(x₀)}(∂A_r − B_r) < ∞`; `∂A_r − B_r` vanishes off the compact sphere
+`{f = r}`, so its total mass is finite, and `M(B_r) ≤ μ'(B_r(x₀))`, `M(A_r) ≤ μ(B_r(x₀))`. -/
+theorem Submission.dmcbr_bim_slice_localization : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) → (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α) → (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → ∀ (P d : ℕ) (U : Set (Euclid P)) (R : GeometricCurrentOn U (d + 1)) (x₀ : Euclid P), IsOpen U → IsIntegerMultiplicity R → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → R.boundary.massOn W < ∞) → x₀ ∈ U → ∃ r : ℝ, 0 < r ∧ closedBall x₀ r ⊆ U ∧ ∃ (R' : GeometricCurrentOn U (d + 1)) (Rr : IMRep U (d + 1)), Rr.Represents R' ∧ Rr.carrier ⊆ ball x₀ r ∧ R'.mass < ∞ ∧ R'.boundary.mass < ∞ ∧ ∀ η : TestFormOn U d, tsupport (η : DifferentialForm (Euclid P) d) ⊆ ball x₀ r → R'.boundary η = R.boundary η := by
+  intro hREP hIMCb hIMCd hSL P d U R x₀ hU hRim hbd hx₀
+  -- Step 0: the local mass of a current is bounded by any representing measure
+  have hmassle : ∀ {k : ℕ} (X : GeometricCurrentOn U k) (ν : Measure (Euclid P))
+      (ζ : Euclid P → MultiVector P k),
+      (∀ᵐ x ∂ν, ∀ α : Covector (Euclid P) k, |ζ x α| ≤ covectorEuclideanNorm α) →
+      (∀ ω : TestFormOn U k, X ω = ∫ x, ζ x ((ω : DifferentialForm (Euclid P) k) x) ∂ν) →
+      ∀ W : Set (Euclid P), X.massOn W ≤ ν W := by
+    intro k X ν ζ hζ hrep W
+    apply sSup_le
+    rintro _ ⟨ω, ⟨hsupp, hnorm⟩, rfl⟩
+    change ENNReal.ofReal (X ω) ≤ ν W
+    rw [hrep ω]
+    calc ENNReal.ofReal (∫ x, ζ x ((ω : DifferentialForm (Euclid P) k) x) ∂ν)
+        ≤ ‖∫ x, ζ x ((ω : DifferentialForm (Euclid P) k) x) ∂ν‖ₑ := by
+          rw [Real.enorm_eq_ofReal_abs]; exact ENNReal.ofReal_le_ofReal (le_abs_self _)
+      _ ≤ ∫⁻ x, ‖ζ x ((ω : DifferentialForm (Euclid P) k) x)‖ₑ ∂ν :=
+          enorm_integral_le_lintegral_enorm _
+      _ ≤ ∫⁻ x, W.indicator 1 x ∂ν := by
+          apply lintegral_mono_ae
+          filter_upwards [hζ] with x hx
+          by_cases hxW : x ∈ W
+          · rw [indicator_of_mem hxW, Pi.one_apply, Real.enorm_eq_ofReal_abs]
+            exact ENNReal.ofReal_le_one.mpr ((hx _).trans (hnorm x))
+          · have : (ω : DifferentialForm (Euclid P) k) x = 0 :=
+              image_eq_zero_of_notMem_tsupport (fun h => hxW (hsupp h))
+            simp [this]
+      _ ≤ ν W := lintegral_indicator_one_le W
+  -- Step 1: `R = τ(M, θ, ξ)` is represented by its weight `μ = θ Hᵈ⁺¹⌞M` and `ξ`
+  obtain ⟨R₀, hR₀⟩ := hRim
+  obtain ⟨hac, haesm, hrestr⟩ := Submission.lcmp_imRep_measure_restrict P (d + 1) U R₀
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → R₀.measure K < ∞ := by
+    intro K hK hKU
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact lt_top_iff_ne_top.mpr (R₀.locallyIntegrable_mult K hK hKU)
+  have hξb : ∀ᵐ x ∂R₀.measure, ∀ α : Covector (Euclid P) (d + 1),
+      |R₀.orient x α| ≤ covectorEuclideanNorm α :=
+    hac.ae_le (hIMCd P (d + 1) U R₀)
+  have hRrep : ∀ ω : TestFormOn U (d + 1),
+      R ω = ∫ x, R₀.orient x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂R₀.measure := by
+    intro ω
+    have h := (hrestr univ R₀ MeasurableSet.univ (inter_univ _).symm rfl rfl).2
+      (ω : DifferentialForm (Euclid P) (d + 1))
+    rw [Measure.restrict_univ] at h
+    rw [hR₀ ω, h]
+  -- Step 2: the representation `(μ', ξ')` of `∂R`
+  obtain ⟨μ', ξ', -, hfin', -, haesm', hξ'b, hbrep, -⟩ := hREP P d U R.boundary hU hbd
+  -- Step 3: a radius `r₀ = ε/2` with `B̄_{r₀}(x₀) ⊆ U`
+  obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.mp hU x₀ hx₀
+  have hr₀pos : 0 < ε / 2 := by positivity
+  have hcb₀ : closedBall x₀ (ε / 2) ⊆ U := (closedBall_subset_ball (by linarith)).trans hεU
+  have hfL : LipschitzWith 1 (fun x : Euclid P => dist x x₀) := LipschitzWith.dist_left x₀
+  -- Step 4: slicing by the distance from `x₀`
+  obtain ⟨A, B, hA, hB, hAB, -, hint5⟩ := hSL P d U R R₀.measure μ' R₀.orient ξ'
+    (fun x => dist x x₀) 1 hU hfin hfin' haesm haesm' hξb (Eventually.of_forall hξ'b)
+    hRrep hbrep hfL
+  have hfinball : R₀.measure (closedBall x₀ (ε / 2)) < ∞ := hfin _ (isCompact_closedBall _ _) hcb₀
+  have hfinball' : μ' (closedBall x₀ (ε / 2)) < ∞ := hfin' _ (isCompact_closedBall _ _) hcb₀
+  -- Step 5: the integrated slice bound gives a good radius `r ∈ (0, r₀)`
+  obtain ⟨r, hr, hZr⟩ : ∃ r ∈ Ioo 0 (ε / 2),
+      ((A r).boundary - B r).massOn (ball x₀ (ε / 2)) < ∞ := by
+    by_contra hcon
+    push Not at hcon
+    have hlint := hint5 (ball x₀ (ε / 2)) 0 (ε / 2) isOpen_ball
+    have htop : ∫⁻ t in Ioo 0 (ε / 2), ((A t).boundary - B t).massOn (ball x₀ (ε / 2)) = ∞ := by
+      rw [setLIntegral_congr_fun measurableSet_Ioo (fun t ht => top_le_iff.mp (hcon t ht))]
+      rw [lintegral_const, Measure.restrict_apply_univ, Real.volume_Ioo, sub_zero]
+      exact ENNReal.top_mul (by simpa using hr₀pos)
+    rw [htop, ENNReal.coe_one, one_mul] at hlint
+    have hle : R₀.measure (ball x₀ (ε / 2) ∩ {x | 0 < dist x x₀ ∧ dist x x₀ < ε / 2}) < ∞ :=
+      lt_of_le_of_lt (measure_mono (inter_subset_left.trans ball_subset_closedBall)) hfinball
+    exact absurd (lt_of_le_of_lt hlint hle) (lt_irrefl _)
+  -- Step 6: `Z = ∂A_r − B_r` vanishes off the compact sphere, so `M(Z) ≤ M_{B_{r₀}(x₀)}(Z) < ∞`
+  set Z := (A r).boundary - B r with hZ
+  have hZvan : ∀ η : TestFormOn U d,
+      Disjoint (tsupport (η : DifferentialForm (Euclid P) d)) (sphere x₀ r) → Z η = 0 := by
+    intro η hη
+    have := hAB r η hη
+    change (A r).boundary η - B r η = 0
+    rw [this, sub_self]
+  have hsph : sphere x₀ r ⊆ ball x₀ (ε / 2) := fun y hy => by
+    rw [mem_sphere] at hy; rw [mem_ball, hy]; exact hr.2
+  have hZU : Z.massOn U < ∞ :=
+    lt_of_le_of_lt (Submission.lcmp_massOn_le_of_vanish_off_compact P d U (ball x₀ (ε / 2))
+      (sphere x₀ r) Z (isCompact_sphere _ _) isOpen_ball hsph hZvan U) hZr
+  -- Step 7: `M(B_r) ≤ μ'(B_r(x₀)) < ∞`
+  have hBU : (B r).massOn U < ∞ := by
+    refine lt_of_le_of_lt (hmassle (B r) (μ'.restrict (ball x₀ r)) ξ'
+      (ae_restrict_of_ae (Eventually.of_forall hξ'b)) (fun η => hB r η) U) ?_
+    refine lt_of_le_of_lt ?_ hfinball'
+    calc μ'.restrict (ball x₀ r) U ≤ μ'.restrict (ball x₀ r) univ := measure_mono (subset_univ _)
+      _ = μ' (ball x₀ r) := Measure.restrict_apply_univ _
+      _ ≤ μ' (closedBall x₀ (ε / 2)) :=
+          measure_mono (ball_subset_closedBall.trans (closedBall_subset_closedBall hr.2.le))
+  -- Step 8: `M(∂A_r) ≤ M(B_r) + M(Z) < ∞`
+  have hAbU : (A r).boundary.massOn U < ∞ := by
+    refine lt_of_le_of_lt (b := (B r).massOn U + Z.massOn U) ?_ (ENNReal.add_lt_top.mpr ⟨hBU, hZU⟩)
+    apply sSup_le
+    rintro _ ⟨η, hη, rfl⟩
+    have hsplit : (A r).boundary η = B r η + Z η := by
+      change (A r).boundary η = B r η + ((A r).boundary η - B r η); ring
+    change ENNReal.ofReal ((A r).boundary η) ≤ _
+    rw [hsplit]
+    exact ENNReal.ofReal_add_le.trans (add_le_add ((B r).le_massOn hη) (Z.le_massOn hη))
+  -- Step 9: `R' := A_r = R⌞B_r(x₀)` is represented by the IMRep `(M ∩ B_r(x₀), θ, ξ)`
+  obtain ⟨A', Rr, -, hcar, hmult, hor⟩ := hIMCb P (d + 1) U R₀ (ball x₀ r) hU measurableSet_ball
+  have hRrA : Rr.Represents (A r) := by
+    intro ω
+    rw [hA r ω]
+    exact ((hrestr (ball x₀ r) Rr measurableSet_ball hcar hmult hor).2 _).symm
+  -- Step 10: `M(R') ≤ μ(B_r(x₀)) < ∞`
+  have hAU : (A r).massOn U < ∞ := by
+    refine lt_of_le_of_lt (hmassle (A r) (R₀.measure.restrict (ball x₀ r)) R₀.orient
+      (ae_restrict_of_ae hξb) (fun ω => hA r ω) U) ?_
+    refine lt_of_le_of_lt ?_ hfinball
+    calc R₀.measure.restrict (ball x₀ r) U ≤ R₀.measure.restrict (ball x₀ r) univ :=
+          measure_mono (subset_univ _)
+      _ = R₀.measure (ball x₀ r) := Measure.restrict_apply_univ _
+      _ ≤ R₀.measure (closedBall x₀ (ε / 2)) :=
+          measure_mono (ball_subset_closedBall.trans (closedBall_subset_closedBall hr.2.le))
+  -- Steps 11–12: `∂R'(η) = B_r(η) = ∂R(η)` for `η` supported in `B_r(x₀)`
+  refine ⟨r, hr.1, (closedBall_subset_closedBall hr.2.le).trans hcb₀, A r, Rr, hRrA, ?_, hAU,
+    hAbU, ?_⟩
+  · rw [hcar]; exact inter_subset_right
+  · intro η hη
+    have hdisj : Disjoint (tsupport (η : DifferentialForm (Euclid P) d)) (sphere x₀ r) := by
+      refine Set.disjoint_left.mpr fun y hy hys => ?_
+      have h1 := hη hy
+      rw [mem_ball] at h1; rw [mem_sphere] at hys
+      linarith
+    rw [hAB r η hdisj, hB r η, hbrep η]
+    apply setIntegral_eq_integral_of_forall_compl_eq_zero
+    intro x hx
+    have : (η : DifferentialForm (Euclid P) d) x = 0 :=
+      image_eq_zero_of_notMem_tsupport (fun h => hx (hη h))
+    rw [this, map_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
