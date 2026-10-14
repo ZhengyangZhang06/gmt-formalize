@@ -832,6 +832,42 @@ theorem Submission.cbr_ci_pw_proj_pullback_extension : ∀ (P m l : ℕ) (pL : E
       ext v
       simp [extDeriv, ContinuousAlternatingMap.alternatizeUncurryFin_apply]
 
+/-- **Boundary mass under projection** (projection step of the closure argument used for
+Simon 7.2.4, Remark 7.2.5(1)).  Write `p = pL` and `(p^#ω)(x) = ω(p x) ∘ p`.  Let
+`Y(ω) = ∫_F ξ(p^#ω) dμ` in `U` and `Z(ω) = ∫_F ξ(ω) dμ` in `ℝᴾ`, where `F ⊆ S` is measurable,
+`S ∩ p⁻¹(K)` is compact for compact `K ⊆ U`, and `|γ ∘ p| ≤ |γ|` for `l`-covectors `γ`.  Then
+`M_W(∂Y) ≤ M_{p⁻¹(W)}(∂Z)` for every open `W`: each `γ` admissible for `M_W(∂Y)` has a cut-off
+pull-back `γ'` (`cbr_ci_pw_proj_pullback_extension`) that is admissible for `M_{p⁻¹(W)}(∂Z)`
+and satisfies `dγ' = p^#(dγ)` on `S`, so `∂Y(γ) = ∂Z(γ')`. -/
+theorem Submission.cbr_ci_pw_proj_boundary_mass_le : ∀ (P m l : ℕ) (pL : Euclid P →L[ℝ] Euclid m) (U : Set (Euclid m)) (S F : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (l + 1)) (Y : GeometricCurrentOn U (l + 1)) (Z : GeometricCurrentOn (univ : Set (Euclid P)) (l + 1)), MeasurableSet F → F ⊆ S → (∀ K : Set (Euclid m), IsCompact K → K ⊆ U → IsCompact (S ∩ pL ⁻¹' K)) → (∀ γ : Covector (Euclid m) l, covectorEuclideanNorm (γ.compContinuousLinearMap pL) ≤ covectorEuclideanNorm γ) → (∀ ω : TestFormOn U (l + 1), Y ω = ∫ x in F, ξ x (((ω : DifferentialForm (Euclid m) (l + 1)) (pL x)).compContinuousLinearMap pL) ∂μ) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (l + 1), Z ω = ∫ x in F, ξ x ((ω : DifferentialForm (Euclid P) (l + 1)) x) ∂μ) → ∀ W : Set (Euclid m), IsOpen W → Y.boundary.massOn W ≤ Z.boundary.massOn (pL ⁻¹' W) := by
+  intro P m l pL U S F μ ξ Y Z hF hFS hcpt hN3 hY hZ W hW
+  -- Step 1: it suffices to bound `∂Y(γ)` for every `γ` admissible for `M_W(∂Y)`
+  apply sSup_le
+  rintro r ⟨γ, ⟨hγW, hγ1⟩, rfl⟩
+  show ENNReal.ofReal (Y.boundary γ) ≤ _
+  -- Steps 2–3: `S ∩ p⁻¹(spt γ)` is a compact subset of the open set `p⁻¹(W)`, so `p^#γ` has a
+  -- cut-off `γ' ∈ 𝒟ˡ(ℝᴾ)` supported in `p⁻¹(W)`
+  have hK : IsCompact (S ∩ pL ⁻¹' tsupport (γ : DifferentialForm (Euclid m) l)) :=
+    hcpt _ γ.property.1.2 γ.property.2
+  obtain ⟨γ', hγ'O, hγ'n, -, hγ'd⟩ := Submission.cbr_ci_pw_proj_pullback_extension P m l pL S
+    (pL ⁻¹' W) (γ : DifferentialForm (Euclid m) l) γ.property.1.1 (hW.preimage pL.continuous) hK
+    (fun x hx => hγW hx.2)
+  -- Step 4: `|γ'(x)| ≤ |γ(p x) ∘ p| ≤ |γ(p x)| ≤ 1`, so `γ'` is admissible for `M_{p⁻¹(W)}(∂Z)`
+  have hadm : γ' ∈ massAdmissibleOn (univ : Set (Euclid P)) l (pL ⁻¹' W) :=
+    ⟨hγ'O, fun x => (hγ'n x).trans ((hN3 _).trans (hγ1 _))⟩
+  -- Step 5: `∂Y(γ) = ∫_F ξ(p^#(dγ)) dμ = ∫_F ξ(dγ') dμ = ∂Z(γ')`, since `F ⊆ S`
+  have heq : Y.boundary γ = Z.boundary γ' := by
+    rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.boundary_apply, hY, hZ]
+    apply setIntegral_congr_fun hF
+    intro x hx
+    change ξ x ((exteriorDerivative (γ : DifferentialForm (Euclid m) l)
+        (pL x)).compContinuousLinearMap pL) =
+      ξ x (exteriorDerivative (γ' : DifferentialForm (Euclid P) l) x)
+    rw [hγ'd x (hFS hx)]
+  -- Step 6: `ofReal (∂Y(γ)) = ofReal (∂Z(γ')) ≤ M_{p⁻¹(W)}(∂Z)`
+  rw [heq]
+  exact Z.boundary.le_massOn hadm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
