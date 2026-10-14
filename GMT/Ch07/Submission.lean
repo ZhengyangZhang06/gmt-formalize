@@ -681,6 +681,70 @@ theorem Submission.cbr_ci_dr_multivector_dual_norm : ∀ (P n : ℕ), ∃ N : Mu
             mul_le_mul_of_nonneg_left (abs_le.mpr ⟨by linarith, h1⟩) h.le
         _ = sSup (ζ '' B) * covectorEuclideanNorm α := mul_comm _ _
 
+/-- **The mass identity forces the representing `n`-vector field to attain `1` a.e.** (Simon Ch. 6,
+2.7–2.8: in `T(ω) = ∫ ⟨ω, T⃗⟩ dμ_T` with `μ_T(U) = M(T)`, `|T⃗| = 1` `μ_T`-a.e.).  Let `Γ ∈ 𝒟ₙ(ℝᴾ)`,
+`μ` finite with `M(Γ) = μ(ℝᴾ)`, and `ξ` `μ`-a.e. strongly measurable with `|ξ(x)(α)| ≤ |α|` a.e.
+and `Γ(ω) = ∫ ξ(x)(ω(x)) dμ`.  For the dual norm `N` of `|·|` on `n`-vectors, `f = N ∘ ξ` has
+`0 ≤ f ≤ 1` a.e.; every mass-admissible `ω` gives `Γ(ω) ≤ ∫ f dμ`, so `μ(ℝᴾ) = M(Γ) ≤ ∫ f dμ`.
+Hence `∫ (1 − f) dμ = 0`, `f = 1` a.e., and a covector `β` attaining `N(ξ(x))` has `|β| ≤ 1`
+and `ξ(x)(β) = 1`. -/
+theorem Submission.cbr_ci_dr_ae_unit_attained_of_mass_eq : ∀ (P n : ℕ) (Γ : GeometricCurrentOn (univ : Set (Euclid P)) n) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ univ < ∞ → Γ.massOn univ = μ univ → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Γ ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) → ∀ᵐ x ∂μ, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ξ x β = 1 := by
+  intro P n Γ μ ξ hμ hmass hξ hbound hrep
+  -- (1) the dual norm `N` of `|·|` on `n`-vectors (sibling `dual_norm`); `μ` is finite
+  obtain ⟨N, hNc, hN0, hNle, hNatt⟩ := Submission.cbr_ci_dr_multivector_dual_norm P n
+  have : IsFiniteMeasure μ := ⟨hμ⟩
+  -- (2) `f = N ∘ ξ` satisfies `0 ≤ f ≤ 1` a.e. and is integrable
+  have hf_le : ∀ᵐ x ∂μ, N (ξ x) ≤ 1 := by
+    filter_upwards [hbound] with x hx
+    obtain ⟨β, hβ, hξβ⟩ := hNatt (ξ x)
+    calc N (ξ x) = ξ x β := hξβ.symm
+      _ ≤ |ξ x β| := le_abs_self _
+      _ ≤ covectorEuclideanNorm β := hx β
+      _ ≤ 1 := hβ
+  have hf_int : Integrable (fun x => N (ξ x)) μ := by
+    refine Integrable.of_bound (hNc.comp_aestronglyMeasurable hξ) 1 ?_
+    filter_upwards [hf_le] with x hx
+    rwa [Real.norm_eq_abs, abs_of_nonneg (hN0 _)]
+  -- (3) every mass-admissible `ω` has `Γ(ω) = ∫ ξ(ω) dμ ≤ ∫ f dμ`, as `|ξ(x)(ω(x))| ≤ f(x)`
+  have hadm : ∀ ω ∈ massAdmissibleOn (univ : Set (Euclid P)) n univ,
+      Γ ω ≤ ∫ x, N (ξ x) ∂μ := by
+    intro ω hω
+    have hgN : ∀ x, |ξ x ((ω : DifferentialForm (Euclid P) n) x)| ≤ N (ξ x) := fun x =>
+      (hNle (ξ x) _).trans (mul_le_of_le_one_right (hN0 _) (hω.2 x))
+    have hg_meas : AEStronglyMeasurable
+        (fun x => ξ x ((ω : DifferentialForm (Euclid P) n) x)) μ :=
+      (continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable
+        (hξ.prodMk ω.property.1.1.continuous.aestronglyMeasurable)
+    have hg_int : Integrable (fun x => ξ x ((ω : DifferentialForm (Euclid P) n) x)) μ :=
+      hf_int.mono' hg_meas (ae_of_all _ fun x => (Real.norm_eq_abs _).trans_le (hgN x))
+    rw [hrep ω]
+    exact integral_mono hg_int hf_int fun x => (le_abs_self _).trans (hgN x)
+  -- (4) `μ(ℝᴾ) = M(Γ) ≤ ∫ f dμ`
+  have hmass_le : μ univ ≤ ENNReal.ofReal (∫ x, N (ξ x) ∂μ) := by
+    rw [← hmass]
+    apply sSup_le
+    rintro r ⟨ω, hω, rfl⟩
+    exact ENNReal.ofReal_le_ofReal (hadm ω hω)
+  have hreal : μ.real univ ≤ ∫ x, N (ξ x) ∂μ :=
+    ENNReal.toReal_le_of_le_ofReal (integral_nonneg fun x => hN0 _) hmass_le
+  -- (5) `∫ (1 − f) dμ = μ(ℝᴾ) − ∫ f dμ ≤ 0` with `1 − f ≥ 0` a.e., so `f = 1` a.e.
+  have hsub_nonneg : 0 ≤ᵐ[μ] fun x => 1 - N (ξ x) := by
+    filter_upwards [hf_le] with x hx
+    exact sub_nonneg.2 hx
+  have hsub_zero : ∫ x, (1 - N (ξ x)) ∂μ = 0 := by
+    refine le_antisymm ?_ (integral_nonneg_of_ae hsub_nonneg)
+    rw [integral_sub (integrable_const 1) hf_int, integral_const, smul_eq_mul, mul_one]
+    exact sub_nonpos.2 hreal
+  have hae : (fun x => 1 - N (ξ x)) =ᵐ[μ] 0 :=
+    (integral_eq_zero_iff_of_nonneg_ae hsub_nonneg ((integrable_const 1).sub hf_int)).1 hsub_zero
+  -- (6) where `N(ξ(x)) = 1`, the covector attaining `N(ξ(x))` is the required `β`
+  filter_upwards [hae] with x hx
+  obtain ⟨β, hβ, hξβ⟩ := hNatt (ξ x)
+  refine ⟨β, hβ, ?_⟩
+  have h1 : 1 - N (ξ x) = 0 := hx
+  rw [hξβ]
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
