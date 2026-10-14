@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c19d51b5ba1f378180b6065bb3d40c9612c72ba9ea592d48e3c1894e577ce7e5",
+  "git_delta": {
+    "base_commit": "a2abeed5a62294a1ee2de92aa09f8ae3ac5f979a",
+    "candidate_commit": "90feef28da2170ea47fbb7f361dd09e8080e883c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_lc_rc_restrict_to_univ",
+    "diff_sha256": "b915fd65fb69deb014e1b418164fdbca823cc6968ee14e4148a2be158ec3c178",
+    "source_sha256": "b95ce9e1e38c7eeb46d48026bc32fb29fd6744fa9dc5c3bcfac7db8541b0af6a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_lc_rc_restrict_to_univ",
+      "statement": "∀ (P n : ℕ) (U E K : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → MeasurableSet E → IsCompact K → E ⊆ K → K ⊆ U → ∃ (Q : GeometricCurrentOn (univ : Set (Euclid P)) n) (RQ : IMRep (univ : Set (Euclid P)) n) (T₁ : GeometricCurrentOn U n) (R₁ : IMRep U n), RQ.Represents Q ∧ RQ.measure = R.measure.restrict E ∧ R₁.Represents T₁ ∧ R₁.measure = R.measure.restrict Eᶜ ∧ (∀ ω : TestFormOn U n, T ω = Q (testFormOnInclusion (subset_univ U) n ω) + T₁ ω) ∧ (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ E → Q (testFormOnInclusion (subset_univ U) n ω) = T ω) ∧ Q.support ⊆ closure E ∩ T.support ∧ IsCompact Q.support",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
