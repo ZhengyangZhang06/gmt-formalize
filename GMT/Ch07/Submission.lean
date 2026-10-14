@@ -3319,6 +3319,40 @@ theorem Submission.cbr_ci_bl_db_eventual_bounds : ∀ (n : ℕ) (m h H o : ℝ �
     _ ≤ (ENNReal.ofReal θ₀)⁻¹ * (ENNReal.ofReal θ₀ * h r) := by gcongr
     _ = h r := ENNReal.inv_mul_cancel_left hθ0 ENNReal.ofReal_ne_top
 
+/-- **Two-sided density bounds at a good point of `μ = θ Hⁿ⌞M`** (step 1 of the blow-up argument in
+the integer multiplicity criterion for cycles; Simon 6.2.8, 7.3.1).  Put `θ₀ = θ(a) > 0`, `τ = θζ`,
+`τ₀ = τ(a)`, `V(r) = ωₙ rⁿ` and `o(r) = ∫_{M ∩ B̄_r(a)} ‖τ − τ₀‖ dHⁿ`.  (F2) For `x ∈ M`, testing
+`τ(x) − τ₀` on a covector `β` with `|β|_E ≤ 1` and `⟨β, ζ(x)⟩ = 1` gives
+`θ(x) ≤ θ₀ + Pⁿ ‖τ(x) − τ₀‖`, since `⟨β, ζ(a)⟩ ≤ 1` and `‖β‖ ≤ Pⁿ |β|_E`
+(`Submission.cbr_ci_bl_db_weight_le_enorm`, `Submission.cbr_ci_bl_covector_opNorm_le`).
+Integrating (F2) over `M ∩ B_r(a) ⊆ M ∩ B̄_r(a)` gives `μ(B_r(a)) ≤ θ₀ Hⁿ(M ∩ B_r(a)) + Pⁿ o(r)`
+(`Submission.cbr_ci_bl_db_withDensity_le`).  For small `r` the lower density bound gives
+`μ(B_r(a)) ≥ (η₁/2) V(r)`, `o(r)/V(r) → 0` gives `Pⁿ o(r) ≤ (η₁/4) V(r)` and the upper density
+bound gives `Hⁿ(M ∩ B̄_r(a)) ≤ 2 V(r)`; cancelling `(η₁/4) V(r)` and dividing by `θ₀` yields
+`Hⁿ(M ∩ B_r(a)) ≥ (η₁/(4θ₀)) V(r)` (`Submission.cbr_ci_bl_db_eventual_bounds`). -/
+theorem Submission.cbr_ci_bl_density_bounds : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n) (a : Euclid P) (η₁ : ℝ), MeasurableSet M → Measurable θ → StronglyMeasurable ζ → μ = (μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) → (∀ x ∈ M, 0 < θ x) → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) → (∀ x ∈ M, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζ x β = 1) → a ∈ M → 0 < η₁ → ENNReal.ofReal η₁ ≤ liminf (fun r : ℝ => μ (ball a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) → limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) ≤ 1 → Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0) → ∃ r₀ : ℝ, 0 < r₀ ∧ ∀ r : ℝ, 0 < r → r < r₀ → ENNReal.ofReal (η₁ / (4 * θ a)) * (unitBallVolume n * ENNReal.ofReal (r ^ n)) ≤ μHE[n] (M ∩ ball a r) ∧ μHE[n] (M ∩ closedBall a r) ≤ 2 * (unitBallVolume n * ENNReal.ofReal (r ^ n)) := by
+  intro P n μ M θ ζ a η₁ hM _ _ hμ hθ hζ hβ ha hη₁ hL hU hD
+  -- `K = ofReal(Pⁿ)` is finite
+  have hK : ENNReal.ofReal ((P : ℝ) ^ n) ≠ ∞ := ENNReal.ofReal_ne_top
+  -- Step 1 (F2): `θ(x) ≤ θ(a) + Pⁿ ‖θ(x)ζ(x) − θ(a)ζ(a)‖` on `M`, read in `[0, ∞]`
+  have hF2 : ∀ x ∈ M, ENNReal.ofReal (θ x) ≤
+      ENNReal.ofReal (θ a) + ENNReal.ofReal ((P : ℝ) ^ n) * ‖θ x • ζ x - θ a • ζ a‖ₑ :=
+    fun x hx => Submission.cbr_ci_bl_db_weight_le_enorm P n (ζ x) (ζ a) (θ x) (θ a)
+      ((P : ℝ) ^ n) (hθ a ha).le (by positivity) (Submission.cbr_ci_bl_covector_opNorm_le P n)
+      (hζ a) (hβ x hx)
+  -- Step 2: `μ(B_r(a)) ≤ θ(a) Hⁿ(M ∩ B_r(a)) + Pⁿ o(r)`, integrating (F2) over `M ∩ B_r(a)`
+  have hmass : ∀ r : ℝ, 0 < r → μ (ball a r) ≤ ENNReal.ofReal (θ a) * μHE[n] (M ∩ ball a r) +
+      ENNReal.ofReal ((P : ℝ) ^ n) *
+        ∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n] :=
+    fun r _ => Submission.cbr_ci_bl_db_withDensity_le P n μ M (ball a r) (closedBall a r) θ
+      (fun x => ‖θ x • ζ x - θ a • ζ a‖ₑ) (ENNReal.ofReal (θ a)) (ENNReal.ofReal ((P : ℝ) ^ n))
+      hM measurableSet_ball ball_subset_closedBall hK hμ hF2
+  -- Steps 3–4: eventual bounds from (L), (D) and (U); cancel `(η₁/4) V(r)`, divide by `θ(a)`
+  exact Submission.cbr_ci_bl_db_eventual_bounds n (fun r => μ (ball a r))
+    (fun r => μHE[n] (M ∩ ball a r)) (fun r => μHE[n] (M ∩ closedBall a r))
+    (fun r => ∫⁻ x in M ∩ closedBall a r, ‖θ x • ζ x - θ a • ζ a‖ₑ ∂μHE[n]) (θ a) η₁
+    (ENNReal.ofReal ((P : ℝ) ^ n)) (hθ a ha) hη₁ hK hmass hL hU hD
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
