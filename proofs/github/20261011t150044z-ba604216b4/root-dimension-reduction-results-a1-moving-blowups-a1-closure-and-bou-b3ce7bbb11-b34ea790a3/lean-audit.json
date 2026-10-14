@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "97fddffda27f19200b0e1ddc8bd9ece8633c9e7cf3b573efe0411675d75f0830",
+  "git_delta": {
+    "base_commit": "84690fc0351e759f946f99f3b24915171c0f0c35",
+    "candidate_commit": "886deb931f82fba1e6d0e17998b331a558352647",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbr_ci_pw_approxTangent_of_subseq",
+    "diff_sha256": "2d2d18fa54301c83aa257eb6873249f21056e2807e78baba35567ac67f90751e",
+    "source_sha256": "98d03b34e459ed5c8c3ff7173aa31226d8ce7819075b96a10e72bd0cbdc31ed4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_ci_pw_approxTangent_of_subseq",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (a : Euclid P) (Q : Submodule ℝ (Euclid P)), Module.finrank ℝ Q = n → (∀ lams : ℕ → ℝ, (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M, f y ∂μHE[n]) atTop (𝓝 (∫ y in (Q : Set (Euclid P)), f y ∂μHE[n]))) → HasApproximateTangentSpaceAt n M a Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
