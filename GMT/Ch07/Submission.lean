@@ -689,6 +689,114 @@ theorem Submission.cmcdt_cbm_bvp_mean_dev_le_osc : ∀ (m : ℕ) (S : Set (Eucli
     rw [integral_sub (integrable_const _) huS, setIntegral_const, hSr, one_smul]
   calc |u x - ∫ y in S, u y| = |∫ y in S, (u x - u y)| := by rw [hx]
     _ ≤ ∫ y in S, |u x - u y| := abs_integral_le_integral_abs
+/-- A continuous `f` on `ℝᵏ` is bounded and integrable on the open unit cube
+`Q₁ = {0 < yᵢ < 1}`.  The closed cube `K = {0 ≤ yᵢ ≤ 1}`, the image of the compact box `Icc 0 1`
+of `Fin k → ℝ` under `toLp`, is compact and contains `Q₁`; a continuous function is bounded on
+`K` and integrable on `K` for the Haar measure `volume`, hence on `Q₁`. -/
+theorem Submission.cmcdt_cbm_bvt_cube_cont_bound : ∀ (k : ℕ) (f : Euclid k → ℝ), Continuous f → (∃ M : ℝ, ∀ y ∈ {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, |f y| ≤ M) ∧ IntegrableOn f {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} := by
+  intro k f hf
+  -- the closed cube `K = {0 ≤ yᵢ ≤ 1}` is the image of the compact box `Icc 0 1` of `Fin k → ℝ`
+  have hK : IsCompact (WithLp.toLp 2 '' Icc (0 : Fin k → ℝ) 1 : Set (Euclid k)) :=
+    isCompact_Icc.image (PiLp.continuous_toLp 2 _)
+  have hQK : {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} ⊆ WithLp.toLp 2 '' Icc (0 : Fin k → ℝ) 1 :=
+    fun y hy => ⟨WithLp.ofLp y, ⟨fun i => (hy i).1.le, fun i => (hy i).2.le⟩, WithLp.toLp_ofLp 2 y⟩
+  -- `f` is bounded and integrable on the compact `K`, hence on `Q₁ ⊆ K`
+  obtain ⟨M, hM⟩ := hK.exists_bound_of_continuousOn hf.continuousOn
+  exact ⟨⟨M, fun y hy => by simpa only [Real.norm_eq_abs] using hM y (hQK hy)⟩,
+    (hf.continuousOn.integrableOn_compact hK).mono_set hQK⟩
+/-- **L¹ limit of an affine bound** (step 2 of the BV trace estimate).  If
+`|∫_S v_k h| ≤ A + B ∫_S |v_k|` for all `k`, `B ≥ 0`, `|h| ≤ M` on `S` and `v_k → w` in `L¹(S)`,
+then `|∫_S w h| ≤ A + B ∫_S |w|`: with `ε_k = ∫_S |v_k − w|`,
+`|∫_S w h − ∫_S v_k h| ≤ M ε_k` and `∫_S |v_k| ≤ ∫_S |w| + ε_k`, so
+`|∫_S w h| ≤ A + B ∫_S |w| + (B + M) ε_k` for every `k`; let `k → ∞`. -/
+theorem Submission.cmcdt_cbm_bvt_l1_limit : ∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (S : Set α) (v : ℕ → α → ℝ) (w h : α → ℝ) (A B M : ℝ), MeasurableSet S → 0 ≤ B → (∀ k, IntegrableOn (v k) S μ) → IntegrableOn w S μ → AEStronglyMeasurable h (μ.restrict S) → (∀ x ∈ S, |h x| ≤ M) → Tendsto (fun k => ∫ x in S, |v k x - w x| ∂μ) atTop (𝓝 0) → (∀ k, |∫ x in S, v k x * h x ∂μ| ≤ A + B * ∫ x in S, |v k x| ∂μ) → |∫ x in S, w x * h x ∂μ| ≤ A + B * ∫ x in S, |w x| ∂μ := by
+  intro α _ μ S v w h A B M hS hB hv hw hh hM hlim hbd
+  -- `|h| ≤ M` holds `μ⌞S`-a.e., so `w h` and `v_k h` are integrable on `S`
+  have hMae : ∀ᵐ x ∂(μ.restrict S), ‖h x‖ ≤ M :=
+    (ae_restrict_iff' hS).2 (Eventually.of_forall fun x hx => by
+      rw [Real.norm_eq_abs]
+      exact hM x hx)
+  have hwh : IntegrableOn (fun x => w x * h x) S μ := Integrable.mul_bdd hw hh hMae
+  have hvh : ∀ k, IntegrableOn (fun x => v k x * h x) S μ := fun k =>
+    Integrable.mul_bdd (hv k) hh hMae
+  -- for every `k`: `|∫_S w h| ≤ A + B ∫_S |w| + (B + M) ε_k`
+  have hk : ∀ k, |∫ x in S, w x * h x ∂μ| ≤
+      A + B * (∫ x in S, |w x| ∂μ) + (B + M) * ∫ x in S, |v k x - w x| ∂μ := by
+    intro k
+    -- `|∫_S w h − ∫_S v_k h| ≤ M ε_k`
+    have hdiff : |(∫ x in S, w x * h x ∂μ) - ∫ x in S, v k x * h x ∂μ| ≤
+        M * ∫ x in S, |v k x - w x| ∂μ := by
+      rw [← integral_sub hwh (hvh k)]
+      calc |∫ x in S, (w x * h x - v k x * h x) ∂μ|
+          ≤ ∫ x in S, |w x * h x - v k x * h x| ∂μ := abs_integral_le_integral_abs
+        _ ≤ ∫ x in S, M * |v k x - w x| ∂μ := by
+          refine integral_mono_ae (hwh.sub (hvh k)).abs (((hv k).sub hw).abs.const_mul M) ?_
+          filter_upwards [hMae] with x hx
+          rw [← sub_mul, abs_mul, abs_sub_comm, mul_comm]
+          exact mul_le_mul_of_nonneg_right (by rwa [Real.norm_eq_abs] at hx) (abs_nonneg _)
+        _ = M * ∫ x in S, |v k x - w x| ∂μ := integral_const_mul M _
+    -- `∫_S |v_k| ≤ ∫_S |w| + ε_k`
+    have hwi : IntegrableOn (fun x => |w x|) S μ := hw.abs
+    have hvwi : IntegrableOn (fun x => |v k x - w x|) S μ := ((hv k).sub hw).abs
+    have hvw : ∫ x in S, |v k x| ∂μ ≤ (∫ x in S, |w x| ∂μ) + ∫ x in S, |v k x - w x| ∂μ := by
+      rw [← integral_add hwi hvwi]
+      refine integral_mono (hv k).abs (hwi.add hvwi) fun x => ?_
+      calc |v k x| = |w x + (v k x - w x)| := by rw [add_sub_cancel]
+        _ ≤ |w x| + |v k x - w x| := abs_add_le _ _
+    have htri : |∫ x in S, w x * h x ∂μ| ≤
+        |∫ x in S, v k x * h x ∂μ| + |(∫ x in S, w x * h x ∂μ) - ∫ x in S, v k x * h x ∂μ| := by
+      have := abs_add_le (∫ x in S, v k x * h x ∂μ)
+        ((∫ x in S, w x * h x ∂μ) - ∫ x in S, v k x * h x ∂μ)
+      rwa [add_sub_cancel] at this
+    linarith [hbd k, mul_le_mul_of_nonneg_left hvw hB]
+  -- let `k → ∞`: `ε_k → 0`
+  have hT : Tendsto (fun k => A + B * (∫ x in S, |w x| ∂μ) + (B + M) * ∫ x in S, |v k x - w x| ∂μ)
+      atTop (𝓝 (A + B * (∫ x in S, |w x| ∂μ) + (B + M) * 0)) :=
+    tendsto_const_nhds.add (hlim.const_mul (B + M))
+  rw [mul_zero, add_zero] at hT
+  exact ge_of_tendsto' hT hk
+/-- Exhaustion of the open unit cube `Q₁ = {0 < yᵢ < 1}` by the shrunken cubes
+`Q_δ = {δ < zᵢ < 1 - δ}`: if `f` is integrable on `Q₁`, then `∫_{Q_δ} f → ∫_{Q₁} f` as `δ → 0⁺`.
+For `δ > 0`, `∫_{Q_δ} f = ∫_{Q₁} 1_{Q_δ} f`, and every `y ∈ Q₁` lies in `Q_δ` for all small
+`δ > 0`; dominated convergence on `Q₁` with bound `|f|` concludes. -/
+theorem Submission.cmcdt_cbm_bvt_cube_exhaust : ∀ (k : ℕ) (f : Euclid k → ℝ), IntegrableOn f {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} → Tendsto (fun δ : ℝ => ∫ y in {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ}, f y) (𝓝[>] 0) (𝓝 (∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, f y)) := by
+  intro k f hf
+  -- each `{z | ∀ i, a < z i ∧ z i < b}` is a finite intersection of open half-spaces
+  have hmeas : ∀ a b : ℝ, MeasurableSet {z : Euclid k | ∀ i, a < z i ∧ z i < b} := by
+    intro a b
+    have h : {z : Euclid k | ∀ i, a < z i ∧ z i < b} =
+        ⋂ i, ({z : Euclid k | a < z i} ∩ {z : Euclid k | z i < b}) := by
+      ext z
+      simp
+    rw [h]
+    refine IsOpen.measurableSet (isOpen_iInter_of_finite fun i => ?_)
+    exact (isOpen_lt continuous_const (PiLp.continuous_apply _ _ i)).inter
+      (isOpen_lt (PiLp.continuous_apply _ _ i) continuous_const)
+  -- for `δ > 0`, `∫_{Q_δ} f = ∫_{Q₁} 1_{Q_δ} f`
+  have heq : (fun δ : ℝ => ∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1},
+      {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ}.indicator f y) =ᶠ[𝓝[>] 0]
+      fun δ : ℝ => ∫ y in {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ}, f y := by
+    filter_upwards [self_mem_nhdsWithin] with δ (hδ : 0 < δ)
+    rw [setIntegral_indicator (hmeas _ _), inter_eq_right.2]
+    intro z hz i
+    exact ⟨hδ.trans (hz i).1, (hz i).2.trans (by linarith)⟩
+  refine Tendsto.congr' heq ?_
+  -- dominated convergence on `Q₁` with bound `|f|`
+  refine tendsto_integral_filter_of_dominated_convergence (fun y => ‖f y‖)
+    (Eventually.of_forall fun δ => hf.aestronglyMeasurable.indicator (hmeas _ _))
+    (Eventually.of_forall fun δ => Eventually.of_forall fun y => norm_indicator_le_norm_self _ _)
+    hf.norm ?_
+  rw [ae_restrict_iff' (by simpa using hmeas 0 1)]
+  refine Eventually.of_forall fun y hy => tendsto_const_nhds.congr' ?_
+  -- every `y ∈ Q₁` lies in `Q_δ` for all small `δ > 0`
+  have hev : ∀ᶠ δ in 𝓝[>] (0 : ℝ), ∀ i, δ < y i ∧ y i < 1 - δ := by
+    rw [Filter.eventually_all]
+    intro i
+    have h1 : ∀ᶠ δ in 𝓝 (0 : ℝ), δ < y i := eventually_lt_nhds (hy i).1
+    have h2 : ∀ᶠ δ in 𝓝 (0 : ℝ), δ < 1 - y i := eventually_lt_nhds (by linarith [(hy i).2])
+    exact nhdsWithin_le_nhds ((h1.and h2).mono fun δ h => ⟨h.1, by linarith [h.2]⟩)
+  filter_upwards [hev] with δ hδ
+  exact (indicator_of_mem (show y ∈ {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ} from hδ) f).symm
 /-- **Adjoint identity for mollification** (Simon Ch. 2, 2.5).  If `η : ℝᴾ → ℝ` is `C¹` with
 compact support, `η̌(z) = η(−z)`, and `u`, `s` are integrable, then
 `∫ D(η ⋆ u)(x)(s x) dx = −∫ u div(η̌ ⋆ s)`, where `div G = trace DG`.  Differentiating under the
@@ -2126,5 +2234,61 @@ theorem Submission.cmcdt_cbm_bv_poincare : ∀ (m : ℕ) (u : Euclid (m + 1) →
       gcongr
       · norm_num
       · omega
+/-- **Trace estimate on the unit cube** (step 5 of the median argument; it replaces the appeal to
+Simon Ch. 2, 2.8–2.9 in the second line of (32) in the proof of Ch. 6, 5.1).  `div G = tr DG` is
+continuous, so `|div G| ≤ M` on `Q₁`.  For `δ ∈ (0, 1/4)` the `C¹` functions `v_k` of
+`cmcdt_cbm_smooth_approx` have `∫_{Q_δ} ‖Dv_k‖ ≤ V` and `v_k → w` in `L¹(Q_δ)`, so the smooth
+estimate `cmcdt_cbm_smooth_trace` on `Q_δ` passes to `w` (`cmcdt_cbm_bvt_l1_limit`); `Q_δ ⊆ Q₁`
+bounds `∫_{Q_δ} |w|` by `∫_{Q₁} |w|`, and `δ → 0⁺` by `cmcdt_cbm_bvt_cube_exhaust`. -/
+theorem Submission.cmcdt_cbm_bv_trace : ∀ (m : ℕ) (w : Euclid (m + 1) → ℝ) (V : ℝ), IntegrableOn w {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → ∀ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 G → (∀ y, ‖G y‖ ≤ 1) → |∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤ (2 * (m + 1) + 1) * V + 4 * (m + 1) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w y| := by
+  intro m w V hw hV G hG hG1
+  -- the cubes `{a < z_i < b}` are open, and `Q_δ ⊆ Q₁` for `δ ≥ 0`
+  have hopen : ∀ a b : ℝ, IsOpen {z : Euclid (m + 1) | ∀ i, a < z i ∧ z i < b} := by
+    intro a b
+    simp only [ofPred_forall, ofPred_and]
+    exact isOpen_iInter_of_finite fun i =>
+      (isOpen_lt continuous_const (PiLp.continuous_apply 2 _ i)).inter
+        (isOpen_lt (PiLp.continuous_apply 2 _ i) continuous_const)
+  have hsub : ∀ δ : ℝ, 0 ≤ δ → {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ} ⊆
+      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := fun δ hδ z hz i =>
+    ⟨hδ.trans_lt (hz i).1, (hz i).2.trans_le (by linarith)⟩
+  -- `div G = tr ∘ DG` is continuous, hence bounded by `M` on `Q₁`
+  have hdc : Continuous fun y => LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) :=
+    ((LinearMap.trace ℝ (Euclid (m + 1))).comp
+      (ContinuousLinearMap.coeLM ℝ)).continuous_of_finiteDimensional.comp
+      (hG.continuous_fderiv one_ne_zero)
+  obtain ⟨⟨M, hM⟩, -⟩ := Submission.cmcdt_cbm_bvt_cube_cont_bound (m + 1) _ hdc
+  -- for `δ ∈ (0, 1/4)`: `|∫_{Q_δ} w div G| ≤ (2n + 1) V + 4n ∫_{Q₁} |w|`
+  have hδbound : ∀ δ ∈ Ioo (0 : ℝ) (1 / 4),
+      |∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ},
+          w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)| ≤
+        (2 * (m + 1) + 1) * V +
+          4 * (m + 1) * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w y| := by
+    rintro δ ⟨hδ0, hδ⟩
+    have hQ := hsub δ hδ0.le
+    -- `C¹` approximations `v_k → w` in `L¹(Q_δ)` with `∫_{Q_δ} ‖Dv_k‖ ≤ V`
+    obtain ⟨v, hv, hvV, hvw⟩ := Submission.cmcdt_cbm_smooth_approx m w V δ hw hV hδ0
+    refine (Submission.cmcdt_cbm_bvt_l1_limit volume _ v w
+      (fun y => LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y)) ((2 * (m + 1) + 1) * V)
+      (4 * (m + 1)) M (hopen δ (1 - δ)).measurableSet (by positivity)
+      (fun k => (Submission.cmcdt_cbm_bvt_cube_cont_bound (m + 1) (v k)
+        (hv k).continuous).2.mono_set hQ)
+      (hw.mono_set hQ) hdc.aestronglyMeasurable (fun y hy => hM y (hQ hy)) hvw
+      fun k => ?_).trans ?_
+    · -- the smooth estimate on `Q_δ`, with `∫_{Q_δ} ‖Dv_k‖ ≤ V`
+      refine (Submission.cmcdt_cbm_smooth_trace m (v k) G δ (hv k) hG hG1 hδ0.le hδ.le).trans ?_
+      gcongr _ * ?_ + _
+      exact hvV k
+    · -- `∫_{Q_δ} |w| ≤ ∫_{Q₁} |w|`
+      gcongr _ + _ * ?_
+      exact setIntegral_mono_set (Integrable.abs hw) (ae_of_all _ fun y => abs_nonneg (w y))
+        (ae_of_all _ hQ)
+  -- `δ → 0⁺`: `∫_{Q_δ} w div G → ∫_{Q₁} w div G`, with `w div G` integrable on `Q₁`
+  have hwG : IntegrableOn (fun y => w y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y))
+      {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} :=
+    Integrable.mul_bdd hw hdc.aestronglyMeasurable
+      (ae_restrict_of_forall_mem (hopen 0 1).measurableSet fun y hy => hM y hy)
+  exact le_of_tendsto (Submission.cmcdt_cbm_bvt_cube_exhaust (m + 1) _ hwG).abs
+    (Filter.mem_of_superset (Ioo_mem_nhdsGT (by norm_num : (0 : ℝ) < 1 / 4)) hδbound)
 
 end GMT.Ch07
