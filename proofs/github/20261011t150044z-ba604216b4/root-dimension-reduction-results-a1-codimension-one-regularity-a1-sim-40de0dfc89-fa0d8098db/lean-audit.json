@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "dceaba8c1d3c86aea7e9e31d84b9b6f5ebe9efb2e8f2fa0b85bac3b0f2d296b5",
+  "git_delta": {
+    "base_commit": "a7af9b3d9af0c37ece81f42d24a9589158db0f40",
+    "candidate_commit": "a453cedabdafc39f383c94939fe71c3c80ecaa3e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ac_saf_chart_area_formula",
+    "diff_sha256": "cb356570989ce9f6d411fd194fcb9ebc30db3db57462d70acd1d47b869718430",
+    "source_sha256": "a41f11beff88f79053455a07bc567c7e2434842f22bc33b560e23ae5e7e82b73",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ac_saf_chart_area_formula",
+      "statement": "∀ (P m r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (Q : Euclid P → Submodule ℝ (Euclid P)) (Φ : Euclid P → Euclid P), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → (∀ x ∈ N, (Q x : Set (Euclid P)) = tangentSpace N x) → ContDiff ℝ 1 Φ → Injective Φ → (∀ x, Injective (fderiv ℝ Φ x)) → ∀ B : Set (Euclid P), B ⊆ W ∩ N → MeasurableSet B → ∀ g : Euclid P → ℝ≥0∞, ∫⁻ y in Φ '' B, g y ∂μHE[m] = ∫⁻ x in B, ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) j))))) * g (Φ x) ∂μHE[m]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
