@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2ca2807268329ee20eb2b6f851ac62170817838731fe386005a7c20cfa078b05",
+  "git_delta": {
+    "base_commit": "fe06e7de00f4da8e4e2e71974613c101688b3cbb",
+    "candidate_commit": "fd45f5726765739f165846688927c7ec9b06eca4",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "1fe519404c4793fb37c1236cc9647a0266856862a05d3b0236c6eee12d6fa752",
+    "source_sha256": "536c62975083a439446f9c9dab45accb68435f28f6c779a958dfb7c85c8d0694",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cttp_blowup_limit_translation_invariant",
+      "statement": "∀ (P n : ℕ) (C C' : GeometricCurrentOn (univ : Set (Euclid P)) n) (p : Euclid P) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), IsIntegerMultiplicity C → IsConeCurrent C → Tendsto lams atTop (𝓝 0) → MassMeasuresConverge (fun j => blowUp C p (lams j) (hlams j).ne') C' → ∀ R' : IMRep (univ : Set (Euclid P)) n, R'.Represents C' → ∀ v ∈ Submodule.span ℝ {p}, ∀ A : Set (Euclid P), MeasurableSet A → R'.measure ((fun x => x + v) ⁻¹' A) = R'.measure A",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
