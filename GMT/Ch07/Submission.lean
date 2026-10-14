@@ -4403,6 +4403,120 @@ theorem Submission.dtc_bc_lc_sl_cc_regular_coarea : ∀ (P n : ℕ) (ψ : Euclid
     rw [lintegral_tsum fun k => (hpiece k).1.aemeasurable, tsum_congr fun k => (hpiece k).2,
       ← lintegral_iUnion (fun k => himg _ (hYY' k) (hYm k)) (hdisj Y fun k => subset_rfl),
       ← image_iUnion, hYunion]
+/-- Countably many slice disks (Simon Ch. 2, 6.4, in local parametrised form).  Let `ψ` be `C¹`,
+injective with injective derivative on the open `V ⊆ ℝ^{n+1}`, and `F` be `C¹`.  Then the image
+`ψ({y ∈ V : F(y) = t, DF(y) ≠ 0})` is covered by the balls `χ_j(B_{r_j}(a_j))` of countably many
+injective `C¹` disks `χ_j : U_j → ℝᴾ` with injective derivative, countably `n`-rectifiable images,
+`Hⁿ(χ_j(B̄_{r_j}(a_j))) < ∞`, and `Dχ_j(w)(ℝⁿ) = Dψ(y)(ℝ^{n+1}) ∩ (ℝv)^⊥` at a point `y` of the
+level set with `ψ(y) = χ_j(w)`, `v` the gradient of `F` along `ψ`.
+
+Proof sketch:
+* `flattening_atlas` gives charts `Θ_k : Ω_k → V` with `F(Θ_k(z)) = z₀` covering `{DF ≠ 0}`;
+  `slice_param` makes `χ^k = ψ ∘ Θ_k ∘ c(t, ·)`, `c(t, w) = (t, w)`, an injective `C¹` disk on the
+  open `U^k = {w : c(t, w) ∈ Ω_k}`, with `DF ≠ 0`, injective derivative and the range identity.
+* Index `j = ⟨k, ⟨m, l⟩⟩`: `U_j = U^k`, `χ_j = χ^k`, `a_j = d_m` for a dense sequence `d`, and
+  `r_j = 1/(l+1)` if `B̄_{1/(l+1)}(d_m) ⊆ U^k`, `r_j = -1` (empty balls) otherwise.
+* `χ^k` is Lipschitz on the convex compact `B̄_{r_j}(a_j) ⊆ U^k`, so `Hⁿ(χ_j(B̄_{r_j}(a_j))) < ∞`.
+* Every `w ∈ U^k` lies in some `B_{r_j}(a_j)` with `j = ⟨k, ⟨m, l⟩⟩`; hence `χ^k(U^k)` is covered by
+  the ranges of Lipschitz extensions of the `χ_j` from these balls (countably rectifiable), and
+  `ψ(Θ_k(z)) = χ_j(w)` for `z = c(t, w) ∈ Ω_k` with `z₀ = t`. -/
+theorem Submission.dtc_bc_lc_sl_cc_slice_disks : ∀ (P n : ℕ) (ψ : Euclid (n + 1) → Euclid P) (V : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (t : ℝ), IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → ∃ (U : ℕ → Set (Euclid n)) (a : ℕ → Euclid n) (r : ℕ → ℝ) (χ : ℕ → Euclid n → Euclid P), (∀ j, IsOpen (U j) ∧ closedBall (a j) (r j) ⊆ U j ∧ ContDiffOn ℝ 1 (χ j) (U j) ∧ InjOn (χ j) (U j) ∧ CountablyRectifiable n (χ j '' U j) ∧ μHE[n] (χ j '' closedBall (a j) (r j)) ≠ ∞ ∧ ∀ w ∈ U j, Injective (fderiv ℝ (χ j) w) ∧ ∃ y ∈ V, ψ y = χ j w ∧ F y = t ∧ fderiv ℝ F y ≠ 0 ∧ ∀ v ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P), (∀ e, inner ℝ v (fderiv ℝ ψ y e) = fderiv ℝ F y e) → LinearMap.range (fderiv ℝ (χ j) w : Euclid n →ₗ[ℝ] Euclid P) = LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ v)ᗮ) ∧ ψ '' {y | y ∈ V ∧ F y = t ∧ fderiv ℝ F y ≠ 0} ⊆ ⋃ j, χ j '' ball (a j) (r j) := by
+  intro P n ψ V F t hV hψ hψinj hDψ hF
+  classical
+  -- Step 1: charts `Θ_k : Ω_k → V` flattening `F`, and the slices `χ^k = ψ ∘ Θ_k ∘ c(t, ·)`
+  obtain ⟨Ω, Θ, hΩ, hcover⟩ := Submission.dtc_bc_lc_sl_cc_flattening_atlas n F V hV hF
+  let c : ℝ → Euclid n → Euclid (n + 1) := fun s w =>
+    WithLp.toLp 2 (Fin.cons s fun i => w i : Fin (n + 1) → ℝ)
+  have hc : ∀ s w, c s w 0 = s ∧ ∀ i : Fin n, c s w i.succ = w i := fun s w => by
+    simp [c]
+  have hsl := fun k => Submission.dtc_bc_lc_sl_cc_slice_param P n c ψ V (Ω k) F (Θ k) t hc hψ
+    hψinj hDψ hF (hΩ k).1 (hΩ k).2.1 (hΩ k).2.2.1 (hΩ k).2.2.2.1 (hΩ k).2.2.2.2.2.1
+    (hΩ k).2.2.2.2.2.2
+  let U : ℕ → Set (Euclid n) := fun k => {w | c t w ∈ Ω k}
+  let χ : ℕ → Euclid n → Euclid P := fun k w => ψ (Θ k (c t w))
+  -- Step 2: `j = ⟨k, ⟨m, l⟩⟩`, `a_j = d_m` and `r_j = 1/(l+1)` if `B̄_{1/(l+1)}(d_m) ⊆ U^k`
+  let d := TopologicalSpace.denseSeq (Euclid n)
+  let ρ : ℕ → ℝ := fun l => 1 / ((l : ℝ) + 1)
+  let a : ℕ → Euclid n := fun j => d (Nat.unpair (Nat.unpair j).2).1
+  let r : ℕ → ℝ := fun j =>
+    if closedBall (a j) (ρ (Nat.unpair (Nat.unpair j).2).2) ⊆ U (Nat.unpair j).1 then
+      ρ (Nat.unpair (Nat.unpair j).2).2 else -1
+  have hball : ∀ j, closedBall (a j) (r j) ⊆ U (Nat.unpair j).1 := by
+    intro j
+    simp only [r]
+    split_ifs with h
+    · exact h
+    · rw [closedBall_eq_empty.2 (by norm_num)]
+      exact empty_subset _
+  -- every `w ∈ U^k` lies in a ball `B_{r_j}(a_j)` with `j = ⟨k, ⟨m, l⟩⟩`
+  have hcov : ∀ k, ∀ w ∈ U k, ∃ j, (Nat.unpair j).1 = k ∧ w ∈ ball (a j) (r j) := by
+    intro k w hw
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 (hsl k).1 w hw
+    obtain ⟨l, hl⟩ := exists_nat_one_div_lt (half_pos hε)
+    have hl' : ρ l < ε / 2 := hl
+    have hρ : 0 < ρ l := Nat.one_div_pos_of_nat
+    obtain ⟨m, hm⟩ := (TopologicalSpace.denseRange_denseSeq (Euclid n)).exists_dist_lt w hρ
+    have hsub : closedBall (d m) (ρ l) ⊆ U k := by
+      intro u hu
+      apply hεU
+      rw [mem_closedBall] at hu
+      rw [mem_ball]
+      calc dist u w ≤ dist u (d m) + dist (d m) w := dist_triangle _ _ _
+        _ < ε := by rw [dist_comm] at hm; linarith
+    have ha : a (Nat.pair k (Nat.pair m l)) = d m := by simp only [a, Nat.unpair_pair]
+    have hr : r (Nat.pair k (Nat.pair m l)) = ρ l := by
+      simp only [r, ha, Nat.unpair_pair]
+      exact ite_eq_left hsub
+    refine ⟨Nat.pair k (Nat.pair m l), by simp only [Nat.unpair_pair], ?_⟩
+    rw [ha, hr, mem_ball]
+    exact hm
+  -- Step 3: `χ^k` is Lipschitz on each `B̄_{r_j}(a_j) ⊆ U^k`; Lipschitz extensions `g_j`
+  have hlip : ∀ j, ∃ K, LipschitzOnWith K (χ (Nat.unpair j).1) (closedBall (a j) (r j)) :=
+    fun j => ((hsl _).2.1.mono (hball j)).exists_lipschitzOnWith one_ne_zero
+      (convex_closedBall _ _) (isCompact_closedBall _ _)
+  choose K hK using hlip
+  choose g hg hgeq using fun j => (hK j).extend_finite_dimension
+  have hR : CountablyRectifiable n (⋃ j, range (g j)) :=
+    Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion _ fun j =>
+      Poincare.SimonGMT.Chapter03.countablyRectifiable_range (hg j)
+  refine ⟨fun j => U (Nat.unpair j).1, a, r, fun j => χ (Nat.unpair j).1, fun j =>
+    ⟨(hsl _).1, hball j, (hsl _).2.1, (hsl _).2.2.1, ?_, ?_, ?_⟩, ?_⟩
+  · -- `χ^k(U^k) ⊆ ⋃_i g_i(ℝⁿ)` by the ball cover of `U^k`
+    refine hR.mono ?_
+    rintro _ ⟨w, hw, rfl⟩
+    obtain ⟨i, hik, hwi⟩ := hcov _ w hw
+    refine mem_iUnion.2 ⟨i, w, ?_⟩
+    rw [← hgeq i (ball_subset_closedBall hwi), hik]
+  · -- `Hⁿ(χ_j(B̄_{r_j}(a_j))) ≤ Kⁿ Lⁿ(B̄_{r_j}(a_j)) < ∞`
+    refine ne_top_of_le_ne_top ?_
+      (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n (hK j))
+    rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+    exact ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top) measure_closedBall_lt_top.ne
+  · -- the level-set point `y = Θ_k(c(t, w))`
+    intro w hw
+    have hw' : c t w ∈ Ω (Nat.unpair j).1 := hw
+    obtain ⟨hDF, hinj, hrange⟩ := (hsl (Nat.unpair j).1).2.2.2 w hw'
+    refine ⟨hinj, Θ (Nat.unpair j).1 (c t w), (hΩ _).2.2.2.2.2.1 ⟨c t w, hw', rfl⟩, rfl, ?_, hDF,
+      fun v hv he => (hrange v hv he).1⟩
+    rw [(hΩ _).2.2.2.2.2.2 _ hw']
+    exact (hc t w).1
+  · -- Step 4: `y = Θ_k(z)` with `z = c(t, w)`, `w ∈ U^k`, so `ψ(y) = χ_j(w)` for some `j`
+    rintro _ ⟨y, ⟨hyV, hFy, hDF⟩, rfl⟩
+    obtain ⟨k, z, hz, rfl⟩ : ∃ k, ∃ z ∈ Ω k, Θ k z = y := by
+      simpa only [mem_iUnion, mem_image] using hcover ⟨hyV, hDF⟩
+    have hz0 : z 0 = t := by
+      rw [← (hΩ k).2.2.2.2.2.2 z hz]
+      exact hFy
+    let w : Euclid n := WithLp.toLp 2 fun i => z i.succ
+    have hcw : c t w = z := by
+      ext i
+      induction i using Fin.cases with
+      | zero => simp [c, hz0]
+      | succ i => simp [c, w]
+    obtain ⟨j, hjk, hwj⟩ := hcov k w (show c t w ∈ Ω k by rw [hcw]; exact hz)
+    refine mem_iUnion.2 ⟨j, w, hwj, ?_⟩
+    show ψ (Θ (Nat.unpair j).1 (c t w)) = ψ (Θ k z)
+    rw [hjk, hcw]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
