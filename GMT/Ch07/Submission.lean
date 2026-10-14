@@ -936,6 +936,93 @@ theorem Submission.dimred_cs_sos_cfs_radial_homotopy : ∀ (P q : ℕ) (β : Dif
   rw [hA, hint, hftc]
   exact sub_add_cancel _ _
 
+/-- **The cone `0 ⨯ X` over a compactly supported cycle** (Simon 6.2.30–2.32).  Let
+`X ∈ 𝒟_{q+1}(ℝᴾ)` be represented by `R = (M, θ, ξ)` with `M ⊆ spt X` and `μ_R(ℝᴾ) < ∞`, `∂X = 0`
+and `spt X` compact.  With `Kω(x) = ∫₀¹ t^{q+1} ι_x ω(tx) dt`, take `Φω` equal to `Kω` on a ball
+`B_ρ(0) ⊇ spt X` with `‖Φω‖ ≤ (ρ + 1) sup ‖ω‖`, and put `Y(ω) = X(Φω)`.  The bound
+`|X(γ)| ≤ μ_R(ℝᴾ) sup ‖γ‖` makes `Y` a current.  On `B_ρ(0)`, `K(dγ) = γ − dψ` for a test form
+`ψ`, so `∂Y(γ) = X(γ) − ∂X(ψ) = X(γ)`.  If `spt ω` misses the compact cone
+`C₀ = {s x : s ∈ [0, 1], x ∈ spt X}`, then `Kω = 0` on `spt X`, so `Y(ω) = 0`; hence `spt Y ⊆ C₀`
+is compact. -/
+theorem Submission.dimred_cs_sos_cfs_cone_current : ∀ (P q : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (q + 1)) (R : IMRep (univ : Set (Euclid P)) (q + 1)), R.Represents X → R.carrier ⊆ X.support → R.measure univ ≠ ∞ → X.boundary = 0 → IsCompact X.support → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (q + 1 + 1), Y.boundary = X ∧ IsCompact Y.support ∧ Y.support ⊆ {y : Euclid P | ∃ s ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = s • x} ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1), ∃ η : TestFormOn (univ : Set (Euclid P)) (q + 1), (∀ x ∈ X.support, (η : DifferentialForm (Euclid P) (q + 1)) x = ∫ t in (0 : ℝ)..1, t ^ (q + 1) • ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x) ∧ Y ω = X η := by
+  intro P q X R hRep hMX hmass hbd hcpt
+  -- Step 0: `X` kills forms vanishing on `M`, and `|X(γ)| ≤ μ_R(ℝᴾ) b` when `‖γ‖ ≤ b`
+  obtain ⟨hvan, hbound⟩ :=
+    Submission.dimred_cs_sos_cfs_cc_imrep_vanish_bound P (q + 1) univ X R hRep
+  -- Step 1: `spt X ⊆ B_ρ(0)` with `ρ > 0`
+  obtain ⟨ρ, hρ, hXρ⟩ := hcpt.isBounded.subset_ball_lt 0 0
+  have hnorm : ∀ x ∈ X.support, ‖x‖ < ρ := fun x hx => mem_ball_zero_iff.mp (hXρ hx)
+  -- Step 2: the cut-off cone operator `Φ`; `Kω` is smooth by the radial homotopy formula
+  obtain ⟨Φ, hΦK, hΦb⟩ := Submission.dimred_cs_sos_cfs_cc_cutoff_cone_operator P q ρ hρ
+    fun β hβ => (Submission.dimred_cs_sos_cfs_radial_homotopy P (q + 1) β hβ).1
+  -- Step 3: `Y = X ∘ Φ` is a current, since `|X(Φω)| ≤ μ_R(ℝᴾ) (ρ + 1) M` when `‖ω‖ ≤ M`
+  obtain ⟨Y, hY⟩ := Submission.cmcs_rc_order_zero_current P (q + 1 + 1) univ (X.toCurrent ∘ₗ Φ)
+    fun _ _ _ => ⟨(R.measure univ).toReal * (ρ + 1), fun ω M _ hM =>
+      calc |(X.toCurrent ∘ₗ Φ) ω| = |X (Φ ω)| := rfl
+        _ ≤ (R.measure univ).toReal * ((ρ + 1) * M) := hbound hmass (Φ ω) _ (hΦb ω M hM)
+        _ = (R.measure univ).toReal * (ρ + 1) * M := (mul_assoc _ _ _).symm⟩
+  -- Step 5: `∂Y = X`
+  have hbdY : Y.boundary = X := by
+    ext γ
+    -- `ψ ∈ 𝒟^q` with `K(dγ) = γ − dψ` on `B_ρ(0)`, by the homotopy formula in degree `q`
+    obtain ⟨ψ, hψ⟩ := Submission.dimred_cs_sos_cfs_cc_cutoff_homotopy P q ρ
+      (Submission.dimred_cs_sos_cfs_radial_homotopy P q) γ
+    have hdγ : (exteriorDerivativeTestOn (univ : Set (Euclid P)) (q + 1) γ :
+        DifferentialForm (Euclid P) (q + 1 + 1)) =
+        exteriorDerivative (γ : DifferentialForm (Euclid P) (q + 1)) := rfl
+    have hdψ : (exteriorDerivativeTestOn (univ : Set (Euclid P)) q ψ :
+        DifferentialForm (Euclid P) (q + 1)) =
+        exteriorDerivative (ψ : DifferentialForm (Euclid P) q) := rfl
+    -- `Φ(dγ) − γ + dψ` vanishes on `M ⊆ spt X ⊆ B_ρ(0)`, so `X` kills it
+    have h0 : X (Φ (exteriorDerivativeTestOn univ (q + 1) γ) - γ +
+        exteriorDerivativeTestOn univ q ψ) = 0 := by
+      refine hvan _ fun x hx => ?_
+      have hx' := hnorm x (hMX hx)
+      simp only [Submodule.coe_add, Submodule.coe_sub, Pi.add_apply, Pi.sub_apply]
+      rw [hΦK _ x hx', hdγ, hψ x hx', hdψ]
+      abel
+    -- `X(dψ) = ∂X(ψ) = 0`
+    have hXdψ : X (exteriorDerivativeTestOn univ q ψ) = 0 := by
+      rw [← GeometricCurrentOn.boundary_apply, hbd, GeometricCurrentOn.zero_apply]
+    rw [map_add X.toCurrent, map_sub X.toCurrent] at h0
+    rw [GeometricCurrentOn.boundary_apply, hY]
+    change X (Φ (exteriorDerivativeTestOn univ (q + 1) γ)) = X γ
+    linarith
+  -- Step 6: the cone `C₀ = {s x : s ∈ [0, 1], x ∈ spt X}` is compact
+  have hC₀ : IsCompact {y : Euclid P | ∃ s ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = s • x} := by
+    have himg : {y : Euclid P | ∃ s ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = s • x} =
+        (fun p : ℝ × Euclid P => p.1 • p.2) '' (Icc (0 : ℝ) 1 ×ˢ X.support) := by
+      ext y
+      constructor
+      · rintro ⟨s, hs, x, hx, rfl⟩
+        exact ⟨(s, x), ⟨hs, hx⟩, rfl⟩
+      · rintro ⟨⟨s, x⟩, ⟨hs, hx⟩, rfl⟩
+        exact ⟨s, hs, x, hx, rfl⟩
+    rw [himg]
+    exact (isCompact_Icc.prod hcpt).image (continuous_fst.smul continuous_snd)
+  -- Step 6a: if `spt ω ∩ C₀ = ∅`, then `Kω = 0` on `M ⊆ spt X`, so `Y(ω) = X(Φω) = 0`
+  have hYvan : ∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) (q + 1 + 1)))
+        {y : Euclid P | ∃ s ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = s • x} → Y ω = 0 := by
+    intro ω hω
+    rw [hY]
+    refine hvan (Φ ω) fun x hx => ?_
+    have hxX := hMX hx
+    have hzero : EqOn (fun t : ℝ => t ^ (q + 1) •
+        ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x) 0 (uIcc 0 1) := by
+      intro t ht
+      rw [uIcc_of_le zero_le_one] at ht
+      have hnot : t • x ∉ tsupport (ω : DifferentialForm (Euclid P) (q + 1 + 1)) :=
+        Set.disjoint_right.mp hω ⟨t, ht, x, hxX, rfl⟩
+      simp [image_eq_zero_of_notMem_tsupport hnot]
+    rw [hΦK ω x (hnorm x hxX), intervalIntegral.integral_congr hzero]
+    simp
+  -- Step 6b: `spt Y ⊆ C₀` and `spt Y` is compact
+  -- Steps 4 and 7: `η = Φω` equals `Kω` on `spt X ⊆ B_ρ(0)` and `Y(ω) = X(η)`
+  obtain ⟨hsub, hYcpt⟩ := Submission.rsd_cmr_support_subset_of_vanish P (q + 1 + 1) univ _ Y
+    isOpen_univ hC₀ (subset_univ _) hYvan
+  exact ⟨Y, hbdY, hYcpt, hsub, fun ω => ⟨Φ ω, fun x hx => hΦK ω x (hnorm x hx), hY ω⟩⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
