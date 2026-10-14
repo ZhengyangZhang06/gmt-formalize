@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_param-a1.piece_action-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_param-a1",
+  "depth": 6,
+  "title": "Cone piece change of variables: ∫_A w·η(G)(DG e) = ∫_B (w∘tail)·ω(H)(DH ê) when η = Kω on G(A) and H(s, u) = s·G(u) on B",
+  "statement": "Let P, n ∈ ℕ, L ≥ 0 (NNReal), G : ℝ^n → ℝ^P any map, H : ℝ^{n+1} → ℝ^P L-Lipschitz, A ⊆ ℝ^n Borel, and w : ℝ^n → ℤ measurable with (w : ℝ) Lebesgue integrable on A. Let ω ∈ 𝒟^{n+1}(ℝ^P) be a test form (TestFormOn univ (n+1): a smooth (n+1)-form with compact support) and let η be any n-form on ℝ^P (a map ℝ^P → Λ^n). Write z_0 := WithLp.ofLp z 0, tail z := WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)), and B := {z ∈ ℝ^{n+1} : z_0 ∈ (0, 1) and tail z ∈ A}. Assume:\n(H1) for every z ∈ B, H(z) = z_0·G(tail z) and the tuple (b ↦ DH(z)ê_b) equals Fin.cons (G(tail z)) (a ↦ z_0·DG(tail z)e_a);\n(H2) for every u ∈ A, η(G u) = ∫_0^1 t^n·(ω(t·G u)).curryLeft (G u) dt, an interval integral of n-covectors; this is Kω(G u) for the radial homotopy operator K.\nThen ∫_{u ∈ A} w(u)·η(G u)(DG(u)e_0, …, DG(u)e_{n−1}) du = ∫_{z ∈ B} w(tail z)·ω(H z)(DH(z)ê_0, …, DH(z)ê_n) dz. Here D = fderiv ℝ, e_a := EuclideanSpace.single a 1 ∈ ℝ^n, ê_b := EuclideanSpace.single b 1 ∈ ℝ^{n+1}, and all measures are Lebesgue measure.",
+  "lean_statement": "∀ (P n : ℕ) (L : NNReal) (G : Euclid n → Euclid P) (H : Euclid (n + 1) → Euclid P) (A : Set (Euclid n)) (w : Euclid n → ℤ) (ω : TestFormOn (univ : Set (Euclid P)) (n + 1)) (η : DifferentialForm (Euclid P) n), LipschitzWith L H → MeasurableSet A → Measurable w → IntegrableOn (fun u => (w u : ℝ)) A → (∀ z : Euclid (n + 1), WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 → (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A → H z = WithLp.ofLp z 0 • G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) ∧ (fun b => fderiv ℝ H z (EuclideanSpace.single b 1)) = Fin.cons (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) (fun a => WithLp.ofLp z 0 • fderiv ℝ G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) (EuclideanSpace.single a 1))) → (∀ u ∈ A, η (G u) = ∫ t in (0 : ℝ)..1, t ^ n • ((ω : DifferentialForm (Euclid P) (n + 1)) (t • G u)).curryLeft (G u)) → ∫ u in A, (w u : ℝ) * η (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) = ∫ z in {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A}, (w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ) * (ω : DifferentialForm (Euclid P) (n + 1)) (H z) (fun b => fderiv ℝ H z (EuclideanSpace.single b 1))",
+  "lean_name": "dimred_cs_sos_cfs_cp_piece_action",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.pullback_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.cyl_fubini-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-36d21f0b90-a1",
+      "result_commit": "8597f3f04cb72a70e4b11d91699ec1f9f45dfc0f",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.pullback_integrable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-c728da6cee-a1",
+      "result_commit": "ed778d442d1b72dff54c498f15fa5d5bac2d6f0f",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-e2ded5a465-a1"
+}
