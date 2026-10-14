@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "10103b9760dbcfa07bf84c3150a452366d49215e9f5d8223fc6e6badf55549b4",
+  "git_delta": {
+    "base_commit": "8a726a7d7f2ad88e8940893d494453bafeca523c",
+    "candidate_commit": "7e15fe6177015a9444dd9a61fa02419e31124478",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_imp_regular_partition",
+    "diff_sha256": "d2320061b8d1fbd8302a5d63cb5e3fe9e0ee2ee215b8a58b7655f01d6967872a",
+    "source_sha256": "b5760b18e0bd24e96b2aedacd38a33782a6424f683c66241c27ea4dd76332135",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_imp_regular_partition",
+      "statement": "∀ (k N' : ℕ) (H : Euclid k → Euclid N') (B : Set (Euclid k)), MeasurableSet B → ∃ (A : ℕ → Set (Euclid k)) (κ : ℕ → ℝ), (∀ l, MeasurableSet (A l)) ∧ (∀ l, A l ⊆ B) ∧ Pairwise (fun l l' => Disjoint (A l) (A l')) ∧ (∀ l, 0 < κ l) ∧ (∀ l, ∀ a ∈ A l, ∀ a' ∈ A l, κ l * ‖a - a'‖ ≤ ‖H a - H a'‖) ∧ (∀ l, ∀ a ∈ A l, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) ∧ ∀ u ∈ B, DifferentiableAt ℝ H u → Injective (fderiv ℝ H u) → ∃ l, u ∈ A l",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
