@@ -6563,6 +6563,83 @@ theorem Submission.cbr_isIntegerMultiplicity_of_local : (∀ (P n : ℕ) (U : Se
       rw [hset E ω hE, Measure.restrict_zero, integral_zero_measure, add_zero]
   exact ⟨ball x r, R, isOpen_ball, mem_ball_self hr, hB, hrestr.trans hRB, hae⟩
 
+/-- **Simon Ch. 6, 8.2 for `n = 0`** (the case the book calls trivial): a weak limit of integer
+multiplicity `0`-currents with `supⱼ M_W(Tⱼ) < ∞` for `W ⊂⊂ U` is integer multiplicity.  The
+hypotheses are (REP), (MR) and (IMC) of `Submission.cbr_isIntegerMultiplicity_of_local`.  By lower
+semicontinuity of mass `T` has locally finite mass.  For `x₀ ∈ U` and `B = B_{2r}(x₀) ⊂⊂ U`, each
+`Tⱼ` is a point sum `Σₗ w_{j,l}⟨ω(x_{j,l})⟩` on `B` with `Σₗ |w_{j,l}| ≤ M_B(Tⱼ) < C`
+(`Submission.cbrz_imrep_zero_local_point_sum` and (MR)).  On `B_r(x₀)` the weak limit is again
+a finite integer point sum (`Submission.cbrz_point_sum_limit`), hence integer multiplicity
+(`Submission.cbrz_isIntegerMultiplicity_point_sum`), and these local representations glue. -/
+theorem Submission.cbr_closure_degree_zero : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U 0) (T : GeometricCurrentOn U 0), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T := by
+  intro hREP hMR hIMC P U Ts T hU hTs hbound hconv
+  -- Step 7: by part (1) of `cbr_isIntegerMultiplicity_of_local` it suffices that `T` has
+  -- locally finite mass and is integer multiplicity near each point of `U`
+  refine (Submission.cbr_isIntegerMultiplicity_of_local hREP hMR hIMC P 0 U T hU).1 ?_ ?_
+  · -- Step 2: `M_W(T) ≤ liminf_j M_W(T_j) ≤ sup_j (M_W(T_j) + M_W(∂T_j)) < ∞`
+    intro W hW hWU
+    refine lt_of_le_of_lt ?_ (hbound W hW hWU)
+    calc T.massOn W ≤ liminf (fun j => (Ts j).massOn W) atTop := hconv.massOn_le_liminf W
+      _ ≤ limsup (fun j => (Ts j).massOn W) atTop := liminf_le_limsup
+      _ ≤ ⨆ j, (Ts j).massOn W := limsup_le_iSup
+      _ ≤ ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) := iSup_mono fun j => le_self_add
+  · -- Step 3: `B_r(x₀) ⊆ U` and `B = B_{2r}(x₀) ⊂⊂ U` for `r = ε/3`, `B_ε(x₀) ⊆ U`
+    intro x₀ hx₀
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x₀ hx₀
+    have hr : 0 < ε / 3 := by positivity
+    have hBU : ball x₀ (ε / 3) ⊆ U := (ball_subset_ball (by linarith)).trans hεU
+    refine ⟨ε / 3, hr, hBU, ?_⟩
+    have hBcc : CompactlyContained (ball x₀ (2 * (ε / 3))) U := by
+      refine ⟨(isCompact_closedBall x₀ (2 * (ε / 3))).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall, ?_⟩
+      exact closure_ball_subset_closedBall.trans
+        ((closedBall_subset_ball (by linarith)).trans hεU)
+    -- `sup_j M_B(T_j) < C`
+    obtain ⟨C, hC⟩ := ENNReal.exists_nat_gt (hbound _ isOpen_ball hBcc).ne
+    -- each `T_j` is a sum of integer-weighted point masses on `B` of total weight `≤ M_B(T_j)`
+    choose R hR using hTs
+    choose N w x hxB hw0 hmass hrep using fun j =>
+      Submission.cbrz_imrep_zero_local_point_sum P U _ (R j) (Ts j) (hR j) hBcc
+    have hCb : ∀ j, (∑ l ∈ Finset.range (N j), (w j l).natAbs) ≤ C := by
+      intro j
+      have h1 : (∑ l ∈ Finset.range (N j), ((w j l).natAbs : ℝ≥0∞)) < C := by
+        calc (∑ l ∈ Finset.range (N j), ((w j l).natAbs : ℝ≥0∞))
+            ≤ (R j).measure (ball x₀ (2 * (ε / 3))) := hmass j
+          _ = (Ts j).massOn (ball x₀ (2 * (ε / 3))) :=
+            (hMR P 0 U (Ts j) (R j) hU (hR j) _ isOpen_ball).symm
+          _ ≤ (Ts j).massOn (ball x₀ (2 * (ε / 3))) +
+              boundaryMassOn (Ts j) (ball x₀ (2 * (ε / 3))) := le_self_add
+          _ ≤ ⨆ i, ((Ts i).massOn (ball x₀ (2 * (ε / 3))) +
+              boundaryMassOn (Ts i) (ball x₀ (2 * (ε / 3)))) :=
+            le_iSup (fun i => ((Ts i).massOn (ball x₀ (2 * (ε / 3))) +
+              boundaryMassOn (Ts i) (ball x₀ (2 * (ε / 3))))) j
+          _ < C := hC
+      have h2 : ((∑ l ∈ Finset.range (N j), (w j l).natAbs : ℕ) : ℝ≥0∞) < C := by
+        push_cast
+        exact h1
+      exact_mod_cast h2.le
+    -- Steps 4–5: on `B_r(x₀)` the weak limit `T` is again a finite integer point sum
+    obtain ⟨M, v, y, -, hlim⟩ := Submission.cbrz_point_sum_limit P (closedBall x₀ (2 * (ε / 3)))
+      C N w x (TestFormOn (ball x₀ (ε / 3)) 0)
+      (fun ω z => (ω : DifferentialForm (Euclid P) 0) z (fun i => i.elim0))
+      (fun ω => T.restrictDomain hBU ω) (isCompact_closedBall _ _)
+      (fun j l hl => ball_subset_closedBall (hxB j l hl)) hw0 hCb
+      (fun ω => by
+        have hω := ω.property.1.1
+        unfold IsSmoothForm at hω
+        exact hω.continuous.eval_const _)
+      (fun ω => by
+        have hsupp : tsupport ((testFormOnInclusion hBU 0 ω : TestFormOn U 0) :
+            DifferentialForm (Euclid P) 0) ⊆ ball x₀ (2 * (ε / 3)) := by
+          rw [testFormOnInclusion_coe]
+          exact ω.property.2.trans (ball_subset_ball (by linarith))
+        simp only [GeometricCurrentOn.restrictDomain_apply]
+        refine (hconv (testFormOnInclusion hBU 0 ω)).congr fun j => ?_
+        rw [hrep j _ hsupp]
+        rfl)
+    -- Step 6: a finite integer point sum is integer multiplicity
+    exact Submission.cbrz_isIntegerMultiplicity_point_sum P _ _ M v y hlim
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
