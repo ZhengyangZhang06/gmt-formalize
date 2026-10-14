@@ -1479,6 +1479,56 @@ theorem Submission.dor_lmbsf_pst_level_set_chart_cover : ∀ (n : ℕ) (W : Set 
     obtain ⟨_, ⟨k, rfl⟩, hyk⟩ := hT ⟨y, hyW, hdF, hFy⟩
     obtain ⟨z, hz, hzy⟩ := hcov (e k) ⟨hyk, hFy.trans (e k).2.2.2.symm⟩
     exact ⟨k, z, hz, hzy⟩
+/-- **Approximate tangent spaces of compact `C¹` patches pass to `S`** (Simon Ch. 3, 1.4; the
+locality step (TL) applied patch by patch).  Assume (TL).  Let `S` be Borel with `Hⁿ(S) < ∞`, and
+for each `k` let `χ_k` be `C¹` on the open `D_k ⊇ K_k = B̄_{ρ_k}(c_k)` and injective on `K_k`.  The
+patch `Σ_k = χ_k(K_k)` is compact with `Hⁿ(Σ_k) < ∞` (Lipschitz image of a compact ball), and
+`A_k = S ∩ χ_k(B_{ρ_k}(c_k))` is Borel (Lusin–Souslin) with `A_k ⊆ Σ_k` and `A_k ⊆ S`.  Two
+applications of (TL) with `U = ℝᴾ` give, `Hⁿ`-a.e. on `A_k`, `Σ_k`-tangent `Q` ⇒ `A_k`-tangent `Q`
+⇒ `S`-tangent `Q`; intersecting over the countably many `k` gives the claim `Hⁿ`-a.e. on `S`. -/
+theorem Submission.dor_lmbsf_pst_patch_tangent_transfer : (∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (S : Set (Euclid P)) (D : ℕ → Set (Euclid n)) (χ : ℕ → Euclid n → Euclid P) (c : ℕ → Euclid n) (ρ : ℕ → ℝ), MeasurableSet S → μHE[n] S ≠ ∞ → (∀ k, IsOpen (D k)) → (∀ k, ContDiffOn ℝ 1 (χ k) (D k)) → (∀ k, closedBall (c k) (ρ k) ⊆ D k) → (∀ k, InjOn (χ k) (closedBall (c k) (ρ k))) → ∀ᵐ x ∂(μHE[n].restrict S), ∀ k, ∀ z ∈ ball (c k) (ρ k), χ k z = x → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (χ k '' closedBall (c k) (ρ k)) x Q → HasApproximateTangentSpaceAt n S x Q := by
+  intro TL P n S D χ c ρ hS hSfin hD hχ hKD hinj
+  -- Steps 1–7, for each patch `k`: `Hⁿ⌞S`-a.e., if `x ∈ A_k = S ∩ χ_k(B_k)`, every approximate
+  -- tangent space of `Σ_k = χ_k(K_k)` at `x` is one of `S`
+  have hpatch : ∀ k, ∀ᵐ x ∂(μHE[n].restrict S), x ∈ S ∩ χ k '' ball (c k) (ρ k) →
+      ∀ Q : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt n (χ k '' closedBall (c k) (ρ k)) x Q →
+          HasApproximateTangentSpaceAt n S x Q := by
+    intro k
+    -- Step 1, `Σ_k` is compact, hence Borel
+    have hχK : ContinuousOn (χ k) (closedBall (c k) (ρ k)) :=
+      ((hχ k).mono (hKD k)).continuousOn
+    have hsig : MeasurableSet (χ k '' closedBall (c k) (ρ k)) :=
+      ((isCompact_closedBall _ _).image_of_continuousOn hχK).isClosed.measurableSet
+    -- Step 2, `χ_k` is `L`-Lipschitz on the convex compact `K_k`, so `Hⁿ(Σ_k) ≤ Lⁿ Hⁿ(K_k) < ∞`
+    obtain ⟨L, hL⟩ := ((hχ k).mono (hKD k)).exists_lipschitzOnWith one_ne_zero
+      (convex_closedBall _ _) (isCompact_closedBall _ _)
+    have hsigfin : μHE[n] (χ k '' closedBall (c k) (ρ k)) ≠ ∞ := by
+      refine ne_top_of_le_ne_top (ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top) ?_)
+        (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n hL)
+      rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      exact (isCompact_closedBall _ _).measure_lt_top.ne
+    -- Step 3, `A_k` is Borel (Lusin–Souslin for the injective continuous `χ_k` on `B_k`)
+    have hA : MeasurableSet (S ∩ χ k '' ball (c k) (ρ k)) :=
+      hS.inter (measurableSet_ball.image_of_continuousOn_injOn
+        (hχK.mono ball_subset_closedBall) ((hinj k).mono ball_subset_closedBall))
+    -- Steps 4–6, `A_k ⊆ Σ_k` and `A_k ⊆ S`, and (TL) applies to both pairs with `U = ℝᴾ`
+    have h1 := TL P n univ _ _ isOpen_univ hA hsig
+      (inter_subset_right.trans (image_mono ball_subset_closedBall)) (subset_univ _)
+      fun K _ _ => ne_top_of_le_ne_top hsigfin (measure_mono inter_subset_left)
+    have h2 := TL P n univ _ _ isOpen_univ hA hS inter_subset_left (subset_univ _)
+      fun K _ _ => ne_top_of_le_ne_top hSfin (measure_mono inter_subset_left)
+    -- Step 7, `Hⁿ⌞A_k`-a.e., `Σ_k`-tangent `Q` ⇒ `A_k`-tangent `Q` ⇒ `S`-tangent `Q`
+    have h3 : ∀ᵐ x ∂(μHE[n].restrict (S ∩ χ k '' ball (c k) (ρ k))),
+        ∀ Q : Submodule ℝ (Euclid P),
+          HasApproximateTangentSpaceAt n (χ k '' closedBall (c k) (ρ k)) x Q →
+            HasApproximateTangentSpaceAt n S x Q := by
+      filter_upwards [h1, h2] with x hx1 hx2 Q hQ
+      exact (hx2 Q).2 ((hx1 Q).1 hQ)
+    exact ae_restrict_of_ae ((ae_restrict_iff' hA).1 h3)
+  -- Steps 8–9, intersect over the countably many `k`; `x = χ_k(z)` with `z ∈ B_k` lies in `A_k`
+  filter_upwards [ae_all_iff.2 hpatch, ae_restrict_mem hS] with x hx hxS k z hz hzx Q hQ
+  exact hx k ⟨hxS, z, hz, hzx⟩ Q hQ
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
