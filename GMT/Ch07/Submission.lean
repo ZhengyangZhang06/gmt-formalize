@@ -40044,4 +40044,134 @@ theorem Submission.cmc_closure_and_boundary_rectifiability : (∀ (P d : ℕ) (U
         Submission.dtc_vanish_off_support d ih (hBR d ih)
   exact ⟨fun P d => hCL d P, fun P d => hBR d (hCL d) P⟩
 
+/-- **Simon Ch. 6, Theorem 7.2 ("only if")**: flat convergence of a weakly convergent sequence of
+integer multiplicity currents.  Let `U ⊆ ℝᴾ` be open and `Tⱼ, T ∈ 𝒟ₙ(U)`, `n = m + 1`, integer
+multiplicity with `sup_j (M_W(Tⱼ) + M_W(∂Tⱼ)) < ∞` for every open `W ⊂⊂ U` and `Tⱼ ⇀ T` in `U`.
+Then for every open `W ⊂⊂ U` there are integer multiplicity `Rⱼ ∈ 𝒟ₙ₊₁(U)`, `Sⱼ ∈ 𝒟ₙ(U)` with
+`T − Tⱼ − Sⱼ = ∂Rⱼ` and `M_W(Rⱼ) + M_W(Sⱼ) → 0`.
+
+Let `d_W(X)` be the infimum of `M_W(R) + M_W(S)` over integer multiplicity `R`, `S` with
+`X − S = ∂R`.  The pair `R = 0`, `S = T − Tⱼ` is admissible for `X = T − Tⱼ`, so it suffices that
+`d_W(T − Tⱼ) → 0`, and by the subsequence principle that every subsequence `T_{ν(j)}` has a
+further subsequence along which `d_W(T − T_{ν(j)}) → 0`.
+* Localization near `closure W` (`cmc_fc_localize`) gives a subsequence `φ` and integer
+  multiplicity `T'ⱼ ⇀ T'`, supported in one compact `K ⊆ U`, with `M(T'ⱼ), M(∂T'ⱼ) ≤ Λ`, that
+  agree with `T_{ν(φ(j))}` and `T` on forms supported in `W`.
+* By the deformation theorem these `T'ⱼ` are totally bounded for the integral flat distance
+  (`cmc_fc_total_bounded`), so a subsequence `T'_{ψ(r)}` is flat-Cauchy (`cmc_fc_cauchy_subseq`);
+  summing it against its weak limit gives `T' − T'_{ψ(ℓ)} − S' = ∂R'` with
+  `M(R') + M(S') ≤ 2·2^{−ℓ}` (`cmc_fc_series_limit`, the closure theorem replacing Simon's 3.13).
+* `S♯ = (T − T_{ν(φ(ψ(ℓ)))}) − ((T' − T'_{ψ(ℓ)}) − S')` is integer multiplicity,
+  `T − T_{ν(φ(ψ(ℓ)))} − S♯ = ∂R'`, and `S♯ = S'` on forms supported in `W`, so
+  `d_W(T − T_{ν(φ(ψ(ℓ)))}) ≤ M(R') + M(S') ≤ 2·2^{−ℓ}`. -/
+theorem Submission.cmc_flat_convergence : ∀ (P m : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U (m + 1)) (T : GeometricCurrentOn U (m + 1)), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → IsIntegerMultiplicity T → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + (Ts j).boundary.massOn W) < ∞) → WeaklyConvergesOn Ts T → ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ∃ (R : ℕ → GeometricCurrentOn U (m + 2)) (S : ℕ → GeometricCurrentOn U (m + 1)), (∀ j, IsIntegerMultiplicity (R j) ∧ IsIntegerMultiplicity (S j) ∧ T - Ts j - S j = (R j).boundary) ∧ Tendsto (fun j => (R j).massOn W + (S j).massOn W) atTop (𝓝 0) := by
+  intro P m U Ts T hU hTs hT hbd hconv W _ hWU
+  -- (IR), (IS), (IO) of the integer multiplicity calculus, (CL), (BR) and (ME)
+  obtain ⟨-, hIR, hIS, hIO⟩ := Submission.cmc_imRep_locality_restrict_sub
+  obtain ⟨hCL, hBR⟩ := Submission.cmc_closure_and_boundary_rectifiability
+  have hME := Submission.cmc_massOn_eq_imRep_measure
+  have hWU' : W ⊆ U := subset_closure.trans hWU.2
+  -- the zero current is integer multiplicity: `0 = τ(∅, 0, 0)`
+  have hIM0 : IsIntegerMultiplicity (0 : GeometricCurrentOn U (m + 2)) := by
+    refine ⟨{ carrier := ∅
+              mult := fun _ => 0
+              orient := fun _ => 0
+              measurableSet_carrier := MeasurableSet.empty
+              carrier_subset := empty_subset U
+              rectifiable :=
+                Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+              measurable_mult := measurable_const
+              mult_pos := fun x hx => absurd hx (notMem_empty x)
+              locallyIntegrable_mult := fun K _ _ => by simp
+              aestronglyMeasurable_orient := aestronglyMeasurable_const
+              orients := by simp }, fun ω => ?_⟩
+    simp [IMRep.action]
+  -- every subsequence `T_{ν(j)}` has a further subsequence `T_{ν(μ(ℓ))}` with
+  -- `T − T_{ν(μ(ℓ))} − S = ∂R`, `R`, `S` integer multiplicity, `M_W(R) + M_W(S) ≤ 2·2^{−ℓ}`
+  have hsub : ∀ ν : ℕ → ℕ, Tendsto ν atTop atTop → ∃ μ : ℕ → ℕ, ∀ ℓ,
+      ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)),
+        (IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ T - Ts (ν (μ ℓ)) - S = R.boundary) ∧
+          R.massOn W + S.massOn W ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ := by
+    intro ν hν
+    -- `T_{ν(j)}` inherits the hypotheses
+    have hbdν : ∀ V : Set (Euclid P), IsOpen V → CompactlyContained V U →
+        ⨆ j, ((Ts (ν j)).massOn V + (Ts (ν j)).boundary.massOn V) < ∞ := fun V hV hVU =>
+      (iSup_comp_le (fun j => (Ts j).massOn V + (Ts j).boundary.massOn V) ν).trans_lt
+        (hbd V hV hVU)
+    have hconvν : WeaklyConvergesOn (fun j => Ts (ν j)) T := fun ω => (hconv ω).comp hν
+    -- localization: `T'ⱼ = X j ⇀ T' = X'`, supported in `K`, with `M(T'ⱼ), M(∂T'ⱼ) ≤ Λ`, equal
+    -- to `T_{ν(φ(j))}` and `T` on forms supported in `W`
+    obtain ⟨φ, K, Λ, X, X', -, hK, hKU, hX, hX', hXK, hXΛ, hXconv, hXW, hX'W⟩ :=
+      Submission.cmc_fc_localize Submission.cmc_slice_mass_bounds hBR hIR hIO hME P m U
+        (fun j => Ts (ν j)) T W hU (fun j => hTs (ν j)) hT hbdν hconvν hWU
+    -- total boundedness (deformation theorem) and a flat-Cauchy subsequence `X ∘ ψ`
+    obtain ⟨ψ, hψ, hcauchy⟩ := Submission.cmc_fc_cauchy_subseq hIS P m U X hU fun η hη => by
+      obtain ⟨𝒬, h𝒬, hnet⟩ := Submission.cmc_fc_total_bounded Submission.cmc_deformation_theorem
+        hBR hIR hIS hME P m U K Λ η hU hK hKU hη
+      exact ⟨𝒬, h𝒬, fun j => hnet (X j) (hX j) (hXK j) (hXΛ j).1 (hXΛ j).2⟩
+    choose Rc Sc hc using hcauchy
+    -- summation against the weak limit: `X' − X (ψ ℓ) − S' = ∂R'`, `M(R') + M(S') ≤ 2·2^{−ℓ}`
+    have hlim := Submission.cmc_fc_series_limit hCL hIS P m U (fun r => X (ψ r)) X' Λ Rc Sc hU
+      (fun ω => (hXconv ω).comp hψ.tendsto_atTop) (fun r => hXΛ (ψ r)) hc
+    refine ⟨fun ℓ => φ (ψ ℓ), fun ℓ => ?_⟩
+    obtain ⟨R', S', hR', hS', hRS', hM'⟩ := hlim ℓ
+    -- back to `T − T_{ν(φ(ψ(ℓ)))}`, with `S♯ = (T − T_{ν(φ(ψ(ℓ)))}) − ((X' − X (ψ ℓ)) − S')`
+    refine ⟨R', (T - Ts (ν (φ (ψ ℓ)))) - ((X' - X (ψ ℓ)) - S'), ⟨hR', ?_, ?_⟩, ?_⟩
+    · exact hIS P (m + 1) U _ _ hU (hIS P (m + 1) U _ _ hU hT (hTs _))
+        (hIS P (m + 1) U _ _ hU (hIS P (m + 1) U _ _ hU hX' (hX (ψ ℓ))) hS')
+    · rw [← hRS']
+      ext ω
+      show T ω - Ts (ν (φ (ψ ℓ))) ω - (T ω - Ts (ν (φ (ψ ℓ))) ω - (X' ω - X (ψ ℓ) ω - S' ω)) =
+        X' ω - X (ψ ℓ) ω - S' ω
+      ring
+    · -- `S♯ = S'` on forms supported in `W`, so `M_W(S♯) = M_W(S') ≤ M(S')`
+      have hSW : ((T - Ts (ν (φ (ψ ℓ)))) - ((X' - X (ψ ℓ)) - S')).massOn W = S'.massOn W := by
+        refine congrArg sSup (Set.image_congr fun ω hω => ?_)
+        have h1 : X' ω = T ω := hX'W ω hω.1
+        have h2 : X (ψ ℓ) ω = Ts (ν (φ (ψ ℓ))) ω := hXW (ψ ℓ) ω hω.1
+        show ENNReal.ofReal (T ω - Ts (ν (φ (ψ ℓ))) ω - (X' ω - X (ψ ℓ) ω - S' ω)) =
+          ENNReal.ofReal (S' ω)
+        rw [h1, h2, sub_sub_cancel]
+      rw [hSW]
+      exact (add_le_add (R'.massOn_mono hWU') (S'.massOn_mono hWU')).trans hM'
+  -- `d_W(T − Tⱼ) → 0` by the subsequence principle
+  let d : ℕ → ℝ≥0∞ := fun j => ⨅ (R : GeometricCurrentOn U (m + 2))
+    (S : GeometricCurrentOn U (m + 1))
+    (_ : IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ T - Ts j - S = R.boundary),
+      R.massOn W + S.massOn W
+  have hgeom : Tendsto (fun ℓ : ℕ => (2⁻¹ : ℝ≥0∞) ^ ℓ) atTop (𝓝 0) :=
+    ENNReal.tendsto_pow_atTop_nhds_zero_iff.2 (ENNReal.inv_lt_one.2 ENNReal.one_lt_two)
+  have hd : Tendsto d atTop (𝓝 0) := by
+    refine tendsto_of_subseq_tendsto fun ν hν => ?_
+    obtain ⟨μ, hμ⟩ := hsub ν hν
+    have h2 := ENNReal.Tendsto.const_mul hgeom (Or.inr (ENNReal.ofNat_ne_top : (2 : ℝ≥0∞) ≠ ∞))
+    rw [mul_zero] at h2
+    refine ⟨μ, tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h2
+      (fun ℓ => zero_le) fun ℓ => ?_⟩
+    obtain ⟨R, S, hRS, hle⟩ := hμ ℓ
+    exact iInf_le_of_le R (iInf_le_of_le S (iInf_le_of_le hRS hle))
+  -- for every `j` an admissible pair with `M_W(Rⱼ) + M_W(Sⱼ) ≤ d_W(T − Tⱼ) + 2^{−j}`
+  have hpair : ∀ j, ∃ (R : GeometricCurrentOn U (m + 2)) (S : GeometricCurrentOn U (m + 1)),
+      (IsIntegerMultiplicity R ∧ IsIntegerMultiplicity S ∧ T - Ts j - S = R.boundary) ∧
+        R.massOn W + S.massOn W ≤ d j + (2⁻¹ : ℝ≥0∞) ^ j := by
+    intro j
+    by_cases hdj : d j = ∞
+    · -- the pair `R = 0`, `S = T − Tⱼ`
+      refine ⟨0, T - Ts j, ⟨hIM0, hIS P (m + 1) U T (Ts j) hU hT (hTs j), ?_⟩, ?_⟩
+      · ext ω
+        show T ω - Ts j ω - (T ω - Ts j ω) = (0 : GeometricCurrentOn U (m + 2)).boundary ω
+        simp
+      · rw [hdj, top_add]
+        exact le_top
+    · obtain ⟨R, hR⟩ :=
+        iInf_lt_iff.1 (ENNReal.lt_add_right (b := (2⁻¹ : ℝ≥0∞) ^ j) hdj (by simp))
+      obtain ⟨S, hS⟩ := iInf_lt_iff.1 hR
+      obtain ⟨hRS, hlt⟩ := iInf_lt_iff.1 hS
+      exact ⟨R, S, hRS, hlt.le⟩
+  choose R S hRS hle using hpair
+  have hdg := hd.add hgeom
+  rw [add_zero] at hdg
+  exact ⟨R, S, hRS, tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hdg
+    (fun j => zero_le) hle⟩
+
 end GMT.Ch07
