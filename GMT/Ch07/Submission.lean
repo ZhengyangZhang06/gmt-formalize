@@ -2780,6 +2780,97 @@ theorem Submission.codim1_hcp_lipschitz_smooth_approx : ∀ (P m : ℕ) (M : Set
       simpa using this
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim (fun k => zero_le) hint
 
+/-- **Tangent projection of a hypersurface of `A₀`** (Simon Ch. 2, §4).  Let `M ⊆ A₀` be an
+embedded `C¹` `m`-dimensional submanifold of `ℝᴾ`, `dim A₀ = m + 1`, and let `ν(x) ∈ A₀` be a unit
+vector orthogonal to `T_xM` for each `x ∈ M`.  Then the orthogonal projection `P_x` onto
+`span T_xM` is `P_x u = Πu − (ν(x)·u)ν(x)`, `Π` the orthogonal projection onto `A₀`, so
+`x ↦ P_x u` is continuous on `M` when `ν` is.  `T_xM ⊆ A₀`, since the slopes of a `C¹` curve in
+`M ⊆ A₀` lie in the closed subspace `A₀`; with `ν(x) ⊥ T_xM` this gives
+`span T_xM ≤ H = (ℝν(x))ᗮ ∩ A₀`, and `dim H = m`.  A chart `ψ` with `ψ(v₀) = x` has
+`T_xM = Dψ(v₀)(ℝᵐ)` with `Dψ(v₀)` injective, so `dim span T_xM = m` and `span T_xM = H`.  Finally
+`p = Πu − (ν(x)·u)ν(x)` lies in `H` and `u − p ⊥ H`, so `P_x u = p`. -/
+theorem Submission.codim1_hcp_stab_tangent_projection : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → (∀ x ∈ M, ∀ u : Euclid P, (Submodule.span ℝ (tangentSpace M x)).starProjection u = A₀.starProjection u - inner ℝ (ν x) u • ν x) ∧ (ContinuousOn ν M → ∀ u : Euclid P, ContinuousOn (fun x => (Submodule.span ℝ (tangentSpace M x)).starProjection u) M) := by
+  intro P m A₀ M ν hdim hMA hM hν
+  have hproj : ∀ x ∈ M, ∀ u : Euclid P, (Submodule.span ℝ (tangentSpace M x)).starProjection u =
+      A₀.starProjection u - inner ℝ (ν x) u • ν x := by
+    intro x hx u
+    obtain ⟨hνA, hν1, hνT⟩ := hν x hx
+    -- step 1: `T_xM ⊆ A₀`, as the slopes `t⁻¹(γ(t) − γ(0))` of a curve `γ` in `M ⊆ A₀` lie in
+    -- the closed subspace `A₀`
+    have hTA : tangentSpace M x ⊆ A₀ := by
+      rintro v ⟨γ, -, hγM, -, hγv⟩
+      have h0 : (0 : ℝ) ∈ Ioo (-1) 1 := ⟨by norm_num, one_pos⟩
+      refine A₀.closed_of_finiteDimensional.mem_of_tendsto hγv.tendsto_slope_zero ?_
+      filter_upwards [nhdsWithin_le_nhds (Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) one_pos)]
+        with t ht
+      exact A₀.smul_mem _ (A₀.sub_mem (hMA (hγM (by rwa [zero_add]))) (hMA (hγM h0)))
+    -- step 2: a chart `ψ` with `ψ(v₀) = x` gives `T_xM = Dψ(v₀)(ℝᵐ)`, `Dψ(v₀)` injective, so
+    -- `span T_xM = Dψ(v₀)(ℝᵐ)` has dimension `m`
+    obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hinj, hψV, hproper, hDψ⟩ := hM x hx
+    obtain ⟨v₀, hv₀, hxv⟩ : x ∈ ψ '' V := by
+      rw [hψV]
+      exact ⟨hxW, hx⟩
+    have htan : tangentSpace M x = Set.range (fderiv ℝ ψ v₀) := by
+      rw [← hxv]
+      exact Submission.chart_tangentSpace_eq_range_fderiv P m 1 M W V ψ v₀ le_rfl hV hW hψ hinj
+        hψV hproper hDψ hv₀
+    have hspan : Submodule.span ℝ (tangentSpace M x) =
+        LinearMap.range ((fderiv ℝ ψ v₀ : Euclid m →L[ℝ] Euclid P) : Euclid m →ₗ[ℝ] Euclid P) := by
+      apply le_antisymm
+      · rw [Submodule.span_le, htan]
+        rintro _ ⟨y, rfl⟩
+        exact ⟨y, rfl⟩
+      · rintro _ ⟨y, rfl⟩
+        apply Submodule.subset_span
+        rw [htan]
+        exact ⟨y, rfl⟩
+    have hdimS : Module.finrank ℝ (Submodule.span ℝ (tangentSpace M x)) = m := by
+      rw [hspan, LinearMap.finrank_range_of_inj (hDψ v₀ hv₀)]
+      exact finrank_euclideanSpace_fin
+    -- step 3: `span T_xM = H = (ℝν(x))ᗮ ⊓ A₀`: `span T_xM ≤ H`, and `dim H = (m + 1) − 1 = m`
+    -- as `ℝν(x)` is a line in `A₀`
+    have hν0 : ν x ≠ 0 := by
+      intro h
+      rw [h, norm_zero] at hν1
+      exact zero_ne_one hν1
+    have hdimH : Module.finrank ℝ ((ℝ ∙ ν x)ᗮ ⊓ A₀ : Submodule ℝ (Euclid P)) = m := by
+      have h := Submodule.finrank_add_inf_finrank_orthogonal
+        ((Submodule.span_singleton_le_iff_mem _ _).2 hνA)
+      rw [finrank_span_singleton hν0, hdim] at h
+      omega
+    have hSH : Submodule.span ℝ (tangentSpace M x) = (ℝ ∙ ν x)ᗮ ⊓ A₀ := by
+      refine Submodule.eq_of_le_of_finrank_eq ?_ (hdimS.trans hdimH.symm)
+      rw [Submodule.span_le]
+      intro v hv
+      exact Submodule.mem_inf.2
+        ⟨Submodule.mem_orthogonal_singleton_iff_inner_right.2 (hνT v hv), hTA hv⟩
+    -- step 4: `p = Πu − (ν(x)·u)ν(x)` lies in `H`, and `u − p = (u − Πu) + (ν(x)·u)ν(x) ⊥ H`
+    -- since `u − Πu ∈ A₀ᗮ`
+    have hperp : u - A₀.starProjection u ∈ A₀ᗮ := A₀.sub_starProjection_mem_orthogonal u
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero ?_ ?_
+    · rw [hSH]
+      refine Submodule.mem_inf.2 ⟨?_, A₀.sub_mem (A₀.starProjection_apply_mem u)
+        (A₀.smul_mem _ hνA)⟩
+      -- `ν(x)·Πu = ν(x)·u` and `ν(x)·ν(x) = 1`
+      have h := Submodule.inner_right_of_mem_orthogonal hνA hperp
+      rw [inner_sub_right] at h
+      rw [Submodule.mem_orthogonal_singleton_iff_inner_right, inner_sub_right,
+        real_inner_smul_right, real_inner_self_eq_norm_sq, hν1, one_pow, mul_one]
+      linarith
+    · intro w hw
+      rw [hSH, Submodule.mem_inf, Submodule.mem_orthogonal_singleton_iff_inner_right] at hw
+      have h : u - (A₀.starProjection u - inner ℝ (ν x) u • ν x) =
+          (u - A₀.starProjection u) + inner ℝ (ν x) u • ν x := by
+        abel
+      rw [h, inner_add_left, real_inner_smul_left,
+        Submodule.inner_left_of_mem_orthogonal hw.2 hperp, hw.1, mul_zero, add_zero]
+  -- step 5: `x ↦ Πu − (ν(x)·u)ν(x)` is continuous on `M` when `ν` is, and equals `x ↦ P_x u`
+  -- there
+  refine ⟨hproj, fun hνc u => ?_⟩
+  have hc : ContinuousOn (fun x => A₀.starProjection u - inner ℝ (ν x) u • ν x) M :=
+    continuousOn_const.fun_sub ((hνc.inner continuousOn_const).fun_smul hνc)
+  exact hc.congr fun x hx => hproj x hx u
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
