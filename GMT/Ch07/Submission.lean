@@ -1230,6 +1230,116 @@ theorem Submission.dor_lmbsf_pc_straightening_cover : ∀ (n : ℕ) (F : Euclid 
     obtain ⟨z, hzT, -⟩ := mem_iUnion₂.mp h1
     exact absurd ⟨z, hzT⟩ hT
 
+/-- **Co-area formula on one straightened patch of a `C¹` chart** (Simon Ch. 2, §6; Ch. 3,
+(2.8)–(2.9)).  Let `ψ : ℝⁿ⁺¹ → ℝᴾ` be `C¹` and injective with injective `Dψ` on the open set `V`,
+`F : ℝⁿ⁺¹ → ℝ` be `C¹`, and `Ψ : ℝⁿ⁺¹ → ℝⁿ⁺¹` be `C¹` and injective with bijective `DΨ` on the
+open set `B`, straightening `F` to the first coordinate: `F(Ψ(w)) = w(0)` on `B`.  Let
+`Z ⊆ V ∩ Ψ(B)` be Borel, with `G(ψ(y)) ∈ Dψ(y)(ℝⁿ⁺¹)` and `⟨G(ψ(y)), Dψ(y)e⟩ = DF(y)e` for
+`y ∈ Z`.  Then for Borel `φ ≥ 0`, `t ↦ ∫_{ψ(Z ∩ F⁻¹(t))} φ dHⁿ` is a.e.-measurable and
+`∫_ℝ ∫_{ψ(Z ∩ F⁻¹(t))} φ dHⁿ dt = ∫_{ψ(Z)} |G| φ dHⁿ⁺¹`.
+On the Borel patch `S = B ∩ Ψ⁻¹(Z)` the map `Φ = ψ ∘ Ψ` is injective, with injective derivative
+`DΦ(w) = Dψ(Ψ(w)) ∘ DΨ(w)`.  Since `F ∘ Ψ` is the first coordinate on `B`,
+`DF(Ψ(w)) ∘ DΨ(w) = (e ↦ e(0))`, so `G(Φ(w)) ∈ DΦ(w)(ℝⁿ⁺¹)` and `⟨G(Φ(w)), DΦ(w)e⟩ = e(0)`.  The
+patch co-area formula applies to `(Φ, S)`, and `Φ(S) = ψ(Z)`,
+`Φ(S ∩ {w(0) = t}) = ψ(Z ∩ F⁻¹(t))`. -/
+theorem Submission.dor_lmbsf_pc_chart_patch_coarea : ∀ (P n : ℕ) (V B Z : Set (Euclid (n + 1))) (ψ : Euclid (n + 1) → Euclid P) (F : Euclid (n + 1) → ℝ) (Ψ : Euclid (n + 1) → Euclid (n + 1)) (G : Euclid P → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → IsOpen B → ContDiffOn ℝ 1 Ψ B → InjOn Ψ B → (∀ w ∈ B, Bijective (fderiv ℝ Ψ w)) → (∀ w ∈ B, F (Ψ w) = w 0) → MeasurableSet Z → Z ⊆ V → Z ⊆ Ψ '' B → (∀ y ∈ Z, G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → ∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t : ℝ => ∫⁻ x in ψ '' (Z ∩ F ⁻¹' {t}), φ x ∂μHE[n]) ∧ ∫⁻ t : ℝ, (∫⁻ x in ψ '' (Z ∩ F ⁻¹' {t}), φ x ∂μHE[n]) = ∫⁻ x in ψ '' Z, ‖G x‖ₑ * φ x ∂μHE[n + 1] := by
+  intro P n V B Z ψ F Ψ G hV hψ hψinj hψreg hF hB hΨ hΨinj hΨbij hFΨ hZ hZV hZB hG φ hφ
+  have hΨd : ∀ w ∈ B, DifferentiableAt ℝ Ψ w := fun w hw =>
+    (hΨ.differentiableOn one_ne_zero w hw).differentiableAt (hB.mem_nhds hw)
+  have hψd : ∀ y ∈ V, DifferentiableAt ℝ ψ y := fun y hy =>
+    (hψ.differentiableOn one_ne_zero y hy).differentiableAt (hV.mem_nhds hy)
+  -- the patch `S = B ∩ Ψ⁻¹(Z)` is Borel: `Ψ` is continuous on the open set `B`
+  set S : Set (Euclid (n + 1)) := B ∩ Ψ ⁻¹' Z with hSdef
+  have hSm : MeasurableSet S := by
+    classical
+    have hpw : Measurable (B.piecewise Ψ (fun _ => 0)) :=
+      hΨ.continuousOn.measurable_piecewise continuousOn_const hB.measurableSet
+    have : S = B ∩ (B.piecewise Ψ (fun _ => 0)) ⁻¹' Z := by
+      ext w
+      constructor
+      · rintro ⟨hw, hwZ⟩
+        exact ⟨hw, by simpa [Set.piecewise_eq_of_mem _ _ _ hw] using hwZ⟩
+      · rintro ⟨hw, hwZ⟩
+        exact ⟨hw, by simpa [Set.piecewise_eq_of_mem _ _ _ hw] using hwZ⟩
+    rw [this]
+    exact hB.measurableSet.inter (hpw hZ)
+  -- `Φ = ψ ∘ Ψ` is differentiable and injective on `S`, with `DΦ(w) = Dψ(Ψ(w)) ∘ DΨ(w)` injective
+  set Φ : Euclid (n + 1) → Euclid P := ψ ∘ Ψ with hΦdef
+  have hSZ : ∀ w ∈ S, Ψ w ∈ Z := fun w hw => hw.2
+  have hΦd : ∀ w ∈ S, DifferentiableAt ℝ Φ w := fun w hw =>
+    (hψd _ (hZV (hSZ w hw))).comp w (hΨd w hw.1)
+  have hΦD : ∀ w ∈ S, fderiv ℝ Φ w = (fderiv ℝ ψ (Ψ w)).comp (fderiv ℝ Ψ w) := fun w hw =>
+    fderiv_comp w (hψd _ (hZV (hSZ w hw))) (hΨd w hw.1)
+  have hΦinjD : ∀ w ∈ S, Injective (fderiv ℝ Φ w) := by
+    intro w hw
+    rw [hΦD w hw]
+    exact (hψreg _ (hZV (hSZ w hw))).comp (hΨbij w hw.1).1
+  have hΦinj : InjOn Φ S := by
+    intro a ha b hb hab
+    exact hΨinj ha.1 hb.1 (hψinj (hZV (hSZ a ha)) (hZV (hSZ b hb)) hab)
+  -- `F ∘ Ψ` is the first coordinate near every `w ∈ B`, so `DF(Ψ(w))(DΨ(w)e) = e(0)`
+  have hDFΨ : ∀ w ∈ B, ∀ e : Euclid (n + 1), fderiv ℝ F (Ψ w) (fderiv ℝ Ψ w e) = e 0 := by
+    intro w hw e
+    have h1 : fderiv ℝ (F ∘ Ψ) w =
+        fderiv ℝ (EuclideanSpace.proj (0 : Fin (n + 1)) : Euclid (n + 1) → ℝ) w := by
+      apply Filter.EventuallyEq.fderiv_eq
+      filter_upwards [hB.mem_nhds hw] with v hv
+      simp [hFΨ v hv]
+    have h2 : fderiv ℝ (F ∘ Ψ) w = (fderiv ℝ F (Ψ w)).comp (fderiv ℝ Ψ w) :=
+      fderiv_comp w ((hF.differentiable one_ne_zero) _) (hΨd w hw)
+    rw [h2, ContinuousLinearMap.fderiv] at h1
+    have := congrArg (fun L : Euclid (n + 1) →L[ℝ] ℝ => L e) h1
+    simpa using this
+  -- the hypotheses on `G` transported to the parametrization `Φ`
+  have hGΦ : ∀ w ∈ S, G (Φ w) ∈ LinearMap.range (fderiv ℝ Φ w : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧
+      ∀ e : Euclid (n + 1), inner ℝ (G (Φ w)) (fderiv ℝ Φ w e) = e 0 := by
+    intro w hw
+    obtain ⟨⟨v, hv⟩, hinner⟩ := hG (Ψ w) (hSZ w hw)
+    refine ⟨?_, ?_⟩
+    · -- `G(Φ(w)) = Dψ(Ψ(w))v` and `v = DΨ(w)u` since `DΨ(w)` is surjective
+      obtain ⟨u, hu⟩ := (hΨbij w hw.1).2 v
+      refine ⟨u, ?_⟩
+      have hv' : fderiv ℝ ψ (Ψ w) v = G (ψ (Ψ w)) := hv
+      change fderiv ℝ Φ w u = G (Φ w)
+      rw [hΦD w hw, ContinuousLinearMap.comp_apply, hu, hv']
+      rfl
+    · intro e
+      rw [hΦD w hw, ContinuousLinearMap.comp_apply]
+      change inner ℝ (G (ψ (Ψ w))) _ = _
+      rw [hinner, hDFΨ w hw.1 e]
+  -- the patch co-area formula for `(Φ, S)`
+  obtain ⟨hmeas, heq⟩ :=
+    Submission.dor_lmbsf_pc_param_coarea P n Φ S G hSm hΦd hΦinjD hΦinj hGΦ φ hφ
+  -- back to the chart: `Φ(S) = ψ(Z)` and `Φ(S ∩ {w(0) = t}) = ψ(Z ∩ F⁻¹(t))`
+  have himg : Φ '' S = ψ '' Z := by
+    rw [hΦdef, image_comp]
+    congr 1
+    ext y
+    constructor
+    · rintro ⟨w, hw, rfl⟩
+      exact hw.2
+    · intro hy
+      obtain ⟨w, hw, rfl⟩ := hZB hy
+      exact ⟨w, ⟨hw, hy⟩, rfl⟩
+  have himgt : ∀ t : ℝ, Φ '' (S ∩ {w | w 0 = t}) = ψ '' (Z ∩ F ⁻¹' {t}) := by
+    intro t
+    rw [hΦdef, image_comp]
+    congr 1
+    ext y
+    constructor
+    · rintro ⟨w, ⟨⟨hwB, hwZ⟩, hwt⟩, rfl⟩
+      refine ⟨hwZ, ?_⟩
+      simp only [mem_preimage, mem_singleton_iff, hFΨ w hwB]
+      exact hwt
+    · rintro ⟨hy, hFy⟩
+      obtain ⟨w, hw, rfl⟩ := hZB hy
+      refine ⟨w, ⟨⟨hw, hy⟩, ?_⟩, rfl⟩
+      simp only [mem_preimage, mem_singleton_iff, hFΨ w hw] at hFy
+      exact hFy
+  simp only [himgt] at hmeas heq
+  rw [himg] at heq
+  exact ⟨hmeas, heq⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
