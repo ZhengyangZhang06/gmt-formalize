@@ -1,0 +1,109 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n -i 'jacobian.*minor|weak.*contin.*jacob|piola|dor_lmb_fcd_jwc' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "rg -n 'ae_convolution_tendsto_right_of_locallyIntegrable|exist_eLpNorm_sub_le|theorem extDeriv_pullback|theorem extDeriv_apply|theorem integral_lineDeriv_mul_eq|theorem ae_differentiableAt|theorem det_le|theorem measurable_fderiv' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "cmr_cc_det_covector_exists",
+        "cmcs_ls_mollify_lipschitz",
+        "dor_lmb_fcd_jwc",
+        "git show fee01ff86c9de6b32f7cfc6b3f5088750ef5af7e:GMT/Ch07/Submission.lean",
+        "git show 52b9c39c17163ce7232935d7cc8c5d62382f63a6:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/jwc-independent-audit-f6egdlh4/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/jwc-independent-audit-f6egdlh4/AllProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/AbsoluteValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f189b35d70/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f189b35d70/decomposition-v1.json",
+        "/tmp/jwc-independent-audit-f6egdlh4/IndependentTypes.lean",
+        "/tmp/jwc-independent-audit-f6egdlh4/AllProofs.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and relevant library hypotheses; the project search found no matching Jacobian-minor continuity or Piola declaration. All eleven child types independently elaborate without child implementations. Reconstructed proofs and the exact selected parent assembly compile successfully, with only propext, Classical.choice and Quot.sound. Both reused declarations are accepted with identical frozen types; all nine new names are unreserved bare identifiers. Dependencies are acyclic and match the supplied proofs. Matrix constructions use Matrix.of; no problematic IsUnit construction occurs. Splitting is appropriate: the children establish the selected weighted-form convergence through coordinate expansion and L1 minor convergence, including zero dimensions. The recomputed parent digest matches the requested binding."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "det_covector_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type agree with the accepted declaration. Coordinate projection, determinant alternation, transposition and the factorial norm bound construct the required continuous covector for arbitrary I, including n = 0."
+    },
+    {
+      "key": "mollify_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted type is identical. Compact support establishes integrability; kernel nonnegativity and normalization yield exactly the claimed Lipschitz constant by integrating the pointwise difference bound."
+    },
+    {
+      "key": "covector_det_expansion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact factorial normalization and matrix orientation follow from multilinear basis expansion, permutation reindexing and the Leibniz formula. The supplied proof covers zero dimensions and requires no additional hypothesis."
+    },
+    {
+      "key": "minor_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Measurable derivative entries give a measurable determinant. The everywhere Lipschitz derivative bound and Leibniz estimate prove the stated factorial bound, including nondifferentiability points and r = 0."
+    },
+    {
+      "key": "mollify_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactly supported C1 convolution differentiation, the reflected-kernel chain rule, Lipschitz integration by parts and Rademacher prove the exact identity for every x and v. No Jacobian-continuity result is assumed."
+    },
+    {
+      "key": "lipschitz_smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normalized shrinking bumps give smoothness, the same Lipschitz constant and uniform convergence. The bounded radius ratio justifies a.e. convolution convergence; the finite-basis estimate upgrades derivative convergence to operator norm."
+    },
+    {
+      "key": "piola_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The C2 pullback of the constant determinant form has zero exterior derivative. Its coordinate expansion matches precisely the signs and succAbove deletion indices in the frozen type, including r = 0."
+    },
+    {
+      "key": "smooth_minor_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "C2 regularity makes the cofactors C1. Laplace expansion, the supplied Piola identity and the product rule give the pointwise identity; compact support and scalar integration by parts justify its integration with the stated C1 test function."
+    },
+    {
+      "key": "lipschitz_minor_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Componentwise approximation gives a common full-measure convergence set. Uniform minor bounds and the eventual majorant involving |Dψ|(|g0| + 1) justify dominated convergence on both sides of the smooth identity."
+    },
+    {
+      "key": "weak_star_l1_upgrade",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The bounds imply C ≥ 0 and establish product integrability. Smooth compactly supported L1 approximation and the explicit three-term epsilon estimate prove convergence for every integrable weight."
+    },
+    {
+      "key": "minor_weak_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The induction is well-founded, starting with the empty determinant. Integration by parts reduces the order; the new weight is integrable, the uniform-convergence error vanishes, and the L1 upgrade closes the step using exactly the listed dependencies."
+    }
+  ],
+  "required_changes": []
+}
