@@ -878,6 +878,107 @@ theorem Submission.idtp_cse_fd_fs_pushforward_signed_transfer : ∀ (X : Type) [
           by_cases hx : φ x ∈ S <;> simp [hx]
       _ = ∫⁻ x in φ ⁻¹' S, ENNReal.ofReal (g x) ∂ν := lintegral_indicator (hφ hS) _
 
+/-- **Signed fibre identity** (flux density for the cone-sector endpoint density in the proof of
+Simon 7.3.3).  Let `R = (M, θ, ξ)` be a `2`-dimensional integer multiplicity triple in `ℝᴾ`,
+`μ = θ H²⌞M`, `Q` a plane with orthonormal basis `a, e`, `π = Q.starProjection`,
+`Ax = ⟨x, a⟩e − ⟨x, e⟩a`, `G(x) = |p_{TₓM}(Ax)|² / |πx|²`, `f(x) = arctan(⟨x, e⟩/⟨x, a⟩)`,
+`F̃(x) = (|x|, f(x))` and
+`Z(s, s') = {x : ⟨x, a⟩ > 0, ||x| − 1| < s', |f(x)| < s', |x − πx| < s|x|}`.  If
+`∫ b H = ∫_{Z(s, s)} b(F̃) G dμ` for every Borel `b : ℝ² → [0, ∞]`, then `H < ∞` a.e., `H` is
+integrable, the identity holds for bounded signed Borel `b`, and
+`∫_{(1 − s', 1 + s') × (−s', s')} H = ∫_{Z(s, s')} G dμ` for `s' ≤ s`.  Self-adjointness of `π`
+and Bessel's inequality for `a, e` give `|p_T(Ax)|² ≤ |Ax|² ≤ |πx|²`, so `0 ≤ G ≤ 1`
+(`t / 0 = 0`); `Z(s, s) ⊆ B̄_{1+|s|}(0)` has finite `μ`-measure, so the push-forward transfer
+applies to `μ⌞Z(s, s)`, and `F̃⁻¹((1 − s', 1 + s') × (−s', s')) ∩ Z(s, s) = Z(s, s')`. -/
+theorem Submission.idtp_cse_fd_fibre_signed_identity : ∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ) (H : ℝ × ℝ → ℝ≥0∞), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → AEMeasurable H volume → (∀ b : ℝ × ℝ → ℝ≥0∞, Measurable b → ∫⁻ p : ℝ × ℝ, b p * H p = ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, b (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure) → (∀ᵐ p : ℝ × ℝ, H p ≠ ∞) ∧ Integrable (fun p : ℝ × ℝ => (H p).toReal) ∧ (∀ b : ℝ × ℝ → ℝ, Measurable b → (∃ M : ℝ, ∀ p, |b p| ≤ M) → ∫ p : ℝ × ℝ, b p * (H p).toReal = ∫ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, b (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) * (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure) ∧ ∀ s' : ℝ, s' ≤ s → ∫⁻ p in Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s', H p = ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure := by
+  intro P R Q a e s H hQ haQ heQ ha he hae hHm hH
+  -- `Z = Z(s, s)`
+  set Z : Set (Euclid P) := {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧
+    |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} with hZ
+  -- Step 1: the frame bound `|p_T(Ax)|² ≤ |Ax|² = ⟨πx, a⟩² + ⟨πx, e⟩² ≤ |πx|²`
+  have haa : inner ℝ a a = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, ha, one_pow]
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, he, one_pow]
+  have hea : inner ℝ e a = (0 : ℝ) := by rw [real_inner_comm, hae]
+  have hframe : ∀ (T : Submodule ℝ (Euclid P)) (x : Euclid P),
+      ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 ≤ ‖Q.starProjection x‖ ^ 2 := by
+    intro T x
+    -- `π` is self-adjoint and fixes `a, e ∈ Q`
+    have hya : inner ℝ (Q.starProjection x) a = inner ℝ x a := by
+      rw [Submodule.inner_starProjection_left_eq_right,
+        Submodule.starProjection_eq_self_iff.2 haQ]
+    have hye : inner ℝ (Q.starProjection x) e = inner ℝ x e := by
+      rw [Submodule.inner_starProjection_left_eq_right,
+        Submodule.starProjection_eq_self_iff.2 heQ]
+    have hA : ∀ u v : ℝ, ‖u • e - v • a‖ ^ 2 = u ^ 2 + v ^ 2 := by
+      intro u v
+      rw [← real_inner_self_eq_norm_sq]
+      simp only [inner_sub_left, inner_sub_right, real_inner_smul_left, real_inner_smul_right,
+        haa, hee, hae, hea]
+      ring
+    -- Bessel: `0 ≤ |y − ⟨y, a⟩a − ⟨y, e⟩e|² = |y|² − ⟨y, a⟩² − ⟨y, e⟩²`
+    have hB : ∀ y : Euclid P, inner ℝ y a ^ 2 + inner ℝ y e ^ 2 ≤ ‖y‖ ^ 2 := by
+      intro y
+      have h : ‖y - (inner ℝ y a • a + inner ℝ y e • e)‖ ^ 2 =
+          ‖y‖ ^ 2 - (inner ℝ y a ^ 2 + inner ℝ y e ^ 2) := by
+        rw [← real_inner_self_eq_norm_sq, ← real_inner_self_eq_norm_sq y]
+        simp only [inner_sub_left, inner_sub_right, inner_add_left, inner_add_right,
+          real_inner_smul_left, real_inner_smul_right, haa, hee, hae, hea, real_inner_comm y a,
+          real_inner_comm y e]
+        ring
+      rw [← sub_nonneg, ← h]
+      positivity
+    calc ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2
+        ≤ ‖inner ℝ x a • e - inner ℝ x e • a‖ ^ 2 := by
+          gcongr
+          exact T.norm_starProjection_apply_le _
+      _ = inner ℝ (Q.starProjection x) a ^ 2 + inner ℝ (Q.starProjection x) e ^ 2 := by
+          rw [hA, hya, hye]
+      _ ≤ ‖Q.starProjection x‖ ^ 2 := hB _
+  -- Step 2: `F̃ = (|·|, f)` is Borel
+  have hφ : Measurable fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)) :=
+    continuous_norm.measurable.prodMk (Real.continuous_arctan.measurable.comp
+      ((continuous_id.inner continuous_const).measurable.div
+        (continuous_id.inner continuous_const).measurable))
+  -- Step 3: `Z ⊆ B̄_{1+|s|}(0)`, so `μ(Z) < ∞` by local integrability of `θ`
+  have hZK : Z ⊆ closedBall (0 : Euclid P) (1 + |s|) := by
+    intro x hx
+    rw [mem_closedBall_zero_iff]
+    have h1 := le_abs_self (‖x‖ - 1)
+    have h2 := le_abs_self s
+    have h3 := hx.2.1
+    linarith
+  have hfin : R.measure.restrict Z univ ≠ ∞ := by
+    rw [Measure.restrict_apply_univ]
+    refine ne_top_of_le_ne_top ?_ (measure_mono hZK)
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact R.locallyIntegrable_mult _ (isCompact_closedBall 0 _) (subset_univ _)
+  -- Step 4: the push-forward transfer for `ν = μ⌞Z`, `φ = F̃`, `g = G` (`0 ≤ G ≤ 1`)
+  obtain ⟨h1, h2, h3, h4⟩ := Submission.idtp_cse_fd_fs_pushforward_signed_transfer (Euclid P)
+    (R.measure.restrict Z) (fun x => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a)))
+    (fun x => ‖(approxTangentPlane 2 R.carrier x).starProjection
+      (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) H hfin hφ
+    (Submission.idtp_cse_fd_fs_frame_ratio_aesm P 2 univ R Q a e).restrict
+    (ae_of_all _ fun x => ⟨div_nonneg (sq_nonneg _) (sq_nonneg _),
+      div_le_one_of_le₀ (hframe _ x) (sq_nonneg _)⟩) hHm hH
+  refine ⟨h1, h2, h3, fun s' hs' => ?_⟩
+  -- Step 5: `F̃⁻¹((1 − s', 1 + s') × (−s', s')) ∩ Z(s, s) = Z(s, s')` for `s' ≤ s`
+  have hS : MeasurableSet (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s') :=
+    measurableSet_Ioo.prod measurableSet_Ioo
+  have hset : (fun x : Euclid P => (‖x‖, Real.arctan (inner ℝ x e / inner ℝ x a))) ⁻¹'
+      (Ioo (1 - s') (1 + s') ×ˢ Ioo (-s') s') ∩ Z = {x : Euclid P | 0 < inner ℝ x a ∧
+        |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧
+        ‖x - Q.starProjection x‖ < s * ‖x‖} := by
+    ext x
+    simp only [hZ, mem_inter_iff, mem_preimage, mem_prod, mem_Ioo, mem_ofPred_eq, abs_lt]
+    constructor
+    · rintro ⟨⟨⟨hr₁, hr₂⟩, hf₁, hf₂⟩, hxa, -, -, hxπ⟩
+      exact ⟨hxa, ⟨by linarith, by linarith⟩, ⟨hf₁, hf₂⟩, hxπ⟩
+    · rintro ⟨hxa, ⟨hr₁, hr₂⟩, ⟨hf₁, hf₂⟩, hxπ⟩
+      exact ⟨⟨⟨by linarith, by linarith⟩, hf₁, hf₂⟩, hxa, ⟨by linarith, by linarith⟩,
+        ⟨by linarith, by linarith⟩, hxπ⟩
+  rw [h4 _ hS, Measure.restrict_restrict (hφ hS), hset]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
