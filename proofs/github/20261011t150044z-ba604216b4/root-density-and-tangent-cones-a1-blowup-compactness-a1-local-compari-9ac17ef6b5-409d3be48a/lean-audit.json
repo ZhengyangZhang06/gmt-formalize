@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fee6851c73e711f4f2f9238922b3632f80c213ade7ed84aabe3d0e0bd9045cbd",
+  "git_delta": {
+    "base_commit": "ae979e3ddf73d28dfb92e74a328f15bed960a6e1",
+    "candidate_commit": "904a317339375fea1b29ea85ba0f0a694ee832c1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_pf_ext_pullback_cutoff",
+    "diff_sha256": "3571c7ad19173eabaa60bef84a28fab2a853e6e0c70d698258ae2fcd99cae2ba",
+    "source_sha256": "402358b2d7c944a3005d8f018fc807a53ec10ba230f3d13d64962dbfd02cfebe",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_pf_ext_pullback_cutoff",
+      "statement": "∀ (P Q n : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid Q) (ω : DifferentialForm (Euclid Q) n), IsOpen O → ContDiffOn ℝ 1 f O → IsCompact K → K ⊆ O → Continuous ω → ∃ h : Euclid P → Covector (Euclid P) n, Continuous h ∧ HasCompactSupport h ∧ ∀ x ∈ K, h x = (ω (f x)).compContinuousLinearMap (fderiv ℝ f x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
