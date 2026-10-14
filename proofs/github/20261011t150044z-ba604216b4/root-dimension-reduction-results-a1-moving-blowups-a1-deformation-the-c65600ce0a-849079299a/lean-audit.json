@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "42025de97467b02fb2e2b6b554e6966941e4874f846ef2f90262205c400da079",
+  "git_delta": {
+    "base_commit": "5eae4e63dff43adafa27f7af945b1b4bc6bdc287",
+    "candidate_commit": "fa6f25247b7032f987ac40ede1999021ed0ff045",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_lpip_bilipschitz_measure_bounds",
+    "diff_sha256": "d97fa8b16903a0a21cb1763e0875d5a04551379b476605a4ab71a227fe9af3d0",
+    "source_sha256": "55047b1808cbd8862126795a77af6ab0a299b8478b5d058a5924ba493db56fe6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_lpip_bilipschitz_measure_bounds",
+      "statement": "∀ (P n : ℕ) (G : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L G → 0 < m → (∀ a ∈ A, ∀ a' ∈ A, m * ‖a - a'‖ ≤ ‖G a - G a'‖) → ∀ Z : Set (Euclid n), Z ⊆ A → ENNReal.ofReal m ^ n * volume Z ≤ μHE[n] (G '' Z) ∧ μHE[n] (G '' Z) ≤ (L : ℝ≥0∞) ^ n * volume Z",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
