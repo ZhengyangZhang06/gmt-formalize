@@ -805,6 +805,49 @@ theorem Submission.cmcdt_lpo_slice_homotopy_zero : ∀ (N : ℕ) (β : TestFormO
     (hderiv ▸ (hsmooth.continuous_deriv (by simp)).continuousOn)
   rw [hL1] at key
   simpa only [hL] using key
+/-- **Simon 6.1.15, 6.2.17** (Minkowski's integral inequality for the Euclidean coefficient norm
+`|·|` of 6.1.15, used for the slice forms defining `[[(0, 1)]] × T`): if `α(v) = ∫₀¹ f(t)(v) dt`
+for all `v` and `|f(t)| ≤ c` on `[0, 1]`, then `|α| ≤ c`.  The coefficient vector
+`κ(γ) = (γ(e_I))_{I strictly increasing} ∈ ℓ²` has `‖κ(γ)‖ = |γ|`, is continuous, and commutes
+with the integral coordinatewise; hence `|α| = ‖∫₀¹ κ(f t) dt‖ ≤ c`. -/
+theorem Submission.cmcdt_lpo_slice_covector_bound : ∀ (N k : ℕ) (α : Covector (Euclid N) k) (f : ℝ → Covector (Euclid N) k) (c : ℝ), Continuous f → (∀ v : Fin k → Euclid N, α v = ∫ t in (0 : ℝ)..1, f t v) → (∀ t ∈ Icc (0 : ℝ) 1, covectorEuclideanNorm (f t) ≤ c) → covectorEuclideanNorm α ≤ c := by
+  intro N k α f c hf hα hc
+  classical
+  -- the coefficient vector `κ γ = (γ(e_I))_I`, with `γ(e_I)` replaced by `0` unless `I` is
+  -- strictly increasing
+  let e : Fin N → Euclid N := fun j => EuclideanSpace.basisFun (Fin N) ℝ j
+  let κ : Covector (Euclid N) k → EuclideanSpace ℝ (Fin k → Fin N) := fun γ =>
+    WithLp.toLp 2 fun I => if StrictMono I then γ (fun i => e (I i)) else 0
+  have hκnorm : ∀ γ, ‖κ γ‖ = covectorEuclideanNorm γ := by
+    intro γ
+    rw [EuclideanSpace.norm_eq, covectorEuclideanNorm]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    by_cases hI : StrictMono I <;> simp [κ, e, hI]
+  have hκcont : Continuous κ := by
+    refine (PiLp.continuous_toLp 2 _).comp (continuous_pi fun I => ?_)
+    by_cases hI : StrictMono I
+    · simp only [hI, ite_true]
+      exact continuous_eval_const _
+    · simp only [hI, ite_false]
+      exact continuous_const
+  have hint : IntervalIntegrable (fun t => κ (f t)) volume 0 1 :=
+    (hκcont.comp hf).intervalIntegrable 0 1
+  -- `κ α = ∫₀¹ κ (f t) dt`, coordinatewise
+  have hκα : κ α = ∫ t in (0 : ℝ)..1, κ (f t) := by
+    ext I
+    refine Eq.trans ?_ ((EuclideanSpace.proj I :
+      EuclideanSpace ℝ (Fin k → Fin N) →L[ℝ] ℝ).intervalIntegral_comp_comm hint)
+    by_cases hI : StrictMono I
+    · simp only [κ, EuclideanSpace.coe_proj, hI, ite_true]
+      exact hα _
+    · simp only [κ, EuclideanSpace.coe_proj, hI, ite_false, intervalIntegral.integral_zero]
+  rw [← hκnorm, hκα]
+  calc ‖∫ t in (0 : ℝ)..1, κ (f t)‖ ≤ c * |(1 : ℝ) - 0| :=
+        intervalIntegral.norm_integral_le_of_norm_le_const fun t ht => by
+          rw [hκnorm]
+          exact hc t (Set.Ioc_subset_Icc_self (by simpa [Set.uIoc_of_le zero_le_one] using ht))
+    _ = c := by simp
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
