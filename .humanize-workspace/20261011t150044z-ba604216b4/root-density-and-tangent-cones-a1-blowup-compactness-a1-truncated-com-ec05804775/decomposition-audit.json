@@ -1,0 +1,117 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'massRepresentation|isIntegerMultiplicity_of_local|measure_convergence_tools|vague_|setIntegral_eq_of_integral_eq|restrictDomain_isIntegerMultiplicity' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "theorem integral_withDensity_eq_integral_smul|withDensity_absolutelyContinuous.|theorem measure_inter_add_sdiff|theorem ext_of_generate_finite|theorem restrict_congr_meas|theorem restrict_eq_self_of_ae_mem|def rieszMeasure|theorem integral_rieszMeasure",
+        "ae_eq_zero_of_integral_contDiff_smul_eq_zero|measurable_deriv|liminf_const_mul_of_ne_top|intervalIntegral_deriv_mem_uIcc",
+        "covectorEuclideanNorm_nonneg|testFormOnInclusion_coe|restrictDomain_apply|def GeometricCurrentOn.massOn|def massAdmissibleOn",
+        "python3 -I /tmp/foundations_independent_audit/check.py",
+        "python3 -I /tmp/foundations_independent_audit/compile.py Types.lean",
+        "python3 -I /tmp/foundations_independent_audit/compile.py Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-ec05804775/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-ec05804775/decomposition-v1.json",
+        "/tmp/foundations_independent_audit/check.py",
+        "/tmp/foundations_independent_audit/evidence.json",
+        "/tmp/foundations_independent_audit/binding.json",
+        "/tmp/foundations_independent_audit/Types.lean",
+        "/tmp/foundations_independent_audit/Assembly.lean",
+        "/tmp/foundations_independent_audit/Assembly.log"
+      ],
+      "conclusion": "Verified the pinned revisions and unchanged contract; the project snapshot contains no matching proved foundations declarations. All 12 proposed names are bare identifiers uniquely identifying accepted nodes, with identical proposed, frozen, candidate and comparator-challenge types. Retained comparator evidence permits only propext, Classical.choice and Quot.sound. The 76-node accepted dependency cone is acyclic and excludes the selected theorem and its ancestors. All 14 types elaborate independently of child implementations. The supplied assembly, rebound to the immutable parent and exact child types, compiles with only standard axioms. It proves precisely REP, T1/T2/MM and conditional IML using the existing restrict_unique dependency. The split is appropriate; every child contributes, and no prohibited matrix-unit construction occurs. The requested parent digest was independently recomputed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "rep_core",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match, including mass equality for every open W and the everywhere covector bound. Extension, vector Riesz representation, polar normalization, norming-form approximation and exhaustion establish all six properties using independently accepted ingredients."
+    },
+    {
+      "key": "rep_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All representation and boundary hypotheses are explicit. The degree-zero case, projection/divergence argument, localization, finite spanning family and compact inner regularity prove nullity for arbitrary Hausdorff-null sets without assuming the desired conclusion."
+    },
+    {
+      "key": "vague_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact exhaustion absorbs every compact support. Compact-piece extraction and the explicit diagonal construction establish strict monotonicity and convergence for every required test function. The identified accepted compact-piece theorem resolves the import-closure issue."
+    },
+    {
+      "key": "vague_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Integrability justifies linearity of the limit functional; positivity permits Riesz representation on U. Extension by zero and pushforward establish the exact support, compact-finiteness and convergence conclusions without requiring an unstated uniform bound."
+    },
+    {
+      "key": "portmanteau",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Cutoff comparisons and continuity from above prove the compact limsup inequality; compact exhaustion proves the open liminf inequality. Only the stated local finiteness assumptions are used."
+    },
+    {
+      "key": "restriction_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type is exactly T2. Integrability, smooth cutoffs and compact-band estimates justify convergence. The open error band for μX decreases to the empty set, so the proof correctly avoids assuming μX{f=t}=0."
+    },
+    {
+      "key": "slice_majorant",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type is exactly MM. Splitting along measurable strips handles arbitrary G; no measurability of Z is assumed. Monotone distribution functions, measurable derivatives, the countable exceptional-set argument and Fatou prove both conclusions, including L=0 and empty intervals."
+    },
+    {
+      "key": "glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The quantified tangent-locality hypothesis matches the type. The countable Borel partition, weighted-measure identity and two tangent-locality applications verify every glued IMRep field and its representation of X. The dependency on imrep_measure is correctly directed."
+    },
+    {
+      "key": "imrep_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Density identities and positivity of multiplicity prove all seven properties. The inspected Mathlib density-integral theorem applies to arbitrary integrands, validating the unrestricted differential-form conclusion without additional measurability or integrability assumptions."
+    },
+    {
+      "key": "orient_ae_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The common restricted measure, compact cutoffs, uniqueness of integrable densities, compact exhaustion and finite covector basis establish the exact a.e. field equality. Equality of set integrals is an explicit hypothesis, so there is no circular reliance on restriction uniqueness."
+    },
+    {
+      "key": "restrict_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly requires openness only of V. Restricting the carrier preserves the IMRep fields; the independently accepted tangent-locality lemma supplies orientation, and vanishing of test forms outside V proves representation."
+    },
+    {
+      "key": "measure_ext",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose matches the type's one-sided compact-finiteness assumption. Agreement on open sets supplies finiteness for both restricted measures; finite-measure π-system uniqueness and continuity from below establish equality on every Borel subset of O."
+    }
+  ],
+  "required_changes": []
+}
