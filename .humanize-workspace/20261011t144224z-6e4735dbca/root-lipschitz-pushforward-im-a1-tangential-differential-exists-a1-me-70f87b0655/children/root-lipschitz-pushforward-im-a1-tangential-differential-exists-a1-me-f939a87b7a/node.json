@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.measurable_chart_differential-a1.single_chart-a1",
+  "parent_id": "root.lipschitz_pushforward_im-a1.tangential_differential_exists-a1.measurable_chart_differential-a1",
+  "depth": 4,
+  "title": "Borel measurable differential on one antilipschitz C¹ chart, G(x) = D(f∘Φ)(Ψx)∘Λ(DΦ(Ψx))",
+  "statement": "Let P, Q, n ∈ ℕ and let Λ : L(ℝⁿ, ℝ^P) → L(ℝ^P, ℝⁿ) be continuous on I := {A : A injective} with Λ(A)∘A = id_{ℝⁿ} and |A(Λ(A)v)| ≤ |v| for every A ∈ I and v ∈ ℝ^P. Let Ω ⊆ ℝⁿ be open, Φ : ℝⁿ → ℝ^P a C¹ map with c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω and some c > 0, and f : ℝ^P → ℝ^Q any map. Then there is a Borel measurable G : ℝ^P → L(ℝ^P, ℝ^Q) such that Φ(Ω) is a Borel set and every x ∈ Φ(Ω) admits w ∈ Ω with Φ(w) = x, G(x)(DΦ(w)s) = D(f∘Φ)(w)s for all s ∈ ℝⁿ, and for every v ∈ ℝ^P some s ∈ ℝⁿ with |DΦ(w)s| ≤ |v| and G(x)v = D(f∘Φ)(w)s (DΦ(w) = fderiv ℝ Φ w, D(f∘Φ)(w) = fderiv ℝ (f ∘ Φ) w, which is 0 where f∘Φ is not differentiable).",
+  "lean_statement": "∀ (P Q n : ℕ) (Λ : (Eucl n →L[ℝ] Eucl P) → (Eucl P →L[ℝ] Eucl n)) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (f : Eucl P → Eucl Q), ContinuousOn Λ {A : Eucl n →L[ℝ] Eucl P | Function.Injective A} → (∀ A : Eucl n →L[ℝ] Eucl P, Function.Injective A → (Λ A).comp A = ContinuousLinearMap.id ℝ (Eucl n) ∧ ∀ v : Eucl P, ‖A (Λ A v)‖ ≤ ‖v‖) → IsOpen Ω → ContDiff ℝ 1 Φ → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ∃ G : Eucl P → (Eucl P →L[ℝ] Eucl Q), Measurable G ∧ MeasurableSet (Φ '' Ω) ∧ ∀ x ∈ Φ '' Ω, ∃ w ∈ Ω, Φ w = x ∧ (∀ s : Eucl n, G x (fderiv ℝ Φ w s) = fderiv ℝ (f ∘ Φ) w s) ∧ ∀ v : Eucl P, ∃ s : Eucl n, ‖fderiv ℝ Φ w s‖ ≤ ‖v‖ ∧ G x v = fderiv ℝ (f ∘ Φ) w s",
+  "lean_name": "lpf_tde_mcd_single_chart",
+  "depends_on": [
+    "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.lipschitz_pushforward_im-a1.weighted_tangent_on_c1_chart-a1.chart_approximate_tangent-a1.fderiv_lower_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-weighted-tangent-on-c1-chart-a1-char-837491fcd9-a1",
+      "result_commit": "8cfbc487a3d10545b0ea005ad58122242bbcc072",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-lipschitz-pushforward-im-a1-tangential-differential-exists-a1-me-f939a87b7a-a1"
+}

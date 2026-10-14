@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1.cylinder_null_measurable-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1",
+  "depth": 5,
+  "title": "Cylinders over null-measurable sets are null-measurable",
+  "statement": "Let P, m ∈ ℕ, Hᵏ := μHE[k] and π(y) := (y_1, …, y_P) for y ∈ ℝ^{P+1} (Lean: (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P+1)) ℝ y))). Assume (NT): for every N ⊆ ℝ^P with Hᵐ(N) = 0, H^{m+1}({y : π(y) ∈ N}) = 0. Then for every Hᵐ-null-measurable M ⊆ ℝ^P, the cylinder {y ∈ ℝ^{P+1} : π(y) ∈ M} is H^{m+1}-null-measurable.",
+  "lean_statement": "∀ (P m : ℕ), (∀ N : Set (Eucl P), (μHE[m] : Measure (Eucl P)) N = 0 → (μHE[m + 1] : Measure (Eucl (P + 1))) {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ N} = 0) → ∀ M : Set (Eucl P), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) → NullMeasurableSet {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M} (μHE[m + 1] : Measure (Eucl (P + 1)))",
+  "lean_name": "iwl_cr_ip_pt_cylinder_nullMeasurableSet",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-d977ae51b5-a1"
+}

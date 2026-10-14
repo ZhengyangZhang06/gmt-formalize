@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1",
+  "depth": 3,
+  "title": "Weak continuity of pulled-back covector integrands (weak continuity of Jacobian minors, parent step (f))",
+  "statement": "Let k, Q ∈ ℕ, Ω ⊆ ℝ^k (= Eucl k) open, ψ : ℝ^k → ℝ Lebesgue-integrable on Ω, α : ℝ^Q → Covector (Eucl Q) k (k-covectors on ℝ^Q) continuous with compact support, C ≥ 0, and let u_j : ℝ^k → ℝ^Q (j ∈ ℕ) and u₀ : ℝ^k → ℝ^Q all be C-Lipschitz on Ω, with u_j → u₀ uniformly on Ω. Then ∫_Ω ψ(w)·α(u_j(w))(∂_0u_j(w), …, ∂_{k−1}u_j(w)) dw → ∫_Ω ψ(w)·α(u₀(w))(∂_0u₀(w), …, ∂_{k−1}u₀(w)) dw as j → ∞, where ∂_bv(w) := fderiv ℝ v w (EuclideanSpace.single b 1) is the b-th partial derivative (Mathlib fderiv, equal to 0 where v is not differentiable) and dw is Lebesgue measure (volume).",
+  "lean_statement": "∀ (k Q : ℕ) (Ω : Set (Eucl k)) (ψ : Eucl k → ℝ) (α : Eucl Q → Covector (Eucl Q) k) (C : ℝ≥0) (u : ℕ → Eucl k → Eucl Q) (u₀ : Eucl k → Eucl Q), IsOpen Ω → IntegrableOn ψ Ω (volume : Measure (Eucl k)) → Continuous α → HasCompactSupport α → (∀ j, LipschitzOnWith C (u j) Ω) → LipschitzOnWith C u₀ Ω → TendstoUniformlyOn u u₀ atTop Ω → Tendsto (fun j => ∫ w in Ω, ψ w * α (u j w) (fun b => fderiv ℝ (u j) w (EuclideanSpace.single b 1)) ∂(volume : Measure (Eucl k))) atTop (𝓝 (∫ w in Ω, ψ w * α (u₀ w) (fun b => fderiv ℝ u₀ w (EuclideanSpace.single b 1)) ∂(volume : Measure (Eucl k))))",
+  "lean_name": "deformation_ipl_minor_weak_continuity",
+  "depends_on": [
+    "root.compactness_mass_bounds-a1.covector_expansion-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_mass_bounds-a1.covector_expansion-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-compactness-mass-bounds-a1-covector-expansion-a1-a1",
+      "result_commit": "6c6b4b2753e8214a3e45619bb0b65d8d553557a5",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-a1"
+}

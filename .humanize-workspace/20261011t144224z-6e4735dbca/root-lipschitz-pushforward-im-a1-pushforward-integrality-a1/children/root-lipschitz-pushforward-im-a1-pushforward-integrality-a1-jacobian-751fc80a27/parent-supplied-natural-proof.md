@@ -1,0 +1,129 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.lipschitz_pushforward_im-a1.pushforward_integrality-a1`
+- Child DAG node: `root.lipschitz_pushforward_im-a1.pushforward_integrality-a1.jacobian_local_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions: ℝ^P = EuclideanSpace ℝ (Fin P) (Lean `Eucl P`) with inner product ⟨·,·⟩ and norm |·|; Hⁿ = μHE[n], Mathlib's Euclidean-normalised n-dimensional Hausdorff measure, which equals Lebesgue measure Lⁿ = volume on ℝⁿ. An n-covector on E is a continuous alternating n-linear map α : Eⁿ → ℝ with the operator norm. An n-vector is a continuous linear functional on n-covectors (`NVector E n`), also with the operator norm. simpleNVector v is the n-vector α ↦ α(v₁,…,vₙ). For a continuous linear map A, A_#u := nVectorPushforward n A u = u ∘ A^#, where A^#α = α(A·,…,A·). Thus A_# is linear in u, and A_#(simpleNVector v) = simpleNVector(A∘v) (`nVectorPushforward_simple`). `HasWeightedApproximateTangentSpaceAt n M θ x T` is Simon's weighted approximate tangent space (Ch. 3, 1.7). By SimonGMT `HasWeightedApproximateTangentSpaceAt.unique` it is unique when θ(x) ≠ 0, and its first component says dim T = n. The derivative clause for (M, θ, f, L) means: for Hⁿ⌞M-a.e. x, for every subspace T with HasWeightedApproximateTangentSpaceAt n M θ x T and every v ∈ T, the map t ↦ f(x + t v) has derivative L(x)v at t = 0. Φ is c-antilipschitz on Ω if c|w − w′| ≤ |Φ(w) − Φ(w′)| for all w, w′ ∈ Ω.
+
+This is Step 2 of the parent proof.
+
+1. (Uniform Lipschitz constant near K.) For each z ∈ K ⊆ U, local Lipschitzness of f on U gives Λ_z ≥ 0 and a set t_z ∈ 𝓝[U] z on which f is Λ_z-Lipschitz. Since U is open, 𝓝[U] z = 𝓝 z, so there is r_z > 0 with the open ball B(z, r_z) ⊆ t_z. The balls B(z, r_z/2), z ∈ K, cover K. By compactness, finitely many of them, B(z_l, r_l/2) for l = 1,…,m, cover K. Put Λ := max_l Λ_{z_l} (Λ := 0 if K = ∅) and C := Λⁿ.
+2. (Regular points.) The field `orients` of the triple holds for Hⁿ⌞M-a.e. x, and so does the derivative clause. Fix x ∈ K where both hold. Then there is an orthonormal τ : Fin n → ℝ^P with HasWeightedApproximateTangentSpaceAt n M θ x (span(range τ)) and ξ(x) = simpleNVector τ or ξ(x) = −simpleNVector τ. It suffices to show ‖L(x)_#ξ(x)‖ ≤ Λⁿ.
+3. (Bound on L(x)τ_i.) Choose l with x ∈ B(z_l, r_l/2) and put ρ := r_l/2. Fix i. Since τ_i ∈ span(range τ), the derivative clause (with T_x := span(range τ), v := τ_i) gives HasDerivAt (t ↦ f(x + tτ_i)) (L(x)τ_i) 0. For |t|, |s| < ρ the points x + tτ_i and x + sτ_i lie in B(z_l, r_l) ⊆ t_{z_l}, because |τ_i| = 1. So |f(x + tτ_i) − f(x + sτ_i)| ≤ Λ|t − s|. Thus t ↦ f(x + tτ_i) is Λ-Lipschitz on the neighbourhood (−ρ, ρ) of 0, and `HasDerivAt.le_of_lipschitzOn` gives |L(x)τ_i| ≤ Λ.
+4. (Hadamard-type bound.) The push-forward is linear (A_#(−u) = −A_#u), and nVectorPushforward_simple gives L(x)_#ξ(x) = ±simpleNVector(L(x)∘τ). For any family u : Fin n → ℝ^Q and any covector α, |α(u)| ≤ ‖α‖ Π_i |u_i| (operator norm of α); this is the bound with which simpleNVector u is built by `LinearMap.mkContinuous`. Hence ‖simpleNVector u‖ ≤ Π_i |u_i|. Therefore ‖L(x)_#ξ(x)‖ = ‖simpleNVector(L(x)∘τ)‖ ≤ Π_i |L(x)τ_i| ≤ Λⁿ = C.
+5. Steps 2–4 show that for Hⁿ⌞M-a.e. x, x ∈ K implies ‖L(x)_#ξ(x)‖ ≤ C. ∎
+
+Verified Lean script (engineering aid; the mathematics is the numbered proof above). On 2026-10-12 the script below was compiled as the complete proof of `theorem Submission.lpf_pi_jacobian_local_bound : <the frozen Lean statement> := by` in the child context: `import GMT.Ch06.Submission`, inside `namespace GMT.Ch06` with the contract's `open` commands. It was compiled in one file together with the other ten children's proofs, which were real proofs, not stubs. `#print axioms` gives exactly propext, Classical.choice, Quot.sound. The script adds no helper declarations; all auxiliary facts are local `have`s. It uses no sibling lemma. The remaining compiler output consists only of style-linter and deprecation warnings.
+```
+  intro P Q n U M θ ξ f L hU htri hf hderiv K hK hKU
+  obtain ⟨K', hK'c, hKK', hK'U⟩ := exists_compact_between hK hU hKU
+  obtain ⟨Λ, hΛ⟩ := (hf.mono hK'U).exists_lipschitzOnWith_of_compact hK'c
+  refine ⟨(Λ : ℝ) ^ n, ?_⟩
+  filter_upwards [htri.orients, hderiv] with x hor hdx hxK
+  obtain ⟨τ, hτ, htan, hξ⟩ := hor
+  have hbound : ∀ i, ‖L x (τ i)‖ ≤ Λ := by
+    intro i
+    have hd := hdx _ htan (τ i) (Submodule.subset_span ⟨i, rfl⟩)
+    obtain ⟨ρ, hρ, hball⟩ := Metric.isOpen_iff.mp isOpen_interior x (hKK' hxK)
+    have hg : LipschitzOnWith 1 (fun t : ℝ => x + t • τ i) (Metric.ball 0 ρ) := by
+      apply LipschitzWith.lipschitzOnWith
+      apply LipschitzWith.of_dist_le_mul
+      intro s t
+      rw [dist_eq_norm, dist_eq_norm, add_sub_add_left_eq_sub, ← sub_smul, norm_smul, hτ.1 i,
+        mul_one, NNReal.coe_one, one_mul]
+    have hmaps : MapsTo (fun t : ℝ => x + t • τ i) (Metric.ball 0 ρ) K' := by
+      intro t ht
+      apply interior_subset
+      apply hball
+      rw [Metric.mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, hτ.1 i, mul_one]
+      simpa using ht
+    have hlip : LipschitzOnWith Λ (fun t : ℝ => f (x + t • τ i)) (Metric.ball 0 ρ) := by
+      have := hΛ.comp hg hmaps
+      rwa [mul_one] at this
+    exact hd.le_of_lipschitzOn (Metric.ball_mem_nhds 0 hρ) hlip
+  have hpush : ‖nVectorPushforward n (L x) (ξ x)‖ = ‖simpleNVector (fun i => L x (τ i))‖ := by
+    rcases hξ with h | h
+    · rw [h, nVectorPushforward_simple]; rfl
+    · rw [h]
+      have : nVectorPushforward n (L x) (-simpleNVector τ) = -simpleNVector (fun i => L x (τ i)) := by
+        ext α; rfl
+      rw [this]
+      exact norm_neg (simpleNVector (fun i => L x (τ i)))
+  rw [hpush]
+  calc ‖simpleNVector (fun i => L x (τ i))‖ ≤ ∏ i, ‖L x (τ i)‖ :=
+        LinearMap.mkContinuous_norm_le _ (Finset.prod_nonneg fun i _ => norm_nonneg _) _
+    _ ≤ ∏ _i : Fin n, (Λ : ℝ) := by
+        gcongr with i
+        exact hbound i
+    _ = (Λ : ℝ) ^ n := by simp
+```
+
+## Key steps
+
+1. Compactness: finite ball cover of K with a common Lipschitz constant Λ on doubled balls inside U
+2. A.e. x ∈ M is regular: orthonormal τ, ξ(x) = ±simpleNVector τ, derivative clause at x
+3. |L(x)τ_i| ≤ Λ, since a derivative is bounded by a local Lipschitz constant
+4. ‖L(x)_#ξ(x)‖ = ‖simpleNVector(L(x)∘τ)‖ ≤ Π|L(x)τ_i| ≤ Λⁿ
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp snapshot project/GMT/Ch06/{Contract,Submission}.lean against workspace GMT/Ch06/{Contract,Submission}.lean (identical)`
+- `python3 over dag.json: frozen lean_statement/status of the 8 uncle nodes; all lean_name fields (226 unique); grep -c 'lpf_pi_' dag.json (0 matches)`
+- `contract_scope(Contract.lean, 'GMT.Ch06.main_theorem') from verifier/gmt-compare.py (replay: open MeasureTheory Filter Set Metric; open scoped ENNReal NNReal Topology; namespace GMT.Ch06; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasWeightedApproximateTangentSpaceAt); open Poincare.SimonGMT.Chapter01 (dimensionalUpperDensity); noncomputable section; end)`
+- `lean_contract.validate_lean_statement on all 11 child statements`
+- `grep -n 'def CountablyRectifiable|theorem CountablyRectifiable.mono|theorem countablyRectifiable_range|theorem countablyRectifiable_iUnion|def HasWeightedApproximateTangentSpaceAt|theorem HasWeightedApproximateTangentSpaceAt.unique' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `grep -n 'abbrev NVector|def covectorPullback|def nVectorPushforward|def simpleNVector|theorem nVectorPushforward_simple' simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean; 'abbrev Covector|abbrev DifferentialForm|def IsTestForm' Chapter06/Forms.lean; 'abbrev TestFormOn|structure GeometricCurrentOn' Chapter06/Currents.lean; 'def GeometricCurrentOn.support|theorem GeometricCurrentOn.support_subset_domain' Chapter06/CurrentLocalEquality.lean`
+- `grep -n 'theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn' simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean (line 216)`
+- `grep -n 'LocallyLipschitzOn.comp|protected lemma comp' mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean (only LocallyLipschitz.comp exists)`
+- `lake build GMT.Ch06.Submission in /tmp/lpi3_scratch (scratch copy, .lake/packages linked to the pinned package tree)`
+- `lake env lean Scratch/Stmts.lean (11 statements in comparator scope, only sorry warnings)`
+- `lake env lean Scratch/Names.lean (#check of ~90 cited Mathlib/SimonGMT names; #synth Norm (NVector (Eucl 3) 2) = ContinuousLinearMap.hasOpNorm, ENorm via SeminormedAddGroup.toContinuousENorm, MeasureSpace (Eucl 3) = measureSpaceOfInnerProductSpace, Norm (Covector ..) = ContinuousAlternatingMap.instNormedAddCommGroup.toNorm)`
+- `lake env lean Scratch/Inst.lean (#synth ContinuousAdd / PseudoMetrizableSpace / ContinuousENorm (NVector (Eucl 3) 2) fail; documented workarounds compile)`
+- `lake env lean Scratch/Assembly.lean (parent from 19 stubs; #print axioms propext, sorryAx, Classical.choice, Quot.sound)`
+- `lake env lean Scratch/AllChildren.lean and Scratch/E2E.lean (all 11 children proved in dependency order + parent assembly; per-child #print axioms = propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-pushforward-integrality-a1/decomposition-audit-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-inner-com-6be04fd41f/rlcr-plan-v1.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/lpi3_scratch/Scratch/Stmts.lean`
+- `/tmp/lpi3_scratch/Scratch/Names.lean`
+- `/tmp/lpi3_scratch/Scratch/Inst.lean`
+- `/tmp/lpi3_scratch/Scratch/Assembly.lean`
+- `/tmp/lpi3_scratch/Scratch/AllChildren.lean`
+- `/tmp/lpi3_scratch/Scratch/E2E.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) is byte-identical to the workspace Contract and Submission. The child scope is import GMT.Ch06.Submission plus the replayed namespace and opens. It provides the contract notions (IsRectifiableTriple, tauAction, IsIntegerMultiplicity) and SimonGMT Ch03 Rectifiable (CountablyRectifiable with mono/range/iUnion, HasWeightedApproximateTangentSpaceAt, .unique for θ x ≠ 0). It also provides Ch06 n-vectors (NVector = Covector →L[ℝ] ℝ with the operator norm, simpleNVector, nVectorPushforward_simple), test forms, currents and support_subset_domain, plus Ch02 euclideanHausdorffMeasure_image_le_of_lipschitzOn.
+
+It does not provide:
+- SimonGMT SubmanifoldCover (countablyRectifiable_image_contDiffOn_open) or Mathlib's Multilinear.FiniteDimensional; both facts are therefore separate import-free leaves.
+- LocallyLipschitzOn.comp.
+- Instance search on NVector for ContinuousAdd, PseudoMetrizableSpace, ContinuousENorm and NormSMulClass; the verified workarounds are recorded in the child texts.
+
+No lpf_pi_* name is reserved in dag.json, and leaf plans forbid helper declarations, so every child script is a single theorem. All 11 frozen statements validate and elaborate in the comparator scope. All 11 children are fully proved in Lean with only propext, Classical.choice and Quot.sound, using only their declared siblings. The frozen parent type follows from them and the eight uncles by the stated assembly; its only sorryAx comes from the uncle stubs.

@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "slicing_im_si_",
+        "theorem ae_tendsto_average|theorem tendsto_Icc_vitaliFamily_left|exists_measurable_subset_ae_eq|theorem restrict_congr_set|theorem le_restrict_apply",
+        "git show 27af9b191b732eae73e3d693d8903e52f89962ce:GMT/Ch06/Submission.lean",
+        "git show 012eb78d57e01b1e54de6b8f0e5cf786950b91c0:GMT/Ch06/Submission.lean",
+        "python3 run_lean.py TypesAndInline.lean",
+        "python3 run_lean.py FullAudit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/OneDim.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Operator/Bilinear.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-identity-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-slice-identity-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-im-series-a1-tsum-tau-a1-unit-bound-a1/isolated-comparator-result.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-pointwise-a1-cutoff-tendsto-a1/isolated-comparator-result.json",
+        "/tmp/sid_independent_audit_zs4auf05/TypesAndInline.lean",
+        "/tmp/sid_independent_audit_zs4auf05/FullAudit.lean",
+        "/tmp/sid_independent_audit_zs4auf05/FullAudit.lean.log"
+      ],
+      "conclusion": "The split is appropriate for the selected slice-identity contract. All eight one-line propositions independently elaborate in the frozen comparator scope and match their prose. Every name is bare; the six new names have no collision, and both reused declarations have identical frozen types, compatible pinned inputs and passing receipts. Dependencies are correctly directed and acyclic. Independent compilation of the supplied proofs and parent assembly succeeds using only propext, Classical.choice and Quot.sound. The assembly establishes the exact selected parent type assuming only its existing coarea and Lipschitz-Leibniz dependencies. The inline contraction's type and evaluation were independently checked by rfl; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The operator-norm bound, orthonormal unit lengths and absolute-value sign cancellation prove the exact statement, including n = 0."
+    },
+    {
+      "key": "coarea_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conclusions follow from the explicit coarea hypothesis using level-set indicators and measurable null hulls. The proof handles arbitrary M and preserves the required quantifier order."
+    },
+    {
+      "key": "borel_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact-support localization supplies the required measurable representatives and integrable domination. The declared unit_bound dependency and wedge linearity establish both identities, including G = 0 and points outside the support."
+    },
+    {
+      "key": "signed_coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite positive and negative parts establish almost-everywhere slice integrability and integrability of the actual Bochner slice integral. Band indicators then prove the equality for every a and b without assuming M measurable."
+    },
+    {
+      "key": "slice_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Borel subset replacement and explicit null-transfer hypothesis justify equality of restricted measures before transferring integrand equality. No unstated measurability or integrability assumption on g or F is needed."
+    },
+    {
+      "key": "left_lebesgue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Vitali differentiation, admissible left intervals, reparametrization and null endpoints prove exactly the stated right-neighborhood limit under local integrability."
+    },
+    {
+      "key": "cutoff_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the Lipschitz constant, measurability, bound and tangent-space membership. Its five derivative cases correctly handle both endpoints through level-set vanishing and the Lipschitz little-o estimate."
+    },
+    {
+      "key": "cutoff_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. McShane extension supplies measurability, vanishing outside U permits substitution, and domination plus pointwise convergence proves the exact filter limit. It applies to both parent restriction terms."
+    }
+  ],
+  "required_changes": []
+}

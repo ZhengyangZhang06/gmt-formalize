@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.skeleton_polyhedral-a1",
+  "parent_id": "root.deformation-a1",
+  "depth": 2,
+  "title": "Replacing a tangential skeleton current by a lattice chain (5.1, printed (26)–(37))",
+  "statement": "Replacement of a skeleton current by a lattice chain (Simon, printed displays (26)–(37) of the proof of 5.1). For all m, ℓ ∈ ℕ with ℓ ≥ 1 (n := m + 1, d := n + ℓ) there is C = C(m,ℓ) ∈ [0,∞) such that for every Q ∈ D_n(ℝ^d) with M(Q) + M(∂Q) < ∞, spt Q ⊆ L_n := ⋃_F latticeFace 1 F, and the tangential property [for every face index F = (z, α), every open ball B with B ∩ L_n ⊆ latticeFace 1 F and every test n-form ω with tsupport ω ⊆ B and ω(x)(e_{α₁},…,e_{α_n}) = 0 for all x, Q(ω) = 0], there are β : LatticeFaceIndex (m+1) (m+1+ℓ) → ℝ and P, S ∈ D_n(ℝ^d) with IsLatticeChain 1 β P (P = Σ_F β_F[[F]]), Q(ω) − P(ω) = S(ω) for all ω, M(P) ≤ C M(Q), M(∂P) ≤ C M(∂Q), M(S) ≤ C M(∂Q), spt P ⊆ {dist(·, spt Q) ≤ √n}, spt ∂P ∪ spt S ⊆ {dist(·, spt ∂Q) ≤ √n} (closed thickenings), and, if Q is integer multiplicity, β_F ∈ ℤ for all F and P is integer multiplicity.",
+  "lean_statement": "∀ m ℓ : ℕ, 1 ≤ ℓ → ∃ C : ℝ≥0, ∀ Q : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), Q.mass + Q.boundary.mass < ∞ → Q.support ⊆ ⋃ F : LatticeFaceIndex (m + 1) (m + 1 + ℓ), latticeFace 1 F → (∀ (F : LatticeFaceIndex (m + 1) (m + 1 + ℓ)) (y : Eucl (m + 1 + ℓ)) (r : ℝ), ball y r ∩ (⋃ G : LatticeFaceIndex (m + 1) (m + 1 + ℓ), latticeFace 1 G) ⊆ latticeFace 1 F → ∀ ω : TestFormOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1), tsupport (ω : DifferentialForm (Eucl (m + 1 + ℓ)) (m + 1)) ⊆ ball y r → (∀ x, (ω : DifferentialForm (Eucl (m + 1 + ℓ)) (m + 1)) x (fun j => EuclideanSpace.single (F.2 j) (1 : ℝ)) = 0) → Q ω = 0) → ∃ (β : LatticeFaceIndex (m + 1) (m + 1 + ℓ) → ℝ) (P S : GeometricCurrentOn (univ : Set (Eucl (m + 1 + ℓ))) (m + 1)), IsLatticeChain 1 β P ∧ (∀ ω, Q ω - P ω = S ω) ∧ P.mass ≤ C * Q.mass ∧ P.boundary.mass ≤ C * Q.boundary.mass ∧ S.mass ≤ C * Q.boundary.mass ∧ P.support ⊆ cthickening (Real.sqrt ((m + 1 : ℕ) : ℝ)) Q.support ∧ P.boundary.support ∪ S.support ⊆ cthickening (Real.sqrt ((m + 1 : ℕ) : ℝ)) Q.boundary.support ∧ (IsIntegerMultiplicity Q → (∀ F, ∃ k : ℤ, β F = k) ∧ IsIntegerMultiplicity P)",
+  "lean_name": "deformation_skeleton_polyhedral",
+  "depends_on": [
+    "root.deformation-a1.mass_restriction-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.deformation-a1.mass_restriction-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-skeleton-polyhedral-a1-a1"
+}

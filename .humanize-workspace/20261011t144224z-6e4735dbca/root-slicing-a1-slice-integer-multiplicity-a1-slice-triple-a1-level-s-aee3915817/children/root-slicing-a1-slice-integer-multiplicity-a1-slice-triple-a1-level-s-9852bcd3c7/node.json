@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.level_set_charts-a1.c1_extension-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.slice_triple-a1.level_set_charts-a1",
+  "depth": 5,
+  "title": "A real function that is C¹ at a point agrees on a ball around it with a globally C¹ function",
+  "statement": "Let m ∈ ℕ, g : ℝ^m → ℝ and x ∈ ℝ^m (ℝ^m = EuclideanSpace ℝ (Fin m)), and assume g is of class C¹ at x (ContDiffAt ℝ 1 g x). Then there are ρ > 0 and a function g̃ : ℝ^m → ℝ of class C¹ on all of ℝ^m (ContDiff ℝ 1 g̃) such that g̃(v) = g(v) for every v in the open ball B(x, ρ).",
+  "lean_statement": "∀ (m : ℕ) (g : Eucl m → ℝ) (x : Eucl m), ContDiffAt ℝ 1 g x → ∃ ρ : ℝ, 0 < ρ ∧ ∃ g' : Eucl m → ℝ, ContDiff ℝ 1 g' ∧ ∀ v ∈ ball x ρ, g' v = g v",
+  "lean_name": "slicing_im_st_lsc_c1_extension",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-slice-triple-a1-level-s-9852bcd3c7-a1"
+}

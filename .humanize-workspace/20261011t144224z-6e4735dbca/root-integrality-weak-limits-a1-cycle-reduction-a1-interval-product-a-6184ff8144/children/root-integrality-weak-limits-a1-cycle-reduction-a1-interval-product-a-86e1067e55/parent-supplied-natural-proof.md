@@ -1,0 +1,142 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1`
+- Child DAG node: `root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_triple-a1.slab_transfer-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Steps 8 and 9 of the parent proof (integrability and a.e. strong measurability transported through the measure identity (D2) by the measurable embedding Φ′ and the product structure), stated for an arbitrary admissible A (the parent uses (a) with A = M ∩ π(K′), f = θ and (b) with A = M, g = ξ).
+
+Notation (as in the parent). E := ℝ^P = Eucl P, E′ := ℝ^{P+1} = Eucl (P+1), Hᵏ := μHE[k], L¹ := Lebesgue measure (volume) on ℝ, equiv_n := EuclideanSpace.equiv (Fin n) ℝ : Eucl n ≃L[ℝ] (Fin n → ℝ). Φ(s, x) := equiv_{P+1}⁻¹(Fin.cons s (equiv_P x)) = (s, x_1, …, x_P); Φ′ : ℝ × E → E′, Φ′(p) := Φ(p.1, p.2); π(y) := equiv_P⁻¹(Fin.tail (equiv_{P+1} y)) = (y_1, …, y_P); y₀ := equiv_{P+1}(y)(0); O := {y ∈ E′ : y₀ ∈ (0,1)}; for A ⊆ E, S_A := {y ∈ E′ : π(y) ∈ A ∧ y₀ ∈ (0,1)} and ν_A := Hᵐ⌞A. Coordinate facts (Fin.cons/Fin.tail computations with ContinuousLinearEquiv.apply_symm_apply, symm_apply_apply, Fin.cons_zero, Fin.cons_succ, Fin.tail_cons, Fin.cons_self_tail): (F1) π(Φ(s,x)) = x, (Φ(s,x))₀ = s and Φ(y₀, π(y)) = y. (MP) is the hypothesis: for every A ⊆ E that is Hᵐ-null-measurable, countably m-rectifiable and has Hᵐ(A ∩ K) < ∞ for every compact K, H^{m+1}⌞{y : π(y) ∈ A} = Φ′_*(L¹ ⊗ Hᵐ⌞A). ρ_A := (L¹⌞(0,1)) ⊗ ν_A.
+
+1. (Measure identity.) By the sibling slab_measure (iwl_cr_ip_pt_slab_restrict_eq_map) applied to (MP) and A: H^{m+1}⌞S_A = Φ′_*ρ_A.
+2. (Finiteness.) For compact K, ν_A(K) = Hᵐ(K ∩ A) = Hᵐ(A ∩ K) < ∞ (Measure.restrict_apply, K Borel), so ν_A is finite on compact sets, hence σ-finite and s-finite (instance inference from IsFiniteMeasureOnCompacts, E σ-compact). L¹⌞(0,1) is a finite measure, L¹((0,1)) = 1 (instance Real.isFiniteMeasure_restrict_Ioo).
+3. (Φ′ is a measurable embedding.) Φ′ is a homeomorphism ℝ × E → E′ with inverse y ↦ (y₀, π(y)): (y₀, π(y)) at y = Φ′(s, x) equals (s, x) by (F1), and Φ′(y₀, π(y)) = equiv_{P+1}⁻¹(Fin.cons (equiv_{P+1} y 0) (Fin.tail (equiv_{P+1} y))) = y (Fin.cons_self_tail); Φ′ is continuous (Continuous.finCons) and the inverse is continuous (Continuous.prodMk of the coordinate map y ↦ y₀ and of π, the latter by continuous_pi over the coordinates i.succ). Hence Φ′ is a measurable embedding (Homeomorph.measurableEmbedding).
+4. (Composition with π.) For p = (s, x), π(Φ′(p)) = equiv_P⁻¹(Fin.tail (Fin.cons s (equiv_P x))) = equiv_P⁻¹(equiv_P x) = x (apply_symm_apply, Fin.tail_cons, symm_apply_apply). Hence (h ∘ π) ∘ Φ′ = h ∘ Prod.snd pointwise, for every function h on E.
+5. (Proof of (a).) Let f be Hᵐ-integrable on A, i.e. f is ν_A-integrable. By definition IntegrableOn (f ∘ π) S_A H^{m+1} means that f ∘ π is integrable for H^{m+1}⌞S_A, which is Φ′_*ρ_A by Step 1; by MeasurableEmbedding.integrable_map_iff (Step 3) this is equivalent to ρ_A-integrability of (f ∘ π) ∘ Φ′. Now f ∘ Prod.snd is ρ_A-integrable by Integrable.comp_snd (f ν_A-integrable, L¹⌞(0,1) finite, ν_A s-finite; by Tonelli ∫|f(x)| dρ_A(s, x) = L¹((0,1))·∫|f| dν_A < ∞), and (f ∘ π) ∘ Φ′ = f ∘ Prod.snd pointwise by Step 4 (Integrable.congr). This proves (a).
+6. (Proof of (b).) Let g be ν_A-a.e. strongly measurable. By Step 1 and MeasurableEmbedding.aestronglyMeasurable_map_iff (Step 3), g ∘ π is a.e. strongly measurable for H^{m+1}⌞S_A = Φ′_*ρ_A iff (g ∘ π) ∘ Φ′ is a.e. strongly measurable for ρ_A. Prod.snd : ℝ × E → E is measurable and quasi-measure-preserving from ρ_A to ν_A (Measure.quasiMeasurePreserving_snd, ν_A s-finite: for Borel B, (Prod.snd)_*ρ_A(B) = ρ_A(ℝ × B) ≤ (L¹⌞(0,1))(ℝ)·ν_A(B) = ν_A(B) (Measure.map_apply, Measure.prod_prod_le), so ν_A(B) = 0 implies (Prod.snd)_*ρ_A(B) = 0), so g ∘ Prod.snd is ρ_A-a.e. strongly measurable (AEStronglyMeasurable.comp_quasiMeasurePreserving). Since (g ∘ π) ∘ Φ′ = g ∘ Prod.snd pointwise (Step 4; AEStronglyMeasurable.congr), (b) follows. ∎
+
+Formalization aid. The following tactic proof, placed after `theorem Submission.iwl_cr_ip_pt_slab_transfer : (<the frozen Lean type of this child, verbatim>) := by`, was kernel-checked in the contract scope (namespace GMT.Ch06 with the contract's opens) after import GMT.Ch06.Submission at the frozen commit d8d46c9 with the pinned toolchain v4.35.0-rc3 / Mathlib 25730c7c; #print axioms = [propext, Classical.choice, Quot.sound]. Besides Mathlib it uses only the sibling Submission.iwl_cr_ip_pt_slab_restrict_eq_map (slab_measure).
+  intro P m hMP A hA1 hA2 hA3
+  have hD := Submission.iwl_cr_ip_pt_slab_restrict_eq_map P m hMP A hA1 hA2 hA3
+  have : IsFiniteMeasureOnCompacts ((μHE[m] : Measure (Eucl P)).restrict A) :=
+    ⟨fun K hK => by
+      rw [Measure.restrict_apply hK.measurableSet, inter_comm]
+      exact hA3 K hK⟩
+  let Φh : ℝ × Eucl P ≃ₜ Eucl (P + 1) :=
+    { toFun := fun p => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))
+      invFun := fun y => (EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0,
+        (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))
+      left_inv := fun p => by
+        rcases p with ⟨s, x⟩
+        simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_zero, Fin.tail_cons,
+          ContinuousLinearEquiv.symm_apply_apply]
+      right_inv := fun y => by
+        simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.cons_self_tail,
+          ContinuousLinearEquiv.symm_apply_apply]
+      continuous_toFun := by
+        refine (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm.continuous.comp ?_
+        exact Continuous.finCons continuous_fst
+          ((EuclideanSpace.equiv (Fin P) ℝ).continuous.comp continuous_snd)
+      continuous_invFun := by
+        refine Continuous.prodMk ?_ ?_
+        · exact (continuous_apply 0).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous
+        · refine (EuclideanSpace.equiv (Fin P) ℝ).symm.continuous.comp ?_
+          exact continuous_pi fun i =>
+            (continuous_apply i.succ).comp (EuclideanSpace.equiv (Fin (P + 1)) ℝ).continuous }
+  have hΦm : MeasurableEmbedding (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+      (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) := Φh.measurableEmbedding
+  have hcomp : ∀ p : ℝ × Eucl P, (EuclideanSpace.equiv (Fin P) ℝ).symm
+      (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm
+        (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))))) = p.2 := by
+    intro p
+    simp only [ContinuousLinearEquiv.apply_symm_apply, Fin.tail_cons,
+      ContinuousLinearEquiv.symm_apply_apply]
+  refine ⟨fun f hf => ?_, fun g hg => ?_⟩
+  · rw [IntegrableOn, hD, hΦm.integrable_map_iff]
+    refine (Integrable.comp_snd hf ((volume : Measure ℝ).restrict (Ioo (0 : ℝ) 1))).congr
+      (Filter.Eventually.of_forall fun p => ?_)
+    simp only [Function.comp_apply, hcomp]
+  · rw [hD, hΦm.aestronglyMeasurable_map_iff]
+    refine (hg.comp_quasiMeasurePreserving Measure.quasiMeasurePreserving_snd).congr
+      (Filter.Eventually.of_forall fun p => ?_)
+    simp only [Function.comp_apply, hcomp]
+
+## Key steps
+
+1. slab_measure gives H^{m+1}⌞S_A = Φ′_*((L¹⌞(0,1)) ⊗ ν_A); ν_A is s-finite and L¹⌞(0,1) finite.
+2. Φ′ is a homeomorphism with inverse y ↦ (y₀, π y), hence a measurable embedding; π ∘ Φ′ = Prod.snd.
+3. (a) integrable_map_iff reduces to integrability of f ∘ Prod.snd for the product measure, which is Integrable.comp_snd.
+4. (b) aestronglyMeasurable_map_iff reduces to g ∘ Prod.snd, a.e. strongly measurable since Prod.snd is quasi-measure-preserving.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean; sha256sum GMT/Ch06/Contract.lean GMT/Ch06/Submission.lean`
+- `python3 -I: dag.json status/lean_name/lean_statement of all root.integrality_weak_limits-a1* nodes (incl. hausdorff_product-a1.* and interval_product-a1.* siblings) and the set of all reserved lean_names`
+- `grep -rlo 'iwl_cr_ip_pt_' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca (no match); grep -rho 'iwl_cr_ip_[A-Za-z_]*' dag.json`
+- `python3 -I: parent nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a1/decomposition-v1.json (sibling types and the slice_formula/measure_identity formalization aids)`
+- `grep -n 'def CountablyRectifiable|countablyRectifiable_of_measure_zero|CountablyRectifiable.mono|def HasWeightedApproximateTangentSpaceAt' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean; grep -n 'abbrev NVector|def simpleNVector|simpleNVector_apply' Chapter06/FormsDuality.lean; 'abbrev Covector' Chapter06/Forms.lean`
+- `rg -n 'lemma Integrable.comp_snd|theorem quasiMeasurePreserving_snd|NullMeasurableSet.preimage|aestronglyMeasurable_map_iff|integrable_map_iff|Homeomorph.measurableEmbedding|theorem restrict_map|theorem prod_restrict|theorem prod_zero|theorem restrict_eq_zero|isFiniteMeasure_restrict_Ioo|AbsolutelyContinuous.mk|protected theorem prodMk|real_inner_comm' in the snapshot Mathlib`
+- `python3 -I /tmp/ptdec-q7k2/scripts/gen.py (lean_contract.validate_lean_statement and gmt-compare.py child_modules on the 5 child types; MP/slab/frame fragments asserted verbatim against the parent and sibling frozen types)`
+- `lake env lean /tmp/ptdec-q7k2/lean/Challenge_{slab_measure,slab_transfer,cylinder_null_measurable,cylinder_rectifiable,frame_orthonormal}.lean (comparator challenge layout)`
+- `lake env lean /tmp/ptdec-q7k2/lean/Children.lean (complete proofs of the 5 children; #print axioms)`
+- `lake env lean /tmp/ptdec-q7k2/lean/Assembly.lean and /tmp/ptdec-q7k2/lean/Full.lean (frozen parent type from the 5 children and the product_tangent stub; #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-6184ff8144/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-6184ff8144/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/AbsolutelyContinuous.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/NullMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ptdec-q7k2/lean/Children.lean`
+- `/tmp/ptdec-q7k2/lean/Full.lean`
+- `/tmp/ptdec-q7k2/lean/Assembly.lean`
+
+Snapshot: project d8d46c95, Mathlib 25730c7c. The snapshot's Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (sha256 ea3ee0dd…853d).
+
+No existing declaration states the slab measure identity, the slab transfer, cylinder null-measurability, cylinder rectifiability or the extended-frame orthonormality. The only related node is iwl_cr_hp_cylinder_null (decomposing, not accepted, different type), so nothing is reused. The names iwl_cr_ip_pt_* are unreserved.
+
+SimonGMT Chapter03/Rectifiable.lean supplies CountablyRectifiable (l.34), countablyRectifiable_of_measure_zero (l.45), CountablyRectifiable.mono (l.55) and HasWeightedApproximateTangentSpaceAt (l.330). FormsDuality.lean supplies NVector, simpleNVector and simpleNVector_apply.
+
+Mathlib supplies every tool used:
+- Integrable.comp_snd (Integral/Prod.lean:285, needs SFinite ν);
+- Measure.quasiMeasurePreserving_snd (Measure/Prod.lean:470);
+- NullMeasurableSet.preimage (QuasiMeasurePreserving.lean:134) and Measure.AbsolutelyContinuous.mk;
+- MeasurableEmbedding.aestronglyMeasurable_map_iff (AEStronglyMeasurable.lean:668) and MeasurableEmbedding.integrable_map_iff (Integrable.lean:374);
+- Homeomorph.measurableEmbedding (BorelSpace/Basic.lean:567);
+- Measure.restrict_map, Measure.restrict_eq_zero, Measure.prod_restrict and Measure.prod_zero;
+- Real.isFiniteMeasure_restrict_Ioo, LipschitzWith.prodMk, ContinuousLinearMap.lipschitzWith, orthonormal_iff_ite and PiLp.inner_apply.
+LipschitzWith.prodMap does not exist at this pin; prodMk is used instead.
+
+Lean checks:
+- All 5 child types elaborate in the comparator challenge layout.
+- All 5 children are fully proved with axioms [propext, Classical.choice, Quot.sound].
+- The frozen parent type is proved from them plus the sibling product_tangent stub; that stub is the only sorry.
+
+Public sources for the mathematics: Simon, Introduction to GMT, Ch. 6, 3.2(2) (product current), and Federer, GMT 3.2.23 (product formula behind (MP)).

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.cutoff_pullback-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1",
+  "depth": 4,
+  "title": "A compactly supported cut-off of the pull-back of a smooth form by a smooth map is a test form",
+  "statement": "Let P, Q, k ∈ ℕ, f : ℝ^P → ℝ^Q a C^∞ map, χ : ℝ^P → ℝ a C^∞ function with compact support, and ω a C^∞ k-form on ℝ^Q (ω : DifferentialForm (Eucl Q) k). Then there is η ∈ D^k(ℝ^P) = TestFormOn univ k with η(y) = χ(y) · (ω(f(y))).compContinuousLinearMap (Df(y)) for every y ∈ ℝ^P.",
+  "lean_statement": "∀ (P Q k : ℕ) (f : Eucl P → Eucl Q) (χ : Eucl P → ℝ) (ω : DifferentialForm (Eucl Q) k), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ → HasCompactSupport χ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω → ∃ η : TestFormOn (univ : Set (Eucl P)) k, ∀ y, (η : DifferentialForm (Eucl P) k) y = χ y • (ω (f y)).compContinuousLinearMap (fderiv ℝ f y)",
+  "lean_name": "iwl_cr_ci_cutoff_pullback_testForm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-cutoff-pullback-a1-a1"
+}

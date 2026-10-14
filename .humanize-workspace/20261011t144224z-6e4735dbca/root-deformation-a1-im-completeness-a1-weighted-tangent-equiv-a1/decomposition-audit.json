@@ -1,0 +1,95 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "HasWeightedApproximateTangentSpaceAt|HasApproximateTangentSpaceAt|def blowUpMap",
+        "approxTangent_of_weighted|weightedTangent_iff|weighted.*iff.*approx",
+        "imc_wte_density_bound_of_weightedTangent|imc_wte_approxTangent_of_weightedTangent",
+        "MeasurableEquiv.restrict_map|MeasurableEmbedding.restrict_map|theorem lintegral_const_mul",
+        "theorem (norm_integral_le_lintegral_norm|MeasurableEquiv.restrict_map|MeasurableEmbedding.integral_map|integral_smul_measure)|theorem of_ae_sdiff_eq_zero|theorem setIntegral_mono_set|theorem setIntegral_mono_ae_restrict",
+        "git show 8389acdfdd73d9fc3fa8f08ede1aff9d04d17e88:GMT/Ch06/Submission.lean",
+        "git show ad4fb1886aef9c0e0a41307650ae9da486277e7b:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wte_audit_51784262/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/wte_audit_51784262/ProofsAndContracts.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1-weighted-tangent-equiv-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-completeness-a1-weighted-tangent-equiv-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/sources/chapter-03-source.txt",
+        "/tmp/wte_audit_51784262/Types.lean",
+        "/tmp/wte_audit_51784262/ProofsAndContracts.lean"
+      ],
+      "conclusion": "Independently confirmed the pinned revisions and recomputed the requested parent digest. Searches found no matching weighted-to-unweighted theorem in the snapshot project/mathlib and no existing declarations using the two new names. All nine frozen types pass validation and elaborate independently before child implementations exist. All names are bare identifiers. The seven reused declarations have passing comparator records and byte-identical frozen types; their tested proof bodies match their accepted commits. Independent compilation verifies all nine contracts with only standard axioms. Parent assembly also compiles, assuming only the exact frozen pending zero_density prerequisite. The full graph, including existing child edges and proposed reuse, is acyclic. The split is appropriate: the density and converse-transfer obligations complement the accepted transfers, and the supplied Lusin/zero-density assembly proves the selected equivalence simultaneously for every Q."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_change_of_variables",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree, including arbitrary sets and functions. The measurable-equivalence, restriction and measure-scaling argument proves the identity without hidden measurability or integrability assumptions. Reuse is valid with the identical accepted type."
+    },
+    {
+      "key": "density_bound_of_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff argument uses local finiteness to justify integral comparison, then converts the real bound to the stated ENNReal inequality. It requires no missing measurability assumption on S. Its dependency is correctly directed."
+    },
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The density hypotheses supply eventual finiteness of the added portion and vanishing normalized errors. Null-measurability and local finiteness justify the integral splitting; the dimension condition is inherited. The exact contract follows non-circularly."
+    },
+    {
+      "key": "weighted_tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The three-term argument proves the stated forward transfer using the tangent density bound, continuity and weighted remainder decay. Local integrability suffices without local finiteness of M. No unstated strict positivity or division by θ(y) is used."
+    },
+    {
+      "key": "blowup_integral_split",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Support localization establishes every integrability needed before additivity and linearity are applied. The disjoint null-measurable decomposition gives precisely the eventual identity in the frozen type, without tangent or positivity assumptions."
+    },
+    {
+      "key": "continuity_error_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit epsilon estimate combines continuity within C with its density bound. The unconditional Bochner norm inequality handles possible non-integrability, and finiteness justifies toReal monotonicity. Neither membership y ∈ C nor extra measurability is required."
+    },
+    {
+      "key": "remainder_vanishes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Nonnegativity and null-measurability justify the restricted norm estimate. Density convergence gives eventual finiteness; rescaling and continuity of toReal at zero yield the claimed limit. The proof correctly covers the absence of integrability assumptions."
+    },
+    {
+      "key": "weighted_density_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cutoff supplies a bounded weighted integral, while continuity and θ(y) > 0 give the lower bound θ(y)/2 on C near y. All comparison integrals are justified, and conversion through toNNReal produces the exact bound. The fresh declaration uses only its listed dependency."
+    },
+    {
+      "key": "tangent_of_weighted_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every sibling application has its hypotheses supplied. The splitting identity and two vanishing errors isolate θ(y) times the unweighted integral; strict positivity permits cancellation. Change of variables and inherited finrank establish the exact conclusion without circular reliance."
+    }
+  ],
+  "required_changes": []
+}

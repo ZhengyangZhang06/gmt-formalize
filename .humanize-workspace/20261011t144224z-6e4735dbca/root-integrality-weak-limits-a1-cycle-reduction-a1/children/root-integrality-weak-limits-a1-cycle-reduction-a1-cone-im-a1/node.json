@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1",
+  "depth": 3,
+  "title": "Cones over integer multiplicity currents are integer multiplicity",
+  "statement": "Fix P, m ∈ ℕ and assume (H_push): for every integer multiplicity Z ∈ D_{m+1}(ℝ^{P+1}) and every C^∞ map f : ℝ^{P+1} → ℝ^P with f⁻¹(K) ∩ spt Z compact for every compact K ⊆ ℝ^P, there is an integer multiplicity S ∈ D_{m+1}(ℝ^P) with S(ω) = Z(η) whenever ω ∈ D^{m+1}(ℝ^P), η ∈ D^{m+1}(ℝ^{P+1}) and η(y) = ω(f(y))∘Df(y) (i.e. (ω(f y)).compContinuousLinearMap (fderiv ℝ f y)) for all y in an open set containing spt Z. Let R ∈ ℝ, X ∈ D_m(ℝ^P) integer multiplicity with spt X ⊆ B̄_R(0), and C ∈ D_{m+1}(ℝ^P) with Cone(X, C), i.e. C(ω) = X(ψ) whenever ω ∈ D^{m+1}(ℝ^P), ψ ∈ D^m(ℝ^P) and ψ(x)(v) = ∫_0^1 t^m ω(tx)(x, v) dt for all x in some open N ⊇ spt X and all v ∈ (ℝ^P)^m. Then C is integer multiplicity.",
+  "lean_statement": "∀ (P m : ℕ), (∀ (Z : GeometricCurrentOn (univ : Set (Eucl (P + 1))) (m + 1)) (f : Eucl (P + 1) → Eucl P), IsIntegerMultiplicity Z → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f → (∀ K : Set (Eucl P), IsCompact K → IsCompact (f ⁻¹' K ∩ Z.support)) → ∃ S : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1), IsIntegerMultiplicity S ∧ ∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (η : TestFormOn (univ : Set (Eucl (P + 1))) (m + 1)), (∃ N : Set (Eucl (P + 1)), IsOpen N ∧ Z.support ⊆ N ∧ ∀ y ∈ N, (η : DifferentialForm (Eucl (P + 1)) (m + 1)) y = ((ω : DifferentialForm (Eucl P) (m + 1)) (f y)).compContinuousLinearMap (fderiv ℝ f y)) → S ω = Z η) → ∀ (R : ℝ) (X : GeometricCurrentOn (univ : Set (Eucl P)) m) (C : GeometricCurrentOn (univ : Set (Eucl P)) (m + 1)), IsIntegerMultiplicity X → X.support ⊆ closedBall 0 R → (∀ (ω : TestFormOn (univ : Set (Eucl P)) (m + 1)) (ψ : TestFormOn (univ : Set (Eucl P)) m), (∃ N : Set (Eucl P), IsOpen N ∧ X.support ⊆ N ∧ ∀ x ∈ N, ∀ v : Fin m → Eucl P, (ψ : DifferentialForm (Eucl P) m) x v = ∫ t in (0 : ℝ)..1, t ^ m * (ω : DifferentialForm (Eucl P) (m + 1)) (t • x) (Fin.cons x v)) → C ω = X ψ) → IsIntegerMultiplicity C",
+  "lean_name": "iwl_cr_cone_integer_multiplicity",
+  "depends_on": [
+    "root.isoperimetric-a1.vanish_off_support-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1",
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.isoperimetric-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-vanish-off-support-a1-a1",
+      "result_commit": "3ccbe082e5193a06d9f4daa1ada94e9f6aaa7fa6",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.radial_operator-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-a1"
+}

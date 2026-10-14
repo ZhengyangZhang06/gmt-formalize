@@ -1,0 +1,58 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "theorem measurable_fderiv",
+        "theorem (withDensity_apply₀|withDensity_absolutelyContinuous)",
+        "theorem (integrable_withDensity_iff_integrable_smul₀|integrable_map_measure)",
+        "theorem integral_withDensity_eq_integral_smul₀",
+        "theorem (integral_map |map_apply_of_aemeasurable|lintegral_indicator₀|lintegral_indicator_one)",
+        "slicing_im_ll_twl_cie_weighted_transfer|slicing_im_ll_twl_cie_jacobian_measurable",
+        "rg -n 'theorem (integral_map_withDensity|map_withDensity|integral_withDensity_map|withDensity_map)' Mathlib/MeasureTheory",
+        "git show 9fc44225b304fca8af9dead3256575ef03818d1e:GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cie_independent_review_26gj0_py/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cie_independent_review_26gj0_py/Challenge0.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cie_independent_review_26gj0_py/Challenge1.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cie_independent_review_26gj0_py/Integrated.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-eff117824a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/cie_independent_review_26gj0_py/Children.lean",
+        "/tmp/cie_independent_review_26gj0_py/Challenge0.lean",
+        "/tmp/cie_independent_review_26gj0_py/Challenge1.lean",
+        "/tmp/cie_independent_review_26gj0_py/AcceptedCCV.lean",
+        "/tmp/cie_independent_review_26gj0_py/Integrated.lean"
+      ],
+      "conclusion": "The two-leaf split is appropriate for the selected parent. Pinned sources confirm unconditional measurable_fderiv and the required density lemmas without σ-finiteness. Both names are bare identifiers, with no collisions in the DAG, snapshot, or SimonGMT search. The existing change-of-variables dependency has a byte-identical accepted type; its dependency closure is acyclic and does not reach this parent. Both child types elaborate independently in comparator scope. Independent translations of the supplied proofs, exact Submission.X checks, and assembly of the exact frozen parent using the actual accepted dependency all compile. The children, reused dependency, and assembled parent use only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weighted_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches all prose hypotheses and conclusions. Each proof step is justified: the finite nonnegative density is a.e. measurable; absolute continuity transfers measurability of Φ; indicator tests establish the pushforward identity using null-measurable preimages, without σ-finiteness; integrability supplies the strong measurability needed for integral_map; density removal and Real.coe_toNNReal recover the exact real scalar weight. The proof is complete, independent of both child and parent conclusions, and its empty dependency list is correct."
+    },
+    {
+      "key": "jacobian_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition matches the arbitrary-map statement for all P and n. Euclidean completeness and the Borel instance on continuous linear maps satisfy measurable_fderiv. Evaluation, inner products, determinant, and square root give the stated continuous Gram-Jacobian map; measurable composition proves the exact conclusion. Matrix.of yields the intended matrix determinant with Fin n indices. The proof is complete and non-circular, and requires no DAG dependencies."
+    }
+  ],
+  "required_changes": []
+}

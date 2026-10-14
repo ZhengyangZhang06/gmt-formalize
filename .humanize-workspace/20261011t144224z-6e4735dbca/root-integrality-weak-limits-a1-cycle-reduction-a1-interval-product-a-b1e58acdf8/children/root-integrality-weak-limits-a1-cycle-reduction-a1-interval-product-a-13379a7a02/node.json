@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1.slice_identity-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1",
+  "depth": 5,
+  "title": "Blow-ups of (0,1) × M are integrals of blow-ups of M over the rescaled interval",
+  "statement": "Let P, m ∈ ℕ, Hᵏ := μHE[k], Φ(s, u) := (s, u_1, …, u_P) ∈ ℝ^{P+1} (Lean: (EuclideanSpace.equiv (Fin (P+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ u))), π(y) := (y_1, …, y_P) ∈ ℝ^P (Lean: (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P+1)) ℝ y))), y₀ := (EuclideanSpace.equiv (Fin (P+1)) ℝ y) 0, and assume (MP): for every A ⊆ ℝ^P that is Hᵐ-null-measurable, countably m-rectifiable and has Hᵐ(A ∩ K) < ∞ for every compact K, H^{m+1}⌞{y : π(y) ∈ A} = Φ′_*(L¹ ⊗ Hᵐ⌞A), where Φ′(p) := Φ(p.1, p.2) on ℝ × ℝ^P and L¹ is Lebesgue measure on ℝ. Let M ⊆ ℝ^P be Hᵐ-null-measurable and countably m-rectifiable with Hᵐ(M ∩ K) < ∞ for every compact K, θ : ℝ^P → ℝ Hᵐ-integrable on M ∩ K for every compact K, x ∈ ℝ^P, s₀ ∈ ℝ, f : ℝ^{P+1} → ℝ continuous with compact support, and r > 0. Put y* := Φ(s₀, x), M̃ := {y : π(y) ∈ M ∧ y₀ ∈ (0, 1)} and a_r(σ) := ∫_{blowUpMap x r '' M} f(Φ(σ, w))·θ(x + r·w) dHᵐ(w). Then ∫_{blowUpMap y* r '' M̃} f(z)·θ(π(y* + r·z)) dH^{m+1}(z) = ∫_ℝ 1_{(−s₀/r, (1−s₀)/r]}(σ)·a_r(σ) dσ.",
+  "lean_statement": "∀ (P m : ℕ), (∀ A : Set (Eucl P), NullMeasurableSet A (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m A → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (A ∩ K) < ∞) → (μHE[m + 1] : Measure (Eucl (P + 1))).restrict {y | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ A} = Measure.map (fun p : ℝ × Eucl P => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons p.1 (EuclideanSpace.equiv (Fin P) ℝ p.2))) ((volume : Measure ℝ).prod ((μHE[m] : Measure (Eucl P)).restrict A))) → ∀ (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (s₀ : ℝ), NullMeasurableSet M (μHE[m] : Measure (Eucl P)) → CountablyRectifiable m M → (∀ K : Set (Eucl P), IsCompact K → (μHE[m] : Measure (Eucl P)) (M ∩ K) < ∞) → (∀ K : Set (Eucl P), IsCompact K → IntegrableOn θ (M ∩ K) (μHE[m] : Measure (Eucl P))) → ∀ f : Eucl (P + 1) → ℝ, Continuous f → HasCompactSupport f → ∀ r : ℝ, 0 < r → ∫ z in Poincare.SimonGMT.Chapter03.blowUpMap ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s₀ (EuclideanSpace.equiv (Fin P) ℝ x))) r '' {y : Eucl (P + 1) | (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)) ∈ M ∧ EuclideanSpace.equiv (Fin (P + 1)) ℝ y 0 ∈ Ioo (0 : ℝ) 1}, f z * θ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ (((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons s₀ (EuclideanSpace.equiv (Fin P) ℝ x))) + r • z)))) ∂(μHE[m + 1] : Measure (Eucl (P + 1))) = ∫ σ : ℝ, (Ioc (-s₀ / r) ((1 - s₀) / r)).indicator (fun σ : ℝ => ∫ w in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f ((EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons σ (EuclideanSpace.equiv (Fin P) ℝ w))) * θ (x + r • w) ∂(μHE[m] : Measure (Eucl P))) σ",
+  "lean_name": "iwl_cr_ip_wt_slice_identity",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1.product_measure-a1",
+    "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1.product_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-blowup-change-of-variables-a1-a1",
+      "result_commit": "91a22d1bfc9063820dd1583526d3d097beffd0ec",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-13379a7a02-a1"
+}

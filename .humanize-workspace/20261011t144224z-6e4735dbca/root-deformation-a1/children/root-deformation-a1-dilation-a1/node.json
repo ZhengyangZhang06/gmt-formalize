@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.dilation-a1",
+  "parent_id": "root.deformation-a1",
+  "depth": 2,
+  "title": "Dilation calculus for currents (change of scale 5.1 → 5.3)",
+  "statement": "Dilation of currents (the change of scale x ↦ ρx used to pass from 5.1 to 5.3). For N ∈ ℕ, ρ > 0 and k ∈ ℕ, writing η_ρ^#ω(x) := ρ^k ω(ρx) (the pull-back of a k-form under x ↦ ρx) and calling (X, Y) a ρ-pair in degree k if Y(ω) = X(η) for all test forms ω, η with η(x) = ρ^k ω(ρx) for all x: (1) for every test k-form ω there is a test k-form η with η(x) = ρ^k ω(ρx) for all x; (2) for every X ∈ D_k(ℝ^N) there is Y with (X, Y) a ρ-pair (Y = (η_ρ)_#X); (3) for every ρ-pair (X, Y) in degree k: M(Y) = ρ^k M(X), spt Y = ρ·spt X, X integer multiplicity ⇒ Y integer multiplicity, and IsLatticeChain 1 β X ⇒ IsLatticeChain ρ β Y for every β : LatticeFaceIndex k N → ℝ; (4) if (X, Y) is a ρ-pair in degree k + 1 then ∂Y(ω) = ∂X(η) for all test k-forms ω, η with η(x) = ρ^k ω(ρx).",
+  "lean_statement": "∀ (N : ℕ) (ρ : ℝ), 0 < ρ → ∀ k : ℕ, (∀ ω : TestFormOn (univ : Set (Eucl N)) k, ∃ η : TestFormOn (univ : Set (Eucl N)) k, ∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) ∧ (∀ X : GeometricCurrentOn (univ : Set (Eucl N)) k, ∃ Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η)) ∧ (∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) k, (∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y ω = X η) → Y.mass = ENNReal.ofReal (ρ ^ k) * X.mass ∧ Y.support = (fun x => ρ • x) '' X.support ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity Y) ∧ ∀ β : LatticeFaceIndex k N → ℝ, IsLatticeChain 1 β X → IsLatticeChain ρ β Y) ∧ ∀ X Y : GeometricCurrentOn (univ : Set (Eucl N)) (k + 1), (∀ ω η : TestFormOn (univ : Set (Eucl N)) (k + 1), (∀ x, (η : DifferentialForm (Eucl N) (k + 1)) x = ρ ^ (k + 1) • (ω : DifferentialForm (Eucl N) (k + 1)) (ρ • x)) → Y ω = X η) → ∀ ω η : TestFormOn (univ : Set (Eucl N)) k, (∀ x, (η : DifferentialForm (Eucl N) k) x = ρ ^ k • (ω : DifferentialForm (Eucl N) k) (ρ • x)) → Y.boundary ω = X.boundary η",
+  "lean_name": "deformation_dilation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-dilation-a1-a1"
+}

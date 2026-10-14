@@ -1,0 +1,90 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_critical-a1`
+- Child DAG node: `root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_critical-a1.small_lip_partition-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Conventions. ℝⁿ = Eucl n with the Euclidean norm |·|. B(w, r) is the open ball. Dh(z) := fderiv ℝ h z is a continuous linear map ℝⁿ → ℝ with operator norm ‖·‖, and ‖Dh(z)‖₊ is the same number viewed in ℝ≥0. "h is ε-Lipschitz on D" means LipschitzOnWith ε h D, i.e. |h(z) − h(z′)| ≤ ε|z − z′| for z, z′ ∈ D. The proof extracts Steps 2–3 (first half) of the parent proof of chart_critical.
+
+1. (Regularity.) h is C¹ (ContDiff ℝ 1 h, and 1 ≠ 0). So h is differentiable at every point (`ContDiff.differentiable`) and z ↦ Dh(z) is continuous (`ContDiff.continuous_fderiv`). Hence z ↦ ‖Dh(z)‖₊ is continuous.
+
+2. (Good radii.) Let w ∈ E. Then ‖Dh(w)‖₊ = ‖0‖₊ = 0 < ε. Since z ↦ ‖Dh(z)‖₊ is continuous at w and {s ∈ ℝ≥0 : s < ε} is a neighbourhood of 0 (`Iio_mem_nhds`), the set {z : ‖Dh(z)‖₊ < ε} is a neighbourhood of w. So (`Metric.eventually_nhds_iff_ball`) there is r(w) > 0 with ‖Dh(z)‖₊ ≤ ε for every z ∈ B(w, r(w)). Fix such an r(w) for every w ∈ E (choice).
+
+3. (h is ε-Lipschitz on each good ball.) Let w ∈ E. The ball B(w, r(w)) is convex (`convex_ball`). h is differentiable at each of its points (Step 1), and ‖Dh(z)‖₊ ≤ ε on it (Step 2). By the mean value inequality on convex sets (`Convex.lipschitzOnWith_of_nnnorm_fderiv_le`), h is ε-Lipschitz on B(w, r(w)).
+
+4. (Countable subcover.) Index the open balls B(w, r(w)) by the points w of the subtype E. ℝⁿ is second countable, so by Lindelöf's lemma (`TopologicalSpace.isOpen_iUnion_countable`) there is a countable set T of indices (T ⊆ E) with ⋃_{w∈T} B(w, r(w)) = ⋃_{w∈E} B(w, r(w)). Every x ∈ E lies in its own ball B(x, r(x)), since r(x) > 0 (`mem_ball_self`). Hence E ⊆ ⋃_{w∈T} B(w, r(w)).
+
+5. (Empty case.) If T = ∅, Step 4 gives E ⊆ ∅, so E = ∅. Put D_k := ∅ for every k ∈ ℕ. These sets are Borel and pairwise disjoint, ⋃_k D_k = ∅ = E, and every function is ε-Lipschitz on ∅ (`lipschitzOnWith_empty`). This proves the claim in this case.
+
+6. (Enumeration.) Otherwise T is countable and nonempty, so there is a sequence (w_k)_{k∈ℕ} with T = {w_k : k ∈ ℕ} (`Set.Countable.exists_eq_range`). In particular w_k ∈ E for all k. Put B_k := B(w_k, r(w_k)). Each B_k is open, hence Borel, and E ⊆ ⋃_k B_k by Step 4.
+
+7. (Disjointification.) Let disjointed(B)_k := B_k ∖ ⋃_{l<k} B_l (Mathlib's `disjointed B k`) and define D_k := E ∩ disjointed(B)_k.
+ (a) Borel: disjointed(B)_k is Borel because every B_l is (`MeasurableSet.disjointed`), and E is Borel by hypothesis. So D_k is Borel.
+ (b) Pairwise disjoint: for k ≠ k′, disjointed(B)_k and disjointed(B)_{k′} are disjoint (`disjoint_disjointed`). Since D_k ⊆ disjointed(B)_k and D_{k′} ⊆ disjointed(B)_{k′}, the sets D_k and D_{k′} are disjoint.
+ (c) Union: ⋃_k D_k = E ∩ ⋃_k disjointed(B)_k = E ∩ ⋃_k B_k (`iUnion_disjointed`) = E, the last equality because E ⊆ ⋃_k B_k (Step 6).
+ (d) Lipschitz: D_k ⊆ disjointed(B)_k ⊆ B_k (`disjointed_subset`). Since w_k ∈ E, h is ε-Lipschitz on B_k = B(w_k, r(w_k)) by Step 3. A Lipschitz bound on a set holds on each of its subsets (`LipschitzOnWith.mono`), so h is ε-Lipschitz on D_k.
+
+8. (Conclusion.) In both cases (Step 5 and Steps 6–7) we have a sequence (D_k)_{k∈ℕ} of Borel, pairwise disjoint sets with ⋃_k D_k = E and h ε-Lipschitz on every D_k. This is the claim. ∎
+
+## Key steps
+
+1. h ∈ C¹ makes h differentiable and Dh continuous; since Dh = 0 on E, each w ∈ E has r(w) > 0 with ‖Dh‖₊ ≤ ε on B(w, r(w)).
+2. Mean value inequality on the convex balls: h is ε-Lipschitz on each B(w, r(w)).
+3. Lindelöf (second countability): countably many of these balls, B_k = B(w_k, r(w_k)), cover E. If none are needed, E = ∅ and D_k := ∅ works.
+4. D_k := E ∩ (B_k ∖ ⋃_{l<k} B_l) are Borel and pairwise disjoint with union E, and h is ε-Lipschitz on D_k ⊆ B_k.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (mode local-project; project_commit d8d46c9587747dee0751a1f780fcafdba16a3886; mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean GMT/Ch06/Contract.lean; cmp local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean GMT/Ch06/Submission.lean (both identical)`
+- `rg -n "μHE" mathlib/Mathlib; rg -n "theorem euclideanHausdorffMeasure_eq_volume" mathlib/Mathlib -A6`
+- `rg -n "euclideanHausdorffMeasure_eq_volume|hausdorffMeasure_image_le|lipschitzOnWith_of_nnnorm_fderiv_le|theorem isOpen_iUnion_countable|theorem lintegral_tsum|theorem lintegral_eq_zero_iff" mathlib/Mathlib`
+- `rg -n "theorem iUnion_disjointed|theorem disjoint_disjointed|theorem MeasurableSet.disjointed|theorem disjointed_subset" mathlib/Mathlib; rg -n "theorem lipschitzOnWith_empty" mathlib/Mathlib`
+- `rg -n "euclideanHausdorffMeasure_image_le_of_lipschitzOn" -A8 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare`
+- `python3 scan of dag.json (502 nodes): status and lean_statement of the coarea-a1 subtree (eilenberg type read verbatim); pattern scan for 'fderiv ℝ h w = 0', 'Pairwise (Function.onFun Disjoint', "∑'", 'Measurable φ', 'majorant', 'small'; lean_name collision check for slicing_im_coarea_cc_small_lip_partition and slicing_im_coarea_cc_null_of_small_majorants (none)`
+- `rg -l "slicing_im_coarea_cc_|small_lip_partition|null_of_small_majorants" nodes/ (no match); rg -n "slicing_im_coarea_cc" local-references/197bdd4b88278494/project GMT (no match)`
+- `python3: verifier/gmt-compare.py contract_scope(GMT/Ch06/Contract.lean, 'GMT.Ch06.main_theorem') -> namespace GMT.Ch06, replayed open/open scoped/noncomputable section/end commands`
+- `sed -n 1420,1520p book/chapter-02.txt (Simon Ch. 2 §6: 6.3, its consequence for C = {Jf = 0}, 6.4)`
+- `lake env lean /tmp/cc-decomp-scratch/T0.lean (#check of the cited Mathlib/SimonGMT lemma names)`
+- `lake env lean /tmp/cc-decomp-scratch/Assembly.lean; lake env lean /tmp/cc-decomp-scratch/Children.lean; lake env lean /tmp/cc-decomp-scratch/StmtA.lean; lake env lean /tmp/cc-decomp-scratch/final/Final.lean (exact child strings proved in comparator form; frozen parent type from frozen eilenberg type + children; #print axioms: propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Disjointed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-critical-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-critical-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-critical-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/cc-decomp-scratch/T0.lean`
+- `/tmp/cc-decomp-scratch/Assembly.lean`
+- `/tmp/cc-decomp-scratch/Children.lean`
+- `/tmp/cc-decomp-scratch/StmtA.lean`
+- `/tmp/cc-decomp-scratch/final/Final.lean`
+
+The snapshot (project d8d46c95, Mathlib 25730c7c) contains the frozen Ch06 contract, and Submission is byte-identical to it. It contains every library fact the split needs.
+
+Mathlib: ContDiff.continuous_fderiv and ContDiff.differentiable, Convex.lipschitzOnWith_of_nnnorm_fderiv_le, TopologicalSpace.isOpen_iUnion_countable, disjointed with iUnion_disjointed, disjoint_disjointed, disjointed_subset and MeasurableSet.disjointed, lipschitzOnWith_empty, Measurable.tsum, Measurable.iInf, lintegral_tsum, lintegral_eq_zero_iff, and EuclideanSpace.euclideanHausdorffMeasure_eq_volume (μHE[d] = volume on Eucl d).
+
+SimonGMT: Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn.
+
+No existing declaration or DAG node states either child. The accepted lpf_raf_lla_disjoint_lipschitz_pieces gives disjoint Lipschitz pieces only with uncontrolled constants, so it cannot give the ε-small partition. Both new lean_names are unused among the 502 DAG nodes and in the project.
+
+Lean checks in the exact comparator scope: both child types elaborate and are proved in scratch. The frozen parent type follows from the frozen slicing_im_coarea_eilenberg type together with the two child types. All of these depend only on propext, Classical.choice and Quot.sound.

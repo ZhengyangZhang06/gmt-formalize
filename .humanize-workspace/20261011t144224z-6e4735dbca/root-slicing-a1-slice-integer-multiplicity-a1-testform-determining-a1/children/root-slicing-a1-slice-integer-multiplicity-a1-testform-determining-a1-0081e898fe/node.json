@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.testform_determining-a1.current_tendsto-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.testform_determining-a1",
+  "depth": 4,
+  "title": "Currents are sequentially continuous at every test form",
+  "statement": "Let P, k ∈ ℕ and let U ⊆ ℝ^P (= Eucl P) be an arbitrary set. Let S ∈ D_k(U) (= GeometricCurrentOn U k: a linear functional on D^k(U) = TestFormOn U k with S(ϖ_l) → 0 whenever TestFormOnConverges ϖ 0). Let (e_l)_{l∈ℕ} be a sequence in D^k(U) and ω ∈ D^k(U) with TestFormOnConverges e ω. Then S(e_l) → S(ω) as l → ∞.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Eucl P)) (S : GeometricCurrentOn U k) (e : ℕ → TestFormOn U k) (ω : TestFormOn U k), TestFormOnConverges e ω → Tendsto (fun l => S (e l)) atTop (𝓝 (S ω))",
+  "lean_name": "slicing_im_td_current_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-testform-determining-a1-0081e898fe-a1"
+}
