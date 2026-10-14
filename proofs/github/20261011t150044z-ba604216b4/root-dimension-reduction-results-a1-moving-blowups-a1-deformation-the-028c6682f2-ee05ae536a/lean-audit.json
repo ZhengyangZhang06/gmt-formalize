@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "130f161473df25d4e0fa5c142ebc69bdff5cece020cb9d983580d7e226847ad4",
+  "git_delta": {
+    "base_commit": "2e0977f70c0902bd872b81113bdf5a8c2f132c98",
+    "candidate_commit": "0238425020891bc916b2251e7b0e586d9746664a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_cbm_bvt_l1_limit",
+    "diff_sha256": "abf02b0b203f7ee35ddbe113f9a4a16103e55e0d4684bda0913ef242d3c37414",
+    "source_sha256": "dfb81698fad9ba9b850b0e7da00055ee4dbdce6dae555b5f3396cf292446a8a0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_cbm_bvt_l1_limit",
+      "statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (S : Set α) (v : ℕ → α → ℝ) (w h : α → ℝ) (A B M : ℝ), MeasurableSet S → 0 ≤ B → (∀ k, IntegrableOn (v k) S μ) → IntegrableOn w S μ → AEStronglyMeasurable h (μ.restrict S) → (∀ x ∈ S, |h x| ≤ M) → Tendsto (fun k => ∫ x in S, |v k x - w x| ∂μ) atTop (𝓝 0) → (∀ k, |∫ x in S, v k x * h x ∂μ| ≤ A + B * ∫ x in S, |v k x| ∂μ) → |∫ x in S, w x * h x ∂μ| ≤ A + B * ∫ x in S, |w x| ∂μ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
