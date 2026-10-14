@@ -509,6 +509,116 @@ theorem Submission.cmcdt_lpi_cyl_fubini : ∀ (n : ℕ) (A : Set (Euclid n)), Me
     · simp only [he]
     · rw [← Measure.volume_eq_prod, ← hpre]
       exact (hmp.integrableOn_comp_preimage e.measurableEmbedding).2 hf
+/-- The suspension `Ĝ(t, u) = (t, G(u))` of `G : ℝⁿ → ℝᴺ` (deformation theorem, Lipschitz
+push-forward integrality, cylinder step).  If `Ĝ z = (z₀, G(tail z))` for every `z ∈ ℝⁿ⁺¹`, then
+(a) `Ĝ` is `max 1 L`-Lipschitz whenever `G` is `L`-Lipschitz, (b) `Ĝ(t, u) = (t, G(u))`, and
+(c) if `G` is differentiable at `u`, then `DĜ(t, u)` maps `ê₀` to `e₀` and `ê_{b+1}` to
+`(0, DG(u) e_b)`.  Write `Ĝ = Φ ∘ (π₀, G ∘ T)` with the continuous linear maps `T = tail`,
+`π₀ z = z₀` and `Φ(s, x) = (s, x)`; then `‖(s, x)‖² = s² + ‖x‖²` gives (a), and the chain rule
+gives `DĜ(t, u) ζ = (ζ₀, DG(u)(T ζ))`, hence (c). -/
+theorem Submission.cmcdt_lpi_cyl_suspension_map : ∀ (N n : ℕ) (G : Euclid n → Euclid N) (Gh : Euclid (n + 1) → Euclid (N + 1)), (∀ z, Gh z = WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0) (WithLp.ofLp (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))))) → (∀ L : NNReal, LipschitzWith L G → LipschitzWith (max 1 L) Gh) ∧ (∀ (t : ℝ) (u : Euclid n), Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp (G u)))) ∧ ∀ (t : ℝ) (u : Euclid n), DifferentiableAt ℝ G u → (fun a => fderiv ℝ Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single a 1)) = Fin.cons (EuclideanSpace.single 0 1) (fun b => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (fderiv ℝ G u (EuclideanSpace.single b 1))))) := by
+  intro N n G Gh hGh
+  -- the continuous linear maps `T z = tail z` and `Φ(s, x) = (s, x)`
+  let T : Euclid (n + 1) →L[ℝ] Euclid n := LinearMap.toContinuousLinearMap
+    { toFun := fun z => WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))
+      map_add' := fun x y => by ext i; simp [Fin.tail]
+      map_smul' := fun c x => by ext i; simp [Fin.tail] }
+  let Φ : ℝ × Euclid N →L[ℝ] Euclid (N + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun p => WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2))
+      map_add' := fun x y => by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      map_smul' := fun c x => by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+  have hT : ∀ z, T z = WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) := fun z => rfl
+  have hΦ : ∀ p, Φ p = WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) := fun p => rfl
+  -- `Ĝ = Φ ∘ (π₀, G ∘ T)`
+  have hGh' : Gh = fun z => Φ (EuclideanSpace.proj (0 : Fin (n + 1)) z, G (T z)) := by
+    funext z; rw [hGh]; rfl
+  -- `‖(s, x)‖² = s² + ‖x‖²`, and `z = (z₀, T z)`
+  have hnorm : ∀ (m : ℕ) (t : ℝ) (x : Euclid m),
+      ‖(WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (m + 1))‖ ^ 2 = t ^ 2 + ‖x‖ ^ 2 := by
+    intro m t x
+    rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, Fin.sum_univ_succ]
+    simp
+  have hsplit : ∀ z : Euclid (n + 1),
+      z = WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0) (WithLp.ofLp (T z))) := by
+    intro z; simp [hT]
+  refine ⟨?_, ?_, ?_⟩
+  · -- (a) `‖Ĝ x - Ĝ y‖² = (x₀ - y₀)² + ‖G(T x) - G(T y)‖² ≤ M² ‖x - y‖²`, `M = max 1 L`
+    intro L hL
+    apply LipschitzWith.of_dist_le_mul
+    intro x y
+    rw [dist_eq_norm, dist_eq_norm]
+    have hxy : ‖x - y‖ ^ 2 = (WithLp.ofLp x 0 - WithLp.ofLp y 0) ^ 2 + ‖T x - T y‖ ^ 2 := by
+      rw [hsplit (x - y), hnorm]; simp [map_sub]
+    have hG2 : ‖Gh x - Gh y‖ ^ 2 =
+        (WithLp.ofLp x 0 - WithLp.ofLp y 0) ^ 2 + ‖G (T x) - G (T y)‖ ^ 2 := by
+      rw [hGh x, hGh y, ← hT, ← hT]
+      have : (WithLp.toLp 2 (Fin.cons (WithLp.ofLp x 0) (WithLp.ofLp (G (T x)))) :
+            Euclid (N + 1)) - WithLp.toLp 2 (Fin.cons (WithLp.ofLp y 0) (WithLp.ofLp (G (T y)))) =
+          WithLp.toLp 2 (Fin.cons (WithLp.ofLp x 0 - WithLp.ofLp y 0)
+            (WithLp.ofLp (G (T x) - G (T y)))) := by
+        ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      rw [this, hnorm]
+    have hGL : ‖G (T x) - G (T y)‖ ≤ L * ‖T x - T y‖ := by
+      have := hL.dist_le_mul (T x) (T y); rwa [dist_eq_norm, dist_eq_norm] at this
+    have h1 : (1 : ℝ) ≤ ((max 1 L : NNReal) : ℝ) := by simp
+    have h2 : (L : ℝ) ≤ ((max 1 L : NNReal) : ℝ) := by simp
+    have hM0 : (0 : ℝ) ≤ ((max 1 L : NNReal) : ℝ) := NNReal.coe_nonneg _
+    have hsq : ‖Gh x - Gh y‖ ^ 2 ≤ (((max 1 L : NNReal) : ℝ) * ‖x - y‖) ^ 2 := by
+      rw [hG2, mul_pow, hxy]
+      have hA : (WithLp.ofLp x 0 - WithLp.ofLp y 0) ^ 2 ≤
+          ((max 1 L : NNReal) : ℝ) ^ 2 * (WithLp.ofLp x 0 - WithLp.ofLp y 0) ^ 2 := by
+        have : (1 : ℝ) ≤ ((max 1 L : NNReal) : ℝ) ^ 2 := one_le_pow₀ h1
+        nlinarith [sq_nonneg (WithLp.ofLp x 0 - WithLp.ofLp y 0)]
+      have hB : ‖G (T x) - G (T y)‖ ^ 2 ≤ ((max 1 L : NNReal) : ℝ) ^ 2 * ‖T x - T y‖ ^ 2 := by
+        have h0 : 0 ≤ ‖G (T x) - G (T y)‖ := norm_nonneg _
+        have h3 : ‖G (T x) - G (T y)‖ ≤ ((max 1 L : NNReal) : ℝ) * ‖T x - T y‖ :=
+          hGL.trans (mul_le_mul_of_nonneg_right h2 (norm_nonneg _))
+        calc ‖G (T x) - G (T y)‖ ^ 2 ≤ (((max 1 L : NNReal) : ℝ) * ‖T x - T y‖) ^ 2 :=
+              pow_le_pow_left₀ h0 h3 2
+          _ = _ := by ring
+      nlinarith [hA, hB]
+    exact (pow_le_pow_iff_left₀ (norm_nonneg _) (mul_nonneg hM0 (norm_nonneg _))
+      two_ne_zero).1 hsq
+  · -- (b) `(t, u)₀ = t` and `tail (t, u) = u`
+    intro t u
+    rw [hGh]; simp
+  · -- (c) chain rule: `DĜ(z) ζ = (ζ₀, DG(u)(T ζ))` at `z = (t, u)`; evaluate on `ê₀`, `ê_{b+1}`
+    intro t u hG
+    set z : Euclid (n + 1) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))
+    have hTz : T z = u := by simp [hT, z]
+    have h1 : HasFDerivAt (fun z => G (T z)) ((fderiv ℝ G u).comp T) z := by
+      have := hG.hasFDerivAt
+      rw [← hTz] at this
+      exact this.comp z T.hasFDerivAt
+    have hd : HasFDerivAt Gh
+        (Φ.comp ((EuclideanSpace.proj (0 : Fin (n + 1))).prod ((fderiv ℝ G u).comp T))) z := by
+      rw [hGh']
+      exact Φ.hasFDerivAt.comp z ((EuclideanSpace.proj (0 : Fin (n + 1))).hasFDerivAt.prodMk h1)
+    rw [hd.fderiv]
+    funext a
+    refine Fin.cases ?_ (fun b => ?_) a
+    · -- `ê₀ ↦ (1, DG(u) 0) = e₀`
+      simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.prod_apply, hΦ, hT,
+        Fin.cons_zero]
+      have h0 : (WithLp.toLp 2 (Fin.tail (WithLp.ofLp
+          (EuclideanSpace.single (0 : Fin (n + 1)) (1 : ℝ)))) : Euclid n) = 0 := by
+        ext j; simp [Fin.tail, Fin.succ_ne_zero]
+      rw [h0, map_zero]
+      ext i
+      refine Fin.cases ?_ (fun j => ?_) i
+      · simp
+      · simp
+    · -- `ê_{b+1} ↦ (0, DG(u) e_b)`
+      simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.prod_apply, hΦ, hT,
+        Fin.cons_succ]
+      have : (WithLp.toLp 2 (Fin.tail (WithLp.ofLp (EuclideanSpace.single b.succ (1 : ℝ)))) :
+          Euclid n) = EuclideanSpace.single b 1 := by
+        ext j; simp [Fin.tail]
+      rw [this]
+      ext i
+      refine Fin.cases ?_ (fun j => ?_) i
+      · simp
+      · simp
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
