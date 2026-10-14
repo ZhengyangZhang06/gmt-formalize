@@ -451,6 +451,65 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- `Hⁿ(Q ∩ B_ρ(y)) = ωₙρⁿ` for an `n`-dimensional linear subspace `Q` of `ℝᴾ`, `y ∈ Q` and
+`ρ > 0` (used in the proof of Simon 7.3.3(1), p. 191, for the density of the planes of a
+2-dimensional minimizing cone).  The inclusion `Q → ℝᴾ` is an isometry, so `Q ∩ B_ρ(y)` has the
+measure of the ball `B_ρ(y)` of `Q`; on `Q`, `μHE[n]` is the volume, Haar scaling gives
+`vol(B_ρ(y)) = ρⁿ vol(B_1(0))`, and orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume, so
+`vol(B_1(0)) = ωₙ`. -/
+theorem Submission.idtp_tdc_subspace_ball_measure : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (y : Euclid P) (ρ : ℝ), Module.finrank ℝ Q = n → y ∈ Q → 0 < ρ → μHE[n] ((Q : Set (Euclid P)) ∩ ball y ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+  intro P n Q y ρ hn hy hρ
+  subst hn
+  -- the inclusion `Q → ℝᴾ` is an isometry with range `Q`; `B_ρ(y)` pulls back to the ball of `Q`
+  have hball : μHE[Module.finrank ℝ Q] ((Q : Set (Euclid P)) ∩ ball y ρ) =
+      μHE[Module.finrank ℝ Q] (ball (⟨y, hy⟩ : Q) ρ) := by
+    rw [← isometry_subtype_coe.preimage_ball (⟨y, hy⟩ : Q) ρ,
+      isometry_subtype_coe.euclideanHausdorffMeasure_preimage, Subtype.range_coe, Set.inter_comm]
+  -- orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume and map `B_1(0)` onto `B_1(0)`
+  have hunit := (stdOrthonormalBasis ℝ Q).measurePreserving_repr.measure_preimage
+    (measurableSet_ball (x := (0 : Euclid (Module.finrank ℝ Q))) (ε := 1)).nullMeasurableSet
+  rw [LinearIsometryEquiv.preimage_ball, map_zero] at hunit
+  -- `μHE[n] = volume` on `Q`, then Haar scaling of balls
+  rw [hball, InnerProductSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_ball_of_pos _ _ hρ, hunit, mul_comm]
+  rfl
+
+/-- `Hⁿ({y : y - w ∈ V} ∩ B_R(0)) = ωₙ(√(R² - ‖w‖²))ⁿ` for an `n`-dimensional linear subspace `V`
+of `ℝᴾ`, an offset `w ∈ V^⊥` and `‖w‖ < R` (a plane in a ball, used in the proof of Simon 7.2.4,
+p. 184, for measures carried by finitely many parallel `n`-planes).  Put `ρ = √(R² - ‖w‖²) > 0`.
+By Pythagoras `‖t + w‖² = ‖t‖² + ‖w‖²` for `t ∈ V`, so the translation `t ↦ t + w`, an isometry,
+maps `V ∩ B_ρ(0)` onto the set; isometry invariance of `μHE[n]` and the subspace-ball formula
+`Hⁿ(V ∩ B_ρ(0)) = ωₙρⁿ` conclude. -/
+theorem Submission.cbr_ci_cp_fp_offset_plane_ball_measure : ∀ (P n : ℕ) (V : Submodule ℝ (Euclid P)) (w : Euclid P) (R : ℝ), Module.finrank ℝ V = n → w ∈ Vᗮ → ‖w‖ < R → μHE[n] ({y : Euclid P | y - w ∈ V} ∩ ball 0 R) = unitBallVolume n * ENNReal.ofReal (Real.sqrt (R ^ 2 - ‖w‖ ^ 2) ^ n) := by
+  intro P n V w R hn hw hR
+  -- the radius `ρ = √(R² - ‖w‖²)` is positive and `ρ² = R² - ‖w‖²`
+  have hpos : 0 < R ^ 2 - ‖w‖ ^ 2 := by nlinarith [norm_nonneg w]
+  have hρ : 0 < Real.sqrt (R ^ 2 - ‖w‖ ^ 2) := Real.sqrt_pos.2 hpos
+  have hρsq : Real.sqrt (R ^ 2 - ‖w‖ ^ 2) ^ 2 = R ^ 2 - ‖w‖ ^ 2 := Real.sq_sqrt hpos.le
+  -- Pythagoras: `‖t + w‖² = ‖t‖² + ‖w‖²` for `t ∈ V`, as `w ⊥ V`
+  have hpyth : ∀ t ∈ V, ‖t + w‖ ^ 2 = ‖t‖ ^ 2 + ‖w‖ ^ 2 := fun t ht => by
+    rw [sq, sq, sq]
+    exact norm_add_sq_eq_norm_sq_add_norm_sq_real (Submodule.inner_right_of_mem_orthogonal ht hw)
+  -- the translation `t ↦ t + w` maps `V ∩ B_ρ(0)` onto `{y | y - w ∈ V} ∩ B_R(0)`
+  have himage : (fun t => t + w) '' ((V : Set (Euclid P)) ∩ ball 0 (Real.sqrt (R ^ 2 - ‖w‖ ^ 2))) =
+      {y : Euclid P | y - w ∈ V} ∩ ball 0 R := by
+    ext y
+    simp only [Set.mem_image, Set.mem_inter_iff, SetLike.mem_coe, mem_ball_zero_iff,
+      Set.mem_ofPred_eq]
+    constructor
+    · rintro ⟨t, ⟨ht, htρ⟩, rfl⟩
+      refine ⟨by simpa using ht, ?_⟩
+      have h := hpyth t ht
+      nlinarith [norm_nonneg t, norm_nonneg w, norm_nonneg (t + w)]
+    · rintro ⟨hy, hyR⟩
+      refine ⟨y - w, ⟨hy, ?_⟩, sub_add_cancel y w⟩
+      have h := hpyth (y - w) hy
+      rw [sub_add_cancel] at h
+      nlinarith [norm_nonneg (y - w), norm_nonneg y]
+  -- isometry invariance of `μHE[n]`, then the subspace-ball formula with centre `0 ∈ V`
+  rw [← himage, (isometry_add_right w).euclideanHausdorffMeasure_image]
+  exact Submission.idtp_tdc_subspace_ball_measure P n V 0 _ hn V.zero_mem hρ
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
