@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "891a19e8e4a6f2e76f7dd2b51a171205c1a858cff9bca0cc40b0c79353ff5a35",
+  "git_delta": {
+    "base_commit": "6770a691bcbbac7b3f0d86c70a7f054be7cd674b",
+    "candidate_commit": "da5c0797093c8cabeeb9039e1f77da22226cb1bd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "ecf_cc_radial_homotopy_formula",
+    "diff_sha256": "eef93d6262cfa6307f0903427afcbf070839f741c955e3ca88077f9503171d8a",
+    "source_sha256": "beab5d01ac406d6f8d0f1320ce1553c8bb22b773a582d427475c884e64006b3a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ecf_cc_radial_homotopy_formula",
+      "statement": "∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x) ∧ ∀ x : Euclid P, exteriorDerivative (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ m • (β (t • y)).curryLeft y) x + ∫ t in (0 : ℝ)..1, t ^ (m + 1) • (exteriorDerivative β (t • x)).curryLeft x = β x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
