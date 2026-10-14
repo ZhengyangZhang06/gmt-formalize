@@ -18660,6 +18660,121 @@ theorem Submission.dtc_bc_tc_cl_cycle_isIntegerMultiplicity : (∀ (P n : ℕ) (
     ⟨η₀, hη₀, hLD₀⟩ Γ μ M θ ζ a η₀ hΓb hΓisp hμ hμW hM hMfin hθ hζ hμM hθpos hζb hζ1 hΓM ha hη₀
     (hMdens a ha) hup hleb
 
+/-- **Closure theorem for compactly supported currents** (Simon Ch. 6, 8.2, the step
+`CL_P(d), BR_P(d) ⟹ CL*_{P,d+1}` used for 7.2.4 and 7.3.1): if `K ⊆ ℝᴾ` is compact,
+`Tⱼ ∈ 𝒟_{d+1}(ℝᴾ)` are integer multiplicity with integer multiplicity boundaries, `spt Tⱼ ⊆ K`,
+`supⱼ (M(Tⱼ) + M(∂Tⱼ)) < ∞` and `Tⱼ ⇀ T`, then `T` is integer multiplicity.  `spt T ⊆ K` by
+(VO) and `M(T), M(∂T) < ∞` by lower semicontinuity; `∂T` is integer multiplicity by `CL_P(d)`
+(`∂∂Tⱼ = 0`), so it has a compactly supported integer multiplicity filling `Y`.  The integer slice
+property holds for the `Tⱼ` and `Y`, passes to the weak limit `T` and then to the compactly
+supported cycle `Γ = T − Y`; the lower density bound and the cycle case make `Γ` integer
+multiplicity, and so is `T = Γ − (0 − Y)` by (IMC)(c). -/
+theorem Submission.dtc_bc_tc_cl_closure_compact_support : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 1 ≤ c ∧ ∀ Z : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Z → IsCompact Z.support → Z.boundary = 0 → Z.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity Y ∧ Y.boundary = Z ∧ Y.mass ≤ ENNReal.ofReal (c * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1)) * Z.mass.toReal) ∧ Y.support ⊆ thickening (3 * Real.sqrt P * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1))) Z.support) → ∀ (P d : ℕ), d + 1 < P → (∀ (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) → (∀ (U : Set (Euclid P)) (R : GeometricCurrentOn U (d + 1)), IsOpen U → IsIntegerMultiplicity R → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → R.boundary.massOn W < ∞) → IsIntegerMultiplicity R.boundary) → (∀ (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (T : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (K : Set (Euclid P)), IsCompact K → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ j, IsIntegerMultiplicity (Ts j).boundary) → (∀ j, (Ts j).support ⊆ K) → ⨆ j, ((Ts j).mass + (Ts j).boundary.mass) < ∞ → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) := by
+  intro hMR hRect hVO hIsor P d hdP hCL hBR Ts T K hK hTsIM hTsbIM hTsK hbound hconv
+  have hIMCc := hRect.2.2.1
+  -- (REP) and (MM) from the sibling foundations; `0` is integer multiplicity
+  obtain ⟨hREP, ⟨-, -, hMM⟩, -⟩ := Submission.dtc_bc_tc_cl_foundations
+  have hzero := Submission.cbr_cc_current_algebra.1
+  -- `S := supⱼ (M(Tⱼ) + M(∂Tⱼ)) < ∞` bounds `M(Tⱼ)`, `M(∂Tⱼ)` and their `liminf`s
+  obtain ⟨S, hS, hSlt⟩ : ∃ S : ℝ≥0∞, (∀ j, (Ts j).mass + (Ts j).boundary.mass ≤ S) ∧ S < ∞ :=
+    ⟨_, le_iSup (fun j => (Ts j).mass + (Ts j).boundary.mass), hbound⟩
+  have hTsS : ∀ j, (Ts j).mass ≤ S := fun j => le_self_add.trans (hS j)
+  have hTsbS : ∀ j, (Ts j).boundary.mass ≤ S := fun j => le_add_self.trans (hS j)
+  have hliminf : ∀ u : ℕ → ℝ≥0∞, (∀ j, u j ≤ S) → liminf u atTop ≤ S := fun u hu =>
+    liminf_le_of_frequently_le' (Frequently.of_forall hu)
+  -- Step 1: `spt T ⊆ K` by (VO), so `spt T` is compact; `M(T), M(∂T) < ∞` by lower
+  -- semicontinuity of mass (Simon 6.2.14), `∂Tⱼ ⇀ ∂T`
+  have hTvan : ∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) (d + 1))) K → T ω = 0 := by
+    intro ω hω
+    have h0 : ∀ j, Ts j ω = 0 := fun j => hVO P (d + 1) univ (Ts j) ω (hω.mono_right (hTsK j))
+    exact tendsto_nhds_unique (hconv ω) (by simp only [h0]; exact tendsto_const_nhds)
+  have hTsupp : IsCompact T.support :=
+    (Submission.rsd_cmr_support_subset_of_vanish P (d + 1) univ K T isOpen_univ hK
+      (subset_univ K) hTvan).2
+  have hTmass : T.mass < ∞ :=
+    ((hconv.massOn_le_liminf univ).trans (hliminf _ hTsS)).trans_lt hSlt
+  have hTbmass : T.boundary.mass < ∞ :=
+    ((hconv.boundary.massOn_le_liminf univ).trans (hliminf _ hTsbS)).trans_lt hSlt
+  -- Step 2: `∂T` is integer multiplicity by CL_P(d) applied to `∂Tⱼ ⇀ ∂T` (`∂∂Tⱼ = 0`)
+  have hbb : ∀ (m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1))
+      (W : Set (Euclid P)), boundaryMassOn X.boundary W = 0 := by
+    intro m
+    cases m with
+    | zero => intro X W; rfl
+    | succ k =>
+      intro X W
+      show X.boundary.boundary.massOn W = 0
+      rw [GeometricCurrentOn.boundary_boundary]
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro _ ⟨ω, -, rfl⟩
+      simp
+  have hTbIM : IsIntegerMultiplicity T.boundary := by
+    refine hCL univ (fun j => (Ts j).boundary) T.boundary isOpen_univ hTsbIM (fun W _ _ => ?_)
+      hconv.boundary
+    refine lt_of_le_of_lt (iSup_le fun j => ?_) hSlt
+    show (Ts j).boundary.massOn W + boundaryMassOn (Ts j).boundary W ≤ S
+    rw [hbb d (Ts j) W, add_zero]
+    exact ((Ts j).boundary.massOn_mono (subset_univ W)).trans (hTsbS j)
+  -- Step 3: a compactly supported integer multiplicity filling `Y` of `∂T` with `M(Y) < ∞`
+  obtain ⟨Y, hYIM, hYb, hYmass, hYsupp⟩ :=
+    Submission.dtc_bc_tc_cl_cc_compact_im_filling hMR hIMCc hVO hIsor P d (by omega) T hTsupp
+      hTbmass hTbIM
+  -- Step 4: `Γ = T − Y` is a cycle of finite mass with compact support
+  have hΓb : (T - Y).boundary = 0 := by
+    ext η
+    have h : Y.boundary η = T.boundary η := by rw [hYb]
+    change T.boundary η - Y.boundary η = 0
+    rw [h, sub_self]
+  have hΓmass : (T - Y).mass < ∞ := by
+    refine ((Submission.cbr_cc_current_algebra).2.1 P (d + 1) univ (T - Y) T Y 1 (-1)
+      (fun ω => by change T ω - Y ω = _; push_cast; ring) univ).trans_lt ?_
+    simp only [Int.natAbs_one, Int.natAbs_neg, Nat.cast_one, one_mul]
+    exact ENNReal.add_lt_top.2 ⟨hTmass, hYmass⟩
+  have hΓsupp : IsCompact (T - Y).support := by
+    refine (Submission.rsd_cmr_support_subset_of_vanish P (d + 1) univ (T.support ∪ Y.support)
+      (T - Y) isOpen_univ (hTsupp.union hYsupp) (subset_univ _) fun ω hω => ?_).2
+    change T ω - Y ω = 0
+    rw [hVO P (d + 1) univ T ω (hω.mono_right subset_union_left),
+      hVO P (d + 1) univ Y ω (hω.mono_right subset_union_right), sub_zero]
+  -- Step 5: currents `X` with `X`, `∂X` integer multiplicity have the integer slice property
+  have hISPIM := Submission.dtc_bc_tc_cl_cc_slice_property_of_im hRect
+    Submission.cmc_slice_mass_bounds hMM Submission.cbr_setIntegral_eq_of_integral_eq P d hBR
+  -- Step 6: so do the `Tⱼ` and `Y`, and SLIM_{P,d} gives it for the weak limit `T`
+  have hSLIM := Submission.dtc_bc_tc_cl_slice_property_of_weak_limit hMR hRect P d hdP hCL
+  have hTsW : ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ →
+      ⨆ i, ((Ts i).massOn W + (Ts i).boundary.massOn W) < ∞ := fun W _ _ =>
+    lt_of_le_of_lt (iSup_le fun i => (add_le_add ((Ts i).massOn_mono (subset_univ W))
+      ((Ts i).boundary.massOn_mono (subset_univ W))).trans (hS i)) hSlt
+  have hISPT := hSLIM Ts T (fun i => hISPIM (Ts i) (hTsIM i) (hTsbIM i)) hTsW hconv
+  have hISPY := hISPIM Y hYIM (hYb ▸ hTbIM)
+  -- Step 7: the integer slice property passes to `Γ = T − Y` (slices are linear in the current)
+  have hTmW : ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → T.massOn W < ∞ :=
+    fun W _ _ => (T.massOn_mono (subset_univ W)).trans_lt hTmass
+  have hTbmW : ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ →
+      T.boundary.massOn W < ∞ :=
+    fun W _ _ => (T.boundary.massOn_mono (subset_univ W)).trans_lt hTbmass
+  have hYmW : ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → Y.massOn W < ∞ :=
+    fun W _ _ => (Y.massOn_mono (subset_univ W)).trans_lt hYmass
+  have hYbmW : ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ →
+      Y.boundary.massOn W < ∞ := by
+    rw [hYb]
+    exact hTbmW
+  have hISPΓ := Submission.cbr_cc_slice_property_sub hREP Submission.cmc_slice_mass_bounds hIMCc
+    Submission.cbr_setIntegral_eq_of_integral_eq d P T Y hTmW hTbmW hYmW hYbmW hISPT hISPY
+  -- Step 8: LD_{P,d} and CYC_{P,d} make the cycle `Γ` integer multiplicity
+  have hΓIM := Submission.dtc_bc_tc_cl_cycle_isIntegerMultiplicity hMR hRect hVO P d hdP hSLIM
+    (Submission.dtc_bc_tc_cl_lower_density hMR hVO hIsor P d hdP) (T - Y) hΓb hΓmass hΓsupp hISPΓ
+  -- `T = Γ − (0 − Y)` is integer multiplicity by (IMC)(c)
+  have hT : (T - Y) - (0 - Y) = T := by
+    ext ω
+    change (T ω - Y ω) - ((0 : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) ω - Y ω) = T ω
+    rw [GeometricCurrentOn.zero_apply]
+    ring
+  rw [← hT]
+  exact hIMCc P (d + 1) univ _ _ isOpen_univ hΓIM
+    (hIMCc P (d + 1) univ _ _ isOpen_univ (hzero P (d + 1) univ) hYIM)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
