@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "73451655c9402b8fc1e6a54e75979799379accc93d835bea4a0f8f00ab646380",
+  "git_delta": {
+    "base_commit": "7e91fe30e2ffd73d8fd9022e1a74e69718aa3353",
+    "candidate_commit": "914228a9ce7bec9a9f8dd9603dc3eb1fc3672e66",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcdr_cube_lipschitz",
+    "diff_sha256": "c576ad7e86b9ac74a729d9b7a394980760ef2b7c8eeb836330eec53b1affa149",
+    "source_sha256": "179116433f9a54aeecd0300eeeb97274109f7f114939771fa35f13487c7905fa",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcdr_cube_lipschitz",
+      "statement": "∀ (P : ℕ) (a : Euclid P), (∀ i, |a i - 1 / 2| < 1 / 4) → ∀ κ : (Fin P → ℝ) → ℝ, (∀ u v : Fin P → ℝ, ∀ t : ℝ, (∀ i, |u i - v i| ≤ t) → |κ u - κ v| ≤ t) → ∀ Φ : Euclid P → Euclid P, (∀ (y : Euclid P) (i : Fin P), Φ y i = a i + (y i - a i) / max (max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) (κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)))) → ∀ y y' : Euclid P, 0 < κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) → dist (Φ y) (Φ y') ≤ 4 * Real.sqrt P / κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) * dist y y'",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
