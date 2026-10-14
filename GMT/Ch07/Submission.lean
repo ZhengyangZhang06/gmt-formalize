@@ -451,6 +451,110 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Pairing error for a non-constant multivector field** (the error estimate of steps 4 and 10
+of the proof of `Submission.dmcbr_ci_blowup_limit`, for a single measure).  Let `w` be a
+continuous covector field with `‖w‖ ≤ A` that vanishes outside `B̄_R = closedBall 0 R`, and
+suppose `E = A ∫_{B̄_R} ‖τ − ζ₀‖ dν'` is finite.  The error `g(x) = ⟨w(x), τ(x) − ζ₀⟩` is a.e.
+strongly measurable, being the continuous evaluation of `τ − ζ₀` at `w`.  By `le_opENorm`, and
+since `w = 0` off `B̄_R`, `‖g(x)‖ ≤ 1_{B̄_R}(x) A ‖τ(x) − ζ₀‖`.  Hence `∫ ‖g‖ dν' ≤ E < ∞` and
+`g` is integrable.  As `⟨w, τ⟩ = ⟨w, ζ₀⟩ + g`, the difference of the two integrals is
+`∫ g dν'`, and `|∫ g dν'| ≤ ∫ ‖g‖ dν' ≤ E`. -/
+theorem Submission.dmcbr_ci_bl_pairing_error_le : ∀ (P n : ℕ) (ν' : Measure (Euclid P)) (τ : Euclid P → MultiVector P n) (ζ₀ : MultiVector P n) (w : Euclid P → Covector (Euclid P) n) (A R : ℝ), AEStronglyMeasurable τ ν' → Continuous w → (∀ x, ‖w x‖ ≤ A) → (∀ x, x ∉ closedBall (0 : Euclid P) R → w x = 0) → Integrable (fun x => ζ₀ (w x)) ν' → ENNReal.ofReal A * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν' ≠ ∞ → |∫ x, τ x (w x) ∂ν' - ∫ x, ζ₀ (w x) ∂ν'| ≤ (ENNReal.ofReal A * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν').toReal := by
+  intro P n ν' τ ζ₀ w A R hτ hw hwA hw0 hζ hE
+  -- the error integrand `g(x) = ⟨w(x), τ(x) − ζ₀⟩`
+  set g : Euclid P → ℝ := fun x => (τ x - ζ₀) (w x) with hg
+  -- Step 1: `g` is a.e. strongly measurable (continuous evaluation of `τ − ζ₀` at `w`)
+  have hgm : AEStronglyMeasurable g ν' :=
+    Continuous.comp_aestronglyMeasurable₂ (g := fun (L : MultiVector P n) v => L v)
+      isBoundedBilinearMap_apply.continuous (hτ.sub aestronglyMeasurable_const)
+      hw.aestronglyMeasurable
+  -- Step 2: `‖g(x)‖ₑ ≤ 1_{B̄_R}(x) A ‖τ(x) − ζ₀‖ₑ`
+  have hpt : ∀ x, ‖g x‖ₑ ≤
+      (closedBall (0 : Euclid P) R).indicator (fun x => ENNReal.ofReal A * ‖τ x - ζ₀‖ₑ) x := by
+    intro x
+    by_cases hx : x ∈ closedBall (0 : Euclid P) R
+    · rw [indicator_of_mem hx, mul_comm]
+      calc ‖g x‖ₑ ≤ ‖τ x - ζ₀‖ₑ * ‖w x‖ₑ := (τ x - ζ₀).le_opENorm (w x)
+        _ ≤ ‖τ x - ζ₀‖ₑ * ENNReal.ofReal A := by
+          gcongr
+          rw [← ofReal_norm]
+          exact ENNReal.ofReal_le_ofReal (hwA x)
+    · rw [indicator_of_notMem hx, hg]
+      simp [hw0 x hx]
+  -- Step 3: `∫⁻ ‖g‖ₑ ≤ A ∫⁻_{B̄_R} ‖τ − ζ₀‖ₑ = E < ∞`
+  have hlint : ∫⁻ x, ‖g x‖ₑ ∂ν' ≤
+      ENNReal.ofReal A * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν' := by
+    calc ∫⁻ x, ‖g x‖ₑ ∂ν'
+        ≤ ∫⁻ x, (closedBall (0 : Euclid P) R).indicator
+            (fun x => ENNReal.ofReal A * ‖τ x - ζ₀‖ₑ) x ∂ν' := lintegral_mono hpt
+      _ = ∫⁻ x in closedBall (0 : Euclid P) R, ENNReal.ofReal A * ‖τ x - ζ₀‖ₑ ∂ν' :=
+          lintegral_indicator measurableSet_closedBall _
+      _ = ENNReal.ofReal A * ∫⁻ x in closedBall (0 : Euclid P) R, ‖τ x - ζ₀‖ₑ ∂ν' :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+  -- Step 4: `g` is integrable
+  have hgi : Integrable g ν' := ⟨hgm, hasFiniteIntegral_iff_enorm.2 (hlint.trans_lt hE.lt_top)⟩
+  -- Step 5: `⟨w, τ⟩ = ⟨w, ζ₀⟩ + g`, so the difference of the integrals is `∫ g`
+  have hint : ∫ x, τ x (w x) ∂ν' - ∫ x, ζ₀ (w x) ∂ν' = ∫ x, g x ∂ν' := by
+    have hsplit : (fun x => τ x (w x)) = fun x => ζ₀ (w x) + g x := by
+      funext x
+      simp [hg]
+    rw [hsplit, integral_add hζ hgi, add_sub_cancel_left]
+  -- Step 6: `|∫ g| ≤ (∫⁻ ‖g‖ₑ).toReal ≤ E.toReal`
+  rw [hint, ← Real.norm_eq_abs, ← toReal_enorm]
+  calc (‖∫ x, g x ∂ν'‖ₑ).toReal ≤ (∫⁻ x, ‖g x‖ₑ ∂ν').toReal :=
+        ENNReal.toReal_mono (hlint.trans_lt hE.lt_top).ne (enorm_integral_le_lintegral_enorm _)
+    _ ≤ _ := ENNReal.toReal_mono hE hlint
+
+/-- **Pairings with a compactly supported covector field converge** (steps 4 and 6 of the proof
+of `Submission.dmcbr_ci_blowup_limit`, for a single form `w`).  Let `νₖ, ν` be measures on `ℝᴾ`,
+each `νₖ` finite on compact sets, with `∫ f dνₖ → ∫ f dν` for every continuous compactly
+supported `f`, and let `τₖ : ℝᴾ → Λₙ` be `νₖ`-a.e. strongly measurable with
+`δₖ(R) = ∫_{B̄_R(0)} ‖τₖ − ζ₀‖ dνₖ → 0` for every `R > 0`.  Then `∫ ⟨w, τₖ⟩ dνₖ → ∫ ⟨w, ζ₀⟩ dν`
+for every continuous compactly supported `w : ℝᴾ → Λⁿ`.  Take `A ≥ ‖w‖` and `R > 0` with `w = 0`
+off `B̄_R(0)`.  Then `f = ⟨w, ζ₀⟩` is continuous with compact support, hence `νₖ`-integrable.
+Since `eₖ = A δₖ(R) → 0`, eventually `eₖ < ∞`, and `Submission.dmcbr_ci_bl_pairing_error_le`
+gives `|∫ ⟨w, τₖ⟩ dνₖ − ∫ f dνₖ| ≤ eₖ → 0`; finally `∫ f dνₖ → ∫ f dν` by hypothesis. -/
+theorem Submission.dmcbr_ci_bl_pairing_tendsto : ∀ (P n : ℕ) (νs : ℕ → Measure (Euclid P)) (ν : Measure (Euclid P)) (τs : ℕ → Euclid P → MultiVector P n) (ζ₀ : MultiVector P n) (w : Euclid P → Covector (Euclid P) n), (∀ (k : ℕ) (K : Set (Euclid P)), IsCompact K → νs k K < ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x ∂(νs k)) atTop (𝓝 (∫ x, f x ∂ν))) → (∀ k, AEStronglyMeasurable (τs k) (νs k)) → (∀ R : ℝ, 0 < R → Tendsto (fun k => ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k)) atTop (𝓝 0)) → Continuous w → HasCompactSupport w → Tendsto (fun k => ∫ x, τs k x (w x) ∂(νs k)) atTop (𝓝 (∫ x, ζ₀ (w x) ∂ν)) := by
+  intro P n νs ν τs ζ₀ w hνK hconv hτ hδ hw hwc
+  -- Step 1: a bound `‖w‖ ≤ A` and a radius `R > 0` with `w = 0` off `B̄_R(0)`
+  obtain ⟨A, hA⟩ := hw.bounded_above_of_compact_support hwc
+  obtain ⟨R₀, hR₀⟩ := hwc.isCompact.isBounded.subset_closedBall (0 : Euclid P)
+  obtain ⟨R, hR, hwR⟩ : ∃ R : ℝ, 0 < R ∧ tsupport w ⊆ closedBall (0 : Euclid P) R :=
+    ⟨max R₀ 1, lt_max_of_lt_right one_pos,
+      hR₀.trans (closedBall_subset_closedBall (le_max_left R₀ 1))⟩
+  have hw0 : ∀ x, x ∉ closedBall (0 : Euclid P) R → w x = 0 := fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun hxw => hx (hwR hxw)
+  -- Step 2: `f = ⟨w, ζ₀⟩` is continuous with compact support, hence `νₖ`-integrable
+  have hfc : Continuous fun x => ζ₀ (w x) := ζ₀.continuous.comp hw
+  have hfs : HasCompactSupport fun x => ζ₀ (w x) := hwc.comp_left (map_zero ζ₀)
+  have hfi : ∀ k, Integrable (fun x => ζ₀ (w x)) (νs k) := fun k => by
+    have : IsFiniteMeasureOnCompacts (νs k) := ⟨fun K hK => hνK k K hK⟩
+    exact hfc.integrable_of_hasCompactSupport hfs
+  -- Step 3: `eₖ = A δₖ(R) → 0`, so eventually `eₖ < 1` (hence `eₖ ≠ ∞`), and `eₖ.toReal → 0`
+  have he : Tendsto (fun k => ENNReal.ofReal A *
+      ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k)) atTop (𝓝 0) := by
+    simpa only [mul_zero] using
+      ENNReal.Tendsto.const_mul (a := ENNReal.ofReal A) (hδ R hR) (Or.inr ENNReal.ofReal_ne_top)
+  have he1 : ∀ᶠ k in atTop, ENNReal.ofReal A *
+      ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k) < 1 :=
+    (tendsto_order.1 he).2 1 one_pos
+  have heR : Tendsto (fun k => (ENNReal.ofReal A *
+      ∫⁻ x in closedBall (0 : Euclid P) R, ‖τs k x - ζ₀‖ₑ ∂(νs k)).toReal) atTop (𝓝 0) := by
+    simpa only [Function.comp_def, ENNReal.toReal_zero] using
+      (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp he
+  -- Step 4: `dₖ = ∫ ⟨w, τₖ⟩ dνₖ − ∫ f dνₖ` has `|dₖ| ≤ eₖ.toReal` once `eₖ < 1`, so `dₖ → 0`
+  have hd : Tendsto (fun k => ∫ x, τs k x (w x) ∂(νs k) - ∫ x, ζ₀ (w x) ∂(νs k)) atTop
+      (𝓝 0) := by
+    refine squeeze_zero_norm' ?_ heR
+    filter_upwards [he1] with k hk
+    rw [Real.norm_eq_abs]
+    exact Submission.dmcbr_ci_bl_pairing_error_le P n (νs k) (τs k) ζ₀ w A R (hτ k) hw hA hw0
+      (hfi k) (ne_top_of_lt hk)
+  -- Step 5: `∫ ⟨w, τₖ⟩ dνₖ = dₖ + ∫ f dνₖ → 0 + ∫ f dν`
+  have hsum := hd.add (hconv (fun x => ζ₀ (w x)) hfc hfs)
+  rw [zero_add] at hsum
+  exact hsum.congr fun k => sub_add_cancel _ _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
