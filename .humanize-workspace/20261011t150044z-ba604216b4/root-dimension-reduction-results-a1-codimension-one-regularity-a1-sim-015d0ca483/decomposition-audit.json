@@ -1,0 +1,78 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "^(import|open|namespace|noncomputable)|def (Euclid|IsEmbeddedSubmanifold|tangentSpace)|μHE",
+        "theorem (lintegral_sum_measure|lintegral_iUnion)|MeasurableEmbedding.lintegral_map|lintegral_withDensity_eq_lintegral_mul_non_measurable|lintegral_subtype_comap|exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|norm_fderiv_sub_le|image_of_continuousOn_injOn|ContinuousOn.measurableEmbedding",
+        "sqrt_mul.|det_toMatrix|adjoint_inner_right|subtypeL|innerProductSpace",
+        "codim1_hcp_af_|codim1_lura_gram_area_formula|codim1_lura_gram_det_comp_orthonormal|chart_tangentSpace_eq_range_fderiv",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/hcp-af-independent-2kmw9jpx/FullAudit.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/hcp-af-independent-2kmw9jpx/ChallengesInstancesClosure.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-015d0ca483/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Subspace.lean",
+        "/tmp/hcp-af-independent-2kmw9jpx/FullAudit.lean",
+        "/tmp/hcp-af-independent-2kmw9jpx/ChallengesInstancesClosure.lean"
+      ],
+      "conclusion": "The snapshot pins, frozen definitions and recomputed parent digest match. Independent Lean checks passed for all seven standalone propositions, the inline instances, the accepted proof bodies, all four new proofs and the exact selected parent assembly. Every audited theorem uses only propext, Classical.choice and Quot.sound. The three reused declarations have byte-identical accepted types and proof bodies; the four new bare names have no competing DAG or decomposition reservation. Dependencies are acyclic and correctly directed, and all four new proofs pass check_source_delta. The split is appropriate: chart_partition and chart_area establish the selected parent through measurable, disjoint images and countable additivity. The pinned measurable-embedding and finite-density integration lemmas justify arbitrary weights, so the omitted Jacobian-measurability argument is unnecessary. Import probes confirm that the cited SimonGMT Euclidean area theorem and LinearMap.normDet are unavailable under the frozen imports. Matrix.of, subspace inner products, adjoints and endomorphism determinants have the intended interpretations."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All chart hypotheses match the exact accepted type. Bounded smooth curves prove one inclusion; properness gives inverse continuity, and the derivative lower bound controls lifted secants to prove the reverse inclusion. The proof is complete and independent of the parent."
+    },
+    {
+      "key": "gram_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conjuncts match the prose, including arbitrary weights. The linear formula, approximation partition, density-point estimate and q-to-1 argument establish the unweighted formula. Measurable-embedding transport then establishes the weighted formula; its measurable density is finite because it uses ofReal. Accepted reuse has the identical frozen type."
+    },
+    {
+      "key": "gram_chain",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frame expansion gives the stated Gram-matrix congruence and determinant factorization. Injectivity makes the coefficient matrix invertible, proving positivity. Both conjuncts, including the zero-dimensional case, are proved without circular reliance. The reused accepted type is identical."
+    },
+    {
+      "key": "subspace_gram",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The family becomes an orthonormal basis of T under the inherited inner product. Computing the adjoint-composition matrix in this basis gives precisely the stated Gram determinant. The proof covers k = 0 and uses the intended determinant and inner-product instances."
+    },
+    {
+      "key": "chart_partition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every chart condition in the Lean proposition. Lindelöf extraction, enumeration and measurable disjointing produce the required partition while preserving the chart data. The empty-cover case is explicitly handled."
+    },
+    {
+      "key": "chart_jacobian",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses exactly its three declared dependencies. Tangent-range identification supplies the orthonormal frame; Gram factorization and the subspace determinant identity give the product. Positivity of the source Gram determinant justifies Real.sqrt_mul', yielding the exact stated equality for arbitrary B."
+    },
+    {
+      "key": "chart_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate set is Borel and maps onto E. Differentiability and both injectivity requirements are verified for the two Euclidean area-formula applications. Chart factorization identifies their integrands exactly. This proves the localized parent equality using only the declared dependencies and supplies the required input to the parent's countable assembly."
+    }
+  ],
+  "required_changes": []
+}
