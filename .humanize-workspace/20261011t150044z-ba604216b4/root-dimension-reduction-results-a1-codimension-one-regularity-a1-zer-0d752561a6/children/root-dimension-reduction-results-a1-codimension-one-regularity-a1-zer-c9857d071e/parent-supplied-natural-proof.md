@@ -1,0 +1,93 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_blowup_limit-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_blowup_limit-a1.graph_flattening-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Steps 2–5 of the supplied proof of the selected node (rescaled graphs, bounded offsets, the offset b, C¹ convergence), abstracted from the graph chart; Simon 7.5.5, where the rescaled sheets of N flatten to the tangent plane (chapter-07.txt lines 790–901). Departure: the mean value inequality is applied to u on small balls instead of to g_i. After the substitution v = s_i + λ_iw this is the same estimate.
+
+Notation. B_r := ball(0, r) ⊆ ℝ^m, Du := fderiv ℝ u, ‖·‖ the operator norm, |·| the Euclidean norm.
+
+1. (Regularity of u.) B_δ is open and u is C¹ on it. So u is differentiable at every v ∈ B_δ (ContDiffOn.differentiableOn with 1 ≠ 0, then DifferentiableOn.differentiableAt with IsOpen.mem_nhds). Du is continuous on B_δ (ContDiffOn.continuousOn_fderiv_of_isOpen), in particular at 0 ∈ B_δ (δ > 0), where Du(0) = 0.
+2. (Small derivative and Lipschitz bound near 0.) Claim: for every η > 0 there is ρ with 0 < ρ ≤ δ such that ‖Du(v)‖ < η for all v ∈ B_ρ, and |u(v') − u(v)| ≤ η|v' − v| for all v, v' ∈ B_ρ. Proof: by step 1 there is ρ₀ > 0 with ‖Du(v)‖ = ‖Du(v) − Du(0)‖ < η whenever |v| < ρ₀. Take ρ := min(ρ₀, δ). Then B_ρ ⊆ B_δ, so u is differentiable on the convex set B_ρ with ‖Du‖ ≤ η there. The mean value inequality (Convex.norm_image_sub_le_of_norm_fderiv_le with convex_ball) gives the Lipschitz bound.
+3. (Chain rule.) Let i ∈ ℕ and w ∈ ℝ^m with s_i + λ_iw ∈ B_δ. The map w ↦ s_i + λ_iw has derivative λ_i·id, and u has derivative Du(s_i + λ_iw) at s_i + λ_iw (step 1). So w ↦ λ_i^{−1}(u(s_i + λ_iw) − t_i) has derivative λ_i^{−1}·(Du(s_i + λ_iw)∘(λ_i·id)) = Du(s_i + λ_iw) at w, because λ_i ≠ 0. Thus g_i is differentiable at w and Dg_i(w) = Du(s_i + λ_iw).
+4. (Ball estimate.) Let i ∈ ℕ, R, r ∈ ℝ and w ∈ ℝ^m with |w| ≤ R and |s_i| + λ_iR < r. Then |s_i + λ_iw| ≤ |s_i| + λ_i|w| ≤ |s_i| + λ_iR < r, so s_i + λ_iw ∈ B_r. Moreover, for every c ∈ ℝ, |s_i| + λ_ic → 0 + 0·c = 0.
+5. (C₀ ≥ 0.) The filter atTop on ℕ is proper, so the hypothesis holds for at least one index i. The corresponding w satisfies 0 ≤ |w| ≤ C₀.
+6. (g_i(0) is bounded.) Take ρ₁ ∈ (0, δ] from step 2 with η = 1. By the hypothesis and step 4 (c = C₀) there is i₂ such that every i ≥ i₂ has a point w_i with |w_i| ≤ C₀, s_i + λ_iw_i ∈ B_δ and |u(s_i + λ_iw_i) − t_i| ≤ C₀λ_i, and moreover |s_i| + λ_iC₀ < ρ₁. Fix such i. Step 4 gives s_i ∈ B_{ρ₁} (take w = 0; this uses C₀ ≥ 0) and s_i + λ_iw_i ∈ B_{ρ₁}. The Lipschitz bound of step 2 gives |u(s_i) − u(s_i + λ_iw_i)| ≤ λ_i|w_i| ≤ λ_iC₀. Hence |u(s_i) − t_i| ≤ λ_iC₀ + C₀λ_i = 2C₀λ_i and |g_i(0)| = λ_i^{−1}|u(s_i) − t_i| ≤ 2C₀. So g_{i₂+j}(0) ∈ closedBall(0, 2C₀) ⊆ ℝ^k for every j ∈ ℕ.
+7. (The subsequence and b.) closedBall(0, 2C₀) is compact (isCompact_closedBall). IsCompact.tendsto_subseq gives b ∈ ℝ^k and a strictly increasing φ : ℕ → ℕ with g_{i₂+φ(j)}(0) → b. Put σ(j) := i₂ + φ(j). Then σ is strictly increasing and g_{σ(j)}(0) → b. Also σ(j) → ∞ (StrictMono.tendsto_atTop), so for every c ∈ ℝ, |s_{σ(j)}| + λ_{σ(j)}c → 0 (step 4 composed with σ).
+8. ((H1).) Let R > 0. By step 7, |s_{σ(j)}| + λ_{σ(j)}R < δ for all large j. For such j and w ∈ B_R, step 4 gives s_{σ(j)} + λ_{σ(j)}w ∈ B_δ, and by step 3 g_{σ(j)} is differentiable at w.
+9. ((H2).) Let R > 0 and ε > 0. Put η := min(ε, ε/(2R)) > 0; then ηR ≤ (ε/(2R))·R = ε/2. Take ρ ∈ (0, δ] from step 2 for this η. By step 7, for all large j both |s_{σ(j)}| + λ_{σ(j)}R < ρ and |g_{σ(j)}(0) − b| < ε/2 hold. Fix such j and write s := s_{σ(j)}, λ := λ_{σ(j)}, g := g_{σ(j)}. Let w ∈ B_R. By step 4, s + λw ∈ B_ρ ⊆ B_δ, and s ∈ B_ρ (take w = 0 there, using R > 0).
+ (a) Derivative: by step 3, Dg(w) = Du(s + λw), so ‖Dg(w)‖ < η ≤ ε by step 2.
+ (b) Values: g(w) − g(0) = λ^{−1}(u(s + λw) − u(s)). The Lipschitz bound gives |g(w) − g(0)| ≤ λ^{−1}·η·|λw| = η|w| ≤ ηR ≤ ε/2. Hence |g(w) − b| ≤ |g(w) − g(0)| + |g(0) − b| < ε/2 + ε/2 = ε.
+Steps 7–9 give σ and b with all the stated properties. ∎
+
+Formalization notes (this exact frozen type was proved in a scratch build with standard axioms only). In this Mathlib, ContDiffOn.differentiableOn takes n ≠ 0 (pass one_ne_zero). The chain rule is ((hasFDerivAt_id w).const_smul λ).const_add s, composed with the derivative of u, then .sub_const t, .const_smul λ⁻¹ and .congr_fderiv (ContinuousLinearMap.ext; simp [smul_smul, inv_mul_cancel₀]). The eventual index comes from eventually_atTop on hoff.and ((tendsto of |s_i| + λ_iC₀).eventually_lt_const hρ₁). Filter.Eventually.exists yields ⟨index, w, …⟩.
+
+## Key steps
+
+1. Du is continuous at 0 with Du(0) = 0. So for every η > 0 there is ρ ∈ (0, δ] with ‖Du‖ < η on B_ρ, and u is η-Lipschitz on B_ρ (mean value inequality).
+2. Chain rule: g_i is differentiable at w with Dg_i(w) = Du(s_i + λ_iw) whenever s_i + λ_iw ∈ B_δ.
+3. The offsets and the 1-Lipschitz bound give |g_i(0)| ≤ 2C₀ for i ≥ i₂. Compactness of closedBall(0, 2C₀) gives σ(j) = i₂ + φ(j) and b with g_{σ(j)}(0) → b.
+4. For w ∈ B_R and large j, s + λw lies in B_ρ: (H1) by the chain rule; (H2) from ‖Du‖ < η and |g(w) − g(0)| ≤ η|w| ≤ ε/2.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; grep -n '"simongmt"' -A8 local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `sha256sum GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `python3 scans of dag.json: status, lean_name and depends_on of the zero_scale_limit_plane children and of testform_correspondence-a1; lean_statement lookup of codim1_zsl_blowUp_isBoundaryOfRegion, codim1_zsl_graph_area_formula, codim1_zsl_flat_graph_limit, dtc_blowUp_testForm_corr and codim1_zsl_graph_blowup_limit (byte equality with the handoff); scan of lean statements containing 'blowUp' together with 'massOn' or 'covectorEuclideanNorm'`
+- `python3 dump of the parent's decomposition-v2.json (subproblem statements and Lean types) and comparison of its testform_corr entry with the accepted node's parent-child-handoff.json (natural proof and key steps byte-equal)`
+- `grep -n 'def check_source_delta' -A40 leaf_verification.py; grep -n '_existing_lean_name_problem|_solve_children|_install_parent_supplied_child_handoff|prerequisite_ids' runtime.py`
+- `grep -n 'def IsTestForm|abbrev exteriorDerivative|theorem exteriorDerivative_apply|def covectorEuclideanNorm|def massAdmissibleOn|def GeometricCurrentOn.massOn|theorem GeometricCurrentOn.le_massOn|def testFormOnSubmodule|structure GeometricCurrentOn|theorem tsupport_exteriorDerivative_subset' simongmt/Poincare/SimonGMT/Chapter06/{Forms,Currents,Mass}.lean; sed -n 1,330p GMT/Ch07/Contract.lean (currentEval, ConvergesWeakly, dilation, blowUp, IsBoundaryOfRegion)`
+- `grep -rn 'ContinuousOn.measurable_piecewise|setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|setIntegral_congr_fun|IsCompact.tendsto_subseq|norm_image_sub_le_of_norm_fderiv_le|ContDiffOn.continuousOn_fderiv_of_isOpen' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `lake env lean /tmp/gbl-split/Names.lean (#check of about 50 cited Mathlib/SimonGMT lemmas)`
+- `lake env lean /tmp/gbl-split/FinalTypes.lean; lake env lean /tmp/gbl-split/FinalAssembly.lean (#print axioms Submission.codim1_zsl_graph_blowup_limit)`
+- `lake env lean /tmp/gbl-split/proofs/{A,B,C,D}_work.lean with #print axioms (scratch proofs of the four new children)`
+- `for r in $(git for-each-ref --format='%(objectname)' | sort -u): git grep -q -e codim1_zsl_gbl $r -- 'GMT/*.lean' (positive control dtc_blowUp_testForm_corr); grep -c of each new name in dag.json, .lake/packages/simongmt, .lake/packages/mathlib/Mathlib, GMT/`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0d752561a6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/tmp/gbl-split/Names.lean`
+- `/tmp/gbl-split/FinalTypes.lean`
+- `/tmp/gbl-split/FinalAssembly.lean`
+- `/tmp/gbl-split/proofs/A_work.lean`
+- `/tmp/gbl-split/proofs/B_work.lean`
+- `/tmp/gbl-split/proofs/C_work.lean`
+- `/tmp/gbl-split/proofs/D_work.lean`
+
+Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib. The snapshot lake-manifest pins simongmt 2b366308, equal to .lake/packages/simongmt. The snapshot Contract.lean and the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+DAG.
+- The selected node is 'decomposing' at depth 4, and its frozen type in dag.json equals the handoff's.
+- Its dependencies blowup_region, graph_area and flat_limit are 'decomposing' under another parent. They therefore cannot be reused as children here; graph_representation takes the first two as hypotheses.
+- dtc_blowUp_testForm_corr is accepted (candidate 5e184fbc), with type and statement byte-equal to the reused entry.
+- No accepted node already states the needed blow-up mass bound for moving centres. The nearest are dtc_blowUp_massOn_image (fixed W, accepted) and dtc_bc_bh_blowUp_massOn_ball_bounded (fixed centre, unaccepted).
+Library.
+- The SimonGMT and Contract definitions match the children's proofs: IsTestForm = C^∞ ∧ compact support, TestFormOn = IsTestForm ∧ tsupport ⊆ U, exteriorDerivative = extDeriv, tsupport_exteriorDerivative_subset, massAdmissibleOn, le_massOn, covectorEuclideanNorm, and currentEval as a dite on IsTestForm ∧ tsupport ⊆ domain.
+- Every cited Mathlib lemma exists in the snapshot, e.g. ContinuousOn.measurable_piecewise (BorelSpace/Basic.lean:523), setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (Bochner/Set.lean:466), setIntegral_congr_fun (Bochner/Set.lean:73), IsCompact.tendsto_subseq (Topology/Sequences.lean:298), Convex.norm_image_sub_le_of_norm_fderiv_le (MeanValue.lean:499) and ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean:916). Measurable.measurableSet_preimage does not exist and is not cited.
+Lean.
+- All 5 child types elaborate.
+- With the children and the 3 unaccepted dependencies as axioms, the selected type is proved, using only standard axioms besides those declarations.
+- Scratch proofs of all 4 new children compile against their exact types without sorry.
+- New names have 0 occurrences anywhere checked; the positive control was found.

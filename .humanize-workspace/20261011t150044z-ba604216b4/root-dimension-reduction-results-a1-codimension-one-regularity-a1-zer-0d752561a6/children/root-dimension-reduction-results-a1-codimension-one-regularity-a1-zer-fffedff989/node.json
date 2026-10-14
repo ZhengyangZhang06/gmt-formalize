@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_blowup_limit-a1.mass_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_blowup_limit-a1",
+  "depth": 5,
+  "title": "Uniform local mass bound for blow-ups with converging centres (supplied step 7, hypothesis (H4) of flat_limit)",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), x ∈ ℝ^P, and let x_i ∈ ℝ^P and λ_i > 0 (i ∈ ℕ) satisfy x_i → x and λ_i → 0. Assume there are C ∈ ℝ and r₀ > 0 such that M_{B_ρ(y)}(T) ≤ ofReal(Cρ^n) (T.massOn (ball y ρ) ≤ ENNReal.ofReal (C·ρ^n)) for every y ∈ ball(x, r₀) and every ρ with 0 < ρ < r₀. Then for every R > 0 there is c ∈ ℝ such that, for all sufficiently large i, every ω ∈ 𝒟^n(ℝ^P) (TestFormOn univ n) with tsupport ω ⊆ ball(0, R) and covectorEuclideanNorm(ω(y)) ≤ 1 for all y satisfies currentEval(η_{x_i,λ_i#}T)(ω) ≤ c. Here η_{x_i,λ_i#}T = blowUp T x_i λ_i ∈ 𝒟_n(η_{x_i,λ_i}(U)), and currentEval(S')(ω) is S'(ω) when ω is a test form with tsupport inside the domain of S', and 0 otherwise.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i), Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → (∃ C r₀ : ℝ, 0 < r₀ ∧ ∀ y ∈ ball x r₀, ∀ ρ : ℝ, 0 < ρ → ρ < r₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → ∀ R : ℝ, 0 < R → ∃ c : ℝ, ∀ᶠ i in atTop, ∀ ω : TestFormOn (univ : Set (Euclid P)) n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball 0 R → (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) y) ≤ 1) → currentEval (blowUp T (xs i) (lams i) (hlams i).ne') (ω : DifferentialForm (Euclid P) n) ≤ c",
+  "lean_name": "codim1_zsl_gbl_blowUp_mass_bound",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.testform_correspondence-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1-a1",
+      "result_commit": "5e184fbc2dc0f26dbd9ce6b79feabd198b8ba518",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-fffedff989-a1"
+}

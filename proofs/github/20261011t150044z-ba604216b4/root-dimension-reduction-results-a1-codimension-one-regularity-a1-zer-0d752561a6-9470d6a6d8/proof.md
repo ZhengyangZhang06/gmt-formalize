@@ -1,0 +1,109 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_blowup_limit-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Steps 1, 2, 5, 6 and 7(a) of the supplied proof of the parent node written in the coordinates of the graph chart, followed by its steps 7(b)–10 in the form of the sibling child flat_limit. Simon 7.5.3 and 7.5.5 (chapter-07.txt lines 790–901). Departure: the representation of the blow-ups is proved for every test form supported in a ball ball(0, R), using that η_i(N) ∩ ball(0, R) lies on the rescaled graph over B_R (the supplied step 6(c)), instead of in the cylinders C_R; this is the form flat_limit needs. Sibling children used: blowup_region (Submission.codim1_zsl_blowUp_isBoundaryOfRegion), graph_area (Submission.codim1_zsl_graph_area_formula), flat_limit (Submission.codim1_zsl_flat_graph_limit) and testform_corr (Submission.dtc_blowUp_testForm_corr).
+
+Notation. P := n + 1 + k; e_0, …, e_n the standard basis of ℝ^{n+1}; α(Le) := α(Le_0, …, Le_n). ι*, ι'* are the adjoints: ι*ι = id, ι'*ι' = id, ι*ι' = 0, ι'*ι = 0, y = ιι*y + ι'ι'*y and |y|² = |ι*y|² + |ι'*y|² (by (d)). B_r := ball(0, r) in ℝ^{n+1} (or ℝ^k). Γ(v) := x + ιv + ι'u(v); Z := {x + ιv + ι'w : v ∈ B_{δ₁}, w ∈ B_{δ₂}}. η_i := dilation x_i λ_i, S_i := blowUp T x_i λ_i ∈ 𝒟_n(η_i(U)), H^{n+1} := μHE[n+1]. C, r₀ are the constants of (a) and c_* := max(C, 0). |α| := covectorEuclideanNorm α; ω is admissible if |ω(y)| ≤ 1 for all y.
+
+0. (Preliminaries.) Z = {y : |ι*(y − x)| < δ₁, |ι'*(y − x)| < δ₂} (by the decomposition of y − x), so Z is open, and x ∈ Z. Du is continuous on the open ball B_{δ₁} (ContDiffOn.continuousOn_fderiv_of_isOpen) and Du(0) = 0. If C₀ < 0, hypothesis (c) fails for i = 0 (|p − x_0| ≥ 0 > C₀λ_0) and there is nothing to prove; so assume C₀ ≥ 0. For v ∈ B_{δ₁}, u(v) = ι'*(Γ(v) − x), and Γ(v) ∈ N ∩ Z by (f).
+
+1. (Coordinates of the centres.) s_i := ι*(x_i − x), t_i := ι'*(x_i − x); then x_i − x = ιs_i + ι't_i, s_i → 0 and t_i → 0.
+
+2. (Rescaled graphs.) For w ∈ ℝ^{n+1} put g_i(w) := λ_i^{−1}(u(s_i + λ_iw) − t_i), G_i(w) := ιw + ι'g_i(w), and D_i := {w : s_i + λ_iw ∈ B_{δ₁}} (open). For every w, λ_iG_i(w) = ι(λ_iw) + ι'(u(s_i + λ_iw) − t_i) = Γ(s_i + λ_iw) − x_i, i.e. η_i(Γ(s_i + λ_iw)) = G_i(w) and x_i + λ_iG_i(w) = Γ(s_i + λ_iw). For w ∈ D_i, g_i is differentiable at w with Dg_i(w) = Du(s_i + λ_iw) (chain rule; the factors λ_i^{−1} and λ_i cancel), so DG_i(w) = ι + ι'Du(s_i + λ_iw) = DΓ(s_i + λ_iw); and g_i is C¹ on D_i.
+
+3. (Bounded offsets.) For each i choose p_i ∈ N with |p_i − x_i| ≤ C₀λ_i (c). Then p_i → x, so p_i ∈ Z for i ≥ i₁ and, by (f), p_i = Γ(v_i) with v_i ∈ B_{δ₁} and v_i = ι*(p_i − x). Put w_i := (v_i − s_i)/λ_i = ι*(p_i − x_i)/λ_i, so |w_i| ≤ C₀. By step 0, g_i(w_i) = (u(v_i) − t_i)/λ_i = ι'*(p_i − x_i)/λ_i, so |g_i(w_i)| ≤ C₀. Choose ρ₁ ∈ (0, δ₁] with ‖Du(v)‖ ≤ 1 for |v| < ρ₁, and i₂ ≥ i₁ with |s_i| + λ_iC₀ < ρ₁ for all i ≥ i₂. For such i the convex set {w : |s_i + λ_iw| < ρ₁} contains 0 and w_i, and g_i is differentiable on it with ‖Dg_i‖ ≤ 1; by the mean value inequality (Convex.norm_image_sub_le_of_norm_fderiv_le), |g_i(0)| ≤ |g_i(w_i)| + |w_i| ≤ 2C₀.
+
+4. (The offset b.) The points g_i(0), i ≥ i₂, lie in the compact ball closedBall(0, 2C₀) ⊆ ℝ^k; choose a strictly increasing σ with σ(0) ≥ i₂ and b ∈ ℝ^k with g_{σ(i)}(0) → b (IsCompact.tendsto_subseq). Below, a property of the sequence that holds for all large indices j holds for j = σ(i) for all large i, because σ(i) ≥ i.
+
+5. (C¹ convergence: (H1) and (H2) of flat_limit for g_{σ(i)}.) Let R > 0 and ε > 0; put ε' := min(ε, ε/(2R)) and choose ρ ∈ (0, δ₁] with ‖Du(v)‖ < ε' for |v| < ρ. For all large i, |s_{σ(i)}| + λ_{σ(i)}R < ρ and |g_{σ(i)}(0) − b| < ε/2. Then for w ∈ B_R, s_{σ(i)} + λ_{σ(i)}w ∈ B_ρ ⊆ B_{δ₁}, so g_{σ(i)} is differentiable at w with ‖Dg_{σ(i)}(w)‖ < ε' ≤ ε (step 2), and the mean value inequality on the convex B_R gives |g_{σ(i)}(w) − g_{σ(i)}(0)| ≤ ε'R ≤ ε/2, hence |g_{σ(i)}(w) − b| < ε.
+
+6. (Domains.) Choose r_U > 0 with ball(x, 2r_U) ⊆ U (U open, x ∈ U). For R > 0 and all large i, |x_i − x| < r_U and λ_iR < r_U, so ball(x_i, λ_iR) ⊆ U and ball(0, R) = η_i(ball(x_i, λ_iR)) ⊆ η_i(U). For such i and ω ∈ 𝒟^n(ℝ^P) with tsupport ω ⊆ ball(0, R), ω is a test form in η_i(U) and currentEval(S_i)(ω) = S_i(ω).
+
+7. (Mass bound: (H4).) Fix R > 0; for all large i also x_i ∈ ball(x, r₀) and λ_iR < r₀. Let ω ∈ 𝒟^n(ℝ^P) be admissible with tsupport ω ⊆ ball(0, R). By testform_corr (a) and (c) there is ω' ∈ 𝒟^n(U) with ω'(z) = ω(η_i(z)) for all z and S_i(ω) = λ_i^{−n}·T(ω'). Now tsupport ω' ⊆ η_i^{−1}(tsupport ω) ⊆ η_i^{−1}(ball(0, R)) = ball(x_i, λ_iR) and |ω'(z)| = |ω(η_i(z))| ≤ 1, so ω' is admissible for M_{ball(x_i,λ_iR)}(T), and (a) with y := x_i, ρ := λ_iR gives ofReal(T(ω')) ≤ T.massOn(ball(x_i, λ_iR)) ≤ ofReal(C(λ_iR)^n). Hence T(ω') ≤ c_*λ_i^nR^n and currentEval(S_i)(ω) = λ_i^{−n}T(ω') ≤ c_*R^n. So (H4) holds, also along σ, with c := c_*R^n.
+
+8. (Representation: (H3).) Let F'_i := {w ∈ D_i : G_i(w) ∈ η_i(E)}. It is measurable: η_i(E) is measurable (η_i is a homeomorphism, E is measurable) and G_i is continuous on the open set D_i. Fix R > 0 and let i be so large that ball(0, R) ⊆ η_i(U) (step 6), |s_i| + λ_iR < δ₁ (so B_R ⊆ D_i) and ball(x_i, λ_iR) ⊆ Z (x_i → x ∈ Z, Z open, λ_i → 0). Let ω ∈ 𝒟^n(ℝ^P) with tsupport ω ⊆ ball(0, R). By step 6 and blowup_region (y := x_i, λ := λ_i):
+ currentEval(S_i)(ω) = ∫_{η_i(E)} f_i dH^{n+1}, where f_i(y) := ξ_N(x_i + λ_iy)(dω(y)).
+(8a) η_i(E) ∩ ball(0, R) ⊆ G_i(F'_i ∩ B_R) ⊆ η_i(E). Let y ∈ η_i(E) with |y| < R. Then e := x_i + λ_iy ∈ E ⊆ N and |e − x_i| < λ_iR, so e ∈ N ∩ Z and by (f) e = Γ(v) with v ∈ B_{δ₁}. With w := (v − s_i)/λ_i we have s_i + λ_iw = v ∈ B_{δ₁} and G_i(w) = η_i(Γ(v)) = η_i(e) = y (step 2), so w ∈ F'_i, and |w| = |ι*y| ≤ |y| < R. The second inclusion is the definition of F'_i.
+(8b) f_i vanishes outside ball(0, R), since dω = 0 outside tsupport ω. Y := G_i(F'_i ∩ B_R) is measurable (G_i is continuous and injective on D_i because ι*G_i = id; MeasurableSet.image_of_continuousOn_injOn), and f_i = 0 on η_i(E) ∖ Y by (8a). Hence ∫_{η_i(E)} f_i dH^{n+1} = ∫_Y f_i dH^{n+1} (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero; η_i(E) is measurable).
+(8c) By graph_area (m := n + 1, g := g_i, D := D_i, A := F'_i ∩ B_R): ∫_Y f_i dH^{n+1} = ∫_{F'_i∩B_R} J_i(w)·f_i(G_i(w)) dw with J_i(w) := √det(DG_i(w)*DG_i(w)).
+(8d) For w ∈ F'_i ∩ B_R let v := s_i + λ_iw ∈ B_{δ₁}. By step 2, DG_i(w) = DΓ(v) and x_i + λ_iG_i(w) = Γ(v), so by (h) with α := dω(G_i(w)): J_i(w)·f_i(G_i(w)) = √det(DΓ(v)*DΓ(v))·ξ_N(Γ(v))(dω(G_i(w))) = dω(G_i(w))(DΓ(v)e) = dω(G_i(w))(DG_i(w)e).
+Hence currentEval(S_i)(ω) = ∫_{F'_i∩B_R} dω(G_i(w))(DG_i(w)e) dw for every such ω: this is (H3), also along σ.
+
+9. (Conclusion via flat_limit.) Apply flat_limit with U'_i := η_{σ(i)}(U), S'_i := S_{σ(i)}, g'_i := g_{σ(i)}, F''_i := F'_{σ(i)} (measurable), the offset b of step 4 and ξ_A := ξ_N(x), which satisfies ξ_A(α) = α(ιe) by (g). Its hypotheses hold: orthogonality and spanning by (d); S_{σ(i)} ⇀ S, since a subsequence of a sequence with currentEval(S_i)(ω) → S(ω) has the same limits; (H1) and (H2) by step 5; (H3) by step 8; (H4) by step 7. flat_limit yields a measurable F ⊆ {y : ∃ w, y = ιw + ι'b} with IsBoundaryOfRegion S F (y ↦ ξ_N(x)); together with b this proves the statement. ∎
+
+## Key steps
+
+1. In chart coordinates the blow-ups see the rescaled graphs G_i(w) = ιw + ι'λ_i^{−1}(u(s_i + λ_iw) − t_i), with DG_i(w) = DΓ(s_i + λ_iw) and x_i + λ_iG_i(w) = Γ(s_i + λ_iw).
+2. Bounded offsets |p_i − x_i| ≤ C₀λ_i and the mean value inequality bound g_i(0); a subsequence has g_{σ(i)}(0) → b, and Du(0) = 0 gives C¹ convergence g_{σ(i)} → b on every ball.
+3. testform_corr and the mass hypothesis give currentEval(S_i)(ω) ≤ c_*R^n for admissible ω supported in ball(0, R).
+4. blowup_region, N ∩ Z = Γ(B_{δ₁}), graph_area and the orientation formula give currentEval(S_i)(ω) = ∫_{F'_i∩B_R} dω(G_i(w))(DG_i(w)e) dw.
+5. flat_limit turns these properties into S = ∂[[F]] with F in the plane {ιw + ι'b} and constant orientation ξ_N(x).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD; grep -n simongmt -A6 local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `sha256sum GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `cat decomposition-audit-v1.json decomposition-review-receipt-v1.json; python3 dump of decomposition-v1.json (12 subproblems: statements, lean_statements, natural proofs, key steps, dependencies)`
+- `python3 scan of dag.json: lean_name lookup of the 8 codim1_zsl_* names, the 4 reused names (status, candidate commit, lean_statement byte equality with decomposition-v1.json), dtc_hausdorff_dilation, dor_ims_unitOrientation_dual and codim1_zero_scale_limit_offset_plane; raw count of 'codim1_zsl'; keyword scan 'area formula|BV|perimeter|bvVariation|indicator' over statements and titles`
+- `for r in $(git for-each-ref --format='%(objectname)' | sort -u): git grep -q -e codim1_zsl $r -- 'GMT/*.lean' (1277 commits); positive control: the same loop with dgcr_graph_orientation_jacobian; grep -rl codim1_zsl .lake/packages/simongmt/Poincare GMT`
+- `grep -n 'def IsTestForm|def exteriorDerivative|theorem exteriorDerivative_apply|def covectorEuclideanNorm|def massOn|def zeroRegion|def support|def affinePullbackForm|theorem exteriorDerivative_affinePullbackForm|theorem tsupport_exteriorDerivative_subset' simongmt/Poincare/SimonGMT/Chapter06/*.lean, then sed of Forms.lean 25-135, Mass.lean 25-80, CurrentLocalEquality.lean 95-125, AffineCurrentPushforward.lean 30-50 and 145-160, Currents.lean 120-190`
+- `rg -n 'theorem tsupport_eq|theorem support_eq|protected theorem neg|symmetric :' mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean; rg -n 'integral_comp_inv_smul_of_nonneg|support_convolution_subset|exists_isCompact_sdiff_lt|exists_isOpen_sdiff_lt|integral_pos_iff_support_of_nonneg|theorem lintegral_tsum' mathlib/Mathlib; rg -n 'namespace Module.Basis|def det' mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `lean -DautoImplicit=false /tmp/zsl-v2/Lib.lean and /tmp/zsl-v2/Lib2.lean (#check of about 70 Mathlib/SimonGMT lemmas cited by the children)`
+- `lean -DautoImplicit=false /tmp/zsl-v2/Bump.lean (ρ := (∫b)⁻¹·b for b : ContDiffBump (0 : Euclid m) with radii 1/2, 1: ContDiff ℝ ⊤, ρ ≥ 0, ρ(−z) = ρ(z), tsupport ρ = closedBall 0 1, ∫ρ = 1)`
+- `lean -DautoImplicit=false /tmp/zsl-v2/TypesV2.lean (12 child types generated from the v2 JSON plus the assembly of the selected type); lean -DautoImplicit=false /tmp/zsl-v2/AssemblyV2.lean (children as axioms, #print axioms)`
+- `grep -n 'def check_source_delta' -A40 /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Convolution.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-0b42d13aab/decomposition-review-receipt-v1.json`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py`
+- `/tmp/zsl-v2/Lib.lean`
+- `/tmp/zsl-v2/Lib2.lean`
+- `/tmp/zsl-v2/Bump.lean`
+- `/tmp/zsl-v2/TypesV2.lean`
+- `/tmp/zsl-v2/AssemblyV2.lean`
+
+Pins match. The snapshot manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib. The snapshot lake-manifest pins simongmt 2b366308, equal to .lake/packages/simongmt. The snapshot Contract.lean and the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+DAG.
+- The selected node is 'decomposing' with the handoff's exact frozen type.
+- The 4 reused declarations are accepted with types byte-identical to v1: dtc_blowUp_testForm_corr (5e184fbc), setIntegral_blowUpMap_image_eq_inv_pow_mul (713eebc5), rsdic_unitOrientation_eq_or_eq_neg (fe95347b) and dgcr_graph_orientation_jacobian (62aa1f11).
+- The 8 codim1_zsl_* names have 0 occurrences in dag.json, SimonGMT, GMT/ and the 1277 commits reachable from refs. The positive control dgcr_graph_orientation_jacobian was found on 6 of those commits.
+- No accepted node gives an exact graph area formula or BV compactness. The only area-formula nodes are unaccepted (dpf_area_formula_bilipschitz_rectifiable, idtp_carrier_area_formula) and have other types.
+Library.
+- The SimonGMT definitions match the children's proofs: exteriorDerivative = extDeriv with the alternating-sum formula, IsTestForm = ContDiff ℝ ∞ ∧ HasCompactSupport, covectorEuclideanNorm, massOn/massAdmissibleOn, zeroRegion/support and affinePullbackForm.
+- In the snapshot Mathlib, ContDiffBump.tsupport_eq (BumpFunction/Basic.lean:157) gives closedBall c rOut. This confirms the v1 defect, so step 1 of bv_compactness now claims only tsupport ρ = closedBall(0, 1). ContDiffBump.neg (:132) gives evenness, and support_eq (:151) gives the open-ball support.
+- Every lemma cited by the corrected proofs exists in the import closure. Examples: integral_comp_inv_smul_of_nonneg (Haar/NormedSpace.lean:129), support_convolution_subset (Convolution.lean:670), MeasurableSet.exists_isCompact_sdiff_lt/exists_isOpen_sdiff_lt (Regular.lean:843/385), exists_continuous_one_zero_of_isCompact and Module.Basis.det (Determinant.lean:591; the old name Basis.det is fixed).
+Lean.
+- Bump.lean compiles the corrected mollifier.
+- TypesV2.lean elaborates all 12 frozen types taken verbatim from the v2 JSON and proves the selected type; lean exits 0. Its axioms are propext, sorryAx, Classical.choice and Quot.sound.
+- With the children as axioms, AssemblyV2.lean depends only on propext, Classical.choice, Quot.sound and the 4 direct children.
+- leaf_verification.check_source_delta forbids new declarations and imports in leaf proofs, so the deep lemmas must stay separate children.
