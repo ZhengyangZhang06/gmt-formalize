@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8e9eb39508d372bad25895df5e11bd756320044091482bb91080d04b69716c4d",
+  "git_delta": {
+    "base_commit": "ab8bb814d0754d417d9da1e6464b2d955d399ba2",
+    "candidate_commit": "7cbb234cd3d6fadcfb409e0a331f127725510365",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbr_ci_pw_density_null_off_image",
+    "diff_sha256": "44c9b75487d2e1d5e47da7482d4a397d07a439301e3a20b703ec288587828773",
+    "source_sha256": "67ce272153d62f8edfada21eb7db097540639d9229e42723aa2b30f23a35963d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_ci_pw_density_null_off_image",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid n)) (u : Euclid n → ℝ) (σ : Measure (Euclid P)) (q : Euclid P → Euclid n) (h : Euclid P → ℝ) (A : Set (Euclid P)), IsOpen U → Continuous q → IntegrableOn u U → σ univ < ∞ → Integrable h σ → σ Aᶜ = 0 → (∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → ∫ y in U, b y * u y = ∫ x, b (q x) * h x ∂σ) → ∀ B : Set (Euclid n), MeasurableSet B → B ⊆ U → volume (B ∩ {y | u y ≠ 0}) ≤ volume (B ∩ q '' A)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
