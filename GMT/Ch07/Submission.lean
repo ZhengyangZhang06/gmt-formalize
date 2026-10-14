@@ -451,6 +451,32 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A small scale below the lower density (Simon Ch. 6, 8.2 (2), with the lower density in place of
+`Θ^{*n}`): `ωₙ > 0`, and if `liminf_{r ↓ 0} μ(B_r(x₁)) / (ωₙ rⁿ) < η₀`, then for every `δ > 0` there
+is `s ∈ (0, δ)` with `μ(B_s(x₁)) < η₀ ωₙ sⁿ`.  The ratio is frequently below `η₀` along `r ↓ 0`;
+clearing the nonzero, finite denominator `ωₙ sⁿ` at such an `s ∈ (0, δ)` gives the bound, and forces
+`η₀ ≥ 0`. -/
+theorem Submission.cbrldlf_exists_small_scale_of_lower_density : ∀ n : ℕ, 0 < (unitBallVolume n).toReal ∧ ∀ (P : ℕ) (μ : Measure (Euclid P)) (x₁ : Euclid P) (η₀ δ : ℝ), 0 < δ → liminf (fun r : ℝ => μ (ball x₁ r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) < ENNReal.ofReal η₀ → ∃ s : ℝ, 0 < s ∧ s < δ ∧ μ (ball x₁ s) < ENNReal.ofReal (η₀ * (unitBallVolume n).toReal * s ^ n) := by
+  intro n
+  -- `ωₙ = volume (ball 0 1)` is positive (Haar measure on a nonempty open set) and finite.
+  have hω₀ : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωt : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  refine ⟨ENNReal.toReal_pos hω₀ hωt, fun P μ x₁ η₀ δ hδ hlim => ?_⟩
+  -- The ratio is frequently below `η₀`, and eventually `r ∈ (0, δ)`.
+  obtain ⟨s, hs, hs₀, hsδ⟩ := ((frequently_lt_of_liminf_lt (by isBoundedDefault) hlim).and_eventually
+    (Ioo_mem_nhdsGT hδ)).exists
+  refine ⟨s, hs₀, hsδ, ?_⟩
+  -- Clear the denominator `ωₙ sⁿ`, which is nonzero and finite.
+  rw [ENNReal.div_lt_iff (Or.inl (mul_ne_zero hω₀ (ENNReal.ofReal_pos.2 (pow_pos hs₀ n)).ne'))
+    (Or.inl (ENNReal.mul_ne_top hωt ENNReal.ofReal_ne_top))] at hs
+  -- `η₀ ≥ 0`, since otherwise the bound would be `μ (ball x₁ s) < 0`.
+  have hη₀ : 0 ≤ η₀ := by
+    by_contra h
+    rw [ENNReal.ofReal_of_nonpos (not_le.1 h).le, zero_mul] at hs
+    exact ENNReal.not_lt_zero hs
+  rwa [ENNReal.ofReal_mul (mul_nonneg hη₀ ENNReal.toReal_nonneg), ENNReal.ofReal_mul hη₀,
+    ENNReal.ofReal_toReal hωt, mul_assoc]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
