@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1.fixed_support_dense-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1",
+  "depth": 5,
+  "title": "Test forms supported in a fixed compact set have a countable subfamily approximating ω and dω uniformly",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set and let K ⊆ ℝ^P be compact. Then there is a countable set D ⊆ 𝒟ⁿ(U) (TestFormOn U n: C^∞ compactly supported n-forms on ℝ^P with tsupport in U) such that tsupport η ⊆ K for every η ∈ D, with the following property. For every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ K and every real ε > 0 there is η ∈ D such that, for every x ∈ ℝ^P, dist(ω(x), η(x)) < ε and dist(dω(x), dη(x)) < ε. Here d = exteriorDerivative, and dist(a, b) = ‖a − b‖ is the operator-norm distance on Covector (Euclid P) n, respectively Covector (Euclid P) (n+1).",
+  "lean_statement": "∀ (P n : ℕ) (U K : Set (Euclid P)), IsCompact K → ∃ D : Set (TestFormOn U n), D.Countable ∧ (∀ η ∈ D, tsupport (η : DifferentialForm (Euclid P) n) ⊆ K) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → ∀ ε : ℝ, 0 < ε → ∃ η ∈ D, (∀ x, dist ((ω : DifferentialForm (Euclid P) n) x) ((η : DifferentialForm (Euclid P) n) x) < ε) ∧ ∀ x, dist (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) (exteriorDerivative (η : DifferentialForm (Euclid P) n) x) < ε",
+  "lean_name": "dor_lmbs_tfa_fixed_support_dense",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1.covector_findim-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.testform_dense-a1.covector_findim-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-t-d688d9da39-a1"
+}
