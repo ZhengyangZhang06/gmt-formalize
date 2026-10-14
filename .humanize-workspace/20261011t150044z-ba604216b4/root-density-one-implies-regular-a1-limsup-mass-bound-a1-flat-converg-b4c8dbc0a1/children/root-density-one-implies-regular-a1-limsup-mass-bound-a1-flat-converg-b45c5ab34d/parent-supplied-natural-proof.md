@@ -1,0 +1,96 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cube_chain_im-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 7 of the parent-supplied proof (each cube current [[G]](ω) = ∫_G ω(e_0, …, e_{P−1}) dHᴾ is IM, (G, 1, e_0∧⋯∧e_{P−1}) being an IMRep — G is Borel and countably P-rectifiable, Hᴾ(G) = ρᴾ, and Hᴾ-a.e. x ∈ G has approximate tangent space ℝ^P by (IMC)(a) applied to G ⊆ ℝ^P, ℝ^P having approximate tangent space ℝ^P at every point by hasApproximateTangentSpaceAt_submodule with ⊤; the standard basis is an orthonormal unit orientation — and a finite integer combination of IM currents is IM by (IMC)(c) with X + Y = X − (0 − Y) and 0 IM). Tools: (IMC) = the accepted declaration cmc_imRep_locality_restrict_sub, parts (a) (locality of approximate tangent spaces), (b) (a Borel restriction of an IMRep represents a current) and (c) (differences of IM currents are IM); SimonGMT Poincare.SimonGMT.Chapter03.hasApproximateTangentSpaceAt_submodule, countablyRectifiable_of_measure_zero, countablyRectifiable_range, CountablyRectifiable.mono; Mathlib EuclideanSpace.euclideanHausdorffMeasure_eq_volume (Hⁿ = Lebesgue measure on ℝⁿ), finrank_euclideanSpace_fin, the orthonormal standard basis EuclideanSpace.basisFun.
+Let e := (e_0, …, e_m) (e_k = EuclideanSpace.single k 1), and let ξ₀ ∈ MultiVector n n be the evaluation at e, ξ₀(α) := α(e), i.e. ξ₀ = ContinuousAlternatingMap.apply ℝ (Euclid n) ℝ e.
+1. The zero current 0 ∈ 𝒟_n(ℝⁿ) is IM: the IMRep with carrier ∅, multiplicity 0 and orientation 0 represents it. Indeed ∅ is Borel and ⊆ univ; it is countably n-rectifiable since Hⁿ(∅) = 0 (countablyRectifiable_of_measure_zero); the constant maps are measurable; positivity on ∅ and the integrability and a.e. conditions over ∅ hold trivially (Hⁿ⌞∅ = 0); and the action is ∫_∅ … = 0.
+2. Approximate tangent spaces of a Borel set G ⊆ ℝⁿ. The subspace ⊤ = ℝⁿ has finrank n, so by hasApproximateTangentSpaceAt_submodule the set (⊤ : Set ℝⁿ) = univ has approximate tangent space ⊤ at each of its points. Apply (IMC)(a) with U = M' = ℝⁿ and M = G: U is open, G ⊆ ℝⁿ ⊆ U are Borel, and Hⁿ(ℝⁿ ∩ K) = Hⁿ(K) < ∞ for every compact K, because Hⁿ is Lebesgue measure on ℝⁿ. Hence for Hⁿ-a.e. x ∈ G, G has approximate tangent space ⊤ at x.
+3. Unit orientation of ⊤: e is orthonormal and spans ℝⁿ = ⊤, so IsUnitOrientationOf (σ·ξ₀) ⊤ holds for σ ∈ {1, −1} (ξ₀(α) = α(e), −ξ₀(α) = −α(e)).
+4. One cube with an integer coefficient. Let z ∈ ℤⁿ and b ∈ ℤ with b ≠ 0, and let σ := sign(b) ∈ {1, −1}. The triple R_{z,b} := (G_z, |b|, σξ₀), with constant multiplicity mult := fun _ => b.natAbs ≥ 1 and constant orientation σξ₀ (so (b.natAbs : ℝ)·σ = b), is an IMRep in ℝⁿ: G_z is closed, hence Borel, and ⊆ univ; it is countably n-rectifiable since G_z ⊆ ℝⁿ = range(id) with id 1-Lipschitz (countablyRectifiable_range and CountablyRectifiable.mono); constant maps are measurable and a.e. strongly measurable; for compact K, ∫⁻_{G_z ∩ K} |b| dHⁿ ≤ |b|·Hⁿ(G_z) = |b|ρⁿ < ∞ (G_z is a cube of side ρ, Hⁿ = Lebesgue measure); and the a.e. orientation condition holds by steps 2 and 3. By (IMC)(b) with U = ℝⁿ and E = ℝⁿ there are A_{z,b} ∈ 𝒟_n(ℝⁿ) and an IMRep with carrier G_z ∩ ℝⁿ = G_z, multiplicity |b| and orientation σξ₀ that represents A_{z,b}; so A_{z,b} is IM and A_{z,b}(ω) = ∫_{G_z} |b|·σ·ω(x)(e) dHⁿ(x) = b ∫_{G_z} ω(x)(e) dHⁿ(x). For b = 0 put A_{z,0} := 0, which is IM by step 1 and satisfies the same formula.
+5. Sums. If A, B ∈ 𝒟_n(ℝⁿ) are IM, then 0 − B is IM and A − (0 − B) is IM by (IMC)(c) (U = ℝⁿ open, 0 IM by step 1), and (A − (0 − B))(ω) = A(ω) + B(ω). By induction over the finite set s (Finset.induction), the current Y_s defined by Y_∅ := 0 and Y_{insert z s'} := A_{z,β_z} − (0 − Y_{s'}) (z ∉ s') is IM and satisfies Y_s(ω) = Σ_{z∈s} β_z ∫_{G_z} ω(x)(e) dHⁿ(x) for every ω.
+6. By hypothesis X(ω) = Y_s(ω) for every ω ∈ 𝒟ⁿ(ℝⁿ), so X = Y_s (GeometricCurrentOn.ext), and X is integer multiplicity. ∎
+
+## Key steps
+
+1. 0 is IM (empty IMRep); Hⁿ-a.e. point of a Borel G ⊆ ℝⁿ has approximate tangent space ℝⁿ by (IMC)(a) and the flat model.
+2. For b ≠ 0, (G_z, |b|, sign(b)·e_0∧⋯∧e_m) is an IMRep; (IMC)(b) with E = ℝⁿ yields the IM current b[[G_z]].
+3. Finite integer combinations are IM via (IMC)(c) and A + B = A − (0 − B), by induction over s; X equals the combination by ext.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean <workspace>/GMT/Ch07/Submission.lean (identical)`
+- `rg -n "affinePushforward|Isometry|isometr" <snapshot>/project/GMT --glob '*.lean' (only the contract's blowUp and Ch05 rotated-plane docs; no IM push-forward by an isometric embedding)`
+- `rg -n -i "cube|latticeFace|deformation" <snapshot>/project/GMT/Ch07 <snapshot>/project/GMT/Ch06 --glob '*.lean' (Ch06 latticeFace/latticeFaceAction/DeformationTheorem with hypothesis 1 ≤ ℓ, sorry-frozen and not imported by GMT.Ch07.Submission; nothing for the top-dimensional case)`
+- `rg -n "theorem Isometry.map_euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume" <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n "theorem norm_iteratedFDeriv_smul_le" ContDiff/Bounds.lean; "theorem map_linearDependent" LinearAlgebra/Alternating/Basic.lean; "IsCompact.cthickening|mem_cthickening_iff|self_subset_cthickening" Topology/MetricSpace/Thickening.lean; "IsClosedEmbedding.isProperMap" Topology/Maps/Proper/Basic.lean; "isClosedEmbedding" Topology/MetricSpace/Isometry.lean (all in the snapshot mathlib)`
+- `rg -n "structure ContDiffBump|one_of_mem_closedBall|tsupport_eq|le_one|nonneg" BumpFunction/Basic.lean; "prod_fiberwise_of_maps_to|Int.natAbs_sum_le" Algebra/BigOperators/Group/Finset/Basic.lean; "restrict_map|restrict_restrict_of_subset|ae_map_iff" MeasureTheory/Measure/Restrict.lean; "MeasurableEmbedding.integral_map" Integral/Bochner/Basic.lean; "aestronglyMeasurable_map_iff" StronglyMeasurable/AEStronglyMeasurable.lean; "Filter.EventuallyEq.extDeriv_eq" Calculus/DifferentialForm/Basic.lean; "Filter.EventuallyEq.fderiv_eq" FDeriv/Congr.lean; "def apply" Module/Alternating/Topology.lean; "def infEDist|le_infEDist|infEDist_le_edist_of_mem" MetricSpace/HausdorffDistance.lean (namespace Metric)`
+- `grep -n declarations in <workspace>/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Currents,Mass,Forms}.lean and Chapter03/Rectifiable.lean (affinePushforward_apply, boundary_affinePushforward, affinePullbackTestOn, tsupport_affinePullbackForm_subset, exteriorDerivative_affinePullbackForm, iteratedFDeriv_affinePullbackForm, affinePullbackJet, TestFormOnConverges, GeometricCurrentOn.continuous', exteriorDerivativeTestOn, covectorEuclideanNorm, massAdmissibleOn, le_massOn, HasApproximateTangentSpaceAt, blowUpMap, hasApproximateTangentSpaceAt_submodule, countablyRectifiable_of_measure_zero, countablyRectifiable_range)`
+- `python3 -I scans of the run's dag.json: statuses and frozen types of dor_lmb_fc_deformation (decomposing), dor_imrep_massOn_eq_measure_and_support and cmc_imRep_locality_restrict_sub (accepted, identical types); searches for accepted IM push-forward/cutoff/projection lemmas (only dtc_blowUp_imrep for similarities of ℝ^P and cmcs_cd_smul_mem_testFormOn; nothing for isometric embeddings, cut-off pull-backs along projections or cube chains); name-collision check of the four new dor_lmb_fc_dtop_* names (none)`
+- `git show 047b3402ecebcae7b968f8ca435cbbb0b9ed036f:GMT/Ch07/Submission.lean (accepted dtc_blowUp_imrep/dtc_approxTangent_dilation/dtc_hausdorff_dilation: template for transporting an IMRep under a similarity)`
+- `sed -n 1405,1500p and 2020,2110p book/chapter-06.txt (Deformation Theorem 5.1/5.3 for n, ℓ ≥ 1; proof of 7.2; no printed treatment of n = P)`
+- `python3 -I gmt-compare.py contract_scope replay; lean_contract.validate_lean_statement on all six lean_statements; lake env lean /tmp/dt-top-decomp/lean/Challenge_*.lean (6 files, 0 errors) and /tmp/dt-top-decomp/lean/Assembly.lean (0 errors; #print axioms [propext, Classical.choice, Quot.sound])`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Maps/Proper/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-b4c8dbc0a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/dt-top-decomp/lean/Assembly.lean`
+- `/tmp/dt-top-decomp/lean/Sanity.lean`
+
+Snapshot: project b4d606db and Mathlib 25730c7c. Its Ch07 Contract.lean is byte-identical to the workspace Submission.lean.
+
+No-match results:
+- Neither the snapshot project nor SimonGMT has a push-forward of IM currents by isometric embeddings into a higher-dimensional space, a cut-off pull-back along a projection, or a top-dimensional deformation or cube-chain IM lemma.
+- The Ch06 contract's DeformationTheorem requires 1 ≤ ℓ, is sorry-frozen, and is not imported.
+- The only related accepted DAG work is dtc_blowUp_imrep, which transports an IMRep under similarities of ℝ^P. It is used as a template for the isometric_pushforward proof.
+
+So these four obligations become new children. They cite only Mathlib basics that are present in the snapshot:
+- Isometry.map_euclideanHausdorffMeasure and Isometry.euclideanHausdorffMeasure_image;
+- the MeasurableEmbedding API;
+- ContDiffBump and norm_iteratedFDeriv_smul_le;
+- Filter.EventuallyEq.extDeriv_eq;
+- AlternatingMap.map_linearDependent;
+- IsCompact.cthickening and IsClosedEmbedding.isProperMap;
+- Finset.sum_fiberwise_of_maps_to and Int.natAbs_sum_le.
+
+From SimonGMT they use the affine pull-back API (affinePushforward_apply, boundary_affinePushforward, exteriorDerivative_affinePullbackForm, iteratedFDeriv_affinePullbackForm) and hasApproximateTangentSpaceAt_submodule.
+
+The accepted dor_imrep_massOn_eq_measure_and_support and cmc_imRep_locality_restrict_sub are reused with byte-identical types. The sibling dor_lmb_fc_deformation (decomposing) stays a DAG dependency of the selected node.
+
+Lean: all six child types compile as exact comparator challenges. The conditional assembly of the exact selected type compiles with only propext, Classical.choice and Quot.sound.
