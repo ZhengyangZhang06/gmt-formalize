@@ -1,0 +1,53 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "def blowUpMap|def HasWeightedApproximateTangentSpaceAt",
+        "theorem integral_indicator₀|theorem Integrable\\.bdd_mul|theorem IntegrableOn\\.integrable_indicator₀|theorem enorm_integral_le_lintegral_enorm|theorem lintegral_indicator|theorem lintegral_const_mul\\x27|lemma indicator_mul_right",
+        "ofReal_le_ofReal_iff|^theorem ofReal_mul |^lemma ofReal_mul ",
+        "fiw_tl_tr_(weighted_diff_bound|scaling_limit)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Audit/ChildA.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Audit/ChildB.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean Audit/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-pointwise-transfer-a1/decomposition-v1.json",
+        "/tmp/fiw_tl_independent_audit_m_2cp4jt/Audit/ChildA.lean",
+        "/tmp/fiw_tl_independent_audit_m_2cp4jt/Audit/ChildB.lean",
+        "/tmp/fiw_tl_independent_audit_m_2cp4jt/Audit/Assembly.lean",
+        "/tmp/fiw_tl_independent_audit_m_2cp4jt/Cmp/fiw_tl_tr_weighted_diff_bound_Challenge.lean",
+        "/tmp/fiw_tl_independent_audit_m_2cp4jt/Cmp/fiw_tl_tr_scaling_limit_Challenge.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions, relevant definitions, and lemma signatures. Both child types and the parent type elaborate in independently generated comparator challenges against the frozen Submission, before either child exists. Replayed both supplied proof artifacts and the assembly in a fresh scratch directory with autoImplicit disabled; all compile using only propext, Classical.choice, and Quot.sound. Checked exact textual identity of the child types, sibling assumptions, and selected parent conclusion. The split appropriately separates the weighted integral estimate from the scaling limit. Together with the parent's declared blow-up and growth dependencies, these children prove the exact selected contract. Dependency directions are correct and acyclic. Scanning 362 DAG nodes and 355 decomposition proposals found no conflicting name reservations; both names are bare identifiers. No declaration reuse or typeclass-sensitive matrix construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weighted_diff_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every hypothesis and matches the standalone one-line Lean proposition. Steps 1–3 correctly localize the indicator products and establish integrability. Step 4 therefore legitimately subtracts the integrals. Steps 5–6 yield the exact ENNReal estimate, with finite ofReal K justifying constant extraction without additional measurability assumptions. Arbitrary signs and nonpositive radii cause no gap. The proof is complete, non-circular, and directly supplies the parent's required error bound."
+    },
+    {
+      "key": "scaling_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line Lean proposition agree exactly. Positivity of R correctly transports eventual estimates along r ↦ Rr. Replacing K and C by their nonnegative maxima handles arbitrary signs; cancellation uses r^n > 0, including n = 0. The nonnegative finite bound permits conversion from ENNReal to the real norm, and the explicit epsilon choice proves the stated limit. All three hypotheses are used correctly, with no circular reliance or deferred proof construction."
+    }
+  ],
+  "required_changes": []
+}

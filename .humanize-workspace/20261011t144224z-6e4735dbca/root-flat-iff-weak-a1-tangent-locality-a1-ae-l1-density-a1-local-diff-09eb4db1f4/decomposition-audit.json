@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n -A10 -B3 'protected def vitaliFamily|theorem tendsto_filterAt|theorem ae_tendsto_measure_inter_div' mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "sed -n '801,837p' mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "sed -n '785,851p' mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "sed -n '448,485p' mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "sed -n '564,592p' mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "rg -n -A5 -B2 'theorem restrict_mono |theorem restrict_restrict₀|theorem restrict_restrict |theorem ae_restrict_mem₀|theorem ae_restrict_of_ae_restrict_of_subset' mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "sed -n '330,385p' mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "rg -l 'fiw_tl_ald_ld_weighted_(lebesgue|density)_point' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes --glob '*.json' --glob '*.md'",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ld_independent_audit_uqtfd0ty/SuppliedProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-tangent-locality-a1-ae-l1-density-a1-local-diff-09eb4db1f4/parent-child-handoff.json",
+        "/tmp/ld_independent_audit_uqtfd0ty/SuppliedProofs.lean",
+        "/tmp/ld_independent_audit_uqtfd0ty/fiw_tl_ald_ld_weighted_lebesgue_point_Challenge.lean",
+        "/tmp/ld_independent_audit_uqtfd0ty/fiw_tl_ald_ld_weighted_density_point_Challenge.lean",
+        "/tmp/ld_independent_audit_uqtfd0ty/fiw_tl_ald_local_differentiation_Challenge.lean"
+      ],
+      "conclusion": "Independently confirmed project revision d8d46c9587747dee0751a1f780fcafdba16a3886 and Mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d; the inspected Mathlib sources and project contract match the compilation environment. Snapshot searches verify the differentiation, weighted-integrability, absolute-continuity and restriction lemmas with the hypotheses used. Both proposed names are bare identifiers, absent from all 458 DAG reservations and other node proposals; no identical frozen DAG type was found. Both types pass the contract validator and elaborate in independently generated comparator challenge files without child implementations. The supplied child proofs and byte-exact parent assembly independently compile; their reported axioms are only propext, Classical.choice and Quot.sound. Challenge files produce only their expected placeholder-proof warnings. Splitting is appropriate: the independent children establish the two selected limits, and the indicator identity supplies the extra integrability hypothesis needed for assembly. Empty child dependency lists are accurate and acyclic. The scalar, measure and Euclidean-space constructions use the intended instances."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "weighted_lebesgue_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches every prose hypothesis and the stated almost-everywhere limit. The proof correctly obtains a finite weighted measure, reverse absolute continuity from positivity, and integrability of f from integrability of θf using the NNReal scalar-multiplication equivalence. This also supplies the required measurability of f for the original restricted measure. Closed-ball differentiation, transfer to λ, and eventual identification of both integrals are justified. No finiteness assumption on μ or additional denominator hypothesis is missing. The proof is complete, directly uses Mathlib rather than the parent or another DAG obligation, and specializes to the parent's (L)."
+    },
+    {
+      "key": "weighted_density_point",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly includes null-measurability of both sets, E ⊆ M, positivity and localized integrability. The proof correctly establishes λ ≪ ν.restrict E, applies the density theorem in its arbitrary-set form, and transfers its conclusion in the correct direction. Null-measurability justifies withDensity_apply₀ and repeated restriction; E ⊆ M and small-ball containment remove the localization exactly. Eventual equality proves the requested ENNReal quotient limit without extra assumptions. The argument is complete and non-circular, has no sibling dependencies, and specializes verbatim to the parent's (D)."
+    }
+  ],
+  "required_changes": []
+}

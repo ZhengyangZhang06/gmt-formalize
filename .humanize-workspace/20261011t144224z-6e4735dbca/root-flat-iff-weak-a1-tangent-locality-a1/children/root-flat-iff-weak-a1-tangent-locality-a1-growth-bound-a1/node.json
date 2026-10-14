@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.growth_bound-a1",
+  "parent_id": "root.flat_iff_weak-a1.tangent_locality-a1",
+  "depth": 3,
+  "title": "Upper n-density bound at a weighted approximate tangent point",
+  "statement": "Let P, n ∈ ℕ and H := μHE[n] on ℝ^P. Let M ⊆ ℝ^P be H-null-measurable and θ : ℝ^P → ℝ with θ ≥ 0 on M. Let x ∈ ℝ^P and ρ > 0 with θ H-integrable on M ∩ B̄_ρ(x). Let Q ⊆ ℝ^P be a linear subspace with HasWeightedApproximateTangentSpaceAt n M θ x Q (Simon Ch. 3, 1.7). Then there is C ∈ ℝ such that for all sufficiently small s > 0 (∀ᶠ s in 𝓝[>] 0): ∫⁻_{M ∩ B̄_s(x)} ofReal(θ(z)) dH(z) ≤ ofReal(C·sⁿ).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (x : Eucl P) (ρ : ℝ) (Q : Submodule ℝ (Eucl P)), 0 < ρ → NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ y ∈ M, 0 ≤ θ y) → IntegrableOn θ (M ∩ closedBall x ρ) (μHE[n] : Measure (Eucl P)) → HasWeightedApproximateTangentSpaceAt n M θ x Q → ∃ C : ℝ, ∀ᶠ s in 𝓝[>] (0 : ℝ), ∫⁻ z in M ∩ closedBall x s, ENNReal.ofReal (θ z) ∂(μHE[n] : Measure (Eucl P)) ≤ ENNReal.ofReal (C * s ^ n)",
+  "lean_name": "fiw_tl_growth_bound",
+  "depends_on": [
+    "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.flat_iff_weak-a1.tangent_locality-a1.blowup_change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-tangent-locality-a1-growth-bound-a1-a1"
+}
