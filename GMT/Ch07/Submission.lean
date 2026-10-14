@@ -451,6 +451,129 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The interior-product covector `ι_z(dy)` on `ℝ^{d+1}`** (used for the `d`-form `f · ι_z(dy)`,
+whose exterior derivative is `(∂_z f) dy`, in White's projection argument for the closure theorem
+behind Simon 7.2.4; cf. the forms `ωⱼ` in the proof of Simon 6.2.34).  For `z ∈ ℝ^{d+1}` there is
+a continuous alternating `d`-form `ε` on `ℝ^{d+1}` with `ε(e₀, …, êᵢ, …, e_d) = (−1)ⁱ zᵢ`:
+`ε(u₁, …, u_d) = det [z | u₁ | ⋯ | u_d] = δ(z, u₁, …, u_d)` for the standard determinant form `δ`. -/
+theorem Submission.cbr_ci_pw_ipf_coord_covector : ∀ (d : ℕ) (z : Euclid (d + 1)), ∃ ε : Covector (Euclid (d + 1)) d, ∀ i : Fin (d + 1), ε (i.removeNth (fun l : Fin (d + 1) => EuclideanSpace.single l (1 : ℝ))) = (-1 : ℝ) ^ (i : ℕ) * z i := by
+  intro d z
+  classical
+  -- The standard basis `b l = e_l` and its determinant `δ₀ c = det (c l r)_{r,l}`.
+  let b : Module.Basis (Fin (d + 1)) ℝ (Euclid (d + 1)) :=
+    (EuclideanSpace.basisFun (Fin (d + 1)) ℝ).toBasis
+  have hdet : ∀ c : Fin (d + 1) → Euclid (d + 1), b.det c = (Matrix.of fun r l => c l r).det := by
+    intro c
+    rw [Module.Basis.det_apply]
+    congr 1
+  -- `δ₀` is continuous (entrywise continuous matrix, then `det`), so it is a covector `δ`.
+  have hcont : Continuous (fun c : Fin (d + 1) → Euclid (d + 1) => b.det c) := by
+    simp only [hdet]
+    apply Continuous.matrix_det
+    refine continuous_matrix fun r l => ?_
+    exact (EuclideanSpace.proj r).continuous.comp (continuous_apply l)
+  let δ : Covector (Euclid (d + 1)) (d + 1) := { b.det with cont := hcont }
+  have hδ : ∀ c, δ c = b.det c := fun c => rfl
+  -- `ε = δ.curryLeft z`, so `ε u = det M(u)` with columns `z, u₀, …, u_{d-1}`; expand along
+  -- column `0`: `det M(u) = Σ_r (−1)ʳ z_r det N_r` with minors `N_r`.
+  refine ⟨δ.curryLeft z, fun i => ?_⟩
+  rw [ContinuousAlternatingMap.curryLeft_apply_apply, hδ, hdet, Matrix.det_succ_column_zero,
+    Finset.sum_eq_single i]
+  · -- `r = i`: `(N_i)_{a,k} = (e_{i.succAbove k})_{i.succAbove a} = [a = k]`, so `N_i = 1`.
+    have h1 : (Matrix.of fun r l => (Matrix.vecCons z (i.removeNth fun l =>
+        EuclideanSpace.single l (1 : ℝ)) : Fin (d + 1) → Euclid (d + 1)) l r).submatrix
+          i.succAbove Fin.succ = 1 := by
+      ext a k
+      simp [Matrix.one_apply, Fin.removeNth_apply]
+    rw [h1, Matrix.det_one]
+    simp
+  · -- `r ≠ i`: row `a₀` of `N_r`, where `r.succAbove a₀ = i`, is `(e_{i.succAbove k})_i = 0`.
+    intro r _ hri
+    obtain ⟨a₀, ha₀⟩ := Fin.exists_succAbove_eq (x := i) (y := r) (Ne.symm hri)
+    rw [Matrix.det_eq_zero_of_row_eq_zero a₀, mul_zero]
+    intro k
+    simp [Fin.removeNth_apply, ha₀]
+  · intro h
+    exact absurd (Finset.mem_univ i) h
+/-- **Coefficient norm of the interior-product covector** (used for `ε = ι_z(dy)` in the closure
+and boundary-rectifiability step of the compactness theorem, Simon 7.2.4).  If the `d`-covector `ε`
+on `ℝ^{d+1}` takes the value `(−1)ⁱ zᵢ` on `(e₀, …, êᵢ, …, e_d)`, then its Euclidean coefficient
+norm (Simon (6.1.15)) is `|z|`: the strictly increasing `I : Fin d → Fin (d + 1)` are exactly the
+maps `i.succAbove`, so the coefficients of `ε` are the `(−1)ⁱ zᵢ`. -/
+theorem Submission.cbr_ci_pw_ipf_covector_norm_eq : ∀ (d : ℕ) (z : Euclid (d + 1)) (ε : Covector (Euclid (d + 1)) d), (∀ i : Fin (d + 1), ε (i.removeNth (fun l : Fin (d + 1) => EuclideanSpace.single l (1 : ℝ))) = (-1 : ℝ) ^ (i : ℕ) * z i) → covectorEuclideanNorm ε = ‖z‖ := by
+  intro d z ε hε
+  have hI : ∀ I : Fin d → Fin (d + 1), StrictMono I → ∃ i : Fin (d + 1), i.succAbove = I := by
+    intro I hI
+    have hns : ¬Surjective I := fun h => by
+      simpa using Fintype.card_le_of_surjective I h
+    obtain ⟨i, hi⟩ := not_forall.mp hns
+    have hcard : (Finset.univ.erase i).card = d := by simp
+    refine ⟨i, ?_⟩
+    rw [Finset.orderEmbOfFin_unique hcard (f := I)
+        (fun k => Finset.mem_erase.2 ⟨fun h => hi ⟨k, h⟩, Finset.mem_univ _⟩) hI,
+      Finset.orderEmbOfFin_unique hcard (f := i.succAbove)
+        (fun k => Finset.mem_erase.2 ⟨Fin.succAbove_ne i k, Finset.mem_univ _⟩)
+        (Fin.strictMono_succAbove i)]
+  rw [covectorEuclideanNorm, EuclideanSpace.norm_eq]
+  congr 1
+  rw [← Finset.sum_subset
+      (Finset.subset_univ (Finset.univ.image fun i : Fin (d + 1) => i.succAbove)) ?_,
+    Finset.sum_image fun i _ j _ h => Fin.succAbove_left_injective h]
+  · refine Finset.sum_congr rfl fun i _ => ?_
+    have hb : (fun k => EuclideanSpace.basisFun (Fin (d + 1)) ℝ (i.succAbove k)) =
+        i.removeNth (fun l : Fin (d + 1) => EuclideanSpace.single l (1 : ℝ)) := by
+      funext k
+      simp [Fin.removeNth]
+    rw [ite_eq_left (Fin.strictMono_succAbove i), hb, hε i, Real.norm_eq_abs, sq_abs, mul_pow,
+      pow_right_comm, neg_one_sq, one_pow, one_mul]
+  · intro I _ hIm
+    refine ite_eq_right fun hmono => ?_
+    obtain ⟨i, rfl⟩ := hI I hmono
+    exact hIm (Finset.mem_image_of_mem _ (Finset.mem_univ i))
+/-- **Exterior derivative of a function times a constant covector** (used for the boundary weak
+derivatives in the graph-cycle regularity step of Simon 7.4.3).  If `a : ℝᴾ → ℝ` is
+differentiable at `x` and `β` is a fixed `m`-covector, then
+`d(a β)(x)(w₀, …, w_m) = Σᵢ (−1)ⁱ Da(x)wᵢ · β(w₀, …, ŵᵢ, …, w_m)`, i.e. `d(a β) = da ∧ β`:
+each term of the alternating sum differentiates `y ↦ a(y) β(w₀, …, ŵᵢ, …, w_m)`. -/
+theorem Submission.dgcr_bwd_extDeriv_smul_const : ∀ (P m : ℕ) (a : Euclid P → ℝ) (β : Covector (Euclid P) m) (x : Euclid P) (w : Fin (m + 1) → Euclid P), DifferentiableAt ℝ a x → exteriorDerivative (fun y => a y • β) x w = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ a x (w i) * β (i.removeNth w)) := by
+  intro P m a β x w ha
+  rw [exteriorDerivative_apply (ha.smul_const β) w]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  have h1 : (fun y => (a y • β) (i.removeNth w)) = fun y => a y * β (i.removeNth w) := by
+    funext y
+    simp [ContinuousAlternatingMap.smul_apply, smul_eq_mul]
+  rw [h1, fderiv_mul_const ha]
+  simp [zsmul_eq_mul, mul_comm]
+
+/-- **The interior product `ι_z(dy)` as a constant `d`-form on `ℝ^{d+1}`** (the forms
+`f · Σⱼ zⱼ εⱼ` in the BV estimate of the closure argument for Simon 7.2.4; cf. the forms `ωⱼ` in
+the proof of Simon Ch. 6, 2.34).  For `z ∈ ℝ^{d+1}` the covector
+`ε(u₁, …, u_d) = det[z | u₁ | ⋯ | u_d]` has `ε(e₀, …, êᵢ, …, e_d) = (−1)ⁱ zᵢ` and `|ε| = |z|`,
+and `d(f ε) = df ∧ ε` gives
+`d(f ε)(y)(e₀, …, e_d) = Σᵢ (−1)ⁱ Df(y)eᵢ · (−1)ⁱ zᵢ = Df(y)(Σᵢ zᵢ eᵢ) = Df(y) z`. -/
+theorem Submission.cbr_ci_pw_interior_product_form : ∀ (d : ℕ) (z : Euclid (d + 1)), ∃ ε : Covector (Euclid (d + 1)) d, covectorEuclideanNorm ε ≤ ‖z‖ ∧ ∀ (f : Euclid (d + 1) → ℝ) (y : Euclid (d + 1)), DifferentiableAt ℝ f y → exteriorDerivative (fun x => f x • ε) y (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ f y z := by
+  intro d z
+  -- steps 1–2: `ε = ι_z(dy)`, with `ε(i.removeNth e) = (−1)ⁱ zᵢ`
+  obtain ⟨ε, hε⟩ := Submission.cbr_ci_pw_ipf_coord_covector d z
+  -- step 3: `|ε| = ‖z‖`
+  refine ⟨ε, (Submission.cbr_ci_pw_ipf_covector_norm_eq d z ε hε).le, fun f y hf => ?_⟩
+  -- step 4: `d(f ε)(y)(e) = Σᵢ (−1)ⁱ Df(y)eᵢ · ε(i.removeNth e)`
+  rw [Submission.dgcr_bwd_extDeriv_smul_const (d + 1) d f ε y _ hf]
+  -- `(−1)ⁱ (−1)ⁱ = 1`, so the `i`-th term is `zᵢ Df(y)eᵢ`
+  have hterm : ∀ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ f y (EuclideanSpace.single i (1 : ℝ)) * ε (i.removeNth (fun l : Fin (d + 1) => EuclideanSpace.single l (1 : ℝ)))) = z i * fderiv ℝ f y (EuclideanSpace.single i (1 : ℝ)) := by
+    intro i
+    have hsq : (-1 : ℝ) ^ (i : ℕ) * (-1 : ℝ) ^ (i : ℕ) = 1 := by
+      rw [← mul_pow]
+      norm_num
+    rw [hε i]
+    linear_combination (z i * fderiv ℝ f y (EuclideanSpace.single i (1 : ℝ))) * hsq
+  rw [Finset.sum_congr rfl fun i _ => hterm i]
+  -- `z = Σᵢ zᵢ eᵢ` and `Df(y)` is linear
+  conv_rhs => rw [← (EuclideanSpace.basisFun (Fin (d + 1)) ℝ).sum_repr z]
+  rw [map_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [map_smul, EuclideanSpace.basisFun_apply, EuclideanSpace.basisFun_repr, smul_eq_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
