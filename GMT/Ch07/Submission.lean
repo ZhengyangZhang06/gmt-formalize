@@ -901,6 +901,25 @@ theorem Submission.idtp_fons_odc_pc_imrep_formulas : ∀ (P : ℕ) (ι : Type) [
         ← Set.image_inter_preimage, ((hline k).2 _).2, ← ENNReal.ofReal_natCast, Nat.cast_natAbs,
         Int.cast_abs]
 
+/-- **Polygonal integer multiplicity 1-currents** (Simon Ch. 6, 3.1–3.2; used for the
+1-dimensional minimizing cones `S₀ = m[[ℓ]]` in the proof of 7.3.3, (10)).  Finitely many
+oriented open line pieces `S_k = γ_k(I_k)`, `γ_k(t) = p_k + t v_k` (`‖v_k‖ = 1`, `I_k` open),
+with integer weights `c_k` and `H¹`-null overlaps `S_j ∩ closure S_k` (`j ≠ k`), define the
+current `X(ω) = Σ_k c_k ∫_{I_k} ω(γ_k t)(v_k) dt`.  It is represented by the triple
+`R = (⋃_{c_k ≠ 0} S_k, Σ_k 1_{S_k}|c_k|, ξ)` with `θξ(α) = Σ_k 1_{S_k} c_k α(v_k)`, whose
+mass measure is `R.measure A = Σ_k |c_k| ℒ¹(I_k ∩ γ_k⁻¹A)`. -/
+theorem Submission.idtp_fons_odc_polygonal_current : ∀ (P : ℕ) (ι : Type) [Fintype ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (c : ι → ℤ), (∀ k, ‖v k‖ = 1) → (∀ k, IsOpen (I k)) → (∀ j k, j ≠ k → (μHE[1] : Measure (Euclid P)) (((fun t : ℝ => p j + t • v j) '' I j) ∩ closure ((fun t : ℝ => p k + t • v k) '' I k)) = 0) → ∃ (X : GeometricCurrentOn (univ : Set (Euclid P)) 1) (R : IMRep (univ : Set (Euclid P)) 1), R.Represents X ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, X ω = ∑ k, (c k : ℝ) * ∫ t in I k, (ω : DifferentialForm (Euclid P) 1) (p k + t • v k) (fun _ => v k)) ∧ ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ k, ENNReal.ofReal |(c k : ℝ)| * volume (I k ∩ (fun t : ℝ => p k + t • v k) ⁻¹' A) := by
+  intro P ι hι p v I c hv hI hnull
+  -- Step 1: the weighted line-integral current `X`, with real weights `(c k : ℝ)`.
+  obtain ⟨X, hX⟩ := Submission.idtp_fons_odc_pc_line_current P ι p v I (fun k => (c k : ℝ)) hv
+  -- Steps 2–3: the triple `R = (⋃_{c_k ≠ 0} S_k, Σ_k 1_{S_k}|c_k|, ξ)`.
+  obtain ⟨R, hcar, hmult, hθξ⟩ := Submission.idtp_fons_odc_pc_imrep P ι p v I c hv hI hnull
+  -- Steps 4–5: the action and the mass measure of `R`.
+  obtain ⟨hact, hmeas⟩ := Submission.idtp_fons_odc_pc_imrep_formulas P ι p v I c hv
+    (fun k => (hI k).measurableSet) R hcar hmult hθξ
+  -- `R.Represents X` is `∀ ω, X ω = R.action ω`; both sides equal the weighted sum.
+  exact ⟨X, R, fun ω => (hX ω).trans (hact ω).symm, hX, hmeas⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
