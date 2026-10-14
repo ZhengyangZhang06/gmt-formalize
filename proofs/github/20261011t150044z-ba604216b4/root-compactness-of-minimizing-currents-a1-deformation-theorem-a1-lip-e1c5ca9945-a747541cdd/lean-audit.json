@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "98bda9a3db13f213083c8a717c7db03e9eed3cbef2bce189e691c8935bf72aec",
+  "git_delta": {
+    "base_commit": "5f5e593f6b4980389bedd04cf04ccfcd1d18cc53",
+    "candidate_commit": "25cb7dfb202fa844d220d8e9679a4c419e0322af",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "988227456c020d6c5ef661bdf52750705b0d00b0d029f4e4022c5c963d5d9593",
+    "source_sha256": "4c8ff9451f0fe187c900e607a79356b7c438c12e587d1f4b6c8f7a5926e04168",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lp_covector_pullback_norm_le",
+      "statement": "∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
