@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "608f39d3f46924345e1e1592d7b82ce701e9fa146ff858bb063f9b12acfc1b55",
+  "git_delta": {
+    "base_commit": "8766fb20302a94eced88e941df89c6a80c6ac502",
+    "candidate_commit": "94cfa489f73c58ddce4b5b660e7abbcada52a445",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_dlc_ld_cone_scale_piece",
+    "diff_sha256": "42c3bdaf30b1e2b931a325278de1bdd82b74e1faf98600cc253eeabeae2ada2d",
+    "source_sha256": "0d82ce638f7ce46c708838bbbfef0c064b85298915d8019534f00c35447aafaf",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_dlc_ld_cone_scale_piece",
+      "statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (x : Euclid P) (k : ℕ) (s ε : ℝ), IsIntegerMultiplicity C → IsConeCurrent C → 0 < s → C.support ∩ ball (s⁻¹ • x) ε = (Q : Set (Euclid P)) ∩ ball (s⁻¹ • x) ε → (∀ y ∈ C.support, y ∈ ball (s⁻¹ • x) ε → HasMassDensity C y k) → C.support ∩ ball x (s * ε) = (Q : Set (Euclid P)) ∩ ball x (s * ε) ∧ ∀ y ∈ C.support, y ∈ ball x (s * ε) → HasMassDensity C y k",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
