@@ -750,6 +750,95 @@ theorem Submission.cmcdt_lp_covector_curryLeft_norm_le : ∀ (N k : ℕ) (v : Eu
   exact (pow_le_pow_iff_left₀ (covectorEuclideanNorm_nonneg _) (covectorEuclideanNorm_nonneg _)
     two_ne_zero).mp (le_of_mul_le_mul_left key (by exact_mod_cast Nat.factorial_pos _))
 
+/-- **Bounds for one piece of the cone** (Simon 6.2.30, `0 ⨯ T = h_#([[(0, 1)]] × T)` with
+`h(t, x) = t x`, and the estimate of 6.2.27): let `B = {z ∈ ℝ^{n+1} : z₀ ∈ (0, 1), tail z ∈ A}`
+and suppose `(DH(z)ê_b)_b = Fin.cons (G u) (z₀ DG(u)e_a)_a` for `z ∈ B`, `u = tail z`.  Then
+`w ∘ tail` is integrable on `B` (Tonelli on `B`, `cmcdt_lpi_cyl_fubini`, and `|(0, 1)| = 1`);
+`c′(z) = z₀ⁿ ‖G u‖ c(u)` satisfies `|α(DH(z)ê)| ≤ c′(z) |α|_E`, since
+`α(Fin.cons v (s • x)) = sⁿ (ι_v α)(x)` by multilinearity and `|ι_v α|_E ≤ ‖v‖ |α|_E`
+(`cmcdt_lp_covector_curryLeft_norm_le`); and Tonelli with `z₀ⁿ ≤ 1` and `‖G‖ ≤ ρ` on `A` gives
+`∫⁻_B |w ∘ tail| c′ ≤ ρ ∫⁻_A |w| c`. -/
+theorem Submission.dimred_cs_sos_cfs_cp_piece_bounds : ∀ (P n : ℕ) (ρ : ℝ) (G : Euclid n → Euclid P) (H : Euclid (n + 1) → Euclid P) (A : Set (Euclid n)) (w : Euclid n → ℤ) (c : Euclid n → ℝ), Measurable G → MeasurableSet A → Measurable w → Measurable c → IntegrableOn (fun u => (w u : ℝ)) A → (∀ u ∈ A, ‖G u‖ ≤ ρ) → (∀ u ∈ A, 0 ≤ c u ∧ ∀ α : Covector (Euclid P) n, |α (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))| ≤ c u * covectorEuclideanNorm α) → (∀ z : Euclid (n + 1), WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 → (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A → (fun b => fderiv ℝ H z (EuclideanSpace.single b 1)) = Fin.cons (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) (fun a => WithLp.ofLp z 0 • fderiv ℝ G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) (EuclideanSpace.single a 1))) → IntegrableOn (fun z : Euclid (n + 1) => (w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)) {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} ∧ (∀ z : Euclid (n + 1), WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 → (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A → 0 ≤ WithLp.ofLp z 0 ^ n * ‖G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))‖ * c (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) ∧ ∀ α : Covector (Euclid P) (n + 1), |α (fun b => fderiv ℝ H z (EuclideanSpace.single b 1))| ≤ WithLp.ofLp z 0 ^ n * ‖G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))‖ * c (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) * covectorEuclideanNorm α) ∧ ∫⁻ z in {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A}, ENNReal.ofReal (|(w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)| * (WithLp.ofLp z 0 ^ n * ‖G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))‖ * c (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))) ≤ ENNReal.ofReal ρ * ∫⁻ u in A, ENNReal.ofReal (|(w u : ℝ)| * c u) := by
+  intro P n ρ G H A w c hGm hA hw hc hwi hGρ hcb hDH
+  obtain ⟨-, hlin, -⟩ := Submission.cmcdt_lpi_cyl_fubini n A hA
+  have htail : Measurable (fun z : Euclid (n + 1) =>
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n)) := by
+    fun_prop
+  have hz0 : Measurable (fun z : Euclid (n + 1) => WithLp.ofLp z 0) := by
+    fun_prop
+  -- `tail (t, u) = u`
+  have hιtail : ∀ (t : ℝ) (u : Euclid n),
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp
+        (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (n + 1)))) : Euclid n) = u := by
+    intro t u; simp
+  have hwR : Measurable (fun u => (w u : ℝ)) := (measurable_of_countable _).comp hw
+  refine ⟨?_, ?_, ?_⟩
+  · -- integrability of `w ∘ tail` on `B`: `∫⁻_B |w ∘ tail| = ∫⁻_A |w| · |(0, 1)| < ∞`
+    refine ⟨(hwR.comp htail).aestronglyMeasurable, ?_⟩
+    rw [HasFiniteIntegral, hlin (fun z => ‖(w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)‖ₑ)
+      (hwR.comp htail).enorm]
+    simp only [hιtail]
+    simp only [lintegral_const, Measure.restrict_apply MeasurableSet.univ, univ_inter,
+      Real.volume_Ioo, sub_zero, ENNReal.ofReal_one, mul_one]
+    exact hwi.2
+  · -- the covector bound, with `s = z₀` and `u = tail z`
+    intro z hz hzA
+    set s := WithLp.ofLp z 0
+    set u := (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n)
+    have hs : 0 < s := hz.1
+    obtain ⟨hc0, hcα⟩ := hcb u hzA
+    refine ⟨by positivity, fun α => ?_⟩
+    rw [hDH z hz hzA]
+    -- `α(Fin.cons v (s • x)) = sⁿ (ι_v α)(x)`
+    have key : α (Fin.cons (G u) (fun a => s • fderiv ℝ G u (EuclideanSpace.single a 1))) =
+        s ^ n * (α.curryLeft (G u)) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) := by
+      have h1 : α (Fin.cons (G u) (fun a => s • fderiv ℝ G u (EuclideanSpace.single a 1))) =
+          (α.curryLeft (G u)) (fun a => s • fderiv ℝ G u (EuclideanSpace.single a 1)) :=
+        (α.curryLeft_apply_apply (G u) _).symm
+      rw [h1, ContinuousAlternatingMap.map_smul_univ (α.curryLeft (G u)) (fun _ => s)]
+      simp
+    rw [key, abs_mul, abs_of_nonneg (by positivity)]
+    calc s ^ n * |(α.curryLeft (G u)) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))|
+        ≤ s ^ n * (c u * covectorEuclideanNorm (α.curryLeft (G u))) := by
+          gcongr; exact hcα _
+      _ ≤ s ^ n * (c u * (‖G u‖ * covectorEuclideanNorm α)) := by
+          gcongr
+          exact Submission.cmcdt_lp_covector_curryLeft_norm_le P n (G u) α
+      _ = s ^ n * ‖G u‖ * c u * covectorEuclideanNorm α := by ring
+  · -- the mass bound: Tonelli on `B`, then `tⁿ ≤ 1` and `‖G u‖ ≤ ρ` for `u ∈ A`
+    have hfm : Measurable (fun z : Euclid (n + 1) =>
+        ENNReal.ofReal (|(w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) : ℝ)| *
+          (WithLp.ofLp z 0 ^ n * ‖G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))‖ *
+            c (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))))) := by
+      refine ENNReal.measurable_ofReal.comp ?_
+      exact (continuous_abs.measurable.comp (hwR.comp htail)).mul
+        (((hz0.pow_const n).mul (hGm.comp htail).norm).mul (hc.comp htail))
+    rw [hlin _ hfm]
+    simp only [hιtail]
+    calc ∫⁻ u in A, ∫⁻ t in Ioo (0 : ℝ) 1,
+          ENNReal.ofReal (|(w u : ℝ)| * (t ^ n * ‖G u‖ * c u))
+        ≤ ∫⁻ u in A, ENNReal.ofReal ρ * ENNReal.ofReal (|(w u : ℝ)| * c u) := by
+          refine setLIntegral_mono (by fun_prop) fun u hu => ?_
+          obtain ⟨hc0, -⟩ := hcb u hu
+          have hρ0 : 0 ≤ ρ := (norm_nonneg _).trans (hGρ u hu)
+          calc ∫⁻ t in Ioo (0 : ℝ) 1, ENNReal.ofReal (|(w u : ℝ)| * (t ^ n * ‖G u‖ * c u))
+              ≤ ∫⁻ t in Ioo (0 : ℝ) 1, ENNReal.ofReal ρ * ENNReal.ofReal (|(w u : ℝ)| * c u) := by
+                refine setLIntegral_mono (by fun_prop) fun t ht => ?_
+                rw [← ENNReal.ofReal_mul hρ0]
+                refine ENNReal.ofReal_le_ofReal ?_
+                have ht1 : t ^ n ≤ 1 := pow_le_one₀ ht.1.le ht.2.le
+                have ht0 : 0 ≤ t ^ n := pow_nonneg ht.1.le n
+                calc |(w u : ℝ)| * (t ^ n * ‖G u‖ * c u)
+                    ≤ |(w u : ℝ)| * (1 * ρ * c u) := by
+                      gcongr
+                      · exact hGρ u hu
+                  _ = ρ * (|(w u : ℝ)| * c u) := by ring
+            _ = ENNReal.ofReal ρ * ENNReal.ofReal (|(w u : ℝ)| * c u) := by
+                rw [setLIntegral_const, Real.volume_Ioo, sub_zero, ENNReal.ofReal_one, mul_one]
+      _ = ENNReal.ofReal ρ * ∫⁻ u in A, ENNReal.ofReal (|(w u : ℝ)| * c u) := by
+          rw [lintegral_const_mul]
+          fun_prop
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
