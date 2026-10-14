@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "65def73ba01e40b70e0c3e038c1427d2092b8850e17b983e9679442c0cca53da",
+  "git_delta": {
+    "base_commit": "b8fb703a17cfd9f351149e96eeeced6ce6a748e5",
+    "candidate_commit": "b8d6db3668b94f3459701d3fd989146469c0cb23",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpi_cyl_slice_covector_bound",
+    "diff_sha256": "675efbdb688ed3ac74c6ebac870ed68d07b6398ec8d2c43ec50be372c965513b",
+    "source_sha256": "6358a426aefabd25f037d096aa900fbe7ca48ede1a78b0a7938407c9aff1136d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpi_cyl_slice_covector_bound",
+      "statement": "(∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) → (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → ∀ (N n : ℕ) (γ : Covector (Euclid (N + 1)) (n + 1)) (v : Fin n → Euclid N) (c : ℝ), 0 ≤ c → (∀ α : Covector (Euclid N) n, |α v| ≤ c * covectorEuclideanNorm α) → |γ (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))| ≤ c * covectorEuclideanNorm γ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
