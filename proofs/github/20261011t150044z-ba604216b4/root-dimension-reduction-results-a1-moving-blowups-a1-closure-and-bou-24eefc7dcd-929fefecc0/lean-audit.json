@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "88a9163d02b2627360ffab7eaafdd8eb3054c58d94f3e4487eed159576c9f182",
+  "git_delta": {
+    "base_commit": "9b1f546573b7cbebd55f2a8560980e469149a39a",
+    "candidate_commit": "37a69a91be3d376aea3559a8e43374950bd9edb2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbr_ci_gp_lebesgue_error_tendsto",
+    "diff_sha256": "d2f03f574e20c753b2f3a58ec6641c277823d02196c09a5c7680b73e1461c4cf",
+    "source_sha256": "8fadae56dcb5262c8c1782d05aea5906f0540da70649cfb32a50ab8177f9c7a4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_ci_gp_lebesgue_error_tendsto",
+      "statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (τ : Euclid P → MultiVector P n), MeasurableSet M → μHE[n] M < ∞ → StronglyMeasurable τ → ∫⁻ x in M, ‖τ x‖ₑ ∂μHE[n] < ∞ → ∀ᵐ a ∂(μHE[n].restrict M), limsup (fun r : ℝ => μHE[n] (M ∩ closedBall a r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) < ∞ → Tendsto (fun r : ℝ => (∫⁻ x in M ∩ closedBall a r, ‖τ x - τ a‖ₑ ∂μHE[n]) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
