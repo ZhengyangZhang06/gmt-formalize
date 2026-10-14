@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.representation_unique-a1.continuous_to_bounded-a1",
+  "parent_id": "root.slicing-a1.representation_unique-a1",
+  "depth": 3,
+  "title": "Agreement on C_c(O) implies agreement on bounded Borel functions vanishing off O (π–λ)",
+  "statement": "For every P ∈ ℕ, all Borel measures μ₁, μ₂ on ℝ^P, all g₁, g₂ : ℝ^P → ℝ with g₁ μ₁-integrable and g₂ μ₂-integrable, and every open O ⊆ ℝ^P: if ∫ φ g₁ dμ₁ = ∫ φ g₂ dμ₂ for every continuous φ : ℝ^P → ℝ with compact support and tsupport φ ⊆ O, then ∫ h g₁ dμ₁ = ∫ h g₂ dμ₂ for every Borel measurable h : ℝ^P → ℝ that is bounded (|h(x)| ≤ C for some constant C and all x) and vanishes outside O.",
+  "lean_statement": "∀ (P : ℕ) (μ₁ μ₂ : Measure (Eucl P)) (g₁ g₂ : Eucl P → ℝ), Integrable g₁ μ₁ → Integrable g₂ μ₂ → ∀ O : Set (Eucl P), IsOpen O → (∀ φ : Eucl P → ℝ, Continuous φ → HasCompactSupport φ → tsupport φ ⊆ O → ∫ x, φ x * g₁ x ∂μ₁ = ∫ x, φ x * g₂ x ∂μ₂) → ∀ h : Eucl P → ℝ, Measurable h → (∃ C : ℝ, ∀ x, |h x| ≤ C) → (∀ x, x ∉ O → h x = 0) → ∫ x, h x * g₁ x ∂μ₁ = ∫ x, h x * g₂ x ∂μ₂",
+  "lean_name": "slicing_ru_continuous_to_bounded",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-representation-unique-a1-continuous-to-bounded-a1-a1"
+}
