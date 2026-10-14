@@ -4610,6 +4610,7 @@ theorem Submission.codim1_hcp_sr_holder_algebra : ∀ (m : ℕ) (α : ℝ) (Ω :
     exact conj5 l f
   · intro E _ _ f
     exact conj6 l f
+set_option maxHeartbeats 4000000 in
 /-- **Interior Schauder bootstrap** for `Δw = div(B[Dw] + g)` with `‖B‖ ≤ ε₁`
 (Giaquinta–Martinazzi 2012, §5.4): if `B, g ∈ C^{l,α}_loc(Ω)` then `w ∈ C^{l+1,α}_loc(Ω)`.
 The `C^{1,α}` estimate is that of `codim1_hcp_sr_c1alpha_estimate` with its Campanato hypothesis in
