@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b4cfb65c06fdac8a646f0afcf6d1c1c3bbace62eedb86bf2d07bff08a084b0c2",
+  "git_delta": {
+    "base_commit": "d544702080f9c4a7bb2186f9b319a097da0cc444",
+    "candidate_commit": "a3a66bc096a896a03a0bf956cb7c57b068238466",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrcs_ce_smooth_cutoff",
+    "diff_sha256": "69b061399c1133a20cb96af8bf3666e01d6820d1e11e6ebc542e72731c823000",
+    "source_sha256": "f036558dd6378e8edf1c5633e7575eadd3306f1deaf7250a982545167f71fac0",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrcs_ce_smooth_cutoff",
+      "statement": "∀ (P : ℕ) (U K : Set (Euclid P)), IsOpen U → IsCompact K → K ⊆ U → ∃ (ζ : Euclid P → ℝ) (N : Set (Euclid P)), ContDiff ℝ (⊤ : ℕ∞) ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ U ∧ (∀ x, 0 ≤ ζ x ∧ ζ x ≤ 1) ∧ IsOpen N ∧ K ⊆ N ∧ ∀ x ∈ N, ζ x = 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
