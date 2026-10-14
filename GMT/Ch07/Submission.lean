@@ -451,6 +451,98 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A smooth cutoff that sees only one ray** (ray constancy for one-dimensional cones).
+If `F` is a finite set of unit vectors, `‖e₀‖ = 1` and `ψ` is smooth with compact support in
+`(0, ∞)`, then `f(x) = ψ(⟨x, e₀⟩) χ(‖x‖² − ⟨x, e₀⟩²)`, for a smooth `χ` with `χ(0) = 1` and
+`χ = 0` on `[κ, ∞)` (`κ > 0` small), is smooth with compact support, `f(s e₀) = ψ(s)`, and `f`
+vanishes on the open rays `{t e : t > 0}`, `e ∈ F`, `e ≠ e₀`. -/
+theorem Submission.idtp_fons_odc_rc_ray_cutoff : ∀ (P : ℕ) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ e₀ : Euclid P, ‖e₀‖ = 1 → ∀ ψ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ Ioi 0 → ∃ f : Euclid P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) f ∧ HasCompactSupport f ∧ (∀ s : ℝ, f (s • e₀) = ψ s) ∧ ∀ e ∈ F, e ≠ e₀ → ∀ t : ℝ, 0 < t → f (t • e) = 0 := by
+  intro P F hF e₀ he₀ ψ hψ hψc hψpos
+  -- Step 1: `ψ s ≠ 0` forces `α ≤ s ≤ β`, with `0 < α`.
+  obtain ⟨α, hα0, hα⟩ : ∃ α : ℝ, 0 < α ∧ ∀ s ∈ tsupport ψ, α ≤ s :=
+    hψc.isCompact.exists_forall_le' continuousOn_id fun s hs => hψpos hs
+  obtain ⟨β, hβ⟩ : ∃ β : ℝ, ∀ s ∈ tsupport ψ, s ≤ β := hψc.isCompact.bddAbove
+  have hψne : ∀ s : ℝ, ψ s ≠ 0 → α ≤ s ∧ s ≤ β := fun s hs =>
+    ⟨hα s (subset_tsupport ψ hs), hβ s (subset_tsupport ψ hs)⟩
+  -- Step 2: `0 < κ < α² (1 - ⟨e, e₀⟩²)` for the finitely many `e ∈ F` with `0 < ⟨e, e₀⟩ < 1`.
+  obtain ⟨κ, hκ0, hκ⟩ : ∃ κ : ℝ, 0 < κ ∧ ∀ e ∈ F, 0 < inner ℝ e e₀ → inner ℝ e e₀ < 1 →
+      κ < α ^ 2 * (1 - inner ℝ e e₀ ^ 2) := by
+    have h : ∀ᶠ κ in 𝓝[>] (0 : ℝ), ∀ e ∈ F, 0 < inner ℝ e e₀ → inner ℝ e e₀ < 1 →
+        κ < α ^ 2 * (1 - inner ℝ e e₀ ^ 2) := by
+      refine (eventually_all_finset F).2 fun e _ => ?_
+      by_cases hc : 0 < inner ℝ e e₀ ∧ inner ℝ e e₀ < 1
+      · have hpos : 0 < α ^ 2 * (1 - inner ℝ e e₀ ^ 2) := by
+          have h1 : inner ℝ e e₀ ^ 2 < 1 := by nlinarith [hc.1, hc.2]
+          have h2 : 0 < α ^ 2 := by positivity
+          nlinarith
+        exact ((eventually_lt_nhds hpos).filter_mono nhdsWithin_le_nhds).mono
+          fun κ hκ _ _ => hκ
+      · exact Eventually.of_forall fun κ h1 h2 => absurd ⟨h1, h2⟩ hc
+    have h0 : ∀ᶠ κ in 𝓝[>] (0 : ℝ), 0 < κ := self_mem_nhdsWithin
+    obtain ⟨κ, hκ, hκ0⟩ := (h.and h0).exists
+    exact ⟨κ, hκ0, hκ⟩
+  -- Step 3: a smooth profile `χ` with `χ 0 = 1` and `χ = 0` on `[κ, ∞)`.
+  obtain ⟨χ, hχ, hχ0, hχκ⟩ : ∃ χ : ℝ → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) χ ∧ χ 0 = 1 ∧
+      ∀ s, κ ≤ s → χ s = 0 := by
+    refine ⟨fun s => Real.smoothTransition ((κ - s) / κ),
+      Real.smoothTransition.contDiff.comp ((contDiff_const.sub contDiff_id).div_const κ), ?_, ?_⟩
+    · simp only [sub_zero, div_self hκ0.ne']
+      exact Real.smoothTransition.one_of_one_le le_rfl
+    · intro s hs
+      exact Real.smoothTransition.zero_of_nonpos
+        (div_nonpos_of_nonpos_of_nonneg (by linarith) hκ0.le)
+  -- Step 4: `f x = ψ ⟨x, e₀⟩ * χ (‖x‖² - ⟨x, e₀⟩²)` is smooth.
+  refine ⟨fun x => ψ (inner ℝ x e₀) * χ (‖x‖ ^ 2 - inner ℝ x e₀ ^ 2), ?_, ?_, ?_, ?_⟩
+  · have hL : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) fun x : Euclid P => inner ℝ x e₀ :=
+      contDiff_id.inner ℝ contDiff_const
+    exact (hψ.comp hL).mul (hχ.comp ((contDiff_norm_sq ℝ).sub (hL.pow 2)))
+  -- Step 5: `f` vanishes outside `closedBall 0 (β + κ + 1)`.
+  · refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid P) (β + κ + 1)) ?_
+    intro x hx
+    by_contra hfx
+    obtain ⟨hl, hu⟩ := hψne _ (left_ne_zero_of_mul hfx)
+    have h3 : ‖x‖ ^ 2 - inner ℝ x e₀ ^ 2 < κ :=
+      lt_of_not_ge fun h => right_ne_zero_of_mul hfx (hχκ _ h)
+    have h4 : inner ℝ x e₀ ^ 2 ≤ β ^ 2 := by nlinarith
+    have h5 : ‖x‖ ^ 2 < (β + κ + 1) ^ 2 := by nlinarith
+    apply hx
+    rw [mem_closedBall, dist_zero_right]
+    nlinarith [norm_nonneg x]
+  -- Step 6: values on the line `ℝ e₀`.
+  · intro s
+    have h1 : inner ℝ (s • e₀) e₀ = s := by
+      rw [real_inner_smul_left, real_inner_self_eq_norm_sq, he₀, one_pow, mul_one]
+    have h2 : ‖s • e₀‖ ^ 2 = s ^ 2 := by
+      rw [norm_smul, he₀, mul_one, Real.norm_eq_abs, sq_abs]
+    simp only [h1, h2, sub_self, hχ0, mul_one]
+  -- Step 7: vanishing on the other rays: `ψ (t c) ≠ 0` forces `0 < c < 1` and `α ≤ t`.
+  · intro e he hne t ht
+    have he1 : ‖e‖ = 1 := hF e he
+    have h1 : inner ℝ (t • e) e₀ = t * inner ℝ e e₀ := real_inner_smul_left e e₀ t
+    have h2 : ‖t • e‖ ^ 2 = t ^ 2 := by
+      rw [norm_smul, he1, mul_one, Real.norm_eq_abs, sq_abs]
+    show ψ (inner ℝ (t • e) e₀) * χ (‖t • e‖ ^ 2 - inner ℝ (t • e) e₀ ^ 2) = 0
+    rw [h1, h2]
+    by_cases hψt : ψ (t * inner ℝ e e₀) = 0
+    · rw [hψt, zero_mul]
+    obtain ⟨hl, -⟩ := hψne _ hψt
+    have hc0 : 0 < inner ℝ e e₀ := by
+      by_contra h
+      have : t * inner ℝ e e₀ ≤ 0 := mul_nonpos_of_nonneg_of_nonpos ht.le (not_lt.1 h)
+      linarith
+    have hc1 : inner ℝ e e₀ < 1 := by
+      have hsub : 0 < ‖e - e₀‖ := norm_pos_iff.2 (sub_ne_zero.2 hne)
+      have h3 := norm_sub_sq_real e e₀
+      rw [he1, he₀] at h3
+      nlinarith
+    have hκ' := hκ e he hc0 hc1
+    have htα : α ≤ t := by nlinarith
+    have h5 : α ^ 2 ≤ t ^ 2 := by nlinarith
+    have h6 : 0 < 1 - inner ℝ e e₀ ^ 2 := by nlinarith
+    have h7 : α ^ 2 * (1 - inner ℝ e e₀ ^ 2) ≤ t ^ 2 * (1 - inner ℝ e e₀ ^ 2) :=
+      mul_le_mul_of_nonneg_right h5 h6.le
+    rw [hχκ _ (by nlinarith), mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
