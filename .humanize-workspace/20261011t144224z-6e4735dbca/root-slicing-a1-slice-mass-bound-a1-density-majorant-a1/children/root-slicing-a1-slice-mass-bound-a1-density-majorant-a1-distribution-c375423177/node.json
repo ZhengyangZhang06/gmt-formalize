@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.density_majorant-a1.distribution_regularity-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1.density_majorant-a1",
+  "depth": 4,
+  "title": "Distribution function of ν on (a,b) is nondecreasing and right-continuous (parent Step 2(a),(d))",
+  "statement": "Let ν be a Borel measure on ℝ and a, b ∈ ℝ with ν((a,b)) < ∞. For r ∈ ℝ let G(r) := ν((a,b) ∩ (−∞, r]), taken as a real number (ENNReal.toReal; the value is finite). Then G is nondecreasing on ℝ. G is also right-continuous at every s ∈ ℝ, i.e. G(r) → G(s) as r → s within [s, ∞) (ContinuousWithinAt G (Ici s) s).",
+  "lean_statement": "∀ (ν : Measure ℝ) (a b : ℝ), ν (Ioo a b) ≠ ∞ → Monotone (fun r : ℝ => (ν (Ioo a b ∩ Iic r)).toReal) ∧ ∀ s : ℝ, ContinuousWithinAt (fun r : ℝ => (ν (Ioo a b ∩ Iic r)).toReal) (Ici s) s",
+  "lean_name": "slicing_mb_dm_distribution_mono_rightcont",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-density-majorant-a1-distribution-c375423177-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1.product_plane-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.interval_product-a1.product_tangent-a1",
+  "depth": 5,
+  "title": "The product frame (e₀, ιτ): orthonormal, spans an (m+1)-plane equal to π⁻¹(span τ)",
+  "statement": "Let P, m ∈ ℕ and let τ = (τ_1, …, τ_m) be an orthonormal family in ℝ^P. Write Φ(s, u) := (s, u_1, …, u_P) ∈ ℝ^{P+1} (Lean: (EuclideanSpace.equiv (Fin (P+1)) ℝ).symm (Fin.cons s (EuclideanSpace.equiv (Fin P) ℝ u))), π(y) := (y_1, …, y_P) ∈ ℝ^P (Lean: (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P+1)) ℝ y))), e₀ := EuclideanSpace.single 0 1 ∈ ℝ^{P+1} and τ̃ := (e₀, Φ(0, τ_1), …, Φ(0, τ_m)) : Fin (m+1) → ℝ^{P+1} (Lean: Fin.cons e₀ (fun i => Φ(0, τ i))). Then (a) τ̃ is orthonormal; (b) finrank ℝ (span ℝ (range τ̃)) = m + 1; (c) as subsets of ℝ^{P+1}, span ℝ (range τ̃) = {z : π(z) ∈ span ℝ (range τ)}.",
+  "lean_statement": "∀ (P m : ℕ) (τ : Fin m → Eucl P), Orthonormal ℝ τ → Orthonormal ℝ (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)) ∧ Module.finrank ℝ (Submodule.span ℝ (range (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1)))) = m + 1 ∧ ((Submodule.span ℝ (range (Fin.cons (EuclideanSpace.single 0 1 : Eucl (P + 1)) (fun i => (EuclideanSpace.equiv (Fin (P + 1)) ℝ).symm (Fin.cons 0 (EuclideanSpace.equiv (Fin P) ℝ (τ i)))) : Fin (m + 1) → Eucl (P + 1))) : Submodule ℝ (Eucl (P + 1))) : Set (Eucl (P + 1))) = {z : Eucl (P + 1) | ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ z))) ∈ Submodule.span ℝ (range τ)}",
+  "lean_name": "iwl_cr_ip_wt_product_plane",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-interval-product-a-8488f4fb5b-a1"
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1.local_null-a1",
+  "parent_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1",
+  "depth": 4,
+  "title": "A rectifiable representation has Hⁿ-null carrier on each relatively compact open set where the current vanishes",
+  "statement": "Let P, n ∈ ℕ and U, W ⊆ ℝ^P, and let T ∈ D_n(U) (T : GeometricCurrentOn U n). Let M ⊆ ℝ^P, θ : ℝ^P → ℝ and ξ : ℝ^P → NVector (Eucl P) n satisfy IsRectifiableTriple U n M θ ξ:\n- M ⊆ U is Hⁿ-null-measurable and countably n-rectifiable;\n- θ > 0 on M, and θ is Hⁿ-integrable on M ∩ K for every compact K ⊆ U;\n- ξ is Hⁿ⌞M-a.e. strongly measurable;\n- for Hⁿ-a.e. x ∈ M there is an orthonormal τ : Fin n → ℝ^P such that span τ is a weighted approximate tangent space of (M, θ) at x and ξ(x) = ±simpleNVector τ.\nAssume T(ω) = τ(M, θ, ξ)(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dHⁿ(x) for every ω ∈ Dⁿ(U). Assume also that W is open, closure W is compact, closure W ⊆ U, and T vanishes on W (T(ψ) = 0 for every ψ ∈ Dⁿ(U) with tsupport ψ ⊆ W). Then Hⁿ(M ∩ W) = 0, where Hⁿ = μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsRectifiableTriple U n M θ ξ → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → (μHE[n] : Measure (Eucl P)) (M ∩ W) = 0",
+  "lean_name": "iwl_sp_sn_local_null",
+  "depends_on": [
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1.covector_basis-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1.signed_simple_bound-a1",
+    "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1.weighted_fundamental_lemma-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1.covector_basis-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1.signed_simple_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.integrality_weak_limits-a1.smooth_pushforward-a1.support_null-a1.weighted_fundamental_lemma-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-smooth-pushforward-a1-support-null-a1-38f821d844-a1"
+}

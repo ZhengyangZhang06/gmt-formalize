@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1",
+  "depth": 4,
+  "title": "C¹ co-area formula on a chart piece where the tangential gradient does not vanish (Simon Ch. 2, 6.3/6.6; Federer 3.2.12/3.2.22)",
+  "statement": "Let P, m ∈ ℕ, n := m+1, Ω ⊆ ℝⁿ open, Φ : ℝⁿ → ℝ^P of class C¹ which is K-Lipschitz on Ω and satisfies c|w − w′| ≤ |Φ(w) − Φ(w′)| on Ω for some c > 0, h : ℝⁿ → ℝ of class C¹, f : ℝ^P → ℝ and G : ℝ^P → ℝ^P Borel, and W ⊆ Φ(Ω) Borel such that for every w ∈ Ω with Φ(w) ∈ W: f(Φ(w)) = h(w), G(Φ(w)) ≠ 0, G(Φ(w)) ∈ range DΦ(w) and ⟨G(Φ(w)), DΦ(w)u⟩ = Dh(w)u for all u ∈ ℝⁿ. Then for every Borel g : ℝ^P → [0, ∞], t ↦ ∫_{W ∩ f⁻¹{t}} g dH^m is Lebesgue-a.e.-measurable and ∫_ℝ ∫_{W ∩ f⁻¹{t}} g dH^m dt = ∫_W |G| g dHⁿ (Hᵏ := μHE[k]).",
+  "lean_statement": "∀ (P m : ℕ) (Φ : Eucl (m + 1) → Eucl P) (Ω : Set (Eucl (m + 1))) (h : Eucl (m + 1) → ℝ) (f : Eucl P → ℝ) (G : Eucl P → Eucl P) (W : Set (Eucl P)), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ c : ℝ, 0 < c ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, c * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → ContDiff ℝ 1 h → Measurable f → Measurable G → MeasurableSet W → W ⊆ Φ '' Ω → (∀ w ∈ Ω, Φ w ∈ W → f (Φ w) = h w ∧ G (Φ w) ≠ 0 ∧ G (Φ w) ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ u, inner ℝ (G (Φ w)) (fderiv ℝ Φ w u) = fderiv ℝ h w u) → ∀ g : Eucl P → ℝ≥0∞, Measurable g → AEMeasurable (fun t : ℝ => ∫⁻ x in W ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in W ∩ f ⁻¹' {t}, g x ∂(μHE[m] : Measure (Eucl P))) ∂(volume : Measure ℝ) = ∫⁻ x in W, ‖G x‖ₑ * g x ∂(μHE[m + 1] : Measure (Eucl P))",
+  "lean_name": "slicing_im_coarea_chart_regular",
+  "depends_on": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.glue-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.glue-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-regular-a1-a1"
+}

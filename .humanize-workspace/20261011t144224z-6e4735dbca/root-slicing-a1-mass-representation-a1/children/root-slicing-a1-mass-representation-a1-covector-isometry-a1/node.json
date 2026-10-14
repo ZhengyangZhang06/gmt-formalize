@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1.covector_isometry-a1",
+  "parent_id": "root.slicing-a1.mass_representation-a1",
+  "depth": 3,
+  "title": "Euclidean coefficient norm of k-covectors is induced by a linear isomorphism onto ℝ^N (Simon 6.1.2–1.5, Fact A)",
+  "statement": "For all P, k ∈ ℕ there are N ∈ ℕ and an ℝ-linear isomorphism J from the space Covector (Eucl P) k of k-covectors on ℝ^P onto the Euclidean space EuclideanSpace ℝ (Fin N) such that covectorEuclideanNorm α = ‖J α‖ (Euclidean norm) for every k-covector α.",
+  "lean_statement": "∀ (P k : ℕ), ∃ (N : ℕ) (J : Covector (Eucl P) k ≃ₗ[ℝ] EuclideanSpace ℝ (Fin N)), ∀ α : Covector (Eucl P) k, covectorEuclideanNorm α = ‖J α‖",
+  "lean_name": "smr_covector_coord_isometry",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-covector-isometry-a1-a1"
+}

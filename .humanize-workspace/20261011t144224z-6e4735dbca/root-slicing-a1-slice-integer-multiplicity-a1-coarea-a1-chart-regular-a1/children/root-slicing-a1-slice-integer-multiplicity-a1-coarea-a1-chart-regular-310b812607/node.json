@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1.cover-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.coarea-a1.chart_regular-a1",
+  "depth": 5,
+  "title": "Local-to-global gluing of co-area identities through an injective continuous chart (Lindelöf, disjointification, countable additivity)",
+  "statement": "Let P, n ∈ ℕ, Ω ⊆ ℝⁿ open, Φ : ℝⁿ → ℝ^P continuous on all of ℝⁿ and injective on Ω, W ⊆ Φ(Ω) Borel, f : ℝ^P → ℝ Borel, J, g : ℝ^P → [0, ∞] arbitrary and μ, ν measures on ℝ^P. Suppose every w₀ ∈ Ω with Φ(w₀) ∈ W has an open neighbourhood O such that for every Borel S ⊆ O ∩ Ω ∩ Φ⁻¹(W), t ↦ ∫_{Φ(S) ∩ f⁻¹{t}} g dν is Lebesgue-a.e.-measurable and ∫_ℝ ∫_{Φ(S) ∩ f⁻¹{t}} g dν dt = ∫_{Φ(S)} J g dμ. Then t ↦ ∫_{W ∩ f⁻¹{t}} g dν is Lebesgue-a.e.-measurable and ∫_ℝ ∫_{W ∩ f⁻¹{t}} g dν dt = ∫_W J g dμ.",
+  "lean_statement": "∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (W : Set (Eucl P)) (f : Eucl P → ℝ) (J g : Eucl P → ℝ≥0∞) (μ ν : Measure (Eucl P)), IsOpen Ω → Continuous Φ → InjOn Φ Ω → Measurable f → MeasurableSet W → W ⊆ Φ '' Ω → (∀ w₀ ∈ Ω, Φ w₀ ∈ W → ∃ O : Set (Eucl n), IsOpen O ∧ w₀ ∈ O ∧ ∀ S : Set (Eucl n), MeasurableSet S → S ⊆ O ∩ (Ω ∩ Φ ⁻¹' W) → AEMeasurable (fun t : ℝ => ∫⁻ x in Φ '' S ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in Φ '' S ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) = ∫⁻ x in Φ '' S, J x * g x ∂μ) → AEMeasurable (fun t : ℝ => ∫⁻ x in W ∩ f ⁻¹' {t}, g x ∂ν) (volume : Measure ℝ) ∧ ∫⁻ t, (∫⁻ x in W ∩ f ⁻¹' {t}, g x ∂ν) ∂(volume : Measure ℝ) = ∫⁻ x in W, J x * g x ∂μ",
+  "lean_name": "slicing_im_creg_local_to_global",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-coarea-a1-chart-regular-310b812607-a1"
+}

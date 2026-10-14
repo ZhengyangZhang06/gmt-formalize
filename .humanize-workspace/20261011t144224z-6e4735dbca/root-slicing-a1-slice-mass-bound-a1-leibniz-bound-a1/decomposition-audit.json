@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "def extDeriv|theorem extDeriv.*smul|fderiv_fun_smul|ContDiff.smulRight|def alternatizeUncurryFinCLM|theorem alternatizeUncurryFin_(add|smul)|enorm_integral_le_lintegral_enorm|theorem tsupport_smul_subset_right|HasCompactSupport.smul_left",
+        "abbrev Covector|abbrev DifferentialForm|def IsSmoothForm|def IsTestForm|abbrev exteriorDerivative|tsupport_exteriorDerivative_subset|exteriorDerivative_isTestForm|abbrev TestFormOn|def exteriorDerivativeTestOn|structure GeometricCurrentOn|boundary_apply",
+        "slicing_mb_lb_(extDeriv_smul|smul_testForm|wedge_testForm|repr_bound)",
+        "python3 '/tmp/leibniz-independent-audit.sf59ykf9/audit_structure.py'",
+        "python3 '/tmp/leibniz-independent-audit.sf59ykf9/verify.py' 'challenges.lean' 'instances.lean'",
+        "python3 '/tmp/leibniz-independent-audit.sf59ykf9/verify.py' 'proofs/extderiv_leibniz.lean' 'proofs/smul_test_form.lean'",
+        "python3 '/tmp/leibniz-independent-audit.sf59ykf9/verify.py' 'proofs/wedge_test_form.lean' 'proofs/repr_bound.lean'",
+        "python3 '/tmp/leibniz-independent-audit.sf59ykf9/verify.py' 'assembly.lean'"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Mul.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-leibniz-bound-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-slicing-a1-slice-mass-bound-a1-leibniz-bound-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/leibniz-independent-audit.sf59ykf9/challenges.lean",
+        "/tmp/leibniz-independent-audit.sf59ykf9/instances.lean",
+        "/tmp/leibniz-independent-audit.sf59ykf9/proofs/extderiv_leibniz.lean",
+        "/tmp/leibniz-independent-audit.sf59ykf9/proofs/smul_test_form.lean",
+        "/tmp/leibniz-independent-audit.sf59ykf9/proofs/wedge_test_form.lean",
+        "/tmp/leibniz-independent-audit.sf59ykf9/proofs/repr_bound.lean",
+        "/tmp/leibniz-independent-audit.sf59ykf9/assembly.lean",
+        "/tmp/leibniz-independent-audit.sf59ykf9/structure-check.json"
+      ],
+      "conclusion": "Verified compatibility with the pinned project and Mathlib revisions and inspected the supporting definitions and lemmas. All four exact one-line propositions elaborate in the comparator's frozen scope without child implementations. Independent proofs following the supplied natural proofs, and assembly of the exact selected parent from the four child types plus the declared wedge sibling, compile with only propext, Classical.choice and Quot.sound. Smoothness-index and scalar/wedge instance checks pass. No proposed name matches the searched libraries, the 229-node DAG or other branch proposals; all names are bare identifiers. The four independent obligations form an appropriate, acyclic split sufficient for this selected parent. The handoff contract and requested digest match."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "extderiv_leibniz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including both pointwise differentiability hypotheses. Unfolding exteriorDerivative, applying fderiv_fun_smul and using linearity of alternatization proves precisely the claimed formula. The supplied proof is complete and non-circular; its independent Lean reconstruction passes."
+    },
+    {
+      "key": "smul_test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement includes all hypotheses. Smooth scalar multiplication preserves smoothness, and support containment in φ supplies compact support and containment in U. Neither openness of U nor compact support of ψ is needed. The explicit construction proves the exact existential contract independently."
+    },
+    {
+      "key": "wedge_test_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The functional field, smulRight operation and alternatization elaborate with the intended types and degree. Continuous bilinearity followed by continuous linear alternatization proves smoothness; vanishing wherever ω vanishes proves the required support properties. The supplied construction is complete and independently kernel checked."
+    },
+    {
+      "key": "repr_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The normalized representation hypotheses match exactly. The representation identity, unconditional extended-norm integral inequality, pointwise normalization and lintegral monotonicity establish the stated bound. No additional measure assumptions or circular reliance are needed; the independent Lean proof passes."
+    }
+  ],
+  "required_changes": []
+}

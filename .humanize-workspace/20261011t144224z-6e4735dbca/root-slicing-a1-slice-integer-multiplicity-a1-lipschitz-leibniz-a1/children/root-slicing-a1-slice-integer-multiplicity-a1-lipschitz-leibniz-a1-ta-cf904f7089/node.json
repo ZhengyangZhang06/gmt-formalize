@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1",
+  "depth": 4,
+  "title": "Weak convergence of tangential gradients on a rectifiable set: ∫_M Dg_k(Y) → ∫_M ⟨G, Y⟩ (Simon Ch. 6, proof of 4.5(2), (1))",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open and (M, θ, ξ) with IsRectifiableTriple U n M θ ξ (M ⊆ U Hⁿ-null-measurable and countably n-rectifiable, θ > 0 on M and Hⁿ-integrable on M ∩ K for every compact K ⊆ U, ξ Hⁿ⌞M-a.e. strongly measurable with ξ(x) = ±τ₁∧…∧τ_n for an orthonormal basis τ of a weighted approximate tangent plane at Hⁿ-a.e. x ∈ M). Let h : ℝ^P → ℝ be L-Lipschitz and G : ℝ^P → ℝ^P Borel with |G| ≤ L everywhere and the tangential-gradient property (for Hⁿ-a.e. x ∈ M and every weighted approximate tangent plane Q of (M, θ) at x: G(x) ∈ Q and s ↦ h(x + su) has derivative ⟨G(x), u⟩ at s = 0 for every u ∈ Q). Let Y : ℝ^P → ℝ^P be Hⁿ⌞M-integrable with Y(x) ∈ Q for Hⁿ-a.e. x ∈ M and every weighted approximate tangent plane Q of (M, θ) at x. Let g_k : ℝ^P → ℝ (k ∈ ℕ) be differentiable and L-Lipschitz with g_k → h uniformly on ℝ^P. Then ∫_M Dg_k(x)(Y(x)) dHⁿ(x) → ∫_M ⟨G(x), Y(x)⟩ dHⁿ(x) as k → ∞.",
+  "lean_statement": "∀ (P n : ℕ) (U M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsOpen U → IsRectifiableTriple U n M θ ξ → ∀ (h : Eucl P → ℝ) (L : ℝ≥0) (G : Eucl P → Eucl P), LipschitzWith L h → Measurable G → (∀ x, ‖G x‖ ≤ L) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Q → G x ∈ Q ∧ ∀ u ∈ Q, HasDerivAt (fun s : ℝ => h (x + s • u)) (inner ℝ (G x) u) 0) → ∀ Y : Eucl P → Eucl P, Integrable Y ((μHE[n] : Measure (Eucl P)).restrict M) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ Q : Submodule ℝ (Eucl P), HasWeightedApproximateTangentSpaceAt n M θ x Q → Y x ∈ Q) → ∀ g : ℕ → Eucl P → ℝ, (∀ k, Differentiable ℝ (g k)) → (∀ k, LipschitzWith L (g k)) → TendstoUniformly g h atTop → Tendsto (fun k => ∫ x in M, fderiv ℝ (g k) x (Y x) ∂(μHE[n] : Measure (Eucl P))) atTop (𝓝 (∫ x in M, inner ℝ (G x) (Y x) ∂(μHE[n] : Measure (Eucl P))))",
+  "lean_name": "slicing_im_ll_tangential_weak_limit",
+  "depends_on": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.gradient_weak_star-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.gradient_weak_star-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-cf904f7089-a1"
+}

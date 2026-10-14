@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1.piola_identity-a1",
+  "parent_id": "root.deformation-a1.im_pushforward_limit-a1.minor_weak_continuity-a1",
+  "depth": 4,
+  "title": "Piola identity: the first-row cofactors of a Jacobian minor of C² functions are divergence-free (parent step (3.2)(i))",
+  "statement": "Let k, r ∈ ℕ, let W_0, …, W_{r−1} : ℝ^k → ℝ (W : Fin r → (Eucl k → ℝ)) be of class C² (ContDiff ℝ 2), and let b : Fin (r+1) → Fin k. Write e_i := EuclideanSpace.single i 1 and ∂_i f(x) := fderiv ℝ f x (e_i). For q ∈ Fin (r+1) let c_q(x) := (−1)^q · det(∂_{b(q.succAbove s)} W_t(x))_{t,s ∈ Fin r}, where q.succAbove : Fin r → Fin (r+1) is the increasing enumeration of Fin (r+1) ∖ {q} (the empty determinant is 1). Then for every w ∈ ℝ^k: Σ_{q ∈ Fin (r+1)} fderiv ℝ c_q w (e_{b(q)}) = 0.",
+  "lean_statement": "∀ (k r : ℕ) (W : Fin r → Eucl k → ℝ) (b : Fin (r + 1) → Fin k), (∀ t, ContDiff ℝ 2 (W t)) → ∀ w : Eucl k, ∑ q : Fin (r + 1), fderiv ℝ (fun x : Eucl k => (-1 : ℝ) ^ (q : ℕ) * Matrix.det (Matrix.of fun t s : Fin r => fderiv ℝ (W t) x (EuclideanSpace.single (b (q.succAbove s)) 1))) w (EuclideanSpace.single (b q) 1) = 0",
+  "lean_name": "deformation_ipl_mwc_piola_identity",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-f2e89eb27d-a1"
+}

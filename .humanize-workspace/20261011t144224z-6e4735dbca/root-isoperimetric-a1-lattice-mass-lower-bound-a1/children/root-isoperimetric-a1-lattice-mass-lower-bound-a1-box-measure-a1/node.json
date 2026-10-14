@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1.box_measure-a1",
+  "parent_id": "root.isoperimetric-a1.lattice_mass_lower_bound-a1",
+  "depth": 3,
+  "title": "Hausdorff measure of an n-dimensional coordinate box in ℝ^N",
+  "statement": "Let n, N ∈ ℕ, let α : Fin n ↪o Fin N be a strictly increasing multi-index with range A := range α, let c : Fin N → ℝ and let a ≤ b be real numbers. Let B := {x ∈ ℝ^N : c_i + a ≤ x_i ≤ c_i + b for i ∈ A, and x_i = c_i for i ∉ A}. Then μHE[n](B) = (b − a)^n, where μHE[n] is Mathlib's normalized n-dimensional Euclidean Hausdorff measure on ℝ^N (equal to Lebesgue measure on ℝ^n); the equality is stated in [0, ∞] as μHE[n](B) = ENNReal.ofReal((b − a)^n).",
+  "lean_statement": "∀ (n N : ℕ) (α : SimonMultiIndex n N) (c : Fin N → ℝ) (a b : ℝ), a ≤ b → (μHE[n] : Measure (Eucl N)) {x : Eucl N | ∀ i : Fin N, (i ∈ range α → c i + a ≤ x i ∧ x i ≤ c i + b) ∧ (i ∉ range α → x i = c i)} = ENNReal.ofReal ((b - a) ^ n)",
+  "lean_name": "isoperimetric_coord_box_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-isoperimetric-a1-lattice-mass-lower-bound-a1-box-measure-a1-a1"
+}

@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'LocallyLipschitzOn|theorem LipschitzOnWith.mono|lipschitzOnWith_empty' mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+        "rg -n 'countable_cover_nhdsWithin' mathlib/Mathlib/Topology/Bases.lean",
+        "rg -n 'disjointed_subset|disjoint_disjointed|iUnion_disjointed' mathlib/Mathlib/Order/Disjointed.lean",
+        "rg -n 'MeasurableSet.disjointed' mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "def normDet|normDet_nonneg|normDet_sq_eq_det_gram",
+        "git show 6941b70febfeca396a5e8105097428578fe61416:GMT/Ch06/Submission.lean",
+        "python3 /tmp/lla-independent-audit-6dh7f7lh/run_checks.py frozen",
+        "python3 /tmp/lla-independent-audit-6dh7f7lh/run_checks.py leaf",
+        "python3 /tmp/lla-independent-audit-6dh7f7lh/run_checks.py parent",
+        "python3 /tmp/lla-independent-audit-6dh7f7lh/run_checks.py frozen DefHash.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/EMetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/Disjointed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-rectifiable-area-formula-a1-local-li-2809c506b6/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-lipschitz-pushforward-im-a1-locally-lipschitz-image-a1-countable-dc002d2f60/accepted-candidate.json",
+        "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/leaf_verification.py",
+        "/runtime/flows/gmt-claude-17d09e2ab055/_recursive_lean/parent_verification.py",
+        "/tmp/lla-independent-audit-6dh7f7lh/parent/GMT/Ch06/Submission.lean",
+        "/tmp/lla-independent-audit-6dh7f7lh/audit-results.json"
+      ],
+      "conclusion": "The split is appropriate: both children establish genuine cover/partition obligations, while the import-dependent analytic steps remain in the selected parent. Verified the pinned revisions, relevant snapshot compatibility, accepted cover reuse, name reservations, and acyclic prerequisite graph. Both exact one-line child propositions elaborate without implementations; generated challenge and solution modules also compile. A fresh partition proof passes the leaf insertion gate. The assembled selected parent compiles with the analytic steps as local haves and uses only propext, Classical.choice, and Quot.sound, as do both children. AreaDomain supplies the required area and derivative lemmas; its import preserves all 56 frozen declaration type/value hashes. The Jacobian uses Matrix.of correctly; neither child contains a matrix-unit construction. These were Lean compilation and axiom checks, not a new full comparator run."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "countable_lipschitz_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition match, including arbitrary U without openness. The proof explicitly extracts open neighbourhoods, obtains a countable subcover, handles the empty case, and enumerates the nonempty case. These steps prove every conclusion without circular reliance on the accepted declaration. The bare name legitimately reuses the sole accepted reservation, whose frozen type is byte-identical; compatibility and axiom checks pass."
+    },
+    {
+      "key": "disjoint_lipschitz_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and seven conclusions match the standalone Lean proposition. The explicit construction V_m = O_m ∩ Ω and B_m = D ∩ disjointed V m establishes openness, containment, Lipschitz control, disjointness, null-measurability, and coverage. The proof is complete and uses only its declared cover dependency and available library results. Its bare name is unreserved, and the dependency direction is acyclic. These pieces support the retained per-piece area argument and fiber_sum_glue with Z = ∅, yielding exactly the selected frozen parent."
+    }
+  ],
+  "required_changes": []
+}

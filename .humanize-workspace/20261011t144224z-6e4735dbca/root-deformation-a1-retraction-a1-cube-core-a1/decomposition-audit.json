@@ -1,0 +1,77 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "rg -n -i 'radial|retract|skeleton|gauge|dr_cc_' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT",
+        "sed -n '460,493p' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean",
+        "sed -n '465,515p' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "sed -n '565,590p' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "sed -n '140,165p' .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "sed -n '1440,1690p' /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cubecore-a1-scratch/AllProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Group/Uniform.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-retraction-a1-cube-core-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-retraction-a1-cube-core-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/cubecore-a1-scratch/AllProofs.lean"
+      ],
+      "conclusion": "The split appropriately separates construction from the analytic estimate for the selected cube-core theorem. The pinned project and Mathlib revisions agree with the workspace; the relevant inspected sources are byte-identical. The project search found no relevant cubical-retraction implementation. Pinned declarations confirm integer-lattice closedness, the empty-set convention and nonemptiness requirements for infDist, and the Euclidean metric. All seven statements independently elaborate as propositions in the replayed comparator scope without child implementations. Every name is a bare, unreserved identifier; recursive inspection of all 458 DAG reservations found no collision or identical prior contract. Dependencies are acyclic and match the proofs. The scratch declarations match every frozen child type and the selected parent type exactly. Independently recompiling their complete proofs and parent assembly succeeded, with only propext, Classical.choice and Quot.sound as axioms. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "lip_at_comp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean hypotheses agree. The positive η and δ choices establish the intermediate distance bound, MapsTo permits applying H2, and the product estimate gives the exact conclusion. Neither x ∈ A nor f(x) ∈ B is silently assumed. The proof is complete and independent."
+    },
+    {
+      "key": "lip_at_union",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact pseudometric-space statement is proved: closedness supplies missing-piece exclusion radii, finiteness supplies a common positive radius, and the covering hypothesis supplies the applicable piece. Empty index types, empty pieces, arbitrary K, and y outside B are correctly accommodated."
+    },
+    {
+      "key": "skeleton_facts",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three conclusions match the prose. Closedness follows from finitely many closed integer-coordinate conditions; subset selection proves centre membership; the cone argument excludes fixed witness coordinates and forces the remaining integer shifts to vanish. It needs neither ℓ ≥ 1 nor x in the cube, consistently with the frozen type."
+    },
+    {
+      "key": "similarity_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof covers La empty and all three exhaustive witness cases. In the zero-shift case, the constructed w′ belongs to La and satisfies y − w = s(x − w′); positivity of s justifies scaling. Taking the infimum proves exactly the stated bound without unstated cube membership for x."
+    },
+    {
+      "key": "radial_map",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The gauge construction supplies one total map with every stated property. J empty is vacuous; existence of an admissible x establishes c in the cube without an additional hypothesis. The maximum gives a boundary coordinate, and the explicit positive radius controls the denominator and proves the exact pointwise estimate, including the unrestricted x′ quantifier."
+    },
+    {
+      "key": "construction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite carrier descent proves stabilization after ℓ iterations and (α); preservation of the carrier and gauge proves (β). The cardinality argument proves (S1). For (S2), the interior case identifies y = R(x), while the boundary case proves s = 1. Only the declared skeleton_facts dependency is used; all four conclusions match the frozen type."
+    },
+    {
+      "key": "pointwise_lip",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The face-dimension induction is complete using exactly the five declared dependencies. It establishes positive distances, the base-case identity, closed-facet gluing, composition, and both constant-estimate cases. The constant is chosen before a and ψ₀. Applying this result to construction's (S1) and (S2), alongside its (α) and (β), proves the exact selected parent contract without circular reliance."
+    }
+  ],
+  "required_changes": []
+}

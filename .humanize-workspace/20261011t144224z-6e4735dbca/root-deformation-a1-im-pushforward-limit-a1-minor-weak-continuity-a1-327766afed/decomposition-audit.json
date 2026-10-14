@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "variable|integral_lineDeriv_mul_eq|FiniteDimensional|IsAddHaarMeasure",
+        "lipschitzWith_of_hasCompactSupport",
+        "det_apply'|det_succ_row_zero",
+        "contDiff_det|ContDiff\\.det|ContDiff.*Matrix\\.det|integral_fderiv_eq_zero|deformation_ipl_mwc_mis",
+        "tsupport_fderiv_subset|support_fderiv_subset|HasCompactSupport.fderiv|lineDeriv_eq_fderiv",
+        "deformation_ipl_mwc_mis_integral_fderiv_eq_zero",
+        "deformation_ipl_mwc_mis_det_contDiff",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mis_independent_audit_85b74a8a/integral_fderiv_zero_challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mis_independent_audit_85b74a8a/det_contdiff_challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mis_independent_audit_85b74a8a/integral_fderiv_zero_proof.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mis_independent_audit_85b74a8a/det_contdiff_proof.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mis_independent_audit_85b74a8a/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/mis_decomp/NotAvail.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-327766afed/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-deformation-a1-im-pushforward-limit-a1-minor-weak-continuity-a1-327766afed/decomposition-v1.json",
+        "/tmp/mis_independent_audit_85b74a8a/integral_fderiv_zero_challenge.lean",
+        "/tmp/mis_independent_audit_85b74a8a/det_contdiff_challenge.lean",
+        "/tmp/mis_independent_audit_85b74a8a/integral_fderiv_zero_proof.lean",
+        "/tmp/mis_independent_audit_85b74a8a/det_contdiff_proof.lean",
+        "/tmp/mis_independent_audit_85b74a8a/Assembly.lean",
+        "/tmp/mis_decomp/NotAvail.lean"
+      ],
+      "conclusion": "Pinned project and mathlib revisions match the manifest; the inspected compiler sources match the snapshot. The cited Lipschitz integration-by-parts, determinant expansion, and ContDiff closure lemmas support the supplied proofs. Searches found no directly matching determinant-regularity declaration; the two proposed C¹ integration-by-parts identifiers are unavailable under the frozen import. Both child types independently validate and elaborate in comparator scope. Both supplied proof scripts compile, and the parent assembly compiles from premises byte-identical to the two child types and frozen Piola type, using only propext, Classical.choice, and Quot.sound. The split isolates two useful obligations that establish the selected statement through its supplied proof. Dependencies are correctly directed and acyclic; neither bare declaration name is reserved in the current 660-node DAG."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "integral_fderiv_zero",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches all prose hypotheses and the conclusion. C¹ regularity and compact support give global Lipschitz continuity; Rademacher integration by parts permits the constant-one partner because only h needs compact support. Differentiability identifies the line derivative in direction −e with −Dh(e), and integral_neg yields the claimed zero integral, including k = 0. Every step is justified without circular reliance. The supplied script compiles with standard axioms, and the free bare name is valid. Applying this child to V₀φC_q supplies the parent's required integration-by-parts step."
+    },
+    {
+      "key": "det_contdiff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition matches the stated dimensions, arbitrary smoothness order, entrywise hypotheses, and determinant conclusion. Matrix.of constructs the intended real matrix. The Leibniz expansion followed by finite products, constant multiplication, and finite sums proves the result for every stated order, including analytic regularity and n = 0. The supplied proof is complete, non-circular, and compiles with standard axioms. The free bare name is valid. Specializing to the derivative entries with m = 1 gives exactly the cofactor regularity needed by the parent."
+    }
+  ],
+  "required_changes": []
+}

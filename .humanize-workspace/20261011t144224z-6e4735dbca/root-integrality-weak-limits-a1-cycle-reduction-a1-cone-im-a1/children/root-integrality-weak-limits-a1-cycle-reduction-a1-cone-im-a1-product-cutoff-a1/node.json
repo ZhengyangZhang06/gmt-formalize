@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1.product_cutoff-a1",
+  "parent_id": "root.integrality_weak_limits-a1.cycle_reduction-a1.cone_im-a1",
+  "depth": 4,
+  "title": "The product ϑ(y_0) ζ(π y) of cut-offs on ℝ and ℝ^P is a cut-off on ℝ^{P+1}",
+  "statement": "Let P ∈ ℕ, ϑ : ℝ → ℝ and ζ : ℝ^P → ℝ be C^∞ functions with compact support. Then χ : ℝ^{P+1} → ℝ, χ(y) := ϑ(y_0) · ζ(π(y)) with π(y) = (y_1, …, y_P) = (EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)), is C^∞ and has compact support.",
+  "lean_statement": "∀ (P : ℕ) (ϑ : ℝ → ℝ) (ζ : Eucl P → ℝ), ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ϑ → HasCompactSupport ϑ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ζ → HasCompactSupport ζ → ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) (fun y : Eucl (P + 1) => ϑ (y 0) * ζ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y)))) ∧ HasCompactSupport (fun y : Eucl (P + 1) => ϑ (y 0) * ζ ((EuclideanSpace.equiv (Fin P) ℝ).symm (Fin.tail (EuclideanSpace.equiv (Fin (P + 1)) ℝ y))))",
+  "lean_name": "iwl_cr_ci_product_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-integrality-weak-limits-a1-cycle-reduction-a1-cone-im-a1-product-cutoff-a1-a1"
+}

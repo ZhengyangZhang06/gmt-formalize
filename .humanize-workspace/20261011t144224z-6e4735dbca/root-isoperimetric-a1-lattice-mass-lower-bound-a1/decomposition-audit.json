@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "latticeFace|IsLatticeChain|lattice_face_cutoff|coord_box_measure|coord_covector_eval",
+        "euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_zero",
+        "exists_contMDiffMap_one_nhds_of_subset_interior|contMDiff_iff_contDiff",
+        "range_inj_of_wellFoundedLT|eq_of_subset_of_ncard_le|ncard_range_of_injective|det_eq_zero_of_row_eq_zero",
+        "volume_preserving_ofLp|volume_Icc_pi|integrableOn_of_bounded|theorem setIntegral_mono_set|theorem setIntegral_congr_fun",
+        "isoperimetric_coord_covector_eval|isoperimetric_coord_box_measure|isoperimetric_lattice_face_cutoff|isoperimetric_lattice_face_isolating_form",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lmlb_independent_audit_m9o73_uf/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lmlb_independent_audit_m9o73_uf/CheckedProofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/ContMDiff/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-lattice-mass-lower-bound-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-isoperimetric-a1-lattice-mass-lower-bound-a1/decomposition-v1.json",
+        "/tmp/lmlb_decomp_check/GMT/LmlbFakeSub.lean",
+        "/tmp/lmlb_independent_audit_m9o73_uf/ChallengeTypes.lean",
+        "/tmp/lmlb_independent_audit_m9o73_uf/CheckedProofs.lean"
+      ],
+      "conclusion": "Verified the frozen project and pinned package compatibility, including byte equality of the inspected measure and smoothness library files. The local definitions support the stated coefficient norm, lattice actions, smooth test forms and mass inequality. All four exact one-line propositions independently elaborate in the comparator scope without child implementations. Independently recompiled the referenced complete proofs and exact-type checks for all children and the selected parent; their only axioms are propext, Classical.choice and Quot.sound. All lean_names are bare identifiers, with no reservation matches in the current 166-node DAG or other nodes' decomposition proposals. The split is appropriate: three independent geometric/algebraic obligations feed isolating_form, which establishes this selected parent through the supplied sign, single-term sum and limit argument. Dependencies are acyclic and correctly directed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coord_covector",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree on all three conjuncts and arbitrary n, N, α and c. The determinant identity, equal-cardinality range argument and zero-row argument establish the frame evaluations. The coefficient-norm sum then has exactly one surviving term c². The proof includes degree zero, is non-circular, and does not rely on the overlapping declaration in another branch."
+    },
+    {
+      "key": "box_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly expresses the stated coordinate box and includes a ≤ b. The explicit parametrization is isometric and has precisely the asserted image. Isometry invariance, the pinned Hausdorff normalization and product-box volume give the required ENNReal equality, including n = 0. The proof supplies the needed nonnegativity and measurability facts without depending on another child."
+    },
+    {
+      "key": "face_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches every cutoff property and both positivity hypotheses. Its explicitly coerced smoothness order denotes C∞, not analyticity. The proof establishes closedness, K ⊆ interior L, compactness of L, smooth Urysohn applicability and separation from every other parallel face. No upper bound on δ is needed; the argument remains valid when K is empty and in degree zero."
+    },
+    {
+      "key": "isolating_form",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches admissibility, off-face vanishing and the quantitative lower bound. The proof uses precisely its three declared dependencies to construct φ • dx^α. It explicitly establishes finite face measure, integrability, measurable K, nonnegativity and integral comparison. It is complete and non-circular. Its conclusion implies the selected parent via tsum_eq_single, the admissible forms ±ω, le_massOn and continuity as δ approaches zero from above."
+    }
+  ],
+  "required_changes": []
+}
