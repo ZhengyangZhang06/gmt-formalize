@@ -1444,6 +1444,128 @@ theorem Submission.codim1_hcp_un_fundamental_lemma : ∀ (P : ℕ) (μ : Measure
     ENNReal.toReal_pos (hpos x₀ hx₀ _ (by positivity)).ne' hBfin
   linarith [mul_pos hc h₃]
 
+/-- **Zero mean curvature** of an embedded `C¹` hypersurface `M` of a subspace `A₀`: `div_M ν`
+is, up to sign, the mean curvature of `M` (Simon Ch. 2, 4.28), and it vanishes when `M` is
+stationary (cf. Ch. 2, 5.5).  Here `M ⊆ U ∩ A₀` is `m`-dimensional, `dim A₀ = m + 1`,
+`Hᵐ(M ∩ K) < ∞` for compact `K ⊆ U`, `∫_M div_M X dHᵐ = 0` for `X ∈ C¹_c(U; ℝᴾ)`, and `ν` is
+`C^∞` on an open `O ⊇ M` with `ν(x) ∈ A₀` a unit normal of `T_xM` for `x ∈ M`; then
+`div_M ν(x) = trace(P_x ∘ Dν(x)) = 0` on `M`.  `T_xM` is an `m`-dimensional subspace of `A₀`, so
+`P_x = P_{A₀} − ν(x) ⊗ ν(x)` and `div_M ν(x) = trace(P_{A₀} ∘ Dν(x)) − ν(x) · Dν(x)ν(x)` is
+continuous on `M`.  For `C^∞` `φ` with compact support in `O ∩ U`, `X = φν` is `C¹` with compact
+support in `U` and `div_M X = φ div_M ν` on `M` (`P_xν(x) = 0`), so `∫_M φ div_M ν dHᵐ = 0`.  As
+`M` is Borel and `Hᵐ(M ∩ B_s(x)) > 0` (density one), the fundamental lemma gives
+`div_M ν ≡ 0` on `M`. -/
+theorem Submission.codim1_hcp_un_zero_mean_curvature : ∀ (P m : ℕ) (U : Set (Euclid P)) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), IsOpen U → M ⊆ U → Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[m] (M ∩ K) ≠ ∞) → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ U → ∫ x in M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X x).toLinearMap) ∂μHE[m] = 0) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, LinearMap.trace ℝ (Euclid P) ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap) = 0 := by
+  intro P m U A₀ M ν hU hMU hA₀ hMA₀ hM hfin hstat hνO hνM
+  obtain ⟨O, hO, hMO, hν⟩ := hνO
+  -- Steps 1–2: `P_x w = P_{A₀} w − (ν(x) · w) ν(x)` for `x ∈ M`, as `span T_xM = T_xM ≤ A₀` has
+  -- dimension `m`
+  have hproj : ∀ x ∈ M, ∀ w : Euclid P, (Submodule.span ℝ (tangentSpace M x)).starProjection w =
+      A₀.starProjection w - inner ℝ (ν x) w • ν x := by
+    intro x hx w
+    obtain ⟨hνA, hν1, hνT⟩ := hνM x hx
+    obtain ⟨Q, hQ, hQm, hQA⟩ := Submission.codim1_hcp_un_tangent_subspace P m A₀ M hM hMA₀ x hx
+    have hspan : Submodule.span ℝ (tangentSpace M x) = Q := by rw [← hQ, Submodule.span_eq]
+    subst hspan
+    exact Submission.codim1_hcp_un_hyperplane_projection P m A₀ _ (ν x) hA₀ hQm hQA hνA hν1
+      (fun v hv => hνT v (by rw [← hQ]; exact hv)) w
+  -- `P_x ν(x) = ν(x) − |ν(x)|² ν(x) = 0`
+  have hPν : ∀ x ∈ M, (Submodule.span ℝ (tangentSpace M x)).starProjection (ν x) = 0 := by
+    intro x hx
+    obtain ⟨hνA, hν1, -⟩ := hνM x hx
+    rw [hproj x hx, Submodule.starProjection_eq_self_iff.2 hνA, real_inner_self_eq_norm_sq, hν1]
+    simp
+  -- Step 3: on `M`, `div_M ν(x) = trace(P_{A₀} ∘ Dν(x)) − ν(x) · Dν(x)ν(x)`, the trace of
+  -- `w ↦ (ν(x) · Dν(x)w) ν(x)` being `ν(x) · Dν(x)ν(x)`
+  have hhF : ∀ x ∈ M, LinearMap.trace ℝ (Euclid P)
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+        (fderiv ℝ ν x).toLinearMap) =
+      LinearMap.trace ℝ (Euclid P) (A₀.starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap) -
+        inner ℝ (ν x) (fderiv ℝ ν x (ν x)) := by
+    intro x hx
+    have hlin : (Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+        (fderiv ℝ ν x).toLinearMap =
+        A₀.starProjection.toLinearMap ∘ₗ (fderiv ℝ ν x).toLinearMap -
+          (innerₛₗ ℝ (ν x) ∘ₗ (fderiv ℝ ν x).toLinearMap).smulRight (ν x) := by
+      refine LinearMap.ext fun w => ?_
+      rw [LinearMap.comp_apply, ContinuousLinearMap.coe_coe, hproj x hx]
+      simp
+    rw [hlin, map_sub, LinearMap.trace_smulRight]
+    simp
+  -- the right-hand side is continuous on `O`: `ν` and `Dν` are continuous there, and
+  -- `L ↦ trace(P_{A₀} ∘ L)` is linear on the finite-dimensional space of operators
+  have htr : Continuous fun L : Euclid P →L[ℝ] Euclid P =>
+      LinearMap.trace ℝ (Euclid P) (A₀.starProjection.toLinearMap ∘ₗ L.toLinearMap) := by
+    let T : (Euclid P →L[ℝ] Euclid P) →ₗ[ℝ] ℝ :=
+      { toFun := fun L =>
+          LinearMap.trace ℝ (Euclid P) (A₀.starProjection.toLinearMap ∘ₗ L.toLinearMap)
+        map_add' := fun L₁ L₂ => by simp [LinearMap.comp_add]
+        map_smul' := fun c L => by simp [LinearMap.comp_smul] }
+    exact T.continuous_of_finiteDimensional
+  have hDν : ContinuousOn (fderiv ℝ ν) O := hν.continuousOn_fderiv_of_isOpen hO (by simp)
+  have hνc : ContinuousOn ν O := hν.continuousOn
+  have hcont : ContinuousOn (fun x => LinearMap.trace ℝ (Euclid P)
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+        (fderiv ℝ ν x).toLinearMap)) M :=
+    (((htr.comp_continuousOn hDν).sub (hνc.inner (hDν.clm_apply hνc))).mono hMO).congr hhF
+  -- Step 4: `∫_M φ div_M ν dHᵐ = 0` for `C^∞` `φ` with compact support in `O ∩ U`, testing
+  -- stationarity with `X = φν`
+  have hMmeas : MeasurableSet M := (Submission.dimred_rpd_embedded_locally_closed P 1 m M hM).1
+  have htest : ∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ →
+      tsupport φ ⊆ O ∩ U → ∫ x in M, φ x * LinearMap.trace ℝ (Euclid P)
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+          (fderiv ℝ ν x).toLinearMap) ∂μHE[m] = 0 := by
+    intro φ hφ hφc hφU
+    -- (a) `X` is `C¹`: a product of `C^∞` maps on `O`, and `0` near each point off `O ⊇ tsupport φ`
+    have hX : ContDiff ℝ 1 fun z => φ z • ν z := by
+      refine contDiff_iff_contDiffAt.2 fun z => ?_
+      by_cases hz : z ∈ O
+      · exact (hφ.of_le (by simp)).contDiffAt.smul
+          ((hν.of_le (by simp)).contDiffAt (hO.mem_nhds hz))
+      · have hz' : z ∉ tsupport φ := fun h => hz (hφU h).1
+        refine (contDiffAt_const (c := (0 : Euclid P))).congr_of_eventuallyEq ?_
+        filter_upwards [notMem_tsupport_iff_eventuallyEq.1 hz'] with y hy
+        simp [hy]
+    -- (b) `tsupport X ⊆ tsupport φ`, compact and contained in `U`
+    have hXc : HasCompactSupport fun z => φ z • ν z := hφc.smul_right (f' := ν)
+    have hXU : tsupport (fun z => φ z • ν z) ⊆ U :=
+      (tsupport_smul_subset_left φ ν).trans (hφU.trans inter_subset_right)
+    -- (c) `DX(x) = φ(x) Dν(x) + Dφ(x) ⊗ ν(x)` and `P_x ν(x) = 0`, so `div_M X = φ div_M ν` on `M`
+    have hdiv : ∀ x ∈ M, φ x * LinearMap.trace ℝ (Euclid P)
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+          (fderiv ℝ ν x).toLinearMap) = LinearMap.trace ℝ (Euclid P)
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+          (fderiv ℝ (fun z => φ z • ν z) x).toLinearMap) := by
+      intro x hx
+      have hνx : DifferentiableAt ℝ ν x :=
+        (hν.differentiableOn (by simp)).differentiableAt (hO.mem_nhds (hMO hx))
+      rw [fderiv_fun_smul ((hφ.differentiable (by simp)) x) hνx]
+      have hlin : (Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+          (φ x • fderiv ℝ ν x + (fderiv ℝ φ x).smulRight (ν x)).toLinearMap =
+          φ x • ((Submodule.span ℝ (tangentSpace M x)).starProjection.toLinearMap ∘ₗ
+            (fderiv ℝ ν x).toLinearMap) := by
+        refine LinearMap.ext fun w => ?_
+        simp [hPν x hx]
+      rw [hlin, map_smul, smul_eq_mul]
+    -- (d) stationarity
+    exact (setIntegral_congr_fun hMmeas hdiv).trans (hstat _ hX hXc hXU)
+  -- Step 5: `Hᵐ(M ∩ B_s(x)) > 0`, since `Hᵐ(M ∩ B_t(x)) / (ωₘtᵐ) → 1` as `t ↓ 0`
+  have hpos : ∀ x ∈ M, ∀ s : ℝ, 0 < s → 0 < μHE[m] (M ∩ ball x s) := by
+    intro x hx s hs
+    refine pos_iff_ne_zero.2 fun h0 => ?_
+    have hzero : Tendsto (fun t : ℝ => μHE[m] (M ∩ ball x t) /
+        (unitBallVolume m * ENNReal.ofReal (t ^ m))) (𝓝[>] 0) (𝓝 0) := by
+      refine tendsto_const_nhds.congr' ?_
+      filter_upwards [Ioo_mem_nhdsGT hs] with t ht
+      rw [measure_mono_null (inter_subset_inter_right M (ball_subset_ball ht.2.le)) h0,
+        ENNReal.zero_div]
+    exact zero_ne_one (tendsto_nhds_unique hzero
+      (Submission.dimred_rpd_submanifold_density_one P m M x hM hx))
+  -- Step 6: the fundamental lemma on the open set `O ∩ U ⊇ M`
+  exact Submission.codim1_hcp_un_fundamental_lemma P μHE[m] (O ∩ U) M _ (hO.inter hU)
+    (fun x hx => ⟨hMO hx, hMU hx⟩) hMmeas hcont
+    (fun K hK hKU => hfin K hK (hKU.trans inter_subset_right)) hpos htest
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
