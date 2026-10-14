@@ -508,6 +508,42 @@ theorem Submission.dtc_vanish_off_support : ∀ (P n : ℕ) (U : Set (Euclid P))
   rw [hsum, map_sum]
   exact Finset.sum_eq_zero fun i _ => (i : 𝒲).2.2.2.2 (ωi i) (hmem i).2
 
+/-- The union of the closed faces `Φ_q([0,1]^{m+1})`, `q = (ι, b) ∈ s`, of the affine maps
+`Φ_q(y) = b + Σⱼ yⱼ e_{ι(j)}` is compact.  The closed unit cube `C ⊆ ℝ^{m+1}` is closed (an
+intersection of coordinate half-spaces) and bounded (`‖y‖ ≤ √(m + 1)` on `C`), hence compact
+since `ℝ^{m+1}` is proper.  Each `Φ_q` is continuous, so each `Φ_q(C)` is compact, and the set
+is the finite union `⋃_{q ∈ s} Φ_q(C)`. -/
+theorem Submission.cmcdtfrbvbsf_closed_faces_isCompact : ∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))), IsCompact {x : Euclid P | ∃ q ∈ s, ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) = x} := by
+  intro P m s
+  -- the closed unit cube `C ⊆ ℝ^{m+1}`
+  set C : Set (Euclid (m + 1)) := {y | ∀ i, 0 ≤ y i ∧ y i ≤ 1} with hC_def
+  -- `C` is closed: an intersection of coordinate half-spaces
+  have hC_closed : IsClosed C := by
+    simp only [hC_def, Set.ofPred_forall, Set.ofPred_and]
+    exact isClosed_iInter fun i =>
+      (isClosed_le continuous_const (PiLp.continuous_apply 2 _ i)).inter
+        (isClosed_le (PiLp.continuous_apply 2 _ i) continuous_const)
+  -- `C` is bounded: `‖y‖ ≤ √(m + 1)` on `C`
+  have hC_bdd : Bornology.IsBounded C := by
+    refine (Metric.isBounded_iff_subset_closedBall 0).mpr ⟨√(m + 1), fun y hy => ?_⟩
+    rw [mem_closedBall_zero_iff, EuclideanSpace.norm_eq]
+    refine Real.sqrt_le_sqrt ?_
+    calc ∑ i, ‖y i‖ ^ 2 ≤ ∑ _i : Fin (m + 1), (1 : ℝ) :=
+          Finset.sum_le_sum fun i _ => by
+            rw [Real.norm_eq_abs, sq_abs]
+            exact pow_le_one₀ (hy i).1 (hy i).2
+      _ = m + 1 := by simp
+  -- `C` is compact, `ℝ^{m+1}` being proper
+  have hC : IsCompact C := Metric.isCompact_of_isClosed_isBounded hC_closed hC_bdd
+  -- each face `Φ_q(C)` is compact, `Φ_q` being continuous
+  have hΦ : ∀ q ∈ s, IsCompact ((fun y : Euclid (m + 1) => WithLp.toLp 2 (fun i => (q.2 i : ℝ)) +
+      ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) '' C) :=
+    fun q _ => hC.image (by fun_prop)
+  -- the set is the finite union `⋃_{q ∈ s} Φ_q(C)`
+  convert s.isCompact_biUnion hΦ using 1
+  ext x
+  simp only [Set.mem_ofPred_eq, Set.mem_iUnion, Set.mem_image, exists_prop, hC_def]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
