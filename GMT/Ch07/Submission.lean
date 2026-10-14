@@ -997,6 +997,120 @@ theorem Submission.cbr_ci_cp_translation_invariant_of_fderiv : ∀ (P : ℕ) (ν
   -- step 8: `ν(τ⁻¹A) = τ_#ν(A) = ν(A)` for Borel `A`
   rw [← Measure.map_apply hτ.measurable hA, hμ]
 
+/-- **Riesz vector of the wedge functional `w ↦ ζ₀(w♭ ∧ α)`** (used in the constant tangent plane
+step of the compactness theorem, Simon 7.2.4).  For `ζ₀ ∈ Λ_{d+1}(ℝᴾ)` and a fixed `d`-covector
+`α` there is `v ∈ ℝᴾ` with `ζ₀(γ) = ⟨v, w⟩` whenever `γ = w♭ ∧ α`, i.e.
+`γ(u₀, …, u_d) = Σᵢ (−1)ⁱ ⟨w, uᵢ⟩ α(u₀, …, ûᵢ, …, u_d)`: such a `γ` is `d(⟨w, ·⟩ α)(0)`, which
+is linear in `w`, and `v` is the Riesz representative of `w ↦ ζ₀(w♭ ∧ α)`. -/
+theorem Submission.cbr_ci_cp_dir_wedge_riesz_vector : ∀ (P d : ℕ) (ζ₀ : MultiVector P (d + 1)) (α : Covector (Euclid P) d), ∃ v : Euclid P, ∀ (w : Euclid P) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → ζ₀ γ = inner ℝ v w := by
+  intro P d ζ₀ α
+  set W : Euclid P → Covector (Euclid P) (d + 1) :=
+    fun w => exteriorDerivative (fun y => inner ℝ w y • α) 0 with hW
+  have hWf : ∀ (w : Euclid P) (u : Fin (d + 1) → Euclid P), W w u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u)) := by
+    intro w u
+    have hd : DifferentiableAt ℝ (fun y => inner ℝ w y) (0 : Euclid P) :=
+      (innerSL ℝ w).differentiableAt
+    rw [hW, Submission.dgcr_bwd_extDeriv_smul_const P d (fun y => inner ℝ w y) α 0 u hd]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    have hf : fderiv ℝ (fun y => inner ℝ w y) (0 : Euclid P) = innerSL ℝ w :=
+      (innerSL ℝ w).fderiv
+    rw [hf, innerSL_apply_apply]
+  have huniq : ∀ (w : Euclid P) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → γ = W w := by
+    intro w γ hγ
+    ext u
+    rw [hγ u, hWf w u]
+  have hadd : ∀ w w' : Euclid P, W (w + w') = W w + W w' := by
+    intro w w'
+    ext u
+    rw [ContinuousAlternatingMap.add_apply, hWf, hWf, hWf, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [inner_add_left]
+    ring
+  have hsmul : ∀ (c : ℝ) (w : Euclid P), W (c • w) = c • W w := by
+    intro c w
+    ext u
+    rw [ContinuousAlternatingMap.smul_apply, hWf, hWf, smul_eq_mul, Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [real_inner_smul_left]
+    ring
+  let ℓ : Euclid P →ₗ[ℝ] ℝ :=
+    { toFun := fun w => ζ₀ (W w)
+      map_add' := by
+        intro w w'
+        simp only [hadd, map_add]
+      map_smul' := by
+        intro c w
+        simp only [hsmul, map_smul, smul_eq_mul, RingHom.id_apply] }
+  refine ⟨(InnerProductSpace.toDual ℝ (Euclid P)).symm (LinearMap.toContinuousLinearMap ℓ), ?_⟩
+  intro w γ hγ
+  rw [InnerProductSpace.toDual_symm_apply, huniq w γ hγ]
+  rfl
+/-- **Vanishing of `∫ Dφ[v] dν` on a set of directions extends to its span** (the linearity step
+of the constant-planes argument for the closure and boundary rectifiability in the compactness
+theorem).  If `ν` is finite on compact sets and `φ : ℝᴾ → ℝ` is `C^∞` with compact support, then
+each `y ↦ Dφ(y)[v]` is continuous with compact support, hence `ν`-integrable, so
+`v ↦ ∫ Dφ(y)[v] dν(y)` is linear; if it vanishes on `S`, it vanishes on `span S`. -/
+theorem Submission.cbr_ci_cp_dir_integral_fderiv_span : ∀ (P : ℕ) (ν : Measure (Euclid P)) (φ : Euclid P → ℝ) (S : Set (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → (∀ v ∈ S, ∫ y, fderiv ℝ φ y v ∂ν = 0) → ∀ v ∈ Submodule.span ℝ S, ∫ y, fderiv ℝ φ y v ∂ν = 0 := by
+  intro P ν φ S hν hφ hφc hS
+  have : IsFiniteMeasureOnCompacts ν := ⟨fun K hK => hν K hK⟩
+  have hint : ∀ v, Integrable (fun y => fderiv ℝ φ y v) ν := by
+    intro v
+    have hc : Continuous (fun y => fderiv ℝ φ y v) :=
+      (hφ.continuous_fderiv (by simp)).clm_apply continuous_const
+    exact hc.integrable_of_hasCompactSupport (hφc.fderiv_apply (𝕜 := ℝ) v)
+  intro v hv
+  induction hv using Submodule.span_induction with
+  | mem x hx => exact hS x hx
+  | zero => simp
+  | add x y _ _ hx hy =>
+    simp only [map_add]
+    rw [integral_add (hint x) (hint y), hx, hy, add_zero]
+  | smul c x _ hx =>
+    simp only [map_smul, smul_eq_mul]
+    rw [integral_const_mul, hx, mul_zero]
+/-- **Testing a cycle condition on `φ α`** (used for the constant-plane step of White's
+tangent-plane argument in the closure theorem behind Simon 7.2.4).  If `∫ ζ₀(dψ(y)) dν(y) = 0`
+for every test `d`-form `ψ`, and `ζ₀(w♭ ∧ α) = v · w` for every `w`, where
+`(w♭ ∧ α)(u₀, …, u_d) = Σᵢ (−1)ⁱ (w · uᵢ) α(u₀, …, ûᵢ, …, u_d)`, then `∫ Dφ(y)v dν(y) = 0`
+for every compactly supported `C^∞` function `φ`: `φ α` is a test form with
+`d(φ α)(y) = ∇φ(y)♭ ∧ α`, so `ζ₀(d(φ α)(y)) = v · ∇φ(y) = Dφ(y)v`. -/
+theorem Submission.cbr_ci_cp_dir_cycle_fderiv_integral_zero : ∀ (P d : ℕ) (ν : Measure (Euclid P)) (ζ₀ : MultiVector P (d + 1)) (α : Covector (Euclid P) d) (v : Euclid P) (φ : Euclid P → ℝ), (∀ ψ : TestFormOn (univ : Set (Euclid P)) d, ∫ y, ζ₀ (exteriorDerivative (ψ : DifferentialForm (Euclid P) d) y) ∂ν = 0) → (∀ (w : Euclid P) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → ζ₀ γ = inner ℝ v w) → ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0 := by
+  intro P d ν ζ₀ α v φ hcyc hv hφ hφc
+  have hmem : (fun y => φ y • α : DifferentialForm (Euclid P) d) ∈
+      TestFormOn (univ : Set (Euclid P)) d :=
+    ⟨⟨hφ.smul contDiff_const, hφc.smul_right⟩, subset_univ _⟩
+  have h := hcyc ⟨_, hmem⟩
+  rw [← h]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+  have hd : DifferentiableAt ℝ φ y := (hφ.differentiable (by simp)) y
+  set g : Euclid P := (InnerProductSpace.toDual ℝ (Euclid P)).symm (fderiv ℝ φ y) with hg
+  have hγ : ∀ u : Fin (d + 1) → Euclid P, exteriorDerivative (fun y => φ y • α) y u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ g (u i) * α (i.removeNth u)) := by
+    intro u
+    rw [Submission.dgcr_bwd_extDeriv_smul_const P d φ α y u hd]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [hg, InnerProductSpace.toDual_symm_apply]
+  have hz := hv g _ hγ
+  show fderiv ℝ φ y v = ζ₀ (exteriorDerivative (fun y => φ y • α) y)
+  rw [hz, real_inner_comm, hg, InnerProductSpace.toDual_symm_apply]
+
+/-- **Translation directions of a constant-orientation cycle** (the vectors `v_α` of the
+tangent-plane step in the closure and boundary rectifiability part of Simon 7.2.4).  Let `ν` be a
+Borel measure on `ℝᴾ`, finite on compact sets, and `ζ₀ ∈ Λ_{d+1}(ℝᴾ)` with `∫ ⟨dφ, ζ₀⟩ dν = 0` for
+every test `d`-form `φ`.  For a `d`-covector `α` let `v_α` represent `w ↦ ⟨w♭ ∧ α, ζ₀⟩`, where
+`(w♭ ∧ α)(u₀, …, u_d) = Σᵢ (−1)ⁱ ⟨w, uᵢ⟩ α(u₀, …, ûᵢ, …, u_d)`.  Then `V = span{v_α}` satisfies
+`∫ Dψ[v] dν = 0` for `v ∈ V` and `ψ ∈ C_c^∞(ℝᴾ)` (test the cycle condition on `ψα`, using
+`d(ψα) = (∇ψ)♭ ∧ α`), and `⟨w♭ ∧ α, ζ₀⟩ = ⟨v_α, w⟩ = 0` for `w ∈ Vᗮ`. -/
+theorem Submission.cbr_ci_cp_wedge_annihilator_subspace : ∀ (P d : ℕ) (ν : Measure (Euclid P)) (ζ₀ : MultiVector P (d + 1)), (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : TestFormOn (univ : Set (Euclid P)) d, ∫ y, ζ₀ (exteriorDerivative (φ : DifferentialForm (Euclid P) d) y) ∂ν = 0) → ∃ V : Submodule ℝ (Euclid P), (∀ v ∈ V, ∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0) ∧ ∀ w ∈ Vᗮ, ∀ (α : Covector (Euclid P) d) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → ζ₀ γ = 0 := by
+  intro P d ν ζ₀ hν hcyc
+  choose v hv using Submission.cbr_ci_cp_dir_wedge_riesz_vector P d ζ₀
+  refine ⟨Submodule.span ℝ (range v), fun u hu φ hφ hφc => ?_, fun w hw α γ hγ => ?_⟩
+  · refine Submission.cbr_ci_cp_dir_integral_fderiv_span P ν φ (range v) hν hφ hφc ?_ u hu
+    rintro _ ⟨α, rfl⟩
+    exact Submission.cbr_ci_cp_dir_cycle_fderiv_integral_zero P d ν ζ₀ α (v α) φ hcyc (hv α)
+      hφ hφc
+  · rw [hv α w γ hγ]
+    exact Submodule.inner_right_of_mem_orthogonal (Submodule.subset_span (mem_range_self α)) hw
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
