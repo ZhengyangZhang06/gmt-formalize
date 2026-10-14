@@ -573,6 +573,38 @@ theorem Submission.idtp_cse_bml_rpm_dilation_map : ∀ (P : ℕ) (μ : Measure (
     rw [integral_map hη.aemeasurable hg.aestronglyMeasurable, integral_smul_measure,
       ENNReal.toReal_ofReal (sq_nonneg _), smul_eq_mul]
 
+/-- **Portmanteau bounds for the rescaled measures `λⱼ⁻²(η_{a,λⱼ})_#μ`** (Simon 7.3, the blow-up
+measures `μ_{η_{a,λⱼ#}T}`; the compact-set half is (13) in the proof of 7.2.4).  Let `μ`, `ν` be
+finite on compact sets, `λⱼ > 0` and `ηⱼ = η_{a,λⱼ}`.  If `λⱼ⁻² ∫ g ∘ ηⱼ dμ → ∫ g dν` for every
+continuous `g` with compact support, then `limsup λⱼ⁻²μ(ηⱼ⁻¹K) ≤ ν(K)` for compact `K` and
+`ν(U) ≤ liminf λⱼ⁻²μ(ηⱼ⁻¹U)` for open `U`: the measures `νⱼ = ηⱼ#(λⱼ⁻²μ)` are finite on compact
+sets with `∫ g dνⱼ = λⱼ⁻² ∫ g ∘ ηⱼ dμ`, so vague portmanteau on `ℝᴾ` applies to `νⱼ → ν`, and
+`νⱼ(S) = λⱼ⁻²μ(ηⱼ⁻¹S)` for the (Borel) sets `S = K, U`. -/
+theorem Submission.idtp_cse_bml_rescaled_portmanteau : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (a : Euclid P) (lams : ℕ → ℝ), IsFiniteMeasureOnCompacts μ → IsFiniteMeasureOnCompacts ν → (∀ j, 0 < lams j) → (∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams j)⁻¹ ^ 2 * ∫ x, g (dilation a (lams j) x) ∂μ) atTop (𝓝 (∫ x, g x ∂ν))) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => ENNReal.ofReal ((lams j)⁻¹ ^ 2) * μ (dilation a (lams j) ⁻¹' K)) atTop ≤ ν K) ∧ ∀ U : Set (Euclid P), IsOpen U → ν U ≤ liminf (fun j => ENNReal.ofReal ((lams j)⁻¹ ^ 2) * μ (dilation a (lams j) ⁻¹' U)) atTop := by
+  intro P μ ν a lams hμ hν hlams hconv
+  -- Step 1: `νⱼ = ηⱼ#(λⱼ⁻²μ)` is finite on compact sets, `νⱼ(S) = λⱼ⁻²μ(ηⱼ⁻¹S)` for measurable
+  -- `S` and `∫ g dνⱼ = λⱼ⁻² ∫ g ∘ ηⱼ dμ` for continuous `g`
+  have hmap := fun j => Submission.idtp_cse_bml_rpm_dilation_map P μ a (lams j) hμ (hlams j)
+  have hset : ∀ (j : ℕ) (S : Set (Euclid P)), MeasurableSet S →
+      Measure.map (dilation a (lams j)) (ENNReal.ofReal ((lams j)⁻¹ ^ 2) • μ) S =
+        ENNReal.ofReal ((lams j)⁻¹ ^ 2) * μ (dilation a (lams j) ⁻¹' S) :=
+    fun j => (hmap j).2.1
+  -- Step 2: vague portmanteau on `U = ℝᴾ` for `νⱼ → ν`
+  obtain ⟨hK, hU⟩ := Submission.cbr_vague_portmanteau P univ
+    (fun j => Measure.map (dilation a (lams j)) (ENNReal.ofReal ((lams j)⁻¹ ^ 2) • μ)) ν
+    isOpen_univ (fun j K hK _ => (hmap j).1 K hK) (fun K hK _ => hK.measure_lt_top)
+    fun g hg hgs _ => (hconv g hg hgs).congr fun j => ((hmap j).2.2 g hg).symm
+  -- Step 3: compact and open sets are measurable, so `νⱼ(S) = λⱼ⁻²μ(ηⱼ⁻¹S)` for them
+  refine ⟨fun K hKc => ?_, fun U hUo => ?_⟩
+  · have hS : ∀ j, Measure.map (dilation a (lams j)) (ENNReal.ofReal ((lams j)⁻¹ ^ 2) • μ) K =
+        ENNReal.ofReal ((lams j)⁻¹ ^ 2) * μ (dilation a (lams j) ⁻¹' K) := fun j =>
+      hset j K hKc.measurableSet
+    simpa only [hS] using hK K hKc (subset_univ K)
+  · have hS : ∀ j, Measure.map (dilation a (lams j)) (ENNReal.ofReal ((lams j)⁻¹ ^ 2) • μ) U =
+        ENNReal.ofReal ((lams j)⁻¹ ^ 2) * μ (dilation a (lams j) ⁻¹' U) := fun j =>
+      hset j U hUo.measurableSet
+    simpa only [hS] using hU U hUo (subset_univ U)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
