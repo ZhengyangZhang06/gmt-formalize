@@ -3127,6 +3127,38 @@ theorem Submission.idtp_fons_cc_psf_lower_bound : ∀ (P n : ℕ) (μ μ₀ : Me
     _ ≤ ENNReal.ofReal (lam⁻¹ ^ n) * (ENNReal.ofReal (r⁻¹ ^ n) * μ (ball p (r * (lam * ρ)))) := by
         gcongr
 
+/-- **The positive-scale family `μ₀^{x,λ}`** (Simon 7.3.3, proof of 3.3(1), chapter-07.txt
+lines 445–467: the blow-ups `η_{x,λ#}T` with `|x| < 1 − λ`, `0 < λ < 1`, and their domains
+`U_S = η_{x,λ}(U)`, (6), (9), (10) there).  Let `0 < μ(B_{2r}(z)) < ∞`,
+`μ₀ = r⁻ⁿ η_{z,r#}(μ⌞B_{2r}(z))`, `μ₀^{x,λ} = λ⁻ⁿ η_{x,λ#}μ₀` and `G_{x,λ} = η_{x,λ}(B_2(0))`;
+`(x, λ)` is admissible if `0 < λ ≤ 1` and `‖x‖ ≤ 1 − λ`.  Then (1) `w ∈ B_2(0)` lies in `spt μ₀`
+iff `z + rw ∈ spt μ`; (2) `(x, λ) ↦ μ₀^{x,λ}` is injective (the total mass recovers `λ`, the
+barycenter `x`); (3) `0 < μ₀^{x,λ}(ℝᴾ) < ∞`; (4) `G_{x,λ}` is open and contains `B_2(0)` for
+admissible `(x, λ)`; (5) a vague limit of admissible members whose domains all fail to contain
+the compact set `K` is an admissible member whose domain does not contain `K`; (6) no member is
+`f Hⁿ` with `f` constant on rays, as `f Hⁿ` has total mass `0` or `∞`; (7) if `Λ₀ ≥ 0` and
+`e^{−Λ₀σ} ωₙ σⁿ ≤ μ(B_σ(p))` whenever `p ∈ spt μ`, `0 < σ < ρ` and
+`closedBall p ρ ⊆ closedBall z (2r)`, then `e^{−rΛ₀ρ} ωₙ ρⁿ ≤ μ₀^{x,λ}(B_ρ(y))` whenever
+`0 < λ ≤ 1`, `ρ > 0`, `closedBall y ρ ⊆ G_{x,λ}` and `y ∈ spt μ₀^{x,λ}`. -/
+theorem Submission.idtp_fons_cc_positive_scale_family : ∀ (P n : ℕ) (μ μ₀ : Measure (Euclid P)) (z : Euclid P) (r : ℝ), 1 ≤ n → 0 < r → μ (ball z (2 * r)) ≠ 0 → μ (ball z (2 * r)) ≠ ∞ → μ₀ = ENNReal.ofReal (r⁻¹ ^ n) • (μ.restrict (ball z (2 * r))).map (dilation z r) → (∀ w ∈ ball (0 : Euclid P) 2, (∀ ε : ℝ, 0 < ε → μ₀ (ball w ε) ≠ 0) ↔ ∀ ε : ℝ, 0 < ε → μ (ball (z + r • w) ε) ≠ 0) ∧ (∀ (x x' : Euclid P) (lam lam' : ℝ), 0 < lam → 0 < lam' → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) = (ENNReal.ofReal (lam'⁻¹ ^ n) • μ₀.map (dilation x' lam')) → x = x' ∧ lam = lam') ∧ (∀ (x : Euclid P) (lam : ℝ), 0 < lam → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) univ ≠ 0 ∧ (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) univ ≠ ∞) ∧ (∀ (x : Euclid P) (lam : ℝ), 0 < lam → lam ≤ 1 → ‖x‖ ≤ 1 - lam → IsOpen (dilation x lam '' ball 0 2) ∧ ball 0 2 ⊆ dilation x lam '' ball 0 2) ∧ (∀ (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (ν : Measure (Euclid P)) (K : Set (Euclid P)), (∀ i, 0 < lams i ∧ lams i ≤ 1 ∧ ‖xs i‖ ≤ 1 - lams i) → (∀ K' : Set (Euclid P), IsCompact K' → ν K' ≠ ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun i => ∫ x, f x ∂(ENNReal.ofReal ((lams i)⁻¹ ^ n) • μ₀.map (dilation (xs i) (lams i)))) atTop (𝓝 (∫ x, f x ∂ν))) → IsCompact K → (∀ i, ¬ K ⊆ dilation (xs i) (lams i) '' ball 0 2) → ∃ (x : Euclid P) (lam : ℝ), (0 < lam ∧ lam ≤ 1 ∧ ‖x‖ ≤ 1 - lam) ∧ ν = (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) ∧ ¬ K ⊆ dilation x lam '' ball 0 2) ∧ (∀ (x : Euclid P) (lam : ℝ) (f : Euclid P → ℝ≥0∞), 0 < lam → (∀ t : ℝ, 0 < t → ∀ w : Euclid P, f (t • w) = f w) → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) ≠ (μHE[n] : Measure (Euclid P)).withDensity f) ∧ ∀ Λ₀ : ℝ, 0 ≤ Λ₀ → (∀ p : Euclid P, (∀ ε : ℝ, 0 < ε → μ (ball p ε) ≠ 0) → ∀ σ ρ : ℝ, closedBall p ρ ⊆ closedBall z (2 * r) → 0 < σ → σ < ρ → ENNReal.ofReal (Real.exp (-(Λ₀ * σ))) * (unitBallVolume n * ENNReal.ofReal (σ ^ n)) ≤ μ (ball p σ)) → ∀ (x y : Euclid P) (lam ρ : ℝ), 0 < lam → lam ≤ 1 → 0 < ρ → closedBall y ρ ⊆ dilation x lam '' ball 0 2 → (∀ ε : ℝ, 0 < ε → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) (ball y ε) ≠ 0) → ENNReal.ofReal (Real.exp (-(r * Λ₀ * ρ))) * (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ≤ (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) (ball y ρ) := by
+  intro P n μ μ₀ z r hn hr hB0 hBinf hμ₀
+  -- Step 0 (and (3)): `μ₀` is a finite nonzero measure concentrated on `B_2(0)`, and every
+  -- `μ₀^{x,λ}`, `λ > 0`, has finite nonzero total mass `λ⁻ⁿ r⁻ⁿ μ(B_{2r}(z))`
+  obtain ⟨h0, hinf, hconc, hmass⟩ :=
+    Submission.idtp_fons_cc_psf_total_mass P n μ μ₀ z r hr hB0 hBinf hμ₀
+  -- (1) support relation; (2) injectivity; (3) total masses; (5) closedness under vague
+  -- limits; (7) transferred lower bound
+  refine ⟨Submission.idtp_fons_cc_psf_support P n μ μ₀ z r hr hμ₀,
+    Submission.idtp_fons_cc_psf_injective P n μ₀ hn h0 hinf hconc, hmass,
+    fun x lam hlam hlam1 hx => ?_, Submission.idtp_fons_cc_psf_vague_closed P n μ₀ hinf,
+    fun x lam f hlam hf => ?_, Submission.idtp_fons_cc_psf_lower_bound P n μ μ₀ z r hr hμ₀⟩
+  · -- (4) `G_{x,λ}` is open, and contains `B_2(0)` for admissible `(x, λ)`
+    obtain ⟨-, hopen, hadm⟩ := Submission.idtp_fons_cc_psf_domain_geometry P x lam hlam
+    exact ⟨hopen, (hadm hlam1 hx).1⟩
+  · -- (6) a nonzero finite measure is not `f Hⁿ` for `f` constant on rays
+    exact Submission.idtp_fons_cc_psf_nonhomogeneous P n _ f hn (hmass x lam hlam).1
+      (hmass x lam hlam).2 hf
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
