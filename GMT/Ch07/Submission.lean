@@ -680,6 +680,32 @@ theorem Submission.cmcsd_support_calculus : ∀ (P n : ℕ), (∀ (E : Set (Eucl
     refine mem_sUnion_of_mem hxW ⟨hWo, hWc, hWU, fun η hη => ?_⟩
     rw [GeometricCurrentOn.boundary_apply]
     exact hWv _ ((tsupport_exteriorDerivative_subset (η : DifferentialForm (Euclid P) n)).trans hη)
+/-- **Mass of a difference** (Simon (6.2.5), chapter-06.txt line 231; this subadditivity makes the
+flat distances `d_W` of 7.1 (lines 2018–2022) pseudometrics and is used in the proof of 7.2):
+`M_G(A − B) ≤ M_G(A) + M_G(B)` for every set `G`.  If `ω` is admissible for `M_G` then so is `−ω`
+(same support, same coefficient norm), and `(A − B)(ω) = A(ω) + B(−ω)`, so
+`ofReal ((A − B)(ω)) ≤ ofReal (A(ω)) + ofReal (B(−ω)) ≤ M_G(A) + M_G(B)`. -/
+theorem Submission.cmc_fc_cs_massOn_sub_le : ∀ (P n : ℕ) (U G : Set (Euclid P)) (A B : GeometricCurrentOn U n), (A - B).massOn G ≤ A.massOn G + B.massOn G := by
+  intro P n U G A B
+  -- Step 1: it suffices to bound `ofReal ((A − B)(ω))` for each admissible `ω`
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  -- Step 2: `−ω` is admissible: same support, same coefficient norm
+  have hneg : -ω ∈ massAdmissibleOn U n G := by
+    refine ⟨?_, fun x => ?_⟩
+    · rw [Submodule.coe_neg, tsupport_neg]
+      exact hω.1
+    · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- Step 3: `(A − B)(ω) = A(ω) − B(ω) = A(ω) + B(−ω)`, by linearity of `B`
+  have hsplit : (A - B) ω = A ω + B (-ω) := by
+    have hB : B (-ω) = -B ω := B.toCurrent.map_neg ω
+    change A ω - B ω = A ω + B (-ω)
+    rw [hB, sub_eq_add_neg]
+  -- Steps 4–5: `ofReal` is subadditive, and each term is bounded by the corresponding mass
+  calc ENNReal.ofReal ((A - B) ω) = ENNReal.ofReal (A ω + B (-ω)) := by rw [hsplit]
+    _ ≤ ENNReal.ofReal (A ω) + ENNReal.ofReal (B (-ω)) := ENNReal.ofReal_add_le
+    _ ≤ A.massOn G + B.massOn G := add_le_add (A.le_massOn hω) (B.le_massOn hneg)
 /-- **Telescoping series** (Simon Ch. 6, proof of 5.1: the passage from the limits (19) to the
 identity (21), chapter-06.txt lines 1792–1820): if `∑ⱼ aⱼ = s`, `a₀ = −k₀`, `aⱼ₊₁ = kⱼ − kⱼ₊₁`
 and `kⱼ → 0`, then `s = 0`.  The partial sums telescope, `∑_{i ≤ N} aᵢ = −k_N`; they tend to `s`
@@ -891,6 +917,105 @@ theorem Submission.cmcsdtd_shell_deformation : ∀ (P m : ℕ) (push : ∀ k : �
         (hdist j x (Or.inl (Or.inl hx)))⟩
     · rintro _ ⟨x, hx, rfl⟩
       exact mem_cthickening_of_dist_le _ x δ A' (hDA j hx) (hdist j x (Or.inl (Or.inr hx)))
+
+/-- **Summation of the deformed shells** (Simon Ch. 6, proof of 5.1, displays (17)–(25)).  The mass
+series of the pieces `V_j`, `H_j`, `Y_j`, `E′_j` are dominated by `Σ a_j`, `δ Σ a_j`, `Σ b_j`,
+`δ Σ b_j < ∞`, so `(IMS)` sums `V_j`, `H_j`, `E′_j` to `Q₀`, `R₁`, `S₁`, with supports in the closed
+sets `K₁`, `K₂`, `K₃`.  At a test form `ω`, (I1)–(I2) make the series of
+`(W_j − V_j − E′_j)(ω) − H_j(dω)` telescope with remainder `−K_N(ω) → 0` (`M(K_N) ≤ δ c_N → 0`), so
+`T − Q₀ − S₁ = ∂R₁`; likewise (I3)–(I4) give `∂Q₀(η) = Σ_j Y_j(η)` (remainder `−L′_N(η) → 0`).
+Hence `M(∂Q₀) ≤ Σ_j M(Y_j)`, and `∂Q₀` vanishes on forms supported off `K₃ ⊇ spt Y_j`. -/
+theorem Submission.cmcsdtd_deformed_series_sum : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P m : ℕ), (∀ (E : Set (Euclid P)) (X : GeometricCurrentOn (univ : Set (Euclid P)) m), IsClosed E → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) E → X ω = 0) → X.support ⊆ E) → (∀ (k : ℕ) (W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), ∑' i, (W i).mass < ∞ → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => W i ω) (S ω)) ∧ S.mass ≤ ∑' i, (W i).mass ∧ S.support ⊆ closure (⋃ i, (W i).support) ∧ ((∀ i, IsIntegerMultiplicity (W i)) → IsIntegerMultiplicity S)) → ∀ (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (W V E' K : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (H : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (Y L' : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m) (a b c : ℕ → ℝ≥0∞) (δ : ℝ) (K₁ K₂ K₃ : Set (Euclid P)), (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), HasSum (fun j => W j ω) (T ω)) → W 0 - V 0 - (E' 0 - K 0) = (H 0).boundary → (∀ j, W (j + 1) - V (j + 1) - (E' (j + 1) - (K (j + 1) - K j)) = (H (j + 1)).boundary) → (V 0).boundary = Y 0 - L' 0 → (∀ j, (V (j + 1)).boundary = Y (j + 1) - (L' (j + 1) - L' j)) → (∀ j, IsIntegerMultiplicity (V j) ∧ IsIntegerMultiplicity (H j)) → (∀ j, (V j).mass ≤ a j ∧ (H j).mass ≤ ENNReal.ofReal δ * a j ∧ (Y j).mass ≤ b j ∧ (E' j).mass ≤ ENNReal.ofReal δ * b j ∧ (L' j).mass ≤ c j ∧ (K j).mass ≤ ENNReal.ofReal δ * c j) → ∑' j, a j < ∞ → ∑' j, b j < ∞ → Tendsto c atTop (𝓝 0) → IsClosed K₁ → IsClosed K₂ → IsClosed K₃ → (∀ j, (V j).support ⊆ K₁ ∧ (H j).support ⊆ K₂ ∧ (Y j).support ⊆ K₃ ∧ (E' j).support ⊆ K₃) → ∃ (Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q₀ ∧ IsIntegerMultiplicity R₁ ∧ T - Q₀ - S₁ = R₁.boundary ∧ Q₀.support ⊆ K₁ ∧ R₁.support ⊆ K₂ ∧ Q₀.boundary.support ⊆ K₃ ∧ S₁.support ⊆ K₃ ∧ Q₀.mass ≤ ∑' j, a j ∧ Q₀.boundary.mass ≤ ∑' j, b j ∧ R₁.mass ≤ ENNReal.ofReal δ * ∑' j, a j ∧ S₁.mass ≤ ENNReal.ofReal δ * ∑' j, b j := by
+  intro hVO P m hSi hIMS T W V E' K H Y L' a b c δ K₁ K₂ K₃ hT h0 hs hb0 hbs hIM hmass hsa hsb
+    hc hK₁ hK₂ hK₃ hspt
+  -- `ME` for currents in `ℝᴾ` of degrees `m` and `m + 1`
+  have hME0 := Submission.cmcsdtd_mass_controls_eval P m univ
+  have hME1 := Submission.cmcsdtd_mass_controls_eval P (m + 1) univ
+  -- Step 1: termwise comparison of the mass series; all four are finite since `ofReal δ < ∞`
+  have hVsum : ∑' j, (V j).mass ≤ ∑' j, a j := ENNReal.tsum_le_tsum fun j => (hmass j).1
+  have hHsum : ∑' j, (H j).mass ≤ ENNReal.ofReal δ * ∑' j, a j := by
+    rw [← ENNReal.tsum_mul_left]
+    exact ENNReal.tsum_le_tsum fun j => (hmass j).2.1
+  have hYsum : ∑' j, (Y j).mass ≤ ∑' j, b j := ENNReal.tsum_le_tsum fun j => (hmass j).2.2.1
+  have hEsum : ∑' j, (E' j).mass ≤ ENNReal.ofReal δ * ∑' j, b j := by
+    rw [← ENNReal.tsum_mul_left]
+    exact ENNReal.tsum_le_tsum fun j => (hmass j).2.2.2.1
+  have hVfin : ∑' j, (V j).mass < ∞ := hVsum.trans_lt hsa
+  have hHfin : ∑' j, (H j).mass < ∞ :=
+    hHsum.trans_lt (ENNReal.mul_lt_top ENNReal.ofReal_lt_top hsa)
+  have hYfin : ∑' j, (Y j).mass < ∞ := hYsum.trans_lt hsb
+  have hEfin : ∑' j, (E' j).mass < ∞ :=
+    hEsum.trans_lt (ENNReal.mul_lt_top ENNReal.ofReal_lt_top hsb)
+  -- Step 2: `0 ≤ M(L′_j) ≤ c_j → 0` and `0 ≤ M(K_j) ≤ δ c_j → δ · 0 = 0`
+  have hLlim : Tendsto (fun j => (L' j).mass) atTop (𝓝 0) :=
+    tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hc (fun _ => zero_le)
+      fun j => (hmass j).2.2.2.2.1
+  have hKlim : Tendsto (fun j => (K j).mass) atTop (𝓝 0) := by
+    have hδc : Tendsto (fun j => ENNReal.ofReal δ * c j) atTop (𝓝 0) := by
+      simpa using ENNReal.Tendsto.const_mul hc (Or.inr ENNReal.ofReal_ne_top)
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hδc (fun _ => zero_le)
+      fun j => (hmass j).2.2.2.2.2
+  -- Step 3: `(IMS)` sums `V_j`, `H_j` (degree `(m + 1) + 1 = m + 2`) and `E′_j`
+  obtain ⟨Q₀, hQs, hQm, hQspt, hQim⟩ := hIMS m V hVfin
+  obtain ⟨R₁, hRs, hRm, hRspt, hRim⟩ := hIMS (m + 1) H hHfin
+  obtain ⟨S₁, hSs, hSm, hSspt, -⟩ := hIMS m E' hEfin
+  -- Step 4: `α_j = W_j(ω) − V_j(ω) − E′_j(ω) − H_j(dω)` sums to `(T − Q₀ − S₁)(ω) − R₁(dω)`; by
+  -- (I1)–(I2), `α₀ = −K₀(ω)` and `α_{j+1} = K_j(ω) − K_{j+1}(ω)`, with `K_j(ω) → 0` (`ME` (i))
+  have hid : T - Q₀ - S₁ = R₁.boundary := by
+    ext ω
+    have hsum := (((hT ω).sub (hQs ω)).sub (hSs ω)).sub
+      (hRs (exteriorDerivativeTestOn univ (m + 1) ω))
+    have hz := Submission.cmcsdtd_hasSum_telescoping_eq_zero _ (fun j => K j ω) _ hsum ?_ ?_
+      ((hME1 K).1 hKlim ω)
+    · change T ω - Q₀ ω - S₁ ω = R₁ (exteriorDerivativeTestOn univ (m + 1) ω)
+      linarith
+    · have e := congrArg (fun X => X ω) h0
+      change W 0 ω - V 0 ω - (E' 0 ω - K 0 ω) = H 0 (exteriorDerivativeTestOn univ (m + 1) ω) at e
+      linarith
+    · intro j
+      have e := congrArg (fun X => X ω) (hs j)
+      change W (j + 1) ω - V (j + 1) ω - (E' (j + 1) ω - (K (j + 1) ω - K j ω)) =
+        H (j + 1) (exteriorDerivativeTestOn univ (m + 1) ω) at e
+      linarith
+  -- Step 5: `β_j = V_j(dη) − Y_j(η)` sums to `Q₀(dη) − Σ_j Y_j(η)` (`ME` (ii)(a)); by (I3)–(I4),
+  -- `β₀ = −L′₀(η)` and `β_{j+1} = L′_j(η) − L′_{j+1}(η)`, with `L′_j(η) → 0` (`ME` (i))
+  have hbd : ∀ η : TestFormOn (univ : Set (Euclid P)) m,
+      HasSum (fun j => Y j η) (Q₀.boundary η) := by
+    intro η
+    have hYs := ((hME0 Y).2 hYfin).1 η
+    have hsum := (hQs (exteriorDerivativeTestOn univ m η)).sub hYs.hasSum
+    have hz := Submission.cmcsdtd_hasSum_telescoping_eq_zero _ (fun j => L' j η) _ hsum ?_ ?_
+      ((hME0 L').1 hLlim η)
+    · have hq : Q₀.boundary η = ∑' j, Y j η := by
+        change Q₀ (exteriorDerivativeTestOn univ m η) = _
+        linarith
+      rw [hq]
+      exact hYs.hasSum
+    · have e := congrArg (fun X => X η) hb0
+      change V 0 (exteriorDerivativeTestOn univ m η) = Y 0 η - L' 0 η at e
+      linarith
+    · intro j
+      have e := congrArg (fun X => X η) (hbs j)
+      change V (j + 1) (exteriorDerivativeTestOn univ m η) =
+        Y (j + 1) η - (L' (j + 1) η - L' j η) at e
+      linarith
+  -- Step 6: `M(∂Q₀) ≤ Σ_j M(Y_j) ≤ Σ_j b_j` (`ME` (ii)(b))
+  have hbdm : Q₀.boundary.mass ≤ ∑' j, b j :=
+    (((hME0 Y).2 hYfin).2 Q₀.boundary hbd).trans hYsum
+  -- Step 7: off `K₃` every `Y_j` vanishes (`(VO)`, `spt Y_j ⊆ K₃`), hence so does `∂Q₀`; `(S-i)`
+  have hbdspt : Q₀.boundary.support ⊆ K₃ := by
+    refine hSi K₃ Q₀.boundary hK₃ fun η hη => ?_
+    have hY0 : (fun j => Y j η) = fun _ => (0 : ℝ) := funext fun j =>
+      hVO P m univ (Y j) η (hη.mono_right (hspt j).2.2.1)
+    have h := hbd η
+    rw [hY0] at h
+    exact h.unique hasSum_zero
+  -- Step 8: `spt` of a sum lies in `closure ⋃_j spt ⊆ K_i`, as `K_i` is closed
+  refine ⟨Q₀, R₁, S₁, hQim fun j => (hIM j).1, hRim fun j => (hIM j).2, hid,
+    hQspt.trans (closure_minimal (iUnion_subset fun j => (hspt j).1) hK₁),
+    hRspt.trans (closure_minimal (iUnion_subset fun j => (hspt j).2.1) hK₂), hbdspt,
+    hSspt.trans (closure_minimal (iUnion_subset fun j => (hspt j).2.2.2) hK₃),
+    hQm.trans hVsum, hbdm, hRm.trans hHsum, hSm.trans hEsum⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
