@@ -1631,6 +1631,44 @@ theorem Submission.dimred_mbl_lc_ic_rb_massOn_le_add_incl : ∀ (P n : ℕ) (U V
         rw [ENNReal.ofReal_mul (abs_nonneg c)]
     _ ≤ X.massOn G + ENNReal.ofReal |c| * Y.massOn G := by gcongr
 
+/-- **Weights of a sum on a compact set** (Simon 7.2.4, proof (10)).  Let `U ⊆ ℝᴾ` be open,
+`U' ⊆ U` open and `E ⊆ U'` compact; let `T = τ(R)`, `Z = τ(R_Z)` in `U` and `Y = τ(R_Y)` in
+`ℝᴾ`.  If `Z(ω) = T(ω) + Y(ω)` for every `ω ∈ 𝒟ⁿ(U)` with `spt ω ⊆ U'`, then
+`μ_{R_Z}(E) ≤ μ_R(E) + μ_{R_Y}(E)`.  On every open `G ⊇ E` with `G ⊂⊂ U'` the mixed mass
+triangle inequality (`c = 1`) gives `M_G(Z) ≤ M_G(T) + M_G(Y)`, i.e.
+`μ_{R_Z}(G) ≤ μ_R(G) + μ_{R_Y}(G)`, as masses on open sets are the weights (Simon 6.3.2(3)).
+`μ_R + μ_{R_Y}` is finite on compact subsets of `U'`, so the outer bound on a compact set lets
+`G` shrink to `E`. -/
+theorem Submission.dimred_mbl_lc_ic_rb_measure_le_add_of_compact : ∀ (P n : ℕ) (U U' E : Set (Euclid P)) (T Z : GeometricCurrentOn U n) (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R RZ : IMRep U n) (RY : IMRep (univ : Set (Euclid P)) n), IsOpen U → IsOpen U' → U' ⊆ U → IsCompact E → E ⊆ U' → R.Represents T → RZ.Represents Z → RY.Represents Y → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ U' → Z ω = T ω + Y (testFormOnInclusion (subset_univ U) n ω)) → RZ.measure E ≤ R.measure E + RY.measure E := by
+  intro P n U U' E T Z Y R RZ RY hU hU' hU'U hE hEU' hR hRZ hRY hZ
+  -- Step 1: for open `G`, `M_G(T) = μ_R(G)`, `M_G(Z) = μ_{R_Z}(G)` and `M_G(Y) = μ_{R_Y}(G)`
+  have hMT := (Submission.dor_imrep_massOn_eq_measure_and_support P n U T R hU hR).1
+  have hMZ := (Submission.dor_imrep_massOn_eq_measure_and_support P n U Z RZ hU hRZ).1
+  have hMY :=
+    (Submission.dor_imrep_massOn_eq_measure_and_support P n univ Y RY isOpen_univ hRY).1
+  -- Step 5: the outer bound on `E ⊆ U'` for `μ_{R_Z}` and `ν = μ_R + μ_{R_Y}`, with `c = 0`
+  have key := Submission.lcmp_measure_le_add_of_open_nhds P U' E RZ.measure
+    (R.measure + RY.measure) 0 hU' hE hEU' ?_ ?_
+  · simpa [Measure.add_apply] using key
+  -- Step 2: `ν(K) < ∞` for compact `K ⊆ U'`, since `K ⊆ U` and `K ⊆ ℝᴾ`
+  · intro K hK hKU'
+    rw [Measure.add_apply]
+    exact ENNReal.add_lt_top.2
+      ⟨lt_top_iff_ne_top.2
+          (Submission.rsd_imrep_compact_measure_ne_top P n U R K hK (hKU'.trans hU'U)).2,
+        lt_top_iff_ne_top.2
+          (Submission.rsd_imrep_compact_measure_ne_top P n univ RY K hK (subset_univ K)).2⟩
+  -- Steps 3–4: for open `G ⊇ E` with `G ⊂⊂ U'`, `Z(ω) = T(ω) + 1 · Y(ιω)` when `spt ω ⊆ G`
+  -- (the inclusion of `𝒟ⁿ(U)` into itself is the identity), so the mixed mass triangle gives
+  -- `μ_{R_Z}(G) = M_G(Z) ≤ M_G(T) + M_G(Y) = ν(G) + 0`
+  · intro G hG hEG hGcc
+    have hGU' : G ⊆ U' := subset_closure.trans hGcc.2
+    have htri := Submission.dimred_mbl_lc_ic_rb_massOn_le_add_incl P n U U univ G (subset_refl U)
+      (subset_univ U) Z T Y 1 (fun ω hω => by
+        rw [hZ ω (hω.trans hGU'), one_mul]; rfl)
+    rw [hMZ G hG, hMT G hG, hMY G hG] at htri
+    simpa [Measure.add_apply] using htri
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
