@@ -451,6 +451,293 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Local `C¹` retraction onto `N` (moving blow-ups in the dimension reduction results; it replaces
+the nearest-point projection of Simon 7.2.5(2)), left inverse step: an injective continuous linear
+map `L : ℝᵈ → ℝᴾ` has a continuous linear left inverse `A` with `‖L ∘ A‖ ≤ 1`.  With `Q = L(ℝᵈ)`,
+`p : ℝᴾ → Q` the orthogonal projection and `e : ℝᵈ ≃ Q` induced by `L`, take `A = e⁻¹ ∘ p`; then
+`A ∘ L = id`, and `L ∘ A` is the orthogonal projection onto `Q`, of norm `≤ 1`. -/
+theorem Submission.dimred_mbl_bh_lr_left_inverse_projection : ∀ (P d : ℕ) (L : Euclid d →L[ℝ] Euclid P), Injective L → ∃ A : Euclid P →L[ℝ] Euclid d, A.comp L = ContinuousLinearMap.id ℝ (Euclid d) ∧ ‖L.comp A‖ ≤ 1 := by
+  intro P d L hL
+  -- Step 1: `Q := L(ℝᵈ)` is finite-dimensional, so the orthogonal projection `p : ℝᴾ → Q` exists
+  let Q : Submodule ℝ (Euclid P) := LinearMap.range (L : Euclid d →ₗ[ℝ] Euclid P)
+  -- Step 2: `e : ℝᵈ ≃ Q`, `e w = L w`, is a continuous linear equivalence (finite dimensions)
+  let e : Euclid d ≃L[ℝ] Q :=
+    (LinearEquiv.ofInjective (L : Euclid d →ₗ[ℝ] Euclid P) hL).toContinuousLinearEquiv
+  -- Step 3: `A := e⁻¹ ∘ p`
+  refine ⟨(e.symm : Q →L[ℝ] Euclid d).comp Q.orthogonalProjectionOnto, ?_, ?_⟩
+  · -- Step 4: `p(L w) = e w` since `p` fixes `Q`, so `A(L w) = e⁻¹(e w) = w`
+    ext1 w
+    have hp : Q.orthogonalProjectionOnto (L w) = e w :=
+      Q.orthogonalProjectionOnto_mem_subspace_eq_self (e w)
+    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, hp,
+      ContinuousLinearEquiv.coe_coe, e.symm_apply_apply, ContinuousLinearMap.id_apply]
+  · -- Step 5: `L(A y) = ι(e(e⁻¹(p y))) = ι(p y)`, i.e. `L ∘ A = ι ∘ p = Q.starProjection`
+    have hLA : L.comp ((e.symm : Q →L[ℝ] Euclid d).comp Q.orthogonalProjectionOnto) =
+        Q.starProjection := by
+      ext1 y
+      exact congrArg Subtype.val (e.apply_symm_apply (Q.orthogonalProjectionOnto y))
+    -- Step 6: `‖L ∘ A‖ = ‖Q.starProjection‖ ≤ 1`
+    rw [hLA]
+    exact Q.starProjection_norm_le
+/-- **Local `C¹` inverse** (inverse function theorem, step 2 of the local retraction in the proof
+of Simon 7.3.1).  If `h` is `C¹` on the open set `V ∋ v₀` with `Dh(v₀) = id`, there are open
+`V₀ ⊆ V` with `v₀ ∈ V₀` and `O`, and `k`, `C¹` on `O`, such that `h : V₀ → O` and `k : O → V₀` are
+mutually inverse, and `Dk(h(v₀)) = id`.  The inverse function theorem gives a partial
+homeomorphism `e` with `⇑e = h`, source `S ∋ v₀` and target `T`; on the open set
+`G = {v ∈ V : ‖Dh(v) − 1‖ < 1}` (which contains `v₀`) `Dh(v)` is invertible (Neumann series).  Take
+`V₀ = S ∩ G`, `O = T ∩ e.symm⁻¹(V₀)`, `k = e.symm`; the `C¹` inverse rule at each `u ∈ O` makes
+`k` `C¹` on `O`, and `k` has derivative `id⁻¹ = id` at `h(v₀)`. -/
+theorem Submission.dtc_bc_lr_local_inverse : ∀ (d : ℕ) (h : Euclid d → Euclid d) (V : Set (Euclid d)) (v₀ : Euclid d), IsOpen V → v₀ ∈ V → ContDiffOn ℝ 1 h V → fderiv ℝ h v₀ = ContinuousLinearMap.id ℝ (Euclid d) → ∃ (V₀ O : Set (Euclid d)) (k : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ V₀ ⊆ V ∧ v₀ ∈ V₀ ∧ MapsTo h V₀ O ∧ MapsTo k O V₀ ∧ (∀ v ∈ V₀, k (h v) = v) ∧ (∀ u ∈ O, h (k u) = u) ∧ ContDiffOn ℝ 1 k O ∧ fderiv ℝ k (h v₀) = ContinuousLinearMap.id ℝ (Euclid d) := by
+  intro d h V v₀ hV hv₀ hh hd
+  -- Step 1: `h` is `C¹` at every point of `V`, `Dh` is continuous on `V`, and `h` has strict
+  -- derivative `id` at `v₀`
+  have hca : ∀ v ∈ V, ContDiffAt ℝ 1 h v := fun v hv => hh.contDiffAt (hV.mem_nhds hv)
+  have hcont : ContinuousOn (fderiv ℝ h) V := hh.continuousOn_fderiv_of_isOpen hV le_rfl
+  have hfd : HasFDerivAt h
+      ((ContinuousLinearEquiv.refl ℝ (Euclid d) : Euclid d ≃L[ℝ] Euclid d) :
+        Euclid d →L[ℝ] Euclid d) v₀ := by
+    rw [ContinuousLinearEquiv.coe_refl, ← hd]
+    exact ((hca v₀ hv₀).differentiableAt one_ne_zero).hasFDerivAt
+  have hs := (hca v₀ hv₀).hasStrictFDerivAt' hfd one_ne_zero
+  -- Step 2: the inverse function theorem gives a partial homeomorphism `e` with `⇑e = h`, and
+  -- its inverse has derivative `id⁻¹ = id` at `h(v₀)`
+  obtain ⟨e, he⟩ : ∃ e : OpenPartialHomeomorph (Euclid d) (Euclid d),
+      e = hs.toOpenPartialHomeomorph h := ⟨_, rfl⟩
+  have hecoe : (e : Euclid d → Euclid d) = h := by
+    rw [he]; exact hs.toOpenPartialHomeomorph_coe
+  have hv₀e : v₀ ∈ e.source := by
+    rw [he]; exact hs.mem_toOpenPartialHomeomorph_source
+  have hk : HasFDerivAt (e.symm : Euclid d → Euclid d) (ContinuousLinearMap.id ℝ (Euclid d))
+      (h v₀) := by
+    have h7 := hs.to_localInverse
+    rw [hs.localInverse_def, ← he, ContinuousLinearEquiv.refl_symm,
+      ContinuousLinearEquiv.coe_refl] at h7
+    exact h7.hasFDerivAt
+  -- Step 3: `G = {v ∈ V : ‖Dh(v) − 1‖ < 1}` is open, contains `v₀`, and `Dh(v)` is invertible
+  -- for `v ∈ G`
+  obtain ⟨G, hG⟩ : ∃ G : Set (Euclid d), G = V ∩ fderiv ℝ h ⁻¹' ball 1 1 := ⟨_, rfl⟩
+  have hGo : IsOpen G := hG ▸ hcont.isOpen_inter_preimage hV isOpen_ball
+  have hGV : G ⊆ V := hG ▸ inter_subset_left
+  have hv₀G : v₀ ∈ G := by
+    rw [hG]
+    refine ⟨hv₀, ?_⟩
+    show fderiv ℝ h v₀ ∈ ball 1 1
+    rw [hd, ← ContinuousLinearMap.one_def]
+    exact mem_ball_self one_pos
+  have hGu : ∀ v ∈ G, ∃ L : Euclid d ≃L[ℝ] Euclid d,
+      (L : Euclid d →L[ℝ] Euclid d) = fderiv ℝ h v := by
+    intro v hv
+    rw [hG] at hv
+    have hu : IsUnit (fderiv ℝ h v) := by
+      by_contra hnu
+      exact nonunits.subset_compl_ball (mem_nonunits_iff.mpr hnu) hv.2
+    obtain ⟨u, hu⟩ := hu
+    refine ⟨ContinuousLinearEquiv.unitsEquiv ℝ (Euclid d) u, ?_⟩
+    ext x
+    simp [ContinuousLinearEquiv.unitsEquiv_apply, ← hu]
+  -- Step 4: `V₀ = S ∩ G`, `O = T ∩ e.symm⁻¹(V₀)`, `k = e.symm`
+  refine ⟨e.source ∩ G, e.target ∩ e.symm ⁻¹' (e.source ∩ G), e.symm,
+    e.open_source.inter hGo, e.isOpen_inter_preimage_symm (e.open_source.inter hGo),
+    fun v hv => hGV hv.2, ⟨hv₀e, hv₀G⟩, ?_, fun u hu => hu.2, fun v hv => ?_, fun u hu => ?_,
+    ?_, ?_⟩
+  -- Step 5: mapping and inverse identities
+  · intro v hv
+    have h1 := e.map_source hv.1
+    have h2 := e.left_inv hv.1
+    rw [hecoe] at h1 h2
+    exact ⟨h1, by rw [mem_preimage, h2]; exact hv⟩
+  · have h2 := e.left_inv hv.1
+    rwa [hecoe] at h2
+  · have h2 := e.right_inv hu.1
+    rwa [hecoe] at h2
+  -- Step 6: `k` is `C¹` on `O`, by the `C¹` inverse rule at each `u ∈ O`
+  · intro u hu
+    obtain ⟨L, hL⟩ := hGu _ hu.2.2
+    have ha : e.symm u ∈ V := hGV hu.2.2
+    have hfa : HasFDerivAt (e : Euclid d → Euclid d) (L : Euclid d →L[ℝ] Euclid d)
+        (e.symm u) := by
+      rw [hL, hecoe]
+      exact ((hca _ ha).differentiableAt one_ne_zero).hasFDerivAt
+    have hca' : ContDiffAt ℝ 1 (e : Euclid d → Euclid d) (e.symm u) := by
+      rw [hecoe]; exact hca _ ha
+    exact (e.contDiffAt_symm hu.1 hfa hca').contDiffWithinAt
+  -- Step 7: `Dk(h(v₀)) = id`
+  · exact hk.fderiv
+/-- **Simon 7.3.1** (proof of (2), local retraction onto `N`, chart step): if `W` is open, `ψ` is
+continuous and injective on `V`, `ψ(V) = W ∩ N` and `ψ` is proper over `W` (`V ∩ ψ⁻¹(K)` is
+compact for compact `K ⊆ W`), then `N ∩ B_ρ(ψ(v₀)) ⊆ ψ(V₀)` for some `ρ > 0`, whenever `V₀ ⊆ V`
+is open and `v₀ ∈ V₀`.  Otherwise there are `yᵢ = ψ(fᵢ) ∈ N` with `fᵢ ∈ V \ V₀` and
+`yᵢ → ψ(v₀)`; the `fᵢ` lie in the compact set `V ∩ ψ⁻¹({ψ(v₀)} ∪ {yᵢ})`, so a subsequence
+converges to some `a ∈ V \ V₀` with `ψ(a) = ψ(v₀)`, contradicting injectivity. -/
+theorem Submission.dtc_bc_lr_chart_image_nhds : ∀ (P d : ℕ) (N W : Set (Euclid P)) (V V₀ : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen W → ContinuousOn ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → IsOpen V₀ → V₀ ⊆ V → v₀ ∈ V₀ → ∃ ρ : ℝ, 0 < ρ ∧ N ∩ ball (ψ v₀) ρ ⊆ ψ '' V₀ := by
+  intro P d N W V V₀ ψ v₀ hW hψc hψi hψV hprop hV₀ hV₀V hv₀
+  -- Step 1: `x := ψ v₀ ∈ W` and `B_{r_W}(x) ⊆ W`
+  have hv₀V : v₀ ∈ V := hV₀V hv₀
+  have hxW : ψ v₀ ∈ W := (hψV ▸ mem_image_of_mem ψ hv₀V : ψ v₀ ∈ W ∩ N).1
+  obtain ⟨rW, hrW, hballW⟩ := Metric.isOpen_iff.1 hW _ hxW
+  -- Step 2: otherwise pick `yᵢ ∈ N ∩ B_{min(r_W, 1/(i+1))}(x) \ ψ(V₀)`, so `yᵢ ∈ W` and `yᵢ → x`
+  by_contra hcon
+  have hseq : ∀ i : ℕ, ∃ y, y ∈ N ∧ dist y (ψ v₀) < min rW (1 / ((i : ℝ) + 1)) ∧ y ∉ ψ '' V₀ := by
+    intro i
+    obtain ⟨y, ⟨hyN, hyb⟩, hy⟩ := not_subset.1 fun h =>
+      hcon ⟨min rW (1 / ((i : ℝ) + 1)), lt_min hrW (by positivity), h⟩
+    exact ⟨y, hyN, hyb, hy⟩
+  choose y hyN hyd hyV₀ using hseq
+  have hyW : ∀ i, y i ∈ W := fun i => hballW ((hyd i).trans_le (min_le_left _ _))
+  have hylim : Tendsto y atTop (𝓝 (ψ v₀)) :=
+    tendsto_iff_dist_tendsto_zero.2 (squeeze_zero (fun i => dist_nonneg)
+      (fun i => ((hyd i).trans_le (min_le_right _ _)).le) tendsto_one_div_add_atTop_nhds_zero_nat)
+  -- Step 3: `yᵢ = ψ(fᵢ)` with `fᵢ ∈ V \ V₀`
+  have hf : ∀ i, ∃ f, f ∈ V ∧ ψ f = y i := fun i => (hψV.symm ▸ ⟨hyW i, hyN i⟩ : y i ∈ ψ '' V)
+  choose f hfV hfy using hf
+  have hfV₀ : ∀ i, f i ∉ V₀ := fun i hi => hyV₀ i ⟨f i, hi, hfy i⟩
+  -- Step 4: `K := {x} ∪ {yᵢ}` is a compact subset of `W`, so `V ∩ ψ⁻¹(K) ∋ fᵢ` is compact
+  have hKW : insert (ψ v₀) (range y) ⊆ W := by
+    rintro z (rfl | ⟨i, rfl⟩)
+    exacts [hxW, hyW i]
+  have hfK : ∀ i, f i ∈ V ∩ ψ ⁻¹' insert (ψ v₀) (range y) := fun i =>
+    ⟨hfV i, Or.inr ⟨i, (hfy i).symm⟩⟩
+  -- Step 5: a subsequence `f_{φ(i)} → a ∈ V`
+  obtain ⟨a, ⟨haV, -⟩, φ, hφ, hfa⟩ :=
+    (hprop _ hKW hylim.isCompact_insert_range).tendsto_subseq hfK
+  -- Step 6: `a ∉ V₀`, as `V₀ᶜ` is closed
+  have haV₀ : a ∉ V₀ :=
+    hV₀.isClosed_compl.mem_of_tendsto hfa (Eventually.of_forall fun i => hfV₀ (φ i))
+  -- Step 7: `ψ(a) = x` by continuity of `ψ` on `V` and uniqueness of limits
+  have h₁ : Tendsto (ψ ∘ (f ∘ φ)) atTop (𝓝 (ψ a)) :=
+    (hψc a haV).tendsto.comp
+      (tendsto_nhdsWithin_iff.2 ⟨hfa, Eventually.of_forall fun i => hfV (φ i)⟩)
+  have h₂ : Tendsto (ψ ∘ (f ∘ φ)) atTop (𝓝 (ψ v₀)) := by
+    have hcomp : ψ ∘ (f ∘ φ) = y ∘ φ := funext fun i => hfy (φ i)
+    rw [hcomp]
+    exact hylim.comp hφ.tendsto_atTop
+  -- Step 8: injectivity gives `a = v₀ ∈ V₀`, a contradiction
+  exact haV₀ (hψi haV hv₀V (tendsto_nhds_unique h₁ h₂) ▸ hv₀)
+/-- Local `C¹` retraction onto `N` (proof of Simon 7.3.1), Lipschitz bound near a point: if `f` is
+`C¹` on `B_δ(x)` and `‖Df(x)‖ ≤ c`, then for every `η > 0`, `f` is `(c + η)`-Lipschitz on some
+`B_s(x)`, `0 < s ≤ δ`.  `Df` is continuous at `x`, so `‖Df(y)‖ ≤ ‖Df(x)‖ + η ≤ c + η` on a small
+ball `B_s(x)`; the mean value inequality on the convex ball `B_s(x)` gives the bound. -/
+theorem Submission.dtc_bc_lr_lipschitz_near_point : ∀ (P : ℕ) (f : Euclid P → Euclid P) (x : Euclid P) (δ c : ℝ), 0 < δ → ContDiffOn ℝ 1 f (ball x δ) → ‖fderiv ℝ f x‖ ≤ c → ∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖f y - f z‖ ≤ (c + η) * ‖y - z‖ := by
+  intro P f x δ c hδ hf hc η hη
+  -- `f` is differentiable at every point of the open ball `B_δ(x)`, and `Df` is continuous there
+  have hdiff : ∀ y ∈ ball x δ, DifferentiableAt ℝ f y := fun y hy =>
+    (hf.differentiableOn one_ne_zero y hy).differentiableAt (isOpen_ball.mem_nhds hy)
+  have hcont : ContinuousOn (fderiv ℝ f) (ball x δ) :=
+    hf.continuousOn_fderiv_of_isOpen isOpen_ball le_rfl
+  -- continuity of `Df` at `x`: `‖Df(y) - Df(x)‖ < η` for `|y - x| < s₁`; take `s = min s₁ δ`
+  obtain ⟨s₁, hs₁, hDf⟩ := Metric.continuousAt_iff.1
+    (hcont.continuousAt (isOpen_ball.mem_nhds (mem_ball_self hδ))) η hη
+  refine ⟨min s₁ δ, lt_min hs₁ hδ, min_le_right _ _, ?_⟩
+  -- `‖Df(y)‖ ≤ ‖Df(x)‖ + ‖Df(y) - Df(x)‖ ≤ c + η` on `B_s(x)`
+  have hbound : ∀ y ∈ ball x (min s₁ δ), ‖fderiv ℝ f y‖ ≤ c + η := by
+    intro y hy
+    have hy₁ : ‖fderiv ℝ f y - fderiv ℝ f x‖ < η := by
+      rw [← dist_eq_norm]
+      exact hDf ((mem_ball.1 hy).trans_le (min_le_left _ _))
+    exact (norm_le_norm_add_norm_sub' _ _).trans (add_le_add hc hy₁.le)
+  -- mean value inequality on the convex ball `B_s(x)`
+  intro y hy z hz
+  exact (convex_ball x (min s₁ δ)).norm_image_sub_le_of_norm_fderiv_le
+    (fun w hw => hdiff w (ball_subset_ball (min_le_right _ _) hw)) hbound hz hy
+/-- **Local `C¹` retraction onto `N`** (moving blow-ups in the dimension reduction results; it
+replaces the nearest-point projection of Simon 7.2.5(2)): near `x ∈ N` there is a `C¹` map `π`
+of `B_δ(x)` into `N` fixing `N ∩ B_δ(x)` that is `(1 + η)`-Lipschitz on small balls `B_s(x)` for
+every `η > 0`.  Take a chart `ψ` with `ψ(v₀) = x`, `L = Dψ(v₀)` and a left inverse `A` of `L`
+with `‖L ∘ A‖ ≤ 1`; invert `h = A(ψ − x)` near `v₀` by `k`, `C¹` on `O ∋ 0`, and put
+`π(y) = ψ(k(A(y − x)))`.  Properness of the chart gives `N ∩ B_ρ(x) ⊆ ψ(V₀)`, so `π` fixes
+`N ∩ B_δ(x)`, and `Dπ(x) = L ∘ A` has norm `≤ 1`. -/
+theorem Submission.dimred_mbl_bh_local_retraction : ∀ (P d : ℕ) (N : Set (Euclid P)) (x : Euclid P), IsEmbeddedSubmanifold 2 d N → x ∈ N → ∃ (δ : ℝ) (π : Euclid P → Euclid P), 0 < δ ∧ ContDiffOn ℝ 1 π (ball x δ) ∧ MapsTo π (ball x δ) N ∧ (∀ y ∈ N ∩ ball x δ, π y = y) ∧ ∀ η : ℝ, 0 < η → ∃ s : ℝ, 0 < s ∧ s ≤ δ ∧ ∀ y ∈ ball x s, ∀ z ∈ ball x s, ‖π y - π z‖ ≤ (1 + η) * ‖y - z‖ := by
+  intro P d N x hN hx
+  -- Step 1: a chart `ψ` at `x = ψ(v₀)`; `L = Dψ(v₀)` has a left inverse `A` with `‖L ∘ A‖ ≤ 1`
+  obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hψi, hψV, hprop, hDψ⟩ := hN x hx
+  have hxV : x ∈ ψ '' V := by
+    rw [hψV]
+    exact ⟨hxW, hx⟩
+  obtain ⟨v₀, hv₀V, hψv₀⟩ := hxV
+  have hψ1 : ContDiffOn ℝ 1 ψ V := hψ.of_le (by norm_num)
+  have hψd : HasFDerivAt ψ (fderiv ℝ ψ v₀) v₀ :=
+    ((hψ1.contDiffAt (hV.mem_nhds hv₀V)).differentiableAt one_ne_zero).hasFDerivAt
+  obtain ⟨A, hAL, hLA⟩ :=
+    Submission.dimred_mbl_bh_lr_left_inverse_projection P d (fderiv ℝ ψ v₀) (hDψ v₀ hv₀V)
+  -- Step 2: `h(v) = A(ψ(v) − x)` is `C¹` on `V` with `Dh(v₀) = A ∘ L = id`; it has a `C¹`
+  -- inverse `k : O → V₀` near `v₀`, and `h(v₀) = 0`, `k(0) = v₀`
+  obtain ⟨h, hh_def⟩ : ∃ h : Euclid d → Euclid d, h = fun v => A (ψ v - x) := ⟨_, rfl⟩
+  have hhC : ContDiffOn ℝ 1 h V := by
+    rw [hh_def]
+    exact A.contDiff.comp_contDiffOn (hψ1.sub contDiffOn_const)
+  have hDh : fderiv ℝ h v₀ = ContinuousLinearMap.id ℝ (Euclid d) := by
+    rw [← hAL, hh_def]
+    exact (A.hasFDerivAt.comp v₀ (hψd.sub_const x)).fderiv
+  obtain ⟨V₀, O, k, hV₀, hO, hV₀V, hv₀V₀, hhV₀, hkO, hkh, -, hk, hDk⟩ :=
+    Submission.dtc_bc_lr_local_inverse d h V v₀ hV hv₀V hhC hDh
+  have hhv₀ : h v₀ = 0 := by simp only [hh_def, hψv₀, sub_self, map_zero]
+  have h0O : (0 : Euclid d) ∈ O := by
+    rw [← hhv₀]
+    exact hhV₀ hv₀V₀
+  have hk0 : k 0 = v₀ := by
+    rw [← hhv₀]
+    exact hkh v₀ hv₀V₀
+  -- Step 3: properness of the chart: `N ∩ B_ρ(x) ⊆ ψ(V₀)`
+  obtain ⟨ρ, hρ, hNρ⟩ := Submission.dtc_bc_lr_chart_image_nhds P d N W V V₀ ψ v₀ hW
+    hψ1.continuousOn hψi hψV hprop hV₀ hV₀V hv₀V₀
+  rw [hψv₀] at hNρ
+  -- Step 4: `B_{r₀}(0) ⊆ O` and `δ = min(ρ, r₀/(‖A‖ + 1))`, so `A(y − x) ∈ O` for `y ∈ B_δ(x)`
+  obtain ⟨r₀, hr₀, hr₀O⟩ := Metric.isOpen_iff.1 hO 0 h0O
+  have hA1 : 0 < ‖A‖ + 1 := by positivity
+  obtain ⟨δ, hδ_def⟩ : ∃ δ : ℝ, δ = min ρ (r₀ / (‖A‖ + 1)) := ⟨_, rfl⟩
+  have hδ : 0 < δ := by
+    rw [hδ_def]
+    exact lt_min hρ (div_pos hr₀ hA1)
+  have hδρ : δ ≤ ρ := by
+    rw [hδ_def]
+    exact min_le_left _ _
+  have hδr : (‖A‖ + 1) * δ ≤ r₀ := by
+    calc (‖A‖ + 1) * δ ≤ (‖A‖ + 1) * (r₀ / (‖A‖ + 1)) := by
+          rw [hδ_def]
+          exact mul_le_mul_of_nonneg_left (min_le_right _ _) hA1.le
+      _ = r₀ := mul_div_cancel₀ r₀ hA1.ne'
+  have haO : MapsTo (fun y => A (y - x)) (ball x δ) O := by
+    intro y hy
+    apply hr₀O
+    rw [mem_ball, dist_zero_right]
+    rw [mem_ball, dist_eq_norm] at hy
+    calc ‖A (y - x)‖ ≤ ‖A‖ * ‖y - x‖ := A.le_opNorm _
+      _ ≤ ‖A‖ * δ := mul_le_mul_of_nonneg_left hy.le (norm_nonneg A)
+      _ < (‖A‖ + 1) * δ := by linarith
+      _ ≤ r₀ := hδr
+  -- Step 5: `π(y) = ψ(k(A(y − x)))` is `C¹` on `B_δ(x)`, maps `B_δ(x)` into `N` and fixes
+  -- `N ∩ B_δ(x)`
+  have hπC : ContDiffOn ℝ 1 (fun y => ψ (k (A (y - x)))) (ball x δ) :=
+    (hψ1.comp hk fun u hu => hV₀V (hkO hu)).comp
+      (A.contDiff.comp (contDiff_id.sub contDiff_const)).contDiffOn haO
+  have hπN : MapsTo (fun y => ψ (k (A (y - x)))) (ball x δ) N := by
+    intro y hy
+    have hy' : ψ (k (A (y - x))) ∈ ψ '' V := mem_image_of_mem ψ (hV₀V (hkO (haO hy)))
+    rw [hψV] at hy'
+    exact hy'.2
+  have hπfix : ∀ y ∈ N ∩ ball x δ, ψ (k (A (y - x))) = y := by
+    rintro y ⟨hyN, hyδ⟩
+    obtain ⟨v, hv, rfl⟩ := hNρ ⟨hyN, ball_subset_ball hδρ hyδ⟩
+    have hAv : A (ψ v - x) = h v := by rw [hh_def]
+    rw [hAv, hkh v hv]
+  -- Step 6: `Dπ(x) = L ∘ A` by the chain rule (`A(x − x) = 0`, `Dk(0) = id`, `k(0) = v₀`), so
+  -- `‖Dπ(x)‖ ≤ 1`, and `π` is `(1 + η)`-Lipschitz near `x`
+  have hkd : HasFDerivAt k (ContinuousLinearMap.id ℝ (Euclid d)) (A (x - x)) := by
+    have h1 : HasFDerivAt k (fderiv ℝ k (h v₀)) (h v₀) :=
+      ((hk.contDiffAt (hO.mem_nhds (hhV₀ hv₀V₀))).differentiableAt one_ne_zero).hasFDerivAt
+    rwa [hDk, hhv₀, ← map_zero A, ← sub_self x] at h1
+  have hψd' : HasFDerivAt ψ (fderiv ℝ ψ v₀) (k (A (x - x))) := by
+    rwa [sub_self, map_zero, hk0]
+  have hπd : HasFDerivAt (fun y => ψ (k (A (y - x))))
+      ((fderiv ℝ ψ v₀).comp ((ContinuousLinearMap.id ℝ (Euclid d)).comp
+        (A.comp (ContinuousLinearMap.id ℝ (Euclid P))))) x :=
+    hψd'.comp x (hkd.comp x (A.hasFDerivAt.comp x ((hasFDerivAt_id x).sub_const x)))
+  have hDπ : ‖fderiv ℝ (fun y => ψ (k (A (y - x)))) x‖ ≤ 1 := by
+    rw [hπd.fderiv, ContinuousLinearMap.id_comp, ContinuousLinearMap.comp_id]
+    exact hLA
+  exact ⟨δ, fun y => ψ (k (A (y - x))), hδ, hπC, hπN, hπfix, fun η hη =>
+    Submission.dtc_bc_lr_lipschitz_near_point P _ x δ 1 hδ hπC hDπ η hη⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

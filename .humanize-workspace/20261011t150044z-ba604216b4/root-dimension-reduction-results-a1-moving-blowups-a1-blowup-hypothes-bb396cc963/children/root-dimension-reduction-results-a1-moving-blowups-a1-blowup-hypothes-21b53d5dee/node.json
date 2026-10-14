@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.blowup_hypotheses-a1.local_retraction-a1.left_inverse_projection-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.blowup_hypotheses-a1.local_retraction-a1",
+  "depth": 5,
+  "title": "Left inverse A of an injective linear map L with ‖L∘A‖ ≤ 1",
+  "statement": "Let P, d ∈ ℕ and let L : ℝ^d → ℝ^P be an injective continuous linear map (ℝ^m = Euclid m). Then there is a continuous linear map A : ℝ^P → ℝ^d such that A∘L = id_{ℝ^d} and the operator norm of L∘A : ℝ^P → ℝ^P satisfies ‖L∘A‖ ≤ 1.",
+  "lean_statement": "∀ (P d : ℕ) (L : Euclid d →L[ℝ] Euclid P), Injective L → ∃ A : Euclid P →L[ℝ] Euclid d, A.comp L = ContinuousLinearMap.id ℝ (Euclid d) ∧ ‖L.comp A‖ ≤ 1",
+  "lean_name": "dimred_mbl_bh_lr_left_inverse_projection",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-blowup-hypothes-21b53d5dee-a1"
+}
