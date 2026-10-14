@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bfe61410bd3400c2fc764f1240528006daa742c9780009c863da22c81153d8b3",
+  "git_delta": {
+    "base_commit": "05300780f4f2eadfdd72e09bfb2392c87db9f8c3",
+    "candidate_commit": "069df27aa8e2f879e2c21754f982b41497308dd7",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_pc_cm_vector_density_add",
+    "diff_sha256": "61f46e8491e39ff099f6af935bc8ab561ab7b0a2c8b50e1971a01fdc51dba272",
+    "source_sha256": "e69375771440bf8461bd1c60ff6395023162626d4ef2becc52ddf335460a1da6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_pc_cm_vector_density_add",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (T : GeometricCurrentOn U n), IsOpen U → R.Represents T → (∀ ω : TestFormOn U n, T ω = R₁.action (ω : DifferentialForm (Euclid P) n) + R₂.action (ω : DifferentialForm (Euclid P) n)) → ∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
