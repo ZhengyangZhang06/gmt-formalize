@@ -796,4 +796,91 @@ theorem Submission.idtp_cse_ah_countable_separating_tests : ∀ c d : ℝ, ∃ F
     exact (setIntegral_congr_fun measurableSet_Ioo fun α hα =>
       indicator_of_mem (Ioo_subset_Ioo hcp.le hqd.le hα) w).symm
 
+/-- **Slices are a.e. constant** (one-variable du Bois-Reymond lemma, with a parameter).  Let
+`I = (a, b)`, `J = (c, d)` with `c < d`, and let `H` be integrable on `I × J` with
+`∫ ψ′(α) l(t) H(t, α) = 0` for all `C¹` functions `ψ`, `l` supported in `J`, `I`.  Fix a normalized
+`C¹` bump `χ` and a countable separating family `F n` of `C¹` tests in `J`.  Then
+`g n = F n − (∫ F n) χ` has mean zero, so `g n = ψ n′` with `ψ n ∈ C¹` supported in `J`, and the
+hypothesis gives `∫_J g n H(t, ·) = 0` for a.e. `t ∈ I`.  By Fubini the slice `H(t, ·)` is
+integrable on `J` for a.e. `t ∈ I`.  For such `t`, `w = H(t, ·) − ∫_J χ H(t, ·)` is integrable on
+`J` and satisfies `∫ F n w = 0` for all `n`, so `w = 0` a.e. on `J`. -/
+theorem Submission.idtp_cse_ah_slice_ae_const : ∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ), c < d → IntegrableOn H (Ioo a b ×ˢ Ioo c d) → (∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo c d → tsupport l ⊆ Ioo a b → ∫ p : ℝ × ℝ, deriv ψ p.2 * l p.1 * H p = 0) → ∀ᵐ t, t ∈ Ioo a b → ∃ k : ℝ, ∀ᵐ α, α ∈ Ioo c d → H (t, α) = k := by
+  intro a b c d H hcd hH hweak
+  -- Step 1: the normalized bump `χ` and the separating family `F n`, all supported in `J`; they
+  -- are continuous with compact support, hence integrable, bounded and zero off `J`
+  obtain ⟨χ, hχ_diff, hχ_supp, hχ_int⟩ := Submission.idtp_cse_ah_normalized_bump c d hcd
+  obtain ⟨F, hF_diff, hF_supp, hF_sep⟩ := Submission.idtp_cse_ah_countable_separating_tests c d
+  have hJ_cpt : ∀ f : ℝ → ℝ, tsupport f ⊆ Ioo c d → HasCompactSupport f := fun f hf =>
+    isCompact_Icc.of_isClosed_subset (isClosed_tsupport f) (hf.trans Ioo_subset_Icc_self)
+  have hJ_zero : ∀ f : ℝ → ℝ, tsupport f ⊆ Ioo c d → ∀ α, α ∉ Ioo c d → f α = 0 :=
+    fun f hf α hα => image_eq_zero_of_notMem_tsupport fun h => hα (hf h)
+  have hχ_integrable : Integrable χ :=
+    hχ_diff.continuous.integrable_of_hasCompactSupport (hJ_cpt χ hχ_supp)
+  have hF_integrable : ∀ n, Integrable (F n) := fun n =>
+    (hF_diff n).continuous.integrable_of_hasCompactSupport (hJ_cpt (F n) (hF_supp n))
+  obtain ⟨Cχ, hCχ⟩ := hχ_diff.continuous.bounded_above_of_compact_support (hJ_cpt χ hχ_supp)
+  choose CF hCF using fun n =>
+    (hF_diff n).continuous.bounded_above_of_compact_support (hJ_cpt (F n) (hF_supp n))
+  -- Step 2: `g n = F n - (∫ F n) χ` is continuous, supported in `J` and of mean zero, so it is
+  -- the derivative of some `ψ n ∈ C¹` supported in `J`
+  obtain ⟨g, hg⟩ : ∃ g : ℕ → ℝ → ℝ, ∀ n, g n = fun α => F n α - (∫ β, F n β) * χ α :=
+    ⟨_, fun _ => rfl⟩
+  have hg_cont : ∀ n, Continuous (g n) := fun n => by
+    rw [hg n]
+    exact (hF_diff n).continuous.sub (continuous_const.mul hχ_diff.continuous)
+  have hg_supp : ∀ n, tsupport (g n) ⊆ Ioo c d := fun n => by
+    rw [hg n]
+    exact (tsupport_sub _ _).trans (union_subset (hF_supp n)
+      ((tsupport_mul_subset_right (f := fun _ => ∫ β, F n β) (g := χ)).trans hχ_supp))
+  have hg_mean : ∀ n, ∫ α, g n α = 0 := fun n => by
+    rw [hg n, integral_sub (hF_integrable n) (hχ_integrable.const_mul _), integral_const_mul, hχ_int,
+      mul_one, sub_self]
+  choose ψ hψ_diff hψ_supp hψ_deriv using fun n =>
+    Submission.idtp_cse_ah_antiderivative_test c d (g n) (hg_cont n) (hg_supp n) (hg_mean n)
+  -- Step 3: the hypothesis with `ψ n` gives `∫_J g n H(t, ·) = 0` for a.e. `t ∈ I`
+  have hslice : ∀ n, ∀ᵐ t, t ∈ Ioo a b → ∫ α in Ioo c d, g n α * H (t, α) = 0 := fun n =>
+    Submission.idtp_cse_ah_slice_integral_ae_zero a b c d H (g n) hH (hg_cont n) (hg_supp n)
+      fun l hl_diff hl_supp => by
+        have h := hweak (ψ n) l (hψ_diff n) hl_diff (hψ_supp n) hl_supp
+        rwa [hψ_deriv n] at h
+  -- Step 4: Fubini; for a.e. `t ∈ I` the slice `H(t, ·)` is integrable on `J`
+  have hH' : Integrable H ((volume.restrict (Ioo a b)).prod (volume.restrict (Ioo c d))) := by
+    rw [Measure.prod_restrict, ← Measure.volume_eq_prod]
+    exact hH
+  have hslice_int : ∀ᵐ t, t ∈ Ioo a b → IntegrableOn (fun α => H (t, α)) (Ioo c d) :=
+    (ae_restrict_iff' measurableSet_Ioo).mp hH'.prod_right_ae
+  -- Step 5: intersect the countably many full-measure sets and fix a good `t`
+  filter_upwards [ae_all_iff.mpr hslice, hslice_int] with t ht hti htI
+  have hHt : Integrable (fun α => H (t, α)) (volume.restrict (Ioo c d)) := hti htI
+  -- Step 6: `w = H(t, ·) - k` with `k = ∫_J χ H(t, ·)` is integrable on `J` and `∫ F n w = 0`
+  set k : ℝ := ∫ α in Ioo c d, χ α * H (t, α)
+  refine ⟨k, ?_⟩
+  have hw_int : IntegrableOn (fun α => H (t, α) - k) (Ioo c d) :=
+    hHt.sub (integrableOn_const measure_Ioo_lt_top.ne)
+  have hFH_int : ∀ n, Integrable (fun α => F n α * H (t, α)) (volume.restrict (Ioo c d)) :=
+    fun n => hHt.bdd_mul (hF_diff n).continuous.aestronglyMeasurable
+      (Eventually.of_forall (hCF n))
+  have hχH_int : Integrable (fun α => χ α * H (t, α)) (volume.restrict (Ioo c d)) :=
+    hHt.bdd_mul hχ_diff.continuous.aestronglyMeasurable (Eventually.of_forall hCχ)
+  have hw_zero : ∀ n, ∫ α, F n α * (H (t, α) - k) = 0 := by
+    intro n
+    have h₁ : ∫ α, F n α * (H (t, α) - k) = ∫ α in Ioo c d, F n α * (H (t, α) - k) :=
+      (setIntegral_eq_integral_of_forall_compl_eq_zero fun α hα => by
+        rw [hJ_zero (F n) (hF_supp n) α hα, zero_mul]).symm
+    have h₂ : ∫ α in Ioo c d, F n α * (H (t, α) - k) =
+        (∫ α in Ioo c d, F n α * H (t, α)) - (∫ α in Ioo c d, F n α) * k := by
+      simp_rw [mul_sub]
+      rw [integral_sub (hFH_int n) ((hF_integrable n).integrableOn.mul_const k), integral_mul_const]
+    have h₃ : ∫ α in Ioo c d, g n α * H (t, α) =
+        (∫ α in Ioo c d, F n α * H (t, α)) - (∫ β, F n β) * k := by
+      simp_rw [hg n, sub_mul, mul_assoc]
+      rw [integral_sub (hFH_int n) (hχH_int.const_mul _), integral_const_mul]
+    have h₄ : ∫ α in Ioo c d, F n α = ∫ α, F n α :=
+      setIntegral_eq_integral_of_forall_compl_eq_zero (hJ_zero (F n) (hF_supp n))
+    rw [h₁, h₂, h₄, ← h₃]
+    exact ht n htI
+  -- Step 7: the separating property of `F n` gives `w = 0` a.e. on `J`
+  filter_upwards [hF_sep (fun α => H (t, α) - k) hw_int hw_zero] with α hα hαJ
+  exact sub_eq_zero.mp (hα hαJ)
+
 end GMT.Ch07
