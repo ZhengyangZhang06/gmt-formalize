@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6582f55e8e127fe3f821b4263a71e0ba50f9cb2817436f827cf63cf9a91c8271",
+  "git_delta": {
+    "base_commit": "7f6c05deea98f120cd5ac84ae59947f4e7b643b1",
+    "candidate_commit": "1f461b8f68aba0ac33f232ea204ce869f3a89438",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cr_nonflat_closed",
+    "diff_sha256": "b36564047b620b036888f21a1e1b4ecb16077e6417be8bd9789b32cc8694ac9f",
+    "source_sha256": "423fe952bb90c9408a1ce6bfdb43b05288c4c8be279aa50a94f7732072702c9f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cr_nonflat_closed",
+      "statement": "∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)), 0 < β → IsClosed S → IsOpen Dset → IsClosed (((S ∩ Dset) \\ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ Dsetᶜ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
