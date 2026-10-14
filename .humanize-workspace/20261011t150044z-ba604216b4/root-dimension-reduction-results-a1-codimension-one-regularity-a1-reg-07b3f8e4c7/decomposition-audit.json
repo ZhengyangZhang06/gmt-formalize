@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -l -i 'whitney|lusin' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "tendstoUniformlyOn_of_ae_tendsto|exists_isClosed_sdiff_lt|exists_isCompact_sdiff_lt|of_sigmaCompactSpace_of_isLocallyFiniteMeasure",
+        "ae_differentiableAt|norm_fderiv_le_of_lipschitz|measurableSet_of_differentiableAt|measurable_fderiv",
+        "continuousOn_iUnion|isClosed_iUnion",
+        "structure HasWhitneyC1Compatibility|theorem exists_contDiff_one_extension_of_whitney|^public import|^import|sorry|axiom|unsafe|implemented_by|native_decide",
+        "git show e4172a7b3e6ff6905ecff6f6d729752746d19ff0:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1a-independent-audit-eq_dt9bm/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1a-independent-audit-eq_dt9bm/Reuse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1a-independent-audit-eq_dt9bm/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/c1a-independent-audit-eq_dt9bm/EndToEndCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake build GMT.Ch07.C1AFinalCheck"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Egorov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/LocallyFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-07b3f8e4c7/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-07b3f8e4c7/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-lusin-c-3a11b01ce9/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyPartition.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/tmp/c1a-independent-audit-eq_dt9bm/Types.lean",
+        "/tmp/c1a-independent-audit-eq_dt9bm/Reuse.lean",
+        "/tmp/c1a-independent-audit-eq_dt9bm/Assembly.lean",
+        "/tmp/c1a-independent-audit-eq_dt9bm/EndToEndCheck.lean",
+        "/tmp/c1a-split/projtest/GMT/Ch07/C1AEndToEnd.lean",
+        "/tmp/c1a-split/projtest/GMT/Ch07/C1AFinalCheck.lean"
+      ],
+      "conclusion": "The split is appropriate for the exact selected C¹ approximation contract. The pinned sources supply the cited Rademacher, measurability, regularity, Egoroff, and locally finite pasting results; the Whitney/Lusin search found no corresponding extension/continuity theorem in snapshot Mathlib. All five frozen types independently elaborate as propositions without child implementations, and the derivative-space and measure instances check. All names are bare identifiers; the four new names are unreserved in the DAG. The reused Lusin declaration has the byte-identical comparator-accepted type. Dependencies are correctly directed and acyclic. The supplied parent assembly compiles from the child contracts as hypotheses, including n = 0 and ε = ∞. Fresh checks of the accepted Lusin proof and all five prototype declarations plus the selected parent report only propext, Classical.choice, and Quot.sound. The vendored Whitney sources match the pinned originals except for redirected imports. Nonblocking evidence discrepancy: the retained C1AFinalCheck build fails because its test helper HumanizeNodeComparator.target_parent duplicates an imported declaration. Independent checks using fresh helper names pass; this does not affect any child contract or proof."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "whitney_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly states the closed-set, continuity, compact-uniform remainder, and prescribed-derivative conclusions. Independently checked the Vitali selection, radius comparability, finite overlap, partition derivative bound, anchor estimates, differentiability on A, and continuity of the derivative across A. These establish the extension without circular reliance. The inline compatibility fields match the pinned Whitney structure. The compact-uniform hypothesis also agrees with [Simon's Theorem 1.6](https://web.stanford.edu/class/math285/ts-gmt)."
+    },
+    {
+      "key": "lusin_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including arbitrary μ, second-countable Y, measurable opens, finite μ(A), and positive extended ε. Restricting μ to A justifies compact inner regularity without assuming global regularity. The summable compact approximations and basis-preimage argument prove continuity on the resulting compact set. Reuse is valid: the frozen type is byte-identical to the accepted declaration, whose proof independently recompiles with standard axioms only."
+    },
+    {
+      "key": "lusin_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the stated infinite-measure Lusin conclusion. Each bounded measurable shell satisfies lusin_finite's hypotheses. The compact subsets form a locally finite closed family, so both closedness and continuity survive gluing. The geometric error sum gives strict loss below ε, including ε = ∞. Its sole dependency, lusin_finite, is sufficient and correctly directed."
+    },
+    {
+      "key": "egorov_closed",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All measurability and pointwise-convergence hypotheses are present in the exact type. Egoroff applies on each finite-measure ball intersection; removing all exceptional sets gives uniform convergence on every bounded remaining subset. Closed inner approximation on locally finite shells preserves this property and keeps total loss below ε. No undeclared child or parent theorem is used."
+    },
+    {
+      "key": "whitney_remainder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree with all Lipschitz, closedness, differentiability, and derivative-continuity hypotheses. The 2L bound makes the suprema finite; the empty-supremum convention is valid. Differentiability gives pointwise convergence, and continuity within C makes strict superlevel sets relatively open, establishing Borel measurability without an invalid arbitrary measurable union. egorov_closed then supplies compact-uniform convergence, yielding the exact remainder estimate, including y = x. The dependency is sufficient and non-circular."
+    }
+  ],
+  "required_changes": []
+}
