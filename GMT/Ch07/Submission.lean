@@ -451,6 +451,31 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Uniform bounds on compact sets** (step 3 of the blow-up limit argument in the
+integer-multiplicity criterion for cycles: `supᵢ νᵢ(K) < ∞` for compact `K`).  If every `νᵢ` is
+a finite measure on `ℝᴾ` and, for every `R > 0`, `νᵢ(B̄_R(0)) ≤ B < ∞` for all large `i`, then
+`supᵢ νᵢ(K) < ∞` for every compact `K`.  `K` is bounded, so `K ⊆ B̄_R(0)` with `R = max(R₀, 1)`;
+the indices `i ≥ N` are bounded by `B`, and the finitely many `i < N` by
+`S = ∑_{j<N} νⱼ(ℝᴾ) < ∞`.  Hence `supᵢ νᵢ(K) ≤ max(B, S) < ∞`. -/
+theorem Submission.dmcbr_ci_bl_compact_sup_bound : ∀ (P : ℕ) (ν : ℕ → Measure (Euclid P)), (∀ i, ν i univ < ∞) → (∀ R : ℝ, 0 < R → ∃ B : ℝ≥0∞, B < ∞ ∧ ∀ᶠ i in atTop, ν i (closedBall 0 R) ≤ B) → ∀ K : Set (Euclid P), IsCompact K → ⨆ i, ν i K < ∞ := by
+  intro P ν hfin hball K hK
+  -- Step 1: `K ⊆ B̄_R(0)` with `R = max(R₀, 1) > 0`
+  obtain ⟨R₀, hR₀⟩ := hK.isBounded.subset_closedBall 0
+  have hKR : K ⊆ closedBall 0 (max R₀ 1) :=
+    hR₀.trans (closedBall_subset_closedBall (le_max_left _ _))
+  -- Step 2: `νᵢ(B̄_R(0)) ≤ B` for all `i ≥ N`
+  obtain ⟨B, hB, hev⟩ := hball (max R₀ 1) (one_pos.trans_le (le_max_right _ _))
+  obtain ⟨N, hN⟩ := eventually_atTop.1 hev
+  -- Step 3: `S = ∑_{j<N} νⱼ(ℝᴾ) < ∞`
+  have hS : ∑ j ∈ Finset.range N, ν j univ < ∞ := ENNReal.sum_lt_top.2 fun j _ => hfin j
+  -- Steps 4 and 5: `νᵢ(K) ≤ max(B, S)` for every `i`
+  refine (iSup_le fun i => ?_).trans_lt (max_lt hB hS)
+  rcases le_or_gt N i with hi | hi
+  · exact le_max_of_le_left ((measure_mono hKR).trans (hN i hi))
+  · exact le_max_of_le_right ((measure_mono (subset_univ K)).trans
+      (Finset.single_le_sum (f := fun j => ν j univ) (fun _ _ => zero_le)
+        (Finset.mem_range.2 hi)))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
