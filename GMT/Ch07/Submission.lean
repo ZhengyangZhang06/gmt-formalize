@@ -3108,4 +3108,78 @@ theorem Submission.dtc_bc_cz_isMinimizingIn : ∀ (n : ℕ) (C : GeometricCurren
     exact sub_eq_zero.mp h
   rw [hSC]
 
+/-- **Blow-ups of a top-dimensional current away from `spt ∂T`** (step 1 of the proof of
+Simon 7.3.1(2) in the case `k = 0`, via the Constancy Theorem, Simon 6.2.34).  Let `n ≥ 1`,
+`T ∈ 𝒟ₙ(U)` integer multiplicity in the open set `U ⊆ ℝⁿ`, `x ∈ U ∖ spt ∂T` and `λⱼ ↓ 0`.  As `x`
+lies in the zero region of `∂T`, `∂T = 0` in a ball `B_r(x) ⊆ U`, so `T = c[[ℝⁿ]]` in `B_r(x)`
+for some `c ∈ ℤ` (constancy).  `C = c[[ℝⁿ]]` is integer multiplicity, hence minimizing in `ℝⁿ`.
+In `B_{r/λⱼ}(0) = η_{x,λⱼ}(B_r(x))`, which eventually contains every ball `B_R(0)`,
+`η_{x,λⱼ#}T = C` and `∂η_{x,λⱼ#}T = 0`; local agreement on these balls gives `η_{x,λⱼ#}T ⇀ C`,
+`μ_{η_{x,λⱼ#}T} → μ_C` (locality of the weight measure) and `∂C = 0`. -/
+theorem Submission.dtc_bc_codim_zero : ∀ (n : ℕ) (U : Set (Euclid n)) (T : GeometricCurrentOn U n) (x : Euclid n), 0 < n → IsOpen U → IsIntegerMultiplicity T → x ∈ U → x ∉ boundarySupport T → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ C : GeometricCurrentOn (univ : Set (Euclid n)) n, ConvergesWeakly (fun j => blowUp T x (lams j) (hlams j).ne') C ∧ MassMeasuresConverge (fun j => blowUp T x (lams j) (hlams j).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C := by
+  intro n U T x hn hU hT hxU hx lams hlams hlim
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  -- step 3: `x ∉ spt ∂T` puts `x` in the zero region of `∂T`, so `∂T = 0` in a ball `B_r(x) ⊆ U`
+  have hxZ : x ∈ T.boundary.zeroRegion := by
+    by_contra h
+    exact hx ((mem_sdiff x).2 ⟨hxU, h⟩)
+  obtain ⟨W, ⟨hWo, -, hWU, hWv⟩, hxW⟩ := mem_sUnion.1 hxZ
+  obtain ⟨r, hr, hrW⟩ := Metric.isOpen_iff.1 hWo x hxW
+  have hrU : ball x r ⊆ U := hrW.trans (subset_closure.trans hWU)
+  have hTb : ∀ β : TestFormOn U m, tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ ball x r →
+      T.boundary β = 0 := fun β hβ => hWv β (hβ.trans hrW)
+  -- steps 1–3: `T = c[[ℝⁿ]]` in `B_r(x)` for some `c ∈ ℤ` (constancy theorem)
+  obtain ⟨c, hTc⟩ := Submission.dtc_bc_cz_top_constancy m U (ball x r) T hU hT isOpen_ball
+    (convex_ball x r).isPreconnected hrU hTb
+  -- step 4: the limit `C = c[[ℝⁿ]]` is integer multiplicity
+  obtain ⟨C, hCim, hC⟩ := Submission.dtc_bc_cz_unit_current (m + 1) c hn
+  -- `η_{x,λ}(y) = λ⁻¹(y − x)`, so the domains `η_{x,λⱼ}(U)` are open
+  have hdil : ∀ (lam : ℝ) (y : Euclid (m + 1)), dilation x lam y = lam⁻¹ • (y - x) := by
+    intro lam y
+    simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply]
+    rw [smul_sub, neg_add_eq_sub]
+  have hopen : ∀ j, IsOpen (dilation x (lams j) '' U) := by
+    intro j
+    rw [show dilation x (lams j) = (fun y => (lams j)⁻¹ • y) ∘ fun y => y - x from
+      funext (hdil (lams j))]
+    exact (isOpenMap_smul₀ (inv_ne_zero (hlams j).ne')).comp (isOpenMap_sub_right x) U hU
+  -- steps 5 and 7: for large `j`, `B_R(0) ⊆ B_{r/λⱼ}(0) ⊆ η_{x,λⱼ}(U)`, and in `B_{r/λⱼ}(0)`
+  -- `η_{x,λⱼ#}T = c[[ℝⁿ]] = C` and `∂η_{x,λⱼ#}T = 0`
+  have hev : ∀ R : ℝ, ∀ᶠ j in atTop, ball (0 : Euclid (m + 1)) R ⊆ dilation x (lams j) '' U ∧
+      (∀ ω : TestFormOn (univ : Set (Euclid (m + 1))) (m + 1),
+        tsupport (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) ⊆ ball 0 R →
+          currentEval (blowUp T x (lams j) (hlams j).ne')
+            (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) = C ω) ∧
+      ∀ β : TestFormOn (dilation x (lams j) '' U) m,
+        tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ ball 0 R →
+          (blowUp T x (lams j) (hlams j).ne').boundary β = 0 := by
+    intro R
+    have hR1 : 0 < |R| + 1 := by positivity
+    filter_upwards [(tendsto_order.1 hlim).2 _ (div_pos hr hR1)] with j hj
+    have hlam := hlams j
+    -- `R ≤ r / λⱼ` since `λⱼ (|R| + 1) < r`
+    have hRr : ball (0 : Euclid (m + 1)) R ⊆ ball 0 (r / lams j) := by
+      refine ball_subset_ball ?_
+      rw [le_div_iff₀ hlam]
+      rw [lt_div_iff₀ hR1] at hj
+      nlinarith [le_abs_self R]
+    -- `B_{r/λ}(0) = η_{x,λ}(B_r(x)) ⊆ η_{x,λ}(U)`
+    have hball : ball (0 : Euclid (m + 1)) (r / lams j) ⊆ dilation x (lams j) '' U := by
+      intro z hz
+      rw [mem_ball_zero_iff, lt_div_iff₀ hlam] at hz
+      refine ⟨x + lams j • z, hrU ?_, ?_⟩
+      · rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]
+        linarith [mul_comm (lams j) ‖z‖]
+      · rw [hdil, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hlam.ne', one_smul]
+    have hval := Submission.dtc_bc_cz_blowUp_eval m U T x r c (lams j) (hlams j) hrU
+    exact ⟨hRr.trans hball, fun ω hω => (hval.1 hTc ω (hω.trans hRr)).trans (hC ω).symm,
+      fun β hβ => hval.2 hTb β (hβ.trans hRr)⟩
+  -- steps 6–8: weak convergence, convergence of the mass measures (via the locality of the
+  -- weight measure) and `∂C = 0`
+  obtain ⟨hconv, hmass, hbd⟩ := Submission.dtc_bc_cz_local_agreement
+    Submission.dtc_bc_measure_restrict_eq_of_eqOn (m + 1) m (fun j => dilation x (lams j) '' U)
+    (fun j => blowUp T x (lams j) (hlams j).ne') C hopen hev
+  -- step 9: `C` is minimizing in `ℝⁿ`
+  exact ⟨C, hconv, hmass, Submission.dtc_bc_cz_isMinimizingIn (m + 1) C univ hn hCim, hbd⟩
+
 end GMT.Ch07
