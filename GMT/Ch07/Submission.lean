@@ -3376,6 +3376,67 @@ theorem Submission.dimred_mbl_lc_sd_level_decomposition : ∀ (P m : ℕ) (R A :
         (Submission.cbr_imRep_measure_basic P (m + 1) univ σ).2.2.2.2.2.2]
       refine setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => ?_
       rw [hωW x hx, map_zero]
+/-- **Lipschitz cut-off adapted to a compact set** (Simon 7.2.4, step 2 of the proof).  If `U` is
+open, `K ⊆ U` is compact and `ε > 0`, there is an `L`-Lipschitz `ψ : ℝᴾ → [0, 1]` with `ψ = 1` on
+`K` whose positivity set `W₀ = {ψ > 0}` lies in the `ε`-thickening of `K` and satisfies `W₀ ⊂⊂ U`.
+For `K = ∅` take `ψ ≡ 0`.  Otherwise choose `δ > 0` with `cthickening δ K ⊆ U`, put
+`r = min δ ε` and `ψ = max 0 (1 - dist(·, K) / r)`: it is `1/r`-Lipschitz and
+`W₀ = thickening r K`, whose closure lies in the compact `cthickening r K ⊆ cthickening δ K ⊆ U`. -/
+theorem Submission.lcmp_exists_lipschitz_cutoff : ∀ (P : ℕ) (U K : Set (Euclid P)) (ε : ℝ), IsOpen U → IsCompact K → K ⊆ U → 0 < ε → ∃ (ψ : Euclid P → ℝ) (L : NNReal), LipschitzWith L ψ ∧ (∀ x, 0 ≤ ψ x ∧ ψ x ≤ 1) ∧ (∀ x ∈ K, ψ x = 1) ∧ {x | 0 < ψ x} ⊆ thickening ε K ∧ CompactlyContained {x | 0 < ψ x} U := by
+  intro P U K ε hU hK hKU hε
+  rcases K.eq_empty_or_nonempty with rfl | hKne
+  · -- Step 1: `K = ∅`; `ψ ≡ 0` and `L = 0`, so `W₀ = ∅`
+    have hempty : {x : Euclid P | (0 : ℝ) < (fun _ : Euclid P => (0 : ℝ)) x} = ∅ := by
+      ext x
+      simp
+    refine ⟨fun _ => 0, 0, LipschitzWith.const 0, fun x => ⟨le_rfl, zero_le_one⟩,
+      fun x hx => absurd hx (Set.notMem_empty x), ?_, ?_⟩
+    · rw [hempty]
+      exact empty_subset _
+    · rw [hempty]
+      exact ⟨by simp, by simp⟩
+  -- Step 2: `cthickening δ K ⊆ U`, `r = min δ ε`, `ψ = max 0 (1 - dist(·, K) / r)`, `L = 1/r`
+  obtain ⟨δ, hδ, hδU⟩ := hK.exists_cthickening_subset_open hU hKU
+  set r : ℝ := min δ ε with hr
+  have hr0 : 0 < r := lt_min hδ hε
+  set ψ : Euclid P → ℝ := fun x => max 0 (1 - infDist x K / r) with hψ
+  -- Step 3: `dist(·, K)` is `1`-Lipschitz, so `1 - dist(·, K) / r` is `1/r`-Lipschitz, and taking
+  -- the maximum with `0` keeps the constant
+  have hlip0 : LipschitzWith (Real.toNNReal (1 / r)) fun x : Euclid P => 1 - infDist x K / r := by
+    refine LipschitzWith.of_dist_le_mul fun x y => ?_
+    rw [Real.dist_eq]
+    have h1 : (1 - infDist x K / r) - (1 - infDist y K / r) = (infDist y K - infDist x K) / r := by
+      ring
+    have h2 : |infDist x K - infDist y K| ≤ dist x y := by
+      have := (lipschitz_infDist_pt K).dist_le_mul x y
+      rwa [Real.dist_eq, NNReal.coe_one, one_mul] at this
+    rw [h1, abs_div, abs_of_pos hr0, Real.coe_toNNReal _ (by positivity), abs_sub_comm]
+    calc |infDist x K - infDist y K| / r ≤ dist x y / r := by gcongr
+      _ = 1 / r * dist x y := by ring
+  have hlip : LipschitzWith (Real.toNNReal (1 / r)) ψ := hlip0.const_max 0
+  -- Step 6: `ψ x > 0 ↔ dist(x, K) < r`, i.e. `W₀ = thickening r K` (uses `K ≠ ∅`)
+  have hpos : {x | 0 < ψ x} = thickening r K := by
+    ext x
+    rw [mem_thickening_iff_infDist_lt hKne]
+    simp only [hψ, mem_ofPred_eq, lt_max_iff, lt_irrefl, false_or, sub_pos]
+    rw [div_lt_one hr0]
+  refine ⟨ψ, Real.toNNReal (1 / r), hlip, fun x => ⟨le_max_left _ _, max_le zero_le_one ?_⟩,
+    fun x hx => ?_, ?_, ?_⟩
+  · -- Step 4: `1 - dist(x, K) / r ≤ 1`, so `0 ≤ ψ ≤ 1`
+    have : 0 ≤ infDist x K / r := div_nonneg infDist_nonneg hr0.le
+    linarith
+  · -- Step 5: `dist(x, K) = 0` on `K`, so `ψ = 1` there
+    simp [hψ, infDist_zero_of_mem hx]
+  · -- Step 7: `W₀ = thickening r K ⊆ thickening ε K` as `r ≤ ε`
+    rw [hpos]
+    exact thickening_mono (min_le_right _ _) K
+  · -- Step 8: `closure W₀ ⊆ cthickening r K ⊆ cthickening δ K ⊆ U`, and `cthickening r K` is
+    -- compact, so its closed subset `closure W₀` is compact
+    rw [hpos]
+    have hcl : closure (thickening r K) ⊆ cthickening r K :=
+      closure_thickening_subset_cthickening r K
+    exact ⟨hK.cthickening.of_isClosed_subset isClosed_closure hcl,
+      (hcl.trans (cthickening_mono (min_le_left _ _) K)).trans hδU⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
