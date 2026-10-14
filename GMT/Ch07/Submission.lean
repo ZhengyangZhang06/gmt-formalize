@@ -1055,6 +1055,34 @@ theorem Submission.cbr_ci_pw_proj_boundary_mass_le : ∀ (P m l : ℕ) (pL : Euc
   rw [heq]
   exact Z.boundary.le_massOn hadm
 
+/-- Projected current for the weight bound `α_{i₀} ≥ 1` in the proof of **Simon 7.2.4**
+(steps 5–7 of that bound, with `Yₖ = p_#(Γₖ⌞{g < t})` written as an integral).  Let `v` be
+orthonormal in `ℝᴾ`, `pL x = (⟨vᵢ, x⟩)ᵢ`, and `Z(ω) = ∫_F ⟨ω(x), ξ(x)⟩ dμ(x)` in `ℝᴾ`, where
+`|⟨β, ξ⟩| ≤ |β|` a.e., `F ⊆ S` and `S ∩ pL⁻¹K` is compact for compact `K ⊆ U`.  Then
+`Y(ω) := ∫_F ⟨ω(pL x) ∘ pL, ξ(x)⟩ dμ(x)` is a current in `U` with `M_U(Y) ≤ μ(F ∩ pL⁻¹U)` and
+`M_W(∂Y) ≤ M_{pL⁻¹W}(∂Z)` for open `W ⊆ U`, and each pull-back `p^#ω` agrees on `S` with a test
+form on `ℝᴾ`.  The covector bound `|γ ∘ pL| ≤ |γ|` (in degrees `d + 1` and `d`) is
+`cbr_ci_pw_orthonormal_covector_bounds`; the four conclusions are `cbr_ci_pw_proj_integral_current`,
+`cbr_ci_pw_proj_mass_le`, `cbr_ci_pw_proj_boundary_mass_le` and
+`cbr_ci_pw_proj_pullback_extension` (with `O = ℝᴾ`). -/
+theorem Submission.cbr_ci_pw_projected_current : ∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P) (pL : Euclid P →L[ℝ] Euclid (d + 1)) (U : Set (Euclid (d + 1))) (S F : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (Z : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), Orthonormal ℝ v → (∀ (x : Euclid P) (i : Fin (d + 1)), pL x i = inner ℝ (v i) x) → IsOpen U → MeasurableSet F → F ⊆ S → (∀ K : Set (Euclid (d + 1)), IsCompact K → K ⊆ U → IsCompact (S ∩ pL ⁻¹' K)) → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ β : Covector (Euclid P) (d + 1), |ξ x β| ≤ covectorEuclideanNorm β) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Z ω = ∫ x in F, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → ∃ Y : GeometricCurrentOn U (d + 1), (∀ ω : TestFormOn U (d + 1), Y ω = ∫ x in F, ξ x (((ω : DifferentialForm (Euclid (d + 1)) (d + 1)) (pL x)).compContinuousLinearMap pL) ∂μ) ∧ Y.massOn U ≤ μ (F ∩ pL ⁻¹' U) ∧ (∀ W : Set (Euclid (d + 1)), IsOpen W → W ⊆ U → Y.boundary.massOn W ≤ Z.boundary.massOn (pL ⁻¹' W)) ∧ ∀ ω : TestFormOn U (d + 1), ∃ ω' : TestFormOn (univ : Set (Euclid P)) (d + 1), ∀ x ∈ S, (ω' : DifferentialForm (Euclid P) (d + 1)) x = ((ω : DifferentialForm (Euclid (d + 1)) (d + 1)) (pL x)).compContinuousLinearMap pL := by
+  intro P d v pL U S F μ ξ Z hv hpL hU hF hFS hcpt hμ hξm hξb hZ
+  -- (N3): `|γ ∘ pL| ≤ |γ|` for covectors of every degree on `ℝⁿ`, `n = d + 1`.
+  have hN3 := (Submission.cbr_ci_pw_orthonormal_covector_bounds P (d + 1) v pL hv hpL).2
+  -- Steps 1–3: `Y` is a current in `U`, given by the integral formula (i).
+  obtain ⟨Y, hY⟩ := Submission.cbr_ci_pw_proj_integral_current P (d + 1) (d + 1) pL U S F μ ξ
+    hF hFS hcpt hμ hξm hξb (hN3 (d + 1))
+  -- Step 4 gives (ii) and step 6 gives (iii).
+  refine ⟨Y, hY,
+    Submission.cbr_ci_pw_proj_mass_le P (d + 1) (d + 1) pL U F μ ξ Y hU hξb (hN3 (d + 1)) hY,
+    fun W hW _ => Submission.cbr_ci_pw_proj_boundary_mass_le P (d + 1) d pL U S F μ ξ Y Z hF hFS
+      hcpt (hN3 d) hY hZ W hW, fun ω => ?_⟩
+  -- Step 5, (iv): cut off `p^#ω` near the compact set `S ∩ pL⁻¹(spt ω)`.
+  obtain ⟨ω', -, -, hω', -⟩ := Submission.cbr_ci_pw_proj_pullback_extension P (d + 1) (d + 1) pL
+    S univ (ω : DifferentialForm (Euclid (d + 1)) (d + 1)) ω.property.1.1 isOpen_univ
+    (hcpt _ ω.property.1.2 ω.property.2) (subset_univ _)
+  exact ⟨ω', hω'⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
