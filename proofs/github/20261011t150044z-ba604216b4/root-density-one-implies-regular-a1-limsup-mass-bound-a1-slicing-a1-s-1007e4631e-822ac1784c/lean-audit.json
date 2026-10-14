@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "858120deb2a6c39088cce8002395817dcb3fba2d4a017f1a4ccd43776c77fef3",
+  "git_delta": {
+    "base_commit": "26ac6d3bf64183d894d0687cdc8c3aacc46d659e",
+    "candidate_commit": "5e8499d9222a81ec2f1a3cfa0a907fcadd8ce2ca",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "2ae687e583e15550ed8c4b9777da297420f1ee7e608b6b8fd1aa7144feacb63c",
+    "source_sha256": "c4e717947c4fa57a36539f6fad0a20e12b8bb3ae864d1082861e4dd883e59588",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_interior_product_orientation",
+      "statement": "∀ (P n : ℕ) (ζ : MultiVector P (n + 1)) (ζ' : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (ν : Euclid P), IsUnitOrientationOf ζ Q → ν ∈ Q → ‖ν‖ = 1 → (∀ α : Covector (Euclid P) n, ζ' α = ζ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ ν).smulRight α))) → IsUnitOrientationOf ζ' (Q ⊓ (ℝ ∙ ν)ᗮ)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
