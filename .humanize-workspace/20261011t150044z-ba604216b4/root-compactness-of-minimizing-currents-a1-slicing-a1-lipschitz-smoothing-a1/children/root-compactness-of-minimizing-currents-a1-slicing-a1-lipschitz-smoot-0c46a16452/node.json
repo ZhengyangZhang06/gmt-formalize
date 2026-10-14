@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.lipschitz_smoothing-a1.mollify_lipschitz-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.lipschitz_smoothing-a1",
+  "depth": 4,
+  "title": "Averaging against a normalized nonnegative kernel preserves the Lipschitz constant",
+  "statement": "Let P ∈ ℕ, K ≥ 0 (K ∈ ℝ≥0) and ψ, g : ℝ^P → ℝ, where ℝ^P = Euclid P carries Lebesgue measure λ. Suppose ψ is continuous, has compact support, ψ(x) ≥ 0 for every x and ∫ ψ dλ = 1, and g is K-Lipschitz. Then the function x ↦ ∫ ψ(y)·g(x − y) dλ(y) is K-Lipschitz on ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (ψ g : Euclid P → ℝ) (K : NNReal), Continuous ψ → HasCompactSupport ψ → (∀ x, 0 ≤ ψ x) → ∫ x, ψ x = 1 → LipschitzWith K g → LipschitzWith K (fun x => ∫ y, ψ y * g (x - y))",
+  "lean_name": "cmcs_ls_mollify_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-lipschitz-smoot-0c46a16452-a1"
+}
