@@ -8341,6 +8341,28 @@ theorem Submission.ecf_isIntegerMultiplicity_of_parametrization : ∀ (k P : ℕ
   rw [hTY]
   exact hYim hWim
 
+/-- **Cone filling** (Simon 6.2.30–2.32 and 6.3.9–3.10; step 1 of the proof of 7.2.1, where
+`𝓘_S ≠ ∅` because `0 ⨯ S ∈ 𝓘_S`).  An integer multiplicity `S ∈ 𝒟ₙ₊₁(ℝᴾ)` with compact support
+and `∂S = 0` bounds the cone `R = 0 ⨯ S = h_#([[(0, 1)]] × S)`, `h(t, x) = tx`, which is integer
+multiplicity with compact support.  `M(S) < ∞` and `S` has an integral Lipschitz parametrization
+`(Fⱼ, Aⱼ, gⱼ)` with `Fⱼ(Aⱼ) ⊆ spt S` (E); the cone `R(ω) = S(ζ K ω)` has compact support,
+`∂R = S` and `K ω` as its form-level formula on `spt S` (B); hence `(s, u) ↦ s Fⱼ(u)` on
+`(0, 1) × Aⱼ` is an integral Lipschitz parametrization of `R` (F), so `R` is integer
+multiplicity (G). -/
+theorem Submission.emf_exists_cone_filling : ∀ (n P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) (n + 1)), IsIntegerMultiplicity S → IsCompact S.support → S.boundary = 0 → ∃ R : GeometricCurrentOn (univ : Set (Euclid P)) (n + 2), IsIntegerMultiplicity R ∧ IsCompact R.support ∧ R.boundary = S := by
+  intro n P S hS hSc hSb
+  -- (E): `M(S) < ∞` and an integral Lipschitz parametrization of `S` carried by `spt S`
+  obtain ⟨hSm, F, A, g, hF, hA, hg, hgi, hFd, hFA, hFw, hFS⟩ :=
+    Submission.ecf_im_lipschitz_parametrization (n + 1) P S hS hSc
+  -- (B): the cone `R`, with `spt R` compact, `∂R = S` and `R(ω) = S(γ)`, `γ = K ω` on `spt S`
+  obtain ⟨R, hRc, hRb, hRS⟩ := Submission.ecf_cone_current n P S hSm hSc hSb
+  -- (F): the induced integral Lipschitz parametrization of `R`
+  obtain ⟨G, B, w, hG, hB, hw, hwi, hGw, hGR⟩ :=
+    Submission.ecf_cone_parametrization n P S R F A g hSc hF hA hg hgi hFd hFA hFw hFS hRS
+  -- (G): a current with an integral Lipschitz parametrization is integer multiplicity
+  exact ⟨R, Submission.ecf_isIntegerMultiplicity_of_parametrization (n + 1) P R G B w hG hB hw
+    hwi hGw hGR, hRc, hRb⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
