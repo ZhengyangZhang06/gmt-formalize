@@ -3465,34 +3465,6 @@ theorem Submission.dimred_mbl_pf_pullback_integral_extension : ∀ (P n : ℕ) (
   -- (6) `Y(ωⱼ) = τ(M, θ, ξ)(ωⱼ)`
   rw [← heq]
   exact hlim.congr fun j => (hR (ωs j)).symm
-/-- **A unit orientation paired with a pulled-back covector** (Simon Ch. 6, 1.8–1.10 and
-3.3–3.4: `⟨L^#α, ξ⟩ = ⟨α, L_#ξ⟩` with `L_#(τ₁ ∧ ⋯ ∧ τₙ) = Lτ₁ ∧ ⋯ ∧ Lτₙ`).  Write
-`ξ(β) = ±β(τ)` with `τ` an orthonormal basis of `Q`, and `α ∘ L = α.compContinuousLinearMap L`.
-(a) `|ξ(α ∘ L)| = |(α ∘ L)(τ)| ≤ |α ∘ L|_E ≤ ‖L‖ⁿ |α|_E` (`regcomp_covector_eval_orthonormal_le`,
-then `dimred_mbl_pf_oc_covectorEuclideanNorm_comp_le`).  (b) If `L` fixes `Q` pointwise, then
-`Lτᵢ = τᵢ` since `τᵢ ∈ span τ = Q`, so `(α ∘ L)(τ) = α(Lτ₁, …, Lτₙ) = α(τ)` and
-`ξ(α ∘ L) = ξ(α)`. -/
-theorem Submission.dimred_mbl_pf_unitOrientation_comp : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ (α.compContinuousLinearMap L)| ≤ covectorEuclideanNorm α * ‖L‖ ^ n) ∧ ((∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α) := by
-  intro P n ξ Q L hξ
-  -- `ξ(β) = ±β(τ)` with one sign, `τ` an orthonormal basis of `Q`; hence `|ξ(β)| = |β(τ)|`
-  obtain ⟨τ, hτ, hspan, hsign⟩ := hξ
-  have habs : ∀ β : Covector (Euclid P) n, |ξ β| = |β τ| := by
-    intro β
-    rcases hsign with h | h
-    · rw [h]
-    · rw [h, abs_neg]
-  refine ⟨fun α => ?_, fun hL α => ?_⟩
-  · -- (a) `|ξ(α ∘ L)| = |(α ∘ L)(τ)| ≤ |α ∘ L|_E ≤ ‖L‖ⁿ |α|_E`
-    rw [habs, mul_comm]
-    exact (Submission.regcomp_covector_eval_orthonormal_le P n (α.compContinuousLinearMap L) τ
-      hτ).trans (Submission.dimred_mbl_pf_oc_covectorEuclideanNorm_comp_le P P n L α)
-  · -- (b) `τᵢ ∈ span τ = Q` is fixed by `L`, so `(α ∘ L)(τ) = α(L ∘ τ) = α(τ)`
-    have hLτ : ⇑L ∘ τ = τ := funext fun i =>
-      hL (τ i) (hspan ▸ Submodule.subset_span ⟨i, rfl⟩)
-    have hτα : (α.compContinuousLinearMap L) τ = α τ := by
-      rw [ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
-    rcases hsign with h | h <;> rw [h, h, hτα]
-
 /-- **Simon Ch. 6, 2.24(2) and 2.29, mass of a `C¹` push-forward**: let `Y = τ(M, θ, ξ)` have
 compact support `spt Y ⊆ O`, `‖Df‖ ≤ L` on `O`, and `Z(ω) = ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ(x)⟩ dHⁿ`.
 Then `M(Z) ≤ Lⁿ M(Y)`.  `Hⁿ`-a.e. on `M`, `x ∈ spt Y ⊆ O` (so `0 ≤ ‖Df(x)‖ ≤ L`) and `ξ(x)` is a
