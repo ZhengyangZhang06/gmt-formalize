@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1",
+  "depth": 3,
+  "title": "Simon 7.3.3(2), corrected (13): a point flat at arbitrarily small scales has a tangent plane",
+  "statement": "For all n, k, ℓ ∈ ℕ with ℓ ≤ k and n ≥ 1, all sets U, N ⊆ ℝ^{n+k} and every T ∈ 𝒟_n(U) such that U is open, N is an embedded C² (n+ℓ)-dimensional submanifold (IsEmbeddedSubmanifold 2 (n + ℓ) N), (closure N ∖ N) ∩ U = ∅, T is minimizing in U ∩ N (IsMinimizingIn T (U ∩ N)), spt T ⊆ U ∩ N and ∂T = 0 in U (BoundaryVanishes T), and every x ∈ spt T: if x is flat at arbitrarily small scales, i.e. for every β > 0 and every R > 0 there are ρ with 0 < ρ < R and an n-dimensional linear subspace Q ⊆ ℝ^{n+k} such that |(y − x) − p_Q(y − x)| < βρ for every y ∈ spt T with |y − x| < ρ (p_Q the orthogonal projection onto Q, Lean `Q.starProjection`), then T has a tangent plane at x (HasTangentPlaneAt T x: some tangent cone C of T at x, a ConvergesWeakly-limit of blowUp T x λ_j with λ_j > 0, λ_j → 0, has support an n-dimensional linear subspace).",
+  "lean_statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ x ∈ T.support, (∀ β : ℝ, 0 < β → ∀ R : ℝ, 0 < R → ∃ ρ : ℝ, 0 < ρ ∧ ρ < R ∧ ∃ Q : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ Q = n ∧ ∀ y ∈ T.support, dist y x < ρ → ‖(y - x) - Q.starProjection (y - x)‖ < β * ρ) → HasTangentPlaneAt T x",
+  "lean_name": "idtp_tangent_plane_of_flat",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.weak_limit_mass_bound-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.weak_limit_mass_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.planar_constancy-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ca3ec8cf49-a1"
+}

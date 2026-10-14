@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_boundary-a1.smooth_pullback_test_form-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.pushforward_boundary-a1",
+  "depth": 4,
+  "title": "Smooth pullback of a test form by a compactly supported perturbation of the identity is a test form",
+  "statement": "Let P, d ∈ ℕ, E := ℝ^P, K' ⊆ E compact, ψ : E → E a C^∞ map with ψ(x) = x for every x ∉ K', and α a test d-form on E (C^∞ with compact support; IsTestForm α). Define the pullback ψ^#α by (ψ^#α)(x) := α(ψ(x))∘Dψ(x), i.e. (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x). Then ψ^#α is a test form (IsTestForm (ψ^#α)) and tsupport(ψ^#α) ⊆ tsupport α ∪ K'.",
+  "lean_statement": "∀ (P d : ℕ) (K' : Set (Euclid P)) (ψ : Euclid P → Euclid P) (α : DifferentialForm (Euclid P) d), IsCompact K' → ContDiff ℝ (⊤ : ℕ∞) ψ → (∀ x, x ∉ K' → ψ x = x) → IsTestForm α → IsTestForm (fun x => (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x)) ∧ tsupport (fun x => (α (ψ x)).compContinuousLinearMap (fderiv ℝ ψ x)) ⊆ tsupport α ∪ K'",
+  "lean_name": "dpf_pb_smooth_pullback_isTestForm",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-pushforwa-72cd9bd2a7-a1"
+}

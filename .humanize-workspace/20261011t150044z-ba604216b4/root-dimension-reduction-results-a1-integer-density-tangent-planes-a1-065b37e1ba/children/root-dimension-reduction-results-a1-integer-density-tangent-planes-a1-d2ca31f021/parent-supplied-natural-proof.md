@@ -1,0 +1,75 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.carrier_area_formula-a1.piece_area_formula-a1.fiber_sum_ae_congr-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 2 of the parent proof (reduction to a Borel weight: the set where the weight changes is H^n-null and its image under the map, which agrees with the Lipschitz G there, is L^n-null; Simon Ch. 2 Theorem 1.8(i), Lipschitz images of H^n-null sets are H^n-null). The only change from the parent text is that the disagreement set is enlarged to a Borel H^n⌞S-null set N, so that Measure.restrict_apply applies with N Borel and S need not be Borel (the parent instead used that S = g(A) is Borel). Notation: H^n := μHE[n] (on ℝ^P and on ℝ^n); λ := L^n = volume on ℝ^n; for k : ℝ^P → [0, ∞] and y ∈ ℝ^n, Σ_k(y) := Σ_{x ∈ S ∩ F^{−1}{y}} k(x) ∈ [0, ∞] (tsum over the subtype S ∩ F^{−1}{y}). Library fact (L1): if ψ is K-Lipschitz on a set X, then μHE[n](ψ(X)) ≤ K^n · μHE[n](X) (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n, applied to LipschitzWith.lipschitzOnWith; available after import GMT.Ch07.Submission). Library fact (E): on ℝ^n = EuclideanSpace ℝ (Fin n), μHE[n] = volume (EuclideanSpace.euclideanHausdorffMeasure_eq_volume n).
+1. (A Borel null set carrying the disagreement.) The hypothesis h = h' (H^n⌞S)-a.e. says (H^n⌞S)({x : h(x) ≠ h'(x)}) = 0 (ae_iff). By exists_measurable_superset_of_null there is a Borel set N ⊇ {x : h(x) ≠ h'(x)} with (H^n⌞S)(N) = 0. Since N is Borel, (H^n⌞S)(N) = H^n(N ∩ S) (Measure.restrict_apply), so H^n(N ∩ S) = 0.
+2. (The image of M := N ∩ S is λ-null.) Since M ⊆ S ⊆ V and F = G on V, F and G agree on M, so F(M) = G(M) (Set.image_congr). G is L_G-Lipschitz on ℝ^P, in particular on M, so by (L1) with target ℝ^n, μHE[n](G(M)) ≤ L_G^n · H^n(M) = L_G^n · 0 = 0; hence μHE[n](G(M)) = 0 (le_antisymm with 0 ≤ μHE[n](G(M))). By (E), λ(F(M)) = λ(G(M)) = μHE[n](G(M)) = 0. Therefore λ-a.e. y ∈ ℝ^n satisfies y ∉ F(M) (measure_eq_zero_iff_ae_notMem).
+3. (Termwise equality off F(M).) Fix y ∈ ℝ^n with y ∉ F(M), and let x ∈ S with F(x) = y, i.e. x is an element of the index subtype S ∩ F^{−1}{y}. If x ∈ N, then x ∈ N ∩ S = M and y = F(x) ∈ F(M), a contradiction; hence x ∉ N. As {x : h(x) ≠ h'(x)} ⊆ N, it follows that h(x) = h'(x) (by contradiction). Thus the two tsums Σ_h(y) and Σ_{h'}(y) over the same index type S ∩ F^{−1}{y} have equal summands, so Σ_h(y) = Σ_{h'}(y) (tsum_congr).
+4. (Conclusion.) By steps 2 and 3, Σ_h(y) = Σ_{h'}(y) for every y outside the λ-null set F(M); i.e. the two fibre-sum functions are equal λ-a.e. (filter_upwards with the a.e. statement of step 2). ∎
+
+## Key steps
+
+1. Enlarge {h ≠ h'} to a Borel set N with (H^n⌞S)(N) = 0; Measure.restrict_apply gives H^n(N ∩ S) = 0.
+2. M := N ∩ S ⊆ V, so F(M) = G(M); (L1) for the Lipschitz G gives μHE[n](G(M)) = 0, and μHE[n] = volume on ℝ^n, so λ(F(M)) = 0.
+3. For y ∉ F(M) every x ∈ S with F(x) = y lies outside N, hence h(x) = h'(x); tsum_congr gives equality of the two fibre sums at y.
+4. Hence the fibre-sum functions agree λ-a.e.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (local-project; project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean (identical)`
+- `python3 -I read of nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-065b37e1ba/parent-child-handoff.json and parent-supplied-plan.md`
+- `grep -n 'theorem weighted_area_formula_lipschitz_fiberSum|theorem aemeasurable_weightedAreaFiberSum_lipschitz|theorem weighted_area_formula_lipschitz_injOn|def weightedAreaFiberSum|def areaJacobianAt|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn' -r .lake/packages/simongmt/Poincare/SimonGMT`
+- `grep -n 'theorem|lemma|def ' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean (normDet_comp, normDet_sq_eq_det_gram, normDet_eq_abs_det, normDet_nonneg)`
+- `grep -rn euclideanHausdorffMeasure_eq_volume mathlib/Mathlib; grep tprod_image (to_additive tsum_image) in mathlib/Mathlib/Topology/Algebra/InfiniteSum/Basic.lean; grep exists_measurable_superset_of_null mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `python3 -I scans of dag.json: nodes whose lean_statement has fibre tsums, stdOrthonormalBasis or LinearMap.det; carrier_area_formula-a1 and rectifiable_area_formula-a1 subtrees; git show c2cf4bd9 (accepted dpf_raf_piece_area_formula_gram proof)`
+- `grep -c idtp_caf_paf dag.json DAG.md dag.mmd issue-workers.json; grep -rl nodes/; git grep idtp_caf_paf over all ref tips; grep in simongmt and GMT sources (all no match)`
+- `lake env lean /tmp/paf_split_dec/Stmts.lean (child stubs plus assembly of the frozen parent type), Proofs.lean (full child proofs), Full.lean (end-to-end), Challenge_*.lean (exact comparator form), Bare_*/Lip_*/Noninj_c2.lean (minimal imports per child)`
+- `python3 -I /tmp/paf_split_scripts/validate.py (verifier/lean_contract.py validate_lean_statement) and gen_challenge.py (verifier/gmt-compare.py child_modules, contract mode)`
+- `independent reviewer subagent: /tmp/paf_split_review/indep/Implication.lean (children as axioms; #print axioms), Min_*.lean, Challenge_*.lean`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-065b37e1ba/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-065b37e1ba/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaNoninjective.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaMultiplicity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/paf_split_dec/Stmts.lean`
+- `/tmp/paf_split_dec/Proofs.lean`
+- `/tmp/paf_split_dec/Full.lean`
+- `/tmp/paf_split_review/subproblems.json`
+- `/tmp/paf_split_review/indep/Implication.lean`
+
+The pins match: snapshot project b4d606d is the workspace HEAD, mathlib is 25730c7c, and Contract.lean is identical to the snapshot copy.
+
+Library support.
+- SimonGMT provides (A1) aemeasurable_weightedAreaFiberSum_lipschitz and weighted_area_formula_lipschitz_fiberSum (Chapter02/AreaNoninjective.lean), (A2) weighted_area_formula_lipschitz_injOn with an arbitrary weight (Chapter02/AreaLipschitz.lean), areaJacobianAt_eq_normDet, and (L1) euclideanHausdorffMeasure_image_le_of_lipschitzOn, which is already in the contract import closure.
+- Mathlib provides LinearMap.normDet_comp, normDet_sq_eq_det_gram, normDet_eq_abs_det, EuclideanSpace and InnerProductSpace euclideanHausdorffMeasure_eq_volume, tsum_image and exists_measurable_superset_of_null.
+
+Statement scope. normDet, areaJacobianAt and weightedAreaFiberSum are not in the contract scope, so the child statements use |LinearMap.det|, Gram determinants and subtype tsums.
+
+No reuse. The accepted dpf_raf_piece_area_formula_gram (commit c2cf4bd) is the closest analogue and served as a proof template, but no existing DAG declaration has a matching type, so fresh idtp_caf_paf_* names are used; none of them occurs anywhere.
+
+Lean checks.
+- All three child types elaborate in the exact comparator form.
+- The frozen parent type follows from them; with the children as axioms, the only other axioms are propext, Classical.choice and Quot.sound.
+- Each child has a complete proof with only the standard axioms. Extra imports: none for child 1, Chapter02.AreaNoninjective for child 2, Chapter02.AreaLipschitz for child 3.
