@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "22ae0e62824dfec571543965c05f72863d0019de3ce989ac43aedfda294c5ac1",
+  "git_delta": {
+    "base_commit": "78872dc77668c7cd060d3e7ec567f9c61b94f0aa",
+    "candidate_commit": "e40d18043f641deebbe7a8b4e0325d1fbe8224a9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_tr_measure_eq_of_smooth_integral_eq",
+    "diff_sha256": "7e40ccce830c2bff2cbd074a87b1bbfea311abc2e3f8a0327d6580d8bbe92800",
+    "source_sha256": "b5c858451dffca7c9ba31724e859a3ffcbc5ba7856e326761f2f0a526eaeae74",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_tr_measure_eq_of_smooth_integral_eq",
+      "statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, φ y ∂μ = ∫ y, φ y ∂ν) → μ = ν",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
