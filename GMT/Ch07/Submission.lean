@@ -1556,6 +1556,43 @@ theorem Submission.cbr_ccisp_restrict_isIntegerMultiplicity : (∀ (P n : ℕ) (
   refine ⟨R', fun ω => ?_⟩
   rw [hArep ω, hRU' E ω hE, ← hA' ω, hR'A' ω]
   simp
+/-- Finiteness step of the integer slice property: almost every slice defect has finite mass on
+bounded sets.  Given (MM), if `μ` is finite on compact sets and
+`M_W(Z_t) ≤ L·liminf_{h↓0} h⁻¹ μ(W ∩ {t − h < f < t})` for every open `W`, then for `L¹`-a.e. `t`,
+`M_W(Z_t) < ∞` for every bounded `W`.  For `k, m ∈ ℕ`, (MM) on `(−m, m)` with the constant
+sequences `μ` and `M_{B_k(0)}(Z_t)` gives `M_{B_k(0)}(Z_t) ≤ g(t)` a.e. on `(−m, m)` with
+`∫_{(−m,m)} g ≤ L·μ(B_k(0) ∩ {−m < f < m}) < ∞`, so `g`, hence `M_{B_k(0)}(Z_t)`, is finite a.e.
+on `(−m, m)`; intersect over the countably many `k, m` and use `massOn_mono`. -/
+theorem Submission.cbr_ccisp_ae_massOn_lt_top : (∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop) → ∀ (P q : ℕ) (U : Set (Euclid P)) (Z : ℝ → GeometricCurrentOn U q) (μ : Measure (Euclid P)) (f : Euclid P → ℝ) (L : NNReal), Continuous f → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → (Z t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∀ᵐ t ∂(volume : Measure ℝ), ∀ W : Set (Euclid P), Bornology.IsBounded W → (Z t).massOn W < ∞ := by
+  intro hMM P q U Z μ f L hf hμ hZ
+  -- steps 1–4: for fixed `k, m`, `M_{B_k}(Z_t) < ∞` for a.e. `t ∈ (-m, m)`
+  have key : ∀ k m : ℕ, ∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo (-(m : ℝ)) m →
+      (Z t).massOn (ball (0 : Euclid P) k) < ∞ := by
+    intro k m
+    have hfinG : μ (ball (0 : Euclid P) k ∩ {x | -(m : ℝ) < f x ∧ f x < m}) < ∞ :=
+      (measure_mono (inter_subset_left.trans ball_subset_closedBall)).trans_lt
+        (hμ _ (isCompact_closedBall _ _))
+    obtain ⟨g, hg, hle, hint⟩ := hMM P (fun _ => μ) f (ball (0 : Euclid P) k) (-(m : ℝ)) m L
+      (fun _ t => (Z t).massOn (ball (0 : Euclid P) k)) hf (fun _ => hfinG)
+      (fun _ t _ => hZ _ t isOpen_ball)
+    simp only [liminf_const] at hle hint
+    have hint' : ∫⁻ t in Ioo (-(m : ℝ)) m, g t ≠ ∞ :=
+      (hint.trans_lt (ENNReal.mul_lt_top ENNReal.coe_lt_top hfinG)).ne
+    have hgfin : ∀ᵐ t ∂(volume.restrict (Ioo (-(m : ℝ)) m)), g t < ∞ := ae_lt_top hg hint'
+    rw [ae_restrict_iff' measurableSet_Ioo] at hgfin
+    filter_upwards [hle, hgfin] with t h1 h2 ht
+    exact (h1 ht).trans_lt (h2 ht)
+  -- step 5: countably many `k, m`
+  have key2 : ∀ᵐ t ∂(volume : Measure ℝ), ∀ k m : ℕ, t ∈ Ioo (-(m : ℝ)) m →
+      (Z t).massOn (ball (0 : Euclid P) k) < ∞ := by
+    rw [ae_all_iff]; intro k; rw [ae_all_iff]; exact key k
+  -- step 6: a bounded `W` lies in some `B_k`, and `t` lies in some `(-m, m)`
+  filter_upwards [key2] with t ht W hW
+  obtain ⟨r, hr⟩ := hW.subset_ball (0 : Euclid P)
+  obtain ⟨k, hk⟩ := exists_nat_gt r
+  obtain ⟨m, hm⟩ := exists_nat_gt |t|
+  have htm : t ∈ Ioo (-(m : ℝ)) m := ⟨by linarith [neg_abs_le t], by linarith [le_abs_self t]⟩
+  exact ((Z t).massOn_mono (hr.trans (ball_subset_ball hk.le))).trans_lt (ht k m htm)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
