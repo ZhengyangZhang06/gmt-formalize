@@ -1279,6 +1279,37 @@ theorem Submission.idtp_ccd_scsp_local_inverse : ∀ (P : ℕ) (M : Set (Euclid 
       (hH.differentiableOn one_ne_zero).differentiableAt (hO.mem_nhds hw)
     rw [Function.comp_apply, hT (H w) (hHV₀ w hw), fderiv_comp w (hψd _ (hHV₀ w hw)) hHd,
       ContinuousLinearMap.coe_comp, (hDH w hw).range_comp]
+/-- **Simon Ch. 2, (4.18)–(4.20)** (tangential divergence in an orthonormal frame): if `τ₁, …, τₙ`
+is an orthonormal basis of `Q`, then `trace(p_Q ∘ B) = Σₐ τₐ · Bτₐ`.  The orthogonality
+characterization of the projection gives `p_Q z = Σₐ (τₐ · z) τₐ`, so `p_Q ∘ B` is the sum of the
+rank-one maps `z ↦ (τₐ · Bz) τₐ`, and the trace of `z ↦ ℓ(z) v` is `ℓ(v)`. -/
+theorem Submission.fvmb_trace_starProjection_comp_eq_sum_inner : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (τ : Fin n → Euclid P) (B : Euclid P →L[ℝ] Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ B.toLinearMap) = ∑ a, inner ℝ (τ a) (B (τ a)) := by
+  intro P n Q τ B hτ hQ
+  -- `p_Q z = Σₐ ⟪τₐ, z⟫ τₐ`: the right side lies in `Q` and `z` minus it is orthogonal to `Q`
+  have hproj : ∀ z : Euclid P, Q.starProjection z = ∑ a, inner ℝ (τ a) z • τ a := by
+    intro z
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · rw [← hQ]
+      exact Submodule.sum_mem _ fun a _ =>
+        Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
+    · intro q hq
+      rw [← hQ] at hq
+      induction hq using Submodule.span_induction with
+      | mem x hx =>
+        obtain ⟨b, rfl⟩ := hx
+        rw [inner_sub_left, hτ.inner_left_fintype, real_inner_comm]
+        simp
+      | zero => simp
+      | add x y _ _ hx hy => rw [inner_add_right, hx, hy, add_zero]
+      | smul c x _ hx => rw [inner_smul_right, hx, mul_zero]
+  -- `p_Q ∘ B = Σₐ (z ↦ ⟪τₐ, Bz⟫ τₐ)`
+  have hdecomp : Q.starProjection.toLinearMap ∘ₗ B.toLinearMap =
+      ∑ a, ((innerₛₗ ℝ (τ a)) ∘ₗ B.toLinearMap).smulRight (τ a) := by
+    ext z
+    simp [hproj]
+  -- `trace (z ↦ ℓ(z) v) = ℓ(v)` (`LinearMap.trace_smulRight`), summed over `a`
+  rw [hdecomp, map_sum]
+  simp
 /-- **Angle-parametrized unit curve** (step 6 of the parent proof).  Differentiating
 `⟨γ, γ⟩ = ‖γ‖² ≡ 1` gives `⟨γ, γ′⟩ = 0`.  With `A = ⟨γ, u⟩ > 0` and `B = ⟨γ, e⟩`, the quotient
 and chain rules differentiate `arctan (B / A) ≡ α` to `(1 + (B / A)²)⁻¹ (B′ A − B A′) / A² = 1`,
@@ -1868,6 +1899,242 @@ theorem Submission.idtp_ccd_scsp_ca_prod_area_formula : ∀ (P : ℕ) (G : ℝ �
   -- (4) pull the integral back from `e⁻¹(R)` to `R`
   simp_rw [hpt]
   exact hmp.setIntegral_preimage_emb hemb Ψ R
+/-- **Smooth cutoff near a compact set** (step 3 of the parent proof).  Take `δ > 0` with
+`cthickening δ K ⊆ N`.  The smooth Urysohn lemma for the closed set `cthickening (δ / 4) K`
+inside the open set `thickening (δ / 2) K` gives a `C¹` function `ζ` with
+`support ζ = thickening (δ / 2) K` and `ζ = 1` exactly on `cthickening (δ / 4) K`.  Then
+`tsupport ζ ⊆ cthickening (δ / 2) K ⊆ N` is a closed subset of a compact set, and
+`V = thickening (δ / 4) K` is an open plateau around `K`. -/
+theorem Submission.idtp_ccd_scsp_tf_cutoff : ∀ (P : ℕ) (K N : Set (Euclid P)), IsCompact K → IsOpen N → K ⊆ N → ∃ ζ : Euclid P → ℝ, ContDiff ℝ 1 ζ ∧ HasCompactSupport ζ ∧ tsupport ζ ⊆ N ∧ ∃ V : Set (Euclid P), IsOpen V ∧ K ⊆ V ∧ ∀ y ∈ V, ζ y = 1 := by
+  intro P K N hK hN hKN
+  -- a margin: `cthickening δ K ⊆ N` for some `δ > 0`
+  obtain ⟨δ, hδ, hδN⟩ := hK.exists_cthickening_subset_open hN hKN
+  -- smooth Urysohn: `ζ = 1` exactly on `cthickening (δ / 4) K`, `support ζ = thickening (δ / 2) K`
+  obtain ⟨ζ, hζ, -, hsupp, hone⟩ := exists_contDiff_support_eq_eq_one_iff (n := 1)
+    (isOpen_thickening (δ := δ / 2) (E := K)) (isClosed_cthickening (δ := δ / 4) (E := K))
+    (cthickening_subset_thickening' (by positivity) (by linarith) K)
+  have hts : tsupport ζ ⊆ cthickening (δ / 2) K := by
+    rw [tsupport, hsupp]
+    exact closure_thickening_subset_cthickening _ _
+  -- the plateau `V = thickening (δ / 4) K ⊆ cthickening (δ / 4) K`
+  refine ⟨ζ, by exact_mod_cast hζ, ?_, ?_, thickening (δ / 4) K, isOpen_thickening,
+    self_subset_thickening (by positivity) K,
+    fun y hy => (hone y).1 (thickening_subset_cthickening _ _ hy)⟩
+  -- `tsupport ζ` is closed inside the compact set `cthickening (δ / 2) K` (`Euclid P` is proper)
+  · exact hK.cthickening.of_isClosed_subset (isClosed_tsupport ζ) hts
+  · exact hts.trans ((cthickening_mono (by linarith) K).trans hδN)
+/-- **Tangential derivative of the angle–radius profile** (steps 1 and 6(iii) of the parent
+proof).  With `a = ⟨x, u⟩ > 0` and `b = ⟨x, e⟩`, the inverse and product rules differentiate
+`q = ⟨·, e⟩ / ⟨·, u⟩` to `h ↦ a⁻¹ ⟨h, e⟩ − b (a²)⁻¹ ⟨h, u⟩`, and the chain rule multiplies this
+by `(1 + (b / a)²)⁻¹ = a² / (a² + b²)` for `arctan ∘ q`.  The norm `‖y‖ = √(‖y‖²)` has derivative
+`h ↦ ⟨x, h⟩ / ‖x‖`, which vanishes for `⟨x, h⟩ = 0`, so the product rule leaves only the angular
+term.  `C¹` regularity follows from `a ≠ 0` and `x ≠ 0`. -/
+theorem Submission.idtp_ccd_scsp_tf_profile_deriv : ∀ (P : ℕ) (u e x : Euclid P) (φ lam : ℝ → ℝ), ContDiff ℝ 1 φ → ContDiff ℝ 1 lam → 0 < inner ℝ x u → ContDiffAt ℝ 1 (fun y : Euclid P => φ (Real.arctan (inner ℝ y e / inner ℝ y u)) * lam ‖y‖) x ∧ ∀ h : Euclid P, inner ℝ x h = 0 → fderiv ℝ (fun y : Euclid P => φ (Real.arctan (inner ℝ y e / inner ℝ y u)) * lam ‖y‖) x h = deriv φ (Real.arctan (inner ℝ x e / inner ℝ x u)) * lam ‖x‖ * ((inner ℝ x u * inner ℝ h e - inner ℝ x e * inner ℝ h u) / (inner ℝ x u ^ 2 + inner ℝ x e ^ 2)) := by
+  intro P u e x φ lam hφ hlam hxu
+  -- non-degeneracy: `a = ⟨x, u⟩ ≠ 0`, hence `x ≠ 0`
+  have ha : inner ℝ x u ≠ 0 := hxu.ne'
+  have hx : x ≠ 0 := by
+    rintro rfl
+    simp at hxu
+  refine ⟨?_, fun h hh => ?_⟩
+  · -- `C¹`: a quotient with nonvanishing denominator, `arctan`, and the norm away from `0`
+    have hq : ContDiffAt ℝ 1 (fun y : Euclid P => inner ℝ y e / inner ℝ y u) x :=
+      (contDiffAt_id.inner ℝ contDiffAt_const).div (contDiffAt_id.inner ℝ contDiffAt_const) ha
+    exact (hφ.contDiffAt.comp x hq.arctan).mul (hlam.contDiffAt.comp x (contDiffAt_norm ℝ hx))
+  · -- the linear coordinates `y ↦ ⟨y, z⟩` are `innerSL ℝ z`
+    have hlin : ∀ z : Euclid P, HasFDerivAt (fun y : Euclid P => inner ℝ y z) (innerSL ℝ z) x := by
+      intro z
+      have hz : (fun y : Euclid P => inner ℝ y z) = innerSL ℝ z := by
+        funext y
+        rw [innerSL_apply_apply, real_inner_comm]
+      rw [hz]
+      exact (innerSL ℝ z).hasFDerivAt
+    -- the quotient `q = ⟨·, e⟩ · ⟨·, u⟩⁻¹`
+    have hinv : HasFDerivAt (fun y : Euclid P => (inner ℝ y u)⁻¹)
+        ((-(inner ℝ x u ^ 2)⁻¹) • innerSL ℝ u) x :=
+      (hasDerivAt_inv ha).comp_hasFDerivAt x (hlin u)
+    have hq : HasFDerivAt (fun y : Euclid P => inner ℝ y e / inner ℝ y u)
+        (inner ℝ x e • ((-(inner ℝ x u ^ 2)⁻¹) • innerSL ℝ u) +
+          (inner ℝ x u)⁻¹ • innerSL ℝ e) x := by
+      simp only [div_eq_mul_inv]
+      exact (hlin e).fun_mul hinv
+    -- the angle `arctan ∘ q` and the outer profile `φ`
+    have hΦ := (hφ.differentiable one_ne_zero
+      (Real.arctan (inner ℝ x e / inner ℝ x u))).hasDerivAt.comp_hasFDerivAt x hq.arctan
+    -- the norm `‖y‖ = √(‖y‖²)` and the radial profile `lam`
+    have hN : HasFDerivAt (fun y : Euclid P => ‖y‖)
+        ((1 / (2 * √(‖x‖ ^ 2))) • (2 • innerSL ℝ x)) x := by
+      have hs := (hasStrictFDerivAt_norm_sq x).hasFDerivAt.sqrt
+        (pow_ne_zero 2 (norm_ne_zero_iff.2 hx))
+      have hfun : (fun y : Euclid P => √(‖y‖ ^ 2)) = fun y => ‖y‖ := by
+        funext y
+        exact Real.sqrt_sq (norm_nonneg y)
+      rwa [hfun] at hs
+    have hL := (hlam.differentiable one_ne_zero ‖x‖).hasDerivAt.comp_hasFDerivAt x hN
+    -- the product rule; the radial term `⟨x, h⟩ / ‖x‖` vanishes since `⟨x, h⟩ = 0`
+    have hF : HasFDerivAt
+        (fun y : Euclid P => φ (Real.arctan (inner ℝ y e / inner ℝ y u)) * lam ‖y‖) _ x :=
+      hΦ.fun_mul hL
+    rw [hF.fderiv]
+    simp only [add_apply, smul_apply, innerSL_apply_apply, smul_eq_mul, Function.comp_apply, hh,
+      smul_zero, mul_zero, zero_add]
+    -- clearing `1 + (b / a)² = (a² + b²) / a²` with `a ≠ 0`
+    rw [real_inner_comm h u, real_inner_comm h e]
+    field_simp
+    ring
+/-- **Tangential divergence of the rotation field** (steps 4–5 of the parent proof).  With the
+skew map `A y = ⟨y, u⟩ e − ⟨y, e⟩ u`, the field is `X = g • A`, so the product rule gives
+`DX(x) h = g(x) A h + (Dg(x) h) A x` at `x = t v`.  The frame formula in the orthonormal frame
+`(v, w)` of `Q` gives `tr(p_Q ∘ DX(x)) = ⟨v, DX(x) v⟩ + ⟨w, DX(x) w⟩`; skewness `⟨z, A z⟩ = 0`
+and `A x = t A v` leave only `(Dg(x) w) t ⟨w, A v⟩`. -/
+theorem Submission.idtp_ccd_scsp_tf_rotation_trace : ∀ (P : ℕ) (u e v w : Euclid P) (Q : Submodule ℝ (Euclid P)) (g : Euclid P → ℝ) (t : ℝ), Orthonormal ℝ ![v, w] → Submodule.span ℝ (Set.range ![v, w]) = Q → DifferentiableAt ℝ g (t • v) → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ (fderiv ℝ (fun y : Euclid P => g y • (inner ℝ y u • e - inner ℝ y e • u)) (t • v)).toLinearMap) = fderiv ℝ g (t • v) w * (t * (inner ℝ v u * inner ℝ w e - inner ℝ v e * inner ℝ w u)) := by
+  intro P u e v w Q g t hτ hQ hg
+  -- the skew continuous linear map `A y = ⟪y, u⟫ e - ⟪y, e⟫ u`, so that `X = g • A`
+  obtain ⟨A, hA⟩ : ∃ A : Euclid P →L[ℝ] Euclid P,
+      ∀ y, A y = inner ℝ y u • e - inner ℝ y e • u :=
+    ⟨(innerSL ℝ u).smulRight e - (innerSL ℝ e).smulRight u, fun y => by simp [real_inner_comm]⟩
+  have hX : (fun y : Euclid P => g y • (inner ℝ y u • e - inner ℝ y e • u)) =
+      fun y => g y • A y := by
+    funext y
+    rw [hA]
+  -- product rule: `DX(x) = g(x) A + Dg(x) ⊗ A x`
+  have hD : HasFDerivAt (fun y : Euclid P => g y • A y)
+      (g (t • v) • A + (fderiv ℝ g (t • v)).smulRight (A (t • v))) (t • v) :=
+    hg.hasFDerivAt.smul A.hasFDerivAt
+  -- frame formula in the orthonormal frame `(v, w)` of `Q`, then expand the two diagonal entries
+  rw [Submission.fvmb_trace_starProjection_comp_eq_sum_inner P 2 Q ![v, w] _ hτ hQ, hX, hD.fderiv]
+  simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, add_apply, smul_apply,
+    ContinuousLinearMap.smulRight_apply, hA, inner_add_right, inner_sub_right, inner_smul_right,
+    real_inner_smul_left]
+  ring
+
+/-- **Test field on the cone over `γ`** (steps 7–8 of the parent proof).  Let
+`A y = ⟨y, u⟩ e − ⟨y, e⟩ u`, `F y = φ(arctan(⟨y, e⟩ / ⟨y, u⟩)) λ(‖y‖)`, and let `ζ` be a `C¹`
+cutoff with compact support in `N` and `ζ ≡ 1` near the compact set
+`K₀ = {t γ(α) : t ∈ spt λ, α ∈ spt φ} ⊆ N`; then `X = F ζ A`.  In the orthonormal frame
+`(γ, τ = γ′/‖γ′‖)` of `T(t γ)` the trace is `D(F ζ)(t γ) τ · t ⟨A γ, τ⟩`, where
+`D(F ζ)(t γ) τ = DF(t γ) τ` (`ζ ≡ 1` near `K₀`, while off `K₀` both `F(t γ)` and `DF(t γ) τ`
+vanish) and `⟨A γ, γ′⟩ = ⟨γ, u⟩² + ⟨γ, e⟩²`. -/
+theorem Submission.idtp_ccd_scsp_test_field : ∀ (P : ℕ) (u e : Euclid P) (r₀ s : ℝ) (N : Set (Euclid P)) (γ : ℝ → Euclid P) (T : Euclid P → Submodule ℝ (Euclid P)) (lam φ : ℝ → ℝ), ‖u‖ = 1 → ‖e‖ = 1 → inner ℝ u e = 0 → 0 < s → s < r₀ → IsOpen N → (∀ x ∈ N, 0 < inner ℝ x u) → ContDiffOn ℝ 1 γ (Ioo (-s) s) → (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ 0 < inner ℝ (γ α) u ∧ Real.arctan (inner ℝ (γ α) e / inner ℝ (γ α) u) = α) → (∀ t ∈ Ioo (r₀ - s) (r₀ + s), ∀ α ∈ Ioo (-s) s, t • γ α ∈ N ∧ T (t • γ α) = Submodule.span ℝ {γ α, deriv γ α}) → ContDiff ℝ 1 lam → HasCompactSupport lam → tsupport lam ⊆ Ioo (r₀ - s) (r₀ + s) → ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ Ioo (-s) s → ∃ X : Euclid P → Euclid P, ContDiff ℝ 1 X ∧ HasCompactSupport X ∧ tsupport X ⊆ N ∧ ∀ t ∈ Ioo (r₀ - s) (r₀ + s), ∀ α ∈ Ioo (-s) s, LinearMap.trace ℝ (Euclid P) ((T (t • γ α)).starProjection.toLinearMap ∘ₗ (fderiv ℝ X (t • γ α)).toLinearMap) = lam t * deriv φ α * ((inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2) / ‖deriv γ α‖ ^ 2) := by
+  intro P u e r₀ s N γ T lam φ _ _ _ _ hsr hN hNu hγ hγp hTN hlam hlamc hlams hφ hφc hφs
+  -- `K₀ = {t γ(α) : t ∈ tsupport λ, α ∈ tsupport φ}` is a compact subset of `N`
+  have hK₀ : IsCompact ((fun p : ℝ × ℝ => p.1 • γ p.2) '' (tsupport lam ×ˢ tsupport φ)) :=
+    (hlamc.isCompact.prod hφc.isCompact).image_of_continuousOn
+      (continuousOn_fst.smul (hγ.continuousOn.comp continuousOn_snd fun p hp => hφs hp.2))
+  have hK₀N : (fun p : ℝ × ℝ => p.1 • γ p.2) '' (tsupport lam ×ˢ tsupport φ) ⊆ N := by
+    rintro _ ⟨p, hp, rfl⟩
+    exact (hTN p.1 (hlams hp.1) p.2 (hφs hp.2)).1
+  -- a `C¹` cutoff `ζ` with compact support in `N` and `ζ ≡ 1` on an open `V ⊇ K₀`
+  obtain ⟨ζ, hζ, hζc, hζN, V, hVo, hKV, hζV⟩ :=
+    Submission.idtp_ccd_scsp_tf_cutoff P _ N hK₀ hN hK₀N
+  -- the profile `F(y) = φ(arctan(⟨y, e⟩ / ⟨y, u⟩)) λ(‖y‖)` and the coefficient `g = F ζ`
+  obtain ⟨F, hFdef⟩ : ∃ F : Euclid P → ℝ,
+      F = fun y => φ (Real.arctan (inner ℝ y e / inner ℝ y u)) * lam ‖y‖ := ⟨_, rfl⟩
+  have hF : ∀ x : Euclid P, 0 < inner ℝ x u → ContDiffAt ℝ 1 F x ∧ ∀ h : Euclid P,
+      inner ℝ x h = 0 → fderiv ℝ F x h = deriv φ (Real.arctan (inner ℝ x e / inner ℝ x u)) *
+        lam ‖x‖ * ((inner ℝ x u * inner ℝ h e - inner ℝ x e * inner ℝ h u) /
+          (inner ℝ x u ^ 2 + inner ℝ x e ^ 2)) := by
+    intro x hx
+    rw [hFdef]
+    exact Submission.idtp_ccd_scsp_tf_profile_deriv P u e x φ lam hφ hlam hx
+  obtain ⟨g, hgdef⟩ : ∃ g : Euclid P → ℝ, g = fun y => F y * ζ y := ⟨_, rfl⟩
+  -- `g` is `C¹`: both factors are `C¹` near points of `N ⊆ {⟨·, u⟩ > 0}`, and `g` vanishes near
+  -- every point off `tsupport ζ ⊆ N`
+  have hg : ContDiff ℝ 1 g := by
+    rw [contDiff_iff_contDiffAt]
+    intro y
+    by_cases hy : y ∈ N
+    · rw [hgdef]
+      exact (hF y (hNu y hy)).1.mul hζ.contDiffAt
+    · have h0 : g =ᶠ[𝓝 y] fun _ => 0 := by
+        filter_upwards [notMem_tsupport_iff_eventuallyEq.mp fun h => hy (hζN h)] with z hz
+        simp [hgdef, hz]
+      exact contDiffAt_const.congr_of_eventuallyEq h0
+  have hXζ : support (fun y => g y • (inner ℝ y u • e - inner ℝ y e • u)) ⊆ support ζ := by
+    intro y hy
+    rw [mem_support] at hy ⊢
+    intro h
+    apply hy
+    simp [hgdef, h]
+  -- the field `X(y) = g(y) (⟨y, u⟩ e - ⟨y, e⟩ u)`
+  refine ⟨fun y => g y • (inner ℝ y u • e - inner ℝ y e • u), ?_, hζc.mono hXζ,
+    (closure_mono hXζ).trans hζN, ?_⟩
+  · exact hg.smul (((contDiff_id.inner ℝ contDiff_const).smul contDiff_const).sub
+      ((contDiff_id.inner ℝ contDiff_const).smul contDiff_const))
+  intro t ht α hα
+  obtain ⟨-, hTx⟩ := hTN t ht α hα
+  obtain ⟨hγ1, hγu, hγarc⟩ := hγp α hα
+  obtain ⟨horth, hkey, hne⟩ := Submission.idtp_ccd_scsp_angle_curve P u e s γ hγ hγp α hα
+  have ht0 : 0 < t := by linarith [ht.1]
+  have hc : 0 < ‖deriv γ α‖ := norm_pos_iff.mpr hne
+  -- the orthonormal frame `(γ(α), τ)` of `T(t γ(α))`, `τ = γ′(α) / ‖γ′(α)‖`
+  obtain ⟨τ, hτ⟩ : ∃ τ : Euclid P, τ = ‖deriv γ α‖⁻¹ • deriv γ α := ⟨_, rfl⟩
+  have hτ1 : ‖τ‖ = 1 := by
+    rw [hτ, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hc.ne']
+  have hγτ : inner ℝ (γ α) τ = 0 := by
+    rw [hτ, real_inner_smul_right, horth, mul_zero]
+  have hon : Orthonormal ℝ ![γ α, τ] := by
+    simp [orthonormal_vecCons_iff, hγ1, hτ1, hγτ]
+  have hspan : Submodule.span ℝ (Set.range ![γ α, τ]) = T (t • γ α) := by
+    rw [hTx, Matrix.range_cons, Matrix.range_cons, Matrix.range_empty, Set.union_empty,
+      Set.singleton_union, Submodule.span_insert, Submodule.span_insert, hτ,
+      Submodule.span_singleton_smul_eq (inv_pos.mpr hc).ne'.isUnit]
+  refine (Submission.idtp_ccd_scsp_tf_rotation_trace P u e (γ α) τ (T (t • γ α)) g t hon hspan
+    (hg.differentiable one_ne_zero _)).trans ?_
+  -- the point `x = t γ(α)`: `⟨x, u⟩ > 0`, `‖x‖ = t`, `arctan(⟨x, e⟩ / ⟨x, u⟩) = α`, `x ⊥ τ`
+  have hxu : 0 < inner ℝ (t • γ α) u := by
+    rw [real_inner_smul_left]
+    positivity
+  have hnx : ‖t • γ α‖ = t := by
+    rw [norm_smul, hγ1, mul_one, Real.norm_of_nonneg ht0.le]
+  have hfx : Real.arctan (inner ℝ (t • γ α) e / inner ℝ (t • γ α) u) = α := by
+    rw [real_inner_smul_left, real_inner_smul_left, mul_div_mul_left _ _ ht0.ne', hγarc]
+  have hxτ : inner ℝ (t • γ α) τ = 0 := by
+    rw [real_inner_smul_left, hγτ, mul_zero]
+  obtain ⟨hFx, hDFx⟩ := hF (t • γ α) hxu
+  have hDF := hDFx τ hxτ
+  rw [hfx, hnx] at hDF
+  -- `Dg(x) τ = DF(x) τ`: if `x ∈ V` then `ζ ≡ 1` near `x`; otherwise `(t, α)` lies outside
+  -- `tsupport λ × tsupport φ`, so `F(x) = 0` and `DF(x) τ = 0`
+  have hDg : fderiv ℝ g (t • γ α) τ = fderiv ℝ F (t • γ α) τ := by
+    by_cases hxV : t • γ α ∈ V
+    · have hgF : g =ᶠ[𝓝 (t • γ α)] F := by
+        filter_upwards [hVo.mem_nhds hxV] with y hy
+        simp only [hgdef, hζV y hy, mul_one]
+      rw [hgF.fderiv_eq]
+    · have hnot : lam t = 0 ∨ (φ α = 0 ∧ deriv φ α = 0) := by
+        by_cases hlt : t ∈ tsupport lam
+        · have hαφ : α ∉ tsupport φ := fun h => hxV (hKV ⟨(t, α), ⟨hlt, h⟩, rfl⟩)
+          exact Or.inr ⟨image_eq_zero_of_notMem_tsupport hαφ,
+            notMem_support.mp fun h => hαφ (support_deriv_subset h)⟩
+        · exact Or.inl (image_eq_zero_of_notMem_tsupport hlt)
+      have hF0 : F (t • γ α) = 0 := by
+        simp only [hFdef]
+        rw [hfx, hnx]
+        rcases hnot with h | h
+        · rw [h, mul_zero]
+        · rw [h.1, zero_mul]
+      have hDF0 : fderiv ℝ F (t • γ α) τ = 0 := by
+        rw [hDF]
+        rcases hnot with h | h
+        · rw [h, mul_zero, zero_mul]
+        · rw [h.2, zero_mul, zero_mul]
+      rw [hgdef, fderiv_fun_mul (hFx.differentiableAt one_ne_zero)
+        (hζ.differentiable one_ne_zero _)]
+      simp [hF0, hDF0]
+  rw [hDg, hDF, hτ]
+  simp only [real_inner_smul_left]
+  set A := inner ℝ (γ α) u
+  set B := inner ℝ (γ α) e
+  set a := inner ℝ (deriv γ α) u
+  set b := inner ℝ (deriv γ α) e
+  set c := ‖deriv γ α‖
+  have hq : 0 < A ^ 2 + B ^ 2 := by positivity
+  rw [show t * A * (c⁻¹ * b) - t * B * (c⁻¹ * a) = t * c⁻¹ * (A ^ 2 + B ^ 2) by
+      rw [← hkey]; ring,
+    show A * (c⁻¹ * b) - B * (c⁻¹ * a) = c⁻¹ * (A ^ 2 + B ^ 2) by rw [← hkey]; ring,
+    show (t * A) ^ 2 + (t * B) ^ 2 = t ^ 2 * (A ^ 2 + B ^ 2) by ring]
+  field_simp
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
