@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.change_of_variables-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1",
+  "depth": 6,
+  "title": "Change of variables on injective pieces: Jacobian bound under composition, Borel image, measurable inverse, null-set pull-back, signed area formula",
+  "statement": "Let P, n ∈ ℕ, e_k := EuclideanSpace.single k 1 and, for a linear T : ℝⁿ → ℝ^P, J_T := (det[⟨Te_k, Te_l⟩]_{k,l})^{1/2}. (I) For continuous linear A : ℝⁿ → ℝ^P and L : ℝ^P → ℝ^P with L∘A injective, J_{L∘A} ≤ ‖L‖ⁿ·J_A. (II) Let F : ℝⁿ → ℝ^P and B ⊆ ℝⁿ Borel such that F is differentiable with injective derivative at every point of B and F is injective on B, and J(x) := J_{DF(x)}. Then (i) F(B) is Borel; (ii) ψ := Function.invFunOn F B is Borel measurable; (iii) every property that holds for Hⁿ⌞F(B)-a.e. y holds at F(x) for Lebesgue-a.e. x ∈ B; (iv) for every h : ℝ^P → ℝ that is a.e. strongly measurable for Hⁿ⌞F(B), h is Hⁿ-integrable on F(B) iff x ↦ J(x)·h(F(x)) is Lebesgue integrable on B, and ∫_{F(B)} h dHⁿ = ∫_B J(x)·h(F(x)) dx (Hⁿ = μHE[n]).",
+  "lean_statement": "∀ (P n : ℕ), (∀ (A : Euclid n →L[ℝ] Euclid P) (L : Euclid P →L[ℝ] Euclid P), Injective (L.comp A) → Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ ((L.comp A) (EuclideanSpace.single k 1)) ((L.comp A) (EuclideanSpace.single l 1)))) ≤ ‖L‖ ^ n * Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (A (EuclideanSpace.single k 1)) (A (EuclideanSpace.single l 1))))) ∧ ∀ (F : Euclid n → Euclid P) (B : Set (Euclid n)), MeasurableSet B → (∀ x ∈ B, DifferentiableAt ℝ F x ∧ Injective (fderiv ℝ F x)) → InjOn F B → MeasurableSet (F '' B) ∧ Measurable (Function.invFunOn F B) ∧ (∀ p : Euclid P → Prop, (∀ᵐ y ∂(μHE[n].restrict (F '' B)), p y) → ∀ᵐ x ∂(volume.restrict B), p (F x)) ∧ ∀ h : Euclid P → ℝ, AEStronglyMeasurable h (μHE[n].restrict (F '' B)) → (IntegrableOn h (F '' B) μHE[n] ↔ IntegrableOn (fun x => Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (fderiv ℝ F x (EuclideanSpace.single k 1)) (fderiv ℝ F x (EuclideanSpace.single l 1)))) * h (F x)) B) ∧ ∫ y in F '' B, h y ∂μHE[n] = ∫ x in B, Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (fderiv ℝ F x (EuclideanSpace.single k 1)) (fderiv ℝ F x (EuclideanSpace.single l 1)))) * h (F x)",
+  "lean_name": "dtc_bc_lc_pfi_area_change_of_variables",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.orient_algebra-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f-a1",
+      "result_commit": "d5ba41d68f1ca2e5ef9b0ebdd62cf01e6e24a919",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.orient_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-80da2c43b0-a1"
+}
