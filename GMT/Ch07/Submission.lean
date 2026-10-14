@@ -541,6 +541,80 @@ theorem codim1_rdo_dg_sp_mollifier_adjoint : ∀ (P : ℕ) (η u : Euclid P → 
       funext x
       rw [← neg_sub x z, hodd, neg_apply]
       ring
+/-- Smoothing a unit field `s` supported in `Q_δ` by a nonnegative normalized `C^∞` kernel `ρ` of
+radius `σ < δ` gives an admissible test field for `Q₁` (Simon Ch. 2, proof of Lemma 2.5): `ρ ⋆ s`
+is `C^∞` (differentiation under the integral), `|ρ ⋆ s| ≤ ∫ ρ = 1`, and
+`spt (ρ ⋆ s) ⊆ Q_δ + B_σ(0)` lies in the compact box `{δ − σ ≤ yᵢ ≤ 1 − δ + σ} ⊆ Q₁`. -/
+theorem dimred_mbl_dt_cbm_sa_smoothed_field : ∀ (m : ℕ) (δ σ : ℝ) (ρ : Euclid (m + 1) → ℝ) (s : Euclid (m + 1) → Euclid (m + 1)), 0 < σ → σ < δ → ContDiff ℝ (⊤ : ℕ∞) ρ → (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → support ρ ⊆ ball (0 : Euclid (m + 1)) σ → AEStronglyMeasurable s volume → (∀ x, ‖s x‖ ≤ 1) → (∀ x, x ∉ {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ} → s x = 0) → ContDiff ℝ (⊤ : ℕ∞) (convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume) ∧ HasCompactSupport (convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume) ∧ tsupport (convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume) ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} ∧ ∀ y, ‖convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume y‖ ≤ 1 := by
+  intro m δ σ ρ s hσ hσδ hρs hρnn hρint hρsupp hs hs1 hs0
+  set G : Euclid (m + 1) → Euclid (m + 1) := convolution ρ s (ContinuousLinearMap.lsmul ℝ ℝ) volume
+    with hG_def
+  -- Step 1: `ρ` vanishes off `B̄_σ(0)`, so it has compact support; `∫ ρ = 1 ≠ 0`, so it is
+  -- integrable.
+  have hρc : HasCompactSupport ρ := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid (m + 1)) σ) fun x hx => ?_
+    by_contra h
+    exact hx (ball_subset_closedBall (hρsupp h))
+  have hρi : Integrable ρ := integrable_of_integral_eq_one hρint
+  -- Step 2: `s` is a.e.-strongly measurable and bounded by `1`, hence locally integrable.
+  have hsloc : LocallyIntegrable s volume := by
+    rw [locallyIntegrable_iff]
+    intro K hK
+    exact Measure.integrableOn_of_bounded hK.measure_lt_top.ne hs
+      (Eventually.of_forall hs1) (M := 1)
+  -- Step 3: `G = ρ ⋆ s` is `C^∞` by differentiation under the integral sign.
+  have hG : ContDiff ℝ (⊤ : ℕ∞) G := hρc.contDiff_convolution_left _ hρs hsloc
+  -- Step 4: `|G y| ≤ ∫ ρ(t) |s(y − t)| dt ≤ ∫ ρ = 1`.
+  have hGle : ∀ y, ‖G y‖ ≤ 1 := by
+    intro y
+    rw [hG_def, convolution_def, ← hρint]
+    refine norm_integral_le_of_norm_le hρi (Eventually.of_forall fun t => ?_)
+    rw [ContinuousLinearMap.lsmul_apply, norm_smul, Real.norm_of_nonneg (hρnn t)]
+    exact mul_le_of_le_one_right (hρnn t) (hs1 _)
+  -- Step 5: `support G ⊆ support s + support ρ ⊆ Q_δ + B_σ(0) ⊆ P`, using `|tᵢ| ≤ |t|`.
+  set P : Set (Euclid (m + 1)) := {y | ∀ i, δ - σ ≤ y i ∧ y i ≤ 1 - δ + σ}
+  have hsuppG : support G ⊆ P := by
+    intro y hy
+    obtain ⟨a, ha, t, ht, rfl⟩ := support_convolution_subset_swap _ hy
+    have haQ : ∀ i, δ < a i ∧ a i < 1 - δ := by
+      by_contra h
+      exact ha (hs0 a h)
+    have htn : ‖t‖ < σ := by simpa using hρsupp ht
+    intro i
+    have hti : |t i| < σ := by
+      have := PiLp.norm_apply_le t i
+      rw [Real.norm_eq_abs] at this
+      linarith
+    obtain ⟨ha1, ha2⟩ := haQ i
+    obtain ⟨ht1, ht2⟩ := abs_lt.1 hti
+    simp only [PiLp.add_apply]
+    constructor <;> linarith
+  -- Step 6: `P` is closed and, as `0 < σ < δ`, lies in `Q₁ ⊆ B̄_{√(m+1)}(0)`; so it is compact.
+  have hPclosed : IsClosed P := by
+    have : P = ⋂ i, ({y : Euclid (m + 1) | δ - σ ≤ y i} ∩
+        {y : Euclid (m + 1) | y i ≤ 1 - δ + σ}) := by
+      ext y; simp [P]
+    rw [this]
+    exact isClosed_iInter fun i => (isClosed_le continuous_const (by fun_prop)).inter
+      (isClosed_le (by fun_prop) continuous_const)
+  have hPQ1 : P ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := by
+    intro y hy i
+    obtain ⟨h1, h2⟩ := hy i
+    exact ⟨by linarith, by linarith⟩
+  have hQ1bdd : {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} ⊆
+      closedBall (0 : Euclid (m + 1)) (Real.sqrt (m + 1)) := by
+    intro y hy
+    rw [mem_closedBall, dist_zero_right, EuclideanSpace.norm_eq]
+    apply Real.sqrt_le_sqrt
+    calc ∑ i, ‖y i‖ ^ 2 ≤ ∑ _i : Fin (m + 1), (1 : ℝ) := Finset.sum_le_sum fun i _ => by
+            obtain ⟨h0, h1⟩ := hy i
+            rw [Real.norm_eq_abs, sq_abs]; nlinarith
+      _ = m + 1 := by simp
+  have hPcompact : IsCompact P :=
+    isCompact_of_isClosed_isBounded hPclosed (isBounded_closedBall.subset (hPQ1.trans hQ1bdd))
+  -- Step 7: `tsupport G = closure (support G) ⊆ P`, so it is compact and lies in `Q₁`.
+  have htsupp : tsupport G ⊆ P := closure_minimal hsuppG hPclosed
+  exact ⟨hG, hPcompact.of_isClosed_subset (isClosed_tsupport G) htsupp, htsupp.trans hPQ1, hGle⟩
 
 end Submission
 
