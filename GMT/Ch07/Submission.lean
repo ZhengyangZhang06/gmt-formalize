@@ -606,6 +606,23 @@ theorem Submission.dimred_mbl_dt_cbm_im_median_abs_le : ∀ (X : Type) [Measurab
     _ ≤ 2 * (|β| * μ.real {x | |β| ≤ |u x|}) := by gcongr
     _ ≤ 2 * ∫ x, |u x| ∂μ := by gcongr
 
+/-- **Simon 6.5.1** (proof, (31) and (35): the integer median `β_F` and `|β_F| ≤ 2∫_{F̊}|F|`):
+if `u` is integer-valued and integrable on the open unit cube `Q₁ = (0, 1)ⁿ`, some `β ∈ ℤ`
+minimizes `c ↦ ∫_{Q₁} |u - c|` and satisfies `|β| ≤ 2 ∫_{Q₁} |u|`.  Since `vol(Q₁) = 1`, Lebesgue
+measure restricted to `Q₁` is a probability measure; an integer median `β` of `u` for it exists,
+minimizes the `L¹` deviation, and is bounded by twice the `L¹` norm. -/
+theorem Submission.dimred_mbl_dt_cbm_integer_median : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ), (∀ y, ∃ z : ℤ, u y = z) → IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∃ β : ℤ, (∀ c : ℝ, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - β| ≤ ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y - c|) ∧ |(β : ℝ)| ≤ 2 * ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u y| := by
+  intro m u hu hint
+  -- `μ := volume.restrict Q₁` is a probability measure, as `vol(Q₁) = 1`
+  have hμ : IsProbabilityMeasure
+      (volume.restrict {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) :=
+    ⟨by rw [Measure.restrict_apply_univ]; exact Submission.cmcdtfrfg_cube_volume (m + 1)⟩
+  -- an integer median `β` of `u` for `μ` (`IntegrableOn u Q₁` is `Integrable u μ`)
+  obtain ⟨β, hβu, huβ⟩ := Submission.dimred_mbl_dt_cbm_im_integer_median_exists _ _ u hμ
+    hint.integrable.aemeasurable hu
+  exact ⟨β, Submission.dimred_mbl_dt_cbm_im_median_minimizes _ _ u β hμ hint.integrable hβu huβ,
+    Submission.dimred_mbl_dt_cbm_im_median_abs_le _ _ u β hμ hint.integrable hβu huβ⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
