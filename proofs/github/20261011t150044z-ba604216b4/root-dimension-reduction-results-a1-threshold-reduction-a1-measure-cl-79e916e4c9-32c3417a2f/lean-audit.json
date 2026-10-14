@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bd133e8aba67ffceae35f78e170c2c4d1d4e1552c15773e0d93c1d6b17de503a",
+  "git_delta": {
+    "base_commit": "512e483b56d8c4e702569dea685b64780141fee3",
+    "candidate_commit": "6f54405a00619bc56add8d8c437f1120a551ed93",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_tr_mcr_tl_lower_bound_transfer",
+    "diff_sha256": "7c049f43f4aea50ae6bc2c16736d1499995ba097109c439a5420897d732d9d80",
+    "source_sha256": "d4dcebe5dd71e857aa88dcd7a81a75dcf8a9ab01492c1442d3ccfcc30c51cd40",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_tr_mcr_tl_lower_bound_transfer",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (ws : ℕ → Euclid P) (w : Euclid P) (s : ℝ) (h : ℝ → ℝ≥0∞), (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K) → Tendsto ws atTop (𝓝 w) → Continuous h → (∀ᶠ j in atTop, ∀ ρ ∈ Ioo 0 s, h ρ ≤ μs j (ball (ws j) ρ)) → ∀ t ∈ Ioo 0 s, h t ≤ μ (ball w t)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
