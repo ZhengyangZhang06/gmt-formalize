@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b27a8b223f4a7eee92d70f01a169333297b56413b52f9f9d99ee0f55b4684402",
+  "git_delta": {
+    "base_commit": "c6d6782f414011399bc82342a7029ccd5bad7d35",
+    "candidate_commit": "b15d9f71ca9fb0fab5c0f0e29afaa5dab3c535be",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cc_mb_monotone_lower_bound",
+    "diff_sha256": "6550f7f047c1abbb33a796564516f5f6ad652a2f6639d9e851683874d2640681",
+    "source_sha256": "23ed4abf4e890bfb53c10480428312fd01e100057a050cd1ce60c7838b14de68",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cc_mb_monotone_lower_bound",
+      "statement": "∀ (n : ℕ) (Λ ρ σ θ : ℝ) (m : ℝ → ℝ≥0∞), 1 ≤ θ → 0 < σ → σ < ρ → MonotoneOn (fun τ : ℝ => ENNReal.ofReal (Real.exp (Λ * τ) / τ ^ n) * m τ) (Ioo 0 ρ) → Tendsto (fun τ : ℝ => m τ / (unitBallVolume n * ENNReal.ofReal (τ ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal θ)) → ENNReal.ofReal (Real.exp (-(Λ * σ))) * (unitBallVolume n * ENNReal.ofReal (σ ^ n)) ≤ m σ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
