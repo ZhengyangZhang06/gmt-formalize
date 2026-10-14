@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2187aa5adefec0c27a9ba4c844d89a0d887249508db3df95d5f81ccac80fadb1",
+  "git_delta": {
+    "base_commit": "37a7e5e595a9fe2710eace1ba51f096b633c8c26",
+    "candidate_commit": "5e56249c0cedd69818c1292c5a9b1fc5a1dea8bc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_cbm_st_div_product",
+    "diff_sha256": "9b340816c04da239c88ade3c75a706340a1d12f3ec87fa0a103a91234b4341fd",
+    "source_sha256": "50012ce60d4230109ee92b608b9193cf07e9dc601321d445b4294886e2a8ea04",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_cbm_st_div_product",
+      "statement": "∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (G : Euclid (m + 1) → Euclid (m + 1)) (x : Euclid (m + 1)), DifferentiableAt ℝ v x → DifferentiableAt ℝ G x → v x * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G x) = ∑ i, fderiv ℝ (fun y => v y * G y i) x (EuclideanSpace.single i 1) - fderiv ℝ v x (G x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
