@@ -735,6 +735,26 @@ theorem Submission.dimred_mbl_dt_cbm_sp_cube_geometry : ∀ (n : ℕ) (δ : ℝ)
             (MeasurableSet.univ_pi fun _ => measurableSet_Ioo).nullMeasurableSet
       _ = 1 := by rw [Real.volume_pi_Ioo]; simp
 
+/-- **Smooth Poincaré inequality on the cube `Q_δ`** (the "usual Poincaré inequality for smooth
+functions" of Simon Ch. 2, 2.7).  For `n = m + 1`, `δ ≥ 0`, `Q_δ = {z : δ < zᵢ < 1 − δ ∀ i}` and
+`v ∈ C¹(ℝⁿ)`, `∫_{Q_δ} ∫_{Q_δ} |v(x) − v(y)| dy dx ≤ 2ⁿ √n ∫_{Q_δ} ‖Dv‖`.  The cube `Q_δ` is convex
+and measurable, has diameter `≤ √n` and `Lⁿ(Q_δ) ≤ 1`, so the convex Poincaré bound with `d = √n`
+gives `∫∫ |v(x) − v(y)| ≤ 2ⁿ √n Lⁿ(Q_δ) ∫_{Q_δ} ‖Dv‖ ≤ 2ⁿ √n ∫_{Q_δ} ‖Dv‖`. -/
+theorem Submission.dimred_mbl_dt_cbm_smooth_poincare : ∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (δ : ℝ), ContDiff ℝ 1 v → 0 ≤ δ → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v x - v y| ≤ 2 ^ (m + 1) * Real.sqrt (m + 1) * ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖fderiv ℝ v x‖ := by
+  intro m v δ hv hδ
+  -- `Q_δ` is convex and measurable, with diameter `≤ √n` and volume `≤ 1` (`n = m + 1`).
+  obtain ⟨hconv, hmeas, hdiam, hvol⟩ := Submission.dimred_mbl_dt_cbm_sp_cube_geometry (m + 1) δ hδ
+  -- Convex Poincaré bound with `d = √n`: `∫∫ |v x − v y| ≤ 2ⁿ √n Lⁿ(Q_δ) ∫ ‖Dv‖`.
+  have hP := Submission.dimred_mbl_dt_cbm_sp_convex_poincare (m + 1) _ v
+    (Real.sqrt ((m + 1 : ℕ) : ℝ)) hconv hmeas (Real.sqrt_nonneg _) hdiam hv
+  have hvol' : (volume {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}).toReal ≤ 1 :=
+    ENNReal.toReal_le_of_le_ofReal zero_le_one (by rwa [ENNReal.ofReal_one])
+  calc _ ≤ _ := hP
+    _ ≤ 2 ^ (m + 1) * Real.sqrt ((m + 1 : ℕ) : ℝ) * 1 *
+          ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖fderiv ℝ v x‖ := by
+        gcongr
+    _ = _ := by push_cast; ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
