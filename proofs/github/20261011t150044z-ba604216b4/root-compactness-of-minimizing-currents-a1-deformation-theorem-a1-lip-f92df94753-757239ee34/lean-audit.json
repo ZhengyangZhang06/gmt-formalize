@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "168d3189c5d84fecfb9e2038da3f7bc94942bd8448f2cc83ba4a6a25c343c879",
+  "git_delta": {
+    "base_commit": "7b48745bf40cf3cfdba34935053ab6dff5429d1c",
+    "candidate_commit": "e34943dcf2d843f80c2c7a2776993496e8010cb8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpo_slice_covector_bound",
+    "diff_sha256": "5ae03cda56d31bf1384af97bde3b676076f1259f4c494a022077dcec2c5aa5a8",
+    "source_sha256": "3211649b3bb1232f9a85823b5a7282869c26b98fe688e23824d4a8e1362c8449",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpo_slice_covector_bound",
+      "statement": "∀ (N k : ℕ) (α : Covector (Euclid N) k) (f : ℝ → Covector (Euclid N) k) (c : ℝ), Continuous f → (∀ v : Fin k → Euclid N, α v = ∫ t in (0 : ℝ)..1, f t v) → (∀ t ∈ Icc (0 : ℝ) 1, covectorEuclideanNorm (f t) ≤ c) → covectorEuclideanNorm α ≤ c",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
