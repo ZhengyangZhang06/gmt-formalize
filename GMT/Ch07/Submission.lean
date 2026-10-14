@@ -2936,6 +2936,62 @@ theorem Submission.lcmp_massOn_le_add_of_eval_eq : ∀ (P k : ℕ) (U G : Set (E
     _ ≤ ENNReal.ofReal (X ω + |Y ω|) := ENNReal.ofReal_le_ofReal (by linarith)
     _ ≤ ENNReal.ofReal (X ω) + ENNReal.ofReal |Y ω| := ENNReal.ofReal_add_le
     _ ≤ X.massOn G + Y.massOn G := add_le_add hXle habs
+/-- **Outer bound on a compact set** (Simon 7.2.4, proof: (F4) and step 8).  Let `U ⊆ ℝᴾ` be
+open, `E ⊆ U` compact, `ν(K) < ∞` for compact `K ⊆ U`, and `μ(G) ≤ ν(G) + c` for every open
+`G ⊇ E` with `G ⊂⊂ U`.  Then `μ(E) ≤ ν(E) + c`.  Choose `δ > 0` with `{dist(·, E) ≤ δ} ⊆ U`; the
+open thickenings `G_k = {dist(·, E) < δ/(k + 2)}` contain `E`, are compactly contained in `U` and
+decrease to `closure E = E`, and `ν(G₀) < ∞`, so `ν(G_k) → ν(E)` by continuity from above and
+`μ(E) ≤ μ(G_k) ≤ ν(G_k) + c` passes to the limit. -/
+theorem Submission.lcmp_measure_le_add_of_open_nhds : ∀ (P : ℕ) (U E : Set (Euclid P)) (μ ν : Measure (Euclid P)) (c : ℝ≥0∞), IsOpen U → IsCompact E → E ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → (∀ G : Set (Euclid P), IsOpen G → E ⊆ G → CompactlyContained G U → μ G ≤ ν G + c) → μ E ≤ ν E + c := by
+  intro P U E μ ν c hU hE hEU hν hG
+  -- Step 1: `cthickening δ E ⊆ U`; the radii `r k = δ/(k + 2) ∈ (0, δ]` decrease
+  obtain ⟨δ, hδ, hδU⟩ := hE.exists_cthickening_subset_open hU hEU
+  set r : ℕ → ℝ := fun k => δ / ((k : ℝ) + 2) with hr
+  have hrpos : ∀ k, 0 < r k := fun k => div_pos hδ (by positivity)
+  have hrle : ∀ k, r k ≤ δ := fun k =>
+    div_le_self hδ.le (by have : (0 : ℝ) ≤ k := Nat.cast_nonneg k; linarith)
+  have hranti : Antitone r := fun a b hab =>
+    div_le_div_of_nonneg_left hδ.le (by positivity) (by
+      have : (a : ℝ) ≤ b := Nat.cast_le.2 hab
+      linarith)
+  -- Step 2: `G k = thickening (r k) E` is open, contains `E`, and has compact closure
+  -- `⊆ cthickening δ E ⊆ U`; so `μ(E) ≤ μ(G k) ≤ ν(G k) + c`
+  set G : ℕ → Set (Euclid P) := fun k => thickening (r k) E
+  have hGo : ∀ k, IsOpen (G k) := fun k => isOpen_thickening
+  have hEG : ∀ k, E ⊆ G k := fun k => self_subset_thickening (hrpos k) E
+  have hclG : ∀ k, closure (G k) ⊆ cthickening δ E := fun k =>
+    (closure_thickening_subset_cthickening _ _).trans (cthickening_mono (hrle k) E)
+  have hGcc : ∀ k, CompactlyContained (G k) U := fun k =>
+    ⟨hE.cthickening.of_isClosed_subset isClosed_closure (hclG k), (hclG k).trans hδU⟩
+  have hle : ∀ k, μ E ≤ ν (G k) + c := fun k =>
+    (measure_mono (hEG k)).trans (hG _ (hGo k) (hEG k) (hGcc k))
+  -- Step 3: `G k` decreases to `closure E = E`, and `ν(G 0) ≤ ν(cthickening δ E) < ∞`
+  have hanti : Antitone G := fun a b hab => thickening_mono (hranti hab) E
+  have hinter : ⋂ k, G k = E := by
+    apply subset_antisymm
+    · intro x hx
+      rw [mem_iInter] at hx
+      have hxcl : x ∈ closure E := by
+        rw [closure_eq_iInter_thickening]
+        simp only [mem_iInter]
+        intro ε hε
+        obtain ⟨k, hk⟩ := exists_nat_gt (δ / ε)
+        have hrk : r k < ε := by
+          rw [hr, div_lt_iff₀ (by positivity)]
+          rw [div_lt_iff₀ hε] at hk
+          nlinarith
+        exact thickening_mono hrk.le E (hx k)
+      rwa [hE.isClosed.closure_eq] at hxcl
+    · exact subset_iInter hEG
+  have hfin0 : ν (G 0) ≠ ∞ :=
+    ((measure_mono ((subset_closure).trans (hclG 0))).trans_lt
+      (hν _ hE.cthickening hδU)).ne
+  -- Step 4: continuity from above gives `ν(G k) + c → ν(E) + c`; pass to the limit
+  have htend : Tendsto (fun k => ν (G k)) atTop (𝓝 (ν E)) := by
+    have := tendsto_measure_iInter_atTop (μ := ν)
+      (fun k => (hGo k).measurableSet.nullMeasurableSet) hanti ⟨0, hfin0⟩
+    rwa [hinter] at this
+  exact ge_of_tendsto' (htend.add_const c) hle
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
