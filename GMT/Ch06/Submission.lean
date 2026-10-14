@@ -68943,8 +68943,6 @@ theorem Submission.boundary_rectifiability : BoundaryRectifiability := by
         (hXT (exteriorDerivativeTestOn U m ω) hdω).symm
     _ = X.boundary.restrictDomain (subset_univ U) ω := rfl
 
-theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
-
 /-- **Weak compactness step of Simon Ch. 6, Lemma 2.15 (p. 137).**  If `sup_q M_W(T_q) < ∞` for
 every `W ⊂⊂ U`, a subsequence of `T_q` converges weakly in `U`.  Take an exhaustion `W i ⊂⊂ U`,
 `B i = sup_q M_{W i}(T_q)`, and countable families `E i` of test forms supported in `W i` that are
