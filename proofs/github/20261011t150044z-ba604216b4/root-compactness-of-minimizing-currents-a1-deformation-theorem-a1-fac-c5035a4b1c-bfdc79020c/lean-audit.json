@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "87b31bdf69bd79123b0d311c2d6e1c7f01a30c908b442896047a0849a83e70a0",
+  "git_delta": {
+    "base_commit": "924e01e131d8fcee4806280600093441b4fb815f",
+    "candidate_commit": "6e3fe6f2b367253c3841383c57fcaedee3ca8b21",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrfic_divergence_field",
+    "diff_sha256": "bca67d15af002d647fde3e85110a2bc1046ff01778e45ed8816777f5f0945ae4",
+    "source_sha256": "d4f4064c2fb973004d1c71e44b21a355a6d688a8ec2974ae8e8b901f3477c749",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrfic_divergence_field",
+      "statement": "∀ (P m : ℕ) (γ : DifferentialForm (Euclid P) m) (ι : Fin (m + 1) → Fin P) (a : Euclid P), ContDiff ℝ (⊤ : ℕ∞) γ → StrictMono ι → ∃ G : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) G ∧ (∀ y, ‖G y‖ ≤ covectorEuclideanNorm (γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)))) ∧ ∀ y, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ G y) = exteriorDerivative γ (a + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
