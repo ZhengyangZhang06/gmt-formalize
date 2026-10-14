@@ -7,7 +7,6 @@ import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
 import Poincare.SimonGMT.Chapter02.AreaLipschitz
-import Mathlib.Analysis.Normed.Group.Tannery
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -7971,6 +7970,46 @@ theorem Submission.cmcdt_lpi_pushforward_im : ((∀ (N N' k : ℕ) (A : Euclid N
       (hNcont.comp (ContDiff.continuous ω.property.1.1)).bounded_above_of_compact_support hcs
     exact ⟨max C 0, le_max_right _ _, fun y =>
       ((Real.le_norm_self _).trans (hC y)).trans (le_max_left _ _)⟩
+  -- Tannery's theorem (dominated convergence for series): if `|fⱼ(i)| ≤ bᵢ` with `Σᵢ bᵢ < ∞`
+  -- and `fⱼ(i) → g(i)` for every `i`, then `Σᵢ fⱼ(i) → Σᵢ g(i)`; an `ε/3` argument
+  have htannery : ∀ (f : ℕ → ℕ → ℝ) (g bound : ℕ → ℝ), Summable bound →
+      (∀ i, Tendsto (fun j => f j i) atTop (𝓝 (g i))) → (∀ j i, ‖f j i‖ ≤ bound i) →
+      Tendsto (fun j => ∑' i, f j i) atTop (𝓝 (∑' i, g i)) := by
+    intro f g bound h_sum hab h_bound
+    have h_g_le : ∀ i, ‖g i‖ ≤ bound i := fun i =>
+      le_of_tendsto' (tendsto_norm.comp (hab i)) fun j => h_bound j i
+    have h_sumg : Summable fun i => ‖g i‖ :=
+      h_sum.of_norm_bounded fun i => (norm_norm (g i)).symm ▸ h_g_le i
+    have h_suma : ∀ j, Summable fun i => ‖f j i‖ := fun j =>
+      h_sum.of_norm_bounded fun i => by simpa only [norm_norm] using h_bound j i
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    -- a finite set `T` carrying all but `ε/3` of `Σᵢ bᵢ`
+    obtain ⟨T, hT⟩ : ∃ T : Finset ℕ, dist (∑ i ∈ T, bound i) (∑' i, bound i) < ε / 3 := by
+      have hS := h_sum.hasSum
+      rw [HasSum, Metric.tendsto_nhds] at hS
+      exact Eventually.exists <| hS _ (by positivity)
+    have h1 : ∑' i : (Tᶜ : Set ℕ), bound i < ε / 3 := by
+      calc _ ≤ ‖∑' i : (Tᶜ : Set ℕ), bound i‖ := Real.le_norm_self _
+        _ = ‖∑' i, bound i - ∑ i ∈ T, bound i‖ := congrArg _ ?_
+        _ < ε / 3 := by rwa [dist_eq_norm, norm_sub_rev] at hT
+      rw [eq_sub_iff_add_eq']
+      exact h_sum.sum_add_tsum_compl
+    have h2 : Tendsto (fun j => ∑ i ∈ T, f j i) atTop (𝓝 (∑ i ∈ T, g i)) :=
+      tendsto_finsetSum _ fun i _ => hab i
+    rw [Metric.tendsto_nhds] at h2
+    filter_upwards [h2 (ε / 3) (by positivity)] with j hj
+    rw [dist_eq_norm, ← (h_suma j).of_norm.tsum_sub h_sumg.of_norm,
+      ← ((h_suma j).of_norm.sub h_sumg.of_norm).sum_add_tsum_compl (s := T),
+      (by ring : ε = ε / 3 + (ε / 3 + ε / 3))]
+    refine (norm_add_le _ _).trans_lt (add_lt_add ?_ ?_)
+    · simpa only [dist_eq_norm, Finset.sum_sub_distrib] using hj
+    · rw [((h_suma j).subtype _).of_norm.tsum_sub (h_sumg.subtype _).of_norm]
+      refine (norm_sub_le _ _).trans_lt (add_lt_add ?_ ?_)
+      · refine ((norm_tsum_le_tsum_norm ((h_suma j).subtype _)).trans ?_).trans_lt h1
+        exact ((h_suma j).subtype _).tsum_le_tsum (fun i => h_bound j i) (h_sum.subtype _)
+      · refine ((norm_tsum_le_tsum_norm (h_sumg.subtype _)).trans ?_).trans_lt h1
+        exact (h_sumg.subtype _).tsum_le_tsum (fun i => h_g_le i) (h_sum.subtype _)
   -- Step 8 (☆): `S(ω) = Σᵢ Tᵢ(ω)`, and `|Tᵢ(ω)| ≤ Bᵢ Λⁿ C` when `|ω| ≤ C`
   have hstar : ∀ (ω : TestFormOn (univ : Set (Euclid N')) (k + 1)) (C : ℝ), 0 ≤ C →
       (∀ y, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N') (k + 1)) y) ≤ C) →
@@ -8004,9 +8043,8 @@ theorem Submission.cmcdt_lpi_pushforward_im : ((∀ (N N' k : ℕ) (A : Euclid N
       rw [hW (G i u) (hXW (hG_spt i (mem_image_of_mem (G i) hu))),
         hchain i j u hu (ω : DifferentialForm (Euclid N') (k + 1))]
     -- Step 8: Tannery's theorem, `X(ηⱼ) = Σᵢ Tᵢⱼ(ω) → Σᵢ Tᵢ(ω)`; also `X(ηⱼ) → S(ω)`
-    have htan := tendsto_tsum_of_dominated_convergence hbsum (fun i => hlim i ω)
-      (Eventually.of_forall fun j i =>
-        hTij i j (ω : DifferentialForm (Euclid N') (k + 1)) C hC0 hC)
+    have htan := htannery _ _ _ hbsum (fun i => hlim i ω) fun j i =>
+      hTij i j (ω : DifferentialForm (Euclid N') (k + 1)) C hC0 hC
     rw [tendsto_nhds_unique hηlim (Tendsto.congr (fun j => (hXj j).tsum_eq) htan)]
     exact (hbsum.of_norm_bounded hTi).hasSum
   -- Step 9: integer multiplicity pieces `Sᵢ` with `Sᵢ(ω) = Tᵢ(ω)`
