@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1",
+  "depth": 3,
+  "title": "Passing a measure inequality from compactly contained open neighbourhoods to a compact set",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P open, E ⊆ U compact, μ and ν measures on ℝ^P with ν(K) < ∞ for every compact K ⊆ U, and c ∈ [0, ∞]. Suppose μ(G) ≤ ν(G) + c for every open G ⊇ E such that closure(G) is compact and contained in U. Then μ(E) ≤ ν(E) + c.",
+  "lean_statement": "∀ (P : ℕ) (U E : Set (Euclid P)) (μ ν : Measure (Euclid P)) (c : ℝ≥0∞), IsOpen U → IsCompact E → E ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → (∀ G : Set (Euclid P), IsOpen G → E ⊆ G → CompactlyContained G U → μ G ≤ ν G + c) → μ E ≤ ν E + c",
+  "lean_name": "lcmp_measure_le_add_of_open_nhds",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-compac-a4168491cb-a1"
+}
