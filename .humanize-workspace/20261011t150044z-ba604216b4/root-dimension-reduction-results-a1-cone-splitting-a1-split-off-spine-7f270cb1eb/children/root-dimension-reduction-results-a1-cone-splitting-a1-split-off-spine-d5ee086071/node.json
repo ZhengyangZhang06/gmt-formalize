@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.product_box_measure-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1",
+  "depth": 5,
+  "title": "Measure of a projection box for a measure of product form ν(A) = ∫_E σ(A − t) dH^k(t)",
+  "statement": "Let P, k ∈ ℕ, let G ⊆ ℝ^P be a linear subspace with orthogonal projections p := G.starProjection and q := G^⊥.starProjection, let ν, σ be measures on ℝ^P and E ⊆ G a Borel set, H^k := μHE[k]. Assume σ(ℝ^P ∖ G^⊥) = 0 and ν(A) = ∫_E σ(A − t) dH^k(t) (Lean: ∫⁻ t in E, σ((fun y => t + y)⁻¹' A) ∂μHE[k]) for every Borel A ⊆ ℝ^P. Then for all Borel sets C, B ⊆ ℝ^P: ν(p⁻¹(C) ∩ q⁻¹(B)) = H^k(E ∩ C)·σ(B).",
+  "lean_statement": "∀ (P k : ℕ) (G : Submodule ℝ (Euclid P)) (ν σ : Measure (Euclid P)) (E : Set (Euclid P)), σ (Gᗮ : Set (Euclid P))ᶜ = 0 → MeasurableSet E → E ⊆ (G : Set (Euclid P)) → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in E, σ ((fun y => t + y) ⁻¹' A) ∂μHE[k]) → ∀ C B : Set (Euclid P), MeasurableSet C → MeasurableSet B → ν (G.starProjection ⁻¹' C ∩ Gᗮ.starProjection ⁻¹' B) = μHE[k] (E ∩ C) * σ B",
+  "lean_name": "dimred_cs_sos_mt_product_box_measure",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-d5ee086071-a1"
+}
