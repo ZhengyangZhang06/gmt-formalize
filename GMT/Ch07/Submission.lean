@@ -1294,6 +1294,173 @@ theorem Submission.dtc_bc_lc_pfi_integer_density_of_summable : ∀ (P n : ℕ) (
       simpa using hy.ne
     simpa [Nat.cast_natAbs] using NNReal.summable_coe.2 h1
 
+/-- **Simon Ch. 6, 3.7–3.9 (gluing integer pieces)**: let `U` be open, `N_j ⊆ U` Borel and
+countably `n`-rectifiable, `g_j` integer-valued and nonzero on `N_j`, and `η_j` a unit orientation
+of an approximate tangent space of `N_j` at `Hⁿ`-a.e. point of `N_j`, with
+`Σ_j ∫_{N_j} |g_j| dHⁿ < ∞`.  If `Q(ω) = Σ_j ∫_{N_j} g_j ⟨ω, η_j⟩ dHⁿ` for `ω ∈ 𝒟ⁿ(U)`, then `Q` is
+integer multiplicity.  The locality of approximate tangent spaces (Ch. 3, Remarks 1.5(2),
+1.8(1)) is the first hypothesis.
+
+Proof sketch:
+* `N = ⋃_j N_j` is Borel and countably `n`-rectifiable, and `Hⁿ(N) ≤ Σ_j ∫_{N_j} |g_j| < ∞`
+  since `|g_j| ≥ 1` on `N_j`.
+* By locality, for `Hⁿ`-a.e. `y` and every `j` with `y ∈ N_j`, `η_j(y)` orients an approximate
+  tangent space of `N` at `y`.
+* `ξ(y) = η_{j₀(y)}(y)`, `j₀(y)` the first `j` with `y ∈ N_j`, is strongly measurable and orients
+  the (unique) approximate tangent space of `N` a.e. on `N`, so `η_j = ±ξ` a.e. on `N_j` (3.7).
+* With `f_j = 1_{N_j} (±g_j)` (so that `g_j η_j = f_j ξ` a.e. on `N_j`), the integer density
+  `m = Σ_j f_j` (3.8) is measurable and `Hⁿ`-integrable.
+* Dominated convergence (`|⟨ω, ξ⟩| ≤ sup ‖ω‖` a.e. on `N`) gives `Q(ω) = ∫_N m ⟨ω, ξ⟩ dHⁿ`, and
+  `(N, m, ξ)` yields an `IMRep` (3.9) by `cmcdt_ims_imrep_of_int_density`. -/
+theorem Submission.dtc_bc_lc_pfi_isIntegerMultiplicity_of_pieces : (∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (U : Set (Euclid P)) (N : ℕ → Set (Euclid P)) (g : ℕ → Euclid P → ℤ) (η : ℕ → Euclid P → MultiVector P n) (Q : GeometricCurrentOn U n), IsOpen U → (∀ j, MeasurableSet (N j)) → (∀ j, N j ⊆ U) → (∀ j, CountablyRectifiable n (N j)) → (∀ j, Measurable (g j)) → (∀ j, ∀ y ∈ N j, g j y ≠ 0) → (∀ j, StronglyMeasurable (η j)) → (∀ j, ∀ᵐ y ∂(μHE[n].restrict (N j)), ∃ T : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (N j) y T ∧ IsUnitOrientationOf (η j y) T) → ∑' j, ∫⁻ y in N j, ((g j y).natAbs : ℝ≥0∞) ∂μHE[n] ≠ ∞ → (∀ ω : TestFormOn U n, Q ω = ∑' j, ∫ y in N j, (g j y : ℝ) * η j y ((ω : DifferentialForm (Euclid P) n) y) ∂μHE[n]) → IsIntegerMultiplicity Q := by
+  intro hTL P n U N g η Q hU hNmeas hNU hNrect hg hg0 hη hηor hsum hQ
+  classical
+  -- `MultiVector P n` is (pseudo)metrizable; instance search does not find it
+  have : TopologicalSpace.PseudoMetrizableSpace (MultiVector P n) :=
+    @PseudoEMetricSpace.pseudoMetrizableSpace (MultiVector P n) inferInstance
+  obtain ⟨horient_pm, horient_le, -, -⟩ := Submission.dtc_bc_lc_pfi_unitOrientation_algebra P n
+  -- Step 1: the union `NN = ⋃_j N_j`, of finite measure since `|g_j| ≥ 1` on `N_j`
+  set NN : Set (Euclid P) := ⋃ j, N j
+  have hNNmeas : MeasurableSet NN := MeasurableSet.iUnion hNmeas
+  have hNNU : NN ⊆ U := iUnion_subset hNU
+  have hNNrect : CountablyRectifiable n NN :=
+    Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion N hNrect
+  have hNjle : ∀ j, μHE[n] (N j) ≤ ∫⁻ y in N j, ((g j y).natAbs : ℝ≥0∞) ∂μHE[n] := by
+    intro j
+    rw [← setLIntegral_one]
+    refine setLIntegral_mono' (hNmeas j) fun y hy => ?_
+    exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Int.natAbs_ne_zero.mpr (hg0 j y hy))
+  have hNNfin : μHE[n] NN ≠ ∞ :=
+    ne_top_of_le_ne_top hsum ((measure_iUnion_le N).trans (ENNReal.tsum_le_tsum hNjle))
+  have hNNK : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (NN ∩ K) ≠ ∞ :=
+    fun K _ _ => ne_top_of_le_ne_top hNNfin (measure_mono inter_subset_left)
+  -- Step 2: by locality (`hTL`), a.e. on `N_j`, `η_j` orients a tangent space of `NN`
+  have hgood : ∀ᵐ y ∂μHE[n], ∀ j, y ∈ N j → ∃ T : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n NN y T ∧ IsUnitOrientationOf (η j y) T := by
+    refine ae_all_iff.2 fun j => (ae_restrict_iff' (hNmeas j)).1 ?_
+    filter_upwards [hTL P n U (N j) NN hU (hNmeas j) hNNmeas (subset_iUnion N j) hNNU hNNK,
+      hηor j] with y hy hyη
+    obtain ⟨T, hT, hTη⟩ := hyη
+    exact ⟨T, (hy T).2 hT, hTη⟩
+  -- Step 3: the common orientation `ξ(y) = η_{j₀(y)}(y)`, `j₀(y)` the first `j` with `y ∈ N_j`
+  have hex : ∀ y, ∃ j, y ∈ N j ∨ y ∉ NN := fun y => by
+    by_cases hy : y ∈ NN
+    · obtain ⟨j, hj⟩ := mem_iUnion.1 hy
+      exact ⟨j, Or.inl hj⟩
+    · exact ⟨0, Or.inr hy⟩
+  set j₀ : Euclid P → ℕ := fun y => Nat.find (hex y)
+  have hj₀meas : Measurable j₀ := measurable_find hex fun j => (hNmeas j).union hNNmeas.compl
+  have hj₀mem : ∀ y ∈ NN, y ∈ N (j₀ y) := fun y hy =>
+    (Nat.find_spec (hex y)).resolve_right (not_not.2 hy)
+  set ξ : Euclid P → MultiVector P n := fun y => η (j₀ y) y
+  have hξsm : StronglyMeasurable ξ :=
+    (stronglyMeasurable_uncurry_of_continuous_of_stronglyMeasurable
+      (fun _ => continuous_of_discreteTopology) hη).comp_measurable (hj₀meas.prodMk measurable_id)
+  have hξor : ∀ᵐ y ∂(μHE[n].restrict NN), ∃ T : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n NN y T ∧ IsUnitOrientationOf (ξ y) T := by
+    filter_upwards [ae_restrict_of_ae hgood, ae_restrict_mem hNNmeas] with y hy hyNN
+    exact hy (j₀ y) (hj₀mem y hyNN)
+  -- Step 4: `η_j = ±ξ` a.e. on `N_j`, by uniqueness of approximate tangent spaces
+  have hsign : ∀ᵐ y ∂μHE[n], ∀ j, y ∈ N j → η j y = ξ y ∨ η j y = -ξ y := by
+    filter_upwards [hgood] with y hy j hyj
+    obtain ⟨T, hT, hTη⟩ := hy j hyj
+    obtain ⟨T', hT', hT'ξ⟩ := hy (j₀ y) (hj₀mem y (mem_iUnion.2 ⟨j, hyj⟩))
+    rw [hT'.unique hT] at hT'ξ
+    exact horient_pm (ξ y) (η j y) T hT'ξ hTη
+  -- Step 5: the integer density `m = Σ_j f_j`, `f_j = 1_{N_j} (±g_j)` with `g_j η_j = f_j ξ`
+  set f : ℕ → Euclid P → ℤ := fun j y =>
+    if y ∈ N j then (if η j y = ξ y then g j y else -g j y) else 0 with hfdef
+  have hf_meas : ∀ j, Measurable (f j) := fun j =>
+    Measurable.ite (hNmeas j)
+      (Measurable.ite ((hη j).measurableSet_eq_fun hξsm) (hg j)
+        ((measurable_of_countable fun z : ℤ => -z).comp (hg j)))
+      measurable_const
+  have hf_natAbs_meas : ∀ j, Measurable fun y => ((f j y).natAbs : ℝ≥0∞) := fun j =>
+    (measurable_of_countable fun z : ℤ => ((z.natAbs : ℕ) : ℝ≥0∞)).comp (hf_meas j)
+  have hf_abs : ∀ j, ∫⁻ y, ((f j y).natAbs : ℝ≥0∞) ∂μHE[n] =
+      ∫⁻ y in N j, ((g j y).natAbs : ℝ≥0∞) ∂μHE[n] := by
+    intro j
+    rw [← lintegral_indicator (hNmeas j)]
+    refine lintegral_congr fun y => ?_
+    by_cases hy : y ∈ N j
+    · rw [indicator_of_mem hy]
+      simp only [hfdef, ite_eq_left hy]
+      split_ifs <;> simp
+    · rw [indicator_of_notMem hy]
+      simp [hfdef, hy]
+  have hf_sum : ∑' j, ∫⁻ y, ((f j y).natAbs : ℝ≥0∞) ∂μHE[n] ≠ ∞ := by
+    rwa [tsum_congr hf_abs]
+  obtain ⟨m, hm_meas, hm_int, hm_le, hm_ae⟩ :=
+    Submission.dtc_bc_lc_pfi_integer_density_of_summable P n f hf_meas hf_sum
+  have hm_loc : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      ∫⁻ x in NN ∩ K, ‖m x‖ₑ ∂μHE[n] ≠ ∞ := by
+    intro K _ _
+    refine ne_top_of_le_ne_top hf_sum ((setLIntegral_le_lintegral _ _).trans ?_)
+    calc ∫⁻ x, ‖m x‖ₑ ∂μHE[n]
+        ≤ ∫⁻ x, ∑' j, ((f j x).natAbs : ℝ≥0∞) ∂μHE[n] :=
+          lintegral_mono fun x => (Real.enorm_eq_ofReal_abs (m x)).trans_le (hm_le x)
+      _ = ∑' j, ∫⁻ x, ((f j x).natAbs : ℝ≥0∞) ∂μHE[n] :=
+          lintegral_tsum fun j => (hf_natAbs_meas j).aemeasurable
+  -- Step 6: the triple `(NN, m, ξ)` gives an `IMRep` acting by `ω ↦ ∫_NN m ⟨ω, ξ⟩ dHⁿ`
+  obtain ⟨R, hR⟩ := Submission.cmcdt_ims_imrep_of_int_density P n U NN ξ m hU hNNmeas hNNU
+    hNNrect hNNK hξsm hm_meas hm_int hm_loc hξor
+  refine ⟨R, fun ω => ?_⟩
+  -- Step 7: `Q(ω) = Σ_j ∫_NN f_j ⟨ω, ξ⟩ dHⁿ = ∫_NN m ⟨ω, ξ⟩ dHⁿ` by dominated convergence
+  set w : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n)
+  have hwc : Continuous w := ω.property.1.1.continuous
+  obtain ⟨C, hC⟩ := hwc.bounded_above_of_compact_support ω.property.1.2
+  have hpiece : ∀ j, ∫ y in N j, (g j y : ℝ) * η j y (w y) ∂μHE[n] =
+      ∫ y in NN, (f j y : ℝ) * ξ y (w y) ∂μHE[n] := by
+    intro j
+    rw [setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hNNmeas (subset_iUnion N j)
+      fun y hy => by simp [hfdef, hy.2]]
+    refine setIntegral_congr_ae (hNmeas j) ?_
+    filter_upwards [hsign] with y hy hyj
+    simp only [hfdef, ite_eq_left hyj]
+    split_ifs with he
+    · rw [he]
+    · rcases hy j hyj with h | h
+      · exact absurd h he
+      · rw [h, neg_apply, Int.cast_neg, mul_neg, neg_mul]
+  have hξbd : ∀ᵐ y ∂(μHE[n].restrict NN), ‖ξ y (w y)‖ₑ ≤ ENNReal.ofReal C := by
+    filter_upwards [hξor] with y hy
+    obtain ⟨T, -, hT⟩ := hy
+    rw [Real.enorm_eq_ofReal_abs]
+    exact ENNReal.ofReal_le_ofReal ((horient_le (ξ y) T hT (w y)).trans (hC y))
+  have hcont : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
+    continuous_fst.clm_apply continuous_snd
+  have hterm_meas : ∀ j, AEStronglyMeasurable (fun y => (f j y : ℝ) * ξ y (w y))
+      (μHE[n].restrict NN) := fun j =>
+    ((measurable_of_countable fun z : ℤ => (z : ℝ)).comp (hf_meas j)).aestronglyMeasurable.mul
+      (hcont.comp_aestronglyMeasurable (hξsm.aestronglyMeasurable.prodMk hwc.aestronglyMeasurable))
+  have hzabs : ∀ z : ℤ, ‖(z : ℝ)‖ₑ = ((z.natAbs : ℕ) : ℝ≥0∞) := fun z => by
+    rw [Real.enorm_eq_ofReal_abs, show |(z : ℝ)| = ((z.natAbs : ℕ) : ℝ) by simp [Nat.cast_natAbs],
+      ENNReal.ofReal_natCast]
+  have hterm_bd : ∑' j, ∫⁻ y in NN, ‖(f j y : ℝ) * ξ y (w y)‖ₑ ∂μHE[n] ≠ ∞ := by
+    refine ne_top_of_le_ne_top (ENNReal.mul_ne_top hf_sum (ENNReal.ofReal_ne_top (r := C))) ?_
+    rw [← ENNReal.tsum_mul_right]
+    refine ENNReal.tsum_le_tsum fun j => ?_
+    calc ∫⁻ y in NN, ‖(f j y : ℝ) * ξ y (w y)‖ₑ ∂μHE[n]
+        ≤ ∫⁻ y in NN, ((f j y).natAbs : ℝ≥0∞) * ENNReal.ofReal C ∂μHE[n] := by
+          refine lintegral_mono_ae ?_
+          filter_upwards [hξbd] with y hy
+          rw [enorm_mul, hzabs]
+          exact mul_le_mul_right hy _
+      _ = (∫⁻ y in NN, ((f j y).natAbs : ℝ≥0∞) ∂μHE[n]) * ENNReal.ofReal C :=
+          lintegral_mul_const _ (hf_natAbs_meas j)
+      _ ≤ (∫⁻ y, ((f j y).natAbs : ℝ≥0∞) ∂μHE[n]) * ENNReal.ofReal C :=
+          mul_le_mul_left (setLIntegral_le_lintegral _ _) _
+  have hsum_eq : ∀ᵐ y ∂(μHE[n].restrict NN),
+      ∑' j, (f j y : ℝ) * ξ y (w y) = m y * ξ y (w y) := by
+    filter_upwards [ae_restrict_of_ae hm_ae] with y hy
+    rw [tsum_mul_right, ← hy.2]
+  calc Q ω = ∑' j, ∫ y in N j, (g j y : ℝ) * η j y (w y) ∂μHE[n] := hQ ω
+    _ = ∑' j, ∫ y in NN, (f j y : ℝ) * ξ y (w y) ∂μHE[n] := tsum_congr hpiece
+    _ = ∫ y in NN, ∑' j, (f j y : ℝ) * ξ y (w y) ∂μHE[n] :=
+        (integral_tsum hterm_meas hterm_bd).symm
+    _ = ∫ y in NN, m y * ξ y (w y) ∂μHE[n] := integral_congr_ae hsum_eq
+    _ = R.action w := (hR w).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
