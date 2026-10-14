@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2826cffa95fd973c9205d62c3fe4d0ab4cea9a12f705be208e5ab0d4283ff168",
+  "git_delta": {
+    "base_commit": "aeacdac3b0d877ffa90c5c83f979b47510bac404",
+    "candidate_commit": "792f83e7b698cf1998f4a4fd3309680768a51ee4",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "37fb9c0797b287888575c196b1c0b39e5b5e477bd2163831d7e7931f1ac102ad",
+    "source_sha256": "251b7b3ea7171262a9bfe870410260031cfa62231c2f3f72994c7c20a4ecf274",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_c1_tangent",
+      "statement": "∀ (P d : ℕ) (g : Euclid d → Euclid P) (U : Set (Euclid d)) (c : Euclid d) (r : ℝ), IsOpen U → closedBall c r ⊆ U → ContDiffOn ℝ 1 g U → InjOn g (closedBall c r) → (∀ z ∈ closedBall c r, Injective (fderiv ℝ g z)) → ∀ z ∈ ball c r, HasApproximateTangentSpaceAt d (g '' closedBall c r) (g z) (LinearMap.range (fderiv ℝ g z : Euclid d →ₗ[ℝ] Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
