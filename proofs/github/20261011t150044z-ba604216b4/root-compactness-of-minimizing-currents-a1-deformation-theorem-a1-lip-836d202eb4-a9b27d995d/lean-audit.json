@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "cc3a51a5ee779ac08cf419bd202e146b9fa6565b953e387efbc6bb636639ca1d",
+  "git_delta": {
+    "base_commit": "5c78bc409affe84f06d6acf5765c7a41ccb7ce20",
+    "candidate_commit": "85710f47ea2be6f20d60c1cc9341cfa9d34df2f5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpi_pr_orientation_sign",
+    "diff_sha256": "bda87e83cd63ba7f92cb6703b4b0ba3b37b460cf51882215550813155370636d",
+    "source_sha256": "1df0590f371f06fbd73759fd51f9598052307dfe2cedda3565b9bb2d1980c09b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpi_pr_orientation_sign",
+      "statement": "∀ (N n : ℕ) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (ζ : Euclid n → MultiVector N n), MeasurableSet A → (∀ u ∈ A, Injective (fderiv ℝ G u)) → AEStronglyMeasurable ζ (volume.restrict A) → (∀ᵐ u ∂(volume.restrict A), IsUnitOrientationOf (ζ u) (Submodule.span ℝ (Set.range (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))))) → ∃ s : Euclid n → ℤ, Measurable s ∧ (∀ u, s u = 1 ∨ s u = -1) ∧ ∀ᵐ u ∂(volume.restrict A), ∀ α : Covector (Euclid N) n, Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ G u (EuclideanSpace.single a 1)) (fderiv ℝ G u (EuclideanSpace.single b 1)))) * ζ u α = (s u : ℝ) * α (fun a => fderiv ℝ G u (EuclideanSpace.single a 1))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
