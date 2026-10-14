@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+  "depth": 3,
+  "title": "Simon 6.3.6–3.9 for a bi-Lipschitz C¹ diffeomorphism: the image triple (φ(M), θ∘φ^{-1}, induced orientation)",
+  "statement": "Let U ⊆ ℝ^P be open, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n), and φ : ℝ^P → ℝ^P a C¹ bijection with Dφ(x) injective for every x, Λ-Lipschitz and Λ-antilipschitz, with φ^{-1}(U) = U, and assume x ↦ orthogonal projection onto approxTangentPlane n M x is H^n⌞M-a.e. strongly measurable. Then there is an integer multiplicity triple R' in U with R'.action(ω) = ∫_M θ(x) ξ(x)(ω(φ(x))∘Dφ(x)) dH^n(x) for every ω ∈ 𝒟^n(U).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (φ : Euclid P → Euclid P) (Λ : NNReal), IsOpen U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ φ → φ ⁻¹' U = U → AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection) (μHE[n].restrict R.carrier) → ∃ R' : IMRep U n, ∀ ω : TestFormOn U n, R'.action (ω : DifferentialForm (Euclid P) n) = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n]",
+  "lean_name": "dpf_imrep_bilipschitz_image_rep",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.rectifiable_area_formula-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.jacobian_measurable-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.rectifiable_area_formula-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.jacobian_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-89b1ce4202-a1"
+}

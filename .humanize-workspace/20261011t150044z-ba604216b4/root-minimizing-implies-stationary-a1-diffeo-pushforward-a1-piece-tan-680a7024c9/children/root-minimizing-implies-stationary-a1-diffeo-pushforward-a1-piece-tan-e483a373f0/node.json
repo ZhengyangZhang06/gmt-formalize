@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_pullback-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+  "depth": 4,
+  "title": "Borel image and null-set pullback along a bi-Lipschitz piece",
+  "statement": "Let F : ℝ^n → ℝ^P be L-Lipschitz, B ⊆ ℝ^n Borel and m > 0 with m|a − a'| ≤ |F(a) − F(a')| for all a, a' ∈ B. Then F(B) is Borel. Moreover, for every predicate p on ℝ^P that holds H^n⌞F(B)-a.e. (H^n = μHE[n]), p(F(b)) holds for Lebesgue-a.e. b ∈ B, i.e. (volume.restrict B)-a.e.",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (B : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L F → MeasurableSet B → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → MeasurableSet (F '' B) ∧ ∀ p : Euclid P → Prop, (∀ᵐ y ∂(μHE[n].restrict (F '' B)), p y) → ∀ᵐ b ∂(volume.restrict B), p (F b)",
+  "lean_name": "ptd_piece_image_measurable_ae_pullback",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-e483a373f0-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1.chosen_tangent_plane-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1",
+  "depth": 4,
+  "title": "The chosen approximate tangent plane equals any approximate tangent plane",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P an arbitrary set, x ∈ ℝ^P and Q a linear subspace of ℝ^P. If Q is an approximate tangent space of M at x in the sense of Simon Ch. 3, Definition 1.4 (SimonGMT HasApproximateTangentSpaceAt n M x Q: dim Q = n and ∫_{η_{x,r}(M)} f dH^n → ∫_Q f dH^n as r ↓ 0 for every f ∈ C_c(ℝ^P), with η_{x,r}(y) = r^{-1}(y − x) and H^n = μHE[n]), then approxTangentPlane n M x = Q, where approxTangentPlane n M x is the contract's choice: a chosen plane Q' with HasApproximateTangentSpaceAt n M x Q' if such a plane exists, and ⊥ otherwise.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), HasApproximateTangentSpaceAt n M x Q → approxTangentPlane n M x = Q",
+  "lean_name": "dpf_itt_approxTangentPlane_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-cd2837f661-a1"
+}

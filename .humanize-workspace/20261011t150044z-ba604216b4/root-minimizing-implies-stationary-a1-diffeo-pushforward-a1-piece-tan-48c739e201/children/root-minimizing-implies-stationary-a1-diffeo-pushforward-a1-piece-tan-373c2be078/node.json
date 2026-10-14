@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1.blowup_scaling-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1",
+  "depth": 5,
+  "title": "Hausdorff-measure scaling under the blow-up map",
+  "statement": "Let P, n ∈ ℕ, x ∈ ℝ^P, r, R ∈ ℝ with r > 0, and let S ⊆ ℝ^P be an arbitrary set. Let η := η_{x,r} be SimonGMT's blowUpMap x r, η(z) = r⁻¹(z − x), and let H^n := μHE[n] (Mathlib's Euclidean Hausdorff measure on Euclid P = ℝ^P). Then H^n(η(S) ∩ B̄_R(0)) = ((ENNReal.ofReal r)⁻¹)^n · H^n(S ∩ B̄_{r·R}(x)), where B̄ denotes closed balls and the product is taken in [0, ∞].",
+  "lean_statement": "∀ (P n : ℕ) (x : Euclid P) (r R : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S ∩ closedBall 0 R) = (ENNReal.ofReal r)⁻¹ ^ n * μHE[n] (S ∩ closedBall x (r * R))",
+  "lean_name": "ptd_tl_blowUp_measure_scaling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-373c2be078-a1"
+}
