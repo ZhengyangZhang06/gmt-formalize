@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7acb310d26522da8ae0309796d179728c5fa7879a2a69da06ea2b5ccb362dedd",
+  "git_delta": {
+    "base_commit": "ffa13f1041a1ac1485094c6f8fbc385b482aaa2c",
+    "candidate_commit": "c130effed4f956c886f6772ed87dcfb7984f7366",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpi_pc_bilipschitz_partition",
+    "diff_sha256": "d47f9e4651fceecea31a943e218a70e0223fc0ab4b6bdd5332e2eae6539ea9db",
+    "source_sha256": "8f23e78c187a44494b8b02e431d1740a21c2cf49384f42519ef06086dd60f1d5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpi_pc_bilipschitz_partition",
+      "statement": "∀ (P n : ℕ) (H : Euclid n → Euclid P) (B : Set (Euclid n)), MeasurableSet B → (∀ a ∈ B, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) → ∃ (C : ℕ → Set (Euclid n)) (κ : ℕ → ℝ), (∀ l, MeasurableSet (C l)) ∧ Pairwise (fun l l' => Disjoint (C l) (C l')) ∧ (⋃ l, C l) = B ∧ (∀ l, 0 < κ l) ∧ ∀ l, ∀ a ∈ C l, ∀ a' ∈ C l, κ l * ‖a - a'‖ ≤ ‖H a - H a'‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
