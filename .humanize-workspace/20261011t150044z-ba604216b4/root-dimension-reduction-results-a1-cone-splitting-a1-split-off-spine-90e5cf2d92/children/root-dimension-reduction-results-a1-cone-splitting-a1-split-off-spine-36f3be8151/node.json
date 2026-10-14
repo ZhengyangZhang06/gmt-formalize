@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.translate_boundary-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1",
+  "depth": 6,
+  "title": "Boundary on translated forms: Y(d(γ(t + ·))) = X(γ(t + ·)) when ∂Y = X",
+  "statement": "Let P, m ∈ ℕ, Y ∈ 𝒟_{m+1}(ℝ^P) and X ∈ 𝒟_m(ℝ^P) (GeometricCurrentOn univ) with Y.boundary = X, let γ be a test m-form on ℝ^P (IsTestForm γ) and t ∈ ℝ^P. Then currentEval Y (y ↦ dγ(t + y)) = currentEval X (y ↦ γ(t + y)), where dγ = exteriorDerivative γ.",
+  "lean_statement": "∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (γ : DifferentialForm (Euclid P) m) (t : Euclid P), Y.boundary = X → IsTestForm γ → currentEval Y (fun y => exteriorDerivative γ (t + y)) = currentEval X (fun y => γ (t + y))",
+  "lean_name": "dimred_cs_sos_mt_cs_translate_boundary_eval",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-36f3be8151-a1"
+}
