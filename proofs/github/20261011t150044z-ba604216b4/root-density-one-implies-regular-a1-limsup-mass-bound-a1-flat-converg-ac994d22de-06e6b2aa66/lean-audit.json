@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "89eea239a23cfc8c9b9eb7cc1551cf61e7df1afcb4dc3e5e99c3a7782b987a98",
+  "git_delta": {
+    "base_commit": "4e7765c6db565678b50026feeabb1821e68b6cd1",
+    "candidate_commit": "ea7a7234b9e906dbf78b115ebe4aeebb68975112",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_cp_smooth_poincare",
+    "diff_sha256": "98998b1dea5e57f23d3a6978bf348a151f490190601afa7a1448316364b4988e",
+    "source_sha256": "7a95915eb3316b43e69502348d790b525e5b6688ce344a6f1d72264734fcf1e3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_cp_smooth_poincare",
+      "statement": "∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (δ : ℝ), ContDiff ℝ 1 v → 0 ≤ δ → δ < 1 / 2 → ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ∫ y in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, |v x - v y| ≤ ((m : ℝ) + 1) * (1 - 2 * δ) * (volume {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}).toReal * ∫ x in {y : Euclid (m + 1) | ∀ i, δ < y i ∧ y i < 1 - δ}, ‖fderiv ℝ v x‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
