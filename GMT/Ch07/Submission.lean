@@ -451,6 +451,25 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A smooth cutoff `ϑ` with `0 ≤ ϑ ≤ 1`, `ϑ = 1` on `B_r(0)` and compact support, and the test
+form `ϑβ ∈ 𝒟ⁿ(ℝᴾ)` of a constant covector `β` (the form `ω_ϑ = ϑβ` of the tilt-excess decay
+step in the proof of Simon 7.3.3, used there with `n = 2`, `r = 3`).  A bump function `ϑ`
+centred at `0` with radii `r < r + 1` has all the scalar properties, and `ϑβ` is smooth, being a
+smooth scalar times a constant, with support inside that of `ϑ`. -/
+theorem Submission.idtp_cse_bml_td_cutoff_test_form : ∀ (P n : ℕ) (r : ℝ) (β : Covector (Euclid P) n), 0 < r → ∃ (ϑ : Euclid P → ℝ) (ω : TestFormOn (univ : Set (Euclid P)) n), Continuous ϑ ∧ HasCompactSupport ϑ ∧ (∀ x, 0 ≤ ϑ x ∧ ϑ x ≤ 1) ∧ (∀ x : Euclid P, ‖x‖ < r → ϑ x = 1) ∧ ∀ x, (ω : DifferentialForm (Euclid P) n) x = ϑ x • β := by
+  intro P n r β hr
+  -- a bump function `ϑ`, equal to `1` on `closedBall 0 r` and supported in `closedBall 0 (r + 1)`
+  let f : ContDiffBump (0 : Euclid P) := ⟨r, r + 1, hr, by linarith⟩
+  -- `ϑβ` is smooth with compact support, so it is a test form on `ℝᴾ`
+  have hsm : IsSmoothForm (fun x : Euclid P => f x • β) :=
+    (f.contDiff (n := ⊤)).smul contDiff_const
+  have hcs : HasCompactSupport (fun x : Euclid P => f x • β) := f.hasCompactSupport.smul_right
+  have hmem : (fun x : Euclid P => f x • β) ∈ TestFormOn (univ : Set (Euclid P)) n :=
+    ⟨⟨hsm, hcs⟩, subset_univ _⟩
+  refine ⟨f, ⟨fun x => f x • β, hmem⟩, f.continuous, f.hasCompactSupport,
+    fun x => ⟨f.nonneg, f.le_one⟩, fun x hx => f.one_of_mem_closedBall ?_, fun x => rfl⟩
+  simpa [mem_closedBall, dist_zero_right] using hx.le
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6e386dd82579d15691977da8652d437f166c622cec833b536bac3f2af2776512",
+  "git_delta": {
+    "base_commit": "f63fe164a46aea7ba26db6cfaa375481bfd10bbb",
+    "candidate_commit": "837d6fa5d7e994be011ff2b264833f995e929f76",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_bml_td_cutoff_test_form",
+    "diff_sha256": "01e53dec5f7da6bcb88d402ac04813d3e5aa86c0b10f5300d802a7346e5d3ada",
+    "source_sha256": "18b42e6c9f5b970fbfd697ca5009432bc045d49aeee28c2182e02ee6b6b36500",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_bml_td_cutoff_test_form",
+      "statement": "∀ (P n : ℕ) (r : ℝ) (β : Covector (Euclid P) n), 0 < r → ∃ (ϑ : Euclid P → ℝ) (ω : TestFormOn (univ : Set (Euclid P)) n), Continuous ϑ ∧ HasCompactSupport ϑ ∧ (∀ x, 0 ≤ ϑ x ∧ ϑ x ≤ 1) ∧ (∀ x : Euclid P, ‖x‖ < r → ϑ x = 1) ∧ ∀ x, (ω : DifferentialForm (Euclid P) n) x = ϑ x • β",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
