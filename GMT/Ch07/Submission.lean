@@ -451,6 +451,43 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The zero current is integer multiplicity, with zero weight** (Simon Ch. 6, 3.1: the zero
+current is `τ(∅, θ, ξ)`).  The triple `R = (∅, 0, 0)` is an integer multiplicity representation in
+`ℝᴾ`: each condition holds because `Hⁿ⌞∅ = 0` (rectifiability as `Hⁿ(∅) = 0`, local integrability
+as `∫⁻ θ d0 = 0`, the a.e. conditions as `ae 0 = ⊥`).  Its action `∫_∅ θ⟨ω, ξ⟩ dHⁿ` is an
+integral against `0`, so `R` represents the zero current, and its weight `θ Hⁿ⌞∅` is the zero
+measure. -/
+theorem Submission.dimred_tr_bc_ct_zero_imrep : ∀ (P n : ℕ), ∃ R : IMRep (univ : Set (Euclid P)) n, R.Represents (0 : GeometricCurrentOn (univ : Set (Euclid P)) n) ∧ R.measure = 0 := by
+  intro P n
+  -- Step 1: the triple `(∅, 0, 0)`; every field holds since `Hⁿ⌞∅ = 0`
+  refine ⟨{ carrier := ∅
+            mult := fun _ => 0
+            orient := fun _ => 0
+            measurableSet_carrier := MeasurableSet.empty
+            carrier_subset := empty_subset _
+            rectifiable :=
+              Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+            measurable_mult := measurable_const
+            mult_pos := fun x hx => absurd hx (notMem_empty x)
+            locallyIntegrable_mult := fun K _ _ => by
+              rw [empty_inter, Measure.restrict_empty, lintegral_zero_measure]
+              exact ENNReal.zero_ne_top
+            aestronglyMeasurable_orient := aestronglyMeasurable_const
+            orients := by
+              rw [Measure.restrict_empty, ae_zero]
+              exact eventually_bot }, fun ω => ?_, ?_⟩
+  · -- Step 2: `0(ω) = 0` and `R.action ω = ∫ θ⟨ω, ξ⟩ d(Hⁿ⌞∅) = ∫ θ⟨ω, ξ⟩ d0 = 0`
+    rw [GeometricCurrentOn.zero_apply]
+    dsimp only [IMRep.action]
+    rw [Measure.restrict_empty, integral_zero_measure]
+  · -- Step 3: `R.measure = (Hⁿ⌞∅).withDensity θ = (0 : Measure).withDensity θ`, which agrees
+    -- with `0` on every Borel set `s`: `∫⁻_s θ d0 = 0`
+    dsimp only [IMRep.measure]
+    rw [Measure.restrict_empty]
+    ext s hs
+    rw [withDensity_apply _ hs, Measure.restrict_zero, lintegral_zero_measure, Measure.coe_zero,
+      Pi.zero_apply]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
