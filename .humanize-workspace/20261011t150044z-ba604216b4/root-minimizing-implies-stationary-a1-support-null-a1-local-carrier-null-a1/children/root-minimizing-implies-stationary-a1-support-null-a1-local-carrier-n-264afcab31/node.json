@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1.covector_finite_dimensional-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.support_null-a1.local_carrier_null-a1",
+  "depth": 4,
+  "title": "The space of n-covectors on ℝ^P is finite-dimensional",
+  "statement": "For all natural numbers P and n, the real vector space Λ^n(ℝ^P) = Covector (Euclid P) n of continuous alternating n-linear forms (ℝ^P)^n → ℝ, with its pointwise ℝ-module structure, is finite-dimensional over ℝ.",
+  "lean_statement": "∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n)",
+  "lean_name": "lcn_covector_finiteDimensional",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-n-264afcab31-a1"
+}
