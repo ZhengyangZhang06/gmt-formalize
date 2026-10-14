@@ -1872,6 +1872,57 @@ theorem Submission.cbr_cipi_slice_integer_multiplicity : (∀ (P k : ℕ) (U : S
   simp only [hξv]
   rfl
 
+/-- **A positive multiple of an oriented `n`-plane with the integer slice property has integer
+multiplicity** (Simon Ch. 6, 8.2, the integrality step; step 10 of the integer multiplicity
+criterion for cycles).  Here `n = d + 1`, `v = (v₁, …, vₙ)` is orthonormal, `V₀ = span v`, `θ₀ > 0`,
+`C(ω) = θ₀ ∫_{V₀} ⟨ω, v₁ ∧ ⋯ ∧ vₙ⟩ dHⁿ`, and `C` has the integer slice property.
+`Submission.cbr_cipi_slice_integer_multiplicity` (slicing `C` by `⟨·, v₁⟩` with (SL), plus the
+half-space Stokes formula) gives, for `L¹`-a.e. `t`, an integer multiplicity current `Z` with
+`Z(φ) = θ₀ ∫_{L_t} ⟨φ, v₂ ∧ ⋯ ∧ vₙ⟩ dH^d`, where `L_t = t v₁ + span(v₂, …, vₙ)`.  The a.e.
+filter of `L¹` is non-trivial, so fix such `t` and `Z`, and an IMRep `R` of `Z`.  `(v₂, …, vₙ)` is
+orthonormal, so `Submission.cbr_cipi_affine_plane_measure` shows that `L_t` is closed and that
+`ν = H^d⌞L_t` is finite on compact sets and positive on `B₁(t v₁)`.  Let
+`ζ₀ = θ₀ (v₂ ∧ ⋯ ∧ vₙ)`, i.e. `⟨α, ζ₀⟩ = θ₀ α(v₂, …, vₙ)`.  Then `|⟨α, ζ₀⟩| ≤ θ₀ |α|`
+(`Submission.regcomp_covector_eval_orthonormal_le`), `⟨β, ζ₀⟩ = θ₀` for some `β` with `|β| = 1`
+(`Submission.regcomp_exists_covector_eval_orthonormal_eq_one`), and `Z(φ) = ∫ ⟨φ, ζ₀⟩ dν`.  So
+`Submission.cbr_ci_const_vector_massOn` gives `M_G(Z) = θ₀ ν(G)` for every open `G`, and (MR) gives
+`M_G(Z) = R.measure(G)`.  Hence `R.measure(G) = θ₀ ν(G)` for every open `G`, and
+`Submission.cbr_cipi_imrep_weight_const_nat` gives `θ₀ ∈ ℕ`. -/
+theorem Submission.cbr_ci_plane_multiplicity_nat : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → ∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P) (θ₀ : ℝ) (C : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), Orthonormal ℝ v → 0 < θ₀ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = θ₀ * ∫ y in (Submodule.span ℝ (Set.range v) : Set (Euclid P)), (ω : DifferentialForm (Euclid P) (d + 1)) y v ∂μHE[(d + 1)]) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (C).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → ∃ m : ℕ, θ₀ = m := by
+  intro hMR hSL P d v θ₀ C hv hθ₀ hC hISP
+  -- Step 1: for a.e. `t` the slice boundary `Z` is integer multiplicity, with
+  -- `Z(φ) = θ₀ ∫_{L_t} ⟨φ, v₂ ∧ ⋯ ∧ vₙ⟩ dH^d`; the a.e. filter on `ℝ` is non-trivial
+  obtain ⟨t, Z, ⟨R, hR⟩, hZ⟩ :=
+    (Submission.cbr_cipi_slice_integer_multiplicity hSL P d v θ₀ C hv hθ₀ hC hISP).exists
+  -- Step 2: `L_t` is closed, and `ν = H^d⌞L_t` is finite on compact sets and positive on
+  -- `B₁(t v₁)`
+  have hw : Orthonormal ℝ (Fin.tail v) := hv.comp Fin.succ (Fin.succ_injective d)
+  obtain ⟨-, hclosed, hfin, hpos⟩ :=
+    Submission.cbr_cipi_affine_plane_measure P d (Fin.tail v) (t • v 0) hw
+  -- Step 3: the constant `d`-vector `ζ₀ = θ₀ (v₂ ∧ ⋯ ∧ vₙ)`
+  obtain ⟨ζ₀, hζ₀⟩ : ∃ ζ₀ : MultiVector P d, ∀ α : Covector (Euclid P) d,
+      ζ₀ α = θ₀ * α (Fin.tail v) :=
+    ⟨θ₀ • ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (Fin.tail v), fun α => rfl⟩
+  -- Step 4: `M_G(Z) = θ₀ ν(G)` for open `G`: `|⟨α, ζ₀⟩| ≤ θ₀ |α|`, `ζ₀` is normed by a unit
+  -- covector, and `Z(φ) = ∫ ⟨φ, ζ₀⟩ dν`
+  have hmass := Submission.cbr_ci_const_vector_massOn P d _ ζ₀ θ₀ Z hfin
+    (fun α => by
+      rw [hζ₀, abs_mul, abs_of_pos hθ₀]
+      exact mul_le_mul_of_nonneg_left
+        (Submission.regcomp_covector_eval_orthonormal_le P d α _ hw) hθ₀.le)
+    (by
+      obtain ⟨β, hβ1, hβv⟩ :=
+        Submission.regcomp_exists_covector_eval_orthonormal_eq_one P d _ hw
+      exact ⟨β, hβ1.le, by rw [hζ₀, hβv, mul_one]⟩)
+    (fun φ => by
+      rw [hZ φ, ← integral_const_mul]
+      simp only [hζ₀])
+  -- Step 5: by (MR), `R.measure(G) = M_G(Z) = θ₀ ν(G)` for open `G`; the IM weight is then `θ₀`
+  -- on a set of positive measure, so `θ₀ ∈ ℕ`
+  exact Submission.cbr_cipi_imrep_weight_const_nat P d univ R _ θ₀ hθ₀ hclosed.measurableSet
+    hfin ⟨t • v 0, 1, hpos 1 one_pos⟩ fun G hG => by
+      rw [← hMR P d univ Z R isOpen_univ hR G hG, hmass G hG]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
