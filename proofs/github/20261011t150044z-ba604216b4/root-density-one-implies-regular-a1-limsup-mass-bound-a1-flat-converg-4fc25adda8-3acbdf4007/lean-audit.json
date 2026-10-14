@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3dca9784f978e9e9206534e97c156e26bba153320aa9d4d873c680275510336d",
+  "git_delta": {
+    "base_commit": "30793e0db39199405218d49bd871141580f53774",
+    "candidate_commit": "249150f795d8110db2107b385c7a42eeb27c3532",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_sd_zero_neg",
+    "diff_sha256": "abd9fdafdfc233c7cd0cf555d3b64f83853e97c8d00f2cd3c47c70bdb1b89b51",
+    "source_sha256": "e52769d71fd9b4974f2cd0ced629c241ca9de189b534a20122f1197c4c00c115",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_sd_zero_neg",
+      "statement": "∀ (P k : ℕ) (U : Set (Euclid P)), IsOpen U → IsIntegerMultiplicity (0 : GeometricCurrentOn U k) ∧ (∀ X : GeometricCurrentOn U k, IsIntegerMultiplicity X → IsIntegerMultiplicity (0 - X)) ∧ (∀ (X : GeometricCurrentOn U k) (G : Set (Euclid P)), (0 - X).massOn G = X.massOn G) ∧ ∀ (X : GeometricCurrentOn U k) (ω : TestFormOn U k) (s : ℝ), 0 < s → X.mass ≠ ∞ → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) k) x) ≤ s) → |X ω| ≤ s * X.mass.toReal",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
