@@ -451,6 +451,206 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Orthonormal frame of `Q` adapted to a unit vector `ν ∈ Q` (Simon Ch. 6, 4.3, used for the
+orientation of the slices in 7.4): if `dim Q = n + 1`, then `Q' = Q ∩ ν^⊥` has an orthonormal
+basis `σ = (σ₁, …, σₙ)`, so that `(ν, σ₁, …, σₙ)` is an orthonormal basis of `Q`.  The dimension
+count is `dim (ℝν) + dim (ν^⊥ ∩ Q) = dim Q`. -/
+theorem Submission.dor_lmbsf_io_adapted_frame : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ν : Euclid P), Module.finrank ℝ Q = n + 1 → ν ∈ Q → ‖ν‖ = 1 → ∃ σ : Fin n → Euclid P, Orthonormal ℝ σ ∧ Submodule.span ℝ (Set.range σ) = Q ⊓ (ℝ ∙ ν)ᗮ ∧ Orthonormal ℝ (Fin.cons ν σ : Fin (n + 1) → Euclid P) ∧ (∀ i, σ i ∈ Q) ∧ ∀ i, inner ℝ ν (σ i) = 0 := by
+  intro P n Q ν hQ hνQ hν
+  set Q' : Submodule ℝ (Euclid P) := Q ⊓ (ℝ ∙ ν)ᗮ
+  have hν0 : ν ≠ 0 := by
+    intro h; rw [h, norm_zero] at hν; exact zero_ne_one hν
+  have hle : (ℝ ∙ ν) ≤ Q := (Submodule.span_singleton_le_iff_mem ν Q).2 hνQ
+  -- `dim Q' = n`
+  have hdim : Module.finrank ℝ Q' = n := by
+    have h1 := Submodule.finrank_add_inf_finrank_orthogonal hle
+    rw [finrank_span_singleton hν0, hQ] at h1
+    have : Q' = (ℝ ∙ ν)ᗮ ⊓ Q := inf_comm _ _
+    rw [this]; omega
+  -- `σ` is an orthonormal basis `b` of `Q'`, viewed in `ℝᴾ`
+  let b : OrthonormalBasis (Fin n) ℝ Q' := (stdOrthonormalBasis ℝ Q').reindex (finCongr hdim)
+  let σ : Fin n → Euclid P := fun i => (b i : Euclid P)
+  have hσ : Orthonormal ℝ σ := b.orthonormal.comp_linearIsometry Q'.subtypeₗᵢ
+  have hσmem : ∀ i, σ i ∈ Q' := fun i => (b i).2
+  have hσspan : Submodule.span ℝ (Set.range σ) = Q' := by
+    have hrange : Set.range σ = Q'.subtype '' Set.range b := by
+      ext x; simp [σ]
+    have htop : Submodule.span ℝ (Set.range b) = ⊤ := by simpa using b.toBasis.span_eq
+    rw [hrange, Submodule.span_image, htop, Submodule.map_top, Submodule.range_subtype]
+  have hσQ : ∀ i, σ i ∈ Q := fun i => (hσmem i).1
+  have hνσ : ∀ i, inner ℝ ν (σ i) = 0 := fun i =>
+    (Submodule.mem_orthogonal_singleton_iff_inner_right).1 (hσmem i).2
+  refine ⟨σ, hσ, hσspan, ?_, hσQ, hνσ⟩
+  -- `Fin.cons ν σ` is orthonormal: split both indices into `0` and successors
+  rw [orthonormal_iff_ite] at hσ ⊢
+  intro i j
+  refine Fin.cases ?_ (fun i' => ?_) i <;> refine Fin.cases ?_ (fun j' => ?_) j
+  · simp [hν]
+  · simp [hνσ j', (Fin.succ_ne_zero j').symm]
+  · simp [real_inner_comm, hνσ i', Fin.succ_ne_zero i']
+  · simp [hσ i' j']
+/-- Step 3(i) of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3, via
+Allard's theorem; `n`-covectors as in Ch. 6, §1): if `τ` is an orthonormal `n`-frame and every
+`bⱼ` lies in `L = span τ`, then `α(b₁, …, bₙ) = det(⟨τᵢ, bⱼ⟩) α(τ₁, …, τₙ)` for every
+`n`-covector `α`.  The restriction of `α` to `L` is `α(τ) det_τ`, and the coordinates of `bⱼ` in
+the basis `τ` of `L` are `⟨τᵢ, bⱼ⟩`. -/
+theorem Submission.dgoj_covector_eq_det_mul_of_mem_span : ∀ (P n : ℕ) (τ b : Fin n → Euclid P), Orthonormal ℝ τ → (∀ j, b j ∈ Submodule.span ℝ (Set.range τ)) → ∀ α : Covector (Euclid P) n, α b = (Matrix.of fun i j => inner ℝ (τ i) (b j)).det * α τ := by
+  intro P n τ b hτ hb α
+  set L := Submodule.span ℝ (Set.range τ)
+  -- `τ` is a basis `e` of `L`
+  let e : Module.Basis (Fin n) ℝ L := Module.Basis.span hτ.linearIndependent
+  have he : ∀ i, (e i : Euclid P) = τ i := fun i => by
+    rw [Module.Basis.span_apply hτ.linearIndependent i]
+  -- the restriction `α_L` of `α` to `L`
+  let αL : L [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap L.subtype
+  let b' : Fin n → L := fun j => ⟨b j, hb j⟩
+  have h1 : α b = αL b' := rfl
+  have h2 : α τ = αL e := by
+    show α τ = α (fun i => (e i : Euclid P))
+    congr 1
+    funext i
+    exact (he i).symm
+  -- coordinates of `b'` in `e` are the inner products with `τ`
+  have hrepr : ∀ i j, e.repr (b' j) i = inner ℝ (τ i) (b j) := by
+    intro i j
+    have hs : (b j : Euclid P) = ∑ l, e.repr (b' j) l • τ l := by
+      have := congrArg (Subtype.val) (e.sum_repr (b' j))
+      simp only [Submodule.coe_sum, Submodule.coe_smul, he] at this
+      exact this.symm
+    rw [hs, hτ.inner_right_fintype]
+  have hmat : e.toMatrix b' = Matrix.of fun i j => inner ℝ (τ i) (b j) := by
+    ext i j
+    rw [Module.Basis.toMatrix_apply, hrepr, Matrix.of_apply]
+  -- `α_L = α_L(e) • det_e`
+  have h3 : αL b' = αL e * e.det b' := by
+    conv_lhs => rw [AlternatingMap.eq_smul_basis_det e αL]
+    rfl
+  rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
+
+/-- Sign lemma for unit orientations (Simon 6.1.1; used for the slice orientation
+`ξ ⌞ ∇^M f/|∇^M f|` of 6.4.3 in the slicing step of the proof of 7.4.3): if
+`ζ = ±τ₁ ∧ ⋯ ∧ τₘ` is a unit orientation of `Q` and `ρ` is an orthonormal `m`-frame in `Q`, then
+`ζ = ρ₁ ∧ ⋯ ∧ ρₘ` or `ζ = -ρ₁ ∧ ⋯ ∧ ρₘ`.  The change of frame `M = (⟨τᵢ, ρⱼ⟩)` satisfies
+`Mᵀ M = I`, so `det M = ±1`, and `β(ρ) = det M · β(τ)` for every `m`-covector `β`. -/
+theorem Submission.dor_lmbsf_io_orientation_frame_sign : ∀ (P m : ℕ) (ζ : MultiVector P m) (Q : Submodule ℝ (Euclid P)) (ρ : Fin m → Euclid P), IsUnitOrientationOf ζ Q → Orthonormal ℝ ρ → (∀ j, ρ j ∈ Q) → (∀ β : Covector (Euclid P) m, ζ β = β ρ) ∨ ∀ β : Covector (Euclid P) m, ζ β = -β ρ := by
+  intro P m ζ Q ρ hζ hρ hρQ
+  obtain ⟨τ, hτ, hspan, hsign⟩ := hζ
+  set M : Matrix (Fin m) (Fin m) ℝ := Matrix.of fun i j => inner ℝ (τ i) (ρ j) with hM
+  have hρspan : ∀ j, ρ j ∈ Submodule.span ℝ (Set.range τ) := fun j => hspan ▸ hρQ j
+  -- `β(ρ) = det M · β(τ)`
+  have hdet : ∀ β : Covector (Euclid P) m, β ρ = M.det * β τ :=
+    Submission.dgoj_covector_eq_det_mul_of_mem_span P m τ ρ hτ hρspan
+  -- Parseval in `span τ`: `⟨x, y⟩ = ∑ᵢ ⟨τᵢ, x⟩ ⟨τᵢ, y⟩`
+  have hparseval : ∀ x y : Euclid P, y ∈ Submodule.span ℝ (Set.range τ) →
+      inner ℝ x y = ∑ i, inner ℝ (τ i) x * inner ℝ (τ i) y := by
+    intro x y hy
+    obtain ⟨c, rfl⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 hy
+    simp only [hτ.inner_right_fintype, inner_sum, inner_smul_right]
+    refine Finset.sum_congr rfl (fun i _ => ?_)
+    rw [real_inner_comm, mul_comm]
+  -- `M` is orthogonal, so `det M = ±1`
+  have hMM : M.transpose * M = 1 := by
+    ext j k
+    rw [Matrix.mul_apply, Matrix.one_apply]
+    simp only [Matrix.transpose_apply, hM, Matrix.of_apply]
+    rw [← hparseval (ρ j) (ρ k) (hρspan k)]
+    exact orthonormal_iff_ite.1 hρ j k
+  have hdet2 : M.det * M.det = 1 := by
+    have := congrArg Matrix.det hMM
+    rwa [Matrix.det_mul, Matrix.det_transpose, Matrix.det_one] at this
+  have hpm : M.det = 1 ∨ M.det = -1 := by
+    have h0 : (M.det - 1) * (M.det + 1) = 0 := by linear_combination hdet2
+    rcases mul_eq_zero.1 h0 with h | h
+    · left; linarith
+    · right; linarith
+  rcases hsign with h | h <;> rcases hpm with hd | hd
+  · left; intro β; rw [h, hdet, hd, one_mul]
+  · right; intro β; rw [h, hdet, hd]; ring
+  · right; intro β; rw [h, hdet, hd, one_mul]
+  · left; intro β; rw [h, hdet, hd]; ring
+/-- Step 3 of the orientation of a slice (Simon 6.4.3, `⟨v⌞w, a⟩ = ⟨v, w ∧ a⟩`): if `ν` is a
+unit vector orthogonal to `σ₀, …, σₙ₋₁`, then `(ν♭ ∧ α)(ν, σ₀, …, σₙ₋₁) = α(σ₀, …, σₙ₋₁)` for
+every `n`-covector `α`, where `ν♭ ∧ α` is the alternatization of `w ↦ ⟨ν, w⟩ α`,
+`(ν♭ ∧ α)(v) = ∑ᵢ (-1)ⁱ ⟨ν, vᵢ⟩ α(v₀, …, v̂ᵢ, …, vₙ)`.  The term `i = 0` is
+`⟨ν, ν⟩ α(σ) = α(σ)`; every other term has a factor `⟨ν, σⱼ⟩ = 0`. -/
+theorem Submission.dor_lmbsf_io_wedge_eval_cons : ∀ (P n : ℕ) (ν : Euclid P) (σ : Fin n → Euclid P) (α : Covector (Euclid P) n), ‖ν‖ = 1 → (∀ i, inner ℝ ν (σ i) = 0) → ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ ν).smulRight α) (Fin.cons ν σ : Fin (n + 1) → Euclid P) = α σ := by
+  intro P n ν σ α hν hνσ
+  -- expand at `v = (ν, σ₀, …, σₙ₋₁)` and split off the term `i = 0`
+  rw [ContinuousAlternatingMap.alternatizeUncurryFin_apply, Fin.sum_univ_succ]
+  -- `⟨ν, ν⟩ = ‖ν‖² = 1`, `v` without `v₀` is `σ`, and `⟨ν, vⱼ₊₁⟩ = ⟨ν, σⱼ⟩ = 0`
+  simp [Fin.removeNth_zero, Fin.tail_cons, innerSL_apply_apply, hνσ, hν]
+
+/-- Orientation of a slice (Simon Ch. 6, 4.3: `⟨v⌞w, a⟩ = ⟨v, w ∧ a⟩`, and `ξ⌞ν` orients
+`TₓM ∩ ν^⊥`): if the `(n+1)`-vector `ζ` orients `Q`, `ν ∈ Q` is a unit vector and
+`⟨α, ζ'⟩ = ⟨ν♭ ∧ α, ζ⟩` for every `n`-covector `α`, then `ζ'` orients `Q ∩ ν^⊥`.  In an
+orthonormal frame `(ν, σ)` of `Q` adapted to `ν`, `ζ` is `±` evaluation at `(ν, σ)` and
+`(ν♭ ∧ α)(ν, σ) = α(σ)`, so `ζ'(α) = ±α(σ)`. -/
+theorem Submission.dor_lmbsf_interior_product_orientation : ∀ (P n : ℕ) (ζ : MultiVector P (n + 1)) (ζ' : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (ν : Euclid P), IsUnitOrientationOf ζ Q → ν ∈ Q → ‖ν‖ = 1 → (∀ α : Covector (Euclid P) n, ζ' α = ζ (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ ν).smulRight α))) → IsUnitOrientationOf ζ' (Q ⊓ (ℝ ∙ ν)ᗮ) := by
+  intro P n ζ ζ' Q ν hζ hνQ hν hζ'
+  -- `dim Q = n + 1`, read off the orthonormal frame `τ` oriented by `ζ`
+  have hdim : Module.finrank ℝ Q = n + 1 := by
+    obtain ⟨τ, hτ, hτQ, -⟩ := hζ
+    rw [← hτQ, finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  -- an orthonormal frame `(ν, σ)` of `Q`, with `σ` an orthonormal basis of `Q ∩ ν^⊥`
+  obtain ⟨σ, hσ, hσspan, hνσo, hσQ, hνσ⟩ :=
+    Submission.dor_lmbsf_io_adapted_frame P n Q ν hdim hνQ hν
+  have hνσQ : ∀ j, (Fin.cons ν σ : Fin (n + 1) → Euclid P) j ∈ Q := by
+    intro j
+    refine Fin.cases ?_ (fun i => ?_) j
+    · simpa using hνQ
+    · simpa using hσQ i
+  -- `(ν♭ ∧ α)(ν, σ) = α(σ)`
+  have hwedge : ∀ α : Covector (Euclid P) n,
+      ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ ν).smulRight α)
+        (Fin.cons ν σ : Fin (n + 1) → Euclid P) = α σ := fun α =>
+    Submission.dor_lmbsf_io_wedge_eval_cons P n ν σ α hν hνσ
+  -- `ζ` is `±` evaluation at `(ν, σ)`, so `ζ'` is `±` evaluation at `σ`
+  refine ⟨σ, hσ, hσspan, ?_⟩
+  rcases Submission.dor_lmbsf_io_orientation_frame_sign P (n + 1) ζ Q _ hζ hνσo hνσQ with h | h
+  · exact Or.inl fun α => by rw [hζ' α, h, hwedge]
+  · exact Or.inr fun α => by rw [hζ' α, h, hwedge]
+
+/-- Countable compact exhaustion, swapping "for every compact `K ⊆ U`" and "for a.e. `t`" (used
+for the local integrability of the slices of Simon Ch. 6, 4.1–4.3 in the slicing step of the
+proof of 7.4.3): if every `F t` is monotone and, for each compact `K ⊆ U`, `F t K ≠ ∞` for a.e.
+`t`, then for a.e. `t`, `F t K ≠ ∞` for all compact `K ⊆ U` at once.  The compact sets
+`Kᵢ = B̄(0, i) ∖ {y : dist(y, Uᶜ) < 1/(i+1)}` lie in `U`, and every compact `K ⊆ U` lies in some
+`Kᵢ` (it is bounded and at positive distance from `Uᶜ`); intersect the countably many full-measure
+sets and use `F t K ≤ F t Kᵢ`. -/
+theorem Submission.dor_lmbsf_si_ae_forall_compact : ∀ (P : ℕ) (U : Set (Euclid P)) (F : ℝ → Set (Euclid P) → ℝ≥0∞), IsOpen U → (∀ t, Monotone (F t)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∀ᵐ t, F t K ≠ ∞) → ∀ᵐ t, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → F t K ≠ ∞ := by
+  intro P U F hU hmono hK
+  -- the compact sets `Kᵢ = B̄(0, i) ∖ thickening (1/(i+1)) Uᶜ ⊆ U`
+  let Kn : ℕ → Set (Euclid P) := fun i => closedBall 0 i \ thickening (1 / ((i : ℝ) + 1)) Uᶜ
+  have hKc : ∀ i, IsCompact (Kn i) := fun i =>
+    (isCompact_closedBall 0 (i : ℝ)).diff isOpen_thickening
+  have hKU : ∀ i, Kn i ⊆ U := by
+    intro i x hx
+    by_contra hxU
+    exact hx.2 (self_subset_thickening (by positivity) _ hxU)
+  -- every compact `K ⊆ U` lies in some `Kᵢ`: `K ⊆ B̄(0, R)` and `thickening δ K ⊆ U`
+  have hcover : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ i, K ⊆ Kn i := by
+    intro K hKc' hKU'
+    obtain ⟨δ, hδ, hδK⟩ := hKc'.exists_thickening_subset_open hU hKU'
+    obtain ⟨R, hR⟩ := hKc'.isBounded.subset_closedBall 0
+    obtain ⟨i₁, hi₁⟩ := exists_nat_ge R
+    obtain ⟨i₂, hi₂⟩ := exists_nat_one_div_lt hδ
+    refine ⟨max i₁ i₂, fun x hx => ⟨?_, ?_⟩⟩
+    · exact closedBall_subset_closedBall (hi₁.trans (by exact_mod_cast le_max_left i₁ i₂)) (hR hx)
+    · intro hxt
+      rw [mem_thickening_iff] at hxt
+      obtain ⟨y, hyU, hxy⟩ := hxt
+      have hlt : (1 : ℝ) / ((max i₁ i₂ : ℕ) + 1) ≤ 1 / ((i₂ : ℝ) + 1) := by
+        gcongr; exact_mod_cast le_max_right i₁ i₂
+      have hy : y ∈ thickening δ K := by
+        rw [mem_thickening_iff]
+        exact ⟨x, hx, by rw [dist_comm]; linarith⟩
+      exact hyU (hδK hy)
+  -- for a.e. `t`, `F t Kᵢ ≠ ∞` for all `i` at once; then `F t K ≤ F t Kᵢ`
+  have hall : ∀ᵐ t, ∀ i, F t (Kn i) ≠ ∞ := ae_all_iff.mpr fun i => hK _ (hKc i) (hKU i)
+  filter_upwards [hall] with t ht K hKc' hKU'
+  obtain ⟨i, hi⟩ := hcover K hKc' hKU'
+  exact ne_top_of_le_ne_top (ht i) (hmono t hi)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
