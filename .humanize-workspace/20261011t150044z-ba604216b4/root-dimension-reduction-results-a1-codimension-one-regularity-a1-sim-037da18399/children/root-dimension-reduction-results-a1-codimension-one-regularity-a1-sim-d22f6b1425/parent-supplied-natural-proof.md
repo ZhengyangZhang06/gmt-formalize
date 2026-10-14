@@ -1,0 +1,169 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1.jacobian_continuous-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source. Simon Ch. 2, (4.1)–(4.2) (book/chapter-02.txt lines 849–863): a local representation is a homeomorphism of V onto W ∩ M. Also 4.11–4.12 (lines 958–981). This child is steps 3–4 of the parent proof and is exactly its first conjunct. It uses the siblings chart_gram_factor (Submission.codim1_ac_saf_chart_gram_factor) and chart_inverse_continuity (Submission.dsmc_chart_inverse_continuity).
+
+Notation. For a linear map T : ℝ^m → ℝ^P put γ(T) := √det(⟨Te_k, Te_l⟩)_{k,l<m}, with e_k = EuclideanSpace.single k 1. J is the function of the statement.
+
+Proof.
+1. (A chart at y.) Fix y ∈ N. We show that J is continuous at y relative to N. By IsEmbeddedSubmanifold 1 m N there are an open V ⊆ ℝ^m, an open W ⊆ ℝ^P with y ∈ W, and ψ : ℝ^m → ℝ^P with: ψ is C¹ on V and injective on V; ψ(V) = W ∩ N; V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W; Dψ(z) is injective for z ∈ V. Since y ∈ W ∩ N = ψ(V), y = ψ(v₀) for some v₀ ∈ V.
+2. (γ is continuous.) Fix k and l. The map T ↦ ⟨Te_k, Te_l⟩ is continuous on the normed space of continuous linear maps ℝ^m → ℝ^P: evaluation at a fixed vector is continuous and linear in T, and the inner product is continuous. The determinant is a polynomial in the matrix entries, hence continuous (Continuous.matrix_det), and √ is continuous. So γ is continuous.
+3. (Continuous derivatives on V.) ψ is C¹ on the open set V. Φ∘ψ is C¹ on V because Φ is C¹ (ContDiff.comp_contDiffOn). The derivative of a map that is C¹ on an open set is continuous there (ContDiffOn.continuousOn_fderiv_of_isOpen). So v ↦ Dψ(v) and v ↦ D(Φ∘ψ)(v) are continuous on V.
+4. (J∘ψ on V.) Let v ∈ V. Φ is differentiable at ψ(v) because it is C¹. Apply the sibling chart_gram_factor with r = 1 to the chart of step 1, Q, Φ and v. It gives det(⟨Dψ(v)e_k, Dψ(v)e_l⟩) > 0, so γ(Dψ(v)) > 0, and γ(D(Φ∘ψ)(v)) = J(ψ(v))·γ(Dψ(v)). Hence J(ψ(v)) = H(v) := γ(D(Φ∘ψ)(v)) / γ(Dψ(v)) for every v ∈ V.
+5. (H is continuous on V.) By steps 2–3 the numerator and the denominator of H are continuous on V. By step 4 the denominator does not vanish on V. So H is continuous on V.
+6. (Inverse of the chart.) ψ is continuous on V (it is C¹) and injective on V, ψ(V) = W ∩ N ⊆ W, and ψ is proper in the sense of step 1. So the sibling chart_inverse_continuity gives: for every ε' > 0 there is δ' > 0 such that every v' ∈ V with |ψ(v') − ψ(v₀)| < δ' satisfies |v' − v₀| < ε'. This is Simon's remark after (4.1). Indeed, if ψ(v_j) → ψ(v₀) with v_j ∈ V, the v_j lie in the compact set V ∩ ψ⁻¹(K), where K = {ψ(v₀)} ∪ {ψ(v_j)}. Every cluster point v* ∈ V has ψ(v*) = ψ(v₀), hence v* = v₀.
+7. (ε–δ.) Let ε > 0. By step 5 there is δ₁ > 0 with |H(v') − H(v₀)| < ε for all v' ∈ V with |v' − v₀| < δ₁. By step 6 with ε' = δ₁ there is δ₂ > 0 such that v' ∈ V and |ψ(v') − y| < δ₂ imply |v' − v₀| < δ₁. Since W is open and y ∈ W, there is δ₃ > 0 with B(y, δ₃) ⊆ W. Put δ := min(δ₂, δ₃) > 0, and let y' ∈ N with |y' − y| < δ. Then y' ∈ W ∩ N = ψ(V), so y' = ψ(v') with v' ∈ V. From |ψ(v') − ψ(v₀)| < δ₂ we get |v' − v₀| < δ₁. By step 4, |J(y') − J(y)| = |H(v') − H(v₀)| < ε.
+8. So J is continuous at every y ∈ N relative to N, i.e. J is continuous on N. If N = ∅ this is vacuous. ∎
+
+Lean notes. No import may be added (depth-6 leaf), and none is needed. Destructuring `IsEmbeddedSubmanifold 1 m N` gives `ContDiffOn ℝ ((1 : ℕ) : WithTop ℕ∞) ψ V`. `exact_mod_cast` turns this into `ContDiffOn ℝ 1 ψ V`, and chart_gram_factor accepts the original form directly with r = 1. Use `hΦ.differentiable one_ne_zero` for Φ and `Metric.continuousWithinAt_iff` for the ε–δ form.
+
+Appendix (Lean proof checked with Lean v4.35.0-rc3, Mathlib 25730c7c, SimonGMT 2b366308). Placed as `theorem Submission.codim1_ac_saf_jacobian_continuousOn : <frozen type> := by` followed by this tactic block, inside `namespace GMT.Ch07` after the contract's `end` of the noncomputable section, with no import beyond the frozen contract (`import GMT.Ch07.Submission` only); it passes the runtime leaf gate leaf_verification.check_source_delta. `#print axioms` reported: [propext, Classical.choice, Quot.sound, Submission.codim1_ac_saf_chart_gram_factor, Submission.dsmc_chart_inverse_continuity].
+```lean
+  intro P m N Q Φ hN hQ hΦ
+  classical
+  intro y hy
+  obtain ⟨V, W, ψ, hV, hW, hyW, hψ, hinj, hψV, hprop, hDψ⟩ := hN y hy
+  have hψ1 : ContDiffOn ℝ 1 ψ V := by exact_mod_cast hψ
+  have hyim : y ∈ ψ '' V := hψV ▸ ⟨hyW, hy⟩
+  obtain ⟨v₀, hv₀, rfl⟩ := hyim
+  set gram : (Euclid m →L[ℝ] Euclid P) → ℝ := fun A => Real.sqrt (Matrix.det (Matrix.of
+    fun k l : Fin m => inner ℝ (A (EuclideanSpace.single k 1)) (A (EuclideanSpace.single l 1))))
+    with hgram
+  have hgram_cont : Continuous gram := by
+    apply Continuous.sqrt
+    apply Continuous.matrix_det
+    apply continuous_pi; intro k; apply continuous_pi; intro l
+    exact ((continuous_id.clm_apply continuous_const).inner
+      (continuous_id.clm_apply continuous_const))
+  have hΦψ : ContDiffOn ℝ 1 (Φ ∘ ψ) V := hΦ.comp_contDiffOn hψ1
+  have hc1 : ContinuousOn (fun v => fderiv ℝ (Φ ∘ ψ) v) V :=
+    hΦψ.continuousOn_fderiv_of_isOpen hV le_rfl
+  have hc2 : ContinuousOn (fun v => fderiv ℝ ψ v) V :=
+    hψ1.continuousOn_fderiv_of_isOpen hV le_rfl
+  have hfac : ∀ v ∈ V, _ := fun v hv =>
+    Submission.codim1_ac_saf_chart_gram_factor P m 1 N W V ψ Q Φ v le_rfl hV hW hψ hinj hψV
+      hprop hDψ hQ (hΦ.differentiable one_ne_zero (ψ v)) hv
+  have hpos : ∀ v ∈ V, 0 < gram (fderiv ℝ ψ v) := fun v hv => Real.sqrt_pos.2 (hfac v hv).1
+  set G : Euclid m → ℝ := fun v => gram (fderiv ℝ (Φ ∘ ψ) v) / gram (fderiv ℝ ψ v) with hGdef
+  have hGcont : ContinuousOn G V :=
+    (hgram_cont.comp_continuousOn hc1).div (hgram_cont.comp_continuousOn hc2)
+      (fun v hv => (hpos v hv).ne')
+  have hJG : ∀ v ∈ V, Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q (ψ v))) =>
+      inner ℝ (fderiv ℝ Φ (ψ v) (stdOrthonormalBasis ℝ (Q (ψ v)) i))
+        (fderiv ℝ Φ (ψ v) (stdOrthonormalBasis ℝ (Q (ψ v)) j)))) = G v := by
+    intro v hv
+    have h2 := (hfac v hv).2
+    rw [hGdef]
+    simp only
+    rw [eq_div_iff (hpos v hv).ne']
+    exact h2.symm
+  rw [Metric.continuousWithinAt_iff]
+  intro ε hε
+  obtain ⟨δ₁, hδ₁, hG⟩ := Metric.continuousWithinAt_iff.1 (hGcont v₀ hv₀) ε hε
+  obtain ⟨δ₂, hδ₂, hinv⟩ := Submission.dsmc_chart_inverse_continuity P m V W ψ hψ1.continuousOn
+    hinj (hψV ▸ inter_subset_left) hprop v₀ hv₀ δ₁ hδ₁
+  obtain ⟨δ₃, hδ₃, hball⟩ := Metric.isOpen_iff.1 hW (ψ v₀) hyW
+  refine ⟨min δ₂ δ₃, lt_min hδ₂ hδ₃, fun {y'} hy'N hy'd => ?_⟩
+  have hy'W : y' ∈ W := hball (lt_of_lt_of_le hy'd (min_le_right _ _))
+  have hy'im : y' ∈ ψ '' V := hψV ▸ ⟨hy'W, hy'N⟩
+  obtain ⟨v', hv', rfl⟩ := hy'im
+  have hclose := hinv v' hv' (lt_of_lt_of_le hy'd (min_le_left _ _))
+  rw [hJG v' hv', hJG v₀ hv₀]
+  exact hG hv' hclose
+```
+
+## Key steps
+
+1. Take a chart (V, W, ψ) of N with y = ψ(v₀).
+2. On V, J∘ψ = γ(D(Φ∘ψ))/γ(Dψ) by chart_gram_factor. Both Gram square roots are continuous on V (C¹ on an open set, det continuous), and the denominator is positive.
+3. ψ⁻¹ is continuous at y along W ∩ N (chart_inverse_continuity), and W is open; an ε–δ argument gives continuity of J within N at y.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD (b4d606db); git -C .lake/packages/mathlib rev-parse HEAD (25730c7c); git -C .lake/packages/simongmt rev-parse HEAD (2b366308)`
+- `sha256sum GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean <snapshot>/project/GMT/Ch07/Contract.lean (all e4148e7f…); git show 785373c2:GMT/Ch07/Submission.lean | sha256sum (node proof base = contract)`
+- `sha256sum <snapshot>/mathlib/X vs .lake/packages/mathlib/X for X in {MeasureTheory/Constructions/Polish/Basic, MeasureTheory/Integral/Lebesgue/Basic, Topology/Compactness/Lindelof, Analysis/Calculus/FDeriv/Comp, Analysis/Calculus/ContDiff/{Defs,Comp}, Analysis/InnerProductSpace/{PiL2,NormDet}, MeasureTheory/Constructions/BorelSpace/Basic, Order/Disjointed, MeasureTheory/MeasurableSpace/Constructions, Topology/Instances/Matrix}.lean (all SAME)`
+- `rg -n -F in <snapshot>/mathlib/Mathlib: 'theorem lintegral_iUnion ', 'theorem Continuous.measurableEmbedding', 'theorem IsLindelof.indexed_countable_subcover', 'HereditarilyLindelofSpace.isLindelof', 'theorem fderiv_comp ', 'theorem ContDiffOn.continuousOn_fderiv_of_isOpen', 'theorem ContDiff.comp_contDiffOn', 'theorem ContinuousOn.measurable_piecewise', 'theorem setLIntegral_congr_fun ', 'theorem finrank_euclideanSpace_fin', 'theorem LinearMap.finrank_range_of_inj', 'theorem Continuous.matrix_det', 'theorem iUnion_disjointed', 'theorem disjointed_subset', 'theorem MeasurableSet.disjointed', 'theorem sqrt_mul\' '`
+- `rg -n 'normDet|codim1_ac_saf' <snapshot>/project (normDet only in GMT/Ch03 and the Ch02 README, not in the Ch07 closure; codim1_ac_saf: no match)`
+- `grep -n 'def IsEmbeddedSubmanifold|def tangentSpace' GMT/Ch07/Contract.lean (lines 221, 228)`
+- `python3 scans of dag.json at 18:15Z, 18:19Z, 18:31:49Z and 19:12:29Z: status/candidate/updated_at and lean_statement identity of chart_tangentSpace_eq_range_fderiv, dsmc_chart_inverse_continuity, codim1_lura_gram_det_comp_orthonormal, dpf_det_gram_stdOrthonormalBasis_eq, codim1_lura_gram_area_formula; count of codim1_ac_saf (0); titles matching area|gram|jacobian (alternatives dpf_raf_piece_area_formula_gram, codim1_lur_cd_injective_area_formula_gram, dpf_area_formula_bilipschitz_rectifiable, codim1_hcp_submanifold_area_formula)`
+- `issue-workers.json (worker 0b7443da… for issue 5877 started 16:35:02Z); .humanize/swarm-configs/0b7443da79c04f0ca0fa6637366c6d18.json (max_depth 6, max_children 12, max_nodes 5000, decomposition_attempts 5, github_shared_issue_runtime true)`
+- `runtime.py: _existing_lean_name_problem, _accepted_checkpoint, _decompose (start-of-attempt store.update), activation existing_by_name mapping, _install_parent_supplied_child_handoff (returns early for accepted checkpoints), _overlay_accepted_children; store.py Store.refresh/update; parallel.py enabled; leaf_verification.py check_source_delta`
+- `git log --all --oneline -S codim1_ac_saf -- GMT/Ch07/Submission.lean over 6521 refs (no match)`
+- `for c in d626082a 5e4b2158 d596f85a 5ac0181c d5ba41d6: git show $c:GMT/Ch07/Submission.lean | grep '^import' | md5sum (all equal to HEAD: 8 contract imports), grep -n 'theorem Submission.<reused name>' (present, type byte-identical)`
+- `python3 -I scripts/gen.py (Assembly.lean, Child_*.lean, Combined.lean); lake env lean -DautoImplicit=false on each (exit 0, no error/warning lines)`
+- `python3 scripts/gate.py: check_source_delta(contract, contract + theorem, name) for the four new children and the parent assembly (all PASS)`
+- `python3 scripts/merge.py; lake env lean -DautoImplicit=false /tmp/saf3-q9w4/lean/Merged.lean (exit 0, 2m54s; parent axioms [propext, Classical.choice, Quot.sound])`
+- `sed -n 750,800p; 845,875p; 950,1000p book/chapter-02.txt (Simon 3.2–3.5, 4.1–4.3, 4.11–4.14)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Lindelof.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Disjointed.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/Matrix.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Finrank.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/0b7443da79c04f0ca0fa6637366c6d18.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-037da18399/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-037da18399/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-chart-tangent-space-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-0f11358db9/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-12e3a7fde6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-3f0e6c2b24/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/parallel.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/leaf_verification.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaFormula.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean`
+- `/tmp/saf3-q9w4/lean/Assembly.lean`
+- `/tmp/saf3-q9w4/lean/Combined.lean`
+- `/tmp/saf3-q9w4/lean/Merged.lean`
+- `/tmp/saf3-q9w4/out/Merged.out`
+- `/tmp/saf3-q9w4/scripts/gate.py`
+
+Pins match.
+- The manifest records project b4d606db and Mathlib 25730c7c, equal to workspace HEAD and .lake/packages/mathlib; SimonGMT is at 2b366308, as pinned.
+- The snapshot Contract.lean, the workspace Contract.lean and Submission.lean, and the node proof base 785373c2 all carry the same contract (sha256 e4148e7f…).
+- The 12 Mathlib files hashed are byte-identical between the snapshot and the workspace.
+Library (snapshot).
+- Every Mathlib lemma the new children use exists: lintegral_iUnion (any integrand), Continuous.measurableEmbedding, IsLindelof.indexed_countable_subcover, HereditarilyLindelofSpace.isLindelof, fderiv_comp, ContDiffOn.continuousOn_fderiv_of_isOpen, ContDiff.comp_contDiffOn, ContinuousOn.measurable_piecewise, setLIntegral_congr_fun, finrank_euclideanSpace_fin, LinearMap.finrank_range_of_inj, Continuous.matrix_det, iUnion_disjointed, disjointed_subset, MeasurableSet.disjointed, Real.sqrt_mul'.
+- NormDet.lean (normDet_comp, normDet_sq_eq_det_gram) is in the snapshot but not in the Ch07 import closure. Depth-6 leaves cannot add imports, so the children use Gram determinants.
+- The snapshot has no codim1_ac_saf declaration.
+DAG reuse.
+- Five accepted checkpoints are reused, each with a byte-identical frozen type and the 8 contract imports in its candidate commit: chart_tangentSpace_eq_range_fderiv (d626082a), dsmc_chart_inverse_continuity (5e4b2158), codim1_lura_gram_det_comp_orthonormal (d596f85a), dpf_det_gram_stdOrthonormalBasis_eq (5ac0181c) and codim1_lura_gram_area_formula (d5ba41d6).
+- codim1_lura_gram_area_formula was flagged as active in attempt 1. It has been accepted since 17:18:18Z, so _accepted_checkpoint now holds and _existing_lean_name_problem permits its exact reuse.
+- Rejected alternatives:
+  - dpf_raf_piece_area_formula_gram needs globally Lipschitz maps.
+  - codim1_lur_cd_injective_area_formula_gram is a Bochner, real-valued version.
+  - dpf_area_formula_bilipschitz_rectifiable uses approxTangentPlane and a Lipschitz φ.
+  - codim1_hcp_submanifold_area_formula is still decomposing and has a different type.
+- The four new codim1_ac_saf_* names are free in dag.json (1585 nodes at 19:12:29Z), in the snapshot and in the Submission.lean history on 6521 refs.
+Lean (only the contract imports).
+- All nine child types elaborate, and the parent follows from the children (Assembly.lean).
+- Each new child compiles from its declared siblings alone and passes check_source_delta, as does the 11-line parent assembly.
+- Merged.lean (contract + real accepted proof text from the five candidate commits + four new children + assembly) compiles. It proves codim1_ac_submanifold_area_formula with axioms [propext, Classical.choice, Quot.sound].

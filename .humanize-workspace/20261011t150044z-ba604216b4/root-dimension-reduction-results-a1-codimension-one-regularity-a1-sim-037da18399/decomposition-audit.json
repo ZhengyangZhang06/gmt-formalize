@@ -1,0 +1,104 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "codim1_ac_saf|normDet",
+        "theorem lintegral_iUnion|theorem Continuous.measurableEmbedding|indexed_countable_subcover|theorem sqrt_mul|normDet_sq_eq_det_gram|normDet_comp",
+        "weighted_area_formula_volume_of_injective_derivative|measurable_areaJacobianAt|areaJacobianAt_eq_normDet|sorry|axiom",
+        "git show d626082a:GMT/Ch07/Submission.lean",
+        "git show 5e4b2158:GMT/Ch07/Submission.lean",
+        "git show d596f85a:GMT/Ch07/Submission.lean",
+        "git show 5ac0181c:GMT/Ch07/Submission.lean",
+        "git show d5ba41d6:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -DautoImplicit=false /tmp/submanifold-audit-oo3yhm6h/Merged.lean > /tmp/submanifold-audit-oo3yhm6h/Merged.out 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Lindelof.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-037da18399/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-037da18399/decomposition-v2.json",
+        "/tmp/submanifold-audit-oo3yhm6h/Types.lean",
+        "/tmp/submanifold-audit-oo3yhm6h/Assembly.lean",
+        "/tmp/submanifold-audit-oo3yhm6h/chart_gram_factor.lean",
+        "/tmp/submanifold-audit-oo3yhm6h/lintegral_image_of_local.lean",
+        "/tmp/submanifold-audit-oo3yhm6h/jacobian_continuous.lean",
+        "/tmp/submanifold-audit-oo3yhm6h/chart_area_formula.lean",
+        "/tmp/submanifold-audit-oo3yhm6h/Merged.lean",
+        "/tmp/submanifold-audit-oo3yhm6h/Merged.out"
+      ],
+      "conclusion": "The split is appropriate for the selected submanifold-area theorem. All nine one-line propositions independently elaborate without their implementations; their hypotheses match the prose, names are bare identifiers, and dependencies are acyclic and sufficient. All Gram matrices use Matrix.of. The five reused declarations have identical frozen types and successful comparator receipts for the stated candidate commits; the four new names remain unreserved in the inspected 1598-node DAG. The snapshot Ch07 search found no codim1_ac_saf or normDet match. Project, Mathlib and SimonGMT revisions match their pins, and checked snapshot files match the workspace. Pinned lintegral_iUnion and weighted-area results explicitly permit arbitrary integrands. Independently rebuilt Types, Assembly, four isolated child proofs, and Merged all compile successfully. Each isolated proof uses only its declared siblings; every merged child and the exact frozen parent have only propext, Classical.choice and Quot.sound as axioms. Source-delta checks pass for all four new children and the parent assembly."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "chart_tangent_space",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact accepted type matches all chart hypotheses and the curve-defined tangent space. Bounded smooth parameter curves prove one inclusion; properness gives inverse continuity, and the injective-derivative remainder estimate proves the reverse inclusion using closedness of the linear range. No circular reliance occurs."
+    },
+    {
+      "key": "chart_inverse_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and exact accepted type agree, including absence of openness assumptions. The convergent image sequence and its limit form a compact subset of W; properness, sequential compactness, continuity and injectivity yield the claimed contradiction. The proof is complete."
+    },
+    {
+      "key": "gram_chain",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conclusions match the exact accepted type. Injectivity yields positive Gram determinant. Expansion in the spanning orthonormal frame gives RᵀHR and RᵀR, whose determinants prove the factorization. The second conclusion does not require an additional injectivity premise, and dimension zero is covered."
+    },
+    {
+      "key": "gram_basis_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact accepted type matches the prose without assuming L injective. The spanning orthonormal family becomes a basis of Q; both Gram matrices represent the same endomorphism L′*L′ in orthonormal bases. Basis-independent determinant proves the equality, including empty bases."
+    },
+    {
+      "key": "gram_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The comparator-accepted frozen type is identical. The normDet–Gram identity proves the Jacobian identification; measurable_fderiv and continuous normDet justify global measurability. The inspected weighted-area theorem has exactly the stated differentiability, derivative-injectivity and set-injectivity hypotheses and permits arbitrary g. Dimension normalization and substitution complete the proof."
+    },
+    {
+      "key": "chart_gram_factor",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose includes every Lean hypothesis. The chain rule and tangent-space child identify the derivative range with Q; injectivity supplies its Fin m orthonormal frame. The two Gram children give positivity and factorization, and sqrt_mul′ applies using the positive second factor. The supplied proof compiles using exactly its declared dependencies."
+    },
+    {
+      "key": "lintegral_image_of_local",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The arbitrary-measure and arbitrary-weight contract matches the prose. Lusin–Souslin supplies measurable images; hereditary Lindelöfness and disjointification produce measurable pieces covering B. Injectivity makes their images disjoint, and the pinned lintegral_iUnion requires no integrand measurability. The empty case is handled, and the supplied proof compiles without siblings."
+    },
+    {
+      "key": "jacobian_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger continuity statement correctly needs neither injectivity of Φ nor m ≥ 1. On each open chart, continuous derivatives and the positive Gram denominator give a continuous quotient equal to J∘ψ. Inverse continuity and the open ambient neighbourhood transfer continuity to N. The complete supplied proof compiles from the two declared siblings."
+    },
+    {
+      "key": "chart_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All chart, map and set hypotheses match the Lean proposition. The proof establishes measurability of A = V ∩ ψ⁻¹(B), verifies both parametric-area applications, and proves equality of their integrands through chart_gram_factor. Arbitrary g is supported by gram_area, and no ambient Jacobian measurability is silently assumed. The supplied proof compiles from its declared siblings."
+    }
+  ],
+  "required_changes": []
+}
