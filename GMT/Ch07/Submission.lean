@@ -891,6 +891,32 @@ theorem Submission.dtc_bc_tc_wc_dense_extension : ∀ (P n : ℕ) (S : ℕ → G
   obtain ⟨h2l, h2r⟩ := abs_lt.mp (hclose l)
   obtain ⟨h3l, h3r⟩ := abs_lt.mp h3
   exact abs_lt.mpr ⟨by linarith, by linarith⟩
+/-- **A pointwise limit of currents with uniform zeroth-order bounds is a current** (Simon 6.2.13;
+the limit step in the proof of Lemma 6.2.15).  Put `L(ω) = lim_i S_i(ω)`.  By uniqueness of
+limits `L` is linear, and letting `i → ∞` in `|S_i(ω)| ≤ c s` gives `|L(ω)| ≤ c s` whenever
+`spt ω ⊆ K` and `‖ω(x)‖ ≤ s` for all `x`.  So `Submission.cmcs_rc_order_zero_current` gives a
+current `C` with `C(ω) = L(ω)`, and `S_i(ω) → C(ω)` for every `ω`. -/
+theorem Submission.dtc_bc_tc_wc_limit_current : ∀ (P n : ℕ) (S : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ K : Set (Euclid P), IsCompact K → ∃ c : ℝ, 0 ≤ c ∧ ∀ (i : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n) (s : ℝ), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ s) → |S i ω| ≤ c * s) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ L : ℝ, Tendsto (fun i => S i ω) atTop (𝓝 L)) → ∃ C : GeometricCurrentOn (univ : Set (Euclid P)) n, WeaklyConvergesOn S C := by
+  intro P n S hbd hlim
+  -- Step 1: the pointwise limit `L(ω) = lim_i S_i(ω)`
+  choose L hL using hlim
+  -- Steps 2–3: `L` is linear, by uniqueness of limits
+  let Λ : TestFormOn (univ : Set (Euclid P)) n →ₗ[ℝ] ℝ :=
+    { toFun := L
+      map_add' := fun ω η => by
+        refine tendsto_nhds_unique (hL (ω + η)) ?_
+        simpa only [map_add] using (hL ω).add (hL η)
+      map_smul' := fun a ω => by
+        refine tendsto_nhds_unique (hL (a • ω)) ?_
+        simpa only [map_smul, smul_eq_mul, RingHom.id_apply] using (hL ω).const_mul a }
+  -- Steps 4–5: `|L(ω)| ≤ c s` in the limit, so `order_zero_current` makes `L` a current `C`
+  obtain ⟨C, hC⟩ := Submission.cmcs_rc_order_zero_current P n univ Λ fun K hK _ => by
+    obtain ⟨c, -, hc⟩ := hbd K hK
+    exact ⟨c, fun ω s hsupp hs => le_of_tendsto' (hL ω).abs fun i => hc i ω s hsupp hs⟩
+  -- Step 6: `S_i(ω) → L(ω) = C(ω)`
+  refine ⟨C, fun ω => ?_⟩
+  rw [hC ω]
+  exact hL ω
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
