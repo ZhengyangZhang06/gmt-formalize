@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_current_rep-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1",
+  "depth": 5,
+  "title": "A weighted sum of rays from the origin is integer multiplicity with mass measure Σ|m_e|·H¹⌞ray(e)",
+  "statement": "Let P ∈ ℕ, C ∈ 𝒟_1(ℝ^P), F a finite set of unit vectors and m : ℝ^P → ℤ such that C(ω) = Σ_{e∈F} m(e)·∫_{(0,∞)} ω(te)(e) dt for every ω ∈ 𝒟¹(ℝ^P). Then C has an integer multiplicity representation R (IMRep univ 1 with R.Represents C) such that R.measure(A) = Σ_{e∈F} |m(e)|·ℒ¹({t > 0 : te ∈ A}) for every Borel set A ⊆ ℝ^P, i.e. μ_C = Σ_{e∈F} |m(e)|·H¹⌞ray(e) with ray(e) := {te : t > 0}.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ m : Euclid P → ℤ, (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, (m e : ℝ) * ∫ t in Ioi (0 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∃ R : IMRep (univ : Set (Euclid P)) 1, R.Represents C ∧ ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ e ∈ F, ENNReal.ofReal |(m e : ℝ)| * volume (Ioi (0 : ℝ) ∩ (fun t : ℝ => t • e) ⁻¹' A)",
+  "lean_name": "idtp_fons_odc_ray_current_rep",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.polygonal_current-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-f15cb646e7-a1"
+}

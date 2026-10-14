@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1",
+  "depth": 5,
+  "title": "Along each ray, the orientation of an integer multiplicity 1-triple carried by finitely many rays is ±e (parent step 4)",
+  "statement": "Let P ∈ ℕ, let R = (M, θ, ξ) be a 1-dimensional integer multiplicity triple in ℝ^P (IMRep univ 1: carrier M, multiplicity θ, orientation ξ : ℝ^P → Λ_1(ℝ^P)), and let F be a finite set of unit vectors with H¹(M ∖ ⋃_{e∈F} ray(e)) = 0, where H¹ = μHE[1] and ray(e) := {te : t > 0}. Then for every e ∈ F and H¹-almost every x ∈ M ∩ ray(e), either ξ(x) = ev_e or ξ(x) = −ev_e, where ev_e ∈ Λ_1(ℝ^P) is the 1-vector α ↦ α(e) (ContinuousAlternatingMap.apply at the family fun _ : Fin 1 => e).",
+  "lean_statement": "∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → (μHE[1] : Measure (Euclid P)) (R.carrier ∩ (⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0)ᶜ) = 0 → ∀ e ∈ F, ∀ᵐ x ∂((μHE[1] : Measure (Euclid P)).restrict (R.carrier ∩ (fun t : ℝ => t • e) '' Ioi 0)), R.orient x = ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e) ∨ R.orient x = -ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => e)",
+  "lean_name": "idtp_fons_odc_ray_orientation",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.line_param-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.line_param-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a4a4246c9b-a1"
+}
