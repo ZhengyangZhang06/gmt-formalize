@@ -500,6 +500,39 @@ theorem Submission.cmcs_smi_lintegral_ofReal_deriv_le : ∀ (F : ℝ → ℝ) (a
     _ = ENNReal.ofReal (leftLim G b - G a) := G.measure_Ioo
     _ ≤ ENNReal.ofReal (F b - F a) := ENNReal.ofReal_le_ofReal (by linarith)
 
+/-- **Left slice density at a point of differentiability of the distribution function** (Simon
+Ch. 6, remark after 4.9 and (10) in the proof of 5.1).  For a finite measure `μ`, a measurable
+`f` and `F(s) = (μ {f < s}).toReal`: if `F` is differentiable at `t`, then
+`liminf_{h → 0+} ofReal (h⁻¹) * μ {t - h < f < t} ≤ ofReal (F′(t))`.  For `h > 0`,
+`{t - h < f < t} ⊆ {f < t} \ {f < t - h}`, whose measure is `ofReal (F(t) - F(t - h))` since `μ`
+is finite; so the claim follows from `Submission.cbr_smm_liminf_left_slope_le_deriv`. -/
+theorem Submission.cmcsd_gr_liminf_slice_le_deriv : ∀ (α : Type) [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) (t : ℝ), IsFiniteMeasure μ → Measurable f → DifferentiableAt ℝ (fun s : ℝ => (μ {x | f x < s}).toReal) t → liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | t - h < f x ∧ f x < t}) (𝓝[>] 0) ≤ ENNReal.ofReal (deriv (fun s : ℝ => (μ {x | f x < s}).toReal) t) := by
+  intro α _ μ f t _ hf hF
+  -- `μ` is finite, so `μ {f < s} = ofReal F(s)` with `F(s) = (μ {f < s}).toReal ≥ 0`
+  have hA : ∀ s : ℝ, μ {x | f x < s} = ENNReal.ofReal (μ {x | f x < s}).toReal := fun s =>
+    (ENNReal.ofReal_toReal (measure_ne_top μ _)).symm
+  -- for `h > 0`, `{t - h < f < t} ⊆ {f < t} \ {f < t - h}`, of measure `ofReal (F(t) - F(t - h))`
+  have hslice : ∀ h : ℝ, 0 < h → ENNReal.ofReal h⁻¹ * μ {x | t - h < f x ∧ f x < t} ≤
+      ENNReal.ofReal h⁻¹ *
+        ENNReal.ofReal ((μ {x | f x < t}).toReal - (μ {x | f x < t - h}).toReal) := by
+    intro h hh
+    gcongr
+    calc μ {x | t - h < f x ∧ f x < t}
+        ≤ μ ({x | f x < t} \ {x | f x < t - h}) :=
+          measure_mono fun x hx => ⟨hx.2, fun hx' => lt_asymm hx.1 hx'⟩
+      _ = μ {x | f x < t} - μ {x | f x < t - h} :=
+          measure_sdiff (fun x (hx : f x < t - h) => hx.trans (by linarith))
+            (measurableSet_lt hf measurable_const).nullMeasurableSet (measure_ne_top μ _)
+      _ = ENNReal.ofReal ((μ {x | f x < t}).toReal - (μ {x | f x < t - h}).toReal) := by
+          rw [ENNReal.ofReal_sub _ ENNReal.toReal_nonneg, ← hA, ← hA]
+  -- compare the liminfs along `𝓝[>] 0`, then use the left slopes of `F` at `t`
+  calc liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x | t - h < f x ∧ f x < t}) (𝓝[>] 0)
+      ≤ liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ *
+          ENNReal.ofReal ((μ {x | f x < t}).toReal - (μ {x | f x < t - h}).toReal)) (𝓝[>] 0) :=
+        liminf_le_liminf (eventually_nhdsWithin_of_forall hslice)
+    _ ≤ ENNReal.ofReal (deriv (fun s : ℝ => (μ {x | f x < s}).toReal) t) :=
+        Submission.cbr_smm_liminf_left_slope_le_deriv (fun s => (μ {x | f x < s}).toReal) t hF
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
