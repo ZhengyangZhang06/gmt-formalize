@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exhaust|SeparableSpace|SecondCountable|countable.dense|FiniteDimensional|TendstoUniformly",
+        "exists_thickening_subset_open|mem_thickening_iff",
+        "ext_alternating|toAlternatingMap_injective|theorem of_injective|FiniteDimensional.proper|secondCountable_of_proper",
+        "Dense.exists_dist_lt|tendstoUniformly_iff|Prod.dist_eq",
+        "instance.*Norm|inst.*Norm|operator norm|dist_eq_norm|norm_def",
+        "git show c9c005d1:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tfd-decomp/EndToEnd.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/testform-independent-audit-rtag43al/compact_exhaustion_Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/testform-independent-audit-rtag43al/covector_findim_Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/testform-independent-audit-rtag43al/fixed_support_dense_Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/testform-independent-audit-rtag43al/NormInstance.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/tfd-decomp/Inst.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/Compact.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-t-9b84f5afc6/parent-child-handoff.json",
+        "/tmp/tfd-decomp/EndToEnd.lean",
+        "/tmp/testform-independent-audit-rtag43al/compact_exhaustion_Challenge.lean",
+        "/tmp/testform-independent-audit-rtag43al/covector_findim_Challenge.lean",
+        "/tmp/testform-independent-audit-rtag43al/fixed_support_dense_Challenge.lean",
+        "/tmp/testform-independent-audit-rtag43al/NormInstance.lean",
+        "/tmp/tfd-decomp/Inst.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected test-form approximation theorem. The exhaustion and fixed-support families assemble by countable union; errors below 1/(k+1) give both required uniform limits with common compact support. The sole child dependency, fixed_support_dense on covector_findim, is correctly directed and acyclic. Snapshot and compiler revisions agree. No relevant helper was found in the project snapshot, and instance checks confirm that covector finite-dimensionality, properness and second countability are not automatically available. Independently generated comparator challenges elaborate without child implementations; their only warnings concern the intentional challenge stubs. The supplied end-to-end proof has exactly the frozen child and parent types and compiles with only propext, Classical.choice and Quot.sound. Separate checks confirm operator-norm covector distance and the maximum product metric. All proposed names are bare identifiers, absent from the 902-node DAG and from Submission.lean across 1647 referenced commits. The four accepted covector declarations have the identical frozen type."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "compact_exhaustion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line Lean proposition exactly matches the prose, including openness and containment of every compact subset in some K_i. The proof establishes compactness, containment in U, a uniform positive margin for each compact C, and the required index using boundedness and the Archimedean property. Empty U, universal U and P=0 are covered. Monotonicity is neither asserted nor needed. The proof is complete and non-circular."
+    },
+    {
+      "key": "covector_findim",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Lean type exactly expresses the stated finite-dimensionality. Evaluation on all tuples of standard basis vectors defines a linear injection into a finite product of real spaces. Basis.ext_alternating and injectivity of the underlying alternating-map projection justify injectivity, including zero-degree and zero-dimensional cases. The supplied proof is complete, independent of the parent, and compatible with the identical previously accepted type under distinct names."
+    },
+    {
+      "key": "fixed_support_dense",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches every hypothesis and conclusion, including arbitrary U, compact K, positive epsilon and both global pointwise bounds. The proof correctly uses covector_findim to obtain second countability, takes a countable dense subset of the image in the compact-domain continuous-map space, and chooses preimages supported in K. The uniform maximum metric controls both components on K; support preservation under exterior differentiation gives vanishing outside K. Empty K is covered without a nonemptiness assumption. No openness or K ⊆ U hypothesis is missing, and there is no circular reliance."
+    }
+  ],
+  "required_changes": []
+}
