@@ -1740,6 +1740,38 @@ theorem Submission.dimred_im_mass_measure : ∀ (P n : ℕ) (U : Set (Euclid P))
     and_iff_right hxU, Metric.nhds_basis_ball.mem_measureSupport]
   exact forall₂_congr fun ε _ => pos_iff_ne_zero
 
+/-- **Simon 7.3.3, proof (sector points lie in `spt C`)**: if the integer multiplicity
+`C ∈ 𝒟₂(ℝᴾ)` has density `k ≥ 1` at every point `t(cos φ a + sin φ e)` with `t > 0` and
+`0 < φ < δ`, then `a + l e ∈ spt C` for `0 < l < δ`.  Indeed `a + l e = t(cos φ a + sin φ e)` for `t = √(1 + l²)`
+and `φ = arctan l ∈ (0, δ)`.  If a ball `B_ε(a + l e)` were `μ_C`-null, then
+`M_{B_ρ(a + l e)}(C) = μ_C(B_ρ(a + l e)) = 0` for `0 < ρ < ε`, and the density of `C` at
+`a + l e` would be `0 ≠ k`. -/
+theorem Submission.idtp_cse_etp_edge_direction_support : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (a e : Euclid P) (δ : ℝ) (k : ℕ), IsIntegerMultiplicity C → 0 < δ → 1 ≤ k → (∀ t φ : ℝ, 0 < t → 0 < φ → φ < δ → HasMassDensity C (t • (Real.cos φ • a + Real.sin φ • e)) k) → ∃ l₀ : ℝ, 0 < l₀ ∧ ∀ l : ℝ, 0 < l → l < l₀ → a + l • e ∈ C.support := by
+  intro P C a e δ k hC hδ hk hdens
+  obtain ⟨R, hR⟩ := hC
+  obtain ⟨hmass, hspt, -⟩ := Submission.dimred_im_mass_measure P 2 univ C R isOpen_univ hR
+  refine ⟨δ, hδ, fun l hl hlδ => ?_⟩
+  -- `a + l e = t(cos φ a + sin φ e)` for `t = √(1 + l²) > 0` and `φ = arctan l ∈ (0, δ)`
+  have ht : 0 < √(1 + l ^ 2) := Real.sqrt_pos.2 (by positivity)
+  have hpolar : √(1 + l ^ 2) • (Real.cos (Real.arctan l) • a + Real.sin (Real.arctan l) • e) =
+      a + l • e := by
+    rw [Real.cos_arctan, Real.sin_arctan, smul_add, smul_smul, smul_smul,
+      mul_one_div_cancel ht.ne', mul_div_cancel₀ l ht.ne', one_smul]
+  obtain ⟨-, hlim⟩ := hdens _ _ ht (Real.arctan_pos.2 hl) ((Real.arctan_lt_self hl).trans hlδ)
+  rw [hpolar] at hlim
+  -- a `μ_C`-null ball `B_ε(a + l e)` makes the density quotients vanish for `0 < ρ < ε`
+  rw [hspt (a + l • e) (mem_univ _)]
+  intro ε hε hnull
+  have hzero : Tendsto (fun ρ : ℝ => C.massOn (ball (a + l • e) ρ) /
+      (unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2))) (𝓝[>] 0) (𝓝 0) := by
+    refine tendsto_const_nhds.congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT hε] with ρ hρ
+    rw [hmass _ isOpen_ball (subset_univ _),
+      measure_mono_null (ball_subset_ball hρ.2.le) hnull, ENNReal.zero_div]
+  have hk₀ : (k : ℝ) ≤ 0 := ENNReal.ofReal_eq_zero.1 (tendsto_nhds_unique hlim hzero)
+  have hk₁ : (1 : ℝ) ≤ k := by exact_mod_cast hk
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
