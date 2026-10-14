@@ -844,6 +844,53 @@ theorem Submission.dtc_bc_tc_wc_local_bound : ∀ (P n : ℕ) (Ts : ℕ → Geom
     _ ≤ N * s * (⨆ j, (Ts j).massOn (ball 0 R)).toReal :=
         mul_le_mul_of_nonneg_left (ENNReal.toReal_mono hm.ne hj) (mul_nonneg hN0 hs)
     _ = N * (⨆ j, (Ts j).massOn (ball 0 R)).toReal * s := by ring
+/-- **Convergence on a sup-norm-dense family extends to all test forms** (Simon Ch. 6, Lemma
+2.15, the boundedness half of the sequential Banach–Alaoglu argument used for 7.2.4).  Suppose the
+`Sᵢ` are uniformly bounded on forms supported in each compact `K` (`|Sᵢ(ω)| ≤ c s` when
+`‖ω(x)‖ ≤ s`), every `ω` is a uniform limit of forms `ωₖ ∈ D` supported in one compact `K`, and
+`(Sᵢ(δ))ᵢ` converges for every `δ ∈ D`.  For `ε > 0` pick `k` with `‖ω(x) − ωₖ(x)‖ < η`,
+`η = ε / (3 (c + 1))`.  Since `spt (ω − ωₖ) ⊆ K`, linearity gives `|Sᵢ(ω) − Sᵢ(ωₖ)| ≤ c η < ε / 3`
+for every `i`, and `(Sᵢ(ωₖ))ᵢ` is Cauchy; the `ε / 3` estimate shows that `(Sᵢ(ω))ᵢ` is Cauchy, so
+it converges in `ℝ`. -/
+theorem Submission.dtc_bc_tc_wc_dense_extension : ∀ (P n : ℕ) (S : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n) (D : Set (TestFormOn (univ : Set (Euclid P)) n)), (∀ K : Set (Euclid P), IsCompact K → ∃ c : ℝ, 0 ≤ c ∧ ∀ (i : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n) (s : ℝ), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ s) → |S i ω| ≤ c * s) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ (K : Set (Euclid P)) (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n), IsCompact K ∧ tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K ∧ (∀ k, ωs k ∈ D) ∧ (∀ k, tsupport (ωs k : DifferentialForm (Euclid P) n) ⊆ K) ∧ TendstoUniformly (fun k x => (ωs k : DifferentialForm (Euclid P) n) x) (ω : DifferentialForm (Euclid P) n) atTop) → (∀ δ ∈ D, ∃ L : ℝ, Tendsto (fun i => S i δ) atTop (𝓝 L)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, ∃ L : ℝ, Tendsto (fun i => S i ω) atTop (𝓝 L) := by
+  intro P n S D hbound hdense hconv ω
+  -- Step 1: `K` and `ωₖ ∈ D` from (b), `c ≥ 0` from (a); it suffices that `(Sᵢ(ω))ᵢ` is Cauchy
+  obtain ⟨K, ωs, hK, hωK, hωsD, hωsK, hunif⟩ := hdense ω
+  obtain ⟨c, hc0, hc⟩ := hbound K hK
+  refine cauchySeq_tendsto_of_complete (Metric.cauchySeq_iff.mpr fun ε hε => ?_)
+  -- Step 2: some `k` with `dist (ω(x), ωₖ(x)) < η = ε / (3 (c + 1))` for every `x`
+  have hη : 0 < ε / (3 * (c + 1)) := by positivity
+  obtain ⟨k, hk⟩ := (Metric.tendstoUniformly_iff.mp hunif _ hη).exists
+  -- Step 3: `spt (ω − ωₖ) ⊆ K` and `‖(ω − ωₖ)(x)‖ ≤ η`, so linearity and (a) give
+  -- `|Sᵢ(ω) − Sᵢ(ωₖ)| = |Sᵢ(ω − ωₖ)| ≤ c η < ε / 3` for every `i`
+  have hsupp : tsupport ((ω - ωs k : TestFormOn (univ : Set (Euclid P)) n) :
+      DifferentialForm (Euclid P) n) ⊆ K := by
+    rw [Submodule.coe_sub]
+    exact (tsupport_sub _ _).trans (union_subset hωK (hωsK k))
+  have hnorm : ∀ x, ‖((ω - ωs k : TestFormOn (univ : Set (Euclid P)) n) :
+      DifferentialForm (Euclid P) n) x‖ ≤ ε / (3 * (c + 1)) := by
+    intro x
+    rw [Submodule.coe_sub, Pi.sub_apply, ← dist_eq_norm]
+    exact (hk x).le
+  have hcη : c * (ε / (3 * (c + 1))) < ε / 3 := by
+    rw [mul_div_assoc', div_lt_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith
+  have hclose : ∀ i, |S i ω - S i (ωs k)| < ε / 3 := by
+    intro i
+    have hsub : S i ω - S i (ωs k) = S i (ω - ωs k) := (map_sub (S i).toCurrent ω (ωs k)).symm
+    rw [hsub]
+    exact (hc i _ _ hsupp hnorm).trans_lt hcη
+  -- Step 4: `(Sᵢ(ωₖ))ᵢ` converges by (c), hence is Cauchy
+  obtain ⟨L, hL⟩ := hconv (ωs k) (hωsD k)
+  obtain ⟨I, hI⟩ := Metric.cauchySeq_iff.mp hL.cauchySeq (ε / 3) (by positivity)
+  -- Step 5: the `ε / 3` estimate for `i, l ≥ I`
+  refine ⟨I, fun i hi l hl => ?_⟩
+  have h3 := hI i hi l hl
+  rw [Real.dist_eq] at h3 ⊢
+  obtain ⟨h1l, h1r⟩ := abs_lt.mp (hclose i)
+  obtain ⟨h2l, h2r⟩ := abs_lt.mp (hclose l)
+  obtain ⟨h3l, h3r⟩ := abs_lt.mp h3
+  exact abs_lt.mpr ⟨by linarith, by linarith⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
