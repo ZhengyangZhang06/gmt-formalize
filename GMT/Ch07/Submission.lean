@@ -842,6 +842,35 @@ theorem Submission.cbr_ci_imc_isIntegerMultiplicity_of_rectifiable : ∀ (P n : 
   refine setIntegral_congr_fun hM''m (fun x hx => ?_)
   simp only [hmult_eq x hx]
 
+/-- **Integer multiplicity from a.e. oriented approximate tangent planes** (Simon Ch. 6, 3.1 with
+Ch. 3, 1.4), assuming the rectifiability criterion (RECT): a Borel `M` with `Hⁿ(M) < ∞` having
+approximate tangent spaces `Q(x)` at `Hⁿ⌞M`-a.e. `x`, with `x ↦ p_{Q(x)}` `Hⁿ⌞M`-a.e. strongly
+measurable, is countably `n`-rectifiable.  If `Γ(ω) = ∫_M θ ⟨ω, ζ⟩ dHⁿ` with `M` Borel,
+`Hⁿ(M) < ∞`, `θ > 0` on `M`, `∫_M θ dHⁿ < ∞`, and `Hⁿ`-a.e. on `M` the density `θ` is an integer
+and `ζ` orients an approximate tangent space of `M`, then `Γ` is integer multiplicity.  The plane
+`TₓM = approxTangentPlane n M x` is an approximate tangent space at `Hⁿ⌞M`-a.e. `x`, so
+`x ↦ p_{TₓM}` is `Hⁿ⌞M`-a.e. strongly measurable; (RECT) makes `M` countably `n`-rectifiable,
+and the rectifiable case applies. -/
+theorem Submission.dmcbr_ci_isIntegerMultiplicity_of_ae_tangent : (∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), MeasurableSet M → μHE[n] M ≠ ∞ → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → CountablyRectifiable n M) → ∀ (P n : ℕ) (Γ : GeometricCurrentOn (univ : Set (Euclid P)) n) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n), MeasurableSet M → μHE[n] M < ∞ → Measurable θ → StronglyMeasurable ζ → (∀ x ∈ M, 0 < θ x) → ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μHE[n] < ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Γ ω = ∫ x in M, θ x * ζ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ∧ IsUnitOrientationOf (ζ x) Q ∧ ∃ m : ℕ, θ x = m) → IsIntegerMultiplicity Γ := by
+  intro hRECT P n Γ M θ ζ hM hfin hθ hζ hpos hint hrep hae
+  -- `TₓM` is an approximate tangent space of `M` at `Hⁿ⌞M`-a.e. `x`
+  have htan : ∀ᵐ x ∂(μHE[n].restrict M),
+      HasApproximateTangentSpaceAt n M x (approxTangentPlane n M x) := by
+    filter_upwards [hae] with x hx
+    obtain ⟨Q, hQ, -⟩ := hx
+    have h : ∃ Q, HasApproximateTangentSpaceAt n M x Q := ⟨Q, hQ⟩
+    rw [approxTangentPlane, dite_eq_left h]
+    exact h.choose_spec
+  -- `Hⁿ(M ∩ K) ≤ Hⁿ(M) < ∞`, so `x ↦ p_{TₓM}` is `Hⁿ⌞M`-a.e. strongly measurable (Ch. 3, 1.4)
+  have hloc : ∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞ := fun K _ =>
+    ne_top_of_le_ne_top hfin.ne (measure_mono inter_subset_left)
+  have hmeas := Submission.cbr_ci_imc_tangent_field_aestronglyMeasurable P n M
+    (approxTangentPlane n M) hloc htan
+  -- (RECT): `M` is countably `n`-rectifiable, and the rectifiable case applies
+  have hrect : CountablyRectifiable n M := hRECT P n M _ hM hfin.ne hmeas htan
+  exact Submission.cbr_ci_imc_isIntegerMultiplicity_of_rectifiable P n Γ M θ ζ hM hrect hθ hζ hpos
+    hint hrep hae
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
