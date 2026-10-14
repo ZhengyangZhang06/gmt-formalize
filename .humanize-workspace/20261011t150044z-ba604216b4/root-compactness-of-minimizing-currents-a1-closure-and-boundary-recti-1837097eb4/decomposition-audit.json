@@ -1,0 +1,68 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'covectorEuclideanNorm|cbr_rlim_coeffNorm_bound|cbr_rlim_smooth_cutoff|cbr_rlim_cutoff_error_le|cbr_rlim_thin_band' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "exists_contDiff_support_eq_eq_one_iff|tendsto_measure_iInter_atTop|bounded_above_of_compact_support|comp_aestronglyMeasurable₂|isBoundedBilinearMap_apply|tsupport_smul_subset_right|theorem HasCompactSupport.smul_left|toReal_lt_of_lt_ofReal|eventually_lt_of_limsup_lt|exists_nat_one_div_lt",
+        "bounded_above_of_compact_support|toReal_lt_of_lt_ofReal|integral_indicator_const|norm_integral_le_of_norm_le|theorem integrableOn_const|theorem integrable_indicator_iff",
+        "git log --all --format='%h %s' -G 'cbr_rlim_(coeffNorm_bound|smooth_cutoff|cutoff_error_le|thin_band)' -- '*.lean'",
+        "git merge-base --is-ancestor 24e876cf45d0c30e56065abf2b3fdf9aedc83613 f4c8d16e83febf8bc0f9c5545026cdae91d41b6f",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/restriction-audit-np9rrkdl/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rlim-decomp-q7k2/lean/EndToEnd.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1837097eb4/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1837097eb4/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/restriction-audit-np9rrkdl/IndependentTypes.lean",
+        "/tmp/rlim-decomp-q7k2/lean/EndToEnd.lean"
+      ],
+      "conclusion": "The split appropriately establishes the selected cbr_sublevel_restriction_tendsto contract. Its type matches the immutable handoff and DAG. The four obligations are independent and non-circular; their empty dependency lists are correct. All names are bare identifiers with no DAG reservations or matching declarations found in the searched project and Git history. No accepted branch declaration is reused. Relevant library signatures and compiler sources match the pinned snapshot. All frozen types passed lexical validation and independently elaborated without child implementations. I also recompiled the supplied child proofs, comparator-style exact applications, and assembly of the exact parent type: all passed, using only propext, Classical.choice and Quot.sound. The assembly correctly combines the compact closed-band limsup bound, strict-band error estimates, weak convergence and the epsilon argument, including M = 0. There are no matrix-unit constructions."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "coeff_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean proposition agree. Continuous coefficient evaluations, finite sums and square root establish continuity of the coefficient norm. Its support lies in the compact support of the test form; boundedness followed by max M₀ 0 gives the exact conclusion. The supplied proof is complete and independent."
+    },
+    {
+      "key": "smooth_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type specify the same global cutoff properties and test-form identity. The verified smooth Urysohn lemma applies to the closed set {f ≤ t − ε} inside {f < t}. The smoothness order is correctly C∞. Scalar multiplication preserves smoothness and inherits compact support inside U. No openness of U or sibling result is required."
+    },
+    {
+      "key": "cutoff_error",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the finite-measure toReal conclusion match. The proof derives M ≥ 0, proves integrability by compact-support domination, and obtains measurability of ξ(η) directly from η; measurability of χ is unnecessary. Linearity, the exhaustive band case analysis and integration prove the exact estimate. Positivity of ε is genuinely unnecessary. No circular reliance occurs."
+    },
+    {
+      "key": "thin_band",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose exactly matches the one-line proposition, including both finiteness assumptions and ENNReal.ofReal δ. The reciprocal-width bands are measurable and decreasing. Their intersections are respectively contained in the μ-null level set and empty. Continuity from above and a common eventual index produce the required positive ε. The proof needs no ν-null level-set assumption or sibling theorem."
+    }
+  ],
+  "required_changes": []
+}
