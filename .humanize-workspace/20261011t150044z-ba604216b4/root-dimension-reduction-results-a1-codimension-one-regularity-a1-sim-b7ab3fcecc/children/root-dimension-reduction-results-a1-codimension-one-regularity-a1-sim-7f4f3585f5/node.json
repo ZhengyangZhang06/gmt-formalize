@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1.partition_glue-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1",
+  "depth": 5,
+  "title": "Local agreement of a current with an oriented-set integral on an open cover gives agreement for all test forms supported in the union (parent step 7)",
+  "statement": "Let P, m ∈ ℕ, C ∈ 𝒟_m(ℝ^P) (GeometricCurrentOn univ m), O ⊆ ℝ^P open, M ⊆ ℝ^P Borel, and ξ : ℝ^P → Λ_m(ℝ^P) continuous on M. Assume |⟨α, ξ(x)⟩| ≤ |α| for x ∈ M and every m-covector α (|α| = covectorEuclideanNorm α), and H^m(M ∩ K) < ∞ for every compact K (H^m = μHE[m]). Suppose every x ∈ O has an open B ∋ x such that C(ω) = ∫_M ⟨ω(z), ξ(z)⟩ dH^m(z) for every ω ∈ 𝒟^m(ℝ^P) with tsupport ω ⊆ B. Then C(ω) = ∫_M ⟨ω(z), ξ(z)⟩ dH^m(z) for every ω ∈ 𝒟^m(ℝ^P) with tsupport ω ⊆ O.",
+  "lean_statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (M O : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), IsOpen O → MeasurableSet M → ContinuousOn ξ M → (∀ x ∈ M, ∀ α : Covector (Euclid P) m, |ξ x α| ≤ covectorEuclideanNorm α) → (∀ K : Set (Euclid P), IsCompact K → μHE[m] (M ∩ K) ≠ ∞) → (∀ x ∈ O, ∃ B : Set (Euclid P), IsOpen B ∧ x ∈ B ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ B → C ω = ∫ z in M, ξ z ((ω : DifferentialForm (Euclid P) m) z) ∂μHE[m]) → ∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ O → C ω = ∫ z in M, ξ z ((ω : DifferentialForm (Euclid P) m) z) ∂μHE[m]",
+  "lean_name": "codim1_ovr_partition_glue_rep",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-7f4f3585f5-a1"
+}

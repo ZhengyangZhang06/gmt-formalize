@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1.vertex_negligible-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1",
+  "depth": 5,
+  "title": "Integer multiplicity currents of dimension at least one do not charge the origin (parent step 8, B0.1)",
+  "statement": "Let P, m ∈ ℕ with m ≥ 1, and let C ∈ 𝒟_m(ℝ^P) (GeometricCurrentOn univ m) be integer multiplicity. Let ω_k ∈ 𝒟^m(ℝ^P) (k ∈ ℕ), r_k ∈ ℝ with r_k → 0, and c ∈ ℝ. Assume ω_k(x) = 0 whenever r_k ≤ |x|, and covectorEuclideanNorm(ω_k(x)) ≤ c for all k and x. Then C(ω_k) → 0 as k → ∞.",
+  "lean_statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) m) (r : ℕ → ℝ) (c : ℝ), 1 ≤ m → IsIntegerMultiplicity C → Tendsto r atTop (𝓝 0) → (∀ (k : ℕ) (x : Euclid P), r k ≤ ‖x‖ → (ωs k : DifferentialForm (Euclid P) m) x = 0) → (∀ (k : ℕ) (x : Euclid P), covectorEuclideanNorm ((ωs k : DifferentialForm (Euclid P) m) x) ≤ c) → Tendsto (fun k => C (ωs k)) atTop (𝓝 0)",
+  "lean_name": "codim1_ovr_imrep_vanish_at_vertex",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-41602e5705-a1"
+}
