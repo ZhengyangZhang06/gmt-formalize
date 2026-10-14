@@ -7187,6 +7187,27 @@ theorem Submission.imrep_c1_diffeo_pushforward_im : ∀ (P n : ℕ) (U K : Set (
     hLip hAnti hpre (Submission.imrep_approxTangent_starProjection_aesm P n U R)
   exact ⟨S, ⟨R', fun ω => (hS ω).trans (hR' ω).symm⟩,
     Submission.dpf_pushforward_formula_boundaryVanishes P n U K T S R φ hU hR hK hKU hφ hid hS, hS⟩
+/-- **Push-forward `φ_#T` of an integer multiplicity current by a `C¹` diffeomorphism that is the
+identity off a compact `K ⊆ U`** (Simon Ch. 6, 2.23–2.24 and 3.3–3.9; the competitor in the
+density gap argument of Ch. 7, §4).  `φ` is bi-Lipschitz with `φ⁻¹(U) = U`
+(`Submission.dpf_c1_compact_perturbation_bilipschitz`); `S(ω) = ∫_M θ ⟨ω(φ(x)) ∘ Dφ(x), ξ(x)⟩ dHⁿ`
+is a current (`Submission.dpf_pushforward_formula_current_exists`); by the area formula and the
+transport of approximate tangent planes it equals `τ(φ(M), θ ∘ φ⁻¹, ξ')` for the induced
+orientation `ξ'` (`Submission.dpf_imrep_bilipschitz_image_rep`, with `x ↦ p_{TₓM}` measurable by
+`Submission.imrep_approxTangent_starProjection_aesm`), so `S` is integer multiplicity; and
+`∂S = 0` if `∂T = 0` (`Submission.dpf_pushforward_formula_boundaryVanishes`). -/
+theorem Submission.dimred_cdg_c1_diffeo_pushforward_im : ∀ (P n : ℕ) (U K : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n) (φ : Euclid P → Euclid P), IsOpen U → R.Represents T → IsCompact K → K ⊆ U → ContDiff ℝ 1 φ → Bijective φ → (∀ x, Injective (fderiv ℝ φ x)) → (∀ x, x ∉ K → φ x = x) → ∃ S : GeometricCurrentOn U n, IsIntegerMultiplicity S ∧ (BoundaryVanishes T → BoundaryVanishes S) ∧ ∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n] := by
+  intro P n U K T R φ hU hR hK hKU hφ hbij hinj hid
+  -- `φ` is bi-Lipschitz and `φ⁻¹(U) = U`
+  obtain ⟨Λ, hLip, hAnti, hpre⟩ :=
+    Submission.dpf_c1_compact_perturbation_bilipschitz P U K φ hK hKU hφ hbij hinj hid
+  -- the push-forward integral is the action of a current `S`
+  obtain ⟨S, hS⟩ := Submission.dpf_pushforward_formula_current_exists P n U K R φ hK hKU hφ hid
+  -- an integer multiplicity triple `R'` on `φ(M)` has the same action
+  obtain ⟨R', hR'⟩ := Submission.dpf_imrep_bilipschitz_image_rep P n U R φ Λ hU hφ hbij hinj
+    hLip hAnti hpre (Submission.imrep_approxTangent_starProjection_aesm P n U R)
+  exact ⟨S, ⟨R', fun ω => (hS ω).trans (hR' ω).symm⟩,
+    Submission.dpf_pushforward_formula_boundaryVanishes P n U K T S R φ hU hR hK hKU hφ hid hS, hS⟩
 /-- Tangential `C¹` deformations (Simon Ch. 2, before 5.8; Ch. 4, 2.5–2.6; step 3 of the proof
 of 7.1.2).  A partition of unity splits `X = X₀ + Σᵢ χᵢX`: `X₀` vanishes on `N`, and `χᵢX` is
 supported where `N` is straightened by `Ψ x = ψ(vₚ + g x) + (x - A g x)` (`A = Dψ(vₚ)`, `g A = id`,
