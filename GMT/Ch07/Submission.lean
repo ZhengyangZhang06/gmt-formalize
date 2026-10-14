@@ -590,6 +590,68 @@ theorem Submission.cmcdt_lpo_slice_extDeriv_split : ∀ (N k : ℕ) (β : Differ
         Fin.cons (L (1, 0)) (fun i => L (0, Fin.removeNth j v i)) :=
       Fin.cons_comp_succ_succAbove (L (1, 0)) (fun i => L (0, v i)) j
     rw [hslice, hrem, Fin.cons_succ, Fin.val_succ, pow_succ, mul_neg_one, neg_smul]
+/-- **Simon 6.2.17** (the slice form of `[[0, 1]] × T`): for `ω ∈ 𝒟^{k+1}(ℝ^{N+1})` the fibre
+integral `η(x)(v) = ∫₀¹ ω(t, x)(e₀, (0, v₁), …, (0, vₖ)) dt` is a test `k`-form on `ℝᴺ` with
+`spt η ⊆ {x : (t, x) ∈ spt ω for some t ∈ [0, 1]}`.  In the coordinates `L (t, x) = (t, x)`,
+`η` integrates `g (t, x) = Φ (ω (L (t, x)))` for the contraction
+`Φ γ = γ (L (1, 0), J ·, …, J ·)`, `J y = L (0, y)`; it is smooth by the parametric integral
+lemma and vanishes off the compact set `snd '' (L⁻¹ (spt ω) ∩ [0, 1] × ℝᴺ)`. -/
+theorem Submission.cmcdt_lpo_slice_fiber_form : ∀ (N k : ℕ) (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)), ∃ η : TestFormOn (univ : Set (Euclid N)) k, (∀ (x : Euclid N) (v : Fin k → Euclid N), (η : DifferentialForm (Euclid N) k) x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ tsupport (η : DifferentialForm (Euclid N) k) ⊆ {x : Euclid N | ∃ t ∈ Icc (0 : ℝ) 1, (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) ∈ tsupport (ω : DifferentialForm (Euclid (N + 1)) (k + 1))} := by
+  intro N k ω
+  set ω' : DifferentialForm (Euclid (N + 1)) (k + 1) :=
+    (ω : DifferentialForm (Euclid (N + 1)) (k + 1))
+  have hωs : ContDiff ℝ (⊤ : ℕ∞) ω' := ω.property.1.1
+  have hωc : HasCompactSupport ω' := ω.property.1.2
+  -- coordinates `L (t, y) = (t, y)` with `L (1, 0) = e₀`, and `J y = L (0, y)`
+  obtain ⟨L, hL, hL1, -⟩ := Submission.cmcdt_lpo_slice_coords N
+  let J : Euclid N →L[ℝ] Euclid (N + 1) :=
+    (L : ℝ × Euclid N →L[ℝ] Euclid (N + 1)).comp (ContinuousLinearMap.inr ℝ ℝ (Euclid N))
+  -- the contraction `Φ γ = γ (L (1, 0), J ·, …, J ·)` is continuous linear
+  let Φ : Covector (Euclid (N + 1)) (k + 1) →L[ℝ] Covector (Euclid N) k :=
+    (ContinuousAlternatingMap.compContinuousLinearMapCLM J).comp
+      ((ContinuousLinearMap.apply ℝ (Covector (Euclid (N + 1)) k) (L (1, 0))).comp
+        ContinuousAlternatingMap.curryLeftLI.toContinuousLinearMap)
+  have hΦ : ∀ (γ : Covector (Euclid (N + 1)) (k + 1)) (v : Fin k → Euclid N),
+      Φ γ v = γ (Fin.cons (L (1, 0)) fun i => L (0, v i)) := fun _ _ => rfl
+  -- `g (t, x) = Φ (ω (L (t, x)))` is smooth, hence so is `η x = ∫₀¹ g (t, x) dt`
+  let g : ℝ × Euclid N → Covector (Euclid N) k := fun p => Φ (ω' (L p))
+  have hg : ContDiff ℝ (⊤ : ℕ∞) g := Φ.contDiff.comp (hωs.comp L.contDiff)
+  let η : DifferentialForm (Euclid N) k := fun x => ∫ t in (0 : ℝ)..1, g (t, x)
+  have hηs : ContDiff ℝ (⊤ : ℕ∞) η :=
+    (Submission.cmcdt_lpo_slice_param_integral N (Covector (Euclid N) k) g hg).1
+  -- `η` vanishes off the compact set `snd '' (L⁻¹ (spt ω) ∩ [0, 1] × ℝᴺ)`
+  have hS : IsCompact (L ⁻¹' tsupport ω' ∩ Icc (0 : ℝ) 1 ×ˢ univ) :=
+    (L.toHomeomorph.isCompact_preimage.2 hωc.isCompact).inter_right
+      (isClosed_Icc.prod isClosed_univ)
+  have hsupp : support η ⊆ Prod.snd '' (L ⁻¹' tsupport ω' ∩ Icc (0 : ℝ) 1 ×ˢ univ) := by
+    intro x hx
+    by_contra hxS
+    refine mem_support.1 hx ?_
+    have h0 : EqOn (fun t => g (t, x)) (fun _ => 0) (uIcc 0 1) := by
+      intro t ht
+      rw [uIcc_of_le zero_le_one] at ht
+      have hnot : L (t, x) ∉ tsupport ω' := fun hmem =>
+        hxS ⟨(t, x), ⟨hmem, ht, mem_univ _⟩, rfl⟩
+      show Φ (ω' (L (t, x))) = 0
+      rw [image_eq_zero_of_notMem_tsupport hnot, map_zero]
+    exact (intervalIntegral.integral_congr h0).trans intervalIntegral.integral_zero
+  have hηt : tsupport η ⊆ Prod.snd '' (L ⁻¹' tsupport ω' ∩ Icc (0 : ℝ) 1 ×ˢ univ) :=
+    closure_minimal hsupp (hS.image continuous_snd).isClosed
+  refine ⟨⟨η, ⟨hηs, (hS.image continuous_snd).of_isClosed_subset (isClosed_tsupport η) hηt⟩,
+    subset_univ _⟩, fun x v => ?_, hηt.trans ?_⟩
+  · -- evaluation at `v` commutes with the integral
+    have hint : IntervalIntegrable (fun t => g (t, x)) volume 0 1 :=
+      (hg.continuous.comp (Continuous.prodMk_left x)).intervalIntegrable 0 1
+    let ev : Covector (Euclid N) k →L[ℝ] ℝ := ContinuousAlternatingMap.apply ℝ (Euclid N) ℝ v
+    calc η x v = ev (∫ t in (0 : ℝ)..1, g (t, x)) := rfl
+      _ = ∫ t in (0 : ℝ)..1, ev (g (t, x)) := (ev.intervalIntegral_comp_comm hint).symm
+      _ = _ := intervalIntegral.integral_congr fun t _ => by
+        change Φ (ω' (L (t, x))) v = _
+        rw [hΦ, hL1]
+        simp only [hL]
+  · rintro _ ⟨⟨t, y⟩, ⟨hmem, ht, -⟩, rfl⟩
+    rw [mem_preimage, hL] at hmem
+    exact ⟨t, ht, hmem⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
