@@ -4221,6 +4221,74 @@ theorem Submission.dtc_bc_lc_sl_cc_piece_coarea : ∀ (P n : ℕ) (ψ : Euclid (
   refine setLIntegral_congr_fun hY' fun y hy => ?_
   simp only [hfdef, hGG y hy]
 
+/-- Co-area formula on the regular part of an embedded `C¹` chart (Simon Ch. 2, 6.3 and 6.6, for
+`F ∘ ψ⁻¹` on `ψ(V)`, where `DF ≠ 0`).  Let `ψ` be `C¹`, injective on the open `V ⊆ ℝ^{n+1}` with
+injective derivative, `F` be `C¹`, `Y' ⊆ V` be Borel with `DF ≠ 0` on `Y'`, and on `Y'` let
+`G(ψ(y)) ∈ Dψ(y)(ℝ^{n+1})` with `⟨G(ψ(y)), Dψ(y)e⟩ = DF(y)e`.  Then for Borel `g ≥ 0`,
+`t ↦ ∫_{ψ(Y' ∩ F⁻¹(t))} g dHⁿ` is Borel and
+`∫_ℝ ∫_{ψ(Y' ∩ F⁻¹(t))} g dHⁿ dt = ∫_{ψ(Y')} |G| g dHⁿ⁺¹`.
+
+Proof sketch:
+* Flattening charts `Wₖ = Θₖ(Ωₖ)` (open, `⊆ V`, `F(Θₖ(z)) = z₀`) cover `{y ∈ V : DF(y) ≠ 0}`,
+  hence `Y'`.
+* `Yₖ = disjointed (Y' ∩ Wₖ)` are Borel, pairwise disjoint, `Yₖ ⊆ Wₖ`, and `⋃ₖ Yₖ = Y'`.
+* The one-chart formula holds on each `Yₖ`.
+* `ψ` is continuous and injective on `V ⊇ Y'`, so it maps Borel subsets of the `Yₖ` to pairwise
+  disjoint Borel sets (Lusin–Souslin).  Hence the slice integral over `ψ(Y' ∩ F⁻¹(t))` is the sum
+  of those over `ψ(Yₖ ∩ F⁻¹(t))`, a Borel function of `t`.
+* Integrate the sum termwise (`lintegral_tsum`) and reassemble the disjoint union
+  `ψ(Y') = ⋃ₖ ψ(Yₖ)` (`lintegral_iUnion`). -/
+theorem Submission.dtc_bc_lc_sl_cc_regular_coarea : ∀ (P n : ℕ) (ψ : Euclid (n + 1) → Euclid P) (V Y' : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (G : Euclid P → Euclid P), IsOpen V → ContDiff ℝ 1 ψ → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → MeasurableSet Y' → Y' ⊆ V → (∀ y ∈ Y', fderiv ℝ F y ≠ 0) → (∀ y ∈ Y', G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e, inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → ∀ g : Euclid P → ℝ≥0∞, Measurable g → Measurable (fun t => ∫⁻ x in ψ '' (Y' ∩ F ⁻¹' {t}), g x ∂μHE[n]) ∧ ∫⁻ t, ∫⁻ x in ψ '' (Y' ∩ F ⁻¹' {t}), g x ∂μHE[n] = ∫⁻ x in ψ '' Y', ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] := by
+  intro P n ψ V Y' F G hV hψ hψV hDψ hF hY' hY'V hDF hG g hg
+  -- flattening charts `Wₖ = Θₖ(Ωₖ)` covering `{y ∈ V : DF(y) ≠ 0} ⊇ Y'`
+  obtain ⟨Ω, Θ, hΘ, hcover⟩ := Submission.dtc_bc_lc_sl_cc_flattening_atlas n F V hV hF
+  have hY'W : Y' ⊆ ⋃ k, Θ k '' Ω k := fun y hy => hcover ⟨hY'V hy, hDF y hy⟩
+  -- disjoint Borel pieces `Yₖ = disjointed (Y' ∩ Wₖ)` with union `Y'`
+  obtain ⟨Y, hYm, hYsub, hYdisj, hYunion⟩ : ∃ Y : ℕ → Set (Euclid (n + 1)),
+      (∀ k, MeasurableSet (Y k)) ∧ (∀ k, Y k ⊆ Y' ∩ Θ k '' Ω k) ∧ Pairwise (Disjoint on Y) ∧
+        ⋃ k, Y k = Y' :=
+    ⟨disjointed fun k => Y' ∩ Θ k '' Ω k,
+      MeasurableSet.disjointed fun k => hY'.inter (hΘ k).2.2.2.2.1.measurableSet,
+      disjointed_subset _, disjoint_disjointed _,
+      by rw [iUnion_disjointed, ← inter_iUnion, inter_eq_left.mpr hY'W]⟩
+  have hYY' : ∀ k, Y k ⊆ Y' := fun k => hYunion ▸ subset_iUnion Y k
+  -- the one-chart formula on each piece
+  have hpiece : ∀ k, Measurable (fun t => ∫⁻ x in ψ '' (Y k ∩ F ⁻¹' {t}), g x ∂μHE[n]) ∧
+      ∫⁻ t, ∫⁻ x in ψ '' (Y k ∩ F ⁻¹' {t}), g x ∂μHE[n] =
+        ∫⁻ x in ψ '' Y k, ENNReal.ofReal ‖G x‖ * g x ∂μHE[n + 1] := by
+    intro k
+    obtain ⟨hΩ, hΘc, hΘi, hDΘ, -, hWV, hFΘ⟩ := hΘ k
+    exact Submission.dtc_bc_lc_sl_cc_piece_coarea P n ψ V (Ω k) (Y k) F (Θ k) G
+      hV hψ hψV hDψ hF hΩ hΘc hΘi hDΘ hWV hFΘ (hYm k) (fun y hy => (hYsub k hy).2)
+      (fun y hy => hG y (hYsub k hy).1) g hg
+  -- `ψ` maps Borel subsets of `Y'` to Borel sets (Lusin–Souslin) ...
+  have himg : ∀ A ⊆ Y', MeasurableSet A → MeasurableSet (ψ '' A) := fun A hA hAm =>
+    hAm.image_of_continuousOn_injOn hψ.continuous.continuousOn (hψV.mono (hA.trans hY'V))
+  -- ... and subsets of the disjoint pieces to disjoint sets
+  have hdisj : ∀ A : ℕ → Set (Euclid (n + 1)), (∀ k, A k ⊆ Y k) →
+      Pairwise (Disjoint on fun k => ψ '' A k) := by
+    intro A hA i j hij
+    refine disjoint_image_image fun a ha b hb hab => ?_
+    obtain rfl := hψV (hY'V (hYY' i (hA i ha))) (hY'V (hYY' j (hA j hb))) hab
+    exact disjoint_left.1 (hYdisj hij) (hA i ha) (hA j hb)
+  -- the slice integral over `ψ(Y' ∩ F⁻¹(t))` is the sum of the piece slice integrals
+  have hslice : ∀ t, ∫⁻ x in ψ '' (Y' ∩ F ⁻¹' {t}), g x ∂μHE[n] =
+      ∑' k, ∫⁻ x in ψ '' (Y k ∩ F ⁻¹' {t}), g x ∂μHE[n] := by
+    intro t
+    have hFt : MeasurableSet (F ⁻¹' {t}) :=
+      (isClosed_singleton.preimage hF.continuous).measurableSet
+    rw [← hYunion, iUnion_inter, image_iUnion]
+    exact lintegral_iUnion
+      (fun k => himg _ (inter_subset_left.trans (hYY' k)) ((hYm k).inter hFt))
+      (hdisj _ fun k => inter_subset_left) g
+  refine ⟨?_, ?_⟩
+  · simp only [hslice]
+    exact Measurable.tsum fun k => (hpiece k).1
+  · simp only [hslice]
+    rw [lintegral_tsum fun k => (hpiece k).1.aemeasurable, tsum_congr fun k => (hpiece k).2,
+      ← lintegral_iUnion (fun k => himg _ (hYY' k) (hYm k)) (hdisj Y fun k => subset_rfl),
+      ← image_iUnion, hYunion]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
