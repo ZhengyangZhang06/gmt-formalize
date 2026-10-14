@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9b36a0836db5b6f21a72a7ea31f259a301785ad4085b5d40ffc8768de9040dca",
+  "git_delta": {
+    "base_commit": "ba3a54aa6ed288e90471169f2d0fe560048b67fd",
+    "candidate_commit": "05f72801167e1990ff656c2c4401e02c61a7b279",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_ah_cst_plateau_weak_limit",
+    "diff_sha256": "21acf30c1dce595aa84fabe8b4e2468b9f0c3980a4dfe14f92516d17ad26abbf",
+    "source_sha256": "a276df05b4238408a1abff98171772a85f5b4aa65e7bd8a48eeb04d9f55688ec",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_ah_cst_plateau_weak_limit",
+      "statement": "∀ p q : ℝ, ∃ χ : ℕ → ℝ → ℝ, (∀ k, ContDiff ℝ 1 (χ k)) ∧ (∀ k, tsupport (χ k) ⊆ Icc p q) ∧ ∀ g : ℝ → ℝ, Integrable g → Tendsto (fun k => ∫ α, χ k α * g α) atTop (𝓝 (∫ α in Ioo p q, g α))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
