@@ -451,6 +451,88 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- `Hⁿ(Q ∩ B_ρ(y)) = ωₙρⁿ` for an `n`-dimensional linear subspace `Q` of `ℝᴾ`, `y ∈ Q` and
+`ρ > 0` (used in the proof of Simon 7.3.3(1), p. 191, for the density of the planes of a
+2-dimensional minimizing cone).  The inclusion `Q → ℝᴾ` is an isometry, so `Q ∩ B_ρ(y)` has the
+measure of the ball `B_ρ(y)` of `Q`; on `Q`, `μHE[n]` is the volume, Haar scaling gives
+`vol(B_ρ(y)) = ρⁿ vol(B_1(0))`, and orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume, so
+`vol(B_1(0)) = ωₙ`. -/
+theorem Submission.idtp_tdc_subspace_ball_measure : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (y : Euclid P) (ρ : ℝ), Module.finrank ℝ Q = n → y ∈ Q → 0 < ρ → μHE[n] ((Q : Set (Euclid P)) ∩ ball y ρ) = unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+  intro P n Q y ρ hn hy hρ
+  subst hn
+  -- the inclusion `Q → ℝᴾ` is an isometry with range `Q`; `B_ρ(y)` pulls back to the ball of `Q`
+  have hball : μHE[Module.finrank ℝ Q] ((Q : Set (Euclid P)) ∩ ball y ρ) =
+      μHE[Module.finrank ℝ Q] (ball (⟨y, hy⟩ : Q) ρ) := by
+    rw [← isometry_subtype_coe.preimage_ball (⟨y, hy⟩ : Q) ρ,
+      isometry_subtype_coe.euclideanHausdorffMeasure_preimage, Subtype.range_coe, Set.inter_comm]
+  -- orthonormal coordinates `Q ≃ₗᵢ ℝⁿ` preserve volume and map `B_1(0)` onto `B_1(0)`
+  have hunit := (stdOrthonormalBasis ℝ Q).measurePreserving_repr.measure_preimage
+    (measurableSet_ball (x := (0 : Euclid (Module.finrank ℝ Q))) (ε := 1)).nullMeasurableSet
+  rw [LinearIsometryEquiv.preimage_ball, map_zero] at hunit
+  -- `μHE[n] = volume` on `Q`, then Haar scaling of balls
+  rw [hball, InnerProductSpace.euclideanHausdorffMeasure_eq_volume,
+    Measure.addHaar_ball_of_pos _ _ hρ, hunit, mul_comm]
+  rfl
+
+/-- A measure `ν` on `ℝᴾ` with `ν(A) = ∫⁻_{t ∈ V} σ({y : t + y ∈ A}) dHⁿ(t)` for Borel `A`, whose
+transversal measure `σ` is carried by a countable set `Z`, is the countable sum of weighted parallel
+planes `ν = Σ_{w ∈ Z} σ({w}) Hⁿ⌞(w + V)` (a step of the proof of Simon 7.2.4, for cycles with a
+constant orientation).  `σ` is the sum of its atoms on `Z`; inserting this into the product
+formula, monotone convergence exchanges sum and integral, and the translation by `w` is an isometry
+carrying `{t : t + w ∈ A} ∩ V` onto `A ∩ (w + V)`, under which `Hⁿ` is invariant. -/
+theorem Submission.cbr_ci_cp_atm_sum_planes_of_carried : ∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)), Z.Countable → σ Zᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → ν = Measure.sum (fun w : Z => σ {(w : Euclid P)} • (μHE[n]).restrict {y : Euclid P | y - w ∈ V}) := by
+  intro P n ν σ V Z hZ hσ hν
+  have := hZ.to_subtype
+  -- `σ` is carried by the countable set `Z`, hence is the sum of its atoms there
+  have hatom : ∀ S : Set (Euclid P), MeasurableSet S →
+      σ S = ∑' w : Z, S.indicator (fun x => σ {x}) (w : Euclid P) := by
+    intro S hS
+    have hSZ : S ∩ Z = ⋃ w : Z, S ∩ {(w : Euclid P)} := by
+      ext y
+      simp
+    rw [← measure_inter_conull hσ, hSZ, measure_iUnion]
+    · congr 1
+      ext w
+      by_cases hw : (w : Euclid P) ∈ S
+      · simp [hw]
+      · simp [hw]
+    · intro w w' hww'
+      exact Disjoint.mono inter_subset_right inter_subset_right
+        (disjoint_singleton.2 (Subtype.coe_injective.ne hww'))
+    · exact fun w => hS.inter (measurableSet_singleton _)
+  ext A hA
+  rw [hν A hA, Measure.sum_apply _ hA]
+  calc ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]
+      = ∫⁻ t in (V : Set (Euclid P)), ∑' w : Z,
+          ((fun t => t + (w : Euclid P)) ⁻¹' A).indicator (fun _ => σ {(w : Euclid P)}) t ∂μHE[n] := by
+        refine lintegral_congr fun t => ?_
+        rw [hatom _ (measurable_const_add t hA)]
+        refine tsum_congr fun w => ?_
+        by_cases hw : t + (w : Euclid P) ∈ A
+        · rw [indicator_of_mem (show (w : Euclid P) ∈ (fun y => t + y) ⁻¹' A from hw),
+            indicator_of_mem (show t ∈ (fun t => t + (w : Euclid P)) ⁻¹' A from hw)]
+        · rw [indicator_of_notMem (show (w : Euclid P) ∉ (fun y => t + y) ⁻¹' A from hw),
+            indicator_of_notMem (show t ∉ (fun t => t + (w : Euclid P)) ⁻¹' A from hw)]
+    -- monotone convergence for the countable sum, then integrate the indicators
+    _ = ∑' w : Z, σ {(w : Euclid P)} *
+          (μHE[n]).restrict (V : Set (Euclid P)) ((fun t => t + (w : Euclid P)) ⁻¹' A) := by
+        rw [lintegral_tsum fun w : Z => (measurable_const.indicator
+          (measurable_add_const (w : Euclid P) hA)).aemeasurable]
+        simp only [lintegral_indicator_const (measurable_add_const _ hA)]
+    _ = ∑' w : Z, (σ {(w : Euclid P)} • (μHE[n]).restrict {y : Euclid P | y - w ∈ V}) A := by
+        congr 1
+        ext w
+        rw [Measure.restrict_apply (measurable_add_const _ hA), Measure.smul_apply, smul_eq_mul,
+          Measure.restrict_apply hA]
+        congr 1
+        -- the translation by `w` is an isometry carrying `{t : t + w ∈ A} ∩ V` onto `A ∩ (w + V)`
+        have hpre : (fun t => t + (w : Euclid P)) ⁻¹' (A ∩ {y : Euclid P | y - w ∈ V}) =
+            (fun t => t + (w : Euclid P)) ⁻¹' A ∩ V := by
+          ext t
+          simp
+        rw [← hpre, (isometry_add_right (w : Euclid P)).euclideanHausdorffMeasure_preimage,
+          (add_right_surjective (w : Euclid P)).range_eq, inter_univ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

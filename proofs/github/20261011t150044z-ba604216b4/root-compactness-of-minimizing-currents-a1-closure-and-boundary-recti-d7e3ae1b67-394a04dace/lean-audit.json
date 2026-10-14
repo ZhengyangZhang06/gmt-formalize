@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "792cd3cf512823682edb830292309779cb456566bdc9e559eb731dd30cee2ef5",
+  "git_delta": {
+    "base_commit": "305259231ca97f0758028a49bfe08d3a8c768a81",
+    "candidate_commit": "f61cfe1da4397f5b9bc9935c702a6eb90629ef04",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_cp_atm_sum_planes_of_carried",
+    "diff_sha256": "efe482446ac98eb7a927e4f21eed7367e29f68c094ede80adda3ddccb9513f4e",
+    "source_sha256": "8045206b65ff21d281a4703b9280955aac222caaa915eed5ec4847e1ad72d30b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_cp_atm_sum_planes_of_carried",
+      "statement": "∀ (P n : ℕ) (ν σ : Measure (Euclid P)) (V : Submodule ℝ (Euclid P)) (Z : Set (Euclid P)), Z.Countable → σ Zᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → ν A = ∫⁻ t in (V : Set (Euclid P)), σ ((fun y => t + y) ⁻¹' A) ∂μHE[n]) → ν = Measure.sum (fun w : Z => σ {(w : Euclid P)} • (μHE[n]).restrict {y : Euclid P | y - w ∈ V})",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
