@@ -451,6 +451,286 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The affine homotopy `h(t, x) = f(x) + t (g(x) − f(x))` from `f` to `g` (Simon 6.2.26, p. 140)
+for smooth `f, g : ℝᴺ → ℝᴺ'`, with `(t, x) ∈ ℝ^{N+1}` written `ι(t, x)`, and the derivative facts
+used for 2.27: `h` is `C^∞`, `dh_{ι(t,x)} e₀ = g(x) − f(x)`,
+`dh_{ι(t,x)} ι(0, v) = df_x v + t (dg_x v − df_x v)` and
+`‖dh_{ι(t,x)}‖ ≤ |g(x) − f(x)| + ‖df_x‖ + |t| (‖dg_x‖ + ‖df_x‖)`.  With `tl y = (y₁, …, y_N)` and
+`hd y = y₀`, both continuous linear with `‖tl w‖, |hd w| ≤ ‖w‖`, `h = f ∘ tl + hd • (g ∘ tl − f ∘ tl)`
+and the chain and product rules give
+`dh_y w = df_{tl y} (tl w) + hd y (dg_{tl y} (tl w) − df_{tl y} (tl w)) + hd w (g(tl y) − f(tl y))`. -/
+theorem Submission.cmcdt_lpoh_interp_calculus : ∀ (N N' : ℕ) (f g : Euclid N → Euclid N'), ContDiff ℝ (⊤ : ℕ∞) f → ContDiff ℝ (⊤ : ℕ∞) g → ∃ h : Euclid (N + 1) → Euclid N', ContDiff ℝ (⊤ : ℕ∞) h ∧ (∀ (t : ℝ) (x : Euclid N), h (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = f x + t • (g x - f x)) ∧ (∀ (t : ℝ) (x : Euclid N), fderiv ℝ h (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (EuclideanSpace.single 0 1) = g x - f x) ∧ (∀ (t : ℝ) (x v : Euclid N), fderiv ℝ h (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = fderiv ℝ f x v + t • (fderiv ℝ g x v - fderiv ℝ f x v)) ∧ ∀ (t : ℝ) (x : Euclid N), ‖fderiv ℝ h (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))‖ ≤ ‖g x - f x‖ + ‖fderiv ℝ f x‖ + |t| * (‖fderiv ℝ g x‖ + ‖fderiv ℝ f x‖) := by
+  intro N N' f g hf hg
+  -- the coordinate maps `tl y = (y₁, …, y_N)` and `hd y = y₀`
+  let tlL : Euclid (N + 1) →ₗ[ℝ] Euclid N :=
+    { toFun := fun y => WithLp.toLp 2 (Fin.tail (WithLp.ofLp y))
+      map_add' := by intro y z; rfl
+      map_smul' := by intro r y; rfl }
+  let tl : Euclid (N + 1) →L[ℝ] Euclid N := LinearMap.toContinuousLinearMap tlL
+  let hd : Euclid (N + 1) →L[ℝ] ℝ := EuclideanSpace.proj (0 : Fin (N + 1))
+  have htl : ∀ y, tl y = WithLp.toLp 2 (Fin.tail (WithLp.ofLp y)) := fun y => rfl
+  have hhd : ∀ y : Euclid (N + 1), hd y = WithLp.ofLp y 0 := fun y => rfl
+  have htlι : ∀ (t : ℝ) (x : Euclid N), tl (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = x := by
+    intro t x; rw [htl]; simp
+  have hhdι : ∀ (t : ℝ) (x : Euclid N), hd (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = t := by
+    intro t x; rw [hhd]; simp
+  have hfd : Differentiable ℝ f := hf.differentiable (by simp)
+  have hgd : Differentiable ℝ g := hg.differentiable (by simp)
+  set h : Euclid (N + 1) → Euclid N' := fun y => f (tl y) + hd y • (g (tl y) - f (tl y)) with hh
+  -- `dh_y = df_{tl y} ∘ tl + hd y • (dg_{tl y} ∘ tl − df_{tl y} ∘ tl) + hd ⊗ (g(tl y) − f(tl y))`
+  have hderiv : ∀ y, HasFDerivAt h ((fderiv ℝ f (tl y)).comp tl +
+      (hd y • ((fderiv ℝ g (tl y)).comp tl - (fderiv ℝ f (tl y)).comp tl) +
+        hd.smulRight (g (tl y) - f (tl y)))) y := by
+    intro y
+    have h1 : HasFDerivAt (fun y => f (tl y)) ((fderiv ℝ f (tl y)).comp tl) y :=
+      (hfd (tl y)).hasFDerivAt.comp y tl.hasFDerivAt
+    have h2 : HasFDerivAt (fun y => g (tl y)) ((fderiv ℝ g (tl y)).comp tl) y :=
+      (hgd (tl y)).hasFDerivAt.comp y tl.hasFDerivAt
+    exact h1.add (hd.hasFDerivAt.smul (h2.sub h1))
+  have hfd' : ∀ y, fderiv ℝ h y = (fderiv ℝ f (tl y)).comp tl +
+      (hd y • ((fderiv ℝ g (tl y)).comp tl - (fderiv ℝ f (tl y)).comp tl) +
+        hd.smulRight (g (tl y) - f (tl y))) := fun y => (hderiv y).fderiv
+  have htle : tl (EuclideanSpace.single 0 1) = 0 := by
+    rw [htl]; ext i; simp [Fin.tail]
+  have hhde : hd (EuclideanSpace.single 0 1 : Euclid (N + 1)) = 1 := by
+    rw [hhd]; simp
+  have htlJ : ∀ v : Euclid N, tl (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = v := fun v => htlι 0 v
+  have hhdJ : ∀ v : Euclid N, hd (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = 0 := fun v => hhdι 0 v
+  -- `‖tl w‖ ≤ ‖w‖` and `|hd w| ≤ ‖w‖`
+  have htln : ∀ w : Euclid (N + 1), ‖tl w‖ ≤ ‖w‖ := by
+    intro w
+    rw [htl, EuclideanSpace.norm_eq, EuclideanSpace.norm_eq]
+    apply Real.sqrt_le_sqrt
+    rw [Fin.sum_univ_succ]
+    simp only [Fin.tail]
+    have : 0 ≤ ‖WithLp.ofLp w 0‖ ^ 2 := by positivity
+    linarith
+  have hhdn : ∀ w : Euclid (N + 1), |hd w| ≤ ‖w‖ := by
+    intro w
+    rw [hhd, ← Real.norm_eq_abs]
+    exact PiLp.norm_apply_le w 0
+  refine ⟨h, (hf.comp tl.contDiff).add (hd.contDiff.smul ((hg.comp tl.contDiff).sub (hf.comp tl.contDiff))),
+    ?_, ?_, ?_, ?_⟩
+  · intro t x
+    simp only [hh, htlι, hhdι]
+  · intro t x
+    rw [hfd']
+    simp only [_root_.add_apply, ContinuousLinearMap.coe_comp, Function.comp_apply,
+      _root_.smul_apply, _root_.sub_apply,
+      ContinuousLinearMap.smulRight_apply, htle, hhde, map_zero, sub_self, smul_zero, zero_add, one_smul,
+      htlι]
+  · intro t x v
+    rw [hfd']
+    simp only [_root_.add_apply, ContinuousLinearMap.coe_comp, Function.comp_apply,
+      _root_.smul_apply, _root_.sub_apply,
+      ContinuousLinearMap.smulRight_apply, htlJ, hhdJ, zero_smul, add_zero, htlι, hhdι]
+  · intro t x
+    rw [hfd']
+    apply ContinuousLinearMap.opNorm_le_bound _ (by positivity)
+    intro w
+    simp only [_root_.add_apply, ContinuousLinearMap.coe_comp, Function.comp_apply,
+      _root_.smul_apply, _root_.sub_apply,
+      ContinuousLinearMap.smulRight_apply, htlι, hhdι]
+    have e1 : ‖fderiv ℝ f x (tl w)‖ ≤ ‖fderiv ℝ f x‖ * ‖w‖ :=
+      (ContinuousLinearMap.le_opNorm _ _).trans (by gcongr; exact htln w)
+    have e2 : ‖fderiv ℝ g x (tl w)‖ ≤ ‖fderiv ℝ g x‖ * ‖w‖ :=
+      (ContinuousLinearMap.le_opNorm _ _).trans (by gcongr; exact htln w)
+    have e3 : ‖hd w • (g x - f x)‖ ≤ ‖g x - f x‖ * ‖w‖ := by
+      rw [norm_smul, Real.norm_eq_abs, mul_comm]
+      gcongr
+      exact hhdn w
+    calc ‖fderiv ℝ f x (tl w) + (t • (fderiv ℝ g x (tl w) - fderiv ℝ f x (tl w)) + hd w • (g x - f x))‖
+        ≤ ‖fderiv ℝ f x (tl w)‖ + (‖t • (fderiv ℝ g x (tl w) - fderiv ℝ f x (tl w))‖ + ‖hd w • (g x - f x)‖) :=
+          (norm_add_le _ _).trans (by gcongr; exact norm_add_le _ _)
+      _ ≤ ‖fderiv ℝ f x‖ * ‖w‖ + (|t| * (‖fderiv ℝ g x‖ * ‖w‖ + ‖fderiv ℝ f x‖ * ‖w‖) + ‖g x - f x‖ * ‖w‖) := by
+          gcongr
+          rw [norm_smul, Real.norm_eq_abs]
+          gcongr
+          exact (norm_sub_le _ _).trans (add_le_add e2 e1)
+      _ = (‖g x - f x‖ + ‖fderiv ℝ f x‖ + |t| * (‖fderiv ℝ g x‖ + ‖fderiv ℝ f x‖)) * ‖w‖ := by ring
+/-- **Mollification of Lipschitz maps**: a `Λ`-Lipschitz `F : ℝᴺ → ℝᴺ'` has `C^∞`,
+`Λ`-Lipschitz approximants `Fⱼ` with `|Fⱼ − F| ≤ Λ/(j + 1)`.  For `σ > 0` normalize the bump `b`
+of a `ContDiffBump` at `0` with `rOut = σ` to `ϕ = b/∫b` (`∫b > 0` as `volume (B_σ(0)) > 0`), so
+`ϕ ≥ 0`, `∫ϕ = 1` and `support ϕ ⊆ B_σ(0)`, and put `G = ϕ ⋆ F`.  Then `G` is `C^∞`,
+`G x − G y = ∫ ϕ(t)(F(x − t) − F(y − t)) dt` gives the constant `Λ`, and `|G − F| ≤ Λσ` since
+`|F y − F x| ≤ Λσ` on `B_σ(x)`.  Take `σ = 1/(j + 1)`. -/
+theorem Submission.cmcdt_lpo_mollify_lipschitz : ∀ (N N' : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N'), LipschitzWith Λ F → ∃ Fs : ℕ → Euclid N → Euclid N', (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, LipschitzWith Λ (Fs j)) ∧ ∀ (j : ℕ) (x : Euclid N), dist (Fs j x) (F x) ≤ (Λ : ℝ) / ((j : ℝ) + 1) := by
+  intro N N' Λ F hF
+  -- For each `σ > 0`: a `C^∞`, `Λ`-Lipschitz `G` with `|G − F| ≤ Λσ`
+  have key : ∀ σ : ℝ, 0 < σ → ∃ G : Euclid N → Euclid N', ContDiff ℝ (⊤ : ℕ∞) G ∧
+      LipschitzWith Λ G ∧ ∀ x, dist (G x) (F x) ≤ (Λ : ℝ) * σ := by
+    intro σ hσ
+    -- Step 1: the bump `b`: `C^∞`, `b ≥ 0`, `support b = B_σ(0)`, compact support
+    let b : ContDiffBump (0 : Euclid N) := ⟨σ / 2, σ, half_pos hσ, half_lt_self hσ⟩
+    have hbi : Integrable (b : Euclid N → ℝ) :=
+      b.continuous.integrable_of_hasCompactSupport b.hasCompactSupport
+    -- Step 2: `∫ b > 0`, and the normalized bump `ϕ = (∫ b)⁻¹ b`
+    have hIpos : 0 < ∫ t, b t := by
+      rw [integral_pos_iff_support_of_nonneg (fun t => b.nonneg) hbi, b.support_eq]
+      exact measure_ball_pos _ _ hσ
+    set ϕ : Euclid N → ℝ := fun t => (∫ s, b s)⁻¹ * b t with hϕ
+    have hϕd : ContDiff ℝ (⊤ : ℕ∞) ϕ := contDiff_const.mul b.contDiff
+    have hϕs : HasCompactSupport ϕ := b.hasCompactSupport.mul_left
+    have hϕn : ∀ t, 0 ≤ ϕ t := fun t => mul_nonneg (inv_nonneg.2 hIpos.le) b.nonneg
+    have hϕ1 : ∫ t, ϕ t = 1 := by
+      rw [hϕ, integral_const_mul]
+      exact inv_mul_cancel₀ hIpos.ne'
+    have hϕb : support ϕ ⊆ ball 0 σ := by
+      intro t ht
+      have : t ∈ support (b : Euclid N → ℝ) := Function.support_mul_subset_right _ _ ht
+      rwa [b.support_eq] at this
+    have hϕi : Integrable ϕ := hϕd.continuous.integrable_of_hasCompactSupport hϕs
+    -- Step 3: `G = ϕ ⋆ F` is `C^∞`; its integrands `t ↦ ϕ t • F (x - t)` are integrable
+    have hFc : Continuous F := hF.continuous
+    have hex : ∀ x, Integrable (fun t => ϕ t • F (x - t)) := by
+      intro x
+      have := (hϕs.convolutionExists_left (ContinuousLinearMap.lsmul ℝ ℝ) hϕd.continuous
+        hFc.locallyIntegrable (μ := volume)) x
+      simpa only [ConvolutionExistsAt, ContinuousLinearMap.lsmul_apply] using this
+    refine ⟨convolution ϕ F (ContinuousLinearMap.lsmul ℝ ℝ) volume, ?_, ?_, ?_⟩
+    · exact hϕs.contDiff_convolution_left _ hϕd hFc.locallyIntegrable
+    -- Step 4: `‖G x − G y‖ ≤ ∫ ϕ(t) Λ‖x − y‖ dt = Λ‖x − y‖`
+    · refine LipschitzWith.of_dist_le_mul fun x y => ?_
+      simp only [convolution_def, ContinuousLinearMap.lsmul_apply]
+      rw [dist_eq_norm, ← integral_sub (hex x) (hex y)]
+      calc ‖∫ t, (ϕ t • F (x - t) - ϕ t • F (y - t))‖
+          ≤ ∫ t, ϕ t * ((Λ : ℝ) * dist x y) := by
+            refine norm_integral_le_of_norm_le (hϕi.mul_const _) (Eventually.of_forall fun t => ?_)
+            rw [← smul_sub, norm_smul, Real.norm_of_nonneg (hϕn t), ← dist_eq_norm]
+            refine mul_le_mul_of_nonneg_left ?_ (hϕn t)
+            calc dist (F (x - t)) (F (y - t)) ≤ (Λ : ℝ) * dist (x - t) (y - t) :=
+                  hF.dist_le_mul _ _
+              _ = (Λ : ℝ) * dist x y := by rw [dist_sub_right]
+        _ = (Λ : ℝ) * dist x y := by rw [integral_mul_const, hϕ1, one_mul]
+    -- Step 5: `|F y − F x| ≤ Λσ` on `B_σ(x)`, so `|G x − F x| ≤ Λσ` (`ϕ ≥ 0`, `∫ϕ = 1`)
+    · intro x
+      refine dist_convolution_le (by positivity) hϕb hϕn hϕ1 hFc.aestronglyMeasurable
+        fun y hy => ?_
+      calc dist (F y) (F x) ≤ (Λ : ℝ) * dist y x := hF.dist_le_mul _ _
+        _ ≤ (Λ : ℝ) * σ := mul_le_mul_of_nonneg_left (mem_ball.1 hy).le Λ.coe_nonneg
+  -- Step 6: `σ = 1/(j + 1)`
+  choose G hG using fun j : ℕ => key (1 / ((j : ℝ) + 1)) (by positivity)
+  refine ⟨G, fun j => (hG j).1, fun j => (hG j).2.1, fun j x => ?_⟩
+  calc dist (G j x) (F x) ≤ (Λ : ℝ) * (1 / ((j : ℝ) + 1)) := (hG j).2.2 x
+    _ = (Λ : ℝ) / ((j : ℝ) + 1) := by ring
+
+/-- **Smooth approximation of a Lipschitz straight-line homotopy**: for `Λ`-Lipschitz
+`F, G : ℝᴺ → ℝᴺ'` and `H(t, x) = F x + t(G x − F x)` on `[0, 1] × K` (`K` compact), take the
+mollifications `Fⱼ, Gⱼ` of `F, G` (`|Fⱼ − F|, |Gⱼ − G| ≤ Λ/(j + 1)`, so `|DFⱼ|, |DGⱼ| ≤ Λ`) and
+let `Hⱼ` be the `C^∞` interpolation `Hⱼ(t, x) = Fⱼ x + t(Gⱼ x − Fⱼ x)`.  Then
+`|∂ₜHⱼ| = |Gⱼ − Fⱼ| ≤ |F − G| + 2Λ/(j + 1)`, `DHⱼ(Jv) = (1 − t) DFⱼ v + t DGⱼ v` for
+`t ∈ [0, 1]`, `|DHⱼ| ≤ sup_K |F − G| + 5Λ` on `[0, 1] × K`, and `Hⱼ → H` uniformly on
+`[0, 1] × K` as `H − Hⱼ = (1 − t)(F − Fⱼ) + t(G − Gⱼ)` there. -/
+theorem Submission.cmcdt_lpoh_smooth_approx : ∀ (N N' : ℕ) (Λ : NNReal) (F G : Euclid N → Euclid N') (H : Euclid (N + 1) → Euclid N') (K : Set (Euclid N)), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact K → (∀ x ∈ K, ∀ t ∈ Icc (0 : ℝ) 1, H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = F x + t • (G x - F x)) → ∃ (Fs Gs : ℕ → Euclid N → Euclid N') (Hs : ℕ → Euclid (N + 1) → Euclid N') (Λ' : ℝ), (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) ∧ (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Gs j)) ∧ (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Hs j)) ∧ (∀ (j : ℕ) (x : Euclid N), ‖fderiv ℝ (Fs j) x‖ ≤ (Λ : ℝ)) ∧ (∀ (j : ℕ) (x : Euclid N), ‖fderiv ℝ (Gs j) x‖ ≤ (Λ : ℝ)) ∧ TendstoUniformly Fs F atTop ∧ TendstoUniformly Gs G atTop ∧ (∀ (j : ℕ) (x : Euclid N), Hs j (WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp x))) = Gs j x) ∧ (∀ (j : ℕ) (x : Euclid N), Hs j (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))) = Fs j x) ∧ (∀ (j : ℕ) (x v : Euclid N), fderiv ℝ (Hs j) (WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp x))) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = fderiv ℝ (Gs j) x v) ∧ (∀ (j : ℕ) (x v : Euclid N), fderiv ℝ (Hs j) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = fderiv ℝ (Fs j) x v) ∧ (∀ (j : ℕ) (t : ℝ) (x : Euclid N), ‖fderiv ℝ (Hs j) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (EuclideanSpace.single 0 1)‖ ≤ dist (F x) (G x) + 2 * (Λ : ℝ) / ((j : ℝ) + 1)) ∧ (∀ (j : ℕ), ∀ t ∈ Icc (0 : ℝ) 1, ∀ (x v : Euclid N), ‖fderiv ℝ (Hs j) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)))‖ ≤ (Λ : ℝ) * ‖v‖) ∧ (∀ (j : ℕ), ∀ t ∈ Icc (0 : ℝ) 1, ∀ x ∈ K, ‖fderiv ℝ (Hs j) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))‖ ≤ Λ') ∧ TendstoUniformlyOn Hs H atTop {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ K, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))} := by
+  intro N N' Λ F G H K hF hG hK hHK
+  -- Step 1: mollify `F, G`; for each `j` interpolate `Fⱼ, Gⱼ` by the `C^∞` map `Hⱼ`
+  obtain ⟨Fs, hFs, hFL, hFd⟩ := Submission.cmcdt_lpo_mollify_lipschitz N N' Λ F hF
+  obtain ⟨Gs, hGs, hGL, hGd⟩ := Submission.cmcdt_lpo_mollify_lipschitz N N' Λ G hG
+  choose Hs hHs hHι hHe hHJ hHn using
+    fun j => Submission.cmcdt_lpoh_interp_calculus N N' (Fs j) (Gs j) (hFs j) (hGs j)
+  -- `M` bounds `|F − G|` on the compact `K`
+  obtain ⟨M, hM⟩ : ∃ M, ∀ x ∈ K, dist (F x) (G x) ≤ M := by
+    obtain ⟨M, hM⟩ := hK.exists_bound_of_continuousOn
+      ((hF.continuous.dist hG.continuous).continuousOn)
+    exact ⟨M, fun x hx => (le_abs_self _).trans (by simpa [Real.norm_eq_abs] using hM x hx)⟩
+  -- Step 2: `Λ`-Lipschitz maps have `|DFⱼ|, |DGⱼ| ≤ Λ`
+  have hDF : ∀ (j : ℕ) (x : Euclid N), ‖fderiv ℝ (Fs j) x‖ ≤ (Λ : ℝ) :=
+    fun j x => norm_fderiv_le_of_lipschitz ℝ (hFL j)
+  have hDG : ∀ (j : ℕ) (x : Euclid N), ‖fderiv ℝ (Gs j) x‖ ≤ (Λ : ℝ) :=
+    fun j x => norm_fderiv_le_of_lipschitz ℝ (hGL j)
+  -- Step 3: `Λ/(j + 1) → 0`, so a uniform error `Λ/(j + 1)` gives uniform convergence
+  have hsmall : Tendsto (fun j : ℕ => (Λ : ℝ) / ((j : ℝ) + 1)) atTop (𝓝 0) := by
+    have h := tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (Λ : ℝ)
+    rw [mul_zero] at h
+    refine h.congr (fun j => ?_)
+    rw [mul_one_div]
+  have hunif : ∀ (Es : ℕ → Euclid N → Euclid N') (E : Euclid N → Euclid N'),
+      (∀ (j : ℕ) (x : Euclid N), dist (Es j x) (E x) ≤ (Λ : ℝ) / ((j : ℝ) + 1)) →
+      TendstoUniformly Es E atTop := by
+    intro Es E hE
+    rw [Metric.tendstoUniformly_iff]
+    intro ε hε
+    filter_upwards [hsmall.eventually (gt_mem_nhds hε)] with j hj x
+    rw [dist_comm]
+    exact (hE j x).trans_lt hj
+  -- Step 6: `|Gⱼ − Fⱼ| ≤ |F − G| + 2Λ/(j + 1)`
+  have hGF : ∀ (j : ℕ) (x : Euclid N),
+      ‖Gs j x - Fs j x‖ ≤ dist (F x) (G x) + 2 * (Λ : ℝ) / ((j : ℝ) + 1) := by
+    intro j x
+    rw [← dist_eq_norm]
+    calc dist (Gs j x) (Fs j x) ≤ dist (Gs j x) (G x) + dist (G x) (F x) + dist (F x) (Fs j x) :=
+          dist_triangle4 _ _ _ _
+      _ ≤ (Λ : ℝ) / ((j : ℝ) + 1) + dist (F x) (G x) + (Λ : ℝ) / ((j : ℝ) + 1) := by
+          gcongr
+          · exact hGd j x
+          · rw [dist_comm]
+          · rw [dist_comm]; exact hFd j x
+      _ = dist (F x) (G x) + 2 * (Λ : ℝ) / ((j : ℝ) + 1) := by ring
+  refine ⟨Fs, Gs, Hs, M + 5 * (Λ : ℝ), hFs, hGs, hHs, hDF, hDG, hunif Fs F hFd, hunif Gs G hGd,
+    ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  -- Steps 4, 5: end values and end derivatives at `t = 1, 0`
+  · intro j x; rw [hHι]; simp
+  · intro j x; rw [hHι]; simp
+  · intro j x v; rw [hHJ]; simp
+  · intro j x v; rw [hHJ]; simp
+  -- Step 7: `DHⱼ e₀ = Gⱼ − Fⱼ`
+  · intro j t x; rw [hHe]; exact hGF j x
+  -- Step 8: `DHⱼ(Jv) = (1 − t) DFⱼ v + t DGⱼ v` has norm `≤ Λ|v|` for `t ∈ [0, 1]`
+  · intro j t ht x v
+    rw [hHJ]
+    have h1 : fderiv ℝ (Fs j) x v + t • (fderiv ℝ (Gs j) x v - fderiv ℝ (Fs j) x v) =
+        (1 - t) • fderiv ℝ (Fs j) x v + t • fderiv ℝ (Gs j) x v := by
+      rw [smul_sub, sub_smul, one_smul]; abel
+    rw [h1]
+    have hF' : ‖fderiv ℝ (Fs j) x v‖ ≤ (Λ : ℝ) * ‖v‖ :=
+      (ContinuousLinearMap.le_opNorm _ _).trans (by gcongr; exact hDF j x)
+    have hG' : ‖fderiv ℝ (Gs j) x v‖ ≤ (Λ : ℝ) * ‖v‖ :=
+      (ContinuousLinearMap.le_opNorm _ _).trans (by gcongr; exact hDG j x)
+    have ht0 : 0 ≤ t := ht.1
+    have ht1 : 0 ≤ 1 - t := by linarith [ht.2]
+    calc ‖(1 - t) • fderiv ℝ (Fs j) x v + t • fderiv ℝ (Gs j) x v‖
+        ≤ ‖(1 - t) • fderiv ℝ (Fs j) x v‖ + ‖t • fderiv ℝ (Gs j) x v‖ := norm_add_le _ _
+      _ = (1 - t) * ‖fderiv ℝ (Fs j) x v‖ + t * ‖fderiv ℝ (Gs j) x v‖ := by
+          rw [norm_smul, norm_smul, Real.norm_of_nonneg ht1, Real.norm_of_nonneg ht0]
+      _ ≤ (1 - t) * ((Λ : ℝ) * ‖v‖) + t * ((Λ : ℝ) * ‖v‖) := by gcongr
+      _ = (Λ : ℝ) * ‖v‖ := by ring
+  -- Step 9: `|DHⱼ| ≤ (M + 2Λ) + Λ + 1 · (Λ + Λ) = M + 5Λ` on `[0, 1] × K`
+  · intro j t ht x hx
+    refine (hHn j t x).trans ?_
+    have h2 : 2 * (Λ : ℝ) / ((j : ℝ) + 1) ≤ 2 * (Λ : ℝ) :=
+      div_le_self (by positivity) (by linarith [(j.cast_nonneg : (0 : ℝ) ≤ j)])
+    have habs : |t| ≤ 1 := by rw [abs_le]; constructor <;> linarith [ht.1, ht.2]
+    calc ‖Gs j x - Fs j x‖ + ‖fderiv ℝ (Fs j) x‖ + |t| * (‖fderiv ℝ (Gs j) x‖ + ‖fderiv ℝ (Fs j) x‖)
+        ≤ (M + 2 * (Λ : ℝ)) + (Λ : ℝ) + 1 * ((Λ : ℝ) + (Λ : ℝ)) := by
+          gcongr
+          · exact (hGF j x).trans (by linarith [hM x hx])
+          · exact hDF j x
+          · exact hDG j x
+          · exact hDF j x
+      _ = M + 5 * (Λ : ℝ) := by ring
+  -- Step 10: `H − Hⱼ = (1 − t)(F − Fⱼ) + t(G − Gⱼ)` has norm `≤ Λ/(j + 1)` on `[0, 1] × K`
+  · rw [Metric.tendstoUniformlyOn_iff]
+    intro ε hε
+    filter_upwards [hsmall.eventually (gt_mem_nhds hε)] with j hj y hy
+    obtain ⟨t, ht, x, hx, rfl⟩ := hy
+    rw [hHK x hx t ht, hHι, dist_eq_norm]
+    have h1 : F x + t • (G x - F x) - (Fs j x + t • (Gs j x - Fs j x)) =
+        (1 - t) • (F x - Fs j x) + t • (G x - Gs j x) := by
+      simp only [smul_sub, sub_smul, one_smul]; abel
+    rw [h1]
+    have ht0 : 0 ≤ t := ht.1
+    have ht1 : 0 ≤ 1 - t := by linarith [ht.2]
+    calc ‖(1 - t) • (F x - Fs j x) + t • (G x - Gs j x)‖
+        ≤ ‖(1 - t) • (F x - Fs j x)‖ + ‖t • (G x - Gs j x)‖ := norm_add_le _ _
+      _ = (1 - t) * ‖F x - Fs j x‖ + t * ‖G x - Gs j x‖ := by
+          rw [norm_smul, norm_smul, Real.norm_of_nonneg ht1, Real.norm_of_nonneg ht0]
+      _ ≤ (1 - t) * ((Λ : ℝ) / ((j : ℝ) + 1)) + t * ((Λ : ℝ) / ((j : ℝ) + 1)) := by
+          gcongr
+          · rw [← dist_eq_norm, dist_comm]; exact hFd j x
+          · rw [← dist_eq_norm, dist_comm]; exact hGd j x
+      _ = (Λ : ℝ) / ((j : ℝ) + 1) := by ring
+      _ < ε := hj
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
