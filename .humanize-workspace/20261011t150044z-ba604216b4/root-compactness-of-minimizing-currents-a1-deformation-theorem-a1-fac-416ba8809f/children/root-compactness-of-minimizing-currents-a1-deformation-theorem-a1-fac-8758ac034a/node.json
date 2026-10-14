@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1.cube_stokes-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1",
+  "depth": 5,
+  "title": "Stokes formula for one oriented lattice unit cube",
+  "statement": "Let P, m ∈ ℕ, ι : Fin (m+1) → Fin P arbitrary, b ∈ ℤ^P, and let γ be a C¹ m-form on Euclid P. Put Φ(y) := toLp(b) + Σ_j y_j e_{ι(j)} and E := (e_{ι(j)})_j. For i ∈ Fin (m+1) let E'_i := (e_{ι(succAbove i l)})_{l∈Fin m} and define the front and back faces Φ¹_i(y') := toLp(b + 𝟙_{ι(i)}) + Σ_l y'_l e_{ι(succAbove i l)} and Φ⁰_i(y') := toLp(b) + Σ_l y'_l e_{ι(succAbove i l)}, where 𝟙_{ι(i)} = Pi.single (ι i) 1 ∈ ℤ^P. With Q^d the open unit cube of Euclid d: ∫_{Q^{m+1}} dγ(Φ(y))(E) dy = Σ_{i∈Fin(m+1)} (−1)^i (∫_{Q^m} γ(Φ¹_i(y'))(E'_i) dy' − ∫_{Q^m} γ(Φ⁰_i(y'))(E'_i) dy').",
+  "lean_statement": "∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P) (b : Fin P → ℤ) (γ : DifferentialForm (Euclid P) m), ContDiff ℝ 1 γ → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, exteriorDerivative γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * ((∫ y in {y : Euclid m | ∀ j, 0 < y j ∧ y j < 1}, γ (WithLp.toLp 2 (fun k => ((b + Pi.single (ι i) 1 : Fin P → ℤ) k : ℝ)) + ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ))) - ∫ y in {y : Euclid m | ∀ j, 0 < y j ∧ y j < 1}, γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)))",
+  "lean_name": "cmcdtfrcb_cube_stokes",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1.cube_partial_ftc-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1.pullback_divergence-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1.cube_partial_ftc-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.chain_boundary-a1.pullback_divergence-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-8758ac034a-a1"
+}

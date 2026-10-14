@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "python3 scan of runs/20261011T150044Z-ba604216b4/dag.json: ancestors and depends_on of the selected node, frozen lean_statement of slice-a1 (cmcdt_lpo_slice_forms) and toolkit-a1 (cmcdt_lpo_current_toolkit), and lean_name collision check for the five proposed cmcdt_lpo_cyl_* names (no collision)",
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean workspaces/gmt-ch07/GMT/Ch07/Submission.lean (identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d)",
+        "rg -n cmcdt_lpo_cyl local-references/123e8435b4a2469b/project local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean' (no match)",
+        "rg -n -i 'cylinder|productWithInterval|homotopy' local-references/123e8435b4a2469b/project/GMT -g '*.lean' (no match)",
+        "rg -n 'GeometricCurrentOn|zeroRegion|massAdmissibleOn' local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "rg -n 'def compContinuousLinearMapCLM|def curryLeftLI|theorem curryLeft_apply_apply|theorem compContinuousLinearMapCLM_apply' local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean'",
+        "rg -n continuous_eval_const mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean; rg -ln 'class ContinuousEvalConst' mathlib/Mathlib",
+        "rg -n 'theorem Continuous.finCons|theorem IsCompact.of_isClosed_subset|closure_ball_subset_closedBall' mathlib/Mathlib -g '*.lean'",
+        "rg -n 'theorem integral_add|theorem integral_const_mul' mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "cat lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,CurrentLocalEquality,Forms}.lean",
+        "sed -n 345,420p book/chapter-06.txt; grep -n 'homotopy formula' book/chapter-06.txt (Simon 6.2.17-2.21, 2.25)",
+        "lake env lean /tmp/cyl-decomp-m3x9/Probe.lean and Probe2.lean (#check of cited Mathlib lemmas; fun_prop proves continuity of t ↦ ι(t, x))",
+        "lake env lean /tmp/cyl-decomp-m3x9/Children.lean (all five child types elaborate after import GMT.Ch07.Submission; sorry-free assembly Submission.cmcdt_lpo_cyl_assembly_check of the exact selected frozen type from the children and the two stubbed sibling dependencies)",
+        "lake env lean /tmp/cyl-decomp-m3x9/Child1.lean ... Child5.lean and Consolidated.lean (complete scratch proofs of all five children; #print axioms)",
+        "sed of /runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py, prompts.py and runtime.py (inherited-prerequisite citation rule; depth gate node.depth >= max_depth = 6)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Hom/ContinuousEvalConst.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Constructions.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-c9dc9edd39/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/cyl-decomp-m3x9/Children.lean",
+        "/tmp/cyl-decomp-m3x9/Child1.lean",
+        "/tmp/cyl-decomp-m3x9/Child2.lean",
+        "/tmp/cyl-decomp-m3x9/Child3.lean",
+        "/tmp/cyl-decomp-m3x9/Child4.lean",
+        "/tmp/cyl-decomp-m3x9/Child5.lean",
+        "/tmp/cyl-decomp-m3x9/Consolidated.lean",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py"
+      ],
+      "conclusion": "Nothing in the snapshot can be reused. The snapshot is project b4d606d with Mathlib 25730c7c, and its Ch07 Contract.lean is identical to the workspace Submission.lean. It has no product-with-[[0,1]], cylinder or homotopy construction for GeometricCurrentOn (rg cylinder|homotopy in project/GMT: no match). It has no declaration with prefix cmcdt_lpo_cyl (no match), and dag.json reserves none of the five proposed names. Every tool the child proofs cite is in the frozen import closure. From Mathlib: ContinuousAlternatingMap.compContinuousLinearMapCLM (Topology/Algebra/Module/Alternating/Topology.lean:281), curryLeftLI and curryLeft_apply_apply (Analysis/Normed/Module/Alternating/Curry.lean:77, :57), continuous_eval_const (Topology/Hom/ContinuousEvalConst.lean), Continuous.finCons (Topology/Constructions.lean:983), IsCompact.of_isClosed_subset (Topology/Compactness/Compact.lean:105), closure_ball_subset_closedBall (Topology/MetricSpace/Pseudo/Lemmas.lean:73), and intervalIntegral.integral_add / integral_const_mul (IntervalIntegral/Basic.lean:774, :817). From SimonGMT Chapter06: GeometricCurrentOn.ext, boundary_apply, isOpen_zeroRegion, zeroRegion/support, massAdmissibleOn and mass. All five child types elaborate after import GMT.Ch07.Submission. Each child has a complete sorry-free scratch proof with axioms propext, Classical.choice and Quot.sound. The exact selected frozen type is assembled from the five children and the two sibling dependencies, stubbed, with no other sorry. Simon 6.2.17–2.21 and the homotopy formula 2.25 in book/chapter-06.txt match the construction."
+    }
+  ],
+  "proof": "Source: step 2 (slice operator) of the parent proof. Notation as in the statement.\n1. Continuity of the integrands. Fix x ∈ ℝ^N. The map t ↦ ι(t, x) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) is continuous ℝ → ℝ^{N+1}: its coordinates are t and the constants x_j (in Lean, fun_prop proves it). Every ω ∈ 𝒟^m(ℝ^{N+1}) is smooth (its membership proof contains ContDiff ℝ ∞ ω), hence continuous, and for a fixed tuple w evaluation γ ↦ γ(w) is continuous on covectors (continuous_eval_const). Hence g_{ω,x,w}(t) := ω(ι(t, x))(w) is continuous in t and therefore interval integrable on [0, 1] (Continuous.intervalIntegrable).\n2. Choice. Fix N, k. By (SA), choose for every ω ∈ 𝒟^{k+1}(ℝ^{N+1}) a test form η_ω ∈ 𝒟^k(ℝ^N) with (F_ω): η_ω(x)(v) = ∫_0^1 ω(ι(t, x))(e₀, Jv_1, …, Jv_k) dt for all x, v, and with tsupport η_ω ⊆ {x : ∃ t ∈ [0, 1], ι(t, x) ∈ tsupport ω}.\n3. Uniqueness. If θ ∈ 𝒟^k(ℝ^N) satisfies (F_ω) for all x and v, then θ = η_ω: for every x the covectors θ(x) and η_ω(x) take the same value (the same integral) on every tuple v, so θ(x) = η_ω(x) (ContinuousAlternatingMap.ext); thus the underlying forms coincide and the test forms are equal (Subtype.ext).\n4. Linearity. Define S(ω) := η_ω. (a) Additivity: for ω₁, ω₂ and all x, v, (η_{ω₁} + η_{ω₂})(x)(v) = η_{ω₁}(x)(v) + η_{ω₂}(x)(v) = ∫_0^1 ω₁(ι(t, x))(e₀, Jv) dt + ∫_0^1 ω₂(ι(t, x))(e₀, Jv) dt = ∫_0^1 (ω₁(ι(t, x))(e₀, Jv) + ω₂(ι(t, x))(e₀, Jv)) dt (intervalIntegral.integral_add; both integrands are interval integrable by step 1) = ∫_0^1 (ω₁ + ω₂)(ι(t, x))(e₀, Jv) dt, because test forms and covectors are added pointwise. So η_{ω₁} + η_{ω₂} satisfies (F_{ω₁+ω₂}), and step 3 gives S(ω₁ + ω₂) = S(ω₁) + S(ω₂). (b) Homogeneity: for a ∈ ℝ, (a·η_ω)(x)(v) = a·∫_0^1 ω(ι(t, x))(e₀, Jv) dt = ∫_0^1 a·ω(ι(t, x))(e₀, Jv) dt (intervalIntegral.integral_const_mul) = ∫_0^1 (a·ω)(ι(t, x))(e₀, Jv) dt, so step 3 gives S(a·ω) = a·S(ω). Hence S is an ℝ-linear map 𝒟^{k+1}(ℝ^{N+1}) → 𝒟^k(ℝ^N).\n5. Properties (i) and (ii) are the formula (F_ω) and the support inclusion chosen in step 2.\n6. Property (iii). Let ω ∈ 𝒟^{k+1}(ℝ^{N+1}) and c ∈ ℝ satisfy |ω(y)| ≤ c for all y, and fix x ∈ ℝ^N. Take Φ from (R1) for (N, k) and put f(t) := Φ(ω(ι(t, x))) for t ∈ ℝ. f is continuous, being the composite of the continuous linear Φ, the continuous ω and the continuous t ↦ ι(t, x) (step 1). For every v, by (i) and the formula for Φ, S(ω)(x)(v) = ∫_0^1 ω(ι(t, x))(e₀, Jv_1, …, Jv_k) dt = ∫_0^1 Φ(ω(ι(t, x)))(v) dt = ∫_0^1 f(t)(v) dt (the integrands agree pointwise). For every t, in particular t ∈ [0, 1], |f(t)| ≤ |ω(ι(t, x))| ≤ c by the bound in (R1) and the hypothesis. So (SE) with dimension N, degree k, α := S(ω)(x), this f and this c gives |S(ω)(x)| ≤ c.\n7. Steps 2–6 work for every N and k, which proves the statement. □",
+  "key_steps": [
+    "t ↦ ω(ι(t, x))(w) is continuous (ω smooth, ι(·, x) continuous, evaluation continuous), hence interval integrable on [0, 1].",
+    "Choose η_ω from (SA); any test form satisfying the slice formula of ω equals η_ω (ContinuousAlternatingMap.ext, Subtype.ext).",
+    "S(ω) := η_ω is additive and homogeneous by uniqueness and linearity of interval integrals; (i), (ii) hold by the choice.",
+    "(iii): apply (SE) to α = S(ω)(x) and f(t) = Φ(ω(ι(t, x))), continuous with |f(t)| ≤ |ω(ι(t, x))| ≤ c by (R1)."
+  ],
+  "unresolved": [],
+  "validation_notes": []
+}
