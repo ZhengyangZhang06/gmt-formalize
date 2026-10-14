@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1.mean_dev-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1",
+  "depth": 6,
+  "title": "Mean deviation is bounded by the double-integral oscillation on a set of volume 1",
+  "statement": "Let m ∈ ℕ, let S ⊆ Euclid (m + 1) be any set with Lebesgue measure vol(S) = 1, and let u : Euclid (m + 1) → ℝ be integrable on S. Then, with c := ∫_S u, ∫_{x∈S}|u(x) − c| dx ≤ ∫_{x∈S}∫_{y∈S}|u(x) − u(y)| dy dx.",
+  "lean_statement": "∀ (m : ℕ) (S : Set (Euclid (m + 1))) (u : Euclid (m + 1) → ℝ), volume S = 1 → IntegrableOn u S → ∫ x in S, |u x - ∫ y in S, u y| ≤ ∫ x in S, ∫ y in S, |u x - u y|",
+  "lean_name": "dimred_mbl_dt_cbm_bvp_mean_dev_le_osc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-c0b3106ac5-a1"
+}
