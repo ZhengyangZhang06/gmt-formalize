@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "eda5ee4a919d6b6d6133c98ccfd9440ac79c25e11e45be55a356acb28e38c2d6",
+  "git_delta": {
+    "base_commit": "075a614053c737eb69df7ff31f58a63210fbe24b",
+    "candidate_commit": "02f2569189c3af89e9468f5d7ebe538696082061",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_tc_rs_radius_bound",
+    "diff_sha256": "1f1a56e84188fc455a90820b9d10a877a5d971a07ccc21cf98bf8378dc0a9fe8",
+    "source_sha256": "59dc4e2fac2f176032b2946dd627a8568c658725ed73b4c2a4abe52336564477",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_tc_rs_radius_bound",
+      "statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (Rp : IMRep U (m + 1)) (R t : ℝ), closedBall (0 : Euclid P) R ⊆ U → Rp.Represents S → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ ball 0 R → S.boundary ω = 0) → t < R → ∀ (β : TestFormOn (univ : Set (Euclid P)) m) (s : ℝ), (∀ x, covectorEuclideanNorm ((β : DifferentialForm (Euclid P) m) x) ≤ s) → ENNReal.ofReal |∫ x in Rp.carrier ∩ ball 0 t, (Rp.mult x : ℝ) * Rp.orient x (exteriorDerivative (β : DifferentialForm (Euclid P) m) x) ∂μHE[m + 1]| ≤ ENNReal.ofReal s * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * Rp.measure {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t}) (𝓝[>] 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
