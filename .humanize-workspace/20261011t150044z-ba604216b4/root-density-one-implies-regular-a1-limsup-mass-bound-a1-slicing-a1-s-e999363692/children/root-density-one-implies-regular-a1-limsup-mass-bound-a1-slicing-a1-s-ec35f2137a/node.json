@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.piece_coarea-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1",
+  "depth": 5,
+  "title": "Co-area formula on one C¹ chart piece for a function that is C¹ along the chart",
+  "statement": "Let P, n ∈ ℕ. Let V ⊆ ℝ^{n+1} be open and ψ : ℝ^{n+1} → ℝ^P be C¹ on V and injective on V, with Dψ(y) injective for every y ∈ V. Let C ⊆ V be compact and Y ⊆ C Borel. Let F : ℝ^{n+1} → ℝ be C¹ and f : ℝ^P → ℝ satisfy f(ψ(y)) = F(y) for y ∈ Y. Let G : ℝ^P → ℝ^P be Borel such that for every y ∈ Y: G(ψ(y)) ∈ Dψ(y)(ℝ^{n+1}) and ⟨G(ψ(y)), Dψ(y)e⟩ = DF(y)e for all e ∈ ℝ^{n+1}. (G is the tangential gradient of f on ψ(Y).) For t ∈ ℝ put S_t := ψ(Y) ∩ {x : G(x) ≠ 0} ∩ f⁻¹(t). Then for every Borel φ : ℝ^P → [0, ∞]:\n - the function t ↦ ∫_{S_t} φ dHⁿ is a.e.-measurable for Lebesgue measure on ℝ, and\n - ∫_ℝ ∫_{S_t} φ dHⁿ dt = ∫_{ψ(Y)} |G| φ dH^{n+1}.\nHere Hᵏ = μHE[k] and all integrals are lower integrals in [0, ∞].",
+  "lean_statement": "∀ (P n : ℕ) (V C Y : Set (Euclid (n + 1))) (ψ : Euclid (n + 1) → Euclid P) (F : Euclid (n + 1) → ℝ) (f : Euclid P → ℝ) (G : Euclid P → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → IsCompact C → C ⊆ V → MeasurableSet Y → Y ⊆ C → ContDiff ℝ 1 F → (∀ y ∈ Y, f (ψ y) = F y) → (∀ y ∈ Y, G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → Measurable G → ∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t => ∫⁻ x in ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂μHE[n]) ∧ ∫⁻ t, (∫⁻ x in ψ '' Y ∩ {x | G x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂μHE[n]) = ∫⁻ x in ψ '' Y, ‖G x‖ₑ * φ x ∂μHE[n + 1]",
+  "lean_name": "dor_lmbsf_piece_coarea",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-ec35f2137a-a1"
+}
