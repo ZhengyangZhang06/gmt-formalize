@@ -929,6 +929,63 @@ theorem Submission.cbr_cc_seg_segment_imrep : ∀ (P : ℕ) (a τ : Euclid P) (�
     simp only [one_mul, ζ₀, ContinuousAlternatingMap.apply_apply]
     exact hIint fun x => ω x fun _ => τ
 
+/-- **The segment current `[[a, b]]`** (Simon Ch. 6, 2.2 and 3.1).  Assuming (MR), i.e.
+`M_W(T) = μ_R(W)` for `T = τ(R)`, every pair `a, b ∈ ℝᴾ` bounds an integer multiplicity
+`S ∈ 𝒟₁(ℝᴾ)` with `∂S = δ_b − δ_a`, `M(S) < ∞` and `spt S ⊆ [a, b]`.  If `a = b`, `S = 0`
+(`current_algebra` (a), (b), `support_vanish`).  Otherwise let `ℓ = |b − a|`, `τ = ℓ⁻¹(b − a)`, so
+`a + ℓτ = b`, and let `S = τ(R)` for the triple `R = (I, 1, τ)` on the open segment
+`I = {a + uτ : 0 < u < ℓ} ⊆ [a, b]` (`segment_imrep`, `imrep_current`).  Then
+`∂S(g) = S(dg) = ∫₀^ℓ dg(a + uτ)(τ) du = g(b)⟨⟩ − g(a)⟨⟩` (`zero_form_ftc`), `M(S) = μ_R(ℝᴾ) < ∞`
+by (MR), and `S(ω) = 0` once `spt ω` misses the compact `[a, b]`, so `spt S ⊆ [a, b]`. -/
+theorem Submission.dmcbr_cc_segment_current : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ∀ (P : ℕ) (a b : Euclid P), ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) 1, IsIntegerMultiplicity S ∧ (∀ g : TestFormOn (univ : Set (Euclid P)) 0, S.boundary g = (g : DifferentialForm (Euclid P) 0) b (fun i => i.elim0) - (g : DifferentialForm (Euclid P) 0) a (fun i => i.elim0)) ∧ S.mass < ∞ ∧ S.support ⊆ segment ℝ a b := by
+  intro hMR P a b
+  by_cases hab : a = b
+  · -- Case `a = b`: `S = 0`, integer multiplicity by `current_algebra` (a)
+    subst hab
+    refine ⟨0, Submission.cbr_cc_current_algebra.1 P 1 univ, fun g => ?_, ?_, ?_⟩
+    · -- `∂0(g) = 0 = g(a)⟨⟩ − g(a)⟨⟩`
+      rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply, sub_self]
+    · -- `M(0) ≤ |0| M(0) + |0| M(0) = 0` by `current_algebra` (b)
+      show (0 : GeometricCurrentOn (univ : Set (Euclid P)) 1).massOn univ < ∞
+      refine (Submission.cbr_cc_current_algebra.2.1 P 1 univ 0 0 0 0 0 (fun ω => by simp)
+        univ).trans_lt ?_
+      simp
+    · -- `0` kills every form, so `spt 0 ⊆ {a} = [a, a]`
+      rw [segment_same]
+      exact (Submission.rsd_cmr_support_subset_of_vanish P 1 univ _ 0 isOpen_univ
+        isCompact_singleton (subset_univ _) fun ω _ => rfl).1
+  · -- Case `a ≠ b`: `ℓ = |b − a| > 0`, `τ = ℓ⁻¹(b − a)` is a unit vector and `a + ℓτ = b`
+    set ℓ : ℝ := ‖b - a‖
+    have hℓ : 0 < ℓ := norm_pos_iff.mpr (sub_ne_zero.mpr (Ne.symm hab))
+    set τ : Euclid P := ℓ⁻¹ • (b - a) with hτdef
+    have hτ : ‖τ‖ = 1 := by
+      rw [hτdef, norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hℓ]
+      exact inv_mul_cancel₀ hℓ.ne'
+    have hb : a + ℓ • τ = b := by
+      rw [hτdef, smul_smul, mul_inv_cancel₀ hℓ.ne', one_smul, add_sub_cancel]
+    -- the triple `R = (I, 1, τ)` on the open segment `I ⊆ [a, b]`, and its current `S = τ(R)`
+    obtain ⟨R, hRc, hRm, hRa⟩ := Submission.cbr_cc_seg_segment_imrep P a τ ℓ hτ hℓ
+    obtain ⟨S, hS⟩ := Submission.dtc_imrep_current P 1 univ R
+    rw [hb] at hRc
+    refine ⟨S, ⟨R, hS⟩, fun g => ?_, ?_, ?_⟩
+    · -- `∂S(g) = S(dg) = ∫_{(0,ℓ)} dg(a + uτ)(τ) du = g(a + ℓτ)⟨⟩ − g(a)⟨⟩`
+      rw [GeometricCurrentOn.boundary_apply, hS]
+      change R.action (exteriorDerivative (g : DifferentialForm (Euclid P) 0)) = _
+      rw [hRa, Submission.cbr_cc_seg_zero_form_ftc P _ g.property.1.1 a τ ℓ hℓ.le, hb]
+    · -- `M(S) = M_{ℝᴾ}(S) = μ_R(ℝᴾ) < ∞` by (MR) with `U = W = ℝᴾ`
+      show S.massOn univ < ∞
+      rw [hMR P 1 univ S R isOpen_univ hS univ isOpen_univ]
+      exact hRm
+    · -- `[a, b]` is compact, and `S(ω) = 0` if `spt ω` misses `[a, b] ⊇ I`
+      have hK : IsCompact (segment ℝ a b) := by
+        rw [segment_eq_image]
+        exact isCompact_Icc.image (by fun_prop)
+      refine (Submission.rsd_cmr_support_subset_of_vanish P 1 univ (segment ℝ a b) S isOpen_univ
+        hK (subset_univ _) fun ω hω => ?_).1
+      rw [hS, IMRep.action]
+      refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+      rw [image_eq_zero_of_notMem_tsupport (disjoint_right.mp hω (hRc hx)), map_zero, mul_zero]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
