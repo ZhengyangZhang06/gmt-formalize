@@ -572,6 +572,172 @@ theorem Submission.cbrld_cone_testForm_coeff_lipschitz : ∀ (P k : ℕ) (U : Se
     _ ≤ C * (max L 0 * ‖x - y‖) := h2
     _ = C * max L 0 * ‖x - y‖ := by ring
 
+/-- **Slice and restriction forms along `x ↦ ι(t, x) = (t, x)`** (the forms entering the cylinder
+`[[(0, 1)]] × X` of Simon Ch. 6, 2.18–2.21 and the homotopy formula 2.25, as used for the
+Lipschitz push-forward in the deformation theorem).  With `J v = (0, v)` and `e₀ = (1, 0, …, 0)`,
+the forms `η_t = (ω(·).curryLeft e₀)(ι(t, ·)) ∘ J`, `β_s = ω(ι(s, ·)) ∘ J` and
+`γ_t = (Dω(ι(t, ·)) e₀) ∘ J` are affine pull-backs along the isometry `x ↦ single(0, t) + J x`,
+which is proper, so they are test forms.  Every slice family satisfies `η_t(x) = S(ω(ι(t, x)))`
+for the slice map `S α = (α.curryLeft e₀).compContinuousLinearMap J`; the covector bounds (L1),
+(L2) and `‖J‖ ≤ 1` give `|S α| ≤ |α|`, which with `Submission.cbrld_cone_testForm_coeff_lipschitz`
+yields the pointwise bound, the Lipschitz estimate in `t` and the support inclusion. -/
+theorem Submission.dimred_mbl_dt_lpc_slice_forms : ((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → (∀ (N k : ℕ) (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)), (∃ η : ℝ → TestFormOn (univ : Set (Euclid N)) k, ∀ (t : ℝ) (x : Euclid N) (v : Fin k → Euclid N), (η t : DifferentialForm (Euclid N) k) x v = (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ ∃ c : ℝ, 0 ≤ c ∧ ∀ η : ℝ → TestFormOn (univ : Set (Euclid N)) k, (∀ (t : ℝ) (x : Euclid N) (v : Fin k → Euclid N), (η t : DifferentialForm (Euclid N) k) x v = (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → (∀ (t : ℝ) (x : Euclid N), covectorEuclideanNorm ((η t : DifferentialForm (Euclid N) k) x) ≤ covectorEuclideanNorm ((ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))))) ∧ (∀ (s t : ℝ) (x : Euclid N), covectorEuclideanNorm ((η s : DifferentialForm (Euclid N) k) x - (η t : DifferentialForm (Euclid N) k) x) ≤ c * |s - t|) ∧ ∀ t : ℝ, tsupport (η t : DifferentialForm (Euclid N) k) ⊆ {x : Euclid N | (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) ∈ tsupport (ω : DifferentialForm (Euclid (N + 1)) (k + 1))}) ∧ ∀ (N k : ℕ) (ω : TestFormOn (univ : Set (Euclid (N + 1))) k), (∃ β : ℝ → TestFormOn (univ : Set (Euclid N)) k, ∀ (s : ℝ) (x : Euclid N) (v : Fin k → Euclid N), (β s : DifferentialForm (Euclid N) k) x v = (ω : DifferentialForm (Euclid (N + 1)) k) (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) ∧ (∃ γ : ℝ → TestFormOn (univ : Set (Euclid N)) k, ∀ (t : ℝ) (x : Euclid N) (v : Fin k → Euclid N), (γ t : DifferentialForm (Euclid N) k) x v = fderiv ℝ (ω : DifferentialForm (Euclid (N + 1)) k) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) ∧ ∀ β : ℝ → TestFormOn (univ : Set (Euclid N)) k, (∀ (s : ℝ) (x : Euclid N) (v : Fin k → Euclid N), (β s : DifferentialForm (Euclid N) k) x v = (ω : DifferentialForm (Euclid (N + 1)) k) (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) → ∀ (s : ℝ) (x : Euclid N), covectorEuclideanNorm ((β s : DifferentialForm (Euclid N) k) x) ≤ covectorEuclideanNorm ((ω : DifferentialForm (Euclid (N + 1)) k) (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)))) := by
+  rintro ⟨hL1, hL2⟩
+  -- Step 1(a): the embedding `J v = (0, v)` is linear with `‖J v‖ = ‖v‖`
+  have hJex : ∀ N : ℕ, ∃ J : Euclid N →L[ℝ] Euclid (N + 1),
+      (∀ v, J v = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) ∧ ∀ v, ‖J v‖ = ‖v‖ := by
+    intro N
+    let Jl : Euclid N →ₗ[ℝ] Euclid (N + 1) :=
+      { toFun := fun v => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))
+        map_add' := fun v w => by
+          ext i
+          refine Fin.cases ?_ (fun j => ?_) i <;> simp
+        map_smul' := fun c v => by
+          ext i
+          refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+    have hn : ∀ v, ‖Jl v‖ = ‖v‖ := by
+      intro v
+      rw [EuclideanSpace.norm_eq, EuclideanSpace.norm_eq, Fin.sum_univ_succ]
+      simp [Jl]
+    exact ⟨LinearMap.mkContinuous Jl 1 fun v => by rw [hn, one_mul], fun v => rfl, hn⟩
+  -- Step 1(a)–(d): `‖J‖ ≤ 1`, `ι(t, x) = single(0, t) + J x`, each `x ↦ ι(t, x)` is an
+  -- isometry, hence proper, and `dist (ι(s, x)) (ι(t, x)) = |s - t|`
+  have hJprops : ∀ (N : ℕ) (J : Euclid N →L[ℝ] Euclid (N + 1)),
+      (∀ v, J v = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) → (∀ v, ‖J v‖ = ‖v‖) →
+      ‖J‖ ≤ 1 ∧
+      (∀ (t : ℝ) (x : Euclid N), (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) =
+        EuclideanSpace.single 0 t + J x) ∧
+      (∀ t : ℝ, IsProperMap fun x => EuclideanSpace.single (0 : Fin (N + 1)) t + J x) ∧
+      ∀ (s t : ℝ) (x : Euclid N),
+        dist (EuclideanSpace.single (0 : Fin (N + 1)) s + J x)
+          (EuclideanSpace.single 0 t + J x) = |s - t| := by
+    intro N J hJ hn
+    refine ⟨J.opNorm_le_bound zero_le_one fun v => by rw [hn, one_mul], fun t x => ?_,
+      fun t => ?_, fun s t x => ?_⟩
+    · rw [hJ]
+      ext i
+      refine Fin.cases ?_ (fun j => ?_) i <;> simp
+    · have hiso : Isometry fun x => EuclideanSpace.single (0 : Fin (N + 1)) t + J x :=
+        Isometry.of_dist_eq fun x y => by
+          rw [dist_add_left, dist_eq_norm, dist_eq_norm, ← map_sub, hn]
+      exact hiso.isClosedEmbedding.isProperMap
+    · rw [dist_add_right]
+      simp [Real.dist_eq]
+  refine ⟨fun N k ω => ?_, fun N k ω => ?_⟩
+  · obtain ⟨J, hJ, hn⟩ := hJex N
+    obtain ⟨hJ1, hι, hprop, hdist⟩ := hJprops N J hJ hn
+    -- Step 2: the slice map `S α = (α.curryLeft e₀).compContinuousLinearMap J` is continuous
+    -- linear, `S α v = α (e₀, J v)`, and `|S α| ≤ ‖J‖ ^ k |α.curryLeft e₀| ≤ |α|` by (L1), (L2)
+    let Φ : Covector (Euclid (N + 1)) (k + 1) →L[ℝ] Covector (Euclid (N + 1)) k :=
+      (ContinuousLinearMap.apply ℝ (Covector (Euclid (N + 1)) k) (EuclideanSpace.single 0 1)).comp
+        (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid (N + 1)) (F := ℝ)
+          (n := k)).toContinuousLinearMap
+    let S : Covector (Euclid (N + 1)) (k + 1) →L[ℝ] Covector (Euclid N) k :=
+      (ContinuousAlternatingMap.compContinuousLinearMapCLM J).comp Φ
+    have hS : ∀ (α : Covector (Euclid (N + 1)) (k + 1)) (v : Fin k → Euclid N),
+        S α v = α (Fin.cons (EuclideanSpace.single 0 1) fun i => J (v i)) := fun α v => rfl
+    have hSb : ∀ α, covectorEuclideanNorm (S α) ≤ covectorEuclideanNorm α := by
+      intro α
+      have h1 := hL1 N (N + 1) k J (α.curryLeft (EuclideanSpace.single 0 1))
+      have h2 := hL2 (N + 1) k (EuclideanSpace.single 0 1) α
+      have he : ‖(EuclideanSpace.single (0 : Fin (N + 1)) (1 : ℝ))‖ = 1 := by simp
+      have hJk : ‖J‖ ^ k ≤ 1 := pow_le_one₀ (norm_nonneg _) hJ1
+      have h0 := covectorEuclideanNorm_nonneg (α.curryLeft (EuclideanSpace.single 0 1))
+      rw [he, one_mul] at h2
+      calc covectorEuclideanNorm (S α)
+          = covectorEuclideanNorm
+              ((α.curryLeft (EuclideanSpace.single 0 1)).compContinuousLinearMap J) := rfl
+        _ ≤ ‖J‖ ^ k * covectorEuclideanNorm (α.curryLeft (EuclideanSpace.single 0 1)) := h1
+        _ ≤ 1 * covectorEuclideanNorm (α.curryLeft (EuclideanSpace.single 0 1)) :=
+            mul_le_mul_of_nonneg_right hJk h0
+        _ ≤ covectorEuclideanNorm α := by rw [one_mul]; exact h2
+    -- Step 3: (A1), `η_t` is the affine pull-back of `ω₁ = ω(·).curryLeft e₀` along
+    -- `x ↦ ι(t, x)`
+    have hω₁ : IsTestForm fun y => Φ ((ω : DifferentialForm (Euclid (N + 1)) (k + 1)) y) :=
+      ⟨Φ.contDiff.comp ω.property.1.1, ω.property.1.2.comp_left (map_zero Φ)⟩
+    refine ⟨⟨fun t => ⟨affinePullbackForm J (EuclideanSpace.single 0 t)
+      (fun y => Φ ((ω : DifferentialForm (Euclid (N + 1)) (k + 1)) y)),
+      affinePullbackForm_isTestForm J _ (hprop t) hω₁, subset_univ _⟩,
+      fun t x v => ?_⟩, ?_⟩
+    · show S ((ω : DifferentialForm (Euclid (N + 1)) (k + 1))
+        (EuclideanSpace.single 0 t + J x)) v = _
+      rw [hS, ← hι t x]
+      simp only [hJ]
+    -- Step 5: the Lipschitz constant `c` of `ω`, fixed before the family `η`
+    obtain ⟨c, hc0, hc⟩ :=
+      Submission.cbrld_cone_testForm_coeff_lipschitz (N + 1) (k + 1) univ ω
+    refine ⟨c, hc0, fun η hη => ?_⟩
+    -- Step 4: every slice family is `η_t(x) = S(ω(ι(t, x)))`
+    have hnf : ∀ t x, (η t : DifferentialForm (Euclid N) k) x =
+        S ((ω : DifferentialForm (Euclid (N + 1)) (k + 1))
+          (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)))) := by
+      intro t x
+      ext v
+      rw [hη t x v, hS]
+      simp only [hJ]
+    -- Step 5: (A2), (i) the pointwise bound, (ii) the Lipschitz estimate, (iii) the support
+    refine ⟨fun t x => ?_, fun s t x => ?_, fun t => ?_⟩
+    · rw [hnf]
+      exact hSb _
+    · rw [hnf, hnf, ← map_sub]
+      calc _ ≤ _ := hSb _
+        _ ≤ c * dist (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)) : Euclid (N + 1))
+            (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) := hc _ _
+        _ = c * |s - t| := by rw [hι, hι, hdist]
+    · have hcont : Continuous fun x : Euclid N =>
+          (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) := by
+        simp only [hι]
+        exact continuous_const.add J.continuous
+      refine closure_minimal (fun x hx => ?_) ((isClosed_tsupport _).preimage hcont)
+      by_contra hx'
+      apply hx
+      rw [hnf, image_eq_zero_of_notMem_tsupport hx', map_zero]
+  · obtain ⟨J, hJ, hn⟩ := hJex N
+    obtain ⟨hJ1, hι, hprop, -⟩ := hJprops N J hJ hn
+    have hω : IsTestForm (ω : DifferentialForm (Euclid (N + 1)) k) := ω.property.1
+    -- Step 6: (B1), `β_s` is the affine pull-back of `ω` along `x ↦ ι(s, x)`
+    refine ⟨⟨fun s => ⟨affinePullbackForm J (EuclideanSpace.single 0 s)
+      (ω : DifferentialForm (Euclid (N + 1)) k),
+      affinePullbackForm_isTestForm J _ (hprop s) hω, subset_univ _⟩,
+      fun s x v => ?_⟩, ?_, ?_⟩
+    · show (ω : DifferentialForm (Euclid (N + 1)) k) (EuclideanSpace.single 0 s + J x)
+        (fun i => J (v i)) = _
+      rw [← hι s x]
+      simp only [hJ]
+    -- Step 6: (B2), `γ_t` is the affine pull-back of the test form `ω' = Dω(·) e₀`
+    · have hω' : IsTestForm fun y => fderiv ℝ (ω : DifferentialForm (Euclid (N + 1)) k) y
+          (EuclideanSpace.single 0 1) :=
+        ⟨(hω.1.fderiv_right (m := ((⊤ : ℕ∞) : WithTop ℕ∞)) (by simp)).clm_apply
+            contDiff_const,
+          (hω.2.fderiv ℝ).comp_left
+            (g := fun L : Euclid (N + 1) →L[ℝ] Covector (Euclid (N + 1)) k =>
+              L (EuclideanSpace.single 0 1)) rfl⟩
+      refine ⟨fun t => ⟨affinePullbackForm J (EuclideanSpace.single 0 t)
+        (fun y => fderiv ℝ (ω : DifferentialForm (Euclid (N + 1)) k) y
+          (EuclideanSpace.single 0 1)),
+        affinePullbackForm_isTestForm J _ (hprop t) hω', subset_univ _⟩, fun t x v => ?_⟩
+      show fderiv ℝ (ω : DifferentialForm (Euclid (N + 1)) k) (EuclideanSpace.single 0 t + J x)
+        (EuclideanSpace.single 0 1) (fun i => J (v i)) = _
+      rw [← hι t x]
+      simp only [hJ]
+    -- Step 7: (B3), `β_s(x) = ω(ι(s, x)).compContinuousLinearMap J`, so (L1) and `‖J‖ ≤ 1`
+    -- give `|β_s(x)| ≤ |ω(ι(s, x))|`
+    · intro β hβ s x
+      have hnf : (β s : DifferentialForm (Euclid N) k) x =
+          ((ω : DifferentialForm (Euclid (N + 1)) k)
+            (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)))).compContinuousLinearMap J := by
+        ext v
+        rw [hβ s x v, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+        simp only [Function.comp_def, hJ]
+      rw [hnf]
+      have hJk : ‖J‖ ^ k ≤ 1 := pow_le_one₀ (norm_nonneg _) hJ1
+      calc _ ≤ ‖J‖ ^ k * covectorEuclideanNorm ((ω : DifferentialForm (Euclid (N + 1)) k)
+            (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)))) := hL1 _ _ _ _ _
+        _ ≤ 1 * covectorEuclideanNorm ((ω : DifferentialForm (Euclid (N + 1)) k)
+            (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)))) :=
+          mul_le_mul_of_nonneg_right hJk (covectorEuclideanNorm_nonneg _)
+        _ = _ := one_mul _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
