@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4f2d20ba59c19a9bb0ad486bcf479e2bfd9fdf3ef247844c902e67300d657e51",
+  "git_delta": {
+    "base_commit": "a4c7d62a68d00d48839ad84281be77e8ad4a9d17",
+    "candidate_commit": "79dee1c89ea7abee03c233d92ef1a4ef2a539a57",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_co_density_gradient_bound",
+    "diff_sha256": "31b40e4910094dc7880c8879aa7cba422473efb0ed8ac7df77eaff1d2605d808",
+    "source_sha256": "e49903a912b0026e731aea34a2b976de4bc51fa7342d3927c3e6b1b5a9509584",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_co_density_gradient_bound",
+      "statement": "∀ (d P : ℕ) (f : Euclid P → ℝ) (L : NNReal) (ψ : Euclid d → Euclid P) (F : Euclid d → ℝ) (Y : Set (Euclid d)) (y : Euclid d), LipschitzWith L f → y ∈ Y → DifferentiableAt ℝ ψ y → DifferentiableAt ℝ F y → (∀ z ∈ Y, f (ψ z) = F z) → Tendsto (fun r => volume (Y ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ e : Euclid d, |fderiv ℝ F y e| ≤ L * ‖fderiv ℝ ψ y e‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
