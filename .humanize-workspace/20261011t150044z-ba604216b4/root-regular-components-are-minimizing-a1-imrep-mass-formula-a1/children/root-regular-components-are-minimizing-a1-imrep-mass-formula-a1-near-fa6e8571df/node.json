@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.near_maximizer-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1",
+  "depth": 3,
+  "title": "Measurable selection of a near-maximizing unit covector field",
+  "statement": "Let μ be a measure on ℝ^P, ξ : ℝ^P → MultiVector P n be μ-a.e. strongly measurable, η > 0, and assume that for μ-a.e. x there is an n-covector β with |β|_E ≤ 1 and ξ(x)(β) = 1. Then there is a strongly measurable g : ℝ^P → Covector (Euclid P) n with |g(x)|_E ≤ 1 for every x and 1 − η ≤ ξ(x)(g(x)) for μ-a.e. x.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (η : ℝ), 0 < η → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ξ x β = 1) → ∃ g : Euclid P → Covector (Euclid P) n, StronglyMeasurable g ∧ (∀ x, covectorEuclideanNorm (g x) ≤ 1) ∧ ∀ᵐ x ∂μ, 1 - η ≤ ξ x (g x)",
+  "lean_name": "regcomp_covector_field_near_maximizer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-near-fa6e8571df-a1"
+}
