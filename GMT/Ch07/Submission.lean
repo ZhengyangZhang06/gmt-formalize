@@ -451,6 +451,578 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Vanishing on the carrier and the `C⁰` bound for `T = τ(M, θ, ξ)`** (Simon 6.3.1 (‡); step 0
+of the construction of the cone `0 ⨯ X`, Simon 6.2.30, in the dimension reduction argument).  By
+`R.Represents X`, `X(γ) = ∫_M θ ⟨γ, ξ⟩ dHⁿ`.  (a) If `γ = 0` on `M`, the integrand vanishes at
+every point of `M`.  (b) `Hⁿ`-a.e. on `M`, `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal, so
+`|⟨α, ξ(x)⟩| = |α(τ)| ≤ ‖α‖`.  If `μ_R(ℝᴾ) = ∫_M θ dHⁿ < ∞`, then `θ` is `Hⁿ⌞M`-integrable
+with integral `μ_R(ℝᴾ)`, and `|X(γ)| ≤ ∫_M θ b dHⁿ = μ_R(ℝᴾ) b`. -/
+theorem Submission.dimred_cs_sos_cfs_cc_imrep_vanish_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n) (R : IMRep U n), R.Represents X → (∀ γ : TestFormOn U n, (∀ x ∈ R.carrier, (γ : DifferentialForm (Euclid P) n) x = 0) → X γ = 0) ∧ (R.measure univ ≠ ∞ → ∀ (γ : TestFormOn U n) (b : ℝ), (∀ x, ‖(γ : DifferentialForm (Euclid P) n) x‖ ≤ b) → |X γ| ≤ (R.measure univ).toReal * b) := by
+  intro P n U X R hR
+  refine ⟨fun γ hγ => ?_, fun hfin γ b hb => ?_⟩
+  · -- Step 1: the integrand `θ(x) ⟨γ(x), ξ(x)⟩` vanishes at every point of `M`
+    rw [hR γ, IMRep.action]
+    refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
+    rw [hγ x hx, map_zero, mul_zero]
+  · -- Step 2: `Hⁿ`-a.e. on `M`, `|⟨α, ξ(x)⟩| ≤ ‖α‖`, since `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ`, `τ` orthonormal
+    have hξ : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+        ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ ‖α‖ := by
+      filter_upwards [R.orients] with x hx α
+      obtain ⟨Q, -, τ, hτ, -, hsign⟩ := hx
+      have hα : |α τ| ≤ ‖α‖ := by
+        simpa [hτ.1] using α.le_opNorm τ
+      rcases hsign with h | h
+      · rw [h α]
+        exact hα
+      · rw [h α, abs_neg]
+        exact hα
+    -- Step 3: `μ_R(ℝᴾ) = ∫⁻_M θ dHⁿ`
+    have hmass : R.measure univ = ∫⁻ x in R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] := by
+      rw [IMRep.measure, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+    -- Step 4: `θ` is `Hⁿ⌞M`-integrable with integral `μ_R(ℝᴾ)`
+    have hθm : AEMeasurable (fun x => (R.mult x : ℝ≥0∞)) (μHE[n].restrict R.carrier) :=
+      (measurable_from_nat.comp R.measurable_mult).aemeasurable
+    have hθi : Integrable (fun x => (R.mult x : ℝ)) (μHE[n].restrict R.carrier) := by
+      simpa only [ENNReal.toReal_natCast] using
+        integrable_toReal_of_lintegral_ne_top hθm (by rwa [← hmass])
+    have hθ : ∫ x in R.carrier, (R.mult x : ℝ) ∂μHE[n] = (R.measure univ).toReal := by
+      rw [hmass, ← integral_toReal hθm (Eventually.of_forall fun x => ENNReal.natCast_lt_top _)]
+      simp only [ENNReal.toReal_natCast]
+    -- Step 5: `|X(γ)| ≤ ∫_M θ b dHⁿ = μ_R(ℝᴾ) b`
+    rw [hR γ, IMRep.action, ← Real.norm_eq_abs, ← hθ, ← integral_mul_const]
+    refine norm_integral_le_of_norm_le (hθi.mul_const b) ?_
+    filter_upwards [hξ] with x hx
+    rw [norm_mul, Real.norm_eq_abs, Nat.abs_cast]
+    exact mul_le_mul_of_nonneg_left ((hx _).trans (hb x)) (Nat.cast_nonneg _)
+/-- **The cut-off radial operator `ω ↦ ζ·Kω`** (for the cone `0 ⨯ T = h#([[(0, 1)]] × T)`,
+`h(t, x) = tx`, Simon 6.2.30).  For a `(q+2)`-form `β` put `(Kβ)(x) = ∫₀¹ t^{q+1} ι_x β(tx) dt`,
+`ι_x α = α.curryLeft x`, and assume that `Kβ` is `C^∞` whenever `β` is.  Let `ζ` be the bump
+function with `ζ = 1` on `B̄_ρ(0)`, `ζ = 0` off `B_{ρ+1}(0)` and `0 ≤ ζ ≤ 1`.  The integrands are
+continuous, so `K` is linear on test forms and `Φ ω = ζ·Kω` is a linear map
+`𝒟^{q+2}(ℝᴾ) → 𝒟^{q+1}(ℝᴾ)` with `Φ ω = Kω` on `B_ρ(0)`.  Since `‖ι_x α‖ ≤ ‖α‖ ‖x‖`,
+`‖ω‖ ≤ b` gives `‖Kω(x)‖ ≤ b ‖x‖`, hence `‖(Φ ω)(x)‖ ≤ (ρ + 1) b`. -/
+theorem Submission.dimred_cs_sos_cfs_cc_cutoff_cone_operator : ∀ (P q : ℕ) (ρ : ℝ), 0 < ρ → (∀ β : DifferentialForm (Euclid P) (q + 1 + 1), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ (q + 1) • (β (t • x)).curryLeft x)) → ∃ Φ : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1) →ₗ[ℝ] TestFormOn (univ : Set (Euclid P)) (q + 1), (∀ (ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1)) (x : Euclid P), ‖x‖ < ρ → (Φ ω : DifferentialForm (Euclid P) (q + 1)) x = ∫ t in (0 : ℝ)..1, t ^ (q + 1) • ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x) ∧ ∀ (ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1)) (b : ℝ), (∀ y, ‖(ω : DifferentialForm (Euclid P) (q + 1 + 1)) y‖ ≤ b) → ∀ x, ‖(Φ ω : DifferentialForm (Euclid P) (q + 1)) x‖ ≤ (ρ + 1) * b := by
+  intro P q ρ hρ hK
+  -- Step 1: the cutoff `ζ`, with `ζ = 1` on `closedBall 0 ρ` and `ζ = 0` off `ball 0 (ρ + 1)`
+  let ζ : ContDiffBump (0 : Euclid P) := ⟨ρ, ρ + 1, hρ, by linarith⟩
+  let K : DifferentialForm (Euclid P) (q + 1 + 1) → DifferentialForm (Euclid P) (q + 1) :=
+    fun β x => ∫ t in (0 : ℝ)..1, t ^ (q + 1) • (β (t • x)).curryLeft x
+  -- Step 2: for continuous `β` the integrands are continuous, hence interval integrable
+  have hint : ∀ β : DifferentialForm (Euclid P) (q + 1 + 1), Continuous β → ∀ x : Euclid P,
+      IntervalIntegrable (fun t : ℝ => t ^ (q + 1) • (β (t • x)).curryLeft x) volume 0 1 := by
+    intro β hβ x
+    refine Continuous.intervalIntegrable ?_ 0 1
+    have hc : Continuous fun t : ℝ => (β (t • x)).curryLeft :=
+      (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ)).continuous.comp
+        (hβ.comp (continuous_id.smul continuous_const))
+    exact (continuous_pow (q + 1)).smul (hc.clm_apply continuous_const)
+  have hsm : ∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1),
+      ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) (q + 1 + 1)) := fun ω => ω.2.1.1
+  -- Step 3: `K` is additive and homogeneous on test forms
+  have hKadd : ∀ ω ω' : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1),
+      K ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) + ω') = K ω + K ω' := by
+    intro ω ω'
+    funext x
+    simp only [K, Pi.add_apply, ContinuousAlternatingMap.curryLeft_add, add_apply, smul_add]
+    exact intervalIntegral.integral_add (hint _ (hsm ω).continuous x) (hint _ (hsm ω').continuous x)
+  have hKsmul : ∀ (c : ℝ) (ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1)),
+      K (c • (ω : DifferentialForm (Euclid P) (q + 1 + 1))) = c • K ω := by
+    intro c ω
+    funext x
+    simp only [K, Pi.smul_apply, ContinuousAlternatingMap.curryLeft_smul, smul_apply]
+    rw [← intervalIntegral.integral_smul]
+    congr 1
+    funext t
+    rw [smul_comm]
+  -- Step 4: `ζ • Kω` is a test form, `Kω` being smooth by the hypothesis on `K`
+  have hη : ∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1),
+      (fun x => ζ x • K ω x) ∈ TestFormOn (univ : Set (Euclid P)) (q + 1) := by
+    intro ω
+    refine ⟨⟨?_, ?_⟩, subset_univ _⟩
+    · exact (ζ.contDiff (n := ⊤)).smul (hK _ (hsm ω))
+    · exact ζ.hasCompactSupport.smul_right
+  -- Step 5: `Φ ω := ζ • Kω` is linear in `ω`
+  let Φ : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1) →ₗ[ℝ]
+      TestFormOn (univ : Set (Euclid P)) (q + 1) :=
+    { toFun := fun ω => ⟨fun x => ζ x • K ω x, hη ω⟩
+      map_add' := by
+        intro ω ω'
+        apply Subtype.ext
+        funext x
+        show ζ x • K ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) + ω') x =
+          ζ x • K ω x + ζ x • K ω' x
+        rw [hKadd, Pi.add_apply, smul_add]
+      map_smul' := by
+        intro c ω
+        apply Subtype.ext
+        funext x
+        show ζ x • K (c • (ω : DifferentialForm (Euclid P) (q + 1 + 1))) x = c • (ζ x • K ω x)
+        rw [hKsmul, Pi.smul_apply, smul_comm] }
+  refine ⟨Φ, ?_, ?_⟩
+  · -- Step 6: `ζ x = 1` for `‖x‖ < ρ`, so `(Φ ω)(x) = Kω(x)`
+    intro ω x hx
+    show ζ x • K ω x = _
+    rw [ζ.one_of_mem_closedBall (mem_closedBall_zero_iff.2 hx.le), one_smul]
+  · -- Step 7: `‖(Φ ω)(x)‖ ≤ (ρ + 1) b`
+    intro ω b hb x
+    have hb0 : 0 ≤ b := (norm_nonneg _).trans (hb 0)
+    show ‖ζ x • K ω x‖ ≤ (ρ + 1) * b
+    rcases lt_or_ge ‖x‖ (ρ + 1) with hx | hx
+    · -- `‖t ^ (q + 1) • ι_x ω(t x)‖ ≤ ‖ω(t x)‖ ‖x‖ ≤ b ‖x‖` on `(0, 1]`, so `‖Kω(x)‖ ≤ b ‖x‖`
+      have hKx : ‖K ω x‖ ≤ b * ‖x‖ := by
+        have h := intervalIntegral.norm_integral_le_of_norm_le_const (a := 0) (b := 1)
+          (C := b * ‖x‖)
+          (f := fun t => t ^ (q + 1) •
+            ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x)
+          (by
+            intro t ht
+            rw [uIoc_of_le zero_le_one] at ht
+            rw [norm_smul, norm_pow, Real.norm_eq_abs, abs_of_pos ht.1]
+            calc t ^ (q + 1) * ‖((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x‖
+                ≤ 1 * (b * ‖x‖) := by
+                  refine mul_le_mul (pow_le_one₀ ht.1.le ht.2) ?_ (norm_nonneg _) zero_le_one
+                  calc ‖((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x‖
+                      ≤ ‖((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft‖ *
+                          ‖x‖ := ContinuousLinearMap.le_opNorm _ _
+                    _ = ‖(ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)‖ * ‖x‖ := by
+                        rw [ContinuousAlternatingMap.norm_curryLeft]
+                    _ ≤ b * ‖x‖ := mul_le_mul_of_nonneg_right (hb _) (norm_nonneg _)
+              _ = b * ‖x‖ := one_mul _)
+        simpa using h
+      -- `0 ≤ ζ ≤ 1` and `‖x‖ < ρ + 1`
+      rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg ζ.nonneg]
+      calc ζ x * ‖K ω x‖ ≤ 1 * (b * ‖x‖) := mul_le_mul ζ.le_one hKx (norm_nonneg _) zero_le_one
+        _ ≤ (ρ + 1) * b := by nlinarith [norm_nonneg x]
+    · -- `ζ x = 0` for `‖x‖ ≥ ρ + 1`
+      rw [ζ.zero_of_le_dist (by rw [dist_zero_right]; exact hx), zero_smul, norm_zero]
+      exact mul_nonneg (by linarith) hb0
+/-- **Localized radial homotopy formula with a compactly supported primitive** (the cone
+construction behind Simon 6.2.25–2.32).  Write `K₀β(x) = ∫₀¹ t^q ι_x β(tx) dt` and
+`K₁α(x) = ∫₀¹ t^(q+1) ι_x α(tx) dt`, and assume the homotopy formula (H): `K₀β` is `C^∞` and
+`d(K₀β) + K₁(dβ) = β` for every `C^∞` `(q+1)`-form `β`.  For a test form `γ`, (H) gives
+`K₁(dγ) = γ − d(K₀γ)`.  Let `ζ` be a bump equal to `1` near every point of `B(0, |ρ| + 1)`.  Then
+`ψ = ζ K₀γ` is a test form, and `ψ = K₀γ` near each `x` with `‖x‖ < ρ`, so
+`dψ(x) = d(K₀γ)(x)` there. -/
+theorem Submission.dimred_cs_sos_cfs_cc_cutoff_homotopy : ∀ (P q : ℕ) (ρ : ℝ), (∀ β : DifferentialForm (Euclid P) (q + 1), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • x)).curryLeft x) ∧ ∀ x : Euclid P, exteriorDerivative (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • y)).curryLeft y) x + (∫ t in (0 : ℝ)..1, t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x) = β x) → ∀ γ : TestFormOn (univ : Set (Euclid P)) (q + 1), ∃ ψ : TestFormOn (univ : Set (Euclid P)) q, ∀ x : Euclid P, ‖x‖ < ρ → (∫ t in (0 : ℝ)..1, t ^ (q + 1) • (exteriorDerivative (γ : DifferentialForm (Euclid P) (q + 1)) (t • x)).curryLeft x) = (γ : DifferentialForm (Euclid P) (q + 1)) x - exteriorDerivative (ψ : DifferentialForm (Euclid P) q) x := by
+  intro P q ρ hH γ
+  -- Step 1: the homotopy formula (H) for the smooth form `γ`
+  obtain ⟨hKγ, hγ⟩ := hH (γ : DifferentialForm (Euclid P) (q + 1)) γ.property.1.1
+  -- Step 2: a bump `ζ` equal to `1` near every point of `B(0, |ρ| + 1)`
+  let ζ : ContDiffBump (0 : Euclid P) := ⟨|ρ| + 1, |ρ| + 2, by positivity, by linarith⟩
+  -- Step 3: the test form `ψ = ζ K₀γ`
+  refine ⟨⟨fun y => ζ y • ∫ t in (0 : ℝ)..1,
+      t ^ q • ((γ : DifferentialForm (Euclid P) (q + 1)) (t • y)).curryLeft y,
+    ⟨ζ.contDiff.smul hKγ, ζ.hasCompactSupport.smul_right⟩, subset_univ _⟩, fun x hx => ?_⟩
+  -- Step 4: `ψ = K₀γ` near `x`, so `dψ(x) = d(K₀γ)(x)`
+  have hxζ : x ∈ ball (0 : Euclid P) ζ.rIn := by
+    rw [mem_ball_zero_iff]
+    exact hx.trans_le ((le_abs_self ρ).trans (le_add_of_nonneg_right zero_le_one))
+  have hloc : (fun y => ζ y • ∫ t in (0 : ℝ)..1,
+      t ^ q • ((γ : DifferentialForm (Euclid P) (q + 1)) (t • y)).curryLeft y) =ᶠ[𝓝 x]
+      fun y => ∫ t in (0 : ℝ)..1,
+        t ^ q • ((γ : DifferentialForm (Euclid P) (q + 1)) (t • y)).curryLeft y := by
+    filter_upwards [ζ.eventuallyEq_one_of_mem_ball hxζ] with y hy
+    rw [hy, Pi.one_apply, one_smul]
+  -- Step 5: `K₁(dγ)(x) = γ(x) - d(K₀γ)(x) = γ(x) - dψ(x)`
+  exact (eq_sub_of_add_eq' (hγ x)).trans
+    (congrArg (fun v => (γ : DifferentialForm (Euclid P) (q + 1)) x - v) hloc.extDeriv_eq.symm)
+/-- **A linear functional on `𝒟ⁿ(U)` with zeroth-order bounds is a current** (Simon 6.2.1; used
+for the restricted currents `ω ↦ ∫_E ⟨ω, ξ⟩ dμ` in the slicing argument behind 7.2.4).  Suppose
+every compact `K ⊆ U` has a `c` with `|L(ω)| ≤ c M` whenever `spt ω ⊆ K` and `‖ω(x)‖ ≤ M` for all
+`x`.  Take `S = L`.  If `ωⱼ → 0` in `𝒟ⁿ(U)` with supports in the compact `K ⊆ U`, the order-`0`
+part of the uniform convergence on `K` gives `‖ωⱼ(x)‖ ≤ η` for large `j`.  Off `K` this holds
+because `ωⱼ(x) = 0`.  With `η = δ / (|c| + 1)`, `|L(ωⱼ)| ≤ c η ≤ |c| η < δ`. -/
+theorem Submission.cmcs_rc_order_zero_current : ∀ (P n : ℕ) (U : Set (Euclid P)) (L : TestFormOn U n →ₗ[ℝ] ℝ), (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ c : ℝ, ∀ (ω : TestFormOn U n) (M : ℝ), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ M) → |L ω| ≤ c * M) → ∃ S : GeometricCurrentOn U n, ∀ ω : TestFormOn U n, S ω = L ω := by
+  intro P n U L hL
+  -- Step 1: `S = ⟨L, h⟩`, so `S ω = L ω` and only `L(ωⱼ) → 0` for `ωⱼ → 0` remains
+  refine ⟨⟨L, fun ωs hconv => ?_⟩, fun ω => rfl⟩
+  -- Step 2: the common compact support `K ⊆ U` and the constant `c` for `K`
+  obtain ⟨K, hK, hKU, hsupp, -, hunif⟩ := hconv
+  obtain ⟨c, hc⟩ := hL K hK hKU
+  -- Step 3: order-`0` uniform convergence on `K`, to the zero form
+  have h0 := Metric.tendstoUniformlyOn_iff.mp (hunif 0)
+  have hz : ∀ x, iteratedFDeriv ℝ 0
+      ((0 : TestFormOn U n) : DifferentialForm (Euclid P) n) x = 0 := by
+    intro x
+    rw [← norm_eq_zero, norm_iteratedFDeriv_zero]
+    simp
+  rw [Metric.tendsto_atTop]
+  intro δ hδ
+  have hη : 0 < δ / (|c| + 1) := div_pos hδ (by positivity)
+  obtain ⟨N, hN⟩ := eventually_atTop.mp (h0 _ hη)
+  refine ⟨N, fun j hj => ?_⟩
+  -- Steps 3–4: `‖ωⱼ(x)‖ ≤ η` on `K` by uniform convergence, and off `K` since `ωⱼ(x) = 0`
+  have hsmall : ∀ x, ‖(ωs j : DifferentialForm (Euclid P) n) x‖ ≤ δ / (|c| + 1) := by
+    intro x
+    by_cases hx : x ∈ K
+    · have h := hN j hj x hx
+      rw [hz, dist_zero_left, norm_iteratedFDeriv_zero] at h
+      exact h.le
+    · rw [image_eq_zero_of_notMem_tsupport (fun h => hx (hsupp j h)), norm_zero]
+      exact hη.le
+  -- Step 5: `|L(ωⱼ)| ≤ c η ≤ |c| η < δ`
+  rw [Real.dist_eq, sub_zero]
+  calc |L (ωs j)| ≤ c * (δ / (|c| + 1)) := hc (ωs j) _ (hsupp j) hsmall
+    _ ≤ |c| * (δ / (|c| + 1)) := mul_le_mul_of_nonneg_right (le_abs_self c) hη.le
+    _ < δ := by
+      rw [mul_div_assoc', div_lt_iff₀ (by positivity)]
+      nlinarith [abs_nonneg c]
+/-- **Support of a current vanishing away from a compact set** (Simon 6.2.11).  If `K ⊆ U` is
+compact and `F ∈ 𝒟ₙ(U)` kills every `ω ∈ 𝒟ⁿ(U)` with `spt ω ∩ K = ∅`, then `spt F ⊆ K` and
+`spt F` is compact.  For `y ∈ U \ K` choose `B_s(y) ⊆ U \ K`: the ball `W = B_{s/2}(y)` has compact
+closure `⊆ B̄_{s/2}(y) ⊆ U \ K` and every form supported in `W` misses `K`, so `y ∈ Z(F)`.  Hence
+`spt F = K \ Z(F)`, compact because the zero region `Z(F)` is open. -/
+theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set (Euclid P)) (F : GeometricCurrentOn U n), IsOpen U → IsCompact K → K ⊆ U → (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) K → F ω = 0) → F.support ⊆ K ∧ IsCompact F.support := by
+  intro P n U K F hU hK hKU hvan
+  -- Steps 1–2: no point of `U \ K` lies in `spt F = U \ Z(F)`, so `spt F ⊆ K`
+  have hsub : F.support ⊆ K := by
+    intro y hy
+    by_contra hyK
+    obtain ⟨s, hs, hball⟩ := Metric.isOpen_iff.mp (hU.sdiff hK.isClosed) y ⟨hy.1, hyK⟩
+    apply hy.2
+    -- `W = B_{s/2}(y)` is one of the open sets whose union is `Z(F)`
+    refine ⟨ball y (s / 2), ⟨isOpen_ball, ?_, ?_, ?_⟩, mem_ball_self (by positivity)⟩
+    · -- `closure W` is compact
+      exact (isCompact_closedBall y (s / 2)).of_isClosed_subset isClosed_closure
+        closure_ball_subset_closedBall
+    · -- `closure W ⊆ B̄_{s/2}(y) ⊆ B_s(y) ⊆ U \ K ⊆ U`
+      exact closure_ball_subset_closedBall.trans
+        ((closedBall_subset_ball (by linarith)).trans (hball.trans sdiff_subset))
+    · -- a form supported in `W ⊆ U \ K` misses `K`, so `F` kills it
+      intro ω hω
+      exact hvan ω (Set.disjoint_of_subset_left
+        (hω.trans ((ball_subset_ball (by linarith)).trans hball)) disjoint_sdiff_left)
+  -- Step 3: `spt F = K \ Z(F)` is compact, `Z(F)` being open
+  refine ⟨hsub, ?_⟩
+  have heq : F.support = K \ F.zeroRegion :=
+    Set.ext fun x => ⟨fun hx => ⟨hsub hx, hx.2⟩, fun hx => ⟨hKU hx.1, hx.2⟩⟩
+  rw [heq]
+  exact hK.diff F.isOpen_zeroRegion
+/-- Smoothness of parametric integrals over `[0, 1]`, used for the slice form of `[[0, 1]] × T`
+(Simon 6.2.17–2.22).  If `h : ℝ × ℝᴺ → V` is `C^∞`, then `x ↦ ∫₀¹ h(t, x) dt` is `C^∞` and its
+derivative at `x` is `∫₀¹ D[x' ↦ h(t, x')](x) dt`.  The derivative formula is differentiation under
+the integral sign, with the partial derivative bounded on `[0, 1] × closedBall x 1`; `C^n` follows
+by induction on `n` over all value spaces, the derivative being a parametric integral of the
+`C^∞` map `(t, x) ↦ D[x' ↦ h(t, x')](x)` with values in `L(ℝᴺ, V)`. -/
+theorem Submission.cmcdt_lpo_slice_param_integral : ∀ (N : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V] (h : ℝ × Euclid N → V), ContDiff ℝ (⊤ : ℕ∞) h → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x)) ∧ ∀ x : Euclid N, HasFDerivAt (fun x' : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x')) (∫ t in (0 : ℝ)..1, fderiv ℝ (fun x' : Euclid N => h (t, x')) x) x := by
+  intro N
+  -- Steps 1–2: `x' ↦ h (t, x')` has derivative `(fderiv ℝ h (t, x)).comp inr` at `x`, so the
+  -- partial derivative `h₁ p = fderiv ℝ (fun x' => h (p.1, x')) p.2` is `C^∞` in `p`.
+  have hsmooth : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] (h : ℝ × Euclid N → V),
+      ContDiff ℝ (⊤ : ℕ∞) h →
+        ContDiff ℝ (⊤ : ℕ∞) (fun p : ℝ × Euclid N => fderiv ℝ (fun x' : Euclid N => h (p.1, x')) p.2) := by
+    intro V _ _ h hh
+    have hd : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ h) := (contDiff_infty_iff_fderiv.1 hh).2
+    have hpart : (fun p : ℝ × Euclid N => fderiv ℝ (fun x' : Euclid N => h (p.1, x')) p.2) =
+        fun p => (fderiv ℝ h p).comp (ContinuousLinearMap.inr ℝ ℝ (Euclid N)) := by
+      funext p
+      exact (((contDiff_infty_iff_fderiv.1 hh).1 p).hasFDerivAt.comp p.2
+        (hasFDerivAt_prodMk_right p.1 p.2)).fderiv
+    rw [hpart]
+    exact hd.clm_comp contDiff_const
+  -- Step 3: differentiation under the integral sign, with a uniform bound on the partial
+  -- derivative over the compact set `[0, 1] × closedBall x₀ 1`.
+  have hderiv : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] (h : ℝ × Euclid N → V),
+      ContDiff ℝ (⊤ : ℕ∞) h → ∀ x₀ : Euclid N,
+        HasFDerivAt (fun x' : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x'))
+          (∫ t in (0 : ℝ)..1, fderiv ℝ (fun x' : Euclid N => h (t, x')) x₀) x₀ := by
+    intro V _ _ h hh x₀
+    have hdiff : Differentiable ℝ h := (contDiff_infty_iff_fderiv.1 hh).1
+    have hc : Continuous h := hh.continuous
+    have h₁c := (hsmooth V h hh).continuous
+    obtain ⟨B, hB⟩ := (isCompact_Icc.prod (isCompact_closedBall x₀ 1)).exists_bound_of_continuousOn
+      h₁c.continuousOn
+    refine hasFDerivAt_integral_of_dominated_of_fderiv_le'' (μ := volume)
+      (F := fun x t => h (t, x)) (F' := fun x t => fderiv ℝ (fun x' : Euclid N => h (t, x')) x)
+      (bound := fun _ => B) (ball_mem_nhds x₀ one_pos) ?_ ?_ ?_ ?_ intervalIntegrable_const ?_
+    · exact Eventually.of_forall fun x =>
+        (hc.comp (continuous_id.prodMk continuous_const)).aestronglyMeasurable
+    · exact (hc.comp (continuous_id.prodMk continuous_const)).intervalIntegrable 0 1
+    · exact (h₁c.comp (continuous_id.prodMk continuous_const)).aestronglyMeasurable
+    · refine (ae_restrict_mem measurableSet_uIoc).mono fun t ht x hx => ?_
+      rw [uIoc_of_le zero_le_one] at ht
+      exact hB (t, x) (Set.mk_mem_prod (Ioc_subset_Icc_self ht) (ball_subset_closedBall hx))
+    · exact Eventually.of_forall fun t x _ =>
+        ((hdiff (t, x)).hasFDerivAt.comp x (hasFDerivAt_prodMk_right t x)).differentiableAt.hasFDerivAt
+  -- Step 4: `C^n` for every `n`, by induction over all value spaces at once.
+  have hind : ∀ n : ℕ, ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] (h : ℝ × Euclid N → V),
+      ContDiff ℝ (⊤ : ℕ∞) h → ContDiff ℝ n (fun x : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x)) := by
+    intro n
+    induction n with
+    | zero =>
+      intro V _ _ h hh
+      rw [Nat.cast_zero, contDiff_zero]
+      exact continuous_iff_continuousAt.2 fun x => (hderiv V h hh x).continuousAt
+    | succ n ih =>
+      intro V _ _ h hh
+      rw [Nat.cast_add_one, contDiff_succ_iff_hasFDerivAt]
+      exact ⟨fun x => ∫ t in (0 : ℝ)..1, fderiv ℝ (fun x' : Euclid N => h (t, x')) x,
+        ih (Euclid N →L[ℝ] V) _ (hsmooth V h hh), hderiv V h hh⟩
+  -- Step 5.
+  intro V _ _ _ h hh
+  exact ⟨contDiff_infty.2 fun n => hind n V h hh, hderiv V h hh⟩
+
+/-- The exterior derivative commutes with parametric integrals over `[0, 1]`, used for the radial
+homotopy formula `β = d(Kβ) + K(dβ)` (Simon 6.2.25–2.26).  If `h : ℝ × ℝᴺ → Λᵏ(ℝᴺ)` is `C^∞`, then
+`d(y ↦ ∫₀¹ h(t, y) dt)(x) = ∫₀¹ d(y ↦ h(t, y))(x) dt`.  By `param_integral` the derivative of
+`y ↦ ∫₀¹ h(t, y) dt` at `x` is `∫₀¹ D[y ↦ h(t, y)](x) dt`; its integrand `Dh(t, x) ∘L inr` is
+continuous in `t`, and `d = alternatizeUncurryFin ∘ D` with `alternatizeUncurryFin` continuous
+linear, so it commutes with the interval integral. -/
+theorem Submission.dimred_cs_sos_cfs_rh_extDeriv_param_integral : ∀ (N k : ℕ) (h : ℝ × Euclid N → Covector (Euclid N) k), ContDiff ℝ (⊤ : ℕ∞) h → ∀ x : Euclid N, exteriorDerivative (fun y : Euclid N => ∫ t in (0 : ℝ)..1, h (t, y)) x = ∫ t in (0 : ℝ)..1, exteriorDerivative (fun y : Euclid N => h (t, y)) x := by
+  intro N k h hh x
+  -- Step 1: `DF(x) = ∫₀¹ D[y ↦ h (t, y)](x) dt` for `F y = ∫₀¹ h (t, y) dt`.
+  have hpi := (Submission.cmcdt_lpo_slice_param_integral N (Covector (Euclid N) k) h hh).2 x
+  have hdiff : Differentiable ℝ h := hh.differentiable (by simp)
+  -- Step 2: `D[y ↦ h (t, y)](x) = Dh (t, x) ∘L inr`, by the chain rule.
+  have hpart : ∀ t : ℝ, fderiv ℝ (fun y : Euclid N => h (t, y)) x =
+      (fderiv ℝ h (t, x)).comp (ContinuousLinearMap.inr ℝ ℝ (Euclid N)) := fun t =>
+    ((hdiff (t, x)).hasFDerivAt.comp x (hasFDerivAt_prodMk_right t x)).fderiv
+  -- Step 3: the partial derivative is continuous in `t`, hence interval integrable on `[0, 1]`.
+  have hcont : Continuous fun t : ℝ => fderiv ℝ (fun y : Euclid N => h (t, y)) x := by
+    simp_rw [hpart]
+    exact ((hh.continuous_fderiv (by simp)).comp (continuous_id.prodMk continuous_const)).clm_comp
+      continuous_const
+  have hint := Continuous.intervalIntegrable (μ := volume)
+    (E := Euclid N →L[ℝ] Covector (Euclid N) k) hcont 0 1
+  -- Step 4: the continuous linear map `alternatizeUncurryFin` commutes with the integral.
+  have hcomm := ContinuousLinearMap.intervalIntegral_comp_comm (𝕜 := ℝ)
+    (E := Euclid N →L[ℝ] Covector (Euclid N) k) (F := Covector (Euclid N) (k + 1))
+    (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Euclid N) ℝ (n := k)) hint
+  -- Step 5: `dF(x) = alt (DF(x)) = alt (∫₀¹ Dhₜ(x) dt) = ∫₀¹ alt (Dhₜ(x)) dt = ∫₀¹ dhₜ(x) dt`.
+  show ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ _ x) =
+    ∫ t in (0 : ℝ)..1, ContinuousAlternatingMap.alternatizeUncurryFin
+      (fderiv ℝ (fun y : Euclid N => h (t, y)) x)
+  rw [hpi.fderiv]
+  simpa using hcomm.symm
+/-- **Cartan's formula for the Euler field** `X(z) = z` (Simon Ch. 6, 2.25–2.26 and 2.33, as used
+in the proof of 7.3.1).  For an `(m+1)`-form `β` differentiable at `y`,
+`d(ι_X β)(y) + ι_y dβ(y) = (m + 1) β(y) + Dβ(y)[y]`, i.e. `L_X β = d ι_X β + ι_X dβ`.  With
+`B = Dβ(y)`, the product rule gives `D(ι_X β)(y) u = (B u).curryLeft y + β(y).curryLeft u`; the
+second term alternates to `(m + 1) β(y)` (`alternatizeUncurryFin_curryLeft`), and the first one
+cancels against every term of `dβ(y)(y, v₀, …, vₘ)` except the `k = 0` term `B y (v₀, …, vₘ)`. -/
+theorem Submission.dtc_cone_euler_cartan : ∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)) (y : Euclid P), DifferentiableAt ℝ β y → exteriorDerivative (fun z => ContinuousAlternatingMap.curryLeft (β z) z) y + ContinuousAlternatingMap.curryLeft (exteriorDerivative β y) y = ((m : ℝ) + 1) • β y + fderiv ℝ β y y := by
+  intro P m β y hβ
+  -- product rule for `z ↦ Φ (β z) z`, where `Φ f x = f.curryLeft x` is continuous bilinear
+  have hψ := (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+    (n := m)).toContinuousLinearMap.hasFDerivAt_of_bilinear hβ.hasFDerivAt (hasFDerivAt_id y)
+  have h1 : exteriorDerivative (fun z => ContinuousAlternatingMap.curryLeft (β z) z) y =
+      ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ (fun z =>
+        (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+          (n := m)).toContinuousLinearMap (β z) (id z)) y) := rfl
+  have h2 : (ContinuousLinearMap.precompR (Euclid P)
+      (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+        (n := m)).toContinuousLinearMap) (β y) (ContinuousLinearMap.id ℝ (Euclid P)) =
+      ContinuousAlternatingMap.curryLeft (β y) := by
+    ext u v
+    rfl
+  -- `d(ι_X β)(y) = alt(u ↦ (B u).curryLeft y) + (m + 1) β(y)`
+  rw [h1, hψ.fderiv, ContinuousAlternatingMap.alternatizeUncurryFin_add, h2,
+    ContinuousAlternatingMap.alternatizeUncurryFin_curryLeft, add_assoc]
+  congr 1
+  · rw [← Nat.cast_smul_eq_nsmul ℝ, Nat.cast_add, Nat.cast_one]
+  · -- removing entry `i + 1` of `(y, v)` leaves `(y, v without vᵢ)`
+    have hrm : ∀ (i : Fin (m + 1)) (v : Fin (m + 1) → Euclid P),
+        Fin.removeNth i.succ (Matrix.vecCons y v) = Matrix.vecCons y (Fin.removeNth i v) := by
+      intro i v
+      funext j
+      cases j using Fin.cases with
+      | zero => simp [Fin.removeNth_apply]
+      | succ j => simp [Fin.removeNth_apply]
+    ext v
+    simp only [ContinuousAlternatingMap.add_apply,
+      ContinuousAlternatingMap.alternatizeUncurryFin_apply, exteriorDerivative, extDeriv,
+      ContinuousLinearMap.precompL_apply, ContinuousAlternatingMap.curryLeft_apply_apply,
+      LinearIsometry.coe_toContinuousLinearMap, ContinuousAlternatingMap.curryLeftLI_apply, id_eq]
+    -- split off the `k = 0` term `B y v` of `dβ(y)(y, v)`; the other terms cancel the first sum
+    rw [Fin.sum_univ_succ (n := m + 1)]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_succ, Fin.removeNth_zero, Fin.tail_vecCons,
+      hrm, Fin.val_zero, Fin.val_succ, pow_zero, one_smul, pow_succ, mul_neg_one, neg_smul,
+      Finset.sum_neg_distrib]
+    abel
+
+/-- **Radial Cartan identity**, the integrand of the radial homotopy formula for forms (the
+homotopy `h(t, x) = t x` of Simon Ch. 6, 2.26).  For a `(q+1)`-form `β` differentiable at `t • x`,
+`d(y ↦ t^q ι_y β(t y))(x) + t^(q+1) ι_x dβ(t x) = (q + 1) t^q β(t x) + t^(q+1) Dβ(t x)[x]`.  This
+is Cartan's formula `Submission.dtc_cone_euler_cartan` for `β_t = β (t • ·)` at `x`, rewritten
+with `Dβ_t(x) = t • Dβ(t x)` (`fderiv_comp_smul`) and multiplied by the constant `t^q`. -/
+theorem Submission.dimred_cs_sos_cfs_rh_radial_cartan : ∀ (P q : ℕ) (β : DifferentialForm (Euclid P) (q + 1)) (t : ℝ) (x : Euclid P), DifferentiableAt ℝ β (t • x) → exteriorDerivative (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x + t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x = (((q : ℝ) + 1) * t ^ q) • β (t • x) + t ^ (q + 1) • fderiv ℝ β (t • x) x := by
+  intro P q β t x hβ
+  -- Cartan's formula for `β_t = β (t • ·)`, which is differentiable at `x`
+  have hβt : DifferentiableAt ℝ (fun y : Euclid P => β (t • y)) x :=
+    hβ.comp x (differentiableAt_id.const_smul t)
+  have hC := Submission.dtc_cone_euler_cartan P q (fun y => β (t • y)) x hβt
+  -- dilation chain rule `Dβ_t(x) = t • Dβ(t x)`, hence `dβ_t(x) = t • dβ(t x)`
+  have hD : fderiv ℝ (fun y : Euclid P => β (t • y)) x = t • fderiv ℝ β (t • x) :=
+    fderiv_comp_smul t
+  have hd : exteriorDerivative (fun y : Euclid P => β (t • y)) x =
+      t • exteriorDerivative β (t • x) := by
+    show ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ (fun y : Euclid P => β (t • y)) x) =
+      t • ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ β (t • x))
+    rw [hD, ContinuousAlternatingMap.alternatizeUncurryFin_smul]
+  -- `d` commutes with the constant factor `t ^ q`
+  have hs : exteriorDerivative (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x =
+      t ^ q • exteriorDerivative (fun y : Euclid P => (β (t • y)).curryLeft y) x :=
+    extDeriv_fun_smul (t ^ q) (fun y : Euclid P => (β (t • y)).curryLeft y)
+  rw [hd, hD, ContinuousAlternatingMap.curryLeft_smul, smul_apply, smul_apply] at hC
+  rw [hs, eq_sub_of_add_eq hC]
+  module
+
+/-- **Radial homotopy formula** (Poincaré lemma for the radial contraction; Simon Ch. 6,
+2.25–2.26).  For a `C^∞` `(q + 1)`-form `β` on `ℝᴾ`, `Kβ(x) = ∫₀¹ tᵠ ι_x β(t x) dt` is `C^∞` and
+`d(Kβ)(x) + ∫₀¹ t^{q+1} ι_x (dβ)(t x) dt = β(x)`, where `ι_x α = α.curryLeft x`.  The integrand
+`h(t, x) = tᵠ ι_x β(t x)` is jointly `C^∞`, so `Kβ` is `C^∞` and `d(Kβ)(x) = ∫₀¹ d(h(t, ·))(x) dt`.
+By the radial Cartan identity, `d(h(t, ·))(x) = G(t) - F(t)` with `F(t) = t^{q+1} ι_x (dβ)(t x)`
+and `G(t) = (q + 1) tᵠ β(t x) + t^{q+1} Dβ(t x)[x]`, the derivative of `t ↦ t^{q+1} β(t x)`; the
+fundamental theorem of calculus gives `∫₀¹ G = β(x)`. -/
+theorem Submission.dimred_cs_sos_cfs_radial_homotopy : ∀ (P q : ℕ) (β : DifferentialForm (Euclid P) (q + 1)), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • x)).curryLeft x) ∧ ∀ x : Euclid P, exteriorDerivative (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • y)).curryLeft y) x + (∫ t in (0 : ℝ)..1, t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x) = β x := by
+  intro P q β hβ
+  -- Step 1: the integrand `h(t, x) = tᵠ ι_x β(t x)` is jointly `C^∞`
+  have hh : ContDiff ℝ (⊤ : ℕ∞)
+      (fun p : ℝ × Euclid P => p.1 ^ q • (β (p.1 • p.2)).curryLeft p.2) :=
+    (contDiff_fst.pow q).smul
+      (((ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+        (n := q)).contDiff.comp (hβ.comp (contDiff_fst.smul contDiff_snd))).clm_apply
+        contDiff_snd)
+  -- Step 2: conclusion (1), by the parametric-integral lemma
+  refine ⟨(Submission.cmcdt_lpo_slice_param_integral P (Covector (Euclid P) q) _ hh).1,
+    fun x => ?_⟩
+  have hdiff : Differentiable ℝ β := hβ.differentiable (by simp)
+  have hDβ : Continuous (fderiv ℝ β) := hβ.continuous_fderiv (by simp)
+  have hsx : Continuous fun t : ℝ => t • x := continuous_id.smul continuous_const
+  -- Step 3: `d(Kβ)(x) = ∫₀¹ d(h(t, ·))(x) dt`
+  have hA : exteriorDerivative
+      (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ q • (β (t • y)).curryLeft y) x =
+      ∫ t in (0 : ℝ)..1, exteriorDerivative
+        (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x :=
+    Submission.dimred_cs_sos_cfs_rh_extDeriv_param_integral P q _ hh x
+  -- Step 4: the radial Cartan identity `d(h(t, ·))(x) = G(t) - F(t)`; `G` and `F` are continuous
+  let G : ℝ → Covector (Euclid P) (q + 1) := fun t =>
+    (((q : ℝ) + 1) * t ^ q) • β (t • x) + t ^ (q + 1) • fderiv ℝ β (t • x) x
+  let F : ℝ → Covector (Euclid P) (q + 1) := fun t =>
+    t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x
+  have hB : ∀ t : ℝ, exteriorDerivative
+      (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x = G t - F t := fun t =>
+    eq_sub_of_add_eq (Submission.dimred_cs_sos_cfs_rh_radial_cartan P q β t x (hdiff _))
+  have hG : Continuous G :=
+    ((continuous_const.mul (continuous_pow q)).smul (hβ.continuous.comp hsx)).add
+      ((continuous_pow (q + 1)).smul ((hDβ.comp hsx).clm_apply continuous_const))
+  have hdβ : Continuous (exteriorDerivative β) :=
+    (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Euclid P) ℝ).continuous.comp hDβ
+  have hF : Continuous F :=
+    (continuous_pow (q + 1)).smul
+      (((ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+        (n := q + 1)).continuous.comp (hdβ.comp hsx)).clm_apply continuous_const)
+  -- `G(t)` is the derivative of `t ↦ t^{q+1} β(t x)`
+  have hderiv : ∀ t : ℝ, HasDerivAt (fun s : ℝ => s ^ (q + 1) • β (s • x)) (G t) t := by
+    intro t
+    have h1 : HasDerivAt (fun s : ℝ => β (s • x)) (fderiv ℝ β (t • x) x) t := by
+      have h := (hdiff (t • x)).hasFDerivAt.comp_hasDerivAt t ((hasDerivAt_id' t).smul_const x)
+      rw [one_smul] at h
+      exact h
+    convert (hasDerivAt_pow (q + 1) t).fun_smul h1 using 1
+    simp only [G, Nat.add_sub_cancel]
+    push_cast
+    exact add_comm _ _
+  -- Step 5: integrate over `[0, 1]`
+  have hint : (∫ t in (0 : ℝ)..1, exteriorDerivative
+      (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x) =
+      (∫ t in (0 : ℝ)..1, G t) - ∫ t in (0 : ℝ)..1, F t := by
+    rw [intervalIntegral.integral_congr fun t _ => hB t]
+    exact intervalIntegral.integral_sub (hG.intervalIntegrable 0 1) (hF.intervalIntegrable 0 1)
+  have hftc : (∫ t in (0 : ℝ)..1, G t) = β x := by
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hderiv t)
+      (hG.intervalIntegrable 0 1)]
+    simp
+  rw [hA, hint, hftc]
+  exact sub_add_cancel _ _
+
+/-- **The cone `0 ⨯ X` over a compactly supported cycle** (Simon 6.2.30–2.32).  Let
+`X ∈ 𝒟_{q+1}(ℝᴾ)` be represented by `R = (M, θ, ξ)` with `M ⊆ spt X` and `μ_R(ℝᴾ) < ∞`, `∂X = 0`
+and `spt X` compact.  With `Kω(x) = ∫₀¹ t^{q+1} ι_x ω(tx) dt`, take `Φω` equal to `Kω` on a ball
+`B_ρ(0) ⊇ spt X` with `‖Φω‖ ≤ (ρ + 1) sup ‖ω‖`, and put `Y(ω) = X(Φω)`.  The bound
+`|X(γ)| ≤ μ_R(ℝᴾ) sup ‖γ‖` makes `Y` a current.  On `B_ρ(0)`, `K(dγ) = γ − dψ` for a test form
+`ψ`, so `∂Y(γ) = X(γ) − ∂X(ψ) = X(γ)`.  If `spt ω` misses the compact cone
+`C₀ = {s x : s ∈ [0, 1], x ∈ spt X}`, then `Kω = 0` on `spt X`, so `Y(ω) = 0`; hence `spt Y ⊆ C₀`
+is compact. -/
+theorem Submission.dimred_cs_sos_cfs_cone_current : ∀ (P q : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (q + 1)) (R : IMRep (univ : Set (Euclid P)) (q + 1)), R.Represents X → R.carrier ⊆ X.support → R.measure univ ≠ ∞ → X.boundary = 0 → IsCompact X.support → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (q + 1 + 1), Y.boundary = X ∧ IsCompact Y.support ∧ Y.support ⊆ {y : Euclid P | ∃ s ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = s • x} ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1), ∃ η : TestFormOn (univ : Set (Euclid P)) (q + 1), (∀ x ∈ X.support, (η : DifferentialForm (Euclid P) (q + 1)) x = ∫ t in (0 : ℝ)..1, t ^ (q + 1) • ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x) ∧ Y ω = X η := by
+  intro P q X R hRep hMX hmass hbd hcpt
+  -- Step 0: `X` kills forms vanishing on `M`, and `|X(γ)| ≤ μ_R(ℝᴾ) b` when `‖γ‖ ≤ b`
+  obtain ⟨hvan, hbound⟩ :=
+    Submission.dimred_cs_sos_cfs_cc_imrep_vanish_bound P (q + 1) univ X R hRep
+  -- Step 1: `spt X ⊆ B_ρ(0)` with `ρ > 0`
+  obtain ⟨ρ, hρ, hXρ⟩ := hcpt.isBounded.subset_ball_lt 0 0
+  have hnorm : ∀ x ∈ X.support, ‖x‖ < ρ := fun x hx => mem_ball_zero_iff.mp (hXρ hx)
+  -- Step 2: the cut-off cone operator `Φ`; `Kω` is smooth by the radial homotopy formula
+  obtain ⟨Φ, hΦK, hΦb⟩ := Submission.dimred_cs_sos_cfs_cc_cutoff_cone_operator P q ρ hρ
+    fun β hβ => (Submission.dimred_cs_sos_cfs_radial_homotopy P (q + 1) β hβ).1
+  -- Step 3: `Y = X ∘ Φ` is a current, since `|X(Φω)| ≤ μ_R(ℝᴾ) (ρ + 1) M` when `‖ω‖ ≤ M`
+  obtain ⟨Y, hY⟩ := Submission.cmcs_rc_order_zero_current P (q + 1 + 1) univ (X.toCurrent ∘ₗ Φ)
+    fun _ _ _ => ⟨(R.measure univ).toReal * (ρ + 1), fun ω M _ hM =>
+      calc |(X.toCurrent ∘ₗ Φ) ω| = |X (Φ ω)| := rfl
+        _ ≤ (R.measure univ).toReal * ((ρ + 1) * M) := hbound hmass (Φ ω) _ (hΦb ω M hM)
+        _ = (R.measure univ).toReal * (ρ + 1) * M := (mul_assoc _ _ _).symm⟩
+  -- Step 5: `∂Y = X`
+  have hbdY : Y.boundary = X := by
+    ext γ
+    -- `ψ ∈ 𝒟^q` with `K(dγ) = γ − dψ` on `B_ρ(0)`, by the homotopy formula in degree `q`
+    obtain ⟨ψ, hψ⟩ := Submission.dimred_cs_sos_cfs_cc_cutoff_homotopy P q ρ
+      (Submission.dimred_cs_sos_cfs_radial_homotopy P q) γ
+    have hdγ : (exteriorDerivativeTestOn (univ : Set (Euclid P)) (q + 1) γ :
+        DifferentialForm (Euclid P) (q + 1 + 1)) =
+        exteriorDerivative (γ : DifferentialForm (Euclid P) (q + 1)) := rfl
+    have hdψ : (exteriorDerivativeTestOn (univ : Set (Euclid P)) q ψ :
+        DifferentialForm (Euclid P) (q + 1)) =
+        exteriorDerivative (ψ : DifferentialForm (Euclid P) q) := rfl
+    -- `Φ(dγ) − γ + dψ` vanishes on `M ⊆ spt X ⊆ B_ρ(0)`, so `X` kills it
+    have h0 : X (Φ (exteriorDerivativeTestOn univ (q + 1) γ) - γ +
+        exteriorDerivativeTestOn univ q ψ) = 0 := by
+      refine hvan _ fun x hx => ?_
+      have hx' := hnorm x (hMX hx)
+      simp only [Submodule.coe_add, Submodule.coe_sub, Pi.add_apply, Pi.sub_apply]
+      rw [hΦK _ x hx', hdγ, hψ x hx', hdψ]
+      abel
+    -- `X(dψ) = ∂X(ψ) = 0`
+    have hXdψ : X (exteriorDerivativeTestOn univ q ψ) = 0 := by
+      rw [← GeometricCurrentOn.boundary_apply, hbd, GeometricCurrentOn.zero_apply]
+    rw [map_add X.toCurrent, map_sub X.toCurrent] at h0
+    rw [GeometricCurrentOn.boundary_apply, hY]
+    change X (Φ (exteriorDerivativeTestOn univ (q + 1) γ)) = X γ
+    linarith
+  -- Step 6: the cone `C₀ = {s x : s ∈ [0, 1], x ∈ spt X}` is compact
+  have hC₀ : IsCompact {y : Euclid P | ∃ s ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = s • x} := by
+    have himg : {y : Euclid P | ∃ s ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = s • x} =
+        (fun p : ℝ × Euclid P => p.1 • p.2) '' (Icc (0 : ℝ) 1 ×ˢ X.support) := by
+      ext y
+      constructor
+      · rintro ⟨s, hs, x, hx, rfl⟩
+        exact ⟨(s, x), ⟨hs, hx⟩, rfl⟩
+      · rintro ⟨⟨s, x⟩, ⟨hs, hx⟩, rfl⟩
+        exact ⟨s, hs, x, hx, rfl⟩
+    rw [himg]
+    exact (isCompact_Icc.prod hcpt).image (continuous_fst.smul continuous_snd)
+  -- Step 6a: if `spt ω ∩ C₀ = ∅`, then `Kω = 0` on `M ⊆ spt X`, so `Y(ω) = X(Φω) = 0`
+  have hYvan : ∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1),
+      Disjoint (tsupport (ω : DifferentialForm (Euclid P) (q + 1 + 1)))
+        {y : Euclid P | ∃ s ∈ Icc (0 : ℝ) 1, ∃ x ∈ X.support, y = s • x} → Y ω = 0 := by
+    intro ω hω
+    rw [hY]
+    refine hvan (Φ ω) fun x hx => ?_
+    have hxX := hMX hx
+    have hzero : EqOn (fun t : ℝ => t ^ (q + 1) •
+        ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x) 0 (uIcc 0 1) := by
+      intro t ht
+      rw [uIcc_of_le zero_le_one] at ht
+      have hnot : t • x ∉ tsupport (ω : DifferentialForm (Euclid P) (q + 1 + 1)) :=
+        Set.disjoint_right.mp hω ⟨t, ht, x, hxX, rfl⟩
+      simp [image_eq_zero_of_notMem_tsupport hnot]
+    rw [hΦK ω x (hnorm x hxX), intervalIntegral.integral_congr hzero]
+    simp
+  -- Step 6b: `spt Y ⊆ C₀` and `spt Y` is compact
+  -- Steps 4 and 7: `η = Φω` equals `Kω` on `spt X ⊆ B_ρ(0)` and `Y(ω) = X(η)`
+  obtain ⟨hsub, hYcpt⟩ := Submission.rsd_cmr_support_subset_of_vanish P (q + 1 + 1) univ _ Y
+    isOpen_univ hC₀ (subset_univ _) hYvan
+  exact ⟨Y, hbdY, hYcpt, hsub, fun ω => ⟨Φ ω, fun x hx => hΦK ω x (hnorm x hx), hY ω⟩⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
