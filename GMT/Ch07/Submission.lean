@@ -2642,6 +2642,59 @@ theorem Submission.idtp_fons_cc_ambient_calculus : (∀ P : ℕ, IsEmbeddedSubma
     have hemb : MeasurableEmbedding (dilation a s) := hh ▸ h.measurableEmbedding
     rw [Measure.restrict_smul, hemb.restrict_map, hemb.injective.preimage_image]
 
+/-- **Blow-ups of a minimizing cycle at a point of its support** (Simon 7.3.1(2),
+chapter-07.txt lines 302–310, proof from line 326; used in the proof of 7.3.3(1), (8), lines
+454–466).  Let `T` be minimizing in `U ∩ N` with `spt T ⊆ U ∩ N`, `∂T = 0`, `n ≥ 1`, let
+`T = τ(M, θ, ξ)` have weight `μ`, `p ∈ spt T`, `λⱼ > 0` and `λⱼ → 0`.  As `∂T = 0`, `spt ∂T = ∅`
+(`p` lies in a ball `W ⊂⊂ U` on which `0` vanishes), so (DTC)(2) applies at `p`: there are
+`λⱼ' = λ_{φ(j)}` and a minimizing cone `C` with `η_{p,λⱼ'#}T ⇀ C` and `μ_{η_{p,λⱼ'#}T} → μ_C`.
+Then `∂C = 0` (`idtp_tpf_blowUp_limit_boundaryVanishes`), `C` has a representation `R_C`, and the
+push-forwards of `R` (`dtc_blowUp_scaling`) represent the blow-ups with weights
+`λⱼ'⁻ⁿ η_{p,λⱼ'#}μ`, which therefore converge to `μ_{R_C}`. -/
+theorem Submission.idtp_fons_cc_tm_support_blowup : DensityAndTangentCones → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (R : IMRep U n) (p : Euclid (n + k)) (lams : ℕ → ℝ), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → R.Represents T → p ∈ T.support → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RC : IMRep (univ : Set (Euclid (n + k))) n), StrictMono sub ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ IsConeCurrent C ∧ RC.Represents C ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • R.measure.map (dilation p (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂RC.measure)) := by
+  intro hDTC n k ℓ hℓk U N T R p lams hn hU hN hNU hTmin hTspt hT hR hp hlams hlim
+  -- Step 1: `p ∈ spt T ⊆ U`
+  have hpU : p ∈ U := T.support_subset_domain hp
+  -- Step 2: `spt ∂T = spt 0 = ∅`, as `p` lies in the ball `W = B_{ε/2}(p) ⊂⊂ U`, on which the
+  -- zero current vanishes
+  have hpx : p ∈ T.support \ boundarySupport T := by
+    refine ⟨hp, ?_⟩
+    obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+    change T.boundary = 0 at hT
+    change p ∉ T.boundary.support
+    rw [hT]
+    obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.mp hU p hpU
+    have hcl : closure (ball p (ε / 2)) ⊆ closedBall p (ε / 2) := closure_ball_subset_closedBall
+    intro h0
+    refine h0.2 (Set.mem_sUnion_of_mem (mem_ball_self (half_pos hε)) ⟨isOpen_ball,
+      (isCompact_closedBall p (ε / 2)).of_isClosed_subset isClosed_closure hcl,
+      hcl.trans ((closedBall_subset_ball (half_lt_self hε)).trans hball), fun ω _ => rfl⟩)
+  -- Step 3: (DTC)(2) at `p` gives `λⱼ' = λ_{φ(j)}` and a minimizing cone `C` with
+  -- `η_{p,λⱼ'#}T ⇀ C` and `μ_{η_{p,λⱼ'#}T} → μ_C`
+  obtain ⟨φ, C, hφ, hconv, hmass, hCmin, hCcone, -⟩ :=
+    (hDTC n k ℓ hℓk U N T hU hN hNU hTmin hTspt).2 p hpx lams hlams hlim
+  -- Step 4: `∂C = 0`, since `λⱼ' → 0` and `η_{p,λⱼ'#}T ⇀ C`
+  have hCb : BoundaryVanishes C :=
+    Submission.idtp_tpf_blowUp_limit_boundaryVanishes (n + k) n U T p (fun j => lams (φ j))
+      (fun j => hlams (φ j)) C hU hpU hT (hlim.comp hφ.tendsto_atTop) hconv
+  -- Step 5: `C` is integer multiplicity; fix a representation `R_C`
+  obtain ⟨RC, hRC⟩ := hCmin.1
+  -- Step 6: representations `R_j` of the blow-ups with `μ_{R_j}(s) = λⱼ'⁻ⁿ μ(η_{p,λⱼ'}⁻¹(s))`
+  choose Rs hRs hRsμ using fun j =>
+    (Submission.dtc_blowUp_scaling (n + k) n U U T p (lams (φ j)) (hlams (φ j)) hU
+      (by omega)).2.1 R hR
+  -- Step 7: hence `μ_{R_j} = λⱼ'⁻ⁿ η_{p,λⱼ'#}μ`
+  have hRsμ' : ∀ j, (Rs j).measure =
+      ENNReal.ofReal ((lams (φ j))⁻¹ ^ n) • R.measure.map (dilation p (lams (φ j))) := by
+    intro j
+    have hmeas : Measurable (dilation p (lams (φ j))) :=
+      (continuous_const.add (dilationCLM (n + k) _).continuous).measurable
+    ext s hs
+    rw [hRsμ j s hs, Measure.smul_apply, smul_eq_mul, Measure.map_apply hmeas hs]
+  -- Step 8: `μ_{η_{p,λⱼ'#}T} → μ_C` for the representations `R_j` and `R_C`
+  refine ⟨φ, C, RC, hφ, hCmin, hCb, hCcone, hRC, fun f hf hfc => ?_⟩
+  exact (hmass Rs hRs RC hRC f hf hfc (subset_univ _)).congr fun j => by rw [hRsμ' j]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
