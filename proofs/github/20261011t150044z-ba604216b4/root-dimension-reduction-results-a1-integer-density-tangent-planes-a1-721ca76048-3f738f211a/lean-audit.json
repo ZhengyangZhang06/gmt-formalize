@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "bd638a5e91a238e5dbc67e9f11e2e0d68e537bb897641c630f94540d61e17e1a",
+  "git_delta": {
+    "base_commit": "65b34345671d785dcde388a24c7d9299259e83d9",
+    "candidate_commit": "457ca77c26c71be52e10108e012c2ab9488c7a8c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_tdc_dlc_ld_unit_vector_angle",
+    "diff_sha256": "6278fd639ffce750b4b5648db4dbf78ff3a4349cb4f592b85d22484047f30c14",
+    "source_sha256": "15518929ae9b149da25877064e22db8193d1065735f436fbf2e068319b447414",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tdc_dlc_ld_unit_vector_angle",
+      "statement": "∀ (P : ℕ) (z e w : Euclid P) (L : ℝ), ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → ‖w‖ = 1 → w = inner ℝ w z • z + inner ℝ w e • e → ‖w - z‖ < L / 2 → ∃ (θ : ℝ) (v : Euclid P), 0 ≤ θ ∧ θ < L ∧ (v = e ∨ v = -e) ∧ w = Real.cos θ • z + Real.sin θ • v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
