@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.projection-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1",
+  "depth": 5,
+  "title": "Projection of a sliced current to ℝⁿ: integral formula, mass, boundary-mass comparison and extension of test forms",
+  "statement": "Let P, d ∈ ℕ, n := d + 1, v = (v_0, …, v_d) orthonormal in ℝ^P, pL : ℝ^P → ℝⁿ continuous linear with (pL x)_i = ⟨v_i, x⟩; U ⊆ ℝⁿ open; S, F ⊆ ℝ^P with F measurable, F ⊆ S and S ∩ pL⁻¹(K) compact for every compact K ⊆ U; μ a Borel measure on ℝ^P finite on compact sets; ξ : ℝ^P → Λ_n(ℝ^P) μ-a.e. strongly measurable with |ξ(x)(β)| ≤ |β| for μ-a.e. x and all β; Z ∈ 𝒟_n(ℝ^P) with Z(ω) = ∫_Fξ(x)(ω(x))dμ(x) for every test n-form ω on ℝ^P. For an l-form ω on ℝⁿ write (p^#ω)(x) := ω(pL x)∘pL = (ω(pL x)).compContinuousLinearMap pL ∈ Λ^l(ℝ^P). Then there is Y ∈ 𝒟_n(U) with (i) Y(ω) = ∫_Fξ(x)((p^#ω)(x))dμ(x) for every ω ∈ 𝒟ⁿ(U); (ii) M_U(Y) ≤ μ(F ∩ pL⁻¹(U)); (iii) M_W(∂Y) ≤ M_{pL⁻¹(W)}(∂Z) for every open W ⊆ U; (iv) for every ω ∈ 𝒟ⁿ(U) there is a test n-form ω' on ℝ^P with ω'(x) = (p^#ω)(x) for every x ∈ S.",
+  "lean_statement": "∀ (P d : ℕ) (v : Fin (d + 1) → Euclid P) (pL : Euclid P →L[ℝ] Euclid (d + 1)) (U : Set (Euclid (d + 1))) (S F : Set (Euclid P)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (Z : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), Orthonormal ℝ v → (∀ (x : Euclid P) (i : Fin (d + 1)), pL x i = inner ℝ (v i) x) → IsOpen U → MeasurableSet F → F ⊆ S → (∀ K : Set (Euclid (d + 1)), IsCompact K → K ⊆ U → IsCompact (S ∩ pL ⁻¹' K)) → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ β : Covector (Euclid P) (d + 1), |ξ x β| ≤ covectorEuclideanNorm β) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), Z ω = ∫ x in F, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → ∃ Y : GeometricCurrentOn U (d + 1), (∀ ω : TestFormOn U (d + 1), Y ω = ∫ x in F, ξ x (((ω : DifferentialForm (Euclid (d + 1)) (d + 1)) (pL x)).compContinuousLinearMap pL) ∂μ) ∧ Y.massOn U ≤ μ (F ∩ pL ⁻¹' U) ∧ (∀ W : Set (Euclid (d + 1)), IsOpen W → W ⊆ U → Y.boundary.massOn W ≤ Z.boundary.massOn (pL ⁻¹' W)) ∧ ∀ ω : TestFormOn U (d + 1), ∃ ω' : TestFormOn (univ : Set (Euclid P)) (d + 1), ∀ x ∈ S, (ω' : DifferentialForm (Euclid P) (d + 1)) x = ((ω : DifferentialForm (Euclid (d + 1)) (d + 1)) (pL x)).compContinuousLinearMap pL",
+  "lean_name": "cbr_ci_pw_projected_current",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.covector_bounds-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.covector_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-35232fb38e-a1"
+}

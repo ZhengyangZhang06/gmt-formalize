@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.extderiv_smul_const-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1",
+  "depth": 5,
+  "title": "Exterior derivative of a scalar function times a constant covector",
+  "statement": "Let P, m ∈ ℕ, a : ℝ^P → ℝ, β a fixed m-covector on ℝ^P (β ∈ Covector (Euclid P) m), x ∈ ℝ^P with a differentiable at x, and w = (w₀, …, w_m) ∈ (ℝ^P)^{m+1}. Then the exterior derivative of the m-form y ↦ a(y)·β satisfies d(a·β)(x)(w) = Σ_{i=0}^{m} (−1)^i · (Da(x)wᵢ · β(Fin.removeNth i w)).",
+  "lean_statement": "∀ (P m : ℕ) (a : Euclid P → ℝ) (β : Covector (Euclid P) m) (x : Euclid P) (w : Fin (m + 1) → Euclid P), DifferentiableAt ℝ a x → exteriorDerivative (fun y => a y • β) x w = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * (fderiv ℝ a x (w i) * β (i.removeNth w))",
+  "lean_name": "dgcr_bwd_extDeriv_smul_const",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-18aa777bf2-a1"
+}
