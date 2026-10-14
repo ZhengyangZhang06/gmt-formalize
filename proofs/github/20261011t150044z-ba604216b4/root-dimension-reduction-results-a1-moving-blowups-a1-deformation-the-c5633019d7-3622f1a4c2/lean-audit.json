@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "49f83aa946ef13313b75fe6e5145d10ed9269e4fade5cab3f5afed2ddf42fd19",
+  "git_delta": {
+    "base_commit": "481679fbb74feeea9846beb73352445b8e0880a0",
+    "candidate_commit": "64a4868e31d5199a6dad3a8bf97f5412efc7860c",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dtsr_segment_lipschitz",
+    "diff_sha256": "72aeca8375c4df1b422cc7932c01cfdeb9a74b9f6c69af27f3fce200b8e55cbe",
+    "source_sha256": "ce673922ebdbebd939db56faebcb57af8daaa783d90527afb23abfb0ac5fbbd6",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dtsr_segment_lipschitz",
+      "statement": "∀ (P : ℕ) (f : Euclid P → Euclid P) (x y : Euclid P) (K : ℝ), 0 ≤ K → (∀ t ∈ Icc (0 : ℝ) 1, ∀ᶠ w in 𝓝 (x + t • (y - x)), dist (f w) (f (x + t • (y - x))) ≤ K * dist w (x + t • (y - x))) → dist (f y) (f x) ≤ K * dist y x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
