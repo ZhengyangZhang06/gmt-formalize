@@ -5623,6 +5623,174 @@ theorem Submission.dor_lmbsf_piece_weak_limit : ∀ (P n : ℕ) (V C Y : Set (Eu
   exact (Submission.dor_lmbsf_pwl_fderiv_weak_integrable (n + 1) K us u Φ hus hUu hΦ).congr
     fun k => (hlhs k).symm
 
+/-- **Tangential gradient of a Lipschitz function on an integer multiplicity triple** (Simon
+Ch. 3, Remark 1.3, Remark 1.5(1), 2.1 and 2.8–2.10(2); Ch. 6, 4.1 and the reduction to one piece
+in the proof of 4.5(2)).  `chart_pieces` decomposes `M = RT.carrier` up to an `H^{n+1}`-null set
+into disjoint Borel chart pieces `P_j = ψ_j(Y_j)` and gives the Borel field `g` with `|g| ≤ L`,
+`g = 0` off `⋃_j P_j` and `g(ψ_j y) ∈ range Dψ_j(y) = T_{ψ_j y}M` (uniqueness of approximate
+tangent planes, Ch. 3, 1.5(1)), so (G1), (G2).  The piece results `piece_coarea`,
+`piece_slice_tangent` and `piece_weak_limit` hold on every `P_j`, and the three gluing lemmas sum
+them over `j`: (G3) by `coarea_gluing`; (G4a) since `M_t ⊆ ⋃_j (P_j)_t`, a countable union of
+countably `n`-rectifiable sets; (G4b) by `tangent_gluing`, each piece slice having finite `Hⁿ`
+measure as a subset of `M_t ∩ ψ_j(C_j)`, `ψ_j(C_j)` compact in `U`; (G5) by `weak_limit_gluing`
+with weight `θ` and dominating function `c c' θ 1_K` (integrable since `θ` is locally
+integrable). -/
+theorem Submission.dor_lmbsf_tangential_gradient : (∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (U : Set (Euclid P)) (RT : IMRep U (n + 1)) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → LipschitzWith L f → ∃ g : Euclid P → Euclid P, Measurable g ∧ (∀ x, ‖g x‖ ≤ L) ∧ (∀ᵐ x ∂(μHE[n + 1].restrict RT.carrier), g x ∈ approxTangentPlane (n + 1) RT.carrier x) ∧ (∀ φ : Euclid P → ℝ≥0∞, Measurable φ → AEMeasurable (fun t => ∫⁻ x in RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂μHE[n]) ∧ ∫⁻ t, (∫⁻ x in RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂μHE[n]) = ∫⁻ x in RT.carrier, ‖g x‖ₑ * φ x ∂μHE[n + 1]) ∧ (∀ t, CountablyRectifiable n (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t})) ∧ (∀ t, (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t} ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t})), HasApproximateTangentSpaceAt n (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}) x (approxTangentPlane (n + 1) RT.carrier x ⊓ (ℝ ∙ g x)ᗮ)) ∧ (∀ (a b : ℝ), a < b → ∀ (hs : ℕ → Euclid P → ℝ) (c : ℝ), (∀ k, ContDiff ℝ 1 (hs k)) → (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ c) → TendstoUniformly hs (fun x => min 1 (max 0 ((b - f x) / (b - a)))) atTop → ∀ (W : Euclid P → Euclid P) (K : Set (Euclid P)) (c' : ℝ), Measurable W → IsCompact K → K ⊆ U → (∀ x, x ∉ K → W x = 0) → (∀ x, ‖W x‖ ≤ c') → (∀ᵐ x ∂(μHE[n + 1].restrict RT.carrier), W x ∈ approxTangentPlane (n + 1) RT.carrier x) → Tendsto (fun k => ∫ x in RT.carrier, (RT.mult x : ℝ) * fderiv ℝ (hs k) x (W x) ∂μHE[n + 1]) atTop (𝓝 (∫ x in RT.carrier ∩ {x | a < f x ∧ f x < b}, (RT.mult x : ℝ) * (-(b - a)⁻¹ * inner ℝ (g x) (W x)) ∂μHE[n + 1]))) := by
+  intro hTL P n U RT f L hU hf
+  have hMm : MeasurableSet RT.carrier := RT.measurableSet_carrier
+  have hfm : Measurable f := hf.continuous.measurable
+  have hθm : Measurable fun x => (RT.mult x : ℝ) := measurable_from_nat.comp RT.measurable_mult
+  -- Step 0(b): `θ ≥ 1` on `M` is locally integrable, so `M` is locally `H^{n+1}`-finite
+  have hθint : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      IntegrableOn (fun x => (RT.mult x : ℝ)) (RT.carrier ∩ K) μHE[n + 1] := by
+    intro K hK hKU
+    have h := integrable_toReal_of_lintegral_ne_top
+      (μ := μHE[n + 1].restrict (RT.carrier ∩ K)) (f := fun x => (RT.mult x : ℝ≥0∞))
+      (measurable_from_nat.comp RT.measurable_mult).aemeasurable
+      (RT.locallyIntegrable_mult K hK hKU)
+    simp only [ENNReal.toReal_natCast] at h
+    exact h
+  have hMfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      μHE[n + 1] (RT.carrier ∩ K) ≠ ∞ := by
+    intro K hK hKU
+    refine ne_top_of_le_ne_top (RT.locallyIntegrable_mult K hK hKU) ?_
+    rw [← setLIntegral_one]
+    exact setLIntegral_mono' (hMm.inter hK.measurableSet) fun x hx =>
+      Nat.one_le_cast.mpr (RT.mult_pos x hx.1)
+  -- Step 0(c): `T_xM` is the approximate tangent space of `M` at `x` whenever one exists
+  have hTM : ∀ x (Q : Submodule ℝ (Euclid P)),
+      HasApproximateTangentSpaceAt (n + 1) RT.carrier x Q →
+        approxTangentPlane (n + 1) RT.carrier x = Q := by
+    intro x Q hQ
+    have hex : ∃ Q, HasApproximateTangentSpaceAt (n + 1) RT.carrier x Q := ⟨Q, hQ⟩
+    rw [approxTangentPlane, dite_eq_left hex]
+    exact hex.choose_spec.unique hQ
+  -- Step 1: the chart pieces `P_j = ψ_j(Y_j)` and the field `g`
+  obtain ⟨V, C, Y, ψ, F, g, hV, hCY, hYM, hdisj, hnull, hfT, hgm, hgL, hg0, hgT⟩ :=
+    Submission.dor_lmbsf_lipschitz_chart_pieces hTL P n U RT.carrier f L hU hMm RT.carrier_subset
+      RT.rectifiable hMfin hf
+  have hTψ : ∀ j, ∀ y ∈ Y j, approxTangentPlane (n + 1) RT.carrier (ψ j y) =
+      LinearMap.range (fderiv ℝ (ψ j) y : Euclid (n + 1) →ₗ[ℝ] Euclid P) := fun j y hy =>
+    hTM _ _ (hfT j y hy).2
+  -- `P_j` is Borel (Lusin–Souslin), and `P_j ⊆ ψ_j(C_j)`, a compact subset of `U`
+  have hPm : ∀ j, MeasurableSet (ψ j '' Y j) := fun j =>
+    (hCY j).2.2.1.image_of_continuousOn_injOn
+      ((hV j).2.1.continuousOn.mono ((hCY j).2.2.2.1.trans (hCY j).2.1))
+      ((hV j).2.2.1.mono ((hCY j).2.2.2.1.trans (hCY j).2.1))
+  have hPC : ∀ j, IsCompact (ψ j '' C j) := fun j =>
+    (hCY j).1.image_of_continuousOn ((hV j).2.1.continuousOn.mono (hCY j).2.1)
+  have hPCU : ∀ j, ψ j '' C j ⊆ U := fun j => (image_mono (hCY j).2.1).trans (hV j).2.2.2.2
+  have hPPC : ∀ j, ψ j '' Y j ⊆ ψ j '' C j := fun j => image_mono (hCY j).2.2.2.1
+  -- Step 2: (G2), everywhere on `ℝ^P`
+  have hG2 : ∀ x, g x ∈ approxTangentPlane (n + 1) RT.carrier x := by
+    intro x
+    by_cases hx : ∃ j, x ∈ ψ j '' Y j
+    · obtain ⟨j, y, hy, rfl⟩ := hx
+      rw [hTψ j y hy]
+      exact (hgT j y hy).1
+    · push Not at hx
+      rw [hg0 x hx]
+      exact Submodule.zero_mem _
+  -- Step 3: `M_t` is the disjoint union of the Borel piece slices `(P_j)_t`
+  have hgne : MeasurableSet {x | g x ≠ 0} := (hgm (measurableSet_singleton 0)).compl
+  have hft : ∀ t : ℝ, MeasurableSet (f ⁻¹' {t}) := fun t => hfm (measurableSet_singleton t)
+  have hcover : ∀ t, RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t} ⊆
+      ⋃ j, ψ j '' Y j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t} := by
+    rintro t x ⟨⟨-, hgx⟩, hfx⟩
+    by_contra hx
+    simp only [mem_iUnion, not_exists] at hx
+    exact hgx (hg0 x fun j hj => hx j ⟨⟨hj, hgx⟩, hfx⟩)
+  have hsub : ∀ t j, ψ j '' Y j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t} ⊆
+      RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t} := fun t j =>
+    inter_subset_inter_left _ (inter_subset_inter_left _ (hYM j))
+  -- the piece results
+  have hcoarea := fun j => Submission.dor_lmbsf_piece_coarea P n (V j) (C j) (Y j) (ψ j) (F j) f g
+    (hV j).1 (hV j).2.1 (hV j).2.2.1 (hV j).2.2.2.1 (hCY j).1 (hCY j).2.1 (hCY j).2.2.1
+    (hCY j).2.2.2.1 (hCY j).2.2.2.2 (fun y hy => (hfT j y hy).1) (hgT j) hgm
+  have hslice := fun j => Submission.dor_lmbsf_piece_slice_approxTangent hTL P n (V j) (C j) (Y j)
+    (ψ j) (F j) f g (hV j).1 (hV j).2.1 (hV j).2.2.1 (hV j).2.2.2.1 (hCY j).1 (hCY j).2.1
+    (hCY j).2.2.1 (hCY j).2.2.2.1 (hCY j).2.2.2.2 (fun y hy => (hfT j y hy).1) (hgT j)
+  refine ⟨g, hgm, hgL, Eventually.of_forall hG2, fun φ hφ => ?_, fun t => ?_, fun t hfin => ?_,
+    ?_⟩
+  · -- Step 4: (G3), summing the piece co-area formulas
+    exact Submission.dor_lmbsf_tg_coarea_gluing P μHE[n + 1] μHE[n] RT.carrier
+      (fun j => ψ j '' Y j) g f φ hMm hPm hdisj hYM hgm hg0 hfm fun j => hcoarea j φ hφ
+  · -- Step 5: (G4a), a countable union of countably `n`-rectifiable piece slices
+    exact (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion
+      (fun j => ψ j '' Y j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}) fun j => (hslice j t).1).mono
+        (hcover t)
+  · -- Step 6: (G4b), gluing the approximate tangent spaces of the piece slices by (TL)
+    refine Submission.dor_lmbsf_tg_tangent_gluing hTL P n U
+      (RT.carrier ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}) (fun j => ψ j '' Y j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t})
+      (fun x => approxTangentPlane (n + 1) RT.carrier x ⊓ (ℝ ∙ g x)ᗮ) hU
+      ((hMm.inter hgne).inter (hft t))
+      (inter_subset_left.trans (inter_subset_left.trans RT.carrier_subset)) hfin
+      (fun j => ((hPm j).inter hgne).inter (hft t)) (hsub t) (hcover t) fun j => ?_
+    -- the piece slice lies in `M_t ∩ ψ_j(C_j)`, so it has finite `Hⁿ` measure
+    have hSfin : μHE[n] (ψ j '' Y j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}) ≠ ∞ :=
+      ne_top_of_le_ne_top (hfin _ (hPC j) (hPCU j)) (measure_mono (subset_inter (hsub t j)
+        (inter_subset_left.trans (inter_subset_left.trans (hPPC j)))))
+    filter_upwards [(hslice j t).2 hSfin, ae_restrict_mem (((hPm j).inter hgne).inter (hft t))]
+      with x hx hxS
+    obtain ⟨y, hy, rfl⟩ := hxS.1.1
+    rw [hTψ j y hy]
+    exact hx y hy rfl
+  · -- Step 7: (G5), dominated convergence over the pieces with weight `θ`
+    intro a b hab hs c hs1 hsc hsu W K c' hWm hK hKU hWK hWc hWT
+    have hc : 0 ≤ c := (norm_nonneg _).trans (hsc 0 0)
+    have hc' : 0 ≤ c' := (norm_nonneg _).trans (hWc 0)
+    -- `κ θ 1_K` is integrable on `M` for every constant `κ`
+    have hdom : ∀ κ : ℝ, IntegrableOn (K.indicator fun x => κ * (RT.mult x : ℝ)) RT.carrier
+        μHE[n + 1] := by
+      intro κ
+      rw [IntegrableOn, integrable_indicator_iff hK.measurableSet, IntegrableOn,
+        Measure.restrict_restrict hK.measurableSet, inter_comm]
+      exact (hθint K hK hKU).const_mul κ
+    refine Submission.dor_lmbsf_tg_weak_limit_gluing P μHE[n + 1] RT.carrier
+      {x | a < f x ∧ f x < b} (fun j => ψ j '' Y j)
+      (fun k x => (RT.mult x : ℝ) * fderiv ℝ (hs k) x (W x))
+      (fun x => (RT.mult x : ℝ) * (-(b - a)⁻¹ * inner ℝ (g x) (W x)))
+      (K.indicator fun x => c * c' * (RT.mult x : ℝ)) hMm (hfm measurableSet_Ioo) hPm hdisj hYM
+      hnull (hdom (c * c')) (fun k => ?_) (fun k => Eventually.of_forall fun x => ?_) ?_ fun j => ?_
+    · -- the integrands are measurable
+      exact hθm.aestronglyMeasurable.mul
+        (Continuous.comp_aestronglyMeasurable₂
+          (g := fun (Λ : Euclid P →L[ℝ] ℝ) (v : Euclid P) => Λ v)
+          isBoundedBilinearMap_apply.continuous
+          ((hs1 k).continuous_fderiv one_ne_zero).aestronglyMeasurable hWm.aestronglyMeasurable)
+    · -- `|θ Dh_k[W]| ≤ c c' θ 1_K`
+      by_cases hxK : x ∈ K
+      · rw [indicator_of_mem hxK, norm_mul, Real.norm_natCast, mul_comm (c * c')]
+        exact mul_le_mul_of_nonneg_left (((fderiv ℝ (hs k) x).le_opNorm (W x)).trans
+          (mul_le_mul (hsc k x) (hWc x) (norm_nonneg _) hc)) (Nat.cast_nonneg _)
+      · rw [indicator_of_notMem hxK, hWK x hxK, map_zero, mul_zero, norm_zero]
+    · -- `|θ (-(b - a)⁻¹ ⟨g, W⟩)| ≤ (b - a)⁻¹ L c' θ 1_K`, so the limit integrand is integrable
+      refine Integrable.mono' ((hdom ((b - a)⁻¹ * (L * c'))).mono_set inter_subset_left)
+        (hθm.aestronglyMeasurable.mul (aestronglyMeasurable_const.mul
+          (continuous_inner.comp_aestronglyMeasurable₂ hgm.aestronglyMeasurable
+            hWm.aestronglyMeasurable))) (Eventually.of_forall fun x => ?_)
+      by_cases hxK : x ∈ K
+      · rw [indicator_of_mem hxK, norm_mul, norm_mul, norm_neg, Real.norm_natCast, norm_inv,
+          Real.norm_of_nonneg (sub_pos.2 hab).le, mul_comm _ (RT.mult x : ℝ)]
+        refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_
+          (inv_nonneg.2 (sub_pos.2 hab).le)) (Nat.cast_nonneg _)
+        exact (norm_inner_le_norm _ _).trans
+          (mul_le_mul (hgL x) (hWc x) (norm_nonneg _) L.coe_nonneg)
+      · rw [indicator_of_notMem hxK, hWK x hxK, inner_zero_right, mul_zero, mul_zero, norm_zero]
+    · -- `piece_weak_limit` on `P_j`, with `θ` integrable on `P_j ⊆ M ∩ ψ_j(C_j)`
+      have hθj : IntegrableOn (fun x => (RT.mult x : ℝ)) (ψ j '' Y j) μHE[n + 1] :=
+        (hθint _ (hPC j) (hPCU j)).mono_set (subset_inter (hYM j) (hPPC j))
+      have hWj : ∀ᵐ x ∂(μHE[n + 1].restrict (ψ j '' Y j)), ∀ y ∈ Y j, ψ j y = x →
+          W x ∈ LinearMap.range (fderiv ℝ (ψ j) y : Euclid (n + 1) →ₗ[ℝ] Euclid P) := by
+        filter_upwards [ae_restrict_of_ae_restrict_of_subset (hYM j) hWT] with x hx
+        rintro y hy rfl
+        rw [← hTψ j y hy]
+        exact hx
+      exact Submission.dor_lmbsf_piece_weak_limit P n (V j) (C j) (Y j) (ψ j) (F j) f g L a b c c'
+        hs (fun x => (RT.mult x : ℝ)) W (hV j).1 (hV j).2.1 (hV j).2.2.1 (hV j).2.2.2.1 (hCY j).1
+        (hCY j).2.1 (hCY j).2.2.1 (hCY j).2.2.2.1 (hCY j).2.2.2.2 (fun y hy => (hfT j y hy).1)
+        (hgT j) hgm hf hab hs1 hsc hsu hθj hWm hWc hWj
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
