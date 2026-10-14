@@ -920,6 +920,48 @@ theorem Submission.idtp_fons_odc_polygonal_current : ∀ (P : ℕ) (ι : Type) [
   -- `R.Represents X` is `∀ ω, X ω = R.action ω`; both sides equal the weighted sum.
   exact ⟨X, R, fun ω => (hX ω).trans (hact ω).symm, hX, hmeas⟩
 
+/-- **Simon 7.3.3, proof of (2), (10)** (p. 193; steps 3–4 of the 1-dimensional cone
+classification read backwards): if `C = Σ_{e ∈ F} m(e)[[ray(e)]]` for finitely many unit vectors
+`e`, with open rays `ray(e) = {te : t > 0}`, then `C` is integer multiplicity with mass measure
+`μ_C = Σ_{e ∈ F} |m(e)| H¹⌞ray(e)`.  Index the pieces of `idtp_fons_odc_polygonal_current` by `F`
+(base point `0`, direction `e`, parameter interval `(0, ∞)`, weight `m(e)`).  Distinct open rays
+miss each other's closed rays: `{se' : s ≥ 0}` is closed, and `te = se'` with `t > 0`, `s ≥ 0`
+gives `t = s` (taking norms) and then `e = e'`; so the overlaps are empty, hence `H¹`-null. -/
+theorem Submission.idtp_fons_odc_ray_current_rep : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ m : Euclid P → ℤ, (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, (m e : ℝ) * ∫ t in Ioi (0 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∃ R : IMRep (univ : Set (Euclid P)) 1, R.Represents C ∧ ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∑ e ∈ F, ENNReal.ofReal |(m e : ℝ)| * volume (Ioi (0 : ℝ) ∩ (fun t : ℝ => t • e) ⁻¹' A) := by
+  intro P C F hF m hC
+  -- distinct open rays `ray(e) = {te : t > 0}` miss each other's closed rays
+  have hray : ∀ e e' : Euclid P, ‖e‖ = 1 → ‖e'‖ = 1 → e ≠ e' →
+      ((fun t : ℝ => (0 : Euclid P) + t • e) '' Ioi 0) ∩
+        closure ((fun t : ℝ => (0 : Euclid P) + t • e') '' Ioi 0) = ∅ := by
+    intro e e' he he' hne
+    -- `closure ray(e') ⊆ {se' : s ≥ 0}`, the image of `[0, ∞)` under the closed map `s ↦ se'`
+    have hcl : closure ((fun t : ℝ => (0 : Euclid P) + t • e') '' Ioi 0) ⊆
+        (fun s : ℝ => s • e') '' Ici 0 := by
+      refine closure_minimal ?_ (isClosedMap_smul_left e' _ isClosed_Ici)
+      rintro _ ⟨t, ht, rfl⟩
+      exact ⟨t, Ioi_subset_Ici_self ht, (zero_add _).symm⟩
+    refine eq_empty_iff_forall_notMem.2 fun x ⟨⟨t, ht, hx⟩, hx'⟩ => ?_
+    obtain ⟨s, hs, rfl⟩ := hcl hx'
+    simp only [zero_add] at hx
+    -- `te = se'` with `t > 0`, `s ≥ 0`: taking norms, `t = s`; cancelling `t`, `e = e'`
+    have hts : t = s := by
+      have h := congrArg norm hx
+      rwa [norm_smul, norm_smul, he, he', mul_one, mul_one, Real.norm_of_nonneg (le_of_lt ht),
+        Real.norm_of_nonneg hs] at h
+    subst hts
+    exact hne (smul_right_injective (Euclid P) (ne_of_gt ht) hx)
+  -- the pieces `t ↦ 0 + te`, `t ∈ (0, ∞)`, with weights `m(e)`, indexed by `e ∈ F`
+  obtain ⟨X, R, hRX, hX, hmeas⟩ := Submission.idtp_fons_odc_polygonal_current P F (fun _ => 0)
+    (fun e => (e : Euclid P)) (fun _ => Ioi 0) (fun e => m e) (fun e => hF e e.2)
+    (fun _ => isOpen_Ioi) fun j k hjk => by
+      rw [hray j k (hF j j.2) (hF k k.2) fun h => hjk (Subtype.ext h), measure_empty]
+  -- `C = X = τ(R)`; both formulas are the ones of the pieces, summed over `F`
+  refine ⟨R, fun ω => ?_, fun A hA => ?_⟩
+  · rw [← hRX ω, hC ω, hX ω, ← Finset.sum_coe_sort F]
+    simp only [zero_add]
+  · rw [hmeas A hA, ← Finset.sum_coe_sort F]
+    simp only [zero_add]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
