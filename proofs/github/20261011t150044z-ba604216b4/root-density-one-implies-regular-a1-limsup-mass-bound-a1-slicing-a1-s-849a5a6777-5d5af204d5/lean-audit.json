@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7367477e62091ef1ae71bdfd3adb6297f071478b1332b5a7c5ec30a3c26f5de3",
+  "git_delta": {
+    "base_commit": "c1b45f5f54a8f2ca01dfecb4c76afeeec0de74e7",
+    "candidate_commit": "ca4d983adbca349ba79f245103485ba2ecf6d56f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_pst_level_set_chart_cover",
+    "diff_sha256": "8b34ae36931c2633ed9fba5db5904a456c69a3e3bfac9cddcb4ff8e302d80fe3",
+    "source_sha256": "7835ea80b4a408821ec7a4848bb1940a3609988644554854b4b82844c84351fc",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_pst_level_set_chart_cover",
+      "statement": "∀ (n : ℕ) (W : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (t : ℝ), IsOpen W → ContDiff ℝ 1 F → ∃ (D : ℕ → Set (Euclid n)) (Λ : ℕ → Euclid n → Euclid (n + 1)) (c : ℕ → Euclid n) (ρ : ℕ → ℝ), (∀ k, IsOpen (D k)) ∧ (∀ k, ContDiffOn ℝ 1 (Λ k) (D k)) ∧ (∀ k, InjOn (Λ k) (D k)) ∧ (∀ k, ∀ z ∈ D k, Λ k z ∈ W ∧ F (Λ k z) = t ∧ Injective (fderiv ℝ (Λ k) z) ∧ LinearMap.range (fderiv ℝ (Λ k) z : Euclid n →ₗ[ℝ] Euclid (n + 1)) = LinearMap.ker (fderiv ℝ F (Λ k z) : Euclid (n + 1) →ₗ[ℝ] ℝ)) ∧ (∀ k, closedBall (c k) (ρ k) ⊆ D k) ∧ ∀ y ∈ W, fderiv ℝ F y ≠ 0 → F y = t → ∃ k, ∃ z ∈ ball (c k) (ρ k), Λ k z = y",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
