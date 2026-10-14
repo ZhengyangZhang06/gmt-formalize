@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "ae_differentiableAt|measurable_fderiv|norm_fderiv_le_of_lipschitz|measurableSet_of_differentiableAt|integral_deriv_eq_sub|absolutelyContinuousOnInterval|map_addHaar_smul|addHaar_preimage_smul|integrable_norm_pow|integral_eq_lintegral_of_nonneg_ae",
+        "theorem (measure_prod_null|ae_ae_of_ae_prod|prod_apply_symm|lintegral_lintegral_swap|volume_eq_prod)|lemma (volume_eq_prod|comp_fst|comp_snd)|theorem (comp_fst|comp_snd)|integral_prod_left|lintegral_prod_right",
+        "^theorem .*([Pp]oincar[eé]|segment_ftc|sq_integral_le|variance_bound)|^lemma .*([Pp]oincar[eé]|segment_ftc|sq_integral_le|variance_bound)",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "python3 -I -u /tmp/poincare-review-t4z0tuz_/run_lean.py /tmp/poincare-review-t4z0tuz_/Types.lean",
+        "python3 -I -u /tmp/poincare-review-t4z0tuz_/run_lean.py /tmp/poincare-review-t4z0tuz_/FullAudit.lean /tmp/poincare-review-t4z0tuz_/FullAudit.olean",
+        "python3 -I -u /tmp/poincare-review-t4z0tuz_/run_lean.py /tmp/poincare-review-t4z0tuz_/Solutions.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AbsolutelyContinuous.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/AbsolutelyContinuousFun.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6beaadac52/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-6beaadac52/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/tmp/poincare-decomp/Full.lean",
+        "/tmp/poincare-review-t4z0tuz_/Types.lean",
+        "/tmp/poincare-review-t4z0tuz_/FullAudit.lean",
+        "/tmp/poincare-review-t4z0tuz_/Solutions.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected Poincaré theorem. Its seven obligations follow the supplied argument, have correctly directed acyclic dependencies, and establish the frozen parent through variance_bound and double_integral_bound with CP = 2^(n+2). The snapshot pins project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b and Mathlib 25730c7c759d108ef87ab70af2342a196760f79d; the contract and relevant build sources match. Searches found no matching reusable Euclidean theorem. Scanning the 344-node DAG and other-node JSON contracts found no conflicting reservations; all seven names are bare identifiers. All seven standalone one-line propositions passed validation and independent elaboration without their implementations. Product volume and continuous-linear-map derivative typing were checked. The supplied complete proof tree compiled freshly, and comparator-style exact Submission.X checks passed for all seven children and the selected parent. Every audited theorem uses only propext, Classical.choice and Quot.sound. The natural proofs were also checked independently; their arguments are complete and non-circular. A public cross-check confirms the variance/segment/change-of-variables structure: [Klartag–Lehec, Theorem 1](https://arxiv.org/html/2406.01324v2)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "sq_integral_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including finite measure and MemLp hypotheses. The proof obtains all required integrability, handles zero total mass, and expands the nonnegative centered square before multiplying by positive mass. It is complete and independent."
+    },
+    {
+      "key": "segment_ftc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type precisely records Lipschitz continuity, a.e. differentiability on Icc, and the interval integral. Lipschitz composition gives absolute continuity; FTC, the chain rule, and restriction to Ioc establish the identity. The cited pinned imports supply the required results."
+    },
+    {
+      "key": "segment_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The inferred pair measure is definitionally product volume. Measurable affine preimages are null for nonzero t; at t=0, the product measure vanishes by (volume univ)*0=0, also when n=0. Tonelli in both orders proves the exact iterated a.e. conclusion."
+    },
+    {
+      "key": "pair_sq_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Rademacher supplies the measurable null exceptional set. The declared segment lemmas give FTC for a.e. pair; the operator-norm estimate and sq_integral_le give the stated squared-distance factor. Measurability, boundedness, integrability, and signs are justified without circular reliance."
+    },
+    {
+      "key": "slice_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ENNReal proposition matches the lower-integral statement and variable order. The indicator argument, Haar dilation formula, translation invariance, and convexity prove the one-variable bound. Splitting at t=1/2 and applying Tonelli yields the exact coefficient, without assuming g integrable."
+    },
+    {
+      "key": "double_integral_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The restricted pair estimate supplies factor 4; Tonelli and slice_bound supply 2^n times the ball volume. Bounded derivatives ensure the finite right-hand side required for toReal monotonicity. Inner integrability and outer measurability justify the real-integral conversions. Exactly the declared dependencies are used."
+    },
+    {
+      "key": "variance_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree, including arbitrary finite-measure s and zero-mass conventions. No measurability assumption on s is needed for the restricted-measure argument. Cauchy–Schwarz proves the pointwise bound; domination by 2f(x)^2+2f(y)^2 supplies product integrability and permits the final integration."
+    }
+  ],
+  "required_changes": []
+}
