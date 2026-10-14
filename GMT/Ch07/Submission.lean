@@ -7101,6 +7101,83 @@ theorem Submission.cmcdt_lpi_lipschitz_piece_im : ((∀ (N N' k : ℕ) (A : Eucl
   exact hasSum_integral_iUnion hCm hCd
     (hint.mono_set (iUnion_subset fun l => (hCA l).trans fun u hu => hu.1))
 
+/-- **The cylinder over an integer multiplicity current is integer multiplicity** (step 8 (B5) of
+the proof of the deformation theorem, Simon 6.5.1; Simon Ch. 6, 2.18–2.20 and 3.2(2):
+`[[(0,1)]] × τ(M, θ, ξ) = τ((0,1) × M, θ, e₁ ∧ ξ)`).  Write `ι(t, x) = (t, x) ∈ ℝᴺ⁺¹`,
+`e₀ = ι(1, 0)` and `Jv = ι(0, v)`.  Let `X ∈ 𝒟ₖ₊₁(ℝᴺ)` be integer multiplicity with `M(X) < ∞`,
+and let `C ∈ 𝒟ₖ₊₂(ℝᴺ⁺¹)` satisfy `C(ω) = X(η)` for a test form `η` with
+`η(x)(v) = ∫₀¹ ω(ι(t, x))(e₀, Jv) dt`.  By `cmcdt_lpi_piece_representation`,
+`X(η) = Σᵢ ∫_{Aᵢ} wᵢ η(Gᵢ)(DGᵢ e)` with Lipschitz `Gᵢ` and `Σᵢ ∫_{Aᵢ} |wᵢ| cᵢ ≤ M(X)`.  The product
+pieces `Ĝᵢ(z) = ι(z₀, Gᵢ(tail z))` on `Âᵢ = (0, 1) × Aᵢ` with weights `ŵᵢ = wᵢ ∘ tail` turn each
+term into `∫_{Âᵢ} ŵᵢ ω(Ĝᵢ)(DĜᵢ ê)` (`cmcdt_lpi_cyl_piece_action`), the action of an integer
+multiplicity current `Ŝᵢ` (`cmcdt_lpi_lipschitz_piece_im`) of mass `M(Ŝᵢ) ≤ ∫_{Aᵢ} |wᵢ| cᵢ`
+(`cmcdt_lpi_cyl_piece_mass`).  So `Σᵢ M(Ŝᵢ) ≤ M(X) < ∞`, (IMS) sums the `Ŝᵢ` to an integer
+multiplicity current `Ĉ`, and `C(ω) = Σᵢ Ŝᵢ(ω) = Ĉ(ω)` for every test form `ω`. -/
+theorem Submission.cmcdt_lpi_cylinder_im : ((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (α : Covector (Euclid N) k) (τ : Fin k → Euclid N), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ((∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P k : ℕ) (W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), ∑' i, (W i).mass < ∞ → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => W i ω) (S ω)) ∧ S.mass ≤ ∑' i, (W i).mass ∧ S.support ⊆ closure (⋃ i, (W i).support) ∧ ((∀ i, IsIntegerMultiplicity (W i)) → IsIntegerMultiplicity S)) → ∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)) (C : GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1 + 1)), IsIntegerMultiplicity X → IsCompact X.support → X.mass < ∞ → (∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1 + 1), ∃ η : TestFormOn (univ : Set (Euclid N)) (k + 1), (∀ (x : Euclid N) (v : Fin (k + 1) → Euclid N), (η : DifferentialForm (Euclid N) (k + 1)) x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (k + 1 + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ C ω = X η) → IsIntegerMultiplicity C := by
+  intro hCB hVO hMR hIMC hIMS N k X C hX _hXc hXm hslice
+  -- (IMSc): (IMS) applied to (VO), (MR), (IMC)
+  have hIMSc := hIMS hVO hMR hIMC
+  -- Step 1: pieces `(Gᵢ, Aᵢ, wᵢ, cᵢ)` with `X(η) = Σᵢ ∫_{Aᵢ} wᵢ η(Gᵢ)(DGᵢ e)`
+  obtain ⟨G, A, w, c, hGL, hA, hw, hc, hGd, -, hwi, hcb, hsum, hrep⟩ :=
+    Submission.cmcdt_lpi_piece_representation hCB hVO hMR hIMC N k X hX hXm
+  choose L hL using hGL
+  -- Step 2: the product pieces `Ĝᵢ(z) = ι(z₀, Gᵢ(tail z))`, `Âᵢ = (0, 1) × Aᵢ`, `ŵᵢ = wᵢ ∘ tail`
+  obtain ⟨Gh, hGh⟩ : ∃ Gh : ℕ → Euclid (k + 1 + 1) → Euclid (N + 1), ∀ i z,
+      Gh i z = WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0)
+        (WithLp.ofLp (G i (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))))) :=
+    ⟨_, fun _ _ => rfl⟩
+  obtain ⟨Ah, hAh⟩ : ∃ Ah : ℕ → Set (Euclid (k + 1 + 1)), ∀ i,
+      Ah i = {z : Euclid (k + 1 + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧
+        (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid (k + 1)) ∈ A i} :=
+    ⟨_, fun _ => rfl⟩
+  obtain ⟨wh, hwh⟩ : ∃ wh : ℕ → Euclid (k + 1 + 1) → ℤ, ∀ i z,
+      wh i z = w i (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) :=
+    ⟨_, fun _ _ => rfl⟩
+  -- Steps 2–3 for each piece: `Ĝᵢ` Lipschitz, `Âᵢ` Borel, `ŵᵢ` integrable, and the slice identity
+  -- `∫_{Aᵢ} wᵢ η(Gᵢ)(DGᵢ e) = ∫_{Âᵢ} ŵᵢ ω(Ĝᵢ)(DĜᵢ ê)`
+  have hact := fun i => Submission.cmcdt_lpi_cyl_piece_action N (k + 1) (L i) (G i) (A i) (w i)
+    (Gh i) (Ah i) (wh i) (hL i) (hA i) (hw i) (hwi i) (hGd i) (hGh i) (hAh i) (hwh i)
+  -- Step 4: integer multiplicity pieces `Ŝᵢ(ω) = ∫_{Âᵢ} ŵᵢ ω(Ĝᵢ)(DĜᵢ ê)`
+  have hS : ∀ i, ∃ S : GeometricCurrentOn (univ : Set (Euclid (N + 1))) (k + 1 + 1),
+      IsIntegerMultiplicity S ∧ ∀ ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1 + 1),
+        S ω = ∫ z in Ah i, (wh i z : ℝ) *
+          (ω : DifferentialForm (Euclid (N + 1)) (k + 1 + 1)) (Gh i z)
+            (fun a => fderiv ℝ (Gh i) z (EuclideanSpace.single a 1)) := by
+    intro i
+    obtain ⟨hGhL, hAhm, hwhm, hwhi, -⟩ := hact i
+    exact Submission.cmcdt_lpi_lipschitz_piece_im hCB hIMC hIMSc (N + 1) (k + 1) (max 1 (L i))
+      (Gh i) (Ah i) (wh i) hGhL hAhm hwhm hwhi
+  choose S hSim hSrep using hS
+  -- Step 5: `M(Ŝᵢ) = sup {Ŝᵢ(ω) : |ω| ≤ 1} ≤ ∫_{Aᵢ} |wᵢ| cᵢ`, so `Σᵢ M(Ŝᵢ) ≤ M(X) < ∞`
+  have hmass : ∀ i, (S i).mass ≤ ∫⁻ u in A i, ENNReal.ofReal (|(w i u : ℝ)| * c i u) := by
+    intro i
+    unfold GeometricCurrentOn.mass GeometricCurrentOn.massOn
+    apply sSup_le
+    rintro _ ⟨ω, hω, rfl⟩
+    dsimp only
+    rw [hSrep i ω]
+    exact Submission.cmcdt_lpi_cyl_piece_mass hCB.1 hCB.2.1 N (k + 1) (G i) (A i) (w i) (c i)
+      (Gh i) (Ah i) (wh i) (hA i) (hw i) (hc i) (hGd i) (hcb i) (hGh i) (hAh i) (hwh i) _ hω.2
+  have hfin : ∑' i, (S i).mass < ∞ :=
+    lt_of_le_of_lt ((ENNReal.tsum_le_tsum hmass).trans hsum) hXm
+  -- Step 6: (IMSc) sums the `Ŝᵢ` to an integer multiplicity `Ĉ = τ(R)`
+  obtain ⟨Ch, hChsum, -, -, hChim⟩ := hIMSc (N + 1) (k + 1) S hfin
+  obtain ⟨R, hR⟩ := hChim hSim
+  -- `C(ω) = X(η) = Σᵢ Ŝᵢ(ω) = Ĉ(ω)`, so `R` also represents `C`
+  refine ⟨R, fun ω => ?_⟩
+  obtain ⟨η, hη, hCω⟩ := hslice ω
+  have hSη : (fun i => S i ω) = fun i => ∫ u in A i, (w i u : ℝ) *
+      (η : DifferentialForm (Euclid N) (k + 1)) (G i u)
+        (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1)) := by
+    funext i
+    rw [hSrep i ω]
+    exact ((hact i).2.2.2.2 ω η hη).symm
+  have hCsum : HasSum (fun i => S i ω) (C ω) := by
+    rw [hSη, hCω]
+    exact hrep η
+  rw [hCsum.unique (hChsum ω)]
+  exact hR ω
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
