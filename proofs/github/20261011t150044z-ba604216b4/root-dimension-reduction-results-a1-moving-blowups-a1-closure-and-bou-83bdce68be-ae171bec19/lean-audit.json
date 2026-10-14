@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "31d7b40349ad949532b9209234deddbc7831d85d22eea240858d888919741142",
+  "git_delta": {
+    "base_commit": "a48905e5174f35fb1808855fa46d862010cd18c9",
+    "candidate_commit": "e3b2d102d1ca6fe67302cd9bfb9d7c0dd7fad5c1",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbrcs_testFormOnConverges_smul",
+    "diff_sha256": "8e2efcc3a11314f14ede8328590f5822131867e721c0c2e1c5f6ede0495be68f",
+    "source_sha256": "3f1759990079f55c15e722512e1dae4f624bf7d385c6695521c5a43536aec288",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbrcs_testFormOnConverges_smul",
+      "statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (ζ : Euclid P → ℝ) (ωs : ℕ → TestFormOn (univ : Set (Euclid P)) k) (ηs : ℕ → TestFormOn U k), ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → tsupport ζ ⊆ U → TestFormOnConverges ωs 0 → (∀ j x, (ηs j : DifferentialForm (Euclid P) k) x = ζ x • (ωs j : DifferentialForm (Euclid P) k) x) → TestFormOnConverges ηs 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
