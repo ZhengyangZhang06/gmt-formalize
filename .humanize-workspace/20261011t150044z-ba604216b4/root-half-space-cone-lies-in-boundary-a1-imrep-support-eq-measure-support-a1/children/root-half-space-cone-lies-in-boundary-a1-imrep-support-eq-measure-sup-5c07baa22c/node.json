@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.current_vanishes_where_weight_null-a1",
+  "parent_id": "root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1",
+  "depth": 3,
+  "title": "A current represented by (M, θ, ξ) vanishes on every set of zero weight θH^n⌞M",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, let W ⊆ ℝ^P be an arbitrary set, let T ∈ GeometricCurrentOn U n, and let R = (M, θ, ξ) ∈ IMRep U n with R.Represents T, i.e. T(ω) = R.action(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dH^n(x) for every ω ∈ TestFormOn U n. If R.measure(W) = 0, where R.measure = (H^n⌞M).withDensity θ, then T vanishes on W: T(ω) = 0 for every ω ∈ TestFormOn U n with tsupport ω ⊆ W.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), R.Represents T → R.measure W = 0 → T.VanishesOn W",
+  "lean_name": "imsupp_vanishesOn_of_measure_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-5c07baa22c-a1"
+}
