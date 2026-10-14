@@ -5659,6 +5659,65 @@ theorem Submission.covectorEuclideanNorm_gram_bounds : ∀ (P n : ℕ), (∀ (α
     unfold covectorEuclideanNorm
     rw [← he, hsum, Real.sqrt_one]
 
+/-- **Integer multiplicity of a parametrized current** (Simon 6.3.5–3.9, Part G of the cone
+construction).  Let `T ∈ 𝒟ₖ₊₁(ℝᴾ)` and, for `j ∈ ℕ`, let `Fⱼ : ℝᵏ⁺¹ → ℝᴾ` be Lipschitz, `Aⱼ` Borel
+and `gⱼ : ℝᵏ⁺¹ → ℤ` measurable with `gⱼ` integrable on `Aⱼ`, such that
+`Σⱼ ∫_{Aⱼ} |gⱼ| JFⱼ < ∞` (`JFⱼ = det(⟨DFⱼ eₐ, DFⱼ e_b⟩)^{1/2}`) and
+`T(ω) = Σⱼ ∫_{Aⱼ} gⱼ ω(Fⱼ)(DFⱼ e₀, …, DFⱼ eₖ)` for every test form `ω`.  Then `T` is integer
+multiplicity.  Each term is an integer multiplicity piece `Wⱼ` (Lipschitz piece current); the
+Gram bound `|α(v)| ≤ |α|_E · det(⟨vₐ, v_b⟩)^{1/2}` gives `M(Wⱼ) ≤ ∫_{Aⱼ} |gⱼ| JFⱼ`, so the masses
+are summable and the series of integer multiplicity currents sums to an integer multiplicity
+`Y` with `Y(ω) = Σⱼ Wⱼ(ω)`; by uniqueness of sums `T = Y`. -/
+theorem Submission.ecf_isIntegerMultiplicity_of_parametrization : ∀ (k P : ℕ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)) (F : ℕ → Euclid (k + 1) → Euclid P) (A : ℕ → Set (Euclid (k + 1))) (g : ℕ → Euclid (k + 1) → ℤ), (∀ j, ∃ K : NNReal, LipschitzWith K (F j)) → (∀ j, MeasurableSet (A j)) → (∀ j, Measurable (g j)) → (∀ j, IntegrableOn (fun u => (g j u : ℝ)) (A j)) → ∑' j, ∫⁻ u in A j, ‖(g j u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (k + 1) => inner ℝ (fderiv ℝ (F j) u (EuclideanSpace.single a 1)) (fderiv ℝ (F j) u (EuclideanSpace.single b 1))))) ≠ ∞ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun j => ∫ u in A j, (g j u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (F j u) (fun a => fderiv ℝ (F j) u (EuclideanSpace.single a 1))) (T ω)) → IsIntegerMultiplicity T := by
+  intro k P T F A g hF hA hg hgi hfin hT
+  -- (MR): the first conjunct of the mass/support identity for an `IMRep`
+  have hMR : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n),
+      IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W :=
+    fun P n U T R hU hR =>
+      (Submission.dor_imrep_massOn_eq_measure_and_support P n U T R hU hR).1
+  -- (IMSc): series of integer multiplicity currents of finite total mass
+  have hIMS := Submission.cmcdt_im_series Submission.dtc_vanish_off_support hMR
+    Submission.cmc_imRep_locality_restrict_sub
+  -- the pieces `Wⱼ(ω) = ∫_{Aⱼ} gⱼ ω(Fⱼ)(∂Fⱼ)` are integer multiplicity
+  have hW : ∀ j, ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1),
+      IsIntegerMultiplicity S ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1),
+        S ω = ∫ u in A j, (g j u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (F j u)
+          (fun a => fderiv ℝ (F j) u (EuclideanSpace.single a 1)) := by
+    intro j
+    obtain ⟨L, hL⟩ := hF j
+    exact Submission.dimred_mbl_dt_lpip_lipschitz_piece_current hMR
+      Submission.cmc_imRep_locality_restrict_sub hIMS P k L (F j) (A j) (g j) hL (hA j) (hg j)
+      (hgi j)
+  choose W hWim hWeq using hW
+  -- `M(Wⱼ) ≤ ∫_{Aⱼ} |gⱼ| JFⱼ`: for admissible `ω`, `|ω(Fⱼ u)(∂Fⱼ u)| ≤ |ω(Fⱼ u)|_E JFⱼ(u) ≤ JFⱼ(u)`
+  have hmass : ∀ j, (W j).mass ≤ ∫⁻ u in A j, ‖(g j u : ℝ)‖ₑ * ENNReal.ofReal (Real.sqrt
+      (Matrix.det (Matrix.of fun a b : Fin (k + 1) =>
+        inner ℝ (fderiv ℝ (F j) u (EuclideanSpace.single a 1))
+          (fderiv ℝ (F j) u (EuclideanSpace.single b 1))))) := by
+    intro j
+    apply sSup_le
+    rintro r ⟨ω, hω, rfl⟩
+    show ENNReal.ofReal (W j ω) ≤ _
+    rw [hWeq j ω]
+    refine (Real.ofReal_le_enorm _).trans <|
+      (enorm_integral_le_lintegral_enorm _).trans (lintegral_mono fun u => ?_)
+    rw [enorm_mul]
+    gcongr
+    rw [Real.enorm_eq_ofReal_abs]
+    refine ENNReal.ofReal_le_ofReal
+      (((Submission.covectorEuclideanNorm_gram_bounds P (k + 1)).1 _ _).trans ?_)
+    exact mul_le_of_le_one_left (Real.sqrt_nonneg _) (hω.2 (F j u))
+  have hsum : ∑' j, (W j).mass < ∞ :=
+    (ENNReal.tsum_le_tsum hmass).trans_lt (lt_top_iff_ne_top.2 hfin)
+  -- the series current `Y` is integer multiplicity, and `T = Y` by uniqueness of sums
+  obtain ⟨Y, hY, -, -, hYim⟩ := hIMS P k W hsum
+  have hTY : T = Y := by
+    ext ω
+    refine HasSum.unique ?_ (hY ω)
+    simpa only [hWeq] using hT ω
+  rw [hTY]
+  exact hYim hWim
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
