@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "68defe2902fe79944abdf941b468b69503148fd754914cd8c0a268f75fd2b31b",
+  "git_delta": {
+    "base_commit": "fe459a5a5bca60181bfad6b54943c4001fe016b0",
+    "candidate_commit": "a8629a222bd473cbdc5060eec1a95ddc4b5def7e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "ecf_cp_ball_retraction",
+    "diff_sha256": "a78839bb5c4b116c8d91d6738852c1767b7d7f506b783a958987fcd0f1f83705",
+    "source_sha256": "c2dfef04e96854cd3a6f12a806c06dc3b50ba9eb12b15392dafb63010d095ad5",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.ecf_cp_ball_retraction",
+      "statement": "∀ (P : ℕ) (ρ : ℝ), 0 < ρ → ∃ r : Euclid P → Euclid P, LipschitzWith 1 r ∧ (∀ y, ‖r y‖ ≤ ρ) ∧ ∀ y, ‖y‖ ≤ ρ → r y = y",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
