@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.cone_density-a1.blowup_upper-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1.cone_density-a1",
+  "depth": 5,
+  "title": "Small-scale upper bound for Hⁿ(M ∩ η_{x,r}⁻¹(U)) from a test function dominating 1_U at an approximate tangent point",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P with Hⁿ(M) < ∞ (Hⁿ = μHE[n]), x ∈ ℝ^P, and Q a linear subspace of ℝ^P which is the approximate tangent space of M at x (SimonGMT HasApproximateTangentSpaceAt n M x Q). Let U ⊆ ℝ^P be a measurable set and f ∈ C_c(ℝ^P, ℝ) with f ≥ 0 everywhere and f ≥ 1 on U. If t ∈ [0, ∞] satisfies ofReal(∫_Q f dHⁿ) < t, then for all sufficiently small r > 0 (eventually in 𝓝[>] 0), Hⁿ(M ∩ η_{x,r}⁻¹(U)) ≤ t·rⁿ, where η_{x,r}(z) = r⁻¹(z − x) is SimonGMT's blowUpMap x r.",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (U : Set (Euclid P)) (f : CompactlySupportedContinuousMap (Euclid P) ℝ), μHE[n] M ≠ ∞ → HasApproximateTangentSpaceAt n M x Q → MeasurableSet U → (∀ y, 0 ≤ f y) → (∀ y ∈ U, 1 ≤ f y) → ∀ t : ℝ≥0∞, ENNReal.ofReal (∫ y in (Q : Set (Euclid P)), f y ∂μHE[n]) < t → ∀ᶠ r in 𝓝[>] (0 : ℝ), μHE[n] (M ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r ⁻¹' U) ≤ t * ENNReal.ofReal (r ^ n)",
+  "lean_name": "cbrr_tcd_blowUp_preimage_le_of_testFunction",
+  "depends_on": [
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1.blowup_image_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1.blowup_image_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-re-844f5fd455-a1",
+      "result_commit": "6d5fb477cd678ba8a2494f88aea12fb69f2dbbc3",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-bfaeb8601b-a1"
+}
