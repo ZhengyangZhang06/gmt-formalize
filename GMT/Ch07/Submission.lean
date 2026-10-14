@@ -695,6 +695,114 @@ theorem Submission.dimred_mbl_dtsr_face_radial : ∀ (P : ℕ) (a : Euclid P), (
       _ ≤ 1 / N x * dist y x + 4 * dist y x / N x * Real.sqrt J.card := by gcongr
       _ = (1 + 4 * Real.sqrt J.card) / N x * dist y x := by ring
 
+/-- **Simon Ch. 6, proof of Lemma 5.4: the composite of the face retractions** (chapter-06.txt,
+lines 1508–1546).  For `a` with `|aᵢ − 1/2| < 1/4` there are maps `Ψ_k : ℝᴾ → ℝᴾ` with
+`Ψ_{m+1} = id` and `Ψ_j(x) = Ψ_{j−1}(ψ_F(x))` for every `j`-face `F = F(b, J)`, `m + 2 ≤ j ≤ P`,
+and `x ∈ F`, where `ψ_F` is the radial retraction of `F` from its centre `a_F` onto `∂F` (Simon's
+`ψ^{(j)} := ⋃ ψ_F` and `ψ^{(m+2)} ∘ ⋯ ∘ ψ^{(j)}`; at `x = a_F` the gauge vanishes and, with
+`t / 0 = 0`, `ψ_F(a_F) = a_F`).  Two distinct `j`-faces through `u` meet where `u` has a coordinate
+`uᵢ ∈ {bᵢ, bᵢ + 1}`, `i ∈ J`, in each of them, and there both retractions are the identity
+(`dimred_mbl_dtsr_face_radial`); so the step map `φ_j` retracting along any `j`-face through `u`
+is well defined, and `Ψ_k := Ψ_{k−1} ∘ φ_k` for `k ≥ m + 2`. -/
+theorem Submission.dimred_mbl_dtsr_face_retraction_family : ∀ (P m : ℕ) (a : Euclid P), (∀ i, |a i - 1 / 2| < 1 / 4) → ∃ Ψ : ℕ → Euclid P → Euclid P, (∀ x, Ψ (m + 1) x = x) ∧ ∀ j, m + 2 ≤ j → j ≤ P → ∀ (b : Fin P → ℤ) (J : Finset (Fin P)) (hJ : J.Nonempty), J.card = j → ∀ x : Euclid P, (∀ i, (i ∈ J → (b i : ℝ) ≤ x i ∧ x i ≤ b i + 1) ∧ (i ∉ J → x i = b i)) → ∀ y : Euclid P, (∀ i, y i = if i ∈ J then (b i : ℝ) + a i + (x i - b i - a i) / J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k)) else x i) → Ψ j x = Ψ (j - 1) y := by
+  classical
+  intro P m a ha
+  -- `u ∈ F(b, J)`
+  let InF : (Fin P → ℤ) → Finset (Fin P) → Euclid P → Prop := fun b J u =>
+    ∀ i, (i ∈ J → (b i : ℝ) ≤ u i ∧ u i ≤ b i + 1) ∧ (i ∉ J → u i = b i)
+  -- the radial retraction `R_{b,J}` of `F(b, J)` from its centre onto `∂F(b, J)` (`id` if `J = ∅`)
+  let R : (Fin P → ℤ) → Finset (Fin P) → Euclid P → Euclid P := fun b J u =>
+    if hJ : J.Nonempty then
+      WithLp.toLp 2 fun i => if i ∈ J then (b i : ℝ) + a i + (u i - b i - a i) /
+        J.sup' hJ (fun k => max ((u k - b k - a k) / (1 - a k)) ((b k + a k - u k) / a k))
+        else u i
+    else u
+  have hR : ∀ (b : Fin P → ℤ) (J : Finset (Fin P)) (hJ : J.Nonempty) (u : Euclid P) (i : Fin P),
+      R b J u i = if i ∈ J then (b i : ℝ) + a i + (u i - b i - a i) /
+        J.sup' hJ (fun k => max ((u k - b k - a k) / (1 - a k)) ((b k + a k - u k) / a k))
+        else u i := by
+    intro b J hJ u i
+    simp only [R, dite_eq_left hJ, PiLp.toLp_apply]
+  -- Step 1: if two distinct faces of the same dimension contain `u`, then `u` has a coordinate
+  -- `uᵢ ∈ {bᵢ, bᵢ + 1}`, `i ∈ J`, on the boundary of the first one
+  have hbd : ∀ (b b' : Fin P → ℤ) (J J' : Finset (Fin P)) (u : Euclid P), J.card = J'.card →
+      InF b J u → InF b' J' u → (b, J) ≠ (b', J') → ∃ i ∈ J, u i = b i ∨ u i = b i + 1 := by
+    intro b b' J J' u hcard hu hu' hne
+    by_cases hJJ : J = J'
+    · -- same free coordinates: `bᵢ ≠ b'ᵢ` for some `i ∈ J` and `uᵢ ∈ [bᵢ, bᵢ + 1] ∩ [b'ᵢ, b'ᵢ + 1]`
+      subst hJJ
+      obtain ⟨i, hi⟩ := Function.ne_iff.mp fun h : b = b' => hne (by rw [h])
+      by_cases hiJ : i ∈ J
+      · refine ⟨i, hiJ, ?_⟩
+        obtain ⟨h1, h2⟩ := (hu i).1 hiJ
+        obtain ⟨h3, h4⟩ := (hu' i).1 hiJ
+        rcases lt_or_gt_of_ne hi with hlt | hlt
+        · have : (b i : ℝ) + 1 ≤ b' i := by exact_mod_cast hlt
+          right; linarith
+        · have : (b' i : ℝ) + 1 ≤ b i := by exact_mod_cast hlt
+          left; linarith
+      · exact absurd (Int.cast_injective (((hu i).2 hiJ).symm.trans ((hu' i).2 hiJ))) hi
+    · -- `J ⊄ J'`: for `i ∈ J \ J'` the coordinate `uᵢ = b'ᵢ ∈ [bᵢ, bᵢ + 1]` is an integer
+      obtain ⟨i, hiJ, hiJ'⟩ := Finset.not_subset.mp fun hsub =>
+        hJJ (Finset.eq_of_subset_of_card_le hsub hcard.ge)
+      refine ⟨i, hiJ, ?_⟩
+      obtain ⟨h1, h2⟩ := (hu i).1 hiJ
+      rw [(hu' i).2 hiJ'] at h1 h2 ⊢
+      have h1' : b i ≤ b' i := Int.cast_le.mp h1
+      have h2' : b' i ≤ b i + 1 := by
+        rw [← Int.cast_le (R := ℝ), Int.cast_add, Int.cast_one]
+        exact h2
+      rcases h1'.eq_or_lt with h | h
+      · left; rw [← h]
+      · right; rw [le_antisymm h2' (Int.add_one_le_of_lt h), Int.cast_add, Int.cast_one]
+  -- Step 2: at such points `R_{b,J}` is the identity (`dimred_mbl_dtsr_face_radial`;
+  -- `1/4 < aᵢ < 3/4` keeps `u` off the centre), so all faces of the same dimension through `u`
+  -- agree
+  have hfix : ∀ (b : Fin P → ℤ) (J : Finset (Fin P)) (u : Euclid P), InF b J u →
+      (∃ i ∈ J, u i = b i ∨ u i = b i + 1) → R b J u = u := by
+    rintro b J u hu ⟨i, hiJ, hbi⟩
+    have hJ : J.Nonempty := ⟨i, hiJ⟩
+    have hai := abs_lt.mp (ha i)
+    have hne : ∃ i ∈ J, u i ≠ b i + a i := ⟨i, hiJ, by
+      rcases hbi with h | h <;> rw [h] <;> intro h' <;> linarith [hai.1, hai.2]⟩
+    exact (Submission.dimred_mbl_dtsr_face_radial P a ha b J hJ (R b J) (hR b J hJ) u hu
+      hne).2.2.2.2.2.1 ⟨i, hiJ, hbi⟩
+  have hcons : ∀ (b b' : Fin P → ℤ) (J J' : Finset (Fin P)) (u : Euclid P), J.card = J'.card →
+      InF b J u → InF b' J' u → R b J u = R b' J' u := by
+    intro b b' J J' u hcard hu hu'
+    by_cases h : (b, J) = (b', J')
+    · obtain ⟨rfl, rfl⟩ := Prod.mk.inj h
+      rfl
+    · rw [hfix b J u hu (hbd b b' J J' u hcard hu hu' h),
+        hfix b' J' u hu' (hbd b' b J' J u hcard.symm hu' hu (Ne.symm h))]
+  -- Step 3: the step map `φ_j` applies the retraction of a chosen `j`-face through `u`
+  let φ : ℕ → Euclid P → Euclid P := fun j u =>
+    if h : ∃ p : (Fin P → ℤ) × Finset (Fin P), p.2.card = j ∧ InF p.1 p.2 u then
+      R h.choose.1 h.choose.2 u
+    else u
+  -- Step 4: `Ψ_k = id` for `k ≤ m + 1` and `Ψ_k = Ψ_{k−1} ∘ φ_k` for `k ≥ m + 2`
+  let Ψ : ℕ → Euclid P → Euclid P := fun k =>
+    Nat.rec (motive := fun _ => Euclid P → Euclid P) id
+      (fun k Ψk => if k + 1 ≤ m + 1 then id else Ψk ∘ φ (k + 1)) k
+  refine ⟨Ψ, fun x => ?_, ?_⟩
+  · show (if m + 1 ≤ m + 1 then id else Ψ m ∘ φ (m + 1)) x = x
+    rw [ite_eq_left le_rfl]
+    rfl
+  -- Step 5: for `x ∈ F(b, J)` the chosen face gives `φ_j(x) = R_{b,J}(x) = y`
+  · intro j hj _ b J hJ hcard x hx y hy
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_add_one.mpr ((Nat.zero_lt_succ _).trans_le hj)
+    have hk : ¬k + 1 ≤ m + 1 := Nat.not_le.mpr hj
+    show (if k + 1 ≤ m + 1 then id else Ψ k ∘ φ (k + 1)) x = Ψ (k + 1 - 1) y
+    rw [ite_eq_right hk, Nat.add_sub_cancel]
+    have hex : ∃ p : (Fin P → ℤ) × Finset (Fin P), p.2.card = k + 1 ∧ InF p.1 p.2 x :=
+      ⟨(b, J), hcard, hx⟩
+    show Ψ k (if h : ∃ p : (Fin P → ℤ) × Finset (Fin P), p.2.card = k + 1 ∧ InF p.1 p.2 x then
+      R h.choose.1 h.choose.2 x else x) = Ψ k y
+    rw [dite_eq_left hex, hcons _ b _ J x (hex.choose_spec.1.trans hcard.symm) hex.choose_spec.2 hx]
+    congr 1
+    ext i
+    rw [hR b J hJ x i, hy i]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
