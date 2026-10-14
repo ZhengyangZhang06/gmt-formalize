@@ -451,6 +451,35 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Local `C¹` retraction onto `N` (moving blow-ups in the dimension reduction results; it replaces
+the nearest-point projection of Simon 7.2.5(2)), left inverse step: an injective continuous linear
+map `L : ℝᵈ → ℝᴾ` has a continuous linear left inverse `A` with `‖L ∘ A‖ ≤ 1`.  With `Q = L(ℝᵈ)`,
+`p : ℝᴾ → Q` the orthogonal projection and `e : ℝᵈ ≃ Q` induced by `L`, take `A = e⁻¹ ∘ p`; then
+`A ∘ L = id`, and `L ∘ A` is the orthogonal projection onto `Q`, of norm `≤ 1`. -/
+theorem Submission.dimred_mbl_bh_lr_left_inverse_projection : ∀ (P d : ℕ) (L : Euclid d →L[ℝ] Euclid P), Injective L → ∃ A : Euclid P →L[ℝ] Euclid d, A.comp L = ContinuousLinearMap.id ℝ (Euclid d) ∧ ‖L.comp A‖ ≤ 1 := by
+  intro P d L hL
+  -- Step 1: `Q := L(ℝᵈ)` is finite-dimensional, so the orthogonal projection `p : ℝᴾ → Q` exists
+  let Q : Submodule ℝ (Euclid P) := LinearMap.range (L : Euclid d →ₗ[ℝ] Euclid P)
+  -- Step 2: `e : ℝᵈ ≃ Q`, `e w = L w`, is a continuous linear equivalence (finite dimensions)
+  let e : Euclid d ≃L[ℝ] Q :=
+    (LinearEquiv.ofInjective (L : Euclid d →ₗ[ℝ] Euclid P) hL).toContinuousLinearEquiv
+  -- Step 3: `A := e⁻¹ ∘ p`
+  refine ⟨(e.symm : Q →L[ℝ] Euclid d).comp Q.orthogonalProjectionOnto, ?_, ?_⟩
+  · -- Step 4: `p(L w) = e w` since `p` fixes `Q`, so `A(L w) = e⁻¹(e w) = w`
+    ext1 w
+    have hp : Q.orthogonalProjectionOnto (L w) = e w :=
+      Q.orthogonalProjectionOnto_mem_subspace_eq_self (e w)
+    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, hp,
+      ContinuousLinearEquiv.coe_coe, e.symm_apply_apply, ContinuousLinearMap.id_apply]
+  · -- Step 5: `L(A y) = ι(e(e⁻¹(p y))) = ι(p y)`, i.e. `L ∘ A = ι ∘ p = Q.starProjection`
+    have hLA : L.comp ((e.symm : Q →L[ℝ] Euclid d).comp Q.orthogonalProjectionOnto) =
+        Q.starProjection := by
+      ext1 y
+      exact congrArg Subtype.val (e.apply_symm_apply (Q.orthogonalProjectionOnto y))
+    -- Step 6: `‖L ∘ A‖ = ‖Q.starProjection‖ ≤ 1`
+    rw [hLA]
+    exact Q.starProjection_norm_le
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
