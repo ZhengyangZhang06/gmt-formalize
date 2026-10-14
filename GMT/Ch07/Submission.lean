@@ -451,6 +451,91 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The coordinate covector `dx^I`** (Simon Ch. 6, §1): for `I : Fin n → Fin P` some
+`n`-covector `θ` on `ℝᴾ` has `θ(v₁, …, vₙ) = det (vⱼ(I k))_{k,j}`.  With the coordinate
+projection `p_I x = (x(I k))_k`, `θ⁰ = det ∘ p_I` is alternating, `det Mᵀ = det M` gives the
+formula, and the Leibniz formula with `|x(l)| ≤ ‖x‖` gives `|θ⁰(v)| ≤ n! ∏ⱼ ‖vⱼ‖`, so
+`θ⁰` is continuous. -/
+theorem Submission.cmr_cc_det_covector_exists : ∀ (P n : ℕ) (I : Fin n → Fin P), ∃ θ : Covector (Euclid P) n, ∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k)) := by
+  intro P n I
+  -- Step 1: the coordinate projection `p_I x = (x(I k))_k` is linear
+  let p : Euclid P →ₗ[ℝ] (Fin n → ℝ) :=
+    { toFun := fun x k => x (I k)
+      map_add' := fun x y => by
+        funext k
+        simp
+      map_smul' := fun c x => by
+        funext k
+        simp }
+  -- Step 2: `θ⁰ = Θ ∘ p_I`, with `Θ` the determinant as an alternating map in the rows
+  let θ₀ : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := Matrix.detRowAlternating.compLinearMap p
+  -- Step 3: `θ⁰(v) = det (vⱼ(I k))_{j,k} = det (vⱼ(I k))_{k,j}` by `det Mᵀ = det M`
+  have hθ₀ : ∀ v : Fin n → Euclid P, θ₀ v = Matrix.det (Matrix.of fun k j => v j (I k)) := by
+    intro v
+    rw [← Matrix.det_transpose]
+    rfl
+  -- Step 4: the Leibniz formula, `|sign σ| = 1` and `|x(l)| ≤ ‖x‖` give
+  -- `|θ⁰(v)| ≤ n! ∏ⱼ ‖vⱼ‖`
+  have hbound : ∀ v : Fin n → Euclid P, ‖θ₀ v‖ ≤ (n.factorial : ℝ) * ∏ j, ‖v j‖ := by
+    intro v
+    rw [hθ₀, Real.norm_eq_abs, Matrix.det_apply]
+    calc |∑ σ : Equiv.Perm (Fin n),
+            Equiv.Perm.sign σ • ∏ j, Matrix.of (fun k j => v j (I k)) (σ j) j|
+        ≤ ∑ σ : Equiv.Perm (Fin n),
+            |Equiv.Perm.sign σ • ∏ j, Matrix.of (fun k j => v j (I k)) (σ j) j| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _σ : Equiv.Perm (Fin n), ∏ j, ‖v j‖ := by
+          refine Finset.sum_le_sum fun σ _ => ?_
+          have hσ : |Equiv.Perm.sign σ • ∏ j, Matrix.of (fun k j => v j (I k)) (σ j) j| =
+              ∏ j, |v j (I (σ j))| := by
+            rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;>
+              simp [h, Finset.abs_prod]
+          rw [hσ]
+          gcongr with j
+          rw [← Real.norm_eq_abs]
+          exact PiLp.norm_apply_le (v j) (I (σ j))
+      _ = (n.factorial : ℝ) * ∏ j, ‖v j‖ := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin,
+            nsmul_eq_mul]
+  -- Step 5: `θ = θ⁰.mkContinuous n!` is an `n`-covector with the same values as `θ⁰`
+  exact ⟨θ₀.mkContinuous (n.factorial : ℝ) hbound, hθ₀⟩
+/-- **Kronecker property of the determinant covectors** (Simon 6.1, chapter-06.txt lines 22–47:
+`dxʲ(v) = vⱼ`, `dx^{i₁} ∧ ⋯ ∧ dx^{iₙ}(v₁, …, vₙ) = det(dx^{iₖ}(vⱼ))` (1.1), and
+`ω_α = ω(e_{i₁}, …, e_{iₙ})` for the basis `{dx^α : α ∈ I_{n,P}}` (1.2)): if `I`, `J` are strictly
+increasing and `θ(v) = det (v_j(I k))_{k,j}`, then `θ(e_{J 1}, …, e_{J n}) = δ_{IJ}`.  The matrix
+of `θ(e_J)` has entries `[I k = J j]`.  It is the identity if `I = J`.  Otherwise some `I k₀` is
+not a value of `J` (else `range I ⊆ range J`, both have `n` elements, so the ranges agree and the
+strictly increasing maps agree), and row `k₀` vanishes. -/
+theorem Submission.cmr_cc_det_covector_basis_kronecker : ∀ (P n : ℕ) (I J : Fin n → Fin P) (θ : Covector (Euclid P) n), StrictMono I → StrictMono J → (∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → θ (fun j => EuclideanSpace.basisFun (Fin P) ℝ (J j)) = if I = J then 1 else 0 := by
+  intro P n I J θ hI hJ hθ
+  -- Step 1: `θ(e_J) = det M` with `M k j = e_{J j}(I k)`
+  rw [hθ]
+  -- Step 2: `M k j = e_{J j}(I k) = if I k = J j then 1 else 0`
+  simp only [EuclideanSpace.basisFun_apply, PiLp.single_apply]
+  by_cases hIJ : I = J
+  · -- Step 3: if `I = J`, injectivity of `J` gives `M = 1`, so `det M = 1`
+    rw [ite_eq_left hIJ]
+    subst hIJ
+    refine (congrArg Matrix.det ?_).trans Matrix.det_one
+    ext k j
+    simp only [Matrix.of_apply, Matrix.one_apply, hI.injective.eq_iff]
+  · -- Step 4: if `I ≠ J`, some `I k₀` is not a value of `J`: otherwise `range I ⊆ range J`,
+    -- both ranges have `n` elements, so they are equal and `I = J`
+    rw [ite_eq_right hIJ]
+    obtain ⟨k₀, hk₀⟩ : ∃ k₀, I k₀ ∉ Set.range J := by
+      by_contra hcon
+      have hsub : Set.range I ⊆ Set.range J := by
+        rintro _ ⟨k, rfl⟩
+        by_contra hk
+        exact hcon ⟨k, hk⟩
+      have hcard : (Set.range J).ncard ≤ (Set.range I).ncard :=
+        ((Set.ncard_range_of_injective hJ.injective).trans
+          (Set.ncard_range_of_injective hI.injective).symm).le
+      exact hIJ ((hI.range_inj_of_wellFoundedLT hJ).1 (Set.eq_of_subset_of_ncard_le hsub hcard))
+    -- Step 5: row `k₀` of `M` vanishes, so `det M = 0`
+    refine Matrix.det_eq_zero_of_row_eq_zero k₀ fun j => ?_
+    simp only [Matrix.of_apply]
+    exact ite_eq_right fun hEq => hk₀ ⟨j, hEq.symm⟩
 /-- **Simon 6.1.15, 6.3.4–3.5** (Euclidean coefficient norm versus Gram determinants):
 (1) `|α(v₁, …, vₙ)| ≤ |α|_E · det(⟨vᵢ, vⱼ⟩)^{1/2}` for every `n`-covector `α` on `ℝᴾ`;
 (2) every orthonormal `τ₁, …, τₙ` admits an `n`-covector `α` with `|α|_E ≤ 1` and `α(τ) = 1`.
@@ -1219,6 +1304,61 @@ theorem Submission.cmr_covector_euclidean_equiv : ∀ (P n : ℕ), ∃ (d : ℕ)
   have : FiniteDimensional ℝ (Covector (Euclid P) n) := LinearEquiv.finiteDimensional c₀.symm
   refine ⟨Module.finrank ℝ S, c₀.toContinuousLinearEquiv, fun α => ?_⟩
   rw [LinearEquiv.coe_toContinuousLinearEquiv', hc₀]
+
+/-- **Simon 6.1.1–1.2** (coordinate covectors): (a) for every `I` the coordinate covector
+`dx^I(v) = det(v_j(I k))_{k,j}` exists; (b) an `n`-vector vanishing on `dx^I` for every strictly
+increasing `I` vanishes.  Every `n`-covector expands as `α = Σ_I α(e_I) dx^I` over strictly
+increasing `I`: by `dx^I(e_J) = δ_IJ` the remainder vanishes on every `e_J`, so its coefficient
+norm `|·|_E` is `0`, and `|·|_E` is the norm of a linear isomorphism onto `ℝᵈ`. -/
+theorem Submission.cmr_coordinate_covectors_span : ∀ (P n : ℕ), (∀ I : Fin n → Fin P, ∃ θ : Covector (Euclid P) n, ∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) ∧ ∀ ζ : MultiVector P n, (∀ (I : Fin n → Fin P) (θ : Covector (Euclid P) n), StrictMono I → (∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k))) → ζ θ = 0) → ζ = 0 := by
+  intro P n
+  refine ⟨Submission.cmr_cc_det_covector_exists P n, fun ζ hζ => ?_⟩
+  classical
+  -- `θ I = dx^I` for every `I`
+  choose θ hθ using Submission.cmr_cc_det_covector_exists P n
+  -- `dx^I(e_J) = δ_IJ` for strictly increasing `I`, `J`
+  have hδ : ∀ I J : Fin n → Fin P, StrictMono I → StrictMono J →
+      θ I (fun j => EuclideanSpace.basisFun (Fin P) ℝ (J j)) = if I = J then 1 else 0 :=
+    fun I J hI hJ => Submission.cmr_cc_det_covector_basis_kronecker P n I J (θ I) hI hJ (hθ I)
+  -- `α = Σ_I α(e_I) dx^I` over strictly increasing `I`
+  have hexp : ∀ α : Covector (Euclid P) n, α = ∑ I : Fin n → Fin P,
+      if StrictMono I then α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) • θ I
+      else 0 := by
+    intro α
+    obtain ⟨α', hα'⟩ : ∃ α', α' = α - ∑ I : Fin n → Fin P,
+        if StrictMono I then α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i)) • θ I
+        else 0 := ⟨_, rfl⟩
+    -- `α'(e_J) = α(e_J) - Σ_I α(e_I) δ_IJ = 0` for strictly increasing `J`
+    have hJ : ∀ J : Fin n → Fin P, StrictMono J →
+        α' (fun j => EuclideanSpace.basisFun (Fin P) ℝ (J j)) = 0 := by
+      intro J hJ
+      rw [hα', ContinuousAlternatingMap.sub_apply, ContinuousAlternatingMap.sum_apply,
+        Finset.sum_eq_single J, ite_eq_left hJ, ContinuousAlternatingMap.smul_apply,
+        hδ J J hJ hJ, ite_eq_left rfl, smul_eq_mul, mul_one, sub_self]
+      · intro I _ hIJ
+        split_ifs with hI
+        · rw [ContinuousAlternatingMap.smul_apply, hδ I J hI hJ, ite_eq_right hIJ, smul_zero]
+        · rfl
+      · intro h
+        exact absurd (Finset.mem_univ J) h
+    -- so `|α'|_E = 0`, and `α' = 0` as `|·|_E` is the norm of a linear isomorphism onto `ℝᵈ`
+    have hnorm : covectorEuclideanNorm α' = 0 := by
+      unfold covectorEuclideanNorm
+      rw [Finset.sum_eq_zero fun I _ => ?_, Real.sqrt_zero]
+      split_ifs with hI
+      · rw [hJ I hI, sq, mul_zero]
+      · rfl
+    obtain ⟨d, c, hc⟩ := Submission.cmr_covector_euclidean_equiv P n
+    have hc0 : c α' = 0 := norm_eq_zero.mp ((hc α').symm.trans hnorm)
+    rw [c.map_eq_zero_iff, hα'] at hc0
+    exact sub_eq_zero.mp hc0
+  -- `ζ` vanishes on every `dx^I`, hence on every covector
+  refine ContinuousLinearMap.ext fun α => ?_
+  rw [zero_apply, hexp α, map_sum]
+  refine Finset.sum_eq_zero fun I _ => ?_
+  split_ifs with hI
+  · rw [map_smul, hζ I (θ I) hI (hθ I), smul_zero]
+  · exact map_zero ζ
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
