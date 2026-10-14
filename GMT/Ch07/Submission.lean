@@ -2247,6 +2247,144 @@ theorem Submission.dimred_mbl_dt_lp_imc_orientation : ∀ (N n : ℕ) (ξ : Mult
   let J : Euclid N →ₗ[ℝ] Euclid (N + 1) :=
     { toFun := fun v => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))
       map_add' := fun v w => by
+/-- **Suspension of a map** (the product pieces `Ĝ(t, u) = (t, G(u))` of a cylinder over a
+rectifiable set): if `Ĝ(t, u) = (t, G(u))` for `G : ℝⁿ → ℝᴺ`, then `Ĝ` is `max(1, L)`-Lipschitz
+when `G` is `L`-Lipschitz, `min(1, m)|z − z'| ≤ |Ĝ(z) − Ĝ(z')|` on `ℝ × A` when
+`m|a − a'| ≤ |G(a) − G(a')|` on `A`, and, where `G` is differentiable at `u`, `Ĝ` is
+differentiable at `(t, u)` with `DĜ(t, u)(s, w) = (s, DG(u)w)`.  Hence `DĜ(t, u)` is injective
+when `DG(u)` is, its range is `ℝe₀ ⊕ (0, range DG(u))`, and its Gram matrix is
+`diag(1, Gram(DG(u)))`, so the two Gram determinants agree. -/
+theorem Submission.dimred_mbl_dt_lp_imc_suspension : ∀ (N n : ℕ) (G : Euclid n → Euclid N) (Gh : Euclid (n + 1) → Euclid (N + 1)), (∀ (t : ℝ) (u : Euclid n), Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp (G u)))) → (∀ L : NNReal, LipschitzWith L G → LipschitzWith (max 1 L) Gh) ∧ (∀ (m : ℝ) (A : Set (Euclid n)), (∀ a ∈ A, ∀ a' ∈ A, m * ‖a - a'‖ ≤ ‖G a - G a'‖) → ∀ (t t' : ℝ), ∀ u ∈ A, ∀ u' ∈ A, min 1 m * ‖(WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (n + 1)) - WithLp.toLp 2 (Fin.cons t' (WithLp.ofLp u'))‖ ≤ ‖Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) - Gh (WithLp.toLp 2 (Fin.cons t' (WithLp.ofLp u')))‖) ∧ ∀ (t : ℝ) (u : Euclid n), DifferentiableAt ℝ G u → DifferentiableAt ℝ Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) ∧ (∀ (s : ℝ) (w : Euclid n), fderiv ℝ Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp w))) = WithLp.toLp 2 (Fin.cons s (WithLp.ofLp (fderiv ℝ G u w)))) ∧ (Injective (fderiv ℝ G u) → Injective (fderiv ℝ Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))))) ∧ LinearMap.range (fderiv ℝ Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) : Euclid (n + 1) →ₗ[ℝ] Euclid (N + 1)) = Submodule.span ℝ (insert (EuclideanSpace.single 0 1) ((fun v : Euclid N => (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)) : Euclid (N + 1))) '' (LinearMap.range (fderiv ℝ G u : Euclid n →ₗ[ℝ] Euclid N) : Set (Euclid N)))) ∧ Matrix.det (Matrix.of fun i j : Fin (n + 1) => inner ℝ (fderiv ℝ Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single i 1)) (fderiv ℝ Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) (EuclideanSpace.single j 1))) = Matrix.det (Matrix.of fun i j : Fin n => inner ℝ (fderiv ℝ G u (EuclideanSpace.single i 1)) (fderiv ℝ G u (EuclideanSpace.single j 1))) := by
+  intro N n G Gh hGh
+  -- `Φ_d(t, u) = (t, u₁, …, u_d)` is a bijection `ℝ × ℝᵈ → ℝᵈ⁺¹`, linear in `(t, u)`,
+  -- with `⟨Φ_d(s, v), Φ_d(s', v')⟩ = s s' + ⟨v, v'⟩`
+  have hsurj : ∀ z : Euclid (n + 1), ∃ (t : ℝ) (u : Euclid n),
+      z = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) := fun z =>
+    ⟨WithLp.ofLp z 0, WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)), by simp [Fin.cons_self_tail]⟩
+  have hinj : ∀ (d : ℕ) (t t' : ℝ) (u u' : Euclid d),
+      (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (d + 1)) =
+        WithLp.toLp 2 (Fin.cons t' (WithLp.ofLp u')) → t = t' ∧ u = u' := by
+    intro d t t' u u' h
+    obtain ⟨h1, h2⟩ := Fin.cons_inj.1 (WithLp.toLp_injective 2 h)
+    exact ⟨h1, WithLp.ofLp_injective 2 h2⟩
+  have hsub : ∀ (d : ℕ) (t t' : ℝ) (u u' : Euclid d),
+      (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (d + 1)) -
+          WithLp.toLp 2 (Fin.cons t' (WithLp.ofLp u')) =
+        WithLp.toLp 2 (Fin.cons (t - t') (WithLp.ofLp (u - u'))) := by
+    intro d t t' u u'
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i <;> simp
+  have hinner : ∀ (d : ℕ) (s s' : ℝ) (v v' : Euclid d),
+      inner ℝ (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp v)) : Euclid (d + 1))
+        (WithLp.toLp 2 (Fin.cons s' (WithLp.ofLp v'))) = s * s' + inner ℝ v v' := by
+    intro d s s' v v'
+    simp [PiLp.inner_apply, Fin.sum_univ_succ, mul_comm]
+  have hnorm : ∀ (d : ℕ) (t : ℝ) (u : Euclid d),
+      ‖(WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)) : Euclid (d + 1))‖ ^ 2 = t ^ 2 + ‖u‖ ^ 2 := by
+    intro d t u
+    rw [← real_inner_self_eq_norm_sq, ← real_inner_self_eq_norm_sq, hinner, sq]
+  refine ⟨fun L hL => LipschitzWith.of_dist_le_mul fun z z' => ?_,
+    fun m A hA t t' u hu u' hu' => ?_, fun t u hG => ?_⟩
+  · -- (i) `|Gh z − Gh z'|² = (z₀ − z'₀)² + |G(tail z) − G(tail z')|² ≤ max(1, L)²|z − z'|²`
+    obtain ⟨t, u, rfl⟩ := hsurj z
+    obtain ⟨t', u', rfl⟩ := hsurj z'
+    rw [dist_eq_norm, dist_eq_norm, hGh, hGh, hsub, hsub]
+    have hGL : ‖G u - G u'‖ ≤ L * ‖u - u'‖ := by
+      simpa only [dist_eq_norm] using hL.dist_le_mul u u'
+    have hM1 : (1 : ℝ) ≤ ((max 1 L : NNReal) : ℝ) := by simp
+    have hML : (L : ℝ) ≤ ((max 1 L : NNReal) : ℝ) := by simp
+    have hb : ‖G u - G u'‖ ^ 2 ≤ ((max 1 L : NNReal) : ℝ) ^ 2 * ‖u - u'‖ ^ 2 := by
+      rw [← mul_pow]
+      exact pow_le_pow_left₀ (norm_nonneg _)
+        (hGL.trans (mul_le_mul_of_nonneg_right hML (norm_nonneg _))) 2
+    have hs : (t - t') ^ 2 ≤ ((max 1 L : NNReal) : ℝ) ^ 2 * (t - t') ^ 2 :=
+      le_mul_of_one_le_left (sq_nonneg _) (one_le_pow₀ hM1)
+    refine (pow_le_pow_iff_left₀ (norm_nonneg _) (by positivity) two_ne_zero).1 ?_
+    rw [mul_pow, hnorm, hnorm]
+    linarith
+  · -- (ii) `min(1, m)²|Φ(t, u) − Φ(t', u')|² ≤ (t − t')² + |G u − G u'|²`
+    rw [hGh, hGh, hsub, hsub]
+    rcases le_or_gt (min 1 m) 0 with hk | hk
+    · exact (mul_nonpos_of_nonpos_of_nonneg hk (norm_nonneg _)).trans (norm_nonneg _)
+    have hb : min 1 m ^ 2 * ‖u - u'‖ ^ 2 ≤ ‖G u - G u'‖ ^ 2 := by
+      rw [← mul_pow]
+      exact pow_le_pow_left₀ (by positivity)
+        ((mul_le_mul_of_nonneg_right (min_le_right _ _) (norm_nonneg _)).trans
+          (hA u hu u' hu')) 2
+    have hs : min 1 m ^ 2 * (t - t') ^ 2 ≤ (t - t') ^ 2 :=
+      mul_le_of_le_one_left (sq_nonneg _) (pow_le_one₀ hk.le (min_le_left _ _))
+    refine (pow_le_pow_iff_left₀ (by positivity) (norm_nonneg _) two_ne_zero).1 ?_
+    rw [mul_pow, hnorm, hnorm]
+    linarith
+  · -- (iii) `Gh = cs ∘ (p₀, G ∘ tl)` with continuous linear `p₀`, `tl`, `cs`
+    obtain ⟨p0, hp0⟩ : ∃ p0 : Euclid (n + 1) →L[ℝ] ℝ, ∀ z, p0 z = WithLp.ofLp z 0 :=
+      ⟨EuclideanSpace.proj 0, fun z => rfl⟩
+    obtain ⟨tl, htl⟩ : ∃ tl : Euclid (n + 1) →L[ℝ] Euclid n,
+        ∀ z, tl z = WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) :=
+      ⟨LinearMap.toContinuousLinearMap
+        { toFun := fun z => WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))
+          map_add' := fun x y => rfl
+          map_smul' := fun c x => rfl }, fun z => rfl⟩
+    obtain ⟨cs, hcs⟩ : ∃ cs : ℝ × Euclid N →L[ℝ] Euclid (N + 1),
+        ∀ p, cs p = WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) :=
+      ⟨LinearMap.toContinuousLinearMap
+        { toFun := fun p => WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2))
+          map_add' := fun x y => by
+            ext i
+            refine Fin.cases ?_ (fun j => ?_) i <;> simp
+          map_smul' := fun c x => by
+            ext i
+            refine Fin.cases ?_ (fun j => ?_) i <;> simp }, fun p => rfl⟩
+    have hGfun : Gh = fun y => cs (p0 y, G (tl y)) := by
+      funext y
+      obtain ⟨s, w, rfl⟩ := hsurj y
+      simp [hGh, hcs, hp0, htl]
+    have htlz : tl (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = u := by simp [htl]
+    have hD : HasFDerivAt Gh (cs.comp (p0.prod ((fderiv ℝ G u).comp tl)))
+        (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) := by
+      have hG' : HasFDerivAt G (fderiv ℝ G u) (tl (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)))) := by
+        rw [htlz]
+        exact hG.hasFDerivAt
+      rw [hGfun]
+      exact cs.hasFDerivAt.comp _ (p0.hasFDerivAt.prodMk (hG'.comp _ tl.hasFDerivAt))
+    have hform : ∀ (s : ℝ) (w : Euclid n),
+        fderiv ℝ Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u)))
+            (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp w))) =
+          WithLp.toLp 2 (Fin.cons s (WithLp.ofLp (fderiv ℝ G u w))) := by
+      intro s w
+      rw [hD.fderiv]
+      simp [hcs, hp0, htl]
+    refine ⟨hD.differentiableAt, hform, fun hinjG y y' hyy => ?_, ?_, ?_⟩
+    · -- injectivity
+      obtain ⟨s, w, rfl⟩ := hsurj y
+      obtain ⟨s', w', rfl⟩ := hsurj y'
+      rw [hform, hform] at hyy
+      obtain ⟨rfl, hw⟩ := hinj N s s' _ _ hyy
+      rw [hinjG hw]
+    · -- range
+      apply le_antisymm
+      · rintro _ ⟨y, rfl⟩
+        obtain ⟨s, w, rfl⟩ := hsurj y
+        have hsplit : (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp (fderiv ℝ G u w))) : Euclid (N + 1)) =
+            s • EuclideanSpace.single 0 1 +
+              WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (fderiv ℝ G u w))) := by
+          ext i
+          refine Fin.cases ?_ (fun j => ?_) i <;> simp
+        rw [ContinuousLinearMap.coe_coe, hform, hsplit]
+        exact Submodule.add_mem _
+          (Submodule.smul_mem _ _ (Submodule.subset_span (Set.mem_insert _ _)))
+          (Submodule.subset_span (Set.mem_insert_of_mem _ ⟨_, ⟨w, rfl⟩, rfl⟩))
+      · rw [Submodule.span_le, Set.insert_subset_iff]
+        refine ⟨⟨WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp (0 : Euclid n))), ?_⟩, ?_⟩
+        · rw [ContinuousLinearMap.coe_coe, hform, map_zero]
+          ext i
+          refine Fin.cases ?_ (fun j => ?_) i <;> simp
+        · rintro _ ⟨v, ⟨w, rfl⟩, rfl⟩
+          exact ⟨WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp w)), by
+            rw [ContinuousLinearMap.coe_coe, hform]; rfl⟩
+    · -- Gram determinant: block diagonal `diag(1, Gram(DG(u)c))`
+      have hb0 : (EuclideanSpace.single 0 1 : Euclid (n + 1)) =
+          WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp (0 : Euclid n))) := by
         ext i
         refine Fin.cases ?_ (fun j => ?_) i <;> simp
       map_smul' := fun c v => by
@@ -2806,6 +2944,68 @@ theorem Submission.dimred_mbl_dt_lp_imc_piece_measure : ∀ (N n : ℕ) (G : Euc
       ((measure_mono inter_subset_right).trans_lt measure_Ioo_lt_top).ne
       (hA.inter (hG.continuous.measurable ht)) inter_subset_left
   rw [hprod, (hΦe N).map_comap, (hΦs N).range_eq, Measure.restrict_univ]
+
+/-- **Cylinder measure.**  For a Borel countably `n`-rectifiable `M ⊆ ℝᴺ` with `Hⁿ(M) < ∞` and
+`Ψ(t, x) = (t, x₁, …, x_N)`, `Ψ_*(L¹⌞(0, 1) ⊗ Hⁿ⌞M) = Hⁿ⁺¹⌞Ψ((0, 1) × M)`.  Up to an `Hⁿ`-null
+set `Z`, `M` is the disjoint union of the bi-Lipschitz pieces `Sᵢ = Fᵢ(Bᵢ)`
+(`dpf_rectifiable_bilipschitz_pieces`), for which the identity is
+`dimred_mbl_dt_lp_imc_piece_measure`.  Both sides are countably additive in the piece, and the
+cylinders `Ψ((0, 1) × Sᵢ)` cover `Ψ((0, 1) × M)` up to `Ψ(ℝ × Z)`, which is `Hⁿ⁺¹`-null by
+`dimred_mbl_dt_lp_imc_product_null`. -/
+theorem Submission.dimred_mbl_dt_lp_imc_cylinder_measure : ∀ (N n : ℕ) (M : Set (Euclid N)), MeasurableSet M → CountablyRectifiable n M → μHE[n] M ≠ ∞ → Measure.map (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) (((volume : Measure ℝ).restrict (Ioo 0 1)).prod (μHE[n].restrict M)) = μHE[n + 1].restrict ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ M)) := by
+  intro N n M hM hrect hfin
+  set Ψ : ℝ × Euclid N → Euclid (N + 1) := fun p => WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2))
+  -- `Ψ` is a continuous injection, hence a measurable embedding
+  have hΨemb : MeasurableEmbedding Ψ := by
+    refine Continuous.measurableEmbedding (by fun_prop) ?_
+    rintro ⟨t, x⟩ ⟨s, y⟩ h
+    obtain ⟨hts, hxy⟩ := Fin.cons_injective2 (WithLp.toLp_injective 2 h)
+    exact Prod.ext hts (WithLp.ofLp_injective 2 hxy)
+  -- the bi-Lipschitz pieces `Sᵢ = Fᵢ(Bᵢ)` of `M`
+  obtain ⟨F, B, m, hLip, hBm, hm, hbil, hdiff, hSm, hSM, hdisj, hZ⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces N n M hM hrect
+  have hinj : ∀ i, InjOn (F i) (B i) := by
+    intro i a ha a' ha' h
+    have h' := hbil i a ha a' ha'
+    rw [h, sub_self, norm_zero] at h'
+    have h0 : ‖a - a'‖ ≤ 0 := by nlinarith [hm i, norm_nonneg (a - a')]
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h0)
+  have hSfin : ∀ i, μHE[n] (F i '' B i) ≠ ∞ := fun i =>
+    ne_top_of_le_ne_top hfin (measure_mono (hSM i))
+  have : ∀ i, SFinite (μHE[n].restrict (F i '' B i)) := fun i =>
+    haveI := isFiniteMeasure_restrict.mpr (hSfin i)
+    inferInstance
+  -- the identity on each piece
+  have hpiece : ∀ i, Measure.map Ψ (((volume : Measure ℝ).restrict (Ioo 0 1)).prod
+      (μHE[n].restrict (F i '' B i))) =
+      μHE[n + 1].restrict (Ψ '' (Ioo (0 : ℝ) 1 ×ˢ (F i '' B i))) := by
+    intro i
+    obtain ⟨L, hL⟩ := hLip i
+    exact Submission.dimred_mbl_dt_lp_imc_piece_measure N n (F i) (B i) L hL (hBm i) (hinj i)
+      (fun a ha => (hdiff i a ha).1) (hSfin i)
+  -- source side: `Hⁿ⌞M = ∑ᵢ Hⁿ⌞Sᵢ`
+  have hsrc : μHE[n].restrict M = Measure.sum fun i => μHE[n].restrict (F i '' B i) := by
+    refine (Measure.restrict_congr_set (ae_eq_set.mpr ⟨hZ, ?_⟩)).trans
+      (Measure.restrict_iUnion (s := fun i => F i '' B i) hdisj hSm)
+    rw [Set.sdiff_eq_empty.mpr (iUnion_subset hSM), measure_empty]
+  -- target side: `Hⁿ⁺¹⌞Ψ((0, 1) × M) = ∑ᵢ Hⁿ⁺¹⌞Ψ((0, 1) × Sᵢ)`
+  have htgt : μHE[n + 1].restrict (Ψ '' (Ioo (0 : ℝ) 1 ×ˢ M)) =
+      Measure.sum fun i => μHE[n + 1].restrict (Ψ '' (Ioo (0 : ℝ) 1 ×ˢ (F i '' B i))) := by
+    refine (Measure.restrict_congr_set (ae_eq_set.mpr ⟨?_, ?_⟩)).trans
+      (Measure.restrict_iUnion (s := fun i => Ψ '' (Ioo (0 : ℝ) 1 ×ˢ (F i '' B i))) ?_ ?_)
+    · refine measure_mono_null (t := Ψ '' (univ ×ˢ (M \ ⋃ i, F i '' B i))) ?_
+        (Submission.dimred_mbl_dt_lp_imc_product_null N n _ hZ)
+      rintro _ ⟨⟨⟨t, x⟩, ⟨ht, hx⟩, rfl⟩, hnot⟩
+      refine ⟨(t, x), ⟨mem_univ t, hx, fun hxU => hnot ?_⟩, rfl⟩
+      obtain ⟨i, hi⟩ := mem_iUnion.mp hxU
+      exact mem_iUnion.mpr ⟨i, (t, x), ⟨ht, hi⟩, rfl⟩
+    · rw [Set.sdiff_eq_empty.mpr
+        (iUnion_subset fun i => image_mono (prod_mono subset_rfl (hSM i))), measure_empty]
+    · intro i j hij
+      exact (disjoint_image_iff hΨemb.injective).mpr (disjoint_prod.mpr (Or.inr (hdisj hij)))
+    · exact fun i => hΨemb.measurableSet_image.mpr (measurableSet_Ioo.prod (hSm i))
+  rw [hsrc, Measure.prod_sum_right, Measure.map_sum hΨemb.measurable.aemeasurable, htgt]
+  exact congrArg Measure.sum (funext hpiece)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
