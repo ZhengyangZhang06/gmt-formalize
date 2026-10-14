@@ -574,6 +574,27 @@ theorem Submission.cmcdt_cbm_im_median_minimizes : ∀ (X : Type) [MeasurableSpa
       have := abs_sub_le (u x) c β
       rw [abs_of_nonpos (sub_nonpos.mpr hc.le)] at this
       linarith
+/-- **Simon Ch. 6, proof of 5.1, (35)**: a median `β` of an integrable `u` on a probability space
+(`μ{β ≤ u} ≥ 1/2` and `μ{u ≤ β} ≥ 1/2`, Simon's (31)) satisfies `|β| ≤ 2 ∫ |u| dμ`.  According to
+the sign of `β`, one of the two median halves lies in `{|β| ≤ |u|}`, so Markov's inequality for
+`|u|` at level `|β|` gives `|β| / 2 ≤ ∫ |u| dμ`. -/
+theorem Submission.cmcdt_cbm_im_median_abs_le : ∀ (X : Type) [MeasurableSpace X] (μ : Measure X) (u : X → ℝ) (β : ℝ), IsProbabilityMeasure μ → Integrable u μ → 1 / 2 ≤ μ.real {x | β ≤ u x} → 1 / 2 ≤ μ.real {x | u x ≤ β} → |β| ≤ 2 * ∫ x, |u x| ∂μ := by
+  intro X _ μ u β _ hu hge hle
+  -- Markov's inequality for `|u|` at level `|β|`
+  have hM : |β| * μ.real {x | |β| ≤ |u x|} ≤ ∫ x, |u x| ∂μ :=
+    mul_meas_ge_le_integral_of_nonneg (ae_of_all _ fun x => abs_nonneg (u x)) hu.abs |β|
+  -- one of the two median halves lies in `{|β| ≤ |u|}`
+  have hhalf : 1 / 2 ≤ μ.real {x | |β| ≤ |u x|} := by
+    rcases le_or_gt 0 β with hβ | hβ
+    · refine hge.trans (measureReal_mono fun x (hx : β ≤ u x) => ?_)
+      show |β| ≤ |u x|
+      rw [abs_of_nonneg hβ, abs_of_nonneg (hβ.trans hx)]
+      exact hx
+    · refine hle.trans (measureReal_mono fun x (hx : u x ≤ β) => ?_)
+      show |β| ≤ |u x|
+      rw [abs_of_neg hβ, abs_of_neg (hx.trans_lt hβ)]
+      exact neg_le_neg hx
+  linarith [mul_le_mul_of_nonneg_left hhalf (abs_nonneg β)]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
