@@ -2950,6 +2950,125 @@ theorem Submission.codim1_hcp_sc_rademacher_submanifold : ∀ (P m : ℕ) (M : S
   refine mem_iUnion₂.2 ⟨p, hpT, ?_⟩
   by_contra hxE
   exact hxnd (hdiff p (hTM hpT) x ⟨hxM, hxO⟩ hxE)
+/-- **The unit normal of a cone is homogeneous of degree `0`** (Simon, Appendix B, proof of
+Lemma B.11, (1)–(2)).  Let `M ⊆ A₀` be an embedded `C¹` `m`-submanifold with `tM ⊆ M` for
+`t > 0`, and `ν` a `C^∞` unit normal to `M` in `A₀`.  By
+`Submission.codim1_hcp_sc_tangent_normal_complement`, `T_yM = {v ∈ A₀ : ν(y) · v = 0}` is a
+linear subspace.  The curve `s ↦ eˢx` gives `x ∈ T_xM`, and scaling curves gives
+`tT_xM ⊆ T_{tx}M`, hence `T_{tx}M = T_xM`.  So `ν(tx)` is a unit vector in
+`A₀ ∩ (T_xM)^⊥ = ℝν(x)`, i.e. `ν(tx) = ±ν(x)`; `t ↦ ν(x) · ν(tx)` is continuous on `(0, ∞)`
+and equals `1` at `t = 1`, so the intermediate value theorem gives `ν(tx) = ν(x)`.
+Differentiating `ν(tγ(s)) = ν(γ(s))` at `s = 0` along curves `γ` in `M` gives
+`tDν(tx)v = Dν(x)v`, and differentiating the constant map `t ↦ ν(tx)` at `t = 1` gives
+`Dν(x)x = 0`. -/
+theorem Submission.codim1_hcp_sc_cone_normal_homogeneous : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, x ∈ tangentSpace M x ∧ fderiv ℝ ν x x = 0 ∧ ∀ t : ℝ, 0 < t → tangentSpace M (t • x) = tangentSpace M x ∧ ν (t • x) = ν x ∧ ∀ v ∈ tangentSpace M x, t • fderiv ℝ ν (t • x) v = fderiv ℝ ν x v := by
+  intro P m A₀ M ν hdim hMA hM hcone hO hν x hx
+  obtain ⟨O, hOo, hMO, hνO⟩ := hO
+  -- Step 0: `ν` is differentiable at every point of `M ⊆ O`, and `T_yM = {v ∈ A₀ : ν(y) · v = 0}`
+  have hνd : ∀ y ∈ M, HasFDerivAt ν (fderiv ℝ ν y) y := fun y hy =>
+    ((hνO.contDiffAt (hOo.mem_nhds (hMO hy))).differentiableAt (by simp)).hasFDerivAt
+  have hT : ∀ y ∈ M, tangentSpace M y = {v : Euclid P | v ∈ A₀ ∧ inner ℝ (ν y) v = 0} :=
+    fun y hy =>
+      (Submission.codim1_hcp_sc_tangent_normal_complement P m A₀ M ν hdim hMA hM hν y hy).1
+  -- in particular each `T_yM`, `y ∈ M`, is closed under scalar multiplication
+  have hTsmul : ∀ y ∈ M, ∀ (c : ℝ) (v : Euclid P), v ∈ tangentSpace M y →
+      c • v ∈ tangentSpace M y := by
+    intro y hy c v hv
+    rw [hT y hy] at hv ⊢
+    exact ⟨A₀.smul_mem c hv.1, by rw [real_inner_smul_right, hv.2, mul_zero]⟩
+  -- Step 1: `x ∈ T_xM`, via the curve `s ↦ eˢx` in `M`
+  have hxT : x ∈ tangentSpace M x := by
+    refine ⟨fun s => Real.exp s • x, (Real.contDiff_exp.smul contDiff_const).contDiffOn,
+      fun s _ => hcone _ (Real.exp_pos s) x hx, by simp, ?_⟩
+    simpa using (Real.hasDerivAt_exp 0).smul_const x
+  -- Step 2: `t • T_yM ⊆ T_{ty}M` for `t > 0`: scale the curves
+  have hscale : ∀ t : ℝ, 0 < t → ∀ y v : Euclid P, v ∈ tangentSpace M y →
+      t • v ∈ tangentSpace M (t • y) := by
+    rintro t ht y v ⟨γ, hγ, hγM, hγ0, hγv⟩
+    exact ⟨fun s => t • γ s, hγ.const_smul t, fun s hs => hcone t ht _ (hγM hs),
+      by simp [hγ0], hγv.const_smul t⟩
+  -- Step 3: `T_{ty}M = T_yM` for `y ∈ M` and `t > 0`
+  have hTeq : ∀ y ∈ M, ∀ t : ℝ, 0 < t → tangentSpace M (t • y) = tangentSpace M y := by
+    intro y hy t ht
+    ext w
+    constructor
+    · intro hw
+      have h1 := hscale t⁻¹ (inv_pos.2 ht) (t • y) w hw
+      rw [inv_smul_smul₀ ht.ne'] at h1
+      have h2 := hTsmul y hy t _ h1
+      rwa [smul_inv_smul₀ ht.ne'] at h2
+    · intro hw
+      have h1 := hscale t ht y _ (hTsmul y hy t⁻¹ w hw)
+      rwa [smul_inv_smul₀ ht.ne'] at h1
+  -- Step 4: `ν(ty) = λν(y)` with `λ = ν(y) · ν(ty) ∈ {1, −1}`
+  have hpm : ∀ y ∈ M, ∀ t : ℝ, 0 < t →
+      ν (t • y) = inner ℝ (ν y) (ν (t • y)) • ν y ∧
+        (inner ℝ (ν y) (ν (t • y)) = 1 ∨ inner ℝ (ν y) (ν (t • y)) = -1) := by
+    intro y hy t ht
+    obtain ⟨hνyA, hνy1, -⟩ := hν y hy
+    obtain ⟨hνtA, hνt1, hνtT⟩ := hν (t • y) (hcone t ht y hy)
+    set lam : ℝ := inner ℝ (ν y) (ν (t • y)) with hlam
+    have hyy : inner ℝ (ν y) (ν y) = (1 : ℝ) := by
+      rw [real_inner_self_eq_norm_sq, hνy1, one_pow]
+    -- `h = ν(ty) − λν(y) ∈ A₀` is orthogonal to `ν(y)`, so `h ∈ T_yM = T_{ty}M`
+    have hhT : ν (t • y) - lam • ν y ∈ tangentSpace M y := by
+      rw [hT y hy]
+      refine ⟨A₀.sub_mem hνtA (A₀.smul_mem lam hνyA), ?_⟩
+      rw [inner_sub_right, real_inner_smul_right, hyy, mul_one, ← hlam, sub_self]
+    have e1 : inner ℝ (ν (t • y)) (ν (t • y) - lam • ν y) = (0 : ℝ) :=
+      hνtT _ (by rw [hTeq y hy t ht]; exact hhT)
+    have e2 : inner ℝ (ν y) (ν (t • y) - lam • ν y) = (0 : ℝ) := by
+      rw [hT y hy] at hhT
+      exact hhT.2
+    -- `|h|² = ν(ty) · h − λ ν(y) · h = 0`
+    have hh0 : ν (t • y) - lam • ν y = 0 := by
+      apply (inner_self_eq_zero (𝕜 := ℝ)).1
+      rw [inner_sub_left, real_inner_smul_left, e1, e2, mul_zero, sub_zero]
+    have hνt : ν (t • y) = lam • ν y := sub_eq_zero.1 hh0
+    refine ⟨hνt, (abs_eq zero_le_one).1 ?_⟩
+    -- `1 = |ν(ty)| = |λ| |ν(y)| = |λ|`
+    have := congrArg norm hνt
+    rw [norm_smul, hνt1, hνy1, mul_one, Real.norm_eq_abs] at this
+    exact this.symm
+  -- Step 5: `ν(ty) = ν(y)` for `y ∈ M` and `t > 0`: `g(s) = ν(y) · ν(sy)` is continuous on
+  -- `(0, ∞)` with values in `{1, −1}` and `g(1) = 1`, so `g(t) = −1` contradicts the IVT
+  have hhom : ∀ y ∈ M, ∀ t : ℝ, 0 < t → ν (t • y) = ν y := by
+    intro y hy t ht
+    have hg : ContinuousOn (fun s : ℝ => inner ℝ (ν y) (ν (s • y))) (Ioi 0) :=
+      continuousOn_const.inner (hνO.continuousOn.comp
+        (continuous_id.smul continuous_const).continuousOn fun s hs => hMO (hcone s hs y hy))
+    obtain ⟨hνt, h1 | h1⟩ := hpm y hy t ht
+    · rw [hνt, h1, one_smul]
+    · exfalso
+      have hg1 : inner ℝ (ν y) (ν ((1 : ℝ) • y)) = (1 : ℝ) := by
+        rw [one_smul, real_inner_self_eq_norm_sq, (hν y hy).2.1, one_pow]
+      obtain ⟨s, hs, hs0⟩ := isPreconnected_Ioi.intermediate_value (show t ∈ Ioi (0 : ℝ) from ht)
+        (Set.mem_Ioi.2 one_pos) hg
+        (show (0 : ℝ) ∈ Icc (inner ℝ (ν y) (ν (t • y))) (inner ℝ (ν y) (ν ((1 : ℝ) • y))) by
+          rw [h1, hg1]
+          constructor <;> norm_num)
+      have hs0' : inner ℝ (ν y) (ν (s • y)) = (0 : ℝ) := hs0
+      rcases (hpm y hy s hs).2 with h2 | h2 <;> linarith
+  refine ⟨hxT, ?_, fun t ht => ⟨hTeq x hx t ht, hhom x hx t ht, ?_⟩⟩
+  · -- Step 7: `Dν(x)x = 0`: `t ↦ ν(tx)` is constant near `t = 1`, with derivative `Dν(x)x` there
+    have h1 : HasDerivAt (fun t : ℝ => ν (t • x)) (fderiv ℝ ν x x) 1 := by
+      have hl : HasDerivAt (fun t : ℝ => t • x) x 1 := by
+        simpa using (hasDerivAt_id (1 : ℝ)).smul_const x
+      exact (hνd x hx).comp_hasDerivAt_of_eq 1 hl (one_smul ℝ x).symm
+    have h2 : HasDerivAt (fun t : ℝ => ν (t • x)) 0 1 := by
+      refine (hasDerivAt_const (1 : ℝ) (ν x)).congr_of_eventuallyEq ?_
+      filter_upwards [Ioi_mem_nhds one_pos] with t ht using hhom x hx t ht
+    exact h1.unique h2
+  · -- Step 6: `tDν(tx)v = Dν(x)v`: differentiate `ν(tγ(s)) = ν(γ(s))` at `s = 0`
+    rintro v ⟨γ, -, hγM, hγ0, hγv⟩
+    have h1 : HasDerivAt (fun s => ν (t • γ s)) (fderiv ℝ ν (t • x) (t • v)) 0 :=
+      (hνd (t • x) (hcone t ht x hx)).comp_hasDerivAt_of_eq 0 (hγv.const_smul t) (by simp [hγ0])
+    have h2 : HasDerivAt (fun s => ν (t • γ s)) (fderiv ℝ ν x v) 0 := by
+      refine ((hνd x hx).comp_hasDerivAt_of_eq 0 hγv hγ0.symm).congr_of_eventuallyEq ?_
+      filter_upwards [Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) (by norm_num : (0 : ℝ) < 1)]
+        with s hs using hhom (γ s) (hγM hs) t ht
+    rw [← map_smul]
+    exact h1.unique h2
 
 /-- **Weingarten map and Codazzi equations of a hypersurface** (Simon, Appendix B, B.4–B.5,
 p. 231; cf. Ch. 2, 4.26).  Let `M ⊆ A₀` be an `m`-dimensional submanifold of the
@@ -3729,6 +3848,360 @@ theorem Submission.codim1_hcp_sc_simons_identity : ∀ (P m : ℕ) (A₀ : Submo
   simp only [he1, hPQ x hx]
   simp only [hLHS, hRHS, ← hC]
   exact hcore
+/-- **Simon, Appendix B, Lemma B.11 (p. 232)**: for a cone `M ⊆ A₀ ≅ ℝ^{m+1}` (`0 ∉ M`, not
+necessarily minimal) with smooth unit normal `ν`, at every `x ∈ M` with `|A|²(x) > 0`,
+`2|A|⁴/|x|² + |∇|A|²|²/4 ≤ |A|²|∇A|²`, i.e. `D ≥ 2|x|⁻²|A|²` for the defect `D` of B.10.
+`W = span T_xM` equals `T_xM` (`normal_complement`) and contains `x` (`cone_normal`); take an
+orthonormal basis `τ` of `W` with radial last vector `x/|x|`.  On `M`, `C(y) = Dν(y) ∘ p_{T_yM}`
+agrees with the smooth `C̃(y) = Dν(y) ∘ (p_{A₀} − ν(y) ⊗ ν(y))`, so `C` has a derivative `C'`
+within `M` at `x`, and `D_M C(x) = C'` on `T_xM` (`tangent_fderiv`).  Instead of Simon's frame
+constant along the ray, `C(tx) = t⁻¹C(x)` (`cone_normal`) and the curve `s ↦ (1 + s)x` give
+`C'x = −C(x)`, which is Simon's (2); `Dν(x)x = 0` is his (1).  The chain rule gives
+`D_M|A|²(x)τ = 2 Σᵢ ⟨C(x)eᵢ, (D_τ C)eᵢ⟩`.  With `h_ad = ⟨Dν(x)τₐ, τ_d⟩` and
+`dh_cad = ⟨(D_{τ_c}C)τₐ, τ_d⟩`, the Hilbert–Schmidt identities give `|A|² = Σ h²`,
+`|∇A|² = Σ dh²` and `|∇|A|²|² = 4 Σ_c (Σ_{a,d} h_ad dh_cad)²`.  By (1), (2) and the Codazzi
+symmetries (`codazzi`), `h` vanishes in the radial row and column and
+`dh_{c n d} = dh_{c d n} = −|x|⁻¹ h_cd`.  So for each `c` the radial entries of `dh_c` contribute
+`2|x|⁻² Σ_d h_cd²` to `Σ dh_c²`, while Cauchy–Schwarz on the tangential block gives
+`(Σ h dh_c)² ≤ |A|² Σ_{a,d<n} dh_cad²`; summing over `c` gives the estimate. -/
+theorem Submission.codim1_hcp_sc_cone_simons_defect : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (0 : Euclid P) ∉ M → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → (∀ t : ℝ, 0 < t → ∀ x ∈ M, t • x ∈ M) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, 0 < (∑ i : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single i 1))‖ ^ 2) → 2 * (∑ i : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single i 1))‖ ^ 2) ^ 2 / ‖x‖ ^ 2 + (∑ k : Fin P, (fderivWithin ℝ (fun z => ∑ i : Fin P, ‖fderiv ℝ ν z ((Submodule.span ℝ (tangentSpace M z)).starProjection (EuclideanSpace.single i 1))‖ ^ 2) M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single k 1))) ^ 2) / 4 ≤ (∑ i : Fin P, ‖fderiv ℝ ν x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single i 1))‖ ^ 2) * (∑ i : Fin P, ∑ j : Fin P, ∑ k : Fin P, (inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single k 1)) ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single i 1))) ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2) := by
+  intro P m A₀ M ν hdim hMA h0 hM hcone hO hν x hx _
+  -- the sibling facts: `normal_complement`, `cone_normal` and `codazzi` at `x`
+  have hNC := Submission.codim1_hcp_sc_tangent_normal_complement P m A₀ M ν hdim hMA (hM 1) hν
+  obtain ⟨hxT, hDx, hray⟩ :=
+    Submission.codim1_hcp_sc_cone_normal_homogeneous P m A₀ M ν hdim hMA (hM 1) hcone hO hν x hx
+  have hCZ := Submission.codim1_hcp_sc_weingarten_codazzi P m A₀ M ν hdim hMA hM hO hν x hx
+  obtain ⟨O, hOopen, hMO, hνO⟩ := hO
+  -- `span T_xM = T_xM`, since `T_xM = A₀ ∩ ν(x)^⊥` is a subspace
+  have hWT : ∀ v ∈ Submodule.span ℝ (tangentSpace M x), v ∈ tangentSpace M x := by
+    intro v hv
+    have hT := (hNC x hx).1
+    induction hv using Submodule.span_induction with
+    | mem v hv => exact hv
+    | zero => rw [hT]; exact ⟨A₀.zero_mem, inner_zero_right _⟩
+    | add u w _ _ hu hw =>
+      rw [hT] at hu hw ⊢
+      exact ⟨A₀.add_mem hu.1 hw.1, by rw [inner_add_right, hu.2, hw.2, add_zero]⟩
+    | smul c u _ hu =>
+      rw [hT] at hu ⊢
+      exact ⟨A₀.smul_mem c hu.1, by rw [inner_smul_right, hu.2, mul_zero]⟩
+  -- an orthonormal basis `τ` of `span T_xM` whose last vector is `x/|x|`
+  have hx0 : x ≠ 0 := fun h => h0 (h ▸ hx)
+  have hρ : 0 < ‖x‖ := norm_pos_iff.2 hx0
+  have hxW : x ∈ Submodule.span ℝ (tangentSpace M x) := Submodule.subset_span hxT
+  obtain ⟨n, hn⟩ : ∃ n, Module.finrank ℝ (Submodule.span ℝ (tangentSpace M x)) = n + 1 :=
+    Nat.exists_eq_succ_of_ne_zero (Module.finrank_pos_iff_exists_ne_zero.2
+      ⟨⟨x, hxW⟩, fun h => hx0 (congrArg Subtype.val h)⟩).ne'
+  have hxhat : ‖(⟨‖x‖⁻¹ • x, Submodule.smul_mem _ _ hxW⟩ :
+      Submodule.span ℝ (tangentSpace M x))‖ = 1 := by
+    show ‖‖x‖⁻¹ • x‖ = 1
+    rw [norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hρ.ne']
+  obtain ⟨b, hb⟩ := Orthonormal.exists_orthonormalBasis_extension_of_card_eq (𝕜 := ℝ)
+    (ι := Fin (n + 1)) (by rw [hn, Fintype.card_fin])
+    (v := fun _ => (⟨‖x‖⁻¹ • x, Submodule.smul_mem _ _ hxW⟩ :
+      Submodule.span ℝ (tangentSpace M x))) (s := {Fin.last n})
+    ⟨fun _ => hxhat, fun i j hij => absurd (Subsingleton.elim i j) hij⟩
+  have hlast : (b (Fin.last n) : Euclid P) = ‖x‖⁻¹ • x := by
+    rw [hb _ (Set.mem_singleton _)]
+  have hbT : ∀ a, (b a : Euclid P) ∈ tangentSpace M x := fun a => hWT _ (b a).2
+  -- `C = C̃` on `M` with `C̃(y) = Dν(y) ∘ (p_{A₀} − ν(y) ⊗ ν(y))` smooth near `x`
+  have hνx : ContDiffAt ℝ (⊤ : ℕ∞) ν x := hνO.contDiffAt (hOopen.mem_nhds (hMO hx))
+  have hν1 : ContDiffAt ℝ 1 ν x := hνx.of_le (WithTop.coe_le_coe.2 le_top)
+  have hDν1 : ContDiffAt ℝ 1 (fderiv ℝ ν) x := hνx.fderiv_right (WithTop.coe_le_coe.2 le_top)
+  have hinner : ContDiffAt ℝ 1 (fun y => innerSL ℝ (ν y)) x :=
+    ((innerSL ℝ : Euclid P →L[ℝ] Euclid P →L[ℝ] ℝ).contDiff.contDiffAt).comp x hν1
+  have hCt : ContDiffAt ℝ 1 (fun y => (fderiv ℝ ν y).comp
+      (A₀.starProjection - (innerSL ℝ (ν y)).smulRight (ν y))) x :=
+    hDν1.clm_comp (contDiffAt_const.sub (hinner.smulRight hν1))
+  have hCeq : ∀ y ∈ M, (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection =
+      (fderiv ℝ ν y).comp (A₀.starProjection - (innerSL ℝ (ν y)).smulRight (ν y)) := by
+    intro y hy
+    ext1 w
+    rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, (hNC y hy).2 w,
+      sub_apply, ContinuousLinearMap.smulRight_apply, innerSL_apply_apply]
+  obtain ⟨C', hC'⟩ : ∃ C', HasFDerivWithinAt
+      (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) C' M x :=
+    ⟨_, (hCt.differentiableAt one_ne_zero).hasFDerivAt.hasFDerivWithinAt.congr hCeq (hCeq x hx)⟩
+  -- `D_M C(x) = C'` on `span T_xM` (`tangent_fderiv`)
+  have hΦW : ∀ v ∈ Submodule.span ℝ (tangentSpace M x), fderivWithin ℝ
+      (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x v =
+        C' v := fun v hv =>
+    Submission.codim1_hcp_sc_fderivWithin_tangent_eq P _ M _ C' x hC' v hv
+  -- homogeneity `C(tx) = t⁻¹C(x)` for `t > 0`
+  have hhom : ∀ t : ℝ, 0 < t → (fderiv ℝ ν (t • x)).comp
+      (Submodule.span ℝ (tangentSpace M (t • x))).starProjection =
+        t⁻¹ • (fderiv ℝ ν x).comp (Submodule.span ℝ (tangentSpace M x)).starProjection := by
+    intro t ht
+    obtain ⟨hTt, -, hDt⟩ := hray t ht
+    ext1 w
+    rw [smul_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, hTt,
+      ← hDt _ (hWT _ (Submodule.starProjection_apply_mem _ w)), smul_smul,
+      inv_mul_cancel₀ ht.ne', one_smul]
+  -- the radial derivative `C'x = −C(x)`, along the curve `s ↦ (1 + s)x` in `M`
+  have hrad : C' x =
+      -((fderiv ℝ ν x).comp (Submodule.span ℝ (tangentSpace M x)).starProjection) := by
+    have hγ : HasDerivAt (fun s : ℝ => (1 + s) • x) x 0 := by
+      simpa using ((hasDerivAt_id (0 : ℝ)).const_add 1).smul_const x
+    have hmaps : MapsTo (fun s : ℝ => (1 + s) • x) (Ioo (-1) 1) M :=
+      fun s hs => hcone (1 + s) (by linarith [hs.1]) x hx
+    have h1 := hC'.comp_hasDerivWithinAt_of_eq (0 : ℝ) hγ.hasDerivWithinAt hmaps (by simp)
+    have h2 := h1.hasDerivAt (Ioo_mem_nhds (by norm_num) (by norm_num))
+    have h3 : HasDerivAt (fun s : ℝ => (1 + s)⁻¹ •
+        (fderiv ℝ ν x).comp (Submodule.span ℝ (tangentSpace M x)).starProjection)
+        (-((fderiv ℝ ν x).comp (Submodule.span ℝ (tangentSpace M x)).starProjection)) 0 := by
+      simpa using (((hasDerivAt_id (0 : ℝ)).const_add 1).inv (by simp)).smul_const
+        ((fderiv ℝ ν x).comp (Submodule.span ℝ (tangentSpace M x)).starProjection)
+    refine h2.unique (h3.congr_of_eventuallyEq ?_)
+    filter_upwards [Ioo_mem_nhds (show (-1 : ℝ) < 0 by norm_num) (show (0 : ℝ) < 1 by norm_num)]
+      with s hs
+    exact hhom (1 + s) (by linarith [hs.1])
+  -- `D_M|A|²(x)τ = 2 Σᵢ ⟨C(x)eᵢ, (D_τ C)eᵢ⟩` for `τ ∈ T_xM` (chain rule, `tangent_fderiv`)
+  have hSd : HasFDerivWithinAt (fun z => ∑ i : Fin P, ‖fderiv ℝ ν z
+      ((Submodule.span ℝ (tangentSpace M z)).starProjection (EuclideanSpace.single i 1))‖ ^ 2)
+      (∑ i : Fin P, 2 • (innerSL ℝ (fderiv ℝ ν x
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single i 1)))).comp
+        ((ContinuousLinearMap.apply ℝ (Euclid P) (EuclideanSpace.single i (1 : ℝ))).comp C'))
+      M x :=
+    HasFDerivWithinAt.fun_sum fun i _ =>
+      ((ContinuousLinearMap.apply ℝ (Euclid P)
+        (EuclideanSpace.single i (1 : ℝ))).hasFDerivAt.comp_hasFDerivWithinAt x hC').norm_sq
+  have hg : ∀ c, fderivWithin ℝ (fun z => ∑ i : Fin P, ‖fderiv ℝ ν z
+      ((Submodule.span ℝ (tangentSpace M z)).starProjection (EuclideanSpace.single i 1))‖ ^ 2)
+      M x (b c : Euclid P) = 2 * ∑ i : Fin P, inner ℝ (fderiv ℝ ν x
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single i 1)))
+        (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp
+          (Submodule.span ℝ (tangentSpace M y)).starProjection) M x (b c : Euclid P)
+          (EuclideanSpace.single i 1)) := by
+    intro c
+    rw [Submission.codim1_hcp_sc_fderivWithin_tangent_eq P ℝ M _ _ x hSd _ (b c).2,
+      hΦW _ (b c).2, sum_apply, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [smul_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.apply_apply, innerSL_apply_apply, nsmul_eq_mul, Nat.cast_ofNat]
+  -- the algebra of B.11 in an orthonormal frame `τ` of `W` with radial last vector
+  have frame : ∀ (W : Submodule ℝ (Euclid P)) (τ : OrthonormalBasis (Fin (n + 1)) ℝ W)
+      (D : Euclid P →L[ℝ] Euclid P) (Φ : Euclid P →L[ℝ] Euclid P →L[ℝ] Euclid P)
+      (g : Euclid P →L[ℝ] ℝ) (ρ : ℝ), (∀ a, D (τ a : Euclid P) ∈ W) →
+      (∀ a c, inner ℝ (D (τ a : Euclid P)) (τ c : Euclid P) =
+        inner ℝ (D (τ c : Euclid P)) (τ a : Euclid P)) →
+      D (τ (Fin.last n) : Euclid P) = 0 →
+      (∀ a c d, inner ℝ (Φ (τ a : Euclid P) (τ c : Euclid P)) (τ d : Euclid P) =
+        inner ℝ (Φ (τ c : Euclid P) (τ a : Euclid P)) (τ d : Euclid P)) →
+      (∀ a c d, inner ℝ (Φ (τ a : Euclid P) (τ c : Euclid P)) (τ d : Euclid P) =
+        inner ℝ (Φ (τ a : Euclid P) (τ d : Euclid P)) (τ c : Euclid P)) →
+      Φ (τ (Fin.last n) : Euclid P) = -(ρ⁻¹ • D.comp W.starProjection) →
+      (∀ c, g (τ c : Euclid P) = 2 * ∑ i : Fin P,
+        inner ℝ (D (W.starProjection (EuclideanSpace.single i 1)))
+          (Φ (τ c : Euclid P) (EuclideanSpace.single i 1))) →
+      2 * (∑ i : Fin P, ‖D (W.starProjection (EuclideanSpace.single i 1))‖ ^ 2) ^ 2 / ρ ^ 2 +
+          (∑ k : Fin P, g (W.starProjection (EuclideanSpace.single k 1)) ^ 2) / 4 ≤
+        (∑ i : Fin P, ‖D (W.starProjection (EuclideanSpace.single i 1))‖ ^ 2) *
+          (∑ i : Fin P, ∑ j : Fin P, ∑ k : Fin P,
+            inner ℝ (Φ (W.starProjection (EuclideanSpace.single k 1))
+              (W.starProjection (EuclideanSpace.single i 1)))
+              (W.starProjection (EuclideanSpace.single j 1)) ^ 2) := by
+    intro W τ D Φ g ρ hDW hDsym hDlast hΦsym₁ hΦsym₂ hΦlast hg
+    -- `p_W v = Σₐ ⟨τₐ, v⟩ τₐ`
+    have hproj : ∀ v : Euclid P,
+        W.starProjection v = ∑ a, inner ℝ (τ a : Euclid P) v • (τ a : Euclid P) := by
+      intro v
+      rw [τ.starProjection_eq_sum_rankOne, sum_apply]
+      simp only [InnerProductSpace.rankOne_apply]
+    -- trace identity: `Σᵢ ⟨A(p_W eᵢ), B eᵢ⟩ = Σₐ ⟨A τₐ, B τₐ⟩`
+    have htrace : ∀ (F : Type) [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+        (A B : Euclid P →L[ℝ] F),
+        ∑ i : Fin P, inner ℝ (A (W.starProjection (EuclideanSpace.single i 1)))
+            (B (EuclideanSpace.single i 1)) =
+          ∑ a, inner ℝ (A (τ a : Euclid P)) (B (τ a : Euclid P)) := by
+      intro F _ _ A B
+      -- `τₐ = Σᵢ ⟨τₐ, eᵢ⟩ eᵢ` in the standard basis
+      have he : ∀ a, ∑ i : Fin P, inner ℝ (τ a : Euclid P) (EuclideanSpace.single i 1) •
+          EuclideanSpace.single i (1 : ℝ) = (τ a : Euclid P) := by
+        intro a
+        simpa [EuclideanSpace.basisFun_apply, real_inner_comm] using
+          (EuclideanSpace.basisFun (Fin P) ℝ).sum_repr' (τ a : Euclid P)
+      calc ∑ i : Fin P, inner ℝ (A (W.starProjection (EuclideanSpace.single i 1)))
+              (B (EuclideanSpace.single i 1))
+          = ∑ i : Fin P, ∑ a, inner ℝ (τ a : Euclid P) (EuclideanSpace.single i 1) *
+              inner ℝ (A (τ a : Euclid P)) (B (EuclideanSpace.single i 1)) := by
+            refine Finset.sum_congr rfl fun i _ => ?_
+            rw [hproj, map_sum, sum_inner]
+            refine Finset.sum_congr rfl fun a _ => ?_
+            rw [map_smul, real_inner_smul_left]
+        _ = ∑ a, ∑ i : Fin P, inner ℝ (τ a : Euclid P) (EuclideanSpace.single i 1) *
+              inner ℝ (A (τ a : Euclid P)) (B (EuclideanSpace.single i 1)) := Finset.sum_comm
+        _ = ∑ a, inner ℝ (A (τ a : Euclid P)) (B (∑ i : Fin P, inner ℝ (τ a : Euclid P)
+              (EuclideanSpace.single i 1) • EuclideanSpace.single i (1 : ℝ))) := by
+            refine Finset.sum_congr rfl fun a _ => ?_
+            rw [map_sum, inner_sum]
+            refine Finset.sum_congr rfl fun i _ => ?_
+            rw [map_smul, real_inner_smul_right]
+        _ = ∑ a, inner ℝ (A (τ a : Euclid P)) (B (τ a : Euclid P)) := by simp_rw [he]
+    -- Hilbert–Schmidt identities: `Σᵢ |L(p_W eᵢ)|² = Σₐ |L τₐ|²`, also for functionals
+    have hhs : ∀ (F : Type) [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+        (L : Euclid P →L[ℝ] F),
+        ∑ i : Fin P, ‖L (W.starProjection (EuclideanSpace.single i 1))‖ ^ 2 =
+          ∑ a, ‖L (τ a : Euclid P)‖ ^ 2 := by
+      intro F _ _ L
+      have h := htrace F L (L.comp W.starProjection)
+      simp only [ContinuousLinearMap.comp_apply, Submodule.starProjection_mem_subspace_eq_self,
+        real_inner_self_eq_norm_sq] at h
+      exact h
+    have hhs1 : ∀ ℓ : Euclid P →L[ℝ] ℝ,
+        ∑ i : Fin P, ℓ (W.starProjection (EuclideanSpace.single i 1)) ^ 2 =
+          ∑ a, ℓ (τ a : Euclid P) ^ 2 := by
+      intro ℓ
+      simpa only [Real.norm_eq_abs, sq_abs] using hhs ℝ ℓ
+    have hhsf : ∀ (f : Euclid P → ℝ) (ℓ : Euclid P →L[ℝ] ℝ), (∀ u, f u = ℓ u) →
+        ∑ i : Fin P, f (W.starProjection (EuclideanSpace.single i 1)) ^ 2 =
+          ∑ a, f (τ a : Euclid P) ^ 2 := by
+      intro f ℓ hf
+      simpa only [hf] using hhs1 ℓ
+    -- Parseval in `W`: `⟨u, w⟩ = Σₐ ⟨u, τₐ⟩⟨τₐ, w⟩` for `u ∈ W`
+    have hpars : ∀ u ∈ W, ∀ w : Euclid P,
+        inner ℝ u w = ∑ a, inner ℝ u (τ a : Euclid P) * inner ℝ (τ a : Euclid P) w := by
+      intro u hu w
+      calc inner ℝ u w = inner ℝ (W.starProjection u) w := by
+            rw [Submodule.starProjection_eq_self_iff.2 hu]
+        _ = inner ℝ u (W.starProjection w) := W.inner_starProjection_left_eq_right u w
+        _ = _ := by
+            rw [hproj, inner_sum]
+            refine Finset.sum_congr rfl fun a _ => ?_
+            rw [real_inner_smul_right, mul_comm]
+    -- the components `h_ad = ⟨Dτₐ, τ_d⟩` and `dh_cad = ⟨Φ(τ_c)τₐ, τ_d⟩`
+    obtain ⟨H, hH⟩ : ∃ H : Fin (n + 1) → Fin (n + 1) → ℝ,
+        ∀ a d, H a d = inner ℝ (D (τ a : Euclid P)) (τ d : Euclid P) := ⟨_, fun _ _ => rfl⟩
+    obtain ⟨Ψ, hΨ⟩ : ∃ Ψ : Fin (n + 1) → Fin (n + 1) → Fin (n + 1) → ℝ,
+        ∀ c a d, Ψ c a d = inner ℝ (Φ (τ c : Euclid P) (τ a : Euclid P)) (τ d : Euclid P) :=
+      ⟨_, fun _ _ _ => rfl⟩
+    -- (a) `|A|² = Σ h²`
+    have hS : ∑ i : Fin P, ‖D (W.starProjection (EuclideanSpace.single i 1))‖ ^ 2 =
+        ∑ a, ∑ d, H a d ^ 2 := by
+      rw [hhs (Euclid P) D]
+      refine Finset.sum_congr rfl fun a _ => ?_
+      rw [← real_inner_self_eq_norm_sq, hpars _ (hDW a)]
+      refine Finset.sum_congr rfl fun d _ => ?_
+      rw [hH, real_inner_comm (D (τ a : Euclid P)) (τ d : Euclid P)]
+      ring
+    -- (b) `|∇A|² = Σ dh²`, one slot at a time
+    have hG : (∑ i : Fin P, ∑ j : Fin P, ∑ k : Fin P,
+        inner ℝ (Φ (W.starProjection (EuclideanSpace.single k 1))
+          (W.starProjection (EuclideanSpace.single i 1)))
+          (W.starProjection (EuclideanSpace.single j 1)) ^ 2) =
+        ∑ c, ∑ a, ∑ d, Ψ c a d ^ 2 := by
+      calc _ = ∑ i : Fin P, ∑ j : Fin P, ∑ c, inner ℝ (Φ (τ c : Euclid P)
+              (W.starProjection (EuclideanSpace.single i 1)))
+              (W.starProjection (EuclideanSpace.single j 1)) ^ 2 := by
+            refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+            exact hhsf
+              (fun u => inner ℝ (Φ u (W.starProjection (EuclideanSpace.single i 1)))
+                (W.starProjection (EuclideanSpace.single j 1)))
+              ((innerSL ℝ (W.starProjection (EuclideanSpace.single j 1))).comp
+                ((ContinuousLinearMap.apply ℝ (Euclid P)
+                  (W.starProjection (EuclideanSpace.single i 1))).comp Φ))
+              (fun u => by
+                rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+                  ContinuousLinearMap.apply_apply, innerSL_apply_apply, real_inner_comm])
+        _ = ∑ i : Fin P, ∑ c, ∑ j : Fin P, inner ℝ (Φ (τ c : Euclid P)
+              (W.starProjection (EuclideanSpace.single i 1)))
+              (W.starProjection (EuclideanSpace.single j 1)) ^ 2 :=
+            Finset.sum_congr rfl fun i _ => Finset.sum_comm
+        _ = ∑ i : Fin P, ∑ c, ∑ d, inner ℝ (Φ (τ c : Euclid P)
+              (W.starProjection (EuclideanSpace.single i 1))) (τ d : Euclid P) ^ 2 := by
+            refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun c _ => ?_
+            exact hhsf
+              (fun u => inner ℝ (Φ (τ c : Euclid P)
+                (W.starProjection (EuclideanSpace.single i 1))) u)
+              (innerSL ℝ (Φ (τ c : Euclid P) (W.starProjection (EuclideanSpace.single i 1))))
+              (fun u => (innerSL_apply_apply _ _ _).symm)
+        _ = ∑ c, ∑ i : Fin P, ∑ d, inner ℝ (Φ (τ c : Euclid P)
+              (W.starProjection (EuclideanSpace.single i 1))) (τ d : Euclid P) ^ 2 :=
+            Finset.sum_comm
+        _ = ∑ c, ∑ d, ∑ i : Fin P, inner ℝ (Φ (τ c : Euclid P)
+              (W.starProjection (EuclideanSpace.single i 1))) (τ d : Euclid P) ^ 2 :=
+            Finset.sum_congr rfl fun c _ => Finset.sum_comm
+        _ = ∑ c, ∑ d, ∑ a,
+              inner ℝ (Φ (τ c : Euclid P) (τ a : Euclid P)) (τ d : Euclid P) ^ 2 := by
+            refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => ?_
+            exact hhsf (fun u => inner ℝ (Φ (τ c : Euclid P) u) (τ d : Euclid P))
+              ((innerSL ℝ (τ d : Euclid P)).comp (Φ (τ c : Euclid P)))
+              (fun u => by
+                rw [ContinuousLinearMap.comp_apply, innerSL_apply_apply, real_inner_comm])
+        _ = ∑ c, ∑ a, ∑ d, Ψ c a d ^ 2 := by
+            simp only [hΨ]
+            exact Finset.sum_congr rfl fun c _ => Finset.sum_comm
+    -- (c) `|∇|A|²|² = 4 Σ_c (Σ_{a,d} h_ad dh_cad)²`
+    have hgrad : ∑ k : Fin P, g (W.starProjection (EuclideanSpace.single k 1)) ^ 2 =
+        4 * ∑ c, (∑ a, ∑ d, H a d * Ψ c a d) ^ 2 := by
+      rw [hhs1 g, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun c _ => ?_
+      have hc : ∑ a, inner ℝ (D (τ a : Euclid P)) (Φ (τ c : Euclid P) (τ a : Euclid P)) =
+          ∑ a, ∑ d, H a d * Ψ c a d := by
+        refine Finset.sum_congr rfl fun a _ => ?_
+        rw [hpars _ (hDW a)]
+        refine Finset.sum_congr rfl fun d _ => ?_
+        rw [hH, hΨ, real_inner_comm (Φ (τ c : Euclid P) (τ a : Euclid P)) (τ d : Euclid P)]
+      rw [hg c, htrace (Euclid P) D (Φ (τ c : Euclid P)), hc]
+      ring
+    -- Simon's (1): `h` vanishes in the radial row and column
+    have hH1 : ∀ a, H (Fin.last n) a = 0 := fun a => by rw [hH, hDlast, inner_zero_left]
+    have hH2 : ∀ a, H a (Fin.last n) = 0 := fun a => by
+      rw [hH, hDsym, hDlast, inner_zero_left]
+    -- Simon's (2) with Codazzi: `dh_{c n d} = dh_{c d n} = −ρ⁻¹ h_cd`
+    have hΨ1 : ∀ c d, Ψ c (Fin.last n) d = -(ρ⁻¹ * H c d) := by
+      intro c d
+      rw [hΨ, hH, hΦsym₁ c (Fin.last n) d, hΦlast, neg_apply, smul_apply,
+        ContinuousLinearMap.comp_apply, Submodule.starProjection_mem_subspace_eq_self,
+        inner_neg_left, real_inner_smul_left]
+    have hΨ2 : ∀ c a, Ψ c a (Fin.last n) = -(ρ⁻¹ * H c a) := by
+      intro c a
+      rw [← hΨ1 c a, hΨ, hΨ, hΦsym₂ c a (Fin.last n)]
+    -- `h` lives on the tangential block `Fin n × Fin n`
+    have hR : ∀ c, ∑ d, H c d ^ 2 = ∑ j : Fin n, H c j.castSucc ^ 2 := fun c => by
+      rw [Fin.sum_univ_castSucc, hH2, sq, mul_zero, add_zero]
+    have hS' : ∑ a, ∑ d, H a d ^ 2 = ∑ i : Fin n, ∑ j : Fin n, H i.castSucc j.castSucc ^ 2 := by
+      rw [Fin.sum_univ_castSucc, hR (Fin.last n)]
+      simp only [hH1, hR, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow,
+        Finset.sum_const_zero, add_zero]
+    -- for each `c`, the radial entries of `dh_c` contribute `2ρ⁻² Σ_d h_cd²` to `Σ dh_c²`,
+    -- and Cauchy–Schwarz on the tangential block gives `(Σ h dh_c)² ≤ |A|² Σ_{tangential} dh_c²`
+    have key : ∀ c, (∑ a, ∑ d, H a d * Ψ c a d) ^ 2 +
+        2 * ρ⁻¹ ^ 2 * (∑ a, ∑ d, H a d ^ 2) * ∑ d, H c d ^ 2 ≤
+          (∑ a, ∑ d, H a d ^ 2) * ∑ a, ∑ d, Ψ c a d ^ 2 := by
+      intro c
+      have hX : ∑ a, ∑ d, H a d * Ψ c a d =
+          ∑ i : Fin n, ∑ j : Fin n, H i.castSucc j.castSucc * Ψ c i.castSucc j.castSucc := by
+        simp only [Fin.sum_univ_castSucc, hH1, hH2, zero_mul, Finset.sum_const_zero, add_zero]
+      have hT : ∑ a, ∑ d, Ψ c a d ^ 2 = ∑ i : Fin n, ∑ j : Fin n, Ψ c i.castSucc j.castSucc ^ 2 +
+          2 * ρ⁻¹ ^ 2 * ∑ d, H c d ^ 2 := by
+        rw [hR c]
+        simp only [Fin.sum_univ_castSucc, hΨ1, hΨ2, hH2, Finset.sum_add_distrib]
+        simp only [neg_sq, mul_pow, ← Finset.mul_sum, mul_zero, zero_pow two_ne_zero]
+        ring
+      have hCS : (∑ i : Fin n, ∑ j : Fin n, H i.castSucc j.castSucc *
+          Ψ c i.castSucc j.castSucc) ^ 2 ≤
+            (∑ i : Fin n, ∑ j : Fin n, H i.castSucc j.castSucc ^ 2) *
+              ∑ i : Fin n, ∑ j : Fin n, Ψ c i.castSucc j.castSucc ^ 2 := by
+        have h := Finset.sum_mul_sq_le_sq_mul_sq (Finset.univ : Finset (Fin n × Fin n))
+          (fun q => H q.1.castSucc q.2.castSucc) (fun q => Ψ c q.1.castSucc q.2.castSucc)
+        simpa only [Fintype.sum_prod_type] using h
+      rw [hX, hT, hS']
+      nlinarith [hCS]
+    -- sum over `c`, using `Σ_c Σ_d h_cd² = |A|²`
+    have hsum := Finset.sum_le_sum (s := Finset.univ) fun c _ => key c
+    rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum] at hsum
+    rw [hS, hG, hgrad]
+    have e : 2 * (∑ a, ∑ d, H a d ^ 2) ^ 2 / ρ ^ 2 =
+        2 * ρ⁻¹ ^ 2 * (∑ a, ∑ d, H a d ^ 2) ^ 2 := by ring
+    rw [e]
+    nlinarith [hsum]
+  exact frame _ b (fderiv ℝ ν x) _ _ ‖x‖
+    (fun a => Submodule.subset_span (hCZ _ (hbT a) _ (hbT a)).1)
+    (fun a c => (hCZ _ (hbT a) _ (hbT c)).2.1)
+    (by rw [hlast, map_smul, hDx, smul_zero])
+    (fun a c d => ((hCZ _ (hbT a) _ (hbT c)).2.2 _ (hbT d)).1)
+    (fun a c d => ((hCZ _ (hbT a) _ (hbT c)).2.2 _ (hbT d)).2)
+    (by rw [hlast, map_smul, hΦW x hxW, hrad, smul_neg]) hg
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
