@@ -504,6 +504,29 @@ theorem Submission.idtp_fons_odc_fr_cone_disjoint : ∀ (P : ℕ) (σ σ' : Eucl
     rw [hid]
     nlinarith [sq_nonneg (t - s), mul_pos ht hs]
   nlinarith [norm_nonneg (t • σ - s • σ')]
+/-- **Simon, proof of 7.3.3(2), (10)** (finite rays, "open cones scale"): if `μ(λW) = λ μ(W)`
+for every `λ > 0` and every open `W ⊆ ℝᴾ`, and `K` is an open cone (`cx ∈ K` whenever `c > 0`,
+`x ∈ K`), then `μ(K ∩ B_r(0)) = r μ(K ∩ B_1(0))` for `r > 0`: `K ∩ B_r(0)` is the dilate
+`r (K ∩ B_1(0))` of the open set `K ∩ B_1(0)` (`y ↦ r⁻¹y` and `x ↦ rx`, `|rx| = r|x|`). -/
+theorem Submission.idtp_fons_odc_fr_cone_scaling : ∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → ∀ K : Set (Euclid P), IsOpen K → (∀ c : ℝ, 0 < c → ∀ x ∈ K, c • x ∈ K) → ∀ r : ℝ, 0 < r → μ (K ∩ ball 0 r) = ENNReal.ofReal r * μ (K ∩ ball 0 1) := by
+  intro P μ hhom K hK hcone r hr
+  -- `K ∩ B_r(0) = r (K ∩ B_1(0))`
+  have hset : (fun x => r • x) '' (K ∩ ball 0 1) = K ∩ ball 0 r := by
+    ext y
+    constructor
+    · rintro ⟨x, ⟨hxK, hx1⟩, rfl⟩
+      refine ⟨hcone r hr x hxK, ?_⟩
+      rw [mem_ball_zero_iff] at hx1 ⊢
+      rw [norm_smul, Real.norm_of_nonneg hr.le]
+      simpa using mul_lt_mul_of_pos_left hx1 hr
+    · rintro ⟨hyK, hyr⟩
+      refine ⟨r⁻¹ • y, ⟨hcone r⁻¹ (inv_pos.mpr hr) y hyK, ?_⟩, smul_inv_smul₀ hr.ne' y⟩
+      rw [mem_ball_zero_iff] at hyr ⊢
+      rw [norm_smul, Real.norm_of_nonneg (inv_pos.mpr hr).le, inv_mul_lt_one₀ hr]
+      exact hyr
+  -- homogeneity on the open set `K ∩ B_1(0)`
+  rw [← hset]
+  exact hhom r hr _ (hK.inter isOpen_ball)
 
 /-- A thin cone around a direction carrying density has mass at least `1/2` (Simon 7.3.3; the
 finite-rays step for `1`-dimensional minimizing cones).  Let `μ(λW) = λ μ(W)` for `λ > 0` and open
@@ -561,6 +584,47 @@ theorem Submission.idtp_fons_odc_fr_cone_mass : ∀ (P : ℕ) (μ : Measure (Euc
   -- `ρ ≤ 2ρa` and `ρ > 0` give `1 ≤ 2a`
   rw [← ENNReal.ofReal_ofNat 2, ← ENNReal.ofReal_mul (by norm_num), ← ENNReal.ofReal_one]
   exact ENNReal.ofReal_le_ofReal (by nlinarith)
+
+/-- **Finitely many rays: counting bound.**  Let `μ` be a measure on `ℝᴾ` with `μ(λW) = λ μ(W)`
+for `λ > 0` and open `W`, and `μ(B_1(0)) < ∞`.  If `T` is a finite set of unit vectors and, for
+each `σ ∈ T`, `ρ ≤ μ(B_ρ(σ))` for all small `ρ > 0`, then `#T ≤ 2 μ(B_1(0))`.  Fix one
+`ρ ∈ (0, 1)` with `ρ ≤ μ(B_ρ(σ))` for every `σ ∈ T` and `2ρ ≤ |σ − σ'|` for distinct
+`σ, σ' ∈ T`.  The sets `C_σ = K_ρ(σ) ∩ B_1(0)`, `K_ρ(σ) = ⋃_{t > 0} B_{tρ}(tσ)`, are open,
+pairwise disjoint (`idtp_fons_odc_fr_cone_disjoint`) and satisfy `1 ≤ 2 μ(C_σ)`
+(`idtp_fons_odc_fr_cone_mass`), so `#T ≤ Σ_σ 2 μ(C_σ) = 2 μ(⋃_σ C_σ) ≤ 2 μ(B_1(0))`. -/
+theorem Submission.idtp_fons_odc_fr_card_le : ∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W → μ ((fun x => lam • x) '' W) = ENNReal.ofReal lam * μ W) → μ (ball (0 : Euclid P) 1) ≠ ∞ → ∀ T : Finset (Euclid P), (∀ σ ∈ T, ‖σ‖ = 1) → (∀ σ ∈ T, ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal ρ ≤ μ (ball σ ρ)) → (T.card : ℝ≥0∞) ≤ 2 * μ (ball 0 1) := by
+  intro P μ hscale hfin T hT hdens
+  -- step 1: the finitely many density bounds hold together for all small `ρ`
+  have h1 : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ∀ σ ∈ T, ENNReal.ofReal ρ ≤ μ (ball σ ρ) :=
+    (eventually_all_finset T).2 hdens
+  -- step 2: eventually `2ρ ≤ |σ − σ'|` for all distinct `σ, σ' ∈ T`
+  have h2 : ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ∀ σ ∈ T, ∀ σ' ∈ T, σ ≠ σ' → 2 * ρ ≤ ‖σ - σ'‖ := by
+    refine (eventually_all_finset T).2 fun σ _ => (eventually_all_finset T).2 fun σ' _ => ?_
+    rcases eq_or_ne σ σ' with h | h
+    · exact Eventually.of_forall fun _ h' => absurd h h'
+    · filter_upwards [Ioo_mem_nhdsGT (half_pos (norm_pos_iff.2 (sub_ne_zero.2 h)))]
+        with ρ hρ _
+      linarith [hρ.2]
+  -- step 3: `𝓝[>] 0` is proper, so a single `ρ ∈ (0, 1)` satisfies all of these
+  obtain ⟨ρ, h1ρ, h2ρ, hρ⟩ := (h1.and (h2.and (Ioo_mem_nhdsGT zero_lt_one))).exists
+  -- step 4: `C_σ = K_ρ(σ) ∩ B_1(0)` is open, hence Borel, and lies in `B_1(0)`
+  set C : Euclid P → Set (Euclid P) :=
+    fun σ => (⋃ (t : ℝ) (_ : 0 < t), ball (t • σ) (t * ρ)) ∩ ball 0 1
+  have hmeas : ∀ σ ∈ T, MeasurableSet (C σ) := fun σ _ =>
+    ((isOpen_iUnion fun t => isOpen_iUnion fun _ => isOpen_ball).inter isOpen_ball).measurableSet
+  -- step 5: the `C_σ` are pairwise disjoint (`cone_disjoint`)
+  have hdisj : (T : Set (Euclid P)).PairwiseDisjoint C := by
+    intro σ hσ σ' hσ' hne
+    exact (Submission.idtp_fons_odc_fr_cone_disjoint P σ σ' ρ (hT σ hσ) (hT σ' hσ') hρ.1 hρ.2.le
+      (h2ρ σ hσ σ' hσ' hne)).mono inter_subset_left inter_subset_left
+  -- steps 6–7: `1 ≤ 2 μ(C_σ)` (`cone_mass`), finite additivity and monotonicity
+  calc (T.card : ℝ≥0∞) = ∑ σ ∈ T, 1 := by simp
+    _ ≤ ∑ σ ∈ T, 2 * μ (C σ) := Finset.sum_le_sum fun σ hσ =>
+        Submission.idtp_fons_odc_fr_cone_mass P μ hscale hfin σ (hT σ hσ) ρ hρ.1 hρ.2 (h1ρ σ hσ)
+    _ = 2 * μ (⋃ σ ∈ T, C σ) := by rw [measure_biUnion_finset hdisj hmeas, Finset.mul_sum]
+    _ ≤ 2 * μ (ball 0 1) := by
+        gcongr
+        exact iUnion₂_subset fun σ _ => inter_subset_right
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
