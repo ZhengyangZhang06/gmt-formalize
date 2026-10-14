@@ -2643,6 +2643,58 @@ theorem Submission.idtp_fons_cc_ambient_calculus : (∀ P : ℕ, IsEmbeddedSubma
     have hemb : MeasurableEmbedding (dilation a s) := hh ▸ h.measurableEmbedding
     rw [Measure.restrict_smul, hemb.restrict_map, hemb.injective.preimage_image]
 
+/-- **The zero current is a minimizing cycle of zero weight** (proof of Simon 7.3.3, the case
+`p ∉ spt T` of the tangent measures; Simon Ch. 6, 3.1 and 7.1.1).  `C = 0 ∈ 𝒟ₙ(ℝᴾ)` is
+represented by the empty triple `R_C = (∅, 1, 0)`: every condition on a triple holds because
+`Hⁿ⌞∅ = 0`, so `R_C(ω) = 0 = C(ω)` and `μ_{R_C} = 0`.  `C` is minimizing in `ℝᴾ`, since
+`M_W(0) = sup{0} = 0 ≤ M_W(S)` for every competitor `S`, and `∂0 = 0`. -/
+theorem Submission.idtp_fons_cc_tm_zero_cycle : ∀ (P n : ℕ), ∃ (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (RC : IMRep (univ : Set (Euclid P)) n), IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ RC.Represents C ∧ RC.measure = 0 := by
+  intro P n
+  -- Step 1 (cycle): `∂0 = 0`, trivially for `n = 0` and as `(∂0)(ω) = 0(dω) = 0` for `n = m + 1`
+  have hbdry : BoundaryVanishes (0 : GeometricCurrentOn (univ : Set (Euclid P)) n) := by
+    cases n with
+    | zero => trivial
+    | succ m =>
+      change (0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)).boundary = 0
+      ext ω
+      rw [GeometricCurrentOn.boundary_apply, GeometricCurrentOn.zero_apply,
+        GeometricCurrentOn.zero_apply]
+  -- Step 2: the empty triple `(∅, 1, 0)` is integer multiplicity in `ℝᴾ`, as `Hⁿ⌞∅ = 0`
+  let RC : IMRep (univ : Set (Euclid P)) n :=
+    { carrier := ∅
+      mult := fun _ => 1
+      orient := fun _ => 0
+      measurableSet_carrier := MeasurableSet.empty
+      carrier_subset := empty_subset _
+      rectifiable := Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+      measurable_mult := measurable_const
+      mult_pos := fun x hx => absurd hx (notMem_empty x)
+      locallyIntegrable_mult := fun K _ _ => by
+        rw [empty_inter, setLIntegral_empty]
+        exact ENNReal.zero_ne_top
+      aestronglyMeasurable_orient := aestronglyMeasurable_const
+      orients := ae_restrict_of_forall_mem MeasurableSet.empty fun x hx =>
+        absurd hx (notMem_empty x) }
+  -- Step 3: `R_C(ω)` is an integral over `∅`, so `R_C(ω) = 0 = C(ω)`
+  have hrep : RC.Represents 0 := by
+    intro ω
+    rw [GeometricCurrentOn.zero_apply]
+    exact setIntegral_empty.symm
+  -- Step 4 (minimality): `M_W(0) = sup{0} = 0 ≤ M_W(S)` for every competitor `S`
+  have hmass : ∀ W : Set (Euclid P),
+      (0 : GeometricCurrentOn (univ : Set (Euclid P)) n).massOn W = 0 := by
+    intro W
+    refine le_antisymm (sSup_le ?_) zero_le
+    rintro r ⟨ω, -, rfl⟩
+    dsimp only
+    rw [GeometricCurrentOn.zero_apply, ENNReal.ofReal_zero]
+  refine ⟨0, RC, ⟨⟨RC, hrep⟩, fun W S _ _ _ _ _ _ => ?_⟩, hbdry, hrep, ?_⟩
+  · rw [hmass W]
+    exact zero_le
+  -- Step 5 (zero weight): `μ_{R_C} = (Hⁿ⌞∅).withDensity 1 = (0).withDensity 1 = 0`
+  · change (μHE[n].restrict (∅ : Set (Euclid P))).withDensity _ = 0
+    rw [Measure.restrict_empty, withDensity_zero_left]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
