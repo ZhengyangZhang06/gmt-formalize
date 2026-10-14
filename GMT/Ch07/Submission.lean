@@ -9342,6 +9342,78 @@ theorem Submission.rsd_isIntegerMultiplicity_int_combination : ∀ (P n : ℕ) (
   rw [hS ω, hR₁ ω, hR₂ ω,
     Submission.rsdic_imrep_action_int_combination P n U R₁ R₂ R p₁ p₂ hR ω]
 
+/-- **The faces of the split-off box** (Simon Ch. 7, 3.5, steps 4–5 of the cone splitting proof;
+Ch. 6, 2.17–2.20 and 3.2(1)).  Let `g = (g₀, …, g_j)` be orthonormal, `G = span g`, `Y = τ(R_Y)`
+with `μ_Y(ℝᴾ ∖ G^⊥) = 0`, and for each `a` let `f_a = g ∘ a.succAbove` (orthonormal, with
+`span f_a ≤ G`, so `μ_Y(ℝᴾ ∖ (span f_a)^⊥) = 0`, and `g_a ∈ (span f_a)^⊥`).  With `w = ±r g_a`,
+`Submission.dimred_cs_sos_mt_fc_box_face` gives integer multiplicity face currents
+`P^{a,±} = [[Q_a]] ×_{f_a} τ_{±r g_a}Y`, `M(P^{a,±}) = (2r)ʲ μ_Y(ℝᴾ)` and
+`P^{a,±}(ω) = ∫_{Q_a} Y(♭_a ω(s ± r g_a + ·)) dHʲ(s)`.  Differences of integer multiplicity
+currents are integer multiplicity (`Submission.rsd_isIntegerMultiplicity_int_combination`), so
+`Submission.cbr_cc_current_algebra` (c) makes `E' = Σ_a (−1)ᵃ (P^{a,+} − P^{a,−})` integer
+multiplicity with `M(E') ≤ Σ_{a,±} M(P^{a,±}) = 2(j + 1)(2r)ʲ μ_Y(ℝᴾ)`. -/
+theorem Submission.dimred_cs_sos_mt_face_currents : ∀ (P j m n' : ℕ) (g : Fin (j + 1) → Euclid P) (h₂ : n' = j + (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (RY : IMRep (univ : Set (Euclid P)) (m + 1)) (r : ℝ), Orthonormal ℝ g → RY.Represents Y → RY.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → 0 < r → ∃ E' : GeometricCurrentOn (univ : Set (Euclid P)) n', IsIntegerMultiplicity E' ∧ E'.mass ≤ ENNReal.ofReal (2 * ((j : ℝ) + 1) * (2 * r) ^ j) * RY.measure univ ∧ ∀ flatF : Fin (j + 1) → Covector (Euclid P) n' → Covector (Euclid P) (m + 1), (∀ (a : Fin (j + 1)) (α : Covector (Euclid P) n') (v : Fin (m + 1) → Euclid P), flatF a α v = α (Fin.append (g ∘ a.succAbove) v ∘ Fin.cast h₂)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n', E' ω = ∑ a : Fin (j + 1), (-1 : ℝ) ^ (a : ℕ) * ((∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (s + r • g a + y))) ∂μHE[j]) - ∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, currentEval Y (fun y => flatF a ((ω : DifferentialForm (Euclid P) n') (s - r • g a + y))) ∂μHE[j]) := by
+  intro P j m n' g h₂ Y RY r hg hRY hRYG hr
+  -- the frames `f_a = g ∘ a.succAbove`: orthonormal, `g_a ⟂ span f_a`, `G^⊥ ⊆ (span f_a)^⊥`
+  have hga : ∀ a : Fin (j + 1), g a ∈ (Submodule.span ℝ (Set.range (g ∘ a.succAbove)))ᗮ := by
+    intro a
+    have hortho : Submodule.IsOrtho (Submodule.span ℝ {g a})
+        (Submodule.span ℝ (Set.range (g ∘ a.succAbove))) := by
+      rw [Submodule.isOrtho_span]
+      rintro u (rfl : u = g a) v ⟨c, rfl⟩
+      exact hg.2 (Fin.succAbove_ne a c).symm
+    exact Submodule.isOrtho_iff_le.mp hortho (Submodule.subset_span rfl)
+  have hRYa : ∀ a : Fin (j + 1),
+      RY.measure ((Submodule.span ℝ (Set.range (g ∘ a.succAbove)))ᗮ : Set (Euclid P))ᶜ = 0 :=
+    fun a => measure_mono_null (compl_subset_compl.mpr
+      (Submodule.orthogonal_le (Submodule.span_mono (range_comp_subset_range _ _)))) hRYG
+  -- the face currents `P^{a,+}` (`b = true`, `w = r g_a`) and `P^{a,−}` (`b = false`, `w = −r g_a`)
+  have hface := fun (a : Fin (j + 1)) (b : Bool) =>
+    Submission.dimred_cs_sos_mt_fc_box_face P j (m + 1) n' (g ∘ a.succAbove) h₂
+      (cond b (r • g a) (-(r • g a))) Y RY r (Nat.succ_pos m)
+      (hg.comp _ Fin.succAbove_right_injective)
+      (by cases b
+          · exact Submodule.neg_mem _ (Submodule.smul_mem _ _ (hga a))
+          · exact Submodule.smul_mem _ _ (hga a))
+      hRY (hRYa a) hr
+  choose B hBim hBmass hBact using hface
+  -- differences of integer multiplicity currents are integer multiplicity
+  have hsub : ∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U →
+      IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B) :=
+    fun P n U A B hU hA hB =>
+      Submission.rsd_isIntegerMultiplicity_int_combination P n U A B (A - B) 1 (-1) hU hA hB
+        fun ω => by
+          show A ω - B ω = _
+          push_cast
+          ring
+  -- `E' = Σ_{(a, b)} ±(−1)ᵃ P^{a,b}`
+  obtain ⟨E', hE'im, hE'act, hE'mass⟩ :=
+    Submission.cbr_cc_current_algebra.2.2 hsub P n' univ (Fin (j + 1) × Bool) Finset.univ
+      (fun p => B p.1 p.2) (fun p => cond p.2 ((-1) ^ (p.1 : ℕ)) (-(-1) ^ (p.1 : ℕ))) isOpen_univ
+      (fun p _ => hBim p.1 p.2)
+  refine ⟨E', hE'im, ?_, fun flatF hflat ω => ?_⟩
+  · -- mass: `M(E') ≤ Σ_{a,b} |±(−1)ᵃ| M(P^{a,b}) = 2(j + 1)(2r)ʲ μ_Y(ℝᴾ)`
+    calc E'.mass ≤ ∑ p : Fin (j + 1) × Bool,
+          ((cond p.2 ((-1 : ℤ) ^ (p.1 : ℕ)) (-(-1) ^ (p.1 : ℕ))).natAbs : ℝ≥0∞) *
+            (B p.1 p.2).massOn univ := hE'mass univ
+      _ = ∑ _p : Fin (j + 1) × Bool, ENNReal.ofReal ((2 * r) ^ j) * RY.measure univ := by
+          refine Finset.sum_congr rfl fun p _ => ?_
+          rw [← GeometricCurrentOn.mass, hBmass]
+          cases p.2 <;> simp
+      _ = ENNReal.ofReal (2 * ((j : ℝ) + 1) * (2 * r) ^ j) * RY.measure univ := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_prod, Fintype.card_fin,
+            Fintype.card_bool, nsmul_eq_mul, ← mul_assoc,
+            ENNReal.ofReal_mul (by positivity : (0 : ℝ) ≤ 2 * ((j : ℝ) + 1)),
+            show 2 * ((j : ℝ) + 1) = (((j + 1) * 2 : ℕ) : ℝ) by push_cast; ring,
+            ENNReal.ofReal_natCast]
+  · -- action: `E'(ω) = Σ_a ((−1)ᵃ P^{a,+}(ω) − (−1)ᵃ P^{a,−}(ω))`
+    rw [hE'act ω, Fintype.sum_prod_type]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [Fintype.sum_bool, hBact a true (flatF a) (hflat a) ω, hBact a false (flatF a) (hflat a) ω]
+    simp only [Bool.cond_true, Bool.cond_false, Function.comp_apply, ← sub_eq_add_neg, Int.cast_neg,
+      Int.cast_pow, Int.cast_one]
+    ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
