@@ -5268,6 +5268,86 @@ theorem Submission.dtc_bc_lc_sl_c1_tangent : ∀ (P d : ℕ) (g : Euclid d → E
   exact (Submission.codim1_rdo_c1pt_rescaled_area_formula P d g (closedBall c r) z s f
     measurableSet_closedBall (fun a ha => hdiff a (hBU ha)) hinj hreg hs).symm
 
+/-- **Simon Ch. 3, Lemma 1.2 ("only if"), Remarks 1.3 and 1.5(2), proof of 2.4** (chart pieces of
+a countably `(n+1)`-rectifiable set).  Let `M ⊆ ℝᴾ` be Borel, countably `(n+1)`-rectifiable and
+locally `H^{n+1}`-finite, and `f : ℝᴾ → ℝ` Lipschitz.  Up to an `H^{n+1}`-null set, `M` is the
+disjoint union of pieces `ψⱼ(Yⱼ)`: `Yⱼ` is Borel with compact closure in an open `Vⱼ` on which the
+`C¹` map `ψⱼ` is injective with injective derivative, `f ∘ ψⱼ` agrees on `Yⱼ` with a `C¹`
+function `Fⱼ`, and `T_{ψⱼ(y)}M = Dψⱼ(y)(ℝ^{n+1})` for `y ∈ Yⱼ`.  Lemma 1.2 covers `M`, up to a
+null set, by `C¹` ball charts `gₖ` with lower Lipschitz bounds.  Along each chart the `C¹`
+approximation theorem (Ch. 2, 1.5) gives pieces `Yₖᵢ` with `f ∘ gₖ = Fₖᵢ` on `Yₖᵢ`, and the
+locality of approximate tangent spaces gives a Borel null set `Eₖ` off which
+`T_{gₖ(y)}M = Dgₖ(y)(ℝ^{n+1})`.  The pieces `Yₖᵢ ∖ gₖ⁻¹(Eₖ)`, indexed by `Nat.pair k i`, are
+disjointified as in Remark 1.3. -/
+theorem Submission.dtc_bc_lc_sl_chart_pieces : ∀ (P n : ℕ) (M : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal), MeasurableSet M → CountablyRectifiable (n + 1) M → (∀ K : Set (Euclid P), IsCompact K → μHE[n + 1] (M ∩ K) ≠ ∞) → LipschitzWith L f → ∃ (ψ : ℕ → Euclid (n + 1) → Euclid P) (V Y : ℕ → Set (Euclid (n + 1))) (F : ℕ → Euclid (n + 1) → ℝ), (∀ j, IsOpen (V j) ∧ ContDiff ℝ 1 (ψ j) ∧ InjOn (ψ j) (V j) ∧ (∀ y ∈ V j, Injective (fderiv ℝ (ψ j) y)) ∧ ContDiff ℝ 1 (F j) ∧ MeasurableSet (Y j) ∧ IsCompact (closure (Y j)) ∧ closure (Y j) ⊆ V j ∧ ψ j '' Y j ⊆ M ∧ (∀ y ∈ Y j, f (ψ j y) = F j y) ∧ ∀ y ∈ Y j, HasApproximateTangentSpaceAt (n + 1) M (ψ j y) (LinearMap.range (fderiv ℝ (ψ j) y : Euclid (n + 1) →ₗ[ℝ] Euclid P))) ∧ Pairwise (fun i j => Disjoint (ψ i '' Y i) (ψ j '' Y j)) ∧ μHE[n + 1] (M \ ⋃ j, ψ j '' Y j) = 0 := by
+  intro P n M f L hM hrect hfin hf
+  -- Steps 1–3 (Lemma 1.2, "only if"): `C¹` charts `gₖ` on `Bₖ = B_{rₖ}(cₖ)` with
+  -- `mₖ|a − b| ≤ |gₖ(a) − gₖ(b)|` on `Bₖ`, Borel images `Sₖ = gₖ(Bₖ)` of finite measure,
+  -- and `H^{n+1}(M ∖ ⋃ₖ Sₖ) = 0`
+  obtain ⟨g, c, r, m, hg, hm, hlow, hSmeas, hSfin, hcover⟩ :=
+    Submission.codim1_rdo_rectifiable_c1_cover P (n + 1) M hrect
+  -- `gₖ` is injective on `Bₖ`: `gₖ(a) = gₖ(b)` forces `mₖ|a − b| ≤ 0`
+  have hinj : ∀ k, InjOn (g k) (ball (c k) (r k)) := by
+    intro k a ha b hb hab
+    have h := hlow k a ha b hb
+    rw [hab, sub_self, norm_zero] at h
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 (by nlinarith [norm_nonneg (a - b), hm k]))
+  -- `Dgₖ(y)` is injective for `y ∈ Bₖ`: `mₖ|v| ≤ |Dgₖ(y)v|`
+  have hDinj : ∀ k, ∀ y ∈ ball (c k) (r k), Injective (fderiv ℝ (g k) y) := by
+    intro k y hy v w hvw
+    have h := Submission.codim1_rdo_c1pt_fderiv_lower_bound P (n + 1) (g k) (ball (c k) (r k)) y
+      (m k) isOpen_ball hy ((hg k).differentiable one_ne_zero y) (fun x hx => hlow k x hx y hy)
+      (v - w)
+    rw [map_sub, hvw, sub_self, norm_zero] at h
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 (by nlinarith [norm_nonneg (v - w), hm k]))
+  -- Steps 4–6 (proof of 2.4): Borel pieces `Yₖᵢ` with compact closure in `Bₖ`, `gₖ(Yₖᵢ) ⊆ M`
+  -- and `f ∘ gₖ = Fₖᵢ ∈ C¹` on `Yₖᵢ`, covering `M ∩ Sₖ` up to a null set
+  choose Y₀ F₀ hY₀ hY₀null using fun k =>
+    Submission.dtc_bc_lc_sl_cp_chart_refinement P (n + 1) M f L (g k) (ball (c k) (r k)) hM hf
+      isOpen_ball (hg k)
+  -- Step 8 (Remark 1.5(2)): off a Borel null set `Eₖ`, `M` has approximate tangent space
+  -- `Dgₖ(y)(ℝ^{n+1})` at every point `gₖ(y) ∈ M` with `y ∈ Bₖ`
+  choose E hEmeas hEnull hEtan using fun k =>
+    Submission.dtc_bc_lc_sl_cp_chart_tangent P (n + 1) M (g k) (c k) (r k) (m k) hM hfin (hg k)
+      (hm k) (hlow k) (hSmeas k) (hSfin k)
+  have hY₀B : ∀ k i, Y₀ k i ⊆ ball (c k) (r k) := fun k i =>
+    subset_closure.trans (hY₀ k i).2.2.2.1
+  -- Step 7 (Remark 1.3): index the pieces `Yₖᵢ ∖ gₖ⁻¹(Eₖ)` by `b = pair k i`; disjointify
+  obtain ⟨Y, hY, hdisj, hunion⟩ := Submission.dtc_bc_lc_sl_cp_disjointify P (n + 1)
+    (fun b => g b.unpair.1) (fun b => Y₀ b.unpair.1 b.unpair.2 \ g b.unpair.1 ⁻¹' E b.unpair.1)
+    (fun b => (hg _).continuous)
+    (fun b => (hY₀ _ _).2.1.diff ((hg _).continuous.measurable (hEmeas _)))
+    (fun b => (hinj _).mono (sdiff_subset.trans (hY₀B _ _)))
+  refine ⟨fun b => g b.unpair.1, fun b => ball (c b.unpair.1) (r b.unpair.1), Y,
+    fun b => F₀ b.unpair.1 b.unpair.2, fun j => ?_, hdisj, ?_⟩
+  · -- Step 9: the properties of the `j`-th piece `Yⱼ ⊆ Yₖᵢ ∖ gₖ⁻¹(Eₖ)`, `(k, i) = unpair j`
+    obtain ⟨hYj, hYsub⟩ := hY j
+    obtain ⟨hFC1, -, hcpt, hclB, himM, hfF⟩ := hY₀ j.unpair.1 j.unpair.2
+    have hYY₀ : Y j ⊆ Y₀ j.unpair.1 j.unpair.2 := hYsub.trans sdiff_subset
+    refine ⟨isOpen_ball, hg _, hinj _, hDinj _, hFC1, hYj,
+      hcpt.of_isClosed_subset isClosed_closure (closure_mono hYY₀),
+      (closure_mono hYY₀).trans hclB, (image_mono hYY₀).trans himM, fun y hy => hfF y (hYY₀ hy),
+      fun y hy => ?_⟩
+    obtain ⟨hy₀, hyE⟩ := hYsub hy
+    exact hEtan _ y (hY₀B _ _ hy₀) (himM (mem_image_of_mem _ hy₀)) hyE
+  · -- `M ∖ ⋃ⱼ ψⱼ(Yⱼ) ⊆ (M ∖ ⋃ₖ Sₖ) ∪ ⋃ₖ ((M ∩ Sₖ) ∖ ⋃ᵢ gₖ(Yₖᵢ)) ∪ ⋃ₖ Eₖ`, which is null
+    rw [hunion]
+    refine measure_mono_null ?_ (measure_union_null (measure_union_null hcover
+      (measure_iUnion_null hY₀null)) (measure_iUnion_null hEnull))
+    rintro x ⟨hxM, hxU⟩
+    by_cases hxS : x ∈ ⋃ k, g k '' ball (c k) (r k)
+    · obtain ⟨k, hk⟩ := mem_iUnion.1 hxS
+      by_cases hxY : x ∈ ⋃ i, g k '' Y₀ k i
+      · obtain ⟨i, y, hy, rfl⟩ := mem_iUnion.1 hxY
+        by_cases hxE : g k y ∈ E k
+        · exact Or.inr (mem_iUnion.2 ⟨k, hxE⟩)
+        · refine (hxU (mem_iUnion.2 ⟨Nat.pair k i, y, ?_, ?_⟩)).elim
+          · simp only [Nat.unpair_pair]
+            exact ⟨hy, hxE⟩
+          · simp only [Nat.unpair_pair]
+      · exact Or.inl (Or.inr (mem_iUnion.2 ⟨k, ⟨hxM, hk⟩, hxY⟩))
+    · exact Or.inl (Or.inl ⟨hxM, hxS⟩)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
