@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1.imrep_tsum-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1",
+  "depth": 4,
+  "title": "A countable family of IMReps with finite total mass is represented by one IMRep",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, and R_i = (M_i, θ_i, ξ_i) (i ∈ ℕ) IMReps in U with Σ_i μ_{R_i}(U) < ∞, where μ_R := θ·Hⁿ⌞M is IMRep.measure. Then there is an IMRep R' in U such that for every test form ω ∈ 𝒟ⁿ(U) the real series Σ_i R_i.action(ω) has sum R'.action(ω) (HasSum). Here R.action(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dHⁿ(x).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n), IsOpen U → ∑' i, (R i).measure U ≠ ∞ → ∃ R' : IMRep U n, ∀ ω : TestFormOn U n, HasSum (fun i => (R i).action (ω : DifferentialForm (Euclid P) n)) (R'.action (ω : DifferentialForm (Euclid P) n))",
+  "lean_name": "cmcdt_ims_imrep_tsum",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1.common_orientation-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1.density_imrep-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5-a1",
+      "result_commit": "0325970d8b47298803106a41abbcdb3c8c9ac103",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1.common_orientation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.im_series-a1.density_imrep-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-38ac66b3de-a1"
+}

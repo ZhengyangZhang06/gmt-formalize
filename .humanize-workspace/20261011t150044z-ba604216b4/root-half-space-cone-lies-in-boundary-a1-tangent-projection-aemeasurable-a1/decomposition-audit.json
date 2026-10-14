@@ -1,0 +1,57 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "sed -n '85,295p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "Isometry.map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume|euclideanHausdorffMeasure_homothety_image|Isometry.euclideanHausdorffMeasure_image|continuousAt_of_dominated|aemeasurable_of_tendsto_metrizable_ae\\x27|theorem AEMeasurable.of_eval|instMeasurableSpace|instBorelSpace",
+        "inner_starProjection_left_eq_right|starProjection_eq_sum_rankOne|def starProjection|theorem measurePreserving",
+        "exists_plane_cutoff_quadratic_moment_eq|continuous_blowUp_image_setIntegral|aemeasurable_starProjection_of_aemeasurable_norm_sq",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tpa-independent-audit/Challenge.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/tpa-v2/Full.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/MeasureSpaceDef.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/tmp/tpa-independent-audit/Challenge.lean",
+        "/tmp/tpa-v2/Full.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility of the inspected sources. The snapshot contract is byte-identical to the workspace Contract and Submission. Independently compiled all frozen propositions without child implementations and verified that the operator measurable-space instance equals borel by rfl. Independently recompiled Full.lean: its three child types and selected parent type match the frozen strings exactly; all four proofs use only propext, Classical.choice and Quot.sound. A scan of 529 JSON artifacts found no competing name reservations or differing types under these names. Targeted declaration searches found no collisions in the inspected contract, Rectifiable and ContinuousLinearMap files. All names are bare identifiers. The split is appropriate: the three independent obligations have empty dependencies and complete non-circular proofs. Together with local finiteness, almost-everywhere tangent existence, the sequential-limit argument and the separate n = 0 case, they establish exactly imrep_univ_tangent_starProjection_aemeasurable."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_quadratic_moment",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition match, including one positive constant uniform in P, Q and u. The proof defines c before choosing P, establishes integrability and positivity, computes moments using measure-preserving coordinate symmetries, transports normalized Hausdorff measure through the plane isometry, and identifies the resulting sum with the projection norm squared. Every step is justified without relying on the parent or another child."
+    },
+    {
+      "key": "blowup_integral_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match the standalone Lean proposition. Hausdorff scaling holds for arbitrary sets, and the push-forward identity evaluates restrictions only on Borel test sets, so measurability of M is unnecessary. Positivity of r supplies the invertible change of variables. Compact support and local finiteness provide an integrable neighbourhood-uniform bound, completing the dominated-continuity argument."
+    },
+    {
+      "key": "projection_field_aemeasurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone Lean proposition agree for arbitrary μ and K. Self-adjointness and idempotence justify polarization; the hypothesis then gives measurable matrix coefficients. Finite-coordinate assembly through a continuous linear map proves the conclusion, including P = 0. The inferred target is the continuous-linear-map space with its operator-norm Borel σ-algebra."
+    }
+  ],
+  "required_changes": []
+}
