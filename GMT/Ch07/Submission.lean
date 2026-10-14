@@ -642,6 +642,23 @@ theorem Submission.doragm_approxTangent_lower_density : ∀ (P n : ℕ) (M : Set
       exact div_pos hρ hA
   filter_upwards [htend.eventually hev2] with ρ hρ
   rwa [div_mul_cancel₀ ρ hA.ne'] at hρ
+/-- **`Hⁿ` under the blow-up map `η_{x,r}(y) = r⁻¹(y − x)`, `r > 0`**: `Hⁿ(η_{x,r}(S)) = r⁻ⁿ Hⁿ(S)`
+for every `S ⊆ ℝᴾ`, the scaling used in the proof of Simon Ch. 3, Theorem 1.6 "⇒".  `η_{x,r}` is
+the translation `y ↦ y + (−x)`, an isometry, followed by the dilation `z ↦ r⁻¹z`, and
+`Hⁿ(cT) = |c|ⁿ Hⁿ(T)` for `c ≠ 0`. -/
+theorem Submission.rsd_cmr_ir_blowUp_image_measure : ∀ (P n : ℕ) (x : Euclid P) (r : ℝ) (S : Set (Euclid P)), 0 < r → μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' S) = ENNReal.ofReal (r⁻¹ ^ n) * μHE[n] S := by
+  intro P n x r S hr
+  -- `η_{x,r}(S) = r⁻¹ • (S + (−x))`: `η_{x,r}(y) = r⁻¹ • (y − x)` and `y − x = y + (−x)`.
+  have hS : Poincare.SimonGMT.Chapter03.blowUpMap x r '' S =
+      (fun z => r⁻¹ • z) '' ((fun y => y + -x) '' S) := by
+    rw [Set.image_image]
+    rfl
+  -- `Hⁿ(r⁻¹ • T) = ‖r⁻¹‖₊ⁿ • Hⁿ(T)`, translation invariance, and `‖r⁻¹‖₊ⁿ = r⁻¹ ^ n` for `r > 0`.
+  rw [hS, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr.ne'),
+    (isometry_add_right (-x)).euclideanHausdorffMeasure_image, ENNReal.smul_def, smul_eq_mul,
+    ← ENNReal.ofReal_coe_nnreal]
+  congr 2
+  simp [abs_of_pos hr]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

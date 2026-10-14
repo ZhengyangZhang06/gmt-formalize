@@ -1,0 +1,52 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasApproximateTangentSpaceAt|blowUpMap|approxTangent_of_local_null|blowUp_image_measure",
+        "euclideanHausdorffMeasure_smul₀|euclideanHausdorffMeasure_image|setIntegral_eq_of_subset_of_ae_sdiff_eq_zero|of_ae_sdiff_eq_zero|isometry_add_right",
+        "rsd_cmr_ir_(blowUp_image_measure|approxTangent_of_local_null)",
+        "sed -n '75,145p' ../../book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rsd-cmr-ir-independent-audit-femdff25/StandaloneTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/rsd-cmr-ir-independent-audit-femdff25/CheckedAssembly.lean",
+        "#check @Poincare.SimonGMT.Chapter04.hausdorff_blowUp_image"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/TangentDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-restrict-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-restrict-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/rsd-cmr-ir-independent-audit-femdff25/StandaloneTypes.lean",
+        "/tmp/rsd-cmr-ir-independent-audit-femdff25/CheckedAssembly.lean",
+        "/tmp/rsd-cmr-ir-independent-audit-femdff25/ImportCheck.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected IMRep restriction theorem: scaling establishes tangent invariance, which supplies the orientation field; the remaining fields follow from the stated hypotheses and restriction lemmas. This dependency chain is acyclic. The pinned contract matches the workspace byte-for-byte, and package revisions match the manifest. The scaling and integral lemmas have the required hypotheses, including arbitrary smaller sets and no integrability assumption. No applicable locality theorem was found in the searched imported library files; Chapter04.hausdorff_blowUp_image exists but is unavailable under the frozen imports. Both names are valid bare identifiers with no reservation in the 212-node DAG or another branch's searched artifacts. No differently typed accepted declaration is reused. Both frozen types independently elaborate as propositions before implementation. Independently recompiled child proofs and exact frozen parent assembly, using the comparator's replayed scope, depend only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_image_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the prose, including arbitrary S, positive r and the ENNReal coefficient. The proof completely factors the blow-up into translation and nonzero dilation, applies the pinned measure laws without measurability assumptions, and converts the scalar correctly. It covers n = 0 and infinite measure, has no circular dependence, and provides the precise null-image fact needed by the next child."
+    },
+    {
+      "key": "approx_tangent_local_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean type agree on every hypothesis, including measurability only of M. Each proof step is justified: compact support bounds the relevant preimages, positivity gives a right-neighbourhood of zero, the declared sibling makes the exceptional image null, and the pinned integral lemma requires neither measurability of M' nor integrability. Eventual equality transfers the defining limit while preserving finrank. Applying this child to M' = R.carrier ∩ A, with sdiff_self_inter and restricted a.e. orientation data, establishes the exact selected parent through its supplied field-by-field construction."
+    }
+  ],
+  "required_changes": []
+}
