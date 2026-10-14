@@ -610,6 +610,47 @@ theorem Submission.dor_lmbsf_interior_product_orientation : ∀ (P n : ℕ) (ζ 
   · exact Or.inl fun α => by rw [hζ' α, h, hwedge]
   · exact Or.inr fun α => by rw [hζ' α, h, hwedge]
 
+/-- Countable compact exhaustion, swapping "for every compact `K ⊆ U`" and "for a.e. `t`" (used
+for the local integrability of the slices of Simon Ch. 6, 4.1–4.3 in the slicing step of the
+proof of 7.4.3): if every `F t` is monotone and, for each compact `K ⊆ U`, `F t K ≠ ∞` for a.e.
+`t`, then for a.e. `t`, `F t K ≠ ∞` for all compact `K ⊆ U` at once.  The compact sets
+`Kᵢ = B̄(0, i) ∖ {y : dist(y, Uᶜ) < 1/(i+1)}` lie in `U`, and every compact `K ⊆ U` lies in some
+`Kᵢ` (it is bounded and at positive distance from `Uᶜ`); intersect the countably many full-measure
+sets and use `F t K ≤ F t Kᵢ`. -/
+theorem Submission.dor_lmbsf_si_ae_forall_compact : ∀ (P : ℕ) (U : Set (Euclid P)) (F : ℝ → Set (Euclid P) → ℝ≥0∞), IsOpen U → (∀ t, Monotone (F t)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∀ᵐ t, F t K ≠ ∞) → ∀ᵐ t, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → F t K ≠ ∞ := by
+  intro P U F hU hmono hK
+  -- the compact sets `Kᵢ = B̄(0, i) ∖ thickening (1/(i+1)) Uᶜ ⊆ U`
+  let Kn : ℕ → Set (Euclid P) := fun i => closedBall 0 i \ thickening (1 / ((i : ℝ) + 1)) Uᶜ
+  have hKc : ∀ i, IsCompact (Kn i) := fun i =>
+    (isCompact_closedBall 0 (i : ℝ)).diff isOpen_thickening
+  have hKU : ∀ i, Kn i ⊆ U := by
+    intro i x hx
+    by_contra hxU
+    exact hx.2 (self_subset_thickening (by positivity) _ hxU)
+  -- every compact `K ⊆ U` lies in some `Kᵢ`: `K ⊆ B̄(0, R)` and `thickening δ K ⊆ U`
+  have hcover : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ i, K ⊆ Kn i := by
+    intro K hKc' hKU'
+    obtain ⟨δ, hδ, hδK⟩ := hKc'.exists_thickening_subset_open hU hKU'
+    obtain ⟨R, hR⟩ := hKc'.isBounded.subset_closedBall 0
+    obtain ⟨i₁, hi₁⟩ := exists_nat_ge R
+    obtain ⟨i₂, hi₂⟩ := exists_nat_one_div_lt hδ
+    refine ⟨max i₁ i₂, fun x hx => ⟨?_, ?_⟩⟩
+    · exact closedBall_subset_closedBall (hi₁.trans (by exact_mod_cast le_max_left i₁ i₂)) (hR hx)
+    · intro hxt
+      rw [mem_thickening_iff] at hxt
+      obtain ⟨y, hyU, hxy⟩ := hxt
+      have hlt : (1 : ℝ) / ((max i₁ i₂ : ℕ) + 1) ≤ 1 / ((i₂ : ℝ) + 1) := by
+        gcongr; exact_mod_cast le_max_right i₁ i₂
+      have hy : y ∈ thickening δ K := by
+        rw [mem_thickening_iff]
+        exact ⟨x, hx, by rw [dist_comm]; linarith⟩
+      exact hyU (hδK hy)
+  -- for a.e. `t`, `F t Kᵢ ≠ ∞` for all `i` at once; then `F t K ≤ F t Kᵢ`
+  have hall : ∀ᵐ t, ∀ i, F t (Kn i) ≠ ∞ := ae_all_iff.mpr fun i => hK _ (hKc i) (hKU i)
+  filter_upwards [hall] with t ht K hKc' hKU'
+  obtain ⟨i, hi⟩ := hcover K hKc' hKU'
+  exact ne_top_of_le_ne_top (ht i) (hmono t hi)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
