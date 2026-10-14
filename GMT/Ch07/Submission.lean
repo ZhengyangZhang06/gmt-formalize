@@ -748,6 +748,46 @@ theorem Submission.idtp_fons_cc_psf_vague_unique : ∀ (P : ℕ) (ν₁ ν₂ : 
   -- regularity), hence on open sets (inner regularity) and on all Borel sets (outer regularity).
   exact Measure.ext_of_integral_eq_on_compactlySupported fun f =>
     hint f f.continuous f.hasCompactSupport
+/-- **Continuity of the rescaled push-forward integrals in the parameters `(x, λ)`, `λ > 0`** (proof
+of Simon 7.3.3, chapter-07.txt lines 443–467: weak limits of `η_{xᵢ,λᵢ#}T` with `lim xᵢ = x` and
+`lim λᵢ = λ > 0`).  Let `μ₀` be a finite measure on `ℝᴾ` and `f` continuous with compact support.
+If `xᵢ → x` and `λᵢ → λ`, with `λᵢ > 0` and `λ > 0`, then
+`∫ f d(λᵢ⁻ⁿ η_{xᵢ,λᵢ#}μ₀) → ∫ f d(λ⁻ⁿ η_{x,λ#}μ₀)`.  By `integral_smul_measure` and `integral_map`,
+`∫ f d(s⁻ⁿ η_{a,s#}μ₀) = s⁻ⁿ ∫ f ∘ η_{a,s} dμ₀` for `s > 0`; `η_{xᵢ,λᵢ}(v) → η_{x,λ}(v)` pointwise
+and `|f| ≤ C`, a constant that is `μ₀`-integrable, so dominated convergence and `λᵢ⁻ⁿ → λ⁻ⁿ`
+conclude. -/
+theorem Submission.idtp_fons_cc_psf_param_continuity : ∀ (P n : ℕ) (μ₀ : Measure (Euclid P)) (f : Euclid P → ℝ) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (x : Euclid P) (lam : ℝ), μ₀ univ ≠ ∞ → Continuous f → HasCompactSupport f → (∀ i, 0 < lams i) → 0 < lam → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 lam) → Tendsto (fun i => ∫ v, f v ∂(ENNReal.ofReal ((lams i)⁻¹ ^ n) • μ₀.map (dilation (xs i) (lams i)))) atTop (𝓝 (∫ v, f v ∂(ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)))) := by
+  intro P n μ₀ f xs lams x lam hμ₀ hf hfc hlams hlam hxs hlim
+  have : IsFiniteMeasure μ₀ := ⟨lt_top_iff_ne_top.2 hμ₀⟩
+  -- `η_{a,s}(u) = −s⁻¹a + s⁻¹u` is continuous, hence measurable.
+  have hcont : ∀ (a : Euclid P) (s : ℝ), Continuous (dilation a s) := fun a s => by
+    unfold dilation
+    fun_prop
+  -- Step 1: `∫ f d(ofReal(s⁻ⁿ) • η_{a,s#}μ₀) = s⁻ⁿ ∫ f ∘ η_{a,s} dμ₀` for `s > 0`, by
+  -- `integral_smul_measure`, `toReal_ofReal` (`s⁻ⁿ ≥ 0`) and `integral_map`.
+  have hformula : ∀ (a : Euclid P) (s : ℝ), 0 < s →
+      ∫ v, f v ∂(ENNReal.ofReal (s⁻¹ ^ n) • μ₀.map (dilation a s)) =
+        s⁻¹ ^ n * ∫ v, f (dilation a s v) ∂μ₀ := by
+    intro a s hs
+    rw [integral_smul_measure, ENNReal.toReal_ofReal (by positivity), smul_eq_mul,
+      integral_map (hcont a s).aemeasurable hf.aestronglyMeasurable]
+  rw [funext fun i => hformula (xs i) (lams i) (hlams i), hformula x lam hlam]
+  -- Step 2: `λᵢ⁻¹ → λ⁻¹`, as `λ ≠ 0`.
+  have hinv : Tendsto (fun i => (lams i)⁻¹) atTop (𝓝 lam⁻¹) := hlim.inv₀ hlam.ne'
+  -- Steps 3–5: `f(η_{xᵢ,λᵢ}(v)) → f(η_{x,λ}(v))` for every `v`, and `|f| ≤ C` with the constant
+  -- `C` integrable for the finite measure `μ₀`; dominated convergence.
+  obtain ⟨C, hC⟩ := hf.bounded_above_of_compact_support hfc
+  have hdct : Tendsto (fun i => ∫ v, f (dilation (xs i) (lams i) v) ∂μ₀) atTop
+      (𝓝 (∫ v, f (dilation x lam v) ∂μ₀)) := by
+    refine tendsto_integral_of_dominated_convergence (fun _ => C)
+      (fun i => (hf.comp (hcont _ _)).aestronglyMeasurable) (integrable_const C)
+      (fun i => Eventually.of_forall fun v => hC _) (Eventually.of_forall fun v => ?_)
+    have h1 : Tendsto (fun i => -((lams i)⁻¹ • xs i) + (lams i)⁻¹ • v) atTop
+        (𝓝 (-(lam⁻¹ • x) + lam⁻¹ • v)) :=
+      (hinv.smul hxs).neg.add (hinv.smul tendsto_const_nhds)
+    exact (hf.tendsto _).comp h1
+  -- Step 6: `λᵢ⁻ⁿ ∫ f ∘ η_{xᵢ,λᵢ} dμ₀ → λ⁻ⁿ ∫ f ∘ η_{x,λ} dμ₀`.
+  exact (hinv.pow n).mul hdct
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
