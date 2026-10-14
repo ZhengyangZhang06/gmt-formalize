@@ -1443,6 +1443,61 @@ theorem Submission.rsd_isIntegerMultiplicity_int_combination : ∀ (P n : ℕ) (
   rw [hS ω, hR₁ ω, hR₂ ω,
     Submission.rsdic_imrep_action_int_combination P n U R₁ R₂ R p₁ p₂ hR ω]
 
+/-- **Cycle algebra** (cube cycle, Step 5 and first sentence of Step 7).  Let `c = (−1)ᵖ`, so
+`c² = 1` and `|c| = 1`, and let `∂B = T₂ + c T₁` with `T₁, T₂` integer multiplicity.  Then
+`Z = c ∂B` and `E' = c T₂` satisfy `Z = c T₂ + c² T₁ = T₁ + E'`; hence `Z = 1·T₁ + (−1)ᵖ T₂` is
+integer multiplicity (Simon Ch. 6, Remark 3.2(1)), `∂Z = c ∂∂B = 0`, `spt Z ⊆ spt B` and, by the
+triangle inequality for mass (6.2.5) applied to `E' = 0 + c T₂`, `M(E') ≤ M(0) + M(T₂) = M(T₂)`. -/
+theorem Submission.dimred_cs_sos_mt_cc_cycle_of_boundary_eq : ∀ (P n : ℕ) (U : Set (Euclid P)) (B : GeometricCurrentOn U (n + 1 + 1)) (T₁ T₂ : GeometricCurrentOn U (n + 1)) (p : ℕ), IsOpen U → IsIntegerMultiplicity T₁ → IsIntegerMultiplicity T₂ → (∀ ω : TestFormOn U (n + 1), B.boundary ω = T₂ ω + (-1 : ℝ) ^ p * T₁ ω) → ∃ Z E' : GeometricCurrentOn U (n + 1), IsIntegerMultiplicity Z ∧ BoundaryVanishes Z ∧ Z.support ⊆ B.support ∧ E'.mass ≤ T₂.mass ∧ ∀ ω : TestFormOn U (n + 1), Z ω = T₁ ω + E' ω := by
+  intro P n U B T₁ T₂ p hU hT₁ hT₂ hB
+  -- `c = (−1)ᵖ` satisfies `c c = 1` and `|c| = 1`
+  have hcc : (-1 : ℝ) ^ p * (-1 : ℝ) ^ p = 1 := by
+    rw [← mul_pow, neg_one_mul, neg_neg, one_pow]
+  have hc : |(-1 : ℝ) ^ p| = 1 := by
+    rw [abs_pow, abs_neg, abs_one, one_pow]
+  -- Step 1: the currents `Z = c ∂B` and `E' = c T₂` (continuous, as scalar multiples)
+  obtain ⟨Z, hZ⟩ : ∃ Z : GeometricCurrentOn U (n + 1),
+      ∀ ω : TestFormOn U (n + 1), Z ω = (-1 : ℝ) ^ p * B.boundary ω :=
+    ⟨{ toCurrent := (-1 : ℝ) ^ p • B.boundary.toCurrent
+       continuous' := fun ωs h => by
+         simpa using (B.boundary.continuous' ωs h).const_mul ((-1 : ℝ) ^ p) },
+      fun _ => rfl⟩
+  obtain ⟨E', hE'⟩ : ∃ E' : GeometricCurrentOn U (n + 1),
+      ∀ ω : TestFormOn U (n + 1), E' ω = (-1 : ℝ) ^ p * T₂ ω :=
+    ⟨{ toCurrent := (-1 : ℝ) ^ p • T₂.toCurrent
+       continuous' := fun ωs h => by
+         simpa using (T₂.continuous' ωs h).const_mul ((-1 : ℝ) ^ p) },
+      fun _ => rfl⟩
+  -- Step 2: `Z(ω) = c T₂(ω) + c² T₁(ω) = T₁(ω) + E'(ω)`
+  have hZE : ∀ ω : TestFormOn U (n + 1), Z ω = T₁ ω + E' ω := by
+    intro ω
+    rw [hZ, hB, hE']
+    linear_combination T₁ ω * hcc
+  refine ⟨Z, E', ?_, ?_, ?_, ?_, hZE⟩
+  · -- Step 3: `Z = 1·T₁ + (−1)ᵖ T₂` is integer multiplicity
+    refine Submission.rsd_isIntegerMultiplicity_int_combination P (n + 1) U T₁ T₂ Z 1 ((-1) ^ p)
+      hU hT₁ hT₂ fun ω => ?_
+    rw [hZE, hE']
+    push_cast
+    ring
+  · -- Step 4: `∂Z(φ) = Z(dφ) = c ∂B(dφ) = c ∂∂B(φ) = 0`
+    show Z.boundary = 0
+    ext φ
+    rw [GeometricCurrentOn.boundary_apply, hZ, ← GeometricCurrentOn.boundary_apply,
+      GeometricCurrentOn.boundary_boundary]
+    simp
+  · -- Step 5: `spt Z ⊆ spt B`, as `Z = c ∂B`
+    exact Submission.dimred_cs_sos_mt_cc_support_smul_boundary P (n + 1) U B Z ((-1 : ℝ) ^ p) hZ
+  · -- Step 6: `E' = 0 + c T₂` with `|c| ≤ 1` gives `M(E') ≤ M(0) + M(T₂)`, and `M(0) = 0`
+    have h := Submission.lcmp_massOn_le_add_of_eval_eq P (n + 1) U U 0 T₂ E' ((-1 : ℝ) ^ p)
+      hc.le fun ω _ => by rw [hE', GeometricCurrentOn.zero_apply, zero_add]
+    have h0 : (0 : GeometricCurrentOn U (n + 1)).massOn U = 0 := by
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro r ⟨ω, -, rfl⟩
+      simp
+    rw [h0, zero_add] at h
+    exact h
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
