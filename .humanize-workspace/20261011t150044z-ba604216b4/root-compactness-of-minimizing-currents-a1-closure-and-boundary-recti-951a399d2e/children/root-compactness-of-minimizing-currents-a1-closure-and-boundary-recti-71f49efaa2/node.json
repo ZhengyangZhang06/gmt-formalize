@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.bv_estimate-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1",
+  "depth": 5,
+  "title": "L¹ mollification error is at most s times the variation bound",
+  "statement": "Let n ∈ ℕ, R > 0, s > 0 with 2s < R, V ≥ 0, φ : ℝⁿ → ℝ smooth with φ ≥ 0, tsupport φ ⊆ B_s(0) and ∫φ = 1, and u : ℝⁿ → ℝ Lebesgue integrable on B_{2R}(0). Assume |∫_{B_{2R}(0)}u(y)·Df(y)(z)dy| ≤ V‖z‖M for every smooth compactly supported f : ℝⁿ → ℝ with tsupport f ⊆ B_{2R}(0), every z ∈ ℝⁿ and every M ∈ ℝ with |f| ≤ M everywhere. Then ∫_{B_R(0)}|u(x) − w(x)|dx ≤ sV, where w(x) := ∫_{B_{2R}(0)}u(y)φ(x − y)dy.",
+  "lean_statement": "∀ (n : ℕ) (R s V : ℝ) (φ u : Euclid n → ℝ), 0 < R → 0 < s → 2 * s < R → 0 ≤ V → ContDiff ℝ (⊤ : ℕ∞) φ → (∀ y, 0 ≤ φ y) → tsupport φ ⊆ ball 0 s → ∫ y, φ y = 1 → IntegrableOn u (ball 0 (2 * R)) → (∀ (f : Euclid n → ℝ) (z : Euclid n) (M : ℝ), ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ ball 0 (2 * R) → (∀ y, |f y| ≤ M) → |∫ y in ball 0 (2 * R), u y * fderiv ℝ f y z| ≤ V * ‖z‖ * M) → ∫ x in ball 0 R, |u x - ∫ y in ball 0 (2 * R), u y * φ (x - y)| ≤ s * V",
+  "lean_name": "cbr_ci_pw_bv_mollifier_estimate",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-71f49efaa2-a1"
+}
