@@ -3411,6 +3411,239 @@ theorem Submission.dimred_cs_sp_orient_projection_le : ∀ (P m : ℕ) (V Q : Su
     _ ≤ covectorEuclideanNorm α :=
         mul_le_of_le_one_right (covectorEuclideanNorm_nonneg α) (Real.sqrt_le_one.mpr
           (Submission.dimred_cs_sp_op_gram_det_starProjection_le_one P m V τ hτ))
+/-- **Simon Ch. 6, 3.1–3.2** (the weight `θHᵏ⌞M`): for an integer multiplicity triple
+`R = (M, θ, ξ)` in `W`, `R.measure = (Hᵏ⌞M).withDensity θ` has the same null sets as `Hᵏ⌞M`
+(`θ` is measurable and `θ ≥ 1` on `M`).  For Borel `A`, `R.measure(A) = ∫_{M ∩ A} θ dHᵏ`; hence
+`R.measure(ℝᴾ \ M) = 0`, and `R.measure(K) < ∞` for compact `K ⊆ W` by local integrability of
+`θ`.  Absolute continuity makes `ξ` a.e. strongly measurable for `R.measure`, and
+`R.action ω = ∫_M θ⟨ω, ξ⟩ dHᵏ = ∫ ⟨ω, ξ⟩ dR.measure` for every form `ω`. -/
+theorem Submission.cbr_imRep_measure_basic : ∀ (P k : ℕ) (W : Set (Euclid P)) (R : IMRep W k), R.measure ≪ μHE[k].restrict R.carrier ∧ μHE[k].restrict R.carrier ≪ R.measure ∧ (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ x in R.carrier ∩ A, (R.mult x : ℝ≥0∞) ∂μHE[k]) ∧ R.measure R.carrierᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ W → R.measure K < ∞) ∧ AEStronglyMeasurable R.orient R.measure ∧ ∀ ω : DifferentialForm (Euclid P) k, R.action ω = ∫ x, R.orient x (ω x) ∂R.measure := by
+  intro P k W R
+  -- the density `θ`, as an `ℝ≥0`-valued measurable function
+  have hθ : Measurable fun x => (R.mult x : NNReal) := measurable_from_nat.comp R.measurable_mult
+  -- (a) a measure with density is absolutely continuous w.r.t. its base measure
+  have hac : R.measure ≪ μHE[k].restrict R.carrier := withDensity_absolutelyContinuous _ _
+  -- (c) `μ(A) = ∫_A θ d(Hᵏ⌞M) = ∫_{M ∩ A} θ dHᵏ` for Borel `A`
+  have happly : ∀ A : Set (Euclid P), MeasurableSet A →
+      R.measure A = ∫⁻ x in R.carrier ∩ A, (R.mult x : ℝ≥0∞) ∂μHE[k] := fun A hA => by
+    rw [IMRep.measure, withDensity_apply _ hA, Measure.restrict_restrict hA, inter_comm A]
+  refine ⟨hac, ?_, happly, ?_, fun K hK hKW => ?_, R.aestronglyMeasurable_orient.mono_ac hac,
+    fun ω => ?_⟩
+  -- (b) `θ ≠ 0` on `M`, hence `Hᵏ⌞M`-a.e.
+  · refine withDensity_absolutelyContinuous'
+      (measurable_from_nat.comp R.measurable_mult).aemeasurable ?_
+    filter_upwards [ae_restrict_mem R.measurableSet_carrier] with x hx
+    exact Nat.cast_ne_zero.2 (R.mult_pos x hx).ne'
+  -- (d) `M ∩ Mᶜ = ∅`
+  · rw [happly _ R.measurableSet_carrier.compl, inter_compl_self, Measure.restrict_empty,
+      lintegral_zero_measure]
+  -- (e) local integrability of `θ`
+  · rw [happly K hK.measurableSet]
+    exact lt_top_iff_ne_top.2 (R.locallyIntegrable_mult K hK hKW)
+  -- (g) `∫ ⟨ω, ξ⟩ d(θ Hᵏ⌞M) = ∫_M θ ⟨ω, ξ⟩ dHᵏ`
+  · have h := integral_withDensity_eq_integral_smul (μ := μHE[k].restrict R.carrier) hθ
+      fun x => R.orient x (ω x)
+    simp only [ENNReal.coe_natCast] at h
+    rw [IMRep.measure, h, IMRep.action]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    simp [NNReal.smul_def]
+/-- **Simon Ch. 3, Definition 1.4 and Remark 1.5(1)**: an approximate tangent space of `M` at `x`
+lies in every subspace `T` along which a set `N` carrying `Hⁿ`-almost all of `M` is flat at `x`
+(for each `ε > 0` there is `ρ > 0` such that every `z ∈ N` with `|z − x| < ρ` has some `t ∈ T`
+with `|z − x − t| ≤ ε|z − x|`).  If `q ∈ Q \ T`, put `δ = dist(q, T) > 0` and
+`g = max(0, δ/2 − |· − q|) ∈ C_c(ℝᴾ)`; `∫_Q g dHⁿ > 0` because `spt(Hⁿ⌞Q) = Q`.  With
+`ε = δ / (2(|q| + δ))` and `0 < r < ρ / (|q| + δ)`, flatness makes `g` vanish on `η_{x,r}(M ∩ N)`,
+and `Hⁿ(η_{x,r}(M \ N)) = 0`; so `∫_{η_{x,r}(M)} g dHⁿ = 0` for all small `r`, contradicting
+the defining limit. -/
+theorem Submission.atsm_approxTangent_le_of_flat : ∀ (P n : ℕ) (N M : Set (Euclid P)) (x : Euclid P) (Q T : Submodule ℝ (Euclid P)), μHE[n] (M \ N) = 0 → (∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 < ρ ∧ ∀ z ∈ N, dist z x < ρ → ∃ t ∈ T, ‖z - x - t‖ ≤ ε * ‖z - x‖) → HasApproximateTangentSpaceAt n M x Q → Q ≤ T := by
+  intro P n N M x Q T hnull hflat hQ q hq
+  by_contra hqT
+  -- `T` is closed, so `δ = dist(q, T) > 0`
+  have hTc : IsClosed (T : Set (Euclid P)) := T.closed_of_finiteDimensional
+  have hδ : 0 < infDist q (T : Set (Euclid P)) :=
+    (hTc.notMem_iff_infDist_pos ⟨0, T.zero_mem⟩).1 hqT
+  set δ := infDist q (T : Set (Euclid P)) with hδdef
+  -- the bump `g = max(0, δ/2 − |· − q|)`, positive exactly on `B_{δ/2}(q)`
+  set g : Euclid P → ℝ := fun y => max 0 (δ / 2 - ‖y - q‖) with hgdef
+  have hgc : Continuous g :=
+    continuous_const.max (continuous_const.sub (continuous_id.sub continuous_const).norm)
+  have hg0 : 0 ≤ g := fun y => le_max_left _ _
+  have hgsupp : ∀ y, g y ≠ 0 → ‖y - q‖ < δ / 2 := by
+    intro y hy
+    by_contra h
+    have h' : δ / 2 ≤ ‖y - q‖ := not_lt.mp h
+    apply hy
+    exact max_eq_left (by linarith)
+  have hgpos : ∀ y, ‖y - q‖ < δ / 2 → 0 < g y := fun y hy =>
+    lt_max_of_lt_right (by linarith)
+  have hgcs : HasCompactSupport g := by
+    apply HasCompactSupport.intro (isCompact_closedBall q (δ / 2))
+    intro y hy
+    by_contra h
+    apply hy
+    rw [mem_closedBall, dist_eq_norm]
+    exact (hgsupp y h).le
+  let f : CompactlySupportedContinuousMap (Euclid P) ℝ := ⟨⟨g, hgc⟩, hgcs⟩
+  -- `∫_Q g dHⁿ > 0`: `Hⁿ⌞Q` is regular with support `Q ∋ q`
+  have hQn : Module.finrank ℝ Q = n := hQ.1
+  have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule hQn
+  have hsupp := Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hQn
+  have hint : Integrable g ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P))) :=
+    hgc.integrable_of_hasCompactSupport hgcs
+  have hpos : 0 < ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] := by
+    rw [integral_pos_iff_support_of_nonneg hg0 hint]
+    have hq' : q ∈ ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P))).support := by
+      rw [hsupp]
+      exact hq
+    have hball : 0 < ((μHE[n] : Measure (Euclid P)).restrict (Q : Set (Euclid P)))
+        (ball q (δ / 2)) :=
+      (Measure.mem_support_iff_forall q).1 hq' _ (ball_mem_nhds q (by linarith))
+    refine hball.trans_le (measure_mono ?_)
+    intro y hy
+    rw [mem_ball, dist_eq_norm] at hy
+    exact (hgpos y hy).ne'
+  -- constants: `ε (|q| + δ) = δ / 2`
+  have hqδ : 0 < ‖q‖ + δ := by positivity
+  set ε : ℝ := δ / (2 * (‖q‖ + δ)) with hεdef
+  have hε : 0 < ε := by positivity
+  have hεq : ε * (‖q‖ + δ) = δ / 2 := by
+    rw [hεdef]
+    field_simp
+  obtain ⟨ρ, hρ, hflatρ⟩ := hflat ε hε
+  -- `∫_{η_{x,r}(M)} g dHⁿ = 0` for `0 < r < ρ / (|q| + δ)`
+  have hvan : ∀ r : ℝ, 0 < r → r < ρ / (‖q‖ + δ) →
+      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n] = 0 := by
+    intro r hr hrρ
+    -- `η_{x,r}(M \ N) = r⁻¹ (M \ N − x)` is `Hⁿ`-null
+    have hnull' : μHE[n] (Poincare.SimonGMT.Chapter03.blowUpMap x r '' (M \ N)) = 0 := by
+      have himg : Poincare.SimonGMT.Chapter03.blowUpMap x r '' (M \ N) =
+          (fun y => r⁻¹ • y) '' ((fun y => y - x) '' (M \ N)) := by
+        rw [Set.image_image]
+        rfl
+      have hiso : Isometry (fun y : Euclid P => y - x) :=
+        Isometry.of_dist_eq fun a b => dist_sub_right a b x
+      rw [himg, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hr.ne'),
+        hiso.euclideanHausdorffMeasure_image, hnull, smul_zero]
+    -- flatness: `g` vanishes on `η_{x,r}(M ∩ N)`
+    have hsub : {y | g y ≠ 0} ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r '' M ⊆
+        Poincare.SimonGMT.Chapter03.blowUpMap x r '' (M \ N) := by
+      rintro y ⟨hgy, z, hzM, rfl⟩
+      refine ⟨z, ⟨hzM, fun hzN => ?_⟩, rfl⟩
+      have hyq : ‖Poincare.SimonGMT.Chapter03.blowUpMap x r z - q‖ < δ / 2 := hgsupp _ hgy
+      set y := Poincare.SimonGMT.Chapter03.blowUpMap x r z with hy
+      have hy' : y = r⁻¹ • (z - x) := rfl
+      have hzx : z - x = r • y := by
+        rw [hy', smul_smul, mul_inv_cancel₀ hr.ne', one_smul]
+      have hynorm : ‖y‖ < ‖q‖ + δ / 2 := by
+        calc ‖y‖ = ‖(y - q) + q‖ := by rw [sub_add_cancel]
+          _ ≤ ‖y - q‖ + ‖q‖ := norm_add_le _ _
+          _ < δ / 2 + ‖q‖ := by linarith
+          _ = ‖q‖ + δ / 2 := by ring
+      have hzxn : ‖z - x‖ = r * ‖y‖ := by
+        rw [hzx, norm_smul, Real.norm_of_nonneg hr.le]
+      have hdist : dist z x < ρ := by
+        rw [dist_eq_norm, hzxn]
+        calc r * ‖y‖ ≤ r * (‖q‖ + δ) := by gcongr; linarith
+          _ < ρ / (‖q‖ + δ) * (‖q‖ + δ) := by gcongr
+          _ = ρ := by field_simp
+      obtain ⟨t, htT, ht⟩ := hflatρ z hzN hdist
+      have hrt : r⁻¹ • t ∈ T := T.smul_mem _ htT
+      have hyt : y - r⁻¹ • t = r⁻¹ • (z - x - t) := by
+        rw [hy']
+        exact (smul_sub _ _ _).symm
+      have hyt' : ‖y - r⁻¹ • t‖ ≤ ε * ‖y‖ := by
+        rw [hyt, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hr.le)]
+        calc r⁻¹ * ‖z - x - t‖ ≤ r⁻¹ * (ε * ‖z - x‖) := by gcongr
+          _ = ε * ‖y‖ := by rw [hzxn]; field_simp
+      have hle : δ ≤ ‖q - r⁻¹ • t‖ := by
+        rw [← dist_eq_norm]
+        exact infDist_le_dist_of_mem hrt
+      have h2 : ε * ‖y‖ ≤ δ / 2 := by
+        rw [← hεq]
+        gcongr
+        linarith
+      have hlt : ‖q - r⁻¹ • t‖ < δ := by
+        calc ‖q - r⁻¹ • t‖ = ‖(q - y) + (y - r⁻¹ • t)‖ := by congr 1; abel
+          _ ≤ ‖q - y‖ + ‖y - r⁻¹ • t‖ := norm_add_le _ _
+          _ < δ / 2 + δ / 2 := by
+            have h1 : ‖q - y‖ < δ / 2 := by rw [norm_sub_rev]; exact hyq
+            linarith
+          _ = δ := by ring
+      linarith
+    -- so `g = 0` a.e. for `Hⁿ⌞η_{x,r}(M)`, evaluated on the open set `{g ≠ 0}`
+    have hopen : MeasurableSet {y | g y ≠ 0} :=
+      (isOpen_ne_fun hgc continuous_const).measurableSet
+    apply integral_eq_zero_of_ae
+    rw [EventuallyEq, ae_iff]
+    change (μHE[n].restrict (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M)) {y | g y ≠ 0} = 0
+    rw [Measure.restrict_apply hopen]
+    exact measure_mono_null hsub hnull'
+  -- the blow-up integrals of `g` are eventually `0`, so their limit `∫_Q g dHⁿ` is `0`
+  have hlim := hQ.2 f
+  have hev : (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n])
+      =ᶠ[𝓝[>] 0] fun _ => 0 := by
+    have hpos' : 0 < ρ / (‖q‖ + δ) := by positivity
+    filter_upwards [Ioo_mem_nhdsGT hpos'] with r hr
+    exact hvan r hr.1 hr.2
+  have hlim0 : Tendsto (fun r : ℝ => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M,
+      f y ∂μHE[n]) (𝓝[>] 0) (𝓝 0) :=
+    tendsto_const_nhds.congr' hev.symm
+  have heq := tendsto_nhds_unique hlim hlim0
+  have hzero : ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] = 0 := heq
+  linarith
+/-- **Simon 6.1.1, 6.1.7** (step 7 of the local comparison in the proof of 7.3.1): if `ξ` is a unit
+orientation of `Q` and the continuous linear map `L` fixes `Q` pointwise, then
+`⟨α ∘ ΛⁿL, ξ⟩ = ⟨α, ξ⟩` for every `n`-covector `α`.  Write `⟨β, ξ⟩ = ±β(τ₁, …, τₙ)` with `τ`
+spanning `Q`; each `τᵢ ∈ Q`, so `L ∘ τ = τ` and `(α ∘ ΛⁿL)(τ) = α(L ∘ τ) = α(τ)`. -/
+theorem Submission.dtc_bc_lc_unitOrientation_comp_eq : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α := by
+  intro P n ξ Q L hξ hL α
+  obtain ⟨τ, -, hspan, hsign⟩ := hξ
+  -- each `τᵢ` lies in `Q = span (range τ)`, so `L ∘ τ = τ`
+  have hLτ : ⇑L ∘ τ = τ := by
+    funext i
+    exact hL (τ i) (hspan ▸ Submodule.subset_span (mem_range_self i))
+  -- `(α ∘ ΛⁿL)(τ) = α(L ∘ τ) = α(τ)`
+  have hτ : α.compContinuousLinearMap L τ = α τ := by
+    rw [ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
+  rcases hsign with h | h <;> rw [h, h, hτ]
+
+/-- **Simon 7.3.1, footnote 2** (`q_#T = T` for the orthogonal projection `q` onto `V`): if the
+weight `μ_R = θ Hᵐ⌞M` of the triple `R = (M, θ, ξ)` gives no mass to `ℝᴾ \ V`, then
+`τ(M, θ, ξ)(q^#ω) = τ(M, θ, ξ)(ω)` for every `m`-form `ω`.  As `Hᵐ⌞M ≪ μ_R`, `Hᵐ(M \ V) = 0`; so
+`Hᵐ`-a.e. `x ∈ M` lies in `V` and has an approximate tangent plane `Q` oriented by `ξ(x)`.  `V` is
+flat at `x ∈ V` along `V`, so `Q ≤ V`; then `qx = x`, `q` fixes `Q` pointwise, and
+`⟨(q^#ω)(x), ξ(x)⟩ = ⟨ω(x) ∘ Λᵐq, ξ(x)⟩ = ⟨ω(x), ξ(x)⟩`. -/
+theorem Submission.dimred_cs_sp_action_starProjection_eq : ∀ (P m : ℕ) (R : IMRep (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), R.measure ((V : Set (Euclid P))ᶜ) = 0 → ∀ ω : DifferentialForm (Euclid P) m, R.action (affinePullbackForm V.starProjection 0 ω) = R.action ω := by
+  intro P m R V hV ω
+  -- `Hᵐ⌞M ≪ μ_R`, so `Hᵐ⌞M` gives no mass to `Vᶜ`
+  have hV' : (μHE[m].restrict R.carrier) ((V : Set (Euclid P))ᶜ) = 0 :=
+    (Submission.cbr_imRep_measure_basic P m univ R).2.1 hV
+  -- hence `Hᵐ(M \ V) = 0`, and `Hᵐ⌞M`-a.e. `x` lies in `V`
+  have hnull : μHE[m] (R.carrier \ (V : Set (Euclid P))) = 0 := by
+    rwa [Measure.restrict_apply' R.measurableSet_carrier, ← Set.sdiff_eq_compl_inter] at hV'
+  have hVae : ∀ᵐ x ∂(μHE[m].restrict R.carrier), x ∈ (V : Set (Euclid P)) := by
+    rw [ae_iff]
+    exact hV'
+  -- the integrands agree `Hᵐ⌞M`-a.e.
+  unfold IMRep.action
+  refine integral_congr_ae ?_
+  filter_upwards [hVae, R.orients] with x hxV hx
+  obtain ⟨Q, hQ, hξ⟩ := hx
+  -- `Q ≤ V`: `V` is flat at `x ∈ V` along `V` (take `t = z - x`)
+  have hQV : Q ≤ V :=
+    Submission.atsm_approxTangent_le_of_flat P m (V : Set (Euclid P)) R.carrier x Q V hnull
+      (fun ε hε => ⟨1, one_pos, fun z hz _ => ⟨z - x, V.sub_mem hz hxV, by
+        rw [sub_self, norm_zero]
+        positivity⟩⟩) hQ
+  -- `q` fixes `Q` pointwise and fixes `x`
+  have hfix : ∀ v ∈ Q, V.starProjection v = v := fun v hv =>
+    Submodule.starProjection_eq_self_iff.2 (hQV hv)
+  have hxq : V.starProjection x = x := Submodule.starProjection_eq_self_iff.2 hxV
+  -- `(q^#ω)(x) = ω(x) ∘ Λᵐq`, and `Λᵐq` fixes the unit orientation `ξ(x)` of `Q`
+  have key := Submission.dtc_bc_lc_unitOrientation_comp_eq P m (R.orient x) Q V.starProjection
+    hξ hfix (ω x)
+  simp only [affinePullbackForm, zero_add, hxq]
+  rw [key]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
