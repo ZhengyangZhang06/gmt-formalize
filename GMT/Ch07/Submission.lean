@@ -627,6 +627,112 @@ theorem Submission.dor_lmb_fcd_fr_face_geometry : ∀ (P m : ℕ) (p : (Fin P �
           exact (hx i).2 (hrange ▸ hi)
         exact_mod_cast h
     exact Prod.ext h1.symm h2.symm
+/-- **Unit orientations of the approximate tangent plane of a set in a coordinate plane** (Simon
+Ch. 6, proof of 5.1, (26)–(27)).  Let `A ⊆ x + V`, `V = span{e_{ι j}}`, have approximate tangent
+space `Q` at `x`, and let `ξ` orient `Q`.  The blow-ups `λ⁻¹(A − x)` lie in `V`, so every test
+function vanishing on `V` has zero limit integral `∫_Q f dHⁿ`; since `Q` is the support of `Hⁿ⌞Q`,
+this forces `Q ⊆ V`.  The orthonormal frame `τ` of `Q` then satisfies `τₖ = Σⱼ Mⱼₖ e_{ι j}` with
+`MᵀM = 1`, so `α(τ) = det M · α(e_ι)` with `det M = ±1` for every `n`-covector `α`. -/
+theorem Submission.dor_lmb_fcd_fr_plane_orientation : ∀ (P n : ℕ) (ι : Fin n → Fin P) (A : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), StrictMono ι → (∀ a ∈ A, ∀ i, (∀ j, ι j ≠ i) → a i = x i) → HasApproximateTangentSpaceAt n A x Q → IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, ξ α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∨ (∀ α : Covector (Euclid P) n, ξ α = -α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) := by
+  intro P n ι A x Q ξ hι hA hQ hξ
+  obtain ⟨τ, hτ, hτQ, hξτ⟩ := hξ
+  -- Step 1: every `q ∈ Q` has `qᵢ = 0` for `i ∉ range ι`
+  have hQV : ∀ q ∈ Q, ∀ i, (∀ j, ι j ≠ i) → q i = 0 := by
+    intro q hq i hi
+    by_contra hqi
+    have hc : 0 < |q i| := abs_pos.2 hqi
+    -- the test function `g w = max 0 (|qᵢ| - |w - q|)`: positive near `q`, zero where `wᵢ = 0`
+    let g : Euclid P → ℝ := fun w => max 0 (|q i| - dist w q)
+    have hgc : Continuous g := by fun_prop
+    have hgs : HasCompactSupport g := by
+      refine HasCompactSupport.intro (isCompact_closedBall q |q i|) fun w hw => ?_
+      rw [mem_closedBall, not_le] at hw
+      exact max_eq_left (by linarith)
+    let f : CompactlySupportedContinuousMap (Euclid P) ℝ :=
+      { toFun := g
+        continuous_toFun := hgc
+        hasCompactSupport' := hgs }
+    have hfg : ∀ w, f w = g w := fun _ => rfl
+    have hg0 : ∀ w : Euclid P, w i = 0 → g w = 0 := by
+      intro w hw
+      have h1 : |q i| ≤ dist w q := by
+        have h2 := PiLp.norm_apply_le (w - q) i
+        rw [dist_eq_norm]
+        simpa [hw] using h2
+      exact max_eq_left (by linarith)
+    -- the integrals over the blow-ups `λ⁻¹(A - x) ⊆ {wᵢ = 0}` vanish, so `∫_Q f dHⁿ = 0`
+    have hlim : ∫ y in (Q : Set (Euclid P)), f y ∂μHE[n] = 0 := by
+      refine tendsto_nhds_unique (hQ.2 f) (tendsto_const_nhds.congr fun r => ?_)
+      refine (setIntegral_eq_zero_of_forall_eq_zero ?_).symm
+      rintro _ ⟨a, ha, rfl⟩
+      rw [hfg]
+      apply hg0
+      simp [Poincare.SimonGMT.Chapter03.blowUpMap, hA a ha i hi]
+    -- but `q` lies in the support `Q` of `Hⁿ⌞Q` and `f > 0` near `q`, so `∫_Q f dHⁿ > 0`
+    have hpos : 0 < ∫ y in (Q : Set (Euclid P)), f y ∂μHE[n] := by
+      have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule hQ.1
+      have hf0 : (0 : Euclid P → ℝ) ≤ ⇑f := fun w => by rw [hfg]; exact le_max_left _ _
+      rw [integral_pos_iff_support_of_nonneg hf0 f.integrable]
+      have hq' : q ∈ (μHE[n].restrict (Q : Set (Euclid P))).support := by
+        rw [Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hQ.1]
+        exact hq
+      refine (Measure.mem_support_iff_forall q).1 hq' _ ?_
+      refine Filter.mem_of_superset (ball_mem_nhds q hc) fun w hw => ?_
+      rw [mem_ball] at hw
+      rw [Function.mem_support, hfg]
+      exact (lt_max_of_lt_right (by linarith)).ne'
+    linarith
+  -- Step 2: the frame `τ` lies in `V = span{e_ι}`
+  have hτV : ∀ k i, (∀ j, ι j ≠ i) → τ k i = 0 := fun k i hi =>
+    hQV (τ k) (by rw [← hτQ]; exact Submodule.subset_span (mem_range_self k)) i hi
+  -- coordinates `m k = (τ k (ι j))ⱼ` of `τ k` in the frame `e_ι`, and `L w = Σⱼ wⱼ e_{ι j}`
+  let m : Fin n → Fin n → ℝ := fun k j => τ k (ι j)
+  let L : (Fin n → ℝ) →ₗ[ℝ] Euclid P :=
+    Fintype.linearCombination ℝ fun j => EuclideanSpace.single (ι j) (1 : ℝ)
+  have hLm : ∀ k, L (m k) = τ k := by
+    intro k
+    refine PiLp.ext fun i => ?_
+    simp only [L, m, Fintype.linearCombination_apply, WithLp.ofLp_sum, WithLp.ofLp_smul,
+      Finset.sum_apply, Pi.smul_apply, smul_eq_mul, PiLp.single_apply, mul_ite, mul_one, mul_zero]
+    by_cases h : ∃ j, ι j = i
+    · obtain ⟨j, rfl⟩ := h
+      simp [hι.injective.eq_iff]
+    · have h' : ∀ j, ι j ≠ i := fun j hj => h ⟨j, hj⟩
+      rw [hτV k i h']
+      exact Finset.sum_eq_zero fun j _ => ite_eq_right (h' j).symm
+  have hLe : ∀ k, L (Pi.basisFun ℝ (Fin n) k) = EuclideanSpace.single (ι k) (1 : ℝ) := by
+    intro k
+    rw [Pi.basisFun_apply, Fintype.linearCombination_apply_single, one_smul]
+  -- Step 3: `M = (τ k (ι j))` is orthogonal, so `det M = ±1`
+  let M : Matrix (Fin n) (Fin n) ℝ := (Pi.basisFun ℝ (Fin n)).toMatrix m
+  have hMM : M.transpose * M = 1 := by
+    ext k l
+    rw [Matrix.mul_apply, Matrix.one_apply, ← orthonormal_iff_ite.1 hτ k l, PiLp.inner_apply]
+    simp only [Matrix.transpose_apply, M, Module.Basis.toMatrix_apply, Pi.basisFun_repr, m]
+    refine Fintype.sum_of_injective ι hι.injective _ _ ?_ fun j => ?_
+    · rintro i hi
+      rw [hτV k i fun j hj => hi ⟨j, hj⟩]
+      simp
+    · simp [mul_comm]
+  have hdet : M.det = 1 ∨ M.det = -1 := by
+    have h := congrArg Matrix.det hMM
+    rw [Matrix.det_mul, Matrix.det_transpose, Matrix.det_one] at h
+    exact mul_self_eq_one_iff.1 h
+  -- Step 4: `α(τ) = det M · α(e_ι)` for every `n`-covector `α`
+  have hα : ∀ α : Covector (Euclid P) n,
+      α τ = M.det * α (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) := by
+    intro α
+    have key := DFunLike.congr_fun
+      (AlternatingMap.eq_smul_basis_det (Pi.basisFun ℝ (Fin n)) (α.toAlternatingMap.compLinearMap L)) m
+    simp only [AlternatingMap.compLinearMap_apply, AlternatingMap.smul_apply, smul_eq_mul,
+      ContinuousAlternatingMap.coe_toAlternatingMap, hLm, hLe, Module.Basis.det_apply] at key
+    rw [mul_comm] at key
+    exact key
+  rcases hξτ with h | h <;> rcases hdet with hd | hd
+  · exact Or.inl fun α => by rw [h, hα, hd, one_mul]
+  · exact Or.inr fun α => by rw [h, hα, hd, neg_one_mul]
+  · exact Or.inr fun α => by rw [h, hα, hd, one_mul]
+  · exact Or.inl fun α => by rw [h, hα, hd, neg_one_mul, neg_neg]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
