@@ -1,0 +1,126 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1`
+- Child DAG node: `root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1.directional_form-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Step 2(a)-(d), specialised to the vector fields G = φ·h, i.e. G^i = h_i φ. These are the only fields used in the parent's Step 3, which takes G_t(y) = g(y − th)·h. A complete Lean proof of exactly this statement along the steps below compiled in the decomposition scratch check, with axioms propext, Classical.choice and Quot.sound.
+
+Notation.
+- n := m + 1.
+- e_i := EuclideanSpace.single i 1 for i ∈ Fin n, and e := (i ↦ e_i) : Fin n → ℝ^n.
+- h_i := h i, so h = Σ_i h_i e_i.
+- proj_k := EuclideanSpace.proj k, so proj_k(e_l) = 1 if k = l and 0 otherwise.
+- For an m-covector β, |β| := covectorEuclideanNorm β.
+
+1. Coordinate m-covectors. For k ∈ Fin n let dx^{(k)} := wedgeCovectors m (a ↦ proj_{k.succAbove a}), the coordinate m-covector omitting direction k.
+   Claim: for all k, i ∈ Fin n, dx^{(k)}(e ∘ i.succAbove) = 1 if k = i, and 0 if k ≠ i.
+   (a) By wedgeCovectors_apply_det, dx^{(k)}(e ∘ i.succAbove) = det M, where M_{a,b} := proj_{k.succAbove a}(e_{i.succAbove b}). This equals 1 if k.succAbove a = i.succAbove b and 0 otherwise.
+   (b) If k = i: i.succAbove is injective, so M_{a,b} = 1 exactly when a = b. Thus M = 1 and det M = 1 (Matrix.det_one).
+   (c) If k ≠ i: i ∈ {k}ᶜ = range(k.succAbove) (Fin.range_succAbove), so i = k.succAbove a₀ for some a₀. Then M_{a₀,b} = 0 for every b, because i.succAbove b ≠ i (Fin.succAbove_ne). A zero row gives det M = 0 (Matrix.det_eq_zero_of_row_eq_zero).
+   (d) For m = 0 only the case k = i occurs, and M is the empty matrix with determinant 1.
+
+2. The constant covector and the form. Put α := Σ_{k ∈ Fin n} ((−1)^k h_k) • dx^{(k)} and ω₀(y) := φ(y) • α.
+   Expanding the sum (ContinuousAlternatingMap.sum_apply, smul_apply) and using step 1, α(e ∘ i.succAbove) = (−1)^i h_i for each i ∈ Fin n.
+   Hence ω₀(y)(e ∘ i.succAbove) = (−1)^i h_i φ(y).
+
+3. ω₀ is a test form on univ.
+   (a) ω₀ is C^∞, as the product of the C^∞ function φ with the constant α (ContDiff.smul with contDiff_const).
+   (b) ω₀(y) = 0 whenever φ(y) = 0, so ω₀ has compact support (HasCompactSupport.smul_right).
+   (c) tsupport ω₀ ⊆ univ trivially.
+   So ω₀ ∈ testFormOnSubmodule univ m, and ω := ⟨ω₀, _⟩ ∈ TestFormOn univ m has underlying form ω₀.
+
+4. Strictly increasing multi-indices. Claim: the strictly increasing maps I : Fin m → Fin n are exactly the maps k.succAbove, each obtained from exactly one k.
+   (a) Let I be strictly increasing, hence injective. I is not surjective: otherwise m + 1 = card(Fin n) ≤ card(Fin m) = m (Fintype.card_le_of_surjective). Pick k ∉ range I.
+   (b) Then range I ⊆ {k}ᶜ = range(k.succAbove).
+   (c) Both ranges are finite sets with m elements (Set.ncard_range_of_injective; k.succAbove is injective). So range I = range(k.succAbove) (Set.eq_of_subset_of_ncard_le).
+   (d) Two strictly increasing maps on Fin m with the same range are equal (StrictMono.range_inj_of_wellFoundedLT, with Fin.strictMono_succAbove). Hence I = k.succAbove.
+   (e) Conversely each k.succAbove is strictly increasing (Fin.strictMono_succAbove), and k ↦ k.succAbove is injective (Fin.succAbove_left_injective).
+   So the finite set of strictly increasing I is the image of Fin n under the injective map k ↦ k.succAbove.
+
+5. Norm.
+   (a) By definition, |β| = √(Σ_I [I strictly increasing]·β(a ↦ EuclideanSpace.basisFun (Fin n) ℝ (I a))²), and basisFun(I a) = e_{I a} (EuclideanSpace.basisFun_apply).
+   (b) Homogeneity: |t • β| = |t|·|β| for t ∈ ℝ. Each squared coefficient is multiplied by t² (Finset.mul_sum), √(t²·S) = √(t²)·√S (Real.sqrt_mul) and √(t²) = |t| (Real.sqrt_sq_eq_abs).
+   (c) Reindex the sum defining |α| by step 4 (Finset.sum_filter, then Finset.sum_image with the injective map k ↦ k.succAbove). By step 2 it equals Σ_{i ∈ Fin n} (α(e ∘ i.succAbove))² = Σ_i ((−1)^i h_i)² = Σ_i h_i².
+   (d) Hence |α| = √(Σ_i h_i²) = ‖h‖ (EuclideanSpace.norm_eq).
+   (e) Therefore |ω₀(x)| = |φ(x) • α| = |φ(x)|·‖h‖ = ‖h‖·|φ(x)| for every x. In particular the required inequality holds.
+
+6. Exterior derivative. By definition of exteriorDerivativeTestOn, the underlying form of exteriorDerivativeTestOn univ m ω is exteriorDerivative ω₀ (= extDeriv ω₀). Fix x.
+   (a) ω₀ is differentiable at x, so exteriorDerivative_apply gives (dω₀)(x)(e) = Σ_{i ∈ Fin n} (−1)^i • D[y ↦ ω₀(y)(i.removeNth e)](x)(e_i).
+   (b) By definition of Fin.removeNth, i.removeNth e = e ∘ i.succAbove. So by step 2 the map y ↦ ω₀(y)(i.removeNth e) is y ↦ ((−1)^i h_i)·φ(y).
+   (c) Its derivative at x is ((−1)^i h_i)·Dφ(x) (fderiv_const_mul).
+   (d) Since ((−1)^i)² = 1, (dω₀)(x)(e) = Σ_i (−1)^i (−1)^i h_i Dφ(x)(e_i) = Σ_i h_i Dφ(x)(e_i).
+   (e) h = Σ_i h_i e_i, its expansion in the orthonormal basis EuclideanSpace.basisFun (OrthonormalBasis.sum_repr with basisFun_repr and basisFun_apply). Since Dφ(x) is linear, Σ_i h_i Dφ(x)(e_i) = Dφ(x)(h).
+
+7. Steps 3, 5 and 6 show that ω ∈ TestFormOn univ m has both required properties. ∎
+
+Remark (not needed above). The same covector is α = dx.curryLeft h, with dx := wedgeCovectors n (j ↦ proj_j): both take the value (−1)^i h_i on e ∘ i.succAbove. A related Lean computation, d(a • dx.curryLeft e_j)(x)(e) = D_j a(x), is in the comparator-accepted Submission.constancy_closed_kills_partial_derivatives (commit 469f013363eae50dbd864d795703cdc6930d8086).
+
+## Key steps
+
+1. wedgeCovectors_apply_det gives dx^{(k)}(e∘i.succAbove) = δ_{ki} for dx^{(k)} := wedgeCovectors m (proj ∘ k.succAbove).
+2. α := Σ_k (−1)^k h_k dx^{(k)}, and ω := φ·α is a test form on univ with ω(y)(e∘i.succAbove) = (−1)^i h_i φ(y).
+3. The strictly increasing maps Fin m → Fin (m+1) are exactly the i.succAbove, so covectorEuclideanNorm(ω(x)) = ‖h‖·|φ(x)|.
+4. exteriorDerivative_apply with i.removeNth e = e∘i.succAbove gives dω(x)(e) = Σ_i h_i ∂_iφ(x) = Dφ(x)(h).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json (local-project; project d8d46c95, mathlib 25730c7c)`
+- `rg -n 'fiw_tb_te_' project (0 matches); python3 scan of dag.json lean_name fields (354 nodes, no fiw_tb_te_ names, no duplicated names)`
+- `grep -rn 'theorem exists_contDiff_support_eq_eq_one_iff|theorem _root_.Disjoint.exists_thickenings|theorem closure_thickening_subset_cthickening|alias _root_.MeasurableSet.exists_isCompact_diff_lt|theorem integral_mul_right_eq_self|theorem integral_integral_swap|theorem integral_eq_sub_of_hasDerivAt|lemma Integrable.comp_fst|theorem ofReal_integral_eq_lintegral_ofReal|theorem isFiniteMeasure_withDensity_ofReal|theorem StrictMono.range_inj_of_wellFoundedLT|lemma range_succAbove|theorem extDeriv_apply' mathlib/Mathlib`
+- `rg -n 'IsCompact.cthickening|fderiv_comp_sub' mathlib/Mathlib`
+- `rg -n 'covectorEuclideanNorm_smul|covectorEuclideanNorm' simongmt/Poincare (no smul lemma; only zero/nonneg/neg in Chapter06/Mass.lean)`
+- `read SimonGMT Chapter06 Currents.lean, Forms.lean, Mass.lean, FormsDuality.lean (TestFormOn, GeometricCurrentOn, exteriorDerivativeTestOn, boundary_apply, exteriorDerivative_apply, massAdmissibleOn, le_massOn, wedgeCovectors_apply_det)`
+- `git show d771ac3a:GMT/Ch06/Submission.lean (br_la_abs_apply_le_mul_mass proof); git cat-file -t ba202ac0 / 469f0133 (present)`
+- `python3 -I tools/gen.py (verifier gmt-compare.py child_modules contract mode + lean_contract.validate_lean_statement) then lake env lean gen/Challenge_*.lean (all elaborate)`
+- `lake env lean SolutionSim.lean (parent frozen type from 4 sorried Submission.X children; #print axioms: propext, sorryAx, Classical.choice, Quot.sound)`
+- `lake env lean Child1Proto.lean and Child2Proto.lean (complete proofs; axioms propext, Classical.choice, Quot.sound); lake env lean Child4Cutoff.lean (compiles)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Group/Integral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Function/L1Space/HasFiniteIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Order/WellFounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Data/Fin/SuccPred.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-40bcd6e5b78a/_recursive_lean/runtime.py`
+- `/tmp/te-decomp-7c1e/SolutionSim.lean`
+- `/tmp/te-decomp-7c1e/Child1Proto.lean`
+- `/tmp/te-decomp-7c1e/Child2Proto.lean`
+- `/tmp/te-decomp-7c1e/Child4Cutoff.lean`
+
+The snapshot is project d8d46c95 with Mathlib 25730c7c. The project and the DAG contain no fiw_tb_te_ declarations, so the four proposed names are globally fresh.
+
+The pinned Mathlib has every lemma the child proofs cite:
+- exists_contDiff_support_eq_eq_one_iff, Disjoint.exists_thickenings, closure_thickening_subset_cthickening, IsCompact.cthickening;
+- MeasurableSet.exists_isCompact_sdiff_lt (exists_isCompact_diff_lt is deprecated);
+- integral_add_right_eq_self, Integrable.comp_add_right, intervalIntegral.integral_eq_sub_of_hasDerivAt, integral_integral_swap, Integrable.comp_fst, fderiv_comp_sub;
+- ofReal_integral_eq_lintegral_ofReal, isFiniteMeasure_withDensity_ofReal;
+- StrictMono.range_inj_of_wellFoundedLT, Fin.range_succAbove.
+InnerRegularCompactLTTop and OuterRegular instances for finite measures on Eucl n are inferred.
+
+SimonGMT supplies covectorEuclideanNorm, massAdmissibleOn, le_massOn, exteriorDerivativeTestOn, GeometricCurrentOn.boundary_apply, exteriorDerivative_apply and wedgeCovectors_apply_det. It has no homogeneity lemma for covectorEuclideanNorm; the mass_bound child proves one.
+
+The accepted br_la_abs_apply_le_mul_mass (d771ac3a) proves the mass_bound type up to renaming. Its proof compiled verbatim under the fresh name. The directional_form child was proved completely in scratch.
+
+All four frozen child types elaborate in the comparator's exact challenge scope, and together they imply the parent's frozen type in Lean.

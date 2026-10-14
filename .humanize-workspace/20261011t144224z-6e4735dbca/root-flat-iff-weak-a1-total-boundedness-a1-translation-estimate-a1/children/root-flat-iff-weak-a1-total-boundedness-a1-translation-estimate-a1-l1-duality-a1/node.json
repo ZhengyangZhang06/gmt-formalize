@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1.l1_duality-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1",
+  "depth": 4,
+  "title": "The L¹ norm is bounded by testing against smooth compactly supported functions with |g| ≤ 1",
+  "statement": "Let n ∈ ℕ, w : ℝ^n → ℝ Lebesgue integrable and C ∈ ℝ. If ∫ w(x)·g(x) dx ≤ C for every C^∞ compactly supported g : ℝ^n → ℝ with |g(x)| ≤ 1 for all x, then ∫ |w(x)| dx ≤ C.",
+  "lean_statement": "∀ (n : ℕ) (w : Eucl n → ℝ) (C : ℝ), Integrable w → (∀ g : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g → HasCompactSupport g → (∀ x, |g x| ≤ 1) → ∫ x, w x * g x ≤ C) → ∫ x, |w x| ≤ C",
+  "lean_name": "fiw_tb_te_l1_le_of_smooth_dual",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-translation-estimate-a1-l1-duality-a1-a1"
+}

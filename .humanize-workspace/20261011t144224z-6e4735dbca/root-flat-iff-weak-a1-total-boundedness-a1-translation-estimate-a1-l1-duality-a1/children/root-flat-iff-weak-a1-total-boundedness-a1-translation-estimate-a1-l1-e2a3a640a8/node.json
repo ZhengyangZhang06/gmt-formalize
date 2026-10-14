@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1.l1_duality-a1.smooth_sign_sep-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.translation_estimate-a1.l1_duality-a1",
+  "depth": 5,
+  "title": "Smooth ±1 separation of two disjoint compact sets",
+  "statement": "Let n ∈ ℕ and let K₁, K₂ ⊆ ℝ^n be disjoint compact sets. Then there is a C^∞ function g : ℝ^n → ℝ with compact support such that |g(x)| ≤ 1 for every x ∈ ℝ^n, g(x) = 1 for every x ∈ K₁, and g(x) = −1 for every x ∈ K₂.",
+  "lean_statement": "∀ (n : ℕ) (K₁ K₂ : Set (Eucl n)), IsCompact K₁ → IsCompact K₂ → Disjoint K₁ K₂ → ∃ g : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) g ∧ HasCompactSupport g ∧ (∀ x, |g x| ≤ 1) ∧ (∀ x ∈ K₁, g x = 1) ∧ (∀ x ∈ K₂, g x = -1)",
+  "lean_name": "fiw_tb_te_l1d_smooth_sign_sep",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-translation-estimate-a1-l1-e2a3a640a8-a1"
+}

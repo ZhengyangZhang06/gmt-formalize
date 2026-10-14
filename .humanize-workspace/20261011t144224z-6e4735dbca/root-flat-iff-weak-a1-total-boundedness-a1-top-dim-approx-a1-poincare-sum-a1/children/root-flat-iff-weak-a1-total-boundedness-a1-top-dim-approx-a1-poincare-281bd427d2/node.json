@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.poincare_sum-a1.translation_ball-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.poincare_sum-a1",
+  "depth": 5,
+  "title": "Translation estimate bounds the double integral over r-balls",
+  "statement": "Let n ∈ ℕ and E := ℝ^n (Eucl n) with Lebesgue measure L. Let u : E → ℝ be measurable, Λ ∈ [0, ∞] and r ∈ ℝ, with no sign condition on r. Assume ∫⁻ ofReal|u(x + h) − u(x)| dL(x) ≤ ofReal(‖h‖)·Λ for every h ∈ E. Then\n∫⁻_x ∫⁻_{y ∈ closedBall(x, r)} ofReal|u(x) − u(y)| dL(y) dL(x) ≤ ofReal(r)·Λ·L(closedBall(0, r))\nin [0, ∞].",
+  "lean_statement": "∀ (n : ℕ) (u : Eucl n → ℝ) (Λ : ℝ≥0∞) (r : ℝ), Measurable u → (∀ h : Eucl n, ∫⁻ x, ENNReal.ofReal |u (x + h) - u x| ≤ ENNReal.ofReal ‖h‖ * Λ) → ∫⁻ x, ∫⁻ y in closedBall x r, ENNReal.ofReal |u x - u y| ≤ ENNReal.ofReal r * Λ * volume (closedBall (0 : Eucl n) r)",
+  "lean_name": "fiw_tb_tda_ps_translation_ball",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-poincare-281bd427d2-a1"
+}

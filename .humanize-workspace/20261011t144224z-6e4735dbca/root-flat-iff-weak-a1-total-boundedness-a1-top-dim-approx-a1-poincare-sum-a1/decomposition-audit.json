@@ -1,0 +1,47 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "lintegral_(mul_left_eq_self|add_left_eq_self|lintegral_swap|indicator_const|const_mul)|setLIntegral_mono\\x27|lintegral_mono_set|volume_preserving_ofLp|volume_Icc_pi|norm_apply_le|tsum_mul_left",
+        "fiw_tb_tda_ps_|lintegral_add_left_eq_self|closedBall.*2 \\*|∫⁻.*closedBall",
+        "class IsMulLeftInvariant|namespace Measure",
+        "ofReal_pow"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Group/LIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-poincare-sum-a1/parent-child-handoff.json",
+        "/tmp/psum-independent-audit-rqzkeurz/Types.lean",
+        "/tmp/psum-independent-audit-rqzkeurz/ProtoA.lean",
+        "/tmp/psum-independent-audit-rqzkeurz/ProtoB.lean",
+        "/tmp/psum-independent-audit-rqzkeurz/Assembly.lean"
+      ],
+      "conclusion": "Verified the pinned project and Mathlib revisions and inspected the required APIs. Both exact child propositions elaborate using a freshly compiled frozen Contract without either child implementation. Fresh replays of the supplied scratch proofs compile with only propext, Classical.choice and Quot.sound. Both names are unused bare identifiers, and no accepted declaration is being reused. The split is appropriate: its independent analytic and geometric obligations have empty dependency lists, while lattice_cubes remains the selected parent's existing prerequisite. The dependency graph is acyclic. A separate Lean implication check, taking the exact three prerequisite contracts as hypotheses, proves the exact frozen parent type using cube enlargement, summation and c = (2√n)^n√n; its axiom check also contains only the three standard axioms."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "translation_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including unrestricted radius and possibly infinite Λ. Each proof step is justified: ball membership permits translation of the indicator integral; joint measurability and sigma-finite Euclidean volume permit Tonelli; measurable constant extraction, the translation hypothesis and the norm bound on the ball give the stated indicator bound; integrating that indicator gives the exact conclusion. The argument covers negative radii, dimension zero and Λ = ∞ without additional assumptions. It invokes neither the parent nor either child theorem and is detailed enough for direct formalization."
+    },
+    {
+      "key": "ball_volume",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches arbitrary dimension and the hypothesis r ≥ 0. Coordinate domination by the Euclidean norm proves the box inclusion. PiLp.volume_preserving_ofLp identifies the correct Euclidean volume with product volume, and Real.volume_Icc_pi followed by ENNReal.ofReal_pow gives the claimed bound. The nonnegativity hypothesis is used correctly, including at r = 0; the empty product handles dimension zero. The proof is complete, independent and non-circular."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1.integer_median-a1",
+  "parent_id": "root.flat_iff_weak-a1.total_boundedness-a1.top_dim_approx-a1",
+  "depth": 4,
+  "title": "Integer medians on a set of finite positive measure (Simon 5.1, (31), (35))",
+  "statement": "Let α be a type with a σ-algebra and μ a measure on it. Let F ⊆ α be measurable with μ(F) = a for a real number a > 0. Let u : α → ℝ be measurable, with u(x) ∈ ℤ for every x and u integrable on F. Then there is an integer β such that:\n(M1) |β|·a ≤ 2 ∫_F |u| dμ, stated as ofReal(|β| a) ≤ 2 ∫⁻_F ofReal|u| dμ;\n(M2) β ≠ 0 implies μ(F ∩ {u ≠ 0}) ≠ 0;\n(M4) ∫⁻_F ofReal|u − β| dμ ≤ ofReal(a⁻¹) ∫⁻_F ∫⁻_F ofReal|u(x) − u(y)| dμ(y) dμ(x).",
+  "lean_statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α) (F : Set α) (a : ℝ) (u : α → ℝ), MeasurableSet F → 0 < a → μ F = ENNReal.ofReal a → Measurable u → (∀ x, ∃ k : ℤ, u x = k) → IntegrableOn u F μ → ∃ β : ℤ, ENNReal.ofReal (|(β : ℝ)| * a) ≤ 2 * ∫⁻ x in F, ENNReal.ofReal |u x| ∂μ ∧ (β ≠ 0 → μ (F ∩ {x | u x ≠ 0}) ≠ 0) ∧ ∫⁻ x in F, ENNReal.ofReal |u x - β| ∂μ ≤ ENNReal.ofReal a⁻¹ * ∫⁻ x in F, ∫⁻ y in F, ENNReal.ofReal |u x - u y| ∂μ ∂μ",
+  "lean_name": "fiw_tb_tda_integer_median",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-flat-iff-weak-a1-total-boundedness-a1-top-dim-approx-a1-integer-median-a1-a1"
+}
