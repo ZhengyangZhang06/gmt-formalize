@@ -1811,6 +1811,83 @@ theorem Submission.idtp_fons_cr_density_normalization : ∀ (P n : ℕ), ∃ c :
       refine integral_congr_ae (ae_of_all _ fun x => ?_)
       simp only [ENNReal.toReal_ofReal (hg0 x), smul_eq_mul, mul_comm]
     rw [h2, ← mul_assoc, inv_mul_cancel₀ (NNReal.coe_ne_zero.2 ha0), one_mul]
+/-- **Support semicontinuity** (Simon 7.3.3, proof of 3.3(2); Remark 3.4).  Let `μₖ → μ`
+vaguely, let the domains `Dₖ` exhaust the open set `U`, and let `μₖ(B_ρ(z)) ≥ e^{−Λρ} ωₙ ρⁿ` for
+`z ∈ spt μₖ` whenever `B̄_ρ(z) ⊆ Dₖ`.  If `yₖ ∈ spt μₖ` and `yₖ → y ∈ U`, then `y ∈ spt μ`.  With
+`B_{r₀}(y) ⊆ U` and `r = min(ε, r₀)/4`, the bump `f = max(0, 4 − |x − y|/r)` is `≥ 1` on
+`B_r(yₖ)` for large `k`, so `∫ f dμₖ ≥ μₖ(B_r(yₖ)) ≥ e^{−Λr} ωₙ rⁿ > 0`; hence `∫ f dμ > 0`, which
+is impossible if `μ(B_ε(y)) = 0`, as `f = 0` off `B_{4r}(y) ⊆ B_ε(y)`. -/
+theorem Submission.idtp_fons_cr_support_limit : ∀ (P n : ℕ) (Λ : ℝ) (μ : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (U : Set (Euclid P)) (Ds : ℕ → Set (Euclid P)) (ys : ℕ → Euclid P) (y : Euclid P), (∀ (k : ℕ) (K : Set (Euclid P)), IsCompact K → μs k K ≠ ∞) → IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∀ᶠ k in atTop, K ⊆ Ds k) → (∀ (k : ℕ) (z : Euclid P) (ρ : ℝ), 0 < ρ → closedBall z ρ ⊆ Ds k → (∀ ε : ℝ, 0 < ε → μs k (ball z ε) ≠ 0) → ENNReal.ofReal (Real.exp (-(Λ * ρ))) * (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ≤ μs k (ball z ρ)) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ x, f x ∂(μs k)) atTop (𝓝 (∫ x, f x ∂μ))) → (∀ (k : ℕ) (ε : ℝ), 0 < ε → μs k (ball (ys k) ε) ≠ 0) → Tendsto ys atTop (𝓝 y) → y ∈ U → ∀ ε : ℝ, 0 < ε → μ (ball y ε) ≠ 0 := by
+  intro P n Λ μ μs U Ds ys y hfin hU hexh hlow hvague hys hy hyU ε hε hμ0
+  -- `B_{r₀}(y) ⊆ U`; work at the radius `r = min(ε, r₀)/4`
+  obtain ⟨r₀, hr₀, hr₀U⟩ := Metric.isOpen_iff.1 hU y hyU
+  set r : ℝ := min ε r₀ / 4 with hr_def
+  have hr : 0 < r := div_pos (lt_min hε hr₀) four_pos
+  have h4r : 4 * r ≤ ε := by rw [hr_def]; linarith [min_le_left ε r₀]
+  have h2r : 2 * r < r₀ := by rw [hr_def]; linarith [min_le_right ε r₀]
+  -- eventually the compact `B̄_{2r}(y) ⊆ U` lies in `Ds k`, and `|yₖ − y| < r`
+  have hK : ∀ᶠ k in atTop, closedBall y (2 * r) ⊆ Ds k :=
+    hexh _ (isCompact_closedBall y (2 * r)) ((closedBall_subset_ball h2r).trans hr₀U)
+  have hyk : ∀ᶠ k in atTop, ys k ∈ ball y r := hy.eventually (ball_mem_nhds y hr)
+  -- the bump `f = max(0, 4 − |x − y|/r)`: `f ≥ 1` on `B_{2r}(y)`, `f = 0` off `B_{4r}(y)`
+  set f : Euclid P → ℝ := fun x => max 0 (4 - dist x y / r)
+  have hfc : Continuous f :=
+    continuous_const.max (continuous_const.sub ((continuous_id.dist continuous_const).div_const r))
+  have hf0 : ∀ x, 0 ≤ f x := fun x => le_max_left _ _
+  have hfsupp : ∀ x, f x ≠ 0 → dist x y < 4 * r := by
+    intro x hx
+    by_contra h
+    refine hx (max_eq_left ?_)
+    have : 4 ≤ dist x y / r := (le_div_iff₀ hr).2 (by linarith [not_lt.1 h])
+    linarith
+  have hfcs : HasCompactSupport f :=
+    HasCompactSupport.intro (isCompact_closedBall y (4 * r)) fun x hx => by
+      by_contra h
+      exact hx (mem_closedBall.2 (hfsupp x h).le)
+  -- `m = e^{−Λr} ωₙ rⁿ ∈ (0, ∞)`
+  set m : ℝ≥0∞ := ENNReal.ofReal (Real.exp (-(Λ * r))) *
+    (unitBallVolume n * ENNReal.ofReal (r ^ n))
+  have hω : unitBallVolume n = volume (ball (0 : Euclid n) 1) := rfl
+  have hm0 : m ≠ 0 :=
+    (ENNReal.mul_pos (ENNReal.ofReal_pos.2 (Real.exp_pos _)).ne'
+      (ENNReal.mul_pos (hω ▸ measure_ball_pos _ _ one_pos).ne'
+        (ENNReal.ofReal_pos.2 (pow_pos hr n)).ne').ne').ne'
+  have hmtop : m ≠ ∞ :=
+    ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+      (ENNReal.mul_ne_top (hω ▸ measure_ball_lt_top.ne) ENNReal.ofReal_ne_top)
+  have hmpos : 0 < m.toReal := ENNReal.toReal_pos hm0 hmtop
+  -- for large `k`: `∫ f dμₖ ≥ μₖ(B_r(yₖ)) ≥ m`
+  have hlarge : ∀ᶠ k in atTop, m.toReal ≤ ∫ x, f x ∂(μs k) := by
+    filter_upwards [hK, hyk] with k hk hdk
+    rw [mem_ball] at hdk
+    have : IsFiniteMeasureOnCompacts (μs k) := ⟨fun K hK => (hfin k K hK).lt_top⟩
+    have hmk : m ≤ μs k (ball (ys k) r) :=
+      hlow k (ys k) r hr ((closedBall_subset_closedBall' (by linarith)).trans hk) (hys k)
+    have hind : (ball (ys k) r).indicator (1 : Euclid P → ℝ) ≤ f := by
+      intro x
+      by_cases hx : x ∈ ball (ys k) r
+      · rw [indicator_of_mem hx, Pi.one_apply]
+        have hdx : dist x y < 2 * r := by
+          linarith [dist_triangle x (ys k) y, mem_ball.1 hx]
+        have : dist x y / r < 2 := (div_lt_iff₀ hr).2 (by linarith)
+        exact le_max_of_le_right (by linarith)
+      · rw [indicator_of_notMem hx]
+        exact hf0 x
+    calc m.toReal ≤ (μs k (ball (ys k) r)).toReal :=
+          ENNReal.toReal_mono measure_ball_lt_top.ne hmk
+      _ = ∫ x, (ball (ys k) r).indicator 1 x ∂(μs k) := by
+          rw [integral_indicator_one measurableSet_ball, measureReal_def]
+      _ ≤ ∫ x, f x ∂(μs k) :=
+          integral_mono_of_nonneg (ae_of_all _ (indicator_nonneg fun _ _ => zero_le_one))
+            (hfc.integrable_of_hasCompactSupport hfcs) (ae_of_all _ hind)
+  -- in the limit `∫ f dμ ≥ m > 0`, yet `f = 0` `μ`-a.e. because `μ(B_ε(y)) = 0`
+  have hlim : m.toReal ≤ ∫ x, f x ∂μ := ge_of_tendsto (hvague f hfc hfcs) hlarge
+  have hzero : ∫ x, f x ∂μ = 0 := by
+    refine integral_eq_zero_of_ae ?_
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hμ0] with x hx
+    by_contra h
+    exact hx (mem_ball.2 ((hfsupp x h).trans_le h4r))
+  linarith
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
