@@ -1,0 +1,125 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1.boundary_cone_transfer-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Registration and depth note (context, not part of the numbered proof). Fresh name idtp_fons_cs_sos_boundary_cone_transfer. Its frozen type is byte-identical to that of dimred_cs_sos_boundary_cone_transfer (DAG node root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.boundary_cone_transfer-a1, status decomposing), which is owned by the other parent root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1 (the node whose frozen type equals the selected node's) and is not comparator-accepted, so the runtime forbids reusing that name here. The numbered proof below is that node's independently audited parent-supplied proof, changed only as stated here. This node sits at depth 6, the configured maximum, so it is a machine leaf: its Lean proof adds only Submission.idtp_fons_cs_sos_boundary_cone_transfer, proves every auxiliary claim below inline (have/obtain/let/show), and adds no helper declaration and no import. The declarations of its listed dependencies are available because the controller merges their accepted candidates into this leaf's worktree before its implementation base is recorded. Changes: none.
+
+Notation. p := L.starProjection and q := Lᗮ.starProjection = I − p. H^k := μHE[k]. Λ^k := Covector (Euclid P) k. For a test k-form γ and t ∈ ℝ^P, γ(t + ·) denotes y ↦ γ(t + y).
+No sibling children are used; every fact used is in scope after `import GMT.Ch07.Submission`. This includes Mathlib MultilinearMap.alternatization, ContDiffBump, euclideanHausdorffMeasure_smul₀ and euclideanHausdorffMeasure_homothety_image, and SimonGMT exteriorDerivative_apply and HasApproximateTangentSpaceAt.
+0. (Fixing ♭: interior product with the frame.) Let h := (Nat.add_sub_of_le hd.le).symm : n = d + m and e := Fin.cast h. For v : Fin m → ℝ^P put u(v) := Fin.append f v ∘ e, the tuple (f_1, …, f_d, v_1, …, v_m).
+ - Updating v_j updates exactly one entry of u(v): Fin.append f (update v j w) = update (Fin.append f v) (Fin.natAdd d j) w, checked pointwise with Fin.addCases.
+ - So, for α ∈ Λ^n, v ↦ α(u(v)) is multilinear. It is alternating, because equal entries v_i = v_j (i ≠ j) give equal entries of u(v) at distinct indices.
+ - It is bounded by ‖α‖∏_j|v_j| (le_opNorm; f is orthonormal).
+ - Hence ♭α := (v ↦ α(u v)) ∈ Λ^m, and α ↦ ♭α is linear with ‖♭α‖ ≤ ‖α‖. So ♭ : Λ^n →L[ℝ] Λ^m is continuous linear (LinearMap.mkContinuous), with (♭α)(v) = α(Fin.append f v ∘ Fin.cast h).
+ Applying the hypothesis to this ♭ gives, for every test n-form ω:
+ (PF) S(ω) = ∫_L S₀(♭ω(t + ·)) dt, where ♭ω(t + ·) := y ↦ ♭(ω(t + y)) is a test m-form, so currentEval equals S₀ applied to it.
+1. (S₀ only sees L^⊥.) Claim: let γ, γ' be test m-forms with γ(y)(w) = γ'(y)(w) for all y ∈ L^⊥ and all w ∈ (L^⊥)^m. Then S₀(γ) = S₀(γ').
+ Proof.
+ - Since θ₀ ≥ 1 on M₀, H^m(M₀ ∖ L^⊥) ≤ μ₀(ℝ^P ∖ L^⊥) = 0.
+ - Take H^m-a.e. y ∈ M₀ such that y ∈ L^⊥ and ζ₀(y) is a unit orientation of a subspace Q_y with HasApproximateTangentSpaceAt m M₀ y Q_y (R₀.orients). Then Q_y ⊆ L^⊥, by the following lemma.
+ (Tangent lemma.) If H^m(M₀ ∖ V) = 0 for a linear subspace V, y ∈ V and HasApproximateTangentSpaceAt m M₀ y Q, then Q ⊆ V.
+ Proof:
+  - Suppose z ∈ Q ∖ V. Then ρ := dist(z, V)/2 > 0, since V is closed, and m = finrank Q ≥ 1.
+  - Let φ(x) := max(0, 1 − |x − z|/ρ). It is continuous with compact support, 0 ≤ φ ≤ 1, φ ≥ 1/2 on B(z, ρ/2), and φ = 0 on V.
+  - For r > 0, η := η_{y,r} (x ↦ r⁻¹(x − y)) maps V onto V, so η(M₀) ∖ V = η(M₀ ∖ V). This set has H^m-measure r^{−m}H^m(M₀ ∖ V) = 0 (homothety scaling and translation invariance of μHE[m]).
+  - Hence 0 ≤ ∫_{η(M₀)} φ dH^m ≤ H^m(η(M₀) ∩ B(z, ρ)) ≤ H^m(η(M₀) ∖ V) = 0 for every r > 0, so the tangent limit gives ∫_Q φ dH^m = 0.
+  - But H^m⌞Q is m-dimensional Lebesgue measure on Q (isometry invariance and EuclideanSpace.euclideanHausdorffMeasure_eq_volume). So ∫_Q φ dH^m ≥ (1/2)H^m(Q ∩ B(z, ρ/2)) > 0, a contradiction.
+  Apply the lemma with V = L^⊥.
+ - Then ζ₀(y)(γ(y)) = ±γ(y)(τ) for an orthonormal basis τ of Q_y ⊆ L^⊥, so it equals ±γ'(y)(τ) = ζ₀(y)(γ'(y)).
+ - The integrands of R₀.action(γ) and R₀.action(γ') agree a.e., so S₀(γ) = S₀(γ').
+2. (Lifts and test forms.) For k ∈ {m − 1, m} let lift_k : Λ^k → Λ^{d+k} be the continuous linear map
+ (lift_k β)(v_1, …, v_{d+k}) := (1/k!) Σ_{σ∈S_{d+k}} sgn(σ) ∏_{a=1}^d ⟨f_a, v_{σ(a)}⟩ · β(q v_{σ(d+1)}, …, q v_{σ(d+k)})
+ (Mathlib MultilinearMap.alternatization; multilinear in v, hence continuous). Its two properties:
+ (L1) (lift_k β)(f_1, …, f_d, w_1, …, w_k) = β(w_1, …, w_k) for w_j ∈ L^⊥. A term is nonzero only if v_{σ(a)} = f_a for all a ≤ d, since ⟨f_a, w_j⟩ = 0 and ⟨f_a, f_b⟩ = δ_ab. The rest is Σ_{π∈S_k} sgn(π)β(w_π) = k!β(w).
+ (L2) (lift_k β)(v) = 0 if v consists of d − 1 vectors from {f_1, …, f_d} and k + 1 vectors from L^⊥. Each term contains a factor ⟨f_a, u⟩ with u ∈ L^⊥, or a mismatched ⟨f_a, f_b⟩ = 0.
+ The bump ϕ. Fix ϕ ∈ C_c^∞(ℝ^P) with ϕ ≥ 0 and ϕ(0) > 0 (a ContDiffBump at 0). Then c_ϕ := ∫_L ϕ dH^d > 0, since ϕ > 0 on a relatively open neighbourhood of 0 in L and H^d⌞L is Lebesgue measure on L.
+ The forms Ω_β. For a test k-form β put Ω_β(x) := ϕ(p x)·lift_k(β(q x)). This is a test (d + k)-form: it is C^∞, and tsupport Ω_β ⊆ {x : p x ∈ tsupport ϕ ∩ L, q x ∈ tsupport β}, which is compact since x = p x + q x.
+ Evaluation: by (L1), for t ∈ L, y ∈ L^⊥ and w ∈ (L^⊥)^k,
+ (E) ♭(Ω_β(t + y))(w) = Ω_β(t + y)(f, w) = ϕ(t)·β(y)(w),
+ since p(t + y) = t and q(t + y) = y.
+3. (∂S = 0 ⇒ ∂S₀ = 0.) Assume BoundaryVanishes S. Since n ≥ 2, this means S(dγ) = 0 for all test (n−1)-forms γ. As m ≥ 1, it suffices to show S₀(dβ) = 0 for every test (m−1)-form β.
+ Let β be a test (m−1)-form and γ := Ω_β (k = m − 1), a test (n−1)-form. We compute ♭(dγ(x)) on w ∈ (L^⊥)^m, using dγ(x)(v_0, …, v_{n−1}) = Σ_i (−1)^i Dγ(x)[v_i](v_0, …, v̂_i, …, v_{n−1}) (SimonGMT exteriorDerivative_apply) with v = (f_1, …, f_d, w_1, …, w_m):
+ - Terms v_i = f_a. Dγ(x)[f_a] = (Dϕ(px)[f_a])·lift(β(qx)) + ϕ(px)·lift(Dβ(qx)[q f_a]), and q f_a = 0. Evaluated on (f_1, …, f̂_a, …, f_d, w), the first part vanishes by (L2), and the second is 0.
+ - Terms v_i = w_j, i = d + j − 1. Dγ(x)[w_j] = ϕ(px)·lift(Dβ(qx)[w_j]), because Dϕ(px)[p w_j] = 0. By (L1), its value on (f, ŵ_j) is ϕ(px)·Dβ(qx)[w_j](ŵ_j).
+ Hence ♭(dγ(x))(w) = (−1)^d ϕ(px) Σ_j (−1)^{j−1} Dβ(qx)[w_j](ŵ_j) = (−1)^d ϕ(px)·dβ(qx)(w).
+ For x = t + y with t ∈ L and y ∈ L^⊥ this reads ♭(dγ(t + y))(w) = (−1)^d ϕ(t)·dβ(y)(w). By step 1, applied to the test m-forms ♭dγ(t + ·) and (−1)^d ϕ(t)dβ, S₀(♭dγ(t + ·)) = (−1)^d ϕ(t) S₀(dβ).
+ By (PF) with ω := dγ: 0 = S(dγ) = ∫_L (−1)^d ϕ(t) S₀(dβ) dt = (−1)^d c_ϕ S₀(dβ). So S₀(dβ) = 0 for all β, i.e. S₀.boundary = 0, which is BoundaryVanishes S₀ (degree m ≥ 1).
+4. (Cone transfer.) Assume IsConeCurrent S and fix λ > 0. For a test k-form γ write η^#γ(x) := λ^{−k}γ(λ^{−1}x). This is the affine pull-back by dilation 0 λ (x ↦ λ^{−1}x) used in blowUp, by multilinearity. Since dilation 0 λ '' univ = univ, currentEval (blowUp T 0 λ) γ = T(η^#γ) for T ∈ {S, S₀}.
+ (a) η^# preserves "agreement on L^⊥". If γ, γ' agree on L^⊥ × (L^⊥)^m as in step 1, so do η^#γ and η^#γ', because λ^{−1}y ∈ L^⊥ for y ∈ L^⊥. Hence η_#S₀(γ) := S₀(η^#γ) also depends only on the restriction of γ to L^⊥ × (L^⊥)^m.
+ (b) Scaling of slices. Let ω be a test n-form and β_s := ♭ω(s + ·). Then
+ ♭((η^#ω)(t + y)) = λ^{−n}♭(ω(λ^{−1}t + λ^{−1}y)) = λ^{−d}·(η^#β_{λ^{−1}t})(y),
+ since λ^{−n} = λ^{−d}λ^{−m}. By (PF) and the cone hypothesis,
+ S(ω) = S(η^#ω) = ∫_L λ^{−d} S₀(η^#β_{λ^{−1}t}) dH^d(t) = ∫_L η_#S₀(β_s) dH^d(s).
+ The last step is the change of variables t = λs on L: μHE[d](λA) = λ^d μHE[d](A) (Mathlib euclideanHausdorffMeasure_smul₀ or euclideanHausdorffMeasure_homothety_image), and L is invariant under scaling. Also S(ω) = ∫_L S₀(β_s) ds by (PF). Therefore:
+ (∗) ∫_L S₀(β_s) ds = ∫_L η_#S₀(β_s) ds for every test n-form ω.
+ (c) Testing. Let β be a test m-form and ω := Ω_β (k = m). By (E), β_s(y)(w) = ϕ(s)β(y)(w) for y ∈ L^⊥ and w ∈ (L^⊥)^m. By step 1, S₀(β_s) = ϕ(s)S₀(β); by (a), η_#S₀(β_s) = ϕ(s)η_#S₀(β). Then (∗) gives c_ϕ S₀(β) = c_ϕ η_#S₀(β), so S₀(β) = S₀(η^#β) = currentEval (blowUp S₀ 0 λ) β.
+ As λ > 0 and β were arbitrary, IsConeCurrent S₀. ∎
+
+## Key steps
+
+1. Construct the interior product ♭ with the frame f. Approximate tangent planes of a set lying in L^⊥ up to a null set are contained in L^⊥. Hence S₀ only sees the values of a test form at points of L^⊥ on (n−d)-tuples from L^⊥.
+2. Forms Ω_β = ϕ(p x)·lift(β(q x)) = ϕ(p x)·dt^1∧⋯∧dt^d∧q^#β satisfy ♭Ω_β(t + y) = ϕ(t)β(y) on L^⊥.
+3. Direct evaluation of d gives ♭(dΩ_β)(t + y) = (−1)^d ϕ(t) dβ(y) on L^⊥, so S(dΩ_β) = 0 forces S₀(dβ) = 0.
+4. Dilations scale slices: ♭(η^#ω)(t + ·) = λ^{−d}η^#(♭ω(λ^{−1}t + ·)); a change of variables on L and testing with Ω_β give S₀(β) = S₀(η^#β).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `python3 -I -c json.load(<snap>/manifest.json); git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD`
+- `cmp GMT/Ch07/Contract.lean <snap>/project/GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n '^def (IsMinimizingIn|IsConeCurrent|BoundaryVanishes|SameBoundary|blowUp|currentEval|approxTangentPlane)|^structure IMRep|^def IMRep\.(measure|Represents|action)' <snap>/project/GMT/Ch07/Contract.lean`
+- `rg -n -i -l coarea <snap>/mathlib/Mathlib (no match)`
+- `rg -n -i -l 'cartesian product of currents|slice of a current' <snap>/mathlib/Mathlib (no match)`
+- `rg -n 'idtp_fons_cs_sos|dimred_cs_sos|dpf_approxTangent_ae_bilipschitz_piece|dimred_im_mass_measure' <snap>/project (no match)`
+- `rg -n 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' <snap>/mathlib/Mathlib`
+- `rg -n 'theorem measurableSet_of_differentiableAt|theorem measurable_fderiv' <snap>/mathlib/Mathlib`
+- `rg -n "theorem ae_all_iff|theorem ae_restrict_iff'" <snap>/mathlib/Mathlib`
+- `rg -n 'theorem isOpen_iUnion_countable' <snap>/mathlib/Mathlib/Topology/Bases.lean; rg -n 'theorem ContinuousLinearMap.isOpen_injective' <snap>/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean; rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_zero ' <snap>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep -n 'theorem weighted_area_formula_lipschitz_injOn|theorem area_image_compl_regularSet_eq_zero|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn|def areaRegularSet|theorem measurableSet_areaRegularSet' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/{AreaLipschitz,Lipschitz}.lean`
+- `python3 scans of dag.json: status, candidate_commit, lean_statement, parent of dimred_cs_split_off_spine, dimred_cs_sos_*, the 5 reuses and all accepted nodes; accepted candidates whose Submission.lean imports Poincare.SimonGMT.Chapter02.AreaLipschitz; absence of the 7 fresh names`
+- `git show <candidate_commit>:GMT/Ch07/Submission.lean for the 5 reuses (declaration with identical type present; a21680472b has import Poincare.SimonGMT.Chapter02.AreaLipschitz)`
+- `cat cluster-state/verification/results/hoa43/20261013T160813Z-ch07-root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_densit-ej3048p6/{result.json,comparator-config.json}`
+- `grep -n '_existing_lean_name_problem|_dependency_problem|_overlay_accepted_children|_leaf_author_task|max_depth' /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `lake env lean /tmp/idtp_sos_decomp/check/{Types,Names,NamesArea,Assembly,Assembly2,Assembly3}.lean`
+- `python3 /tmp/idtp_sos_decomp/scripts/gates.py /tmp/idtp_sos_decomp/envelope_test3.json (ScopedDecomposition.model_validate; replay of Runtime._dependency_problem, _topological, _existing_lean_name_problem on dag.json)`
+- `sed -n 395,420p book/chapter-07.txt (Simon Lemma 7.3.5)`
+- `WebSearch: Simon Introduction to GMT Lemma 3.5 minimizing cone translation invariant S = [[R^m]] × S_0`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ac0f702949/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/models.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/idtp_sos_decomp/check/Assembly3.lean`
+- `/tmp/idtp_sos_decomp/check/NamesArea.lean`
+- `/tmp/idtp_sos_review/LipCheck.lean`
+- `/tmp/idtp_sos_review/CarrierCheck.lean`
+- `/tmp/idtp_sos_review/UsageCheck.lean`
+
+Pins match: the snapshot manifest records project b4d606d (= workspace HEAD) and Mathlib 25730c7c (= workspace Mathlib); SimonGMT is 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, which hold no Submission declarations; none of the 7 fresh names, nor the reused names, occur in the snapshot project. No coarea formula, slicing or Cartesian product of currents exists in the snapshot Mathlib (no match). Mathlib does have exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, measurableSet_of_differentiableAt, measurable_fderiv, ContinuousLinearMap.isOpen_injective, TopologicalSpace.isOpen_iUnion_countable and euclideanHausdorffMeasure_zero, all used by the child proofs. SimonGMT's area formula (weighted_area_formula_lipschitz_injOn, area_image_compl_regularSet_eq_zero, measurableSet_areaRegularSet) lies in Chapter02/AreaLipschitz.lean, outside the contract imports. In dag.json, the accepted dpf_approxTangent_ae_bilipschitz_piece (candidate a21680472b, comparator passed with propext, Quot.sound, Classical.choice) carries that import and proves the bi-Lipschitz-piece tangent lemma. The 5 reused declarations are accepted with byte-identical types present in their candidate commits. The six dimred_cs_sos_* children of the identical-type node dimred_cs_split_off_spine are unaccepted and owned by another parent, hence the fresh names. All 12 child types and the parent type elaborate. The parent assembly and the product_current usage checks compile; #print axioms shows only propext, Classical.choice and Quot.sound beyond the stubs' sorryAx. The runtime gate replay reports no problem.

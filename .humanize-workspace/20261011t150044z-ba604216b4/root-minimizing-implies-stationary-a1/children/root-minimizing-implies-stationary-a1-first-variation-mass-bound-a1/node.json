@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1",
+  "depth": 2,
+  "title": "First variation of mass along push-forwards (Simon Ch. 4, 2.2; Ch. 2, 5.3): upper bound",
+  "statement": "Let R = (M, θ, ξ) be an integer multiplicity triple in U ⊆ ℝ^P, W ⊆ ℝ^P open with μ_V(W) = ∫_{M∩W} θ dH^n < ∞, X ∈ C¹(ℝ^P; ℝ^P) with compact support and spt X ⊆ W, and (φ_t)_{t∈ℝ} C¹ maps with φ_t = id outside spt X and ‖Dφ_t(x) − I − tDX(x)‖ ≤ ε|t| for all x whenever |t| < δ(ε). Then for every ε > 0 there is δ > 0 such that for every |t| < δ and every S ∈ 𝒟_n(U) with S(ω) = ∫_M θ ξ(ω(φ_t x)∘Dφ_t(x)) dH^n for all ω ∈ 𝒟^n(U): M_W(S) ≤ μ_V(W) + t·δV(X) + ε|t|, where δV(X) = ∫_M θ div_M X dH^n = R.firstVariation X.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (R : IMRep U n) (X : Euclid P → Euclid P) (φ : ℝ → Euclid P → Euclid P), IsOpen W → R.measure W ≠ ∞ → ContDiff ℝ 1 X → HasCompactSupport X → tsupport X ⊆ W → (∀ t, ContDiff ℝ 1 (φ t)) → (∀ t x, x ∉ tsupport X → φ t x = x) → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ x, ‖fderiv ℝ (φ t) x - ContinuousLinearMap.id ℝ (Euclid P) - t • fderiv ℝ X x‖ ≤ ε * |t|) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ t : ℝ, |t| < δ → ∀ S : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, S ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (φ t x)).compContinuousLinearMap (fderiv ℝ (φ t) x)) ∂μHE[n]) → S.massOn W ≤ ENNReal.ofReal ((R.measure W).toReal + t * R.firstVariation X + ε * |t|)",
+  "lean_name": "pushforward_action_massOn_le_first_variation",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1",
+    "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.covector_gram_bounds-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-a1"
+}
