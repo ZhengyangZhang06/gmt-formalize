@@ -544,6 +544,41 @@ theorem Submission.idod_nearby_center_ball_mass_bound : ∀ (P n : ℕ) (U : Set
         mul_le_mul' h5' (h2.trans (h3.trans h4))
     _ = ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := mul_comm _ _
 
+/-- **Simon 7.3.3, proof of (1), display (2) (p. 190)**, at one point: let `Θⁿ(μ_T, y) = θ` with
+`θ < θ₁ < θ₂`, let `B̄_{2σ₀}(y) ⊆ K''`, and let `ρ ↦ e^{Λρ}ρ⁻ⁿ M_{B_ρ(z)}(T)` (`Λ ≥ 0`) be
+nondecreasing on `(0, R)` whenever `B̄_R(z) ⊆ K''`.  Then for some `δ > 0`,
+`M_{B_ρ(y')}(T) ≤ θ₂ ωₙ ρⁿ` for all `y' ∈ B_δ(y)` and `0 < ρ < δ`.
+Take `r ∈ (0, σ₀)` with `e^{Λr}r⁻ⁿ M_{B_r(y)}(T) < ωₙθ₁` (`idod_monotone_quantity_eventually_lt`),
+then `τ ∈ (0, r)` with `θ₁(r/(r − τ))ⁿ < θ₂` (continuity at `τ = 0`), and `δ = min(τ, r − τ)`.  For
+`y' ∈ B_δ(y)`, `B̄_r(y') ⊆ B̄_{2σ₀}(y) ⊆ K''`, so the monotone quantity at `y'` is nondecreasing on
+`(0, r)`, and `idod_nearby_center_ball_mass_bound` gives the bound for `ρ < r − τ`. -/
+theorem Submission.idod_local_uniform_ball_mass_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (K'' : Set (Euclid P)) (y : Euclid P) (Λ σ₀ θ θ₁ θ₂ : ℝ), 0 ≤ Λ → 0 < σ₀ → θ < θ₁ → θ₁ < θ₂ → HasMassDensity T y θ → closedBall y (2 * σ₀) ⊆ K'' → (∀ (z : Euclid P) (R : ℝ), closedBall z R ⊆ K'' → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball z ρ)) (Ioo 0 R)) → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ ball y δ, ∀ ρ : ℝ, 0 < ρ → ρ < δ → T.massOn (ball y' ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+  intro P n U T K'' y Λ σ₀ θ θ₁ θ₂ hΛ hσ₀ hθθ₁ hθ₁θ₂ hdens hK hmono
+  -- a radius `r ∈ (0, σ₀)` with `e^{Λr}r⁻ⁿ M_{B_r(y)}(T) < ωₙθ₁`
+  obtain ⟨r, hrlt, hr, hrσ₀⟩ : ∃ r : ℝ, ENNReal.ofReal (Real.exp (Λ * r) / r ^ n) *
+      T.massOn (ball y r) < unitBallVolume n * ENNReal.ofReal θ₁ ∧ 0 < r ∧ r < σ₀ :=
+    ((Submission.idod_monotone_quantity_eventually_lt P n U T y Λ θ θ₁ hdens hθθ₁).and
+      (Ioo_mem_nhdsGT hσ₀)).exists
+  -- a shift `τ ∈ (0, r)` with `θ₁(r/(r − τ))ⁿ < θ₂`: `t ↦ θ₁(r/(r − t))ⁿ` is continuous at `0`,
+  -- where it takes the value `θ₁ < θ₂`
+  have hcont : ContinuousAt (fun t : ℝ => θ₁ * (r / (r - t)) ^ n) 0 :=
+    continuousAt_const.mul ((continuousAt_const.div₀ (continuousAt_const.sub continuousAt_id)
+      (by simpa using hr.ne')).pow n)
+  have h0 : θ₁ * (r / (r - 0)) ^ n < θ₂ := by
+    rwa [sub_zero, div_self hr.ne', one_pow, mul_one]
+  obtain ⟨τ, hτθ₂, hτ, hτr⟩ : ∃ τ : ℝ, θ₁ * (r / (r - τ)) ^ n < θ₂ ∧ 0 < τ ∧ τ < r :=
+    (((hcont.eventually (gt_mem_nhds h0)).filter_mono nhdsWithin_le_nhds).and
+      (Ioo_mem_nhdsGT hr)).exists
+  -- `δ = min(τ, r − τ)`: for `y' ∈ B_δ(y)`, `|y' − y| < τ`, and `ρ < δ` gives `ρ < r − τ`
+  refine ⟨min τ (r - τ), lt_min hτ (sub_pos.2 hτr), fun y' hy' ρ hρ hρδ => ?_⟩
+  have hy'y : dist y' y < τ := (mem_ball.1 hy').trans_le (min_le_left _ _)
+  -- `B̄_r(y') ⊆ B̄_{2σ₀}(y) ⊆ K''`, as `r + |y' − y| < r + τ < 2r < 2σ₀`, so the monotone quantity
+  -- at `y'` is nondecreasing on `(0, r)`
+  have hdist : r + dist y' y ≤ 2 * σ₀ := by linarith
+  have hball : closedBall y' r ⊆ K'' := (closedBall_subset_closedBall' hdist).trans hK
+  exact Submission.idod_nearby_center_ball_mass_bound P n U T y y' Λ r τ θ₁ θ₂ hΛ hτ hτr hy'y
+    hτθ₂.le (hmono y' r hball) hrlt.le ρ hρ (hρδ.trans_le (min_le_right _ _))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
