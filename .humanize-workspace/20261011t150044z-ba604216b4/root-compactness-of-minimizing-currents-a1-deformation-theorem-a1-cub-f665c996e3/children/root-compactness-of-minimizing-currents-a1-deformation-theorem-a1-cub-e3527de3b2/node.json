@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1.mollify_l1-a1.compact_support_approx-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1.mollify_l1-a1",
+  "depth": 6,
+  "title": "Uniform L¹ approximate identity for continuous compactly supported h: ∫⁻‖ρ⋆h − h‖ₑ ≤ ε for all normalized kernels supported in a small ball",
+  "statement": "Let n ∈ ℕ, ℝⁿ = Euclid n with Lebesgue measure, and let h : ℝⁿ → ℝ be continuous with compact support. For every ε > 0 there is r > 0 with the following property. Let ρ : ℝⁿ → ℝ satisfy ρ ≥ 0, ∫ρ = 1 and support ρ ⊆ B_r(0) (open ball); ρ need not be continuous. Let (ρ ⋆ h)(x) := ∫ ρ(t) h(x − t) dt (Mathlib's convolution with lsmul ℝ ℝ and volume). Then ∫⁻ ‖(ρ ⋆ h)(x) − h(x)‖ₑ dx ≤ ofReal(ε).",
+  "lean_statement": "∀ (n : ℕ) (h : Euclid n → ℝ), Continuous h → HasCompactSupport h → ∀ ε : ℝ, 0 < ε → ∃ r : ℝ, 0 < r ∧ ∀ ρ : Euclid n → ℝ, (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → support ρ ⊆ ball (0 : Euclid n) r → ∫⁻ x, ‖convolution ρ h (ContinuousLinearMap.lsmul ℝ ℝ) volume x - h x‖ₑ ≤ ENNReal.ofReal ε",
+  "lean_name": "cmcdt_cbm_sa_ml_compact_support_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-e3527de3b2-a1"
+}

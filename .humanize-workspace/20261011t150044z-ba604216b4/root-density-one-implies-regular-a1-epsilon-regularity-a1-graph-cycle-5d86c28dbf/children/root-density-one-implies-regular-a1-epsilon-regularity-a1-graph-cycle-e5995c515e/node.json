@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.graph_cutoff_lift-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1",
+  "depth": 5,
+  "title": "Cut-off lift of a compactly supported form on ℝⁿ to a test form near the graph",
+  "statement": "Let m, k ∈ ℕ, U ⊆ ℝ^{m+1+k}; ι : ℝ^{m+1} → ℝ^{m+1+k}, ι' : ℝ^k → ℝ^{m+1+k} linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w and such that every x ∈ ℝ^{m+1+k} equals ιv + ι'w for some v, w; s, h ∈ ℝ with h > 0; u : ℝ^{m+1} → ℝ^k continuous on B_s(0) with u(B_s(0)) ⊆ B_h(0); z ∈ ℝ^{m+1+k} with C := {z + ιv + ι'w : v ∈ B_s(0), w ∈ B_h(0)} ⊆ U; ψ a smooth m-form on ℝ^{m+1} with compact support and tsupport ψ ⊆ B_s(0). Let L := ι* (ContinuousLinearMap.adjoint ι.toContinuousLinearMap) and P^#ψ := affinePullbackForm L (−Lz) ψ. Then there is a test form φ ∈ 𝒟^m(U) (φ : TestFormOn U m) with tsupport φ ⊆ C such that, for every v ∈ B_s(0), φ coincides with P^#ψ on a neighbourhood of z + ιv + ι'u(v).",
+  "lean_statement": "∀ (m k : ℕ) (U : Set (Euclid (m + 1 + k))) (ι : Euclid (m + 1) →ₗᵢ[ℝ] Euclid (m + 1 + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + 1 + k)) (u : Euclid (m + 1) → Euclid k) (z : Euclid (m + 1 + k)) (s h : ℝ) (ψ : DifferentialForm (Euclid (m + 1)) m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → (∀ x : Euclid (m + 1 + k), ∃ v : Euclid (m + 1), ∃ w : Euclid k, x = ι v + ι' w) → 0 < h → ContinuousOn u (ball 0 s) → (∀ v ∈ ball (0 : Euclid (m + 1)) s, u v ∈ ball (0 : Euclid k) h) → {x | ∃ v ∈ ball (0 : Euclid (m + 1)) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} ⊆ U → IsSmoothForm ψ → HasCompactSupport ψ → tsupport ψ ⊆ ball (0 : Euclid (m + 1)) s → ∃ φ : TestFormOn U m, tsupport (φ : DifferentialForm (Euclid (m + 1 + k)) m) ⊆ {x | ∃ v ∈ ball (0 : Euclid (m + 1)) s, ∃ w ∈ ball (0 : Euclid k) h, x = z + ι v + ι' w} ∧ ∀ v ∈ ball (0 : Euclid (m + 1)) s, (φ : DifferentialForm (Euclid (m + 1 + k)) m) =ᶠ[𝓝 (z + ι v + ι' (u v))] affinePullbackForm (ContinuousLinearMap.adjoint ι.toContinuousLinearMap) (-(ContinuousLinearMap.adjoint ι.toContinuousLinearMap z)) ψ",
+  "lean_name": "dgcr_bwd_graph_cutoff_lift",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.normal_cutoff-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.normal_cutoff-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-e5995c515e-a1"
+}
