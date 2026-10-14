@@ -451,6 +451,262 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon 6.5.1** (proof, (31): `Lⁿ` of the interior of a unit face is `1`): the open unit cube
+`{y : 0 < yᵢ < 1}` of `ℝᵏ` has volume `1`.  It is the preimage of the box `∏ᵢ (0, 1)` under the
+volume-preserving `ofLp : ℝᵏ → (Fin k → ℝ)`, and the box has volume `∏ᵢ (1 - 0) = 1` (the empty
+product if `k = 0`). -/
+theorem Submission.cmcdtfrfg_cube_volume : ∀ k : ℕ, volume {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} = 1 := by
+  intro k
+  -- the box `∏ᵢ (0, 1)` in `Fin k → ℝ`
+  have hB : MeasurableSet (Set.pi univ fun _ : Fin k => Ioo (0 : ℝ) 1) :=
+    MeasurableSet.univ_pi fun _ => measurableSet_Ioo
+  -- the cube is `ofLp⁻¹` of the box
+  have hpre : {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} =
+      WithLp.ofLp ⁻¹' (Set.pi univ fun _ : Fin k => Ioo (0 : ℝ) 1) := by
+    ext y
+    simp [Set.mem_pi]
+  rw [hpre, (PiLp.volume_preserving_ofLp (Fin k)).measure_preimage hB.nullMeasurableSet,
+    Real.volume_pi_Ioo]
+  simp
+/-- **Coordinates of the lattice face map** (Simon Ch. 6 §5, deformation theorem: a face of the
+cube lattice parametrised over `ℝᵏ`).  For injective `ι : Fin k → Fin P`, `b ∈ ℤᴾ`, `y ∈ ℝᵏ` and
+`Φ(y) = b + Σⱼ yⱼ e_{ι(j)}`: coordinates are additive and linear and `(eᵢ)ₗ = [l = i]`, so
+`Φ(y)ₗ = bₗ + Σⱼ [ι(j) = l] yⱼ`.  At `l = ι(m)` injectivity of `ι` leaves only the summand `j = m`,
+giving `b_{ι(m)} + yₘ`; for `l` outside the range of `ι` every summand vanishes, giving `bₗ`. -/
+theorem Submission.cmcdtfrfg_face_coord : ∀ (P k : ℕ) (ι : Fin k → Fin P) (b : Fin P → ℤ) (y : Euclid k), Function.Injective ι → (∀ m, (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (ι m) = (b (ι m) : ℝ) + y m) ∧ (∀ l, (∀ m, ι m ≠ l) → (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) l = (b l : ℝ)) := by
+  intro P k ι b y hι
+  -- steps 1-2: `Φ(y)ₗ = bₗ + Σⱼ [ι(j) = l] yⱼ`
+  have hcoord : ∀ l : Fin P, (WithLp.toLp 2 (fun i => (b i : ℝ)) +
+      ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) l =
+      (b l : ℝ) + ∑ j, if ι j = l then y j else 0 := by
+    intro l
+    rw [PiLp.add_apply, PiLp.toLp_apply, WithLp.ofLp_sum, Finset.sum_apply]
+    congr 1
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [PiLp.smul_apply, PiLp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero]
+    exact if_congr eq_comm rfl rfl
+  refine ⟨fun m => ?_, fun l hl => ?_⟩
+  -- step 3: at `l = ι(m)` injectivity of `ι` leaves only the summand `j = m`
+  · rw [hcoord, Fintype.sum_eq_single m fun j hj => ite_eq_right (hι.ne hj), ite_eq_left rfl]
+  -- step 4: for `l` outside the range of `ι` every summand vanishes
+  · rw [hcoord, Finset.sum_eq_zero fun j _ => ite_eq_right (hl j), add_zero]
+
+/-- **Isometry and diameter of the lattice face map** (Simon Ch. 6 §5, deformation theorem: a face
+of the cube lattice parametrised over `ℝᵏ`).  For injective `ι : Fin k → Fin P` and `b ∈ ℤᴾ`, the
+map `Φ(y) = b + Σⱼ yⱼ e_{ι(j)}` is an isometry `ℝᵏ → ℝᴾ`: by `face_coord` the coordinate gap of
+`Φ(y)` and `Φ(y')` is `yₘ - y'ₘ` at `ι(m)` and `0` off the range of `ι`, so reindexing the sum of
+squared gaps along `ι` gives `|Φ(y) - Φ(y')| = |y - y'|`.  On the closed unit cube every squared gap
+is at most `1`, so `|y - y'| ≤ √k ≤ √P`, as `k ≤ P` by injectivity of `ι`. -/
+theorem Submission.cmcdtfrfg_face_isometry_diam : ∀ (P k : ℕ) (ι : Fin k → Fin P) (b : Fin P → ℤ), Function.Injective ι → (∀ y y' : Euclid k, dist (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (ι j) (1 : ℝ)) = dist y y') ∧ (∀ y y' : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → dist (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (ι j) (1 : ℝ)) ≤ Real.sqrt P) := by
+  intro P k ι b hι
+  -- (a), steps 1-5: `|Φ(y) - Φ(y')|² = Σₗ |Φ(y)ₗ - Φ(y')ₗ|² = Σₘ |yₘ - y'ₘ|² = |y - y'|²`
+  have hiso : ∀ y y' : Euclid k,
+      dist (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ))
+        (WithLp.toLp 2 (fun i => (b i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (ι j) (1 : ℝ)) =
+      dist y y' := by
+    intro y y'
+    -- step 2: the coordinates of `Φ(y)` and `Φ(y')`
+    obtain ⟨hy, hyc⟩ := Submission.cmcdtfrfg_face_coord P k ι b y hι
+    obtain ⟨hy', hy'c⟩ := Submission.cmcdtfrfg_face_coord P k ι b y' hι
+    rw [EuclideanSpace.dist_eq, EuclideanSpace.dist_eq]
+    congr 1
+    -- steps 3-4: reindex the sum of squared gaps along the injective `ι`
+    symm
+    refine Fintype.sum_of_injective ι hι _ _ (fun l hl => ?_) fun m => ?_
+    -- off the range of `ι` the gap is `bₗ - bₗ = 0`
+    · have hl' : ∀ m, ι m ≠ l := fun m hm => hl ⟨m, hm⟩
+      rw [hyc l hl', hy'c l hl', dist_self, sq, mul_zero]
+    -- at `ι(m)` the gap is `(b_{ι(m)} + yₘ) - (b_{ι(m)} + y'ₘ) = yₘ - y'ₘ`
+    · rw [hy m, hy' m, dist_add_left]
+  refine ⟨hiso, fun y y' hy hy' => ?_⟩
+  -- (b), step 6: on the unit cube `-1 ≤ yₘ - y'ₘ ≤ 1`, so every squared gap is at most `1`
+  have hgap : ∀ m, dist (y m) (y' m) ^ 2 ≤ 1 := by
+    intro m
+    obtain ⟨hy₀, hy₁⟩ := hy m
+    obtain ⟨hy'₀, hy'₁⟩ := hy' m
+    rw [Real.dist_eq, sq_abs, sq_le_one_iff_abs_le_one, abs_le]
+    constructor <;> linarith
+  -- step 7: `k = #(Fin k) ≤ #(Fin P) = P`, as `ι` is injective
+  have hkP : k ≤ P := by
+    simpa only [Fintype.card_fin] using Fintype.card_le_of_injective ι hι
+  -- step 8: `|Φ(y) - Φ(y')| = |y - y'| = √(Σₘ |yₘ - y'ₘ|²) ≤ √k ≤ √P`
+  rw [hiso, EuclideanSpace.dist_eq]
+  refine Real.sqrt_le_sqrt ?_
+  calc ∑ m, dist (y m) (y' m) ^ 2 ≤ ∑ _m : Fin k, (1 : ℝ) := Finset.sum_le_sum fun m _ => hgap m
+    _ = k := by simp
+    _ ≤ P := by exact_mod_cast hkP
+/-- **Separation of distinct unit lattice faces** (Simon Ch. 6, §5, chapter-06.txt lines 1841–1918:
+the faces `F ∈ 𝓛ₖ` and their interiors `F̆`).  For `p = (ι, b) ≠ q = (ι', b')` with `ι, ι'`
+strictly increasing, `x = Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}` with `y ∈ (0,1)ᵏ` and `z = Φ_q(y')` with
+`y' ∈ [0,1]ᵏ`, either `1 ≤ |x − z|` or `min(yⱼ, 1 − yⱼ) ≤ |x − z|` for some `j`.  If some
+`z_{ι(j)}` lies outside `(b_{ι(j)}, b_{ι(j)} + 1) ∋ x_{ι(j)} = b_{ι(j)} + yⱼ`, the coordinate `ι(j)`
+gives the second alternative.  Otherwise no `z_{ι(j)}` is an integer, so `range ι ⊆ range ι'` and
+`ι = ι'` (both enumerate the same `k`-element set increasingly), `b = b'` on `range ι`, and a
+coordinate `l ∉ range ι` with `b_l ≠ b'_l` gives `|x_l − z_l| = |b_l − b'_l| ≥ 1`.  The coordinates
+of `x` and `z` are `cmcdtfrfg_face_coord`. -/
+theorem Submission.cmcdtfrfg_face_separation : ∀ (P k : ℕ) (p q : (Fin k → Fin P) × (Fin P → ℤ)), StrictMono p.1 → StrictMono q.1 → p ≠ q → ∀ y y' : Euclid k, (∀ j, 0 < y j ∧ y j < 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → 1 ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)) ∨ ∃ j, min (y j) (1 - y j) ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)) := by
+  intro P k p q hp hq hpq y y' hy hy'
+  -- step 1: the coordinates of `x = Φ_p(y)` and `z = Φ_q(y')`
+  obtain ⟨hx₁, hx₂⟩ := Submission.cmcdtfrfg_face_coord P k p.1 p.2 y hp.injective
+  obtain ⟨hz₁, hz₂⟩ := Submission.cmcdtfrfg_face_coord P k q.1 q.2 y' hq.injective
+  set x := WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)
+  set z := WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)
+  -- step 2: `|x_l − z_l| ≤ |x − z|`
+  have hcoord : ∀ l, |x l - z l| ≤ dist x z := fun l => by
+    simpa only [Real.dist_eq] using PiLp.dist_apply_le x z l
+  by_cases hA : ∃ j, ¬((p.2 (p.1 j) : ℝ) < z (p.1 j) ∧ z (p.1 j) < p.2 (p.1 j) + 1)
+  · -- step 3 (Case A): `z_{ι(j)} ∉ (b_{ι(j)}, b_{ι(j)} + 1)` while `x_{ι(j)} = b_{ι(j)} + y_j`
+    obtain ⟨j, hj⟩ := hA
+    obtain ⟨hy₀, hy₁⟩ := hy j
+    refine Or.inr ⟨j, le_trans ?_ (hcoord (p.1 j))⟩
+    rw [hx₁ j]
+    rcases not_and_or.mp hj with h | h
+    · calc min (y j) (1 - y j) ≤ y j := min_le_left _ _
+        _ ≤ (p.2 (p.1 j) : ℝ) + y j - z (p.1 j) := by linarith [not_lt.mp h]
+        _ ≤ |(p.2 (p.1 j) : ℝ) + y j - z (p.1 j)| := le_abs_self _
+    · calc min (y j) (1 - y j) ≤ 1 - y j := min_le_right _ _
+        _ ≤ z (p.1 j) - ((p.2 (p.1 j) : ℝ) + y j) := by linarith [not_lt.mp h]
+        _ ≤ |(p.2 (p.1 j) : ℝ) + y j - z (p.1 j)| := by rw [abs_sub_comm]; exact le_abs_self _
+  -- step 4 (Case B): `b_{ι(j)} < z_{ι(j)} < b_{ι(j)} + 1` for every `j`
+  have hB : ∀ j, (p.2 (p.1 j) : ℝ) < z (p.1 j) ∧ z (p.1 j) < p.2 (p.1 j) + 1 :=
+    fun j => not_not.mp fun h => hA ⟨j, h⟩
+  refine Or.inl ?_
+  -- step 5: `range ι ⊆ range ι'`, since `z_l = b'_l ∈ ℤ` for `l ∉ range ι'`
+  have hsub : ∀ j, ∃ m, q.1 m = p.1 j := by
+    intro j
+    by_contra hne
+    obtain ⟨h₁, h₂⟩ := hB j
+    rw [hz₂ (p.1 j) fun m hm => hne ⟨m, hm⟩] at h₁ h₂
+    have h₁' : (p.2 (p.1 j) : ℝ) < q.2 (p.1 j) := h₁
+    have h₂' : (q.2 (p.1 j) : ℝ) < p.2 (p.1 j) + 1 := h₂
+    have : p.2 (p.1 j) < q.2 (p.1 j) := by exact_mod_cast h₁'
+    have : q.2 (p.1 j) < p.2 (p.1 j) + 1 := by exact_mod_cast h₂'
+    omega
+  -- step 6: `ι = ι'`, both being the increasing enumeration of the `k`-element set `range ι'`
+  have hι : p.1 = q.1 := by
+    have hcard : (Finset.univ.image q.1).card = k := by
+      rw [Finset.card_image_of_injective _ hq.injective, Finset.card_univ, Fintype.card_fin]
+    refine (Finset.orderEmbOfFin_unique hcard (fun j => ?_) hp).trans
+      (Finset.orderEmbOfFin_unique hcard
+        (fun j => Finset.mem_image_of_mem _ (Finset.mem_univ j)) hq).symm
+    obtain ⟨m, hm⟩ := hsub j
+    exact Finset.mem_image.mpr ⟨m, Finset.mem_univ m, hm⟩
+  -- step 7: `b = b'` on `range ι`, since `b_{ι(j)} = ⌊z_{ι(j)}⌋ = b'_{ι(j)}`
+  have hb : ∀ j, p.2 (p.1 j) = q.2 (p.1 j) := by
+    intro j
+    obtain ⟨h₁, h₂⟩ := hB j
+    obtain ⟨h₃, h₄⟩ := hy' j
+    have hzj := hz₁ j
+    rw [← hι] at hzj
+    rw [hzj] at h₁ h₂
+    have h₅ : (p.2 (p.1 j) : ℝ) < q.2 (p.1 j) + 1 := by linarith
+    have h₆ : (q.2 (p.1 j) : ℝ) < p.2 (p.1 j) + 1 := by linarith
+    have : p.2 (p.1 j) < q.2 (p.1 j) + 1 := by exact_mod_cast h₅
+    have : q.2 (p.1 j) < p.2 (p.1 j) + 1 := by exact_mod_cast h₆
+    omega
+  -- step 8: as `p ≠ q`, some `l ∉ range ι` has `b_l ≠ b'_l`, and there `x_l = b_l`, `z_l = b'_l`
+  obtain ⟨l, hl⟩ := Function.ne_iff.mp fun h : p.2 = q.2 => hpq (Prod.ext hι h)
+  have hlι : ∀ m, p.1 m ≠ l := by
+    rintro m rfl
+    exact hl (hb m)
+  calc (1 : ℝ) ≤ |(p.2 l : ℝ) - q.2 l| := by exact_mod_cast Int.one_le_abs (sub_ne_zero.mpr hl)
+    _ = |x l - z l| := by rw [hx₂ l hlι, hz₂ l (hι ▸ hlι)]
+    _ ≤ dist x z := hcoord l
+
+/-- **Geometry of unit lattice faces** (Simon Ch. 6, §5, Lemma 2.1 and the faces `F ∈ 𝓛ₖ` of the
+deformation theorem, for faces of any dimension `k`).  `(0)` `vol((0,1)ᵏ) = 1`.  For `p = (ι, b)`
+with `ι` strictly increasing and `b ∈ ℤᴾ`, the face map `Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}` is `(a)` an
+isometry `ℝᵏ → ℝᴾ` with `(b)` `dist(Φ_p y, Φ_p y') ≤ √P` on `[0,1]ᵏ`; `(c)` if `q ≠ p`,
+`y ∈ (0,1)ᵏ` and `y' ∈ [0,1]ᵏ`, then `dist(Φ_p y, Φ_q y') ≥ 1` or `≥ min(yⱼ, 1 − yⱼ)` for some
+`j`.  A strictly increasing `ι` is injective, so `(a)`, `(b)` are `cmcdtfrfg_face_isometry_diam`;
+`(0)` is `cmcdtfrfg_cube_volume` and `(c)` is `cmcdtfrfg_face_separation`. -/
+theorem Submission.cmcdtfr_face_geometry : ∀ (P k : ℕ), volume {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} = 1 ∧ ∀ p q : (Fin k → Fin P) × (Fin P → ℤ), StrictMono p.1 → StrictMono q.1 → (∀ y y' : Euclid k, dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (p.1 j) (1 : ℝ)) = dist y y') ∧ (∀ y y' : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ≤ Real.sqrt P) ∧ (p ≠ q → ∀ y y' : Euclid k, (∀ j, 0 < y j ∧ y j < 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → 1 ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)) ∨ ∃ j, min (y j) (1 - y j) ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ))) := by
+  intro P k
+  refine ⟨Submission.cmcdtfrfg_cube_volume k, fun p q hp hq => ?_⟩
+  -- `(a)`, `(b)` for the face map of `p`, whose strictly increasing `p.1` is injective
+  obtain ⟨hiso, hdiam⟩ := Submission.cmcdtfrfg_face_isometry_diam P k p.1 p.2 hp.injective
+  -- `(c)`: the open face of `p` against the closed face of `q ≠ p`
+  exact ⟨hiso, hdiam, Submission.cmcdtfrfg_face_separation P k p q hp hq⟩
+
+/-- **Open lattice faces are disjoint, and their union is flat near each of its points** (Simon
+Ch. 6, §5, chapter-06.txt lines 1841 and 1924–1927: the interiors `F̆` of the faces `F ∈ 𝓛ₖ`, as
+used to see that `P = Σ_F β_F [[F]]` is integer multiplicity).  Assume `(FG)`, the frozen type of
+`cmcdtfr_face_geometry`.  Let `S` be a finite set of pairs `p = (ι, b)` with `ι` strictly
+increasing, `Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}`, `F̆_p = Φ_p((0,1)ᵏ)` and `C = ⋃_{q ∈ S} F̆_q`.
+`(a)` Distinct open faces are disjoint: a common point would be at distance `0` from itself,
+against the separation in `(FG)`.  `(b)` For `p ∈ S`, `t ∈ (0,1)ᵏ` and
+`δ = min({1} ∪ {min(tⱼ, 1 − tⱼ)})`, every `z` with `|z − Φ_p(t)| < δ` has `z ∈ C` iff
+`z − Φ_p(t) ∈ V_p = span{e_{ι(j)}}`.  By separation, a point of `C` this close to `Φ_p(t)` lies
+on `F̆_p`, so `z − Φ_p(t) = Σⱼ (t'ⱼ − tⱼ) e_{ι(j)}`.  Conversely, if `z − Φ_p(t) = Σⱼ cⱼ e_{ι(j)}`
+then `z = Φ_p(t + c)`, and the isometry in `(FG)` gives `|cⱼ| ≤ |c| = |z − Φ_p(t)| < δ`, so
+`t + c ∈ (0,1)ᵏ`. -/
+theorem Submission.cmcdtfrpi_face_union_local_plane : (∀ (P k : ℕ), volume {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} = 1 ∧ ∀ p q : (Fin k → Fin P) × (Fin P → ℤ), StrictMono p.1 → StrictMono q.1 → (∀ y y' : Euclid k, dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (p.1 j) (1 : ℝ)) = dist y y') ∧ (∀ y y' : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ≤ Real.sqrt P) ∧ (p ≠ q → ∀ y y' : Euclid k, (∀ j, 0 < y j ∧ y j < 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → 1 ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)) ∨ ∃ j, min (y j) (1 - y j) ≤ dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)))) → ∀ (P k : ℕ) (S : Finset ((Fin k → Fin P) × (Fin P → ℤ))), (∀ p ∈ S, StrictMono p.1) → (∀ p ∈ S, ∀ q ∈ S, p ≠ q → Disjoint ((fun y : Euclid k => WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) '' {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}) ((fun y : Euclid k => WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) '' {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1})) ∧ ∀ p ∈ S, ∀ t : Euclid k, (∀ i, 0 < t i ∧ t i < 1) → ∃ δ : ℝ, 0 < δ ∧ ∀ z : Euclid P, dist z (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, t j • EuclideanSpace.single (p.1 j) (1 : ℝ)) < δ → (z ∈ ⋃ q ∈ S, (fun y : Euclid k => WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) '' {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} ↔ z - (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, t j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ Submodule.span ℝ (range (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ) : Fin k → Euclid P))) := by
+  intro hFG P k S hS
+  refine ⟨fun p hp q hq hpq => ?_, fun p hp t ht => ?_⟩
+  · -- step 1: a common point `Φ_p(y) = Φ_q(y')` is at distance `0` from itself, against the
+    -- separation of the open face of `p` from the closed face of `q ≠ p`
+    rw [Set.disjoint_left]
+    rintro _ ⟨y, hy, rfl⟩ ⟨y', hy', hyy'⟩
+    beta_reduce at hyy'
+    have hy₁ : ∀ i, 0 < y i ∧ y i < 1 := hy
+    have hy'₁ : ∀ i, 0 < y' i ∧ y' i < 1 := hy'
+    rcases ((hFG P k).2 p q (hS p hp) (hS q hq)).2.2 hpq y y' hy₁
+        (fun i => ⟨(hy'₁ i).1.le, (hy'₁ i).2.le⟩) with h | ⟨j, hj⟩
+    · rw [hyy', dist_self] at h
+      linarith
+    · rw [hyy', dist_self] at hj
+      linarith [lt_min (hy₁ j).1 (sub_pos.mpr (hy₁ j).2)]
+  -- step 2: `δ = min({1} ∪ {min(tⱼ, 1 - tⱼ)}) > 0`, so `δ ≤ 1` and `δ ≤ min(tⱼ, 1 - tⱼ)`
+  obtain ⟨δ, hδ₀, hδ₁, hδt⟩ : ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 ∧ ∀ j, δ ≤ min (t j) (1 - t j) := by
+    let D := insert (1 : ℝ) (Finset.univ.image fun j => min (t j) (1 - t j))
+    have hD : D.Nonempty := Finset.insert_nonempty _ _
+    refine ⟨D.min' hD, (Finset.lt_min'_iff D hD).mpr fun d hd => ?_,
+      D.min'_le 1 (Finset.mem_insert_self 1 _), fun j =>
+      D.min'_le _ (Finset.mem_insert_of_mem (Finset.mem_image_of_mem _ (Finset.mem_univ j)))⟩
+    rcases Finset.mem_insert.mp hd with rfl | hd
+    · exact one_pos
+    · obtain ⟨j, -, rfl⟩ := Finset.mem_image.mp hd
+      exact lt_min (ht j).1 (sub_pos.mpr (ht j).2)
+  refine ⟨δ, hδ₀, fun z hz => ⟨fun hzC => ?_, fun hzV => ?_⟩⟩
+  · -- step 3 (⇒): `z = Φ_q(t')` for some `q ∈ S` and `t' ∈ (0,1)ᵏ`
+    obtain ⟨q, hq, t', ht', hzt'⟩ := Set.mem_iUnion₂.mp hzC
+    beta_reduce at hzt'
+    rcases eq_or_ne p q with rfl | hpq
+    · -- `q = p`: the constant `b` cancels, so `z - Φ_p(t) = Σⱼ (t'ⱼ - tⱼ) e_{ι(j)} ∈ V_p`
+      rw [← hzt', add_sub_add_left_eq_sub, ← Finset.sum_sub_distrib]
+      refine Submodule.sum_mem _ fun j _ => ?_
+      rw [← sub_smul]
+      exact Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, rfl⟩)
+    · -- `q ≠ p`: separation gives `1 ≤ |z - Φ_p(t)|` or `min(tⱼ, 1 - tⱼ) ≤ |z - Φ_p(t)|`,
+      -- both impossible as `|z - Φ_p(t)| < δ`
+      have ht'₁ : ∀ i, 0 < t' i ∧ t' i < 1 := ht'
+      rcases ((hFG P k).2 p q (hS p hp) (hS q hq)).2.2 hpq t t' ht
+          (fun i => ⟨(ht'₁ i).1.le, (ht'₁ i).2.le⟩) with h | ⟨j, hj⟩
+      · rw [hzt', dist_comm] at h
+        linarith
+      · rw [hzt', dist_comm] at hj
+        linarith [hδt j]
+  · -- step 4 (⇐): `z - Φ_p(t) = Σⱼ cⱼ e_{ι(j)}` for some `c ∈ ℝᵏ`
+    obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp hzV
+    beta_reduce at hc
+    -- `t' = t + c` has `Φ_p(t') = Φ_p(t) + (z - Φ_p(t)) = z`
+    have hzt' : WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+        ∑ j, (t + WithLp.toLp 2 c) j • EuclideanSpace.single (p.1 j) (1 : ℝ) = z := by
+      simp only [PiLp.add_apply, add_smul, Finset.sum_add_distrib, hc]
+      abel
+    -- by the isometry, `|cⱼ| ≤ |t' - t| = |Φ_p(t') - Φ_p(t)| = |z - Φ_p(t)| < δ ≤ min(tⱼ, 1 - tⱼ)`
+    have hiso := ((hFG P k).2 p p (hS p hp) (hS p hp)).1 (t + WithLp.toLp 2 c) t
+    rw [hzt'] at hiso
+    have hc₁ : ∀ j, |c j| < min (t j) (1 - t j) := fun j => by
+      have h := PiLp.dist_apply_le (t + WithLp.toLp 2 c) t j
+      rw [PiLp.add_apply, PiLp.toLp_apply, Real.dist_eq, add_sub_cancel_left] at h
+      linarith [hδt j]
+    -- so `t' ∈ (0,1)ᵏ`, and `z = Φ_p(t') ∈ F̆_p ⊆ C`
+    refine Set.mem_iUnion₂.mpr ⟨p, hp, t + WithLp.toLp 2 c, fun j => ?_, hzt'⟩
+    obtain ⟨h₁, h₂⟩ := abs_lt.mp (hc₁ j)
+    rw [PiLp.add_apply, PiLp.toLp_apply]
+    constructor <;> linarith [min_le_left (t j) (1 - t j), min_le_right (t j) (1 - t j)]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
