@@ -6,6 +6,7 @@ import Poincare.SimonGMT.Chapter03.Rectifiable
 import Poincare.SimonGMT.Chapter06.Mass
 import Poincare.SimonGMT.Chapter06.CurrentLocalEquality
 import Poincare.SimonGMT.Chapter06.AffineCurrentPushforward
+import Poincare.SimonGMT.Chapter02.AreaLipschitz
 
 /-!
 # Simon, *Introduction to Geometric Measure Theory*, Chapter 7 "Area Minimizing Currents"
@@ -743,6 +744,151 @@ theorem Submission.dpf_rectifiable_bilipschitz_pieces : ∀ (P n : ℕ) (M : Set
           exact ⟨ha, hk⟩
         · simp only [hFi, Nat.unpair_pair]
       · exact Or.inr (mem_iUnion.mpr ⟨j, a, ha, rfl⟩)
+
+open Poincare.SimonGMT.Chapter02 (areaJacobianAt areaJacobianAt_eq_normDet
+  measurable_areaJacobianAt weighted_area_formula_lipschitz_injOn) in
+/-- **The cylinder over one piece.**  Let `G : ℝⁿ → ℝᴺ` be Lipschitz, `A ⊆ ℝⁿ` Borel, `G`
+injective on `A` and differentiable at every point of `A`, and `Hⁿ(G(A)) < ∞`.  Then
+`Ψ(t, x) = (t, x)` carries `(L¹⌞(0, 1)) × (Hⁿ⌞G(A))` to `Hⁿ⁺¹⌞Ψ((0, 1) × G(A))`.  The suspension
+`Ĝ(t, u) = (t, G u)` is Lipschitz, injective on `Â = (0, 1) × A` with `Ĝ(Â) = Ψ((0, 1) × G(A))`,
+and its Gram determinant gives `JĜ(t, u) = JG(u)` on `Â`.  On a Borel set `S`, the area formula
+for `Ĝ` on `Â`, Fubini on `ℝⁿ⁺¹ = ℝ × ℝⁿ` and the area formula for `G` on `A` (weight
+`1_S(Ψ(t, ·))`) turn `Hⁿ⁺¹(Ψ((0, 1) × G(A)) ∩ S)` into `∫₀¹ Hⁿ(G(A) ∩ {x | Ψ(t, x) ∈ S}) dt`. -/
+theorem Submission.dimred_mbl_dt_lp_imc_piece_measure : ∀ (N n : ℕ) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (L : NNReal), LipschitzWith L G → MeasurableSet A → InjOn G A → (∀ a ∈ A, DifferentiableAt ℝ G a) → μHE[n] (G '' A) ≠ ∞ → Measure.map (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) (((volume : Measure ℝ).restrict (Ioo 0 1)).prod (μHE[n].restrict (G '' A))) = μHE[n + 1].restrict ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ (G '' A))) := by
+  intro N n G A L hG hA hinj hdiff hfin
+  -- Step 0(a): the maps `Φ_d(t, u) = (t, u) ∈ ℝ^{d+1}` are continuous injections
+  have hcont : ∀ d : ℕ, Continuous (fun p : ℝ × Euclid d =>
+      (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (d + 1))) := fun d => by
+    fun_prop
+  have hcinj : ∀ d : ℕ, Injective (fun p : ℝ × Euclid d =>
+      (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (d + 1))) := by
+    rintro d ⟨t, u⟩ ⟨t', u'⟩ h
+    obtain ⟨h1, h2⟩ := Fin.cons_injective2 (WithLp.toLp_injective 2 h)
+    exact Prod.ext h1 (WithLp.ofLp_injective 2 h2)
+  -- Step 0(c): `Φ_n` carries Lebesgue measure on `ℝ × ℝⁿ` to Lebesgue measure on `ℝⁿ⁺¹`
+  have hmp : MeasurePreserving (fun p : ℝ × Euclid n =>
+      (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (n + 1))) := by
+    have h1 : MeasurePreserving (Prod.map (id : ℝ → ℝ) (WithLp.ofLp : Euclid n → (Fin n → ℝ)))
+        ((volume : Measure ℝ).prod (volume : Measure (Euclid n)))
+        ((volume : Measure ℝ).prod (volume : Measure (Fin n → ℝ))) :=
+      (MeasurePreserving.id volume).prod (PiLp.volume_preserving_ofLp (Fin n))
+    have h2 : MeasurePreserving (MeasurableEquiv.piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) 0).symm
+        ((volume : Measure ℝ).prod (volume : Measure (Fin n → ℝ)))
+        (volume : Measure (Fin (n + 1) → ℝ)) :=
+      (volume_preserving_piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) 0).symm
+    have h3 := (PiLp.volume_preserving_toLp (Fin (n + 1))).comp (h2.comp h1)
+    convert h3 using 1
+    funext p
+    simp [MeasurableEquiv.piFinSuccAbove_symm_apply, Fin.insertNthEquiv, Fin.insertNth_zero']
+  have hemb : MeasurableEmbedding (fun p : ℝ × Euclid n =>
+      (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (n + 1))) :=
+    (hcont n).measurableEmbedding (hcinj n)
+  have hΨc := hcont N
+  have hΨinj := hcinj N
+  set Ψ : ℝ × Euclid N → Euclid (N + 1) := fun p => WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2))
+  set Φ : ℝ × Euclid n → Euclid (n + 1) := fun p => WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2))
+  -- Step 0(d): the suspension `Ĝ(t, u) = (t, G u)`, its Lipschitz bound and `JĜ(t, u) = JG(u)`
+  -- on `A` (equal Gram determinants, `normDet² = det Gram`)
+  obtain ⟨Gh, hGhΦ⟩ : ∃ Gh : Euclid (n + 1) → Euclid (N + 1), ∀ (t : ℝ) (u : Euclid n),
+      Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) =
+        WithLp.toLp 2 (Fin.cons t (WithLp.ofLp (G u))) :=
+    ⟨fun z => WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0)
+      (WithLp.ofLp (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))))), fun t u => by simp⟩
+  obtain ⟨hLipGh, -, hDGh⟩ := Submission.dimred_mbl_dt_lp_imc_suspension N n G Gh hGhΦ
+  have hJ : ∀ (t : ℝ), ∀ u ∈ A,
+      areaJacobianAt Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) = areaJacobianAt G u := by
+    intro t u hu
+    obtain ⟨-, -, -, -, hgram⟩ := hDGh t u (hdiff u hu)
+    have h1 := LinearMap.normDet_sq_eq_det_gram
+      (fderiv ℝ Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) :
+        Euclid (n + 1) →ₗ[ℝ] Euclid (N + 1)) (EuclideanSpace.basisFun (Fin (n + 1)) ℝ)
+    have h2 := LinearMap.normDet_sq_eq_det_gram (fderiv ℝ G u : Euclid n →ₗ[ℝ] Euclid N)
+      (EuclideanSpace.basisFun (Fin n) ℝ)
+    simp only [EuclideanSpace.basisFun_apply, ContinuousLinearMap.coe_coe, Matrix.gram,
+      RCLike.ofReal_real_eq_id, id_eq] at h1 h2
+    have hsq : (fderiv ℝ Gh (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp u))) :
+        Euclid (n + 1) →ₗ[ℝ] Euclid (N + 1)).normDet ^ 2 =
+        (fderiv ℝ G u : Euclid n →ₗ[ℝ] Euclid N).normDet ^ 2 := by
+      rw [h1, h2]
+      exact hgram
+    rw [areaJacobianAt_eq_normDet, areaJacobianAt_eq_normDet]
+    exact (pow_left_inj₀ (LinearMap.normDet_nonneg _) (LinearMap.normDet_nonneg _)
+      two_ne_zero).1 hsq
+  have hGhΦ' : ∀ (t : ℝ) (u : Euclid n), Gh (Φ (t, u)) = Ψ (t, G u) := hGhΦ
+  have hJ' : ∀ (t : ℝ), ∀ u ∈ A, areaJacobianAt Gh (Φ (t, u)) = areaJacobianAt G u := hJ
+  have : IsFiniteMeasure (μHE[n].restrict (G '' A)) := isFiniteMeasure_restrict.mpr hfin
+  have hGm : Measurable G := hG.continuous.measurable
+  have hGhL : LipschitzWith (max 1 L) Gh := hLipGh L hG
+  -- Step 0(a), (e): `Ψ((0, 1) × G(A)) = Ĝ(Â)`, `Â = Φ((0, 1) × A)` is Borel, `Ĝ` is injective
+  -- on `Â`
+  have himg : Ψ '' (Ioo 0 1 ×ˢ (G '' A)) = Gh '' (Φ '' (Ioo 0 1 ×ˢ A)) := by
+    ext y
+    simp only [mem_image, mem_prod, Prod.exists]
+    constructor
+    · rintro ⟨t, x, ⟨ht, u, hu, rfl⟩, rfl⟩
+      exact ⟨Φ (t, u), ⟨t, u, ⟨ht, hu⟩, rfl⟩, hGhΦ' t u⟩
+    · rintro ⟨_, ⟨t, u, ⟨ht, hu⟩, rfl⟩, rfl⟩
+      exact ⟨t, G u, ⟨ht, u, hu, rfl⟩, (hGhΦ' t u).symm⟩
+  have hÂ : MeasurableSet (Φ '' (Ioo 0 1 ×ˢ A)) :=
+    hemb.measurableSet_image.2 (measurableSet_Ioo.prod hA)
+  have hGhinj : InjOn Gh (Φ '' (Ioo 0 1 ×ˢ A)) := by
+    rintro _ ⟨⟨t, u⟩, ⟨-, hu⟩, rfl⟩ _ ⟨⟨t', u'⟩, ⟨-, hu'⟩, rfl⟩ h
+    rw [hGhΦ', hGhΦ'] at h
+    obtain ⟨rfl, h2⟩ := Prod.mk.inj (hΨinj h)
+    have hu2 : u = u' := hinj hu hu' h2
+    rw [hu2]
+  -- Step 1: test both measures on a Borel set `S`
+  ext S hS
+  have hΨS : MeasurableSet (Ψ ⁻¹' S) := hΨc.measurable hS
+  -- Steps 4–5: slice the product measure over `t ∈ (0, 1)`; area formula for `G` on each slice
+  have hL : (Measure.map Ψ (((volume : Measure ℝ).restrict (Ioo 0 1)).prod
+      (μHE[n].restrict (G '' A)))) S =
+      ∫⁻ t in Ioo (0 : ℝ) 1, ∫⁻ u in A,
+        ENNReal.ofReal (areaJacobianAt G u) * S.indicator 1 (Ψ (t, G u)) := by
+    rw [Measure.map_apply hΨc.measurable hS, Measure.prod_apply hΨS]
+    refine lintegral_congr fun t => ?_
+    have h := weighted_area_formula_lipschitz_injOn hG hA hinj
+      ((Prod.mk t ⁻¹' (Ψ ⁻¹' S)).indicator 1)
+    rw [finrank_euclideanSpace_fin, lintegral_indicator_one (measurable_prodMk_left hΨS)] at h
+    exact h
+  -- Steps 2–3: area formula for `Ĝ` on `Â`, change of variables `z = Φ(t, u)`, Tonelli
+  have hcongr : EqOn
+      (fun p : ℝ × Euclid n =>
+        ENNReal.ofReal (areaJacobianAt Gh (Φ p)) * S.indicator 1 (Gh (Φ p)))
+      (fun p => ENNReal.ofReal (areaJacobianAt G p.2) * S.indicator 1 (Ψ (p.1, G p.2)))
+      (Ioo 0 1 ×ˢ A) := by
+    rintro ⟨t, u⟩ ⟨-, hu⟩
+    simp only [hJ' t u hu, hGhΦ' t u]
+  have hmeas : AEMeasurable
+      (fun p : ℝ × Euclid n =>
+        ENNReal.ofReal (areaJacobianAt G p.2) * S.indicator 1 (Ψ (p.1, G p.2)))
+      (((volume : Measure ℝ).restrict (Ioo 0 1)).prod ((volume : Measure (Euclid n)).restrict A)) :=
+    ((((measurable_areaJacobianAt G).comp measurable_snd).ennreal_ofReal).mul
+      ((measurable_one.indicator hS).comp
+        (hΨc.measurable.comp (measurable_fst.prodMk (hGm.comp measurable_snd))))).aemeasurable
+  have hR : (μHE[n + 1].restrict (Ψ '' (Ioo 0 1 ×ˢ (G '' A)))) S =
+      ∫⁻ t in Ioo (0 : ℝ) 1, ∫⁻ u in A,
+        ENNReal.ofReal (areaJacobianAt G u) * S.indicator 1 (Ψ (t, G u)) := by
+    have h := weighted_area_formula_lipschitz_injOn hGhL hÂ hGhinj (S.indicator 1)
+    rw [finrank_euclideanSpace_fin] at h
+    calc (μHE[n + 1].restrict (Ψ '' (Ioo 0 1 ×ˢ (G '' A)))) S
+        = ∫⁻ y in Gh '' (Φ '' (Ioo 0 1 ×ˢ A)), S.indicator 1 y ∂μHE[n + 1] := by
+          rw [himg, lintegral_indicator_one hS]
+      _ = ∫⁻ z in Φ '' (Ioo 0 1 ×ˢ A),
+            ENNReal.ofReal (areaJacobianAt Gh z) * S.indicator 1 (Gh z) := h
+      _ = ∫⁻ p in Ioo 0 1 ×ˢ A,
+            ENNReal.ofReal (areaJacobianAt Gh (Φ p)) * S.indicator 1 (Gh (Φ p)) :=
+          (hmp.setLIntegral_comp_emb hemb _ _).symm
+      _ = ∫⁻ p in Ioo 0 1 ×ˢ A,
+            ENNReal.ofReal (areaJacobianAt G p.2) * S.indicator 1 (Ψ (p.1, G p.2)) :=
+          setLIntegral_congr_fun (measurableSet_Ioo.prod hA) hcongr
+      _ = ∫⁻ p, ENNReal.ofReal (areaJacobianAt G p.2) * S.indicator 1 (Ψ (p.1, G p.2))
+            ∂(((volume : Measure ℝ).restrict (Ioo 0 1)).prod
+              ((volume : Measure (Euclid n)).restrict A)) := by
+          rw [Measure.prod_restrict]
+          rfl
+      _ = _ := lintegral_prod _ hmeas
+  rw [hL, hR]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
