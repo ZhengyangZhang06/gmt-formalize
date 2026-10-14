@@ -1763,6 +1763,48 @@ theorem Submission.abstract_dimension_reduction : ∀ (P n Q : ℕ) (F : Set (Eu
     have h1 := hdim φ hφ 1 one_pos
     rwa [Nat.cast_zero, zero_add] at h1
 
+/-- **Simon 7.3.3, proof of 3.3(2)** (hypothesis A.3(3) of Appendix A for the non-flat set).
+Let `R(S, D)` be the `β`-flat points `w` of `S` (some `B_ρ(w) ⊆ D`, `n`-plane `Q` and `s < βρ`
+with `|(y − w) − p_Q(y − w)| ≤ s` on `S ∩ B_ρ(w)`) and `N(S, D) = ((S ∩ D) \ R(S, D)) ∪ (ℝᴾ \ D)`.
+If `B̄₁(0) ⊆ D`, `B₁(0) ⊆ D_k`, compact subsets of `D` eventually lie in `D_k`, and limits in `D`
+of points of subsequences of the `S_k` lie in `S`, then `B₁(0) ∩ N(S_k, D_k)` eventually lies in
+the `ε`-neighbourhood of `N(S, D)`.  Otherwise non-flat `w_j ∈ S_{κ j} ∩ B₁(0)`, `ε`-far from
+`N(S, D)`, subconverge to some `w₀ ∈ S`, which is then `β`-flat; as flat points persist
+(`idtp_fons_cr_nusc_flat_point_persists`), the `w_j` are `β`-flat for large `j` along the
+subsequence, a contradiction. -/
+theorem Submission.idtp_fons_cr_nonflat_usc : ∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)) (Ss Ds : ℕ → Set (Euclid P)), 0 < β → closedBall (0 : Euclid P) 1 ⊆ Dset → (∀ k, ball (0 : Euclid P) 1 ⊆ Ds k) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ Dset → ∀ᶠ k in atTop, K ⊆ Ds k) → (∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub → (∀ k, z k ∈ Ss (sub k)) → Tendsto z atTop (𝓝 x) → x ∈ Dset → x ∈ S) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ (((Ss k ∩ Ds k) \ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Ds k ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ Ss k, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ (Ds k)ᶜ) ⊆ {x | ∃ z ∈ ((S ∩ Dset) \ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ Dsetᶜ, dist x z < ε} := by
+  intro P n β S Dset Ss Ds hβ hD hDs hexh hsupp ε hε
+  refine eventually_atTop.1 ?_
+  by_contra hcon
+  -- a strictly increasing `κ` and points `w j ∈ B₁(0) ∩ N(S_{κ j}, D_{κ j})` `ε`-far from `N(S, D)`
+  obtain ⟨κ, hκ, hbad⟩ := extraction_of_frequently_atTop (not_eventually.1 hcon)
+  choose w hw hwfar using fun j => not_subset.1 (hbad j)
+  -- `w j ∈ B₁(0) ⊆ D_{κ j}`, so `w j` is a point of `S_{κ j}` that is not `β`-flat
+  have hwS : ∀ j, w j ∈ Ss (κ j) := fun j => by
+    rcases (hw j).2 with h | h
+    · exact h.1.1
+    · exact absurd (hDs (κ j) (hw j).1) h
+  -- a subsequence `w ∘ φ` converges to some `w₀ ∈ B̄₁(0) ⊆ D`; put `σ := κ ∘ φ`
+  obtain ⟨w₀, hw₀, φ, hφ, hlim⟩ := (isCompact_closedBall (0 : Euclid P) 1).tendsto_subseq
+    fun j => ball_subset_closedBall (hw j).1
+  have hw₀D : w₀ ∈ Dset := hD hw₀
+  -- support convergence: `w₀ ∈ S`
+  have hw₀S : w₀ ∈ S := hsupp (κ ∘ φ) (w ∘ φ) w₀ (hκ.comp hφ) (fun i => hwS (φ i)) hlim hw₀D
+  -- `ε`-separation: `w₀ ∉ N(S, D)`, so `w₀` is a `β`-flat point of `S`
+  obtain ⟨i₀, hi₀⟩ := (Metric.tendsto_nhds.1 hlim ε hε).exists
+  have hw₀R : ∃ ρ : ℝ, 0 < ρ ∧ ball w₀ ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P),
+      Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧
+        ∀ y ∈ S, y ∈ ball w₀ ρ → ‖(y - w₀) - Q.starProjection (y - w₀)‖ ≤ s := by
+    by_contra hR
+    exact hwfar (φ i₀) ⟨w₀, Or.inl ⟨⟨hw₀S, hw₀D⟩, hR⟩, hi₀⟩
+  -- flat points persist: `w (φ i)` is `β`-flat for `(S_{σ i}, D_{σ i})` for large `i`
+  obtain ⟨i, hi⟩ := (Submission.idtp_fons_cr_nusc_flat_point_persists P n β S Dset Ss Ds hβ hexh
+    hsupp w₀ hw₀R (κ ∘ φ) (w ∘ φ) (hκ.comp hφ) hlim).exists
+  -- but `w (φ i) ∈ B₁(0) ∩ N(S_{σ i}, D_{σ i})` is not `β`-flat there
+  rcases (hw (φ i)).2 with h | h
+  · exact h.2 hi
+  · exact h (hDs _ (hw (φ i)).1)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
