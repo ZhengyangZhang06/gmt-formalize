@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "231a28a0e6569e95237201d830949f71d882f02cd111b4952f2ae2aad292a359",
+  "git_delta": {
+    "base_commit": "560af3d645358908d357a13f65e3d6597e9b106f",
+    "candidate_commit": "72d8c9c29913fae221d979ebba367ff3320205bf",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_fd_bim_de_giorgi",
+    "diff_sha256": "72b7023c6f2e810cd939d79084549c9b522267c4f9accc422904585e046430a4",
+    "source_sha256": "e0c602f83b4d7de9b4c00c9cfb0b5b88876d0421282084772c85a8b1580383c1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_bim_de_giorgi",
+      "statement": "∀ (n : ℕ) (E : Set (Euclid (n + 1))) (C : ℝ), 1 ≤ n → MeasurableSet E → (∀ φ : Euclid (n + 1) → Euclid (n + 1), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → (∀ y, ‖φ y‖ ≤ 1) → ∫ y in E, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ y : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1)) ≤ C) → ∃ (B : Set (Euclid (n + 1))) (ν : Euclid (n + 1) → Euclid (n + 1)), MeasurableSet B ∧ CountablyRectifiable n B ∧ μHE[n] B ≠ ∞ ∧ Measurable ν ∧ (∀ y ∈ B, ‖ν y‖ = 1) ∧ (∀ᵐ y ∂(μHE[n].restrict B), HasApproximateTangentSpaceAt n B y (Submodule.span ℝ {ν y})ᗮ) ∧ (∀ φ : Euclid (n + 1) → Euclid (n + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → ∫ y in E, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ y : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1)) = -∫ y in B, inner ℝ (φ y) (ν y) ∂μHE[n]) ∧ ∀ᵐ y ∂(μHE[n].restrict B), ∀ ρ : ℝ, Tendsto (fun r : ℝ => volume (symmDiff ((fun w => y + r • w) ⁻¹' E) {w | 0 < inner ℝ w (ν y)} ∩ ball (0 : Euclid (n + 1)) ρ)) (𝓝[>] 0) (𝓝 0)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
