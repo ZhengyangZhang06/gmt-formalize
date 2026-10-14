@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.telescoping_deformation-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/6336 | this PR | root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.support_calculus-a1, root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1.mass_sub_le-a1, root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1, root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1, root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1.coeff_bound-a1, root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1, root.compactness_of_minimizing_currents-a1.flat_convergence-a1.cauchy_subseq-a1.mass_sub_le-a1, root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.telescoping_deformation-a1.telescoping_real-a1, root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.telescoping_deformation-a1.mass_eval-a1, root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.telescoping_deformation-a1.shell_deformation-a1, root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.telescoping_deformation-a1.series_sum-a1 |
