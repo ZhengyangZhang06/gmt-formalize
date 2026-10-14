@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1.product_fderiv-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.rotation_conservation-a1.test_function-a1",
+  "depth": 6,
+  "title": "Derivative of ψ(f)·l(|·|)·ζ in a direction orthogonal to the position vector",
+  "statement": "Let P ∈ ℕ, let f, ζ : ℝ^P → ℝ and ψ, l : ℝ → ℝ, and let x, v ∈ ℝ^P with x ≠ 0 and ⟨x,v⟩ = 0. Assume f and ζ are differentiable at x, ψ is differentiable at f(x), and l is differentiable at |x|. Then h(y) := ψ(f(y))·l(|y|)·ζ(y) satisfies Dh(x)v = ψ(f(x))·l(|x|)·Dζ(x)v + ζ(x)·l(|x|)·(ψ'(f(x))·Df(x)v), where ψ' := deriv ψ.",
+  "lean_statement": "∀ (P : ℕ) (f ζ : Euclid P → ℝ) (ψ l : ℝ → ℝ) (x v : Euclid P), x ≠ 0 → inner ℝ x v = 0 → DifferentiableAt ℝ f x → DifferentiableAt ℝ ψ (f x) → DifferentiableAt ℝ l ‖x‖ → DifferentiableAt ℝ ζ x → fderiv ℝ (fun y : Euclid P => ψ (f y) * l ‖y‖ * ζ y) x v = ψ (f x) * l ‖x‖ * fderiv ℝ ζ x v + ζ x * l ‖x‖ * (deriv ψ (f x) * fderiv ℝ f x v)",
+  "lean_name": "idtp_cse_rc_tf_product_fderiv",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-58d0f2b0e9-a1"
+}
