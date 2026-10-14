@@ -859,6 +859,75 @@ theorem Submission.cbr_cc_seg_zero_form_ftc : ∀ (P : ℕ) (g : DifferentialFor
   simp only [hd]
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun u _ => hderiv u)
     (hcont.intervalIntegrable 0 ℓ), zero_smul, add_zero]
+/-- **The oriented open segment as an integer multiplicity triple** (Simon 6.2.2, 6.3.1).  For a
+unit vector `τ` and `ℓ > 0`, the triple `R = (I, 1, ζ₀)` with `I = φ((0, ℓ))`, `φ(u) = a + uτ`, and
+`ζ₀ = τ` (`⟨α, ζ₀⟩ = α(τ)`) is an `IMRep` of degree `1` in `ℝᴾ`.  `I` is Borel with `H¹(I) = ℓ`
+and `∫_I h dH¹ = ∫₀^ℓ h(a + uτ) du` (`line_hausdorff`); it lies in the range of the `1`-Lipschitz
+map `w ↦ a + w₀τ`, so it is countably `1`-rectifiable; `ζ₀` orients `span{τ}`, the approximate
+tangent space of `I` at each of its points (`open_segment_tangent`).  Hence `I ⊆ [a, a + ℓτ]`,
+`μ_R(ℝᴾ) = H¹(I) < ∞`, and `R(ω) = ∫_I ω(x)(τ) dH¹(x) = ∫₀^ℓ ω(a + uτ)(τ) du`. -/
+theorem Submission.cbr_cc_seg_segment_imrep : ∀ (P : ℕ) (a τ : Euclid P) (ℓ : ℝ), ‖τ‖ = 1 → 0 < ℓ → ∃ R : IMRep (univ : Set (Euclid P)) 1, R.carrier ⊆ segment ℝ a (a + ℓ • τ) ∧ R.measure univ < ∞ ∧ ∀ ω : DifferentialForm (Euclid P) 1, R.action ω = ∫ u in Ioo 0 ℓ, ω (a + u • τ) (fun _ => τ) := by
+  intro P a τ ℓ hτ hℓ
+  -- Step 1: `I = φ((0, ℓ))` is Borel, `H¹(I) = ℓ < ∞`, and `∫_I h dH¹ = ∫₀^ℓ h ∘ φ`
+  obtain ⟨hImeas, hIvol, hIint⟩ :=
+    Submission.cbr_cc_seg_line_hausdorff P a τ hτ (Ioo 0 ℓ) measurableSet_Ioo
+  have hIfin : μHE[1] ((fun u : ℝ => a + u • τ) '' Ioo 0 ℓ) < ∞ := by
+    rw [hIvol, Real.volume_Ioo]
+    exact ENNReal.ofReal_lt_top
+  -- Step 2: `ζ₀ = (α ↦ α(τ))` is a unit orientation of `span{τ}`
+  let ζ₀ : MultiVector P 1 := ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun _ : Fin 1 => τ)
+  have hζ₀ : IsUnitOrientationOf ζ₀ (Submodule.span ℝ {τ}) := by
+    refine ⟨fun _ => τ, ?_, by rw [range_const], Or.inl fun α => rfl⟩
+    rw [orthonormal_iff_ite]
+    intro i j
+    rw [Subsingleton.elim i j, ite_eq_left rfl, real_inner_self_eq_norm_sq, hτ, one_pow]
+  -- Step 3: `I` lies in the range of the `1`-Lipschitz map `w ↦ a + w₀τ`
+  have hrect : CountablyRectifiable 1 ((fun u : ℝ => a + u • τ) '' Ioo 0 ℓ) := by
+    let F : EuclideanSpace ℝ (Fin 1) → Euclid P := fun w => a + w 0 • τ
+    have hF : LipschitzWith 1 F := by
+      refine LipschitzWith.of_dist_le_mul fun w w' => ?_
+      rw [dist_eq_norm, dist_eq_norm, NNReal.coe_one, one_mul]
+      calc ‖F w - F w'‖ = ‖(w - w') 0‖ := by
+            simp only [F, add_sub_add_left_eq_sub, ← sub_smul, norm_smul, hτ, mul_one,
+              PiLp.sub_apply]
+        _ ≤ ‖w - w'‖ := PiLp.norm_apply_le _ _
+    refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_range hF).mono ?_
+    rintro _ ⟨u, -, rfl⟩
+    exact ⟨EuclideanSpace.single 0 u, by simp [F]⟩
+  -- Step 4: the triple `R = (I, 1, ζ₀)`
+  let R : IMRep (univ : Set (Euclid P)) 1 :=
+    { carrier := (fun u : ℝ => a + u • τ) '' Ioo 0 ℓ
+      mult := fun _ => 1
+      orient := fun _ => ζ₀
+      measurableSet_carrier := hImeas
+      carrier_subset := subset_univ _
+      rectifiable := hrect
+      measurable_mult := measurable_const
+      mult_pos := fun _ _ => Nat.one_pos
+      locallyIntegrable_mult := fun K _ _ => by
+        rw [Nat.cast_one, setLIntegral_one]
+        exact (lt_of_le_of_lt (measure_mono inter_subset_left) hIfin).ne
+      aestronglyMeasurable_orient := aestronglyMeasurable_const
+      orients := ae_restrict_of_forall_mem hImeas fun x hx =>
+        ⟨_, Submission.cbr_cc_seg_open_segment_tangent P a τ ℓ hτ x hx, hζ₀⟩ }
+  refine ⟨R, ?_, ?_, ?_⟩
+  -- Step 5: `I ⊆ [a, a + ℓτ]`, via `φ(u) = a + (u/ℓ)((a + ℓτ) − a)` with `u/ℓ ∈ [0, 1]`
+  · rintro _ ⟨u, ⟨hu0, huℓ⟩, rfl⟩
+    rw [segment_eq_image']
+    refine ⟨u / ℓ, ⟨div_nonneg hu0.le hℓ.le, (div_le_one hℓ).mpr huℓ.le⟩, ?_⟩
+    simp only [add_sub_cancel_left, smul_smul, div_mul_cancel₀ u hℓ.ne']
+  -- Step 6: `μ_R(ℝᴾ) = H¹(I) < ∞`
+  · show ((μHE[1].restrict ((fun u : ℝ => a + u • τ) '' Ioo 0 ℓ)).withDensity
+      fun _ => ((1 : ℕ) : ℝ≥0∞)) univ < ∞
+    rw [withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ, Nat.cast_one,
+      setLIntegral_one]
+    exact hIfin
+  -- Step 7: `R(ω) = ∫_I ω(x)(τ) dH¹(x) = ∫₀^ℓ ω(a + uτ)(τ) du`
+  · intro ω
+    show ∫ x in (fun u : ℝ => a + u • τ) '' Ioo 0 ℓ, ((1 : ℕ) : ℝ) * ζ₀ (ω x) ∂μHE[1] = _
+    rw [Nat.cast_one]
+    simp only [one_mul, ζ₀, ContinuousAlternatingMap.apply_apply]
+    exact hIint fun x => ω x fun _ => τ
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
