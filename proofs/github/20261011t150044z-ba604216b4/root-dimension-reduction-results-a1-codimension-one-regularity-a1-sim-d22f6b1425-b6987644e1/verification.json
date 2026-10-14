@@ -1,0 +1,18 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1.jacobian_continuous-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/7111",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "ef545ccf47503b97cf089b19a47d260a6c75b16e",
+  "integrated_commit": "",
+  "proof_base_commit": "5de5dd7910e24ec640b028eee320ffa1d9d5580f",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-leaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1",
+  "requires": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.area_comparison-a1.submanifold_area-a1.chart_gram_factor-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.inverse_continuity-a1"
+  ]
+}

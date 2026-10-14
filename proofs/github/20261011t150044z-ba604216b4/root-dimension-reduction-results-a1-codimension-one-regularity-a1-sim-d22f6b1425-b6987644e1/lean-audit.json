@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "e08794a092004df06cdcfb949852ac4397ec29854667d997d1ffdd89c4bf61c5",
+  "git_delta": {
+    "base_commit": "6ee77245a6b3f2d55605da8a94bbbcd505555b6d",
+    "candidate_commit": "ef545ccf47503b97cf089b19a47d260a6c75b16e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ac_saf_jacobian_continuousOn",
+    "diff_sha256": "33f40f1342b28bcab1221ceabdd6d210fb8a069311cf65fedca30fdf63115e43",
+    "source_sha256": "8d210276fc1d7570d0abafc722688fecb3b7eb68d47cc8ba1e20dc8dcd2e95db",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ac_saf_jacobian_continuousOn",
+      "statement": "∀ (P m : ℕ) (N : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (Φ : Euclid P → Euclid P), IsEmbeddedSubmanifold 1 m N → (∀ x ∈ N, (Q x : Set (Euclid P)) = tangentSpace N x) → ContDiff ℝ 1 Φ → ContinuousOn (fun x => Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) i)) (fderiv ℝ Φ x (stdOrthonormalBasis ℝ (Q x) j))))) N",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
