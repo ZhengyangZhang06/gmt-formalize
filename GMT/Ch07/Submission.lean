@@ -451,6 +451,46 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Only finitely many unit lattice faces `b + Σⱼ [0, 1] e_{ι(j)}` (`b ∈ ℤᴾ`, `ι : Fin k → Fin P`
+arbitrary) meet a compact `K ⊆ ℝᴾ` (Simon Ch. 6, §5).  If `‖x‖ ≤ ρ` on `K` and
+`Φ(y) = b + Σⱼ yⱼ e_{ι(j)} ∈ K` with `y ∈ [0, 1]ᵏ`, then `Φ(y)ᵢ = bᵢ + Sᵢ` with `0 ≤ Sᵢ ≤ k`
+and `|Φ(y)ᵢ| ≤ ρ`, so `|bᵢ| ≤ ⌈ρ⌉ + k`: the set lies in the finite set `(all ι) × [-N, N]ᴾ`. -/
+theorem Submission.dimred_mbl_dtfrsd_faces_meeting_compact_finite : ∀ (P k : ℕ) (K : Set (Euclid P)), IsCompact K → {p : (Fin k → Fin P) × (Fin P → ℤ) | ∃ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) ∈ K}.Finite := by
+  intro P k K hK
+  -- `K` is bounded: `‖x‖ ≤ ρ` for `x ∈ K`
+  obtain ⟨ρ, hρ⟩ := hK.isBounded.exists_norm_le
+  -- the set lies in `(Fin k → Fin P) × [-N, N]ᴾ`, `N = ⌈ρ⌉ + k`, which is finite
+  refine (Set.finite_univ.prod (Set.Finite.pi fun _ =>
+    Set.finite_Icc (-(⌈ρ⌉ + k)) (⌈ρ⌉ + k))).subset ?_
+  rintro ⟨ι, b⟩ ⟨y, hy, hxK⟩
+  refine ⟨Set.mem_univ _, fun i _ => ?_⟩
+  -- coordinate formula `Φ(y)ᵢ = bᵢ + Sᵢ`, `Sᵢ = Σⱼ [i = ι j] yⱼ`
+  have hcoord : (WithLp.toLp 2 (fun i => (b i : ℝ)) +
+      ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) i =
+      (b i : ℝ) + ∑ j, if i = ι j then y j else 0 := by
+    simp only [PiLp.add_apply, WithLp.ofLp_sum, Finset.sum_apply, PiLp.smul_apply,
+      PiLp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero]
+  -- `|bᵢ + Sᵢ| = |Φ(y)ᵢ| ≤ ‖Φ(y)‖ ≤ ρ`
+  have hxi : |(b i : ℝ) + ∑ j, if i = ι j then y j else 0| ≤ ρ := by
+    rw [← hcoord, ← Real.norm_eq_abs]
+    exact (PiLp.norm_apply_le _ i).trans (hρ _ hxK)
+  -- `0 ≤ Sᵢ ≤ k`: each of the `k` summands lies in `[0, 1]`
+  have hS0 : 0 ≤ ∑ j, if i = ι j then y j else 0 :=
+    Finset.sum_nonneg fun j _ => by split_ifs <;> linarith [(hy j).1]
+  have hS1 : (∑ j, if i = ι j then y j else 0) ≤ k :=
+    calc (∑ j, if i = ι j then y j else 0) ≤ ∑ _j : Fin k, (1 : ℝ) :=
+          Finset.sum_le_sum fun j _ => by split_ifs <;> linarith [(hy j).2]
+      _ = k := by simp
+  -- hence `-(⌈ρ⌉ + k) ≤ bᵢ ≤ ⌈ρ⌉ + k`
+  obtain ⟨h1, h2⟩ := abs_le.mp hxi
+  have hc := Int.le_ceil ρ
+  have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
+  refine Set.mem_Icc.mpr ⟨?_, ?_⟩
+  · have : ((-(⌈ρ⌉ + k) : ℤ) : ℝ) ≤ b i := by push_cast; linarith
+    exact_mod_cast this
+  · have : (b i : ℝ) ≤ ((⌈ρ⌉ + k : ℤ) : ℝ) := by push_cast; linarith
+    exact_mod_cast this
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
