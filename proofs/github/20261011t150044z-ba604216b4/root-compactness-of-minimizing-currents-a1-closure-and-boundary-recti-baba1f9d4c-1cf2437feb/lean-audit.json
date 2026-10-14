@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3e3fe7cbbd349d6dfa06d1784925654d165758c27de9e26f70d6a6cfcd42f404",
+  "git_delta": {
+    "base_commit": "7e6e7485b91cc5fb9e1adc3806a86a0b7f38a5ab",
+    "candidate_commit": "f24e218b7fc245a728847512f03ffa1e2d1e32b8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrsl_isIntegerMultiplicity_of_local_liminf_bounds",
+    "diff_sha256": "165d6076479bed4038f89b13b083d91be567b05613b31e85d4e50ac66dbc3a85",
+    "source_sha256": "8e6e970fe72ded842aa887a078455fbe9fcba2b45a23cb32e9ea420927659dce",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrsl_isIntegerMultiplicity_of_local_liminf_bounds",
+      "statement": "∀ d : ℕ, (∀ (P : ℕ) (U : Set (Euclid P)) (Ts : ℕ → GeometricCurrentOn U d) (T : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → ⨆ j, ((Ts j).massOn W + boundaryMassOn (Ts j) W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T) → (∀ (P k : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U k), IsOpen U → ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → X.massOn W < ∞) → (∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ ∃ h : ball x r ⊆ U, IsIntegerMultiplicity (X.restrictDomain h)) → IsIntegerMultiplicity X) ∧ (∀ (V : Set (Euclid P)) (h : V ⊆ U), IsOpen V → IsIntegerMultiplicity X → IsIntegerMultiplicity (X.restrictDomain h))) → ∀ (P : ℕ) (Zs : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) d) (Z : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ i, IsIntegerMultiplicity (Zs i)) → WeaklyConvergesOn Zs Z → (∀ k : ℕ, liminf (fun i => (Zs i).massOn (ball (0 : Euclid P) ((k : ℝ) + 1)) + boundaryMassOn (Zs i) (ball (0 : Euclid P) ((k : ℝ) + 1))) atTop < ∞) → IsIntegerMultiplicity Z",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
