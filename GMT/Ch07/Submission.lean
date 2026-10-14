@@ -37803,49 +37803,6 @@ theorem Submission.dtc_bc_tc_cl_closure_succ : (∀ (P n : ℕ) (U : Set (Euclid
   exact (hIML hREP hMR hIMC P (d + 1) univ (E A) isOpen_univ).2 (ball x₀ r) (subset_univ _)
     isOpen_ball hEA
 
-/-- **Closure theorem in `ℝᴾ`, positive codimension** (Simon Ch. 6, Theorem 3.11: weak limits of
-integer multiplicity currents with locally bounded `M_W(Tⱼ) + M_W(∂Tⱼ)` are integer multiplicity,
-proved in §8 (Theorem 8.2, Remarks 8.3) with 6.1–6.3).  Let `m + 1 < P` and `Tⱼ, T ∈ 𝒟_{m+1}(ℝᴾ)`
-with every `Tⱼ` integer multiplicity, `supⱼ (M_W(Tⱼ) + M_W(∂Tⱼ)) < ∞` for every bounded open `W`
-and `Tⱼ ⇀ T`; then `T` is integer multiplicity.  Fix `P` and prove, by induction on `d < P`, the
-closure theorem `CL_P(d)` in every open `U ⊆ ℝᴾ`.  `CL_P(0)` is
-`dtc_bc_tc_cl_closure_degree_zero`.  For `d + 1 < P`, `CL_P(d)` and the deformation theorem give
-boundary rectifiability `BR_P(d)` (`dtc_bc_tc_cl_boundary_isIntegerMultiplicity`); `CL_P(d)`,
-`BR_P(d)` and the isoperimetric filling give the closure theorem `CL*_{P,d+1}` for sequences with
-supports in a fixed compact set (`dtc_bc_tc_cl_closure_compact_support`); and `BR_P(d)` with
-`CL*_{P,d+1}` gives `CL_P(d+1)` by localization (`dtc_bc_tc_cl_closure_succ`).  Finally apply
-`CL_P(m+1)` in `U = ℝᴾ`: an open `W ⊂⊂ ℝᴾ` has compact, hence bounded, closure, so `W` is
-bounded, and `boundaryMassOn` of an `(m+1)`-current is the mass of its boundary. -/
-theorem Submission.dtc_bc_tc_closure : ∀ (P m : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), m + 1 < P → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, ((Ts j).massOn W + (Ts j).boundary.massOn W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T := by
-  intro P m Ts T hmP hTs hmass hconv
-  -- the accepted siblings (MR), (IMC), (VO)
-  have hMR := Submission.cmc_massOn_eq_imRep_measure
-  have hIMC := Submission.cmc_imRep_locality_restrict_sub
-  have hVO := Submission.dtc_vanish_off_support
-  -- (REP), the deformation theorem and the isoperimetric filling, in positive codimension
-  have hREP := Submission.dtc_bc_tc_cl_foundations.1
-  obtain ⟨hDT, hIso⟩ := Submission.dtc_bc_tc_cl_deformation_isoperimetric hMR hIMC hVO
-  -- `CL_P(d)` for every `d < P`, by induction on `d`
-  have hCL : ∀ d : ℕ, d < P → ∀ (U : Set (Euclid P)) (Xs : ℕ → GeometricCurrentOn U d)
-      (X : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Xs j)) →
-      (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U →
-        ⨆ j, ((Xs j).massOn W + boundaryMassOn (Xs j) W) < ∞) →
-      WeaklyConvergesOn Xs X → IsIntegerMultiplicity X := by
-    intro d
-    induction d with
-    | zero => exact fun _ => Submission.dtc_bc_tc_cl_closure_degree_zero hREP hMR hIMC P
-    | succ d ih =>
-      intro hd
-      -- `CL_P(d) ⟹ BR_P(d)`, then `CL_P(d) ∧ BR_P(d) ⟹ CL*_{P,d+1}`, then `CL_P(d+1)`
-      have hCLd := ih (by omega)
-      have hBR :=
-        Submission.dtc_bc_tc_cl_boundary_isIntegerMultiplicity hMR hIMC hVO hDT P d hd hCLd
-      exact Submission.dtc_bc_tc_cl_closure_succ hMR hIMC hVO P d hd hBR
-        (Submission.dtc_bc_tc_cl_closure_compact_support hMR hIMC hVO hIso P d hd hCLd hBR)
-  -- `CL_P(m+1)` in `U = ℝᴾ`: `W ⊂⊂ ℝᴾ` is bounded, and `boundaryMassOn` is `M_W(∂Tⱼ)`
-  refine hCL (m + 1) hmP univ Ts T isOpen_univ hTs (fun W hW hWU => ?_) hconv
-  exact hmass W hW (isBounded_closure_iff.mp hWU.1.isBounded)
-
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
@@ -38095,5 +38052,48 @@ theorem Submission.dtc_bc_tc_cl_closure_compact_support : (∀ (P n : ℕ) (U : 
   rw [← hT]
   exact hIMCc P (d + 1) univ _ _ isOpen_univ hΓIM
     (hIMCc P (d + 1) univ _ _ isOpen_univ (hzero P (d + 1) univ) hYIM)
+
+/-- **Closure theorem in `ℝᴾ`, positive codimension** (Simon Ch. 6, Theorem 3.11: weak limits of
+integer multiplicity currents with locally bounded `M_W(Tⱼ) + M_W(∂Tⱼ)` are integer multiplicity,
+proved in §8 (Theorem 8.2, Remarks 8.3) with 6.1–6.3).  Let `m + 1 < P` and `Tⱼ, T ∈ 𝒟_{m+1}(ℝᴾ)`
+with every `Tⱼ` integer multiplicity, `supⱼ (M_W(Tⱼ) + M_W(∂Tⱼ)) < ∞` for every bounded open `W`
+and `Tⱼ ⇀ T`; then `T` is integer multiplicity.  Fix `P` and prove, by induction on `d < P`, the
+closure theorem `CL_P(d)` in every open `U ⊆ ℝᴾ`.  `CL_P(0)` is
+`dtc_bc_tc_cl_closure_degree_zero`.  For `d + 1 < P`, `CL_P(d)` and the deformation theorem give
+boundary rectifiability `BR_P(d)` (`dtc_bc_tc_cl_boundary_isIntegerMultiplicity`); `CL_P(d)`,
+`BR_P(d)` and the isoperimetric filling give the closure theorem `CL*_{P,d+1}` for sequences with
+supports in a fixed compact set (`dtc_bc_tc_cl_closure_compact_support`); and `BR_P(d)` with
+`CL*_{P,d+1}` gives `CL_P(d+1)` by localization (`dtc_bc_tc_cl_closure_succ`).  Finally apply
+`CL_P(m+1)` in `U = ℝᴾ`: an open `W ⊂⊂ ℝᴾ` has compact, hence bounded, closure, so `W` is
+bounded, and `boundaryMassOn` of an `(m+1)`-current is the mass of its boundary. -/
+theorem Submission.dtc_bc_tc_closure : ∀ (P m : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), m + 1 < P → (∀ j, IsIntegerMultiplicity (Ts j)) → (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, ((Ts j).massOn W + (Ts j).boundary.massOn W) < ∞) → WeaklyConvergesOn Ts T → IsIntegerMultiplicity T := by
+  intro P m Ts T hmP hTs hmass hconv
+  -- the accepted siblings (MR), (IMC), (VO)
+  have hMR := Submission.cmc_massOn_eq_imRep_measure
+  have hIMC := Submission.cmc_imRep_locality_restrict_sub
+  have hVO := Submission.dtc_vanish_off_support
+  -- (REP), the deformation theorem and the isoperimetric filling, in positive codimension
+  have hREP := Submission.dtc_bc_tc_cl_foundations.1
+  obtain ⟨hDT, hIso⟩ := Submission.dtc_bc_tc_cl_deformation_isoperimetric hMR hIMC hVO
+  -- `CL_P(d)` for every `d < P`, by induction on `d`
+  have hCL : ∀ d : ℕ, d < P → ∀ (U : Set (Euclid P)) (Xs : ℕ → GeometricCurrentOn U d)
+      (X : GeometricCurrentOn U d), IsOpen U → (∀ j, IsIntegerMultiplicity (Xs j)) →
+      (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U →
+        ⨆ j, ((Xs j).massOn W + boundaryMassOn (Xs j) W) < ∞) →
+      WeaklyConvergesOn Xs X → IsIntegerMultiplicity X := by
+    intro d
+    induction d with
+    | zero => exact fun _ => Submission.dtc_bc_tc_cl_closure_degree_zero hREP hMR hIMC P
+    | succ d ih =>
+      intro hd
+      -- `CL_P(d) ⟹ BR_P(d)`, then `CL_P(d) ∧ BR_P(d) ⟹ CL*_{P,d+1}`, then `CL_P(d+1)`
+      have hCLd := ih (by omega)
+      have hBR :=
+        Submission.dtc_bc_tc_cl_boundary_isIntegerMultiplicity hMR hIMC hVO hDT P d hd hCLd
+      exact Submission.dtc_bc_tc_cl_closure_succ hMR hIMC hVO P d hd hBR
+        (Submission.dtc_bc_tc_cl_closure_compact_support hMR hIMC hVO hIso P d hd hCLd hBR)
+  -- `CL_P(m+1)` in `U = ℝᴾ`: `W ⊂⊂ ℝᴾ` is bounded, and `boundaryMassOn` is `M_W(∂Tⱼ)`
+  refine hCL (m + 1) hmP univ Ts T isOpen_univ hTs (fun W hW hWU => ?_) hconv
+  exact hmass W hW (isBounded_closure_iff.mp hWU.1.isBounded)
 
 end GMT.Ch07
