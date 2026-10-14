@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.locally_closed-a1",
+  "parent_id": "root.dimension_reduction_results-a1.regular_point_density-a1",
+  "depth": 3,
+  "title": "An embedded submanifold is Borel and meets small closed balls in compact sets",
+  "statement": "Let P, r, d ∈ ℕ and M ⊆ ℝ^P with IsEmbeddedSubmanifold r d M, i.e. every y ∈ M has open sets V ⊆ ℝ^d and W ⊆ ℝ^P with y ∈ W and a map ψ : ℝ^d → ℝ^P that is C^r on V and injective on V, with ψ(V) = W ∩ M, V ∩ ψ⁻¹(K) compact for every compact K ⊆ W, and Dψ(v) injective for v ∈ V. Then (a) M is a (Borel) measurable subset of ℝ^P, and (b) every y ∈ M has some ε > 0 such that M ∩ closedBall(y, ε) is compact.",
+  "lean_statement": "∀ (P r d : ℕ) (M : Set (Euclid P)), IsEmbeddedSubmanifold r d M → MeasurableSet M ∧ ∀ y ∈ M, ∃ ε : ℝ, 0 < ε ∧ IsCompact (M ∩ closedBall y ε)",
+  "lean_name": "dimred_rpd_embedded_locally_closed",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-locally-closed-a1-a1"
+}
