@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "07b5bea0b90e9d4e2b55004094524e16c23cacc374ca257d0e320f652757ee95",
+  "git_delta": {
+    "base_commit": "da99081e4ca840462f95d10622195b1e217f3325",
+    "candidate_commit": "271f3182f412d639ce6accf4910d3e0626dc8414",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_lc_ic_cancel",
+    "diff_sha256": "e5865973d2d543386282788a6ed90fc67bc262605b7973f9e970663d273fffe5",
+    "source_sha256": "ebf27dc7197a72cac4e34981ddc0c5465685d2368d3341495d458f7ad2a32f1f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_lc_ic_cancel",
+      "statement": "∀ (a b s e M : ℝ≥0∞) (L : ℝ) (n : ℕ), 1 ≤ L → b ≤ M → M ≠ ∞ → a + b ≤ ENNReal.ofReal (L ^ n) * (s + e + e + b) → a ≤ ENNReal.ofReal (L ^ n) * (s + 2 * e) + ENNReal.ofReal (L ^ n - 1) * M",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
