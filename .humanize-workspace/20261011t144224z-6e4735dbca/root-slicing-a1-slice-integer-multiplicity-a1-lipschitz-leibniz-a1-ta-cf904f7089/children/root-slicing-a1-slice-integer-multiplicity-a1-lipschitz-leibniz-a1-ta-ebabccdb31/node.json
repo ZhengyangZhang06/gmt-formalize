@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_representation-a1",
+  "parent_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1",
+  "depth": 5,
+  "title": "Tangential integrals over a chart piece as parameter integrals against one integrable field: ∫_A Df(Y) = ∫_Ω D(f∘Φ)(c) and ∫_A ⟨G, Y⟩ = ∫_Ω D(h∘Φ)(c)",
+  "statement": "Let P, n ∈ ℕ, Ω ⊆ ℝⁿ open, and Φ : ℝⁿ → ℝ^P of class C¹, Lipschitz on Ω and κ-antilipschitz on Ω for some κ > 0. Let A ⊆ Φ(Ω) be Hⁿ-null-measurable, h : ℝ^P → ℝ L-Lipschitz, G : ℝ^P → ℝ^P Borel with |G| ≤ L everywhere, and Y : ℝ^P → ℝ^P Hⁿ⌞A-integrable. Suppose that for Hⁿ-a.e. x ∈ A and every w ∈ Ω with Φ(w) = x: Y(x) ∈ range DΦ(w), and for every u ∈ range DΦ(w), s ↦ h(x + su) has derivative ⟨G(x), u⟩ at s = 0. Then there is c : ℝⁿ → ℝⁿ, Lⁿ-integrable on Ω, such that:\n(i) ∫_A Df(x)(Y(x)) dHⁿ(x) = ∫_Ω D(f∘Φ)(w)(c(w)) dw for every differentiable f : ℝ^P → ℝ that is K-Lipschitz for some K ≥ 0;\n(ii) ∫_A ⟨G(x), Y(x)⟩ dHⁿ(x) = ∫_Ω D(h∘Φ)(w)(c(w)) dw.\nHere D = fderiv ℝ, which is 0 where the map is not differentiable; DΦ(w) = fderiv ℝ Φ w; Hⁿ = μHE[n] on ℝ^P; and Lⁿ = volume on ℝⁿ.",
+  "lean_statement": "∀ (P n : ℕ) (Φ : Eucl n → Eucl P) (Ω : Set (Eucl n)) (A : Set (Eucl P)) (h : Eucl P → ℝ) (L : ℝ≥0) (G Y : Eucl P → Eucl P), IsOpen Ω → ContDiff ℝ 1 Φ → (∃ K : ℝ≥0, LipschitzOnWith K Φ Ω) → (∃ κ : ℝ, 0 < κ ∧ ∀ w ∈ Ω, ∀ w' ∈ Ω, κ * ‖w - w'‖ ≤ ‖Φ w - Φ w'‖) → A ⊆ Φ '' Ω → NullMeasurableSet A (μHE[n] : Measure (Eucl P)) → LipschitzWith L h → Measurable G → (∀ x, ‖G x‖ ≤ L) → IntegrableOn Y A (μHE[n] : Measure (Eucl P)) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict A), ∀ w ∈ Ω, Φ w = x → Y x ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap ∧ ∀ u ∈ LinearMap.range (fderiv ℝ Φ w).toLinearMap, HasDerivAt (fun s : ℝ => h (x + s • u)) (inner ℝ (G x) u) 0) → ∃ c : Eucl n → Eucl n, IntegrableOn c Ω (volume : Measure (Eucl n)) ∧ (∀ (f : Eucl P → ℝ) (K : ℝ≥0), Differentiable ℝ f → LipschitzWith K f → ∫ x in A, fderiv ℝ f x (Y x) ∂(μHE[n] : Measure (Eucl P)) = ∫ w in Ω, fderiv ℝ (f ∘ Φ) w (c w)) ∧ ∫ x in A, inner ℝ (G x) (Y x) ∂(μHE[n] : Measure (Eucl P)) = ∫ w in Ω, fderiv ℝ (h ∘ Φ) w (c w)",
+  "lean_name": "slicing_im_ll_twl_chart_representation",
+  "depends_on": [
+    "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_integral_eq-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.coefficient_field-a1",
+    "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_has_fderiv_at-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_integral_eq-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.coefficient_field-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.slicing-a1.slice_integer_multiplicity-a1.lipschitz_leibniz-a1.tangential_weak_limit-a1.chart_has_fderiv_at-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-integer-multiplicity-a1-lipschitz-leibniz-a1-ta-ebabccdb31-a1"
+}

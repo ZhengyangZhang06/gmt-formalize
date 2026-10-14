@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.mass_representation-a1.unit_form_density-a1.integral_lower_bound-a1",
+  "parent_id": "root.slicing-a1.mass_representation-a1.unit_form_density-a1",
+  "depth": 4,
+  "title": "Lower bound ∫_A g dμ > c for |g| ≤ 1, g = 1 on C ⊆ A, g = 0 off S, c + μ(S ∖ C) < μ(C)",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P, g : ℝ^P → ℝ Borel with |g(x)| ≤ 1 for all x, and A, C, S ⊆ ℝ^P Borel with C ⊆ A and μ(S) < ∞. Assume g = 1 on C, g = 0 off S, and c ∈ [0, ∞] satisfies c + μ(S ∖ C) < μ(C). Then c < ENNReal.ofReal(∫_A g dμ).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Eucl P)) (g : Eucl P → ℝ) (A C S : Set (Eucl P)) (c : ℝ≥0∞), MeasurableSet A → MeasurableSet C → MeasurableSet S → C ⊆ A → μ S < ∞ → Measurable g → (∀ x, |g x| ≤ 1) → (∀ x ∈ C, g x = 1) → (∀ x, x ∉ S → g x = 0) → c + μ (S \\ C) < μ C → c < ENNReal.ofReal (∫ x in A, g x ∂μ)",
+  "lean_name": "smr_ufd_integral_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-mass-representation-a1-unit-form-density-a1-integral-9d081869a2-a1"
+}

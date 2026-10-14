@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.slicing-a1.slice_mass_bound-a1.density_majorant-a1",
+  "parent_id": "root.slicing-a1.slice_mass_bound-a1",
+  "depth": 3,
+  "title": "Borel majorant of the lower left density of a measure on ℝ with integral ≤ ν((a,b)) (parent Step 5 / Simon 4.10, via Lebesgue's theorem for monotone functions)",
+  "statement": "For every Borel measure ν on ℝ and all real a < b there is a Borel measurable g : ℝ → [0,∞] such that liminf_{h→0+} ν([t − h, t])/h ≤ g(t) for every t ∈ (a,b) (liminf along 𝓝[>] 0, quotient in [0,∞]) and ∫⁻_{(a,b)} g(t) dt ≤ ν((a,b)).",
+  "lean_statement": "∀ (ν : Measure ℝ) (a b : ℝ), a < b → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ t ∈ Ioo a b, liminf (fun h : ℝ => ν (Icc (t - h) t) / ENNReal.ofReal h) (𝓝[>] 0) ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ ν (Ioo a b)",
+  "lean_name": "slicing_mb_density_majorant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-slicing-a1-slice-mass-bound-a1-density-majorant-a1-a1"
+}
