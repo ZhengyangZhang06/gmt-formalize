@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b5ebefd4d6681907b9ce1e11cf4a05a5aa1468f60fe0323358079e17b7fec758",
+  "git_delta": {
+    "base_commit": "31d9becc564243bac7a33890ca326ca1c8640e37",
+    "candidate_commit": "058a26054f9d921654dc95829b8806c679be7027",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_cse_fd_cone_integral_smul",
+    "diff_sha256": "850f6a3cb641d78f8db1905416223b222d00eeb9a6b9a9ddfa2d18930d1c3fbd",
+    "source_sha256": "f59fea342253790899dd1dae572f2a83f63dc66c57a5563f1cc1ce8cc9a168d1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cse_fd_cone_integral_smul",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsConeCurrent C → R.Represents C → ∀ r : ℝ, 0 < r → ∀ φ : Euclid P → ℝ, ∫ x, φ (r • x) ∂R.measure = (r ^ n)⁻¹ * ∫ x, φ x ∂R.measure",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
