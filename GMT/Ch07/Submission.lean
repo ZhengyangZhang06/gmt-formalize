@@ -927,6 +927,45 @@ theorem Submission.idtp_ccd_scsp_local_inverse : ∀ (P : ℕ) (M : Set (Euclid 
       (hH.differentiableOn one_ne_zero).differentiableAt (hO.mem_nhds hw)
     rw [Function.comp_apply, hT (H w) (hHV₀ w hw), fderiv_comp w (hψd _ (hHV₀ w hw)) hHd,
       ContinuousLinearMap.coe_comp, (hDH w hw).range_comp]
+/-- **Angle-parametrized unit curve** (step 6 of the parent proof).  Differentiating
+`⟨γ, γ⟩ = ‖γ‖² ≡ 1` gives `⟨γ, γ′⟩ = 0`.  With `A = ⟨γ, u⟩ > 0` and `B = ⟨γ, e⟩`, the quotient
+and chain rules differentiate `arctan (B / A) ≡ α` to `(1 + (B / A)²)⁻¹ (B′ A − B A′) / A² = 1`,
+i.e. `A B′ − B A′ = A² + B²`; the right side is positive, so `γ′ ≠ 0`. -/
+theorem Submission.idtp_ccd_scsp_angle_curve : ∀ (P : ℕ) (u e : Euclid P) (s : ℝ) (γ : ℝ → Euclid P), ContDiffOn ℝ 1 γ (Ioo (-s) s) → (∀ α ∈ Ioo (-s) s, ‖γ α‖ = 1 ∧ 0 < inner ℝ (γ α) u ∧ Real.arctan (inner ℝ (γ α) e / inner ℝ (γ α) u) = α) → ∀ α ∈ Ioo (-s) s, inner ℝ (γ α) (deriv γ α) = 0 ∧ inner ℝ (γ α) u * inner ℝ (deriv γ α) e - inner ℝ (γ α) e * inner ℝ (deriv γ α) u = inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2 ∧ deriv γ α ≠ 0 := by
+  intro P u e s γ hγ hprop α hα
+  -- `(-s, s)` is a neighbourhood of `α` on which `γ` is differentiable
+  have hI : Ioo (-s) s ∈ 𝓝 α := Ioo_mem_nhds hα.1 hα.2
+  have hd : HasDerivAt γ (deriv γ α) α :=
+    ((hγ.differentiableOn one_ne_zero).differentiableAt hI).hasDerivAt
+  -- orthogonality: `⟨γ, γ⟩ = ‖γ‖² ≡ 1` near `α`, so its derivative `2 ⟨γ, γ′⟩` vanishes
+  have hn1 : (fun t => inner ℝ (γ t) (γ t)) =ᶠ[𝓝 α] fun _ => (1 : ℝ) := by
+    filter_upwards [hI] with t ht
+    rw [real_inner_self_eq_norm_sq, (hprop t ht).1, one_pow]
+  have h0 := (hd.inner ℝ hd).unique ((hasDerivAt_const α (1 : ℝ)).congr_of_eventuallyEq hn1)
+  rw [real_inner_comm (γ α) (deriv γ α)] at h0
+  have horth : inner ℝ (γ α) (deriv γ α) = 0 := by linarith
+  -- the angle: `A = ⟨γ, u⟩`, `B = ⟨γ, e⟩` and `arctan (B / A) ≡ id` near `α`
+  have hA : 0 < inner ℝ (γ α) u := (hprop α hα).2.1
+  have hAd : HasDerivAt (fun t => inner ℝ (γ t) u) (inner ℝ (deriv γ α) u) α := by
+    simpa using hd.inner ℝ (hasDerivAt_const α u)
+  have hBd : HasDerivAt (fun t => inner ℝ (γ t) e) (inner ℝ (deriv γ α) e) α := by
+    simpa using hd.inner ℝ (hasDerivAt_const α e)
+  have hid : (fun t => Real.arctan (((fun t => inner ℝ (γ t) e) / fun t => inner ℝ (γ t) u) t))
+      =ᶠ[𝓝 α] fun t => t := by
+    filter_upwards [hI] with t ht
+    exact (hprop t ht).2.2
+  have h1 := ((hBd.div hAd hA.ne').arctan).unique ((hasDerivAt_id' α).congr_of_eventuallyEq hid)
+  simp only [Pi.div_apply] at h1
+  -- clearing `(1 + (B / A)²) A² = A² + B² > 0` from `h1` gives the angle identity
+  have hpos : 0 < inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2 := by positivity
+  have hkey : inner ℝ (γ α) u * inner ℝ (deriv γ α) e - inner ℝ (γ α) e * inner ℝ (deriv γ α) u =
+      inner ℝ (γ α) u ^ 2 + inner ℝ (γ α) e ^ 2 := by
+    field_simp at h1
+    linarith
+  -- non-degeneracy: `γ′ = 0` would make the left side `0`
+  refine ⟨horth, hkey, fun h => ?_⟩
+  rw [h, inner_zero_left, inner_zero_left, mul_zero, mul_zero, sub_zero] at hkey
+  exact hpos.ne' hkey.symm
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
