@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "lake env lean probe after `import GMT.Ch07.Submission`: #check @Poincare.SimonGMT.Chapter08.ae_eq_const_of_weak_coordinate_derivatives_zero, @ContinuousMap.instSeparableSpace, @ContDiffBump.integral_normed, @exists_polynomial_near_continuousMap, @ContinuousMap.subalgebra_topologicalClosure_eq_top_of_separatesPoints, @MeasureTheory.Lp.secondCountableTopology, (inferInstance : Denumerable ℚ) -> all unknown / not synthesizable",
+        "lake env lean probe after `import GMT.Ch07.Submission`: #check @IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero, @integral_prod, @setIntegral_prod_mul, @Measure.ae_prod_iff_ae_ae, @Measure.ae_ae_of_ae_prod, @Measure.quasiMeasurePreserving_fst, @Measure.integral_comp_mul_left, @Integrable.comp_mul_left', @Real.volume_preimage_mul_left, @IsUnifLocDoublingMeasure.ae_tendsto_average plus `example : IsUnifLocDoublingMeasure (volume : Measure ℝ) := inferInstance`, @Measure.ext_of_Ioc_finite, @intervalIntegral.continuous_primitive, @intervalIntegral.integral_hasDerivAt_right, @Real.smoothTransition.contDiff/zero_of_nonpos/one_of_one_le/nonneg/le_one, @Continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero, @exists_surjective_nat, @tendsto_integral_of_dominated_convergence, @AEStronglyMeasurable.mk, @StronglyMeasurable.integral_prod_right', @IsCompact.sInf_mem, @tsupport_sub, @Integrable.bdd_mul, @HasCompactSupport.exists_bound_of_continuous -> all available",
+        "rg -n 'idtp_cse|du Bois|Bois-Reymond|ae_eq_const_of_weak|SimonGMT.Chapter08' local-references/123e8435b4a2469b/project (no hit in GMT/Ch07; only the unrelated Ch08 contract imports Chapter08)",
+        "rg -n 'theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero|theorem integral_comp_mul_left |theorem ae_tendsto_average|theorem ext_of_Ioc_finite|theorem continuous_primitive|theorem integral_hasDerivAt_right|theorem setIntegral_prod_mul|theorem ae_prod_iff_ae_ae|theorem quasiMeasurePreserving_fst|theorem volume_preimage_mul_left|theorem Integrable.comp_mul_left|theorem Integrable.bdd_mul ' local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "diff -q local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (identical)",
+        "python3 scan of dag.json lean_name values for the nine proposed idtp_cse_ah_* names (no match); grep -rl idtp_cse_ah nodes decomposition-reopenings operator-dependency-edits dag.json issue-workers.json (no match)",
+        "python3 scan of dag.json statements for related analytic nodes (deriv ψ, ae_eq_const, homogeneous, distributional, fundamental lemma): codim1_rdo_dg_hr_ae_translate_invariant, dgcr_smooth_tests_to_C1_tests, idtp_pc_constancy_reduction, dorag_ha_weyl_lemma, imsupp_measure_eq_zero_of_vanishesOn (none has a Lean type reusable here)",
+        "git show c1d608481329bbb6de1c0f4e4052367b8d92d742:GMT/Ch07/Submission.lean and git show 1d65cf6d4d473fe727cd0ad43b45f3adfea87280:GMT/Ch07/Submission.lean (accepted node proofs are appended under the unchanged frozen import header)",
+        "lake env lean /tmp/ah-decomp/final/Stmts.lean (all nine Submission.idtp_cse_ah_* types elaborate in namespace GMT.Ch07 with the frozen opens; only sorry warnings)",
+        "lake env lean /tmp/ah-decomp/final/Checks.lean (check_parent_assembly, check_slice_ae_const_assembly, check_normalized_bump, check_product_integral_reduce; #print axioms: propext, Classical.choice, Quot.sound)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-132cdbbb80/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-132cdbbb80/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Metrizable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/tmp/ah-decomp/final/stmts.json",
+        "/tmp/ah-decomp/final/Stmts.lean",
+        "/tmp/ah-decomp/final/Checks.lean"
+      ],
+      "conclusion": "The snapshot Submission.lean is byte-identical to the workspace compiler authority (mathlib 25730c7c, SimonGMT 2b36630), and accepted node proofs are appended to it without import changes. Two results cited by the supplied proof are not in that import closure: SimonGMT Chapter08 ae_eq_const_of_weak_coordinate_derivatives_zero and Mathlib ContinuousMap.instSeparableSpace (likewise ContDiffBump.integral_normed). The children therefore use routes that are available: the fundamental lemma, Fubini/Tonelli, dominated convergence, IsUnifLocDoublingMeasure.ae_tendsto_average (the instance exists for volume on ℝ), interval-integral FTC, Real.smoothTransition, change of variables and exists_surjective_nat. No DAG node, run record or snapshot file uses the idtp_cse_ah_ prefix, and no existing DAG declaration has a reusable identical type. All nine child types elaborate. The parent's frozen type is kernel-checked from six of the children, and slice_ae_const is kernel-checked from its four siblings. normalized_bump and product_integral_reduce are fully proved. All of these use only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1",
+  "child_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.slice_ae_const-a1",
+  "subproblem": {
+    "key": "slice_ae_const",
+    "title": "Vanishing product-tested α-derivative forces a.e. constant slices (fibrewise du Bois-Reymond)",
+    "statement": "Let a, b, c, d ∈ ℝ with c < d, I := (a, b), J := (c, d), and let H : ℝ × ℝ → ℝ be Lebesgue integrable on I × J. Assume ∫_{ℝ×ℝ} ψ'(α)·l(t)·H(t, α) d(t, α) = 0 for all ψ, l ∈ C¹(ℝ) with tsupport ψ ⊆ J and tsupport l ⊆ I, where ψ' = deriv ψ. Then for almost every t ∈ I there is k ∈ ℝ with H(t, α) = k for almost every α ∈ J.",
+    "lean_statement": "∀ (a b c d : ℝ) (H : ℝ × ℝ → ℝ), c < d → IntegrableOn H (Ioo a b ×ˢ Ioo c d) → (∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo c d → tsupport l ⊆ Ioo a b → ∫ p : ℝ × ℝ, deriv ψ p.2 * l p.1 * H p = 0) → ∀ᵐ t, t ∈ Ioo a b → ∃ k : ℝ, ∀ᵐ α, α ∈ Ioo c d → H (t, α) = k",
+    "lean_name": "idtp_cse_ah_slice_ae_const",
+    "depends_on": [
+      "normalized_bump",
+      "antiderivative_test",
+      "slice_integral_ae_zero",
+      "countable_separating_tests"
+    ],
+    "natural_proof": "Source: steps 1–5 of the parent-supplied proof. Two citations there are not in the import closure of GMT/Ch07/Submission.lean and are replaced:\n- the separability step, by the countable family of countable_separating_tests;\n- the SimonGMT Chapter08 constancy lemma, by that family's separating property.\nThis argument was kernel-checked during the review as a hypothesis-only assembly from the four sibling statements.\n1. By normalized_bump (Submission.idtp_cse_ah_normalized_bump, using c < d), fix χ ∈ C¹ with tsupport χ ⊆ J and ∫χ = 1. By countable_separating_tests (Submission.idtp_cse_ah_countable_separating_tests), fix C¹ functions F_n (n ∈ ℕ) with tsupport F_n ⊆ J such that every w integrable on J with ∫ F_n w = 0 for all n vanishes a.e. on J. The tsupports of χ and of each F_n are closed subsets of [c, d]. So these functions are continuous with compact support, hence bounded, integrable on ℝ, and zero outside J.\n2. For n ∈ ℕ let g_n := F_n − (∫F_n)·χ. Then:\n   - g_n is continuous;\n   - tsupport g_n ⊆ tsupport F_n ∪ tsupport χ ⊆ J (tsupport_sub, tsupport_mul_subset_right);\n   - ∫ g_n = ∫F_n − (∫F_n)·1 = 0 (integral_sub, integral_const_mul).\n   By antiderivative_test (Submission.idtp_cse_ah_antiderivative_test) there is ψ_n ∈ C¹ with tsupport ψ_n ⊆ J and deriv ψ_n = g_n.\n3. Let l ∈ C¹ with tsupport l ⊆ I. Apply the hypothesis to (ψ_n, l) and rewrite deriv ψ_n = g_n: ∫ g_n(p.2)·l(p.1)·H(p) dp = 0. Hence slice_integral_ae_zero (Submission.idtp_cse_ah_slice_integral_ae_zero, with g := g_n, which is continuous with tsupport in J) gives: for a.e. t ∈ I, ∫_J g_n(α)·H(t, α) dα = 0.\n4. H is integrable w.r.t. (vol|I).prod(vol|J) = vol|(I×J) (Measure.prod_restrict, Measure.volume_eq_prod). By Fubini (Integrable.prod_right_ae, rewritten with ae_restrict_iff'), for a.e. t ∈ I the slice α ↦ H(t, α) is integrable on J.\n5. A countable union of null sets is null (ae_all_iff). So for a.e. t ∈ I, the slice H(t, ·) is integrable on J and ∫_J g_n(α)·H(t, α) dα = 0 for all n simultaneously. Fix such a t.\n6. Put k := ∫_J χ(α)·H(t, α) dα and w(α) := H(t, α) − k. Then w is integrable on J: it is the integrable slice minus a constant on the finite-measure set J. For each n, the products F_n·H(t, ·) and χ·H(t, ·) are integrable on J (bounded continuous times integrable; Integrable.bdd_mul). Since F_n vanishes off J,\n   ∫_ℝ F_n w = ∫_J F_n(α)·H(t, α) dα − k·∫_ℝ F_n.\n   By step 5 and linearity,\n   0 = ∫_J g_n(α)·H(t, α) dα = ∫_J F_n(α)·H(t, α) dα − (∫F_n)·k.\n   Subtracting, ∫_ℝ F_n w = 0 for every n.\n7. By the separating property of (F_n), w = 0 a.e. on J, i.e. H(t, α) = k for a.e. α ∈ J. Since t was an arbitrary point of a full-measure subset of I, the claim follows. ∎",
+    "proof_key_steps": [
+      "Fix a normalized C¹ bump χ in J (normalized_bump) and the countable separating family F_n on J (countable_separating_tests).",
+      "g_n := F_n − (∫F_n)χ is continuous, supported in J and mean-zero; antiderivative_test gives ψ_n ∈ C¹ supported in J with ψ_n' = g_n.",
+      "The hypothesis with ψ_n and slice_integral_ae_zero give ∫_J g_n H(t,·) = 0 for a.e. t; slices are integrable for a.e. t (Fubini); intersect over n.",
+      "For such t, w := H(t,·) − ∫_J χH(t,·) satisfies ∫F_n w = 0 for all n, so w = 0 a.e. on J."
+    ]
+  },
+  "audit": {
+    "key": "slice_ae_const",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The four declared dependencies suffice and are acyclic. Mean-zero corrected tests admit supported antiderivatives; countable intersection makes their slice identities simultaneous. Subtracting the normalized-bump average then permits the separating lemma. The exact hypothesis-only assembly independently compiles."
+  },
+  "resolved_dependencies": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.normalized_bump-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.antiderivative_test-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.slice_integral_ae_zero-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.countable_separating_tests-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d2599f0098/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d2599f0098/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d2599f0098/parent-supplied-natural-proof.json"
+}

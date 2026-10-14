@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.ae_linear_of_ae_scaling-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1",
+  "depth": 5,
+  "title": "A.e. degree-one multiplicative homogeneity forces h(v) = c·v near 1",
+  "statement": "Let 0 < s ≤ 1 and let h : ℝ → ℝ be almost-everywhere strongly measurable on (1 − s, 1 + s). Assume that for every r ∈ ℝ with |r − 1| < s/4, h(ru) = r·h(u) for almost every u ∈ (1 − s/2, 1 + s/2). Then there is c ∈ ℝ with h(v) = c·v for almost every v ∈ (1 − s/8, 1 + s/8).",
+  "lean_statement": "∀ (s : ℝ) (h : ℝ → ℝ), 0 < s → s ≤ 1 → AEStronglyMeasurable h (volume.restrict (Ioo (1 - s) (1 + s))) → (∀ r : ℝ, |r - 1| < s / 4 → ∀ᵐ u, u ∈ Ioo (1 - s / 2) (1 + s / 2) → h (r * u) = r * h u) → ∃ c : ℝ, ∀ᵐ v, v ∈ Ioo (1 - s / 8) (1 + s / 8) → h v = c * v",
+  "lean_name": "idtp_cse_ah_ae_linear_of_ae_scaling",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-cdabde896a-a1"
+}

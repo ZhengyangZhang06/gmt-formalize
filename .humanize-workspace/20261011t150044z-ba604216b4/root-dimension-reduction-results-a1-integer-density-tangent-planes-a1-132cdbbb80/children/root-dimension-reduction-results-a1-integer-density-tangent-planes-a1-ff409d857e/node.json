@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1.normalized_bump-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.alpha_homogeneous-a1",
+  "depth": 5,
+  "title": "Normalized C¹ bump supported in a given open interval",
+  "statement": "For real numbers c < d there is a function χ : ℝ → ℝ of class C¹ such that tsupport χ ⊆ (c, d) and ∫_ℝ χ(α) dα = 1.",
+  "lean_statement": "∀ c d : ℝ, c < d → ∃ χ : ℝ → ℝ, ContDiff ℝ 1 χ ∧ tsupport χ ⊆ Ioo c d ∧ ∫ α, χ α = 1",
+  "lean_name": "idtp_cse_ah_normalized_bump",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ff409d857e-a1"
+}

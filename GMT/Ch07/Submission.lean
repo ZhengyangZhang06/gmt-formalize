@@ -451,6 +451,64 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Normalized `C¹` bump** in a given open interval.  For `c < d` there is a `C¹` function
+`χ : ℝ → ℝ` with `spt χ ⊆ (c, d)` and `∫ χ = 1`.  With `σ = Real.smoothTransition`,
+`m = (c + d)/2`, `ρ = (d − c)/2`, `p = m − ρ/2` and `q = m + ρ/2` (so `c < p < q < d`), the
+function `θ(α) = σ((4/ρ)(α − p)) σ((4/ρ)(q − α))` is smooth, nonnegative, vanishes off `[p, q]`
+and has `θ(m) = 1`, so `∫ θ > 0`; take `χ = (∫ θ)⁻¹ θ`. -/
+theorem Submission.idtp_cse_ah_normalized_bump : ∀ c d : ℝ, c < d → ∃ χ : ℝ → ℝ, ContDiff ℝ 1 χ ∧ tsupport χ ⊆ Ioo c d ∧ ∫ α, χ α = 1 := by
+  intro c d hcd
+  -- `c < p < m < q < d` with `m = (c + d)/2`, `ρ = (d - c)/2`, `p = m - ρ/2`, `q = m + ρ/2`
+  set ρ : ℝ := (d - c) / 2 with hρ_def
+  have hρ : 0 < ρ := by rw [hρ_def]; linarith
+  set m : ℝ := (c + d) / 2 with hm_def
+  set p : ℝ := m - ρ / 2 with hp_def
+  set q : ℝ := m + ρ / 2 with hq_def
+  have hcp : c < p := by rw [hp_def, hm_def, hρ_def]; linarith
+  have hqd : q < d := by rw [hq_def, hm_def, hρ_def]; linarith
+  -- `θ(α) = σ((4/ρ)(α - p)) σ((4/ρ)(q - α))`, `σ = Real.smoothTransition`
+  set θ : ℝ → ℝ := fun α =>
+    Real.smoothTransition (4 / ρ * (α - p)) * Real.smoothTransition (4 / ρ * (q - α)) with hθ_def
+  have hθ_diff : ContDiff ℝ 1 θ := by
+    have h₁ : ContDiff ℝ 1 fun α : ℝ => Real.smoothTransition (4 / ρ * (α - p)) :=
+      Real.smoothTransition.contDiff.comp (contDiff_const.mul (contDiff_id.sub contDiff_const))
+    have h₂ : ContDiff ℝ 1 fun α : ℝ => Real.smoothTransition (4 / ρ * (q - α)) :=
+      Real.smoothTransition.contDiff.comp (contDiff_const.mul (contDiff_const.sub contDiff_id))
+    exact h₁.mul h₂
+  have hθ_nonneg : 0 ≤ θ := fun α =>
+    mul_nonneg (Real.smoothTransition.nonneg _) (Real.smoothTransition.nonneg _)
+  -- `θ` vanishes off `[p, q]`
+  have hθ_supp : support θ ⊆ Icc p q := by
+    intro α hα
+    rw [mem_support] at hα
+    by_contra h
+    rw [mem_Icc, not_and_or, not_le, not_le] at h
+    apply hα
+    rcases h with h | h
+    · have h' : 4 / ρ * (α - p) ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos (by positivity) (by linarith)
+      simp only [hθ_def, Real.smoothTransition.zero_of_nonpos h', zero_mul]
+    · have h' : 4 / ρ * (q - α) ≤ 0 :=
+        mul_nonpos_of_nonneg_of_nonpos (by positivity) (by linarith)
+      simp only [hθ_def, Real.smoothTransition.zero_of_nonpos h', mul_zero]
+  have hθ_tsupp : tsupport θ ⊆ Icc p q := closure_minimal hθ_supp isClosed_Icc
+  have hθ_cpt : HasCompactSupport θ :=
+    isCompact_Icc.of_isClosed_subset (isClosed_tsupport θ) hθ_tsupp
+  -- `θ(m) = 1`
+  have hθm : θ m = 1 := by
+    have h₁ : 4 / ρ * (m - p) = 2 := by rw [hp_def]; field_simp; ring
+    have h₂ : 4 / ρ * (q - m) = 2 := by rw [hq_def]; field_simp; ring
+    simp only [hθ_def, h₁, h₂, Real.smoothTransition.one_of_one_le (by norm_num : (1 : ℝ) ≤ 2),
+      mul_one]
+  -- `∫ θ > 0`; normalize
+  have hI : 0 < ∫ α, θ α :=
+    hθ_diff.continuous.integral_pos_of_hasCompactSupport_nonneg_nonzero hθ_cpt hθ_nonneg
+      (x := m) (by rw [hθm]; exact one_ne_zero)
+  refine ⟨fun α => (∫ α, θ α)⁻¹ * θ α, contDiff_const.mul hθ_diff, ?_, ?_⟩
+  · exact tsupport_mul_subset_right.trans (hθ_tsupp.trans (Icc_subset_Ioo hcp hqd))
+  · rw [integral_const_mul]
+    exact inv_mul_cancel₀ hI.ne'
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
