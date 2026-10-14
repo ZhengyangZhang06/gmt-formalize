@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "a2871dbbd151259e96dcee1a86cc3bffbc616bb1d53f0f69ad1ee70fac4d8386",
+  "git_delta": {
+    "base_commit": "3b826016862f462ad3956277e030adb424452115",
+    "candidate_commit": "8925c91a462a40cf25c02926624b693327a57b9f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_cbm_sa_mollify_l1",
+    "diff_sha256": "d3fa0d2e67f719858009ce7012a68b9472fac080b441d8ea085741d96422b2cf",
+    "source_sha256": "6e84d6310e8f7ea833dc84ebb84134c79dee2387a4405aa97c7aef351792b460",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_cbm_sa_mollify_l1",
+      "statement": "∀ (n : ℕ) (f : Euclid n → ℝ), Integrable f → ∀ ε : ℝ, 0 < ε → ∃ r : ℝ, 0 < r ∧ ∀ ρ : Euclid n → ℝ, Continuous ρ → (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → support ρ ⊆ ball (0 : Euclid n) r → ∫⁻ x, ‖convolution ρ f (ContinuousLinearMap.lsmul ℝ ℝ) volume x - f x‖ₑ ≤ ENNReal.ofReal ε",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
