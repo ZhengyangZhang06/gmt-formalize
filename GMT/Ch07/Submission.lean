@@ -3104,5 +3104,21 @@ theorem Submission.idtp_tdc_puvd_plane_domain : ∀ (P q : ℕ) (Ps : Fin q → 
   · -- step 3: `Pⱼ ⊆ F = ℝᴾ ∖ V` for `j ≠ i`
     exact disjoint_compl_left_iff_subset.2
       (subset_biUnion_of_mem (u := fun j => (Ps j : Set (Euclid P))) hj)
+/-- **Exact homogeneous ball mass gives the density** (step 7 of the density computation for the
+planes of a 2-dimensional minimizing cone, Simon 7.3.3(1), p. 191).  If `θ ≥ 0`, `r > 0` and
+`M_{B_ρ(x)}(T) = θ ωₙρⁿ` for `0 < ρ < r`, then `Θⁿ(μ_T, x) = θ`.  `ωₙ` is the volume of the
+nonempty bounded open unit ball of `ℝⁿ`, so `0 < ωₙρⁿ < ∞` and the ratio
+`M_{B_ρ(x)}(T)/(ωₙρⁿ)` equals `θ` for `0 < ρ < r`; `(0, r) ∈ 𝓝[>] 0`, so it tends to `θ`. -/
+theorem Submission.idtp_tdc_puvd_density_of_ball_mass : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (θ r : ℝ), 0 ≤ θ → 0 < r → (∀ ρ : ℝ, 0 < ρ → ρ < r → T.massOn (ball x ρ) = ENNReal.ofReal θ * (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) → HasMassDensity T x θ := by
+  intro P n U T x θ r hθ hr hmass
+  -- `0 < ωₙ < ∞`: `ωₙ` is the volume of the nonempty bounded open unit ball of `ℝⁿ`
+  have hω₀ : unitBallVolume n ≠ 0 := (measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hω : unitBallVolume n ≠ ∞ := measure_ball_ne_top
+  -- for `0 < ρ < r` the ratio is `θ ωₙρⁿ / ωₙρⁿ = θ`, and `(0, r) ∈ 𝓝[>] 0`
+  refine ⟨hθ, tendsto_const_nhds.congr' ?_⟩
+  filter_upwards [Ioo_mem_nhdsGT hr] with ρ hρ
+  rw [hmass ρ hρ.1 hρ.2, ENNReal.mul_div_cancel_right
+    (mul_ne_zero hω₀ (ENNReal.ofReal_pos.2 (pow_pos hρ.1 n)).ne')
+    (ENNReal.mul_ne_top hω ENNReal.ofReal_ne_top)]
 
 end GMT.Ch07
