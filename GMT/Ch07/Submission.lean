@@ -610,6 +610,69 @@ theorem Submission.dor_lmbsf_interior_product_orientation : ∀ (P n : ℕ) (ζ 
   · exact Or.inl fun α => by rw [hζ' α, h, hwedge]
   · exact Or.inr fun α => by rw [hζ' α, h, hwedge]
 
+/-- The orientation field of a slice (Simon Ch. 6, 4.3–4.4: `ξₜ = ξ⌞(∇ᴹf/|∇ᴹf|)`, with
+`⟨v⌞w, a⟩ = ⟨v, w ∧ a⟩`; the slices of Ch. 6, 4.5 enter the upper mass bound in the proof of
+7.4.3): for a strongly measurable `(n+1)`-vector field `ζ` and a Borel vector field `g`, the
+`n`-vector field `ζ' = ζ⌞(g/|g|)`, `⟨α, ζ'⟩ = ⟨(g/|g|)♭ ∧ α, ζ⟩`, is strongly measurable,
+`|g| ζ' = ζ⌞g`, and `|⟨g♭ ∧ α, ζ⟩| ≤ (n + 1) |ζ| |g| |α|`.  The wedge `(v, α) ↦ v♭ ∧ α` is
+bounded bilinear with `|v♭ ∧ α| ≤ (n + 1) |v| |α|`, so `(ζ₀, v) ↦ ζ₀ ∘ (v♭ ∧ ·)` is continuous. -/
+theorem Submission.dor_lmbsf_si_slice_orientation_field : ∀ (P n : ℕ) (ζ : Euclid P → MultiVector P (n + 1)) (g : Euclid P → Euclid P), StronglyMeasurable ζ → Measurable g → ∃ ζ' : Euclid P → MultiVector P n, StronglyMeasurable ζ' ∧ (∀ x (α : Covector (Euclid P) n), ζ' x α = ζ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (‖g x‖⁻¹ • g x)).smulRight α))) ∧ (∀ x (α : Covector (Euclid P) n), ‖g x‖ * ζ' x α = ζ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (g x)).smulRight α))) ∧ ∀ x (α : Covector (Euclid P) n), |ζ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (g x)).smulRight α))| ≤ ((n : ℝ) + 1) * ‖ζ x‖ * ‖g x‖ * ‖α‖ := by
+  intro P n ζ g hζ hg
+  -- the wedge `B(v, α) = v♭ ∧ α`, with `|v♭ ∧ α| ≤ (n + 1) |v| |α|`
+  let B : Euclid P × Covector (Euclid P) n → Covector (Euclid P) (n + 1) := fun p =>
+    ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ p.1).smulRight p.2)
+  have hBnorm : ∀ v α, ‖B (v, α)‖ ≤ ((n : ℝ) + 1) * ‖v‖ * ‖α‖ := fun v α => by
+    refine (ContinuousAlternatingMap.norm_alternatizeUncurryFin_le _).trans_eq ?_
+    rw [ContinuousLinearMap.norm_smulRight_apply, innerSL_apply_norm, mul_assoc]
+  -- `B` is bilinear: compare the arguments of `alternatizeUncurryFin` at each `y`
+  have hB : IsBoundedBilinearMap ℝ B :=
+    { add_left := fun v w α => by
+        simp only [B, map_add, ← ContinuousAlternatingMap.alternatizeUncurryFin_add]
+        congr 1
+        ext y
+        simp [add_smul]
+      smul_left := fun c v α => by
+        simp only [B, map_smul, ← ContinuousAlternatingMap.alternatizeUncurryFin_smul]
+        congr 1
+        ext y
+        simp [smul_smul]
+      add_right := fun v α β => by
+        simp only [B, ← ContinuousAlternatingMap.alternatizeUncurryFin_add]
+        congr 1
+        ext y
+        simp
+      smul_right := fun c v α => by
+        simp only [B, ← ContinuousAlternatingMap.alternatizeUncurryFin_smul]
+        congr 1
+        ext y
+        simp [smul_smul, mul_comm]
+      bound := ⟨(n : ℝ) + 1, by positivity, hBnorm⟩ }
+  -- `A v = v♭ ∧ ·`, a continuous linear map in `v`
+  let A : Euclid P →L[ℝ] Covector (Euclid P) n →L[ℝ] Covector (Euclid P) (n + 1) :=
+    hB.toContinuousLinearMap
+  -- `Ξ(ζ₀, v) = ζ₀ ∘ (v♭ ∧ ·)` is continuous, since composition is bounded bilinear
+  let Ξ : MultiVector P (n + 1) × Euclid P → MultiVector P n := fun p => p.1.comp (A p.2)
+  have hΞ : Continuous Ξ := isBoundedBilinearMap_comp.continuous.comp
+    (continuous_fst.prodMk (A.continuous.comp continuous_snd))
+  -- `ζ' = Ξ(ζ, g/|g|)`, where `g/|g|` is Borel
+  have hν : Measurable fun x => ‖g x‖⁻¹ • g x := hg.norm.inv.smul hg
+  refine ⟨fun x => Ξ (ζ x, ‖g x‖⁻¹ • g x),
+    hΞ.comp_stronglyMeasurable (hζ.prodMk hν.stronglyMeasurable), fun x α => rfl, ?_, ?_⟩
+  · -- `|g| ζ' = ζ⌞g`: linearity of `A` and of `ζ(x)`; trivial where `g(x) = 0`
+    intro x α
+    show ‖g x‖ * ζ x (A (‖g x‖⁻¹ • g x) α) = ζ x (A (g x) α)
+    by_cases hgx : g x = 0
+    · simp [hgx]
+    · rw [map_smul, smul_apply, map_smul, smul_eq_mul, ← mul_assoc,
+        mul_inv_cancel₀ (norm_ne_zero_iff.mpr hgx), one_mul]
+  · -- `|⟨g♭ ∧ α, ζ⟩| ≤ |ζ| |g♭ ∧ α| ≤ (n + 1) |ζ| |g| |α|`
+    intro x α
+    show |ζ x (A (g x) α)| ≤ _
+    rw [← Real.norm_eq_abs]
+    calc ‖ζ x (A (g x) α)‖ ≤ ‖ζ x‖ * ‖A (g x) α‖ := (ζ x).le_opNorm _
+      _ ≤ ‖ζ x‖ * (((n : ℝ) + 1) * ‖g x‖ * ‖α‖) := by gcongr; exact hBnorm (g x) α
+      _ = ((n : ℝ) + 1) * ‖ζ x‖ * ‖g x‖ * ‖α‖ := by ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
