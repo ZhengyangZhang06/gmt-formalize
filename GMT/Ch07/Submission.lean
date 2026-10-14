@@ -1627,6 +1627,103 @@ theorem Submission.cmcdt_lpo_pf_pointwise_limit : (∀ (P n : ℕ) (U : Set (Euc
       rw [hε'eq, div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
       nlinarith
 
+/-- The Lipschitz push-forward of a normal current is a current (Simon 6.2.28–2.29).  For every
+`ω`, `L ω` is the common limit of `X(ηⱼ)` over admissible data for `ω`
+(`cmcdt_lpo_pf_pointwise_limit`).  The common approximants `Gⱼ` and forms `θⱼ^ω = Gⱼ^#ω` near
+`spt X` of `cmcdt_lpo_pf_approx_data` are admissible for every `ω`; sums and scalar multiples of
+them are admissible for `ω₁ + ω₂` and `c • ω`, so `L` is linear by uniqueness of limits.  By (L1)
+and the mass–support bound, `|L ω| ≤ Λᵏ M(X) c` whenever `|ω| ≤ c`, so `L` is a current `T`
+(`cmcdt_lpo_current_toolkit`), and `X(ηⱼ) → T(ω)` for all admissible data. -/
+theorem Submission.cmcdt_lpo_pf_current : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (α : Covector (Euclid N) k) (τ : Fin k → Euclid N), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α) → ∀ (N N' k : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → ∃ T : GeometricCurrentOn (univ : Set (Euclid N')) k, ∀ (Λ' : ℝ) (Fs : ℕ → Euclid N → Euclid N') (ω : TestFormOn (univ : Set (Euclid N')) k) (ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k), (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) → (∀ j, ∀ x ∈ X.support, ‖fderiv ℝ (Fs j) x‖ ≤ Λ') → TendstoUniformlyOn Fs F atTop X.support → (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (T ω)) := by
+  intro hVO hREP hLB N N' k Λ F X hF hX1 hX2 hX3
+  obtain ⟨hMSB, hBC, -, -⟩ := Submission.cmcdt_lpo_current_toolkit hVO hREP
+  have hL1 := hLB.1
+  -- the common limit `L ω` of `X(ηⱼ)` over all admissible data for `ω`
+  choose L hL using fun ω =>
+    Submission.cmcdt_lpo_pf_pointwise_limit hVO hREP hLB N N' k Λ F X ω hF hX1 hX2 hX3
+  -- common approximants `Gⱼ` and pulled-back forms `θⱼ^ω`, admissible for every `ω`
+  obtain ⟨G, hG, -, hDG, -, hUG, hηG⟩ :=
+    Submission.cmcdt_lpo_pf_approx_data N N' Λ F X.support hF hX1
+  choose θ hθs using hηG k
+  have hθ : ∀ ω j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W,
+      (θ ω j : DifferentialForm (Euclid N) k) x =
+        ((ω : DifferentialForm (Euclid N') k) (G j x)).compContinuousLinearMap
+          (fderiv ℝ (G j) x) := fun ω j => by
+    obtain ⟨W, hW, hKW, h1, -⟩ := hθs ω j
+    exact ⟨W, hW, hKW, h1⟩
+  have hconv : ∀ ω, Tendsto (fun j => X (θ ω j)) atTop (𝓝 (L ω)) := fun ω =>
+    hL ω Λ G (θ ω) hG (fun j x _ => hDG j x) hUG.tendstoUniformlyOn (hθ ω)
+  -- additivity: `θⱼ^{ω₁} + θⱼ^{ω₂}` is admissible for `ω₁ + ω₂`
+  have hadd : ∀ ω₁ ω₂, L (ω₁ + ω₂) = L ω₁ + L ω₂ := by
+    intro ω₁ ω₂
+    have hdata : ∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W,
+        ((θ ω₁ j + θ ω₂ j : TestFormOn (univ : Set (Euclid N)) k) :
+          DifferentialForm (Euclid N) k) x =
+        (((ω₁ + ω₂ : TestFormOn (univ : Set (Euclid N')) k) : DifferentialForm (Euclid N') k)
+          (G j x)).compContinuousLinearMap (fderiv ℝ (G j) x) := by
+      intro j
+      obtain ⟨W₁, hW₁, hK₁, h₁⟩ := hθ ω₁ j
+      obtain ⟨W₂, hW₂, hK₂, h₂⟩ := hθ ω₂ j
+      refine ⟨W₁ ∩ W₂, hW₁.inter hW₂, subset_inter hK₁ hK₂, fun x hx => ?_⟩
+      rw [Submodule.coe_add, Submodule.coe_add, Pi.add_apply, Pi.add_apply, h₁ x hx.1, h₂ x hx.2]
+      ext v
+      simp
+    have h1 := hL (ω₁ + ω₂) Λ G (fun j => θ ω₁ j + θ ω₂ j) hG (fun j x _ => hDG j x)
+      hUG.tendstoUniformlyOn hdata
+    have h2 : Tendsto (fun j => X (θ ω₁ j + θ ω₂ j)) atTop (𝓝 (L ω₁ + L ω₂)) := by
+      have := (hconv ω₁).add (hconv ω₂)
+      refine this.congr (fun j => ?_)
+      exact (X.toCurrent.map_add _ _).symm
+    exact tendsto_nhds_unique h1 h2
+  -- homogeneity: `c • θⱼ^ω` is admissible for `c • ω`
+  have hsmul : ∀ (c : ℝ) ω, L (c • ω) = c * L ω := by
+    intro c ω
+    have hdata : ∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W,
+        ((c • θ ω j : TestFormOn (univ : Set (Euclid N)) k) :
+          DifferentialForm (Euclid N) k) x =
+        (((c • ω : TestFormOn (univ : Set (Euclid N')) k) : DifferentialForm (Euclid N') k)
+          (G j x)).compContinuousLinearMap (fderiv ℝ (G j) x) := by
+      intro j
+      obtain ⟨W, hW, hK, h⟩ := hθ ω j
+      refine ⟨W, hW, hK, fun x hx => ?_⟩
+      rw [Submodule.coe_smul, Submodule.coe_smul, Pi.smul_apply, Pi.smul_apply, h x hx]
+      ext v
+      simp
+    have h1 := hL (c • ω) Λ G (fun j => c • θ ω j) hG (fun j x _ => hDG j x)
+      hUG.tendstoUniformlyOn hdata
+    have h2 : Tendsto (fun j => X (c • θ ω j)) atTop (𝓝 (c * L ω)) := by
+      have := (hconv ω).const_mul c
+      refine this.congr (fun j => ?_)
+      exact (X.toCurrent.map_smul c _).symm
+    exact tendsto_nhds_unique h1 h2
+  let T₀ : TestFormOn (univ : Set (Euclid N')) k →ₗ[ℝ] ℝ :=
+    { toFun := L
+      map_add' := hadd
+      map_smul' := hsmul }
+  -- `|T₀ ω| ≤ Λᵏ M(X) c` whenever `|ω| ≤ c`, by (L1) and the mass–support bound
+  have hbound : ∀ (ω : TestFormOn (univ : Set (Euclid N')) k) (c : ℝ),
+      (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N') k) x) ≤ c) →
+        |T₀ ω| ≤ ((Λ : ℝ) ^ k * X.mass.toReal) * c := by
+    intro ω c hc
+    have hj : ∀ j, |X (θ ω j)| ≤ (Λ : ℝ) ^ k * c * X.mass.toReal := by
+      intro j
+      apply hMSB N k X (θ ω j) ((Λ : ℝ) ^ k * c) hX2
+      intro x hx
+      obtain ⟨W, -, hKW, h⟩ := hθ ω j
+      rw [h x (hKW hx)]
+      refine (hL1 N N' k (fderiv ℝ (G j) x) _).trans ?_
+      exact mul_le_mul (pow_le_pow_left₀ (norm_nonneg _) (hDG j x) k) (hc _)
+        (covectorEuclideanNorm_nonneg _) (pow_nonneg Λ.2 k)
+    have hlim : |L ω| ≤ (Λ : ℝ) ^ k * c * X.mass.toReal :=
+      le_of_tendsto' (hconv ω).abs hj
+    show |L ω| ≤ _
+    linarith
+  -- the bounded linear functional `T₀` is a current `T`, with `T ω = L ω`
+  obtain ⟨T, hT, -⟩ := hBC N' k T₀ ((Λ : ℝ) ^ k * X.mass.toReal) hbound
+  refine ⟨T, fun Λ' Fs ω ηs hFs hD hU hη => ?_⟩
+  rw [hT ω]
+  exact hL ω Λ' Fs ηs hFs hD hU hη
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
