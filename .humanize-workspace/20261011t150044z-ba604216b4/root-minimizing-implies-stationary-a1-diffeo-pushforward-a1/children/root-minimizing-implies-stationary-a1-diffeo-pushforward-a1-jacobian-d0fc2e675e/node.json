@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.jacobian_measurable-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1",
+  "depth": 3,
+  "title": "Measurability of the tangential Jacobian from measurability of the tangent projection",
+  "statement": "Let μ be a measure on E := ℝ^P, Q : E → {subspaces of E} and L : E → End(E) such that x ↦ (orthogonal projection onto Q(x)) and x ↦ L(x) are μ-a.e. strongly measurable. Then x ↦ (det(L(x)e_a · L(x)e_b)_{a,b})^{1/2}, where e is the standard orthonormal basis of Q(x), is μ-a.e. strongly measurable.",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)) (L : Euclid P → (Euclid P →L[ℝ] Euclid P)), AEStronglyMeasurable (fun x => (Q x).starProjection) μ → AEStronglyMeasurable L μ → AEStronglyMeasurable (fun x => Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q x)) => inner ℝ (L x (stdOrthonormalBasis ℝ (Q x) i)) (L x (stdOrthonormalBasis ℝ (Q x) j))))) μ",
+  "lean_name": "dpf_aestronglyMeasurable_gramJacobian",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-jacobian-d0fc2e675e-a1"
+}
