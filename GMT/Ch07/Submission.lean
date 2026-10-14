@@ -686,6 +686,72 @@ theorem Submission.dimred_tr_mcr_tl_density_lower_bound : ∀ (n : ℕ) (Λ c s 
   -- `(0, s) ∈ 𝓝[>] 0`, so the bound passes to the limit
   exact le_of_tendsto_of_tendsto hleft hlim (eventually_of_mem (Ioo_mem_nhdsGT hs) hratio)
 
+/-- **Density lower bounds pass to vague limits** (Simon 7.3.3, display (12), chapter-07.txt
+lines 478–482, in threshold form; the densities exist by the monotonicity formula as in the proof
+of 7.3.1(1), lines 326–328).  Let `μⱼ → μ` vaguely in `ℝᴾ`, all finite on compact sets and all
+satisfying the monotonicity hypothesis (`ρ ↦ e^{Λρ} ρ⁻ⁿ ν(B_ρ(y))` nondecreasing on `(0, R)`
+whenever `B̄_R(y) ⊆ B̄₂(0)`), and let `wⱼ → w` with `|w| < 2`.  If `c ≤ Θ(μⱼ, wⱼ)` for every `j`,
+then `c ≤ Θ(μ, w)`.  With `r = (2 - |w|)/4`, monotonicity at `wⱼ` gives
+`ωₙ c ρⁿ e^{-Λρ} ≤ μⱼ(B_ρ(wⱼ))` for `ρ < 2r` and large `j`; `limsup μⱼ(K) ≤ μ(K)` transfers this
+to `μ(B_t(w))`, and dividing by `ωₙ tⁿ` and letting `t ↓ 0` (monotonicity at `w`) gives the
+claim. -/
+theorem Submission.dimred_tr_mcr_threshold_limit : ∀ (P n : ℕ) (Λ c : ℝ) (μ : Measure (Euclid P)) (μs : ℕ → Measure (Euclid P)) (ws : ℕ → Euclid P) (w : Euclid P), (∀ K : Set (Euclid P), IsCompact K → μ K ≠ ∞) → (∀ (j : ℕ) (K : Set (Euclid P)), IsCompact K → μs j K ≠ ∞) → (∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ closedBall 0 2 → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * μ (ball y ρ)) (Ioo 0 R)) → (∀ (j : ℕ) (y : Euclid P) (R : ℝ), closedBall y R ⊆ closedBall 0 2 → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * μs j (ball y ρ)) (Ioo 0 R)) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ))) → Tendsto ws atTop (𝓝 w) → ‖w‖ < 2 → (∀ j, c ≤ (limsup (fun ρ : ℝ => μs j (ball (ws j) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) → c ≤ (limsup (fun ρ : ℝ => μ (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal := by
+  intro P n Λ c μ μs ws w hμ hμs hmono hmonos hconv hws hw hc
+  -- Step 3 (the case `c ≤ 0`) needs no separate treatment: the final `ofReal_le_ofReal_iff` only
+  -- uses `0 ≤ Θ(μ, w)`.
+  -- Step 4: radii.  With `r = (2 - |w|)/4 > 0`, `B̄_{2r}(wⱼ) ⊆ B̄₂(0)` once `|wⱼ - w| < r`, and
+  -- `B̄_{4r}(w) ⊆ B̄₂(0)`
+  set r : ℝ := (2 - ‖w‖) / 4 with hr_def
+  have hr : 0 < r := by linarith
+  have hsubj : ∀ j, dist (ws j) w < r → closedBall (ws j) (2 * r) ⊆ closedBall 0 2 := by
+    intro j hj
+    refine closedBall_subset_closedBall' ?_
+    have h0 := dist_triangle (ws j) w 0
+    rw [dist_zero_right w] at h0
+    linarith
+  have hsub : closedBall w (4 * r) ⊆ closedBall 0 2 :=
+    closedBall_subset_closedBall' (by rw [dist_zero_right]; linarith)
+  -- open balls lie in compact closed balls, so they have finite measure
+  have hfin : ∀ ν : Measure (Euclid P), (∀ K : Set (Euclid P), IsCompact K → ν K ≠ ∞) →
+      ∀ (y : Euclid P) (ρ : ℝ), ν (ball y ρ) ≠ ∞ := fun ν hν y ρ =>
+    measure_ne_top_of_subset ball_subset_closedBall (hν _ (isCompact_closedBall y ρ))
+  -- the comparison function `h(ρ) = ωₙ ofReal(c) ofReal(ρⁿ e^{-Λρ})` is continuous (`ωₙ < ∞`)
+  have hω : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hcont : Continuous fun ρ : ℝ =>
+      unitBallVolume n * ENNReal.ofReal c * ENNReal.ofReal (ρ ^ n * Real.exp (-(Λ * ρ))) :=
+    (ENNReal.continuous_const_mul (ENNReal.mul_ne_top hω ENNReal.ofReal_ne_top)).comp
+      (ENNReal.continuous_ofReal.comp (by fun_prop))
+  -- Step 5: for large `j`, the monotone density lemma at `wⱼ` (radius `2r`) and `c ≤ Θ(μⱼ, wⱼ)`
+  -- give `h(ρ) ≤ μⱼ(B_ρ(wⱼ))` for `0 < ρ < 2r`
+  have hlow : ∀ᶠ j in atTop, ∀ ρ ∈ Ioo 0 (2 * r), unitBallVolume n * ENNReal.ofReal c *
+      ENNReal.ofReal (ρ ^ n * Real.exp (-(Λ * ρ))) ≤ μs j (ball (ws j) ρ) := by
+    filter_upwards [Metric.tendsto_nhds.mp hws r hr] with j hj ρ hρ
+    calc unitBallVolume n * ENNReal.ofReal c * ENNReal.ofReal (ρ ^ n * Real.exp (-(Λ * ρ)))
+        ≤ unitBallVolume n * ENNReal.ofReal (limsup (fun ρ : ℝ => μs j (ball (ws j) ρ) /
+            (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal *
+            ENNReal.ofReal (ρ ^ n * Real.exp (-(Λ * ρ))) := by
+          gcongr
+          exact hc j
+      _ ≤ μs j (ball (ws j) ρ) :=
+          (Submission.dimred_tr_mcr_tl_monotone_density n Λ (2 * r)
+            (fun ρ => μs j (ball (ws j) ρ)) (by linarith) (fun ρ _ => hfin _ (hμs j) _ _)
+            (hmonos j (ws j) (2 * r) (hsubj j hj))).2 ρ hρ
+  -- Step 6: vague convergence gives `limsup μⱼ(K) ≤ μ(K)` for compact `K` (portmanteau, `U = ℝᴾ`)
+  have hvague : ∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K :=
+    fun K hK => (Submission.cbr_vague_portmanteau P univ μs μ isOpen_univ
+      (fun j K hK _ => (hμs j K hK).lt_top) (fun K hK _ => (hμ K hK).lt_top)
+      (fun f hf hfs _ => hconv f hf hfs)).1 K hK (subset_univ K)
+  -- Step 7: the lower bound passes to the limit: `h(t) ≤ μ(B_t(w))` for `0 < t < 2r`
+  have htr := Submission.dimred_tr_mcr_tl_lower_bound_transfer P μ μs ws w (2 * r) _ hvague hws
+    hcont hlow
+  -- Steps 8–9: by the monotone density lemma at `w` (radius `4r`) the ratio tends to
+  -- `ofReal Θ(μ, w)`, so `ofReal c ≤ ofReal Θ(μ, w)`, i.e. `c ≤ Θ(μ, w)` as `Θ(μ, w) ≥ 0`
+  have hlim := (Submission.dimred_tr_mcr_tl_monotone_density n Λ (4 * r)
+    (fun ρ => μ (ball w ρ)) (by linarith) (fun ρ _ => hfin _ hμ _ _) (hmono w (4 * r) hsub)).1
+  exact (ENNReal.ofReal_le_ofReal_iff ENNReal.toReal_nonneg).1
+    (Submission.dimred_tr_mcr_tl_density_lower_bound n Λ c (2 * r) (fun t => μ (ball w t)) _
+      (by linarith) htr hlim)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
