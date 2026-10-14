@@ -4219,6 +4219,291 @@ theorem Submission.dor_lmb_fcd_fr_local_plane_tangent : ∀ (P n : ℕ) (N : Set
   rw [hloc (V : Set (Euclid P)), hloc (Poincare.SimonGMT.Chapter03.blowUpMap x lam '' N),
     hblow lam hlam]
 
+/-- **Lattice chains are integer multiplicity** (Simon Ch. 6, proof of 5.1: "the fact that `P`,
+`R` are integer multiplicity … should be evident").  Let `T(ω) = Σ_{p ∈ s} ∫_{Q₁} β_p
+ω(Φ_p(y))(e_p) dy`, where `p = (z, ι)` has `ι` strictly increasing, `Φ_p(y) = z + Σⱼ yⱼ e_{ι(j)}`,
+`e_p = (e_{ι(0)}, …, e_{ι(m)})` and `Q₁ = (0, 1)ⁿ`.  Then `T = τ(N, θ, ξ)`, where `N` is the union
+of the open faces `A_p = Φ_p(Q₁)` with `β_p ≠ 0`, `θ = |β_p|` and `ξ = sgn(β_p) e_p^*` on `A_p`
+(`e_p^*(α) = α(e_p)`).  The face facts (`Φ_p` an isometry, `A_p ⊆ F_p` closed with `Hⁿ(F_p) = 1`,
+`∫_{F_p} f dHⁿ = ∫_{Q₁} f ∘ Φ_p`, `A_p ∩ F_q = ∅` for `q ≠ p`) make the `A_p` disjoint Borel sets
+of measure `≤ 1`, so `(N, θ, ξ)` is Borel, countably `n`-rectifiable and locally integrable; near
+`x ∈ A_p`, `N` coincides with `x + V_p`, `V_p = span e_p` (the other faces are closed and miss
+`x`), so `TₓN = V_p`, oriented by `±e_p`; and face by face its action is `T(ω)`. -/
+theorem Submission.dor_lmb_fcd_fr_lattice_chain_im : ∀ (P m : ℕ) (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (β : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℤ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ p ∈ s, StrictMono p.2) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, (β p : ℝ) * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ))) → IsIntegerMultiplicity T := by
+  intro P m s β T hmono hT
+  classical
+  -- Step 1: the face facts, in the notation `Q₁`, `Φ_p`, `F_p`, `e_p`
+  obtain ⟨Q₁, hQ₁⟩ : ∃ Q : Set (Euclid (m + 1)), Q = {y | ∀ i, 0 < y i ∧ y i < 1} := ⟨_, rfl⟩
+  obtain ⟨Φ, hΦ⟩ : ∃ Φ : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → Euclid (m + 1) → Euclid P,
+      Φ = fun p y => WithLp.toLp 2 (fun i => (p.1 i : ℝ)) +
+        ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ) := ⟨_, rfl⟩
+  obtain ⟨F, hF⟩ : ∃ F : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → Set (Euclid P),
+      F = fun p => {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → (p.1 i : ℝ) ≤ x i ∧
+        x i ≤ p.1 i + 1) ∧ (i ∉ Set.range p.2 → x i = p.1 i)} := ⟨_, rfl⟩
+  obtain ⟨e, he⟩ : ∃ e : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → Fin (m + 1) → Euclid P,
+      e = fun p k => EuclideanSpace.single (p.2 k) (1 : ℝ) := ⟨_, rfl⟩
+  have hFG := fun p (hp : p ∈ s) => Submission.dor_lmb_fcd_fr_face_geometry P m p (hmono p hp)
+  have hFmeas : ∀ p ∈ s, μHE[m + 1] (F p) = 1 := fun p hp => by
+    rw [hF]; exact (hFG p hp).2.1
+  have hFint : ∀ p ∈ s, ∀ f : Euclid P → ℝ,
+      ∫ x in F p, f x ∂μHE[m + 1] = ∫ y in Q₁, f (Φ p y) := fun p hp f => by
+    rw [hF, hQ₁, hΦ]; exact (hFG p hp).2.2.2.1 f
+  have hΦF : ∀ p ∈ s, ∀ y ∈ Q₁, Φ p y ∈ F p := fun p hp y hy => by
+    rw [hQ₁] at hy
+    rw [hF, hΦ]
+    exact (hFG p hp).2.2.2.2.1 y fun i => ⟨(hy i).1.le, (hy i).2.le⟩
+  have hiso : ∀ p ∈ s, Isometry (Φ p) := fun p hp => Isometry.of_dist_eq fun y y' => by
+    rw [hΦ]; exact (hFG p hp).2.2.2.2.2.1 y y'
+  have hFclosed : ∀ p ∈ s, IsClosed (F p) := fun p hp => by
+    rw [hF]; exact (hFG p hp).2.2.2.2.2.2.2.1
+  have hΦnotF : ∀ p ∈ s, ∀ q ∈ s, q ≠ p → ∀ y ∈ Q₁, Φ p y ∉ F q :=
+    fun p hp q hq hqp y hy => by
+      rw [hQ₁] at hy
+      rw [hF, hΦ]
+      exact (hFG p hp).2.2.2.2.2.2.2.2 q (hmono q hq) hqp y hy
+  have hQ₁open : IsOpen Q₁ := by
+    rw [hQ₁, ofPred_forall]
+    exact isOpen_iInter_of_finite fun i =>
+      (isOpen_lt continuous_const (PiLp.continuous_apply 2 _ i)).inter
+        (isOpen_lt (PiLp.continuous_apply 2 _ i) continuous_const)
+  -- the open faces `A_p = Φ_p(Q₁) ⊆ F_p`: Borel, pairwise disjoint, `Hⁿ(A_p) ≤ 1`
+  obtain ⟨A, hA⟩ : ∃ A : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → Set (Euclid P),
+      A = fun p => Φ p '' Q₁ := ⟨_, rfl⟩
+  have hAmem : ∀ p x, x ∈ A p ↔ ∃ y ∈ Q₁, Φ p y = x := fun p x => by
+    rw [hA]; exact Iff.rfl
+  have hAmeas : ∀ p ∈ s, MeasurableSet (A p) := fun p hp => by
+    rw [hA]
+    exact (hiso p hp).isClosedEmbedding.measurableEmbedding.measurableSet_image.mpr
+      hQ₁open.measurableSet
+  have hAF : ∀ p ∈ s, A p ⊆ F p := fun p hp x hx => by
+    obtain ⟨y, hy, rfl⟩ := (hAmem p x).mp hx
+    exact hΦF p hp y hy
+  have hAdisj : ∀ p ∈ s, ∀ q ∈ s, p ≠ q → Disjoint (A p) (A q) := fun p hp q hq hpq => by
+    refine Set.disjoint_left.mpr fun x hxp hxq => ?_
+    obtain ⟨y, hy, rfl⟩ := (hAmem p x).mp hxp
+    exact hΦnotF p hp q hq (Ne.symm hpq) y hy (hAF q hq hxq)
+  have hAfin : ∀ p ∈ s, μHE[m + 1] (A p) ≤ 1 := fun p hp =>
+    (measure_mono (hAF p hp)).trans (hFmeas p hp).le
+  -- Step 2: the triple `N = ⋃_{β_p ≠ 0} A_p`, `θ = Σ_p |β_p| 1_{A_p}`,
+  -- `ξ = Σ_p sgn(β_p) 1_{A_p} e_p^*`
+  obtain ⟨s', hs'⟩ : ∃ s' : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P)),
+      s' = s.filter fun p => β p ≠ 0 := ⟨_, rfl⟩
+  have hs's : ∀ p ∈ s', p ∈ s := fun p hp => by
+    rw [hs'] at hp; exact (Finset.mem_filter.mp hp).1
+  have hs'β : ∀ p ∈ s', β p ≠ 0 := fun p hp => by
+    rw [hs'] at hp; exact (Finset.mem_filter.mp hp).2
+  obtain ⟨N, hN⟩ : ∃ N : Set (Euclid P), N = ⋃ p ∈ s', A p := ⟨_, rfl⟩
+  have hNmem : ∀ x, x ∈ N ↔ ∃ p ∈ s', x ∈ A p := fun x => by
+    rw [hN]; simp only [mem_iUnion, exists_prop]
+  have hNmeas : MeasurableSet N := by
+    rw [hN]; exact Finset.measurableSet_biUnion s' fun p hp => hAmeas p (hs's p hp)
+  obtain ⟨θ, hθ⟩ : ∃ θ : Euclid P → ℕ,
+      θ = fun x => ∑ p ∈ s', (A p).indicator (fun _ => (β p).natAbs) x := ⟨_, rfl⟩
+  obtain ⟨ξ, hξ⟩ : ∃ ξ : Euclid P → MultiVector P (m + 1),
+      ξ = fun x => ∑ p ∈ s', (A p).indicator
+        (fun _ => ((β p).sign : ℝ) • ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (e p)) x :=
+    ⟨_, rfl⟩
+  -- on `A_p` (`β_p ≠ 0`), by disjointness, `θ = |β_p|` and `ξ = sgn(β_p) e_p^*`
+  have hθA : ∀ p ∈ s', ∀ x ∈ A p, θ x = (β p).natAbs := fun p hp x hx => by
+    rw [hθ]
+    beta_reduce
+    rw [Finset.sum_eq_single_of_mem p hp, indicator_of_mem hx]
+    intro q hq hqp
+    exact indicator_of_notMem (fun hxq => Set.disjoint_left.mp
+      (hAdisj p (hs's p hp) q (hs's q hq) (Ne.symm hqp)) hx hxq) _
+  have hξA : ∀ p ∈ s', ∀ x ∈ A p,
+      ξ x = ((β p).sign : ℝ) • ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (e p) :=
+    fun p hp x hx => by
+      rw [hξ]
+      beta_reduce
+      rw [Finset.sum_eq_single_of_mem p hp, indicator_of_mem hx]
+      intro q hq hqp
+      exact indicator_of_notMem (fun hxq => Set.disjoint_left.mp
+        (hAdisj p (hs's p hp) q (hs's q hq) (Ne.symm hqp)) hx hxq) _
+  -- Step 3: measurability, positivity, rectifiability, local integrability
+  have hθmeas : Measurable θ := by
+    rw [hθ]
+    exact Finset.measurable_sum s' fun p hp => measurable_const.indicator (hAmeas p (hs's p hp))
+  have hξmeas : StronglyMeasurable ξ := by
+    -- `Λₙ(ℝᴾ)` is a topological additive group; its `ContinuousAdd` is not found by inference
+    have : ContinuousAdd (MultiVector P (m + 1)) :=
+      (inferInstance : IsTopologicalAddGroup (MultiVector P (m + 1))).toContinuousAdd
+    rw [hξ]
+    exact Finset.stronglyMeasurable_fun_sum s' fun p hp =>
+      stronglyMeasurable_const.indicator (hAmeas p (hs's p hp))
+  have hθpos : ∀ x ∈ N, 0 < θ x := fun x hx => by
+    obtain ⟨p, hp, hxp⟩ := (hNmem x).mp hx
+    rw [hθA p hp x hxp]
+    exact Int.natAbs_pos.mpr (hs'β p hp)
+  -- `N ⊆ ⋃_{j < |s'|} Φ_{p_j}(ℝⁿ)`, each `Φ_p` being `1`-Lipschitz
+  have hrect : CountablyRectifiable (m + 1) N := by
+    refine (Poincare.SimonGMT.Chapter03.countablyRectifiable_iUnion
+      (fun j : ℕ => if h : j < s'.card then range (Φ (s'.equivFin.symm ⟨j, h⟩)) else ∅)
+      fun j => ?_).mono fun x hx => ?_
+    · beta_reduce
+      split_ifs with h
+      · exact Poincare.SimonGMT.Chapter03.countablyRectifiable_range
+          (hiso _ (hs's _ (s'.equivFin.symm ⟨j, h⟩).2)).lipschitzWith
+      · exact Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+    · obtain ⟨p, hp, hxp⟩ := (hNmem x).mp hx
+      obtain ⟨y, -, rfl⟩ := (hAmem p x).mp hxp
+      refine mem_iUnion.mpr ⟨s'.equivFin ⟨p, hp⟩, ?_⟩
+      rw [dite_eq_left (s'.equivFin ⟨p, hp⟩).2]
+      simp only [Fin.eta, Equiv.symm_apply_apply]
+      exact mem_range_self y
+  -- `∫_{N ∩ K} θ dHⁿ ≤ Σ_p |β_p| Hⁿ(A_p) < ∞`
+  have hθint : ∀ K : Set (Euclid P), IsCompact K → K ⊆ univ →
+      ∫⁻ x in N ∩ K, (θ x : ℝ≥0∞) ∂μHE[m + 1] ≠ ∞ := by
+    intro K _ _
+    refine ne_top_of_le_ne_top ?_ (lintegral_mono_set inter_subset_left)
+    rw [hN, lintegral_biUnion_finset
+      (fun p hp q hq hpq => hAdisj p (hs's p hp) q (hs's q hq) hpq)
+      fun p hp => hAmeas p (hs's p hp)]
+    refine ENNReal.sum_ne_top.mpr fun p hp => ?_
+    rw [setLIntegral_congr_fun (g := fun _ => ((β p).natAbs : ℝ≥0∞)) (hAmeas p (hs's p hp))
+      fun x hx => by rw [hθA p hp x hx], setLIntegral_const]
+    exact ENNReal.mul_ne_top (ENNReal.natCast_ne_top _)
+      (ne_top_of_le_ne_top ENNReal.one_ne_top (hAfin p (hs's p hp)))
+  -- Step 4: at `x ∈ A_p`, `TₓN = V_p = span e_p`, unit-oriented by `ξ(x) = ±e_p^*`
+  have horth : ∀ p ∈ s, Orthonormal ℝ (e p) := fun p hp => by
+    have h : e p = (EuclideanSpace.basisFun (Fin P) ℝ) ∘ p.2 := by
+      funext k
+      rw [he]
+      simp only [Function.comp_apply, EuclideanSpace.basisFun_apply]
+    rw [h]
+    exact (EuclideanSpace.basisFun (Fin P) ℝ).orthonormal.comp p.2 (hmono p hp).injective
+  have hunit : ∀ p ∈ s', IsUnitOrientationOf
+      (((β p).sign : ℝ) • ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (e p))
+      (Submodule.span ℝ (range (e p))) := fun p hp => by
+    refine ⟨e p, horth p (hs's p hp), rfl, ?_⟩
+    rcases lt_or_gt_of_ne (hs'β p hp) with h | h
+    · refine Or.inr fun α => ?_
+      rw [Int.sign_eq_neg_one_of_neg h]
+      simp
+    · refine Or.inl fun α => ?_
+      rw [Int.sign_eq_one_of_pos h]
+      simp
+  have htan : ∀ p ∈ s', ∀ x ∈ A p,
+      HasApproximateTangentSpaceAt (m + 1) N x (Submodule.span ℝ (range (e p))) := by
+    intro p hp x hx
+    have hps := hs's p hp
+    obtain ⟨y₀, hy₀, rfl⟩ := (hAmem p x).mp hx
+    -- `B_{r₁}(y₀) ⊆ Q₁`
+    obtain ⟨r₁, hr₁, hball₁⟩ := Metric.isOpen_iff.mp hQ₁open y₀ hy₀
+    -- `B_{r₂}(x)` misses the closed faces `F_q`, `q ∈ s' \ {p}`
+    have hGclosed : IsClosed (⋃ q ∈ s'.erase p, F q) :=
+      isClosed_biUnion_finset fun q hq => hFclosed q (hs's q (Finset.mem_of_mem_erase hq))
+    have hxG : Φ p y₀ ∉ ⋃ q ∈ s'.erase p, F q := by
+      simp only [mem_iUnion, exists_prop, not_exists, not_and]
+      intro q hq
+      exact hΦnotF p hps q (hs's q (Finset.mem_of_mem_erase hq)) (Finset.ne_of_mem_erase hq)
+        y₀ hy₀
+    obtain ⟨r₂, hr₂, hball₂⟩ := Metric.isOpen_iff.mp hGclosed.isOpen_compl _ hxG
+    refine Submission.dor_lmb_fcd_fr_local_plane_tangent P (m + 1) N (Φ p y₀) _ (min r₁ r₂)
+      ?_ (lt_min hr₁ hr₂) fun y hy => ?_
+    · rw [finrank_span_eq_card (horth p hps).linearIndependent, Fintype.card_fin]
+    have hy₁ : dist y (Φ p y₀) < r₁ := (mem_ball.mp hy).trans_le (min_le_left _ _)
+    have hy₂ : y ∉ ⋃ q ∈ s'.erase p, F q :=
+      hball₂ (mem_ball.mpr ((mem_ball.mp hy).trans_le (min_le_right _ _)))
+    constructor
+    · -- `y ∈ N` forces `y ∈ A_p`, so `y − x = Σ_k (y₁ − y₀)_k e_{ι(k)} ∈ V_p`
+      intro hyN
+      obtain ⟨q, hq, hyq⟩ := (hNmem y).mp hyN
+      have hqp : q = p := by
+        by_contra hqp
+        exact hy₂ (mem_iUnion₂.mpr ⟨q, Finset.mem_erase.mpr ⟨hqp, hq⟩, hAF q (hs's q hq) hyq⟩)
+      rw [hqp] at hyq
+      obtain ⟨y₁, -, rfl⟩ := (hAmem p y).mp hyq
+      have hdiff : Φ p y₁ - Φ p y₀ = ∑ k, (y₁ k - y₀ k) • e p k := by
+        rw [hΦ, he]
+        simp only [sub_smul, Finset.sum_sub_distrib, add_sub_add_left_eq_sub]
+      rw [hdiff]
+      exact sum_mem fun k _ => Submodule.smul_mem _ _ (Submodule.subset_span (mem_range_self k))
+    · -- `y − x = Σ_k c_k e_{ι(k)}` with `|c| = |y − x| < r₁`, so `y = Φ_p(y₀ + c) ∈ A_p`
+      intro hyV
+      obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).mp hyV
+      have hΦc : Φ p (y₀ + WithLp.toLp 2 c) = y := by
+        have h : Φ p (y₀ + WithLp.toLp 2 c) = Φ p y₀ + ∑ k, c k • e p k := by
+          rw [hΦ, he]
+          simp only [PiLp.add_apply, add_smul, Finset.sum_add_distrib, add_assoc]
+        rw [h, hc, add_sub_cancel]
+      have hc₁ : y₀ + WithLp.toLp 2 c ∈ Q₁ := by
+        apply hball₁
+        rw [mem_ball, ← (hiso p hps).dist_eq, hΦc]
+        exact hy₁
+      exact (hNmem y).mpr ⟨p, hp, (hAmem p y).mpr ⟨_, hc₁, hΦc⟩⟩
+  have horients : ∀ x ∈ N, ∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt (m + 1) N x Q ∧ IsUnitOrientationOf (ξ x) Q := by
+    intro x hx
+    obtain ⟨p, hp, hxp⟩ := (hNmem x).mp hx
+    exact ⟨_, htan p hp x hxp, by rw [hξA p hp x hxp]; exact hunit p hp⟩
+  -- `R = (N, θ, ξ)` is an `IMRep` in `ℝ^P`
+  refine ⟨⟨N, θ, ξ, hNmeas, subset_univ N, hrect, hθmeas, hθpos, hθint,
+    hξmeas.aestronglyMeasurable, ae_restrict_of_forall_mem hNmeas horients⟩, fun ω => ?_⟩
+  -- Step 5: `R` represents `T`, face by face
+  show T ω = ∫ x in N, (θ x : ℝ) * ξ x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]
+  obtain ⟨⟨hsmooth, hcpt⟩, -⟩ := ω.2
+  have hωc : Continuous (ω : DifferentialForm (Euclid P) (m + 1)) := ContDiff.continuous hsmooth
+  obtain ⟨C, hC⟩ := hcpt.exists_bound_of_continuous hωc
+  -- on `A_p`: `θ ⟨ω, ξ⟩ = |β_p| sgn(β_p) ω(e_p) = β_p ω(e_p)`
+  have hpt : ∀ p ∈ s', ∀ x ∈ A p, (θ x : ℝ) * ξ x ((ω : DifferentialForm (Euclid P) (m + 1)) x) =
+      (β p : ℝ) * (ω : DifferentialForm (Euclid P) (m + 1)) x (e p) := fun p hp x hx => by
+    rw [hθA p hp x hx, hξA p hp x hx, smul_apply,
+      ContinuousAlternatingMap.apply_apply, smul_eq_mul, ← mul_assoc]
+    congr 1
+    have h : (((β p).sign * ((β p).natAbs : ℤ) : ℤ) : ℝ) = (β p : ℝ) := by
+      rw [Int.sign_mul_natAbs]
+    rw [Int.cast_mul, Int.cast_natCast] at h
+    rw [mul_comm]
+    exact h
+  -- integrability on each face: `|β_p ω(x)(e_p)| ≤ |β_p| sup ‖ω‖ ∏_k ‖e_{ι(k)}‖`, `Hⁿ(A_p) ≤ 1`
+  have hintA : ∀ p ∈ s', IntegrableOn
+      (fun x => (θ x : ℝ) * ξ x ((ω : DifferentialForm (Euclid P) (m + 1)) x)) (A p)
+      μHE[m + 1] := by
+    intro p hp
+    have hps := hs's p hp
+    have hcont : Continuous fun x =>
+        (β p : ℝ) * (ω : DifferentialForm (Euclid P) (m + 1)) x (e p) :=
+      continuous_const.mul
+        ((ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (e p)).continuous.comp hωc)
+    refine IntegrableOn.congr_fun ?_ (fun x hx => (hpt p hp x hx).symm) (hAmeas p hps)
+    refine Measure.integrableOn_of_bounded (M := |(β p : ℝ)| * (C * ∏ k, ‖e p k‖))
+      (ne_top_of_le_ne_top ENNReal.one_ne_top (hAfin p hps)) hcont.aestronglyMeasurable
+      (Eventually.of_forall fun x => ?_)
+    rw [norm_mul, Real.norm_eq_abs]
+    gcongr
+    exact ((((ω : DifferentialForm (Euclid P) (m + 1)) x).le_opNorm (e p)).trans
+      (by gcongr; exact hC x))
+  -- on each face, `∫_{A_p} β_p ω(e_p) dHⁿ = ∫_{F_p} 1_{A_p} β_p ω(e_p) dHⁿ`
+  -- `= ∫_{Q₁} β_p ω(Φ_p y)(e_p) dy`
+  have hface : ∀ p ∈ s', ∫ x in A p, (θ x : ℝ) *
+      ξ x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] =
+      ∫ y in Q₁, (β p : ℝ) * (ω : DifferentialForm (Euclid P) (m + 1)) (Φ p y) (e p) := by
+    intro p hp
+    have hps := hs's p hp
+    calc ∫ x in A p, (θ x : ℝ) * ξ x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1]
+        = ∫ x in A p, (β p : ℝ) * (ω : DifferentialForm (Euclid P) (m + 1)) x (e p)
+            ∂μHE[m + 1] := setIntegral_congr_fun (hAmeas p hps) fun x hx => hpt p hp x hx
+      _ = ∫ x in F p, (A p).indicator
+            (fun x => (β p : ℝ) * (ω : DifferentialForm (Euclid P) (m + 1)) x (e p)) x
+            ∂μHE[m + 1] := by
+          rw [integral_indicator (hAmeas p hps), Measure.restrict_restrict (hAmeas p hps),
+            inter_eq_left.mpr (hAF p hps)]
+      _ = ∫ y in Q₁, (A p).indicator
+            (fun x => (β p : ℝ) * (ω : DifferentialForm (Euclid P) (m + 1)) x (e p)) (Φ p y) :=
+          hFint p hps _
+      _ = ∫ y in Q₁, (β p : ℝ) * (ω : DifferentialForm (Euclid P) (m + 1)) (Φ p y) (e p) :=
+          setIntegral_congr_fun hQ₁open.measurableSet fun y hy =>
+            indicator_of_mem ((hAmem p _).mpr ⟨y, hy, rfl⟩) _
+  -- sum over the disjoint faces; the faces with `β_p = 0` contribute nothing
+  rw [hT ω, hN, integral_biUnion_finset s' (fun p hp => hAmeas p (hs's p hp))
+    (fun p hp q hq hpq => hAdisj p (hs's p hp) q (hs's q hq) hpq) hintA,
+    Finset.sum_congr rfl hface, hs', Finset.sum_filter_of_ne]
+  · subst hQ₁ hΦ he
+    rfl
+  · intro p _ hp0 hβ
+    exact hp0 (by simp [hβ])
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
