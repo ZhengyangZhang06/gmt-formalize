@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1.chart_tangent_lift-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1",
+  "depth": 6,
+  "title": "Continuous tangential lift of DF along a C¹ immersion, with norm bound (∇^N F; parent Step 9)",
+  "statement": "Let m, P ∈ ℕ, V ⊆ ℝ^m open, ψ : ℝ^m → ℝ^P C¹ on V with Dψ(y) injective for every y ∈ V, and F : ℝ^m → ℝ C¹. Then there is Φ : ℝ^m → ℝ^P, continuous on V, such that for every y ∈ V:\n- (i) Φ(y) ∈ Dψ(y)(ℝ^m);\n- (ii) ⟨Φ(y), Dψ(y)e⟩ = DF(y)e for every e ∈ ℝ^m;\n- (iii) for every L ≥ 0 with |DF(y)e| ≤ L·|Dψ(y)e| for all e ∈ ℝ^m, |Φ(y)| ≤ L.\nHere Dψ(y) = fderiv ℝ ψ y and DF(y) = fderiv ℝ F y.",
+  "lean_statement": "∀ (m P : ℕ) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (F : Euclid m → ℝ), IsOpen V → ContDiffOn ℝ 1 ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → ContDiff ℝ 1 F → ∃ Φ : Euclid m → Euclid P, ContinuousOn Φ V ∧ ∀ y ∈ V, Φ y ∈ LinearMap.range (fderiv ℝ ψ y : Euclid m →ₗ[ℝ] Euclid P) ∧ (∀ e : Euclid m, inner ℝ (Φ y) (fderiv ℝ ψ y e) = fderiv ℝ F y e) ∧ ∀ L : NNReal, (∀ e : Euclid m, |fderiv ℝ F y e| ≤ (L : ℝ) * ‖fderiv ℝ ψ y e‖) → ‖Φ y‖ ≤ (L : ℝ)",
+  "lean_name": "dor_lmbsf_cp_chart_tangent_lift",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-601a426c85-a1"
+}
