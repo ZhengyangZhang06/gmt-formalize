@@ -1334,6 +1334,66 @@ theorem Submission.dimred_cs_sos_mt_cs_coord_box_ftc : ∀ (j : ℕ) (a : Fin (j
       ((hcont.comp (Continuous.prodMk_right u)).intervalIntegrable _ _)
   · exact hcont.continuousOn.integrableOn_compact (hT.prod isCompact_Icc)
 
+/-- **Frame-box FTC** (step 5 of the proof of `dimred_cs_sos_mt_cube_stokes`, for abstract `A`
+and `b`).  Let `g = (g₀, …, g_j)` be orthonormal, `r > 0`, and let `σ ↦ b(s + σ g_a)` have
+derivative `A(s + τ g_a)` at every `τ`.  Then
+`∫_{Q_r} A dH^{j+1} = ∫_{Q'_a} b(s + r g_a) dHʲ(s) − ∫_{Q'_a} b(s − r g_a) dHʲ(s)`, where `Q_r` is
+the box of radius `r` of the frame `g` and `Q'_a` that of the frame `g ∘ a.succAbove`.  In the
+frame coordinates `ι(u) = ∑ᵢ uᵢ gᵢ` on `Q_r` and `ι_a(u') = ∑_c u'_c g_{a.succAbove c}` on `Q'_a`
+(`dimred_cs_sos_mt_cs_frame_box_integral`) this is the coordinate FTC
+`dimred_cs_sos_mt_cs_coord_box_ftc` for `φ = A ∘ ι` and `ψ = b ∘ ι`, as
+`ι(a.insertNth τ u') = ι_a(u') + τ g_a`; both face integrands are continuous on the compact cube
+`I_j = [−r, r]ʲ`, so the integral of their difference splits. -/
+theorem Submission.dimred_cs_sos_mt_cs_frame_box_ftc : ∀ (P j : ℕ) (g : Fin (j + 1) → Euclid P) (a : Fin (j + 1)) (r : ℝ) (A b : Euclid P → ℝ), Orthonormal ℝ g → 0 < r → Continuous A → Continuous b → (∀ (s : Euclid P) (τ : ℝ), HasDerivAt (fun σ : ℝ => b (s + σ • g a)) (A (s + τ • g a)) τ) → ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, A t ∂μHE[j + 1] = (∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, b (s + r • g a) ∂μHE[j]) - ∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧ ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, b (s - r • g a) ∂μHE[j] := by
+  intro P j g a r A b hg hr hA hb hd
+  -- the face frame `g ∘ a.succAbove` is orthonormal; `ι` and `ι_a` are continuous
+  have hg' : Orthonormal ℝ (g ∘ a.succAbove) := hg.comp _ Fin.succAbove_right_injective
+  have hι : Continuous fun u : Fin (j + 1) → ℝ => ∑ i, u i • g i :=
+    continuous_finsetSum _ fun i _ => (continuous_apply i).smul continuous_const
+  have hιa : Continuous fun u : Fin j → ℝ => ∑ c, u c • g (a.succAbove c) :=
+    continuous_finsetSum _ fun c _ => (continuous_apply c).smul continuous_const
+  -- splitting off the coordinate `a`: `ι(a.insertNth τ u') = ι_a(u') + τ g_a`
+  have hsplit : ∀ (u : Fin j → ℝ) (τ : ℝ),
+      ∑ i, (Fin.insertNth a τ u : Fin (j + 1) → ℝ) i • g i =
+        ∑ c, u c • g (a.succAbove c) + τ • g a := by
+    intro u τ
+    rw [Fin.sum_univ_succAbove _ a, Fin.insertNth_apply_same, add_comm]
+    simp only [Fin.insertNth_apply_succAbove]
+  -- frame coordinates on `Q_r` (frame `g`) and on the face `Q'_a` (frame `g ∘ a.succAbove`)
+  have hbox : ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r},
+      A t ∂μHE[j + 1] = ∫ u in {u : Fin (j + 1) → ℝ | ∀ i, |u i| ≤ r}, A (∑ i, u i • g i) :=
+    Submission.dimred_cs_sos_mt_cs_frame_box_integral P (j + 1) g r A hg
+  have hface : ∀ f : Euclid P → ℝ,
+      ∫ s in {s | s ∈ Submodule.span ℝ (Set.range (g ∘ a.succAbove)) ∧
+        ∀ c, |inner ℝ (g (a.succAbove c)) s| ≤ r}, f s ∂μHE[j] =
+        ∫ u in {u : Fin j → ℝ | ∀ c, |u c| ≤ r}, f (∑ c, u c • g (a.succAbove c)) :=
+    fun f => Submission.dimred_cs_sos_mt_cs_frame_box_integral P j (g ∘ a.succAbove) r f hg'
+  -- the coordinate FTC for `φ = A ∘ ι` and `ψ = b ∘ ι`, its face terms rewritten by `hsplit`
+  have hftc : ∫ u in {u : Fin (j + 1) → ℝ | ∀ i, |u i| ≤ r}, A (∑ i, u i • g i) =
+      ∫ u in {u : Fin j → ℝ | ∀ c, |u c| ≤ r},
+        (b (∑ c, u c • g (a.succAbove c) + r • g a) -
+          b (∑ c, u c • g (a.succAbove c) - r • g a)) := by
+    refine (Submission.dimred_cs_sos_mt_cs_coord_box_ftc j a r (fun u => A (∑ i, u i • g i))
+      (fun u => b (∑ i, u i • g i)) hr (hA.comp hι) fun u τ => ?_).trans ?_
+    · simp only [hsplit]
+      exact hd _ τ
+    · simp only [hsplit, neg_smul, ← sub_eq_add_neg]
+  -- both face integrands are continuous on the compact cube `I_j`, hence integrable there
+  have hK : IsCompact {u : Fin j → ℝ | ∀ c, |u c| ≤ r} := by
+    have hI : {u : Fin j → ℝ | ∀ c, |u c| ≤ r} = Set.univ.pi fun _ => Set.Icc (-r) r := by
+      ext u
+      simp only [Set.mem_ofPred_eq, Set.mem_univ_pi, Set.mem_Icc, abs_le]
+    rw [hI]
+    exact isCompact_univ_pi fun _ => isCompact_Icc
+  have hint₁ : IntegrableOn (fun u : Fin j → ℝ => b (∑ c, u c • g (a.succAbove c) + r • g a))
+      {u : Fin j → ℝ | ∀ c, |u c| ≤ r} :=
+    (hb.comp (hιa.add continuous_const)).continuousOn.integrableOn_compact hK
+  have hint₂ : IntegrableOn (fun u : Fin j → ℝ => b (∑ c, u c • g (a.succAbove c) - r • g a))
+      {u : Fin j → ℝ | ∀ c, |u c| ≤ r} :=
+    (hb.comp (hιa.sub continuous_const)).continuousOn.integrableOn_compact hK
+  rw [hbox, hftc, hface (fun s => b (s + r • g a)), hface (fun s => b (s - r • g a)),
+    integral_sub hint₁ hint₂]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
