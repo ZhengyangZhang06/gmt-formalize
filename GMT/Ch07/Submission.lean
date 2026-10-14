@@ -3519,6 +3519,54 @@ theorem Submission.dor_lmb_fc_im_series : ∀ (P m : ℕ) (U : Set (Euclid P)) (
   exact hasSum_le (fun r => (ENNReal.ofReal_le_iff_le_toReal (hne r)).1 ((X r).le_massOn hω))
     (hsum ω) (ENNReal.summable_toReal hfin).hasSum
 
+/-- **Simon Ch. 6, proof of 7.2 (p. 172), the series step** `T − T_{j_ℓ} = ∂R^{(ℓ)} + S^{(ℓ)}`.
+If `X_r ⇀ X_∞` in `U` and `X_{r+1} − X_r = ∂R_r + S_r` with `R_r`, `S_r` integer multiplicity
+and `M(R_r) + M(S_r) ≤ 2^{−r}`, then for each `ℓ` the `M`-absolutely convergent tails
+`R' = Σ_{r ≥ ℓ} R_r`, `S' = Σ_{r ≥ ℓ} S_r` are integer multiplicity (3.13, via
+`dor_lmb_fc_im_series`) with `M(R') + M(S') ≤ 2·2^{−ℓ}`; telescoping
+`X_{ℓ+N} − X_ℓ = Σ_{r<N} (∂R_{ℓ+r} + S_{ℓ+r})` and letting `N → ∞` gives `X_∞ − X_ℓ = ∂R' + S'`. -/
+theorem Submission.dor_lmb_fc_series_limit : ∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)) (Xlim : GeometricCurrentOn U (m + 1)) (R : ℕ → GeometricCurrentOn U (m + 2)) (S : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → WeaklyConvergesOn X Xlim → (∀ r, IsIntegerMultiplicity (R r) ∧ IsIntegerMultiplicity (S r) ∧ (∀ ω : TestFormOn U (m + 1), X (r + 1) ω - X r ω = (R r).boundary ω + S r ω) ∧ (R r).mass + (S r).mass ≤ (2⁻¹ : ℝ≥0∞) ^ r) → ∀ ℓ : ℕ, ∃ (R' : GeometricCurrentOn U (m + 2)) (S' : GeometricCurrentOn U (m + 1)), IsIntegerMultiplicity R' ∧ IsIntegerMultiplicity S' ∧ (∀ ω : TestFormOn U (m + 1), Xlim ω - X ℓ ω = R'.boundary ω + S' ω) ∧ R'.mass + S'.mass ≤ 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ := by
+  intro P m U X Xlim R S hU hX hRS ℓ
+  -- the tails have total mass at most `Σ_r 2^{−ℓ−r} = 2·2^{−ℓ} < ∞`
+  have hgeom : ∑' r, (2⁻¹ : ℝ≥0∞) ^ (ℓ + r) = 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ := by
+    simp_rw [pow_add]
+    rw [ENNReal.tsum_mul_left, ENNReal.tsum_geometric_two, mul_comm]
+  have hfin : ∑' r, (2⁻¹ : ℝ≥0∞) ^ (ℓ + r) ≠ ∞ := by
+    rw [hgeom]
+    exact ENNReal.mul_ne_top ENNReal.ofNat_ne_top
+      (ENNReal.pow_ne_top (ENNReal.inv_ne_top.2 two_ne_zero))
+  have hRfin : ∑' r, (R (ℓ + r)).mass ≠ ∞ := ne_top_of_le_ne_top hfin <|
+    ENNReal.tsum_le_tsum fun r => le_self_add.trans (hRS (ℓ + r)).2.2.2
+  have hSfin : ∑' r, (S (ℓ + r)).mass ≠ ∞ := ne_top_of_le_ne_top hfin <|
+    ENNReal.tsum_le_tsum fun r => le_add_self.trans (hRS (ℓ + r)).2.2.2
+  -- 3.13: the tails sum to integer multiplicity `R' = Σ_r R_{ℓ+r}` and `S' = Σ_r S_{ℓ+r}`
+  obtain ⟨R', hR', hRsum, hRmass⟩ := Submission.dor_lmb_fc_im_series P (m + 1) U
+    (fun r => R (ℓ + r)) hU (fun r => (hRS (ℓ + r)).1) hRfin
+  obtain ⟨S', hS', hSsum, hSmass⟩ := Submission.dor_lmb_fc_im_series P m U
+    (fun r => S (ℓ + r)) hU (fun r => (hRS (ℓ + r)).2.1) hSfin
+  refine ⟨R', S', hR', hS', fun ω => ?_, ?_⟩
+  · -- telescoping: `X_{ℓ+N}(ω) − X_ℓ(ω) = Σ_{r<N} (∂R_{ℓ+r}(ω) + S_{ℓ+r}(ω))`
+    have htel : ∀ N : ℕ, X (ℓ + N) ω - X ℓ ω =
+        ∑ r ∈ Finset.range N, ((R (ℓ + r)).boundary ω + S (ℓ + r) ω) := by
+      intro N
+      induction N with
+      | zero => simp
+      | succ N ih =>
+        rw [Finset.sum_range_succ, ← ih, ← (hRS (ℓ + N)).2.2.1 ω, ← add_assoc ℓ N 1]
+        ring
+    -- let `N → ∞`: the left side tends to `X_∞(ω) − X_ℓ(ω)`, the right side to `∂R'(ω) + S'(ω)`
+    have hlim : Tendsto (fun N => X (ℓ + N) ω - X ℓ ω) atTop (𝓝 (Xlim ω - X ℓ ω)) :=
+      ((hX ω).comp (tendsto_atTop_mono (fun N => Nat.le_add_left N ℓ) tendsto_id)).sub_const _
+    have hsum : HasSum (fun r => (R (ℓ + r)).boundary ω + S (ℓ + r) ω)
+        (R'.boundary ω + S' ω) :=
+      (hRsum (exteriorDerivativeTestOn U (m + 1) ω)).add (hSsum ω)
+    exact tendsto_nhds_unique (hlim.congr htel) hsum.tendsto_sum_nat
+  · calc R'.mass + S'.mass
+        ≤ ∑' r, (R (ℓ + r)).mass + ∑' r, (S (ℓ + r)).mass := add_le_add hRmass hSmass
+      _ = ∑' r, ((R (ℓ + r)).mass + (S (ℓ + r)).mass) := ENNReal.tsum_add.symm
+      _ ≤ ∑' r, (2⁻¹ : ℝ≥0∞) ^ (ℓ + r) := ENNReal.tsum_le_tsum fun r => (hRS (ℓ + r)).2.2.2
+      _ = 2 * (2⁻¹ : ℝ≥0∞) ^ ℓ := hgeom
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
