@@ -658,6 +658,58 @@ theorem Submission.dtc_bc_cz_blowUp_eval_dilation_ball : ∀ (P : ℕ) (x : Eucl
     refine ⟨x + lam • z, ?_, hz'⟩
     rw [← hpre, mem_preimage, hz']
     exact hz
+/-- **Blow-ups of a top-dimensional current that is `c[[ℝ^{m+1}]]` near `x`** (codimension-zero
+case `n = P` of the proof of Simon 7.3.1, chapter-07.txt lines 326–338: the dilations
+`η_{x,λⱼ#}T` of (1), line 331, and `∂η_{x,λⱼ#}T = 0` in `B_R(0)`, line 336; push-forward
+6.2.23–6.2.24(1), chapter-06.txt lines 408–414).  Let `η = η_{x,λ}`, `η(y) = λ⁻¹(y − x)`, `λ > 0`,
+`B_ρ(x) ⊆ U`, and `e = (e₁, …, e_{m+1})` the standard basis.  (i) If `T(ω) = c ∫ ω(y)(e) dy` for
+`ω ∈ 𝒟^{m+1}(U)` with `spt ω ⊆ B_ρ(x)`, then `η_#T(ω) = c ∫ ω(z)(e) dz` for
+`ω ∈ 𝒟^{m+1}(ℝ^{m+1})` with `spt ω ⊆ B_{ρ/λ}(0)`.  (ii) If `∂T` vanishes on forms supported in
+`B_ρ(x)`, then `∂(η_#T)` vanishes on forms supported in `B_{ρ/λ}(0)`.
+
+`η⁻¹(B_{ρ/λ}(0)) = B_ρ(x)` and `η(B_ρ(x)) = B_{ρ/λ}(0) ⊆ η(U)`
+(`dtc_bc_cz_blowUp_eval_dilation_ball`), so `ω' = ω ∘ η` is supported in `B_ρ(x)`, and
+`η_#T(ω) = λ^{-(m+1)} T(ω')` (`dtc_blowUp_testForm_corr`).  (i) `T(ω') = c ∫ ω(η(y))(e) dy =
+c λ^{m+1} ∫ ω(z)(e) dz` (`dtc_bc_cz_blowUp_eval_integral_dilation`).  (ii)
+`∂(η_#T) = η_#(∂T)` (`dtc_blowUp_algebra`), so `∂(η_#T)(β) = λ^{-m} ∂T(β ∘ η) = 0`. -/
+theorem Submission.dtc_bc_cz_blowUp_eval : ∀ (m : ℕ) (U : Set (Euclid (m + 1))) (T : GeometricCurrentOn U (m + 1)) (x : Euclid (m + 1)) (ρ c lam : ℝ) (hlam : 0 < lam), ball x ρ ⊆ U → ((∀ ω : TestFormOn U (m + 1), tsupport (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) ⊆ ball x ρ → T ω = c * ∫ y, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) y ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ)) → ∀ ω : TestFormOn (univ : Set (Euclid (m + 1))) (m + 1), tsupport (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) ⊆ ball 0 (ρ / lam) → currentEval (blowUp T x lam hlam.ne') (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) = c * ∫ z, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) z ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ)) ∧ ((∀ β : TestFormOn U m, tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ ball x ρ → T.boundary β = 0) → ∀ β : TestFormOn (dilation x lam '' U) m, tsupport (β : DifferentialForm (Euclid (m + 1)) m) ⊆ ball 0 (ρ / lam) → (blowUp T x lam hlam.ne').boundary β = 0) := by
+  intro m U T x ρ c lam hlam hball
+  obtain ⟨hpre, himg⟩ := Submission.dtc_bc_cz_blowUp_eval_dilation_ball (m + 1) x ρ lam hlam
+  -- Step 1: if `ω' = ω ∘ η` and `spt ω ⊆ B_{ρ/λ}(0)`, then `spt ω' ⊆ η⁻¹(B_{ρ/λ}(0)) = B_ρ(x)`.
+  have hsupp : ∀ {k : ℕ} (ω ω' : DifferentialForm (Euclid (m + 1)) k),
+      (∀ y, ω' y = ω (dilation x lam y)) → tsupport ω ⊆ ball 0 (ρ / lam) →
+        tsupport ω' ⊆ ball x ρ := by
+    intro k ω ω' hω' hω
+    have hfun : ω' = ω ∘ dilation x lam := funext hω'
+    rw [hfun, ← hpre]
+    exact (tsupport_comp_subset_preimage ω
+      (continuous_const.add (dilationCLM (m + 1) lam).continuous)).trans (preimage_mono hω)
+  refine ⟨fun hT ω hω => ?_, fun hTb β hβ => ?_⟩
+  · -- Step 2 (i): `ω ∈ 𝒟^{m+1}(η(U))`, as `B_{ρ/λ}(0) = η(B_ρ(x)) ⊆ η(U)`, so
+    -- `η_#T(ω) = λ^{-(m+1)} T(ω ∘ η) = λ^{-(m+1)} c ∫ ω(η(y))(e) dy = c ∫ ω(z)(e) dz`.
+    obtain ⟨ha, -, hval⟩ := Submission.dtc_blowUp_testForm_corr (m + 1) (m + 1) U x lam hlam
+    have hmem : IsTestForm (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) ∧
+        tsupport (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) ⊆ dilation x lam '' U :=
+      ⟨ω.property.1, hω.trans (himg.symm.subset.trans (image_mono hball))⟩
+    obtain ⟨ω', hω'⟩ := ha ⟨ω, hmem⟩
+    have hint : ∫ y, (ω' : DifferentialForm (Euclid (m + 1)) (m + 1)) y
+        ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ) = lam ^ (m + 1) *
+          ∫ z, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) z
+            ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ) := by
+      rw [← Submission.dtc_bc_cz_blowUp_eval_integral_dilation (m + 1)
+        (fun z => (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) z
+          ⇑(EuclideanSpace.basisFun (Fin (m + 1)) ℝ)) x lam hlam]
+      congr 1
+      funext y
+      rw [hω' y]
+    rw [currentEval, dite_eq_left hmem, hval T ⟨ω, hmem⟩ ω' hω', hT ω' (hsupp _ _ hω' hω), hint,
+      inv_pow]
+    field_simp
+  · -- Step 3 (ii): `∂(η_#T)(β) = η_#(∂T)(β) = λ^{-m} ∂T(β ∘ η) = 0`.
+    obtain ⟨ha, -, hval⟩ := Submission.dtc_blowUp_testForm_corr (m + 1) m U x lam hlam
+    obtain ⟨β', hβ'⟩ := ha β
+    rw [(Submission.dtc_blowUp_algebra (m + 1) U x lam hlam).2.2.2 m T, hval T.boundary β β' hβ',
+      hTb β' (hsupp _ _ hβ' hβ), mul_zero]
 /-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
 has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
 increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
