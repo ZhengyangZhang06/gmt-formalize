@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.pushforward-a1.sub-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.pushforward-a1",
+  "depth": 6,
+  "title": "Push-forward commutes with differences of normal currents",
+  "statement": "Let lpush be any family of maps lpush_{N,N',k} : (ℝ^N → ℝ^{N'}) → 𝒟_k(ℝ^N) → 𝒟_k(ℝ^{N'}), one for all N, N', k ∈ ℕ, where 𝒟_k(ℝ^N) = GeometricCurrentOn univ k. Suppose lpush satisfies (PA): take N, N', k ∈ ℕ, Λ ∈ ℝ≥0, Λ' ∈ ℝ, a Λ-Lipschitz F : ℝ^N → ℝ^{N'}, a sequence of maps F_j : ℝ^N → ℝ^{N'}, X ∈ 𝒟_k(ℝ^N) with spt X compact, M(X) < ∞ and boundaryMassOn X univ < ∞, ω ∈ 𝒟^k(ℝ^{N'}) and a sequence η_j ∈ 𝒟^k(ℝ^N). If every F_j is C^∞ (ContDiff ℝ (⊤ : ℕ∞)), ‖fderiv ℝ F_j x‖ ≤ Λ' for all j and x ∈ spt X, F_j → F uniformly on spt X (TendstoUniformlyOn), and for every j there is an open W ⊇ spt X with η_j(x) = (ω(F_j x)).compContinuousLinearMap (fderiv ℝ F_j x) for all x ∈ W, then X(η_j) → lpush_{N,N',k}(F, X)(ω). Conclusion: for all N, N', k ∈ ℕ, Λ ∈ ℝ≥0, every Λ-Lipschitz F : ℝ^N → ℝ^{N'} and all X, Y ∈ 𝒟_k(ℝ^N) with spt X compact, M(X) < ∞, boundaryMassOn X univ < ∞, spt Y compact, M(Y) < ∞ and boundaryMassOn Y univ < ∞: lpush(F, X − Y) = lpush(F, X) − lpush(F, Y), with differences given by the contract's Sub instance.",
+  "lean_statement": "∀ (lpush : ∀ (N N' k : ℕ), (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid N')) k), (∀ (N N' k : ℕ) (Λ : NNReal) (Λ' : ℝ) (F : Euclid N → Euclid N') (Fs : ℕ → Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ω : TestFormOn (univ : Set (Euclid N')) k) (ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) → (∀ j, ∀ x ∈ X.support, ‖fderiv ℝ (Fs j) x‖ ≤ Λ') → TendstoUniformlyOn Fs F atTop X.support → (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (lpush N N' k F X ω))) → ∀ (N N' k : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (X Y : GeometricCurrentOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → IsCompact Y.support → Y.mass < ∞ → boundaryMassOn Y univ < ∞ → lpush N N' k F (X - Y) = lpush N N' k F X - lpush N N' k F Y",
+  "lean_name": "cmcdt_lpo_pf_sub",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.pushforward-a1.approx_data-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.pushforward-a1.normal_closure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.pushforward-a1.approx_data-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.pushforward-a1.normal_closure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-2fd431761a-a1"
+}
