@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "21055e33b0a24f39b819908f2026da7a7c046b7a51c2b30f354bb80ccd712c75",
+  "git_delta": {
+    "base_commit": "c144dcabe5ddafb7026b45d7f6cf97b50036f334",
+    "candidate_commit": "12e026ba207f3fd4920db4f8eacfc064752cecb2",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "4963071a924f1ca0e1cb1195ae146792849e74934581a22c0d7bc3b50a3f6f3f",
+    "source_sha256": "6ab8fc1bad756c5d13170a1324c1322284c9a699fac782655ef6677de98468be",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_isIntegerMultiplicity_of_local",
+      "statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P k : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U k), IsOpen U → ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → X.massOn W < ∞) → (∀ x ∈ U, ∃ r : ℝ, 0 < r ∧ ∃ h : ball x r ⊆ U, IsIntegerMultiplicity (X.restrictDomain h)) → IsIntegerMultiplicity X) ∧ (∀ (V : Set (Euclid P)) (h : V ⊆ U), IsOpen V → IsIntegerMultiplicity X → IsIntegerMultiplicity (X.restrictDomain h))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
