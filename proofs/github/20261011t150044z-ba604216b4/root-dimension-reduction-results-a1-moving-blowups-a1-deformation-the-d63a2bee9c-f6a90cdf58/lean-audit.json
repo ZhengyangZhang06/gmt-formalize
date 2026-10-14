@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6889051a72642602addca41fb3af3707b0a8114aa154be3cd1068f3a08000393",
+  "git_delta": {
+    "base_commit": "37d15715805095daf132eef1e5c6f574e6e3effd",
+    "candidate_commit": "70a7ad88edf4f0a885de26d6f88a9f3b97f6be14",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dtfrbv_massOn_disjoint_sum_le",
+    "diff_sha256": "bc3afd6afe0bd9c7df32f65b0bd15d793446ce7784d0f9e5fc16ab04dcf6320a",
+    "source_sha256": "4ca5db02789716ec8e1565ca2ecfc666d13074d2e3a87a02de5f4f76fc1bd3d8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dtfrbv_massOn_disjoint_sum_le",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ι : Type) (s : Finset ι) (N : ι → Set (Euclid P)), (↑s : Set ι).PairwiseDisjoint N → ∑ i ∈ s, S.massOn (N i) ≤ S.massOn (⋃ i ∈ s, N i)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
