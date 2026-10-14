@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7f5587bd633295a4aba8c68674ec2bba7d22796b408e4fcc96533afcfd72e087",
+  "git_delta": {
+    "base_commit": "e51b94497b9820f0dda6765e4ba19c5ec7c60526",
+    "candidate_commit": "0754d83b89f223495e2e4fdee9a24bd92494f6bd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_fd_lz_cutoff_estimate",
+    "diff_sha256": "880a0393691c800a16dbe259e5f200f3a1ded1172b03ed228e6596b85adf7642",
+    "source_sha256": "71320cd2be0b315e0a938401caad6b0e1294e20623c26559b1076c46549f2cf7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_fd_lz_cutoff_estimate",
+      "statement": "∀ (P m : ℕ) (U V S : Set (Euclid P)) (T : GeometricCurrentOn U (m + 1)) (R : IMRep U (m + 1)) (g : Euclid P → ℝ) (η : TestFormOn U m) (a c : ℝ), R.Represents T → ContDiff ℝ (⊤ : ℕ∞) g → tsupport g ⊆ V → (∀ x, |g x| ≤ a) → (∀ x, ‖fderiv ℝ g x‖ ≤ c) → (∀ x, fderiv ℝ g x ≠ 0 → x ∈ S) → (∀ x, covectorEuclideanNorm ((η : DifferentialForm (Euclid P) m) x) ≤ 1) → ENNReal.ofReal |R.action (fun x => g x • exteriorDerivative (η : DifferentialForm (Euclid P) m) x)| ≤ ENNReal.ofReal a * T.boundary.massOn V + ENNReal.ofReal c * R.measure S",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
