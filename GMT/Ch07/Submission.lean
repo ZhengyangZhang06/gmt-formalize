@@ -1082,6 +1082,71 @@ theorem Submission.dimred_cs_sos_cfs_cp_piece_action : ∀ (P n : ℕ) (L : NNRe
     smul_eq_mul]
   rfl
 
+/-- **Cone parametrization** (Simon 6.2.30, `0 ⨯ X = h_#([[(0, 1)]] × X)` with `h(t, x) = tx`).
+If `X(γ) = Σᵢ ∫_{Aᵢ} wᵢ γ(Gᵢ u)(DGᵢ(u)e) du` for Lipschitz `Gᵢ` with `Gᵢ(Aᵢ) ⊆ spt X` compact,
+and `Y(ω) = X(η)` with `η = Kω`, `Kω(x) = ∫₀¹ t^{q+1} ι_x ω(tx) dt`, on `spt X`, then `Y` is
+parametrized by the cone maps: `Hᵢ(s, u) = s Gᵢ(u)` on `Bᵢ = {w₀ ∈ (0, 1), tail w ∈ Aᵢ}`,
+`hᵢ(w) = wᵢ(tail w)` and `c′ᵢ(w) = w₀^{q+1} ‖Gᵢ(tail w)‖ cᵢ(tail w)`.  Take `ρ` with
+`spt X ⊆ B_ρ(0)`, so `‖Gᵢ‖ < ρ` on `Aᵢ`.  `cone_map` gives the Lipschitz `Hᵢ` with this value and
+derivative on `Bᵢ`; `piece_bounds` gives the integrability of `hᵢ`, the `c′ᵢ` bound and
+`∫⁻_{Bᵢ} |hᵢ| c′ᵢ ≤ ρ ∫⁻_{Aᵢ} |wᵢ| cᵢ`, which sums to a finite bound; `piece_action` turns each
+term of the series for `X(η)` into the corresponding term for `Y(ω)`. -/
+theorem Submission.dimred_cs_sos_cfs_cone_param : ∀ (P q : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (q + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (q + 1 + 1)) (G : ℕ → Euclid (q + 1) → Euclid P) (A : ℕ → Set (Euclid (q + 1))) (w : ℕ → Euclid (q + 1) → ℤ) (c : ℕ → Euclid (q + 1) → ℝ), IsCompact X.support → (∀ i, ∃ L : NNReal, LipschitzWith L (G i)) → (∀ i, MeasurableSet (A i)) → (∀ i, Measurable (w i)) → (∀ i, Measurable (c i)) → (∀ i, ∀ u ∈ A i, DifferentiableAt ℝ (G i) u) → (∀ i, G i '' A i ⊆ X.support) → (∀ i, IntegrableOn (fun u => (w i u : ℝ)) (A i)) → (∀ i, ∀ u ∈ A i, 0 ≤ c i u ∧ ∀ α : Covector (Euclid P) (q + 1), |α (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))| ≤ c i u * covectorEuclideanNorm α) → ∑' i, ∫⁻ u in A i, ENNReal.ofReal (|(w i u : ℝ)| * c i u) ≠ ∞ → (∀ γ : TestFormOn (univ : Set (Euclid P)) (q + 1), HasSum (fun i => ∫ u in A i, (w i u : ℝ) * (γ : DifferentialForm (Euclid P) (q + 1)) (G i u) (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))) (X γ)) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1), ∃ η : TestFormOn (univ : Set (Euclid P)) (q + 1), (∀ x ∈ X.support, (η : DifferentialForm (Euclid P) (q + 1)) x = ∫ t in (0 : ℝ)..1, t ^ (q + 1) • ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x) ∧ Y ω = X η) → ∃ (H : ℕ → Euclid (q + 1 + 1) → Euclid P) (B : ℕ → Set (Euclid (q + 1 + 1))) (h : ℕ → Euclid (q + 1 + 1) → ℤ) (c' : ℕ → Euclid (q + 1 + 1) → ℝ), (∀ i, ∃ L : NNReal, LipschitzWith L (H i)) ∧ (∀ i, MeasurableSet (B i)) ∧ (∀ i, Measurable (h i)) ∧ (∀ i, Measurable (c' i)) ∧ (∀ i, IntegrableOn (fun u => (h i u : ℝ)) (B i)) ∧ (∀ i, ∀ u ∈ B i, 0 ≤ c' i u ∧ ∀ α : Covector (Euclid P) (q + 1 + 1), |α (fun a => fderiv ℝ (H i) u (EuclideanSpace.single a 1))| ≤ c' i u * covectorEuclideanNorm α) ∧ ∑' i, ∫⁻ u in B i, ENNReal.ofReal (|(h i u : ℝ)| * c' i u) ≠ ∞ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1), HasSum (fun i => ∫ u in B i, (h i u : ℝ) * (ω : DifferentialForm (Euclid P) (q + 1 + 1)) (H i u) (fun a => fderiv ℝ (H i) u (EuclideanSpace.single a 1))) (Y ω) := by
+  intro P q X Y G A w c hXc hGL hA hw hc hGd hGA hwi hcb hsum hXser hYK
+  -- step 1: a radius `ρ` with `spt X ⊆ B_ρ(0)`, so `‖Gᵢ u‖ < ρ` on `Aᵢ`
+  obtain ⟨ρ, hρ⟩ : ∃ ρ : ℝ, X.support ⊆ ball (0 : Euclid P) ρ := hXc.isBounded.subset_ball 0
+  have hGρ : ∀ i, ∀ u ∈ A i, ‖G i u‖ < ρ := fun i u hu => by
+    simpa [mem_ball_zero_iff] using hρ (hGA i ⟨u, hu, rfl⟩)
+  -- step 2: the truncated cone maps `Hᵢ`, Lipschitz with `Hᵢ(s, u) = s Gᵢ(u)` near `Bᵢ`
+  choose L hL using hGL
+  choose H hHL hH using fun i =>
+    Submission.dimred_cs_sos_cfs_cp_cone_map P (q + 1) (G i) (L i) ρ (hL i)
+  choose K hK using hHL
+  have htail : Continuous fun z : Euclid (q + 1 + 1) =>
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid (q + 1)) := by
+    fun_prop
+  have hz0 : Continuous fun z : Euclid (q + 1 + 1) => WithLp.ofLp z 0 := by
+    fun_prop
+  -- value and derivative of `Hᵢ` on `Bᵢ = {z₀ ∈ (0, 1), tail z ∈ Aᵢ}`
+  have hHB : ∀ i, ∀ z : Euclid (q + 1 + 1), WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 →
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid (q + 1)) ∈ A i →
+      H i z = WithLp.ofLp z 0 • G i (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) ∧
+      (fun b => fderiv ℝ (H i) z (EuclideanSpace.single b 1)) =
+        Fin.cons (G i (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))
+          (fun a => WithLp.ofLp z 0 • fderiv ℝ (G i) (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))
+            (EuclideanSpace.single a 1)) := by
+    intro i z hz hzA
+    obtain ⟨h1, h2⟩ := hH i z hz (hGρ i _ hzA)
+    exact ⟨h1, h2 (hGd i _ hzA)⟩
+  -- steps 3, 5–7 for each piece: integrability of `hᵢ`, the `c′ᵢ` bound and the mass bound
+  have hpb := fun i => Submission.dimred_cs_sos_cfs_cp_piece_bounds P (q + 1) ρ (G i) (H i) (A i)
+    (w i) (c i) (hL i).continuous.measurable (hA i) (hw i) (hc i) (hwi i)
+    (fun u hu => (hGρ i u hu).le) (hcb i) (fun z hz hzA => (hHB i z hz hzA).2)
+  refine ⟨H, fun i => {z : Euclid (q + 1 + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧
+      (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid (q + 1)) ∈ A i},
+    fun i z => w i (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))),
+    fun i z => WithLp.ofLp z 0 ^ (q + 1) * ‖G i (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))‖ *
+      c i (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))),
+    fun i => ⟨K i, hK i⟩, fun i => (Submission.cmcdt_lpi_cyl_fubini (q + 1) (A i) (hA i)).1,
+    fun i => (hw i).comp htail.measurable, fun i => ?_, fun i => (hpb i).1,
+    fun i z hz => (hpb i).2.1 z hz.1 hz.2, ?_, ?_⟩
+  · -- `c′ᵢ` is measurable
+    exact ((hz0.measurable.pow_const (q + 1)).mul
+      ((hL i).continuous.comp htail).measurable.norm).mul ((hc i).comp htail.measurable)
+  · -- step 7: `Σᵢ ∫⁻_{Bᵢ} |hᵢ| c′ᵢ ≤ ρ Σᵢ ∫⁻_{Aᵢ} |wᵢ| cᵢ < ∞`
+    refine ne_top_of_le_ne_top ?_ (ENNReal.tsum_le_tsum fun i => (hpb i).2.2)
+    rw [ENNReal.tsum_mul_left]
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hsum
+  · -- step 8: `Y(ω) = X(η)` with `η = Kω` on `spt X ⊇ Gᵢ(Aᵢ)`, and each term of the series for
+    -- `X(η)` is the corresponding cone integral
+    intro ω
+    obtain ⟨η, hη, hYη⟩ := hYK ω
+    rw [hYη]
+    convert hXser η using 1
+    funext i
+    exact (Submission.dimred_cs_sos_cfs_cp_piece_action P (q + 1) (K i) (G i) (H i) (A i) (w i) ω
+      η (hK i) (hA i) (hw i) (hwi i) (hHB i) fun u hu => hη (G i u) (hGA i ⟨u, hu, rfl⟩)).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
