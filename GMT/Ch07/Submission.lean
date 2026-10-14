@@ -13475,4 +13475,47 @@ theorem Submission.codim1_rdo_de_giorgi_gauss_green : ∀ (m : ℕ) (D F : Set (
   rw [inter_comm, ← Measure.restrict_apply' hB]
   exact hμK K hK hKD
 
+/-- **Locally finite perimeter of the chart region** (Simon Ch. 6, 2.35; the chart step of the
+local unit representation in the proof of 7.5.8).  Let `G(v) = x + ιv + u(v)` on `D = B_{δ₁}(0)`
+and `F = D ∩ G⁻¹(E)`.  `F` is Borel: `G` is continuous on the open ball `D`, so
+`F = D ∩ G̃⁻¹(E)` for the Borel map `G̃ = D.piecewise G x`.  Let `K̂ = B̄_{δ₁+δ₂}(x)`, a compact
+subset of `U`.  For an integer multiplicity representation `R` of `T`,
+`M_{K̂}(T) ≤ μ_R(K̂) < ∞`.  Given `φ ∈ C^∞_c` with `spt φ ⊆ K ⊆ D` and `|φ| ≤ 1`, the test form
+`ω_φ` of `codim1_lur_chart_test_form_exists` is supported in `Z ∩ K̂` and has
+`|ω_φ| ≤ (n+1)! √(Pⁿ)`.  Its pull-back field is `φ`, so the chart divergence formula gives
+`∫_F div φ = T(ω_φ) ≤ |T(ω_φ)| ≤ (n+1)! √(Pⁿ) M_{K̂}(T)`, a bound independent of `φ`. -/
+theorem Submission.codim1_lur_chart_locally_finite_perimeter : ∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n) (x : Euclid P) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ₁ δ₂ : ℝ), MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsIntegerMultiplicity T → 0 < δ₁ → 0 < δ₂ → closedBall x (δ₁ + δ₂) ⊆ U → ContDiffOn ℝ 2 u (ball 0 δ₁) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, (∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) ∧ ‖fderiv ℝ u v‖ ≤ 1 ∧ ‖u v‖ < δ₂ / 2 ∧ x + ι v + u v ∈ N ∧ ∀ α : Covector (Euclid P) (n + 1), ξN (x + ι v + u v) α * Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (n + 1) => inner ℝ (ι (EuclideanSpace.single i 1) + fderiv ℝ u v (EuclideanSpace.single i 1)) (ι (EuclideanSpace.single j 1) + fderiv ℝ u v (EuclideanSpace.single j 1)))) = α (fun i => ι (EuclideanSpace.single i 1) + fderiv ℝ u v (EuclideanSpace.single i 1))) → (∀ (v : Euclid (n + 1)) (h : Euclid P), ‖v‖ < δ₁ → ‖h‖ < δ₂ → (∀ w : Euclid (n + 1), inner ℝ (ι w) h = 0) → x + ι v + h ∈ N → h = u v) → MeasurableSet (ball 0 δ₁ ∩ (fun y => x + ι y + u y) ⁻¹' E) ∧ ∀ K : Set (Euclid (n + 1)), IsCompact K → K ⊆ ball 0 δ₁ → ∃ C : ℝ, ∀ φ : Euclid (n + 1) → Euclid (n + 1), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ K → (∀ y, ‖φ y‖ ≤ 1) → ∫ y in ball 0 δ₁ ∩ (fun y => x + ι y + u y) ⁻¹' E, LinearMap.trace ℝ (Euclid (n + 1)) (fderiv ℝ φ y : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1)) ≤ C := by
+  intro P n U N E ξN T x ι u δ₁ δ₂ hE hEU hTE hTim hδ₁ hδ₂ hxU hu hchart huniq
+  -- on `D = B_{δ₁}(0)`: `u` is differentiable, `u ⊥ range ι` and `|u| < δ₂/2`
+  have hud : DifferentiableOn ℝ u (ball 0 δ₁) := hu.differentiableOn two_ne_zero
+  have huι : ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0 :=
+    fun v hv => (hchart v hv).1
+  have hus : ∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ‖u v‖ < δ₂ / 2 := fun v hv => (hchart v hv).2.2.1
+  refine ⟨?_, fun K hK hKD => ?_⟩
+  · -- `F = D ∩ G̃⁻¹(E)` for the Borel map `G̃ = D.piecewise G x`, `G` being continuous on `D`
+    classical
+    have hGc : ContinuousOn (fun y => x + ι y + u y) (ball (0 : Euclid (n + 1)) δ₁) :=
+      (continuousOn_const.add ι.continuous.continuousOn).add hu.continuousOn
+    have hGpw := hGc.measurable_piecewise (continuousOn_const (c := x)) measurableSet_ball
+    convert measurableSet_ball.inter (hGpw hE) using 1
+    ext y
+    simp only [mem_inter_iff, mem_preimage]
+    exact and_congr_right fun hy => by rw [piecewise_eq_of_mem _ _ _ hy]
+  · -- `K̂ = B̄_{δ₁+δ₂}(x)` is a compact subset of `U`, so `M_{K̂}(T) ≤ μ_R(K̂) < ∞`
+    obtain ⟨R, hR⟩ := hTim
+    have hM : T.massOn (closedBall x (δ₁ + δ₂)) ≠ ∞ :=
+      ne_top_of_le_ne_top (Submission.rsd_imrep_compact_measure_ne_top P n U R _
+          (isCompact_closedBall x (δ₁ + δ₂)) hxU).2
+        (Submission.dor_ims_massOn_le_measure P n U T R hR _)
+    refine ⟨((n + 1).factorial : ℝ) * Real.sqrt ((P : ℝ) ^ n) *
+        (T.massOn (closedBall x (δ₁ + δ₂))).toReal, fun φ hφ hφc hφK hφ1 => ?_⟩
+    -- the test form `ω_φ`: support in `Z ∩ K̂`, `|ω_φ| ≤ (n+1)! √(Pⁿ)`, pull-back field `φ`
+    obtain ⟨ω, hωZ, hωK, hω, hφω⟩ := Submission.codim1_lur_chart_test_form_exists P n U x ι u δ₁ δ₂
+      φ hδ₂ hxU hud huι hus hφ hφc (hφK.trans hKD) hφ1
+    -- the chart divergence formula with `Φ = φ`: `T(ω_φ) = ∫_F div φ`
+    rw [← (Submission.codim1_lur_chart_divergence_formula P n U N E ξN T x ι u δ₁ δ₂ hE hEU hTE
+      hδ₁ hδ₂ hu hchart huniq ω φ hωZ hφω).2.2.2]
+    -- `T(ω_φ) ≤ |T(ω_φ)| ≤ (n+1)! √(Pⁿ) M_{K̂}(T)`
+    exact (le_abs_self _).trans (Submission.cmr_abs_apply_le_massOn P n U _ T ω _ hM hωK hω)
+
 end GMT.Ch07
