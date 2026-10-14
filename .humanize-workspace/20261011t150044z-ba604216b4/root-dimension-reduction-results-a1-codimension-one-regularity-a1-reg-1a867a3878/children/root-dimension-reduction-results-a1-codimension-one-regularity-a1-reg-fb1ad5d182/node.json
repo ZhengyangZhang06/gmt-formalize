@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.test_form-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1",
+  "depth": 6,
+  "title": "Test forms on the chart whose pull-back field is a prescribed φ (supplied steps 3–6 and 8; Simon 6.2.35)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, x ∈ ℝ^P, let ι : ℝ^{n+1} → ℝ^P be a linear isometry with adjoint A := ι*, let u : ℝ^{n+1} → ℝ^P, δ₁, δ₂ ∈ ℝ and φ : ℝ^{n+1} → ℝ^{n+1}. Write D := B_{δ₁}(0) ⊆ ℝ^{n+1}, G(v) := x + ιv + u(v), DG(v) for the Fréchet derivative of G at v, e_0, …, e_n for the standard basis of ℝ^{n+1}, j.succAbove : {0, …, n−1} → {0, …, n} for the increasing enumeration of {0, …, n} ∖ {j}, and Z := {w ∈ ℝ^P : |A(w − x)| < δ₁ and |w − x − ιA(w − x)| < δ₂}. Assume: δ₂ > 0; closedBall(x, δ₁ + δ₂) ⊆ U; u is differentiable on D; ⟨ιw, u(v)⟩ = 0 for all v ∈ D and w ∈ ℝ^{n+1}; |u(v)| < δ₂/2 for all v ∈ D; φ is C^∞, has compact support, tsupport φ ⊆ D and |φ(y)| ≤ 1 for all y. Then there is a test form ω ∈ 𝒟^n(U) (TestFormOn U n: a C^∞ n-form on ℝ^P with compact support and tsupport ω ⊆ U) such that (i) tsupport ω ⊆ Z; (ii) tsupport ω ⊆ closedBall(x, δ₁ + δ₂); (iii) covectorEuclideanNorm(ω(w)) ≤ (n+1)!·√(P^n) for every w ∈ ℝ^P; and (iv) φ = 1_D · Σ_{j=0}^{n} (−1)^j ω(G(·))(DG(·)e_{j.succAbove 0}, …, DG(·)e_{j.succAbove(n−1)}) e_j, i.e. for v ∈ D, φ(v) = Σ_j ((−1)^j ω(G(v))(DG(v)e_{j.succAbove 0}, …, DG(v)e_{j.succAbove(n−1)})) e_j, and φ(v) = 0 for v ∉ D.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (x : Euclid P) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ₁ δ₂ : ℝ) (φ : Euclid (n + 1) → Euclid (n + 1)), 0 < δ₂ → closedBall x (δ₁ + δ₂) ⊆ U → DifferentiableOn ℝ u (ball 0 δ₁) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, ‖u v‖ < δ₂ / 2) → ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ ball 0 δ₁ → (∀ y, ‖φ y‖ ≤ 1) → ∃ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ ∧ ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂} ∧ tsupport (ω : DifferentialForm (Euclid P) n) ⊆ closedBall x (δ₁ + δ₂) ∧ (∀ w, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) w) ≤ ((n + 1).factorial : ℝ) * Real.sqrt ((P : ℝ) ^ n)) ∧ φ = (ball (0 : Euclid (n + 1)) δ₁).indicator (fun v => ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * (ω : DifferentialForm (Euclid P) n) (x + ι v + u v) (fun k => fderiv ℝ (fun y => x + ι y + u y) v (EuclideanSpace.single (j.succAbove k) 1))) • EuclideanSpace.single j (1 : ℝ))",
+  "lean_name": "codim1_lur_chart_test_form_exists",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.chart_geometry-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.det_covector-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.coeff_bound-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.det_laplace-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.chart_geometry-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.det_covector-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.coeff_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.det_laplace-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-fb1ad5d182-a1"
+}

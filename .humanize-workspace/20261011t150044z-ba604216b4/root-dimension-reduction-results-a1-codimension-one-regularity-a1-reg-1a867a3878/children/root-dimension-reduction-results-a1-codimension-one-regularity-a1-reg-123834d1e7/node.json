@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1.det_laplace-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_perimeter-a1",
+  "depth": 6,
+  "title": "Cofactor expansion det[p, e_{j.succAbove 0}, …, e_{j.succAbove(n−1)}] = (−1)^j p_j (supplied step 6)",
+  "statement": "Let n ∈ ℕ, p ∈ ℝ^{n+1} and j ∈ {0, …, n}. Let e_0, …, e_n be the standard basis of ℝ^{n+1} and let j.succAbove : {0, …, n−1} → {0, …, n} be the increasing enumeration of {0, …, n} ∖ {j} (j.succAbove k = k for k < j and k + 1 for k ≥ j). Let M be the (n+1)×(n+1) real matrix whose column 0 is p and whose column k+1 is e_{j.succAbove k} (k = 0, …, n−1); that is, M_{r,0} = p_r and M_{r,k+1} = (e_{j.succAbove k})_r, the r-th coordinate. Then det M = (−1)^j p_j, where p_j is the j-th coordinate of p.",
+  "lean_statement": "∀ (n : ℕ) (p : Euclid (n + 1)) (j : Fin (n + 1)), Matrix.det (Matrix.of fun r c : Fin (n + 1) => (Fin.cons p (fun k : Fin n => EuclideanSpace.single (j.succAbove k) (1 : ℝ)) : Fin (n + 1) → Euclid (n + 1)) c r) = (-1 : ℝ) ^ (j : ℕ) * p j",
+  "lean_name": "codim1_lur_det_laplace_first_column",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-123834d1e7-a1"
+}

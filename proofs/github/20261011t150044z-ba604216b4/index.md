@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/4345 | this PR | root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_support_cycle-a1, root.dimension_reduction_results-a1.codimension_one_regularity-a1.oriented_piece_mass-a1, root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1, root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1, root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.density_pos_support-a1, root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.support_mass_pos-a1, root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1, root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1, root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1, root.density_one_implies_regular-a1.imrep_mass_and_support-a1.mass_upper_bound-a1, root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.graph_chart-a1, root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1, root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1 |

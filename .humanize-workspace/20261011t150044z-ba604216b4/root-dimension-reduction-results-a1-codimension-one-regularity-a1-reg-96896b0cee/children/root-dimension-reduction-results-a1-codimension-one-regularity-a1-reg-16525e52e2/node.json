@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.flat_tangent_density-a1.test_lower_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.flat_tangent_density-a1",
+  "depth": 6,
+  "title": "Lower bound for rescaled measures from a test function dominated by an indicator",
+  "statement": "Let N, m ∈ ℕ, μ a measure on the Borel sets of ℝ^N = Euclid N, y ∈ ℝ^N, and A ⊆ ℝ^N any set. Let f : ℝ^N → ℝ be continuous with 0 ≤ f ≤ 1 and f(w) = 0 for every w ∉ A, and let L', L be reals with L' < L. If r^{-m} ∫ f(r^{-1}(z − y)) dμ(z) → L as r ↓ 0 (Bochner integral, limit along 𝓝[>] 0), then for all sufficiently small r > 0 (eventually along 𝓝[>] 0), ENNReal.ofReal(L' · r^m) ≤ μ({z : r^{-1}(z − y) ∈ A}). (A need not be measurable; μ is evaluated on {z : r^{-1}(z − y) ∈ A} as an outer measure.)",
+  "lean_statement": "∀ (N m : ℕ) (μ : Measure (Euclid N)) (y : Euclid N) (f : Euclid N → ℝ) (A : Set (Euclid N)) (L L' : ℝ), Continuous f → (∀ w, 0 ≤ f w) → (∀ w, f w ≤ 1) → (∀ w, w ∉ A → f w = 0) → Tendsto (fun r : ℝ => (r ^ m)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 L) → L' < L → ∀ᶠ r in 𝓝[>] (0 : ℝ), ENNReal.ofReal (L' * r ^ m) ≤ μ {z | r⁻¹ • (z - y) ∈ A}",
+  "lean_name": "codim1_rdo_dg_ftd_test_lower_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-16525e52e2-a1"
+}

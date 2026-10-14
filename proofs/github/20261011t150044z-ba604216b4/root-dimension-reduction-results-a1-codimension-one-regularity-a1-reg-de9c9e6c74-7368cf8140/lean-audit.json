@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "6dcecb77a146b664308b385b564f6f1ae1c13f5cac390c1a9b96c87da71bb0ca",
+  "git_delta": {
+    "base_commit": "7d66f6aacc2d3ffc9f89482b33d7ad713341461a",
+    "candidate_commit": "0d2cc51e07aa226efddea2a8f311029008302f7b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "9450afcb01db6e216405b14fbab65dcda4cbbc55902a5886b8a0b2b73a7d04c2",
+    "source_sha256": "dfae960d5feb89c95cc0d4ff0934c8d8c79eac822a152366140d4ce91bec9507",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_region_density_one_dense",
+      "statement": "∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → InClassO n U N ξN → MeasurableSet E → E ⊆ N ∩ U → IsBoundaryOfRegion T E ξN → IsIntegerMultiplicity T → ∀ x ∈ T.support, ∀ ρ : ℝ, 0 < ρ → ∃ y ∈ T.support ∩ ball x ρ, HasMassDensity T y 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
