@@ -12064,6 +12064,149 @@ theorem Submission.dimred_one_dim_minimizing_cone : ∀ (P : ℕ) (C : Geometric
   obtain ⟨hs, hd⟩ := Submission.odc_line_conclusion C F hF m hCm a ha hb hsupp k hk hk'
   exact ⟨a, k, fun _ => hF a ha, hs, hd⟩
 
+/-- **Simon 7.3.3, proof of (2), formula (10)**: a `1`-dimensional minimizing cone `C` in `ℝᴾ`
+with `∂C = 0` is `m[[ℝe]]` for a unit vector `e` (or `C = 0`, `m = 0`); in particular
+`spt C ⊆ ℝe` and `Θ¹(μ_C, y) = m` for every `y ∈ ℝe`.
+(0) A current vanishing on all test forms (e.g. `P = 0`) satisfies this with `e = 0`, `m = 0`.
+(1) For `C = τ(M, θ, ξ)`, `μ = θH¹⌞M = μ_C` is finite on compact sets, and monotonicity in
+`U = N = ℝᴾ` gives `Θ¹(μ, x) ≥ 1` on `spt C`, so `ρ ≤ μ(B_ρ(x))` for small `ρ` (`ω₁ = 2`).
+(2) The cone property gives `μ(λW) = λμ(W)`.  (3) Hence `μ` lives on finitely many rays, and
+`H¹(M ∖ rays) = 0` as `θ ≥ 1` on `M`.  (4) Along the rays `C` has integer densities, which are
+constants `m(e)` with `∑ m(e) = 0` because `∂C = 0`.  (5) If some `m(e) ≠ 0`, rays `a`, `b` with
+`m(a) > 0 > m(b)` exist, and minimality forces `b = -a` for every such pair.  (6) So
+`C = k[[ℝa]]` with `k = m(a)`, supported in `ℝa` with density `k` along `ℝa`. -/
+theorem Submission.idtp_fons_one_dim_minimizing_cone : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → ∃ (e : Euclid P) (m : ℕ), (0 < m → ‖e‖ = 1) ∧ C.support ⊆ (Submodule.span ℝ {e} : Set (Euclid P)) ∧ ∀ y ∈ Submodule.span ℝ {e}, HasMassDensity C y m := by
+  intro P C hmin hbdry hcone
+  -- (0) a current vanishing on every test form: take `e = 0`, `m = 0`
+  have hzero : (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = 0) →
+      ∃ (e : Euclid P) (m : ℕ), (0 < m → ‖e‖ = 1) ∧
+        C.support ⊆ (Submodule.span ℝ {e} : Set (Euclid P)) ∧
+        ∀ y ∈ Submodule.span ℝ {e}, HasMassDensity C y m := by
+    intro h
+    have hmass0 : ∀ W : Set (Euclid P), C.massOn W = 0 := by
+      intro W
+      refine le_antisymm (sSup_le ?_) zero_le
+      rintro _ ⟨ω, -, rfl⟩
+      simp [h ω]
+    refine ⟨0, 0, fun h0 => absurd h0 (lt_irrefl 0), fun x hx => absurd ?_ hx.2,
+      fun y _ => ⟨Nat.cast_nonneg _, ?_⟩⟩
+    · exact mem_sUnion.2 ⟨ball x 1, ⟨isOpen_ball, isBounded_ball.isCompact_closure,
+        subset_univ _, fun ω _ => h ω⟩, mem_ball_self one_pos⟩
+    · simp only [hmass0, ENNReal.zero_div, Nat.cast_zero, ENNReal.ofReal_zero]
+      exact tendsto_const_nhds
+  -- `P = 0`: every `1`-covector on `ℝ⁰` vanishes, so `C = 0`
+  rcases Nat.eq_zero_or_pos P with rfl | hP
+  · refine hzero fun ω => ?_
+    have hω : ω = 0 := Subtype.ext <| funext fun x => ContinuousAlternatingMap.ext fun v => by
+      rw [Subsingleton.elim v 0]
+      simp
+    rw [hω]
+    exact map_zero C.toCurrent
+  -- (1) `μ = R.measure` for a representation `R` of `C`: `M_W(C) = μ(W)`, `spt C = spt μ`
+  obtain ⟨R, hR⟩ := hmin.1
+  obtain ⟨hmass, hsupp, -⟩ := Submission.dimred_im_mass_measure P 1 univ C R isOpen_univ hR
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → R.measure K ≠ ∞ := by
+    intro K hK
+    rw [IMRep.measure, withDensity_apply _ hK.isClosed.measurableSet,
+      Measure.restrict_restrict hK.isClosed.measurableSet, inter_comm]
+    exact R.locallyIntegrable_mult K hK (subset_univ K)
+  -- monotonicity with `U = N = ℝᴾ` (identity chart), `n = 1`, `d = P`: `Θ ≥ 1` on `spt C`
+  have hN : IsEmbeddedSubmanifold 2 P (univ : Set (Euclid P)) := fun y _ =>
+    ⟨univ, univ, id, isOpen_univ, isOpen_univ, mem_univ y, contDiffOn_id, injOn_id _,
+      by simp, fun K _ hK => by simpa using hK, fun z _ => by
+        rw [fderiv_id, ContinuousLinearMap.coe_id']; exact injective_id⟩
+  obtain ⟨-, -, ⟨Θ, hΘ, -⟩, hge⟩ := Submission.idtp_fons_minimizing_monotonicity P 1 P univ univ C
+    le_rfl hP le_rfl isOpen_univ hN (by simp) (by rwa [inter_self]) (by simp) hbdry
+  -- with `ω₁ = 2`, `ρ ≤ μ(B_ρ(x))` for all small `ρ > 0` at every `x ∈ spt μ`
+  have hvol : unitBallVolume 1 = 2 := Submission.idtp_fons_odc_line_hausdorff.1
+  have hlower : ∀ x : Euclid P, (∀ ε : ℝ, 0 < ε → R.measure (ball x ε) ≠ 0) →
+      ∀ᶠ ρ in 𝓝[>] (0 : ℝ), ENNReal.ofReal ρ ≤ R.measure (ball x ρ) := by
+    intro x hx
+    have hΘx := hΘ x (mem_univ x)
+    have h1 : (2⁻¹ : ℝ≥0∞) < ENNReal.ofReal (Θ x) :=
+      (ENNReal.inv_lt_one.2 ENNReal.one_lt_two).trans_le
+        (ENNReal.one_le_ofReal.2 (hge x ((hsupp x (mem_univ x)).2 hx) _ hΘx))
+    filter_upwards [hΘx.2.eventually_const_lt h1, self_mem_nhdsWithin] with ρ hρ hρ0
+    rw [hvol, pow_one, hmass _ isOpen_ball (subset_univ _),
+      ENNReal.lt_div_iff_mul_lt (Or.inl (mul_ne_zero two_ne_zero (ENNReal.ofReal_pos.2 hρ0).ne'))
+        (Or.inl (ENNReal.mul_ne_top ENNReal.ofNat_ne_top ENNReal.ofReal_ne_top)), ← mul_assoc,
+      ENNReal.inv_mul_cancel two_ne_zero ENNReal.ofNat_ne_top, one_mul] at hρ
+    exact hρ.le
+  -- (2) the cone property: `μ(λW) = λμ(W)`
+  have hscale : ∀ lam : ℝ, 0 < lam → ∀ W : Set (Euclid P), IsOpen W →
+      R.measure ((fun x => lam • x) '' W) = ENNReal.ofReal lam * R.measure W := by
+    intro lam hlam W hW
+    rw [Submission.cone_current_imrep_measure_smul_image P 1 C R hcone hR lam hlam W
+      hW.measurableSet, pow_one]
+  -- (3) `μ` lives on finitely many rays; as `θ ≥ 1` on `M`, `H¹(M ∖ rays) = 0`
+  obtain ⟨F, hF, hZ⟩ := Submission.idtp_fons_odc_finite_rays P R.measure hfin hscale hlower
+  have hrays : MeasurableSet (⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0) := by
+    refine Finset.measurableSet_biUnion F fun e he => ?_
+    simpa only [zero_add] using
+      (Submission.idtp_fons_odc_line_hausdorff.2 P 0 e (hF e he)).1.measurableSet_image.2
+        measurableSet_Ioi
+  have hnull : (μHE[1] : Measure (Euclid P))
+      (R.carrier ∩ (⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0)ᶜ) = 0 := by
+    rw [IMRep.measure, withDensity_apply _ hrays.compl] at hZ
+    rw [inter_comm, ← Measure.restrict_apply hrays.compl, ← setLIntegral_one,
+      ← nonpos_iff_eq_zero, ← hZ]
+    refine lintegral_mono_ae (ae_restrict_of_ae ((ae_restrict_mem R.measurableSet_carrier).mono
+      fun x hx => ?_))
+    exact_mod_cast R.mult_pos x hx
+  -- (4) integer densities along the rays, constant since `∂C = 0`, with `∑ m(e) = 0`
+  obtain ⟨g, hgi, hgZ, hrep⟩ := Submission.idtp_fons_odc_ray_action P R F hF hnull
+  obtain ⟨m, hsum, hCm⟩ := Submission.idtp_fons_odc_ray_constancy P C hbdry F hF g hgi hgZ
+    fun ω => (hR ω).trans (hrep ω)
+  by_cases hm0 : ∀ e ∈ F, m e = 0
+  · refine hzero fun ω => ?_
+    rw [hCm ω]
+    exact Finset.sum_eq_zero fun e he => by simp [hm0 e he]
+  simp only [not_forall] at hm0
+  obtain ⟨e₀, he₀, hme₀⟩ := hm0
+  -- (5) as `∑ m(e) = 0`, there are rays of positive and of negative multiplicity
+  have hpos : ∃ a ∈ F, 0 < m a := by
+    by_contra! h
+    have : 0 < ∑ e ∈ F, -m e :=
+      Finset.sum_pos' (fun e he => by have := h e he; omega)
+        ⟨e₀, he₀, by have := h e₀ he₀; omega⟩
+    rw [Finset.sum_neg_distrib, hsum, neg_zero] at this
+    exact lt_irrefl _ this
+  have hneg : ∃ b ∈ F, m b < 0 := by
+    by_contra! h
+    have : 0 < ∑ e ∈ F, m e := Finset.sum_pos' h ⟨e₀, he₀, by have := h e₀ he₀; omega⟩
+    rw [hsum] at this
+    exact lt_irrefl _ this
+  obtain ⟨a, ha, hma⟩ := hpos
+  obtain ⟨b, hb, hmb⟩ := hneg
+  -- minimality: every positive ray is antipodal to every negative ray
+  have hanti := Submission.idtp_fons_odc_antipodal P C hmin F hF m hCm
+  obtain rfl : b = -a := hanti a ha b hb hma hmb
+  have hpm : ∀ e ∈ F, m e ≠ 0 → e = a ∨ e = -a := by
+    intro e he hme
+    rcases lt_or_gt_of_ne hme with h | h
+    · exact Or.inr (hanti a ha e he hma h)
+    · exact Or.inl (neg_injective (hanti e he (-a) hb h hmb)).symm
+  -- (6) `0 = ∑ m(e) = m(a) + m(-a)`, so `C = k[[ℝa]]` with `k = m(a)`
+  have ha0 : a ≠ -a := by
+    intro h
+    have h2 : (2 : ℝ) • a = 0 := by rw [two_smul]; nth_rewrite 2 [h]; exact add_neg_cancel a
+    have h1 := hF a ha
+    rw [(smul_eq_zero.1 h2).resolve_left two_ne_zero, norm_zero] at h1
+    exact zero_ne_one h1
+  have hsum2 : ∑ e ∈ F, m e = m a + m (-a) :=
+    Finset.sum_eq_add a (-a) ha0
+      (fun e he hne => by
+        by_contra hme
+        rcases hpm e he hme with h | h
+        · exact hne.1 h
+        · exact hne.2 h)
+      (fun h => absurd ha h) (fun h => absurd hb h)
+  obtain ⟨k, hk⟩ : ∃ k : ℕ, m a = k := ⟨(m a).toNat, (Int.toNat_of_nonneg hma.le).symm⟩
+  have hk' : m (-a) = -k := by omega
+  obtain ⟨hs, hd⟩ :=
+    Submission.idtp_fons_odc_line_conclusion P C F hF m hCm a ha hb hpm k hk hk'
+  exact ⟨a, k, fun _ => hF a ha, hs, hd⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
