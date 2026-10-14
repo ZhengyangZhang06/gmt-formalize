@@ -841,6 +841,168 @@ theorem Submission.codim1_lura_gram_area_formula : ∀ (m P : ℕ) (f : Euclid m
   · simp only [eventually_true, ENNReal.ofReal_lt_top]
   · exact (hGc.measurable.comp (measurable_fderiv ℝ f)).ennreal_ofReal.aemeasurable
 
+/-- **First-order calculus of Lipschitz maps on parameter domains** (Simon Ch. 7, deformation step;
+Ch. 6, 2.29; Ch. 2, 3.3–3.5).  Write `J_H(u) = √det(⟨DH(u)eₐ, DH(u)e_b⟩)`.
+(i) If `F` is `Λ`-Lipschitz and `G` is differentiable at `u`, then `J_{F∘G}(u) ≤ Λᵏ J_G(u)`:
+`|D(F∘G)(u)v| ≤ Λ|DG(u)v|` by difference quotients; a non-injective `D(F∘G)(u)` has singular Gram
+matrix, and otherwise the area formula for the linear maps `L = D(F∘G)(u)`, `M = DG(u)` on the unit
+ball `S` gives `Hᵏ(L S) = J(L)|S|`, `Hᵏ(M S) = J(M)|S|`, while `L = A ∘ M` with `A` `Λ`-Lipschitz on
+`M S`, so `Hᵏ(L S) ≤ Λᵏ Hᵏ(M S)`.
+(ii) If `H, H'` are Lipschitz and agree a.e. on a Borel set `B`, then `DH = DH'` a.e. on `B`: at a
+point `u` of `E = {H = H'}` where `E` has density `1` along the balls `B(y, |y - u|/(n+1))`,
+`y → u` (Lebesgue density theorem for the doubling measure `Lᵏ`), every `y` near `u` is within
+`|y - u|/(n+1)` of `E`, so `H - H'` has derivative `0` at `u`. -/
+theorem Submission.dor_lmb_fcd_imp_lipschitz_jacobian_locality : (∀ (k N N' : ℕ) (F : Euclid N → Euclid N') (G : Euclid k → Euclid N) (Λ : NNReal) (u : Euclid k), LipschitzWith Λ F → DifferentiableAt ℝ G u → Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ (F ∘ G) u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ (F ∘ G) u (EuclideanSpace.single b (1 : ℝ))))) ≤ (Λ : ℝ) ^ k * Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (fderiv ℝ G u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ G u (EuclideanSpace.single b (1 : ℝ)))))) ∧ ∀ (k N' : ℕ) (H H' : Euclid k → Euclid N') (B : Set (Euclid k)) (L L' : NNReal), LipschitzWith L H → LipschitzWith L' H' → MeasurableSet B → (∀ᵐ u ∂(volume.restrict B), H u = H' u) → ∀ᵐ u ∂(volume.restrict B), fderiv ℝ H u = fderiv ℝ H' u := by
+  refine ⟨fun k N N' F G Λ u hF hG => ?_, fun k N' H H' B L L' hH hH' hB hae => ?_⟩
+  · -- (i)  `Lm = D(F∘G)(u)`, `Mm = DG(u)`
+    set Lm := fderiv ℝ (F ∘ G) u with hLm
+    set Mm := fderiv ℝ G u with hMm
+    -- `|Lm v| ≤ Λ |Mm v|`, from the difference quotients along `u + v/n`
+    have hLM : ∀ v : Euclid k, ‖Lm v‖ ≤ (Λ : ℝ) * ‖Mm v‖ := by
+      intro v
+      by_cases hFG : DifferentiableAt ℝ (F ∘ G) u
+      · have hc : Tendsto (fun n : ℕ => ‖(n : ℝ)‖) atTop atTop := by
+          simpa only [Real.norm_natCast] using tendsto_natCast_atTop_atTop
+        have h1 := (hFG.hasFDerivAt.lim v hc).norm
+        have h2 := ((hG.hasFDerivAt.lim v hc).norm).const_mul (Λ : ℝ)
+        refine le_of_tendsto_of_tendsto' h1 h2 fun n => ?_
+        rw [norm_smul, norm_smul, mul_left_comm]
+        refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
+        rw [← dist_eq_norm, ← dist_eq_norm]
+        exact hF.dist_le_mul _ _
+      · rw [hLm, fderiv_zero_of_not_differentiableAt hFG, zero_apply, norm_zero]
+        positivity
+    by_cases hLinj : Injective Lm
+    · have hMinj : Injective Mm := by
+        intro v w hvw
+        apply hLinj
+        have h := hLM (v - w)
+        simp only [map_sub, hvw, sub_self, norm_zero, mul_zero] at h
+        exact sub_eq_zero.mp (norm_le_zero_iff.mp h)
+      -- area formula for an injective linear map on the closed unit ball
+      have harea : ∀ {P : ℕ} (T : Euclid k →L[ℝ] Euclid P), Injective T →
+          μHE[k] (T '' closedBall 0 1) = ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin k =>
+            inner ℝ (T (EuclideanSpace.single a (1 : ℝ))) (T (EuclideanSpace.single b (1 : ℝ)))))) *
+            volume (closedBall (0 : Euclid k) 1) := by
+        intro P T hT
+        have h := (Submission.codim1_lura_gram_area_formula k P T).2 (closedBall 0 1)
+          measurableSet_closedBall (fun x _ => T.differentiableAt)
+          (fun x _ => by rw [T.fderiv]; exact hT) hT.injOn (fun _ => 1)
+        simpa only [ContinuousLinearMap.fderiv, mul_one, setLIntegral_one, setLIntegral_const] using h
+      -- `Lm = A ∘ Mm` with `A = Lm ∘ Linv` `Λ`-Lipschitz on the range of `Mm`
+      obtain ⟨Linv, hLinv⟩ := LinearMap.exists_leftInverse_of_injective (Mm : Euclid k →ₗ[ℝ] Euclid N)
+        (LinearMap.ker_eq_bot.mpr hMinj)
+      have hLx : ∀ x, Linv (Mm x) = x := fun x => by
+        simpa using LinearMap.congr_fun hLinv x
+      have hA : LipschitzOnWith Λ (fun y => Lm (Linv y)) (Mm '' closedBall 0 1) := by
+        refine LipschitzOnWith.of_dist_le_mul fun y hy y' hy' => ?_
+        obtain ⟨x, -, rfl⟩ := hy
+        obtain ⟨x', -, rfl⟩ := hy'
+        simp only [hLx, dist_eq_norm, ← map_sub]
+        exact hLM (x - x')
+      have himg : (fun y => Lm (Linv y)) '' (Mm '' closedBall 0 1) = Lm '' closedBall 0 1 := by
+        rw [image_image]
+        simp only [hLx]
+      have hle := Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn k hA
+      rw [himg, harea Lm hLinj, harea Mm hMinj] at hle
+      have hS0 : volume (closedBall (0 : Euclid k) 1) ≠ 0 := (measure_closedBall_pos volume 0 one_pos).ne'
+      have hSt : volume (closedBall (0 : Euclid k) 1) ≠ ∞ := measure_closedBall_lt_top.ne
+      rw [← mul_assoc, ENNReal.mul_le_mul_iff_left hS0 hSt, ← ENNReal.ofReal_coe_nnreal,
+        ← ENNReal.ofReal_pow Λ.coe_nonneg, ← ENNReal.ofReal_mul (p := (Λ : ℝ) ^ k) (by positivity)] at hle
+      exact (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp hle
+    · -- a non-injective `Lm` has singular Gram matrix
+      obtain ⟨v, w, hvw, hne⟩ : ∃ v w, Lm v = Lm w ∧ v ≠ w := by
+        simpa [Injective] using hLinj
+      have hdet : Matrix.det (Matrix.of fun a b : Fin k => inner ℝ (Lm (EuclideanSpace.single a (1 : ℝ)))
+          (Lm (EuclideanSpace.single b (1 : ℝ)))) = 0 := by
+        have hx : ∑ b, (v - w).ofLp b • EuclideanSpace.single b (1 : ℝ) = v - w := by
+          ext i
+          simp [Pi.single_apply]
+        rw [← Matrix.exists_mulVec_eq_zero_iff]
+        refine ⟨(v - w).ofLp, fun h0 => hne (sub_eq_zero.mp ?_), ?_⟩
+        · rw [← hx, h0]
+          simp
+        · funext a
+          simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, Pi.zero_apply]
+          calc ∑ b, inner ℝ (Lm (EuclideanSpace.single a (1 : ℝ))) (Lm (EuclideanSpace.single b (1 : ℝ))) *
+                (v - w).ofLp b
+              = inner ℝ (Lm (EuclideanSpace.single a (1 : ℝ)))
+                  (Lm (∑ b, (v - w).ofLp b • EuclideanSpace.single b (1 : ℝ))) := by
+                rw [map_sum, inner_sum]
+                refine Finset.sum_congr rfl fun b _ => ?_
+                rw [map_smul, inner_smul_right, mul_comm]
+            _ = 0 := by rw [hx, map_sub, hvw, sub_self, inner_zero_right]
+      rw [hdet, Real.sqrt_zero]
+      positivity
+  · -- (ii)  `E = {H = H'}` is closed and contains almost all of `B`
+    set E : Set (Euclid k) := {x | H x = H' x} with hE
+    have hBE : B ≤ᵐ[volume] E := by
+      filter_upwards [(ae_restrict_iff' hB).mp hae] with x hx
+      exact fun hxB => hx hxB
+    -- density of `E` along the balls `B(y, |y - x|/(n+1))`, `y → x`
+    have hdens : ∀ᵐ x ∂(volume.restrict E), ∀ n : ℕ,
+        Tendsto (fun y => volume (E ∩ closedBall y (dist y x / ((n : ℝ) + 1))) /
+          volume (closedBall y (dist y x / ((n : ℝ) + 1)))) (𝓝[≠] x) (𝓝 1) := by
+      rw [ae_all_iff]
+      intro n
+      filter_upwards [IsUnifLocDoublingMeasure.ae_tendsto_measure_inter_div
+        (volume : Measure (Euclid k)) E ((n : ℝ) + 1)] with x hx
+      have hn : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+      refine hx id (fun y => dist y x / ((n : ℝ) + 1)) ?_ ?_
+      · rw [tendsto_nhdsWithin_iff]
+        constructor
+        · have h0 : Tendsto (fun y => dist y x / ((n : ℝ) + 1)) (𝓝 x) (𝓝 (dist x x / ((n : ℝ) + 1))) :=
+            ((continuous_id.dist continuous_const).div_const _).tendsto x
+          rw [dist_self, zero_div] at h0
+          exact h0.mono_left nhdsWithin_le_nhds
+        · filter_upwards [self_mem_nhdsWithin] with y hy
+          exact div_pos (dist_pos.mpr (mem_compl_singleton_iff.mp hy)) hn
+      · refine Eventually.of_forall fun y => ?_
+        rw [mem_closedBall, id, mul_div_cancel₀ _ hn.ne', dist_comm]
+    filter_upwards [hae, ae_mono (Measure.restrict_mono_ae hBE) hdens] with u hu hdu
+    -- `H - H'` has derivative `0` at `u`
+    have hD : HasFDerivAt (fun x => H x - H' x) (0 : Euclid k →L[ℝ] Euclid N') u := by
+      refine HasFDerivAt.of_isLittleO (Asymptotics.isLittleO_iff.mpr fun c hc => ?_)
+      obtain ⟨n, hn⟩ := exists_nat_gt (((L : ℝ) + L') / c)
+      have hn1 : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+      have hev : ∀ᶠ y in 𝓝[≠] u, (E ∩ closedBall y (dist y u / ((n : ℝ) + 1))).Nonempty := by
+        filter_upwards [(hdu n).eventually_ne one_ne_zero] with y hy
+        refine nonempty_of_measure_ne_zero (μ := volume) fun h0 => hy ?_
+        rw [h0, ENNReal.zero_div]
+      rw [eventually_nhdsWithin_iff] at hev
+      filter_upwards [hev] with y hy
+      simp only [hu, sub_self, sub_zero, zero_apply]
+      by_cases hyu : y = u
+      · subst hyu
+        simp [hu]
+      obtain ⟨z, hzE, hz⟩ := hy (mem_compl_singleton_iff.mpr hyu)
+      rw [mem_closedBall, dist_comm] at hz
+      have hzE' : H z = H' z := hzE
+      have hcoef : ((L : ℝ) + L') / ((n : ℝ) + 1) ≤ c := by
+        rw [div_le_iff₀ hn1]
+        rw [div_lt_iff₀ hc] at hn
+        nlinarith
+      calc ‖H y - H' y‖ = ‖(H y - H z) - (H' y - H' z)‖ := by rw [hzE']; congr 1; abel
+        _ ≤ ‖H y - H z‖ + ‖H' y - H' z‖ := norm_sub_le _ _
+        _ ≤ L * dist y z + L' * dist y z := by
+            rw [← dist_eq_norm, ← dist_eq_norm]
+            exact add_le_add (hH.dist_le_mul _ _) (hH'.dist_le_mul _ _)
+        _ = (L + L') * dist y z := by ring
+        _ ≤ (L + L') * (dist y u / ((n : ℝ) + 1)) := by gcongr
+        _ = ((L + L') / ((n : ℝ) + 1)) * dist y u := by ring
+        _ ≤ c * ‖y - u‖ := by
+            rw [← dist_eq_norm]
+            exact mul_le_mul_of_nonneg_right hcoef dist_nonneg
+    by_cases hd : DifferentiableAt ℝ H u
+    · have h1 := hd.hasFDerivAt.sub hD
+      rw [show (H - fun x => H x - H' x) = H' from funext fun x => sub_sub_cancel (H x) (H' x)] at h1
+      rw [h1.fderiv, sub_zero]
+    · have hd' : ¬DifferentiableAt ℝ H' u := fun hd' => hd (by
+        have h1 := hd'.hasFDerivAt.add hD
+        rw [show (H' + fun x => H x - H' x) = H from funext fun x => add_sub_cancel (H' x) (H x)] at h1
+        exact h1.differentiableAt)
+      rw [fderiv_zero_of_not_differentiableAt hd, fderiv_zero_of_not_differentiableAt hd']
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
