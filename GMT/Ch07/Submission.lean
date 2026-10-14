@@ -651,6 +651,39 @@ theorem Submission.dimred_tr_bc_currentEval_blowUp : ∀ (P n : ℕ) (U : Set (E
         rw [← hz, hpull, hsurj z, smul_smul, ← mul_pow, mul_inv_cancel₀ hne, one_pow, one_smul]
       exact h (hω₁ω ▸ ω₁.property)
     rw [dite_eq_right h']
+/-- **Composition of dilation pull-backs** (the pull-back `f^#` of 6.2.23, chapter-06.txt lines
+404–409; needed for the closure (10) of `𝒯` under `η_{x,λ#}`, Appendix A.1, in the proof of
+7.3.3(1), chapter-07.txt line 472).  For `λ ≠ 0`, `η_{y,μ} ∘ η_{x,λ} = η_{x+λy,λμ}`, since
+`μ⁻¹(λ⁻¹(p − x) − y) = (λμ)⁻¹(p − x − λy)`; hence, by contravariance of the affine pull-back,
+`η_{x,λ}^#(η_{y,μ}^#ω) = η_{x+λy,λμ}^#ω`. -/
+theorem Submission.dimred_tr_bc_dilation_pullback_comp : ∀ (P n : ℕ) (x y : Euclid P) (lam mu : ℝ), lam ≠ 0 → ∀ ω : DifferentialForm (Euclid P) n, affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) (affinePullbackForm (dilationCLM P mu) (-(mu⁻¹ • y)) ω) = affinePullbackForm (dilationCLM P (lam * mu)) (-((lam * mu)⁻¹ • (x + lam • y))) ω := by
+  intro P n x y lam mu hlam ω
+  -- `dilationCLM P a` is `v ↦ a⁻¹ • v`.
+  have hd : ∀ (a : ℝ) (v : Euclid P), dilationCLM P a v = a⁻¹ • v := fun _ _ => rfl
+  -- Linear parts: `μ⁻¹(λ⁻¹v) = (λμ)⁻¹v`.
+  have hlin : ∀ v : Euclid P,
+      dilationCLM P mu (dilationCLM P lam v) = dilationCLM P (lam * mu) v := by
+    intro v
+    rw [hd, hd, hd, smul_smul, mul_inv, mul_comm mu⁻¹ lam⁻¹]
+  -- Base points: `−μ⁻¹y + μ⁻¹(−λ⁻¹x + λ⁻¹p) = −(λμ)⁻¹(x + λy) + (λμ)⁻¹p`, as `(λμ)⁻¹λ = μ⁻¹`.
+  have hbase : ∀ p : Euclid P,
+      -(mu⁻¹ • y) + dilationCLM P mu (-(lam⁻¹ • x) + dilationCLM P lam p) =
+        -((lam * mu)⁻¹ • (x + lam • y)) + dilationCLM P (lam * mu) p := by
+    intro p
+    have hcoef : (lam * mu)⁻¹ * lam = mu⁻¹ := by
+      rw [mul_inv, mul_comm lam⁻¹ mu⁻¹, mul_assoc, inv_mul_cancel₀ hlam, mul_one]
+    simp only [hd, smul_add, smul_neg, smul_smul, hcoef]
+    rw [mul_inv, mul_comm mu⁻¹ lam⁻¹]
+    abel
+  -- At `p` and `(v₁, …, vₙ)` both sides are `ω(b + Lp)(Lv₁, …, Lvₙ)` with the same `b + Lp`
+  -- and the same `L`.
+  funext p
+  ext v
+  simp only [affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+  rw [hbase p]
+  congr 1
+  funext i
+  exact hlin (v i)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
