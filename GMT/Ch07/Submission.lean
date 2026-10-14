@@ -876,6 +876,371 @@ theorem Submission.idtp_cse_rc_test_function : ∀ (P : ℕ) (Q : Submodule ℝ 
       rw [t1, t2, add_zero]
     · rw [hDout x hxa, zero_apply]
 
+/-- **Rotation conservation on a cone sector** (Simon Ch. 4, 2.2–2.6: first variation of the
+stationary `V = v(M, θ)` along a rotation field, as in the proof of 7.3.3(1)).  Let `(a, e)` be an
+orthonormal basis of the 2-plane `Q`, `A y = ⟨y,a⟩e − ⟨y,e⟩a`, `f(y) = arctan(⟨y,e⟩/⟨y,a⟩)`,
+`G(x) = |p_{TₓM}(Ax)|²/|πx|²` and `Z = {⟨x,a⟩ > 0, ||x| − 1| < s, |f(x)| < s, |x − πx| < s|x|}`.
+If `V` is stationary, `p_{TₓM} x = x` and the gap condition hold `μ_V`-a.e., then
+`ψ'(f)·l(|·|)·G` is `μ_V`-integrable on `Z` with integral `0`.
+* With `g` from `idtp_cse_rc_test_function`, `X = gA` is `C¹` with compact support, so
+  `0 = δV(X) = ∫_M θ div_M X dH²`, and `div_M X(x) = Dg(x)(p_{TₓM}(Ax))`
+  (`idtp_cse_rc_rotation_divergence`).
+* `μ_V`-a.e., `⟨x, p_{TₓM}(Ax)⟩ = ⟨p_{TₓM} x, Ax⟩ = ⟨x, Ax⟩ = 0` and
+  `⟨Ax, p_{TₓM}(Ax)⟩ = |p_{TₓM}(Ax)|²`, so the derivative formulas of `g` give
+  `Dg(x)(p_{TₓM}(Ax)) = 1_Z(x)·ψ'(f(x))·l(|x|)·G(x)`; as `μ_V = θ H²⌞M`, this yields
+  `∫_Z ψ'(f)·l(|·|)·G dμ_V = δV(X) = 0`.
+* `x ↦ p_{TₓM}` is `H²⌞M`-a.e. strongly measurable (`TₓM` is a.e. the plane oriented by `ξ(x)`,
+  and the projection onto the plane of a unit simple 2-vector is a Borel function of it),
+  `0 ≤ G ≤ 1` since `|Ax| = |πx|`, and `μ_V(Z) ≤ μ_V(B̄₂(0)) < ∞`. -/
+theorem Submission.idtp_cse_rotation_conservation : ∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (s : ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s → s ≤ 1 / 4 → (∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0) → (∀ᵐ x ∂R.measure, (approxTangentPlane 2 R.carrier x).starProjection x = x) → (∀ᵐ x ∂R.measure, 0 < inner ℝ x a → |‖x‖ - 1| < s → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s → ‖x - Q.starProjection x‖ < s / 2 * ‖x‖ ∨ 2 * s * ‖x‖ < ‖x - Q.starProjection x‖) → ∀ ψ l : ℝ → ℝ, ContDiff ℝ 1 ψ → ContDiff ℝ 1 l → tsupport ψ ⊆ Ioo (-s) s → tsupport l ⊆ Ioo (1 - s) (1 + s) → IntegrableOn (fun x : Euclid P => deriv ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) * l ‖x‖ * (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2)) {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} R.measure ∧ ∫ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, deriv ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) * l ‖x‖ * (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2) ∂R.measure = 0 := by
+  intro P R Q a e s hQ ha he hna hne hae hs hs4 hstat htan hgap ψ l hψ hl hψs hls
+  classical
+  -- step 6, measurability: `x ↦ p_{TₓM}` is `Hⁿ⌞M`-a.e. strongly measurable.  `TₓM` is a.e. the
+  -- plane oriented by `ξ(x)`, and the projection onto the plane of a unit simple `n`-vector is a
+  -- Borel function of it (the argument of `Submission.imrep_approxTangent_starProjection_aesm`)
+  have haesm : ∀ (n : ℕ) (R : IMRep (univ : Set (Euclid P)) n),
+      AEStronglyMeasurable (fun x => (approxTangentPlane n R.carrier x).starProjection)
+        (μHE[n].restrict R.carrier) := by
+    intro n R
+    classical
+    -- `ev τ = (α ↦ α(τ₁, …, τₙ))`, a continuous alternating map of `τ`
+    let ev : Euclid P [⋀^Fin n]→L[ℝ] MultiVector P n :=
+      (ContinuousLinearMap.id ℝ (Covector (Euclid P) n)).flipAlternating
+    have hev : ∀ (τ : Fin n → Euclid P) (α : Covector (Euclid P) n), ev τ α = α τ :=
+      fun τ α => rfl
+    -- `Φ(τ, s) = s τ₁ ∧ ⋯ ∧ τₙ` on the compact set `Ω` of orthonormal frames and signs `s = ±1`
+    let Φ : (Fin n → Euclid P) × ℝ → MultiVector P n := fun ω => ω.2 • ev ω.1
+    have hΦc : Continuous Φ := continuous_snd.smul (ev.coe_continuous.comp continuous_fst)
+    let Ω : Set ((Fin n → Euclid P) × ℝ) := {τ | Orthonormal ℝ τ} ×ˢ {1, -1}
+    have hΩ : IsCompact Ω := by
+      refine IsCompact.prod (isCompact_of_isClosed_isBounded ?_ ?_) (Set.toFinite _).isCompact
+      · have hset : {τ : Fin n → Euclid P | Orthonormal ℝ τ} =
+            ⋂ i, ⋂ j, {τ | inner ℝ (τ i) (τ j) = if i = j then (1 : ℝ) else 0} := by
+          ext τ
+          simp [orthonormal_iff_ite]
+        rw [hset]
+        exact isClosed_iInter fun i => isClosed_iInter fun j =>
+          isClosed_eq ((continuous_apply i).inner (continuous_apply j)) continuous_const
+      · refine (isBounded_iff_subset_closedBall 0).mpr ⟨1, fun τ hτ => ?_⟩
+        rw [mem_closedBall_zero_iff]
+        exact (pi_norm_le_iff_of_nonneg zero_le_one).mpr fun i => (hτ.1 i).le
+    -- `ζ` orients `Q` iff `ζ = Φ(τ, s)` for a point `(τ, s)` of `Ω` with `span τ = Q`
+    have horient : ∀ (ζ : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
+        IsUnitOrientationOf ζ Q ↔ ∃ ω ∈ Ω, Φ ω = ζ ∧ Submodule.span ℝ (range ω.1) = Q := by
+      intro ζ Q
+      constructor
+      · rintro ⟨τ, hτ, hQ, h | h⟩
+        · refine ⟨(τ, 1), ⟨hτ, Or.inl rfl⟩, ?_, hQ⟩
+          ext α
+          simp [Φ, hev, h]
+        · refine ⟨(τ, -1), ⟨hτ, Or.inr rfl⟩, ?_, hQ⟩
+          ext α
+          simp [Φ, hev, h]
+      · rintro ⟨⟨τ, s⟩, ⟨hτ, hs⟩, rfl, hQ⟩
+        refine ⟨τ, hτ, hQ, ?_⟩
+        rcases hs with rfl | rfl
+        · left
+          intro α
+          simp [Φ, hev]
+        · right
+          intro α
+          simp [Φ, hev]
+    -- the `n`-covector `u ↦ det(⟨cₖ, uⱼ⟩)ₖⱼ`
+    have hdet : ∀ c : Fin n → Euclid P, ∃ α : Covector (Euclid P) n,
+        ∀ u : Fin n → Euclid P, α u = (Matrix.of fun k j => inner ℝ (c k) (u j)).det := by
+      intro c
+      let L : Euclid P →ₗ[ℝ] (Fin n → ℝ) := LinearMap.pi fun k => (innerSL ℝ (c k)).toLinearMap
+      let A : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := Matrix.detRowAlternating.compLinearMap L
+      have hA : ∀ u : Fin n → Euclid P, A u = (Matrix.of fun k j => inner ℝ (c k) (u j)).det := by
+        intro u
+        rw [← Matrix.det_transpose]
+        rfl
+      have hAc : Continuous fun u : Fin n → Euclid P => A u := by
+        simp only [hA]
+        exact Continuous.matrix_det (continuous_matrix fun k j => by
+          simp only [Matrix.of_apply]
+          exact continuous_const.inner (continuous_apply j))
+      exact ⟨{ A with cont := hAc }, hA⟩
+    -- a unit simple `n`-vector determines its plane: if `ζ` orients `span τ` and `span τ'`, then
+    -- each `τᵢ` is orthogonal to `(span τ')ᗮ`
+    have hle : ∀ (ζ : MultiVector P n) (Q Q' : Submodule ℝ (Euclid P)),
+        IsUnitOrientationOf ζ Q → IsUnitOrientationOf ζ Q' → Q ≤ Q' := by
+      rintro ζ Q Q' ⟨τ, hτ, rfl, hζ⟩ ⟨τ', hτ', rfl, hζ'⟩
+      rw [Submodule.span_le]
+      rintro _ ⟨i, rfl⟩
+      rw [SetLike.mem_coe, ← Submodule.orthogonal_orthogonal (Submodule.span ℝ (range τ')),
+        Submodule.mem_orthogonal]
+      intro y hy
+      obtain ⟨α, hα⟩ := hdet (Function.update τ i y)
+      -- `α(τ)` is the determinant of the identity matrix with row `i` replaced by `(⟨y, τⱼ⟩)ⱼ`
+      have h1 : α τ = inner ℝ y (τ i) := by
+        rw [hα]
+        have hM : (Matrix.of fun k j => inner ℝ (Function.update τ i y k) (τ j)) =
+            (1 : Matrix (Fin n) (Fin n) ℝ).updateRow i (fun j => inner ℝ y (τ j)) := by
+          ext k j
+          by_cases hk : k = i
+          · subst hk
+            simp
+          · simp [hk, Matrix.one_apply, orthonormal_iff_ite.mp hτ k j]
+        rw [hM, ← Matrix.det_transpose, ← Matrix.updateCol_transpose, Matrix.transpose_one,
+          ← Matrix.cramer_apply, Matrix.cramer_one]
+        rfl
+      -- row `i` of the matrix of `α(τ')` is `(⟨y, τ'ⱼ⟩)ⱼ = 0`
+      have h2 : α τ' = 0 := by
+        rw [hα]
+        refine Matrix.det_eq_zero_of_row_eq_zero i fun j => ?_
+        simp only [Matrix.of_apply, Function.update_self]
+        rw [real_inner_comm]
+        exact hy _ (Submodule.subset_span ⟨j, rfl⟩)
+      have h3 : ζ α = 0 := by
+        rcases hζ' with h | h <;> simp [h, h2]
+      rcases hζ with h | h
+      · rw [← h1, ← h, h3]
+      · have h4 := h α
+        rw [h3] at h4
+        rw [← h1]
+        linarith
+    have huniq : ∀ (ζ : MultiVector P n) (Q Q' : Submodule ℝ (Euclid P)),
+        IsUnitOrientationOf ζ Q → IsUnitOrientationOf ζ Q' → Q = Q' :=
+      fun ζ Q Q' h h' => le_antisymm (hle ζ Q Q' h h') (hle ζ Q' Q h' h)
+    -- the projection onto the span of an orthonormal frame `τ` is `Σₖ ⟨τₖ, ·⟩ τₖ`, continuous in
+    -- `τ`
+    let F : (Fin n → Euclid P) × ℝ → (Euclid P →L[ℝ] Euclid P) :=
+      fun ω => ∑ k, (innerSL ℝ (ω.1 k)).smulRight (ω.1 k)
+    have hFapply : ∀ ω v, F ω v = ∑ k, inner ℝ (ω.1 k) v • ω.1 k := by
+      intro ω v
+      simp [F]
+    have hFc : Continuous F := by
+      refine continuous_clm_apply.mpr fun v => ?_
+      simp only [hFapply]
+      exact continuous_finsetSum _ fun k _ => by fun_prop
+    have hFproj : ∀ ω ∈ Ω, (Submodule.span ℝ (range ω.1)).starProjection = F ω := by
+      rintro ⟨τ, s⟩ ⟨hτ, -⟩
+      refine ContinuousLinearMap.ext fun v => ?_
+      refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero ?_ ?_
+      · rw [hFapply]
+        exact Submodule.sum_mem _ fun k _ =>
+          Submodule.smul_mem _ _ (Submodule.subset_span ⟨k, rfl⟩)
+      · intro w hw
+        refine Submodule.span_induction ?_ ?_ ?_ ?_ hw
+        · rintro _ ⟨j, rfl⟩
+          rw [hFapply, inner_sub_left, sum_inner]
+          simp [inner_smul_left, orthonormal_iff_ite.mp hτ, real_inner_comm]
+        · simp
+        · intro x y _ _ hx hy
+          rw [inner_add_right, hx, hy, add_zero]
+        · intro a x _ hx
+          rw [inner_smul_right, hx, mul_zero]
+    -- `G ζ` is the projection onto the plane oriented by `ζ` (`0` if there is none)
+    let G : MultiVector P n → (Euclid P →L[ℝ] Euclid P) := fun ζ =>
+      if h : ∃ Q, IsUnitOrientationOf ζ Q then h.choose.starProjection else 0
+    have hGQ : ∀ (ζ : MultiVector P n) (Q : Submodule ℝ (Euclid P)),
+        IsUnitOrientationOf ζ Q → G ζ = Q.starProjection := by
+      intro ζ Q hQ
+      have hex : ∃ Q, IsUnitOrientationOf ζ Q := ⟨Q, hQ⟩
+      simp only [G, dite_eq_left hex]
+      rw [huniq _ _ _ hex.choose_spec hQ]
+    have hGΦ : ∀ ω ∈ Ω, G (Φ ω) = F ω := fun ω hω => by
+      rw [hGQ _ _ ((horient _ _).mpr ⟨ω, hω, rfl, rfl⟩), hFproj ω hω]
+    -- `G` is Borel: for closed `t`, `G⁻¹(t)` is a compact set `Φ(Ω ∩ F⁻¹(t))` together with the
+    -- complement of the compact set `Φ(Ω)` (if `0 ∈ t`)
+    have hG : Measurable G := by
+      refine measurable_of_isClosed fun t ht => ?_
+      have hset : G ⁻¹' t = Φ '' (Ω ∩ F ⁻¹' t) ∪
+          ((Φ '' Ω)ᶜ ∩ {_ζ | (0 : Euclid P →L[ℝ] Euclid P) ∈ t}) := by
+        ext ζ
+        simp only [Set.mem_preimage, Set.mem_union, Set.mem_image, Set.mem_inter_iff,
+          Set.mem_compl_iff]
+        by_cases h : ∃ Q, IsUnitOrientationOf ζ Q
+        · obtain ⟨Q, hQ⟩ := h
+          obtain ⟨ω, hω, hΦω, -⟩ := (horient ζ Q).mp hQ
+          have hGζ : G ζ = F ω := by
+            rw [← hΦω]
+            exact hGΦ ω hω
+          constructor
+          · intro hζt
+            exact Or.inl ⟨ω, ⟨hω, by rwa [← hGζ]⟩, hΦω⟩
+          · rintro (⟨ω', ⟨hω', hω't⟩, hΦω'⟩ | ⟨hn, -⟩)
+            · rw [← hΦω', hGΦ ω' hω']
+              exact hω't
+            · exact absurd ⟨ω, hω, hΦω⟩ hn
+        · have hGζ : G ζ = 0 := dite_eq_right h
+          have hn : ¬∃ ω, ω ∈ Ω ∧ Φ ω = ζ := fun ⟨ω, hω, hΦω⟩ =>
+            h ⟨_, (horient ζ _).mpr ⟨ω, hω, hΦω, rfl⟩⟩
+          rw [hGζ]
+          constructor
+          · intro h0
+            exact Or.inr ⟨hn, h0⟩
+          · rintro (⟨ω', ⟨hω', -⟩, hΦω'⟩ | ⟨-, h0⟩)
+            · exact absurd ⟨ω', hω', hΦω'⟩ hn
+            · exact h0
+      rw [hset]
+      exact ((hΩ.inter_right (ht.preimage hFc)).image hΦc).isClosed.measurableSet.union
+        ((hΩ.image hΦc).isClosed.measurableSet.compl.inter (MeasurableSet.const _))
+    -- a.e. `TₓM` is the plane oriented by `ξ(x)` (uniqueness of approximate tangent planes), so
+    -- `p_{TₓM} = G(ξ(x))`
+    have hae : (fun x => (approxTangentPlane n R.carrier x).starProjection)
+        =ᵐ[μHE[n].restrict R.carrier] G ∘ R.orient := by
+      filter_upwards [R.orients] with x ⟨Q, hQ, hor⟩
+      have hex : ∃ Q, HasApproximateTangentSpaceAt n R.carrier x Q := ⟨Q, hQ⟩
+      have h1 : approxTangentPlane n R.carrier x = Q := by
+        rw [approxTangentPlane, dite_eq_left hex]
+        exact hex.choose_spec.unique hQ
+      rw [Function.comp_apply, hGQ _ _ hor, h1]
+    -- `G ∘ ξ` is a.e. measurable, with values in the finite-dimensional space `End(ℝᴾ)`
+    have : TopologicalSpace.PseudoMetrizableSpace (MultiVector P n) :=
+      @PseudoEMetricSpace.pseudoMetrizableSpace _
+        (inferInstance : PseudoEMetricSpace (MultiVector P n))
+    exact ((hG.comp_aemeasurable R.aestronglyMeasurable_orient.aemeasurable).aestronglyMeasurable
+      ).congr hae.symm
+  -- steps 1, 3: `|πy|² = ⟨y,a⟩² + ⟨y,e⟩²`; step 5: the `C¹` test function `g` of compact support
+  obtain ⟨hπ, -⟩ := Submission.idtp_cse_rc_angle_fderiv P Q a e hQ ha he hna hne hae
+  obtain ⟨g, hgC, hgc, hgZ, hgZc⟩ := Submission.idtp_cse_rc_test_function P Q a e s ψ l hQ ha he
+    hna hne hae hs hs4 hψ hl hψs hls
+  set Z : Set (Euclid P) := {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s ∧
+    |Real.arctan (inner ℝ x e / inner ℝ x a)| < s ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} with hZ
+  set φ : Euclid P → ℝ := fun x => deriv ψ (Real.arctan (inner ℝ x e / inner ℝ x a)) * l ‖x‖ *
+    (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 /
+      ‖Q.starProjection x‖ ^ 2) with hφ
+  -- the rotation field `X = g A`, `A y = ⟨y,a⟩e − ⟨y,e⟩a`, is `C¹` with compact support
+  set X : Euclid P → Euclid P := fun y => g y • (inner ℝ y a • e - inner ℝ y e • a) with hX
+  have hAC : ContDiff ℝ 1 fun y : Euclid P => inner ℝ y a • e - inner ℝ y e • a :=
+    ((contDiff_id.inner ℝ contDiff_const).smul contDiff_const).sub
+      ((contDiff_id.inner ℝ contDiff_const).smul contDiff_const)
+  have hXC : ContDiff ℝ 1 X := hgC.smul hAC
+  have hXc : HasCompactSupport X := hgc.smul_right
+  -- measurability of the angle `f`, of `Z` and of the multiplicity
+  have hfm : Measurable fun x : Euclid P => Real.arctan (inner ℝ x e / inner ℝ x a) :=
+    Real.continuous_arctan.measurable.comp
+      ((continuous_id.inner continuous_const).measurable.div
+        (continuous_id.inner continuous_const).measurable)
+  have hZm : MeasurableSet Z := by
+    simp only [hZ, Set.ofPred_and]
+    exact (measurableSet_lt measurable_const
+      (continuous_id.inner continuous_const).measurable).inter
+      ((measurableSet_lt (continuous_norm.sub continuous_const).abs.measurable
+        measurable_const).inter
+        ((measurableSet_lt (continuous_abs.measurable.comp hfm) measurable_const).inter
+          (measurableSet_lt (continuous_id.sub Q.starProjection.continuous).norm.measurable
+            (continuous_const.mul continuous_norm).measurable)))
+  have hmult : Measurable fun x => (R.mult x : ℝ≥0∞) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : ℝ≥0∞))).comp R.measurable_mult
+  -- step 2: `div_M X(x) = Dg(x)(p_{TₓM}(Ax))`
+  have hdiv : ∀ x, tangentialDivergence 2 R.carrier X x = fderiv ℝ g x
+      ((approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)) :=
+    fun x => Submission.idtp_cse_rc_rotation_divergence P 2 R.carrier a e x g
+      (hgC.differentiable_one x)
+  -- step 7: `μ`-a.e., `Dg(x)(p_{TₓM}(Ax)) = 1_Z(x) φ(x)`
+  have hpt : ∀ᵐ x ∂R.measure, fderiv ℝ g x
+      ((approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)) =
+        Z.indicator φ x := by
+    filter_upwards [htan, hgap] with x hx hgx
+    -- (a) `⟨x, p(Ax)⟩ = ⟨p x, Ax⟩ = ⟨x, Ax⟩ = 0` (radial tangency, `p` self-adjoint)
+    have hxv : inner ℝ x (inner ℝ x a • e - inner ℝ x e • a) = (0 : ℝ) := by
+      rw [inner_sub_right, real_inner_smul_right, real_inner_smul_right]
+      ring
+    have hxpv : inner ℝ x ((approxTangentPlane 2 R.carrier x).starProjection
+        (inner ℝ x a • e - inner ℝ x e • a)) = (0 : ℝ) := by
+      rw [← Submodule.inner_starProjection_left_eq_right, hx, hxv]
+    -- (c) `⟨Ax, p(Ax)⟩ = |p(Ax)|²` (`p` idempotent and self-adjoint)
+    have hvpv : inner ℝ (inner ℝ x a • e - inner ℝ x e • a)
+        ((approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)) =
+          ‖(approxTangentPlane 2 R.carrier x).starProjection
+            (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 := by
+      have h1 := Submodule.starProjection_inner_eq_zero (K := approxTangentPlane 2 R.carrier x)
+        (inner ℝ x a • e - inner ℝ x e • a)
+        ((approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a))
+        (Submodule.starProjection_apply_mem _ _)
+      rw [inner_sub_left, real_inner_self_eq_norm_sq] at h1
+      linarith
+    -- (b) on and off `Z`, the derivative formulas of the test function
+    by_cases hxZ : x ∈ Z
+    · rw [Set.indicator_of_mem hxZ, hgZ x _ hxpv hgx hxZ, hvpv]
+    · rw [Set.indicator_of_notMem hxZ, hgZc x _ hxpv hgx hxZ]
+  -- `μ = θ H²⌞M` with `θ` measurable: the identity holds `H²⌞M`-a.e. after multiplying by `θ`
+  have hae2 : ∀ᵐ x ∂(μHE[2].restrict R.carrier),
+      (R.mult x : ℝ) * tangentialDivergence 2 R.carrier X x = (R.mult x : ℝ) * Z.indicator φ x := by
+    filter_upwards [(ae_withDensity_iff hmult).1 hpt] with x hx
+    rcases eq_or_ne (R.mult x) 0 with h0 | h0
+    · simp [h0]
+    · rw [hdiv x, hx (by exact_mod_cast h0)]
+  -- step 8: `∫_Z φ dμ = ∫ 1_Z φ dμ = ∫_M θ div_M X dH² = δV(X) = 0`
+  have hint : ∫ x in Z, φ x ∂R.measure = 0 := by
+    have h1 : ∫ x, Z.indicator φ x ∂R.measure =
+        ∫ x in R.carrier, (R.mult x : ℝ) * Z.indicator φ x ∂μHE[2] := by
+      rw [IMRep.measure, integral_withDensity_eq_integral_toReal_smul hmult
+        (ae_of_all _ fun x => ENNReal.natCast_lt_top (R.mult x))]
+      simp only [ENNReal.toReal_natCast, smul_eq_mul]
+    calc ∫ x in Z, φ x ∂R.measure = ∫ x, Z.indicator φ x ∂R.measure :=
+          (integral_indicator hZm).symm
+      _ = ∫ x in R.carrier, (R.mult x : ℝ) * Z.indicator φ x ∂μHE[2] := h1
+      _ = ∫ x in R.carrier, (R.mult x : ℝ) * tangentialDivergence 2 R.carrier X x ∂μHE[2] :=
+          integral_congr_ae (hae2.mono fun x hx => hx.symm)
+      _ = R.firstVariation X := rfl
+      _ = 0 := hstat X hXC hXc
+  -- step 8, integrability: `φ` is `μ`-a.e. strongly measurable, bounded on `Z`, and `μ(Z) < ∞`
+  have hπA : ∀ x : Euclid P,
+      ‖inner ℝ x a • e - inner ℝ x e • a‖ ^ 2 = ‖Q.starProjection x‖ ^ 2 := by
+    intro x
+    have haa : inner ℝ a a = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, hna, one_pow]
+    have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, hne, one_pow]
+    have hea : inner ℝ e a = (0 : ℝ) := by rw [real_inner_comm, hae]
+    rw [hπ x, ← real_inner_self_eq_norm_sq]
+    simp only [inner_sub_left, inner_sub_right, real_inner_smul_left, real_inner_smul_right, haa,
+      hee, hae, hea]
+    ring
+  have hφm : AEStronglyMeasurable φ R.measure := by
+    have hpA : AEStronglyMeasurable (fun x => (approxTangentPlane 2 R.carrier x).starProjection
+        (inner ℝ x a • e - inner ℝ x e • a)) R.measure :=
+      Continuous.comp_aestronglyMeasurable₂
+        (g := fun (L : Euclid P →L[ℝ] Euclid P) (v : Euclid P) => L v)
+        (continuous_fst.clm_apply continuous_snd)
+        ((haesm 2 R).mono_ac (withDensity_absolutelyContinuous _ _))
+        hAC.continuous.aestronglyMeasurable
+    exact ((((hψ.continuous_deriv le_rfl).measurable.comp hfm).aemeasurable.mul
+      (hl.continuous.comp continuous_norm).measurable.aemeasurable).mul
+      ((hpA.aemeasurable.norm.pow_const 2).div
+        (Q.starProjection.continuous.norm.pow 2).measurable.aemeasurable)).aestronglyMeasurable
+  obtain ⟨Cψ, hCψ⟩ := (isCompact_Icc : IsCompact (Icc (-s) s)).exists_bound_of_continuousOn
+    (hψ.continuous_deriv le_rfl).continuousOn
+  obtain ⟨Cl, hCl⟩ := (isCompact_Icc : IsCompact (Icc (1 - s) (1 + s))).exists_bound_of_continuousOn
+    hl.continuous.continuousOn
+  have hbound : ∀ x ∈ Z, ‖φ x‖ ≤ Cψ * Cl := by
+    intro x hx
+    obtain ⟨-, hx1, hfx, -⟩ := hx
+    obtain ⟨hf1, hf2⟩ := abs_lt.1 hfx
+    obtain ⟨hn1, hn2⟩ := abs_lt.1 hx1
+    have h1 := hCψ _ ⟨hf1.le, hf2.le⟩
+    have h2 := hCl ‖x‖ ⟨by linarith, by linarith⟩
+    -- `0 ≤ |p(Ax)|² / |πx|² ≤ 1`, as `|p(Ax)| ≤ |Ax|` and `|Ax| = |πx|`
+    have h3 : ‖‖(approxTangentPlane 2 R.carrier x).starProjection
+        (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2‖ ≤ 1 := by
+      rw [Real.norm_of_nonneg (by positivity), ← hπA x]
+      exact div_le_one_of_le₀ (pow_le_pow_left₀ (norm_nonneg _)
+        (Submodule.norm_starProjection_apply_le _ _) 2) (sq_nonneg _)
+    have hCψ0 : 0 ≤ Cψ := (norm_nonneg _).trans h1
+    have hCl0 : 0 ≤ Cl := (norm_nonneg _).trans h2
+    calc ‖φ x‖ = ‖deriv ψ (Real.arctan (inner ℝ x e / inner ℝ x a))‖ * ‖l ‖x‖‖ *
+          ‖‖(approxTangentPlane 2 R.carrier x).starProjection
+            (inner ℝ x a • e - inner ℝ x e • a)‖ ^ 2 / ‖Q.starProjection x‖ ^ 2‖ := by
+          simp only [hφ, norm_mul]
+      _ ≤ Cψ * Cl * 1 :=
+          mul_le_mul (mul_le_mul h1 h2 (norm_nonneg _) hCψ0) h3 (norm_nonneg _)
+            (mul_nonneg hCψ0 hCl0)
+      _ = Cψ * Cl := mul_one _
+  -- `Z ⊆ B̄₂(0)` and `μ(B̄₂(0)) = ∫_{M ∩ B̄₂(0)} θ dH² < ∞`
+  have hfin : R.measure Z ≠ ∞ := by
+    have hZb : Z ⊆ closedBall (0 : Euclid P) 2 := by
+      intro x hx
+      obtain ⟨-, hx1, -, -⟩ := hx
+      rw [mem_closedBall_zero_iff]
+      linarith [(abs_lt.1 hx1).2]
+    refine ne_top_of_le_ne_top ?_ (measure_mono hZb)
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, Set.inter_comm]
+    exact R.locallyIntegrable_mult _ (isCompact_closedBall _ _) (subset_univ _)
+  exact ⟨Measure.integrableOn_of_bounded hfin hφm (ae_restrict_of_forall_mem hZm hbound), hint⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
