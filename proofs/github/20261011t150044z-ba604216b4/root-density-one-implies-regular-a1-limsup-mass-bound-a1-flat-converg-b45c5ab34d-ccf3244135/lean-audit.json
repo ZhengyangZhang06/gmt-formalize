@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "2566842c08f2d39e93342639d13a337a4293488eea810c7c2286255b1f943788",
+  "git_delta": {
+    "base_commit": "b777f6b3421cbbd5a9da02b16e0e7a1779643edf",
+    "candidate_commit": "976003200f909567e0d96ee79d42169e6adf79e9",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "70fba98317cab795b5d32041c3fc6b5f0d3cc01007e2e9d2a5bd6483402199cb",
+    "source_sha256": "90cec1113c9ab808a27cc47316068b8fae6a8e50d8b2d6f7f6f168658bb8d30c",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_dtop_cube_chain_im",
+      "statement": "∀ (m : ℕ) (ρ : ℝ) (s : Finset (Fin (m + 1) → ℤ)) (β : (Fin (m + 1) → ℤ) → ℤ) (X : GeometricCurrentOn (univ : Set (Euclid (m + 1))) (m + 1)), 0 < ρ → (∀ ω : TestFormOn (univ : Set (Euclid (m + 1))) (m + 1), X ω = ∑ z ∈ s, (β z : ℝ) * ∫ x in {x : Euclid (m + 1) | ∀ i : Fin (m + 1), ρ * z i ≤ x i ∧ x i ≤ ρ * (z i + 1)}, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) x (fun k => EuclideanSpace.single k (1 : ℝ)) ∂μHE[m + 1]) → IsIntegerMultiplicity X",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

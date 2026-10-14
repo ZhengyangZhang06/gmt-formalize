@@ -1,0 +1,20 @@
+{
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cube_chain_im-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/6266",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "976003200f909567e0d96ee79d42169e6adf79e9",
+  "integrated_commit": "",
+  "proof_base_commit": "cc4b64395af400c3e25de523ef6f16a61dd6621d",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1",
+  "requires": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cube_chain_im-a1.borel_current_im-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.current_algebra-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ]
+}
