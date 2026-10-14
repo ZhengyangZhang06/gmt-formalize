@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_representation-a1.lintegral_pullback-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_representation-a1",
+  "depth": 6,
+  "title": "Integrals pulled back along a bi-Lipschitz piece (supplied step 10)",
+  "statement": "Let P, n ∈ ℕ, L ∈ ℝ≥0, G : ℝⁿ → ℝ^P L-Lipschitz, A ⊆ ℝⁿ Borel and m > 0 with m|a − a'| ≤ |G(a) − G(a')| for all a, a' ∈ A. Let Hⁿ := μHE[n] on ℝ^P and λ := volume (Lebesgue measure) on ℝⁿ = Euclid n. Then for every Borel f : ℝ^P → [0, ∞], ∫_A f(G(u)) dλ(u) ≤ ofReal((m^n)^{-1})·∫_{G(A)} f dHⁿ.",
+  "lean_statement": "∀ (P n : ℕ) (G : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (m : ℝ), LipschitzWith L G → MeasurableSet A → 0 < m → (∀ a ∈ A, ∀ a' ∈ A, m * ‖a - a'‖ ≤ ‖G a - G a'‖) → ∀ f : Euclid P → ℝ≥0∞, Measurable f → ∫⁻ u in A, f (G u) ≤ ENNReal.ofReal ((m ^ n)⁻¹) * ∫⁻ x in G '' A, f x ∂μHE[n]",
+  "lean_name": "cmcdt_lpi_pr_lintegral_pullback",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.regular_point_density-a1.bilipschitz_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.bilipschitz_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-bilipsch-1804d7035f-a1",
+      "result_commit": "0501e07ced47186792005c0a22c976aafdb0ebdf",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-fcd819fff8-a1"
+}
