@@ -1726,6 +1726,108 @@ theorem Submission.rsd_ae_hasMassDensity_mult : ∀ (P n : ℕ) (U : Set (Euclid
       (ball_subset_closedBall.trans (hsub ρ hρ.2.le))]
   -- `μ_T = θμ ≪ μ`
   exact (withDensity_absolutelyContinuous μ θ).ae_le key
+/-- **Simon Ch. 1, Theorem 3.3** (comparison theorem, p. 14), with a non-sharp constant and
+`Hⁿ = μHE[n]` on `ℝᴺ`: if `ν(B̄_t(x)) ≥ c tⁿ` for all small `t > 0` at every point `x` of a subset
+`A` of an open set `O`, then `Hⁿ(A) ≤ C ν(O)` with `C = C(n, c) < ∞`.  At each scale `δ` the
+5-times covering lemma (Simon 3.4) selects, among the balls `B̄_r(x) ⊆ O` with `x ∈ A`, `10r ≤ δ`
+and `ν(B̄_r(x)) ≥ c rⁿ`, a disjoint, hence countable, subfamily whose 5-times enlargements cover
+`A`.  This `δ`-cover costs `Σ (10rⱼ)ⁿ ≤ (10ⁿ/c) Σ ν(B̄_{rⱼ}(xⱼ)) ≤ (10ⁿ/c) ν(O)`, and `μHE[n]` is
+a finite multiple of `μH[n]`. -/
+theorem Submission.dorag_sn_hausdorff_le_mul_of_lower_density : ∀ (N n : ℕ) (c : ℝ), 0 < c → ∃ C : ℝ≥0∞, C ≠ ∞ ∧ ∀ (ν : Measure (Euclid N)) (A O : Set (Euclid N)), IsOpen O → A ⊆ O → (∀ x ∈ A, ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, 0 < t → t < t₀ → ENNReal.ofReal (c * t ^ n) ≤ ν (closedBall x t)) → μHE[n] A ≤ C * ν O := by
+  intro N n c hc
+  -- `μHE[n] = k • μH[n]` with a finite factor `k`; take `C = k · 10ⁿ / c`
+  set k : NNReal :=
+    Measure.addHaarScalarFactor (volume : Measure (EuclideanSpace ℝ (Fin n))) μH[(n : ℝ)]
+  refine ⟨(k : ℝ≥0∞) * ENNReal.ofReal (10 ^ n / c),
+    ENNReal.mul_ne_top ENNReal.coe_ne_top ENNReal.ofReal_ne_top, ?_⟩
+  intro ν A O hO hAO hA
+  have hdiam : ∀ (y : Euclid N) (ρ : ℝ), ediam (closedBall y ρ) ≤ ENNReal.ofReal (2 * ρ) := by
+    intro y ρ
+    apply ediam_le_of_forall_dist_le
+    intro z hz w hw
+    rw [mem_closedBall] at hz hw
+    linarith [dist_triangle_right z w y]
+  -- scale `δ = 1 / (m + 1)`: a countable disjoint family of admissible balls whose 5-times
+  -- enlargements cover `A`, of total cost at most `(10ⁿ/c) ν(O)`
+  have step : ∀ m : ℕ, ∃ u : Set (Euclid N × ℝ), u.Countable ∧
+      (∀ p ∈ u, ediam (closedBall p.1 (5 * p.2)) ≤ ENNReal.ofReal (1 / ((m : ℝ) + 1))) ∧
+      A ⊆ ⋃ p : u, closedBall (p : Euclid N × ℝ).1 (5 * (p : Euclid N × ℝ).2) ∧
+      ∑' p : u, ediam (closedBall (p : Euclid N × ℝ).1 (5 * (p : Euclid N × ℝ).2)) ^ (n : ℝ) ≤
+        ENNReal.ofReal (10 ^ n / c) * ν O := by
+    intro m
+    set δ : ℝ := 1 / ((m : ℝ) + 1)
+    have hδpos : 0 < δ := by positivity
+    -- the admissible balls, as (center, radius) pairs
+    set T : Set (Euclid N × ℝ) := {p | p.1 ∈ A ∧ 0 < p.2 ∧ 10 * p.2 ≤ δ ∧
+      closedBall p.1 p.2 ⊆ O ∧ ENNReal.ofReal (c * p.2 ^ n) ≤ ν (closedBall p.1 p.2)}
+    obtain ⟨u, huT, hudisj, hucov⟩ :=
+      Vitali.exists_disjoint_subfamily_covering_enlargement_closedBall T (fun p => p.1)
+        (fun p => p.2) δ (fun p hp => by linarith [hp.2.2.1, hp.2.1]) 5 (by norm_num)
+    -- disjoint balls with nonempty interiors in the separable space `ℝᴺ`
+    have hucount : u.Countable := by
+      refine hudisj.countable_of_nonempty_interior fun p hp => ?_
+      exact ⟨p.1, ball_subset_interior_closedBall (mem_ball_self (huT hp).2.1)⟩
+    refine ⟨u, hucount, fun p hp => ?_, ?_, ?_⟩
+    · obtain ⟨-, -, hpδ, -, -⟩ := huT hp
+      refine (hdiam _ _).trans (ENNReal.ofReal_le_ofReal ?_)
+      linarith
+    · -- each `x ∈ A` is the center of a small admissible ball
+      intro x hx
+      obtain ⟨t₀, ht₀, hbound⟩ := hA x hx
+      obtain ⟨ε, hε, hball⟩ := Metric.isOpen_iff.1 hO x (hAO hx)
+      set r : ℝ := min (t₀ / 2) (min (ε / 2) (δ / 10))
+      have hrpos : 0 < r := by positivity
+      have hr₁ := min_le_left (t₀ / 2) (min (ε / 2) (δ / 10))
+      have hr₂ := min_le_right (t₀ / 2) (min (ε / 2) (δ / 10))
+      have hr₃ := min_le_left (ε / 2) (δ / 10)
+      have hr₄ := min_le_right (ε / 2) (δ / 10)
+      have hmem : (x, r) ∈ T :=
+        ⟨hx, hrpos, by linarith, (closedBall_subset_ball (by linarith)).trans hball,
+          hbound r hrpos (by linarith)⟩
+      obtain ⟨b, hbu, hsub⟩ := hucov (x, r) hmem
+      exact mem_iUnion.2 ⟨⟨b, hbu⟩, hsub (mem_closedBall_self hrpos.le)⟩
+    · calc ∑' p : u, ediam (closedBall (p : Euclid N × ℝ).1 (5 * (p : Euclid N × ℝ).2)) ^ (n : ℝ)
+          ≤ ∑' p : u, ENNReal.ofReal (10 ^ n / c) *
+              ν (closedBall (p : Euclid N × ℝ).1 (p : Euclid N × ℝ).2) := by
+            refine ENNReal.tsum_le_tsum fun p => ?_
+            obtain ⟨-, hp0, -, -, hpν⟩ := huT p.2
+            calc ediam (closedBall (p : Euclid N × ℝ).1 (5 * (p : Euclid N × ℝ).2)) ^ (n : ℝ)
+                ≤ ENNReal.ofReal (2 * (5 * (p : Euclid N × ℝ).2)) ^ (n : ℝ) :=
+                  ENNReal.rpow_le_rpow (hdiam _ _) (Nat.cast_nonneg n)
+              _ = ENNReal.ofReal (10 ^ n / c) * ENNReal.ofReal (c * (p : Euclid N × ℝ).2 ^ n) := by
+                  rw [ENNReal.rpow_natCast, ← ENNReal.ofReal_pow (by positivity),
+                    ← ENNReal.ofReal_mul (by positivity)]
+                  congr 1
+                  field_simp
+                  ring
+              _ ≤ ENNReal.ofReal (10 ^ n / c) *
+                    ν (closedBall (p : Euclid N × ℝ).1 (p : Euclid N × ℝ).2) := by
+                  gcongr
+        _ = ENNReal.ofReal (10 ^ n / c) * ν (⋃ p ∈ u, closedBall p.1 p.2) := by
+            rw [ENNReal.tsum_mul_left,
+              measure_biUnion hucount hudisj fun p _ => measurableSet_closedBall]
+        _ ≤ ENNReal.ofReal (10 ^ n / c) * ν O := by
+            gcongr
+            exact iUnion₂_subset fun p hp => (huT hp).2.2.2.1
+  choose u hucount hudiam hucov husum using step
+  have : ∀ m, Countable (u m) := fun m => (hucount m).to_subtype
+  -- covers of mesh `1 / (m + 1) → 0`
+  have main : μH[(n : ℝ)] A ≤ ENNReal.ofReal (10 ^ n / c) * ν O := by
+    calc μH[(n : ℝ)] A
+        ≤ liminf (fun m => ∑' p : u m,
+            ediam (closedBall (p : Euclid N × ℝ).1 (5 * (p : Euclid N × ℝ).2)) ^ (n : ℝ)) atTop := by
+          refine Measure.hausdorffMeasure_le_liminf_tsum (ι := fun m => u m) (n : ℝ) A
+            (fun m : ℕ => ENNReal.ofReal (1 / ((m : ℝ) + 1))) ?_
+            (fun m p => closedBall (p : Euclid N × ℝ).1 (5 * (p : Euclid N × ℝ).2))
+            (Eventually.of_forall fun m p => hudiam m p p.2) (Eventually.of_forall hucov)
+          simpa using ENNReal.tendsto_ofReal (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+      _ ≤ ENNReal.ofReal (10 ^ n / c) * ν O :=
+          liminf_le_of_frequently_le' (Frequently.of_forall husum)
+  calc μHE[n] A = (k : ℝ≥0∞) * μH[(n : ℝ)] A := by
+        rw [Measure.euclideanHausdorffMeasure_def, Measure.smul_apply, ENNReal.smul_def,
+          smul_eq_mul]
+    _ ≤ (k : ℝ≥0∞) * (ENNReal.ofReal (10 ^ n / c) * ν O) := by gcongr
+    _ = (k : ℝ≥0∞) * ENNReal.ofReal (10 ^ n / c) * ν O := by rw [mul_assoc]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
