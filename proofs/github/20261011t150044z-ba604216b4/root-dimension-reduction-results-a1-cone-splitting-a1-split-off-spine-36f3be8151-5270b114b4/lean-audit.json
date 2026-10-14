@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2486a4d0930ad488c04cc8d98606635ec08f72d8e060899ebdd9e2451c6f8f37",
+  "git_delta": {
+    "base_commit": "29658a07619284a1e6012fd2949fdeb91d422b06",
+    "candidate_commit": "0a2b9d813bd6b5565584f1026c352cd9c2127fd3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cs_translate_boundary_eval",
+    "diff_sha256": "0ccf39a946f27e99b1bf821c53d78e89fae4affa6fb74a115f8bad3129a6e9ef",
+    "source_sha256": "90f84898891cd33d517fc9437864bd201a992c2e2d7db06fcd89822388804560",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cs_translate_boundary_eval",
+      "statement": "∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (γ : DifferentialForm (Euclid P) m) (t : Euclid P), Y.boundary = X → IsTestForm γ → currentEval Y (fun y => exteriorDerivative γ (t + y)) = currentEval X (fun y => γ (t + y))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
