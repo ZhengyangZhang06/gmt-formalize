@@ -483,6 +483,66 @@ theorem Submission.idod_monotone_quantity_eventually_lt : ∀ (P n : ℕ) (U : S
         T.massOn (ball y ρ) * (unitBallVolume n * (unitBallVolume n)⁻¹) := by
           rw [ENNReal.mul_inv_cancel hω0 hωtop, mul_one]
     _ = _ := by ring
+/-- **Simon 7.3.3, proof of (1), display (2)**, by the monotonicity of Ch. 4, 4.7: let `Λ ≥ 0`,
+`|y' - y| < τ < r`, `θ₁(r/(r - τ))ⁿ ≤ θ₂`, let `ρ ↦ e^{Λρ}ρ⁻ⁿ M_{B_ρ(y')}(T)` be nondecreasing on
+`(0, r)`, and let `e^{Λr}r⁻ⁿ M_{B_r(y)}(T) ≤ ωₙθ₁`.  Then `M_{B_ρ(y')}(T) ≤ θ₂ωₙρⁿ` for
+`0 < ρ < r - τ`.
+Monotonicity at `y'` compares the radius `ρ` with `s = r - τ`.  Then `e^{Λs} ≤ e^{Λr}` and
+`B_s(y') ⊆ B_r(y)` pass to the centre `y`, where `e^{Λr}s⁻ⁿ = (r/s)ⁿe^{Λr}r⁻ⁿ`.  Finally
+`e^{Λρ} ≥ 1`. -/
+theorem Submission.idod_nearby_center_ball_mass_bound : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (y y' : Euclid P) (Λ r τ θ₁ θ₂ : ℝ), 0 ≤ Λ → 0 < τ → τ < r → dist y' y < τ → θ₁ * (r / (r - τ)) ^ n ≤ θ₂ → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y' ρ)) (Ioo 0 r) → ENNReal.ofReal (Real.exp (Λ * r) / r ^ n) * T.massOn (ball y r) ≤ unitBallVolume n * ENNReal.ofReal θ₁ → ∀ ρ : ℝ, 0 < ρ → ρ < r - τ → T.massOn (ball y' ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := by
+  intro P n U T y y' Λ r τ θ₁ θ₂ hΛ hτ hτr hyy' hθ hmono hy ρ hρ hρs
+  -- (1) `s = r - τ ∈ (0, r)` and `0 < ρ ≤ s`
+  have hr : 0 < r := hτ.trans hτr
+  have hs : 0 < r - τ := sub_pos.2 hτr
+  have hsr : r - τ < r := sub_lt_self r hτ
+  -- (2) monotonicity at the centre `y'`
+  have h2 : ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y' ρ) ≤
+      ENNReal.ofReal (Real.exp (Λ * (r - τ)) / (r - τ) ^ n) * T.massOn (ball y' (r - τ)) :=
+    hmono ⟨hρ, hρs.trans hsr⟩ ⟨hs, hsr⟩ hρs.le
+  -- (3) `e^{Λs} ≤ e^{Λr}` and `B_s(y') ⊆ B_r(y)`
+  have h3 : ENNReal.ofReal (Real.exp (Λ * (r - τ)) / (r - τ) ^ n) * T.massOn (ball y' (r - τ)) ≤
+      ENNReal.ofReal (Real.exp (Λ * r) / (r - τ) ^ n) * T.massOn (ball y r) := by
+    gcongr ?_ * ?_
+    · exact ENNReal.ofReal_le_ofReal (div_le_div_of_nonneg_right
+        (Real.exp_le_exp.2 (mul_le_mul_of_nonneg_left hsr.le hΛ)) (pow_nonneg hs.le n))
+    · exact T.massOn_mono (ball_subset_ball' (by linarith))
+  -- (4) rescaling to radius `r` at the centre `y`, with `q = (r / s)ⁿ ≥ 0`
+  have hq : 0 ≤ (r / (r - τ)) ^ n := pow_nonneg (div_pos hr hs).le n
+  have h4 : ENNReal.ofReal (Real.exp (Λ * r) / (r - τ) ^ n) * T.massOn (ball y r) ≤
+      ENNReal.ofReal θ₂ * unitBallVolume n := by
+    have hid : Real.exp (Λ * r) / (r - τ) ^ n = (r / (r - τ)) ^ n * (Real.exp (Λ * r) / r ^ n) := by
+      rw [div_pow]
+      field_simp
+    calc ENNReal.ofReal (Real.exp (Λ * r) / (r - τ) ^ n) * T.massOn (ball y r)
+        = ENNReal.ofReal ((r / (r - τ)) ^ n) *
+            (ENNReal.ofReal (Real.exp (Λ * r) / r ^ n) * T.massOn (ball y r)) := by
+          rw [hid, ENNReal.ofReal_mul hq, mul_assoc]
+      _ ≤ ENNReal.ofReal ((r / (r - τ)) ^ n) * (unitBallVolume n * ENNReal.ofReal θ₁) := by
+          gcongr
+      _ = ENNReal.ofReal (θ₁ * (r / (r - τ)) ^ n) * unitBallVolume n := by
+          rw [mul_comm θ₁, ENNReal.ofReal_mul hq]
+          ring
+      _ ≤ ENNReal.ofReal θ₂ * unitBallVolume n := by
+          gcongr
+  -- (5) `M(y', ρ) = ofReal(ρⁿ/e^{Λρ}) · f_{y'}(ρ)` and `e^{Λρ} ≥ 1`
+  have hρn : 0 < ρ ^ n := pow_pos hρ n
+  have hexp : 0 < Real.exp (Λ * ρ) := Real.exp_pos _
+  have h5 : T.massOn (ball y' ρ) = ENNReal.ofReal (ρ ^ n / Real.exp (Λ * ρ)) *
+      (ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y' ρ)) := by
+    have h1 : ρ ^ n / Real.exp (Λ * ρ) * (Real.exp (Λ * ρ) / ρ ^ n) = 1 := by
+      field_simp
+    rw [← mul_assoc, ← ENNReal.ofReal_mul (div_nonneg hρn.le hexp.le), h1, ENNReal.ofReal_one,
+      one_mul]
+  have h5' : ENNReal.ofReal (ρ ^ n / Real.exp (Λ * ρ)) ≤ ENNReal.ofReal (ρ ^ n) :=
+    ENNReal.ofReal_le_ofReal (div_le_self hρn.le (Real.one_le_exp (mul_nonneg hΛ hρ.le)))
+  -- (6) conclusion
+  calc T.massOn (ball y' ρ)
+      = ENNReal.ofReal (ρ ^ n / Real.exp (Λ * ρ)) *
+          (ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y' ρ)) := h5
+    _ ≤ ENNReal.ofReal (ρ ^ n) * (ENNReal.ofReal θ₂ * unitBallVolume n) :=
+        mul_le_mul' h5' (h2.trans (h3.trans h4))
+    _ = ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n) := mul_comm _ _
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
