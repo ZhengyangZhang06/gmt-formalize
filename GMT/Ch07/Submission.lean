@@ -3165,6 +3165,95 @@ theorem Submission.dimred_mbl_dtfr_chain_boundary : ∀ (P m : ℕ) (s : Finset 
     (hs p hp) γ.property.1.1 fun _ _ => rfl
   exact Submission.dimred_mbl_dtfrcb_cube_stokes P m p.1 p.2 _ _
     (hG.of_le (by exact_mod_cast le_top)) (fun _ _ => rfl) htr
+/-- Finite family in the proof of the deformation theorem (Simon 6.5.1): for compact `K ⊆ ℝᴾ` and
+`Λ ∈ ℝ` there are only finitely many currents `T = Σ_{p ∈ s} β_p [[F_p]]` whose unit `k`-faces
+`F_p = b + {Σⱼ yⱼ e_{ι(j)} : y ∈ [0,1]ᵏ}` (`p = (ι, b)`, `ι` increasing, `b ∈ ℤᴾ`) all meet `K`
+and whose integer coefficients have `Σ_p |β_p| ≤ Λ`.  If `‖x‖ ≤ ρ` on `K`, a face meeting `K`
+has `|bᵢ| ≤ ρ + 1`, so these faces form a finite set `S_K`; padding `β` by zero gives a
+coefficient vector `S_K → {z ∈ ℤ : |z| ≤ Λ}`, which determines `T` (`GeometricCurrentOn.ext`). -/
+theorem Submission.dimred_mbl_dtfr_finite_family : ∀ (P k : ℕ) (K : Set (Euclid P)) (Λ : ℝ), IsCompact K → {T : GeometricCurrentOn (univ : Set (Euclid P)) k | ∃ (s : Finset ((Fin k → Fin P) × (Fin P → ℤ))) (β : (Fin k → Fin P) × (Fin P → ℤ) → ℤ), (∀ p ∈ s, StrictMono p.1) ∧ (∀ p ∈ s, ∃ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ K) ∧ ∑ p ∈ s, |(β p : ℝ)| ≤ Λ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) k, T ω = ∑ p ∈ s, (β p : ℝ) * ∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, (ω : DifferentialForm (Euclid P) k) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))}.Finite := by
+  intro P k K Λ hK
+  -- `{z ∈ ℤ : |z| ≤ r}` is finite
+  have hZ : ∀ r : ℝ, {z : ℤ | |(z : ℝ)| ≤ r}.Finite := fun r =>
+    (Set.finite_Icc (-⌊r⌋) ⌊r⌋).subset fun z hz => by
+      obtain ⟨h₁, h₂⟩ := abs_le.mp (Set.mem_ofPred.mp hz)
+      have h₃ : -z ≤ ⌊r⌋ := Int.le_floor.mpr (by push_cast; linarith)
+      exact ⟨by linarith, Int.le_floor.mpr h₂⟩
+  -- step 1: `K` is bounded, `|x i| ≤ ‖x‖ ≤ ρ` on `K`
+  obtain ⟨ρ, hρ⟩ := hK.isBounded.exists_norm_le
+  -- step 2: the faces `p = (ι, b)` meeting `K` form a finite set `S_K`, since `|b i| ≤ ρ + 1`
+  have hSK : {p : (Fin k → Fin P) × (Fin P → ℤ) | StrictMono p.1 ∧ ∃ y : Euclid k,
+      (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+        ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ K}.Finite := by
+    refine (Set.finite_univ.prod (Set.Finite.pi fun _ : Fin P => hZ (ρ + 1))).subset ?_
+    rintro p ⟨hι, y, hy, hyK⟩
+    refine Set.mem_prod.mpr ⟨Set.mem_univ _, Set.mem_univ_pi.mpr fun i => ?_⟩
+    -- `Φ_p(y) i - b i` is `y j` if `i = ι j` (`ι` is injective), and `0` if `i ∉ range ι`
+    have hv : 0 ≤ (∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) i ∧
+        (∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) i ≤ 1 := by
+      simp only [WithLp.ofLp_sum, Finset.sum_apply, WithLp.ofLp_smul, Pi.smul_apply,
+        PiLp.single_apply, smul_eq_mul, mul_ite, mul_one, mul_zero]
+      by_cases hi : ∃ j₀, p.1 j₀ = i
+      · obtain ⟨j₀, rfl⟩ := hi
+        rw [Finset.sum_eq_single j₀]
+        · rw [ite_eq_left rfl]
+          exact hy j₀
+        · intro j _ hj
+          exact ite_eq_right (hι.injective.ne hj).symm
+        · intro h
+          exact absurd (Finset.mem_univ j₀) h
+      · rw [Finset.sum_eq_zero]
+        · exact ⟨le_rfl, zero_le_one⟩
+        · intro j _
+          exact ite_eq_right fun h => hi ⟨j, h.symm⟩
+    have hx := (PiLp.norm_apply_le _ i).trans (hρ _ hyK)
+    simp only [PiLp.add_apply, Real.norm_eq_abs, abs_le] at hx
+    exact Set.mem_ofPred.mpr (abs_le.mpr ⟨by linarith [hx.1, hv.2], by linarith [hx.2, hv.1]⟩)
+  let S := hSK.toFinset
+  -- step 3: if `Λ < 0` the set is empty, as `0 ≤ Σ_{p ∈ s} |β p|`
+  rcases lt_or_ge Λ 0 with hΛ | hΛ
+  · refine Set.finite_empty.subset ?_
+    rintro T ⟨s, β, -, -, hs, -⟩
+    exact absurd ((Finset.sum_nonneg fun p _ => abs_nonneg _).trans hs) (not_le.mpr hΛ)
+  -- otherwise the coefficient vectors `𝔅 = (S_K → {z ∈ ℤ : |z| ≤ Λ})` form a finite set
+  have h𝔅 : (Set.pi Set.univ fun _ : S => {z : ℤ | |(z : ℝ)| ≤ Λ}).Finite :=
+    Set.Finite.pi fun _ => hZ Λ
+  -- the face integral `[[p]](ω)`
+  let I : (Fin k → Fin P) × (Fin P → ℤ) → TestFormOn (univ : Set (Euclid P)) k → ℝ :=
+    fun p ω => ∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, (ω : DifferentialForm (Euclid P) k)
+      (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+      (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))
+  -- step 4: pad the witness `β` of `T` by zero to `β̄_T ∈ 𝔅`; then `T = Σ_{p ∈ S_K} β̄_T(p) [[p]]`
+  have step4 : ∀ T ∈ {T : GeometricCurrentOn (univ : Set (Euclid P)) k |
+      ∃ (s : Finset ((Fin k → Fin P) × (Fin P → ℤ))) (β : (Fin k → Fin P) × (Fin P → ℤ) → ℤ),
+        (∀ p ∈ s, StrictMono p.1) ∧ (∀ p ∈ s, ∃ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧
+          (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+            ∈ K) ∧ ∑ p ∈ s, |(β p : ℝ)| ≤ Λ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) k,
+          T ω = ∑ p ∈ s, (β p : ℝ) * ∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1},
+            (ω : DifferentialForm (Euclid P) k) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+              ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+              (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))},
+      ∃ c ∈ Set.pi Set.univ (fun _ : S => {z : ℤ | |(z : ℝ)| ≤ Λ}),
+        ∀ ω, T ω = ∑ p : S, (c p : ℝ) * I p ω := by
+    rintro T ⟨s, β, hmono, hsK, hs, hT⟩
+    have hsS : s ⊆ S := fun p hp => hSK.mem_toFinset.mpr ⟨hmono p hp, hsK p hp⟩
+    refine ⟨fun p => if (p : (Fin k → Fin P) × (Fin P → ℤ)) ∈ s then β p else 0,
+      Set.mem_univ_pi.mpr fun p => ?_, fun ω => ?_⟩
+    · -- `|β p| ≤ Σ_{q ∈ s} |β q| ≤ Λ` for `p ∈ s`, and `|0| ≤ Λ`
+      show |((if (p : (Fin k → Fin P) × (Fin P → ℤ)) ∈ s then β p else 0 : ℤ) : ℝ)| ≤ Λ
+      split_ifs with hp
+      · exact (Finset.single_le_sum (fun q _ => abs_nonneg (β q : ℝ)) hp).trans hs
+      · simpa using hΛ
+    · -- the added terms vanish
+      rw [hT ω, Finset.sum_coe_sort S fun p => ((if p ∈ s then β p else 0 : ℤ) : ℝ) * I p ω,
+        ← Finset.sum_subset hsS]
+      · exact Finset.sum_congr rfl fun p hp => by rw [ite_eq_left hp]
+      · intro p _ hp
+        rw [ite_eq_right hp, Int.cast_zero, zero_mul]
+  -- step 5: currents are determined by their values, so `T ↦ β̄_T` is injective
+  choose! c hc hcT using step4
+  exact Set.Finite.of_injOn hc (fun T₁ h₁ T₂ h₂ h => GeometricCurrentOn.ext fun ω => by
+    rw [hcT T₁ h₁ ω, hcT T₂ h₂ ω, h]) h𝔅
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
