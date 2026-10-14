@@ -642,6 +642,100 @@ theorem Submission.doragm_approxTangent_lower_density : ∀ (P n : ℕ) (M : Set
       exact div_pos hρ hA
   filter_upwards [htend.eventually hev2] with ρ hρ
   rwa [div_mul_cancel₀ ρ hA.ne'] at hρ
+/-- **`Hⁿ` of a disc in an `n`-plane**: if `Q ⊆ ℝᴾ` is an `n`-dimensional subspace and `r ≥ 0`, then
+`Hⁿ(Q ∩ B̄_r(0)) = rⁿ ωₙ`.  An orthonormal basis of `Q` gives a linear isometry `j : ℝⁿ → ℝᴾ`
+with `j(B̄_r(0)) = Q ∩ B̄_r(0)`; `Hⁿ` is invariant under isometries and equals Lebesgue measure on
+`ℝⁿ`, and `Lⁿ(B̄_r(0)) = rⁿ Lⁿ(B₁(0))`. -/
+theorem Submission.cbrr_tcd_plane_closedBall_measure : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)), Module.finrank ℝ Q = n → ∀ r : ℝ, 0 ≤ r → μHE[n] ((Q : Set (Euclid P)) ∩ closedBall 0 r) = ENNReal.ofReal (r ^ n) * unitBallVolume n := by
+  intro P n Q hQ r hr
+  -- Step 1: an orthonormal basis `b` of `Q` indexed by `Fin n`
+  let b : OrthonormalBasis (Fin n) ℝ Q := (stdOrthonormalBasis ℝ Q).reindex (finCongr hQ)
+  -- Step 2: the isometry `j = ι ∘ b.repr.symm : ℝⁿ → ℝᴾ`
+  have hj : Isometry (Q.subtypeₗᵢ ∘ b.repr.symm) := Q.subtypeₗᵢ.isometry.comp b.repr.symm.isometry
+  -- Step 3: `j(B̄_r(0)) = Q ∩ B̄_r(0)`
+  have himg : (Q.subtypeₗᵢ ∘ b.repr.symm) '' closedBall (0 : Euclid n) r =
+      (Q : Set (Euclid P)) ∩ closedBall 0 r := by
+    ext y
+    constructor
+    · rintro ⟨v, hv, rfl⟩
+      refine ⟨(b.repr.symm v).2, ?_⟩
+      rw [mem_closedBall_zero_iff] at hv ⊢
+      rwa [Function.comp_apply, LinearIsometry.norm_map, LinearIsometryEquiv.norm_map]
+    · rintro ⟨hyQ, hy⟩
+      refine ⟨b.repr ⟨y, hyQ⟩, ?_, ?_⟩
+      · rw [mem_closedBall_zero_iff] at hy ⊢
+        rwa [LinearIsometryEquiv.norm_map, ← Submodule.norm_coe]
+      · simp
+  -- Steps 4–7: isometry invariance, `Hⁿ = Lⁿ` on `ℝⁿ`, Haar scaling, and `ωₙ = Lⁿ(B₁(0))`
+  rw [← himg, hj.euclideanHausdorffMeasure_image,
+    EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Measure.addHaar_closedBall _ _ hr,
+    finrank_euclideanSpace_fin]
+  rfl
+/-- **Cutoff for the cone `X = {y : 2|p_Q y| < |y|}`**: for a subspace `Q ⊆ ℝᴾ` and `δ > 0` there
+is `f ∈ C_c(ℝᴾ)` with `0 ≤ f ≤ 1`, `f = 1` on `X ∩ B₁(0)` and `f = 0` on `Q \ B̄_δ(0)`.  With
+`s = δ/4` take `f = φχ`, `φ(y) = max(0, min(1, 1 + ((3/4)|y| − |p_Q y|)/s))` and
+`χ(y) = max(0, min(1, 2 − |y|))`; `f` vanishes outside `B̄₂(0)`. -/
+theorem Submission.cbrr_tcd_cone_cutoff_exists : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (δ : ℝ), 0 < δ → ∃ f : CompactlySupportedContinuousMap (Euclid P) ℝ, (∀ y, 0 ≤ f y) ∧ (∀ y, f y ≤ 1) ∧ (∀ y : Euclid P, 2 * ‖Q.starProjection y‖ < ‖y‖ → ‖y‖ < 1 → f y = 1) ∧ ∀ y ∈ Q, δ < ‖y‖ → f y = 0 := by
+  intro P Q δ hδ
+  -- Step 1: `s = δ/4`, `h(y) = (3/4)|y| − |p_Q y|`, `φ = max(0, min(1, 1 + h/s))`,
+  -- `χ = max(0, min(1, 2 − |y|))`.
+  set s : ℝ := δ / 4 with hs_def
+  have hs : 0 < s := by positivity
+  let φ : Euclid P → ℝ := fun y => max 0 (min 1 (1 + (3 / 4 * ‖y‖ - ‖Q.starProjection y‖) / s))
+  let χ : Euclid P → ℝ := fun y => max 0 (min 1 (2 - ‖y‖))
+  -- Step 2: `φ` and `χ` are continuous (`p_Q` is a continuous linear map).
+  have hφ : Continuous φ :=
+    continuous_const.max (continuous_const.min (continuous_const.add
+      (((continuous_const.mul continuous_norm).sub Q.starProjection.continuous.norm).div_const s)))
+  have hχ : Continuous χ :=
+    continuous_const.max (continuous_const.min (continuous_const.sub continuous_norm))
+  -- Step 3: `χ`, hence `φχ`, vanishes outside the compact ball `B̄₂(0)`.
+  have hsupp : HasCompactSupport fun y => φ y * χ y := by
+    refine HasCompactSupport.intro (isCompact_closedBall (0 : Euclid P) 2) fun y hy => ?_
+    rw [mem_closedBall_zero_iff, not_le] at hy
+    have hχy : χ y = 0 := by
+      simp only [χ]
+      rw [min_eq_right (by linarith), max_eq_left (by linarith)]
+    simp [hχy]
+  let f : CompactlySupportedContinuousMap (Euclid P) ℝ :=
+    { toFun := fun y => φ y * χ y
+      continuous_toFun := hφ.mul hχ
+      hasCompactSupport' := hsupp }
+  have hf : ∀ y, f y = φ y * χ y := fun _ => rfl
+  -- Step 4: `max(0, min(1, a)) ∈ [0, 1]`, so `0 ≤ φ, χ ≤ 1` and `0 ≤ φχ ≤ φ ≤ 1`.
+  have hclamp : ∀ a : ℝ, 0 ≤ max 0 (min 1 a) ∧ max 0 (min 1 a) ≤ 1 := fun a =>
+    ⟨le_max_left _ _, max_le zero_le_one (min_le_left _ _)⟩
+  refine ⟨f, fun y => ?_, fun y => ?_, fun y hX hB => ?_, fun y hyQ hyδ => ?_⟩
+  · rw [hf]
+    exact mul_nonneg (hclamp _).1 (hclamp _).1
+  · rw [hf]
+    calc φ y * χ y ≤ φ y * 1 := mul_le_mul_of_nonneg_left (hclamp _).2 (hclamp _).1
+      _ = φ y := mul_one _
+      _ ≤ 1 := (hclamp _).2
+  -- Step 5: if `2|p_Q y| < |y| < 1` then `h(y) > |y|/4 ≥ 0`, so `φ(y) = 1`; and `χ(y) = 1`.
+  · have hh : 0 ≤ (3 / 4 * ‖y‖ - ‖Q.starProjection y‖) / s :=
+      div_nonneg (by linarith [norm_nonneg y]) hs.le
+    have hφy : φ y = 1 := by
+      simp only [φ]
+      rw [min_eq_left (by linarith), max_eq_right zero_le_one]
+    have hχy : χ y = 1 := by
+      simp only [χ]
+      rw [min_eq_left (by linarith), max_eq_right zero_le_one]
+    rw [hf, hφy, hχy, one_mul]
+  -- Step 6: if `y ∈ Q` and `|y| > δ` then `p_Q y = y`, so `1 + h(y)/s = 1 − |y|/δ < 0` and
+  -- `φ(y) = 0`.
+  · have hp : Q.starProjection y = y := Submodule.starProjection_eq_self_iff.mpr hyQ
+    have hneg : 1 + (3 / 4 * ‖y‖ - ‖y‖) / s < 0 := by
+      have h1 : (3 / 4 * ‖y‖ - ‖y‖) / s = -(‖y‖ / δ) := by
+        rw [hs_def]
+        field_simp
+        ring
+      have h2 : 1 < ‖y‖ / δ := (one_lt_div hδ).mpr hyδ
+      linarith
+    have hφy : φ y = 0 := by
+      simp only [φ]
+      rw [hp, min_eq_right (by linarith), max_eq_left hneg.le]
+    rw [hf, hφy, zero_mul]
 /-- **`Hⁿ` under the blow-up map `η_{x,r}(y) = r⁻¹(y − x)`, `r > 0`**: `Hⁿ(η_{x,r}(S)) = r⁻ⁿ Hⁿ(S)`
 for every `S ⊆ ℝᴾ`, the scaling used in the proof of Simon Ch. 3, Theorem 1.6 "⇒".  `η_{x,r}` is
 the translation `y ↦ y + (−x)`, an isometry, followed by the dilation `z ↦ r⁻¹z`, and
@@ -659,6 +753,133 @@ theorem Submission.rsd_cmr_ir_blowUp_image_measure : ∀ (P n : ℕ) (x : Euclid
     ← ENNReal.ofReal_coe_nnreal]
   congr 2
   simp [abs_of_pos hr]
+
+/-- **Small-scale upper bound at an approximate tangent point**: if `Q` is the approximate tangent
+space of `M` at `x` (Simon Ch. 3, 1.4), `Hⁿ(M) < ∞`, and `f ∈ C_c(ℝᴾ)` satisfies `f ≥ 0` and
+`f ≥ 1` on the measurable set `U`, then `Hⁿ(M ∩ η_{x,r}⁻¹(U)) ≤ t rⁿ` for all small `r > 0`
+whenever `∫_Q f dHⁿ < t`.  Indeed `Hⁿ(η_{x,r}(M) ∩ U) ≤ ∫_{η_{x,r}(M)} f dHⁿ → ∫_Q f dHⁿ`, and
+`η_{x,r}(M) ∩ U = η_{x,r}(M ∩ η_{x,r}⁻¹(U))` has measure `r⁻ⁿ Hⁿ(M ∩ η_{x,r}⁻¹(U))`. -/
+theorem Submission.cbrr_tcd_blowUp_preimage_le_of_testFunction : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (U : Set (Euclid P)) (f : CompactlySupportedContinuousMap (Euclid P) ℝ), μHE[n] M ≠ ∞ → HasApproximateTangentSpaceAt n M x Q → MeasurableSet U → (∀ y, 0 ≤ f y) → (∀ y ∈ U, 1 ≤ f y) → ∀ t : ℝ≥0∞, ENNReal.ofReal (∫ y in (Q : Set (Euclid P)), f y ∂μHE[n]) < t → ∀ᶠ r in 𝓝[>] (0 : ℝ), μHE[n] (M ∩ Poincare.SimonGMT.Chapter03.blowUpMap x r ⁻¹' U) ≤ t * ENNReal.ofReal (r ^ n) := by
+  intro P n M x Q U f hM hT hU hf0 hfU t ht
+  -- `t = ∞`: the right-hand side is `∞` for every `r > 0`.
+  rcases eq_or_ne t ∞ with rfl | htop
+  · filter_upwards [self_mem_nhdsWithin] with r hr
+    rw [ENNReal.top_mul (ENNReal.ofReal_pos.2 (pow_pos hr n)).ne']
+    exact le_top
+  -- `∫_Q f dHⁿ < t`, and `∫_{η_{x,r}(M)} f dHⁿ → ∫_Q f dHⁿ`, so eventually `∫_{η_{x,r}(M)} f < t`.
+  have hL : ∫ y in (Q : Set (Euclid P)), f y ∂μHE[n] < t.toReal :=
+    (ENNReal.ofReal_lt_iff_lt_toReal (integral_nonneg hf0) htop).1 ht
+  filter_upwards [self_mem_nhdsWithin, (hT.2 f).eventually (gt_mem_nhds hL)] with r hr hI
+  have hr0 : (0 : ℝ) < r := hr
+  set η := Poincare.SimonGMT.Chapter03.blowUpMap x r
+  -- `Hⁿ(η_{x,r}(M)) = r⁻ⁿ Hⁿ(M) < ∞`, so `f` is integrable for `Hⁿ⌞η_{x,r}(M)`.
+  have hfin : μHE[n] (η '' M) ≠ ∞ := by
+    rw [Submission.rsd_cmr_ir_blowUp_image_measure P n x r M hr0]
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hM
+  have : IsFiniteMeasure (μHE[n].restrict (η '' M)) := isFiniteMeasure_restrict.2 hfin
+  have hint : Integrable f (μHE[n].restrict (η '' M)) := f.integrable
+  -- `Hⁿ(η_{x,r}(M) ∩ U) = ∫ 1_U d(Hⁿ⌞η_{x,r}(M)) ≤ ∫_{η_{x,r}(M)} f dHⁿ ≤ t`.
+  have hle : μHE[n] (η '' M ∩ U) ≤ t := by
+    calc μHE[n] (η '' M ∩ U) = μHE[n].restrict (η '' M) U := by
+          rw [Measure.restrict_apply hU, Set.inter_comm]
+      _ = ∫⁻ y, U.indicator 1 y ∂(μHE[n].restrict (η '' M)) := (lintegral_indicator_one hU).symm
+      _ ≤ ∫⁻ y, ENNReal.ofReal (f y) ∂(μHE[n].restrict (η '' M)) := by
+          refine lintegral_mono fun y => ?_
+          by_cases hy : y ∈ U
+          · rw [Set.indicator_of_mem hy, Pi.one_apply]
+            exact ENNReal.one_le_ofReal.2 (hfU y hy)
+          · rw [Set.indicator_of_notMem hy]
+            exact zero_le
+      _ = ENNReal.ofReal (∫ y in η '' M, f y ∂μHE[n]) :=
+          (ofReal_integral_eq_lintegral_ofReal hint (Eventually.of_forall hf0)).symm
+      _ ≤ ENNReal.ofReal t.toReal := ENNReal.ofReal_le_ofReal hI.le
+      _ = t := ENNReal.ofReal_toReal htop
+  -- `η_{x,r}(M) ∩ U = η_{x,r}(M ∩ η_{x,r}⁻¹(U))`, whose measure is `r⁻ⁿ Hⁿ(M ∩ η_{x,r}⁻¹(U))`.
+  have hscale : μHE[n] (η '' M ∩ U) = ENNReal.ofReal (r⁻¹ ^ n) * μHE[n] (M ∩ η ⁻¹' U) := by
+    rw [← Set.image_inter_preimage]
+    exact Submission.rsd_cmr_ir_blowUp_image_measure P n x r _ hr0
+  have hcancel : ENNReal.ofReal (r ^ n) * ENNReal.ofReal (r⁻¹ ^ n) = 1 := by
+    rw [← ENNReal.ofReal_mul (pow_nonneg hr0.le n), ← mul_pow, mul_inv_cancel₀ hr0.ne', one_pow,
+      ENNReal.ofReal_one]
+  calc μHE[n] (M ∩ η ⁻¹' U)
+      = ENNReal.ofReal (r ^ n) * (ENNReal.ofReal (r⁻¹ ^ n) * μHE[n] (M ∩ η ⁻¹' U)) := by
+        rw [← mul_assoc, hcancel, one_mul]
+    _ ≤ ENNReal.ofReal (r ^ n) * t := by
+        rw [← hscale]
+        gcongr
+    _ = t * ENNReal.ofReal (r ^ n) := mul_comm _ _
+
+/-- **Vanishing density in the cone about the normal space** (Simon Ch. 3, Remark 1.5(3), second
+half, and formula (6) in the proof of Theorem 1.6): if `Q` is the approximate tangent space of `M`
+at `x`, `n ≥ 1` and `Hⁿ(M) < ∞`, then for every `t > 0`, `Hⁿ(M ∩ X(x) ∩ B_ρ(x)) ≤ t ρⁿ` for all
+small `ρ > 0`, where `X(x) = {z : 2|p_Q(z − x)| < |z − x|} = X_{1/2}((TₓM)^⊥, x)`.  Choose `δ > 0`
+with `Hⁿ(Q ∩ B̄_δ(0)) = δⁿωₙ < t` and `f ∈ C_c` with `0 ≤ f ≤ 1`, `f = 1` on `X ∩ B₁(0)` and
+`f = 0` on `Q \ B̄_δ(0)`.  Then `∫_Q f dHⁿ ≤ Hⁿ(Q ∩ B̄_δ(0)) < t`, so the blow-up bound gives
+`Hⁿ(M ∩ η_{x,r}⁻¹(X ∩ B₁(0))) ≤ t rⁿ` for small `r > 0`, and `η_{x,r}⁻¹(X ∩ B₁(0)) = X(x) ∩ B_r(x)`. -/
+theorem Submission.cbrr_tangent_cone_density_zero : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), 0 < n → μHE[n] M ≠ ∞ → HasApproximateTangentSpaceAt n M x Q → ∀ t : ℝ≥0∞, 0 < t → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] (M ∩ ({z | 2 * ‖Q.starProjection (z - x)‖ < ‖z - x‖} ∩ ball x ρ)) ≤ t * ENNReal.ofReal (ρ ^ n) := by
+  intro P n M x Q hn hM hQ t ht
+  -- Step 1: `ωₙ < ∞` and `n ≥ 1`, so `δⁿωₙ → 0` as `δ → 0`; choose `δ > 0` with `δⁿωₙ < t`, so
+  -- that `Hⁿ(Q ∩ B̄_δ(0)) = δⁿωₙ < t` (`dim Q = n`)
+  have hω_top : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  have hlim : Tendsto (fun δ : ℝ => ENNReal.ofReal (δ ^ n) * unitBallVolume n) (𝓝 0) (𝓝 0) := by
+    have h0 : Tendsto (fun δ : ℝ => δ ^ n) (𝓝 0) (𝓝 0) := by
+      have h := (continuous_pow n).tendsto (0 : ℝ)
+      rwa [zero_pow hn.ne'] at h
+    have h := ENNReal.Tendsto.mul_const (ENNReal.tendsto_ofReal h0) (Or.inr hω_top)
+    rwa [ENNReal.ofReal_zero, zero_mul] at h
+  obtain ⟨δ, hδt, hδ⟩ := ((hlim.eventually (gt_mem_nhds ht)).filter_mono nhdsWithin_le_nhds |>.and
+    (self_mem_nhdsWithin (s := Ioi (0 : ℝ)) (a := 0))).exists
+  have hδ0 : 0 < δ := hδ
+  have hplane : μHE[n] ((Q : Set (Euclid P)) ∩ closedBall 0 δ) < t := by
+    rw [Submission.cbrr_tcd_plane_closedBall_measure P n Q hQ.1 δ hδ0.le]
+    exact hδt
+  -- Step 2: the cutoff `f ∈ C_c`: `0 ≤ f ≤ 1`, `f = 1` on `X ∩ B₁(0)`, `f = 0` on `Q \ B̄_δ(0)`
+  obtain ⟨f, hf0, hf1, hfX, hfQ⟩ := Submission.cbrr_tcd_cone_cutoff_exists P Q δ hδ0
+  -- Step 3: `ofReal (∫_Q f dHⁿ) ≤ ∫⁻_Q ofReal ∘ f dHⁿ ≤ Hⁿ(Q ∩ B̄_δ(0)) < t`, as
+  -- `ofReal ∘ f ≤ 1_{B̄_δ(0)}` on `Q`
+  have hQm : MeasurableSet (Q : Set (Euclid P)) := Q.closed_of_finiteDimensional.measurableSet
+  have hint : ENNReal.ofReal (∫ y in (Q : Set (Euclid P)), f y ∂μHE[n]) < t := by
+    refine lt_of_le_of_lt ?_ hplane
+    rw [integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall hf0)
+      f.continuous.aestronglyMeasurable]
+    refine ENNReal.ofReal_toReal_le.trans ?_
+    calc ∫⁻ y in (Q : Set (Euclid P)), ENNReal.ofReal (f y) ∂μHE[n]
+        ≤ ∫⁻ y in (Q : Set (Euclid P)), (closedBall (0 : Euclid P) δ).indicator 1 y ∂μHE[n] := by
+          refine setLIntegral_mono' hQm fun y hy => ?_
+          by_cases hyδ : y ∈ closedBall (0 : Euclid P) δ
+          · rw [indicator_of_mem hyδ, Pi.one_apply]
+            exact ENNReal.ofReal_le_one.mpr (hf1 y)
+          · rw [mem_closedBall_zero_iff, not_le] at hyδ
+            rw [hfQ y hy hyδ, ENNReal.ofReal_zero]
+            exact zero_le
+      _ = μHE[n] ((Q : Set (Euclid P)) ∩ closedBall 0 δ) := by
+          rw [lintegral_indicator_one measurableSet_closedBall,
+            Measure.restrict_apply measurableSet_closedBall, inter_comm]
+  -- Step 4: the blow-up bound for the open set `U = X ∩ B₁(0)`, on which `f = 1`
+  set U : Set (Euclid P) := {y | 2 * ‖Q.starProjection y‖ < ‖y‖} ∩ ball 0 1
+  have hU : IsOpen U :=
+    (isOpen_lt (continuous_const.mul Q.starProjection.continuous.norm) continuous_norm).inter
+      isOpen_ball
+  have hfU : ∀ y ∈ U, 1 ≤ f y := fun y hy => (hfX y hy.1 (mem_ball_zero_iff.mp hy.2)).ge
+  filter_upwards [Submission.cbrr_tcd_blowUp_preimage_le_of_testFunction P n M x Q U f hM hQ
+    hU.measurableSet hf0 hfU t hint, self_mem_nhdsWithin] with r hr hr0
+  -- Step 5: for `r > 0`, `η_{x,r}⁻¹(X ∩ B₁(0)) = X(x) ∩ B_r(x)`, since `η_{x,r}(z) = r⁻¹(z − x)`,
+  -- `p_Q` is linear and `|r⁻¹v| = r⁻¹|v|`
+  have hr0' : 0 < r := hr0
+  have hrinv : 0 < r⁻¹ := inv_pos.mpr hr0'
+  have hset : {z | 2 * ‖Q.starProjection (z - x)‖ < ‖z - x‖} ∩ ball x r =
+      Poincare.SimonGMT.Chapter03.blowUpMap x r ⁻¹' U := by
+    ext z
+    have hnorm : ‖r⁻¹ • (z - x)‖ = r⁻¹ * ‖z - x‖ := by
+      rw [norm_smul, Real.norm_of_nonneg hrinv.le]
+    have hproj : ‖Q.starProjection (r⁻¹ • (z - x))‖ = r⁻¹ * ‖Q.starProjection (z - x)‖ := by
+      rw [map_smul, norm_smul, Real.norm_of_nonneg hrinv.le]
+    change 2 * ‖Q.starProjection (z - x)‖ < ‖z - x‖ ∧ dist z x < r ↔
+      2 * ‖Q.starProjection (r⁻¹ • (z - x))‖ < ‖r⁻¹ • (z - x)‖ ∧ dist (r⁻¹ • (z - x)) 0 < 1
+    rw [dist_eq_norm, dist_eq_norm, sub_zero, hproj, hnorm, mul_left_comm,
+      mul_lt_mul_iff_right₀ hrinv, inv_mul_lt_iff₀ hr0', mul_one]
+  rw [hset]
+  exact hr
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
