@@ -451,6 +451,51 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Covector estimate for the cylinder slice (deformation theorem, Lipschitz push-forward
+integrality).  Given the norm bounds `|β ∘ A| ≤ ‖A‖ᵏ |β|` (pull-back) and `|β ⌟ v| ≤ ‖v‖ |β|`
+(contraction), let `J x = (0, x)` embed `ℝᴺ` into `ℝᴺ⁺¹` and `e₀ = (1, 0, …, 0)`.  If
+`|α(v)| ≤ c |α|` for every `n`-covector `α` on `ℝᴺ`, then `|γ(e₀, Jv₁, …, Jvₙ)| ≤ c |γ|` for every
+`(n + 1)`-covector `γ` on `ℝᴺ⁺¹`: the left side is `β(v)` for `β = (γ ⌟ e₀) ∘ J`, and `‖J‖ ≤ 1`,
+`‖e₀‖ = 1` give `|β| ≤ |γ|`. -/
+theorem Submission.cmcdt_lpi_cyl_slice_covector_bound : (∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) → (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → ∀ (N n : ℕ) (γ : Covector (Euclid (N + 1)) (n + 1)) (v : Fin n → Euclid N) (c : ℝ), 0 ≤ c → (∀ α : Covector (Euclid N) n, |α v| ≤ c * covectorEuclideanNorm α) → |γ (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))| ≤ c * covectorEuclideanNorm γ := by
+  intro hL1 hL2 N n γ v c hc hv
+  -- the isometric embedding `J x = (0, x)` of `ℝᴺ` into `ℝᴺ⁺¹`
+  let J : Euclid N →L[ℝ] Euclid (N + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun x => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))
+      map_add' := fun x y => by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      map_smul' := fun a x => by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+  have hJx : ∀ x, J x = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x)) := fun x => rfl
+  -- `‖J x‖² = 0² + ‖x‖²`, so `‖J‖ ≤ 1`
+  have hJ : ‖J‖ ≤ 1 := by
+    refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun x => ?_
+    have h : ‖J x‖ ^ 2 = ‖x‖ ^ 2 := by
+      rw [hJx, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, Fin.sum_univ_succ]
+      simp
+    rw [pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero] at h
+    rw [h, one_mul]
+  -- `β = (γ ⌟ e₀) ∘ J`, so `β(v) = γ(e₀, Jv₁, …, Jvₙ)`
+  set β : Covector (Euclid N) n :=
+    (γ.curryLeft (EuclideanSpace.single 0 1)).compContinuousLinearMap J with hβdef
+  have hβv : β v = γ (Fin.cons (EuclideanSpace.single 0 1)
+      (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) := by
+    rw [hβdef, ContinuousAlternatingMap.compContinuousLinearMap_apply,
+      ContinuousAlternatingMap.curryLeft_apply_apply]
+    rfl
+  -- `|β| ≤ ‖J‖ⁿ |γ ⌟ e₀| ≤ |γ ⌟ e₀| ≤ ‖e₀‖ |γ| = |γ|`
+  have hβ : covectorEuclideanNorm β ≤ covectorEuclideanNorm γ := by
+    have h1 := hL1 N (N + 1) n J (γ.curryLeft (EuclideanSpace.single 0 1))
+    have h2 := hL2 (N + 1) n (EuclideanSpace.single 0 1) γ
+    have he : ‖(EuclideanSpace.single (0 : Fin (N + 1)) (1 : ℝ))‖ = 1 := by simp
+    rw [he, one_mul] at h2
+    have hJn : ‖J‖ ^ n ≤ 1 := pow_le_one₀ (norm_nonneg _) hJ
+    calc covectorEuclideanNorm β
+        ≤ ‖J‖ ^ n * covectorEuclideanNorm (γ.curryLeft (EuclideanSpace.single 0 1)) := h1
+      _ ≤ 1 * covectorEuclideanNorm (γ.curryLeft (EuclideanSpace.single 0 1)) :=
+          mul_le_mul_of_nonneg_right hJn (covectorEuclideanNorm_nonneg _)
+      _ ≤ covectorEuclideanNorm γ := by rw [one_mul]; exact h2
+  rw [← hβv]
+  exact (hv β).trans (mul_le_mul_of_nonneg_left hβ hc)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
