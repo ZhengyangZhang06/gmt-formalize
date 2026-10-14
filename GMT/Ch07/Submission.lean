@@ -462,36 +462,6 @@ theorem Submission.dpf_itt_approxTangentPlane_eq : ∀ (P n : ℕ) (M : Set (Euc
   unfold approxTangentPlane
   rw [dite_eq_left h]
   exact h.choose_spec.unique hQ
-/-- Step 3(i) of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3, via
-Allard's theorem; `n`-covectors as in Ch. 6, §1): if `τ` is an orthonormal `n`-frame and every
-`bⱼ` lies in `L = span τ`, then `α(b₁, …, bₙ) = det(⟨τᵢ, bⱼ⟩) α(τ₁, …, τₙ)` for every
-`n`-covector `α`.  The restriction of `α` to `L` is `α(τ) det_τ`, and the coordinates of `bⱼ` in
-the basis `τ` of `L` are `⟨τᵢ, bⱼ⟩`. -/
-theorem Submission.dgoj_covector_eq_det_mul_of_mem_span : ∀ (P n : ℕ) (τ b : Fin n → Euclid P), Orthonormal ℝ τ → (∀ j, b j ∈ Submodule.span ℝ (Set.range τ)) → ∀ α : Covector (Euclid P) n, α b = (Matrix.of fun i j => inner ℝ (τ i) (b j)).det * α τ := by
-  intro P n τ b hτ hb α
-  set L := Submodule.span ℝ (Set.range τ)
-  -- `τ` is a basis `e` of `L`
-  let e : Module.Basis (Fin n) ℝ L := Module.Basis.span hτ.linearIndependent
-  have he : ∀ i, (e i : Euclid P) = τ i := fun i => by
-    rw [Module.Basis.span_apply hτ.linearIndependent i]
-  -- the restriction `α_L` of `α` to `L`
-  let αL : L [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap L.subtype
-  let b' : Fin n → L := fun j => ⟨b j, hb j⟩
-  have h1 : α b = αL b' := rfl
-  have h2 : α τ = αL e := by
-    show α τ = α (fun i => (e i : Euclid P))
-    congr 1
-    funext i
-    exact (he i).symm
-  -- coordinates of `b'` in `e` are the inner products with `τ`
-  have hrepr : ∀ i j, e.repr (b' j) i = inner ℝ (τ i) (b j) := by
-    intro i j
-    have hs : (b j : Euclid P) = ∑ l, e.repr (b' j) l • τ l := by
-      have := congrArg (Subtype.val) (e.sum_repr (b' j))
-      simp only [Submodule.coe_sum, Submodule.coe_smul, he] at this
-      exact this.symm
-    rw [hs, hτ.inner_right_fintype]
-  have hmat : e.toMatrix b' = Matrix.of fun i j => inner ℝ (τ i) (b j) := by
 /-- **Simon Ch. 6, 1.1 and 1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of a plane (`τ`
 orthonormal) is a nonzero `n`-vector of norm at most one.  `|ξ(α)| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
 gives `‖ξ‖ ≤ 1`.  The covector `δ(w) = Σ_σ sgn σ ∏ᵢ ⟨τᵢ, w_{σ(i)}⟩ = det(⟨τᵢ, wⱼ⟩)`, the
@@ -734,7 +704,33 @@ theorem Submission.fvmb_gram_det_le_exp_sum_norm_sq_sub : ∀ (P n : ℕ) (v : F
     rw [LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
       OrthonormalBasis.repr_apply_apply, OrthonormalBasis.coe_toBasis, hSinner, hVe, hVe]
     rfl
-  rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
+  have hdet : LinearMap.det S = Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) := by
+    rw [← LinearMap.det_toMatrix b.toBasis, hmat]
+  have htr : LinearMap.trace ℝ _ S = ∑ a, ‖v a‖ ^ 2 := by
+    rw [LinearMap.trace_eq_sum_inner S b]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [hSinner, hVe, real_inner_self_eq_norm_sq]
+  -- spectral theorem: `det S = Πᵢ λᵢ`, `trace S = Σᵢ λᵢ`, with `λᵢ = ⟪uᵢ, S uᵢ⟫ = |V uᵢ|² ≥ 0`
+  rw [← hdet, hS.det_eq_prod_eigenvalues hn, ← htr, hS.trace_eq_sum_eigenvalues hn]
+  have hnonneg : ∀ i, 0 ≤ hS.eigenvalues hn i := by
+    intro i
+    have h1 := hS.apply_eigenvectorBasis hn i
+    have hu : ‖hS.eigenvectorBasis hn i‖ = 1 := (hS.eigenvectorBasis hn).orthonormal.1 i
+    have h2 : inner ℝ (hS.eigenvectorBasis hn i) (S (hS.eigenvectorBasis hn i)) =
+        hS.eigenvalues hn i := by
+      rw [h1, inner_smul_right, real_inner_self_eq_norm_sq, hu]
+      simp
+    rw [← h2, hSinner]
+    exact real_inner_self_nonneg
+  -- `0 ≤ λᵢ ≤ e^{λᵢ − 1}`, multiplied over `i`
+  simp only [RCLike.ofReal_real_eq_id, id]
+  calc ∏ i, hS.eigenvalues hn i ≤ ∏ i, Real.exp (hS.eigenvalues hn i - 1) := by
+        refine Finset.prod_le_prod₀ (fun i _ => hnonneg i) (fun i _ => ?_)
+        have := Real.add_one_le_exp (hS.eigenvalues hn i - 1)
+        linarith
+    _ = Real.exp (∑ i, hS.eigenvalues hn i - n) := by
+        rw [← Real.exp_sum, Finset.sum_sub_distrib]
+        simp
 /-- **Simon Ch. 6, 3.2(3)** (independence of `θHⁿ⌞M` from the representation, steps 1(b), 1(d)):
 two unit orientations `ξ₁ = ±τ₁ ∧ ⋯ ∧ τₙ`, `ξ₂ = ±τ'₁ ∧ ⋯ ∧ τ'ₙ` of the same subspace `Q` take
 absolute value `1` on a common `n`-covector.  Take the frame determinant
@@ -797,52 +793,6 @@ theorem Submission.unit_orientations_common_unit_covector : ∀ (P n : ℕ) (Q :
       exact hδ b' τ' hb'
     · rw [h, abs_neg]
       exact hδ b' τ' hb'
-/-- **Simon Ch. 6, 1.2 (p. 132)**: `Λⁿ(ℝᴾ)` is finite-dimensional.  An `n`-covector `α` is
-determined by its values `α(e_{I(1)}, …, e_{I(n)})` on tuples of standard basis vectors
-(alternating maps agreeing on distinct basis vectors are equal), so
-`Φ α = (α(e ∘ I))_{I : Fin n → Fin P}` is an injective linear map into the finite-dimensional
-space `ℝ^(Fin n → Fin P)`. -/
-theorem Submission.lcn_covector_finiteDimensional : ∀ (P n : ℕ), FiniteDimensional ℝ (Covector (Euclid P) n) := by
-  intro P n
-  -- the standard basis `e` of `ℝᴾ`
-  let e := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
-  -- `Φ α = (α(e ∘ I))_I`, linear since addition and scaling of covectors are pointwise
-  let Φ : Covector (Euclid P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
-    { toFun := fun α I => α fun i => e (I i)
-      map_add' := fun α β => rfl
-      map_smul' := fun c α => rfl }
-  -- `Φ α = Φ β` makes `α` and `β` agree on distinct basis vectors, hence everywhere
-  refine FiniteDimensional.of_injective Φ fun α β h => ?_
-  exact ContinuousAlternatingMap.toAlternatingMap_injective
-    (e.ext_alternating fun v _ => congr_fun h v)
-  have hdet : LinearMap.det S = Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) := by
-    rw [← LinearMap.det_toMatrix b.toBasis, hmat]
-  have htr : LinearMap.trace ℝ _ S = ∑ a, ‖v a‖ ^ 2 := by
-    rw [LinearMap.trace_eq_sum_inner S b]
-    refine Finset.sum_congr rfl fun a _ => ?_
-    rw [hSinner, hVe, real_inner_self_eq_norm_sq]
-  -- spectral theorem: `det S = Πᵢ λᵢ`, `trace S = Σᵢ λᵢ`, with `λᵢ = ⟪uᵢ, S uᵢ⟫ = |V uᵢ|² ≥ 0`
-  rw [← hdet, hS.det_eq_prod_eigenvalues hn, ← htr, hS.trace_eq_sum_eigenvalues hn]
-  have hnonneg : ∀ i, 0 ≤ hS.eigenvalues hn i := by
-    intro i
-    have h1 := hS.apply_eigenvectorBasis hn i
-    have hu : ‖hS.eigenvectorBasis hn i‖ = 1 := (hS.eigenvectorBasis hn).orthonormal.1 i
-    have h2 : inner ℝ (hS.eigenvectorBasis hn i) (S (hS.eigenvectorBasis hn i)) =
-        hS.eigenvalues hn i := by
-      rw [h1, inner_smul_right, real_inner_self_eq_norm_sq, hu]
-      simp
-    rw [← h2, hSinner]
-    exact real_inner_self_nonneg
-  -- `0 ≤ λᵢ ≤ e^{λᵢ − 1}`, multiplied over `i`
-  simp only [RCLike.ofReal_real_eq_id, id]
-  calc ∏ i, hS.eigenvalues hn i ≤ ∏ i, Real.exp (hS.eigenvalues hn i - 1) := by
-        refine Finset.prod_le_prod₀ (fun i _ => hnonneg i) (fun i _ => ?_)
-        have := Real.add_one_le_exp (hS.eigenvalues hn i - 1)
-        linarith
-    _ = Real.exp (∑ i, hS.eigenvalues hn i - n) := by
-        rw [← Real.exp_sum, Finset.sum_sub_distrib]
-        simp
-
 /-- **First-order Jacobian bound** (Simon Ch. 2, §5, where `J_t = 1 + t div_M X + O(t²)` gives the
 first variation formula 5.3; here only `‖L − I − tB‖ ≤ η|t|` is assumed): for `|t| < δ`,
 `‖B‖ ≤ A` and orthonormal `τ₁, …, τₙ`, `(det(Lτᵢ · Lτⱼ))^{1/2} ≤ 1 + t Σₐ τₐ · Bτₐ + ε|t|`.
@@ -2466,16 +2416,6 @@ theorem Submission.dpfir_integral_eq_of_area_lintegral : ∀ (P : ℕ) (μ ν : 
   refine ⟨hint, ?_⟩
   rw [integral_eq_lintegral_pos_part_sub_lintegral_neg_part hint,
     integral_eq_lintegral_pos_part_sub_lintegral_neg_part hf, hpos, hneg]
-/-- **The chosen approximate tangent plane** (Simon Ch. 3, Remark 1.5(1), used for 7.1.2).  If `Q`
-is an approximate tangent space of `M` at `x` (Ch. 3, 1.4), then `approxTangentPlane n M x = Q`:
-`Q` witnesses the existential in its definition, so it returns the chosen plane, which is an
-approximate tangent space of `M` at `x` and hence equals `Q` by uniqueness. -/
-theorem Submission.dpf_itt_approxTangentPlane_eq : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)), HasApproximateTangentSpaceAt n M x Q → approxTangentPlane n M x = Q := by
-  intro P n M x Q hQ
-  have h : ∃ Q', HasApproximateTangentSpaceAt n M x Q' := ⟨Q, hQ⟩
-  unfold approxTangentPlane
-  rw [dite_eq_left h]
-  exact h.choose_spec.unique hQ
 /-- **Bi-Lipschitz images of Borel, locally `Hⁿ`-finite subsets of `U`** (Simon 6.3.7, the image
 `φ(M)` in the push-forward of `τ(M, θ, ξ)` by a diffeomorphism, used in 7.1.2).  If `M ⊆ U` is
 Borel with `Hⁿ(M ∩ C) < ∞` for every compact `C ⊆ U`, and `φ : ℝᴾ → ℝᴾ` is `Λ`-Lipschitz and
