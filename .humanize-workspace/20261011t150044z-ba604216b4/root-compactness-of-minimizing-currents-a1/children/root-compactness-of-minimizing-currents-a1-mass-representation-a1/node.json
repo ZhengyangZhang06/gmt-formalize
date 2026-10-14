@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1",
+  "depth": 2,
+  "title": "Riesz representation of currents of locally finite mass, and absolute continuity of normal currents (Simon Ch. 6, 2.7–2.8, 2.36–2.37)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open and T ∈ 𝒟_n(U) a current (SimonGMT GeometricCurrentOn U n) with M_W(T) < ∞ for every open W with closure(W) compact and contained in U. Then there are a Borel measure μ on ℝ^P and a map ξ from ℝ^P to n-vectors (continuous linear functionals on n-covectors) such that: μ(ℝ^P ∖ U) = 0; μ(K) < ∞ for every compact K ⊆ U; M_W(T) = μ(W) for every open W ⊆ ℝ^P; ξ is μ-a.e. strongly measurable; |ξ(x)(α)| ≤ |α| for every x and every n-covector α, where |α| is the Euclidean coefficient norm (covectorEuclideanNorm); T(ω) = ∫ ξ(x)(ω(x)) dμ(x) for every ω ∈ 𝒟ⁿ(U); and, if in addition M_W(∂T) < ∞ for every such W (boundaryMassOn, read as 0 when n = 0), then μ(E) = 0 for every set E ⊆ ℝ^P with Hⁿ(E) = 0 (Hⁿ = μHE[n]).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)",
+  "lean_name": "cmc_exists_massRepresentation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-a1"
+}
