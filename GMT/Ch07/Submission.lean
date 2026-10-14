@@ -1400,6 +1400,140 @@ theorem Submission.dimred_mbl_dtfr_plane_orientation : ∀ (P n : ℕ) (ι : Fin
   · exact Or.inr fun α => by rw [hσ α, hc α]
   · exact Or.inl fun α => by rw [hσ α, hc α, neg_neg]
 
+/-- **Simon Ch. 6, proof of 5.1, (26)–(28) and (33)** (with `n = m + 1`): an integer
+multiplicity `Q₀ ∈ 𝒟ₙ(ℝᴾ)` with `spt Q₀` in a compact `K` and in the lattice `n`-skeleton `L_n`
+is a finite sum of integer `L¹` densities on open unit lattice `n`-faces
+`F̆_p = Φ_p((0, 1)ⁿ)`, `Φ_p(y) = b + Σⱼ yⱼ e_{ι(j)}` (`p = (ι, b)`, `ι` increasing):
+`Q₀(ω) = Σ_p ∫_{(0,1)ⁿ} u_p(y) ⟨ω(Φ_p(y)), e_{ι(1)} ∧ ⋯ ∧ e_{ι(n)}⟩ dy`, `Σ_p ∫ |u_p| ≤ M(Q₀)`.
+Write `Q₀ = τ(M, θ, ξ)`.  The faces whose open face meets `spt Q₀ ⊆ K` are finitely many, and
+distinct open faces are disjoint (face_geometry).  `M` lies in their union up to
+`(M ∖ spt Q₀) ∪ L_m`, which is `Hⁿ`-null (`imrep_carrier_sdiff_support_null`, skeleton_null), as
+a point of `L_n ∖ L_m` lies on an open face.  On each face `Q₀⌞F̆_p` is an integer density `u_p`
+with `∫ |u_p| ≤ μ_{Q₀}(F̆_p)` (face_density; `Φ_p` is an isometry).  Summing over the disjoint
+faces gives the representation and, by (MR), `Σ_p ∫ |u_p| ≤ μ_{Q₀}(ℝᴾ) = M(Q₀)`. -/
+theorem Submission.dimred_mbl_dtfr_skeleton_decomposition : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P m : ℕ) (K : Set (Euclid P)) (Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact K → IsIntegerMultiplicity Q₀ → Q₀.support ⊆ K → Q₀.support ⊆ {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} → ∃ (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (u : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ), (∀ p ∈ s, StrictMono p.1) ∧ (∀ p ∈ s, ∀ y, ∃ z : ℤ, u p y = z) ∧ (∀ p ∈ s, IntegrableOn (u p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) ∧ ENNReal.ofReal (∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u p y|) ≤ Q₀.mass ∧ (∀ p ∈ s, ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) ∈ Q₀.support) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Q₀ ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
+  classical
+  intro _ hMR hIMC P m K Q₀ hK hQ₀ hQ₀K hQ₀L
+  obtain ⟨-, hIMCb, -, -⟩ := hIMC
+  -- Step 1: an integer multiplicity representation `R = (M, θ, ξ)` of `Q₀`
+  obtain ⟨R, hR⟩ := hQ₀
+  -- the open unit cube `Q₁ = (0, 1)ⁿ` and the open faces `F̆_p = Φ_p(Q₁)`
+  set Q₁ : Set (Euclid (m + 1)) := {y | ∀ i, 0 < y i ∧ y i < 1} with hQ₁
+  set F : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Set (Euclid P) := fun p =>
+    (fun y : Euclid (m + 1) => WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+      ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) '' Q₁
+  -- Step 8: for increasing `ι`, `Φ_p` is an isometry (face_geometry (a)), hence a measurable
+  -- embedding, so the open faces are Borel
+  have hiso : ∀ p : (Fin (m + 1) → Fin P) × (Fin P → ℤ), StrictMono p.1 →
+      Isometry (fun y : Euclid (m + 1) => WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+        ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) := fun p hp =>
+    Isometry.of_dist_eq ((Submission.dimred_mbl_dtfr_face_geometry P (m + 1)).2 p p hp hp).1
+  have hQ₁o : IsOpen Q₁ := by
+    rw [hQ₁, ofPred_forall]
+    exact isOpen_iInter_of_finite fun i =>
+      (isOpen_lt continuous_const (PiLp.continuous_apply 2 _ i)).inter
+        (isOpen_lt (PiLp.continuous_apply 2 _ i) continuous_const)
+  have hFm : ∀ p : (Fin (m + 1) → Fin P) × (Fin P → ℤ), StrictMono p.1 → MeasurableSet (F p) :=
+    fun p hp => (hiso p hp).isClosedEmbedding.measurableEmbedding.measurableSet_image'
+      hQ₁o.measurableSet
+  -- Step 6: distinct open faces are disjoint (face_geometry (c))
+  have hdisj : ∀ p q : (Fin (m + 1) → Fin P) × (Fin P → ℤ), StrictMono p.1 → StrictMono q.1 →
+      p ≠ q → Disjoint (F p) (F q) := by
+    intro p q hp hq hpq
+    refine Set.disjoint_left.2 ?_
+    rintro _ ⟨y, hy, rfl⟩ ⟨y', hy', hyy'⟩
+    have h0 : dist (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+        ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+        (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) +
+          ∑ j, y' j • EuclideanSpace.single (q.1 j) (1 : ℝ)) = 0 :=
+      dist_eq_zero.2 hyy'.symm
+    rcases ((Submission.dimred_mbl_dtfr_face_geometry P (m + 1)).2 p q hp hq).2.2 hpq y y' hy
+      (fun i => ⟨(hy' i).1.le, (hy' i).2.le⟩) with h | ⟨j, hj⟩
+    · linarith [h.trans_eq h0]
+    · linarith [hj.trans_eq h0, lt_min (hy j).1 (sub_pos.2 (hy j).2)]
+  -- Step 5: the faces `p` (with `ι` increasing) whose open face meets `spt Q₀` form a finite set,
+  -- since `spt Q₀ ⊆ K` is compact
+  have hSfin : {p : (Fin (m + 1) → Fin P) × (Fin P → ℤ) | StrictMono p.1 ∧
+      ∃ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+        ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) ∈ Q₀.support}.Finite :=
+    (Submission.dimred_mbl_dtfrsd_faces_meeting_compact_finite P (m + 1) K hK).subset
+      fun p ⟨_, y, hy, hyS⟩ => ⟨y, fun i => ⟨(hy i).1.le, (hy i).2.le⟩, hQ₀K hyS⟩
+  set s := hSfin.toFinset
+  have hsS : ∀ p ∈ s, StrictMono p.1 ∧
+      ∃ y : Euclid (m + 1), (∀ i, 0 < y i ∧ y i < 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+        ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) ∈ Q₀.support :=
+    fun p hp => hSfin.mem_toFinset.1 hp
+  have hpd : Set.Pairwise (↑s) (Disjoint on F) := by
+    intro p hp q hq hpq
+    exact hdisj p q (hsS p hp).1 (hsS q hq).1 hpq
+  -- Steps 8 and 10–12 for one face (face_density): an integer density `u_p` on `Q₁`
+  have hfd : ∀ p : (Fin (m + 1) → Fin P) × (Fin P → ℤ), ∃ v : Euclid (m + 1) → ℝ,
+      StrictMono p.1 → (∀ y, ∃ z : ℤ, v y = z) ∧ IntegrableOn v Q₁ ∧
+        ENNReal.ofReal (∫ y in Q₁, |v y|) ≤ R.measure (F p) ∧
+        ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+          ∫ x in R.carrier ∩ F p, (R.mult x : ℝ) *
+              R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] =
+            ∫ y in Q₁, v y * (ω : DifferentialForm (Euclid P) (m + 1))
+              (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) +
+                ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ))
+              (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ)) := by
+    intro p
+    by_cases hp : StrictMono p.1
+    · obtain ⟨v, hv⟩ := Submission.dimred_mbl_dtfrsd_face_density hIMCb
+        Submission.dimred_mbl_dtfr_plane_orientation P (m + 1) R p hp (hiso p hp)
+      exact ⟨v, fun _ => hv⟩
+    · exact ⟨0, fun h => absurd h hp⟩
+  choose u hu using hfd
+  refine ⟨s, u, fun p hp => (hsS p hp).1, fun p hp => (hu p (hsS p hp).1).1,
+    fun p hp => (hu p (hsS p hp).1).2.1, ?_, ?_, ?_⟩
+  · -- Step 11: `Σ_p ∫_{Q₁} |u_p| ≤ Σ_p μ(F̆_p) = μ(⋃_p F̆_p) ≤ μ(ℝᴾ) = M(Q₀)`, by (MR)
+    calc ENNReal.ofReal (∑ p ∈ s, ∫ y in Q₁, |u p y|)
+        = ∑ p ∈ s, ENNReal.ofReal (∫ y in Q₁, |u p y|) :=
+          ENNReal.ofReal_sum_of_nonneg fun p _ => integral_nonneg fun y => abs_nonneg _
+      _ ≤ ∑ p ∈ s, R.measure (F p) :=
+          Finset.sum_le_sum fun p hp => (hu p (hsS p hp).1).2.2.1
+      _ = R.measure (⋃ p ∈ s, F p) :=
+          (measure_biUnion_finset hpd fun p hp => hFm p (hsS p hp).1).symm
+      _ ≤ R.measure univ := measure_mono (subset_univ _)
+      _ = Q₀.mass := (hMR P (m + 1) univ Q₀ R isOpen_univ hR univ isOpen_univ).symm
+  · -- each closed face of `s` meets `spt Q₀`
+    intro p hp
+    obtain ⟨-, y, hy, hyS⟩ := hsS p hp
+    exact ⟨y, fun i => ⟨(hy i).1.le, (hy i).2.le⟩, hyS⟩
+  · -- Step 12: the representation of `Q₀(ω)`
+    intro ω
+    -- Step 7: `M ∖ ⋃_p (M ∩ F̆_p) ⊆ (M ∖ spt Q₀) ∪ L_m`, which is `Hⁿ`-null by Steps 2 and 3
+    have hnull : μHE[m + 1] (R.carrier \ ⋃ p ∈ s, R.carrier ∩ F p) = 0 := by
+      refine measure_mono_null ?_ (measure_union_null
+        (Submission.imrep_carrier_sdiff_support_null P (m + 1) univ Q₀ R isOpen_univ hR)
+        (Submission.dimred_mbl_dtfr_skeleton_null P m))
+      rintro x ⟨hxM, hxU⟩
+      by_cases hxS : x ∈ Q₀.support
+      · refine mem_union_right _ ?_
+        by_contra hxL
+        -- Step 4: `x ∈ L_n ∖ L_m` lies on an open face `F̆_p`, and `p ∈ s` as `x ∈ spt Q₀`
+        obtain ⟨p, y, hp, hy, hpy⟩ :=
+          Submission.dimred_mbl_dtfrsd_skeleton_point_on_open_face P m x (hQ₀L hxS) hxL
+        refine hxU (mem_iUnion₂.2 ⟨p, hSfin.mem_toFinset.2 ⟨hp, y, hy, ?_⟩, hxM, y, hy, hpy⟩)
+        rw [hpy]
+        exact hxS
+      · exact mem_union_left _ ⟨hxM, hxS⟩
+    have hae : R.carrier =ᵐ[μHE[m + 1]] ⋃ p ∈ s, R.carrier ∩ F p := by
+      refine ae_eq_set.2 ⟨hnull, ?_⟩
+      rw [sdiff_eq_empty.2 (iUnion₂_subset fun p _ => inter_subset_left)]
+      exact measure_empty
+    have hint := Submission.regcomp_rim_action_integrable P (m + 1) univ R ω
+    have hpd' : Set.Pairwise (↑s) (Disjoint on fun p => R.carrier ∩ F p) := by
+      intro p hp q hq hpq
+      exact Disjoint.mono inter_subset_right inter_subset_right (hpd hp hq hpq)
+    rw [hR ω]
+    show ∫ x in R.carrier, (R.mult x : ℝ) *
+      R.orient x ((ω : DifferentialForm (Euclid P) (m + 1)) x) ∂μHE[m + 1] = _
+    rw [setIntegral_congr_set hae, integral_biUnion_finset s
+      (fun p hp => R.measurableSet_carrier.inter (hFm p (hsS p hp).1)) hpd'
+      (fun p _ => IntegrableOn.mono_set hint inter_subset_left)]
+    exact Finset.sum_congr rfl fun p hp => (hu p (hsS p hp).1).2.2.2 ω
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
