@@ -1094,6 +1094,79 @@ theorem Submission.rsd_cmr_support_subset_of_vanish : ∀ (P n : ℕ) (U K : Set
   rw [heq]
   exact hK.diff F.isOpen_zeroRegion
 
+/-- **Simon Ch. 6, 4.9 with `f = |x|`** (localisation at a good radius in the proof of 7.2): if
+`μ(B_r) < ∞` for every `r`, the left Dini derivative `D(t) = liminf_{h ↓ 0} h⁻¹ μ{t - h < |x| < t}`
+of `t ↦ μ(B_t)` is Borel.  For `h > 0`, `μ{t - h < |x| < t} = μ(B_t) - μ(B̄_{t-h})` is a
+difference of monotone functions of `t`.  Along the basis `(0, ε)` of `𝓝[>] 0`,
+`D(t) = ⨆ₖ ⨅_{0 < h < 1/(k+1)} h⁻¹ μ{t - h < |x| < t}`; the annulus measure increases with `h`
+and `x ↦ x⁻¹ μ{t - h < |x| < t}` is continuous at `h`, so each infimum may run over rational
+`h`, and `D` is a countable supremum of countable infima of measurable functions. -/
+theorem Submission.dtc_bc_lc_fd_lz_dini_measurable : ∀ (P : ℕ) (μ : Measure (Euclid P)), (∀ r : ℝ, μ (ball (0 : Euclid P) r) < ∞) → Measurable (fun t : ℝ => liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t}) (𝓝[>] 0)) := by
+  intro P μ hμ
+  -- `A(t, h) = μ{t - h < |x| < t}` and `f(t, h) = h⁻¹ A(t, h)`
+  let A : ℝ → ℝ → ℝ≥0∞ := fun t h => μ {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t}
+  let f : ℝ → ℝ → ℝ≥0∞ := fun t h => ENNReal.ofReal h⁻¹ * A t h
+  -- Step 4: `A(t, ·)` is monotone, and `A(t, h) ≤ μ(B_t) < ∞`
+  have hAmono : ∀ t h' h : ℝ, h' ≤ h → A t h' ≤ A t h := fun t h' h hle =>
+    measure_mono fun x hx => ⟨by linarith [hx.1], hx.2⟩
+  have hAfin : ∀ t h : ℝ, A t h ≠ ∞ := fun t h =>
+    ne_top_of_le_ne_top (hμ t).ne (measure_mono fun x hx => mem_ball_zero_iff.2 hx.2)
+  -- Steps 1–3: for `h > 0`, `A(t, h) = μ(B_t) - μ(B̄_{t-h})`, a difference of monotone
+  -- functions of `t`
+  have hfm : ∀ h : ℝ, 0 < h → Measurable fun t => f t h := by
+    intro h hh
+    have hF : Monotone fun s : ℝ => μ (ball (0 : Euclid P) s) :=
+      fun a b hab => measure_mono (ball_subset_ball hab)
+    have hG : Monotone fun s : ℝ => μ (closedBall (0 : Euclid P) s) :=
+      fun a b hab => measure_mono (closedBall_subset_closedBall hab)
+    have hAeq : ∀ t, A t h = μ (ball (0 : Euclid P) t) - μ (closedBall (0 : Euclid P) (t - h)) := by
+      intro t
+      have hsub : closedBall (0 : Euclid P) (t - h) ⊆ ball 0 t :=
+        closedBall_subset_ball (by linarith)
+      have hset : {x : Euclid P | t - h < ‖x‖ ∧ ‖x‖ < t} = ball 0 t \ closedBall 0 (t - h) :=
+        Set.ext fun x => ⟨fun hx => ⟨mem_ball_zero_iff.2 hx.2,
+            fun hx' => not_lt.2 (mem_closedBall_zero_iff.1 hx') hx.1⟩,
+          fun hx => ⟨not_le.1 fun hx' => hx.2 (mem_closedBall_zero_iff.2 hx'),
+            mem_ball_zero_iff.1 hx.1⟩⟩
+      show μ _ = _
+      rw [hset, measure_sdiff hsub measurableSet_closedBall.nullMeasurableSet
+        (ne_top_of_le_ne_top (hμ t).ne (measure_mono hsub))]
+    have : (fun t => f t h) = fun t => ENNReal.ofReal h⁻¹ *
+        (μ (ball (0 : Euclid P) t) - μ (closedBall (0 : Euclid P) (t - h))) := by
+      funext t
+      show ENNReal.ofReal h⁻¹ * A t h = _
+      rw [hAeq]
+    rw [this]
+    exact (hF.measurable.sub (hG.measurable.comp (measurable_id.sub_const h))).const_mul _
+  -- Steps 5–6: `D(t) = ⨆ₖ ⨅_{q ∈ ℚ, 0 < q < 1/(k+1)} f(t, q)`
+  have key : ∀ t, liminf (fun h => f t h) (𝓝[>] 0) =
+      ⨆ k : ℕ, ⨅ q : {q : ℚ // 0 < q ∧ (q : ℝ) < 1 / (k + 1)}, f t ((q : ℚ) : ℝ) := by
+    intro t
+    rw [(nhdsGT_basis (0 : ℝ)).liminf_eq_iSup_iInf]
+    refine le_antisymm (iSup₂_le fun ε hε => ?_) (iSup_le fun k => ?_)
+    · -- `I_ε(t) ≤ J_k(t)` once `1/(k+1) < ε`
+      obtain ⟨k, hk⟩ := exists_nat_one_div_lt hε
+      refine le_iSup_of_le k (le_iInf fun q => ?_)
+      exact iInf₂_le ((q : ℚ) : ℝ) ⟨by exact_mod_cast q.2.1, q.2.2.trans hk⟩
+    · -- `J_k(t) ≤ I_{1/(k+1)}(t)`: approximate `h` from below by rationals
+      refine le_iSup₂_of_le (1 / ((k : ℝ) + 1)) (by positivity) (le_iInf₂ fun h hh => ?_)
+      refine le_of_forall_gt fun c hc => ?_
+      -- `x ↦ x⁻¹ A(t, h)` is continuous at `h`
+      have htend : Tendsto (fun x : ℝ => ENNReal.ofReal x⁻¹ * A t h) (𝓝[<] h) (𝓝 (f t h)) :=
+        (ENNReal.Tendsto.mul_const ((ENNReal.continuous_ofReal.tendsto _).comp
+          (tendsto_inv₀ hh.1.ne')) (Or.inr (hAfin t h))).mono_left nhdsWithin_le_nhds
+      obtain ⟨l, hl, hlsub⟩ := mem_nhdsLT_iff_exists_Ioo_subset.1 (htend.eventually_lt_const hc)
+      obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn (max_lt hl hh.1)
+      have hq0 : (0 : ℝ) < q := (le_max_right l 0).trans_lt hq1
+      calc ⨅ q : {q : ℚ // 0 < q ∧ (q : ℝ) < 1 / (k + 1)}, f t ((q : ℚ) : ℝ)
+          ≤ f t q := iInf_le_of_le ⟨q, by exact_mod_cast hq0, hq2.trans hh.2⟩ le_rfl
+        _ ≤ ENNReal.ofReal (q : ℝ)⁻¹ * A t h := mul_le_mul_right (hAmono t q h hq2.le) _
+        _ < c := hlsub ⟨(le_max_left l 0).trans_lt hq1, hq2⟩
+  -- Step 7: a countable supremum of countable infima of measurable functions
+  show Measurable fun t => liminf (fun h => f t h) (𝓝[>] 0)
+  rw [show (fun t => liminf (fun h => f t h) (𝓝[>] 0)) = _ from funext key]
+  exact Measurable.iSup fun k => Measurable.iInf fun q => hfm _ (by exact_mod_cast q.2.1)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
