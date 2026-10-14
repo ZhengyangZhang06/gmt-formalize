@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "d42df3148da5d26a0b4be6c6a7a38df1a61a3e06acf5fa817f1a2f2d8a1c91e7",
+  "git_delta": {
+    "base_commit": "5f7227f2cbd9ff072a761cb122773e5dbdef1fe3",
+    "candidate_commit": "2c87728aa7637a3a07953c178f3e4f9547979008",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_jwc_covector_det_expansion",
+    "diff_sha256": "94234d222341cb0f444b29330a75feb70454336e6804d1ed2c6c645b63387ed1",
+    "source_sha256": "75b6e6a75c5a86d058de13568a61c1e3a50f2daa05150edc70598986e25dc5d7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_jwc_covector_det_expansion",
+      "statement": "∀ (N' k : ℕ) (f : Covector (Euclid N') k) (u : Fin k → Euclid N'), (k.factorial : ℝ) * f u = ∑ I : Fin k → Fin N', f (fun c => EuclideanSpace.single (I c) (1 : ℝ)) * Matrix.det (Matrix.of fun c b => u b (I c))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
