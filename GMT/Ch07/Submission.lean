@@ -518,6 +518,20 @@ theorem Submission.ecf_cp_gc_det_shear : ∀ (P k : ℕ) (a : Euclid P) (w : Fin
           real_inner_smul_right, Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul]
         exact Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun l _ => by ring
     _ = _ := by rw [Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose, hdetE, one_mul, mul_one]
+/-- If `b` is orthogonal to every `w j`, the Gram determinant of `(b, w 0, …, w (k - 1))` is
+`‖b‖²` times that of `w`.  Row 0 of the Gram matrix `M` is `(‖b‖², 0, …, 0)`, so the Laplace
+expansion along row 0 leaves only `‖b‖² · det (M.submatrix Fin.succ Fin.succ)`, and this minor
+is the Gram matrix of `w` (for `k = 0` it is the empty matrix, of determinant `1`). -/
+theorem Submission.ecf_cp_gc_det_orth : ∀ (P k : ℕ) (b : Euclid P) (w : Fin k → Euclid P), (∀ j : Fin k, inner ℝ b (w j) = 0) → Matrix.det (Matrix.of fun i j : Fin (k + 1) => inner ℝ ((Fin.cons b w : Fin (k + 1) → Euclid P) i) ((Fin.cons b w : Fin (k + 1) → Euclid P) j)) = ‖b‖ ^ 2 * Matrix.det (Matrix.of fun i j : Fin k => inner ℝ (w i) (w j)) := by
+  intro P k b w hbw
+  -- Laplace expansion along row 0, with the `j = 0` term split off
+  rw [Matrix.det_succ_row_zero, Fin.sum_univ_succ]
+  -- `M 0 0 = ‖b‖²` and `M 0 (j + 1) = ⟪b, w j⟫ = 0`, so only the `j = 0` term survives
+  simp only [Matrix.of_apply, Fin.cons_zero, Fin.cons_succ, hbw, mul_zero, zero_mul,
+    Finset.sum_const_zero, add_zero, Fin.val_zero, pow_zero, one_mul, Fin.succAbove_zero,
+    real_inner_self_eq_norm_sq]
+  -- the `j = 0` minor `M.submatrix Fin.succ Fin.succ` has entries `⟪w i, w j⟫` (`Fin.cons_succ`)
+  rfl
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
