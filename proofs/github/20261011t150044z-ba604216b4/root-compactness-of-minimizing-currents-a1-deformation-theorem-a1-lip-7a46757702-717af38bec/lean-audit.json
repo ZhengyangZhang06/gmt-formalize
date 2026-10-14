@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "79e1c4e02e5f1725be1beb3bb787e0d845001d0e849bdaa86377e0c0ec6e4096",
+  "git_delta": {
+    "base_commit": "5a1cd55800b61a181b8534db311d21387aed0fbd",
+    "candidate_commit": "547d5274a6a697b3703f7cb0f5d92d3c9528bc80",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpi_pc_scalar_weak_continuity",
+    "diff_sha256": "1af39d699b48bfd0b96990540aab312c7dfe881ec363fd7241161a5e73056d04",
+    "source_sha256": "297c0343c30ac516e80ef72ae824be61fb795283844891ea6025995b1794e498",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpi_pc_scalar_weak_continuity",
+      "statement": "∀ (m p r : ℕ) (L : NNReal) (v : ℕ → Euclid m → Euclid p) (v₀ : Euclid m → Euclid p) (a : Fin r → Fin p) (b : Fin r → Fin m) (w : Euclid m → ℝ) (f : Euclid p → ℝ), (∀ j, LipschitzWith L (v j)) → LipschitzWith L v₀ → TendstoUniformly v v₀ atTop → Integrable w → Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ u, w u * (f (v j u) * Matrix.det (Matrix.of fun s t => fderiv ℝ (v j) u (EuclideanSpace.single (b t) 1) (a s)))) atTop (𝓝 (∫ u, w u * (f (v₀ u) * Matrix.det (Matrix.of fun s t => fderiv ℝ v₀ u (EuclideanSpace.single (b t) 1) (a s)))))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
