@@ -1,0 +1,99 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.cylinder_im-a1.slice_covector_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 5 of the parent's supplied proof (first two items: f_{i,ω} = β_{t,u}(DG_i(u)e) with β_{t,u} = (ω(·).curryLeft e₀).compContinuousLinearMap J, and |β_{t,u}| ≤ |ω(·)| from (L1), (L2)), isolated for one covector.
+Notation. ℝ^m := Euclid m = EuclideanSpace ℝ (Fin m) with Lebesgue measure volume. For z ∈ ℝ^{m+1}: z_0 := WithLp.ofLp z 0 and tail z := WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) ∈ ℝ^m. For t ∈ ℝ and x ∈ ℝ^m: ι(t, x) := WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) ∈ ℝ^{m+1}, so that ι(t, x)_0 = t, tail ι(t, x) = x and z = ι(z_0, tail z) (Fin.cons_zero, Fin.tail_cons, Fin.cons_self_tail, WithLp.ofLp_toLp, WithLp.toLp_ofLp). e₀ := EuclideanSpace.single 0 1 ∈ ℝ^{N+1}; ê_a := EuclideanSpace.single a 1 ∈ ℝ^{n+1}; e_b := EuclideanSpace.single b 1 ∈ ℝ^n; J x := ι(0, x) = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x)) for x ∈ ℝ^N. DH(z) := fderiv ℝ H z, and DH(z)ê denotes the tuple a ↦ DH(z) ê_a. |α| := covectorEuclideanNorm α.
+
+Proof. Fix N, n, γ, v and c ≥ 0 as in the statement.
+1. (The embedding J.) J : ℝ^N → ℝ^{N+1}, J x = ι(0, x), is linear (check coordinates, splitting the index by Fin.cases), hence a continuous linear map (LinearMap.toContinuousLinearMap). By EuclideanSpace.norm_sq_eq and Fin.sum_univ_succ, ‖J x‖² = 0² + ‖x‖², so ‖J x‖ = ‖x‖ for all x, and therefore ‖J‖ ≤ 1 (ContinuousLinearMap.opNorm_le_bound with bound 1).
+2. (The covector β.) Let β := (γ.curryLeft e₀).compContinuousLinearMap J, an n-covector on ℝ^N. For w ∈ (ℝ^N)ⁿ, β(w) = (γ.curryLeft e₀)(J ∘ w) = γ(Matrix.vecCons e₀ (J ∘ w)) = γ(Fin.cons e₀ (J ∘ w)) (ContinuousAlternatingMap.compContinuousLinearMap_apply, ContinuousAlternatingMap.curryLeft_apply_apply; Matrix.vecCons is Fin.cons by definition). In particular β(v) = γ(Fin.cons e₀ (i ↦ J v_i)).
+3. (|β| ≤ |γ|.) By (L1) with A := J and k := n, |β| ≤ ‖J‖ⁿ·|γ.curryLeft e₀|. Since 0 ≤ ‖J‖ ≤ 1 we have ‖J‖ⁿ ≤ 1, and |γ.curryLeft e₀| ≥ 0, so |β| ≤ |γ.curryLeft e₀|. By (L2) with v := e₀ and β := γ, and ‖e₀‖ = 1, |γ.curryLeft e₀| ≤ |γ|. Hence |β| ≤ |γ|.
+4. (Conclusion.) The hypothesis applied to α := β gives |β(v)| ≤ c·|β|, and c ≥ 0 with step 3 gives c·|β| ≤ c·|γ|. By step 2, |γ(Fin.cons e₀ (i ↦ J v_i))| = |β(v)| ≤ c·|γ|. ∎
+
+Appendix (supplementary; the numbered argument above is complete without it). The following Lean proof of exactly this frozen statement was checked with `lake env lean` after `import GMT.Ch07.Submission`, inside `namespace GMT.Ch07` with the contract's opens and `noncomputable section`, with the declaration named Submission.X as in accepted nodes. Its axioms are propext, Classical.choice and Quot.sound only, and sibling theorems are referenced by their Submission. names.
+Lean tactic block for `theorem Submission.cmcdt_lpi_cyl_slice_covector_bound`, whose type is exactly the frozen lean_statement of this child (it follows `:= by`):
+  intro hL1 hL2 N n γ v c hc hv
+  let J : Euclid N →L[ℝ] Euclid (N + 1) := LinearMap.toContinuousLinearMap
+    { toFun := fun x => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))
+      map_add' := fun x y => by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp
+      map_smul' := fun c x => by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> simp }
+  have hJx : ∀ x, J x = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x)) := fun x => rfl
+  have hJ : ‖J‖ ≤ 1 := by
+    refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one (fun x => ?_)
+    have h : ‖J x‖ ^ 2 = ‖x‖ ^ 2 := by
+      rw [hJx, EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, Fin.sum_univ_succ]; simp
+    have : ‖J x‖ = ‖x‖ := by
+      rwa [pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero] at h
+    rw [this, one_mul]
+  set β : Covector (Euclid N) n := (γ.curryLeft (EuclideanSpace.single 0 1)).compContinuousLinearMap J with hβdef
+  have hβv : β v = γ (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) := by
+    rw [hβdef, ContinuousAlternatingMap.compContinuousLinearMap_apply, ContinuousAlternatingMap.curryLeft_apply_apply]
+    rfl
+  have hβ : covectorEuclideanNorm β ≤ covectorEuclideanNorm γ := by
+    have h1 := hL1 N (N + 1) n J (γ.curryLeft (EuclideanSpace.single 0 1))
+    have h2 := hL2 (N + 1) n (EuclideanSpace.single 0 1) γ
+    have he : ‖(EuclideanSpace.single (0 : Fin (N + 1)) (1 : ℝ))‖ = 1 := by simp
+    rw [he, one_mul] at h2
+    have hJn : ‖J‖ ^ n ≤ 1 := pow_le_one₀ (norm_nonneg _) hJ
+    calc covectorEuclideanNorm β
+        ≤ ‖J‖ ^ n * covectorEuclideanNorm (γ.curryLeft (EuclideanSpace.single 0 1)) := h1
+      _ ≤ 1 * covectorEuclideanNorm (γ.curryLeft (EuclideanSpace.single 0 1)) :=
+          mul_le_mul_of_nonneg_right hJn (covectorEuclideanNorm_nonneg _)
+      _ ≤ covectorEuclideanNorm γ := by rw [one_mul]; exact h2
+  rw [← hβv]
+  exact (hv β).trans (mul_le_mul_of_nonneg_left hβ hc)
+
+## Key steps
+
+1. J x = ι(0, x) is a linear isometric embedding, so ‖J‖ ≤ 1.
+2. β := (γ.curryLeft e₀).compContinuousLinearMap J satisfies β(v) = γ(Fin.cons e₀ (J ∘ v)).
+3. (L1) with ‖J‖ⁿ ≤ 1 and (L2) with ‖e₀‖ = 1 give |β| ≤ |γ|.
+4. |γ(Fin.cons e₀ (J ∘ v))| = |β(v)| ≤ c|β| ≤ c|γ| using c ≥ 0.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/{Submission,Contract}.lean against workspace GMT/Ch07/{Submission,Contract}.lean (both identical); git -C local-references/123e8435b4a2469b/mathlib rev-parse HEAD = 25730c7c759d108ef87ab70af2342a196760f79d (= manifest.json and lake-manifest.json)`
+- `rg -n "cmcdt_lpi_cyl|piFinSuccAbove|curryLeft|Fin.tail|cylinder" local-references/123e8435b4a2469b/project -g '*.lean' (no match)`
+- `rg -n "def piFinSuccAbove" local-references/123e8435b4a2469b/mathlib/Mathlib (MeasureTheory/MeasurableSpace/Embedding.lean:566)`
+- `rg -n -e 'theorem volume_preserving_piFinSuccAbove' -e 'theorem setLIntegral_comp_preimage_emb' -e 'theorem setLIntegral_prod' -e 'theorem setIntegral_prod ' -e 'theorem measurable_fderiv_apply_const' -e 'theorem norm_fderiv_le_of_lipschitz' -e 'theorem curryLeft_apply_apply' -e 'theorem enorm_integral_le_lintegral_enorm' -e 'theorem integral_Ioc_eq_integral_Ioo' -e "theorem setLIntegral_mono'" -e 'theorem measurePreserving_swap' local-references/123e8435b4a2469b/mathlib/Mathlib/{MeasureTheory,Analysis,LinearAlgebra,Topology}`
+- `lake env lean /tmp/cylim/Names.lean, Names2.lean, Names3.lean (#check on the pinned Mathlib: found volume_preserving_piFinSuccAbove, EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp, MeasurePreserving.setIntegral_preimage_emb, MeasurePreserving.integrableOn_comp_preimage, Integrable.mul_bdd, continuous_eval/Continuous.eval for Covector, Real.ofReal_le_enorm, Real.enorm_eq_ofReal_abs, Fin.insertNth_zero', ContinuousAlternatingMap.le_opNorm; absent: ContinuousAlternatingMap.continuous_eval, ofReal_integral_le_lintegral_ofReal, EuclideanSpace.volume_preserving_measurableEquiv)`
+- `python3 scan of runs/20261011T150044Z-ba604216b4/dag.json: frozen types of siblings cmcdt_lpi_piece_representation and cmcdt_lpi_lipschitz_piece_im; lean_name collisions for cmcdt_lpi_cyl_* (none); lean_statement patterns MeasurePreserving, piFinSuccAbove, Fin.cons t, Fin.tail, curryLeft (accepted codim1_rdo_dg_tma_orthogonal_fubini and cbr_cipi_halfspace_partial_integral have different types; dimred_mbl_dt_lp_im_cylinder, dor_lmb_fcdp_cylinder, dor_lmb_fcdp_product_imrep are unaccepted with different types; none reused)`
+- `sed/grep of SimonGMT Chapter06 Forms.lean, Currents.lean, Mass.lean (Covector, DifferentialForm, IsTestForm, TestFormOn, GeometricCurrentOn, GeometricCurrentOn.ext, covectorEuclideanNorm, massAdmissibleOn, massOn, mass) and of the contract (Euclid, IMRep, IsIntegerMultiplicity)`
+- `git show a936aa93:GMT/Ch07/Submission.lean | grep '^theorem' (accepted nodes are declared as theorem Submission.<name> inside namespace GMT.Ch07)`
+- `lake env lean /tmp/cylim/Stmts.lean (6 child types elaborate); /tmp/cylim/Assembly.lean (parent from sorry'd children and siblings); /tmp/cylim/val/C1.lean, C2.lean, C56.lean, /tmp/cylim/C34.lean; /tmp/cylim/FullSub.lean (all six children proved at their frozen types with axioms propext, Classical.choice, Quot.sound; parent assembly compiles, sorryAx only through the two sibling prerequisites)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-6e44182ce4/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-6e44182ce4/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean`
+- `/tmp/cylim/Stmts.lean`
+- `/tmp/cylim/Assembly.lean`
+- `/tmp/cylim/FullSub.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same Ch07 contract as the workspace. It has no cylinder/suspension/Fubini lemma in the project and no cmcdt_lpi_cyl_* declaration (rg: no match); no accepted DAG theorem has a matching type, so nothing is reused and all six names are fresh and globally unused. Mathlib supplies every tool the children need: piFinSuccAbove with volume preservation, toLp/ofLp volume preservation, set-integral change of variables along a measurable embedding, set Fubini/Tonelli, measurability of fderiv, the Lipschitz bound on fderiv, curryLeft and compContinuousLinearMap evaluation, the alternating-map operator-norm bound, continuous_eval, and the enorm and Ioc/Ioo integral lemmas. ContinuousAlternatingMap.continuous_eval and ofReal_integral_le_lintegral_ofReal do not exist; the proofs use continuous_eval/Continuous.eval and Real.ofReal_le_enorm with enorm_integral_le_lintegral_enorm instead. All six child types elaborate after import GMT.Ch07.Submission. Each child was proved at its exact frozen type as theorem Submission.<name> inside namespace GMT.Ch07, with axioms propext, Classical.choice and Quot.sound only. The parent cmcdt_lpi_cylinder_im then compiles from the six children, Submission.cmcdt_lpi_piece_representation, Submission.cmcdt_lpi_lipschitz_piece_im and its antecedents; sorryAx enters only through those two not-yet-proved sibling prerequisites.
