@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ed9a8d168e9385a78f732512dd728a12fe1aeb301121ff13dc3f582a164bd629",
+  "git_delta": {
+    "base_commit": "49bccebbe86f90ec8fef9e96fa7209e830274fa1",
+    "candidate_commit": "07086ed3513805053249c42d7e3d183040e11058",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_cs_slice_hasDerivAt",
+    "diff_sha256": "8044fd7b08f7bc69a1524ee6f109962fca289f65e924d3c2cfbd7527ecfc9dca",
+    "source_sha256": "94e2b1f48b76bc0337f0f47e176be7790f7940ab4509b320730cf2f3d382712e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_cs_slice_hasDerivAt",
+      "statement": "∀ (P q n' : ℕ) (Y : GeometricCurrentOn (univ : Set (Euclid P)) q) (RY : IMRep (univ : Set (Euclid P)) q) (Φ : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) q) (ω : TestFormOn (univ : Set (Euclid P)) n') (s v : Euclid P) (τ : ℝ), RY.Represents Y → HasDerivAt (fun σ : ℝ => currentEval Y (fun y => Φ ((ω : DifferentialForm (Euclid P) n') (s + σ • v + y)))) (currentEval Y (fun y => fderiv ℝ (fun z => Φ ((ω : DifferentialForm (Euclid P) n') z)) (s + τ • v + y) v)) τ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

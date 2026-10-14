@@ -451,6 +451,303 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Directional derivatives of test forms are test forms: if `φ ∈ 𝒟^q(ℝᴾ)` and `v ∈ ℝᴾ`, then
+`z ↦ Dφ(z)[v]` is again `C^∞` (`Dφ` is `C^∞`, as `∞ + 1 ≤ ∞`) with compact support
+(`spt Dφ ⊆ spt φ`, and evaluation at `v` maps `0` to `0`). -/
+theorem Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply : ∀ (P q : ℕ) (φ : DifferentialForm (Euclid P) q) (v : Euclid P), IsTestForm φ → IsTestForm (fun z => fderiv ℝ φ z v) := by
+  rintro P q φ v ⟨hs, hc⟩
+  refine ⟨?_, ?_⟩
+  · -- `Dφ` is `C^∞`, hence so is its evaluation at the constant vector `v`
+    exact (hs.fderiv_right (by simp)).clm_apply contDiff_const
+  · -- `Dφ` has compact support, and `L ↦ L v` maps `0` to `0`
+    exact (hc.fderiv ℝ).comp_left (g := fun L : Euclid P →L[ℝ] Covector (Euclid P) q => L v) rfl
+/-- **Interior product with a frame; translated test forms.**  (a) For `g = (g₁, …, g_k)` in
+`ℝᴾ` and `n' = k + m`, `♭α(v) = α(g₁, …, g_k, v₁, …, v_m)` defines a continuous linear map
+`♭ : Λ^{n'} → Λ^m`.  Updating `vⱼ` updates only the entry `natAdd k j` of `(g, v)`, so `♭α` is
+multilinear; it is alternating because equal entries of `v` stay at distinct indices; it is
+continuous; and `‖♭α‖ ≤ (∏ᵢ ‖gᵢ‖) ‖α‖`, so `α ↦ ♭α` is bounded (`LinearMap.mkContinuous`).
+(b) For a continuous linear `Φ : Λᵃ → Λᵇ`, a test `a`-form `ω` and `t ∈ ℝᴾ`, `y ↦ Φ(ω(t + y))`
+is smooth and vanishes off the closed set `{y : t + y ∈ spt ω}`, the compact translate
+`spt ω − t`; hence it is a test form supported there.  This is the interior product `♭_g` of
+the product construction `[[E]] ×_g A` used to split off the spine of a cone. -/
+theorem Submission.dimred_cs_sos_mt_interior_product : ∀ P : ℕ, (∀ (k m n' : ℕ) (g : Fin k → Euclid P) (h : n' = k + m), ∃ flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) m, ∀ (α : Covector (Euclid P) n') (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) ∧ ∀ (a b : ℕ) (flat : Covector (Euclid P) a →L[ℝ] Covector (Euclid P) b) (ω : DifferentialForm (Euclid P) a) (t : Euclid P), IsTestForm ω → IsTestForm (fun y => flat (ω (t + y))) ∧ tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω := by
+  intro P
+  refine ⟨fun k m n' g h => ?_, fun a b flat ω t hω => ?_⟩
+  · -- (a) the interior product with the frame `g`; first identify `n'` with `k + m`
+    subst h
+    -- the entries `castAdd m i` (from `g`) and `natAdd k j` (from `v`) are distinct
+    have hne : ∀ (i : Fin k) (j : Fin m), Fin.castAdd m i ≠ Fin.natAdd k j := by
+      intro i j hc
+      have hv := congrArg Fin.val hc
+      have hi := i.isLt
+      simp only [Fin.val_castAdd, Fin.val_natAdd] at hv
+      omega
+    -- updating `v` at `j` updates `Fin.append g v` at `natAdd k j` (for any `DecidableEq`)
+    have hupd : ∀ (_ : DecidableEq (Fin m)) (v : Fin m → Euclid P) (j : Fin m) (x : Euclid P),
+        Fin.append g (Function.update v j x) =
+          Function.update (Fin.append g v) (Fin.natAdd k j) x := by
+      intro _ v j x
+      funext z
+      induction z using Fin.addCases with
+      | left i => rw [Fin.append_left, Function.update_of_ne (hne i j), Fin.append_left]
+      | right j' =>
+        rw [Fin.append_right, Function.update_apply_of_injective _ (Fin.natAdd_injective m k)]
+        congr 1
+        funext i
+        rw [Fin.append_right]
+    -- `v ↦ Fin.append g v` is continuous: each entry is a constant `gᵢ` or a projection `vⱼ`
+    have hcont : Continuous fun v : Fin m → Euclid P => Fin.append g v := by
+      refine continuous_pi fun z => ?_
+      induction z using Fin.addCases with
+      | left i => simp only [Fin.append_left]; exact continuous_const
+      | right j => simp only [Fin.append_right]; exact continuous_apply j
+    -- `♭α (v) = α (g, v)` is a continuous alternating map
+    let φ : Covector (Euclid P) (k + m) → Covector (Euclid P) m := fun α =>
+      { toFun := fun v => α (Fin.append g v)
+        map_update_add' := fun v j x y => by
+          simp only [hupd _ v j, α.map_update_add]
+        map_update_smul' := fun v j c x => by
+          simp only [hupd _ v j, α.map_update_smul]
+        cont := α.cont.comp hcont
+        map_eq_zero_of_eq' := fun v i j hv hij =>
+          α.map_eq_zero_of_eq (Fin.append g v) (i := Fin.natAdd k i) (j := Fin.natAdd k j)
+            (by rw [Fin.append_right, Fin.append_right]; exact hv)
+            ((Fin.natAdd_injective m k).ne hij) }
+    have hφ : ∀ α v, φ α v = α (Fin.append g v) := fun α v => rfl
+    -- `α ↦ ♭α` is linear
+    let L : Covector (Euclid P) (k + m) →ₗ[ℝ] Covector (Euclid P) m :=
+      { toFun := φ
+        map_add' := fun α β => by
+          ext v
+          simp only [hφ, ContinuousAlternatingMap.add_apply]
+        map_smul' := fun c α => by
+          ext v
+          simp only [hφ, ContinuousAlternatingMap.smul_apply, RingHom.id_apply] }
+    -- and bounded: `|α (g, v)| ≤ ‖α‖ ∏ᵢ ‖gᵢ‖ ∏ⱼ ‖vⱼ‖`, so `‖♭α‖ ≤ (∏ᵢ ‖gᵢ‖) ‖α‖`
+    have hbound : ∀ α, ‖L α‖ ≤ (∏ i, ‖g i‖) * ‖α‖ := by
+      intro α
+      refine ContinuousAlternatingMap.opNorm_le_bound _ (by positivity) fun v => ?_
+      calc ‖L α v‖ = ‖α (Fin.append g v)‖ := rfl
+        _ ≤ ‖α‖ * ∏ z, ‖Fin.append g v z‖ := α.le_opNorm _
+        _ = (∏ i, ‖g i‖) * ‖α‖ * ∏ j, ‖v j‖ := by
+          rw [Fin.prod_univ_add]
+          simp only [Fin.append_left, Fin.append_right]
+          ring
+    refine ⟨L.mkContinuous (∏ i, ‖g i‖) hbound, fun α v => ?_⟩
+    rw [LinearMap.mkContinuous_apply, Fin.cast_refl, Function.comp_id]
+    rfl
+  · -- (b) off `{y : t + y ∈ spt ω}` the form `ω (t + y)` vanishes, hence so does its image
+    have hsub : tsupport (fun y => flat (ω (t + y))) ⊆ (fun y => t + y) ⁻¹' tsupport ω := by
+      refine closure_minimal (fun y hy => ?_)
+        ((isClosed_tsupport ω).preimage (continuous_const.add continuous_id))
+      by_contra hy'
+      apply hy
+      show flat (ω (t + y)) = 0
+      rw [image_eq_zero_of_notMem_tsupport (f := ω) (x := t + y) hy', map_zero]
+    have hs : ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) ω := hω.1
+    -- `{y : t + y ∈ spt ω}` is the compact translate `spt ω − t`
+    have hK : IsCompact ((fun y => t + y) ⁻¹' tsupport ω) := by
+      have hK' := (Homeomorph.addLeft t).isCompact_preimage.mpr hω.2
+      rwa [Homeomorph.coe_addLeft] at hK'
+    refine ⟨⟨?_, ?_⟩, hsub⟩
+    · exact flat.contDiff.comp (hs.comp (contDiff_const.add contDiff_id))
+    · exact hK.of_isClosed_subset (isClosed_tsupport _) hsub
+/-- A unit orientation has norm at most `1` (step 1(c) of the proof of Simon Ch. 6, 3.2(3)).
+If `ξ α = ±α(τ₁, …, τₙ)` for an orthonormal family `τ`, then `|ξ α| = |α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`
+for every `n`-covector `α`, so the operator norm of `ξ` is at most `1`. -/
+theorem Submission.unit_orientation_norm_le_one : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), IsUnitOrientationOf ξ Q → ‖ξ‖ ≤ 1 := by
+  rintro P n Q ξ ⟨τ, hτ, -, hξ⟩
+  refine ContinuousLinearMap.opNorm_le_bound _ zero_le_one fun α => ?_
+  -- `|α(τ)| ≤ ‖α‖ ∏ᵢ ‖τᵢ‖ = ‖α‖`, as `‖τᵢ‖ = 1`
+  have hbound : ‖α τ‖ ≤ ‖α‖ := by
+    simpa [hτ.1] using α.le_opNorm τ
+  rcases hξ with h | h
+  · rw [h, one_mul]
+    exact hbound
+  · rw [h, norm_neg, one_mul]
+    exact hbound
+
+/-- Differentiation under the integral sign for the translations `y ↦ sv + y`: for every `t`,
+`s ↦ τ(M, θ, ξ)(ω(sv + ·))` has derivative `τ(M, θ, ξ)(Dω(tv + ·)[v])` at `t`.  For
+`s ∈ (t − 1, t + 1)` the integrands vanish off `B = B̄_ρ(0)`, `ρ = r + (|t| + 1)‖v‖` where
+`spt ω ⊆ B̄_r(0)`, and are dominated by `K θ 1_B`, `K` bounding the continuous map
+`(s, y) ↦ Dω(sv + y)[v]` on `[t − 1, t + 1] × B` (as `‖ξ‖ ≤ 1` a.e.); `θ 1_B` is integrable since
+`θ` is locally `Hⁿ`-integrable. -/
+theorem Submission.dimred_cs_ti_translate_action_hasDerivAt : ∀ (P n : ℕ) (R : IMRep (univ : Set (Euclid P)) n) (ω : TestFormOn (univ : Set (Euclid P)) n) (v : Euclid P) (t : ℝ), HasDerivAt (fun s : ℝ => R.action (fun y => (ω : DifferentialForm (Euclid P) n) (s • v + y))) (R.action (fun y => fderiv ℝ (ω : DifferentialForm (Euclid P) n) (t • v + y) v)) t := by
+  intro P n R ω v t
+  have hws : ContDiff ℝ (⊤ : ℕ∞) (ω : DifferentialForm (Euclid P) n) := ω.property.1.1
+  have hwc : HasCompactSupport (ω : DifferentialForm (Euclid P) n) := ω.property.1.2
+  set w : DifferentialForm (Euclid P) n := (ω : DifferentialForm (Euclid P) n) with hw_def
+  -- Step 1: `‖ξ(x)‖ ≤ 1` for `Hⁿ⌞M`-a.e. `x`
+  have hξ : ∀ᵐ x ∂(μHE[n].restrict R.carrier), ‖R.orient x‖ ≤ 1 := by
+    filter_upwards [R.orients] with x hx
+    obtain ⟨Q, -, hQ⟩ := hx
+    exact Submission.unit_orientation_norm_le_one P n Q _ hQ
+  -- Step 2: a support radius `r` and a bound `K0` for `ω`; `ω` and `Dω` vanish off `spt ω`
+  have hwcont : Continuous w := hws.continuous
+  have hDw : Continuous (fderiv ℝ w) := hws.continuous_fderiv (by simp)
+  obtain ⟨K0, hK0⟩ := hwcont.bounded_above_of_compact_support hwc
+  obtain ⟨r, hr⟩ : ∃ r, tsupport w ⊆ closedBall (0 : Euclid P) r :=
+    hwc.isCompact.isBounded.subset_closedBall 0
+  have hvan : ∀ z, z ∉ tsupport w → w z = 0 ∧ fderiv ℝ w z = 0 := fun z hz =>
+    ⟨image_eq_zero_of_notMem_tsupport hz,
+      image_eq_zero_of_notMem_tsupport (fun h => hz (tsupport_fderiv_subset ℝ h))⟩
+  -- Step 3: measurability of the integrands
+  have hθm : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have happly : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
+    continuous_fst.clm_apply continuous_snd
+  have hmeas : ∀ φ : Euclid P → Covector (Euclid P) n, Continuous φ →
+      AEStronglyMeasurable (fun y => (R.mult y : ℝ) * R.orient y (φ y))
+        (μHE[n].restrict R.carrier) :=
+    fun φ hφ => hθm.aestronglyMeasurable.mul
+      (happly.comp_aestronglyMeasurable
+        (R.aestronglyMeasurable_orient.prodMk hφ.aestronglyMeasurable))
+  have hcF : ∀ s : ℝ, Continuous (fun y => w (s • v + y)) := fun s =>
+    hwcont.comp (continuous_const.add continuous_id)
+  have hΦ : Continuous (fun p : ℝ × Euclid P => fderiv ℝ w (p.1 • v + p.2) v) := by
+    have hsy : Continuous (fun p : ℝ × Euclid P => p.1 • v + p.2) :=
+      (continuous_fst.smul continuous_const).add continuous_snd
+    exact (hDw.comp hsy).clm_apply continuous_const
+  have hcF' : ∀ s : ℝ, Continuous (fun y => fderiv ℝ w (s • v + y) v) := fun s =>
+    hΦ.comp (continuous_const.prodMk continuous_id)
+  -- Step 4: localization in `B = B̄_ρ(0)`, `ρ = r + (|t| + 1)‖v‖`; the bound `K` of `Dω(sv+y)[v]`
+  set ρ : ℝ := r + (|t| + 1) * ‖v‖ with hρ
+  set B : Set (Euclid P) := closedBall (0 : Euclid P) ρ with hB
+  have hBm : MeasurableSet B := measurableSet_closedBall
+  obtain ⟨K, hK⟩ := (isCompact_Icc (a := t - 1) (b := t + 1)).prod
+    (isCompact_closedBall (0 : Euclid P) ρ) |>.exists_bound_of_continuousOn hΦ.continuousOn
+  have hθB : IntegrableOn (fun x => (R.mult x : ℝ)) B (μHE[n].restrict R.carrier) := by
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, Measure.restrict_restrict hBm, inter_comm]
+    simpa only [Real.enorm_natCast] using
+      (R.locallyIntegrable_mult B (isCompact_closedBall 0 ρ) (subset_univ _)).lt_top
+  -- if `|s| ≤ |t| + 1` and `s v + y ∈ spt ω` then `y ∈ B`
+  have hmemB : ∀ s : ℝ, |s| ≤ |t| + 1 → ∀ y : Euclid P, s • v + y ∈ tsupport w → y ∈ B := by
+    intro s hs y hy
+    have h1 : ‖s • v + y‖ ≤ r := by simpa using hr hy
+    have h2 := norm_sub_le (s • v + y) (s • v)
+    rw [add_sub_cancel_left] at h2
+    have h3 : ‖s • v‖ ≤ (|t| + 1) * ‖v‖ := by
+      rw [norm_smul, Real.norm_eq_abs]
+      exact mul_le_mul_of_nonneg_right hs (norm_nonneg v)
+    simp only [hB, mem_closedBall, dist_zero_right, hρ]
+    linarith
+  have habs : ∀ s ∈ Icc (t - 1) (t + 1), |s| ≤ |t| + 1 := by
+    intro s hs
+    rw [abs_le]
+    constructor <;> linarith [hs.1, hs.2, neg_abs_le t, le_abs_self t]
+  -- Step 5: hypotheses of the dominated differentiation theorem
+  have hs : Ioo (t - 1) (t + 1) ∈ 𝓝 t := Ioo_mem_nhds (by linarith) (by linarith)
+  have hF_meas : ∀ᶠ s in 𝓝 t, AEStronglyMeasurable
+      (fun y => (R.mult y : ℝ) * R.orient y (w (s • v + y))) (μHE[n].restrict R.carrier) :=
+    Eventually.of_forall fun s => hmeas _ (hcF s)
+  have hF'_meas : AEStronglyMeasurable (fun y => (R.mult y : ℝ) * R.orient y
+      (fderiv ℝ w (t • v + y) v)) (μHE[n].restrict R.carrier) := hmeas _ (hcF' t)
+  have hF_int : Integrable (fun y => (R.mult y : ℝ) * R.orient y (w (t • v + y)))
+      (μHE[n].restrict R.carrier) := by
+    refine ((hθB.integrable_indicator hBm).const_mul K0).mono' (hmeas _ (hcF t)) ?_
+    filter_upwards [hξ] with y hy
+    by_cases hty : t • v + y ∈ tsupport w
+    · have hyB := hmemB t (by linarith [abs_nonneg t]) y hty
+      rw [indicator_of_mem hyB, norm_mul, Real.norm_natCast]
+      calc (R.mult y : ℝ) * ‖R.orient y (w (t • v + y))‖
+          ≤ (R.mult y : ℝ) * (‖R.orient y‖ * ‖w (t • v + y)‖) := by
+            gcongr; exact (R.orient y).le_opNorm _
+        _ ≤ (R.mult y : ℝ) * (1 * K0) := by
+            gcongr
+            exact hK0 _
+        _ = K0 * (R.mult y : ℝ) := by ring
+    · rw [(hvan _ hty).1, map_zero, mul_zero, norm_zero]
+      have hK0n : 0 ≤ K0 := le_trans (norm_nonneg _) (hK0 0)
+      by_cases hyB : y ∈ B
+      · rw [indicator_of_mem hyB]; positivity
+      · rw [indicator_of_notMem hyB, mul_zero]
+  have h_bound : ∀ᵐ y ∂(μHE[n].restrict R.carrier), ∀ s ∈ Ioo (t - 1) (t + 1),
+      ‖(R.mult y : ℝ) * R.orient y (fderiv ℝ w (s • v + y) v)‖ ≤
+        K * B.indicator (fun x => (R.mult x : ℝ)) y := by
+    filter_upwards [hξ] with y hy s hs
+    by_cases hsy : s • v + y ∈ tsupport w
+    · have hyB := hmemB s (habs s (Ioo_subset_Icc_self hs)) y hsy
+      rw [indicator_of_mem hyB, norm_mul, Real.norm_natCast]
+      have hnorm := hK (s, y) ⟨Ioo_subset_Icc_self hs, hyB⟩
+      calc (R.mult y : ℝ) * ‖R.orient y (fderiv ℝ w (s • v + y) v)‖
+          ≤ (R.mult y : ℝ) * (‖R.orient y‖ * ‖fderiv ℝ w (s • v + y) v‖) := by
+            gcongr; exact (R.orient y).le_opNorm _
+        _ ≤ (R.mult y : ℝ) * (1 * K) := by gcongr
+        _ = K * (R.mult y : ℝ) := by ring
+    · rw [(hvan _ hsy).2, zero_apply, map_zero, mul_zero, norm_zero]
+      by_cases hyB : y ∈ B
+      · rw [indicator_of_mem hyB]
+        have hKn : 0 ≤ K := le_trans (norm_nonneg _)
+          (hK (t, y) ⟨⟨by linarith, by linarith⟩, hyB⟩)
+        positivity
+      · rw [indicator_of_notMem hyB, mul_zero]
+  have h_diff : ∀ᵐ y ∂(μHE[n].restrict R.carrier), ∀ s ∈ Ioo (t - 1) (t + 1),
+      HasDerivAt (fun s => (R.mult y : ℝ) * R.orient y (w (s • v + y)))
+        ((R.mult y : ℝ) * R.orient y (fderiv ℝ w (s • v + y) v)) s := by
+    refine Eventually.of_forall fun y s _ => ?_
+    have h1 : HasDerivAt (fun s : ℝ => s • v + y) v s := by
+      simpa using ((hasDerivAt_id s).smul_const v).add_const y
+    have h2 : HasDerivAt (fun s : ℝ => w (s • v + y)) (fderiv ℝ w (s • v + y) v) s :=
+      ((hws.differentiable (by simp)).differentiableAt (x := s • v + y)).hasFDerivAt.comp_hasDerivAt
+        s h1
+    exact ((R.orient y).hasFDerivAt.comp_hasDerivAt s h2).const_mul (R.mult y : ℝ)
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le hs hF_meas hF_int hF'_meas h_bound
+    ((hθB.integrable_indicator hBm).const_mul K) h_diff
+  exact key.2
+
+/-- Differentiation of the slices `σ ↦ Y(Φ(ω(s + σv + ·)))` (step (5c) of the cube Stokes
+argument): for `Y = τ(M, θ, ξ)` in `ℝᴾ`, a continuous linear `Φ : Λ^{n'} → Λ^q` and a test
+`n'`-form `ω`, the derivative at `τ` is `Y(D(Φ ∘ ω)(s + τv + ·)[v])`.  The translate
+`ω_s = Φ ∘ ω ∘ (s + ·)` is a test form (`dimred_cs_sos_mt_interior_product` (b)), so
+`dimred_cs_ti_translate_action_hasDerivAt` differentiates `σ ↦ τ(M, θ, ξ)(ω_s(σv + ·))`; here
+`ω_s(σv + y) = Φ(ω(s + σv + y))` and `Dω_s(z) = D(Φ ∘ ω)(s + z)`, and on these test forms
+`currentEval Y` is `τ(M, θ, ξ)`. -/
+theorem Submission.dimred_cs_sos_mt_cs_slice_hasDerivAt : ∀ (P q n' : ℕ) (Y : GeometricCurrentOn (univ : Set (Euclid P)) q) (RY : IMRep (univ : Set (Euclid P)) q) (Φ : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) q) (ω : TestFormOn (univ : Set (Euclid P)) n') (s v : Euclid P) (τ : ℝ), RY.Represents Y → HasDerivAt (fun σ : ℝ => currentEval Y (fun y => Φ ((ω : DifferentialForm (Euclid P) n') (s + σ • v + y)))) (currentEval Y (fun y => fderiv ℝ (fun z => Φ ((ω : DifferentialForm (Euclid P) n') z)) (s + τ • v + y) v)) τ := by
+  intro P q n' Y RY Φ ω s v τ hRY
+  set w : DifferentialForm (Euclid P) n' := (ω : DifferentialForm (Euclid P) n') with hw_def
+  have hw : IsTestForm w := ω.property.1
+  have hb := (Submission.dimred_cs_sos_mt_interior_product P).2
+  -- Step 1: on a test form `ψ`, `currentEval Y ψ = Y ψ = τ(M, θ, ξ)(ψ)`
+  have hEval : ∀ ψ : DifferentialForm (Euclid P) q, IsTestForm ψ →
+      currentEval Y ψ = RY.action ψ := by
+    intro ψ hψ
+    have h : IsTestForm ψ ∧ tsupport ψ ⊆ (univ : Set (Euclid P)) := ⟨hψ, subset_univ _⟩
+    rw [currentEval, dite_eq_left h]
+    exact hRY ⟨ψ, h⟩
+  -- Step 2: `β = Φ ∘ ω` and its translate `ω_s = β(s + ·)` are test forms
+  set β : DifferentialForm (Euclid P) q := fun z => Φ (w z) with hβ_def
+  have hβ : IsTestForm β := by
+    simpa only [zero_add] using (hb n' q Φ w 0 hw).1
+  set ωs : DifferentialForm (Euclid P) q := fun y => Φ (w (s + y)) with hωs_def
+  have hωs : IsTestForm ωs ∧ tsupport ωs ⊆ (univ : Set (Euclid P)) :=
+    ⟨(hb n' q Φ w s hw).1, subset_univ _⟩
+  -- Step 3: `σ ↦ τ(M, θ, ξ)(ω_s(σv + ·))` has derivative `τ(M, θ, ξ)(Dω_s(τv + ·)[v])` at `τ`
+  have key := Submission.dimred_cs_ti_translate_action_hasDerivAt P q RY ⟨ωs, hωs⟩ v τ
+  -- Step 4: the function, as `ω_s(σv + y) = Φ(ω(s + σv + y))`
+  have hfun : (fun σ : ℝ => currentEval Y (fun y => Φ (w (s + σ • v + y)))) =
+      fun σ : ℝ => RY.action (fun y => ωs (σ • v + y)) := by
+    funext σ
+    rw [hEval _ (hb n' q Φ w (s + σ • v) hw).1]
+    simp only [hωs_def, add_assoc]
+  -- Step 5: the derivative, as `Dω_s(z) = Dβ(s + z)`; `y ↦ Dβ(s + τv + y)[v]` is a test form
+  have hderiv : currentEval Y (fun y => fderiv ℝ β (s + τ • v + y) v) =
+      RY.action (fun y => fderiv ℝ ωs (τ • v + y) v) := by
+    have hβv : IsTestForm (fun z => fderiv ℝ β z v) :=
+      Submission.dimred_cs_sos_mt_cs_isTestForm_fderiv_apply P q β v hβ
+    have htr : IsTestForm (fun y => fderiv ℝ β (s + τ • v + y) v) := by
+      simpa only [ContinuousLinearMap.id_apply] using
+        (hb q q (ContinuousLinearMap.id ℝ (Covector (Euclid P) q)) _ (s + τ • v) hβv).1
+    have hDs : ∀ z, fderiv ℝ ωs z = fderiv ℝ β (s + z) := fun z =>
+      fderiv_comp_add_left (f := β) (x := z) s
+    rw [hEval _ htr]
+    congr 1
+    funext y
+    rw [hDs, add_assoc]
+  -- Step 6: rewrite the function and the derivative in step 3
+  rw [hfun, hderiv]
+  exact key
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
