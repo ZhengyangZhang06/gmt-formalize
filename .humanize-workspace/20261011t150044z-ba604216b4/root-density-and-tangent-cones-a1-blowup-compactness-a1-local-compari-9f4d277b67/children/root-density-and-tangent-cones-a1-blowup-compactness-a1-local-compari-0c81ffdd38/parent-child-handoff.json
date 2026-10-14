@@ -1,0 +1,92 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c); cmp GMT/Ch07/Contract.lean against GMT/Ch07/Submission.lean and against the snapshot project/GMT/Ch07/Contract.lean (all identical)",
+        "grep -n 'covectorEuclideanNorm|abbrev Covector|compContinuousLinearMap' in simongmt Poincare/SimonGMT/Chapter06/{Mass,Forms}.lean",
+        "python3 -I scans of dag.json (1559 nodes): lean_name/lean_statement matching unitOrientation|gram|Hadamard|'Matrix.det' with '∏'|'‖L‖ ^ n'; status and candidate_commit of covectorEuclideanNorm_gram_bounds, dpf_exists_orthonormal_frame_det_gram, fvmb_gram_det_le_exp_sum_norm_sq_sub, dpf_unitOrientation_map_gramNormalized, dtc_bc_lc_unitOrientation_comp_eq, dor_lmb_pc_unitOrientation_comp, dimred_mbl_pf_unitOrientation_comp",
+        "git show 2fd8f6ff9db8d5c94835632a4abd3e7d37106715:GMT/Ch07/Submission.lean and git show 93ec31ab686fa25a7af150db4f17b9bcc26da7df:GMT/Ch07/Submission.lean | grep '^theorem Submission.' (byte-identical types, one theorem per commit)",
+        "grep -rln -i hadamard mathlib/Mathlib; grep -rn 'det_le_prod|abs_det_le|det_gram|gram_det|prod_diag' mathlib/Mathlib (only Matrix.det_le for entrywise bounds, Matrix.gram/posSemidef_opNorm_smul_gram_sub_gram in GramMatrix.lean, LinearMap.normDet in NormDet.lean; no Gram Hadamard inequality)",
+        "grep 'exists_mulVec_eq_zero_iff|Fintype.not_linearIndependent_iff|pow_le_pow_left₀|prod_le_prod₀' in Mathlib/LinearAlgebra/Matrix/ToLinearEquiv.lean, LinearIndependent/Defs.lean, Algebra/Order",
+        "#check Matrix.exists_mulVec_eq_zero_iff, Fintype.not_linearIndependent_iff (in scope), Matrix.gram, LinearMap.normDet (unknown constants: not imported by the contract)",
+        "sed runtime.py: _existing_lean_name_problem, _accepted_checkpoint, _overlay_accepted_children, _solve_children, _decompose (max_depth check); prompts.py DECOMPOSE",
+        "cat leaf-implementation-base.json, isolated-comparator-result.json and decomposition-v1.json of node ...-8d07a7623e (dtc_bc_lc_unitOrientation_comp_eq); git show e638d73:GMT/Ch07/Submission.lean | grep -c '^theorem Submission.' (0)",
+        "read parent-child-handoff.json of the reused nodes (audited proofs) and the parallel node dor_lmb_pc parent-supplied-natural-proof.md; read pushforward-a1 decomposition-v1.json for the reuse format",
+        "gmt-compare.py contract_scope/child_modules (replayed scope); lean_contract.validate_lean_statement on the three child strings",
+        "lake env lean /tmp/dtc-oc-decomp/Types.lean, Assembly.lean, EndToEnd.lean, Imports.lean with #print axioms",
+        "collision scan of dtc_bc_lc_pf_gram_det_le_prod_norm_sq: dag.json, git log --all -S, grep -rn in nodes/, .lake/packages/simongmt, .lake/packages/mathlib/Mathlib (no hits)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/PROBLEM.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramMatrix.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/AbsoluteValue.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Matrix/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/LinearAlgebra/Matrix/ToLinearEquiv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/LinearAlgebra/LinearIndependent/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Algebra/Order/BigOperators/GroupWithZero/Finset.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9f4d277b67/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9f4d277b67/parent-supplied-plan.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9f4d277b67/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-a685b45291/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-a685b45291/decomposition-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8d07a7623e/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8d07a7623e/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8d07a7623e/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8d07a7623e/leaf-implementation-base.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-co-50e808237a/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-covector-gram-bounds-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-orientati-ce923d2f7f/parent-child-handoff.json",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/prompts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/dtc-oc-decomp/Types.lean",
+        "/tmp/dtc-oc-decomp/Assembly.lean",
+        "/tmp/dtc-oc-decomp/EndToEnd.lean",
+        "/tmp/dtc-oc-decomp/Imports.lean"
+      ],
+      "conclusion": "The pinned SimonGMT defines Covector (Forms.lean) and covectorEuclideanNorm (Mass.lean). Neither SimonGMT nor Mathlib at 25730c7c has a Hadamard inequality for Gram determinants. Mathlib's Matrix.gram and LinearMap.normDet exist but are not imported by the contract, and none of them is needed. The DAG has two comparator-accepted declarations whose frozen types are byte-identical at their accepted commits: covectorEuclideanNorm_gram_bounds (2fd8f6f; steps 1–3, Cauchy–Binet) and dpf_exists_orthonormal_frame_det_gram (93ec31a; the Gram–Schmidt half of step 4). They are reused as children. The only new child is Hadamard's inequality, dtc_bc_lc_pf_gram_det_le_prod_norm_sq, whose name is unused anywhere. All child types and the parent type elaborate in the comparator scope. The following compile using only propext, Classical.choice and Quot.sound: the new child proved from the reused frame, the exact frozen parent type proved from the children, and an end-to-end file with the real accepted proofs."
+    }
+  ],
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.orient_comp-a1",
+  "child_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.orient_comp-a1.hadamard-a1",
+  "subproblem": {
+    "key": "hadamard",
+    "title": "Hadamard's inequality for Gram determinants: det(⟨v_i, v_j⟩) ≤ ∏|v_i|²",
+    "statement": "Let P, n ∈ ℕ and let v = (v_1, …, v_n) (indexed by Fin n) be an arbitrary family of vectors in ℝ^P (Euclid P); no independence is assumed. Then the Gram determinant satisfies det(⟨v_i, v_j⟩)_{i,j} ≤ ∏_{i=1}^n |v_i|². Here ⟨·,·⟩ and |·| are the Euclidean inner product and norm, and the determinant is that of the n×n real matrix with entries ⟨v_i, v_j⟩ (Matrix.of fun i j => inner ℝ (v i) (v j)). For n = 0 both sides equal 1.",
+    "lean_statement": "∀ (P n : ℕ) (v : Fin n → Euclid P), Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) ≤ ∏ i, ‖v i‖ ^ 2",
+    "lean_name": "dtc_bc_lc_pf_gram_det_le_prod_norm_sq",
+    "depends_on": [
+      "gs_frame"
+    ],
+    "natural_proof": "Source: step 4 of the parent proof (Hadamard: Γ(v) ≤ Π_j |v_j|², the dependent case by a kernel vector of the Gram matrix and the independent case by Gram–Schmidt), with the details filled in. The Gram–Schmidt part is the sibling gs_frame (the comparator-accepted declaration dpf_exists_orthonormal_frame_det_gram). This is the classical Hadamard inequality for Gram determinants.\nNotation: ⟨·,·⟩ and |·| are the Euclidean inner product and norm of ℝ^P. G is the n×n real matrix G_{ij} := ⟨v_i, v_j⟩ (Matrix.of fun i j => inner ℝ (v i) (v j)), and Γ(v) := det G. Since |v_i|² ≥ 0 for every i, the right-hand side ∏_i |v_i|² is ≥ 0 (Finset.prod_nonneg, sq_nonneg).\n1. Case split. Either v is linearly independent over ℝ (steps 5–6) or it is not (steps 2–4).\n2. Dependent case: a nonzero coefficient vector. If v is linearly dependent, there is c = (c_1, …, c_n) ∈ ℝ^n with Σ_j c_j v_j = 0 and c_{i₀} ≠ 0 for some index i₀ (Fintype.not_linearIndependent_iff). In particular c ≠ 0. (In the parent's notation, Vc = 0, where V is the P×n matrix with columns v_j.)\n3. Dependent case: Gc = 0. For each i, (Gc)_i = Σ_j ⟨v_i, v_j⟩c_j = Σ_j ⟨v_i, c_j v_j⟩ = ⟨v_i, Σ_j c_j v_j⟩ = ⟨v_i, 0⟩ = 0. This uses linearity of the inner product in its second argument (real_inner_smul_right, inner_sum, inner_zero_right). So G = VᵀV maps the nonzero vector c to 0.\n4. Dependent case: conclusion. A square real matrix that sends a nonzero vector to 0 has determinant 0 (Matrix.exists_mulVec_eq_zero_iff: (∃ c ≠ 0, G *ᵥ c = 0) ↔ det G = 0). Hence Γ(v) = 0 ≤ ∏_i |v_i|².\n5. Independent case: Gram–Schmidt. If v is linearly independent, apply the sibling gs_frame to v. It gives an orthonormal family σ = (σ_1, …, σ_n), the Gram–Schmidt orthonormalization of v, with the following property. Let A be the n×n matrix A_{ij} := ⟨σ_i, v_j⟩ (the upper-triangular matrix T of the parent's step 4). Then (i) Γ(v) = (det A)² and (iii) |det A| ≤ ∏_i |v_i|.\n6. Independent case: conclusion. 0 ≤ |det A| ≤ ∏_i |v_i|, and t ↦ t² is monotone on [0, ∞) (pow_le_pow_left₀). So Γ(v) = (det A)² = |det A|² ≤ (∏_i |v_i|)² = ∏_i |v_i|² (sq_abs, Finset.prod_pow).\n7. Edge cases need no separate treatment. For n = 0 the empty family is linearly independent, and steps 5–6 give Γ(v) = det(empty matrix) = 1 ≤ 1 = the empty product. A family with some v_i = 0, e.g. P = 0 with n ≥ 1, is linearly dependent and falls under steps 2–4. ∎\nFormalization notes (checked: this proof compiles after import GMT.Ch07.Submission in the comparator's contract scope, with the gs_frame statement as a hypothesis; #print axioms gives [propext, Classical.choice, Quot.sound]). intro P n v; by_cases hv : LinearIndependent ℝ v.\n- Independent: obtain ⟨σ, -, -, hG, -, hA⟩ := Submission.dpf_exists_orthonormal_frame_det_gram P n v hv; rw [hG, Finset.prod_pow, ← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) hA 2.\n- Dependent: obtain ⟨c, hc, i₀, hi₀⟩ := Fintype.not_linearIndependent_iff.mp hv. Prove the determinant is zero by rw [← Matrix.exists_mulVec_eq_zero_iff] with the witness ⟨c, fun h => hi₀ (congrFun h i₀), _⟩ and funext i. Then simp only [Matrix.mulVec, dotProduct, Matrix.of_apply, Pi.zero_apply]. Show Σ_j inner ℝ (v i) (v j) * c j = inner ℝ (v i) (Σ_j c j • v j) by rw [inner_sum], then Finset.sum_congr with real_inner_smul_right and mul_comm, and finish with rw [this, hc, inner_zero_right]. Then rw [hdet]; exact Finset.prod_nonneg fun i _ => sq_nonneg _.\n- Mathlib's Matrix.gram and LinearMap.normDet are not imported by the contract and are not needed.",
+    "proof_key_steps": [
+      "Split on whether v is linearly independent.",
+      "Dependent: Σ_j c_j v_j = 0 with c ≠ 0 gives (⟨v_i, v_j⟩)·c = 0, so Γ(v) = det(⟨v_i, v_j⟩) = 0 ≤ ∏|v_i|².",
+      "Independent: the sibling gs_frame gives A = (⟨σ_i, v_j⟩) with Γ(v) = (det A)² and |det A| ≤ ∏|v_i|.",
+      "Square the nonnegative bound: Γ(v) = |det A|² ≤ (∏|v_i|)² = ∏|v_i|²."
+    ]
+  },
+  "audit": {
+    "key": "hadamard",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The arbitrary-family prose exactly matches the standalone one-line proposition; the bare name is unreserved. In the dependent case, the supplied nonzero coefficient vector lies in the Gram matrix's kernel, giving determinant zero and the required inequality. In the independent case, gs_frame gives the determinant-square identity and absolute determinant bound; squaring and distributing the product proves the conclusion. Nonnegativity and empty-family cases are justified. The declared gs_frame dependency is sufficient, correctly directed and non-circular."
+  },
+  "resolved_dependencies": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.orientation_pushforward-a1.gram_schmidt_frame-a1"
+  ],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-0c81ffdd38/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-0c81ffdd38/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-0c81ffdd38/parent-supplied-natural-proof.json"
+}
