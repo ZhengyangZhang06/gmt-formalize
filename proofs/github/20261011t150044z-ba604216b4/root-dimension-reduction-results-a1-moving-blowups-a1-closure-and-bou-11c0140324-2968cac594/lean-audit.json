@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c77966f5f2f579ea3749a3e9092cdceac1201c4428dc3feaee0d4bc61dfc7782",
+  "git_delta": {
+    "base_commit": "65acaab200c2da9c907009050a84090d4e2694f1",
+    "candidate_commit": "6a4e557e9052721a72acd9a75da471a4d9e465da",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbrz_isIntegerMultiplicity_point_sum",
+    "diff_sha256": "5ea2e781b531674d8d6466c2ec6ab804ced9cc3b61fc6d142deca1342bf729c0",
+    "source_sha256": "99157e3160e2d66f9b455300321bc138943a9eb04b9c6c84db52a27eebb67562",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbrz_isIntegerMultiplicity_point_sum",
+      "statement": "∀ (P : ℕ) (V : Set (Euclid P)) (S : GeometricCurrentOn V 0) (M : ℕ) (v : ℕ → ℤ) (y : ℕ → Euclid P), (∀ ω : TestFormOn V 0, S ω = ∑ l ∈ Finset.range M, (v l : ℝ) * (ω : DifferentialForm (Euclid P) 0) (y l) (fun i => i.elim0)) → IsIntegerMultiplicity S",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
