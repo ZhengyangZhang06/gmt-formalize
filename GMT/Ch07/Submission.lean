@@ -471,6 +471,30 @@ theorem Submission.cbrld_ns_support_sub_subset : ∀ (P n : ℕ) (U : Set (Eucli
   intro ω hω
   change S ω - T ω = 0
   rw [hW₁v ω (hω.trans inter_subset_left), hW₂v ω (hω.trans inter_subset_right), sub_zero]
+/-- `M_W(S − T) ≤ M_W(S) + M_W(T)`.  For every `W`-admissible `ω`, `−ω` is `W`-admissible as well
+(`tsupport (−ω) = tsupport ω`, `|−ω(x)| = |ω(x)|`) and `(S − T)(ω) = S(ω) + T(−ω)`, so
+`ofReal((S − T)(ω)) ≤ ofReal(S(ω)) + ofReal(T(−ω)) ≤ M_W(S) + M_W(T)`; take the supremum
+over `ω`. -/
+theorem Submission.cbrld_ns_massOn_sub_le : ∀ (P n : ℕ) (U W : Set (Euclid P)) (S T : GeometricCurrentOn U n), (S - T).massOn W ≤ S.massOn W + T.massOn W := by
+  intro P n U W S T
+  refine sSup_le ?_
+  rintro r ⟨ω, hω, rfl⟩
+  -- `−ω` is `W`-admissible
+  have hneg : -ω ∈ massAdmissibleOn U n W := by
+    refine ⟨?_, fun x => ?_⟩
+    · show tsupport (-(ω : DifferentialForm (Euclid P) n)) ⊆ W
+      rw [tsupport_neg]
+      exact hω.1
+    · show covectorEuclideanNorm (-(ω : DifferentialForm (Euclid P) n) x) ≤ 1
+      rw [covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- `(S − T)(ω) = S(ω) + T(−ω)`
+  have heq : (S - T) ω = S ω + T (-ω) := by
+    rw [show T (-ω) = -T ω from map_neg T.toCurrent ω]
+    exact sub_eq_add_neg (S ω) (T ω)
+  calc ENNReal.ofReal ((S - T) ω) = ENNReal.ofReal (S ω + T (-ω)) := by rw [heq]
+    _ ≤ ENNReal.ofReal (S ω) + ENNReal.ofReal (T (-ω)) := ENNReal.ofReal_add_le
+    _ ≤ S.massOn W + T.massOn W := add_le_add (S.le_massOn hω) (T.le_massOn hneg)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
