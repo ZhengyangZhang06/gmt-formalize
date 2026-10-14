@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_lpi_mwc|minor_weak_continuity|lipschitz_minor_ibp|weak_star_l1_upgrade|Piola|piola|null Lagrangian",
+        "ae_differentiableAt|norm_fderiv_le_of_lipschitz|measurable_fderiv_apply_const|theorem measurable_fderiv|integral_lineDeriv_mul_eq|ae_convolution_tendsto_right_of_locallyIntegrable|contDiff_convolution_left|hasFDerivAt_convolution_left|exists_hasCompactSupport_integral_sub_le|isSymmSndFDerivAt|det_succ_row_zero|det_isEmpty|theorem det_apply",
+        "cmcdt_lpi_mwc_coordinate_minor_continuity",
+        "git show 13966862f4c84217ad5d35ba66b3e5440c90d946:GMT/Ch07/Submission.lean",
+        "git show 7ba02a03145b060d32f1724fe453e480c4209154:GMT/Ch07/Submission.lean",
+        "git show dc9dd4b6139267dee9bdebebc5eb8b55f2c14e0d:GMT/Ch07/Submission.lean",
+        "git show ca73d99e39b455a43df67388b0f447d52245edef:GMT/Ch07/Submission.lean",
+        "git show 7c2f0c43f702d533b42063c5e3634e4e453253cb:GMT/Ch07/Submission.lean",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mwc-independent-audit-ybb6fshf/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/mwc-independent-audit-ybb6fshf/ProofEvidence.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Symmetric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Matrix/Determinant/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/UniformSpace/UniformConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-6f0c593de0/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-6f0c593de0/decomposition-v3.json",
+        "/tmp/mwc4-check-k7q/Full.lean",
+        "/tmp/mwc-independent-audit-ybb6fshf/FrozenTypes.lean",
+        "/tmp/mwc-independent-audit-ybb6fshf/ProofEvidence.lean"
+      ],
+      "conclusion": "The six-child split is appropriate for this exact selected parent. The proposed dependency graph is acyclic and correctly directed; reused dependency closures do not reach the selected parent. The frozen project contains no matching minor-continuity, Piola or minor-IBP declaration. The inspected Mathlib files provide the required analytic and algebraic tools. The installed Mathlib revision matches the manifest, sampled library files match the snapshot, and the frozen contract is unchanged. All five reused names are accepted, with byte-identical proposed, DAG and candidate declaration types. The new name is unreserved; all six names are bare identifiers. Every frozen type is a standalone one-line proposition without child-dependent aliases. Independent FrozenTypes.lean and ProofEvidence.lean runs both exited 0. Matrix.det arguments and the C∞ coercion were checked; no IsUnit function-instance construction occurs. All six children and the exact parent assembly depend only on propext, Classical.choice and Quot.sound. Each supplied natural proof was independently checked, including its integrability, limiting and boundary cases. The divergence and weak-continuity framework is also corroborated by [Ball–Currie–Olver, Theorem 3.4 and §4](https://people.maths.ox.ac.uk/ball/Papers/Ball%2C%20Currie%20%26%20Olver%201981.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "minor_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including arbitrary directions and the stated factorial bound. Measurable derivative evaluations give measurable entries; the Lipschitz derivative bound and Leibniz formula prove the everywhere bound, including r = 0. The proof is complete and independent. Accepted-name reuse has an identical frozen type."
+    },
+    {
+      "key": "weak_star_l1_upgrade",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly includes both measurability assumptions, uniform bounds and convergence against every smooth compactly supported weight. Nonnegativity of C follows from the hypotheses. The supplied compact-support mollification argument establishes the required L¹ density, and the three-term estimate proves convergence with valid integrability justifications. No circular reliance occurs; accepted reuse is type-identical."
+    },
+    {
+      "key": "smooth_minor_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The C² row and C¹ compact-support hypotheses match the Lean type and suffice. The proof explicitly establishes Laplace expansion, Piola cancellation with the correct signs and deleted-column order, and vanishing integrals of compactly supported directional derivatives. It handles r = 0 and arbitrary constant directions. No parent theorem is assumed; accepted reuse is type-identical."
+    },
+    {
+      "key": "lipschitz_smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type agree on smoothness, preservation of L, global uniform convergence and almost-everywhere operator-norm convergence. The normalized kernels, reflected-kernel integration by parts, Rademacher identification and Lebesgue-point estimate justify these properties. The finite-basis argument supplies operator-norm convergence, including dimension zero. The proof is constructive enough for formalization and non-circular; accepted reuse is type-identical."
+    },
+    {
+      "key": "lipschitz_minor_ibp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the exact Lipschitz minor integration-by-parts formula. The three listed dependencies supply precisely the approximation, smooth identity and bounds used. Finite unions of exceptional sets give simultaneous determinant convergence, and the stated integrable dominators justify both limits; eventual domination on the right suffices. No global boundedness of the rows is incorrectly assumed. Accepted reuse is type-identical."
+    },
+    {
+      "key": "coordinate_minor_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone type matches all scalar-row hypotheses and the claimed weighted convergence. The supplied induction generalizes the necessary data, uses only smaller minors, proves integrability before splitting integrals, and controls the uniform-convergence error explicitly. Its three dependencies are correctly directed. The fresh name is unreserved. Coordinate projections preserve the required Lipschitz and convergence properties, and Rademacher plus the chain rule identifies the determinants almost everywhere, so this child proves the exact selected parent through the supplied assembly."
+    }
+  ],
+  "required_changes": []
+}
