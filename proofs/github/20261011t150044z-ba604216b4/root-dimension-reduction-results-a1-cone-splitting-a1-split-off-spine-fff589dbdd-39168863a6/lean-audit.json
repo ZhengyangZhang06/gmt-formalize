@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "eef5ce29a0bc93835628cbdbd3c5bbd6f21b770e22c45d6e9e088af045d7bc06",
+  "git_delta": {
+    "base_commit": "735b61b1b995dddef8b396b36293ac33a139a4f5",
+    "candidate_commit": "f31284f61aadde1532de2b0f4bda425fc79b0c5b",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "31d20cb5a358edd9795e7110c39e140676a7d68055123ad2ebc5f4094938620c",
+    "source_sha256": "f6bb518e23074c8e300a4c34a67c4fa9fdcfd36d45c82196a927dad0f5313316",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_slice_integrable",
+      "statement": "∀ (P k j n' : ℕ) (g : Fin k → Euclid P) (T : GeometricCurrentOn (univ : Set (Euclid P)) j) (RT : IMRep (univ : Set (Euclid P)) j) (flat : Covector (Euclid P) n' →L[ℝ] Covector (Euclid P) j) (ω : TestFormOn (univ : Set (Euclid P)) n'), Orthonormal ℝ g → RT.Represents T → Continuous (fun t => currentEval T (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y)))) ∧ (∀ E : Set (Euclid P), MeasurableSet E → E ⊆ (Submodule.span ℝ (Set.range g) : Set (Euclid P)) → Bornology.IsBounded E → IntegrableOn (fun t => currentEval T (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y)))) E μHE[k]) ∧ (RT.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → ∀ E : Set (Euclid P), MeasurableSet E → E ⊆ (Submodule.span ℝ (Set.range g) : Set (Euclid P)) → IntegrableOn (fun t => currentEval T (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y)))) E μHE[k])",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
