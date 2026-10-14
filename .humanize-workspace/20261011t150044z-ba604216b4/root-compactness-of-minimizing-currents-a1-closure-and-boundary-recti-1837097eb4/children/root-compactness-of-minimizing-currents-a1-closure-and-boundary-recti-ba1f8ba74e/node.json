@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.restriction_limit-a1.thin_band-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.restriction_limit-a1",
+  "depth": 5,
+  "title": "Choice of a thin level band of small measure",
+  "statement": "Let μ, ν be measures on ℝ^P (Borel σ-algebra), C ⊆ ℝ^P a measurable set with μ(C) < ∞ and ν(C) < ∞, f : ℝ^P → ℝ continuous, t ∈ ℝ with μ{x : f(x) = t} = 0, and δ > 0. Then there is ε > 0 such that μ(C ∩ {t − ε ≤ f ≤ t}) < δ and ν(C ∩ {t − ε < f < t}) < δ (inequalities in [0, ∞], with δ read as ENNReal.ofReal δ).",
+  "lean_statement": "∀ (P : ℕ) (μ ν : Measure (Euclid P)) (C : Set (Euclid P)) (f : Euclid P → ℝ) (t δ : ℝ), MeasurableSet C → μ C < ∞ → ν C < ∞ → Continuous f → μ {x | f x = t} = 0 → 0 < δ → ∃ ε : ℝ, 0 < ε ∧ μ (C ∩ {x | t - ε ≤ f x ∧ f x ≤ t}) < ENNReal.ofReal δ ∧ ν (C ∩ {x | t - ε < f x ∧ f x < t}) < ENNReal.ofReal δ",
+  "lean_name": "cbr_rlim_thin_band",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-ba1f8ba74e-a1"
+}

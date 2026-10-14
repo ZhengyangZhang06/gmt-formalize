@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.portmanteau-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1",
+  "depth": 4,
+  "title": "Portmanteau inequalities for vague convergence on an open set",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P open, (ν_j)_{j∈ℕ} Borel measures on ℝ^P with ν_j(K) < ∞ for every j and every compact K ⊆ U, and μ a Borel measure on ℝ^P with μ(K) < ∞ for every compact K ⊆ U. If ∫ f dν_j → ∫ f dμ for every continuous f : ℝ^P → ℝ with compact support and tsupport f ⊆ U, then limsup_j ν_j(K) ≤ μ(K) for every compact K ⊆ U and μ(G) ≤ liminf_j ν_j(G) for every open G ⊆ U.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (νs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), IsOpen U → (∀ (j : ℕ) (K : Set (Euclid P)), IsCompact K → K ⊆ U → νs j K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Tendsto (fun j => ∫ x, f x ∂(νs j)) atTop (𝓝 (∫ x, f x ∂μ))) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => νs j K) atTop ≤ μ K) ∧ (∀ G : Set (Euclid P), IsOpen G → G ⊆ U → μ G ≤ liminf (fun j => νs j G) atTop)",
+  "lean_name": "cbr_vague_portmanteau",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-959ef3c94c-a1"
+}

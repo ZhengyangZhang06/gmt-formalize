@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.rectifiable-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1",
+  "depth": 3,
+  "title": "Approximate tangent planes almost everywhere imply countable rectifiability (Simon Ch. 3, 1.6 ⇐, corrected constant)",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P a Borel set with Hⁿ(M) < ∞ (Hⁿ = μHE[n]), and Q : ℝ^P → linear subspaces of ℝ^P such that x ↦ (orthogonal projection onto Q(x)) is Hⁿ⌞M-a.e. strongly measurable and M has approximate tangent space Q(x) at Hⁿ-a.e. x ∈ M (SimonGMT HasApproximateTangentSpaceAt n M x (Q x)). Then M is countably n-rectifiable (SimonGMT CountablyRectifiable n M).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (Q : Euclid P → Submodule ℝ (Euclid P)), MeasurableSet M → μHE[n] M ≠ ∞ → AEStronglyMeasurable (fun x => (Q x).starProjection) (μHE[n].restrict M) → (∀ᵐ x ∂(μHE[n].restrict M), HasApproximateTangentSpaceAt n M x (Q x)) → CountablyRectifiable n M",
+  "lean_name": "cbr_rectifiable_of_approx_tangent",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f03d9c44ac-a1"
+}

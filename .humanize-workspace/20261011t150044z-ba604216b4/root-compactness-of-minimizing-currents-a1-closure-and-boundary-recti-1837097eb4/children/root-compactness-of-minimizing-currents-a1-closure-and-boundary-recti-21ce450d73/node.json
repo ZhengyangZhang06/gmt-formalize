@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.restriction_limit-a1.smooth_cutoff-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.restriction_limit-a1",
+  "depth": 5,
+  "title": "Smooth one-sided cut-off of a test form across a level set",
+  "statement": "Let P, k ∈ ℕ, let U ⊆ ℝ^P be any set, ω ∈ 𝒟^k(U) (TestFormOn U k), f : ℝ^P → ℝ continuous, t ∈ ℝ and ε > 0. Then there exist a function χ : ℝ^P → ℝ and a test form η ∈ 𝒟^k(U) such that η(x) = χ(x)·ω(x) for every x ∈ ℝ^P, 0 ≤ χ(x) ≤ 1 for every x, χ(x) = 1 whenever f(x) ≤ t − ε, and χ(x) = 0 whenever f(x) ≥ t.",
+  "lean_statement": "∀ (P k : ℕ) (U : Set (Euclid P)) (ω : TestFormOn U k) (f : Euclid P → ℝ) (t ε : ℝ), Continuous f → 0 < ε → ∃ (χ : Euclid P → ℝ) (η : TestFormOn U k), (∀ x, (η : DifferentialForm (Euclid P) k) x = χ x • (ω : DifferentialForm (Euclid P) k) x) ∧ (∀ x, 0 ≤ χ x ∧ χ x ≤ 1) ∧ (∀ x, f x ≤ t - ε → χ x = 1) ∧ (∀ x, t ≤ f x → χ x = 0)",
+  "lean_name": "cbr_rlim_smooth_cutoff",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-21ce450d73-a1"
+}

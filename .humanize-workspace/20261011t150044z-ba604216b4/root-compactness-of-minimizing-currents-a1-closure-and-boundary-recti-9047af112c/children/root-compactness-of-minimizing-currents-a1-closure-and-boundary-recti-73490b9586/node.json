@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1.strip_distribution-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1",
+  "depth": 5,
+  "title": "Monotone distribution function controlling the strip masses of an arbitrary set",
+  "statement": "Let μ be a measure on the Borel sets of ℝ^P (for a non-measurable set E, μ(E) denotes the outer-measure value, as for Mathlib measures), f : ℝ^P → ℝ continuous, G ⊆ ℝ^P arbitrary (possibly non-measurable) and a, b ∈ ℝ with μ(G ∩ {a < f < b}) < ∞. Then there is a nondecreasing F : ℝ → ℝ such that ENNReal.ofReal(F(b) − F(a)) = μ(G ∩ {a < f < b}), and μ(G ∩ {t − h < f < t}) ≤ ENNReal.ofReal(F(t) − F(t − h)) for every t ∈ (a, b) and every h ∈ (0, t − a).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ), Continuous f → μ (G ∩ {x | a < f x ∧ f x < b}) < ∞ → ∃ F : ℝ → ℝ, Monotone F ∧ ENNReal.ofReal (F b - F a) = μ (G ∩ {x | a < f x ∧ f x < b}) ∧ ∀ t ∈ Ioo a b, ∀ h ∈ Ioo 0 (t - a), μ (G ∩ {x | t - h < f x ∧ f x < t}) ≤ ENNReal.ofReal (F t - F (t - h))",
+  "lean_name": "cbr_smm_strip_distribution_function",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-73490b9586-a1"
+}

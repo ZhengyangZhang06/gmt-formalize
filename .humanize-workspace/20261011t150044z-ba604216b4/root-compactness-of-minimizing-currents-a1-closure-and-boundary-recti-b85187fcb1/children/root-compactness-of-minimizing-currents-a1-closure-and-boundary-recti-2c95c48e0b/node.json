@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.vague_subseq-a1.compact_piece-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.vague_subseq-a1",
+  "depth": 5,
+  "title": "Selection on one compact set: a subsequence along which ∫ f dμ_j converges for every continuous f with tsupport f ⊆ K",
+  "statement": "Let P ∈ ℕ, let K ⊆ ℝ^P be compact, and let (μ_j)_{j∈ℕ} be Borel measures on ℝ^P with sup_j μ_j(K) < ∞. Then there is a strictly increasing θ : ℕ → ℕ such that for every continuous f : ℝ^P → ℝ with tsupport f ⊆ K the real sequence (∫ f dμ_{θ(j)})_{j∈ℕ} converges to some c ∈ ℝ.",
+  "lean_statement": "∀ (P : ℕ) (K : Set (Euclid P)) (μs : ℕ → Measure (Euclid P)), IsCompact K → ⨆ j, μs j K < ∞ → ∃ θ : ℕ → ℕ, StrictMono θ ∧ ∀ f : Euclid P → ℝ, Continuous f → tsupport f ⊆ K → ∃ c : ℝ, Tendsto (fun j => ∫ x, f x ∂(μs (θ j))) atTop (𝓝 c)",
+  "lean_name": "cbr_ct_vs_compact_piece_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-2c95c48e0b-a1"
+}

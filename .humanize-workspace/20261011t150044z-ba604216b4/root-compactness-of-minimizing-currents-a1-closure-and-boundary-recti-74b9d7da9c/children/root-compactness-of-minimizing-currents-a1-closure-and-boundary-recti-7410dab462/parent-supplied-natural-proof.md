@@ -1,0 +1,76 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.vague_limit-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.vague_limit-a1.integrable_cc-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: the selected parent proof, step 0 (Integrability). In Simon Ch. 1, proof of Theorem 4.16 (book/chapter-01.txt lines 1764-1778), this is the implicit fact that F_k(f) = ∫_X f dμ_k is a finite real number for f ∈ K(X) because μ_k is Radon (finite on compact sets); here only finiteness on compact subsets of U is available, which suffices because tsupport f is a compact subset of U. Lean pointers: HasCompactSupport f is by definition IsCompact (tsupport f); Measure.restrict_apply_univ; IsFiniteMeasure (finite measures are finite on compacts); Continuous.integrable_of_hasCompactSupport; subset_tsupport; integrableOn_iff_integrable_of_support_subset.
+
+1. Let S := tsupport f. By the hypothesis HasCompactSupport f, S is compact, and S ⊆ U by hypothesis. Applying the local finiteness hypothesis to K := S gives ν(S) < ∞.
+
+2. Let ν⌞S := ν.restrict S, i.e. (ν⌞S)(A) = ν(A ∩ S) for measurable A. Its total mass is (ν⌞S)(ℝ^P) = ν(S) < ∞ (Measure.restrict_apply_univ), so ν⌞S is a finite measure; in particular (ν⌞S)(K) ≤ ν(S) < ∞ for every compact K ⊆ ℝ^P, i.e. ν⌞S is finite on compact sets.
+
+3. f is continuous, hence Borel measurable (indeed strongly measurable, as ℝ^P is second countable and metrizable), and f has compact support. A continuous function with compact support is integrable with respect to every Borel measure that is finite on compact sets (Continuous.integrable_of_hasCompactSupport). Explicitly: the continuous function |f| attains a maximum C on the compact set S (put C := 0 if S = ∅), f = 0 outside S ⊇ support f, so |f| ≤ C everywhere and ∫ |f| d(ν⌞S) ≤ C · (ν⌞S)(ℝ^P) = C · ν(S) < ∞. Hence f is ν⌞S-integrable, i.e. f is integrable on S with respect to ν (IntegrableOn f S ν).
+
+4. The support of f is contained in S (subset_tsupport), so f vanishes outside S. For such f, integrability on S and integrability on ℝ^P (with respect to ν) are equivalent (integrableOn_iff_integrable_of_support_subset): ∫ |f| dν = ∫_S |f| dν + ∫_{ℝ^P ∖ S} |f| dν = ∫ |f| d(ν⌞S) + 0 < ∞, and f is strongly measurable.
+
+5. Therefore f is ν-integrable. ∎
+
+## Key steps
+
+1. S := tsupport f is compact and S ⊆ U, so ν(S) < ∞ by the hypothesis applied to K := S.
+2. ν⌞S = ν.restrict S has total mass ν(S) < ∞ (Measure.restrict_apply_univ), hence is finite on compact sets.
+3. f continuous with compact support is ν⌞S-integrable (Continuous.integrable_of_hasCompactSupport; |f| ≤ max_S |f|), i.e. IntegrableOn f S ν.
+4. support f ⊆ S (subset_tsupport), so IntegrableOn f S ν ↔ Integrable f ν (integrableOn_iff_integrable_of_support_subset); conclude Integrable f ν.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (IDENTICAL); diff GMT/Ch07/Contract.lean local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean (SNAPSHOT_IDENTICAL)`
+- `grep -n '^theorem\|^lemma\|^def\|^instance\|^noncomputable def' mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean (rieszMeasure l.65, integral_rieszMeasure l.345, instance regular_rieszMeasure l.357); sed -n 40,70p and 340,362p of that file`
+- `grep -rn 'def mk₀' mathlib/Mathlib/Algebra/Order/Module/PositiveLinearMap.lean (l.206)`
+- `grep -n 'extend_zero\|extend_one' mathlib/Mathlib/Topology/Algebra/Support.lean; sed -n 300,350p (mulTSupport_extend_one_subset l.321, extend_one l.327, continuous_extend_one l.341, all @[to_additive])`
+- `grep -rn in snapshot mathlib/Mathlib: 'IsOpen.locallyCompactSpace', 'theorem subtype_coe', 'theorem _root_.MeasurableEmbedding.integral_map', 'Subtype.isCompact_iff', 'theorem image_preimage_coe', 'mulTSupport_comp_subset_preimage', 'image_eq_one_of_notMem_mulTSupport', 'theorem Continuous.integrable_of_hasCompactSupport', 'theorem integrableOn_iff_integrable_of_support_subset'`
+- `python3 scans of dag.json: nodes with id prefix ...convergence_tools-a1 (parent cbr_measure_convergence_tools; siblings cbr_vague_portmanteau, cbr_sublevel_restriction_tendsto, cbr_slice_mass_majorant, cbr_vague_convergent_subseq); regexes 'Integrable f [a-zμν]|Integrable f\b', 'rieszMeasure|PositiveLinearMap|limUnder|Λ', '↥U|Subtype|// x ∈ U|Measure.map Subtype|extend Subtype'; mass_representation-a1 subtree (cmr_vector_riesz_representation, cmr_vr_*, cmrc_polar_pushforward, cmrc_testForm_restrict_cc, cmr_exists_massRepresentation_core)`
+- `name checks: grep -c cbr_vl_integrable_of_tsupport_subset / cbr_vl_riesz_measure_on_open in dag.json (0); python3 list of lean_names starting with cbr_vl (none of 982); git for-each-ref --format='%(refname)' | xargs -n 400 git grep -l -e cbr_vl_integrable_of_tsupport_subset -e cbr_vl_riesz_measure_on_open -e cbr_vl_ -- 'GMT/*.lean' (no match); grep -rl over lake-packages-25730c7c/simongmt and the snapshot project (no match)`
+- `verifier: gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') replay via /tmp/vl-decomp-q7m2/scripts/scope.py; lean_contract.validate_lean_statement on both child strings (pass, lengths 200 and 619)`
+- `lake env lean /tmp/vl-decomp-q7m2/lean/Types.lean (both child types elaborate in the replayed scope); Assembly.lean (hypothesis-only proof of the exact frozen parent type from the two child types); Children.lean; Final.lean (generated from the exact strings by scripts/gen_final.py: children proved, parent assembled, comparator-style checks; #print axioms: propext, Classical.choice, Quot.sound)`
+- `sed -n 1515,1540p and 1745,1782p book/chapter-01.txt; grep -n '4.12 Theorem (Riesz\|4.16 Theorem (Compactness\|construction.) Then by applying Theorem 4.12' book/chapter-01.txt (lines 1522, 1750, 1775-1778)`
+- `WebSearch: 'Mathlib RealRMK.rieszMeasure integral_rieszMeasure Riesz-Markov-Kakutani real positive linear functional'; 'Riesz representation theorem positive linear functional C_c(X) locally compact Hausdorff Radon measure Rudin Real and Complex Analysis Theorem 2.14'`
+- `independent reviewer subagent over /tmp/vl-decomp-q7m2/draft/subproblems.json, parent_assembly.md and lean/Final.lean (own implication proof /tmp/vl-review-r5k8/lean/Review.lean; comparator-generated challenge/solution files; verdict ACCEPT)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Module/PositiveLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/LocallyCompact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/Compact.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/MeasurableSpace/Embedding.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-74b9d7da9c/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-74b9d7da9c/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-74b9d7da9c/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt`
+- `/tmp/vl-decomp-q7m2/lean/Types.lean`
+- `/tmp/vl-decomp-q7m2/lean/Assembly.lean`
+- `/tmp/vl-decomp-q7m2/lean/Children.lean`
+- `/tmp/vl-decomp-q7m2/lean/Final.lean`
+- `/tmp/vl-decomp-q7m2/draft/subproblems.json`
+
+The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean (manifest: project b4d606db, mathlib 25730c7c). No DAG node, git ref, SimonGMT declaration or snapshot declaration already proves either child. The closest are cmr_vr_* (vector-valued Riesz on an abstract X) and cmrc_polar_pushforward (a push-forward of a vector density from Measure U); their types differ. Every Mathlib lemma cited in the child proofs exists at the pinned commit and loads from the frozen contract's imports, with no extra import needed: RealRMK.rieszMeasure, integral_rieszMeasure, regular_rieszMeasure; PositiveLinearMap.mk₀; HasCompactSupport.continuous_extend_zero, extend_zero, tsupport_extend_zero_subset (to_additive of the extend_one lemmas); IsOpen.locallyCompactSpace; MeasurableEmbedding.subtype_coe and integral_map; Subtype.isCompact_iff; Subtype.image_preimage_coe; tsupport_comp_subset_preimage; image_eq_zero_of_notMem_tsupport; Continuous.integrable_of_hasCompactSupport; integrableOn_iff_integrable_of_support_subset. Both exact child types elaborate in the replayed comparator scope and pass the verifier's lexical check. In scratch Lean both children are fully proved and the exact frozen parent type is assembled from them, with only the axioms propext, Classical.choice and Quot.sound. Book anchors: Simon 1.4.12 (chapter-01 lines 1522-1527) and 1.4.16 (lines 1750-1778, with 4.12 invoked at 1775-1778).

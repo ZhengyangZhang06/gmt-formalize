@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1.monotone_majorant-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1",
+  "depth": 5,
+  "title": "Measurable Fatou majorant from left difference quotients of monotone functions",
+  "statement": "Let F_j : ℝ → ℝ (j ∈ ℕ) be nondecreasing, Z_j : ℝ → [0, ∞], a, b ∈ ℝ and L ∈ ℝ≥0. Suppose Z_j(t) ≤ L · liminf_{h→0⁺} ENNReal.ofReal(h⁻¹) · ENNReal.ofReal(F_j(t) − F_j(t − h)) for all j and all t ∈ (a, b). Then there is a measurable g : ℝ → [0, ∞] such that liminf_j Z_j(t) ≤ g(t) for L¹-a.e. t ∈ (a, b), and ∫⁻_{(a,b)} g dL¹ ≤ L · liminf_j ENNReal.ofReal(F_j(b) − F_j(a)).",
+  "lean_statement": "∀ (F : ℕ → ℝ → ℝ) (Z : ℕ → ℝ → ℝ≥0∞) (a b : ℝ) (L : NNReal), (∀ j, Monotone (F j)) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * ENNReal.ofReal (F j t - F j (t - h))) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => ENNReal.ofReal (F j b - F j a)) atTop",
+  "lean_name": "cbr_smm_monotone_majorant",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1.lintegral_deriv-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1.left_slope-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1.lintegral_deriv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1.left_slope-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c1f8b1d35c-a1"
+}

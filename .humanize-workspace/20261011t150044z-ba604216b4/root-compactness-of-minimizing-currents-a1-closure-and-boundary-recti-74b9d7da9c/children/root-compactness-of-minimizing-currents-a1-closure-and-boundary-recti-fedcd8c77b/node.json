@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.vague_limit-a1.riesz_open-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.vague_limit-a1",
+  "depth": 5,
+  "title": "Riesz–Markov–Kakutani representation of a positive linear functional on C_c(U) for open U ⊆ ℝ^P, realised as a measure on ℝ^P",
+  "statement": "Let P ∈ ℕ and U ⊆ ℝ^P open, and write 𝒦_U for the set of continuous f : ℝ^P → ℝ with compact support and tsupport f ⊆ U. Let Λ : (ℝ^P → ℝ) → ℝ be any function such that Λ(f + g) = Λ(f) + Λ(g) for all f, g ∈ 𝒦_U, Λ(c·f) = c·Λ(f) for all c ∈ ℝ and f ∈ 𝒦_U, and Λ(f) ≥ 0 for every f ∈ 𝒦_U with f(x) ≥ 0 for all x. Then there is a Borel measure μ on ℝ^P with μ(ℝ^P ∖ U) = 0, μ(K) < ∞ for every compact K ⊆ U, and ∫ f dμ = Λ(f) for every f ∈ 𝒦_U. (Riesz–Markov–Kakutani representation on the open set U, with the measure realised on ℝ^P.)",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (Λ : (Euclid P → ℝ) → ℝ), IsOpen U → (∀ f g : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → Continuous g → HasCompactSupport g → tsupport g ⊆ U → Λ (f + g) = Λ f + Λ g) → (∀ (c : ℝ) (f : Euclid P → ℝ), Continuous f → HasCompactSupport f → tsupport f ⊆ U → Λ (c • f) = c * Λ f) → (∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → (∀ x, 0 ≤ f x) → 0 ≤ Λ f) → ∃ μ : Measure (Euclid P), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → tsupport f ⊆ U → ∫ x, f x ∂μ = Λ f",
+  "lean_name": "cbr_vl_riesz_measure_on_open",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-fedcd8c77b-a1"
+}
