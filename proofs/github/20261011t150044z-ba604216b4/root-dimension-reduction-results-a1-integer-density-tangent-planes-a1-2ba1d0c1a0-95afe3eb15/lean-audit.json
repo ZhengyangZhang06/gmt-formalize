@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9a5728cfe6aecb2aaf4d54970751aeac843d0df8e901c9bda7beabe55213555a",
+  "git_delta": {
+    "base_commit": "b510a43e878de8838155c3161f2bb41cf30c3fb4",
+    "candidate_commit": "44eb3eac1945b8448bd26796e15a778872478bdd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cs_sos_cone_filling_in_subspace",
+    "diff_sha256": "6032a230b63b2e19f9ac8d82f3615d32672e0dbbccbc4d7815d82bc3459f5b47",
+    "source_sha256": "b1d64af40f0f93eb4e215c3b1990202e5228137372b9592f08e54fd8ec755e22",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cs_sos_cone_filling_in_subspace",
+      "statement": "∀ (P m : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), 0 < m → IsIntegerMultiplicity X → BoundaryVanishes X → IsCompact X.support → X.support ⊆ (V : Set (Euclid P)) → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ Y.boundary = X ∧ IsCompact Y.support ∧ Y.support ⊆ (V : Set (Euclid P))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
