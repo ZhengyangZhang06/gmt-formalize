@@ -1673,41 +1673,6 @@ theorem Submission.cmc_tendsto_integral_of_limsup_liminf : ∀ (P : ℕ) (U : Se
     (hpos _ hfm (fun x => le_max_right _ _) hsupp_neg)
   rw [hsplit μ hμC] at hlim
   exact hlim.congr' (hμsC.mono fun j hj => hsplit (μs j) hj)
-/-- **Simon 6.2.14** (lower semicontinuity of mass) for currents `Sⱼ ∈ 𝒟ₙ(Uⱼ)` on domains
-exhausting `ℝᴾ`, along any subsequence: if `Sⱼ ⇀ C` then `M_O(C) ≤ liminf_i M_O(S_{φ(i)})`.
-`M_O(C)` is a supremum over admissible `ω ∈ 𝒟ⁿ(ℝᴾ)`.  Each such `spt ω` is compact, so it lies in
-a closed ball `B̄_R(0) ⊆ U_{φ(i)}` for all large `i`; there `ω` is admissible for `S_{φ(i)}` in
-`O`, whence `S_{φ(i)}(ω) ≤ M_O(S_{φ(i)})`, and `S_{φ(i)}(ω) → C(ω)`. -/
-theorem Submission.dimred_mbl_mm_massOn_le_liminf : ∀ (P n : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) n) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ R : ℝ, ∀ᶠ j in atTop, closedBall (0 : Euclid P) R ⊆ Us j) → ConvergesWeakly Ss C → ∀ φ : ℕ → ℕ, StrictMono φ → ∀ O : Set (Euclid P), C.massOn O ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := by
-  intro P n Us Ss C hU hconv φ hφ O
-  -- `M_O(C)` is the supremum of `C(ω)` over the admissible `ω`
-  apply sSup_le
-  rintro r ⟨ω, hω, rfl⟩
-  -- `spt ω` is compact, hence contained in a closed ball `B̄_R(0)`
-  have hK : IsCompact (tsupport (ω : DifferentialForm (Euclid P) n)) := ω.property.1.2
-  obtain ⟨R, hR⟩ := hK.isBounded.subset_closedBall 0
-  -- so `spt ω ⊆ U_{φ(i)}` for all large `i`
-  have hev : ∀ᶠ i in atTop, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Us (φ i) :=
-    (hφ.tendsto_atTop.eventually (hU R)).mono fun i hi => hR.trans hi
-  -- `S_{φ(i)}(ω) → C(ω)`
-  have hlim : Tendsto (fun i => currentEval (Ss (φ i)) (ω : DifferentialForm (Euclid P) n))
-      atTop (𝓝 (C ω)) :=
-    (hconv ω).comp hφ.tendsto_atTop
-  calc ENNReal.ofReal (C ω)
-      = liminf (fun i => ENNReal.ofReal
-          (currentEval (Ss (φ i)) (ω : DifferentialForm (Euclid P) n))) atTop :=
-        (ENNReal.tendsto_ofReal hlim).liminf_eq.symm
-    _ ≤ liminf (fun i => (Ss (φ i)).massOn O) atTop := by
-        refine liminf_le_liminf (hev.mono fun i hi => ?_)
-        -- for such `i`, `ω` is an admissible form for `S_{φ(i)}` in `O`
-        have hmem : IsTestForm (ω : DifferentialForm (Euclid P) n) ∧
-            tsupport (ω : DifferentialForm (Euclid P) n) ⊆ Us (φ i) := ⟨ω.property.1, hi⟩
-        have heval : currentEval (Ss (φ i)) (ω : DifferentialForm (Euclid P) n) =
-            Ss (φ i) ⟨(ω : DifferentialForm (Euclid P) n), hmem⟩ := by
-          unfold currentEval
-          exact dite_eq_left hmem
-        rw [heval]
-        exact (Ss (φ i)).le_massOn (omega := ⟨(ω : DifferentialForm (Euclid P) n), hmem⟩) hω
 /-- **Upper bound on compact sets from sub-subsequence comparisons** (Simon 7.2.4 (13) and the
 remark after it).  Let `μ` be finite on compact sets.  Suppose that for every compact `K`, every
 `ε > 0` and every subsequence `ψ` there are `K ⊆ W ⊆ thickening ε K` and a further subsequence
