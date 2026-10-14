@@ -767,6 +767,64 @@ theorem Submission.cbr_cc_seg_line_hausdorff : ∀ (P : ℕ) (a τ : Euclid P), 
     -- Step 6: change of variables along the measurable embedding `φ`, for every `h`
     rw [hrestr, hemb.integral_map]
 
+/-- **Approximate tangent line of an open segment** (Simon Ch. 3, 1.4).  If `|τ| = 1`, the open
+segment `I = {a + uτ : 0 < u < ℓ}` has approximate tangent space `span{τ}` at every point
+`x = a + s₀τ` of `I`.  Let `f ∈ C_c` vanish outside `B̄_ρ(0)` and `0 < r < min(s₀, ℓ − s₀)/ρ`.
+Then `η_{x,r}(I) ⊆ span{τ}`, and every `y = cτ` with `f(y) ≠ 0` equals `η_{x,r}(a + (s₀ + rc)τ)`
+with `s₀ + rc ∈ (0, ℓ)`.  So `∫_{η_{x,r}(I)} f dH¹ = ∫_{span{τ}} f dH¹` for all small `r > 0`. -/
+theorem Submission.cbr_cc_seg_open_segment_tangent : ∀ (P : ℕ) (a τ : Euclid P) (ℓ : ℝ), ‖τ‖ = 1 → ∀ x ∈ (fun u : ℝ => a + u • τ) '' Ioo 0 ℓ, HasApproximateTangentSpaceAt 1 ((fun u : ℝ => a + u • τ) '' Ioo 0 ℓ) x (Submodule.span ℝ {τ}) := by
+  intro P a τ ℓ hτ x hx
+  -- Step 1: `x = a + s₀τ` with `0 < s₀ < ℓ`, and `dim span{τ} = 1` since `τ ≠ 0`
+  obtain ⟨s₀, ⟨hs₀, hs₀ℓ⟩, rfl⟩ := hx
+  have hτ0 : τ ≠ 0 := by
+    rintro rfl
+    simp at hτ
+  refine ⟨finrank_span_singleton hτ0, fun f => ?_⟩
+  -- Step 2: `f y ≠ 0` implies `|y| ≤ ρ`
+  obtain ⟨R₀, hR₀⟩ := (isBounded_iff_subset_closedBall (0 : Euclid P)).mp
+    f.hasCompactSupport.isCompact.isBounded
+  set ρ := max R₀ 1
+  have hρpos : 0 < ρ := lt_of_lt_of_le one_pos (le_max_right _ _)
+  have hfρ : ∀ y, f y ≠ 0 → ‖y‖ ≤ ρ := by
+    intro y hy
+    have h := hR₀ (subset_tsupport f hy)
+    rw [mem_closedBall, dist_zero_right] at h
+    exact h.trans (le_max_left _ _)
+  -- Step 3: `δ = min(s₀, ℓ - s₀)` and `0 < r < δ/ρ`
+  set δ := min s₀ (ℓ - s₀)
+  have hδpos : 0 < δ := lt_min hs₀ (sub_pos.mpr hs₀ℓ)
+  refine tendsto_const_nhds.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδpos hρpos)] with r hr
+  obtain ⟨hr0, hrδ⟩ := hr
+  have hrρ : r * ρ < δ := by rwa [lt_div_iff₀ hρpos] at hrδ
+  -- Step 4: `η_r(a + uτ) = (r⁻¹(u - s₀))τ`, so `η_r(I) ⊆ span{τ}`
+  have hη : ∀ u : ℝ, Poincare.SimonGMT.Chapter03.blowUpMap (a + s₀ • τ) r (a + u • τ) =
+      (r⁻¹ * (u - s₀)) • τ := by
+    intro u
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, mul_smul, sub_smul, add_sub_add_left_eq_sub]
+  have hsub : Poincare.SimonGMT.Chapter03.blowUpMap (a + s₀ • τ) r ''
+      ((fun u : ℝ => a + u • τ) '' Ioo 0 ℓ) ⊆ (Submodule.span ℝ {τ} : Set (Euclid P)) := by
+    rintro _ ⟨_, ⟨u, -, rfl⟩, rfl⟩
+    exact Submodule.mem_span_singleton.mpr ⟨_, (hη u).symm⟩
+  -- Step 6: `span{τ}` is closed, so the two integrals agree once `f = 0` on `span{τ} \ η_r(I)`
+  refine setIntegral_eq_of_subset_of_ae_sdiff_eq_zero
+    (Submodule.closed_of_finiteDimensional _).measurableSet.nullMeasurableSet hsub
+    (Eventually.of_forall fun y hy => ?_)
+  -- Step 5: if `y = cτ` and `f y ≠ 0`, then `y = η_r(a + (s₀ + rc)τ)` with `s₀ + rc ∈ (0, ℓ)`
+  by_contra hfy
+  obtain ⟨c, rfl⟩ := Submodule.mem_span_singleton.mp hy.1
+  have hc : |c| ≤ ρ := by
+    have h := hfρ _ hfy
+    rwa [norm_smul, hτ, mul_one, Real.norm_eq_abs] at h
+  have hrc : |r * c| < δ := by
+    rw [abs_mul, abs_of_pos hr0]
+    exact (mul_le_mul_of_nonneg_left hc hr0.le).trans_lt hrρ
+  have hδs₀ : δ ≤ s₀ := min_le_left _ _
+  have hδℓ : δ ≤ ℓ - s₀ := min_le_right _ _
+  obtain ⟨hrc₁, hrc₂⟩ := abs_lt.mp hrc
+  refine hy.2 ⟨a + (s₀ + r * c) • τ, ⟨s₀ + r * c, ⟨by linarith, by linarith⟩, rfl⟩, ?_⟩
+  rw [hη, add_sub_cancel_left, inv_mul_cancel_left₀ hr0.ne']
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
