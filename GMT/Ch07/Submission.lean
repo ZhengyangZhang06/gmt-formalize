@@ -3199,6 +3199,36 @@ theorem Submission.cbr_ci_bl_covector_opNorm_le : ∀ (P n : ℕ) (α : Covector
         push_cast
         ring
 
+/-- **The weight is controlled by the multivector difference through a norming covector**
+(fact (F2) in the proof of `Submission.cbr_ci_bl_density_bounds`; `|·|_E` is
+`covectorEuclideanNorm`).  Let `‖α‖ ≤ C |α|_E` and `|⟨α, ζa⟩| ≤ |α|_E` for every `n`-covector
+`α`, and let `β` satisfy `|β|_E ≤ 1` and `⟨β, ζx⟩ = 1`.  For `d = t ζx − t₀ ζa`,
+`⟨β, d⟩ = t − t₀ ⟨β, ζa⟩` with `t₀ ⟨β, ζa⟩ ≤ t₀`, and `⟨β, d⟩ ≤ ‖d‖ ‖β‖ ≤ C ‖d‖`, as
+`‖β‖ ≤ C |β|_E ≤ C`.  Hence `t ≤ t₀ + C ‖d‖`, and `ENNReal.ofReal` turns this into the bound. -/
+theorem Submission.cbr_ci_bl_db_weight_le_enorm : ∀ (P n : ℕ) (ζx ζa : MultiVector P n) (t t₀ C : ℝ), 0 ≤ t₀ → 0 ≤ C → (∀ α : Covector (Euclid P) n, ‖α‖ ≤ C * covectorEuclideanNorm α) → (∀ α : Covector (Euclid P) n, |ζa α| ≤ covectorEuclideanNorm α) → (∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζx β = 1) → ENNReal.ofReal t ≤ ENNReal.ofReal t₀ + ENNReal.ofReal C * ‖t • ζx - t₀ • ζa‖ₑ := by
+  rintro P n ζx ζa t t₀ C ht₀ hC hop hζa ⟨β, hβ1, hζβ⟩
+  set d : MultiVector P n := t • ζx - t₀ • ζa with hd
+  -- Step 1: `⟨β, d⟩ = t − t₀ ⟨β, ζa⟩`
+  have hdβ : d β = t - t₀ * ζa β := by
+    rw [hd, _root_.sub_apply, _root_.smul_apply, _root_.smul_apply, smul_eq_mul, smul_eq_mul,
+      hζβ, mul_one]
+  -- Step 2: `t₀ ⟨β, ζa⟩ ≤ t₀`, as `⟨β, ζa⟩ ≤ |β|_E ≤ 1`
+  have hζaβ : t₀ * ζa β ≤ t₀ :=
+    mul_le_of_le_one_right ht₀ ((le_abs_self _).trans ((hζa β).trans hβ1))
+  -- Step 3: `⟨β, d⟩ ≤ ‖d‖ ‖β‖ ≤ C ‖d‖`, as `‖β‖ ≤ C |β|_E ≤ C`
+  have hβC : ‖β‖ ≤ C := (hop β).trans (mul_le_of_le_one_right hC hβ1)
+  have hdle : d β ≤ C * ‖d‖ :=
+    calc d β ≤ ‖d β‖ := Real.le_norm_self _
+      _ ≤ ‖d‖ * ‖β‖ := d.le_opNorm β
+      _ ≤ ‖d‖ * C := mul_le_mul_of_nonneg_left hβC (norm_nonneg d)
+      _ = C * ‖d‖ := mul_comm _ _
+  -- Step 4: `t ≤ t₀ + C ‖d‖`; pass to `[0, ∞]`
+  have ht : t ≤ t₀ + C * ‖d‖ := by linarith
+  calc ENNReal.ofReal t ≤ ENNReal.ofReal (t₀ + C * ‖d‖) := ENNReal.ofReal_le_ofReal ht
+    _ = ENNReal.ofReal t₀ + ENNReal.ofReal C * ‖d‖ₑ := by
+      rw [ENNReal.ofReal_add ht₀ (mul_nonneg hC (norm_nonneg d)), ENNReal.ofReal_mul hC,
+        ofReal_norm d]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
