@@ -1848,6 +1848,131 @@ theorem Submission.idtp_ccd_sfv_support_sdiff_carrier_null : ∀ (P n : ℕ) (U 
   have hk0 : (k : ℝ) ≤ 0 := ENNReal.ofReal_eq_zero.1 (le_antisymm hle0 bot_le)
   have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
   linarith
+/-- **The tangent space of an embedded `C¹` submanifold** (Simon Ch. 2, §4, (4.3)).  If `M` is an
+embedded `C¹` `d`-dimensional submanifold of `ℝᴾ` and `x ∈ M`, then `T_xM` is a linear subspace of
+dimension `d`: for a local representation `ψ : V → W ∩ M` with `ψ(v) = x`, `T_xM` is the range of
+the injective linear map `Dψ(v)`.  A `C¹` curve in `M` through `x` stays in `ψ(V)` near `0` and,
+`ψ` being proper and injective, lifts to a curve in `V` converging to `v` at rate `O(t)` (`Dψ(v)` is
+injective), so its velocity lies in the closed subspace `range Dψ(v)`; conversely `Dψ(v) u` is the
+velocity of `t ↦ ψ(v + a sin(t / a) u)` for small `a > 0`. -/
+theorem Submission.idtp_ccd_sfv_span_tangentSpace_finrank : ∀ (P d : ℕ) (M : Set (Euclid P)) (x : Euclid P), IsEmbeddedSubmanifold 1 d M → x ∈ M → (Submodule.span ℝ (tangentSpace M x) : Set (Euclid P)) = tangentSpace M x ∧ Module.finrank ℝ (Submodule.span ℝ (tangentSpace M x)) = d := by
+  intro P d M x hM hx
+  obtain ⟨V, W, ψ, hVo, hWo, hxW, hψC, hψinj, hψim, hprop, hψD⟩ := hM x hx
+  obtain ⟨v, hvV, rfl⟩ : x ∈ ψ '' V := hψim ▸ ⟨hxW, hx⟩
+  rw [Nat.cast_one] at hψC
+  set L : Euclid d →L[ℝ] Euclid P := fderiv ℝ ψ v
+  have hψd : HasFDerivAt ψ L v :=
+    ((hψC.contDiffAt (hVo.mem_nhds hvV)).differentiableAt one_ne_zero).hasFDerivAt
+  have hrange :
+      Set.range L = ((LinearMap.range (L : Euclid d →ₗ[ℝ] Euclid P)) : Set (Euclid P)) := by
+    rw [LinearMap.coe_range]; rfl
+  have key : tangentSpace M (ψ v) = Set.range L := by
+    ext w
+    constructor
+    · rintro ⟨γ, -, hγM, hγ0, hγd⟩
+      -- lift `γ` near `0` to a curve `φ` in the compact set `S = V ∩ ψ⁻¹(B̄_r(ψ v))`
+      have hγc : Tendsto γ (𝓝 0) (𝓝 (ψ v)) := hγ0 ▸ hγd.continuousAt.tendsto
+      obtain ⟨r, hr, hrW⟩ := nhds_basis_closedBall.mem_iff.mp (hWo.mem_nhds hxW)
+      set S := V ∩ ψ ⁻¹' closedBall (ψ v) r
+      have hS : IsCompact S := hprop _ hrW (isCompact_closedBall _ _)
+      have hev : ∀ᶠ t in 𝓝 (0 : ℝ), t ∈ Ioo (-1 : ℝ) 1 ∧ γ t ∈ closedBall (ψ v) r := by
+        filter_upwards [Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0) (by norm_num : (0 : ℝ) < 1),
+          hγc (closedBall_mem_nhds _ hr)] with t h1 h2
+        exact ⟨h1, h2⟩
+      have hpre : ∀ t, t ∈ Ioo (-1 : ℝ) 1 ∧ γ t ∈ closedBall (ψ v) r → ∃ z ∈ S, ψ z = γ t := by
+        rintro t ⟨ht, htK⟩
+        obtain ⟨z, hz, hzt⟩ : γ t ∈ ψ '' V := hψim ▸ ⟨hrW htK, hγM ht⟩
+        exact ⟨z, ⟨hz, by rw [mem_preimage, hzt]; exact htK⟩, hzt⟩
+      classical
+      set φ : ℝ → Euclid d := fun t =>
+        if h : t ∈ Ioo (-1 : ℝ) 1 ∧ γ t ∈ closedBall (ψ v) r then (hpre t h).choose else v
+        with hφ_def
+      have hφ : ∀ᶠ t in 𝓝 (0 : ℝ), φ t ∈ S ∧ ψ (φ t) = γ t := hev.mono fun t ht => by
+        rw [hφ_def]; dsimp only; rw [dite_eq_left ht]; exact (hpre t ht).choose_spec
+      -- `φ t → v`: every cluster point `z ∈ S` has `ψ z = ψ v`
+      have hφv : Tendsto φ (𝓝 0) (𝓝 v) := by
+        refine hS.tendsto_nhds_of_unique_mapClusterPt (hφ.mono fun t ht => ht.1) ?_
+        intro z hz hcl
+        have hψz : ContinuousAt ψ z := hψC.continuousOn.continuousAt (hVo.mem_nhds hz.1)
+        have h1 : MapClusterPt (ψ z) (𝓝 0) (ψ ∘ φ) := hcl.continuousAt_comp hψz
+        have h2 : Tendsto (ψ ∘ φ) (𝓝 0) (𝓝 (ψ v)) := hγc.congr' (hφ.mono fun t ht => ht.2.symm)
+        exact hψinj hz.1 hvV (eq_of_nhds_neBot (ClusterPt.mono h1 h2))
+      -- `‖φ t - v‖ ≤ 2K ‖γ t - ψ v‖`, `K` an antilipschitz constant of `L`
+      obtain ⟨K, hKpos, hK⟩ := (L : Euclid d →ₗ[ℝ] Euclid P).exists_antilipschitzWith
+        (LinearMap.ker_eq_bot.mpr (hψD v hvV))
+      have hK0 : (0 : ℝ) < K := hKpos
+      have hKL : ∀ h, ‖h‖ ≤ K * ‖L h‖ := fun h => hK.le_mul_norm (map_zero _) h
+      have h1 : (fun t => ψ (φ t) - ψ v - L (φ t - v)) =o[𝓝 0] (fun t => φ t - v) :=
+        hψd.isLittleO.comp_tendsto hφv
+      have h2 : (fun t => φ t - v) =O[𝓝 0] (fun t => γ t - ψ v) := by
+        refine Asymptotics.IsBigO.of_bound (2 * K) ?_
+        filter_upwards [h1.bound (c := 1 / (2 * K)) (by positivity), hφ] with t ht hφt
+        rw [hφt.2] at ht
+        have h4 : ‖L (φ t - v)‖ ≤ ‖γ t - ψ v‖ + 1 / (2 * K) * ‖φ t - v‖ := by
+          calc ‖L (φ t - v)‖ = ‖(γ t - ψ v) - (γ t - ψ v - L (φ t - v))‖ := by congr 1; abel
+            _ ≤ ‖γ t - ψ v‖ + ‖γ t - ψ v - L (φ t - v)‖ := norm_sub_le _ _
+            _ ≤ ‖γ t - ψ v‖ + 1 / (2 * K) * ‖φ t - v‖ := by gcongr
+        have h5 : ‖φ t - v‖ ≤ K * ‖γ t - ψ v‖ + ‖φ t - v‖ / 2 := by
+          calc ‖φ t - v‖ ≤ K * ‖L (φ t - v)‖ := hKL _
+            _ ≤ K * (‖γ t - ψ v‖ + 1 / (2 * K) * ‖φ t - v‖) := by gcongr
+            _ = K * ‖γ t - ψ v‖ + ‖φ t - v‖ / 2 := by field_simp
+        linarith
+      have h6 : (fun t => φ t - v) =O[𝓝 0] (fun t : ℝ => t) := by
+        have h' := hγd.isBigO_sub
+        rw [hγ0] at h'
+        simpa only [sub_zero] using h2.trans h'
+      -- hence `t • w - L (φ t - v) = o(t)`, and `w` is a limit of points of `range L`
+      have h7 : (fun t => ψ (φ t) - ψ v - L (φ t - v)) =o[𝓝 0] (fun t : ℝ => t) :=
+        h1.trans_isBigO h6
+      have h8 : (fun t => γ t - ψ v - L (φ t - v)) =o[𝓝 0] (fun t : ℝ => t) :=
+        h7.congr' (hφ.mono fun t ht => by dsimp only; rw [ht.2]) EventuallyEq.rfl
+      have h9 : (fun t => γ t - ψ v - t • w) =o[𝓝 0] (fun t : ℝ => t) := by
+        have := hasDerivAt_iff_isLittleO.mp hγd
+        simpa [hγ0] using this
+      have h10 : (fun t => t • w - L (φ t - v)) =o[𝓝 0] (fun t : ℝ => t) :=
+        (h8.sub h9).congr_left fun t => by abel
+      have h11 : Tendsto (fun t : ℝ => t⁻¹ • (t • w - L (φ t - v))) (𝓝[≠] 0) (𝓝 0) :=
+        h10.tendsto_inv_smul_nhds_zero.mono_left nhdsWithin_le_nhds
+      have h12 : Tendsto (fun t : ℝ => L (t⁻¹ • (φ t - v))) (𝓝[≠] 0) (𝓝 w) := by
+        have := (tendsto_const_nhds (x := w)).sub h11
+        rw [sub_zero] at this
+        refine this.congr' ?_
+        filter_upwards [self_mem_nhdsWithin] with t (ht : t ≠ 0)
+        rw [smul_sub, smul_smul, inv_mul_cancel₀ ht, one_smul, map_smul]
+        abel
+      have hclosed : IsClosed (Set.range L) :=
+        hrange ▸ (LinearMap.range (L : Euclid d →ₗ[ℝ] Euclid P)).closed_of_finiteDimensional
+      exact hclosed.mem_of_tendsto h12 (Eventually.of_forall fun t => ⟨_, rfl⟩)
+    · rintro ⟨u, rfl⟩
+      obtain ⟨δ, hδ, hδV⟩ := Metric.isOpen_iff.mp hVo v hvV
+      set a : ℝ := δ / (‖u‖ + 1) with ha
+      have ha0 : 0 < a := by positivity
+      set c : ℝ → Euclid d := fun t => v + (a * Real.sin (t / a)) • u with hc
+      have hcV : ∀ t, c t ∈ V := fun t => hδV (by
+        rw [mem_ball, dist_eq_norm, hc, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_mul,
+          abs_of_pos ha0]
+        calc a * |Real.sin (t / a)| * ‖u‖ ≤ a * 1 * ‖u‖ := by
+              gcongr; exact Real.abs_sin_le_one _
+          _ < δ := by
+              rw [mul_one, ha, div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+              nlinarith [norm_nonneg u])
+      have hcC : ContDiff ℝ 1 c := by
+        rw [hc]; fun_prop
+      have hcd : HasDerivAt c u 0 := by
+        have h1 : HasDerivAt (fun t : ℝ => a * Real.sin (t / a)) 1 0 := by
+          have := (((hasDerivAt_id (0 : ℝ)).div_const a).sin).const_mul a
+          simpa [ha0.ne'] using this
+        simpa only [one_smul] using (h1.smul_const u).const_add v
+      refine ⟨ψ ∘ c, (hψC.comp_contDiff hcC hcV).contDiffOn, fun t _ => ?_, ?_, ?_⟩
+      · exact ((hψim ▸ mem_image_of_mem ψ (hcV t)) : ψ (c t) ∈ W ∩ M).2
+      · simp [hc]
+      · exact hψd.comp_hasDerivAt_of_eq 0 hcd (by simp [hc])
+  have hspan : Submodule.span ℝ (tangentSpace M (ψ v)) =
+      LinearMap.range (L : Euclid d →ₗ[ℝ] Euclid P) := by
+    rw [key, hrange, Submodule.span_eq]
+  refine ⟨?_, ?_⟩
+  · rw [hspan, ← hrange, key]
+  · rw [hspan, LinearMap.finrank_range_of_inj (hψD v hvV), finrank_euclideanSpace_fin]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
