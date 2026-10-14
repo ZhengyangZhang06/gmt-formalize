@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9250c7142e77d7f8fbeb2b2eb3d7b3bda78bf7c00723339abb106c4113ea01f8",
+  "git_delta": {
+    "base_commit": "8accbd8d2dc03dc934736a4bdc6d12af9947ba8d",
+    "candidate_commit": "9f436e0062e23dae20264cb1a5e708f25f5e9693",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_stab_shape_operator",
+    "diff_sha256": "840d360afc3b654aacbb73bd8992e81248103fb3868a9a8e0464f00e0ee1e9cb",
+    "source_sha256": "2ade24a3ab0a8188e1cdb5f2b09c89f64e45d6940b5721ea1373933a799c5b59",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_stab_shape_operator",
+      "statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M O : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 2 m M → IsOpen O → M ⊆ O → ContDiffOn ℝ 1 ν O → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, ∀ τ ∈ Submodule.span ℝ (tangentSpace M x), fderiv ℝ ν x τ ∈ Submodule.span ℝ (tangentSpace M x) ∧ ∀ η ∈ Submodule.span ℝ (tangentSpace M x), inner ℝ η (fderiv ℝ ν x τ) = inner ℝ τ (fderiv ℝ ν x η)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
