@@ -12103,6 +12103,227 @@ theorem Submission.dor_lmb_fcd_pushforward_homotopy : (∀ (P m : ℕ) (U : Set 
         rw [e1, e2]
       exact tendsto_nhds_unique h5 h4
 
+/-- **Simon Ch. 6, Deformation Theorem 5.1, displays (6)–(25)** (deformation onto the
+`n`-skeleton, `n = m + 1 < P`), with the slicing theorem (SL) and the series theorem (IMS) as
+antecedents.  Let `T` be integer multiplicity with `∂T` integer multiplicity, vanishing off the
+compact `K`, with `M(T), M(∂T) < ∞`; `μ_T`, `μ_∂T` are the measures of representations of `T`,
+`∂T` (`M_W = μ(W)` for open `W`).
+* The good centre `a` (`dor_lmb_fcd_good_center`) gives `μ({d < r}) ≤ C r^{n+1} μ(ℝᴾ)` for
+  `d = dist(·, L*(a))` and `r ≤ 1/4`; the retraction `ψ` (`dor_lmb_fcd_retraction`) sends
+  `{d > 0}` into `Lₙ`, moves points by at most `√P`, and is `c_R/r`-Lipschitz on `{d ≥ r}`.
+* Slicing `T` by the `1`-Lipschitz `d` (SL) and a Markov choice (`dor_lmb_fcd_sd_good_slice`)
+  give radii `r_j ∈ (2^{-j-3}, 2^{-j-2})` with `M(P_{r_j}) ≤ 4C 2^{-(j+2)(m+1)} M(T)`.
+* The shells of `T`, `∂T` between consecutive radii (`dor_lmb_fcd_sd_shells`) vanish off
+  `E_j = K ∩ {d ≥ r_j}`, where `ψ` agrees with its `√P c_R/r_j`-Lipschitz extension `φ_j`
+  (`dor_lmb_fcd_sd_lipschitz_extend`); `Λ_j = max(1, √P c_R/r_j) ≤ c₄ 2^j`, `c₄ = 8(1 + √P c_R)`.
+* `dor_lmb_fcd_sd_core` deforms the shells and sums them with (IMS), with the constant
+  `c = max(c₄^{n}(1 + 2C), √P(2c₄)^{n}(1 + 2C), c₄^{n-1}(1 + 2C), √P(2c₄)^{n-1}(1 + 2C))`. -/
+theorem Submission.dor_lmb_fcd_skeleton_deformation : ((∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (RT : IMRep U (n + 1)) (RB : IMRep U n) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → RT.Represents T → RB.Represents T.boundary → LipschitzWith L f → ∃ Ps : ℝ → GeometricCurrentOn U n, (∀ W : Set (Euclid P), IsOpen W → AEMeasurable (fun t => (Ps t).massOn W) ∧ ∫⁻ t, (Ps t).massOn W ≤ (L : ℝ≥0∞) * T.massOn W) ∧ ∀ᵐ t, IsIntegerMultiplicity (Ps t) ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (f ⁻¹' {t}) → Ps t ω = 0) ∧ ∀ ω : TestFormOn U n, Ps t ω = (∫ x in RT.carrier ∩ {x | f x < t}, (RT.mult x : ℝ) * RT.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ {x | f x < t}, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass) → ∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 0 ≤ c ∧ ∀ (K : Set (Euclid P)) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsCompact K → IsIntegerMultiplicity T → IsIntegerMultiplicity T.boundary → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (K) → T ω = 0) → T.mass ≠ ∞ → T.boundary.mass ≠ ∞ → ∃ (Q : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity R₁ ∧ IsIntegerMultiplicity S₁ ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω - Q ω = R₁.boundary ω + S₁ ω) ∧ Q.mass ≤ ENNReal.ofReal c * T.mass ∧ Q.boundary.mass ≤ ENNReal.ofReal c * T.boundary.mass ∧ R₁.mass ≤ ENNReal.ofReal c * T.mass ∧ S₁.mass ≤ ENNReal.ofReal c * T.boundary.mass ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) ({x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} ∩ cthickening (Real.sqrt P) K) → Q ω = 0) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 2), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 2))) (cthickening (Real.sqrt P) K) → R₁ ω = 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (cthickening (Real.sqrt P) K) → S₁ ω = 0 := by
+  intro hSL hIMS P m hmP
+  have hSL' := hSL Submission.dor_imrep_massOn_eq_measure_and_support
+  -- constants: retraction `c_R`, good-centre `C`, `c₄ = 8(1 + √P c_R)` and `c`
+  obtain ⟨cR, hcR, hRET⟩ := Submission.dor_lmb_fcd_retraction P m hmP
+  obtain ⟨CG, hGC⟩ := Submission.dor_lmb_fcd_good_center P m hmP
+  obtain ⟨push, homot, hPF1, hPF2, hPF3, hPF4, hPF5⟩ :=
+    Submission.dor_lmb_fcd_pushforward_homotopy hIMS P
+  have hsP : 0 ≤ Real.sqrt P := Real.sqrt_nonneg _
+  have hC0 : (0 : ℝ) ≤ CG := NNReal.coe_nonneg CG
+  obtain ⟨c₄, hc₄⟩ : ∃ c₄ : ℝ, c₄ = 8 * (1 + Real.sqrt P * cR) := ⟨_, rfl⟩
+  have hc₄0 : 0 ≤ c₄ := by
+    rw [hc₄]
+    have := mul_nonneg hsP hcR.le
+    linarith
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = max (max (c₄ ^ (m + 1) * (1 + 2 * (CG : ℝ)))
+      (Real.sqrt P * (2 * c₄) ^ (m + 1) * (1 + 2 * (CG : ℝ))))
+      (max (c₄ ^ m * (1 + 2 * (CG : ℝ))) (Real.sqrt P * (2 * c₄) ^ m * (1 + 2 * (CG : ℝ)))) :=
+    ⟨_, rfl⟩
+  have hc1 : c₄ ^ (m + 1) * (1 + 2 * (CG : ℝ)) ≤ c := by
+    rw [hc]; exact le_max_of_le_left (le_max_left _ _)
+  have hc2 : Real.sqrt P * (2 * c₄) ^ (m + 1) * (1 + 2 * (CG : ℝ)) ≤ c := by
+    rw [hc]; exact le_max_of_le_left (le_max_right _ _)
+  have hc3 : c₄ ^ m * (1 + 2 * (CG : ℝ)) ≤ c := by
+    rw [hc]; exact le_max_of_le_right (le_max_left _ _)
+  have hc4 : Real.sqrt P * (2 * c₄) ^ m * (1 + 2 * (CG : ℝ)) ≤ c := by
+    rw [hc]; exact le_max_of_le_right (le_max_right _ _)
+  refine ⟨c, le_trans (mul_nonneg (pow_nonneg hc₄0 _) (by positivity)) hc1, ?_⟩
+  intro K T hK hTIM hBIM hTK hTmass hBmass
+  -- the measures `μ_T`, `μ_∂T` of representations; `μ(ℝᴾ)` is the mass
+  obtain ⟨RT, hRT⟩ := hTIM
+  obtain ⟨RB, hRB⟩ := hBIM
+  have hTuniv : RT.measure univ = T.mass :=
+    ((Submission.dor_imrep_massOn_eq_measure_and_support P (m + 1) univ T RT isOpen_univ
+      hRT).1 univ isOpen_univ).symm
+  have hBuniv : RB.measure univ = T.boundary.mass :=
+    ((Submission.dor_imrep_massOn_eq_measure_and_support P m univ T.boundary RB isOpen_univ
+      hRB).1 univ isOpen_univ).symm
+  have hTfin : IsFiniteMeasure RT.measure := ⟨by rw [hTuniv]; exact lt_top_iff_ne_top.2 hTmass⟩
+  have hBfin : IsFiniteMeasure RB.measure := ⟨by rw [hBuniv]; exact lt_top_iff_ne_top.2 hBmass⟩
+  -- good centre `a`, dual skeleton `L*(a)`, retraction `ψ`
+  obtain ⟨a, ha, hGCa⟩ := hGC RT.measure RB.measure hTfin hBfin
+  obtain ⟨ψ, hψ, hψLip⟩ := hRET a ha
+  set Lstar : Set (Euclid P) :=
+    {w : Euclid P | ∃ s : Finset (Fin P), m + 2 ≤ s.card ∧ ∀ i ∈ s, ∃ z : ℤ, w i - a i = z}
+  have hdcont : Continuous fun x => infDist x Lstar := continuous_infDist_pt Lstar
+  -- slices of `T` by `d = dist(·, L*(a))` and good radii `r_j ∈ (2^{-j-3}, 2^{-j-2})`
+  obtain ⟨Ps, hPs1, hPs2⟩ := hSL' P m univ T RT RB (fun x => infDist x Lstar) 1 isOpen_univ hRT
+    hRB (lipschitz_infDist_pt Lstar)
+  have hab : ∀ j : ℕ, (1 / 2 : ℝ) ^ (j + 3) < (1 / 2) ^ (j + 2) := fun j =>
+    pow_lt_pow_right_of_lt_one₀ (by norm_num) (by norm_num) (by omega)
+  have hquarter : ∀ j : ℕ, (1 / 2 : ℝ) ^ (j + 2) ≤ 1 / 4 := fun j =>
+    (pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega : 2 ≤ j + 2)).trans
+      (by norm_num)
+  choose r hr hrIM hrvan hrform hrmass using fun j : ℕ =>
+    Submission.dor_lmb_fcd_sd_good_slice P m T RT RB (fun x => infDist x Lstar) 1 Ps
+      ((1 / 2 : ℝ) ^ (j + 3)) ((1 / 2 : ℝ) ^ (j + 2)) hRT hdcont (hab j) hPs1 hPs2
+  have hr0 : ∀ j, 0 < r j := fun j => (pow_pos (by norm_num) _).trans (hr j).1
+  have hr14 : ∀ j, r j ≤ 1 / 4 := fun j => (hr j).2.le.trans (hquarter j)
+  have hrsucc : ∀ j, r (j + 1) < r j := by
+    intro j
+    have h1 := (hr (j + 1)).2
+    rw [show j + 1 + 2 = j + 3 by omega] at h1
+    exact h1.trans (hr j).1
+  have hranti : Antitone r := antitone_nat_of_succ_le fun j => (hrsucc j).le
+  -- shells of `T` and `∂T` between consecutive good radii
+  obtain ⟨W, A, D, hWIM, hDIM, hWvan, hDvan, hZvan, hW0bd, hWbd, hWsum, hW0mass, hWmass,
+      hD0mass, hDmass, hAmass⟩ :=
+    Submission.dor_lmb_fcd_sd_shells P m T RT RB K (fun x => infDist x Lstar) r
+      (fun j => Ps (r j)) hRT hRB hK.isClosed hdcont hranti hTK hrform
+  -- mass estimates (Simon (6), (7), (10))
+  have hGCT : ∀ j : ℕ, RT.measure {x | infDist x Lstar < (1 / 2 : ℝ) ^ (j + 2)} ≤
+      ENNReal.ofReal ((CG : ℝ) * (1 / 2) ^ ((j + 2) * (m + 2))) * T.mass := by
+    intro j
+    calc RT.measure {x | infDist x Lstar < (1 / 2 : ℝ) ^ (j + 2)}
+        ≤ (CG : ℝ≥0∞) * ENNReal.ofReal (((1 / 2 : ℝ) ^ (j + 2)) ^ (m + 2)) * RT.measure univ :=
+          (hGCa _ (by positivity) (hquarter j)).1
+      _ = ENNReal.ofReal ((CG : ℝ) * (1 / 2) ^ ((j + 2) * (m + 2))) * T.mass := by
+          rw [hTuniv, ← pow_mul, ENNReal.ofReal_mul hC0, ENNReal.ofReal_coe_nnreal]
+  have hGCB : ∀ j : ℕ, RB.measure {x | infDist x Lstar < (1 / 2 : ℝ) ^ (j + 2)} ≤
+      ENNReal.ofReal ((CG : ℝ) * (1 / 2) ^ ((j + 2) * (m + 2))) * T.boundary.mass := by
+    intro j
+    calc RB.measure {x | infDist x Lstar < (1 / 2 : ℝ) ^ (j + 2)}
+        ≤ (CG : ℝ≥0∞) * ENNReal.ofReal (((1 / 2 : ℝ) ^ (j + 2)) ^ (m + 2)) * RB.measure univ :=
+          (hGCa _ (by positivity) (hquarter j)).2
+      _ = ENNReal.ofReal ((CG : ℝ) * (1 / 2) ^ ((j + 2) * (m + 2))) * T.boundary.mass := by
+          rw [hBuniv, ← pow_mul, ENNReal.ofReal_mul hC0, ENNReal.ofReal_coe_nnreal]
+  have hW0le : (W 0).mass ≤ T.mass := by
+    rw [hW0mass, ← hTuniv]; exact measure_mono (subset_univ _)
+  have hD0le : (D 0).mass ≤ T.boundary.mass := by
+    rw [hD0mass, ← hBuniv]; exact measure_mono (subset_univ _)
+  have hWle : ∀ j, (W (j + 1)).mass ≤
+      ENNReal.ofReal ((CG : ℝ) * (1 / 2) ^ ((j + 2) * (m + 2))) * T.mass := by
+    intro j
+    rw [hWmass j]
+    have hsub : {x | r (j + 1) ≤ infDist x Lstar ∧ infDist x Lstar < r j} ⊆
+        {x | infDist x Lstar < (1 / 2 : ℝ) ^ (j + 2)} := fun x hx => hx.2.trans (hr j).2
+    exact (measure_mono (μ := RT.measure) hsub).trans (hGCT j)
+  have hDle : ∀ j, (D (j + 1)).mass ≤
+      ENNReal.ofReal ((CG : ℝ) * (1 / 2) ^ ((j + 2) * (m + 2))) * T.boundary.mass := by
+    intro j
+    rw [hDmass j]
+    have hsub : {x | r (j + 1) ≤ infDist x Lstar ∧ infDist x Lstar < r j} ⊆
+        {x | infDist x Lstar < (1 / 2 : ℝ) ^ (j + 2)} := fun x hx => hx.2.trans (hr j).2
+    exact (measure_mono (μ := RB.measure) hsub).trans (hGCB j)
+  have hZle : ∀ j, (Ps (r j)).mass ≤
+      ENNReal.ofReal (4 * (CG : ℝ) * (1 / 2) ^ ((j + 2) * (m + 1))) * T.mass := by
+    intro j
+    have hδpos : (0 : ℝ) < (1 / 2) ^ (j + 3) := by positivity
+    have hsub : {x | (1 / 2 : ℝ) ^ (j + 3) < infDist x Lstar ∧
+        infDist x Lstar < (1 / 2) ^ (j + 2)} ⊆ {x | infDist x Lstar < (1 / 2 : ℝ) ^ (j + 2)} :=
+      fun x hx => hx.2
+    have hstrip := (measure_mono (μ := RT.measure) hsub).trans (hGCT j)
+    have hreal : (1 / 2 : ℝ) ^ (j + 3) * (4 * (CG : ℝ) * (1 / 2) ^ ((j + 2) * (m + 1))) =
+        2 * ((CG : ℝ) * (1 / 2) ^ ((j + 2) * (m + 2))) := by
+      rw [show (j + 2) * (m + 2) = (j + 2) * (m + 1) + (j + 2) by ring, pow_add]
+      ring
+    have hR : ENNReal.ofReal ((1 / 2 : ℝ) ^ (j + 3)) *
+        (ENNReal.ofReal (4 * (CG : ℝ) * (1 / 2) ^ ((j + 2) * (m + 1))) * T.mass) =
+        2 * (ENNReal.ofReal ((CG : ℝ) * (1 / 2) ^ ((j + 2) * (m + 2))) * T.mass) := by
+      rw [← mul_assoc, ← ENNReal.ofReal_mul hδpos.le, hreal,
+        ENNReal.ofReal_mul (show (0 : ℝ) ≤ 2 by norm_num), ENNReal.ofReal_ofNat, mul_assoc]
+    have h1 := hrmass j
+    rw [show (1 / 2 : ℝ) ^ (j + 2) - (1 / 2) ^ (j + 3) = (1 / 2) ^ (j + 3) by ring,
+      ENNReal.coe_one, one_mul] at h1
+    rw [← ENNReal.mul_le_mul_iff_right (ENNReal.ofReal_pos.2 hδpos).ne' ENNReal.ofReal_ne_top,
+      hR]
+    exact h1.trans (mul_le_mul' le_rfl hstrip)
+  have hAtendsto : Tendsto (fun N => (A N).mass) atTop (𝓝 0) := by
+    have hAle : ∀ N, (A N).mass ≤ ENNReal.ofReal ((CG : ℝ) * (1 / 2) ^ N) * T.mass := by
+      intro N
+      rw [hAmass N]
+      have hsub : {x | infDist x Lstar < r N} ⊆ {x | infDist x Lstar < (1 / 2 : ℝ) ^ (N + 2)} :=
+        fun x hx => lt_trans hx (hr N).2
+      have hpow : (1 / 2 : ℝ) ^ ((N + 2) * (m + 2)) ≤ (1 / 2) ^ N :=
+        pow_le_pow_of_le_one (by norm_num) (by norm_num) (by nlinarith)
+      exact (measure_mono (μ := RT.measure) hsub).trans ((hGCT N).trans
+        (mul_le_mul' (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left hpow hC0)) le_rfl))
+    have h1 : Tendsto (fun N : ℕ => (CG : ℝ) * (1 / 2) ^ N) atTop (𝓝 0) := by
+      have := (tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num : (0 : ℝ) ≤ 1 / 2)
+        (by norm_num)).const_mul (CG : ℝ)
+      rwa [mul_zero] at this
+    have h2 := ENNReal.Tendsto.mul_const (ENNReal.tendsto_ofReal h1) (Or.inr hTmass)
+    rw [ENNReal.ofReal_zero, zero_mul] at h2
+    exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h2 (fun _ => zero_le)
+      hAle
+  -- globally Lipschitz pieces `φ_j = ψ` on `{d ≥ r_j}` with constants `Λ_j ≤ c₄ 2^j`
+  have hψLipOn : ∀ j, LipschitzOnWith (Real.toNNReal (cR / r j)) ψ {x | r j ≤ infDist x Lstar} :=
+    fun j => LipschitzOnWith.of_dist_le' fun x hx y hy => hψLip (r j) (hr0 j) (hr14 j) x y hx hy
+  choose φ hφLip hφEq using fun j => Submission.dor_lmb_fcd_sd_lipschitz_extend P
+    {x | r j ≤ infDist x Lstar} ψ (Real.toNNReal (cR / r j)) (hψLipOn j)
+  obtain ⟨Λ, hΛ⟩ : ∃ Λ : ℕ → NNReal,
+      ∀ j, Λ j = max 1 (NNReal.sqrt P * Real.toNNReal (cR / r j)) := ⟨_, fun j => rfl⟩
+  have hφΛ : ∀ j, LipschitzWith (Λ j) (φ j) := fun j => by
+    rw [hΛ]; exact (hφLip j).weaken (le_max_right _ _)
+  have hΛ1 : ∀ j, 1 ≤ Λ j := fun j => by rw [hΛ]; exact le_max_left _ _
+  have hΛmono : ∀ j, Λ j ≤ Λ (j + 1) := fun j => by
+    rw [hΛ, hΛ]
+    exact max_le_max le_rfl (mul_le_mul' le_rfl (Real.toNNReal_le_toNNReal
+      (div_le_div_of_nonneg_left hcR.le (hr0 (j + 1)) (hranti (Nat.le_succ j)))))
+  have hΛc₄ : ∀ j, (Λ j : ℝ) ≤ c₄ * 2 ^ j := fun j => by
+    have h2j : (1 : ℝ) ≤ 2 ^ j := one_le_pow₀ (by norm_num)
+    have hkey : cR / r j ≤ 8 * cR * 2 ^ j := by
+      rw [div_le_iff₀ (hr0 j)]
+      have h1 := mul_lt_mul_of_pos_left (hr j).1 (by positivity : (0 : ℝ) < 2 ^ j)
+      have h2 : (2 : ℝ) ^ j * (1 / 2) ^ (j + 3) = 1 / 8 := by
+        rw [pow_add, ← mul_assoc, ← mul_pow]; norm_num
+      rw [h2] at h1
+      nlinarith [mul_lt_mul_of_pos_left h1 hcR]
+    rw [hΛ, NNReal.coe_max, NNReal.coe_one, NNReal.coe_mul, Real.coe_sqrt, NNReal.coe_natCast,
+      Real.coe_toNNReal _ (div_nonneg hcR.le (hr0 j).le), hc₄]
+    have h3 : 0 ≤ Real.sqrt P * cR * 2 ^ j :=
+      mul_nonneg (mul_nonneg hsP hcR.le) (by positivity)
+    refine max_le (by nlinarith) ?_
+    nlinarith [mul_le_mul_of_nonneg_left hkey hsP]
+  -- the compact sets `E_j = K ∩ {d ≥ r_j}` and the vanishing sets `F₁ = Lₙ ∩ K_√P`, `F₂ = K_√P`
+  have hEcpt : ∀ j, IsCompact (K ∩ {x | r j ≤ infDist x Lstar}) := fun j =>
+    hK.inter_right (isClosed_le continuous_const hdcont)
+  have hEmono : ∀ j, K ∩ {x | r j ≤ infDist x Lstar} ⊆ K ∩ {x | r (j + 1) ≤ infDist x Lstar} :=
+    fun j x hx => ⟨hx.1, (hranti (Nat.le_succ j)).trans hx.2⟩
+  have hφψ : ∀ j, EqOn (φ j) ψ (K ∩ {x | r j ≤ infDist x Lstar}) := fun j x hx => hφEq j hx.2
+  have hψdist : ∀ j, ∀ x ∈ K ∩ {x | r j ≤ infDist x Lstar}, dist (ψ x) x ≤ Real.sqrt P :=
+    fun j x hx => (hψ x ((hr0 j).trans_le hx.2)).2
+  have hψF₁ : ∀ j, ψ '' (K ∩ {x | r j ≤ infDist x Lstar}) ⊆
+      {x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} ∩
+        cthickening (Real.sqrt P) K := by
+    rintro j _ ⟨x, hx, rfl⟩
+    exact ⟨(hψ x ((hr0 j).trans_le hx.2)).1,
+      mem_cthickening_of_dist_le _ x _ K hx.1 (hψdist j x hx)⟩
+  have hψF₂ : ∀ j, ∀ x ∈ K ∩ {x | r j ≤ infDist x Lstar}, ∀ t ∈ Icc (0 : ℝ) 1,
+      x + t • (ψ x - x) ∈ cthickening (Real.sqrt P) K := by
+    intro j x hx t ht
+    refine mem_cthickening_of_dist_le _ x _ K hx.1 ?_
+    rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_nonneg ht.1,
+      ← dist_eq_norm]
+    calc t * dist (ψ x) x ≤ 1 * Real.sqrt P :=
+          mul_le_mul ht.2 (hψdist j x hx) dist_nonneg zero_le_one
+      _ = Real.sqrt P := one_mul _
+  -- deform the shells and sum them (Simon (11)–(25))
+  exact Submission.dor_lmb_fcd_sd_core hIMS P m push homot hPF1 hPF2 hPF3 hPF4 hPF5 c c₄ CG T
+    ψ (fun j => K ∩ {x | r j ≤ infDist x Lstar}) φ Λ W A D (fun j => Ps (r j))
+    ({x : Euclid P | ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, ∃ z : ℤ, x i = z} ∩
+      cthickening (Real.sqrt P) K) (cthickening (Real.sqrt P) K)
+    hc₄0 hC0 hc1 hc2 hc3 hc4 hTmass hBmass hEcpt hEmono hφΛ hΛ1 hΛmono hΛc₄ hφψ hψdist hψF₁
+    hψF₂ hWIM hDIM hrIM hWvan hDvan hZvan hW0bd hWbd hWsum hW0le hWle hD0le hDle hZle hAtendsto
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
