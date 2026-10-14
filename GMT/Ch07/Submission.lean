@@ -1770,6 +1770,35 @@ theorem Submission.cmcdt_ims_imrep_tsum : ∀ (P n : ℕ) (U : Set (Euclid P)) (
   rw [hR' (ω : DifferentialForm (Euclid P) n)]
   exact hmain
 
+/-- **A mass-summable series of currents, and integer multiplicity of its sum** (the closing step
+of B3 in the proof of the deformation theorem, Simon Ch. 6, 5.1).  Let `Wᵢ ∈ 𝒟ₖ₊₁(ℝᴾ)` with
+`Σᵢ M(Wᵢ) < ∞`.  The series `S(ω) = Σᵢ Wᵢ(ω)` defines a current with `M(S) ≤ Σᵢ M(Wᵢ)` and, by
+(VO), `spt S ⊆ closure ⋃ᵢ spt Wᵢ`.  If every `Wᵢ = τ(Mᵢ, θᵢ, ξᵢ)` is integer multiplicity, then
+(MR) with `U = W = ℝᴾ` gives `μ_{Rᵢ}(ℝᴾ) = M(Wᵢ)`, so the triples have finite total weight and
+are summed by one triple `R'`; by uniqueness of sums `S(ω) = R'(ω)` for every test form `ω`.
+The tangent locality and orientation bound of (IMC) enter through `cmcdt_ims_imrep_tsum`. -/
+theorem Submission.dimred_mbl_dt_im_series : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P k : ℕ) (W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), ∑' i, (W i).mass < ∞ → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => W i ω) (S ω)) ∧ S.mass ≤ ∑' i, (W i).mass ∧ S.support ⊆ closure (⋃ i, (W i).support) ∧ ((∀ i, IsIntegerMultiplicity (W i)) → IsIntegerMultiplicity S) := by
+  intro hVO hMR _hIMC P k W hW
+  -- Steps 1–4: the series current `S`, `M(S) ≤ Σᵢ M(Wᵢ)` and `spt S ⊆ closure ⋃ᵢ spt Wᵢ`
+  obtain ⟨S, hS, hmass, hsupp⟩ :=
+    Submission.cmcdt_ims_series_current hVO P (k + 1) univ W isOpen_univ hW.ne
+  refine ⟨S, hS, hmass, hsupp, fun hIM => ?_⟩
+  -- Step 5: representations `Wᵢ = τ(Rᵢ)`; (MR) gives `μ_{Rᵢ}(ℝᴾ) = M_{ℝᴾ}(Wᵢ) = M(Wᵢ)`
+  choose R hR using hIM
+  have hRmeas : ∀ i, (R i).measure univ = (W i).mass := fun i =>
+    (hMR P (k + 1) univ (W i) (R i) isOpen_univ (hR i) univ isOpen_univ).symm
+  have hRsum : ∑' i, (R i).measure univ ≠ ∞ := by
+    rw [tsum_congr hRmeas]
+    exact hW.ne
+  -- one triple `R'` with `Σᵢ Rᵢ(ω) = R'(ω)`; then `S(ω) = R'(ω)` by uniqueness of sums
+  obtain ⟨R', hR'⟩ := Submission.cmcdt_ims_imrep_tsum P (k + 1) univ R isOpen_univ hRsum
+  refine ⟨R', fun ω => (hS ω).unique ?_⟩
+  have hWR : (fun i => W i ω) =
+      fun i => (R i).action (ω : DifferentialForm (Euclid P) (k + 1)) :=
+    funext fun i => hR i ω
+  rw [hWR]
+  exact hR' ω
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
