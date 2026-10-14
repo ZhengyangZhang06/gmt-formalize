@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "21d340267fcd9b09490e8f165264c69767d61627120db79ee83cbdcd14079c92",
+  "git_delta": {
+    "base_commit": "54e07b90c066cb77c1b48c80b9e191c65f7b8458",
+    "candidate_commit": "e3d52fbd29e0d7226033967eb5f3eda16c934f1f",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_lc_ic_massOn_eq_zero_of_disjoint",
+    "diff_sha256": "fb420e520c6d8d98c7d8d7dfeedafac0e1e38b8efb38ce71d22ec7a663206252",
+    "source_sha256": "74989920e4e1eed1253c0ae955409836d45375285e1ae899578fd61c069863be",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_lc_ic_massOn_eq_zero_of_disjoint",
+      "statement": "∀ (P n : ℕ) (U V : Set (Euclid P)) (T : GeometricCurrentOn U n), Disjoint V T.support → T.massOn V = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
