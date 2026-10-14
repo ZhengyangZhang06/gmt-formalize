@@ -4692,6 +4692,419 @@ theorem Submission.rectifiability_mass_measure_representation : ∀ (P k : ℕ) 
       refine ⟨by rw [hfun]; exact hint, ?_⟩
       rw [hfun, ← heq, hLHω ω]
 
+/-- Simon Ch. 6, Lemma 5.4, proof p. 161, displays (1) and (2): elementary facts on the dual
+skeleton `La = {y : y_i − a_i ∈ ℤ for m + 2 indices i}` of a point `a ∈ (1/4, 3/4)^d`.
+`La` is a finite union of finite intersections of the closed sets `{y : y_i − a_i ∈ ℤ}`, hence
+closed; a point agreeing with `a` on `m + 2` coordinates lies in `La`; and if `y ∈ La ∩ [0,1]^d`
+lies on the ray from the centre `c` of a face of `[0,1]^d` (free coordinates `J`) through `x`,
+then each witness coordinate `i` of `y` has `y_i − a_i ∈ (−1, 1) ∩ ℤ = {0}`, so `i ∈ J` (else
+`a_i = y_i = c_i ∈ {0, 1}`) and `x_i = a_i` as `s > 0`. -/
+theorem Submission.dr_cc_skeleton_facts :
+    ∀ (m ℓ : ℕ) (a : Eucl (m + 1 + ℓ)), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ La : Set (Eucl (m + 1 + ℓ)), La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧ ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → IsClosed La ∧ (∀ (J : Finset (Fin (m + 1 + ℓ))) (c : Eucl (m + 1 + ℓ)), m + 2 ≤ J.card → (∀ i ∈ J, c i = a i) → c ∈ La) ∧ ∀ (J : Finset (Fin (m + 1 + ℓ))) (c x y : Eucl (m + 1 + ℓ)) (s : ℝ), (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) → (∀ i ∉ J, x i = c i) → (∀ i, 0 ≤ y i ∧ y i ≤ 1) → 0 < s → (∀ i, y i - c i = s * (x i - c i)) → y ∈ La → x ∈ La := by
+  intro m ℓ a ha La hLa
+  refine ⟨?_, ?_, ?_⟩
+  · -- `La = ⋃_{|J| = m+2} ⋂_{i ∈ J} {y : y_i − a_i ∈ ℤ}`, a finite union of closed sets.
+    have hLa' : La = ⋃ J ∈ {J : Finset (Fin (m + 1 + ℓ)) | J.card = m + 2},
+        ⋂ i ∈ J, (fun y : Eucl (m + 1 + ℓ) => y i - a i) ⁻¹' range ((↑) : ℤ → ℝ) := by
+      rw [hLa]
+      ext y
+      simp only [mem_ofPred_eq, mem_iUnion, mem_iInter, mem_preimage, mem_range, exists_prop]
+      exact exists_congr fun J => and_congr_right fun _ =>
+        forall₂_congr fun i _ => exists_congr fun k => eq_comm
+    rw [hLa']
+    refine (toFinite _).isClosed_biUnion fun J _ => isClosed_biInter fun i _ => ?_
+    exact Real.isClosed_range_intCast.preimage (by fun_prop)
+  · -- Face centres: any `m + 2` of the coordinates where `c = a` witness `c ∈ La`.
+    intro J c hJ hc
+    obtain ⟨J', hJ'J, hJ'⟩ := Finset.exists_subset_card_eq hJ
+    rw [hLa]
+    exact ⟨J', hJ', fun i hi => ⟨0, by rw [hc i (hJ'J hi), sub_self, Int.cast_zero]⟩⟩
+  · -- Cone property: every witness coordinate of `y` is free and has `x_i = y_i = a_i`.
+    intro J c x y s hcJ hc01 hxc hy hs hyx hyLa
+    rw [hLa] at hyLa ⊢
+    obtain ⟨J', hJ', hyJ'⟩ := hyLa
+    refine ⟨J', hJ', fun i hi => ⟨0, ?_⟩⟩
+    obtain ⟨k, hk⟩ := hyJ' i hi
+    obtain ⟨ha1, ha2⟩ := ha i
+    obtain ⟨hy0, hy1⟩ := hy i
+    -- `y_i − a_i ∈ (−1, 1)` is an integer, hence `0`.
+    have hk0 : k = 0 := by
+      have h1 : (-1 : ℝ) < k := by linarith
+      have h2 : (k : ℝ) < 1 := by linarith
+      have h1' : -1 < k := by exact_mod_cast h1
+      have h2' : k < 1 := by exact_mod_cast h2
+      omega
+    rw [hk0, Int.cast_zero] at hk
+    rw [Int.cast_zero]
+    have h := hyx i
+    by_cases hiJ : i ∈ J
+    · rw [hcJ i hiJ, hk] at h
+      exact (mul_eq_zero.1 h.symm).resolve_left hs.ne'
+    · -- A fixed coordinate would give `a_i = y_i = c_i ∈ {0, 1}`.
+      rw [hxc i hiJ, sub_self, mul_zero] at h
+      rcases hc01 i hiJ with h0 | h0 <;> linarith
+
+/-- Simon Ch. 6, Lemma 5.4, proof p. 163 ("by (7), (8) and the chain rule"), pointwise form:
+if `f` is `K₁`-Lipschitz at `x` within `A`, `f` maps `A` into `B`, and `g` is `K₂`-Lipschitz at
+`f x` within `B`, then `g ∘ f` is `K₁ K₂`-Lipschitz at `x` within `A`.  With
+`η = min{1, ε/(K₁ + K₂ + 1)}` and `δ = min{δ₁, δ₂/(K₁ + η)}` one gets
+`(K₂ + η)(K₁ + η) = K₁K₂ + η(K₁ + K₂ + η) ≤ K₁K₂ + ε`. -/
+theorem Submission.dr_cc_lip_at_comp : ∀ (X Y Z : Type) [PseudoMetricSpace X] [PseudoMetricSpace Y] [PseudoMetricSpace Z] (f : X → Y) (g : Y → Z) (A : Set X) (B : Set Y) (x : X) (K₁ K₂ : ℝ), 0 ≤ K₁ → 0 ≤ K₂ → MapsTo f A B → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' ∈ A, dist x' x < δ → dist (f x') (f x) ≤ (K₁ + ε) * dist x' x) → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ B, dist y' (f x) < δ → dist (g y') (g (f x)) ≤ (K₂ + ε) * dist y' (f x)) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' ∈ A, dist x' x < δ → dist (g (f x')) (g (f x)) ≤ (K₁ * K₂ + ε) * dist x' x := by
+  intro X Y Z _ _ _ f g A B x K₁ K₂ hK₁ hK₂ hfAB hf hg ε hε
+  -- The auxiliary level `η = min{1, ε/(K₁ + K₂ + 1)}`: `0 < η ≤ 1` and `η(K₁ + K₂ + 1) ≤ ε`.
+  have hS : 0 < K₁ + K₂ + 1 := by linarith
+  obtain ⟨η, hη, hη1, hηε⟩ : ∃ η : ℝ, 0 < η ∧ η ≤ 1 ∧ η * (K₁ + K₂ + 1) ≤ ε :=
+    ⟨min 1 (ε / (K₁ + K₂ + 1)), lt_min one_pos (div_pos hε hS), min_le_left _ _,
+      (le_div_iff₀ hS).1 (min_le_right _ _)⟩
+  -- `δ₁` for `f` and `δ₂` for `g` at level `η`; then `δ = min{δ₁, δ₂/(K₁ + η)}`.
+  obtain ⟨δ₁, hδ₁, h₁⟩ := hf η hη
+  obtain ⟨δ₂, hδ₂, h₂⟩ := hg η hη
+  have hL : 0 < K₁ + η := by linarith
+  refine ⟨min δ₁ (δ₂ / (K₁ + η)), lt_min hδ₁ (div_pos hδ₂ hL), fun x' hx' hd => ?_⟩
+  -- `d(f x', f x) ≤ (K₁ + η) d(x', x) < δ₂`, and `f x' ∈ B`, so the bound for `g` applies.
+  have hfx : dist (f x') (f x) ≤ (K₁ + η) * dist x' x := h₁ x' hx' (hd.trans_le (min_le_left _ _))
+  have hd₂ : (K₁ + η) * dist x' x < δ₂ := by
+    rw [← lt_div_iff₀' hL]
+    exact hd.trans_le (min_le_right _ _)
+  have hgx := h₂ (f x') (hfAB hx') (hfx.trans_lt hd₂)
+  -- `(K₂ + η)(K₁ + η) = K₁K₂ + η(K₁ + K₂ + η) ≤ K₁K₂ + η(K₁ + K₂ + 1) ≤ K₁K₂ + ε`.
+  have hη2 : η * (K₁ + K₂ + η) ≤ η * (K₁ + K₂ + 1) :=
+    mul_le_mul_of_nonneg_left (by linarith) hη.le
+  calc dist (g (f x')) (g (f x)) ≤ (K₂ + η) * dist (f x') (f x) := hgx
+    _ ≤ (K₂ + η) * ((K₁ + η) * dist x' x) := mul_le_mul_of_nonneg_left hfx (by linarith)
+    _ = (K₁ * K₂ + η * (K₁ + K₂ + η)) * dist x' x := by ring
+    _ ≤ (K₁ * K₂ + ε) * dist x' x := mul_le_mul_of_nonneg_right (by linarith) dist_nonneg
+
+/-- Union rule for pointwise upper Lipschitz bounds (used for Simon Ch. 6, Lemma 5.4, p. 162,
+where `y` may lie on several closed faces): if `g` is `K`-Lipschitz at `y` within `G k ∩ B` for
+every closed piece `G k ∋ y`, and `B ⊆ ⋃ k, G k` with finitely many pieces, then `g` is
+`K`-Lipschitz at `y` within `B`.  Pieces missing `y` stay a positive distance away from `y`, and
+the minimum of finitely many radii is a common radius. -/
+theorem Submission.dr_cc_lip_at_union : ∀ (X Y : Type) [PseudoMetricSpace X] [PseudoMetricSpace Y] (ι : Type) [Finite ι] (G : ι → Set X) (B : Set X) (g : X → Y) (y : X) (K : ℝ), (∀ k, IsClosed (G k)) → B ⊆ ⋃ k, G k → (∀ k, y ∈ G k → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ G k ∩ B, dist y' y < δ → dist (g y') (g y) ≤ (K + ε) * dist y' y) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ B, dist y' y < δ → dist (g y') (g y) ≤ (K + ε) * dist y' y := by
+  intro X Y _ _ ι _ G B g y K hG hB hloc ε hε
+  -- A radius `r k > 0` for each piece: from the hypothesis if `y ∈ G k`, and otherwise a ball
+  -- around `y` missing the closed set `G k` (the bound then holds vacuously).
+  have hr : ∀ k, ∃ r : ℝ, 0 < r ∧
+      ∀ y' ∈ G k ∩ B, dist y' y < r → dist (g y') (g y) ≤ (K + ε) * dist y' y := by
+    intro k
+    by_cases hyk : y ∈ G k
+    · exact hloc k hyk ε hε
+    · obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.1 (hG k).isOpen_compl y hyk
+      exact ⟨r, hr, fun y' hy' hdist => absurd hy'.1 (hball (Metric.mem_ball.2 hdist))⟩
+  choose r hr0 hrb using hr
+  -- A common radius `δ ≤ r k`: the minimum over the finite index type (`1` if `ι` is empty).
+  obtain ⟨δ, hδ, hδr⟩ : ∃ δ : ℝ, 0 < δ ∧ ∀ k, δ ≤ r k := by
+    rcases isEmpty_or_nonempty ι with hι | hι
+    · exact ⟨1, one_pos, fun k => isEmptyElim k⟩
+    · obtain ⟨k₀, hk₀⟩ := Finite.exists_min r
+      exact ⟨r k₀, hr0 k₀, hk₀⟩
+  -- A point `y' ∈ B` lies in some piece `G k`, and `dist y' y < δ ≤ r k`.
+  refine ⟨δ, hδ, fun y' hy' hdist => ?_⟩
+  obtain ⟨k, hk⟩ := Set.mem_iUnion.1 (hB hy')
+  exact hrb k y' ⟨hk, hy'⟩ (hdist.trans_le (hδr k))
+
+/-- Simon Ch. 6, Lemma 5.4, displays (4)–(7) (corrected similarity bound): if `y ∈ [0,1]^d` lies
+on the ray `y = c + s(x - c)` from a face centre `c` (with `c_i = a_i` on `J`, `c_i ∈ {0,1}`
+and `x_i = c_i` off `J`), then `min{1/4, s·dist(x, La)} ≤ dist(y, La)`.  A point `w ∈ La` either
+has a witness coordinate where `y_i ∈ [0,1]` is `1/4`-far from `a_i + ℤ`, or all its witness
+coordinates are free with zero shift, and then `w' = c + s⁻¹(w - c) ∈ La` and
+`y - w = s(x - w')`. -/
+theorem Submission.dr_cc_similarity_bound : ∀ (m ℓ : ℕ) (a : Eucl (m + 1 + ℓ)), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ La : Set (Eucl (m + 1 + ℓ)), La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧ ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → ∀ (J : Finset (Fin (m + 1 + ℓ))) (c x y : Eucl (m + 1 + ℓ)) (s : ℝ), (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) → (∀ i ∉ J, x i = c i) → (∀ i, 0 ≤ y i ∧ y i ≤ 1) → 0 < s → (∀ i, y i - c i = s * (x i - c i)) → min (1 / 4) (s * infDist x La) ≤ infDist y La := by
+  intro m ℓ a ha La hLa J c x y s hcJ hcJc hxJc hy hs hrel
+  -- `La = ∅` is trivial; otherwise it suffices to bound `dist y w` for each `w ∈ La`.
+  rcases La.eq_empty_or_nonempty with hE | hne
+  · simp [hE]
+  rw [Metric.le_infDist hne]
+  intro w hw
+  -- The witness set `J'` (of `m + 2` indices) and the integers `k_i` for `w ∈ La`.
+  rw [hLa, Set.mem_ofPred_eq] at hw
+  obtain ⟨J', hJ'card, hJ'⟩ := hw
+  -- `|y_i - w_i| ≤ |y - w|`, so a coordinate gap of `1/4` gives the bound.
+  have hcoord : ∀ i, 1 / 4 ≤ |y i - w i| → min (1 / 4) (s * infDist x La) ≤ dist y w := by
+    intro i hi
+    have hi' := PiLp.dist_apply_le y w i
+    rw [Real.dist_eq] at hi'
+    exact (min_le_left _ _).trans (hi.trans hi')
+  by_cases h1 : ∃ i ∈ J', i ∉ J
+  · -- Case 1: a witness index `i ∉ J`, where `y_i = c_i ∈ {0, 1}`.
+    obtain ⟨i, hiJ', hiJ⟩ := h1
+    obtain ⟨k, hk⟩ := hJ' i hiJ'
+    obtain ⟨ha1, ha2⟩ := ha i
+    have hyi : y i = c i := by
+      have hri := hrel i
+      rw [hxJc i hiJ, sub_self, mul_zero, sub_eq_zero] at hri
+      exact hri
+    refine hcoord i ?_
+    rcases hcJc i hiJ with hc | hc
+    · have hk' : (k : ℝ) ≤ -1 ∨ (0 : ℝ) ≤ k := by
+        rcases le_or_gt 0 k with h | h
+        · right; exact_mod_cast h
+        · left; exact_mod_cast (show k ≤ -1 by omega)
+      rcases hk' with hk1 | hk1
+      · exact (show (1 : ℝ) / 4 ≤ y i - w i by linarith).trans (le_abs_self _)
+      · exact (show (1 : ℝ) / 4 ≤ -(y i - w i) by linarith).trans (neg_le_abs _)
+    · have hk' : (k : ℝ) ≤ 0 ∨ (1 : ℝ) ≤ k := by
+        rcases le_or_gt 1 k with h | h
+        · right; exact_mod_cast h
+        · left; exact_mod_cast (show k ≤ 0 by omega)
+      rcases hk' with hk1 | hk1
+      · exact (show (1 : ℝ) / 4 ≤ y i - w i by linarith).trans (le_abs_self _)
+      · exact (show (1 : ℝ) / 4 ≤ -(y i - w i) by linarith).trans (neg_le_abs _)
+  push Not at h1
+  by_cases h2 : ∃ i ∈ J', w i ≠ a i
+  · -- Case 2: a nonzero shift `k_i` at a witness index, where `y_i ∈ [0, 1]`.
+    obtain ⟨i, hiJ', hwi⟩ := h2
+    obtain ⟨k, hk⟩ := hJ' i hiJ'
+    obtain ⟨ha1, ha2⟩ := ha i
+    obtain ⟨hy0, hy1⟩ := hy i
+    have hk0 : k ≠ 0 := by
+      rintro rfl
+      rw [Int.cast_zero, sub_eq_zero] at hk
+      exact hwi hk
+    have hk' : (k : ℝ) ≤ -1 ∨ (1 : ℝ) ≤ k := by
+      rcases le_or_gt 1 k with h | h
+      · right; exact_mod_cast h
+      · left; exact_mod_cast (show k ≤ -1 by omega)
+    refine hcoord i ?_
+    rcases hk' with hk1 | hk1
+    · exact (show (1 : ℝ) / 4 ≤ y i - w i by linarith).trans (le_abs_self _)
+    · exact (show (1 : ℝ) / 4 ≤ -(y i - w i) by linarith).trans (neg_le_abs _)
+  -- Case 3: all witness indices lie in `J` with zero shifts; `w' = c + s⁻¹(w - c) ∈ La`.
+  push Not at h2
+  have hw' : c + s⁻¹ • (w - c) ∈ La := by
+    rw [hLa, Set.mem_ofPred_eq]
+    refine ⟨J', hJ'card, fun i hi => ⟨0, ?_⟩⟩
+    simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul, h2 i hi,
+      hcJ i (h1 i hi), sub_self, mul_zero, add_zero, Int.cast_zero]
+  have hyw : y - w = s • (x - (c + s⁻¹ • (w - c))) := by
+    ext i
+    simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul]
+    calc y i - w i = (y i - c i) - (w i - c i) := by ring
+      _ = s * (x i - c i) - s * s⁻¹ * (w i - c i) := by rw [hrel i, mul_inv_cancel₀ hs.ne', one_mul]
+      _ = s * (x i - (c i + s⁻¹ * (w i - c i))) := by ring
+  have hdist : dist y w = s * dist x (c + s⁻¹ • (w - c)) := by
+    rw [dist_eq_norm, dist_eq_norm, hyw, norm_smul, Real.norm_of_nonneg hs.le]
+  rw [hdist]
+  exact (min_le_right _ _).trans
+    (mul_le_mul_of_nonneg_left (Metric.infDist_le_dist_of_mem hw') hs.le)
+
+/-- Simon Ch. 6, proof of Lemma 5.4: the radial retraction `ψ_F` with origin `c` (p. 161) of
+`F = {x ∈ [0,1]^D : xᵢ = cᵢ (i ∉ J)}` onto its relative boundary, with its pointwise Lipschitz
+bound (printed (8), p. 163).  Here `g(x) = c + N(x - c)⁻¹ • (x - c)` for the gauge
+`N(v) = max_{i ∈ J} max (vᵢ/(1 - aᵢ)) (-vᵢ/aᵢ)`, and `s = N(x - c)⁻¹`. -/
+theorem Submission.dr_cc_radial_map : ∀ (D : ℕ) (a : Eucl D), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ (J : Finset (Fin D)) (c : Eucl D), (∀ i ∈ J, c i = a i) → ∃ g : Eucl D → Eucl D, ∀ x : Eucl D, (∀ i, 0 ≤ x i ∧ x i ≤ 1) → (∀ i ∉ J, x i = c i) → x ≠ c → (∀ i, 0 ≤ g x i ∧ g x i ≤ 1) ∧ (∃ i ∈ J, g x i = 0 ∨ g x i = 1) ∧ ∃ s : ℝ, 0 < s ∧ (∀ i, g x i - c i = s * (x i - c i)) ∧ s * dist x c ≤ Real.sqrt (D : ℝ) ∧ ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' : Eucl D, (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → (∀ i ∉ J, x' i = c i) → dist x' x < δ → dist (g x') (g x) ≤ ((1 + 4 * Real.sqrt (D : ℝ)) * s + ε) * dist x' x := by
+  intro D a ha J c hcJ
+  -- Step 1: for `J = ∅` the face is `{c}`, so no `x` is admissible.
+  rcases J.eq_empty_or_nonempty with hJ | hJ
+  · refine ⟨id, fun x _ hxJ hxc => absurd ?_ hxc⟩
+    ext i
+    exact hxJ i (by simp [hJ])
+  -- Step 0: `aᵢ, 1 - aᵢ > 1/4`, coordinates are bounded by the norm, `diam [0,1]^D ≤ √D`.
+  have ha0 : ∀ i, 0 < a i := fun i => by linarith [(ha i).1]
+  have ha1 : ∀ i, 0 < 1 - a i := fun i => by linarith [(ha i).2]
+  have hcoord : ∀ (v : Eucl D) (i : Fin D), |v i| ≤ ‖v‖ := by
+    intro v i
+    have h := PiLp.norm_apply_le v i
+    rwa [Real.norm_eq_abs] at h
+  have hdiam : ∀ p q : Eucl D, (∀ i, 0 ≤ p i ∧ p i ≤ 1) → (∀ i, 0 ≤ q i ∧ q i ≤ 1) →
+      dist p q ≤ Real.sqrt D := by
+    intro p q hp hq
+    rw [EuclideanSpace.dist_eq]
+    refine Real.sqrt_le_sqrt ?_
+    calc ∑ i, dist (p i) (q i) ^ 2 ≤ ∑ _i : Fin D, (1 : ℝ) := by
+          refine Finset.sum_le_sum fun i _ => ?_
+          have h1 : 0 ≤ 1 - p i + q i := by linarith [(hp i).2, (hq i).1]
+          have h2 : 0 ≤ 1 + p i - q i := by linarith [(hp i).1, (hq i).2]
+          rw [Real.dist_eq, sq_abs]
+          nlinarith [mul_nonneg h1 h2]
+      _ = D := by simp
+  -- Step 2: the gauge `N(v) = max_{i ∈ J} fᵢ(v)`, `fᵢ(v) = max (vᵢ/(1 - aᵢ)) (-vᵢ/aᵢ)`.
+  obtain ⟨f, hf⟩ : ∃ f : Eucl D → Fin D → ℝ,
+      ∀ v i, f v i = max (v i / (1 - a i)) (-v i / a i) := ⟨_, fun _ _ => rfl⟩
+  obtain ⟨N, hN⟩ : ∃ N : Eucl D → ℝ, ∀ v, N v = J.sup' hJ (f v) := ⟨_, fun _ => rfl⟩
+  have hfN : ∀ v, ∀ i ∈ J, f v i ≤ N v := by
+    intro v i hi
+    rw [hN]
+    exact Finset.le_sup' (f v) hi
+  have hNatt : ∀ v, ∃ i ∈ J, N v = f v i := by
+    intro v
+    obtain ⟨i, hi, h⟩ := Finset.exists_mem_eq_sup' hJ (f v)
+    exact ⟨i, hi, (hN v).trans h⟩
+  -- (N2): each `fᵢ`, hence `N`, is `4`-Lipschitz.
+  have hfLip : ∀ v w : Eucl D, ∀ i, f w i ≤ f v i + 4 * ‖w - v‖ := by
+    intro v w i
+    have hwv : |w i - v i| ≤ ‖w - v‖ := hcoord (w - v) i
+    have e1 : |w i / (1 - a i) - v i / (1 - a i)| ≤ 4 * |w i - v i| := by
+      rw [← sub_div, abs_div, abs_of_pos (ha1 i), div_le_iff₀ (ha1 i)]
+      nlinarith [abs_nonneg (w i - v i), (ha i).2]
+    have e2 : |-w i / a i - -v i / a i| ≤ 4 * |w i - v i| := by
+      rw [← sub_div, abs_div, abs_of_pos (ha0 i), div_le_iff₀ (ha0 i), neg_sub_neg,
+        abs_sub_comm (v i) (w i)]
+      nlinarith [abs_nonneg (w i - v i), (ha i).1]
+    have e3 := (abs_le.mp (abs_max_sub_max_le_max (w i / (1 - a i)) (-w i / a i)
+      (v i / (1 - a i)) (-v i / a i))).2
+    have e4 := max_le e1 e2
+    rw [hf, hf]
+    linarith
+  have hNle : ∀ v w : Eucl D, N w ≤ N v + 4 * ‖w - v‖ := by
+    intro v w
+    rw [hN w]
+    exact Finset.sup'_le hJ (f w) fun i hi => (hfLip v w i).trans (by linarith [hfN v i hi])
+  have hNlip : ∀ v w : Eucl D, |N w - N v| ≤ 4 * ‖w - v‖ := by
+    intro v w
+    rw [abs_le]
+    constructor
+    · have h := hNle w v
+      rw [norm_sub_rev] at h
+      linarith
+    · linarith [hNle v w]
+  -- Step 8 (core): the estimate `|u w - t v| ≤ ((1 + 4√D) t + ε) |w - v|` for `t = N(v)⁻¹`,
+  -- `u = N(w)⁻¹`, written with `W = w - v`, `V = v`, `ν = N(v)`, `μ = N(w)`, `ρ = |w - v|`.
+  have key : ∀ (ν μ ρ ε : ℝ) (V W : Eucl D), 0 < ν → ‖W‖ = ρ → |μ - ν| ≤ 4 * ρ →
+      ν⁻¹ * ‖V‖ ≤ Real.sqrt D → ρ < ν / 8 → ρ < ε * ν ^ 2 / (8 * (1 + 4 * Real.sqrt D)) →
+      ‖μ⁻¹ • W + (μ⁻¹ - ν⁻¹) • V‖ ≤ ((1 + 4 * Real.sqrt D) * ν⁻¹ + ε) * ρ := by
+    intro ν μ ρ ε V W hν hW hμν hV hρ1 hρ2
+    have hβ : 0 < 1 + 4 * Real.sqrt D := by positivity
+    have hρ0 : 0 ≤ ρ := hW ▸ norm_nonneg W
+    have hμ : ν / 2 < μ := by linarith [(abs_le.mp hμν).1]
+    have hμ0 : 0 < μ := by linarith
+    have ht : 0 < ν⁻¹ := inv_pos.mpr hν
+    have hu : 0 < μ⁻¹ := inv_pos.mpr hμ0
+    have htν : ν⁻¹ * ν = 1 := inv_mul_cancel₀ hν.ne'
+    have huμ : μ⁻¹ * μ = 1 := inv_mul_cancel₀ hμ0.ne'
+    generalize ν⁻¹ = t at ht htν hV ⊢
+    generalize μ⁻¹ = u at hu huμ ⊢
+    -- (b): `u - t = u t (ν - μ)`, so `|u - t| ≤ 4 u t ρ`; and `u < 2 t`.
+    have hut : u - t = u * t * (ν - μ) := by linear_combination (-u) * htν + t * huμ
+    have habs : |u - t| ≤ 4 * u * t * ρ := by
+      rw [hut, abs_mul, abs_of_pos (mul_pos hu ht), abs_sub_comm ν μ]
+      have h := mul_le_mul_of_nonneg_left hμν (mul_pos hu ht).le
+      linarith
+    have hu2t : u < 2 * t := by
+      have h1 : u * (μ * ν) = ν := by rw [← mul_assoc, huμ, one_mul]
+      have h2 : 2 * t * (μ * ν) = 2 * μ := by
+        have h : 2 * t * (μ * ν) = 2 * μ * (t * ν) := by ring
+        rw [h, htν, mul_one]
+      have h3 : u * (μ * ν) < 2 * t * (μ * ν) := by rw [h1, h2]; linarith
+      exact lt_of_mul_lt_mul_right h3 (mul_pos hμ0 hν).le
+    -- (d): `u ≤ t + 8 t² ρ` and `8 (1 + 4√D) t² ρ ≤ ε`.
+    have hu_le : u ≤ t + 8 * t ^ 2 * ρ := by
+      have h1 : u - t ≤ 4 * u * t * ρ := (le_abs_self _).trans habs
+      have h2 := mul_le_mul_of_nonneg_right hu2t.le (by positivity : (0 : ℝ) ≤ 4 * t * ρ)
+      nlinarith
+    have h8 : 8 * (1 + 4 * Real.sqrt D) * t ^ 2 * ρ ≤ ε := by
+      have h1 : ρ * (8 * (1 + 4 * Real.sqrt D)) < ε * ν ^ 2 := by
+        rwa [lt_div_iff₀ (by positivity)] at hρ2
+      calc 8 * (1 + 4 * Real.sqrt D) * t ^ 2 * ρ
+          = t ^ 2 * (ρ * (8 * (1 + 4 * Real.sqrt D))) := by ring
+        _ ≤ t ^ 2 * (ε * ν ^ 2) := mul_le_mul_of_nonneg_left h1.le (by positivity)
+        _ = ε * (t * ν) ^ 2 := by ring
+        _ = ε := by rw [htν, one_pow, mul_one]
+    -- (a), (c), (e).
+    calc ‖u • W + (u - t) • V‖ ≤ ‖u • W‖ + ‖(u - t) • V‖ := norm_add_le _ _
+      _ = u * ρ + |u - t| * ‖V‖ := by
+          rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos hu, hW]
+      _ ≤ u * ρ + 4 * u * t * ρ * ‖V‖ := by
+          have h := mul_le_mul_of_nonneg_right habs (norm_nonneg V)
+          linarith
+      _ = u * ρ * (1 + 4 * (t * ‖V‖)) := by ring
+      _ ≤ u * ρ * (1 + 4 * Real.sqrt D) := by
+          refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg hu.le hρ0)
+          linarith
+      _ = (1 + 4 * Real.sqrt D) * u * ρ := by ring
+      _ ≤ (1 + 4 * Real.sqrt D) * (t + 8 * t ^ 2 * ρ) * ρ :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hu_le hβ.le) hρ0
+      _ = ((1 + 4 * Real.sqrt D) * t + 8 * (1 + 4 * Real.sqrt D) * t ^ 2 * ρ) * ρ := by ring
+      _ ≤ ((1 + 4 * Real.sqrt D) * t + ε) * ρ := by
+          refine mul_le_mul_of_nonneg_right ?_ hρ0
+          linarith
+  -- Step 3: the map `g(y) = c + N(y - c)⁻¹ (y - c)`.
+  obtain ⟨g, hg⟩ : ∃ g : Eucl D → Eucl D, ∀ y, g y = c + (N (y - c))⁻¹ • (y - c) :=
+    ⟨_, fun _ => rfl⟩
+  have hgi : ∀ y i, g y i = c i + (N (y - c))⁻¹ * (y i - c i) := by
+    intro y i
+    rw [hg]
+    rfl
+  refine ⟨g, fun x hx hxJ hxc => ?_⟩
+  -- Step 4: `ν = N(x - c) > 0` (N3); `s = ν⁻¹`.
+  have hxc_i : ∀ i, (x - c) i = x i - c i := fun i => rfl
+  have hν : 0 < N (x - c) := by
+    by_contra hle
+    rw [not_lt] at hle
+    apply hxc
+    ext i
+    by_cases hi : i ∈ J
+    · have h := (hfN (x - c) i hi).trans hle
+      rw [hf, max_le_iff, div_le_iff₀ (ha1 i), div_le_iff₀ (ha0 i), zero_mul, zero_mul,
+        hxc_i] at h
+      linarith [h.1, h.2]
+    · exact hxJ i hi
+  -- Step 5: `g(x) ∈ [0,1]^D` (printed (R1)).
+  have hgx_cube : ∀ i, 0 ≤ g x i ∧ g x i ≤ 1 := by
+    intro i
+    rw [hgi]
+    by_cases hi : i ∈ J
+    · have h := hfN (x - c) i hi
+      rw [hf, max_le_iff, div_le_iff₀ (ha1 i), div_le_iff₀ (ha0 i), hxc_i] at h
+      have k1 : (N (x - c))⁻¹ * (x i - c i) ≤ 1 - a i := by
+        rw [inv_mul_le_iff₀ hν]
+        exact h.1
+      have k2 : -((N (x - c))⁻¹ * (x i - c i)) ≤ a i := by
+        rw [← mul_neg, inv_mul_le_iff₀ hν]
+        exact h.2
+      constructor <;> linarith [hcJ i hi]
+    · rw [← hxJ i hi, sub_self, mul_zero, add_zero]
+      exact hx i
+  -- Step 7: `s |x - c| = |g(x) - c| ≤ √D` (printed (R5)), as `c ∈ [0,1]^D`.
+  have hc_cube : ∀ i, 0 ≤ c i ∧ c i ≤ 1 := by
+    intro i
+    by_cases hi : i ∈ J
+    · rw [hcJ i hi]
+      exact ⟨(ha0 i).le, by linarith [ha1 i]⟩
+    · rw [← hxJ i hi]
+      exact hx i
+  have hR5 : (N (x - c))⁻¹ * ‖x - c‖ ≤ Real.sqrt D := by
+    have h := hdiam (g x) c hgx_cube hc_cube
+    rwa [hg, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
+      abs_of_pos (inv_pos.mpr hν)] at h
+  refine ⟨hgx_cube, ?_, (N (x - c))⁻¹, inv_pos.mpr hν, fun i => by rw [hgi]; ring,
+    by rw [dist_eq_norm]; exact hR5, ?_⟩
+  · -- Step 6: a coordinate `i₀ ∈ J` realizing the maximum is sent to `0` or `1`.
+    obtain ⟨i₀, hi₀, hmax⟩ := hNatt (x - c)
+    refine ⟨i₀, hi₀, ?_⟩
+    rw [hgi, hcJ i₀ hi₀]
+    rw [hf, hxc_i, hcJ i₀ hi₀] at hmax
+    rcases le_total (-(x i₀ - a i₀) / a i₀) ((x i₀ - a i₀) / (1 - a i₀)) with h | h
+    · right
+      rw [max_eq_left h] at hmax
+      have e : x i₀ - a i₀ = N (x - c) * (1 - a i₀) := by
+        rw [hmax, div_mul_cancel₀ _ (ha1 i₀).ne']
+      rw [e, ← mul_assoc, inv_mul_cancel₀ hν.ne', one_mul]
+      ring
+    · left
+      rw [max_eq_right h] at hmax
+      have e : x i₀ - a i₀ = -(N (x - c) * a i₀) := by
+        rw [hmax, div_mul_cancel₀ _ (ha0 i₀).ne', neg_neg]
+      rw [e, mul_neg, ← mul_assoc, inv_mul_cancel₀ hν.ne', one_mul]
+      ring
+  · -- Step 8: the pointwise estimate (printed (8)), with `δ = min (ν/8) (εν²/(8(1 + 4√D)))`.
+    intro ε hε
+    refine ⟨min (N (x - c) / 8) (ε * N (x - c) ^ 2 / (8 * (1 + 4 * Real.sqrt D))),
+      lt_min (by linarith) (div_pos (mul_pos hε (pow_pos hν 2)) (by positivity)), ?_⟩
+    intro x' _ _ hx'
+    have hid : g x' - g x = (N (x' - c))⁻¹ • ((x' - c) - (x - c)) +
+        ((N (x' - c))⁻¹ - (N (x - c))⁻¹) • (x - c) := by
+      rw [hg, hg]
+      module
+    have hwv : ‖(x' - c) - (x - c)‖ = dist x' x := by
+      rw [sub_sub_sub_cancel_right, dist_eq_norm]
+    have hμν : |N (x' - c) - N (x - c)| ≤ 4 * dist x' x := by
+      have h := hNlip (x - c) (x' - c)
+      rwa [hwv] at h
+    rw [dist_eq_norm (g x') (g x), hid]
+    exact key (N (x - c)) (N (x' - c)) (dist x' x) ε (x - c) ((x' - c) - (x - c)) hν hwv hμν hR5
+      (hx'.trans_le (min_le_left _ _)) (hx'.trans_le (min_le_right _ _))
+
 /-- Simon Ch. 6, Lemma 5.4, claim (3) (pp. 162–163), as a pointwise upper Lipschitz bound.  Let
 `ψ₀` satisfy (S1) (`ψ₀ x = x` on `C ∖ La` where `ℓ` coordinates lie in `{0, 1}`) and (S2) (on each
 face of dimension `≥ m + 2`, `ψ₀` is constant along the rays from its centre `c` up to its
@@ -4915,6 +5328,393 @@ theorem Submission.dr_cc_pointwise_lip :
     hxLa ε hε
   exact ⟨δ, hδ, fun x' hx'C hx'La hx'x =>
     h x' hx'C (fun i hi => absurd (Finset.mem_univ i) hi) hx'La hx'x⟩
+
+/-- Simon Ch. 6, Lemma 5.4, printed proof p. 161 (book `n = m + 1`), in the one-step form
+`ψ₀ = R^ℓ`.  A point `y ∈ C ∖ La` whose carrier `J(y) = {i : 0 < yᵢ < 1}` has at least `m + 2`
+elements is pushed radially from the centre `a_F` of its carrier face `F` onto `∂F`,
+`R(y)ᵢ = aᵢ + (yᵢ - aᵢ) / N(y)` on `J(y)`, with the gauge
+`N(y) = max_{i ∈ J(y)} max ((yᵢ - aᵢ) / (1 - aᵢ), (aᵢ - yᵢ) / aᵢ)`; `R` fixes every other point.
+Each step stays in `C ∖ La` (cone property of `dr_cc_skeleton_facts`) and lowers `|J(y)|`, so
+`R^ℓ` maps `C ∖ La` into the `(m+1)`-skeleton (α) and fixes the `(m+1)`-skeleton (S1); `R`
+commutes with integer translations (β); and the exit point `y` of the ray from `a_F` through
+`x ∈ F ∖ La` is `R(x)` or `x` itself (S2). -/
+theorem Submission.dr_cc_construction :
+    ∀ m ℓ : ℕ, 1 ≤ ℓ → ∀ a : Eucl (m + 1 + ℓ), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) →
+      ∀ La : Set (Eucl (m + 1 + ℓ)),
+        La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧
+          ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} →
+        ∃ ψ₀ : Eucl (m + 1 + ℓ) → Eucl (m + 1 + ℓ),
+          (∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La →
+            (∀ i, 0 ≤ ψ₀ x i ∧ ψ₀ x i ≤ 1) ∧
+              ∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, ψ₀ x i = 0 ∨ ψ₀ x i = 1) ∧
+          (∀ x x' : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La →
+            (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → x' ∉ La → (∀ i, ∃ k : ℤ, x' i - x i = k) →
+              ∀ i, ψ₀ x' i - ψ₀ x i = x' i - x i) ∧
+          (∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La →
+            (∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, x i = 0 ∨ x i = 1) →
+              ψ₀ x = x) ∧
+          ∀ (J : Finset (Fin (m + 1 + ℓ))) (c x y : Eucl (m + 1 + ℓ)) (s : ℝ), m + 2 ≤ J.card →
+            (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) → (∀ i, 0 ≤ x i ∧ x i ≤ 1) →
+            x ∉ La → (∀ i ∉ J, x i = c i) → (∀ i, 0 ≤ y i ∧ y i ≤ 1) → 0 < s →
+            (∀ i, y i - c i = s * (x i - c i)) → (∃ i ∈ J, y i = 0 ∨ y i = 1) → ψ₀ y = ψ₀ x := by
+  intro m ℓ _ a ha La hLa
+  classical
+  -- Cone property: if `y ∈ C ∩ La` lies on the ray from the face centre `c` through `x`
+  -- (`y - c = s • (x - c)`, `s > 0`), then `x ∈ La`.
+  obtain ⟨-, -, hcone⟩ := Submission.dr_cc_skeleton_facts m ℓ a ha La hLa
+  have ha1 : ∀ i, 0 < a i := fun i => by linarith [(ha i).1]
+  have ha2 : ∀ i, 0 < 1 - a i := fun i => by linarith [(ha i).2]
+  -- The carrier `J(y) = {i : 0 < yᵢ < 1}`.
+  obtain ⟨Jx, hJx⟩ : ∃ Jx : Eucl (m + 1 + ℓ) → Finset (Fin (m + 1 + ℓ)),
+      ∀ y i, i ∈ Jx y ↔ (0 < y i ∧ y i < 1) :=
+    ⟨fun y => Finset.univ.filter (fun i => 0 < y i ∧ y i < 1), fun y i => by simp⟩
+  have hoff01 : ∀ y : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → ∀ i, i ∉ Jx y →
+      y i = 0 ∨ y i = 1 := by
+    intro y hy i hi
+    rw [hJx] at hi
+    rcases (hy i).1.lt_or_eq with h0 | h0
+    · exact Or.inr (le_antisymm (hy i).2 (not_lt.1 fun h1 => hi ⟨h0, h1⟩))
+    · exact Or.inl h0.symm
+  -- The gauge `N(y) = max_{i ∈ J(y)} max ((yᵢ - aᵢ) / (1 - aᵢ), (aᵢ - yᵢ) / aᵢ)`.
+  obtain ⟨N, hNle, hNex⟩ : ∃ N : Eucl (m + 1 + ℓ) → ℝ,
+      (∀ y, ∀ i ∈ Jx y, max ((y i - a i) / (1 - a i)) ((a i - y i) / a i) ≤ N y) ∧
+      (∀ y, (Jx y).Nonempty → ∃ i ∈ Jx y,
+        N y = max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) := by
+    refine ⟨fun y => if h : (Jx y).Nonempty then
+      (Jx y).sup' h (fun i => max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) else 0, ?_, ?_⟩
+    · intro y i hi
+      have h : (Jx y).Nonempty := ⟨i, hi⟩
+      simp only [dite_eq_left h]
+      exact Finset.le_sup' (fun i => max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) hi
+    · intro y h
+      obtain ⟨i, hi, he⟩ := Finset.exists_mem_eq_sup' h
+        (fun i => max ((y i - a i) / (1 - a i)) ((a i - y i) / a i))
+      exact ⟨i, hi, by simp only [dite_eq_left h]; exact he⟩
+  -- `y` is *active* if `y ∈ C ∖ La` and `|J(y)| ≥ m + 2`.  `R` retracts an active `y` radially
+  -- from the centre of its carrier face onto the boundary of that face and fixes all other points.
+  obtain ⟨R, hRa, hRn⟩ : ∃ R : Eucl (m + 1 + ℓ) → Eucl (m + 1 + ℓ),
+      (∀ y, ((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card) →
+        ∀ i, R y i = if i ∈ Jx y then a i + (y i - a i) / N y else y i) ∧
+      (∀ y, ¬((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card) → R y = y) := by
+    refine ⟨fun y => if ((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card) then
+      WithLp.toLp 2 (fun i => if i ∈ Jx y then a i + (y i - a i) / N y else y i) else y, ?_, ?_⟩
+    · intro y hy i
+      dsimp only
+      rw [ite_eq_left hy]
+    · intro y hy
+      dsimp only
+      rw [ite_eq_right hy]
+  -- One step: for active `y`, `N(y) > 0`, `R(y) ∈ C ∖ La` and `|J(R y)| < |J(y)|`.
+  have step : ∀ y, ((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card) →
+      0 < N y ∧ (∀ i, 0 ≤ R y i ∧ R y i ≤ 1) ∧ R y ∉ La ∧ (Jx (R y)).card + 1 ≤ (Jx y).card := by
+    intro y hact
+    have hRi := hRa y hact
+    obtain ⟨hyC, hyL, hyJ⟩ := hact
+    -- `N(y) ≤ 0` would force `y = a` on `J(y)`, hence `y ∈ La`.
+    have hNpos : 0 < N y := by
+      by_contra hle
+      rw [not_lt] at hle
+      apply hyL
+      rw [hLa]
+      obtain ⟨J', hJ'sub, hJ'card⟩ := Finset.exists_subset_card_eq hyJ
+      refine ⟨J', hJ'card, fun i hi => ⟨0, ?_⟩⟩
+      have hi' := hJ'sub hi
+      have h := (hNle y i hi').trans hle
+      have h1 : (y i - a i) / (1 - a i) ≤ 0 := (le_max_left _ _).trans h
+      have h2 : (a i - y i) / a i ≤ 0 := (le_max_right _ _).trans h
+      rw [div_le_iff₀ (ha2 i), zero_mul] at h1
+      rw [div_le_iff₀ (ha1 i), zero_mul] at h2
+      simp only [Int.cast_zero]
+      linarith
+    have hbd : ∀ i ∈ Jx y, 0 ≤ a i + (y i - a i) / N y ∧ a i + (y i - a i) / N y ≤ 1 := by
+      intro i hi
+      have h := hNle y i hi
+      have h1 : (y i - a i) / (1 - a i) ≤ N y := (le_max_left _ _).trans h
+      have h2 : (a i - y i) / a i ≤ N y := (le_max_right _ _).trans h
+      rw [div_le_iff₀ (ha2 i)] at h1
+      rw [div_le_iff₀ (ha1 i)] at h2
+      constructor
+      · have h3 : (a i - y i) / N y ≤ a i := by rw [div_le_iff₀ hNpos]; linarith
+        have e : (y i - a i) / N y = -((a i - y i) / N y) := by ring
+        linarith
+      · have h3 : (y i - a i) / N y ≤ 1 - a i := by rw [div_le_iff₀ hNpos]; linarith
+        linarith
+    have hRC : ∀ i, 0 ≤ R y i ∧ R y i ≤ 1 := by
+      intro i
+      rw [hRi]
+      split_ifs with hi
+      · exact hbd i hi
+      · exact hyC i
+    -- A maximising coordinate `i₀` of the gauge is sent to `0` or `1`.
+    have hne : (Jx y).Nonempty := Finset.card_pos.1 (by omega)
+    obtain ⟨i₀, hi₀, hNi₀⟩ := hNex y hne
+    have hext : R y i₀ = 0 ∨ R y i₀ = 1 := by
+      rw [hRi, ite_eq_left hi₀]
+      rcases max_cases ((y i₀ - a i₀) / (1 - a i₀)) ((a i₀ - y i₀) / a i₀) with ⟨hm, _⟩ | ⟨hm, _⟩
+      · right
+        rw [hm] at hNi₀
+        have h4 : (y i₀ - a i₀) / N y = 1 - a i₀ := by
+          rw [div_eq_iff hNpos.ne', hNi₀, mul_comm, div_mul_cancel₀ _ (ha2 i₀).ne']
+        linarith
+      · left
+        rw [hm] at hNi₀
+        have h4 : (a i₀ - y i₀) / N y = a i₀ := by
+          rw [div_eq_iff hNpos.ne', hNi₀, mul_comm, div_mul_cancel₀ _ (ha1 i₀).ne']
+        have e : (y i₀ - a i₀) / N y = -((a i₀ - y i₀) / N y) := by ring
+        linarith
+    have hsub : Jx (R y) ⊆ (Jx y).erase i₀ := by
+      intro i hi
+      rw [hJx] at hi
+      rw [Finset.mem_erase]
+      constructor
+      · rintro rfl
+        rcases hext with h | h <;> rw [h] at hi <;> linarith [hi.1, hi.2]
+      · by_contra hni
+        rw [hRi, ite_eq_right hni] at hi
+        exact hni ((hJx y i).2 hi)
+    have hcard : (Jx (R y)).card + 1 ≤ (Jx y).card := by
+      have h5 := Finset.card_le_card hsub
+      rw [Finset.card_erase_of_mem hi₀] at h5
+      have : 0 < (Jx y).card := Finset.card_pos.2 hne
+      omega
+    -- `R(y) - c = N(y)⁻¹ (y - c)` for the centre `c` of the carrier face, so `R(y) ∉ La`.
+    have hRL : R y ∉ La := by
+      intro hRyL
+      apply hyL
+      let c : Eucl (m + 1 + ℓ) := WithLp.toLp 2 (fun i => if i ∈ Jx y then a i else y i)
+      have hc : ∀ i, c i = if i ∈ Jx y then a i else y i := fun i => rfl
+      refine hcone (Jx y) c y (R y) (N y)⁻¹ (fun i hi => by rw [hc, ite_eq_left hi])
+        (fun i hi => by rw [hc, ite_eq_right hi]; exact hoff01 y hyC i hi)
+        (fun i hi => by rw [hc, ite_eq_right hi]) hRC (inv_pos.2 hNpos) (fun i => ?_) hRyL
+      rw [hRi, hc]
+      split_ifs with hi
+      · ring
+      · ring
+    exact ⟨hNpos, hRC, hRL, hcard⟩
+  -- Iteration: `R^k` stays in `C ∖ La`, and `|J(R^k y)| ≤ m + 1` or `|J(R^k y)| + k ≤ |J(y)|`.
+  have iter : ∀ k : ℕ, ∀ y : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → y ∉ La →
+      (∀ i, 0 ≤ R^[k] y i ∧ R^[k] y i ≤ 1) ∧ R^[k] y ∉ La ∧
+        ((Jx (R^[k] y)).card ≤ m + 1 ∨ (Jx (R^[k] y)).card + k ≤ (Jx y).card) := by
+    intro k
+    induction k with
+    | zero => intro y hyC hyL; exact ⟨hyC, hyL, Or.inr (by simp)⟩
+    | succ k ih =>
+      intro y hyC hyL
+      obtain ⟨hzC, hzL, hzJ⟩ := ih y hyC hyL
+      rw [Function.iterate_succ_apply']
+      by_cases hact : ((∀ i, 0 ≤ R^[k] y i ∧ R^[k] y i ≤ 1) ∧ R^[k] y ∉ La ∧
+          m + 2 ≤ (Jx (R^[k] y)).card)
+      · obtain ⟨-, hC', hL', hJ'⟩ := step _ hact
+        refine ⟨hC', hL', ?_⟩
+        have := hact.2.2
+        omega
+      · rw [hRn _ hact]
+        refine ⟨hzC, hzL, Or.inl ?_⟩
+        by_contra h
+        exact hact ⟨hzC, hzL, by omega⟩
+  -- After `ℓ` steps the carrier has at most `m + 1` elements, as `|J(y)| ≤ m + 1 + ℓ`.
+  have hfinal : ∀ y : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → y ∉ La →
+      (Jx (R^[ℓ] y)).card ≤ m + 1 := by
+    intro y hyC hyL
+    obtain ⟨-, -, h⟩ := iter ℓ y hyC hyL
+    have := Finset.card_le_univ (Jx y)
+    rw [Fintype.card_fin] at this
+    omega
+  refine ⟨R^[ℓ], ?_, ?_, ?_, ?_⟩
+  · -- (α): at least `ℓ` coordinates of `R^ℓ x` lie outside the carrier, i.e. in `{0, 1}`.
+    intro x hx hxL
+    obtain ⟨hC, -, -⟩ := iter ℓ x hx hxL
+    have hc := hfinal x hx hxL
+    refine ⟨hC, ?_⟩
+    have hcompl : ℓ ≤ (Finset.univ \ Jx (R^[ℓ] x)).card := by
+      rw [Finset.card_univ_sdiff, Fintype.card_fin]; omega
+    obtain ⟨I, hIsub, hIcard⟩ := Finset.exists_subset_card_eq hcompl
+    exact ⟨I, hIcard, fun i hi => hoff01 _ hC i (Finset.mem_sdiff.1 (hIsub hi)).2⟩
+  · -- (β): `R` commutes with integer translations inside `C ∖ La` (same carrier, same gauge).
+    have stepT : ∀ y y' : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → y ∉ La →
+        (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → y' ∉ La → (∀ i, ∃ k : ℤ, y' i - y i = k) →
+        ∀ i, R y' i - R y i = y' i - y i := by
+      intro y y' hyC hyL hy'C hy'L hz
+      have hsame : ∀ i, (0 < y i ∧ y i < 1) ∨ (0 < y' i ∧ y' i < 1) → y' i = y i := by
+        intro i hi
+        obtain ⟨k, hk⟩ := hz i
+        have hk0 : k = 0 := by
+          have hb : (-1 : ℝ) < k ∧ (k : ℝ) < 1 := by
+            rcases hi with ⟨h1, h2⟩ | ⟨h1, h2⟩
+            · constructor <;> linarith [(hy'C i).1, (hy'C i).2]
+            · constructor <;> linarith [(hyC i).1, (hyC i).2]
+          have h1 : (-1 : ℤ) < k := by exact_mod_cast hb.1
+          have h2 : k < 1 := by exact_mod_cast hb.2
+          omega
+        rw [hk0, Int.cast_zero] at hk
+        linarith
+      have hJeq : Jx y' = Jx y := by
+        ext i
+        rw [hJx, hJx]
+        constructor
+        · intro h; rw [← hsame i (Or.inr h)]; exact h
+        · intro h; rw [hsame i (Or.inl h)]; exact h
+      by_cases hact : ((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card)
+      · have hact' : ((∀ i, 0 ≤ y' i ∧ y' i ≤ 1) ∧ y' ∉ La ∧ m + 2 ≤ (Jx y').card) :=
+          ⟨hy'C, hy'L, by rw [hJeq]; exact hact.2.2⟩
+        have hterm : ∀ i ∈ Jx y, max ((y' i - a i) / (1 - a i)) ((a i - y' i) / a i) =
+            max ((y i - a i) / (1 - a i)) ((a i - y i) / a i) := by
+          intro i hi
+          rw [hsame i (Or.inl ((hJx y i).1 hi))]
+        have hNeq : N y' = N y := by
+          have hne : (Jx y).Nonempty := Finset.card_pos.1 (by have := hact.2.2; omega)
+          obtain ⟨i₀, hi₀, h₀⟩ := hNex y hne
+          obtain ⟨i₁, hi₁, h₁⟩ := hNex y' (by rw [hJeq]; exact hne)
+          rw [hJeq] at hi₁
+          apply le_antisymm
+          · rw [h₁, hterm i₁ hi₁]; exact hNle y i₁ hi₁
+          · rw [h₀, ← hterm i₀ hi₀]; exact hNle y' i₀ (by rw [hJeq]; exact hi₀)
+        intro i
+        rw [hRa y' hact' i, hRa y hact i, hJeq, hNeq]
+        split_ifs with hi
+        · rw [hsame i (Or.inl ((hJx y i).1 hi))]; ring
+        · ring
+      · have hact' : ¬((∀ i, 0 ≤ y' i ∧ y' i ≤ 1) ∧ y' ∉ La ∧ m + 2 ≤ (Jx y').card) := by
+          rintro ⟨-, -, h⟩
+          exact hact ⟨hyC, hyL, by rw [← hJeq]; exact h⟩
+        intro i
+        rw [hRn y hact, hRn y' hact']
+    intro x x' hx hxL hx' hx'L hz
+    have hk : ∀ k : ℕ, ∀ i, R^[k] x' i - R^[k] x i = x' i - x i := by
+      intro k
+      induction k with
+      | zero => intro i; rfl
+      | succ k ih =>
+        intro i
+        obtain ⟨hC, hL, -⟩ := iter k x hx hxL
+        obtain ⟨hC', hL', -⟩ := iter k x' hx' hx'L
+        rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
+        have hz' : ∀ j, ∃ k' : ℤ, R^[k] x' j - R^[k] x j = k' := fun j => by
+          rw [ih j]; exact hz j
+        rw [stepT _ _ hC hL hC' hL' hz' i, ih i]
+    exact hk ℓ
+  · -- (S1): `ℓ` coordinates in `{0, 1}` leave a carrier of size `≤ m + 1`, so `R` fixes `x`.
+    rintro x hx hxL ⟨I, hIcard, hI⟩
+    have hsub : Jx x ⊆ Finset.univ \ I := by
+      intro i hi
+      rw [hJx] at hi
+      rw [Finset.mem_sdiff]
+      refine ⟨Finset.mem_univ _, fun hiI => ?_⟩
+      rcases hI i hiI with h | h <;> rw [h] at hi <;> linarith [hi.1, hi.2]
+    have hc : (Jx x).card ≤ m + 1 := by
+      have h5 := Finset.card_le_card hsub
+      rw [Finset.card_univ_sdiff, Fintype.card_fin, hIcard] at h5
+      omega
+    have hR : R x = x := hRn x (fun h => by have := h.2.2; omega)
+    exact Function.iterate_fixed hR ℓ
+  · -- (S2): the exit point `y` of the ray from the face centre `c` through `x` is `R(x)` or `x`.
+    intro J c x y s hJ hcJ hc01 hx hxL hxc hy hs hray hext
+    have hyoff : ∀ i ∉ J, y i = c i := fun i hi => by
+      have := hray i
+      rw [hxc i hi, sub_self, mul_zero] at this
+      linarith
+    by_cases hint : ∀ i ∈ J, 0 < x i ∧ x i < 1
+    · -- Case A: `x` lies in the relative interior of the face, so `J(x) = J`, `N(x) = s⁻¹` and
+      -- `y = R(x)`; then `R^ℓ y = R (R^ℓ x) = R^ℓ x`.
+      have hJeq : Jx x = J := by
+        ext i
+        rw [hJx]
+        constructor
+        · intro h
+          by_contra hiJ
+          rw [hxc i hiJ] at h
+          rcases hc01 i hiJ with h0 | h0 <;> rw [h0] at h <;> linarith [h.1, h.2]
+        · exact hint i
+      have hact : ((∀ i, 0 ≤ x i ∧ x i ≤ 1) ∧ x ∉ La ∧ m + 2 ≤ (Jx x).card) :=
+        ⟨hx, hxL, by rw [hJeq]; exact hJ⟩
+      have hterm_le : ∀ i ∈ J, max ((x i - a i) / (1 - a i)) ((a i - x i) / a i) ≤ s⁻¹ := by
+        intro i hi
+        have hyi := hy i
+        have hr := hray i
+        rw [hcJ i hi] at hr
+        apply max_le
+        · rw [div_le_iff₀ (ha2 i)]
+          have h6 : s * (x i - a i) ≤ 1 - a i := by linarith [hyi.2]
+          calc x i - a i = s⁻¹ * (s * (x i - a i)) := by field_simp
+            _ ≤ s⁻¹ * (1 - a i) := mul_le_mul_of_nonneg_left h6 (inv_nonneg.2 hs.le)
+        · rw [div_le_iff₀ (ha1 i)]
+          have h6 : s * (a i - x i) ≤ a i := by linarith [hyi.1]
+          calc a i - x i = s⁻¹ * (s * (a i - x i)) := by field_simp
+            _ ≤ s⁻¹ * a i := mul_le_mul_of_nonneg_left h6 (inv_nonneg.2 hs.le)
+      have hNx : N x = s⁻¹ := by
+        apply le_antisymm
+        · obtain ⟨i₀, hi₀, h₀⟩ := hNex x (Finset.card_pos.1 (by rw [hJeq]; omega))
+          rw [h₀]
+          rw [hJeq] at hi₀
+          exact hterm_le i₀ hi₀
+        · obtain ⟨i₁, hi₁J, hi₁⟩ := hext
+          have hle := hNle x i₁ (by rw [hJeq]; exact hi₁J)
+          have hr := hray i₁
+          rw [hcJ i₁ hi₁J] at hr
+          rcases hi₁ with h0 | h1
+          · have h7 : (a i₁ - x i₁) / a i₁ = s⁻¹ := by
+              rw [div_eq_iff (ha1 i₁).ne']
+              rw [h0] at hr
+              field_simp
+              linarith
+            rw [← h7]
+            exact (le_max_right _ _).trans hle
+          · have h7 : (x i₁ - a i₁) / (1 - a i₁) = s⁻¹ := by
+              rw [div_eq_iff (ha2 i₁).ne']
+              rw [h1] at hr
+              field_simp
+              linarith
+            rw [← h7]
+            exact (le_max_left _ _).trans hle
+      have hRx : R x = y := by
+        ext i
+        rw [hRa x hact i, hJeq]
+        split_ifs with hi
+        · rw [hNx]
+          have hr := hray i
+          rw [hcJ i hi] at hr
+          rw [div_inv_eq_mul]
+          linarith
+        · rw [hyoff i hi, hxc i hi]
+      rw [← hRx, ← Function.iterate_succ_apply, Function.iterate_succ_apply']
+      have hc := hfinal x hx hxL
+      exact hRn _ (fun h => by have := h.2.2; omega)
+    · -- Case B: `x` lies on the relative boundary of the face; then `s = 1` and `y = x`.
+      push Not at hint
+      obtain ⟨i₂, hi₂J, hi₂⟩ := hint
+      have hx01 : x i₂ = 0 ∨ x i₂ = 1 := by
+        rcases (hx i₂).1.lt_or_eq with h0 | h0
+        · right; exact le_antisymm (hx i₂).2 (hi₂ h0)
+        · left; exact h0.symm
+      have hs1 : s ≤ 1 := by
+        have hr := hray i₂
+        rw [hcJ i₂ hi₂J] at hr
+        have hyi := hy i₂
+        have hai1 := ha1 i₂
+        have hai2 := ha2 i₂
+        rcases hx01 with h0 | h1
+        · rw [h0] at hr
+          nlinarith
+        · rw [h1] at hr
+          nlinarith
+      have hs1' : 1 ≤ s := by
+        obtain ⟨i₁, hi₁J, hi₁⟩ := hext
+        have hr := hray i₁
+        rw [hcJ i₁ hi₁J] at hr
+        have hxi := hx i₁
+        have hai1 := ha1 i₁
+        have hai2 := ha2 i₁
+        rcases hi₁ with h0 | h1
+        · rw [h0] at hr
+          nlinarith [mul_nonneg hs.le hxi.1]
+        · rw [h1] at hr
+          nlinarith [mul_le_mul_of_nonneg_left hxi.2 hs.le]
+      have hyx : y = x := by
+        ext i
+        have := hray i
+        rw [le_antisymm hs1 hs1', one_mul] at this
+        linarith
+      rw [hyx]
 
 /-- **Simon Ch. 6, Lemma 5.4, printed proof pp. 161–163: the radial retraction of the unit cube.**
 For `1/4 < aᵢ < 3/4` there is `ψ₀` mapping `C ∖ L_{ℓ−1}(a)`, `C = [0, 1]^d`, into `C` with `ℓ`
@@ -6706,806 +7506,6 @@ theorem Submission.cmb_rb_covectorEuclideanNorm_add_le :
   rw [hc, hc, hc, hadd]
   exact norm_add_le _ _
 
-/-- Simon Ch. 6, Lemma 5.4, proof p. 161, displays (1) and (2): elementary facts on the dual
-skeleton `La = {y : y_i − a_i ∈ ℤ for m + 2 indices i}` of a point `a ∈ (1/4, 3/4)^d`.
-`La` is a finite union of finite intersections of the closed sets `{y : y_i − a_i ∈ ℤ}`, hence
-closed; a point agreeing with `a` on `m + 2` coordinates lies in `La`; and if `y ∈ La ∩ [0,1]^d`
-lies on the ray from the centre `c` of a face of `[0,1]^d` (free coordinates `J`) through `x`,
-then each witness coordinate `i` of `y` has `y_i − a_i ∈ (−1, 1) ∩ ℤ = {0}`, so `i ∈ J` (else
-`a_i = y_i = c_i ∈ {0, 1}`) and `x_i = a_i` as `s > 0`. -/
-theorem Submission.dr_cc_skeleton_facts :
-    ∀ (m ℓ : ℕ) (a : Eucl (m + 1 + ℓ)), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ La : Set (Eucl (m + 1 + ℓ)), La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧ ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → IsClosed La ∧ (∀ (J : Finset (Fin (m + 1 + ℓ))) (c : Eucl (m + 1 + ℓ)), m + 2 ≤ J.card → (∀ i ∈ J, c i = a i) → c ∈ La) ∧ ∀ (J : Finset (Fin (m + 1 + ℓ))) (c x y : Eucl (m + 1 + ℓ)) (s : ℝ), (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) → (∀ i ∉ J, x i = c i) → (∀ i, 0 ≤ y i ∧ y i ≤ 1) → 0 < s → (∀ i, y i - c i = s * (x i - c i)) → y ∈ La → x ∈ La := by
-  intro m ℓ a ha La hLa
-  refine ⟨?_, ?_, ?_⟩
-  · -- `La = ⋃_{|J| = m+2} ⋂_{i ∈ J} {y : y_i − a_i ∈ ℤ}`, a finite union of closed sets.
-    have hLa' : La = ⋃ J ∈ {J : Finset (Fin (m + 1 + ℓ)) | J.card = m + 2},
-        ⋂ i ∈ J, (fun y : Eucl (m + 1 + ℓ) => y i - a i) ⁻¹' range ((↑) : ℤ → ℝ) := by
-      rw [hLa]
-      ext y
-      simp only [mem_ofPred_eq, mem_iUnion, mem_iInter, mem_preimage, mem_range, exists_prop]
-      exact exists_congr fun J => and_congr_right fun _ =>
-        forall₂_congr fun i _ => exists_congr fun k => eq_comm
-    rw [hLa']
-    refine (toFinite _).isClosed_biUnion fun J _ => isClosed_biInter fun i _ => ?_
-    exact Real.isClosed_range_intCast.preimage (by fun_prop)
-  · -- Face centres: any `m + 2` of the coordinates where `c = a` witness `c ∈ La`.
-    intro J c hJ hc
-    obtain ⟨J', hJ'J, hJ'⟩ := Finset.exists_subset_card_eq hJ
-    rw [hLa]
-    exact ⟨J', hJ', fun i hi => ⟨0, by rw [hc i (hJ'J hi), sub_self, Int.cast_zero]⟩⟩
-  · -- Cone property: every witness coordinate of `y` is free and has `x_i = y_i = a_i`.
-    intro J c x y s hcJ hc01 hxc hy hs hyx hyLa
-    rw [hLa] at hyLa ⊢
-    obtain ⟨J', hJ', hyJ'⟩ := hyLa
-    refine ⟨J', hJ', fun i hi => ⟨0, ?_⟩⟩
-    obtain ⟨k, hk⟩ := hyJ' i hi
-    obtain ⟨ha1, ha2⟩ := ha i
-    obtain ⟨hy0, hy1⟩ := hy i
-    -- `y_i − a_i ∈ (−1, 1)` is an integer, hence `0`.
-    have hk0 : k = 0 := by
-      have h1 : (-1 : ℝ) < k := by linarith
-      have h2 : (k : ℝ) < 1 := by linarith
-      have h1' : -1 < k := by exact_mod_cast h1
-      have h2' : k < 1 := by exact_mod_cast h2
-      omega
-    rw [hk0, Int.cast_zero] at hk
-    rw [Int.cast_zero]
-    have h := hyx i
-    by_cases hiJ : i ∈ J
-    · rw [hcJ i hiJ, hk] at h
-      exact (mul_eq_zero.1 h.symm).resolve_left hs.ne'
-    · -- A fixed coordinate would give `a_i = y_i = c_i ∈ {0, 1}`.
-      rw [hxc i hiJ, sub_self, mul_zero] at h
-      rcases hc01 i hiJ with h0 | h0 <;> linarith
-
-/-- Simon Ch. 6, Lemma 5.4, printed proof p. 161 (book `n = m + 1`), in the one-step form
-`ψ₀ = R^ℓ`.  A point `y ∈ C ∖ La` whose carrier `J(y) = {i : 0 < yᵢ < 1}` has at least `m + 2`
-elements is pushed radially from the centre `a_F` of its carrier face `F` onto `∂F`,
-`R(y)ᵢ = aᵢ + (yᵢ - aᵢ) / N(y)` on `J(y)`, with the gauge
-`N(y) = max_{i ∈ J(y)} max ((yᵢ - aᵢ) / (1 - aᵢ), (aᵢ - yᵢ) / aᵢ)`; `R` fixes every other point.
-Each step stays in `C ∖ La` (cone property of `dr_cc_skeleton_facts`) and lowers `|J(y)|`, so
-`R^ℓ` maps `C ∖ La` into the `(m+1)`-skeleton (α) and fixes the `(m+1)`-skeleton (S1); `R`
-commutes with integer translations (β); and the exit point `y` of the ray from `a_F` through
-`x ∈ F ∖ La` is `R(x)` or `x` itself (S2). -/
-theorem Submission.dr_cc_construction :
-    ∀ m ℓ : ℕ, 1 ≤ ℓ → ∀ a : Eucl (m + 1 + ℓ), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) →
-      ∀ La : Set (Eucl (m + 1 + ℓ)),
-        La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧
-          ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} →
-        ∃ ψ₀ : Eucl (m + 1 + ℓ) → Eucl (m + 1 + ℓ),
-          (∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La →
-            (∀ i, 0 ≤ ψ₀ x i ∧ ψ₀ x i ≤ 1) ∧
-              ∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, ψ₀ x i = 0 ∨ ψ₀ x i = 1) ∧
-          (∀ x x' : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La →
-            (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → x' ∉ La → (∀ i, ∃ k : ℤ, x' i - x i = k) →
-              ∀ i, ψ₀ x' i - ψ₀ x i = x' i - x i) ∧
-          (∀ x : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ x i ∧ x i ≤ 1) → x ∉ La →
-            (∃ I : Finset (Fin (m + 1 + ℓ)), I.card = ℓ ∧ ∀ i ∈ I, x i = 0 ∨ x i = 1) →
-              ψ₀ x = x) ∧
-          ∀ (J : Finset (Fin (m + 1 + ℓ))) (c x y : Eucl (m + 1 + ℓ)) (s : ℝ), m + 2 ≤ J.card →
-            (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) → (∀ i, 0 ≤ x i ∧ x i ≤ 1) →
-            x ∉ La → (∀ i ∉ J, x i = c i) → (∀ i, 0 ≤ y i ∧ y i ≤ 1) → 0 < s →
-            (∀ i, y i - c i = s * (x i - c i)) → (∃ i ∈ J, y i = 0 ∨ y i = 1) → ψ₀ y = ψ₀ x := by
-  intro m ℓ _ a ha La hLa
-  classical
-  -- Cone property: if `y ∈ C ∩ La` lies on the ray from the face centre `c` through `x`
-  -- (`y - c = s • (x - c)`, `s > 0`), then `x ∈ La`.
-  obtain ⟨-, -, hcone⟩ := Submission.dr_cc_skeleton_facts m ℓ a ha La hLa
-  have ha1 : ∀ i, 0 < a i := fun i => by linarith [(ha i).1]
-  have ha2 : ∀ i, 0 < 1 - a i := fun i => by linarith [(ha i).2]
-  -- The carrier `J(y) = {i : 0 < yᵢ < 1}`.
-  obtain ⟨Jx, hJx⟩ : ∃ Jx : Eucl (m + 1 + ℓ) → Finset (Fin (m + 1 + ℓ)),
-      ∀ y i, i ∈ Jx y ↔ (0 < y i ∧ y i < 1) :=
-    ⟨fun y => Finset.univ.filter (fun i => 0 < y i ∧ y i < 1), fun y i => by simp⟩
-  have hoff01 : ∀ y : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → ∀ i, i ∉ Jx y →
-      y i = 0 ∨ y i = 1 := by
-    intro y hy i hi
-    rw [hJx] at hi
-    rcases (hy i).1.lt_or_eq with h0 | h0
-    · exact Or.inr (le_antisymm (hy i).2 (not_lt.1 fun h1 => hi ⟨h0, h1⟩))
-    · exact Or.inl h0.symm
-  -- The gauge `N(y) = max_{i ∈ J(y)} max ((yᵢ - aᵢ) / (1 - aᵢ), (aᵢ - yᵢ) / aᵢ)`.
-  obtain ⟨N, hNle, hNex⟩ : ∃ N : Eucl (m + 1 + ℓ) → ℝ,
-      (∀ y, ∀ i ∈ Jx y, max ((y i - a i) / (1 - a i)) ((a i - y i) / a i) ≤ N y) ∧
-      (∀ y, (Jx y).Nonempty → ∃ i ∈ Jx y,
-        N y = max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) := by
-    refine ⟨fun y => if h : (Jx y).Nonempty then
-      (Jx y).sup' h (fun i => max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) else 0, ?_, ?_⟩
-    · intro y i hi
-      have h : (Jx y).Nonempty := ⟨i, hi⟩
-      simp only [dite_eq_left h]
-      exact Finset.le_sup' (fun i => max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) hi
-    · intro y h
-      obtain ⟨i, hi, he⟩ := Finset.exists_mem_eq_sup' h
-        (fun i => max ((y i - a i) / (1 - a i)) ((a i - y i) / a i))
-      exact ⟨i, hi, by simp only [dite_eq_left h]; exact he⟩
-  -- `y` is *active* if `y ∈ C ∖ La` and `|J(y)| ≥ m + 2`.  `R` retracts an active `y` radially
-  -- from the centre of its carrier face onto the boundary of that face and fixes all other points.
-  obtain ⟨R, hRa, hRn⟩ : ∃ R : Eucl (m + 1 + ℓ) → Eucl (m + 1 + ℓ),
-      (∀ y, ((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card) →
-        ∀ i, R y i = if i ∈ Jx y then a i + (y i - a i) / N y else y i) ∧
-      (∀ y, ¬((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card) → R y = y) := by
-    refine ⟨fun y => if ((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card) then
-      WithLp.toLp 2 (fun i => if i ∈ Jx y then a i + (y i - a i) / N y else y i) else y, ?_, ?_⟩
-    · intro y hy i
-      dsimp only
-      rw [ite_eq_left hy]
-    · intro y hy
-      dsimp only
-      rw [ite_eq_right hy]
-  -- One step: for active `y`, `N(y) > 0`, `R(y) ∈ C ∖ La` and `|J(R y)| < |J(y)|`.
-  have step : ∀ y, ((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card) →
-      0 < N y ∧ (∀ i, 0 ≤ R y i ∧ R y i ≤ 1) ∧ R y ∉ La ∧ (Jx (R y)).card + 1 ≤ (Jx y).card := by
-    intro y hact
-    have hRi := hRa y hact
-    obtain ⟨hyC, hyL, hyJ⟩ := hact
-    -- `N(y) ≤ 0` would force `y = a` on `J(y)`, hence `y ∈ La`.
-    have hNpos : 0 < N y := by
-      by_contra hle
-      rw [not_lt] at hle
-      apply hyL
-      rw [hLa]
-      obtain ⟨J', hJ'sub, hJ'card⟩ := Finset.exists_subset_card_eq hyJ
-      refine ⟨J', hJ'card, fun i hi => ⟨0, ?_⟩⟩
-      have hi' := hJ'sub hi
-      have h := (hNle y i hi').trans hle
-      have h1 : (y i - a i) / (1 - a i) ≤ 0 := (le_max_left _ _).trans h
-      have h2 : (a i - y i) / a i ≤ 0 := (le_max_right _ _).trans h
-      rw [div_le_iff₀ (ha2 i), zero_mul] at h1
-      rw [div_le_iff₀ (ha1 i), zero_mul] at h2
-      simp only [Int.cast_zero]
-      linarith
-    have hbd : ∀ i ∈ Jx y, 0 ≤ a i + (y i - a i) / N y ∧ a i + (y i - a i) / N y ≤ 1 := by
-      intro i hi
-      have h := hNle y i hi
-      have h1 : (y i - a i) / (1 - a i) ≤ N y := (le_max_left _ _).trans h
-      have h2 : (a i - y i) / a i ≤ N y := (le_max_right _ _).trans h
-      rw [div_le_iff₀ (ha2 i)] at h1
-      rw [div_le_iff₀ (ha1 i)] at h2
-      constructor
-      · have h3 : (a i - y i) / N y ≤ a i := by rw [div_le_iff₀ hNpos]; linarith
-        have e : (y i - a i) / N y = -((a i - y i) / N y) := by ring
-        linarith
-      · have h3 : (y i - a i) / N y ≤ 1 - a i := by rw [div_le_iff₀ hNpos]; linarith
-        linarith
-    have hRC : ∀ i, 0 ≤ R y i ∧ R y i ≤ 1 := by
-      intro i
-      rw [hRi]
-      split_ifs with hi
-      · exact hbd i hi
-      · exact hyC i
-    -- A maximising coordinate `i₀` of the gauge is sent to `0` or `1`.
-    have hne : (Jx y).Nonempty := Finset.card_pos.1 (by omega)
-    obtain ⟨i₀, hi₀, hNi₀⟩ := hNex y hne
-    have hext : R y i₀ = 0 ∨ R y i₀ = 1 := by
-      rw [hRi, ite_eq_left hi₀]
-      rcases max_cases ((y i₀ - a i₀) / (1 - a i₀)) ((a i₀ - y i₀) / a i₀) with ⟨hm, _⟩ | ⟨hm, _⟩
-      · right
-        rw [hm] at hNi₀
-        have h4 : (y i₀ - a i₀) / N y = 1 - a i₀ := by
-          rw [div_eq_iff hNpos.ne', hNi₀, mul_comm, div_mul_cancel₀ _ (ha2 i₀).ne']
-        linarith
-      · left
-        rw [hm] at hNi₀
-        have h4 : (a i₀ - y i₀) / N y = a i₀ := by
-          rw [div_eq_iff hNpos.ne', hNi₀, mul_comm, div_mul_cancel₀ _ (ha1 i₀).ne']
-        have e : (y i₀ - a i₀) / N y = -((a i₀ - y i₀) / N y) := by ring
-        linarith
-    have hsub : Jx (R y) ⊆ (Jx y).erase i₀ := by
-      intro i hi
-      rw [hJx] at hi
-      rw [Finset.mem_erase]
-      constructor
-      · rintro rfl
-        rcases hext with h | h <;> rw [h] at hi <;> linarith [hi.1, hi.2]
-      · by_contra hni
-        rw [hRi, ite_eq_right hni] at hi
-        exact hni ((hJx y i).2 hi)
-    have hcard : (Jx (R y)).card + 1 ≤ (Jx y).card := by
-      have h5 := Finset.card_le_card hsub
-      rw [Finset.card_erase_of_mem hi₀] at h5
-      have : 0 < (Jx y).card := Finset.card_pos.2 hne
-      omega
-    -- `R(y) - c = N(y)⁻¹ (y - c)` for the centre `c` of the carrier face, so `R(y) ∉ La`.
-    have hRL : R y ∉ La := by
-      intro hRyL
-      apply hyL
-      let c : Eucl (m + 1 + ℓ) := WithLp.toLp 2 (fun i => if i ∈ Jx y then a i else y i)
-      have hc : ∀ i, c i = if i ∈ Jx y then a i else y i := fun i => rfl
-      refine hcone (Jx y) c y (R y) (N y)⁻¹ (fun i hi => by rw [hc, ite_eq_left hi])
-        (fun i hi => by rw [hc, ite_eq_right hi]; exact hoff01 y hyC i hi)
-        (fun i hi => by rw [hc, ite_eq_right hi]) hRC (inv_pos.2 hNpos) (fun i => ?_) hRyL
-      rw [hRi, hc]
-      split_ifs with hi
-      · ring
-      · ring
-    exact ⟨hNpos, hRC, hRL, hcard⟩
-  -- Iteration: `R^k` stays in `C ∖ La`, and `|J(R^k y)| ≤ m + 1` or `|J(R^k y)| + k ≤ |J(y)|`.
-  have iter : ∀ k : ℕ, ∀ y : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → y ∉ La →
-      (∀ i, 0 ≤ R^[k] y i ∧ R^[k] y i ≤ 1) ∧ R^[k] y ∉ La ∧
-        ((Jx (R^[k] y)).card ≤ m + 1 ∨ (Jx (R^[k] y)).card + k ≤ (Jx y).card) := by
-    intro k
-    induction k with
-    | zero => intro y hyC hyL; exact ⟨hyC, hyL, Or.inr (by simp)⟩
-    | succ k ih =>
-      intro y hyC hyL
-      obtain ⟨hzC, hzL, hzJ⟩ := ih y hyC hyL
-      rw [Function.iterate_succ_apply']
-      by_cases hact : ((∀ i, 0 ≤ R^[k] y i ∧ R^[k] y i ≤ 1) ∧ R^[k] y ∉ La ∧
-          m + 2 ≤ (Jx (R^[k] y)).card)
-      · obtain ⟨-, hC', hL', hJ'⟩ := step _ hact
-        refine ⟨hC', hL', ?_⟩
-        have := hact.2.2
-        omega
-      · rw [hRn _ hact]
-        refine ⟨hzC, hzL, Or.inl ?_⟩
-        by_contra h
-        exact hact ⟨hzC, hzL, by omega⟩
-  -- After `ℓ` steps the carrier has at most `m + 1` elements, as `|J(y)| ≤ m + 1 + ℓ`.
-  have hfinal : ∀ y : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → y ∉ La →
-      (Jx (R^[ℓ] y)).card ≤ m + 1 := by
-    intro y hyC hyL
-    obtain ⟨-, -, h⟩ := iter ℓ y hyC hyL
-    have := Finset.card_le_univ (Jx y)
-    rw [Fintype.card_fin] at this
-    omega
-  refine ⟨R^[ℓ], ?_, ?_, ?_, ?_⟩
-  · -- (α): at least `ℓ` coordinates of `R^ℓ x` lie outside the carrier, i.e. in `{0, 1}`.
-    intro x hx hxL
-    obtain ⟨hC, -, -⟩ := iter ℓ x hx hxL
-    have hc := hfinal x hx hxL
-    refine ⟨hC, ?_⟩
-    have hcompl : ℓ ≤ (Finset.univ \ Jx (R^[ℓ] x)).card := by
-      rw [Finset.card_univ_sdiff, Fintype.card_fin]; omega
-    obtain ⟨I, hIsub, hIcard⟩ := Finset.exists_subset_card_eq hcompl
-    exact ⟨I, hIcard, fun i hi => hoff01 _ hC i (Finset.mem_sdiff.1 (hIsub hi)).2⟩
-  · -- (β): `R` commutes with integer translations inside `C ∖ La` (same carrier, same gauge).
-    have stepT : ∀ y y' : Eucl (m + 1 + ℓ), (∀ i, 0 ≤ y i ∧ y i ≤ 1) → y ∉ La →
-        (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → y' ∉ La → (∀ i, ∃ k : ℤ, y' i - y i = k) →
-        ∀ i, R y' i - R y i = y' i - y i := by
-      intro y y' hyC hyL hy'C hy'L hz
-      have hsame : ∀ i, (0 < y i ∧ y i < 1) ∨ (0 < y' i ∧ y' i < 1) → y' i = y i := by
-        intro i hi
-        obtain ⟨k, hk⟩ := hz i
-        have hk0 : k = 0 := by
-          have hb : (-1 : ℝ) < k ∧ (k : ℝ) < 1 := by
-            rcases hi with ⟨h1, h2⟩ | ⟨h1, h2⟩
-            · constructor <;> linarith [(hy'C i).1, (hy'C i).2]
-            · constructor <;> linarith [(hyC i).1, (hyC i).2]
-          have h1 : (-1 : ℤ) < k := by exact_mod_cast hb.1
-          have h2 : k < 1 := by exact_mod_cast hb.2
-          omega
-        rw [hk0, Int.cast_zero] at hk
-        linarith
-      have hJeq : Jx y' = Jx y := by
-        ext i
-        rw [hJx, hJx]
-        constructor
-        · intro h; rw [← hsame i (Or.inr h)]; exact h
-        · intro h; rw [hsame i (Or.inl h)]; exact h
-      by_cases hact : ((∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ y ∉ La ∧ m + 2 ≤ (Jx y).card)
-      · have hact' : ((∀ i, 0 ≤ y' i ∧ y' i ≤ 1) ∧ y' ∉ La ∧ m + 2 ≤ (Jx y').card) :=
-          ⟨hy'C, hy'L, by rw [hJeq]; exact hact.2.2⟩
-        have hterm : ∀ i ∈ Jx y, max ((y' i - a i) / (1 - a i)) ((a i - y' i) / a i) =
-            max ((y i - a i) / (1 - a i)) ((a i - y i) / a i) := by
-          intro i hi
-          rw [hsame i (Or.inl ((hJx y i).1 hi))]
-        have hNeq : N y' = N y := by
-          have hne : (Jx y).Nonempty := Finset.card_pos.1 (by have := hact.2.2; omega)
-          obtain ⟨i₀, hi₀, h₀⟩ := hNex y hne
-          obtain ⟨i₁, hi₁, h₁⟩ := hNex y' (by rw [hJeq]; exact hne)
-          rw [hJeq] at hi₁
-          apply le_antisymm
-          · rw [h₁, hterm i₁ hi₁]; exact hNle y i₁ hi₁
-          · rw [h₀, ← hterm i₀ hi₀]; exact hNle y' i₀ (by rw [hJeq]; exact hi₀)
-        intro i
-        rw [hRa y' hact' i, hRa y hact i, hJeq, hNeq]
-        split_ifs with hi
-        · rw [hsame i (Or.inl ((hJx y i).1 hi))]; ring
-        · ring
-      · have hact' : ¬((∀ i, 0 ≤ y' i ∧ y' i ≤ 1) ∧ y' ∉ La ∧ m + 2 ≤ (Jx y').card) := by
-          rintro ⟨-, -, h⟩
-          exact hact ⟨hyC, hyL, by rw [← hJeq]; exact h⟩
-        intro i
-        rw [hRn y hact, hRn y' hact']
-    intro x x' hx hxL hx' hx'L hz
-    have hk : ∀ k : ℕ, ∀ i, R^[k] x' i - R^[k] x i = x' i - x i := by
-      intro k
-      induction k with
-      | zero => intro i; rfl
-      | succ k ih =>
-        intro i
-        obtain ⟨hC, hL, -⟩ := iter k x hx hxL
-        obtain ⟨hC', hL', -⟩ := iter k x' hx' hx'L
-        rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
-        have hz' : ∀ j, ∃ k' : ℤ, R^[k] x' j - R^[k] x j = k' := fun j => by
-          rw [ih j]; exact hz j
-        rw [stepT _ _ hC hL hC' hL' hz' i, ih i]
-    exact hk ℓ
-  · -- (S1): `ℓ` coordinates in `{0, 1}` leave a carrier of size `≤ m + 1`, so `R` fixes `x`.
-    rintro x hx hxL ⟨I, hIcard, hI⟩
-    have hsub : Jx x ⊆ Finset.univ \ I := by
-      intro i hi
-      rw [hJx] at hi
-      rw [Finset.mem_sdiff]
-      refine ⟨Finset.mem_univ _, fun hiI => ?_⟩
-      rcases hI i hiI with h | h <;> rw [h] at hi <;> linarith [hi.1, hi.2]
-    have hc : (Jx x).card ≤ m + 1 := by
-      have h5 := Finset.card_le_card hsub
-      rw [Finset.card_univ_sdiff, Fintype.card_fin, hIcard] at h5
-      omega
-    have hR : R x = x := hRn x (fun h => by have := h.2.2; omega)
-    exact Function.iterate_fixed hR ℓ
-  · -- (S2): the exit point `y` of the ray from the face centre `c` through `x` is `R(x)` or `x`.
-    intro J c x y s hJ hcJ hc01 hx hxL hxc hy hs hray hext
-    have hyoff : ∀ i ∉ J, y i = c i := fun i hi => by
-      have := hray i
-      rw [hxc i hi, sub_self, mul_zero] at this
-      linarith
-    by_cases hint : ∀ i ∈ J, 0 < x i ∧ x i < 1
-    · -- Case A: `x` lies in the relative interior of the face, so `J(x) = J`, `N(x) = s⁻¹` and
-      -- `y = R(x)`; then `R^ℓ y = R (R^ℓ x) = R^ℓ x`.
-      have hJeq : Jx x = J := by
-        ext i
-        rw [hJx]
-        constructor
-        · intro h
-          by_contra hiJ
-          rw [hxc i hiJ] at h
-          rcases hc01 i hiJ with h0 | h0 <;> rw [h0] at h <;> linarith [h.1, h.2]
-        · exact hint i
-      have hact : ((∀ i, 0 ≤ x i ∧ x i ≤ 1) ∧ x ∉ La ∧ m + 2 ≤ (Jx x).card) :=
-        ⟨hx, hxL, by rw [hJeq]; exact hJ⟩
-      have hterm_le : ∀ i ∈ J, max ((x i - a i) / (1 - a i)) ((a i - x i) / a i) ≤ s⁻¹ := by
-        intro i hi
-        have hyi := hy i
-        have hr := hray i
-        rw [hcJ i hi] at hr
-        apply max_le
-        · rw [div_le_iff₀ (ha2 i)]
-          have h6 : s * (x i - a i) ≤ 1 - a i := by linarith [hyi.2]
-          calc x i - a i = s⁻¹ * (s * (x i - a i)) := by field_simp
-            _ ≤ s⁻¹ * (1 - a i) := mul_le_mul_of_nonneg_left h6 (inv_nonneg.2 hs.le)
-        · rw [div_le_iff₀ (ha1 i)]
-          have h6 : s * (a i - x i) ≤ a i := by linarith [hyi.1]
-          calc a i - x i = s⁻¹ * (s * (a i - x i)) := by field_simp
-            _ ≤ s⁻¹ * a i := mul_le_mul_of_nonneg_left h6 (inv_nonneg.2 hs.le)
-      have hNx : N x = s⁻¹ := by
-        apply le_antisymm
-        · obtain ⟨i₀, hi₀, h₀⟩ := hNex x (Finset.card_pos.1 (by rw [hJeq]; omega))
-          rw [h₀]
-          rw [hJeq] at hi₀
-          exact hterm_le i₀ hi₀
-        · obtain ⟨i₁, hi₁J, hi₁⟩ := hext
-          have hle := hNle x i₁ (by rw [hJeq]; exact hi₁J)
-          have hr := hray i₁
-          rw [hcJ i₁ hi₁J] at hr
-          rcases hi₁ with h0 | h1
-          · have h7 : (a i₁ - x i₁) / a i₁ = s⁻¹ := by
-              rw [div_eq_iff (ha1 i₁).ne']
-              rw [h0] at hr
-              field_simp
-              linarith
-            rw [← h7]
-            exact (le_max_right _ _).trans hle
-          · have h7 : (x i₁ - a i₁) / (1 - a i₁) = s⁻¹ := by
-              rw [div_eq_iff (ha2 i₁).ne']
-              rw [h1] at hr
-              field_simp
-              linarith
-            rw [← h7]
-            exact (le_max_left _ _).trans hle
-      have hRx : R x = y := by
-        ext i
-        rw [hRa x hact i, hJeq]
-        split_ifs with hi
-        · rw [hNx]
-          have hr := hray i
-          rw [hcJ i hi] at hr
-          rw [div_inv_eq_mul]
-          linarith
-        · rw [hyoff i hi, hxc i hi]
-      rw [← hRx, ← Function.iterate_succ_apply, Function.iterate_succ_apply']
-      have hc := hfinal x hx hxL
-      exact hRn _ (fun h => by have := h.2.2; omega)
-    · -- Case B: `x` lies on the relative boundary of the face; then `s = 1` and `y = x`.
-      push Not at hint
-      obtain ⟨i₂, hi₂J, hi₂⟩ := hint
-      have hx01 : x i₂ = 0 ∨ x i₂ = 1 := by
-        rcases (hx i₂).1.lt_or_eq with h0 | h0
-        · right; exact le_antisymm (hx i₂).2 (hi₂ h0)
-        · left; exact h0.symm
-      have hs1 : s ≤ 1 := by
-        have hr := hray i₂
-        rw [hcJ i₂ hi₂J] at hr
-        have hyi := hy i₂
-        have hai1 := ha1 i₂
-        have hai2 := ha2 i₂
-        rcases hx01 with h0 | h1
-        · rw [h0] at hr
-          nlinarith
-        · rw [h1] at hr
-          nlinarith
-      have hs1' : 1 ≤ s := by
-        obtain ⟨i₁, hi₁J, hi₁⟩ := hext
-        have hr := hray i₁
-        rw [hcJ i₁ hi₁J] at hr
-        have hxi := hx i₁
-        have hai1 := ha1 i₁
-        have hai2 := ha2 i₁
-        rcases hi₁ with h0 | h1
-        · rw [h0] at hr
-          nlinarith [mul_nonneg hs.le hxi.1]
-        · rw [h1] at hr
-          nlinarith [mul_le_mul_of_nonneg_left hxi.2 hs.le]
-      have hyx : y = x := by
-        ext i
-        have := hray i
-        rw [le_antisymm hs1 hs1', one_mul] at this
-        linarith
-      rw [hyx]
-
-/-- Simon Ch. 6, Lemma 5.4, proof p. 163 ("by (7), (8) and the chain rule"), pointwise form:
-if `f` is `K₁`-Lipschitz at `x` within `A`, `f` maps `A` into `B`, and `g` is `K₂`-Lipschitz at
-`f x` within `B`, then `g ∘ f` is `K₁ K₂`-Lipschitz at `x` within `A`.  With
-`η = min{1, ε/(K₁ + K₂ + 1)}` and `δ = min{δ₁, δ₂/(K₁ + η)}` one gets
-`(K₂ + η)(K₁ + η) = K₁K₂ + η(K₁ + K₂ + η) ≤ K₁K₂ + ε`. -/
-theorem Submission.dr_cc_lip_at_comp : ∀ (X Y Z : Type) [PseudoMetricSpace X] [PseudoMetricSpace Y] [PseudoMetricSpace Z] (f : X → Y) (g : Y → Z) (A : Set X) (B : Set Y) (x : X) (K₁ K₂ : ℝ), 0 ≤ K₁ → 0 ≤ K₂ → MapsTo f A B → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' ∈ A, dist x' x < δ → dist (f x') (f x) ≤ (K₁ + ε) * dist x' x) → (∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ B, dist y' (f x) < δ → dist (g y') (g (f x)) ≤ (K₂ + ε) * dist y' (f x)) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' ∈ A, dist x' x < δ → dist (g (f x')) (g (f x)) ≤ (K₁ * K₂ + ε) * dist x' x := by
-  intro X Y Z _ _ _ f g A B x K₁ K₂ hK₁ hK₂ hfAB hf hg ε hε
-  -- The auxiliary level `η = min{1, ε/(K₁ + K₂ + 1)}`: `0 < η ≤ 1` and `η(K₁ + K₂ + 1) ≤ ε`.
-  have hS : 0 < K₁ + K₂ + 1 := by linarith
-  obtain ⟨η, hη, hη1, hηε⟩ : ∃ η : ℝ, 0 < η ∧ η ≤ 1 ∧ η * (K₁ + K₂ + 1) ≤ ε :=
-    ⟨min 1 (ε / (K₁ + K₂ + 1)), lt_min one_pos (div_pos hε hS), min_le_left _ _,
-      (le_div_iff₀ hS).1 (min_le_right _ _)⟩
-  -- `δ₁` for `f` and `δ₂` for `g` at level `η`; then `δ = min{δ₁, δ₂/(K₁ + η)}`.
-  obtain ⟨δ₁, hδ₁, h₁⟩ := hf η hη
-  obtain ⟨δ₂, hδ₂, h₂⟩ := hg η hη
-  have hL : 0 < K₁ + η := by linarith
-  refine ⟨min δ₁ (δ₂ / (K₁ + η)), lt_min hδ₁ (div_pos hδ₂ hL), fun x' hx' hd => ?_⟩
-  -- `d(f x', f x) ≤ (K₁ + η) d(x', x) < δ₂`, and `f x' ∈ B`, so the bound for `g` applies.
-  have hfx : dist (f x') (f x) ≤ (K₁ + η) * dist x' x := h₁ x' hx' (hd.trans_le (min_le_left _ _))
-  have hd₂ : (K₁ + η) * dist x' x < δ₂ := by
-    rw [← lt_div_iff₀' hL]
-    exact hd.trans_le (min_le_right _ _)
-  have hgx := h₂ (f x') (hfAB hx') (hfx.trans_lt hd₂)
-  -- `(K₂ + η)(K₁ + η) = K₁K₂ + η(K₁ + K₂ + η) ≤ K₁K₂ + η(K₁ + K₂ + 1) ≤ K₁K₂ + ε`.
-  have hη2 : η * (K₁ + K₂ + η) ≤ η * (K₁ + K₂ + 1) :=
-    mul_le_mul_of_nonneg_left (by linarith) hη.le
-  calc dist (g (f x')) (g (f x)) ≤ (K₂ + η) * dist (f x') (f x) := hgx
-    _ ≤ (K₂ + η) * ((K₁ + η) * dist x' x) := mul_le_mul_of_nonneg_left hfx (by linarith)
-    _ = (K₁ * K₂ + η * (K₁ + K₂ + η)) * dist x' x := by ring
-    _ ≤ (K₁ * K₂ + ε) * dist x' x := mul_le_mul_of_nonneg_right (by linarith) dist_nonneg
-
-/-- Union rule for pointwise upper Lipschitz bounds (used for Simon Ch. 6, Lemma 5.4, p. 162,
-where `y` may lie on several closed faces): if `g` is `K`-Lipschitz at `y` within `G k ∩ B` for
-every closed piece `G k ∋ y`, and `B ⊆ ⋃ k, G k` with finitely many pieces, then `g` is
-`K`-Lipschitz at `y` within `B`.  Pieces missing `y` stay a positive distance away from `y`, and
-the minimum of finitely many radii is a common radius. -/
-theorem Submission.dr_cc_lip_at_union : ∀ (X Y : Type) [PseudoMetricSpace X] [PseudoMetricSpace Y] (ι : Type) [Finite ι] (G : ι → Set X) (B : Set X) (g : X → Y) (y : X) (K : ℝ), (∀ k, IsClosed (G k)) → B ⊆ ⋃ k, G k → (∀ k, y ∈ G k → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ G k ∩ B, dist y' y < δ → dist (g y') (g y) ≤ (K + ε) * dist y' y) → ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ B, dist y' y < δ → dist (g y') (g y) ≤ (K + ε) * dist y' y := by
-  intro X Y _ _ ι _ G B g y K hG hB hloc ε hε
-  -- A radius `r k > 0` for each piece: from the hypothesis if `y ∈ G k`, and otherwise a ball
-  -- around `y` missing the closed set `G k` (the bound then holds vacuously).
-  have hr : ∀ k, ∃ r : ℝ, 0 < r ∧
-      ∀ y' ∈ G k ∩ B, dist y' y < r → dist (g y') (g y) ≤ (K + ε) * dist y' y := by
-    intro k
-    by_cases hyk : y ∈ G k
-    · exact hloc k hyk ε hε
-    · obtain ⟨r, hr, hball⟩ := Metric.isOpen_iff.1 (hG k).isOpen_compl y hyk
-      exact ⟨r, hr, fun y' hy' hdist => absurd hy'.1 (hball (Metric.mem_ball.2 hdist))⟩
-  choose r hr0 hrb using hr
-  -- A common radius `δ ≤ r k`: the minimum over the finite index type (`1` if `ι` is empty).
-  obtain ⟨δ, hδ, hδr⟩ : ∃ δ : ℝ, 0 < δ ∧ ∀ k, δ ≤ r k := by
-    rcases isEmpty_or_nonempty ι with hι | hι
-    · exact ⟨1, one_pos, fun k => isEmptyElim k⟩
-    · obtain ⟨k₀, hk₀⟩ := Finite.exists_min r
-      exact ⟨r k₀, hr0 k₀, hk₀⟩
-  -- A point `y' ∈ B` lies in some piece `G k`, and `dist y' y < δ ≤ r k`.
-  refine ⟨δ, hδ, fun y' hy' hdist => ?_⟩
-  obtain ⟨k, hk⟩ := Set.mem_iUnion.1 (hB hy')
-  exact hrb k y' ⟨hk, hy'⟩ (hdist.trans_le (hδr k))
-
-/-- Simon Ch. 6, Lemma 5.4, displays (4)–(7) (corrected similarity bound): if `y ∈ [0,1]^d` lies
-on the ray `y = c + s(x - c)` from a face centre `c` (with `c_i = a_i` on `J`, `c_i ∈ {0,1}`
-and `x_i = c_i` off `J`), then `min{1/4, s·dist(x, La)} ≤ dist(y, La)`.  A point `w ∈ La` either
-has a witness coordinate where `y_i ∈ [0,1]` is `1/4`-far from `a_i + ℤ`, or all its witness
-coordinates are free with zero shift, and then `w' = c + s⁻¹(w - c) ∈ La` and
-`y - w = s(x - w')`. -/
-theorem Submission.dr_cc_similarity_bound : ∀ (m ℓ : ℕ) (a : Eucl (m + 1 + ℓ)), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ La : Set (Eucl (m + 1 + ℓ)), La = {y | ∃ J : Finset (Fin (m + 1 + ℓ)), J.card = m + 2 ∧ ∀ i ∈ J, ∃ k : ℤ, y i - a i = k} → ∀ (J : Finset (Fin (m + 1 + ℓ))) (c x y : Eucl (m + 1 + ℓ)) (s : ℝ), (∀ i ∈ J, c i = a i) → (∀ i ∉ J, c i = 0 ∨ c i = 1) → (∀ i ∉ J, x i = c i) → (∀ i, 0 ≤ y i ∧ y i ≤ 1) → 0 < s → (∀ i, y i - c i = s * (x i - c i)) → min (1 / 4) (s * infDist x La) ≤ infDist y La := by
-  intro m ℓ a ha La hLa J c x y s hcJ hcJc hxJc hy hs hrel
-  -- `La = ∅` is trivial; otherwise it suffices to bound `dist y w` for each `w ∈ La`.
-  rcases La.eq_empty_or_nonempty with hE | hne
-  · simp [hE]
-  rw [Metric.le_infDist hne]
-  intro w hw
-  -- The witness set `J'` (of `m + 2` indices) and the integers `k_i` for `w ∈ La`.
-  rw [hLa, Set.mem_ofPred_eq] at hw
-  obtain ⟨J', hJ'card, hJ'⟩ := hw
-  -- `|y_i - w_i| ≤ |y - w|`, so a coordinate gap of `1/4` gives the bound.
-  have hcoord : ∀ i, 1 / 4 ≤ |y i - w i| → min (1 / 4) (s * infDist x La) ≤ dist y w := by
-    intro i hi
-    have hi' := PiLp.dist_apply_le y w i
-    rw [Real.dist_eq] at hi'
-    exact (min_le_left _ _).trans (hi.trans hi')
-  by_cases h1 : ∃ i ∈ J', i ∉ J
-  · -- Case 1: a witness index `i ∉ J`, where `y_i = c_i ∈ {0, 1}`.
-    obtain ⟨i, hiJ', hiJ⟩ := h1
-    obtain ⟨k, hk⟩ := hJ' i hiJ'
-    obtain ⟨ha1, ha2⟩ := ha i
-    have hyi : y i = c i := by
-      have hri := hrel i
-      rw [hxJc i hiJ, sub_self, mul_zero, sub_eq_zero] at hri
-      exact hri
-    refine hcoord i ?_
-    rcases hcJc i hiJ with hc | hc
-    · have hk' : (k : ℝ) ≤ -1 ∨ (0 : ℝ) ≤ k := by
-        rcases le_or_gt 0 k with h | h
-        · right; exact_mod_cast h
-        · left; exact_mod_cast (show k ≤ -1 by omega)
-      rcases hk' with hk1 | hk1
-      · exact (show (1 : ℝ) / 4 ≤ y i - w i by linarith).trans (le_abs_self _)
-      · exact (show (1 : ℝ) / 4 ≤ -(y i - w i) by linarith).trans (neg_le_abs _)
-    · have hk' : (k : ℝ) ≤ 0 ∨ (1 : ℝ) ≤ k := by
-        rcases le_or_gt 1 k with h | h
-        · right; exact_mod_cast h
-        · left; exact_mod_cast (show k ≤ 0 by omega)
-      rcases hk' with hk1 | hk1
-      · exact (show (1 : ℝ) / 4 ≤ y i - w i by linarith).trans (le_abs_self _)
-      · exact (show (1 : ℝ) / 4 ≤ -(y i - w i) by linarith).trans (neg_le_abs _)
-  push Not at h1
-  by_cases h2 : ∃ i ∈ J', w i ≠ a i
-  · -- Case 2: a nonzero shift `k_i` at a witness index, where `y_i ∈ [0, 1]`.
-    obtain ⟨i, hiJ', hwi⟩ := h2
-    obtain ⟨k, hk⟩ := hJ' i hiJ'
-    obtain ⟨ha1, ha2⟩ := ha i
-    obtain ⟨hy0, hy1⟩ := hy i
-    have hk0 : k ≠ 0 := by
-      rintro rfl
-      rw [Int.cast_zero, sub_eq_zero] at hk
-      exact hwi hk
-    have hk' : (k : ℝ) ≤ -1 ∨ (1 : ℝ) ≤ k := by
-      rcases le_or_gt 1 k with h | h
-      · right; exact_mod_cast h
-      · left; exact_mod_cast (show k ≤ -1 by omega)
-    refine hcoord i ?_
-    rcases hk' with hk1 | hk1
-    · exact (show (1 : ℝ) / 4 ≤ y i - w i by linarith).trans (le_abs_self _)
-    · exact (show (1 : ℝ) / 4 ≤ -(y i - w i) by linarith).trans (neg_le_abs _)
-  -- Case 3: all witness indices lie in `J` with zero shifts; `w' = c + s⁻¹(w - c) ∈ La`.
-  push Not at h2
-  have hw' : c + s⁻¹ • (w - c) ∈ La := by
-    rw [hLa, Set.mem_ofPred_eq]
-    refine ⟨J', hJ'card, fun i hi => ⟨0, ?_⟩⟩
-    simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul, h2 i hi,
-      hcJ i (h1 i hi), sub_self, mul_zero, add_zero, Int.cast_zero]
-  have hyw : y - w = s • (x - (c + s⁻¹ • (w - c))) := by
-    ext i
-    simp only [PiLp.add_apply, PiLp.smul_apply, PiLp.sub_apply, smul_eq_mul]
-    calc y i - w i = (y i - c i) - (w i - c i) := by ring
-      _ = s * (x i - c i) - s * s⁻¹ * (w i - c i) := by rw [hrel i, mul_inv_cancel₀ hs.ne', one_mul]
-      _ = s * (x i - (c i + s⁻¹ * (w i - c i))) := by ring
-  have hdist : dist y w = s * dist x (c + s⁻¹ • (w - c)) := by
-    rw [dist_eq_norm, dist_eq_norm, hyw, norm_smul, Real.norm_of_nonneg hs.le]
-  rw [hdist]
-  exact (min_le_right _ _).trans
-    (mul_le_mul_of_nonneg_left (Metric.infDist_le_dist_of_mem hw') hs.le)
-
-/-- Simon Ch. 6, proof of Lemma 5.4: the radial retraction `ψ_F` with origin `c` (p. 161) of
-`F = {x ∈ [0,1]^D : xᵢ = cᵢ (i ∉ J)}` onto its relative boundary, with its pointwise Lipschitz
-bound (printed (8), p. 163).  Here `g(x) = c + N(x - c)⁻¹ • (x - c)` for the gauge
-`N(v) = max_{i ∈ J} max (vᵢ/(1 - aᵢ)) (-vᵢ/aᵢ)`, and `s = N(x - c)⁻¹`. -/
-theorem Submission.dr_cc_radial_map : ∀ (D : ℕ) (a : Eucl D), (∀ i, 1 / 4 < a i ∧ a i < 3 / 4) → ∀ (J : Finset (Fin D)) (c : Eucl D), (∀ i ∈ J, c i = a i) → ∃ g : Eucl D → Eucl D, ∀ x : Eucl D, (∀ i, 0 ≤ x i ∧ x i ≤ 1) → (∀ i ∉ J, x i = c i) → x ≠ c → (∀ i, 0 ≤ g x i ∧ g x i ≤ 1) ∧ (∃ i ∈ J, g x i = 0 ∨ g x i = 1) ∧ ∃ s : ℝ, 0 < s ∧ (∀ i, g x i - c i = s * (x i - c i)) ∧ s * dist x c ≤ Real.sqrt (D : ℝ) ∧ ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∀ x' : Eucl D, (∀ i, 0 ≤ x' i ∧ x' i ≤ 1) → (∀ i ∉ J, x' i = c i) → dist x' x < δ → dist (g x') (g x) ≤ ((1 + 4 * Real.sqrt (D : ℝ)) * s + ε) * dist x' x := by
-  intro D a ha J c hcJ
-  -- Step 1: for `J = ∅` the face is `{c}`, so no `x` is admissible.
-  rcases J.eq_empty_or_nonempty with hJ | hJ
-  · refine ⟨id, fun x _ hxJ hxc => absurd ?_ hxc⟩
-    ext i
-    exact hxJ i (by simp [hJ])
-  -- Step 0: `aᵢ, 1 - aᵢ > 1/4`, coordinates are bounded by the norm, `diam [0,1]^D ≤ √D`.
-  have ha0 : ∀ i, 0 < a i := fun i => by linarith [(ha i).1]
-  have ha1 : ∀ i, 0 < 1 - a i := fun i => by linarith [(ha i).2]
-  have hcoord : ∀ (v : Eucl D) (i : Fin D), |v i| ≤ ‖v‖ := by
-    intro v i
-    have h := PiLp.norm_apply_le v i
-    rwa [Real.norm_eq_abs] at h
-  have hdiam : ∀ p q : Eucl D, (∀ i, 0 ≤ p i ∧ p i ≤ 1) → (∀ i, 0 ≤ q i ∧ q i ≤ 1) →
-      dist p q ≤ Real.sqrt D := by
-    intro p q hp hq
-    rw [EuclideanSpace.dist_eq]
-    refine Real.sqrt_le_sqrt ?_
-    calc ∑ i, dist (p i) (q i) ^ 2 ≤ ∑ _i : Fin D, (1 : ℝ) := by
-          refine Finset.sum_le_sum fun i _ => ?_
-          have h1 : 0 ≤ 1 - p i + q i := by linarith [(hp i).2, (hq i).1]
-          have h2 : 0 ≤ 1 + p i - q i := by linarith [(hp i).1, (hq i).2]
-          rw [Real.dist_eq, sq_abs]
-          nlinarith [mul_nonneg h1 h2]
-      _ = D := by simp
-  -- Step 2: the gauge `N(v) = max_{i ∈ J} fᵢ(v)`, `fᵢ(v) = max (vᵢ/(1 - aᵢ)) (-vᵢ/aᵢ)`.
-  obtain ⟨f, hf⟩ : ∃ f : Eucl D → Fin D → ℝ,
-      ∀ v i, f v i = max (v i / (1 - a i)) (-v i / a i) := ⟨_, fun _ _ => rfl⟩
-  obtain ⟨N, hN⟩ : ∃ N : Eucl D → ℝ, ∀ v, N v = J.sup' hJ (f v) := ⟨_, fun _ => rfl⟩
-  have hfN : ∀ v, ∀ i ∈ J, f v i ≤ N v := by
-    intro v i hi
-    rw [hN]
-    exact Finset.le_sup' (f v) hi
-  have hNatt : ∀ v, ∃ i ∈ J, N v = f v i := by
-    intro v
-    obtain ⟨i, hi, h⟩ := Finset.exists_mem_eq_sup' hJ (f v)
-    exact ⟨i, hi, (hN v).trans h⟩
-  -- (N2): each `fᵢ`, hence `N`, is `4`-Lipschitz.
-  have hfLip : ∀ v w : Eucl D, ∀ i, f w i ≤ f v i + 4 * ‖w - v‖ := by
-    intro v w i
-    have hwv : |w i - v i| ≤ ‖w - v‖ := hcoord (w - v) i
-    have e1 : |w i / (1 - a i) - v i / (1 - a i)| ≤ 4 * |w i - v i| := by
-      rw [← sub_div, abs_div, abs_of_pos (ha1 i), div_le_iff₀ (ha1 i)]
-      nlinarith [abs_nonneg (w i - v i), (ha i).2]
-    have e2 : |-w i / a i - -v i / a i| ≤ 4 * |w i - v i| := by
-      rw [← sub_div, abs_div, abs_of_pos (ha0 i), div_le_iff₀ (ha0 i), neg_sub_neg,
-        abs_sub_comm (v i) (w i)]
-      nlinarith [abs_nonneg (w i - v i), (ha i).1]
-    have e3 := (abs_le.mp (abs_max_sub_max_le_max (w i / (1 - a i)) (-w i / a i)
-      (v i / (1 - a i)) (-v i / a i))).2
-    have e4 := max_le e1 e2
-    rw [hf, hf]
-    linarith
-  have hNle : ∀ v w : Eucl D, N w ≤ N v + 4 * ‖w - v‖ := by
-    intro v w
-    rw [hN w]
-    exact Finset.sup'_le hJ (f w) fun i hi => (hfLip v w i).trans (by linarith [hfN v i hi])
-  have hNlip : ∀ v w : Eucl D, |N w - N v| ≤ 4 * ‖w - v‖ := by
-    intro v w
-    rw [abs_le]
-    constructor
-    · have h := hNle w v
-      rw [norm_sub_rev] at h
-      linarith
-    · linarith [hNle v w]
-  -- Step 8 (core): the estimate `|u w - t v| ≤ ((1 + 4√D) t + ε) |w - v|` for `t = N(v)⁻¹`,
-  -- `u = N(w)⁻¹`, written with `W = w - v`, `V = v`, `ν = N(v)`, `μ = N(w)`, `ρ = |w - v|`.
-  have key : ∀ (ν μ ρ ε : ℝ) (V W : Eucl D), 0 < ν → ‖W‖ = ρ → |μ - ν| ≤ 4 * ρ →
-      ν⁻¹ * ‖V‖ ≤ Real.sqrt D → ρ < ν / 8 → ρ < ε * ν ^ 2 / (8 * (1 + 4 * Real.sqrt D)) →
-      ‖μ⁻¹ • W + (μ⁻¹ - ν⁻¹) • V‖ ≤ ((1 + 4 * Real.sqrt D) * ν⁻¹ + ε) * ρ := by
-    intro ν μ ρ ε V W hν hW hμν hV hρ1 hρ2
-    have hβ : 0 < 1 + 4 * Real.sqrt D := by positivity
-    have hρ0 : 0 ≤ ρ := hW ▸ norm_nonneg W
-    have hμ : ν / 2 < μ := by linarith [(abs_le.mp hμν).1]
-    have hμ0 : 0 < μ := by linarith
-    have ht : 0 < ν⁻¹ := inv_pos.mpr hν
-    have hu : 0 < μ⁻¹ := inv_pos.mpr hμ0
-    have htν : ν⁻¹ * ν = 1 := inv_mul_cancel₀ hν.ne'
-    have huμ : μ⁻¹ * μ = 1 := inv_mul_cancel₀ hμ0.ne'
-    generalize ν⁻¹ = t at ht htν hV ⊢
-    generalize μ⁻¹ = u at hu huμ ⊢
-    -- (b): `u - t = u t (ν - μ)`, so `|u - t| ≤ 4 u t ρ`; and `u < 2 t`.
-    have hut : u - t = u * t * (ν - μ) := by linear_combination (-u) * htν + t * huμ
-    have habs : |u - t| ≤ 4 * u * t * ρ := by
-      rw [hut, abs_mul, abs_of_pos (mul_pos hu ht), abs_sub_comm ν μ]
-      have h := mul_le_mul_of_nonneg_left hμν (mul_pos hu ht).le
-      linarith
-    have hu2t : u < 2 * t := by
-      have h1 : u * (μ * ν) = ν := by rw [← mul_assoc, huμ, one_mul]
-      have h2 : 2 * t * (μ * ν) = 2 * μ := by
-        have h : 2 * t * (μ * ν) = 2 * μ * (t * ν) := by ring
-        rw [h, htν, mul_one]
-      have h3 : u * (μ * ν) < 2 * t * (μ * ν) := by rw [h1, h2]; linarith
-      exact lt_of_mul_lt_mul_right h3 (mul_pos hμ0 hν).le
-    -- (d): `u ≤ t + 8 t² ρ` and `8 (1 + 4√D) t² ρ ≤ ε`.
-    have hu_le : u ≤ t + 8 * t ^ 2 * ρ := by
-      have h1 : u - t ≤ 4 * u * t * ρ := (le_abs_self _).trans habs
-      have h2 := mul_le_mul_of_nonneg_right hu2t.le (by positivity : (0 : ℝ) ≤ 4 * t * ρ)
-      nlinarith
-    have h8 : 8 * (1 + 4 * Real.sqrt D) * t ^ 2 * ρ ≤ ε := by
-      have h1 : ρ * (8 * (1 + 4 * Real.sqrt D)) < ε * ν ^ 2 := by
-        rwa [lt_div_iff₀ (by positivity)] at hρ2
-      calc 8 * (1 + 4 * Real.sqrt D) * t ^ 2 * ρ
-          = t ^ 2 * (ρ * (8 * (1 + 4 * Real.sqrt D))) := by ring
-        _ ≤ t ^ 2 * (ε * ν ^ 2) := mul_le_mul_of_nonneg_left h1.le (by positivity)
-        _ = ε * (t * ν) ^ 2 := by ring
-        _ = ε := by rw [htν, one_pow, mul_one]
-    -- (a), (c), (e).
-    calc ‖u • W + (u - t) • V‖ ≤ ‖u • W‖ + ‖(u - t) • V‖ := norm_add_le _ _
-      _ = u * ρ + |u - t| * ‖V‖ := by
-          rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos hu, hW]
-      _ ≤ u * ρ + 4 * u * t * ρ * ‖V‖ := by
-          have h := mul_le_mul_of_nonneg_right habs (norm_nonneg V)
-          linarith
-      _ = u * ρ * (1 + 4 * (t * ‖V‖)) := by ring
-      _ ≤ u * ρ * (1 + 4 * Real.sqrt D) := by
-          refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg hu.le hρ0)
-          linarith
-      _ = (1 + 4 * Real.sqrt D) * u * ρ := by ring
-      _ ≤ (1 + 4 * Real.sqrt D) * (t + 8 * t ^ 2 * ρ) * ρ :=
-          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hu_le hβ.le) hρ0
-      _ = ((1 + 4 * Real.sqrt D) * t + 8 * (1 + 4 * Real.sqrt D) * t ^ 2 * ρ) * ρ := by ring
-      _ ≤ ((1 + 4 * Real.sqrt D) * t + ε) * ρ := by
-          refine mul_le_mul_of_nonneg_right ?_ hρ0
-          linarith
-  -- Step 3: the map `g(y) = c + N(y - c)⁻¹ (y - c)`.
-  obtain ⟨g, hg⟩ : ∃ g : Eucl D → Eucl D, ∀ y, g y = c + (N (y - c))⁻¹ • (y - c) :=
-    ⟨_, fun _ => rfl⟩
-  have hgi : ∀ y i, g y i = c i + (N (y - c))⁻¹ * (y i - c i) := by
-    intro y i
-    rw [hg]
-    rfl
-  refine ⟨g, fun x hx hxJ hxc => ?_⟩
-  -- Step 4: `ν = N(x - c) > 0` (N3); `s = ν⁻¹`.
-  have hxc_i : ∀ i, (x - c) i = x i - c i := fun i => rfl
-  have hν : 0 < N (x - c) := by
-    by_contra hle
-    rw [not_lt] at hle
-    apply hxc
-    ext i
-    by_cases hi : i ∈ J
-    · have h := (hfN (x - c) i hi).trans hle
-      rw [hf, max_le_iff, div_le_iff₀ (ha1 i), div_le_iff₀ (ha0 i), zero_mul, zero_mul,
-        hxc_i] at h
-      linarith [h.1, h.2]
-    · exact hxJ i hi
-  -- Step 5: `g(x) ∈ [0,1]^D` (printed (R1)).
-  have hgx_cube : ∀ i, 0 ≤ g x i ∧ g x i ≤ 1 := by
-    intro i
-    rw [hgi]
-    by_cases hi : i ∈ J
-    · have h := hfN (x - c) i hi
-      rw [hf, max_le_iff, div_le_iff₀ (ha1 i), div_le_iff₀ (ha0 i), hxc_i] at h
-      have k1 : (N (x - c))⁻¹ * (x i - c i) ≤ 1 - a i := by
-        rw [inv_mul_le_iff₀ hν]
-        exact h.1
-      have k2 : -((N (x - c))⁻¹ * (x i - c i)) ≤ a i := by
-        rw [← mul_neg, inv_mul_le_iff₀ hν]
-        exact h.2
-      constructor <;> linarith [hcJ i hi]
-    · rw [← hxJ i hi, sub_self, mul_zero, add_zero]
-      exact hx i
-  -- Step 7: `s |x - c| = |g(x) - c| ≤ √D` (printed (R5)), as `c ∈ [0,1]^D`.
-  have hc_cube : ∀ i, 0 ≤ c i ∧ c i ≤ 1 := by
-    intro i
-    by_cases hi : i ∈ J
-    · rw [hcJ i hi]
-      exact ⟨(ha0 i).le, by linarith [ha1 i]⟩
-    · rw [← hxJ i hi]
-      exact hx i
-  have hR5 : (N (x - c))⁻¹ * ‖x - c‖ ≤ Real.sqrt D := by
-    have h := hdiam (g x) c hgx_cube hc_cube
-    rwa [hg, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs,
-      abs_of_pos (inv_pos.mpr hν)] at h
-  refine ⟨hgx_cube, ?_, (N (x - c))⁻¹, inv_pos.mpr hν, fun i => by rw [hgi]; ring,
-    by rw [dist_eq_norm]; exact hR5, ?_⟩
-  · -- Step 6: a coordinate `i₀ ∈ J` realizing the maximum is sent to `0` or `1`.
-    obtain ⟨i₀, hi₀, hmax⟩ := hNatt (x - c)
-    refine ⟨i₀, hi₀, ?_⟩
-    rw [hgi, hcJ i₀ hi₀]
-    rw [hf, hxc_i, hcJ i₀ hi₀] at hmax
-    rcases le_total (-(x i₀ - a i₀) / a i₀) ((x i₀ - a i₀) / (1 - a i₀)) with h | h
-    · right
-      rw [max_eq_left h] at hmax
-      have e : x i₀ - a i₀ = N (x - c) * (1 - a i₀) := by
-        rw [hmax, div_mul_cancel₀ _ (ha1 i₀).ne']
-      rw [e, ← mul_assoc, inv_mul_cancel₀ hν.ne', one_mul]
-      ring
-    · left
-      rw [max_eq_right h] at hmax
-      have e : x i₀ - a i₀ = -(N (x - c) * a i₀) := by
-        rw [hmax, div_mul_cancel₀ _ (ha0 i₀).ne', neg_neg]
-      rw [e, mul_neg, ← mul_assoc, inv_mul_cancel₀ hν.ne', one_mul]
-      ring
-  · -- Step 8: the pointwise estimate (printed (8)), with `δ = min (ν/8) (εν²/(8(1 + 4√D)))`.
-    intro ε hε
-    refine ⟨min (N (x - c) / 8) (ε * N (x - c) ^ 2 / (8 * (1 + 4 * Real.sqrt D))),
-      lt_min (by linarith) (div_pos (mul_pos hε (pow_pos hν 2)) (by positivity)), ?_⟩
-    intro x' _ _ hx'
-    have hid : g x' - g x = (N (x' - c))⁻¹ • ((x' - c) - (x - c)) +
-        ((N (x' - c))⁻¹ - (N (x - c))⁻¹) • (x - c) := by
-      rw [hg, hg]
-      module
-    have hwv : ‖(x' - c) - (x - c)‖ = dist x' x := by
-      rw [sub_sub_sub_cancel_right, dist_eq_norm]
-    have hμν : |N (x' - c) - N (x - c)| ≤ 4 * dist x' x := by
-      have h := hNlip (x - c) (x' - c)
-      rwa [hwv] at h
-    rw [dist_eq_norm (g x') (g x), hid]
-    exact key (N (x - c)) (N (x' - c)) (dist x' x) ε (x - c) ((x' - c) - (x - c)) hν hwv hμν hR5
-      (hx'.trans_le (min_le_left _ _)) (hx'.trans_le (min_le_right _ _))
-
 /-- **A current has zero mass iff it is zero** (Simon Ch. 6, proof of 6.1, p. 168: "if
 `M(T) = 0` then `|T(ω)| ≤ M(T) ‖ω‖ = 0`").  `M(0)` is a supremum of zeros.  Conversely, every
 test form `ω` is supported in `U` with Euclidean coefficient norm `|ω(x)| ≤ C`, so the mass
@@ -7632,6 +7632,250 @@ theorem Submission.deformation_ipl_cc_gram_det_lower_bound : ∀ (P k : ℕ) (T 
   calc c ^ k = Real.sqrt ((c ^ k) ^ 2) := (Real.sqrt_sq (pow_nonneg hc k)).symm
     _ = Real.sqrt ((c ^ 2) ^ k) := by ring_nf
     _ ≤ _ := Real.sqrt_le_sqrt hprod
+/-- If `M ⊆ U` is `μ`-null on every open `W ⊂⊂ U` on which `T` vanishes, then `μ(M ∖ spt T) = 0`:
+`M ∖ spt T` lies in the zero region (Simon 2.11), a countable union of such `W` (Lindelöf). -/
+theorem Submission.lpf_rsn_null_diff_support_of_local_null : ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (μ : Measure (Eucl P)), M ⊆ U → (∀ W : Set (Eucl P), IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → μ (M ∩ W) = 0) → μ (M \ T.support) = 0 := by
+  intro P n U T M μ hMU hloc
+  -- Countably many of the open sets whose union is `T.zeroRegion` already cover it.
+  obtain ⟨S, hSc, hSsub, hSeq⟩ := TopologicalSpace.isOpen_sUnion_countable
+    {W : Set (Eucl P) | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ T.VanishesOn W}
+    fun W hW => hW.1
+  -- As `M ⊆ U`, every point of `M ∖ spt T` lies in `T.zeroRegion = ⋃₀ S`.
+  have hsub : M \ T.support ⊆ ⋃ W ∈ S, M ∩ W := by
+    rintro x ⟨hxM, hxs⟩
+    have hxZ : x ∈ ⋃₀ S := by
+      rw [hSeq]
+      by_contra hxZ
+      exact hxs ⟨hMU hxM, hxZ⟩
+    obtain ⟨W, hWS, hxW⟩ := hxZ
+    exact mem_biUnion hWS ⟨hxM, hxW⟩
+  refine measure_mono_null hsub ((measure_biUnion_null_iff hSc).2 fun W hWS => ?_)
+  obtain ⟨hWo, hWc, hWU, hWv⟩ := hSsub hWS
+  exact hloc W hWo hWc hWU hWv
+
+/-- Finitely many `n`-covectors separate `n`-vectors (Simon Ch. 6, §1; used for Lemma 3.9 to show
+that a representation `τ(M, θ, ξ)` of `T` lives on `spt T` up to an `Hⁿ`-null set).  Evaluation on
+tuples of standard basis vectors, `Φ(α)(r) = α(e_{r(1)}, …, e_{r(n)})`, embeds `Λⁿ(ℝ^P)` linearly
+into `ℝ^(Fin n → Fin P)`, since a multilinear map is determined by its values on basis vectors.
+So `Λⁿ(ℝ^P)` is finite-dimensional, and an `n`-vector vanishing on a basis `b₁, …, b_N` is zero. -/
+theorem Submission.lpf_rsn_covector_separating_family : ∀ (P n : ℕ), ∃ (N : ℕ) (b : Fin N → Covector (Eucl P) n), ∀ w : NVector (Eucl P) n, (∀ i, w (b i) = 0) → w = 0 := by
+  intro P n
+  -- Step 1: evaluation on `n`-tuples of standard basis vectors of `ℝ^P` is linear.
+  let e : Module.Basis (Fin P) ℝ (Eucl P) := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
+  let Φ : Covector (Eucl P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
+    { toFun := fun α r => α (fun i => e (r i))
+      map_add' := fun _ _ => rfl
+      map_smul' := fun _ _ => rfl }
+  -- Step 2: `Φ` is injective, as a multilinear map is determined by its values on basis vectors.
+  have hΦ : Function.Injective Φ := by
+    intro α β h
+    have hm : α.toContinuousMultilinearMap.toMultilinearMap =
+        β.toContinuousMultilinearMap.toMultilinearMap :=
+      Module.Basis.ext_multilinear (fun _ => e) (fun r => congrFun h r)
+    ext v
+    exact congrArg (fun m : MultilinearMap ℝ (fun _ : Fin n => Eucl P) ℝ => m v) hm
+  -- Step 3: hence `Λⁿ(ℝ^P)` is finite-dimensional; take a basis `b₁, …, b_N`.
+  have : FiniteDimensional ℝ (Covector (Eucl P) n) := FiniteDimensional.of_injective Φ hΦ
+  let b := Module.finBasis ℝ (Covector (Eucl P) n)
+  refine ⟨Module.finrank ℝ (Covector (Eucl P) n), b, ?_⟩
+  -- Step 4: a linear functional vanishing on a basis is zero.
+  intro w hw
+  have hlin : (w : Covector (Eucl P) n →ₗ[ℝ] ℝ) = 0 := b.ext (fun i => by simpa using hw i)
+  ext α
+  simpa using congrArg (fun l : Covector (Eucl P) n →ₗ[ℝ] ℝ => l α) hlin
+
+/-- **Fundamental lemma of the calculus of variations with a positive weight** (a step of the
+proof that a rectifiable `τ(M, θ, ξ)` lives on its support, Simon Ch. 6, 3.9).  If `θ > 0` on `M`,
+`θ` is `μ`-integrable on `M ∩ W` with `W` open, `g` is a.e.-strongly measurable and a.e. bounded
+for `μ ⌞ M`, and `∫_M θ φ g dμ = 0` for every smooth compactly supported `φ` with
+`tsupport φ ⊆ W`, then `g = 0` `μ ⌞ M`-a.e. on `W`.  Mathlib's fundamental lemma applied to `θ g`,
+which is integrable on `W` for `μ ⌞ M`, gives `θ g = 0` there; divide by `θ`. -/
+theorem Submission.lpf_rsn_weighted_fundamental_lemma : ∀ (P : ℕ) (μ : Measure (Eucl P)) (M W : Set (Eucl P)) (θ g : Eucl P → ℝ) (C : ℝ), IsOpen W → NullMeasurableSet M μ → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) μ → AEStronglyMeasurable g (μ.restrict M) → (∀ᵐ x ∂(μ.restrict M), |g x| ≤ C) → (∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ W → ∫ x in M, θ x * (φ x * g x) ∂μ = 0) → ∀ᵐ x ∂(μ.restrict M), x ∈ W → g x = 0 := by
+  intro P μ M W θ g C hW hM hpos hθ hg hgC hint
+  -- Step 1: `θ g` is integrable on `W` for `μ ⌞ M`, as `(μ ⌞ M) ⌞ W = μ ⌞ (M ∩ W)`.
+  have hfint : IntegrableOn (fun x => θ x * g x) W (μ.restrict M) := by
+    rw [IntegrableOn, Measure.restrict_restrict hW.measurableSet, Set.inter_comm]
+    have hθ' : Integrable θ (μ.restrict (M ∩ W)) := hθ
+    have hg' : AEStronglyMeasurable g (μ.restrict (M ∩ W)) :=
+      hg.mono_measure (Measure.restrict_mono Set.inter_subset_left le_rfl)
+    have hgC' : ∀ᵐ x ∂(μ.restrict (M ∩ W)), ‖g x‖ ≤ C := by
+      filter_upwards [ae_restrict_of_ae_restrict_of_subset Set.inter_subset_left hgC] with x hx
+      simpa [Real.norm_eq_abs] using hx
+    exact hθ'.mul_bdd hg' hgC'
+  -- Steps 2–3: the tests `∫ φ • (θ g) d(μ ⌞ M)` vanish, so `θ g = 0` `μ ⌞ M`-a.e. on `W`.
+  have hzero := hW.ae_eq_zero_of_integral_contDiff_smul_eq_zero hfint.locallyIntegrableOn
+    (fun φ hφ hφc hφW => by
+      rw [← hint φ hφ hφc hφW]
+      refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+      simp only [smul_eq_mul]
+      ring)
+  -- Step 4: `μ ⌞ M`-a.e. point lies in `M`, where `θ > 0`.
+  filter_upwards [hzero, ae_restrict_mem₀ hM] with x hx hxM hxW
+  rcases mul_eq_zero.mp (hx hxW) with h | h
+  · exact absurd h (hpos x hxM).ne'
+  · exact h
+
+/-- **A representation is null where the current vanishes (steps 5–8 of (P2) in Simon Ch. 6,
+Lemma 3.9).**  If `T = τ(M, θ, ξ)` with `‖ξ‖ = 1` `Hⁿ`-a.e. on `M`, `T` vanishes on the open set
+`W ⊆ U` and `θ` is integrable on `M ∩ W`, then `Hⁿ(M ∩ W) = 0`.  Testing `T` with `φ α`
+(`φ ∈ C_c^∞(W)`, `α` an `n`-covector) gives `∫_M θ φ ⟨α, ξ⟩ dHⁿ = 0`, so `⟨α, ξ⟩ = 0` a.e. on
+`M ∩ W` (`lpf_rsn_weighted_fundamental_lemma`).  Finitely many covectors separate `n`-vectors
+(`lpf_rsn_covector_separating_family`), so `ξ = 0` a.e. on `M ∩ W`; as `‖ξ‖ = 1` a.e. on `M`,
+the set `M ∩ W` is null. -/
+theorem Submission.lpf_rsn_local_null : ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsOpen W → W ⊆ U → T.VanishesOn W → NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) (μHE[n] : Measure (Eucl P)) → AEStronglyMeasurable ξ ((μHE[n] : Measure (Eucl P)).restrict M) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ x‖ = 1) → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M ∩ W) = 0 := by
+  intro P n U W T M θ ξ hW hWU hvan hM hpos hθ hξm hξ1 hrep
+  -- Each coordinate `x ↦ ξ x α` is bounded by `‖α‖` and vanishes a.e. on `M ∩ W`.
+  have key : ∀ α : Covector (Eucl P) n,
+      ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ W → ξ x α = 0 := by
+    intro α
+    refine Submission.lpf_rsn_weighted_fundamental_lemma P (μHE[n] : Measure (Eucl P)) M W θ
+      (fun x => ξ x α) ‖α‖ hW hM hpos hθ ?_ ?_ ?_
+    · exact (ContinuousLinearMap.apply ℝ ℝ α).continuous.comp_aestronglyMeasurable hξm
+    · filter_upwards [hξ1] with x hx
+      calc |ξ x α| = ‖ξ x α‖ := (Real.norm_eq_abs _).symm
+        _ ≤ ‖ξ x‖ * ‖α‖ := (ξ x).le_opNorm α
+        _ = ‖α‖ := by rw [hx, one_mul]
+    · -- `ω = φ α` is a test form supported in `W`, so `T ω = 0`.
+      intro φ hφ hφc hφW
+      let ω : DifferentialForm (Eucl P) n := fun x => φ x • α
+      have hωs : IsSmoothForm ω := hφ.smul contDiff_const
+      have hωc : HasCompactSupport ω := hφc.smul_right
+      have hωW : tsupport ω ⊆ W := (tsupport_smul_subset_left φ (fun _ => α)).trans hφW
+      let ωU : TestFormOn U n := ⟨ω, ⟨hωs, hωc⟩, hωW.trans hWU⟩
+      have h0 : T ωU = 0 := hvan ωU hωW
+      rw [hrep ωU] at h0
+      simpa [tauAction, ωU, ω, map_smul, smul_eq_mul] using h0
+  -- A finite separating family of covectors gives `ξ = 0` a.e. on `M ∩ W`, where `‖ξ‖ = 1`.
+  obtain ⟨N, b, hb⟩ := Submission.lpf_rsn_covector_separating_family P n
+  have hall : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ i, x ∈ W → ξ x (b i) = 0 :=
+    ae_all_iff.mpr fun i => key (b i)
+  have hnotW : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∉ W := by
+    filter_upwards [hall, hξ1] with x hx h1 hxW
+    rw [hb (ξ x) fun i => hx i hxW, ContinuousLinearMap.opNorm_zero] at h1
+    exact zero_ne_one h1
+  have hres : (μHE[n] : Measure (Eucl P)).restrict M W = 0 := by
+    rw [ae_iff] at hnotW
+    simpa using hnotW
+  rwa [Measure.restrict_apply hW.measurableSet, Set.inter_comm] at hres
+
+/-- **Simple `n`-vectors (step (P1) of Simon Ch. 6, Lemma 3.9).**  The operator norm of
+`v₁ ∧ ⋯ ∧ vₙ = simpleNVector v` is the square root of the Gram determinant `det (⟪vᵢ, vⱼ⟫)`, and a
+change of frame `τ ↦ Bτ` multiplies `simpleNVector τ` by `det B`.  The second identity is the
+uniqueness of alternating forms on `ℝⁿ` (`AlternatingMap.eq_smul_basis_det`).  A dependent `v`
+makes both sides of the first vanish.  An independent `v` is `Bτ` for an orthonormal basis `τ` of
+`span v`, so `G(v) = B Bᵀ`; `|α τ| ≤ ‖α‖` and the covector `u ↦ det (⟪τᵢ, uⱼ⟫)` (norm `≤ 1` by
+Hadamard's and Bessel's inequalities, value `1` at `τ`) give `‖simpleNVector v‖ = |det B|`. -/
+theorem Submission.lpf_simple_nvector_algebra : (∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ := by
+  -- Change of frame: `α(Bτ) = det B · α(τ)` for every `n`-covector `α`, since
+  -- `B ↦ α(Bτ)` is alternating in the rows of `B` (`AlternatingMap.eq_smul_basis_det`).
+  have hframe : ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P),
+      simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ := by
+    intro P n B τ
+    ext α
+    simp only [simpleNVector_apply, FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
+    set f : (Fin n → ℝ) [⋀^Fin n]→ₗ[ℝ] ℝ :=
+      α.toAlternatingMap.compLinearMap (Fintype.linearCombination ℝ τ) with hf
+    have h1 : f (fun i j => B i j) = α (fun i => ∑ j, B i j • τ j) := by
+      simp [hf, Fintype.linearCombination_apply]
+    have h2 : f (Pi.basisFun ℝ (Fin n)) = α τ := by
+      simp [hf, Fintype.linearCombination_apply_single]
+    rw [← h1, AlternatingMap.eq_smul_basis_det (Pi.basisFun ℝ (Fin n)) f,
+      AlternatingMap.smul_apply, h2, Pi.basisFun_det, smul_eq_mul, mul_comm]
+    rfl
+  refine ⟨fun P n v => ?_, hframe⟩
+  by_cases hv : LinearIndependent ℝ v
+  · -- Independent family: `v = Bτ` for an orthonormal basis `τ` of `W = span v`,
+    -- `B i j = ⟪v i, τ j⟫`, so `G(v) = B Bᵀ` and `simpleNVector v = det B • simpleNVector τ`.
+    set W := Submodule.span ℝ (Set.range v) with hW_def
+    have hW : Module.finrank ℝ W = n := by rw [finrank_span_eq_card hv, Fintype.card_fin]
+    set b : OrthonormalBasis (Fin n) ℝ W := (stdOrthonormalBasis ℝ W).reindex (finCongr hW)
+    set τ : Fin n → Eucl P := fun j => (b j : Eucl P) with hτ_def
+    have hτ : Orthonormal ℝ τ := b.orthonormal.comp_linearIsometry W.subtypeₗᵢ
+    have hvW : ∀ i, v i ∈ W := fun i => Submodule.subset_span (Set.mem_range_self i)
+    set B : Matrix (Fin n) (Fin n) ℝ := Matrix.of fun i j => inner ℝ (v i) (τ j) with hB_def
+    have hvB : (fun i => ∑ j, B i j • τ j) = v := by
+      funext i
+      have h := congrArg Subtype.val (b.sum_repr' ⟨v i, hvW i⟩)
+      simp only [Submodule.coe_sum, Submodule.coe_smul, Submodule.coe_inner] at h
+      simpa [hB_def, hτ_def, real_inner_comm] using h
+    have hgram : (Matrix.of fun i j => inner ℝ (v i) (v j)) = B * B.transpose := by
+      ext i k
+      have h := b.sum_inner_mul_inner ⟨v i, hvW i⟩ ⟨v k, hvW k⟩
+      simp only [Submodule.coe_inner] at h
+      simp only [Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply, hB_def]
+      rw [← h]
+      simp [hτ_def, real_inner_comm]
+    have hsv : ∀ α : Covector (Eucl P) n, simpleNVector v α = B.det * α τ := by
+      intro α
+      rw [← hvB, hframe]
+      simp only [FunLike.coe_smul, Pi.smul_apply, smul_eq_mul, simpleNVector_apply]
+    -- Upper bound: `|α τ| ≤ ‖α‖ ∏ ‖τ i‖ = ‖α‖`.
+    have hup : ∀ α : Covector (Eucl P) n, |α τ| ≤ ‖α‖ := by
+      intro α
+      have h := α.le_opNorm τ
+      simp only [hτ.1, Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
+      exact h
+    -- Lower bound: the calibrating covector `α₀(u) = det (⟪τ i, u j⟫)` has `α₀ τ = 1` and
+    -- `‖α₀‖ ≤ 1` by Hadamard's inequality for the columns `c j = (⟪τ i, u j⟫)ᵢ` together with
+    -- Bessel's inequality `‖c j‖ ≤ ‖u j‖`.
+    set α₀ : Covector (Eucl P) n := wedgeCovectors n fun i => innerSL ℝ (τ i) with hα₀_def
+    have hα₀τ : α₀ τ = 1 := by
+      rw [hα₀_def, wedgeCovectors_apply_det]
+      have h : (Matrix.of fun i j => innerSL ℝ (τ i) (τ j)) = 1 := by
+        ext i j
+        simp [Matrix.one_apply, orthonormal_iff_ite.mp hτ i j]
+      rw [h, Matrix.det_one]
+    have hα₀ : ‖α₀‖ ≤ 1 := by
+      refine ContinuousAlternatingMap.opNorm_le_bound _ zero_le_one fun u => ?_
+      rw [one_mul, hα₀_def, wedgeCovectors_apply_det, Real.norm_eq_abs]
+      set c : Fin n → EuclideanSpace ℝ (Fin n) :=
+        fun j => WithLp.toLp 2 fun i => inner ℝ (τ i) (u j) with hc
+      set e := EuclideanSpace.basisFun (Fin n) ℝ
+      have hdet : (Matrix.of fun i j => innerSL ℝ (τ i) (u j)).det = e.toBasis.det c := by
+        rw [Module.Basis.det_apply]
+        congr 1
+      have hHad : |e.toBasis.det c| ≤ ∏ j, ‖c j‖ := by
+        have : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = n) :=
+          ⟨finrank_euclideanSpace_fin⟩
+        rw [← e.toBasis.orientation.volumeForm_robust' e c]
+        exact e.toBasis.orientation.abs_volumeForm_apply_le c
+      have hBessel : ∀ j, ‖c j‖ ≤ ‖u j‖ := by
+        intro j
+        rw [EuclideanSpace.norm_eq, ← Real.sqrt_sq (norm_nonneg (u j))]
+        apply Real.sqrt_le_sqrt
+        simpa [hc] using hτ.sum_inner_products_le (u j) (s := Finset.univ)
+      rw [hdet]
+      calc |e.toBasis.det c| ≤ ∏ j, ‖c j‖ := hHad
+        _ ≤ ∏ j, ‖u j‖ := by gcongr with j; exact hBessel j
+    -- Hence `‖simpleNVector v‖ = |det B|`.
+    have hnorm : ‖simpleNVector v‖ = |B.det| := by
+      apply le_antisymm
+      · refine ContinuousLinearMap.opNorm_le_bound _ (abs_nonneg _) fun α => ?_
+        rw [hsv, Real.norm_eq_abs, abs_mul]
+        exact mul_le_mul_of_nonneg_left (hup α) (abs_nonneg _)
+      · calc |B.det| = ‖simpleNVector v α₀‖ := by rw [hsv, hα₀τ, mul_one, Real.norm_eq_abs]
+          _ ≤ ‖simpleNVector v‖ * ‖α₀‖ := (simpleNVector v).le_opNorm α₀
+          _ ≤ ‖simpleNVector v‖ * 1 :=
+            mul_le_mul_of_nonneg_left hα₀ (ContinuousLinearMap.opNorm_nonneg _)
+          _ = ‖simpleNVector v‖ := mul_one _
+    rw [hnorm, hgram, Matrix.det_mul, Matrix.det_transpose, sq_abs, sq]
+  · -- Dependent family: every alternating map vanishes on `v`, and `G(v) g = 0` for a
+    -- nontrivial relation `∑ g j • v j = 0`, so both sides vanish.
+    have h0 : ‖simpleNVector v‖ = 0 := by
+      refine le_antisymm (ContinuousLinearMap.opNorm_le_bound _ le_rfl fun α => ?_)
+        (ContinuousLinearMap.opNorm_nonneg _)
+      have hα : α v = 0 := α.toAlternatingMap.map_linearDependent v hv
+      rw [simpleNVector_apply, hα, norm_zero, zero_mul]
+    obtain ⟨g, hg, i₀, hi₀⟩ := Fintype.not_linearIndependent_iff.mp hv
+    have hdet : (Matrix.of fun i j => inner ℝ (v i) (v j)).det = 0 := by
+      rw [← Matrix.exists_mulVec_eq_zero_iff]
+      refine ⟨g, fun h => hi₀ (congrFun h i₀), ?_⟩
+      funext i
+      have h := congrArg (inner ℝ (v i)) hg
+      simp only [inner_sum, inner_smul_right, inner_zero_right] at h
+      simpa [Matrix.mulVec, dotProduct, mul_comm] using h
+    rw [h0, hdet, sq, mul_zero]
+
 /-- **A rectifiable representation lives on the support (step (P2) of Simon Ch. 6, Lemma 3.9).**
 If `T = τ(M, θ, ξ)` then `Hⁿ(M \ spt T) = 0`.  An orthonormal frame `τ` has Gram matrix `1`, so
 `‖simpleNVector τ‖ = 1` by `lpf_simple_nvector_algebra` and `‖ξ‖ = 1` `Hⁿ`-a.e. on `M`
@@ -8765,132 +9009,6 @@ theorem Submission.lpf_pi_im_of_chart_density : (∀ (Q n : ℕ) (V M : Set (Euc
   obtain ⟨c, -, -, -, -, -, -, -, hθc, -⟩ := hdata y hy
   exact ⟨c.natAbs, hθc⟩
 
-/-- If `M ⊆ U` is `μ`-null on every open `W ⊂⊂ U` on which `T` vanishes, then `μ(M ∖ spt T) = 0`:
-`M ∖ spt T` lies in the zero region (Simon 2.11), a countable union of such `W` (Lindelöf). -/
-theorem Submission.lpf_rsn_null_diff_support_of_local_null : ∀ (P n : ℕ) (U : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (μ : Measure (Eucl P)), M ⊆ U → (∀ W : Set (Eucl P), IsOpen W → IsCompact (closure W) → closure W ⊆ U → T.VanishesOn W → μ (M ∩ W) = 0) → μ (M \ T.support) = 0 := by
-  intro P n U T M μ hMU hloc
-  -- Countably many of the open sets whose union is `T.zeroRegion` already cover it.
-  obtain ⟨S, hSc, hSsub, hSeq⟩ := TopologicalSpace.isOpen_sUnion_countable
-    {W : Set (Eucl P) | IsOpen W ∧ IsCompact (closure W) ∧ closure W ⊆ U ∧ T.VanishesOn W}
-    fun W hW => hW.1
-  -- As `M ⊆ U`, every point of `M ∖ spt T` lies in `T.zeroRegion = ⋃₀ S`.
-  have hsub : M \ T.support ⊆ ⋃ W ∈ S, M ∩ W := by
-    rintro x ⟨hxM, hxs⟩
-    have hxZ : x ∈ ⋃₀ S := by
-      rw [hSeq]
-      by_contra hxZ
-      exact hxs ⟨hMU hxM, hxZ⟩
-    obtain ⟨W, hWS, hxW⟩ := hxZ
-    exact mem_biUnion hWS ⟨hxM, hxW⟩
-  refine measure_mono_null hsub ((measure_biUnion_null_iff hSc).2 fun W hWS => ?_)
-  obtain ⟨hWo, hWc, hWU, hWv⟩ := hSsub hWS
-  exact hloc W hWo hWc hWU hWv
-
-/-- Finitely many `n`-covectors separate `n`-vectors (Simon Ch. 6, §1; used for Lemma 3.9 to show
-that a representation `τ(M, θ, ξ)` of `T` lives on `spt T` up to an `Hⁿ`-null set).  Evaluation on
-tuples of standard basis vectors, `Φ(α)(r) = α(e_{r(1)}, …, e_{r(n)})`, embeds `Λⁿ(ℝ^P)` linearly
-into `ℝ^(Fin n → Fin P)`, since a multilinear map is determined by its values on basis vectors.
-So `Λⁿ(ℝ^P)` is finite-dimensional, and an `n`-vector vanishing on a basis `b₁, …, b_N` is zero. -/
-theorem Submission.lpf_rsn_covector_separating_family : ∀ (P n : ℕ), ∃ (N : ℕ) (b : Fin N → Covector (Eucl P) n), ∀ w : NVector (Eucl P) n, (∀ i, w (b i) = 0) → w = 0 := by
-  intro P n
-  -- Step 1: evaluation on `n`-tuples of standard basis vectors of `ℝ^P` is linear.
-  let e : Module.Basis (Fin P) ℝ (Eucl P) := (EuclideanSpace.basisFun (Fin P) ℝ).toBasis
-  let Φ : Covector (Eucl P) n →ₗ[ℝ] ((Fin n → Fin P) → ℝ) :=
-    { toFun := fun α r => α (fun i => e (r i))
-      map_add' := fun _ _ => rfl
-      map_smul' := fun _ _ => rfl }
-  -- Step 2: `Φ` is injective, as a multilinear map is determined by its values on basis vectors.
-  have hΦ : Function.Injective Φ := by
-    intro α β h
-    have hm : α.toContinuousMultilinearMap.toMultilinearMap =
-        β.toContinuousMultilinearMap.toMultilinearMap :=
-      Module.Basis.ext_multilinear (fun _ => e) (fun r => congrFun h r)
-    ext v
-    exact congrArg (fun m : MultilinearMap ℝ (fun _ : Fin n => Eucl P) ℝ => m v) hm
-  -- Step 3: hence `Λⁿ(ℝ^P)` is finite-dimensional; take a basis `b₁, …, b_N`.
-  have : FiniteDimensional ℝ (Covector (Eucl P) n) := FiniteDimensional.of_injective Φ hΦ
-  let b := Module.finBasis ℝ (Covector (Eucl P) n)
-  refine ⟨Module.finrank ℝ (Covector (Eucl P) n), b, ?_⟩
-  -- Step 4: a linear functional vanishing on a basis is zero.
-  intro w hw
-  have hlin : (w : Covector (Eucl P) n →ₗ[ℝ] ℝ) = 0 := b.ext (fun i => by simpa using hw i)
-  ext α
-  simpa using congrArg (fun l : Covector (Eucl P) n →ₗ[ℝ] ℝ => l α) hlin
-
-/-- **Fundamental lemma of the calculus of variations with a positive weight** (a step of the
-proof that a rectifiable `τ(M, θ, ξ)` lives on its support, Simon Ch. 6, 3.9).  If `θ > 0` on `M`,
-`θ` is `μ`-integrable on `M ∩ W` with `W` open, `g` is a.e.-strongly measurable and a.e. bounded
-for `μ ⌞ M`, and `∫_M θ φ g dμ = 0` for every smooth compactly supported `φ` with
-`tsupport φ ⊆ W`, then `g = 0` `μ ⌞ M`-a.e. on `W`.  Mathlib's fundamental lemma applied to `θ g`,
-which is integrable on `W` for `μ ⌞ M`, gives `θ g = 0` there; divide by `θ`. -/
-theorem Submission.lpf_rsn_weighted_fundamental_lemma : ∀ (P : ℕ) (μ : Measure (Eucl P)) (M W : Set (Eucl P)) (θ g : Eucl P → ℝ) (C : ℝ), IsOpen W → NullMeasurableSet M μ → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) μ → AEStronglyMeasurable g (μ.restrict M) → (∀ᵐ x ∂(μ.restrict M), |g x| ≤ C) → (∀ φ : Eucl P → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ W → ∫ x in M, θ x * (φ x * g x) ∂μ = 0) → ∀ᵐ x ∂(μ.restrict M), x ∈ W → g x = 0 := by
-  intro P μ M W θ g C hW hM hpos hθ hg hgC hint
-  -- Step 1: `θ g` is integrable on `W` for `μ ⌞ M`, as `(μ ⌞ M) ⌞ W = μ ⌞ (M ∩ W)`.
-  have hfint : IntegrableOn (fun x => θ x * g x) W (μ.restrict M) := by
-    rw [IntegrableOn, Measure.restrict_restrict hW.measurableSet, Set.inter_comm]
-    have hθ' : Integrable θ (μ.restrict (M ∩ W)) := hθ
-    have hg' : AEStronglyMeasurable g (μ.restrict (M ∩ W)) :=
-      hg.mono_measure (Measure.restrict_mono Set.inter_subset_left le_rfl)
-    have hgC' : ∀ᵐ x ∂(μ.restrict (M ∩ W)), ‖g x‖ ≤ C := by
-      filter_upwards [ae_restrict_of_ae_restrict_of_subset Set.inter_subset_left hgC] with x hx
-      simpa [Real.norm_eq_abs] using hx
-    exact hθ'.mul_bdd hg' hgC'
-  -- Steps 2–3: the tests `∫ φ • (θ g) d(μ ⌞ M)` vanish, so `θ g = 0` `μ ⌞ M`-a.e. on `W`.
-  have hzero := hW.ae_eq_zero_of_integral_contDiff_smul_eq_zero hfint.locallyIntegrableOn
-    (fun φ hφ hφc hφW => by
-      rw [← hint φ hφ hφc hφW]
-      refine integral_congr_ae (Eventually.of_forall fun x => ?_)
-      simp only [smul_eq_mul]
-      ring)
-  -- Step 4: `μ ⌞ M`-a.e. point lies in `M`, where `θ > 0`.
-  filter_upwards [hzero, ae_restrict_mem₀ hM] with x hx hxM hxW
-  rcases mul_eq_zero.mp (hx hxW) with h | h
-  · exact absurd h (hpos x hxM).ne'
-  · exact h
-
-/-- **A representation is null where the current vanishes (steps 5–8 of (P2) in Simon Ch. 6,
-Lemma 3.9).**  If `T = τ(M, θ, ξ)` with `‖ξ‖ = 1` `Hⁿ`-a.e. on `M`, `T` vanishes on the open set
-`W ⊆ U` and `θ` is integrable on `M ∩ W`, then `Hⁿ(M ∩ W) = 0`.  Testing `T` with `φ α`
-(`φ ∈ C_c^∞(W)`, `α` an `n`-covector) gives `∫_M θ φ ⟨α, ξ⟩ dHⁿ = 0`, so `⟨α, ξ⟩ = 0` a.e. on
-`M ∩ W` (`lpf_rsn_weighted_fundamental_lemma`).  Finitely many covectors separate `n`-vectors
-(`lpf_rsn_covector_separating_family`), so `ξ = 0` a.e. on `M ∩ W`; as `‖ξ‖ = 1` a.e. on `M`,
-the set `M ∩ W` is null. -/
-theorem Submission.lpf_rsn_local_null : ∀ (P n : ℕ) (U W : Set (Eucl P)) (T : GeometricCurrentOn U n) (M : Set (Eucl P)) (θ : Eucl P → ℝ) (ξ : Eucl P → NVector (Eucl P) n), IsOpen W → W ⊆ U → T.VanishesOn W → NullMeasurableSet M (μHE[n] : Measure (Eucl P)) → (∀ x ∈ M, 0 < θ x) → IntegrableOn θ (M ∩ W) (μHE[n] : Measure (Eucl P)) → AEStronglyMeasurable ξ ((μHE[n] : Measure (Eucl P)).restrict M) → (∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ‖ξ x‖ = 1) → (∀ ω : TestFormOn U n, T ω = tauAction n M θ ξ ω) → (μHE[n] : Measure (Eucl P)) (M ∩ W) = 0 := by
-  intro P n U W T M θ ξ hW hWU hvan hM hpos hθ hξm hξ1 hrep
-  -- Each coordinate `x ↦ ξ x α` is bounded by `‖α‖` and vanishes a.e. on `M ∩ W`.
-  have key : ∀ α : Covector (Eucl P) n,
-      ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∈ W → ξ x α = 0 := by
-    intro α
-    refine Submission.lpf_rsn_weighted_fundamental_lemma P (μHE[n] : Measure (Eucl P)) M W θ
-      (fun x => ξ x α) ‖α‖ hW hM hpos hθ ?_ ?_ ?_
-    · exact (ContinuousLinearMap.apply ℝ ℝ α).continuous.comp_aestronglyMeasurable hξm
-    · filter_upwards [hξ1] with x hx
-      calc |ξ x α| = ‖ξ x α‖ := (Real.norm_eq_abs _).symm
-        _ ≤ ‖ξ x‖ * ‖α‖ := (ξ x).le_opNorm α
-        _ = ‖α‖ := by rw [hx, one_mul]
-    · -- `ω = φ α` is a test form supported in `W`, so `T ω = 0`.
-      intro φ hφ hφc hφW
-      let ω : DifferentialForm (Eucl P) n := fun x => φ x • α
-      have hωs : IsSmoothForm ω := hφ.smul contDiff_const
-      have hωc : HasCompactSupport ω := hφc.smul_right
-      have hωW : tsupport ω ⊆ W := (tsupport_smul_subset_left φ (fun _ => α)).trans hφW
-      let ωU : TestFormOn U n := ⟨ω, ⟨hωs, hωc⟩, hωW.trans hWU⟩
-      have h0 : T ωU = 0 := hvan ωU hωW
-      rw [hrep ωU] at h0
-      simpa [tauAction, ωU, ω, map_smul, smul_eq_mul] using h0
-  -- A finite separating family of covectors gives `ξ = 0` a.e. on `M ∩ W`, where `‖ξ‖ = 1`.
-  obtain ⟨N, b, hb⟩ := Submission.lpf_rsn_covector_separating_family P n
-  have hall : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), ∀ i, x ∈ W → ξ x (b i) = 0 :=
-    ae_all_iff.mpr fun i => key (b i)
-  have hnotW : ∀ᵐ x ∂((μHE[n] : Measure (Eucl P)).restrict M), x ∉ W := by
-    filter_upwards [hall, hξ1] with x hx h1 hxW
-    rw [hb (ξ x) fun i => hx i hxW, ContinuousLinearMap.opNorm_zero] at h1
-    exact zero_ne_one h1
-  have hres : (μHE[n] : Measure (Eucl P)).restrict M W = 0 := by
-    rw [ae_iff] at hnotW
-    simpa using hnotW
-  rwa [Measure.restrict_apply hW.measurableSet, Set.inter_comm] at hres
-
 /-- The `n`-dimensional coordinate box `{x : c_i + a ≤ x_i ≤ c_i + b (i ∈ range α), x_i = c_i
 (i ∉ range α)}` in `ℝ^N` has `μHE[n]`-measure `(b - a)^n`.  The map
 `ι(y)_i = c_i + ∑_j [α j = i] y_j` is an isometry `ℝⁿ → ℝ^N` carrying the cube `[a, b]ⁿ` onto the
@@ -9311,124 +9429,6 @@ theorem Submission.constancy_mollifier_iteratedFDeriv_norm_le_integral :
     hφc S (fun t => hS q le_rfl t) g hg x⟩
   intro u t
   simp [Real.norm_eq_abs]
-
-/-- **Simple `n`-vectors (step (P1) of Simon Ch. 6, Lemma 3.9).**  The operator norm of
-`v₁ ∧ ⋯ ∧ vₙ = simpleNVector v` is the square root of the Gram determinant `det (⟪vᵢ, vⱼ⟫)`, and a
-change of frame `τ ↦ Bτ` multiplies `simpleNVector τ` by `det B`.  The second identity is the
-uniqueness of alternating forms on `ℝⁿ` (`AlternatingMap.eq_smul_basis_det`).  A dependent `v`
-makes both sides of the first vanish.  An independent `v` is `Bτ` for an orthonormal basis `τ` of
-`span v`, so `G(v) = B Bᵀ`; `|α τ| ≤ ‖α‖` and the covector `u ↦ det (⟪τᵢ, uⱼ⟫)` (norm `≤ 1` by
-Hadamard's and Bessel's inequalities, value `1` at `τ`) give `‖simpleNVector v‖ = |det B|`. -/
-theorem Submission.lpf_simple_nvector_algebra : (∀ (P n : ℕ) (v : Fin n → Eucl P), ‖simpleNVector v‖ ^ 2 = (Matrix.of fun i j => inner ℝ (v i) (v j)).det) ∧ ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P), simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ := by
-  -- Change of frame: `α(Bτ) = det B · α(τ)` for every `n`-covector `α`, since
-  -- `B ↦ α(Bτ)` is alternating in the rows of `B` (`AlternatingMap.eq_smul_basis_det`).
-  have hframe : ∀ (P n : ℕ) (B : Matrix (Fin n) (Fin n) ℝ) (τ : Fin n → Eucl P),
-      simpleNVector (fun i => ∑ j, B i j • τ j) = B.det • simpleNVector τ := by
-    intro P n B τ
-    ext α
-    simp only [simpleNVector_apply, FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
-    set f : (Fin n → ℝ) [⋀^Fin n]→ₗ[ℝ] ℝ :=
-      α.toAlternatingMap.compLinearMap (Fintype.linearCombination ℝ τ) with hf
-    have h1 : f (fun i j => B i j) = α (fun i => ∑ j, B i j • τ j) := by
-      simp [hf, Fintype.linearCombination_apply]
-    have h2 : f (Pi.basisFun ℝ (Fin n)) = α τ := by
-      simp [hf, Fintype.linearCombination_apply_single]
-    rw [← h1, AlternatingMap.eq_smul_basis_det (Pi.basisFun ℝ (Fin n)) f,
-      AlternatingMap.smul_apply, h2, Pi.basisFun_det, smul_eq_mul, mul_comm]
-    rfl
-  refine ⟨fun P n v => ?_, hframe⟩
-  by_cases hv : LinearIndependent ℝ v
-  · -- Independent family: `v = Bτ` for an orthonormal basis `τ` of `W = span v`,
-    -- `B i j = ⟪v i, τ j⟫`, so `G(v) = B Bᵀ` and `simpleNVector v = det B • simpleNVector τ`.
-    set W := Submodule.span ℝ (Set.range v) with hW_def
-    have hW : Module.finrank ℝ W = n := by rw [finrank_span_eq_card hv, Fintype.card_fin]
-    set b : OrthonormalBasis (Fin n) ℝ W := (stdOrthonormalBasis ℝ W).reindex (finCongr hW)
-    set τ : Fin n → Eucl P := fun j => (b j : Eucl P) with hτ_def
-    have hτ : Orthonormal ℝ τ := b.orthonormal.comp_linearIsometry W.subtypeₗᵢ
-    have hvW : ∀ i, v i ∈ W := fun i => Submodule.subset_span (Set.mem_range_self i)
-    set B : Matrix (Fin n) (Fin n) ℝ := Matrix.of fun i j => inner ℝ (v i) (τ j) with hB_def
-    have hvB : (fun i => ∑ j, B i j • τ j) = v := by
-      funext i
-      have h := congrArg Subtype.val (b.sum_repr' ⟨v i, hvW i⟩)
-      simp only [Submodule.coe_sum, Submodule.coe_smul, Submodule.coe_inner] at h
-      simpa [hB_def, hτ_def, real_inner_comm] using h
-    have hgram : (Matrix.of fun i j => inner ℝ (v i) (v j)) = B * B.transpose := by
-      ext i k
-      have h := b.sum_inner_mul_inner ⟨v i, hvW i⟩ ⟨v k, hvW k⟩
-      simp only [Submodule.coe_inner] at h
-      simp only [Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply, hB_def]
-      rw [← h]
-      simp [hτ_def, real_inner_comm]
-    have hsv : ∀ α : Covector (Eucl P) n, simpleNVector v α = B.det * α τ := by
-      intro α
-      rw [← hvB, hframe]
-      simp only [FunLike.coe_smul, Pi.smul_apply, smul_eq_mul, simpleNVector_apply]
-    -- Upper bound: `|α τ| ≤ ‖α‖ ∏ ‖τ i‖ = ‖α‖`.
-    have hup : ∀ α : Covector (Eucl P) n, |α τ| ≤ ‖α‖ := by
-      intro α
-      have h := α.le_opNorm τ
-      simp only [hτ.1, Finset.prod_const_one, mul_one, Real.norm_eq_abs] at h
-      exact h
-    -- Lower bound: the calibrating covector `α₀(u) = det (⟪τ i, u j⟫)` has `α₀ τ = 1` and
-    -- `‖α₀‖ ≤ 1` by Hadamard's inequality for the columns `c j = (⟪τ i, u j⟫)ᵢ` together with
-    -- Bessel's inequality `‖c j‖ ≤ ‖u j‖`.
-    set α₀ : Covector (Eucl P) n := wedgeCovectors n fun i => innerSL ℝ (τ i) with hα₀_def
-    have hα₀τ : α₀ τ = 1 := by
-      rw [hα₀_def, wedgeCovectors_apply_det]
-      have h : (Matrix.of fun i j => innerSL ℝ (τ i) (τ j)) = 1 := by
-        ext i j
-        simp [Matrix.one_apply, orthonormal_iff_ite.mp hτ i j]
-      rw [h, Matrix.det_one]
-    have hα₀ : ‖α₀‖ ≤ 1 := by
-      refine ContinuousAlternatingMap.opNorm_le_bound _ zero_le_one fun u => ?_
-      rw [one_mul, hα₀_def, wedgeCovectors_apply_det, Real.norm_eq_abs]
-      set c : Fin n → EuclideanSpace ℝ (Fin n) :=
-        fun j => WithLp.toLp 2 fun i => inner ℝ (τ i) (u j) with hc
-      set e := EuclideanSpace.basisFun (Fin n) ℝ
-      have hdet : (Matrix.of fun i j => innerSL ℝ (τ i) (u j)).det = e.toBasis.det c := by
-        rw [Module.Basis.det_apply]
-        congr 1
-      have hHad : |e.toBasis.det c| ≤ ∏ j, ‖c j‖ := by
-        have : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = n) :=
-          ⟨finrank_euclideanSpace_fin⟩
-        rw [← e.toBasis.orientation.volumeForm_robust' e c]
-        exact e.toBasis.orientation.abs_volumeForm_apply_le c
-      have hBessel : ∀ j, ‖c j‖ ≤ ‖u j‖ := by
-        intro j
-        rw [EuclideanSpace.norm_eq, ← Real.sqrt_sq (norm_nonneg (u j))]
-        apply Real.sqrt_le_sqrt
-        simpa [hc] using hτ.sum_inner_products_le (u j) (s := Finset.univ)
-      rw [hdet]
-      calc |e.toBasis.det c| ≤ ∏ j, ‖c j‖ := hHad
-        _ ≤ ∏ j, ‖u j‖ := by gcongr with j; exact hBessel j
-    -- Hence `‖simpleNVector v‖ = |det B|`.
-    have hnorm : ‖simpleNVector v‖ = |B.det| := by
-      apply le_antisymm
-      · refine ContinuousLinearMap.opNorm_le_bound _ (abs_nonneg _) fun α => ?_
-        rw [hsv, Real.norm_eq_abs, abs_mul]
-        exact mul_le_mul_of_nonneg_left (hup α) (abs_nonneg _)
-      · calc |B.det| = ‖simpleNVector v α₀‖ := by rw [hsv, hα₀τ, mul_one, Real.norm_eq_abs]
-          _ ≤ ‖simpleNVector v‖ * ‖α₀‖ := (simpleNVector v).le_opNorm α₀
-          _ ≤ ‖simpleNVector v‖ * 1 :=
-            mul_le_mul_of_nonneg_left hα₀ (ContinuousLinearMap.opNorm_nonneg _)
-          _ = ‖simpleNVector v‖ := mul_one _
-    rw [hnorm, hgram, Matrix.det_mul, Matrix.det_transpose, sq_abs, sq]
-  · -- Dependent family: every alternating map vanishes on `v`, and `G(v) g = 0` for a
-    -- nontrivial relation `∑ g j • v j = 0`, so both sides vanish.
-    have h0 : ‖simpleNVector v‖ = 0 := by
-      refine le_antisymm (ContinuousLinearMap.opNorm_le_bound _ le_rfl fun α => ?_)
-        (ContinuousLinearMap.opNorm_nonneg _)
-      have hα : α v = 0 := α.toAlternatingMap.map_linearDependent v hv
-      rw [simpleNVector_apply, hα, norm_zero, zero_mul]
-    obtain ⟨g, hg, i₀, hi₀⟩ := Fintype.not_linearIndependent_iff.mp hv
-    have hdet : (Matrix.of fun i j => inner ℝ (v i) (v j)).det = 0 := by
-      rw [← Matrix.exists_mulVec_eq_zero_iff]
-      refine ⟨g, fun h => hi₀ (congrFun h i₀), ?_⟩
-      funext i
-      have h := congrArg (inner ℝ (v i)) hg
-      simp only [inner_sum, inner_smul_right, inner_zero_right] at h
-      simpa [Matrix.mulVec, dotProduct, mul_comm] using h
-    rw [h0, hdet, sq, mul_zero]
 
 /-- For a.e. `t`, the slice `M ∩ f⁻¹{t}` of an `Hᵐ⁺¹`-null-measurable `M` by a measurable `f`
 is `Hᵐ`-null-measurable, given that `Hᵐ⁺¹⌞M`-a.e. properties hold `Hᵐ⌞(M ∩ f⁻¹{t})`-a.e. for
