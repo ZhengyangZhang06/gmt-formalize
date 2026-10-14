@@ -934,6 +934,33 @@ theorem Submission.cbr_ci_pw_bv_mollify_continuous : ∀ (n : ℕ) (S : Set (Euc
   · -- continuity in `x` for each fixed `y`
     exact continuous_const.mul (hφ.comp (continuous_id.sub continuous_const))
 
+/-- **BV estimate for mollification** (for the integer multiplicity of limits in Simon 7.2.4,
+Remark 7.2.5(1); the boundary mass `M_{B_{2R}}(∂Y)` is replaced by a variation bound `V`): if `u`
+is integrable on `B_{2R}(0)` and `|∫_{B_{2R}(0)} u(y) Df(y)(z) dy| ≤ V‖z‖M` for every smooth `f`
+supported in `B_{2R}(0)` with `|f| ≤ M`, then `∫_{B_R(0)} |u − w| ≤ sV` for
+`w(x) = ∫_{B_{2R}(0)} u(y)φ(x − y) dy`, where `φ ≥ 0` is smooth, `tsupport φ ⊆ B_s(0)`,
+`∫φ = 1` and `2s < R`.  The mollification `w` is continuous (`cbr_ci_pw_bv_mollify_continuous`),
+so `u − w` is integrable on `B_{R+s}(0)`; its pairings with smooth `g`, `|g| ≤ 1`,
+`tsupport g ⊆ B_{R+s}(0)` are at most `sV` (`cbr_ci_pw_bv_smooth_test_bound`); `L¹` duality
+(`cbr_ci_pw_bv_l1_duality` with `δ = s`) concludes. -/
+theorem Submission.cbr_ci_pw_bv_mollifier_estimate : ∀ (n : ℕ) (R s V : ℝ) (φ u : Euclid n → ℝ), 0 < R → 0 < s → 2 * s < R → 0 ≤ V → ContDiff ℝ (⊤ : ℕ∞) φ → (∀ y, 0 ≤ φ y) → tsupport φ ⊆ ball 0 s → ∫ y, φ y = 1 → IntegrableOn u (ball 0 (2 * R)) → (∀ (f : Euclid n → ℝ) (z : Euclid n) (M : ℝ), ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ ball 0 (2 * R) → (∀ y, |f y| ≤ M) → |∫ y in ball 0 (2 * R), u y * fderiv ℝ f y z| ≤ V * ‖z‖ * M) → ∫ x in ball 0 R, |u x - ∫ y in ball 0 (2 * R), u y * φ (x - y)| ≤ s * V := by
+  intro n R s V φ u hR hs hsR hV hφ hφ0 hφs hφ1 hu hvar
+  have hφc : HasCompactSupport φ :=
+    (isCompact_closedBall 0 s).of_isClosed_subset (isClosed_tsupport φ)
+      (hφs.trans ball_subset_closedBall)
+  have hw : Continuous fun x => ∫ y in ball 0 (2 * R), u y * φ (x - y) :=
+    Submission.cbr_ci_pw_bv_mollify_continuous n (ball 0 (2 * R)) φ u hu hφ.continuous hφc
+  have hh : IntegrableOn (fun x => u x - ∫ y in ball 0 (2 * R), u y * φ (x - y))
+      (ball 0 (R + s)) :=
+    (hu.mono_set (ball_subset_ball (by linarith))).fun_sub
+      ((hw.continuousOn.integrableOn_compact (isCompact_closedBall 0 (R + s))).mono_set
+        ball_subset_closedBall)
+  exact Submission.cbr_ci_pw_bv_l1_duality n R s (s * V)
+    (fun x => u x - ∫ y in ball 0 (2 * R), u y * φ (x - y)) hs hh
+    fun g hg hgc hgs hg1 => (le_abs_self _).trans
+      (Submission.cbr_ci_pw_bv_smooth_test_bound n R s V φ u g hR hs hsR hV hφ hφ0 hφs hφ1 hu
+        hvar hg hgc hgs hg1)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
