@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0bdd82ffaaec54bcb865443f29f0a16e4a7b67fb6aa82527a27aa9072f0bfe0f",
+  "git_delta": {
+    "base_commit": "039dbc566a36bd20b98687e7fad8f09972073fb5",
+    "candidate_commit": "e00cee808ebb05eaa8fd3676a81608b3a4e28802",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_pfi_isIntegerMultiplicity_of_pieces",
+    "diff_sha256": "5d3752d4cb8928b455def47bdccbb90853873207d00eb29637d09ffcacb9bf13",
+    "source_sha256": "9432c02c442e438a2e55f4540f6c8fac9a18de784792e6cbb121312c0e0c2d92",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_pfi_isIntegerMultiplicity_of_pieces",
+      "statement": "(∀ (P n : ℕ) (U A B : Set (Euclid P)), IsOpen U → MeasurableSet A → MeasurableSet B → A ⊆ B → B ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (B ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict A), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q) → ∀ (P n : ℕ) (U : Set (Euclid P)) (N : ℕ → Set (Euclid P)) (g : ℕ → Euclid P → ℤ) (η : ℕ → Euclid P → MultiVector P n) (Q : GeometricCurrentOn U n), IsOpen U → (∀ j, MeasurableSet (N j)) → (∀ j, N j ⊆ U) → (∀ j, CountablyRectifiable n (N j)) → (∀ j, Measurable (g j)) → (∀ j, ∀ y ∈ N j, g j y ≠ 0) → (∀ j, StronglyMeasurable (η j)) → (∀ j, ∀ᵐ y ∂(μHE[n].restrict (N j)), ∃ T : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n (N j) y T ∧ IsUnitOrientationOf (η j y) T) → ∑' j, ∫⁻ y in N j, ((g j y).natAbs : ℝ≥0∞) ∂μHE[n] ≠ ∞ → (∀ ω : TestFormOn U n, Q ω = ∑' j, ∫ y in N j, (g j y : ℝ) * η j y ((ω : DifferentialForm (Euclid P) n) y) ∂μHE[n]) → IsIntegerMultiplicity Q",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
