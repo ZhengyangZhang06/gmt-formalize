@@ -1472,6 +1472,52 @@ theorem Submission.cbr_ci_pw_bv_mollifier_estimate : ∀ (n : ℕ) (R s V : ℝ)
       (Submission.cbr_ci_pw_bv_smooth_test_bound n R s V φ u g hR hs hsR hV hφ hφ0 hφs hφ1 hu
         hvar hg hgc hgs hg1)
 
+/-- **The densities converge to the constant in `L¹(B_R(0))`** (step 11 of the weight bound).
+Let `U = B_{2R}(0) ⊆ ℝⁿ`, `n = d + 1`, `Y_k(ω) = ∫_U u_k ω(e)` with `∫_U |u_k| ≤ Λ` eventually,
+`M_U(∂Y_k) → 0` and `Y_k(ω) → c ∫ ω(e)`.  Testing with `b dy` gives `∫_U u_k b → c ∫ b` for
+smooth `b` compactly supported in `U`.  Fix a normalized mollifier `φ ≥ 0` supported in
+`B_{R/8}(0)`, so `tsupport φ ⊆ B_s(0)` with `s = R/4`; then `w_k = ∫_U u_k(y) φ(· − y) dy → c`
+uniformly on `B̄_R(0)`.  Eventually `M_U(∂Y_k) < ∞`, and then, with `V_k = M_U(∂Y_k)` and the
+interior-product form `ε_z` (`d(f ε_z)(e) = ∂_z f`, `|ε_z| ≤ ‖z‖`),
+`|∫_U u_k ∂_z f| = |∂Y_k(f ε_z)| ≤ V_k ‖z‖ sup |f|`.  The BV estimate gives
+`∫_{B_R} |u_k − w_k| ≤ s V_k → 0`, and the `L¹` squeeze yields `∫_{B_R} |u_k − c| → 0`. -/
+theorem Submission.cbr_ci_pw_density_l1_tendsto_const : ∀ (d : ℕ) (R c Λ : ℝ) (Y : ℕ → GeometricCurrentOn (ball (0 : Euclid (d + 1)) (2 * R)) (d + 1)) (u : ℕ → Euclid (d + 1) → ℝ), 0 < R → (∀ k, IntegrableOn (u k) (ball 0 (2 * R))) → (∀ᶠ k in atTop, ∫ y in ball 0 (2 * R), |u k y| ≤ Λ) → (∀ (k : ℕ) (ω : TestFormOn (ball (0 : Euclid (d + 1)) (2 * R)) (d + 1)), Y k ω = ∫ y in ball 0 (2 * R), u k y * (ω : DifferentialForm (Euclid (d + 1)) (d + 1)) y (fun i => EuclideanSpace.single i (1 : ℝ))) → Tendsto (fun k => (Y k).boundary.massOn (ball 0 (2 * R))) atTop (𝓝 0) → (∀ ω : TestFormOn (ball (0 : Euclid (d + 1)) (2 * R)) (d + 1), Tendsto (fun k => Y k ω) atTop (𝓝 (c * ∫ y, (ω : DifferentialForm (Euclid (d + 1)) (d + 1)) y (fun i => EuclideanSpace.single i (1 : ℝ))))) → Tendsto (fun k => ∫ y in ball 0 R, |u k y - c|) atTop (𝓝 0) := by
+  intro d R c Λ Y u hR hint hΛ hrep hbd hconv
+  -- Step 1: scalar tests `∫_U u_k b → c ∫ b`
+  have htest :=
+    Submission.cbr_ci_pw_l1_scalar_test_tendsto (d + 1) (ball 0 (2 * R)) c Y u hrep hconv
+  -- Step 2: a normalized mollifier `φ` with `tsupport φ ⊆ B̄_{R/8}(0) ⊆ B_s(0)`, `s = R/4`
+  obtain ⟨φ, hφ, hφc, hφ0, hφ1, hφs⟩ :=
+    Submission.dgcr_stc_exists_normalized_mollifier (d + 1) (R / 8) (by positivity)
+  have hφt : tsupport φ ⊆ ball 0 (R / 4) :=
+    (closure_minimal (hφs.trans ball_subset_closedBall) isClosed_closedBall).trans
+      (closedBall_subset_ball (by linarith))
+  -- Step 3: `w_k → c ∫ φ = c` uniformly on `B̄_R(0)`
+  have hunif := Submission.cbr_ci_pw_mollified_tendstoUniformlyOn (d + 1) R (R / 4) c Λ φ u hR
+    (by positivity) (by linarith) hφ hφt hint hΛ htest
+  rw [hφ1, mul_one] at hunif
+  -- Step 4: `V_k = M_U(∂Y_k).toReal → 0`, and eventually `M_U(∂Y_k) ≠ ∞`
+  have hV : Tendsto (fun k => ((Y k).boundary.massOn (ball 0 (2 * R))).toReal) atTop (𝓝 0) := by
+    simpa only [Function.comp_def, ENNReal.toReal_zero] using
+      (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hbd
+  have hfin := hbd.eventually_ne ENNReal.zero_ne_top
+  -- Step 5: `∫_{B_R} |u_k − w_k| ≤ s V_k`, by the BV estimate; its hypothesis
+  -- `|∫_U u_k ∂_z f| ≤ V_k ‖z‖ M` comes from `ε_z` and the boundary-mass bound
+  have hbv : ∀ᶠ k in atTop,
+      ∫ x in ball 0 R, |u k x - ∫ y in ball 0 (2 * R), u k y * φ (x - y)| ≤
+        R / 4 * ((Y k).boundary.massOn (ball 0 (2 * R))).toReal := by
+    filter_upwards [hfin] with k hk
+    refine Submission.cbr_ci_pw_bv_mollifier_estimate (d + 1) R (R / 4)
+      ((Y k).boundary.massOn (ball 0 (2 * R))).toReal φ (u k) hR (by positivity) (by linarith)
+      ENNReal.toReal_nonneg hφ hφ0 hφt hφ1 (hint k) fun f z M hf hfc hft hM => ?_
+    obtain ⟨ε, hε, hεf⟩ := Submission.cbr_ci_pw_interior_product_form d z
+    exact Submission.cbr_ci_pw_l1_boundary_variation_bound d (ball 0 (2 * R)) (Y k) (u k) ε f z M
+      (hrep k) hk hε (fun y => hεf f y (hf.differentiable (by simp) y)) hf hfc hft hM
+  -- Step 6: the `L¹` squeeze with `a_k = s V_k → 0`
+  exact Submission.cbr_ci_pw_l1_squeeze_of_mollified (d + 1) R c φ u
+    (fun k => R / 4 * ((Y k).boundary.massOn (ball 0 (2 * R))).toReal) hR hφ.continuous hφc hint
+    hunif (by simpa only [mul_zero] using hV.const_mul (R / 4)) hbv
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
