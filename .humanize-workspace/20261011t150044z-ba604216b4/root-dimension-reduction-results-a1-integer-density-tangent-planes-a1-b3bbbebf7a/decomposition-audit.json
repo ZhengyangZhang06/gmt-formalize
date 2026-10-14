@@ -1,0 +1,70 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_cse_rc_",
+        "trace_smulRight|trace_comp_comm",
+        "trace_eq_sum_inner",
+        "inner_starProjection_left_eq_right|eq_starProjection_of_mem_of_inner_eq_zero|norm_sq_eq_add_norm_sq_starProjection|starProjection_orthogonal_val",
+        "support_deriv_subset",
+        "HasOrthogonalProjection|FiniteDimensional|ofCompleteSpace",
+        "withDensity_absolutelyContinuous",
+        "integrable_indicator_iff",
+        "imrep_approxTangent_starProjection_aesm",
+        "dsmc_firstVariation_eq_integral"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/SmoothTransition.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Calculus.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/ArctanDeriv.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Deriv/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b3bbbebf7a/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-b3bbbebf7a/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-tangent-projection-measurable-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-fi-76e995b6e5/accepted-candidate.json",
+        "/tmp/rc_decomp/Full.lean",
+        "/tmp/rc_decomp/full.out",
+        "/tmp/rotation-conservation-independent-audit-lyod82gb/replay-status.json"
+      ],
+      "conclusion": "The split is appropriate for the selected rotation-conservation theorem. Snapshot definitions and relevant Mathlib files match the workspace pin. All four names are bare identifiers, with no DAG reservation or snapshot declaration found. Every frozen type is a standalone one-line proposition matching its prose; projection instances are justified by finite dimensionality, and no matrix-unit construction occurs. Dependencies are acyclic and correctly directed. Both reused external lemmas are comparator-accepted with identical frozen types and compatible definitions. Their kernel evidence and the retained four-child proof log report standard axioms only. The children yield the divergence-indicator identity, hence both conclusions of the exact selected parent. I independently checked the supplied proofs and literal types; the optional fresh compiler replay was stopped without completion, so no new compiler pass is claimed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "rotation_divergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including differentiability only at x and arbitrary a, e, n, M. The product rule, rank-one trace identity, and trace cancellation using projection idempotence and self-adjointness prove the exact equality. No orthonormality or parent theorem is implicitly required."
+    },
+    {
+      "key": "cone_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit smoothTransition construction proves all four stated properties. Positivity of s and nonzero x justify division and squaring inequalities. Both strict derivative-zero regions are open regions of constancy; the origin is correctly excluded. The proof is complete and independent."
+    },
+    {
+      "key": "angle_fderiv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All geometric hypotheses appear in both statements. Orthonormality and finrank two establish the projection formula; the quotient and arctan chain rules give the exact differential. Positive inner product with a ensures the required denominators are nonzero. No circular dependency occurs."
+    },
+    {
+      "key": "test_function",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both derivative clauses and every hypothesis match the Lean type. The support estimate gives inner product with a greater than 1/2, validating compact support and the global C¹ extension. Orthogonality eliminates the radial derivative; the gap condition and derivative-support inclusion handle both membership cases, including boundaries. Only cone_cutoff and angle_fderiv are used as child dependencies. Substitution of v = p_T(Ax), followed by the supplied first-variation assembly, establishes the selected parent exactly."
+    }
+  ],
+  "required_changes": []
+}
