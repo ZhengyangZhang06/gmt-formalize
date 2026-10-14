@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6ceff0d0bc79105ed90466a7b9dc88f0e9447acd3212ecfedf2ee3d6bd3d67b1",
+  "git_delta": {
+    "base_commit": "698379f25943a5e82a7729a89ca89cc81c01f246",
+    "candidate_commit": "80d67cd0430ea2ac30711786ba2a7719d5760fd2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dtsd_gr_exists_deriv_le_off_null",
+    "diff_sha256": "354d2f9f8ec8697b68a636793ddaef0db47b0e62b77847acae22347970055cd3",
+    "source_sha256": "994b4ecc04bf4cb66fc101a5de207cfc109f1721ffe4ef89ae0e1ced65743418",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dtsd_gr_exists_deriv_le_off_null",
+      "statement": "∀ (F : ℝ → ℝ) (ρ : ℝ) (B : ℝ≥0∞) (N : Set ℝ), Monotone F → 0 < ρ → ENNReal.ofReal (F ρ - F (ρ / 2)) ≤ B → (volume : Measure ℝ) N = 0 → ∃ r ∈ Ioo (ρ / 2) ρ, r ∉ N ∧ ENNReal.ofReal (deriv F r) ≤ ENNReal.ofReal (4 / ρ) * B",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
