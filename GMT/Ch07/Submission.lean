@@ -486,6 +486,164 @@ theorem Submission.rsd_mw_tfa_smooth_cutoff : ∀ (P : ℕ) (ν : Measure (Eucli
     _ = ν (V \ K) := by rw [hVc, zero_add]
     _ < ENNReal.ofReal δ := hVK
 
+/-- **Total variation of a smooth function by duality with smooth test fields** (parent step 5:
+`∫_W |Dw|` is bounded by the supremum of `∫ Dw · g` over `C^∞` fields `g` with compact support in
+`W` and `|g| ≤ 1`).  Let `F = (Dw(·) eᵢ)ᵢ` be the gradient field of `w`, so `⟪F, h⟫ = Dw · h` and
+`|F| = ‖Dw‖`; `F` is `C^∞`, and bounded by `M` on the compact set `closure W`.  Given `ε > 0`, the
+smooth cut-off `rsd_mw_tfa_smooth_cutoff` (for `vol⌞W`) gives `χ ∈ C_c^∞(W)` with `0 ≤ χ ≤ 1` and
+`vol (W ∩ {χ ≠ 1}) < ε`.  The field `g = χ F / √(|F|² + ε²)` is admissible, and
+`Dw · g = ψ := χ |F|² / √(|F|² + ε²)`, which vanishes off `W`, so `∫_W ψ ≤ V`.  On `W`,
+`|F| ≤ ψ + |M| 1_{χ ≠ 1} + ε` (if `χ = 1`, use `a ≤ a² / √(a² + ε²) + ε`; otherwise `|F| ≤ M`).
+Integrating, `∫_W |F| ≤ V + (|M| + vol W) ε`, and `ε → 0` gives the claim. -/
+theorem Submission.dor_lmb_fcd_cp_smooth_duality : ∀ (P : ℕ) (w : Euclid P → ℝ) (W : Set (Euclid P)) (V : ℝ), IsOpen W → Bornology.IsBounded W → ContDiff ℝ (⊤ : ℕ∞) w → (∀ g : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ W → (∀ y, ‖g y‖ ≤ 1) → ∫ y, fderiv ℝ w y (g y) ≤ V) → ∫ y in W, ‖fderiv ℝ w y‖ ≤ V := by
+  intro P w W V hWo hWb hw hV
+  -- Step 1: the gradient field `F y = (Dw(y) eᵢ)ᵢ`, with `⟪F y, h⟫ = Dw(y) h` and `‖F y‖ = ‖Dw(y)‖`
+  set F : Euclid P → Euclid P :=
+    fun y => WithLp.toLp 2 (fun i => fderiv ℝ w y (EuclideanSpace.single i 1))
+  have hinner : ∀ y h, inner ℝ (F y) h = fderiv ℝ w y h := by
+    intro y h
+    have hh : h = ∑ i, h i • EuclideanSpace.single i (1 : ℝ) := by
+      ext j
+      simp [Finset.sum_apply, Pi.single_apply]
+    conv_rhs => rw [hh]
+    simp [F, PiLp.inner_apply, map_sum, map_smul]
+  have hFc : ContDiff ℝ (⊤ : ℕ∞) F := by
+    have hD : ContDiff ℝ (⊤ : ℕ∞) (fun y => fderiv ℝ w y) :=
+      hw.fderiv_right (by exact_mod_cast le_top)
+    have : ContDiff ℝ (⊤ : ℕ∞) (fun y => (WithLp.linearEquiv 2 ℝ (Fin P → ℝ)).symm
+        (fun i => fderiv ℝ w y (EuclideanSpace.single i 1))) := by
+      apply (LinearEquiv.toContinuousLinearEquiv
+        (WithLp.linearEquiv 2 ℝ (Fin P → ℝ)).symm).contDiff.comp
+      exact contDiff_pi.2 fun i => hD.clm_apply contDiff_const
+    simpa [F] using this
+  have hFn : ∀ y, ‖F y‖ = ‖fderiv ℝ w y‖ := by
+    intro y
+    have hdual : InnerProductSpace.toDual ℝ (Euclid P) (F y) = fderiv ℝ w y := by
+      ext h
+      simp [InnerProductSpace.toDual_apply_apply, hinner]
+    rw [← hdual, LinearIsometryEquiv.norm_map]
+  simp_rw [← hFn]
+  -- Step 2: `vol W < ∞`, `closure W` is compact, `‖F‖ ≤ M` on `closure W`, `‖F‖` integrable on `W`
+  have hWm : volume W < ∞ := hWb.measure_lt_top
+  have hWc : IsCompact (closure W) := hWb.isCompact_closure
+  obtain ⟨M, hM⟩ := hWc.exists_bound_of_continuousOn hFc.continuous.continuousOn
+  have hFi : IntegrableOn (fun y => ‖F y‖) W :=
+    (hFc.continuous.norm.continuousOn.integrableOn_compact hWc).mono_set subset_closure
+  -- the scalar inequality `a ≤ a² / S + ε` for `a ≤ S ≤ a + ε`
+  have alg : ∀ ε a S : ℝ, 0 < S → a ≤ S → S ≤ a + ε → a ≤ S⁻¹ * a ^ 2 + ε := by
+    intro ε a S hS haS hSa
+    rw [inv_mul_eq_div, ← sub_le_iff_le_add, le_div_iff₀ hS]
+    nlinarith [sq_nonneg (S - a), mul_nonneg hS.le (sub_nonneg.2 hSa)]
+  -- Step 3: for every `ε > 0`, `∫_W ‖F‖ ≤ V + (|M| + vol W) ε`
+  have key : ∀ ε : ℝ, 0 < ε → ∫ y in W, ‖F y‖ ≤ V + (|M| + volume.real W) * ε := by
+    intro ε hε
+    -- the smooth cut-off `χ` with compact support in `W` and `vol (W ∩ {χ ≠ 1}) < ε`
+    have hfin : IsFiniteMeasure (volume.restrict W) := isFiniteMeasure_restrict.2 hWm.ne
+    obtain ⟨χ, hχ, hχc, hχW, hχ01, hχm⟩ :=
+      Submission.rsd_mw_tfa_smooth_cutoff P (volume.restrict W) W hfin hWo
+        (by rw [Measure.restrict_apply' hWo.measurableSet, compl_inter_self, measure_empty]) ε hε
+    -- the regularised length `s = √(‖F‖² + ε²)` and the test field `g = χ s⁻¹ F`
+    set s : Euclid P → ℝ := fun y => √(‖F y‖ ^ 2 + ε ^ 2)
+    have hspos : ∀ y, 0 < s y := by
+      intro y
+      show 0 < √(‖F y‖ ^ 2 + ε ^ 2)
+      positivity
+    have hsc : ContDiff ℝ (⊤ : ℕ∞) s :=
+      ((hFc.norm_sq ℝ).add contDiff_const).sqrt fun y =>
+        (by positivity : (0 : ℝ) < ‖F y‖ ^ 2 + ε ^ 2).ne'
+    have hFs : ∀ y, ‖F y‖ ≤ s y := by
+      intro y
+      show ‖F y‖ ≤ √(‖F y‖ ^ 2 + ε ^ 2)
+      exact (Real.le_sqrt (norm_nonneg _) (by positivity)).2 (le_add_of_nonneg_right (sq_nonneg ε))
+    have hsF : ∀ y, s y ≤ ‖F y‖ + ε := by
+      intro y
+      show √(‖F y‖ ^ 2 + ε ^ 2) ≤ ‖F y‖ + ε
+      rw [Real.sqrt_le_left (by positivity)]
+      nlinarith [mul_nonneg (norm_nonneg (F y)) hε.le]
+    have hgc : ContDiff ℝ (⊤ : ℕ∞) (fun y => χ y • ((s y)⁻¹ • F y)) :=
+      hχ.smul ((hsc.inv fun y => (hspos y).ne').smul hFc)
+    have hgcs : HasCompactSupport (fun y => χ y • ((s y)⁻¹ • F y)) :=
+      hχc.smul_right (f' := fun y => (s y)⁻¹ • F y)
+    have hgt : tsupport (fun y => χ y • ((s y)⁻¹ • F y)) ⊆ W :=
+      (tsupport_smul_subset_left χ fun y => (s y)⁻¹ • F y).trans hχW
+    have hg1 : ∀ y, ‖χ y • ((s y)⁻¹ • F y)‖ ≤ 1 := by
+      intro y
+      have hc0 : 0 ≤ (s y)⁻¹ * ‖F y‖ := mul_nonneg (inv_nonneg.2 (hspos y).le) (norm_nonneg _)
+      have hc1 : (s y)⁻¹ * ‖F y‖ ≤ 1 := by
+        rw [inv_mul_le_iff₀ (hspos y), mul_one]
+        exact hFs y
+      rw [norm_smul, norm_smul, Real.norm_of_nonneg (hχ01 y).1,
+        Real.norm_of_nonneg (inv_nonneg.2 (hspos y).le)]
+      exact (mul_le_of_le_one_left hc0 (hχ01 y).2).trans hc1
+    -- `Dw(y) (g y) = ψ y := χ y s(y)⁻¹ ‖F y‖²`; `ψ` vanishes off `W`, so `∫_W ψ ≤ V`
+    set ψ : Euclid P → ℝ := fun y => χ y * ((s y)⁻¹ * ‖F y‖ ^ 2)
+    have hDg : ∀ y, fderiv ℝ w y (χ y • ((s y)⁻¹ • F y)) = ψ y := by
+      intro y
+      show fderiv ℝ w y (χ y • ((s y)⁻¹ • F y)) = χ y * ((s y)⁻¹ * ‖F y‖ ^ 2)
+      rw [← hinner, inner_smul_right, inner_smul_right, real_inner_self_eq_norm_sq]
+    have hψ0W : ∀ y ∉ W, ψ y = 0 := by
+      intro y hy
+      have h0 : χ y = 0 := image_eq_zero_of_notMem_tsupport fun h => hy (hχW h)
+      show χ y * ((s y)⁻¹ * ‖F y‖ ^ 2) = 0
+      rw [h0, zero_mul]
+    have hψV : ∫ y in W, ψ y ≤ V := by
+      rw [setIntegral_eq_integral_of_forall_compl_eq_zero hψ0W]
+      calc ∫ y, ψ y = ∫ y, fderiv ℝ w y (χ y • ((s y)⁻¹ • F y)) := by simp_rw [hDg]
+        _ ≤ V := hV (fun y => χ y • ((s y)⁻¹ • F y)) hgc hgcs hgt hg1
+    -- pointwise on `W`: `‖F‖ ≤ ψ + |M| 1_{χ ≠ 1} + ε`
+    have hEm : MeasurableSet {x | χ x ≠ 1} :=
+      (isOpen_ne_fun hχ.continuous continuous_const).measurableSet
+    have hpt : ∀ y ∈ W,
+        ‖F y‖ ≤ ψ y + Set.indicator {x | χ x ≠ 1} (fun _ => |M|) y + ε := by
+      intro y hy
+      by_cases hy1 : χ y = 1
+      · have hyE : y ∉ {x | χ x ≠ 1} := fun h => h hy1
+        rw [indicator_of_notMem hyE, add_zero]
+        show ‖F y‖ ≤ χ y * ((s y)⁻¹ * ‖F y‖ ^ 2) + ε
+        rw [hy1, one_mul]
+        exact alg ε _ _ (hspos y) (hFs y) (hsF y)
+      · have hyE : y ∈ {x | χ x ≠ 1} := hy1
+        rw [indicator_of_mem hyE]
+        have hψ0 : 0 ≤ ψ y :=
+          mul_nonneg (hχ01 y).1 (mul_nonneg (inv_nonneg.2 (hspos y).le) (sq_nonneg _))
+        have h1 := hM y (subset_closure hy)
+        have h2 := le_abs_self M
+        show ‖F y‖ ≤ ψ y + |M| + ε
+        linarith
+    -- integrate over `W`
+    have hψc : Continuous ψ :=
+      hχ.continuous.mul ((hsc.continuous.inv₀ fun y => (hspos y).ne').mul
+        (hFc.continuous.norm.pow 2))
+    have hψi : IntegrableOn ψ W :=
+      (hψc.continuousOn.integrableOn_compact hWc).mono_set subset_closure
+    have hEi : IntegrableOn (Set.indicator {x | χ x ≠ 1} fun _ => |M|) W :=
+      (integrableOn_const hWm.ne).indicator hEm
+    have hψEi : IntegrableOn (fun y => ψ y + Set.indicator {x | χ x ≠ 1} (fun _ => |M|) y) W :=
+      hψi.add hEi
+    have hεi : IntegrableOn (fun _ => ε) W := integrableOn_const hWm.ne
+    have hEε : (volume.restrict W).real {x | χ x ≠ 1} ≤ ε :=
+      (ENNReal.toReal_lt_of_lt_ofReal hχm).le
+    calc ∫ y in W, ‖F y‖
+        ≤ ∫ y in W, (ψ y + Set.indicator {x | χ x ≠ 1} (fun _ => |M|) y + ε) :=
+          setIntegral_mono_on hFi (hψEi.add hεi) hWo.measurableSet hpt
+      _ = (∫ y in W, ψ y) + (∫ y in W, Set.indicator {x | χ x ≠ 1} (fun _ => |M|) y) +
+            ∫ y in W, ε := by
+          rw [integral_add hψEi hεi, integral_add hψi hEi]
+      _ = (∫ y in W, ψ y) + (volume.restrict W).real {x | χ x ≠ 1} * |M| +
+            volume.real W * ε := by
+          rw [integral_indicator_const _ hEm, setIntegral_const, smul_eq_mul, smul_eq_mul]
+      _ ≤ V + (|M| + volume.real W) * ε := by
+          nlinarith [mul_le_mul_of_nonneg_right hEε (abs_nonneg M)]
+  -- Step 4: let `ε → 0`
+  refine le_of_forall_pos_le_add fun η hη => ?_
+  have hL : 0 ≤ volume.real W := measureReal_nonneg
+  have hpos : 0 < |M| + volume.real W + 1 := by positivity
+  have h1 := key (η / (|M| + volume.real W + 1)) (div_pos hη hpos)
+  have h2 : (|M| + volume.real W) * (η / (|M| + volume.real W + 1)) ≤ η := by
+    rw [← mul_div_assoc, div_le_iff₀ hpos]
+    nlinarith
+  linarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
