@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.local_on_balls-a1.density_constancy-a1",
+  "parent_id": "root.constancy-a1.local_on_balls-a1",
+  "depth": 3,
+  "title": "A bounded density of the mollified functional is constant on the ball (printed display (2) of Simon 2.34)",
+  "statement": "Let n ∈ ℕ, U ⊆ ℝⁿ and u : (ℝⁿ → ℝ) → ℝ such that u(D_j a) = 0 for every C^∞ compactly supported a : ℝⁿ → ℝ with spt a ⊆ U (spt g denotes the closed support of g, the closure of {g ≠ 0}; Lean: tsupport g) and every j ∈ {1,…,n}, where D_j a(x) := Da(x)(e_j) and e_j = EuclideanSpace.single j 1 is the j-th standard basis vector. Let x₀ ∈ ℝⁿ, ρ > 0 and ε > 0 with B̄_{ρ+ε}(x₀) ⊆ U, and put B := B_ρ(x₀). Let φ : ℝⁿ → ℝ be C^∞ with compact support and spt φ ⊆ B̄_ε(0). Let θ : ℝⁿ → ℝ be measurable with |θ(x)| ≤ M for all x (some M ∈ ℝ), and assume (1) u(φ ∗ (1_B f)) = ∫_B f θ dLⁿ for every f integrable on B. Here (φ ∗ g)(x) = ∫ φ(t) g(x − t) dLⁿ(t) and 1_B f is f on B and 0 off B. Then there is c ∈ ℝ with u(φ ∗ (1_B f)) = c ∫_B f dLⁿ for every f integrable on B.",
+  "lean_statement": "∀ (n : ℕ) (U : Set (Eucl n)) (u : (Eucl n → ℝ) → ℝ), (∀ a : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) a → HasCompactSupport a → tsupport a ⊆ U → ∀ j : Fin n, u (fun x => fderiv ℝ a x (EuclideanSpace.single j (1 : ℝ))) = 0) → ∀ (x₀ : Eucl n) (ρ ε : ℝ), 0 < ρ → 0 < ε → closedBall x₀ (ρ + ε) ⊆ U → ∀ φ : Eucl n → ℝ, ContDiff ℝ ((⊤ : ℕ∞) : WithTop ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ closedBall 0 ε → ∀ θ : Eucl n → ℝ, Measurable θ → (∃ M : ℝ, ∀ x, |θ x| ≤ M) → (∀ f : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume → u (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) = ∫ x in ball x₀ ρ, f x * θ x ∂volume) → ∃ c : ℝ, ∀ f : Eucl n → ℝ, IntegrableOn f (ball x₀ ρ) volume → u (convolution φ ((ball x₀ ρ).indicator f) (ContinuousLinearMap.lsmul ℝ ℝ) volume) = c * ∫ x in ball x₀ ρ, f x ∂volume",
+  "lean_name": "constancy_mollified_density_const",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-local-on-balls-a1-density-constancy-a1-a1"
+}

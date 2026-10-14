@@ -1,0 +1,82 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "structure GeometricCurrentOn|def TestFormOnConverges|abbrev TestFormOn|abbrev DifferentialForm|def IsTestForm|def wedgeCovectors|theorem wedgeCovectors_apply_det",
+        "theorem AlternatingMap.eq_smul_basis_det|theorem det_self",
+        "HasCompactSupport.contDiff_convolution_left|HasCompactSupport.contDiff_convolution_right|HasCompactSupport.hasFDerivAt_convolution_right",
+        "tsupport_fderiv_apply_subset|HasCompactSupport.fderiv_apply",
+        "ae_eq_const_of_weak_coordinate_derivatives_zero|^import|abbrev Euclidean",
+        "constancy_topForm_scalar_reduction|constancy_mollified_functional_l1_bounded|constancy_mollified_density_const|constancy_local_of_mollified_const",
+        "python3 Audit/runlean.py Audit/Challenge_scalar_reduction.lean",
+        "python3 Audit/runlean.py Audit/Challenge_mollified_l1_bound.lean",
+        "python3 Audit/runlean.py Audit/Challenge_density_constancy.lean",
+        "python3 Audit/runlean.py Audit/Challenge_mollifier_limit.lean",
+        "python3 Audit/runlean.py Audit/Child_scalar_reduction.lean",
+        "python3 Audit/runlean.py Audit/Child_mollified_l1_bound.lean",
+        "python3 Audit/runlean.py Audit/Child_density_constancy.lean",
+        "python3 Audit/runlean.py Audit/Child_mollifier_limit.lean",
+        "python3 Audit/runlean.py Audit/LibraryAxioms.lean",
+        "python3 Audit/runlean.py Audit/ParentFromObligations.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/LinearAlgebra/Determinant.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Normed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/local-references/197bdd4b88278494/mathlib/Mathlib/Analysis/Calculus/FDeriv/Const.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter08/DistributionalConstancy.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-local-on-balls-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/nodes/root-constancy-a1-local-on-balls-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch06/.humanize/github-theorem-prover/runs/20261011T144224Z-6e4735dbca/dag.json",
+        "/tmp/gmt-local-balls-audit-r41f_d39/Audit/Challenge_scalar_reduction.lean",
+        "/tmp/gmt-local-balls-audit-r41f_d39/Audit/Challenge_mollified_l1_bound.lean",
+        "/tmp/gmt-local-balls-audit-r41f_d39/Audit/Challenge_density_constancy.lean",
+        "/tmp/gmt-local-balls-audit-r41f_d39/Audit/Challenge_mollifier_limit.lean",
+        "/tmp/gmt-local-balls-audit-r41f_d39/Audit/Child_scalar_reduction.lean",
+        "/tmp/gmt-local-balls-audit-r41f_d39/Audit/Child_mollified_l1_bound.lean",
+        "/tmp/gmt-local-balls-audit-r41f_d39/Audit/Child_density_constancy.lean",
+        "/tmp/gmt-local-balls-audit-r41f_d39/Audit/Child_mollifier_limit.lean",
+        "/tmp/gmt-local-balls-audit-r41f_d39/Audit/LibraryAxioms.lean",
+        "/tmp/gmt-local-balls-audit-r41f_d39/Audit/ParentFromObligations.lean"
+      ],
+      "conclusion": "Independently checked against project d8d46c9587747dee0751a1f780fcafdba16a3886, Mathlib 25730c7c759d108ef87ab70af2342a196760f79d and pinned SimonGMT 2b3663083f3fe399b6296fb8eaee52169170e197. Relevant compiled-package sources match the pinned sources. All four one-line propositions pass validation and elaborate as comparator-generated challenges against frozen Submission without child declarations. All four supplied Lean proofs have identical proposed types and compile using only propext, Classical.choice and Quot.sound; the last two use the explicitly specified DistributionalConstancy import. Reused library results also pass axiom checks. The supplied parent assembly, with the four child contracts and three exact existing sibling contracts bound as hypotheses, proves the selected frozen parent type without sorry. This preserves the pending Riesz obligation. The split separates four substantive steps of this selected theorem. Empty child dependency lists are correct because necessary inputs are explicit hypotheses; the selected dependency closure is acyclic. All four names are bare identifiers, absent from the 272-node DAG and searched project/library declarations. No forbidden matrix-unit construction occurs; scalar convolution and determinant constructions have the intended types."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "scalar_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean match all five clauses, including arbitrary U and the precise compact-support continuity condition. The supplied proof constructs the determinant covector and scalar lift, defines u on admissible functions, proves representation and linearity, and transfers derivative convergence to TestFormOnConverges. It is complete and non-circular."
+    },
+    {
+      "key": "mollified_l1_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All linearity, continuity, derivative-bound and support hypotheses match. The proof establishes admissibility and convolution existence before using linearity. Normalization by nonzero F(f_k), followed by the max(C_q,0) estimate, gives uniform derivative convergence contradicting continuity. It neither assumes a positive L¹ norm nor leaves a boundedness gap."
+    },
+    {
+      "key": "density_constancy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement requires no additional linearity or kernel normalization. For every C¹ compactly supported test, the proof justifies derivative support, convolution smoothness and differentiation on the right, obtaining precisely the weak-coordinate identities required by the checked library lemma. Bounded measurability supplies local integrability; a.e. constancy yields the claimed representation."
+    },
+    {
+      "key": "mollifier_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and Lean agree, including merely continuous kernels and the explicit convergence hypothesis. Smoothness comes from the compactly supported smooth right factor. The proof checks common compact support, applies continuity, uses a normalized bump to obtain convergence of the constants, and concludes by uniqueness of limits. The construction also covers n = 0."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.constancy-a1.riesz_l1_dual-a1.extend_from_indicators-a1",
+  "parent_id": "root.constancy-a1.riesz_l1_dual-a1",
+  "depth": 3,
+  "title": "An L¹-bounded linear functional agreeing with ∫·θ on indicators agrees with it on all integrable functions",
+  "statement": "Let μ be a finite measure on a measurable space α, F : (α → ℝ) → ℝ and C ∈ ℝ such that F(f + g) = F(f) + F(g), F(c f) = c F(f) and |F(f)| ≤ C ∫|f| dμ for all μ-integrable f, g : α → ℝ and all c ∈ ℝ. Let θ : α → ℝ be measurable with |θ(x)| ≤ M for all x ∈ α (for some M ∈ ℝ), and suppose F(1_A) = ∫_A θ dμ for every measurable A ⊆ α, where 1_A is the indicator function of A. Then F(f) = ∫ f θ dμ for every μ-integrable f : α → ℝ.",
+  "lean_statement": "∀ {α : Type} [MeasurableSpace α] (μ : Measure α), IsFiniteMeasure μ → ∀ (F : (α → ℝ) → ℝ) (C : ℝ), (∀ f g : α → ℝ, Integrable f μ → Integrable g μ → F (f + g) = F f + F g) → (∀ (c : ℝ) (f : α → ℝ), Integrable f μ → F (c • f) = c * F f) → (∀ f : α → ℝ, Integrable f μ → |F f| ≤ C * ∫ x, |f x| ∂μ) → ∀ (θ : α → ℝ) (M : ℝ), Measurable θ → (∀ x, |θ x| ≤ M) → (∀ A : Set α, MeasurableSet A → F (A.indicator 1) = ∫ x in A, θ x ∂μ) → ∀ f : α → ℝ, Integrable f μ → F f = ∫ x, f x * θ x ∂μ",
+  "lean_name": "constancy_riesz_eq_integral_mul_of_indicator_eq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch06/20261011t144224z-6e4735dbca/root-constancy-a1-riesz-l1-dual-a1-extend-from-indicators-a1-a1"
+}
