@@ -451,6 +451,118 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Planar fibre geometry** (fibre count for the cone-sector endpoint density in the proof of
+Simon 7.3.3).  Let `Q ⊆ ℝᴾ` be a plane with orthonormal basis `a, e`, `π = Q.starProjection`,
+`Ax = ⟨x, a⟩e − ⟨x, e⟩a` and `f(x) = arctan(⟨x, e⟩/⟨x, a⟩)`.  Then (a) `|p_T(Ax)| ≤ |πx| ≤ |x|`
+for every subspace `T`; (b) for `t > 0` and `|α| < Real.pi/2`, the point
+`x₀ = t(cos α a + sin α e)` has `⟨x₀, a⟩ > 0`, `|x₀| = t`, `f(x₀) = α`, `πx₀ = x₀` and
+`|π(Ax₀)| = t`; (c) every other `x` with `⟨x, a⟩ > 0`, `|x| = t` and `f(x) = α` has `|πx| < t`.
+A dimension count gives `Q = span{a, e}`, hence `πx = ⟨x, a⟩a + ⟨x, e⟩e` and `|Ax| = |πx|`; in
+(c), `|πx| = |x|` would give `x ∈ Q`, `x = ua + ve` with `u² + v² = t²`, and then `cos α = u/t`,
+`sin α = v/t` force `x = x₀`. -/
+theorem Submission.idtp_cse_fc_planar_fibre_geometry : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → (∀ (T : Submodule ℝ (Euclid P)) (x : Euclid P), ‖T.starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ ≤ ‖Q.starProjection x‖ ∧ ‖Q.starProjection x‖ ≤ ‖x‖) ∧ ∀ t α : ℝ, 0 < t → |α| < Real.pi / 2 → (0 < inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a ∧ ‖t • (Real.cos α • a + Real.sin α • e)‖ = t ∧ Real.arctan (inner ℝ (t • (Real.cos α • a + Real.sin α • e)) e / inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a) = α ∧ Q.starProjection (t • (Real.cos α • a + Real.sin α • e)) = t • (Real.cos α • a + Real.sin α • e) ∧ ‖Q.starProjection (inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a • e - inner ℝ (t • (Real.cos α • a + Real.sin α • e)) e • a)‖ = t) ∧ ∀ x : Euclid P, 0 < inner ℝ x a → ‖x‖ = t → Real.arctan (inner ℝ x e / inner ℝ x a) = α → x ≠ t • (Real.cos α • a + Real.sin α • e) → ‖Q.starProjection x‖ < t := by
+  intro P Q a e hQ haQ heQ ha he hae
+  -- Step 1: the Gram matrix of `(a, e)`
+  have haa : inner ℝ a a = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, ha, one_pow]
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, he, one_pow]
+  have hea : inner ℝ e a = (0 : ℝ) := by rw [real_inner_comm, hae]
+  -- Step 2: `Q = span {a, e}` by a dimension count, so every `w ∈ Q` is `c₁ a + c₂ e`
+  have hQmem : ∀ w ∈ Q, ∃ c₁ c₂ : ℝ, w = c₁ • a + c₂ • e := by
+    have hon : Orthonormal ℝ ![a, e] := by
+      rw [orthonormal_iff_ite]
+      intro i j
+      fin_cases i <;> fin_cases j <;> simp [ha, he, hae, hea]
+    have hspan : Submodule.span ℝ (Set.range ![a, e]) = Q := by
+      refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
+      · rw [Submodule.span_le, Set.range_subset_iff]
+        intro i
+        fin_cases i
+        · simpa using haQ
+        · simpa using heQ
+      · rw [finrank_span_eq_card hon.linearIndependent, hQ, Fintype.card_fin]
+    intro w hw
+    rw [← hspan, Submodule.mem_span_range_iff_exists_fun] at hw
+    obtain ⟨c, rfl⟩ := hw
+    exact ⟨c 0, c 1, by simp [Fin.sum_univ_two]⟩
+  -- Step 3: `πx = ⟨x, a⟩ a + ⟨x, e⟩ e`
+  have hproj : ∀ x : Euclid P, Q.starProjection x = inner ℝ x a • a + inner ℝ x e • e := by
+    intro x
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+      (Q.add_mem (Q.smul_mem _ haQ) (Q.smul_mem _ heQ)) fun w hw => ?_
+    obtain ⟨c₁, c₂, rfl⟩ := hQmem w hw
+    simp only [inner_sub_left, inner_add_left, inner_add_right, real_inner_smul_left,
+      real_inner_smul_right, haa, hee, hae, hea]
+    ring
+  -- Step 4: `‖u e − v a‖² = u² + v² = ‖u a + v e‖²`, hence `‖Ax‖ = ‖πx‖`
+  have hnormA : ∀ u v : ℝ, ‖u • e - v • a‖ ^ 2 = u ^ 2 + v ^ 2 := by
+    intro u v
+    rw [← real_inner_self_eq_norm_sq]
+    simp only [inner_sub_left, inner_sub_right, real_inner_smul_left, real_inner_smul_right, haa,
+      hee, hae, hea]
+    ring
+  have hnormP : ∀ u v : ℝ, ‖u • a + v • e‖ ^ 2 = u ^ 2 + v ^ 2 := by
+    intro u v
+    rw [← real_inner_self_eq_norm_sq]
+    simp only [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right, haa,
+      hee, hae, hea]
+    ring
+  have hAx : ∀ x : Euclid P, ‖inner ℝ x a • e - inner ℝ x e • a‖ = ‖Q.starProjection x‖ := by
+    intro x
+    rw [hproj x]
+    exact (pow_left_inj₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1
+      ((hnormA _ _).trans (hnormP _ _).symm)
+  -- Step 5: part (a)
+  refine ⟨fun T x => ⟨(T.norm_starProjection_apply_le _).trans (hAx x).le,
+    Q.norm_starProjection_apply_le x⟩, fun t α ht hα => ?_⟩
+  -- Step 6: part (b)
+  obtain ⟨hα₁, hα₂⟩ := abs_lt.1 hα
+  have hcos : 0 < Real.cos α := Real.cos_pos_of_mem_Ioo ⟨hα₁, hα₂⟩
+  have hx₀Q : t • (Real.cos α • a + Real.sin α • e) ∈ Q :=
+    Q.smul_mem t (Q.add_mem (Q.smul_mem _ haQ) (Q.smul_mem _ heQ))
+  have hx₀a : inner ℝ (t • (Real.cos α • a + Real.sin α • e)) a = t * Real.cos α := by
+    simp only [real_inner_smul_left, inner_add_left, haa, hea]
+    ring
+  have hx₀e : inner ℝ (t • (Real.cos α • a + Real.sin α • e)) e = t * Real.sin α := by
+    simp only [real_inner_smul_left, inner_add_left, hee, hae]
+    ring
+  have hx₀n : ‖t • (Real.cos α • a + Real.sin α • e)‖ = t := by
+    have h1 : ‖Real.cos α • a + Real.sin α • e‖ = 1 :=
+      (pow_left_inj₀ (norm_nonneg _) zero_le_one two_ne_zero).1
+        (by rw [hnormP, Real.cos_sq_add_sin_sq, one_pow])
+    rw [norm_smul, h1, mul_one, Real.norm_eq_abs, abs_of_pos ht]
+  refine ⟨⟨?_, hx₀n, ?_, Submodule.starProjection_eq_self_iff.2 hx₀Q, ?_⟩, ?_⟩
+  · rw [hx₀a]
+    exact mul_pos ht hcos
+  · rw [hx₀a, hx₀e, mul_div_mul_left _ _ ht.ne', ← Real.tan_eq_sin_div_cos,
+      Real.arctan_tan hα₁ hα₂]
+  · rw [Submodule.starProjection_eq_self_iff.2 (Q.sub_mem (Q.smul_mem _ heQ) (Q.smul_mem _ haQ)),
+      hAx, Submodule.starProjection_eq_self_iff.2 hx₀Q, hx₀n]
+  -- Steps 7–8: part (c)
+  · intro x hxa hxt hxα hne
+    refine not_le.1 fun hlt => ?_
+    have hπx : ‖Q.starProjection x‖ = ‖x‖ :=
+      le_antisymm (Q.norm_starProjection_apply_le x) (by rw [hxt]; exact hlt)
+    have hx : x = inner ℝ x a • a + inner ℝ x e • e := by
+      rw [← hproj x,
+        Submodule.starProjection_eq_self_iff.2 ((Q.mem_iff_norm_starProjection x).2 hπx)]
+    have huv : inner ℝ x a ^ 2 + inner ℝ x e ^ 2 = t ^ 2 := by
+      rw [← hnormP, ← hx, hxt]
+    have hu0 : inner ℝ x a ≠ 0 := hxa.ne'
+    have hsqrt : √(1 + (inner ℝ x e / inner ℝ x a) ^ 2) = t / inner ℝ x a := by
+      rw [← Real.sqrt_sq (div_pos ht hxa).le]
+      congr 1
+      field_simp
+      linarith [huv]
+    have hcosα : Real.cos α = inner ℝ x a / t := by
+      rw [← hxα, Real.cos_arctan, hsqrt, one_div_div]
+    have hsinα : Real.sin α = inner ℝ x e / t := by
+      rw [← hxα, Real.sin_arctan, hsqrt]
+      field_simp
+    apply hne
+    rw [hcosα, hsinα, smul_add, smul_smul, smul_smul, mul_div_cancel₀ _ ht.ne',
+      mul_div_cancel₀ _ ht.ne']
+    exact hx
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

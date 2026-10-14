@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def approxTangentPlane|abbrev Euclid|def Euclid|mult_pos|idtp_cse_fc_|imrep_represents_support_eq_inter_measure_support",
+        "theorem (eq_starProjection_of_mem_of_inner_eq_zero|starProjection_eq_self_iff|mem_iff_norm_starProjection|norm_starProjection_apply_le)|def starProjection",
+        "sum_lt_sum_of_nonempty|finite_const_le_of_tsum_ne_top|tsum_mul_right|mul_le_mul_iff_left|ofReal_lt_ofReal_iff",
+        "setLIntegral_mono_ae|setLIntegral_const|lintegral_add_left|lintegral_indicator_const|support_mem_ae|ae_restrict_neBot|volume_Ioo|theorem prod_prod",
+        "arctan_tan|cos_arctan|sin_arctan",
+        "rg -l 'idtp_cse_fc_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json GMT",
+        "rg -l --glob 'decomposition-v*.json' 'idtp_cse_fc_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/fc_independent_audit_ffb4yq4n/ChildrenAndAssembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecialFunctions/Trigonometric/Arctan.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/BigOperators.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2bc2cca051/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-2bc2cca051/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-support-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa17/20261012T164038Z-ch07-root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1-x2nl3kh1/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa17/20261012T164038Z-ch07-root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1-x2nl3kh1/result.json",
+        "/tmp/fc_split_check/Final.lean",
+        "/tmp/fc_independent_audit_ffb4yq4n/ChildrenAndAssembly.lean"
+      ],
+      "conclusion": "The split appropriately isolates five genuine obligations establishing this selected fibre-count theorem. The handoff and DAG types agree; the compiler context matches the pinned snapshot. All five names are bare identifiers, with no reservations found in the DAG, project, snapshot, or another branch's decomposition. Every frozen child type is a one-line proposition using only existing definitions, without self-reference or implementation-dependent aliases. Dependencies are correctly directed and acyclic; none of the external prerequisites reaches the selected node. The accepted support lemma's frozen type is identical, and its comparator certificate permits only standard axioms. Fresh compilation of all five child proofs and the exact parent conclusion, with the four sibling contracts and support contract supplied explicitly as hypotheses, succeeded. Each proof and the conditional assembly uses only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "planar_geometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match all hypotheses and conclusions. The dimension argument establishes the projection formula; norm identities and the justified arctan formulas establish the sector point and strict inequality for other fibre points. All subspaces are finite-dimensional, supplying the required orthogonal-projection instances. The proof is complete and independent."
+    },
+    {
+      "key": "count_arith",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly separates infinite and finite total multiplicity. Positivity of every natural multiplicity makes the finite case a finite index set; the nonempty remainder gives a strict sum inequality and the integer increment. All cancellations use positive finite factors. No nonnegativity assumption on w is missing: t > 0 makes the stated strict ofReal comparison valid. The exact proposition matches the prose."
+    },
+    {
+      "key": "fibre_pointwise",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the required parameter ranges, fibre membership of the planar point, its weight t, and strict weight bounds for every other subtype element. R.mult_pos supplies positivity on the entire fibre. Both conclusions follow from precisely the two declared dependencies, with no circular reliance or unstated geometric hypothesis. The prose and Lean type agree."
+    },
+    {
+      "key": "square_lower",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable comparison function m plus the positive-half-plane indicator gives the claimed almost-everywhere lower bound. Product Lebesgue measure yields areas 4r² and 2r², producing the exact coefficient. Lower-integral monotonicity requires no measurability assumption on N. The proof is complete and the frozen type matches the prose."
+    },
+    {
+      "key": "jacobian_upper",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Localization and the triangle inequality give projection norm greater than 1−2s′, which is positive under s′ ≤ 1/4. The planar bound then gives the stated reciprocal estimate. The pinned setLIntegral_mono_ae theorem applies with a measurable constant upper function, so no measurability assumption on S or J, nor positivity assumption on s, is missing. The sole declared dependency and exact type match the complete proof."
+    }
+  ],
+  "required_changes": []
+}
