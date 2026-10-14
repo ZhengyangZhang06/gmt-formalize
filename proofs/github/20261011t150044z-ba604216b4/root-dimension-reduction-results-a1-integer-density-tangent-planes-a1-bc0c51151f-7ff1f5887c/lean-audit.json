@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1b13afb013b9fca2bf635b631767a1e4b31ca67b6e9696d7b929459a42f90fb1",
+  "git_delta": {
+    "base_commit": "c4f936bc502cad2f567c126a5520a42f3bfb12a5",
+    "candidate_commit": "c4a14b1212dc59ce51e4d58dbf494d0940cf297a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_ra_action_split",
+    "diff_sha256": "2eb472ceff160217947c50952067c9560a046d1d2fb2b29baa6f3d66bbfa0b7b",
+    "source_sha256": "ca77a76e3674a7b01d106a26e85797f086e2e2639a4c1918097f1f198c15b60c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_ra_action_split",
+      "statement": "∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → (μHE[1] : Measure (Euclid P)) (R.carrier ∩ (⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0)ᶜ) = 0 → ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, R.action (ω : DifferentialForm (Euclid P) 1) = ∑ e ∈ F, ∫ x in R.carrier ∩ (fun t : ℝ => t • e) '' Ioi 0, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) 1) x) ∂μHE[1]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
