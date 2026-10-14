@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "914d73187b3a5c4c206b0183d158fc3a6c2e82f7df2d93eae78ee8aeb58c971a",
+  "git_delta": {
+    "base_commit": "b9701aeaec3636e61d4c9e78c1440ae260f05550",
+    "candidate_commit": "e1842e9536a825f70723711ef3c5fe73f9f51aa0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbr_sl_sb_ennreal_liminf_add_le",
+    "diff_sha256": "676130d201ff4eab5903068e05e6c0d53c7e880032cf6f8a5d52d39a14b4bfbc",
+    "source_sha256": "06d81dcc20fd0323bd06928d9e945656ed0fab2a70ed452f509366ac86cfdde2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_sl_sb_ennreal_liminf_add_le",
+      "statement": "∀ (ι : Type) (F : Filter ι) (u v : ι → ℝ≥0∞), liminf u F + liminf v F ≤ liminf (fun i => u i + v i) F",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
