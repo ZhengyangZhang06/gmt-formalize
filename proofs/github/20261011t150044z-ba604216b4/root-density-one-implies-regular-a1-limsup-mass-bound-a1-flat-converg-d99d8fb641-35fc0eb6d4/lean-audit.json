@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "19a3d9d91037a488b49a931419b33e8fd638945aa4bda71ed0c3e5846cea48d3",
+  "git_delta": {
+    "base_commit": "1232bc397ba1f3823d6c8f86bd3419c4f45fd520",
+    "candidate_commit": "2e4b5d9268906201452db568e210b0d900733c05",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_dtop_ip_isometry_change_of_variables",
+    "diff_sha256": "9a7e7579ab06def744fe51e4fd0219b60321fdd3123f97d4c8621f4305021f3d",
+    "source_sha256": "a742db1abf7e07b1c59f45210209a8716cb0b2b4a29fcfdc176e2655b9ef46ed",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_dtop_ip_isometry_change_of_variables",
+      "statement": "∀ (P Q d : ℕ) (f : Euclid P → Euclid Q), Isometry f → MeasurableEmbedding f ∧ (∀ A : Set (Euclid P), Measure.map f ((μHE[d] : Measure (Euclid P)).restrict A) = (μHE[d] : Measure (Euclid Q)).restrict (f '' A)) ∧ (∀ (A : Set (Euclid P)) (g : Euclid Q → ℝ), ∫ y in f '' A, g y ∂μHE[d] = ∫ x in A, g (f x) ∂μHE[d]) ∧ ∀ (A : Set (Euclid P)) (g : Euclid Q → ℝ≥0∞), ∫⁻ y in f '' A, g y ∂μHE[d] = ∫⁻ x in A, g (f x) ∂μHE[d]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
