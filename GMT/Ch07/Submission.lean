@@ -27474,6 +27474,79 @@ theorem Submission.dimred_invariant_cone_splitting : ∀ (P n : ℕ) (S : Geomet
     hnull₀ hprod fun y _ => ⟨Θ₀ y, hΘ₀ y (mem_univ y)⟩
   exact ⟨S₀, hmin₀', hbd₀, hcone₀, hspt₀, hsupp, hdens⟩
 
+/-- **Invariant minimizing cycles are cones that split off their spine** (Simon Lemma 7.3.5, with
+the invariance step of the proof of 7.3.3 and footnote 2 of 7.3.1), as used for the flatness of
+`T` off a null set in 7.3.3.  Let `S ∈ 𝒟ₙ(ℝᴾ)` be minimizing with `∂S = 0`, and `L ⊆ ℝᴾ` a
+subspace with `d = dim L < n` such that the density of `S` is invariant under `w ↦ y + λw`
+(`y ∈ L`, `λ > 0`).  If `n > P` then `S = 0` (`dimred_cs_high_degree_case`).  Otherwise fix
+`S = τ(M, θ, ξ)` and `μ = θHⁿ⌞M`: by monotonicity (`idtp_fons_minimizing_monotonicity`, `U = N =
+ℝᴾ`) `Θ(S, ·)` exists everywhere, and by 7.1.2 (`idtp_fons_minimizing_stationary`, `U = N = ℝᴾ`)
+`v(M, θ)` is stationary.  The invariance of `Θ` makes `μ` invariant under translations by `L` and
+`n`-homogeneous, so the monotonicity identity gives `x ∈ TₓM` and `L ⊆ TₓM` for `μ`-a.e. `x`;
+hence `S` is a cone and is invariant under translations by `L` (homotopy formula).  Slicing by the
+projection onto `L` gives `S = [[L]] × S₀` (`idtp_fons_cs_split_off_spine`), where `S₀` is a cone
+cycle in `L^⊥`, minimizing in `L^⊥` (product competitors) and hence in `ℝᴾ` (orthogonal
+projection, `idtp_fons_cs_minimizing_of_minimizing_in_subspace`, as `n − d ≥ 1`), and
+`μ = Hᵈ⌞L ⊗ μ_{S₀}`; supports and densities correspond through this product. -/
+theorem Submission.idtp_fons_invariant_cone_splitting : ∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), Module.finrank ℝ L < n → IsMinimizingIn S univ → BoundaryVanishes S → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → IsConeCurrent S ∧ (∀ v ∈ L, ∀ ω : TestFormOn (univ : Set (Euclid P)) n, currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω) ∧ ∃ S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L), IsMinimizingIn S₀ univ ∧ BoundaryVanishes S₀ ∧ IsConeCurrent S₀ ∧ S₀.support ⊆ (Lᗮ : Set (Euclid P)) ∧ (∀ t ∈ L, ∀ y ∈ Lᗮ, (t + y ∈ S.support ↔ y ∈ S₀.support)) ∧ ∀ t ∈ L, ∀ y ∈ Lᗮ, ∀ θ : ℝ, (HasMassDensity S (t + y) θ ↔ HasMassDensity S₀ y θ) := by
+  intro P n S L hd hmin hbd hinv
+  -- Step 0, `n > P`: every `n`-current in `ℝᴾ` vanishes, and `S₀ = 0` works
+  rcases lt_or_ge P n with hPn | hnP
+  · exact Submission.dimred_cs_high_degree_case P n S L hPn
+  have hn : 0 < n := (Nat.zero_le _).trans_lt hd
+  -- `ℝᵐ` is an embedded `C²` `m`-submanifold of itself (identity chart)
+  have huniv : ∀ m : ℕ, IsEmbeddedSubmanifold 2 m (univ : Set (Euclid m)) := fun m y _ =>
+    ⟨univ, univ, id, isOpen_univ, isOpen_univ, mem_univ y, contDiffOn_id, injOn_id _,
+      by simp, fun K _ hK => by simpa using hK, fun z _ => by
+        rw [fderiv_id, ContinuousLinearMap.coe_id']; exact injective_id⟩
+  -- fix a representation `S = τ(M, θ, ξ)`, `μ = θHⁿ⌞M`
+  obtain ⟨R, hR⟩ := hmin.1
+  -- `Θ(S, x)` exists at every `x` (monotonicity with `U = N = ℝᴾ`, `d = P`)
+  obtain ⟨-, -, ⟨Θ, hΘ, -⟩, -⟩ := Submission.idtp_fons_minimizing_monotonicity P n P univ univ S
+    hn hnP le_rfl isOpen_univ (huniv P) (by simp) (by rwa [inter_self]) (by simp) hbd
+  -- `v(M, θ)` is stationary in `ℝᴾ` (7.1.2 with `P = n + k`, `ℓ = k`, `U = N = ℝᴾ`, where every
+  -- vector is tangent: `γ(t) = y + tX(y)`)
+  have hstat : ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X →
+      R.firstVariation X = 0 := by
+    obtain ⟨k, rfl⟩ : ∃ k, P = n + k := ⟨P - n, by omega⟩
+    intro X hX hXc
+    refine (Submission.idtp_fons_minimizing_stationary n k k le_rfl univ univ S isOpen_univ
+      (huniv (n + k)) (by simp) (subset_univ _) (by rwa [inter_self]) hbd R hR).1 X hX hXc
+      (subset_univ _) fun y _ => ⟨fun t => y + t • X y,
+        (contDiff_const.add (contDiff_id.smul contDiff_const)).contDiffOn, mapsTo_univ _ _,
+        by simp, by simpa using ((hasDerivAt_id (0 : ℝ)).smul_const (X y)).const_add y⟩
+  -- Steps 1–2: `μ` is invariant under translations by `L` and `n`-homogeneous
+  obtain ⟨htrans, hscale⟩ := Submission.dimred_cs_measure_invariant_of_density_invariant P n S R L
+    hn hR (fun x => ⟨Θ x, hΘ x (mem_univ x)⟩) hinv
+  -- Step 3: `x ∈ TₓM` and `L ⊆ TₓM` for `μ`-a.e. `x`
+  have htan := Submission.dimred_cs_spine_tangent_of_invariant_measure P n R L hn hstat htrans
+    hscale
+  -- Step 4: (a) `S` is a cone; (b) `S` is invariant under translations by `L`
+  have hcone : IsConeCurrent S := Submission.dimred_cs_cone_of_radial_tangency P n S R hn hR hbd
+    (htan.mono fun x hx => hx.1)
+  have htr : ∀ v ∈ L, ∀ ω : TestFormOn (univ : Set (Euclid P)) n,
+      currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω :=
+    fun v hv => Submission.dimred_cs_translation_invariant_of_tangency P n S R v hn hR hbd
+      (htan.mono fun x hx => hx.2 v hv)
+  refine ⟨hcone, htr, ?_⟩
+  -- Steps 5–8: `S = [[L]] × S₀`, `S₀` a cone cycle in `L^⊥`, minimizing in `L^⊥`, and
+  -- `μ = Hᵈ⌞L ⊗ μ_{S₀}`
+  obtain ⟨S₀, R₀, hR₀, hmin₀, hbd₀, hcone₀, hspt₀, hnull₀, hprod⟩ :=
+    Submission.idtp_fons_cs_split_off_spine P n S R L hd hnP hmin hbd hcone htr hR
+      (htan.mono fun x hx => hx.2)
+  -- Step 9: `S₀` is minimizing in `ℝᴾ` (orthogonal projection onto `L^⊥`; `n − d ≥ 1`)
+  have hmin₀' : IsMinimizingIn S₀ univ :=
+    Submission.idtp_fons_cs_minimizing_of_minimizing_in_subspace P (n - Module.finrank ℝ L) S₀ Lᗮ
+      (by omega) hmin₀ hspt₀
+  -- `Θ(S₀, y)` exists at every `y` (monotonicity for `S₀`, in degree `1 ≤ n − d ≤ P`)
+  obtain ⟨-, -, ⟨Θ₀, hΘ₀, -⟩, -⟩ := Submission.idtp_fons_minimizing_monotonicity P
+    (n - Module.finrank ℝ L) P univ univ S₀ (by omega) (by omega) le_rfl isOpen_univ (huniv P)
+    (by simp) (by rwa [inter_self]) (by simp) hbd₀
+  -- Steps 10–11: supports and densities correspond through `μ = Hᵈ⌞L ⊗ μ_{S₀}`
+  obtain ⟨hsupp, hdens⟩ := Submission.dimred_cs_product_support_density P n L S S₀ R R₀ hd hR hR₀
+    hnull₀ hprod fun y _ => ⟨Θ₀ y, hΘ₀ y (mem_univ y)⟩
+  exact ⟨S₀, hmin₀', hbd₀, hcone₀, hspt₀, hsupp, hdens⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
