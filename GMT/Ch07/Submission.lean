@@ -643,6 +643,69 @@ theorem Submission.dor_lmb_fcdr_cube_skeleton : ∀ (P m : ℕ) (a : Euclid P), 
     refine ⟨s, hs, fun i hi => ?_⟩
     rw [hΦ y i]
     exact skel (a i) (y i) _ (ha' i).1 (ha' i).2 hy (hsκ i hi)
+/-- **Simon Ch. 6, Lemma 5.4** (retraction onto the `n`-skeleton), integer-translation
+compatibility of the cube map `Φ(y)ᵢ = aᵢ + (yᵢ − aᵢ)/max(rᵢ(y), κ(r(y)))`, where
+`rⱼ(y) = max((yⱼ − aⱼ)/(1 − aⱼ), (aⱼ − yⱼ)/aⱼ)`: if `y, y' ∈ [0, 1]ᴾ` and `y' − y ∈ ℤᴾ`, then
+`Φ(y') = Φ(y) + (y' − y)`.  Each coordinate has `y'ⱼ = yⱼ` or `{yⱼ, y'ⱼ} = {0, 1}`, where
+`rⱼ = 1`; so `r(y') = r(y)`, `κ(r(y)) ≤ rᵢ₀(y) ≤ 1` for some `i₀` (as `m + 1 < P`), and `Φ` is the
+identity on the moved coordinates. -/
+theorem Submission.dor_lmb_fcdr_cube_periodic : ∀ (P m : ℕ), m + 1 < P → ∀ a : Euclid P, (∀ i, |a i - 1 / 2| < 1 / 4) → ∀ κ : (Fin P → ℝ) → ℝ, (∀ u : Fin P → ℝ, ∃ s : Finset (Fin P), P ≤ m + 1 + s.card ∧ ∀ i ∈ s, κ u ≤ u i) → ∀ Φ : Euclid P → Euclid P, (∀ (y : Euclid P) (i : Fin P), Φ y i = a i + (y i - a i) / max (max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) (κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)))) → ∀ y y' : Euclid P, (∀ i, 0 ≤ y i ∧ y i ≤ 1) → (∀ i, 0 ≤ y' i ∧ y' i ≤ 1) → (∀ i, ∃ k : ℤ, y' i - y i = k) → ∀ i, Φ y' i = Φ y i + (y' i - y i) := by
+  intro P m hmP a ha κ hκ Φ hΦ y y' hy hy' hint i
+  -- `0 < aⱼ < 1`
+  have ha0 : ∀ j, 0 < a j := fun j => by linarith [(abs_lt.mp (ha j)).1]
+  have ha1 : ∀ j, 0 < 1 - a j := fun j => by linarith [(abs_lt.mp (ha j)).2]
+  -- `ρⱼ(t) = max((t − aⱼ)/(1 − aⱼ), (aⱼ − t)/aⱼ)` has `ρⱼ(0) = ρⱼ(1) = 1` and `ρⱼ ≤ 1` on `[0, 1]`
+  have hρ0 : ∀ j, max ((0 - a j) / (1 - a j)) ((a j - 0) / a j) = 1 := fun j => by
+    rw [sub_zero, div_self (ha0 j).ne']
+    exact max_eq_right ((div_le_one (ha1 j)).mpr (by linarith))
+  have hρ1 : ∀ j, max ((1 - a j) / (1 - a j)) ((a j - 1) / a j) = 1 := fun j => by
+    rw [div_self (ha1 j).ne']
+    exact max_eq_left ((div_le_one (ha0 j)).mpr (by linarith))
+  have hρle : ∀ j, max ((y j - a j) / (1 - a j)) ((a j - y j) / a j) ≤ 1 := fun j =>
+    max_le ((div_le_one (ha1 j)).mpr (by linarith [(hy j).2]))
+      ((div_le_one (ha0 j)).mpr (by linarith [(hy j).1]))
+  -- `y'ⱼ − yⱼ ∈ ℤ ∩ [−1, 1]`, so `y'ⱼ = yⱼ` or `{yⱼ, y'ⱼ} = {0, 1}`
+  have hcase : ∀ j, y' j = y j ∨ (y j = 0 ∧ y' j = 1) ∨ (y j = 1 ∧ y' j = 0) := by
+    intro j
+    obtain ⟨k, hk⟩ := hint j
+    obtain ⟨h₀, h₁⟩ := hy j
+    obtain ⟨h₀', h₁'⟩ := hy' j
+    have hk1 : k ≤ 1 := by
+      have : (k : ℝ) ≤ 1 := by linarith
+      exact_mod_cast this
+    have hk2 : -1 ≤ k := by
+      have : (-1 : ℝ) ≤ k := by linarith
+      exact_mod_cast this
+    rcases (show k = -1 ∨ k = 0 ∨ k = 1 by omega) with rfl | rfl | rfl <;> push_cast at hk
+    · exact Or.inr (Or.inr ⟨by linarith, by linarith⟩)
+    · exact Or.inl (by linarith)
+    · exact Or.inr (Or.inl ⟨by linarith, by linarith⟩)
+  -- hence `r(y') = r(y)` and `κ(r(y')) = κ(r(y))`
+  have hr : ∀ j, max ((y' j - a j) / (1 - a j)) ((a j - y' j) / a j)
+      = max ((y j - a j) / (1 - a j)) ((a j - y j) / a j) := by
+    intro j
+    rcases hcase j with h | ⟨h0, h1⟩ | ⟨h0, h1⟩
+    · rw [h]
+    · rw [h0, h1, hρ0 j, hρ1 j]
+    · rw [h0, h1, hρ0 j, hρ1 j]
+  have hκeq : κ (fun j => max ((y' j - a j) / (1 - a j)) ((a j - y' j) / a j))
+      = κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) :=
+    congrArg κ (funext hr)
+  -- `κ(r(y)) ≤ 1`: `s` is nonempty as `P ≤ m + 1 + |s|` and `m + 1 < P`
+  have hκle : κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) ≤ 1 := by
+    obtain ⟨s, hs, hsκ⟩ := hκ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j))
+    have hne : s.Nonempty := Finset.card_pos.mp (by omega)
+    obtain ⟨i₀, hi₀⟩ := hne
+    exact (hsκ i₀ hi₀).trans (hρle i₀)
+  -- coordinates with `y'ᵢ = yᵢ` agree; on `{yᵢ, y'ᵢ} = {0, 1}`, `max(rᵢ, κ) = 1` and `Φ` fixes `yᵢ`
+  rw [hΦ y' i, hΦ y i, hκeq, hr i]
+  rcases hcase i with h | ⟨h0, h1⟩ | ⟨h0, h1⟩
+  · rw [h]
+    ring
+  · rw [h0, h1, hρ0 i, max_eq_left hκle]
+    ring
+  · rw [h0, h1, hρ1 i, max_eq_left hκle]
+    ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
