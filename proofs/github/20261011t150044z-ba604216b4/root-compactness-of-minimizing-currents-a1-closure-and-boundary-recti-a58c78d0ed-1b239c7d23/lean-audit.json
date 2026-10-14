@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "041b67c14b950f250fbb11504a60d903bd6f05b7de14bba6ffd6500f92940143",
+  "git_delta": {
+    "base_commit": "d544702080f9c4a7bb2186f9b319a097da0cc444",
+    "candidate_commit": "7a719ecbbff95df552c3b729db28d1c00e86f6c2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbrcs_ce_imrep_lift_univ",
+    "diff_sha256": "14ec929baad841faaaf624eebd632192dacd0099fe48669f421470061cfdbbd6",
+    "source_sha256": "866f6424b12bf623d681160ec95c5d9af46f5bf041ee8d20751001509c64704d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbrcs_ce_imrep_lift_univ",
+      "statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n), IsCompact K → K ⊆ U → R.carrier ⊆ K → ∃ R' : IMRep (univ : Set (Euclid P)) n, R'.carrier = R.carrier ∧ R'.mult = R.mult ∧ R'.orient = R.orient",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

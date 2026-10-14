@@ -451,6 +451,30 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **A triple in `U` carried by a compact `K ⊆ U` is a triple in `ℝᴾ`** (Simon Ch. 6, 3.1; used
+to extend a cut-off current from `U` to `ℝᴾ`).  Keep `M`, `θ`, `ξ` and every field of `R` that
+does not mention the domain; `M ⊆ ℝᴾ` is trivial.  For compact `K' ⊆ ℝᴾ`, `M ∩ K' ⊆ M ∩ K`
+because `M ⊆ K`, so `∫_{M ∩ K'} θ dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ < ∞`, the last bound being local
+integrability of `θ` in `U` on the compact set `K ⊆ U`. -/
+theorem Submission.cbrcs_ce_imrep_lift_univ : ∀ (P n : ℕ) (U K : Set (Euclid P)) (R : IMRep U n), IsCompact K → K ⊆ U → R.carrier ⊆ K → ∃ R' : IMRep (univ : Set (Euclid P)) n, R'.carrier = R.carrier ∧ R'.mult = R.mult ∧ R'.orient = R.orient := by
+  intro P n U K R hK hKU hRK
+  -- Steps 1–3: the same data; only `locallyIntegrable_mult` involves the domain
+  refine ⟨{ carrier := R.carrier
+            mult := R.mult
+            orient := R.orient
+            measurableSet_carrier := R.measurableSet_carrier
+            carrier_subset := subset_univ _
+            rectifiable := R.rectifiable
+            measurable_mult := R.measurable_mult
+            mult_pos := R.mult_pos
+            locallyIntegrable_mult := ?_
+            aestronglyMeasurable_orient := R.aestronglyMeasurable_orient
+            orients := R.orients }, rfl, rfl, rfl⟩
+  -- Step 4: `∫_{M ∩ K'} θ ≤ ∫_{M ∩ K} θ < ∞`, as `M ∩ K' ⊆ M ∩ K`
+  intro K' _ _
+  have hsub : R.carrier ∩ K' ⊆ R.carrier ∩ K := fun x hx => ⟨hx.1, hRK hx.1⟩
+  exact ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU) (lintegral_mono_set hsub)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
