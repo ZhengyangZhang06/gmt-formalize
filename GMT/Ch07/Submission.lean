@@ -3280,6 +3280,141 @@ theorem Submission.dtc_bc_lc_pfi_area_change_of_variables : ∀ (P n : ℕ), (�
     simp only [e1, e2]
   · rw [integral_undef hi, integral_undef fun h' => hi (hint.2 h')]
 
+/-- **Simon Ch. 3, Lemma 1.2, refined for the push-forward of Ch. 6, 3.4–3.6**: for a
+differentiable `φ : ℝᴾ → ℝᴾ`, a Borel countably `n`-rectifiable `M ⊆ ℝᴾ` is, up to an `Hⁿ`-null
+set, the disjoint union of Borel pieces `Gⱼ(Aⱼ) ⊆ M` as in `dpf_rectifiable_bilipschitz_pieces`
+such that on each piece either `φ ∘ Gⱼ` is bi-Lipschitz with injective derivative (Simon's `M₊`,
+where `J^M φ > 0`) or `D(φ ∘ Gⱼ)` is nowhere injective (where `J^M φ = 0`, 3.4).  Each piece
+`Fᵢ(Bᵢ)` of `dpf_rectifiable_bilipschitz_pieces` is split into the Borel critical set
+`{a ∈ Bᵢ : D(φ ∘ Fᵢ)(a) not injective}` and Mathlib's partition of the rest into sets on which
+`φ ∘ Fᵢ` is close to an injective linear map, hence bi-Lipschitz. -/
+theorem Submission.dtc_bc_lc_pfi_refined_bilipschitz_pieces : ∀ (P n : ℕ) (M : Set (Euclid P)) (φ : Euclid P → Euclid P), MeasurableSet M → CountablyRectifiable n M → Differentiable ℝ φ → ∃ (G : ℕ → Euclid n → Euclid P) (A : ℕ → Set (Euclid n)) (κ : ℕ → ℝ), (∀ j, ∃ L : NNReal, LipschitzWith L (G j)) ∧ (∀ j, MeasurableSet (A j)) ∧ (∀ j, 0 < κ j) ∧ (∀ j, ∀ a ∈ A j, ∀ a' ∈ A j, κ j * ‖a - a'‖ ≤ ‖G j a - G j a'‖) ∧ (∀ j, ∀ a ∈ A j, DifferentiableAt ℝ (G j) a ∧ Injective (fderiv ℝ (G j) a)) ∧ (∀ j, MeasurableSet (G j '' A j)) ∧ (∀ j, G j '' A j ⊆ M) ∧ Pairwise (fun i j => Disjoint (G i '' A i) (G j '' A j)) ∧ μHE[n] (M \ ⋃ j, G j '' A j) = 0 ∧ ∀ j, ((∃ κ' : ℝ, 0 < κ' ∧ ∀ a ∈ A j, ∀ a' ∈ A j, κ' * ‖a - a'‖ ≤ ‖φ (G j a) - φ (G j a')‖) ∧ ∀ a ∈ A j, Injective (fderiv ℝ (φ ∘ G j) a)) ∨ ∀ a ∈ A j, ¬ Injective (fderiv ℝ (φ ∘ G j) a) := by
+  intro P n M φ hM hrect hφ
+  -- Step 1: the bi-Lipschitz parametrization `Fᵢ(Bᵢ)` of `M`
+  obtain ⟨F, B, m, hFL, hBmeas, hmpos, hmlow, hFdiff, -, hFBM, hFBdisj, hnull⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces P n M hM hrect
+  have hFcont : ∀ i, Continuous (F i) := fun i => by
+    obtain ⟨L, hL⟩ := hFL i
+    exact hL.continuous
+  have hinjB : ∀ i, InjOn (F i) (B i) := by
+    intro i a ha a' ha' h
+    have := hmlow i a ha a' ha'
+    rw [h, sub_self, norm_zero] at this
+    have h0 : ‖a - a'‖ = 0 := by
+      rcases (norm_nonneg (a - a')).eq_or_lt with h0 | h0
+      · exact h0.symm
+      · linarith [mul_pos (hmpos i) h0]
+    exact sub_eq_zero.mp (norm_eq_zero.mp h0)
+  -- Step 3: a coercivity constant `c(A)` for every injective `A`; radius `r(A) = c(A)/2 ≠ 0`
+  have hcoer : ∀ A : Euclid n →L[ℝ] Euclid P, ∃ c : NNReal, 0 < c ∧
+      (Injective A → ∀ h, (c : ℝ) * ‖h‖ ≤ ‖A h‖) := by
+    intro A
+    by_cases hA : Injective A
+    · obtain ⟨C, Cpos, hC⟩ := A.injective_iff_antilipschitz.mp hA
+      refine ⟨C⁻¹, inv_pos.mpr Cpos, fun _ h => ?_⟩
+      have hb := A.bound_of_antilipschitz hC h
+      have hC0 : (0 : ℝ) < C := Cpos
+      rw [NNReal.coe_inv]
+      calc (C : ℝ)⁻¹ * ‖h‖ ≤ (C : ℝ)⁻¹ * (C * ‖A h‖) := by gcongr
+        _ = ‖A h‖ := by field_simp
+    · exact ⟨1, one_pos, fun h => absurd h hA⟩
+  choose c hcpos hc using hcoer
+  -- Steps 2 and 4: split `Bᵢ` into the critical set `Cᵢ = {D(φ ∘ Fᵢ) not injective}` and the
+  -- pieces `Bᵢ⁺ ∩ tᵢₗ` of `Bᵢ⁺ = Bᵢ ∖ Cᵢ` on which `φ ∘ Fᵢ` is bi-Lipschitz
+  have hsplit : ∀ i, ∃ D : ℕ → Set (Euclid n), (∀ k, D k ⊆ B i) ∧ (∀ k, MeasurableSet (D k)) ∧
+      Pairwise (Disjoint on D) ∧ B i ⊆ ⋃ k, D k ∧
+      ∀ k, ((∃ κ' : ℝ, 0 < κ' ∧ ∀ a ∈ D k, ∀ a' ∈ D k,
+          κ' * ‖a - a'‖ ≤ ‖φ (F i a) - φ (F i a')‖) ∧
+        ∀ a ∈ D k, Injective (fderiv ℝ (φ ∘ F i) a)) ∨
+        ∀ a ∈ D k, ¬ Injective (fderiv ℝ (φ ∘ F i) a) := by
+    intro i
+    set S := {a | Injective (fderiv ℝ (φ ∘ F i) a)} with hS
+    have hSmeas : MeasurableSet S :=
+      measurable_fderiv ℝ (φ ∘ F i) ContinuousLinearMap.isOpen_injective.measurableSet
+    obtain ⟨t, T, htdisj, htmeas, hRt, hTapprox, hTy⟩ :=
+      exists_partition_approximatesLinearOn_of_hasFDerivWithinAt (φ ∘ F i) (B i ∩ S)
+        (fderiv ℝ (φ ∘ F i))
+        (fun x hx => ((hφ (F i x)).comp x (hFdiff i x hx.1).1).hasFDerivAt.hasFDerivWithinAt)
+        (fun T => c T / 2) (fun T => (div_pos (hcpos T) two_pos).ne')
+    refine ⟨fun k => if k = 0 then B i ∩ Sᶜ else B i ∩ S ∩ t (k - 1), ?_, ?_, ?_, ?_, ?_⟩
+    · intro k
+      dsimp only
+      split_ifs
+      · exact inter_subset_left
+      · exact inter_subset_left.trans inter_subset_left
+    · intro k
+      dsimp only
+      split_ifs
+      · exact (hBmeas i).inter hSmeas.compl
+      · exact ((hBmeas i).inter hSmeas).inter (htmeas _)
+    · intro k k' hkk'
+      dsimp only [Function.onFun]
+      split_ifs with hk hk'
+      · exact absurd (hk.trans hk'.symm) hkk'
+      · exact disjoint_left.mpr fun a ha ha' => ha.2 ha'.1.2
+      · exact disjoint_left.mpr fun a ha ha' => ha'.2 ha.1.2
+      · exact (htdisj fun h => hkk' (by omega)).mono inter_subset_right inter_subset_right
+    · intro a ha
+      by_cases haS : a ∈ S
+      · obtain ⟨l, hl⟩ := mem_iUnion.mp (hRt ⟨ha, haS⟩)
+        refine mem_iUnion.mpr ⟨l + 1, ?_⟩
+        simp only [Nat.add_one_ne_zero, ↓reduceIte, Nat.add_sub_cancel]
+        exact ⟨⟨ha, haS⟩, hl⟩
+      · refine mem_iUnion.mpr ⟨0, ?_⟩
+        simp only [↓reduceIte]
+        exact ⟨ha, haS⟩
+    · intro k
+      dsimp only
+      split_ifs with hk
+      · exact Or.inr fun a ha => ha.2
+      · refine Or.inl ⟨⟨((c (T (k - 1)) / 2 : NNReal) : ℝ),
+          NNReal.coe_pos.mpr (div_pos (hcpos _) two_pos), ?_⟩, fun a ha => ha.1.2⟩
+        intro a ha a' ha'
+        obtain ⟨y, hy, hTk⟩ := hTy ⟨a, ha.1⟩ (k - 1)
+        have hinj : Injective (T (k - 1)) := by
+          rw [hTk]
+          exact hy.2
+        have h1 := hc (T (k - 1)) hinj (a - a')
+        have h2 := hTapprox (k - 1) a ha a' ha'
+        have h3 := norm_sub_norm_le (T (k - 1) (a - a')) (φ (F i a) - φ (F i a'))
+        rw [norm_sub_rev (T (k - 1) (a - a'))] at h3
+        simp only [comp_apply] at h2
+        push_cast at h2 ⊢
+        linarith
+  choose D hDB hDmeas hDdisj hBD hDdich using hsplit
+  -- Step 5: enumerate the pieces `(i, k) ↦ Fᵢ(Dᵢₖ)` by `j ↦ unpair j`
+  refine ⟨fun j => F (Nat.unpair j).1, fun j => D (Nat.unpair j).1 (Nat.unpair j).2,
+    fun j => m (Nat.unpair j).1, fun j => hFL _, fun j => hDmeas _ _, fun j => hmpos _,
+    fun j a ha a' ha' => hmlow _ a (hDB _ _ ha) a' (hDB _ _ ha'),
+    fun j a ha => hFdiff _ a (hDB _ _ ha), fun j => ?_, fun j => ?_, ?_, ?_,
+    fun j => hDdich _ _⟩
+  -- Step 6: the images are Borel (Lusin–Souslin) and lie in `M`
+  · exact (hDmeas _ _).image_of_continuousOn_injOn (hFcont _).continuousOn
+      ((hinjB _).mono (hDB _ _))
+  · exact (image_mono (hDB _ _)).trans (hFBM _)
+  -- Step 7: disjointness
+  · intro j j' hjj'
+    dsimp only
+    rcases eq_or_ne (Nat.unpair j).1 (Nat.unpair j').1 with hi | hi
+    · have hk : (Nat.unpair j).2 ≠ (Nat.unpair j').2 := fun hk => hjj' (by
+        rw [← Nat.pair_unpair j, ← Nat.pair_unpair j', hi, hk])
+      rw [hi]
+      rw [disjoint_left]
+      rintro _ ⟨a, ha, rfl⟩ ⟨a', ha', heq⟩
+      have := hinjB _ (hDB _ _ ha') (hDB _ _ ha) heq
+      subst this
+      exact disjoint_left.mp (hDdisj _ hk) ha ha'
+    · exact (hFBdisj hi).mono (image_mono (hDB _ _)) (image_mono (hDB _ _))
+  -- Step 8: the remainder is the null remainder of the parametrization
+  · refine measure_mono_null (sdiff_subset_sdiff_right ?_) hnull
+    refine iUnion_subset fun i => ?_
+    rintro _ ⟨a, ha, rfl⟩
+    obtain ⟨k, hk⟩ := mem_iUnion.mp (hBD i ha)
+    refine mem_iUnion.mpr ⟨Nat.pair i k, a, ?_, ?_⟩
+    · simp only [Nat.unpair_pair]
+      exact hk
+    · simp only [Nat.unpair_pair]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
