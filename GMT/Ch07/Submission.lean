@@ -451,6 +451,37 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 2, (4.18)–(4.20)** (tangential divergence in an orthonormal frame): if `τ₁, …, τₙ`
+is an orthonormal basis of `Q`, then `trace(p_Q ∘ B) = Σₐ τₐ · Bτₐ`.  The orthogonality
+characterization of the projection gives `p_Q z = Σₐ (τₐ · z) τₐ`, so `p_Q ∘ B` is the sum of the
+rank-one maps `z ↦ (τₐ · Bz) τₐ`, and the trace of `z ↦ ℓ(z) v` is `ℓ(v)`. -/
+theorem Submission.fvmb_trace_starProjection_comp_eq_sum_inner : ∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (τ : Fin n → Euclid P) (B : Euclid P →L[ℝ] Euclid P), Orthonormal ℝ τ → Submodule.span ℝ (Set.range τ) = Q → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ B.toLinearMap) = ∑ a, inner ℝ (τ a) (B (τ a)) := by
+  intro P n Q τ B hτ hQ
+  -- `p_Q z = Σₐ ⟪τₐ, z⟫ τₐ`: the right side lies in `Q` and `z` minus it is orthogonal to `Q`
+  have hproj : ∀ z : Euclid P, Q.starProjection z = ∑ a, inner ℝ (τ a) z • τ a := by
+    intro z
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · rw [← hQ]
+      exact Submodule.sum_mem _ fun a _ =>
+        Submodule.smul_mem _ _ (Submodule.subset_span ⟨a, rfl⟩)
+    · intro q hq
+      rw [← hQ] at hq
+      induction hq using Submodule.span_induction with
+      | mem x hx =>
+        obtain ⟨b, rfl⟩ := hx
+        rw [inner_sub_left, hτ.inner_left_fintype, real_inner_comm]
+        simp
+      | zero => simp
+      | add x y _ _ hx hy => rw [inner_add_right, hx, hy, add_zero]
+      | smul c x _ hx => rw [inner_smul_right, hx, mul_zero]
+  -- `p_Q ∘ B = Σₐ (z ↦ ⟪τₐ, Bz⟫ τₐ)`
+  have hdecomp : Q.starProjection.toLinearMap ∘ₗ B.toLinearMap =
+      ∑ a, ((innerₛₗ ℝ (τ a)) ∘ₗ B.toLinearMap).smulRight (τ a) := by
+    ext z
+    simp [hproj]
+  -- `trace (z ↦ ℓ(z) v) = ℓ(v)` (`LinearMap.trace_smulRight`), summed over `a`
+  rw [hdecomp, map_sum]
+  simp
 /-- **Angle-parametrized unit curve** (step 6 of the parent proof).  Differentiating
 `⟨γ, γ⟩ = ‖γ‖² ≡ 1` gives `⟨γ, γ′⟩ = 0`.  With `A = ⟨γ, u⟩ > 0` and `B = ⟨γ, e⟩`, the quotient
 and chain rules differentiate `arctan (B / A) ≡ α` to `(1 + (B / A)²)⁻¹ (B′ A − B A′) / A² = 1`,
@@ -605,6 +636,31 @@ theorem Submission.fvmb_trace_starProjection_comp_eq_sum_inner : ∀ (P n : ℕ)
   -- `trace (z ↦ ℓ(z) v) = ℓ(v)` (`LinearMap.trace_smulRight`), summed over `a`
   rw [hdecomp, map_sum]
   simp
+/-- **Tangential divergence of the rotation field** (steps 4–5 of the parent proof).  With the
+skew map `A y = ⟨y, u⟩ e − ⟨y, e⟩ u`, the field is `X = g • A`, so the product rule gives
+`DX(x) h = g(x) A h + (Dg(x) h) A x` at `x = t v`.  The frame formula in the orthonormal frame
+`(v, w)` of `Q` gives `tr(p_Q ∘ DX(x)) = ⟨v, DX(x) v⟩ + ⟨w, DX(x) w⟩`; skewness `⟨z, A z⟩ = 0`
+and `A x = t A v` leave only `(Dg(x) w) t ⟨w, A v⟩`. -/
+theorem Submission.idtp_ccd_scsp_tf_rotation_trace : ∀ (P : ℕ) (u e v w : Euclid P) (Q : Submodule ℝ (Euclid P)) (g : Euclid P → ℝ) (t : ℝ), Orthonormal ℝ ![v, w] → Submodule.span ℝ (Set.range ![v, w]) = Q → DifferentiableAt ℝ g (t • v) → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ (fderiv ℝ (fun y : Euclid P => g y • (inner ℝ y u • e - inner ℝ y e • u)) (t • v)).toLinearMap) = fderiv ℝ g (t • v) w * (t * (inner ℝ v u * inner ℝ w e - inner ℝ v e * inner ℝ w u)) := by
+  intro P u e v w Q g t hτ hQ hg
+  -- the skew continuous linear map `A y = ⟪y, u⟫ e - ⟪y, e⟫ u`, so that `X = g • A`
+  obtain ⟨A, hA⟩ : ∃ A : Euclid P →L[ℝ] Euclid P,
+      ∀ y, A y = inner ℝ y u • e - inner ℝ y e • u :=
+    ⟨(innerSL ℝ u).smulRight e - (innerSL ℝ e).smulRight u, fun y => by simp [real_inner_comm]⟩
+  have hX : (fun y : Euclid P => g y • (inner ℝ y u • e - inner ℝ y e • u)) =
+      fun y => g y • A y := by
+    funext y
+    rw [hA]
+  -- product rule: `DX(x) = g(x) A + Dg(x) ⊗ A x`
+  have hD : HasFDerivAt (fun y : Euclid P => g y • A y)
+      (g (t • v) • A + (fderiv ℝ g (t • v)).smulRight (A (t • v))) (t • v) :=
+    hg.hasFDerivAt.smul A.hasFDerivAt
+  -- frame formula in the orthonormal frame `(v, w)` of `Q`, then expand the two diagonal entries
+  rw [Submission.fvmb_trace_starProjection_comp_eq_sum_inner P 2 Q ![v, w] _ hτ hQ, hX, hD.fderiv]
+  simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, add_apply, smul_apply,
+    ContinuousLinearMap.smulRight_apply, hA, inner_add_right, inner_sub_right, inner_smul_right,
+    real_inner_smul_left]
+  ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
