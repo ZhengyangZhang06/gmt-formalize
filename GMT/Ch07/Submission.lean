@@ -630,6 +630,55 @@ theorem Submission.dor_lmb_fcd_jwc_minor_measurable_bound : ∀ (k r : ℕ) (L :
       _ = (r.factorial : ℝ) * ((L : ℝ) * ∑ b, ‖V b‖) ^ r := by
           rw [Finset.sum_const, Finset.prod_const, Finset.card_univ, Finset.card_univ,
             Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
+/-- **Derivative of the mollification of a Lipschitz function**: for an `L`-Lipschitz `f` and a
+`C¹` kernel `ρ` with compact support, `D(ρ ⋆ f)(x) v = ∫ ρ(t) Df(x − t) v dt`.  Differentiating
+under the integral (`HasCompactSupport.hasFDerivAt_convolution_left`) gives
+`D(ρ ⋆ f)(x) v = ∫ Dρ(t) v · f(x − t) dt`.  With `t = x − s` and the reflected kernel
+`h(s) = ρ(x − s)` (`C¹` with compact support, hence Lipschitz, and `∂_{−v} h(s) = Dρ(x − s) v`)
+the two sides become `∫ ∂_{−v} h · f` and `∫ h · Df(·) v`; they agree by integration by parts for
+Lipschitz functions (`LipschitzWith.integral_lineDeriv_mul_eq`: `∫ ∂_v f · h = ∫ ∂_{−v} h · f`)
+and Rademacher (`∂_v f = Df · v` a.e.). -/
+theorem Submission.dor_lmb_fcd_jwc_mollify_fderiv_eq : ∀ (k : ℕ) (L : NNReal) (f ρ : Euclid k → ℝ), LipschitzWith L f → ContDiff ℝ 1 ρ → HasCompactSupport ρ → ∀ x v : Euclid k, fderiv ℝ (fun y => ∫ t, ρ t * f (y - t)) x v = ∫ t, ρ t * fderiv ℝ f (x - t) v := by
+  intro k L f ρ hf hρ hρs x v
+  have hconv : (fun y => ∫ t, ρ t * f (y - t)) =
+      convolution ρ f (ContinuousLinearMap.lsmul ℝ ℝ) volume := by
+    funext y; simp [convolution_def]
+  have hD := hρs.hasFDerivAt_convolution_left (μ := volume) (ContinuousLinearMap.lsmul ℝ ℝ) hρ
+    hf.continuous.locallyIntegrable x
+  have hint := (hρs.fderiv (𝕜 := ℝ)).convolutionExists_left (μ := (volume : Measure (Euclid k)))
+    ((ContinuousLinearMap.lsmul ℝ ℝ).precompL (Euclid k)) (hρ.continuous_fderiv (by norm_num))
+    (hf.continuous.locallyIntegrable (μ := (volume : Measure (Euclid k)))) x
+  rw [hconv, hD.fderiv, convolution_def, ContinuousLinearMap.integral_apply hint]
+  simp only [ContinuousLinearMap.precompL_apply, ContinuousLinearMap.lsmul_apply, smul_eq_mul]
+  -- change of variables `t ↦ x - t` on both sides
+  rw [← integral_sub_left_eq_self (fun t => fderiv ℝ ρ t v * f (x - t)) (μ := volume) x,
+    ← integral_sub_left_eq_self (fun t => ρ t * fderiv ℝ f (x - t) v) (μ := volume) x]
+  simp only [sub_sub_cancel]
+  -- integration by parts against `h(s) = ρ(x - s)`
+  set h : Euclid k → ℝ := fun s => ρ (x - s) with hh
+  have hhC1 : ContDiff ℝ 1 h := hρ.comp (contDiff_const.sub contDiff_id)
+  have hhs : HasCompactSupport h := hρs.comp_homeomorph (Homeomorph.subLeft x)
+  obtain ⟨D, hhL⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hhs hhC1 (by norm_num)
+  have hibp := hf.integral_lineDeriv_mul_eq (μ := volume) hhL hhs v
+  have hlh : ∀ s, lineDeriv ℝ h s (-v) = fderiv ℝ ρ (x - s) v := by
+    intro s
+    rw [(hhC1.differentiable (by norm_num) s).lineDeriv_eq_fderiv]
+    have h1 : HasFDerivAt h (-(fderiv ℝ ρ (x - s))) s := by
+      have := (hρ.differentiable (by norm_num) (x - s)).hasFDerivAt.comp s
+        ((hasFDerivAt_const x s).sub (hasFDerivAt_id s))
+      simpa [hh, Function.comp_def] using this
+    rw [h1.fderiv]
+    simp
+  -- Rademacher: `∂_v f = Df · v` almost everywhere
+  have hlf : ∀ᵐ s ∂(volume : Measure (Euclid k)), lineDeriv ℝ f s v = fderiv ℝ f s v := by
+    filter_upwards [hf.ae_differentiableAt] with s hs
+    exact hs.lineDeriv_eq_fderiv
+  simp only [hlh] at hibp
+  rw [← hibp]
+  refine integral_congr_ae ?_
+  filter_upwards [hlf] with s hs
+  rw [hs, hh]
+  ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
