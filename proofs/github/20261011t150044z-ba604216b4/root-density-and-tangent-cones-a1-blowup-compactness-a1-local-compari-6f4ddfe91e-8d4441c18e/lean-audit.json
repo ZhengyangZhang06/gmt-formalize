@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "45d6c124c5c97883efa441112e50479853b873efdb26bc92fa2990fa188e0aee",
+  "git_delta": {
+    "base_commit": "699f1d69ce4b6ed4925d896509227a3d7a1083fb",
+    "candidate_commit": "43bb0a4b4880c74852c448fa13ae9bb7ddca562e",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_ll_grad_weak_limit",
+    "diff_sha256": "3a474ecc2bec91892703f4717466d3559b862fb3d7b0f463b45a09faca45a0bc",
+    "source_sha256": "2a63ab3ccbdb5425f9a6bf75252481634b687541d06425dc810f5a4604330b4b",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_ll_grad_weak_limit",
+      "statement": "∀ (N : ℕ) (us : ℕ → Euclid N → ℝ) (u : Euclid N → ℝ) (Λ : NNReal) (W : Euclid N → Euclid N), (∀ k, LipschitzWith Λ (us k)) → LipschitzWith Λ u → TendstoUniformly us u atTop → Integrable W → Tendsto (fun k => ∫ y, fderiv ℝ (us k) y (W y)) atTop (𝓝 (∫ y, fderiv ℝ u y (W y)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
