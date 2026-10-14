@@ -2992,6 +2992,49 @@ theorem Submission.lcmp_imRep_measure_restrict : ∀ (P n : ℕ) (U : Set (Eucli
   funext x
   rw [ho, NNReal.smul_def, smul_eq_mul]
   norm_cast
+/-- **Subadditivity of integer multiplicity weights on closed sets** (Simon 6.2.5 and
+6.3.2(3); Simon 7.2.4, proof).  Let `V` be open and `X = X₁ + X₂` in `𝒟ₙ(V)`, where `X = τ(R)`,
+`X₁ = τ(R₁)` and `X₂ = τ(R₂)`.  Then `μ_R(F) ≤ μ_{R₁}(F) + μ_{R₂}(F)` for every closed `F ⊆ V`.
+For open `G`, `μ_R(G) = M_G(X) ≤ M_G(X₁) + M_G(X₂) = μ_{R₁}(G) + μ_{R₂}(G)`.  As
+`μ_{R₁} + μ_{R₂}` is finite on compact subsets of `V`, the outer bound gives the inequality on
+compact `K ⊆ V`, and `F = ⋃_j F ∩ B̄(0, j)` is an increasing union of such sets. -/
+theorem Submission.dimred_mbl_lc_rc_measure_le_add_of_closed : ∀ (P n : ℕ) (V F : Set (Euclid P)) (X X₁ X₂ : GeometricCurrentOn V n) (R R₁ R₂ : IMRep V n), IsOpen V → R.Represents X → R₁.Represents X₁ → R₂.Represents X₂ → (∀ ω : TestFormOn V n, X ω = X₁ ω + X₂ ω) → IsClosed F → F ⊆ V → R.measure F ≤ R₁.measure F + R₂.measure F := by
+  intro P n V F X X₁ X₂ R R₁ R₂ hV hR hR₁ hR₂ hX hF hFV
+  -- Step 1: for open `G`, `μ_R(G) = M_G(X) ≤ M_G(X₁) + M_G(X₂) = μ_{R₁}(G) + μ_{R₂}(G)`
+  have hopen : ∀ G : Set (Euclid P), IsOpen G →
+      R.measure G ≤ (R₁.measure + R₂.measure) G + 0 := by
+    intro G hG
+    rw [add_zero, Measure.add_apply,
+      ← (Submission.dor_imrep_massOn_eq_measure_and_support P n V X R hV hR).1 G hG,
+      ← (Submission.dor_imrep_massOn_eq_measure_and_support P n V X₁ R₁ hV hR₁).1 G hG,
+      ← (Submission.dor_imrep_massOn_eq_measure_and_support P n V X₂ R₂ hV hR₂).1 G hG]
+    exact Submission.lcmp_massOn_le_add_of_eval_eq P n V G X₁ X₂ X 1 (by rw [abs_one])
+      fun ω _ => by rw [one_mul]; exact hX ω
+  -- Step 2: `μ_{R'}(K) = ∫_{M' ∩ K} θ' dHⁿ < ∞` for compact `K ⊆ V`, so `μ_{R₁} + μ_{R₂}` is
+  -- finite on compact subsets of `V`
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ V → (R₁.measure + R₂.measure) K < ∞ := by
+    intro K hK hKV
+    have hR' : ∀ R' : IMRep V n, R'.measure K < ∞ := fun R' => by
+      rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+        Measure.restrict_restrict hK.measurableSet, inter_comm]
+      exact (R'.locallyIntegrable_mult K hK hKV).lt_top
+    rw [Measure.add_apply]
+    exact ENNReal.add_lt_top.2 ⟨hR' R₁, hR' R₂⟩
+  -- Step 3: the outer bound with `c = 0` gives `μ_R(K) ≤ μ_{R₁}(K) + μ_{R₂}(K)` for compact `K ⊆ V`
+  have hcpt : ∀ K : Set (Euclid P), IsCompact K → K ⊆ V →
+      R.measure K ≤ (R₁.measure + R₂.measure) K := fun K hK hKV => by
+    simpa only [add_zero] using Submission.lcmp_measure_le_add_of_open_nhds P V K R.measure
+      (R₁.measure + R₂.measure) 0 hV hK hKV hfin fun G hG _ _ => hopen G hG
+  -- Step 4: `F` is the increasing union of the compact sets `F ∩ B̄(0, j) ⊆ V`; continuity from
+  -- below passes the inequality to `F`
+  have hmono : Monotone fun j : ℕ => F ∩ closedBall (0 : Euclid P) j := fun a b hab =>
+    inter_subset_inter_right F (closedBall_subset_closedBall (Nat.cast_le.2 hab))
+  calc R.measure F = ⨆ j : ℕ, R.measure (F ∩ closedBall 0 j) := by
+        rw [← hmono.measure_iUnion, iUnion_inter_closedBall_nat]
+    _ ≤ ⨆ j : ℕ, (R₁.measure + R₂.measure) (F ∩ closedBall 0 j) := iSup_mono fun j =>
+        hcpt _ ((isCompact_closedBall 0 (j : ℝ)).inter_left hF) (inter_subset_left.trans hFV)
+    _ ≤ (R₁.measure + R₂.measure) F := iSup_le fun j => measure_mono inter_subset_left
+    _ = R₁.measure F + R₂.measure F := Measure.add_apply _ _ _
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
