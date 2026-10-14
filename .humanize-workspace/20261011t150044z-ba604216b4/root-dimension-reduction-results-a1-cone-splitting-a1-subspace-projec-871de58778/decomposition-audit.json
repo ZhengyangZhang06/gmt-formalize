@@ -1,0 +1,67 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def Represents|def measure|def action|def support|def massOn|def IsIntegerMultiplicity|def affinePullbackForm|def IsUnitOrientationOf|def TestFormOnConverges|structure GeometricCurrentOn",
+        "measure_compl_support|support_subset_iff|withDensity_absolutelyContinuous",
+        "linear_pushforward|imrep_linear",
+        "dtc_imrep_current",
+        "dor_imrep_massOn_eq_measure_and_support",
+        "dtc_bc_lc_pushforward",
+        "dtc_imrep_of_null_off_compact",
+        "git show 642d7450f79f28435ddba02f9c815e2208bcee00:GMT/Ch07/Submission.lean",
+        "git show d49dda91b75b7417d67a10053e6dc4b65d4f0312:GMT/Ch07/Submission.lean",
+        "git show b1757de56800bfad9f11c71168e87756f47b6004:GMT/Ch07/Submission.lean",
+        "git show 4794819e5be21c3318483e9d756beaf7a9bf882e:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/ipf-decomp-q7/alt/AltRoute.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-871de58778/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-subspace-projec-871de58778/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-a685b45291/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1-imrep-transfer-a1/accepted-candidate.json",
+        "/tmp/ipf-decomp-q7/alt/AltRoute.lean"
+      ],
+      "conclusion": "The split is appropriate. Project and mathlib pins match the snapshot; frozen definitions are unchanged in all four accepted candidates. No direct linear-IMRep push-forward declaration matched the snapshot project search. Each proposed name uniquely identifies an accepted declaration with a byte-identical frozen type. Their dependency closures (1, 14, 76 and 2 nodes) are accepted, acyclic, and exclude the selected node and its ancestors. Retained comparator inputs match the candidate sources, and comparator records verify kernel acceptance under only propext, Classical.choice and Quot.sound. All four statements pass lexical validation and elaborate independently of their implementations. No matrix-unit construction occurs. Independently rerunning AltRoute.lean succeeded with those same three axioms: the four propositions imply the exact selected parent contract, including carrier inclusion and the action identity."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "imrep_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including arbitrary U and n = 0. Measurability, compact-support domination, integral linearity and sequential continuity establish R.Represents T. The bare name is valid identical-type accepted reuse, with no circular dependency."
+    },
+    {
+      "key": "mass_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The open-domain hypothesis and both conclusions match exactly. The proof establishes the orientation duality estimate, upper and lower mass bounds through smooth approximation, and the support identity through the zero region. Reduction to W ∩ U handles open W not contained in U. Accepted reuse and its prerequisites were verified."
+    },
+    {
+      "key": "pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches all clauses, including degree m + 1, C¹ regularity only on O, representation independence, support, mass, cycle preservation and additivity. The supplied supplement resolves Step 6 through the independently accepted integer-multiplicity, bilipschitz-tangent and gluing lemmas; inspection confirms that the required tangent-locality premise is discharged. These prerequisites are non-circular. Specialization to f = L supplies the selected parent's required push-forward."
+    },
+    {
+      "key": "trim_carrier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact proposition includes both domain inclusions and the Hausdorff-null hypothesis. Restricting the carrier to M ∩ K preserves the restricted measure, rectifiability and orientation; compactness and K ⊆ V supply integrability in U. Equality of measures proves action equality for every differential form without requiring its integrability. The cited null-modification prerequisite is accepted and non-circular."
+    }
+  ],
+  "required_changes": []
+}
