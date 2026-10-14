@@ -451,6 +451,26 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Currents of degree above the ambient dimension vanish.**  If `P < d`, any `d` vectors
+`v₀, …, v_{d−1}` in `ℝᴾ` are linearly dependent (otherwise `d = card (Fin d) ≤ dim ℝᴾ = P`), so
+every alternating `d`-covector vanishes on them.  Hence every test `d`-form in `U` is `0`, and
+`A(ω) = A(0) = 0` by linearity. -/
+theorem Submission.dor_lmb_fc_tb_eq_zero_of_lt_degree : ∀ (P d : ℕ) (U : Set (Euclid P)) (A : GeometricCurrentOn U d), P < d → A = 0 := by
+  intro P d U A hPd
+  -- every `d`-covector on `ℝᴾ` is `0`: `d > P` vectors in `ℝᴾ` are linearly dependent
+  have hcov : ∀ α : Covector (Euclid P) d, α = 0 := fun α => by
+    ext v
+    rw [ContinuousAlternatingMap.coe_zero, Pi.zero_apply]
+    refine α.toAlternatingMap.map_linearDependent v fun hv => ?_
+    have hcard := hv.fintype_card_le_finrank
+    rw [Fintype.card_fin, finrank_euclideanSpace_fin] at hcard
+    omega
+  -- hence every test `d`-form is `0`, and `A(ω) = A(0) = 0`
+  ext ω
+  rw [GeometricCurrentOn.zero_apply,
+    show ω = 0 from Subtype.ext (funext fun x => (hcov _).trans (hcov _).symm)]
+  exact map_zero A.toCurrent
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
