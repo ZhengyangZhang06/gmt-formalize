@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "97828b518e6cfac7fa60bdc07e98ebec23e3c06f65405422ddd13a5faaf110a9",
+  "git_delta": {
+    "base_commit": "a4d5abf27e54565814c5e2259ad7fde0efe40055",
+    "candidate_commit": "2b4b0bbc7a7ae612682807617c1ee28adb259e11",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cc_psf_nonhomogeneous",
+    "diff_sha256": "a8cfc55ba82eeb0fd96810dcc3d3e59e29b152a567406cd6428c6053541588f5",
+    "source_sha256": "b759b125024635d8444b15fc88fe2825f22b6c4de037132aa266d9b2d85fb11a",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cc_psf_nonhomogeneous",
+      "statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)) (f : Euclid P → ℝ≥0∞), 1 ≤ n → ν univ ≠ 0 → ν univ ≠ ∞ → (∀ t : ℝ, 0 < t → ∀ w : Euclid P, f (t • w) = f w) → ν ≠ (μHE[n] : Measure (Euclid P)).withDensity f",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
