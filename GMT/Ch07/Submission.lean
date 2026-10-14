@@ -451,6 +451,92 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Single-scale calibration bound for the tilt excess on `B_{3t}(a)`.  With
+`h = ϑ ∘ dilation a t` (continuous with compact support, so `μ`-integrable; `h ≥ 0`, `h = 1` on
+`B_{3t}(a)`), the ball integral of `1 - |d|` is at most `∫ h (1 - |d|) dμ`, and
+`∫ h (1 - |d|) dμ = ∫ h dμ - ∫ h |d| dμ ≤ ∫ h dμ - |∫ h d dμ|`; divide by `t²`. -/
+theorem Submission.idtp_cse_bml_td_excess_bound : ∀ (P : ℕ) (μ : Measure (Euclid P)) (d ϑ : Euclid P → ℝ) (a : Euclid P) (t : ℝ), 0 < t → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → AEStronglyMeasurable d μ → (∀ᵐ x ∂μ, |d x| ≤ 1) → Continuous ϑ → HasCompactSupport ϑ → (∀ x, 0 ≤ ϑ x) → (∀ x : Euclid P, ‖x‖ < 3 → ϑ x = 1) → (∫⁻ x in ball a (3 * t), ENNReal.ofReal (1 - |d x|) ∂μ) / ENNReal.ofReal (t ^ 2) ≤ ENNReal.ofReal (t⁻¹ ^ 2 * ∫ x, ϑ (dilation a t x) ∂μ - |t⁻¹ ^ 2 * ∫ x, ϑ (dilation a t x) * d x ∂μ|) := by
+  intro P μ d ϑ a t ht hloc hdm hd1 hϑc hϑcs hϑ0 hϑ1
+  have : IsFiniteMeasureOnCompacts μ := ⟨fun K hK => hloc K hK⟩
+  -- `dilation a t` is the homeomorphism `x ↦ -(t⁻¹ • a) + t⁻¹ • x`
+  let e : Euclid P ≃ₜ Euclid P :=
+    (Homeomorph.smulOfNeZero t⁻¹ (inv_ne_zero ht.ne')).trans (Homeomorph.addLeft (-(t⁻¹ • a)))
+  have he : (fun x => ϑ (dilation a t x)) = ϑ ∘ e := by
+    funext x
+    simp [e, dilation, dilationCLM]
+  have hdil : ∀ x, dilation a t x = t⁻¹ • (x - a) := fun x => by
+    simp [dilation, dilationCLM, smul_sub]
+    abel
+  set h : Euclid P → ℝ := fun x => ϑ (dilation a t x)
+  have hcont : Continuous h := by
+    rw [he]
+    exact hϑc.comp e.continuous
+  have hint : Integrable h μ := by
+    refine hcont.integrable_of_hasCompactSupport ?_
+    rw [he]
+    exact hϑcs.comp_homeomorph e
+  have hnn : ∀ x, 0 ≤ h x := fun x => hϑ0 _
+  -- `h = 1` on `B_{3t}(a)`
+  have hone : ∀ x ∈ ball a (3 * t), h x = 1 := by
+    intro x hx
+    rw [mem_ball, dist_eq_norm] at hx
+    apply hϑ1
+    rw [hdil, norm_smul, norm_inv, Real.norm_of_nonneg ht.le, inv_mul_lt_iff₀ ht]
+    linarith
+  -- `h d`, `h |d|` and `h (1 - |d|)` are integrable, being dominated by `h`
+  have hdom : ∀ᵐ x ∂μ, h x * |d x| ≤ h x := by
+    filter_upwards [hd1] with x hx
+    simpa using mul_le_mul_of_nonneg_left hx (hnn x)
+  have hhd : Integrable (fun x => h x * d x) μ := by
+    refine hint.mono' (hcont.aestronglyMeasurable.mul hdm) ?_
+    filter_upwards [hdom] with x hx
+    rwa [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hnn x)]
+  have hha : Integrable (fun x => h x * |d x|) μ := by
+    refine hint.mono' (hcont.aestronglyMeasurable.mul hdm.norm) ?_
+    filter_upwards [hdom] with x hx
+    rwa [Real.norm_eq_abs, abs_mul, abs_of_nonneg (hnn x), abs_abs]
+  have hE : Integrable (fun x => h x * (1 - |d x|)) μ := by
+    refine (hint.sub hha).congr (Eventually.of_forall fun x => ?_)
+    simp only [Pi.sub_apply]
+    ring
+  have hE0 : 0 ≤ᵐ[μ] fun x => h x * (1 - |d x|) := by
+    filter_upwards [hd1] with x hx
+    exact mul_nonneg (hnn x) (by linarith)
+  -- the ball estimate
+  have hball : ∫⁻ x in ball a (3 * t), ENNReal.ofReal (1 - |d x|) ∂μ ≤
+      ENNReal.ofReal (∫ x, h x * (1 - |d x|) ∂μ) := by
+    rw [ofReal_integral_eq_lintegral_ofReal hE hE0, ← lintegral_indicator measurableSet_ball]
+    refine lintegral_mono fun x => ?_
+    by_cases hx : x ∈ ball a (3 * t)
+    · rw [indicator_of_mem hx, hone x hx, one_mul]
+    · rw [indicator_of_notMem hx]
+      exact zero_le
+  -- the calibration inequality
+  have hcal : ∫ x, h x * (1 - |d x|) ∂μ ≤ ∫ x, h x ∂μ - |∫ x, h x * d x ∂μ| := by
+    have h1 : ∫ x, h x * (1 - |d x|) ∂μ = ∫ x, h x ∂μ - ∫ x, h x * |d x| ∂μ := by
+      rw [← integral_sub hint hha]
+      congr 1
+      funext x
+      ring
+    have h2 : |∫ x, h x * d x ∂μ| ≤ ∫ x, h x * |d x| ∂μ := by
+      refine abs_integral_le_integral_abs.trans (le_of_eq ?_)
+      congr 1
+      funext x
+      rw [abs_mul, abs_of_nonneg (hnn x)]
+    linarith
+  -- rescaling
+  have ht2 : 0 < t ^ 2 := by positivity
+  calc (∫⁻ x in ball a (3 * t), ENNReal.ofReal (1 - |d x|) ∂μ) / ENNReal.ofReal (t ^ 2)
+      ≤ ENNReal.ofReal (∫ x, h x ∂μ - |∫ x, h x * d x ∂μ|) / ENNReal.ofReal (t ^ 2) := by
+        gcongr
+        exact hball.trans (ENNReal.ofReal_le_ofReal hcal)
+    _ = ENNReal.ofReal ((∫ x, h x ∂μ - |∫ x, h x * d x ∂μ|) / t ^ 2) :=
+        (ENNReal.ofReal_div_of_pos ht2).symm
+    _ = ENNReal.ofReal (t⁻¹ ^ 2 * ∫ x, h x ∂μ - |t⁻¹ ^ 2 * ∫ x, h x * d x ∂μ|) := by
+        congr 1
+        rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ t⁻¹ ^ 2)]
+        field_simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
