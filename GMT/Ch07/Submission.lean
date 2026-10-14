@@ -469,6 +469,57 @@ theorem Submission.cbrz_finset_integral_hausdorff_zero : ∀ (P : ℕ) (F : Fins
   · rw [lintegral_finset]
     simp [Measure.hausdorffMeasure_zero_singleton]
 
+/-- A finite set has the zero subspace as `0`-dimensional approximate tangent space at each of its
+points (Simon Ch. 3, 1.4 with `n = 0`): if `f = 0` off `B_{R₀}(0)` and `δ ≤ ‖z - y‖` for
+`z ∈ F \ {y}`, then for `0 < ρ < δ/R₀` the blow-up `η_{y,ρ}(F)` meets `{f ≠ 0}` at most in
+`η_{y,ρ}(y) = 0`, so `∫_{η_{y,ρ}(F)} f dH⁰ = f(0) = ∫_{{0}} f dH⁰`. -/
+theorem Submission.cbrz_approxTangent_finite_zero : ∀ (P : ℕ) (F : Set (Euclid P)) (y : Euclid P), F.Finite → y ∈ F → HasApproximateTangentSpaceAt 0 F y ⊥ := by
+  intro P F y hF hy
+  refine ⟨by simp, fun f => ?_⟩
+  -- the limit `∫_{{0}} f dH⁰ = f(0)`
+  have hlim : ∫ z in ((⊥ : Submodule ℝ (Euclid P)) : Set (Euclid P)), f z ∂μHE[0] = f 0 := by
+    rw [Submodule.bot_coe, ← Finset.coe_singleton,
+      (Submission.cbrz_finset_integral_hausdorff_zero P {0} f fun _ => 0).1, Finset.sum_singleton]
+  rw [hlim]
+  -- `f = 0` off the open ball `B_{R₀}(0)`
+  obtain ⟨R₀, hR₀, hfz⟩ : ∃ R₀ > 0, ∀ z : Euclid P, R₀ ≤ ‖z‖ → f z = 0 := by
+    obtain ⟨R, hR⟩ := f.hasCompactSupport.isBounded.subset_closedBall (0 : Euclid P)
+    refine ⟨max R 0 + 1, add_pos_of_nonneg_of_pos (le_max_right R 0) one_pos,
+      fun z hz => image_eq_zero_of_notMem_tsupport fun hzs => ?_⟩
+    have h1 := mem_closedBall_zero_iff.1 (hR hzs)
+    have h2 := le_max_left R 0
+    linarith
+  -- `y` is isolated in `F`: `δ ≤ ‖z - y‖` for `z ∈ F \ {y}`
+  obtain ⟨δ, hδ, hsep⟩ : ∃ δ > 0, ∀ z ∈ F, z ≠ y → δ ≤ ‖z - y‖ := by
+    have hclosed : IsClosed (F \ {y}) := hF.sdiff.isClosed
+    obtain ⟨δ, hδ, hball⟩ := Metric.isOpen_iff.1 hclosed.isOpen_compl y (by simp)
+    exact ⟨δ, hδ, fun z hz hzy =>
+      not_lt.1 fun h => hball (mem_ball_iff_norm.2 h) ⟨hz, hzy⟩⟩
+  -- for `0 < ρ < δ/R₀`, `∫_{η_{y,ρ}(F)} f dH⁰ = Σ_{w ∈ η_{y,ρ}(F)} f(w) = f(0)`
+  apply tendsto_nhds_of_eventually_eq
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hδ hR₀)] with ρ hρ
+  have hfin : (Poincare.SimonGMT.Chapter03.blowUpMap y ρ '' F).Finite := hF.image _
+  rw [← hfin.coe_toFinset,
+    (Submission.cbrz_finset_integral_hausdorff_zero P hfin.toFinset f fun _ => 0).1]
+  refine Finset.sum_eq_single 0 (fun w hw hw0 => ?_) fun h0 => ?_
+  · -- `w = η_{y,ρ}(z)` with `z ∈ F \ {y}`, so `‖w‖ = ρ⁻¹‖z - y‖ ≥ ρ⁻¹δ > R₀`
+    obtain ⟨z, hz, rfl⟩ := hfin.mem_toFinset.1 hw
+    have hzy : z ≠ y := by
+      rintro rfl
+      exact hw0 (by simp [Poincare.SimonGMT.Chapter03.blowUpMap])
+    have h1 : δ ≤ ‖z - y‖ := hsep z hz hzy
+    have h2 : R₀ * ρ < δ := by
+      have := hρ.2
+      rw [lt_div_iff₀ hR₀] at this
+      linarith
+    apply hfz
+    rw [Poincare.SimonGMT.Chapter03.blowUpMap, norm_smul, norm_inv, Real.norm_eq_abs,
+      abs_of_pos hρ.1, inv_mul_eq_div, le_div_iff₀ hρ.1]
+    linarith
+  · -- `0 = η_{y,ρ}(y) ∈ η_{y,ρ}(F)`
+    exact absurd (hfin.mem_toFinset.2 ⟨y, hy, by simp [Poincare.SimonGMT.Chapter03.blowUpMap]⟩)
+      h0
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
