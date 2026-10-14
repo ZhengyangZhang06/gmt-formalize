@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ccb65c5ef997c345e8e1b5bad2f30bfbbdf19d795d1307ee2eb714d5872e760f",
+  "git_delta": {
+    "base_commit": "20dbecd3dd1fc58691ae5a9efb3d7789c7b47f76",
+    "candidate_commit": "2e4da8e95aa6686f10484b06c5afc152c91724e9",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrsd_faces_meeting_compact_finite",
+    "diff_sha256": "b79eb631fc64d713414ccd937ab7963f9bc22a075b2aecc97e27d0522e0902ab",
+    "source_sha256": "16218127bed2d49bc79dfcad56fcdfa5428175be3ee9ec82f52f2a5ac10012d9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrsd_faces_meeting_compact_finite",
+      "statement": "∀ (P k : ℕ) (K : Set (Euclid P)), IsCompact K → {p : (Fin k → Fin P) × (Fin P → ℤ) | ∃ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) ∈ K}.Finite",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
