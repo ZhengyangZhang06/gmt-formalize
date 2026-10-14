@@ -2645,12 +2645,42 @@ theorem Submission.cbr_ci_dilation_slice_property : (∀ (P k : ℕ) (U : Set (E
   obtain ⟨-, hbd, him, -, -, -⟩ := hdc P d a lam hlam
   obtain ⟨-, -, -, hrepd, -, -⟩ := hdc P (d + 1) a lam hlam
   -- Step 2: `∂X' = 0`, testing `∂X` against `φ ∘ η`
+/-- **Dilation invariance of the integer slice property** (step 2 of the proof that a cycle with
+the integer slice property is integer multiplicity, for the closure theorem Simon Ch. 6, 8.2,
+whose proof slices the blow-ups `η_{x,λⱼ#}T` (8.2 (7), (8)); slices as in Ch. 6, 4.6–4.10;
+dilations `η_{a,λ#}` as in Ch. 6, 2.23).  Let `η = η_{a,λ}`, `η(y) = λ⁻¹(y − a)`, `λ > 0`,
+`n = d + 1`, and let `X'` be the dilation of the cycle `X ∈ 𝒟ₙ(ℝᴾ)` with admissible
+representation `(μ_X, ξ_X)`.  By the dilation calculus
+(`Submission.dmcbr_ci_dilation_calculus`), `∂X' = 0` and `(λ⁻ⁿ η_# μ_X, ξ_X(a + λ ·))` is an
+admissible representation of `X'` (`Submission.cbr_ci_dsp_pushforward_pair`).  Fix admissible
+representations `(μ, ξ)` of `X'`, `(μ', ξ')` of `∂X'` and an `L`-Lipschitz `f`.  By (SL) and the
+integer slice property of `X` (`Submission.cbr_ci_dsp_cycle_slice_boundary_im`), the slice `A_X(t)`
+of `X` by `{f ∘ η < t}` has integer multiplicity boundary for a.e. `t`.  For such `t`, (RU) and the
+change of variables along `η` make every slice `A` of `X'` by `{f < t}` the dilation of `A_X(t)`,
+and (RU) with `∂X' = 0` makes the boundary slice `B` vanish.  Hence `∂A − B = ∂A` is the dilation
+of `∂A_X(t)`, which is integer multiplicity. -/
+theorem Submission.dmcbr_ci_dilation_slice_property : (∀ (P k : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (k + 1)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (k + 1)) (ξ' : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (L : NNReal), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (k + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) k, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (k + 1), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) → (∀ η : TestFormOn U k, T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn U (k + 1)) (B : ℝ → GeometricCurrentOn U k), (∀ (t : ℝ) (ω : TestFormOn U (k + 1)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (k + 1)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn U k), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) k) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn U k), Disjoint (tsupport (η : DifferentialForm (Euclid P) k)) {x | f x = t} → (A t).boundary η = B t η) ∧ (∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) ∧ (∀ (W : Set (Euclid P)) (a b : ℝ), IsOpen W → ∫⁻ t in Ioo a b, ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b}))) → (∀ (P k : ℕ) (U : Set (Euclid P)) (μ₁ μ₂ μ₃ : Measure (Euclid P)) (ξ₁ ξ₂ ξ₃ : Euclid P → MultiVector P k), IsOpen U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₁ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₂ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ₃ K < ∞) → AEStronglyMeasurable ξ₁ μ₁ → AEStronglyMeasurable ξ₂ μ₂ → AEStronglyMeasurable ξ₃ μ₃ → (∀ᵐ x ∂μ₁, ∀ α : Covector (Euclid P) k, |ξ₁ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₂, ∀ α : Covector (Euclid P) k, |ξ₂ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ₃, ∀ α : Covector (Euclid P) k, |ξ₃ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U k, ∫ x, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃) → ∀ (B : Set (Euclid P)) (ω : TestFormOn U k), MeasurableSet B → ∫ x in B, ξ₁ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₁ = ∫ x in B, ξ₂ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₂ + ∫ x in B, ξ₃ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ₃) → ∀ (P d : ℕ) (a : Euclid P) (lam : ℝ) (X X' : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μX : Measure (Euclid P)) (ξX : Euclid P → MultiVector P (d + 1)), 0 < lam → (∀ ω ω' : TestFormOn (univ : Set (Euclid P)) (d + 1), (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) (d + 1)) y = (ω : DifferentialForm (Euclid P) (d + 1)) (dilation a lam y)) → X' ω = lam⁻¹ ^ (d + 1) * X ω') → X.boundary = 0 → (∀ K : Set (Euclid P), IsCompact K → μX K < ∞) → AEStronglyMeasurable ξX μX → (∀ᵐ x ∂μX, ∀ α : Covector (Euclid P) (d + 1), |ξX x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), X ω = ∫ x, ξX x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μX) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (X).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), X' ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (X').boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) := by
+  have hdc := Submission.dmcbr_ci_dilation_calculus
+  have hpush := Submission.cbr_ci_dsp_pushforward_pair
+  have hcomp := Submission.cbr_ci_dsp_testForm_comp_dilation
+  have hcyc := Submission.cbr_ci_dsp_cycle_slice_boundary_im
+  intro SL RU P d a lam X X' μX ξX hlam hdil hXbd hμXK hξXm hξXb hXrep hISP
+    μ μ' ξ ξ' hμK hμ'K hξm hξ'm hξb hξ'b hrep hbrep f L hf
+  -- Steps 1 and 3: `(μ₂, ξ₂) = (λ⁻ⁿ η_# μ_X, ξ_X(a + λ ·))` is an admissible representation of
+  -- `X'` (the push-forward pair and the dilation calculus (4))
+  obtain ⟨hμ₂K, hξ₂m, hξ₂b, hchg⟩ := hpush P (d + 1) a lam μX ξX hlam hμXK hξXm hξXb
+  obtain ⟨-, hbd, him, -, -, -⟩ := hdc P d a lam hlam
+  obtain ⟨-, -, -, hrepd, -, -⟩ := hdc P (d + 1) a lam hlam
+  -- Step 2: `∂X' = 0`, by the dilation calculus (2) applied to `(φ, φ ∘ η)`
   have hX'bd : ∀ φ : TestFormOn (univ : Set (Euclid P)) d, X'.boundary φ = 0 := by
     intro φ
     obtain ⟨φ', hφ'⟩ := hcomp P d a lam hlam φ
     rw [hbd X X' hdil φ φ' hφ', hXbd, GeometricCurrentOn.zero_apply, mul_zero]
   -- Step 3: the slices `A_X(t)` of `X` by `{f ∘ η < t}` have integer multiplicity boundary
   -- for a.e. `t`
+  -- Steps 5 and 6: `g = f ∘ η` is `Lλ⁻¹`-Lipschitz, and by (SL) and the ISP of `X` (with the
+  -- representations `(μ_X, ξ_X)` and `(0, 0)` of `X` and `∂X = 0`) the slices `A_X(t)` of `X` by
+  -- `{g < t}` have integer multiplicity boundary for `t` outside an `L¹`-null set
   have hηL : LipschitzWith ‖lam⁻¹‖₊ (dilation a lam) := by
     refine LipschitzWith.of_dist_le_mul fun x y => le_of_eq ?_
     simp [dilation, dilationCLM, dist_smul₀]
@@ -2661,6 +2691,12 @@ theorem Submission.cbr_ci_dilation_slice_property : (∀ (P k : ℕ) (U : Set (E
   have hft : MeasurableSet {x | f x < t} :=
     measurableSet_lt hf.continuous.measurable measurable_const
   -- Step 4: by (RU), `A` is also the slice of the representation of Step 1
+  -- Step 4: slices `A` of `X'` and `B` of `∂X'` by `{f < t}`
+  intro A B hA hB
+  have hft : MeasurableSet {x | f x < t} :=
+    measurableSet_lt hf.continuous.measurable measurable_const
+  -- Step 7: (RU) with `(μ, ξ)`, `(μ₂, ξ₂)`, `(0, 0)` and the Borel set `{f < t}`: `A` is also
+  -- the slice of `(μ₂, ξ₂)`
   have hRU1 : ∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1),
       ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ =
         ∫ y in {x | f x < t}, ξX (a + lam • y) ((ω : DifferentialForm (Euclid P) (d + 1)) y)
@@ -2675,6 +2711,7 @@ theorem Submission.cbr_ci_dilation_slice_property : (∀ (P k : ℕ) (U : Set (E
       {x | f x < t} ω hft
     simpa only [Measure.restrict_zero, integral_zero_measure, add_zero] using h
   -- Step 5: change of variables by `η`: `A` is the dilation of `A_X(t)`
+  -- Step 7, change of variables along `η`: `A` is the dilation of `A_X(t)`
   have hAdil : ∀ ω ω' : TestFormOn (univ : Set (Euclid P)) (d + 1),
       (∀ y : Euclid P, (ω' : DifferentialForm (Euclid P) (d + 1)) y =
         (ω : DifferentialForm (Euclid P) (d + 1)) (dilation a lam y)) →
@@ -2684,6 +2721,7 @@ theorem Submission.cbr_ci_dilation_slice_property : (∀ (P k : ℕ) (U : Set (E
     simp only [hω']
     rfl
   -- Step 6: by (RU) and `∂X' = 0`, the boundary slice `B` vanishes
+  -- Step 8: (RU) with `(μ', ξ')`, `(0, 0)`, `(0, 0)`, `∂X' = 0` and `{f < t}`: `B = 0`
   have hB0 : ∀ φ : TestFormOn (univ : Set (Euclid P)) d, B φ = 0 := by
     intro φ
     have h := RU P d univ μ' 0 0 ξ' (fun _ => 0) (fun _ => 0) isOpen_univ
@@ -2693,6 +2731,8 @@ theorem Submission.cbr_ci_dilation_slice_property : (∀ (P k : ℕ) (U : Set (E
       {x | f x < t} φ hft
     rw [hB φ, h, Measure.restrict_zero, integral_zero_measure, add_zero]
   -- Step 7: `∂A − B = ∂A` is the dilation of the integer multiplicity `∂A_X(t)`
+  -- Step 9: `∂A − B = ∂A` is the dilation of the integer multiplicity current `∂A_X(t)`
+  -- (the dilation calculus (2) and (3))
   have hsub : A.boundary - B = A.boundary := by
     refine GeometricCurrentOn.ext fun φ => ?_
     show A.boundary φ - B φ = A.boundary φ
