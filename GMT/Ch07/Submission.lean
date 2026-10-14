@@ -451,6 +451,40 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Lower density of a constant-orientation cycle** (blow-up step of the closure theorem,
+Simon Ch. 6, 3.11): if `C(ω) = ∫ θ₀ ζ₀(ω) dν` (`θ₀ > 0`, constant `ζ₀`, `|ζ₀| ≤ 1`) has
+`∂C = 0`, mass measure `θ₀ ν` and the integer slice property, then the lower density bound
+`LD_{η₀}` applied to `C` with `μ = c • ν` (`c = ofReal θ₀`) and `ξ ≡ ζ₀` gives
+`η₀ ≤ c · Θ_*(ν, y)` for `c • ν`-a.e., hence `ν`-a.e., `y`; dividing by `c ∈ (0, ∞)` gives
+`η₀ / θ₀ ≤ Θ_*(ν, y)`. -/
+theorem Submission.cbr_ci_pw_blowup_lower_density : ∀ (P d : ℕ) (η₀ θ₀ : ℝ) (ν : Measure (Euclid P)) (ζ₀ : MultiVector P (d + 1)) (C : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), (∀ (C' : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)), C'.boundary = 0 → (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ W : Set (Euclid P), IsOpen W → C'.massOn W = μ W) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C' ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C' ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (C').boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → ∀ᵐ x ∂μ, ENNReal.ofReal η₀ ≤ liminf (fun r : ℝ => μ (ball x r) / (unitBallVolume (d + 1) * ENNReal.ofReal (r ^ (d + 1)))) (𝓝[>] 0)) → 0 < θ₀ → C.boundary = 0 → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → (∀ W : Set (Euclid P), IsOpen W → C.massOn W = ENNReal.ofReal θ₀ * ν W) → (∀ β : Covector (Euclid P) (d + 1), |ζ₀ β| ≤ covectorEuclideanNorm β) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ y, θ₀ * ζ₀ ((ω : DifferentialForm (Euclid P) (d + 1)) y) ∂ν) → (∀ (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (ξ' : Euclid P → MultiVector P d), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), C ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, (C).boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → ∀ (f : Euclid P → ℝ) (L : NNReal), LipschitzWith L f → ∀ᵐ t ∂(volume : Measure ℝ), ∀ (A : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)) (B : GeometricCurrentOn (univ : Set (Euclid P)) d), (∀ ω : TestFormOn (univ : Set (Euclid P)) (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → IsIntegerMultiplicity (A.boundary - B)) → ∀ᵐ y ∂ν, ENNReal.ofReal (η₀ / θ₀) ≤ liminf (fun r : ℝ => ν (ball y r) / (unitBallVolume (d + 1) * ENNReal.ofReal (r ^ (d + 1)))) (𝓝[>] 0) := by
+  intro P d η₀ θ₀ ν ζ₀ C hLD hθ₀ hC hνK hmass hζ₀ hrep hISP
+  -- Step 1: `c = ofReal θ₀` is positive and finite, with `c.toReal = θ₀`
+  have hc₀ : ENNReal.ofReal θ₀ ≠ 0 := (ENNReal.ofReal_pos.2 hθ₀).ne'
+  have hc_top : ENNReal.ofReal θ₀ ≠ ∞ := ENNReal.ofReal_ne_top
+  -- Step 2: `LD_{η₀}` for `C' = C`, `μ = c • ν` and the constant field `ξ ≡ ζ₀`
+  have hLDc := hLD C (ENNReal.ofReal θ₀ • ν) (fun _ => ζ₀) hC
+    (fun K hK => by
+      rw [Measure.smul_apply, smul_eq_mul]
+      exact ENNReal.mul_lt_top hc_top.lt_top (hνK K hK))
+    (fun W hW => by
+      rw [Measure.smul_apply, smul_eq_mul]
+      exact hmass W hW)
+    aestronglyMeasurable_const (Eventually.of_forall fun _ α => hζ₀ α)
+    (fun ω => by
+      rw [integral_smul_measure, ENNReal.toReal_ofReal hθ₀.le, smul_eq_mul,
+        ← integral_const_mul]
+      exact hrep ω)
+    hISP
+  -- Step 3: `ν ≪ c • ν` since `c ≠ 0`
+  filter_upwards [(Measure.absolutelyContinuous_smul hc₀).ae_le hLDc] with y hy
+  -- Step 4: `(c • ν)(B) / D = c · (ν(B) / D)`, and the finite `c` leaves the `liminf`
+  simp_rw [Measure.smul_apply, smul_eq_mul, mul_div_assoc] at hy
+  rw [ENNReal.liminf_const_mul_of_ne_top hc_top] at hy
+  -- Step 5: divide by `c`
+  rw [ENNReal.ofReal_div_of_pos hθ₀]
+  exact ENNReal.div_le_of_le_mul' hy
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
