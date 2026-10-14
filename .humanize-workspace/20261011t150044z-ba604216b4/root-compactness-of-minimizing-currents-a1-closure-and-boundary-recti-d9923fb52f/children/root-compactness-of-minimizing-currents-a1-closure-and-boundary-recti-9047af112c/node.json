@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.slice_majorant-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1",
+  "depth": 4,
+  "title": "Measurable majorant of liminf slice masses (MM)",
+  "statement": "(MM) Let μ_j be Borel measures on ℝ^P, f : ℝ^P → ℝ continuous, G ⊆ ℝ^P arbitrary, a, b ∈ ℝ, L ∈ ℝ≥0, with μ_j(G ∩ {a < f < b}) < ∞ for all j, and Z_j : ℝ → [0, ∞] with Z_j(t) ≤ L · liminf_{h↓0} h⁻¹ μ_j(G ∩ {t − h < f < t}) for all j and all t ∈ (a, b). Then there is a measurable g : ℝ → [0, ∞] with liminf_j Z_j(t) ≤ g(t) for L¹-a.e. t ∈ (a, b) and ∫_{(a,b)} g dL¹ ≤ L · liminf_j μ_j(G ∩ {a < f < b}).",
+  "lean_statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop",
+  "lean_name": "cbr_slice_mass_majorant",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9047af112c-a1"
+}
