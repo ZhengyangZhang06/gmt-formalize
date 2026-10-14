@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "c0d57c8780a144267e4bfee731c49d18f10d43e573aefc4b15bd19a55c4c7651",
+  "git_delta": {
+    "base_commit": "90ed6747830aaeaa3b999866ce725be25ce8ca42",
+    "candidate_commit": "1943bbf1e551f67fd3203c6dbd018ae27659268f",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "57f54be5d1d9bd626e41b2ddbfa91740ffb989000819dc3f3d0340c714495865",
+    "source_sha256": "e0a161587595181d5974b3a60169abecf977adf04a069141b1e73ff072a4e24b",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_lp_covector_bounds",
+      "statement": "(∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
