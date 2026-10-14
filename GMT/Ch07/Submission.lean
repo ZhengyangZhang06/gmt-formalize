@@ -560,6 +560,137 @@ theorem Submission.dtc_cone_euler_cartan : ∀ (P m : ℕ) (β : DifferentialFor
       Finset.sum_neg_distrib]
     abel
 
+/-- **Radial Poincaré homotopy formula** (Simon Ch. 6, 2.25–2.26 for the affine homotopy
+`h(t, x) = t x` from `0` to `id`, at the level of forms; used for the cone filling in Lemma 7.2.1).
+For a `C^∞` `(m+1)`-form `β` on `ℝᴾ`, `Kβ(x) = ∫₀¹ tᵐ ι_x β(t x) dt` is `C^∞` and
+`d(Kβ)(x) + ∫₀¹ tᵐ⁺¹ ι_x dβ(t x) dt = β(x)`.  Differentiation under the integral sign
+(`cmcdt_lpo_slice_param_integral`) moves `d` inside the integral; Cartan's formula for the Euler
+field (`dtc_cone_euler_cartan`), applied to `z ↦ β(t z)` and multiplied by `tᵐ`, turns the sum of
+the integrands into `d/dt (tᵐ⁺¹ β(t x))`, and the fundamental theorem of calculus gives `β(x)`. -/
+theorem Submission.ecf_cc_radial_homotopy_formula : ∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)), ContDiff ℝ (⊤ : ℕ∞) β → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid P => ∫ t in (0 : ℝ)..1, t ^ m • (β (t • x)).curryLeft x) ∧ ∀ x : Euclid P, exteriorDerivative (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ m • (β (t • y)).curryLeft y) x + ∫ t in (0 : ℝ)..1, t ^ (m + 1) • (exteriorDerivative β (t • x)).curryLeft x = β x := by
+  intro P m β hβ
+  -- Step 1: joint smoothness of `h (t, z) = t ^ m • ι_z β (t • z)`
+  let h : ℝ × Euclid P → Covector (Euclid P) m := fun p => p.1 ^ m • (β (p.1 • p.2)).curryLeft p.2
+  -- generic helpers (stated over arbitrary normed spaces, to avoid instance diamonds of `Covector`)
+  have gen2 : ∀ (W₁ W₃ : Type) [NormedAddCommGroup W₁] [NormedSpace ℝ W₁] [NormedAddCommGroup W₃]
+      [NormedSpace ℝ W₃] (L : W₁ →L[ℝ] (Euclid P →L[ℝ] W₃)) (g : ℝ × Euclid P → W₁),
+      ContDiff ℝ (⊤ : ℕ∞) g → ContDiff ℝ (⊤ : ℕ∞) (fun p : ℝ × Euclid P => p.1 ^ m • L (g p) p.2) := by
+    intro W₁ W₃ _ _ _ _ L g hg
+    exact (contDiff_fst.pow m).smul ((L.contDiff.comp hg).clm_apply contDiff_snd)
+  have hhs : ContDiff ℝ (⊤ : ℕ∞) h :=
+    gen2 (Covector (Euclid P) (m + 1)) (Covector (Euclid P) m)
+      (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ) (n := m)).toContinuousLinearMap
+      (fun p => β (p.1 • p.2)) (hβ.comp (contDiff_fst.smul contDiff_snd))
+  -- Step 2: `param_integral`
+  obtain ⟨hKs, hKd⟩ := Submission.cmcdt_lpo_slice_param_integral P (Covector (Euclid P) m) h hhs
+  refine ⟨hKs, fun y => ?_⟩
+  -- Step 3: `d` commutes with the integral
+  have hpart : ∀ t : ℝ, HasFDerivAt (fun z : Euclid P => h (t, z))
+      ((fderiv ℝ h (t, y)).comp (ContinuousLinearMap.inr ℝ ℝ (Euclid P))) y := fun t =>
+    (hhs.differentiable (by simp) (t, y)).hasFDerivAt.comp y (hasFDerivAt_prodMk_right t y)
+  have hpart_cont : Continuous (fun t : ℝ => fderiv ℝ (fun z : Euclid P => h (t, z)) y) := by
+    have heq : (fun t : ℝ => fderiv ℝ (fun z : Euclid P => h (t, z)) y) =
+        fun t => (fderiv ℝ h (t, y)).comp (ContinuousLinearMap.inr ℝ ℝ (Euclid P)) := by
+      funext t
+      exact (hpart t).fderiv
+    rw [heq]
+    exact ((hhs.continuous_fderiv (by simp)).comp (continuous_id.prodMk continuous_const)).clm_comp
+      continuous_const
+  have hdK : exteriorDerivative (fun y : Euclid P => ∫ t in (0 : ℝ)..1, t ^ m • (β (t • y)).curryLeft y) y =
+      ∫ t in (0 : ℝ)..1, exteriorDerivative (fun z : Euclid P => h (t, z)) y := by
+    have hfd : fderiv ℝ (fun y : Euclid P => ∫ t in (0 : ℝ)..1, h (t, y)) y =
+        ∫ t in (0 : ℝ)..1, fderiv ℝ (fun z : Euclid P => h (t, z)) y := (hKd y).fderiv
+    change ContinuousAlternatingMap.alternatizeUncurryFin
+        (fderiv ℝ (fun y : Euclid P => ∫ t in (0 : ℝ)..1, h (t, y)) y) =
+      ∫ t in (0 : ℝ)..1, ContinuousAlternatingMap.alternatizeUncurryFin
+        (fderiv ℝ (fun z : Euclid P => h (t, z)) y)
+    rw [hfd]
+    have key : ∀ (W W' : Type) [NormedAddCommGroup W] [NormedSpace ℝ W] [CompleteSpace W]
+        [NormedAddCommGroup W'] [NormedSpace ℝ W'] [CompleteSpace W']
+        (F : ℝ → (Euclid P →L[ℝ] W)) (L : (Euclid P →L[ℝ] W) →L[ℝ] W'),
+        Continuous F → L (∫ t in (0 : ℝ)..1, F t) = ∫ t in (0 : ℝ)..1, L (F t) := by
+      intro W W' _ _ _ _ _ _ F L hF
+      exact (L.intervalIntegral_comp_comm (hF.intervalIntegrable 0 1)).symm
+    exact key (Covector (Euclid P) m) (Covector (Euclid P) (m + 1))
+      (fun t : ℝ => fderiv ℝ (fun z : Euclid P => h (t, z)) y)
+      (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Euclid P) ℝ) hpart_cont
+  -- Step 4: the pointwise identity, from `euler_cartan` applied to `z ↦ β (t • z)`
+  have hpt : ∀ t : ℝ, exteriorDerivative (fun z : Euclid P => h (t, z)) y +
+      t ^ (m + 1) • (exteriorDerivative β (t • y)).curryLeft y =
+      ((m : ℝ) + 1) • (t ^ m • β (t • y)) + t ^ (m + 1) • fderiv ℝ β (t • y) y := by
+    intro t
+    set βt : DifferentialForm (Euclid P) (m + 1) := fun z => β (t • z) with hβtdef
+    have hβt : ∀ z, HasFDerivAt βt (t • fderiv ℝ β (t • z)) z := by
+      intro z
+      have h1 : HasFDerivAt (fun z : Euclid P => t • z) (t • ContinuousLinearMap.id ℝ (Euclid P)) z :=
+        (hasFDerivAt_id z).const_smul t
+      have h2 : HasFDerivAt βt ((fderiv ℝ β (t • z)).comp (t • ContinuousLinearMap.id ℝ (Euclid P))) z :=
+        (hβ.differentiable (by simp) (t • z)).hasFDerivAt.comp z h1
+      convert h2 using 1
+      refine ContinuousLinearMap.ext fun u => ?_
+      simp
+    have hEC := Submission.dtc_cone_euler_cartan P m βt y (hβt y).differentiableAt
+    have hdβt : exteriorDerivative βt y = t • exteriorDerivative β (t • y) := by
+      change ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ βt y) =
+        t • ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ β (t • y))
+      rw [(hβt y).fderiv, ContinuousAlternatingMap.alternatizeUncurryFin_smul]
+    have hDβt : fderiv ℝ βt y y = t • fderiv ℝ β (t • y) y := by
+      rw [(hβt y).fderiv]
+      rfl
+    rw [hdβt, hDβt, ContinuousAlternatingMap.curryLeft_smul, smul_apply] at hEC
+    simp only [hβtdef] at hEC
+    have hsm : exteriorDerivative (fun z : Euclid P => h (t, z)) y =
+        t ^ m • exteriorDerivative (fun z : Euclid P => (β (t • z)).curryLeft z) y := by
+      have heq : (fun z : Euclid P => h (t, z)) = t ^ m • (fun z : Euclid P => (β (t • z)).curryLeft z) := rfl
+      rw [heq]
+      exact extDeriv_smul (t ^ m) _
+    rw [hsm]
+    linear_combination (norm := module) (t ^ m) • hEC
+  -- Step 5: the fundamental theorem of calculus for `φ (t) = t ^ (m + 1) • β (t • y)`
+  have hφ : ∀ t : ℝ, HasDerivAt (fun s : ℝ => s ^ (m + 1) • β (s • y))
+      (((m : ℝ) + 1) • (t ^ m • β (t • y)) + t ^ (m + 1) • fderiv ℝ β (t • y) y) t := by
+    intro t
+    have h1 : HasDerivAt (fun s : ℝ => s ^ (m + 1)) (((m : ℝ) + 1) * t ^ m) t := by
+      simpa using hasDerivAt_pow (m + 1) t
+    have h3 : HasDerivAt (fun s : ℝ => s • y) y t := by
+      simpa using (hasDerivAt_id t).smul_const y
+    have h2 : HasDerivAt (fun s : ℝ => β (s • y)) (fderiv ℝ β (t • y) y) t :=
+      (hβ.differentiable (by simp) (t • y)).hasFDerivAt.comp_hasDerivAt t h3
+    convert h1.smul h2 using 1
+    module
+  have hc1 : Continuous (fun t : ℝ => β (t • y)) := hβ.continuous.comp (continuous_id.smul continuous_const)
+  have hφint : IntervalIntegrable (fun t : ℝ => ((m : ℝ) + 1) • (t ^ m • β (t • y)) +
+      t ^ (m + 1) • fderiv ℝ β (t • y) y) MeasureTheory.volume 0 1 := by
+    apply Continuous.intervalIntegrable
+    have hc2 : Continuous (fun t : ℝ => fderiv ℝ β (t • y) y) :=
+      ((hβ.continuous_fderiv (by simp)).comp (continuous_id.smul continuous_const)).clm_apply
+        continuous_const
+    have hc3 : Continuous (fun t : ℝ => ((m : ℝ) + 1) • (t ^ m • β (t • y))) :=
+      ((continuous_pow m).smul hc1).const_smul ((m : ℝ) + 1)
+    have hc4 : Continuous (fun t : ℝ => t ^ (m + 1) • fderiv ℝ β (t • y) y) :=
+      (continuous_pow (m + 1)).smul hc2
+    exact hc3.add hc4
+  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t _ => hφ t) hφint
+  have hφ1 : (1 : ℝ) ^ (m + 1) • β ((1 : ℝ) • y) = β y := by simp
+  have hφ0 : (0 : ℝ) ^ (m + 1) • β ((0 : ℝ) • y) = 0 := by simp
+  rw [hφ1, hφ0, sub_zero] at hFTC
+  -- Step 6: conclusion
+  have hdβc : Continuous (exteriorDerivative β) :=
+    (ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Euclid P) ℝ).continuous.comp
+      (hβ.continuous_fderiv (by simp))
+  have hint2 : IntervalIntegrable (fun t : ℝ => t ^ (m + 1) • (exteriorDerivative β (t • y)).curryLeft y)
+      MeasureTheory.volume 0 1 := by
+    apply Continuous.intervalIntegrable
+    exact (continuous_pow (m + 1)).smul
+      (((ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ) (n := m + 1)).continuous.comp
+        (hdβc.comp (continuous_id.smul continuous_const))).clm_apply continuous_const)
+  have hint1 : IntervalIntegrable (fun t : ℝ => exteriorDerivative (fun z : Euclid P => h (t, z)) y)
+      MeasureTheory.volume 0 1 :=
+    ((ContinuousAlternatingMap.alternatizeUncurryFinCLM ℝ (Euclid P) ℝ).continuous.comp
+      hpart_cont).intervalIntegrable 0 1
+  rw [hdK, ← intervalIntegral.integral_add hint1 hint2, ← hFTC]
+  exact intervalIntegral.integral_congr (fun t _ => hpt t)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
