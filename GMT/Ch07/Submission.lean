@@ -1208,6 +1208,124 @@ theorem Submission.cmcdt_lpo_cutoff_pullback : ∀ (N N' k : ℕ) (F : Euclid N 
     exact extDeriv_pullback ((hω.differentiable (by simp)).differentiableAt) hF.contDiffAt
       (by simp)
 
+/-- **Cut-off pull-backs along the smoothed homotopy and their limits** (Simon Ch. 6, §2: the
+homotopy formula for Lipschitz maps via smooth approximation).  Write `ι(t, x) = (t, x₁, …, x_N)`,
+`Jv = ι(0, v)` and `C = {ι(t, x) : t ∈ [0, 1], x ∈ K}` (compact).  With the smooth approximations
+`F_j, G_j, H_j` of `cmcdt_lpoh_smooth_approx`, `β_j` is the cut-off pull-back of
+`cmcdt_lpo_cutoff_pullback`, equal to `H_j^#ω` (and `dβ_j` to `H_j^#(dω)`) on an open `W_j ⊇ C`,
+and `ρ_{s,j}(x) = β_j(ι(s, x)) ∘ J` is the affine pull-back of `β_j` by the isometric embedding
+`ι(s, ·)`, a test form since `ι(s, ·)` is proper.  As `H_j ∘ ι(1, ·) = G_j` and
+`H_j ∘ ι(0, ·) = F_j` with matching derivatives along `J`, `ρ_{1,j} = G_j^#ω` and
+`ρ_{0,j} = F_j^#ω` near `K`, so (PA) gives the limits; the pointwise description of `β_j` on `C`
+carries the derivative bounds of `cmcdt_lpoh_smooth_approx`. -/
+theorem Submission.cmcdt_lpoh_pullback_limits : ∀ (lpush : ∀ (N N' k : ℕ), (Euclid N → Euclid N') → GeometricCurrentOn (univ : Set (Euclid N)) k → GeometricCurrentOn (univ : Set (Euclid N')) k), (∀ (N N' k : ℕ) (Λ : NNReal) (Λ' : ℝ) (F : Euclid N → Euclid N') (Fs : ℕ → Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ω : TestFormOn (univ : Set (Euclid N')) k) (ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) → (∀ j, ∀ x ∈ X.support, ‖fderiv ℝ (Fs j) x‖ ≤ Λ') → TendstoUniformlyOn Fs F atTop X.support → (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) → Tendsto (fun j => X (ηs j)) atTop (𝓝 (lpush N N' k F X ω))) → ∀ (N N' m : ℕ) (Λ L : NNReal) (F G : Euclid N → Euclid N') (H : Euclid (N + 1) → Euclid N') (K : Set (Euclid N)) (ω : TestFormOn (univ : Set (Euclid N')) m), LipschitzWith Λ F → LipschitzWith Λ G → LipschitzWith L H → IsCompact K → (∀ x ∈ K, ∀ t ∈ Icc (0 : ℝ) 1, H (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = F x + t • (G x - F x)) → ∃ (β : ℕ → TestFormOn (univ : Set (Euclid (N + 1))) m) (ρ₁ ρ₀ : ℕ → TestFormOn (univ : Set (Euclid N)) m), (∀ (j : ℕ) (x : Euclid N) (v : Fin m → Euclid N), (ρ₁ j : DifferentialForm (Euclid N) m) x v = (β j : DifferentialForm (Euclid (N + 1)) m) (WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) ∧ (∀ (j : ℕ) (x : Euclid N) (v : Fin m → Euclid N), (ρ₀ j : DifferentialForm (Euclid N) m) x v = (β j : DifferentialForm (Euclid (N + 1)) m) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) ∧ (∀ X : GeometricCurrentOn (univ : Set (Euclid N)) m, IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → X.support ⊆ K → Tendsto (fun j => X (ρ₁ j)) atTop (𝓝 (lpush N N' m G X ω)) ∧ Tendsto (fun j => X (ρ₀ j)) atTop (𝓝 (lpush N N' m F X ω))) ∧ (∀ Y : GeometricCurrentOn (univ : Set (Euclid (N + 1))) m, IsCompact Y.support → Y.mass < ∞ → boundaryMassOn Y univ < ∞ → Y.support ⊆ {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ K, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))} → Tendsto (fun j => Y (β j)) atTop (𝓝 (lpush (N + 1) N' m H Y ω))) ∧ (∀ Y : GeometricCurrentOn (univ : Set (Euclid (N + 1))) (m + 1), IsCompact Y.support → Y.mass < ∞ → boundaryMassOn Y univ < ∞ → Y.support ⊆ {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ K, y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))} → Tendsto (fun j => Y (exteriorDerivativeTestOn (univ : Set (Euclid (N + 1))) m (β j))) atTop (𝓝 (lpush (N + 1) N' (m + 1) H Y (exteriorDerivativeTestOn (univ : Set (Euclid N')) m ω)))) ∧ ∀ (j : ℕ), ∀ x ∈ K, ∀ t ∈ Icc (0 : ℝ) 1, ∃ (p : Euclid N') (D : Euclid (N + 1) →L[ℝ] Euclid N'), (β j : DifferentialForm (Euclid (N + 1)) m) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) = ((ω : DifferentialForm (Euclid N') m) p).compContinuousLinearMap D ∧ ‖D (EuclideanSpace.single 0 1)‖ ≤ dist (F x) (G x) + 2 * (Λ : ℝ) / ((j : ℝ) + 1) ∧ ∀ v : Euclid N, ‖D (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)))‖ ≤ (Λ : ℝ) * ‖v‖ := by
+  intro lpush hPA N N' m Λ L F G H K ω hF hG hH hK hHK
+  obtain ⟨Fs, Gs, Hs, Λ', hFs, hGs, hHs, hDF, hDG, hFu, hGu, hH1, hH0, hDH1, hDH0, hDe, hDJ, hDHb,
+    hHu⟩ := Submission.cmcdt_lpoh_smooth_approx N N' Λ F G H K hF hG hK hHK
+  -- `C = {ι(t, x) : t ∈ [0, 1], x ∈ K}` is compact
+  set C : Set (Euclid (N + 1)) := {y : Euclid (N + 1) | ∃ t ∈ Icc (0 : ℝ) 1, ∃ x ∈ K,
+    y = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))}
+  have hιc : ∀ s : ℝ, Continuous
+      (fun x : Euclid N => (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)) : Euclid (N + 1))) :=
+    fun s => (PiLp.continuous_toLp 2 _).comp (continuous_const.finCons (PiLp.continuous_ofLp 2 _))
+  have hCc : IsCompact C := by
+    have : C = (fun p : ℝ × Euclid N =>
+        (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) ''
+          (Icc (0 : ℝ) 1 ×ˢ K) := by
+      ext y
+      constructor
+      · rintro ⟨t, ht, x, hx, rfl⟩
+        exact ⟨(t, x), ⟨ht, hx⟩, rfl⟩
+      · rintro ⟨⟨t, x⟩, ⟨ht, hx⟩, rfl⟩
+        exact ⟨t, ht, x, hx, rfl⟩
+    rw [this]
+    exact (isCompact_Icc.prod hK).image (by fun_prop)
+  -- cut-off pull-backs `β_j = H_j^#ω` and `dβ_j = H_j^#(dω)` on an open `W_j ⊇ C`
+  have hCP := fun j => Submission.cmcdt_lpo_cutoff_pullback (N + 1) N' m (Hs j) ω C (hHs j) hCc
+  choose β W hWo hCW hβW hdβW using hCP
+  -- end slices `ρ(x)(v) = β(ι(s, x))(Jv)`: the affine pull-back by the isometry `ι(s, ·)`
+  have hslice : ∀ (s : ℝ) (β' : TestFormOn (univ : Set (Euclid (N + 1))) m),
+      ∃ ρ : TestFormOn (univ : Set (Euclid N)) m, ∀ (x : Euclid N) (v : Fin m → Euclid N),
+        (ρ : DifferentialForm (Euclid N) m) x v =
+          (β' : DifferentialForm (Euclid (N + 1)) m) (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)))
+            (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))) := by
+    intro s β'
+    let Jₗ : Euclid N →ₗ[ℝ] Euclid (N + 1) :=
+      { toFun := fun v => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))
+        map_add' := fun v w => by
+          ext i
+          refine Fin.cases ?_ (fun i => ?_) i <;> simp
+        map_smul' := fun c v => by
+          ext i
+          refine Fin.cases ?_ (fun i => ?_) i <;> simp }
+    let J : Euclid N →L[ℝ] Euclid (N + 1) := LinearMap.toContinuousLinearMap Jₗ
+    have hJ : ∀ v, J v = WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)) := fun _ => rfl
+    set b : Euclid (N + 1) := WithLp.toLp 2 (Fin.cons s (WithLp.ofLp (0 : Euclid N))) with hb
+    have hbJ : ∀ x, b + J x = WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)) := by
+      intro x
+      ext i
+      refine Fin.cases ?_ (fun i => ?_) i <;> simp [hb, hJ]
+    have hproper : IsProperMap fun x => b + J x := by
+      refine (Isometry.isClosedEmbedding (Isometry.of_dist_eq fun x y => ?_)).isProperMap
+      rw [hbJ, hbJ, EuclideanSpace.dist_eq, EuclideanSpace.dist_eq, Fin.sum_univ_succ]
+      simp
+    refine ⟨⟨affinePullbackForm J b (β' : DifferentialForm (Euclid (N + 1)) m),
+      affinePullbackForm_isTestForm J b hproper β'.property.1, subset_univ _⟩, fun x v => ?_⟩
+    show affinePullbackForm J b (β' : DifferentialForm (Euclid (N + 1)) m) x v = _
+    simp only [affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply, hbJ]
+    rfl
+  choose ρ hρ using fun (s : ℝ) (j : ℕ) => hslice s (β j)
+  refine ⟨β, ρ 1, ρ 0, fun j x v => hρ 1 j x v, fun j x v => hρ 0 j x v, ?_, ?_, ?_, ?_⟩
+  · -- (ii): near `K`, `ρ_{1,j} = G_j^#ω` and `ρ_{0,j} = F_j^#ω`
+    intro X hXc hXm hXb hXK
+    have hend : ∀ (s : ℝ) (Es : ℕ → Euclid N → Euclid N'),
+        (∀ (j : ℕ) (x : Euclid N), Hs j (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x))) = Es j x) →
+        (∀ (j : ℕ) (x v : Euclid N), fderiv ℝ (Hs j) (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)))
+          (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))) = fderiv ℝ (Es j) x v) →
+        s ∈ Icc (0 : ℝ) 1 → ∀ j, ∃ W' : Set (Euclid N), IsOpen W' ∧ X.support ⊆ W' ∧ ∀ x ∈ W',
+          (ρ s j : DifferentialForm (Euclid N) m) x =
+            ((ω : DifferentialForm (Euclid N') m) (Es j x)).compContinuousLinearMap
+              (fderiv ℝ (Es j) x) := by
+      intro s Es hE hDE hs j
+      refine ⟨(fun x : Euclid N => (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)) : Euclid (N + 1)))
+        ⁻¹' W j, (hWo j).preimage (hιc s), fun x hx => hCW j ⟨s, hs, x, hXK hx, rfl⟩,
+        fun x hx => ?_⟩
+      ext v
+      rw [hρ s j x v, hβW j _ hx]
+      simp only [ContinuousAlternatingMap.compContinuousLinearMap_apply, hE]
+      congr 1
+      funext i
+      exact hDE j x (v i)
+    constructor
+    · exact hPA N N' m Λ Λ G Gs X ω (ρ 1) hG hXc hXm hXb hGs (fun j x _ => hDG j x)
+        hGu.tendstoUniformlyOn (hend 1 Gs hH1 hDH1 ⟨zero_le_one, le_rfl⟩)
+    · exact hPA N N' m Λ Λ F Fs X ω (ρ 0) hF hXc hXm hXb hFs (fun j x _ => hDF j x)
+        hFu.tendstoUniformlyOn (hend 0 Fs hH0 hDH0 ⟨le_rfl, zero_le_one⟩)
+  · -- (iii): (PA) for `H` with the approximations `H_j`
+    intro Y hYc hYm hYb hYC
+    refine hPA (N + 1) N' m L Λ' H Hs Y ω β hH hYc hYm hYb hHs ?_ (hHu.mono hYC) ?_
+    · intro j y hy
+      obtain ⟨t, ht, x, hx, rfl⟩ := hYC hy
+      exact hDHb j t ht x hx
+    · intro j
+      exact ⟨W j, hWo j, hYC.trans (hCW j), hβW j⟩
+  · -- (iv): the same in degree `m + 1` for `dβ_j` and `dω`
+    intro Y hYc hYm hYb hYC
+    refine hPA (N + 1) N' (m + 1) L Λ' H Hs Y
+      (exteriorDerivativeTestOn (univ : Set (Euclid N')) m ω)
+      (fun j => exteriorDerivativeTestOn (univ : Set (Euclid (N + 1))) m (β j)) hH hYc hYm hYb hHs
+      ?_ (hHu.mono hYC) ?_
+    · intro j y hy
+      obtain ⟨t, ht, x, hx, rfl⟩ := hYC hy
+      exact hDHb j t ht x hx
+    · intro j
+      exact ⟨W j, hWo j, hYC.trans (hCW j), hdβW j⟩
+  · -- (v): on `C`, `β_j = H_j^#ω` with the derivative bounds of the smoothed homotopy
+    intro j x hx t ht
+    exact ⟨Hs j (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))),
+      fderiv ℝ (Hs j) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))),
+      hβW j _ (hCW j ⟨t, ht, x, hx, rfl⟩), hDe j t x, hDJ j t ht x⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
