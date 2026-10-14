@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9e9434bcf3c8508051a8c4efde08f01e1b0d6ea68d5ee0c054f9c58b5f097ae1",
+  "git_delta": {
+    "base_commit": "763180651c1658958a80d81d48c4382afef19d67",
+    "candidate_commit": "0c1d701b866e68bbff4110f98f19ce8aa9d96dc0",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_odc_ro_tangent_line",
+    "diff_sha256": "7cdc72c781296235631ba558802107f90644e9bcfad5874e1a1187ca00d60b65",
+    "source_sha256": "fc0fa07c1e244ade7c0446d9367ef68f8bf31e4c264acb849362aee6af8eaed7",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_odc_ro_tangent_line",
+      "statement": "∀ (P : ℕ) (M N : Set (Euclid P)) (x v : Euclid P) (δ : ℝ) (Q : Submodule ℝ (Euclid P)), v ≠ 0 → 0 < δ → (μHE[1] : Measure (Euclid P)) N = 0 → M ∩ ball x δ ⊆ range (fun s : ℝ => x + s • v) ∪ N → HasApproximateTangentSpaceAt 1 M x Q → Q = Submodule.span ℝ {v}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
