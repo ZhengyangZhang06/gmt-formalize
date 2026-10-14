@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "672b4a5dd764b25ca7496d2ffbddc55780e5aa343e500016aaf40cbca86c6cab",
+  "git_delta": {
+    "base_commit": "3d9e300382102e50a5543917f34d8f4c9accad5d",
+    "candidate_commit": "12a40ec3b2ee3f8045024dff62516cb232612014",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dtsr_face_retraction_family",
+    "diff_sha256": "b6d6cc7b8e325c6939402ee20a62cd26c2eaf215a2cd410362fe297a919be6df",
+    "source_sha256": "e68e441f92d17236c0b07b668fce1498a5c302cd2572c93460df93ebb85c27a1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dtsr_face_retraction_family",
+      "statement": "∀ (P m : ℕ) (a : Euclid P), (∀ i, |a i - 1 / 2| < 1 / 4) → ∃ Ψ : ℕ → Euclid P → Euclid P, (∀ x, Ψ (m + 1) x = x) ∧ ∀ j, m + 2 ≤ j → j ≤ P → ∀ (b : Fin P → ℤ) (J : Finset (Fin P)) (hJ : J.Nonempty), J.card = j → ∀ x : Euclid P, (∀ i, (i ∈ J → (b i : ℝ) ≤ x i ∧ x i ≤ b i + 1) ∧ (i ∉ J → x i = b i)) → ∀ y : Euclid P, (∀ i, y i = if i ∈ J then (b i : ℝ) + a i + (x i - b i - a i) / J.sup' hJ (fun k => max ((x k - b k - a k) / (1 - a k)) ((b k + a k - x k) / a k)) else x i) → Ψ j x = Ψ (j - 1) y",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
