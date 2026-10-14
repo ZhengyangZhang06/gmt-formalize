@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "bd7a4e2fd71e73602f9b55baa485a359ece5c53ceed5eaef765dfb03ec431554",
+  "git_delta": {
+    "base_commit": "21fa76d53f66edc4432fd52c64c6176377407801",
+    "candidate_commit": "9948347b25074cf18c2b5d669f1bcbe28f7fa3b0",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "067d4df07f2d507d4a8c0e027b5e178d079b886d39de338c462de8f0ea3be6e3",
+    "source_sha256": "6645676d0e00ab9ebdac7470c4c84050421119d743854184cdaa5f6de094617f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_tr_imrep_density_ae",
+      "statement": "∀ (P n : ℕ) (V W : Set (Euclid P)) (R : IMRep V n), IsOpen W → (∀ K : Set (Euclid P), IsCompact K → R.measure (K ∩ W) ≠ ∞) → ∀ᵐ x ∂(μHE[n] : Measure (Euclid P)), Tendsto (fun ρ : ℝ => R.measure (ball x ρ ∩ W) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (Set.indicator (R.carrier ∩ W) (fun y => (R.mult y : ℝ≥0∞)) x))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
