@@ -711,6 +711,79 @@ theorem Submission.chart_tangentSpace_eq_range_fderiv : ∀ (P d r : ℕ) (N W :
   exact Submission.dsmc_tangentSpace_subset_range_of_secant P d N (ψ v) (fderiv ℝ ψ v)
     (Submission.dsmc_chart_secant_estimate P d N V W ψ (fderiv ℝ ψ v) v hW hψV hv hψv
       (hDψ v hv) hinv)
+/-- **Tangent space of a hypersurface in an `(m + 1)`-plane** (Simon Ch. 2, §4, (4.3), and
+Appendix B, p. 231: `T_xM` and the unit normal `ν(x)` together span the ambient space).  Let
+`M ⊆ A₀` be an embedded `C¹` `m`-submanifold, `dim A₀ = m + 1`, and let `ν(x) ∈ A₀` be a unit
+vector orthogonal to `T_xM`.  Then `T_xM = A₀ ∩ ν(x)ᗮ`, and the orthogonal projection onto
+`T_xM` is `w ↦ Π_{A₀}w − (ν(x)·w)ν(x)`.  A chart `ψ` with `ψ(v₀) = x` gives
+`T_xM = Dψ(v₀)(ℝᵐ)`, of dimension `m`.  Difference quotients of curves in `M ⊆ A₀` lie in the
+closed subspace `A₀`, so `T_xM ⊆ A₀ ∩ ν(x)ᗮ`, which has dimension `(m + 1) − 1 = m`; hence
+equality.  Finally `u = Π_{A₀}w − (ν(x)·w)ν(x)` lies in `A₀ ∩ ν(x)ᗮ` and `w − u` is orthogonal
+to it. -/
+theorem Submission.codim1_hcp_sc_tangent_normal_complement : ∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → IsEmbeddedSubmanifold 1 m M → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, tangentSpace M x = {v : Euclid P | v ∈ A₀ ∧ inner ℝ (ν x) v = 0} ∧ ∀ w : Euclid P, (Submodule.span ℝ (tangentSpace M x)).starProjection w = A₀.starProjection w - inner ℝ (ν x) w • ν x := by
+  intro P m A₀ M ν hdim hMA hM hν x hx
+  obtain ⟨hνA, hν1, hνT⟩ := hν x hx
+  -- Step 1: a chart `ψ` at `x = ψ(v₀)` gives `T_xM = Dψ(v₀)(ℝᵐ)`, a subspace of dimension `m`
+  obtain ⟨V, W, ψ, hV, hW, hxW, hψ, hinj, hψV, hprop, hDψ⟩ := hM x hx
+  obtain ⟨v₀, hv₀, hψv₀⟩ : x ∈ ψ '' V := hψV ▸ ⟨hxW, hx⟩
+  set L : Submodule ℝ (Euclid P) :=
+    LinearMap.range ((fderiv ℝ ψ v₀ : Euclid m →L[ℝ] Euclid P) : Euclid m →ₗ[ℝ] Euclid P) with hL
+  have hT : tangentSpace M x = (L : Set (Euclid P)) := by
+    rw [← hψv₀]
+    exact Submission.chart_tangentSpace_eq_range_fderiv P m 1 M W V ψ v₀ le_rfl hV hW hψ hinj
+      hψV hprop hDψ hv₀
+  have hLdim : Module.finrank ℝ L = m := by
+    rw [hL, LinearMap.finrank_range_of_inj (hDψ v₀ hv₀), finrank_euclideanSpace_fin]
+  -- Step 2: `T_xM ⊆ A₀`, as difference quotients of curves in `M ⊆ A₀` lie in the closed `A₀`
+  have hTA : ∀ v ∈ tangentSpace M x, v ∈ A₀ := by
+    rintro v ⟨γ, -, hγM, hγ0, hγv⟩
+    refine A₀.closed_of_finiteDimensional.mem_of_tendsto hγv.tendsto_slope ?_
+    filter_upwards [nhdsWithin_le_nhds (Ioo_mem_nhds (by norm_num : (-1 : ℝ) < 0)
+      (by norm_num : (0 : ℝ) < 1))] with t ht
+    rw [slope_def_module]
+    exact A₀.smul_mem _ (A₀.sub_mem (hMA (hγM ht)) (hγ0 ▸ hMA hx))
+  -- Step 3: `T_xM ⊆ H = A₀ ∩ ν(x)ᗮ`
+  set H : Submodule ℝ (Euclid P) := (ℝ ∙ ν x)ᗮ ⊓ A₀ with hH
+  have hmemH : ∀ v, v ∈ H ↔ v ∈ A₀ ∧ inner ℝ (ν x) v = 0 := fun v => by
+    rw [hH, Submodule.mem_inf, Submodule.mem_orthogonal_singleton_iff_inner_right, and_comm]
+  have hLH : L ≤ H := fun v hv => by
+    have hvT : v ∈ tangentSpace M x := hT ▸ hv
+    exact (hmemH v).2 ⟨hTA v hvT, hνT v hvT⟩
+  -- Step 4: `dim H = (m + 1) - 1 = m`, since `ν(x) ∈ A₀` is a unit vector
+  have hν0 : ν x ≠ 0 := by
+    rintro h
+    rw [h, norm_zero] at hν1
+    exact zero_ne_one hν1
+  have hHdim : Module.finrank ℝ H = m := by
+    have h : Module.finrank ℝ (ℝ ∙ ν x) + Module.finrank ℝ H = Module.finrank ℝ A₀ :=
+      Submodule.finrank_add_inf_finrank_orthogonal
+        ((Submodule.span_singleton_le_iff_mem (ν x) A₀).2 hνA)
+    rw [finrank_span_singleton hν0, hdim] at h
+    omega
+  -- Step 5: `T_xM = H`
+  have hLeq : L = H := Submodule.eq_of_le_of_finrank_eq hLH (hLdim.trans hHdim.symm)
+  have hspan : Submodule.span ℝ (tangentSpace M x) = H := by
+    rw [hT, Submodule.span_eq, hLeq]
+  refine ⟨?_, fun w => ?_⟩
+  · rw [hT, hLeq]
+    ext v
+    exact hmemH v
+  -- Step 6: `u = Πw - ⟪ν(x), w⟫ν(x)` lies in `H` and `w - u ⊥ H`
+  · have hPν : inner ℝ (ν x) (A₀.starProjection w) = inner ℝ (ν x) w := by
+      rw [← Submodule.inner_starProjection_left_eq_right A₀,
+        Submodule.starProjection_eq_self_iff.2 hνA]
+    have hνν : inner ℝ (ν x) (ν x) = (1 : ℝ) := by
+      rw [real_inner_self_eq_norm_sq, hν1, one_pow]
+    apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+    · rw [hspan, hmemH]
+      refine ⟨A₀.sub_mem (A₀.starProjection_apply_mem w) (A₀.smul_mem _ hνA), ?_⟩
+      rw [inner_sub_right, real_inner_smul_right, hPν, hνν, mul_one, sub_self]
+    · intro h hh
+      rw [hspan, hmemH] at hh
+      have h1 : inner ℝ (w - A₀.starProjection w) h = 0 :=
+        Submodule.starProjection_inner_eq_zero w h hh.1
+      rw [sub_sub_eq_add_sub, add_sub_right_comm, inner_add_left, h1, real_inner_smul_left, hh.2,
+        mul_zero, zero_add]
 /-- **`Cʳ` inverse function theorem with a `Cʳ` inverse on a neighbourhood** (Simon Ch. 2, 4.4;
 smooth charts of the hypercone plane: `φ` maps an open `V₀ ∋ z₀` `Cʳ`-diffeomorphically onto an
 open `O`).  If `φ : ℝᵈ → ℝᵈ` is `Cʳ` (`r ≥ 1`) on an open `V ∋ z₀` and `Dφ(z₀)` is injective,
