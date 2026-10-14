@@ -566,6 +566,45 @@ theorem Submission.dimred_mbl_dtfrpo_orthonormal_frame_sign : ∀ (P n : ℕ) (�
   · exact Or.inl fun α => by rw [hdet α, hc, mul_one]
   · exact Or.inr fun α => by rw [hdet α, hc, mul_neg_one]
 
+/-- **Orientation of a set lying in a coordinate plane** (Simon Ch. 6, §5, (26)–(27): on a face
+of the lattice the orientation is `±e₁ ∧ ⋯ ∧ eₙ`; Ch. 3, Definition 1.4).  If `a_i = x_i` for
+every `a ∈ A` and every `i ∉ range ι`, and `ξ` is a unit orientation of an approximate tangent
+space `Q` of `A` at `x`, then `ξ = ±e_{ι 0} ∧ ⋯ ∧ e_{ι (n−1)}`.  Every `a − x` lies in
+`V = span {e_{ι j}}`, so `Q ≤ V`; as `dim Q = n = dim V`, `Q = V`.  Then `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` for
+an orthonormal basis `τ` of `V`, and `α(τ) = ±α(e_ι)` with one sign for all `n`-covectors `α`. -/
+theorem Submission.dimred_mbl_dtfr_plane_orientation : ∀ (P n : ℕ) (ι : Fin n → Fin P) (A : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (ξ : MultiVector P n), StrictMono ι → (∀ a ∈ A, ∀ i, (∀ j, ι j ≠ i) → a i = x i) → HasApproximateTangentSpaceAt n A x Q → IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, ξ α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∨ (∀ α : Covector (Euclid P) n, ξ α = -α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) := by
+  intro P n ι A x Q ξ hι hA hQ hξ
+  -- Step 1: the coordinate frame `e j = e_{ι j}` is orthonormal (`ι` is injective)
+  set e : Fin n → Euclid P := fun j => EuclideanSpace.single (ι j) (1 : ℝ)
+  have he : Orthonormal ℝ e :=
+    (EuclideanSpace.orthonormal_single (𝕜 := ℝ) (ι := Fin P)).comp ι hι.injective
+  -- Step 2: `v = ∑ i, v i • e_i` lies in `V = span (range e)` if `v i = 0` for `i ∉ range ι`
+  have hmem : ∀ v : Euclid P, (∀ i, (∀ j, ι j ≠ i) → v i = 0) →
+      v ∈ Submodule.span ℝ (Set.range e) := by
+    intro v hv
+    rw [← (EuclideanSpace.basisFun (Fin P) ℝ).sum_repr v]
+    refine Submodule.sum_mem _ fun i _ => ?_
+    by_cases h : ∃ j, ι j = i
+    · obtain ⟨j, rfl⟩ := h
+      refine Submodule.smul_mem _ _ (Submodule.subset_span ⟨j, ?_⟩)
+      rw [EuclideanSpace.basisFun_apply]
+    · rw [EuclideanSpace.basisFun_repr, hv i (fun j hj => h ⟨j, hj⟩), zero_smul]
+      exact Submodule.zero_mem _
+  -- Step 3: `a − x ∈ V` for `a ∈ A`, so `Q ≤ V`; `dim Q = n = dim V` gives `Q = V`
+  have hAV : ∀ a ∈ A, a - x ∈ Submodule.span ℝ (Set.range e) := fun a ha =>
+    hmem _ fun i hi => by rw [PiLp.sub_apply, hA a ha i hi, sub_self]
+  have hQV := Submission.dimred_mbl_dtfrpo_approxTangent_le_of_sub_mem P n A x Q _ hAV hQ
+  have hQeq : Q = Submodule.span ℝ (Set.range e) := Submodule.eq_of_le_of_finrank_eq hQV (by
+    rw [hQ.1, finrank_span_eq_card he.linearIndependent, Fintype.card_fin])
+  -- Step 4: `ξ = ±τ` for an orthonormal frame `τ` of `Q = V`, and `α(τ) = ±α(e)` uniformly
+  obtain ⟨τ, hτ, hτQ, hσ⟩ := hξ
+  rcases Submission.dimred_mbl_dtfrpo_orthonormal_frame_sign P n τ e hτ he (hτQ.trans hQeq)
+    with hc | hc <;> rcases hσ with hσ | hσ
+  · exact Or.inl fun α => by rw [hσ α, hc α]
+  · exact Or.inr fun α => by rw [hσ α, hc α]
+  · exact Or.inr fun α => by rw [hσ α, hc α]
+  · exact Or.inl fun α => by rw [hσ α, hc α, neg_neg]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
