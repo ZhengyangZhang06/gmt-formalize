@@ -573,6 +573,113 @@ theorem Submission.cbr_ci_pw_interior_product_form : ∀ (d : ℕ) (z : Euclid (
   rw [map_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [map_smul, EuclideanSpace.basisFun_apply, EuclideanSpace.basisFun_repr, smul_eq_mul]
+/-- **Translated test functions** (mollified weights in the closure theorem behind Simon 7.2.4):
+if `φ` is smooth with `tsupport φ ⊆ B_s(0)`, `s < R` and `x ∈ B̄_R(0)`, then `b(y) = φ(x − y)` is
+smooth with compact support in `B_{2R}(0)` and `∫ b = ∫ φ`.  `tsupport φ` is closed in the compact
+`B̄_s(0)`; `y ↦ x − y` is the homeomorphism `Homeomorph.subLeft x`, so `tsupport b` is the preimage
+of `tsupport φ`, on which `‖y‖ ≤ ‖x‖ + ‖x − y‖ < R + s < 2R`; and Lebesgue measure is invariant
+under `y ↦ x − y`. -/
+theorem Submission.cbr_ci_pw_mu_translate_admissible : ∀ (n : ℕ) (R s : ℝ) (φ : Euclid n → ℝ) (x : Euclid n), s < R → ContDiff ℝ (⊤ : ℕ∞) φ → tsupport φ ⊆ ball 0 s → x ∈ closedBall 0 R → ContDiff ℝ (⊤ : ℕ∞) (fun y => φ (x - y)) ∧ HasCompactSupport (fun y => φ (x - y)) ∧ tsupport (fun y => φ (x - y)) ⊆ ball 0 (2 * R) ∧ ∫ y, φ (x - y) = ∫ y, φ y := by
+  intro n R s φ x hsR hφ hsupp hx
+  -- `φ` has compact support: `tsupport φ` is closed in the compact `closedBall 0 s`
+  have hφc : HasCompactSupport φ :=
+    (isCompact_closedBall (0 : Euclid n) s).of_isClosed_subset (isClosed_tsupport φ)
+      (hsupp.trans ball_subset_closedBall)
+  -- `b = φ ∘ e` for the homeomorphism `e = (x - ·)`
+  have hb : (fun y => φ (x - y)) = φ ∘ Homeomorph.subLeft x := rfl
+  refine ⟨hφ.comp (contDiff_const.sub contDiff_id), hb ▸ hφc.comp_homeomorph _, ?_,
+    integral_sub_left_eq_self φ volume x⟩
+  intro y hy
+  have hxy : x - y ∈ tsupport φ := by
+    rw [hb, tsupport_comp_eq_preimage] at hy
+    exact hy
+  have hxy' : ‖x - y‖ < s := mem_ball_zero_iff.mp (hsupp hxy)
+  have hxR : ‖x‖ ≤ R := mem_closedBall_zero_iff.mp hx
+  rw [mem_ball_zero_iff]
+  calc ‖y‖ = ‖x - (x - y)‖ := by rw [sub_sub_cancel]
+    _ ≤ ‖x‖ + ‖x - y‖ := norm_sub_le _ _
+    _ < 2 * R := by linarith
+/-- **Mollification is Lipschitz, with constant `∝ ∫_S |v|`**: for `φ ∈ C^∞_c(ℝⁿ)` there is
+`L ≥ 0` such that, for every `S ⊆ ℝⁿ`, every `v` integrable on `S` and all `x, x'`,
+`|∫_S v(y)φ(x − y) dy − ∫_S v(y)φ(x' − y) dy| ≤ L (∫_S |v|) |x − x'|`.  `φ` is `C¹` with compact
+support, hence `L`-Lipschitz, and bounded, so both integrands are integrable on `S` and the
+difference is `|∫_S v(y)(φ(x − y) − φ(x' − y)) dy| ≤ ∫_S |v(y)| L |x − x'| dy`. -/
+theorem Submission.cbr_ci_pw_mu_conv_lipschitz : ∀ (n : ℕ) (φ : Euclid n → ℝ), ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∃ L : ℝ, 0 ≤ L ∧ ∀ (S : Set (Euclid n)) (v : Euclid n → ℝ), IntegrableOn v S → ∀ x x' : Euclid n, |(∫ y in S, v y * φ (x - y)) - ∫ y in S, v y * φ (x' - y)| ≤ L * (∫ y in S, |v y|) * dist x x' := by
+  intro n φ hφ hφc
+  obtain ⟨C, hC⟩ := hφ.lipschitzWith_of_hasCompactSupport hφc (by simp)
+  obtain ⟨M, hM⟩ := hφ.continuous.bounded_above_of_compact_support hφc
+  refine ⟨C, C.coe_nonneg, fun S v hv x x' => ?_⟩
+  have hint : ∀ z : Euclid n, IntegrableOn (fun y => v y * φ (z - y)) S := fun z =>
+    Integrable.mul_bdd hv
+      (hφ.continuous.comp (continuous_const.sub continuous_id)).aestronglyMeasurable
+      (Eventually.of_forall fun y => hM (z - y))
+  rw [← integral_sub (hint x) (hint x'), ← Real.norm_eq_abs]
+  calc ‖∫ y in S, v y * φ (x - y) - v y * φ (x' - y)‖
+      ≤ ∫ y in S, |v y| * (C * dist x x') := by
+        refine norm_integral_le_of_norm_le (hv.abs.mul_const _) (Eventually.of_forall fun y => ?_)
+        rw [Real.norm_eq_abs, ← mul_sub, abs_mul]
+        gcongr
+        rw [← Real.dist_eq]
+        simpa [dist_sub_right] using hC.dist_le_mul (x - y) (x' - y)
+    _ = C * (∫ y in S, |v y|) * dist x x' := by
+        rw [integral_mul_const]
+        ring
+/-- Pointwise convergence to a constant plus an eventual uniform Lipschitz bound on a compact set
+gives uniform convergence (the ε/3 argument): cover `K` by finitely many `η`-balls centred in `K`,
+with `max L 0 * η < ε / 3`; eventually every centre is `ε / 3`-close to `a`, and each `x ∈ K` lies
+within `η` of a centre. -/
+theorem Submission.cbr_ci_pw_mu_uniform_of_equilipschitz : ∀ (n : ℕ) (K : Set (Euclid n)) (F : ℕ → Euclid n → ℝ) (a L : ℝ), IsCompact K → (∀ x ∈ K, Tendsto (fun k => F k x) atTop (𝓝 a)) → (∀ᶠ k in atTop, ∀ x ∈ K, ∀ x' ∈ K, |F k x - F k x'| ≤ L * dist x x') → TendstoUniformlyOn F (fun _ => a) atTop K := by
+  intro n K F a L hK hpt hL
+  rw [Metric.tendstoUniformlyOn_iff]
+  intro ε hε
+  have hM0 : 0 ≤ max L 0 := le_max_right L 0
+  have hη : 0 < ε / (3 * (max L 0 + 1)) := by positivity
+  have hMη : max L 0 * (ε / (3 * (max L 0 + 1))) < ε / 3 := by
+    rw [mul_div_assoc', div_lt_div_iff₀ (by positivity) (by norm_num)]
+    nlinarith
+  obtain ⟨t, htK, ht, hcover⟩ := hK.finite_cover_balls hη
+  have hnet : ∀ᶠ k in atTop, ∀ z ∈ t, |F k z - a| < ε / 3 :=
+    ht.eventually_all.2 fun z hz => by
+      simpa only [Real.dist_eq] using Metric.tendsto_nhds.1 (hpt z (htK hz)) (ε / 3) (by positivity)
+  filter_upwards [hnet, hL] with k hk hkL x hx
+  obtain ⟨z, hz, hxz⟩ := mem_iUnion₂.1 (hcover hx)
+  have hzx : |F k z - F k x| < ε / 3 :=
+    calc |F k z - F k x| ≤ L * dist z x := hkL z (htK hz) x hx
+      _ ≤ max L 0 * dist z x := mul_le_mul_of_nonneg_right (le_max_left L 0) dist_nonneg
+      _ ≤ max L 0 * (ε / (3 * (max L 0 + 1))) :=
+        mul_le_mul_of_nonneg_left (mem_ball'.1 hxz).le hM0
+      _ < ε / 3 := hMη
+  rw [Real.dist_eq]
+  have htri := abs_sub_le a (F k z) (F k x)
+  rw [abs_sub_comm a (F k z)] at htri
+  linarith [hk z hz]
+
+/-- **Simon 7.2.4**, uniform convergence of mollified weak limits (step 11(a) of the weight
+lower bound `α ≥ 1`): if the `u_k` are eventually `L¹`-bounded by `Λ` on `B_{2R}(0)` and
+`∫_{B_{2R}(0)} u_k b → c ∫ b` for every test function `b` with `spt b ⊆ B_{2R}(0)`, then for a test
+function `φ` with `spt φ ⊆ B_s(0)`, `s < R`, the mollifications
+`w_k(x) = ∫_{B_{2R}(0)} u_k(y) φ(x − y) dy` converge to `c ∫ φ` uniformly on `B̄_R(0)`.  For
+`x ∈ B̄_R(0)` the translate `φ(x − ·)` is such a test function with the same integral
+(`cbr_ci_pw_mu_translate_admissible`), so `w_k(x) → c ∫ φ`; the `w_k` are eventually
+`LΛ`-Lipschitz (`cbr_ci_pw_mu_conv_lipschitz`); and pointwise convergence with an eventual
+uniform Lipschitz bound on the compact `B̄_R(0)` is uniform
+(`cbr_ci_pw_mu_uniform_of_equilipschitz`). -/
+theorem Submission.cbr_ci_pw_mollified_tendstoUniformlyOn : ∀ (n : ℕ) (R s c Λ : ℝ) (φ : Euclid n → ℝ) (u : ℕ → Euclid n → ℝ), 0 < R → 0 < s → s < R → ContDiff ℝ (⊤ : ℕ∞) φ → tsupport φ ⊆ ball 0 s → (∀ k, IntegrableOn (u k) (ball 0 (2 * R))) → (∀ᶠ k in atTop, ∫ y in ball 0 (2 * R), |u k y| ≤ Λ) → (∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ ball 0 (2 * R) → Tendsto (fun k => ∫ y in ball 0 (2 * R), u k y * b y) atTop (𝓝 (c * ∫ y, b y))) → TendstoUniformlyOn (fun k x => ∫ y in ball 0 (2 * R), u k y * φ (x - y)) (fun _ => c * ∫ y, φ y) atTop (closedBall 0 R) := by
+  intro n R s c Λ φ u _ _ hsR hφ hφs hu hΛ hconv
+  have hφc : HasCompactSupport φ :=
+    (isCompact_closedBall (0 : Euclid n) s).of_isClosed_subset (isClosed_tsupport φ)
+      (hφs.trans ball_subset_closedBall)
+  obtain ⟨L, hL, hLip⟩ := Submission.cbr_ci_pw_mu_conv_lipschitz n φ hφ hφc
+  refine Submission.cbr_ci_pw_mu_uniform_of_equilipschitz n (closedBall 0 R)
+    (fun k x => ∫ y in ball 0 (2 * R), u k y * φ (x - y)) (c * ∫ y, φ y) (L * Λ)
+    (isCompact_closedBall 0 R) (fun x hx => ?_) ?_
+  · obtain ⟨hb, hbc, hbs, hbi⟩ :=
+      Submission.cbr_ci_pw_mu_translate_admissible n R s φ x hsR hφ hφs hx
+    have h := hconv (fun y => φ (x - y)) hb hbc hbs
+    rwa [hbi] at h
+  · filter_upwards [hΛ] with k hk x _ x' _
+    exact (hLip (ball 0 (2 * R)) (u k) (hu k) x x').trans
+      (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hk hL) dist_nonneg)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
