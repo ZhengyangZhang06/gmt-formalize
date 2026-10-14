@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b8a9efd4ba196ce8498576102c3853bdaa07d8e36b60f584fc25f94d5205b47a",
+  "git_delta": {
+    "base_commit": "40e72dea701721957afade854dcf54e56d0dd03c",
+    "candidate_commit": "5b5b700631e078033c79a3c6b9556c928ec95840",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_pwl_fderiv_weak_integrable",
+    "diff_sha256": "0193aa208307c67b781909740d5a33565773940d90a7b6191727b11466056787",
+    "source_sha256": "77d3ea61c3ee816c85c865fbc03771f783bb213e22a82d5e365b00136015cbe4",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_pwl_fderiv_weak_integrable",
+      "statement": "∀ (d : ℕ) (K : NNReal) (us : ℕ → Euclid d → ℝ) (u : Euclid d → ℝ) (Φ : Euclid d → Euclid d), (∀ k, LipschitzWith K (us k)) → TendstoUniformly us u atTop → Integrable Φ → Tendsto (fun k => ∫ y, fderiv ℝ (us k) y (Φ y)) atTop (𝓝 (∫ y, fderiv ℝ u y (Φ y)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
