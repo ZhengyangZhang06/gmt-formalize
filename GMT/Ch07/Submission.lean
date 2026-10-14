@@ -647,6 +647,44 @@ theorem Submission.dtc_bc_lc_unitOrientation_comp_eq : ∀ (P n : ℕ) (ξ : Mul
     rw [ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
   rcases hsign with h | h <;> rw [h, h, hτ]
 
+/-- **Simon 7.3.1, footnote 2** (`q_#T = T` for the orthogonal projection `q` onto `V`): if the
+weight `μ_R = θ Hᵐ⌞M` of the triple `R = (M, θ, ξ)` gives no mass to `ℝᴾ \ V`, then
+`τ(M, θ, ξ)(q^#ω) = τ(M, θ, ξ)(ω)` for every `m`-form `ω`.  As `Hᵐ⌞M ≪ μ_R`, `Hᵐ(M \ V) = 0`; so
+`Hᵐ`-a.e. `x ∈ M` lies in `V` and has an approximate tangent plane `Q` oriented by `ξ(x)`.  `V` is
+flat at `x ∈ V` along `V`, so `Q ≤ V`; then `qx = x`, `q` fixes `Q` pointwise, and
+`⟨(q^#ω)(x), ξ(x)⟩ = ⟨ω(x) ∘ Λᵐq, ξ(x)⟩ = ⟨ω(x), ξ(x)⟩`. -/
+theorem Submission.dimred_cs_sp_action_starProjection_eq : ∀ (P m : ℕ) (R : IMRep (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), R.measure ((V : Set (Euclid P))ᶜ) = 0 → ∀ ω : DifferentialForm (Euclid P) m, R.action (affinePullbackForm V.starProjection 0 ω) = R.action ω := by
+  intro P m R V hV ω
+  -- `Hᵐ⌞M ≪ μ_R`, so `Hᵐ⌞M` gives no mass to `Vᶜ`
+  have hV' : (μHE[m].restrict R.carrier) ((V : Set (Euclid P))ᶜ) = 0 :=
+    (Submission.cbr_imRep_measure_basic P m univ R).2.1 hV
+  -- hence `Hᵐ(M \ V) = 0`, and `Hᵐ⌞M`-a.e. `x` lies in `V`
+  have hnull : μHE[m] (R.carrier \ (V : Set (Euclid P))) = 0 := by
+    rwa [Measure.restrict_apply' R.measurableSet_carrier, ← Set.sdiff_eq_compl_inter] at hV'
+  have hVae : ∀ᵐ x ∂(μHE[m].restrict R.carrier), x ∈ (V : Set (Euclid P)) := by
+    rw [ae_iff]
+    exact hV'
+  -- the integrands agree `Hᵐ⌞M`-a.e.
+  unfold IMRep.action
+  refine integral_congr_ae ?_
+  filter_upwards [hVae, R.orients] with x hxV hx
+  obtain ⟨Q, hQ, hξ⟩ := hx
+  -- `Q ≤ V`: `V` is flat at `x ∈ V` along `V` (take `t = z - x`)
+  have hQV : Q ≤ V :=
+    Submission.atsm_approxTangent_le_of_flat P m (V : Set (Euclid P)) R.carrier x Q V hnull
+      (fun ε hε => ⟨1, one_pos, fun z hz _ => ⟨z - x, V.sub_mem hz hxV, by
+        rw [sub_self, norm_zero]
+        positivity⟩⟩) hQ
+  -- `q` fixes `Q` pointwise and fixes `x`
+  have hfix : ∀ v ∈ Q, V.starProjection v = v := fun v hv =>
+    Submodule.starProjection_eq_self_iff.2 (hQV hv)
+  have hxq : V.starProjection x = x := Submodule.starProjection_eq_self_iff.2 hxV
+  -- `(q^#ω)(x) = ω(x) ∘ Λᵐq`, and `Λᵐq` fixes the unit orientation `ξ(x)` of `Q`
+  have key := Submission.dtc_bc_lc_unitOrientation_comp_eq P m (R.orient x) Q V.starProjection
+    hξ hfix (ω x)
+  simp only [affinePullbackForm, zero_add, hxq]
+  rw [key]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
