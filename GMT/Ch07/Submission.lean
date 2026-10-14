@@ -595,6 +595,30 @@ theorem Submission.dtc_bc_tc_cl_sl_slice_sum_mass_bound : (∀ (P k : ℕ) (U : 
   gcongr
   refine hsum.trans_eq ?_
   simp only [Measure.add_apply, mul_add]
+/-- Slices of weakly convergent represented currents converge weakly (Simon 7.2.4, slicing step).
+Given the sublevel-restriction convergence (T2), applying it to `Xⱼ ⇀ X` in degree `d + 1` with
+limit measure `ν` gives `Aⱼ(ω) → A(ω)`, and applying it to `∂Xⱼ ⇀ ∂X` in degree `d` with limit
+measure `ν'` gives `Bⱼ(η) → B(η)`; testing the first on `dη` and subtracting gives
+`(∂Aⱼ − Bⱼ)(η) = Aⱼ(dη) − Bⱼ(η) → A(dη) − B(η) = (∂A − B)(η)`. -/
+theorem Submission.dtc_bc_tc_cl_sl_slices_weakly_converge : (∀ (P k : ℕ) (U : Set (Euclid P)) (Xs : ℕ → GeometricCurrentOn U k) (X : GeometricCurrentOn U k) (μs : ℕ → Measure (Euclid P)) (ξs : ℕ → Euclid P → MultiVector P k) (μX μ : Measure (Euclid P)) (ξX : Euclid P → MultiVector P k) (f : Euclid P → ℝ) (t : ℝ), IsOpen U → Continuous f → WeaklyConvergesOn Xs X → (∀ j, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μs j K < ∞) → (∀ j, AEStronglyMeasurable (ξs j) (μs j)) → (∀ j, ∀ᵐ x ∂(μs j), ∀ α : Covector (Euclid P) k, |ξs j x α| ≤ covectorEuclideanNorm α) → (∀ j, ∀ ω : TestFormOn U k, Xs j ω = ∫ x, ξs j x ((ω : DifferentialForm (Euclid P) k) x) ∂(μs j)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μX K < ∞) → AEStronglyMeasurable ξX μX → (∀ᵐ x ∂μX, ∀ α : Covector (Euclid P) k, |ξX x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U k, X ω = ∫ x, ξX x ((ω : DifferentialForm (Euclid P) k) x) ∂μX) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ μ K) → μ {x | f x = t} = 0 → ∀ ω : TestFormOn U k, Tendsto (fun j => ∫ x in {x | f x < t}, ξs j x ((ω : DifferentialForm (Euclid P) k) x) ∂(μs j)) atTop (𝓝 (∫ x in {x | f x < t}, ξX x ((ω : DifferentialForm (Euclid P) k) x) ∂μX))) → ∀ (P d : ℕ) (U : Set (Euclid P)) (Xs : ℕ → GeometricCurrentOn U (d + 1)) (X : GeometricCurrentOn U (d + 1)) (μs : ℕ → Measure (Euclid P)) (ξs : ℕ → Euclid P → MultiVector P (d + 1)) (μs' : ℕ → Measure (Euclid P)) (ξs' : ℕ → Euclid P → MultiVector P d) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (d + 1)) (μ' : Measure (Euclid P)) (ξ' : Euclid P → MultiVector P d) (ν ν' : Measure (Euclid P)) (f : Euclid P → ℝ) (t : ℝ) (As : ℕ → GeometricCurrentOn U (d + 1)) (Bs : ℕ → GeometricCurrentOn U d) (A : GeometricCurrentOn U (d + 1)) (B : GeometricCurrentOn U d), IsOpen U → Continuous f → WeaklyConvergesOn Xs X → (∀ j, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μs j K < ∞) → (∀ j, AEStronglyMeasurable (ξs j) (μs j)) → (∀ j, ∀ᵐ x ∂(μs j), ∀ α : Covector (Euclid P) (d + 1), |ξs j x α| ≤ covectorEuclideanNorm α) → (∀ j, ∀ ω : TestFormOn U (d + 1), Xs j ω = ∫ x, ξs j x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂(μs j)) → (∀ j, ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μs' j K < ∞) → (∀ j, AEStronglyMeasurable (ξs' j) (μs' j)) → (∀ j, ∀ᵐ x ∂(μs' j), ∀ α : Covector (Euclid P) d, |ξs' j x α| ≤ covectorEuclideanNorm α) → (∀ j, ∀ η : TestFormOn U d, (Xs j).boundary η = ∫ x, ξs' j x ((η : DifferentialForm (Euclid P) d) x) ∂(μs' j)) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (d + 1), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn U (d + 1), X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ' K < ∞) → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) d, |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ η : TestFormOn U d, X.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs j K) atTop ≤ ν K) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ν' K < ∞) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → limsup (fun j => μs' j K) atTop ≤ ν' K) → ν {x | f x = t} = 0 → ν' {x | f x = t} = 0 → (∀ (j : ℕ) (ω : TestFormOn U (d + 1)), As j ω = ∫ x in {x | f x < t}, ξs j x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂(μs j)) → (∀ (j : ℕ) (η : TestFormOn U d), Bs j η = ∫ x in {x | f x < t}, ξs' j x ((η : DifferentialForm (Euclid P) d) x) ∂(μs' j)) → (∀ ω : TestFormOn U (d + 1), A ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (d + 1)) x) ∂μ) → (∀ η : TestFormOn U d, B η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) d) x) ∂μ') → WeaklyConvergesOn (fun j => (As j).boundary - Bs j) (A.boundary - B) := by
+  intro hT2 P d U Xs X μs ξs μs' ξs' μ ξ μ' ξ' ν ν' f t As Bs A B hU hf hX hμs hξs hξsb hXs
+    hμs' hξs' hξs'b hbXs hμ hξ hξb hXrep hμ' hξ' hξ'b hbX hν hνs hν' hν's hνt hν't hAs hBs hA hB
+  -- Step 1: (T2) in degree `d + 1` for `Xⱼ ⇀ X`, representations `(μⱼ, ξⱼ)`, `(μ, ξ)`, limit `ν`.
+  have hslice := hT2 P (d + 1) U Xs X μs ξs μ ν ξ f t hU hf hX hμs hξs hξsb hXs hμ hξ hξb hXrep
+    hν hνs hνt
+  -- Steps 2–3: `∂Xⱼ ⇀ ∂X`; (T2) in degree `d`, representations `(μ'ⱼ, ξ'ⱼ)`, `(μ', ξ')`, limit `ν'`.
+  have hslice' := hT2 P d U (fun j => (Xs j).boundary) X.boundary μs' ξs' μ' ν' ξ' f t hU hf
+    hX.boundary hμs' hξs' hξs'b hbXs hμ' hξ' hξ'b hbX hν' hν's hν't
+  -- Step 4: test `Aⱼ ⇀ A` on `dη`, then subtract `Bⱼ(η) → B(η)`.
+  intro η
+  have hAη : Tendsto (fun j => As j (exteriorDerivativeTestOn U d η)) atTop
+      (𝓝 (A (exteriorDerivativeTestOn U d η))) := by
+    rw [hA]
+    exact (hslice _).congr fun j => (hAs j _).symm
+  have hBη : Tendsto (fun j => Bs j η) atTop (𝓝 (B η)) := by
+    rw [hB]
+    exact (hslice' η).congr fun j => (hBs j η).symm
+  exact hAη.sub hBη
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
