@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1",
+  "depth": 4,
+  "title": "The Euclidean coefficient norm of n-covectors is a continuous seminorm dominated by the operator norm",
+  "statement": "Let P, n ∈ ℕ, let F := Covector (Euclid P) n (continuous alternating n-linear forms on ℝ^P with the operator norm ‖·‖), and let N := covectorEuclideanNorm, i.e. N(α) = (Σ_{I : Fin n → Fin P strictly increasing} α(e_{I(0)}, …, e_{I(n−1)})²)^{1/2} for the standard orthonormal basis (e_j) of ℝ^P. Then (i) N(α + α') ≤ N(α) + N(α') for all α, α' ∈ F; (ii) N(t·α) = |t|·N(α) for all t ∈ ℝ and α ∈ F; (iii) there is a real C ≥ 0 with N(α) ≤ C·‖α‖ for all α ∈ F; and (iv) N : F → ℝ is continuous.",
+  "lean_statement": "∀ (P n : ℕ), (∀ α α' : Covector (Euclid P) n, covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α') ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∃ C : ℝ, 0 ≤ C ∧ ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ C * ‖α‖) ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α)",
+  "lean_name": "rsd_mw_tfa_norm_props",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1-a1"
+}

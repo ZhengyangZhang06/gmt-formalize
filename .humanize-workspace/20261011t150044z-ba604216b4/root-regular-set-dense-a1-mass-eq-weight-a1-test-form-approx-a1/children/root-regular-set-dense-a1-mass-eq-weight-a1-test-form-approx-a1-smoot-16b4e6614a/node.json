@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.smooth_uniform-a1",
+  "parent_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1",
+  "depth": 4,
+  "title": "Uniform C^∞ approximation of a continuous compactly supported unit-bounded covector field, keeping the unit bound",
+  "statement": "Let P, n ∈ ℕ, let g : ℝ^P → Covector (Euclid P) n be continuous with compact support and covectorEuclideanNorm (g x) ≤ 1 for every x, and let δ > 0. Then there is a C^∞ map h : ℝ^P → Covector (Euclid P) n with covectorEuclideanNorm (h x) ≤ 1 and covectorEuclideanNorm (h x − g x) ≤ δ for every x.",
+  "lean_statement": "∀ (P n : ℕ) (g : Euclid P → Covector (Euclid P) n), Continuous g → HasCompactSupport g → (∀ x, covectorEuclideanNorm (g x) ≤ 1) → ∀ δ : ℝ, 0 < δ → ∃ h : Euclid P → Covector (Euclid P) n, ContDiff ℝ (⊤ : ℕ∞) h ∧ (∀ x, covectorEuclideanNorm (h x) ≤ 1) ∧ ∀ x, covectorEuclideanNorm (h x - g x) ≤ δ",
+  "lean_name": "rsd_mw_tfa_smooth_uniform_approx",
+  "depends_on": [
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-smoot-16b4e6614a-a1"
+}
