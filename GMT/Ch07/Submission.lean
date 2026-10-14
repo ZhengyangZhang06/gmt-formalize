@@ -1474,6 +1474,86 @@ theorem Submission.cmcdt_lpo_smooth_homotopy_estimate : (∀ (P n : ℕ) (U : Se
         add_le_add hη hθ
       _ = δ * (Λ ^ (k + 1) * X.mass.toReal * b + Λ ^ k * X.boundary.mass.toReal * a) := by ring
 
+/-- Simon 6.2.29, existence of the limit: for `X ∈ 𝒟ₖ(ℝᴺ)` with `spt X` compact and
+`M(X), M(∂X) < ∞`, a Lipschitz `F : ℝᴺ → ℝᴺ'` and `ω ∈ 𝒟ᵏ(ℝᴺ')`, the evaluations `X(Fⱼ^#ω)`
+converge to one limit `L` for every sequence of `C^∞` maps `Fⱼ → F` (uniformly on `spt X`, with
+`|DFⱼ|` bounded there).  By the homotopy estimate 2.27, the evaluations on the mollified
+approximants `Gᵢ` are Cauchy; comparing any admissible `Fⱼ` with `Gᵢ` gives the same limit. -/
+theorem Submission.cmcdt_lpo_pf_pointwise_limit : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ((∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (α : Covector (Euclid N) k) (τ : Fin k → Euclid N), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α) → ∀ (N N' k : ℕ) (Λ : NNReal) (F : Euclid N → Euclid N') (X : GeometricCurrentOn (univ : Set (Euclid N)) k) (ω : TestFormOn (univ : Set (Euclid N')) k), LipschitzWith Λ F → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → ∃ L : ℝ, ∀ (Λ' : ℝ) (Fs : ℕ → Euclid N → Euclid N') (ηs : ℕ → TestFormOn (univ : Set (Euclid N)) k), (∀ j, ContDiff ℝ (⊤ : ℕ∞) (Fs j)) → (∀ j, ∀ x ∈ X.support, ‖fderiv ℝ (Fs j) x‖ ≤ Λ') → TendstoUniformlyOn Fs F atTop X.support → (∀ j, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W, (ηs j : DifferentialForm (Euclid N) k) x = ((ω : DifferentialForm (Euclid N') k) (Fs j x)).compContinuousLinearMap (fderiv ℝ (Fs j) x)) → Tendsto (fun j => X (ηs j)) atTop (𝓝 L) := by
+  intro hVO hREP hLB N N' k Λ F X ω hF hX1 hX2 hX3
+  have hE := Submission.cmcdt_lpo_smooth_homotopy_estimate hVO hREP hLB
+  -- step 1: bounds `a`, `b` for `|ω|`, `|dω|`; step 2: mollified `Gᵢ` and `θᵢ = Gᵢ^#ω` near `spt X`
+  obtain ⟨⟨a, ha⟩, ⟨b, hb⟩⟩ := Submission.cmcdt_lpo_pf_form_bounds N' k ω
+  obtain ⟨G, hG, -, hDG, hdistG, -, hηG⟩ :=
+    Submission.cmcdt_lpo_pf_approx_data N N' Λ F X.support hF hX1
+  obtain ⟨θ, hθs⟩ := hηG k ω
+  have hθ : ∀ i, ∃ W : Set (Euclid N), IsOpen W ∧ X.support ⊆ W ∧ ∀ x ∈ W,
+      (θ i : DifferentialForm (Euclid N) k) x =
+        ((ω : DifferentialForm (Euclid N') k) (G i x)).compContinuousLinearMap
+          (fderiv ℝ (G i) x) := fun i => by
+    obtain ⟨W, hW, hKW, h1, -⟩ := hθs i
+    exact ⟨W, hW, hKW, h1⟩
+  let Cf : ℝ → ℝ := fun μ =>
+    μ ^ k * X.mass.toReal * b + μ ^ (k - 1) * (boundaryMassOn X univ).toReal * a
+  have ha0 : 0 ≤ a := (covectorEuclideanNorm_nonneg _).trans (ha 0)
+  have hb0 : 0 ≤ b := (covectorEuclideanNorm_nonneg _).trans (hb 0)
+  have hC0 : ∀ μ : ℝ, 0 ≤ μ → 0 ≤ Cf μ := fun μ hμ => by
+    simp only [Cf]
+    positivity
+  have hΛ0 : (0 : ℝ) ≤ Λ := Λ.2
+  have hrate : Tendsto (fun i : ℕ => (Λ : ℝ) / ((i : ℝ) + 1)) atTop (𝓝 0) := by
+    have := (tendsto_one_div_add_atTop_nhds_zero_nat).const_mul (Λ : ℝ)
+    rw [mul_zero] at this
+    exact this.congr (fun j => mul_one_div _ _)
+  -- step 3: the homotopy estimate makes `X(θᵢ)` Cauchy; `L` is its limit
+  have hcauchy : CauchySeq (fun i => X (θ i)) := by
+    refine cauchySeq_of_le_tendsto_0 (fun n : ℕ => 2 * ((Λ : ℝ) / ((n : ℝ) + 1)) * Cf Λ) ?_ ?_
+    · intro n m M hn hm
+      rw [Real.dist_eq, abs_sub_comm]
+      have hest := hE N N' k Λ ((Λ : ℝ) / ((n : ℝ) + 1) + (Λ : ℝ) / ((m : ℝ) + 1)) a b (G n) (G m)
+        X ω (θ n) (θ m) (hG n) (hG m) hX1 hX2 hX3 (fun x _ => ⟨hDG n x, hDG m x⟩)
+        (fun x _ => (dist_triangle _ (F x) _).trans
+          (add_le_add (hdistG n x) (by rw [dist_comm]; exact hdistG m x))) ha hb (hθ n) (hθ m)
+      refine hest.trans (mul_le_mul_of_nonneg_right ?_ (hC0 _ hΛ0))
+      have h1 : (Λ : ℝ) / ((n : ℝ) + 1) ≤ (Λ : ℝ) / ((M : ℝ) + 1) :=
+        div_le_div_of_nonneg_left hΛ0 (by positivity) (by exact_mod_cast Nat.add_le_add_right hn 1)
+      have h2 : (Λ : ℝ) / ((m : ℝ) + 1) ≤ (Λ : ℝ) / ((M : ℝ) + 1) :=
+        div_le_div_of_nonneg_left hΛ0 (by positivity) (by exact_mod_cast Nat.add_le_add_right hm 1)
+      linarith
+    · have := (hrate.const_mul 2).mul_const (Cf Λ)
+      simpa using this
+  obtain ⟨L, hL⟩ := cauchySeq_tendsto_of_complete hcauchy
+  -- step 4: any admissible `Fⱼ`, `ηⱼ` give `|X(ηⱼ) − L| ≤ ε'·C(Λ'') < ε` for large `j`
+  refine ⟨L, fun Λ' Fs ηs hFs hD hU hη => ?_⟩
+  set Λ'' : ℝ := max (Λ : ℝ) Λ'
+  have hΛ'' : 0 ≤ Λ'' := le_trans hΛ0 (le_max_left _ _)
+  have hC'' := hC0 Λ'' hΛ''
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  set ε' : ℝ := ε / (Cf Λ'' + 1) with hε'eq
+  have hε'pos : 0 < ε' := div_pos hε (by linarith)
+  rw [Metric.tendstoUniformlyOn_iff] at hU
+  obtain ⟨j₀, hj₀⟩ := eventually_atTop.1 (hU ε' hε'pos)
+  refine ⟨j₀, fun j hj => ?_⟩
+  have hbound : ∀ i : ℕ, |X (ηs j) - X (θ i)| ≤ ((Λ : ℝ) / ((i : ℝ) + 1) + ε') * Cf Λ'' := by
+    intro i
+    exact hE N N' k Λ'' _ a b (G i) (Fs j) X ω (θ i) (ηs j) (hG i) (hFs j) hX1 hX2 hX3
+      (fun x hx => ⟨(hDG i x).trans (le_max_left _ _), (hD j x hx).trans (le_max_right _ _)⟩)
+      (fun x hx => (dist_triangle _ (F x) _).trans (add_le_add (hdistG i x) (hj₀ j hj x hx).le))
+      ha hb (hθ i) (hη j)
+  have hlim : |X (ηs j) - L| ≤ ε' * Cf Λ'' := by
+    have h1 : Tendsto (fun i => |X (ηs j) - X (θ i)|) atTop (𝓝 |X (ηs j) - L|) :=
+      (tendsto_const_nhds.sub hL).abs
+    have h2 : Tendsto (fun i : ℕ => ((Λ : ℝ) / ((i : ℝ) + 1) + ε') * Cf Λ'') atTop
+        (𝓝 ((0 + ε') * Cf Λ'')) := (hrate.add_const ε').mul_const _
+    rw [zero_add] at h2
+    exact le_of_tendsto_of_tendsto' h1 h2 hbound
+  rw [Real.dist_eq]
+  calc |X (ηs j) - L| ≤ ε' * Cf Λ'' := hlim
+    _ < ε := by
+      rw [hε'eq, div_mul_eq_mul_div, div_lt_iff₀ (by linarith)]
+      nlinarith
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
