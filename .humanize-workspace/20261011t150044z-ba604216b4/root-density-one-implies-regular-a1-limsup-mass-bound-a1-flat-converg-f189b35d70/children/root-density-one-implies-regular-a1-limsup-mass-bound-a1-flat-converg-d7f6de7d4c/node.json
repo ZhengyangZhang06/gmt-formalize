@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.piola_identity-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1",
+  "depth": 6,
+  "title": "Piola identity: the cofactor rows of a C² map are divergence free",
+  "statement": "Let k, r ∈ ℕ, g_0, …, g_{r−1} : ℝᵏ → ℝ of class C² (ℝᵏ = Euclid k), V_0, …, V_r ∈ ℝᵏ and x ∈ ℝᵏ. For b ∈ {0, …, r} let M_b(y) := det(Dg_c(y)V_{s_b(b')})_{c,b' ∈ Fin r}, where s_b := Fin.succAbove b : Fin r → Fin (r+1) enumerates {0, …, r} ∖ {b} increasingly and D = fderiv ℝ. Then Σ_{b=0}^{r} (−1)^b·DM_b(x)V_b = 0.",
+  "lean_statement": "∀ (k r : ℕ) (g : Fin r → Euclid k → ℝ) (V : Fin (r + 1) → Euclid k) (x : Euclid k), (∀ c, ContDiff ℝ 2 (g c)) → ∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * fderiv ℝ (fun y => Matrix.det (Matrix.of fun (c b' : Fin r) => fderiv ℝ (g c) y (V (b.succAbove b')))) x (V b) = 0",
+  "lean_name": "dor_lmb_fcd_jwc_piola_identity",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1.det_covector_exists-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.coordinate_covectors-a1.det_covector_exists-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-coo-498906c61d-a1",
+      "result_commit": "fee01ff86c9de6b32f7cfc6b3f5088750ef5af7e",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-d7f6de7d4c-a1"
+}

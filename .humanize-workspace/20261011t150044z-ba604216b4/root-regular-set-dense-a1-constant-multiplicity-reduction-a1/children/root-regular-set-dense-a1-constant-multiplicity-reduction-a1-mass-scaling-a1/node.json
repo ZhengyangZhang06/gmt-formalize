@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.mass_scaling-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1",
+  "depth": 3,
+  "title": "Mass of a restricted and positively scaled current",
+  "statement": "Let P, n ∈ ℕ and V ⊆ U ⊆ ℝ^P. Let T ∈ 𝒟_n(U) and T₀ ∈ 𝒟_n(V) (GeometricCurrentOn), and let c ≥ 0 be a real number such that T(ι ω) = c·T₀(ω) for every ω ∈ 𝒟^n(V), where ι = testFormOnInclusion regards a test form with topological support in V as a test form in U (same underlying differential form). Then for every W ⊆ V, M_W(T) = c·M_W(T₀) in [0, ∞], i.e. T.massOn W = ENNReal.ofReal c * T₀.massOn W. Here M_W(S) (massOn) is the supremum in [0, ∞] of ofReal(S(ω)) over the admissible forms massAdmissibleOn D n W of the domain D of S: test forms ω ∈ 𝒟^n(D) with tsupport ω ⊆ W and Euclidean coefficient norm of ω(x) at most 1 for every x.",
+  "lean_statement": "∀ (P n : ℕ) (U V : Set (Euclid P)) (hVU : V ⊆ U) (T : GeometricCurrentOn U n) (T₀ : GeometricCurrentOn V n) (c : ℝ), 0 ≤ c → (∀ ω : TestFormOn V n, T (testFormOnInclusion hVU n ω) = c * T₀ ω) → ∀ W : Set (Euclid P), W ⊆ V → T.massOn W = ENNReal.ofReal c * T₀.massOn W",
+  "lean_name": "rsd_cmr_massOn_eq_ofReal_mul",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-mass-scaling-a1-a1"
+}

@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n --glob '*.lean' 'cmcdt_lpi_pc' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "sed -n '226,290p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "sed -n '804,875p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "python3 /tmp/piece-current-independent-audit/run_check.py"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-743d1fb29a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-743d1fb29a/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-0e9a4f203404/_recursive_lean/inherited.py",
+        "/tmp/pcsplit/lean/Full.lean",
+        "/tmp/piece-current-independent-audit/VerifiedTypes.lean",
+        "/tmp/piece-current-independent-audit/VerifiedTypes.log"
+      ],
+      "conclusion": "The split appropriately separates the selected theorem's analytic and geometric obligations. Snapshot definitions match the workspace byte-for-byte; no proposed name occurs in the snapshot, DAG, or another active decomposition. Sibling and inherited dependencies are correctly directed and acyclic. The four accepted inherited contracts match their accepted records and passed comparators permitting only standard axioms; span_orientation remains an explicit pending prerequisite. Independently compiled the author's proofs after removing all placeholder declarations: the first three children hold outright, the remaining three follow from exactly their specified prerequisites, and the assembly proves the exact selected parent type from the children. All seven frozen-type checks passed, with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "regular_reduction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type exactly matches the stated hypotheses and conclusions. The proof establishes Borel regularity, measurable evaluation, integrable domination, and vanishing outside the regular set using Rademacher and alternation. It is complete and non-circular."
+    },
+    {
+      "key": "bilip_partition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated partition and lower Lipschitz bound. The pinned partition theorem supplies derivative-valued approximating maps when B is nonempty; positive coercivity constants give the required inequality. Empty pieces and zero-dimensional domains are covered."
+    },
+    {
+      "key": "measurable_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All continuity, measurability and injectivity hypotheses are explicit. Lusin–Souslin gives Borel images of Borel subsets, and extending the unique inverse by zero yields the claimed globally measurable map. The exact type is independent of its implementation."
+    },
+    {
+      "key": "piece_multiplicity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The real-valued, integer-valued density matches the prose exactly. The measurable inverse constructs it; the inherited Gram bound and area formula prove its integral estimate. Nonvanishing of the integer weight correctly supplies finite image measure. Dependencies are sufficient and non-circular."
+    },
+    {
+      "key": "piece_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite coordinate expansion proves strong measurability without an unavailable second-countability instance. Positive Jacobian and span_orientation give the pointwise orientation identity. A measurable exceptional set null under volume restricted to B has Hausdorff-null image by the area formula, proving the exact a.e. conclusion. The Gram matrix uses Matrix.of correctly."
+    },
+    {
+      "key": "single_piece_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both antecedents exactly match the required parent conjuncts. The sibling results satisfy every integer-density representation hypothesis; IMC(b) produces the current, the Bochner area formula gives its action, and L3 bounds its mass. Summing these currents using regular_reduction, bilip_partition and IMSc proves the selected parent contract unchanged."
+    }
+  ],
+  "required_changes": []
+}

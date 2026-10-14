@@ -1,0 +1,88 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1.face_union_local_plane-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1 and 4(ii) of the parent proof: the open faces F̆_p are pairwise disjoint, and C ∩ B(x, δ) = Π_p ∩ B(x, δ). The separation and isometry facts come from the antecedent (FG), which is verbatim the frozen type of Submission.cmcdtfr_face_geometry (a resolved dependency of the parent). The parent discharges (FG) with that declaration.
+
+Notation. For p = (ι, b): Φ_p(y) := WithLp.toLp 2 b + Σ_j y_j • e_{ι(j)} for y ∈ ℝ^k = Euclid k, with e_i := EuclideanSpace.single i 1. Also Q₁ := {y : 0 < y_i < 1 ∀ i}, F̆_p := Φ_p(Q₁), C := ⋃_{q∈S} F̆_q and V_p := span_ℝ{e_{ι(j)} : j ∈ Fin k}. Every p ∈ S has a strictly increasing first component.
+
+0. Facts from (FG), applied at (P, k). For pairs p, q whose first components are strictly increasing:
+ (iso) dist(Φ_p y, Φ_p y') = dist(y, y') for all y, y' ∈ ℝ^k;
+ (sep) if p ≠ q, y ∈ Q₁ and y' ∈ [0,1]^k, then 1 ≤ dist(Φ_p y, Φ_q y'), or min(y_j, 1 − y_j) ≤ dist(Φ_p y, Φ_q y') for some j.
+1. Part (a), disjointness. Let p ≠ q in S, and suppose w ∈ F̆_p ∩ F̆_q, say w = Φ_p(t) = Φ_q(t') with t, t' ∈ Q₁. Since Q₁ ⊆ [0,1]^k, (sep) applies to (p, q, t, t'). But dist(Φ_p t, Φ_q t') = dist(w, w) = 0. The first alternative gives 1 ≤ 0, which is false. The second gives min(t_j, 1 − t_j) ≤ 0 for some j, which is false because 0 < t_j < 1. So F̆_p ∩ F̆_q = ∅.
+2. Part (b), choice of δ. Fix p = (ι, b) ∈ S and t ∈ Q₁, and let x := Φ_p(t). Let D be the finite set {1} ∪ {min(t_j, 1 − t_j) : j ∈ Fin k}; it is nonempty because it contains 1. Put δ := min D. Every element of D is positive, so δ > 0. Also δ ≤ 1, and δ ≤ min(t_j, 1 − t_j) for each j. (For k = 0, D = {1} and δ = 1.)
+ Now let z ∈ ℝ^P with dist(z, x) < δ. We show z ∈ C ⟺ z − x ∈ V_p.
+3. (⇒) Suppose z ∈ C, so z = Φ_q(t') for some q ∈ S and t' ∈ Q₁.
+ - If q ≠ p, apply (sep) to (p, q, t, t') (t' ∈ Q₁ ⊆ [0,1]^k). It gives 1 ≤ dist(x, z), or min(t_j, 1 − t_j) ≤ dist(x, z) for some j. But dist(x, z) = dist(z, x) < δ, with δ ≤ 1 and δ ≤ min(t_j, 1 − t_j). Both alternatives are impossible.
+ - Hence q = p, and z − x = Φ_p(t') − Φ_p(t) = Σ_j (t'_j − t_j) e_{ι(j)}, because the constant toLp(b) cancels. This is a linear combination of the e_{ι(j)}, so z − x ∈ V_p.
+4. (⇐) Suppose z − x ∈ V_p.
+ - V_p is spanned by the finite family (e_{ι(j)})_{j ∈ Fin k}, so there is c : Fin k → ℝ with Σ_j c_j e_{ι(j)} = z − x (Submodule.mem_span_range_iff_exists_fun).
+ - Let t' := t + toLp(c) ∈ ℝ^k, so t'_j = t_j + c_j. Then Φ_p(t') = toLp(b) + Σ_j t_j e_{ι(j)} + Σ_j c_j e_{ι(j)} = x + (z − x) = z.
+ - By (iso), dist(z, x) = dist(Φ_p t', Φ_p t) = dist(t', t) = ‖toLp(c)‖. A coordinate is bounded by the Euclidean norm (PiLp.norm_apply_le), so |c_j| ≤ ‖toLp(c)‖ < δ ≤ min(t_j, 1 − t_j) for each j.
+ - Hence t'_j = t_j + c_j > t_j − min(t_j, 1 − t_j) ≥ 0, and t'_j < t_j + min(t_j, 1 − t_j) ≤ 1. So t' ∈ Q₁ and z = Φ_p(t') ∈ F̆_p. Since p ∈ S, z ∈ C.
+5. Steps 3 and 4 prove the equivalence for every z with dist(z, x) < δ. This completes part (b). ∎
+
+Lean note (checked): a Lean proof of exactly this statement compiles in the comparator scope with only standard axioms. The membership hypotheses arrive beta-unreduced (e.g. (fun y => …) t' = (fun y => …) t), so use beta_reduce before rewriting. Take δ := (insert 1 (Finset.univ.image fun j => min (t j) (1 - t j))).min' _ (Finset.lt_min'_iff, Finset.min'_le).
+
+## Key steps
+
+1. From (FG): each face map is an isometry, and an open face is separated from every other closed face (distance ≥ 1 or ≥ min(t_j, 1 − t_j)).
+2. Disjointness: a common point would have distance 0 from itself, which contradicts separation.
+3. δ := min({1} ∪ {min(t_j, 1 − t_j)}) > 0.
+4. ⇒: a nearby point of another face contradicts separation, so z lies on the same face and z − x = Σ (t'_j − t_j) e_{ι(j)} ∈ V_p.
+5. ⇐: write z − x = Σ c_j e_{ι(j)}. By the isometry, |c_j| ≤ |z − x| < δ, so t + c ∈ (0,1)^k and z = Φ_p(t + c) ∈ C.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d); cmp project/GMT/Ch07/Contract.lean against the workspace Contract.lean (identical) and the workspace Contract.lean against Submission.lean (identical)`
+- `rg -n 'theorem (Isometry\.euclideanHausdorffMeasure_image|Isometry\.map_euclideanHausdorffMeasure|EuclideanSpace\.euclideanHausdorffMeasure_eq_volume)|theorem isClosedEmbedding|Topology\.IsClosedEmbedding\.measurableEmbedding|theorem restrict_map \(μ|MeasurableEmbedding\.integral_map|setIntegral_eq_integral_of_forall_compl_eq_zero|theorem restrict_restrict \(hs|integral_biUnion_finset|lintegral_biUnion_finset|Submodule\.mem_span_range_iff_exists_fun|finrank_span_eq_card|theorem le_opNorm \(f : E \[⋀|Continuous\.integrable_of_hasCompactSupport|protected theorem ite|ae_restrict_of_forall_mem|Orthonormal\.comp|theorem norm_apply_le|basisFun_apply' mathlib/Mathlib -g '*.lean'`
+- `rg -n 'IMRep|hasApproximateTangentSpaceAt|cmcdtfr|polyhedral|IsLatticeChain' project/GMT -g '*.lean'`
+- `rg -n 'cmcdtfrpi_|isometry_image_integral|local_plane_tangent|coord_plane_orientation|face_union_local_plane|finite_piece_imrep' project mathlib/Mathlib lake-packages-25730c7c/simongmt -g '*.lean' (no match)`
+- `python3 scan of dag.json: lean_name collisions with prefix cmcdtfrpi_ (none among 1619 nodes); identical or overlapping lean_statements (none; only dor_lmb_fc_dtop_isometric_pushforward_im mentions Isometry, a different statement)`
+- `grep in lake-packages-25730c7c/simongmt Poincare/SimonGMT/Chapter03/Rectifiable.lean (CountablyRectifiable, countablyRectifiable_range, countablyRectifiable_iUnion, blowUpMap, HasApproximateTangentSpaceAt, hasApproximateTangentSpaceAt_submodule) and Chapter06/{Forms,Currents,Mass}.lean (DifferentialForm, IsTestForm, TestFormOn, GeometricCurrentOn.ext, zero_apply, massOn, mass)`
+- `python3 verifier/gmt-compare.py contract_scope(Contract.lean, 'GMT.Ch07.main_theorem') -> replayed scope used for all Lean checks`
+- `lake env lean /tmp/pimdecomp/lean/Types.lean (five child types elaborate); lake env lean /tmp/pimdecomp/lean/Assembly.lean (PIM.assembly: child types + frozen cmcdtfr_face_geometry type imply the selected frozen type; axioms propext, Classical.choice, Quot.sound)`
+- `lake env lean /tmp/pimdecomp/lean/Small.lean and /tmp/pimdecomp/lean/Big.lean (all five children proved against their exact strings; standard axioms; instance checks); lake env lean /tmp/pimdecomp/lean/Inst*.lean (ContinuousAdd (MultiVector P k) fails to synthesize; the StronglyMeasurable.ite list fold works)`
+- `lake env lean /tmp/pimdecomp/lean/Final.lean (regenerated from the final JSON strings: five child proofs, FINAL.assembly, and FINAL.parent_from_children (frozen face_geometry type ⊢ selected frozen type); no sorry; only propext, Classical.choice, Quot.sound)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Finsupp/LinearCombination.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-9de237faed/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-297ffaa421/decomposition-v1.json`
+- `/tmp/pimdecomp/lean/Types.lean`
+- `/tmp/pimdecomp/lean/Assembly.lean`
+- `/tmp/pimdecomp/lean/Small.lean`
+- `/tmp/pimdecomp/lean/Big.lean`
+- `/tmp/pimdecomp/lean/Final.lean`
+
+The snapshot (project b4d606d, Mathlib 25730c7c) has the same Ch07 contract as the workspace, and Submission.lean equals the contract. Its project tree has no reusable proofs: Ch06/Contract.lean only defines lattice chains (IsLatticeChain, main_theorem := by sorry), and Ch07 only defines IMRep. Mathlib supplies every tool used by the children: isometry invariance of μHE and μHE = volume on Euclid d (Geometry/Euclidean/Volume/Measure.lean); Isometry.isClosedEmbedding; IsClosedEmbedding.measurableEmbedding; MeasurableEmbedding.restrict_map and integral_map; restrict_restrict; setIntegral_eq_integral_of_forall_compl_eq_zero; integral_biUnion_finset; lintegral_biUnion_finset; Submodule.mem_span_range_iff_exists_fun; finrank_span_eq_card; ContinuousAlternatingMap.le_opNorm; Orthonormal.comp; EuclideanSpace.basisFun_apply; PiLp.norm_apply_le; Continuous.integrable_of_hasCompactSupport; StronglyMeasurable.ite; ae_restrict_of_forall_mem. SimonGMT Chapter03/Rectifiable.lean supplies CountablyRectifiable, blowUpMap, HasApproximateTangentSpaceAt and the flat model hasApproximateTangentSpaceAt_submodule, which local_plane_tangent localizes. Mathlib has no polyhedral-chain or IMRep material, and no declaration or DAG node uses the prefix cmcdtfrpi_. Lean checks in the replayed comparator scope: all five child types elaborate; the assembly derives the selected frozen type from them and the frozen cmcdtfr_face_geometry type; all five children were proved against their exact strings; Final.lean re-checks everything from the final JSON strings. Every check uses only propext, Classical.choice and Quot.sound. Instance finding: ContinuousAdd (MultiVector P k) fails to synthesize, so finite_piece_imrep's orientation is a list fold, not a Finset sum.
