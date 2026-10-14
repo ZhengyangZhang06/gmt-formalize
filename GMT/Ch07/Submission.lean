@@ -1305,6 +1305,69 @@ theorem Submission.dor_lmbsf_pwl_chart_pairing_transfer : ∀ (P d : ℕ) (V C Y
     smul_eq_mul]
   ring
 
+/-- **Weak limit of the cut-off gradients on one chart piece.**  Let
+`γ(s) = min 1 (max 0 ((b - s) / (b - a)))`, with `γ'(s) = -(b - a)⁻¹` for `a < s < b` and
+`γ'(s) = 0` otherwise.  Localize `h_k ∘ ψ` and `γ ∘ f ∘ ψ` near `C` to uniformly Lipschitz
+`u_k → u` on `ℝⁿ⁺¹`, and use the area formula to write the pairings over `ψ(Y)` as `∫ α[Φ]`, for
+one integrable chart field `Φ` vanishing off `Y`.  By the chain rule `Dh_k(ψ y) ∘ Dψ(y) = Du_k(y)`
+on `Y`, so the left side is `∫ Du_k[Φ]`.  Since `⟨G(ψ y), Dψ(y)·⟩ = DF(y)` and `f ∘ ψ = F` on
+`Y`, the right side is `∫ γ'(F) DF[Φ]`.  This is `∫ Du[Φ]`, as `Du = γ'(F) DF` a.e. on `Y` and
+`Φ = 0` off `Y`.  Finally `∫ Du_k[Φ] → ∫ Du[Φ]` by weak-* convergence of the derivatives. -/
+theorem Submission.dor_lmbsf_piece_weak_limit : ∀ (P n : ℕ) (V C Y : Set (Euclid (n + 1))) (ψ : Euclid (n + 1) → Euclid P) (F : Euclid (n + 1) → ℝ) (f : Euclid P → ℝ) (G : Euclid P → Euclid P) (L : NNReal) (a b c c' : ℝ) (hs : ℕ → Euclid P → ℝ) (w : Euclid P → ℝ) (W : Euclid P → Euclid P), IsOpen V → ContDiffOn ℝ 1 ψ V → InjOn ψ V → (∀ y ∈ V, Injective (fderiv ℝ ψ y)) → IsCompact C → C ⊆ V → MeasurableSet Y → Y ⊆ C → ContDiff ℝ 1 F → (∀ y ∈ Y, f (ψ y) = F y) → (∀ y ∈ Y, G (ψ y) ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P) ∧ ∀ e : Euclid (n + 1), inner ℝ (G (ψ y)) (fderiv ℝ ψ y e) = fderiv ℝ F y e) → Measurable G → LipschitzWith L f → a < b → (∀ k, ContDiff ℝ 1 (hs k)) → (∀ k x, ‖fderiv ℝ (hs k) x‖ ≤ c) → TendstoUniformly hs (fun x => min 1 (max 0 ((b - f x) / (b - a)))) atTop → IntegrableOn w (ψ '' Y) μHE[n + 1] → Measurable W → (∀ x, ‖W x‖ ≤ c') → (∀ᵐ x ∂(μHE[n + 1].restrict (ψ '' Y)), ∀ y ∈ Y, ψ y = x → W x ∈ LinearMap.range (fderiv ℝ ψ y : Euclid (n + 1) →ₗ[ℝ] Euclid P)) → Tendsto (fun k => ∫ x in ψ '' Y, w x * fderiv ℝ (hs k) x (W x) ∂μHE[n + 1]) atTop (𝓝 (∫ x in ψ '' Y ∩ {x | a < f x ∧ f x < b}, w x * (-(b - a)⁻¹ * inner ℝ (G x) (W x)) ∂μHE[n + 1])) := by
+  intro P n V C Y ψ F f G L a b c c' hs w W hV hψ hψi hDψ hC hCV hY hYC hF hfF hGF _ hf hab hhs
+    hhs' hU hw hW hW' hWt
+  -- globally `K`-Lipschitz `u_k → u` with `u_k = h_k ∘ ψ` and `u = γ ∘ f ∘ ψ` on an open `O ⊇ C`
+  obtain ⟨O, K, us, u, hO, hCO, hus, hu, hUu, husO, huO⟩ :=
+    Submission.dor_lmbsf_pwl_chart_cutoff_localize P (n + 1) V C ψ hs
+      (fun x => min 1 (max 0 ((b - f x) / (b - a)))) c hV hψ hC hCV hhs hhs' hU
+  -- one integrable chart field `Φ`, vanishing off `Y`, with `∫_{ψ(Y)} w β[W] = ∫ α[Φ]` whenever
+  -- `β(ψ y) ∘ Dψ(y) = α(y)` on `Y`
+  obtain ⟨Φ, hΦ, hΦY, hΦpair⟩ :=
+    Submission.dor_lmbsf_pwl_chart_pairing_transfer P (n + 1) V C Y ψ w W c' hV hψ hψi hDψ hC
+      hCV hY hYC hw hW hW' hWt
+  -- left side: `u_k = h_k ∘ ψ` near `y ∈ Y`, so `Dh_k(ψ y) ∘ Dψ(y) = Du_k(y)`
+  have hlhs : ∀ k, ∫ x in ψ '' Y, w x * fderiv ℝ (hs k) x (W x) ∂μHE[n + 1]
+      = ∫ y, fderiv ℝ (us k) y (Φ y) := by
+    intro k
+    refine hΦpair (fderiv ℝ (hs k)) (fderiv ℝ (us k)) fun y hy => ?_
+    have hloc : us k =ᶠ[𝓝 y] hs k ∘ ψ :=
+      eventually_of_mem (hO.mem_nhds (hCO (hYC hy))) fun z hz => husO k z hz
+    have hψy : DifferentiableAt ℝ ψ y :=
+      (hψ.contDiffAt (hV.mem_nhds (hCV (hYC hy)))).differentiableAt one_ne_zero
+    rw [hloc.fderiv_eq, fderiv_comp y ((hhs k).differentiable one_ne_zero (ψ y)) hψy]
+  -- right side: `γ'(f) ⟨G, ·⟩` pulls back along `ψ` to `γ'(F) DF` on `Y`
+  have hS : MeasurableSet {x : Euclid P | a < f x ∧ f x < b} :=
+    hf.continuous.measurable (measurableSet_Ioo (a := a) (b := b))
+  have hrhs : ∫ x in ψ '' Y ∩ {x | a < f x ∧ f x < b},
+        w x * (-(b - a)⁻¹ * inner ℝ (G x) (W x)) ∂μHE[n + 1]
+      = ∫ y, ((if a < F y ∧ F y < b then -(b - a)⁻¹ else 0) • fderiv ℝ F y) (Φ y) := by
+    rw [← setIntegral_indicator hS]
+    refine (integral_congr_ae (ae_of_all _ fun x => ?_)).trans
+      (hΦpair (fun x => (if a < f x ∧ f x < b then -(b - a)⁻¹ else 0) • innerSL ℝ (G x))
+        (fun y => (if a < F y ∧ F y < b then -(b - a)⁻¹ else 0) • fderiv ℝ F y) fun y hy => ?_)
+    · by_cases hx : a < f x ∧ f x < b
+      · simp [hx, innerSL_apply_apply]
+      · simp [hx]
+    · have hpull : (innerSL ℝ (G (ψ y))).comp (fderiv ℝ ψ y) = fderiv ℝ F y :=
+        ContinuousLinearMap.ext fun e => (hGF y hy).2 e
+      simp only [ContinuousLinearMap.smul_comp, hfF y hy, hpull]
+  -- `Du = γ'(F) DF` a.e. on `Y` and `Φ = 0` off `Y`
+  have hcut := Submission.dor_lmbsf_pwl_fderiv_cutoff_comp_ae
+    Submission.dor_lmbsf_density_directions (n + 1) Y F u K a b hY
+    (hF.differentiable one_ne_zero) hu hab fun y hy => by
+      simpa only [hfF y hy] using huO y (hCO (hYC hy))
+  have hlim : ∫ y, ((if a < F y ∧ F y < b then -(b - a)⁻¹ else 0) • fderiv ℝ F y) (Φ y)
+      = ∫ y, fderiv ℝ u y (Φ y) := by
+    refine integral_congr_ae ?_
+    filter_upwards [hcut] with y hy
+    by_cases hyY : y ∈ Y
+    · rw [hy hyY]
+    · rw [hΦY y hyY, map_zero, map_zero]
+  -- weak-* convergence `∫ Du_k[Φ] → ∫ Du[Φ]`
+  rw [hrhs, hlim]
+  exact (Submission.dor_lmbsf_pwl_fderiv_weak_integrable (n + 1) K us u Φ hus hUu hΦ).congr
+    fun k => (hlhs k).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
