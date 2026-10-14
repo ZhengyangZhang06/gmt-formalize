@@ -761,6 +761,22 @@ theorem Submission.dor_lmbs_testForm_countable_approx : ∀ (P n : ℕ) (U : Set
     intro ε hε
     filter_upwards [hsmall ε hε] with k hk x
     exact ((hωs k).2 x).trans hk
+/-- Common convergent subsequence for countably many bounded real sequences.  The points
+`xᵢ = (b_k(i))_k` lie in the product `Π_k [-M_k, M_k]`, which is compact (Tychonoff,
+`isCompact_univ_pi`); `ℝ^ι` is first countable since `ι` is countable, so `IsCompact.tendsto_subseq`
+gives a strictly increasing `σ` and a limit `a` with `x_{σ(i)} → a`.  Evaluation at `k` is
+continuous, hence `b_k(σ(i)) → a(k)` for every `k`. -/
+theorem Submission.codim1_zsl_pc_diagonal_subseq : ∀ (ι : Type) [Countable ι] (b : ι → ℕ → ℝ) (M : ι → ℝ), (∀ k i, |b k i| ≤ M k) → ∃ σ : ℕ → ℕ, StrictMono σ ∧ ∀ k, ∃ L : ℝ, Tendsto (fun i => b k (σ i)) atTop (𝓝 L) := by
+  intro ι _ b M hb
+  have hS : IsCompact (Set.pi univ (fun k => Icc (-M k) (M k))) :=
+    isCompact_univ_pi (fun k => isCompact_Icc)
+  have hx : ∀ i, (fun k => b k i) ∈ Set.pi univ (fun k => Icc (-M k) (M k)) := by
+    intro i
+    rw [Set.mem_univ_pi]
+    intro k
+    exact Set.mem_Icc.mpr (abs_le.mp (hb k i))
+  obtain ⟨a, -, σ, hσ, hlim⟩ := hS.tendsto_subseq hx
+  exact ⟨σ, hσ, fun k => ⟨a k, ((continuous_apply k).tendsto a).comp hlim⟩⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.mollified_gradient-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1",
+  "depth": 5,
+  "title": "Gradient bound for the mollified indicator of a set with bounded perimeter (parent step 3)",
+  "statement": "Let m ∈ ℕ, F ⊆ ℝ^m measurable, r, ε, c ∈ ℝ, and let ρ : ℝ^m → ℝ be C^∞ with ρ ≥ 0, ρ(z) = 0 for |z| > ε and ∫ρ = 1. Assume ∫_F div φ dL^m ≤ c for every C^∞ vector field φ with compact support, tsupport φ ⊆ B_{r+ε}(0) and |φ| ≤ 1. Then f(v) := ∫ρ(z)1_F(v − z) dz is C^∞, and ∫⁻_{B_r(0)} ‖Df(v)‖ dv ≤ c, read in [0, ∞] with c as ofReal c.",
+  "lean_statement": "∀ (m : ℕ) (F : Set (Euclid m)) (ρ : Euclid m → ℝ) (r ε c : ℝ), MeasurableSet F → ContDiff ℝ (⊤ : ℕ∞) ρ → (∀ z, 0 ≤ ρ z) → (∀ z, ε < ‖z‖ → ρ z = 0) → ∫ z, ρ z = 1 → (∀ φ : Euclid m → Euclid m, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ ball (0 : Euclid m) (r + ε) → (∀ v, ‖φ v‖ ≤ 1) → ∫ v in F, LinearMap.trace ℝ (Euclid m) (fderiv ℝ φ v).toLinearMap ≤ c) → ContDiff ℝ (⊤ : ℕ∞) (fun v => ∫ z, ρ z * F.indicator (fun _ => (1 : ℝ)) (v - z)) ∧ ∫⁻ v in ball (0 : Euclid m) r, ‖fderiv ℝ (fun v => ∫ z, ρ z * F.indicator (fun _ => (1 : ℝ)) (v - z)) v‖ₑ ≤ ENNReal.ofReal c",
+  "lean_name": "codim1_zsl_pc_mollify_grad_bound",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.smooth_variation-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.mollify_field-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.smooth_variation-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.mollify_field-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-b178d0320c-a1"
+}

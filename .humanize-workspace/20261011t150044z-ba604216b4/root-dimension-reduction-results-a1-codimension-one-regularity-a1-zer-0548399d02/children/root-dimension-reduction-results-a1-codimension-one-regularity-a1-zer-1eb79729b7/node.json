@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.translation_estimate-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1",
+  "depth": 5,
+  "title": "Translation estimate for a set of bounded perimeter: L^m(((F − h) Δ F) ∩ B_R) ≤ c|h| (parent steps 1–4)",
+  "statement": "Let m ∈ ℕ, F ⊆ ℝ^m measurable, and R, c ∈ ℝ. Assume ∫_F div φ dL^m ≤ c for every C^∞ vector field φ with compact support, tsupport φ ⊆ B_{R+2}(0) and |φ| ≤ 1, where div φ = trace Dφ. Then for every h ∈ ℝ^m with |h| ≤ 1, L^m(((F − h) Δ F) ∩ B_R(0)) ≤ c|h|, where F − h := {v : v + h ∈ F} and the right side is ofReal(c|h|).",
+  "lean_statement": "∀ (m : ℕ) (F : Set (Euclid m)) (R c : ℝ), MeasurableSet F → (∀ φ : Euclid m → Euclid m, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ ball (0 : Euclid m) (R + 2) → (∀ v, ‖φ v‖ ≤ 1) → ∫ v in F, LinearMap.trace ℝ (Euclid m) (fderiv ℝ φ v).toLinearMap ≤ c) → ∀ h : Euclid m, ‖h‖ ≤ 1 → volume (symmDiff ((fun v => v + h) ⁻¹' F) F ∩ ball (0 : Euclid m) R) ≤ ENNReal.ofReal (c * ‖h‖)",
+  "lean_name": "codim1_zsl_pc_translation_estimate",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.mollify_l1-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.smooth_translate-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.mollified_gradient-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.mollify_l1-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.smooth_translate-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.mollified_gradient-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-1eb79729b7-a1"
+}

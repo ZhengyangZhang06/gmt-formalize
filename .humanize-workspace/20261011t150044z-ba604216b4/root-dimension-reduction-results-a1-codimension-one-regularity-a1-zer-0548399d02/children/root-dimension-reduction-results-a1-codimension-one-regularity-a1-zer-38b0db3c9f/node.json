@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.smooth_translate-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1",
+  "depth": 5,
+  "title": "L¹ translation estimate for C¹ functions: ∫_{B_R}|f(v + h) − f(v)| ≤ |h|·∫_{B_{R+|h|}}‖Df‖",
+  "statement": "Let m ∈ ℕ, f : ℝ^m → ℝ of class C¹, h ∈ ℝ^m and R ∈ ℝ. Then ∫⁻_{B_R(0)} |f(v + h) − f(v)| dv ≤ |h| · ∫⁻_{B_{R+|h|}(0)} ‖Df(w)‖ dw. Here ‖Df(w)‖ is the operator norm of the derivative, which equals |∇f(w)|, and both sides are [0, ∞]-valued integrals.",
+  "lean_statement": "∀ (m : ℕ) (f : Euclid m → ℝ) (h : Euclid m) (R : ℝ), ContDiff ℝ 1 f → ∫⁻ v in ball (0 : Euclid m) R, ‖f (v + h) - f v‖ₑ ≤ ‖h‖ₑ * ∫⁻ w in ball (0 : Euclid m) (R + ‖h‖), ‖fderiv ℝ f w‖ₑ",
+  "lean_name": "codim1_zsl_pc_smooth_translate_l1",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-38b0db3c9f-a1"
+}

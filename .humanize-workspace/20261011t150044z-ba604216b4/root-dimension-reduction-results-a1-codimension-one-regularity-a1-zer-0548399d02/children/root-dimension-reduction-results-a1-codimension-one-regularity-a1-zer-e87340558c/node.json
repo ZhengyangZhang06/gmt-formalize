@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1.smooth_variation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.bv_compactness-a1",
+  "depth": 5,
+  "title": "Duality bound for the variation of a smooth function: ∫_{B_r}‖Dg‖ ≤ c (Simon Ch. 2, 2.5 (4))",
+  "statement": "Let m ∈ ℕ, let g : ℝ^m → ℝ be of class C^∞, and let r, c ∈ ℝ. Suppose ∫ g·div ψ dL^m ≤ c for every C^∞ vector field ψ : ℝ^m → ℝ^m with compact support, tsupport ψ ⊆ B_r(0) and |ψ(v)| ≤ 1 for all v, where div ψ(v) = trace Dψ(v). Then ∫⁻_{B_r(0)} ‖Dg(v)‖ dv ≤ c, read in [0, ∞] with c as ofReal c.",
+  "lean_statement": "∀ (m : ℕ) (g : Euclid m → ℝ) (r c : ℝ), ContDiff ℝ (⊤ : ℕ∞) g → (∀ ψ : Euclid m → Euclid m, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ → tsupport ψ ⊆ ball (0 : Euclid m) r → (∀ v, ‖ψ v‖ ≤ 1) → ∫ v, g v * LinearMap.trace ℝ (Euclid m) (fderiv ℝ ψ v).toLinearMap ≤ c) → ∫⁻ v in ball (0 : Euclid m) r, ‖fderiv ℝ g v‖ₑ ≤ ENNReal.ofReal c",
+  "lean_name": "codim1_zsl_pc_smooth_grad_bound",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.energy_lsc-a1.ibp_c1_ball-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.allard_graph-a1.harmonic_approximation-a1.energy_lsc-a1.ibp_c1_ball-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-0b4bc9c57a-a1",
+      "result_commit": "46877ce9502b635edd5da586357ddf357d5d6d5d",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-e87340558c-a1"
+}
