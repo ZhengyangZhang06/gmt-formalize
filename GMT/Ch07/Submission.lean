@@ -1565,6 +1565,107 @@ theorem Submission.dor_lmb_pc_cm_vector_density_add : ∀ (P n : ℕ) (U : Set (
   -- Step 5: combine with step 1
   rw [hxR, hx']
   simp only [Int.cast_one, one_smul]
+/-- Simon 6.3.1: `Hⁿ`-a.e. on `M` the orientation `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` of an integer
+multiplicity triple is a unit simple `n`-vector (`τ` orthonormal), so every `n`-covector `β`
+satisfies `|⟨β, ξ(x)⟩| = |β(τ₁, …, τₙ)| ≤ ‖β‖ ∏ᵢ ‖τᵢ‖ = ‖β‖` (operator norm). -/
+theorem Submission.dpf_pfc_imrep_orient_abs_apply_le : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ β : Covector (Euclid P) n, |R.orient x β| ≤ ‖β‖ := by
+  intro P n U R
+  filter_upwards [R.orients] with x hx β
+  -- `ξ(x)` is `±` evaluation at an orthonormal frame `τ`
+  obtain ⟨Q, -, τ, hτ, -, hξ⟩ := hx
+  have hβ : |β τ| ≤ ‖β‖ :=
+    calc |β τ| = ‖β τ‖ := (Real.norm_eq_abs _).symm
+      _ ≤ ‖β‖ * ∏ i, ‖τ i‖ := β.le_opNorm τ
+      _ = ‖β‖ := by rw [Finset.prod_eq_one fun i _ => hτ.1 i, mul_one]
+  rcases hξ with h | h
+  · rw [h β]
+    exact hβ
+  · rw [h β, abs_neg]
+    exact hβ
+
+/-- **Pairing bound for `τ(M, θ, ξ)`** (the estimate behind Simon 6.2.24(2)).  If `F` is
+`Hⁿ⌞M`-a.e. strongly measurable, vanishes off the compact `C ⊆ U` and `‖F‖ ≤ B`, then
+`θ ⟨F, ξ⟩` is `Hⁿ⌞M`-integrable and `|∫_M θ ⟨F, ξ⟩ dHⁿ| ≤ B ∫_{M ∩ C} θ dHⁿ`.  By
+`dpf_pfc_imrep_orient_abs_apply_le`, `|θ ⟨F, ξ⟩| ≤ B θ 1_C` a.e., and `θ 1_C` is integrable by
+the local integrability of `θ`. -/
+theorem Submission.dpf_pfc_imrep_pairing_integrable_abs_le : ∀ (P n : ℕ) (U C : Set (Euclid P)) (R : IMRep U n) (F : Euclid P → Covector (Euclid P) n) (B : ℝ), IsCompact C → C ⊆ U → AEStronglyMeasurable F (μHE[n].restrict R.carrier) → (∀ x, x ∉ C → F x = 0) → (∀ x, ‖F x‖ ≤ B) → Integrable (fun x => (R.mult x : ℝ) * R.orient x (F x)) (μHE[n].restrict R.carrier) ∧ |∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (F x) ∂μHE[n]| ≤ B * (∫⁻ x in R.carrier ∩ C, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal := by
+  intro P n U C R F B hC hCU hF hF0 hFB
+  -- Step 1: `C` is measurable; step 2: `θ` is measurable
+  have hCm : MeasurableSet C := hC.isClosed.measurableSet
+  have hθm : Measurable fun x => (R.mult x : ℝ) :=
+    (measurable_from_nat (f := fun k : ℕ => (k : ℝ))).comp R.measurable_mult
+  -- Step 3: `μ.restrict C = Hⁿ⌞(M ∩ C)`
+  have hres : (μHE[n].restrict R.carrier).restrict C = μHE[n].restrict (R.carrier ∩ C) := by
+    rw [Measure.restrict_restrict hCm, inter_comm]
+  -- Step 4: `θ` is integrable on `C`, so `g = B · 1_C θ` is integrable
+  have hθC : IntegrableOn (fun x => (R.mult x : ℝ)) C (μHE[n].restrict R.carrier) := by
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    rw [HasFiniteIntegral, hres]
+    simpa using (R.locallyIntegrable_mult C hC hCU).lt_top
+  have hg : Integrable (fun x => B * C.indicator (fun y => (R.mult y : ℝ)) x)
+      (μHE[n].restrict R.carrier) :=
+    ((integrable_indicator_iff hCm).2 hθC).const_mul B
+  -- Step 5: `h = θ · ξ(F)` is a.e. strongly measurable
+  have hh : AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (F x))
+      (μHE[n].restrict R.carrier) :=
+    hθm.aestronglyMeasurable.mul ((continuous_fst.clm_apply continuous_snd).comp_aestronglyMeasurable₂
+      R.aestronglyMeasurable_orient hF)
+  -- Step 6: `|h| ≤ g` a.e., by `orient_bound`
+  have hdom : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      ‖(R.mult x : ℝ) * R.orient x (F x)‖ ≤ B * C.indicator (fun y => (R.mult y : ℝ)) x := by
+    filter_upwards [Submission.dpf_pfc_imrep_orient_abs_apply_le P n U R] with x hx
+    by_cases hxC : x ∈ C
+    · rw [indicator_of_mem hxC, Real.norm_eq_abs, abs_mul, Nat.abs_cast, mul_comm B]
+      exact mul_le_mul_of_nonneg_left ((hx (F x)).trans (hFB x)) (Nat.cast_nonneg _)
+    · simp [indicator_of_notMem hxC, hF0 x hxC]
+  -- Step 7: integrability
+  refine ⟨hg.mono' hh hdom, ?_⟩
+  -- Step 8: `∫ g dμ = B · (∫⁻_{M ∩ C} θ dHⁿ).toReal`
+  have hgval : ∫ x, B * C.indicator (fun y => (R.mult y : ℝ)) x ∂(μHE[n].restrict R.carrier) =
+      B * (∫⁻ x in R.carrier ∩ C, (R.mult x : ℝ≥0∞) ∂μHE[n]).toReal := by
+    rw [integral_const_mul, integral_indicator hCm, hres,
+      integral_eq_lintegral_of_nonneg_ae (Eventually.of_forall fun x => Nat.cast_nonneg _)
+        hθm.aestronglyMeasurable]
+    simp
+  -- Step 9: `|∫ h dμ| ≤ ∫ g dμ`
+  rw [← Real.norm_eq_abs, ← hgval]
+  exact norm_integral_le_of_norm_le hg hdom
+
+/-- **Additivity of the pairing with a bounded field** (the identity
+`∫ ⟨φ, ν_Y⟩ dHⁿ = ∫ ⟨φ, ν_Z + ν_X⟩ dHⁿ` in the competitor mass bound of Simon 7.2.4 (8)–(9)).
+Write `ν_R = 1_M θ ξ` for `R = (M, θ, ξ)`.  If `ν_R = ν_{R₁} + ν_{R₂}` `Hⁿ`-a.e. and `F` is
+`Hⁿ`-a.e. strongly measurable, vanishes off the compact `K ⊆ U` and `‖F‖ ≤ B`, then
+`∫_M θ ⟨F, ξ⟩ dHⁿ = ∫_{M₁} θ₁ ⟨F, ξ₁⟩ dHⁿ + ∫_{M₂} θ₂ ⟨F, ξ₂⟩ dHⁿ`.  Each side is the integral
+over `ℝᴾ` of `⟨F, ν⟩ = 1_M θ ⟨F, ξ⟩`, integrable by `dpf_pfc_imrep_pairing_integrable_abs_le`. -/
+theorem Submission.dor_lmb_pc_cm_pairing_add_of_bounded : ∀ (P n : ℕ) (U K : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (F : Euclid P → Covector (Euclid P) n) (B : ℝ), IsCompact K → K ⊆ U → AEStronglyMeasurable F μHE[n] → (∀ x, x ∉ K → F x = 0) → (∀ x, ‖F x‖ ≤ B) → (∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x) → ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (F x) ∂μHE[n] = ∫ x in R₁.carrier, (R₁.mult x : ℝ) * R₁.orient x (F x) ∂μHE[n] + ∫ x in R₂.carrier, (R₂.mult x : ℝ) * R₂.orient x (F x) ∂μHE[n] := by
+  intro P n U K R₁ R₂ R F B hK hKU hF hF0 hFB hvd
+  -- Steps 1–3: for each `R'`, `⟨F, ν_{R'}⟩` is `Hⁿ`-integrable with integral `∫_{M'} θ' ⟨F, ξ'⟩`
+  have key : ∀ R' : IMRep U n,
+      Integrable (fun x => R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x (F x))
+        μHE[n] ∧
+      ∫ x, R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x (F x) ∂μHE[n] =
+        ∫ x in R'.carrier, (R'.mult x : ℝ) * R'.orient x (F x) ∂μHE[n] := by
+    intro R'
+    -- Step 2: `⟨F, ν_{R'}⟩ = 1_{M'} θ' ⟨F, ξ'⟩`
+    have hfun : (fun x => R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x (F x)) =
+        R'.carrier.indicator (fun y => (R'.mult y : ℝ) * R'.orient y (F y)) := by
+      funext x
+      by_cases hx : x ∈ R'.carrier
+      · simp [indicator_of_mem hx]
+      · simp [indicator_of_notMem hx]
+    -- Steps 1 and 3: integrability on `M'` from the pairing bound, then `integral_indicator`
+    rw [hfun, integrable_indicator_iff R'.measurableSet_carrier,
+      integral_indicator R'.measurableSet_carrier]
+    exact ⟨(Submission.dpf_pfc_imrep_pairing_integrable_abs_le P n U K R' F B hK hKU hF.restrict
+      hF0 hFB).1, rfl⟩
+  obtain ⟨-, he⟩ := key R
+  obtain ⟨hi₁, he₁⟩ := key R₁
+  obtain ⟨hi₂, he₂⟩ := key R₂
+  -- Steps 4–5: evaluate `ν_R = ν_{R₁} + ν_{R₂}` at `F` a.e. and integrate additively
+  rw [← he, ← he₁, ← he₂, ← integral_add hi₁ hi₂]
+  refine integral_congr_ae ?_
+  filter_upwards [hvd] with x hx
+  rw [hx, add_apply]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
