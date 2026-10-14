@@ -4033,6 +4033,138 @@ theorem Submission.dor_lmb_fcd_fr_boundary_variation : ∀ (P m : ℕ) (s : Fins
   have hle : ENNReal.ofReal (T ω) ≤ T.massOn (W p) := T.le_massOn hωadm
   rw [hval] at hle
   exact (ENNReal.ofReal_le_iff_le_toReal (hne p)).1 hle
+/-- **Currents given by `L¹` densities on unit faces** (Simon Ch. 6, proof of the deformation
+theorem 5.1, (29), and the mass estimate (34) via 2.35).  For pairs `p = (z, ι)` with `ι` strictly
+increasing, `Φ_p(y) = z + Σⱼ yⱼ e_{ι(j)}` and `e_p = (e_{ι(0)}, …, e_{ι(m)})`:
+(I) `y ↦ w_p(y) ω(Φ_p(y))(e_p)` is integrable on `Q₁ = (0, 1)^{m+1}`, since `ω` is continuous with
+compact support and `|ω(x)(e_p)| ≤ ‖ω(x)‖`; (II) `ω ↦ Σ_p ∫_{Q₁} w_p ω(Φ_p)(e_p)` is linear and
+bounded by `(Σ_p ∫_{Q₁} |w_p|) · sup ‖ω‖`, hence a current; (III) `|ω(x)(e_p)|` is bounded by the
+Euclidean coefficient norm of `ω(x)`, so every such current has `M ≤ Σ_p ∫_{Q₁} |w_p|`. -/
+theorem Submission.dor_lmb_fcd_fr_chain_current : ∀ (P m : ℕ) (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (w : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → Euclid (m + 1) → ℝ), (∀ p ∈ s, StrictMono p.2) → (∀ p ∈ s, IntegrableOn (w p) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), ∀ p ∈ s, IntegrableOn (fun y => w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ))) {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}) ∧ (∃ D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ))) ∧ ∀ D : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), D ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ))) → D.mass ≤ ENNReal.ofReal (∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y|) := by
+  intro P m s w hmono hw
+  -- Step 1: the frame `e_ι = (e_{ι 0}, …, e_{ι m})` consists of unit vectors, so `|α(e_ι)| ≤ ‖α‖`
+  have hframe : ∀ (α : Covector (Euclid P) (m + 1)) (ι : Fin (m + 1) → Fin P),
+      |α (fun k => EuclideanSpace.single (ι k) (1 : ℝ))| ≤ ‖α‖ := by
+    intro α ι
+    simpa using α.le_opNorm (fun k => EuclideanSpace.single (ι k) (1 : ℝ))
+  -- for strictly increasing `ι`, `α(e_ι)` is one of the coefficients in the Euclidean norm of `α`
+  have hcoeff : ∀ (α : Covector (Euclid P) (m + 1)) (ι : Fin (m + 1) → Fin P), StrictMono ι →
+      |α (fun k => EuclideanSpace.single (ι k) (1 : ℝ))| ≤ covectorEuclideanNorm α := by
+    intro α ι hι
+    refine Real.abs_le_sqrt ?_
+    have hle := Finset.single_le_sum (s := Finset.univ)
+      (f := fun I : Fin (m + 1) → Fin P => if StrictMono I then
+        (α (fun i => EuclideanSpace.basisFun (Fin P) ℝ (I i))) ^ 2 else 0)
+      (fun I _ => by split_ifs <;> positivity) (Finset.mem_univ ι)
+    simpa [hι, EuclideanSpace.basisFun_apply] using hle
+  -- Step 2: `y ↦ ω(Φ_p(y))(e_p)` is continuous, and test forms are bounded
+  have hcont : ∀ (ω : TestFormOn (univ : Set (Euclid P)) (m + 1))
+      (p : (Fin P → ℤ) × (Fin (m + 1) → Fin P)),
+      Continuous fun y : Euclid (m + 1) => (ω : DifferentialForm (Euclid P) (m + 1))
+        (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ))
+        (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) := by
+    intro ω p
+    have hω : Continuous (ω : DifferentialForm (Euclid P) (m + 1)) := ω.property.1.1.continuous
+    have hΦ : Continuous fun y : Euclid (m + 1) =>
+        WithLp.toLp 2 (fun i => (p.1 i : ℝ)) +
+          ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ) := by
+      fun_prop
+    exact (hω.comp hΦ).eval_const _
+  have hbdd : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1),
+      ∃ C, ∀ x, ‖(ω : DifferentialForm (Euclid P) (m + 1)) x‖ ≤ C := fun ω =>
+    ω.property.1.1.continuous.bounded_above_of_compact_support ω.property.1.2
+  -- (I): an integrable density times a bounded continuous function is integrable
+  have hint : ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), ∀ p ∈ s,
+      IntegrableOn (fun y => w p y * (ω : DifferentialForm (Euclid P) (m + 1))
+        (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ))
+        (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)))
+        {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := by
+    intro ω p hp
+    obtain ⟨C, hC⟩ := hbdd ω
+    exact (hw p hp).mul_bdd (hcont ω p).aestronglyMeasurable (Filter.Eventually.of_forall fun y =>
+      (Real.norm_eq_abs _).trans_le ((hframe _ _).trans (hC _)))
+  -- Step 3: `|Σ_p ∫ w_p ω(Φ_p)(e_p)| ≤ c · Σ_p ∫ |w_p|` whenever `|ω(Φ_p)(e_p)| ≤ c`
+  have hbound : ∀ (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)) (c : ℝ),
+      (∀ p ∈ s, ∀ y : Euclid (m + 1), |(ω : DifferentialForm (Euclid P) (m + 1))
+        (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ))
+        (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ))| ≤ c) →
+      |∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, w p y *
+        (ω : DifferentialForm (Euclid P) (m + 1))
+        (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ))
+        (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ))| ≤
+      c * ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |w p y| := by
+    intro ω c hc
+    rw [Finset.mul_sum]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun p hp => ?_)
+    rw [← integral_const_mul, ← Real.norm_eq_abs]
+    refine norm_integral_le_of_norm_le ((hw p hp).abs.const_mul c)
+      (Filter.Eventually.of_forall fun y => ?_)
+    rw [Real.norm_eq_abs, abs_mul, mul_comm c]
+    exact mul_le_mul_of_nonneg_left (hc p hp y) (abs_nonneg _)
+  -- (II): the formula is a linear functional on test forms ...
+  let L : TestFormOn (univ : Set (Euclid P)) (m + 1) →ₗ[ℝ] ℝ :=
+    { toFun := fun ω => ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+        w p y * (ω : DifferentialForm (Euclid P) (m + 1))
+          (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ))
+          (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ))
+      map_add' := fun ω η => by
+        have h : ∀ x v, ((ω + η : TestFormOn (univ : Set (Euclid P)) (m + 1)) :
+            DifferentialForm (Euclid P) (m + 1)) x v =
+            (ω : DifferentialForm (Euclid P) (m + 1)) x v +
+              (η : DifferentialForm (Euclid P) (m + 1)) x v := fun x v => rfl
+        simp only [h, mul_add]
+        rw [← Finset.sum_add_distrib]
+        exact Finset.sum_congr rfl fun p hp => integral_add (hint ω p hp) (hint η p hp)
+      map_smul' := fun c ω => by
+        have h : ∀ x v, ((c • ω : TestFormOn (univ : Set (Euclid P)) (m + 1)) :
+            DifferentialForm (Euclid P) (m + 1)) x v =
+            c * (ω : DifferentialForm (Euclid P) (m + 1)) x v := fun x v => rfl
+        simp only [h, RingHom.id_apply, smul_eq_mul, Finset.mul_sum]
+        refine Finset.sum_congr rfl fun p _ => ?_
+        rw [← integral_const_mul]
+        congr 1
+        funext y
+        ring }
+  -- ... and it is sequentially continuous: `ωⱼ → 0` forces `sup ‖ωⱼ‖ → 0`
+  have hLcont : ∀ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) (m + 1),
+      TestFormOnConverges ωs 0 → Tendsto (fun j => L (ωs j)) atTop (𝓝 0) := by
+    intro ωs hωs
+    obtain ⟨K, -, -, hsupp, -, hunif⟩ := hωs
+    have h0 := Metric.tendstoUniformlyOn_iff.1 (hunif 0)
+    obtain ⟨S, hS⟩ : ∃ S, S = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1},
+        |w p y| := ⟨_, rfl⟩
+    have hS0 : 0 ≤ S := hS ▸ Finset.sum_nonneg fun p _ => integral_nonneg fun y => abs_nonneg _
+    refine Metric.tendsto_nhds.2 fun ε hε => ?_
+    have hδ : 0 < ε / (S + 1) := div_pos hε (by linarith)
+    filter_upwards [h0 _ hδ] with j hj
+    have hsup : ∀ x, ‖(ωs j : DifferentialForm (Euclid P) (m + 1)) x‖ ≤ ε / (S + 1) := by
+      intro x
+      by_cases hx : x ∈ K
+      · have hjx := hj x hx
+        have h00 : iteratedFDeriv ℝ 0 ((0 : TestFormOn (univ : Set (Euclid P)) (m + 1)) :
+            DifferentialForm (Euclid P) (m + 1)) x = 0 := by
+          rw [← norm_eq_zero, norm_iteratedFDeriv_zero]
+          simp
+        rw [h00, dist_zero_left, norm_iteratedFDeriv_zero] at hjx
+        exact hjx.le
+      · rw [image_eq_zero_of_notMem_tsupport fun h => hx (hsupp j h), norm_zero]
+        exact hδ.le
+    have hb := hbound (ωs j) (ε / (S + 1)) fun p _ y => (hframe _ _).trans (hsup _)
+    rw [← hS] at hb
+    rw [Real.dist_eq, sub_zero]
+    calc |L (ωs j)| ≤ ε / (S + 1) * S := hb
+      _ < ε / (S + 1) * (S + 1) := mul_lt_mul_of_pos_left (lt_add_one S) hδ
+      _ = ε := div_mul_cancel₀ ε (by linarith : (0 : ℝ) < S + 1).ne'
+  refine ⟨hint, ⟨⟨L, hLcont⟩, fun ω => rfl⟩, fun D hD => ?_⟩
+  -- (III): admissible forms have `|ω(Φ_p)(e_p)| ≤ 1`, so every admissible value is `≤ Σ_p ∫ |w_p|`
+  unfold GeometricCurrentOn.mass GeometricCurrentOn.massOn
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  dsimp only
+  rw [hD ω]
+  refine ENNReal.ofReal_le_ofReal ((le_abs_self _).trans ?_)
+  have hb := hbound ω 1 fun p hp y => (hcoeff _ _ (hmono p hp)).trans (hω.2 _)
+  rwa [one_mul] at hb
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
