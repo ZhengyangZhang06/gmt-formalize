@@ -451,6 +451,76 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Radial retraction onto the closed unit ball is nonexpansive towards the ball** (step 0(d)
+of `regcomp_exists_smooth_unit_form_approx`).  If `‖y‖ ≤ 1`, then
+`‖(max 1 ‖x‖)⁻¹ • x - y‖ ≤ ‖x - y‖`: for `‖x‖ ≤ 1` the retraction fixes `x`; for `s = ‖x‖ > 1`,
+`‖x - y‖² - ‖s⁻¹ • x - y‖² = s² - 1 - 2(1 - s⁻¹)⟨x, y⟩ ≥ (s - 1)²` by Cauchy–Schwarz. -/
+theorem Submission.regcomp_norm_radial_retraction_sub_le : ∀ (E : Type) [NormedAddCommGroup E] [InnerProductSpace ℝ E] (x y : E), ‖y‖ ≤ 1 → ‖(max 1 ‖x‖)⁻¹ • x - y‖ ≤ ‖x - y‖ := by
+  intro E _ _ x y hy
+  rcases le_or_gt ‖x‖ 1 with hx | hx
+  · -- Step 1: if `‖x‖ ≤ 1`, the retraction fixes `x`.
+    rw [max_eq_left hx, inv_one, one_smul]
+  · -- Steps 2–5: `s = ‖x‖ > 1`; compare the squared distances.
+    rw [max_eq_right hx.le]
+    have hs : 0 < ‖x‖ := one_pos.trans hx
+    -- Cauchy–Schwarz with `‖y‖ ≤ 1`: `⟨x, y⟩ ≤ s`; and `s⁻¹ < 1`, `s⁻¹ s = 1`.
+    have hxy : inner ℝ x y ≤ ‖x‖ :=
+      (real_inner_le_norm x y).trans (mul_le_of_le_one_right hs.le hy)
+    have hinv : ‖x‖⁻¹ < 1 := inv_lt_one_of_one_lt₀ hx
+    have hcancel : ‖x‖⁻¹ * ‖x‖ = 1 := inv_mul_cancel₀ hs.ne'
+    -- `‖s⁻¹ • x - y‖² = 1 - 2s⁻¹⟨x, y⟩ + ‖y‖²`.
+    have h2 : ‖‖x‖⁻¹ • x - y‖ ^ 2 = 1 - 2 * (‖x‖⁻¹ * inner ℝ x y) + ‖y‖ ^ 2 := by
+      rw [norm_sub_sq_real, norm_smul, real_inner_smul_left, Real.norm_eq_abs,
+        abs_of_pos (inv_pos.2 hs), hcancel, one_pow]
+    -- The difference of the squares is at least `(s - 1)² ≥ 0`.
+    have key : ‖‖x‖⁻¹ • x - y‖ ^ 2 ≤ ‖x - y‖ ^ 2 := by
+      rw [h2, norm_sub_sq_real]
+      nlinarith [mul_nonneg (sub_nonneg.2 hinv.le) (sub_nonneg.2 hxy), sq_nonneg (‖x‖ - 1)]
+    exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).1 key
+
+/-- **The Euclidean coefficient norm** `|α|_E = covectorEuclideanNorm α` on `Λⁿ(ℝᴾ)` (Simon
+6.1.15) is a continuous seminorm dominated by the operator norm, and the radial retraction
+`v ↦ (max 1 |v|_E)⁻¹ v` onto its unit ball does not increase the distance to points of that ball.
+
+The coefficient map `Φ α = (ev_j α)_j ∈ ℓ²(Fin n → Fin P)`, with
+`ev_j α = α(e_{j 0}, …, e_{j (n-1)})` for increasing `j` and `0` otherwise, is continuous linear
+with `‖Φ α‖ = |α|_E` (`EuclideanSpace.norm_eq`).  So (i)–(iii) are those of `‖·‖ ∘ Φ`, (iv) holds
+with `c = 1 + ‖Φ‖`, and (v) is `regcomp_norm_radial_retraction_sub_le` for `x = Φ v`, `y = Φ b`. -/
+theorem Submission.regcomp_covectorEuclideanNorm_seminorm_retract : ∀ (P n : ℕ), ∃ c : ℝ, 0 < c ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α) ∧ (∀ α β : Covector (Euclid P) n, covectorEuclideanNorm (α + β) ≤ covectorEuclideanNorm α + covectorEuclideanNorm β) ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ c * ‖α‖) ∧ ∀ v b : Covector (Euclid P) n, covectorEuclideanNorm b ≤ 1 → covectorEuclideanNorm ((max 1 (covectorEuclideanNorm v))⁻¹ • v - b) ≤ covectorEuclideanNorm (v - b) := by
+  intro P n
+  classical
+  -- `ev j α = α(e_{j 0}, …, e_{j (n-1)})` for increasing `j`, and `0` otherwise
+  let ev : (Fin n → Fin P) → Covector (Euclid P) n →L[ℝ] ℝ := fun j =>
+    if StrictMono j then
+      ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ
+        (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (j i))
+    else 0
+  -- the coefficient map `Φ : Λⁿ → ℓ²(Fin n → Fin P)`
+  let Φ : Covector (Euclid P) n →L[ℝ] EuclideanSpace ℝ (Fin n → Fin P) :=
+    (EuclideanSpace.equiv (Fin n → Fin P) ℝ).symm.toContinuousLinearMap.comp
+      (ContinuousLinearMap.pi ev)
+  have hΦ : ∀ α, ‖Φ α‖ = covectorEuclideanNorm α := by
+    intro α
+    rw [EuclideanSpace.norm_eq, covectorEuclideanNorm]
+    congr 1
+    refine Finset.sum_congr rfl fun j _ => ?_
+    by_cases hj : StrictMono j <;> simp [Φ, ev, hj]
+  refine ⟨1 + ‖Φ‖, by positivity, ?_, ?_, ?_, ?_, ?_⟩
+  · exact (continuous_norm.comp Φ.continuous).congr hΦ
+  · intro α β
+    simpa only [← hΦ, map_add] using norm_add_le (Φ α) (Φ β)
+  · intro t α
+    simp only [← hΦ, map_smul, norm_smul, Real.norm_eq_abs]
+  · intro α
+    rw [← hΦ]
+    exact (Φ.le_opNorm α).trans
+      (mul_le_mul_of_nonneg_right (le_add_of_nonneg_left zero_le_one) (norm_nonneg α))
+  · intro v b hb
+    rw [← hΦ] at hb
+    simp only [← hΦ, map_sub, map_smul]
+    exact Submission.regcomp_norm_radial_retraction_sub_le (EuclideanSpace ℝ (Fin n → Fin P))
+      (Φ v) (Φ b) hb
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
