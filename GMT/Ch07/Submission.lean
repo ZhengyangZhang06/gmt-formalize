@@ -1960,6 +1960,133 @@ theorem Submission.dtc_bc_lc_sl_co_chart_gradient : ∀ (P d : ℕ) (ψ : Euclid
       rw [← mul_apply_eq_comp, Ring.mul_inverse_cancel (S y) (hunit y hy), one_apply_eq_self]
     rw [hSS]
     exact InnerProductSpace.toDual_symm_apply
+/-- **Gradient bound at a density point** (a step of the co-area formula, Simon Ch. 3, §2).
+Let `f : ℝᴾ → ℝ` be `L`-Lipschitz, `F = f ∘ ψ` on `Y ⊆ ℝᵈ`, and let `y ∈ Y`
+be a Lebesgue density point of `Y` at which `ψ` and `F` are differentiable.  Then
+`|DF(y) e| ≤ L |Dψ(y) e|` for every `e ∈ ℝᵈ`.
+
+Proof sketch:
+* Density: for `ρ > 0` and all small `r > 0`, every ball `B_{ρr}(p) ⊆ B̄_r(y)` meets `Y`;
+  otherwise `Lᵈ(Y ∩ B̄_r(y)) + ρᵈ Lᵈ(B̄_r(y)) ≤ Lᵈ(B̄_r(y))`, against density `1`.
+* Directions: with `k = |e| + ε`, the ball `B_{(ε/k) r}(y + (r/k) e)` lies in `B̄_r(y)`, so
+  for `ε, T > 0` there are `t ∈ (0, T)` and `z ∈ Y` with `|z − (y + t e)| < ε t`.
+* Taking `ε = T = 1/(n+1)` gives `t_n → 0⁺`, `z_n ∈ Y`, `(z_n − y)/t_n → e`; the difference
+  quotients of `F` and `ψ` along `z_n` converge to `DF(y) e` and `Dψ(y) e`.
+* `|F(z_n) − F(y)| = |f(ψ z_n) − f(ψ y)| ≤ L |ψ(z_n) − ψ(y)|`; divide by `t_n`, pass to the
+  limit. -/
+theorem Submission.dtc_bc_lc_sl_co_density_gradient_bound : ∀ (d P : ℕ) (f : Euclid P → ℝ) (L : NNReal) (ψ : Euclid d → Euclid P) (F : Euclid d → ℝ) (Y : Set (Euclid d)) (y : Euclid d), LipschitzWith L f → y ∈ Y → DifferentiableAt ℝ ψ y → DifferentiableAt ℝ F y → (∀ z ∈ Y, f (ψ z) = F z) → Tendsto (fun r => volume (Y ∩ closedBall y r) / volume (closedBall y r)) (𝓝[>] 0) (𝓝 1) → ∀ e : Euclid d, |fderiv ℝ F y e| ≤ L * ‖fderiv ℝ ψ y e‖ := by
+  intro d P f L ψ F Y y hf hyY hψ hF hfψ hY e
+  -- Step 1: for `ρ > 0` and all small `r > 0`, every ball `B_{ρr}(p) ⊆ B̄_r(y)` meets `Y`
+  have hmeets : ∀ ρ : ℝ, 0 < ρ → ∀ᶠ r in 𝓝[>] (0:ℝ), ∀ p : Euclid d,
+      ball p (ρ * r) ⊆ closedBall y r → (Y ∩ ball p (ρ * r)).Nonempty := by
+    intro ρ hρ
+    have hc0 : ENNReal.ofReal (ρ ^ Module.finrank ℝ (Euclid d)) ≠ 0 := by
+      rw [Ne, ENNReal.ofReal_eq_zero, not_le]
+      exact pow_pos hρ _
+    have h1 : Tendsto (fun r => volume (Y ∩ closedBall y r) / volume (closedBall y r)
+        + ENNReal.ofReal (ρ ^ Module.finrank ℝ (Euclid d))) (𝓝[>] 0)
+        (𝓝 (1 + ENNReal.ofReal (ρ ^ Module.finrank ℝ (Euclid d)))) :=
+      hY.add tendsto_const_nhds
+    have hlt : (1 : ℝ≥0∞) < 1 + ENNReal.ofReal (ρ ^ Module.finrank ℝ (Euclid d)) :=
+      ENNReal.lt_add_right ENNReal.one_ne_top hc0
+    filter_upwards [(tendsto_order.1 h1).1 1 hlt, self_mem_nhdsWithin] with r hr hr0 p hsub
+    have hr0' : 0 < r := hr0
+    by_contra hne
+    rw [not_nonempty_iff_eq_empty] at hne
+    -- a ball missing `Y` gives `Lᵈ(Y ∩ B̄_r(y)) + ρᵈ Lᵈ(B̄_r(y)) ≤ Lᵈ(B̄_r(y))`
+    have hdisj : Disjoint (Y ∩ closedBall y r) (ball p (ρ * r)) := by
+      rw [Set.disjoint_left]
+      intro z hz hzW
+      have hmem : z ∈ Y ∩ ball p (ρ * r) := ⟨hz.1, hzW⟩
+      rw [hne] at hmem
+      exact hmem
+    have hmeas : volume (Y ∩ closedBall y r) + volume (ball p (ρ * r)) ≤
+        volume (closedBall y r) := by
+      rw [← measure_union hdisj measurableSet_ball]
+      exact measure_mono (union_subset inter_subset_right hsub)
+    have hVW : volume (ball p (ρ * r)) =
+        ENNReal.ofReal (ρ ^ Module.finrank ℝ (Euclid d)) * volume (closedBall y r) := by
+      rw [Measure.addHaar_ball_of_pos volume p (mul_pos hρ hr0'),
+        Measure.addHaar_closedBall volume y hr0'.le, mul_pow,
+        ENNReal.ofReal_mul (pow_nonneg hρ.le _), mul_assoc]
+    have hV0 : volume (closedBall y r) ≠ 0 := (measure_closedBall_pos volume y hr0').ne'
+    have hVT : volume (closedBall y r) ≠ ∞ := measure_closedBall_lt_top.ne
+    have hle : volume (Y ∩ closedBall y r) / volume (closedBall y r)
+        + ENNReal.ofReal (ρ ^ Module.finrank ℝ (Euclid d)) ≤ 1 := by
+      calc volume (Y ∩ closedBall y r) / volume (closedBall y r)
+            + ENNReal.ofReal (ρ ^ Module.finrank ℝ (Euclid d))
+          = (volume (Y ∩ closedBall y r) + volume (ball p (ρ * r))) /
+              volume (closedBall y r) := by
+            rw [ENNReal.add_div, hVW, ENNReal.mul_div_cancel_right hV0 hVT]
+        _ ≤ volume (closedBall y r) / volume (closedBall y r) :=
+            ENNReal.div_le_div_right hmeas _
+        _ = 1 := ENNReal.div_self hV0 hVT
+    exact absurd hr (not_lt.2 hle)
+  -- Step 2: for `ε, T > 0` there are `t ∈ (0, T)` and `z ∈ Y` with `|z − (y + t e)| < ε t`,
+  -- using the ball `B_{(ε/k) r}(y + (r/k) e) ⊆ B̄_r(y)`, `k = |e| + ε`
+  have hdir : ∀ ε T : ℝ, 0 < ε → 0 < T → ∃ t ∈ Ioo 0 T, ∃ z ∈ Y, dist z (y + t • e) < ε * t := by
+    intro ε T hε hT
+    obtain ⟨k, hk⟩ : ∃ k : ℝ, k = ‖e‖ + ε := ⟨_, rfl⟩
+    have hkpos : 0 < k := by rw [hk]; positivity
+    obtain ⟨r, hr, hrT⟩ := ((hmeets (ε / k) (div_pos hε hkpos)).and
+      (Ioo_mem_nhdsGT (mul_pos hT hkpos))).exists
+    have htpos : 0 < r / k := div_pos hrT.1 hkpos
+    have hρr : ε / k * r = ε * (r / k) := by ring
+    have hsub : ball (y + (r / k) • e) (ε / k * r) ⊆ closedBall y r := by
+      intro w hw
+      rw [mem_ball, hρr] at hw
+      rw [mem_closedBall]
+      have h1 : dist (y + (r / k) • e) y = r / k * ‖e‖ := by
+        rw [dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_pos htpos]
+      have h2 : r / k * ‖e‖ + ε * (r / k) = r := by
+        calc r / k * ‖e‖ + ε * (r / k) = r / k * (‖e‖ + ε) := by ring
+          _ = r / k * k := by rw [hk]
+          _ = r := div_mul_cancel₀ r hkpos.ne'
+      linarith [dist_triangle w (y + (r / k) • e) y]
+    obtain ⟨z, hzY, hzW⟩ := hr (y + (r / k) • e) hsub
+    refine ⟨r / k, ⟨htpos, (div_lt_iff₀ hkpos).2 hrT.2⟩, z, hzY, ?_⟩
+    rw [mem_ball, hρr] at hzW
+    exact hzW
+  -- Step 3: `t_n → 0⁺` and `z_n ∈ Y` with `(z_n − y)/t_n → e`
+  have key : ∀ n : ℕ, ∃ t ∈ Ioo (0:ℝ) (1 / ((n:ℝ) + 1)), ∃ z ∈ Y,
+      dist z (y + t • e) < 1 / ((n:ℝ) + 1) * t :=
+    fun n => hdir _ _ (by positivity) (by positivity)
+  choose t ht z hz hzt using key
+  have hlim0 : Tendsto (fun n : ℕ => 1 / ((n:ℝ) + 1)) atTop (𝓝 0) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  have ht0 : Tendsto t atTop (𝓝 0) :=
+    squeeze_zero (fun n => (ht n).1.le) (fun n => (ht n).2.le) hlim0
+  have hcd : Tendsto (fun n => (t n)⁻¹ • (z n - y)) atTop (𝓝 e) := by
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero (fun n => norm_nonneg _) (fun n => ?_) hlim0
+    have htn : 0 < t n := (ht n).1
+    have hrw : (t n)⁻¹ • (z n - y) - e = (t n)⁻¹ • (z n - (y + t n • e)) := by
+      rw [sub_add_eq_sub_sub, smul_sub (t n)⁻¹ (z n - y), smul_smul, inv_mul_cancel₀ htn.ne',
+        one_smul]
+    rw [hrw, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos htn, ← dist_eq_norm,
+      inv_mul_le_iff₀ htn, mul_comm]
+    exact (hzt n).le
+  have hdlim : Tendsto (fun n => z n - y) atTop (𝓝 0) := by
+    have h := ht0.smul hcd
+    rw [zero_smul] at h
+    refine h.congr (fun n => ?_)
+    rw [smul_smul, mul_inv_cancel₀ (ht n).1.ne', one_smul]
+  -- Step 4: difference quotients of `F` and `ψ` along `z_n` converge to `DF(y) e`, `Dψ(y) e`
+  have hF' := (hasFDerivWithinAt_univ.2 hF.hasFDerivAt).lim hdlim
+    (Eventually.of_forall fun n => mem_univ _) hcd
+  have hψ' := (hasFDerivWithinAt_univ.2 hψ.hasFDerivAt).lim hdlim
+    (Eventually.of_forall fun n => mem_univ _) hcd
+  simp only [add_sub_cancel] at hF' hψ'
+  -- Step 5: `|F(z_n) − F(y)| = |f(ψ z_n) − f(ψ y)| ≤ L |ψ(z_n) − ψ(y)|`; pass to the limit
+  refine le_of_tendsto_of_tendsto' hF'.abs (hψ'.norm.const_mul (L:ℝ)) (fun n => ?_)
+  have htn : 0 < t n := (ht n).1
+  rw [smul_eq_mul, abs_mul, norm_smul, Real.norm_eq_abs, abs_inv, abs_of_pos htn,
+    ← hfψ _ (hz n), ← hfψ _ hyY]
+  have hL := hf.dist_le_mul (ψ (z n)) (ψ y)
+  rw [Real.dist_eq, dist_eq_norm] at hL
+  calc (t n)⁻¹ * |f (ψ (z n)) - f (ψ y)| ≤ (t n)⁻¹ * (L * ‖ψ (z n) - ψ y‖) :=
+        mul_le_mul_of_nonneg_left hL (inv_nonneg.2 htn.le)
+    _ = L * ((t n)⁻¹ * ‖ψ (z n) - ψ y‖) := by ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
