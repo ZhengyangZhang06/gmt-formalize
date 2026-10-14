@@ -1852,6 +1852,52 @@ theorem Submission.dtc_bc_lc_pf_ext_pullback_cutoff : ∀ (P Q n : ℕ) (O K : S
   · -- `χ = 1` on `K`
     intro x hx
     simp only [hχK x hx, one_smul]
+/-- **Mollification** (behind Simon Ch. 6, Remark 2.24(2)): a continuous, compactly supported
+`n`-covector field `h` on `ℝᴾ` is the uniform limit of test forms `ωⱼ ∈ 𝒟ⁿ(ℝᴾ)`.
+
+Let `ψⱼ = φⱼ / ∫ φⱼ`, where `φⱼ ≥ 0` is a smooth bump with `support φⱼ = B_{1/(j+1)}(0)`, so
+`ψⱼ ≥ 0` and `∫ ψⱼ = 1`.  Then `ωⱼ = ψⱼ ⋆ h` is `C^∞` with compact support, and
+`‖ωⱼ(x) − h(x)‖ ≤ sup_{‖t‖ < 1/(j+1)} ‖h(x − t) − h(x)‖`, which tends to `0` uniformly in `x`
+because `h` is uniformly continuous. -/
+theorem Submission.dtc_bc_lc_pf_ext_mollify_tendstoUniformly : ∀ (P n : ℕ) (h : Euclid P → Covector (Euclid P) n), Continuous h → HasCompactSupport h → ∃ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) n, TendstoUniformly (fun j x => (ωs j : DifferentialForm (Euclid P) n) x) h atTop := by
+  intro P n h hhc hhs
+  -- (1) `h` is locally integrable
+  have hhi : LocallyIntegrable h volume := hhc.locallyIntegrable
+  -- (2) smooth bumps `φ j ≥ 0` with `support (φ j) = B_{1/(j+1)}(0)`, and the normalized kernels
+  -- `ψ j = φ j / ∫ φ j`: `ψ j ≥ 0`, `∫ ψ j = 1`
+  have hr : ∀ j : ℕ, 0 < 1 / ((j : ℝ) + 1) := fun j => Nat.one_div_pos_of_nat
+  let φ : ℕ → ContDiffBump (0 : Euclid P) := fun j =>
+    ⟨1 / ((j : ℝ) + 1) / 2, 1 / ((j : ℝ) + 1), half_pos (hr j), half_lt_self (hr j)⟩
+  have hφ : ∀ j, 0 < ∫ y, φ j y := fun j => by
+    refine (integral_pos_iff_support_of_nonneg (φ j).nonneg'
+      ((φ j).continuous.integrable_of_hasCompactSupport (φ j).hasCompactSupport)).mpr ?_
+    rw [(φ j).support_eq]
+    exact measure_ball_pos volume 0 (hr j)
+  let ψ : ℕ → Euclid P → ℝ := fun j y => φ j y / ∫ y, φ j y
+  have hψφ : ∀ j, support (ψ j) ⊆ support (φ j) := fun j y hy h0 => hy (by simp [ψ, h0])
+  have hψs : ∀ j, support (ψ j) ⊆ ball 0 (1 / ((j : ℝ) + 1)) := fun j =>
+    (hψφ j).trans (φ j).support_eq.subset
+  have hψc : ∀ j, HasCompactSupport (ψ j) := fun j => (φ j).hasCompactSupport.mono (hψφ j)
+  have hψ0 : ∀ j y, 0 ≤ ψ j y := fun j y => div_nonneg (φ j).nonneg (hφ j).le
+  have hψ1 : ∀ j, ∫ y, ψ j y = 1 := fun j => by rw [integral_div, div_self (hφ j).ne']
+  -- (3) `ω j = ψ j ⋆ h`
+  let ω : ℕ → DifferentialForm (Euclid P) n := fun j =>
+    convolution (ψ j) h (ContinuousLinearMap.lsmul ℝ ℝ) volume
+  -- (4) `ω j` is `C^∞` with compact support, so it is a test form on `ℝᴾ`
+  have hω : ∀ j, ω j ∈ TestFormOn (univ : Set (Euclid P)) n := fun j =>
+    ⟨⟨(hψc j).contDiff_convolution_left _ ((φ j).contDiff.div_const _) hhi,
+      (hψc j).convolution _ hhs⟩, subset_univ _⟩
+  refine ⟨fun j => ⟨ω j, hω j⟩, Metric.tendstoUniformly_iff.mpr fun ε hε => ?_⟩
+  -- (6) uniform continuity of `h` gives `δ` for `ε/2`; take `J` with `1/(J+1) < δ`
+  obtain ⟨δ, hδ, hhδ⟩ := Metric.uniformContinuous_iff.mp
+    (hhs.uniformContinuous_of_continuous hhc) (ε / 2) (half_pos hε)
+  obtain ⟨J, hJ⟩ := exists_nat_one_div_lt hδ
+  refine eventually_atTop.mpr ⟨J, fun j hj x => ?_⟩
+  -- (5) for `j ≥ J`, `‖h(y) − h(x)‖ < ε/2` on `B_{1/(j+1)}(x)`, so `‖ω j x − h x‖ ≤ ε/2 < ε`
+  rw [dist_comm]
+  refine lt_of_le_of_lt ?_ (half_lt_self hε)
+  exact dist_convolution_le (half_pos hε).le (hψs j) (hψ0 j) (hψ1 j) hhc.aestronglyMeasurable
+    fun y hy => (hhδ ((mem_ball.mp hy).trans_le ((Nat.one_div_le_one_div hj).trans hJ.le))).le
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
