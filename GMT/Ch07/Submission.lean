@@ -451,6 +451,61 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 3, 1.2–1.3** (bi-Lipschitz partition of the regular set): for any
+`H : ℝᵏ → ℝ^{N'}` and Borel `B ⊆ ℝᵏ`, the set `S` of `u ∈ B` at which `H` is differentiable with
+injective derivative is the disjoint union of countably many Borel pieces `Aₗ` with
+`κₗ|a − a'| ≤ |H(a) − H(a')|` on `Aₗ`, `κₗ > 0`.  `S` is Borel (`measurableSet_of_differentiableAt`,
+`measurable_fderiv`, `ContinuousLinearMap.isOpen_injective`).  For injective `L` take `K > 0` with
+`|x| ≤ K|Lx|` (`LinearMap.exists_antilipschitzWith`) and `r(L) = K⁻¹/2`; otherwise `r(L) = 1`.
+`exists_partition_approximatesLinearOn_of_hasFDerivWithinAt` gives Borel `Aₗ = S ∩ tₗ` on which
+`H` is `r(Tₗ)`-close to `Tₗ = DH(yₗ)`, `yₗ ∈ S`, so
+`|H(a) − H(a')| ≥ |Tₗ(a − a')| − r(Tₗ)|a − a'| ≥ r(Tₗ)|a − a'|` and `κₗ = r(Tₗ)`. -/
+theorem Submission.dor_lmb_fcd_imp_regular_partition : ∀ (k N' : ℕ) (H : Euclid k → Euclid N') (B : Set (Euclid k)), MeasurableSet B → ∃ (A : ℕ → Set (Euclid k)) (κ : ℕ → ℝ), (∀ l, MeasurableSet (A l)) ∧ (∀ l, A l ⊆ B) ∧ Pairwise (fun l l' => Disjoint (A l) (A l')) ∧ (∀ l, 0 < κ l) ∧ (∀ l, ∀ a ∈ A l, ∀ a' ∈ A l, κ l * ‖a - a'‖ ≤ ‖H a - H a'‖) ∧ (∀ l, ∀ a ∈ A l, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) ∧ ∀ u ∈ B, DifferentiableAt ℝ H u → Injective (fderiv ℝ H u) → ∃ l, u ∈ A l := by
+  intro k N' H B hB
+  -- the regular set `S = B ∩ {H differentiable, DH injective}` is Borel
+  set S : Set (Euclid k) := B ∩ {u | DifferentiableAt ℝ H u ∧ Injective (fderiv ℝ H u)}
+  have hS : MeasurableSet S :=
+    hB.inter ((measurableSet_of_differentiableAt ℝ H).inter
+      (measurable_fderiv ℝ H ContinuousLinearMap.isOpen_injective.measurableSet))
+  -- coercivity radius: `r(L) ≠ 0`, and `2 r(L) |x| ≤ |Lx|` for injective `L`
+  have hcoer : ∀ L : Euclid k →L[ℝ] Euclid N', ∃ c : NNReal, c ≠ 0 ∧
+      (Injective L → ∀ x, 2 * ((c : ℝ) * ‖x‖) ≤ ‖L x‖) := by
+    intro L
+    by_cases hL : Injective L
+    · obtain ⟨K, hK, hKL⟩ := LinearMap.exists_antilipschitzWith (L : Euclid k →ₗ[ℝ] Euclid N')
+        (LinearMap.ker_eq_bot.mpr hL)
+      refine ⟨K⁻¹ / 2, div_ne_zero (inv_ne_zero hK.ne') two_ne_zero, fun _ x => ?_⟩
+      have hb : ‖x‖ ≤ K * ‖L x‖ := ZeroHomClass.bound_of_antilipschitz L hKL x
+      have hK' : (0 : ℝ) < K := hK
+      calc 2 * (((K⁻¹ / 2 : NNReal) : ℝ) * ‖x‖) = (K : ℝ)⁻¹ * ‖x‖ := by push_cast; ring
+        _ ≤ (K : ℝ)⁻¹ * (K * ‖L x‖) := mul_le_mul_of_nonneg_left hb (inv_nonneg.mpr hK'.le)
+        _ = ‖L x‖ := inv_mul_cancel_left₀ hK'.ne' _
+    · exact ⟨1, one_ne_zero, fun h => absurd h hL⟩
+  choose r rpos hr using hcoer
+  -- partition of `S` into Borel pieces on which `H` is `r(Tₗ)`-close to `Tₗ = DH(yₗ)`
+  obtain ⟨t, T, htd, htm, hSt, happrox, hrep⟩ :=
+    exists_partition_approximatesLinearOn_of_hasFDerivWithinAt H S (fderiv ℝ H)
+      (fun x hx => hx.2.1.hasFDerivAt.hasFDerivWithinAt) r rpos
+  refine ⟨fun l => S ∩ t l, fun l => (r (T l) : ℝ), fun l => hS.inter (htm l),
+    fun l x hx => hx.1.1, fun l l' hll' => (htd hll').mono inter_subset_right inter_subset_right,
+    fun l => NNReal.coe_pos.mpr (pos_iff_ne_zero.mpr (rpos (T l))), ?_, fun l x hx => hx.1.2, ?_⟩
+  · -- `|H(a) − H(a')| ≥ |Tₗ(a − a')| − r(Tₗ)|a − a'| ≥ r(Tₗ)|a − a'|`, `Tₗ = DH(yₗ)` injective
+    intro l a ha a' ha'
+    obtain ⟨y, hyS, hy⟩ := hrep ⟨a, ha.1⟩ l
+    have hinj : Injective (T l) := by rw [hy]; exact hyS.2.2
+    have h2 : ‖H a - H a' - T l (a - a')‖ ≤ r (T l) * ‖a - a'‖ := happrox l a ha a' ha'
+    have h3 := hr (T l) hinj (a - a')
+    have h4 : ‖T l (a - a')‖ ≤ ‖H a - H a'‖ + ‖H a - H a' - T l (a - a')‖ :=
+      calc ‖T l (a - a')‖ = ‖(H a - H a') - (H a - H a' - T l (a - a'))‖ := by
+            rw [sub_sub_cancel]
+        _ ≤ _ := norm_sub_le _ _
+    show (r (T l) : ℝ) * ‖a - a'‖ ≤ ‖H a - H a'‖
+    linarith
+  · -- every regular point of `H` in `B` lies in `S ⊆ ⋃ₗ tₗ`
+    intro u hu hdiff hinj
+    obtain ⟨l, hl⟩ := mem_iUnion.mp (hSt ⟨hu, hdiff, hinj⟩)
+    exact ⟨l, ⟨hu, hdiff, hinj⟩, hl⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
