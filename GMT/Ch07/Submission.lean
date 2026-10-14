@@ -573,6 +573,137 @@ theorem Submission.cmr_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid 
   exact ge_of_tendsto hlim
     (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
 
+/-- **Deformation of the shells** (Simon 6.5.1, proof, displays (11)–(16), (20), (22)–(23);
+chapter-06.txt lines 1740–1830).  Let `push`, `homot` satisfy the properties (PF) of push-forward
+and straight-line homotopy under Lipschitz maps, and let `∂W₀ = D₀ − Z₀`,
+`∂W_{j+1} = D_{j+1} − (Z_{j+1} − Z_j)`.  The homotopy formula for the homotopy `h_j` from `φ_j`
+to `id`, with `push(id, W_j) = W_j`, gives `W_j − φ_{j#}W_j − h_{j#}∂W_j = ∂h_{j#}W_j`; linearity
+and locality (`φ_{j+1} = φ_j` on `spt Z_j`) split `φ_{j#}∂W_j` and `h_{j#}∂W_j` into telescoping
+differences.  The deformed currents are integer multiplicity, `Λ_j^k ≤ (2Λ_j)^k` gives the mass
+bounds, and `|φ_j(x) + t(x − φ_j(x)) − x| = (1 − t)|φ_j(x) − x| ≤ δ` gives the supports. -/
+theorem Submission.cmcsdtd_shell_deformation : ∀ (P m : ℕ) (push : ∀ k : ℕ, (Euclid P → Euclid P) → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) k) (homot : ∀ k : ℕ, (Euclid P → Euclid P) → (Euclid P → Euclid P) → GeometricCurrentOn (univ : Set (Euclid P)) k → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), ((∀ (k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → push k (fun x => x) X = X) ∧ (∀ (k : ℕ) (Λ : NNReal) (F G : Euclid P → Euclid P) (X Y : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → IsCompact Y.support → Y.mass < ∞ → boundaryMassOn Y univ < ∞ → push k F (X - Y) = push k F X - push k F Y ∧ homot k F G (X - Y) = homot k F G X - homot k F G Y) ∧ (∀ (k : ℕ) (Λ : NNReal) (F G F' G' : Euclid P → Euclid P) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → LipschitzWith Λ G → LipschitzWith Λ F' → LipschitzWith Λ G' → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → EqOn F F' X.support → EqOn G G' X.support → push k F X = push k F' X ∧ homot k F G X = homot k F' G' X) ∧ (∀ (k : ℕ) (Λ : NNReal) (F G : Euclid P → Euclid P) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact X.support → X.mass < ∞ → boundaryMassOn X univ < ∞ → (push k F X).mass ≤ (Λ : ℝ≥0∞) ^ k * X.mass ∧ (push k F X).support ⊆ F '' X.support ∧ (∀ δ : ℝ, (∀ x ∈ X.support, dist (F x) (G x) ≤ δ) → (homot k F G X).mass ≤ ENNReal.ofReal δ * (2 * (Λ : ℝ≥0∞)) ^ k * X.mass) ∧ (homot k F G X).support ⊆ {y : Euclid P | ∃ x ∈ X.support, ∃ t ∈ Icc (0 : ℝ) 1, y = F x + t • (G x - F x)}) ∧ (∀ (k : ℕ) (Λ : NNReal) (F G : Euclid P → Euclid P) (X : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact X.support → X.mass < ∞ → X.boundary.mass < ∞ → (push (k + 1) F X).boundary = push k F X.boundary ∧ push (k + 1) G X - push (k + 1) F X - homot k F G X.boundary = (homot (k + 1) F G X).boundary ∧ (IsIntegerMultiplicity X → IsIntegerMultiplicity (push (k + 1) F X) ∧ IsIntegerMultiplicity (homot (k + 1) F G X))) ∧ ∀ (Λ : NNReal) (F G : Euclid P → Euclid P) (X : GeometricCurrentOn (univ : Set (Euclid P)) 0), LipschitzWith Λ F → LipschitzWith Λ G → IsCompact X.support → X.mass < ∞ → push 0 G X - push 0 F X = (homot 0 F G X).boundary) → (∀ X : GeometricCurrentOn (univ : Set (Euclid P)) m, IsClosed X.support) → (∀ A B : GeometricCurrentOn (univ : Set (Euclid P)) m, (A - B).support ⊆ A.support ∪ B.support) → ∀ (W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (D Z : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m) (φ : ℕ → Euclid P → Euclid P) (Λ : ℕ → NNReal) (δ : ℝ) (L A A' : Set (Euclid P)), (W 0).boundary = D 0 - Z 0 → (∀ j, (W (j + 1)).boundary = D (j + 1) - (Z (j + 1) - Z j)) → (∀ j, IsIntegerMultiplicity (W j)) → (∀ j, IsCompact (W j).support ∧ (W j).mass < ∞ ∧ (W j).boundary.mass < ∞) → (∀ j, IsCompact (D j).support ∧ (D j).mass < ∞ ∧ boundaryMassOn (D j) univ < ∞) → (∀ j, IsCompact (Z j).support ∧ (Z j).mass < ∞ ∧ boundaryMassOn (Z j) univ < ∞) → (∀ j, LipschitzWith (Λ j) (φ j)) → (∀ j, 1 ≤ Λ j) → (∀ j, Λ j ≤ Λ (j + 1)) → (∀ j, EqOn (φ (j + 1)) (φ j) (Z j).support) → (∀ j, ∀ x ∈ (W j).support ∪ (D j).support ∪ (Z j).support, dist (φ j x) x ≤ δ) → (∀ j, ∀ x ∈ (W j).support, φ j x ∈ L) → (∀ j, (W j).support ⊆ A) → (∀ j, (D j).support ⊆ A') → W 0 - push (m + 1) (φ 0) (W 0) - (homot m (φ 0) (fun x => x) (D 0) - homot m (φ 0) (fun x => x) (Z 0)) = (homot (m + 1) (φ 0) (fun x => x) (W 0)).boundary ∧ (∀ j, W (j + 1) - push (m + 1) (φ (j + 1)) (W (j + 1)) - (homot m (φ (j + 1)) (fun x => x) (D (j + 1)) - (homot m (φ (j + 1)) (fun x => x) (Z (j + 1)) - homot m (φ j) (fun x => x) (Z j))) = (homot (m + 1) (φ (j + 1)) (fun x => x) (W (j + 1))).boundary) ∧ (push (m + 1) (φ 0) (W 0)).boundary = push m (φ 0) (D 0) - push m (φ 0) (Z 0) ∧ (∀ j, (push (m + 1) (φ (j + 1)) (W (j + 1))).boundary = push m (φ (j + 1)) (D (j + 1)) - (push m (φ (j + 1)) (Z (j + 1)) - push m (φ j) (Z j))) ∧ (∀ j, IsIntegerMultiplicity (push (m + 1) (φ j) (W j)) ∧ IsIntegerMultiplicity (homot (m + 1) (φ j) (fun x => x) (W j))) ∧ (∀ j, (push (m + 1) (φ j) (W j)).mass ≤ (2 * (Λ j : ℝ≥0∞)) ^ (m + 1) * (W j).mass ∧ (homot (m + 1) (φ j) (fun x => x) (W j)).mass ≤ ENNReal.ofReal δ * ((2 * (Λ j : ℝ≥0∞)) ^ (m + 1) * (W j).mass) ∧ (push m (φ j) (D j)).mass ≤ (2 * (Λ j : ℝ≥0∞)) ^ m * (D j).mass ∧ (homot m (φ j) (fun x => x) (D j)).mass ≤ ENNReal.ofReal δ * ((2 * (Λ j : ℝ≥0∞)) ^ m * (D j).mass) ∧ (push m (φ j) (Z j)).mass ≤ (2 * (Λ j : ℝ≥0∞)) ^ m * (Z j).mass ∧ (homot m (φ j) (fun x => x) (Z j)).mass ≤ ENNReal.ofReal δ * ((2 * (Λ j : ℝ≥0∞)) ^ m * (Z j).mass)) ∧ (∀ j, (push (m + 1) (φ j) (W j)).support ⊆ L ∩ cthickening δ A ∧ (homot (m + 1) (φ j) (fun x => x) (W j)).support ⊆ cthickening δ A ∧ (push m (φ j) (D j)).support ⊆ cthickening δ A' ∧ (homot m (φ j) (fun x => x) (D j)).support ⊆ cthickening δ A') := by
+  intro P m push homot hPF hSii hSiii W D Z φ Λ δ L A A' hW0 hWs hIM hWnc hDnc hZnc hLip h1 hmono
+    hEq hdist hφL hWA hDA
+  obtain ⟨PF1, PF2, PF3, PF4, PF5, -⟩ := hPF
+  -- Step 1: `id` is `Λ_j`-Lipschitz (`1 ≤ Λ_j`) and `φ_j` is `Λ_{j+1}`-Lipschitz (`Λ_j ≤ Λ_{j+1}`)
+  have hidLip : ∀ j, LipschitzWith (Λ j) (fun x : Euclid P => x) := fun j =>
+    LipschitzWith.id.weaken (h1 j)
+  have hφLip : ∀ j, LipschitzWith (Λ (j + 1)) (φ j) := fun j => (hLip j).weaken (hmono j)
+  -- Step 2: `W_j`, `D_j`, `Z_j` are normal with compact support (for `W_j`, the boundary mass
+  -- `boundaryMassOn (W j) univ` is `M(∂W_j)` by definition).
+  -- Step 3: so is `Z_{j+1} − Z_j`: its support is closed and lies in `spt Z_{j+1} ∪ spt Z_j`,
+  -- and `M(X − Y) ≤ M(X) + M(Y)`, with `∂(X − Y) = ∂X − ∂Y` in positive degree
+  have hbmsub : ∀ (n : ℕ) (X Y : GeometricCurrentOn (univ : Set (Euclid P)) n),
+      boundaryMassOn X univ < ∞ → boundaryMassOn Y univ < ∞ → boundaryMassOn (X - Y) univ < ∞ := by
+    intro n X Y hX hY
+    cases n with
+    | zero => exact ENNReal.zero_lt_top
+    | succ k =>
+      have e : (X - Y).boundary = X.boundary - Y.boundary := by
+        ext ω
+        rfl
+      show (X - Y).boundary.massOn univ < ∞
+      rw [e]
+      exact (Submission.cmc_fc_cs_massOn_sub_le P k univ univ X.boundary Y.boundary).trans_lt
+        (ENNReal.add_lt_top.2 ⟨hX, hY⟩)
+  have hZd : ∀ j, IsCompact (Z (j + 1) - Z j).support ∧ (Z (j + 1) - Z j).mass < ∞ ∧
+      boundaryMassOn (Z (j + 1) - Z j) univ < ∞ := by
+    intro j
+    obtain ⟨hc1, hm1, hb1⟩ := hZnc (j + 1)
+    obtain ⟨hc0, hm0, hb0⟩ := hZnc j
+    refine ⟨(hc1.union hc0).of_isClosed_subset (hSii _) (hSiii _ _), ?_, hbmsub m _ _ hb1 hb0⟩
+    exact (Submission.cmc_fc_cs_massOn_sub_le P m univ univ _ _).trans_lt
+      (ENNReal.add_lt_top.2 ⟨hm1, hm0⟩)
+  -- Step 4: locality, as `φ_{j+1} = φ_j` on `spt Z_j`
+  have hloc : ∀ j, push m (φ (j + 1)) (Z j) = push m (φ j) (Z j) ∧
+      homot m (φ (j + 1)) (fun x => x) (Z j) = homot m (φ j) (fun x => x) (Z j) := fun j =>
+    PF3 m (Λ (j + 1)) (φ (j + 1)) (fun x => x) (φ j) (fun x => x) (Z j) (hLip (j + 1))
+      (hidLip (j + 1)) (hφLip j) (hidLip (j + 1)) (hZnc j).1 (hZnc j).2.1 (hZnc j).2.2 (hEq j)
+      (fun _ _ => rfl)
+  -- Step 5: linearity deforms `∂W₀ = D₀ − Z₀` and `∂W_{j+1} = D_{j+1} − (Z_{j+1} − Z_j)`
+  have hlin0 := PF2 m (Λ 0) (φ 0) (fun x => x) (D 0) (Z 0) (hLip 0) (hidLip 0) (hDnc 0).1
+    (hDnc 0).2.1 (hDnc 0).2.2 (hZnc 0).1 (hZnc 0).2.1 (hZnc 0).2.2
+  have hlinS : ∀ j, push m (φ (j + 1)) (D (j + 1) - (Z (j + 1) - Z j)) =
+        push m (φ (j + 1)) (D (j + 1)) - (push m (φ (j + 1)) (Z (j + 1)) - push m (φ j) (Z j)) ∧
+      homot m (φ (j + 1)) (fun x => x) (D (j + 1) - (Z (j + 1) - Z j)) =
+        homot m (φ (j + 1)) (fun x => x) (D (j + 1)) -
+          (homot m (φ (j + 1)) (fun x => x) (Z (j + 1)) - homot m (φ j) (fun x => x) (Z j)) := by
+    intro j
+    obtain ⟨e1, e2⟩ := PF2 m (Λ (j + 1)) (φ (j + 1)) (fun x => x) (D (j + 1)) (Z (j + 1) - Z j)
+      (hLip (j + 1)) (hidLip (j + 1)) (hDnc (j + 1)).1 (hDnc (j + 1)).2.1 (hDnc (j + 1)).2.2
+      (hZd j).1 (hZd j).2.1 (hZd j).2.2
+    obtain ⟨e3, e4⟩ := PF2 m (Λ (j + 1)) (φ (j + 1)) (fun x => x) (Z (j + 1)) (Z j)
+      (hLip (j + 1)) (hidLip (j + 1)) (hZnc (j + 1)).1 (hZnc (j + 1)).2.1 (hZnc (j + 1)).2.2
+      (hZnc j).1 (hZnc j).2.1 (hZnc j).2.2
+    rw [e1, e3, (hloc j).1, e2, e4, (hloc j).2]
+    exact ⟨rfl, rfl⟩
+  -- Step 6: the homotopy formula from `φ_j` to `id` on `W_j`, where `push_{m+1}(id, W_j) = W_j`
+  have hPF5 := fun j => PF5 m (Λ j) (φ j) (fun x => x) (W j) (hLip j) (hidLip j) (hWnc j).1
+    (hWnc j).2.1 (hWnc j).2.2
+  have hPF1 : ∀ j, push (m + 1) (fun x => x) (W j) = W j := fun j =>
+    PF1 (m + 1) (W j) (hWnc j).1 (hWnc j).2.1 (hWnc j).2.2
+  -- Step 7: in `[0, ∞]`, `Λ_j^k ≤ (2Λ_j)^k`
+  have hpow : ∀ (j k : ℕ) (M : ℝ≥0∞), (Λ j : ℝ≥0∞) ^ k * M ≤ (2 * (Λ j : ℝ≥0∞)) ^ k * M :=
+    fun j k M => by
+      gcongr
+      exact le_mul_of_one_le_left zero_le one_le_two
+  -- Step 8: `φ_j(x) + t(x − φ_j(x)) − x = (1 − t)(φ_j(x) − x)`, so the segment from `φ_j(x)` to
+  -- `x` stays within `δ` of `x`
+  have hseg : ∀ (j : ℕ) (S B : Set (Euclid P)), S ⊆ B → (∀ x ∈ S, dist (φ j x) x ≤ δ) →
+      {y : Euclid P | ∃ x ∈ S, ∃ t ∈ Icc (0 : ℝ) 1, y = φ j x + t • (x - φ j x)} ⊆
+        cthickening δ B := by
+    rintro j S B hSB hd _ ⟨x, hx, t, ht, rfl⟩
+    refine mem_cthickening_of_dist_le _ x δ B (hSB hx) ?_
+    have e : φ j x + t • (x - φ j x) - x = (1 - t) • (φ j x - x) := by
+      rw [sub_smul, one_smul, smul_sub, smul_sub]
+      abel
+    have h1t : 0 ≤ 1 - t := by linarith [ht.2]
+    calc dist (φ j x + t • (x - φ j x)) x = (1 - t) * dist (φ j x) x := by
+          rw [dist_eq_norm, e, norm_smul, Real.norm_eq_abs, abs_of_nonneg h1t, dist_eq_norm]
+      _ ≤ 1 * dist (φ j x) x := by gcongr; linarith [ht.1]
+      _ ≤ δ := by rw [one_mul]; exact hd x hx
+  refine ⟨?_, fun j => ?_, ?_, fun j => ?_, fun j => (hPF5 j).2.2 (hIM j), fun j => ?_, fun j => ?_⟩
+  · -- (c1): substitute `∂W₀ = D₀ − Z₀` into the homotopy formula
+    have e := (hPF5 0).2.1
+    rw [hPF1 0, hW0, hlin0.2] at e
+    exact e
+  · -- (c2): substitute `∂W_{j+1} = D_{j+1} − (Z_{j+1} − Z_j)`
+    have e := (hPF5 (j + 1)).2.1
+    rw [hPF1 (j + 1), hWs j, (hlinS j).2] at e
+    exact e
+  · -- (c3): `∂φ_{0#}W₀ = φ_{0#}∂W₀`
+    rw [(hPF5 0).1, hW0, hlin0.1]
+  · -- (c4): `∂φ_{j+1#}W_{j+1} = φ_{j+1#}∂W_{j+1}`
+    rw [(hPF5 (j + 1)).1, hWs j, (hlinS j).1]
+  · -- (c6): mass bounds, with `|φ_j(x) − x| ≤ δ` on the supports
+    have hW4 := PF4 (m + 1) (Λ j) (φ j) (fun x => x) (W j) (hLip j) (hidLip j) (hWnc j).1
+      (hWnc j).2.1 (hWnc j).2.2
+    have hD4 := PF4 m (Λ j) (φ j) (fun x => x) (D j) (hLip j) (hidLip j) (hDnc j).1 (hDnc j).2.1
+      (hDnc j).2.2
+    have hZ4 := PF4 m (Λ j) (φ j) (fun x => x) (Z j) (hLip j) (hidLip j) (hZnc j).1 (hZnc j).2.1
+      (hZnc j).2.2
+    refine ⟨hW4.1.trans (hpow j _ _), ?_, hD4.1.trans (hpow j _ _), ?_,
+      hZ4.1.trans (hpow j _ _), ?_⟩
+    · rw [← mul_assoc]
+      exact hW4.2.2.1 δ fun x hx => hdist j x (Or.inl (Or.inl hx))
+    · rw [← mul_assoc]
+      exact hD4.2.2.1 δ fun x hx => hdist j x (Or.inl (Or.inr hx))
+    · rw [← mul_assoc]
+      exact hZ4.2.2.1 δ fun x hx => hdist j x (Or.inr hx)
+  · -- (c7): supports, via `spt φ_{j#}X ⊆ φ_j(spt X)` and Step 8
+    have hW4 := PF4 (m + 1) (Λ j) (φ j) (fun x => x) (W j) (hLip j) (hidLip j) (hWnc j).1
+      (hWnc j).2.1 (hWnc j).2.2
+    have hD4 := PF4 m (Λ j) (φ j) (fun x => x) (D j) (hLip j) (hidLip j) (hDnc j).1 (hDnc j).2.1
+      (hDnc j).2.2
+    refine ⟨hW4.2.1.trans ?_, hW4.2.2.2.trans (hseg j _ A (hWA j) fun x hx =>
+      hdist j x (Or.inl (Or.inl hx))), hD4.2.1.trans ?_, hD4.2.2.2.trans (hseg j _ A' (hDA j)
+      fun x hx => hdist j x (Or.inl (Or.inr hx)))⟩
+    · rintro _ ⟨x, hx, rfl⟩
+      exact ⟨hφL j x hx, mem_cthickening_of_dist_le _ x δ A (hWA j hx)
+        (hdist j x (Or.inl (Or.inl hx)))⟩
+    · rintro _ ⟨x, hx, rfl⟩
+      exact mem_cthickening_of_dist_le _ x δ A' (hDA j hx) (hdist j x (Or.inl (Or.inr hx)))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
