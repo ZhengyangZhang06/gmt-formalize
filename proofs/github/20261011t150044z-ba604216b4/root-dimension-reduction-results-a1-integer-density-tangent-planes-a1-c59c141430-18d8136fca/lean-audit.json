@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4e15f612ff80bb8e96365b2bf4ffd378c631bfdb33a8e6fab6e02f58620119de",
+  "git_delta": {
+    "base_commit": "12d351ebb0ae3158e5a4d92a59db28a1bef173f8",
+    "candidate_commit": "9ae33e0105bcc6941e2e09176f67d313aa64d11a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_ccd_minimizing_stationary",
+    "diff_sha256": "a286ebabdd7c52cdc79922cc437b869d868fdb80aec5c2ee121684dfee44f688",
+    "source_sha256": "7f188bf8f50c0d4f56e3900e849961f20752cdf552248104876cfff8ccc8e785",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_ccd_minimizing_stationary",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsMinimizingIn C univ → BoundaryVanishes C → R.Represents C → ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
