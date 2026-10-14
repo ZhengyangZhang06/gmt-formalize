@@ -1,0 +1,118 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.face_currents-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.face_currents-a1.translate_imrep-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Step 1 of the parent-supplied proof of face_currents (translates of integer multiplicity currents), with every IMRep field written out.
+Accepted result used: Submission.dtc_imrep_current (every IMRep in U represents some current in U). It is a dependency of the ancestor minimality_transfer and is cited here by its exact Lean name.
+Notation:
+- H^n := μHE[n] on ℝ^P = Euclid P;
+- (M, θ, ξ) := (RA.carrier, RA.mult, RA.orient);
+- e(x) := x − v and M' := e⁻¹(M) = {x : x − v ∈ M} = M + v;
+- blowUpMap z ρ (y) = ρ⁻¹(y − z), the SimonGMT blow-up map.
+
+1. (Translation preserves H^n.) μHE[n] on ℝ^P is translation invariant: Mathlib has the instance IsAddRightInvariant for μHE[d] in Mathlib/Geometry/Euclidean/Volume/Measure.lean. So e is measure preserving from H^n to H^n (measurePreserving_sub_right). Also e is a measurable equivalence (MeasurableEquiv.subRight v), hence a measurable embedding. Consequently:
+ (i) H^n(e⁻¹(S)) = H^n(S) for every set S ⊆ ℝ^P, measurable or not (MeasurePreserving.measure_preimage_equiv);
+ (ii) for every set S, every f : ℝ^P → [0, ∞] and every F : ℝ^P → ℝ, ∫⁻_{e⁻¹(S)} f(e(x)) dH^n(x) = ∫⁻_S f dH^n and ∫_{e⁻¹(S)} F(e(x)) dH^n(x) = ∫_S F dH^n (MeasurePreserving.setLIntegral_comp_preimage_emb, MeasurePreserving.setIntegral_preimage_emb);
+ (iii) e is measure preserving from H^n⌞M' to H^n⌞M (MeasurePreserving.restrict_preimage; M is Borel by RA.measurableSet_carrier, and M' = e⁻¹(M)).
+
+2. (Blow-up images.) For all x ∈ ℝ^P and ρ ∈ ℝ, blowUpMap x ρ '' M' = blowUpMap (x − v) ρ '' M:
+ - if y ∈ M', then y − v ∈ M and ρ⁻¹(y − x) = ρ⁻¹((y − v) − (x − v));
+ - if y ∈ M, then y + v ∈ M' and ρ⁻¹(y − (x − v)) = ρ⁻¹((y + v) − x).
+ SimonGMT's HasApproximateTangentSpaceAt n N z Q means: finrank Q = n, and ∫_{blowUpMap z ρ '' N} f dH^n → ∫_Q f dH^n as ρ → 0⁺ for every f ∈ C_c(ℝ^P, ℝ). It depends on (N, z) only through the sets blowUpMap z ρ '' N. Hence HasApproximateTangentSpaceAt n M (x − v) Q implies HasApproximateTangentSpaceAt n M' x Q, with the same dimension condition and the same functions of ρ.
+
+3. (The translated triple.) Let R^v := (M', θ', ξ') with θ'(x) := θ(x − v) and ξ'(x) := ξ(x − v). We check the IMRep fields.
+ (a) M' = e⁻¹(M) is Borel (e is measurable and M is Borel), and M' ⊆ ℝ^P.
+ (b) M' is countably n-rectifiable. By RA.rectifiable, M ⊆ M₀ ∪ ⋃_j range F_j with H^n(M₀) = 0 and each F_j : ℝ^n → ℝ^P Lipschitz with some constant K_j. Put M₀' := e⁻¹(M₀) and F_j'(z) := F_j(z) + v.
+  - H^n(M₀') = H^n(M₀) = 0 by 1(i).
+  - F_j' is Lipschitz with constant K_j: it is the sum of F_j and a constant map (LipschitzWith.add with LipschitzWith.const).
+  - If x ∈ M', then x − v ∈ M. Either x − v ∈ M₀, so x ∈ M₀', or x − v = F_j(z) for some j and z, so x = F_j'(z).
+  Hence M' ⊆ M₀' ∪ ⋃_j range F_j'.
+ (c) θ' = θ ∘ e is measurable. For x ∈ M' we have x − v ∈ M, so θ'(x) = θ(x − v) > 0 by RA.mult_pos.
+ (d) Local integrability. Let K ⊆ ℝ^P be compact. K_v := {y : y + v ∈ K} = {x − v : x ∈ K} is compact, as the image of K under the continuous map x ↦ x − v. Also M' ∩ K = e⁻¹(M ∩ K_v). By 1(ii), ∫⁻_{M'∩K} θ'(x) dH^n(x) = ∫⁻_{e⁻¹(M∩K_v)} θ(e(x)) dH^n(x) = ∫⁻_{M∩K_v} θ dH^n, which is finite by RA.locallyIntegrable_mult applied to the compact set K_v ⊆ ℝ^P.
+ (e) ξ' = ξ ∘ e is AEStronglyMeasurable for H^n⌞M'. Indeed, ξ is AEStronglyMeasurable for H^n⌞M (RA.aestronglyMeasurable_orient), and e is measure preserving from H^n⌞M' to H^n⌞M by 1(iii) (AEStronglyMeasurable.comp_measurePreserving).
+ (f) Orientations. By RA.orients, for H^n⌞M-a.e. y there is a subspace Q with HasApproximateTangentSpaceAt n M y Q and IsUnitOrientationOf (ξ(y)) Q. A measure-preserving map is quasi-measure-preserving, so this a.e. property pulls back along e (QuasiMeasurePreserving.ae): for H^n⌞M'-a.e. x it holds at y = x − v. For such x and Q, step 2 gives HasApproximateTangentSpaceAt n M' x Q, and ξ'(x) = ξ(x − v) is a unit orientation of Q.
+ Hence R^v is an IMRep of dimension n in ℝ^P.
+
+4. (The current.) By Submission.dtc_imrep_current with U = ℝ^P, there is A^v ∈ 𝒟_n(ℝ^P) with R^v.Represents A^v.
+
+5. (Translation preserves test forms.) Let φ be a test form (C^∞ with compact support) and u ∈ ℝ^P. Then φ(· + u) is a test form:
+ - it is smooth, as the composition of φ with the smooth map y ↦ y + u;
+ - it equals φ ∘ h for the homeomorphism h(y) = y + u (Homeomorph.addRight u), so it has compact support (HasCompactSupport.comp_homeomorph).
+ Applying this with u := −v: if φ(· + v) is a test form, then so is φ = (φ(· + v))(· − v).
+
+6. (Proof of (a).) Let φ be an n-form.
+ Case 1: φ is a test form. Then φ(· + v) is a test form by step 5, and both have tsupport ⊆ ℝ^P. By the definition of currentEval, currentEval A^v φ = A^v(φ) and currentEval A (φ(· + v)) = A(φ(· + v)). Now A^v(φ) = R^v.action(φ) = ∫_{M'} θ(x − v)·ξ(x − v)(φ(x)) dH^n(x). Since φ(x) = φ((x − v) + v), the integrand is G(e(x)) with G(y) := θ(y)·ξ(y)(φ(y + v)). By 1(ii) the integral equals ∫_M G dH^n = R_A.action(φ(· + v)), which is A(φ(· + v)) because R_A represents A.
+ Case 2: φ is not a test form. Then φ(· + v) is not a test form either (step 5, contrapositive), so both sides of (a) are 0 by the definition of currentEval.
+
+7. (Proof of (b).) Let C be Borel. Then C_v := (y ↦ y + v)⁻¹(C) is Borel. IMRep.measure is the withDensity of the multiplicity over H^n⌞carrier, so withDensity_apply and Measure.restrict_restrict give R^v.measure(C) = ∫⁻_{C∩M'} θ(x − v) dH^n(x). Now C ∩ M' = e⁻¹(C_v ∩ M), so by 1(ii) this equals ∫⁻_{C_v∩M} θ dH^n. By withDensity_apply and Measure.restrict_restrict again, that is R_A.measure(C_v) = R_A.measure((y ↦ y + v)⁻¹(C)). ∎
+
+## Key steps
+
+1. x ↦ x − v is a measure-preserving measurable equivalence of μHE[n] (translation invariance). This gives H^n(e⁻¹S) = H^n(S) for all S, change of variables on preimages, and measure preservation from H^n⌞(M + v) to H^n⌞M.
+2. blowUpMap x ρ '' (M + v) = blowUpMap (x − v) ρ '' M, so approximate tangent planes of M at x − v are approximate tangent planes of M + v at x.
+3. R^v = (M + v, θ(· − v), ξ(· − v)) satisfies every IMRep field (Borel, rectifiable via F_j + v, positive and locally integrable multiplicity, measurable orientation, a.e. orientation pulled back along e). Submission.dtc_imrep_current then gives A^v represented by R^v.
+4. Test forms are invariant under translation. For test φ, change of variables gives R^v.action φ = R_A.action φ(· + v), i.e. (a); for non-test φ both currentEvals are 0. The same change of variables gives R^v.measure C = R_A.measure(C − v), i.e. (b).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat manifest.json (project b4d606db1 = workspace HEAD, mathlib 25730c7c); cmp project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean and Submission.lean (identical)`
+- `python3 over dag.json: ancestors of face_currents and their depends_on (citable inherited names); lean_name/title regex transl|shift|translate; accepted lean_statements containing IMRep/IsIntegerMultiplicity together with ∑/Finset; accepted statements combining blowUp and IMRep; IsIntegerMultiplicity (0`
+- `git show 791f7d72:GMT/Ch07/Submission.lean (cbr_cc_current_algebra), git show c7dea4b8 / 4aa9ba8d import lists; byte comparison of the declaration type with dag.json`
+- `grep -n over /runtime/.../_recursive_lean/runtime.py (_decompose max_depth, _existing_lean_name_problem, _accepted_checkpoint, _overlay_accepted_children, _reference_use_problem) and inherited.py (cited_inherited)`
+- `rg -n "IsAddRightInvariant|IsAddLeftInvariant|theorem IsometryEquiv.measurePreserving_euclideanHausdorffMeasure" mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n "theorem setLIntegral_comp_preimage_emb" mathlib/Mathlib/MeasureTheory; rg -n "theorem restrict_preimage |theorem measure_preimage_equiv|protected theorem quasiMeasurePreserving" mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean; rg -n comp_measurePreserving mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean; rg -n "^theorem ae " mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean; rg -n "def divRight|theorem measurePreserving_div_right" mathlib/Mathlib/MeasureTheory/Group`
+- `rg -n "theorem isClosed_orthogonal|closed_of_finiteDimensional|theorem add_mem_iff_left|theorem mem_orthogonal'|theorem orthogonal_le" over mathlib InnerProductSpace/Orthogonal.lean, Topology/Algebra/Module/FiniteDimension.lean, Algebra/Module/Submodule/Defs.lean`
+- `rg -n "translat|addRight|τ_v" project/GMT/Ch07/Contract.lean (no match); grep -n "blowUpMap|def HasApproximateTangentSpaceAt|def CountablyRectifiable" SimonGMT Chapter03/Rectifiable.lean; grep -n restrictDomain / Zero instance / massOn / massAdmissibleOn in SimonGMT Chapter06 Currents.lean, Mass.lean, CurrentLocalEquality.lean`
+- `lake env lean /tmp/fc-decomp/check/{Smoke,Types,Assembly,BoxFace,Translate,Combined}.lean (Lean v4.35.0-rc3)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/QuasiMeasurePreserving.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/MeasurableEquiv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Group/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-1425c6505c/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-7f270cb1eb/decomposition-v1.json`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/inherited.py`
+- `/tmp/fc-decomp/check/Types.lean`
+- `/tmp/fc-decomp/check/Translate.lean`
+- `/tmp/fc-decomp/check/BoxFace.lean`
+- `/tmp/fc-decomp/check/Assembly.lean`
+- `/tmp/fc-decomp/check/Combined.lean`
+
+Pins match: the manifest records project b4d606db1 (workspace HEAD) and mathlib 25730c7c, and the snapshot Contract.lean is identical to the workspace Contract.lean and Submission.lean.
+
+Gaps: the contract has no translation of currents (rg 'translat|addRight' on Contract.lean: no match), and SimonGMT has no translation of IMReps. Among accepted dag.json nodes, the only translation tools are for blow-ups at scale 1 on the domain dilation(−v,1)''U (dtc_blowUp_imrep, dimred_cs_ti_blowUp_translate_eval), so translate_imrep is a new lemma; it follows the supplied direct construction.
+
+Mathlib in the snapshot provides every fact it needs:
+- μHE[d] is IsAddRightInvariant / IsAddLeftInvariant (Volume/Measure.lean, lines 250–258), so measurePreserving_sub_right and MeasurableEquiv.subRight (to_additive of divRight) apply;
+- MeasurePreserving.measure_preimage_equiv, restrict_preimage and quasiMeasurePreserving (MeasurePreserving.lean 77/94/155);
+- setLIntegral_comp_preimage_emb (Lebesgue/Map.lean:130);
+- AEStronglyMeasurable.comp_measurePreserving (StronglyMeasurable/Lemmas.lean:38) and QuasiMeasurePreserving.ae (QuasiMeasurePreserving.lean:108).
+SimonGMT's HasApproximateTangentSpaceAt depends on (M, x) only through blowUpMap x r '' M (Rectifiable.lean:96–111), which makes the tangent-plane field translate directly. For box_face, Submodule.isClosed_orthogonal (Orthogonal.lean:128), Submodule.closed_of_finiteDimensional (FiniteDimension.lean:531) and Submodule.add_mem_iff_left (Submodule/Defs.lean:346) are present.
+
+Accepted reuse: cbr_cc_current_algebra (candidate 791f7d72) has a complete proof and a frozen type byte-identical to its dag.json entry; part (c) is exactly Step 5. Other summation results were rejected: cmc_fc_sl_im_partial_sum is ℕ-indexed over range (N+1), and cmcsd_zero_isIntegerMultiplicity covers only the zero current.
+
+Lean checks: all child types elaborate. Combined.lean compiles with complete proofs of translate_imrep, box_face and the frozen parent type from stubs of the accepted or external dependencies only; the axioms are propext, sorryAx from stubs only, Classical.choice and Quot.sound.

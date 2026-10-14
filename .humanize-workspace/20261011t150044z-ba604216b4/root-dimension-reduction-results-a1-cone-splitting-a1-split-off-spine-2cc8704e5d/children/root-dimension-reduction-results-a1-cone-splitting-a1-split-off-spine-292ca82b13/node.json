@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_param-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1",
+  "depth": 5,
+  "title": "Lipschitz parametrization of the cone: (s, u) ↦ s·G_i(u) parametrizes ω ↦ X(Kω)",
+  "statement": "Let P, q ∈ ℕ, X ∈ 𝒟_{q+1}(ℝ^P) with spt X compact, and Y ∈ 𝒟_{q+2}(ℝ^P) (GeometricCurrentOn univ (q+1) and (q+1+1)). Let G_i : ℝ^{q+1} → ℝ^P (i ∈ ℕ) be Lipschitz, A_i ⊆ ℝ^{q+1} Borel, and w_i : ℝ^{q+1} → ℤ and c_i : ℝ^{q+1} → ℝ measurable. Assume:\n- G_i is differentiable at every point of A_i, and G_i(A_i) ⊆ spt X;\n- w_i is integrable on A_i;\n- for u ∈ A_i, c_i(u) ≥ 0 and |α(DG_i(u)e)| ≤ c_i(u)|α| for all (q+1)-covectors α (|α| = covectorEuclideanNorm α);\n- Σ_i ∫⁻_{A_i} |w_i| c_i < ∞;\n- X(γ) = Σ_i ∫_{A_i} w_i(u) γ(G_i u)(DG_i(u)e) du (HasSum) for every γ ∈ 𝒟^{q+1}(ℝ^P);\n- for every ω ∈ 𝒟^{q+2}(ℝ^P) there is η ∈ 𝒟^{q+1}(ℝ^P) with η(x) = ∫_0^1 t^{q+1} ι_x(ω(t x)) dt for x ∈ spt X and Y(ω) = X(η).\nThen there are, for i ∈ ℕ, Lipschitz H_i : ℝ^{q+2} → ℝ^P, Borel B_i ⊆ ℝ^{q+2}, and measurable h_i : ℝ^{q+2} → ℤ and c′_i : ℝ^{q+2} → ℝ such that:\n- h_i is integrable on B_i;\n- for w ∈ B_i, c′_i(w) ≥ 0 and |α(DH_i(w)e_0, …, DH_i(w)e_{q+1})| ≤ c′_i(w)|α| for all (q+2)-covectors α;\n- Σ_i ∫⁻_{B_i} |h_i| c′_i < ∞;\n- Y(ω) = Σ_i ∫_{B_i} h_i(w) ω(H_i w)(DH_i(w)e) dw (HasSum) for every ω ∈ 𝒟^{q+2}(ℝ^P).\nRemark (not part of the Lean statement): the constructed maps satisfy H_i(s, u) = s G_i(u) on (0,1) × A_i, the cone parametrization of step 8 of the parent proof.",
+  "lean_statement": "∀ (P q : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) (q + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (q + 1 + 1)) (G : ℕ → Euclid (q + 1) → Euclid P) (A : ℕ → Set (Euclid (q + 1))) (w : ℕ → Euclid (q + 1) → ℤ) (c : ℕ → Euclid (q + 1) → ℝ), IsCompact X.support → (∀ i, ∃ L : NNReal, LipschitzWith L (G i)) → (∀ i, MeasurableSet (A i)) → (∀ i, Measurable (w i)) → (∀ i, Measurable (c i)) → (∀ i, ∀ u ∈ A i, DifferentiableAt ℝ (G i) u) → (∀ i, G i '' A i ⊆ X.support) → (∀ i, IntegrableOn (fun u => (w i u : ℝ)) (A i)) → (∀ i, ∀ u ∈ A i, 0 ≤ c i u ∧ ∀ α : Covector (Euclid P) (q + 1), |α (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))| ≤ c i u * covectorEuclideanNorm α) → ∑' i, ∫⁻ u in A i, ENNReal.ofReal (|(w i u : ℝ)| * c i u) ≠ ∞ → (∀ γ : TestFormOn (univ : Set (Euclid P)) (q + 1), HasSum (fun i => ∫ u in A i, (w i u : ℝ) * (γ : DifferentialForm (Euclid P) (q + 1)) (G i u) (fun a => fderiv ℝ (G i) u (EuclideanSpace.single a 1))) (X γ)) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1), ∃ η : TestFormOn (univ : Set (Euclid P)) (q + 1), (∀ x ∈ X.support, (η : DifferentialForm (Euclid P) (q + 1)) x = ∫ t in (0 : ℝ)..1, t ^ (q + 1) • ((ω : DifferentialForm (Euclid P) (q + 1 + 1)) (t • x)).curryLeft x) ∧ Y ω = X η) → ∃ (H : ℕ → Euclid (q + 1 + 1) → Euclid P) (B : ℕ → Set (Euclid (q + 1 + 1))) (h : ℕ → Euclid (q + 1 + 1) → ℤ) (c' : ℕ → Euclid (q + 1 + 1) → ℝ), (∀ i, ∃ L : NNReal, LipschitzWith L (H i)) ∧ (∀ i, MeasurableSet (B i)) ∧ (∀ i, Measurable (h i)) ∧ (∀ i, Measurable (c' i)) ∧ (∀ i, IntegrableOn (fun u => (h i u : ℝ)) (B i)) ∧ (∀ i, ∀ u ∈ B i, 0 ≤ c' i u ∧ ∀ α : Covector (Euclid P) (q + 1 + 1), |α (fun a => fderiv ℝ (H i) u (EuclideanSpace.single a 1))| ≤ c' i u * covectorEuclideanNorm α) ∧ ∑' i, ∫⁻ u in B i, ENNReal.ofReal (|(h i u : ℝ)| * c' i u) ≠ ∞ ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (q + 1 + 1), HasSum (fun i => ∫ u in B i, (h i u : ℝ) * (ω : DifferentialForm (Euclid P) (q + 1 + 1)) (H i u) (fun a => fderiv ℝ (H i) u (EuclideanSpace.single a 1))) (Y ω)",
+  "lean_name": "dimred_cs_sos_cfs_cone_param",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1.curry_le-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.covector_bounds-a1.curry_le-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-14afd577b6-a1",
+      "result_commit": "0ea228e4341594546bf57438f6b9c6dbb180422d",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-292ca82b13-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.rescaled_integral_limit-a1.diff_quot_integral-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.rescaled_integral_limit-a1",
+  "depth": 6,
+  "title": "Integrated convergence of blown-up difference quotients on a ball",
+  "statement": "Let P, n ∈ ℕ, F : ℝ^n → ℝ^P, L : ℝ^n → ℝ^P a continuous linear map, b ∈ ℝ^n, f : ℝ^P → ℝ continuous with compact support, and R ∈ ℝ. Suppose F has Fréchet derivative L at b. Then ∫_{B̄_R(0)} |f(r^{-1}(F(b + rc) − F(b))) − f(Lc)| dλ(c) → 0 as r → 0⁺. Here λ is Lebesgue measure on ℝ^n, B̄_R(0) = {c : |c| ≤ R}, the integral is a Bochner integral (equal to 0 by convention when the integrand is not integrable on B̄_R(0)), and no measurability of F is assumed.",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (L : Euclid n →L[ℝ] Euclid P) (b : Euclid n) (f : Euclid P → ℝ) (R : ℝ), HasFDerivAt F L b → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => ∫ c in closedBall (0 : Euclid n) R, ‖f (r⁻¹ • (F (b + r • c) - F b)) - f (L c)‖ ∂volume) (𝓝[>] 0) (𝓝 0)",
+  "lean_name": "pit_ril_diffQuot_integral_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-bb5a701af1-a1"
+}
