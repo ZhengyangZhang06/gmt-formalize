@@ -1664,6 +1664,125 @@ theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : M
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
 
+/-- **Simon Ch. 6, 3.4–3.5 and 3.7** (printed pp. 147–148), for one bi-Lipschitz piece `(G, A)` of
+the carrier `M` of `R = τ(M, θ, ξ)`: `D₁G(u) ∧ ⋯ ∧ DₙG(u) = det(DᵢG(u) · τⱼ) τ₁ ∧ ⋯ ∧ τₙ` with
+`|det(DᵢG(u) · τⱼ)| = J_G(u)`, so `J_G(u) ξ(G(u)) = ±D₁G(u) ∧ ⋯ ∧ DₙG(u)` for `λ`-a.e. `u ∈ A`,
+with a measurable choice of the sign.  By `bilip_measure`, `Hⁿ`-null subsets of `G(A)` pull back to
+`λ`-null subsets of `A`; `G(A)` has approximate tangent space `range DG(u)` at `G(u)`
+(`piece_tangent`), hence so has `M` (locality (IMC)(a)), and `ξ(G(u))` orients it (`R.orients`,
+uniqueness of `T_{G(u)}M`).  `J_G(u)⁻¹ D₁G(u) ∧ ⋯ ∧ DₙG(u)` is another unit orientation of
+`range DG(u)` (`wedge_orientation`), so the two agree up to sign (`orientation_sign`). -/
+theorem Submission.dimred_mbl_dt_lpip_piece_orientation_sign : ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (G : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (m : ℝ), IsOpen U → LipschitzWith L G → MeasurableSet A → 0 < m → (∀ a ∈ A, ∀ a' ∈ A, m * ‖a - a'‖ ≤ ‖G a - G a'‖) → (∀ a ∈ A, DifferentiableAt ℝ G a ∧ Injective (fderiv ℝ G a)) → G '' A ⊆ R.carrier → ∃ s : Euclid n → ℤ, Measurable s ∧ (∀ u, s u = 1 ∨ s u = -1) ∧ ∀ᵐ u ∂(volume.restrict A), ∀ α : Covector (Euclid P) n, Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n => inner ℝ (fderiv ℝ G u (EuclideanSpace.single a 1)) (fderiv ℝ G u (EuclideanSpace.single b 1)))) * R.orient (G u) α = (s u : ℝ) * α (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) := by
+  classical
+  intro hIMC P n U R G A L m hU hG hA hm hbi hdiff hGA
+  -- `G` is continuous and injective on `A`, so `G(A)` is Borel
+  have hGc : Continuous G := hG.continuous
+  have hinj : InjOn G A := by
+    intro a ha a' ha' h
+    have h1 := hbi a ha a' ha'
+    rw [h, sub_self, norm_zero] at h1
+    have h2 : ‖a - a'‖ ≤ 0 := le_of_mul_le_mul_left (by rwa [mul_zero]) hm
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 h2)
+  have hYm : MeasurableSet (G '' A) := hA.image_of_continuousOn_injOn hGc.continuousOn hinj
+  -- the carrier is locally `Hⁿ`-finite in `U`, since `θ ≥ 1` on it
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (R.carrier ∩ K) ≠ ∞ := by
+    intro K hK hKU
+    refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU) ?_
+    calc μHE[n] (R.carrier ∩ K) = ∫⁻ _ in R.carrier ∩ K, 1 ∂μHE[n] := (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[n] :=
+        setLIntegral_mono' (R.measurableSet_carrier.inter hK.measurableSet)
+          fun x hx => Nat.one_le_cast.2 (R.mult_pos x hx.1)
+  -- `bilip_measure`: `Hⁿ`-null subsets of `G(A)` pull back to `λ`-null subsets of `A`, so `G` is
+  -- quasi-measure-preserving from `λ⌞A` to `Hⁿ⌞G(A)`
+  have hnull : ∀ Z ⊆ A, μHE[n] (G '' Z) = 0 → volume Z = 0 := by
+    intro Z hZ h0
+    have h1 :=
+      (Submission.dimred_mbl_dt_lpip_bilipschitz_measure_bounds P n G A L m hG hm hbi Z hZ).1
+    rw [h0, nonpos_iff_eq_zero, mul_eq_zero] at h1
+    exact h1.resolve_left (pow_ne_zero _ (ENNReal.ofReal_pos.2 hm).ne')
+  have hqmp : Measure.QuasiMeasurePreserving G (volume.restrict A) (μHE[n].restrict (G '' A)) := by
+    refine ⟨hGc.measurable, Measure.AbsolutelyContinuous.mk fun T hT h0 => ?_⟩
+    rw [Measure.restrict_apply hT] at h0
+    rw [Measure.map_apply hGc.measurable hT, Measure.restrict_apply (hGc.measurable hT)]
+    refine hnull _ inter_subset_right (measure_mono_null ?_ h0)
+    rintro _ ⟨u, hu, rfl⟩
+    exact ⟨hu.1, mem_image_of_mem G hu.2⟩
+  -- a.e. on `A`: `G(A)` has approximate tangent space `range DG(u)` at `G(u)` (`piece_tangent`),
+  -- `G(A)` and `M` have the same approximate tangent spaces at `G(u)` (locality (IMC)(a)), and
+  -- `ξ(G(u))` orients an approximate tangent space of `M` at `G(u)` (`R.orients`)
+  have hpt := Submission.ptd_piece_image_approxTangent_ae P n G A L m hG hA hm hbi hdiff
+  have hloc := hqmp.ae (hIMC.1 P n U (G '' A) R.carrier hU hYm R.measurableSet_carrier hGA
+    R.carrier_subset hfin)
+  have hor := hqmp.ae (ae_restrict_of_ae_restrict_of_subset hGA R.orients)
+  -- the frame `v(u) = (DG(u)eₐ)ₐ`, `J(u) = J_G(u)` and `ev_v = v₁ ∧ ⋯ ∧ vₙ : α ↦ α(v)`
+  let v : Euclid n → Fin n → Euclid P := fun u a => fderiv ℝ G u (EuclideanSpace.single a 1)
+  let J : Euclid n → ℝ := fun u =>
+    Real.sqrt (Matrix.det (Matrix.of fun a b : Fin n => inner ℝ (v u a) (v u b)))
+  let ev := (ContinuousLinearMap.id ℝ (Covector (Euclid P) n)).flipAlternating
+  have hev : ∀ (w : Fin n → Euclid P) (α : Covector (Euclid P) n), ev w α = α w := fun w α => by
+    simp only [ev, ContinuousLinearMap.flipAlternating_apply_apply, ContinuousLinearMap.id_apply]
+  -- a.e. on `A`: `J(u) ξ(G(u)) = ±ev_{v(u)}`
+  have hsign : ∀ᵐ u ∂(volume.restrict A),
+      J u • R.orient (G u) = ev (v u) ∨ J u • R.orient (G u) = -ev (v u) := by
+    filter_upwards [hpt, hloc, hor, ae_restrict_mem hA] with u hpt hloc hor huA
+    -- `v(u)` is the image of the standard basis under the injective `DG(u)`
+    let b := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+    have hvu : v u = (fderiv ℝ G u : Euclid n →ₗ[ℝ] Euclid P) ∘ b := by
+      funext a
+      simp [v, b]
+    have hli : LinearIndependent ℝ (v u) := by
+      rw [hvu]
+      exact b.linearIndependent.map' _ (LinearMap.ker_eq_bot.2 (hdiff u huA).2)
+    have hspan : Submodule.span ℝ (range (v u)) =
+        LinearMap.range (fderiv ℝ G u : Euclid n →ₗ[ℝ] Euclid P) := by
+      rw [hvu, range_comp, Submodule.span_image, b.span_eq, Submodule.map_top]
+    -- `ξ(G(u))` is a unit orientation of `T_{G(u)}M = range DG(u) = span v(u)`
+    obtain ⟨Q, hQ, hξQ⟩ := hor
+    have hQeq : Q = Submodule.span ℝ (range (v u)) := by
+      rw [hspan]
+      exact hQ.unique ((hloc _).1 hpt)
+    rw [hQeq] at hξQ
+    -- so is `J(u)⁻¹ ev_{v(u)}` (`wedge_orientation`); they agree up to sign (`orientation_sign`)
+    obtain ⟨hdet, hwedge⟩ := Submission.codim1_lur_normalized_wedge_orientation P n (v u) hli
+    have hJ : 0 < J u := Real.sqrt_pos.2 hdet
+    have hζ := hwedge ((J u)⁻¹ • ev (v u)) fun α => by
+      rw [smul_apply, smul_eq_mul, hev]
+    rcases Submission.rsdic_unitOrientation_eq_or_eq_neg P n _ _ _ hζ hξQ with h | h
+    · left
+      rw [h, smul_smul, mul_inv_cancel₀ hJ.ne', one_smul]
+    · right
+      rw [h, smul_neg (J u) ((J u)⁻¹ • ev (v u)), smul_smul, mul_inv_cancel₀ hJ.ne', one_smul]
+  -- measurability: `J` (`gram_area`), `v` (`measurable_fderiv`), `ev` continuous, and `ξ ∘ G`
+  -- through the quasi-measure-preserving `G`
+  have hJm : Measurable J := (Submission.codim1_lura_gram_area_formula n P G).1
+  have hvm : Measurable v :=
+    Measurable.of_eval fun a => measurable_fderiv_apply_const ℝ G (EuclideanSpace.single a 1)
+  have hfm : AEStronglyMeasurable (fun u => J u • R.orient (G u)) (volume.restrict A) :=
+    hJm.aestronglyMeasurable.smul
+      ((R.aestronglyMeasurable_orient.mono_measure
+        (Measure.restrict_mono_set _ hGA)).comp_quasiMeasurePreserving hqmp)
+  have hem : AEStronglyMeasurable (fun u => ev (v u)) (volume.restrict A) :=
+    (map_continuous ev).comp_aestronglyMeasurable hvm.aestronglyMeasurable
+  -- the sign: `1` on a measurable version `S` of `{J ξ ∘ G = ev_v}`, `-1` off it; the
+  -- operator-norm uniformity of `Λₙ` is countably generated and induces its topology
+  have : TopologicalSpace.PseudoMetrizableSpace (MultiVector P n) :=
+    ⟨⟨PseudoMetricSpace.toUniformSpace, rfl,
+      Metric.uniformity_basis_dist_inv_nat_succ.isCountablyGenerated⟩⟩
+  have hS₀ := hfm.nullMeasurableSet_eq_fun hem
+  set S := toMeasurable (volume.restrict A) {u | J u • R.orient (G u) = ev (v u)}
+  have hSm : MeasurableSet S := measurableSet_toMeasurable _ _
+  refine ⟨fun u => if u ∈ S then 1 else -1, Measurable.ite hSm measurable_const measurable_const,
+    fun u => by by_cases hu : u ∈ S <;> simp [hu], ?_⟩
+  filter_upwards [hsign, hS₀.toMeasurable_ae_eq] with u hu hSu α
+  have hSu' : u ∈ S ↔ J u • R.orient (G u) = ev (v u) := Iff.of_eq hSu
+  have key : J u * R.orient (G u) α = (J u • R.orient (G u)) α := by
+    rw [smul_apply, smul_eq_mul]
+  show J u * R.orient (G u) α = ((if u ∈ S then (1 : ℤ) else -1 : ℤ) : ℝ) * α (v u)
+  by_cases huS : u ∈ S
+  · rw [ite_eq_left huS, key, hSu'.1 huS, hev, Int.cast_one, one_mul]
+  · rw [ite_eq_right huS, key, hu.resolve_left (fun h => huS (hSu'.2 h)), neg_apply, hev,
+      Int.cast_neg, Int.cast_one, neg_one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
