@@ -599,6 +599,47 @@ theorem Submission.cmcdtfrcb_pullback_divergence : ∀ (P m : ℕ) (ι : Fin (m 
     rw [hF.fderiv]
     simp [hLe]
 
+/-- **Stokes' formula for one oriented lattice unit cube** (the cubes of the lattice of Simon
+Ch. 6, §5).  For `Φ(y) = b + Σⱼ yⱼ e_{ι(j)}` on the open unit cube `Q^{m+1}` (`b ∈ ℤᴾ`, `ι`
+arbitrary) and a `C¹` `m`-form `γ`,
+`∫_{Q^{m+1}} dγ(Φ y)(e_{ι(0)}, …, e_{ι(m)}) = Σᵢ (−1)ⁱ (∫_{Q^m} γ(Φ¹ᵢ)(E'ᵢ) − ∫_{Q^m} γ(Φ⁰ᵢ)(E'ᵢ))`,
+where `Φᶜᵢ(y') = b + c e_{ι(i)} + Σₗ y'ₗ e_{ι(succAbove i l)}` and `E'ᵢ = (e_{ι(succAbove i l)})ₗ`.
+By `cmcdtfrcb_pullback_divergence` the integrand is `Σᵢ ∂ᵢFᵢ` with the `C¹` functions
+`Fᵢ(y) = (−1)ⁱ γ(Φ y)(E'ᵢ)`; `cmcdtfrcb_cube_partial_ftc` integrates each `∂ᵢFᵢ` to the
+difference of the integrals of `Fᵢ` over the faces `yᵢ = 1` and `yᵢ = 0`, and
+`Φ(insertNth i c y') = Φᶜᵢ(y')`. -/
+theorem Submission.cmcdtfrcb_cube_stokes : ∀ (P m : ℕ) (ι : Fin (m + 1) → Fin P) (b : Fin P → ℤ) (γ : DifferentialForm (Euclid P) m), ContDiff ℝ 1 γ → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, exteriorDerivative γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single (ι j) (1 : ℝ)) (fun j => EuclideanSpace.single (ι j) (1 : ℝ)) = ∑ i : Fin (m + 1), (-1 : ℝ) ^ (i : ℕ) * ((∫ y in {y : Euclid m | ∀ j, 0 < y j ∧ y j < 1}, γ (WithLp.toLp 2 (fun k => ((b + Pi.single (ι i) 1 : Fin P → ℤ) k : ℝ)) + ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ))) - ∫ y in {y : Euclid m | ∀ j, 0 < y j ∧ y j < 1}, γ (WithLp.toLp 2 (fun k => (b k : ℝ)) + ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ)) (fun j => EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ))) := by
+  intro P m ι b γ hγ
+  -- `dγ(Φ y)(E) = Σᵢ ∂ᵢFᵢ(y)`, with every `Fᵢ` of class `C¹`
+  obtain ⟨hC1, hpt⟩ := Submission.cmcdtfrcb_pullback_divergence P m ι
+    (WithLp.toLp 2 (fun k => (b k : ℝ))) γ hγ
+  simp only [hpt]
+  -- each `∂ᵢFᵢ` is integrable on the cube, so the finite sum leaves the integral
+  rw [integral_finsetSum _ fun i _ => (Submission.cmcdtfrcb_cube_partial_ftc m i _ (hC1 i)).1]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  -- `∫ ∂ᵢFᵢ` is the difference of the face integrals of `Fᵢ` at `yᵢ = 1` and `yᵢ = 0`
+  rw [(Submission.cmcdtfrcb_cube_partial_ftc m i _ (hC1 i)).2]
+  -- `Φ(insertNth i c y') = b + c e_{ι(i)} + Σₗ y'ₗ e_{ι(succAbove i l)}`
+  have hface : ∀ (c : ℝ) (y : Euclid m),
+      WithLp.toLp 2 (fun k => (b k : ℝ)) +
+          ∑ j, (WithLp.toLp 2 (Fin.insertNth i c (WithLp.ofLp y)) : Euclid (m + 1)) j •
+            EuclideanSpace.single (ι j) (1 : ℝ) =
+        WithLp.toLp 2 (fun k => (b k : ℝ)) + c • EuclideanSpace.single (ι i) (1 : ℝ) +
+          ∑ j, y j • EuclideanSpace.single ((ι ∘ Fin.succAbove i) j) (1 : ℝ) := by
+    intro c y
+    rw [Fin.sum_univ_succAbove _ i, add_assoc]
+    simp
+  -- the front face is based at `b + e_{ι(i)}`
+  have hbase : WithLp.toLp 2 (fun k => ((b + Pi.single (ι i) 1 : Fin P → ℤ) k : ℝ)) =
+      WithLp.toLp 2 (fun k => (b k : ℝ)) + EuclideanSpace.single (ι i) (1 : ℝ) := by
+    ext k
+    by_cases hk : k = ι i
+    · subst hk
+      simp
+    · simp [hk]
+  simp only [hface, one_smul, zero_smul, add_zero, ← hbase]
+  rw [integral_const_mul, integral_const_mul, mul_sub]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
