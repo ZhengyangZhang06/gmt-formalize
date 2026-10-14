@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "4017785e2236def8e75c0637ca34e275503156a4dcd06535c550a3ab8f7d6f8d",
+  "git_delta": {
+    "base_commit": "c86b59a43b528e6228090e52e38ff40205aabae1",
+    "candidate_commit": "cfece4a8e8e47faac538a57938447d5e225fd331",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrbvbsf_boundary_vanish_off_faces",
+    "diff_sha256": "12ce1adda7d343d9c45cdbb812e8833236675b39d17ff4ab574dc3b413206e93",
+    "source_sha256": "beb3326b7ed9372e96415f8dd59000e948067b5ff292968d3f5d46a702cc25a8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrbvbsf_boundary_vanish_off_faces",
+      "statement": "∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))) (u : (Fin (m + 1) → Fin P) × (Fin P → ℤ) → Euclid (m + 1) → ℝ) (Q₀ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Q₀ ω = ∑ p ∈ s, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u p y * (ω : DifferentialForm (Euclid P) (m + 1)) (WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ)) (fun j => EuclideanSpace.single (p.1 j) (1 : ℝ))) → ∀ γ : TestFormOn (univ : Set (Euclid P)) m, Disjoint (tsupport (γ : DifferentialForm (Euclid P) m)) {x : Euclid P | ∃ q ∈ s, ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) = x} → Q₀.boundary γ = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
