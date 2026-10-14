@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.integral_div_zero-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1",
+  "depth": 4,
+  "title": "The divergence of a C¹ field compactly supported in the open unit cube integrates to zero over the cube",
+  "statement": "Let m ∈ ℕ, n := m + 1, Q₁ := {y ∈ ℝⁿ : 0 < y_i < 1 for all i} ⊆ Euclid n (Lebesgue measure). If g : ℝⁿ → ℝⁿ is C¹, has compact support and tsupport g ⊆ Q₁, then ∫_{Q₁} div g = 0, where div g(y) := trace Dg(y) (LinearMap.trace of fderiv).",
+  "lean_statement": "∀ (m : ℕ) (g : Euclid (m + 1) → Euclid (m + 1)), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) = 0",
+  "lean_name": "cmcdt_cbm_integral_div_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-b03c1fa602-a1"
+}

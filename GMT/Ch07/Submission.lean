@@ -451,6 +451,56 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon, Ch. 6, proof of 5.1** ((29)–(30): subtracting `β [[F]]` does not change the boundary
+in `F̊`).  If `g : ℝⁿ → ℝⁿ` is `C¹` with compact support in the open unit cube `Q₁ = (0, 1)ⁿ`, then
+`∫_{Q₁} div g = 0`.  `Dg` vanishes off `tsupport g ⊆ Q₁`, so the integral over `Q₁` is the
+integral over `ℝⁿ`; in the standard basis `div g = Σᵢ ∂ᵢ gᵢ`, and each `∫ ∂ᵢ gᵢ = 0` by
+integration by parts against the constant `1` (the compactly supported `C¹` component `gᵢ` is
+Lipschitz). -/
+theorem Submission.cmcdt_cbm_integral_div_eq_zero : ∀ (m : ℕ) (g : Euclid (m + 1) → Euclid (m + 1)), ContDiff ℝ 1 g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) = 0 := by
+  intro m g hg hgc hgQ
+  -- `Dg` vanishes off `tsupport g ⊆ Q₁`, so the integral over `Q₁` is the integral over `ℝⁿ`
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => ?_]
+  swap
+  · have h0 : fderiv ℝ g y = 0 := by
+      by_contra h
+      exact hy (hgQ (support_fderiv_subset ℝ h))
+    rw [h0, ContinuousLinearMap.toLinearMap_zero, map_zero]
+  -- `div g = Σᵢ ∂ᵢ gᵢ` in the standard basis `eᵢ`
+  let e := EuclideanSpace.basisFun (Fin (m + 1)) ℝ
+  have htr : ∀ y, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) =
+      ∑ i, (fderiv ℝ g y (e i)) i := by
+    intro y
+    rw [LinearMap.trace_eq_sum_inner _ e]
+    simp only [e, EuclideanSpace.basisFun_inner, ContinuousLinearMap.coe_coe]
+  simp_rw [htr]
+  have hdiff : Differentiable ℝ g := hg.differentiable one_ne_zero
+  have hcont : Continuous (fderiv ℝ g) := hg.continuous_fderiv one_ne_zero
+  rw [integral_finsetSum]
+  · refine Finset.sum_eq_zero fun i _ => ?_
+    -- the `i`-th component `gᵢ` is `C¹` with compact support, hence Lipschitz
+    let u : Euclid (m + 1) → ℝ := fun y => g y i
+    have hu : ContDiff ℝ 1 u := (EuclideanSpace.proj i : Euclid (m + 1) →L[ℝ] ℝ).contDiff.comp hg
+    have huc : HasCompactSupport u := hgc.comp_left (g := fun v : Euclid (m + 1) => v i) (by simp)
+    obtain ⟨C, hC⟩ := ContDiff.lipschitzWith_of_hasCompactSupport huc hu one_ne_zero
+    -- integration by parts against the constant `1`
+    have key := LipschitzWith.integral_lineDeriv_mul_eq (μ := volume)
+      (LipschitzWith.const (1 : ℝ)) hC huc (-e i)
+    have h1 : ∀ x, lineDeriv ℝ (fun _ : Euclid (m + 1) => (1 : ℝ)) x (-e i) = 0 := fun x =>
+      ((hasFDerivAt_const (1 : ℝ) x).hasLineDerivAt (-e i)).lineDeriv
+    have h2 : ∀ x, lineDeriv ℝ u x (-(-e i)) = fderiv ℝ g x (e i) i := by
+      intro x
+      rw [neg_neg]
+      exact (((EuclideanSpace.proj i : Euclid (m + 1) →L[ℝ] ℝ).hasFDerivAt.comp x
+        (hdiff x).hasFDerivAt).hasLineDerivAt (e i)).lineDeriv
+    simp only [h1, h2, zero_mul, integral_zero, mul_one] at key
+    exact key.symm
+  · intro i _
+    refine Continuous.integrable_of_hasCompactSupport ?_ ?_
+    · fun_prop
+    · exact (hgc.fderiv ℝ).comp_left
+        (g := fun L : Euclid (m + 1) →L[ℝ] Euclid (m + 1) => L (e i) i) (by simp)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
