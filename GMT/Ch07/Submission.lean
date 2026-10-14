@@ -581,6 +581,55 @@ theorem Submission.dor_lmb_fcd_jwc_covector_det_expansion : ∀ (N' k : ℕ) (f 
   rw [Units.smul_def, zsmul_eq_mul]
   simp only [Matrix.of_apply, he]
   ring
+/-- **Jacobian minors of Lipschitz maps are measurable and bounded** (the integrands in the weak
+continuity of Jacobian minors): if `g₀, …, g_{r-1}` are `L`-Lipschitz on `ℝᵏ` and
+`V₀, …, V_{r-1} ∈ ℝᵏ`, then `D(x) = det (Dg_c(x) V_b)_{c,b}` is measurable and
+`|D(x)| ≤ r! (L ∑_b ‖V_b‖)ʳ` for every `x`, where `Dg(x) = fderiv ℝ g x` (`0` where `g` is not
+differentiable).  Each entry `x ↦ Dg_c(x) V_b` is measurable (`measurable_fderiv_apply_const`)
+and bounded by `‖Dg_c(x)‖ ‖V_b‖ ≤ L ‖V_b‖ ≤ L ∑_b ‖V_b‖` (`norm_fderiv_le_of_lipschitz`); by the
+Leibniz formula `D` is a signed sum of `r!` products of `r` entries, which gives both claims.
+(`Matrix.det_le` is outside the import closure, so the bound is done by hand.) -/
+theorem Submission.dor_lmb_fcd_jwc_minor_measurable_bound : ∀ (k r : ℕ) (L : NNReal) (g : Fin r → Euclid k → ℝ) (V : Fin r → Euclid k), (∀ c, LipschitzWith L (g c)) → Measurable (fun x => Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b))) ∧ ∀ x, |Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b))| ≤ (r.factorial : ℝ) * ((L : ℝ) * ∑ b, ‖V b‖) ^ r := by
+  intro k r L g V hg
+  -- Leibniz formula: `D(x) = ∑_σ sign σ ∏_b Dg_{σ b}(x) V_b`
+  have hdet : ∀ x, Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b)) =
+      ∑ σ : Equiv.Perm (Fin r), ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ b, fderiv ℝ (g (σ b)) x (V b) :=
+    fun x => Matrix.det_apply' _
+  refine ⟨?_, fun x => ?_⟩
+  · -- steps 1–2: the entries are measurable, hence so is the signed sum of their products
+    have hm : Measurable fun x => ∑ σ : Equiv.Perm (Fin r),
+        ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ b, fderiv ℝ (g (σ b)) x (V b) :=
+      Finset.measurable_sum _ fun σ _ => measurable_const.mul
+        (Finset.measurable_prod _ fun b _ => measurable_fderiv_apply_const ℝ (g (σ b)) (V b))
+    simpa only [hdet] using hm
+  · -- step 3: every entry is bounded by `s = L ∑_b ‖V_b‖`
+    have hent : ∀ c b, |fderiv ℝ (g c) x (V b)| ≤ (L : ℝ) * ∑ b, ‖V b‖ := by
+      intro c b
+      rw [← Real.norm_eq_abs]
+      calc ‖fderiv ℝ (g c) x (V b)‖ ≤ ‖fderiv ℝ (g c) x‖ * ‖V b‖ :=
+            ContinuousLinearMap.le_opNorm _ _
+        _ ≤ L * ‖V b‖ :=
+            mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ (hg c)) (norm_nonneg _)
+        _ ≤ L * ∑ b, ‖V b‖ := by
+            gcongr
+            exact Finset.single_le_sum (f := fun b => ‖V b‖) (fun b _ => norm_nonneg _)
+              (Finset.mem_univ b)
+    -- step 4: the triangle inequality and `|sign σ| = 1` give `|D(x)| ≤ ∑_σ sʳ = r! sʳ`
+    rw [hdet]
+    calc |∑ σ : Equiv.Perm (Fin r), ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ b, fderiv ℝ (g (σ b)) x (V b)|
+        ≤ ∑ σ : Equiv.Perm (Fin r),
+            |((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ b, fderiv ℝ (g (σ b)) x (V b)| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ = ∑ σ : Equiv.Perm (Fin r), ∏ b, |fderiv ℝ (g (σ b)) x (V b)| := by
+          refine Finset.sum_congr rfl fun σ _ => ?_
+          rw [abs_mul, Finset.abs_prod]
+          rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> simp [h]
+      _ ≤ ∑ _σ : Equiv.Perm (Fin r), ∏ _b : Fin r, (L : ℝ) * ∑ b, ‖V b‖ := by
+          gcongr with σ _ b _
+          exact hent (σ b) b
+      _ = (r.factorial : ℝ) * ((L : ℝ) * ∑ b, ‖V b‖) ^ r := by
+          rw [Finset.sum_const, Finset.prod_const, Finset.card_univ, Finset.card_univ,
+            Fintype.card_perm, Fintype.card_fin, nsmul_eq_mul]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
