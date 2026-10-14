@@ -2843,7 +2843,6 @@ theorem dimred_mbl_dt_skeleton_retraction : ∀ (P m : ℕ), m + 1 < P → ∃ c
         rw [div_mul_eq_mul_div, le_div_iff₀ hr]
         nlinarith
 
-end Submission
 
 /-- Mollification by an even `C¹` kernel `η` with compact support commutes with `D` and is
 self-adjoint: `∫ D(η * u)(x)(s x) dx = −∫ u div(η * s)` for integrable `u`, `s` (Simon Ch. 2,
