@@ -1,0 +1,132 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.local_comparison-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon 7.2.4, proof of (1)–(11) (chapter-07.txt lines 176–258); these are steps 3–7 of the parent proof. Departures from the printed text are marked “Correction”.
+
+Conventions. n = m + 1 ≥ 1; “W ⊂⊂ U” means W open with closure(W) compact and contained in U; M(A) := M_{ℝ^P}(A) = A.mass; IM means integer multiplicity; for currents X, Y in U, X + Y := X − (0 − Y) (contract Sub). For an IM current A ∈ 𝒟_d(U) with an IMRep R_A put μ_A := R_A.measure.
+
+Sibling facts used.
+(F1) [mass_equals_rep_measure] M_G(A) = μ_A(G) for every open G ⊆ ℝ^P (U open). Hence μ_A does not depend on the representation on open sets, hence (finite on compact subsets of U, outer regular) on Borel subsets of U; μ_A(ℝ^P ∖ U) = 0; M(A) = μ_A(ℝ^P); and for compact E ⊆ U, μ_A(E) = lim_{δ↓0} μ_A(E_δ), E_δ := {x : dist(x, E) < δ}.
+(F2) [vanish_off_support] A(ω) = 0 whenever tsupport ω ∩ spt A = ∅. With (F1): μ_A(ℝ^P ∖ spt A) = μ_A(U ∖ spt A) = 0 (U ∖ spt A is open and every admissible form for M_{U∖spt A}(A) is killed).
+(F3) (Simon 2.11, definitional) spt ∂A ⊆ spt A (∂A(ω) = A(dω), tsupport dω ⊆ tsupport ω); spt(A ± B) ⊆ spt A ∪ spt B; a support contained in a compact subset of U is compact (supports are relatively closed in U).
+(F4) [im_calculus (c)] A − B (hence A + B and integer combinations) is IM if A, B are; and M_G(A ± B) ≤ M_G(A) + M_G(B) for open G (definition of M_G), so by (F1) μ_{A±B}(E) ≤ μ_A(E) + μ_B(E) for compact E ⊆ U (apply to E_δ, let δ ↓ 0).
+(F5) [im_calculus (b)] For IM A and Borel B, A⌞B, represented by (M_A ∩ B, θ_A, ξ_A), is IM; (A⌞B)(ω) = A(ω) if ω vanishes outside B (in particular if B is open and tsupport ω ⊆ B); μ_{A⌞B} = μ_A⌞B; spt(A⌞B) ⊆ closure(B) ∩ U; M(A⌞B) = μ_A(B).
+(F6) [flat_convergence] If T, T_j ∈ 𝒟_n(U) are IM, sup_j (M_G(T_j) + M_G(∂T_j)) < ∞ for G ⊂⊂ U and T_j ⇀ T, then for every G ⊂⊂ U there are IM R_j ∈ 𝒟_{n+1}(U), S_j ∈ 𝒟_n(U) with T − T_j − S_j = ∂R_j and M_G(R_j) + M_G(S_j) → 0.
+(F7) [slicing] For a current R ∈ 𝒟_{n+1}(U) with representations (μ, ξ) of R and (μ', ξ') of ∂R and an L-Lipschitz f: the currents A_t = R⌞{f < t}, B_t = (∂R)⌞{f < t} (integrals over {f < t}), Z_t := ∂A_t − B_t, with Z_t(η) = 0 when tsupport η ∩ {f = t} = ∅, and ∫⁻_{(a,b)} M_G(Z_t) dt ≤ L μ(G ∩ {a < f < b}) and M_G(Z_t) ≤ L liminf_{h↓0} h⁻¹ μ(G ∩ {t − h < f < t}) for open G.
+(F8) [closure_and_boundary_rectifiability (BR)] The boundary of an IM current in U with locally finite boundary mass is IM.
+For an IMRep, |ξ(x)(α)| ≤ |α| Hᵈ-a.e. on the carrier (sibling im_calculus, conjunct (d)), so (R.measure, orient) is a representation in the sense of (F7), and for Borel B the current of (F7) built from it coincides with the IM restriction of (F5).
+
+Dimension remark. If n > P, every n-covector on ℝ^P vanishes, so every n-current is 0; then the conclusion holds with W as constructed in steps 1–2 below (W := ∅ if K = ∅, W := W₀ otherwise), φ := id and e_j := 0. Otherwise (F6) applies in every codimension (including n = P, where (n+1)-currents vanish).
+
+Proof.
+1. (Trivial case.) If K = ∅, take W := ∅ (open, closure ∅ compact and contained in U, K ⊆ ∅ ⊆ thickening), φ := id and e_j := 0; only the zero form has support in ∅, so M_∅(T_j) = 0. Assume K ≠ ∅.
+2. (Cut-off; lines 176–186.) Let d₀ := dist(K, ℝ^P ∖ U) ∈ (0, ∞] (d₀ := ∞ if U = ℝ^P) and δ := min(ε, d₀)/2, so 0 < δ < ε and C := {x : dist(x, K) ≤ δ} is a compact subset of U. Choose ψ ∈ C^∞(ℝ^P) with 0 ≤ ψ ≤ 1, ψ = 1 on K and tsupport ψ ⊆ {dist(·, K) < δ} (mollify the indicator of {dist(·, K) < δ/2} at scale δ/4). ψ is Lipschitz with constant L := sup|Dψ| < ∞. For 0 ≤ s < 1 put W_s := {ψ > s}: open, K ⊆ W_s ⊆ {dist(·, K) < δ} ⊆ thickening ε K, closure(W_s) ⊆ tsupport ψ ⊆ C, so W_s ⊂⊂ U. For 0 < s < 1: {ψ ≥ s} is a closed subset of tsupport ψ, hence compact; closure(W_s) ⊆ {ψ ≥ s}; {ψ ≥ s} ⊆ W_γ for 0 ≤ γ < s; ⋂_{0<γ<s} W_γ = {ψ ≥ s}; and {ψ = s} ∩ K = ∅.
+3. (Flat convergence; (2), lines 187–191.) By hypothesis every T_j is minimizing, hence IM, T is IM, and the mass bounds and T_j ⇀ T hold; (F6) with G := W₀ gives IM R_j ∈ 𝒟_{n+1}(U), S_j ∈ 𝒟_n(U) with T − T_j − S_j = ∂R_j and M_{W₀}(R_j) + M_{W₀}(S_j) → 0.
+4. (Slicing; (3)–(4), lines 192–201.) ∂R_j = T − T_j − S_j is IM (F4), so R_j and ∂R_j have IM representations whose measures μ_{R_j}, μ_{∂R_j} are finite on compact subsets of U (F1). Apply (F7) to R_j with f := −ψ (Lipschitz constant L) and t := −s, so that {f < t} = W_s: the currents A_t = R_j⌞W_s and B_t = (∂R_j)⌞W_s are the IM restrictions (F5), and
+ P_{j,s} := ∂(R_j⌞W_s) − (∂R_j)⌞W_s
+satisfies P_{j,s}(η) = 0 whenever tsupport η ∩ {ψ = s} = ∅, and, since {t − h < f < t} = {s < ψ < s + h},
+ M_{W₀}(P_{j,s}) ≤ L liminf_{h↓0} h⁻¹ μ_{R_j}(W₀ ∩ {s < ψ < s + h}) for every s ∈ (0, 1).
+(a) Localization of the mass of P_{j,s}: for s ∈ (0, 1) the closed set {ψ = s} is a compact subset of W₀. Choose χ ∈ C_c^∞(W₀; [0, 1]) with χ = 1 near {ψ = s}. For any open G and any ω admissible for M_G, (1 − χ)ω vanishes near {ψ = s}, so P_{j,s}(ω) = P_{j,s}(χω) ≤ M_{W₀}(P_{j,s}) (χω is admissible for M_{W₀}). Hence M_G(P_{j,s}) ≤ M_{W₀}(P_{j,s}) for every open G, in particular M(P_{j,s}) ≤ M_{W₀}(P_{j,s}).
+(b) Integrality: if M_{W₀}(P_{j,s}) < ∞, then ∂(R_j⌞W_s) = (∂R_j)⌞W_s + P_{j,s} has locally finite mass (by (a) and μ_{∂R_j}(G) < ∞ for G ⊂⊂ U), R_j⌞W_s is IM (F5), so ∂(R_j⌞W_s) is IM by (F8) and P_{j,s} is IM by (F4), (F5); and spt P_{j,s} ⊆ {ψ = s} (vanishing property). Thus ∂(R_j⌞W_s) = (∂R_j)⌞W_s + P_{j,s}, Simon's (3).
+Remark (not an erratum): Simon's spt P_j ⊆ ∂W_α also holds, but only spt P_j ⊆ {ψ = α} (⊇ ∂W_α) is used. The sign convention is that of Simon 4.6 with f = −ψ, which yields exactly (3).
+5. (Choice of α and φ; (3)–(5), lines 192–205.) Let H_j(s) := μ_{R_j}(W₀ ∩ {s < ψ < 1}) for every s ∈ ℝ: a nonincreasing real function (finite, bounded by μ_{R_j}(W₀) = M_{W₀}(R_j) < ∞ since closure W₀ is a compact subset of U; F1). For 0 < h < 1 − s, {s < ψ < s + h} ⊆ {s < ψ < 1} ∖ {s + h < ψ < 1}, so μ_{R_j}(W₀ ∩ {s < ψ < s + h}) ≤ H_j(s) − H_j(s + h). By Lebesgue's theorem (Mathlib Monotone.ae_differentiableAt applied to −H_j) H_j is differentiable a.e., and at such s step 4 gives M_{W₀}(P_{j,s}) ≤ g_j(s) := −L H_j'(s). The functions g_j ≥ 0 are measurable (Mathlib measurable_deriv) and ∫_0^1 g_j ≤ L(H_j(0) − H_j(1)) ≤ L M_{W₀}(R_j) (Mathlib MonotoneOn.intervalIntegrable_deriv and MonotoneOn.intervalIntegral_deriv_mem_uIcc applied to the nondecreasing function −H_j). Since M_{W₀}(R_j) → 0 (step 3), Fatou's lemma gives ∫_0^1 liminf_j g_j ≤ liminf_j ∫_0^1 g_j = 0, so liminf_j g_j(s) = 0 for a.e. s. For each j, the level sets {ψ = s} (0 < s < 1) are pairwise disjoint subsets of the compact set tsupport ψ ⊆ U, on which μ_{T_j} is finite (F1), so μ_{T_j}({ψ = s}) > 0 for at most countably many s. Hence there is α ∈ (0, 1) such that: every H_j is differentiable at α (so M_{W₀}(P_{j,α}) ≤ g_j(α) < ∞ and step 4(b) applies at s = α for every j); liminf_j g_j(α) = 0; and μ_{T_j}({ψ = α}) = 0 for every j. Choose a strictly increasing φ : ℕ → ℕ with g_{φ(j)}(α) → 0; then M(P_{φ(j),α}) ≤ M_{W₀}(P_{φ(j),α}) → 0 by step 4(a). Let W := W_α; by step 2, W is open, K ⊆ W ⊆ thickening ε K, and W ⊂⊂ U.
+Correction: Simon's (5) “M(T_j⌞∂W_α) = 0” is used in the form μ_{T_j}({ψ = α}) = 0; the condition on T is not needed.
+6. (The decomposition; (6)–(7), lines 206–221.) Fix j and write T' := T_{φ(j)}, R := R_{φ(j)}, S'' := S_{φ(j)}, P := P_{φ(j),α}. Put R̃ := R⌞W and S̃ := S''⌞W − P; both are IM (F4), (F5), and ∂R̃ = (∂R)⌞W + P by step 4, which is IM. If ω ∈ 𝒟ⁿ(U) and tsupport ω ⊆ W, then R̃(dω) = R(dω) (F5, tsupport dω ⊆ W), (S''⌞W)(ω) = S''(ω), and P(ω) = 0 (tsupport ω ⊆ W is disjoint from {ψ = α}). Hence by step 3,
+ (★) T(ω) = T'(ω) + ∂R̃(ω) + S̃(ω) for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ W,
+which is Simon's (6) tested in W. Moreover M(S̃) ≤ M(S''⌞W) + M(P) = μ_{S''}(W) + M(P) ≤ M_{W₀}(S'') + M(P) (F1, F4, F5). Define e_j := M(S̃) + M(P) ∈ [0, ∞]; it depends only on j, and e_j ≤ M_{W₀}(S_{φ(j)}) + 2M(P_{φ(j),α}) → 0 by steps 3 and 5.
+Correction: the printed formula reads S̃_j = S_j⌞W_α + P_j; with (3) the correct expression is S̃_j = S_j⌞W_α − P_j.
+7. (The competitor; (9), lines 222–245.) Let S ∈ 𝒟_n(U) be IM with ∂S = ∂T and spt(S − T) ⊆ K. Then X := S − T is IM (F4), ∂X = 0 and spt X ⊆ K. Y := X + ∂R̃ is IM (F4), ∂Y = ∂X + ∂∂R̃ = 0, and spt Y ⊆ spt X ∪ spt R̃ ⊆ K ∪ closure(W) ⊆ {ψ ≥ α} (F3, F5; ψ = 1 on K). Let Z := T' + Y. Z is IM (F4), ∂Z = ∂T', and Z − T' = Y, so spt(Z − T') ⊆ {ψ ≥ α} is compact (F3) and contained in W_γ = U ∩ W_γ for every γ ∈ (0, α). Since W_γ ⊂⊂ U and T' is minimizing in U, M_{W_γ}(T') ≤ M_{W_γ}(Z), i.e. by (F1)
+ (9) μ_{T'}(W_γ) ≤ μ_Z(W_γ) for every γ ∈ (0, α).
+Correction: the printed text has “(9) … for γ > α” and then “letting γ ↓ 0”; since W_γ decreases as γ increases, the inclusion spt(Z − T') ⊆ W_γ holds for γ < α, and the limit to take is γ ↑ α.
+8. (Letting γ ↑ α; (10), lines 246–252.) As γ ↑ α, W_γ decreases to {ψ ≥ α}, and μ_{T'}, μ_Z are finite on W₀ ⊆ C; by continuity from above, (9) gives μ_{T'}({ψ ≥ α}) ≤ μ_Z({ψ ≥ α}). The left side is ≥ μ_{T'}(W) = M_W(T'). Since {ψ ≥ α} is the disjoint union of W and {ψ = α}, the right side equals M_W(Z) + μ_Z({ψ = α}). The set {ψ = α} is a compact subset of U, so by (F4), μ_Z({ψ = α}) ≤ μ_{T'}({ψ = α}) + μ_X({ψ = α}) + μ_{∂R̃}({ψ = α}), where μ_{T'}({ψ = α}) = 0 by the choice of α; μ_X({ψ = α}) = 0 by (F2), since spt X ⊆ K and K ∩ {ψ = α} = ∅; and μ_{∂R̃}({ψ = α}) ≤ μ_{(∂R)⌞W}({ψ = α}) + μ_P({ψ = α}) ≤ 0 + M(P), because μ_{(∂R)⌞W} = μ_{∂R}⌞W vanishes on {ψ = α} ⊆ ℝ^P ∖ W (F5) and μ_P({ψ = α}) ≤ μ_P(ℝ^P) = M(P) (F1). Therefore
+ (10) M_W(T') ≤ M_W(Z) + M(P).
+9. (Conclusion; (11), lines 253–257.) For ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ W, (★) gives Z(ω) = T'(ω) + X(ω) + ∂R̃(ω) = (T(ω) − S̃(ω)) + (S(ω) − T(ω)) = S(ω) − S̃(ω). If ω is admissible for M_W (tsupport ω ⊆ W, |ω| ≤ 1), so is −ω, and −S̃(ω) = S̃(−ω) ≤ M_W(S̃) ≤ M(S̃); hence Z(ω) ≤ M_W(S) + M(S̃) and M_W(Z) ≤ M_W(S) + M(S̃). With (10):
+ M_W(T_{φ(j)}) ≤ M_W(S) + M(S̃) + M(P) = M_W(S) + e_j.
+W, φ and (e_j) were fixed in steps 5–6 before S was chosen, so this holds for every j and every S as in the statement, and e_j → 0. ∎
+
+## Key steps
+
+1. Cut-off ψ with ψ = 1 on K and tsupport ψ ⊆ {dist(·,K) < δ}, δ < min(ε, dist(K, ℝ^P∖U)); W_s := {ψ > s} ⊂⊂ U.
+2. Flat convergence (sibling): T − T_j − S_j = ∂R_j with IM R_j, S_j and M_{W₀}(R_j) + M_{W₀}(S_j) → 0.
+3. Slicing (sibling) by −ψ with monotone majorants and Fatou: a level α and a subsequence φ with ∂(R_j⌞W_α) = (∂R_j)⌞W_α + P_j, P_j IM by (BR), spt P_j ⊆ {ψ = α}, M(P_j) → 0 and μ_{T_j}({ψ = α}) = 0.
+4. For S as in the statement, Z_j := T_j + (S − T) + ∂(R_j⌞W_α) is an IM competitor with spt(Z_j − T_j) ⊆ {ψ ≥ α} ⊂ W_γ (γ < α); minimality and γ ↑ α give M_{W_α}(T_j) ≤ M_{W_α}(Z_j) + M(P_j).
+5. On W_α, Z_j = S − S̃_j with S̃_j := S_j⌞W_α − P_j, so M_{W_α}(T_j) ≤ M_{W_α}(S) + e_j with e_j := M(S̃_j) + M(P_j) → 0 independent of S.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cmp GMT/Ch07/Contract.lean .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `rg -n 'cmc_|dtc_vanish_off_support' local-references/123e8435b4a2469b/project (no match); rg -c sorry local-references/123e8435b4a2469b/project/GMT -g '*.lean'`
+- `rg -n -i 'federer.?fleming|deformation theorem|flat norm' local-references/123e8435b4a2469b/mathlib/Mathlib -g '*.lean' (no match); rg -n 'theorem eLpNorm_le_eLpNorm_fderiv_one|theorem tendsto_measure_thickening_of_isClosed' local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n -i 'federer|deformation|flat (norm|metric|convergence)|slice|slicing|closure theorem|boundary rectifiab' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06`
+- `python3 scan of dag.json: lean_name, lean_statement, status and children of all 451 nodes; collisions of the twelve proposed names; accepted nodes with matching types (dtc_vanish_off_support, dor_ims_massOn_le_measure, dor_ims_measure_le_massOn, regcomp_approx_tangent_locality, regcomp_covector_eval_orthonormal_le, rsdic_unitOrientation_eq_or_eq_neg, dtc_isIntegerMultiplicity_sub); cross-branch reuse edges`
+- `grep compactness_of_minimizing cluster-state/logs/gmt-ch07/*.log; comparison of swarm-configs/3cda86c657b24789a5e2370499838a03.json and e19a0116cbcc4eccb5496520b27c492f.json (max_nodes 200 vs 1000); node-directory timestamps at the v3 and v4 audit times`
+- `sed -n 1300,1700p and 1801,2000p /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py; grep -n 'def _existing_lean_name_problem' -A 40 runtime.py; grep -n 'def ensure' -A 35 store.py`
+- `grep for declarations simon_theorem_4_14_caratheodory, simon_theorem_4_14_positive_envelope, vectorFunctionalEnvelopeMeasure_isRadon, radonCaratheodoryMeasure_apply, integral_radonCaratheodoryMeasure, IsLocallyBoundedCcFunctional, simon_theorem_4_16_compact_metrizable, simon_theorem_3_6, simon_remark_3_7_hausdorff, simonHausdorffMeasureReal_nat_eq_euclideanHausdorffMeasure, simonHausdorffMeasureReal_toOuterMeasure, simon_theorem_3_3, simon_theorem_3_26_i, exists_isClosed_continuousOn_of_measurable, area_image_criticalSet_eq_zero, injective_area_formula_lipschitzOn, weighted_area_formula_lipschitzOn_fiberSum, exteriorDerivativeOn_pullbackFormWithin, countablyRectifiable_of_measure_zero, HasApproximateTangentSpaceAt.unique, WeaklyConvergesOn.boundary, WeaklyConvergesOn.massOn_le_liminf, affinePushforward in lake-packages-25730c7c/simongmt/Poincare`
+- `grep for declarations Monotone.ae_differentiableAt, measurable_deriv, MonotoneOn.intervalIntegrable_deriv, MonotoneOn.intervalIntegral_deriv_mem_uIcc, LipschitzWith.ae_differentiableAt, LipschitzOnWith.hausdorffMeasure_image_le, exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, LinearMap.exists_antilipschitzWith, MeasurableSet.image_of_continuousOn_injOn, LipschitzOnWith.extend_real, LipschitzOnWith.extend_pi, Besicovitch.exists_disjoint_closedBall_covering_ae, VitaliFamily.ae_tendsto_average_norm_sub, isMulLeftInvariant_eq_smul, tendstoUniformlyOn_of_ae_tendsto, LipschitzWith.integral_lineDeriv_mul_eq, eLpNorm_le_eLpNorm_fderiv_one, euclideanHausdorffMeasure_zero, hausdorffMeasure_smul₀, tendsto_measure_thickening_of_isClosed, countable_meas_level_set_pos, Integrable.integral_eq_integral_meas_lt, SmoothPartitionOfUnity.exists_isSubordinate, exists_contDiff_tsupport_subset, ContDiffBump.normed, AlternatingMap.map_linearDependent, Vitali.exists_disjoint_subfamily_covering_enlargement, RealRMK.rieszMeasure, ext_of_generate_finite, ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable, hausdorffMeasure_zero_singleton, Besicovitch.tendsto_filterAt in lake-packages-25730c7c/mathlib/Mathlib`
+- `lake env lean /tmp/cmc-a5/lean/TypesFinal.lean; lake env lean /tmp/cmc-a5/lean/AssemblyFinal.lean; lake env lean /tmp/cmc-a5/lean/Inst.lean; lake env lean /tmp/cmc-a5/lean/Names.lean; lake env lean /tmp/cmc-a5/lean/Names2.lean`
+- `git -C lake-packages-25730c7c/simongmt rev-parse HEAD; git -C lake-packages-25730c7c/mathlib rev-parse HEAD`
+- `sed -n 176,260p book/chapter-07.txt`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1/decomposition-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1/decomposition-audit-v3.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1/decomposition-audit-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1/decomposition-review-receipt-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/3cda86c657b24789a5e2370499838a03.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/swarm-configs/e19a0116cbcc4eccb5496520b27c492f.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/logs/gmt-ch07/3cda86c657b24789a5e2370499838a03.log`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/logs/gmt-ch07/e19a0116cbcc4eccb5496520b27c492f.log`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/GeometricPointProduct.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/VectorFunctionalEnvelope.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonCaratheodoryIntegral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/DensityComparison.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/cmc-a5/final.json`
+- `/tmp/cmc-a5/scripts/build_final.py`
+- `/tmp/cmc-a5/scripts/gen_types_final.py`
+- `/tmp/cmc-a5/scripts/gen_assembly.py`
+- `/tmp/cmc-a5/scripts/body.lean`
+- `/tmp/cmc-a5/lean/TypesFinal.lean`
+- `/tmp/cmc-a5/lean/AssemblyFinal.lean`
+- `/tmp/cmc-a5/lean/Inst.lean`
+- `/tmp/cmc-a5/lean/Names.lean`
+- `/tmp/cmc-a5/lean/Names2.lean`
+
+The snapshot contract (manifest: project b4d606db, mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean, and each snapshot chapter contract has only its frozen final sorry; the pinned packages are SimonGMT 2b366308 and Mathlib 25730c7c. SimonGMT Chapter06 says Federer–Fleming compactness remains a separate obligation and contains only point slices of products. Neither SimonGMT nor the snapshot Mathlib has a closure, deformation, Lipschitz-slicing or flat-convergence theorem (rg: no match). These results, Riesz representation and absolute continuity of normal currents, and IM calculus therefore remain children with complete parent-written proofs. Reusable library facts: WeaklyConvergesOn.massOn_le_liminf and WeaklyConvergesOn.boundary, the Chapter01 Riesz, compactness, density and Lusin theorems, the Chapter02 area formulas and the Chapter03 rectifiability API. Every SimonGMT and Mathlib declaration cited by name in the child proofs exists in the pinned sources. The 451-node DAG contains no cmc_ name, and the snapshot project has no cmc_ or dtc_ name. dtc_vanish_off_support is a comparator-accepted node whose frozen type equals the vanish_off_support child type, so it is reused verbatim; accepted declarations covering parts of mass_equals_rep_measure and im_calculus are named in remarks. In the workspace build, all 12 exact child types elaborate after import GMT.Ch07.Submission. The conditional assembly of CompactnessOfMinimizingCurrents from the six used child types depends only on propext, Classical.choice and Quot.sound, and current subtraction uses the contract instance. The identical previously accepted split was dropped only by the runtime node bound (max_nodes = 200 with about 200 DAG nodes); the current configuration allows 1000 nodes. Book lines 176–260 confirm the two corrections used in local_comparison.
