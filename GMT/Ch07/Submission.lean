@@ -1560,6 +1560,35 @@ theorem Submission.dgoj_covector_eq_det_mul_of_mem_span : ∀ (P n : ℕ) (τ b 
     conv_lhs => rw [AlternatingMap.eq_smul_basis_det e αL]
     rfl
   rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
+/-- **Gradient length of a linear functional on `ℝⁿ`** (the identities `‖Du‖ = |∇u|` and
+`|∇u · Φ| ≤ ‖Du‖ |Φ|` behind the energy bound in Simon Ch. 5, 3.1, p. 114):
+`‖L‖² = Σᵢ L(eᵢ)²` and `|Σᵢ L(eᵢ) aᵢ| ≤ ‖L‖ √(Σᵢ aᵢ²)`.  The Riesz representative
+`g = toDual⁻¹ L` has `‖g‖ = ‖L‖` and coordinates `gᵢ = ⟪eᵢ, g⟫ = L(eᵢ)`; the bound is the
+finite Cauchy–Schwarz inequality applied to `a` and to `-a`. -/
+theorem Submission.dorag_ha_lsc_grad_norm_sq : ∀ (n : ℕ) (L : Euclid n →L[ℝ] ℝ), ‖L‖ ^ 2 = ∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) ^ 2 ∧ ∀ a : Fin n → ℝ, |∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) * a i| ≤ ‖L‖ * Real.sqrt (∑ i : Fin n, a i ^ 2) := by
+  intro n L
+  -- the Riesz representative `g` of `L`: `⟪g, v⟫ = L v` and `‖g‖ = ‖L‖`
+  set g : Euclid n := (InnerProductSpace.toDual ℝ (Euclid n)).symm L with hg
+  have hgL : ∀ v, inner ℝ g v = L v := fun v => InnerProductSpace.toDual_symm_apply
+  have hnorm : ‖g‖ = ‖L‖ := by simp [hg]
+  -- `L(eᵢ) = ⟪eᵢ, g⟫ = gᵢ`
+  have hcoord : ∀ i, L (EuclideanSpace.single i (1 : ℝ)) = g i := by
+    intro i
+    rw [← hgL, real_inner_comm, EuclideanSpace.inner_single_left]; simp
+  -- (i) `‖L‖² = ‖g‖² = Σᵢ gᵢ²`
+  have hid : ‖L‖ ^ 2 = ∑ i : Fin n, L (EuclideanSpace.single i (1 : ℝ)) ^ 2 := by
+    rw [← hnorm, EuclideanSpace.real_norm_sq_eq]; simp_rw [hcoord]
+  refine ⟨hid, fun a => ?_⟩
+  -- (ii) `‖L‖ = √(Σᵢ L(eᵢ)²)`; Cauchy–Schwarz for `-a` gives the lower bound, for `a` the upper
+  have hL : ‖L‖ = Real.sqrt (∑ i, L (EuclideanSpace.single i (1 : ℝ)) ^ 2) := by
+    rw [← hid, Real.sqrt_sq (norm_nonneg _)]
+  rw [hL, abs_le]
+  constructor
+  · have := Real.sum_mul_le_sqrt_mul_sqrt Finset.univ
+      (fun i => L (EuclideanSpace.single i (1 : ℝ))) (fun i => -a i)
+    simp only [neg_sq, mul_neg, Finset.sum_neg_distrib] at this
+    linarith
+  · exact Real.sum_mul_le_sqrt_mul_sqrt _ _ _
 /-- **The Euclidean coefficient norm is a continuous seminorm dominated by the operator norm**
 (Simon Ch. 6, 1.15 and 2.4; used by the smooth approximation of test forms behind the mass of
 `τ(M, θ, ξ)`).  With `e` the standard basis of `ℝᴾ`, let `c_I α = α(e_{I(0)}, …, e_{I(n-1)})`
@@ -2531,6 +2560,223 @@ theorem Submission.regcomp_covector_eval_orthonormal_le : ∀ (P n : ℕ) (α : 
     le_of_mul_le_mul_left hle (Nat.cast_pos.mpr n.factorial_pos)
   -- Step 5: `|α(τ)| ≤ |α|_E`, since `|α|_E ≥ 0`
   exact abs_le_of_sq_le_sq hsq (covectorEuclideanNorm_nonneg α)
+/-- **Pull-back of a covector, summed over all index tuples** (the coefficient bound behind the
+push-forward mass estimates of Simon Ch. 6, 2.24(2) and 2.27): for a continuous linear
+`A : ℝᴺ → ℝᴺ'` and an `m`-covector `γ` on `ℝᴺ'`, with `e`, `e'` the standard bases,
+`Σ_j (A^#γ)(e_{j(0)}, …, e_{j(m−1)})² ≤ (‖A‖²)ᵐ Σ_j γ(e'_{j(0)}, …, e'_{j(m−1)})²`, both sums over
+all index maps `j`.  Induction on `m`, peeling off the first slot with `curryLeft`: for fixed `j`,
+`μ(u) = γ(u, e'_{j(0)}, …, e'_{j(m−1)})` is a linear functional, and
+`Σ_a μ(A e_a)² = ‖μ ∘ A‖² ≤ ‖A‖² ‖μ‖² = ‖A‖² Σ_b μ(e'_b)²` (Parseval,
+`dorag_ha_lsc_grad_norm_sq`). -/
+theorem Submission.cmcdt_lp_pullback_basis_sq_sum_le : ∀ (N N' m : ℕ) (A : Euclid N →L[ℝ] Euclid N') (γ : Covector (Euclid N') m), ∑ j : Fin m → Fin N, ((γ.compContinuousLinearMap A) (fun i => EuclideanSpace.basisFun (Fin N) ℝ (j i))) ^ 2 ≤ (‖A‖ ^ 2) ^ m * ∑ j : Fin m → Fin N', (γ (fun i => EuclideanSpace.basisFun (Fin N') ℝ (j i))) ^ 2 := by
+  intro N N' m A γ
+  -- Parseval for functionals: `Σ_c μ(e_c)² = ‖μ‖²` (`grad_norm_sq`, with `e_c = single c 1`)
+  have hpars : ∀ (M : ℕ) (μ : Euclid M →L[ℝ] ℝ),
+      ∑ c : Fin M, μ (EuclideanSpace.basisFun (Fin M) ℝ c) ^ 2 = ‖μ‖ ^ 2 := by
+    intro M μ
+    rw [(Submission.dorag_ha_lsc_grad_norm_sq M μ).1]
+    simp only [EuclideanSpace.basisFun_apply]
+  -- one-slot estimate: `Σ_a μ(A e_a)² = ‖μ ∘ A‖² ≤ ‖A‖² ‖μ‖² = ‖A‖² Σ_b μ(e'_b)²`
+  have hone : ∀ μ : Euclid N' →L[ℝ] ℝ,
+      ∑ a : Fin N, μ (A (EuclideanSpace.basisFun (Fin N) ℝ a)) ^ 2 ≤
+        ‖A‖ ^ 2 * ∑ b : Fin N', μ (EuclideanSpace.basisFun (Fin N') ℝ b) ^ 2 := by
+    intro μ
+    have h := hpars N (μ.comp A)
+    simp only [ContinuousLinearMap.comp_apply] at h
+    rw [h, hpars N' μ]
+    calc ‖μ.comp A‖ ^ 2 ≤ (‖μ‖ * ‖A‖) ^ 2 :=
+          pow_le_pow_left₀ (norm_nonneg _) (ContinuousLinearMap.opNorm_comp_le μ A) 2
+      _ = ‖A‖ ^ 2 * ‖μ‖ ^ 2 := by ring
+  -- induction on the degree, for all covectors `γ` of that degree
+  induction m with
+  | zero =>
+    -- one (empty) index tuple on each side, and the two empty tuples of vectors agree
+    rw [pow_zero, one_mul, Fintype.sum_unique, Fintype.sum_unique,
+      ContinuousAlternatingMap.compContinuousLinearMap_apply]
+    exact le_of_eq (congrArg (· ^ 2) (congrArg γ (Subsingleton.elim _ _)))
+  | succ m ih =>
+    -- first-slot reindexing `J = Fin.cons c j`
+    have hsplit : ∀ (M : ℕ) (F : (Fin (m + 1) → Fin M) → ℝ),
+        ∑ J : Fin (m + 1) → Fin M, F J = ∑ c : Fin M, ∑ j : Fin m → Fin M, F (Fin.cons c j) := by
+      intro M F
+      rw [← (Fin.consEquiv fun _ => Fin M).sum_comp, Fintype.sum_prod_type]
+      rfl
+    -- `δ(e ∘ Fin.cons c j) = (ι_{e_c} δ)(e ∘ j)`
+    have hcons : ∀ (M : ℕ) (δ : Covector (Euclid M) (m + 1)) (c : Fin M) (j : Fin m → Fin M),
+        δ (fun i => EuclideanSpace.basisFun (Fin M) ℝ ((Fin.cons c j : Fin (m + 1) → Fin M) i)) =
+          δ.curryLeft (EuclideanSpace.basisFun (Fin M) ℝ c)
+            (fun i => EuclideanSpace.basisFun (Fin M) ℝ (j i)) := by
+      intro M δ c j
+      rw [ContinuousAlternatingMap.curryLeft_apply_apply]
+      congr 1
+      ext i : 1
+      refine Fin.cases ?_ (fun i => ?_) i <;> simp
+    -- the one-slot estimate for `μ_j(u) = (ι_u γ)(e' ∘ j)`, continuous linear in `u`
+    have hμ : ∀ j : Fin m → Fin N',
+        ∑ a : Fin N, (γ.curryLeft (A (EuclideanSpace.basisFun (Fin N) ℝ a))
+            (fun i => EuclideanSpace.basisFun (Fin N') ℝ (j i))) ^ 2 ≤
+          ‖A‖ ^ 2 * ∑ b : Fin N', (γ.curryLeft (EuclideanSpace.basisFun (Fin N') ℝ b)
+            (fun i => EuclideanSpace.basisFun (Fin N') ℝ (j i))) ^ 2 :=
+      fun j => hone ((ContinuousAlternatingMap.apply ℝ (Euclid N') ℝ
+        (fun i => EuclideanSpace.basisFun (Fin N') ℝ (j i))).comp γ.curryLeft)
+    calc ∑ J : Fin (m + 1) → Fin N,
+          ((γ.compContinuousLinearMap A) (fun i => EuclideanSpace.basisFun (Fin N) ℝ (J i))) ^ 2
+        = ∑ a : Fin N, ∑ j : Fin m → Fin N,
+            (((γ.curryLeft (A (EuclideanSpace.basisFun (Fin N) ℝ a))).compContinuousLinearMap A)
+              (fun i => EuclideanSpace.basisFun (Fin N) ℝ (j i))) ^ 2 := by
+          rw [hsplit N]
+          refine Finset.sum_congr rfl fun a _ => Finset.sum_congr rfl fun j _ => ?_
+          rw [hcons, ContinuousAlternatingMap.curryLeft_compContinuousLinearMap]
+      _ ≤ ∑ a : Fin N, (‖A‖ ^ 2) ^ m * ∑ j : Fin m → Fin N',
+            (γ.curryLeft (A (EuclideanSpace.basisFun (Fin N) ℝ a))
+              (fun i => EuclideanSpace.basisFun (Fin N') ℝ (j i))) ^ 2 :=
+          Finset.sum_le_sum fun a _ => ih _
+      _ = (‖A‖ ^ 2) ^ m * ∑ j : Fin m → Fin N', ∑ a : Fin N,
+            (γ.curryLeft (A (EuclideanSpace.basisFun (Fin N) ℝ a))
+              (fun i => EuclideanSpace.basisFun (Fin N') ℝ (j i))) ^ 2 := by
+          rw [← Finset.mul_sum, Finset.sum_comm]
+      _ ≤ (‖A‖ ^ 2) ^ m * ∑ j : Fin m → Fin N', ‖A‖ ^ 2 * ∑ b : Fin N',
+            (γ.curryLeft (EuclideanSpace.basisFun (Fin N') ℝ b)
+              (fun i => EuclideanSpace.basisFun (Fin N') ℝ (j i))) ^ 2 := by
+          gcongr with j
+          exact hμ j
+      _ = (‖A‖ ^ 2) ^ (m + 1) * ∑ J : Fin (m + 1) → Fin N',
+            (γ (fun i => EuclideanSpace.basisFun (Fin N') ℝ (J i))) ^ 2 := by
+          -- reindex back with `Fin.cons` and collect `(‖A‖²)ᵐ ‖A‖² = (‖A‖²)ᵐ⁺¹`
+          rw [hsplit N', Finset.sum_comm, ← Finset.mul_sum, ← mul_assoc, ← pow_succ]
+          simp only [hcons]
+
+/-- **Pull-back bound for the Euclidean coefficient norm** (Simon 6.1, the pointwise pull-back
+`f^#ω` of (6.1.13)): for a continuous linear `A : ℝᴺ → ℝᴺ'` and a `k`-covector `β` on `ℝᴺ'`, the
+pull-back `A^#β = β.compContinuousLinearMap A`, `A^#β(w₁, …, w_k) = β(Aw₁, …, Aw_k)`, satisfies
+`|A^#β|_E ≤ ‖A‖ᵏ |β|_E`.  Over all index tuples, `Σ_j (A^#β)(e ∘ j)² ≤ (‖A‖²)ᵏ Σ_j β(e' ∘ j)²` for
+the standard bases `e`, `e'` (`cmcdt_lp_pullback_basis_sq_sum_le`), and both sums are `k!` times
+the squared coefficient norms (`regcomp_covector_sq_sum_orthonormalBasis`); cancel `k! > 0` and
+take square roots. -/
+theorem Submission.cmcdt_lp_covector_pullback_norm_le : ∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β := by
+  intro N N' k A β
+  -- `k! |A^#β|_E² = Σ_j (A^#β)(e ∘ j)² ≤ (‖A‖²)ᵏ Σ_j β(e' ∘ j)² = (‖A‖²)ᵏ k! |β|_E²`
+  have key : (k.factorial : ℝ) * covectorEuclideanNorm (β.compContinuousLinearMap A) ^ 2 ≤
+      (k.factorial : ℝ) * (‖A‖ ^ k * covectorEuclideanNorm β) ^ 2 :=
+    calc (k.factorial : ℝ) * covectorEuclideanNorm (β.compContinuousLinearMap A) ^ 2
+        = ∑ j : Fin k → Fin N,
+            ((β.compContinuousLinearMap A) (fun i => EuclideanSpace.basisFun (Fin N) ℝ (j i))) ^ 2 :=
+          (Submission.regcomp_covector_sq_sum_orthonormalBasis N k _
+            (EuclideanSpace.basisFun (Fin N) ℝ)).symm
+      _ ≤ (‖A‖ ^ 2) ^ k *
+            ∑ j : Fin k → Fin N', (β (fun i => EuclideanSpace.basisFun (Fin N') ℝ (j i))) ^ 2 :=
+          Submission.cmcdt_lp_pullback_basis_sq_sum_le N N' k A β
+      _ = (‖A‖ ^ 2) ^ k * ((k.factorial : ℝ) * covectorEuclideanNorm β ^ 2) := by
+          rw [Submission.regcomp_covector_sq_sum_orthonormalBasis N' k β
+            (EuclideanSpace.basisFun (Fin N') ℝ)]
+      _ = (k.factorial : ℝ) * (‖A‖ ^ k * covectorEuclideanNorm β) ^ 2 := by ring
+  -- cancel `k! > 0` and take square roots of nonnegative quantities
+  exact (pow_le_pow_iff_left₀ (covectorEuclideanNorm_nonneg _)
+    (mul_nonneg (pow_nonneg (norm_nonneg A) k) (covectorEuclideanNorm_nonneg β)) two_ne_zero).mp
+    (le_of_mul_le_mul_left key (by exact_mod_cast Nat.factorial_pos _))
+/-- **Interior product bound for the Euclidean coefficient norm** (Simon 6.1): for `v ∈ ℝᴺ` and a
+`(k+1)`-covector `β` on `ℝᴺ`, the interior product `ι_v β = β.curryLeft v`,
+`ι_v β(w₁, …, w_k) = β(v, w₁, …, w_k)`, satisfies `|ι_v β|_E ≤ ‖v‖ |β|_E`.  By homogeneity it
+suffices to treat `u = v / ‖v‖ = f_{i₀}` for an orthonormal basis `f` of `ℝᴺ`.  The position sums
+`R_p = Σ_{J(p) = i₀} β(f ∘ J)²` all equal `R_0 = k! |ι_u β|_E²` (transpose `0 ↔ p`), and
+`Σ_p R_p ≤ Σ_J β(f ∘ J)² = (k+1)! |β|_E²` because tuples with `i₀` in two slots vanish
+(`regcomp_covector_sq_sum_orthonormalBasis` evaluates both sums). -/
+theorem Submission.cmcdt_lp_covector_curryLeft_norm_le : ∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β := by
+  intro N k v β
+  classical
+  -- the case `v = 0`
+  rcases eq_or_ne v 0 with rfl | hv
+  · simp
+  have hvpos : 0 < ‖v‖ := norm_pos_iff.mpr hv
+  -- homogeneity: `|c γ|_E = |c| |γ|_E`
+  have hhom : ∀ (c : ℝ) (γ : Covector (Euclid N) k),
+      covectorEuclideanNorm (c • γ) = |c| * covectorEuclideanNorm γ := by
+    intro c γ
+    unfold covectorEuclideanNorm
+    rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun I _ => ?_
+    split_ifs
+    · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+    · rw [mul_zero]
+  -- `N ≥ 1` as `ℝ⁰ = {0}`; an orthonormal basis `f` of `ℝᴺ` with `f i₀ = ‖v‖⁻¹ v`
+  have hN : 0 < N := Nat.pos_of_ne_zero fun h => hv (by subst h; exact Subsingleton.elim v 0)
+  set i₀ : Fin N := ⟨0, hN⟩
+  obtain ⟨f, hf⟩ : ∃ f : OrthonormalBasis (Fin N) ℝ (Euclid N), f i₀ = ‖v‖⁻¹ • v := by
+    have hon : Orthonormal ℝ (({i₀} : Set (Fin N)).domRestrict fun _ => ‖v‖⁻¹ • v) := by
+      refine ⟨fun _ => ?_, fun i j hij => absurd (Subsingleton.elim i j) hij⟩
+      rw [Set.domRestrict_apply, norm_smul, norm_inv, norm_norm, inv_mul_cancel₀ hvpos.ne']
+    obtain ⟨b, hb⟩ := hon.exists_orthonormalBasis_extension_of_card_eq (by simp)
+    exact ⟨b, hb i₀ rfl⟩
+  -- `|ι_v β|_E = ‖v‖ |ι_{f i₀} β|_E`, so it suffices to show `|ι_{f i₀} β|_E ≤ |β|_E`
+  have hvu : β.curryLeft v = ‖v‖ • β.curryLeft (f i₀) := by
+    rw [hf, map_smul, smul_smul, mul_inv_cancel₀ hvpos.ne', one_smul]
+  rw [hvu, hhom, abs_of_pos hvpos]
+  refine mul_le_mul_of_nonneg_left ?_ hvpos.le
+  -- `g J = β(f ∘ J)²` and the position sums `R p = Σ_{J p = i₀} g J`
+  set g : (Fin (k + 1) → Fin N) → ℝ := fun J => (β fun t => f (J t)) ^ 2 with hg
+  set R : Fin (k + 1) → ℝ := fun p => ∑ J, if J p = i₀ then g J else 0 with hR
+  -- `R 0 = Σ_j (ι_{f i₀} β)(f ∘ j)² = k! |ι_{f i₀} β|_E²` (reindex `J = Fin.cons a j`)
+  have hR0 : R 0 = (k.factorial : ℝ) * covectorEuclideanNorm (β.curryLeft (f i₀)) ^ 2 := by
+    rw [← Submission.regcomp_covector_sq_sum_orthonormalBasis N k (β.curryLeft (f i₀)) f]
+    simp only [hR]
+    rw [← (Fin.consEquiv fun _ : Fin (k + 1) => Fin N).sum_comp, Fintype.sum_prod_type,
+      Finset.sum_eq_single i₀]
+    · refine Finset.sum_congr rfl fun j _ => ?_
+      simp only [Fin.consEquiv_apply, Fin.cons_zero, ↓reduceIte, hg]
+      rw [ContinuousAlternatingMap.curryLeft_apply_apply]
+      congr 2
+      funext t
+      refine Fin.cases ?_ (fun s => ?_) t <;> simp
+    · intro a _ ha
+      exact Finset.sum_eq_zero fun j _ => by simp [ha]
+    · intro h
+      exact absurd (Finset.mem_univ i₀) h
+  -- `R p = R 0`: reindex `J ↦ J ∘ (0 p)`, and `β(f ∘ J ∘ (0 p)) = ±β(f ∘ J)`
+  have hRp : ∀ p, R p = R 0 := by
+    intro p
+    simp only [hR]
+    refine Fintype.sum_equiv (Equiv.arrowCongr (Equiv.swap 0 p) (Equiv.refl (Fin N))) _ _
+      fun J => ?_
+    have hJ : ∀ t, Equiv.arrowCongr (Equiv.swap 0 p) (Equiv.refl (Fin N)) J t =
+        J (Equiv.swap 0 p t) := fun t => by
+      simp [Equiv.arrowCongr_apply]
+    have hperm : β (fun t => f (J (Equiv.swap 0 p t))) =
+        Equiv.Perm.sign (Equiv.swap 0 p) • β (fun t => f (J t)) :=
+      β.toAlternatingMap.map_perm (fun t => f (J t)) (Equiv.swap 0 p)
+    have hgJ : g (Equiv.arrowCongr (Equiv.swap 0 p) (Equiv.refl (Fin N)) J) = g J := by
+      simp only [hg, hJ, hperm]
+      rcases Int.units_eq_one_or (Equiv.Perm.sign (Equiv.swap (0 : Fin (k + 1)) p)) with h | h <;>
+        simp [h]
+    rw [hgJ, hJ, Equiv.swap_apply_left]
+  -- `Σ_p R p ≤ Σ_J g J`: a tuple `J` with `i₀` in two slots has `β(f ∘ J) = 0`
+  have hsum : ∑ p, R p ≤ ∑ J, g J := by
+    simp only [hR]
+    rw [Finset.sum_comm]
+    refine Finset.sum_le_sum fun J _ => ?_
+    rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, nsmul_eq_mul]
+    by_cases h : (Finset.univ.filter fun p => J p = i₀).card ≤ 1
+    · exact mul_le_of_le_one_left (sq_nonneg _) (by exact_mod_cast h)
+    · obtain ⟨p, hp, q, hq, hpq⟩ := Finset.one_lt_card.mp (not_le.mp h)
+      rw [Finset.mem_filter] at hp hq
+      have h0 : β (fun t => f (J t)) = 0 :=
+        β.map_eq_zero_of_eq _ (by rw [hp.2, hq.2]) hpq
+      simp [hg, h0]
+  -- `(k+1)! |ι_{f i₀} β|_E² = Σ_p R p ≤ Σ_J g J = (k+1)! |β|_E²`
+  have key : ((k + 1).factorial : ℝ) * covectorEuclideanNorm (β.curryLeft (f i₀)) ^ 2 ≤
+      ((k + 1).factorial : ℝ) * covectorEuclideanNorm β ^ 2 :=
+    calc ((k + 1).factorial : ℝ) * covectorEuclideanNorm (β.curryLeft (f i₀)) ^ 2
+        = ∑ p, R p := by
+          rw [Finset.sum_congr rfl fun p _ => hRp p, Finset.sum_const, Finset.card_univ,
+            Fintype.card_fin, nsmul_eq_mul, hR0, Nat.factorial_succ]
+          push_cast
+          ring
+      _ ≤ ∑ J, g J := hsum
+      _ = ((k + 1).factorial : ℝ) * covectorEuclideanNorm β ^ 2 := by
+          simp only [hg]
+          exact Submission.regcomp_covector_sq_sum_orthonormalBasis N (k + 1) β f
+  exact (pow_le_pow_iff_left₀ (covectorEuclideanNorm_nonneg _) (covectorEuclideanNorm_nonneg _)
+    two_ne_zero).mp (le_of_mul_le_mul_left key (by exact_mod_cast Nat.factorial_pos _))
 /-- Local finiteness of an integer multiplicity representation `(M, θ, ξ)` in `U` (Simon Ch. 6,
 Definition 3.1).  For compact `K ⊆ U`, `μ_R(K) = ∫_{M ∩ K} θ dHⁿ < ∞` by the local integrability
 of `θ`, and `Hⁿ(M ∩ K) = ∫_{M ∩ K} 1 dHⁿ ≤ ∫_{M ∩ K} θ dHⁿ < ∞` since `θ ≥ 1` on `M`. -/
@@ -5791,6 +6037,20 @@ theorem Submission.dpf_rectifiable_bilipschitz_pieces : ∀ (P n : ℕ) (M : Set
           exact ⟨ha, hk⟩
         · simp only [hFi, Nat.unpair_pair]
       · exact Or.inr (mem_iUnion.mpr ⟨j, a, ha, rfl⟩)
+
+/-- **Covector norm bounds: pull-back, interior product, orthonormal evaluation** (Simon Ch. 6, §1;
+the pointwise estimates behind the homotopy and Lipschitz push-forward mass bounds 6.2.27, 6.2.29
+used in the deformation theorem 6.5.1).  With `|α|` the Euclidean coefficient norm
+`covectorEuclideanNorm α` (Simon 6.1.5):
+(L1) `|A^#β| ≤ ‖A‖ᵏ |β|` for a linear map `A : ℝᴺ → ℝᴺ'` and the pull-back
+`A^#β(w₁, …, w_k) = β(Aw₁, …, Aw_k)` (`cmcdt_lp_covector_pullback_norm_le`);
+(L2) `|ι_v β| ≤ ‖v‖ |β|` for the interior product `ι_v β(w₁, …, w_k) = β(v, w₁, …, w_k)`
+(`cmcdt_lp_covector_curryLeft_norm_le`);
+(L3) `|α(τ₁, …, τ_k)| ≤ |α|` for an orthonormal family `τ` in `ℝᴺ`
+(`regcomp_covector_eval_orthonormal_le`). -/
+theorem Submission.cmcdt_lp_covector_norm_bounds : (∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) ∧ (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) ∧ ∀ (N k : ℕ) (α : Covector (Euclid N) k) (τ : Fin k → Euclid N), Orthonormal ℝ τ → |α τ| ≤ covectorEuclideanNorm α :=
+  ⟨Submission.cmcdt_lp_covector_pullback_norm_le, Submission.cmcdt_lp_covector_curryLeft_norm_le,
+    Submission.regcomp_covector_eval_orthonormal_le⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
