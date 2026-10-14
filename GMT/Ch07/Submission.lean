@@ -451,6 +451,37 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Thin cones around separated unit directions are disjoint.**  If `|σ| = |σ'| = 1`,
+`0 < ρ ≤ 1` and `2ρ ≤ |σ − σ'|`, then `⋃_{t>0} B(tσ, tρ)` and `⋃_{s>0} B(sσ', sρ)` are disjoint.
+A common point `x` of `B(tσ, tρ)` and `B(sσ', sρ)` gives `|tσ − sσ'| < (t + s)ρ` by the triangle
+inequality, whereas `|tσ − sσ'|² = (t − s)² + ts|σ − σ'|² ≥ (t − s)²ρ² + 4tsρ² = ((t + s)ρ)²`. -/
+theorem Submission.idtp_fons_odc_fr_cone_disjoint : ∀ (P : ℕ) (σ σ' : Euclid P) (ρ : ℝ), ‖σ‖ = 1 → ‖σ'‖ = 1 → 0 < ρ → ρ ≤ 1 → 2 * ρ ≤ ‖σ - σ'‖ → Disjoint (⋃ (t : ℝ) (_ : 0 < t), ball (t • σ) (t * ρ)) (⋃ (s : ℝ) (_ : 0 < s), ball (s • σ') (s * ρ)) := by
+  intro P σ σ' ρ hσ hσ' hρ hρ1 hsep
+  rw [Set.disjoint_left]
+  intro x hx hx'
+  simp only [mem_iUnion, mem_ball] at hx hx'
+  obtain ⟨t, ht, hxt⟩ := hx
+  obtain ⟨s, hs, hxs⟩ := hx'
+  -- triangle inequality through the common point `x`
+  have hlt : ‖t • σ - s • σ'‖ < (t + s) * ρ := by
+    calc ‖t • σ - s • σ'‖ = dist (t • σ) (s • σ') := (dist_eq_norm _ _).symm
+      _ ≤ dist (t • σ) x + dist x (s • σ') := dist_triangle _ _ _
+      _ = dist x (t • σ) + dist x (s • σ') := by rw [dist_comm (t • σ) x]
+      _ < t * ρ + s * ρ := add_lt_add hxt hxs
+      _ = (t + s) * ρ := by ring
+  -- `|tσ − sσ'|² = (t − s)² + ts|σ − σ'|²` for unit `σ`, `σ'`
+  have hid : ‖t • σ - s • σ'‖ ^ 2 = (t - s) ^ 2 + t * s * ‖σ - σ'‖ ^ 2 := by
+    rw [norm_sub_sq_real, norm_sub_sq_real, norm_smul, norm_smul, real_inner_smul_left,
+      real_inner_smul_right, hσ, hσ', Real.norm_of_nonneg ht.le, Real.norm_of_nonneg hs.le]
+    ring
+  -- hence `|tσ − sσ'|² ≥ (t − s)²ρ² + 4tsρ² = ((t + s)ρ)²`
+  have hρ2 : ρ ^ 2 ≤ 1 := by nlinarith
+  have hsep2 : 4 * ρ ^ 2 ≤ ‖σ - σ'‖ ^ 2 := by nlinarith
+  have hge : ((t + s) * ρ) ^ 2 ≤ ‖t • σ - s • σ'‖ ^ 2 := by
+    rw [hid]
+    nlinarith [sq_nonneg (t - s), mul_pos ht hs]
+  nlinarith [norm_nonneg (t • σ - s • σ')]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
