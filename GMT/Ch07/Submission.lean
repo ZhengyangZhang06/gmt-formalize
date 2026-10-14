@@ -3528,6 +3528,191 @@ theorem Submission.dimred_mbl_dt_lpip_bilipschitz_image_current : (∀ (P n : �
       inter_univ]
     exact hθint
 
+/-- **Lipschitz push-forward of a weighted parameter domain** (Simon Ch. 6, (3.3)–(3.7), printed
+pp. 146–148, for the flat domain `A ⊆ ℝⁿ` with integer weight `g`).  Assume (MR), (IMC) and the
+integer multiplicity series lemma (IMSc).  Let `n = k + 1`, `H : ℝⁿ → ℝᴾ` be `L`-Lipschitz,
+`A ⊆ ℝⁿ` Borel and `g : ℝⁿ → ℤ` measurable and integrable on `A`.  Then
+`ω ↦ ∫_A g(u) ω(H u)(DH(u)e₀, …, DH(u)eₖ) du` is an integer multiplicity current in `ℝᴾ`.
+The integrand vanishes off `A⁺ = {u ∈ A : (DH(u)eₐ)ₐ independent, g(u) ≠ 0}` (alternating maps
+vanish on dependent vectors, as in (3.4)), and `H` is differentiable on `A⁺` because `DH = 0` off
+the differentiability set and `n ≥ 1`.  Mathlib's approximately-linear partition, with radius half
+the coercivity constant of the model map, cuts `A⁺` into disjoint Borel pieces `Aₗ` on which `H`
+is bi-Lipschitz.  The bi-Lipschitz image current gives integer multiplicity `Φₗ` with
+`Φₗ(ω) = ∫_{Aₗ} g ω(H)(DH e)` and `M(Φₗ) ≤ Lⁿ ∫_{Aₗ} |g|`, so `Σₗ M(Φₗ) ≤ Lⁿ ∫_A |g| < ∞`;
+(IMSc) sums the `Φₗ` to an integer multiplicity `S`, and countable additivity of the integral
+identifies `S(ω)`. -/
+theorem Submission.dimred_mbl_dt_lpip_lipschitz_piece_current : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P k : ℕ) (W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), ∑' i, (W i).mass < ∞ → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => W i ω) (S ω)) ∧ S.mass ≤ ∑' i, (W i).mass ∧ S.support ⊆ closure (⋃ i, (W i).support) ∧ ((∀ i, IsIntegerMultiplicity (W i)) → IsIntegerMultiplicity S)) → ∀ (P k : ℕ) (L : NNReal) (H : Euclid (k + 1) → Euclid P) (A : Set (Euclid (k + 1))) (g : Euclid (k + 1) → ℤ), LipschitzWith L H → MeasurableSet A → Measurable g → IntegrableOn (fun u => (g u : ℝ)) A → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), IsIntegerMultiplicity S ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), S ω = ∫ u in A, (g u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)) := by
+  intro hMR hIMC hIMS P k L H A g hH hA hg hgi
+  have hIC := Submission.dimred_mbl_dt_lpip_bilipschitz_image_current hMR hIMC
+  -- `Lip H ≤ L` bounds every `DH(u)eₐ`
+  have hDH : ∀ u (a : Fin (k + 1)), ‖fderiv ℝ H u (EuclideanSpace.single a 1)‖ ≤ L := by
+    intro u a
+    calc ‖fderiv ℝ H u (EuclideanSpace.single a 1)‖
+        ≤ L * ‖(EuclideanSpace.single a 1 : Euclid (k + 1))‖ :=
+          (fderiv ℝ H u).le_of_opNorm_le (norm_fderiv_le_of_lipschitz ℝ hH) _
+      _ = L := by simp
+  -- `u ↦ (DH(u)eₐ)ₐ` is Borel
+  have hvmeas : Measurable fun u (a : Fin (k + 1)) => fderiv ℝ H u (EuclideanSpace.single a 1) :=
+    measurable_pi_iff.2 fun a => measurable_fderiv_apply_const ℝ H _
+  -- step 1: `Ψ_ω = g · ω(H)(DH e)` is integrable on `A`, with `|Ψ_ω| ≤ C_ω Lⁿ |g|`
+  have hΨint : ∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1),
+      IntegrableOn (fun u => (g u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (H u)
+        (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))) A := by
+    intro ω
+    have hωc : Continuous (ω : DifferentialForm (Euclid P) (k + 1)) :=
+      ContDiff.continuous ω.property.1.1
+    obtain ⟨C, hC⟩ := HasCompactSupport.exists_bound_of_continuous ω.property.1.2 hωc
+    have hC0 : 0 ≤ C := (norm_nonneg _).trans (hC 0)
+    have hev : Continuous fun p : Euclid P × (Fin (k + 1) → Euclid P) =>
+        (ω : DifferentialForm (Euclid P) (k + 1)) p.1 p.2 :=
+      continuous_eval.comp ((hωc.comp continuous_fst).prodMk continuous_snd)
+    have hmeas : Measurable fun u => (ω : DifferentialForm (Euclid P) (k + 1)) (H u)
+        (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)) :=
+      hev.measurable.comp (hH.continuous.measurable.prodMk hvmeas)
+    refine (hgi.norm.mul_const (C * (L : ℝ) ^ (k + 1))).mono'
+      (hgi.aestronglyMeasurable.mul hmeas.aestronglyMeasurable) (Eventually.of_forall fun u => ?_)
+    rw [norm_mul]
+    refine mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
+    calc ‖(ω : DifferentialForm (Euclid P) (k + 1)) (H u)
+          (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))‖
+        ≤ ‖(ω : DifferentialForm (Euclid P) (k + 1)) (H u)‖ *
+            ∏ a : Fin (k + 1), ‖fderiv ℝ H u (EuclideanSpace.single a 1)‖ :=
+          ContinuousAlternatingMap.le_opNorm _ _
+      _ ≤ C * ∏ _a : Fin (k + 1), (L : ℝ) := by
+          refine mul_le_mul (hC _) ?_ (by positivity) hC0
+          gcongr with a
+          exact hDH u a
+      _ = C * (L : ℝ) ^ (k + 1) := by
+          rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+  -- `DH(u)` is injective as soon as `(DH(u)eₐ)ₐ` is linearly independent
+  have hLIinj : ∀ T : Euclid (k + 1) →L[ℝ] Euclid P,
+      LinearIndependent ℝ (fun a => T (EuclideanSpace.single a 1)) → Injective T := by
+    intro T hT x y hxy
+    have hrepr : ∀ z : Euclid (k + 1), T z = ∑ a, z a • T (EuclideanSpace.single a 1) := by
+      intro z
+      conv_lhs => rw [← (EuclideanSpace.basisFun (Fin (k + 1)) ℝ).sum_repr z]
+      simp [map_sum, map_smul]
+    have hc := Fintype.linearIndependent_iff.1 hT (fun a => (x - y) a)
+      (by rw [← hrepr, map_sub, hxy, sub_self])
+    rw [← sub_eq_zero]
+    ext a
+    simpa using hc a
+  -- step 2: the regular part `A⁺ = {u ∈ A : (DH(u)eₐ)ₐ independent, g(u) ≠ 0}`
+  obtain ⟨Ap, hAp⟩ : ∃ Ap : Set (Euclid (k + 1)), Ap = A ∩
+      {u | LinearIndependent ℝ (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))} ∩
+        {u | g u ≠ 0} := ⟨_, rfl⟩
+  have hmem : ∀ u, u ∈ Ap ↔ (u ∈ A ∧
+      LinearIndependent ℝ (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))) ∧ g u ≠ 0 := by
+    intro u
+    rw [hAp]
+    rfl
+  have hApA : Ap ⊆ A := fun u hu => ((hmem u).1 hu).1.1
+  have hApm : MeasurableSet Ap := by
+    rw [hAp]
+    exact (hA.inter ((isOpen_setOfPred_linearIndependent (𝕜 := ℝ) (E := Euclid P)
+      (ι := Fin (k + 1))).measurableSet.preimage hvmeas)).inter
+        (hg (measurableSet_singleton 0)).compl
+  have hinj : ∀ u ∈ Ap, Injective (fderiv ℝ H u) := fun u hu => hLIinj _ ((hmem u).1 hu).1.2
+  -- `n ≥ 1`, so `DH(u) = 0` is not injective where `H` is not differentiable
+  have hdiff : ∀ u ∈ Ap, DifferentiableAt ℝ H u := by
+    intro u hu
+    by_contra hnd
+    have h0 := hinj u hu
+    rw [fderiv_zero_of_not_differentiableAt hnd] at h0
+    have he : (EuclideanSpace.single 0 1 : Euclid (k + 1)) = 0 := h0 (by simp)
+    simpa using congrArg norm he
+  have hgne : ∀ u ∈ Ap, g u ≠ 0 := fun u hu => ((hmem u).1 hu).2
+  -- off `A⁺`, `g = 0` or `ω(H u)` is evaluated on dependent vectors
+  have hzero : ∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), ∀ u ∈ A \ Ap,
+      (g u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (H u)
+        (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)) = 0 := by
+    intro ω u hu
+    by_cases hgu : g u = 0
+    · simp [hgu]
+    · have hdep : ¬LinearIndependent ℝ (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)) :=
+        fun hLI => hu.2 ((hmem u).2 ⟨⟨hu.1, hLI⟩, hgu⟩)
+      have hω0 : (ω : DifferentialForm (Euclid P) (k + 1)) (H u)
+          (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)) = 0 :=
+        ((ω : DifferentialForm (Euclid P) (k + 1)) (H u)).toAlternatingMap.map_linearDependent _
+          hdep
+      rw [hω0, mul_zero]
+  -- step 3: a coercivity radius `δ(T) > 0`, `2δ(T)|w| ≤ |T w|` for injective `T`
+  have hcoer : ∀ T : Euclid (k + 1) →L[ℝ] Euclid P, ∃ δ : NNReal, 0 < δ ∧
+      (Injective T → ∀ w, 2 * (δ : ℝ) * ‖w‖ ≤ ‖T w‖) := by
+    intro T
+    by_cases hT : Injective T
+    · obtain ⟨K, hKpos, hK⟩ := (T : Euclid (k + 1) →ₗ[ℝ] Euclid P).exists_antilipschitzWith
+        (LinearMap.ker_eq_bot.mpr hT)
+      refine ⟨(2 * K)⁻¹, by positivity, fun _ w => ?_⟩
+      have h := hK.le_mul_dist w 0
+      simp only [dist_zero_right, map_zero, ContinuousLinearMap.coe_coe] at h
+      have hK' : (0 : ℝ) < K := by exact_mod_cast hKpos
+      have h2 : 2 * (((2 * K)⁻¹ : NNReal) : ℝ) = (K : ℝ)⁻¹ := by
+        push_cast
+        field_simp
+      rw [h2, inv_mul_le_iff₀ hK']
+      exact h
+    · exact ⟨1, one_pos, fun h => (hT h).elim⟩
+  choose δ hδpos hδ using hcoer
+  -- Mathlib's approximately-linear partition of `A⁺` with radius `δ`
+  obtain ⟨t, T, hdisj, ht, hcover, happrox, hT⟩ :=
+    exists_partition_approximatesLinearOn_of_hasFDerivWithinAt H Ap (fderiv ℝ H)
+      (fun u hu => (hdiff u hu).hasFDerivAt.hasFDerivWithinAt) δ (fun T => (hδpos T).ne')
+  -- `H` is bi-Lipschitz with constant `δ(Tₗ)` on `Aₗ = A⁺ ∩ tₗ`
+  have hbilip : ∀ l, ∀ a ∈ Ap ∩ t l, ∀ a' ∈ Ap ∩ t l,
+      (δ (T l) : ℝ) * ‖a - a'‖ ≤ ‖H a - H a'‖ := by
+    intro l a ha a' ha'
+    obtain ⟨y, hy, hTy⟩ := hT ⟨a, ha.1⟩ l
+    have h1 := hδ (T l) (hTy ▸ hinj y hy) (a - a')
+    have h2 : ‖H a - H a' - T l (a - a')‖ ≤ δ (T l) * ‖a - a'‖ := happrox l a ha a' ha'
+    have h3 := norm_sub_le (H a - H a') (H a - H a' - T l (a - a'))
+    rw [sub_sub_cancel] at h3
+    linarith
+  -- step 4: the integer multiplicity piece currents `Φₗ`
+  have hpiece : ∀ l, ∃ Φ : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1),
+      IsIntegerMultiplicity Φ ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1),
+        Φ ω = ∫ u in Ap ∩ t l, (g u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (H u)
+          (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))) ∧
+      Φ.mass ≤ (L : ℝ≥0∞) ^ (k + 1) * ∫⁻ u in Ap ∩ t l, ‖(g u : ℝ)‖ₑ := fun l =>
+    hIC P (k + 1) L (δ (T l)) H (Ap ∩ t l) g hH (hApm.inter (ht l))
+      (by exact_mod_cast hδpos (T l)) (hbilip l)
+      (fun a ha => ⟨hdiff a ha.1, hinj a ha.1⟩) hg (fun a ha => hgne a ha.1)
+      (hgi.mono_set (inter_subset_left.trans hApA))
+  choose Φ hΦim hΦeq hΦmass using hpiece
+  have hdisj' : Pairwise (Disjoint on fun l => Ap ∩ t l) :=
+    fun i j hij => (hdisj hij).mono inter_subset_right inter_subset_right
+  have hunion : (⋃ l, Ap ∩ t l) = Ap := by
+    rw [← inter_iUnion]
+    exact inter_eq_left.2 hcover
+  -- step 5: `Σₗ M(Φₗ) ≤ Lⁿ ∫_A |g| < ∞`
+  have hmass : ∑' l, (Φ l).mass < ∞ := by
+    calc ∑' l, (Φ l).mass
+        ≤ ∑' l, (L : ℝ≥0∞) ^ (k + 1) * ∫⁻ u in Ap ∩ t l, ‖(g u : ℝ)‖ₑ :=
+          ENNReal.tsum_le_tsum hΦmass
+      _ = (L : ℝ≥0∞) ^ (k + 1) * ∫⁻ u in Ap, ‖(g u : ℝ)‖ₑ := by
+          rw [ENNReal.tsum_mul_left, ← lintegral_iUnion (fun l => hApm.inter (ht l)) hdisj',
+            hunion]
+      _ ≤ (L : ℝ≥0∞) ^ (k + 1) * ∫⁻ u in A, ‖(g u : ℝ)‖ₑ := by
+          gcongr
+      _ < ∞ := ENNReal.mul_lt_top (ENNReal.pow_lt_top ENNReal.coe_lt_top) hgi.2
+  -- step 6: sum the pieces with (IMSc)
+  obtain ⟨S, hS, -, -, hSim⟩ := hIMS P k Φ hmass
+  refine ⟨S, hSim hΦim, fun ω => ?_⟩
+  -- step 7: countable additivity identifies `S(ω) = ∫_{A⁺} Ψ_ω = ∫_A Ψ_ω`
+  have h1 : HasSum (fun l => ∫ u in Ap ∩ t l, (g u : ℝ) *
+      (ω : DifferentialForm (Euclid P) (k + 1)) (H u)
+        (fun a => fderiv ℝ H u (EuclideanSpace.single a 1)))
+      (∫ u in ⋃ l, Ap ∩ t l, (g u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (H u)
+        (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))) :=
+    hasSum_integral_iUnion (fun l => hApm.inter (ht l)) hdisj'
+      (by rw [hunion]; exact (hΨint ω).mono_set hApA)
+  have h2 : HasSum (fun l => ∫ u in Ap ∩ t l, (g u : ℝ) *
+      (ω : DifferentialForm (Euclid P) (k + 1)) (H u)
+        (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))) (S ω) := by
+    simpa only [hΦeq] using hS ω
+  rw [h2.unique h1, hunion]
+  exact (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero hA hApA (hzero ω)).symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
