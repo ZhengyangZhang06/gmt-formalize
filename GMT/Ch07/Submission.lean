@@ -556,6 +556,51 @@ theorem Submission.idtp_fons_cc_psf_domain_geometry : ∀ (P : ℕ) (x : Euclid 
     calc ‖x + lam • v‖ ≤ ‖x‖ + ‖lam • v‖ := norm_add_le _ _
       _ = ‖x‖ + lam * ‖v‖ := by rw [norm_smul_of_nonneg hlam.le]
       _ < 2 := by linarith
+/-- **Finite positive total mass of the rescaled seed `μ₀` and of its rescalings; concentration of
+`μ₀` on `B₂(0)`** (proof of Simon 7.3.3(1), chapter-07.txt lines 435–472: the rescaling and
+translation to `U = B₂(0)` in (4) and the rescalings `η_{x,λ#}` of (10), at the level of weights).
+If `r > 0` and `0 < μ(B_{2r}(z)) < ∞`, then `μ₀ = r⁻ⁿ η_{z,r#}(μ⌞B_{2r}(z))` has
+`μ₀(ℝᴾ) = r⁻ⁿ μ(B_{2r}(z)) ∈ (0, ∞)` and `μ₀(ℝᴾ \ B₂(0)) = 0`, since `η_{z,r}⁻¹(B₂(0)) = B_{2r}(z)`;
+and `μ₀^{x,λ} = λ⁻ⁿ η_{x,λ#}μ₀` has `μ₀^{x,λ}(ℝᴾ) = λ⁻ⁿ μ₀(ℝᴾ) ∈ (0, ∞)` for every `x` and
+`λ > 0`.  Dilations are continuous, so `(c • η_#ν)(A) = c ν(η⁻¹(A))` for Borel `A`. -/
+theorem Submission.idtp_fons_cc_psf_total_mass : ∀ (P n : ℕ) (μ μ₀ : Measure (Euclid P)) (z : Euclid P) (r : ℝ), 0 < r → μ (ball z (2 * r)) ≠ 0 → μ (ball z (2 * r)) ≠ ∞ → μ₀ = ENNReal.ofReal (r⁻¹ ^ n) • (μ.restrict (ball z (2 * r))).map (dilation z r) → μ₀ univ ≠ 0 ∧ μ₀ univ ≠ ∞ ∧ μ₀ (ball (0 : Euclid P) 2)ᶜ = 0 ∧ ∀ (x : Euclid P) (lam : ℝ), 0 < lam → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) univ ≠ 0 ∧ (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) univ ≠ ∞ := by
+  intro P n μ μ₀ z r hr hB0 hBtop hμ₀
+  -- Step 1: `η_{a,s}(u) = -(s⁻¹a) + s⁻¹u` is continuous, hence Borel measurable.
+  have hmeas : ∀ (a : Euclid P) (s : ℝ), Measurable (dilation a s) := fun a s =>
+    (continuous_const.add (dilationCLM P s).continuous).measurable
+  -- Step 2: `ofReal(s⁻ⁿ) ≠ 0` for `s > 0` (and `ofReal t ≠ ∞` for every `t`).
+  have hc : ∀ s : ℝ, 0 < s → ENNReal.ofReal (s⁻¹ ^ n) ≠ 0 := fun s hs =>
+    (ENNReal.ofReal_pos.2 (pow_pos (inv_pos.2 hs) n)).ne'
+  -- Step 3: `μ₀(ℝᴾ) = ofReal(r⁻ⁿ) μ(B_{2r}(z))`, a product of two elements of `(0, ∞)`.
+  have huniv : μ₀ univ = ENNReal.ofReal (r⁻¹ ^ n) * μ (ball z (2 * r)) := by
+    rw [hμ₀, Measure.smul_apply, Measure.map_apply (hmeas z r) MeasurableSet.univ, preimage_univ,
+      Measure.restrict_apply MeasurableSet.univ, univ_inter, smul_eq_mul]
+  have h0 : μ₀ univ ≠ 0 := by
+    rw [huniv]
+    exact mul_ne_zero (hc r hr) hB0
+  have htop : μ₀ univ ≠ ∞ := by
+    rw [huniv]
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top hBtop
+  refine ⟨h0, htop, ?_, fun x lam hlam => ?_⟩
+  -- Step 4: `η_{z,r}⁻¹(B₂(0)) = B_{2r}(z)`, as `‖r⁻¹(v - z)‖ < 2 ↔ ‖v - z‖ < 2r`; hence
+  -- `μ₀(B₂(0)ᶜ) = ofReal(r⁻ⁿ) μ(B_{2r}(z)ᶜ ∩ B_{2r}(z)) = 0`.
+  · have hball : dilation z r ⁻¹' ball (0 : Euclid P) 2 = ball z (2 * r) := by
+      ext v
+      have hv : dilation z r v = r⁻¹ • (v - z) := by
+        simp only [dilation, dilationCLM, smul_apply, ContinuousLinearMap.id_apply, smul_sub]
+        abel
+      rw [mem_preimage, mem_ball_zero_iff, hv, norm_smul, norm_inv, Real.norm_of_nonneg hr.le,
+        mem_ball, dist_eq_norm, inv_mul_lt_iff₀ hr, mul_comm]
+    rw [hμ₀, Measure.smul_apply, Measure.map_apply (hmeas z r) measurableSet_ball.compl,
+      preimage_compl, hball, Measure.restrict_apply measurableSet_ball.compl, compl_inter_self,
+      measure_empty, smul_zero]
+  -- Step 5: `μ₀^{x,λ}(ℝᴾ) = ofReal(λ⁻ⁿ) μ₀(ℝᴾ)`, again a product of two elements of `(0, ∞)`.
+  · have hmem : (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) univ =
+        ENNReal.ofReal (lam⁻¹ ^ n) * μ₀ univ := by
+      rw [Measure.smul_apply, Measure.map_apply (hmeas x lam) MeasurableSet.univ, preimage_univ,
+        smul_eq_mul]
+    rw [hmem]
+    exact ⟨mul_ne_zero (hc lam hlam) h0, ENNReal.mul_ne_top ENNReal.ofReal_ne_top htop⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
