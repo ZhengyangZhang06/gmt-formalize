@@ -469,6 +469,26 @@ theorem Submission.cmcsd_sh_measure_compl_support_eq_zero : (∀ (P n : ℕ) (U 
   show ENNReal.ofReal (X ω) ≤ 0
   rw [hVO P k univ X ω (Disjoint.mono_left hω.1 Set.disjoint_sdiff_right), ENNReal.ofReal_zero]
 
+/-- **Mass measure of a current of finite mass** (Simon Ch. 6, (2.7)–(2.8); the measures of the
+proof of the deformation theorem 5.1): if `X ∈ 𝒟_k(ℝᴾ)` has `M(X) < ∞`, then
+`X(ω) = ∫ ⟨ω(x), ξ(x)⟩ dμ(x)` for a finite measure `μ` with `M_W(X) = μ(W)` for every open `W`
+and `μ(ℝᴾ \ spt X) = 0`, and a `μ`-a.e. strongly measurable `ξ` with `|⟨α, ξ(x)⟩| ≤ |α|`.
+Since `M_W(X) ≤ M(X) < ∞`, the representation (REP) applies in `U = ℝᴾ`;
+`μ(ℝᴾ) = M_{ℝᴾ}(X) = M(X) < ∞`, and `μ` is null off `spt X` by
+`cmcsd_sh_measure_compl_support_eq_zero`. -/
+theorem Submission.cmcsd_sh_finite_mass_measure : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n), IsOpen U → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → T.massOn W < ∞) → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n), μ Uᶜ = 0 ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) ∧ (∀ W : Set (Euclid P), IsOpen W → T.massOn W = μ W) ∧ AEStronglyMeasurable ξ μ ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn U n, T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) ∧ ((∀ W : Set (Euclid P), IsOpen W → CompactlyContained W U → boundaryMassOn T W < ∞) → ∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0)) → ∀ (P k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid P)) k), X.mass < ∞ → ∃ (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P k), IsFiniteMeasure μ ∧ AEStronglyMeasurable ξ μ ∧ (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) k, |ξ x α| ≤ covectorEuclideanNorm α) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) k, X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ) ∧ (∀ W : Set (Euclid P), IsOpen W → X.massOn W = μ W) ∧ μ X.supportᶜ = 0 := by
+  intro hVO hREP P k X hX
+  -- Step 1: `M_W(X) ≤ M(X) < ∞` for every `W`, so (REP) applies in `U = ℝᴾ`
+  have hfin : ∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → X.massOn W < ∞ :=
+    fun W _ _ => (X.massOn_mono (subset_univ W)).trans_lt hX
+  -- Step 2: `X(ω) = ∫ ⟨ω, ξ⟩ dμ` with `|⟨α, ξ(x)⟩| ≤ |α|` and `M_W(X) = μ(W)` for open `W`
+  obtain ⟨μ, ξ, -, -, hmass, hξm, hξ, hrep, -⟩ := hREP P k univ X isOpen_univ hfin
+  -- Step 3: `μ(ℝᴾ) = M(X) < ∞`
+  have hμ : IsFiniteMeasure μ := ⟨by rw [← hmass univ isOpen_univ]; exact hX⟩
+  -- Steps 4–5: the bound holds everywhere, hence `μ`-a.e.; `μ` is null off `spt X`
+  exact ⟨μ, ξ, hμ, hξm, ae_of_all μ hξ, hrep, hmass,
+    Submission.cmcsd_sh_measure_compl_support_eq_zero hVO P k X μ hmass⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
