@@ -1190,6 +1190,297 @@ theorem Submission.cbr_ci_pw_bv_mollifier_estimate : ∀ (n : ℕ) (R s V : ℝ)
       (Submission.cbr_ci_pw_bv_smooth_test_bound n R s V φ u g hR hs hsR hV hφ hφ0 hφs hφ1 hu
         hvar hg hgc hgs hg1)
 
+/-- **Simon 7.2.4**, `L¹` convergence of the densities to the constant (step 11 of the weight
+lower bound `α ≥ 1`): if `Y_k(ω) = ∫_{B_{2R}(0)} u_k ⟨ω(y), e₀ ∧ ⋯ ∧ e_d⟩ dy`, the `u_k` are
+eventually `L¹`-bounded by `Λ` on `B_{2R}(0)`, `M_{B_{2R}(0)}(∂Y_k) → 0` and
+`Y_k(ω) → c ∫ ⟨ω(y), e₀ ∧ ⋯ ∧ e_d⟩ dy` for every test form `ω`, then `∫_{B_R(0)} |u_k − c| → 0`.
+Test functions `b` give the test forms `b dy`, so `∫ u_k b → c ∫ b`; for a normalized bump `φ`
+supported in `B_{R/4}(0)` the mollifications `w_k = u_k ∗ φ` converge to `c` uniformly on
+`B̄_R(0)` (`cbr_ci_pw_mollified_tendstoUniformlyOn`); `∂Y_k(f ι_z(dy)) = ∫ u_k Df(z)`
+(`cbr_ci_pw_interior_product_form`) bounds the variation of `u_k` by `M(∂Y_k)`, so
+`∫_{B_R(0)} |u_k − w_k| ≤ (R/4) M(∂Y_k)` (`cbr_ci_pw_bv_mollifier_estimate`); and
+`∫_{B_R(0)} |u_k − c| ≤ (R/4) M(∂Y_k) + |B_R(0)| sup_{B̄_R(0)} |w_k − c| → 0`. -/
+theorem Submission.dmcbr_ci_pw_density_l1_tendsto_const : ∀ (d : ℕ) (R c Λ : ℝ) (Y : ℕ → GeometricCurrentOn (ball (0 : Euclid (d + 1)) (2 * R)) (d + 1)) (u : ℕ → Euclid (d + 1) → ℝ), 0 < R → (∀ k, IntegrableOn (u k) (ball 0 (2 * R))) → (∀ᶠ k in atTop, ∫ y in ball 0 (2 * R), |u k y| ≤ Λ) → (∀ (k : ℕ) (ω : TestFormOn (ball (0 : Euclid (d + 1)) (2 * R)) (d + 1)), Y k ω = ∫ y in ball 0 (2 * R), u k y * (ω : DifferentialForm (Euclid (d + 1)) (d + 1)) y (fun i => EuclideanSpace.single i (1 : ℝ))) → Tendsto (fun k => (Y k).boundary.massOn (ball 0 (2 * R))) atTop (𝓝 0) → (∀ ω : TestFormOn (ball (0 : Euclid (d + 1)) (2 * R)) (d + 1), Tendsto (fun k => Y k ω) atTop (𝓝 (c * ∫ y, (ω : DifferentialForm (Euclid (d + 1)) (d + 1)) y (fun i => EuclideanSpace.single i (1 : ℝ))))) → Tendsto (fun k => ∫ y in ball 0 R, |u k y - c|) atTop (𝓝 0) := by
+  have aux_exists_det_covector : ∀ n : ℕ, ∃ δ : Covector (Euclid n) n, δ (fun i => EuclideanSpace.single i (1 : ℝ)) = 1 := by
+    intro n
+    have : Fact (Module.finrank ℝ (Euclid n) = n) := ⟨finrank_euclideanSpace_fin⟩
+    let b := EuclideanSpace.basisFun (Fin n) ℝ
+    let o : Orientation ℝ (Euclid n) (Fin n) := b.toBasis.orientation
+    refine ⟨o.volumeForm.mkContinuous 1 fun m => ?_, ?_⟩
+    · rw [one_mul, Real.norm_eq_abs]
+      exact o.abs_volumeForm_apply_le m
+    · rw [AlternatingMap.coe_mkContinuous, o.volumeForm_robust b rfl]
+      have h : (fun i => EuclideanSpace.single i (1 : ℝ)) = ⇑b.toBasis := by
+        funext i; simp [b]
+      rw [h, Module.Basis.det_self]
+  have aux_scalar_test_tendsto : ∀ (n : ℕ) (U : Set (Euclid n)) (c : ℝ) (Y : ℕ → GeometricCurrentOn U n) (u : ℕ → Euclid n → ℝ), (∀ (k : ℕ) (ω : TestFormOn U n), Y k ω = ∫ y in U, u k y * (ω : DifferentialForm (Euclid n) n) y (fun i => EuclideanSpace.single i (1 : ℝ))) → (∀ ω : TestFormOn U n, Tendsto (fun k => Y k ω) atTop (𝓝 (c * ∫ y, (ω : DifferentialForm (Euclid n) n) y (fun i => EuclideanSpace.single i (1 : ℝ))))) → ∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → Tendsto (fun k => ∫ y in U, u k y * b y) atTop (𝓝 (c * ∫ y, b y)) := by
+    intro n U c Y u hrep hweak b hb hbc hbU
+    obtain ⟨δ, hδ⟩ := aux_exists_det_covector n
+    have hmem : (fun y => b y • δ : DifferentialForm (Euclid n) n) ∈ testFormOnSubmodule (E := Euclid n) U n :=
+      ⟨⟨hb.smul contDiff_const, hbc.smul_right⟩, (tsupport_smul_subset_left b (fun _ => δ)).trans hbU⟩
+    let ω : TestFormOn U n := ⟨fun y => b y • δ, hmem⟩
+    have hωe : ∀ y, (ω : DifferentialForm (Euclid n) n) y (fun i => EuclideanSpace.single i (1 : ℝ)) = b y := by
+      intro y
+      simp [ω, hδ]
+    have h1 := hweak ω
+    simp only [hωe] at h1
+    refine h1.congr (fun k => ?_)
+    rw [hrep k ω]
+    simp only [hωe]
+  have aux_exists_normalized_mollifier : ∀ (n : ℕ) (r : ℝ), 0 < r → ∃ ρ : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) ρ ∧ HasCompactSupport ρ ∧ (∀ x, 0 ≤ ρ x) ∧ ∫ x, ρ x = 1 ∧ support ρ ⊆ ball (0 : Euclid n) r := by
+    intro n r hr
+    -- the bump `B` with `rIn = r/2`, `rOut = r`
+    let B : ContDiffBump (0 : Euclid n) := ⟨r / 2, r, half_pos hr, half_lt_self hr⟩
+    have hBs : HasCompactSupport B := B.hasCompactSupport
+    have hBi : Integrable B := B.continuous.integrable_of_hasCompactSupport hBs
+    -- `I = ∫ B > 0`: `B ≥ 0` and `support B = B_r(0)` has positive measure
+    have hI : 0 < ∫ x, B x := by
+      rw [integral_pos_iff_support_of_nonneg (fun x => B.nonneg' x) hBi, B.support_eq]
+      exact measure_ball_pos volume 0 hr
+    refine ⟨fun x => (∫ y, B y)⁻¹ * B x, contDiff_const.mul B.contDiff, hBs.mul_left,
+      fun x => mul_nonneg (inv_nonneg.2 hI.le) (B.nonneg' x), ?_, ?_⟩
+    · rw [integral_const_mul, inv_mul_cancel₀ hI.ne']
+    · exact (support_mul_subset_right _ _).trans B.support_eq.subset
+  have aux_abs_apply_le_massOn : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (ω : TestFormOn U n) (r : ℝ), T.massOn W ≠ ∞ → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * (T.massOn W).toReal := by
+    intro P n U W T ω r hM hW hr
+    -- homogeneity of the Euclidean coefficient norm
+    have hsmul : ∀ (c : ℝ) (α : Covector (Euclid P) n),
+        covectorEuclideanNorm (c • α) = |c| * covectorEuclideanNorm α := by
+      intro c α
+      unfold covectorEuclideanNorm
+      rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul (sq_nonneg c), Finset.mul_sum]
+      congr 1
+      refine Finset.sum_congr rfl fun I _ => ?_
+      split_ifs
+      · rw [ContinuousAlternatingMap.smul_apply, smul_eq_mul, mul_pow]
+      · rw [mul_zero]
+    have hr0 : 0 ≤ r := (covectorEuclideanNorm_nonneg _).trans (hr 0)
+    -- `|T(ω)| ≤ s M_W(T)` for `0 < s`, `r ≤ s`: every `c • ω` with `|c| ≤ s⁻¹` is admissible
+    have hbound : ∀ s : ℝ, 0 < s → r ≤ s → |T ω| ≤ s * (T.massOn W).toReal := by
+      intro s hs hrs
+      have hadm : ∀ c : ℝ, |c| ≤ s⁻¹ → c * T ω ≤ (T.massOn W).toReal := by
+        intro c hc
+        have hmem : c • ω ∈ massAdmissibleOn U n W := by
+          refine ⟨(tsupport_smul_subset_right (fun _ => c) _).trans hW, fun x => ?_⟩
+          show covectorEuclideanNorm (c • (ω : DifferentialForm (Euclid P) n) x) ≤ 1
+          rw [hsmul]
+          calc |c| * covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ s⁻¹ * s :=
+                mul_le_mul hc ((hr x).trans hrs) (covectorEuclideanNorm_nonneg _)
+                  (inv_nonneg.2 hs.le)
+            _ = 1 := inv_mul_cancel₀ hs.ne'
+        have h := (ENNReal.ofReal_le_iff_le_toReal hM).1 (T.le_massOn hmem)
+        rwa [show T (c • ω) = c * T ω from T.toCurrent.map_smul c ω] at h
+      have h1 := hadm s⁻¹ (abs_of_pos (inv_pos.2 hs)).le
+      have h2 := hadm (-s⁻¹) (by rw [abs_neg, abs_of_pos (inv_pos.2 hs)])
+      rw [neg_mul, ← mul_neg] at h2
+      rw [abs_le]
+      exact ⟨neg_le.1 ((inv_mul_le_iff₀ hs).1 h2), (inv_mul_le_iff₀ hs).1 h1⟩
+    -- let `s ↓ r`
+    have hlim : Tendsto (fun s : ℝ => s * (T.massOn W).toReal) (𝓝[>] r)
+        (𝓝 (r * (T.massOn W).toReal)) :=
+      ((continuous_mul_const _).tendsto r).mono_left nhdsWithin_le_nhds
+    exact ge_of_tendsto hlim
+      (eventually_nhdsWithin_of_forall fun s hs => hbound s (hr0.trans_lt hs) (le_of_lt hs))
+  have aux_norm_props : ∀ (P n : ℕ), (∀ α α' : Covector (Euclid P) n, covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α') ∧ (∀ (t : ℝ) (α : Covector (Euclid P) n), covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α) ∧ (∃ C : ℝ, 0 ≤ C ∧ ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ C * ‖α‖) ∧ Continuous (fun α : Covector (Euclid P) n => covectorEuclideanNorm α) := by
+    intro P n
+    classical
+    -- Step 1: the coefficients `c_I α` and the coefficient vector `v α`, with `N α = ‖v α‖`
+    let e := EuclideanSpace.basisFun (Fin P) ℝ
+    let c : (Fin n → Fin P) → Covector (Euclid P) n → ℝ := fun I α =>
+      if StrictMono I then α (fun i => e (I i)) else 0
+    let v : Covector (Euclid P) n → EuclideanSpace ℝ (Fin n → Fin P) := fun α =>
+      WithLp.toLp 2 (fun I => c I α)
+    have hN : ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖v α‖ := by
+      intro α
+      rw [EuclideanSpace.norm_eq]
+      unfold covectorEuclideanNorm
+      congr 1
+      refine Finset.sum_congr rfl fun I _ => ?_
+      by_cases hI : StrictMono I <;> simp [v, c, e, hI]
+    -- Step 2: `v` is additive and `ℝ`-homogeneous
+    have hadd : ∀ α α' : Covector (Euclid P) n, v (α + α') = v α + v α' := by
+      intro α α'
+      simp only [v, ← WithLp.toLp_add]
+      congr 1
+      funext I
+      by_cases hI : StrictMono I <;> simp [c, hI]
+    have hsmul : ∀ (t : ℝ) (α : Covector (Euclid P) n), v (t • α) = t • v α := by
+      intro t α
+      simp only [v, ← WithLp.toLp_smul]
+      congr 1
+      funext I
+      by_cases hI : StrictMono I <;> simp [c, hI]
+    -- Step 3: (i), the triangle inequality in `EuclideanSpace ℝ (Fin n → Fin P)`
+    have h1 : ∀ α α' : Covector (Euclid P) n,
+        covectorEuclideanNorm (α + α') ≤ covectorEuclideanNorm α + covectorEuclideanNorm α' := by
+      intro α α'
+      rw [hN, hN, hN, hadd]
+      exact norm_add_le _ _
+    -- Step 4: (ii), homogeneity of the Euclidean norm
+    have h2 : ∀ (t : ℝ) (α : Covector (Euclid P) n),
+        covectorEuclideanNorm (t • α) = |t| * covectorEuclideanNorm α := by
+      intro t α
+      rw [hN, hN, hsmul, norm_smul, Real.norm_eq_abs]
+    -- Step 5: `|c_I α| ≤ ‖α‖ ∏ₖ ‖e_{I(k)}‖ = ‖α‖`
+    have hc : ∀ (I : Fin n → Fin P) (α : Covector (Euclid P) n), |c I α| ≤ ‖α‖ := by
+      intro I α
+      by_cases hI : StrictMono I
+      · simpa [c, e, hI, Real.norm_eq_abs] using α.le_opNorm (fun i => e (I i))
+      · simp [c, hI]
+    -- Step 6: (iii) with `C = √(card (Fin n → Fin P))`
+    have h3 : ∀ α : Covector (Euclid P) n,
+        covectorEuclideanNorm α ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
+      intro α
+      have hsum : ∑ I, ‖(v α).ofLp I‖ ^ 2 ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 :=
+        Finset.sum_le_sum fun I _ => by
+          simpa [v, Real.norm_eq_abs] using pow_le_pow_left₀ (abs_nonneg _) (hc I α) 2
+      rw [hN, EuclideanSpace.norm_eq]
+      calc Real.sqrt (∑ I, ‖(v α).ofLp I‖ ^ 2) ≤ Real.sqrt (∑ _I : Fin n → Fin P, ‖α‖ ^ 2) :=
+            Real.sqrt_le_sqrt hsum
+        _ = Real.sqrt (Fintype.card (Fin n → Fin P)) * ‖α‖ := by
+            rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
+              Real.sqrt_mul (Nat.cast_nonneg _), Real.sqrt_sq (norm_nonneg _)]
+    -- Step 7: (iv), `|N α - N α'| ≤ N (α - α') ≤ C ‖α - α'‖`, so `N` is Lipschitz
+    have hlip : ∀ α α' : Covector (Euclid P) n, dist (covectorEuclideanNorm α)
+        (covectorEuclideanNorm α') ≤ Real.sqrt (Fintype.card (Fin n → Fin P)) * dist α α' := by
+      intro α α'
+      have ha : covectorEuclideanNorm α ≤
+          covectorEuclideanNorm (α - α') + covectorEuclideanNorm α' := by
+        simpa only [sub_add_cancel] using h1 (α - α') α'
+      have hb : covectorEuclideanNorm α' ≤
+          covectorEuclideanNorm (α - α') + covectorEuclideanNorm α := by
+        have h := h1 (α' - α) α
+        rwa [sub_add_cancel, ← neg_sub, covectorEuclideanNorm_neg] at h
+      have hC := h3 (α - α')
+      rw [Real.dist_eq, dist_eq_norm, abs_le]
+      constructor <;> linarith
+    exact ⟨h1, h2, ⟨_, Real.sqrt_nonneg _, h3⟩,
+      (LipschitzWith.of_dist_le_mul (K := ⟨_, Real.sqrt_nonneg _⟩) hlip).continuous⟩
+  have aux_boundary_variation_bound : ∀ (d : ℕ) (U : Set (Euclid (d + 1))) (Y : GeometricCurrentOn U (d + 1)) (u : Euclid (d + 1) → ℝ) (ε : Covector (Euclid (d + 1)) d) (f : Euclid (d + 1) → ℝ) (z : Euclid (d + 1)) (M : ℝ), (∀ ω : TestFormOn U (d + 1), Y ω = ∫ y in U, u y * (ω : DifferentialForm (Euclid (d + 1)) (d + 1)) y (fun i => EuclideanSpace.single i (1 : ℝ))) → Y.boundary.massOn U ≠ ∞ → covectorEuclideanNorm ε ≤ ‖z‖ → (∀ y, exteriorDerivative (fun x => f x • ε) y (fun i => EuclideanSpace.single i (1 : ℝ)) = fderiv ℝ f y z) → ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ U → (∀ y, |f y| ≤ M) → |∫ y in U, u y * fderiv ℝ f y z| ≤ (Y.boundary.massOn U).toReal * ‖z‖ * M := by
+    intro d U Y u ε f z M hrep hfin hεn hεd hf hfc hfU hM
+    -- the test `d`-form `γ = f ε`, with `spt γ ⊆ spt f ⊆ U`
+    have hsupp : tsupport (fun x => f x • ε : DifferentialForm (Euclid (d + 1)) d) ⊆ U :=
+      (tsupport_smul_subset_left f (fun _ => ε)).trans hfU
+    have hmem : (fun x => f x • ε : DifferentialForm (Euclid (d + 1)) d) ∈
+        testFormOnSubmodule (E := Euclid (d + 1)) U d :=
+      ⟨⟨hf.smul contDiff_const, hfc.smul_right⟩, hsupp⟩
+    let γ : TestFormOn U d := ⟨fun x => f x • ε, hmem⟩
+    -- `|γ(x)| = |f(x)| |ε| ≤ M ‖z‖`
+    have hM0 : 0 ≤ M := (abs_nonneg _).trans (hM 0)
+    have hbound : ∀ x, covectorEuclideanNorm ((γ : DifferentialForm (Euclid (d + 1)) d) x) ≤
+        M * ‖z‖ := by
+      intro x
+      change covectorEuclideanNorm (f x • ε) ≤ M * ‖z‖
+      rw [(aux_norm_props (d + 1) d).2.1]
+      exact mul_le_mul (hM x) hεn (covectorEuclideanNorm_nonneg ε) hM0
+    -- `|∂Y(γ)| ≤ M ‖z‖ M_U(∂Y)`
+    have key := aux_abs_apply_le_massOn (d + 1) d U U Y.boundary γ (M * ‖z‖) hfin hsupp
+      hbound
+    -- `∂Y(γ) = Y(dγ) = ∫_U u Df(z)`
+    have heq : Y.boundary γ = ∫ y in U, u y * fderiv ℝ f y z := by
+      rw [GeometricCurrentOn.boundary_apply, hrep]
+      congr 1
+      funext y
+      change u y * exteriorDerivative (fun x => f x • ε) y
+        (fun i => EuclideanSpace.single i (1 : ℝ)) = _
+      rw [hεd y]
+    rw [heq] at key
+    calc |∫ y in U, u y * fderiv ℝ f y z| ≤ M * ‖z‖ * (Y.boundary.massOn U).toReal := key
+      _ = (Y.boundary.massOn U).toReal * ‖z‖ * M := by ring
+  have aux_l1_squeeze_of_mollified : ∀ (n : ℕ) (R c : ℝ) (φ : Euclid n → ℝ) (u : ℕ → Euclid n → ℝ) (a : ℕ → ℝ), 0 < R → Continuous φ → HasCompactSupport φ → (∀ k, IntegrableOn (u k) (ball 0 (2 * R))) → TendstoUniformlyOn (fun k x => ∫ y in ball 0 (2 * R), u k y * φ (x - y)) (fun _ => c) atTop (closedBall 0 R) → Tendsto a atTop (𝓝 0) → (∀ᶠ k in atTop, ∫ x in ball 0 R, |u k x - ∫ y in ball 0 (2 * R), u k y * φ (x - y)| ≤ a k) → Tendsto (fun k => ∫ x in ball 0 R, |u k x - c|) atTop (𝓝 0) := by
+    intro n R c φ u a hR hφ hφc hint hunif ha hbound
+    obtain ⟨C, hC⟩ := hφ.bounded_above_of_compact_support hφc
+    -- continuity of the mollifications
+    have hwcont : ∀ k, Continuous (fun x => ∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)) := by
+      intro k
+      refine continuous_of_dominated (bound := fun y => ‖u k y‖ * C) (fun x => ?_) (fun x => ?_) ?_ ?_
+      · exact (hint k).aestronglyMeasurable.mul
+          (hφ.comp (continuous_const.sub continuous_id)).aestronglyMeasurable
+      · refine Eventually.of_forall fun y => ?_
+        rw [norm_mul]
+        exact mul_le_mul_of_nonneg_left (hC _) (norm_nonneg _)
+      · exact (hint k).norm.mul_const C
+      · exact Eventually.of_forall fun y => continuous_const.mul (hφ.comp (continuous_id.sub continuous_const))
+    have hBR : ball (0 : Euclid n) R ⊆ ball 0 (2 * R) := ball_subset_ball (by linarith)
+    have hvol : volume (ball (0 : Euclid n) R) < ∞ := measure_ball_lt_top
+    have hwint : ∀ k, IntegrableOn (fun x => ∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)) (ball 0 R) :=
+      fun k => ((hwcont k).continuousOn.integrableOn_compact (isCompact_closedBall 0 R)).mono_set
+        ball_subset_closedBall
+    have huint : ∀ k, IntegrableOn (u k) (ball 0 R) := fun k => (hint k).mono_set hBR
+    have hcint : IntegrableOn (fun _ : Euclid n => c) (ball 0 R) := integrableOn_const hvol.ne
+    have htri : ∀ k, ∫ x in ball 0 R, |u k x - c| ≤
+        (∫ x in ball 0 R, |u k x - ∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)|) +
+          ∫ x in ball 0 R, |(∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)) - c| := by
+      intro k
+      have hA : IntegrableOn (fun x => |u k x - ∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)|)
+          (ball 0 R) := ((huint k).sub (hwint k)).abs
+      have hB : IntegrableOn (fun x => |(∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)) - c|)
+          (ball 0 R) := ((hwint k).sub hcint).abs
+      rw [← integral_add hA hB]
+      exact integral_mono_of_nonneg (Eventually.of_forall fun x => abs_nonneg _) (hA.add hB)
+        (Eventually.of_forall fun x => abs_sub_le _ _ _)
+    set m := (volume (ball (0 : Euclid n) R)).toReal with hm
+    have hm0 : 0 ≤ m := ENNReal.toReal_nonneg
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    have hη0 : 0 < ε / (2 * (m + 1)) := by positivity
+    have h1 := Metric.tendstoUniformlyOn_iff.1 hunif _ hη0
+    have h2 := Metric.tendsto_nhds.1 ha (ε / 2) (by positivity)
+    filter_upwards [h1, h2, hbound] with k hk1 hk2 hk3
+    have hwc : ∫ x in ball 0 R, |(∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)) - c| ≤
+        ε / (2 * (m + 1)) * m := by
+      have := norm_setIntegral_le_of_norm_le_const hvol (C := ε / (2 * (m + 1)))
+        (f := fun x => |(∫ y in ball (0 : Euclid n) (2 * R), u k y * φ (x - y)) - c|) (fun x hx => by
+          have := hk1 x (ball_subset_closedBall hx)
+          rw [Real.dist_eq] at this
+          rw [Real.norm_eq_abs, abs_abs, abs_sub_comm]
+          exact this.le)
+      exact (le_abs_self _).trans ((Real.norm_eq_abs _).symm ▸ this)
+    have hnn : 0 ≤ ∫ x in ball 0 R, |u k x - c| := integral_nonneg fun x => abs_nonneg _
+    rw [Real.dist_eq, sub_zero, abs_of_nonneg hnn]
+    rw [Real.dist_eq, sub_zero] at hk2
+    have hak : a k < ε / 2 := (le_abs_self _).trans_lt hk2
+    have hlast : ε / (2 * (m + 1)) * m < ε / 2 := by
+      rw [div_mul_eq_mul_div, div_lt_div_iff₀ (by positivity) (by positivity)]
+      nlinarith
+    have := htri k
+    linarith
+  intro d R c Λ Y u hR hint hΛ hrep hbd hconv
+  -- Step 1: scalar tests `∫_U u_k b → c ∫ b`
+  have htest :=
+    aux_scalar_test_tendsto (d + 1) (ball 0 (2 * R)) c Y u hrep hconv
+  -- Step 2: a normalized mollifier `φ` with `tsupport φ ⊆ B̄_{R/8}(0) ⊆ B_s(0)`, `s = R/4`
+  obtain ⟨φ, hφ, hφc, hφ0, hφ1, hφs⟩ :=
+    aux_exists_normalized_mollifier (d + 1) (R / 8) (by positivity)
+  have hφt : tsupport φ ⊆ ball 0 (R / 4) :=
+    (closure_minimal (hφs.trans ball_subset_closedBall) isClosed_closedBall).trans
+      (closedBall_subset_ball (by linarith))
+  -- Step 3: `w_k → c ∫ φ = c` uniformly on `B̄_R(0)`
+  have hunif := Submission.cbr_ci_pw_mollified_tendstoUniformlyOn (d + 1) R (R / 4) c Λ φ u hR
+    (by positivity) (by linarith) hφ hφt hint hΛ htest
+  rw [hφ1, mul_one] at hunif
+  -- Step 4: `V_k = M_U(∂Y_k).toReal → 0`, and eventually `M_U(∂Y_k) ≠ ∞`
+  have hV : Tendsto (fun k => ((Y k).boundary.massOn (ball 0 (2 * R))).toReal) atTop (𝓝 0) := by
+    simpa only [Function.comp_def, ENNReal.toReal_zero] using
+      (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hbd
+  have hfin := hbd.eventually_ne ENNReal.zero_ne_top
+  -- Step 5: `∫_{B_R} |u_k − w_k| ≤ s V_k`, by the BV estimate; its hypothesis
+  -- `|∫_U u_k ∂_z f| ≤ V_k ‖z‖ M` comes from `ε_z` and the boundary-mass bound
+  have hbv : ∀ᶠ k in atTop,
+      ∫ x in ball 0 R, |u k x - ∫ y in ball 0 (2 * R), u k y * φ (x - y)| ≤
+        R / 4 * ((Y k).boundary.massOn (ball 0 (2 * R))).toReal := by
+    filter_upwards [hfin] with k hk
+    refine Submission.cbr_ci_pw_bv_mollifier_estimate (d + 1) R (R / 4)
+      ((Y k).boundary.massOn (ball 0 (2 * R))).toReal φ (u k) hR (by positivity) (by linarith)
+      ENNReal.toReal_nonneg hφ hφ0 hφt hφ1 (hint k) fun f z M hf hfc hft hM => ?_
+    obtain ⟨ε, hε, hεf⟩ := Submission.cbr_ci_pw_interior_product_form d z
+    exact aux_boundary_variation_bound d (ball 0 (2 * R)) (Y k) (u k) ε f z M
+      (hrep k) hk hε (fun y => hεf f y (hf.differentiable (by simp) y)) hf hfc hft hM
+  -- Step 6: the `L¹` squeeze with `a_k = s V_k → 0`
+  exact aux_l1_squeeze_of_mollified (d + 1) R c φ u
+    (fun k => R / 4 * ((Y k).boundary.massOn (ball 0 (2 * R))).toReal) hR hφ.continuous hφc hint
+    hunif (by simpa only [mul_zero] using hV.const_mul (R / 4)) hbv
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
