@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "0d8d4ffa2ce85864f623fe8ed6f907019ab71e576a5ef2faffc680ba4b5f3b0d",
+  "git_delta": {
+    "base_commit": "0cbdf10abce868c3cd4cc1ce70d580cdc5a51986",
+    "candidate_commit": "7d509dcdf104f2846f241e1c675fabe789bcbf65",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_mt_si_translate_action_continuous",
+    "diff_sha256": "7e28e0c9ac9a30b483ad31e7d6dfd3eefab0592a765da3bae496dd38db52ac2b",
+    "source_sha256": "bf65511a07748d782628916b0cf17ea345ff4552219bbeb29d2feffa92dc7c82",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_mt_si_translate_action_continuous",
+      "statement": "∀ (P j : ℕ) (R : IMRep (univ : Set (Euclid P)) j) (η : DifferentialForm (Euclid P) j), Continuous η → HasCompactSupport η → Continuous (fun t : Euclid P => R.action (fun y => η (t + y)))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
