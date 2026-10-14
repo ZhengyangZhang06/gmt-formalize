@@ -451,6 +451,80 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Weighted line currents** (Simon 6.2.1).  For unit vectors `vₖ`, arbitrary parameter sets
+`Iₖ ⊆ ℝ` and real weights `cₖ` (`k` in a finite type), `ω ↦ Σₖ cₖ ∫_{Iₖ} ω(pₖ + t vₖ)(vₖ) dt` is a
+`1`-current in `ℝᴾ`.  Each `γₖ(t) = pₖ + t vₖ` is an isometry, hence a closed embedding, so each
+integrand is continuous with compact support; a null sequence of test forms converges to `0`
+uniformly on `ℝᴾ`, and dominated convergence with the indicator of the compact set `γₖ⁻¹(K)`
+gives the sequential continuity of each piece. -/
+theorem Submission.idtp_fons_odc_pc_line_current : ∀ (P : ℕ) (ι : Type) [Fintype ι] (p v : ι → Euclid P) (I : ι → Set ℝ) (c : ι → ℝ), (∀ k, ‖v k‖ = 1) → ∃ X : GeometricCurrentOn (univ : Set (Euclid P)) 1, ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, X ω = ∑ k, c k * ∫ t in I k, (ω : DifferentialForm (Euclid P) 1) (p k + t • v k) (fun _ => v k) := by
+  intro P ι hι p v I c hv
+  -- test forms converging to `0` in `𝒟¹(ℝᴾ)` converge to `0` uniformly on all of `ℝᴾ`
+  have hunif : ∀ ωs : ℕ → TestFormOn (univ : Set (Euclid P)) 1, TestFormOnConverges ωs 0 →
+      TendstoUniformly (fun j => (ωs j : DifferentialForm (Euclid P) 1)) 0 atTop := by
+    intro ωs h
+    obtain ⟨K, -, -, hsupp, -, hderiv⟩ := h
+    refine Metric.tendstoUniformly_iff.2 fun ε hε => ?_
+    filter_upwards [Metric.tendstoUniformlyOn_iff.1 (hderiv 0) ε hε] with j hj x
+    by_cases hx : x ∈ K
+    · simpa [iteratedFDeriv_zero_eq_comp] using hj x hx
+    · simpa [image_eq_zero_of_notMem_tsupport fun hx' => hx (hsupp j hx')] using hε
+  -- integration of `1`-forms along one unit-speed line `t ↦ q + t w`, `t ∈ J`, is a current
+  have hline : ∀ (q w : Euclid P) (J : Set ℝ), ‖w‖ = 1 →
+      ∃ X : GeometricCurrentOn (univ : Set (Euclid P)) 1,
+        ∀ ω : TestFormOn (univ : Set (Euclid P)) 1,
+          X ω = ∫ t in J, (ω : DifferentialForm (Euclid P) 1) (q + t • w) (fun _ => w) := by
+    intro q w J hw
+    have hγ : Isometry fun t : ℝ => q + t • w := by
+      refine Isometry.of_dist_eq fun s t => ?_
+      rw [dist_add_left, dist_eq_norm, ← sub_smul, norm_smul, hw, mul_one, Real.dist_eq,
+        Real.norm_eq_abs]
+    have hint (ω : TestFormOn (univ : Set (Euclid P)) 1) :
+        Integrable fun t : ℝ => (ω : DifferentialForm (Euclid P) 1) (q + t • w) (fun _ => w) :=
+      ((continuous_eval_const (F := Covector (Euclid P) 1) fun _ : Fin 1 => w).comp
+        (ω.2.1.1.continuous.comp hγ.continuous)).integrable_of_hasCompactSupport
+        ((ω.2.1.2.comp_isClosedEmbedding hγ.isClosedEmbedding).comp_left
+          (g := fun α : Covector (Euclid P) 1 => α fun _ => w) rfl)
+    refine ⟨⟨{ toFun := fun ω =>
+                 ∫ t in J, (ω : DifferentialForm (Euclid P) 1) (q + t • w) (fun _ => w)
+               map_add' := fun ω η => ?_
+               map_smul' := fun a ω => ?_ }, fun ωs h => ?_⟩, fun ω => rfl⟩
+    · simp only [Submodule.coe_add, Pi.add_apply, ContinuousAlternatingMap.add_apply]
+      exact integral_add (hint ω).restrict (hint η).restrict
+    · simp only [Submodule.coe_smul, Pi.smul_apply, ContinuousAlternatingMap.smul_apply,
+        smul_eq_mul, RingHom.id_apply]
+      exact integral_const_mul a _
+    · -- dominated convergence, dominated by the indicator of the compact set `γ⁻¹(K)`
+      have hu := hunif ωs h
+      obtain ⟨K, hK, -, hsupp, -, -⟩ := h
+      have hS : IsCompact ((fun t : ℝ => q + t • w) ⁻¹' K) :=
+        hγ.isClosedEmbedding.isCompact_preimage hK
+      have key := tendsto_integral_filter_of_dominated_convergence (μ := volume.restrict J)
+        (F := fun j t => (ωs j : DifferentialForm (Euclid P) 1) (q + t • w) (fun _ => w))
+        (f := fun _ => 0) (((fun t : ℝ => q + t • w) ⁻¹' K).indicator fun _ => 1)
+        (Eventually.of_forall fun j => (hint (ωs j)).aestronglyMeasurable.restrict) ?_
+        ((integrableOn_const (C := (1 : ℝ)) hS.measure_lt_top.ne).integrable_indicator
+          hS.isClosed.measurableSet).restrict
+        (Eventually.of_forall fun t => by
+          simpa [Function.comp_def] using ((continuous_eval_const (F := Covector (Euclid P) 1)
+            fun _ : Fin 1 => w).tendsto 0).comp (hu.tendsto_at (q + t • w)))
+      · simpa using key
+      · filter_upwards [Metric.tendstoUniformly_iff.1 hu 1 one_pos] with j hj
+        refine Eventually.of_forall fun t => ?_
+        by_cases ht : q + t • w ∈ K
+        · rw [indicator_of_mem (show t ∈ (fun t : ℝ => q + t • w) ⁻¹' K from ht)]
+          calc _ ≤ ‖(ωs j : DifferentialForm (Euclid P) 1) (q + t • w)‖ * ∏ _i : Fin 1, ‖w‖ :=
+                ContinuousAlternatingMap.le_opNorm _ _
+            _ ≤ 1 := by simpa [hw] using (hj (q + t • w)).le
+        · rw [indicator_of_notMem (show t ∉ (fun t : ℝ => q + t • w) ⁻¹' K from ht),
+            image_eq_zero_of_notMem_tsupport fun h' => ht (hsupp j h')]
+          simp
+  -- the weighted finite sum of the line currents
+  choose X hX using fun k => hline (p k) (v k) (I k) (hv k)
+  refine ⟨⟨∑ k, c k • (X k).toCurrent, fun ωs h => ?_⟩, fun ω => ?_⟩
+  · simpa using tendsto_finsetSum Finset.univ fun k _ => ((X k).continuous' ωs h).const_mul (c k)
+  · simp [← hX]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
