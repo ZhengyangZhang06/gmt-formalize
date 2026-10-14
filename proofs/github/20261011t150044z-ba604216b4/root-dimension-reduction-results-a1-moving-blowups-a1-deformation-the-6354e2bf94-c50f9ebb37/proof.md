@@ -1,0 +1,107 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.integer_median-a1.integer_median_exists-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 0–2 of the parent proof: β := min{k ∈ ℤ : μ{u ≤ k} ≥ 1/2} exists by continuity of the distribution function from below and from above, and integer values give μ{u ≥ β} > 1/2. This is the integer median choice (31) in Simon's proof of Ch. 6, 5.1 (book/chapter-06.txt lines 1878–1883): take β with min{Lⁿ{F ≥ β}, Lⁿ{F ≤ β}} ≥ 1/2, possible because Lⁿ(F̊) = 1, and take β ∈ ℤ when F is integer-valued. Here it is stated for an arbitrary probability measure μ. The parent's step 0 allows working directly with the μ-null-measurable sets {u ≤ t}; this is done instead of passing to a Borel representative.
+
+Notation. For A ⊆ X, μ(A) := μ.real A = (μ A).toReal ∈ [0, 1]. For t ∈ ℝ, F(t) := μ{x : u(x) ≤ t}.
+
+1. Null-measurability and complements. u is μ-a.e.-measurable and (−∞, t] is a Borel set. So each {u ≤ t} = u⁻¹((−∞, t]) is μ-null-measurable (AEMeasurable.nullMeasurableSet_preimage with measurableSet_Iic). Since μ is a probability measure, μ(Aᶜ) = 1 − μ(A) for every μ-null-measurable A (probReal_compl_eq_one_sub₀).
+2. Monotonicity. μ is finite, so A ⊆ B implies μ(A) ≤ μ(B) (measureReal_mono). If s ≤ t then {u ≤ s} ⊆ {u ≤ t}, so F is nondecreasing.
+3. Upper tail. For n ∈ ℕ let A_n := {u ≤ n}.
+   - If a ≤ b in ℕ then (a : ℝ) ≤ (b : ℝ), so (A_n) is increasing.
+   - ⋃_n A_n = X, because every real number u(x) is at most some natural number (exists_nat_ge).
+   - By continuity from below (tendsto_measure_iUnion_atTop), μ(A_n) → μ(X) = 1 in [0, ∞].
+   - ENNReal.toReal is continuous at the finite value 1 (ENNReal.tendsto_toReal, 1 ≠ ∞), so F(n) = μ(A_n) → 1 in ℝ.
+   - Since 1/2 < 1, eventually F(n) > 1/2 (lt_mem_nhds), so there is n₁ ∈ ℕ with F(n₁) > 1/2.
+4. Lower tail. For n ∈ ℕ let B_n := {u ≤ −n}.
+   - If a ≤ b in ℕ then −(b : ℝ) ≤ −(a : ℝ), so B_b ⊆ B_a and (B_n) is decreasing.
+   - Each B_n is μ-null-measurable (step 1), and μ(B_0) ≤ 1 < ∞.
+   - ⋂_n B_n = ∅. For x ∈ X choose n ∈ ℕ with −u(x) < n (exists_nat_gt). Then u(x) > −n, so x ∉ B_n.
+   - By continuity from above (tendsto_measure_iInter_atTop, using the null-measurability, the antitonicity and the finite measure of B_0), μ(B_n) → μ(∅) = 0. Hence F(−n) → 0 in ℝ (ENNReal.tendsto_toReal at 0 ≠ ∞).
+   - Since 0 < 1/2, eventually F(−n) < 1/2 (gt_mem_nhds), so there is n₀ ∈ ℕ with F(−n₀) < 1/2.
+5. Let S := {z ∈ ℤ : F(z) ≥ 1/2}, where F(z) means F((z : ℝ)).
+   - S is nonempty: the integer z := n₁ satisfies ((n₁ : ℤ) : ℝ) = (n₁ : ℝ) (Int.cast_natCast), so F(z) = F(n₁) > 1/2.
+   - S is bounded below by −n₀. Suppose z ∈ S and z < −n₀. Then z ≤ −n₀, hence (z : ℝ) ≤ −(n₀ : ℝ), and step 2 gives F(z) ≤ F(−n₀) < 1/2. This contradicts F(z) ≥ 1/2.
+6. By Int.exists_least_of_bdd, S has a least element β. Since β ∈ S, μ{u ≤ β} = F(β) ≥ 1/2. This is the second claim.
+7. β − 1 ∉ S, since otherwise minimality would give β ≤ β − 1. Hence F(β − 1) = μ{u ≤ ((β − 1 : ℤ) : ℝ)} < 1/2.
+8. Integer values. Let x ∈ X and choose z ∈ ℤ with u(x) = z. For integers, β ≤ z ⟺ β − 1 < z ⟺ ¬(z ≤ β − 1). Casting to ℝ (Int.cast_le, Int.cast_lt) gives (β : ℝ) ≤ u(x) ⟺ ¬(u(x) ≤ ((β − 1 : ℤ) : ℝ)). Hence {x : β ≤ u(x)} = {x : u(x) ≤ β − 1}ᶜ. This is the parent's identity {u > β − 1} = {u ≥ β}.
+9. By steps 8, 1 and 7, μ{β ≤ u} = 1 − F(β − 1) > 1 − 1/2 = 1/2. In particular μ{β ≤ u} ≥ 1/2, which is the first claim.
+10. By steps 6 and 9, β ∈ ℤ has both required properties. ∎
+
+## Key steps
+
+1. Each {u ≤ t} is μ-null-measurable, so μ(Aᶜ) = 1 − μ(A) for these sets, and F(t) = μ{u ≤ t} is nondecreasing.
+2. Continuity from below on {u ≤ n} gives F(n₁) > 1/2, so S = {z ∈ ℤ : F(z) ≥ 1/2} is nonempty.
+3. Continuity from above on the null-measurable decreasing sets {u ≤ −n} gives F(−n₀) < 1/2, so S is bounded below by −n₀.
+4. β := min S (Int.exists_least_of_bdd) satisfies μ{u ≤ β} ≥ 1/2 and μ{u ≤ β − 1} < 1/2.
+5. Integer values give {β ≤ u} = {u ≤ β − 1}ᶜ, so μ{β ≤ u} = 1 − F(β − 1) > 1/2.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean RUN/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean (identical); git rev-parse HEAD (b4d606db1da5da8fa2c0292ad4924d97de8b3c4b); git -C RUN/local-references/123e8435b4a2469b/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d = manifest.json mathlib_commit = lake-manifest inputRev)`
+- `rg -n "theorem (volume_preserving_ofLp|volume_pi_Ioo|tendsto_measure_iInter_atTop|tendsto_measure_iUnion_atTop|probReal_compl_eq_one_sub₀|probReal_compl_eq_one_sub|measureReal_compl₀|measureReal_compl|mul_meas_ge_le_integral_of_nonneg|integral_indicator₀|integral_indicator_one|exists_least_of_bdd|measureReal_mono|measureReal_univ_eq_one|probReal_univ)\b" -A4 SNAPSHOT/mathlib/Mathlib`
+- `rg -n "volume_preserving_ofLp|theorem integral_indicator₀|probReal_compl_eq_one_sub|probReal_univ|integrable_indicator_iff₀|IntegrableOn.integrable_indicator₀|Integrable.indicator₀" SNAPSHOT/mathlib/Mathlib; rg -n "CoeFun" SNAPSHOT/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `rg -n "theorem indicator_of_notMem|neg_le_abs|theorem lt_mem_nhds|theorem gt_mem_nhds|theorem setIntegral_const\b|theorem integral_const\b|theorem integral_const_mul\b|abs_sub_le" SNAPSHOT/mathlib/Mathlib`
+- `rg -n -i -l median SNAPSHOT/mathlib/Mathlib -g '*.lean' (only LinearAlgebra/AffineSpace/Simplex/Centroid.lean, unrelated); rg -n -i median SNAPSHOT/project -g '*.lean' (no match)`
+- `rg -n dimred_mbl_dt_cbm_im GMT SNAPSHOT/project lake-packages-25730c7c/simongmt -g '*.lean' (no match); grep -c dimred_mbl_dt_cbm_im RUN/issue-workers.json (0)`
+- `python3 scan of RUN/dag.json (2092 nodes, 3344 reserved identifiers): 'dimred_mbl_dt_cbm_im' occurs 0 times; exact lean_statement matches: cmcdtfrfg_cube_volume (accepted, candidate_commit a104b3873f3c…, PR #7250) and twin cmcdt_cbm_im_{cube_volume, integer_median_exists, median_minimizes, median_abs_le} (rlcr-lean/decomposing, unaccepted); 951 existing cross-branch child references to accepted nodes`
+- `git show a104b3873f3c979b07a45e8d97d3d4d1d84c106a:GMT/Ch07/Submission.lean | grep -n cmcdtfrfg_cube_volume (line 458, identical type); git show --stat a104b3873f3c`
+- `sed -n on /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py: _decompose (node.depth >= max_depth disables splitting), _existing_lean_name_problem, _accepted_checkpoint, _solve_children (accepted-name reuse with identical type)`
+- `python3 -I /tmp/dmdt-cbm-im-gG3zEg/scripts/emit.py (verifier/gmt-compare.py contract_scope/child_modules + both validate_lean_statement; all five types unchanged); lake env lean /tmp/dmdt-cbm-im-gG3zEg/chal/Challenge_{parent,cube_volume,integer_median_exists,median_minimizes,median_abs_le}.lean (only 'declaration uses sorry')`
+- `lake env lean /tmp/dmdt-cbm-im-gG3zEg/lean/Final.lean (four child types fully proved; HumanizeNodeComparator.assembly proves the exact parent type from the four child types as hypotheses; #print axioms: [propext, Classical.choice, Quot.sound] for all six)`
+- `lake env lean /tmp/dmdt-cbm-im-gG3zEg/lean/Inspect.lean (pp.numericTypes shows (1 / 2 : ℝ); MeasureTheory.Measure; volume on Euclid k = measureSpaceOfInnerProductSpace by rfl)`
+- `python3 of twin nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-4adef27685/{decomposition-v1,decomposition-audit-v1,decomposition-review-receipt-v1,decomposition-scope-v1}.json (audited four-child split of the identical frozen type, acceptable: true)`
+- `sed -n 1872,1912p book/chapter-06.txt (Simon Ch. 6, 5.1, displays (31) and (35))`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Probability.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Int/LeastGreatest.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/AffineSpace/Simplex/Centroid.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/issue-workers.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-5a243b38c6/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-5a243b38c6/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-5a243b38c6/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-4adef27685/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-4adef27685/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-4adef27685/decomposition-review-receipt-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-4adef27685/decomposition-scope-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-4adef27685/parent-supplied-natural-proof.md`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/dmdt-cbm-im-gG3zEg/scripts/emit.py`
+- `/tmp/dmdt-cbm-im-gG3zEg/scripts/items.json`
+- `/tmp/dmdt-cbm-im-gG3zEg/chal/Challenge_parent.lean`
+- `/tmp/dmdt-cbm-im-gG3zEg/chal/Challenge_cube_volume.lean`
+- `/tmp/dmdt-cbm-im-gG3zEg/chal/Challenge_integer_median_exists.lean`
+- `/tmp/dmdt-cbm-im-gG3zEg/chal/Challenge_median_minimizes.lean`
+- `/tmp/dmdt-cbm-im-gG3zEg/chal/Challenge_median_abs_le.lean`
+- `/tmp/dmdt-cbm-im-gG3zEg/lean/Children.lean`
+- `/tmp/dmdt-cbm-im-gG3zEg/lean/Final.lean`
+- `/tmp/dmdt-cbm-im-gG3zEg/lean/Inspect.lean`
+
+Pins match: project b4d606db and Mathlib 25730c7c; Submission.lean is byte-identical to the frozen contract and to the snapshot contract. Neither the snapshot project, Mathlib nor SimonGMT contains an integer-median, median-minimality or median-bound lemma; Mathlib's only 'median' hit is the unrelated simplex Centroid file. All the Mathlib ingredients exist under the bare GMT.Ch07.Submission import: PiLp.volume_preserving_ofLp, Real.volume_pi_Ioo, tendsto_measure_iUnion_atTop/iInter_atTop, probReal_compl_eq_one_sub₀, measureReal_mono, Int.exists_least_of_bdd, Integrable.indicator₀, integral_indicator₀, setIntegral_const, integral_const, mul_meas_ge_le_integral_of_nonneg, lt_mem_nhds/gt_mem_nhds, abs_sub_le and neg_le_abs. The cube-volume child exactly matches the accepted declaration cmcdtfrfg_cube_volume (candidate a104b387, identical type at line 458), which the runtime allows to be reused. The three median children get fresh names, because the identically typed twin children cmcdt_cbm_im_* are unaccepted and owned by another parent. All five types elaborate in exact comparator form and pass both validators. All four children are fully proved, and an assembly proves the exact parent type from the four child types, using only propext, Classical.choice and Quot.sound.
