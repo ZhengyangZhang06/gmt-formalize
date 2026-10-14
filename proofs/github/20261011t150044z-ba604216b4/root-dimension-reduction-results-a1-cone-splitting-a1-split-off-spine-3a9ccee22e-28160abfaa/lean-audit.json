@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f57baa7ade3eb3e51e0266c9ed89f7b5effb1324c4430ff046148765242d90b6",
+  "git_delta": {
+    "base_commit": "9c1fa803f92815a3b44d508fc1eb431cdcef2cc0",
+    "candidate_commit": "37eb8d85ccae2c08aa9d006f21207afa208d1e42",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_cs_sos_cfs_rh_radial_cartan",
+    "diff_sha256": "70f6bc7fdd4db90d3962766257959ad1aeb74e26a9ea4b26ed3d2c11072fef0a",
+    "source_sha256": "e3f2a5e18edccd25e4a9b9a834a9e4a28ed93167254a910bf0251716e101da3c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_cs_sos_cfs_rh_radial_cartan",
+      "statement": "∀ (P q : ℕ) (β : DifferentialForm (Euclid P) (q + 1)) (t : ℝ) (x : Euclid P), DifferentiableAt ℝ β (t • x) → exteriorDerivative (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x + t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x = (((q : ℝ) + 1) * t ^ q) • β (t • x) + t ^ (q + 1) • fderiv ℝ β (t • x) x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

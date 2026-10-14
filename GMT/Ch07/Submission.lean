@@ -451,6 +451,79 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cartan's formula for the Euler field** `X(z) = z` (Simon Ch. 6, 2.25–2.26 and 2.33, as used
+in the proof of 7.3.1).  For an `(m+1)`-form `β` differentiable at `y`,
+`d(ι_X β)(y) + ι_y dβ(y) = (m + 1) β(y) + Dβ(y)[y]`, i.e. `L_X β = d ι_X β + ι_X dβ`.  With
+`B = Dβ(y)`, the product rule gives `D(ι_X β)(y) u = (B u).curryLeft y + β(y).curryLeft u`; the
+second term alternates to `(m + 1) β(y)` (`alternatizeUncurryFin_curryLeft`), and the first one
+cancels against every term of `dβ(y)(y, v₀, …, vₘ)` except the `k = 0` term `B y (v₀, …, vₘ)`. -/
+theorem Submission.dtc_cone_euler_cartan : ∀ (P m : ℕ) (β : DifferentialForm (Euclid P) (m + 1)) (y : Euclid P), DifferentiableAt ℝ β y → exteriorDerivative (fun z => ContinuousAlternatingMap.curryLeft (β z) z) y + ContinuousAlternatingMap.curryLeft (exteriorDerivative β y) y = ((m : ℝ) + 1) • β y + fderiv ℝ β y y := by
+  intro P m β y hβ
+  -- product rule for `z ↦ Φ (β z) z`, where `Φ f x = f.curryLeft x` is continuous bilinear
+  have hψ := (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+    (n := m)).toContinuousLinearMap.hasFDerivAt_of_bilinear hβ.hasFDerivAt (hasFDerivAt_id y)
+  have h1 : exteriorDerivative (fun z => ContinuousAlternatingMap.curryLeft (β z) z) y =
+      ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ (fun z =>
+        (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+          (n := m)).toContinuousLinearMap (β z) (id z)) y) := rfl
+  have h2 : (ContinuousLinearMap.precompR (Euclid P)
+      (ContinuousAlternatingMap.curryLeftLI (𝕜 := ℝ) (E := Euclid P) (F := ℝ)
+        (n := m)).toContinuousLinearMap) (β y) (ContinuousLinearMap.id ℝ (Euclid P)) =
+      ContinuousAlternatingMap.curryLeft (β y) := by
+    ext u v
+    rfl
+  -- `d(ι_X β)(y) = alt(u ↦ (B u).curryLeft y) + (m + 1) β(y)`
+  rw [h1, hψ.fderiv, ContinuousAlternatingMap.alternatizeUncurryFin_add, h2,
+    ContinuousAlternatingMap.alternatizeUncurryFin_curryLeft, add_assoc]
+  congr 1
+  · rw [← Nat.cast_smul_eq_nsmul ℝ, Nat.cast_add, Nat.cast_one]
+  · -- removing entry `i + 1` of `(y, v)` leaves `(y, v without vᵢ)`
+    have hrm : ∀ (i : Fin (m + 1)) (v : Fin (m + 1) → Euclid P),
+        Fin.removeNth i.succ (Matrix.vecCons y v) = Matrix.vecCons y (Fin.removeNth i v) := by
+      intro i v
+      funext j
+      cases j using Fin.cases with
+      | zero => simp [Fin.removeNth_apply]
+      | succ j => simp [Fin.removeNth_apply]
+    ext v
+    simp only [ContinuousAlternatingMap.add_apply,
+      ContinuousAlternatingMap.alternatizeUncurryFin_apply, exteriorDerivative, extDeriv,
+      ContinuousLinearMap.precompL_apply, ContinuousAlternatingMap.curryLeft_apply_apply,
+      LinearIsometry.coe_toContinuousLinearMap, ContinuousAlternatingMap.curryLeftLI_apply, id_eq]
+    -- split off the `k = 0` term `B y v` of `dβ(y)(y, v)`; the other terms cancel the first sum
+    rw [Fin.sum_univ_succ (n := m + 1)]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_succ, Fin.removeNth_zero, Fin.tail_vecCons,
+      hrm, Fin.val_zero, Fin.val_succ, pow_zero, one_smul, pow_succ, mul_neg_one, neg_smul,
+      Finset.sum_neg_distrib]
+    abel
+
+/-- **Radial Cartan identity**, the integrand of the radial homotopy formula for forms (the
+homotopy `h(t, x) = t x` of Simon Ch. 6, 2.26).  For a `(q+1)`-form `β` differentiable at `t • x`,
+`d(y ↦ t^q ι_y β(t y))(x) + t^(q+1) ι_x dβ(t x) = (q + 1) t^q β(t x) + t^(q+1) Dβ(t x)[x]`.  This
+is Cartan's formula `Submission.dtc_cone_euler_cartan` for `β_t = β (t • ·)` at `x`, rewritten
+with `Dβ_t(x) = t • Dβ(t x)` (`fderiv_comp_smul`) and multiplied by the constant `t^q`. -/
+theorem Submission.dimred_cs_sos_cfs_rh_radial_cartan : ∀ (P q : ℕ) (β : DifferentialForm (Euclid P) (q + 1)) (t : ℝ) (x : Euclid P), DifferentiableAt ℝ β (t • x) → exteriorDerivative (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x + t ^ (q + 1) • (exteriorDerivative β (t • x)).curryLeft x = (((q : ℝ) + 1) * t ^ q) • β (t • x) + t ^ (q + 1) • fderiv ℝ β (t • x) x := by
+  intro P q β t x hβ
+  -- Cartan's formula for `β_t = β (t • ·)`, which is differentiable at `x`
+  have hβt : DifferentiableAt ℝ (fun y : Euclid P => β (t • y)) x :=
+    hβ.comp x (differentiableAt_id.const_smul t)
+  have hC := Submission.dtc_cone_euler_cartan P q (fun y => β (t • y)) x hβt
+  -- dilation chain rule `Dβ_t(x) = t • Dβ(t x)`, hence `dβ_t(x) = t • dβ(t x)`
+  have hD : fderiv ℝ (fun y : Euclid P => β (t • y)) x = t • fderiv ℝ β (t • x) :=
+    fderiv_comp_smul t
+  have hd : exteriorDerivative (fun y : Euclid P => β (t • y)) x =
+      t • exteriorDerivative β (t • x) := by
+    show ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ (fun y : Euclid P => β (t • y)) x) =
+      t • ContinuousAlternatingMap.alternatizeUncurryFin (fderiv ℝ β (t • x))
+    rw [hD, ContinuousAlternatingMap.alternatizeUncurryFin_smul]
+  -- `d` commutes with the constant factor `t ^ q`
+  have hs : exteriorDerivative (fun y : Euclid P => t ^ q • (β (t • y)).curryLeft y) x =
+      t ^ q • exteriorDerivative (fun y : Euclid P => (β (t • y)).curryLeft y) x :=
+    extDeriv_fun_smul (t ^ q) (fun y : Euclid P => (β (t • y)).curryLeft y)
+  rw [hd, hD, ContinuousAlternatingMap.curryLeft_smul, smul_apply, smul_apply] at hC
+  rw [hs, eq_sub_of_add_eq hC]
+  module
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
