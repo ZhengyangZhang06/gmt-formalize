@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1f91455308ce974a63744a407567f14fc764dac18ab42b40eda4f36f712f05c4",
+  "git_delta": {
+    "base_commit": "0ad4bae5f8f25173699213ca62cf8d1a1670a09f",
+    "candidate_commit": "ff73fdc9f9cb1c277aba4be11ddb24c56c191d73",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcsd_sh_boundaryMassOn_calculus",
+    "diff_sha256": "53c3cd572cbb30f00613a53751d13f096cfb907b615ae81cb18e05b9927c887e",
+    "source_sha256": "7448c5f2fb6c62628ae28747db57b67fba257749bbc4673a9378b54d92958a06",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcsd_sh_boundaryMassOn_calculus",
+      "statement": "∀ (P m : ℕ) (U G : Set (Euclid P)), (∀ X Y : GeometricCurrentOn U m, boundaryMassOn (X - Y) G ≤ boundaryMassOn X G + boundaryMassOn Y G) ∧ ∀ X : GeometricCurrentOn U (m + 1), boundaryMassOn X.boundary G = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
