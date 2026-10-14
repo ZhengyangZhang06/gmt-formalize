@@ -2018,6 +2018,50 @@ theorem Submission.cmc_imRep_locality_restrict_sub : (∀ (P n : ℕ) (U M M' : 
     · rw [h α, abs_neg]
       exact hατ
 
+/-- Density zero of the complement of a subset with the same approximate tangent plane (Simon
+Ch. 3, Remarks 1.5(3), 1.8(2)).  Let `A ⊆ M` with `A` Borel and `Hᴺ(M ∩ B̄_s(x)) < ∞`, and let `M`
+and `A` both have approximate tangent space `Q` at `x`.  Then `Hᴺ((M ∖ A) ∩ B_r(x)) / rᴺ → 0` as
+`r ↓ 0`: the normalised masses `Hᴺ(M ∩ B̄_ρ(x)) / (ω_N ρᴺ)` and `Hᴺ(A ∩ B̄_ρ(x)) / (ω_N ρᴺ)` both
+tend to `1`, and `Hᴺ(M ∩ B̄_ρ(x)) = Hᴺ(A ∩ B̄_ρ(x)) + Hᴺ((M ∖ A) ∩ B̄_ρ(x))` with finite terms for
+`ρ ≤ s`, so that of `M ∖ A` tends to `1 - 1 = 0`; then `B_r(x) ⊆ B̄_r(x)` and `ω_N < ∞`. -/
+theorem Submission.dtc_bc_lc_sl_co_tangent_complement_density : ∀ (P N : ℕ) (A M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (s : ℝ), MeasurableSet A → A ⊆ M → 0 < s → μHE[N] (M ∩ closedBall x s) ≠ ∞ → HasApproximateTangentSpaceAt N M x Q → HasApproximateTangentSpaceAt N A x Q → Tendsto (fun r : ℝ => μHE[N] ((M \ A) ∩ ball x r) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0) := by
+  intro P N A M x Q s hA hAM hs hMs hTM hTA
+  -- Step 1: `ω_N ∈ (0, ∞)`
+  have hω0 : unitBallVolume N ≠ 0 := (measure_ball_pos volume (0 : Euclid N) one_pos).ne'
+  have hωtop : unitBallVolume N ≠ ∞ := measure_ball_lt_top.ne
+  -- Step 2: `Hᴺ(A ∩ B̄_s(x)) ≤ Hᴺ(M ∩ B̄_s(x)) < ∞`
+  have hAs : μHE[N] (A ∩ closedBall x s) ≠ ∞ :=
+    ne_top_of_le_ne_top hMs (measure_mono (inter_subset_inter_left _ hAM))
+  -- Step 3: `Hᴺ(M ∩ B̄_ρ(x)) = Hᴺ(A ∩ B̄_ρ(x)) + Hᴺ((M ∖ A) ∩ B̄_ρ(x))`, `A` being Borel
+  have hsplit : ∀ ρ : ℝ, μHE[N] (M ∩ closedBall x ρ)
+      = μHE[N] (A ∩ closedBall x ρ) + μHE[N] ((M \ A) ∩ closedBall x ρ) := by
+    intro ρ
+    rw [← measure_inter_add_sdiff (μ := μHE[N]) (M ∩ closedBall x ρ) hA, inter_right_comm,
+      inter_eq_right.2 hAM, inter_sdiff_right_comm]
+  -- Step 4: the normalised closed-ball masses of `M` and of `A` both tend to `1`
+  have ha := Submission.rsd_tendsto_closedBall_density_of_approxTangent P N M x Q s hs hMs hTM
+  have hb := Submission.rsd_tendsto_closedBall_density_of_approxTangent P N A x Q s hs hAs hTA
+  -- Step 5: hence that of `M ∖ A` tends to `1 - 1 = 0`, the subtraction being exact on `(0, s]`
+  have hc : Tendsto (fun ρ : ℝ => μHE[N] ((M \ A) ∩ closedBall x ρ)
+      / (unitBallVolume N * ENNReal.ofReal (ρ ^ N))) (𝓝[>] 0) (𝓝 0) := by
+    have hsub := ENNReal.Tendsto.sub ha hb (Or.inl ENNReal.one_ne_top)
+    rw [tsub_self] at hsub
+    refine hsub.congr' ?_
+    filter_upwards [Ioc_mem_nhdsGT hs] with ρ hρ
+    have hD : unitBallVolume N * ENNReal.ofReal (ρ ^ N) ≠ 0 :=
+      mul_ne_zero hω0 (ENNReal.ofReal_pos.2 (pow_pos hρ.1 N)).ne'
+    have hbfin : μHE[N] (A ∩ closedBall x ρ) / (unitBallVolume N * ENNReal.ofReal (ρ ^ N)) ≠ ∞ :=
+      ENNReal.div_ne_top (ne_top_of_le_ne_top hAs
+        (measure_mono (inter_subset_inter_right _ (closedBall_subset_closedBall hρ.2)))) hD
+    rw [hsplit ρ, ENNReal.add_div, ENNReal.add_sub_cancel_left hbfin]
+  -- Step 6: pass to the open balls `B_r(x) ⊆ B̄_r(x)` and multiply by `ω_N < ∞`
+  have hlim := ENNReal.Tendsto.const_mul hc (Or.inr hωtop)
+  rw [mul_zero] at hlim
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hlim
+    (Eventually.of_forall fun _ => zero_le) (Eventually.of_forall fun r => ?_)
+  rw [← mul_div_assoc, ENNReal.mul_div_mul_left _ _ hω0 hωtop]
+  exact ENNReal.div_le_div_right (measure_mono (inter_subset_inter_right _ ball_subset_closedBall)) _
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
