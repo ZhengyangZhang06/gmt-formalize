@@ -14479,4 +14479,145 @@ theorem Submission.codim1_rdo_de_giorgi_gauss_green : ∀ (m : ℕ) (D F : Set (
   rw [inter_comm, ← Measure.restrict_apply' hB]
   exact hμK K hK hKD
 
+/-- **Area formula on a countably rectifiable set for an injective `C¹` immersion** (Simon Ch. 3,
+2.1–2.6; used for the local unit representation in the proof of 7.5.8).  Let `D ⊆ ℝᵈ` be open,
+`G : ℝᵈ → ℝᴾ` be `C¹` and injective on `D` with `DG(v)` injective, and let `B ⊆ D` be Borel and
+countably `m`-rectifiable, with `Hᵐ(B ∩ K) < ∞` for compact `K ⊆ D` and approximate tangent space
+`Q(v)` at `Hᵐ`-a.e. `v ∈ B`.  Then `G(B)` is countably `m`-rectifiable, `Hᵐ(G(B ∩ K)) < ∞`, and a
+Borel `J ≥ 0`, equal `Hᵐ`-a.e. on `B` to `√det[⟨DG σᵢ, DG σⱼ⟩]` for every orthonormal frame `σ` of
+`Q(v)`, has `∫_{G(B)} g dHᵐ = ∫_B J (g ∘ G) dHᵐ` (lower and Bochner integrals).  Up to an
+`Hᵐ`-null set, `B` is the disjoint union of bi-Lipschitz pieces `Aᵢ = Fᵢ(Bᵢ)`, and
+`Q(Fᵢ b) = range DFᵢ(b)` for a.e. `b ∈ Bᵢ` (tangent spaces of the pieces, locality, uniqueness).
+On `Aᵢ`, `J = J_{G ∘ Fᵢ} / J_{Fᵢ}` is the Gram Jacobian of `DG` along `Q` by the chain rule; the
+injective area formula for `G ∘ Fᵢ` and for `Fᵢ` on `Bᵢ`, summed over the pieces, gives the lower
+integral identity, and the measurable embedding `G|_B` gives the Bochner identity. -/
+theorem Submission.codim1_lur_rectifiable_area_formula : ∀ (m d P : ℕ) (D B : Set (Euclid d)) (G : Euclid d → Euclid P) (Q : Euclid d → Submodule ℝ (Euclid d)), 1 ≤ m → IsOpen D → ContDiffOn ℝ 1 G D → InjOn G D → (∀ v ∈ D, Injective (fderiv ℝ G v)) → MeasurableSet B → B ⊆ D → CountablyRectifiable m B → (∀ K : Set (Euclid d), IsCompact K → K ⊆ D → μHE[m] (B ∩ K) ≠ ∞) → (∀ᵐ v ∂(μHE[m].restrict B), HasApproximateTangentSpaceAt m B v (Q v)) → CountablyRectifiable m (G '' B) ∧ (∀ K : Set (Euclid d), IsCompact K → K ⊆ D → μHE[m] (G '' (B ∩ K)) ≠ ∞) ∧ ∃ J : Euclid d → ℝ, Measurable J ∧ (∀ v, 0 ≤ J v) ∧ (∀ᵐ v ∂(μHE[m].restrict B), ∀ σ : Fin m → Euclid d, Orthonormal ℝ σ → Submodule.span ℝ (Set.range σ) = Q v → J v = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin m => inner ℝ (fderiv ℝ G v (σ i)) (fderiv ℝ G v (σ j))))) ∧ (∀ g : Euclid P → ℝ≥0∞, ∫⁻ w in G '' B, g w ∂μHE[m] = ∫⁻ v in B, ENNReal.ofReal (J v) * g (G v) ∂μHE[m]) ∧ ∀ f : Euclid P → ℝ, ∫ w in G '' B, f w ∂μHE[m] = ∫ v in B, J v * f (G v) ∂μHE[m] := by
+  intro m d P D B G Q hm hD hG hGinj hDG hB hBD hBrect hBfin hQ
+  -- Step 0: `G` is Lipschitz on compacta of `D` and maps null, resp. countably `m`-rectifiable,
+  -- subsets of `D` to null, resp. countably `m`-rectifiable, sets
+  obtain ⟨hGlip, hGnull, hGrect⟩ :=
+    Submission.codim1_lura_c1_image_lipschitz_null_rectifiable m d P D G hD hG
+  have hGd : ∀ v ∈ D, DifferentiableAt ℝ G v := fun v hv =>
+    (hG.contDiffAt (hD.mem_nhds hv)).differentiableAt one_ne_zero
+  have hGc : ContinuousOn G B := hG.continuousOn.mono hBD
+  have hGi : InjOn G B := hGinj.mono hBD
+  -- Step 1: Borel pieces `Aᵢ = Fᵢ(Bᵢ) ⊆ B`, pairwise disjoint and covering `B` up to an
+  -- `Hᵐ`-null set, with `Fᵢ` Lipschitz, `cᵢ|a − a'| ≤ |Fᵢ a − Fᵢ a'|` and `DFᵢ` injective on `Bᵢ`
+  obtain ⟨F, S, c, hFL, hSm, hc, hlow, hFd, hAm, hAB, hAdisj, hN⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces d m B hB hBrect
+  have hFi : ∀ i, InjOn (F i) (S i) := fun i a ha a' ha' h => by
+    have hle := hlow i a ha a' ha'
+    rw [h, sub_self, norm_zero] at hle
+    exact sub_eq_zero.1 (norm_le_zero_iff.1 (nonpos_of_mul_nonpos_right hle (hc i)))
+  have hFc : ∀ i, Continuous (F i) := fun i => (hFL i).choose_spec.continuous
+  have hFD : ∀ i, ∀ b ∈ S i, F i b ∈ D := fun i b hb => hBD (hAB i (mem_image_of_mem _ hb))
+  -- `G ∘ Fᵢ` is differentiable at `b ∈ Bᵢ`, with `D(G ∘ Fᵢ)(b) = DG(Fᵢ b) ∘ DFᵢ(b)` injective, and
+  -- `G ∘ Fᵢ` is injective on `Bᵢ`
+  have hcomp : ∀ i, ∀ b ∈ S i,
+      fderiv ℝ (G ∘ F i) b = (fderiv ℝ G (F i b)).comp (fderiv ℝ (F i) b) := fun i b hb =>
+    fderiv_comp b (hGd _ (hFD i b hb)) (hFd i b hb).1
+  have hGFd : ∀ i, ∀ b ∈ S i, DifferentiableAt ℝ (G ∘ F i) b := fun i b hb =>
+    (hGd _ (hFD i b hb)).comp b (hFd i b hb).1
+  have hGFinj : ∀ i, ∀ b ∈ S i, Injective (fderiv ℝ (G ∘ F i) b) := fun i b hb => by
+    rw [hcomp i b hb, ContinuousLinearMap.coe_comp]
+    exact (hDG _ (hFD i b hb)).comp (hFd i b hb).2
+  have hGFi : ∀ i, InjOn (G ∘ F i) (S i) := fun i => hGinj.comp (hFi i) (hFD i)
+  -- Step 2: `Q(Fᵢ b) = range DFᵢ(b)` for a.e. `b ∈ Bᵢ`
+  have htan : ∀ i, ∀ᵐ b ∂(volume.restrict (S i)),
+      Q (F i b) = LinearMap.range (fderiv ℝ (F i) b : Euclid m →ₗ[ℝ] Euclid d) := by
+    intro i
+    obtain ⟨L, hL⟩ := hFL i
+    -- (a) `Aᵢ` has approximate tangent space `range DFᵢ(b)` at `Fᵢ b`, for a.e. `b ∈ Bᵢ`
+    have ha := Submission.codim1_lur_piece_image_approxTangent_ae d m (F i) (S i) L (c i) hL
+      (hSm i) (hc i) (hlow i) (hFd i)
+    -- (b) `B` and `Aᵢ` have the same approximate tangent spaces `Hᵐ`-a.e. on `Aᵢ`
+    have hb := Submission.regcomp_approx_tangent_locality d m D (F i '' S i) B hD (hAm i) hB
+      (hAB i) hBD hBfin
+    -- (c) `B` has approximate tangent space `Q` `Hᵐ`-a.e. on `Aᵢ ⊆ B`
+    have hcQ := ae_restrict_of_ae_restrict_of_subset (hAB i) hQ
+    -- (d) pull (b) ∧ (c) back to a.e. `b ∈ Bᵢ`
+    have hd := (Submission.ptd_piece_image_measurable_ae_pullback d m (F i) (S i) L (c i) hL
+      (hSm i) (hc i) (hlow i)).2 _ (hb.and hcQ)
+    -- (e) uniqueness of the approximate tangent space of `Aᵢ` at `Fᵢ b`
+    filter_upwards [ha, hd] with b hab hdb
+    exact ((hdb.1 (Q (F i b))).1 hdb.2).unique hab
+  -- Step 3: the Jacobians `J_{Fᵢ}`, `J_{G ∘ Fᵢ}` (`√det` of the Gram matrices) are Borel,
+  -- `J_{Fᵢ} > 0` on `Bᵢ`, and `J_{G ∘ Fᵢ} = √det[⟨DG σₐ, DG σ_b⟩] · J_{Fᵢ}` along an orthonormal
+  -- frame `σ` of `range DFᵢ(b)`
+  obtain ⟨JF, hJF⟩ : ∃ JF : ℕ → Euclid m → ℝ, ∀ i b, JF i b = Real.sqrt (Matrix.det
+      (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ (F i) b (EuclideanSpace.single k 1))
+        (fderiv ℝ (F i) b (EuclideanSpace.single l 1)))) := ⟨_, fun _ _ => rfl⟩
+  obtain ⟨JGF, hJGF⟩ : ∃ JGF : ℕ → Euclid m → ℝ, ∀ i b, JGF i b = Real.sqrt (Matrix.det
+      (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ (G ∘ F i) b (EuclideanSpace.single k 1))
+        (fderiv ℝ (G ∘ F i) b (EuclideanSpace.single l 1)))) := ⟨_, fun _ _ => rfl⟩
+  have hJFm : ∀ i, Measurable (JF i) := fun i => by
+    rw [show JF i = _ from funext (hJF i)]
+    exact (Submission.codim1_lura_gram_area_formula m d (F i)).1
+  have hJGFm : ∀ i, Measurable (JGF i) := fun i => by
+    rw [show JGF i = _ from funext (hJGF i)]
+    exact (Submission.codim1_lura_gram_area_formula m P (G ∘ F i)).1
+  have hJFpos : ∀ i, ∀ b ∈ S i, 0 < JF i b := fun i b hb => by
+    rw [hJF]
+    exact Real.sqrt_pos.2
+      ((Submission.codim1_lura_gram_det_comp_orthonormal m d P (fderiv ℝ (F i) b)).1 (hFd i b hb).2)
+  have hchain : ∀ i, ∀ b ∈ S i, ∀ σ : Fin m → Euclid d, Orthonormal ℝ σ →
+      Submodule.span ℝ (Set.range σ) =
+        LinearMap.range (fderiv ℝ (F i) b : Euclid m →ₗ[ℝ] Euclid d) →
+      JGF i b = Real.sqrt (Matrix.det (Matrix.of fun a a' : Fin m =>
+        inner ℝ (fderiv ℝ G (F i b) (σ a)) (fderiv ℝ G (F i b) (σ a')))) * JF i b := by
+    intro i b hb σ hσ hspan
+    obtain ⟨hpos, hdet⟩ :=
+      Submission.codim1_lura_gram_det_comp_orthonormal m d P (fderiv ℝ (F i) b)
+    rw [hJGF, hJF, hcomp i b hb]
+    simp only [ContinuousLinearMap.comp_apply]
+    rw [hdet (fderiv ℝ G (F i b)) σ hσ hspan, Real.sqrt_mul' _ (hpos (hFd i b hb).2).le]
+  -- Step 4: a Borel `J ≥ 0` with `J(Fᵢ b) = J_{G ∘ Fᵢ}(b) / J_{Fᵢ}(b)` for `b ∈ Bᵢ`
+  obtain ⟨J, hJm, hJ0, hJ⟩ := Submission.codim1_lura_glue_measurable_on_pieces m d F S
+    (fun i b => JGF i b / JF i b) hFc hSm hFi hAdisj (fun i => (hJGFm i).div (hJFm i))
+    (fun i b => div_nonneg (hJGF i b ▸ Real.sqrt_nonneg _) (hJF i b ▸ Real.sqrt_nonneg _))
+  -- (‡) `J(Fᵢ b) · J_{Fᵢ}(b) = J_{G ∘ Fᵢ}(b)` on `Bᵢ`
+  have hJmul : ∀ i, ∀ b ∈ S i, JF i b * J (F i b) = JGF i b := fun i b hb => by
+    rw [hJ i b hb, mul_div_cancel₀ _ (hJFpos i b hb).ne']
+  -- Step 5: the Gram identity for `J`, first at `Fᵢ b` for a.e. `b ∈ Bᵢ`, then `Hᵐ`-a.e. on `B`
+  have hgram : ∀ᵐ v ∂(μHE[m].restrict B), ∀ σ : Fin m → Euclid d, Orthonormal ℝ σ →
+      Submodule.span ℝ (Set.range σ) = Q v → J v = Real.sqrt (Matrix.det
+        (Matrix.of fun i j : Fin m => inner ℝ (fderiv ℝ G v (σ i)) (fderiv ℝ G v (σ j)))) := by
+    refine Submission.dpf_itt_ae_of_ae_pieces d m B F S _ hB hFL hN fun i => ?_
+    filter_upwards [htan i, ae_restrict_mem (hSm i)] with b hbQ hb σ hσ hspan
+    have hne := (hJFpos i b hb).ne'
+    rw [← mul_left_inj' hne, mul_comm (J (F i b)), hJmul i b hb,
+      hchain i b hb σ hσ (hspan.trans hbQ)]
+  -- Step 6: the area formula, first on each piece (applied to `G ∘ Fᵢ` and to `Fᵢ`), then summed
+  have hpiece : ∀ i (g : Euclid P → ℝ≥0∞), ∫⁻ w in G '' (F i '' S i), g w ∂μHE[m] =
+      ∫⁻ v in F i '' S i, ENNReal.ofReal (J v) * g (G v) ∂μHE[m] := by
+    intro i g
+    rw [← image_comp, (Submission.codim1_lura_gram_area_formula m P (G ∘ F i)).2 (S i) (hSm i)
+      (hGFd i) (hGFinj i) (hGFi i) g, (Submission.codim1_lura_gram_area_formula m d (F i)).2
+      (S i) (hSm i) (fun b hb => (hFd i b hb).1) (fun b hb => (hFd i b hb).2) (hFi i)
+      (fun v => ENNReal.ofReal (J v) * g (G v))]
+    refine setLIntegral_congr_fun (hSm i) fun b hb => ?_
+    simp only [← hJF, ← hJGF, comp_apply]
+    rw [← mul_assoc, ← ENNReal.ofReal_mul (hJFpos i b hb).le, hJmul i b hb]
+  have hlint : ∀ g : Euclid P → ℝ≥0∞,
+      ∫⁻ w in G '' B, g w ∂μHE[m] = ∫⁻ v in B, ENNReal.ofReal (J v) * g (G v) ∂μHE[m] := by
+    intro g
+    have hGN : μHE[m] (G '' (B \ ⋃ i, F i '' S i)) = 0 := hGnull _ (sdiff_subset.trans hBD) hN
+    have hid := Submission.codim1_lura_lintegral_image_eq_tsum_pieces m d d B
+      (fun i => F i '' S i) id continuousOn_id (injOn_id B) hAm hAB hAdisj (by rwa [image_id])
+      (fun v => ENNReal.ofReal (J v) * g (G v))
+    simp only [image_id] at hid
+    rw [Submission.codim1_lura_lintegral_image_eq_tsum_pieces m d P B (fun i => F i '' S i) G hGc
+      hGi hAm hAB hAdisj hGN g, hid]
+    exact tsum_congr fun i => hpiece i g
+  -- Step 7: the Bochner identity, from the lintegral identity along the embedding `G|_B`
+  refine ⟨hGrect B hBD hBrect, fun K hK hKD => ?_, J, hJm, hJ0, hgram, hlint,
+    Submission.codim1_lura_integral_image_of_lintegral d P (μHE[m]) (μHE[m]) B G J hB hGc hGi hJm
+      hJ0 hlint⟩
+  -- `Hᵐ(G(B ∩ K)) ≤ Lᵐ Hᵐ(B ∩ K) < ∞`, `G` being `L`-Lipschitz on `K`
+  obtain ⟨L, hL⟩ := hGlip K hK hKD
+  exact ne_top_of_le_ne_top
+    (ENNReal.mul_ne_top (ENNReal.pow_ne_top ENNReal.coe_ne_top) (hBfin K hK hKD))
+    (Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn m
+      (hL.mono inter_subset_right))
+
 end GMT.Ch07
