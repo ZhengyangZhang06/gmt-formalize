@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7c150e86f7502580d776a57e00d22ff4ffa717d0c2af93dceb1fa775eec100e3",
+  "git_delta": {
+    "base_commit": "608d96b4e05755849a4061938afe469996566fab",
+    "candidate_commit": "6df9c8c18e7d0f02b5b061473701e02003f1f273",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_bv_smooth_test_bound",
+    "diff_sha256": "926ea6d93f7e447ea08fad419f0bd44b6e244d3e1488f73ed9b5b7946fb8e66c",
+    "source_sha256": "48dbf5a128c1687536db3c1d9c0e1aa40ebe537b0bc0d1d9dcda9154f131ffcd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_bv_smooth_test_bound",
+      "statement": "∀ (n : ℕ) (R s V : ℝ) (φ u g : Euclid n → ℝ), 0 < R → 0 < s → 2 * s < R → 0 ≤ V → ContDiff ℝ (⊤ : ℕ∞) φ → (∀ y, 0 ≤ φ y) → tsupport φ ⊆ ball 0 s → ∫ y, φ y = 1 → IntegrableOn u (ball 0 (2 * R)) → (∀ (f : Euclid n → ℝ) (z : Euclid n) (M : ℝ), ContDiff ℝ (⊤ : ℕ∞) f → HasCompactSupport f → tsupport f ⊆ ball 0 (2 * R) → (∀ y, |f y| ≤ M) → |∫ y in ball 0 (2 * R), u y * fderiv ℝ f y z| ≤ V * ‖z‖ * M) → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ ball 0 (R + s) → (∀ x, |g x| ≤ 1) → |∫ x, (u x - ∫ y in ball 0 (2 * R), u y * φ (x - y)) * g x| ≤ s * V",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
