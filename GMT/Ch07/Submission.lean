@@ -1233,6 +1233,66 @@ theorem Submission.dimred_cs_sos_mt_frame_measure : ∀ (P k : ℕ) (g : Fin k �
   -- (i): the affine plane measure at `a = 0`, where `0 + ι(u) = ι(u)` and `y − 0 = y`
   simpa using (Submission.cbr_cipi_affine_plane_measure P k g 0 hg).1
 
+/-- **Frame-box integrals in frame coordinates** (step (5a) of the cube Stokes formula).  For an
+orthonormal frame `g₁, …, gₖ` of `ℝᴾ` with span `G`, the frame map `ι(u) = ∑ᵢ uᵢ gᵢ` is a linear
+isometry from Euclidean `ℝᵏ` onto `G`, so it pushes Lebesgue measure to `Hᵏ⌞G`.  The frame box
+`Q = {t ∈ G : |⟨gᵢ, t⟩| ≤ r}` is closed, lies in `G`, and has preimage `ι⁻¹(Q) = [-r, r]ᵏ`; hence
+`∫_Q f dHᵏ = ∫_{[-r, r]ᵏ} f(∑ᵢ uᵢ gᵢ) du` for every `f` (no integrability is needed). -/
+theorem Submission.dimred_cs_sos_mt_cs_frame_box_integral : ∀ (P k : ℕ) (g : Fin k → Euclid P) (r : ℝ) (f : Euclid P → ℝ), Orthonormal ℝ g → ∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, f t ∂μHE[k] = ∫ u in {u : Fin k → ℝ | ∀ i, |u i| ≤ r}, f (∑ i, u i • g i) := by
+  intro P k g r f hg
+  -- Step 1: the frame map `ι u = ∑ᵢ uᵢ gᵢ` lands in `G` and has coordinates `⟨gᵢ, ι u⟩ = uᵢ`
+  let ι : (Fin k → ℝ) →ₗ[ℝ] Euclid P := Fintype.linearCombination ℝ g
+  have hcoord : ∀ u i, inner ℝ (g i) (ι u) = u i := fun u i => hg.inner_right_fintype u i
+  have hrange : LinearMap.range ι = Submodule.span ℝ (Set.range g) :=
+    Fintype.range_linearCombination ℝ g
+  -- Step 2: `ι` is injective, hence a closed and so a measurable embedding
+  have hemb : MeasurableEmbedding ι := by
+    refine (LinearMap.isClosedEmbedding_of_injective
+      (LinearMap.ker_eq_bot.mpr ?_)).measurableEmbedding
+    intro u v huv
+    funext i
+    rw [← hcoord u i, ← hcoord v i, huv]
+  -- Step 3: `volume.map ι = Hᵏ⌞G`: on Euclidean `ℝᵏ` the frame map is a linear isometry onto `G`
+  have hmap : (volume : Measure (Fin k → ℝ)).map ι =
+      μHE[k].restrict (Submodule.span ℝ (Set.range g) : Set (Euclid P)) := by
+    let L : EuclideanSpace ℝ (Fin k) →ₗ[ℝ] Euclid P :=
+      ι ∘ₗ (WithLp.linearEquiv 2 ℝ (Fin k → ℝ)).toLinearMap
+    have hL : ∀ x y, inner ℝ (L x) (L y) = inner ℝ x y := by
+      intro x y
+      simp [L, ι, Fintype.linearCombination_apply, hg.inner_sum, PiLp.inner_apply, mul_comm]
+    have hiso : Isometry L := (L.isometryOfInner hL).isometry
+    have hrangeL : Set.range L = (Submodule.span ℝ (Set.range g) : Set (Euclid P)) := by
+      rw [← hrange, LinearMap.coe_range]
+      exact (WithLp.linearEquiv 2 ℝ (Fin k → ℝ)).surjective.range_comp ι
+    calc (volume : Measure (Fin k → ℝ)).map ι
+        = ((volume : Measure (Fin k → ℝ)).map (WithLp.toLp 2)).map L := by
+          rw [Measure.map_map hiso.continuous.measurable
+            (PiLp.volume_preserving_toLp (Fin k)).measurable]
+          rfl
+      _ = (μHE[k] : Measure (EuclideanSpace ℝ (Fin k))).map L := by
+          rw [(PiLp.volume_preserving_toLp (Fin k)).map_eq,
+            EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+      _ = μHE[k].restrict (Submodule.span ℝ (Set.range g) : Set (Euclid P)) := by
+          rw [hiso.map_euclideanHausdorffMeasure, hrangeL]
+  -- Step 4: `Hᵏ⌞Q = (volume.map ι)⌞Q`, since `Q ⊆ G` is closed (`frame_box_compact`)
+  have hQ : MeasurableSet
+      {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} :=
+    (Submission.dimred_cs_sos_mt_cs_frame_box_compact P k g r hg).isClosed.measurableSet
+  have hrestrict :
+      μHE[k].restrict {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} =
+        ((volume : Measure (Fin k → ℝ)).map ι).restrict
+          {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} := by
+    rw [hmap, Measure.restrict_restrict hQ, Set.inter_eq_left.mpr fun t ht => ht.1]
+  -- Step 5: `ι⁻¹(Q) = I`
+  have hpre : ι ⁻¹' {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r} =
+      {u : Fin k → ℝ | ∀ i, |u i| ≤ r} := by
+    ext u
+    simp only [Set.mem_preimage, Set.mem_ofPred_eq, hcoord]
+    exact and_iff_right (hrange ▸ LinearMap.mem_range_self ι u)
+  -- Step 6: change of variables along the measurable embedding `ι`
+  rw [hrestrict, hemb.setIntegral_map, hpre]
+  rfl
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
