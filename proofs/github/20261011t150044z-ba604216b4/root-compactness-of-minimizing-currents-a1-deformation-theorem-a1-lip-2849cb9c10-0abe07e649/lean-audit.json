@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7983b594adbf8f7a3e95b247ff70b95c21959b12c2a5f2084e464da31e083143",
+  "git_delta": {
+    "base_commit": "a9ee926e032765574a6908b7026ffa6983924a35",
+    "candidate_commit": "54a491571fc943513279dc0e06956746b65d9545",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpi_cyl_piece_action",
+    "diff_sha256": "d12c1da1a3f49a3b2e5447b872af11cb9801dd0353f76f0f73124bb5138b2e86",
+    "source_sha256": "963e02cbf54ca94cc39fd8a6d3c010137aff913bbc8c976977132126e53c6649",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpi_cyl_piece_action",
+      "statement": "∀ (N n : ℕ) (L : NNReal) (G : Euclid n → Euclid N) (A : Set (Euclid n)) (w : Euclid n → ℤ) (Gh : Euclid (n + 1) → Euclid (N + 1)) (Ah : Set (Euclid (n + 1))) (wh : Euclid (n + 1) → ℤ), LipschitzWith L G → MeasurableSet A → Measurable w → IntegrableOn (fun u => (w u : ℝ)) A → (∀ u ∈ A, DifferentiableAt ℝ G u) → (∀ z, Gh z = WithLp.toLp 2 (Fin.cons (WithLp.ofLp z 0) (WithLp.ofLp (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))))))) → Ah = {z : Euclid (n + 1) | WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 ∧ (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) : Euclid n) ∈ A} → (∀ z, wh z = w (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) → LipschitzWith (max 1 L) Gh ∧ MeasurableSet Ah ∧ Measurable wh ∧ IntegrableOn (fun z => (wh z : ℝ)) Ah ∧ ∀ (ω : TestFormOn (univ : Set (Euclid (N + 1))) (n + 1)) (η : DifferentialForm (Euclid N) n), (∀ (x : Euclid N) (v : Fin n → Euclid N), η x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (n + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → ∫ u in A, (w u : ℝ) * η (G u) (fun a => fderiv ℝ G u (EuclideanSpace.single a 1)) = ∫ z in Ah, (wh z : ℝ) * (ω : DifferentialForm (Euclid (N + 1)) (n + 1)) (Gh z) (fun a => fderiv ℝ Gh z (EuclideanSpace.single a 1))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
