@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "aa8853bdb90204be61f45e9586997c1c085f97c3ed985c0c46b5be1628c6da4b",
+  "git_delta": {
+    "base_commit": "ae9e07e818694c52af5a665431c53c5e91564884",
+    "candidate_commit": "265db42593855c0db89b660f68459793c0affa25",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_pc_cm_pairing_add_of_bounded",
+    "diff_sha256": "20ddb66b63330e5035e9a1a1e73eb7ee7966a6f2fb74568c2892da9583ec3765",
+    "source_sha256": "665128b5d85fbe301ad9d62d80df2ad370668afc513b77356e42fdcfd93d3210",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_pc_cm_pairing_add_of_bounded",
+      "statement": "∀ (P n : ℕ) (U K : Set (Euclid P)) (R₁ R₂ R : IMRep U n) (F : Euclid P → Covector (Euclid P) n) (B : ℝ), IsCompact K → K ⊆ U → AEStronglyMeasurable F μHE[n] → (∀ x, x ∉ K → F x = 0) → (∀ x, ‖F x‖ ≤ B) → (∀ᵐ x ∂μHE[n], R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x = R₁.carrier.indicator (fun y => (R₁.mult y : ℝ) • R₁.orient y) x + R₂.carrier.indicator (fun y => (R₂.mult y : ℝ) • R₂.orient y) x) → ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (F x) ∂μHE[n] = ∫ x in R₁.carrier, (R₁.mult x : ℝ) * R₁.orient x (F x) ∂μHE[n] + ∫ x in R₂.carrier, (R₂.mult x : ℝ) * R₂.orient x (F x) ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
