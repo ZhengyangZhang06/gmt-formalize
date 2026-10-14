@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.graph_reparam-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1",
+  "depth": 6,
+  "title": "Graph reparametrization of a C^r chart over a linear projection (Simon Ch. 2, 4.2 and 4.4)",
+  "statement": "Let P, d, r ∈ ℕ with r ≥ 1, N, W ⊆ ℝ^P, V ⊆ ℝ^d, ψ : ℝ^d → ℝ^P, π : ℝ^P → ℝ^d a continuous linear map, c ∈ ℝ^P and v₀ ∈ V. Suppose V and W are open, ψ is C^r on V and injective on V, ψ(V) = W ∩ N, V ∩ ψ^{-1}(K) is compact for every compact K ⊆ W, and π ∘ Dψ(v₀) is injective. Then there are open sets D ⊆ ℝ^d and O ⊆ ℝ^P and a map g : ℝ^d → ℝ^P with ψ(v₀) ∈ O ⊆ W such that g is C^r on D, g is injective on D, g(D) = O ∩ N, D ∩ g^{-1}(K) is compact for every compact K ⊆ O, Dg(a) is injective for every a ∈ D, and π(g(a) − c) = a for every a ∈ D.",
+  "lean_statement": "∀ (P d r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (π : Euclid P →L[ℝ] Euclid d) (c : Euclid P) (v₀ : Euclid d), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → v₀ ∈ V → Injective (π ∘L fderiv ℝ ψ v₀) → ∃ (D : Set (Euclid d)) (O : Set (Euclid P)) (g : Euclid d → Euclid P), IsOpen D ∧ IsOpen O ∧ ψ v₀ ∈ O ∧ O ⊆ W ∧ ContDiffOn ℝ r g D ∧ InjOn g D ∧ g '' D = O ∩ N ∧ (∀ K ⊆ O, IsCompact K → IsCompact (D ∩ g ⁻¹' K)) ∧ (∀ a ∈ D, Injective (fderiv ℝ g a)) ∧ ∀ a ∈ D, π (g a - c) = a",
+  "lean_name": "codim1_hcp_sc_graph_reparam",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.chart_image_nhds-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.local_inverse_cr-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.left_inverse_immersion-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_retraction-a1.chart_image_nhds-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-retract-4303b6673f-a1",
+      "result_commit": "fe444362e7b3a74c2589e7fa4b1cb9588f469adc",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.local_inverse_cr-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.left_inverse_immersion-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-3d737a3ccd-a1"
+}

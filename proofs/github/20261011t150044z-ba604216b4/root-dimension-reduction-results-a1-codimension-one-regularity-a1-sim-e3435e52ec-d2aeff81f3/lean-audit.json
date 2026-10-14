@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3e49f26c068322fdb85bd36a9ca1d6161e01b46cc2c391f08cbeee68286880c4",
+  "git_delta": {
+    "base_commit": "c7e076a9689ba342b64da76bceac27a6b59dc87b",
+    "candidate_commit": "1121ae7fa0cd8c02d38ce877fc9451fab40fcc17",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_un_hyperplane_projection",
+    "diff_sha256": "92ab510f499d7d565c21189834a2f9c05427cc0fd0b8a6e18d067be77f3826f1",
+    "source_sha256": "0a82d2c5dc63b381f5d04bfc0693c6d23eac76688759ed15c6ac272d1d61fa94",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_un_hyperplane_projection",
+      "statement": "∀ (P m : ℕ) (A₀ Q : Submodule ℝ (Euclid P)) (n : Euclid P), Module.finrank ℝ A₀ = m + 1 → Module.finrank ℝ Q = m → Q ≤ A₀ → n ∈ A₀ → ‖n‖ = 1 → (∀ v ∈ Q, inner ℝ n v = 0) → ∀ w : Euclid P, Q.starProjection w = A₀.starProjection w - inner ℝ n w • n",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
