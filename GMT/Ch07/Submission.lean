@@ -451,6 +451,65 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- A field `ζ` with `|ζ(x)(α)| ≤ |α|_E` is bounded in operator norm by `C = √(card (Fin n → Fin P))`,
+since each coefficient satisfies `|α(e_I)| ≤ ‖α‖`.  Hence `θζ` is strongly measurable and, as
+`θ > 0` on `M`, `∫⁻_M ‖θζ‖ₑ dμ ≤ C ∫⁻_M θ dμ < ∞`. -/
+theorem Submission.dmcbr_ci_gp_weighted_field_l1 : ∀ (P n : ℕ) (μ : Measure (Euclid P)) (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n), MeasurableSet M → Measurable θ → StronglyMeasurable ζ → (∀ x ∈ M, 0 < θ x) → ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μ < ∞ → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) → StronglyMeasurable (fun x => θ x • ζ x) ∧ ∫⁻ x in M, ‖θ x • ζ x‖ₑ ∂μ < ∞ := by
+  intro P n μ M θ ζ hM hθ hζ hpos hint hbound
+  refine ⟨hθ.stronglyMeasurable.smul hζ, ?_⟩
+  classical
+  set C : ℝ := Real.sqrt ((Fintype.card (Fin n → Fin P) : ℝ)) with hC
+  have hC0 : 0 ≤ C := Real.sqrt_nonneg _
+  -- the Euclidean coefficient norm is dominated by `C` times the operator norm
+  have hcov : ∀ α : Covector (Euclid P) n, covectorEuclideanNorm α ≤ C * ‖α‖ := by
+    intro α
+    have hterm : ∀ I : Fin n → Fin P,
+        (if StrictMono I then (α (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (I i))) ^ 2 else 0)
+          ≤ ‖α‖ ^ 2 := by
+      intro I
+      split_ifs
+      · have h1 : ‖α (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (I i))‖ ≤ ‖α‖ := by
+          have := α.le_opNorm (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (I i))
+          simpa using this
+        have h2 : |α (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (I i))| ≤ ‖α‖ := by
+          simpa [Real.norm_eq_abs] using h1
+        nlinarith [abs_nonneg (α (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (I i))),
+          sq_abs (α (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (I i)))]
+      · positivity
+    have hsum : (∑ I : Fin n → Fin P,
+        if StrictMono I then (α (fun i ↦ EuclideanSpace.basisFun (Fin P) ℝ (I i))) ^ 2 else 0)
+          ≤ (Fintype.card (Fin n → Fin P) : ℝ) * ‖α‖ ^ 2 := by
+      calc _ ≤ ∑ _I : Fin n → Fin P, ‖α‖ ^ 2 := Finset.sum_le_sum fun I _ => hterm I
+        _ = _ := by simp
+    unfold covectorEuclideanNorm
+    calc Real.sqrt _ ≤ Real.sqrt ((Fintype.card (Fin n → Fin P) : ℝ) * ‖α‖ ^ 2) :=
+          Real.sqrt_le_sqrt hsum
+      _ = C * ‖α‖ := by
+          rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _)]
+  -- `‖ζ x‖ ≤ C`
+  have hζC : ∀ x, ‖ζ x‖ ≤ C := by
+    intro x
+    refine ContinuousLinearMap.opNorm_le_bound _ hC0 fun α => ?_
+    rw [Real.norm_eq_abs]
+    exact (hbound x α).trans (hcov α)
+  -- the lintegral bound
+  calc ∫⁻ x in M, ‖θ x • ζ x‖ₑ ∂μ ≤ ∫⁻ x in M, ENNReal.ofReal C * ENNReal.ofReal (θ x) ∂μ := by
+        refine setLIntegral_mono' hM fun x hx => ?_
+        have hθx : 0 < θ x := hpos x hx
+        have hn : ‖θ x • ζ x‖ ≤ C * θ x := by
+          refine ContinuousLinearMap.opNorm_le_bound _ (by positivity) fun α => ?_
+          rw [FunLike.coe_smul, Pi.smul_apply, smul_eq_mul, Real.norm_eq_abs, abs_mul,
+            abs_of_pos hθx]
+          calc θ x * |ζ x α| ≤ θ x * (C * ‖α‖) := by
+                gcongr
+                exact (hbound x α).trans (hcov α)
+            _ = C * θ x * ‖α‖ := by ring
+        rw [← ofReal_norm, ← ENNReal.ofReal_mul hC0]
+        exact ENNReal.ofReal_le_ofReal hn
+    _ = ENNReal.ofReal C * ∫⁻ x in M, ENNReal.ofReal (θ x) ∂μ :=
+        lintegral_const_mul _ hθ.ennreal_ofReal
+    _ < ∞ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hint
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
