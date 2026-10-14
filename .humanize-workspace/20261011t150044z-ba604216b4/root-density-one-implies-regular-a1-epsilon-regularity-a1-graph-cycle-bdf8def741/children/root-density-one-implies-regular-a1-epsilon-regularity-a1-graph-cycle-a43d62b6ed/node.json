@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_embedded-a1.left_inverse_tangent-a1.tangent_subset_range-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_embedded-a1.left_inverse_tangent-a1",
+  "depth": 6,
+  "title": "Velocities of curves in the image of a C¹ map with a continuous affine left inverse lie in the range of its derivative",
+  "statement": "Let d, P ∈ ℕ, Φ : ℝ^d → ℝ^P, let L : ℝ^P → ℝ^d be a continuous linear map, and let z ∈ ℝ^P and s ∈ ℝ. Let D := B_s(0) ⊆ ℝ^d be the open ball. Assume Φ is of class C¹ on D and L(Φ(v) − z) = v for every v ∈ D. Put Σ := Φ(D). Then for every v₀ ∈ D, the contract's tangent space tangentSpace Σ (Φ(v₀)) is contained in the range of DΦ(v₀) = fderiv ℝ Φ v₀, regarded as a linear map and coerced to a set. That is, every w ∈ tangentSpace Σ (Φ(v₀)) equals DΦ(v₀)(y) for some y ∈ ℝ^d. Here tangentSpace Σ (Φ(v₀)) is the set of vectors w such that some γ : ℝ → ℝ^P is C¹ on (−1, 1), maps (−1, 1) into Σ, has γ(0) = Φ(v₀), and has HasDerivAt γ w 0. ℝ^m denotes Euclid m = EuclideanSpace ℝ (Fin m).",
+  "lean_statement": "∀ (d P : ℕ) (Φ : Euclid d → Euclid P) (L : Euclid P →L[ℝ] Euclid d) (z : Euclid P) (s : ℝ), ContDiffOn ℝ 1 Φ (ball 0 s) → (∀ v ∈ ball (0 : Euclid d) s, L (Φ v - z) = v) → ∀ v ∈ ball (0 : Euclid d) s, tangentSpace (Φ '' ball (0 : Euclid d) s) (Φ v) ⊆ (LinearMap.range (fderiv ℝ Φ v : Euclid d →ₗ[ℝ] Euclid P) : Set (Euclid P))",
+  "lean_name": "dgce_left_inverse_tangentSpace_subset_range",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-a43d62b6ed-a1"
+}

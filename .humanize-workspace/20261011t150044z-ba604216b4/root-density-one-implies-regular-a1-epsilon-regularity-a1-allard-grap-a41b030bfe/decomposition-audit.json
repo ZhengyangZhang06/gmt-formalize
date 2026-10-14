@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "starProjection_minimal|sub_starProjection_mem_orthogonal|starProjection_apply_mem",
+        "finrank_add_finrank_orthogonal",
+        "finrank_range_of_inj|eq_of_le_of_finrank_eq",
+        "theorem (restrict_withDensity|ae_withDensity_iff|withDensity_congr_ae|withDensity_one)|lemma (restrict_withDensity|ae_withDensity_iff|withDensity_congr_ae|withDensity_one)",
+        "theorem restrict_mono|restrict_restrict_of_subset",
+        "norm_fderiv_le_of_lipschitz",
+        "theorem addHaar_sphere|lemma addHaar_sphere",
+        "support_mem_ae|measure_compl_support",
+        "dorag_tes_gah_|dorag_tes_graph_affine_height|dorag_tes_lipschitz_graph_area_bounds",
+        ". /tmp/tes-v2/env.sh\n\"$LEAN\" /tmp/graph-height-independent-audit-t9r7slin/Challenges.lean",
+        ". /tmp/tes-v2/env.sh\n\"$LEAN\" /tmp/graph-height-independent-audit-t9r7slin/SubmissionCheck.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-allard-grap-a41b030bfe/parent-child-handoff.json",
+        "/tmp/gh-split/lean/EndToEnd3.lean",
+        "/tmp/graph-height-independent-audit-t9r7slin/Challenges.lean",
+        "/tmp/graph-height-independent-audit-t9r7slin/SubmissionCheck.lean"
+      ],
+      "conclusion": "Verified the pinned revisions and compatibility of the workspace contract. The cited infrastructure supports projection minimality, density-one domination without extra finiteness assumptions, arbitrary-integrand lower integrals, sphere nullity and conull support. The snapshot search found no declarations with the proposed names; scanning eight workspace DAGs containing 2,017 nodes found no name reservations. All three names are bare identifiers. Each exact child proposition elaborated independently without its implementation, and all three proofs compiled as Submission.<lean_name>. The exact selected parent implication also compiled using the three child contracts and the frozen graph_area contract; axiom checks reported only propext, Classical.choice and Quot.sound. This is an appropriate split into three genuine independent obligations. Their empty dependency lists are correct, while the parent retains its acyclic graph_area dependency. Assembly preserves the selected contract, including the separate off-graph summand."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "plane_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line proposition match all hypotheses and three conclusions, including zero-dimensional cases. Pythagoras proves injectivity, dimension and the coordinate bound; projection minimality proves the graph-distance bound. Equal-dimension inclusions identify both frame ranges, allowing the orthogonal decomposition and operator-norm estimate to prove the final bound. Every step is supplied and non-circular. Finite-dimensional projection instances elaborate correctly."
+    },
+    {
+      "key": "mult_one_domination",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact proposition agree, including arbitrary A and nonmeasurable h. Measurability and positivity of multiplicity on the carrier justify transferring the almost-everywhere hypothesis through withDensity. Restriction to measurable B then gives density one and measure domination. Restriction monotonicity and lower-integral monotonicity establish the second conclusion without additional measurability or finiteness assumptions. The supplied proof is complete and independent of the parent."
+    },
+    {
+      "key": "weight_ball",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line proposition exactly matches the stated weight, coefficient, volume measure and integral scopes. The global derivative-norm bound applies also at nondifferentiability points; unit basis vectors give the sum bound. Finite constant extraction is valid for arbitrary G. Positive n ensures a nontrivial Euclidean space, so sphere nullity identifies closed- and open-ball restrictions for every real radius, including zero and negative radii. The supplied proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}
