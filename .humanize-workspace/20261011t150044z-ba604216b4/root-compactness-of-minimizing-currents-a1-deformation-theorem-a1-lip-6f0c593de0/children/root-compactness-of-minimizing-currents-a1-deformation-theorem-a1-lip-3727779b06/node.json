@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.minor_continuity-a1.coordinate_minor_continuity-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.minor_continuity-a1",
+  "depth": 6,
+  "title": "Weak continuity of Jacobian minors of scalar Lipschitz rows under uniform convergence with bounded Lipschitz constants; the induction P(r) (supplied steps 2 and 7)",
+  "statement": "Let k, r ∈ ℕ and L ∈ ℝ≥0. For j ∈ ℕ and c ∈ Fin r let g^j_c, g_c : ℝ^k → ℝ be L-Lipschitz, with g^j_c → g_c uniformly on ℝ^k as j → ∞ for every c. Let V_b ∈ ℝ^k (b ∈ Fin r), and let φ : ℝ^k → ℝ be Lebesgue integrable. Here ℝ^k = Euclid k carries Lebesgue measure λ, and Dg(x) := fderiv ℝ g x is the zero map at points where g is not differentiable. Then ∫ φ(x)·det(Dg^j_c(x)V_b)_{c,b ∈ Fin r} dλ(x) → ∫ φ(x)·det(Dg_c(x)V_b)_{c,b ∈ Fin r} dλ(x) as j → ∞ (row c, column b).",
+  "lean_statement": "∀ (k r : ℕ) (L : NNReal) (gs : ℕ → Fin r → Euclid k → ℝ) (g : Fin r → Euclid k → ℝ) (V : Fin r → Euclid k) (φ : Euclid k → ℝ), Integrable φ → (∀ j c, LipschitzWith L (gs j c)) → (∀ c, LipschitzWith L (g c)) → (∀ c, TendstoUniformly (fun j => gs j c) (g c) atTop) → Tendsto (fun j => ∫ x, φ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (gs j c) x (V b))) atTop (𝓝 (∫ x, φ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b))))",
+  "lean_name": "cmcdt_lpi_mwc_coordinate_minor_continuity",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.minor_bound-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.weak_star_l1_upgrade-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.lipschitz_minor_ibp-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.minor_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-85d5c4f3c5-a1",
+      "result_commit": "13966862f4c84217ad5d35ba66b3e5440c90d946",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.weak_star_l1_upgrade-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-31844bb0f4-a1",
+      "result_commit": "7ba02a03145b060d32f1724fe453e480c4209154",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.jacobian_weak_continuity-a1.lipschitz_minor_ibp-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ffab4a183e-a1",
+      "result_commit": "7c2f0c43f702d533b42063c5e3634e4e453253cb",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-3727779b06-a1"
+}

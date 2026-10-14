@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1.bilip_partition-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.integrality-a1.piece_current-a1",
+  "depth": 6,
+  "title": "Countable bi-Lipschitz partition of a Borel set on which the derivative is injective (supplied step 3)",
+  "statement": "Let P, n ∈ ℕ, let H : ℝⁿ → ℝ^P, and let B ⊆ ℝⁿ be Borel such that H is differentiable at every a ∈ B with injective derivative DH(a) = fderiv ℝ H a. Then there are Borel sets C_l ⊆ ℝⁿ (l ∈ ℕ), pairwise disjoint, with ⋃_l C_l = B, and constants κ_l > 0 such that κ_l·|a − a'| ≤ |H(a) − H(a')| for every l and all a, a' ∈ C_l.",
+  "lean_statement": "∀ (P n : ℕ) (H : Euclid n → Euclid P) (B : Set (Euclid n)), MeasurableSet B → (∀ a ∈ B, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) → ∃ (C : ℕ → Set (Euclid n)) (κ : ℕ → ℝ), (∀ l, MeasurableSet (C l)) ∧ Pairwise (fun l l' => Disjoint (C l) (C l')) ∧ (⋃ l, C l) = B ∧ (∀ l, 0 < κ l) ∧ ∀ l, ∀ a ∈ C l, ∀ a' ∈ C l, κ l * ‖a - a'‖ ≤ ‖H a - H a'‖",
+  "lean_name": "cmcdt_lpi_pc_bilipschitz_partition",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-a72e0bfe08-a1"
+}

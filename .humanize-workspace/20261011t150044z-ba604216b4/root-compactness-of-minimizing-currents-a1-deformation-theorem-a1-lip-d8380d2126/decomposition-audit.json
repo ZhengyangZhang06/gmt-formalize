@@ -1,0 +1,85 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_lpoh_",
+        "def (curryLeft|curryLeftLI)|theorem curryLeft_apply_apply|def compContinuousLinearMapCLM|theorem HasFDerivAt.smul|theorem norm_fderiv_le_of_lipschitz|theorem norm_apply_le",
+        "^(def|noncomputable def|theorem|lemma|abbrev|structure)|boundary_boundary|boundary_apply|massAdmissibleOn|covectorEuclideanNorm_nonneg|isOpen_zeroRegion",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/homotopy-independent-audit-qop70hba/Types.lean > /tmp/homotopy-independent-audit-qop70hba/Types.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/homotopy-independent-audit-qop70hba/Full.lean > /tmp/homotopy-independent-audit-qop70hba/Full.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-d8380d2126/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-d8380d2126/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-26edcacc53/comparison-identity-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa59/20261014T011848Z-ch07-root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_push-_xld5u04/comparator.log",
+        "/tmp/homotopy-independent-audit-qop70hba/Types.lean",
+        "/tmp/homotopy-independent-audit-qop70hba/Full.lean",
+        "/tmp/homotopy-independent-audit-qop70hba/Full.log"
+      ],
+      "conclusion": "Verified the pinned revisions and unchanged Ch07 contract. No cmcdt_lpoh_* declaration exists in the snapshot; no proposed name conflicts with the DAG or other stored decompositions. All eight names are bare identifiers, and all types are standalone one-line propositions that elaborate before any child implementation. Independently recompiled every supplied proof script and the exact selected parent assembly successfully. Axiom inspection shows only standard axioms and explicitly assumed, exact inherited dependency contracts; no sorryAx or ancestor theorem is used. The accepted mollifier's comparator type is identical, with its permitted-axiom check recorded. Covector composition, scalar multiplication, boundary and mass conventions match the prose; no matrix-unit construction occurs. The split is appropriate, dependencies are acyclic and correctly directed, and the children establish exactly the selected conjuncts (10)–(12)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "interp_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Coordinate splitting, chain and product rules prove both derivative identities; the coordinate norm bounds give exactly the stated operator norm estimate. No circular dependency occurs."
+    },
+    {
+      "key": "smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Mollification and interp_calculus establish every quantified approximation property. Compactness supplies the common derivative bound, and the uniform error estimate proves convergence on C(K), without assuming regularity of H elsewhere."
+    },
+    {
+      "key": "pullback_limits",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact cutoffs and endpoint slices satisfy every PA premise in degrees m and m+1. The witnesses work uniformly for the subsequently quantified currents, and the pointwise pullback description has exactly the required derivative bounds."
+    },
+    {
+      "key": "cyl_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The degree-zero convention and explicit normality hypotheses justify both uses of (9). The inherited slice identities, test-form extensionality and boundary evaluation formula yield the exact signs and degrees in both conclusions."
+    },
+    {
+      "key": "phi_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The factorization through curryLeft and D composed with J is exact. The operator norm bound and L1–L2 give the claimed coefficient-norm estimate; all required positivity follows from the stated hypotheses."
+    },
+    {
+      "key": "cyl_eval_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The sliced covector integrand is continuous and satisfies phi_bound pointwise. The inherited Minkowski and support mass bounds prove the conclusion. Empty support and unrestricted signs of a and c introduce no missing hypothesis."
+    },
+    {
+      "key": "homotopy_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Boundary support containment, closedness and boundary squared equal to zero establish all normality premises. Passing cyl_identity through the supplied limits proves precisely (10) and (11), without relying on the parent or operator implementations."
+    },
+    {
+      "key": "mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The evaluation bounds pass to the limit for each admissible form. Finite mass justifies ENNReal conversion, and the negative-delta case is valid, including empty support. Taking the supremum proves exactly (12); together with homotopy_formula it yields the frozen parent."
+    }
+  ],
+  "required_changes": []
+}
