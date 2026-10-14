@@ -451,6 +451,356 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Step 3(i) of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3, via
+Allard's theorem; `n`-covectors as in Ch. 6, §1): if `τ` is an orthonormal `n`-frame and every
+`bⱼ` lies in `L = span τ`, then `α(b₁, …, bₙ) = det(⟨τᵢ, bⱼ⟩) α(τ₁, …, τₙ)` for every
+`n`-covector `α`.  The restriction of `α` to `L` is `α(τ) det_τ`, and the coordinates of `bⱼ` in
+the basis `τ` of `L` are `⟨τᵢ, bⱼ⟩`. -/
+theorem Submission.dgoj_covector_eq_det_mul_of_mem_span : ∀ (P n : ℕ) (τ b : Fin n → Euclid P), Orthonormal ℝ τ → (∀ j, b j ∈ Submodule.span ℝ (Set.range τ)) → ∀ α : Covector (Euclid P) n, α b = (Matrix.of fun i j => inner ℝ (τ i) (b j)).det * α τ := by
+  intro P n τ b hτ hb α
+  set L := Submodule.span ℝ (Set.range τ)
+  -- `τ` is a basis `e` of `L`
+  let e : Module.Basis (Fin n) ℝ L := Module.Basis.span hτ.linearIndependent
+  have he : ∀ i, (e i : Euclid P) = τ i := fun i => by
+    rw [Module.Basis.span_apply hτ.linearIndependent i]
+  -- the restriction `α_L` of `α` to `L`
+  let αL : L [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap L.subtype
+  let b' : Fin n → L := fun j => ⟨b j, hb j⟩
+  have h1 : α b = αL b' := rfl
+  have h2 : α τ = αL e := by
+    show α τ = α (fun i => (e i : Euclid P))
+    congr 1
+    funext i
+    exact (he i).symm
+  -- coordinates of `b'` in `e` are the inner products with `τ`
+  have hrepr : ∀ i j, e.repr (b' j) i = inner ℝ (τ i) (b j) := by
+    intro i j
+    have hs : (b j : Euclid P) = ∑ l, e.repr (b' j) l • τ l := by
+      have := congrArg (Subtype.val) (e.sum_repr (b' j))
+      simp only [Submodule.coe_sum, Submodule.coe_smul, he] at this
+      exact this.symm
+    rw [hs, hτ.inner_right_fintype]
+  have hmat : e.toMatrix b' = Matrix.of fun i j => inner ℝ (τ i) (b j) := by
+    ext i j
+    rw [Module.Basis.toMatrix_apply, hrepr, Matrix.of_apply]
+  -- `α_L = α_L(e) • det_e`
+  have h3 : αL b' = αL e * e.det b' := by
+    conv_lhs => rw [AlternatingMap.eq_smul_basis_det e αL]
+    rfl
+  rw [h1, h2, h3, Module.Basis.det_apply, hmat, mul_comm]
+/-- Steps 3(ii)–(iii) of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3,
+via Allard's theorem): if `τ` is an orthonormal `n`-frame whose span contains every `F eⱼ`, then
+`det(F* ∘ F) = (det 𝒜)²` with `𝒜ᵢⱼ = ⟨τᵢ, F eⱼ⟩`.  Expanding `F eⱼ = Σₗ 𝒜ₗⱼ τₗ` gives the Gram
+identity `⟨F eᵢ, F eⱼ⟩ = (𝒜ᵀ𝒜)ᵢⱼ`, and the Gram matrix is the matrix of `F* ∘ F` in the standard
+basis of `ℝⁿ`. -/
+theorem Submission.dgoj_det_adjoint_comp_eq_det_sq : ∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P) (τ : Fin n → Euclid P), Orthonormal ℝ τ → (∀ j, F (EuclideanSpace.single j (1 : ℝ)) ∈ Submodule.span ℝ (Set.range τ)) → (F.adjoint ∘L F).det = (Matrix.of fun i j => inner ℝ (τ i) (F (EuclideanSpace.single j (1 : ℝ)))).det ^ 2 := by
+  intro P n F τ hτ hb
+  set A : Matrix (Fin n) (Fin n) ℝ :=
+    Matrix.of fun i j => inner ℝ (τ i) (F (EuclideanSpace.single j (1 : ℝ))) with hA
+  -- `F eⱼ = Σₗ 𝒜ₗⱼ τₗ`: the coordinates of a vector of `span τ` are its inner products with `τ`
+  have hexp : ∀ j, F (EuclideanSpace.single j (1 : ℝ)) = ∑ l, A l j • τ l := by
+    intro j
+    obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 (hb j)
+    have hcA : ∀ l, A l j = c l := by
+      intro l
+      rw [hA, Matrix.of_apply, ← hc, hτ.inner_right_fintype]
+    rw [← hc]
+    simp only [hcA]
+  -- the Gram identity `⟨F eᵢ, F eⱼ⟩ = (𝒜ᵀ𝒜)ᵢⱼ`
+  have hgram : ∀ i j, inner ℝ (F (EuclideanSpace.single i (1 : ℝ)))
+      (F (EuclideanSpace.single j (1 : ℝ))) = (A.transpose * A) i j := by
+    intro i j
+    rw [Matrix.mul_apply]
+    conv_lhs => rw [hexp i]
+    rw [sum_inner]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    rw [inner_smul_left, Matrix.transpose_apply]
+    simp [hA]
+  -- the matrix of `F* ∘ F` in the standard basis has entries `⟨eᵢ, F* F eⱼ⟩ = ⟨F eᵢ, F eⱼ⟩`
+  let B := (EuclideanSpace.basisFun (Fin n) ℝ).toBasis
+  have hmat : LinearMap.toMatrix B B ((F.adjoint ∘L F : Euclid n →L[ℝ] Euclid n) : Euclid n →ₗ[ℝ] Euclid n)
+      = A.transpose * A := by
+    ext i j
+    rw [LinearMap.toMatrix_apply, ← hgram i j]
+    simp only [B, OrthonormalBasis.coe_toBasis, OrthonormalBasis.coe_toBasis_repr_apply,
+      EuclideanSpace.basisFun_repr, EuclideanSpace.basisFun_apply, ContinuousLinearMap.coe_coe,
+      ContinuousLinearMap.coe_comp, Function.comp_apply]
+    rw [← ContinuousLinearMap.adjoint_inner_right, EuclideanSpace.inner_single_left]
+    simp
+  rw [ContinuousLinearMap.det, ← LinearMap.det_toMatrix B, hmat, Matrix.det_mul,
+    Matrix.det_transpose, sq]
+/-- Step 3 of the Jacobian identity for the orientation of a `C¹` graph (Simon 7.4.3, via
+Allard's theorem): if `F : ℝⁿ → ℝᴾ` is injective, its range `L` has an orthonormal basis
+`τ = (τ₁, …, τₙ)`, regarded as an orthonormal `n`-frame in `ℝᴾ` spanning `L`.  Since
+`dim L = n`, reindex `stdOrthonormalBasis ℝ L` along `Fin (dim L) ≃ Fin n` and include it into
+`ℝᴾ` by the linear isometry `L → ℝᴾ`. -/
+theorem Submission.dgoj_exists_orthonormal_frame_range : ∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P), Injective F → ∃ τ : Fin n → Euclid P, Orthonormal ℝ τ ∧ Submodule.span ℝ (Set.range τ) = LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P) := by
+  intro P n F hF
+  set L := LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P) with hLdef
+  -- `dim L = dim ℝⁿ = n`, since `F` is injective
+  have hL : Module.finrank ℝ L = n := by
+    rw [hLdef, LinearMap.finrank_range_of_inj hF, finrank_euclideanSpace_fin]
+  let T : OrthonormalBasis (Fin n) ℝ L := (stdOrthonormalBasis ℝ L).reindex (finCongr hL)
+  refine ⟨fun i => (T i : Euclid P), ?_, ?_⟩
+  · -- the inclusion `L → ℝᴾ` is a linear isometry
+    exact T.orthonormal.comp_linearIsometry L.subtypeₗᵢ
+  · -- `span (ι '' range T) = ι '' span (range T) = ι '' L = L`
+    have h1 : (fun i => (T i : Euclid P)) = L.subtype ∘ T := rfl
+    rw [h1, Set.range_comp, Submodule.span_image, ← T.coe_toBasis, T.toBasis.span_eq,
+      Submodule.map_top, Submodule.range_subtype]
+
+/-- **The normalized evaluation at `F e` is a unit orientation of `range F`** (Simon 6.1.1,
+6.1.7; `√det(F* ∘ F)` is the area Jacobian of Ch. 2, 3.1/3.3).  For injective `F : ℝⁿ → ℝᴾ`,
+`det(F* ∘ F) > 0`, and if `α(F e₁, …, F eₙ) = √det(F* ∘ F) ξ(α)` for every `n`-covector `α` then
+`ξ = ±τ₁ ∧ ⋯ ∧ τₙ` for an orthonormal frame `τ` of `range F`: with `d = det(⟨τᵢ, F eⱼ⟩)` one has
+`det(F* ∘ F) = d² ≠ 0` and `α(F e) = d α(τ)`, so `|d| ξ(α) = d α(τ)` and the sign is that of `d`. -/
+theorem Submission.dgoj_unitOrientation_of_injective : ∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P), Injective F → 0 < (F.adjoint ∘L F).det ∧ ∀ ξ : MultiVector P n, (∀ α : Covector (Euclid P) n, α (fun i => F (EuclideanSpace.single i (1 : ℝ))) = Real.sqrt ((F.adjoint ∘L F).det) * ξ α) → IsUnitOrientationOf ξ (LinearMap.range (F : Euclid n →ₗ[ℝ] Euclid P)) := by
+  intro P n F hF
+  -- an orthonormal frame `τ` of `range F`; every `F eⱼ` lies in its span
+  obtain ⟨τ, hτo, hτs⟩ := Submission.dgoj_exists_orthonormal_frame_range P n F hF
+  have hb : ∀ j, F (EuclideanSpace.single j (1 : ℝ)) ∈ Submodule.span ℝ (Set.range τ) := by
+    intro j
+    rw [hτs]
+    exact LinearMap.mem_range_self _ _
+  -- `det(F* ∘ F) = d²` for `d = det(⟨τᵢ, F eⱼ⟩)`
+  set d := (Matrix.of fun i j => inner ℝ (τ i) (F (EuclideanSpace.single j (1 : ℝ)))).det
+  have hdet : (F.adjoint ∘L F).det = d ^ 2 :=
+    Submission.dgoj_det_adjoint_comp_eq_det_sq P n F τ hτo hb
+  -- `ker(F* ∘ F) = ker F = 0`, so `det(F* ∘ F) ≠ 0` and hence `d ≠ 0`
+  have hd : d ≠ 0 := by
+    intro h
+    have h0 : (F.adjoint ∘L F).det = 0 := by rw [hdet, h, zero_pow two_ne_zero]
+    apply LinearMap.det_eq_zero_iff_ker_ne_bot.1 h0
+    rw [F.ker_adjoint_comp_self, LinearMap.ker_eq_bot]
+    exact hF
+  -- (i): `det(F* ∘ F) = d² > 0`
+  refine ⟨by rw [hdet]; positivity, fun ξ hξ => ⟨τ, hτo, hτs, ?_⟩⟩
+  -- (ii): `|d| ξ(α) = √det(F* ∘ F) ξ(α) = α(F e) = d α(τ)` for every `α`
+  have key : ∀ α : Covector (Euclid P) n, |d| * ξ α = d * α τ := by
+    intro α
+    rw [← Real.sqrt_sq_eq_abs, ← hdet, ← hξ α]
+    exact Submission.dgoj_covector_eq_det_mul_of_mem_span P n τ _ hτo hb α
+  -- the sign of `d` decides between `ξ(α) = -α(τ)` and `ξ(α) = α(τ)`
+  rcases hd.lt_or_gt with hneg | hpos
+  · right
+    intro α
+    have h := key α
+    rw [abs_of_neg hneg] at h
+    apply mul_left_cancel₀ hd
+    linarith
+  · left
+    intro α
+    have h := key α
+    rw [abs_of_pos hpos] at h
+    exact mul_left_cancel₀ hd h
+/-- **Simon Ch. 6, Remark 3.2(1)**, step 3 (orientations `±τ₁ ∧ ⋯ ∧ τₙ` as in 2.1–2.2): two unit
+orientations `v = ±τ₁ ∧ ⋯ ∧ τₙ`, `w = ±τ'₁ ∧ ⋯ ∧ τ'ₙ` of the same subspace `Q` differ by a sign.
+`τ` and `τ'` are orthonormal bases `b`, `b'` of `Q`; every alternating `n`-form on `Q` is a
+multiple of `det_b`, so `α(τ') = det_b(b') α(τ)` for every `n`-covector `α`, and
+`det_b(b') = ±1`, the change of orthonormal basis being orthogonal. -/
+theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf v Q → IsUnitOrientationOf w Q → w = v ∨ w = -v := by
+  rintro P n v w Q ⟨τ, hτ, hspan, hv⟩ ⟨τ', hτ', hspan', hw⟩
+  -- an orthonormal frame spanning `Q` is an orthonormal basis of `Q`
+  have frame : ∀ σ : Fin n → Euclid P, Orthonormal ℝ σ → Submodule.span ℝ (range σ) = Q →
+      ∃ c : OrthonormalBasis (Fin n) ℝ Q, ∀ i, (c i : Euclid P) = σ i := by
+    intro σ hσ hσspan
+    have hmem : ∀ i, σ i ∈ Q := fun i => hσspan ▸ Submodule.subset_span (mem_range_self i)
+    let u : Fin n → Q := fun i => ⟨σ i, hmem i⟩
+    have hu : Orthonormal ℝ u := by
+      rw [← Q.subtypeₗᵢ.orthonormal_comp_iff (v := u)]
+      exact hσ
+    have huspan : ⊤ ≤ Submodule.span ℝ (range u) := by
+      rintro ⟨y, hy⟩ -
+      rw [← hσspan, Submodule.mem_span_range_iff_exists_fun] at hy
+      obtain ⟨c, hc⟩ := hy
+      rw [Submodule.mem_span_range_iff_exists_fun]
+      exact ⟨c, Subtype.ext (by simpa [u] using hc)⟩
+    exact ⟨OrthonormalBasis.mk hu huspan, fun i => by simp [u]⟩
+  obtain ⟨b, hb⟩ := frame τ hτ hspan
+  obtain ⟨b', hb'⟩ := frame τ' hτ' hspan'
+  -- `det_b(b') = ±1`
+  have hd := b.det_to_matrix_orthonormalBasis_real b'
+  -- `α(τ') = det_b(b') α(τ)`: the restriction `α_Q` of `α` to `Q` is `α_Q(b) det_b`
+  have hτ'τ : ∀ α : Covector (Euclid P) n, α τ' = b.toBasis.det b' * α τ := by
+    intro α
+    let f : Q [⋀^Fin n]→ₗ[ℝ] ℝ := α.toAlternatingMap.compLinearMap Q.subtype
+    have hf : ∀ (c : OrthonormalBasis (Fin n) ℝ Q) (σ : Fin n → Euclid P),
+        (∀ i, (c i : Euclid P) = σ i) → f c = α σ := by
+      intro c σ hc
+      have hcσ : (fun i => Q.subtype (c i)) = σ := funext hc
+      rw [AlternatingMap.compLinearMap_apply, hcσ, ContinuousAlternatingMap.coe_toAlternatingMap]
+    have h := congrArg (fun g : Q [⋀^Fin n]→ₗ[ℝ] ℝ => g b') (f.eq_smul_basis_det b.toBasis)
+    simp only [AlternatingMap.smul_apply, smul_eq_mul, OrthonormalBasis.coe_toBasis] at h
+    rw [← hf b' τ' hb', h, hf b τ hb, mul_comm]
+  -- `w = ±v`
+  rcases hd with hd | hd <;> rcases hv with hv | hv <;> rcases hw with hw | hw
+  · left; ext α; rw [hw, hv, hτ'τ, hd, one_mul]
+  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, one_mul]
+  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, one_mul, neg_neg]
+  · left; ext α; rw [hw, hv, hτ'τ, hd, one_mul]
+  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul]
+  · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
+  · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
+  · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
+
+/-- Algebra of the area Jacobian for the push-forward of an integer multiplicity current by a `C¹`
+map (Simon 6.3.3–3.9; `J_A = √det(A* ∘ A)` is the area Jacobian of Ch. 2, 3.1/3.3).  For linear
+`A : ℝⁿ → ℝᴾ` and `Ae = (A e₁, …, A eₙ)`: (a) `J_{L∘A} ≤ ‖L‖ⁿ J_A` for every linear `L` of `ℝᴾ`;
+(b) `|α(Ae)| ≤ J_A ‖α‖` for every `n`-covector `α`; (c) if `A` is injective, then
+`J_A ξ(α) = s α(Ae)` for every unit orientation `ξ` of `range A`, with one sign `s = ±1` for all
+`α`.  If `A` is not injective, `Ae` is linearly dependent, so `α(Ae) = 0`.  Otherwise
+`ζ(α) = J_A⁻¹ α(Ae)` is a unit orientation `±τ₁ ∧ ⋯ ∧ τₙ` of `range A`, which gives (b) as
+`|α(τ)| ≤ ‖α‖`, and (c) since two unit orientations of `range A` differ by a sign.  For (a),
+with orthonormal frames `τ` of `range A` and `σ` of `range (L ∘ A)`, `J_A = |det M|` and
+`J_{L∘A} = |det N|` for `M = (⟨τᵢ, A eⱼ⟩)` and `N = (⟨σᵢ, L A eⱼ⟩) = K M`, `K = (⟨σᵢ, L τₖ⟩)`;
+by Hadamard's inequality `|det K| ≤ ∏ₖ |L τₖ| ≤ ‖L‖ⁿ`. -/
+theorem Submission.dimred_mbl_pfi_gram_jacobian_algebra : ∀ (P n : ℕ) (A : Euclid n →L[ℝ] Euclid P), (∀ L : Euclid P →L[ℝ] Euclid P, Real.sqrt (((L ∘L A).adjoint ∘L (L ∘L A)).det) ≤ ‖L‖ ^ n * Real.sqrt ((A.adjoint ∘L A).det)) ∧ (∀ α : Covector (Euclid P) n, |α (fun j => A (EuclideanSpace.single j (1 : ℝ)))| ≤ Real.sqrt ((A.adjoint ∘L A).det) * ‖α‖) ∧ (Injective A → ∀ ξ : MultiVector P n, IsUnitOrientationOf ξ (LinearMap.range (A : Euclid n →ₗ[ℝ] Euclid P)) → ∃ s : ℝ, (s = 1 ∨ s = -1) ∧ ∀ α : Covector (Euclid P) n, Real.sqrt ((A.adjoint ∘L A).det) * ξ α = s * α (fun j => A (EuclideanSpace.single j (1 : ℝ)))) := by
+  intro P n A
+  -- if `A` is not injective, `Ae` is linearly dependent and every `α(Ae)` vanishes
+  have hdep : ¬ Injective A → ∀ α : Covector (Euclid P) n,
+      α (fun j => A (EuclideanSpace.single j (1 : ℝ))) = 0 := by
+    intro hA α
+    apply α.toAlternatingMap.map_linearDependent
+    intro hli
+    apply hA
+    rw [injective_iff_map_eq_zero]
+    intro x hx
+    have hx' : ∑ j, x j • A (EuclideanSpace.single j (1 : ℝ)) = 0 := by
+      have hsum : x = ∑ j, x j • EuclideanSpace.single j (1 : ℝ) := by
+        ext k
+        simp [Pi.single_apply]
+      have : A x = 0 := hx
+      rw [hsum, map_sum] at this
+      simpa [map_smul] using this
+    have h0 := (Fintype.linearIndependent_iff.mp hli) (fun j => x j) hx'
+    ext k
+    simp [h0 k]
+  -- if `A` is injective, `J_A > 0` and `ζ(α) = J_A⁻¹ α(Ae)` is a unit orientation of `range A`
+  have hζ : Injective A → 0 < Real.sqrt ((A.adjoint ∘L A).det) ∧ ∃ ζ : MultiVector P n,
+      (∀ β : Covector (Euclid P) n, β (fun j => A (EuclideanSpace.single j (1 : ℝ))) =
+        Real.sqrt ((A.adjoint ∘L A).det) * ζ β) ∧
+      IsUnitOrientationOf ζ (LinearMap.range (A : Euclid n →ₗ[ℝ] Euclid P)) := by
+    intro hA
+    obtain ⟨hpos, hor⟩ := Submission.dgoj_unitOrientation_of_injective P n A hA
+    have hJpos : 0 < Real.sqrt ((A.adjoint ∘L A).det) := Real.sqrt_pos.2 hpos
+    let ζ : MultiVector P n := (Real.sqrt ((A.adjoint ∘L A).det))⁻¹ •
+      ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun j => A (EuclideanSpace.single j (1 : ℝ)))
+    have hev : ∀ β : Covector (Euclid P) n, β (fun j => A (EuclideanSpace.single j (1 : ℝ))) =
+        Real.sqrt ((A.adjoint ∘L A).det) * ζ β := by
+      intro β
+      simp only [ζ, FunLike.coe_smul, Pi.smul_apply, ContinuousAlternatingMap.apply_apply,
+        smul_eq_mul]
+      field_simp
+    exact ⟨hJpos, ζ, hev, hor ζ hev⟩
+  refine ⟨fun L => ?_, fun α => ?_, fun hA ξ hξ => ?_⟩
+  · -- (a)
+    by_cases hLA : Injective (L ∘L A)
+    · have hA : Injective A := fun x y hxy => hLA (by simp [hxy])
+      -- orthonormal frames `σ` of `range (L ∘ A)` and `τ` of `range A`
+      obtain ⟨σ, hσo, hσs⟩ := Submission.dgoj_exists_orthonormal_frame_range P n (L ∘L A) hLA
+      obtain ⟨τ, hτo, hτs⟩ := Submission.dgoj_exists_orthonormal_frame_range P n A hA
+      have hbσ : ∀ j, (L ∘L A) (EuclideanSpace.single j (1 : ℝ)) ∈
+          Submodule.span ℝ (Set.range σ) := by
+        intro j
+        rw [hσs]
+        exact LinearMap.mem_range_self _ _
+      have hbτ : ∀ j, A (EuclideanSpace.single j (1 : ℝ)) ∈ Submodule.span ℝ (Set.range τ) := by
+        intro j
+        rw [hτs]
+        exact LinearMap.mem_range_self _ _
+      -- `J_{L∘A} = |det N|` and `J_A = |det M|`
+      rw [Submission.dgoj_det_adjoint_comp_eq_det_sq P n (L ∘L A) σ hσo hbσ,
+        Submission.dgoj_det_adjoint_comp_eq_det_sq P n A τ hτo hbτ,
+        Real.sqrt_sq_eq_abs, Real.sqrt_sq_eq_abs]
+      set M := Matrix.of fun i j => inner ℝ (τ i) (A (EuclideanSpace.single j (1 : ℝ))) with hM
+      set K := Matrix.of fun i k => inner ℝ (σ i) (L (τ k)) with hK
+      -- `A eⱼ = ∑ₖ Mₖⱼ τₖ`
+      have hexp : ∀ j, A (EuclideanSpace.single j (1 : ℝ)) = ∑ k, M k j • τ k := by
+        intro j
+        obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℝ).1 (hbτ j)
+        have hcM : ∀ k, M k j = c k := by
+          intro k
+          rw [hM, Matrix.of_apply, ← hc]
+          exact hτo.inner_right_fintype c k
+        simp_rw [hcM]
+        exact hc.symm
+      -- `N = K M`
+      have hN : (Matrix.of fun i j => inner ℝ (σ i) ((L ∘L A) (EuclideanSpace.single j (1 : ℝ)))) =
+          K * M := by
+        ext i j
+        rw [Matrix.of_apply, Matrix.mul_apply, ContinuousLinearMap.comp_apply, hexp j, map_sum,
+          inner_sum]
+        refine Finset.sum_congr rfl fun k _ => ?_
+        rw [map_smul, inner_smul_right, hK, Matrix.of_apply, mul_comm]
+      rw [hN, Matrix.det_mul, abs_mul]
+      refine mul_le_mul_of_nonneg_right ?_ (abs_nonneg _)
+      -- Hadamard's inequality: `|det K| ≤ ∏ₖ |L τₖ| ≤ ‖L‖ⁿ`
+      set Q := Submodule.span ℝ (Set.range σ)
+      have hmem : ∀ i, σ i ∈ Q := fun i => Submodule.subset_span (Set.mem_range_self i)
+      let u : Fin n → Q := fun i => ⟨σ i, hmem i⟩
+      have hu : Orthonormal ℝ u := by
+        rw [← Q.subtypeₗᵢ.orthonormal_comp_iff (v := u)]
+        exact hσo
+      have huspan : ⊤ ≤ Submodule.span ℝ (Set.range u) := by
+        rintro ⟨y, hy⟩ -
+        rw [Submodule.mem_span_range_iff_exists_fun] at hy
+        obtain ⟨c, hc⟩ := hy
+        rw [Submodule.mem_span_range_iff_exists_fun]
+        exact ⟨c, Subtype.ext (by simpa [u] using hc)⟩
+      let b : OrthonormalBasis (Fin n) ℝ Q := OrthonormalBasis.mk hu huspan
+      have hb : ∀ i, (b i : Euclid P) = σ i := fun i => by simp [b, u]
+      have hw : ∀ k, L (τ k) ∈ Q := by
+        intro k
+        have hk : τ k ∈ LinearMap.range (A : Euclid n →ₗ[ℝ] Euclid P) :=
+          hτs ▸ Submodule.subset_span (Set.mem_range_self k)
+        obtain ⟨x, hx⟩ := hk
+        rw [hσs]
+        exact ⟨x, by simp [← hx]⟩
+      let w : Fin n → Q := fun k => ⟨L (τ k), hw k⟩
+      have hKw : K.det = b.toBasis.det w := by
+        rw [Module.Basis.det_apply]
+        congr 1
+        ext i k
+        rw [Module.Basis.toMatrix_apply, OrthonormalBasis.coe_toBasis_repr_apply,
+          OrthonormalBasis.repr_apply_apply, Submodule.coe_inner, hb, hK, Matrix.of_apply]
+      have : Fact (Module.finrank ℝ Q = n) :=
+        ⟨by rw [Module.finrank_eq_card_basis b.toBasis, Fintype.card_fin]⟩
+      have hH := (b.toBasis.orientation).abs_volumeForm_apply_le w
+      rw [(b.toBasis.orientation).volumeForm_robust b rfl] at hH
+      rw [hKw]
+      refine hH.trans ?_
+      calc ∏ k, ‖w k‖ ≤ ∏ _k : Fin n, ‖L‖ := by
+            refine Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _) fun k _ => ?_
+            have h1 : ‖w k‖ = ‖L (τ k)‖ := rfl
+            rw [h1]
+            calc ‖L (τ k)‖ ≤ ‖L‖ * ‖τ k‖ := L.le_opNorm _
+              _ = ‖L‖ := by rw [hτo.1 k, mul_one]
+        _ = ‖L‖ ^ n := by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+    · -- `L ∘ A` is not injective: `det((L ∘ A)* ∘ (L ∘ A)) = 0`
+      have h0 : ((L ∘L A).adjoint ∘L (L ∘L A)).det = 0 := by
+        apply LinearMap.det_eq_zero_iff_ker_ne_bot.2
+        rw [ContinuousLinearMap.ker_adjoint_comp_self, Ne, LinearMap.ker_eq_bot]
+        exact hLA
+      rw [h0, Real.sqrt_zero]
+      positivity
+  · -- (b)
+    by_cases hA : Injective A
+    · obtain ⟨hJpos, ζ, hev, τ, hτ, -, hsgn⟩ := hζ hA
+      have hατ : |α τ| ≤ ‖α‖ := by
+        simpa [hτ.norm_eq_one, Real.norm_eq_abs] using α.le_opNorm τ
+      rw [hev α, abs_mul, abs_of_pos hJpos]
+      refine mul_le_mul_of_nonneg_left ?_ hJpos.le
+      rcases hsgn with h | h
+      · rwa [h α]
+      · rwa [h α, abs_neg]
+    · rw [hdep hA α, abs_zero]
+      positivity
+  · -- (c): `ξ = ±ζ`
+    obtain ⟨-, ζ, hev, hζo⟩ := hζ hA
+    rcases Submission.rsdic_unitOrientation_eq_or_eq_neg P n ζ ξ _ hζo hξ with h | h
+    · exact ⟨1, Or.inl rfl, fun α => by rw [h, hev α]; ring⟩
+    · exact ⟨-1, Or.inr rfl, fun α => by rw [h, hev α, neg_apply]; ring⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
