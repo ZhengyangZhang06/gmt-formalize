@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c19d76a977546c2b487a6f064a56f155d117897b2b6a724392d7a676cb194bad",
+  "git_delta": {
+    "base_commit": "3ee113211a633f2413583ab5a6f6076d20cb05a1",
+    "candidate_commit": "cfd655d427eb5ab21ef7b0dc02f31fa9f345d2dd",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrpo_approxTangent_le_of_sub_mem",
+    "diff_sha256": "99b9bcd664e66f0c3cf79b597cf24d6bfa74894b7602723c201d6ad5f0e69d5d",
+    "source_sha256": "ad6481a686c29a802bd2d6caa0b6e8c0569fa9ded1b4de283a5aef0b12db6586",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrpo_approxTangent_le_of_sub_mem",
+      "statement": "∀ (P n : ℕ) (A : Set (Euclid P)) (x : Euclid P) (Q V : Submodule ℝ (Euclid P)), (∀ a ∈ A, a - x ∈ V) → HasApproximateTangentSpaceAt n A x Q → Q ≤ V",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
