@@ -536,6 +536,70 @@ theorem Submission.dtc_approxTangent_dilation : ∀ (P n : ℕ) (M : Set (Euclid
       exact mul_pos hlam hr
   exact (hT.2 f).comp hlim
 
+/-- **Mass under the dilation push-forward** (step 5 of the proof of
+`Submission.cmcdt_dilation_pushforward`; Simon 6.5.3, chapter-06.txt lines 1458–1460: the changes
+of scale `x ↦ λ⁻¹x` and `x ↦ λx` scale the masses of `k`-currents by `λ^{∓k}`).  Let `λ > 0` and
+`X, Y ∈ 𝒟_k(ℝᴾ)` with `Y(ω) = X(η)` whenever `η = δ_λ^#ω`, i.e. `Y = δ_{λ#}X` for `δ_λ(x) = λx`
+(6.2.23).  Then `M(Y) = λᵏ M(X)` in `[0, ∞]`, with no finiteness assumption.  By
+`Submission.cmcdt_dil_pullback_testForm`, `δ_μ^#ω` is a test form with `(δ_μ^#ω)(x) = μᵏ ω(μx)`
+for `μ ≠ 0`.  (1) For admissible `ω`, `η' = λ⁻ᵏ δ_λ^#ω` has `η'(x) = ω(λx)`, so it is admissible
+and `Y(ω) = X(δ_λ^#ω) = λᵏ X(η') ≤ λᵏ M(X)`.  (2) For admissible `η`, `ω = λᵏ δ_{λ⁻¹}^#η` has
+`ω(y) = η(λ⁻¹y)`, so it is admissible, and `δ_λ^#ω = λᵏ η`; thus `λᵏ X(η) = Y(ω) ≤ M(Y)`, and
+`λᵏ M(X) ≤ M(Y)` because multiplication by `λᵏ` commutes with suprema in `[0, ∞]`. -/
+theorem Submission.cmcdt_dil_mass_eq : ∀ (P k : ℕ) (lam : ℝ), 0 < lam → ∀ X Y : GeometricCurrentOn (univ : Set (Euclid P)) k, (∀ ω η : TestFormOn (univ : Set (Euclid P)) k, (η : DifferentialForm (Euclid P) k) = affinePullbackForm (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0 (ω : DifferentialForm (Euclid P) k) → Y ω = X η) → Y.mass = ENNReal.ofReal (lam ^ k) * X.mass := by
+  intro P k lam hlam X Y hXY
+  have hlam0 : lam ≠ 0 := hlam.ne'
+  have hpow : 0 < lam ^ k := pow_pos hlam k
+  apply le_antisymm
+  -- Step 1: `M(Y) ≤ λᵏ M(X)`.  Fix an admissible `ω`.
+  · refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    show ENNReal.ofReal (Y ω) ≤ ENNReal.ofReal (lam ^ k) * X.mass
+    -- (a) `η = δ_λ^#ω` is a test form with `η(x) = λᵏ ω(λx)`, and `Y(ω) = X(η)`.
+    obtain ⟨η, hηω, hη⟩ := Submission.cmcdt_dil_pullback_testForm P k lam hlam0 ω
+    -- (b) `η' = λ⁻ᵏ η` has `η'(x) = ω(λx)`, so it is admissible.
+    have hη' : (lam ^ k)⁻¹ • η ∈ massAdmissibleOn (univ : Set (Euclid P)) k univ := by
+      refine ⟨subset_univ _, fun x => ?_⟩
+      change covectorEuclideanNorm ((lam ^ k)⁻¹ • (η : DifferentialForm (Euclid P) k) x) ≤ 1
+      rw [hη x, smul_smul, inv_mul_cancel₀ hpow.ne', one_smul]
+      exact hω.2 (lam • x)
+    -- (c) `X(η) = λᵏ X(η')` by linearity.
+    have hXη : X η = lam ^ k * X ((lam ^ k)⁻¹ • η) := by
+      rw [map_smul, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hpow.ne', one_mul]
+    -- (d) `Y(ω) = λᵏ X(η') ≤ λᵏ M(X)`.
+    rw [hXY ω η hηω, hXη, ENNReal.ofReal_mul hpow.le]
+    exact mul_le_mul_right (X.le_massOn hη') _
+  -- Step 2: `λᵏ M(X) ≤ M(Y)`, where `λᵏ M(X)` is the supremum of `λᵏ X(η)` over admissible `η`.
+  · show ENNReal.ofReal (lam ^ k) * sSup ((fun ω => ENNReal.ofReal (X ω)) ''
+      massAdmissibleOn (univ : Set (Euclid P)) k univ) ≤ Y.mass
+    rw [ENNReal.mul_sSup]
+    refine iSup₂_le ?_
+    rintro _ ⟨η, hη, rfl⟩
+    show ENNReal.ofReal (lam ^ k) * ENNReal.ofReal (X η) ≤ Y.mass
+    -- (a) `ζ = δ_{λ⁻¹}^#η` and `ω = λᵏ ζ`, so `ω(y) = η(λ⁻¹y)`.
+    obtain ⟨ζ, -, hζ⟩ := Submission.cmcdt_dil_pullback_testForm P k lam⁻¹ (inv_ne_zero hlam0) η
+    have hω : ∀ y, ((lam ^ k • ζ : TestFormOn (univ : Set (Euclid P)) k) :
+        DifferentialForm (Euclid P) k) y = (η : DifferentialForm (Euclid P) k) (lam⁻¹ • y) := by
+      intro y
+      change lam ^ k • (ζ : DifferentialForm (Euclid P) k) y = _
+      rw [hζ y, smul_smul, ← mul_pow, mul_inv_cancel₀ hlam0, one_pow, one_smul]
+    -- (b) `ω` is admissible.
+    have hωadm : lam ^ k • ζ ∈ massAdmissibleOn (univ : Set (Euclid P)) k univ := by
+      refine ⟨subset_univ _, fun y => ?_⟩
+      rw [hω y]
+      exact hη.2 (lam⁻¹ • y)
+    -- (c) `η₂ = δ_λ^#ω` satisfies `η₂(x) = λᵏ ω(λx) = λᵏ η(x)`, i.e. `η₂ = λᵏ η`.
+    obtain ⟨η₂, hη₂ω, hη₂⟩ := Submission.cmcdt_dil_pullback_testForm P k lam hlam0 (lam ^ k • ζ)
+    have hη₂η : η₂ = lam ^ k • η := by
+      refine Subtype.ext (funext fun x => ?_)
+      change (η₂ : DifferentialForm (Euclid P) k) x = lam ^ k • (η : DifferentialForm (Euclid P) k) x
+      rw [hη₂ x, hω, inv_smul_smul₀ hlam0]
+    -- (d) `λᵏ X(η) = X(η₂) = Y(ω) ≤ M(Y)`.
+    calc ENNReal.ofReal (lam ^ k) * ENNReal.ofReal (X η)
+        = ENNReal.ofReal (Y (lam ^ k • ζ)) := by
+          rw [hXY (lam ^ k • ζ) η₂ hη₂ω, hη₂η, map_smul, smul_eq_mul, ENNReal.ofReal_mul hpow.le]
+      _ ≤ Y.mass := Y.le_massOn hωadm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
