@@ -628,6 +628,28 @@ theorem Submission.cmcdtfr_face_geometry : ∀ (P k : ℕ), volume {y : Euclid k
   -- `(c)`: the open face of `p` against the closed face of `q ≠ p`
   exact ⟨hiso, hdiam, Submission.cmcdtfrfg_face_separation P k p q hp hq⟩
 
+/-- **Isometric images: Borel, `Hᵏ`-measure and change of variables** (Simon Ch. 6 §5, deformation
+theorem: integrals over a unit lattice face `Φ_p((0,1)ᵏ)` are computed on its parameter cube).  For
+an isometry `Φ : ℝᵏ → ℝᴾ` and a Borel set `A ⊆ ℝᵏ`, `Φ(A)` is Borel, `Hᵏ(Φ(A)) = Lᵏ(A)` and
+`∫_{Φ(A)} h dHᵏ = ∫_A h ∘ Φ dLᵏ` for every `h : ℝᴾ → ℝ`.  As `ℝᵏ` is complete, `Φ` is a closed,
+hence measurable, embedding; `Hᵏ` is isometry invariant and equals `Lᵏ` on `ℝᵏ`; and
+`Φ_#Hᵏ = Hᵏ⌞range Φ` restricts to `Hᵏ⌞Φ(A) = Φ_#(Lᵏ⌞A)`, so changing variables along `Φ` needs no
+integrability of `h` (both Bochner integrals vanish when it fails). -/
+theorem Submission.cmcdtfrpi_isometry_image_integral : ∀ (P k : ℕ) (Φ : Euclid k → Euclid P) (A : Set (Euclid k)), Isometry Φ → MeasurableSet A → MeasurableSet (Φ '' A) ∧ μHE[k] (Φ '' A) = volume A ∧ ∀ h : Euclid P → ℝ, ∫ x in Φ '' A, h x ∂μHE[k] = ∫ y in A, h (Φ y) := by
+  intro P k Φ A hΦ hA
+  -- step 1: `ℝᵏ` is complete, so the isometry `Φ` is a closed, hence measurable, embedding
+  have hemb : MeasurableEmbedding Φ := hΦ.isClosedEmbedding.measurableEmbedding
+  refine ⟨hemb.measurableSet_image.mpr hA, ?_, fun h => ?_⟩
+  -- steps 2-3: `Hᵏ(Φ(A)) = Hᵏ(A) = Lᵏ(A)`, by isometry invariance and `Hᵏ = Lᵏ` on `ℝᵏ`
+  · rw [hΦ.euclideanHausdorffMeasure_image, EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- step 4: `Hᵏ⌞Φ(A) = (Hᵏ⌞range Φ)⌞Φ(A) = (Φ_#Hᵏ)⌞Φ(A) = Φ_#(Hᵏ⌞Φ⁻¹(Φ(A))) = Φ_#(Lᵏ⌞A)`
+  have hpush : μHE[k].restrict (Φ '' A) = (volume.restrict A).map Φ := by
+    rw [← Measure.restrict_restrict_of_subset (image_subset_range Φ A),
+      ← hΦ.map_euclideanHausdorffMeasure, hemb.restrict_map, hemb.injective.preimage_image,
+      EuclideanSpace.euclideanHausdorffMeasure_eq_volume]
+  -- step 5: change of variables along the measurable embedding `Φ`, for every `h`
+  rw [hpush, hemb.integral_map]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
