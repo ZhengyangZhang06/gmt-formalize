@@ -451,6 +451,31 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Transfer of right-limits at `0` to a positive null sequence, times a finite constant**
+(the limit arguments of steps 4 and 7 of the blow-up limit).  Let `f, h : ℝ → [0, ∞]`,
+`C ≠ ∞`, and `sᵢ > 0` with `sᵢ → 0`.  Since every `sᵢ` lies in `(0, ∞)`, `s → 0` along
+`𝓝[>] 0`.  (i) If `limsup_{r → 0⁺} f(r) ≤ 1`: as `C ≠ ∞`,
+`limsup C f(sᵢ) = C limsup f(sᵢ)`, so it suffices that `limsup f(sᵢ) ≤ 1`.  For every `c > 1`,
+eventually `f(r) < c` along `𝓝[>] 0`, hence eventually `f(sᵢ) ≤ c` and `limsup f(sᵢ) ≤ c`;
+density of `[0, ∞]` gives `limsup f(sᵢ) ≤ 1`.  (ii) If `h(r) → 0` as `r → 0⁺`, then
+`h(sᵢ) → 0` by composition, and `C h(sᵢ) → C · 0 = 0` as `C ≠ ∞`. -/
+theorem Submission.dmcbr_ci_bl_null_seq_transfer : ∀ (f h : ℝ → ℝ≥0∞) (C : ℝ≥0∞) (s : ℕ → ℝ), C ≠ ∞ → (∀ i, 0 < s i) → Tendsto s atTop (𝓝 0) → (limsup f (𝓝[>] 0) ≤ 1 → limsup (fun i => C * f (s i)) atTop ≤ C) ∧ (Tendsto h (𝓝[>] 0) (𝓝 0) → Tendsto (fun i => C * h (s i)) atTop (𝓝 0)) := by
+  intro f h C s hC hs hs0
+  -- Step 1: `s → 0` along `𝓝[>] 0`
+  have hs' : Tendsto s atTop (𝓝[>] 0) :=
+    tendsto_nhdsWithin_iff.2 ⟨hs0, Eventually.of_forall hs⟩
+  refine ⟨fun hf => ?_, fun hh => ?_⟩
+  · -- Step 2: `limsup C f(sᵢ) = C limsup f(sᵢ)`, so it suffices that `limsup f(sᵢ) ≤ 1`
+    rw [ENNReal.limsup_const_mul_of_ne_top hC]
+    refine mul_le_of_le_one_right' ?_
+    -- Step 3: `limsup f(sᵢ) ≤ c` for every `c > 1`, hence `limsup f(sᵢ) ≤ 1`
+    refine le_of_forall_gt_imp_ge_of_dense fun c hc => ?_
+    have hfc : ∀ᶠ r in 𝓝[>] (0 : ℝ), f r < c := eventually_lt_of_limsup_lt (hf.trans_lt hc)
+    exact limsup_le_of_le (h := (hs'.eventually hfc).mono fun i hi => hi.le)
+  · -- Step 4: `h(sᵢ) → 0`, so `C h(sᵢ) → C · 0 = 0`
+    have hCh := ENNReal.Tendsto.const_mul (hh.comp hs') (Or.inr hC)
+    rwa [mul_zero] at hCh
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
