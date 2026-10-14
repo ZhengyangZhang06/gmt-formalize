@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "ab2a59c13e44d0e5245e80e7099c22ecf898002d2cc0b18ba74adb0c4837e316",
+  "git_delta": {
+    "base_commit": "04895f78cf8bbae978c4efc7c31bc780763a0ea0",
+    "candidate_commit": "62c592450308bcbee1b6fed78c080adf5dff7d45",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "cf85067f367723d557ae11ce64e79d8aa3892d3c4b5bb6a4a171cdc2ac712ecd",
+    "source_sha256": "0a5643ce636e8f6fa6a8411b809a143162b597ada5c190a64be5ab6c053e6b24",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_cbm_smooth_poincare",
+      "statement": "∀ (m : ℕ) (v : Euclid (m + 1) → ℝ) (δ : ℝ), ContDiff ℝ 1 v → 0 ≤ δ → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |v x - v y| ≤ 2 ^ (m + 1) * Real.sqrt (m + 1) * ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖fderiv ℝ v x‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
