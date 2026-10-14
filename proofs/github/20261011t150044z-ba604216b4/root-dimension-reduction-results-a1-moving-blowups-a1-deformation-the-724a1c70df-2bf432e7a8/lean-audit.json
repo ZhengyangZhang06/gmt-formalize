@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b7bb17c274f73acbf904739de4e2a847772d0751422a1dd9f414cb0db45ed9d5",
+  "git_delta": {
+    "base_commit": "442865f5aaf8c3845aa089863aacbc19fcbe3363",
+    "candidate_commit": "524a474c8f2c6cfcc9d811a9f8f3f0f3ed3776c8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_cbm_sp_convex_poincare",
+    "diff_sha256": "aa2e935d0e5a3d8582f98b4b5ddd0ab51bab48fb10ab6ea7bd48e6bdc4f86dbd",
+    "source_sha256": "56dc5adcedd71f4243288a1165072c659b6d5c9937b00d373ec39085a72175ea",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_cbm_sp_convex_poincare",
+      "statement": "∀ (n : ℕ) (Q : Set (Euclid n)) (v : Euclid n → ℝ) (d : ℝ), Convex ℝ Q → MeasurableSet Q → 0 ≤ d → (∀ x ∈ Q, ∀ y ∈ Q, ‖x - y‖ ≤ d) → ContDiff ℝ 1 v → ∫ x in Q, ∫ y in Q, |v x - v y| ≤ 2 ^ n * d * (volume Q).toReal * ∫ z in Q, ‖fderiv ℝ v z‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
