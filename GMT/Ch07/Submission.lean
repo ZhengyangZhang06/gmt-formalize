@@ -1406,6 +1406,54 @@ theorem Submission.dor_lmbsf_pst_level_set_local_chart : ∀ (n : ℕ) (W : Set 
     rw [← hyF']
     exact h
 
+/-- **Countable chart cover of a regular level set** (Simon Ch. 2, before 6.4: "the implicit
+function theorem implies that either `f⁻¹(y) ∖ C` is empty or else it is a `k`-dimensional `C¹`
+submanifold", chapter-02.txt lines 1479–1496; used for the slice tangent planes of Ch. 6,
+Lemma 4.1(2)).  Let `W ⊆ ℝ^{n+1}` be open, `F` be `C¹` and `t ∈ ℝ`.  There are countably many
+`C¹` maps `Λ_k`, injective on open sets `D_k ⊇ B̄_{ρ_k}(c_k)` and with values in `W ∩ {F = t}`,
+such that `DΛ_k(z)` is injective with range `ker DF(Λ_k z)` and every `y ∈ W` with `DF(y) ≠ 0`,
+`F(y) = t` is `Λ_k(z)` for some `k` and `z ∈ B_{ρ_k}(c_k)`.  Take the local chart
+(`dor_lmbsf_pst_level_set_local_chart`) at each such `y`, with neighbourhood `N_y`, and a
+countable subfamily of the open sets `N_y` with the same union (second countability); if there
+is no such `y`, take empty charts with `ρ_k = -1`. -/
+theorem Submission.dor_lmbsf_pst_level_set_chart_cover : ∀ (n : ℕ) (W : Set (Euclid (n + 1))) (F : Euclid (n + 1) → ℝ) (t : ℝ), IsOpen W → ContDiff ℝ 1 F → ∃ (D : ℕ → Set (Euclid n)) (Λ : ℕ → Euclid n → Euclid (n + 1)) (c : ℕ → Euclid n) (ρ : ℕ → ℝ), (∀ k, IsOpen (D k)) ∧ (∀ k, ContDiffOn ℝ 1 (Λ k) (D k)) ∧ (∀ k, InjOn (Λ k) (D k)) ∧ (∀ k, ∀ z ∈ D k, Λ k z ∈ W ∧ F (Λ k z) = t ∧ Injective (fderiv ℝ (Λ k) z) ∧ LinearMap.range (fderiv ℝ (Λ k) z : Euclid n →ₗ[ℝ] Euclid (n + 1)) = LinearMap.ker (fderiv ℝ F (Λ k z) : Euclid (n + 1) →ₗ[ℝ] ℝ)) ∧ (∀ k, closedBall (c k) (ρ k) ⊆ D k) ∧ ∀ y ∈ W, fderiv ℝ F y ≠ 0 → F y = t → ∃ k, ∃ z ∈ ball (c k) (ρ k), Λ k z = y := by
+  intro n W F t hW hF
+  by_cases hne : ∃ y, y ∈ W ∧ fderiv ℝ F y ≠ 0 ∧ F y = t
+  swap
+  · -- Step 1, no regular point of `{F = t}` in `W`: empty charts, `B̄_{-1}(0) = ∅`
+    refine ⟨fun _ => ∅, fun _ => 0, fun _ => 0, fun _ => -1, fun _ => isOpen_empty,
+      fun _ => contDiffOn_empty, fun _ => injOn_empty _,
+      fun _ z hz => (Set.notMem_empty z hz).elim,
+      fun _ => (closedBall_eq_empty.2 (by norm_num)).subset, fun y hyW hdF hFy => ?_⟩
+    exact (hne ⟨y, hyW, hdF, hFy⟩).elim
+  obtain ⟨y₀, hy₀⟩ := hne
+  -- Step 2, a local chart `(D y, Λ y, c y, ρ y)` with neighbourhood `N y` at each regular point `y`
+  choose D Λ c ρ N hD hΛ hinj hprop hcb hNo hyN hcov using
+    fun y : {y // y ∈ W ∧ fderiv ℝ F y ≠ 0 ∧ F y = t} =>
+      Submission.dor_lmbsf_pst_level_set_local_chart n W F y hW hF y.2.1 y.2.2.1
+  -- Step 3, the `N y` with `y` in a countable `T` have the same union; `T ≠ ∅` as `y₀` is regular
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable N hNo
+  have hT : ∀ y : {y // y ∈ W ∧ fderiv ℝ F y ≠ 0 ∧ F y = t},
+      ∃ i ∈ T, (y : Euclid (n + 1)) ∈ N i := by
+    intro y
+    have hy : (y : Euclid (n + 1)) ∈ ⋃ i ∈ T, N i := by
+      rw [hTU]
+      exact mem_iUnion.2 ⟨y, hyN y⟩
+    obtain ⟨i, hi, hyi⟩ := mem_iUnion₂.1 hy
+    exact ⟨i, hi, hyi⟩
+  obtain ⟨i₀, hi₀, -⟩ := hT ⟨y₀, hy₀⟩
+  obtain ⟨e, rfl⟩ := hTc.exists_eq_range ⟨i₀, hi₀⟩
+  -- Step 4, the charts at the points `e k`, where `F (e k) = t`
+  refine ⟨fun k => D (e k), fun k => Λ (e k), fun k => c (e k), fun k => ρ (e k),
+    fun k => hD (e k), fun k => hΛ (e k), fun k => hinj (e k), fun k z hz => ?_,
+    fun k => hcb (e k), fun y hyW hdF hFy => ?_⟩
+  · obtain ⟨h₁, h₂, h₃, h₄⟩ := hprop (e k) z hz
+    exact ⟨h₁, h₂.trans (e k).2.2.2, h₃, h₄⟩
+  · -- Step 5, `y ∈ N (e k) ∩ F⁻¹(F (e k)) ⊆ Λ (e k) '' B_{ρ (e k)}(c (e k))` for some `k`
+    obtain ⟨_, ⟨k, rfl⟩, hyk⟩ := hT ⟨y, hyW, hdF, hFy⟩
+    obtain ⟨z, hz, hzy⟩ := hcov (e k) ⟨hyk, hFy.trans (e k).2.2.2.symm⟩
+    exact ⟨k, z, hz, hzy⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
