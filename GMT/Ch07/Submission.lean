@@ -923,6 +923,52 @@ theorem Submission.cbr_ci_dr_withDensity_carrier_of_absolutelyContinuous : ∀ (
   rw [hμh, withDensity_congr_ae hae, withDensity_indicator hM,
     Measure.restrict_restrict_of_subset hMM₀]
 
+/-- Density representation of the limit cycle (Simon 7.2.4 via the closure theorem, step 3 of the
+integer multiplicity argument): if `μ = μ_Γ` is finite, `Γ(ω) = ∫ ⟨ω, ξ⟩ dμ` with `|ξ|* ≤ 1`,
+`μ ≪ Hⁿ` and `liminf_{r↓0} μ(B_r(x))/(ωₙrⁿ) ≥ η₀ > 0` for `μ`-a.e. `x`, then `μ = θ Hⁿ⌞M` and
+`Γ(ω) = ∫_M θ ⟨ω, ζ⟩ dHⁿ` on a Borel carrier `M` with `Hⁿ(M) < ∞`.  `ζ` is the Borel bounded
+modification of `ξ`; the mass identity `μ(ℝᴾ) = M(Γ)` makes it attain `1` on the unit covector
+ball `μ`-a.e.  `M₀` is the complement of a Borel `μ`-null set off which this and the density
+bound hold, so `Hⁿ(M₀) < ∞` (Vitali), and Radon–Nikodym for `μ ≪ Hⁿ⌞M₀` gives `M ⊆ M₀` and
+`θ > 0` on `M`. -/
+theorem Submission.cbr_ci_density_representation : ∀ (P n : ℕ) (Γ : GeometricCurrentOn (univ : Set (Euclid P)) n) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P n) (η₀ : ℝ), 0 < η₀ → μ univ < ∞ → (∀ W : Set (Euclid P), IsOpen W → Γ.massOn W = μ W) → AEStronglyMeasurable ξ μ → (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Γ ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) n) x) ∂μ) → (∀ E : Set (Euclid P), μHE[n] E = 0 → μ E = 0) → (∀ᵐ x ∂μ, ENNReal.ofReal η₀ ≤ liminf (fun r : ℝ => μ (ball x r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0)) → ∃ (M : Set (Euclid P)) (θ : Euclid P → ℝ) (ζ : Euclid P → MultiVector P n), MeasurableSet M ∧ μHE[n] M < ∞ ∧ Measurable θ ∧ StronglyMeasurable ζ ∧ μ = (μHE[n].restrict M).withDensity (fun x => ENNReal.ofReal (θ x)) ∧ (∀ x ∈ M, 0 < θ x) ∧ (∀ (x : Euclid P) (α : Covector (Euclid P) n), |ζ x α| ≤ covectorEuclideanNorm α) ∧ (∀ x ∈ M, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζ x β = 1) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Γ ω = ∫ x in M, θ x * ζ x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) ∧ (∀ x ∈ M, ENNReal.ofReal η₀ ≤ liminf (fun r : ℝ => μ (ball x r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0)) := by
+  intro P n Γ μ ξ η₀ hη₀ hμ hmass hξm hξ hrep hnull hdens
+  have hξae : ∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) n, |ξ x α| ≤ covectorEuclideanNorm α :=
+    Eventually.of_forall hξ
+  -- a strongly measurable `ζ` with `|ζ(x)(α)| ≤ |α|` everywhere and `ζ = ξ` `μ`-a.e.
+  obtain ⟨ζ, hζm, hζ, hζξ⟩ :=
+    Submission.cbr_ci_dr_bounded_stronglyMeasurable_modification P n μ ξ hξm hξae
+  -- `μ(ℝᴾ) = M(Γ)` forces `ξ`, hence `ζ`, to attain `1` on the unit covector ball `μ`-a.e.
+  have hunit : ∀ᵐ x ∂μ, ∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζ x β = 1 := by
+    filter_upwards [Submission.cbr_ci_dr_ae_unit_attained_of_mass_eq P n Γ μ ξ hμ
+      (hmass univ isOpen_univ) hξm hξae hrep, hζξ] with x hx hxζ
+    rwa [hxζ]
+  -- a Borel `μ`-null set `N` off which both `μ`-a.e. properties hold; `M₀ = Nᶜ`
+  obtain ⟨N, hsN, hN, hμN⟩ := exists_measurable_superset_of_null (ae_iff.1 (hunit.and hdens))
+  have hgood : ∀ x ∈ Nᶜ, (∃ β : Covector (Euclid P) n, covectorEuclideanNorm β ≤ 1 ∧ ζ x β = 1) ∧
+      ENNReal.ofReal η₀ ≤ liminf (fun r : ℝ => μ (ball x r) /
+        (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0) :=
+    fun x hx => not_not.1 fun h => hx (hsN h)
+  -- `Hⁿ(M₀) < ∞` by the Vitali covering argument
+  have hHN : μHE[n] Nᶜ < ∞ :=
+    Submission.cbr_ci_dr_euclideanHausdorff_lt_top_of_lower_density P n μ Nᶜ η₀ hη₀ hμ
+      fun x hx => (hgood x hx).2
+  -- Radon–Nikodym for `μ ≪ Hⁿ⌞M₀`: `μ = θ Hⁿ⌞M` with `M ⊆ M₀` Borel and `θ > 0` on `M`
+  obtain ⟨M, θ, hM, hMN, hθm, hθpos, hμeq⟩ :=
+    Submission.cbr_ci_dr_withDensity_carrier_of_absolutelyContinuous P μ μHE[n] Nᶜ hμ hN.compl
+      hHN (by rwa [compl_compl]) hnull
+  refine ⟨M, θ, ζ, hM, (measure_mono hMN).trans_lt hHN, hθm, hζm, hμeq, hθpos, hζ,
+    fun x hx => (hgood x (hMN hx)).1, fun ω => ?_, fun x hx => (hgood x (hMN hx)).2⟩
+  -- `Γ(ω) = ∫ ⟨ω, ζ⟩ dμ = ∫_M θ ⟨ω, ζ⟩ dHⁿ`
+  have hωζ : (fun x => ξ x ((ω : DifferentialForm (Euclid P) n) x)) =ᵐ[μ]
+      fun x => ζ x ((ω : DifferentialForm (Euclid P) n) x) := by
+    filter_upwards [hζξ] with x hx
+    rw [hx]
+  rw [hrep ω, integral_congr_ae hωζ, hμeq, integral_withDensity_eq_integral_toReal_smul
+    hθm.ennreal_ofReal (Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
+  refine setIntegral_congr_fun hM fun x hx => ?_
+  simp only [ENNReal.toReal_ofReal (hθpos x hx).le, smul_eq_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
