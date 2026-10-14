@@ -487,6 +487,36 @@ theorem Submission.idtp_pc_plane_hausdorff_eq_map : ∀ (P n : ℕ) (τ : Fin n 
   have h := hiso.map_euclideanHausdorffMeasure (d := n)
   rw [EuclideanSpace.euclideanHausdorffMeasure_eq_volume, hrange] at h
   exact h.symm
+/-- **Lebesgue measure of the squares `(−r, r)²` and `[−r, r]²` in `ℝ²`** (for the box masses at
+the edge of a planar sector, in the proof of Simon 7.3.3).  `WithLp.ofLp : ℝ² → (Fin 2 → ℝ)`
+preserves volume, the open square is the preimage of the box `∏ᵢ (−r, r)` and the closed square
+that of `∏ᵢ [−r, r]`, and both boxes have volume `(2r)·(2r) = 4r²` for `r ≥ 0`. -/
+theorem Submission.idtp_cse_bml_sqm_coord_square_volume : ∀ r : ℝ, 0 ≤ r → volume {v : Euclid 2 | |v 0| < r ∧ |v 1| < r} = ENNReal.ofReal (4 * r ^ 2) ∧ volume {v : Euclid 2 | |v 0| ≤ r ∧ |v 1| ≤ r} = ENNReal.ofReal (4 * r ^ 2) := by
+  intro r hr
+  -- `WithLp.ofLp : ℝ² → (Fin 2 → ℝ)` is measure preserving
+  have hmp := PiLp.volume_preserving_ofLp (Fin 2)
+  -- both boxes have volume `ofReal (2r) · ofReal (2r) = ofReal (4r²)`, using `r ≥ 0`
+  have h4 : (∏ _i : Fin 2, ENNReal.ofReal (r - -r)) = ENNReal.ofReal (4 * r ^ 2) := by
+    rw [Fin.prod_univ_two, ← ENNReal.ofReal_mul (by linarith)]
+    congr 1
+    ring
+  constructor
+  · -- the open square is the preimage of `∏ᵢ (−r, r)` (`|t| < r ↔ −r < t < r`)
+    have hset : {v : Euclid 2 | |v 0| < r ∧ |v 1| < r} =
+        WithLp.ofLp ⁻¹' (Set.pi univ fun _ : Fin 2 => Ioo (-r) r) := by
+      ext v
+      simp [abs_lt, Fin.forall_fin_two]
+    rw [hset, hmp.measure_preimage
+      (MeasurableSet.univ_pi fun _ => measurableSet_Ioo).nullMeasurableSet,
+      Real.volume_pi_Ioo, h4]
+  · -- the closed square is the preimage of `∏ᵢ [−r, r]` (`|t| ≤ r ↔ −r ≤ t ≤ r`)
+    have hset : {v : Euclid 2 | |v 0| ≤ r ∧ |v 1| ≤ r} =
+        WithLp.ofLp ⁻¹' (Set.Icc (fun _ : Fin 2 => -r) (fun _ => r)) := by
+      ext v
+      simp only [Set.mem_ofPred_eq, Set.mem_preimage, Set.mem_Icc, Pi.le_def, Fin.forall_fin_two,
+        abs_le]
+      tauto
+    rw [hset, hmp.measure_preimage measurableSet_Icc.nullMeasurableSet, Real.volume_Icc_pi, h4]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
