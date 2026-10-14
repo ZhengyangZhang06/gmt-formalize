@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c75a3440adeb0635baa499fc507b1a2c047ac5d053b95aadde539a02565f0d96",
+  "git_delta": {
+    "base_commit": "792e965be4069622caee9891c0e96bbee9185cbe",
+    "candidate_commit": "86265bf881a51c1e282b1ca2ae97fe5ed4b7ecbc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_pst_slice_plane_algebra",
+    "diff_sha256": "7f342a86e631c5b9d35e6097938a0040145a3412192942dfd10ea281777d5e48",
+    "source_sha256": "0d6423c4be5d378dfccf34fd87837e98725f8e3e4ca1d6771aab09592002cec9",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_pst_slice_plane_algebra",
+      "statement": "∀ (m P : ℕ) (L : Euclid m →L[ℝ] Euclid P) (ℓ : Euclid m →L[ℝ] ℝ) (g : Euclid P), g ∈ LinearMap.range (L : Euclid m →ₗ[ℝ] Euclid P) → (∀ e : Euclid m, inner ℝ g (L e) = ℓ e) → (g = 0 ↔ ℓ = 0) ∧ LinearMap.range (L : Euclid m →ₗ[ℝ] Euclid P) ⊓ (ℝ ∙ g)ᗮ = Submodule.map (L : Euclid m →ₗ[ℝ] Euclid P) (LinearMap.ker (ℓ : Euclid m →ₗ[ℝ] ℝ))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
