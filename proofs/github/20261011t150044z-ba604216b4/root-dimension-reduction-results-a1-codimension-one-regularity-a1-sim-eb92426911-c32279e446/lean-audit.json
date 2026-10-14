@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "2409d1185a1a182c0aa545389fe0deb0027f061401cac46db662e20eafff63a0",
+  "git_delta": {
+    "base_commit": "48523cc3d0599c954750b0025335d39d6fe9f4ee",
+    "candidate_commit": "08db4724d375977ae96fe98afbd7765b16739860",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_sc_weingarten_codazzi",
+    "diff_sha256": "c71f3459ec0466396ad502863f0869b7c24a629b0aec99e883112968b2e685af",
+    "source_sha256": "5cd3767983cf80367ee10b29d8803dc8f6b39fc98dee72be277fcd166f664335",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_sc_weingarten_codazzi",
+      "statement": "∀ (P m : ℕ) (A₀ : Submodule ℝ (Euclid P)) (M : Set (Euclid P)) (ν : Euclid P → Euclid P), Module.finrank ℝ A₀ = m + 1 → M ⊆ (A₀ : Set (Euclid P)) → (∀ r : ℕ, IsEmbeddedSubmanifold r m M) → (∃ O : Set (Euclid P), IsOpen O ∧ M ⊆ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ν O) → (∀ x ∈ M, ν x ∈ A₀ ∧ ‖ν x‖ = 1 ∧ ∀ v ∈ tangentSpace M x, inner ℝ (ν x) v = 0) → ∀ x ∈ M, ∀ a ∈ tangentSpace M x, ∀ b ∈ tangentSpace M x, fderiv ℝ ν x a ∈ tangentSpace M x ∧ inner ℝ (fderiv ℝ ν x a) b = inner ℝ (fderiv ℝ ν x b) a ∧ ∀ d ∈ tangentSpace M x, inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x a b) d = inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x b a) d ∧ inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x a b) d = inner ℝ (fderivWithin ℝ (fun y => (fderiv ℝ ν y).comp (Submodule.span ℝ (tangentSpace M y)).starProjection) M x a d) b",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
