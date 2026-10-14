@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "56175f7f84924ab1d63f1f545997ef606f75a8f49bffd74066534d4882013823",
+  "git_delta": {
+    "base_commit": "d755c80aa19cd66261abbdac9ea291941f69de58",
+    "candidate_commit": "b59d5fb0444cd9fa4ec17eb8bb7b3fba938d5f77",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_un_chart_retraction",
+    "diff_sha256": "a9069760bdf0db8ad6582d7e86907247340449000a4d4527843e5aeb1452f45b",
+    "source_sha256": "257bd8fc3add87ab41d326a5b5acd04ec735717488e9ed3c5202226d1796e81e",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_un_chart_retraction",
+      "statement": "∀ (P d : ℕ) (M W : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P) (v₀ : Euclid d), IsOpen V → IsOpen W → ContDiffOn ℝ (⊤ : ℕ∞) ψ V → InjOn ψ V → ψ '' V = W ∩ M → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → v₀ ∈ V → ∃ (O : Set (Euclid P)) (ρ : Euclid P → Euclid d), IsOpen O ∧ ψ v₀ ∈ O ∧ ContDiffOn ℝ (⊤ : ℕ∞) ρ O ∧ MapsTo ρ O V ∧ ∀ z ∈ M ∩ O, ψ (ρ z) = z",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
