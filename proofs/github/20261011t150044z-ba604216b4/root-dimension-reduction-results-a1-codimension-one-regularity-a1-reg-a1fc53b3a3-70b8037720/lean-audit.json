@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "75d53b9b09ae0c27ac4a65228bb4d2df345db9d4c0557463d9a56f7b436459cd",
+  "git_delta": {
+    "base_commit": "83098cf9b1bfc2b3a60eff16f4b7764cd1b9133c",
+    "candidate_commit": "7ff4c39a91166fc02dc696ea8e7cfcb78da4611a",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "18afeb5e1677da68696a6b0688a370f36350751a4e2230f4f0c29d9b3a489ba2",
+    "source_sha256": "8ce7ac033ec8bba860751e4b0a58925f1004a4ff0c38ea2aa7f298db07d6533f",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_lur_gauss_green_pushforward",
+      "statement": "∀ (P n : ℕ) (x : Euclid P) (ι : Euclid (n + 1) →ₗᵢ[ℝ] Euclid P) (u : Euclid (n + 1) → Euclid P) (δ₁ δ₂ : ℝ) (B : Set (Euclid (n + 1))) (ν : Euclid (n + 1) → Euclid (n + 1)), 1 ≤ n → 0 < δ₁ → ContDiffOn ℝ 1 u (ball 0 δ₁) → (∀ v ∈ ball (0 : Euclid (n + 1)) δ₁, (∀ w : Euclid (n + 1), inner ℝ (ι w) (u v) = 0) ∧ ‖u v‖ < δ₂) → MeasurableSet B → B ⊆ ball 0 δ₁ → CountablyRectifiable n B → (∀ K : Set (Euclid (n + 1)), IsCompact K → K ⊆ ball 0 δ₁ → μHE[n] (B ∩ K) ≠ ∞) → Measurable ν → (∀ y ∈ B, ‖ν y‖ = 1) → (∀ᵐ y ∂(μHE[n].restrict B), HasApproximateTangentSpaceAt n B y (Submodule.span ℝ {ν y})ᗮ) → ∃ (M' : Set (Euclid P)) (ξ' : Euclid P → MultiVector P n), MeasurableSet M' ∧ M' ⊆ {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ / 2 ∧ ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂} ∧ CountablyRectifiable n M' ∧ μHE[n] M' ≠ ∞ ∧ AEStronglyMeasurable ξ' (μHE[n].restrict M') ∧ (∀ᵐ w ∂(μHE[n].restrict M'), ∃ Q : Submodule ℝ (Euclid P), IsUnitOrientationOf (ξ' w) Q) ∧ ∀ ω : DifferentialForm (Euclid P) n, tsupport ω ⊆ {w : Euclid P | ‖ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x)‖ < δ₁ / 2 ∧ ‖w - x - ι (ContinuousLinearMap.adjoint ι.toContinuousLinearMap (w - x))‖ < δ₂} → -∫ v in B, inner ℝ ((ball (0 : Euclid (n + 1)) δ₁).indicator (fun v => ∑ j : Fin (n + 1), ((-1 : ℝ) ^ (j : ℕ) * ω (x + ι v + u v) (fun k => fderiv ℝ (fun y => x + ι y + u y) v (EuclideanSpace.single (j.succAbove k) 1))) • EuclideanSpace.single j (1 : ℝ)) v) (ν v) ∂μHE[n] = ∫ w in M', ξ' w (ω w) ∂μHE[n]",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
