@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "9e118cd1d1fc8a5f6b82665f4377912b3219d064c51e455f6c8b2b3167b61149",
+  "git_delta": {
+    "base_commit": "a1a0fc9d8493d24b3ce976aaa5c5ef54351ee394",
+    "candidate_commit": "3c4dfaf1542d7e22344e95fe98deec7852405c83",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "846d155900dd4c1ff7fbc7c2c0ea1aeb97e7b5f3749200d429b04e9642f0a627",
+    "source_sha256": "d1dfc5abe9090349ca13e9f9cf0060937664e9be5e914215511455443beb0733",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_im_series",
+      "statement": "∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
