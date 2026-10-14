@@ -486,6 +486,58 @@ theorem Submission.idtp_cse_rc_rotation_divergence : ∀ (P n : ℕ) (M : Set (E
   rw [hX, hD, ← hp, hdecomp, map_add, map_smul, map_sub, LinearMap.trace_smulRight,
     LinearMap.trace_smulRight, LinearMap.trace_smulRight, innerₛₗ_apply_apply,
     innerₛₗ_apply_apply, hskew, smul_zero, zero_add, ContinuousLinearMap.coe_coe, hAy]
+/-- **Conical `C¹` cutoff around a subspace** (step 4 of the parent proof).  With
+`π = Q.starProjection` and `u(y) = ‖y − π y‖² / (s² ‖y‖²)`, take
+`ζ(y) = smoothTransition((4/3)(1 − u(y)))`.  Off `0`, `u` is smooth, `‖x − π x‖ ≤ (s/2)‖x‖` gives
+`u ≤ 1/4` and `ζ = 1`, `s‖x‖ ≤ ‖x − π x‖` gives `u ≥ 1` and `ζ = 0`, and `ζ` is constant near `x`
+when either inequality is strict, so `Dζ(x) = 0` there. -/
+theorem Submission.idtp_cse_rc_cone_cutoff : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (s : ℝ), 0 < s → ∃ ζ : Euclid P → ℝ, (∀ x : Euclid P, x ≠ 0 → ContDiffAt ℝ 1 ζ x) ∧ (∀ x : Euclid P, x ≠ 0 → ‖x - Q.starProjection x‖ ≤ s / 2 * ‖x‖ → ζ x = 1) ∧ (∀ x : Euclid P, x ≠ 0 → s * ‖x‖ ≤ ‖x - Q.starProjection x‖ → ζ x = 0) ∧ (∀ x : Euclid P, x ≠ 0 → (‖x - Q.starProjection x‖ < s / 2 * ‖x‖ ∨ s * ‖x‖ < ‖x - Q.starProjection x‖) → fderiv ℝ ζ x = 0) := by
+  intro P Q s hs
+  let ζ : Euclid P → ℝ := fun y =>
+    Real.smoothTransition (4 / 3 * (1 - ‖y - Q.starProjection y‖ ^ 2 / (s ^ 2 * ‖y‖ ^ 2)))
+  -- (b): `‖x − π x‖ ≤ (s/2)‖x‖` gives `u x ≤ 1/4`, so the argument of `smoothTransition` is `≥ 1`
+  have h1 : ∀ x : Euclid P, x ≠ 0 → ‖x - Q.starProjection x‖ ≤ s / 2 * ‖x‖ → ζ x = 1 := by
+    intro x hx hle
+    have hd : 0 < s ^ 2 * ‖x‖ ^ 2 := mul_pos (pow_pos hs 2) (pow_pos (norm_pos_iff.2 hx) 2)
+    have hu : ‖x - Q.starProjection x‖ ^ 2 / (s ^ 2 * ‖x‖ ^ 2) ≤ 1 / 4 := by
+      rw [div_le_iff₀ hd]
+      nlinarith [pow_le_pow_left₀ (norm_nonneg _) hle 2]
+    exact Real.smoothTransition.one_of_one_le (by linarith)
+  -- (c): `s‖x‖ ≤ ‖x − π x‖` gives `u x ≥ 1`, so the argument of `smoothTransition` is `≤ 0`
+  have h0 : ∀ x : Euclid P, x ≠ 0 → s * ‖x‖ ≤ ‖x - Q.starProjection x‖ → ζ x = 0 := by
+    intro x hx hle
+    have hd : 0 < s ^ 2 * ‖x‖ ^ 2 := mul_pos (pow_pos hs 2) (pow_pos (norm_pos_iff.2 hx) 2)
+    have hu : 1 ≤ ‖x - Q.starProjection x‖ ^ 2 / (s ^ 2 * ‖x‖ ^ 2) := by
+      rw [le_div_iff₀ hd]
+      nlinarith [pow_le_pow_left₀ (mul_nonneg hs.le (norm_nonneg x)) hle 2]
+    exact Real.smoothTransition.zero_of_nonpos (by linarith)
+  refine ⟨ζ, fun x hx => ?_, h1, h0, fun x hx hx' => ?_⟩
+  · -- (a): `u` is smooth at `x ≠ 0` (the denominator `s² ‖x‖²` is nonzero)
+    have hd : s ^ 2 * ‖x‖ ^ 2 ≠ 0 := (mul_pos (pow_pos hs 2) (pow_pos (norm_pos_iff.2 hx) 2)).ne'
+    have hu : ContDiffAt ℝ 1
+        (fun y : Euclid P => ‖y - Q.starProjection y‖ ^ 2 / (s ^ 2 * ‖y‖ ^ 2)) x :=
+      ((contDiff_id.sub Q.starProjection.contDiff).norm_sq ℝ).contDiffAt.fun_div
+        (contDiffAt_const.mul (contDiff_norm_sq ℝ).contDiffAt) hd
+    exact (Real.smoothTransition.contDiffAt (n := 1)).comp x
+      (contDiffAt_const.mul (contDiffAt_const.sub hu))
+  · -- (d): `ζ` is constant on an open neighbourhood of `x`
+    rcases hx' with hlt | hlt
+    · have hV : IsOpen ({y : Euclid P | y ≠ 0} ∩ {y | ‖y - Q.starProjection y‖ < s / 2 * ‖y‖}) :=
+        isOpen_ne.inter (isOpen_lt (by fun_prop) (by fun_prop))
+      have hev : ζ =ᶠ[𝓝 x] fun _ => (1 : ℝ) := by
+        filter_upwards [hV.mem_nhds ⟨hx, hlt⟩] with y hy
+        exact h1 y hy.1 hy.2.le
+      rw [hev.fderiv_eq, fderiv_const_apply]
+    · -- the region `s‖y‖ < ‖y − π y‖` avoids `0`
+      have hV : IsOpen {y : Euclid P | s * ‖y‖ < ‖y - Q.starProjection y‖} :=
+        isOpen_lt (by fun_prop) (by fun_prop)
+      have hev : ζ =ᶠ[𝓝 x] fun _ => (0 : ℝ) := by
+        filter_upwards [hV.mem_nhds hlt] with y hy
+        have hy0 : y ≠ 0 := by
+          rintro rfl
+          simp at hy
+        exact h0 y hy0 hy.le
+      rw [hev.fderiv_eq, fderiv_const_apply]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
