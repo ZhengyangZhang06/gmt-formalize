@@ -538,6 +538,124 @@ theorem Submission.idtp_cse_rc_cone_cutoff : ∀ (P : ℕ) (Q : Submodule ℝ (E
           simp at hy
         exact h0 y hy0 hy.le
       rw [hev.fderiv_eq, fderiv_const_apply]
+/-- **Orthogonal projection onto a 2-plane in an orthonormal frame** (the linear-algebra half of
+the polar-angle differential `idtp_cse_rc_angle_fderiv`, used for Simon 7.3.3(1)).  If `a, e ∈ Q`
+are orthonormal and `dim Q = 2`, then `π_Q y = ⟨y, a⟩ a + ⟨y, e⟩ e` and
+`|π_Q y|² = ⟨y, a⟩² + ⟨y, e⟩²`.  The orthonormal pair `![a, e]` is independent, so it spans `Q`;
+`y − (⟨y, a⟩ a + ⟨y, e⟩ e)` is orthogonal to `a` and `e`, hence to `Q`, and `π_Q y` is the unique
+point of `Q` with this property. -/
+theorem Submission.idtp_cse_rc_af_plane_projection : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → ∀ y : Euclid P, Q.starProjection y = inner ℝ y a • a + inner ℝ y e • e ∧ ‖Q.starProjection y‖ ^ 2 = inner ℝ y a ^ 2 + inner ℝ y e ^ 2 := by
+  intro P Q a e hQ ha he ha1 he1 hae y
+  -- `⟪a, a⟫ = ⟪e, e⟫ = 1` and `⟪a, e⟫ = ⟪e, a⟫ = 0`
+  have haa : inner ℝ a a = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, ha1, one_pow]
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, he1, one_pow]
+  have hea : inner ℝ e a = (0 : ℝ) := by rw [real_inner_comm, hae]
+  -- `![a, e]` is orthonormal, hence linearly independent
+  have hv : Orthonormal ℝ ![a, e] := by
+    rw [orthonormal_iff_ite]
+    simp only [Fin.forall_fin_two, Matrix.cons_val_zero, Matrix.cons_val_one, haa, hee, hae, hea]
+    simp
+  -- `span {a, e} = Q`: the span lies in `Q` and has the same dimension `2`
+  have hrange : Set.range ![a, e] = {a, e} := Matrix.range_cons_cons_empty a e ![]
+  have hspan : Submodule.span ℝ {a, e} = Q := by
+    rw [← hrange]
+    refine Submodule.eq_of_le_of_finrank_eq ?_ ?_
+    · rw [Submodule.span_le, hrange, Set.insert_subset_iff, Set.singleton_subset_iff]
+      exact ⟨ha, he⟩
+    · rw [finrank_span_eq_card hv.linearIndependent, hQ, Fintype.card_fin]
+  -- `w = ⟪y, a⟫ a + ⟪y, e⟫ e` lies in `Q`, and `y - w` is orthogonal to `a` and `e`
+  have hwQ : inner ℝ y a • a + inner ℝ y e • e ∈ Q :=
+    Q.add_mem (Q.smul_mem _ ha) (Q.smul_mem _ he)
+  have hya : inner ℝ (y - (inner ℝ y a • a + inner ℝ y e • e)) a = (0 : ℝ) := by
+    rw [inner_sub_left, inner_add_left, real_inner_smul_left, real_inner_smul_left, haa, hea]
+    ring
+  have hye : inner ℝ (y - (inner ℝ y a • a + inner ℝ y e • e)) e = (0 : ℝ) := by
+    rw [inner_sub_left, inner_add_left, real_inner_smul_left, real_inner_smul_left, hae, hee]
+    ring
+  -- so `y - w` is orthogonal to `span {a, e} = Q` (the kernel of `⟪y - w, ·⟫`), and `π y = w`
+  have hproj : Q.starProjection y = inner ℝ y a • a + inner ℝ y e • e := by
+    refine Submodule.eq_starProjection_of_mem_of_inner_eq_zero hwQ fun z hz => ?_
+    have hK : Submodule.span ℝ {a, e} ≤
+        LinearMap.ker (innerₛₗ ℝ (y - (inner ℝ y a • a + inner ℝ y e • e))) := by
+      rw [Submodule.span_le, Set.insert_subset_iff, Set.singleton_subset_iff]
+      exact ⟨by rw [SetLike.mem_coe, LinearMap.mem_ker, innerₛₗ_apply_apply, hya],
+        by rw [SetLike.mem_coe, LinearMap.mem_ker, innerₛₗ_apply_apply, hye]⟩
+    rw [← hspan] at hz
+    have hz' := hK hz
+    rwa [LinearMap.mem_ker, innerₛₗ_apply_apply] at hz'
+  -- `‖π y‖² = ⟪w, w⟫ = ⟪y, a⟫² + ⟪y, e⟫²`
+  refine ⟨hproj, ?_⟩
+  rw [hproj, ← real_inner_self_eq_norm_sq, inner_add_left, inner_add_right, inner_add_right,
+    real_inner_smul_left, real_inner_smul_left, real_inner_smul_left, real_inner_smul_left,
+    real_inner_smul_right, real_inner_smul_right, real_inner_smul_right, real_inner_smul_right,
+    haa, hee, hae, hea]
+  ring
+/-- **Differential of the polar angle `arctan (⟨y, e⟩ / ⟨y, a⟩)`** (the calculus step of the
+rotation argument for cone sectors in Simon 7.3).  If `⟨x, a⟩ ≠ 0`, then
+`f(y) = arctan (⟨y, e⟩ / ⟨y, a⟩)` is `C¹` near `x` and, for every `v`,
+`Df(x) v = ⟨⟨x, a⟩ e - ⟨x, e⟩ a, v⟩ / (⟨x, a⟩² + ⟨x, e⟩²)`.
+* `y ↦ ⟨y, a⟩ = innerSL ℝ a y` and `y ↦ ⟨y, e⟩` are continuous linear, hence smooth and their
+  own derivatives; the quotient is `C¹` at `x` because `⟨x, a⟩ ≠ 0`, and so is its `arctan`.
+* With `α = ⟨x, a⟩` and `β = ⟨x, e⟩`, the inverse, product and `arctan` chain rules give
+  `Df(x) v = (1 + (β / α)²)⁻¹ (β (-(α²)⁻¹ ⟨a, v⟩) + α⁻¹ ⟨e, v⟩)`, which equals
+  `(α ⟨e, v⟩ - β ⟨a, v⟩) / (α² + β²)` since `α² + β² ≥ α² > 0`. -/
+theorem Submission.idtp_cse_rc_af_polar_angle_fderiv : ∀ (P : ℕ) (a e x : Euclid P), inner ℝ x a ≠ 0 → ContDiffAt ℝ 1 (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y a)) x ∧ ∀ v : Euclid P, fderiv ℝ (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y a)) x v = inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / (inner ℝ x a ^ 2 + inner ℝ x e ^ 2) := by
+  intro P a e x hx
+  -- Step 1: `y ↦ ⟨y, a⟩` and `y ↦ ⟨y, e⟩` are the continuous linear maps `innerSL ℝ a`, `innerSL ℝ e`
+  have hLa : (fun y : Euclid P => inner ℝ y a) = innerSL ℝ a := by
+    funext y; rw [innerSL_apply_apply, real_inner_comm]
+  have hLe : (fun y : Euclid P => inner ℝ y e) = innerSL ℝ e := by
+    funext y; rw [innerSL_apply_apply, real_inner_comm]
+  have hda : HasFDerivAt (fun y : Euclid P => inner ℝ y a) (innerSL ℝ a) x :=
+    hLa ▸ (innerSL ℝ a).hasFDerivAt
+  have hde : HasFDerivAt (fun y : Euclid P => inner ℝ y e) (innerSL ℝ e) x :=
+    hLe ▸ (innerSL ℝ e).hasFDerivAt
+  -- Step 2: the quotient `q = ⟨·, e⟩ / ⟨·, a⟩` is `C¹` at `x`, and so is `arctan ∘ q`
+  have hq : ContDiffAt ℝ 1 (fun y : Euclid P => inner ℝ y e / inner ℝ y a) x := by
+    have hca : ContDiffAt ℝ 1 (fun y : Euclid P => inner ℝ y a) x :=
+      hLa ▸ (innerSL ℝ a).contDiff.contDiffAt
+    have hce : ContDiffAt ℝ 1 (fun y : Euclid P => inner ℝ y e) x :=
+      hLe ▸ (innerSL ℝ e).contDiff.contDiffAt
+    exact hce.fun_div hca hx
+  refine ⟨hq.arctan, fun v => ?_⟩
+  -- Step 3: `y ↦ ⟨y, a⟩⁻¹` has derivative `-(α²)⁻¹ ⟨a, ·⟩` at `x`
+  have hdinv : HasFDerivAt (fun y : Euclid P => (inner ℝ y a)⁻¹)
+      (-(inner ℝ x a ^ 2)⁻¹ • innerSL ℝ a) x :=
+    (hasDerivAt_inv hx).comp_hasFDerivAt x hda
+  -- Step 4: the product rule for `q = ⟨·, e⟩ ⬝ ⟨·, a⟩⁻¹`
+  have hdq : HasFDerivAt (fun y : Euclid P => inner ℝ y e / inner ℝ y a)
+      (inner ℝ x e • (-(inner ℝ x a ^ 2)⁻¹ • innerSL ℝ a) + (inner ℝ x a)⁻¹ • innerSL ℝ e) x := by
+    simp only [div_eq_mul_inv]
+    exact hde.fun_mul hdinv
+  -- Step 5: the `arctan` chain rule and uniqueness of the derivative
+  have hdf : HasFDerivAt (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y a))
+      ((1 / (1 + (inner ℝ x e / inner ℝ x a) ^ 2)) •
+        (inner ℝ x e • (-(inner ℝ x a ^ 2)⁻¹ • innerSL ℝ a) + (inner ℝ x a)⁻¹ • innerSL ℝ e)) x :=
+    hdq.arctan
+  rw [hdf.fderiv]
+  -- Step 6: algebra, with `α ≠ 0` and `α² + β² ≥ α² > 0`
+  simp only [smul_apply, add_apply, innerSL_apply_apply, smul_eq_mul, inner_sub_left,
+    real_inner_smul_left]
+  have hden : inner ℝ x a ^ 2 + inner ℝ x e ^ 2 ≠ 0 := by positivity
+  field_simp
+  ring
+
+/-- **Simon 7.3.3, proof of (1)** (2-dimensional minimizing cones, chapter text lines 501–504;
+polar angle for the rotation field, Ch. 4, 2.2–2.6): if `a, e` is an orthonormal pair in the
+`2`-dimensional subspace `Q`, then (i) `|p_Q y|² = (y · a)² + (y · e)²`, and (ii) on `{x · a > 0}`
+the angle `f(y) = arctan((y · e)/(y · a))` is `C¹` with
+`Df(x)v = ((x · a)e − (x · e)a) · v / |p_Q x|²`.  `(a, e)` is an orthonormal basis of `Q`, so
+`p_Q y = (y · a)a + (y · e)e`, which gives (i); the quotient and `arctan` chain rules give `Df(x)v`
+with denominator `(x · a)² + (x · e)²`, which is `|p_Q x|²` by (i). -/
+theorem Submission.idtp_cse_rc_angle_fderiv : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → (∀ y : Euclid P, ‖Q.starProjection y‖ ^ 2 = inner ℝ y a ^ 2 + inner ℝ y e ^ 2) ∧ ∀ x : Euclid P, 0 < inner ℝ x a → ContDiffAt ℝ 1 (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y a)) x ∧ ∀ v : Euclid P, fderiv ℝ (fun y : Euclid P => Real.arctan (inner ℝ y e / inner ℝ y a)) x v = inner ℝ (inner ℝ x a • e - inner ℝ x e • a) v / ‖Q.starProjection x‖ ^ 2 := by
+  intro P Q a e hQ ha he ha1 he1 hae
+  -- (i): `p_Q y = (y · a)a + (y · e)e`, so `|p_Q y|² = (y · a)² + (y · e)²`
+  have hnorm : ∀ y : Euclid P, ‖Q.starProjection y‖ ^ 2 = inner ℝ y a ^ 2 + inner ℝ y e ^ 2 :=
+    fun y => (Submission.idtp_cse_rc_af_plane_projection P Q a e hQ ha he ha1 he1 hae y).2
+  refine ⟨hnorm, fun x hx => ?_⟩
+  -- (ii): `x · a ≠ 0`, and the denominator `(x · a)² + (x · e)²` of `Df(x)v` is `|p_Q x|²` by (i)
+  obtain ⟨hf, hDf⟩ := Submission.idtp_cse_rc_af_polar_angle_fderiv P a e x hx.ne'
+  exact ⟨hf, fun v => by rw [hDf v, hnorm x]⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
