@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "cbr_vague_convergent_subseq|cbr_vague_limit_measure|cbr_vague_portmanteau|cbr_sublevel_restriction_tendsto|cbr_slice_mass_majorant",
+        "def rieszMeasure|integral_rieszMeasure|regular_rieszMeasure|isFiniteMeasureOnCompacts",
+        "exists_contDiff_support_eq_eq_one_iff",
+        "continuous_extend_one|tsupport_extend|extend_zero|mulTSupport_extend",
+        "theorem (MonotoneOn.intervalIntegrable_deriv|MonotoneOn.intervalIntegral_deriv_mem_uIcc)",
+        "theorem (lintegral_liminf_le|measure_inter_add_sdiff)|liminf_const_mul_of_ne_top",
+        "sed -n '1,240p' .lake/packages/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cbr-independent-audit-_du6oghc/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cbr-independent-audit-_du6oghc/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cbr-independent-audit-_du6oghc/Checks.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -j1 /tmp/cbr-independent-audit-_du6oghc/Instances.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d9923fb52f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-d9923fb52f/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter01/CompactMetrizableCompactness.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/RieszMarkovKakutani/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Metric.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        "/tmp/cbr-independent-audit-_du6oghc/Types.lean",
+        "/tmp/cbr-independent-audit-_du6oghc/Assembly.lean",
+        "/tmp/cbr-independent-audit-_du6oghc/Checks.lean",
+        "/tmp/cbr-independent-audit-_du6oghc/Instances.lean"
+      ],
+      "conclusion": "Independent checks support the split of cbr_measure_convergence_tools. All five names are bare identifiers, with no collision among the 817 current DAG nodes and no declaration matches in the searched snapshot project or pinned SimonGMT. Each exact one-line proposition passes lexical validation and elaborates without child implementations. A fresh hypothesis-only Lean assembly proves the exact frozen parent: selection, representation and portmanteau establish T1; restriction_limit and slice_majorant exactly match T2 and MM. Empty dependency lists are correct because each child independently proves a conditional theorem; the parent supplies the connecting hypotheses. No circular reliance or accepted-declaration substitution occurs. Compiler revisions and consulted mathlib files match the snapshot. The assembly and checked library results use only propext, Classical.choice and Quot.sound. Both additional imports load, and the smoothness-order, continuous evaluation, open-subtype and RMK finiteness checks compile. No matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vague_subseq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type agree. The compact pullbacks satisfy the corrected compact-metrizable selection theorem, including empty compact pieces. The recursive subsequences, strict diagonal map and tail-factorization argument establish simultaneous convergence for every supported test function. Compact containment completes the proof without relying on another child or the parent."
+    },
+    {
+      "key": "vague_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and conclusion match exactly. Local finiteness supplies integrability; extension by zero supplies ambient test functions. Limits define a positive linear functional, RMK supplies a measure finite on compacts, and the measurable inclusion gives the required support and integral identities. No uniform mass bound or unproved continuity assumption is introduced."
+    },
+    {
+      "key": "portmanteau",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement matches its Lean proposition. The proof justifies integrability and ENNReal integral comparisons, obtains the compact inequality through finite closed thickenings, and obtains the open inequality through increasing compact exhaustion. It handles empty sets and infinite open-set mass without assuming global finiteness or unstated regularity."
+    },
+    {
+      "key": "restriction_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly T2. Strong measurability, continuous evaluation and compact support justify all integrals. The verified smooth cutoff produces a test form. The compact closed band permits the limsup bound, while the strict band for μX decreases to the empty set; no μX-null level-set assumption is needed. The final epsilon estimate proves the stated convergence."
+    },
+    {
+      "key": "slice_majorant",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is exactly MM, retaining arbitrary G and potentially nonmeasurable Z. The measure decomposition requires only the measurable strip, so the finite monotone distribution functions and derivative comparison are justified. Countable almost-everywhere differentiation, measurable derivatives, finite-constant liminf multiplication, the derivative integral bound and Fatou prove both conclusions, including L = 0."
+    }
+  ],
+  "required_changes": []
+}

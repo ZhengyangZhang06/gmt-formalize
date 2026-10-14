@@ -1,0 +1,84 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.restriction_limit-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.restriction_limit-a1.cutoff_error-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source (provenance only; the numbered steps below are self-contained): steps 2, 4 and 5 of the T2 proof (integrability, linearity of ξ(x) along the cut-off, and the error estimate on the level band), stated once for an arbitrary admissible pair (μ, ξ) so that it applies both to (μ_j, ξ_j) and to (μ_X, ξ_X). The bound uses the open band {t − ε < f < t}; no condition ε > 0 is needed. Notation: w := (ω : DifferentialForm (Euclid P) k), v := (η : DifferentialForm (Euclid P) k), C := tsupport w, S := {x | f(x) < t}, B := {x | t − ε < f(x) ∧ f(x) < t}, g(x) := ξ(x)(w(x)), h(x) := ξ(x)(v(x)).
+
+1. M ≥ 0, because M ≥ |w(0)|_E ≥ 0 (covectorEuclideanNorm_nonneg).
+
+2. Measurability and finiteness. C is closed (isClosed_tsupport), hence measurable; S and B are measurable because f is continuous, hence measurable (measurableSet_lt). C is compact (HasCompactSupport w, part of ω being a test form) and C ⊆ U (part of ω ∈ TestFormOn U k), so μ(C) < ∞ by hypothesis, and μ(C ∩ B) ≤ μ(C) < ∞.
+
+3. g and h are μ-a.e. strongly measurable. The evaluation map (L, α) ↦ L(α) from MultiVector P k × Covector (Euclid P) k to ℝ is continuous (isBoundedBilinearMap_apply.continuous); ξ is a.e. strongly measurable by hypothesis, and w, v are C^∞, hence continuous, hence a.e. strongly measurable. So g = eval ∘ (ξ, w) and h = eval ∘ (ξ, v) are a.e. strongly measurable (Continuous.comp_aestronglyMeasurable₂).
+
+4. g is integrable. Fix x in the full-measure set where |ξ(x)(α)| ≤ |α|_E for all α. If x ∈ C, then |g(x)| ≤ |w(x)|_E ≤ M. If x ∉ C, then w(x) = 0 (image_eq_zero_of_notMem_tsupport), so g(x) = ξ(x)(0) = 0. Hence ‖g(x)‖ ≤ 1_C(x)·M for μ-a.e. x. The majorant 1_C·M is integrable, being a constant times the indicator of a measurable set of finite measure (integrable_indicator_iff, integrableOn_const). By step 3 and Integrable.mono', g is integrable.
+
+5. h = χ·g and h is integrable. For every x, h(x) = ξ(x)(χ(x) • w(x)) = χ(x)·ξ(x)(w(x)) = χ(x)·g(x) by linearity of ξ(x) (map_smul, smul_eq_mul). Since 0 ≤ χ(x) ≤ 1, ‖h(x)‖ = |χ(x)|·‖g(x)‖ ≤ ‖g(x)‖ for all x; with step 3, Integrable.mono gives that h is integrable.
+
+6. Rewriting the difference. Since S is measurable, ∫_S g dμ = ∫ 1_S·g dμ (integral_indicator), and 1_S·g is integrable (Integrable.indicator). Hence ∫_S g dμ − ∫ h dμ = ∫ (1_S·g − h) dμ (integral_sub).
+
+7. Pointwise bound: for μ-a.e. x (the full-measure set of step 4), |1_S(x)g(x) − h(x)| ≤ 1_{C∩B}(x)·M. Note that the right side is ≥ 0 by step 1, and write h(x) = χ(x)g(x) by step 5. Cases:
+(a) f(x) < t and f(x) ≤ t − ε: then 1_S(x) = 1 and χ(x) = 1, so the left side is |g(x) − g(x)| = 0.
+(b) t − ε < f(x) < t and x ∈ C: then x ∈ C ∩ B and the right side is M; the left side is |(1 − χ(x))g(x)| = (1 − χ(x))|g(x)| ≤ |g(x)| ≤ M, using 0 ≤ 1 − χ(x) ≤ 1 and the bound of step 4.
+(c) t − ε < f(x) < t and x ∉ C: then g(x) = 0 by step 4, so the left side is 0.
+(d) f(x) ≥ t: then 1_S(x) = 0 and χ(x) = 0 (hypothesis), so the left side is |0 − 0| = 0.
+
+8. Conclusion. The majorant 1_{C∩B}·M is integrable (C ∩ B is measurable with μ(C ∩ B) < ∞ by step 2). By step 6, the triangle inequality for integrals (norm_integral_le_of_norm_le) and step 7,
+|∫_S g dμ − ∫ h dμ| = |∫ (1_S g − h) dμ| ≤ ∫ 1_{C∩B}·M dμ = μ(C ∩ B).toReal · M (integral_indicator_const, measureReal_def) = M · μ(tsupport ω ∩ {t − ε < f < t}).toReal. ∎
+
+## Key steps
+
+1. M ≥ 0; C := tsupport ω is compact in U, so μ(C) < ∞; C, {f<t} and the band {t−ε<f<t} are measurable.
+2. g := ξ(ω) and h := ξ(η) are a.e. strongly measurable (continuous evaluation composed with (ξ, ω) resp. (ξ, η)).
+3. |g| ≤ M·1_C a.e. (admissibility at α = ω(x), and ω = 0 off C), so g is integrable; h = χg by linearity and |h| ≤ |g|, so h is integrable.
+4. ∫_{f<t} g − ∫ h = ∫ (1_{f<t} g − χ g), and the integrand is a.e. bounded by M·1_{C∩{t−ε<f<t}} by a four-case analysis on f(x).
+5. Integrating the majorant gives the bound M·μ(C ∩ {t−ε<f<t}).toReal.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); diff snapshot project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean (identical); diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `rg -n covectorEuclideanNorm project/GMT (no match: defined in SimonGMT Chapter06/Mass.lean); rg -n 'exists_contDiff_support_eq_eq_one_iff|tendsto_measure_iInter_atTop|bounded_above_of_compact_support|comp_aestronglyMeasurable₂' project/GMT (no match)`
+- `rg -n -F over snapshot mathlib/Mathlib: 'theorem exists_contDiff_support_eq_eq_one_iff', 'theorem isBoundedBilinearMap_apply', 'theorem _root_.Continuous.comp_aestronglyMeasurable₂', 'theorem tendsto_measure_iInter_atTop', 'theorem integral_indicator_const', 'theorem toReal_lt_of_lt_ofReal', 'theorem HasCompactSupport.smul_left', 'theorem tsupport_smul_subset_right', 'theorem integrable_indicator_iff', 'theorem integrableOn_const', 'exists_nat_one_div_lt', 'eventually_lt_of_limsup_lt', 'bounded_above_of_compact_support'`
+- `grep -n '^def\|^structure\|^abbrev\|^theorem' simongmt Chapter06/Forms.lean Chapter06/Currents.lean; sed Chapter06/Mass.lean and Chapter06/FormSupNorm.lean (Covector, DifferentialForm, IsSmoothForm = ContDiff ℝ ∞, IsTestForm, testFormOnSubmodule, TestFormOn, GeometricCurrentOn, WeaklyConvergesOn, covectorEuclideanNorm, covectorEuclideanNorm_zero, covectorEuclideanNorm_nonneg)`
+- `python3 scan of dag.json lean_statements containing Integrable/ContDiff/covectorEuclideanNorm (found cmcs_smp_pairing_integrable [accepted, other branch], cmc_fc_sc_testForm_coeff_bound [rlcr-lean, other branch, concludes 0 < c], dor_ims_action_eq_integral, regcomp_rim_action_integrable, rsd_cmr_ic_action_integrable [IMRep-specific]); git log --all --oneline -S cmcs_smp_pairing_integrable (proof commit 24e876cf4, not contained in proof base f4c8d16e83febf8bc0f9c5545026cdae91d41b6f)`
+- `name collision check of cbr_rlim_coeffNorm_bound, cbr_rlim_smooth_cutoff, cbr_rlim_cutoff_error_le, cbr_rlim_thin_band: dag.json lean_names, git log --all -S <name>, rg over the run directory, the snapshot and the simongmt package (no match)`
+- `verifier/gmt-compare.py contract_scope and child_modules (replayed scope: open Filter Function Set MeasureTheory Metric; open scoped ENNReal Topology; namespace GMT.Ch07; open Poincare.SimonGMT.Chapter06; open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt); noncomputable section; end); verifier/lean_contract.py validate_lean_statement on the four child strings and the parent string (pass)`
+- `lake env lean /tmp/rlim-decomp-q7k2/lean/Api.lean, Types.lean, Final.lean, Children.lean, Cutoff.lean, EndToEnd.lean (EndToEnd: four children proved as Submission.*, comparator-style exact targets, parent's exact frozen type proved from the children; #print axioms: propext, Classical.choice, Quot.sound)`
+- `sed book/chapter-06.txt lines 170-182 ((1.15) |ω|_U), 1255-1285 (Lemma 4.5(2) cut-off γ_ε∘f), 2300-2320 (Theorem 8.2, Remark 8.3(1))`
+- `independent reviewer subagent over /tmp/rlim-decomp-q7k2/draft/subproblems.json and /tmp/rlim-decomp-q7k2/lean/EndToEnd.lean (verdict ACCEPT, no blocking issues; wording notes applied)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/Archimedean/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1837097eb4/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-1837097eb4/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/rlim-decomp-q7k2/draft/subproblems.json`
+- `/tmp/rlim-decomp-q7k2/lean/EndToEnd.lean`
+
+The snapshot Ch07 contract is identical to the workspace Contract.lean and Submission.lean. Neither the snapshot project nor this branch's proof base contains an accepted declaration proving T2 or any of its four ingredients. cmcs_smp_pairing_integrable is accepted, but only on another branch (commit 24e876cf4, not in proof base f4c8d16e8). cmc_fc_sc_testForm_coeff_bound is on another branch, not accepted, and has a different type (0 < c). So no exact reuse is possible and four globally unique names were chosen. Every cited Mathlib/SimonGMT lemma exists in the pinned snapshot with a matching signature: exists_contDiff_support_eq_eq_one_iff {n : ℕ∞} (PartitionOfUnity.lean:789), isBoundedBilinearMap_apply, Continuous.comp_aestronglyMeasurable₂, tendsto_measure_iInter_atTop, integral_indicator_const, ENNReal.toReal_lt_of_lt_ofReal, HasCompactSupport.smul_left, tsupport_smul_subset_right, integrable_indicator_iff, integrableOn_const, exists_nat_one_div_lt, eventually_lt_of_limsup_lt, Continuous.bounded_above_of_compact_support, covectorEuclideanNorm_zero/_nonneg. The four exact child statements elaborate in the replayed contract scope and pass the verifier's lexical check. Each child is fully provable (scratch proofs compiled). The parent's exact frozen type is proved from the four children with axioms propext, Classical.choice, Quot.sound only. Book anchors: Simon Ch. 6 (1.15) at chapter-06.txt line 178, the Lemma 4.5(2) cut-off γ_ε∘f at lines 1262-1281, and Remark 8.3(1) at lines 2311-2316.
