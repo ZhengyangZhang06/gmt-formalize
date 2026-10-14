@@ -1,0 +1,26 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.monotonicity-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5824",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "0d09671c487a96191f9a7a1bda5d1b787b13ee5d",
+  "integrated_commit": "",
+  "proof_base_commit": "a2f3bbf6dad5fd9f22f390eea801ef3a4eb6f373",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1",
+  "requires": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.stationarity-a1",
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.tangent_projection_measurable-a1",
+    "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1.truncated_mean_curvature-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1.density_usc-a1",
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.unweighted_density_one-a1",
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.closed_to_open_ball_density-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1.ae_density_lower_bound-a1",
+    "root.dimension_reduction_results-a1.monotonicity-a1.support_density_lower_bound-a1"
+  ]
+}
