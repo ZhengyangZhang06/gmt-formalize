@@ -1066,6 +1066,52 @@ theorem Submission.ptd_piece_image_approxTangent_ae : ∀ (P n : ℕ) (F : Eucli
     exact (Submission.pit_blowUp_image_setIntegral_eq_rescaled P n F B J b r f hF.continuous hB
       hJmeas hJnonneg harea hr f.continuous).symm
 
+/-- **Normalized representation** (Simon 6.3.1, 6.2.11): an integer multiplicity `X ∈ 𝒟ₙ(U)`,
+`U` open, has a representation `X = τ(M, θ, ξ)` with `M ⊆ spt X` and `μ_X(U) = M(X)`.
+Take any `X = τ(M₀, θ, ξ)`.  Every form admissible for `M_Z(X)`, `Z` the open zero region, is
+supported away from `spt X = U ∖ Z`, so `M_Z(X) = 0`; as `θ ≥ 1` on `M₀`,
+`Hⁿ(M₀ ∖ spt X) = Hⁿ(M₀ ∩ Z) ≤ θHⁿ⌞M₀(Z) = M_Z(X) = 0`.  Restricting `(M₀, θ, ξ)` to the Borel
+set `spt X` therefore still represents `X`, and its weight of `U` is `M_U(X) = M(X)`. -/
+theorem Submission.dimred_mbl_dt_lpip_normalized_rep : (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity X → ∃ R : IMRep U n, R.Represents X ∧ R.carrier ⊆ X.support ∧ R.measure U = X.mass := by
+  intro hVO hMR hIMC P n U X hU hX
+  obtain ⟨R₀, hR₀⟩ := hX
+  -- `spt X = U ∖ Z` with `Z` the open zero region, so `spt X` is Borel
+  have hZ : IsOpen X.zeroRegion := X.isOpen_zeroRegion
+  have hspt : MeasurableSet X.support := hU.measurableSet.diff hZ.measurableSet
+  -- `M_Z(X) = 0`: every admissible form is supported in `Z`, away from `spt X`
+  have hmassZ : X.massOn X.zeroRegion = 0 := by
+    refine le_antisymm (sSup_le ?_) bot_le
+    rintro r ⟨ω, hω, rfl⟩
+    dsimp only
+    rw [hVO P n U X ω (disjoint_sdiff_right.mono_left hω.1), ENNReal.ofReal_zero]
+  -- `Hⁿ(M₀ ∖ spt X) = Hⁿ(Z ∩ M₀) ≤ ∫_{Z ∩ M₀} θ dHⁿ = M_Z(X) = 0`, as `θ ≥ 1` on `M₀`
+  have hnull : μHE[n] (R₀.carrier \ X.support) = 0 := by
+    have h := hMR P n U X R₀ hU hR₀ X.zeroRegion hZ
+    rw [hmassZ, IMRep.measure, withDensity_apply _ hZ.measurableSet,
+      Measure.restrict_restrict hZ.measurableSet] at h
+    have hdiff : R₀.carrier \ X.support = X.zeroRegion ∩ R₀.carrier := by
+      ext x
+      simp only [GeometricCurrentOn.support, Set.mem_sdiff, mem_inter_iff, not_and, not_not]
+      exact ⟨fun hx => ⟨hx.2 (R₀.carrier_subset hx.1), hx.1⟩, fun hx => ⟨hx.2, fun _ => hx.1⟩⟩
+    rw [hdiff, ← nonpos_iff_eq_zero]
+    calc μHE[n] (X.zeroRegion ∩ R₀.carrier) = ∫⁻ _ in X.zeroRegion ∩ R₀.carrier, 1 ∂μHE[n] :=
+          (setLIntegral_one _).symm
+      _ ≤ ∫⁻ x in X.zeroRegion ∩ R₀.carrier, (R₀.mult x : ℝ≥0∞) ∂μHE[n] :=
+          setLIntegral_mono (measurable_from_nat.comp R₀.measurable_mult) fun x hx =>
+            Nat.one_le_cast.2 (R₀.mult_pos x hx.2)
+      _ = 0 := h.symm
+  -- restrict `(M₀, θ, ξ)` to `spt X`; this changes `Hⁿ⌞M₀` only on a null set
+  obtain ⟨-, R, -, hcar, hmult, horient⟩ := hIMC.2.1 P n U R₀ X.support hU hspt
+  have hres : μHE[n].restrict R.carrier = μHE[n].restrict R₀.carrier := by
+    rw [hcar, ← Measure.restrict_inter_add_sdiff R₀.carrier hspt, Measure.restrict_eq_zero.2 hnull,
+      add_zero]
+  have hRX : R.Represents X := by
+    intro ω
+    rw [hR₀ ω, IMRep.action, IMRep.action, hres, hmult, horient]
+  refine ⟨R, hRX, ?_, (hMR P n U X R hU hRX U hU).symm⟩
+  rw [hcar]
+  exact inter_subset_right
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
