@@ -8427,6 +8427,49 @@ theorem Submission.atsm_approxTangent_le_of_flat : ∀ (P n : ℕ) (N M : Set (E
   have hzero : ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] = 0 := heq
   linarith
 
+/-- **Simon 7.3.1, footnote 2** (`spt C ⊆ TₓN`): if the weight `θ Hᵐ⌞M` of the triple
+`R = (M, θ, ξ)` gives no mass to `ℝᴾ \ V`, the orthogonal projection `q` onto `V` fixes
+`τ(M, θ, ξ)`: `τ(M, θ, ξ)(q^#ω) = τ(M, θ, ξ)(ω)`.  As `θ ≥ 1` on `M`, `Hᵐ(M \ V) = 0`; so for
+`Hᵐ`-a.e. `x ∈ M`, `x ∈ V` and the approximate tangent plane oriented by `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₘ`
+lies in `V` (along which `V` is flat at `x`).  Then `qx = x`, `qτᵢ = τᵢ` and
+`⟨(q^#ω)(x), ξ(x)⟩ = ⟨ω(x), ξ(x)⟩`. -/
+theorem Submission.idtp_fons_cs_sp_action_starProjection_eq : ∀ (P m : ℕ) (R : IMRep (univ : Set (Euclid P)) m) (V : Submodule ℝ (Euclid P)), R.measure ((V : Set (Euclid P))ᶜ) = 0 → ∀ ω : DifferentialForm (Euclid P) m, R.action (affinePullbackForm V.starProjection 0 ω) = R.action ω := by
+  intro P m R V hV ω
+  -- `Hᵐ(M \ V) = 0`, since `θ ≥ 1` on `M`
+  have hnull : μHE[m] (R.carrier \ (V : Set (Euclid P))) = 0 := by
+    have hθ : Measurable fun x => (R.mult x : ℝ≥0∞) := measurable_from_nat.comp R.measurable_mult
+    rw [IMRep.measure, withDensity_apply_eq_zero hθ,
+      Measure.restrict_apply' R.measurableSet_carrier] at hV
+    refine measure_mono_null ?_ hV
+    intro x hx
+    exact ⟨⟨Nat.cast_ne_zero.2 (R.mult_pos x hx.1).ne', hx.2⟩, hx.1⟩
+  -- so `Hᵐ⌞M`-a.e. `x` lies in `V`
+  have hVae : ∀ᵐ x ∂(μHE[m].restrict R.carrier), x ∈ (V : Set (Euclid P)) := by
+    rw [ae_restrict_iff' R.measurableSet_carrier]
+    filter_upwards [measure_eq_zero_iff_ae_notMem.1 hnull] with x hx hxM
+    by_contra hxV
+    exact hx ⟨hxM, hxV⟩
+  -- the integrands agree `Hᵐ⌞M`-a.e.
+  unfold IMRep.action
+  refine integral_congr_ae ?_
+  filter_upwards [hVae, R.orients] with x hxV hQ
+  obtain ⟨Q, hQ, τ, -, hspan, hor⟩ := hQ
+  -- `TₓM = Q ≤ V`: `V` is flat at `x ∈ V` along `V` (take `t = z - x`)
+  have hQV : Q ≤ V :=
+    Submission.atsm_approxTangent_le_of_flat P m (V : Set (Euclid P)) R.carrier x Q V hnull
+      (fun ε hε => ⟨1, one_pos, fun z hz _ => ⟨z - x, V.sub_mem hz hxV, by
+        rw [sub_self, norm_zero]
+        positivity⟩⟩) hQ
+  have hτ : V.starProjection ∘ τ = τ := by
+    funext i
+    exact Submodule.starProjection_eq_self_iff.2
+      (hQV (hspan ▸ Submodule.subset_span (mem_range_self i)))
+  have hx : V.starProjection x = x := Submodule.starProjection_eq_self_iff.2 hxV
+  congr 1
+  rcases hor with hor | hor <;>
+    simp only [hor, affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply,
+      zero_add, hx, hτ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
