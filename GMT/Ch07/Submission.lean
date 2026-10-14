@@ -451,6 +451,81 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Cavalieri's principle along a coordinate direction** (Simon Ch. 1, proof of 2.10: Steiner
+symmetrization keeps Lebesgue measure "by Fubini").  If measurable `S, A ⊆ ℝᵈ` have line slices
+`{t : y[j↦t] ∈ S}`, `{t : y[j↦t] ∈ A}` of equal `L¹`-measure through every `y`, then
+`Lᵈ(S) = Lᵈ(A)`.  With `d = n + 1`, `φ(t, z) = Fin.insertNth j t z` is measure preserving from
+`L¹ ⊗ Lⁿ` to `Lᵈ`; its fibre over `z` is the slice through `φ(0, z)`, and Tonelli
+(`Measure.prod_apply_symm`) integrates the equal slice measures over `z`. -/
+theorem Submission.cbr_ci_iso_svol_volume_eq_of_slice_volume_eq : ∀ (d : ℕ) (j : Fin d) (S A : Set (Euclid d)), MeasurableSet S → MeasurableSet A → (∀ y : Euclid d, volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ S} = volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}) → volume S = volume A := by
+  intro d j S A hS hA hslice
+  cases d with
+  | zero => exact Fin.elim0 j
+  | succ n =>
+    -- `φ(t, z) = Fin.insertNth j t z`, measure preserving from `L¹ ⊗ Lⁿ` to `Lᵈ`
+    let e := MeasurableEquiv.piFinSuccAbove (fun _ : Fin (n + 1) => ℝ) j
+    let φ : ℝ × (Fin n → ℝ) → Euclid (n + 1) := fun p => WithLp.toLp 2 (e.symm p)
+    have hφ : MeasurePreserving φ volume volume :=
+      (PiLp.volume_preserving_toLp (Fin (n + 1))).comp
+        (MeasurePreserving.symm e (volume_preserving_piFinSuccAbove _ j))
+    -- the fibre of `φ` over `z` is the coordinate slice through `φ(0, z)`
+    have hfibre (B : Set (Euclid (n + 1))) (z : Fin n → ℝ) :
+        (fun t => φ (t, z)) ⁻¹' B =
+          {t : ℝ | WithLp.toLp 2 (Function.update (φ (0, z)).ofLp j t) ∈ B} := by
+      ext t
+      change WithLp.toLp 2 (j.insertNth t z) ∈ B ↔
+        WithLp.toLp 2 (Function.update (j.insertNth 0 z) j t) ∈ B
+      rw [Fin.update_insertNth]
+    -- Tonelli: `Lᵈ(B) = (L¹ ⊗ Lⁿ)(φ⁻¹ B) = ∫⁻ z, L¹(fibre of φ⁻¹ B over z)`
+    have hvol (B : Set (Euclid (n + 1))) (hB : MeasurableSet B) :
+        volume B = ∫⁻ z : Fin n → ℝ, volume ((fun t => φ (t, z)) ⁻¹' B) :=
+      (hφ.measure_preimage hB.nullMeasurableSet).symm.trans
+        (Measure.prod_apply_symm (hB.preimage hφ.measurable))
+    rw [hvol S hS, hvol A hA]
+    refine lintegral_congr fun z => ?_
+    rw [hfibre S z, hfibre A z]
+    exact hslice (φ (0, z))
+/-- Steiner symmetrization in direction `j` keeps the length of every line slice: for compact
+`A ⊆ ℝᵈ` and `y ∈ ℝᵈ`, `L¹{t | y[j↦t] ∈ S_j(A)} = L¹(B)` with `B = {t | y[j↦t] ∈ A}`.  Each
+point `y[j↦t]` of the line has `j`-th coordinate `t` and slice `B`, so the left set is
+`{t | B ≠ ∅ ∧ |t| ≤ ℓ/2}`, `ℓ = L¹(B)`.  It is empty if `B = ∅` and `[-ℓ/2, ℓ/2]` otherwise, of
+length `ℓ`, which is finite because `B` lies in the compact projection `π_j(A)`. -/
+theorem Submission.cbr_ci_iso_svol_steiner_slice_volume_eq : ∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → ∀ y : Euclid d, volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ {x : Euclid d | {s : ℝ | WithLp.toLp 2 (Function.update x.ofLp j s) ∈ A}.Nonempty ∧ |x j| ≤ (volume {s : ℝ | WithLp.toLp 2 (Function.update x.ofLp j s) ∈ A}).toReal / 2}} = volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A} := by
+  intro d j A hA y
+  -- `B = A^j_y = {s | y[j↦s] ∈ A}`
+  obtain ⟨B, hB⟩ : ∃ B : Set ℝ, {s : ℝ | WithLp.toLp 2 (update y.ofLp j s) ∈ A} = B :=
+    ⟨_, rfl⟩
+  -- steps 1–2: `(y[j↦t])_j = t` and `(y[j↦t])[j↦s] = y[j↦s]` (`WithLp.ofLp_toLp` is `rfl`), so
+  -- `A^j_{y[j↦t]} = B` and the left set is `{t | B ≠ ∅ ∧ |t| ≤ ℓ/2}`, `ℓ = (L¹ B).toReal`
+  simp only [mem_ofPred_eq, update_idem, update_self, hB]
+  -- step 3: `B ⊆ π_j(A)`, which is compact, so `L¹(B) < ∞`
+  have hBfin : volume B ≠ ∞ := by
+    have hπ : IsCompact ((fun x : Euclid d => x j) '' A) := hA.image (PiLp.continuous_apply 2 _ j)
+    refine (measure_lt_top_of_subset ?_ hπ.measure_lt_top.ne).ne
+    rintro s hs
+    rw [← hB] at hs
+    exact ⟨_, hs, update_self j s y.ofLp⟩
+  rcases B.eq_empty_or_nonempty with rfl | hBne
+  -- step 4: if `B = ∅`, the left set is empty
+  · simp only [Set.not_nonempty_empty, false_and, ofPred_false]
+  -- step 5: otherwise it is `[-ℓ/2, ℓ/2]`, of measure `ofReal ℓ = L¹(B)`
+  · have hIcc : {t : ℝ | B.Nonempty ∧ |t| ≤ (volume B).toReal / 2} =
+        Icc (-((volume B).toReal / 2)) ((volume B).toReal / 2) := by
+      ext t
+      rw [mem_ofPred_eq, mem_Icc, ← abs_le, and_iff_right hBne]
+    rw [hIcc, Real.volume_Icc, sub_neg_eq_add, add_halves, ENNReal.ofReal_toReal hBfin]
+
+/-- **Simon Ch. 1, proof of 2.10 (p. 12): Steiner symmetrization preserves Lebesgue measure.**
+Let `A ⊆ ℝ^d` be compact, `j ∈ Fin d`, `A^j_y = {t : y[j↦t] ∈ A}`.  If the Steiner symmetral
+`S_j(A) = {y : A^j_y ≠ ∅, |y_j| ≤ ½ L¹(A^j_y)}` is measurable, then `L^d(S_j(A)) = L^d(A)`, "by
+Fubini": each line in direction `e_j` meets `S_j(A)` in `∅` or a centred segment of length
+`L¹(A^j_y)`, hence in a set of the same `L¹`-measure as its trace on the measurable set `A`, and
+Cavalieri's principle along `e_j` compares the volumes. -/
+theorem Submission.cbr_ci_iso_steiner_volume_eq : ∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → MeasurableSet {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} → volume {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} = volume A := by
+  intro d j A hA hS
+  exact Submission.cbr_ci_iso_svol_volume_eq_of_slice_volume_eq d j _ A hS hA.measurableSet
+    (Submission.cbr_ci_iso_svol_steiner_slice_volume_eq d j A hA)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
