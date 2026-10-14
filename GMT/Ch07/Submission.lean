@@ -451,6 +451,30 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 6, 2.23 and Remark 2.24(2)**: the cut-off `χ f^#ω` of a pull-back.  If `f` is
+`C¹` on the open set `O`, `K ⊆ O` is compact and `ω` is a continuous `n`-form, then
+`f^#ω = ω(f)∘Df` is continuous on `O` (`f`, `Df` are continuous there and `(β, A) ↦ β∘A` is
+continuous), and `h = χ f^#ω`, for a Urysohn function `χ` equal to `1` on `K` with compact
+`tsupport χ ⊆ O`, is continuous, compactly supported and equal to `f^#ω` on `K`. -/
+theorem Submission.dimred_mbl_pf_ext_pullback_cutoff : ∀ (P n : ℕ) (O K : Set (Euclid P)) (f : Euclid P → Euclid P) (ω : DifferentialForm (Euclid P) n), Continuous ω → IsOpen O → ContDiffOn ℝ 1 f O → IsCompact K → K ⊆ O → ∃ h : Euclid P → Covector (Euclid P) n, Continuous h ∧ HasCompactSupport h ∧ ∀ x ∈ K, h x = (ω (f x)).compContinuousLinearMap (fderiv ℝ f x) := by
+  intro P n O K f ω hω hO hf hK hKO
+  -- `γ = ω(f)∘Df` is continuous on `O`: `β∘A = compContinuousLinearMapCLM A β`, continuous in `A`
+  have hγ : ContinuousOn (fun x => (ω (f x)).compContinuousLinearMap (fderiv ℝ f x)) O :=
+    (ContinuousAlternatingMap.continuous_compContinuousLinearMapCLM.comp_continuousOn
+      (hf.continuousOn_fderiv_of_isOpen hO le_rfl)).clm_apply
+      (hω.comp_continuousOn hf.continuousOn)
+  -- Urysohn cut-off: `χ = 1` on `K`, `χ = 0` off an open `V` with `closure V ⊆ O` compact
+  obtain ⟨V, hVo, hKV, hVO, -⟩ := exists_open_between_and_isCompact_closure hK hO hKO
+  obtain ⟨χ, hχK, hχV, hχc, -⟩ := exists_continuous_one_zero_of_isCompact hK hVo.isClosed_compl
+    (disjoint_compl_right_iff_subset.mpr hKV)
+  have hχO : tsupport χ ⊆ O :=
+    (closure_mono (support_subset_iff'.mpr fun _ hxV => hχV hxV)).trans hVO
+  -- `h = χγ` is continuous on `O` and vanishes off `tsupport χ ⊆ O`
+  refine ⟨fun x => χ x • (ω (f x)).compContinuousLinearMap (fderiv ℝ f x),
+    (χ.continuous.continuousOn.smul hγ).continuous_of_tsupport_subset hO
+      ((tsupport_smul_subset_left _ _).trans hχO), hχc.smul_right, fun x hx => ?_⟩
+  simp only [hχK hx, Pi.one_apply, one_smul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
