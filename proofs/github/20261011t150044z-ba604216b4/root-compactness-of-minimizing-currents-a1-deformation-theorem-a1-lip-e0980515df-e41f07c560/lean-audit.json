@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "34235c4d0bade09f8cec7735250125cd5e9517c8a7b3716b459c32c967acf187",
+  "git_delta": {
+    "base_commit": "4740fb54b86147dd61f08f5008ec1ccf087378ac",
+    "candidate_commit": "2e63b7ec7243ba772735f7e839d0f81c9a7b45cc",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdt_lpo_slice_fiber_form",
+    "diff_sha256": "4752908c1d061554e39ee08c7173aeb2c8d03c45ac75b849396f5798c3ded551",
+    "source_sha256": "bc59ef7033da7f584a9c251a8d3d05b6e94eea9e8bbe1c82fca1cbcb56589395",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdt_lpo_slice_fiber_form",
+      "statement": "∀ (N k : ℕ) (ω : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)), ∃ η : TestFormOn (univ : Set (Euclid N)) k, (∀ (x : Euclid N) (v : Fin k → Euclid N), (η : DifferentialForm (Euclid N) k) x v = ∫ t in (0 : ℝ)..1, (ω : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) ∧ tsupport (η : DifferentialForm (Euclid N) k) ⊆ {x : Euclid N | ∃ t ∈ Icc (0 : ℝ) 1, (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) : Euclid (N + 1)) ∈ tsupport (ω : DifferentialForm (Euclid (N + 1)) (k + 1))}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
