@@ -1171,6 +1171,58 @@ theorem Submission.codim1_lura_gram_area_formula : ∀ (m P : ℕ) (f : Euclid m
   · rfl
   · simp only [eventually_true, ENNReal.ofReal_lt_top]
   · exact (hGc.measurable.comp (measurable_fderiv ℝ f)).ennreal_ofReal.aemeasurable
+/-- **Simon Ch. 2, 4.11–4.12, (2.1)**: the Jacobian of `Φ ∘ ψ` factors through a chart.  Let
+`ψ : V → W` be a local representation of `N` as in (4.1), `Q(x) = T_xN` on `N`, `v ∈ V` and `Φ`
+differentiable at `ψ(v)`.  With `A = Dψ(v)`, `L = DΦ(ψ(v))` and `G(T) = det[⟨Teₖ, Teₗ⟩]`,
+`G(A) > 0` and `√G(D(Φ ∘ ψ)(v)) = J^NΦ(ψ(v)) · √G(A)`, where `J^NΦ(y) = √det[⟨Lτᵢ, Lτⱼ⟩]` for
+`τ = stdOrthonormalBasis ℝ (Q y)`.  Indeed `D(Φ ∘ ψ)(v) = L ∘ A` and `Q(ψ(v)) = T_{ψ(v)}N = range A`,
+of dimension `m` as `A` is injective; for an orthonormal frame `σ` of `range A`,
+`G(L ∘ A) = det[⟨Lσᵢ, Lσⱼ⟩] · G(A)` and `det[⟨Lσᵢ, Lσⱼ⟩] = det[⟨Lτᵢ, Lτⱼ⟩]`. -/
+theorem Submission.codim1_ac_saf_chart_gram_factor : ∀ (P m r : ℕ) (N W : Set (Euclid P)) (V : Set (Euclid m)) (ψ : Euclid m → Euclid P) (Q : Euclid P → Submodule ℝ (Euclid P)) (Φ : Euclid P → Euclid P) (v : Euclid m), 1 ≤ r → IsOpen V → IsOpen W → ContDiffOn ℝ r ψ V → InjOn ψ V → ψ '' V = W ∩ N → (∀ K ⊆ W, IsCompact K → IsCompact (V ∩ ψ ⁻¹' K)) → (∀ z ∈ V, Injective (fderiv ℝ ψ z)) → (∀ x ∈ N, (Q x : Set (Euclid P)) = tangentSpace N x) → DifferentiableAt ℝ Φ (ψ v) → v ∈ V → 0 < Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ ψ v (EuclideanSpace.single k 1)) (fderiv ℝ ψ v (EuclideanSpace.single l 1))) ∧ Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ (Φ ∘ ψ) v (EuclideanSpace.single k 1)) (fderiv ℝ (Φ ∘ ψ) v (EuclideanSpace.single l 1)))) = Real.sqrt (Matrix.det (Matrix.of fun i j : Fin (Module.finrank ℝ (Q (ψ v))) => inner ℝ (fderiv ℝ Φ (ψ v) (stdOrthonormalBasis ℝ (Q (ψ v)) i)) (fderiv ℝ Φ (ψ v) (stdOrthonormalBasis ℝ (Q (ψ v)) j)))) * Real.sqrt (Matrix.det (Matrix.of fun k l : Fin m => inner ℝ (fderiv ℝ ψ v (EuclideanSpace.single k 1)) (fderiv ℝ ψ v (EuclideanSpace.single l 1)))) := by
+  intro P m r N W V ψ Q Φ v hr hV hW hψ hinj hψV hprop hDψ hQ hΦ hv
+  -- chain rule: `ψ` is `C¹` on the open set `V`, so `D(Φ ∘ ψ)(v) = DΦ(ψ(v)) ∘ Dψ(v)`
+  have hψ1 : ContDiffOn ℝ 1 ψ V := hψ.of_le (by exact_mod_cast hr)
+  have hψd : DifferentiableAt ℝ ψ v :=
+    (hψ1.differentiableOn one_ne_zero v hv).differentiableAt (hV.mem_nhds hv)
+  have hchain : fderiv ℝ (Φ ∘ ψ) v = (fderiv ℝ Φ (ψ v)).comp (fderiv ℝ ψ v) :=
+    fderiv_comp v hΦ hψd
+  -- `Q(ψ(v)) = T_{ψ(v)}N = range Dψ(v)`, as `ψ(v) ∈ ψ(V) = W ∩ N`
+  have hT := Submission.chart_tangentSpace_eq_range_fderiv P m r N W V ψ v hr hV hW hψ hinj hψV
+    hprop hDψ hv
+  have hψvWN : ψ v ∈ W ∩ N := hψV ▸ mem_image_of_mem ψ hv
+  set A : Euclid m →L[ℝ] Euclid P := fderiv ℝ ψ v
+  set L : Euclid P →L[ℝ] Euclid P := fderiv ℝ Φ (ψ v)
+  have hQv : Q (ψ v) = LinearMap.range (A : Euclid m →ₗ[ℝ] Euclid P) := by
+    apply SetLike.coe_injective
+    rw [hQ _ hψvWN.2, hT, LinearMap.coe_range]
+    rfl
+  -- an orthonormal frame `σ : Fin m → ℝᴾ` of `S = range A`, which has dimension `m` (`A` injective)
+  have hAinj : Injective A := hDψ v hv
+  set S : Submodule ℝ (Euclid P) := LinearMap.range (A : Euclid m →ₗ[ℝ] Euclid P) with hS
+  have hfr : Module.finrank ℝ S = m := by
+    rw [hS, LinearMap.finrank_range_of_inj (f := (A : Euclid m →ₗ[ℝ] Euclid P)) hAinj,
+      finrank_euclideanSpace_fin]
+  let b : OrthonormalBasis (Fin m) ℝ S := (stdOrthonormalBasis ℝ S).reindex (finCongr hfr)
+  let σ : Fin m → Euclid P := fun i => (b i : Euclid P)
+  have hσ : Orthonormal ℝ σ := b.orthonormal.comp_linearIsometry S.subtypeₗᵢ
+  have hspan : Submodule.span ℝ (Set.range σ) = S := by
+    have hrange : Set.range σ = S.subtype '' Set.range b := by
+      ext x
+      simp [σ]
+    rw [hrange, Submodule.span_image]
+    have htop : Submodule.span ℝ (Set.range b) = ⊤ := by
+      simpa [OrthonormalBasis.coe_toBasis] using b.toBasis.span_eq
+    rw [htop, Submodule.map_top, Submodule.range_subtype]
+  -- `G(A) > 0` and `G(L ∘ A) = det[⟨Lσᵢ, Lσⱼ⟩] · G(A) = det[⟨Lτᵢ, Lτⱼ⟩] · G(A)`
+  have hcomp := Submission.codim1_lura_gram_det_comp_orthonormal m P P A
+  have hpos := hcomp.1 hAinj
+  have hmul := hcomp.2 L σ hσ hspan
+  have hstd := Submission.dpf_det_gram_stdOrthonormalBasis_eq P m (Q (ψ v)) L σ hσ
+    (hspan.trans hQv.symm)
+  refine ⟨hpos, ?_⟩
+  rw [hchain]
+  simp only [ContinuousLinearMap.comp_apply]
+  rw [hmul, hstd, Real.sqrt_mul' _ hpos.le]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
