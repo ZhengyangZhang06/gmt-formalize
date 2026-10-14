@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_det_exp_bound-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1",
+  "depth": 3,
+  "title": "Gram determinant bound det(v_i·v_j) ≤ exp(Σ|v_a|² − n)",
+  "statement": "For all P, n ∈ ℕ and all vectors v_1, …, v_n ∈ ℝ^P, the Gram determinant satisfies det(v_i·v_j)_{i,j=1}^n ≤ exp(Σ_{a=1}^n |v_a|² − n). (For n = 0 the determinant of the empty matrix is 1 and the right-hand side is exp(0) = 1.)",
+  "lean_statement": "∀ (P n : ℕ) (v : Fin n → Euclid P), Matrix.det (Matrix.of fun i j => inner ℝ (v i) (v j)) ≤ Real.exp (∑ a, ‖v a‖ ^ 2 - (n : ℝ))",
+  "lean_name": "fvmb_gram_det_le_exp_sum_norm_sq_sub",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-3e803c0b62-a1"
+}

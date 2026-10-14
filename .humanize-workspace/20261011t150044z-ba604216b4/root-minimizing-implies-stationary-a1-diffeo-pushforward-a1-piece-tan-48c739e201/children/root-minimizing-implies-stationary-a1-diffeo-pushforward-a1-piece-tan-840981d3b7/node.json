@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1.pointwise_comparison-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1",
+  "depth": 5,
+  "title": "Zero-density excess does not change approximate tangent spaces (Simon Ch. 3, Remark 1.5(2), pointwise form)",
+  "statement": "Let P, n ∈ ℕ, let A ⊆ B ⊆ ℝ^P be Borel sets, x ∈ ℝ^P and r₀ > 0 with H^n(B ∩ B̄_{r₀}(x)) < ∞, where H^n := μHE[n]. Suppose (†) H^n((B ∖ A) ∩ B̄_ρ(x)) / (ENNReal.ofReal ρ)^n → 0 in [0, ∞] as ρ → 0 in 𝓝[>] 0, the quotient taken in [0, ∞] (a/b = a·b⁻¹). Then for every linear subspace Q of ℝ^P, B has approximate tangent space Q at x (HasApproximateTangentSpaceAt n B x Q, Simon Ch. 3, Definition 1.4) if and only if A has approximate tangent space Q at x.",
+  "lean_statement": "∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ : ℝ), MeasurableSet A → MeasurableSet B → A ⊆ B → 0 < r₀ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → Tendsto (fun ρ : ℝ => μHE[n] ((B \\ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n B x Q ↔ HasApproximateTangentSpaceAt n A x Q",
+  "lean_name": "ptd_tl_tangent_iff_of_density_zero",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1.blowup_scaling-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1.blowup_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-840981d3b7-a1"
+}

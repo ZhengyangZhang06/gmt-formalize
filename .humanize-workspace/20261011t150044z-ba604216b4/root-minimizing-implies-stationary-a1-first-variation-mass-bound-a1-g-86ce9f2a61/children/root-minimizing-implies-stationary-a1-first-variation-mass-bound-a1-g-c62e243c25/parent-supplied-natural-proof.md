@@ -1,0 +1,94 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_jacobian_first_order-a1`
+- Child DAG node: `root.minimizing_implies_stationary-a1.first_variation_mass_bound-a1.gram_jacobian_first_order-a1.perturbed_frame_trace_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 2–5 of the parent proof of fvmb_orthonormal_gram_sqrt_det_le_first_order (setup, elementary bounds, one-column expansion, trace bound), together with the bound |D| ≤ nA from its step 3. Background: Simon Ch. 2, §5 (book/chapter-02.txt lines 1162–1256), where the Jacobian of a variation is expanded to first order in t. Here only the first-order control ‖L − I − tB‖ ≤ η|t| is assumed.
+
+Conventions: norms of linear maps are operator norms; u·w is the Euclidean inner product and |w| the Euclidean norm.
+
+Useful Mathlib facts: ContinuousLinearMap.le_opNorm, abs_real_inner_le_norm, real_inner_le_norm, norm_add_le, norm_smul, norm_add_sq_real, inner_add_right, real_inner_smul_right, pow_le_pow_left₀, Finset.abs_sum_le_sum_abs, Finset.sum_le_sum.
+
+1. Notation. Put E := L − I − tB, a continuous linear map. Then ‖E‖ ≤ η|t| by hypothesis and L = I + tB + E. For each a put w_a := tBτ_a + Eτ_a. Then Lτ_a = τ_a + tBτ_a + Eτ_a = τ_a + w_a. Put D := Σ_a τ_a·Bτ_a.
+2. Unit vectors. Orthonormality gives |τ_a| = 1 for every a. Since |Mv| ≤ ‖M‖|v| for every continuous linear map M:
+- |Bτ_a| ≤ ‖B‖|τ_a| = ‖B‖ ≤ A;
+- |Eτ_a| ≤ ‖E‖|τ_a| = ‖E‖ ≤ η|t|.
+3. Part (i). For each a, Cauchy–Schwarz and step 2 give |τ_a·Bτ_a| ≤ |τ_a||Bτ_a| = |Bτ_a| ≤ A. By the triangle inequality for finite sums, |D| ≤ Σ_a |τ_a·Bτ_a| ≤ Σ_{a=1}^n A = nA.
+4. Size of w_a. By the triangle inequality, homogeneity of the norm and step 2, |w_a| ≤ |tBτ_a| + |Eτ_a| = |t||Bτ_a| + |Eτ_a| ≤ |t|A + η|t|. Since η ≤ 1 and |t| ≥ 0, η|t| ≤ |t|, so |w_a| ≤ (A + 1)|t|. Since 0 ≤ |w_a| ≤ (A + 1)|t| and squaring is monotone on [0, ∞), |w_a|² ≤ ((A + 1)|t|)² = (A + 1)²t².
+5. Cross term. By Cauchy–Schwarz and step 2, τ_a·Eτ_a ≤ |τ_a||Eτ_a| = |Eτ_a| ≤ η|t|.
+6. One column. Expanding the square of a sum, |Lτ_a|² = |τ_a + w_a|² = |τ_a|² + 2τ_a·w_a + |w_a|². Here |τ_a|² = 1, and by bilinearity τ_a·w_a = t(τ_a·Bτ_a) + τ_a·Eτ_a. Steps 4 and 5 then give |Lτ_a|² ≤ 1 + 2t(τ_a·Bτ_a) + 2η|t| + (A + 1)²t².
+7. Part (ii). Summing step 6 over a = 1, …, n gives Σ_a |Lτ_a|² ≤ n + 2tΣ_a τ_a·Bτ_a + 2nη|t| + n(A + 1)²t². Subtracting n yields (ii). For n = 0 all sums are empty and (i), (ii) read 0 ≤ 0. The argument uses no sign condition on t, A or η beyond the stated hypotheses. ∎
+
+## Key steps
+
+1. Set E := L − I − tB, so ‖E‖ ≤ η|t|, and w_a := tBτ_a + Eτ_a, so that Lτ_a = τ_a + w_a.
+2. From |τ_a| = 1: |Bτ_a| ≤ A and |Eτ_a| ≤ η|t|; Cauchy–Schwarz gives |τ_a·Bτ_a| ≤ A, hence |Σ_a τ_a·Bτ_a| ≤ nA.
+3. |w_a| ≤ |t|A + η|t| ≤ (A+1)|t| (using η ≤ 1), so |w_a|² ≤ (A+1)²t²; also τ_a·Eτ_a ≤ η|t|.
+4. |Lτ_a|² = 1 + 2t τ_a·Bτ_a + 2 τ_a·Eτ_a + |w_a|² ≤ 1 + 2t τ_a·Bτ_a + 2η|t| + (A+1)²t²; sum over a and subtract n.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `python3 -I: read nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-86ce9f2a61/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}`
+- `python3 -I: dag.json scan (509 nodes): selected node entry (depth 3, status decomposing, children []); siblings under first_variation_mass_bound-a1 incl. GE fvmb_gram_det_le_exp_sum_norm_sq_sub frozen type; lean_name collision check for fvmb_perturbed_frame_sum_norm_sq_sub_le and fvmb_sqrt_le_first_order_of_le_exp (0 hits); lean_names containing frame|sqrt|exp_first|first_order`
+- `git log --all --oneline -S"fvmb_perturbed_frame_sum_norm_sq_sub_le" -- GMT/Ch07/Submission.lean; git log --all --oneline -S"fvmb_sqrt_le_first_order_of_le_exp" -- GMT/Ch07/Submission.lean (2557 refs, no hits)`
+- `git show 2fd8f6f:GMT/Ch07/Submission.lean | sed -n 440,470p (accepted child theorems are declared as GMT.Ch07.Submission.X before main_theorem)`
+- `rg -n 'Orthonormal ℝ' project; rg -l 'abs_exp_sub_one_sub_id_le|Real.sqrt \(Matrix.det|sum_norm_sq|norm_add_sq_real' project simongmt; rg -n '^(theorem|lemma|def) ' simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `grep -rn in mathlib/Mathlib: abs_exp_sub_one_sub_id_le, exp_le_exp, exp_add, exp_pos, sqrt_le_sqrt, sqrt_sq, sqrt_mul_self, abs_sum_le_sum_abs, real_inner_le_norm, abs_real_inner_le_norm, norm_add_sq_real, inner_add_right, real_inner_smul_right, le_opNorm, norm_smul_le, pow_le_pow_left₀; awk namespace scan of Analysis/Complex/Exponential.lean and Analysis/Real/Sqrt.lean`
+- `sed -n 520,660p verifier/gmt-compare.py; grep -n 'CHILD_TARGET\s*=\|CHILD_MODULES\s*=\|AXIOMS\s*=' verifier/gmt-compare.py (contract_scope/child_modules replay, target HumanizeNodeComparator.target, permitted axioms)`
+- `sed -n 1162,1175p and 1236,1256p book/chapter-02.txt (Simon Ch. 2 §5, 5.1–5.3)`
+- `lake env lean /tmp/gjfo/Scope.lean (frozen parent and GE types elaborate in the replayed scope)`
+- `lake env lean /tmp/gjfo/Children.lean (both child types elaborate)`
+- `lake env lean /tmp/gjfo/Full.lean (both children proved; frozen parent type assembled from children + GE stub; #print axioms)`
+- `lake env lean /tmp/gjfo/Replay.lean (comparator replay: exact Submission.X closes both child types and the parent type; rfl parse checks)`
+- `independent reviewer agent: /tmp/gjfo_review/Insitu.lean (children inside Submission.lean noncomputable section + generated NodeSolution text), replay.out, scripts/numcheck.py, scripts/validate.py, scripts/parent_check.py`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-86ce9f2a61/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-86ce9f2a61/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-first-variation-mass-bound-a1-g-86ce9f2a61/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Complex/Exponential.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Real/Sqrt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/BigOperators/Group/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter05/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/gjfo/Scope.lean`
+- `/tmp/gjfo/Children.lean`
+- `/tmp/gjfo/Full.lean`
+- `/tmp/gjfo/Replay.lean`
+- `/tmp/gjfo/proposal.md`
+- `/tmp/gjfo_review/Insitu.lean`
+- `/tmp/gjfo_review/replay.out`
+
+Neither child statement exists in the pinned snapshot (project b4d606d, Mathlib 25730c7c) or in the DAG; both are new. Their lean_names collide with nothing among the 509 DAG nodes or in the GMT/Ch07/Submission.lean history of 2557 refs. The snapshot Contract.lean is byte-identical to the workspace contract, and the workspace Submission.lean equals it.
+
+Nothing in SimonGMT can be reused. Chapter04/FirstVariation.lean defines firstVariation through tangentialDivergence but has no Jacobian or Gram first-order lemma. The rg hits in Chapter04/CompactConvexHull.lean and Chapter05/Basic.lean are unrelated uses.
+
+Every Mathlib fact cited in the child proofs exists in the snapshot:
+- Analysis/Complex/Exponential.lean: Real.abs_exp_sub_one_sub_id_le (:537), Real.exp_le_exp (:316), Real.exp_add (:211), Real.exp_pos (:283).
+- Analysis/Real/Sqrt.lean: Real.sqrt_le_sqrt (:208), Real.sqrt_mul_self (:152), Real.sqrt_sq (:180).
+- Analysis/InnerProductSpace/Basic.lean: norm_add_sq_real (:411), abs_real_inner_le_norm (:471), real_inner_le_norm (:475), real_inner_smul_right (:120), inner_add_right (:77).
+- Analysis/Normed/Operator/Basic.lean: ContinuousLinearMap.le_opNorm (:234).
+- Algebra/Order/BigOperators/Group/Finset.lean: Finset.abs_sum_le_sum_abs (:371).
+- Algebra/Order/GroupWithZero/Basic.lean: pow_le_pow_left₀ (:513).
+
+Simon Ch. 2 §5 (book/chapter-02.txt lines 1162–1256) gives the C² Taylor expansion J_t = 1 + t div_M X + O(t²) behind 5.3. The children carry the supplied proof's one-sided, first-order version.
+
+The comparator replay of verifier/gmt-compare.py (contract_scope/child_modules, target _root_.HumanizeNodeComparator.target, exact Submission.X) is reproduced in /tmp/gjfo/Replay.lean. Both child types elaborate and are proved with only propext, Classical.choice and Quot.sound. The frozen parent type is proved from the two children plus the sibling GE fvmb_gram_det_le_exp_sum_norm_sq_sub, stubbed with its frozen DAG type; GE is the only extra axiom. The independent reviewer reproduced all of this and accepted.

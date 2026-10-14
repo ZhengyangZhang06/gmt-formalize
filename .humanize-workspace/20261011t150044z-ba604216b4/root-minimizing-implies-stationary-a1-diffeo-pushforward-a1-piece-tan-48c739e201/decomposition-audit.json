@@ -1,0 +1,65 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "HasApproximateTangentSpaceAt|blowUpMap|ae_tendsto_measure_inter_div|approxTangent|tangent_iff|ptd_tl_|rsdic_|regcomp_",
+        "ae_tendsto_measure_inter_div|instHasBesicovitchCovering|euclideanHausdorffMeasure_homothety_image|Isometry.euclideanHausdorffMeasure_image|notation.*μHE|def euclideanHausdorffMeasure",
+        "setIntegral_sdiff|norm_setIntegral_le_of_norm_le_const |setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|ofReal_integral_eq_lintegral_ofReal",
+        "div_le_of_le_mul|le_of_add_le_add_right",
+        "ptd_tl_|rsdic_|regcomp_",
+        "git show a157a5f4f62ba1c354a3b0cc070d947560abf2e6:GMT/Ch07/Submission.lean",
+        "LEAN_NUM_THREADS=4 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean -j 4 /tmp/ptd-tangent-audit-v4ci412_/AuditAll.lean > /tmp/ptd-tangent-audit-v4ci412_/AuditAll.log 2>&1"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-48c739e201/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/ptd-tangent-audit-v4ci412_/AuditAll.lean",
+        "/tmp/ptd-tangent-audit-v4ci412_/AuditAll.log"
+      ],
+      "conclusion": "Verified the pinned project and mathlib revisions, the literal tangent-space definition, and the cited scaling, density, integral and ENNReal lemmas. The snapshot search found no ptd_tl_, rsdic_ or regcomp_ declarations. All five proposed names are bare identifiers; scanning 2,652 nodes across eight chapter DAGs and the chapter's stored proposals found no competing reservation. Every child type and the selected parent type exactly match the cited accepted declarations. Independent challenge elaboration succeeded before declaring the children. Renamed reference proofs and a conditional parent assembly compiled against the frozen source, with only propext, Classical.choice and Quot.sound. Explicit elaboration confirmed ENNReal arithmetic and the Euclidean PiLp 2 metric. The five-way split is appropriate: its two dependency edges are correctly directed and acyclic, and the assembly proves exactly the selected parent with one plane-independent exceptional set."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone one-line type agree, including arbitrary S and unrestricted R. The ball-image identity, nonzero homothety scaling and translation invariance prove the precise ENNReal factor without measurability assumptions. Negative R and n = 0 are covered. No circular reliance occurs."
+    },
+    {
+      "key": "ae_excess",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the placement of ∀ ε inside the a.e. conclusion match. The countable compact cover and localized finite-measure density theorem produce one exceptional set. Restriction identities and finite ENNReal cancellation justify the estimate, including zero denominators and ε = ∞. The proof is complete and independent of the parent."
+    },
+    {
+      "key": "tangent_growth",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the prose; neither requires a sign condition on the existential C. The supplied proof chooses C = |Λ| + 1, establishes cutoff integrability using local finiteness and blowup_scaling, bounds the unit-ball measure, and rescales correctly. The unused Borel hypothesis is harmless. The declared dependency is correct."
+    },
+    {
+      "key": "excess_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger contract for arbitrary A and B is justified: the proof uses a covering inclusion and subadditivity, not measurable additivity or A ⊆ B. Local finiteness permits cancellation of the finite half-measure. The ENNReal squeeze proves the exact quotient limit and handles negative C and n = 0. Its supplied premises make additional child dependencies unnecessary."
+    },
+    {
+      "key": "pointwise_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match all measurability, inclusion, finiteness and limit assumptions. The proof establishes Borel blow-up images and integrability before subtracting integrals, bounds the difference using blowup_scaling, and transfers the ENNReal limit through toReal at zero. Both tangent implications preserve finrank and all test-function limits. This is a genuine pointwise obligation sufficient for the parent's assembly, with no circular reliance."
+    }
+  ],
+  "required_changes": []
+}

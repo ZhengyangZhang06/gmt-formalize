@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "IsUnitOrientationOf|structure IMRep|def IMRep",
+        "ext_alternating|theorem of_injective",
+        "toAlternatingMap_injective|alternatization_apply_apply",
+        "setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|integrable_toReal_of_lintegral_ne_top",
+        "theorem IsOpen.ae_eq_zero_of_integral_contDiff_smul_eq_zero",
+        "FiniteDimensional|lintegral_ne_top|IntegrableOn|ae_eq_zero_of_integral|lcn_",
+        "git diff c4996afd6a47ccb4eaff0a43e52254bf2e001e31 2e5d20d49a4a41f79e81db1a65e850fb919b38ba -- GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lcn-decomp/All.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/lcn-independent-audit-1q2k6rtn/Contracts.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-support-null-a1-local-carrier-null-a1/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-imrep-support-eq-measure-sup-2d6f974584/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa59/20261012T020803Z-ch07-root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.uni-v1ivwv3n/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa59/20261012T020803Z-ch07-root.half_space_cone_lies_in_boundary-a1.imrep_support_eq_measure_support-a1.uni-v1ivwv3n/comparator-config.json",
+        "/tmp/lcn-decomp/All.lean",
+        "/tmp/lcn-independent-audit-1q2k6rtn/Contracts.lean"
+      ],
+      "conclusion": "Independently verified the pinned revisions and byte-identical Ch07 definitions. Searches found no relevant existing component lemma in the snapshot project; a fresh Lean probe confirmed that the required Covector finite-dimensional instance is not synthesized. All four frozen types independently elaborate as Prop before any child is declared. The supplied implementations and exact selected-parent glue compile successfully, with only propext, Classical.choice and Quot.sound. The reused declaration matches its accepted type and comparator input exactly; retained comparator evidence confirms the permitted-axiom check. All names are bare identifiers, and the three new names have no DAG reservation. Operator norms, scalar multiplication and restricted measures have the intended instances. The split appropriately separates linear algebra, integrability and distributional vanishing. Dependencies are acyclic and correctly directed: unit_orientation_bounds → component_integrable → orient_component_null, with covector_finite_dimensional independent. Finite-basis vanishing contradicts orientation nonvanishing almost everywhere for μHE[n].restrict (R.carrier ∩ W), proving precisely the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_orientation_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean type match. Orthonormal evaluation gives the operator-norm bound; unnormalized alternatization constructs a covector evaluating to 1, proving nonvanishing, including n = 0. The proof is complete and independent of the parent. Reuse is valid because the comparator-accepted declaration has the identical frozen type."
+    },
+    {
+      "key": "covector_finite_dimensional",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone proposition exactly matches the prose for all P and n. Evaluation on standard-basis tuples defines a linear injection by alternating-map extensionality; its finite-dimensional codomain proves the conclusion. The argument covers zero dimensions, needs no sibling or parent theorem, and supplies a complete formalization route."
+    },
+    {
+      "key": "component_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the restricted Hausdorff measure match the prose. Compact local integrability yields integrable real multiplicity; measurable evaluation and the transferred orientation bound give an integrable majorant for θ·ξ(α). Domination proves the exact conclusion. Its declared dependency on unit_orientation_bounds is sufficient and correctly directed."
+    },
+    {
+      "key": "orient_component_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every stated hypothesis and the exact concluding restricted measure. The proof constructs admissible g·α test forms, justifies localization by vanishing outside closure W, applies the pinned fundamental lemma using component_integrable, transfers the result to M ∩ W, and cancels positive multiplicity there. No openness of U or additional measure hypothesis is needed. The proof is complete, non-circular and uses only its declared child dependency."
+    }
+  ],
+  "required_changes": []
+}

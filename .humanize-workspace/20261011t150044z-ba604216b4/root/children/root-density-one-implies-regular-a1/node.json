@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1",
+  "parent_id": "root",
+  "depth": 1,
+  "title": "Theorem 7.4.3 (fixed N): density-one points are regular, stably under weak convergence",
+  "statement": "Let ℓ ≤ k, U ⊆ ℝ^{n+k} open, N an embedded C² (n+ℓ)-submanifold with (N̄∖N) ∩ U = ∅. Let T_i, T ∈ 𝒟_n(U) be minimizing in U ∩ N with spt T_i, spt T ⊆ N and ∂T_i = ∂T = 0 in U, sup_i M_W(T_i) < ∞ for every open W ⊂⊂ U, and T_i ⇀ T. If y ∈ N ∩ U has Θ^n(μ_T, y) = 1, y_i ∈ spt T_i and y_i → y, then y ∈ reg T and y_i ∈ reg T_i for all sufficiently large i (reg as in 7.4.1: some ball B_ρ(z) ⊆ U, m ∈ ℤ∖{0} and an embedded oriented C¹ n-submanifold M ∋ z of locally finite H^n-measure in B_ρ(z) with T = m[[M]] in B_ρ(z)).",
+  "lean_statement": "DensityOneImpliesRegular",
+  "lean_name": "density_one_implies_regular",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-a1"
+}

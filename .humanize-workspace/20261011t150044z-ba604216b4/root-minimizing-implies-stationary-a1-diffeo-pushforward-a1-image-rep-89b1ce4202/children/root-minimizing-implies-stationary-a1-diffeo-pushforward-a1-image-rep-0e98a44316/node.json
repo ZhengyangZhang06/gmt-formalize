@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.pairing_integrable-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1",
+  "depth": 4,
+  "title": "An integer multiplicity triple pairs integrably with every continuous compactly supported covector field in U",
+  "statement": "Let U ⊆ ℝ^P and let R = (M, θ, ξ) be an integer multiplicity triple in U (IMRep U n). Let β : ℝ^P → Λ^n(ℝ^P) be a continuous field of n-covectors with compact support and tsupport β ⊆ U. Then x ↦ θ(x)·ξ(x)(β(x)) is integrable with respect to H^n⌞M.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (β : Euclid P → Covector (Euclid P) n), Continuous β → HasCompactSupport β → tsupport β ⊆ U → Integrable (fun x => (R.mult x : ℝ) * R.orient x (β x)) (μHE[n].restrict R.carrier)",
+  "lean_name": "dpfir_imrep_pairing_continuous_integrable",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-0e98a44316-a1"
+}
