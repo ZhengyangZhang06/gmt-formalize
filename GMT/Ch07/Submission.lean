@@ -1169,6 +1169,63 @@ theorem Submission.cmcdtfrbv_divergence_test_form : ∀ (P m : ℕ) (p : (Fin (m
     rw [hface, fderiv_const_mul ((hGj i).differentiable (by simp) _), smul_apply,
       smul_eq_mul, zsmul_eq_mul, Int.cast_pow, Int.cast_neg, Int.cast_one, ← mul_assoc, ← mul_pow,
       neg_one_mul, neg_neg, one_pow, one_mul]
+/-- Local mass is superadditive over finitely many pairwise disjoint regions (Simon 6.2.5):
+`∑_{i ∈ s} M_{N_i}(S) ≤ M_{⋃_{i ∈ s} N_i}(S)`.  If `ω_A`, `ω_B` are admissible for disjoint
+regions `A`, `B`, then at each point at most one of them is nonzero, so `ω_A + ω_B` is admissible
+for `A ∪ B` and `S(ω_A + ω_B) = S(ω_A) + S(ω_B)`; replacing a form with negative value by `0`
+gives `M_A(S) + M_B(S) ≤ M_{A ∪ B}(S)`, and induction on `s` finishes. -/
+theorem Submission.cmcdtfrbv_massOn_disjoint_sum_le : ∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ι : Type) (s : Finset ι) (N : ι → Set (Euclid P)), (↑s : Set ι).PairwiseDisjoint N → ∑ i ∈ s, S.massOn (N i) ≤ S.massOn (⋃ i ∈ s, N i) := by
+  classical
+  intro P n U S ι s N hN
+  -- the zero form is admissible for every region
+  have hzero : ∀ A : Set (Euclid P), (0 : TestFormOn U n) ∈ massAdmissibleOn U n A :=
+    fun A => ⟨by simp, fun x => by simp⟩
+  -- forms admissible for disjoint regions glue to a form admissible for the union
+  have hglue : ∀ A B : Set (Euclid P), Disjoint A B → ∀ ωA ∈ massAdmissibleOn U n A,
+      ∀ ωB ∈ massAdmissibleOn U n B, ωA + ωB ∈ massAdmissibleOn U n (A ∪ B) := by
+    intro A B hAB ωA hA ωB hB
+    refine ⟨?_, fun x => ?_⟩
+    · rw [Submodule.coe_add]
+      exact (tsupport_add _ _).trans (union_subset_union hA.1 hB.1)
+    · rw [Submodule.coe_add, Pi.add_apply]
+      by_cases hx : x ∈ tsupport (ωA : DifferentialForm (Euclid P) n)
+      · have hxB : x ∉ tsupport (ωB : DifferentialForm (Euclid P) n) := fun h =>
+          hAB.notMem_of_mem_left (hA.1 hx) (hB.1 h)
+        rw [image_eq_zero_of_notMem_tsupport hxB, add_zero]
+        exact hA.2 x
+      · rw [image_eq_zero_of_notMem_tsupport hx, zero_add]
+        exact hB.2 x
+  -- superadditivity on two disjoint regions
+  have htwo : ∀ A B : Set (Euclid P), Disjoint A B →
+      S.massOn A + S.massOn B ≤ S.massOn (A ∪ B) := by
+    intro A B hAB
+    have key : ∀ ωA ∈ massAdmissibleOn U n A, ∀ ωB ∈ massAdmissibleOn U n B,
+        ENNReal.ofReal (S ωA) + ENNReal.ofReal (S ωB) ≤ S.massOn (A ∪ B) := by
+      intro ωA hA ωB hB
+      rcases le_or_gt (S ωA) 0 with hωA | hωA
+      · rw [ENNReal.ofReal_of_nonpos hωA, zero_add]
+        exact S.le_massOn ⟨hB.1.trans subset_union_right, hB.2⟩
+      rcases le_or_gt (S ωB) 0 with hωB | hωB
+      · rw [ENNReal.ofReal_of_nonpos hωB, add_zero]
+        exact S.le_massOn ⟨hA.1.trans subset_union_left, hA.2⟩
+      rw [← ENNReal.ofReal_add hωA.le hωB.le, ← map_add S.toCurrent ωA ωB]
+      exact S.le_massOn (hglue A B hAB ωA hA ωB hB)
+    calc S.massOn A + S.massOn B
+        = (⨆ ω ∈ massAdmissibleOn U n A, ENNReal.ofReal (S ω)) +
+            ⨆ ω ∈ massAdmissibleOn U n B, ENNReal.ofReal (S ω) := by
+          simp only [GeometricCurrentOn.massOn, sSup_image]
+      _ ≤ S.massOn (A ∪ B) := ENNReal.biSup_add_biSup_le ⟨0, hzero A⟩ ⟨0, hzero B⟩ key
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+    rw [Finset.coe_insert, Set.pairwiseDisjoint_insert_of_notMem (Finset.mem_coe.not.2 ha)] at hN
+    have hdisj : Disjoint (N a) (⋃ i ∈ s, N i) := by
+      simp only [Set.disjoint_iUnion_right]
+      exact fun i hi => hN.2 i hi
+    rw [Finset.sum_insert ha, Finset.set_biUnion_insert]
+    calc S.massOn (N a) + ∑ i ∈ s, S.massOn (N i)
+        ≤ S.massOn (N a) + S.massOn (⋃ i ∈ s, N i) := add_le_add le_rfl (ih hN.1)
+      _ ≤ S.massOn (N a ∪ ⋃ i ∈ s, N i) := htwo _ _ hdisj
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
