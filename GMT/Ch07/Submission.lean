@@ -541,6 +541,75 @@ theorem Submission.cmcdt_dil_mass_eq : ∀ (P k : ℕ) (lam : ℝ), 0 < lam → 
         = ENNReal.ofReal (Y (lam ^ k • ζ)) := by
           rw [hXY (lam ^ k • ζ) η₂ hη₂ω, hη₂η, map_smul, smul_eq_mul, ENNReal.ofReal_mul hpow.le]
       _ ≤ Y.mass := Y.le_massOn hωadm
+/-- **Support of the dilation push-forward**: step 6 of the proof of `cmcdt_dilation_pushforward`
+(`spt T` as in Simon 6.2.11, chapter-06.txt lines 296–302; change of scale as in 6.5.3, lines
+1458–1460).  If `λ > 0` and `Y(ω) = X(δ_λ^#ω)` for all test forms `ω` (`Y = δ_{λ#}X`,
+`δ_λ(x) = λx`), then `spt Y = λ spt X`.  As `δ_λ^#ω = λᵏ ω(λ·)`, `tsupport δ_λ^#ω ⊆
+δ_λ⁻¹(tsupport ω)`, so `Y` vanishes on `λW` whenever `X` vanishes on `W`; as `δ_λ^#δ_{λ⁻¹}^#η = η`,
+`X` vanishes on `λ⁻¹W` whenever `Y` vanishes on `W`.  Hence `Z_Y = λZ_X`, and `δ_λ` is a
+bijection of `ℝᴾ`. -/
+theorem Submission.cmcdt_dil_support_eq : ∀ (P k : ℕ) (lam : ℝ), 0 < lam → ∀ X Y : GeometricCurrentOn (univ : Set (Euclid P)) k, (∀ ω η : TestFormOn (univ : Set (Euclid P)) k, (η : DifferentialForm (Euclid P) k) = affinePullbackForm (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0 (ω : DifferentialForm (Euclid P) k) → Y ω = X η) → Y.support = (fun x => lam • x) '' X.support := by
+  intro P k lam hlam X Y hrel
+  have hne : lam ≠ 0 := hlam.ne'
+  have hne' : lam⁻¹ ≠ 0 := inv_ne_zero hne
+  -- Step 0(b): if `η(x) = μᵏ ω(μx)` for all `x`, then `tsupport η ⊆ δ_μ⁻¹(tsupport ω)`.
+  have htsupp : ∀ (μ : ℝ) (ω η : TestFormOn (univ : Set (Euclid P)) k),
+      (∀ x, (η : DifferentialForm (Euclid P) k) x =
+        μ ^ k • (ω : DifferentialForm (Euclid P) k) (μ • x)) →
+      tsupport (η : DifferentialForm (Euclid P) k) ⊆
+        (fun x => μ • x) ⁻¹' tsupport (ω : DifferentialForm (Euclid P) k) := by
+    intro μ ω η h
+    refine closure_minimal (fun x hx => ?_)
+      ((isClosed_tsupport _).preimage (continuous_const_smul μ))
+    refine mem_preimage.2 (subset_tsupport _ fun h0 => hx ?_)
+    rw [h x, h0, smul_zero]
+  -- Step 0(c): each test form `η` has `ζ = δ_{λ⁻¹}^#η` with `X(η) = Y(ζ)`, since `δ_λ^#ζ = η`,
+  -- and `tsupport ζ ⊆ δ_{λ⁻¹}⁻¹(tsupport η)` by Step 0(b).
+  have hinv : ∀ η : TestFormOn (univ : Set (Euclid P)) k,
+      ∃ ζ : TestFormOn (univ : Set (Euclid P)) k, X η = Y ζ ∧
+        tsupport (ζ : DifferentialForm (Euclid P) k) ⊆
+          (fun x => lam⁻¹ • x) ⁻¹' tsupport (η : DifferentialForm (Euclid P) k) := by
+    intro η
+    obtain ⟨ζ, -, hζ⟩ := Submission.cmcdt_dil_pullback_testForm P k lam⁻¹ hne' η
+    obtain ⟨η₂, hη₂, hη₂ζ⟩ := Submission.cmcdt_dil_pullback_testForm P k lam hne ζ
+    have hη₂η : η₂ = η := by
+      refine Subtype.ext (funext fun x => ?_)
+      rw [hη₂ζ x, hζ, smul_smul, ← mul_pow, mul_inv_cancel₀ hne, one_pow, one_smul,
+        inv_smul_smul₀ hne]
+    exact ⟨ζ, by rw [hrel ζ η₂ hη₂, hη₂η], htsupp lam⁻¹ η ζ hζ⟩
+  -- Steps 1 and 2 share one argument: if every `ω` has `η` with `A(ω) = B(η)` and
+  -- `tsupport η ⊆ δ_μ⁻¹(tsupport ω)`, then `δ_μ(Z_B) ⊆ Z_A`.  For `x ∈ W` with `B` vanishing on
+  -- `W`, `δ_μ(W)` is open with compact closure (Step 0(a)) and `A` vanishes on it, because
+  -- `tsupport ω ⊆ δ_μ(W)` gives `tsupport η ⊆ δ_μ⁻¹(δ_μ(W)) = W`.
+  have hzero : ∀ μ : ℝ, μ ≠ 0 → ∀ A B : GeometricCurrentOn (univ : Set (Euclid P)) k,
+      (∀ ω : TestFormOn (univ : Set (Euclid P)) k, ∃ η : TestFormOn (univ : Set (Euclid P)) k,
+        A ω = B η ∧ tsupport (η : DifferentialForm (Euclid P) k) ⊆
+          (fun x => μ • x) ⁻¹' tsupport (ω : DifferentialForm (Euclid P) k)) →
+      (fun x => μ • x) '' B.zeroRegion ⊆ A.zeroRegion := by
+    rintro μ hμ A B hAB _ ⟨x, ⟨W, ⟨hWo, hWc, -, hWv⟩, hxW⟩, rfl⟩
+    have hK : IsCompact ((fun x => μ • x) '' closure W) := hWc.image (continuous_const_smul μ)
+    refine ⟨(fun x => μ • x) '' W, ⟨isOpenMap_smul₀ hμ W hWo,
+      hK.of_isClosed_subset isClosed_closure (closure_minimal (image_mono subset_closure)
+        hK.isClosed), subset_univ _, fun ω hω => ?_⟩, mem_image_of_mem _ hxW⟩
+    obtain ⟨η, hAB', hηω⟩ := hAB ω
+    rw [hAB']
+    exact hWv η (hηω.trans ((preimage_mono hω).trans
+      ((smul_right_injective (Euclid P) hμ).preimage_image W).subset))
+  -- Step 1: `δ_λ(Z_X) ⊆ Z_Y`, taking `η = δ_λ^#ω` from `cmcdt_dil_pullback_testForm`.
+  have h1 : (fun x => lam • x) '' X.zeroRegion ⊆ Y.zeroRegion := by
+    refine hzero lam hne Y X fun ω => ?_
+    obtain ⟨η, hη, hηω⟩ := Submission.cmcdt_dil_pullback_testForm P k lam hne ω
+    exact ⟨η, hrel ω η hη, htsupp lam ω η hηω⟩
+  -- Step 2: `δ_{λ⁻¹}(Z_Y) ⊆ Z_X` by Step 0(c), so `y = λ(λ⁻¹y) ∈ δ_λ(Z_X)` for `y ∈ Z_Y`.
+  have h2 : (fun x => lam⁻¹ • x) '' Y.zeroRegion ⊆ X.zeroRegion := hzero lam⁻¹ hne' X Y hinv
+  have hZ : Y.zeroRegion = (fun x => lam • x) '' X.zeroRegion :=
+    Subset.antisymm
+      (fun y hy => ⟨lam⁻¹ • y, h2 (mem_image_of_mem _ hy), smul_inv_smul₀ hne y⟩) h1
+  -- Step 3: `δ_λ` is a bijection, so `spt Y = univ \ δ_λ(Z_X) = δ_λ(univ \ Z_X) = δ_λ(spt X)`.
+  unfold GeometricCurrentOn.support
+  rw [hZ, image_sdiff (smul_right_injective (Euclid P) hne),
+    image_univ_of_surjective (f := fun x : Euclid P => lam • x)
+      fun y => ⟨lam⁻¹ • y, smul_inv_smul₀ hne y⟩]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
