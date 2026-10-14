@@ -451,6 +451,93 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Density from a monotone density ratio** (existence of `Θⁿ` from the monotonicity formula,
+Simon 7.3.1(1); chapter-07.txt lines 326–328).  Let `m : ℝ → [0, ∞]` be finite on `(0, R)` with
+`g(ρ) = e^{Λρ}ρ⁻ⁿ m(ρ)` nondecreasing on `(0, R)`, and put `q(ρ) = m(ρ)/(ωₙρⁿ)`,
+`Θ = (lim sup_{ρ↓0} q(ρ)).toReal`.  Then `q(ρ) → Θ` as `ρ ↓ 0`, and `ωₙΘσⁿe^{−Λσ} ≤ m(σ)` for
+`σ ∈ (0, R)`.  Indeed `g(ρ) → L = inf g((0, R)) ≤ g(R/2) < ∞` and
+`q(ρ) = ωₙ⁻¹e^{−Λρ}g(ρ) → ωₙ⁻¹L`, so `Θ = ωₙ⁻¹L` and
+`ωₙΘσⁿe^{−Λσ} = Lσⁿe^{−Λσ} ≤ g(σ)σⁿe^{−Λσ} = m(σ)`. -/
+theorem Submission.dimred_tr_mcr_tl_monotone_density : (∀ (n : ℕ) (Λ R : ℝ) (m : ℝ → ℝ≥0∞), 0 < R → (∀ ρ ∈ Ioo 0 R, m ρ ≠ ∞) → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * m ρ) (Ioo 0 R) → Tendsto (fun ρ : ℝ => m ρ / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal (limsup (fun ρ : ℝ => m ρ / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal)) ∧ ∀ σ ∈ Ioo 0 R, unitBallVolume n * ENNReal.ofReal (limsup (fun ρ : ℝ => m ρ / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal * ENNReal.ofReal (σ ^ n * Real.exp (-(Λ * σ))) ≤ m σ) := by
+  intro n Λ R m hR hfin hmono
+  -- Step 1: `0 < ωₙ < ∞`
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (measure_ball_pos (volume : Measure (Euclid n)) (0 : Euclid n) one_pos).ne'
+  have hωt : unitBallVolume n ≠ ∞ :=
+    (measure_ball_lt_top (μ := (volume : Measure (Euclid n))) (x := (0 : Euclid n)) (r := 1)).ne
+  set ω : ℝ≥0∞ := unitBallVolume n
+  -- Step 2: `g(ρ) → L = inf g((0, R))` as `ρ ↓ 0`, and `L ≤ g(R/2) < ∞`
+  set g : ℝ → ℝ≥0∞ := fun ρ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * m ρ with hg_def
+  set L : ℝ≥0∞ := sInf (g '' Ioo 0 R)
+  have hgL : Tendsto g (𝓝[>] 0) (𝓝 L) :=
+    hmono.tendsto_nhdsWithin_Ioo_right (nonempty_Ioo.2 hR) (OrderBot.bddBelow _)
+  have hLle : ∀ σ ∈ Ioo (0 : ℝ) R, L ≤ g σ := fun σ hσ => sInf_le (mem_image_of_mem g hσ)
+  have hR2 : R / 2 ∈ Ioo (0 : ℝ) R := ⟨by linarith, by linarith⟩
+  have hLt : L ≠ ∞ :=
+    ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top (hfin _ hR2)) (hLle _ hR2)
+  -- Step 3: `q(ρ) = (e^{−Λρ}/ωₙ) g(ρ)` for `ρ > 0`
+  set q : ℝ → ℝ≥0∞ := fun ρ => m ρ / (ω * ENNReal.ofReal (ρ ^ n)) with hq_def
+  have hq_eq : ∀ ρ : ℝ, 0 < ρ →
+      q ρ = (ENNReal.ofReal (Real.exp (-(Λ * ρ))) / ω) * g ρ := by
+    intro ρ hρ
+    have hρn : 0 < ρ ^ n := pow_pos hρ n
+    have h1 : ENNReal.ofReal (Real.exp (-(Λ * ρ))) * ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n)
+        = (ENNReal.ofReal (ρ ^ n))⁻¹ := by
+      rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← ENNReal.ofReal_inv_of_pos hρn,
+        mul_div_assoc', ← Real.exp_add, neg_add_cancel, Real.exp_zero, one_div]
+    simp only [hq_def, hg_def]
+    rw [div_eq_mul_inv, ENNReal.mul_inv (Or.inl hω0) (Or.inl hωt), div_eq_mul_inv, ← h1]
+    ring
+  -- Step 4: `e^{−Λρ}/ωₙ → 1/ωₙ`, hence `q(ρ) → L/ωₙ`
+  have hexp : Tendsto (fun ρ : ℝ => ENNReal.ofReal (Real.exp (-(Λ * ρ)))) (𝓝[>] 0) (𝓝 1) := by
+    have hc : Continuous (fun ρ : ℝ => ENNReal.ofReal (Real.exp (-(Λ * ρ)))) :=
+      ENNReal.continuous_ofReal.comp (by fun_prop)
+    have := hc.tendsto 0
+    simp only [mul_zero, neg_zero, Real.exp_zero, ENNReal.ofReal_one] at this
+    exact this.mono_left nhdsWithin_le_nhds
+  have hdiv : Tendsto (fun ρ : ℝ => ENNReal.ofReal (Real.exp (-(Λ * ρ))) / ω) (𝓝[>] 0)
+      (𝓝 (1 / ω)) := ENNReal.Tendsto.div_const hexp (Or.inr hω0)
+  have hprod : Tendsto (fun ρ : ℝ => (ENNReal.ofReal (Real.exp (-(Λ * ρ))) / ω) * g ρ) (𝓝[>] 0)
+      (𝓝 (1 / ω * L)) :=
+    ENNReal.Tendsto.mul hdiv (Or.inr hLt) hgL (Or.inr (ENNReal.div_ne_top ENNReal.one_ne_top hω0))
+  have hq : Tendsto q (𝓝[>] 0) (𝓝 (1 / ω * L)) := by
+    refine hprod.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with ρ hρ
+    exact (hq_eq ρ hρ).symm
+  -- Step 5: `lim sup q = L/ωₙ < ∞`, so `ofReal Θ = L/ωₙ`; this gives (i)
+  have hfinlim : 1 / ω * L ≠ ∞ :=
+    ENNReal.mul_ne_top (ENNReal.div_ne_top ENNReal.one_ne_top hω0) hLt
+  have hΘ : ENNReal.ofReal (limsup q (𝓝[>] 0)).toReal = 1 / ω * L := by
+    rw [hq.limsup_eq, ENNReal.ofReal_toReal hfinlim]
+  refine ⟨?_, ?_⟩
+  · rw [hΘ]
+    exact hq
+  -- Step 6: `ωₙ Θ σⁿe^{−Λσ} = L σⁿe^{−Λσ} ≤ g(σ) σⁿe^{−Λσ} = m(σ)`; this gives (ii)
+  · intro σ hσ
+    have hσn : 0 < σ ^ n := pow_pos hσ.1 n
+    have hone : ENNReal.ofReal (Real.exp (Λ * σ) / σ ^ n) *
+        ENNReal.ofReal (σ ^ n * Real.exp (-(Λ * σ))) = 1 := by
+      rw [← ENNReal.ofReal_mul (div_nonneg (Real.exp_pos _).le hσn.le)]
+      have : Real.exp (Λ * σ) / σ ^ n * (σ ^ n * Real.exp (-(Λ * σ))) = 1 := by
+        rw [show Real.exp (Λ * σ) / σ ^ n * (σ ^ n * Real.exp (-(Λ * σ)))
+            = (Real.exp (Λ * σ) * Real.exp (-(Λ * σ))) * (σ ^ n / σ ^ n) by ring,
+          div_self hσn.ne', ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
+      rw [this, ENNReal.ofReal_one]
+    have hωinv : ω * (1 / ω) = 1 := by
+      rw [one_div, ENNReal.mul_inv_cancel hω0 hωt]
+    show ω * ENNReal.ofReal (limsup q (𝓝[>] 0)).toReal *
+      ENNReal.ofReal (σ ^ n * Real.exp (-(Λ * σ))) ≤ m σ
+    rw [hΘ, ← mul_assoc, hωinv, one_mul]
+    calc L * ENNReal.ofReal (σ ^ n * Real.exp (-(Λ * σ)))
+        ≤ g σ * ENNReal.ofReal (σ ^ n * Real.exp (-(Λ * σ))) := by
+          gcongr
+          exact hLle σ hσ
+      _ = m σ * (ENNReal.ofReal (Real.exp (Λ * σ) / σ ^ n) *
+            ENNReal.ofReal (σ ^ n * Real.exp (-(Λ * σ)))) := by
+          simp only [hg_def]
+          ring
+      _ = m σ := by rw [hone, mul_one]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
