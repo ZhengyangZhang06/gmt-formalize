@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "14f74d94566ba943a01bb6ce9202932ed239118b8b05283069192ffa7494069c",
+  "git_delta": {
+    "base_commit": "9b1f546573b7cbebd55f2a8560980e469149a39a",
+    "candidate_commit": "0d3ef6c2470ca75a73ee3b7d9a16f171946f840b",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dmcbr_ci_gp_density_comparison",
+    "diff_sha256": "5d17e4d116cf39dca4876fcb7de38d95f902d5de66670ef751a55c12c30e3939",
+    "source_sha256": "bc631c90031f10b1d38074e82bf62f54f37fa486842969cca2a214d5c56622d3",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dmcbr_ci_gp_density_comparison",
+      "statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (A : Set (Euclid P)) (t : ℝ≥0∞), (μHE[n] : Measure (Euclid P)) ≤ (unitBallVolume n / 2 ^ n) • (μH[(n : ℝ)] : Measure (Euclid P)) → 0 < t → (∀ x ∈ A, t < limsup (fun r : ℝ => μ (closedBall x r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0)) → t * μHE[n] A ≤ μ univ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
