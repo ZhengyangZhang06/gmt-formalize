@@ -1,0 +1,19 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.cycle_tangent_cone-a1.stationarity-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/6400",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "e6ea7824dd57cfbcd53ef7295cabbcac31008720",
+  "integrated_commit": "",
+  "proof_base_commit": "18e64575f2abf2afddb18166e57e18515439f844",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_tangent_cone_planar-a1.cycle_tangent_cone-a1",
+  "requires": [
+    "root.minimizing_implies_stationary-a1.support_null-a1",
+    "root.minimizing_implies_stationary-a1.stationary_of_minimizing-a1",
+    "root.minimizing_implies_stationary-a1.mean_curvature_of_stationary-a1"
+  ]
+}
