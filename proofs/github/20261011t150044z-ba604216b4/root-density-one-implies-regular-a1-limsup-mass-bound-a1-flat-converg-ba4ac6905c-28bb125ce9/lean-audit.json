@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ba271b08771cb56f1c24c4065faa4501478d1745e3768ff42edbc291b5ebfb7d",
+  "git_delta": {
+    "base_commit": "ff88ab03e41913b0583091af92b3d28910a01f5b",
+    "candidate_commit": "c11d929e1c868692a35ea6f5bf8329b0bdcac574",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_dtop_ip_image_imrep",
+    "diff_sha256": "5015b869192011efeaed0b7e38d1a746e07ddece8719d0504129e96aa2d5fd54",
+    "source_sha256": "4eed06626b70ba74f9830f64a276cfcecdaa88bde33ba7b1eb914ebbe3238c7c",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_dtop_ip_image_imrep",
+      "statement": "∀ (P Q d : ℕ) (L : Euclid P →L[ℝ] Euclid Q) (hL : IsProperMap (fun x => (0 : Euclid Q) + L x)) (T : GeometricCurrentOn (univ : Set (Euclid P)) d) (R : IMRep (univ : Set (Euclid P)) d), Isometry L → R.Represents T → ∃ R' : IMRep (univ : Set (Euclid Q)) d, R'.Represents (GeometricCurrentOn.affinePushforward (V := (univ : Set (Euclid Q))) L 0 hL T) ∧ ∀ s : Set (Euclid Q), MeasurableSet s → R'.measure s = R.measure (L ⁻¹' s)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
