@@ -520,6 +520,132 @@ theorem Submission.cbrz_approxTangent_finite_zero : ∀ (P : ℕ) (F : Set (Eucl
     exact absurd (hfin.mem_toFinset.2 ⟨y, hy, by simp [Poincare.SimonGMT.Chapter03.blowUpMap]⟩)
       h0
 
+/-- A finite integer point sum `S(ω) = Σ_{l<M} v_l ⟨ω(y_l)⟩` in `𝒟₀(V)`, `⟨α⟩ = α(e)` for the
+empty family `e`, is integer multiplicity (Simon 6.3.1 for `n = 0`, the case called trivial in
+the proof of Ch. 6, 8.2).  Group the coefficients by location, `m(p) = Σ_{y_l = p} v_l`; the
+points outside `V` (where `ω` vanishes) and those with `m(p) = 0` contribute nothing, which
+leaves a finite set `G ⊆ V`.  Then `(G, |m|, sign(m) ⟨·⟩)` represents `S`: `H⁰` is counting
+measure on `G` (`Submission.cbrz_finset_integral_hausdorff_zero`), and the approximate tangent
+space `⊥` of the finite set `G` (`Submission.cbrz_approxTangent_finite_zero`) is oriented by
+`±⟨·⟩`. -/
+theorem Submission.cbrz_isIntegerMultiplicity_point_sum : ∀ (P : ℕ) (V : Set (Euclid P)) (S : GeometricCurrentOn V 0) (M : ℕ) (v : ℕ → ℤ) (y : ℕ → Euclid P), (∀ ω : TestFormOn V 0, S ω = ∑ l ∈ Finset.range M, (v l : ℝ) * (ω : DifferentialForm (Euclid P) 0) (y l) (fun i => i.elim0)) → IsIntegerMultiplicity S := by
+  have hCI := Submission.cbrz_finset_integral_hausdorff_zero
+  have hFT := Submission.cbrz_approxTangent_finite_zero
+  intro P V S M v y hS
+  classical
+  -- Step 1: `m(p) = Σ_{y_l = p} v_l`, `Y = {y_l : l < M}`, `G = {p ∈ Y : p ∈ V, m(p) ≠ 0}`
+  let m : Euclid P → ℤ := fun p => ∑ l ∈ Finset.range M, if y l = p then v l else 0
+  let Y : Finset (Euclid P) := (Finset.range M).image y
+  let Gf : Finset (Euclid P) := Y.filter (fun p => p ∈ V ∧ m p ≠ 0)
+  have hGmem : ∀ p, p ∈ Gf ↔ p ∈ Y ∧ (p ∈ V ∧ m p ≠ 0) := fun p => Finset.mem_filter
+  have hGfin : (Gf : Set (Euclid P)).Finite := Gf.finite_toSet
+  have hGmeas : MeasurableSet (Gf : Set (Euclid P)) := hGfin.measurableSet
+  -- `ev(α) = ⟨α⟩ = α(e)`
+  let ev : MultiVector P 0 := ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ (fun i => i.elim0)
+  have hev : ∀ α : Covector (Euclid P) 0, ev α = α (fun i => i.elim0) := fun α => rfl
+  -- Step 2: `Σ_l v_l φ(y_l) = Σ_{p ∈ Y} m(p) φ(p)`, so `S(ω) = Σ_{p ∈ G} m(p) ⟨ω(p)⟩`
+  have hgroup : ∀ f : Euclid P → ℝ,
+      ∑ l ∈ Finset.range M, (v l : ℝ) * f (y l) = ∑ p ∈ Y, (m p : ℝ) * f p := by
+    intro f
+    simp only [m, Int.cast_sum, Int.cast_ite, Int.cast_zero, Finset.sum_mul]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun l hl => ?_
+    rw [Finset.sum_eq_single (y l)]
+    · simp
+    · intro p _ hp
+      simp [Ne.symm hp]
+    · intro h
+      exact absurd (Finset.mem_image_of_mem y hl) h
+  have hred : ∀ ω : TestFormOn V 0, S ω =
+      ∑ p ∈ Gf, (m p : ℝ) * (ω : DifferentialForm (Euclid P) 0) p (fun i => i.elim0) := by
+    intro ω
+    rw [hS ω, hgroup (fun p => (ω : DifferentialForm (Euclid P) 0) p (fun i => i.elim0))]
+    symm
+    apply Finset.sum_filter_of_ne
+    intro p _ hp
+    refine ⟨?_, fun h0 => hp (by simp [h0])⟩
+    -- `ω(p) = 0` off `tsupport ω ⊆ V`
+    by_contra hpV
+    apply hp
+    have h0 : (ω : DifferentialForm (Euclid P) 0) p = 0 :=
+      image_eq_zero_of_notMem_tsupport (fun h => hpV (ω.property.2 h))
+    simp [h0]
+  -- Step 3: `m` is measurable, hence so are `|m|` and `sign(m)` on `G`
+  have hm : Measurable m := by
+    apply Finset.measurable_sum
+    intro l _
+    refine Measurable.ite ?_ measurable_const measurable_const
+    have h : {a : Euclid P | y l = a} = {y l} := by
+      ext a
+      simp [eq_comm]
+    rw [h]
+    exact measurableSet_singleton _
+  let sgn : Euclid P → ℝ :=
+    (Gf : Set (Euclid P)).indicator (fun q => ((Int.sign (m q) : ℤ) : ℝ))
+  have hsgn : Measurable sgn :=
+    ((Measurable.of_discrete (f := fun z : ℤ => ((Int.sign z : ℤ) : ℝ))).comp hm).indicator hGmeas
+  -- Step 4: the triple `(G, |m|, sign(m) ev)`
+  let R : IMRep V 0 :=
+    { carrier := Gf
+      mult := (Gf : Set (Euclid P)).indicator (fun p => (m p).natAbs)
+      orient := fun p => sgn p • ev
+      measurableSet_carrier := hGmeas
+      carrier_subset := fun p hp => ((hGmem p).mp hp).2.1
+      rectifiable := by
+        -- `G` is covered by the ranges of constant maps `ℝ⁰ → ℝᴾ`
+        rcases (Gf : Set (Euclid P)).eq_empty_or_nonempty with h | h
+        · rw [h]
+          exact Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+        · obtain ⟨φ, hφ⟩ := hGfin.countable.exists_eq_range h
+          refine ⟨∅, measure_empty, fun j _ => φ j, fun j => ⟨0, LipschitzWith.const (φ j)⟩, ?_⟩
+          intro x hx
+          rw [hφ] at hx
+          obtain ⟨j, rfl⟩ := hx
+          exact Or.inr (mem_iUnion.mpr ⟨j, ⟨0, rfl⟩⟩)
+      measurable_mult :=
+        ((Measurable.of_discrete (f := fun z : ℤ => z.natAbs)).comp hm).indicator hGmeas
+      mult_pos := fun p hp => by
+        rw [Set.indicator_of_mem hp]
+        exact Int.natAbs_pos.mpr ((hGmem p).mp hp).2.2
+      locallyIntegrable_mult := fun K _ _ => by
+        -- `∫_{G ∩ K} |m| dH⁰ ≤ ∫_G |m| dH⁰ = Σ_{p ∈ G} |m(p)| < ∞`
+        refine ne_top_of_le_ne_top ?_ (lintegral_mono_set inter_subset_left)
+        rw [(hCI P Gf (fun _ => 0) _).2]
+        exact ENNReal.sum_ne_top.mpr fun p _ => ENNReal.natCast_ne_top _
+      aestronglyMeasurable_orient :=
+        (hsgn.stronglyMeasurable.smul_const ev).aestronglyMeasurable
+      orients := by
+        -- at every `p ∈ G`: `T_p G = ⊥`, and `sign(m(p)) ev = ±ev` orients `⊥` via `τ = e`
+        refine ae_restrict_of_forall_mem hGmeas fun p hp => ?_
+        refine ⟨⊥, hFT P _ p hGfin hp, fun i => i.elim0,
+          ⟨fun i => i.elim0, fun i => i.elim0⟩, by simp, ?_⟩
+        have hmp := ((hGmem p).mp hp).2.2
+        rcases lt_or_gt_of_ne hmp with hneg | hpos
+        · right
+          intro α
+          simp [sgn, Set.indicator_of_mem hp, Int.sign_eq_neg_one_of_neg hneg, hev]
+        · left
+          intro α
+          simp [sgn, Set.indicator_of_mem hp, Int.sign_eq_one_of_pos hpos, hev] }
+  -- Step 5: `R(ω) = Σ_{p ∈ G} |m(p)| sign(m(p)) ⟨ω(p)⟩ = Σ_{p ∈ G} m(p) ⟨ω(p)⟩ = S(ω)`
+  refine ⟨R, fun ω => ?_⟩
+  rw [hred ω]
+  change _ = ∫ x in (Gf : Set (Euclid P)),
+    (((Gf : Set (Euclid P)).indicator (fun p => (m p).natAbs) x : ℕ) : ℝ) *
+      (sgn x • ev) ((ω : DifferentialForm (Euclid P) 0) x) ∂μHE[0]
+  rw [(hCI P Gf _ (fun _ => 0)).1]
+  refine Finset.sum_congr rfl fun p hp => ?_
+  have hpc : p ∈ (Gf : Set (Euclid P)) := Finset.mem_coe.mpr hp
+  simp only [sgn, Set.indicator_of_mem hpc, _root_.smul_apply, smul_eq_mul, hev]
+  have h : ((Int.sign (m p) * ((m p).natAbs : ℤ) : ℤ) : ℝ) = (m p : ℝ) := by
+    rw [Int.sign_mul_natAbs]
+  simp only [Int.cast_mul, Int.cast_natCast] at h
+  have h' : (((m p).natAbs : ℕ) : ℝ) * ((Int.sign (m p) : ℤ) : ℝ) = (m p : ℝ) := by
+    rw [mul_comm]
+    exact h
+  rw [← h']
+  ring
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
