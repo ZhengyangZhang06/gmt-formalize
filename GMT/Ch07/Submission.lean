@@ -733,6 +733,210 @@ theorem Submission.dor_lmb_fcd_jwc_lipschitz_smooth_approx : ∀ (k : ℕ) (L : 
       have := tendsto_iff_norm_sub_tendsto_zero.1 (hx i)
       simpa using this
     simpa using this
+/-- **The coordinate covector `dx^I`** (Simon Ch. 6, §1): for `I : Fin n → Fin P` some
+`n`-covector `θ` on `ℝᴾ` has `θ(v₁, …, vₙ) = det (vⱼ(I k))_{k,j}`.  With the coordinate
+projection `p_I x = (x(I k))_k`, `θ⁰ = det ∘ p_I` is alternating, `det Mᵀ = det M` gives the
+formula, and the Leibniz formula with `|x(l)| ≤ ‖x‖` gives `|θ⁰(v)| ≤ n! ∏ⱼ ‖vⱼ‖`, so
+`θ⁰` is continuous. -/
+theorem Submission.cmr_cc_det_covector_exists : ∀ (P n : ℕ) (I : Fin n → Fin P), ∃ θ : Covector (Euclid P) n, ∀ v : Fin n → Euclid P, θ v = Matrix.det (Matrix.of fun k j => v j (I k)) := by
+  intro P n I
+  -- Step 1: the coordinate projection `p_I x = (x(I k))_k` is linear
+  let p : Euclid P →ₗ[ℝ] (Fin n → ℝ) :=
+    { toFun := fun x k => x (I k)
+      map_add' := fun x y => by
+        funext k
+        simp
+      map_smul' := fun c x => by
+        funext k
+        simp }
+  -- Step 2: `θ⁰ = Θ ∘ p_I`, with `Θ` the determinant as an alternating map in the rows
+  let θ₀ : Euclid P [⋀^Fin n]→ₗ[ℝ] ℝ := Matrix.detRowAlternating.compLinearMap p
+  -- Step 3: `θ⁰(v) = det (vⱼ(I k))_{j,k} = det (vⱼ(I k))_{k,j}` by `det Mᵀ = det M`
+  have hθ₀ : ∀ v : Fin n → Euclid P, θ₀ v = Matrix.det (Matrix.of fun k j => v j (I k)) := by
+    intro v
+    rw [← Matrix.det_transpose]
+    rfl
+  -- Step 4: the Leibniz formula, `|sign σ| = 1` and `|x(l)| ≤ ‖x‖` give
+  -- `|θ⁰(v)| ≤ n! ∏ⱼ ‖vⱼ‖`
+  have hbound : ∀ v : Fin n → Euclid P, ‖θ₀ v‖ ≤ (n.factorial : ℝ) * ∏ j, ‖v j‖ := by
+    intro v
+    rw [hθ₀, Real.norm_eq_abs, Matrix.det_apply]
+    calc |∑ σ : Equiv.Perm (Fin n),
+            Equiv.Perm.sign σ • ∏ j, Matrix.of (fun k j => v j (I k)) (σ j) j|
+        ≤ ∑ σ : Equiv.Perm (Fin n),
+            |Equiv.Perm.sign σ • ∏ j, Matrix.of (fun k j => v j (I k)) (σ j) j| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _σ : Equiv.Perm (Fin n), ∏ j, ‖v j‖ := by
+          refine Finset.sum_le_sum fun σ _ => ?_
+          have hσ : |Equiv.Perm.sign σ • ∏ j, Matrix.of (fun k j => v j (I k)) (σ j) j| =
+              ∏ j, |v j (I (σ j))| := by
+            rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;>
+              simp [h, Finset.abs_prod]
+          rw [hσ]
+          gcongr with j
+          rw [← Real.norm_eq_abs]
+          exact PiLp.norm_apply_le (v j) (I (σ j))
+      _ = (n.factorial : ℝ) * ∏ j, ‖v j‖ := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_perm, Fintype.card_fin,
+            nsmul_eq_mul]
+  -- Step 5: `θ = θ⁰.mkContinuous n!` is an `n`-covector with the same values as `θ⁰`
+  exact ⟨θ₀.mkContinuous (n.factorial : ℝ) hbound, hθ₀⟩
+
+/-- **The Piola identity** (the Jacobian minors are null Lagrangians): for `C²` functions
+`g₀, …, g_{r-1}` on `ℝᵏ` and directions `V₀, …, V_r`, the minors
+`M_b(y) = det (Dg_c(y) V_{s_b(b')})_{c,b'}` (`s_b = Fin.succAbove b`, so `V_b` is deleted) satisfy
+`∑_b (-1)^b DM_b(x) V_b = 0`.  With `G = (g₀, …, g_{r-1})` and the constant determinant form
+`θ = dy⁰ ∧ ⋯ ∧ dy^{r-1}` one has `M_b(y) = (G^*θ)(y)(V ∘ s_b)`, so the left side is
+`d(G^*θ)(x)(V)`, and `d(G^*θ) = G^*(dθ) = 0` by the naturality of `d` (which is where the symmetry
+of `D²G` enters). -/
+theorem Submission.dor_lmb_fcd_jwc_piola_identity : ∀ (k r : ℕ) (g : Fin r → Euclid k → ℝ) (V : Fin (r + 1) → Euclid k) (x : Euclid k), (∀ c, ContDiff ℝ 2 (g c)) → ∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * fderiv ℝ (fun y => Matrix.det (Matrix.of fun (c b' : Fin r) => fderiv ℝ (g c) y (V (b.succAbove b')))) x (V b) = 0 := by
+  intro k r g V x hg
+  -- Step 1: the map `G = (g₀, …, g_{r-1}) : ℝᵏ → ℝʳ` is `C²`, and `(DG(y) w)_c = Dg_c(y) w`
+  set e : (Fin r → ℝ) ≃L[ℝ] Euclid r := (EuclideanSpace.equiv (Fin r) ℝ).symm with he
+  set G : Euclid k → Euclid r := fun y => e (fun c => g c y) with hG
+  have hGc : ContDiff ℝ 2 G := e.contDiff.comp (contDiff_pi.2 hg)
+  have hGd : ∀ y w (c : Fin r), fderiv ℝ G y w c = fderiv ℝ (g c) y w := by
+    intro y w c
+    have hpi : HasFDerivAt (fun y => fun c => g c y)
+        (ContinuousLinearMap.pi fun c => fderiv ℝ (g c) y) y :=
+      hasFDerivAt_pi.2 fun c => ((hg c).differentiable (by norm_num) y).hasFDerivAt
+    have h := e.hasFDerivAt.comp y hpi
+    rw [show G = e ∘ (fun y => fun c => g c y) from rfl, h.fderiv]
+    simp [he]
+  -- Step 2: the constant determinant form `Θ ≡ θ`, `θ(w) = det (w_b(c))_{c,b}`
+  obtain ⟨θ, hθ⟩ := Submission.cmr_cc_det_covector_exists r r id
+  set Θ : Euclid r → Covector (Euclid r) r := fun _ => θ with hΘ
+  -- Step 3: `dΘ = 0`, since `DΘ = 0` and the alternatization is linear
+  have hdΘ : extDeriv Θ (G x) = 0 := by
+    simp [extDeriv, hΘ, ← ContinuousAlternatingMap.alternatizeUncurryFinCLM_apply]
+  -- Step 4: naturality of `d` gives `d(G^*Θ)(x) = (dΘ)(G x) ∘ DG(x) = 0`
+  have hpull := extDeriv_pullback (ω := Θ) (f := G) (x := x) (r := 2) (differentiableAt_const θ)
+    hGc.contDiffAt (by simp)
+  rw [hdΘ] at hpull
+  -- Step 5: the coordinate formula `d(G^*Θ)(x)(V) = ∑_b (-1)^b D[(G^*Θ)(·)(V ∘ s_b)](x) V_b`
+  have hβd : DifferentiableAt ℝ (fun y => (Θ (G y)).compContinuousLinearMap (fderiv ℝ G y)) x :=
+    (differentiableAt_const θ).continuousAlternatingMapCompContinuousLinearMap
+      ((hGc.fderiv_right (m := 1) (by norm_num)).differentiable (by norm_num) x)
+  have happ := extDeriv_apply hβd V
+  rw [hpull] at happ
+  -- Step 6: `(G^*Θ)(y)(V ∘ s_b) = M_b(y)` by Steps 1 and 2
+  have hβ : ∀ i : Fin (r + 1), (fun y => (Θ (G y)).compContinuousLinearMap (fderiv ℝ G y)
+      (i.removeNth V)) = fun y => Matrix.det (Matrix.of fun (c b' : Fin r) =>
+        fderiv ℝ (g c) y (V (i.succAbove b'))) := by
+    intro i
+    funext y
+    simp only [hΘ, ContinuousAlternatingMap.compContinuousLinearMap_apply, hθ]
+    congr 1
+    ext c b'
+    simp [Matrix.of_apply, Fin.removeNth, hGd]
+  -- Step 7: hence `0 = d(G^*Θ)(x)(V) = ∑_b (-1)^b DM_b(x) V_b`
+  simp only [hβ] at happ
+  rw [eq_comm] at happ
+  simpa [zsmul_eq_mul] using happ
+
+/-- **Integration by parts for Jacobian minors** (formula (∗) of the weak continuity of Jacobian
+minors, for `C²` maps): for `C²` functions `g₀, …, g_r` on `ℝᵏ`, directions `V₀, …, V_r` and a
+compactly supported `C¹` function `ψ`, with `A = (Dg_c V_b)_{c,b}` and `M_b` the minor of `A`
+without row `0` and column `b`, `∫ ψ det A = −Σ_b (−1)^b ∫ (Dψ V_b) g₀ M_b`.  Laplace expansion
+along row `0`, the product rule for `F_b = ψ g₀ M_b` and the Piola identity
+`Σ_b (−1)^b ∂_{V_b} M_b = 0` give `ψ det A = Σ_b (−1)^b ∂_{V_b} F_b − Σ_b (−1)^b (∂_{V_b} ψ) g₀ M_b`
+pointwise, and `∫ ∂_W F = 0` for every compactly supported `C¹` function `F` (integration by
+parts of the Lipschitz functions `1` and `F`). -/
+theorem Submission.dor_lmb_fcd_jwc_smooth_minor_ibp : ∀ (k r : ℕ) (g : Fin (r + 1) → Euclid k → ℝ) (V : Fin (r + 1) → Euclid k) (ψ : Euclid k → ℝ), (∀ c, ContDiff ℝ 2 (g c)) → ContDiff ℝ 1 ψ → HasCompactSupport ψ → ∫ x, ψ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b)) = -∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * ∫ x, fderiv ℝ ψ x (V b) * g 0 x * Matrix.det (Matrix.of fun (c b' : Fin r) => fderiv ℝ (g c.succ) x (V (b.succAbove b'))) := by
+  intro k r g V ψ hg hψ hψs
+  -- Step 2: the entries `Dg_c(·)W` are `C¹` (`g_c` is `C²`), hence so is every determinant of
+  -- such entries (Leibniz formula), in particular every minor `M_b`
+  have hdetC1 : ∀ {m : ℕ} (A : Euclid k → Fin m → Fin m → ℝ),
+      (∀ i j, ContDiff ℝ 1 (fun x => A x i j)) →
+      ContDiff ℝ 1 (fun x => Matrix.det (Matrix.of (A x))) := by
+    intro m A hA
+    have hLeib : (fun x => Matrix.det (Matrix.of (A x))) =
+        fun x => ∑ σ : Equiv.Perm (Fin m), ((Equiv.Perm.sign σ : ℤ) : ℝ) * ∏ i, A x (σ i) i := by
+      funext x
+      rw [Matrix.det_apply]
+      refine Finset.sum_congr rfl fun σ _ => ?_
+      rw [Units.smul_def, zsmul_eq_mul]
+      simp [Matrix.of_apply]
+    rw [hLeib]
+    exact ContDiff.sum fun σ _ => contDiff_const.mul (contDiff_prod fun i _ => hA _ _)
+  have hentry : ∀ c (W : Euclid k), ContDiff ℝ 1 (fun x => fderiv ℝ (g c) x W) := fun c W =>
+    ((hg c).fderiv_right (by norm_num)).clm_apply contDiff_const
+  set M : Fin (r + 1) → Euclid k → ℝ := fun b x => Matrix.det (Matrix.of fun (c b' : Fin r) =>
+    fderiv ℝ (g c.succ) x (V (b.succAbove b')))
+  have hMC1 : ∀ b, ContDiff ℝ 1 (M b) := fun b =>
+    hdetC1 (fun x c b' => fderiv ℝ (g c.succ) x (V (b.succAbove b'))) fun c b' => hentry _ _
+  -- `F_b = ψ g₀ M_b` is `C¹` with compact support
+  have hFC1 : ∀ b, ContDiff ℝ 1 (fun y => ψ y * g 0 y * M b y) := fun b =>
+    (hψ.mul ((hg 0).of_le (by norm_num))).mul (hMC1 b)
+  have hFs : ∀ b, HasCompactSupport (fun y => ψ y * g 0 y * M b y) := fun b =>
+    hψs.mul_right.mul_right
+  -- Step 3: product rule for `∂_{V_b} F_b`
+  have hdiff : ∀ b x, fderiv ℝ (fun y => ψ y * g 0 y * M b y) x (V b) =
+      fderiv ℝ ψ x (V b) * g 0 x * M b x + ψ x * fderiv ℝ (g 0) x (V b) * M b x +
+        ψ x * g 0 x * fderiv ℝ (M b) x (V b) := by
+    intro b x
+    have hψd : DifferentiableAt ℝ ψ x := hψ.differentiable (by norm_num) x
+    have hgd : DifferentiableAt ℝ (g 0) x := (hg 0).differentiable (by norm_num) x
+    have hMd : DifferentiableAt ℝ (M b) x := (hMC1 b).differentiable (by norm_num) x
+    have h : HasFDerivAt (fun y => ψ y * g 0 y * M b y) _ x :=
+      (hψd.hasFDerivAt.mul hgd.hasFDerivAt).mul hMd.hasFDerivAt
+    rw [h.fderiv]
+    simp only [add_apply, smul_apply, smul_eq_mul, Pi.mul_apply]
+    ring
+  -- Steps 1, 4, 5: Laplace expansion along row `0` and the Piola identity give, pointwise,
+  -- `ψ det A = Σ_b (−1)^b ∂_{V_b} F_b − Σ_b (−1)^b (∂_{V_b} ψ) g₀ M_b`
+  have hpt : ∀ x, ψ x * Matrix.det (Matrix.of fun c b => fderiv ℝ (g c) x (V b)) =
+      ∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * fderiv ℝ (fun y => ψ y * g 0 y * M b y) x (V b) -
+        ∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * (fderiv ℝ ψ x (V b) * g 0 x * M b x) := by
+    intro x
+    have hp : ∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * fderiv ℝ (M b) x (V b) = 0 :=
+      Submission.dor_lmb_fcd_jwc_piola_identity k r (fun c => g c.succ) V x fun c => hg c.succ
+    simp_rw [hdiff]
+    have halg : ∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * (fderiv ℝ ψ x (V b) * g 0 x * M b x +
+          ψ x * fderiv ℝ (g 0) x (V b) * M b x + ψ x * g 0 x * fderiv ℝ (M b) x (V b)) -
+        ∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * (fderiv ℝ ψ x (V b) * g 0 x * M b x) =
+        ψ x * ∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * fderiv ℝ (g 0) x (V b) * M b x +
+          ψ x * g 0 x * ∑ b : Fin (r + 1), (-1 : ℝ) ^ (b : ℕ) * fderiv ℝ (M b) x (V b) := by
+      rw [← Finset.sum_sub_distrib, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun b _ => by ring
+    rw [halg, hp, mul_zero, add_zero, Matrix.det_succ_row_zero]
+    rfl
+  -- Step 6: `∫ ∂_W F = 0` for `C¹` compactly supported `F` (integration by parts of the
+  -- Lipschitz functions `1` and `F`)
+  have hIBP0 : ∀ F : Euclid k → ℝ, ContDiff ℝ 1 F → HasCompactSupport F → ∀ W,
+      ∫ x, fderiv ℝ F x W = 0 := by
+    intro F hF hFs W
+    obtain ⟨C, hFL⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hFs hF (by norm_num)
+    have h := LipschitzWith.integral_lineDeriv_mul_eq (μ := (volume : Measure (Euclid k)))
+      (LipschitzWith.const (1 : ℝ)) hFL hFs (-W)
+    have h0 : ∀ x : Euclid k, lineDeriv ℝ (fun _ : Euclid k => (1 : ℝ)) x (-W) = 0 := by
+      intro x
+      rw [(differentiableAt_const (1 : ℝ)).lineDeriv_eq_fderiv]
+      simp
+    have h1 : ∀ x, lineDeriv ℝ F x W = fderiv ℝ F x W := fun x =>
+      (hF.differentiable (by norm_num) x).lineDeriv_eq_fderiv
+    simp only [h0, zero_mul, integral_zero, neg_neg, mul_one, h1] at h
+    exact h.symm
+  -- Step 7: every term is continuous with compact support, hence integrable; integrate
+  have hi1 : ∀ b : Fin (r + 1), Integrable (fun x => (-1 : ℝ) ^ (b : ℕ) *
+      fderiv ℝ (fun y => ψ y * g 0 y * M b y) x (V b)) := fun b =>
+    ((((hFC1 b).continuous_fderiv (by norm_num)).clm_apply
+      continuous_const).integrable_of_hasCompactSupport ((hFs b).fderiv_apply ℝ (V b))).const_mul _
+  have hi2 : ∀ b : Fin (r + 1), Integrable (fun x => (-1 : ℝ) ^ (b : ℕ) *
+      (fderiv ℝ ψ x (V b) * g 0 x * M b x)) := fun b =>
+    (((((hψ.continuous_fderiv (by norm_num)).clm_apply continuous_const).mul
+      (hg 0).continuous).mul (hMC1 b).continuous).integrable_of_hasCompactSupport
+      ((hψs.fderiv_apply ℝ (V b)).mul_right.mul_right)).const_mul _
+  rw [integral_congr_ae (Eventually.of_forall hpt),
+    integral_sub (integrable_finsetSum _ fun b _ => hi1 b)
+      (integrable_finsetSum _ fun b _ => hi2 b),
+    integral_finsetSum _ fun b _ => hi1 b, integral_finsetSum _ fun b _ => hi2 b]
+  have hz : ∑ b : Fin (r + 1), ∫ x, (-1 : ℝ) ^ (b : ℕ) *
+      fderiv ℝ (fun y => ψ y * g 0 y * M b y) x (V b) = 0 :=
+    Finset.sum_eq_zero fun b _ => by rw [integral_const_mul, hIBP0 _ (hFC1 b) (hFs b) _, mul_zero]
+  rw [hz, zero_sub]
+  simp only [integral_const_mul]
+  rfl
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
