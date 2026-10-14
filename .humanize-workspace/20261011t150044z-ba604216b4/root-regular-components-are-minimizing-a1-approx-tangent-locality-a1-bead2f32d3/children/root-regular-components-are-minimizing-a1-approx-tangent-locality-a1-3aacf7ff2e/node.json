@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.pointwise_comparison-a1.tangent_transfer-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.approx_tangent_locality-a1.pointwise_comparison-a1",
+  "depth": 4,
+  "title": "Asymptotically equal blow-up integrals give equal approximate tangent spaces (Simon Ch. 3, Definition 1.4)",
+  "statement": "Let P, n ∈ ℕ, let M, M' ⊆ ℝ^P be arbitrary sets and x ∈ ℝ^P. Write η_r = blowUpMap x r and μ = μHE[n]. Suppose that for every compactly supported continuous f : ℝ^P → ℝ, ∫_{η_r(M)} f dμ − ∫_{η_r(M')} f dμ → 0 as r → 0⁺ (filter 𝓝[>]0). Then for every linear subspace Q of ℝ^P, M has approximate tangent space Q at x (HasApproximateTangentSpaceAt n M x Q, Simon Ch. 3, Definition 1.4) if and only if M' does.",
+  "lean_statement": "∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P), (∀ f : CompactlySupportedContinuousMap (Euclid P) ℝ, Tendsto (fun r : ℝ => (∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M, f y ∂μHE[n]) - ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' M', f y ∂μHE[n]) (𝓝[>] 0) (𝓝 0)) → ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q",
+  "lean_name": "regcomp_atl_pc_tangent_iff_of_integral_sub_tendsto",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1-3aacf7ff2e-a1"
+}
