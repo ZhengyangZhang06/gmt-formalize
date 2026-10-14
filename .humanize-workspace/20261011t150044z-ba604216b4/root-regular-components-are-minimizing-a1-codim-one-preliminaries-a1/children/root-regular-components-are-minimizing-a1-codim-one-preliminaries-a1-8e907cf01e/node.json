@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.region_support_subset-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1",
+  "depth": 3,
+  "title": "∂[[E]] is supported in N when E ⊆ N and (N̄∖N) ∩ U = ∅",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, let N, E ⊆ ℝ^P with (N̄ ∖ N) ∩ U = ∅ and E ⊆ N, let ξ_N : ℝ^P → Λ_{n+1}(ℝ^P) be arbitrary, and let T ∈ 𝒟_n(U) satisfy T(ω) = ∫_E ⟨dω, ξ_N⟩ dH^{n+1} for every ω ∈ 𝒟^n(U) (IsBoundaryOfRegion T E ξ_N). Then spt T ⊆ N.",
+  "lean_statement": "∀ (P n : ℕ) (U N E : Set (Euclid P)) (ξN : Euclid P → MultiVector P (n + 1)) (T : GeometricCurrentOn U n), IsOpen U → (closure N \\ N) ∩ U = ∅ → E ⊆ N → IsBoundaryOfRegion T E ξN → T.support ⊆ N",
+  "lean_name": "regcomp_cop_region_support_subset",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-8e907cf01e-a1"
+}
