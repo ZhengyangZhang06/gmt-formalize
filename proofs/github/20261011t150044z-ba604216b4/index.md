@@ -1,0 +1,7 @@
+# Theorem solutions
+
+Local proof acceptance and GitHub merge status are separate.
+
+| Node | Issue | PR | Requires |
+| --- | --- | --- | --- |
+| root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1 | https://github.com/ZhengyangZhang06/gmt-formalize/issues/7943 | this PR | root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.density_measurable-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.density_rescale-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.tangent_measures-a1.density_homogeneous-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.density_normalization-a1, root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.nonhomogeneous-a1, root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.convergence_tools-a1.portmanteau-a1, root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.threshold_limit-a1, root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.eventually_near-a1, root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.homogeneous_infinite_mass-a1 |
