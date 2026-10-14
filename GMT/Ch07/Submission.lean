@@ -5392,6 +5392,209 @@ theorem Submission.codim1_massOn_eq_lintegral_of_oriented_rep : ∀ (P k : ℕ) 
     (Submission.codim1_oriented_rep_lintegral_le_massOn P k U V M' T θ' ξ' hVU hθ hθ0 hξ hξQ hT W hW
       hWV hI)⟩
 
+/-- **Area comparison from minimality** (Simon 7.1.1; Appendix B, the competitors `(id + tZ)_#C`
+for `H^n(M_t) ≥ H^n(M_0)`).  Let `K = spt Z ⊆ V` and choose an open `W ⊇ K` with `closure W` a
+compact subset of `V`, so `H^m(M ∩ W) < ∞`.  For `|t| < t₀`, `Φ = id + tZ` is a bi-Lipschitz
+`C^∞` bijection with injective derivative, `Φ = id` off `K` and `Φ(K) ⊆ K`.  The push-forward
+`S = Φ_#C`, `S(ω) = C(Φ^#ω)`, has `∂S = 0`.  For `D₁ = [[M ∩ W]]` and `D₂ = Φ_#[[M ∩ W]]`
+(integer multiplicity), `S − C = D₂ − D₁`, because `Φ^#ω − ω` vanishes off `K ⊆ W` and `C = [[M]]`
+on forms supported in `V`.  Hence `S = C − (D₁ − D₂)` is integer multiplicity, `∂S = ∂C`, and
+`spt(S − C) ⊆ K`.  Minimality and `S = D₂` on forms supported in `W` give
+`H^m(M ∩ W) ≤ M_W(C) ≤ M_W(S) ≤ M_W(D₂) ≤ H^m(Φ(M ∩ W))`.  Finally `Φ(M ∩ W) ∩ K = Φ(M ∩ K)` and
+`Φ(M ∩ W) \ K = (M ∩ W) \ K`; cancelling the finite measure of `(M ∩ W) \ K` gives the claim. -/
+theorem Submission.codim1_minimizing_piece_area_comparison : ∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (V M : Set (Euclid P)) (ξ : Euclid P → MultiVector P m), 1 ≤ m → IsMinimizingIn C univ → BoundaryVanishes C → IsOpen V → M ⊆ V → IsEmbeddedSubmanifold 1 m M → IsOrientation m M ξ → (∀ K : Set (Euclid P), IsCompact K → K ⊆ V → μHE[m] (M ∩ K) ≠ ∞) → (∀ ω : TestFormOn (univ : Set (Euclid P)) m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ V → C ω = ∫ x in M, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]) → (∀ W : Set (Euclid P), IsOpen W → W ⊆ V → μHE[m] (M ∩ W) ≠ ∞ → μHE[m] (M ∩ W) ≤ C.massOn W) → ∀ Z : Euclid P → Euclid P, ContDiff ℝ (⊤ : ℕ∞) Z → HasCompactSupport Z → tsupport Z ⊆ V → ∃ t₀ : ℝ, 0 < t₀ ∧ ∀ t : ℝ, |t| < t₀ → μHE[m] (M ∩ tsupport Z) ≤ μHE[m] ((fun x => x + t • Z x) '' (M ∩ tsupport Z)) := by
+  intro P m C V M ξ hm hmin hbdry hV _hMV hM hξ hLF hRep hmass Z hZ hZc hZV
+  -- currents with `∂ = 0` have the same boundary (vacuous in degree `0`)
+  have hsame : ∀ {n : ℕ} (A B : GeometricCurrentOn (univ : Set (Euclid P)) n),
+      BoundaryVanishes A → BoundaryVanishes B → SameBoundary A B := by
+    intro n A B hA hB
+    cases n with
+    | zero => trivial
+    | succ k => exact (hA : A.boundary = 0).trans (hB : B.boundary = 0).symm
+  -- Step 1: `K = spt Z` is compact; an open `W ⊇ K` with `closure W` a compact subset of `V`
+  set K : Set (Euclid P) := tsupport Z
+  have hKc : IsCompact K := hZc.isCompact
+  have hKm : MeasurableSet K := hKc.isClosed.measurableSet
+  obtain ⟨W, hW, hKW, hWV', hWc⟩ := exists_open_between_and_isCompact_closure hKc hV hZV
+  have hWV : W ⊆ V := subset_closure.trans hWV'
+  have hMW : μHE[m] (M ∩ W) ≠ ∞ := ne_top_of_le_ne_top (hLF _ hWc hWV')
+    (measure_mono (inter_subset_inter_right M subset_closure))
+  -- integrals over `M` of functions vanishing off `W` are integrals over `M ∩ W`
+  have hloc : ∀ g : Euclid P → ℝ, (∀ x, x ∉ W → g x = 0) →
+      ∫ x in M, g x ∂μHE[m] = ∫ x in M ∩ W, g x ∂μHE[m] := by
+    intro g hg
+    rw [inter_comm, ← Measure.restrict_restrict hW.measurableSet,
+      setIntegral_eq_integral_of_forall_compl_eq_zero hg]
+  -- Step 2: `Φ = id + tZ` is a bi-Lipschitz bijection with injective derivative for `|t| < t₀`
+  have hZ1 : ContDiff ℝ 1 Z := hZ.of_le (by exact_mod_cast le_top)
+  obtain ⟨t₀, ht₀, hpert⟩ := Submission.codim1_ac_perturbation_diffeo P Z hZ1 hZc
+  refine ⟨t₀, ht₀, fun t ht => ?_⟩
+  obtain ⟨hbij, hDΦ, Λ, hlip, hanti⟩ := hpert t ht
+  set Φ : Euclid P → Euclid P := fun x => x + t • Z x
+  have hΦsm : ContDiff ℝ (⊤ : ℕ∞) Φ := contDiff_id.add (hZ.const_smul t)
+  have hΦ1 : ContDiff ℝ 1 Φ := contDiff_id.add (hZ1.const_smul t)
+  -- `Φ = id` off `K`, so `DΦ = I` off `K`; `Φ(K) ⊆ K` since `Φ` is injective
+  have hΦid : ∀ x, x ∉ K → Φ x = x := fun x hx => by
+    show x + t • Z x = x
+    rw [image_eq_zero_of_notMem_tsupport hx, smul_zero, add_zero]
+  have hDΦid : ∀ x, x ∉ K → fderiv ℝ Φ x = ContinuousLinearMap.id ℝ (Euclid P) := by
+    intro x hx
+    have h : Φ =ᶠ[𝓝 x] id := eventually_of_mem (hKc.isClosed.isOpen_compl.mem_nhds hx) hΦid
+    rw [h.fderiv_eq, fderiv_id]
+  have hΦK : ∀ x ∈ K, Φ x ∈ K := by
+    intro x hx
+    by_contra h
+    have hx' : Φ x = x := hbij.injective (hΦid (Φ x) h)
+    rw [hx'] at h
+    exact h hx
+  -- Step 3: the pull-back `Φ^#ω = ω(Φ) ∘ DΦ` of a test form is a test form
+  obtain ⟨pb, hpb⟩ : ∃ pb : TestFormOn (univ : Set (Euclid P)) m →
+      TestFormOn (univ : Set (Euclid P)) m, ∀ ω, (pb ω : DifferentialForm (Euclid P) m) =
+        fun x => ((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap
+          (fderiv ℝ Φ x) :=
+    ⟨fun ω => ⟨fun x => ((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap
+        (fderiv ℝ Φ x), (Submission.dpf_pb_smooth_pullback_isTestForm P m K Φ
+          (ω : DifferentialForm (Euclid P) m) hKc hΦsm hΦid ω.property.1).1, subset_univ _⟩,
+      fun ω => rfl⟩
+  -- `Φ^#ω = ω` off `K`, and everywhere when `ω` vanishes on `K`
+  have hpb_off : ∀ ω x, x ∉ K →
+      (pb ω : DifferentialForm (Euclid P) m) x = (ω : DifferentialForm (Euclid P) m) x := by
+    intro ω x hx
+    simp only [hpb]
+    rw [hΦid x hx, hDΦid x hx]
+    ext v
+    simp
+  have hpb_eq : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+      (∀ y ∈ K, (ω : DifferentialForm (Euclid P) m) y = 0) → pb ω = ω := by
+    intro ω hω
+    refine Subtype.ext (funext fun x => ?_)
+    by_cases hx : x ∈ K
+    · simp only [hpb]
+      rw [hω _ (hΦK x hx), hω x hx]
+      ext v
+      simp
+    · exact hpb_off ω x hx
+  -- Step 4: the competitor `S = Φ_#C`, with `S(ω) = C(Φ^#ω)` and `∂S = 0`
+  obtain ⟨R, hR⟩ := hmin.1
+  obtain ⟨S, hS⟩ := Submission.dpf_pushforward_formula_current_exists P m univ K R Φ hKc
+    (subset_univ K) hΦ1 hΦid
+  have hSC : ∀ ω, S ω = C (pb ω) := by
+    intro ω
+    rw [hS ω, hR (pb ω), IMRep.action, hpb ω]
+  have hSb : BoundaryVanishes S := Submission.dpf_pushforward_formula_boundaryVanishes P m univ K
+    C S R Φ isOpen_univ hR hKc (subset_univ K) hΦ1 hΦid hS hbdry
+  -- Step 5: `D₁ = [[M ∩ W]]` and `D₂ = Φ_#[[M ∩ W]]`, integer multiplicity currents
+  obtain ⟨D₁, hD₁im, hD₁, -⟩ := Submission.codim1_ac_oriented_piece_pushforward P m M W ξ id 1 hm
+    hM hξ hW hMW contDiff_id bijective_id
+    (fun x => by rw [fderiv_id, ContinuousLinearMap.coe_id']; exact injective_id)
+    LipschitzWith.id AntilipschitzWith.id
+  obtain ⟨D₂, hD₂im, hD₂, hD₂mass⟩ := Submission.codim1_ac_oriented_piece_pushforward P m M W ξ Φ
+    Λ hm hM hξ hW hMW hΦ1 hbij hDΦ hlip hanti
+  have hD₁' : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+      Integrable (fun x => ξ x ((ω : DifferentialForm (Euclid P) m) x))
+        (μHE[m].restrict (M ∩ W)) ∧
+      D₁ ω = ∫ x in M ∩ W, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m] := by
+    intro ω
+    have hid : ∀ x, ((ω : DifferentialForm (Euclid P) m) (id x)).compContinuousLinearMap
+        (fderiv ℝ id x) = (ω : DifferentialForm (Euclid P) m) x := by
+      intro x
+      rw [fderiv_id]
+      ext v
+      simp
+    simpa only [hid] using hD₁ ω
+  -- Step 6: `S − C = D₂ − D₁`: `Φ^#ω − ω` vanishes off `K ⊆ W ⊆ V`, where `C = [[M]]`
+  have key : ∀ ω : TestFormOn (univ : Set (Euclid P)) m, S ω - C ω = D₂ ω - D₁ ω := by
+    intro ω
+    set β : TestFormOn (univ : Set (Euclid P)) m := pb ω - ω with hβ_def
+    have hβ : ∀ x, (β : DifferentialForm (Euclid P) m) x =
+        ((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap (fderiv ℝ Φ x) -
+          (ω : DifferentialForm (Euclid P) m) x := by
+      intro x
+      rw [hβ_def, Submodule.coe_sub, Pi.sub_apply, hpb ω]
+    have hβK : ∀ x, x ∉ K → (β : DifferentialForm (Euclid P) m) x = 0 := by
+      intro x hx
+      rw [hβ_def, Submodule.coe_sub, Pi.sub_apply, hpb_off ω x hx, sub_self]
+    have hβs : tsupport (β : DifferentialForm (Euclid P) m) ⊆ K :=
+      closure_minimal (fun x hx => by_contra fun hxK => hx (hβK x hxK)) hKc.isClosed
+    calc S ω - C ω = C β := by rw [hSC ω, hβ_def]; exact (map_sub C.toCurrent (pb ω) ω).symm
+      _ = ∫ x in M, ξ x ((β : DifferentialForm (Euclid P) m) x) ∂μHE[m] :=
+          hRep β (hβs.trans hZV)
+      _ = ∫ x in M ∩ W, ξ x ((β : DifferentialForm (Euclid P) m) x) ∂μHE[m] :=
+          hloc _ fun x hx => by simp only [hβK x fun hxK => hx (hKW hxK), map_zero]
+      _ = ∫ x in M ∩ W, (ξ x (((ω : DifferentialForm (Euclid P) m) (Φ x)).compContinuousLinearMap
+            (fderiv ℝ Φ x)) - ξ x ((ω : DifferentialForm (Euclid P) m) x)) ∂μHE[m] := by
+          congr 1
+          ext x
+          rw [hβ x, map_sub]
+      _ = D₂ ω - D₁ ω := by
+          rw [integral_sub (hD₂ ω).1 (hD₁' ω).1, (hD₂ ω).2, (hD₁' ω).2]
+  -- Step 7: `S = C − (D₁ − D₂)` is integer multiplicity, `∂S = ∂C`, `spt(S − C) ⊆ K`
+  have hSim : IsIntegerMultiplicity S := by
+    have hSeq : S = C - (D₁ - D₂) := GeometricCurrentOn.ext fun ω => by
+      show S ω = C ω - (D₁ ω - D₂ ω)
+      linarith [key ω]
+    rw [hSeq]
+    exact Submission.regcomp_integer_multiplicity_sub P m univ C (D₁ - D₂) isOpen_univ hmin.1
+      (Submission.regcomp_integer_multiplicity_sub P m univ D₁ D₂ isOpen_univ hD₁im hD₂im)
+  have hvan : ∀ ω : TestFormOn (univ : Set (Euclid P)) m,
+      tsupport (ω : DifferentialForm (Euclid P) m) ⊆ Kᶜ → (S - C) ω = 0 := by
+    intro ω hω
+    have h := hpb_eq ω fun y hy => image_eq_zero_of_notMem_tsupport fun h => hω h hy
+    show S ω - C ω = 0
+    rw [hSC ω, h, sub_self]
+  have hsuppK : (S - C).support ⊆ K := by
+    intro x hx
+    by_contra hxK
+    obtain ⟨r, hr, hrK⟩ := Metric.isOpen_iff.mp hKc.isClosed.isOpen_compl x hxK
+    exact hx.2 (mem_sUnion.mpr ⟨ball x r, ⟨isOpen_ball,
+      (isCompact_closedBall x r).of_isClosed_subset isClosed_closure closure_ball_subset_closedBall,
+      subset_univ _, fun ω hω => hvan ω (hω.trans hrK)⟩, mem_ball_self hr⟩)
+  -- minimality of `C` against `S`
+  have hCS : C.massOn W ≤ S.massOn W :=
+    hmin.2 W S hW ⟨hWc, subset_univ _⟩ hSim (hsame S C hSb hbdry)
+      (hKc.of_isClosed_subset (isClosed_univ.sdiff (S - C).isOpen_zeroRegion) hsuppK)
+      fun x hx => ⟨mem_univ x, hKW (hsuppK hx)⟩
+  -- Step 8: `M_W(S) ≤ M_W(D₂) ≤ H^m(Φ(M ∩ W))`, since `C = D₁` on forms supported in `W`
+  have hSmass : S.massOn W ≤ μHE[m] (Φ '' (M ∩ W)) := by
+    refine sSup_le ?_
+    rintro r ⟨ω, hω, rfl⟩
+    have hCD : C ω = D₁ ω := by
+      rw [hRep ω (hω.1.trans hWV), (hD₁' ω).2]
+      exact hloc _ fun x hx => by
+        simp only [image_eq_zero_of_notMem_tsupport fun h => hx (hω.1 h), map_zero]
+    have hSD : S ω = D₂ ω := by linarith [key ω]
+    show ENNReal.ofReal (S ω) ≤ _
+    rw [hSD]
+    exact (D₂.le_massOn hω).trans ((hD₂mass W).trans (measure_mono inter_subset_left))
+  -- Step 9: cancel the finite common part `(M ∩ W) \ K`, using `Φ = id` off `K`, `Φ(K) ⊆ K`
+  have himK : Φ '' (M ∩ W) ∩ K = Φ '' (M ∩ K) := by
+    ext y
+    constructor
+    · rintro ⟨⟨x, ⟨hxM, -⟩, rfl⟩, hy⟩
+      refine ⟨x, ⟨hxM, ?_⟩, rfl⟩
+      by_contra hx
+      rw [hΦid x hx] at hy
+      exact hx hy
+    · rintro ⟨x, ⟨hxM, hxK⟩, rfl⟩
+      exact ⟨⟨x, ⟨hxM, hKW hxK⟩, rfl⟩, hΦK x hxK⟩
+  have himW : Φ '' (M ∩ W) \ K = (M ∩ W) \ K := by
+    ext y
+    constructor
+    · rintro ⟨⟨x, hx, rfl⟩, hy⟩
+      have hxK : x ∉ K := fun hxK => hy (hΦK x hxK)
+      rw [hΦid x hxK]
+      exact ⟨hx, hxK⟩
+    · rintro ⟨hy, hyK⟩
+      exact ⟨⟨y, hy, hΦid y hyK⟩, hyK⟩
+  have hb : μHE[m] ((M ∩ W) \ K) ≠ ∞ := ne_top_of_le_ne_top hMW (measure_mono sdiff_subset)
+  have h1 := measure_inter_add_sdiff (μ := μHE[m]) (M ∩ W) hKm
+  have h2 := measure_inter_add_sdiff (μ := μHE[m]) (Φ '' (M ∩ W)) hKm
+  rw [inter_assoc, inter_eq_right.mpr hKW] at h1
+  rw [himK, himW] at h2
+  refine ENNReal.le_of_add_le_add_right hb ?_
+  rw [h1, h2]
+  exact ((hmass W hW hWV hMW).trans hCS).trans hSmass
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
