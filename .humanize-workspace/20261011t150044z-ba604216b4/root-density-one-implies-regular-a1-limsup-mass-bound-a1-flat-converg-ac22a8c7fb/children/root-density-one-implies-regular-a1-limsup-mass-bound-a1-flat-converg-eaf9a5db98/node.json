@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.im_series-a1.density_series-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.im_series-a1",
+  "depth": 5,
+  "title": "A mass-summable series of integer multiplicity densities converges Hⁿ-a.e. and integrates termwise against test forms",
+  "statement": "Conventions: ℝ^P = Euclid P and Hⁿ = μHE[n]. Λ_n(ℝ^P) = MultiVector P n is the space of continuous linear functionals on n-covectors (Covector (Euclid P) n), with its operator norm ‖·‖ and the induced topology. An IMRep R = (M, θ, ξ) in U is the contract structure IMRep U n (M = R.carrier Borel, M ⊆ U, countably n-rectifiable; θ = R.mult : ℝ^P → ℕ measurable, θ ≥ 1 on M, locally Hⁿ-integrable on M in U; ξ = R.orient : ℝ^P → Λ_n(ℝ^P), Hⁿ⌞M-a.e. strongly measurable and Hⁿ⌞M-a.e. a unit orientation (IsUnitOrientationOf) of an approximate tangent space of M). Its density is D_R(x) := 1_M(x)θ(x)ξ(x) ∈ Λ_n(ℝ^P) (Lean: R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x), its weight is μ_R := θ·Hⁿ⌞M (R.measure), and its action on an n-form ω is R.action(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dHⁿ(x). 𝒟ⁿ(U) = TestFormOn U n (smooth n-forms on ℝ^P with compact support contained in U). Let P, n ∈ ℕ, U ⊆ ℝ^P an arbitrary set and R_r (r ∈ ℕ) IMReps in U with Σ_r μ_{R_r}(U) < ∞ (sum in [0, ∞]). Then there is η : ℝ^P → Λ_n(ℝ^P) such that (a) for Hⁿ-a.e. x ∈ ℝ^P the series Σ_r D_{R_r}(x) converges in Λ_n(ℝ^P) to η(x) (HasSum), and (b) for every ω ∈ 𝒟ⁿ(U) the real series Σ_r R_r.action(ω) converges to ∫ η(x)(ω(x)) dHⁿ(x) (HasSum).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n), ∑' r, (R r).measure U ≠ ∞ → ∃ η : Euclid P → MultiVector P n, (∀ᵐ x ∂μHE[n], HasSum (fun r => (R r).carrier.indicator (fun y => ((R r).mult y : ℝ) • (R r).orient y) x) (η x)) ∧ ∀ ω : TestFormOn U n, HasSum (fun r => (R r).action (ω : DifferentialForm (Euclid P) n)) (∫ x, η x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n])",
+  "lean_name": "dor_lmb_fc_ims_density_series",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.imrep_measure_unique-a1.orientation_norm_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-imrep-measure-unique-a1-orie-c3a822a8f5-a1",
+      "result_commit": "0325970d8b47298803106a41abbcdb3c8c9ac103",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-eaf9a5db98-a1"
+}

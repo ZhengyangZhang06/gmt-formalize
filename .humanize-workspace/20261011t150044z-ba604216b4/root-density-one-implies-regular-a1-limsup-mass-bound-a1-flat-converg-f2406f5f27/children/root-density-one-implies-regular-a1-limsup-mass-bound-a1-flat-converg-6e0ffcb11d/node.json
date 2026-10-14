@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.lipschitz_extend-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1",
+  "depth": 6,
+  "title": "Lipschitz extension of a map into ℝ^P with a √P loss (componentwise McShane)",
+  "statement": "Let P ∈ ℕ, S ⊆ ℝ^P (= Euclid P), ψ : ℝ^P → ℝ^P and K ∈ ℝ≥0 such that ψ is K-Lipschitz on S, i.e. |ψ(x) − ψ(y)| ≤ K|x − y| for all x, y ∈ S. Then there is φ : ℝ^P → ℝ^P which is (√P·K)-Lipschitz on all of ℝ^P (Lipschitz constant NNReal.sqrt P * K) and agrees with ψ on S.",
+  "lean_statement": "∀ (P : ℕ) (S : Set (Euclid P)) (ψ : Euclid P → Euclid P) (K : NNReal), LipschitzOnWith K ψ S → ∃ φ : Euclid P → Euclid P, LipschitzWith (NNReal.sqrt P * K) φ ∧ EqOn φ ψ S",
+  "lean_name": "dor_lmb_fcd_sd_lipschitz_extend",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-6e0ffcb11d-a1"
+}
