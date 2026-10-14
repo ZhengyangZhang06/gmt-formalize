@@ -1756,6 +1756,45 @@ theorem Submission.rsdic_unitOrientation_eq_or_eq_neg : ∀ (P n : ℕ) (v w : M
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
   · left; ext α; rw [hw, hv, hτ'τ, hd, neg_one_mul]
   · right; ext α; rw [neg_apply, hw, hv, hτ'τ, hd, neg_one_mul, neg_neg]
+/-- **The unit orientation of the span of an independent family** (Simon Ch. 6, 3.4–3.5:
+`D₁f ∧ ⋯ ∧ Dₙf = det(Dᵢf · τⱼ) τ₁ ∧ ⋯ ∧ τₙ` and `J = |det(Dᵢf · τⱼ)|`, for one linearly
+independent family).  Let `v` be linearly independent in `ℝᴾ`, `V = span v`,
+`G = (⟨vₐ, v_b⟩)` and `J = √det G`.  Then `det G > 0`, `J ≤ ∏ₐ |vₐ|`, and some unit orientation
+`ξ` of `V` has `α(v) = J ⟨α, ξ⟩` for every `n`-covector `α`; every unit orientation of `V` is
+`±ξ`.  For the Gram–Schmidt frame `σ` of `V` and `A = (⟨σₐ, v_b⟩)`, `det G = (det A)²`,
+`det A ≠ 0`, `|det A| ≤ ∏ₐ |vₐ|` and `α(v) = det A · α(σ)`; so `ξ = sign(det A) σ₁ ∧ ⋯ ∧ σₙ`
+works, and two unit orientations of `V` differ by a sign. -/
+theorem Submission.cmcdt_lpi_unit_orientation_span : ∀ (P n : ℕ) (v : Fin n → Euclid P), LinearIndependent ℝ v → 0 < Matrix.det (Matrix.of fun a b => inner ℝ (v a) (v b)) ∧ Real.sqrt (Matrix.det (Matrix.of fun a b => inner ℝ (v a) (v b))) ≤ ∏ a, ‖v a‖ ∧ ∃ ξ : MultiVector P n, IsUnitOrientationOf ξ (Submodule.span ℝ (Set.range v)) ∧ (∀ α : Covector (Euclid P) n, α v = Real.sqrt (Matrix.det (Matrix.of fun a b => inner ℝ (v a) (v b))) * ξ α) ∧ ∀ ζ : MultiVector P n, IsUnitOrientationOf ζ (Submodule.span ℝ (Set.range v)) → ζ = ξ ∨ ζ = -ξ := by
+  intro P n v hv
+  -- Steps 1–4: the Gram–Schmidt frame `σ` of `V = span v`, and `d = det A`
+  obtain ⟨σ, hσ, hspan, hG, hd0, hHad⟩ :=
+    Submission.dpf_exists_orthonormal_frame_det_gram P n v hv
+  set d := Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (v j)) with hd
+  -- `J = √((det A)²) = |det A|`
+  have hJ : Real.sqrt (Matrix.det (Matrix.of fun a b => inner ℝ (v a) (v b))) = |d| := by
+    rw [hG, Real.sqrt_sq_eq_abs]
+  refine ⟨hG ▸ sq_pos_of_ne_zero hd0, hJ ▸ hHad, ?_⟩
+  -- Step 6: `ε = sign(det A)` and `ξ = ε σ₁ ∧ ⋯ ∧ σₙ`, i.e. `ξ(α) = ε α(σ)`
+  obtain ⟨ε, hε, hdε⟩ : ∃ ε : ℝ, (ε = 1 ∨ ε = -1) ∧ |d| * ε = d := by
+    rcases hd0.lt_or_gt with h | h
+    · exact ⟨-1, Or.inr rfl, by rw [abs_of_neg h, mul_neg_one, neg_neg]⟩
+    · exact ⟨1, Or.inl rfl, by rw [abs_of_pos h, mul_one]⟩
+  let ξ : MultiVector P n := ε • ContinuousAlternatingMap.apply ℝ (Euclid P) ℝ σ
+  have hξ : ∀ α : Covector (Euclid P) n, ξ α = ε * α σ := fun α => rfl
+  -- `ξ` is a unit orientation of `V`, witnessed by the orthonormal basis `σ` of `V`
+  have hunit : IsUnitOrientationOf ξ (Submodule.span ℝ (Set.range v)) := by
+    refine ⟨σ, hσ, hspan, ?_⟩
+    rcases hε with h | h
+    · exact Or.inl fun α => by rw [hξ, h, one_mul]
+    · exact Or.inr fun α => by rw [hξ, h, neg_one_mul]
+  refine ⟨ξ, hunit, fun α => ?_, fun ζ hζ => ?_⟩
+  · -- Step 5: every `v_b` lies in `span σ`, so `α(v) = det A · α(σ) = |det A| · ε α(σ)`
+    have hmem : ∀ j, v j ∈ Submodule.span ℝ (Set.range σ) := fun j =>
+      hspan ▸ Submodule.subset_span ⟨j, rfl⟩
+    rw [Submission.dgoj_covector_eq_det_mul_of_mem_span P n σ v hσ hmem α, ← hd, hJ, hξ,
+      ← mul_assoc, hdε]
+  · -- Step 7: two unit orientations of `V` differ by a sign
+    exact Submission.rsdic_unitOrientation_eq_or_eq_neg P n ξ ζ _ hunit hζ
 /-- **A common Borel orientation for countably many integer multiplicity pieces** (countable
 form of the orientation argument behind Simon Ch. 6, Remark 3.2(1); chapter-06.txt lines
 733–756, with Ch. 3, 1.4–1.5, chapter-03.txt lines 77–89).  Let `Rᵢ = (Mᵢ, θᵢ, ξᵢ)` be
