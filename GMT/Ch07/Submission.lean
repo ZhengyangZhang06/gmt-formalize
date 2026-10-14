@@ -588,6 +588,30 @@ theorem Submission.idtp_tdc_cone_dilation : ∀ (P n : ℕ) (C : GeometricCurren
       rw [hratio, mul_div_cancel_left₀ ρ hs.ne']
     · exact (h.comp hto).congr fun ρ => (hratio ρ).symm
 
+/-- Dilation transfers a planar constant-density piece of a `2`-dimensional cone `C` (used in the
+proof of Simon 7.3.3(1), pp. 191–192, that `Θ²(μ_C, ·)` is locally constant on `spt C \ {0}`):
+for `s > 0`, if `spt C ∩ B_ε(s⁻¹x) = Q ∩ B_ε(s⁻¹x)` for a subspace `Q` and `Θ²(μ_C, y) = k` for
+every `y ∈ spt C ∩ B_ε(s⁻¹x)`, then the same holds with `B_{sε}(x)` in place of `B_ε(s⁻¹x)`.
+The map `y ↦ s⁻¹y` sends `B_{sε}(x)` onto `B_ε(s⁻¹x)` and preserves `Q`; by the dilation
+invariance of the cone (`Submission.idtp_tdc_cone_dilation` with factors `s⁻¹` and `s`), it also
+preserves `spt C`, and `Θ²(μ_C, s⁻¹y) = k` gives `Θ²(μ_C, y) = k`. -/
+theorem Submission.idtp_tdc_dlc_ld_cone_scale_piece : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (x : Euclid P) (k : ℕ) (s ε : ℝ), IsIntegerMultiplicity C → IsConeCurrent C → 0 < s → C.support ∩ ball (s⁻¹ • x) ε = (Q : Set (Euclid P)) ∩ ball (s⁻¹ • x) ε → (∀ y ∈ C.support, y ∈ ball (s⁻¹ • x) ε → HasMassDensity C y k) → C.support ∩ ball x (s * ε) = (Q : Set (Euclid P)) ∩ ball x (s * ε) ∧ ∀ y ∈ C.support, y ∈ ball x (s * ε) → HasMassDensity C y k := by
+  intro P C Q x k s ε hIM hcone hs hA hB
+  -- `s⁻¹y ∈ spt C ↔ y ∈ spt C` and `Θ²(μ_C, su) = θ ↔ Θ²(μ_C, u) = θ`
+  have hS := (Submission.idtp_tdc_cone_dilation P 2 C hIM hcone s⁻¹ (inv_pos.mpr hs)).2.1
+  have hD := (Submission.idtp_tdc_cone_dilation P 2 C hIM hcone s hs).2.2
+  -- `s⁻¹y ∈ B_ε(s⁻¹x) ↔ y ∈ B_{sε}(x)` and `s⁻¹y ∈ Q ↔ y ∈ Q`
+  have hball : ∀ y : Euclid P, s⁻¹ • y ∈ ball (s⁻¹ • x) ε ↔ y ∈ ball x (s * ε) := by
+    intro y
+    rw [mem_ball, mem_ball, dist_smul₀, norm_inv, Real.norm_of_nonneg hs.le, inv_mul_lt_iff₀ hs]
+  have hQ : ∀ y : Euclid P, s⁻¹ • y ∈ Q ↔ y ∈ Q := fun y => Q.smul_mem_iff (inv_ne_zero hs.ne')
+  refine ⟨Set.ext fun y => ?_, fun y hy hyx => ?_⟩
+  -- the support equation at the point `s⁻¹y`
+  · simpa only [mem_inter_iff, SetLike.mem_coe, hS, hQ, hball] using Set.ext_iff.mp hA (s⁻¹ • y)
+  -- the density `k` at `s⁻¹y` transfers to `s(s⁻¹y) = y`
+  · simpa only [smul_inv_smul₀ hs.ne'] using
+      (hD (s⁻¹ • y) k).mpr (hB _ ((hS y).mpr hy) ((hball y).mpr hyx))
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
