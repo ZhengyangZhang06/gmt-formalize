@@ -451,6 +451,23 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- The open unit cube `Q₁ = {y : 0 < yᵢ < 1 for all i}` of `ℝᵏ` has Lebesgue measure `1`: it is
+the preimage of the box `∏ᵢ (0, 1)` under the measure-preserving coordinate map
+`ofLp : ℝᵏ → (Fin k → ℝ)`, and `vol ∏ᵢ (0, 1) = ∏ᵢ (1 − 0) = 1` (the empty product if `k = 0`). -/
+theorem Submission.cmcdt_cbm_im_cube_volume : ∀ k : ℕ, volume {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} = 1 := by
+  intro k
+  -- `Q₁` is the preimage under `ofLp` of the measurable box `B = ∏ᵢ (0, 1)`
+  have hB : MeasurableSet (univ.pi fun _ : Fin k => Ioo (0 : ℝ) 1) :=
+    MeasurableSet.univ_pi fun _ => measurableSet_Ioo
+  have hQ : {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} =
+      WithLp.ofLp ⁻¹' (univ.pi fun _ : Fin k => Ioo (0 : ℝ) 1) := by
+    ext y
+    simp [Set.mem_pi]
+  -- `ofLp` preserves volume, and `vol B = ∏ᵢ ofReal (1 - 0) = 1`
+  rw [hQ, (PiLp.volume_preserving_ofLp (Fin k)).measure_preimage hB.nullMeasurableSet,
+    Real.volume_pi_Ioo]
+  simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
