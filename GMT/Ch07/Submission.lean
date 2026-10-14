@@ -493,126 +493,6 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
-/-- **Simon Ch. 6, 1.2 and 1.5–1.7**: a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` (`τ` orthonormal)
-has `|ξ(α)| ≤ |α|` for the Euclidean coefficient norm, and `L(ζ) = Σ_I ζ(dx^I) dx^I` (`I` strictly
-increasing) has `|L(ξ)| ≤ 1` and `ξ(L(ξ)) = 1`.  Every covector expands as `α = Σ_I α(e_I) dx^I`,
-and `dx^I(e_J) = δ_IJ`.  Expanding `δ_τ(v) = det(⟨τᵢ, vⱼ⟩)` at `v = τ` gives the Cauchy–Binet
-identity `Σ_I dx^I(τ)² = 1`; with Cauchy–Schwarz, `|α(τ)| ≤ |α|`. -/
-theorem Submission.dor_ims_unitOrientation_dual : ∀ (P n : ℕ), ∃ L : MultiVector P n →L[ℝ] Covector (Euclid P) n, ∀ (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ α| ≤ covectorEuclideanNorm α) ∧ covectorEuclideanNorm (L ξ) ≤ 1 ∧ ξ (L ξ) = 1 := by
-  intro P n
-  -- `W u v = Σ_σ sgn σ ∏ₖ ⟨uₖ, v_{σ k}⟩ = det(⟨uₖ, vⱼ⟩)`; `dx^I = W (e ∘ I)` and `δ_τ = W τ`
-  let W : (Fin n → Euclid P) → Covector (Euclid P) n := fun u =>
-    ContinuousMultilinearMap.alternatization
-      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin n) ℝ).compContinuousLinearMap
-        fun k => innerSL ℝ (u k))
-  have hW : ∀ u v, W u v =
-      ∑ σ : Equiv.Perm (Fin n), Equiv.Perm.sign σ • ∏ k, inner ℝ (u k) (v (σ k)) := by
-    intro u v
-    simp only [W, ContinuousMultilinearMap.alternatization_apply_apply,
-      ContinuousMultilinearMap.compContinuousLinearMap_apply,
-      ContinuousMultilinearMap.mkPiAlgebra_apply, innerSL_apply_apply, Function.comp_apply]
-  -- `W u v = W v u` (the determinant of the transpose): substitute `σ ↦ σ⁻¹` and `k ↦ σ k`
-  have hWsymm : ∀ u v, W u v = W v u := by
-    intro u v
-    rw [hW, hW]
-    refine Fintype.sum_equiv (Equiv.inv (Equiv.Perm (Fin n))) _ _ fun σ => ?_
-    rw [Equiv.inv_apply, Equiv.Perm.sign_inv,
-      ← Equiv.prod_comp σ (fun k => inner ℝ (v k) (u (σ⁻¹ k)))]
-    simp only [Equiv.Perm.coe_inv, Equiv.symm_apply_apply, real_inner_comm]
-  -- `W u u = 1` for orthonormal `u`: only `σ = 1` contributes
-  have hW1 : ∀ u, Orthonormal ℝ u → W u u = 1 := by
-    intro u hu
-    rw [hW, Finset.sum_eq_single (1 : Equiv.Perm (Fin n))]
-    · rw [Equiv.Perm.sign_one, one_smul]
-      refine Finset.prod_eq_one fun k _ => ?_
-      rw [Equiv.Perm.coe_one, id, real_inner_self_eq_norm_sq, hu.norm_eq_one, one_pow]
-    · intro σ _ hσ
-      obtain ⟨k, hk⟩ : ∃ k, σ k ≠ k := by
-        by_contra! h
-        exact hσ (Equiv.ext h)
-      rw [Finset.prod_eq_zero (Finset.mem_univ k) (hu.inner_eq_zero hk.symm), smul_zero]
-    · exact fun h => absurd (Finset.mem_univ _) h
-  -- Kronecker property `dx^I(e_J) = δ_IJ` for strictly increasing `I`, `J`: a nonzero term
-  -- forces `J ∘ σ = I`, so `range I = range J` and `I = J`
-  let e := EuclideanSpace.basisFun (Fin P) ℝ
-  have he : ∀ i j, inner ℝ (e i) (e j) = if i = j then (1 : ℝ) else 0 :=
-    orthonormal_iff_ite.mp e.orthonormal
-  have hK : ∀ I J : Fin n → Fin P, StrictMono I → StrictMono J →
-      W (fun k => e (I k)) (fun k => e (J k)) = if I = J then 1 else 0 := by
-    intro I J hI hJ
-    split_ifs with hIJ
-    · subst hIJ
-      have hIo : Orthonormal ℝ (fun k => e (I k)) := e.orthonormal.comp I hI.injective
-      exact hW1 _ hIo
-    · rw [hW]
-      refine Finset.sum_eq_zero fun σ _ => ?_
-      rw [Finset.prod_eq_zero_iff.mpr, smul_zero]
-      by_contra! h
-      apply hIJ
-      have hJσ : J ∘ σ = I := funext fun k => by
-        have := h k (Finset.mem_univ k)
-        rw [he] at this
-        split_ifs at this with hk
-        · exact hk.symm
-        · exact absurd rfl this
-      rw [← (StrictMono.range_inj_of_wellFoundedLT hI hJ), ← hJσ, EquivLike.range_comp]
-  -- expansion `α = Σ_{I ∈ S} α(e_I) dx^I`: both sides are alternating, so compare them on
-  -- `e ∘ f`, `f` injective; writing `f = J ∘ σ⁻¹` with `J` strictly increasing (`J = f ∘ sort f`)
-  -- reduces this to `e ∘ J`, where it is the Kronecker property
-  let S : Finset (Fin n → Fin P) := Finset.univ.filter StrictMono
-  have hE : ∀ α : Covector (Euclid P) n,
-      α = ∑ I ∈ S, α (fun k => e (I k)) • W (fun k => e (I k)) := by
-    intro α
-    apply ContinuousAlternatingMap.toAlternatingMap_injective
-    refine e.toBasis.ext_alternating fun f hf => ?_
-    simp only [OrthonormalBasis.coe_toBasis, ContinuousAlternatingMap.coe_toAlternatingMap]
-    set σ := Tuple.sort f
-    have hJ : StrictMono (f ∘ σ) :=
-      (Tuple.monotone_sort f).strictMono_of_injective (hf.comp σ.injective)
-    have hperm : ∀ β : Covector (Euclid P) n,
-        β (fun k => e (f k)) = Equiv.Perm.sign σ⁻¹ • β (fun k => e ((f ∘ σ) k)) := by
-      intro β
-      have : (fun k => e (f k)) = (fun k => e ((f ∘ σ) k)) ∘ ⇑(σ⁻¹) := by
-        funext k
-        simp
-      rw [this]
-      exact β.toAlternatingMap.map_perm _ _
-    rw [hperm α, hperm, ContinuousAlternatingMap.sum_apply, Finset.sum_eq_single (f ∘ σ)]
-    · rw [ContinuousAlternatingMap.smul_apply, hK _ _ hJ hJ, ite_eq_left rfl, smul_eq_mul,
-        mul_one]
-    · intro I hI hIJ
-      rw [ContinuousAlternatingMap.smul_apply, hK _ _ (Finset.mem_filter.mp hI).2 hJ,
-        ite_eq_right hIJ, smul_zero]
-    · exact fun h => absurd (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hJ⟩) h
-  -- `|β| = (Σ_{I ∈ S} β(e_I)²)^{1/2}`
-  have hnorm : ∀ β : Covector (Euclid P) n,
-      covectorEuclideanNorm β = Real.sqrt (∑ I ∈ S, β (fun k => e (I k)) ^ 2) := by
-    intro β
-    rw [covectorEuclideanNorm, Finset.sum_filter]
-  -- Cauchy–Binet `Σ_{I ∈ S} dx^I(τ)² = 1` for orthonormal `τ`: evaluate the expansion of `δ_τ`
-  -- at `τ`, using `δ_τ(τ) = 1` and `δ_τ(e_I) = dx^I(τ)`
-  have hCB : ∀ τ : Fin n → Euclid P, Orthonormal ℝ τ →
-      ∑ I ∈ S, W (fun k => e (I k)) τ ^ 2 = 1 := by
-    intro τ hτ
-    have h := congrArg (fun β : Covector (Euclid P) n => β τ) (hE (W τ))
-    simp only [ContinuousAlternatingMap.sum_apply, ContinuousAlternatingMap.smul_apply,
-      smul_eq_mul, hW1 τ hτ] at h
-    rw [h]
-    refine Finset.sum_congr rfl fun I _ => ?_
-    rw [hWsymm τ, sq]
-  -- `L ζ = Σ_{I ∈ S} ζ(dx^I) dx^I`
-  refine ⟨∑ I ∈ S, (ContinuousLinearMap.apply ℝ ℝ (W fun k => e (I k))).smulRight
-    (W fun k => e (I k)), ?_⟩
-  rintro ξ Q ⟨τ, hτ, -, hξ⟩
-  -- `ξ(α) = ±α(τ)` with a common sign
-  have hξ2 : ∀ α β : Covector (Euclid P) n, ξ α * ξ β = α τ * β τ := by
-    intro α β
-    rcases hξ with h | h
-    · rw [h, h]
-    · rw [h, h, neg_mul_neg]
-  have hξabs : ∀ α : Covector (Euclid P) n, |ξ α| = |α τ| := by
-    intro α
-    rcases hξ with h | h
 /-- **Lipschitz order statistic** (proof of Simon Ch. 6, Lemma 5.4, the retraction of the
 deformation theorem): for `m + 1 < P` the `ℓ`-th largest entry
 `κ u = max_{|I| = ℓ} min_{i ∈ I} u i`, `ℓ = P − (m + 1)`, of `u : Fin P → ℝ` is `≤` at least `ℓ`
@@ -11909,6 +11789,127 @@ theorem Submission.cbr_cc_current_algebra : (∀ (P n : ℕ) (U : Set (Euclid P)
   have hzero : ∀ (P n : ℕ) (U : Set (Euclid P)),
       IsIntegerMultiplicity (0 : GeometricCurrentOn U n) := by
     intro P n U
+    refine ⟨{ carrier := ∅
+              mult := fun _ => 0
+              orient := fun _ => 0
+              measurableSet_carrier := MeasurableSet.empty
+              carrier_subset := empty_subset U
+              rectifiable :=
+                Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+              measurable_mult := measurable_const
+              mult_pos := fun x hx => by simp at hx
+              locallyIntegrable_mult := fun K _ _ => by simp
+              aestronglyMeasurable_orient := aestronglyMeasurable_const
+              orients := by simp }, ?_⟩
+    intro ω
+    simp [IMRep.action]
+  -- `|X(ω)| ≤ M_W(X)` for admissible `ω`, since `−ω` is admissible as well
+  have habs : ∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n)
+      (W : Set (Euclid P)) (ω : TestFormOn U n), ω ∈ massAdmissibleOn U n W →
+      ENNReal.ofReal |X ω| ≤ X.massOn W := by
+    intro P n U X W ω hω
+    rcases le_total 0 (X ω) with h | h
+    · rw [abs_of_nonneg h]
+      exact X.le_massOn hω
+    · have hneg : -ω ∈ massAdmissibleOn U n W := by
+        refine ⟨?_, fun x => ?_⟩
+        · rw [Submodule.coe_neg, tsupport_neg]
+          exact hω.1
+        · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+          exact hω.2 x
+      rw [abs_of_nonpos h, ← map_neg X.toCurrent ω]
+      exact X.le_massOn hneg
+  -- one term `|k| |X(ω)| ≤ |k| M_W(X)` of an integer combination
+  have hterm : ∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n) (k : ℤ)
+      (W : Set (Euclid P)) (ω : TestFormOn U n), ω ∈ massAdmissibleOn U n W →
+      ENNReal.ofReal (|(k : ℝ)| * |X ω|) ≤ (k.natAbs : ℝ≥0∞) * X.massOn W := by
+    intro P n U X k W ω hω
+    rw [ENNReal.ofReal_mul (abs_nonneg _), ← Int.cast_abs, ← Nat.cast_natAbs,
+      ENNReal.ofReal_natCast]
+    exact mul_le_mul' le_rfl (habs P n U X W ω hω)
+  -- (b)
+  have hmass : ∀ (P n : ℕ) (U : Set (Euclid P)) (A B C : GeometricCurrentOn U n) (p q : ℤ),
+      (∀ ω : TestFormOn U n, A ω = (p : ℝ) * B ω + (q : ℝ) * C ω) → ∀ W : Set (Euclid P),
+      A.massOn W ≤ (p.natAbs : ℝ≥0∞) * B.massOn W + (q.natAbs : ℝ≥0∞) * C.massOn W := by
+    intro P n U A B C p q hA W
+    refine sSup_le ?_
+    rintro _ ⟨ω, hω, rfl⟩
+    calc ENNReal.ofReal (A ω)
+        ≤ ENNReal.ofReal (|(p : ℝ)| * |B ω| + |(q : ℝ)| * |C ω|) := by
+          refine ENNReal.ofReal_le_ofReal ?_
+          rw [hA ω, ← abs_mul, ← abs_mul]
+          exact add_le_add (le_abs_self _) (le_abs_self _)
+      _ = ENNReal.ofReal (|(p : ℝ)| * |B ω|) + ENNReal.ofReal (|(q : ℝ)| * |C ω|) :=
+          ENNReal.ofReal_add (by positivity) (by positivity)
+      _ ≤ (p.natAbs : ℝ≥0∞) * B.massOn W + (q.natAbs : ℝ≥0∞) * C.massOn W :=
+          add_le_add (hterm P n U B p W ω hω) (hterm P n U C q W ω hω)
+  refine ⟨hzero, hmass, ?_⟩
+  -- (c)
+  intro hsub P n U ι F S m hU hS
+  classical
+  have hsubapp : ∀ (A B : GeometricCurrentOn U n) (ω : TestFormOn U n),
+      (A - B) ω = A ω - B ω := fun A B ω => rfl
+  -- `A − (0 − B)` is integer multiplicity, with values `A(ω) + B(ω)`
+  have hadd : ∀ A B : GeometricCurrentOn U n, IsIntegerMultiplicity A →
+      IsIntegerMultiplicity B →
+      IsIntegerMultiplicity (A - (0 - B)) ∧ ∀ ω, (A - (0 - B)) ω = A ω + B ω := by
+    intro A B hA hB
+    refine ⟨hsub P n U A (0 - B) hU hA (hsub P n U 0 B hU (hzero P n U) hB), fun ω => ?_⟩
+    rw [hsubapp, hsubapp, GeometricCurrentOn.zero_apply]
+    ring
+  -- natural multiples `k X = X + ⋯ + X`
+  have hnat : ∀ X : GeometricCurrentOn U n, IsIntegerMultiplicity X → ∀ k : ℕ,
+      ∃ V : GeometricCurrentOn U n, IsIntegerMultiplicity V ∧ ∀ ω, V ω = (k : ℝ) * X ω := by
+    intro X hX k
+    induction k with
+    | zero => exact ⟨0, hzero P n U, fun ω => by simp⟩
+    | succ k ih =>
+      obtain ⟨V, hV, hVω⟩ := ih
+      obtain ⟨hV', hV'ω⟩ := hadd V X hV hX
+      refine ⟨V - (0 - X), hV', fun ω => ?_⟩
+      rw [hV'ω, hVω]
+      push_cast
+      ring
+  -- integer multiples, `(−k) X = 0 − k X`
+  have hint : ∀ X : GeometricCurrentOn U n, IsIntegerMultiplicity X → ∀ k : ℤ,
+      ∃ V : GeometricCurrentOn U n, IsIntegerMultiplicity V ∧ ∀ ω, V ω = (k : ℝ) * X ω := by
+    intro X hX k
+    obtain ⟨j, rfl | rfl⟩ := Int.eq_nat_or_neg k
+    · obtain ⟨V, hV, hVω⟩ := hnat X hX j
+      exact ⟨V, hV, fun ω => by rw [hVω, Int.cast_natCast]⟩
+    · obtain ⟨V, hV, hVω⟩ := hnat X hX j
+      refine ⟨0 - V, hsub P n U 0 V hU (hzero P n U) hV, fun ω => ?_⟩
+      rw [hsubapp, GeometricCurrentOn.zero_apply, hVω, Int.cast_neg, Int.cast_natCast]
+      ring
+  -- finite integer combinations, by induction on the index set
+  have hsum : ∀ G : Finset ι, (∀ i ∈ G, IsIntegerMultiplicity (S i)) →
+      ∃ Y : GeometricCurrentOn U n, IsIntegerMultiplicity Y ∧
+        ∀ ω, Y ω = ∑ i ∈ G, (m i : ℝ) * S i ω := by
+    intro G
+    induction G using Finset.induction_on with
+    | empty => exact fun _ => ⟨0, hzero P n U, fun ω => by simp⟩
+    | insert j G hj ih =>
+      intro hG
+      obtain ⟨Y, hY, hYω⟩ := ih fun i hi => hG i (Finset.mem_insert_of_mem hi)
+      obtain ⟨V, hV, hVω⟩ := hint (S j) (hG j (Finset.mem_insert_self j G)) (m j)
+      obtain ⟨hY', hY'ω⟩ := hadd Y V hY hV
+      refine ⟨Y - (0 - V), hY', fun ω => ?_⟩
+      rw [hY'ω, hYω, hVω, Finset.sum_insert hj]
+      ring
+  obtain ⟨Y, hY, hYω⟩ := hsum F hS
+  refine ⟨Y, hY, hYω, fun W => ?_⟩
+  -- the mass bound, from `Y(ω) ≤ Σᵢ |mᵢ| |Sᵢ(ω)|` for admissible `ω`
+  refine sSup_le ?_
+  rintro _ ⟨ω, hω, rfl⟩
+  calc ENNReal.ofReal (Y ω)
+      ≤ ENNReal.ofReal (∑ i ∈ F, |(m i : ℝ)| * |S i ω|) := by
+        refine ENNReal.ofReal_le_ofReal ?_
+        rw [hYω]
+        exact Finset.sum_le_sum fun i _ => by rw [← abs_mul]; exact le_abs_self _
+    _ = ∑ i ∈ F, ENNReal.ofReal (|(m i : ℝ)| * |S i ω|) :=
+        ENNReal.ofReal_sum_of_nonneg fun i _ => by positivity
+    _ ≤ ∑ i ∈ F, ((m i).natAbs : ℝ≥0∞) * (S i).massOn W :=
+        Finset.sum_le_sum fun i _ => hterm P n U (S i) (m i) W ω hω
 /-- **Lipschitz extension into `ℝᴾ` with a `√P` loss** (Simon Ch. 2, 1.2, applied to each
 coordinate; used for the deformation theorem, Ch. 6, 5.1).  Each coordinate `x ↦ ψ(x)ᵢ` is
 `K`-Lipschitz on `S` since `|vᵢ| ≤ |v|`; McShane's extension gives `K`-Lipschitz `gᵢ : ℝᴾ → ℝ`
@@ -12845,147 +12846,6 @@ theorem Submission.dor_lmb_fcd_sd_zero_neg : ∀ (P k : ℕ) (U : Set (Euclid P)
               rectifiable :=
                 Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
               measurable_mult := measurable_const
-              mult_pos := fun x hx => by simp at hx
-              locallyIntegrable_mult := fun K _ _ => by simp
-              aestronglyMeasurable_orient := aestronglyMeasurable_const
-              orients := by simp }, ?_⟩
-    intro ω
-    simp [IMRep.action]
-  -- `|X(ω)| ≤ M_W(X)` for admissible `ω`, since `−ω` is admissible as well
-  have habs : ∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n)
-      (W : Set (Euclid P)) (ω : TestFormOn U n), ω ∈ massAdmissibleOn U n W →
-      ENNReal.ofReal |X ω| ≤ X.massOn W := by
-    intro P n U X W ω hω
-    rcases le_total 0 (X ω) with h | h
-    · rw [abs_of_nonneg h]
-      exact X.le_massOn hω
-    · have hneg : -ω ∈ massAdmissibleOn U n W := by
-        refine ⟨?_, fun x => ?_⟩
-        · rw [Submodule.coe_neg, tsupport_neg]
-          exact hω.1
-        · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
-          exact hω.2 x
-      rw [abs_of_nonpos h, ← map_neg X.toCurrent ω]
-      exact X.le_massOn hneg
-  -- one term `|k| |X(ω)| ≤ |k| M_W(X)` of an integer combination
-  have hterm : ∀ (P n : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U n) (k : ℤ)
-      (W : Set (Euclid P)) (ω : TestFormOn U n), ω ∈ massAdmissibleOn U n W →
-      ENNReal.ofReal (|(k : ℝ)| * |X ω|) ≤ (k.natAbs : ℝ≥0∞) * X.massOn W := by
-    intro P n U X k W ω hω
-    rw [ENNReal.ofReal_mul (abs_nonneg _), ← Int.cast_abs, ← Nat.cast_natAbs,
-      ENNReal.ofReal_natCast]
-    exact mul_le_mul' le_rfl (habs P n U X W ω hω)
-  -- (b)
-  have hmass : ∀ (P n : ℕ) (U : Set (Euclid P)) (A B C : GeometricCurrentOn U n) (p q : ℤ),
-      (∀ ω : TestFormOn U n, A ω = (p : ℝ) * B ω + (q : ℝ) * C ω) → ∀ W : Set (Euclid P),
-      A.massOn W ≤ (p.natAbs : ℝ≥0∞) * B.massOn W + (q.natAbs : ℝ≥0∞) * C.massOn W := by
-    intro P n U A B C p q hA W
-    refine sSup_le ?_
-    rintro _ ⟨ω, hω, rfl⟩
-    calc ENNReal.ofReal (A ω)
-        ≤ ENNReal.ofReal (|(p : ℝ)| * |B ω| + |(q : ℝ)| * |C ω|) := by
-          refine ENNReal.ofReal_le_ofReal ?_
-          rw [hA ω, ← abs_mul, ← abs_mul]
-          exact add_le_add (le_abs_self _) (le_abs_self _)
-      _ = ENNReal.ofReal (|(p : ℝ)| * |B ω|) + ENNReal.ofReal (|(q : ℝ)| * |C ω|) :=
-          ENNReal.ofReal_add (by positivity) (by positivity)
-      _ ≤ (p.natAbs : ℝ≥0∞) * B.massOn W + (q.natAbs : ℝ≥0∞) * C.massOn W :=
-          add_le_add (hterm P n U B p W ω hω) (hterm P n U C q W ω hω)
-  refine ⟨hzero, hmass, ?_⟩
-  -- (c)
-  intro hsub P n U ι F S m hU hS
-  classical
-  have hsubapp : ∀ (A B : GeometricCurrentOn U n) (ω : TestFormOn U n),
-      (A - B) ω = A ω - B ω := fun A B ω => rfl
-  -- `A − (0 − B)` is integer multiplicity, with values `A(ω) + B(ω)`
-  have hadd : ∀ A B : GeometricCurrentOn U n, IsIntegerMultiplicity A →
-      IsIntegerMultiplicity B →
-      IsIntegerMultiplicity (A - (0 - B)) ∧ ∀ ω, (A - (0 - B)) ω = A ω + B ω := by
-    intro A B hA hB
-    refine ⟨hsub P n U A (0 - B) hU hA (hsub P n U 0 B hU (hzero P n U) hB), fun ω => ?_⟩
-    rw [hsubapp, hsubapp, GeometricCurrentOn.zero_apply]
-    ring
-  -- natural multiples `k X = X + ⋯ + X`
-  have hnat : ∀ X : GeometricCurrentOn U n, IsIntegerMultiplicity X → ∀ k : ℕ,
-      ∃ V : GeometricCurrentOn U n, IsIntegerMultiplicity V ∧ ∀ ω, V ω = (k : ℝ) * X ω := by
-    intro X hX k
-    induction k with
-    | zero => exact ⟨0, hzero P n U, fun ω => by simp⟩
-    | succ k ih =>
-      obtain ⟨V, hV, hVω⟩ := ih
-      obtain ⟨hV', hV'ω⟩ := hadd V X hV hX
-      refine ⟨V - (0 - X), hV', fun ω => ?_⟩
-      rw [hV'ω, hVω]
-      push_cast
-      ring
-  -- integer multiples, `(−k) X = 0 − k X`
-  have hint : ∀ X : GeometricCurrentOn U n, IsIntegerMultiplicity X → ∀ k : ℤ,
-      ∃ V : GeometricCurrentOn U n, IsIntegerMultiplicity V ∧ ∀ ω, V ω = (k : ℝ) * X ω := by
-    intro X hX k
-    obtain ⟨j, rfl | rfl⟩ := Int.eq_nat_or_neg k
-    · obtain ⟨V, hV, hVω⟩ := hnat X hX j
-      exact ⟨V, hV, fun ω => by rw [hVω, Int.cast_natCast]⟩
-    · obtain ⟨V, hV, hVω⟩ := hnat X hX j
-      refine ⟨0 - V, hsub P n U 0 V hU (hzero P n U) hV, fun ω => ?_⟩
-      rw [hsubapp, GeometricCurrentOn.zero_apply, hVω, Int.cast_neg, Int.cast_natCast]
-      ring
-  -- finite integer combinations, by induction on the index set
-  have hsum : ∀ G : Finset ι, (∀ i ∈ G, IsIntegerMultiplicity (S i)) →
-      ∃ Y : GeometricCurrentOn U n, IsIntegerMultiplicity Y ∧
-        ∀ ω, Y ω = ∑ i ∈ G, (m i : ℝ) * S i ω := by
-    intro G
-    induction G using Finset.induction_on with
-    | empty => exact fun _ => ⟨0, hzero P n U, fun ω => by simp⟩
-    | insert j G hj ih =>
-      intro hG
-      obtain ⟨Y, hY, hYω⟩ := ih fun i hi => hG i (Finset.mem_insert_of_mem hi)
-      obtain ⟨V, hV, hVω⟩ := hint (S j) (hG j (Finset.mem_insert_self j G)) (m j)
-      obtain ⟨hY', hY'ω⟩ := hadd Y V hY hV
-      refine ⟨Y - (0 - V), hY', fun ω => ?_⟩
-      rw [hY'ω, hYω, hVω, Finset.sum_insert hj]
-      ring
-  obtain ⟨Y, hY, hYω⟩ := hsum F hS
-  refine ⟨Y, hY, hYω, fun W => ?_⟩
-  -- the mass bound, from `Y(ω) ≤ Σᵢ |mᵢ| |Sᵢ(ω)|` for admissible `ω`
-  refine sSup_le ?_
-  rintro _ ⟨ω, hω, rfl⟩
-  calc ENNReal.ofReal (Y ω)
-      ≤ ENNReal.ofReal (∑ i ∈ F, |(m i : ℝ)| * |S i ω|) := by
-        refine ENNReal.ofReal_le_ofReal ?_
-        rw [hYω]
-        exact Finset.sum_le_sum fun i _ => by rw [← abs_mul]; exact le_abs_self _
-    _ = ∑ i ∈ F, ENNReal.ofReal (|(m i : ℝ)| * |S i ω|) :=
-        ENNReal.ofReal_sum_of_nonneg fun i _ => by positivity
-    _ ≤ ∑ i ∈ F, ((m i).natAbs : ℝ≥0∞) * (S i).massOn W :=
-        Finset.sum_le_sum fun i _ => hterm P n U (S i) (m i) W ω hω
-
-/-- **Integer combinations of oriented grid cubes in `ℝⁿ` are integer multiplicity** (Simon Ch. 6,
-2.2, 2.4 and 3.2(1)), `n = m + 1`.  Each grid cube `G_z = ρ(z + [0, 1]ⁿ)` is closed, hence Borel,
-so `[[G_z]](ω) = ∫_{G_z} ω(x)(e₀, …, eₘ) dHⁿ(x)` is an integer multiplicity current; the finite
-integer combination `Σ_{z ∈ s} β_z [[G_z]]` is integer multiplicity (differences of integer
-multiplicity currents being integer multiplicity) and agrees with `X` on every test form. -/
-theorem Submission.dor_lmb_fc_dtop_cube_chain_im : ∀ (m : ℕ) (ρ : ℝ) (s : Finset (Fin (m + 1) → ℤ)) (β : (Fin (m + 1) → ℤ) → ℤ) (X : GeometricCurrentOn (univ : Set (Euclid (m + 1))) (m + 1)), 0 < ρ → (∀ ω : TestFormOn (univ : Set (Euclid (m + 1))) (m + 1), X ω = ∑ z ∈ s, (β z : ℝ) * ∫ x in {x : Euclid (m + 1) | ∀ i : Fin (m + 1), ρ * z i ≤ x i ∧ x i ≤ ρ * (z i + 1)}, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) x (fun k => EuclideanSpace.single k (1 : ℝ)) ∂μHE[m + 1]) → IsIntegerMultiplicity X := by
-  intro m ρ s β X _ hX
-  -- the grid cube `G_z = ρ(z + [0, 1]ⁿ)` is closed, hence Borel
-  have hG : ∀ z : Fin (m + 1) → ℤ, MeasurableSet
-      {x : Euclid (m + 1) | ∀ i : Fin (m + 1), ρ * z i ≤ x i ∧ x i ≤ ρ * (z i + 1)} := by
-    intro z
-    refine IsClosed.measurableSet ?_
-    simp only [ofPred_forall, ofPred_and]
-    exact isClosed_iInter fun i =>
-      (isClosed_le continuous_const (PiLp.continuous_apply _ _ i)).inter
-        (isClosed_le (PiLp.continuous_apply _ _ i) continuous_const)
-  -- the integer multiplicity cube currents `[[G_z]]`
-  choose A hA hAω using fun z => Submission.dor_lmb_fc_dtop_cci_borel_current_im (m + 1) _ (hG z)
-  -- `Y = Σ_{z ∈ s} β_z [[G_z]]` is integer multiplicity
-  obtain ⟨Y, hY, hYω, -⟩ := Submission.cbr_cc_current_algebra.2.2
-    Submission.cmc_imRep_locality_restrict_sub.2.2.1 (m + 1) (m + 1) univ (Fin (m + 1) → ℤ) s A β
-    isOpen_univ fun z _ => hA z
-  -- `X = Y` on every test form
-  have hXY : X = Y := GeometricCurrentOn.ext fun ω => by
-    rw [hX ω, hYω ω]
-    exact Finset.sum_congr rfl fun z _ => by rw [hAω]
-  exact hXY ▸ hY
               mult_pos := fun x hx => absurd hx (notMem_empty x)
               locallyIntegrable_mult := fun K _ _ => by simp
               aestronglyMeasurable_orient := aestronglyMeasurable_const
@@ -13047,6 +12907,34 @@ theorem Submission.dor_lmb_fc_dtop_cube_chain_im : ∀ (m : ℕ) (ρ : ℝ) (s :
     calc |X ω| = |s * X (s⁻¹ • ω)| := by rw [hlin, ← mul_assoc, mul_inv_cancel₀ hs.ne', one_mul]
       _ = s * |X (s⁻¹ • ω)| := by rw [abs_mul, abs_of_pos hs]
       _ ≤ s * X.mass.toReal := mul_le_mul_of_nonneg_left habs hs.le
+
+/-- **Integer combinations of oriented grid cubes in `ℝⁿ` are integer multiplicity** (Simon Ch. 6,
+2.2, 2.4 and 3.2(1)), `n = m + 1`.  Each grid cube `G_z = ρ(z + [0, 1]ⁿ)` is closed, hence Borel,
+so `[[G_z]](ω) = ∫_{G_z} ω(x)(e₀, …, eₘ) dHⁿ(x)` is an integer multiplicity current; the finite
+integer combination `Σ_{z ∈ s} β_z [[G_z]]` is integer multiplicity (differences of integer
+multiplicity currents being integer multiplicity) and agrees with `X` on every test form. -/
+theorem Submission.dor_lmb_fc_dtop_cube_chain_im : ∀ (m : ℕ) (ρ : ℝ) (s : Finset (Fin (m + 1) → ℤ)) (β : (Fin (m + 1) → ℤ) → ℤ) (X : GeometricCurrentOn (univ : Set (Euclid (m + 1))) (m + 1)), 0 < ρ → (∀ ω : TestFormOn (univ : Set (Euclid (m + 1))) (m + 1), X ω = ∑ z ∈ s, (β z : ℝ) * ∫ x in {x : Euclid (m + 1) | ∀ i : Fin (m + 1), ρ * z i ≤ x i ∧ x i ≤ ρ * (z i + 1)}, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) x (fun k => EuclideanSpace.single k (1 : ℝ)) ∂μHE[m + 1]) → IsIntegerMultiplicity X := by
+  intro m ρ s β X _ hX
+  -- the grid cube `G_z = ρ(z + [0, 1]ⁿ)` is closed, hence Borel
+  have hG : ∀ z : Fin (m + 1) → ℤ, MeasurableSet
+      {x : Euclid (m + 1) | ∀ i : Fin (m + 1), ρ * z i ≤ x i ∧ x i ≤ ρ * (z i + 1)} := by
+    intro z
+    refine IsClosed.measurableSet ?_
+    simp only [ofPred_forall, ofPred_and]
+    exact isClosed_iInter fun i =>
+      (isClosed_le continuous_const (PiLp.continuous_apply _ _ i)).inter
+        (isClosed_le (PiLp.continuous_apply _ _ i) continuous_const)
+  -- the integer multiplicity cube currents `[[G_z]]`
+  choose A hA hAω using fun z => Submission.dor_lmb_fc_dtop_cci_borel_current_im (m + 1) _ (hG z)
+  -- `Y = Σ_{z ∈ s} β_z [[G_z]]` is integer multiplicity
+  obtain ⟨Y, hY, hYω, -⟩ := Submission.cbr_cc_current_algebra.2.2
+    Submission.cmc_imRep_locality_restrict_sub.2.2.1 (m + 1) (m + 1) univ (Fin (m + 1) → ℤ) s A β
+    isOpen_univ fun z _ => hA z
+  -- `X = Y` on every test form
+  have hXY : X = Y := GeometricCurrentOn.ext fun ω => by
+    rw [hX ω, hYω ω]
+    exact Finset.sum_congr rfl fun z _ => by rw [hAω]
+  exact hXY ▸ hY
 
 /-- **Shell-wise push-forwards and homotopies telescope** (Simon Ch. 6, proof of 5.1, with the
 homotopy formula 2.25).  Let `push`, `homot` satisfy, on integer multiplicity currents vanishing
