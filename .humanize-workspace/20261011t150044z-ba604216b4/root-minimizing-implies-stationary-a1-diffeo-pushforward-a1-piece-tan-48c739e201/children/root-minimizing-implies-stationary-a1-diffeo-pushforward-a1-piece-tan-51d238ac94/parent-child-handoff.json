@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "rg -n 'HasApproximateTangentSpaceAt|blowUpMap|ae_tendsto_measure_inter_div|approxTangent|tangent_iff' project --glob '*.lean'",
+        "rg -n 'ptd_|rsdic_|regcomp_|dor_lmb_' project --glob '*.lean' (no match)",
+        "rg -n 'notation.*μHE|def euclideanHausdorffMeasure|theorem euclideanHausdorffMeasure_homothety_image|theorem Isometry.euclideanHausdorffMeasure_image|euclideanHausdorffMeasure_smul₀|theorem ae_tendsto_measure_inter_div|instance.*HasBesicovitchCovering|theorem countable_cover_nhdsWithin' mathlib/Mathlib",
+        "rg -n 'theorem setIntegral_sdiff|theorem norm_setIntegral_le_of_norm_le_const |theorem tendsto_nhds_zero|theorem ofReal_integral_eq_lintegral_ofReal|theorem mem_nhdsGT_iff_exists_Ioo_subset|theorem squeeze_zero_norm'|theorem bounded_above_of_compact_support|theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|theorem lintegral_indicator_one|theorem ae_restrict_mem|theorem ae_ball_iff|theorem div_le_of_le_mul|theorem le_of_add_le_add_right' mathlib/Mathlib",
+        "grep -rn 'def HasApproximateTangentSpaceAt|def blowUpMap|abbrev Euclid' lake-packages-25730c7c/simongmt/Poincare/SimonGMT (SimonGMT 2b3663083f)",
+        "git show a157a5f4f62ba1c354a3b0cc070d947560abf2e6:GMT/Ch07/Submission.lean; python3 -I exact-string comparison of the five child types with the accepted rsdic_* lean_statements in dag.json (all identical)",
+        "python3 -I scans of dag.json lean_names (604) and all nodes/*/decomposition-v*.json proposal names (850) for the five ptd_tl_* names; grep -c ptd_tl over the eight chapter dag.json files; git for-each-ref (2,895 refs) | xargs git grep -l ptd_tl -- GMT; git log --all -S ptd_tl (all no match)",
+        "python3 -I gmt-compare.py contract_scope(GMT/Ch07/Contract.lean, 'GMT.Ch07.main_theorem'); lake env lean /tmp/ptd-tl-decomp/Challenge_{blowup_scaling,ae_excess,tangent_growth,excess_density,pointwise_comparison,parent}.lean",
+        "lake env lean /tmp/ptd-tl-decomp/Full.lean (#print axioms); Assembly.lean; GrowthVariant.lean; Instances.lean (pp.explicit)",
+        "python3 -I verifier/lean_contract.py validate_lean_statement on the five child types and the parent type"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/BesicovitchVectorSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LeftRightNhds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-48c739e201/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-tangent-locality-a1/decomposition-v3.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-components-are-minimizing-a1-approx-tangent-locality-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/tmp/ptd-tl-decomp/Full.lean",
+        "/tmp/ptd-tl-decomp/Assembly.lean",
+        "/tmp/ptd-tl-decomp/GrowthVariant.lean",
+        "/tmp/ptd-tl-decomp/Instances.lean",
+        "/tmp/ptd-tl-decomp/Challenge_parent.lean"
+      ],
+      "conclusion": "No proof of this statement or of any child is in the snapshot.\n- GMT/Ch07/Contract.lean and GMT/Ch07/Submission.lean are byte-identical. They supply only the definitions: HasApproximateTangentSpaceAt (opened from SimonGMT) and approxTangentPlane.\n- GMT/Ch03/Contract.lean records Simon 3.1.6 only as an unproved Prop.\n- The rg search for ptd_/rsdic_/regcomp_/dor_lmb_ in project finds nothing.\n- SimonGMT 2b3663083f (Chapter03/Rectifiable.lean) defines blowUpMap x r y = r⁻¹ • (y − x). It defines HasApproximateTangentSpaceAt as finrank P = n ∧ ∀ f : C_c(E, ℝ), Tendsto (r ↦ ∫ y in blowUpMap x r '' M, f y ∂μHE[n]) (𝓝[>] 0) (𝓝 (∫ y in P, f y ∂μHE[n])).\n\nEvery library fact the child proofs cite exists in the pinned Mathlib 25730c7c with compatible hypotheses:\n- density and covers: Besicovitch.ae_tendsto_measure_inter_div (Covering/Besicovitch.lean:1105, needs IsLocallyFiniteMeasure), instHasBesicovitchCovering, TopologicalSpace.countable_cover_nhdsWithin;\n- Hausdorff measure: μHE[d] := euclideanHausdorffMeasure (Geometry/Euclidean/Volume/Measure.lean:72), Isometry.euclideanHausdorffMeasure_image, MeasureTheory.euclideanHausdorffMeasure_homothety_image (‖c‖₊ ^ d •), Measure.euclideanHausdorffMeasure_smul₀;\n- set integrals: setIntegral_sdiff, setIntegral_eq_of_subset_of_forall_sdiff_eq_zero, norm_setIntegral_le_of_norm_le_const, ofReal_integral_eq_lintegral_ofReal, lintegral_indicator_one;\n- filters and limits: mem_nhdsGT_iff_exists_Ioo_subset, ENNReal.tendsto_nhds_zero;\n- ENNReal arithmetic: ENNReal.div_le_of_le_mul, ENNReal.le_of_add_le_add_right;\n- a.e. bookkeeping: ae_restrict_mem, ae_ball_iff.\n\nThe identical frozen type has a complete, comparator-accepted Lean proof in commit a157a5f4. Its five helper types match the proposed children character for character. Porting them under fresh ptd_tl_ names compiles in the replayed comparator scope with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1",
+  "child_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1.excess_density-a1",
+  "subproblem": {
+    "key": "excess_density",
+    "title": "Zero n-density of the excess from a growth bound and relative smallness",
+    "statement": "Let P, n ∈ ℕ, let A, B ⊆ ℝ^P be arbitrary sets, x ∈ ℝ^P, and r₀, C, r₁ ∈ ℝ with r₀ > 0, r₁ > 0 and H^n(B ∩ B̄_{r₀}(x)) < ∞, where H^n := μHE[n]. Assume:\n(G) H^n(A ∩ B̄_ρ(x)) ≤ ENNReal.ofReal(C · ρ^n) for all ρ ∈ (0, r₁);\n(E) for every extended nonnegative real ε ∈ (0, ∞], eventually as ρ → 0 in 𝓝[>] 0, H^n((B ∖ A) ∩ B̄_ρ(x)) ≤ ε · H^n(B ∩ B̄_ρ(x)).\nThen H^n((B ∖ A) ∩ B̄_ρ(x)) / (ENNReal.ofReal ρ)^n → 0 in [0, ∞] as ρ → 0 in 𝓝[>] 0, where the quotient is taken in [0, ∞] (a/b = a·b⁻¹).",
+    "lean_statement": "∀ (P n : ℕ) (A B : Set (Euclid P)) (x : Euclid P) (r₀ C r₁ : ℝ), 0 < r₀ → μHE[n] (B ∩ closedBall x r₀) ≠ ∞ → 0 < r₁ → (∀ ρ : ℝ, 0 < ρ → ρ < r₁ → μHE[n] (A ∩ closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → (∀ ε : ℝ≥0∞, 0 < ε → ∀ᶠ ρ in 𝓝[>] (0 : ℝ), μHE[n] ((B \\ A) ∩ closedBall x ρ) ≤ ε * μHE[n] (B ∩ closedBall x ρ)) → Tendsto (fun ρ : ℝ => μHE[n] ((B \\ A) ∩ closedBall x ρ) / ENNReal.ofReal ρ ^ n) (𝓝[>] 0) (𝓝 0)",
+    "lean_name": "ptd_tl_excess_density_zero",
+    "depends_on": [],
+    "natural_proof": "Source: step 6 of the parent-supplied proof (zero n-density of the excess).\nNotation: H^n := μHE[n]. In [0, ∞] put\n- a(ρ) := H^n(A ∩ B̄_ρ(x)), β(ρ) := H^n(B ∩ B̄_ρ(x)), e(ρ) := H^n((B ∖ A) ∩ B̄_ρ(x));\n- c := ENNReal.ofReal C ∈ [0, ∞) and κ := 2c ∈ [0, ∞).\n1. Rewriting (G). For ρ > 0 we have ρ^n ≥ 0, so ENNReal.ofReal(C·ρ^n) = ofReal(C)·ofReal(ρ^n) = c·(ofReal ρ)^n (ENNReal.ofReal_mul', ENNReal.ofReal_pow). Thus a(ρ) ≤ c·(ofReal ρ)^n for ρ ∈ (0, r₁).\n2. Doubling bound for B. Claim: eventually in 𝓝[>] 0, β(ρ) ≤ κ·(ofReal ρ)^n.\nThe interval (0, min(r₀, r₁)) belongs to 𝓝[>] 0, and (E) with ε = 1/2 holds eventually; so the conjunction holds eventually. Let ρ satisfy both. Then:\n- β(ρ) ≤ H^n(B ∩ B̄_{r₀}(x)) < ∞ by monotonicity, since ρ ≤ r₀;\n- β(ρ) ≤ a(ρ) + e(ρ) by monotonicity and subadditivity, since B ∩ B̄_ρ(x) ⊆ (A ∩ B̄_ρ(x)) ∪ ((B ∖ A) ∩ B̄_ρ(x)); no relation between A and B is needed;\n- e(ρ) ≤ (1/2)·β(ρ) by (E).\nHence β/2 + β/2 = β ≤ a + e ≤ a + β/2. Since β/2 < ∞ it can be cancelled, so β(ρ)/2 ≤ a(ρ). Therefore, using step 1 (ρ < r₁),\n β(ρ) = β/2 + β/2 ≤ 2·a(ρ) ≤ 2c·(ofReal ρ)^n = κ·(ofReal ρ)^n.\n3. Smallness. We use ENNReal.tendsto_nhds_zero: g(ρ) → 0 in [0, ∞] iff for every δ ∈ (0, ∞], eventually g(ρ) ≤ δ.\nLet δ > 0. If δ = ∞ there is nothing to prove. Otherwise δ ∈ (0, ∞); put ε := δ/(κ + 1). As κ + 1 ∈ [1, ∞), ε ∈ (0, ∞). Eventually both step 2 and (E) with this ε hold. For such ρ:\n e(ρ) ≤ ε·β(ρ) ≤ ε·(κ + 1)·(ofReal ρ)^n = δ·(ofReal ρ)^n.\nThe middle inequality uses β ≤ κ·(ofReal ρ)^n ≤ (κ + 1)·(ofReal ρ)^n. The last equality uses (δ/(κ + 1))·(κ + 1) = δ, valid because κ + 1 ∉ {0, ∞}. Then e(ρ)/(ofReal ρ)^n ≤ δ (ENNReal.div_le_of_le_mul).\n4. Conclusion. e(ρ)/(ofReal ρ)^n → 0 as ρ → 0 in 𝓝[>] 0.\n- For n = 0 all powers equal 1 and the argument is unchanged.\n- If C < 0 then c = 0 and the argument is unchanged. ∎",
+    "proof_key_steps": [
+      "ofReal(C ρ^n) = ofReal(C)·(ofReal ρ)^n for ρ > 0.",
+      "With ε = 1/2 and H^n(B ∩ B̄_ρ(x)) < ∞ for ρ ≤ r₀: β ≤ a + e ≤ a + β/2, so β ≤ 2a ≤ 2·ofReal(C)·ρ^n eventually.",
+      "Given δ, ε := δ/(2·ofReal(C) + 1) gives e ≤ εβ ≤ δρ^n eventually.",
+      "ENNReal.tendsto_nhds_zero gives e(ρ)/ρ^n → 0."
+    ]
+  },
+  "audit": {
+    "key": "excess_density",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The stronger contract for arbitrary A and B is justified: the proof uses a covering inclusion and subadditivity, not measurable additivity or A ⊆ B. Local finiteness permits cancellation of the finite half-measure. The ENNReal squeeze proves the exact quotient limit and handles negative C and n = 0. Its supplied premises make additional child dependencies unnecessary."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-51d238ac94/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-51d238ac94/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-51d238ac94/parent-supplied-natural-proof.json"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.mean_curvature_of_stationary-a1.normal_trace_identity-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.mean_curvature_of_stationary-a1",
+  "depth": 3,
+  "title": "Simon Ch. 2, 5.9 / Ch. 4, 2.7: the tangential divergence of the normal part of X is −X·H",
+  "statement": "Let P be a natural number, Q ≤ S linear subspaces of ℝ^P with orthogonal projections p_Q and P_S (Submodule.starProjection), pr : ℝ^P → L(ℝ^P, ℝ^P), X, Y : ℝ^P → ℝ^P and x ∈ ℝ^P. Assume pr(x) = P_S, pr and X are differentiable at x, and Y(y) = X(y) − pr(y)(X(y)) for all y in a neighbourhood of x. Then trace(p_Q ∘ DY(x)) = −⟨X(x), Σ_{j=1}^P (Dpr(x)[p_Q e_j])^*(p_Q e_j)⟩, where e_1, …, e_P is the standard basis of ℝ^P (e_j = EuclideanSpace.single j 1), Dpr(x) ∈ L(ℝ^P, L(ℝ^P, ℝ^P)) is the derivative of pr at x, and T^* is the adjoint of T ∈ L(ℝ^P, ℝ^P).",
+  "lean_statement": "∀ (P : ℕ) (Q S : Submodule ℝ (Euclid P)) (pr : Euclid P → (Euclid P →L[ℝ] Euclid P)) (X Y : Euclid P → Euclid P) (x : Euclid P), Q ≤ S → pr x = S.starProjection → DifferentiableAt ℝ pr x → DifferentiableAt ℝ X x → Y =ᶠ[𝓝 x] (fun y => X y - pr y (X y)) → LinearMap.trace ℝ (Euclid P) (Q.starProjection.toLinearMap ∘ₗ (fderiv ℝ Y x).toLinearMap) = -inner ℝ (X x) (∑ j : Fin P, ContinuousLinearMap.adjoint (fderiv ℝ pr x (Q.starProjection (EuclideanSpace.single j 1))) (Q.starProjection (EuclideanSpace.single j 1)))",
+  "lean_name": "mcs_trace_normal_part_eq_neg_inner",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-mean-curvature-of-stationary-a1-7a456981d2-a1"
+}

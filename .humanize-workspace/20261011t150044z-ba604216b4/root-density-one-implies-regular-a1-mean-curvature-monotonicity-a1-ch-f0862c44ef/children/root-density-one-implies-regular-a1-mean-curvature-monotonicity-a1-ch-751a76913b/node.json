@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1.range_subset_tangent-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.chart_tangent_space-a1",
+  "depth": 4,
+  "title": "Every vector Dψ(v)a is the velocity of a C¹ curve in N",
+  "statement": "Let P, r, d ∈ ℕ with r ≥ 1, N ⊆ ℝ^P, V ⊆ ℝ^d open, and ψ : ℝ^d → ℝ^P of class C^r on V with ψ(V) ⊆ N. Then for every v ∈ V, Dψ(v)(ℝ^d) ⊆ tangentSpace N (ψ(v)), where Dψ(v) = fderiv ℝ ψ v. Here tangentSpace N y is the set of w ∈ ℝ^P for which some γ : ℝ → ℝ^P is C¹ on (−1, 1), maps (−1, 1) into N, and satisfies γ(0) = y and γ'(0) = w (HasDerivAt γ w 0).",
+  "lean_statement": "∀ (P r d : ℕ) (N : Set (Euclid P)) (V : Set (Euclid d)) (ψ : Euclid d → Euclid P), 1 ≤ r → IsOpen V → ContDiffOn ℝ r ψ V → ψ '' V ⊆ N → ∀ v ∈ V, Set.range (fderiv ℝ ψ v) ⊆ tangentSpace N (ψ v)",
+  "lean_name": "dsmc_chart_range_subset_tangentSpace",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ch-751a76913b-a1"
+}

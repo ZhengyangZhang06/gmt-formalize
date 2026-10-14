@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.adjoint_det_frame_sq-a1",
+  "parent_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1",
+  "depth": 5,
+  "title": "Gram determinant: det(F*∘F) is the square of the frame-coordinate determinant",
+  "statement": "Let P, n ∈ ℕ, F : ℝⁿ → ℝᴾ a continuous linear map and τ = (τ₁, …, τₙ) an orthonormal family in ℝᴾ such that F eⱼ ∈ span{τ₁, …, τₙ} for every j, where eⱼ = EuclideanSpace.single j 1 is the standard basis of ℝⁿ. Then det(F*∘F) = (det 𝒜)², where F* is the adjoint of F, det(F*∘F) is the determinant of the endomorphism F.adjoint ∘L F of ℝⁿ (ContinuousLinearMap.det), and 𝒜ᵢⱼ := ⟨τᵢ, F eⱼ⟩.",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n →L[ℝ] Euclid P) (τ : Fin n → Euclid P), Orthonormal ℝ τ → (∀ j, F (EuclideanSpace.single j (1 : ℝ)) ∈ Submodule.span ℝ (Set.range τ)) → (F.adjoint ∘L F).det = (Matrix.of fun i j => inner ℝ (τ i) (F (EuclideanSpace.single j (1 : ℝ)))).det ^ 2",
+  "lean_name": "dgoj_det_adjoint_comp_eq_det_sq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-1671b0ceb2-a1"
+}
