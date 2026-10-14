@@ -1111,6 +1111,125 @@ theorem Submission.codim1_zsl_gc_local_inverse : ∀ (d : ℕ) (φ : Euclid d �
     exact ((hcd _ hV').differentiableAt one_ne_zero).hasFDerivAt
   exact (e.contDiffAt_symm ha hd (hcd _ hV')).contDiffWithinAt
 
+/-- Straightening charts for the co-area step of the limsup mass bound (density one implies
+regular, Simon 7.5 via the co-area formula of Ch. 2, §5): if `F : ℝ^{n+1} → ℝ` is `C¹`, then
+`{DF ≠ 0}` is covered by countably many open sets `Ψ_q(B_q)`, where `B_q` is open and `Ψ_q` is
+`C¹`, injective and with bijective derivative on `B_q`, and `F(Ψ_q(w)) = w(0)` on `B_q`.  Near `y₀`
+with `DF(y₀) e_i ≠ 0` the map `Θ(y) = (F(y), y ∘ i.succAbove)` has injective derivative at `y₀`, so
+its local inverse `χ` on an open `O` (`codim1_zsl_gc_local_inverse`) is such a chart with
+`y₀ ∈ χ(O)`; second countability selects countably many of these charts. -/
+theorem Submission.dor_lmbsf_pc_straightening_cover : ∀ (n : ℕ) (F : Euclid (n + 1) → ℝ), ContDiff ℝ 1 F → ∃ (B : ℕ → Set (Euclid (n + 1))) (Ψ : ℕ → Euclid (n + 1) → Euclid (n + 1)), (∀ q, IsOpen (B q)) ∧ (∀ q, ContDiffOn ℝ 1 (Ψ q) (B q)) ∧ (∀ q, InjOn (Ψ q) (B q)) ∧ (∀ q, ∀ w ∈ B q, Bijective (fderiv ℝ (Ψ q) w)) ∧ (∀ q, ∀ w ∈ B q, F (Ψ q w) = w 0) ∧ (∀ q, IsOpen (Ψ q '' B q)) ∧ {y | fderiv ℝ F y ≠ 0} ⊆ ⋃ q, Ψ q '' B q := by
+  have hR3 := Submission.codim1_zsl_gc_local_inverse
+  intro n F hF
+  classical
+  have hFd : Differentiable ℝ F := hF.differentiable one_ne_zero
+  -- pointwise straightening
+  have hloc : ∀ y₀ : Euclid (n + 1), fderiv ℝ F y₀ ≠ 0 →
+      ∃ (B : Set (Euclid (n + 1))) (Ψ : Euclid (n + 1) → Euclid (n + 1)), IsOpen B ∧
+        ContDiffOn ℝ 1 Ψ B ∧ InjOn Ψ B ∧ (∀ w ∈ B, Bijective (fderiv ℝ Ψ w)) ∧
+        (∀ w ∈ B, F (Ψ w) = w 0) ∧ IsOpen (Ψ '' B) ∧ y₀ ∈ Ψ '' B := by
+    intro y₀ hy₀
+    have hexp : ∀ v : Euclid (n + 1), v = ∑ j, v j • EuclideanSpace.single j (1 : ℝ) := by
+      intro v; ext j; simp [Finset.sum_apply, Pi.single_apply, Finset.sum_ite_eq]
+    obtain ⟨i, hi⟩ : ∃ i : Fin (n + 1), fderiv ℝ F y₀ (EuclideanSpace.single i 1) ≠ 0 := by
+      by_contra! h
+      apply hy₀
+      ext1 v
+      rw [hexp v, map_sum]
+      simp [h]
+    -- the linear part `y ↦ (0, y ∘ i.succAbove)`
+    let Llin : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1) :=
+      { toFun := fun y => WithLp.toLp 2 (Fin.cons 0 (fun k => y (i.succAbove k)) : Fin (n + 1) → ℝ)
+        map_add' := by
+          intro y z; ext j; refine Fin.cases ?_ (fun k => ?_) j <;> simp
+        map_smul' := by
+          intro c y; ext j; refine Fin.cases ?_ (fun k => ?_) j <;> simp }
+    let L : Euclid (n + 1) →L[ℝ] Euclid (n + 1) := LinearMap.toContinuousLinearMap Llin
+    have hL0 : ∀ y, L y 0 = 0 := fun y => by simp [L, Llin]
+    have hLs : ∀ y (k : Fin n), L y k.succ = y (i.succAbove k) := fun y k => by simp [L, Llin]
+    let e0 : Euclid (n + 1) := EuclideanSpace.single 0 1
+    let Θ : Euclid (n + 1) → Euclid (n + 1) := fun y => F y • e0 + L y
+    have hΘ0 : ∀ y, Θ y 0 = F y := fun y => by simp [Θ, e0, hL0]
+    have hΘc : ContDiff ℝ 1 Θ := (hF.smul contDiff_const).add L.contDiff
+    have hΘD : ∀ y, fderiv ℝ Θ y = (fderiv ℝ F y).smulRight e0 + L := by
+      intro y
+      have h1 : HasFDerivAt (fun y => F y • e0) ((fderiv ℝ F y).smulRight e0) y :=
+        (hFd y).hasFDerivAt.smul_const e0
+      exact (h1.add L.hasFDerivAt).fderiv
+    have hinj0 : Injective (fderiv ℝ Θ y₀) := by
+      rw [hΘD y₀]
+      have hker : ∀ h : Euclid (n + 1), ((fderiv ℝ F y₀).smulRight e0 + L) h = 0 → h = 0 := by
+        intro h hh
+        have hc0 := congrArg (fun v : Euclid (n + 1) => v 0) hh
+        have hcs : ∀ k : Fin n, h (i.succAbove k) = 0 := by
+          intro k
+          have := congrArg (fun v : Euclid (n + 1) => v k.succ) hh
+          simpa [e0, hLs, Fin.succ_ne_zero] using this
+        have hhi : h = h i • EuclideanSpace.single i (1 : ℝ) := by
+          ext j
+          rcases Fin.eq_self_or_eq_succAbove i j with rfl | ⟨k, rfl⟩
+          · simp
+          · simp [hcs k, Fin.succAbove_ne]
+        have hDF : fderiv ℝ F y₀ h = 0 := by simpa [e0, hL0] using hc0
+        rw [hhi, map_smul, smul_eq_mul] at hDF
+        have hi0 : h i = 0 := by
+          rcases mul_eq_zero.mp hDF with h' | h'
+          · exact h'
+          · exact absurd h' hi
+        rw [hhi, hi0, zero_smul]
+      intro h1 h2 h12
+      have := hker (h1 - h2) (by rw [map_sub, h12, sub_self])
+      exact sub_eq_zero.mp this
+    obtain ⟨V₀, O, χ, hV₀, hO, hy₀V₀, -, hχ, hχmaps, hΘχ, hχΘ⟩ :=
+      hR3 (n + 1) Θ univ y₀ isOpen_univ (mem_univ _) hΘc.contDiffOn hinj0
+    have hχd : ∀ a ∈ O, DifferentiableAt ℝ χ a := fun a ha =>
+      (hχ.differentiableOn one_ne_zero a ha).differentiableAt (hO.mem_nhds ha)
+    have himg : χ '' O = V₀ := by
+      apply Subset.antisymm
+      · rintro _ ⟨a, ha, rfl⟩; exact hχmaps ha
+      · intro z hz; exact ⟨Θ z, (hχΘ z hz).1, (hχΘ z hz).2⟩
+    refine ⟨O, χ, hO, hχ, ?_, ?_, ?_, ?_, ?_⟩
+    · intro a ha b hb hab
+      rw [← hΘχ a ha, ← hΘχ b hb, hab]
+    · intro a ha
+      have hid : fderiv ℝ (Θ ∘ χ) a = ContinuousLinearMap.id ℝ (Euclid (n + 1)) := by
+        rw [Filter.EventuallyEq.fderiv_eq (f₁ := Θ ∘ χ) (f := id) ?_, fderiv_id]
+        filter_upwards [hO.mem_nhds ha] with b hb using hΘχ b hb
+      rw [fderiv_comp a (hΘc.differentiable one_ne_zero _) (hχd a ha)] at hid
+      have hli : Function.LeftInverse (fderiv ℝ Θ (χ a)) (fderiv ℝ χ a) := fun u => by
+        simpa using DFunLike.congr_fun hid u
+      have hinj : Injective (fderiv ℝ χ a) := hli.injective
+      exact ⟨hinj, LinearMap.surjective_of_injective
+        (f := (fderiv ℝ χ a : Euclid (n + 1) →ₗ[ℝ] Euclid (n + 1))) hinj⟩
+    · intro a ha
+      rw [← hΘ0, hΘχ a ha]
+    · rw [himg]; exact hV₀
+    · rw [himg]; exact hy₀V₀
+  let O' : Set (Euclid (n + 1)) := {y | fderiv ℝ F y ≠ 0}
+  choose! Bf Ψf hBf hΨf hinjf hbijf hFf hopenf hmemf using hloc
+  obtain ⟨T, hTc, hTU⟩ := TopologicalSpace.isOpen_iUnion_countable
+    (fun y : O' => Ψf y '' Bf y) (fun y => hopenf y y.2)
+  by_cases hT : T.Nonempty
+  · obtain ⟨e, he⟩ := hTc.exists_eq_range hT
+    refine ⟨fun q => Bf (e q), fun q => Ψf (e q), fun q => hBf _ (e q).2, fun q => hΨf _ (e q).2,
+      fun q => hinjf _ (e q).2, fun q => hbijf _ (e q).2, fun q => hFf _ (e q).2,
+      fun q => hopenf _ (e q).2, ?_⟩
+    intro y hy
+    have h1 : y ∈ ⋃ z : O', Ψf z '' Bf z := mem_iUnion.mpr ⟨⟨y, hy⟩, hmemf y hy⟩
+    rw [← hTU] at h1
+    obtain ⟨z, hzT, hz⟩ := mem_iUnion₂.mp h1
+    rw [he] at hzT
+    obtain ⟨q, rfl⟩ := hzT
+    exact mem_iUnion.mpr ⟨q, hz⟩
+  · refine ⟨fun _ => ∅, fun _ => id, fun _ => isOpen_empty, fun _ => contDiff_id.contDiffOn,
+      fun _ => injOn_empty _, fun _ _ h => absurd h (notMem_empty _),
+      fun _ _ h => absurd h (notMem_empty _), fun _ => by simp, ?_⟩
+    intro y hy
+    have h1 : y ∈ ⋃ z : O', Ψf z '' Bf z := mem_iUnion.mpr ⟨⟨y, hy⟩, hmemf y hy⟩
+    rw [← hTU] at h1
+    obtain ⟨z, hzT, -⟩ := mem_iUnion₂.mp h1
+    exact absurd ⟨z, hzT⟩ hT
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
