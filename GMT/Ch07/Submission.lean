@@ -2831,6 +2831,55 @@ theorem Submission.dtc_bc_lc_pf_unitOrientation_comp : ∀ (P n : ℕ) (ξ : Mul
       exact hL (τ i) (hspan ▸ Submodule.subset_span (mem_range_self i))
     rcases hsign with h | h <;> rw [h, h, hcomp, hLτ]
 
+/-- **Mass bound for the push-forward formula** (Simon Ch. 6, 2.27 and 2.29:
+`M(f_#T) ≤ (ess sup |Df|)ⁿ M(T)`).  Let `‖Df‖ ≤ L` on `O`, let `R = (M, θ, ξ)` represent `Y` with
+`spt Y ⊆ O`, and let `Z(ω) = ∫_M θ ⟨ω(f(x)) ∘ ΛⁿDf(x), ξ(x)⟩ dHⁿ`.  Then `M(Z) ≤ Lⁿ M(Y)`.
+* `Hⁿ(M ∖ spt Y) = 0` and `M(Y) = μ_R(ℝᴾ) = ∫_M θ dHⁿ`.
+* For `|ω| ≤ 1` and `Hⁿ`-a.e. `x ∈ M`: `x ∈ spt Y ⊆ O`, so `0 ≤ ‖Df(x)‖ ≤ L` (in particular
+  `L ≥ 0` whenever `M` is not `Hⁿ`-null), and `ξ(x)` is a unit orientation of a plane, so
+  `|⟨ω(f(x)) ∘ ΛⁿDf(x), ξ(x)⟩| ≤ |ω(f(x))| ‖Df(x)‖ⁿ ≤ Lⁿ`.
+* Hence `Z(ω) ≤ ∫_M |θ ⟨ω(f(x)) ∘ ΛⁿDf(x), ξ(x)⟩| dHⁿ ≤ Lⁿ ∫_M θ dHⁿ = Lⁿ M(Y)`; take the
+  supremum over `ω`. -/
+theorem Submission.dtc_bc_lc_pf_pushforward_mass_le : ∀ (P n : ℕ) (O : Set (Euclid P)) (f : Euclid P → Euclid P) (L : ℝ) (Y Z : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), (∀ y ∈ O, ‖fderiv ℝ f y‖ ≤ L) → R.Represents Y → IsCompact Y.support → Y.support ⊆ O → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Z ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → Z.mass ≤ ENNReal.ofReal (L ^ n) * Y.mass := by
+  intro P n O f L Y Z R hL hRY _ hKO hZ
+  -- Step 1: `Hⁿ(M ∖ spt Y) = 0` and `M(Y) = μ_R(ℝᴾ) = ∫_M θ dHⁿ`
+  obtain ⟨hnull, hmass, -⟩ := (Submission.dtc_bc_lc_pf_imrep_carrier_mass_support P n).1 Y R hRY
+  have hspt : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ Y.support := by
+    rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+    refine measure_mono_null (fun x hx => ?_) hnull
+    exact ⟨hx.2, hx.1⟩
+  have hθ : ∫⁻ x in R.carrier, (R.mult x : ℝ≥0∞) ∂μHE[n] = Y.mass := by
+    rw [hmass, IMRep.measure, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+  -- Step 2: fix an admissible `ω`, i.e. `|ω(z)| ≤ 1` for every `z`
+  apply sSup_le
+  rintro _ ⟨ω, ⟨-, hω⟩, rfl⟩
+  dsimp only
+  -- Step 3: `|θ ⟨ω(f(x)) ∘ ΛⁿDf(x), ξ(x)⟩| ≤ Lⁿ θ` at `Hⁿ`-a.e. `x ∈ M`
+  have hbound : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      ‖(R.mult x : ℝ) * R.orient x
+        (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x))‖ₑ ≤
+          ENNReal.ofReal (L ^ n) * (R.mult x : ℝ≥0∞) := by
+    filter_upwards [hspt, R.orients] with x hx hor
+    obtain ⟨Q, -, hQ⟩ := hor
+    have hDf : ‖fderiv ℝ f x‖ ≤ L := hL x (hKO hx)
+    have hLn : 0 ≤ L ^ n := pow_nonneg ((norm_nonneg _).trans hDf) n
+    have hξ : |R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap
+        (fderiv ℝ f x))| ≤ L ^ n :=
+      calc _ ≤ covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) (f x)) *
+            ‖fderiv ℝ f x‖ ^ n :=
+          (Submission.dtc_bc_lc_pf_unitOrientation_comp P n (R.orient x) Q (fderiv ℝ f x) hQ).1 _
+        _ ≤ 1 * L ^ n := mul_le_mul (hω (f x)) (pow_le_pow_left₀ (norm_nonneg _) hDf n)
+            (pow_nonneg (norm_nonneg _) n) zero_le_one
+        _ = L ^ n := one_mul _
+    rw [Real.enorm_eq_ofReal_abs, abs_mul, Nat.abs_cast, ← ENNReal.ofReal_natCast,
+      ← ENNReal.ofReal_mul hLn, mul_comm (L ^ n)]
+    exact ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left hξ (Nat.cast_nonneg _))
+  -- Step 4: `Z(ω) ≤ ∫_M |θ ⟨ω(f(x)) ∘ ΛⁿDf(x), ξ(x)⟩| dHⁿ ≤ Lⁿ ∫_M θ dHⁿ = Lⁿ M(Y)`
+  rw [hZ ω]
+  refine (Real.ofReal_le_enorm _).trans ((enorm_integral_le_lintegral_enorm _).trans
+    ((lintegral_mono_ae hbound).trans_eq ?_))
+  rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top, hθ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
