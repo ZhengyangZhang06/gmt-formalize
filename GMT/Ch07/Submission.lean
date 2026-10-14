@@ -451,6 +451,67 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **The chord `[[b, a]]`** (Simon 7.3.3, proof of (2), formula (10)): let `a, b ∈ ℝᴾ` be unit
+vectors with `a ≠ b` and `b ≠ −a`.  Then `ℓ = |a − b| > 0`, `u = ℓ⁻¹(a − b)` is a unit vector with
+`b + ℓu = a`, and every point `b + su = (1 − s/ℓ)b + (s/ℓ)a`, `s ∈ [0, ℓ]`, is a convex combination
+of unit vectors, so it lies in the closed unit ball.  The line `s ↦ b + su` meets each line `ℝe`
+through `0` in at most one parameter: two parameters `s₁ ≠ s₂` would put `u`, then `b` and
+`a = b + ℓu`, on `ℝe`, and unit vectors `a = αe`, `b = βe` have `|α| = |β|`, i.e. `a = ±b`. -/
+theorem Submission.idtp_fons_odc_antipodal_chord : ∀ (P : ℕ) (a b : Euclid P), ‖a‖ = 1 → ‖b‖ = 1 → a ≠ b → b ≠ -a → ∃ (ℓ : ℝ) (u : Euclid P), 0 < ℓ ∧ ‖a - b‖ = ℓ ∧ ‖u‖ = 1 ∧ b + ℓ • u = a ∧ (∀ s ∈ Icc (0 : ℝ) ℓ, ‖b + s • u‖ ≤ 1) ∧ ∀ (e : Euclid P) (s₁ s₂ t₁ t₂ : ℝ), b + s₁ • u = t₁ • e → b + s₂ • u = t₂ • e → s₁ = s₂ := by
+  intro P a b ha hb hab hba
+  -- `ℓ := |a − b| > 0` and `u := ℓ⁻¹(a − b)`
+  obtain ⟨ℓ, hℓdef⟩ : ∃ ℓ : ℝ, ‖a - b‖ = ℓ := ⟨_, rfl⟩
+  have hℓ : 0 < ℓ := hℓdef ▸ norm_pos_iff.mpr (sub_ne_zero.mpr hab)
+  -- `b + ℓu = a`
+  have hpt : b + ℓ • ℓ⁻¹ • (a - b) = a := by
+    rw [smul_smul, mul_inv_cancel₀ hℓ.ne', one_smul, add_sub_cancel]
+  refine ⟨ℓ, ℓ⁻¹ • (a - b), hℓ, hℓdef, ?_, hpt, ?_, ?_⟩
+  · -- `|u| = ℓ⁻¹|a − b| = 1`
+    rw [norm_smul, norm_inv, Real.norm_of_nonneg hℓ.le, hℓdef, inv_mul_cancel₀ hℓ.ne']
+  · -- `b + su = (1 − s/ℓ)b + (s/ℓ)a` is a convex combination of unit vectors
+    rintro s ⟨hs0, hsℓ⟩
+    have hr0 : 0 ≤ s / ℓ := div_nonneg hs0 hℓ.le
+    have hr1 : s / ℓ ≤ 1 := (div_le_one hℓ).mpr hsℓ
+    have hcomb : b + s • ℓ⁻¹ • (a - b) = (1 - s / ℓ) • b + (s / ℓ) • a := by
+      rw [smul_smul, ← div_eq_mul_inv, smul_sub, sub_smul, one_smul]
+      abel
+    rw [hcomb]
+    calc ‖(1 - s / ℓ) • b + (s / ℓ) • a‖ ≤ ‖(1 - s / ℓ) • b‖ + ‖(s / ℓ) • a‖ := norm_add_le _ _
+      _ = (1 - s / ℓ) + s / ℓ := by
+        rw [norm_smul, norm_smul, hb, ha, Real.norm_of_nonneg (sub_nonneg.mpr hr1),
+          Real.norm_of_nonneg hr0, mul_one, mul_one]
+      _ = 1 := sub_add_cancel 1 (s / ℓ)
+  · -- two meeting parameters `s₁ ≠ s₂` would put `u`, `b` and `a = b + ℓu` on the line `ℝe`
+    intro e s₁ s₂ t₁ t₂ h₁ h₂
+    by_contra hs
+    have huS : ℓ⁻¹ • (a - b) ∈ Submodule.span ℝ {e} := by
+      have hdu : (s₁ - s₂) • ℓ⁻¹ • (a - b) = (t₁ - t₂) • e := by
+        rw [sub_smul, sub_smul, ← h₁, ← h₂]
+        abel
+      rw [← Submodule.smul_mem_iff _ (sub_ne_zero.mpr hs), hdu]
+      exact Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self e)
+    have hbS : b ∈ Submodule.span ℝ {e} := by
+      have hb' : b = t₁ • e - s₁ • ℓ⁻¹ • (a - b) := by
+        rw [← h₁, add_sub_cancel_right]
+      rw [hb']
+      exact Submodule.sub_mem _ (Submodule.smul_mem _ _ (Submodule.mem_span_singleton_self e))
+        (Submodule.smul_mem _ _ huS)
+    have haS : a ∈ Submodule.span ℝ {e} := by
+      rw [← hpt]
+      exact Submodule.add_mem _ hbS (Submodule.smul_mem _ _ huS)
+    -- unit vectors `a = αe`, `b = βe` force `|α| = |β|`, i.e. `a = b` or `b = −a`
+    obtain ⟨α, hα⟩ := Submodule.mem_span_singleton.mp haS
+    obtain ⟨β, hβ⟩ := Submodule.mem_span_singleton.mp hbS
+    rw [← hα, norm_smul, Real.norm_eq_abs] at ha
+    rw [← hβ, norm_smul, Real.norm_eq_abs] at hb
+    have he : ‖e‖ ≠ 0 := by
+      intro h0
+      rw [h0, mul_zero] at ha
+      exact zero_ne_one ha
+    rcases abs_eq_abs.mp (mul_right_cancel₀ he (ha.trans hb.symm)) with h | h
+    · exact hab (by rw [← hα, ← hβ, h])
+    · exact hba (by rw [← hα, ← hβ, h, neg_smul, neg_neg])
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
