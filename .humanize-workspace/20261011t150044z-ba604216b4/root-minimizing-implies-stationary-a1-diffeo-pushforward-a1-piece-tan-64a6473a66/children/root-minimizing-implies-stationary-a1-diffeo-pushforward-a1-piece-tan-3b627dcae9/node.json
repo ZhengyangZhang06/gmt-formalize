@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1.linear_range_integral-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1",
+  "depth": 5,
+  "title": "Hausdorff integral over the range of a linear map with constant Jacobian",
+  "statement": "Let P, n ∈ ℕ, T : ℝ^n → ℝ^P continuous linear and j ≥ 0 with H^n(T(S)) = ofReal(j)·λ(S) for every S ⊆ ℝ^n (H^n = μHE[n] on ℝ^P, λ = Lebesgue measure on ℝ^n). Then for every continuous f : ℝ^P → ℝ, ∫_{range T} f dH^n = j·∫_{ℝ^n} f(Tc) dλ(c).",
+  "lean_statement": "∀ (P n : ℕ) (T : Euclid n →L[ℝ] Euclid P) (j : ℝ) (f : Euclid P → ℝ), 0 ≤ j → (∀ S : Set (Euclid n), μHE[n] (T '' S) = ENNReal.ofReal j * volume S) → Continuous f → ∫ y in (LinearMap.range (T : Euclid n →ₗ[ℝ] Euclid P) : Set (Euclid P)), f y ∂μHE[n] = j * ∫ c, f (T c) ∂volume",
+  "lean_name": "pit_setIntegral_range_linear",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-3b627dcae9-a1"
+}
