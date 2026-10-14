@@ -7660,6 +7660,222 @@ theorem Submission.dtc_bc_lc_measure_le_add : ∀ (P n : ℕ) (U : Set (Euclid P
           rw [Measure.add_apply, Submission.dtc_mass_eq_measure P n U V X RX hU hV hVU hRX,
             Submission.dtc_mass_eq_measure P n U V Y RY hU hV hVU hRY]
 
+/-- **Simon 7.2.4, local comparison: retraction estimate.**  Let `n = m + 1`, `S ∈ 𝒟ₙ(U)` be
+minimizing in `A` with `spt S ⊆ A`, `B̄_G ⊆ U`, and let `π` be `C¹` and `L`-Lipschitz on `B_{2G}`,
+with `π(B_{2G}) ⊆ A`, `π = id` on `A ∩ B_{2G}` and `|π(y)| ≤ 2|y|`.  If `Y ∈ 𝒟ₙ(ℝᴾ)` is an integer
+multiplicity cycle with compact support in `B_{G/2}`, then `M_{B_G}(S) ≤ Lⁿ M_{B_G}(S + Y)`.
+Here `‖Dπ‖ ≤ L` on `B_{2G}`, and `Q = S⌞B_G` is an integer multiplicity current in `ℝᴾ` with
+compact support in `B̄_G ∩ spt S ⊆ A`.  `π` fixes `spt Q`, so `π_#Q = Q` and
+`π_#(Q + Y) = Q + π_#Y`.  `π_#Y` is an integer multiplicity cycle supported in the compact set
+`π(spt Y) ⊆ A ∩ B_G`, so minimality (7.2.4 (9)) gives `M_{B_G}(S) ≤ M_{B_G}(S + π_#Y)`, and
+`M_{B_G}(S + π_#Y) = M_{B_G}(π_#(Q + Y)) ≤ Lⁿ M(Q + Y)`.  Finally `μ_{Q+Y} ≤ μ_Q + μ_Y` vanishes
+off `B_G`, so `M(Q + Y) = M_{B_G}(Q + Y) = M_{B_G}(S + Y)`. -/
+theorem Submission.dtc_bc_lc_retraction_comparison : ∀ (P m : ℕ) (U A : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (π : Euclid P → Euclid P) (G L : ℝ), IsOpen U → IsMinimizingIn S A → S.support ⊆ A → 0 < G → closedBall (0 : Euclid P) G ⊆ U → 0 ≤ L → ContDiffOn ℝ 1 π (ball 0 (2 * G)) → MapsTo π (ball 0 (2 * G)) A → (∀ y ∈ A ∩ ball 0 (2 * G), π y = y) → (∀ y ∈ ball 0 (2 * G), ‖π y‖ ≤ 2 * ‖y‖) → (∀ y ∈ ball 0 (2 * G), ∀ z ∈ ball 0 (2 * G), ‖π y - π z‖ ≤ L * ‖y - z‖) → IsIntegerMultiplicity Y → Y.boundary = 0 → IsCompact Y.support → Y.support ⊆ ball 0 (G / 2) → S.massOn (ball 0 G) ≤ ENNReal.ofReal (L ^ (m + 1)) * (S - (0 - Y.restrictDomain (subset_univ U))).massOn (ball 0 G) := by
+  -- the children and the sibling prerequisites used below
+  have hPF := Submission.dtc_bc_lc_pushforward
+  have hRestr := Submission.dtc_bc_lc_rc_ambient_restriction
+  have hComp := Submission.dtc_bc_lc_rc_cycle_competitor
+  have hOF := Submission.dtc_bc_lc_orient_fixed
+  have hF4 := Submission.dtc_bc_lc_measure_le_add
+  have hM := Submission.dtc_mass_eq_measure
+  have hV := Submission.dtc_vanish_off_support
+  have hIM := Submission.cmc_imRep_locality_restrict_sub
+  have hSV := Submission.rsd_cmr_support_subset_of_vanish
+  have hAG := Submission.dtc_massOn_eq_of_agreeOn
+  intro P m U A S Y π G L hU hmin hsptS hG hGU hL hπC hπA hπfix hπ2 hπLip hYim hYbd hYcpt hYsub
+  -- `B_G` is open with `closure B_G = B̄_G ⊆ U` compact; `B̄_G ⊆ B_{2G}`
+  have hBopen : IsOpen (ball (0 : Euclid P) G) := isOpen_ball
+  have hclos : closure (ball (0 : Euclid P) G) = closedBall 0 G := closure_ball 0 hG.ne'
+  have hBcc : CompactlyContained (ball (0 : Euclid P) G) U := by
+    refine ⟨?_, ?_⟩
+    · rw [hclos]; exact isCompact_closedBall 0 G
+    · rw [hclos]; exact hGU
+  have hBU : ball (0 : Euclid P) G ⊆ U := ball_subset_closedBall.trans hGU
+  have hO : IsOpen (ball (0 : Euclid P) (2 * G)) := isOpen_ball
+  have hcb2 : closedBall (0 : Euclid P) G ⊆ ball 0 (2 * G) := closedBall_subset_ball (by linarith)
+  have hBB2 : ball (0 : Euclid P) G ⊆ ball 0 (2 * G) := ball_subset_ball (by linarith)
+  -- Step 1: `‖Dπ(y)‖ ≤ L` on `B_{2G}`, as `π` is `L`-Lipschitz on this open ball
+  have hDπ : ∀ y ∈ ball (0 : Euclid P) (2 * G), ‖fderiv ℝ π y‖ ≤ L := by
+    intro y hy
+    have hlip : LipschitzOnWith (Real.toNNReal L) π (ball (0 : Euclid P) (2 * G)) := by
+      apply LipschitzOnWith.of_dist_le_mul
+      intro a ha b hb
+      rw [dist_eq_norm, dist_eq_norm, Real.coe_toNNReal _ hL]
+      exact hπLip a ha b hb
+    have := norm_fderiv_le_of_lipschitzOn ℝ (hO.mem_nhds hy) hlip
+    simpa [Real.coe_toNNReal _ hL] using this
+  -- Step 2: `Q = S⌞B_G` in `ℝᴾ`, represented by `(M ∩ B_G, θ, ξ)`, agreeing with `S` on forms
+  -- supported in `B_G`, with compact support in `B̄_G ∩ spt S ⊆ A ∩ B_{2G}`
+  obtain ⟨R, hR⟩ := hmin.1
+  obtain ⟨Q, RQ, hRQ, hRQc, -, -, hQ1, hQsupp, hQcpt⟩ :=
+    hRestr P (m + 1) U (ball 0 G) S R hU hBopen hBcc hR
+  have hQsub : Q.support ⊆ ball (0 : Euclid P) (2 * G) := by
+    intro y hy
+    have h1 := (hQsupp hy).1
+    rw [hclos] at h1
+    exact hcb2 h1
+  have hQA : Q.support ⊆ A := fun y hy => hsptS (hQsupp hy).2
+  -- Step 3: the push-forward `π_#` on currents with compact support in `B_{2G}`; `π_#Q = Q`,
+  -- since `π x = x` and `ΛⁿDπ(x)` fixes `ξ(x)` for a.e. `x ∈ M ∩ B_G`
+  obtain ⟨push, hpushA, hpushB⟩ := hPF P m (ball 0 (2 * G)) π hO hπC
+  have hYsub2 : Y.support ⊆ ball (0 : Euclid P) (2 * G) :=
+    hYsub.trans (ball_subset_ball (by linarith))
+  have hpQ : push Q = Q := by
+    have hfix := hOF P (m + 1) univ (ball 0 (2 * G)) Q RQ π isOpen_univ hO hRQ
+      (hπC.differentiableOn one_ne_zero) (fun y hy => hπfix y ⟨hQA hy.1, hy.2⟩)
+    have hcar : RQ.carrier ∩ ball 0 (2 * G) = RQ.carrier := by
+      rw [hRQc]
+      exact inter_eq_left.mpr (fun x hx => hBB2 hx.2)
+    rw [hcar] at hfix
+    obtain ⟨hformula, -⟩ := hpushA Q RQ hRQ hQcpt hQsub
+    ext ω
+    rw [hformula ω, hRQ ω]
+    unfold IMRep.action
+    apply integral_congr_ae
+    filter_upwards [hfix] with x hx
+    rw [hx.1, hx.2]
+  -- Step 4: additivity, `π_#0 = 0`, `π_#(0 − Y) = 0 − π_#Y` and `π_#(Q + Y) = Q + π_#Y`
+  have h0im : IsIntegerMultiplicity (0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) := by
+    have h := hIM.2.2.1 P (m + 1) univ Y Y isOpen_univ hYim hYim
+    have h' : Y - Y = 0 := by
+      ext ω
+      show Y ω - Y ω = 0
+      ring
+    rwa [h'] at h
+  have h0spt := hSV P (m + 1) univ ∅ (0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1))
+    isOpen_univ isCompact_empty (empty_subset _) (fun ω _ => rfl)
+  have h0sub : (0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)).support ⊆
+      ball 0 (2 * G) := h0spt.1.trans (empty_subset _)
+  have hp0 : push 0 = 0 := by
+    have h := hpushB 0 0 h0im h0im h0spt.2 h0sub h0spt.2 h0sub
+    have h00 : (0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) - 0 = 0 := by
+      ext ω
+      show (0 : ℝ) - 0 = 0
+      ring
+    rw [h00] at h
+    ext ω
+    have hω := congrArg (fun T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1) => T ω) h
+    change push 0 ω = push 0 ω - push 0 ω at hω
+    show push 0 ω = 0
+    linarith
+  have hnYim : IsIntegerMultiplicity (0 - Y) := hIM.2.2.1 P (m + 1) univ 0 Y isOpen_univ h0im hYim
+  have hnYspt := hSV P (m + 1) univ Y.support (0 - Y) isOpen_univ hYcpt (subset_univ _)
+    (fun ω hω => by
+      show (0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) ω - Y ω = 0
+      rw [hV P (m + 1) univ Y ω hω, sub_zero]
+      rfl)
+  have hpnY : push (0 - Y) = 0 - push Y := by
+    rw [hpushB 0 Y h0im hYim h0spt.2 h0sub hYcpt hYsub2, hp0]
+  have hQYim : IsIntegerMultiplicity (Q - (0 - Y)) :=
+    hIM.2.2.1 P (m + 1) univ Q (0 - Y) isOpen_univ ⟨RQ, hRQ⟩ hnYim
+  have hQYspt := hSV P (m + 1) univ (Q.support ∪ Y.support) (Q - (0 - Y)) isOpen_univ
+    (hQcpt.union hYcpt) (subset_univ _) (fun ω hω => by
+      have h1 := hV P (m + 1) univ Q ω (Disjoint.mono_right subset_union_left hω)
+      have h2 := hV P (m + 1) univ Y ω (Disjoint.mono_right subset_union_right hω)
+      show Q ω - ((0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) ω - Y ω) = 0
+      rw [h1, h2]
+      show (0 : ℝ) - (0 - 0) = 0
+      ring)
+  have hQYsub : (Q - (0 - Y)).support ⊆ ball 0 (2 * G) :=
+    hQYspt.1.trans (union_subset hQsub hYsub2)
+  have hpQY : push (Q - (0 - Y)) = Q - (0 - push Y) := by
+    rw [hpushB Q (0 - Y) ⟨RQ, hRQ⟩ hnYim hQcpt hQsub hnYspt.2 (hnYspt.1.trans hYsub2), hpQ, hpnY]
+  -- Step 5: `π_#Y` is an integer multiplicity cycle supported in the compact set
+  -- `π(spt Y) ⊆ A ∩ B_G`, so minimality gives `M_{B_G}(S) ≤ M_{B_G}(S + (π_#Y)|_U)`
+  obtain ⟨RY, hRY⟩ := hYim
+  obtain ⟨-, hpYim, hpYspt, -, hpYbd⟩ := hpushA Y RY hRY hYcpt hYsub2
+  have hKcpt : IsCompact (π '' Y.support) :=
+    hYcpt.image_of_continuousOn (hπC.continuousOn.mono hYsub2)
+  have hKsub : π '' Y.support ⊆ A ∩ ball 0 G := by
+    rintro _ ⟨y, hy, rfl⟩
+    have hy2 := hYsub2 hy
+    refine ⟨hπA hy2, ?_⟩
+    have h1 := hπ2 y hy2
+    have h2 : ‖y‖ < G / 2 := by simpa using hYsub hy
+    rw [mem_ball_zero_iff]
+    linarith
+  have hcomp := hComp P m U A (ball 0 G) (π '' Y.support) S (push Y) hU hmin hBopen hBcc hpYim
+    (hpYbd hYbd) hKcpt hpYspt hKsub
+  -- Step 6(a): `M_{B_G}(S + (π_#Y)|_U) = M_{B_G}(π_#(Q + Y))`, by (Q1)
+  have h6a : (S - (0 - (push Y).restrictDomain (subset_univ U))).massOn (ball 0 G) =
+      (push (Q - (0 - Y))).massOn (ball 0 G) := by
+    symm
+    apply hAG P (m + 1) univ U (ball 0 G) (subset_univ U) (push (Q - (0 - Y))) _ hBU
+    intro ω hω
+    rw [hpQY]
+    show Q (testFormOnInclusion (subset_univ U) (m + 1) ω) -
+        ((0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1))
+          (testFormOnInclusion (subset_univ U) (m + 1) ω) -
+          push Y (testFormOnInclusion (subset_univ U) (m + 1) ω)) =
+      S ω - ((0 : GeometricCurrentOn U (m + 1)) ω -
+        push Y (testFormOnInclusion (subset_univ U) (m + 1) ω))
+    rw [hQ1 ω hω]
+    rfl
+  -- Step 6(b): `M(π_#(Q + Y)) ≤ Lⁿ M(Q + Y)`
+  obtain ⟨RQY, hRQY⟩ := hQYim
+  obtain ⟨-, -, -, hpmass, -⟩ := hpushA (Q - (0 - Y)) RQY hRQY hQYspt.2 hQYsub
+  have h6b := hpmass L hDπ
+  -- Step 6(c): `μ_{Q+Y} ≤ μ_Q + μ_Y` vanishes off `B_G`, so `M(Q + Y) = M_{B_G}(Q + Y)`
+  have hF := hF4 P (m + 1) univ Q Y (Q - (0 - Y)) RQ RY RQY 1 isOpen_univ (by simp) hRQ hRY hRQY
+    (fun ω => by
+      show Q ω - ((0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) ω - Y ω) = Q ω + 1 * Y ω
+      rw [GeometricCurrentOn.zero_apply]
+      ring)
+  have hQc : RQ.measure (ball (0 : Euclid P) G)ᶜ = 0 := by
+    unfold IMRep.measure
+    apply withDensity_absolutelyContinuous
+    rw [Measure.restrict_apply measurableSet_ball.compl, hRQc]
+    have : (ball (0 : Euclid P) G)ᶜ ∩ (R.carrier ∩ ball 0 G) = ∅ := by
+      ext x
+      simp only [mem_inter_iff, mem_compl_iff, mem_empty_iff_false, iff_false, not_and]
+      intro h1 _ h2
+      exact h1 h2
+    rw [this, measure_empty]
+  have hYc : RY.measure (ball (0 : Euclid P) G)ᶜ = 0 := by
+    have h1 : RY.measure (Y.support)ᶜ = 0 := by
+      rw [← hM P (m + 1) univ (Y.support)ᶜ Y RY isOpen_univ hYcpt.isClosed.isOpen_compl
+        (subset_univ _) hRY]
+      apply le_zero_iff.mp
+      apply sSup_le
+      rintro r ⟨ω, hω, rfl⟩
+      show ENNReal.ofReal (Y ω) ≤ 0
+      rw [hV P (m + 1) univ Y ω (Set.subset_compl_iff_disjoint_right.mp hω.1),
+        ENNReal.ofReal_zero]
+    apply measure_mono_null _ h1
+    exact compl_subset_compl.mpr (hYsub.trans (ball_subset_ball (by linarith)))
+  have hQYc : RQY.measure (ball (0 : Euclid P) G)ᶜ = 0 := by
+    have h := Measure.le_iff'.mp hF (ball (0 : Euclid P) G)ᶜ
+    rw [Measure.add_apply, hQc, hYc, add_zero] at h
+    exact le_zero_iff.mp h
+  have h6c : (Q - (0 - Y)).mass = (Q - (0 - Y)).massOn (ball 0 G) := by
+    show (Q - (0 - Y)).massOn univ = (Q - (0 - Y)).massOn (ball 0 G)
+    rw [hM P (m + 1) univ univ (Q - (0 - Y)) RQY isOpen_univ isOpen_univ subset_rfl hRQY,
+      hM P (m + 1) univ (ball 0 G) (Q - (0 - Y)) RQY isOpen_univ hBopen (subset_univ _) hRQY,
+      ← measure_add_measure_compl (measurableSet_ball : MeasurableSet (ball (0 : Euclid P) G)),
+      hQYc, add_zero]
+  -- Step 6(d): `M_{B_G}(Q + Y) = M_{B_G}(S + Y|_U)`, by (Q1)
+  have h6d : (Q - (0 - Y)).massOn (ball 0 G) =
+      (S - (0 - Y.restrictDomain (subset_univ U))).massOn (ball 0 G) := by
+    apply hAG P (m + 1) univ U (ball 0 G) (subset_univ U) (Q - (0 - Y)) _ hBU
+    intro ω hω
+    show Q (testFormOnInclusion (subset_univ U) (m + 1) ω) -
+        ((0 : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1))
+          (testFormOnInclusion (subset_univ U) (m + 1) ω) -
+          Y (testFormOnInclusion (subset_univ U) (m + 1) ω)) =
+      S ω - ((0 : GeometricCurrentOn U (m + 1)) ω -
+        Y (testFormOnInclusion (subset_univ U) (m + 1) ω))
+    rw [hQ1 ω hω]
+    rfl
+  -- Step 7: the chain of inequalities
+  calc S.massOn (ball 0 G)
+      ≤ (S - (0 - (push Y).restrictDomain (subset_univ U))).massOn (ball 0 G) := hcomp
+    _ = (push (Q - (0 - Y))).massOn (ball 0 G) := h6a
+    _ ≤ (push (Q - (0 - Y))).mass := GeometricCurrentOn.massOn_mono _ (subset_univ _)
+    _ ≤ ENNReal.ofReal (L ^ (m + 1)) * (Q - (0 - Y)).mass := h6b
+    _ = ENNReal.ofReal (L ^ (m + 1)) * (Q - (0 - Y)).massOn (ball 0 G) := by rw [h6c]
+    _ = ENNReal.ofReal (L ^ (m + 1)) *
+        (S - (0 - Y.restrictDomain (subset_univ U))).massOn (ball 0 G) := by rw [h6d]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
