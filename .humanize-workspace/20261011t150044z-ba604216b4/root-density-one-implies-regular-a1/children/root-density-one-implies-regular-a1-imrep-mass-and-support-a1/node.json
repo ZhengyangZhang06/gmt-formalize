@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+  "parent_id": "root.density_one_implies_regular-a1",
+  "depth": 2,
+  "title": "Mass formula and support of an integer multiplicity current (Simon 6.3.2(3), 6.2.12)",
+  "statement": "Let P, n be natural numbers, U ⊆ ℝ^P open, T ∈ 𝒟_n(U), and R = (M, θ, ξ) an integer multiplicity triple in U (IMRep: M ⊆ U Borel and countably n-rectifiable, θ : ℝ^P → ℕ measurable with θ ≥ 1 on M and ∫_{M∩K} θ dHⁿ < ∞ for every compact K ⊆ U, ξ Hⁿ⌞M-a.e. strongly measurable and, Hⁿ-a.e. on M, equal to ±τ₁∧⋯∧τₙ for an orthonormal basis τ of the approximate tangent space) with T = τ(M, θ, ξ), i.e. T(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ for all ω ∈ 𝒟ⁿ(U). Let μ_R = θHⁿ⌞M (R.measure). Then (i) M_W(T) = μ_R(W) in [0, ∞] for every open W ⊆ ℝ^P, where M_W(T) is the supremum of T(ω) over ω ∈ 𝒟ⁿ(U) with spt ω ⊆ W and Euclidean coefficient norm |ω(x)| ≤ 1 for all x; (ii) spt T = U ∩ spt μ_R.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support",
+  "lean_name": "dor_imrep_massOn_eq_measure_and_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1"
+}

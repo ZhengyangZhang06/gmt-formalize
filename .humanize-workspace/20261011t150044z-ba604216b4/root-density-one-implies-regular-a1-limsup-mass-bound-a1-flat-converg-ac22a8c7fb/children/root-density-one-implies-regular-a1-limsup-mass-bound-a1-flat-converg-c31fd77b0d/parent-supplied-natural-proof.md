@@ -1,0 +1,106 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.im_series-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.im_series-a1.partial_sums-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 3–4 of the supplied proof of dor_lmb_fc_im_series (Simon Ch. 6, Lemma 3.13 applied to the partial sums Y_q = X_0 + ⋯ + X_{q−1}: the partial sums are integer multiplicity, and the density of an IMRep of Y_q equals H_q = Σ_{r<q} θ_rξ_r Hⁿ-a.e.). Tool substitution: the intermediate claim of steps 3–4 is unchanged, namely an IMRep of the q-th partial sum whose density is H_q Hⁿ-a.e. Instead of fixing an arbitrary IMRep of the current Y_q (which is IM by (IMC)(c)) and identifying its density with H_q by the fundamental lemma of the calculus of variations (supplied step 4), the IMRep R'_q is constructed directly at the level of densities by the reused accepted sibling int_combination (rsdic_exists_imrep_int_combination, the density form of (IMC)(c)), so the identity of step 4 holds by construction. Addition: the weight bound μ_{R'_q} ≤ Σ_{r<q} μ_{R_r} is also recorded, from the reused accepted sibling combination_mass (dor_lmb_ic_measure_le_of_weighted_orient_eq). It is needed because the sibling ae_limit (its step 6) obtains local integrability of the limit multiplicity by Fatou from this bound, in place of supplied step 7's ∫|η|* ≤ Λ. Conventions: ℝ^P = Euclid P and Hⁿ = μHE[n]. Λ_n(ℝ^P) = MultiVector P n is the space of continuous linear functionals on n-covectors (Covector (Euclid P) n), with its operator norm ‖·‖ and the induced topology. An IMRep R = (M, θ, ξ) in U is the contract structure IMRep U n (M = R.carrier Borel, M ⊆ U, countably n-rectifiable; θ = R.mult : ℝ^P → ℕ measurable, θ ≥ 1 on M, locally Hⁿ-integrable on M in U; ξ = R.orient : ℝ^P → Λ_n(ℝ^P), Hⁿ⌞M-a.e. strongly measurable and Hⁿ⌞M-a.e. a unit orientation (IsUnitOrientationOf) of an approximate tangent space of M). Its density is D_R(x) := 1_M(x)θ(x)ξ(x) ∈ Λ_n(ℝ^P) (Lean: R.carrier.indicator (fun y => (R.mult y : ℝ) • R.orient y) x), its weight is μ_R := θ·Hⁿ⌞M (R.measure), and its action on an n-form ω is R.action(ω) = ∫_M θ(x)·ξ(x)(ω(x)) dHⁿ(x). 𝒟ⁿ(U) = TestFormOn U n (smooth n-forms on ℝ^P with compact support contained in U).
+We prove the statement by induction on q.
+1. Case q = 0. Let R'_0 := (∅, 0, 0): carrier ∅ (Borel, contained in U, countably n-rectifiable because Hⁿ(∅) = 0, SimonGMT countablyRectifiable_of_measure_zero), multiplicity the constant 0 (measurable; positivity on ∅ is vacuous; ∫_{∅∩K} 0 dHⁿ = 0 < ∞ for every compact K ⊆ U), orientation the constant 0 (strongly measurable), and the orientation condition holds Hⁿ⌞∅-a.e. because Hⁿ⌞∅ = 0. Its density is D_{R'_0} = 1_∅·0·0 = 0, which is the empty sum Σ_{r<0} D_{R_r}, everywhere; its weight is (Hⁿ⌞∅).withDensity 0 = 0 ≤ 0 = Σ_{r<0} μ_{R_r}.
+2. Induction step, densities. Let q ∈ ℕ and let R'_q be an IMRep in U with D_{R'_q} = Σ_{r<q} D_{R_r} Hⁿ-a.e. and μ_{R'_q} ≤ Σ_{r<q} μ_{R_r}. Apply int_combination to R₁ := R'_q, R₂ := R_q and p₁ = p₂ = 1 (U is open): there is an IMRep R'_{q+1} in U with D_{R'_{q+1}} = 1·D_{R'_q} + 1·D_{R_q} Hⁿ-a.e. On the intersection of the two full-measure sets, D_{R'_{q+1}} = Σ_{r<q} D_{R_r} + D_{R_q} = Σ_{r<q+1} D_{R_r} (Finset.sum_range_succ). So the density identity holds for q + 1.
+3. Induction step, weights. The a.e. identity D_{R'_{q+1}} = 1·D_{R'_q} + 1·D_{R_q} of step 2 is exactly the hypothesis of combination_mass for R₁ := R'_q, R₂ := R_q, R := R'_{q+1}, p₁ = p₂ = 1, which gives μ_{R'_{q+1}} ≤ |1|·μ_{R'_q} + |1|·μ_{R_q} = μ_{R'_q} + μ_{R_q}. By the induction hypothesis and monotonicity of addition of measures, μ_{R'_q} + μ_{R_q} ≤ Σ_{r<q} μ_{R_r} + μ_{R_q} = Σ_{r<q+1} μ_{R_r}. ∎
+
+Lean reference implementation (kernel-checked during this decomposition in namespace GMT.Ch07 after import GMT.Ch07.Submission, together with stand-ins carrying the exact frozen types of the reused accepted declarations; #print axioms of the conditional version gives [propext, Classical.choice, Quot.sound]):
+theorem Submission.dor_lmb_fc_ims_partial_sum_reps : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : ℕ → IMRep U n), IsOpen U → ∀ q : ℕ, ∃ R' : IMRep U n, (∀ᵐ x ∂μHE[n], R'.carrier.indicator (fun y => (R'.mult y : ℝ) • R'.orient y) x = ∑ r ∈ Finset.range q, (R r).carrier.indicator (fun y => ((R r).mult y : ℝ) • (R r).orient y) x) ∧ R'.measure ≤ ∑ r ∈ Finset.range q, (R r).measure := by
+  have hcomb := Submission.rsdic_exists_imrep_int_combination
+  have hmeas := Submission.dor_lmb_ic_measure_le_of_weighted_orient_eq
+  intro P n U R hU q
+  induction q with
+  | zero =>
+    -- the empty representation (∅, 0, 0)
+    let R0 : IMRep U n :=
+      { carrier := ∅
+        mult := fun _ => 0
+        orient := fun _ => 0
+        measurableSet_carrier := MeasurableSet.empty
+        carrier_subset := empty_subset U
+        rectifiable := Poincare.SimonGMT.Chapter03.countablyRectifiable_of_measure_zero measure_empty
+        measurable_mult := measurable_const
+        mult_pos := fun x hx => absurd hx (notMem_empty x)
+        locallyIntegrable_mult := fun K _ _ => by simp
+        aestronglyMeasurable_orient := aestronglyMeasurable_const
+        orients := by simp }
+    refine ⟨R0, Eventually.of_forall fun x => by simp [R0], ?_⟩
+    simp [R0, IMRep.measure]
+  | succ q ih =>
+    obtain ⟨Rq, hRq_ae, hRq_meas⟩ := ih
+    obtain ⟨Rn, hRn⟩ := hcomb P n U Rq (R q) 1 1 hU
+    refine ⟨Rn, ?_, ?_⟩
+    · filter_upwards [hRn, hRq_ae] with x h1 h2
+      rw [h1, h2, Finset.sum_range_succ]
+      simp
+    · have h := hmeas P n U Rq (R q) Rn 1 1 hRn
+      simp only [Int.natAbs_one, Nat.cast_one, one_smul] at h
+      rw [Finset.sum_range_succ]
+      exact h.trans (add_le_add hRq_meas le_rfl)
+
+## Key steps
+
+1. q = 0: the IMRep (∅, 0, 0) has density 0 and weight 0, the empty sums.
+2. q → q+1: int_combination with p₁ = p₂ = 1 applied to R'_q and R_q gives R'_{q+1} with D_{R'_{q+1}} = D_{R'_q} + D_{R_q} = Σ_{r≤q} D_{R_r} Hⁿ-a.e.
+3. combination_mass with p₁ = p₂ = 1 gives μ_{R'_{q+1}} ≤ μ_{R'_q} + μ_{R_q} ≤ Σ_{r≤q} μ_{R_r}.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `sed -n 880,945p book/chapter-06.txt (Simon Ch. 6, Lemma 3.13 and its printed proof)`
+- `sed -n 1,116p .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; sed -n 100,200p .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean (massAdmissibleOn, massOn, mass, le_massOn, GeometricCurrentOn, TestFormOn)`
+- `rg -n 'theorem countablyRectifiable_of_measure_zero|theorem CountablyRectifiable.mono|theorem countablyRectifiable_iUnion|theorem HasApproximateTangentSpaceAt.unique' .lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `python3 -I scans of dag.json (re-read at 2026-10-13T13:51Z): accepted declarations mentioning IMRep / IsIntegerMultiplicity / IsUnitOrientationOf; status and byte-identical frozen type of the 7 reused declarations (all still accepted); cmc_fc_series_current, cmcdt_im_series and cmcdt_ims_imrep_tsum are speculative-ready, not accepted, hence not reusable; no collision for dor_lmb_fc_ims_*`
+- `grep -rl dor_lmb_fc_ims_ nodes decomposition-reopenings (no match)`
+- `git show 0af9ed59:GMT/Ch07/Submission.lean (theorem Submission.rsdic_exists_imrep_int_combination); git show d76960cc:GMT/Ch07/Submission.lean (PseudoMetrizableSpace (MultiVector P n) instance workaround)`
+- `rg -n in local-references/123e8435b4a2469b/mathlib: hasSum_integral_of_dominated_convergence, integral_tsum, lintegral_tsum, lintegral_liminf_le, ae_lt_top, aestronglyMeasurable_of_tendsto_ae, measure_eq_zero_iff_ae_notMem, Set.Finite.isClosed, liminf_le_of_frequently_le', UniformSpace.pseudoMetrizableSpace, Summable.of_norm_bounded, HasSum.mapL`
+- `cat nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-series-a1/decomposition-audit-v1.json (parallel im_series split via a common orientation, accepted)`
+- `python3 -I gmt-compare.py contract_scope replay and lean_contract.validate_lean_statement on all 10 lean_statement strings`
+- `lake env lean /tmp/ims-decomp/lean/{Types,Assembly,ChildA,ChildB,ChildC,ChildC_noHB,Final}.lean with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-ac22a8c7fb/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-series-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Metrizable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/InfiniteSum.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/Module.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/ims-decomp/lean/Assembly.lean`
+- `/tmp/ims-decomp/lean/ChildA.lean`
+- `/tmp/ims-decomp/lean/ChildB.lean`
+- `/tmp/ims-decomp/lean/ChildC.lean`
+- `/tmp/ims-decomp/lean/Final.lean`
+
+Snapshot: project b4d606db and mathlib 25730c7c. The snapshot Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+Neither SimonGMT nor the snapshot contains Simon's Lemma 3.13 or any completeness result for IM currents. Seven comparator-accepted DAG declarations supply the needed IMRep calculus and are reused with byte-identical frozen types: dor_imrep_massOn_eq_measure_and_support (C1), cmc_imRep_locality_restrict_sub (IMC), dor_ims_unitOrientation_dual (UOD), unit_orientation_norm_le_one, rsdic_exists_imrep_int_combination, dor_lmb_ic_measure_le_of_weighted_orient_eq and rsdic_unitOrientation_eq_or_eq_neg. cmc_fc_series_current has the type of supplied step 1 but is only speculative-ready, so it is not reused; the assembly gets Y from (IMC)(b) instead. The speculative-ready cmcdt_ims_imrep_tsum overlaps the three new children taken together and is likewise not reusable. SimonGMT supplies countablyRectifiable_of_measure_zero / iUnion / mono and HasApproximateTangentSpaceAt.unique. The snapshot Mathlib supplies dominated convergence for series, Fatou, a.e. limits of a.e. strongly measurable maps, and Summable.of_norm_bounded.
+Lean: all ten child types elaborate in the replayed comparator scope. The three new children and the exact parent type are kernel-checked conditionally on the reused frozen types with axioms [propext, Classical.choice, Quot.sound], and they compile as drop-in Submission declarations.
