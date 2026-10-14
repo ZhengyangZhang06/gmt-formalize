@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "ae3fc8bb7ce3b401e31484da5292c4eae867dd29402fec222f0ed027892d2746",
+  "git_delta": {
+    "base_commit": "8044d6ef77886096a4ef318aee71c61ad814a801",
+    "candidate_commit": "fc9562867bfe9c4c4f9c847117edead570c663d4",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_lc_rc_push_add",
+    "diff_sha256": "1c18d6e70bb6a1ca457797d0e9aee16e0d808f1f2bf9cf3c52ba47c372457034",
+    "source_sha256": "5cdea50d81f8f5ca014a2ae2271f6d1c65cc8010135542fa7161bb11f4a63ca2",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_lc_rc_push_add",
+      "statement": "∀ (P n : ℕ) (O : Set (Euclid P)) (push : GeometricCurrentOn (univ : Set (Euclid P)) n → GeometricCurrentOn (univ : Set (Euclid P)) n) (X Y : GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ X₁ X₂ : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity X₁ → IsIntegerMultiplicity X₂ → IsCompact X₁.support → X₁.support ⊆ O → IsCompact X₂.support → X₂.support ⊆ O → push (X₁ - X₂) = push X₁ - push X₂) → IsIntegerMultiplicity X → IsIntegerMultiplicity Y → IsCompact X.support → X.support ⊆ O → IsCompact Y.support → Y.support ⊆ O → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity S ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = X ω + Y ω) ∧ S.support ⊆ X.support ∪ Y.support ∧ IsCompact S.support ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) n, push S ω = push X ω + push Y ω",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
