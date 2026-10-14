@@ -2855,6 +2855,114 @@ theorem Submission.codim1_hcp_stab_energy_convergence : ∀ (P : ℕ) (μ : Meas
           integral_const_mul]
     _ < η := by linarith
 
+/-- **Density extension of the stability inequality** (Simon B.1, extension from smooth to locally
+Lipschitz test functions).  Let `ζ` be locally Lipschitz on `M` and vanish on `M` off a compact
+`C ⊆ M`.  By (hApprox)(ii) there are `C^∞` compactly supported `ζₖ`, vanishing on `M` off a
+compact `C' ⊆ M`, with `ζₖ → ζ` uniformly on `M` and `∇^M ζₖ → ∇^M ζ` in `L²(Hᵐ⌞M)`.  A tangent
+vector at `x ∈ M \ C'` is the velocity of a curve in `M` that avoids the closed set `C'` for small
+times, so `Dζₖ(x)` vanishes on `span TₓM` and the smooth energies `∫_M |∇^M ζₖ|²` are integrable;
+by energy convergence they tend to `∫_M |∇^M ζ|²`.  Dominated convergence on `C ∪ C'` gives
+`∫_M w ζₖ² → ∫_M w ζ²`, and the smooth inequality for each `ζₖ` passes to the limit. -/
+theorem Submission.codim1_hcp_stab_lipschitz_extension : ∀ (P m : ℕ) (M : Set (Euclid P)) (w : Euclid P → ℝ), MeasurableSet M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ M → μHE[m] K ≠ ∞) → ContinuousOn w M → (∀ u : Euclid P, ContinuousOn (fun x => (Submodule.span ℝ (tangentSpace M x)).starProjection u) M) → ((∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → ∀ j : Fin P, AEStronglyMeasurable (fun x => fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) (μHE[m].restrict M)) ∧ ∀ (ζ : Euclid P → ℝ), LocallyLipschitzOn M ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∃ (C' : Set (Euclid P)) (ζs : ℕ → Euclid P → ℝ), IsCompact C' ∧ C' ⊆ M ∧ (∀ k, ContDiff ℝ (⊤ : ℕ∞) (ζs k) ∧ HasCompactSupport (ζs k)) ∧ (∀ k, ∀ x ∈ M, x ∉ C' → ζs k x = 0) ∧ TendstoUniformlyOn ζs ζ atTop M ∧ Tendsto (fun k => ∫⁻ x in M, ENNReal.ofReal (∑ j : Fin P, (fderiv ℝ (ζs k) x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)) - fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2) ∂μHE[m]) atTop (𝓝 0)) → (∀ ζ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) ζ → HasCompactSupport ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∫ x in M, w x * ζ x ^ 2 ∂μHE[m] ≤ ∫ x in M, ∑ j : Fin P, (fderiv ℝ ζ x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2 ∂μHE[m]) → ∀ ζ : Euclid P → ℝ, LocallyLipschitzOn M ζ → (∃ C : Set (Euclid P), IsCompact C ∧ C ⊆ M ∧ ∀ x ∈ M, x ∉ C → ζ x = 0) → ∫ x in M, w x * ζ x ^ 2 ∂μHE[m] ≤ ∫ x in M, ∑ j : Fin P, (fderivWithin ℝ ζ M x ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2 ∂μHE[m] := by
+  intro P m M w hM hfin hw hP hApprox hSmooth ζ hζ hC
+  -- step 1: smooth approximants `ζₖ`, vanishing on `M` off a compact `C' ⊆ M`
+  obtain ⟨C', ζs, hC'c, hC'M, hζs, hvan, hunif, hL2⟩ := hApprox.2 ζ hζ hC
+  obtain ⟨C, hCc, hCM, -⟩ := hC
+  have hζs1 : ∀ k, ContDiff ℝ 1 (ζs k) := fun k => (hζs k).1.of_le (by exact_mod_cast le_top)
+  -- step 2: `Dζₖ(x)` vanishes on `span TₓM` for `x ∈ M \ C'`
+  have hDvan : ∀ k, ∀ x ∈ M, x ∉ C' → ∀ u : Euclid P,
+      fderiv ℝ (ζs k) x ((Submodule.span ℝ (tangentSpace M x)).starProjection u) = 0 := by
+    intro k x hxM hxC' u
+    have htan : ∀ v ∈ tangentSpace M x, fderiv ℝ (ζs k) x v = 0 := by
+      rintro v ⟨γ, -, hγM, hγ0, hγv⟩
+      -- `γ(t) ∈ M \ C'` for small `|t|`, so `ζₖ ∘ γ = 0` near `0`
+      have hev : (fun t => ζs k (γ t)) =ᶠ[𝓝 0] fun _ => (0 : ℝ) := by
+        have hγC' : ∀ᶠ t in 𝓝 (0 : ℝ), γ t ∈ C'ᶜ := hγv.continuousAt.preimage_mem_nhds
+          (hC'c.isClosed.isOpen_compl.mem_nhds (by rwa [hγ0]))
+        filter_upwards [hγC', Ioo_mem_nhds (show (-1 : ℝ) < 0 by norm_num)
+          (show (0 : ℝ) < 1 by norm_num)] with t ht ht'
+        exact hvan k (γ t) (hγM ht') ht
+      -- chain rule: `(ζₖ ∘ γ)'(0) = Dζₖ(x) v`
+      have hd : HasDerivAt (fun t => ζs k (γ t)) (fderiv ℝ (ζs k) x v) 0 := by
+        have hfx : HasFDerivAt (ζs k) (fderiv ℝ (ζs k) x) (γ 0) := by
+          rw [hγ0]
+          exact ((hζs1 k).differentiable one_ne_zero x).hasFDerivAt
+        exact hfx.comp_hasDerivAt 0 hγv
+      exact hd.unique ((hasDerivAt_const (0 : ℝ) (0 : ℝ)).congr_of_eventuallyEq hev)
+    -- by linearity `Dζₖ(x)` vanishes on `span TₓM`, which contains `Pₓu`
+    have hle : Submodule.span ℝ (tangentSpace M x) ≤
+        LinearMap.ker (fderiv ℝ (ζs k) x : Euclid P →ₗ[ℝ] ℝ) :=
+      Submodule.span_le.2 fun v hv => LinearMap.mem_ker.2 (htan v hv)
+    exact LinearMap.mem_ker.1 (hle (Submodule.starProjection_apply_mem _ u))
+  -- step 3: the smooth energies are integrable on `M` and converge, by energy convergence
+  have hFc : ∀ k (j : Fin P), ContinuousOn (fun x => fderiv ℝ (ζs k) x
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) M :=
+    fun k j => ((hζs1 k).continuous_fderiv one_ne_zero).continuousOn.clm_apply (hP _)
+  have hC'fin : μHE[m].restrict M C' ≠ ∞ :=
+    ne_top_of_le_ne_top (hfin C' hC'c hC'M) (Measure.restrict_apply_le _ _)
+  have hFint : ∀ k, Integrable (fun x => ∑ j : Fin P, (fderiv ℝ (ζs k) x
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2)
+      (μHE[m].restrict M) := by
+    intro k
+    have hc : ContinuousOn (fun x => ∑ j : Fin P, (fderiv ℝ (ζs k) x
+        ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1))) ^ 2)
+        M :=
+      continuousOn_finsetSum _ fun j _ => (hFc k j).pow 2
+    -- bounded on the compact `C'`, zero on `M \ C'`
+    obtain ⟨B, hB⟩ := hC'c.exists_bound_of_continuousOn (hc.mono hC'M)
+    refine Integrable.mono' ((integrableOn_const (C := B) hC'fin).integrable_indicator
+      hC'c.isClosed.measurableSet) (hc.aestronglyMeasurable hM)
+      (ae_restrict_of_forall_mem hM fun x hx => ?_)
+    by_cases hxC' : x ∈ C'
+    · rw [indicator_of_mem hxC']
+      exact hB x hxC'
+    · rw [indicator_of_notMem hxC']
+      simp [hDvan k x hx hxC']
+  have hRHS := (Submission.codim1_hcp_stab_energy_convergence P (μHE[m].restrict M)
+    (fun k j x => fderiv ℝ (ζs k) x
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)))
+    (fun j x => fderivWithin ℝ ζ M x
+      ((Submodule.span ℝ (tangentSpace M x)).starProjection (EuclideanSpace.single j 1)))
+    (fun k j => (hFc k j).aestronglyMeasurable hM) (hApprox.1 ζ hζ) hFint hL2).2
+  -- step 4: `∫_M w ζₖ² → ∫_M w ζ²`, by dominated convergence on the compact `C ∪ C'`
+  have hKc : IsCompact (C ∪ C') := hCc.union hC'c
+  have hKM : C ∪ C' ⊆ M := union_subset hCM hC'M
+  have hKfin : μHE[m].restrict M (C ∪ C') ≠ ∞ :=
+    ne_top_of_le_ne_top (hfin _ hKc hKM) (Measure.restrict_apply_le _ _)
+  obtain ⟨Bw, hBw⟩ := hKc.exists_bound_of_continuousOn (hw.mono hKM)
+  obtain ⟨Bz, hBz⟩ := hKc.exists_bound_of_continuousOn (hζ.continuousOn.mono hKM)
+  have hLHS : Tendsto (fun k => ∫ x in M, w x * ζs k x ^ 2 ∂μHE[m]) atTop
+      (𝓝 (∫ x in M, w x * ζ x ^ 2 ∂μHE[m])) := by
+    refine tendsto_integral_filter_of_dominated_convergence
+      ((C ∪ C').indicator fun _ => Bw * (Bz + 1) ^ 2)
+      (Eventually.of_forall fun k =>
+        (hw.mul ((hζs k).1.continuous.continuousOn.pow 2)).aestronglyMeasurable hM) ?_
+      ((integrableOn_const (C := Bw * (Bz + 1) ^ 2) hKfin).integrable_indicator
+        hKc.isClosed.measurableSet)
+      (ae_restrict_of_forall_mem hM fun x hx =>
+        tendsto_const_nhds.mul ((hunif.tendsto_at hx).pow 2))
+    -- for large `k`, `|ζₖ - ζ| < 1` on `M`; and `ζₖ = 0` on `M \ C'`
+    filter_upwards [Metric.tendstoUniformlyOn_iff.1 hunif 1 one_pos] with k hk
+    refine ae_restrict_of_forall_mem hM fun x hx => ?_
+    by_cases hxK : x ∈ C ∪ C'
+    · rw [indicator_of_mem hxK]
+      simp only [norm_mul, norm_pow, Real.norm_eq_abs]
+      have hwx : |w x| ≤ Bw := by simpa using hBw x hxK
+      have hζx : |ζ x| ≤ Bz := by simpa using hBz x hxK
+      have hdist := hk x hx
+      rw [Real.dist_eq] at hdist
+      have hζkx : |ζs k x| ≤ Bz + 1 := by
+        have h := abs_sub_abs_le_abs_sub (ζs k x) (ζ x)
+        rw [abs_sub_comm] at h
+        linarith
+      exact mul_le_mul hwx (pow_le_pow_left₀ (abs_nonneg _) hζkx 2) (by positivity)
+        ((abs_nonneg _).trans hwx)
+    · rw [indicator_of_notMem hxK, hvan k x hx fun h => hxK (Or.inr h)]
+      simp
+  -- step 5: pass to the limit in the smooth inequality for `ζₖ`
+  exact le_of_tendsto_of_tendsto' hLHS hRHS fun k =>
+    hSmooth (ζs k) (hζs k).1 (hζs k).2 ⟨C', hC'c, hC'M, hvan k⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
