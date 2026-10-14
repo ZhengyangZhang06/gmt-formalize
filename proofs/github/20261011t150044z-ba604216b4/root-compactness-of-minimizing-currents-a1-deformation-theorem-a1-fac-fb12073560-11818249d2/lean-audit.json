@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "38cf0e7927bf554e3038ab25ce70bb4f767b3b5c19366f29f4a7555e48641303",
+  "git_delta": {
+    "base_commit": "397980912644cbc1e360a9c70784589b683d27fb",
+    "candidate_commit": "2914d4f86930859c2b9ad8ed4865f0924ff270df",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrbvbsf_closed_faces_isCompact",
+    "diff_sha256": "ea9aa791656e0cddc12baa8f0c766b6bdbf2c3bc998227ba70d367d52e9d1696",
+    "source_sha256": "2d0b4512aa5e39b3c0afa95340c7dff5bf4a4e557046942cc17d6f697df46c7d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrbvbsf_closed_faces_isCompact",
+      "statement": "∀ (P m : ℕ) (s : Finset ((Fin (m + 1) → Fin P) × (Fin P → ℤ))), IsCompact {x : Euclid P | ∃ q ∈ s, ∃ y : Euclid (m + 1), (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ (WithLp.toLp 2 (fun i => (q.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (q.1 j) (1 : ℝ)) = x}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
