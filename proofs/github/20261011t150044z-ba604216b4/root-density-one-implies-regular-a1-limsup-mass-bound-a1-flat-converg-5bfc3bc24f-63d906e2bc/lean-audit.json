@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "c77f8a946b1b79dfc4d04f4e18931d03362acd2111c8d82eed39c1909713430a",
+  "git_delta": {
+    "base_commit": "42999cd797882a6b017d1dad417a81cdfa5ee95c",
+    "candidate_commit": "265983ec2d35f07c80bbbc88599b5341bb0f5301",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fc_tb_extend_univ",
+    "diff_sha256": "dde10e2a46456b56f8124d9e17008972b04f80d44e30ec7704b77262c47e74eb",
+    "source_sha256": "266364af46d9529703afe25c5828f53439d398a392b1a1ef290ea38e7af5a613",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fc_tb_extend_univ",
+      "statement": "∀ (P d : ℕ) (U K : Set (Euclid P)) (A : GeometricCurrentOn U d), IsOpen U → IsCompact K → K ⊆ U → IsIntegerMultiplicity A → (∀ ω : TestFormOn U d, Disjoint (tsupport (ω : DifferentialForm (Euclid P) d)) K → A ω = 0) → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) d, IsIntegerMultiplicity Y ∧ Y.restrictDomain (subset_univ U) = A ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) d, Disjoint (tsupport (ω : DifferentialForm (Euclid P) d)) K → Y ω = 0) ∧ Y.mass ≤ A.mass",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
