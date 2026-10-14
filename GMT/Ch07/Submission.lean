@@ -705,6 +705,47 @@ theorem Submission.cbrg_imRep_glue_disjoint : (∀ (P n : ℕ) (U M M' : Set (Eu
            aestronglyMeasurable_orient := hξM
            orients := horient }, rfl, rfl, hmeas⟩
 
+/-- **Integer multiplicity is local** (Simon Ch. 6, 3.1 and 6.3.1; Ch. 8, Remark 3(1)).  Assume
+(IMC)(a), as in `cbrg_ae_orient_iUnion`.  Let `X(ω) = ∫ ⟨ω, ξ⟩ dμ` in the open set `U`, where `μ` is
+carried by `U` and finite on compact subsets of `U`, and `ξ` is `μ`-measurable.  Suppose every
+`x ∈ U` has an open neighbourhood `W ⊆ U` with an integer multiplicity triple `R = (M_R, θ_R, ξ_R)`
+in `W` such that `μ⌞W = θ_R Hᵏ⌞M_R` and `ξ = ξ_R` `μ`-a.e. on `W`.  Then `X` is integer
+multiplicity.  By Lindelöf countably many such `Wᵢ` (with triples `Rᵢ`) have disjoint Borel pieces
+`Aᵢ ⊆ Wᵢ` covering `U`; then `μ⌞Aᵢ = (θᵢHᵏ⌞Mᵢ)⌞Aᵢ`, and `ξ = ξᵢ` `Hᵏ`-a.e. on `Mᵢ`, because
+`Hᵏ⌞Mᵢ ≪ θᵢHᵏ⌞Mᵢ = μ⌞Wᵢ`.  Gluing the `Rᵢ` over the `Aᵢ` gives a triple `R'` in `U` with
+orientation `ξ` and weight `θ'Hᵏ⌞M' = μ`, so `R'(ω) = ∫ ⟨ω, ξ⟩ dμ = X(ω)`. -/
+theorem Submission.dmcbr_isIntegerMultiplicity_of_local_reps : (∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) → ∀ (P k : ℕ) (U : Set (Euclid P)) (X : GeometricCurrentOn U k) (μ : Measure (Euclid P)) (ξ : Euclid P → MultiVector P k), IsOpen U → μ Uᶜ = 0 → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ K < ∞) → AEStronglyMeasurable ξ μ → (∀ ω : TestFormOn U k, X ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) k) x) ∂μ) → (∀ x ∈ U, ∃ (W : Set (Euclid P)) (R : IMRep W k), IsOpen W ∧ x ∈ W ∧ W ⊆ U ∧ μ.restrict W = R.measure ∧ ∀ᵐ y ∂μ, y ∈ W → ξ y = R.orient y) → IsIntegerMultiplicity X := by
+  intro hIMC P k U X μ ξ hU hUc hfin hξm hX hloc
+  -- countably many neighbourhoods `Wᵢ ⊆ U` with local triples, and disjoint Borel `Aᵢ ⊆ Wᵢ`
+  -- covering `U` (the index type is empty when `U = ∅`)
+  obtain ⟨ι, hι, W, A, hWo, hWU, hRW, hAm, hAW, hAd, hAU⟩ :=
+    Submission.cbrg_exists_countable_disjoint_refinement P U
+      (fun W => ∃ R : IMRep W k, μ.restrict W = R.measure ∧ ∀ᵐ y ∂μ, y ∈ W → ξ y = R.orient y)
+      fun x hx => by
+        obtain ⟨W, R, hWo, hxW, hWU, hμW, hξW⟩ := hloc x hx
+        exact ⟨W, hWo, hxW, hWU, R, hμW, hξW⟩
+  have hRW' : ∀ i, ∃ R : IMRep (W i) k, μ.restrict (W i) = R.measure ∧
+      ∀ᵐ y ∂μ, y ∈ W i → ξ y = R.orient y := hRW
+  choose R hμR hξR using hRW'
+  -- `μ⌞Aᵢ = (μ⌞Wᵢ)⌞Aᵢ = (θᵢHᵏ⌞Mᵢ)⌞Aᵢ`, as `Aᵢ ⊆ Wᵢ`
+  have hμA : ∀ i, μ.restrict (A i) = (R i).measure.restrict (A i) := fun i => by
+    rw [← hμR i, Measure.restrict_restrict_of_subset (hAW i)]
+  -- `ξ = ξᵢ` holds `μ⌞Wᵢ`-a.e., i.e. `θᵢHᵏ⌞Mᵢ`-a.e., hence `Hᵏ`-a.e. on `Mᵢ ⊇ Mᵢ ∩ Aᵢ`
+  have hξ : ∀ i, ∀ᵐ y ∂(μHE[k].restrict ((R i).carrier ∩ A i)), ξ y = (R i).orient y := by
+    intro i
+    have h1 : ∀ᵐ y ∂(R i).measure, ξ y = (R i).orient y := by
+      rw [← hμR i, ae_restrict_iff' (hWo i).measurableSet]
+      exact hξR i
+    obtain ⟨-, hac, -⟩ := Submission.cbr_imRep_measure_basic P k (W i) (R i)
+    exact ae_restrict_of_ae_restrict_of_subset inter_subset_left (hac.ae_le h1)
+  -- glue the `Rᵢ` over the `Aᵢ`: a triple `R'` in `U` with orientation `ξ` and weight `μ`
+  obtain ⟨R', -, hR'o, hR'μ⟩ := Submission.cbrg_imRep_glue_disjoint hIMC ι P k U W A R μ ξ hU
+    hWo hWU hAm hAd (by rw [hAU]; exact hUc) hμA hfin hξm hξ
+  -- `R'(ω) = ∫ ⟨ω, ξ⟩ dμ = X(ω)`
+  obtain ⟨-, -, -, -, -, -, haction⟩ := Submission.cbr_imRep_measure_basic P k U R'
+  refine ⟨R', fun ω => ?_⟩
+  rw [hX ω, haction, hR'o, hR'μ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
