@@ -1599,6 +1599,68 @@ theorem Submission.dimred_mbl_dt_lp_imc_piece_measure : ∀ (N n : ℕ) (G : Euc
       (hA.inter (hG.continuous.measurable ht)) inter_subset_left
   rw [hprod, (hΦe N).map_comap, (hΦs N).range_eq, Measure.restrict_univ]
 
+/-- **Cylinder measure.**  For a Borel countably `n`-rectifiable `M ⊆ ℝᴺ` with `Hⁿ(M) < ∞` and
+`Ψ(t, x) = (t, x₁, …, x_N)`, `Ψ_*(L¹⌞(0, 1) ⊗ Hⁿ⌞M) = Hⁿ⁺¹⌞Ψ((0, 1) × M)`.  Up to an `Hⁿ`-null
+set `Z`, `M` is the disjoint union of the bi-Lipschitz pieces `Sᵢ = Fᵢ(Bᵢ)`
+(`dpf_rectifiable_bilipschitz_pieces`), for which the identity is
+`dimred_mbl_dt_lp_imc_piece_measure`.  Both sides are countably additive in the piece, and the
+cylinders `Ψ((0, 1) × Sᵢ)` cover `Ψ((0, 1) × M)` up to `Ψ(ℝ × Z)`, which is `Hⁿ⁺¹`-null by
+`dimred_mbl_dt_lp_imc_product_null`. -/
+theorem Submission.dimred_mbl_dt_lp_imc_cylinder_measure : ∀ (N n : ℕ) (M : Set (Euclid N)), MeasurableSet M → CountablyRectifiable n M → μHE[n] M ≠ ∞ → Measure.map (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) (((volume : Measure ℝ).restrict (Ioo 0 1)).prod (μHE[n].restrict M)) = μHE[n + 1].restrict ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ M)) := by
+  intro N n M hM hrect hfin
+  set Ψ : ℝ × Euclid N → Euclid (N + 1) := fun p => WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2))
+  -- `Ψ` is a continuous injection, hence a measurable embedding
+  have hΨemb : MeasurableEmbedding Ψ := by
+    refine Continuous.measurableEmbedding (by fun_prop) ?_
+    rintro ⟨t, x⟩ ⟨s, y⟩ h
+    obtain ⟨hts, hxy⟩ := Fin.cons_injective2 (WithLp.toLp_injective 2 h)
+    exact Prod.ext hts (WithLp.ofLp_injective 2 hxy)
+  -- the bi-Lipschitz pieces `Sᵢ = Fᵢ(Bᵢ)` of `M`
+  obtain ⟨F, B, m, hLip, hBm, hm, hbil, hdiff, hSm, hSM, hdisj, hZ⟩ :=
+    Submission.dpf_rectifiable_bilipschitz_pieces N n M hM hrect
+  have hinj : ∀ i, InjOn (F i) (B i) := by
+    intro i a ha a' ha' h
+    have h' := hbil i a ha a' ha'
+    rw [h, sub_self, norm_zero] at h'
+    have h0 : ‖a - a'‖ ≤ 0 := by nlinarith [hm i, norm_nonneg (a - a')]
+    exact sub_eq_zero.mp (norm_le_zero_iff.mp h0)
+  have hSfin : ∀ i, μHE[n] (F i '' B i) ≠ ∞ := fun i =>
+    ne_top_of_le_ne_top hfin (measure_mono (hSM i))
+  have : ∀ i, SFinite (μHE[n].restrict (F i '' B i)) := fun i =>
+    haveI := isFiniteMeasure_restrict.mpr (hSfin i)
+    inferInstance
+  -- the identity on each piece
+  have hpiece : ∀ i, Measure.map Ψ (((volume : Measure ℝ).restrict (Ioo 0 1)).prod
+      (μHE[n].restrict (F i '' B i))) =
+      μHE[n + 1].restrict (Ψ '' (Ioo (0 : ℝ) 1 ×ˢ (F i '' B i))) := by
+    intro i
+    obtain ⟨L, hL⟩ := hLip i
+    exact Submission.dimred_mbl_dt_lp_imc_piece_measure N n (F i) (B i) L hL (hBm i) (hinj i)
+      (fun a ha => (hdiff i a ha).1) (hSfin i)
+  -- source side: `Hⁿ⌞M = ∑ᵢ Hⁿ⌞Sᵢ`
+  have hsrc : μHE[n].restrict M = Measure.sum fun i => μHE[n].restrict (F i '' B i) := by
+    refine (Measure.restrict_congr_set (ae_eq_set.mpr ⟨hZ, ?_⟩)).trans
+      (Measure.restrict_iUnion (s := fun i => F i '' B i) hdisj hSm)
+    rw [Set.sdiff_eq_empty.mpr (iUnion_subset hSM), measure_empty]
+  -- target side: `Hⁿ⁺¹⌞Ψ((0, 1) × M) = ∑ᵢ Hⁿ⁺¹⌞Ψ((0, 1) × Sᵢ)`
+  have htgt : μHE[n + 1].restrict (Ψ '' (Ioo (0 : ℝ) 1 ×ˢ M)) =
+      Measure.sum fun i => μHE[n + 1].restrict (Ψ '' (Ioo (0 : ℝ) 1 ×ˢ (F i '' B i))) := by
+    refine (Measure.restrict_congr_set (ae_eq_set.mpr ⟨?_, ?_⟩)).trans
+      (Measure.restrict_iUnion (s := fun i => Ψ '' (Ioo (0 : ℝ) 1 ×ˢ (F i '' B i))) ?_ ?_)
+    · refine measure_mono_null (t := Ψ '' (univ ×ˢ (M \ ⋃ i, F i '' B i))) ?_
+        (Submission.dimred_mbl_dt_lp_imc_product_null N n _ hZ)
+      rintro _ ⟨⟨⟨t, x⟩, ⟨ht, hx⟩, rfl⟩, hnot⟩
+      refine ⟨(t, x), ⟨mem_univ t, hx, fun hxU => hnot ?_⟩, rfl⟩
+      obtain ⟨i, hi⟩ := mem_iUnion.mp hxU
+      exact mem_iUnion.mpr ⟨i, (t, x), ⟨ht, hi⟩, rfl⟩
+    · rw [Set.sdiff_eq_empty.mpr
+        (iUnion_subset fun i => image_mono (prod_mono subset_rfl (hSM i))), measure_empty]
+    · intro i j hij
+      exact (disjoint_image_iff hΨemb.injective).mpr (disjoint_prod.mpr (Or.inr (hdisj hij)))
+    · exact fun i => hΨemb.measurableSet_image.mpr (measurableSet_Ioo.prod (hSm i))
+  rw [hsrc, Measure.prod_sum_right, Measure.map_sum hΨemb.measurable.aemeasurable, htgt]
+  exact congrArg Measure.sum (funext hpiece)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
