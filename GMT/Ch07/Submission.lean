@@ -958,6 +958,91 @@ theorem Submission.dtc_blowUp_scaling : ∀ (P n : ℕ) (U A : Set (Euclid P)) (
     Submission.dtc_blowUp_imrep P n U T x lam hlam,
     Submission.dtc_blowUp_isMinimizingIn P n U A T x lam hlam⟩
 
+/-- **Blow-ups at a point of finite density have locally bounded mass** (proof of Simon 7.3.1,
+display (1), chapter-07.txt lines 329–335): if `Θⁿ(μ_T, x) = θ` and `λⱼ > 0`, `λⱼ → 0`, then
+for each `R` there is `c < ∞` with `M_{B_R(0)}(η_{x,λⱼ#}T) ≤ c` for all large `j`.  For `R ≤ 0`
+the ball is empty and the mass is `0`.  For `R > 0`, `M_{B_ρ(x)}(T) ≤ (θ + 1) ωₙ ρⁿ` for small
+`ρ > 0`; since `η_{x,λ}(B_{λR}(x)) = B_R(0)`, the scaling `Submission.dtc_blowUp_scaling` gives
+`M_{B_R(0)}(η_{x,λⱼ#}T) = λⱼ⁻ⁿ M_{B_{λⱼR}(x)}(T) ≤ (θ + 1) ωₙ Rⁿ` once `λⱼR` is small. -/
+theorem Submission.dtc_bc_bh_blowUp_massOn_ball_bounded : ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (θ : ℝ), IsOpen U → 0 < n → HasMassDensity T x θ → ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∀ R : ℝ, ∃ c : ℝ≥0∞, c ≠ ∞ ∧ ∀ᶠ j in atTop, (blowUp T x (lams j) (hlams j).ne').massOn (ball 0 R) ≤ c := by
+  intro P n U T x θ hU hn hθ lams hlams hlim R
+  obtain ⟨hθ0, hlimθ⟩ := hθ
+  by_cases hR : 0 < R
+  swap
+  · -- `R ≤ 0`: `B_R(0) = ∅`, the only admissible form is `0`, so the mass is `0`
+    refine ⟨0, ENNReal.zero_ne_top, Eventually.of_forall fun j => ?_⟩
+    have hempty : ball (0 : Euclid P) R = ∅ := ball_eq_empty.2 (not_lt.1 hR)
+    rw [hempty]
+    apply sSup_le
+    rintro r ⟨ω, hω, rfl⟩
+    have hω0 : ω = 0 := by
+      apply Subtype.ext
+      funext y
+      by_contra hy
+      have : y ∈ tsupport (ω : DifferentialForm (Euclid P) n) := subset_tsupport _ hy
+      exact (hω.1 this).elim
+    simp only [hω0, map_zero, ENNReal.ofReal_zero, le_refl]
+  -- `ωₙ ∈ (0, ∞)`
+  have hω0 : unitBallVolume n ≠ 0 :=
+    (Metric.measure_ball_pos volume (0 : Euclid n) one_pos).ne'
+  have hωtop : unitBallVolume n ≠ ∞ := measure_ball_lt_top.ne
+  -- the density ratio is eventually `< ofReal (θ + 1)` as `ρ ↓ 0`
+  have hlt : ENNReal.ofReal θ < ENNReal.ofReal (θ + 1) :=
+    (ENNReal.ofReal_lt_ofReal_iff (by linarith)).2 (by linarith)
+  obtain ⟨s₀, hs₀, hs₀ev⟩ := (nhdsGT_basis (0 : ℝ)).eventually_iff.1
+    ((tendsto_order.1 hlimθ).2 _ hlt)
+  -- hence `M_{B_ρ(x)}(T) ≤ ofReal (θ + 1) ωₙ ρⁿ` for `0 < ρ < s₀`
+  have hmass : ∀ ρ : ℝ, 0 < ρ → ρ < s₀ →
+      T.massOn (ball x ρ) ≤ ENNReal.ofReal (θ + 1) * (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) := by
+    intro ρ hρ hρs
+    have h := hs₀ev ⟨hρ, hρs⟩
+    have hb0 : unitBallVolume n * ENNReal.ofReal (ρ ^ n) ≠ 0 :=
+      mul_ne_zero hω0 (ENNReal.ofReal_pos.2 (pow_pos hρ n)).ne'
+    have hbtop : unitBallVolume n * ENNReal.ofReal (ρ ^ n) ≠ ∞ :=
+      ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top
+    exact ((ENNReal.div_lt_iff (Or.inl hb0) (Or.inl hbtop)).1 h).le
+  refine ⟨ENNReal.ofReal (θ + 1) * (unitBallVolume n * ENNReal.ofReal (R ^ n)),
+    ENNReal.mul_ne_top ENNReal.ofReal_ne_top (ENNReal.mul_ne_top hωtop ENNReal.ofReal_ne_top), ?_⟩
+  have hsmall : ∀ᶠ j in atTop, lams j * R < s₀ := by
+    have h0 : Tendsto (fun j => lams j * R) atTop (𝓝 0) := by
+      simpa using hlim.mul_const R
+    exact (tendsto_order.1 h0).2 s₀ hs₀
+  filter_upwards [hsmall] with j hj
+  have hlam := hlams j
+  -- `η_j(B_{λⱼR}(x)) = B_R(0)`
+  have himg : dilation x (lams j) '' ball x (lams j * R) = ball 0 R := by
+    have hdil : ∀ y : Euclid P, dilation x (lams j) y = (lams j)⁻¹ • (y - x) := by
+      intro y
+      simp only [dilation, dilationCLM, FunLike.coe_smul, Pi.smul_apply,
+        ContinuousLinearMap.coe_id', id_eq, smul_sub]
+      abel
+    ext z
+    constructor
+    · rintro ⟨y, hy, rfl⟩
+      rw [mem_ball, dist_eq_norm] at hy
+      rw [mem_ball, dist_zero_right, hdil, norm_smul, Real.norm_of_nonneg (inv_nonneg.2 hlam.le)]
+      calc (lams j)⁻¹ * ‖y - x‖ < (lams j)⁻¹ * (lams j * R) :=
+            mul_lt_mul_of_pos_left hy (inv_pos.2 hlam)
+        _ = R := by field_simp
+    · intro hz
+      rw [mem_ball, dist_zero_right] at hz
+      refine ⟨x + lams j • z, ?_, ?_⟩
+      · rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hlam.le]
+        exact mul_lt_mul_of_pos_left hz hlam
+      · rw [hdil, add_sub_cancel_left, smul_smul, inv_mul_cancel₀ hlam.ne', one_smul]
+  rw [← himg, (Submission.dtc_blowUp_scaling P n U U T x (lams j) hlam hU hn).1 (ball x (lams j * R))]
+  calc ENNReal.ofReal ((lams j)⁻¹ ^ n) * T.massOn (ball x (lams j * R))
+      ≤ ENNReal.ofReal ((lams j)⁻¹ ^ n) *
+          (ENNReal.ofReal (θ + 1) * (unitBallVolume n * ENNReal.ofReal ((lams j * R) ^ n))) := by
+        gcongr
+        exact hmass _ (mul_pos hlam hR) hj
+    _ = ENNReal.ofReal (θ + 1) * (unitBallVolume n * ENNReal.ofReal (R ^ n)) := by
+        rw [mul_left_comm]
+        congr 1
+        rw [mul_left_comm, ← ENNReal.ofReal_mul (by positivity)]
+        congr 2
+        rw [mul_pow, ← mul_assoc, ← mul_pow, inv_mul_cancel₀ hlam.ne', one_pow, one_mul]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
