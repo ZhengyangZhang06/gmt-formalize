@@ -451,6 +451,50 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 3, 1.4** (local flat model): a measurable `M` that coincides near `x` with the
+affine plane `x + Q` has `Q` as approximate tangent space at `x`.  If `spt f ⊆ closedBall 0 R`
+and `0 < ρ < r / R`, then for `y ∈ spt f` the point `x + ρ y` lies in `B_r(x)`, so
+`y ∈ η_{x,ρ}(M) ↔ x + ρ y ∈ M ↔ ρ y ∈ Q ↔ y ∈ Q`; hence the blown-up integrals equal
+`∫_Q f dHⁿ` for all small `ρ > 0`. -/
+theorem Submission.idtp_fons_odc_pc_local_plane_tangent : ∀ (P n : ℕ) (M : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (r : ℝ), MeasurableSet M → Module.finrank ℝ Q = n → 0 < r → M ∩ ball x r = {y | y - x ∈ Q} ∩ ball x r → HasApproximateTangentSpaceAt n M x Q := by
+  intro P n M x Q r hM hQ hr hloc
+  refine ⟨hQ, fun f => ?_⟩
+  -- `spt f ⊆ closedBall 0 R` with `R > 0`
+  obtain ⟨R, hR0, hR⟩ :=
+    f.hasCompactSupport.isCompact.isBounded.subset_closedBall_lt 0 (0 : Euclid P)
+  refine tendsto_const_nhds.congr' ?_
+  filter_upwards [Ioo_mem_nhdsGT (div_pos hr hR0)] with ρ ⟨hρ0, hρ⟩
+  rw [lt_div_iff₀ hR0] at hρ
+  -- `η_{x,ρ}(M) = {y | x + ρ y ∈ M}`
+  have himage : Poincare.SimonGMT.Chapter03.blowUpMap x ρ '' M =
+      (fun y => x + ρ • y) ⁻¹' M := by
+    ext y
+    constructor
+    · rintro ⟨z, hz, rfl⟩
+      simpa [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hρ0.ne'] using hz
+    · intro hy
+      exact ⟨_, hy, by simp [Poincare.SimonGMT.Chapter03.blowUpMap, smul_smul, hρ0.ne']⟩
+  rw [himage, ← integral_indicator (hM.preimage (by fun_prop)),
+    ← integral_indicator (Submodule.closed_of_finiteDimensional Q).measurableSet]
+  congr 1
+  ext y
+  by_cases hy : y ∈ tsupport f
+  · -- on `spt f`, `x + ρ y ∈ B_r(x)`, so `x + ρ y ∈ M ↔ ρ y ∈ Q ↔ y ∈ Q`
+    have hball : x + ρ • y ∈ ball x r := by
+      rw [mem_ball, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_of_nonneg hρ0.le]
+      exact (mul_le_mul_of_nonneg_left (mem_closedBall_zero_iff.1 (hR hy)) hρ0.le).trans_lt hρ
+    have hiff : y ∈ (fun y => x + ρ • y) ⁻¹' M ↔ y ∈ Q := by
+      have h := Set.ext_iff.1 hloc (x + ρ • y)
+      simp only [mem_inter_iff, hball, and_true, mem_ofPred_eq, add_sub_cancel_left] at h
+      show x + ρ • y ∈ M ↔ y ∈ Q
+      rw [h, Q.smul_mem_iff hρ0.ne']
+    by_cases hyQ : y ∈ Q
+    · rw [indicator_of_mem hyQ, indicator_of_mem (hiff.2 hyQ)]
+    · rw [indicator_of_notMem hyQ, indicator_of_notMem (mt hiff.1 hyQ)]
+  · -- off `spt f` both integrands vanish
+    have h0 : f y = 0 := image_eq_zero_of_notMem_tsupport hy
+    rw [indicator_apply_eq_zero.2 fun _ => h0, indicator_apply_eq_zero.2 fun _ => h0]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
