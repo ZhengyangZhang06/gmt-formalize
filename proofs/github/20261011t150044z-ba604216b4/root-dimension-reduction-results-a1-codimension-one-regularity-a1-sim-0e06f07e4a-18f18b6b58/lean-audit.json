@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "59abc895538bea6d7e10e87f4c0258f275a238b1728e4e4a39e4fd5fc44ab683",
+  "git_delta": {
+    "base_commit": "db78748647b2074649597cbe2b20d60b60d66d38",
+    "candidate_commit": "c8c2568ad1b75a749eedf75bb2ae9f6cc86091fe",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_stab_perturbation_injective",
+    "diff_sha256": "e55845a441ff40044b84017fd4f00c10ef172de69ac235d4dcf16eef6f5e0fed",
+    "source_sha256": "92d7f3559931540264e9c432d838d1346bd6bcf61a8789849be742e6f28e93ca",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_stab_perturbation_injective",
+      "statement": "∀ (P : ℕ) (Z : Euclid P → Euclid P) (Λ t : ℝ), ContDiff ℝ 1 Z → (∀ x, ‖fderiv ℝ Z x‖ ≤ Λ) → |t| * Λ < 1 → Injective (fun x => x + t • Z x) ∧ (∀ x, fderiv ℝ (fun x => x + t • Z x) x = ContinuousLinearMap.id ℝ (Euclid P) + t • fderiv ℝ Z x) ∧ ∀ x, Injective (fderiv ℝ (fun x => x + t • Z x) x)",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
