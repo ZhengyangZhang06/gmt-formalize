@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.support_mass_pos-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1",
+  "depth": 4,
+  "title": "Positive mass on every open neighbourhood of a support point (general fact G3)",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, T ∈ 𝒟_n(U), W ⊆ ℝ^P open and x ∈ W with x ∈ spt T. Then M_W(T) > 0.",
+  "lean_statement": "∀ (P n : ℕ) (U W : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P), IsOpen U → IsOpen W → x ∈ W → x ∈ T.support → 0 < T.massOn W",
+  "lean_name": "codim1_rdo_massOn_pos_of_mem_support",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-11b437a99d-a1"
+}

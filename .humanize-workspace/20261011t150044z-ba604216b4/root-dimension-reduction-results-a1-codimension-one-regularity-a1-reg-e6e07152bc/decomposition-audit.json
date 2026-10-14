@@ -1,0 +1,110 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(abbrev MultiVector|def IsUnitOrientationOf|def IsEmbeddedSubmanifold|def tangentSpace|def IsOrientation)",
+        "to_localInverse|toOpenPartialHomeomorph|contDiffAt_symm|isOpen_injective|continuousOn_fderiv_of_isOpen",
+        "norm_image_sub_le|map_update_smul|gramSchmidtOrthonormalBasis_det|gramSchmidtOrthonormalBasis_inv_triangular|eq_smul_basis_det|det_to_matrix_orthonormalBasis_real|isometryOfOrthonormal",
+        "python3 /tmp/gc-independent-audit-20261013/build_audit.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/gc-independent-audit-20261013/FullAudit.lean",
+        "python3 /tmp/gc-independent-audit-20261013/run_checks.py IndependentTypes Isolated_unit_orientation_isometry Isolated_gram_unit_orientation",
+        "python3 /tmp/gc-independent-audit-20261013/run_checks.py Isolated_local_inverse_c2 Isolated_graph_over_tangent Isolated_orientation_along_graph"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/GramSchmidtOrtho.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-e6e07152bc/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-e6e07152bc/decomposition-v1.json",
+        "/tmp/gc-independent-audit-20261013/build_audit.py",
+        "/tmp/gc-independent-audit-20261013/FullAudit.lean",
+        "/tmp/gc-independent-audit-20261013/FullAudit.log",
+        "/tmp/gc-independent-audit-20261013/IndependentTypes.lean",
+        "/tmp/gc-independent-audit-20261013/IndependentTypes.log"
+      ],
+      "conclusion": "The split is appropriate: the graph construction and orientation transport are genuine separate obligations, and the supplied assembly proves exactly the selected parent contract. Independently verified the binding digest and project, Mathlib, and SimonGMT pins. All seven reused declarations have identical frozen types and passing comparator records for their candidate commits; the five new names have no DAG collisions. Dependencies are acyclic, including reused proof prerequisites. Every name is a bare identifier, and every frozen type independently elaborates as a one-line proposition without child implementations. All five supplied new proofs compile using only their declared prerequisites. Fresh compilation of the accepted proofs, new proofs, and exact parent assembly succeeds; all twelve children and the selected parent depend only on propext, Classical.choice, and Quot.sound. Source-delta checks pass. Matrix.of constructions were independently checked to use ordinary matrix multiplication. Each natural proof was reviewed independently and supplies a complete, non-circular argument."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_orientation_isometry",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Degree m+1 supplies the slot needed to absorb the negative sign. The proof verifies preservation of orthonormality and span, then constructs the isometry with exactly the required range and covector evaluations."
+    },
+    {
+      "key": "local_inverse_c2",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All neighborhood and inverse clauses match the prose. Finite-dimensional injectivity gives an equivalence; the open derivative locus and restricted partial homeomorphism give the stated sets. Pointwise inverse smoothness proves C² throughout O, without circular reliance."
+    },
+    {
+      "key": "chart_tangent_range",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Properness proves inverse continuity; the derivative lower bound yields the secant estimate. That estimate proves one tangent inclusion, and the bounded smooth parameter curve proves the other with the exact required velocity. All three conclusions and degenerate dimensions are covered."
+    },
+    {
+      "key": "graph_over_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type match, and both declared prerequisites suffice. Adjoint projection constructs the graph; Du(0) lies both in the tangent plane and its orthogonal complement. The explicit radius choices establish every bound and closed-ball inclusion, while inverse uniqueness proves h = u(v)."
+    },
+    {
+      "key": "orthonormal_frame_gram",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Gram–Schmidt supplies the frame and triangular coefficient matrix; Parseval proves the Gram identity, independence proves the determinant nonzero, and Cauchy–Schwarz proves the product bound. The empty-family case is correctly included."
+    },
+    {
+      "key": "covector_frame_det",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse with all span hypotheses stated. Restricting the covector to the frame's span reduces it to a multiple of the basis determinant; orthonormality identifies the coordinate entries with the stated inner products. This also covers degree zero."
+    },
+    {
+      "key": "gram_unit_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared prerequisites give Γ = (det A)² > 0 and ξ(α)|det A| = det A·α(σ). Splitting on the nonzero determinant's sign yields one uniform orientation sign for every covector. This proves the exact conjunction, with correctly constructed Gram matrices."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The orthonormal spanning families are bases of the same plane. Their orthogonal transition determinant is ±1 independently of the covector, yielding equality or negated equality of the functionals. Degree zero is covered."
+    },
+    {
+      "key": "unit_orientation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Coordinate expansion proves the squared-minor identity; Cauchy–Schwarz gives the precise coefficient-norm bound. The fixed finite sum defines a continuous linear L and proves both its norm bound and ξ(Lξ) = 1. Degenerate degrees are addressed."
+    },
+    {
+      "key": "chart_range_subset_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The bounded smooth parameter h keeps the curve inside V throughout the required interval while h′(0) = 1 preserves the exact velocity Dψ(v)a. Composition and the chain rule establish every tangentSpace witness condition; a = 0 is handled separately."
+    },
+    {
+      "key": "covector_eval_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The evaluation bound constructs a bounded linear functional for each family. The stated operator-norm difference estimate and squeeze argument establish continuity in the required topology, including degree zero."
+    },
+    {
+      "key": "orientation_along_graph",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Every hypothesis and conclusion matches the frozen type. Differentiated orthogonality gives injectivity and Gram positivity; dimension identifies the graph tangent plane. Normalized evaluation is continuous, and dual evaluation detects its orientation sign. The intermediate value argument fixes that sign from the center and proves the exact Jacobian identity using only declared prerequisites."
+    }
+  ],
+  "required_changes": []
+}
