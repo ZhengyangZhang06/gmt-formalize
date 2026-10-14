@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "8ed8438a3d5f29c2cb27e380c15bd103484709fe73994599becfaee02e73a2de",
+  "git_delta": {
+    "base_commit": "97f565300e3e8c74aa6faedd89ad1718c41b6ebc",
+    "candidate_commit": "bbb5e3ebc5bbf1663af1fd214562724c29e963d2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_lp_imc_cylinder_measure",
+    "diff_sha256": "0896916514c281ac60e28904919c83a4bf390567003d61f58434e4c0c88bca31",
+    "source_sha256": "7441cc800256d7e0dd97b834c8e6768e186c5e771e17d1e317d92becec6e4919",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_lp_imc_cylinder_measure",
+      "statement": "∀ (N n : ℕ) (M : Set (Euclid N)), MeasurableSet M → CountablyRectifiable n M → μHE[n] M ≠ ∞ → Measure.map (fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) (((volume : Measure ℝ).restrict (Ioo 0 1)).prod (μHE[n].restrict M)) = μHE[n + 1].restrict ((fun p : ℝ × Euclid N => (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2)) : Euclid (N + 1))) '' (Ioo (0 : ℝ) 1 ×ˢ M))",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
