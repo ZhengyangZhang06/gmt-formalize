@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "121df97fdab709f2275f93d3dbe19bd8d172139ba798d3375ea877db1a866c46",
+  "git_delta": {
+    "base_commit": "a89ecbd4dbc1c5f4fc6b0e2e42375971af9276fa",
+    "candidate_commit": "dbd936fef3837c1ea4b58cf976d257de0d4f2772",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "idtp_fons_cr_nusc_flat_point_persists",
+    "diff_sha256": "16dfb6860def81cdba6b527f2b7d3d38a342cc2fa560434eec4225d2b3235ba5",
+    "source_sha256": "303b11251932f9b02f8ac56b0f3f792a9dbca579fe8956df4f609bffa540eb5d",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_fons_cr_nusc_flat_point_persists",
+      "statement": "∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)) (Ss Ds : ℕ → Set (Euclid P)), 0 < β → (∀ K : Set (Euclid P), IsCompact K → K ⊆ Dset → ∀ᶠ k in atTop, K ⊆ Ds k) → (∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub → (∀ k, z k ∈ Ss (sub k)) → Tendsto z atTop (𝓝 x) → x ∈ Dset → x ∈ S) → ∀ w : Euclid P, (∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s) → ∀ (σ : ℕ → ℕ) (v : ℕ → Euclid P), StrictMono σ → Tendsto v atTop (𝓝 w) → ∀ᶠ i in atTop, ∃ ρ : ℝ, 0 < ρ ∧ ball (v i) ρ ⊆ Ds (σ i) ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ Ss (σ i), y ∈ ball (v i) ρ → ‖(y - v i) - Q.starProjection (y - v i)‖ ≤ s",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -451,6 +451,91 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Eventual flatness of the approximating supports (used in the proof of Simon 7.3.3(2), p. 192,
+to check Appendix A.3(3)).  Suppose every limit in `Dset` of points `z_k ∈ S_{sub(k)}` along a
+strictly increasing `sub` lies in `S`, the ball `B_ρ(w)` lies in `Dset`, and `S ∩ B_ρ(w)` lies
+within distance `s` of the affine plane `w + Q`.  If `s < τ`, `ρ' < ρ`, `σ` is strictly increasing
+and `vᵢ → w`, then for all large `i` the set `S_{σ(i)} ∩ B_{ρ'}(vᵢ)` lies within distance `τ` of
+`vᵢ + Q`.  Otherwise there are points `y_l ∈ S_{σ(ψ(l))} ∩ B_{ρ'}(v_{ψ(l)})` with
+`|q_Q(y_l − v_{ψ(l)})| > τ`, `q_Q = 1 − p_Q`; the displacements `y_l − v_{ψ(l)}` lie in the
+compact `closedBall 0 ρ'`, so along a subsequence they converge to some `d` and `y_l → w + d`,
+with `w + d ∈ B_ρ(w) ⊆ Dset`.  Thus `w + d ∈ S`, which gives `|q_Q(d)| ≤ s`, while continuity of
+`q_Q` gives `|q_Q(d)| ≥ τ > s`. -/
+theorem Submission.idtp_fons_cr_nusc_flat_eventually : ∀ (P : ℕ) (S Dset : Set (Euclid P)) (Ss : ℕ → Set (Euclid P)), (∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub → (∀ k, z k ∈ Ss (sub k)) → Tendsto z atTop (𝓝 x) → x ∈ Dset → x ∈ S) → ∀ (w : Euclid P) (ρ ρ' s τ : ℝ) (Q : Submodule ℝ (Euclid P)), ρ' < ρ → ball w ρ ⊆ Dset → s < τ → (∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s) → ∀ (σ : ℕ → ℕ) (v : ℕ → Euclid P), StrictMono σ → Tendsto v atTop (𝓝 w) → ∀ᶠ i in atTop, ∀ y ∈ Ss (σ i), y ∈ ball (v i) ρ' → ‖(y - v i) - Q.starProjection (y - v i)‖ ≤ τ := by
+  intro P S Dset Ss hS w ρ ρ' s τ Q hρ hball hsτ hflat σ v hσ hv
+  by_contra hcon
+  -- step 1: a strictly increasing `ψ` and bad points `y l ∈ S_{σ(ψ l)} ∩ B_{ρ'}(v_{ψ l})`
+  obtain ⟨ψ, hψ, hψbad⟩ := extraction_of_frequently_atTop (not_eventually.1 hcon)
+  have hbad : ∀ l, ∃ y ∈ Ss (σ (ψ l)), y ∈ ball (v (ψ l)) ρ' ∧
+      τ < ‖(y - v (ψ l)) - Q.starProjection (y - v (ψ l))‖ := by
+    intro l
+    simpa only [not_forall, not_le, exists_prop] using hψbad l
+  choose y hySs hyball hygt using hbad
+  -- step 2: the displacements `d l = y l - v (ψ l)` lie in the compact `closedBall 0 ρ'`
+  have hdmem : ∀ l, y l - v (ψ l) ∈ closedBall (0 : Euclid P) ρ' := fun l => by
+    rw [mem_closedBall, dist_zero_right, ← dist_eq_norm]
+    exact (mem_ball.1 (hyball l)).le
+  obtain ⟨d, hd, χ, hχ, hdχ⟩ := (isCompact_closedBall (0 : Euclid P) ρ').tendsto_subseq hdmem
+  -- step 3: along `χ`, `y (χ m) → w + d`
+  have hvχ : Tendsto (fun m => v (ψ (χ m))) atTop (𝓝 w) :=
+    hv.comp (hψ.comp hχ).tendsto_atTop
+  have hyχ : Tendsto (fun m => y (χ m)) atTop (𝓝 (w + d)) :=
+    (hvχ.add hdχ).congr fun m => by simp
+  -- step 4: `w + d ∈ B_ρ(w) ⊆ Dset`
+  have hwd : w + d ∈ ball w ρ := by
+    rw [mem_ball, dist_eq_norm, add_sub_cancel_left]
+    rw [mem_closedBall, dist_zero_right] at hd
+    exact hd.trans_lt hρ
+  -- step 5: `w + d ∈ S`
+  have hwdS : w + d ∈ S :=
+    hS (σ ∘ ψ ∘ χ) (fun m => y (χ m)) (w + d) (hσ.comp (hψ.comp hχ)) (fun m => hySs (χ m)) hyχ
+      (hball hwd)
+  -- step 6: flatness at `w` bounds `|q_Q(d)|` by `s`
+  have hds : ‖d - Q.starProjection d‖ ≤ s := by
+    simpa only [add_sub_cancel_left] using hflat (w + d) hwdS hwd
+  -- step 7: continuity of `u ↦ |u - p_Q u|` gives `τ ≤ |q_Q(d)|`
+  have hg : Continuous fun u : Euclid P => ‖u - Q.starProjection u‖ :=
+    (continuous_id.sub Q.starProjection.continuous).norm
+  have hτd : τ ≤ ‖d - Q.starProjection d‖ :=
+    ge_of_tendsto' ((hg.tendsto d).comp hdχ) fun m => (hygt (χ m)).le
+  linarith
+
+/-- **Simon 7.3.3(2), proof (p. 192)**: the claim that if `y ∈ R_β(S)`, `y_j ∈ spt S_j` and
+`y_j → y`, then `y_j ∈ R_β(S_j)` for all large `j`, for sets.  Let the `D_k` exhaust `D` on
+compact sets, and let every subsequential limit in `D` of points of the `S_k` lie in `S`.  If `w` is
+`β`-flat for `(S, D)` with witness `(ρ, Q, s)`, `σ` is strictly increasing and `v_i → w`, then `v_i`
+is `β`-flat for `(S_{σ(i)}, D_{σ(i)})` for all large `i`, with witness `(ρ', Q, τ)`, where
+`ρ' = (ρ + max (s/β) 0)/2` and `τ = (s + βρ')/2`.  With `η = (ρ - ρ')/2`, the compact ball
+`B̄_{ρ'+η}(w) ⊆ B_ρ(w) ⊆ D` lies in `D_{σ(i)}` for large `i` and contains `B_{ρ'}(v_i)` once
+`|v_i - w| < η`; the bound `τ` on `B_{ρ'}(v_i)` is `idtp_fons_cr_nusc_flat_eventually`. -/
+theorem Submission.idtp_fons_cr_nusc_flat_point_persists : ∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)) (Ss Ds : ℕ → Set (Euclid P)), 0 < β → (∀ K : Set (Euclid P), IsCompact K → K ⊆ Dset → ∀ᶠ k in atTop, K ⊆ Ds k) → (∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub → (∀ k, z k ∈ Ss (sub k)) → Tendsto z atTop (𝓝 x) → x ∈ Dset → x ∈ S) → ∀ w : Euclid P, (∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s) → ∀ (σ : ℕ → ℕ) (v : ℕ → Euclid P), StrictMono σ → Tendsto v atTop (𝓝 w) → ∀ᶠ i in atTop, ∃ ρ : ℝ, 0 < ρ ∧ ball (v i) ρ ⊆ Ds (σ i) ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ Ss (σ i), y ∈ ball (v i) ρ → ‖(y - v i) - Q.starProjection (y - v i)‖ ≤ s := by
+  rintro P n β S Dset Ss Ds hβ hE hH w ⟨ρ, hρ, hρD, Q, hQ, s, hs, hflat⟩ σ v hσ hv
+  -- the radius `ρ' = (ρ + max (s/β) 0)/2 ∈ (0, ρ)` with `s < βρ'`
+  have hsβ : s / β < ρ := (div_lt_iff₀' hβ).2 hs
+  have hmρ : max (s / β) 0 < ρ := max_lt hsβ hρ
+  have hm0 : 0 ≤ max (s / β) 0 := le_max_right _ _
+  have hsm : s / β ≤ max (s / β) 0 := le_max_left _ _
+  obtain ⟨ρ', hρ'0, hρ'ρ, hsρ'⟩ : ∃ ρ' : ℝ, 0 < ρ' ∧ ρ' < ρ ∧ s < β * ρ' :=
+    ⟨(ρ + max (s / β) 0) / 2, by linarith, by linarith,
+      (div_lt_iff₀' hβ).1 (by linarith)⟩
+  -- the constant `τ = (s + βρ')/2 ∈ (s, βρ')` and the margin `η = (ρ - ρ')/2`
+  obtain ⟨τ, hsτ, hτ⟩ : ∃ τ : ℝ, s < τ ∧ τ < β * ρ' :=
+    ⟨(s + β * ρ') / 2, by linarith, by linarith⟩
+  obtain ⟨η, hη, hρ'η⟩ : ∃ η : ℝ, 0 < η ∧ ρ' + η < ρ := ⟨(ρ - ρ') / 2, by linarith, by linarith⟩
+  -- `B̄_{ρ'+η}(w)` is a compact subset of `B_ρ(w) ⊆ D`, so it lies in `D_{σ(i)}` for large `i`
+  have hK : closedBall w (ρ' + η) ⊆ Dset := (closedBall_subset_ball hρ'η).trans hρD
+  have hKD : ∀ᶠ i in atTop, closedBall w (ρ' + η) ⊆ Ds (σ i) :=
+    hσ.tendsto_atTop.eventually (hE _ (isCompact_closedBall w (ρ' + η)) hK)
+  have hvw : ∀ᶠ i in atTop, dist (v i) w < η := Metric.tendsto_nhds.1 hv η hη
+  -- flatness with constant `τ` on `B_{ρ'}(v_i)` for large `i`
+  have hfl := Submission.idtp_fons_cr_nusc_flat_eventually P S Dset Ss hH w ρ ρ' s τ Q hρ'ρ hρD
+    hsτ hflat σ v hσ hv
+  -- `(ρ', Q, τ)` witnesses that `v_i` is `β`-flat for `(S_{σ(i)}, D_{σ(i)})`
+  filter_upwards [hKD, hvw, hfl] with i hKi hvi hfi
+  refine ⟨ρ', hρ'0, fun x hx => hKi ?_, Q, hQ, τ, hτ, hfi⟩
+  have hxv : dist x (v i) < ρ' := mem_ball.1 hx
+  exact mem_closedBall.2 (by linarith [dist_triangle x (v i) w])
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
