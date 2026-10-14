@@ -1,0 +1,115 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof step 3; Simon Ch. 3, Definition 1.4 and Remark 1.5 (chapter-03.txt lines 75–90). Uses the sibling chart_tangent_space.
+Notation. Hⁿ := μHE[n]; η_λ(y) := λ⁻¹(y − x) (blowUpMap x λ); dist(u, L) is the distance from u to the set L.
+1. Chart at x.
+ (a) IsEmbeddedSubmanifold r d N at x ∈ N gives a chart (V, W, ψ) with x ∈ W. Since x ∈ W ∩ N = ψ(V), x = ψ(v₀) with v₀ ∈ V.
+ (b) Let A := Dψ(v₀) and L := A(ℝ^d), a linear subspace of ℝ^P, hence closed.
+ (c) By chart_tangent_space (r ≥ 1), tangentSpace N x = L. Moreover, for every ε > 0 there is δ_ε > 0 such that every y ∈ N with |y − x| < δ_ε admits a ∈ ℝ^d with |y − x − Aa| ≤ ε|y − x|.
+2. Reduction. Let w ∈ Q. If w = 0, then w = A0 ∈ L. Assume w ≠ 0. It suffices to prove dist(w, L) < s + ε(|w| + s) for all s ∈ (0, |w|/2) and ε > 0. Then dist(w, L) = 0, and w ∈ L because L is closed. Fix such s and ε.
+3. Test function. Let f(y) := max(0, s − |y − w|). f is continuous and ≥ 0, vanishes outside ball(w, s), is positive on ball(w, s), and has compact support closedBall(w, s). So f ∈ C_c(ℝ^P, ℝ).
+4. ∫_Q f dHⁿ > 0.
+ (a) HasApproximateTangentSpaceAt n M x Q includes finrank Q = n. So the support of Hⁿ⌞Q is Q (SimonGMT Chapter03, support_euclideanHausdorffMeasure_restrict_submodule).
+ (b) Hⁿ⌞Q is finite on compact sets. It is the image under the isometric inclusion Q → ℝ^P of Hⁿ on the n-dimensional space Q, which is Lebesgue measure after an isometry with ℝ^n (Isometry.map_euclideanHausdorffMeasure, EuclideanSpace.euclideanHausdorffMeasure_eq_volume).
+ (c) w ∈ Q lies in the support and ball(w, s) is an open neighbourhood of w, so Hⁿ⌞Q(ball(w, s)) > 0.
+ (d) f is Hⁿ⌞Q-integrable (continuous with compact support), nonnegative, and positive on ball(w, s). Hence ∫_Q f dHⁿ > 0.
+5. Positive blow-up integrals. By the definition of HasApproximateTangentSpaceAt, ∫_{η_λ(M)} f dHⁿ → ∫_Q f dHⁿ > 0 as λ ↓ 0. So there is λ₀ > 0 with ∫_{η_λ(M)} f dHⁿ ≠ 0 for every λ ∈ (0, λ₀).
+6. Points of M ∩ N in the blow-up. Fix λ ∈ (0, λ₀).
+ (a) Suppose Hⁿ(η_λ(M) ∩ ball(w, s)) = 0. Since f vanishes off ball(w, s), f = 0 almost everywhere for Hⁿ⌞η_λ(M), so ∫_{η_λ(M)} f dHⁿ = 0, a contradiction. Hence Hⁿ(η_λ(M) ∩ ball(w, s)) > 0.
+ (b) η_λ is a translation followed by multiplication by λ⁻¹. So Hⁿ(η_λ(B)) = λ^{−n}Hⁿ(B) for every B ⊆ ℝ^P (Isometry.euclideanHausdorffMeasure_image for the translation, Measure.euclideanHausdorffMeasure_smul₀ for the dilation). In particular Hⁿ(η_λ(M ∖ N)) = 0.
+ (c) η_λ(M) ⊆ η_λ(M ∩ N) ∪ η_λ(M ∖ N). With (a) and (b), Hⁿ(η_λ(M ∩ N) ∩ ball(w, s)) > 0, so this set is nonempty.
+ (d) Hence there is y_λ ∈ M ∩ N with |λ⁻¹(y_λ − x) − w| < s. In particular |y_λ − x| < λ(|w| + s).
+7. Distance estimate.
+ (a) Let δ := δ_ε from step 1. Choose λ ∈ (0, λ₀) with λ(|w| + s) < δ, and let y := y_λ from step 6.
+ (b) Then y ∈ N and |y − x| < δ, so there is a ∈ ℝ^d with |y − x − Aa| ≤ ε|y − x| < ελ(|w| + s).
+ (c) Put w' := λ⁻¹(y − x) and ℓ := A(λ⁻¹a) ∈ L. Then |w − w'| < s and |w' − ℓ| = λ⁻¹|y − x − Aa| < ε(|w| + s).
+ (d) Hence dist(w, L) ≤ |w − w'| + |w' − ℓ| < s + ε(|w| + s).
+8. By step 2, w ∈ L = tangentSpace N x. Since w ∈ Q was arbitrary, Q ⊆ tangentSpace N x. For n = 0 we have Q = {0}, and only the case w = 0 occurs.
+
+## Key steps
+
+1. A chart through x and chart_tangent_space give tangentSpace N x = L := Dψ(v₀)(ℝ^d), a closed subspace, together with the secant estimate.
+2. For w ∈ Q ∖ {0}, a bump f at w has ∫_Q f dHⁿ > 0, so for all small λ the blow-ups η_λ(M) charge ball(w, s).
+3. Since Hⁿ(M ∖ N) = 0 and Hⁿ scales under η_λ, there is y ∈ M ∩ N with |(y − x)/λ − w| < s.
+4. The secant estimate at y gives dist(w, L) < s + ε(|w| + s); letting s, ε → 0 gives w ∈ L.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1/{parent-child-handoff.json,parent-supplied-plan.md,parent-supplied-natural-proof.md}`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `python3 -I (list dag.json nodes: ids, lean_name, lean_statement, status)`
+- `grep -rn dsmc dag.json problem.json GMT lake-packages-25730c7c/simongmt/Poincare (name-collision check: no match)`
+- `grep -n '^theorem\|^def' simongmt Chapter04/MeanCurvature.lean Chapter04/FirstVariation.lean; sed -n 1,120p,300,520p MeanCurvature.lean; sed -n 40,430p,1190,1200p FirstVariation.lean; cat Chapter04/Basic.lean`
+- `sed -n 1,280p simongmt Chapter03/Rectifiable.lean (HasApproximateTangentSpaceAt, unique, support_euclideanHausdorffMeasure_restrict_submodule)`
+- `grep -rn 'abbrev Covector' simongmt Chapter06/*.lean (Covector = E [⋀^Fin n]→L[ℝ] ℝ)`
+- `sed -n 20,146p simongmt Chapter02/Submanifold.lean, SubmanifoldTopology.lean (IsSimonLocalRepresentation.isEmbedding_chartMap)`
+- `cat nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-natural-proof.md`
+- `sed -n 150,215p and 215,450p book/chapter-04.txt; sed -n 1270,1360p book/chapter-02.txt`
+- `grep -rln Binet mathlib/Mathlib (no Cauchy–Binet in LinearAlgebra); grep for measure_compl_support, ae_withDensity_iff, toOpenPartialHomeomorph, contDiffAt_ringInverse, ContinuousLinearMap.adjoint, measurable_fderiv, Measurable.lintegral_prod_right', aemeasurable_of_tendsto_metrizable_ae', integral_withDensity_eq_integral_smul, euclideanHausdorffMeasure_smul₀, Isometry.map_euclideanHausdorffMeasure, hasDerivAt_integral_of_dominated_loc_of_deriv_le, monotoneOn_of_deriv_nonneg, fderiv_clm_apply`
+- `lake env lean /tmp/dsmc-decomp/Final.lean (seven exact child types + conditional assembly of dor_stationary_mean_curvature_monotonicity; #print axioms)`
+- `lake env lean /tmp/dsmc-decomp/Use.lean (chart lemma applied to IsEmbeddedSubmanifold r and 2 chart data)`
+- `lake env lean /tmp/dsmc-decomp/Assembly.lean (#synth MeasurableSpace/BorelSpace (Euclid 3 →L[ℝ] Euclid 3); inner ℝ on Euclid P is the PiLp inner product)`
+- `lake env lean /tmp/dsmc-decomp/Imports.lean, Imports2.lean (#check of cited library lemmas under import GMT.Ch07.Submission)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-half-space-cone-lies-in-boundary-a1-tangent-projection-aemeasurable-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/MeanCurvature.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/FirstVariation.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Submanifold.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/SubmanifoldTopology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-04.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean`
+- `/tmp/dsmc-decomp/Final.lean`
+- `/tmp/dsmc-decomp/Use.lean`
+- `/tmp/dsmc-decomp/Assembly.lean`
+- `/tmp/dsmc-decomp/spec/statements.json`
+
+Snapshot: project b4d606d, mathlib 25730c7c. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.
+
+Reusable facts found:
+- SimonGMT Chapter03/Rectifiable.lean: HasApproximateTangentSpaceAt (finrank = n plus blow-up convergence of Bochner integrals), HasApproximateTangentSpaceAt.unique, and support_euclideanHausdorffMeasure_restrict_submodule. These are used by approx_tangent_in_tangent_space and tangent_projection_measurable.
+- Mathlib: Measure.measure_compl_support and ae_withDensity_iff (parent assembly); HasStrictFDerivAt.toOpenPartialHomeomorph, OpenPartialHomeomorph.contDiffAt_symm, contDiffAt_ringInverse and ContinuousLinearMap.adjoint (tangent_projection_field); measurable_fderiv and fderiv_clm_apply (mean_curvature_formula); Measurable.lintegral_prod_right', aemeasurable_of_tendsto_metrizable_ae', euclideanHausdorffMeasure_smul₀ and Isometry.map_euclideanHausdorffMeasure (tangent_projection_measurable); integral_withDensity_eq_integral_smul (first_variation_integral); hasDerivAt_integral_of_dominated_loc_of_deriv_le and monotoneOn_of_deriv_nonneg (exp_monotonicity).
+- The half-space branch's accepted measurability proof for U = ℝ^P was adapted to open U.
+
+Not available here:
+- No tubular-neighbourhood or nearest-point theorem exists in Mathlib or SimonGMT. A retraction is therefore built with the inverse function theorem.
+- Mathlib has no Cauchy–Binet. The ξ-based measurability sketch is therefore replaced.
+- SimonGMT's monotonicity (Chapter04/MeanCurvature.lean, exp_normalizedBallMass_monotoneOn) concerns its RectifiableVarifold, which needs a globally locally finite weight and closed balls, and it is not imported by the contract. It is therefore used only as a reference.
+- SimonGMT Chapter02 IsSimonLocalRepresentation.isEmbedding_chartMap is not imported. It is mentioned as optional.
+
+Lean checks:
+- All seven child types elaborate after import GMT.Ch07.Submission in namespace GMT.Ch07 with the contract's opens.
+- The instances are as intended: Borel MeasurableSpace and BorelSpace on Euclid P →L[ℝ] Euclid P, and inner ℝ is the Euclidean (PiLp) inner product.
+- The chart lemma applies to chart data from both IsEmbeddedSubmanifold r and IsEmbeddedSubmanifold 2.
+- The conditional assembly of dor_stationary_mean_curvature_monotonicity elaborates from the seven stubs plus the frozen type of dor_imrep_massOn_eq_measure_and_support, with axioms propext, Classical.choice, Quot.sound and the stub sorryAx.
