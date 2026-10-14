@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "7916a7c1fab37d71b6f0e68670851869123cc0fac64e45925b5fbc1698e655fe",
+  "git_delta": {
+    "base_commit": "3ee8785fe602aeb1f5f8f7ca1a56aad051be10c0",
+    "candidate_commit": "ed2e69d832213cdaa8063d15c9d1f1f10b466f88",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_un_fundamental_lemma",
+    "diff_sha256": "6bb923f27cec732add8d0a259d7d16c3555ba3ff22dc970c32e1ad90aa410322",
+    "source_sha256": "15de406c467af3332b3c400f764b5175eaf34d1258c95a77282d3eac5cfad1d1",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_un_fundamental_lemma",
+      "statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (U M : Set (Euclid P)) (h : Euclid P → ℝ), IsOpen U → M ⊆ U → MeasurableSet M → ContinuousOn h M → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μ (M ∩ K) ≠ ∞) → (∀ x ∈ M, ∀ s : ℝ, 0 < s → 0 < μ (M ∩ ball x s)) → (∀ φ : Euclid P → ℝ, ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → tsupport φ ⊆ U → ∫ x in M, φ x * h x ∂μ = 0) → ∀ x ∈ M, h x = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
