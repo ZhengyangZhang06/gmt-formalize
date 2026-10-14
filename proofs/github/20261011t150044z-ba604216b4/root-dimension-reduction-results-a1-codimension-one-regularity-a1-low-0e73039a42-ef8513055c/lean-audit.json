@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "b5280eb52e74f68c03609d31b18a653b8112083c44baadd365c9221f4679072d",
+  "git_delta": {
+    "base_commit": "6944901d2e2e1e71d6e8068001632b939bf0324d",
+    "candidate_commit": "9663b4ede475fb6e72fcdfe85250e6e10ac15990",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_ldr_stationaryAlong_of_minimizing",
+    "diff_sha256": "e2ec24fd6b392babea1761af09626f7bca5d31e51bd05956ef17a9c51aa55b65",
+    "source_sha256": "758c633febf634f760bfde19515687c4c3edbca1be738df7d950fb550905f3e8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_ldr_stationaryAlong_of_minimizing",
+      "statement": "∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (N ∩ U) → BoundaryVanishes T → R.Represents T → μHE[n] (R.carrier \\ N) = 0 → R.IsStationaryAlong N",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
