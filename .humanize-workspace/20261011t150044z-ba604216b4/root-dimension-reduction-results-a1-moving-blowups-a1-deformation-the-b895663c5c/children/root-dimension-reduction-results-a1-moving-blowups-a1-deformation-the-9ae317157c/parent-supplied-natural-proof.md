@@ -1,0 +1,148 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1.tangent_le_plane-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1–2 of the parent proof (blow-ups lie in the plane; the bump-function argument), stated for an arbitrary linear subspace V in place of the coordinate plane. Compare Simon Ch. 3, Definition 1.4 and the test-function argument of Remark 1.5(3) (book/chapter-03.txt lines 77–93).
+
+Notation. Hⁿ := μHE[n]. For r ∈ ℝ let S_r := blowUpMap x r '' A = {r⁻¹ • (a − x) : a ∈ A}. Let μ := Hⁿ.restrict Q, the restriction of Hⁿ to the set Q. Write (a) and (b) for the two components of HasApproximateTangentSpaceAt n A x Q.
+
+1. Blow-ups lie in V. Let r ∈ ℝ and a ∈ A. By hypothesis a − x ∈ V, and V is closed under scalar multiplication, so blowUpMap x r a = r⁻¹ • (a − x) ∈ V (Submodule.smul_mem). Hence S_r ⊆ V for every r ∈ ℝ.
+
+2. Set-up of a contradiction. Let q ∈ Q, and suppose q ∉ V. The subspace V of the finite-dimensional normed space Euclid P is closed (Submodule.closed_of_finiteDimensional), and it is nonempty since 0 ∈ V. Hence d := infDist(q, V) > 0 (IsClosed.notMem_iff_infDist_pos).
+
+3. A bump function. Define g : Euclid P → ℝ by g(y) := max(0, d/2 − dist(y, q)).
+ (i) g is continuous, as the max of the constant 0 and the continuous function y ↦ d/2 − dist(y, q).
+ (ii) g(y) ≥ 0 for every y.
+ (iii) support g = ball(q, d/2): max(0, t) ≠ 0 iff t > 0, and d/2 − dist(y, q) > 0 iff dist(y, q) < d/2.
+ (iv) g has compact support: if y ∉ closedBall(q, d/2), then dist(y, q) > d/2, so d/2 − dist(y, q) < 0 and g(y) = 0. Closed balls of Euclid P are compact (HasCompactSupport.intro with isCompact_closedBall).
+ Therefore g underlies an element f of C_c(Euclid P, ℝ), namely the CompactlySupportedContinuousMap ⟨⟨g, (i)⟩, (iv)⟩, and f(y) = g(y) for all y.
+
+4. g vanishes on V. Let v ∈ V. Then d = infDist(q, V) ≤ dist(q, v) = dist(v, q) (infDist_le_dist_of_mem). So d/2 − dist(v, q) ≤ −d/2 < 0, and g(v) = max(0, d/2 − dist(v, q)) = 0.
+
+5. The blow-up integrals vanish. Fix r ∈ ℝ. Every y ∈ S_r lies in V by step 1, so f(y) = g(y) = 0 by step 4. Hence ∫_{S_r} f dHⁿ = 0 (setIntegral_eq_zero_of_forall_eq_zero). This lemma needs no measurability of S_r. Indeed f vanishes at every point of S_r, so the open (hence Borel) set O := {f ≠ 0} satisfies (Hⁿ.restrict S_r)(O) = Hⁿ(O ∩ S_r) = Hⁿ(∅) = 0 (Measure.restrict_apply for the measurable set O). Thus f = 0 holds (Hⁿ.restrict S_r)-almost everywhere, and the integral is 0.
+
+6. The plane integral is zero. Apply (b) to f: the function r ↦ ∫_{S_r} f dHⁿ tends to ∫_Q f dHⁿ along 𝓝[>] 0. By step 5 this function is identically 0, so it also tends to 0 along 𝓝[>] 0 (tendsto_const_nhds). The filter 𝓝[>] 0 on ℝ is nontrivial and ℝ is Hausdorff, so limits are unique (tendsto_nhds_unique). Hence ∫_Q f dHⁿ = 0.
+
+7. The plane measure charges every ball around q. By (a), finrank Q = n. Hence the support of μ = Hⁿ.restrict Q is exactly Q (support_euclideanHausdorffMeasure_restrict_submodule, SimonGMT Ch. 3). Since q ∈ Q, q lies in the support of μ, so every neighbourhood of q has positive μ-measure (Measure.mem_support_iff_forall). Because d/2 > 0, ball(q, d/2) is a neighbourhood of q (ball_mem_nhds), so μ(ball(q, d/2)) > 0.
+
+8. Integrability. By (a), μ is a regular measure (regular_euclideanHausdorffMeasure_restrict_submodule), in particular finite on compact sets. A continuous function with compact support is integrable for such a measure (Continuous.integrable_of_hasCompactSupport), so g is μ-integrable.
+
+9. Positivity and contradiction. Since g ≥ 0 and g is μ-integrable, integral_pos_iff_support_of_nonneg gives: 0 < ∫ g dμ iff 0 < μ(support g). By step 3(iii) and step 7, μ(support g) = μ(ball(q, d/2)) > 0, so ∫ g dμ > 0. But ∫ g dμ is by definition the set integral ∫_Q f dHⁿ (f and g agree pointwise), and it equals 0 by step 6. This is a contradiction.
+
+10. Therefore every q ∈ Q lies in V, that is, Q ≤ V. The argument is uniform in n; for n = 0 it applies verbatim (and then Q = {0} ⊆ V anyway). ∎
+
+Formalization notes (from a compiled scratch proof of this exact type in the comparator's replayed Ch07 scope; axioms propext, Classical.choice, Quot.sound): the C_c notation is not open in the Ch07 scope, so write CompactlySupportedContinuousMap (Euclid P) ℝ and build f as ⟨⟨g, hg_cont⟩, hg_cs⟩; write blowUpMap as Poincare.SimonGMT.Chapter03.blowUpMap; Measure.mem_support_iff_forall takes the point explicitly; introduce the regularity fact with `have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule (E := Euclid P) hT.1` so that Continuous.integrable_of_hasCompactSupport finds IsFiniteMeasureOnCompacts; the set integral ∫ y in (Q : Set _), f y ∂μHE[n] is definitionally ∫ y, g y ∂(μHE[n].restrict Q).
+
+## Key steps
+
+1. Every blow-up blowUpMap x r '' A = {r⁻¹ • (a − x) : a ∈ A} lies in V, because a − x ∈ V and V is a subspace.
+2. If q ∈ Q \ V, then d := infDist(q, V) > 0 because V is closed and nonempty. The bump g = max(0, d/2 − dist(·, q)) is continuous, nonnegative, compactly supported, has support ball(q, d/2), and vanishes on V.
+3. Every blow-up integral of g is 0, since g vanishes at every point of the blow-up (no measurability is needed). The approximate-tangent limit and uniqueness of limits along 𝓝[>] 0 give ∫_Q g dHⁿ = 0.
+4. Since finrank Q = n, supp(Hⁿ⌞Q) = Q and Hⁿ⌞Q is regular. So g is integrable, Hⁿ⌞Q(ball(q, d/2)) > 0, and integral_pos_iff_support_of_nonneg gives ∫_Q g dHⁿ > 0. This contradiction shows Q ≤ V.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5…, mathlib_commit 25730c7c759d…); git -C SNAPSHOT/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `rg -n 'dimred_mbl_dtfrpo|dtfrpo_approxTangent|dtfrpo_orthonormal' SNAPSHOT/project lake-packages-25730c7c/simongmt GMT -g '*.lean' (no match); rg -l 'dimred_mbl_dtfrpo' SNAPSHOT/mathlib/Mathlib -g '*.lean' (no match)`
+- `python3 -I scan of RUN/dag.json (2092 nodes): both proposed names and the prefix dimred_mbl_dtfrpo_ are unused, and no lean_name is duplicated. Exact-type matches: only the twin's cmcdtfrpo_approxTangent_le_of_sub_mem and cmcdtfrpo_orthonormal_frame_sign (rlcr-lean, unaccepted). Related accepted nodes with different types: atsm_approxTangent_le_of_flat, dgcr_atg_approxTangent_le_of_flat, dgoj_covector_eq_det_mul_of_mem_span, dor_lmbsf_io_orientation_frame_sign, idtp_pc_orient_ae_eq_or_neg`
+- `python3 -I read of RUN/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-342d8827bb/decomposition-v1.json (twin node, identical frozen type, audited 2-child split) and of the …-44b4878763 and …-ea64782274 decomposition-v1.json files (both twin children judged atomic)`
+- `grep -n in SNAPSHOT/mathlib/Mathlib:
+- AlternatingMap.eq_smul_basis_det: LinearAlgebra/Determinant.lean:650
+- in Analysis/InnerProductSpace/PiL2.lean: OrthonormalBasis.det_to_matrix_orthonormalBasis_real (992), Module.Basis.toBasis_toOrthonormalBasis (628), OrthonormalBasis.mk and coe_mk (712/717), EuclideanSpace.orthonormal_single (349), EuclideanSpace.basisFun, basisFun_apply and basisFun_repr (802/806/810)
+- Orthonormal.comp: Analysis/InnerProductSpace/Orthonormal.lean:193
+- Orthonormal.codRestrict and orthonormal_span: Analysis/InnerProductSpace/Subspace.lean:43/48
+- finrank_span_eq_card: LinearAlgebra/Dimension/Constructions.lean:463
+- Submodule.eq_of_le_of_finrank_eq: LinearAlgebra/FiniteDimensional/Basic.lean:257
+- LinearIndependent.span_eq_top_of_card_eq_finrank': LinearAlgebra/FiniteDimensional/Lemmas.lean:266
+- Module.Basis.span_apply and coe_span_apply: LinearAlgebra/Basis/Basic.lean:191/196`
+- `grep -n in SNAPSHOT/mathlib/Mathlib:
+- Measure.mem_support_iff_forall: MeasureTheory/Measure/Support.lean:75
+- setIntegral_eq_zero_of_forall_eq_zero: MeasureTheory/Integral/Bochner/Set.lean:357, no measurability hypothesis
+- integral_pos_iff_support_of_nonneg: MeasureTheory/Integral/Bochner/Basic.lean:790
+- Continuous.integrable_of_hasCompactSupport: MeasureTheory/Function/LocallyIntegrable.lean:622
+- IsClosed.notMem_iff_infDist_pos and infDist_le_dist_of_mem: Topology/MetricSpace/HausdorffDistance.lean:584/500`
+- `sed -n 1,260p lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean: blowUpMap l.96, HasApproximateTangentSpaceAt l.102 (finrank = n ∧ C_c convergence along 𝓝[>] 0), support_euclideanHausdorffMeasure_restrict_submodule l.157, regular_euclideanHausdorffMeasure_restrict_submodule l.187
+sed -n 25,40p …/Chapter06/Forms.lean: Covector l.31
+sed -n 1,80p GMT/Ch07/Submission.lean: Euclid, MultiVector, IsUnitOrientationOf`
+- `lake env lean on four files in /tmp/dmpo-scratch:
+- Types.lean: both child types and the parent type elaborate in the contract scope, with sorry warnings only.
+- Assembly.lean: #print axioms DMPOAsm.check gives propext, Classical.choice, Quot.sound.
+- ChildA.lean and ChildB.lean: direct proofs of both exact child types, same axioms.
+- E2E.lean: Submission.X declarations plus comparator-style `exact Submission.X` targets, same axioms.`
+- `python3 -I with verifier/gmt-compare.py contract_scope/child_modules (contract mode) generated NodeChallenge/NodeSolution modules for both children and the parent. They were checked against a scratch copy /tmp/dmpo-e2e/ws, whose GMT/Ch07/Submission.lean holds the three declarations:
+- lake build GMT.Ch07.Submission;
+- lake env lean on the 6 generated files: the challenges give only sorry warnings, and the solutions use propext, Classical.choice, Quot.sound;
+- find lake-packages-25730c7c -newer: the shared package tree is unchanged.`
+- `python3 -I verifier/lean_contract.py validate_lean_statement on both child statements: both accepted unchanged; the file is identical to the runtime copy`
+- `grep/sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose max_depth check l.1391, _existing_lean_name_problem l.6557, child activation l.1834–1900) and store.py ensure (l.179); grep of swarm-project.json (max_depth 6, max_children 12, max_nodes 5000)`
+- `sed -n 70,93p book/chapter-03.txt (Simon 3.1.4 Definition, 1.5 Remarks); sed -n 1832,1866p and 2218,2230p book/chapter-06.txt (6.5 (26)–(27); orientation ±τ₁∧⋯∧τₙ for any orthonormal basis in the proof of 8.1)`
+- `An independent reviewer agent recompiled Assembly, ChildA, ChildB and the generated NodeSolution files, plus its own Review_Assembly and Review_E2E (logs in /tmp/dmpo-review/). It also ran character-for-character statement checks and name scans. Verdict: ACCEPT, no required changes.`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Subspace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Basis/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b895663c5c/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-342d8827bb/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-44b4878763/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-ea64782274/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/dmpo-scratch/Types.lean`
+- `/tmp/dmpo-scratch/Assembly.lean`
+- `/tmp/dmpo-scratch/ChildA.lean`
+- `/tmp/dmpo-scratch/ChildB.lean`
+- `/tmp/dmpo-scratch/E2E.lean`
+- `/tmp/dmpo-e2e/ws/GMT/Ch07/Submission.lean`
+- `/tmp/dmpo-e2e/gen/A_NodeSolution.lean`
+- `/tmp/dmpo-e2e/gen/B_NodeSolution.lean`
+- `/tmp/dmpo-e2e/gen/P_NodeSolution.lean`
+
+Pins:
+- The snapshot is local-project with project b4d606db and Mathlib 25730c7c; the snapshot Mathlib HEAD matches.
+- The snapshot Contract equals the workspace Contract and Submission byte for byte.
+
+Names and reuse:
+- No snapshot project, Mathlib, SimonGMT or DAG declaration uses dimred_mbl_dtfrpo_approxTangent_le_of_sub_mem, dimred_mbl_dtfrpo_orthonormal_frame_sign or the prefix dimred_mbl_dtfrpo_ (rg: no match).
+- Neither the snapshot project nor Mathlib proves 'an approximate tangent plane of a subset of x + V lies in V' or 'orthonormal frames with equal spans give the same Covector values up to one sign'.
+- The only DAG nodes with these exact types are the twin's unaccepted cmcdtfrpo_* children, so nothing can be reused and fresh names are required.
+
+Lemmas:
+- Every Mathlib and SimonGMT lemma cited in the child proofs exists at the recorded lines and resolves under import GMT.Ch07.Submission.
+- setIntegral_eq_zero_of_forall_eq_zero needs no measurability of the blow-up sets.
+
+Lean:
+- Both child types elaborate.
+- The assembly from the two child types to the exact selected type compiles with only propext, Classical.choice and Quot.sound.
+- Both children are proved directly in scratch.
+- The comparator-generated modules pass in a scratch workspace copy.
+- The shared package tree is untouched.

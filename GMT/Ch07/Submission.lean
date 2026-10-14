@@ -451,6 +451,75 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **Simon Ch. 3, Definition 1.4** (the test-function argument of Remark 1.5(3)): if
+`a − x ∈ V` for every `a ∈ A`, where `V` is a linear subspace, then every approximate tangent
+space `Q` of `A` at `x` is contained in `V`.  Every blow-up `η_{x,r}(A) = r⁻¹(A − x)` lies in
+`V`.  For `q ∈ Q \ V` let `d = dist(q, V) > 0` (`V` is closed); the bump
+`g = max(0, d/2 − |· − q|) ∈ C_c` vanishes on `V`, so all blow-up integrals of `g` vanish and
+in the limit `∫_Q g dHⁿ = 0`.  Since `dim Q = n`, `Hⁿ⌞Q` is regular with support `Q ∋ q`, and
+`g ≥ 0` has support `B_{d/2}(q)`, so `∫_Q g dHⁿ > 0`, a contradiction. -/
+theorem Submission.dimred_mbl_dtfrpo_approxTangent_le_of_sub_mem : ∀ (P n : ℕ) (A : Set (Euclid P)) (x : Euclid P) (Q V : Submodule ℝ (Euclid P)), (∀ a ∈ A, a - x ∈ V) → HasApproximateTangentSpaceAt n A x Q → Q ≤ V := by
+  intro P n A x Q V hAV hQ q hqQ
+  by_contra hqV
+  -- `d = dist(q, V) > 0`: `V` is closed (finite dimension) and contains `0`
+  have hd : 0 < infDist q (V : Set (Euclid P)) :=
+    (V.closed_of_finiteDimensional.notMem_iff_infDist_pos ⟨0, V.zero_mem⟩).mp hqV
+  set d := infDist q (V : Set (Euclid P))
+  -- the bump `g = max(0, d/2 − dist(·, q))`
+  set g : Euclid P → ℝ := fun y => max 0 (d / 2 - dist y q)
+  have hg_cont : Continuous g :=
+    continuous_const.max (continuous_const.sub (continuous_id.dist continuous_const))
+  have hg_nonneg : 0 ≤ g := fun y => le_max_left 0 _
+  have hg_far : ∀ y, d / 2 ≤ dist y q → g y = 0 := fun y hy =>
+    max_eq_left (sub_nonpos.mpr hy)
+  have hg_supp : Function.support g = ball q (d / 2) := by
+    ext y
+    rw [Function.mem_support, mem_ball]
+    constructor
+    · intro hy
+      by_contra hy'
+      exact hy (hg_far y (not_lt.mp hy'))
+    · intro hy
+      exact (lt_max_of_lt_right (sub_pos.mpr hy)).ne'
+  have hg_cpt : HasCompactSupport g := by
+    refine HasCompactSupport.intro (isCompact_closedBall q (d / 2)) fun y hy => hg_far y ?_
+    rw [mem_closedBall, not_le] at hy
+    exact hy.le
+  -- `g` vanishes on `V`, as `dist(v, q) ≥ dist(q, V) = d` there
+  have hg_V : ∀ v ∈ V, g v = 0 := by
+    intro v hv
+    refine hg_far v ?_
+    have h : d ≤ dist q v := infDist_le_dist_of_mem (SetLike.mem_coe.mpr hv)
+    rw [dist_comm] at h
+    linarith
+  let f : CompactlySupportedContinuousMap (Euclid P) ℝ := ⟨⟨g, hg_cont⟩, hg_cpt⟩
+  -- the blow-up `η_{x,r}(A)` lies in `V`, so its integral of `f` is `0` (no measurability)
+  have hblow : ∀ r : ℝ,
+      ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap x r '' A, f y ∂μHE[n] = 0 := by
+    intro r
+    refine setIntegral_eq_zero_of_forall_eq_zero ?_
+    rintro _ ⟨a, ha, rfl⟩
+    exact hg_V _ (V.smul_mem r⁻¹ (hAV a ha))
+  -- uniqueness of limits along `𝓝[>] 0`: `∫_Q g dHⁿ = 0`
+  have hQ_zero : ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] = 0 := by
+    refine tendsto_nhds_unique (hQ.2 f) ?_
+    simp only [hblow]
+    exact tendsto_const_nhds
+  -- `dim Q = n`: `Hⁿ⌞Q` is regular with support `Q ∋ q`, so `∫_Q g dHⁿ > 0`
+  have := Poincare.SimonGMT.Chapter03.regular_euclideanHausdorffMeasure_restrict_submodule
+    (E := Euclid P) hQ.1
+  have hg_int : Integrable g (μHE[n].restrict (Q : Set (Euclid P))) :=
+    hg_cont.integrable_of_hasCompactSupport hg_cpt
+  have hq_supp : q ∈ (μHE[n].restrict (Q : Set (Euclid P))).support := by
+    rw [Poincare.SimonGMT.Chapter03.support_euclideanHausdorffMeasure_restrict_submodule hQ.1]
+    exact hqQ
+  have hball : 0 < μHE[n].restrict (Q : Set (Euclid P)) (ball q (d / 2)) :=
+    (Measure.mem_support_iff_forall q).mp hq_supp _ (ball_mem_nhds q (half_pos hd))
+  have hQ_pos : 0 < ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n] := by
+    rw [integral_pos_iff_support_of_nonneg hg_nonneg hg_int, hg_supp]
+    exact hball
+  exact hQ_pos.ne' hQ_zero
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 

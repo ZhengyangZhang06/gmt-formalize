@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1.tangent_le_plane-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1",
+  "depth": 6,
+  "title": "Approximate tangent planes of a set lying in an affine plane x + V are contained in V",
+  "statement": "Let P, n ∈ ℕ, A ⊆ Euclid P (= ℝ^P), x ∈ Euclid P, and let Q and V be linear subspaces of Euclid P. Assume a − x ∈ V for every a ∈ A. Assume also that Q is an approximate tangent space of A at x in the sense of HasApproximateTangentSpaceAt n A x Q (Simon Ch. 3, Definition 1.4, as formalized in SimonGMT Chapter03/Rectifiable.lean). This means: (a) finrank Q = n, and (b) for every compactly supported continuous f : Euclid P → ℝ, ∫_{η_{x,r}(A)} f dHⁿ → ∫_Q f dHⁿ as r → 0⁺ (along the filter 𝓝[>] 0). Here η_{x,r}(y) = r⁻¹ • (y − x) is blowUpMap x r, Hⁿ = μHE[n], each integral is taken against the restriction of Hⁿ to the indicated set, and no measurability of A is assumed. Then Q ⊆ V, i.e. Q ≤ V as submodules.",
+  "lean_statement": "∀ (P n : ℕ) (A : Set (Euclid P)) (x : Euclid P) (Q V : Submodule ℝ (Euclid P)), (∀ a ∈ A, a - x ∈ V) → HasApproximateTangentSpaceAt n A x Q → Q ≤ V",
+  "lean_name": "dimred_mbl_dtfrpo_approxTangent_le_of_sub_mem",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-9ae317157c-a1"
+}
