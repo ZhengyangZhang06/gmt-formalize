@@ -451,6 +451,23 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- **One-sided limits at `0⁺` from subsequences of positive null sequences.**  If every
+sequence `λⱼ > 0`, `λⱼ → 0` has a subsequence along which `f(λ_{φ(j)}) → L`, then `f(t) → L` as
+`t ↓ 0`.  `𝓝[>] 0` is countably generated, so by the subsequence criterion it suffices to treat a
+sequence `ns → 0⁺`.  It is positive from some `N` on and tends to `0`, so `λⱼ = ns (j + N)` is a
+positive null sequence; the hypothesis gives `φ` with `f(λ_{φ(j)}) → L`, and `ms j = φ j + N` is
+the required subsequence of `ns`. -/
+theorem Submission.idtp_cse_bml_tendsto_nhdsGT_of_subseq : ∀ (f : ℝ → ℝ≥0∞) (L : ℝ≥0∞), (∀ lams : ℕ → ℝ, (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ Tendsto (fun j => f (lams (φ j))) atTop (𝓝 L)) → Tendsto f (𝓝[>] 0) (𝓝 L) := by
+  intro f L h
+  -- `𝓝[>] 0` is countably generated: it suffices to treat sequences `ns → 0⁺`
+  refine tendsto_of_subseq_tendsto fun ns hns => ?_
+  -- `0 < ns n` for `n ≥ N` and `ns → 0`, so `λⱼ = ns (j + N)` is a positive null sequence
+  obtain ⟨N, hN⟩ := eventually_atTop.1 (hns.eventually_mem self_mem_nhdsWithin)
+  obtain ⟨φ, -, hφ⟩ := h (fun j => ns (j + N)) (fun j => hN (j + N) (Nat.le_add_left N j))
+    ((tendsto_nhdsWithin_iff.1 hns).1.comp (tendsto_add_atTop_nat N))
+  -- `ms j = φ j + N` gives `ns (ms j) = λ_{φ(j)}`
+  exact ⟨fun j => φ j + N, hφ⟩
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
