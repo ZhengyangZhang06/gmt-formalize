@@ -652,6 +652,51 @@ theorem Submission.dpf_exists_orthonormal_frame_det_gram : ∀ (P n : ℕ) (v : 
     calc |inner ℝ (σ i) (v i)| ≤ ‖σ i‖ * ‖v i‖ := abs_real_inner_le_norm _ _
       _ = ‖v i‖ := by rw [show ‖σ i‖ = 1 from b.norm_eq_one i, one_mul]
 
+/-- **Simon 6.1.8–1.10, 6.3.4–3.5** for a unit orientation `ξ = ±τ₁ ∧ ⋯ ∧ τₙ` of `Q` and a
+linear map `L`: `ξ(α ∘ L) = ±α(Lτ₁, …, Lτₙ)`, hence (a) `|ξ(α ∘ L)| ≤ |α|_E ‖L‖ⁿ`, the value
+being `0` if `Lτ` is linearly dependent and otherwise bounded by Cauchy–Binet and Hadamard,
+`|α(Lτ)| ≤ |α|_E det(⟨Lτᵢ, Lτⱼ⟩)^{1/2} ≤ |α|_E ∏ᵢ |Lτᵢ|`; and (b) `ξ(α ∘ L) = ξ(α)` when `L`
+fixes `Q` pointwise. -/
+theorem Submission.dor_lmb_pc_unitOrientation_comp : ∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ (α.compContinuousLinearMap L)| ≤ covectorEuclideanNorm α * ‖L‖ ^ n) ∧ ((∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α) := by
+  intro P n ξ Q L hξ
+  obtain ⟨τ, hτ, hspan, hsign⟩ := hξ
+  -- `ξ(β) = ±β(τ)`, so `|ξ(β)| = |β(τ)|`
+  have habs : ∀ β : Covector (Euclid P) n, |ξ β| = |β τ| := by
+    intro β
+    rcases hsign with h | h
+    · rw [h β]
+    · rw [h β, abs_neg]
+  refine ⟨fun α => ?_, fun hL α => ?_⟩
+  · -- (a): `ξ(α ∘ L) = ±α(v)` with `v = Lτ`
+    rw [habs, ContinuousAlternatingMap.compContinuousLinearMap_apply]
+    set v : Fin n → Euclid P := L ∘ τ
+    have hα := covectorEuclideanNorm_nonneg α
+    -- `|vᵢ| = |Lτᵢ| ≤ ‖L‖`
+    have hprod : ∏ i, ‖v i‖ ≤ ‖L‖ ^ n := by
+      calc ∏ i, ‖v i‖ ≤ ∏ _i : Fin n, ‖L‖ :=
+            Finset.prod_le_prod₀ (fun i _ => norm_nonneg _) fun i _ => by
+              calc ‖v i‖ = ‖L (τ i)‖ := rfl
+                _ ≤ ‖L‖ * ‖τ i‖ := L.le_opNorm _
+                _ = ‖L‖ := by rw [hτ.1 i, mul_one]
+        _ = ‖L‖ ^ n := by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
+    by_cases hli : LinearIndependent ℝ v
+    · -- Cauchy–Binet and Hadamard: `|α(v)| ≤ |α|_E det(⟨vᵢ, vⱼ⟩)^{1/2} ≤ |α|_E ∏ |vᵢ|`
+      obtain ⟨σ, -, -, hG, -, hA⟩ := Submission.dpf_exists_orthonormal_frame_det_gram P n v hli
+      have h1 := (Submission.covectorEuclideanNorm_gram_bounds P n).1 α v
+      rw [hG, Real.sqrt_sq_eq_abs] at h1
+      calc |α v| ≤ covectorEuclideanNorm α *
+            |Matrix.det (Matrix.of fun i j => inner ℝ (σ i) (v j))| := h1
+        _ ≤ covectorEuclideanNorm α * ∏ i, ‖v i‖ := mul_le_mul_of_nonneg_left hA hα
+        _ ≤ covectorEuclideanNorm α * ‖L‖ ^ n := mul_le_mul_of_nonneg_left hprod hα
+    · -- a linearly dependent `v` gives `α(v) = 0`
+      rw [show α v = 0 from α.toAlternatingMap.map_linearDependent v hli, abs_zero]
+      exact mul_nonneg hα (pow_nonneg (norm_nonneg L) n)
+  · -- (b): `L` fixes each `τᵢ ∈ span τ = Q`, so `α(Lτ) = α(τ)`
+    have hLτ : L ∘ τ = τ := funext fun i => hL (τ i) (hspan ▸ Submodule.subset_span ⟨i, rfl⟩)
+    rcases hsign with h | h
+    · rw [h, h, ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
+    · rw [h, h, ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
