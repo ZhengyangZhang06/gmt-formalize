@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "aa2683f30d81fb8a502eff02bbdd16c2d77697d13576a302f834fa0d516571fc",
+  "git_delta": {
+    "base_commit": "2b0d626101b8faf27d621a4580e012c38091e948",
+    "candidate_commit": "e4408a0b7759359e570b97dc37e71719f522e6ef",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "f459d648edb719227a72abeee169810fa68954648f0cae8244105dc9ed1784f7",
+    "source_sha256": "cae28c69a3f161c28be9b0e4a25c1c7d34920c436c8fa13480b8ea5d07788774",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_simons_regular_cone_density",
+      "statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m) (A₀ : Submodule ℝ (Euclid P)), 2 ≤ m → m ≤ 6 → Module.finrank ℝ A₀ = m + 1 → IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → C.support ⊆ (A₀ : Set (Euclid P)) → (∀ y ∈ C.support, y ≠ 0 → y ∈ regularSet C ∧ HasMassDensity C y 1) → ∀ θ : ℝ, HasMassDensity C 0 θ → θ ≤ 1",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
