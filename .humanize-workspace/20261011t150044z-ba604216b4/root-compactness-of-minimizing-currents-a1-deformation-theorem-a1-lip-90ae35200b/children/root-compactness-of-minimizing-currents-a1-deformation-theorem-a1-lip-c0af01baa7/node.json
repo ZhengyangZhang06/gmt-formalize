@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.toolkit-a1.boundary_support-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.toolkit-a1",
+  "depth": 6,
+  "title": "spt ∂X ⊆ spt X",
+  "statement": "For all N, k ∈ ℕ and every X ∈ 𝒟_{k+1}(ℝ^N) (GeometricCurrentOn univ (k + 1)), (SB) spt ∂X ⊆ spt X. Here ∂X = X.boundary, (∂X)(ω) = X(dω), and spt S = S.support = univ \\ S.zeroRegion.",
+  "lean_statement": "∀ (N k : ℕ) (X : GeometricCurrentOn (univ : Set (Euclid N)) (k + 1)), X.boundary.support ⊆ X.support",
+  "lean_name": "cmcdt_lpo_tk_boundary_support_subset",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-c0af01baa7-a1"
+}

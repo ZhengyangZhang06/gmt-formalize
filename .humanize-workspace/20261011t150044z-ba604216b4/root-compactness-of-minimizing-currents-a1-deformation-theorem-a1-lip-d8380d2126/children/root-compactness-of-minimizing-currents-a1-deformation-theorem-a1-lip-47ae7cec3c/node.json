@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.homotopy-a1.phi_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.lipschitz_pushforward-a1.operators-a1.homotopy-a1",
+  "depth": 6,
+  "title": "Covector bound for the e₀-slice of a pulled-back covector",
+  "statement": "Assume (L1) |β.compContinuousLinearMap A| ≤ ‖A‖^k·|β| for every continuous linear A : ℝ^N → ℝ^{N'} and k-covector β on ℝ^{N'} and (L2) |β.curryLeft v| ≤ ‖v‖·|β| for v ∈ ℝ^N and every (k+1)-covector β on ℝ^N (exact frozen Lean types, written as antecedents). For N, N', k ∈ ℕ, a (k+1)-covector γ on ℝ^{N'}, a continuous linear D : ℝ^{N+1} → ℝ^{N'}, a k-covector φ on ℝ^N and a, b ∈ ℝ with b ≥ 0, ‖De₀‖ ≤ a, ‖D(Jv)‖ ≤ b‖v‖ for all v ∈ ℝ^N, and φ(v) = (γ.compContinuousLinearMap D)(e₀, Jv_1, …, Jv_k) for all v ∈ (ℝ^N)^k (e₀ := EuclideanSpace.single 0 1, Jv := WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v))): |φ| ≤ b^k·a·|γ|, |·| = covectorEuclideanNorm.",
+  "lean_statement": "(∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β) → (∀ (N k : ℕ) (v : Euclid N) (β : Covector (Euclid N) (k + 1)), covectorEuclideanNorm (β.curryLeft v) ≤ ‖v‖ * covectorEuclideanNorm β) → ∀ (N N' k : ℕ) (γ : Covector (Euclid N') (k + 1)) (D : Euclid (N + 1) →L[ℝ] Euclid N') (φ : Covector (Euclid N) k) (a b : ℝ), 0 ≤ b → ‖D (EuclideanSpace.single 0 1)‖ ≤ a → (∀ v : Euclid N, ‖D (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp v)))‖ ≤ b * ‖v‖) → (∀ v : Fin k → Euclid N, φ v = (γ.compContinuousLinearMap D) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → covectorEuclideanNorm φ ≤ b ^ k * a * covectorEuclideanNorm γ",
+  "lean_name": "cmcdt_lpoh_phi_bound",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-47ae7cec3c-a1"
+}
