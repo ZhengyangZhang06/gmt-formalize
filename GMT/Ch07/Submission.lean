@@ -1986,6 +1986,107 @@ theorem Submission.dimred_mbl_pf_unitOrientation_comp : ∀ (P n : ℕ) (ξ : Mu
       rw [ContinuousAlternatingMap.compContinuousLinearMap_apply, hLτ]
     rcases hsign with h | h <;> rw [h, h, hτα]
 
+/-- **A push-forward by a `C¹` map fixing `spt Y` pointwise is `Y`** (Simon Ch. 6, 2.24(2)–(3)
+and 3.3; approximate tangent spaces as in Ch. 3, 1.4).  Let `Y = τ(M, θ, ξ)`, `spt Y ⊆ O` with `O`
+open, `f ∈ C¹(O)` fix `spt Y` pointwise and `Z(ω) = ∫_M θ ⟨ω(f(x)) ∘ Df(x), ξ(x)⟩ dHⁿ`.  Since
+`Hⁿ(M \ spt Y) = 0`, blow-ups of points of `M ∩ spt Y` approach every vector of the approximate
+tangent plane `Q` oriented by `ξ(x)` at `Hⁿ`-a.e. `x ∈ M`; `f` fixes these points, so `Df(x)`
+fixes `Q`, hence `ξ(x)(ω(f(x)) ∘ Df(x)) = ξ(x)(ω(x))` and the integrands of `Z(ω)` and `Y(ω)`
+agree `Hⁿ⌞M`-a.e. -/
+theorem Submission.dimred_mbl_pf_pushforward_eq_self_of_fix : ∀ (P n : ℕ) (O : Set (Euclid P)) (f : Euclid P → Euclid P) (Y Z : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsOpen O → ContDiffOn ℝ 1 f O → R.Represents Y → Y.support ⊆ O → (∀ y ∈ Y.support, f y = y) → (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Z ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) → Z = Y := by
+  intro P n O f Y Z R hO hf hR hYO hfix hZ
+  -- Step 1 (carrier_facts): `Hⁿ(M \ spt Y) = 0`
+  have hnull : μHE[n] (R.carrier \ Y.support) = 0 :=
+    ((Submission.dimred_mbl_pf_imrep_carrier_mass_support P n).1 Y R hR).1
+  -- Step 2: `Hⁿ⌞M`-a.e. `x` lies in `spt Y` and `ξ(x)` orients an approximate tangent plane of `M`
+  have hgood : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ Y.support ∧
+      ∃ Q : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt n R.carrier x Q ∧ IsUnitOrientationOf (R.orient x) Q := by
+    have hK : ∀ᵐ x ∂(μHE[n].restrict R.carrier), x ∈ Y.support := by
+      rw [ae_iff, Measure.restrict_apply' R.measurableSet_carrier]
+      refine measure_mono_null (fun x hx => ?_) hnull
+      exact ⟨hx.2, hx.1⟩
+    filter_upwards [hK, R.orients] with x hxK hxQ using ⟨hxK, hxQ⟩
+  -- Steps 3–4: at `x ∈ spt Y`, `Df(x)` fixes every approximate tangent plane `Q` of `M` at `x`
+  have hDf : ∀ x ∈ Y.support, ∀ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt n R.carrier x Q → ∀ w ∈ Q, fderiv ℝ f x w = w := by
+    intro x hxK Q hQ w hw
+    -- Step 3: `x ∈ spt Y ⊆ O` with `O` open and `f ∈ C¹(O)`, so `f` is differentiable at `x`;
+    -- and `f(x) = x`
+    set L := fderiv ℝ f x
+    have hfL : HasFDerivAt f L x :=
+      ((hf.differentiableOn one_ne_zero).differentiableAt (hO.mem_nhds (hYO hxK))).hasFDerivAt
+    have hfx : f x = x := hfix x hxK
+    -- Step 4: it suffices to show `|Lw − w| ≤ ε` for every `ε > 0`; fix the constants
+    refine eq_of_forall_dist_le fun ε hε => ?_
+    rw [dist_eq_norm]
+    set C : ℝ := ‖w‖ + 1 with hC
+    set B : ℝ := ‖L‖ + 1 with hB
+    have hCpos : 0 < C := by rw [hC]; positivity
+    have hBpos : 0 < B := by rw [hB]; positivity
+    set η : ℝ := ε / (2 * C) with hη
+    set s : ℝ := min 1 (ε / (2 * B))
+    have hηpos : 0 < η := div_pos hε (mul_pos two_pos hCpos)
+    have hspos : 0 < s := lt_min one_pos (div_pos hε (mul_pos two_pos hBpos))
+    have hBs : B * s ≤ ε / 2 := by
+      calc B * s ≤ B * (ε / (2 * B)) := mul_le_mul_of_nonneg_left (min_le_right _ _) hBpos.le
+        _ = ε / 2 := by field_simp
+    have hηC : η * C = ε / 2 := by rw [hη]; field_simp
+    -- differentiability at `x`: `|f(y) − f(x) − L(y − x)| ≤ η|y − x|` for `|y − x| < δ`
+    obtain ⟨δ, hδ, hδf⟩ := Metric.eventually_nhds_iff.mp (hfL.isLittleO.bound hηpos)
+    -- blowup_points with `N = spt Y`: for `0 < λ < λ₀` some `y ∈ M ∩ spt Y` has
+    -- `|λ⁻¹(y − x) − w| < s`
+    obtain ⟨lam₀, hlam₀, hpts⟩ :=
+      Submission.dsmc_att_blowUp_points_of_approxTangent P n R.carrier Y.support x w Q hnull hQ
+        hw s hspos
+    set lam : ℝ := min (lam₀ / 2) (δ / (2 * C))
+    have hlampos : 0 < lam := lt_min (half_pos hlam₀) (div_pos hδ (mul_pos two_pos hCpos))
+    obtain ⟨y, ⟨-, hyK⟩, hy⟩ :=
+      hpts lam hlampos ((min_le_left _ _).trans_lt (half_lt_self hlam₀))
+    -- the secant point `u = λ⁻¹(y − x)`: `|u − w| < s`, `|u| ≤ C` and `|y − x| = λ|u| < δ`
+    set u : Euclid P := lam⁻¹ • (y - x) with hu
+    have hyx : y - x = lam • u := by rw [hu, smul_inv_smul₀ hlampos.ne']
+    have huw : ‖u - w‖ < s := hy
+    have huC : ‖u‖ ≤ C := by
+      have h1 := norm_le_norm_sub_add u w
+      have h2 := huw.trans_le (min_le_left _ _)
+      rw [hC]; linarith
+    have hyδ : dist y x < δ := by
+      rw [dist_eq_norm, hyx, norm_smul, Real.norm_of_nonneg hlampos.le]
+      calc lam * ‖u‖ ≤ δ / (2 * C) * C :=
+            mul_le_mul (min_le_right _ _) huC (norm_nonneg _)
+              (div_pos hδ (mul_pos two_pos hCpos)).le
+        _ = δ / 2 := by field_simp
+        _ < δ := half_lt_self hδ
+    -- `f(y) = y` (`y ∈ spt Y`) and `f(x) = x`, so dividing by `λ > 0`: `|u − Lu| ≤ η|u| ≤ ε/2`
+    have hkey : ‖u - L u‖ ≤ ε / 2 := by
+      have h := hδf hyδ
+      rw [hfix y hyK, hfx, hyx, map_smul, ← smul_sub, norm_smul, norm_smul,
+        Real.norm_of_nonneg hlampos.le, mul_left_comm] at h
+      calc ‖u - L u‖ ≤ η * ‖u‖ := le_of_mul_le_mul_left h hlampos
+        _ ≤ η * C := mul_le_mul_of_nonneg_left huC hηpos.le
+        _ = ε / 2 := hηC
+    -- `|Lw − w| ≤ |L(w − u)| + |Lu − u| + |u − w| ≤ Bs + ε/2 ≤ ε`
+    have hLwu : ‖L w - L u‖ ≤ ‖L‖ * ‖u - w‖ := by
+      calc ‖L w - L u‖ = ‖L (w - u)‖ := by rw [map_sub]
+        _ ≤ ‖L‖ * ‖w - u‖ := L.le_opNorm _
+        _ = ‖L‖ * ‖u - w‖ := by rw [norm_sub_rev]
+    calc ‖L w - w‖ = ‖(L w - L u) + (L u - u) + (u - w)‖ := by congr 1; abel
+      _ ≤ ‖L w - L u‖ + ‖L u - u‖ + ‖u - w‖ := norm_add₃_le
+      _ ≤ ‖L‖ * ‖u - w‖ + ε / 2 + ‖u - w‖ := by rw [norm_sub_rev (L u) u]; linarith
+      _ = B * ‖u - w‖ + ε / 2 := by rw [hB]; ring
+      _ ≤ B * s + ε / 2 := by linarith [mul_le_mul_of_nonneg_left huw.le hBpos.le]
+      _ ≤ ε := by linarith
+  -- Step 6: `Z(ω) = ∫_M θ ξ(ω) dHⁿ = Y(ω)`, the integrands agreeing `Hⁿ⌞M`-a.e.
+  ext ω
+  rw [hZ ω, hR ω, IMRep.action]
+  refine integral_congr_ae ?_
+  filter_upwards [hgood] with x hx
+  obtain ⟨hxK, Q, hQ, hξ⟩ := hx
+  -- Step 5 (orient_comp (b)): `ξ(x)(α ∘ Df(x)) = ξ(x)(α)`, and `ω(f(x)) = ω(x)`
+  rw [(Submission.dimred_mbl_pf_unitOrientation_comp P n (R.orient x) Q (fderiv ℝ f x) hξ).2
+    (hDf x hxK Q hQ), hfix x hxK]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
