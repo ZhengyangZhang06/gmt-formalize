@@ -451,6 +451,217 @@ def RegularComponentsAreMinimizing : Prop :=
 
 end
 
+/-- Coordinates for the products `[[(0,1)]] × T` and `{p} × T` (Simon 6.2.17, 6.2.21–2.22),
+`ℝ × ℝᴺ ≅ ℝᴺ⁺¹`, `(t, x) ↦ (t, x₁, …, x_N)`: the composite of `id × ofLp`, `Fin.consLinearEquiv`
+and `toLp` is a linear equivalence, continuous in finite dimension, with `L(1, 0) = e₀` and
+`‖L(0, x)‖ = ‖x‖`. -/
+theorem Submission.cmcdt_lpo_slice_coords : ∀ N : ℕ, ∃ L : (ℝ × Euclid N) ≃L[ℝ] Euclid (N + 1), (∀ (t : ℝ) (x : Euclid N), L (t, x) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) ∧ L (1, 0) = EuclideanSpace.single 0 1 ∧ ∀ x : Euclid N, ‖L (0, x)‖ = ‖x‖ := by
+  intro N
+  -- `(t, x) ↦ (t, ofLp x) ↦ Fin.cons t (ofLp x) ↦ toLp 2 (Fin.cons t (ofLp x))`
+  let e : (ℝ × Euclid N) ≃ₗ[ℝ] Euclid (N + 1) :=
+    ((LinearEquiv.refl ℝ ℝ).prodCongr (WithLp.linearEquiv 2 ℝ (Fin N → ℝ))).trans
+      ((Fin.consLinearEquiv ℝ (fun _ : Fin (N + 1) => ℝ)).trans
+        (WithLp.linearEquiv 2 ℝ (Fin (N + 1) → ℝ)).symm)
+  -- `e` is continuous in finite dimension; (i) holds by unfolding the three maps
+  have hL : ∀ (t : ℝ) (x : Euclid N),
+      e.toContinuousLinearEquiv (t, x) = WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x)) :=
+    fun _ _ => rfl
+  refine ⟨e.toContinuousLinearEquiv, hL, ?_, fun x => ?_⟩
+  · -- (ii): compare coordinates, splitting the index into `0` and `j.succ`
+    rw [hL]
+    ext i
+    refine Fin.cases ?_ (fun j => ?_) i
+    · simp
+    · simp [Fin.succ_ne_zero]
+  · -- (iii): `‖L (0, x)‖² = ‖0‖² + ∑ⱼ ‖xⱼ‖² = ‖x‖²`
+    rw [hL, EuclideanSpace.norm_eq, EuclideanSpace.norm_eq x, Fin.sum_univ_succ]
+    simp
+/-- Smoothness of parametric integrals over `[0, 1]`, used for the slice form of `[[0, 1]] × T`
+(Simon 6.2.17–2.22).  If `h : ℝ × ℝᴺ → V` is `C^∞`, then `x ↦ ∫₀¹ h(t, x) dt` is `C^∞` and its
+derivative at `x` is `∫₀¹ D[x' ↦ h(t, x')](x) dt`.  The derivative formula is differentiation under
+the integral sign, with the partial derivative bounded on `[0, 1] × closedBall x 1`; `C^n` follows
+by induction on `n` over all value spaces, the derivative being a parametric integral of the
+`C^∞` map `(t, x) ↦ D[x' ↦ h(t, x')](x)` with values in `L(ℝᴺ, V)`. -/
+theorem Submission.cmcdt_lpo_slice_param_integral : ∀ (N : ℕ) (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] [CompleteSpace V] (h : ℝ × Euclid N → V), ContDiff ℝ (⊤ : ℕ∞) h → ContDiff ℝ (⊤ : ℕ∞) (fun x : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x)) ∧ ∀ x : Euclid N, HasFDerivAt (fun x' : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x')) (∫ t in (0 : ℝ)..1, fderiv ℝ (fun x' : Euclid N => h (t, x')) x) x := by
+  intro N
+  -- Steps 1–2: `x' ↦ h (t, x')` has derivative `(fderiv ℝ h (t, x)).comp inr` at `x`, so the
+  -- partial derivative `h₁ p = fderiv ℝ (fun x' => h (p.1, x')) p.2` is `C^∞` in `p`.
+  have hsmooth : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] (h : ℝ × Euclid N → V),
+      ContDiff ℝ (⊤ : ℕ∞) h →
+        ContDiff ℝ (⊤ : ℕ∞) (fun p : ℝ × Euclid N => fderiv ℝ (fun x' : Euclid N => h (p.1, x')) p.2) := by
+    intro V _ _ h hh
+    have hd : ContDiff ℝ (⊤ : ℕ∞) (fderiv ℝ h) := (contDiff_infty_iff_fderiv.1 hh).2
+    have hpart : (fun p : ℝ × Euclid N => fderiv ℝ (fun x' : Euclid N => h (p.1, x')) p.2) =
+        fun p => (fderiv ℝ h p).comp (ContinuousLinearMap.inr ℝ ℝ (Euclid N)) := by
+      funext p
+      exact (((contDiff_infty_iff_fderiv.1 hh).1 p).hasFDerivAt.comp p.2
+        (hasFDerivAt_prodMk_right p.1 p.2)).fderiv
+    rw [hpart]
+    exact hd.clm_comp contDiff_const
+  -- Step 3: differentiation under the integral sign, with a uniform bound on the partial
+  -- derivative over the compact set `[0, 1] × closedBall x₀ 1`.
+  have hderiv : ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] (h : ℝ × Euclid N → V),
+      ContDiff ℝ (⊤ : ℕ∞) h → ∀ x₀ : Euclid N,
+        HasFDerivAt (fun x' : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x'))
+          (∫ t in (0 : ℝ)..1, fderiv ℝ (fun x' : Euclid N => h (t, x')) x₀) x₀ := by
+    intro V _ _ h hh x₀
+    have hdiff : Differentiable ℝ h := (contDiff_infty_iff_fderiv.1 hh).1
+    have hc : Continuous h := hh.continuous
+    have h₁c := (hsmooth V h hh).continuous
+    obtain ⟨B, hB⟩ := (isCompact_Icc.prod (isCompact_closedBall x₀ 1)).exists_bound_of_continuousOn
+      h₁c.continuousOn
+    refine hasFDerivAt_integral_of_dominated_of_fderiv_le'' (μ := volume)
+      (F := fun x t => h (t, x)) (F' := fun x t => fderiv ℝ (fun x' : Euclid N => h (t, x')) x)
+      (bound := fun _ => B) (ball_mem_nhds x₀ one_pos) ?_ ?_ ?_ ?_ intervalIntegrable_const ?_
+    · exact Eventually.of_forall fun x =>
+        (hc.comp (continuous_id.prodMk continuous_const)).aestronglyMeasurable
+    · exact (hc.comp (continuous_id.prodMk continuous_const)).intervalIntegrable 0 1
+    · exact (h₁c.comp (continuous_id.prodMk continuous_const)).aestronglyMeasurable
+    · refine (ae_restrict_mem measurableSet_uIoc).mono fun t ht x hx => ?_
+      rw [uIoc_of_le zero_le_one] at ht
+      exact hB (t, x) (Set.mk_mem_prod (Ioc_subset_Icc_self ht) (ball_subset_closedBall hx))
+    · exact Eventually.of_forall fun t x _ =>
+        ((hdiff (t, x)).hasFDerivAt.comp x (hasFDerivAt_prodMk_right t x)).differentiableAt.hasFDerivAt
+  -- Step 4: `C^n` for every `n`, by induction over all value spaces at once.
+  have hind : ∀ n : ℕ, ∀ (V : Type) [NormedAddCommGroup V] [NormedSpace ℝ V] (h : ℝ × Euclid N → V),
+      ContDiff ℝ (⊤ : ℕ∞) h → ContDiff ℝ n (fun x : Euclid N => ∫ t in (0 : ℝ)..1, h (t, x)) := by
+    intro n
+    induction n with
+    | zero =>
+      intro V _ _ h hh
+      rw [Nat.cast_zero, contDiff_zero]
+      exact continuous_iff_continuousAt.2 fun x => (hderiv V h hh x).continuousAt
+    | succ n ih =>
+      intro V _ _ h hh
+      rw [Nat.cast_add_one, contDiff_succ_iff_hasFDerivAt]
+      exact ⟨fun x => ∫ t in (0 : ℝ)..1, fderiv ℝ (fun x' : Euclid N => h (t, x')) x,
+        ih (Euclid N →L[ℝ] V) _ (hsmooth V h hh), hderiv V h hh⟩
+  -- Step 5.
+  intro V _ _ _ h hh
+  exact ⟨contDiff_infty.2 fun n => hind n V h hh, hderiv V h hh⟩
+
+/-- **Coordinate splitting of `dβ` along `ℝ × ℝᴺ`** (pointwise form of Simon 6.2.17–2.21,
+`∂([[0,1]] × T) = {1} × T − {0} × T − [[0,1]] × ∂T`).  Write `ι(s, y) = (s, y)`, `Jy = ι(0, y)` and
+`e₀ = ι(1, 0)`; by `cmcdt_lpo_slice_coords`, `ι = L` for a continuous linear equivalence `L`.
+Expand `dβ(ι(t, x))(e₀, Jv₀, …, Jvₖ) = Σᵢ (−1)ⁱ D[y ↦ β(y)(Ŵᵢ)](ι(t, x))(Wᵢ)` by
+`exteriorDerivative_apply`, where `W = (e₀, Jv₀, …, Jvₖ)` and `Ŵᵢ` omits `Wᵢ`, and split off
+`i = 0`.  As `y ↦ β(y)(u)` has derivative `m ↦ Dβ(y)(m)(u)`, the chain rule along `s ↦ ι(s, x)`
+(derivative `e₀`) turns the `0`-th term into `d/ds|_{s=t} β(ι(s, x))(Jv)`.  For `i = j + 1`,
+`Ŵᵢ = (e₀, J(removeNth j v))` and `Wᵢ = Jvⱼ`, and the chain rule along `x' ↦ ι(t, x')` (derivative
+`J`) together with `(−1)^{j+1} = −(−1)^j` turns the term into
+`−(−1)^j D[x' ↦ β(ι(t, x'))(e₀, J(removeNth j v))](x)(vⱼ)`. -/
+theorem Submission.cmcdt_lpo_slice_extDeriv_split : ∀ (N k : ℕ) (β : DifferentialForm (Euclid (N + 1)) (k + 1)), Differentiable ℝ β → ∀ (t : ℝ) (x : Euclid N) (v : Fin (k + 1) → Euclid N), exteriorDerivative β (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) = deriv (fun s : ℝ => β (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) t - ∑ j : Fin (k + 1), (-1 : ℤ) ^ (j : ℕ) • fderiv ℝ (fun x' : Euclid N => β (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x'))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (Fin.removeNth j v i)))))) x (v j) := by
+  intro N k β hβ t x v
+  -- Step 1: the coordinate map `ι(s, y)` is `L (s, y)`, and `e₀ = L (1, 0)` (sibling `coords`)
+  obtain ⟨L, hL, hL1, -⟩ := Submission.cmcdt_lpo_slice_coords N
+  simp only [← hL, ← hL1]
+  -- Step 2: `y ↦ β y u` has derivative `m ↦ Dβ(y)(m)(u)`
+  have hβu : ∀ (u : Fin (k + 1) → Euclid (N + 1)) (y : Euclid (N + 1)),
+      HasFDerivAt (fun z => β z u) (fderiv ℝ (fun z => β z u) y) y := fun u y =>
+    ((hβ y).continuousAlternatingMap_apply_const u).hasFDerivAt
+  -- Step 3: derivatives of the coordinate paths `s ↦ L (s, x)` and `x' ↦ L (t, x')`
+  have hpath₁ : HasDerivAt (fun s : ℝ => L (s, x)) (L (1, 0)) t :=
+    (L : ℝ × Euclid N →L[ℝ] Euclid (N + 1)).hasFDerivAt.comp_hasDerivAt t
+      ((hasDerivAt_id t).prodMk (hasDerivAt_const t x))
+  have hpath₂ : HasFDerivAt (fun x' : Euclid N => L (t, x'))
+      ((L : ℝ × Euclid N →L[ℝ] Euclid (N + 1)).comp (ContinuousLinearMap.inr ℝ ℝ (Euclid N))) x :=
+    (L : ℝ × Euclid N →L[ℝ] Euclid (N + 1)).hasFDerivAt.comp x (hasFDerivAt_prodMk_right t x)
+  have hslice : ∀ (u : Fin (k + 1) → Euclid (N + 1)) (y : Euclid N),
+      fderiv ℝ (fun x' : Euclid N => β (L (t, x')) u) x y =
+        fderiv ℝ (fun z => β z u) (L (t, x)) (L (0, y)) := by
+    intro u y
+    have h := (hβu u (L (t, x))).comp x hpath₂
+    simp only [Function.comp_def] at h
+    rw [h.fderiv]
+    rfl
+  -- Step 4: expand `dβ` and split off the index `0`
+  rw [exteriorDerivative_apply (hβ _), Fin.sum_univ_succ, sub_eq_add_neg,
+    ← Finset.sum_neg_distrib]
+  congr 1
+  · -- Step 5: the `0`-th term is `deriv φ t`, `φ s = β (L (s, x)) (Jv)`
+    have h := (hβu (fun i => L (0, v i)) (L (t, x))).comp_hasDerivAt t hpath₁
+    simp only [Function.comp_def] at h
+    rw [h.deriv, Fin.val_zero, pow_zero, one_smul, Fin.removeNth_zero, Fin.tail_cons,
+      Fin.cons_zero]
+  · -- Step 6: the `(j + 1)`-st term, with `Ŵ = (e₀, J(removeNth j v))` and sign `−(−1)^j`
+    refine Finset.sum_congr rfl fun j _ => ?_
+    have hrem : Fin.removeNth j.succ
+        (Fin.cons (L (1, 0)) (fun i => L (0, v i)) : Fin (k + 1 + 1) → Euclid (N + 1)) =
+        Fin.cons (L (1, 0)) (fun i => L (0, Fin.removeNth j v i)) :=
+      Fin.cons_comp_succ_succAbove (L (1, 0)) (fun i => L (0, v i)) j
+    rw [hslice, hrem, Fin.cons_succ, Fin.val_succ, pow_succ, mul_neg_one, neg_smul]
+
+/-- **Slice homotopy identity in degree `k + 1`** (Simon 6.2.19, 6.2.21 at the level of forms:
+`S_{dβ} = i₁^#β − i₀^#β − dS_β`).  Write `ι(t, x) = (t, x)`, `Jv = ι(0, v)` and `e₀ = ι(1, 0)`.
+If `θ(x)(u) = ∫₀¹ β(ι(t, x))(e₀, Ju) dt` for all `x` and `u`, then
+`∫₀¹ dβ(ι(t, x))(e₀, Jv) dt = β(ι(1, x))(Jv) − β(ι(0, x))(Jv) − dθ(x)(v)`.
+
+By `cmcdt_lpo_slice_extDeriv_split` the integrand is `∂ₜ[β(ι(t, x))(Jv)]` minus the alternating
+sum of the `x`-derivatives of the slices `β(ι(t, ·))(e₀, J v̂ⱼ)`.  The first term integrates to
+the boundary terms (fundamental theorem of calculus).  Differentiating the hypothesis under the
+integral sign (`cmcdt_lpo_slice_param_integral`; smoothness via the linear coordinates of
+`cmcdt_lpo_slice_coords`) and expanding `dθ` identifies the integral of the second term with
+`dθ(x)(v)`. -/
+theorem Submission.cmcdt_lpo_slice_homotopy_succ : ∀ (N k : ℕ) (β : TestFormOn (univ : Set (Euclid (N + 1))) (k + 1)) (θ : TestFormOn (univ : Set (Euclid N)) k), (∀ (x : Euclid N) (v : Fin k → Euclid N), (θ : DifferentialForm (Euclid N) k) x v = ∫ t in (0 : ℝ)..1, (β : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))))) → ∀ (x : Euclid N) (v : Fin (k + 1) → Euclid N), ∫ t in (0 : ℝ)..1, exteriorDerivative (β : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x))) (Fin.cons (EuclideanSpace.single 0 1) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i))))) = (β : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons 1 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))) - (β : DifferentialForm (Euclid (N + 1)) (k + 1)) (WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp x))) (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))) - exteriorDerivative (θ : DifferentialForm (Euclid N) k) x v := by
+  intro N k β θ hθ x v
+  set B := (β : DifferentialForm (Euclid (N + 1)) (k + 1))
+  set Θ := (θ : DifferentialForm (Euclid N) k)
+  have hBs : ContDiff ℝ (⊤ : ℕ∞) B := β.property.1.1
+  have hΘd : Differentiable ℝ Θ := θ.property.1.1.differentiable (by simp)
+  -- (1) `p ↦ B(ι p)(w)` is smooth for each fixed tuple `w`, as `ι` is the linear equivalence `L`
+  obtain ⟨L, hL, -, -⟩ := Submission.cmcdt_lpo_slice_coords N
+  have hG : ∀ w : Fin (k + 1) → Euclid (N + 1), ContDiff ℝ (⊤ : ℕ∞)
+      fun p : ℝ × Euclid N => B (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2))) w := by
+    intro w
+    have hfun : (fun p : ℝ × Euclid N => B (WithLp.toLp 2 (Fin.cons p.1 (WithLp.ofLp p.2))) w) =
+        ContinuousAlternatingMap.apply ℝ (Euclid (N + 1)) ℝ w ∘ B ∘ L := by
+      funext p
+      simp only [Function.comp_apply, ContinuousAlternatingMap.apply_apply, ← hL, Prod.mk.eta]
+    rw [hfun]
+    exact (ContinuousAlternatingMap.apply ℝ (Euclid (N + 1)) ℝ w).contDiff.comp
+      (hBs.comp L.contDiff)
+  -- (2) the `x`-derivative of each slice is continuous in `t`
+  have hD : ∀ w : Fin (k + 1) → Euclid (N + 1), Continuous fun t : ℝ =>
+      fderiv ℝ (fun x' : Euclid N => B (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x'))) w) x :=
+    fun w => Continuous.fderiv
+      (f := fun (t : ℝ) (x' : Euclid N) => B (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x'))) w)
+      (hG w) continuous_const (by simp)
+  -- (3) differentiate the hypothesis on `θ` under the integral sign
+  have hΘD : ∀ u : Fin k → Euclid N, fderiv ℝ (fun x' : Euclid N => Θ x' u) x =
+      ∫ t in (0 : ℝ)..1, fderiv ℝ (fun x' : Euclid N => B (WithLp.toLp 2 (Fin.cons t
+        (WithLp.ofLp x'))) (Fin.cons (EuclideanSpace.single 0 1)
+          (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (u i)))))) x := by
+    intro u
+    rw [show (fun x' : Euclid N => Θ x' u) = _ from funext fun x' => hθ x' u]
+    exact ((Submission.cmcdt_lpo_slice_param_integral N ℝ _ (hG _)).2 x).fderiv
+  -- (4) split the integrand into a `t`-derivative and the alternating sum of `x`-derivatives
+  simp only [Submission.cmcdt_lpo_slice_extDeriv_split N k B (hBs.differentiable (by simp))]
+  -- (5) fundamental theorem of calculus for `φ(s) = B(ι(s, x))(Jv)`
+  have hφ : ContDiff ℝ (⊤ : ℕ∞) fun s : ℝ => B (WithLp.toLp 2 (Fin.cons s (WithLp.ofLp x)))
+      (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (v i)))) :=
+    (hG _).comp (contDiff_id.prodMk contDiff_const)
+  have hFTC := intervalIntegral.integral_deriv_eq_sub (fun s _ => hφ.differentiable (by simp) s)
+    ((hφ.continuous_deriv (by simp)).intervalIntegrable 0 1)
+  -- (6) the integral of the alternating sum is `dΘ(x)(v)`
+  have hcont : ∀ j : Fin (k + 1), Continuous fun t : ℝ => (-1 : ℤ) ^ (j : ℕ) •
+      fderiv ℝ (fun x' : Euclid N => B (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x')))
+        (Fin.cons (EuclideanSpace.single 0 1)
+          (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (Fin.removeNth j v i)))))) x (v j) :=
+    fun j => ((hD _).clm_apply continuous_const).fun_const_smul ((-1 : ℤ) ^ (j : ℕ))
+  have hsum : ∫ t in (0 : ℝ)..1, ∑ j : Fin (k + 1), (-1 : ℤ) ^ (j : ℕ) •
+      fderiv ℝ (fun x' : Euclid N => B (WithLp.toLp 2 (Fin.cons t (WithLp.ofLp x')))
+        (Fin.cons (EuclideanSpace.single 0 1)
+          (fun i => WithLp.toLp 2 (Fin.cons 0 (WithLp.ofLp (Fin.removeNth j v i)))))) x (v j) =
+      exteriorDerivative Θ x v := by
+    rw [exteriorDerivative_apply (hΘd x) v,
+      intervalIntegral.integral_finsetSum fun j _ => (hcont j).intervalIntegrable 0 1]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [hΘD, ContinuousLinearMap.intervalIntegral_apply ((hD _).intervalIntegrable 0 1)]
+    simp only [zsmul_eq_mul, intervalIntegral.integral_const_mul]
+  -- (7) linearity of the integral
+  rw [intervalIntegral.integral_sub ((hφ.continuous_deriv (by simp)).intervalIntegrable 0 1)
+    ((continuous_finsetSum _ fun j _ => hcont j).intervalIntegrable 0 1), hFTC, hsum]
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
