@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "fe1798a1b17a807b6fc434a862ee6230773c061b1bb85c9a2f92fc366d7ee41a",
+  "git_delta": {
+    "base_commit": "1813976d3e6f3754bc567c6ff5d674e2471c6e56",
+    "candidate_commit": "de87fa44118ee067a4b8161f38c14cb1854c2dc5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmbsf_si_slice_orientation_field",
+    "diff_sha256": "da3b45a4e8945ef7dda652e1747df8bd3acf5305c1059946bcab67ee1ca71a75",
+    "source_sha256": "b95b108278ef3ee58372cc74c99a820136bde0efcab438337df48fcc6eaeec74",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmbsf_si_slice_orientation_field",
+      "statement": "∀ (P n : ℕ) (ζ : Euclid P → MultiVector P (n + 1)) (g : Euclid P → Euclid P), StronglyMeasurable ζ → Measurable g → ∃ ζ' : Euclid P → MultiVector P n, StronglyMeasurable ζ' ∧ (∀ x (α : Covector (Euclid P) n), ζ' x α = ζ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (‖g x‖⁻¹ • g x)).smulRight α))) ∧ (∀ x (α : Covector (Euclid P) n), ‖g x‖ * ζ' x α = ζ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (g x)).smulRight α))) ∧ ∀ x (α : Covector (Euclid P) n), |ζ x (ContinuousAlternatingMap.alternatizeUncurryFin ((innerSL ℝ (g x)).smulRight α))| ≤ ((n : ℝ) + 1) * ‖ζ x‖ * ‖g x‖ * ‖α‖",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
