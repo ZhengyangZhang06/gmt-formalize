@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "478a5d68deb64e221f1873878df7f37098ddfabda7f27736ecbdeffbf4387627",
+  "git_delta": {
+    "base_commit": "b87c34ba46ef1717e2c3f015f905b8ff01e9dae1",
+    "candidate_commit": "a57f48899b21366a77d7944204b91eefb162d6f5",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_tc_wc_local_bound",
+    "diff_sha256": "920045682d3084a0db1b0cd5d6570ee4d3491a8dcf247524734ca423bd7334fd",
+    "source_sha256": "1547da936b572b3aebb0d2cf996613ae2fd5762ab0145d16eeeb8f73bb058351",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_tc_wc_local_bound",
+      "statement": "∀ (P n : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, (Ts j).massOn W < ∞) → ∀ K : Set (Euclid P), IsCompact K → ∃ c : ℝ, 0 ≤ c ∧ ∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n) (s : ℝ), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ s) → |Ts j ω| ≤ c * s",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
