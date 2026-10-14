@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.zero_current_sum-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1",
+  "depth": 4,
+  "title": "Compactly supported IM 0-currents are finite integer sums of point evaluations",
+  "statement": "Assume (MR) and (VO). (MR) is the exact frozen statement of cmc_massOn_eq_imRep_measure: M_W(X) = R.measure(W) whenever R is an IMRep representing X ∈ 𝒟_n(U), U open, W open. (VO) is the exact frozen statement of dtc_vanish_off_support: S(ω) = 0 for every current S ∈ 𝒟_n(U) and every ω ∈ 𝒟ⁿ(U) whose topological support is disjoint from spt S. Let P ∈ ℕ and let S ∈ 𝒟_0(ℝ^P) be integer multiplicity with compact support. Then there are a finite set F ⊆ spt S and integers m(x) (x ∈ ℝ^P) such that S(g) = Σ_{x∈F} m(x)·g(x)⟨⟩ for every test 0-form g on ℝ^P, where g(x)⟨⟩ denotes the value of the 0-covector g(x) on the empty tuple (fun i => i.elim0).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) 0), IsIntegerMultiplicity S → IsCompact S.support → ∃ (F : Finset (Euclid P)) (m : Euclid P → ℤ), (↑F : Set (Euclid P)) ⊆ S.support ∧ ∀ g : TestFormOn (univ : Set (Euclid P)) 0, S g = ∑ x ∈ F, (m x : ℝ) * (g : DifferentialForm (Euclid P) 0) x (fun i => i.elim0)",
+  "lean_name": "cbr_cc_zero_current_finite_sum",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-23d83beaa8-a1"
+}

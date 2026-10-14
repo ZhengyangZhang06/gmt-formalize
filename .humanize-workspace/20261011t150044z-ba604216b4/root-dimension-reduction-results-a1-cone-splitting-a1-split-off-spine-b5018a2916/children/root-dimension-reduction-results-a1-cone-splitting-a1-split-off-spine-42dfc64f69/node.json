@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1.support_smul_boundary-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1",
+  "depth": 6,
+  "title": "A scalar multiple of a boundary is supported in the support: S = c·∂T ⇒ spt S ⊆ spt T",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P (U : Set (Euclid P)), T ∈ 𝒟_{n+1}(U) and S ∈ 𝒟_n(U) (GeometricCurrentOn U (n+1), GeometricCurrentOn U n) and c ∈ ℝ. If S(ω) = c·∂T(ω) for every test n-form ω in U (∂T = T.boundary, ∂T(ω) = T(dω)), then spt S ⊆ spt T (GeometricCurrentOn.support, Simon 6.2.11).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U (n + 1)) (S : GeometricCurrentOn U n) (c : ℝ), (∀ ω : TestFormOn U n, S ω = c * T.boundary ω) → S.support ⊆ T.support",
+  "lean_name": "dimred_cs_sos_mt_cc_support_smul_boundary",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-42dfc64f69-a1"
+}
