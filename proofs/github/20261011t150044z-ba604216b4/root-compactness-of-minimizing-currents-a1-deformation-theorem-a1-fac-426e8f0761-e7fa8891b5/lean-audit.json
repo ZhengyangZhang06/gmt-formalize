@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "125b8eadf16eaf9ab07aaa3ebb70da8e3e5e1d3a1a05c1a03e59adadd3a7997c",
+  "git_delta": {
+    "base_commit": "df40c3006de5c60b3738acdee4386cc6f7011034",
+    "candidate_commit": "17421e447b419b409d13ee7395f151aa55b1c7e3",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cmcdtfrfic_coeff_bounds",
+    "diff_sha256": "540a04fee9a5debed55c61cb5b02716c3ab2e86287c5ca984273e95ae44adca7",
+    "source_sha256": "d1e171517e5b03761bf640c7ed761cfd8216ce098896394aa96b345e408995d8",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cmcdtfrfic_coeff_bounds",
+      "statement": "∀ (P k : ℕ) (α : Covector (Euclid P) k), (∀ I : Fin k → Fin P, StrictMono I → |α (fun j => EuclideanSpace.single (I j) (1 : ℝ))| ≤ covectorEuclideanNorm α) ∧ ∀ ι : Fin (k + 1) → Fin P, StrictMono ι → ∑ i : Fin (k + 1), (α (fun j => EuclideanSpace.single (ι (i.succAbove j)) (1 : ℝ))) ^ 2 ≤ covectorEuclideanNorm α ^ 2",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
