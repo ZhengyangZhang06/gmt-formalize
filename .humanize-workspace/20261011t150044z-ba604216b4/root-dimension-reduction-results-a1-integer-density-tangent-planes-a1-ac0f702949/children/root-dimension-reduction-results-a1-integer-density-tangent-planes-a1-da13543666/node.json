@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1.product_current-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1",
+  "depth": 6,
+  "title": "Cartesian product [[E]] × A of a Borel piece E of a frame span G with an integer multiplicity current A concentrated on G^⊥ (Simon Ch. 6, 2.17–2.20 and 3.9)",
+  "statement": "Data: P, k, m', n' ∈ ℕ with m' ≥ 1 (0 < m') and an explicit equality h : n' = k + m'; an orthonormal family g = (g_1, …, g_k) in ℝ^P with span G := span{g_1, …, g_k}; a Borel set E ⊆ G; a current A ∈ 𝒟_{m'}(ℝ^P) with an integer multiplicity representation R_A = (M_A, θ_A, ζ_A) (IMRep univ m', R_A.Represents A) whose measure μ_A := R_A.measure is concentrated on G^⊥: μ_A(ℝ^P ∖ G^⊥) = 0. H^k := μHE[k].\nConclusion: there are B ∈ 𝒟_{n'}(ℝ^P) and an integer multiplicity representation R_B of B (IMRep univ n', R_B.Represents B) such that\n(i) R_B.measure(C) = ∫_E μ_A(C − t) dH^k(t) for every Borel C ⊆ ℝ^P (Lean: ∫⁻ t in E, R_A.measure((fun y => t + y)⁻¹' C) ∂μHE[k]);\n(ii) for every map ♭ : Λ^{n'} → Λ^{m'} with (♭α)(v) = α(g_1, …, g_k, v_1, …, v_{m'}) (Lean: α (Fin.append g v ∘ Fin.cast h)) and every test n'-form ω: B(ω) = ∫_E A(y ↦ ♭(ω(t + y))) dH^k(t), where the integrand is currentEval A of that test form.\nB is the Cartesian product [[E]] × A of Simon Ch. 6, 2.17–2.20 (integer multiplicity by Ch. 6, 3.9), transported to ℝ^P = G ⊕ G^⊥ by (t, y) ↦ t + y.",
+  "lean_statement": "∀ (P k m' n' : ℕ) (g : Fin k → Euclid P) (h : n' = k + m') (E : Set (Euclid P)) (A : GeometricCurrentOn (univ : Set (Euclid P)) m') (RA : IMRep (univ : Set (Euclid P)) m'), 0 < m' → Orthonormal ℝ g → MeasurableSet E → E ⊆ (Submodule.span ℝ (Set.range g) : Set (Euclid P)) → RA.Represents A → RA.measure ((Submodule.span ℝ (Set.range g))ᗮ : Set (Euclid P))ᶜ = 0 → ∃ (B : GeometricCurrentOn (univ : Set (Euclid P)) n') (RB : IMRep (univ : Set (Euclid P)) n'), RB.Represents B ∧ (∀ C : Set (Euclid P), MeasurableSet C → RB.measure C = ∫⁻ t in E, RA.measure ((fun y => t + y) ⁻¹' C) ∂μHE[k]) ∧ ∀ flat : Covector (Euclid P) n' → Covector (Euclid P) m', (∀ (α : Covector (Euclid P) n') (v : Fin m' → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n', B ω = ∫ t in E, currentEval A (fun y => flat ((ω : DifferentialForm (Euclid P) n') (t + y))) ∂μHE[k]",
+  "lean_name": "idtp_fons_cs_sos_product_current",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.localize-a1.imrep_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-localize-a1-imrep-current-a1-a1",
+      "result_commit": "642d7450f79f28435ddba02f9c815e2208bcee00",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9-a1",
+      "result_commit": "a21680472b6919972de04d02dc3e1395a15d4171",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-da13543666-a1"
+}
