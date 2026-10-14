@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "3df77309c2f67f1e6b298827a2009193cbb190802a3b5131349155f723d14ace",
+  "git_delta": {
+    "base_commit": "0fe765dcb72027454fbb550379a9a6ff997eb4ef",
+    "candidate_commit": "2bd2696df196b3645fa489d6b90cc1cead5abf04",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "codim1_hcp_sc_fderivWithin_tangent_eq",
+    "diff_sha256": "2d1005dd2a24d84971f0aa1941b9d1e1ef7d7174b8ebedf2a0b3c86a51761d74",
+    "source_sha256": "810459917394c0bd83868333315be40f2fcef22abc9cbe9cc30d5865f141c3cd",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.codim1_hcp_sc_fderivWithin_tangent_eq",
+      "statement": "∀ (P : ℕ) (E : Type) [NormedAddCommGroup E] [NormedSpace ℝ E] (M : Set (Euclid P)) (f : Euclid P → E) (f' : Euclid P →L[ℝ] E) (x : Euclid P), HasFDerivWithinAt f f' M x → ∀ v ∈ Submodule.span ℝ (tangentSpace M x), fderivWithin ℝ f M x v = f' v",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

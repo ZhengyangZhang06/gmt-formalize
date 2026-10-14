@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1.local_inverse_cr-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.hypercone_plane-a1.smooth_charts-a1",
+  "depth": 6,
+  "title": "C^r inverse function theorem with a C^r local inverse on an open target",
+  "statement": "Let d, r ∈ ℕ with r ≥ 1, let V ⊆ ℝ^d be open, z₀ ∈ V, and let φ : ℝ^d → ℝ^d be of class C^r on V with Dφ(z₀) = fderiv ℝ φ z₀ injective. Then there are open sets V₀, O ⊆ ℝ^d and a map χ : ℝ^d → ℝ^d such that z₀ ∈ V₀ ⊆ V, χ is of class C^r on O, χ maps O into V₀, φ(χ(a)) = a for every a ∈ O, and φ(z) ∈ O and χ(φ(z)) = z for every z ∈ V₀.",
+  "lean_statement": "∀ (d r : ℕ) (φ : Euclid d → Euclid d) (V : Set (Euclid d)) (z₀ : Euclid d), 1 ≤ r → IsOpen V → z₀ ∈ V → ContDiffOn ℝ r φ V → Injective (fderiv ℝ φ z₀) → ∃ (V₀ O : Set (Euclid d)) (χ : Euclid d → Euclid d), IsOpen V₀ ∧ IsOpen O ∧ z₀ ∈ V₀ ∧ V₀ ⊆ V ∧ ContDiffOn ℝ r χ O ∧ MapsTo χ O V₀ ∧ (∀ a ∈ O, φ (χ a) = a) ∧ ∀ z ∈ V₀, φ z ∈ O ∧ χ (φ z) = z",
+  "lean_name": "codim1_hcp_sc_local_inverse_cr",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-251211106d-a1"
+}
