@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "1ecd828e927fa7839e6c33175c63f2d72f2aa08f0f27731ba1eaec6acc955dd7",
+  "git_delta": {
+    "base_commit": "0288732e49abee2342f3fa21d6b504c3c42a4f87",
+    "candidate_commit": "8314ed34d0fc9adb3cecb52c529893cf0e569f66",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dtc_bc_lc_sl_cc_flattening_atlas",
+    "diff_sha256": "7d6adcb46178524469ab7957b275a8ab33822e2b18a79c8790e3a4b8421a7e2e",
+    "source_sha256": "bc1c28752eb33a11a6ea0f6b591959fe696d6aee6af1312114c1feb728c5e370",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dtc_bc_lc_sl_cc_flattening_atlas",
+      "statement": "∀ (n : ℕ) (F : Euclid (n + 1) → ℝ) (V : Set (Euclid (n + 1))), IsOpen V → ContDiff ℝ 1 F → ∃ (Ω : ℕ → Set (Euclid (n + 1))) (Θ : ℕ → Euclid (n + 1) → Euclid (n + 1)), (∀ k, IsOpen (Ω k) ∧ ContDiffOn ℝ 1 (Θ k) (Ω k) ∧ InjOn (Θ k) (Ω k) ∧ (∀ z ∈ Ω k, Injective (fderiv ℝ (Θ k) z)) ∧ IsOpen (Θ k '' Ω k) ∧ Θ k '' Ω k ⊆ V ∧ ∀ z ∈ Ω k, F (Θ k z) = z 0) ∧ {y | y ∈ V ∧ fderiv ℝ F y ≠ 0} ⊆ ⋃ k, Θ k '' Ω k",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
