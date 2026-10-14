@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "f80684d616e95361cde8a118093c2c81b3fe8f004d92b11f58ab9d6138dff227",
+  "git_delta": {
+    "base_commit": "f1f5708b480a43ae0e8147c0669b3fdbcf7fd37d",
+    "candidate_commit": "fa4145def7802d4e393ab5afb9f2d8f928a048a8",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dor_lmb_fcd_sd_series_limit",
+    "diff_sha256": "f625dbdf63d7ab5dd9ffdd2c489434e94fbf0a45a7479ee6a3de51e2153be59a",
+    "source_sha256": "37150ed0d46589b99cd343564b32a6a29809b00e3b23c6275f1140e16ab41c6f",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dor_lmb_fcd_sd_series_limit",
+      "statement": "(∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass) → ∀ (P m : ℕ) (c : ℝ) (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (V E' A Kc : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (H : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (Y L : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) m) (F₁ F₂ : Set (Euclid P)), T.mass ≠ ∞ → T.boundary.mass ≠ ∞ → (∀ j, IsIntegerMultiplicity (V j)) → (∀ j, IsIntegerMultiplicity (H j)) → (∀ j, IsIntegerMultiplicity (E' j)) → (∀ N (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), ∑ j ∈ Finset.range (N + 1), V j ω - T ω + A N ω - ∑ j ∈ Finset.range (N + 1), (H j).boundary ω = ∑ j ∈ Finset.range (N + 1), E' j ω - Kc N ω) → (∀ N (ω : TestFormOn (univ : Set (Euclid P)) m), ∑ j ∈ Finset.range (N + 1), (V j).boundary ω = ∑ j ∈ Finset.range (N + 1), Y j ω - L N ω) → Tendsto (fun N => (A N).mass) atTop (𝓝 0) → Tendsto (fun N => (Kc N).mass) atTop (𝓝 0) → Tendsto (fun N => (L N).mass) atTop (𝓝 0) → ∑' j, (V j).mass ≤ ENNReal.ofReal c * T.mass → ∑' j, (H j).mass ≤ ENNReal.ofReal c * T.mass → ∑' j, (E' j).mass ≤ ENNReal.ofReal c * T.boundary.mass → ∑' j, (Y j).mass ≤ ENNReal.ofReal c * T.boundary.mass → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (F₁) → V j ω = 0) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) (m + 2)), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 2))) (F₂) → H j ω = 0) → (∀ j (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (F₂) → E' j ω = 0) → ∃ (Q : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (R₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S₁ : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsIntegerMultiplicity Q ∧ IsIntegerMultiplicity R₁ ∧ IsIntegerMultiplicity S₁ ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), T ω - Q ω = R₁.boundary ω + S₁ ω) ∧ Q.mass ≤ ENNReal.ofReal c * T.mass ∧ Q.boundary.mass ≤ ENNReal.ofReal c * T.boundary.mass ∧ R₁.mass ≤ ENNReal.ofReal c * T.mass ∧ S₁.mass ≤ ENNReal.ofReal c * T.boundary.mass ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (F₁) → Q ω = 0) ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 2), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 2))) (F₂) → R₁ ω = 0) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (ω : DifferentialForm (Euclid P) (m + 1))) (F₂) → S₁ ω = 0",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
