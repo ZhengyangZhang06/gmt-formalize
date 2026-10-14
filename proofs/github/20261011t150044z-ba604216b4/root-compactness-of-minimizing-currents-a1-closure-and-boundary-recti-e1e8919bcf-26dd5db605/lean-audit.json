@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "6250627670027f043290c7481cbede2cc3a05c26b6c6ab2760a4d04f9b8c49eb",
+  "git_delta": {
+    "base_commit": "3452855acf46afa006bd9b2f47e63e19b22139a2",
+    "candidate_commit": "832227e51e0aea0cd79b684a4c368537e6ec735a",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "cbr_ci_pw_noi_setIntegral_eq_preimage",
+    "diff_sha256": "2cb712c187b990f3bcd2c6d23599d90c2a8bbe2250139c74b9f54a66f7157c61",
+    "source_sha256": "dd4896c8fc00a82e8231d74af5f75234d26f6a4c03341ced100b4ad006e68711",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.cbr_ci_pw_noi_setIntegral_eq_preimage",
+      "statement": "∀ (P n : ℕ) (U : Set (Euclid n)) (u : Euclid n → ℝ) (σ : Measure (Euclid P)) (q : Euclid P → Euclid n) (h : Euclid P → ℝ), IsOpen U → Measurable q → IntegrableOn u U → Integrable h σ → (∀ b : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) b → HasCompactSupport b → tsupport b ⊆ U → ∫ y in U, b y * u y = ∫ x, b (q x) * h x ∂σ) → ∀ B : Set (Euclid n), MeasurableSet B → B ⊆ U → ∫ y in B, u y = ∫ x in q ⁻¹' B, h x ∂σ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
