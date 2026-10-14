@@ -42567,6 +42567,99 @@ theorem Submission.deformation_theorem : DeformationTheorem := by
         ring
     exact hSim hS''im
 
+/-- **Simon Ch. 6, 6.1 (Isoperimetric Theorem, pp. 168–169)**, by its printed proof (p. 169):
+deform `T` by 5.3 in `ℝ^{(m+1)+(ℓ+1)} = ℝ^{m+2+ℓ}` at the scale `ρ` with
+`ρ^{m+1} = 2(C+1)M(T)`.  Then `S = 0` as `∂T = 0`, and the lattice chain `P` vanishes because a
+nonzero integer `β_F` would give `M(P) ≥ ρ^{m+1} > C M(T)`; so `T = ∂R`, and
+`M(R) ≤ Cρ M(T) ≤ ρ^{m+2}` gives `M(R)^{(m+1)/(m+2)} ≤ ρ^{m+1} = 2(C+1)M(T)`. -/
+theorem Submission.isoperimetric_theorem : IsoperimetricTheorem := by
+  intro m ℓ hℓ
+  -- 5.3 with `(m, ℓ + 1)`: its ambient space `ℝ^{(m+1)+(ℓ+1)}` is `ℝ^{m+2+ℓ}`.
+  obtain ⟨C, hC⟩ := Submission.deformation_theorem m (ℓ + 1) (by omega)
+  rw [show m + 1 + (ℓ + 1) = m + 2 + ℓ by omega] at hC
+  refine ⟨2 * (C + 1), fun T hT hTc hTb => ?_⟩
+  -- Step 1: `M(T) < ∞` and `M(∂T) = 0`.
+  have hTM : T.mass < ∞ := Submission.isoperimetric_mass_lt_top _ _ T hT hTc
+  have hTbM : T.boundary.mass = 0 := (Submission.isoperimetric_mass_eq_zero_iff _ _ _ _).2 hTb
+  -- Steps 3–6 at any scale `ρ` with `C M(T) < ρ^{m+1}`: the deformation gives `T = ∂R`.
+  have key : ∀ ρ : ℝ, 0 < ρ → (C : ℝ≥0∞) * T.mass < ENNReal.ofReal (ρ ^ (m + 1)) →
+      ∃ R : GeometricCurrentOn (univ : Set (Eucl (m + 2 + ℓ))) (m + 2),
+        IsIntegerMultiplicity R ∧ IsCompact R.support ∧ R.boundary = T ∧
+        R.mass ≤ (C : ℝ≥0∞) * ENNReal.ofReal ρ * T.mass := by
+    intro ρ hρ hρC
+    obtain ⟨Pc, β, R, S, hPc, hTPc, hPcM, -, hRM, hSM, hspt, -, hIM, -⟩ :=
+      hC T (by rw [hTbM, add_zero]; exact hTM) ρ hρ
+    obtain ⟨hβ, -, hR⟩ := hIM hT
+    -- Simon's (1): `|β_F| ρ^{m+1} ≤ M(P) ≤ C M(T) < ρ^{m+1}`, so the integer `β_F` is `0`.
+    have hβ0 : ∀ F, β F = 0 := by
+      intro F
+      obtain ⟨k, hk⟩ := hβ F
+      have hlt := ((Submission.isoperimetric_lattice_chain_mass_ge m _ ρ β Pc hρ hPc F).trans
+        hPcM).trans_lt hρC
+      rw [ENNReal.ofReal_lt_ofReal_iff (pow_pos hρ _)] at hlt
+      have hk1 : |(k : ℝ)| < 1 := by
+        rw [← hk]
+        nlinarith [pow_pos hρ (m + 1), abs_nonneg (β F)]
+      have hk0 : k = 0 := Int.abs_lt_one_iff.1 (by exact_mod_cast hk1)
+      rw [hk, hk0, Int.cast_zero]
+    -- `M(S) ≤ C ρ M(∂T) = 0`.
+    have hS : S = 0 := (Submission.isoperimetric_mass_eq_zero_iff _ _ _ _).1 <| by
+      simpa [hTbM] using hSM
+    refine ⟨R, hR, ?_, ?_, hRM⟩
+    -- `spt R` is closed and lies in the bounded `2√(m+2+ℓ) ρ`-neighbourhood of `spt T`.
+    · exact Metric.isCompact_of_isClosed_isBounded (isClosed_univ.sdiff R.isOpen_zeroRegion)
+        (hTc.isBounded.thickening.subset (subset_union_right.trans hspt))
+    · ext ω
+      have h := hTPc ω
+      rw [hPc ω, hS] at h
+      simpa [hβ0] using h.symm
+  by_cases hT0 : T.mass = 0
+  -- Step 2, `M(T) = 0`: deform at scale `1`; then `M(R) ≤ C M(T) = 0`.
+  · obtain ⟨R, hR, hRc, hRT, hRM⟩ := key 1 one_pos (by simp [hT0])
+    refine ⟨R, hR, hRc, hRT, ?_⟩
+    rw [show R.mass = 0 by simpa [hT0] using hRM, hT0, mul_zero,
+      ENNReal.zero_rpow_of_pos (by positivity)]
+  -- `0 < M(T) < ∞`: deform at the scale `ρ` with `ρ^{m+1} = 2(C+1)M(T)`.
+  · obtain ⟨t, ht0, hTt⟩ : ∃ t : ℝ, 0 < t ∧ T.mass = ENNReal.ofReal t :=
+      ⟨T.mass.toReal, ENNReal.toReal_pos hT0 hTM.ne, (ENNReal.ofReal_toReal hTM.ne).symm⟩
+    have hC1 : (0 : ℝ) < C + 1 := by positivity
+    obtain ⟨ρ, hρ⟩ : ∃ ρ : ℝ, ρ = (2 * (C + 1) * t) ^ ((m + 1 : ℕ) : ℝ)⁻¹ := ⟨_, rfl⟩
+    have hρ0 : 0 < ρ := by
+      rw [hρ]
+      exact Real.rpow_pos_of_pos (by positivity) _
+    have hρk : ρ ^ (m + 1) = 2 * (C + 1) * t := by
+      rw [hρ]
+      exact Real.rpow_inv_natCast_pow (by positivity) (by omega)
+    -- `C M(T) ≤ (C + 1) M(T) < ρ^{m+1}`.
+    have hCT : (C : ℝ≥0∞) * T.mass ≤ ENNReal.ofReal ((C + 1) * t) := by
+      rw [hTt, ← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul C.coe_nonneg]
+      exact ENNReal.ofReal_le_ofReal (by nlinarith)
+    obtain ⟨R, hR, hRc, hRT, hRM⟩ := key ρ hρ0 <| hCT.trans_lt <| by
+      rw [ENNReal.ofReal_lt_ofReal_iff (pow_pos hρ0 _), hρk]
+      nlinarith [mul_pos hC1 ht0]
+    refine ⟨R, hR, hRc, hRT, ?_⟩
+    -- `M(R) ≤ C ρ M(T) ≤ ρ (C + 1) M(T) ≤ ρ^{m+2}`.
+    have hRρ : R.mass ≤ ENNReal.ofReal (ρ ^ (m + 2)) := by
+      calc R.mass ≤ (C : ℝ≥0∞) * ENNReal.ofReal ρ * T.mass := hRM
+        _ = ENNReal.ofReal ρ * ((C : ℝ≥0∞) * T.mass) := by ring
+        _ ≤ ENNReal.ofReal ρ * ENNReal.ofReal ((C + 1) * t) := by gcongr
+        _ = ENNReal.ofReal (ρ * ((C + 1) * t)) := (ENNReal.ofReal_mul hρ0.le).symm
+        _ ≤ ENNReal.ofReal (ρ ^ (m + 2)) := by
+          refine ENNReal.ofReal_le_ofReal ?_
+          rw [show ρ ^ (m + 2) = ρ ^ (m + 1) * ρ from pow_succ ρ (m + 1), hρk]
+          nlinarith [mul_pos (mul_pos hρ0 hC1) ht0]
+    calc R.mass ^ (((m + 1 : ℕ) : ℝ) / ((m + 2 : ℕ) : ℝ))
+        ≤ ENNReal.ofReal (ρ ^ (m + 2)) ^ (((m + 1 : ℕ) : ℝ) / ((m + 2 : ℕ) : ℝ)) :=
+          ENNReal.rpow_le_rpow hRρ (by positivity)
+      _ = ENNReal.ofReal (ρ ^ (m + 1)) := by
+          rw [ENNReal.ofReal_rpow_of_nonneg (pow_pos hρ0 _).le (by positivity),
+            ← Real.rpow_natCast ρ (m + 2), ← Real.rpow_mul hρ0.le, ← Real.rpow_natCast ρ (m + 1),
+            ← mul_div_assoc, mul_div_cancel_left₀ _ (by positivity)]
+      _ = ((2 * (C + 1) : ℝ≥0) : ℝ≥0∞) * T.mass := by
+          rw [hρk, hTt, ← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul (by positivity)]
+          push_cast
+          ring_nf
+
 theorem main_theorem : CompactnessUnderMassBounds ∧ ConstancyTheorem ∧ LipschitzPushforwardIntegerMultiplicity ∧ FedererFlemingCompactness ∧ SlicingTheorem ∧ DeformationTheorem ∧ IsoperimetricTheorem ∧ PolyhedralApproximation ∧ BoundaryRectifiability ∧ FlatConvergenceIffWeakConvergence ∧ RectifiabilityTheorem ∧ IntegralityOfWeakLimits := by sorry
 
 end GMT.Ch06
