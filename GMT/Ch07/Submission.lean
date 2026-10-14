@@ -523,6 +523,55 @@ theorem Submission.dimred_mbl_dt_cbm_bvt_l1_limit : ∀ {α : Type} [MeasurableS
     tendsto_const_nhds.add (hlim.const_mul _)
   have := ge_of_tendsto' hlim' key
   rwa [mul_zero, add_zero] at this
+/-- **Simon, proof of Ch. 6, 5.1, display (32)** (the limit `δ ↓ 0` of the trace estimate on the
+unit cube that replaces Ch. 2, 2.9): if `f` is integrable on `Q₁ = {0 < yᵢ < 1}`, then
+`∫_{Q_δ} f → ∫_{Q₁} f` as `δ ↓ 0`, where `Q_δ = {δ < zᵢ < 1 − δ}`.  For `δ > 0`, `Q_δ ⊆ Q₁` gives
+`∫_{Q_δ} f = ∫_{Q₁} 1_{Q_δ} f`; every point of `Q₁` lies in `Q_δ` for all small `δ`, so dominated
+convergence with the bound `|f|` applies. -/
+theorem Submission.dimred_mbl_dt_cbm_bvt_cube_exhaust : ∀ (k : ℕ) (f : Euclid k → ℝ), IntegrableOn f {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} → Tendsto (fun δ : ℝ => ∫ y in {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ}, f y) (𝓝[>] 0) (𝓝 (∫ y in {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, f y)) := by
+  intro k f hf
+  -- the boxes `{a < zᵢ < b ∀ i}` are open, hence measurable
+  have hcoord : ∀ i : Fin k, Continuous fun z : Euclid k => z i := fun i =>
+    (continuous_apply i).comp (PiLp.continuous_ofLp 2 (fun _ : Fin k => ℝ))
+  have hopen : ∀ a b : ℝ, IsOpen {z : Euclid k | ∀ i, a < z i ∧ z i < b} := by
+    intro a b
+    have : {z : Euclid k | ∀ i, a < z i ∧ z i < b} =
+        ⋂ i, ({z : Euclid k | a < z i} ∩ {z : Euclid k | z i < b}) := by
+      ext z; simp
+    rw [this]
+    exact isOpen_iInter_of_finite fun i =>
+      (isOpen_lt continuous_const (hcoord i)).inter (isOpen_lt (hcoord i) continuous_const)
+  set Q₁ : Set (Euclid k) := {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}
+  have hQ₁m : MeasurableSet Q₁ := (hopen 0 1).measurableSet
+  have hQm : ∀ δ : ℝ, MeasurableSet {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ} :=
+    fun δ => (hopen δ (1 - δ)).measurableSet
+  -- `Q_δ ⊆ Q₁` for `δ ≥ 0`
+  have hsub : ∀ δ : ℝ, 0 ≤ δ → {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ} ⊆ Q₁ :=
+    fun δ hδ z hz i => ⟨hδ.trans_lt (hz i).1, (hz i).2.trans_le (by linarith)⟩
+  -- dominated convergence on `Q₁` for `1_{Q_δ} f → f`, with the bound `|f|`
+  have hF : Tendsto (fun δ : ℝ =>
+        ∫ y in Q₁, {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ}.indicator f y)
+      (𝓝[>] 0) (𝓝 (∫ y in Q₁, f y)) := by
+    refine tendsto_integral_filter_of_dominated_convergence (fun y => ‖f y‖)
+      (Eventually.of_forall fun δ => hf.aestronglyMeasurable.indicator (hQm δ))
+      (Eventually.of_forall fun δ => Eventually.of_forall fun y => norm_indicator_le_norm_self _ _)
+      hf.norm ?_
+    filter_upwards [ae_restrict_mem hQ₁m] with y hy
+    -- each `y ∈ Q₁` lies in `Q_δ` for all small `δ` (finitely many coordinates)
+    have hev : ∀ᶠ δ in 𝓝[>] (0 : ℝ), y ∈ {z : Euclid k | ∀ i, δ < z i ∧ z i < 1 - δ} := by
+      have h0 : ∀ᶠ δ in 𝓝 (0 : ℝ), ∀ i, δ < y i ∧ y i < 1 - δ := by
+        rw [Filter.eventually_all]
+        intro i
+        have h1 : ∀ᶠ δ in 𝓝 (0 : ℝ), δ < y i := eventually_lt_nhds (hy i).1
+        have h2 : ∀ᶠ δ in 𝓝 (0 : ℝ), δ < 1 - y i := eventually_lt_nhds (by linarith [(hy i).2])
+        filter_upwards [h1, h2] with δ hδ1 hδ2
+        exact ⟨hδ1, by linarith⟩
+      exact h0.filter_mono nhdsWithin_le_nhds
+    exact tendsto_const_nhds.congr' (hev.mono fun δ hδ => (indicator_of_mem hδ f).symm)
+  -- for `δ > 0`, `∫_{Q₁} 1_{Q_δ} f = ∫_{Q₁ ∩ Q_δ} f = ∫_{Q_δ} f`
+  refine hF.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with δ hδ
+  rw [setIntegral_indicator (hQm δ), Set.inter_eq_right.2 (hsub δ (le_of_lt hδ))]
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
