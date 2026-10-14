@@ -1,0 +1,78 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_current-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 1, 3, 4 and 5 of the parent proof (Simon Ch. 6, 2.23–2.24(2)): the parent's push Y is defined by this integral, shown to be a current by the bound |push Y(ω)| ≤ const·|ω|_∞, and to have support in f(spt Y). Here the representation R is fixed, spt Y is replaced by the compact set K carrying Hⁿ⌞M, and the domain ℝ^P by an open U.
+Notation. Hⁿ := μHE[n]; ‖·‖ denotes operator norms (of linear maps, of n-covectors as continuous alternating maps, of n-vectors). For ω ∈ 𝒟ⁿ(U) put β_ω(x) := ω(f(x))∘Df(x) and ‖ω‖_∞ := sup_z ‖ω(z)‖ < ∞ (ω continuous with compact support).
+1. Good points. By R.orients, for Hⁿ-a.e. x ∈ M there are an orthonormal family τ = (τ₁, …, τₙ) and s ∈ {±1} with ξ(x)(β) = s·β(τ) for every n-covector β; at such x, |ξ(x)(β)| = |β(τ)| ≤ ‖β‖·Π_i|τ_i| = ‖β‖ (ContinuousAlternatingMap.le_opNorm). Since Hⁿ(M ∖ K) = 0, Hⁿ-a.e. x ∈ M is such a point lying in K. Put c_K := ∫_{M∩K} θ dHⁿ < ∞ (R.locallyIntegrable_mult; K is compact and K ⊆ U).
+2. Derivative bound. f is C¹ on the open set O, so f and Df are continuous on O (ContDiffOn.continuousOn, ContDiffOn.continuousOn_fderiv_of_isOpen); K ⊆ O is compact, so Λ_K := sup_{x∈K}‖Df(x)‖ < ∞ (Λ_K := 0 if K = ∅).
+3. The integrand. For every n-covector α and linear A, ‖α∘A‖ ≤ ‖α‖·‖A‖ⁿ (Mathlib ContinuousAlternatingMap.norm_compContinuousLinearMap_le); so ‖β_ω(x)‖ ≤ ‖ω‖_∞Λ_Kⁿ for x ∈ K. On O, x ↦ β_ω(x) is continuous (ω, f, Df continuous and (α, A) ↦ α∘A continuous), so x ↦ 1_K(x)β_ω(x) is Borel. Because Hⁿ(M ∖ K) = 0, the integrand x ↦ θ(x)ξ(x)(β_ω(x)) agrees Hⁿ⌞M-a.e. with θ(x)ξ(x)(1_K(x)β_ω(x)), which is a.e. strongly measurable (θ Borel, ξ a.e. strongly measurable, evaluation continuous) and, by steps 1–2, bounded a.e. by ‖ω‖_∞Λ_Kⁿθ(x)1_K(x). Hence it is integrable and I(ω) := ∫_M θ(x)ξ(x)(β_ω(x)) dHⁿ(x) satisfies |I(ω)| ≤ Λ_Kⁿ·c_K·‖ω‖_∞. (This is the parent's remark in step 3 that the Bochner integral is no junk value, and its bound of step 4.)
+4. Linearity. β_{aω+bη} = a·β_ω + b·β_η (evaluation at f(x) and α ↦ α∘Df(x) are linear) and ξ(x) is linear; all integrands are integrable (step 3), so I(aω + bη) = a·I(ω) + b·I(η). Thus I is a linear functional on 𝒟ⁿ(U).
+5. Continuity (parent step 4). Let ω_j → 0 in 𝒟ⁿ(U) (TestFormOnConverges ω_j 0): there is a compact C ⊆ U with tsupport ω_j ⊆ C for all j, and the k = 0 clause says ω_j → 0 uniformly on C (iteratedFDeriv of order 0 is ω_j composed with a norm-preserving identification). Since ω_j = 0 off C, ‖ω_j‖_∞ → 0, and by step 3 |I(ω_j)| ≤ Λ_Kⁿc_K‖ω_j‖_∞ → 0. Hence Q := I is a GeometricCurrentOn U n with the required formula.
+6. Vanishing away from f(K) (parent step 5). Let ω ∈ 𝒟ⁿ(U) with tsupport ω ∩ f(K) = ∅. For x ∈ K, f(x) ∉ tsupport ω, so ω(f(x)) = 0 and β_ω(x) = 0; the integrand vanishes on M ∩ K, hence Hⁿ⌞M-a.e., and Q(ω) = 0.
+7. Support. f is continuous on K, so f(K) is compact, hence closed, and f(K) ⊆ U. Let z ∈ U ∖ f(K). As U ∖ f(K) is open, there is r > 0 with closedBall(z, r) ⊆ U ∖ f(K). W := ball(z, r) is open, closure(W) = closedBall(z, r) is compact and contained in U, and Q vanishes on W: if tsupport ω ⊆ W then tsupport ω ∩ f(K) = ∅ and Q(ω) = 0 by step 6. So W lies in the zero region of Q, z ∉ spt Q; as spt Q ⊆ U by definition, spt Q ⊆ f(K).
+8. Compactness. spt Q = U ∖ Z(Q) with Z(Q) the (open) zero region; by step 7 and f(K) ⊆ U, spt Q = f(K) ∩ (ℝ^P ∖ Z(Q)), a closed subset of the compact set f(K), hence compact. ∎
+
+## Key steps
+
+1. A.e. on M, ξ(x) is a unit simple n-vector, so |ξ(x)(β)| ≤ ‖β‖, and a.e. x ∈ M lies in K.
+2. On K, ‖ω(f(x))∘Df(x)‖ ≤ ‖ω‖_∞Λ_Kⁿ; the integrand is a.e. strongly measurable and dominated by ‖ω‖_∞Λ_Kⁿθ1_K, so I(ω) is a genuine integral with |I(ω)| ≤ Λ_Kⁿc_K‖ω‖_∞.
+3. I is linear, and TestFormOnConverges ω_j → 0 forces ‖ω_j‖_∞ → 0, so I is a GeometricCurrentOn U n.
+4. Forms vanishing on f(K) are killed, so every point of U ∖ f(K) has a ball in the zero region: spt Q ⊆ f(K), and spt Q is closed in the compact f(K).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/parent-child-handoff.json and parent-supplied-plan.md (frozen type, supplied proof, resolved dependencies)`
+- `python3 scans of RUN/dag.json: lean_statement/status/candidate_commit of nodes whose types mention compContinuousLinearMap (fderiv, HasApproximateTangentSpaceAt or covectorEuclideanNorm; lean_name collision check for dimred_mbl_pf_* (no match)`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint|_overlay_accepted_children' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `cmp RUN/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; rg -c sorry project/GMT/Ch07/Contract.lean`
+- `rg -n 'lemma measure_compl_support :|theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|theorem MeasurableSet.image_of_continuousOn_injOn|theorem LipschitzWith.ae_differentiableAt|theorem ContDiffOn.continuousOn_fderiv_of_isOpen|theorem norm_compContinuousLinearMap_le|theorem extDeriv_pullback|theorem map_linearDependent' RUN/local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `rg -n 'pushforward|Pushforward' RUN/local-references/123e8435b4a2469b/project/GMT/Ch07/*.lean; rg -il pushforward lake-packages-25730c7c/simongmt/Poincare/SimonGMT`
+- `grep -rn 'theorem area_image_criticalSet_eq_zero|theorem injective_area_formula_lipschitzOn|theorem weighted_area_formula_lipschitzOn_fiberSum|theorem weighted_area_formula_lipschitz_injOn|theorem exists_lipschitz_extension_finiteDimensional|theorem exteriorDerivativeOn_pullbackFormWithin' lake-packages-25730c7c/simongmt/Poincare/SimonGMT`
+- `git log --all -S'dimred_mbl_pf_' --oneline (no match)`
+- `lake env lean /tmp/pfdecomp/T1.lean (11 child types and the parent type as theorem Submission.X : T := by sorry after import GMT.Ch07.Submission)`
+- `lake env lean /tmp/pfdecomp/T2.lean (conditional assembly from the 11 child types to the frozen parent type; #print axioms)`
+- `python3 verifier lean_contract.validate_lean_statement on all 11 child types; topological sort of depends_on`
+- `read RUN/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-comparison-a1/decomposition-v1.json and the parent-supplied-natural-proof.md of the three reused accepted nodes`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-projected-comparison-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-0354723769/parent-supplied-natural-proof.md`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/FormsDuality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/tmp/pfdecomp/T1.lean`
+- `/tmp/pfdecomp/T2.lean`
+
+Pins match: HEAD b4d606d, Mathlib 25730c7c, SimonGMT 2b366308. Submission.lean is byte-identical to the frozen contract, whose only sorry is main_theorem. Neither the contract nor SimonGMT pushes currents forward by nonlinear maps: there is only the affine push-forward and the n-vector push-forward algebra. So the C¹ push-forward obligations are genuine. Every cited Mathlib and SimonGMT lemma exists in the pinned sources. Three accepted declarations are reused with byte-identical frozen types and candidate commits: dor_imrep_massOn_eq_measure_and_support, cmc_imRep_locality_restrict_sub and dsmc_att_blowUp_points_of_approxTangent. The four push-forward lemmas of the projected_comparison node are still decomposing, so their exact types are mirrored under new dimred_mbl_pf_* names; these collide with nothing in dag.json or git history. All 11 child types and the parent type elaborate. A conditional assembly proves the exact frozen parent type from the child types, with axioms propext, Classical.choice and Quot.sound.
