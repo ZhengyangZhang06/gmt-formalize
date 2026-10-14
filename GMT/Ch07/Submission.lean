@@ -575,6 +575,58 @@ theorem Submission.dpfir_bilipschitz_image_imrep_exists : ∀ (P n : ℕ) (U : S
             orients := horients }, rfl, fun x => ⟨?_, ?_⟩⟩
   · exact congrArg R.mult (hleft x)
   · exact congrArg η (hleft x)
+/-- **Pairing with a continuous covector field** (Simon Ch. 6, 3.1 (‡), 6.2.24(3)).  For an
+integer multiplicity triple `R = (M, θ, ξ)` in `U` and a continuous `β : ℝᴾ → Λⁿ(ℝᴾ)` with
+compact support `K = spt β ⊆ U`, `x ↦ θ(x) ⟨β(x), ξ(x)⟩` is `Hⁿ⌞M`-integrable: `ξ = ±τ₁ ∧ ⋯ ∧ τₙ`
+with `τ` orthonormal `Hⁿ`-a.e. on `M`, so `|⟨α, ξ(x)⟩| ≤ ‖α‖`, and the integrand is dominated by
+`C θ 1_K` (`C` a bound for `‖β‖`), which is integrable because `∫_{M ∩ K} θ dHⁿ < ∞`. -/
+theorem Submission.dpfir_imrep_pairing_continuous_integrable : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (β : Euclid P → Covector (Euclid P) n), Continuous β → HasCompactSupport β → tsupport β ⊆ U → Integrable (fun x => (R.mult x : ℝ) * R.orient x (β x)) (μHE[n].restrict R.carrier) := by
+  intro P n U R β hβ hcpt hU
+  set K : Set (Euclid P) := tsupport β
+  /- Step 1: `ξ(x) = ±τ₁ ∧ ⋯ ∧ τₙ` with `τ` orthonormal gives `|⟨α, ξ(x)⟩| = |α(τ)| ≤ ‖α‖`
+  for `Hⁿ`-a.e. `x ∈ M`. -/
+  have hξ : ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n,
+      ‖R.orient x α‖ ≤ ‖α‖ := by
+    filter_upwards [R.orients] with x hx α
+    obtain ⟨Q, -, τ, hτ, -, hor⟩ := hx
+    have hατ : ‖α τ‖ ≤ ‖α‖ := by
+      simpa [hτ.norm_eq_one] using α.le_opNorm τ
+    rcases hor with h | h
+    · rw [h]
+      exact hατ
+    · rw [h, norm_neg]
+      exact hατ
+  /- Step 2: `β` is bounded by some `C` and vanishes off the compact, hence Borel, set
+  `K = spt β ⊆ U`. -/
+  obtain ⟨C, hC⟩ := hβ.bounded_above_of_compact_support hcpt
+  have hKm : MeasurableSet K := (isClosed_tsupport β).measurableSet
+  /- Step 3: `|θ ⟨β, ξ⟩| ≤ C θ 1_K` a.e. on `M`. -/
+  have hbound : ∀ᵐ x ∂(μHE[n].restrict R.carrier),
+      ‖(R.mult x : ℝ) * R.orient x (β x)‖ ≤ C * K.indicator (fun x => (R.mult x : ℝ)) x := by
+    filter_upwards [hξ] with x hx
+    by_cases hxK : x ∈ K
+    · rw [indicator_of_mem hxK, norm_mul, Real.norm_natCast, mul_comm C]
+      exact mul_le_mul_of_nonneg_left ((hx (β x)).trans (hC x)) (Nat.cast_nonneg _)
+    · rw [indicator_of_notMem hxK, image_eq_zero_of_notMem_tsupport hxK, map_zero]
+      simp
+  /- Step 4: `C θ 1_K` is integrable, since `∫_{M ∩ K} θ dHⁿ < ∞`. -/
+  have hθm : Measurable fun x => (R.mult x : ℝ) := measurable_from_nat.comp R.measurable_mult
+  have hθK : IntegrableOn (fun x => (R.mult x : ℝ)) K (μHE[n].restrict R.carrier) := by
+    refine ⟨hθm.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, Measure.restrict_restrict hKm, inter_comm]
+    simpa only [Real.enorm_natCast] using (R.locallyIntegrable_mult K hcpt hU).lt_top
+  have hg : Integrable (fun x => C * K.indicator (fun x => (R.mult x : ℝ)) x)
+      (μHE[n].restrict R.carrier) := (hθK.integrable_indicator hKm).const_mul C
+  /- Step 5: the integrand is a.e. strongly measurable: `θ` is measurable, `ξ` is a.e. strongly
+  measurable, `β` is continuous and evaluation `(ζ, α) ↦ ζ(α)` is continuous. -/
+  have happly : Continuous fun p : MultiVector P n × Covector (Euclid P) n => p.1 p.2 :=
+    continuous_fst.clm_apply continuous_snd
+  have hF : AEStronglyMeasurable (fun x => (R.mult x : ℝ) * R.orient x (β x))
+      (μHE[n].restrict R.carrier) :=
+    hθm.aestronglyMeasurable.mul (happly.comp_aestronglyMeasurable
+      (R.aestronglyMeasurable_orient.prodMk hβ.aestronglyMeasurable))
+  /- Step 6: dominated by an integrable function. -/
+  exact hg.mono' hF hbound
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
