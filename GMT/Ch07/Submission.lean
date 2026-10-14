@@ -464,6 +464,74 @@ theorem Submission.cmcdt_cbm_bvp_unit_cube_volume : ∀ m : ℕ, volume {y : Euc
     (MeasurableSet.univ_pi fun _ => measurableSet_Ioo).nullMeasurableSet, Real.volume_pi_Ioo]
   simp
 
+/-- **Exhausting `Q₁` by the inner cubes `Q_δ`** (the limit `δ ↓ 0` in the cube Poincaré
+inequality, Simon Ch. 2, 2.7, where `U` is first replaced by an inner set
+`W = {x ∈ U : dist(x, ∂U) > σ}`): if `u` is integrable on `Q₁ = (0, 1)ⁿ` and
+`∫_{Q_δ}∫_{Q_δ} |u(x) − u(y)| dy dx ≤ K` for every inner cube `Q_δ = (δ, 1 − δ)ⁿ`, `0 < δ < 1/2`,
+then `∫_{Q₁}∫_{Q₁} |u(x) − u(y)| dy dx ≤ K`.  As `vol(Q₁) = 1`, `|u(x) − u(y)|` is integrable on
+`Q₁ × Q₁`; the products `Q_{δⱼ} × Q_{δⱼ}`, `δⱼ = 1/(j + 3)`, increase to `Q₁ × Q₁`, so by Fubini
+and continuity of the integral along increasing unions the double integrals over `Q_{δⱼ}` tend
+to the one over `Q₁`. -/
+theorem Submission.cmcdt_cbm_bvp_osc_le_of_inner_cubes : ∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (K : ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ δ : ℝ, 0 < δ → δ < 1 / 2 → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ∫ y in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, |u x - u y| ≤ K) → ∫ x in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, |u x - u y| ≤ K := by
+  intro m u K hu hK
+  set Q₁ : Set (Euclid (m + 1)) := {y | ∀ i, 0 < y i ∧ y i < 1} with hQ₁
+  let Q : ℝ → Set (Euclid (m + 1)) := fun δ => {z | ∀ i, δ < z i ∧ z i < 1 - δ}
+  -- step 1: every `Q δ` is measurable
+  have hQm : ∀ δ : ℝ, MeasurableSet (Q δ) := by
+    intro δ
+    have hQ : Q δ = ⋂ i, ({z : Euclid (m + 1) | δ < z i} ∩ {z | z i < 1 - δ}) := by
+      ext z; simp [Q]
+    rw [hQ]
+    refine MeasurableSet.iInter fun i => ?_
+    have hc : Measurable fun z : Euclid (m + 1) => z i :=
+      (PiLp.continuous_apply 2 (fun _ : Fin (m + 1) => ℝ) i).measurable
+    exact (measurableSet_lt measurable_const hc).inter (measurableSet_lt hc measurable_const)
+  -- step 2: `|u x - u y|` is integrable on `Q₁ × Q₁`, since `vol(Q₁) = 1`
+  have hu' : Integrable u (volume.restrict Q₁) := hu
+  have : IsFiniteMeasure (volume.restrict Q₁) := isFiniteMeasure_restrict.2 (by
+    rw [hQ₁, Submission.cmcdt_cbm_bvp_unit_cube_volume m]; exact ENNReal.one_ne_top)
+  let F : Euclid (m + 1) × Euclid (m + 1) → ℝ := fun p => |u p.1 - u p.2|
+  have hFi : IntegrableOn F (Q₁ ×ˢ Q₁) ((volume : Measure (Euclid (m + 1))).prod volume) := by
+    rw [IntegrableOn, ← Measure.prod_restrict]
+    exact ((hu'.comp_fst _).sub (hu'.comp_snd _)).abs
+  -- step 3: the cubes `Q (δ j)`, `δ j = 1 / (j + 3)`, increase
+  let δ : ℕ → ℝ := fun j => 1 / ((j : ℝ) + 3)
+  have hδpos : ∀ j, 0 < δ j := fun j => by positivity
+  have hδlt : ∀ j, δ j < 1 / 2 := fun j =>
+    one_div_lt_one_div_of_lt (by norm_num) (by linarith [(Nat.cast_nonneg j : (0 : ℝ) ≤ j)])
+  have hδanti : Antitone δ := fun j k hjk =>
+    one_div_le_one_div_of_le (by positivity) (by simpa using (Nat.cast_le.2 hjk : (j : ℝ) ≤ k))
+  have hδlim : Tendsto δ atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop (tendsto_atTop_add_const_right _ 3 tendsto_natCast_atTop_atTop)
+  have hQmono : Monotone fun j => Q (δ j) := fun j k hjk z hz i =>
+    ⟨(hδanti hjk).trans_lt (hz i).1, (hz i).2.trans_le (by linarith [hδanti hjk])⟩
+  -- step 4: they exhaust `Q₁`
+  have hU : ⋃ j, Q (δ j) = Q₁ := by
+    refine Set.Subset.antisymm (Set.iUnion_subset fun j z hz i =>
+      ⟨(hδpos j).trans (hz i).1, (hz i).2.trans (by linarith [hδpos j])⟩) fun x hx => ?_
+    have hev : ∀ᶠ j in atTop, ∀ i, δ j < x i ∧ x i < 1 - δ j := by
+      refine Filter.eventually_all.2 fun i => ?_
+      filter_upwards [hδlim.eventually_lt_const (hx i).1,
+        hδlim.eventually_lt_const (sub_pos.2 (hx i).2)] with j h1 h2
+      exact ⟨h1, by linarith⟩
+    obtain ⟨j, hj⟩ := hev.exists
+    exact Set.mem_iUnion.2 ⟨j, hj⟩
+  -- step 5: the products `Q (δ j) × Q (δ j)` increase to `Q₁ × Q₁`
+  let s : ℕ → Set (Euclid (m + 1) × Euclid (m + 1)) := fun j => Q (δ j) ×ˢ Q (δ j)
+  have hsm : ∀ j, MeasurableSet (s j) := fun j => (hQm _).prod (hQm _)
+  have hsmono : Monotone s := fun j k hjk => Set.prod_mono (hQmono hjk) (hQmono hjk)
+  have hsU : ⋃ j, s j = Q₁ ×ˢ Q₁ := by
+    rw [Set.iUnion_prod_of_monotone hQmono hQmono, hU]
+  -- steps 6-7: Fubini on each `s j` and continuity along the increasing union
+  have hlim := tendsto_setIntegral_of_monotone
+    (μ := (volume : Measure (Euclid (m + 1))).prod volume) (f := F) hsm hsmono (hsU ▸ hFi)
+  rw [hsU, setIntegral_prod F hFi] at hlim
+  have hD : ∀ j, ∫ p in s j, F p ∂(volume : Measure (Euclid (m + 1))).prod volume =
+      ∫ x in Q (δ j), ∫ y in Q (δ j), |u x - u y| := fun j =>
+    setIntegral_prod F (hFi.mono_set (hsU ▸ Set.subset_iUnion s j))
+  -- step 8: pass to the limit in `D(δ j) ≤ K`
+  exact le_of_tendsto' (hlim.congr hD) fun j => hK (δ j) (hδpos j) (hδlt j)
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
