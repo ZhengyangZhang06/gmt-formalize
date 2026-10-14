@@ -768,6 +768,95 @@ theorem Submission.cbr_ci_iso_steiner_volume_eq : ∀ (d : ℕ) (j : Fin d) (A :
   exact Submission.cbr_ci_iso_svol_volume_eq_of_slice_volume_eq d j _ A hS hA.measurableSet
     (Submission.cbr_ci_iso_svol_steiner_slice_volume_eq d j A hA)
 
+/-- Iterated coordinate Steiner symmetrization (Simon, Ch. 1, proof of 2.10): every compact
+`A ⊆ ℝ^d` has a compact replacement `K` with `L^d(K) = L^d(A)`, `ediam K ≤ ediam A` and `-x ∈ K`
+for all `x ∈ K`.  Write `y[i↦t]` for `y` with `i`-th coordinate replaced by `t`,
+`R_k(y) = y[k↦-y_k]`, `B^i_y = {t : y[i↦t] ∈ B}`, `S_i(B) = {y : B^i_y ≠ ∅, |y_i| ≤ L¹(B^i_y)/2}`.
+By induction over finite `F ⊆ Fin d` there is a compact `K_F` with the measure of `A`, diameter at
+most `ediam A` and `R_k(K_F) ⊆ K_F` for `k ∈ F`: for `i ∉ F`, `S_i(K_F)` is compact, has the same
+measure and no larger diameter (sibling lemmas), is `R_i`-invariant since `R_i(y)[i↦t] = y[i↦t]`,
+and stays `R_k`-invariant for `k ∈ F` since `R_k(y)[i↦t] = R_k(y[i↦t])` and `R_k` is an involution.
+For `K = K_{Fin d}`, flipping the coordinates of `x ∈ K` one at a time shows `-x ∈ K`. -/
+theorem Submission.cbr_ci_iso_exists_symmetric_replacement : ∀ (d : ℕ) (A : Set (Euclid d)), IsCompact A → ∃ K : Set (Euclid d), IsCompact K ∧ volume K = volume A ∧ ediam K ≤ ediam A ∧ ∀ x ∈ K, -x ∈ K := by
+  intro d A hA
+  -- Step 1: for every finite set `F` of coordinates there is a compact `K_F` with the measure of
+  -- `A`, diameter at most `ediam A`, and invariant under `R_k` for every `k ∈ F`
+  have hF : ∀ F : Finset (Fin d), ∃ K : Set (Euclid d), IsCompact K ∧ volume K = volume A ∧
+      ediam K ≤ ediam A ∧
+      ∀ k ∈ F, ∀ x ∈ K, WithLp.toLp 2 (Function.update x.ofLp k (-x k)) ∈ K := by
+    intro F
+    induction F using Finset.induction_on with
+    | empty => exact ⟨A, hA, rfl, le_rfl, by simp⟩
+    | insert i F hi ih =>
+      -- replace `K' = K_F` by its Steiner symmetrization `S_i(K')` in the new direction `i`
+      obtain ⟨K', hK', hvol', hdiam', hsym'⟩ := ih
+      have hS := Submission.cbr_ci_iso_steiner_isCompact d i K' hK'
+        (Submission.cbr_ci_iso_slice_length_usc d i K' hK')
+      refine ⟨_, hS,
+        (Submission.cbr_ci_iso_steiner_volume_eq d i K' hK' hS.measurableSet).trans hvol',
+        (Submission.cbr_ci_iso_steiner_ediam_le d i K' hK').trans hdiam', fun k hk x hx => ?_⟩
+      rcases Finset.mem_insert.1 hk with rfl | hkF
+      · -- `R_k(x)[k↦t] = x[k↦t]`, so the `k`-slice is unchanged, and `|(R_k x)_k| = |x_k|`
+        simpa using hx
+      · -- `k ≠ i`: `R_k` is an involution preserving `K'` with `R_k(x)[i↦t] = R_k(x[i↦t])`, so
+        -- `x` and `R_k(x)` have the same `i`-slice of `K'`, and `(R_k x)_i = x_i`
+        have hki : k ≠ i := by
+          rintro rfl
+          exact hi hkF
+        have hR := hsym' k hkF
+        have hinv : ∀ z : Euclid d, WithLp.toLp 2 (Function.update
+            (WithLp.toLp 2 (Function.update z.ofLp k (-z k))).ofLp k
+            (-(WithLp.toLp 2 (Function.update z.ofLp k (-z k))) k)) = z := by
+          intro z
+          ext m
+          by_cases hm : m = k
+          · subst hm
+            simp
+          · simp [hm]
+        have hcomm : ∀ t : ℝ,
+            WithLp.toLp 2 (Function.update (Function.update x.ofLp k (-x k)) i t) =
+              WithLp.toLp 2 (Function.update (WithLp.toLp 2 (Function.update x.ofLp i t)).ofLp k
+                (-(WithLp.toLp 2 (Function.update x.ofLp i t)) k)) := by
+          intro t
+          simp only [Function.update_of_ne hki]
+          rw [Function.update_comm hki]
+        have hslice : {t : ℝ | WithLp.toLp 2 (Function.update
+            (WithLp.toLp 2 (Function.update x.ofLp k (-x k))).ofLp i t) ∈ K'} =
+            {t : ℝ | WithLp.toLp 2 (Function.update x.ofLp i t) ∈ K'} := by
+          ext t
+          simp only [Set.mem_ofPred_eq]
+          rw [hcomm t]
+          constructor
+          · intro h
+            have h' := hR _ h
+            rwa [hinv] at h'
+          · exact hR _
+        have hxi : (WithLp.toLp 2 (Function.update x.ofLp k (-x k))) i = x i := by
+          simp [hki.symm]
+        show _ ∧ _
+        rw [hslice, hxi]
+        exact hx
+  -- Step 4: `K = K_{Fin d}` is invariant under every coordinate reflection
+  obtain ⟨K, hK, hvol, hdiam, hsym⟩ := hF Finset.univ
+  refine ⟨K, hK, hvol, hdiam, fun x hx => ?_⟩
+  -- Step 5: `x^G ∈ K` for every finite `G`, where `x^G` flips the coordinates of `x` in `G`
+  have hG : ∀ G : Finset (Fin d), WithLp.toLp 2 (fun k => if k ∈ G then -x k else x k) ∈ K := by
+    intro G
+    induction G using Finset.induction_on with
+    | empty => simpa using hx
+    | insert i G hi ih =>
+      -- `x^{insert i G} = R_i(x^G)` because `i ∉ G`
+      convert hsym i (Finset.mem_univ i) _ ih using 1
+      ext k
+      by_cases hk : k = i
+      · subst hk
+        simp [hi]
+      · simp [hk]
+  -- `x^{Fin d} = -x`
+  convert hG Finset.univ using 1
+  ext k
+  simp
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
