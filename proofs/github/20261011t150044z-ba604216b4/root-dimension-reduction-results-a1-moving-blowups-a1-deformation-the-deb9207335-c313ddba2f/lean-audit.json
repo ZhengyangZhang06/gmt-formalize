@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-leaf",
+  "comparison_identity": "9cfab89bed0ed873f6079b93d48f2a2087a92f415f36baaf5b2ffe20997e9e83",
+  "git_delta": {
+    "base_commit": "2e0977f70c0902bd872b81113bdf5a8c2f132c98",
+    "candidate_commit": "e8aa1bbfb4341985bad451a19f6f8d10a449e8d2",
+    "target": "GMT/Ch07/Submission.lean",
+    "declaration": "dimred_mbl_dt_cbm_bvt_cube_cont_bound",
+    "diff_sha256": "e4aee1187d17c018c5e24ef4d7bf1081871749d60932aec89860767289d732df",
+    "source_sha256": "b202c6a02cf6926ddd178231c99c1a466123cf398b121156df986d4e96163a14",
+    "root_leaf": false,
+    "metadata_base": "",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.dimred_mbl_dt_cbm_bvt_cube_cont_bound",
+      "statement": "∀ (k : ℕ) (f : Euclid k → ℝ), Continuous f → (∃ M : ℝ, ∀ y ∈ {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}, |f y| ≤ M) ∧ IntegrableOn f {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1}",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
