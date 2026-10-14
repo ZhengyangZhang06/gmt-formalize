@@ -521,6 +521,38 @@ theorem Submission.dimred_mbl_dtfrpi_local_plane_tangent : ∀ (P n : ℕ) (M : 
         exact V.smul_mem r hyV
       · rw [Poincare.SimonGMT.Chapter03.blowUpMap, add_sub_cancel_left, inv_smul_smul₀ hr0.ne']
   rw [hloc (Poincare.SimonGMT.Chapter03.blowUpMap x r '' M), hset, ← hloc]
+/-- **Coordinate `k`-planes and their unit orientations** (Simon Ch. 6, (1.2), (1.7): the simple
+`k`-vector `e_{i₁} ∧ ⋯ ∧ e_{iₖ}` pairs with a `k`-covector `ω` as `ω(e_{i₁}, …, e_{iₖ})`; §5: a face
+`F ∈ 𝓛ₖ` of the Deformation Theorem lies in such a coordinate plane, oriented by
+`±e_{i₁} ∧ ⋯ ∧ e_{iₖ}`).  Let `ι : Fin k → Fin P` be strictly increasing, `τⱼ = e_{ι(j)}` and
+`V = span{τⱼ}`.  The standard orthonormal basis composed with the injective `ι` is orthonormal,
+hence linearly independent, so `dim V = k`.  Evaluation `α ↦ α(τ)` is linear with
+`|α(τ)| ≤ ‖α‖ ∏ⱼ ‖τⱼ‖ = ‖α‖`, which gives the `k`-vector `e` with `e(α) = α(τ)`; the frame `τ`
+witnesses that both `e` and `-e` are unit orientations of `V`. -/
+theorem Submission.dimred_mbl_dtfrpi_coord_plane_orientation : ∀ (P k : ℕ) (ι : Fin k → Fin P), StrictMono ι → Module.finrank ℝ (Submodule.span ℝ (range (fun j => EuclideanSpace.single (ι j) (1 : ℝ) : Fin k → Euclid P))) = k ∧ ∃ e : MultiVector P k, (∀ α : Covector (Euclid P) k, e α = α (fun j => EuclideanSpace.single (ι j) (1 : ℝ))) ∧ IsUnitOrientationOf e (Submodule.span ℝ (range (fun j => EuclideanSpace.single (ι j) (1 : ℝ) : Fin k → Euclid P))) ∧ IsUnitOrientationOf (-e) (Submodule.span ℝ (range (fun j => EuclideanSpace.single (ι j) (1 : ℝ) : Fin k → Euclid P))) := by
+  intro P k ι hι
+  -- step 1: `τ` is the orthonormal standard basis of `ℝᴾ` composed with the injective `ι`
+  have hτ : Orthonormal ℝ (fun j => EuclideanSpace.single (ι j) (1 : ℝ) : Fin k → Euclid P) :=
+    EuclideanSpace.orthonormal_single.comp ι hι.injective
+  -- step 2: an orthonormal family is linearly independent, so `dim V = #(Fin k) = k`
+  have hV : Module.finrank ℝ (Submodule.span ℝ
+      (range (fun j => EuclideanSpace.single (ι j) (1 : ℝ) : Fin k → Euclid P))) = k := by
+    rw [finrank_span_eq_card hτ.linearIndependent, Fintype.card_fin]
+  -- step 3: `α ↦ α(τ)` is linear (covector operations are pointwise) and bounded by `‖α‖`
+  let e : MultiVector P k :=
+    LinearMap.mkContinuous
+      { toFun := fun α : Covector (Euclid P) k => α fun j => EuclideanSpace.single (ι j) (1 : ℝ)
+        map_add' := fun _ _ => rfl
+        map_smul' := fun _ _ => rfl } 1
+      fun α => by
+        calc ‖α fun j => EuclideanSpace.single (ι j) (1 : ℝ)‖
+            ≤ ‖α‖ * ∏ j, ‖(EuclideanSpace.single (ι j) (1 : ℝ) : Euclid P)‖ := α.le_opNorm _
+          _ = 1 * ‖α‖ := by simp [hτ.1]
+  refine ⟨hV, e, fun _ => rfl, ?_, ?_⟩
+  -- step 4: the frame `τ` orients `V` with sign `+` for `e`
+  · exact ⟨_, hτ, rfl, Or.inl fun _ => rfl⟩
+  -- step 5: and with sign `-` for `-e`, as `(-e)(α) = -e(α)`
+  · exact ⟨_, hτ, rfl, Or.inr fun _ => rfl⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
