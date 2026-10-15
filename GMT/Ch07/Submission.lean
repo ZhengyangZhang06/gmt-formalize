@@ -543,6 +543,62 @@ theorem Submission.idtp_tdc_dlc_ld_arc_point_bounds : ∀ (P : ℕ) (z e : Eucli
       rw [h]
       nlinarith [Real.cos_sq_add_sin_sq φ, Real.one_sub_sq_div_two_le_cos (x := φ)]
     exact (sq_le_sq₀ (norm_nonneg _) hφ).mp hsq
+/-- Angle parametrization of a unit vector in the plane of an orthonormal pair (used in the proof
+of Simon 7.3.3(1), p. 191, for 2-dimensional minimizing cones): if `‖z‖ = ‖e‖ = 1`, `z ⊥ e`, and
+the unit vector `w = ⟨w, z⟩z + ⟨w, e⟩e` has `‖w − z‖ < L/2`, then `w = cos θ z + sin θ v` with
+`0 ≤ θ < L` and `v = ±e`.  For `α = ⟨w, z⟩`, `β = ⟨w, e⟩`, `α² + β² = ⟨w, αz + βe⟩ = ‖w‖² = 1`,
+so `θ = arccos α ∈ [0, π]` has `cos θ = α` and `sin θ = √(1 − α²) = |β|`, and `v = ±e` absorbs
+the sign of `β`.  The chord is `‖w − z‖² = 2 − 2cos θ = 4sin²(θ/2)`, so `‖w − z‖ = 2sin(θ/2)`,
+and Jordan's inequality `(2/π)x ≤ sin x` (`0 ≤ x ≤ π/2`) gives `θ ≤ (π/2)‖w − z‖ < πL/4 ≤ L`.
+The hypotheses `‖e‖ = 1` and `⟨z, e⟩ = 0` are not needed. -/
+theorem Submission.idtp_tdc_dlc_ld_unit_vector_angle : ∀ (P : ℕ) (z e w : Euclid P) (L : ℝ), ‖z‖ = 1 → ‖e‖ = 1 → inner ℝ z e = 0 → ‖w‖ = 1 → w = inner ℝ w z • z + inner ℝ w e • e → ‖w - z‖ < L / 2 → ∃ (θ : ℝ) (v : Euclid P), 0 ≤ θ ∧ θ < L ∧ (v = e ∨ v = -e) ∧ w = Real.cos θ • z + Real.sin θ • v := by
+  intro P z e w L hz _he _hze hw hwd hL
+  -- `α = ⟨w, z⟩` and `β = ⟨w, e⟩` satisfy `α² + β² = ⟨w, αz + βe⟩ = ‖w‖² = 1`
+  have hsq : inner ℝ w z ^ 2 + inner ℝ w e ^ 2 = 1 := by
+    have h : inner ℝ w (inner ℝ w z • z + inner ℝ w e • e) = 1 := by
+      rw [← hwd, real_inner_self_eq_norm_sq, hw, one_pow]
+    rw [inner_add_right, real_inner_smul_right, real_inner_smul_right] at h
+    linear_combination h
+  have hα₁ : -1 ≤ inner ℝ w z := by nlinarith [sq_nonneg (inner ℝ w e)]
+  have hα₂ : inner ℝ w z ≤ 1 := by nlinarith [sq_nonneg (inner ℝ w e)]
+  -- `θ = arccos α ∈ [0, π]` has `cos θ = α` and `sin θ = √(1 - α²) = |β|`
+  obtain ⟨θ, hθ₀, hθπ, hcos, hsin⟩ : ∃ θ : ℝ, 0 ≤ θ ∧ θ ≤ Real.pi ∧
+      Real.cos θ = inner ℝ w z ∧ Real.sin θ = |inner ℝ w e| := by
+    refine ⟨Real.arccos (inner ℝ w z), Real.arccos_nonneg _, Real.arccos_le_pi _,
+      Real.cos_arccos hα₁ hα₂, ?_⟩
+    rw [Real.sin_arccos, ← Real.sqrt_sq_eq_abs]
+    congr 1
+    linarith
+  -- `‖w - z‖² = 2 - 2 cos θ = (2 sin(θ/2))²` with `sin(θ/2) ≥ 0`, so `‖w - z‖ = 2 sin(θ/2)`
+  have hs₀ : 0 ≤ Real.sin (θ / 2) :=
+    Real.sin_nonneg_of_nonneg_of_le_pi (by linarith) (by linarith [Real.pi_pos])
+  have hchord : ‖w - z‖ = 2 * Real.sin (θ / 2) := by
+    have h₁ := norm_sub_sq_real w z
+    have h₂ := Real.cos_two_mul_eq_one_sub (θ / 2)
+    rw [show 2 * (θ / 2) = θ by ring, hcos] at h₂
+    rw [hw, hz, h₂] at h₁
+    refine (pow_left_inj₀ (norm_nonneg _) (by linarith) two_ne_zero).mp ?_
+    rw [h₁]
+    ring
+  -- Jordan's inequality `(2/π)(θ/2) ≤ sin(θ/2)` gives `θ ≤ (π/2)‖w - z‖ < πL/4 ≤ L`
+  have hθL : θ < L := by
+    have hπ := Real.pi_pos
+    have hJ := Real.mul_le_sin (x := θ / 2) (by linarith) (by linarith)
+    have hL₀ : 0 < L := by linarith [norm_nonneg (w - z)]
+    have h₁ : θ / Real.pi < L / 4 := by
+      have : 2 / Real.pi * (θ / 2) = θ / Real.pi := by ring
+      linarith
+    rw [div_lt_iff₀ hπ] at h₁
+    have h₂ := mul_le_mul_of_nonneg_left Real.pi_le_four (by linarith : (0 : ℝ) ≤ L / 4)
+    linarith
+  -- `v = ±e` absorbs the sign of `β`: `sin θ • v = |β| • v = β • e`
+  rcases le_or_gt 0 (inner ℝ w e) with hβ | hβ
+  · refine ⟨θ, e, hθ₀, hθL, Or.inl rfl, ?_⟩
+    rw [hcos, hsin, abs_of_nonneg hβ]
+    exact hwd
+  · refine ⟨θ, -e, hθ₀, hθL, Or.inr rfl, ?_⟩
+    rw [hcos, hsin, abs_of_neg hβ, neg_smul_neg]
+    exact hwd
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
