@@ -518,6 +518,81 @@ theorem Submission.dimred_tr_bc_vanishing_blowup : (∀ (P n : ℕ) (U : Set (Eu
     split_ifs with h
     · exact (hvan ⟨_, h⟩ hsupp).symm
     · rfl
+/-- **Rescaling blow-up limits in `ℝᴾ`** (proof of Simon 7.3.3(1), chapter-07.txt lines 444–472:
+the class `𝒯` of weak limits of blow-ups `η_{xᵢ,λᵢ#}T` has `η_{y,λ#}𝒯 ⊆ 𝒯`, (10) there; here
+the limits in `ℝᴾ`, the case `lim λᵢ = 0` of (8)–(9)).  Assume the blow-up calculus (BC): the
+mass formula, `η_{x,λ#}T(ω) = T(η_{x,λ}^# ω)` and `η_{y,μ#}η_{x,λ#}T = η_{x+λy,λμ#}T`; and (BUI):
+`η_{x,λ#}τ(M, θ, ξ)` has an integer multiplicity representation of weight `λ⁻ⁿ μ_R(η_{x,λ}⁻¹(·))`
+on Borel sets.  If `η_{cᵢ,tᵢ#}T ⇀ S` in `ℝᴾ`, then for `y ∈ ℝᴾ` and `λ > 0`,
+`η_{cᵢ+tᵢy,tᵢλ#}T = η_{y,λ#}η_{cᵢ,tᵢ#}T ⇀ S' = η_{y,λ#}S` in `ℝᴾ`, and a representation of `S`
+of weight `μ` gives one of `S'` of weight `λ⁻ⁿ η_{y,λ#}μ`.  As `η_{y,λ}(ℝᴾ) = ℝᴾ`, `S'` is
+`η_{y,λ#}S` with its domain restricted to `ℝᴾ`, and the representation of (BUI) moves along. -/
+theorem Submission.dimred_tr_bc_zero_limit_rescale : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam), (∀ W : Set (Euclid P), (blowUp T x lam hlam.ne').massOn W = ENNReal.ofReal (lam⁻¹ ^ n) * T.massOn (dilation x lam ⁻¹' W)) ∧ (∀ ω : DifferentialForm (Euclid P) n, currentEval (blowUp T x lam hlam.ne') ω = currentEval T (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • x)) ω)) ∧ ∀ (y : Euclid P) (mu : ℝ) (hmu : 0 < mu) (ω : DifferentialForm (Euclid P) n), currentEval (blowUp (blowUp T x lam hlam.ne') y mu hmu.ne') ω = currentEval (blowUp T (x + lam • y) (lam * mu) (mul_pos hlam hmu).ne') ω) → (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (x : Euclid P) (lam : ℝ) (hlam : 0 < lam) (R : IMRep U n), R.Represents T → ∃ R' : IMRep (dilation x lam '' U) n, R'.Represents (blowUp T x lam hlam.ne') ∧ ∀ s : Set (Euclid P), MeasurableSet s → R'.measure s = ENNReal.ofReal (lam⁻¹ ^ n) * R.measure (dilation x lam ⁻¹' s)) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (cs : ℕ → Euclid P) (ts : ℕ → ℝ) (hts : ∀ i, 0 < ts i) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (y : Euclid P) (lam : ℝ) (hlam : 0 < lam), ConvergesWeakly (fun i => blowUp T (cs i) (ts i) (hts i).ne') S → ∃ S' : GeometricCurrentOn (univ : Set (Euclid P)) n, ConvergesWeakly (fun i => blowUp T (cs i + ts i • y) (ts i * lam) (mul_pos (hts i) hlam).ne') S' ∧ ∀ R : IMRep (univ : Set (Euclid P)) n, R.Represents S → ∃ R' : IMRep (univ : Set (Euclid P)) n, R'.Represents S' ∧ R'.measure = ENNReal.ofReal (lam⁻¹ ^ n) • R.measure.map (dilation y lam) := by
+  intro hBC hBUI P n U T cs ts hts S y lam hlam hconv
+  -- (1) `η = η_{y,λ}` maps `ℝᴾ` onto `ℝᴾ`: `η(y + λu) = u`
+  have hsurj : (univ : Set (Euclid P)) ⊆ dilation y lam '' univ := by
+    intro u _
+    refine ⟨y + lam • u, mem_univ _, ?_⟩
+    simp [dilation, dilationCLM, smul_add, smul_smul, inv_mul_cancel₀ hlam.ne']
+  -- (3) `v ↦ −λ⁻¹y + λ⁻¹v` is a homeomorphism, hence proper
+  have hproper : IsProperMap (fun v : Euclid P => -(lam⁻¹ • y) + dilationCLM P lam v) := by
+    convert ((Homeomorph.smulOfNeZero lam⁻¹ (inv_ne_zero hlam.ne')).trans
+        (Homeomorph.addLeft (-(lam⁻¹ • y)))).isProperMap using 1
+    funext v
+    simp [dilationCLM]
+  -- (2) `S' := η_#S`, restricted to the domain `ℝᴾ ⊆ η(ℝᴾ)`
+  refine ⟨(blowUp S y lam hlam.ne').restrictDomain hsurj, ?_, ?_⟩
+  · -- (4), (5) `η_{cᵢ+tᵢy,tᵢλ#}T(ω) = η_{cᵢ,tᵢ#}T(η^#ω) → S(η^#ω) = η_#S(ω) = S'(ω)`
+    intro ω
+    have hω' : IsTestForm (affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • y))
+        (ω : DifferentialForm (Euclid P) n)) :=
+      affinePullbackForm_isTestForm _ _ hproper ω.property.1
+    let ω' : TestFormOn (univ : Set (Euclid P)) n :=
+      ⟨affinePullbackForm (dilationCLM P lam) (-(lam⁻¹ • y)) (ω : DifferentialForm (Euclid P) n),
+        hω', subset_univ _⟩
+    have hseq : (fun i => currentEval (blowUp T (cs i + ts i • y) (ts i * lam)
+        (mul_pos (hts i) hlam).ne') (ω : DifferentialForm (Euclid P) n)) =
+        fun i => currentEval (blowUp T (cs i) (ts i) (hts i).ne')
+          (ω' : DifferentialForm (Euclid P) n) := by
+      funext i
+      rw [← (hBC P n U T (cs i) (ts i) (hts i)).2.2 y lam hlam ω]
+      exact (hBC P n _ (blowUp T (cs i) (ts i) (hts i).ne') y lam hlam).2.1 ω
+    have hB : currentEval (blowUp S y lam hlam.ne') (ω : DifferentialForm (Euclid P) n) =
+        (blowUp S y lam hlam.ne').restrictDomain hsurj ω := by
+      unfold currentEval
+      rw [dite_eq_left ⟨ω.property.1, ω.property.2.trans hsurj⟩]
+      rfl
+    have hS : currentEval S (ω' : DifferentialForm (Euclid P) n) = S ω' := by
+      unfold currentEval
+      rw [dite_eq_left ⟨hω', subset_univ _⟩]
+    have hlim : S ω' = (blowUp S y lam hlam.ne').restrictDomain hsurj ω := by
+      rw [← hB, ← hS]
+      exact ((hBC P n univ S y lam hlam).2.1 ω).symm
+    rw [hseq, ← hlim]
+    exact hconv ω'
+  · -- (6), (7) the representation of `η_#S` given by (BUI), moved to the domain `ℝᴾ`; its
+    -- weight agrees with `λ⁻ⁿ η_#μ_R` on Borel sets
+    intro R hR
+    obtain ⟨R₁, hR₁, hR₁m⟩ := hBUI P n univ S y lam hlam R hR
+    let R' : IMRep (univ : Set (Euclid P)) n :=
+      { carrier := R₁.carrier
+        mult := R₁.mult
+        orient := R₁.orient
+        measurableSet_carrier := R₁.measurableSet_carrier
+        carrier_subset := subset_univ _
+        rectifiable := R₁.rectifiable
+        measurable_mult := R₁.measurable_mult
+        mult_pos := R₁.mult_pos
+        locallyIntegrable_mult := fun K hK _ =>
+          R₁.locallyIntegrable_mult K hK ((subset_univ K).trans hsurj)
+        aestronglyMeasurable_orient := R₁.aestronglyMeasurable_orient
+        orients := R₁.orients }
+    refine ⟨R', fun ω => hR₁ (testFormOnInclusion hsurj n ω), ?_⟩
+    have hmeas : Measurable (dilation y lam) :=
+      (continuous_const.add (dilationCLM P lam).continuous).measurable
+    ext s hs
+    rw [Measure.smul_apply, Measure.map_apply hmeas hs, smul_eq_mul]
+    exact hR₁m s hs
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
