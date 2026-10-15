@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1.piece_current-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1",
+  "depth": 6,
+  "title": "Integrality of the Lipschitz image of an integer-weighted Lebesgue piece (supplied step 5(a), 5(d))",
+  "statement": "Assume (MR), (IMC) and (IMSc). (MR) is the exact frozen type of the accepted Submission.cmc_massOn_eq_imRep_measure: for U open, an IMRep R in U representing T ∈ 𝒟_n(U), and every open W, M_W(T) = T.massOn W = R.measure W. (IMC) is the exact frozen type of the accepted Submission.cmc_imRep_locality_restrict_sub, the conjunction of: (a) locality of approximate tangent spaces: for U ⊆ ℝ^P open and Borel M ⊆ M' ⊆ U with Hⁿ(M' ∩ K) < ∞ for every compact K ⊆ U, for Hⁿ-a.e. x ∈ M and every subspace Q, HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q; (b) restriction: for U open, an IMRep R in U and a Borel set E there are a current A ∈ 𝒟_n(U) and an IMRep R' with R'.Represents A, R'.carrier = R.carrier ∩ E, R'.mult = R.mult, R'.orient = R.orient; (c) A − B is integer multiplicity if A, B are (U open); (d) for every IMRep R, for Hⁿ-a.e. x ∈ R.carrier and every n-covector α, |R.orient x α| ≤ covectorEuclideanNorm α. (IMSc) is the conclusion of the frozen type of Submission.dimred_mbl_dt_im_series (the selected node's (IMS) after discharging its antecedents (VO), (MR), (IMC)): for all P, k and W : ℕ → 𝒟_{k+1}(ℝ^P) with Σ_l M(W_l) < ∞ there is S ∈ 𝒟_{k+1}(ℝ^P) with HasSum (l ↦ W_l(ω)) (S(ω)) for every test form ω, M(S) ≤ Σ_l M(W_l), spt S ⊆ closure ⋃_l spt W_l, and S is integer multiplicity if every W_l is. Let P, k ∈ ℕ, n := k + 1, L ∈ ℝ≥0, H : ℝⁿ → ℝ^P L-Lipschitz, A ⊆ ℝⁿ Borel and g : ℝⁿ → ℤ measurable and Lebesgue integrable on A. Then there is an integer multiplicity S ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ (k+1)) with S(ω) = ∫_A g(u)·ω(H(u))(DH(u)e_0, …, DH(u)e_k) du for every test form ω ∈ 𝒟ⁿ(ℝ^P).",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → (∀ (P k : ℕ) (W : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (k + 1)), ∑' i, (W i).mass < ∞ → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), (∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), HasSum (fun i => W i ω) (S ω)) ∧ S.mass ≤ ∑' i, (W i).mass ∧ S.support ⊆ closure (⋃ i, (W i).support) ∧ ((∀ i, IsIntegerMultiplicity (W i)) → IsIntegerMultiplicity S)) → ∀ (P k : ℕ) (L : NNReal) (H : Euclid (k + 1) → Euclid P) (A : Set (Euclid (k + 1))) (g : Euclid (k + 1) → ℤ), LipschitzWith L H → MeasurableSet A → Measurable g → IntegrableOn (fun u => (g u : ℝ)) A → ∃ S : GeometricCurrentOn (univ : Set (Euclid P)) (k + 1), IsIntegerMultiplicity S ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (k + 1), S ω = ∫ u in A, (g u : ℝ) * (ω : DifferentialForm (Euclid P) (k + 1)) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))",
+  "lean_name": "dimred_mbl_dt_lpip_lipschitz_piece_current",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1.image_current-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.wedge_orientation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1.image_current-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f-a1",
+      "result_commit": "d5ba41d68f1ca2e5ef9b0ebdd62cf01e6e24a919",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.wedge_orientation-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-828dc69c10-a1",
+      "result_commit": "6057bc9f0af7e624ac82e56dc0bef1991ba13181",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-53b6b2be95-a1"
+}

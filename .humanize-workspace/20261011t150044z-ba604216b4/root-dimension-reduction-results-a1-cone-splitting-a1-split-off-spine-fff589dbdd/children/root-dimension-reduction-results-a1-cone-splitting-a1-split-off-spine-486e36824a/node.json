@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1.translate_continuous-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1",
+  "depth": 6,
+  "title": "Translates of an integer multiplicity action depend continuously on the translation",
+  "statement": "Let P, j ∈ ℕ and let R = (M, θ, ξ) be an integer multiplicity triple in ℝ^P (R : IMRep univ j, with M = R.carrier, θ = R.mult, ξ = R.orient, H^j := μHE[j]). Let η : ℝ^P → Λ^j (η : DifferentialForm (Euclid P) j) be a continuous j-form with compact support. Then the function t ↦ R.action(y ↦ η(t + y)) = ∫_M θ(y)·ξ(y)(η(t + y)) dH^j(y) is continuous on ℝ^P.",
+  "lean_statement": "∀ (P j : ℕ) (R : IMRep (univ : Set (Euclid P)) j) (η : DifferentialForm (Euclid P) j), Continuous η → HasCompactSupport η → Continuous (fun t : Euclid P => R.action (fun y => η (t + y)))",
+  "lean_name": "dimred_cs_sos_mt_si_translate_action_continuous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-486e36824a-a1"
+}

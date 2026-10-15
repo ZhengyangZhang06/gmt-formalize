@@ -1,0 +1,54 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "continuousAt_of_dominated|integrableOn_of_bounded|of_forall_(sdiff|diff)_eq_zero|starProjection_eq_self_iff|starProjection_apply_eq_zero_iff|withDensity_apply|isCompact_closure|bounded_above_of_compact_support|setLIntegral_mono",
+        "dimred_cs_sos_mt_si_|translate_action_continuous|span_bounded_measure",
+        "cited_inherited|_inherited_prerequisites|_dependency_problem|_existing_lean_name_problem|max_depth",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/si-independent-audit/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/si-decomp/check/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/si-decomp/check/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-fff589dbdd/decomposition-v1.json",
+        "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/inherited.py",
+        "/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/decomposition_scope.py",
+        "/tmp/si-independent-audit/FrozenTypes.lean",
+        "/tmp/si-decomp/check/Children.lean",
+        "/tmp/si-decomp/check/Assembly.lean"
+      ],
+      "conclusion": "The project and mathlib revisions match the snapshot; the reconstructed selected-contract digest matches the requested digest. The split appropriately isolates three analytic obligations. Together with the existing interior_product dependency, they establish exactly parent conclusions (i)–(iii). All child types independently elaborate as propositions before child declarations exist. All names are bare identifiers, with no reservation matches in the DAG or snapshot project. Dependency inheritance supplies frame_measure only to span_bounded_finite, without a cycle. Fresh Lean reruns succeeded: both translation proofs use only standard axioms; the bounded-measure proof uses the exact frame_measure stub. Parent assembly succeeds with exact child/dependency stubs, verifying the implication rather than claiming completed parent formalization."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "translate_continuous",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the prose hypotheses and conclusion. The supplied proof establishes the orientation bound, integrand measurability, pointwise continuity, and an integrable compact-window majorant before applying dominated convergence. Empty support and zero degree cause no gap. The argument is complete and independent of the parent and other children."
+    },
+    {
+      "key": "translate_vanish",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the prose; continuity of η is unnecessary. Positive integer multiplicity transfers concentration to the restricted Hausdorff measure. Projecting tsupport η gives a compact set outside which the integrand vanishes almost everywhere. Independent Lean checks confirm projection-instance inference for arbitrary G and that the concentration expression measures the complement set. No circular reliance occurs."
+    },
+    {
+      "key": "span_bounded_finite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states finiteness for every bounded subset of the frame span. No measurability assumption is needed: enclosure in a positive-radius closed frame box and measure monotonicity suffice. The supplied proof correctly uses orthonormality and the exact closed-box conclusion of frame_measure. Its explicit citation creates the inherited prerequisite, so the empty sibling-dependency list is correct and acyclic."
+    }
+  ],
+  "required_changes": []
+}

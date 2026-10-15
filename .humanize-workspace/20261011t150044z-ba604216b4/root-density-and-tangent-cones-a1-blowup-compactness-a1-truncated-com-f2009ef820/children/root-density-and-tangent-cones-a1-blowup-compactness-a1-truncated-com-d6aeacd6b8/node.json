@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.weak_compactness-a1.local_bound-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.weak_compactness-a1",
+  "depth": 5,
+  "title": "Uniform local mass bounds give uniform sup-norm bounds for T_j(ω) on test forms supported in a fixed compact set",
+  "statement": "Let P, n ∈ ℕ and let T_j ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n, j ∈ ℕ) satisfy ⨆_j M_W(T_j) < ∞ in [0, ∞] (M_W = massOn, Simon 6.2.5 with the Euclidean coefficient norm) for every bounded open W ⊆ ℝ^P. Then for every compact K ⊆ ℝ^P there is a real c ≥ 0 such that |T_j(ω)| ≤ c·s for every j ∈ ℕ, every ω ∈ 𝒟ⁿ(ℝ^P) (TestFormOn univ n) with tsupport ω ⊆ K and every s ∈ ℝ with ‖ω(x)‖ ≤ s for all x ∈ ℝ^P, where ‖·‖ is the operator norm on Covector (Euclid P) n.",
+  "lean_statement": "∀ (P n : ℕ) (Ts : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) n), (∀ W : Set (Euclid P), IsOpen W → Bornology.IsBounded W → ⨆ j, (Ts j).massOn W < ∞) → ∀ K : Set (Euclid P), IsCompact K → ∃ c : ℝ, 0 ≤ c ∧ ∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) n) (s : ℝ), tsupport (ω : DifferentialForm (Euclid P) n) ⊆ K → (∀ x, ‖(ω : DifferentialForm (Euclid P) n) x‖ ≤ s) → |Ts j ω| ≤ c * s",
+  "lean_name": "dtc_bc_tc_wc_local_bound",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+    "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91-a1",
+      "result_commit": "7a706164baaf42fc7f55751247396a8836928310",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1-a1",
+      "result_commit": "f492ba4a003c8f1324077e050d48667ae23c7100",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-d6aeacd6b8-a1"
+}
