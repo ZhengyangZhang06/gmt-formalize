@@ -99228,4 +99228,49 @@ theorem Submission.idtp_cse_fibre_count_bound : ∀ (P : ℕ) (C : GeometricCurr
         rw [mul_right_comm, ← ENNReal.ofReal_mul (by positivity), one_div_mul_cancel h2s'.ne',
           ENNReal.ofReal_one, one_mul]
 
+/-- **Density at the edge of a planar sector of a 2-dimensional minimizing cone** (proof of
+7.3.3(1), case `n − d = 2`, chapter-07.txt lines 497–510, where the structure of 2-dimensional
+minimizing cones is cited to [Whi82]).  Let `C ∈ 𝒟₂(ℝᴾ)` be a minimizing cone with `∂C = 0`, let
+`a, e` be an orthonormal basis of the plane `Q`, and let `a ∈ spt C`.  If every point
+`y = t(cos φ·a + sin φ·e)` (`t > 0`, `0 < φ < δ`) has `Θ²(μ_C, y) = k ≥ 1` and
+`spt C ∩ B_r(y) ⊆ Q` for some `r > 0`, then `Θ²(μ_C, a) = k`.  The tangent cones at `a` give
+`m = Θ²(μ_C, a) ≥ 1` and localize `spt C` near `a`; the integrality of the fibre multiplicities
+gives `k ≤ m`, and for `k < m` the boxes `Z(s₀, s')` at `a` would have mass at least
+`(4m + 2)s'²(1 − 2s')`, against `μ_C(Z(s₀, s'))/s'² → 4m`. -/
+theorem Submission.idtp_cone_sector_endpoint_density : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ : ℝ) (k : ℕ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < δ → 1 ≤ k → a ∈ C.support → (∀ t φ : ℝ, 0 < t → 0 < φ → φ < δ → HasMassDensity C (t • (Real.cos φ • a + Real.sin φ • e)) k ∧ ∃ r : ℝ, 0 < r ∧ C.support ∩ ball (t • (Real.cos φ • a + Real.sin φ • e)) r ⊆ (Q : Set (Euclid P))) → HasMassDensity C a k := by
+  intro P C Q a e δ k hC hCb hCcone hQ haQ heQ ha he hae hδ hk haC hsec
+  -- Step 0: an integer multiplicity representation `R` of `C`.
+  obtain ⟨R, hR⟩ := hC.1
+  -- Steps 0–2 and 4(a): `m = Θ²(μ_C, a) ≥ 1` and the localization property `Loc(s₀)` at `a`.
+  obtain ⟨m, -, hma, -, s₀, hs₀, hs₀le, hloc⟩ := Submission.idtp_cse_edge_tangent_plane P C Q a e
+    δ k hC hCb hCcone hQ haQ heQ ha he hae hδ hk haC hsec
+  -- Steps 11–12: `k ≤ m`, and for `k < m` the boxes `Z(s₀, s')` carry excess mass.
+  obtain ⟨hkm, hexcess⟩ := Submission.idtp_cse_fibre_count_bound P C Q a e δ k hC hCb hCcone hQ
+    haQ heQ ha he hae hδ hk haC hsec R m s₀ hR hma hs₀ hs₀le hloc
+  rcases hkm.lt_or_eq with hkm | rfl
+  · exfalso
+    obtain ⟨s₃, hs₃, hbound⟩ := hexcess hkm
+    -- Step 10(c): `μ_C(Z(s₀, s'))/s'² → 4m` as `s' → 0⁺`.
+    have hlim := (Submission.idtp_cse_edge_box_mass_limits P C Q a e δ k hC hCb hCcone hQ haQ
+      heQ ha he hae hδ hk haC hsec R m s₀ hR hma hs₀ hs₀le hloc).1
+    -- The excess bound gives `(4m + 2)(1 − 2s') ≤ μ_C(Z(s₀, s'))/s'²` for `0 < s' < s₃`.
+    have hlow : Tendsto (fun s' : ℝ => ENNReal.ofReal ((4 * (m : ℝ) + 2) * (1 - 2 * s')))
+        (𝓝[>] 0) (𝓝 (ENNReal.ofReal (4 * (m : ℝ) + 2))) :=
+      ENNReal.tendsto_ofReal (tendsto_nhdsWithin_of_tendsto_nhds
+        (Continuous.tendsto' (by fun_prop) _ _ (by norm_num)))
+    have hle := le_of_tendsto_of_tendsto hlow hlim (by
+      filter_upwards [Ioo_mem_nhdsGT hs₃] with s' hs'
+      rw [ENNReal.le_div_iff_mul_le (Or.inl (ENNReal.ofReal_pos.2 (pow_pos hs'.1 2)).ne')
+        (Or.inl ENNReal.ofReal_ne_top), ← ENNReal.ofReal_mul' (sq_nonneg s'),
+        show (4 * (m : ℝ) + 2) * (1 - 2 * s') * s' ^ 2 = (4 * (m : ℝ) + 2) * s' ^ 2 * (1 - 2 * s')
+          by ring]
+      exact hbound s' hs'.1 hs'.2.le)
+    -- Hence `4m + 2 ≤ 4m`, which is absurd.
+    rw [show (4 * (m : ℝ≥0∞)) = ENNReal.ofReal (4 * (m : ℝ)) by
+        rw [ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 4), ENNReal.ofReal_natCast,
+          ENNReal.ofReal_ofNat],
+      ENNReal.ofReal_le_ofReal_iff (by positivity)] at hle
+    linarith
+  · exact hma
+
 end GMT.Ch07
