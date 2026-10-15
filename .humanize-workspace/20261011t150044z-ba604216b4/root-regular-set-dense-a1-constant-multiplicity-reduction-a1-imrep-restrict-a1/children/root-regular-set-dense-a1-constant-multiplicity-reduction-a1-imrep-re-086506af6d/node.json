@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1.approx_tangent_local_null-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1",
+  "depth": 4,
+  "title": "Approximate tangent spaces survive removal of a locally null set",
+  "statement": "Let P, n ∈ ℕ. Let M, M' ⊆ ℝ^P with M Borel and M' ⊆ M (M' is otherwise arbitrary). Let x ∈ ℝ^P and δ > 0 with Hⁿ((M ∖ M') ∩ B_δ(x)) = 0, where Hⁿ = μHE[n] and B_δ(x) is the open ball. Let Q be a linear subspace of ℝ^P. Suppose Q is the approximate tangent space of M at x in the sense of Simon Ch. 3, Definition 1.4: HasApproximateTangentSpaceAt n M x Q, meaning finrank Q = n and ∫_{η_{x,λ}(M)} f dHⁿ → ∫_Q f dHⁿ as λ ↓ 0 for all f ∈ C_c(ℝ^P, ℝ), where η_{x,λ}(y) = λ⁻¹(y − x). Then Q is the approximate tangent space of M' at x: HasApproximateTangentSpaceAt n M' x Q.",
+  "lean_statement": "∀ (P n : ℕ) (M M' : Set (Euclid P)) (x : Euclid P) (δ : ℝ) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → M' ⊆ M → 0 < δ → μHE[n] ((M \\ M') ∩ ball x δ) = 0 → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n M' x Q",
+  "lean_name": "rsd_cmr_ir_approxTangent_of_local_null",
+  "depends_on": [
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1.blowup_image_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_restrict-a1.blowup_image_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-re-086506af6d-a1"
+}

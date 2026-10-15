@@ -1,0 +1,122 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "cmp .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "rg -n 'dmcbr_ci|cbr_ci_const_vector_massOn' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project -g '*.lean'",
+        "integral_map_equiv|setIntegral_map_equiv|integral_smul_measure|measure_toMeasurable_inter_of_sFinite|le_hausdorffMeasure|hausdorffMeasure_le_liminf_tsum|exists_disjoint_subfamily_covering_enlargement|ae_tendsto_lintegral_enorm_sub_div|tendsto_filterAt",
+        "git show bc226ec6ff9a09922237c3ab524c8613d1bdec79:GMT/Ch07/Submission.lean",
+        "env LEAN_NUM_THREADS=4 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cycle_im_independent_audit/Types.lean",
+        "env LEAN_NUM_THREADS=4 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cycle_im_independent_audit/Assembly.lean",
+        "env LEAN_NUM_THREADS=4 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cycle_im_independent_audit/AcceptedConstMass.lean",
+        "env LEAN_NUM_THREADS=4 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cycle_im_independent_audit/LibraryAxioms.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/SFinite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/Unique.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-22612ab17a/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-22612ab17a/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-f2206a35f5/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/tmp/cycle_im_independent_audit/Types.lean",
+        "/tmp/cycle_im_independent_audit/Assembly.lean",
+        "/tmp/cycle_im_independent_audit/AcceptedConstMass.lean",
+        "/tmp/cycle_im_independent_audit/LibraryAxioms.lean"
+      ],
+      "conclusion": "The pins and frozen contract match, and independently recomputing the scope digest gives the requested digest. No proposed declaration occurs in the snapshot project. All twelve exact one-line types elaborate independently without child implementations; none contains a placeholder, self-reference, declaration wrapper, or problematic matrix construction. All names are bare identifiers: eleven are unreserved, and const_mass reuses an accepted declaration with an identical frozen type. Dependencies are acyclic and correctly directed. The split appropriately separates obligations in this selected proof. After checking every assumption against the frozen interfaces, the conditional assembly compiles to the exact selected parent type. The assembly, reused constant-mass declaration, and checked library results have only propext, Classical.choice and Quot.sound as axioms. Each supplied child proof was independently reviewed, rather than accepted on the strength of the other branch's audit."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dilation_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All six conclusions match the prose. The proof supplies test-form composition, boundary scaling, IMRep transport, representation transfer, mass scaling for arbitrary sets, and Hausdorff scaling. The measurable-equivalence integral identity is valid without additional measurability or integrability hypotheses."
+    },
+    {
+      "key": "dilation_isp",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "SL constructs the required slices; ISP applies to their exact representations. RU identifies every competing slice and forces the boundary restriction to vanish. The declared dilation_calculus dependency then transports the integer boundary. All admissibility conditions are established."
+    },
+    {
+      "key": "const_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The norming covector implies s ≥ 0. The pointwise bound proves the upper mass estimate, and smooth cutoffs exhausting the open set prove the lower estimate, including infinite measure and s = 0. The accepted declaration has the identical frozen type and a clean axiom footprint."
+    },
+    {
+      "key": "isodiametric_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes compactness, volume preservation, diameter control and retained coordinate symmetries under Steiner symmetrization. Covering estimates and Haar normalization then give the exact measure inequality, including dimension zero. This agrees with [Simon, Theorem 2.10](https://web.stanford.edu/class/math285/ts-gmt.pdf) and supplies the normalization needed by good_points."
+    },
+    {
+      "key": "density_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite total mass justifies the unit-dual-norm argument. The covering estimate establishes a finite-Hausdorff-measure carrier before Radon–Nikodym is applied. Removing zero/infinite-density and nonunit points gives the stated pointwise conditions, while normalization and change of density preserve the current representation."
+    },
+    {
+      "key": "good_points",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The covering-tail argument and isodiametric_bound yield the sharp upper-density constant 1. The field bound supplies integrability for Besicovitch differentiation. Multiplying the vanishing average error by the bounded density ratio proves exactly the stated ENNReal operator-norm limit."
+    },
+    {
+      "key": "blowup_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The good-point estimates give both carrier-density bounds and vanishing rescaled error. CT supplies the subsequence and measure inequalities; const_mass and the comparison estimate establish the mass conclusions. Dilation invariance and the explicit SLIM hypothesis establish ISP of the limit. All concentration, compact-finiteness and convergence conclusions are accounted for."
+    },
+    {
+      "key": "constant_planes",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The distributional boundary identity gives translation invariance. Coordinate expansion and growth force the invariant subspace to have dimension d+1 and the vector to be simple. Haar decomposition and lower density give atoms of weight at least c; growth bounds their total weight and number. Positivity near the origin supplies the zero offset."
+    },
+    {
+      "key": "weight_ge_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof uses only the stated REP, SL and CT hypotheses. The empty-annulus argument produces slices with vanishing boundary mass; projection, density representation and the supplied BV estimate give L¹ convergence. Measurable hulls handle arbitrary, potentially nonmeasurable N_k. Lipschitz measure comparison and the compact-set limsup bound then imply every weight is at least one."
+    },
+    {
+      "key": "plane_integer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The coordinate calculation proves that C is a cycle and computes its half-space slice boundaries. SL makes ISP applicable to actual slice currents. const_mass and MR identify their mass measures, forcing the positive coefficient to equal a natural-valued multiplicity on a set of positive measure. The d = 0 slice is explicitly covered."
+    },
+    {
+      "key": "pointwise",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four declared dependencies apply with the stated hypotheses. LD supplies the lower density for constant_planes; weight_ge_one collapses the measure to a single unit-weight plane; plane_integer gives integrality. The determinant argument identifies the plane independently of the subsequence, and the subsequence criterion proves the exact approximate-tangent predicate."
+    },
+    {
+      "key": "im_criterion",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes a.e. strong measurability of the chosen plane projections through quadratic moments, then applies the explicit RECT hypothesis. It selects a Borel full-measure carrier, proves tangent invariance under the null modification, and verifies every IMRep field and the representation identity. No unstated IMC hypothesis or parent conclusion is used."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,60 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "dimred_mbl_dtfric_|face_integral_current|face_divergence",
+        "TestFormOnConverges|structure GeometricCurrentOn",
+        "covectorEuclideanNorm",
+        "Integrable.mul_bdd",
+        "norm_integral_le_of_norm_le",
+        "integral_eq_zero_iff_of_nonneg",
+        "norm_iteratedFDeriv_zero",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/dimred_mbl_dtfric_decision/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-bb2fad829b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-bb2fad829b/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtfric_decision/CurrentExists.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtfric_decision/MassLe.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtfric_decision/SupportFaces.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtfric_decision/Assembly.lean",
+        "/tmp/face-integral-current-independent-audit-kdnvpree/IndependentTypes.lean"
+      ],
+      "conclusion": "Verified the pinned revisions, relevant library-source compatibility, and byte-identical snapshot Contract/local Submission. Recomputed the exact requested parent digest. No proposed names occur in the searched reference declarations or another DAG node; identical types on unaccepted twin branches are not reused. All names are bare identifiers. Each frozen proposition passes the syntax validator unchanged and elaborates without child implementations; separate checks confirm the intended Euclidean coordinates, restricted-volume integrals, and smoothness convention. Independently reviewed every natural proof and successfully recompiled all three supplied child proofs and the exact parent assembly, each using only propext, Classical.choice, and Quot.sound. The three-way split is appropriate: construction, mass, and support are independent obligations, and the retained boundary argument uses the inherited face_divergence dependency. These obligations establish the exact selected parent, with acyclic, correctly directed dependencies."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "current_exists",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line type matches all prose hypotheses and both conclusions. The proof establishes continuous bounded multipliers, integrability, linearity, and the uniform estimate, then derives precisely the required sequential continuity from order-zero convergence and common compact support. Arbitrary index maps suffice. The argument is complete and independent of the parent and other children."
+    },
+    {
+      "key": "mass_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the stated assumptions and mass inequality. Strict monotonicity correctly identifies a coefficient among the nonnegative squared terms defining the Euclidean covector norm. Integrability supplies the absolute-density majorant; the cited integral bound requires no separate integrability hypothesis on the dominated integrand. Finite summation and the defining mass supremum finish the proof without relying on current_exists or the parent."
+    },
+    {
+      "key": "support_faces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the full existential support conclusion and all hypotheses. The proof establishes compactness of the finite closed-face union, uses integrability to discard zero-L1 densities almost everywhere, and proves vanishing on a disjoint ball. Properness supplies compact closure, making that ball a valid zeroRegion witness. No injectivity, monotonicity, sibling result, or parent conclusion is implicitly required."
+    }
+  ],
+  "required_changes": []
+}

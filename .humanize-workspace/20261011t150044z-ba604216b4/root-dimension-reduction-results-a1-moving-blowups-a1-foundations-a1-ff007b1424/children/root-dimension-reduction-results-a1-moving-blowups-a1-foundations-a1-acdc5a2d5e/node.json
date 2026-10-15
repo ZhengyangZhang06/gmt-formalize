@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.testform_extension-a1.ambient_extension-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.testform_extension-a1",
+  "depth": 5,
+  "title": "Linear extension of a locally bounded current to compactly supported continuous covector fields on ℝ^P (selected proof, steps 2–3, 5–8)",
+  "statement": "Let P, n, d ∈ ℕ and let c : Λ := Covector (Euclid P) n → ℝ^d = EuclideanSpace ℝ (Fin d) be a continuous linear equivalence with |α| := covectorEuclideanNorm α = ‖c α‖ for every α ∈ Λ. Let U ⊆ ℝ^P be open, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), and m : Set(ℝ^P) → ℝ a function such that |T(ω)| ≤ r·m(W) whenever W ⊆ ℝ^P is open with W ⊂⊂ U (CompactlyContained W U: closure W is compact and contained in U), ω ∈ TestFormOn U n, tsupport ω ⊆ W, r ∈ ℝ and |ω(x)| ≤ r for all x. Then there is Φ : (ℝ^P → Λ) → ℝ such that: (a) Φ(G₁ + G₂) = Φ(G₁) + Φ(G₂) whenever G₁, G₂ : ℝ^P → Λ are continuous with compact support and tsupport G_i ⊆ U; (b) Φ(t•G) = t·Φ(G) for every t ∈ ℝ and every continuous compactly supported G : ℝ^P → Λ with tsupport G ⊆ U; (c) Φ(ω) = T(ω) for every ω ∈ TestFormOn U n (ω regarded as the map ℝ^P → Λ); (d) |Φ(G)| ≤ r·m(W) whenever W ⊆ ℝ^P is open with W ⊂⊂ U, G : ℝ^P → Λ is continuous with compact support and tsupport G ⊆ W, r ∈ ℝ, and |G(x)| ≤ r for all x.",
+  "lean_statement": "∀ (P n d : ℕ) (c : Covector (Euclid P) n ≃L[ℝ] EuclideanSpace ℝ (Fin d)) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (m : Set (Euclid P) → ℝ), IsOpen U → (∀ α : Covector (Euclid P) n, covectorEuclideanNorm α = ‖c α‖) → (∀ (W : Set (Euclid P)) (ω : TestFormOn U n) (r : ℝ), IsOpen W → CompactlyContained W U → tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) n) x) ≤ r) → |T ω| ≤ r * m W) → ∃ Φ : (Euclid P → Covector (Euclid P) n) → ℝ, (∀ G₁ G₂ : Euclid P → Covector (Euclid P) n, Continuous G₁ → HasCompactSupport G₁ → tsupport G₁ ⊆ U → Continuous G₂ → HasCompactSupport G₂ → tsupport G₂ ⊆ U → Φ (G₁ + G₂) = Φ G₁ + Φ G₂) ∧ (∀ (t : ℝ) (G : Euclid P → Covector (Euclid P) n), Continuous G → HasCompactSupport G → tsupport G ⊆ U → Φ (t • G) = t * Φ G) ∧ (∀ ω : TestFormOn U n, Φ (ω : DifferentialForm (Euclid P) n) = T ω) ∧ ∀ (W : Set (Euclid P)) (G : Euclid P → Covector (Euclid P) n) (r : ℝ), IsOpen W → CompactlyContained W U → Continuous G → HasCompactSupport G → tsupport G ⊆ W → (∀ x, covectorEuclideanNorm (G x) ≤ r) → |Φ G| ≤ r * m W",
+  "lean_name": "dimred_mbl_fnd_tfe_ambient_extension",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.testform_extension-a1.uniform_approx-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.testform_extension-a1.limit_functional-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.testform_extension-a1.uniform_approx-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.foundations-a1.testform_extension-a1.limit_functional-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-foundations-a1-acdc5a2d5e-a1"
+}

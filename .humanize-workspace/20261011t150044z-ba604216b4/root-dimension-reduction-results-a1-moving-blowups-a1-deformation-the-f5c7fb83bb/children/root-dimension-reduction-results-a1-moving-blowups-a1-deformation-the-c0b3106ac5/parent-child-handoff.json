@@ -1,0 +1,82 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat SNAPSHOT/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); git -C SNAPSHOT/mathlib rev-parse HEAD (25730c7c759d…, matches); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (identical)",
+        "rg -n 'dimred_mbl_dt_cbm_bvp|cmcdtfrfg_cube_volume' SNAPSHOT/project SNAPSHOT/mathlib/Mathlib lake-packages-25730c7c/simongmt GMT -g '*.lean' (no match)",
+        "rg -n 'BVPoincare|poincare_ineq|Poincaré inequality|Poincare inequality' SNAPSHOT/project/GMT -g '*.lean' (Ch02 def BVPoincare : Prop is an unproved specification under main_theorem := by sorry; Ch04 5.6 is the varifold Poincaré spec; Ch07 imports neither); rg -n -i 'poincar[eé] ineq|mean_dev|oscillation' lake-packages-25730c7c/simongmt/Poincare -g '*.lean' (only Chapter04/Poincare.lean, Simon 5.6 local Poincaré for generalized mean curvature: different setting)",
+        "rg -n 'lemma Integrable.comp_fst|lemma Integrable.comp_snd|theorem Integrable.integral_prod_left|theorem setIntegral_prod|theorem tendsto_setIntegral_of_monotone|theorem prod_restrict|lemma integral_mono_of_nonneg|lemma abs_integral_le_integral_abs|theorem iUnion_prod_of_monotone|theorem volume_pi_Ioo|lemma isFiniteMeasure_restrict|theorem measure_closedBall_lt_top|theorem ContinuousOn.integrableOn_compact|theorem tendsto_natCast_atTop_atTop|theorem restrict_apply_univ|PiLp.volume_preserving_ofLp|EuclideanSpace.proj|EuclideanSpace.norm_eq|inv_tendsto_atTop' SNAPSHOT/mathlib/Mathlib (all found)",
+        "python3 scans of RUN/dag.json (2092 nodes): exact lean_statement matches for each proposed type; cmcdtfrfg_cube_volume is the lean_name of exactly one node (status accepted, candidate_commit a104b3873f3c979b07a45e8d97d3d4d1d84c106a) with byte-identical type; twin children cmcdt_cbm_bvp_* (identical types) unaccepted under another parent; proposed fresh names occur 0 times; git show a104b3873f3c…:GMT/Ch07/Submission.lean (13-line accepted proof)",
+        "python3/cat of twin nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c82ada6bf8/{decomposition-v1,decomposition-audit-v1,decomposition-scope-v1,parent-supplied-natural-proof.md}; diff against this node's parent-supplied-natural-proof.md (same argument, steps 0–4)",
+        "grep -n in /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py for _decompose (node.depth >= max_depth), _existing_lean_name_problem, _accepted_checkpoint, _install_parent_supplied_child_handoff, _overlay_accepted_children, _reference_use_problem; swarm-project.json (max_depth 6, max_children 12)",
+        "python3 -I importing verifier/gmt-compare.py contract_scope(Contract.lean, GMT.Ch07.main_theorem) to build the challenge prefix; lake env lean /tmp/dimred-bvp-k4q9/lean/{ChildTypes,Challenge_cube_volume,Challenge_osc_l1_limit,Challenge_osc_exhaustion,Challenge_mean_dev,Assembly,MeanDev,OscL1,OscExh,EndToEnd,ExactE2E}.lean (types elaborate; children fully proved; parent assembled; #print axioms propext, Classical.choice, Quot.sound)",
+        "validate_lean_statement from /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py and verifier/lean_contract.py on all four types (accepted unchanged)",
+        "sed -n 627,662p book/chapter-02.txt (Simon Ch. 2, 2.7 BV Poincaré); sed -n 1880,1893p book/chapter-06.txt (Ch. 6, proof of 5.1, display (32))"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch04/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Lattice/Image.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Order/Field.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Archimedean.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-f5c7fb83bb/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c82ada6bf8/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-c82ada6bf8/decomposition-audit-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter04/Poincare.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/dimred-bvp-k4q9/lean/ExactE2E.lean",
+        "/tmp/dimred-bvp-k4q9/lean/Assembly.lean"
+      ],
+      "conclusion": "The pins match (project b4d606db, Mathlib 25730c7c), and the snapshot Contract.lean, workspace Contract.lean and Submission.lean are byte-identical. Neither the snapshot project, Mathlib nor SimonGMT contains this BV Poincaré inequality or any of the three new oscillation lemmas. Ch02 BVPoincare is an unproved specification that Ch07 does not import, and SimonGMT's Ch04 Poincaré is the varifold version. The unit-cube volume is already a comparator-accepted DAG declaration, cmcdtfrfg_cube_volume, with the byte-identical type ∀ k : ℕ, volume {y : Euclid k | ∀ i, 0 < y i ∧ y i < 1} = 1, so it is reused. The three new obligations get fresh, collision-free names dimred_mbl_dt_cbm_bvp_*. Their types equal the reviewed but unaccepted twin cmcdt_cbm_bvp_* lemmas owned by another parent. All cited Mathlib lemmas exist at the pinned revision and inside the bare GMT.Ch07.Submission import closure. All four children were compiled with complete proofs, and the exact frozen parent was derived from them plus the two sibling contracts using only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1",
+  "child_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.bv_poincare-a1.mean_dev-a1",
+  "subproblem": {
+    "key": "mean_dev",
+    "title": "Mean deviation is bounded by the double-integral oscillation on a set of volume 1",
+    "statement": "Let m ∈ ℕ, let S ⊆ Euclid (m + 1) be any set with Lebesgue measure vol(S) = 1, and let u : Euclid (m + 1) → ℝ be integrable on S. Then, with c := ∫_S u, ∫_{x∈S}|u(x) − c| dx ≤ ∫_{x∈S}∫_{y∈S}|u(x) − u(y)| dy dx.",
+    "lean_statement": "∀ (m : ℕ) (S : Set (Euclid (m + 1))) (u : Euclid (m + 1) → ℝ), volume S = 1 → IntegrableOn u S → ∫ x in S, |u x - ∫ y in S, u y| ≤ ∫ x in S, ∫ y in S, |u x - u y|",
+    "lean_name": "dimred_mbl_dt_cbm_bvp_mean_dev_le_osc",
+    "depends_on": [],
+    "natural_proof": "Source: step 4 of the parent proof (c := ∫_{Q₁}u; since vol(Q₁) = 1, u(x) − c = ∫_{Q₁}(u(x) − u(y)) dy, hence |u(x) − c| ≤ ∫_{Q₁}|u(x) − u(y)| dy = h_0(x); integrate over Q₁), stated for an arbitrary set S of volume 1. The integrability of the inner integral h is step 1 of the parent proof.\n\nNotation. Euclid (m + 1) with Lebesgue measure vol. μ := vol restricted to S (Measure.restrict is defined for every set S). Integrals ∫ … dμ are exactly the set integrals ∫_S … of the statement. c := ∫ u dμ = ∫_S u.\n\n1. μ is a probability measure: μ(univ) = vol(S) = 1 (Measure.restrict_apply_univ, valid for every set S). In particular μ is finite, constants are μ-integrable, and ∫ b dμ = μ(univ)·b = b for every constant b (integral_const). By hypothesis u ∈ L¹(μ).\n2. Integrability on the product. On μ ⊗ μ the functions (x, y) ↦ u(x) and (x, y) ↦ u(y) are integrable (Integrable.comp_fst and Integrable.comp_snd, using that μ is finite). Hence F(x, y) := |u(x) − u(y)| is μ⊗μ-integrable (difference, then absolute value), and by Fubini (Integrable.integral_prod_left) h(x) := ∫ |u(x) − u(y)| dμ(y) is a μ-integrable function of x.\n3. Pointwise bound. Fix x. The function y ↦ u(x) − u(y) is μ-integrable (a constant minus u), and by linearity (integral_sub) and step 1, ∫ (u(x) − u(y)) dμ(y) = u(x) − ∫ u dμ = u(x) − c. Hence |u(x) − c| = |∫ (u(x) − u(y)) dμ(y)| ≤ ∫ |u(x) − u(y)| dμ(y) = h(x), because the absolute value of an integral is at most the integral of the absolute value (abs_integral_le_integral_abs).\n4. Integration. The function x ↦ |u(x) − c| is nonnegative and pointwise ≤ h(x), and h is μ-integrable by step 2. By monotonicity of the integral (integral_mono_of_nonneg: nonnegative left side, integrable right side, pointwise inequality), ∫ |u(x) − c| dμ(x) ≤ ∫ h dμ = ∫_{x∈S}∫_{y∈S}|u(x) − u(y)| dy dx. With c = ∫_S u this is the claim. ∎",
+    "proof_key_steps": [
+      "μ := vol restricted to S has μ(univ) = vol(S) = 1, so it is a probability measure and u ∈ L¹(μ).",
+      "Fubini: |u(x) − u(y)| is μ⊗μ-integrable, so h(x) := ∫_S|u(x) − u(y)| dy is integrable on S.",
+      "Since μ(univ) = 1, u(x) − ∫_S u = ∫_S (u(x) − u(y)) dy, hence |u(x) − ∫_S u| ≤ h(x).",
+      "Integrating the nonnegative function |u − ∫_S u| ≤ h over S gives ∫_S|u − ∫_S u| ≤ ∫_S∫_S|u(x) − u(y)| dy dx."
+    ]
+  },
+  "audit": {
+    "key": "mean_dev",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The exact proposition correctly permits arbitrary S: restrict_apply_univ requires no measurability assumption on S. Unit mass justifies the constant-integral identity, product integrability justifies Fubini, and the absolute-integral inequality followed by integration proves the conclusion completely without circular reliance."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-c0b3106ac5/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-c0b3106ac5/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-c0b3106ac5/parent-supplied-natural-proof.json"
+}
