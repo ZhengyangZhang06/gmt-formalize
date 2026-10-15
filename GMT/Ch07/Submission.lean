@@ -103918,4 +103918,113 @@ theorem Submission.density_and_tangent_cones : DensityAndTangentCones := by
     Submission.dtc_cone_of_constant_density (n + k) n C (Θ x) hn hCmin.1 hCbd hCstat hCball,
     Θ x, hxΘ, hCdens⟩
 
+/-- **Threshold reduction** (the common part of the proofs of Simon 7.3.3(1), 7.4.4 and 7.5.8,
+chapter-07.txt lines 420–510, 641–684, 919–974, with Appendix A.4).  Let `T` be minimizing in
+`U ∩ N` with `∂T = 0`, `B̄_{2r}(z) ⊆ U` and `c > 0`, and suppose that no admissible zero-scale
+limit `S` of blow-ups `η_{xᵢ,λᵢ#}T` (`xᵢ ∈ B_r(z)`, `λᵢ → 0`) is (H1) an `n`-plane of density
+`c' ≥ c`, or (H2) invariant under a subspace `L` with `d₀ ≤ dim L < n` and `{Θ_S ≥ c} = L`.  Then
+`Z(s) = {x ∈ B_s(z) : Θⁿ(μ_T, x) ≥ c}` has `μH[d₀ − 1 + α](Z(r)) = 0` for `α > 0`, is empty if
+`d₀ = 0`, and `Z(r/2)` is finite if `d₀ = 1`.  `dimred_tr_blowup_class` gives Simon's class `𝓜`
+of mass measures of rescalings of `T` and their zero-scale limits, with `μ₀ ∈ 𝓜` the rescaling to
+`B₂(0)`; `dimred_tr_measure_class_reduction` (Appendix A.4 for the threshold map) gives either
+`{c ≤ Θ_μ} ∩ B₁(0) = ∅` for all `μ ∈ 𝓜`, or a dimension `d ≤ n − 1` with the null and finiteness
+bounds and an infinite extremal `ν` with `{c ≤ Θ_ν} = L` invariant under `L`, `dim L = d`.  That
+`ν` is an admissible zero-scale limit, so (H2) forces `d < d₀`, and the bounds pass to `Z` through
+the similarity `w ↦ z + r w`. -/
+theorem Submission.dimred_threshold_reduction : ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (c : ℝ) (d₀ : ℕ) (z : Euclid (n + k)) (r : ℝ), 0 < c → 0 < r → closedBall z (2 * r) ⊆ U → (∀ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (Q : Submodule ℝ (Euclid (n + k))) (c' : ℝ), (∀ i, xs i ∈ ball z r) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → IsMinimizingIn S univ → BoundaryVanishes S → Module.finrank ℝ Q = n → c ≤ c' → (∀ y, HasMassDensity S y (Set.indicator (Q : Set (Euclid (n + k))) (fun _ => c') y)) → False) → (∀ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (L : Submodule ℝ (Euclid (n + k))), (∀ i, xs i ∈ ball z r) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → IsMinimizingIn S univ → BoundaryVanishes S → d₀ ≤ Module.finrank ℝ L → Module.finrank ℝ L < n → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid (n + k)) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → (∀ y, (∃ θ : ℝ, c ≤ θ ∧ HasMassDensity S y θ) ↔ y ∈ L) → False) → (∀ α : ℝ, 0 < α → μH[(d₀ : ℝ) - 1 + α] {x | x ∈ ball z r ∧ ∃ θ : ℝ, c ≤ θ ∧ HasMassDensity T x θ} = 0) ∧ (d₀ = 0 → {x | x ∈ ball z r ∧ ∃ θ : ℝ, c ≤ θ ∧ HasMassDensity T x θ} = ∅) ∧ (d₀ = 1 → {x | x ∈ ball z (r / 2) ∧ ∃ θ : ℝ, c ≤ θ ∧ HasMassDensity T x θ}.Finite) := by
+  intro n k ℓ hℓ U N T hn hU hN hcl hmin hspt hbd c d₀ z r hc hr hzU hH1 hH2
+  -- Step 1 (parent steps 1–3): the class `𝓜` of mass measures of the members of Simon's class
+  -- `𝒯`, with `dens μ = Θ^{*n}(μ, ·)`, and the rescaling `μ₀` of `μ_T` to `B₂(0)`
+  obtain ⟨dens, hdens⟩ : ∃ dens : Measure (Euclid (n + k)) → Euclid (n + k) → ℝ,
+      ∀ (μ : Measure (Euclid (n + k))) (x : Euclid (n + k)), dens μ x = (limsup (fun ρ : ℝ =>
+        μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal :=
+    ⟨_, fun _ _ => rfl⟩
+  obtain ⟨𝓜, Λ, hfin, hrep, hres, hblow, hmono, ⟨μ₀, hμ₀, hμ₀T⟩, hadm⟩ :=
+    Submission.dimred_tr_blowup_class Submission.dimred_im_mass_measure
+      Submission.dimred_minimizing_monotonicity Submission.dimred_blowup_limit_moving_centres
+      (Submission.dimred_tr_tangent_measure_homogeneous Submission.dimred_minimizing_monotonicity
+        Submission.dimred_blowup_limit_moving_centres)
+      n k ℓ hℓ U N T hn hU hN hcl hmin hspt hbd z r dens hr hzU hdens
+  -- Step 2 (parent step 5(δ), A.3(1)): by (H1), no infinite member is flat of density `≥ c`
+  have hflat : ∀ μ ∈ 𝓜, μ univ = ∞ → ∀ (Q : Submodule ℝ (Euclid (n + k))) (c' : ℝ),
+      Module.finrank ℝ Q = n → c ≤ c' →
+        (∀ x, dens μ x = Set.indicator (Q : Set (Euclid (n + k))) (fun _ => c') x) → False := by
+    intro μ hμ hinf Q c' hQ hcc' hind
+    obtain ⟨S, xs, lams, hlams, hxs, hlim, hconv, hSmin, hSbd, hSdens⟩ := hadm μ hμ hinf
+    refine hH1 S xs lams hlams Q c' hxs hlim hconv hSmin hSbd hQ hcc' fun y => ?_
+    rw [← hind y]
+    exact hSdens y
+  -- Step 3 (parent step 6): Appendix A.4 for the density threshold
+  have hdich := Submission.dimred_tr_measure_class_reduction Submission.abstract_dimension_reduction
+    (n + k) n c Λ 𝓜 dens hn hc hdens hfin hrep hres hblow hmono hflat
+  -- densities are unique
+  have huniq : ∀ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (x : Euclid (n + k))
+      (θ θ' : ℝ), HasMassDensity S x θ → HasMassDensity S x θ' → θ = θ' := fun _ _ _ _ h h' =>
+    (ENNReal.ofReal_eq_ofReal_iff h.1 h'.1).1 (tendsto_nhds_unique h.2 h'.2)
+  -- Step 4 (parent step 8): `Z(rσ) ⊆ z + r · {w ∈ B_σ(0) : c ≤ dens μ₀ w}` for `σ ≤ 1`
+  have hZ : ∀ ρ σ : ℝ, σ ≤ 1 → ρ = r * σ →
+      {x | x ∈ ball z ρ ∧ ∃ θ : ℝ, c ≤ θ ∧ HasMassDensity T x θ} ⊆
+        (fun w => z + r • w) '' {w | w ∈ ball (0 : Euclid (n + k)) σ ∧ c ≤ dens μ₀ w} := by
+    rintro ρ σ hσ rfl x ⟨hx, θ, hcθ, hθ⟩
+    have hxz : z + r • (r⁻¹ • (x - z)) = x := by
+      rw [smul_smul, mul_inv_cancel₀ hr.ne', one_smul, add_sub_cancel]
+    have hw : r⁻¹ • (x - z) ∈ ball (0 : Euclid (n + k)) σ := by
+      rw [mem_ball_zero_iff, norm_smul, norm_inv, Real.norm_of_nonneg hr.le, inv_mul_lt_iff₀ hr]
+      exact mem_ball_iff_norm.1 hx
+    refine ⟨r⁻¹ • (x - z), ⟨hw, ?_⟩, hxz⟩
+    rw [hμ₀T (r⁻¹ • (x - z)) (ball_subset_ball hσ hw) θ (by rwa [hxz])]
+    exact hcθ
+  rcases hdich with hI | ⟨d, hdn, hnull, hfin0, ν, hν, hνinf, L, hL, hνL, hνinv⟩
+  · -- Case (I): `Z(r) = ∅`
+    have hZr : {x | x ∈ ball z r ∧ ∃ θ : ℝ, c ≤ θ ∧ HasMassDensity T x θ} = ∅ := by
+      refine subset_empty_iff.1 ((hZ r 1 le_rfl (mul_one r).symm).trans ?_)
+      rw [hI μ₀ hμ₀, image_empty]
+    refine ⟨fun α _ => by rw [hZr, measure_empty], fun _ => hZr, fun _ => ?_⟩
+    refine Set.finite_empty.subset ?_
+    rw [← hZr]
+    exact fun x hx => ⟨ball_subset_ball (half_le_self hr.le) hx.1, hx.2⟩
+  · -- Case (II) (parent step 7): the extremal `ν` is an admissible zero-scale limit `S`, so
+    -- (H2) forces `d < d₀`
+    obtain ⟨S, xs, lams, hlams, hxs, hlim, hconv, hSmin, hSbd, hSdens⟩ := hadm ν hν hνinf
+    have hdd₀ : d + 1 ≤ d₀ := by
+      by_contra hlt
+      refine hH2 S xs lams hlams L hxs hlim hconv hSmin hSbd (by omega) (by omega) ?_ ?_
+      · intro y hy lam hlam w θ hθ
+        rw [huniq S w θ (dens ν w) hθ (hSdens w), ← hνinv y hy lam hlam w]
+        exact hSdens _
+      · intro y
+        constructor
+        · rintro ⟨θ, hcθ, hθ⟩
+          have hy : y ∈ {x | c ≤ dens ν x} := by
+            show c ≤ dens ν y
+            rw [← huniq S y θ (dens ν y) hθ (hSdens y)]
+            exact hcθ
+          rw [hνL] at hy
+          exact hy
+        · intro hy
+          have hy' : y ∈ {x | c ≤ dens ν x} := by
+            rw [hνL]
+            exact hy
+          exact ⟨dens ν y, hy', hSdens y⟩
+    obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hdd₀
+    refine ⟨fun α hα => ?_, fun hd₀ => absurd hd₀ (by omega), fun hd₀ => ?_⟩
+    · -- `μH[d₀ − 1 + α](Z(r)) = 0`, with `d₀ − 1 + α = d + (m + α)`, through `w ↦ z + r w`
+      have hs : ((d + 1 + m : ℕ) : ℝ) - 1 + α = (d : ℝ) + ((m : ℝ) + α) := by
+        push_cast
+        ring
+      have hLip : LipschitzWith (Real.toNNReal r) (fun w : Euclid (n + k) => z + r • w) := by
+        refine LipschitzWith.of_dist_le_mul fun w w' => le_of_eq ?_
+        rw [dist_add_left, dist_smul₀, Real.coe_toNNReal _ hr.le, Real.norm_of_nonneg hr.le]
+      rw [hs]
+      refine measure_mono_null (hZ r 1 le_rfl (mul_one r).symm) (nonpos_iff_eq_zero.1 ?_)
+      calc μH[(d : ℝ) + ((m : ℝ) + α)] ((fun w => z + r • w) ''
+            {w | w ∈ ball (0 : Euclid (n + k)) 1 ∧ c ≤ dens μ₀ w})
+          ≤ (Real.toNNReal r : ℝ≥0∞) ^ ((d : ℝ) + ((m : ℝ) + α)) *
+            μH[(d : ℝ) + ((m : ℝ) + α)] {w | w ∈ ball (0 : Euclid (n + k)) 1 ∧ c ≤ dens μ₀ w} :=
+            hLip.hausdorffMeasure_image_le (by positivity) _
+        _ = 0 := by rw [hnull μ₀ hμ₀ _ (by positivity), mul_zero]
+    · -- `d₀ = 1`: `d = 0`, so `Z(r/2) ⊆ z + r · {w ∈ B_{1/2}(0) : c ≤ dens μ₀ w}` is finite
+      exact ((hfin0 (by omega) μ₀ hμ₀ (1 / 2) (by norm_num)).image _).subset
+        (hZ (r / 2) (1 / 2) (by norm_num) (by ring))
+
 end GMT.Ch07
