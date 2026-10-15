@@ -1,0 +1,367 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-dimension-reduction-results-a1-zero-dim-vanishing-a1",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.carrier_finite-a1",
+      "key": "carrier_finite",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-carrier-finite-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-carrier-finite-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD",
+              "grep -n 'euclideanHausdorffMeasure_zero' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; sed -n 620,665p local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "rg -n 'theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|theorem setIntegral_union |theorem integral_singleton |theorem lintegral_finset|theorem integrableOn_finite_biUnion|theorem IntegrableOn.of_forall_sdiff_eq_zero|theorem integrableOn_singleton |theorem Infinite.exists_subset_card_eq|theorem hausdorffMeasure_zero_singleton' (snapshot mathlib)",
+              "grep -rn -i 'dirac\\|pointCurrent\\|pointGeometricCurrentOn\\|TestFormOnConverges\\.' .lake/packages/simongmt/Poincare/SimonGMT; sed -n 1,70p Chapter06/GeometricPointProduct.lean",
+              "grep -n 'def HasApproximateTangentSpaceAt\\|def CountablyRectifiable\\|def blowUpMap\\|CountablyRectifiable.mono' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "sed -n 1,200p simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean (VanishesOn, zeroRegion, support); sed -n 1,320p Chapter06/Currents.lean (TestFormOnConverges, GeometricCurrentOn, ext, Zero); sed -n 1,140p Chapter06/Mass.lean (massOn)",
+              "lake env lean /tmp/zdv-check/Probe.lean: env.contains of Poincare.SimonGMT.Chapter06.pointGeometricCurrentOn, Poincare.SimonGMT.Chapter06.TestFormOnConverges.tendsto_eval and GMT.Ch07.Submission.dimred_im_mass_measure after import GMT.Ch07.Submission",
+              "python3 inspection of dag.json: dtc_dim_zero_eq_zero, dtc_dim_zero_carrier_finite, dtc_dim_zero_erase_point, dtc_point_current, dtc_approxTangent_sdiff_singleton, dor_zero_dim_minimizing_support_disjoint, regcomp_rim_sub_imrep, rsd_cmr_imrep_restrict (statements and statuses)",
+              "grep -c dimred_zdv dag.json; for d in .swarm-worktrees/*/gmt-ch07/GMT; do grep -rl dimred_zdv $d; done",
+              "lake env lean /tmp/zdv-check/Assembly.lean; lake env lean /tmp/zdv-check/Children.lean; lake env lean /tmp/zdv-check/Full.lean with #print axioms; string comparison of the tested parent and sibling types with the handoff lean_statement fields"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Countable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/GeometricPointProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/parent-child-handoff.json",
+              "/tmp/zdv-check/Probe.lean",
+              "/tmp/zdv-check/Assembly.lean",
+              "/tmp/zdv-check/Children.lean",
+              "/tmp/zdv-check/Full.lean"
+            ],
+            "conclusion": "Pins match. The snapshot is project b4d606d, equal to workspace HEAD, with mathlib 25730c7c and simongmt 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nMathlib facts used:\n- μHE[0] = μH[0] (Measure.lean:82) and μH[0]{x} = 1 (Hausdorff.lean:628), so H⁰{x} = 1.\n- Set-integral and integrability lemmas: setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (Bochner/Set.lean:466), setIntegral_union (:87), integral_singleton (Bochner/Basic.lean:1254), lintegral_finset (Lebesgue/Countable.lean:149), integrableOn_singleton / integrableOn_finite_biUnion / IntegrableOn.of_forall_sdiff_eq_zero (IntegrableOn.lean:221/226/435), Set.Infinite.exists_subset_card_eq (Data/Set/Finite/Basic.lean:862).\n\nSimonGMT facts used:\n- HasApproximateTangentSpaceAt integrates f over blowUpMap x r '' M against μHE[n] as r → 0⁺ (Rectifiable.lean:96–111). CountablyRectifiable.mono exists.\n- support = U \\ zeroRegion, where zeroRegion is the union of open W with compact closure ⊆ U on which the current vanishes (CurrentLocalEquality.lean).\n- GeometricCurrentOn continuity is defined via TestFormOnConverges to 0; GeometricCurrentOn.ext and Zero are in Currents.lean.\n- pointGeometricCurrentOn and TestFormOnConverges.tendsto_eval exist only in Chapter06/GeometricPointProduct.lean, which the contract does not import. The probe confirmed both are absent after import GMT.Ch07.Submission, so point_current must be proved as a child.\n\nRelated nodes. dtc_dim_zero_* and dtc_point_current, dor_zero_dim_minimizing_support_disjoint, regcomp_rim_sub_imrep and rsd_cmr_imrep_restrict are all status decomposing, none accepted. So no exact accepted declaration can be reused, and the names chosen here use the unused prefix dimred_zdv_; grep found no match in dag.json, the workspace GMT tree or any of the 544 swarm worktrees.\n\nLean check (scratch files only, workspace untouched):\n- All four child types elaborate in GMT.Ch07 with the contract opens.\n- All four children were fully proved (axioms propext, Classical.choice, Quot.sound).\n- The frozen parent type was proved from them plus a stub of the frozen sibling dimred_im_mass_measure; the parent depends on sorryAx only through that stub."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+        "child_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.carrier_finite-a1",
+        "subproblem": {
+          "key": "carrier_finite",
+          "title": "Carriers of 0-dimensional integer multiplicity triples are finite on compact sets",
+          "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P (= Euclid P) be an arbitrary set, let K ⊆ ℝ^P be compact with K ⊆ U, and let R = (M, θ, ξ) ∈ IMRep U 0 be a 0-dimensional integer multiplicity triple in U as frozen in the contract. That is:\n- M = R.carrier is a Borel subset of U that is countably 0-rectifiable;\n- θ = R.mult : ℝ^P → ℕ is measurable with θ(x) > 0 for every x ∈ M, and ∫⁻_{M∩K'} θ dH⁰ < ∞ for every compact K' ⊆ U (field locallyIntegrable_mult, with H⁰ = μHE[0]);\n- ξ = R.orient is the orientation.\nThen M ∩ K is a finite set.",
+          "lean_statement": "∀ (P : ℕ) (U K : Set (Euclid P)) (R : IMRep U 0), IsCompact K → K ⊆ U → (R.carrier ∩ K).Finite",
+          "lean_name": "dimred_zdv_carrier_finite",
+          "depends_on": [],
+          "natural_proof": "Notation: H⁰ := μHE[0] on ℝ^P, M := R.carrier, θ := R.mult.\n1. (H⁰ of a point.) By Mathlib, μHE[0] = μH[0] (MeasureTheory.Measure.euclideanHausdorffMeasure_zero) and μH[0]{x} = 1 (MeasureTheory.Measure.hausdorffMeasure_zero_singleton). Hence H⁰{x} = 1 for every x ∈ ℝ^P.\n2. Put I := ∫⁻_{M∩K} θ dH⁰ ∈ [0, ∞]. Since K is compact and K ⊆ U, the field R.locallyIntegrable_mult gives I ≠ ∞.\n3. Suppose, for a contradiction, that M ∩ K is infinite. We show that N ≤ I for every N ∈ ℕ.\n4. Fix N ∈ ℕ. Because M ∩ K is infinite, there is a finite set t ⊆ M ∩ K with exactly N elements (Set.Infinite.exists_subset_card_eq).\n5. Every x ∈ t lies in M, so θ(x) > 0 by the field R.mult_pos. Since θ(x) is a natural number, θ(x) ≥ 1, and by step 1, 1 ≤ θ(x)·H⁰{x}. Summing over t gives N = Σ_{x∈t} 1 ≤ Σ_{x∈t} θ(x)·H⁰{x}.\n6. Singletons are measurable in ℝ^P, so the lower integral over the finite set t is the weighted sum: ∫⁻_t θ dH⁰ = Σ_{x∈t} θ(x)·H⁰{x} (lintegral_finset).\n7. Since t ⊆ M ∩ K, the lower integral is monotone in the domain of integration (lintegral_mono_set): ∫⁻_t θ dH⁰ ≤ ∫⁻_{M∩K} θ dH⁰ = I. Combining steps 5–7 gives N ≤ I.\n8. So N ≤ I for every N ∈ ℕ. Since N → ∞ in [0, ∞] (ENNReal.tendsto_nat_nhds_top), I = ∞, which contradicts step 2. Hence M ∩ K is finite.",
+          "proof_key_steps": [
+            "μHE[0] = μH[0] gives H⁰{x} = 1 for every point x.",
+            "If M ∩ K were infinite, then for every N there is an N-element subset t ⊆ M ∩ K.",
+            "θ ≥ 1 on M gives N ≤ Σ_{x∈t} θ(x)H⁰{x} = ∫⁻_t θ dH⁰ ≤ ∫⁻_{M∩K} θ dH⁰.",
+            "So the lower integral is ∞, contradicting locallyIntegrable_mult; hence M ∩ K is finite."
+          ]
+        },
+        "audit": {
+          "key": "carrier_finite",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose and Lean type agree, including arbitrary U and compact K ⊆ U. Singleton H⁰-measure one and positive integer multiplicities bound every finite subset's cardinality by the finite local integral. Arbitrarily large finite subsets therefore contradict local integrability. The argument is complete and independent."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-carrier-finite-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-carrier-finite-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-carrier-finite-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.point_current-a1",
+      "key": "point_current",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-point-current-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-point-current-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD",
+              "grep -n 'euclideanHausdorffMeasure_zero' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; sed -n 620,665p local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "rg -n 'theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|theorem setIntegral_union |theorem integral_singleton |theorem lintegral_finset|theorem integrableOn_finite_biUnion|theorem IntegrableOn.of_forall_sdiff_eq_zero|theorem integrableOn_singleton |theorem Infinite.exists_subset_card_eq|theorem hausdorffMeasure_zero_singleton' (snapshot mathlib)",
+              "grep -rn -i 'dirac\\|pointCurrent\\|pointGeometricCurrentOn\\|TestFormOnConverges\\.' .lake/packages/simongmt/Poincare/SimonGMT; sed -n 1,70p Chapter06/GeometricPointProduct.lean",
+              "grep -n 'def HasApproximateTangentSpaceAt\\|def CountablyRectifiable\\|def blowUpMap\\|CountablyRectifiable.mono' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "sed -n 1,200p simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean (VanishesOn, zeroRegion, support); sed -n 1,320p Chapter06/Currents.lean (TestFormOnConverges, GeometricCurrentOn, ext, Zero); sed -n 1,140p Chapter06/Mass.lean (massOn)",
+              "lake env lean /tmp/zdv-check/Probe.lean: env.contains of Poincare.SimonGMT.Chapter06.pointGeometricCurrentOn, Poincare.SimonGMT.Chapter06.TestFormOnConverges.tendsto_eval and GMT.Ch07.Submission.dimred_im_mass_measure after import GMT.Ch07.Submission",
+              "python3 inspection of dag.json: dtc_dim_zero_eq_zero, dtc_dim_zero_carrier_finite, dtc_dim_zero_erase_point, dtc_point_current, dtc_approxTangent_sdiff_singleton, dor_zero_dim_minimizing_support_disjoint, regcomp_rim_sub_imrep, rsd_cmr_imrep_restrict (statements and statuses)",
+              "grep -c dimred_zdv dag.json; for d in .swarm-worktrees/*/gmt-ch07/GMT; do grep -rl dimred_zdv $d; done",
+              "lake env lean /tmp/zdv-check/Assembly.lean; lake env lean /tmp/zdv-check/Children.lean; lake env lean /tmp/zdv-check/Full.lean with #print axioms; string comparison of the tested parent and sibling types with the handoff lean_statement fields"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Countable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/GeometricPointProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/parent-child-handoff.json",
+              "/tmp/zdv-check/Probe.lean",
+              "/tmp/zdv-check/Assembly.lean",
+              "/tmp/zdv-check/Children.lean",
+              "/tmp/zdv-check/Full.lean"
+            ],
+            "conclusion": "Pins match. The snapshot is project b4d606d, equal to workspace HEAD, with mathlib 25730c7c and simongmt 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nMathlib facts used:\n- μHE[0] = μH[0] (Measure.lean:82) and μH[0]{x} = 1 (Hausdorff.lean:628), so H⁰{x} = 1.\n- Set-integral and integrability lemmas: setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (Bochner/Set.lean:466), setIntegral_union (:87), integral_singleton (Bochner/Basic.lean:1254), lintegral_finset (Lebesgue/Countable.lean:149), integrableOn_singleton / integrableOn_finite_biUnion / IntegrableOn.of_forall_sdiff_eq_zero (IntegrableOn.lean:221/226/435), Set.Infinite.exists_subset_card_eq (Data/Set/Finite/Basic.lean:862).\n\nSimonGMT facts used:\n- HasApproximateTangentSpaceAt integrates f over blowUpMap x r '' M against μHE[n] as r → 0⁺ (Rectifiable.lean:96–111). CountablyRectifiable.mono exists.\n- support = U \\ zeroRegion, where zeroRegion is the union of open W with compact closure ⊆ U on which the current vanishes (CurrentLocalEquality.lean).\n- GeometricCurrentOn continuity is defined via TestFormOnConverges to 0; GeometricCurrentOn.ext and Zero are in Currents.lean.\n- pointGeometricCurrentOn and TestFormOnConverges.tendsto_eval exist only in Chapter06/GeometricPointProduct.lean, which the contract does not import. The probe confirmed both are absent after import GMT.Ch07.Submission, so point_current must be proved as a child.\n\nRelated nodes. dtc_dim_zero_* and dtc_point_current, dor_zero_dim_minimizing_support_disjoint, regcomp_rim_sub_imrep and rsd_cmr_imrep_restrict are all status decomposing, none accepted. So no exact accepted declaration can be reused, and the names chosen here use the unused prefix dimred_zdv_; grep found no match in dag.json, the workspace GMT tree or any of the 544 swarm worktrees.\n\nLean check (scratch files only, workspace untouched):\n- All four child types elaborate in GMT.Ch07 with the contract opens.\n- All four children were fully proved (axioms propext, Classical.choice, Quot.sound).\n- The frozen parent type was proved from them plus a stub of the frozen sibling dimred_im_mass_measure; the parent depends on sorryAx only through that stub."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+        "child_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.point_current-a1",
+        "subproblem": {
+          "key": "point_current",
+          "title": "Point (Dirac) currents and their support",
+          "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, let p ∈ ℝ^P and let ζ ∈ Λₙ(ℝ^P) (MultiVector P n, a continuous linear functional on n-covectors).\n\nThen there is a current X ∈ 𝒟ₙ(U) such that:\n- X(ω) = ζ(ω(p)) for every ω ∈ 𝒟ⁿ(U);\n- spt X ⊆ {p}.\n\nHere 𝒟ₙ(U) is GeometricCurrentOn U n: the linear functionals on TestFormOn U n that are sequentially continuous for SimonGMT's TestFormOnConverges. The support spt X = X.support = U ∖ zeroRegion X, where zeroRegion X is the union of all open W with closure W compact and contained in U on which X vanishes, i.e. X(ω) = 0 for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ W.",
+          "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (p : Euclid P) (ζ : MultiVector P n), IsOpen U → ∃ X : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, X ω = ζ ((ω : DifferentialForm (Euclid P) n) p)) ∧ X.support ⊆ {p}",
+          "lean_name": "dimred_zdv_point_current",
+          "depends_on": [],
+          "natural_proof": "1. (Linearity.) For ω ∈ TestFormOn U n let L(ω) := ζ(ω(p)). Evaluation at p is linear on forms: (ω + η)(p) = ω(p) + η(p) and (cω)(p) = c·ω(p). Since ζ is also linear, L is a linear functional on TestFormOn U n.\n2. (Pointwise convergence.) Let (ω_j) be a sequence in TestFormOn U n with TestFormOnConverges ω_j → 0. That is, there is a compact K ⊆ U with tsupport ω_j ⊆ K for all j (and tsupport 0 ⊆ K) such that, for every k ∈ ℕ, the k-th iterated derivatives D^kω_j converge uniformly on K to D^k0 = 0. We show ω_j(p) → 0 in the space of n-covectors.\n (a) If p ∈ K: uniform convergence on K for k = 0 gives D⁰ω_j(p) → D⁰0(p) (TendstoUniformlyOn.tendsto_at). The 0-th iterated derivative D⁰ω(p) is the 0-multilinear map whose value at the empty tuple is ω(p) (iteratedFDeriv_zero_apply), and evaluation at the empty tuple is continuous (continuous_eval_const). So ω_j(p) → 0(p) = 0.\n (b) If p ∉ K: for every j, p ∉ tsupport ω_j, so ω_j(p) = 0 (image_eq_zero_of_notMem_tsupport) and the sequence is constantly 0.\n3. (Continuity.) ζ is continuous, so L(ω_j) = ζ(ω_j(p)) → ζ(0) = 0. Hence X := ⟨L, continuity⟩ is a GeometricCurrentOn U n with X(ω) = ζ(ω(p)) for every ω. This is the argument behind SimonGMT's pointGeometricCurrentOn and TestFormOnConverges.tendsto_eval in Chapter06/GeometricPointProduct.lean; the contract does not import that file, so the argument is reproduced here.\n4. (Support.) Let y ∈ spt X, so y ∈ U and y ∉ zeroRegion X. Suppose y ≠ p; we show y ∈ zeroRegion X, a contradiction. Since U is open, choose ε > 0 with B_ε(y) ⊆ U. Let r := min(ε/2, dist(y, p)/2) > 0 and W := B_r(y).\n (a) W is open and y ∈ W.\n (b) closure W ⊆ closedBall(y, r) (closure_ball_subset_closedBall), and closedBall(y, r) is compact because ℝ^P is a proper space. So closure W, a closed subset of it, is compact.\n (c) closure W ⊆ closedBall(y, r) ⊆ B_ε(y) ⊆ U, because r ≤ ε/2 < ε.\n (d) X vanishes on W: let ω ∈ TestFormOn U n with tsupport ω ⊆ W. If p ∈ tsupport ω, then p ∈ W, i.e. dist(p, y) < r ≤ dist(y, p)/2, which is impossible since dist(y, p) > 0. So p ∉ tsupport ω, hence ω(p) = 0 and X(ω) = ζ(0) = 0.\n Thus W is one of the sets whose union is zeroRegion X, so y ∈ W ⊆ zeroRegion X. This contradiction shows y = p. Therefore spt X ⊆ {p}.",
+          "proof_key_steps": [
+            "ω ↦ ζ(ω(p)) is linear on 𝒟ⁿ(U).",
+            "Test-form convergence ω_j → 0 implies ω_j(p) → 0: by uniform convergence of the 0-th derivatives on the common compact support if p lies in it, and ω_j(p) = 0 otherwise. So X is sequentially continuous.",
+            "Every y ∈ U ∖ {p} has a ball W ∌ p whose closure is compact and contained in U; every test form supported in W vanishes at p, so X vanishes on W and y ∈ zeroRegion X.",
+            "Hence spt X ⊆ {p}."
+          ]
+        },
+        "audit": {
+          "key": "point_current",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The prose matches the independently elaborated type for arbitrary p and degree n. Linearity and continuity follow from point evaluation, with both cases of membership in the common compact support covered. Openness and Euclidean properness provide the required relatively compact neighborhoods away from p, proving support containment. No hypothesis p ∈ U or unimported point-current theorem is needed."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-point-current-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-point-current-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-point-current-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.tangent_erase-a1",
+      "key": "tangent_erase",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-tangent-erase-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-tangent-erase-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD",
+              "grep -n 'euclideanHausdorffMeasure_zero' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; sed -n 620,665p local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "rg -n 'theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|theorem setIntegral_union |theorem integral_singleton |theorem lintegral_finset|theorem integrableOn_finite_biUnion|theorem IntegrableOn.of_forall_sdiff_eq_zero|theorem integrableOn_singleton |theorem Infinite.exists_subset_card_eq|theorem hausdorffMeasure_zero_singleton' (snapshot mathlib)",
+              "grep -rn -i 'dirac\\|pointCurrent\\|pointGeometricCurrentOn\\|TestFormOnConverges\\.' .lake/packages/simongmt/Poincare/SimonGMT; sed -n 1,70p Chapter06/GeometricPointProduct.lean",
+              "grep -n 'def HasApproximateTangentSpaceAt\\|def CountablyRectifiable\\|def blowUpMap\\|CountablyRectifiable.mono' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "sed -n 1,200p simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean (VanishesOn, zeroRegion, support); sed -n 1,320p Chapter06/Currents.lean (TestFormOnConverges, GeometricCurrentOn, ext, Zero); sed -n 1,140p Chapter06/Mass.lean (massOn)",
+              "lake env lean /tmp/zdv-check/Probe.lean: env.contains of Poincare.SimonGMT.Chapter06.pointGeometricCurrentOn, Poincare.SimonGMT.Chapter06.TestFormOnConverges.tendsto_eval and GMT.Ch07.Submission.dimred_im_mass_measure after import GMT.Ch07.Submission",
+              "python3 inspection of dag.json: dtc_dim_zero_eq_zero, dtc_dim_zero_carrier_finite, dtc_dim_zero_erase_point, dtc_point_current, dtc_approxTangent_sdiff_singleton, dor_zero_dim_minimizing_support_disjoint, regcomp_rim_sub_imrep, rsd_cmr_imrep_restrict (statements and statuses)",
+              "grep -c dimred_zdv dag.json; for d in .swarm-worktrees/*/gmt-ch07/GMT; do grep -rl dimred_zdv $d; done",
+              "lake env lean /tmp/zdv-check/Assembly.lean; lake env lean /tmp/zdv-check/Children.lean; lake env lean /tmp/zdv-check/Full.lean with #print axioms; string comparison of the tested parent and sibling types with the handoff lean_statement fields"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Countable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/GeometricPointProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/parent-child-handoff.json",
+              "/tmp/zdv-check/Probe.lean",
+              "/tmp/zdv-check/Assembly.lean",
+              "/tmp/zdv-check/Children.lean",
+              "/tmp/zdv-check/Full.lean"
+            ],
+            "conclusion": "Pins match. The snapshot is project b4d606d, equal to workspace HEAD, with mathlib 25730c7c and simongmt 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nMathlib facts used:\n- μHE[0] = μH[0] (Measure.lean:82) and μH[0]{x} = 1 (Hausdorff.lean:628), so H⁰{x} = 1.\n- Set-integral and integrability lemmas: setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (Bochner/Set.lean:466), setIntegral_union (:87), integral_singleton (Bochner/Basic.lean:1254), lintegral_finset (Lebesgue/Countable.lean:149), integrableOn_singleton / integrableOn_finite_biUnion / IntegrableOn.of_forall_sdiff_eq_zero (IntegrableOn.lean:221/226/435), Set.Infinite.exists_subset_card_eq (Data/Set/Finite/Basic.lean:862).\n\nSimonGMT facts used:\n- HasApproximateTangentSpaceAt integrates f over blowUpMap x r '' M against μHE[n] as r → 0⁺ (Rectifiable.lean:96–111). CountablyRectifiable.mono exists.\n- support = U \\ zeroRegion, where zeroRegion is the union of open W with compact closure ⊆ U on which the current vanishes (CurrentLocalEquality.lean).\n- GeometricCurrentOn continuity is defined via TestFormOnConverges to 0; GeometricCurrentOn.ext and Zero are in Currents.lean.\n- pointGeometricCurrentOn and TestFormOnConverges.tendsto_eval exist only in Chapter06/GeometricPointProduct.lean, which the contract does not import. The probe confirmed both are absent after import GMT.Ch07.Submission, so point_current must be proved as a child.\n\nRelated nodes. dtc_dim_zero_* and dtc_point_current, dor_zero_dim_minimizing_support_disjoint, regcomp_rim_sub_imrep and rsd_cmr_imrep_restrict are all status decomposing, none accepted. So no exact accepted declaration can be reused, and the names chosen here use the unused prefix dimred_zdv_; grep found no match in dag.json, the workspace GMT tree or any of the 544 swarm worktrees.\n\nLean check (scratch files only, workspace untouched):\n- All four child types elaborate in GMT.Ch07 with the contract opens.\n- All four children were fully proved (axioms propext, Classical.choice, Quot.sound).\n- The frozen parent type was proved from them plus a stub of the frozen sibling dimred_im_mass_measure; the parent depends on sorryAx only through that stub."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+        "child_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.tangent_erase-a1",
+        "subproblem": {
+          "key": "tangent_erase",
+          "title": "Deleting a point other than the base point preserves approximate tangent spaces",
+          "statement": "Let P, n ∈ ℕ, let M ⊆ ℝ^P be a Borel set, let x, p ∈ ℝ^P with x ≠ p, and let Q be a linear subspace of ℝ^P.\n\nSuppose Q is an approximate tangent space of M at x in the sense of SimonGMT's HasApproximateTangentSpaceAt n M x Q (Simon Ch. 3, Def. 1.4):\n- dim Q = n;\n- for every compactly supported continuous f : ℝ^P → ℝ (f ∈ C_c(ℝ^P, ℝ)), ∫_{η_{x,r}(M)} f dHⁿ → ∫_Q f dHⁿ as r → 0⁺.\nHere η_{x,r}(y) = blowUpMap x r y = r⁻¹(y − x) and Hⁿ = μHE[n].\n\nThen Q is also an approximate tangent space of M ∖ {p} at x, i.e. HasApproximateTangentSpaceAt n (M ∖ {p}) x Q.",
+          "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (x p : Euclid P) (Q : Submodule ℝ (Euclid P)), MeasurableSet M → x ≠ p → HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt n (M \\ {p}) x Q",
+          "lean_name": "dimred_zdv_approxTangent_sdiff_singleton",
+          "depends_on": [],
+          "natural_proof": "Notation: Hⁿ := μHE[n], η_r := η_{x,r} = blowUpMap x r, so η_r(y) = r⁻¹(y − x).\n1. (Reduction.) The first component of HasApproximateTangentSpaceAt, finrank Q = n, does not involve the set, so it carries over unchanged. Fix f ∈ C_c(ℝ^P, ℝ) and put F(r) := ∫_{η_r(M)} f dHⁿ and G(r) := ∫_{η_r(M∖{p})} f dHⁿ. By hypothesis F(r) → ∫_Q f dHⁿ as r → 0⁺. It suffices to find r₀ > 0 with F(r) = G(r) for all r ∈ (0, r₀). Then F and G agree eventually in the filter 𝓝[>] 0, so G(r) → ∫_Q f dHⁿ as well (Tendsto.congr'). This is the second component of HasApproximateTangentSpaceAt n (M ∖ {p}) x Q.\n2. (Choice of r₀.) f has compact support, so tsupport f is bounded: there is R₀ ∈ ℝ with tsupport f ⊆ closedBall(0, R₀). Put R₁ := max(R₀, 1) > 0 and d := ‖p − x‖ > 0 (because x ≠ p). Let r₀ := d/(R₁ + 1) > 0, and fix r with 0 < r < r₀.\n3. (Image of the punctured set.) Since r ≠ 0, η_r is injective: r⁻¹(a − x) = r⁻¹(b − x) implies a = b. Hence η_r(M ∖ {p}) = η_r(M) ∖ η_r({p}) = η_r(M) ∖ {q}, where q := η_r(p) = r⁻¹(p − x).\n4. (Measurability.) η_r(M) = {y : x + r·y ∈ M}. Indeed, if y = r⁻¹(z − x) with z ∈ M, then x + r·y = z ∈ M; conversely, if x + r·y ∈ M, then y = η_r(x + r·y). The map y ↦ x + r·y is continuous, so η_r(M) is the preimage of the Borel set M under a measurable map and is Borel.\n5. (f vanishes at q.) ‖q‖ = r⁻¹·d. From r < d/(R₁ + 1) we get r(R₁ + 1) < d, so ‖q‖ = d/r > R₁ + 1 > R₀, using R₁ ≥ R₀. Thus q ∉ closedBall(0, R₀) ⊇ tsupport f, so f(q) = 0, since a function vanishes outside its topological support.\n6. (Equality of the integrals.) Let t := η_r(M), which is Borel by step 4, and s := t ∖ {q} ⊆ t. Every point of t ∖ s equals q, where f vanishes by step 5. Hence ∫_t f dHⁿ = ∫_s f dHⁿ, by Mathlib's setIntegral_eq_of_subset_of_forall_sdiff_eq_zero: if t is measurable, s ⊆ t and f = 0 on t ∖ s, the two Bochner set integrals coincide. This includes the case where f is not integrable on t, when both sides are 0. By step 3, s = η_r(M ∖ {p}), so F(r) = G(r).\n7. Step 6 holds for every r ∈ (0, r₀). By step 1, HasApproximateTangentSpaceAt n (M ∖ {p}) x Q.",
+          "proof_key_steps": [
+            "The dimension part is unchanged; it suffices that the blow-up integrals over M and over M ∖ {p} agree for all small r > 0.",
+            "For r > 0, η_{x,r} is injective, so η_{x,r}(M ∖ {p}) = η_{x,r}(M) ∖ {q} with q = r⁻¹(p − x); and η_{x,r}(M) = {y : x + r y ∈ M} is Borel.",
+            "‖q‖ = ‖p − x‖/r exceeds the support radius of f once r < ‖p − x‖/(max(R₀,1)+1), so f(q) = 0.",
+            "Deleting a point where the integrand vanishes does not change the set integral (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero), so the limits coincide (Tendsto.congr')."
+          ]
+        },
+        "audit": {
+          "key": "tangent_erase",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The exact hypotheses suffice, without requiring p ∈ M or x ∈ M. For small positive radii the deleted point's image lies outside the test function's support. Injectivity identifies the punctured image, and the explicit inverse proves image measurability. The cited set-integral equality requires no hidden integrability assumption, so eventual equality transfers the tangent limit."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-tangent-erase-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-tangent-erase-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-tangent-erase-a1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.erase_point-a1",
+      "key": "erase_point",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-erase-point-a1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-erase-point-a1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD",
+              "grep -n 'euclideanHausdorffMeasure_zero' local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; sed -n 620,665p local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "rg -n 'theorem setIntegral_eq_of_subset_of_forall_sdiff_eq_zero|theorem setIntegral_union |theorem integral_singleton |theorem lintegral_finset|theorem integrableOn_finite_biUnion|theorem IntegrableOn.of_forall_sdiff_eq_zero|theorem integrableOn_singleton |theorem Infinite.exists_subset_card_eq|theorem hausdorffMeasure_zero_singleton' (snapshot mathlib)",
+              "grep -rn -i 'dirac\\|pointCurrent\\|pointGeometricCurrentOn\\|TestFormOnConverges\\.' .lake/packages/simongmt/Poincare/SimonGMT; sed -n 1,70p Chapter06/GeometricPointProduct.lean",
+              "grep -n 'def HasApproximateTangentSpaceAt\\|def CountablyRectifiable\\|def blowUpMap\\|CountablyRectifiable.mono' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "sed -n 1,200p simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean (VanishesOn, zeroRegion, support); sed -n 1,320p Chapter06/Currents.lean (TestFormOnConverges, GeometricCurrentOn, ext, Zero); sed -n 1,140p Chapter06/Mass.lean (massOn)",
+              "lake env lean /tmp/zdv-check/Probe.lean: env.contains of Poincare.SimonGMT.Chapter06.pointGeometricCurrentOn, Poincare.SimonGMT.Chapter06.TestFormOnConverges.tendsto_eval and GMT.Ch07.Submission.dimred_im_mass_measure after import GMT.Ch07.Submission",
+              "python3 inspection of dag.json: dtc_dim_zero_eq_zero, dtc_dim_zero_carrier_finite, dtc_dim_zero_erase_point, dtc_point_current, dtc_approxTangent_sdiff_singleton, dor_zero_dim_minimizing_support_disjoint, regcomp_rim_sub_imrep, rsd_cmr_imrep_restrict (statements and statuses)",
+              "grep -c dimred_zdv dag.json; for d in .swarm-worktrees/*/gmt-ch07/GMT; do grep -rl dimred_zdv $d; done",
+              "lake env lean /tmp/zdv-check/Assembly.lean; lake env lean /tmp/zdv-check/Children.lean; lake env lean /tmp/zdv-check/Full.lean with #print axioms; string comparison of the tested parent and sibling types with the handoff lean_statement fields"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Countable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Finite/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/GeometricPointProduct.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/problem.md",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/parent-child-handoff.json",
+              "/tmp/zdv-check/Probe.lean",
+              "/tmp/zdv-check/Assembly.lean",
+              "/tmp/zdv-check/Children.lean",
+              "/tmp/zdv-check/Full.lean"
+            ],
+            "conclusion": "Pins match. The snapshot is project b4d606d, equal to workspace HEAD, with mathlib 25730c7c and simongmt 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean.\n\nMathlib facts used:\n- μHE[0] = μH[0] (Measure.lean:82) and μH[0]{x} = 1 (Hausdorff.lean:628), so H⁰{x} = 1.\n- Set-integral and integrability lemmas: setIntegral_eq_of_subset_of_forall_sdiff_eq_zero (Bochner/Set.lean:466), setIntegral_union (:87), integral_singleton (Bochner/Basic.lean:1254), lintegral_finset (Lebesgue/Countable.lean:149), integrableOn_singleton / integrableOn_finite_biUnion / IntegrableOn.of_forall_sdiff_eq_zero (IntegrableOn.lean:221/226/435), Set.Infinite.exists_subset_card_eq (Data/Set/Finite/Basic.lean:862).\n\nSimonGMT facts used:\n- HasApproximateTangentSpaceAt integrates f over blowUpMap x r '' M against μHE[n] as r → 0⁺ (Rectifiable.lean:96–111). CountablyRectifiable.mono exists.\n- support = U \\ zeroRegion, where zeroRegion is the union of open W with compact closure ⊆ U on which the current vanishes (CurrentLocalEquality.lean).\n- GeometricCurrentOn continuity is defined via TestFormOnConverges to 0; GeometricCurrentOn.ext and Zero are in Currents.lean.\n- pointGeometricCurrentOn and TestFormOnConverges.tendsto_eval exist only in Chapter06/GeometricPointProduct.lean, which the contract does not import. The probe confirmed both are absent after import GMT.Ch07.Submission, so point_current must be proved as a child.\n\nRelated nodes. dtc_dim_zero_* and dtc_point_current, dor_zero_dim_minimizing_support_disjoint, regcomp_rim_sub_imrep and rsd_cmr_imrep_restrict are all status decomposing, none accepted. So no exact accepted declaration can be reused, and the names chosen here use the unused prefix dimred_zdv_; grep found no match in dag.json, the workspace GMT tree or any of the 544 swarm worktrees.\n\nLean check (scratch files only, workspace untouched):\n- All four child types elaborate in GMT.Ch07 with the contract opens.\n- All four children were fully proved (axioms propext, Classical.choice, Quot.sound).\n- The frozen parent type was proved from them plus a stub of the frozen sibling dimred_im_mass_measure; the parent depends on sorryAx only through that stub."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1",
+        "child_id": "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.erase_point-a1",
+        "subproblem": {
+          "key": "erase_point",
+          "title": "Deleting a point from a 0-dimensional integer multiplicity triple",
+          "statement": "Let P ∈ ℕ, let U ⊆ ℝ^P be an arbitrary set, and let R = (M, θ, ξ) ∈ IMRep U 0 be a 0-dimensional integer multiplicity triple in U as frozen in the contract, with H⁰ = μHE[0]. That is:\n- M = R.carrier is Borel, M ⊆ U, and M is countably 0-rectifiable;\n- θ = R.mult is measurable, ℕ-valued and positive on M, with ∫⁻_{M∩K} θ dH⁰ < ∞ for every compact K ⊆ U;\n- ξ = R.orient is H⁰⌞M-a.e. strongly measurable, and for H⁰⌞M-a.e. x there is Q with HasApproximateTangentSpaceAt 0 M x Q and IsUnitOrientationOf (ξ x) Q.\nLet p ∈ M.\n\nThen there exists R' ∈ IMRep U 0 with R'.carrier = M ∖ {p}, R'.mult = θ and R'.orient = ξ such that for every ω ∈ 𝒟⁰(U) (TestFormOn U 0):\nR.action ω = R'.action ω + θ(p)·ξ(p)(ω(p)),\nwhere R.action ω = ∫_M θ(x)·ξ(x)(ω(x)) dH⁰(x).",
+          "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (R : IMRep U 0) (p : Euclid P), p ∈ R.carrier → ∃ R' : IMRep U 0, R'.carrier = R.carrier \\ {p} ∧ R'.mult = R.mult ∧ R'.orient = R.orient ∧ ∀ ω : TestFormOn U 0, R.action (ω : DifferentialForm (Euclid P) 0) = R'.action (ω : DifferentialForm (Euclid P) 0) + (R.mult p : ℝ) * R.orient p ((ω : DifferentialForm (Euclid P) 0) p)",
+          "lean_name": "dimred_zdv_erase_point",
+          "depends_on": [
+            "carrier_finite",
+            "tangent_erase"
+          ],
+          "natural_proof": "Notation: H⁰ := μHE[0], M := R.carrier, θ := R.mult, ξ := R.orient, M' := M ∖ {p}.\n\nSibling results used:\n- carrier_finite: for every R ∈ IMRep U 0 and compact K ⊆ U, R.carrier ∩ K is finite.\n- tangent_erase: for Borel M, x ≠ p and any n, HasApproximateTangentSpaceAt n M x Q implies HasApproximateTangentSpaceAt n (M ∖ {p}) x Q.\n\n1. H⁰{x} = 1 for every x, because μHE[0] = μH[0] (Measure.euclideanHausdorffMeasure_zero) and μH[0]{x} = 1 (Measure.hausdorffMeasure_zero_singleton).\n2. (Construction of R'.) Define R' with carrier M', multiplicity θ and orientation ξ, and verify the fields of IMRep U 0:\n (a) measurableSet_carrier: M' = M ∖ {p} is Borel, since M is Borel and {p} is closed.\n (b) carrier_subset: M' ⊆ M ⊆ U.\n (c) rectifiable: M' ⊆ M and M is countably 0-rectifiable, so M' is countably 0-rectifiable (CountablyRectifiable.mono).\n (d) measurable_mult: θ is unchanged, hence measurable.\n (e) mult_pos: if x ∈ M' then x ∈ M, so θ(x) > 0.\n (f) locallyIntegrable_mult: for compact K ⊆ U, M' ∩ K ⊆ M ∩ K, so ∫⁻_{M'∩K} θ dH⁰ ≤ ∫⁻_{M∩K} θ dH⁰ < ∞ (lintegral_mono_set and the corresponding field of R).\n (g) aestronglyMeasurable_orient: H⁰⌞M' ≤ H⁰⌞M (Measure.restrict_mono), and a.e.-strong measurability passes to a smaller measure (AEStronglyMeasurable.mono_measure).\n (h) orients: By R.orients, for H⁰⌞M-a.e. x there is a subspace Q with HasApproximateTangentSpaceAt 0 M x Q and IsUnitOrientationOf (ξ x) Q. Since M' ⊆ M, this also holds for H⁰⌞M'-a.e. x (ae_restrict_of_ae_restrict_of_subset). Also, H⁰⌞M'-a.e. x lies in M' (ae_restrict_mem; M' is measurable). For such x we have x ≠ p. Applying tangent_erase with n = 0, the Borel set M, base point x and deleted point p gives HasApproximateTangentSpaceAt 0 M' x Q; the condition IsUnitOrientationOf (ξ x) Q is unchanged. So for H⁰⌞M'-a.e. x there is Q with HasApproximateTangentSpaceAt 0 M' x Q ∧ IsUnitOrientationOf (ξ x) Q.\n By construction R'.carrier = M ∖ {p}, R'.mult = θ and R'.orient = ξ.\n3. (The integrand.) Fix ω ∈ TestFormOn U 0 and let g(x) := θ(x)·ξ(x)(ω(x)) ∈ ℝ, so R.action ω = ∫_M g dH⁰ and R'.action ω = ∫_{M'} g dH⁰. Let K := tsupport ω. Then K is compact, since ω has compact support, and K ⊆ U by the test-form condition. If x ∉ K then ω(x) = 0, so g(x) = θ(x)·ξ(x)(0) = 0 by linearity of ξ(x).\n4. (Integrability.) By carrier_finite applied to R and K, M ∩ K is finite. For each y, g is integrable on {y} because H⁰{y} = 1 < ∞ (integrableOn_singleton). Hence g is integrable on the finite union M ∩ K = ⋃_{y∈M∩K}{y} (integrableOn_finite_biUnion). M is measurable and g = 0 on M ∖ (M ∩ K) ⊆ ℝ^P ∖ K, so g is integrable on M (IntegrableOn.of_forall_sdiff_eq_zero). It is therefore integrable on the subsets M' and {p}.\n5. (Splitting.) Since p ∈ M, M = M' ∪ {p}, a disjoint union with {p} measurable. By additivity of the Bochner integral over disjoint sets on which g is integrable (setIntegral_union), ∫_M g dH⁰ = ∫_{M'} g dH⁰ + ∫_{{p}} g dH⁰.\n6. (The point term.) ∫_{{p}} g dH⁰ = H⁰{p}·g(p) = g(p) = θ(p)·ξ(p)(ω(p)), by integral_singleton and step 1.\n7. Steps 5 and 6 give R.action ω = R'.action ω + θ(p)·ξ(p)(ω(p)) for every ω ∈ TestFormOn U 0. Together with step 2 this proves the claim.",
+          "proof_key_steps": [
+            "R' = (M ∖ {p}, θ, ξ) satisfies every IMRep field: Borel, ⊆ U, rectifiable by monotonicity, θ positive and locally integrable on the smaller set, ξ a.e.-strongly measurable for the smaller restricted measure.",
+            "The a.e. orientation condition transfers: H⁰⌞(M∖{p})-a.e. x lies in M∖{p}, so x ≠ p and tangent_erase keeps the approximate tangent space.",
+            "For a test form ω, the integrand vanishes off the compact tsupport ω, and M ∩ tsupport ω is finite (carrier_finite), so the integrand is integrable on M.",
+            "Splitting M = (M ∖ {p}) ∪ {p} and using H⁰{p} = 1 gives R.action ω = R'.action ω + θ(p)ξ(p)(ω(p))."
+          ]
+        },
+        "audit": {
+          "key": "erase_point",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The statement preserves precisely the carrier, multiplicity, orientation and action data specified by the Lean type. Every IMRep field is verified; tangent_erase supplies the necessary change in the orientation predicate. carrier_finite proves integrability on each test form's support before the disjoint integral split. Both dependencies are correctly directed, and the singleton term has the stated coefficient and sign."
+        },
+        "resolved_dependencies": [
+          "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.carrier_finite-a1",
+          "root.dimension_reduction_results-a1.zero_dim_vanishing-a1.tangent_erase-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-erase-point-a1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-erase-point-a1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-erase-point-a1/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/decomposition.json": "b6d251cd7b91e888134224cd1a8debb73ee4d4d1098478fa5813c775bb0a4526",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/decomposition-audit.json": "ff754e18b93bb1544d5b2e5d35c26deb3e9c5f22eac60ae03a3d78e1547f4761",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-carrier-finite-a1/parent-child-handoff.json": "6f072c6b0305ce79a1f24d77edb8e13bcbaefbda6af0f0fc902538e9b2a54e6c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-carrier-finite-a1/parent-supplied-plan.md": "07bdbb2071f9bc044df42e22edd820d0a6e6eed489828ec2f02dbd318bf4219a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-carrier-finite-a1/parent-supplied-natural-proof.md": "b81f6e253d3ad7e92ebde8e4c30569a5522f517595aa7db7205294dcc577452f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-carrier-finite-a1/parent-supplied-natural-proof.json": "31d10e0f0b64bdde7b99c21d9b0d656efc51bfc225fc27dd0b99ef4fc6f72431",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-carrier-finite-a1/node.json": "520188ed61f4731e9443a78547a9e54f788d1611d751fd7d7102fbca3d7adec1",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-point-current-a1/parent-child-handoff.json": "de5e7bec5894dab6dc55f98deca78f97c2076731397aa9690d4523924f2447d7",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-point-current-a1/parent-supplied-plan.md": "d5dc1cdd63c5c6b2ebc714da73d3ef1be80aca99dfde59c8263ef594a5545bef",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-point-current-a1/parent-supplied-natural-proof.md": "46f5201a26f8f4512e37acc38745b798e265f3357edb2dd3795fc2285394a782",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-point-current-a1/parent-supplied-natural-proof.json": "9761d39839c3546e3f3d020a9c837f4927de5483dcbb880e568cb4239f5414b0",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-point-current-a1/node.json": "bb62b8a270d14b0fed9b2d02370718393bd0b559c9e40addc4dce2737e2748d5",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-tangent-erase-a1/parent-child-handoff.json": "fe8d46f1e2ff8874199c34f6a95f30bbdfb0561769c017daf5ef097fe59b4870",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-tangent-erase-a1/parent-supplied-plan.md": "7747d7b292c102d27e0b8ce346ddede5f98f482e4a8a4ae24946574acfc8b842",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-tangent-erase-a1/parent-supplied-natural-proof.md": "992e2118a1ab04e268efec110afb16d5c51b5f73625cdd351a3e5f47051b0d57",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-tangent-erase-a1/parent-supplied-natural-proof.json": "27e63a49d455758454f3a6e7f206d1c3297b5ded0b83005ef4534824758e345e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-tangent-erase-a1/node.json": "22dff4ce847677d65d7a02f60293d25e72cd27f95777e157172b9f1fbd6affc6",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-erase-point-a1/parent-child-handoff.json": "f9ad1827bdc80fe5f735e99dc367cad54969d7c1e88304e048bbd2eb28e8835d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-erase-point-a1/parent-supplied-plan.md": "824ca6af8780c94b9fc0e2d8dfc1145c4f614c66d4c7886b197208fea3a99506",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-erase-point-a1/parent-supplied-natural-proof.md": "be60aab4a830ad7114e379a148595008843f3cc9d1531230c7fe7dbbab686eaf",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-erase-point-a1/parent-supplied-natural-proof.json": "c32a7fc70773722e09afc61fe4ef65888c0b52b97184cfc1cfd156378d91524d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-zero-dim-vanishing-a1/children/root-dimension-reduction-results-a1-zero-dim-vanishing-a1-erase-point-a1/node.json": "92491885fae7fd410755841995215acf154984e2d73fa49fdfe72face02ef6c5"
+  }
+}
