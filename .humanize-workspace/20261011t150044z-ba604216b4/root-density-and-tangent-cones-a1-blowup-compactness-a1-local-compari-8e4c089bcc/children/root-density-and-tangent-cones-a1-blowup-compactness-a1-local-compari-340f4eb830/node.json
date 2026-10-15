@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1.layers-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1",
+  "depth": 6,
+  "title": "Integer density, layer decomposition and truncation bounds for a compactly supported top-dimensional integer multiplicity current (Simon 6.3.14 first step and (3)–(7), 2.35, 3.15)",
+  "statement": "Let n ∈ ℕ and let R ∈ 𝒟_{n+1}(ℝ^{n+1}) be integer multiplicity with compact support. Then there are Borel sets U_j ⊆ ℝ^{n+1} (j ∈ ℤ) with U_{j+1} ⊆ U_j, and currents X_j ∈ 𝒟_{n+1}(ℝ^{n+1}) with X_j(ω) = ∫_{U_j} ω(x)(e_0, …, e_n) dL^{n+1}(x) for every ω (X_j = [[U_j]]), such that: (i) for every η ∈ 𝒟^n(ℝ^{n+1}) the family (∂X_j(η))_{j∈ℤ} is summable with sum ∂R(η) (HasSum); (ii) M(∂X_j) ≤ M(∂R) for every j; (iii) for every N ∈ ℕ and every Y ∈ 𝒟_n(ℝ^{n+1}) with Y(η) = Σ_{j=−N}^{N} ∂X_j(η) for all η, M(Y) ≤ M(∂R). Here M = mass = M_{ℝ^{n+1}} in [0, ∞].",
+  "lean_statement": "∀ (n : ℕ) (R : GeometricCurrentOn (univ : Set (Euclid (n + 1))) (n + 1)), IsIntegerMultiplicity R → IsCompact R.support → ∃ (U : ℤ → Set (Euclid (n + 1))) (X : ℤ → GeometricCurrentOn (univ : Set (Euclid (n + 1))) (n + 1)), (∀ j, MeasurableSet (U j)) ∧ (∀ j, U (j + 1) ⊆ U j) ∧ (∀ (j : ℤ) (ω : TestFormOn (univ : Set (Euclid (n + 1))) (n + 1)), X j ω = ∫ x in U j, (ω : DifferentialForm (Euclid (n + 1)) (n + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))) ∧ (∀ η : TestFormOn (univ : Set (Euclid (n + 1))) n, HasSum (fun j => (X j).boundary η) (R.boundary η)) ∧ (∀ j, (X j).boundary.mass ≤ R.boundary.mass) ∧ ∀ (N : ℕ) (Y : GeometricCurrentOn (univ : Set (Euclid (n + 1))) n), (∀ η : TestFormOn (univ : Set (Euclid (n + 1))) n, Y η = ∑ j ∈ Finset.Icc (-(N : ℤ)) N, (X j).boundary η) → Y.mass ≤ R.boundary.mass",
+  "lean_name": "dtc_bc_lc_fd_bim_layers",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1.mollify_variation-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1.mollify_variation-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-e0d9e1789d-a1",
+      "result_commit": "cfaa429efca1840978e7f9181d2485e21ce0432e",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-340f4eb830-a1"
+}

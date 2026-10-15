@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.radon_criterion-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1",
+  "depth": 3,
+  "title": "Convergence of integrals from limsup on compact sets and liminf on bounded open sets",
+  "statement": "Let P ∈ ℕ and let μ and μ_j (j ∈ ℕ) be Borel measures on ℝ^P (Measure (Euclid P)). Assume (a) μ(K) < ∞ for every compact K ⊆ ℝ^P; (b) limsup_j μ_j(K) ≤ μ(K) for every compact K; (c) μ(G) ≤ liminf_j μ_j(G) for every bounded open G ⊆ ℝ^P (lim sup and lim inf taken in [0, ∞]). Then for every continuous f : ℝ^P → ℝ with compact support, ∫ f dμ_j → ∫ f dμ (Bochner integrals).",
+  "lean_statement": "∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (μ : Measure (Euclid P)), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → limsup (fun j => μs j K) atTop ≤ μ K) → (∀ G : Set (Euclid P), IsOpen G → Bornology.IsBounded G → μ G ≤ liminf (fun j => μs j G) atTop) → ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(μs j)) atTop (𝓝 (∫ x, f x ∂μ))",
+  "lean_name": "dtc_bc_tendsto_integral_of_limsup_liminf",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-radon-criterion-a1-a1"
+}

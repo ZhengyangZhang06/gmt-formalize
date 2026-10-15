@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.isolated_carrier_point-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1",
+  "depth": 4,
+  "title": "A local nonzero point mass forces an isolated carrier point",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P an arbitrary set, T ∈ 𝒟_0(U), and R = (C, θ, ξ_R) ∈ IMRep U 0 with R.Represents T, i.e. T(ω) = R.action(ω) = ∫_C θ(x)·ξ_R(x)(ω(x)) dH⁰(x) for every ω ∈ 𝒟^0(U), where H⁰ = μHE[0], C = R.carrier, θ = R.mult and ξ_R = R.orient. Let y ∈ ℝ^P, r > 0 with ball(y, r) ⊆ U, and c ∈ ℝ with c ≠ 0, and suppose T(ω) = c·ω(y)(()) for every ω ∈ 𝒟^0(U) with tsupport ω ⊆ ball(y, r), where () = (fun i => i.elim0) is the empty family. Then y ∈ C and C ∩ ball(y, r) ⊆ {y}.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U 0) (R : IMRep U 0) (y : Euclid P) (r c : ℝ), R.Represents T → 0 < r → ball y r ⊆ U → c ≠ 0 → (∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ ball y r → T ω = c * (ω : DifferentialForm (Euclid P) 0) y (fun i => i.elim0)) → y ∈ R.carrier ∧ R.carrier ∩ ball y r ⊆ {y}",
+  "lean_name": "regcomp_cop_zdr_isolated_carrier_point",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.zero_dim_minimizing_trivial-a1.imrep_zero_structure-a1",
+    "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.unit_orientation_zero-a1",
+    "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.isolated_point_integral-a1",
+    "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.bump_form-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.zero_dim_minimizing_trivial-a1.imrep_zero_structure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-zero-dim-minimizing-trivial-a1-im-4b50b377f9-a1",
+      "result_commit": "39634bad5eec4be8528431168a20eb2a5ff79a28",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.unit_orientation_zero-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.isolated_point_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.bump_form-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-576bb6bfc5-a1"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1.egorov_closed-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_approximation-a1",
+  "depth": 6,
+  "title": "Egoroff's theorem on ℝ^n with a closed good set and uniform convergence on its compact subsets (steps 5–6 of Simon's proof of Ch. 2, 1.5)",
+  "statement": "Let n ∈ ℕ and let C ⊆ ℝ^n = Euclid n be measurable, possibly with L^n(C) = ∞. Let η_k : ℝ^n → ℝ (k ∈ ℕ) and g : ℝ^n → ℝ be measurable, and assume η_k(x) → g(x) as k → ∞ for every x ∈ C. Then for every ε ∈ (0, ∞] there is a closed set A ⊆ C with L^n(C ∖ A) < ε (L^n = volume) such that η_k → g uniformly on every compact Q ⊆ A (TendstoUniformlyOn η g atTop Q).",
+  "lean_statement": "∀ (n : ℕ) (C : Set (Euclid n)) (η : ℕ → Euclid n → ℝ) (g : Euclid n → ℝ), MeasurableSet C → (∀ k, Measurable (η k)) → Measurable g → (∀ x ∈ C, Tendsto (fun k => η k x) atTop (𝓝 (g x))) → ∀ ε : ℝ≥0∞, 0 < ε → ∃ A : Set (Euclid n), A ⊆ C ∧ IsClosed A ∧ volume (C \\ A) < ε ∧ ∀ Q : Set (Euclid n), IsCompact Q → Q ⊆ A → TendstoUniformlyOn η g atTop Q",
+  "lean_name": "codim1_rdo_c1a_egorov_isClosed",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-2640aebb22-a1"
+}

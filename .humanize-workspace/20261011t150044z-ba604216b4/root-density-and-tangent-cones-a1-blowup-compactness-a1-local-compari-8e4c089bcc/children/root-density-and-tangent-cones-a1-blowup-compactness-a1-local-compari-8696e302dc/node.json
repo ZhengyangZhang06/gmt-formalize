@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1.nested_im-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1",
+  "depth": 6,
+  "title": "A sum of boundaries of nested sets of finite perimeter with bounded partial masses is integer multiplicity (Simon 6.3.14 (8)–(9), 3.15, Ch. 3, 4.3(‡))",
+  "statement": "Let n ≥ 1, let U_j ⊆ ℝ^{n+1} (j ∈ ℤ) be Borel sets with U_{j+1} ⊆ U_j, and let X_j ∈ 𝒟_{n+1}(ℝ^{n+1}) with X_j(ω) = ∫_{U_j} ω(x)(e_0, …, e_n) dL^{n+1}(x) for every ω and M(∂X_j) < ∞ for every j. Let T ∈ 𝒟_n(ℝ^{n+1}) satisfy HasSum (j ↦ ∂X_j(η)) (T(η)) for every η ∈ 𝒟^n(ℝ^{n+1}), and let C ∈ [0, ∞) be such that M(Y) ≤ C for every N ∈ ℕ and every Y ∈ 𝒟_n(ℝ^{n+1}) with Y(η) = Σ_{j=−N}^{N} ∂X_j(η) for all η. Then T is integer multiplicity.",
+  "lean_statement": "∀ (n : ℕ) (U : ℤ → Set (Euclid (n + 1))) (X : ℤ → GeometricCurrentOn (univ : Set (Euclid (n + 1))) (n + 1)) (T : GeometricCurrentOn (univ : Set (Euclid (n + 1))) n) (C : ℝ≥0∞), 1 ≤ n → (∀ j, MeasurableSet (U j)) → (∀ j, U (j + 1) ⊆ U j) → (∀ (j : ℤ) (ω : TestFormOn (univ : Set (Euclid (n + 1))) (n + 1)), X j ω = ∫ x in U j, (ω : DifferentialForm (Euclid (n + 1)) (n + 1)) x (fun i => EuclideanSpace.single i (1 : ℝ))) → (∀ j, (X j).boundary.mass < ∞) → (∀ η : TestFormOn (univ : Set (Euclid (n + 1))) n, HasSum (fun j => (X j).boundary η) (T η)) → C < ∞ → (∀ (N : ℕ) (Y : GeometricCurrentOn (univ : Set (Euclid (n + 1))) n), (∀ η : TestFormOn (univ : Set (Euclid (n + 1))) n, Y η = ∑ j ∈ Finset.Icc (-(N : ℤ)) N, (X j).boundary η) → Y.mass ≤ C) → IsIntegerMultiplicity T",
+  "lean_name": "dtc_bc_lc_fd_bim_nested_im",
+  "depends_on": [
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1.de_giorgi-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.normal_orientation-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.oriented_piece_mass-a1.oriented_mass_lower-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.boundary_im-a1.de_giorgi-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.normal_orientation-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-44555cebd5-a1",
+      "result_commit": "8380287b09c003ca5138e900da2cec1e93be55ee",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.oriented_piece_mass-a1.oriented_mass_lower-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-ori-74933f09f6-a1",
+      "result_commit": "d1641e8aee2752f9b0dfa591db0aa98f84abd4a9",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8696e302dc-a1"
+}
