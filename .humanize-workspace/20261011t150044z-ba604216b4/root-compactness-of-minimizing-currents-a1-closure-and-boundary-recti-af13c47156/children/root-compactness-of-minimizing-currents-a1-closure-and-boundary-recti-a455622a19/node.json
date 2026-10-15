@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1.vitali_finite-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.density_rep-a1",
+  "depth": 5,
+  "title": "Positive lower n-density of a finite measure on a set forces finite Hⁿ-measure (Vitali 5r-covering)",
+  "statement": "Let P, n ∈ ℕ, let μ be a measure on ℝ^P with μ(ℝ^P) < ∞, let A ⊆ ℝ^P be an arbitrary set and let η > 0. Suppose liminf_{r↓0} μ(B_r(x))/(ω_n·rⁿ) ≥ η for every x ∈ A. Here B_r(x) is the open ball, ω_n = unitBallVolume n is the volume of the unit ball of ℝⁿ, and the quotient is computed in [0, ∞] with rⁿ entering through ENNReal.ofReal. Then Hⁿ(A) < ∞, where Hⁿ = μHE[n].",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (A : Set (Euclid P)) (η : ℝ), 0 < η → μ univ < ∞ → (∀ x ∈ A, ENNReal.ofReal η ≤ liminf (fun r : ℝ => μ (ball x r) / (unitBallVolume n * ENNReal.ofReal (r ^ n))) (𝓝[>] 0)) → μHE[n] A < ∞",
+  "lean_name": "cbr_ci_dr_euclideanHausdorff_lt_top_of_lower_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-a455622a19-a1"
+}

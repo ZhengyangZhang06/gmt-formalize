@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1.steiner_diam-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.isodiametric_bound-a1",
+  "depth": 5,
+  "title": "Steiner symmetrization does not increase the diameter",
+  "statement": "Let d ∈ ℕ, j ∈ Fin d and let A ⊆ ℝ^d = EuclideanSpace ℝ (Fin d) be compact. With y[j↦t] := y with its j-th coordinate replaced by t (Lean: WithLp.toLp 2 (Function.update y.ofLp j t)), A^j_y := {t ∈ ℝ : y[j↦t] ∈ A}, λ(y) := (L¹(A^j_y)).toReal and S_j(A) := {y ∈ ℝ^d : A^j_y ≠ ∅ and |y_j| ≤ λ(y)/2}, the extended diameters satisfy ediam S_j(A) ≤ ediam A.",
+  "lean_statement": "∀ (d : ℕ) (j : Fin d) (A : Set (Euclid d)), IsCompact A → ediam {y : Euclid d | {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}.Nonempty ∧ |y j| ≤ (volume {t : ℝ | WithLp.toLp 2 (Function.update y.ofLp j t) ∈ A}).toReal / 2} ≤ ediam A",
+  "lean_name": "cbr_ci_iso_steiner_ediam_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-e28597edfe-a1"
+}
