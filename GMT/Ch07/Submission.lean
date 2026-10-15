@@ -3953,6 +3953,149 @@ theorem Submission.dimred_tr_bc_class_tangent : (∀ (P n : ℕ) (U : Set (Eucli
         filter_upwards [Submission.idtp_fons_cc_tm_blowup_integrals.2 (n + k) n RS.measure y ε
           lams f hε hnull hlams hlim hfs] with j hj
         exact hj.symm
+/-- **Simon 7.3.3, proof of (1)** (p. 189): given (MB), the moving-centre form of 7.3.1(2), every
+weak limit `η_{xᵢ,λᵢ#}T ⇀ S` in `ℝ^{n+k}` with centres `xᵢ → x ∈ U` and scales `λᵢ ↓ 0` is
+minimizing in `ℝ^{n+k}` with `∂S = 0`.  (MB) gives a strictly increasing `φ` and `C`, minimizing
+in `ℝ^{n+k}` with `∂C = 0`, with `η_{x_{φ(j)},λ_{φ(j)}#}T ⇀ C`.  For each `ω ∈ 𝒟ⁿ(ℝ^{n+k})` the
+values along `φ` tend both to `S(ω)` and to `C(ω)`, so `S = C` by uniqueness of limits in `ℝ`. -/
+theorem Submission.dimred_tr_bc_zero_limit_minimizing : (∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C) → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → IsMinimizingIn S univ ∧ BoundaryVanishes S := by
+  intro hMB n k ℓ hℓk U N T hn hU hN hNU hT hsptT hbdT x xs lams hlams S hx hxs hlams0 hS
+  -- (MB) at the limit `x ∈ U` of the centres: along a subsequence `φ` the blow-ups converge
+  -- weakly to some `C`, minimizing in `ℝ^{n+k}` with `∂C = 0`
+  obtain ⟨φ, C, hφ, hC, -, hCmin, hCbd⟩ :=
+    hMB n k ℓ hℓk U N T hn hU hN hNU hT hsptT hbdT x xs lams hlams hx hxs hlams0
+  -- weak limits are unique: `φ(j) → ∞`, so along `φ` the values on `ω` tend to `S(ω)` and `C(ω)`
+  have hSC : S = C := by
+    ext ω
+    exact tendsto_nhds_unique ((hS ω).comp hφ.tendsto_atTop) (hC ω)
+  rw [hSC]
+  exact ⟨hCmin, hCbd⟩
+
+/-- **Simon 7.3.3, proof of (1)** (p. 189), monotonicity for the class `𝒯`: given (IM), (MON)
+and (MB), one constant `Λ` makes `ρ ↦ e^{Λρ}ρ⁻ⁿμ(B_ρ(y))` nondecreasing on `(0, R)` for every
+`μ ∈ 𝓜` and every `B̄_R(y) ⊆ B̄₂(0)`.  (MON)(i) on the compact `K = B̄_{2r}(z) ⊆ U` gives
+`Λ_K ≥ 0`; take `Λ = rΛ_K`.  For a positive-scale member `μ = t⁻ⁿ η_{a,t#}(μ_T⌞B_{2r}(z))`,
+`μ(B_ρ(y)) = t⁻ⁿ M_{B_{tρ}(a+ty)}(T)` with `B̄_{tR}(a + ty) ⊆ K`, so
+`e^{Λρ}ρ⁻ⁿμ(B_ρ(y)) = e^{(r−t)Λ_Kρ} · e^{Λ_K tρ}(tρ)⁻ⁿ M_{B_{tρ}(a+ty)}(T)` is a product of
+nondecreasing factors.  A zero-scale member is the measure of a weak limit `S` of blow-ups,
+minimizing in `ℝ^{n+k}` with `∂S = 0` (zero_limit_minimizing), so (MON)(ii) and (IM) make
+`ρ⁻ⁿμ(B_ρ(y))` nondecreasing, and `e^{Λρ}` is nondecreasing as `Λ ≥ 0`. -/
+theorem Submission.dimred_tr_bc_class_monotone : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → W ⊆ U → T.massOn W = R.measure W) ∧ (∀ x ∈ U, (x ∈ T.support ↔ ∀ ε : ℝ, 0 < ε → R.measure (ball x ε) ≠ 0)) ∧ ∀ R' : IMRep U n, R'.Represents T → R'.measure = R.measure) → (∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n), 1 ≤ n → n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (N = univ → ∀ (y : Euclid P) (R : ℝ), ball y R ⊆ U → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y ∈ U, HasMassDensity T y (Θ y)) ∧ UpperSemicontinuousOn Θ U) ∧ ∀ y ∈ T.support, ∀ θ : ℝ, HasMassDensity T y θ → 1 ≤ θ) → (∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C) → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (z : Euclid (n + k)) (r : ℝ) (RT : IMRep U n) (𝓜 : Set (Measure (Euclid (n + k)))), 0 < r → closedBall z (2 * r) ⊆ U → RT.Represents T → (∀ μ : Measure (Euclid (n + k)), μ ∈ 𝓜 ↔ (∃ (a : Euclid (n + k)) (t : ℝ), 0 < t ∧ t ≤ r ∧ dist a z ≤ r - t ∧ μ = ENNReal.ofReal (t⁻¹ ^ n) • (RT.measure.restrict (ball z (2 * r))).map (dilation a t)) ∨ ∃ (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RS : IMRep (univ : Set (Euclid (n + k))) n) (cs : ℕ → Euclid (n + k)) (ts : ℕ → ℝ) (hts : ∀ i, 0 < ts i) (b : Euclid (n + k)), (∀ i, dist (cs i) z < r - ts i) ∧ Tendsto ts atTop (𝓝 0) ∧ Tendsto cs atTop (𝓝 b) ∧ ConvergesWeakly (fun i => blowUp T (cs i) (ts i) (hts i).ne') S ∧ RS.Represents S ∧ μ = RS.measure) → ∃ Λ : ℝ, (∀ μ ∈ 𝓜, ∀ (y : Euclid (n + k)) (R : ℝ), closedBall y R ⊆ closedBall 0 2 → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * μ (ball y ρ)) (Ioo 0 R)) := by
+  intro hIM hMON hMB n k ℓ hℓk U N T hn hU hN hNU hT hsptT hbdT z r RT 𝓜 hr hzU hRT h𝓜
+  -- Step 1: (MON)(i) for `T` (with `d = n + ℓ`) on the compact `K = B̄_{2r}(z) ⊆ U` gives
+  -- `Λ_K ≥ 0`; the common constant is `Λ = rΛ_K ≥ 0`
+  obtain ⟨hMONi, -, -, -⟩ := hMON (n + k) n (n + ℓ) U N T hn (Nat.le_add_right n ℓ)
+    (Nat.add_le_add_left hℓk n) hU hN hNU hT hsptT hbdT
+  obtain ⟨ΛK, hΛK, hmonK⟩ := hMONi (closedBall z (2 * r)) (isCompact_closedBall z (2 * r)) hzU
+  obtain ⟨hAC1, hAC2, hAC3, -⟩ := Submission.idtp_fons_cc_ambient_calculus
+  refine ⟨r * ΛK, fun μ hμ y R hyR => ?_⟩
+  rcases (h𝓜 μ).1 hμ with ⟨a, t, ht, htr, haz, hμeq⟩ |
+    ⟨S, RS, cs, ts, hts, b, hcs, hts0, hcsb, hS, hRS, hμeq⟩
+  · -- Step 4 (positive scale, `μ = t⁻ⁿ η_{a,t#}(μ_T⌞B_{2r}(z))`), with `c' := a + ty`:
+    -- `η_{a,t}(v) = t⁻¹(v − a)`, so `dist(η_{a,t}(v), w) = t⁻¹ dist(v, a + tw)` and
+    -- `dist(v, z) ≤ dist(a, z) + t‖η_{a,t}(v)‖`
+    have hdil : ∀ v : Euclid (n + k), dilation a t v = t⁻¹ • (v - a) := fun v => by
+      show -(t⁻¹ • a) + t⁻¹ • v = t⁻¹ • (v - a)
+      rw [smul_sub, neg_add_eq_sub]
+    have hdw : ∀ v w : Euclid (n + k), dist (dilation a t v) w = t⁻¹ * dist v (a + t • w) := by
+      intro v w
+      have hv : dilation a t v - w = t⁻¹ • (v - (a + t • w)) := by
+        rw [hdil, sub_add_eq_sub_sub, smul_sub t⁻¹ (v - a) (t • w), inv_smul_smul₀ ht.ne']
+      rw [dist_eq_norm, dist_eq_norm, hv, norm_smul, norm_inv, Real.norm_of_nonneg ht.le]
+    have hvz : ∀ v : Euclid (n + k), dist v z ≤ dist a z + t * ‖dilation a t v‖ := by
+      intro v
+      have hv : v - z = (a - z) + t • dilation a t v := by
+        rw [hdil, smul_inv_smul₀ ht.ne']
+        abel
+      calc dist v z = ‖(a - z) + t • dilation a t v‖ := by rw [dist_eq_norm, hv]
+        _ ≤ ‖a - z‖ + ‖t • dilation a t v‖ := norm_add_le _ _
+        _ = dist a z + t * ‖dilation a t v‖ := by
+          rw [dist_eq_norm, norm_smul, Real.norm_of_nonneg ht.le]
+    -- (a) `B̄_{tR}(c') ⊆ K`: `η_{a,t}` maps it into `B̄_R(y) ⊆ B̄₂(0)`, and
+    -- `dist(v, z) ≤ (r − t) + 2t ≤ 2r`
+    have hK : closedBall (a + t • y) (t * R) ⊆ closedBall z (2 * r) := by
+      intro v hv
+      have hw : dilation a t v ∈ closedBall (0 : Euclid (n + k)) 2 := by
+        apply hyR
+        rw [mem_closedBall, hdw, inv_mul_le_iff₀ ht]
+        exact hv
+      rw [mem_closedBall_zero_iff] at hw
+      rw [mem_closedBall]
+      linarith [hvz v, mul_le_mul_of_nonneg_left hw ht.le]
+    have hκ : 0 ≤ (r - t) * ΛK := mul_nonneg (sub_nonneg.2 htr) hΛK
+    have hg := hmonK (a + t • y) (t * R) hK
+    intro ρ₁ hρ₁ ρ₂ hρ₂ hρ
+    have hR : 0 < R := hρ₁.1.trans hρ₁.2
+    -- `B_R(y) = int B̄_R(y) ⊆ int B̄₂(0) = B₂(0)`
+    have hball2 : ball y R ⊆ ball (0 : Euclid (n + k)) 2 := by
+      rw [← interior_closedBall y hR.ne', ← interior_closedBall (0 : Euclid (n + k)) two_ne_zero]
+      exact interior_mono hyR
+    -- `B_{tρ}(c') ⊆ B_{2r}(z)` for `ρ ≤ R`: here `‖η_{a,t}(v)‖ < 2`
+    have hW : ∀ ρ, ρ ≤ R → ball (a + t • y) (t * ρ) ⊆ ball z (2 * r) := by
+      intro ρ hρR v hv
+      have hw : dilation a t v ∈ ball (0 : Euclid (n + k)) 2 := by
+        apply hball2
+        rw [mem_ball, hdw, inv_mul_lt_iff₀ ht]
+        exact lt_of_lt_of_le hv (mul_le_mul_of_nonneg_left hρR ht.le)
+      rw [mem_ball_zero_iff] at hw
+      rw [mem_ball]
+      linarith [hvz v, mul_lt_mul_of_pos_left hw ht]
+    -- (b) `μ(B_ρ(y)) = t⁻ⁿ μ_T(B_{2r}(z) ∩ η_{a,t}⁻¹(B_ρ(y))) = t⁻ⁿ M_{B_{tρ}(c')}(T)`
+    have hμball : ∀ ρ, ρ ≤ R →
+        μ (ball y ρ) = ENNReal.ofReal (t⁻¹ ^ n) * T.massOn (ball (a + t • y) (t * ρ)) := by
+      intro ρ hρR
+      rw [hμeq, hAC2 (n + k) n _ a t _ ht measurableSet_ball, hAC3 (n + k) a y t ρ ht,
+        Measure.restrict_apply measurableSet_ball, inter_eq_left.2 (hW ρ hρR),
+        (hIM (n + k) n U T RT hU hRT).1 _ isOpen_ball
+          ((hW ρ hρR).trans (ball_subset_closedBall.trans hzU))]
+    -- (c), (d) `e^{rΛ_Kρ}ρ⁻ⁿ t⁻ⁿ = e^{(r−t)Λ_Kρ} · e^{Λ_K tρ}(tρ)⁻ⁿ`
+    have key : ∀ ρ ∈ Ioo 0 R,
+        ENNReal.ofReal (Real.exp (r * ΛK * ρ) / ρ ^ n) * μ (ball y ρ) =
+          ENNReal.ofReal (Real.exp ((r - t) * ΛK * ρ)) *
+            (ENNReal.ofReal (Real.exp (ΛK * (t * ρ)) / (t * ρ) ^ n) *
+              T.massOn (ball (a + t • y) (t * ρ))) := by
+      intro ρ hρ
+      have hreal : Real.exp (r * ΛK * ρ) / ρ ^ n * t⁻¹ ^ n =
+          Real.exp ((r - t) * ΛK * ρ) * (Real.exp (ΛK * (t * ρ)) / (t * ρ) ^ n) := by
+        rw [show r * ΛK * ρ = (r - t) * ΛK * ρ + ΛK * (t * ρ) by ring, Real.exp_add, mul_pow,
+          inv_pow]
+        ring
+      rw [hμball ρ hρ.2.le, ← mul_assoc,
+        ← ENNReal.ofReal_mul (div_nonneg (Real.exp_pos _).le (pow_nonneg hρ.1.le n)), hreal,
+        ENNReal.ofReal_mul (Real.exp_pos _).le, mul_assoc]
+    show ENNReal.ofReal (Real.exp (r * ΛK * ρ₁) / ρ₁ ^ n) * μ (ball y ρ₁) ≤
+      ENNReal.ofReal (Real.exp (r * ΛK * ρ₂) / ρ₂ ^ n) * μ (ball y ρ₂)
+    rw [key ρ₁ hρ₁, key ρ₂ hρ₂]
+    exact mul_le_mul' (ENNReal.ofReal_le_ofReal (Real.exp_le_exp.2
+      (mul_le_mul_of_nonneg_left hρ hκ)))
+      (hg ⟨mul_pos ht hρ₁.1, mul_lt_mul_of_pos_left hρ₁.2 ht⟩
+        ⟨mul_pos ht hρ₂.1, mul_lt_mul_of_pos_left hρ₂.2 ht⟩ (mul_le_mul_of_nonneg_left hρ ht.le))
+  · -- Step 5 (zero scale, `μ = μ_S`): `dist(b, z) ≤ r`, so `b ∈ U`
+    have hbz : dist b z ≤ r := le_of_tendsto' (hcsb.dist tendsto_const_nhds) fun i =>
+      ((hcs i).trans (sub_lt_self r (hts i))).le
+    have hb : b ∈ U := hzU (mem_closedBall.2 (by linarith))
+    -- `S` is minimizing in `ℝ^{n+k}` with `∂S = 0` (zero_limit_minimizing with (MB))
+    obtain ⟨hSmin, hSbd⟩ := Submission.dimred_tr_bc_zero_limit_minimizing hMB n k ℓ hℓk U N T
+      hn hU hN hNU hT hsptT hbdT b cs ts hts S hb hcsb hts0 hS
+    -- (MON)(ii) for `S` in `U = N = ℝ^{n+k}` (`d = n + k`), and (IM) for `S`
+    obtain ⟨-, hMONii, -, -⟩ := hMON (n + k) n (n + k) univ univ S hn (Nat.le_add_right n k)
+      le_rfl isOpen_univ (hAC1 (n + k)) (by simp) (by rwa [inter_self])
+      (by rw [inter_self]; exact subset_univ _) hSbd
+    have hmono := hMONii rfl y R (subset_univ _)
+    have hmass := (hIM (n + k) n univ S RS isOpen_univ hRS).1
+    -- `e^{Λρ}ρ⁻ⁿμ(B_ρ(y)) = e^{Λρ} · ρ⁻ⁿ M_{B_ρ(y)}(S)`, and `e^{Λρ}` is nondecreasing
+    intro ρ₁ hρ₁ ρ₂ hρ₂ hρ
+    have key : ∀ ρ : ℝ, ENNReal.ofReal (Real.exp (r * ΛK * ρ) / ρ ^ n) * μ (ball y ρ) =
+        ENNReal.ofReal (Real.exp (r * ΛK * ρ)) *
+          (ENNReal.ofReal (1 / ρ ^ n) * S.massOn (ball y ρ)) := by
+      intro ρ
+      rw [hmass _ isOpen_ball (subset_univ _), ← hμeq, ← mul_assoc,
+        ← ENNReal.ofReal_mul (Real.exp_pos _).le, mul_one_div]
+    show ENNReal.ofReal (Real.exp (r * ΛK * ρ₁) / ρ₁ ^ n) * μ (ball y ρ₁) ≤
+      ENNReal.ofReal (Real.exp (r * ΛK * ρ₂) / ρ₂ ^ n) * μ (ball y ρ₂)
+    rw [key ρ₁, key ρ₂]
+    exact mul_le_mul' (ENNReal.ofReal_le_ofReal (Real.exp_le_exp.2
+      (mul_le_mul_of_nonneg_left hρ (mul_nonneg hr.le hΛK)))) (hmono hρ₁ hρ₂ hρ)
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
