@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_action-a1.action_split-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_action-a1",
+  "depth": 6,
+  "title": "The action of a 1-dimensional integer multiplicity triple carried by finitely many rays is the sum of its integrals over the ray pieces (parent step 8)",
+  "statement": "Let P ∈ ℕ, let R = (M, θ, ξ) be a 1-dimensional integer multiplicity triple in ℝ^P (IMRep univ 1), and let F be a finite set of unit vectors with H¹(M ∖ ⋃_{e∈F} ray(e)) = 0, where H¹ = μHE[1] and ray(e) := {te : t > 0}. Then for every test 1-form ω ∈ 𝒟¹(ℝ^P): R.action(ω) = Σ_{e∈F} ∫_{M ∩ ray(e)} θ(x)·ξ(x)(ω(x)) dH¹(x).",
+  "lean_statement": "∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → (μHE[1] : Measure (Euclid P)) (R.carrier ∩ (⋃ e ∈ F, (fun t : ℝ => t • e) '' Ioi 0)ᶜ) = 0 → ∀ ω : TestFormOn (univ : Set (Euclid P)) 1, R.action (ω : DifferentialForm (Euclid P) 1) = ∑ e ∈ F, ∫ x in R.carrier ∩ (fun t : ℝ => t • e) '' Ioi 0, (R.mult x : ℝ) * R.orient x ((ω : DifferentialForm (Euclid P) 1) x) ∂μHE[1]",
+  "lean_name": "idtp_fons_odc_ra_action_split",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1.action_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.restriction_integer_multiplicity-a1.action_integrable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-restriction-integer-multipl-1450eb50b9-a1",
+      "result_commit": "f1339f96a29cbdb17656f4c1e78c5fd20e35f641",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-bc0c51151f-a1"
+}

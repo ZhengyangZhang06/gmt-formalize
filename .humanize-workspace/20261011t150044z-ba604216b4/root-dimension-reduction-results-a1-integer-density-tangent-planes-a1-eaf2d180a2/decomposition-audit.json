@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "idtp_fons_cs_|dimred_cs_|dimred_im_mass_measure",
+        "euclideanHausdorffMeasure_smul₀|ae_tendsto_average_norm_sub|exists_disjoint_subfamily_covering_enlargement_closedBall|map_linearDependent",
+        "IsMinimizingIn|locallyIntegrable_mult|orients|firstVariation",
+        "^.*coarea",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ics_decomp/check/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ics_decomp/check/AssemblyAx.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Vitali.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-eaf2d180a2/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-eaf2d180a2/decomposition-v1.json",
+        "/tmp/ics_decomp/check/Types.lean",
+        "/tmp/ics_decomp/check/AssemblyAx.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected contract. Project, Mathlib and SimonGMT pins match; the parent digest recomputes exactly. All nine standalone proposition types elaborate and match their prose hypotheses and conclusions. All names are bare identifiers. Seven reuses match their comparator challenge types and accepted candidate contents; their comparator records permit only propext, Quot.sound and Classical.choice. Both fresh names are unreserved. The expanded dependency graph is acyclic. The conditional parent assembly compiles using exactly the eight main children and registered stationarity/monotonicity dependencies, without sorryAx; im_mass_measure supports the child proofs. No matrix-unit construction occurs. The snapshot supplies the cited Hausdorff scaling, differentiation and covering results; Mathlib has no coarea match. The substantial slicing and projection work remains within the supplied proofs. The cited product, slicing and support-proper push-forward prerequisites were also checked against [Simon, Chapter 6](https://web.stanford.edu/class/math285/ts-gmt.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "high_degree_case",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type accepted reuse verified. Linear dependence annihilates every n-covector when P < n, hence S and its blow-ups vanish. The proof establishes all required properties of the zero residual current, including HasMassDensity iff θ = 0 in both degrees. No minimizing or dimension-of-L hypothesis is missing."
+    },
+    {
+      "key": "measure_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type accepted reuse verified. Density uniqueness, differentiation on the carrier and the Vitali estimate off it establish μ = Θ·Hⁿ. Translation and dilation changes of variables then prove precisely the two Borel-set identities, including the translation-preimage convention. The proof does not require unstated stationarity or minimality."
+    },
+    {
+      "key": "spine_tangency",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type accepted reuse verified. Projection measurability and local integrability justify the first-variation computation. Constant mass ratios force the nonnegative transverse integral to vanish for each centre in L. A countable dense subset supplies the common almost-everywhere set needed for the universal conclusion over v ∈ L."
+    },
+    {
+      "key": "cone_of_radial_tangency",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type accepted reuse verified. Radial tangency annihilates contraction against the orientation. Differentiation of S(sⁿω(s·)), with compact domination, and the Euler-field Cartan identity yield zero derivative using BoundaryVanishes. The inverse-scale normalization agrees with blowUp and proves the exact cone contract."
+    },
+    {
+      "key": "translation_invariance",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type accepted reuse verified. The proof correctly identifies blowUp S (-v) 1 with translation by +v. Tangency annihilates the contraction term, while the boundary hypothesis annihilates the exterior-derivative term. The justified differentiation along translations proves the stated evaluation equality."
+    },
+    {
+      "key": "product_support_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type accepted reuse verified. Concentration on Lᗮ and orthogonality give the ball-slicing formula and both support bounds. Finite residual density supplies the uniform small-radius bound required for dominated convergence, without assuming monotonicity. The unit-ball normalization and uniqueness of nonnegative densities prove the exact equivalence for every θ, including d = 0."
+    },
+    {
+      "key": "im_mass_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type accepted reuse verified. Cauchy–Binet duality uses the contract's Euclidean coefficient norm. The upper bound and Lusin–extension–mollification lower bound establish mass equality, including infinite mass on open sets. Localization proves the support characterization; uniqueness on relatively compact open sets proves representation independence. Its registration as a shared prerequisite is valid."
+    },
+    {
+      "key": "split_off_spine",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh name is unreserved and the proposition matches every stated hypothesis and conclusion. The proof handles d = 0, constructs compatible slices and a translated residual representation, and establishes the product measure identity and cone property. For d ≥ 1, the capped product competitor has the correct boundary signs; m = n − d ≥ 1 validates the cone filling. The explicit Rᵈ gain versus Rᵈ⁻¹ cap cost proves subspace minimality. This is a supplied proof, not a deferred search or reliance on the parent conclusion."
+    },
+    {
+      "key": "subspace_projection",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The fresh name is unreserved and the exact type includes all needed hypotheses. Support containment forces tangency to V and q#T = T. Projection is proper on V ∪ K′, so the projected competitor is legitimate and preserves the prescribed boundary, without assuming ∂T = 0. The enlarged cylinder, exterior-power contraction estimate and cancellation of a finite common mass term establish ambient minimality non-circularly."
+    }
+  ],
+  "required_changes": []
+}
