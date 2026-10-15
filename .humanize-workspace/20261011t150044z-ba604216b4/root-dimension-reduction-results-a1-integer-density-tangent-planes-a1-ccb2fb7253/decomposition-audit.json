@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "theorem ae_tendsto_measure_inter_div|theorem ae_tendsto_average_norm_sub|theorem euclideanHausdorffMeasure_image_eq_normDet_mul_volume|theorem integral_comp_smul |integral_withDensity_eq_integral_smul|MeasurableEmbedding.integral_map|theorem euclideanHausdorffMeasure_smul₀",
+        "def blowUpMap|def HasApproximateTangentSpaceAt|weighted_area_formula_lipschitz_injOn|theorem measurable_areaJacobianAt|theorem areaJacobianAt_nonneg|theorem areaJacobianAt_eq_normDet",
+        "rg -n 'idtp_caf_rescaled_integral_tendsto' GMT .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pit_independent_audit_zze4cf2k/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pit_independent_audit_zze4cf2k/Reuse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pit_independent_audit_zze4cf2k/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/pit_independent_audit_zze4cf2k/EndToEndLocal.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/DensityTheorem.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/NormedSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaApproximation.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ccb2fb7253/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ccb2fb7253/decomposition-v2.json",
+        "/tmp/pit_independent_audit_zze4cf2k/Types.lean",
+        "/tmp/pit_independent_audit_zze4cf2k/Reuse.lean",
+        "/tmp/pit_independent_audit_zze4cf2k/Assembly.lean",
+        "/tmp/pit_independent_audit_zze4cf2k/EndToEndLocal.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected theorem. Project, mathlib and SimonGMT revisions match their pins. All six frozen propositions elaborate independently in comparator scope and use valid bare names, with no self-dependent types or matrix-instance ambiguity. The five reused declarations are accepted with byte-identical frozen types; their extracted proofs compile using only propext, Classical.choice and Quot.sound. The fresh name has no DAG reservation or GMT source match outside this node's proposal records. Dependencies are correctly directed and acyclic. Independent review of every prose proof found no gap or circular reliance. The assembly proves the exact selected parent type. Rebuilding the complete supplied argument, with scratch helpers inlined locally, also compiles using only the three standard axioms. The parent contract digest was independently recomputed and matches."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "blowup_scaling",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type match exactly. Homeomorphic Hausdorff scaling establishes restricted-measure transport for arbitrary M. MeasurableEmbedding.integral_map justifies arbitrary f without hidden measurability or integrability assumptions. The reused declaration has the identical accepted type."
+    },
+    {
+      "key": "rescaled_area_formula",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. Indicator weights establish the measure identity; continuity supplies integral-map measurability, and the finite Borel density permits Bochner integral transfer without integrability assumptions. Affine Haar substitution gives the exact rescaled expression. The dependency on blowup_scaling is correctly directed."
+    },
+    {
+      "key": "density_derivative_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hole-ball argument uses only monotonicity on sets involving B and measurability of the removed ball, so arbitrary B and omission of b ∈ B are valid. The differentiability estimate and explicit epsilon choices prove the exact lower bound, including n = 0. Accepted reuse is type-identical."
+    },
+    {
+      "key": "linear_range_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The image-measure hypothesis yields the restricted-range measure identity on every Borel test set. Continuity of f justifies integral_map, and scalar-measure integration handles j = 0 as well. No injectivity or integrability assumption is silently introduced. Prose and accepted frozen type agree."
+    },
+    {
+      "key": "rescaled_ball_average",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Affine substitution and positive finite ball volume give the stated exact average identity. These identities hold for totalized Bochner integrals of arbitrary h, including dimension zero. Composition with r ↦ rR proves the required right-sided limit. The accepted frozen type matches."
+    },
+    {
+      "key": "rescaled_integral_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes localization, measurability and integrability before applying the explicit three-term estimate. Density and the declared rescaling sibling control the first two terms; differentiability and uniform continuity control the third. It never assumes b ∈ B or invokes an unaccepted theorem. The complete argument proves the exact standalone proposition without further proof planning."
+    }
+  ],
+  "required_changes": []
+}
