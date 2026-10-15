@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_approx-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1",
+  "depth": 5,
+  "title": "C¹ approximation of Lipschitz functions on ℝ^m, value form (Simon Ch. 2, Theorem 1.5)",
+  "statement": "Let m ∈ ℕ, K ≥ 0 and let u : ℝ^m → ℝ be K-Lipschitz (ℝ^m = Euclid m with Lebesgue measure L^m = volume). Then for every ε ∈ (0, ∞] there is a function G : ℝ^m → ℝ of class C¹ (ContDiff ℝ 1 G) with L^m({y ∈ ℝ^m : u(y) ≠ G(y)}) < ε.\n(This is the part of Simon's C¹ Approximation Theorem, Ch. 2, 1.5, that concerns values; the companion statement about gradients is not needed.)",
+  "lean_statement": "∀ (m : ℕ) (u : Euclid m → ℝ) (K : NNReal), LipschitzWith K u → ∀ ε : ℝ≥0∞, 0 < ε → ∃ G : Euclid m → ℝ, ContDiff ℝ 1 G ∧ volume {y | u y ≠ G y} < ε",
+  "lean_name": "dor_lmbsf_lipschitz_c1_approx",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-36cc9a67df-a1"
+}

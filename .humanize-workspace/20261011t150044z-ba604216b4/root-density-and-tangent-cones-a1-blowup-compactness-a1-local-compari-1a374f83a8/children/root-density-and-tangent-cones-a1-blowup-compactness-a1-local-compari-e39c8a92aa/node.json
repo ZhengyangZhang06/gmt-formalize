@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1.approx_grad_unique-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.lipschitz_leibniz-a1",
+  "depth": 6,
+  "title": "Uniqueness of approximate differentials along a set with an approximate tangent plane (supplied step 4(b), \"Uniqueness along A\")",
+  "statement": "Let P, N ∈ ℕ, A ⊆ ℝ^P an arbitrary set, x ∈ ℝ^P and Q a linear subspace of ℝ^P. Suppose A has approximate tangent space Q at x in the sense of Simon Ch. 3, 1.4 (HasApproximateTangentSpaceAt N A x Q: dim Q = N, and ∫_{η_{x,r}(A)} φ dH^N → ∫_Q φ dH^N as r ↓ 0 for all φ ∈ C_c(ℝ^P), where η_{x,r}(y) = r⁻¹(y − x) and H^N = μHE[N]). Let h : ℝ^P → ℝ and u, u' ∈ Q. Suppose that for every ε > 0, r^{−N}·H^N(A ∩ B_r(x) ∩ {y : ε|y − x| < |h(y) − h(x) − ⟨u, y − x⟩|}) → 0 as r ↓ 0, and the same holds with u' in place of u. Then u = u'.",
+  "lean_statement": "∀ (P N : ℕ) (A : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (h : Euclid P → ℝ) (u u' : Euclid P), HasApproximateTangentSpaceAt N A x Q → u ∈ Q → u' ∈ Q → (∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[N] (A ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ u (y - x)|}) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0)) → (∀ ε : ℝ, 0 < ε → Tendsto (fun r : ℝ => μHE[N] (A ∩ ball x r ∩ {y | ε * ‖y - x‖ < |h y - h x - inner ℝ u' (y - x)|}) / ENNReal.ofReal (r ^ N)) (𝓝[>] 0) (𝓝 0)) → u = u'",
+  "lean_name": "dtc_bc_lc_sl_ll_approx_grad_unique",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-e39c8a92aa-a1"
+}

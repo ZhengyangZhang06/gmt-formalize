@@ -1,0 +1,96 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cutoff_pullback-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: steps 4, 5(b), 8 and 9 of the parent-supplied proof (ω̃ := ζ·p^#ω with a smooth cut-off ζ equal to 1 near the compact set; ω ↦ ω̃ is linear and sequentially continuous because derivatives of p^#ω are those of ω composed with the fixed linear map p and supports lie in tsupport ζ; on V, dω̃ = p^#(dω); |ω̃(y)| = ζ(y)|p^*(ω(py))| ≤ |ω(py)| since p^* maps the orthonormal basis {dx_I} onto part of the orthonormal basis {dy_J}; tsupport ω̃ ⊆ p⁻¹(tsupport ω)). Tools: SimonGMT affinePullbackForm (with L = p, b = 0), affinePullbackForm_isSmoothForm, tsupport_affinePullbackForm_subset, exteriorDerivative_affinePullbackForm, iteratedFDeriv_affinePullbackForm and affinePullbackJet; Mathlib ContDiffBump (one_of_mem_closedBall, nonneg, le_one, tsupport_eq), tsupport_smul_subset_right, Filter.EventuallyEq.fderiv_eq, tsupport_iteratedFDeriv_subset, norm_iteratedFDeriv_smul_le (Leibniz bound), ContinuousMultilinearMap.map_coord_zero.
+1. The cut-off and the operator. As K is compact it is bounded: K ⊆ B_r(0) for some r > 0. Let ζ : ℝ^{P+1} → ℝ be a C^∞ bump function (ContDiffBump centred at 0 with rIn = r + 1, rOut = r + 2): 0 ≤ ζ ≤ 1, ζ = 1 on the closed ball B̄_{r+1}(0), and tsupport ζ = B̄_{r+2}(0) is compact. Put V := B_{r+1}(0), an open set containing K, and E(ω) := ζ·p^#ω, i.e. E(ω)(y) := ζ(y)·(ω(py)).compContinuousLinearMap p = ζ(y)·affinePullbackForm p 0 ω (y) (note 0 + py = py).
+2. E maps 𝒟ᵈ(ℝ^P) linearly into 𝒟ᵈ(ℝ^{P+1}). p^#ω is C^∞ (affinePullbackForm_isSmoothForm) and ζ is C^∞, so E(ω) is C^∞; tsupport E(ω) ⊆ tsupport ζ is compact, so E(ω) has compact support; tsupport E(ω) ⊆ univ trivially. E(ω + η) = E(ω) + E(η) and E(cω) = cE(ω) pointwise, because ω ↦ ω(py).compContinuousLinearMap p is linear. Property (i) holds because ζ = 1 on V.
+3. Property (iii): tsupport(ζ·p^#ω) ⊆ tsupport(p^#ω) (tsupport_smul_subset_right) ⊆ (y ↦ 0 + py)⁻¹(tsupport ω) = p⁻¹(tsupport ω) (tsupport_affinePullbackForm_subset with L = p, b = 0, then zero_add).
+4. Property (ii): let y ∈ V. V is open and ζ = 1 on V, so E(ω) and p^#ω agree on a neighbourhood of y; hence they have the same exterior derivative at y (Filter.EventuallyEq.extDeriv_eq; equivalently, the same Fréchet derivative by Filter.EventuallyEq.fderiv_eq, and exteriorDerivative f y = extDeriv f y = alternatizeUncurryFin (Df(y))). Since ω is smooth, exteriorDerivative_affinePullbackForm gives d(p^#ω) = p^#(dω), so (dE(ω))(y) = (dω)(0 + py).compContinuousLinearMap p = (dω)(py)(p·, …, p·).
+5. Property (iv). First, |p^*α| = |α| for every d-covector α of ℝ^P, where p^*α := α.compContinuousLinearMap p. Indeed p e_{castSucc i} = e_i for i ∈ Fin P and p e_last = 0 (by the defining formula of p, castSucc being injective and never equal to last). Let J : Fin d → Fin (P+1) be strictly increasing. If last ∈ range J, then (p^*α)(e_{J(0)}, …, e_{J(d−1)}) = α(p e_{J(0)}, …, p e_{J(d−1)}) has a zero argument, so it vanishes (map_coord_zero). Otherwise J = castSucc ∘ I for a unique I : Fin d → Fin P, which is strictly increasing because castSucc is an order embedding, and (p^*α)(e_J) = α(e_I). The map I ↦ castSucc ∘ I is a bijection from the strictly increasing I : Fin d → Fin P onto the strictly increasing J : Fin d → Fin (P+1) with last ∉ range J. Therefore |p^*α|² = Σ_J (p^*α)(e_J)² = Σ_I α(e_I)² = |α|². Next, |c·β| = |c|·|β| for c ∈ ℝ (the coefficients scale by c). Hence |E(ω)(y)| = |ζ(y)|·|p^*(ω(py))| = ζ(y)·|ω(py)| ≤ |ω(py)|, using 0 ≤ ζ(y) ≤ 1.
+6. Property (v). Let ω_j → 0 in the sense of TestFormOnConverges: there is a compact C ⊆ ℝ^P with tsupport ω_j ⊆ C for all j, and for every k, D^kω_j → 0 uniformly on C. Since tsupport D^kω_j ⊆ tsupport ω_j ⊆ C (tsupport_iteratedFDeriv_subset), D^kω_j vanishes off C; hence ε_{j,k} := sup_{x ∈ ℝ^P} ‖D^kω_j(x)‖ → 0 as j → ∞, for every k (in a formalization it is convenient to use the equivalent form: for every ε > 0, eventually in j, ‖D^kω_j(x)‖ < ε for all x ∈ ℝ^P). By iteratedFDeriv_affinePullbackForm, D^l(p^#ω_j)(y) = A_l(D^lω_j(py)), where A_l = affinePullbackJet p d l is a fixed continuous linear map; so sup_y ‖D^l(p^#ω_j)(y)‖ ≤ ‖A_l‖·ε_{j,l}. Each D^iζ is continuous with compact support, hence Z_i := sup_y ‖D^iζ(y)‖ < ∞. By the Leibniz bound for a scalar function times a vector-valued function (norm_iteratedFDeriv_smul_le), for all y, ‖D^k(ζ·p^#ω_j)(y)‖ ≤ Σ_{l=0}^{k} C(k, l)·Z_{k−l}·‖A_l‖·ε_{j,l}, and the right-hand side tends to 0 as j → ∞. Thus for every k, D^kE(ω_j) → 0 = D^k(0) uniformly on ℝ^{P+1}, in particular on the compact set K' := tsupport ζ, which contains tsupport E(ω_j) for every j (step 2) and tsupport 0 = ∅, and K' ⊆ univ. This is TestFormOnConverges (j ↦ E(ω_j)) 0. ∎
+
+## Key steps
+
+1. E(ω) := ζ·p^#ω with a C^∞ bump ζ ∈ [0, 1], ζ = 1 on an open ball V ⊇ K, compact tsupport; E is linear into 𝒟ᵈ(ℝ^{P+1}).
+2. Agreement with p^#ω on V gives (i) and, by locality of the derivative and d∘p^# = p^#∘d, property (ii); (iii) from tsupport bounds.
+3. |p^*α| = |α| for the coordinate projection (strictly increasing J through the last index contribute 0, the others are castSucc∘I), hence |E(ω)(y)| ≤ |ω(py)|.
+4. Leibniz bound with D^l(p^#ω) = A_l(D^lω∘p) and bounded derivatives of ζ gives sequential continuity at 0 with the compact tsupport ζ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean <workspace>/GMT/Ch07/Submission.lean (identical)`
+- `rg -n "affinePushforward|Isometry|isometr" <snapshot>/project/GMT --glob '*.lean' (only the contract's blowUp and Ch05 rotated-plane docs; no IM push-forward by an isometric embedding)`
+- `rg -n -i "cube|latticeFace|deformation" <snapshot>/project/GMT/Ch07 <snapshot>/project/GMT/Ch06 --glob '*.lean' (Ch06 latticeFace/latticeFaceAction/DeformationTheorem with hypothesis 1 ≤ ℓ, sorry-frozen and not imported by GMT.Ch07.Submission; nothing for the top-dimensional case)`
+- `rg -n "theorem Isometry.map_euclideanHausdorffMeasure|theorem Isometry.euclideanHausdorffMeasure_image|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume" <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `rg -n "theorem norm_iteratedFDeriv_smul_le" ContDiff/Bounds.lean; "theorem map_linearDependent" LinearAlgebra/Alternating/Basic.lean; "IsCompact.cthickening|mem_cthickening_iff|self_subset_cthickening" Topology/MetricSpace/Thickening.lean; "IsClosedEmbedding.isProperMap" Topology/Maps/Proper/Basic.lean; "isClosedEmbedding" Topology/MetricSpace/Isometry.lean (all in the snapshot mathlib)`
+- `rg -n "structure ContDiffBump|one_of_mem_closedBall|tsupport_eq|le_one|nonneg" BumpFunction/Basic.lean; "prod_fiberwise_of_maps_to|Int.natAbs_sum_le" Algebra/BigOperators/Group/Finset/Basic.lean; "restrict_map|restrict_restrict_of_subset|ae_map_iff" MeasureTheory/Measure/Restrict.lean; "MeasurableEmbedding.integral_map" Integral/Bochner/Basic.lean; "aestronglyMeasurable_map_iff" StronglyMeasurable/AEStronglyMeasurable.lean; "Filter.EventuallyEq.extDeriv_eq" Calculus/DifferentialForm/Basic.lean; "Filter.EventuallyEq.fderiv_eq" FDeriv/Congr.lean; "def apply" Module/Alternating/Topology.lean; "def infEDist|le_infEDist|infEDist_le_edist_of_mem" MetricSpace/HausdorffDistance.lean (namespace Metric)`
+- `grep -n declarations in <workspace>/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Currents,Mass,Forms}.lean and Chapter03/Rectifiable.lean (affinePushforward_apply, boundary_affinePushforward, affinePullbackTestOn, tsupport_affinePullbackForm_subset, exteriorDerivative_affinePullbackForm, iteratedFDeriv_affinePullbackForm, affinePullbackJet, TestFormOnConverges, GeometricCurrentOn.continuous', exteriorDerivativeTestOn, covectorEuclideanNorm, massAdmissibleOn, le_massOn, HasApproximateTangentSpaceAt, blowUpMap, hasApproximateTangentSpaceAt_submodule, countablyRectifiable_of_measure_zero, countablyRectifiable_range)`
+- `python3 -I scans of the run's dag.json: statuses and frozen types of dor_lmb_fc_deformation (decomposing), dor_imrep_massOn_eq_measure_and_support and cmc_imRep_locality_restrict_sub (accepted, identical types); searches for accepted IM push-forward/cutoff/projection lemmas (only dtc_blowUp_imrep for similarities of ℝ^P and cmcs_cd_smul_mem_testFormOn; nothing for isometric embeddings, cut-off pull-backs along projections or cube chains); name-collision check of the four new dor_lmb_fc_dtop_* names (none)`
+- `git show 047b3402ecebcae7b968f8ca435cbbb0b9ed036f:GMT/Ch07/Submission.lean (accepted dtc_blowUp_imrep/dtc_approxTangent_dilation/dtc_hausdorff_dilation: template for transporting an IMRep under a similarity)`
+- `sed -n 1405,1500p and 2020,2110p book/chapter-06.txt (Deformation Theorem 5.1/5.3 for n, ℓ ≥ 1; proof of 7.2; no printed treatment of n = P)`
+- `python3 -I gmt-compare.py contract_scope replay; lean_contract.validate_lean_statement on all six lean_statements; lake env lean /tmp/dt-top-decomp/lean/Challenge_*.lean (6 files, 0 errors) and /tmp/dt-top-decomp/lean/Assembly.lean (0 errors; #print axioms [propext, Classical.choice, Quot.sound])`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Maps/Proper/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Isometry.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Congr.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-b4c8dbc0a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v2.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/dt-top-decomp/lean/Assembly.lean`
+- `/tmp/dt-top-decomp/lean/Sanity.lean`
+
+Snapshot: project b4d606db and Mathlib 25730c7c. Its Ch07 Contract.lean is byte-identical to the workspace Submission.lean.
+
+No-match results:
+- Neither the snapshot project nor SimonGMT has a push-forward of IM currents by isometric embeddings into a higher-dimensional space, a cut-off pull-back along a projection, or a top-dimensional deformation or cube-chain IM lemma.
+- The Ch06 contract's DeformationTheorem requires 1 ≤ ℓ, is sorry-frozen, and is not imported.
+- The only related accepted DAG work is dtc_blowUp_imrep, which transports an IMRep under similarities of ℝ^P. It is used as a template for the isometric_pushforward proof.
+
+So these four obligations become new children. They cite only Mathlib basics that are present in the snapshot:
+- Isometry.map_euclideanHausdorffMeasure and Isometry.euclideanHausdorffMeasure_image;
+- the MeasurableEmbedding API;
+- ContDiffBump and norm_iteratedFDeriv_smul_le;
+- Filter.EventuallyEq.extDeriv_eq;
+- AlternatingMap.map_linearDependent;
+- IsCompact.cthickening and IsClosedEmbedding.isProperMap;
+- Finset.sum_fiberwise_of_maps_to and Int.natAbs_sum_le.
+
+From SimonGMT they use the affine pull-back API (affinePushforward_apply, boundary_affinePushforward, exteriorDerivative_affinePullbackForm, iteratedFDeriv_affinePullbackForm) and hasApproximateTangentSpaceAt_submodule.
+
+The accepted dor_imrep_massOn_eq_measure_and_support and cmc_imRep_locality_restrict_sub are reused with byte-identical types. The sibling dor_lmb_fc_deformation (decomposing) stays a DAG dependency of the selected node.
+
+Lean: all six child types compile as exact comparator challenges. The conditional assembly of the exact selected type compiles with only propext, Classical.choice and Quot.sound.

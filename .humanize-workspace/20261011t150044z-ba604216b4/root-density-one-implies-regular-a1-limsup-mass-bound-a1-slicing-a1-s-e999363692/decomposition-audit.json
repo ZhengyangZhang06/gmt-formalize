@@ -1,0 +1,121 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "CountablyRectifiable|HasApproximateTangentSpaceAt|approxTangentPlane|sorry|axiom",
+        "weighted_area_formula_of_injective_derivative|integral_area_formula_of_injective_derivative|map_withDensity_areaJacobian_eq|integrableOn_image_iff_integrableOn_areaJacobian_smul|area_image_criticalSet_eq_zero|exists_contDiff_one_extension_of_whitney|HasWhitneyC1Compatibility|exists_isClosed_continuousOn_of_measurable|sorry|axiom",
+        "dor_lmbsf_|coarea|CoareaFormula|Slice|slice|tangentialGradient|IsUnit \\(fun",
+        "ae_tendsto_measure_inter_div_of_measurableSet|integral_lineDeriv_mul_eq|dense_hasCompactSupport_contDiff|alternatizeUncurryFin_apply|norm_alternatizeUncurryFin_le|volume_preserving_piFinSuccAbove",
+        "(theorem|lemma|def|abbrev|axiom)[[:space:]]+dor_lmbsf_",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-family-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-family-independent-audit/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-family-independent-audit/LibraryAxioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-family-independent-audit/WhitneyAxioms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/slice-family-independent-audit/Semantics.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyExtension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WhitneyJet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/Lusin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-e999363692/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-e999363692/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/tmp/slice-family-independent-audit/Types.lean",
+        "/tmp/slice-family-independent-audit/Assembly.lean",
+        "/tmp/slice-family-independent-audit/LibraryAxioms.lean",
+        "/tmp/slice-family-independent-audit/WhitneyAxioms.lean",
+        "/tmp/slice-family-independent-audit/Semantics.lean"
+      ],
+      "conclusion": "The split is appropriate for this selected slice-family theorem. All twelve obligations contribute through an acyclic, correctly directed dependency graph. Independently compiled all exact child propositions in comparator scope and derived the exact frozen parent from tangential_gradient, slice_imreps and lipschitz_leibniz supplied as hypotheses. The assembly and checked library facts, including Whitney extension compiled from source, use only propext, Classical.choice and Quot.sound. Verified snapshot compatibility: project b4d606d, mathlib 25730c7c, simongmt 2b36630; inspected package sources match their pins. Related snapshot coarea/slicing specifications are unproved and were not reused. All names are bare identifiers, with no collisions among 1302 DAG nodes or declarations at 1960 branch-tip commits. TL antecedents exactly match the accepted sibling's frozen type. Verified Lebesgue defaults, ENNReal norms and the unnormalized wedge expansion; no prohibited matrix construction occurs. The slice convention and cutoff sign also agree with [Simon, Chapter 6 §4](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "c1_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition matches the global value-approximation statement, including zero dimension and infinite tolerance. The shellwise Lusin/Egorov construction produces a closed Whitney-compatible set with the required error bound; the checked Whitney theorem supplies the extension."
+    },
+    {
+      "key": "c1_cover",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinatewise approximation, null critical images and the explicit proper local charts establish the stated embedded-submanifold cover. Countable selection and degenerate dimensions are handled. Its only child dependency is correctly directed to c1_approx."
+    },
+    {
+      "key": "image_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactness and injectivity exclude contributions from distant parameter points. The local lower Lipschitz bound, rescaled area formula, dominated convergence and linear area formula prove precisely the contract's blow-up limit, including the zero-dimensional case."
+    },
+    {
+      "key": "density_directions",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The cone-ball argument proves the exact sequence conclusion. Its measure comparison uses measurability only of the balls, so the absence of a measurability hypothesis on Z is legitimate."
+    },
+    {
+      "key": "chart_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chart construction, disjointification and Borel null deletions preserve every stated property. Both TL applications satisfy their finiteness hypotheses. Density points of C_j justify the derivative bound, and compact chart inverses give a Borel gradient with the required global bound and zero extension."
+    },
+    {
+      "key": "piece_coarea",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Straightening F, the two area formulas, the Gram-determinant identity and Tonelli establish the exact weighted identity and measurability. Arbitrary ambient f causes no gap: on the relevant image its fibers equal Borel chart-level images."
+    },
+    {
+      "key": "piece_slice_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Regular-level charts give countable rectifiability for every level. Under the stated total-finiteness hypothesis, image_tangent and two valid TL applications yield the asserted tangent plane. Injectivity supplies the conclusion for every qualifying parameter y."
+    },
+    {
+      "key": "piece_weak_limit",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Area transport correctly transfers tangency and integrability to the chart. Integration by parts and L¹ approximation justify the weak limit without pointwise gradient convergence. The density argument handles derivative agreement and both cutoff kinks, giving the exact signed limit."
+    },
+    {
+      "key": "tangential_gradient",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The chart output supplies the piece lemmas' hypotheses. Countable gluing proves coarea and rectifiability; local finiteness permits the tangent-locality transfer. Compactly supported mass bounds justify summing the weak limits. All five properties are proved without assuming the parent."
+    },
+    {
+      "key": "wedge_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The orthogonal decomposition and change-of-basis sign give an adapted orthonormal basis. The verified alternatizeUncurryFin expansion has exactly the stated normalization, so contraction yields a unit orientation, also when n = 0."
+    },
+    {
+      "key": "lipschitz_leibniz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Mollification supplies the required uniformly bounded derivatives. The constructed measurable field is bounded, compactly supported and tangent almost everywhere, so G5 applies. Dominated convergence and the wedge-evaluation identity give the stated boundary formula with the correct sign."
+    },
+    {
+      "key": "slice_imreps",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coarea transfers exceptional null sets and gives a full-measure collection of locally finite levels. The orientation construction satisfies every IMRep field; empty triples handle other levels. Signed coarea, compact-support bounds and the null endpoint difference establish all four conclusions for one common family."
+    }
+  ],
+  "required_changes": []
+}

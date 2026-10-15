@@ -1,0 +1,79 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json; read GMT/Ch07/Contract.lean, GMT/Ch07/README.md, PROBLEM.md and this node's parent-child-handoff.json, parent-supplied-plan.md, parent-supplied-natural-proof.md (proof identical to the handoff)",
+        "grep '^theorem|^def|^structure|^abbrev|^instance' simongmt Poincare/SimonGMT/Chapter06/{Forms,Currents,Mass,CurrentLocalEquality,AffineCurrentPushforward}.lean and Chapter03/{Rectifiable,Differential}.lean",
+        "grep '^theorem' simongmt Poincare/SimonGMT/Chapter02/{AreaLipschitz,AreaNoninjective,AreaCritical,AreaDomain,Area}.lean (weighted_area_formula_lipschitz_injOn, area_image_criticalSet_eq_zero, linear_area_formula)",
+        "python3 -I scans of dag.json (995 nodes): lean_name/statement matching push|area|pullback|compContinuousLinearMap|mollif|fderiv|ContDiffOn; status and candidate_commit of dpf_pushforward_formula_current_exists, dpf_pushforward_formula_boundaryVanishes, dpf_smooth_approx_compact_perturbation, dpf_rectifiable_bilipschitz_pieces, covectorEuclideanNorm_gram_bounds, ptd_ae_approxTangent_iff_of_subset, ptd_piece_image_approxTangent_ae; parallel nodes dimred_mbl_pf_* and dor_lmb_pc_* (all decomposing); byte-identity comparisons; collision check of dtc_bc_lc_pf_* (none)",
+        "git show <candidate_commit>:GMT/Ch07/Submission.lean | grep 'theorem Submission.<name>' for the six reused declarations (types identical); git log --all --oneline -S'dtc_bc_lc_pf_' (no match)",
+        "read nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json, nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-comparison-a1/decomposition-v1.json, and the parent-child-handoff.json of the reused nodes (audited proofs)",
+        "grep -n '_existing_lean_name_problem|_accepted_checkpoint|_overlay_accepted_children' /runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py",
+        "grep Mathlib at the pin: exists_contDiff_support_eq_eq_one_iff, IsCompact.exists_cthickening_subset_open, exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, MeasurableSet.image_of_continuousOn_injOn, LipschitzWith.ae_differentiableAt, ContDiffOn.continuousOn_fderiv_of_isOpen, norm_compContinuousLinearMap_le, ae_tendsto_average_norm_sub, ae_tendsto_measure_inter_div, norm_integral_le_of_norm_le, LipschitzOnWith.hausdorffMeasure_image_le, Filter.EventuallyEq.fderiv_eq, ContDiffBump.convolution_tendsto_right_of_continuous, Isometry.hausdorffMeasure_image, euclideanHausdorffMeasure_smul₀, LinearMap.euclideanHausdorffMeasure_image",
+        "sed -n book/chapter-06.txt lines 395-540 and 760-870 (2.23-2.29, 3.1-3.10); book/chapter-03.txt lines 330-412 (2.1-2.6)",
+        "lake env lean /tmp/pfdecomp/check/Types2.lean (12 child types in the scope from gmt-compare.py contract_scope); lake env lean /tmp/pfdecomp/check/Assembly2.lean with #print axioms; verifier lean_contract.validate_lean_statement on all 12 strings; topological sort of depends_on"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/PROBLEM.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-a685b45291/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-a685b45291/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-comparison-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Differential.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py",
+        "/tmp/pfdecomp/check/Types2.lean",
+        "/tmp/pfdecomp/check/Assembly2.lean"
+      ],
+      "conclusion": "The pinned SimonGMT library has currents, boundary, mass with the Euclidean coefficient norm, support and zero region, countable rectifiability, approximate tangent spaces and the Lipschitz area formula on ℝⁿ. It has only the affine push-forward, and no push-forward of integer multiplicity currents by C¹ maps. Comparator-accepted DAG declarations already prove, for compactly supported C¹ perturbations of the identity, that the push-forward formula defines a current and maps cycles to cycles (dpf_pushforward_formula_current_exists, dpf_pushforward_formula_boundaryVanishes). They are reused together with the node's four inherited dependencies (dtc_mass_eq_measure, dtc_vanish_off_support, cmc_imRep_locality_restrict_sub, rsd_cmr_support_subset_of_vanish), all with types identical to their accepted candidate commits. Five new types are byte-identical to the unaccepted dimred_mbl_pf_*/dor_lmb_pc_* nodes and get new unique names dtc_bc_lc_pf_*; c1_perturbation is new. All 12 types elaborate in the comparator scope, and a Lean assembly proves the exact frozen parent type from them using only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1",
+  "child_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.orient_comp-a1",
+  "subproblem": {
+    "key": "orient_comp",
+    "title": "Unit orientations under linear maps: |ξ(α∘L)| ≤ |α|_E·‖L‖ⁿ, and invariance when L fixes the oriented plane",
+    "statement": "Let P, n ∈ ℕ, Q ⊆ ℝ^P a linear subspace, ξ an n-vector (MultiVector P n, a continuous linear functional on n-covectors) that is a unit orientation of Q (IsUnitOrientationOf ξ Q: there are an orthonormal family τ = (τ₁, …, τₙ) with span τ = Q and a sign s ∈ {1, −1} such that ξ(β) = s·β(τ₁, …, τₙ) for every n-covector β), and L : ℝ^P → ℝ^P a continuous linear map. For an n-covector α let α∘L be the n-covector (v₁, …, vₙ) ↦ α(Lv₁, …, Lvₙ) (α.compContinuousLinearMap L). Then (a) |ξ(α∘L)| ≤ |α|_E·‖L‖ⁿ for every n-covector α, where |·|_E is the Euclidean coefficient norm (covectorEuclideanNorm) and ‖L‖ the operator norm; and (b) if Lv = v for every v ∈ Q, then ξ(α∘L) = ξ(α) for every n-covector α.",
+    "lean_statement": "∀ (P n : ℕ) (ξ : MultiVector P n) (Q : Submodule ℝ (Euclid P)) (L : Euclid P →L[ℝ] Euclid P), IsUnitOrientationOf ξ Q → (∀ α : Covector (Euclid P) n, |ξ (α.compContinuousLinearMap L)| ≤ covectorEuclideanNorm α * ‖L‖ ^ n) ∧ ((∀ v ∈ Q, L v = v) → ∀ α : Covector (Euclid P) n, ξ (α.compContinuousLinearMap L) = ξ α)",
+    "lean_name": "dtc_bc_lc_pf_unitOrientation_comp",
+    "depends_on": [],
+    "natural_proof": "Source: step 1(a) of the parent proof (Cauchy–Binet, Cauchy–Schwarz and Hadamard; this is the pointwise estimate behind Simon Ch. 6, 2.27 and 2.29, chapter-06.txt lines 464–520, with Simon's Euclidean norm of 1.15). Part (b) is an elementary identity that this parent does not use; it is part of the frozen type so that the type is byte-identical to those of dimred_mbl_pf_unitOrientation_comp and dor_lmb_pc_unitOrientation_comp in other branches.\nNotation: e₁, …, e_P the standard basis of ℝ^P. For an n-covector α and a strictly increasing I : {1, …, n} → {1, …, P}, α(e_I) := α(e_{I(1)}, …, e_{I(n)}); |α|_E := covectorEuclideanNorm α = (Σ_I α(e_I)²)^{1/2}. ‖L‖ is the operator norm. α∘L := α.compContinuousLinearMap L, so (α∘L)(v₁, …, vₙ) = α(Lv₁, …, Lvₙ). For v = (v₁, …, vₙ) in ℝ^P let V be the P×n matrix with entries V_{ij} = ⟨e_i, v_j⟩, V_I its n×n submatrix on the rows I(1), …, I(n), and Γ(v) := det(⟨v_i, v_j⟩)_{i,j} = det(VᵀV).\n1. Expansion. Writing v_j = Σ_i V_{ij}e_i and expanding by multilinearity, α(v₁, …, vₙ) = Σ_{k : {1..n}→{1..P}} (Π_j V_{k(j)j})·α(e_{k(1)}, …, e_{k(n)}). Terms with k not injective vanish because α is alternating. Each injective k is uniquely I∘σ with I increasing and σ a permutation of {1, …, n}, and α(e_{I∘σ}) = sgn(σ)α(e_I). Grouping, α(v) = Σ_I α(e_I)·Σ_σ sgn(σ)Π_j V_{I(σ(j)),j} = Σ_I α(e_I)·det(V_I).\n2. Cauchy–Schwarz. |α(v)| ≤ (Σ_I α(e_I)²)^{1/2}(Σ_I det(V_I)²)^{1/2} = |α|_E·(Σ_I det(V_I)²)^{1/2}.\n3. Cauchy–Binet. Σ_I det(V_I)² = det(VᵀV) = Γ(v). Proof: det(VᵀV) is multilinear and alternating in the columns of the right factor V; expanding these columns in the standard basis exactly as in step 1 gives det(VᵀV) = Σ_I det((Vᵀ)^I)·det(V_I), where (Vᵀ)^I is the n×n submatrix of Vᵀ on the columns I, i.e. (V_I)ᵀ; so det(VᵀV) = Σ_I det(V_I)². Hence Γ(v) ≥ 0 and |α(v)| ≤ |α|_E·Γ(v)^{1/2}. (This is also the first part of the accepted declaration covectorEuclideanNorm_gram_bounds.)\n4. Hadamard. Γ(v) ≤ Π_j |v_j|². If v₁, …, vₙ are linearly dependent, Vc = 0 for some c ≠ 0, so (VᵀV)c = 0 and Γ(v) = 0. Otherwise let σ₁, …, σₙ be the Gram–Schmidt orthonormalization of v₁, …, vₙ: v_j = Σ_{i≤j} T_{ij}σ_i with T upper triangular and T_{jj} = dist(v_j, span(v₁, …, v_{j−1})) ∈ (0, |v_j|]. Then ⟨v_i, v_j⟩ = (TᵀT)_{ij}, so Γ(v) = det(T)² = Π_j T_{jj}² ≤ Π_j |v_j|².\n5. Set-up. By IsUnitOrientationOf ξ Q there are an orthonormal family τ = (τ₁, …, τₙ) with span τ = Q and a sign s ∈ {1, −1} such that ξ(β) = s·β(τ₁, …, τₙ) for every n-covector β.\n6. Part (a). Let α be an n-covector. Then ξ(α∘L) = s·(α∘L)(τ) = s·α(Lτ₁, …, Lτₙ). By steps 3 and 4 with v_j := Lτ_j, |ξ(α∘L)| = |α(Lτ₁, …, Lτₙ)| ≤ |α|_E·Γ(Lτ)^{1/2} ≤ |α|_E·Π_j|Lτ_j| ≤ |α|_E·Π_j ‖L‖·|τ_j| = |α|_E·‖L‖ⁿ, since |τ_j| = 1. (For n = 0 all products are empty, the empty I is the only increasing index, |α|_E = |α()| and ξ(α∘L) = s·(α∘L)() = s·α(): the inequality holds with equality.)\n7. Part (b). Suppose Lv = v for every v ∈ Q. Each τ_j lies in span τ = Q, so Lτ_j = τ_j and (α∘L)(τ) = α(Lτ₁, …, Lτₙ) = α(τ₁, …, τₙ). Hence ξ(α∘L) = s·α(τ) = ξ(α) for every n-covector α. ∎",
+    "proof_key_steps": [
+      "Expansion α(v) = Σ_I α(e_I)det(V_I) by multilinearity and the alternating property.",
+      "Cauchy–Schwarz and Cauchy–Binet: |α(v)| ≤ |α|_E·det(⟨v_i, v_j⟩)^{1/2}.",
+      "Hadamard (Gram–Schmidt): det(⟨v_i, v_j⟩) ≤ Π_j|v_j|²; with v_j = Lτ_j this gives |ξ(α∘L)| ≤ |α|_E‖L‖ⁿ.",
+      "If L fixes Q pointwise then L fixes each τ_j, so ξ(α∘L) = ±α(τ) = ξ(α)."
+    ]
+  },
+  "audit": {
+    "key": "orient_comp",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The alternating expansion, Cauchy–Binet and Hadamard establish the precise Euclidean coefficient-norm bound. Fixing the oriented plane fixes each frame vector and proves invariance. Degree zero is explicitly covered."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9f4d277b67/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9f4d277b67/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-9f4d277b67/parent-supplied-natural-proof.json"
+}

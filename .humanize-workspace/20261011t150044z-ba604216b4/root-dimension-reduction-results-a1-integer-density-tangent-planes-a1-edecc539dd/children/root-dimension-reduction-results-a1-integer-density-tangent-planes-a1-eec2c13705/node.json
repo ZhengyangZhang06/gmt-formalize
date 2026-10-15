@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.planes_union_vertex_density-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1",
+  "depth": 4,
+  "title": "An integer multiplicity 2-cycle supported in finitely many 2-planes meeting at 0 has integer density at 0",
+  "statement": "Let P, q ∈ ℕ, let C ∈ 𝒟_2(ℝ^P) be integer multiplicity with ∂C = 0 (BoundaryVanishes C), and let P_1, …, P_q (a family indexed by Fin q) be 2-dimensional linear subspaces of ℝ^P with P_i ∩ P_j = {0} (P_i ⊓ P_j = ⊥) for i ≠ j, such that every x ∈ spt C with x ≠ 0 lies in some P_i. Then there is m ∈ ℕ with HasMassDensity C 0 m, i.e. Θ²(μ_C, 0) = m.",
+  "lean_statement": "∀ (P q : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Ps : Fin q → Submodule ℝ (Euclid P)), IsIntegerMultiplicity C → BoundaryVanishes C → (∀ i, Module.finrank ℝ (Ps i) = 2) → (∀ i j, i ≠ j → Ps i ⊓ Ps j = ⊥) → (∀ x ∈ C.support, x ≠ 0 → ∃ i, x ∈ Ps i) → ∃ m : ℕ, HasMassDensity C 0 m",
+  "lean_name": "idtp_tdc_planes_union_vertex_density",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-eec2c13705-a1"
+}

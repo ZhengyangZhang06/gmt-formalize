@@ -1,0 +1,81 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json (project b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib 25730c7c759d108ef87ab70af2342a196760f79d)",
+        "cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (all identical)",
+        "rg -n 'theorem exists_.*zero_one|theorem exists_.*_one_of_isClosed|theorem exists_msmooth|theorem exists_contMDiff' local-references/123e8435b4a2469b/mathlib/Mathlib (exists_contMDiffMap_one_nhds_of_subset_interior at Geometry/Manifold/PartitionOfUnity.lean:526)",
+        "rg -n 'cthickening_subset_open|exists_thickening_subset_open|IsCompact.cthickening|isCompact_cthickening' local-references/123e8435b4a2469b/mathlib/Mathlib (Topology/MetricSpace/Thickening.lean:283, 426)",
+        "rg -n 'theorem exists_contDiff_tsupport_subset|theorem IsOpen.exists_contDiff_support_eq' local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "rg -n 'theorem norm_apply_le' local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean (line 713)",
+        "grep -n 'restrictDomain|testFormOnInclusion|GeometricCurrentOn.ext|zero_apply|boundary_apply|tsupport_exteriorDerivative_subset|exteriorDerivativeTestOn|def massOn|def mass|massAdmissibleOn|abbrev Covector|abbrev DifferentialForm|def IsTestForm' simongmt/Poincare/SimonGMT/Chapter06/{Currents,CurrentLocalEquality,Mass,Forms}.lean",
+        "grep -n 'def CountablyRectifiable|theorem countablyRectifiable_of_measure_zero' simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "python3 -I scans of runs/20261011T150044Z-ba604216b4/dag.json: frozen types and status of dor_lmb_fc_total_bounded, dor_lmb_fc_deformation, dor_lmb_fc_deformation_top (decomposing), dor_imrep_massOn_eq_measure_and_support, cmc_imRep_locality_restrict_sub, dtc_restrictDomain_isIntegerMultiplicity (accepted; byte-identical types); related accepted dtc_extend_by_zero, dtc_imrep_of_null_off_compact, dtc_imrep_current, dtc_massOn_eq_of_agreeOn, dtc_vanish_off_support, imrep_carrier_sdiff_support_null, dgcr_bwd_normal_cutoff; grep of the six dor_lmb_fc_tb_* names in dag.json, nodes/, GMT/, simongmt (no match)",
+        "python3 -I parse of nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v2.json and nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-total-bounded-a1/decomposition-v1.json (reuse-entry format for imrep_mass, im_calculus, restrict_im)",
+        "sed -n 2040,2095p book/chapter-06.txt (Simon Ch. 6, proof of Theorem 7.2, (1)-(3))",
+        "verifier/gmt-compare.py contract_scope/child_modules replay + lean_contract.validate_lean_statement -> /tmp/tb-decomp/lean/Challenge_*.lean; lake env lean on each (0 errors)",
+        "lake env lean /tmp/tb-decomp/lean/All.lean with #print axioms (components TBCheck.lean, FCheck.lean, ACheck.lean, B.lean, CCheck.lean, DE.lean); independent reviewer replay /tmp/tb-review/Faithful.lean in the exact comparator scope (exit 0)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f1082ad442/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-convergence-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-total-bounded-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-localize-a1-restrict-im-a1/parent-supplied-natural-proof.md",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/tb-decomp/lean/All.lean",
+        "/tmp/tb-decomp/lean/Challenge_cell_chains_finite.lean",
+        "/tmp/tb-decomp/lean/Challenge_extend_univ.lean",
+        "/tmp/tb-decomp/lean/Challenge_eq_of_vanish_off.lean",
+        "/tmp/tb-decomp/lean/Challenge_extend_boundary.lean",
+        "/tmp/tb-decomp/lean/Challenge_zero_im.lean",
+        "/tmp/tb-decomp/lean/Challenge_high_degree_zero.lean",
+        "/tmp/tb-decomp/lean/Challenge_restrict_im.lean"
+      ],
+      "conclusion": "Snapshot: project b4d606db and mathlib 25730c7c. The snapshot's Contract.lean and Submission.lean are byte-identical to the workspace files.\n\nNeither SimonGMT nor the snapshot has extension-by-zero, cutoff-uniqueness, cube-chain finiteness, zero-IM or high-degree-vanishing lemmas for GeometricCurrentOn. The DAG has related accepted declarations (dtc_extend_by_zero, dtc_imrep_of_null_off_compact, dtc_massOn_eq_of_agreeOn), but their types differ: support-based hypotheses, no mass bound. The only exact matches are the three reused accepted declarations dor_imrep_massOn_eq_measure_and_support, cmc_imRep_locality_restrict_sub and dtc_restrictDomain_isIntegerMultiplicity, whose types are byte-identical.\n\nMathlib in the snapshot supplies everything the child proofs cite:\n- exists_contMDiffMap_one_nhds_of_subset_interior with model modelWithCornersSelf ℝ (Euclid P), and contMDiff_iff_contDiff;\n- IsCompact.exists_cthickening_subset_open and IsCompact.cthickening;\n- PiLp.norm_apply_le, Set.Finite.pi and Set.Finite.of_finite_image;\n- LinearIndependent.fintype_card_le_finrank and AlternatingMap.map_linearDependent;\n- countablyRectifiable_of_measure_zero (SimonGMT Chapter03).\n\nThe six new names are fresh. All nine child types elaborate as exact comparator challenges with 0 errors. All.lean shows that the children, together with deformation and deformation_top, imply the exact frozen selected type. Four children are fully proved with standard axioms, and sorry appears only in the five assumed external declarations. An independent reviewer returned ACCEPT."
+    }
+  ],
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1",
+  "child_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.total_bounded-a1.cell_chains_finite-a1",
+  "subproblem": {
+    "key": "cell_chains_finite",
+    "title": "Finiteness of the integer cube chains with bounded coefficients on grid cells inside a compact set (parent step 2)",
+    "statement": "Let P, m ∈ ℕ, let U ⊆ ℝ^P be any set, let K ⊆ ℝ^P be compact, let ρ > 0 be real and let B ∈ ℕ. For p = (z, ι) ∈ ℤ^P × (Fin (m+1) → Fin P) let F_p := {x ∈ ℝ^P : ρz_i ≤ x_i ≤ ρ(z_i + 1) for i ∈ range ι and x_i = ρz_i for i ∉ range ι}. For ω ∈ 𝒟^{m+1}(U) let I_p(ω) := ∫_{F_p} ω(x)(e_{ι(0)}, …, e_{ι(m)}) dH^{m+1}(x), where e_j = EuclideanSpace.single j 1 is the j-th standard basis vector. Let 𝒬 be the set of X ∈ 𝒟_{m+1}(U) for which there are a finite set s of such pairs and integers b(p) with F_p ⊆ K and |b(p)| ≤ B for every p ∈ s, and X(ω) = Σ_{p∈s} b(p)·I_p(ω) for every ω ∈ 𝒟^{m+1}(U). Then 𝒬 is finite. Conventions: ℝ^P = Euclid P and Hᵈ = μHE[d]. For D ⊆ ℝ^P, 𝒟^d(D) = TestFormOn D d (smooth d-forms on ℝ^P with compact support contained in D) and 𝒟_d(D) = GeometricCurrentOn D d; ∂X = X.boundary (∂X(ω) = X(dω)). For G ⊆ ℝ^P, M_G(X) = X.massOn G is the supremum of ofReal(X(ω)) over ω ∈ 𝒟^d(D) with tsupport ω ⊆ G and covectorEuclideanNorm(ω(x)) ≤ 1 for all x; M(X) = X.mass = M_D(X). An IMRep R = (M, θ, ξ) in D is the contract structure IMRep D d; R.action(ω) = ∫_M θ(x) ξ(x)(ω(x)) dHᵈ(x); R represents X when X(ω) = R.action(ω) for every ω ∈ 𝒟^d(D); μ_R = R.measure = (Hᵈ⌞M).withDensity θ; X is integer multiplicity (IM, IsIntegerMultiplicity X) if some IMRep in D represents it. For V ⊆ D, ι = testFormOnInclusion regards ω ∈ 𝒟^d(V) as an element of 𝒟^d(D) with the same underlying form, and X⌞V = X.restrictDomain (V ⊆ D) ∈ 𝒟_d(V) is given by X⌞V(ω) = X(ιω). X vanishes off a set K if X(ω) = 0 for every test form ω whose tsupport is disjoint from K.",
+    "lean_statement": "∀ (P m : ℕ) (U K : Set (Euclid P)) (ρ : ℝ) (B : ℕ), 0 < ρ → IsCompact K → {X : GeometricCurrentOn U (m + 1) | ∃ (s : Finset ((Fin P → ℤ) × (Fin (m + 1) → Fin P))) (b : (Fin P → ℤ) × (Fin (m + 1) → Fin P) → ℤ), (∀ p ∈ s, {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧ (i ∉ Set.range p.2 → x i = ρ * p.1 i)} ⊆ K) ∧ (∀ p ∈ s, (b p).natAbs ≤ B) ∧ ∀ ω : TestFormOn U (m + 1), X ω = ∑ p ∈ s, (b p : ℝ) * ∫ x in {x : Euclid P | ∀ i : Fin P, (i ∈ Set.range p.2 → ρ * p.1 i ≤ x i ∧ x i ≤ ρ * (p.1 i + 1)) ∧ (i ∉ Set.range p.2 → x i = ρ * p.1 i)}, (ω : DifferentialForm (Euclid P) (m + 1)) x (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) ∂μHE[m + 1]}.Finite",
+    "lean_name": "dor_lmb_fc_tb_cell_chains_finite",
+    "depends_on": [],
+    "natural_proof": "Source: step 2 of the parent proof. Simon Ch. 6, proof of Theorem 7.2 (chapter-06.txt lines 2056–2090) states that there are only finitely many currents P as in (2), with N depending only on M, W, n, k and ρ.\n1. K is compact, hence bounded, so there is D ∈ ℝ with ‖y‖ ≤ D for all y ∈ K (Bornology.IsBounded.exists_norm_le). Put N := ⌈D/ρ⌉ ∈ ℕ (Nat.ceil).\n2. If p = (z, ι) satisfies F_p ⊆ K, then |z_i| ≤ N for every i. Let y ∈ ℝ^P be the point with coordinates y_i = ρz_i. For i ∈ range ι, ρz_i ≤ y_i ≤ ρz_i + ρ = ρ(z_i + 1) because ρ > 0; for i ∉ range ι, y_i = ρz_i. So y ∈ F_p ⊆ K and ρ|z_i| = |y_i| ≤ ‖y‖ ≤ D (PiLp.norm_apply_le). Hence |z_i| ≤ D/ρ ≤ N (Nat.le_ceil).\n3. Let C_f := {z ∈ ℤ^P : |z_i| ≤ N for all i} × (Fin (m+1) → Fin P). This set is finite: it is Fintype.piFinset of the integer intervals [−N, N] times the finite type Fin (m+1) → Fin P. By step 2, every p with F_p ⊆ K lies in C_f.\n4. For e : C_f → ℤ define Φ(e) : 𝒟^{m+1}(U) → ℝ by Φ(e)(ω) := Σ_{q∈C_f} e(q)·I_q(ω). The set E_B := {e : C_f → ℤ : −B ≤ e(q) ≤ B for all q} is finite, being a finite product of finite integer intervals (Set.Finite.pi, Set.finite_Icc). Hence its image Φ(E_B) is a finite set of functions.\n5. Let X ∈ 𝒬 with data s and b. By step 3, s ⊆ C_f. Define e(q) := b(q) if q ∈ s and e(q) := 0 otherwise. Then e ∈ E_B, because |b(q)| ≤ B for q ∈ s. For every ω, X(ω) = Σ_{p∈s} b(p) I_p(ω) = Σ_{q∈C_f} e(q) I_q(ω) = Φ(e)(ω). Here the sum over s extends to C_f ⊇ s by terms that are 0 (Finset.sum_subset), and the sum over the finset C_f equals the sum over its subtype (Finset.sum_coe_sort). Thus the function ω ↦ X(ω) lies in Φ(E_B).\n6. A current is determined by its values (GeometricCurrentOn.ext), so the map X ↦ (ω ↦ X(ω)) is injective on 𝒟_{m+1}(U). By step 5 it maps 𝒬 into the finite set Φ(E_B). Hence 𝒬 is finite (Set.Finite.subset, Set.Finite.of_finite_image). ∎",
+    "proof_key_steps": [
+      "A cell F_p ⊆ K contains its corner ρz, so |z_i| ≤ ⌈D/ρ⌉ where D bounds the norms on K; hence only the finitely many index pairs in C_f are admissible.",
+      "Rewrite each admissible chain as a sum over the finite index set C_f, with coefficients in [−B, B] that are zero off s.",
+      "Finitely many coefficient vectors give finitely many functionals, and a current is determined by its values, so 𝒬 is finite."
+    ]
+  },
+  "audit": {
+    "key": "cell_chains_finite",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The corner rho*z bounds every admissible integer coordinate, yielding finitely many index pairs. Zero extension of coefficients gives finitely many bounded coefficient vectors; current extensionality then proves finiteness. Unbounded coefficients outside s cause no problem. Omitting StrictMono matches the prose and gives a finite superset sufficient for the parent."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-7bd1c9a402/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-7bd1c9a402/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-7bd1c9a402/parent-supplied-natural-proof.json"
+}

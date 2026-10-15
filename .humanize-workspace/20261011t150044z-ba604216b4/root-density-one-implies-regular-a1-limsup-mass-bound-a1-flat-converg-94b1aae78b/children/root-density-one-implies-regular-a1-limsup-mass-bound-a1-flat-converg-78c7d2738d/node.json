@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.retraction-a1.cube_lipschitz-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.retraction-a1",
+  "depth": 6,
+  "title": "Lipschitz estimate |Φ(y) − Φ(y')| ≤ (4√P/κ(r(y)))·|y − y'| (Claim B)",
+  "statement": "Let P ∈ ℕ, a ∈ Euclid P with |a_i − 1/2| < 1/4 for all i, κ : (Fin P → ℝ) → ℝ such that |κ(u) − κ(v)| ≤ t whenever t ∈ ℝ and |u_i − v_i| ≤ t for all i, and suppose Φ : Euclid P → Euclid P satisfies Φ(y)_i = a_i + (y_i − a_i)/max(r_i(y), κ(r(y))) for all y and i (real division with the convention x/0 = 0, as in Lean; the denominator vanishes only when r_i(y) = 0 and κ(r(y)) ≤ 0), where r(y) denotes the function j ↦ r_j(y) := max((y_j − a_j)/(1 − a_j), (a_j − y_j)/a_j) (= (y_j − a_j)/(1 − a_j) if y_j ≥ a_j, and = (a_j − y_j)/a_j if y_j < a_j). For all y, y' ∈ Euclid P with κ(r(y)) > 0: dist(Φ(y), Φ(y')) ≤ (4√P/κ(r(y)))·dist(y, y') (Euclidean distances).",
+  "lean_statement": "∀ (P : ℕ) (a : Euclid P), (∀ i, |a i - 1 / 2| < 1 / 4) → ∀ κ : (Fin P → ℝ) → ℝ, (∀ u v : Fin P → ℝ, ∀ t : ℝ, (∀ i, |u i - v i| ≤ t) → |κ u - κ v| ≤ t) → ∀ Φ : Euclid P → Euclid P, (∀ (y : Euclid P) (i : Fin P), Φ y i = a i + (y i - a i) / max (max ((y i - a i) / (1 - a i)) ((a i - y i) / a i)) (κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)))) → ∀ y y' : Euclid P, 0 < κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) → dist (Φ y) (Φ y') ≤ 4 * Real.sqrt P / κ (fun j => max ((y j - a j) / (1 - a j)) ((a j - y j) / a j)) * dist y y'",
+  "lean_name": "dor_lmb_fcdr_cube_lipschitz",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-78c7d2738d-a1"
+}

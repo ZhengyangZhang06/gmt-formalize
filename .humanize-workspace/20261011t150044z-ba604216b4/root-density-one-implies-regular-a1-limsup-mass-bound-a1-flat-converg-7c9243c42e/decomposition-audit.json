@@ -1,0 +1,114 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IMRep|IsUnitOrientationOf|instance : Sub|sorry|axiom",
+        "pushforward|homotop|cartan",
+        "extDeriv_apply|extDeriv_pullback|EventuallyEq.extDeriv_eq|norm_integral_le_of_norm_le|hasFDerivAt_integral_of_dominated_of_fderiv_le|HasApproximateTangentSpaceAt.unique|def HasApproximateTangentSpaceAt|CountablyRectifiable",
+        "curryLeftLI|curryLeft_compContinuousLinearMap|curryLeft_apply_apply|def curryLeft",
+        "infDist_empty|lipschitz_infDist_pt|notMem_iff_infDist_pos",
+        "volume_preserving_piFinSuccAbove",
+        "contDiff_convolution_left",
+        "lake env lean /tmp/scoped-pfc-audit-nzcoak0x/Challenges.lean",
+        "lake env lean /tmp/scoped-pfc-audit-nzcoak0x/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-7c9243c42e/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-7c9243c42e/decomposition-v1.json",
+        "/tmp/pfc-decomp-k7q2/lean/AllTypes.lean",
+        "/tmp/pfc-decomp-k7q2/lean/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt"
+      ],
+      "conclusion": "The pinned revisions and contract agree with the workspace. The search found no proved replacement for the proposed Lipschitz-current calculus. All six reused types match both their accepted DAG contracts and retained comparator challenges; their inspected receipts confirm kernel acceptance with only propext, Quot.sound and Classical.choice permitted. The six new names are unreserved. The local dependency order and the 78-node inherited dependency closure are acyclic. All twelve statements are standalone, one-line propositions matching their prose; matrix expressions use Matrix.of and no problematic matrix IsUnit construction occurs. The split appropriately establishes dor_lmb_fcd_pushforward_homotopy: the exact IPF antecedents are discharged using IMS, and the supplied assembly derives every parent clause. Fresh Lean execution was unavailable because lake was not installed; compiler claims were checked against retained evidence and source inspection, not independently rerun."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "imrep_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact-type reuse of the accepted mass-and-support declaration is verified. Its application to open complements of compact sets supplies the required concentration and mass identities without circularity."
+    },
+    {
+      "key": "gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and frozen type agree, including the Gram matrix and orthonormal duality clause. Unchanged reuse is supported by the accepted declaration and comparator evidence."
+    },
+    {
+      "key": "gram_frame",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Verified identical accepted type, including linear independence, equal spans, determinant identity, nonvanishing and Hadamard bound. Reuse supplies precisely the independent-frame estimate needed downstream."
+    },
+    {
+      "key": "bilipschitz_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Verified unchanged accepted declaration. All measurability, differentiability, injectivity, disjointness and null-remainder conditions match the prose and support the cylinder construction."
+    },
+    {
+      "key": "piece_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The accepted frozen type is identical and includes the essential local finiteness and bi-Lipschitz hypotheses. Its two applications in the cylinder proof satisfy those hypotheses."
+    },
+    {
+      "key": "gram_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type and permitted-axiom comparator evidence verified. The measurable Gram Jacobian and injective area formula provide the stated cylinder measure calculation."
+    },
+    {
+      "key": "toolkit_push",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All six components match their Lean clauses. The proof establishes concentration, finiteness, action bounds, normalized mollification, cutoffs and the conditional push operator. The arbitrary-form action bound legitimately uses norm_integral_le_of_norm_le without requiring measurability of that form. IPF is an exact explicit antecedent."
+    },
+    {
+      "key": "smooth_homotopy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The pullback and homotopy formulas have the correct degrees and curryLeft sign convention. The constant-field calculation, differentiation under the integral with compact local bounds, and fundamental theorem of calculus prove the exact identity and smoothness conclusions."
+    },
+    {
+      "key": "cylinder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The piecewise construction proves the stated subset, rectifiability and measure identity without needing a product-null lemma. The two tangent applications, uniqueness and Lipschitz transfer of exceptional null sets establish the universal tangent implication."
+    },
+    {
+      "key": "product_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies every IMRep field using the cylinder identity and a measurable orientation representative. Finiteness, null-set transfer and integrable domination justify Fubini and the exact action formula, including the coordinate embedding derivative."
+    },
+    {
+      "key": "homotopy_maps",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The compact-support bounds establish global Lipschitz continuity and a common approximation constant. Uniform convergence follows from bounded scalar factors. Neighborhood equality and the derivative calculation give precisely the stated pulled-back integrand."
+    },
+    {
+      "key": "homot_operator",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The construction uses only declared dependencies and the exact IPF antecedent. The empty-support case is handled correctly. Product locality and the C1 approximation argument prove characterization; separation and frame estimates prove support and mass bounds. Together with the supplied parent assembly, these conclusions yield the selected theorem, including subtraction and boundary identities."
+    }
+  ],
+  "required_changes": []
+}
