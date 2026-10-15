@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.retraction-a1.grid_segment-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.retraction-a1",
+  "depth": 6,
+  "title": "Lipschitz on every closed unit grid cube implies Lipschitz along segments",
+  "statement": "Let P ∈ ℕ, f : Euclid P → Euclid P, S ⊆ Euclid P and K ≥ 0. Assume that for every z ∈ ℤ^P and all x, y ∈ S with z_i ≤ x_i ≤ z_i + 1 and z_i ≤ y_i ≤ z_i + 1 for every i, dist(f(x), f(y)) ≤ K·dist(x, y). Then dist(f(x), f(y)) ≤ K·dist(x, y) for all x, y ∈ Euclid P whose closed segment [x, y] is contained in S.",
+  "lean_statement": "∀ (P : ℕ) (f : Euclid P → Euclid P) (S : Set (Euclid P)) (K : ℝ), 0 ≤ K → (∀ (z : Fin P → ℤ) (x y : Euclid P), x ∈ S → y ∈ S → (∀ i, (z i : ℝ) ≤ x i ∧ x i ≤ z i + 1) → (∀ i, (z i : ℝ) ≤ y i ∧ y i ≤ z i + 1) → dist (f x) (f y) ≤ K * dist x y) → ∀ x y : Euclid P, segment ℝ x y ⊆ S → dist (f x) (f y) ≤ K * dist x y",
+  "lean_name": "dor_lmb_fcdr_grid_segment",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-fcfaa6df1a-a1"
+}

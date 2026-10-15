@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1.cube_chain_im-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation_top-a1",
+  "depth": 5,
+  "title": "Integer combinations of oriented grid cubes in ℝ^{m+1} are integer multiplicity currents (parent step 7)",
+  "statement": "Conventions: ℝ^P = Euclid P and Hᵈ = μHE[d] (Mathlib's normalized Euclidean Hausdorff measure). For U ⊆ ℝ^P, 𝒟^d(U) = TestFormOn U d (smooth d-forms on ℝ^P with compact support contained in U) and 𝒟_d(U) = GeometricCurrentOn U d; ∂X = X.boundary (∂X(ω) = X(dω), d = exteriorDerivative); X − Y is the contract subtraction (pointwise on test forms). For G ⊆ ℝ^P, M_G(X) = X.massOn G is the supremum of max(X(ω), 0) over ω ∈ 𝒟^d(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x, where |·| is the Euclidean coefficient norm of covectors (covectorEuclideanNorm: |α|² = Σ_I α(e_{I(0)}, …, e_{I(d−1)})² over strictly increasing I); M(X) = X.mass = M_U(X). An IMRep R = (M, θ, ξ) in U is the contract structure IMRep U d; R represents X when X(ω) = ∫_M θ⟨ω, ξ⟩ dHᵈ for every ω ∈ 𝒟^d(U), where ⟨ω, ξ⟩(x) = ξ(x)(ω(x)); μ_R = θ·Hᵈ⌞M is R.measure; X is integer multiplicity (IM, IsIntegerMultiplicity X) if some IMRep represents it. e_i = EuclideanSpace.single i 1 denotes the standard basis vector of the respective space; castSucc : Fin P → Fin (P + 1) and last = Fin.last P. Let m ∈ ℕ, n := m + 1, ρ > 0, let s be a finite set of z ∈ ℤⁿ and β : ℤⁿ → ℤ, and let X ∈ 𝒟_n(ℝⁿ) (domain univ) satisfy X(ω) = Σ_{z∈s} β_z ∫_{G_z} ω(x)(e_0, …, e_m) dHⁿ(x) for every ω ∈ 𝒟ⁿ(ℝⁿ), where G_z := {x ∈ ℝⁿ : ρz_i ≤ x_i ≤ ρ(z_i + 1) for every i} = ρ(z + [0, 1]ⁿ). Then X is integer multiplicity.",
+  "lean_statement": "∀ (m : ℕ) (ρ : ℝ) (s : Finset (Fin (m + 1) → ℤ)) (β : (Fin (m + 1) → ℤ) → ℤ) (X : GeometricCurrentOn (univ : Set (Euclid (m + 1))) (m + 1)), 0 < ρ → (∀ ω : TestFormOn (univ : Set (Euclid (m + 1))) (m + 1), X ω = ∑ z ∈ s, (β z : ℝ) * ∫ x in {x : Euclid (m + 1) | ∀ i : Fin (m + 1), ρ * z i ≤ x i ∧ x i ≤ ρ * (z i + 1)}, (ω : DifferentialForm (Euclid (m + 1)) (m + 1)) x (fun k => EuclideanSpace.single k (1 : ℝ)) ∂μHE[m + 1]) → IsIntegerMultiplicity X",
+  "lean_name": "dor_lmb_fc_dtop_cube_chain_im",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-b45c5ab34d-a1"
+}
