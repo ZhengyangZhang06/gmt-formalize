@@ -3953,24 +3953,6 @@ theorem Submission.dimred_tr_bc_class_tangent : (∀ (P n : ℕ) (U : Set (Eucli
         filter_upwards [Submission.idtp_fons_cc_tm_blowup_integrals.2 (n + k) n RS.measure y ε
           lams f hε hnull hlams hlim hfs] with j hj
         exact hj.symm
-/-- **Simon 7.3.3, proof of (1)** (p. 189): given (MB), the moving-centre form of 7.3.1(2), every
-weak limit `η_{xᵢ,λᵢ#}T ⇀ S` in `ℝ^{n+k}` with centres `xᵢ → x ∈ U` and scales `λᵢ ↓ 0` is
-minimizing in `ℝ^{n+k}` with `∂S = 0`.  (MB) gives a strictly increasing `φ` and `C`, minimizing
-in `ℝ^{n+k}` with `∂C = 0`, with `η_{x_{φ(j)},λ_{φ(j)}#}T ⇀ C`.  For each `ω ∈ 𝒟ⁿ(ℝ^{n+k})` the
-values along `φ` tend both to `S(ω)` and to `C(ω)`, so `S = C` by uniqueness of limits in `ℝ`. -/
-theorem Submission.dimred_tr_bc_zero_limit_minimizing : (∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C) → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i) (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → IsMinimizingIn S univ ∧ BoundaryVanishes S := by
-  intro hMB n k ℓ hℓk U N T hn hU hN hNU hT hsptT hbdT x xs lams hlams S hx hxs hlams0 hS
-  -- (MB) at the limit `x ∈ U` of the centres: along a subsequence `φ` the blow-ups converge
-  -- weakly to some `C`, minimizing in `ℝ^{n+k}` with `∂C = 0`
-  obtain ⟨φ, C, hφ, hC, -, hCmin, hCbd⟩ :=
-    hMB n k ℓ hℓk U N T hn hU hN hNU hT hsptT hbdT x xs lams hlams hx hxs hlams0
-  -- weak limits are unique: `φ(j) → ∞`, so along `φ` the values on `ω` tend to `S(ω)` and `C(ω)`
-  have hSC : S = C := by
-    ext ω
-    exact tendsto_nhds_unique ((hS ω).comp hφ.tendsto_atTop) (hC ω)
-  rw [hSC]
-  exact ⟨hCmin, hCbd⟩
-
 /-- **Simon 7.3.3, proof of (1)** (p. 189), monotonicity for the class `𝒯`: given (IM), (MON)
 and (MB), one constant `Λ` makes `ρ ↦ e^{Λρ}ρ⁻ⁿμ(B_ρ(y))` nondecreasing on `(0, R)` for every
 `μ ∈ 𝓜` and every `B̄_R(y) ⊆ B̄₂(0)`.  (MON)(i) on the compact `K = B̄_{2r}(z) ⊆ U` gives
