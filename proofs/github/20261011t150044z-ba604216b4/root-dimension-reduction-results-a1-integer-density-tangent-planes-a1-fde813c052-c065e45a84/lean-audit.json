@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "8dbe7082341ad6b44c95422bbf80894bc6092a8cacadd274ef189757d0faa085",
+  "git_delta": {
+    "base_commit": "9245739bdb4c877d838792ca69ef39ec9942135e",
+    "candidate_commit": "e04200678e49936e0c959cd7c950d17a1ee72b3c",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "fb1880d7e10542c768b01be8bcc79c3c28024f24851be9876cc545251b321e64",
+    "source_sha256": "18cbb0283cf7e54b049dd544ee93b99411e2d703851bbb637ff8fcbe29653697",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_cttp_cycle_tangent_cone",
+      "statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n), 1 ≤ n → IsMinimizingIn C univ → BoundaryVanishes C → ∀ p ∈ C.support, ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) n) (θ : ℝ), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ MassMeasuresConverge (fun j => blowUp C p (lams (φ j)) (hlams (φ j)).ne') C' ∧ IsMinimizingIn C' univ ∧ IsConeCurrent C' ∧ BoundaryVanishes C' ∧ 1 ≤ θ ∧ HasMassDensity C p θ ∧ HasMassDensity C' 0 θ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
