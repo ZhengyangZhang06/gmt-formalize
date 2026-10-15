@@ -1,0 +1,80 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmcdt_lpi_cyl|volume_preserving_piFinSuccAbove|curryLeft|Fin.tail|cylinder' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "rg -n 'cmcdt_lpi_cyl_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes -g 'decomposition-v*.json' -l",
+        "volume_preserving_piFinSuccAbove; volume_preserving_symm_measurableEquiv_toLp; setIntegral_prod; setLIntegral_prod; setLIntegral_comp_preimage_emb",
+        "measurable_fderiv_apply_const; norm_fderiv_le_of_lipschitz; curryLeft_apply_apply; enorm_integral_le_lintegral_enorm; setLIntegral_mono'",
+        "cmcdt_lpi_piece_representation; cmcdt_lpi_lipschitz_piece_im; lean_name; lean_statement; theorems; depends_on; children",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cylim_independent_audit/Types.lean > /tmp/cylim_independent_audit/types.log 2>&1",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cylim_independent_audit/Audit.lean > /tmp/cylim_independent_audit/audit.log 2>&1"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-6e44182ce4/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-lip-6e44182ce4/decomposition-v1.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/tmp/cylim_independent_audit/Types.lean",
+        "/tmp/cylim_independent_audit/Audit.lean",
+        "/tmp/cylim_independent_audit/audit.log"
+      ],
+      "conclusion": "The pinned contract is byte-identical to the workspace; Mathlib revision 25730c7c759d108ef87ab70af2342a196760f79d matches the manifest. The project search found no matching cylinder declarations. All six names are fresh bare identifiers, and all six one-line propositions elaborate independently without child declarations. Independently replaying the supplied proofs succeeded with only propext, Classical.choice and Quot.sound. The supplied assembly also compiled against the exact frozen parent, using its two declared sibling contracts as explicit hypotheses, without sorry. The relevant 30-node dependency closure is acyclic, and proof references match declared dependencies. Euclidean norms, volume transport and covector constructions use the intended instances; no matrix IsUnit construction occurs. Splitting is appropriate: the four foundational children support the action and mass lemmas, which establish this selected cylinder theorem through the existing siblings and IMS."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cyl_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type agree, including measurability and integrability hypotheses. The explicit measure-preserving equivalence has the correct cylinder preimage and integration order. Change of variables, Tonelli and Fubini prove all three conclusions without circularity."
+    },
+    {
+      "key": "suspension_map",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The defining equation and conditional hypotheses match exactly. The Euclidean squared-norm calculation proves the max(1,L) bound; the chain rule and basis evaluations prove the stated Fin.cons derivative tuple, including zero-dimensional cases."
+    },
+    {
+      "key": "slice_covector_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both norm-bound antecedents and c ≥ 0 are explicit. The proof correctly constructs the continuous linear embedding J, establishes its norm bound, evaluates the contracted pullback, and uses nonnegativity when multiplying inequalities."
+    },
+    {
+      "key": "pullback_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement allows arbitrary S and needs no differentiability assumption. Measurability of total fderiv, its global Lipschitz bound, and compact-support boundedness give a bounded measurable factor. Multiplying by the integrable weight proves the conclusion."
+    },
+    {
+      "key": "piece_action",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All data and defining equations appear in both statements. The declared dependencies establish the four admissibility conclusions and justify Fubini. The derivative tuple, slice formula and null endpoints give the exact action identity; no regularity assumption on η is silently added."
+    },
+    {
+      "key": "piece_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stronger statement for arbitrary forms is sound. The proof uses a measurable majorant and the unconditional Bochner integral bound, so neither measurability nor integrability of the action integrand is missing. Tonelli gives the asserted ENNReal bound, which suffices for the parent's mass supremum."
+    }
+  ],
+  "required_changes": []
+}

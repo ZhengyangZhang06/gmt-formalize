@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.telescoping_deformation-a1.mass_eval-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.skeleton_deformation-a1.telescoping_deformation-a1",
+  "depth": 5,
+  "title": "Mass controls evaluation: mass-null sequences tend weakly to 0, mass-summable series converge weakly, and the mass of the weak sum is at most the sum of the masses",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, and let X_j ∈ 𝒟_n(U) (j ∈ ℕ). (i) If M(X_j) → 0 in [0, ∞], then X_j(ω) → 0 in ℝ for every ω ∈ 𝒟^n(U). (ii) If Σ_j M(X_j) < ∞ (tsum in [0, ∞]), then (a) for every ω ∈ 𝒟^n(U) the real series Σ_j X_j(ω) is summable, and (b) every Y ∈ 𝒟_n(U) such that Σ_j X_j(ω) = Y(ω) (HasSum) for every ω ∈ 𝒟^n(U) satisfies M(Y) ≤ Σ_j M(X_j). Conventions: ℝ^P = Euclid P (EuclideanSpace ℝ (Fin P)); for U ⊆ ℝ^P, 𝒟^n(U) = TestFormOn U n (smooth n-forms on ℝ^P whose compact tsupport lies in U) and 𝒟_n(U) = GeometricCurrentOn U n (SimonGMT Chapter06), X(ω) the value of X on ω. |α| = covectorEuclideanNorm α is the Euclidean coefficient norm of a covector. M_G(X) = X.massOn G ∈ [0, ∞] is the supremum of ENNReal.ofReal X(ω) over the ω ∈ 𝒟^n(U) with tsupport ω ⊆ G and |ω(x)| ≤ 1 for all x (such ω are admissible for M_G, massAdmissibleOn U n G); M(X) = X.mass = M_U(X). HasSum is unconditional summation in ℝ; Σ_j M(X_j) is the tsum in [0, ∞].",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U n), (Tendsto (fun j => (X j).mass) atTop (𝓝 0) → ∀ ω : TestFormOn U n, Tendsto (fun j => X j ω) atTop (𝓝 0)) ∧ (∑' j, (X j).mass < ∞ → (∀ ω : TestFormOn U n, Summable (fun j => X j ω)) ∧ ∀ Y : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, HasSum (fun j => X j ω) (Y ω)) → Y.mass ≤ ∑' j, (X j).mass)",
+  "lean_name": "cmcsdtd_mass_controls_eval",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1.coeff_bound-a1",
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.flat_convergence-a1.series_current-a1.coeff_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-flat-convergence-a1-series-896eab3360-a1",
+      "result_commit": "827f2b91f9f4bc56c57c61f028ddb49fff28d5b8",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.eval_mass_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91-a1",
+      "result_commit": "7a706164baaf42fc7f55751247396a8836928310",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-be84d2c2fd-a1"
+}

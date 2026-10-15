@@ -1,0 +1,71 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.rescaled_bounds-a1`
+- Child DAG node: `root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.blowup_limit-a1.rescaled_bounds-a1.compact_sup_bound-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 (part (a)) of the parent proof. There the early indices are bounded by ν_i(K) ≤ c_i·Hⁿ(M), which equals ν_i(ℝ^P), and the late indices by ν_i(B̄_R(0)) ≤ 2V(R); here these two inputs are the two hypotheses.
+1. (Enclosing ball.) K is compact, hence bounded, so K ⊆ B̄_{R₀}(0) for some R₀ ∈ ℝ (Bornology.IsBounded.subset_closedBall). Put R := max(R₀, 1). Then R ≥ 1 > 0 and K ⊆ B̄_{R₀}(0) ⊆ B̄_R(0).
+2. (Late indices.) By the hypothesis applied to this R there are B < ∞ and N ∈ ℕ with ν_i(B̄_R(0)) ≤ B for all i ≥ N (eventually_atTop).
+3. (Early indices.) Let S := Σ_{j=0}^{N−1} ν_j(ℝ^P). Each summand is finite by hypothesis, so S < ∞ (ENNReal.sum_lt_top).
+4. (Pointwise bound.) Let i ∈ ℕ. If i ≥ N, then ν_i(K) ≤ ν_i(B̄_R(0)) ≤ B by monotonicity of ν_i and steps 1–2. If i < N, then ν_i(K) ≤ ν_i(ℝ^P) ≤ S by monotonicity of ν_i and because ν_i(ℝ^P) is one of the summands of S, all of which are ≥ 0 (Finset.single_le_sum with i ∈ {0, …, N−1}). In both cases ν_i(K) ≤ max(B, S).
+5. (Conclusion.) Hence sup_i ν_i(K) ≤ max(B, S) (iSup_le), and max(B, S) < ∞ because B < ∞ and S < ∞ (max_lt). ∎
+
+## Key steps
+
+1. K compact ⇒ K ⊆ B̄_R(0) with R := max(R₀, 1) > 0.
+2. The hypothesis gives B < ∞ and N with ν_i(B̄_R(0)) ≤ B for all i ≥ N.
+3. For i < N, ν_i(K) ≤ ν_i(ℝ^P) ≤ Σ_{j<N} ν_j(ℝ^P) < ∞.
+4. sup_i ν_i(K) ≤ max(B, Σ_{j<N} ν_j(ℝ^P)) < ∞.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b, mathlib_commit 25730c7c759d108ef87ab70af2342a196760f79d); cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean against workspace GMT/Ch07/Contract.lean and GMT/Ch07/Submission.lean (both identical)`
+- `grep -n 'def dilation\|def dilationCLM\|def unitBallVolume' project/GMT/Ch07/Contract.lean (dilation x lam y = -(lam⁻¹ • x) + dilationCLM P lam y, dilationCLM = lam⁻¹ • id, unitBallVolume n = volume (ball (0 : Euclid n) 1)); grep -rn 'def blowUpMap' simongmt Poincare/SimonGMT/Chapter03/Rectifiable.lean (blowUpMap x r y = r⁻¹ • (y - x))`
+- `python3 -I scans of dag.json: frozen lean_statement of the parent's prerequisites cbr_ci_bl_blowUp_restrict_scaling and cbr_ci_bl_density_bounds (byte-identical to the stubs used); search for existing dilation/blowUpMap ball lemmas (accepted regcomp_atl_blowUp_measure_scaling / rsdic_tl_blowUp_measure_scaling / ptd_tl_blowUp_measure_scaling cover only closed-ball masses; dtc_rescaled_ball_measure_tendsto concerns density limits; none reused); lean_name collision check for cbr_ci_bl_rb_scale_identities, cbr_ci_bl_rb_null_seq_transfer, cbr_ci_bl_rb_compact_sup_bound (no match)`
+- `grep -rn in local-references/123e8435b4a2469b/mathlib/Mathlib: MeasurableEmbedding.lintegral_map, MeasurableEmbedding.restrict_map, map_apply (hf : MeasurableEmbedding f), Measure.restrict_smul, lintegral_smul_measure, Measure.restrict_restrict, Homeomorph.measurableEmbedding, Homeomorph.smulOfNeZero, ENNReal.mul_div_mul_left, ENNReal.ofReal_div_of_pos, measure_ball_pos, measure_ball_lt_top, inv_mul_le_iff₀, inv_mul_lt_iff₀, ENNReal.limsup_const_mul_of_ne_top, eventually_lt_of_limsup_lt, limsup_le_of_le, le_of_forall_gt_imp_ge_of_dense, ENNReal.Tendsto.const_mul, tendsto_nhdsWithin_iff, Bornology.IsBounded.subset_closedBall, ENNReal.sum_lt_top, Finset.single_le_sum, ENNReal.div_le_of_le_mul, ENNReal.le_div_iff_mul_le`
+- `sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose depth gate: depth 5 < max_depth 6; _solve_children and _existing_lean_name_problem: children depend only on sibling keys, accepted identical-type reuse only) and speculation.py (appended Submission.X theorems inside namespace GMT.Ch07)`
+- `lake env lean /tmp/rb-decomp/Stmts.lean, C1.lean, C2.lean, C3.lean, Assembly.lean, EndToEnd.lean with #print axioms; validate_lean_statement from verifier/lean_contract.py and the runtime lean_contract.py on the three child types`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6264bc6f37/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6264bc6f37/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Map.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/ConstMulAction.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/NhdsWithin.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Bounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/BigOperators.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/BigOperators/Group/Finset.lean`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/speculation.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/rb-decomp/C1.lean`
+- `/tmp/rb-decomp/C2.lean`
+- `/tmp/rb-decomp/C3.lean`
+- `/tmp/rb-decomp/EndToEnd.lean`
+
+The snapshot contract (project b4d606db, Mathlib 25730c7c) is byte-identical to the workspace Contract.lean and Submission.lean. dilation, dilationCLM, unitBallVolume and blowUpMap have the definitions used in the child proofs. No existing DAG declaration gives the open-ball, total-mass and lintegral scaling identities. The accepted regcomp_atl_blowUp_measure_scaling covers only closed-ball masses, so nothing is reused. The three new cbr_ci_bl_rb_* names are fresh. Every Mathlib lemma cited in the child proofs exists in the pinned snapshot. ENNReal.limsup_const_mul_of_ne_top works for atTop, unlike ENNReal.limsup_const_mul. All three child types elaborate in namespace GMT.Ch07 after import GMT.Ch07.Submission and pass both lexical validators. Each child was fully proved in scratch Lean with only propext, Classical.choice and Quot.sound. The byte-identical frozen parent type was proved from the three children plus the frozen statements of cbr_ci_bl_blowUp_restrict_scaling and cbr_ci_bl_density_bounds, and depends on no other axioms.

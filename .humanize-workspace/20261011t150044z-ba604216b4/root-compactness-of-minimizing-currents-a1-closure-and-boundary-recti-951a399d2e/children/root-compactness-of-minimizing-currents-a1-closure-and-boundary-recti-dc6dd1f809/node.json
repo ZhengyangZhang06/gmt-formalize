@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1.plane_map-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.weight_ge_one-a1",
+  "depth": 5,
+  "title": "The coordinate projection pushes Hⁿ on an affine n-plane forward to Lebesgue measure",
+  "statement": "Let P, n ∈ ℕ, let v = (v_0, …, v_{n−1}) be orthonormal in ℝ^P, w ∈ ℝ^P, Π := {y ∈ ℝ^P : y − w ∈ span(v)}, and let pL : ℝ^P → ℝⁿ be a continuous linear map with (pL x)_i = ⟨v_i, x⟩ for all x, i. Then the push-forward of Hⁿ⌞Π (Hⁿ = μHE[n] on ℝ^P) under pL is Lebesgue measure on ℝⁿ: Measure.map pL (μHE[n].restrict Π) = volume on Euclid n.",
+  "lean_statement": "∀ (P n : ℕ) (v : Fin n → Euclid P) (w : Euclid P) (pL : Euclid P →L[ℝ] Euclid n), Orthonormal ℝ v → (∀ (x : Euclid P) (i : Fin n), pL x i = inner ℝ (v i) x) → Measure.map pL ((μHE[n]).restrict {y : Euclid P | y - w ∈ Submodule.span ℝ (Set.range v)}) = (volume : Measure (Euclid n))",
+  "lean_name": "cbr_ci_pw_plane_map_volume",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-dc6dd1f809-a1"
+}
