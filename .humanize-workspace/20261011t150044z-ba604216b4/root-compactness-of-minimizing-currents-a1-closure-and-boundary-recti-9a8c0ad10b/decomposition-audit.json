@@ -1,0 +1,101 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "integral_withDensity_eq_integral_smul|withDensity_absolutelyContinuous|theorem withDensity_apply|lintegral_eq_zero_iff",
+        "exists_contDiff_support_eq_eq_one_iff|ae_eq_of_forall_setIntegral_eq_of_sigmaFinite",
+        "def HasApproximateTangentSpaceAt|def CountablyRectifiable|theorem CountablyRectifiable.mono|theorem countablyRectifiable_iUnion|def blowUpMap",
+        "cbr_imRep_measure_basic|cbr_orient_ae_eq_of_setIntegral_eq|cbr_isIntegerMultiplicity_of_local_reps",
+        "git show 022bd01bf7500f65a1cfbba033ecf91be9652452:GMT/Ch07/Submission.lean",
+        "git show 8f3bacb2e7f68423e88b488e5939a0d419c646fb:GMT/Ch07/Submission.lean",
+        "git show 0c79e2ab8192c141221cbe30fcd242e4becc6f00:GMT/Ch07/Submission.lean",
+        "git show 9adc8b20a486bc0e31782b03829041145baea564:GMT/Ch07/Submission.lean",
+        "git show 127487dd6bed94a74811cb8523d5535db984c906:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imlocal-independent-audit-oa2g8wvq/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imlocal-independent-audit-oa2g8wvq/Final.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imlocal-independent-audit-oa2g8wvq/P.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imlocal-independent-audit-oa2g8wvq/Orient.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imlocal-independent-audit-oa2g8wvq/Glue.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/AEEqOfIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9a8c0ad10b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-9a8c0ad10b/decomposition-v1.json",
+        "/tmp/imlocal-independent-audit-oa2g8wvq/Types.lean",
+        "/tmp/imlocal-independent-audit-oa2g8wvq/Final.lean",
+        "/tmp/imlocal-independent-audit-oa2g8wvq/P.lean",
+        "/tmp/imlocal-independent-audit-oa2g8wvq/Orient.lean",
+        "/tmp/imlocal-independent-audit-oa2g8wvq/Glue.lean",
+        "/tmp/imlocal-independent-audit-oa2g8wvq/Reuse_restrict_im.lean",
+        "/tmp/imlocal-independent-audit-oa2g8wvq/Reuse_mass_agree.lean",
+        "/tmp/imlocal-independent-audit-oa2g8wvq/Reuse_measure_ext.lean",
+        "/tmp/imlocal-independent-audit-oa2g8wvq/Reuse_covector_fd.lean"
+      ],
+      "conclusion": "The split is appropriate for cbr_isIntegerMultiplicity_of_local: measure identification, orientation identification, gluing, and domain restriction are distinct obligations that establish its exact two conjuncts. The snapshot matches the workspace contract; checked library sources and revisions are compatible. All eight one-line propositions independently elaborate with autoImplicit disabled and contain no implementation-dependent aliases or matrix constructions. All names are bare identifiers; the three new names have no snapshot or DAG matches, and the five reused names have identical accepted frozen types. The augmented dependency graph is acyclic and correctly directed, including the parent's existing restrict_unique dependency. Independently replayed proofs and exact-type bindings for the three new children, accepted reused proofs, and parent assembly pass Lean; their axiom closures contain only propext, Classical.choice, and Quot.sound."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "approx_local",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and accepted frozen type agree, including arbitrary, potentially nonmeasurable sets. Cutting blow-up integrals to a fixed ball reduces their difference to a Lipschitz image of the assumed null set. Eventual equality preserves the tangent limit and dimension condition. This independently supports restrict_im."
+    },
+    {
+      "key": "restrict_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Intersecting the carrier with V preserves every IMRep field. The declared approx_local dependency transfers tangents, and test forms vanish outside V, giving the required representation. Openness of U is unnecessary, consistently with both prose and type. This proves the parent's second conjunct."
+    },
+    {
+      "key": "mass_agree",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof explicitly identifies the two admissible-value sets using W ⊆ V ⊆ U and the action-agreement hypothesis, so their mass suprema coincide. No openness or finiteness assumption is silently required. The reused frozen type matches exactly."
+    },
+    {
+      "key": "measure_ext",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The stated exhaustion has compact closures inside O. Its restricted measures are finite and agree on the generating open-set π-system; continuity from below then proves equality on every Borel subset of O. Finiteness of ν on the exhaustion follows from open-set agreement. The ENNReal finiteness formulations in prose and type are equivalent."
+    },
+    {
+      "key": "covector_fd",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Evaluation on standard-basis tuples defines an injective real-linear map into a finite product. Alternating-map extensionality proves injectivity, including degenerate dimensions and degrees. This proves the exact accepted type and supplies the finite basis needed by orient_ae_eq."
+    },
+    {
+      "key": "imrep_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes every listed conclusion from measurable positive multiplicity and the IMRep fields. Both absolute-continuity directions are correct. The pinned change-of-density theorem applies to arbitrary integrands, so conclusion (g) needs no omitted smoothness or integrability hypothesis. The exact type was independently replayed successfully."
+    },
+    {
+      "key": "orient_ae_eq",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "On each compact subset, the common restricted measure is finite and scalar evaluations are integrable. Smooth cutoffs yield all required set-integral equalities; density uniqueness, countable compact exhaustion, and the declared covector_fd dependency give equality of multivectors almost everywhere on B. The final conditional a.e. formulation matches the Lean type exactly."
+    },
+    {
+      "key": "glue",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The countable partition constructs a measurable rectifiable carrier and positive measurable multiplicity. The measure identity establishes compact finiteness before both tangent-locality applications, avoiding circularity. Absolute continuity transfers orientation measurability and equality correctly; imrep_measure supplies the final action identity. The empty-domain case and every IMRep field are covered, and the parent's proof discharges these exact local hypotheses."
+    }
+  ],
+  "required_changes": []
+}

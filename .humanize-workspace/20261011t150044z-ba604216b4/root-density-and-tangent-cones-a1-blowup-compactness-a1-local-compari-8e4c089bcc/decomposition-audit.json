@@ -1,0 +1,122 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'BoundaryRectifiability|DeGiorgi|RectifiabilityTheorem|CompactnessTheorem|FedererFleming' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "rg -l 'dtc_bc_lc_fd_bim_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes -g 'decomposition-*.json'",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git show 44ef61f79e2168134f8a5a6d6520baba56052d67:GMT/Ch07/Submission.lean",
+        "git show cfaa429efca1840978e7f9181d2485e21ce0432e:GMT/Ch07/Submission.lean",
+        "git show 8380287b09c003ca5138e900da2cec1e93be55ee:GMT/Ch07/Submission.lean",
+        "git show 2af75d6921b01a9c889a45103692ca0af95ea394:GMT/Ch07/Submission.lean",
+        "git show d1641e8aee2752f9b0dfa591db0aa98f84abd4a9:GMT/Ch07/Submission.lean",
+        "git show 3450f100f2bc24645474a6e44b437f899d9571db:GMT/Ch07/Submission.lean",
+        "git show 3632b244600d917333b1ceef4709c265614d91ef:GMT/Ch07/Submission.lean",
+        "git show be5e5124bcc122be14e4b41214ce012bae5b1691:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bim_independent_audit/Challenges.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/bim_v2_check/AllChecks.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch03/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Differentiation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Distribution/AEEqOfIntegralContDiff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8e4c089bcc/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-8e4c089bcc/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/bim_independent_audit/Challenges.lean",
+        "/tmp/bim_v2_check/AllChecks.lean"
+      ],
+      "conclusion": "The handoff matches the selected frozen contract. Splitting its positive-codimension and top-dimensional cases is appropriate; the children and authorized deformation sibling imply this exact parent. All 12 one-line propositions independently elaborate, and the conditional parent assembly compiles. These stub-based checks establish type compatibility, not the child proofs. All names are bare identifiers; the four new names are unreserved elsewhere, and the dependency graph, including 88 reachable obligations, is acyclic. Eight reuses have identical frozen types, unchanged contracts, and source hashes matching successful archived comparator checks permitting only propext, Quot.sound and Classical.choice. The snapshot and workspace contracts agree, and Mathlib matches revision 25730c7c. No directly usable proved closure or De Giorgi theorem was found in the pinned project; the chapter contracts contain specifications. The inspected libraries support the stated current, mass, tangent, differentiation and integration conventions. No problematic matrix-unit construction occurs. Mathematical comparison also used [Simon's text, Chapters 3 and 6](https://web.stanford.edu/class/math285/ts-gmt)."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "closure_cycles",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including degree zero. The induction, slicing, filling and density argument establish rectifiability. Steps 7–8 now derive uniform rescaled approximant masses from their limiting mass measure and prove restriction convergence at an uncharged truncation level. Projection and BV compactness then establish integer multiplicity without using boundary rectifiability."
+    },
+    {
+      "key": "layers",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact contract is proved. The determinant representation and support argument give an integrable integer density; its layers yield absolute summability. Hodge correspondence, mollification and smoothed truncations establish both mass bounds. Infinite boundary mass is explicitly handled, so no finiteness hypothesis is missing."
+    },
+    {
+      "key": "de_giorgi",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The blow-up argument establishes half-space limits and flat tangent measures before measure identification. All hypotheses of the accepted measure-identification lemma are verified, with density one supplied by the declared sibling. Finite total perimeter gives finite Hausdorff measure, and Gauss–Green and the almost-everywhere conclusions transfer correctly."
+    },
+    {
+      "key": "nested_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Complete conditional on its declared children. Nested half-space limits force compatible normals. The lower mass estimate bounds the total layer measure; tangent locality and absolute convergence then construct an IMRep representing the specified T. Prose and Lean hypotheses match."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse. Compactness gives a finite cover by vanishing regions, and a subordinate smooth partition of unity proves the statement for arbitrary U without an openness assumption."
+    },
+    {
+      "key": "mollify_variation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse. The normalized gradient field is measurable and integrable; its mollification is admissible. The accepted adjoint identity gives precisely the stated operator-norm variation bound."
+    },
+    {
+      "key": "normal_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse. The hypothesis n ≥ 1 permits the frame sign adjustment. Multilinearity and Laplace expansion establish the exact negative sign and coordinate formula."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse. Density-zero locality proves the tangent equivalence; restriction and signed multiplicity combination establish the current constructions. Cauchy–Binet supplies the coefficient-norm orientation bound. All four conjuncts are covered non-circularly."
+    },
+    {
+      "key": "oriented_mass_lower",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse. The finite weighted measure, Lusin approximation and admissible smooth form yield the required lower bound. Restrictions to Borel sets justify the argument even when M′ is arbitrary."
+    },
+    {
+      "key": "gauss_green_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse. Mollification extends the locally bounded functional; Riesz representation and the Borel modification produce the measure and globally unit normal. The transfer and C¹ Gauss–Green identity match the exact contract."
+    },
+    {
+      "key": "measure_eq_hausdorff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse. Flat tangents and the accepted rectifiability criterion produce a full-measure carrier. Covering estimates establish local finiteness and absolute continuity; RD and differentiation identify the measure. Scaling then gives the precise approximate-tangent predicate."
+    },
+    {
+      "key": "rect_density_one",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted reuse. C¹ approximation and the area formula supply rectifiable pieces; density-zero estimates transfer their tangents to M. The accepted tangent-density and closed-to-open-ball lemmas prove the exact almost-everywhere limit."
+    }
+  ],
+  "required_changes": []
+}

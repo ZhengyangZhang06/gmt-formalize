@@ -1,0 +1,111 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'dtc_bc_tc_rs_|radial_slice_bound' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "lintegral_withDensity_eq_lintegral_mul_non_measurable",
+        "tendsto_integral_filter_of_dominated_convergence",
+        "lintegral_liminf_le",
+        "python3 /tmp/radial-independent-audit-cqj9qeeo/check_contracts.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/radial-independent-audit-cqj9qeeo/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rs_split/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rs_split/Radius.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/rs_split/Defect.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-77957babf4/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-77957babf4/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/radial-independent-audit-cqj9qeeo/check_contracts.py",
+        "/tmp/radial-independent-audit-cqj9qeeo/contracts-report.json",
+        "/tmp/radial-independent-audit-cqj9qeeo/Types.lean",
+        "/tmp/rs_split/Assembly.lean",
+        "/tmp/rs_split/Radius.lean",
+        "/tmp/rs_split/Defect.lean"
+      ],
+      "conclusion": "Confirmed pinned project b4d606db and Mathlib 25730c7c. The relevant definitions and measure-theoretic lemmas support the supplied arguments; the new declaration names have no snapshot or DAG matches. All nine reused declarations have identical frozen types, unchanged contract definitions and dependency locks, and matching comparator evidence permitting only propext, Classical.choice and Quot.sound. All names are bare identifiers. Local and transitive dependencies are acyclic and do not return to the selected node. All twelve types independently elaborated without placeholders in Types.lean. The three supplied implication proofs independently compiled with only the standard axioms. Splitting is appropriate: cutoff_defect establishes radius_bound, and good_slice applied to the radial image measure supplies a radius independent of β and s; σ = C.toReal then proves the exact selected parent contract. No problematic matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "cutoff_defect",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including arbitrary U and V. Compact support comes from β. Boundary cancellation, justified integral splitting, Leibniz, the orientation and wedge bounds, and the withDensity identity prove the exact estimate using only the declared dependencies."
+    },
+    {
+      "key": "radius_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof covers t ≤ 0, establishes s ≥ 0, verifies cutoff supports and integrability, and applies dominated convergence and the liminf bound with their exact hypotheses. No openness or positivity hypothesis omitted from the type is needed."
+    },
+    {
+      "key": "good_slice",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted declaration. Restriction, Helly selection, continuity-point nonconcentration, Tonelli and two Fatou applications establish both conclusions for one strictly increasing subsequence. The proof handles arbitrary original measures and ε = ∞."
+    },
+    {
+      "key": "level_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted declaration. The clamp profile and specified smoothing scale yield the exact derivative bound; neighborhood constancy proves both plateaus and derivative localization. The existing smoothing dependency is accepted and non-circular."
+    },
+    {
+      "key": "cutoff_integral_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and type match. Eventual measurability, the integrable majorant C|F|, and pointwise eventual equality to the sublevel indicator justify dominated convergence along the countably generated filter, without additional measure assumptions."
+    },
+    {
+      "key": "liminf_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly uses z ≤ |z|, eventual bounds with r > 1, finite-constant multiplication through liminf, and r ↓ 1. Zero coefficients and infinite liminf values introduce no gap."
+    },
+    {
+      "key": "pairing_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Measurability and operator-norm orientation control give domination by B times the compactly restricted multiplicity. Local integrability establishes both integrability and the stated estimate with the finite lower integral converted toReal."
+    },
+    {
+      "key": "leibniz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact identity follows from the scalar-vector Fréchet product rule and linearity of alternatizeUncurryFin. Differentiability at the specified point suffices; no stronger regularity assumption is used."
+    },
+    {
+      "key": "wedge_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. The Riesz representative, adapted orthonormal basis, tuple estimate and insertion/removal bijections give the coefficient-norm inequality with constant one. The zero-functional case and factorial cancellation are handled."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four conjuncts are proved through density-zero locality, restriction, signed overlap cancellation and Cauchy–Binet orientation control. Reuse preserves the entire accepted type. Its fourth conjunct supplies precisely the required orientation bound without assuming U open."
+    },
+    {
+      "key": "pairing_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. The proof supplies the unit-orientation operator bound, boundedness on compact support, an integrable multiplicity majorant and measurable evaluation, proving the exact integrability conclusion without openness."
+    }
+  ],
+  "required_changes": []
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1.integer_multiplicity-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1",
+  "depth": 4,
+  "title": "Integer multiplicity is preserved by the dilation push-forward",
+  "statement": "Let P, k ∈ ℕ, λ > 0 and X, Y ∈ 𝒟_k(ℝ^P) (GeometricCurrentOn univ k). Assume Y(ω) = X(η) for all test forms ω, η ∈ TestFormOn univ k whose underlying forms satisfy η = δ_λ^#ω := affinePullbackForm (λ·id) 0 ω (this is δ_{λ#}X(ω) = X(δ_λ^#ω), i.e. Y = δ_{λ#}X is the push-forward of X under δ_λ(x) = λx). If X is integer multiplicity, i.e. X = τ(M, θ, ξ) for some IMRep R = (M, θ, ξ) in univ of degree k (contract IMRep, IMRep.Represents, IsIntegerMultiplicity), then Y is integer multiplicity; in fact the triple (λM, θ(·/λ), ξ(·/λ)) is an IMRep in univ of degree k that represents Y. This holds in every degree k, including k = 0.",
+  "lean_statement": "∀ (P k : ℕ) (lam : ℝ), 0 < lam → ∀ X Y : GeometricCurrentOn (univ : Set (Euclid P)) k, (∀ ω η : TestFormOn (univ : Set (Euclid P)) k, (η : DifferentialForm (Euclid P) k) = affinePullbackForm (lam • ContinuousLinearMap.id ℝ (Euclid P)) 0 (ω : DifferentialForm (Euclid P) k) → Y ω = X η) → IsIntegerMultiplicity X → IsIntegerMultiplicity Y",
+  "lean_name": "cmcdt_dil_isIntegerMultiplicity",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1.pullback_testform-a1",
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.dilation_change_of_variables-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1.tangent_invariance-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.dilation-a1.pullback_testform-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.dilation_change_of_variables-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-862a12a643-a1",
+      "result_commit": "22204a6d923d28f1c362798e3e4f529019c709a5",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1.tangent_invariance-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-tangent-invariance-a1-a1",
+      "result_commit": "2b0c51405c3f7d305798214e74d0447c1d210ae1",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-dil-238dac29dc-a1"
+}
