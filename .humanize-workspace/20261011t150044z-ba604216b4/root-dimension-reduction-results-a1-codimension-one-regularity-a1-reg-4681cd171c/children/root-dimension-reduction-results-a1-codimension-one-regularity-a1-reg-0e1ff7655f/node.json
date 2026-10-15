@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.compact_cover-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1",
+  "depth": 6,
+  "title": "Finitely many Lipschitz graphs cover a compact set with uniform density and cone bounds (Simon Ch. 3, 1.6 ⇐, reference directions and finite cover)",
+  "statement": "Let m ∈ ℕ, E := ℝ^{m+1}, μ a Borel measure on E, ν : E → E with |ν(y)| = 1 for all y, K ⊆ E compact, δ > 0, and ε ≥ 0 with (1 + 16^m)ε < 1. Put ω_m := unitBallVolume m and C(x) := {z : ¼|z − x| ≤ |⟨z − x, ν(x)⟩|}, and assume that for all x ∈ K and ρ ∈ (0, δ): (1 − ε)⁺ ω_m ρ^m ≤ μ(B̄_ρ(x)) and μ(C(x) ∩ B̄_ρ(x)) ≤ ε ω_m ρ^m (in [0, ∞]). Then there is a closed countably m-rectifiable set Γ ⊆ E with K ⊆ Γ.",
+  "lean_statement": "∀ (m : ℕ) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (K : Set (Euclid (m + 1))) (δ ε : ℝ), (∀ y, ‖ν y‖ = 1) → IsCompact K → 0 < δ → 0 ≤ ε → (1 + 16 ^ m) * ε < 1 → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → ENNReal.ofReal (1 - ε) * unitBallVolume m * ENNReal.ofReal (ρ ^ m) ≤ μ (closedBall x ρ)) → (∀ x ∈ K, ∀ ρ : ℝ, 0 < ρ → ρ < δ → μ ({z | (1 / 4 : ℝ) * ‖z - x‖ ≤ |inner ℝ (z - x) (ν x)|} ∩ closedBall x ρ) ≤ ENNReal.ofReal ε * unitBallVolume m * ENNReal.ofReal (ρ ^ m)) → ∃ Γ : Set (Euclid (m + 1)), IsClosed Γ ∧ CountablyRectifiable m Γ ∧ K ⊆ Γ",
+  "lean_name": "codim1_rdo_dg_rc_compact_cover",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.cone_exclusion-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.lipschitz_graph-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.cone_exclusion-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.rectifiable_criterion-a1.lipschitz_graph-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-0e1ff7655f-a1"
+}

@@ -1,0 +1,74 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n 'cmcs_smp_|pairing_integrable|cutoff_integral|strip_lintegral|Integrable' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "theorem lintegral_indicator_const_le|theorem tendsto_integral_filter_of_dominated_convergence|theorem liminf_const_mul_of_ne_top|theorem Integrable.mono\\x27|theorem integrable_indicator_iff|theorem integrableOn_const|theorem isBoundedBilinearMap_apply|bounded_above_of_compact_support|comp_aestronglyMeasurable₂",
+        "def covectorEuclideanNorm|def massAdmissibleOn|def GeometricCurrentOn.massOn|abbrev TestFormOn|def testFormOnSubmodule|def exteriorDerivativeTestOn|theorem GeometricCurrentOn.boundary_apply|theorem tsupport_exteriorDerivative_subset|abbrev MultiVector|def MultiVector",
+        "git for-each-ref --format=%(objectname)",
+        "cmcs_smp_",
+        ". GMT/Scratch/cmcs_mass_pointwise_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcs_mass_pointwise_audit_zac29qgk/ChallengeTypes.lean",
+        ". GMT/Scratch/cmcs_mass_pointwise_decomposition/env.sh\n/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/cmcs_mass_pointwise_audit_zac29qgk/IndependentAudit.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/ENNReal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/L1Space/Integrable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/AEStronglyMeasurable.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Topology.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/Bounded.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-pointwise-a1/parent-child-handoff.json",
+        "GMT/Scratch/cmcs_mass_pointwise_decomposition/draft_children.json",
+        "GMT/Scratch/cmcs_mass_pointwise_decomposition/Assembly.lean",
+        "GMT/Scratch/cmcs_mass_pointwise_decomposition/ChildA.lean",
+        "GMT/Scratch/cmcs_mass_pointwise_decomposition/ChildB.lean",
+        "GMT/Scratch/cmcs_mass_pointwise_decomposition/ChildC.lean",
+        "GMT/Scratch/cmcs_mass_pointwise_decomposition/ChildD.lean",
+        "/tmp/cmcs_mass_pointwise_audit_zac29qgk/ChallengeTypes.lean",
+        "/tmp/cmcs_mass_pointwise_audit_zac29qgk/IndependentAudit.lean"
+      ],
+      "conclusion": "The split appropriately isolates four analytic steps of the selected theorem. The pinned project contains no matching reusable proof; inspected Mathlib sources match the runtime revision. All four names are bare identifiers, absent from the current DAG and 1346 local ref tips. Dependencies, including inherited dependencies and their children, are acyclic. Each frozen child proposition elaborates independently with automatic implicit variables disabled, before any child declaration exists. Each supplied child proof was checked step by step and independently compiled using only propext, Classical.choice and Quot.sound. Reassembly proves the exact handoff parent type using these children and only the two inherited sibling contracts; it does not assume the parent. The inverse notation, current subtraction, boundary evaluation and filter instances were independently checked."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "pairing_integrable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line Lean proposition match all hypotheses. Compact support and local finiteness give an integrable indicator bound; continuity of the coefficient norm gives boundedness, and continuous evaluation gives a.e. strong measurability. Integrable.mono' completes the exact claim. The proof is complete and independent of the parent and other children."
+    },
+    {
+      "key": "cutoff_integral_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement and Lean type agree. Both pointwise cases establish eventual equality to the indicator integrand. Eventual measurability and domination by the integrable function C|F| satisfy filter dominated convergence. Neither finite total measure nor an additional positivity hypothesis on C is needed. The supplied proof is complete and non-circular."
+    },
+    {
+      "key": "liminf_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact ENNReal proposition matches the prose; ofReal h⁻¹ means ofReal(h⁻¹). The proof correctly obtains eventual bounds for every r > 1, extracts finite constants from the liminf even when L = 0, and handles infinite X separately before taking r → 1+. All filter and continuity requirements are satisfied, without circular reliance."
+    },
+    {
+      "key": "strip_lintegral_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean proposition match, including arbitrary W, S, g and η. The three pointwise cases establish indicator domination. The pinned lintegral_indicator_const_le requires no measurability of W ∩ S, so integration proves precisely the stated bound. No differentiability or unstated measure hypothesis is needed; the proof is complete and independent."
+    }
+  ],
+  "required_changes": []
+}

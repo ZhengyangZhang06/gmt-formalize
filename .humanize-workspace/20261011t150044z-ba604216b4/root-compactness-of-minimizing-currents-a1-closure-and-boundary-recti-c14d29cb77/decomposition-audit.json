@@ -1,0 +1,89 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "exists_open_between_and_isCompact_closure|exists_contDiff_support_eq_eq_one_iff|norm_iteratedFDeriv_smul_le|norm_iteratedFDerivWithin_le_of_bilinear_aux|support_iteratedFDeriv_subset|EventuallyEq.extDeriv_eq|sum_choose_succ_mul",
+        "structure IMRep|def (Represents|action|IsIntegerMultiplicity)|abbrev Euclid",
+        "def TestFormOnConverges|structure GeometricCurrentOn|def covectorEuclideanNorm|def IsTestForm",
+        "norm_iteratedFDeriv_fderiv|fderiv_of_bilinear|def precompR|def precompL|bounded_above_of_compact_support",
+        "lintegral_mono_set|setIntegral_congr_fun",
+        "cbrcs_ce_smooth_cutoff",
+        "cbrcs_ce_leibniz_smul_bound",
+        "cbrcs_ce_cutoff_multiplier",
+        "cbrcs_ce_imrep_lift_univ",
+        "rsd_mw_tfa_norm_props",
+        "rsd_cmr_support_subset_of_vanish",
+        "git show f492ba4a003c8f1324077e050d48667ae23c7100:GMT/Ch07/Submission.lean",
+        "git show 02c6122c94d0280a6288d299659b2dab7b59e109:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrcs-ce-q8w2/build/E2E.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrcs-ce-q8w2/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrcs-cutoff-audit-sqxymghe/Contracts.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cbrcs-cutoff-audit-sqxymghe/Availability.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c14d29cb77/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-c14d29cb77/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81/isolated-comparator-result.json",
+        "/tmp/cbrcs-ce-q8w2/build/E2E.lean",
+        "/tmp/cbrcs-ce-q8w2/Assembly.lean",
+        "/tmp/cbrcs-cutoff-audit-sqxymghe/Contracts.lean",
+        "/tmp/cbrcs-cutoff-audit-sqxymghe/Availability.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected cutoff-extension theorem. All six frozen statements are standalone one-line propositions, pass lexical validation, and elaborate without implementing any child. The explicit smoothness order matches IsSmoothForm; the operator norms and coefficient norm have their intended meanings. The cited Leibniz bound exists in the snapshot but is unavailable under the frozen imports, supporting the separate induction obligation. All names are bare identifiers. The four new names are unreserved; both reuses have comparator-accepted, byte-identical frozen types and compatible pinned build inputs. Their copied proof bodies match the accepted candidates. Dependencies are acyclic, with cutoff_multiplier depending only on leibniz_bound. Independently rerun end-to-end and hypothesis-only assembly checks compile with only propext, Classical.choice and Quot.sound. The assembly proves the exact selected parent, including boundary mass via the defect vanishing near K and integer multiplicity via the preserved carrier."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "smooth_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type include all hypotheses and cutoff properties. The two relatively compact neighbourhoods and smooth Urysohn lemma produce the required function and open N. Compactness, support containment, value bounds and equality to one are established explicitly, without circular reliance."
+    },
+    {
+      "key": "leibniz_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the stated operator-norm inequality. The generalized bilinear induction correctly handles the auxiliary operator bounds, product rule, derivative-order shifts and Pascal summation. Specialization to scalar multiplication proves the requested statement. The proof is complete under the frozen imports."
+    },
+    {
+      "key": "cutoff_multiplier",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The statement correctly permits arbitrary U and requires precisely compactly supported smooth ζ with support in U. The proof constructs the linear map, supplies the common compact support, extends derivative smallness globally, and gives an explicit finite-sum epsilon estimate. Its sole dependency on leibniz_bound is correctly directed."
+    },
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four conjuncts match the prose and the accepted frozen type. The linear coefficient embedding proves the triangle inequality and homogeneity; coordinate bounds give the stated domination, and the resulting Lipschitz estimate proves continuity. Reuse at candidate f492ba4a003c8f1324077e050d48667ae23c7100 is valid."
+    },
+    {
+      "key": "imrep_lift",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree, including the absence of an openness hypothesis. Every IMRep field is accounted for. Carrier containment in K bounds each required lintegral by the finite integral supplied by local integrability on the compact K ⊆ U. The construction preserves all three data fields exactly."
+    },
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The ball argument proves exclusion from the precise zeroRegion used by GeometricCurrentOn.support. The equality F.support = K ∖ F.zeroRegion then proves compactness using K ⊆ U. The complete proof matches the accepted frozen type at candidate 02c6122c94d0280a6288d299659b2dab7b59e109, so reuse is valid."
+    }
+  ],
+  "required_changes": []
+}

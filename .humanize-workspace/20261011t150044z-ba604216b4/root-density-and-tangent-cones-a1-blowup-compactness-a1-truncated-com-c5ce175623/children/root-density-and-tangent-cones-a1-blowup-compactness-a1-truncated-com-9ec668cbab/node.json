@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.slice_limit-a1.level_null-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.slice_limit-a1",
+  "depth": 6,
+  "title": "Level sets of a measure finite on compact sets are null at almost every level (parent step 4, countable_meas_level_set_pos)",
+  "statement": "Let P ∈ ℕ, let ν be a measure on ℝ^P (Borel σ-algebra of Euclid P) with ν(K) < ∞ for every compact K ⊆ ℝ^P, and let f : ℝ^P → ℝ be measurable. Then ν({x : f(x) = t}) = 0 for L¹-almost every t ∈ ℝ.",
+  "lean_statement": "∀ (P : ℕ) (ν : Measure (Euclid P)) (f : Euclid P → ℝ), Measurable f → (∀ K : Set (Euclid P), IsCompact K → ν K < ∞) → ∀ᵐ t ∂(volume : Measure ℝ), ν {x | f x = t} = 0",
+  "lean_name": "dtc_bc_tc_cl_sl_ae_level_set_null",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-9ec668cbab-a1"
+}
