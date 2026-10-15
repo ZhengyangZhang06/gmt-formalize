@@ -1,0 +1,77 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.minimizing_implies_stationary-a1`
+- Child DAG node: `root.minimizing_implies_stationary-a1.tangent_projection_measurable-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: Simon Ch. 3 §1 (T_xM is unique, 1.5(1)) and the definition 6.3.1 of an integer multiplicity current, in which ξ orients T_xM in an H^n-measurable way; this measurability is implicit in Simon's formulas ∫ div_M X dμ_V (Ch. 4, 2.2–2.7) used in steps 2, 5 and 6 of the parent proof.
+1. a.e. identification. Let μ := μHE[n].restrict M. By R.orients, for μ-a.e. x there is Q_x with HasApproximateTangentSpaceAt n M x Q_x and IsUnitOrientationOf (ξ x) Q_x. At such x the existential in the definition of approxTangentPlane holds, so approxTangentPlane n M x is some Q' with HasApproximateTangentSpaceAt n M x Q'; by uniqueness of approximate tangent planes (SimonGMT HasApproximateTangentSpaceAt.unique) Q' = Q_x.
+2. Case n = 0. Every Q with finrank 0 equals ⊥, and approxTangentPlane 0 M x is ⊥ in both branches of its definition, so the map is the constant 0, which is strongly measurable. Assume n ≥ 1.
+3. A unit simple n-vector determines its plane. Let ζ ∈ (Λ^n)^* with ζ(β) = s·β(τ_1, …, τ_n) for all n-covectors β, τ orthonormal, s = ±1. Claim: span τ = {v : ζ(ι_vβ) = 0 for every (n+1)-covector β}, where ι_vβ(u_1, …, u_n) := β(v, u_1, …, u_n). If v ∈ span τ then β(v, τ_1, …, τ_n) = 0 because the arguments are linearly dependent. If v ∉ span τ, let w := v − Σ_i⟨v, τ_i⟩τ_i ≠ 0 and β(u_0, …, u_n) := det(⟨c_a, u_b⟩)_{a,b=0..n} with c := (w, τ_1, …, τ_n), a continuous alternating (n+1)-form; the matrix (⟨c_a, (v, τ_1, …, τ_n)_b⟩) has first row (|w|², 0, …, 0) and lower-right block I_n, so β(v, τ) = |w|² and ζ(ι_vβ) = s|w|² ≠ 0. Consequently, if ζ orients both Q and Q' (IsUnitOrientationOf) then Q = Q'.
+4. Continuity of the orientation-to-projection map. Let Ω := {(τ, s) : τ ∈ (ℝ^P)^n orthonormal, s ∈ {1, −1}}, a compact set, and Φ(τ, s) := (β ↦ s·β(τ)), a continuous map Ω → (Λ^n)^* (multilinear evaluation with |τ_i| = 1). Its image 𝒮 is compact, hence closed, and equals the set of ζ for which ∃ Q, IsUnitOrientationOf ζ Q. The map G̃(τ, s) := Σ_i ⟨τ_i, ·⟩τ_i = starProjection(span τ) is continuous on Ω and, by step 3, constant on the fibres of Φ; hence G̃ = G∘Φ for a unique G : 𝒮 → End(ℝ^P). Since Φ : Ω → 𝒮 is a continuous surjection from a compact space onto a Hausdorff space, it is a quotient map, so G is continuous on 𝒮. Extend G by 0 outside 𝒮; the extension is Borel measurable (𝒮 closed, G continuous on it).
+5. Conclusion. For μ-a.e. x (step 1), ξ(x) = Φ(τ, s) for an orthonormal basis τ of Q_x = approxTangentPlane n M x, hence starProjection(approxTangentPlane n M x) = G(ξ(x)). Since ξ is μ-a.e. strongly measurable and G is Borel, G∘ξ is μ-a.e. measurable; End(ℝ^P) is finite-dimensional (second countable and metrizable), so G∘ξ is μ-a.e. strongly measurable, and so is the μ-a.e. equal map x ↦ (approxTangentPlane n M x).starProjection.
+
+## Key steps
+
+1. Almost everywhere the approximate tangent plane is the plane oriented by ξ(x) (uniqueness of T_xM).
+2. A unit simple n-vector determines its plane (kernel of v ↦ ζ(ι_v ·)).
+3. The map unit simple n-vector ↦ projection is continuous on the compact set of such vectors (quotient-map argument); compose with the a.e.-measurable ξ.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json (project b4d606d, mathlib 25730c7c)`
+- `python3 -I: read nodes/root-minimizing-implies-stationary-a1/{parent-child-handoff.json,decomposition-v1.json,decomposition-audit-v1.json,decomposition-review-receipt-v1.json}`
+- `python3 -I: list dag.json node ids and lean_name (56 nodes; no collision with the twelve child names)`
+- `grep -n 'exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' -A 25 mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `grep -rn 'theorem LinearMap.exists_antilipschitzWith' mathlib/Mathlib`
+- `grep -n 'def normDet\|normDet_of_subsingleton\|normDet_comp\|normDet_sq_eq_det_gram\|euclideanHausdorffMeasure_image' mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `sed -n 1,100p mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean; grep -n hausdorffMeasure_zero_singleton mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `grep -rn 'MeasurableSet.image_of_continuousOn_injOn\|ae_tendsto_measure_inter_div\|hausdorffMeasure_image_le\|measurable_fderiv\|measurableSet_of_differentiableAt\|extDerivWithin_pullback\|det_isEmpty\|lintegral_iUnion\|to_localInverse\|toHomeomorph\|exists_isSubordinate' mathlib/Mathlib`
+- `sed -n 1,420p simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `sed -n 1,140p simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean; grep -n areaJacobianAt simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `sed -n 60,110p simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean; sed -n 30,70p simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean`
+- `sed -n 1,140p simongmt/Poincare/SimonGMT/Chapter06/Mass.lean; sed -n 95,140p simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean; sed -n 110,360p simongmt/Poincare/SimonGMT/Chapter06/Currents.lean; sed -n 25,125p simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `sed -n 1,75p book/chapter-07.txt; sed -n 400,440p book/chapter-06.txt; sed -n 760,880p book/chapter-06.txt`
+- `lake env lean /tmp/mis-decomp-v2/Check.lean (import GMT.Ch07.Submission; 12 child types in namespace GMT.Ch07.Submission, minimizing_implies_stationary and a conditional assembly_check; #print axioms)`
+- `lake env lean /tmp/mis-decomp-v2/Standalone.lean (same with the frozen contract inlined)`
+- `lake env lean /tmp/mis-decomp-v2/Radius.lean (radius_check, pieces_check; #print axioms)`
+- `lake env lean /tmp/mis-decomp-v2/Instances.lean (Gram Matrix.of, HasOrthogonalProjection instances, operator norm, μHE[0] singleton, normDet out of ℝ^0)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/README.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaNormalization.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/HausdorffDensityBounds.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/mis-decomp-v2/Check.lean`
+- `/tmp/mis-decomp-v2/Standalone.lean`
+- `/tmp/mis-decomp-v2/Radius.lean`
+- `/tmp/mis-decomp-v2/Instances.lean`
+
+The local snapshot (project b4d606d, Mathlib 25730c7c) has no counterpart for the contract's IMRep push-forward, first variation or mean curvature, so the twelve children are new. The library facts they reuse are the ones cited in the child proofs. The only blocking defect from v1 is confirmed and repaired. Mathlib's exists_partition_approximatesLinearOn_of_hasFDerivWithinAt takes r : (E →L[ℝ] F) → ℝ≥0 with rpos : ∀ A, r A ≠ 0, and the unit-sphere minimum used in v1 does not exist for n = 0. The fix sets m(A) = 1 for n = 0 (alternatively 1/K from LinearMap.exists_antilipschitzWith, which also covers subsingleton domains) and r = 1 on non-injective maps; rpos then holds for every A. pieces_check compiles the resulting bi-Lipschitz partition for all n and P using only propext, Classical.choice and Quot.sound. The n = 0 facts used in the new step 10 exist: Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton, LinearMap.normDet_of_subsingleton and Matrix.det_isEmpty. The upper-density lemma needs only real n ≥ 0, and the SimonGMT area lemmas have no rank hypothesis and accept arbitrary weights. All twelve child types (eleven identical to v1) elaborate after import GMT.Ch07.Submission and also with the contract inlined. minimizing_implies_stationary compiles from them, and the conditional assembly uses only standard axioms. Inferred instances were verified: Matrix.of Gram matrix, Submodule.HasOrthogonalProjection.ofCompleteSpace and ContinuousLinearMap.hasOpNorm. No child name collides with any of the 56 DAG nodes.
