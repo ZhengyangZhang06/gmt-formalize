@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1.local_uniform_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1",
+  "depth": 5,
+  "title": "Uniform small-ball mass bound on a neighbourhood of a point of density below θ₁ (Simon 7.3.3(1), display (2))",
+  "statement": "For all P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U) (GeometricCurrentOn U n), K'' ⊆ ℝ^P, y ∈ ℝ^P and reals Λ, σ₀, θ, θ₁, θ₂, assume Λ ≥ 0, σ₀ > 0, θ < θ₁ < θ₂, HasMassDensity T y θ, closedBall y (2σ₀) ⊆ K'', and that for all z ∈ ℝ^P and R ∈ ℝ with closedBall z R ⊆ K'' the function ρ ↦ ofReal(e^{Λρ}/ρ^n)·M_{B_ρ(z)}(T) is monotone on (0, R). Then there is δ > 0 such that M_{B_ρ(y')}(T) ≤ ofReal(θ₂)·ω_n·ofReal(ρ^n) for all y' ∈ B_δ(y) and all ρ with 0 < ρ < δ. Here M_W(T) = T.massOn W ∈ [0, ∞], ω_n = unitBallVolume n, ofReal = ENNReal.ofReal, products are in [0, ∞], and balls B are open.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (K'' : Set (Euclid P)) (y : Euclid P) (Λ σ₀ θ θ₁ θ₂ : ℝ), 0 ≤ Λ → 0 < σ₀ → θ < θ₁ → θ₁ < θ₂ → HasMassDensity T y θ → closedBall y (2 * σ₀) ⊆ K'' → (∀ (z : Euclid P) (R : ℝ), closedBall z R ⊆ K'' → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball z ρ)) (Ioo 0 R)) → ∃ δ : ℝ, 0 < δ ∧ ∀ y' ∈ ball y δ, ∀ ρ : ℝ, 0 < ρ → ρ < δ → T.massOn (ball y' ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)",
+  "lean_name": "idod_local_uniform_ball_mass_bound",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1.eventual_threshold-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1.nearby_center_bound-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1.eventual_threshold-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.uniform_density_bound-a1.nearby_center_bound-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-dcb3be4bd7-a1"
+}

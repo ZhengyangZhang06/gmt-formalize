@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.limit_density_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1",
+  "depth": 4,
+  "title": "Small-ball mass bounds pass to weak limits of blow-ups at moving centres (Simon 7.3.3(1), displays (6) and (11))",
+  "statement": "For all P, n ∈ ℕ, U ⊆ ℝ^P, T ∈ 𝒟_n(U), S ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), z ∈ ℝ^P, reals r, θ₂, ρ₀, points x_i ∈ ℝ^P and reals λ_i > 0 (i ∈ ℕ), assume:\n- r > 0, θ₂ ≥ 0, ρ₀ > 0 and B_{2r}(z) ⊆ U;\n- M_{B_ρ(y)}(T) ≤ ofReal(θ₂)·ω_n·ofReal(ρ^n) for every y ∈ B_{3r/2}(z) and every ρ with 0 < ρ < ρ₀;\n- x_i ∈ B_r(z) for every i, and λ_i → 0;\n- blowUp T x_i λ_i ⇀ S (ConvergesWeakly).\n\nThen (1) M_{B_ρ(w)}(S) ≤ ofReal(θ₂)·ω_n·ofReal(ρ^n) for every w ∈ ℝ^P and every ρ > 0; and (2) θ ≤ θ₂ whenever HasMassDensity S w θ (w ∈ ℝ^P, θ ∈ ℝ). Here M_W = massOn, ω_n = unitBallVolume n, ofReal = ENNReal.ofReal, and balls are open.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (z : Euclid P) (r θ₂ ρ₀ : ℝ) (xs : ℕ → Euclid P) (lams : ℕ → ℝ) (hlams : ∀ i, 0 < lams i), 0 < r → 0 ≤ θ₂ → 0 < ρ₀ → ball z (2 * r) ⊆ U → (∀ y ∈ ball z (3 * r / 2), ∀ ρ : ℝ, 0 < ρ → ρ < ρ₀ → T.massOn (ball y ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)) → (∀ i, xs i ∈ ball z r) → Tendsto lams atTop (𝓝 0) → ConvergesWeakly (fun i => blowUp T (xs i) (lams i) (hlams i).ne') S → (∀ (w : Euclid P) (ρ : ℝ), 0 < ρ → S.massOn (ball w ρ) ≤ ENNReal.ofReal θ₂ * unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ∧ ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → θ ≤ θ₂",
+  "lean_name": "idod_blowUp_limit_mass_density_le",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-e69bcca705-a1"
+}

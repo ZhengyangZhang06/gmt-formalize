@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.jac_algebra-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1",
+  "depth": 5,
+  "title": "Gram–Jacobian algebra: J_{L∘A} ≤ ‖L‖ⁿJ_A, |α(Ae)| ≤ J_A‖α‖, and a unit orientation of range A equals ±Ae/J_A",
+  "statement": "Let P, n ∈ ℕ and A : ℝⁿ → ℝ^P a (continuous) linear map; write e₁, …, eₙ for the standard basis of ℝⁿ (EuclideanSpace.single j 1), Ae := (Ae₁, …, Aeₙ), and J_A := (det(A*∘A))^{1/2} (A* = A.adjoint, det of the endomorphism A*∘A of ℝⁿ; ContinuousLinearMap.det). Then: (a) for every linear L : ℝ^P → ℝ^P, J_{L∘A} ≤ ‖L‖ⁿ·J_A (operator norm of L); (b) for every n-covector α of ℝ^P (α ∈ Covector (Euclid P) n, a continuous alternating n-linear form, with its operator norm ‖α‖), |α(Ae)| ≤ J_A·‖α‖; (c) if A is injective, then for every ξ ∈ Λ_n(ℝ^P) (MultiVector P n) which is a unit orientation of range A (IsUnitOrientationOf ξ (range A)) there is s ∈ {1, −1} with J_A·ξ(α) = s·α(Ae) for every n-covector α.",
+  "lean_statement": "∀ (P n : ℕ) (A : Euclid n →L[ℝ] Euclid P), (∀ L : Euclid P →L[ℝ] Euclid P, Real.sqrt (((L ∘L A).adjoint ∘L (L ∘L A)).det) ≤ ‖L‖ ^ n * Real.sqrt ((A.adjoint ∘L A).det)) ∧ (∀ α : Covector (Euclid P) n, |α (fun j => A (EuclideanSpace.single j (1 : ℝ)))| ≤ Real.sqrt ((A.adjoint ∘L A).det) * ‖α‖) ∧ (Injective A → ∀ ξ : MultiVector P n, IsUnitOrientationOf ξ (LinearMap.range (A : Euclid n →ₗ[ℝ] Euclid P)) → ∃ s : ℝ, (s = 1 ∨ s = -1) ∧ ∀ α : Covector (Euclid P) n, Real.sqrt ((A.adjoint ∘L A).det) * ξ α = s * α (fun j => A (EuclideanSpace.single j (1 : ℝ))))",
+  "lean_name": "dimred_mbl_pfi_gram_jacobian_algebra",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.injective_unit_orientation-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.graph_orientation_jacobian-a1.injective_unit_orientation-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-b87b86ed4f-a1",
+      "result_commit": "329e3832b55d19228d95b8532a02784b7d0bc807",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-6ef28deb49-a1"
+}

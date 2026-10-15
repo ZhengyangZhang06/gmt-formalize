@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1.nonflat_usc-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.class_reduction-a1",
+  "depth": 5,
+  "title": "Upper semicontinuity of the non-β-flat sets under support and domain convergence (supplied proof, step 12; A.3(3))",
+  "statement": "Let P, n ∈ ℕ, β > 0, S, D ⊆ ℝ^P and S_k, D_k ⊆ ℝ^P (k ∈ ℕ). Notation for this statement: for S, D ⊆ ℝ^P and β ∈ ℝ let R(S, D) be the set of w ∈ ℝ^P for which there are ρ > 0 with B_ρ(w) ⊆ D, a linear subspace Q ⊆ ℝ^P with dim Q = n, and s < βρ such that |(y − w) − p_Q(y − w)| ≤ s for every y ∈ S ∩ B_ρ(w) (p_Q = Q.starProjection, the orthogonal projection onto Q); and let N(S, D) := ((S ∩ D) ∖ R(S, D)) ∪ (ℝ^P ∖ D). (N(spt μ, D μ) is the set sing'(μ) of the parent proof; in the Lean statement R and N are written out.) Assume: closedBall 0 1 ⊆ D; B_1(0) ⊆ D_k for every k; every compact K ⊆ D satisfies K ⊆ D_k for all sufficiently large k; and whenever sub : ℕ → ℕ is strictly increasing, z_k ∈ S_{sub(k)} for all k, z_k → x and x ∈ D, then x ∈ S. Then for every ε > 0 there is k₀ such that for all k ≥ k₀, B_1(0) ∩ N(S_k, D_k) ⊆ {x : there is z ∈ N(S, D) with |x − z| < ε}.",
+  "lean_statement": "∀ (P n : ℕ) (β : ℝ) (S Dset : Set (Euclid P)) (Ss Ds : ℕ → Set (Euclid P)), 0 < β → closedBall (0 : Euclid P) 1 ⊆ Dset → (∀ k, ball (0 : Euclid P) 1 ⊆ Ds k) → (∀ K : Set (Euclid P), IsCompact K → K ⊆ Dset → ∀ᶠ k in atTop, K ⊆ Ds k) → (∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub → (∀ k, z k ∈ Ss (sub k)) → Tendsto z atTop (𝓝 x) → x ∈ Dset → x ∈ S) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ (((Ss k ∩ Ds k) \\ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Ds k ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ Ss k, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ (Ds k)ᶜ) ⊆ {x | ∃ z ∈ ((S ∩ Dset) \\ {w | ∃ ρ : ℝ, 0 < ρ ∧ ball w ρ ⊆ Dset ∧ ∃ Q : Submodule ℝ (Euclid P), Module.finrank ℝ Q = n ∧ ∃ s : ℝ, s < β * ρ ∧ ∀ y ∈ S, y ∈ ball w ρ → ‖(y - w) - Q.starProjection (y - w)‖ ≤ s}) ∪ Dsetᶜ, dist x z < ε}",
+  "lean_name": "idtp_fons_cr_nonflat_usc",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-e0bc5065ed-a1"
+}

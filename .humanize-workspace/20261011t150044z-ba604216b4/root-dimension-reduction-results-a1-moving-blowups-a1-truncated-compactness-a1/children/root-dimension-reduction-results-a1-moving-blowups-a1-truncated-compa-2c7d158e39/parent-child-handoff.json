@@ -1,0 +1,71 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat RUN/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean",
+        "python3 scans of RUN/dag.json: selected node, parent root.dimension_reduction_results-a1.moving_blowups-a1 and its children, dependency types (dor_imrep_massOn_eq_measure_and_support, dimred_mbl_current_foundations, dimred_mbl_slice_mass_bounds, dimred_mbl_closure_and_boundary_rectifiability), accepted declarations mentioning massOn/IMRep/compact/diagonal/separab, collisions for dimred_mbl_tc_*",
+        "rg -n 'Banach|Alaoglu|SecondCountableTopology|IsSeparable|diagonal|extraction' lake-packages/simongmt/Poincare/SimonGMT/Chapter06 (no match); rg -n 'WeaklyConvergesOn|Banach' SNAPSHOT/project --glob '*.lean'",
+        "rg -n 'instSecondCountableTopology|theorem extraction_forall_of_eventually|IsSeparable.exists_countable_dense_subset|Filter.EventuallyEq.extDeriv_eq' SNAPSHOT/mathlib/Mathlib; grep of setLIntegral_congr_fun, lipschitzWith_one_norm, ContDiffBump API, tsupport_sub, norm_iteratedFDeriv_zero",
+        "sed -n on book/chapter-06.txt lines 284–333 (2.9, 2.13–2.15), 755–767 (3.2), 875–895 (3.11), 1330–1380 (4.6–4.10)",
+        "grep -n _existing_lean_name_problem _overlay_accepted_children _accepted_checkpoint ensure in /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py and store.py; contract_scope in verifier/gmt-compare.py",
+        "lake env lean on Types/Final.lean (7 child types), Assembly.lean (conditional parent), LT.lean, TR.lean, WC.lean (child proofs from sibling types), SubForm.lean and SubParent.lean (Submission-form compile), all with #print axioms"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-truncated-compactness-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1/decomposition-v2.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-cov-64249b6f60/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-im-calculus-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-local-comparison-a1-imrep-1bd5f15878/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/ContinuousMap/SecondCountableSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Metrizable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py",
+        "/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py",
+        "/tmp/tc-decomp-x7k2/lean/Assembly.lean",
+        "/tmp/tc-decomp-x7k2/lean/TR.lean",
+        "/tmp/tc-decomp-x7k2/lean/WC.lean",
+        "/tmp/tc-decomp-x7k2/lean/LT.lean"
+      ],
+      "conclusion": "Pins match: HEAD b4d606d, Mathlib 25730c7c, SimonGMT 2b366308, and Submission.lean is byte-identical to Contract.lean. Neither the pinned libraries nor any accepted DAG node proves weak compactness of currents. SimonGMT Chapter06 has no match. The project snapshot states Simon 2.15 only as the unproved Ch06 contract conjunct CompactnessUnderMassBounds (GMT/Ch06/Contract.lean:194–205), a different problem. So weak_compactness is a new child. Its Lean route exists in Mathlib: ContinuousMap.instSecondCountableTopology (separate import), IsSeparable.exists_countable_dense_subset, IsCompact.tendsto_subseq on a countable product, and norm_iteratedFDeriv_zero. The cut-off uses ContDiffBump and Filter.EventuallyEq.extDeriv_eq. Step 1 uses Filter.extraction_forall_of_eventually. Four accepted declarations are reused with identical frozen types: cmr_abs_apply_le_massOn, cmr_covector_euclidean_equiv, cmc_imRep_locality_restrict_sub and lcmp_imRep_measure_restrict. The new names dimred_mbl_tc_* collide with nothing. All child types elaborate. The conditional assembly proves the exact parent type, and each new child is proved in Lean from its sibling types. All of these depend only on propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.truncated_compactness-a1",
+  "child_id": "root.dimension_reduction_results-a1.moving_blowups-a1.truncated_compactness-a1.limit_transfer-a1",
+  "subproblem": {
+    "key": "limit_transfer",
+    "title": "Agreement on expanding balls transfers weak convergence and boundary vanishing to the limit",
+    "statement": "Let P, m ∈ ℕ, U_j ⊆ ℝ^P arbitrary sets and S_j ∈ 𝒟_{m+1}(U_j) (j ∈ ℕ), Ŝ_j, C ∈ 𝒟_{m+1}(ℝ^P) and ρ_j ∈ ℝ with ρ_j → ∞. Assume Ŝ_j ⇀ C (WeaklyConvergesOn), Ŝ_j(ω) = currentEval(S_j, ω) for every j and every ω ∈ 𝒟^{m+1}(ℝ^P) with tsupport ω ⊆ ball(0, ρ_j), and ∂Ŝ_j(β) = 0 for every j and every β ∈ 𝒟^m(ℝ^P) with tsupport β ⊆ ball(0, ρ_j). Then ∂C = 0 and S_j ⇀ C in ℝ^P in the sense of ConvergesWeakly (currentEval(S_j, ω) → C(ω) for every ω ∈ 𝒟^{m+1}(ℝ^P)).",
+    "lean_statement": "∀ (P m : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)) (Ŝ : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ρ : ℕ → ℝ), Tendsto ρ atTop atTop → WeaklyConvergesOn Ŝ C → (∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 (ρ j) → Ŝ j ω = currentEval (Ss j) (ω : DifferentialForm (Euclid P) (m + 1))) → (∀ (j : ℕ) (β : TestFormOn (univ : Set (Euclid P)) m), tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 (ρ j) → (Ŝ j).boundary β = 0) → C.boundary = 0 ∧ ConvergesWeakly Ss C",
+    "lean_name": "dimred_mbl_tc_limit_of_agreement",
+    "depends_on": [],
+    "natural_proof": "Source: parent proof, step 7 (agreement on expanding balls); cf. Simon Ch. 6, 2.13 (chapter-06.txt lines 308–313: weak convergence is convergence on each test form, and ∂ is continuous for it).\nNotation: B_r := ball(0, r); 𝒟^k := TestFormOn ℝ^P k.\n\n1. (Supports lie eventually inside the balls.) Every α ∈ 𝒟^k (any k) has compact, hence bounded, tsupport, so tsupport α ⊆ B_r for some r ∈ ℝ (Bornology.IsBounded.subset_ball). As ρ_j → ∞, ρ_j ≥ r for all large j, and then tsupport α ⊆ B_r ⊆ B_{ρ_j}.\n\n2. (S_j ⇀ C.) Let ω ∈ 𝒟^{m+1}. By step 1 and the agreement hypothesis, currentEval(S_j, ω) = Ŝ_j(ω) for all large j. Since Ŝ_j(ω) → C(ω) (WeaklyConvergesOn), the sequence (currentEval(S_j, ω))_j, which eventually coincides with it, converges to C(ω) as well (Tendsto.congr'). This is ConvergesWeakly (j ↦ S_j) C.\n\n3. (∂C = 0.) Let β ∈ 𝒟^m. By definition of the boundary, ∂Ŝ_j(β) = Ŝ_j(dβ) and ∂C(β) = C(dβ), with dβ ∈ 𝒟^{m+1} (exteriorDerivativeTestOn); hence ∂Ŝ_j(β) → ∂C(β) (WeaklyConvergesOn.boundary). By step 1 and the vanishing hypothesis, ∂Ŝ_j(β) = 0 for all large j, so the same sequence also converges to 0. Limits in ℝ are unique, so ∂C(β) = 0. As β is arbitrary, C.boundary = 0 (GeometricCurrentOn.ext). ∎\n\nAppendix (verified Lean realization of the numbered proof above; not part of the proof). Compiled in this decomposition session with Lean v4.35.0-rc3, Mathlib 25730c7c and SimonGMT 2b366308 after `import GMT.Ch07.Submission`, inside `namespace GMT.Ch07` with the frozen contract's `open` commands (after its `noncomputable section ... end`). No extra import and no sibling declaration is needed; `#print axioms` reports only propext, Classical.choice and Quot.sound.\n\n```lean\ntheorem Submission.dimred_mbl_tc_limit_of_agreement : ∀ (P m : ℕ) (Us : ℕ → Set (Euclid P)) (Ss : (j : ℕ) → GeometricCurrentOn (Us j) (m + 1)) (Ŝ : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ρ : ℕ → ℝ), Tendsto ρ atTop atTop → WeaklyConvergesOn Ŝ C → (∀ (j : ℕ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 1)), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ ball 0 (ρ j) → Ŝ j ω = currentEval (Ss j) (ω : DifferentialForm (Euclid P) (m + 1))) → (∀ (j : ℕ) (β : TestFormOn (univ : Set (Euclid P)) m), tsupport (β : DifferentialForm (Euclid P) m) ⊆ ball 0 (ρ j) → (Ŝ j).boundary β = 0) → C.boundary = 0 ∧ ConvergesWeakly Ss C := by\n  intro P m Us Ss Ŝ C ρ hρ hconv hagree hbd\n  -- every test form on ℝ^P has tsupport in some ball, eventually inside `ball 0 (ρ j)`\n  have hev : ∀ {k : ℕ} (ω : TestFormOn (univ : Set (Euclid P)) k), ∀ᶠ j in atTop,\n      tsupport (ω : DifferentialForm (Euclid P) k) ⊆ ball 0 (ρ j) := by\n    intro k ω\n    obtain ⟨r, hr⟩ := ω.property.1.2.isCompact.isBounded.subset_ball (0 : Euclid P)\n    filter_upwards [hρ.eventually_ge_atTop r] with j hj\n    exact hr.trans (ball_subset_ball hj)\n  constructor\n  · apply GeometricCurrentOn.ext\n    intro β\n    have h1 : Tendsto (fun j => (Ŝ j).boundary β) atTop (𝓝 (C.boundary β)) :=\n      hconv.boundary β\n    have h2 : Tendsto (fun j => (Ŝ j).boundary β) atTop (𝓝 0) := by\n      refine tendsto_const_nhds.congr' ?_\n      filter_upwards [hev β] with j hj\n      exact (hbd j β hj).symm\n    rw [tendsto_nhds_unique h1 h2]\n    rfl\n  · intro ω\n    refine (hconv ω).congr' ?_\n    filter_upwards [hev ω] with j hj\n    exact hagree j ω hj\n```",
+    "proof_key_steps": [
+      "Every test form has tsupport in some ball, hence in ball(0, ρ_j) for all large j.",
+      "Eventually currentEval(S_j, ω) = Ŝ_j(ω) → C(ω): ConvergesWeakly.",
+      "∂Ŝ_j(β) → ∂C(β) and ∂Ŝ_j(β) = 0 eventually, so ∂C(β) = 0."
+    ]
+  },
+  "audit": {
+    "key": "limit_transfer",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "The proposition correctly allows arbitrary domains. Compact support and radii tending to infinity yield eventual agreement and boundary vanishing; weak convergence and uniqueness of real limits prove both conclusions. The supplied proof compiles without sibling assumptions."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-truncated-compa-2c7d158e39/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-truncated-compa-2c7d158e39/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-truncated-compa-2c7d158e39/parent-supplied-natural-proof.json"
+}

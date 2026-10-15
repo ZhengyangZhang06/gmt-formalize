@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1.spine_density_integer-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.integer_density-a1",
+  "depth": 4,
+  "title": "Integer density at 0 of a minimizing current invariant along a spine of codimension one or two (Simon 7.3.3(1), display (15), Lemma 3.5)",
+  "statement": "Let P, n ∈ ℕ, S ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n), L ⊆ ℝ^P a linear subspace with d := dim L (Module.finrank ℝ L) satisfying d < n ≤ d + 2, and θ₀ ∈ ℝ. Assume:\n- S is minimizing in ℝ^P (IsMinimizingIn S univ) and ∂S = 0 (BoundaryVanishes S);\n- HasMassDensity S w θ implies HasMassDensity S (y + λw) θ, for all y ∈ L, λ > 0, w ∈ ℝ^P and θ ∈ ℝ;\n- HasMassDensity S 0 θ₀.\n\nThen θ₀ = m for some m ∈ ℕ.",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)) (θ₀ : ℝ), Module.finrank ℝ L < n → n ≤ Module.finrank ℝ L + 2 → IsMinimizingIn S univ → BoundaryVanishes S → (∀ y ∈ L, ∀ lam : ℝ, 0 < lam → ∀ (w : Euclid P) (θ : ℝ), HasMassDensity S w θ → HasMassDensity S (y + lam • w) θ) → HasMassDensity S 0 θ₀ → ∃ m : ℕ, θ₀ = m",
+  "lean_name": "idod_spine_invariant_density_nat",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-864ea00686-a1"
+}
