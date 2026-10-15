@@ -724,6 +724,38 @@ theorem Submission.idtp_cse_fc_square_lintegral_lower : ∀ (N : ℝ × ℝ → 
           Measure.restrict_apply hU, hUSq, hSqvol, hUvol]
     _ ≤ ∫⁻ p in Ioo (1 - r) (1 + r) ×ˢ Ioo (-r) r, N p := lintegral_mono_ae hg
 
+/-- **Upper bound for the fibre Jacobian over `Z(s, s')`** (step 6 of the fibre count in the proof
+of Simon 7.3.3).  Write `π = p_Q`, `Ax = ⟨x, a⟩e − ⟨x, e⟩a` and `J(x) = |p_{TₓM}(Ax)| / |πx|²`.  At
+`μ`-a.e. `x ∈ Z(s, s')` the localization hypothesis gives `|x − πx| < (s'/4)|x|`, so
+`|πx| > (1 − s'/4)(1 − s') ≥ 1 − 2s' > 0`.  Since `|p_{TₓM}(Ax)| ≤ |πx|`
+(`idtp_cse_fc_planar_fibre_geometry`), `J(x) ≤ 1/|πx| ≤ 1/(1 − 2s')`; integrate this constant
+bound over `Z(s, s')`. -/
+theorem Submission.idtp_cse_fc_jacobian_upper : ∀ (P : ℕ) (R : IMRep (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (S : Set (Euclid P)) (s s' : ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → (∀ᵐ x ∂R.measure, x ∈ S) → 0 < s' → s' ≤ 1 / 4 → (∀ x ∈ S, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ < s * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖) → ∫⁻ x in {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖}, ENNReal.ofReal (‖(approxTangentPlane 2 R.carrier x).starProjection (inner ℝ x a • e - inner ℝ x e • a)‖ / ‖Q.starProjection x‖ ^ 2) ∂R.measure ≤ ENNReal.ofReal (1 / (1 - 2 * s')) * R.measure {x : Euclid P | 0 < inner ℝ x a ∧ |‖x‖ - 1| < s' ∧ |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' ∧ ‖x - Q.starProjection x‖ < s * ‖x‖} := by
+  intro P R Q a e S s s' hQ ha he ha1 he1 hae hS hs' hs'4 hloc
+  -- `|p_T(Ax)| ≤ |πx|` for every plane `T` (planar geometry (a))
+  have hw := (Submission.idtp_cse_fc_planar_fibre_geometry P Q a e hQ ha he ha1 he1 hae).1
+  -- compare with the constant `ofReal (1 / (1 - 2s'))`, a.e. on `Z(s, s')`
+  refine (setLIntegral_mono_ae aemeasurable_const (hS.mono fun x hxS hxZ => ?_)).trans_eq
+    (setLIntegral_const _ _)
+  obtain ⟨hxa, hx1, hxf, hxs⟩ := hxZ
+  -- localization at `x ∈ S ∩ Z(s, s')`, and `|x| > 1 - s'`
+  have hxπ := hloc x hxS hxa hx1 hxf hxs
+  have hx : 1 - s' < ‖x‖ := by linarith [(abs_lt.mp hx1).1]
+  -- `|πx| ≥ |x| - |x - πx| > (1 - s'/4)|x| > (1 - s'/4)(1 - s') ≥ 1 - 2s' > 0`
+  have htri : ‖x‖ - ‖x - Q.starProjection x‖ ≤ ‖Q.starProjection x‖ := by
+    simpa using norm_sub_norm_le x (x - Q.starProjection x)
+  have h2s' : 0 < 1 - 2 * s' := by linarith
+  have hπ : 1 - 2 * s' < ‖Q.starProjection x‖ := by
+    nlinarith [mul_lt_mul_of_pos_left hx (show 0 < 1 - s' / 4 by linarith)]
+  have hπ0 : 0 < ‖Q.starProjection x‖ := h2s'.trans hπ
+  -- `J(x) ≤ |πx| / |πx|² = 1 / |πx| ≤ 1 / (1 - 2s')`
+  refine ENNReal.ofReal_le_ofReal ?_
+  calc _ ≤ ‖Q.starProjection x‖ / ‖Q.starProjection x‖ ^ 2 := by
+        gcongr
+        exact (hw _ x).1
+    _ = 1 / ‖Q.starProjection x‖ := by field_simp
+    _ ≤ 1 / (1 - 2 * s') := one_div_le_one_div_of_le h2s' hπ.le
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
