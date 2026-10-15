@@ -1758,6 +1758,30 @@ theorem Submission.idtp_cse_fd_gap_ae : ∀ (P : ℕ) (C : GeometricCurrentOn (u
     exact mul_le_mul_of_nonneg_right (by linarith) (norm_nonneg x)
   · exact Or.inr hlt
 
+/-- **Integrals against the weight of a cone scale homogeneously** (scaling step 5(i) of the
+flux-density argument for planar sectors of 2-dimensional minimizing cones, proof of Simon 7.3.3).
+If the cone `C` is represented by `R = (M, θ, ξ)` with weight `μ = θHⁿ⌞M` and `r > 0`, then
+`∫ φ(rx) dμ(x) = r⁻ⁿ ∫ φ dμ` for every `φ : ℝᴾ → ℝ`.  `S(x) = rx` is a homeomorphism, hence a
+measurable embedding, and `S⁻¹(A) = r⁻¹A` with `μ(r⁻¹A) = r⁻ⁿ μ(A)` (homogeneity of the weight of
+a cone) gives `S_#μ = r⁻ⁿ μ`; integrals commute with the push-forward along `S`. -/
+theorem Submission.idtp_cse_fd_cone_integral_smul : ∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsConeCurrent C → R.Represents C → ∀ r : ℝ, 0 < r → ∀ φ : Euclid P → ℝ, ∫ x, φ (r • x) ∂R.measure = (r ^ n)⁻¹ * ∫ x, φ x ∂R.measure := by
+  intro P n C R hC hR r hr φ
+  -- Step 1: `S(x) = rx` is a homeomorphism of `ℝᴾ`, hence a measurable embedding
+  have hS : MeasurableEmbedding (fun x : Euclid P => r • x) :=
+    measurableEmbedding_const_smul₀ hr.ne'
+  -- Step 2: `S_#μ = r⁻ⁿ μ`, as `S⁻¹(A) = r⁻¹A` and `μ(r⁻¹A) = r⁻ⁿ μ(A)` for Borel `A`
+  have hmap : Measure.map (fun x : Euclid P => r • x) R.measure =
+      ENNReal.ofReal (r⁻¹ ^ n) • R.measure := by
+    ext A hA
+    rw [Measure.map_apply hS.measurable hA, Set.preimage_smul₀ hr.ne', ← Set.image_smul,
+      Submission.cone_current_imrep_measure_smul_image P n C R hC hR r⁻¹ (inv_pos.2 hr) A hA,
+      Measure.smul_apply, smul_eq_mul]
+  -- Step 3: change of variables, `∫ φ(rx) dμ = ∫ φ d(S_#μ) = r⁻ⁿ ∫ φ dμ`, and `r⁻¹ⁿ = (rⁿ)⁻¹`
+  have h := hS.integral_map (μ := R.measure) φ
+  rw [hmap, integral_smul_measure, ENNReal.toReal_ofReal (pow_nonneg (inv_nonneg.2 hr.le) n),
+    smul_eq_mul, inv_pow] at h
+  exact h.symm
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
