@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.regular_local_form-a1",
+  "parent_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1",
+  "depth": 4,
+  "title": "Local form of a 0-current at a regular point",
+  "statement": "Let P ∈ ℕ, U ⊆ ℝ^P an arbitrary set, T ∈ 𝒟_0(U) (GeometricCurrentOn U 0) and y ∈ reg T (regularSet T, Simon 7.4.1 as frozen in the contract, with n = 0). Then there are r > 0 with ball(y, r) ⊆ U and c ∈ ℝ with |c| ≥ 1 such that T(ω) = c·ω(y)(()) for every ω ∈ 𝒟^0(U) (TestFormOn U 0) with tsupport ω ⊆ ball(y, r). Here ω(y) is a 0-covector and ω(y)(()) is its value at the empty family () = (fun i => i.elim0) : Fin 0 → ℝ^P.",
+  "lean_statement": "∀ (P : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U 0) (y : Euclid P), y ∈ regularSet T → ∃ r : ℝ, 0 < r ∧ ball y r ⊆ U ∧ ∃ c : ℝ, 1 ≤ |c| ∧ ∀ ω : TestFormOn U 0, tsupport (ω : DifferentialForm (Euclid P) 0) ⊆ ball y r → T ω = c * (ω : DifferentialForm (Euclid P) 0) y (fun i => i.elim0)",
+  "lean_name": "regcomp_cop_zdr_regular_local_form",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.unit_orientation_zero-a1",
+    "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.isolated_point_integral-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.unit_orientation_zero-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.codim_one_preliminaries-a1.zero_dim_regular_empty-a1.isolated_point_integral-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-codim-one-preliminaries-a1-2f1ead7e54-a1"
+}

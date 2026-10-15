@@ -2111,6 +2111,174 @@ theorem Submission.dmcbr_cc_segment_current : (∀ (P n : ℕ) (U : Set (Euclid 
       rw [hS, IMRep.action]
       refine setIntegral_eq_zero_of_forall_eq_zero fun x hx => ?_
       rw [image_eq_zero_of_notMem_tsupport (disjoint_right.mp hω (hRc hx)), map_zero, mul_zero]
+/-- **Degree-0 integer multiplicity triples** (Simon Ch. 3, 1.1 and 1.4; Ch. 6, 3.1; `H⁰` is
+counting measure, Ch. 2).  For `R = (M, θ, ξ) ∈ IMRep U 0`: (i) `M` is countable, since the null
+set of the rectifiable cover has `H⁰`-measure `≥ 1` unless empty and `ℝ⁰` is a point; (ii) for
+compact `K ⊆ U`, `μ_R(K) = ∫_{M ∩ K} θ dH⁰ < ∞` and `H⁰(M ∩ K) ≤ μ_R(K)` as `θ ≥ 1` on `M`, so
+`M ∩ K` is finite; (iii) each point of `M` has `H⁰⌞M`-mass `1`, so the a.e. orientation property
+holds everywhere on `M`, and `ξ(x)` maps the constant covector `1` to `±1`, so `ξ(x) ≠ 0`;
+(iv) for `U` open, carrier points have `μ_R`-mass `θ(x) ≥ 1`, and a point of `U \ M` has a
+neighbourhood missing the locally finite `M`, so `U ∩ spt μ_R = M`. -/
+theorem Submission.dor_zdm_imrep_zero_structure : ∀ (P : ℕ) (U : Set (Euclid P)) (R : IMRep U 0), R.carrier.Countable ∧ (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → (R.carrier ∩ K).Finite ∧ R.measure K ≠ ∞) ∧ (∀ x ∈ R.carrier, (∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt 0 R.carrier x Q ∧ IsUnitOrientationOf (R.orient x) Q) ∧ R.orient x ≠ 0) ∧ (IsOpen U → U ∩ R.measure.support = R.carrier) := by
+  intro P U R
+  -- `H⁰ = μH[0]`: points have mass `1` and nonempty sets mass `≥ 1`
+  have hpt : ∀ z : Euclid P, μHE[0] ({z} : Set (Euclid P)) = 1 := fun z => by
+    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+  have hne : ∀ S : Set (Euclid P), S.Nonempty → 1 ≤ μHE[0] S := fun S hS => by
+    rw [Measure.euclideanHausdorffMeasure_zero]
+    exact Measure.one_le_hausdorffMeasure_zero_of_nonempty hS
+  -- (i) the null set `M₀` of the rectifiable cover is empty and each `F_j(ℝ⁰)` is a point
+  have hcount : R.carrier.Countable := by
+    obtain ⟨M₀, hM₀, F, -, hcover⟩ := R.rectifiable
+    have hM₀e : M₀ = ∅ := by
+      by_contra h
+      have h1 := hne M₀ (Set.nonempty_iff_ne_empty.2 h)
+      rw [hM₀] at h1
+      simp at h1
+    rw [hM₀e, Set.empty_union] at hcover
+    exact Set.Countable.mono hcover
+      (Set.countable_iUnion fun j => (Set.subsingleton_range (F j)).countable)
+  -- (ii) `μ_R(K) = ∫_{M ∩ K} θ dH⁰ < ∞`, and `H⁰(M ∩ K) ≤ μ_R(K)` since `θ ≥ 1` on `M`
+  have hloc : ∀ K : Set (Euclid P), IsCompact K → K ⊆ U →
+      (R.carrier ∩ K).Finite ∧ R.measure K ≠ ∞ := by
+    intro K hK hKU
+    have hKm : MeasurableSet K := hK.isClosed.measurableSet
+    have hmeas : R.measure K = ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[0] := by
+      rw [IMRep.measure, withDensity_apply _ hKm, Measure.restrict_restrict hKm, Set.inter_comm]
+    have hfin : μHE[0] (R.carrier ∩ K) ≠ ∞ := by
+      refine ne_top_of_le_ne_top (R.locallyIntegrable_mult K hK hKU) ?_
+      calc μHE[0] (R.carrier ∩ K) = ∫⁻ _ in R.carrier ∩ K, 1 ∂μHE[0] := (setLIntegral_one _).symm
+        _ ≤ ∫⁻ x in R.carrier ∩ K, (R.mult x : ℝ≥0∞) ∂μHE[0] :=
+          setLIntegral_mono' (R.measurableSet_carrier.inter hKm) fun x hx => by
+            exact_mod_cast R.mult_pos x hx.1
+    refine ⟨?_, by rw [hmeas]; exact R.locallyIntegrable_mult K hK hKU⟩
+    -- an infinite `M ∩ K` contains `m`-point sets of `H⁰`-measure `m` for every `m`
+    by_contra hinf
+    obtain ⟨m, hm⟩ := ENNReal.exists_nat_gt hfin
+    obtain ⟨t, hts, rfl⟩ := Set.Infinite.exists_subset_card_eq hinf m
+    have ht : μHE[0] (t : Set (Euclid P)) = t.card := by
+      rw [← sum_measure_singleton]
+      simp only [hpt, Finset.sum_const, nsmul_eq_mul, mul_one]
+    have hle := measure_mono (μ := μHE[0]) hts
+    rw [ht] at hle
+    exact absurd hle (not_le.2 hm)
+  -- (iii) every point of `M` has `H⁰⌞M`-mass `1`, so the a.e. property holds at each point
+  have horient : ∀ x ∈ R.carrier, (∃ Q : Submodule ℝ (Euclid P),
+      HasApproximateTangentSpaceAt 0 R.carrier x Q ∧ IsUnitOrientationOf (R.orient x) Q) ∧
+      R.orient x ≠ 0 := by
+    intro x hx
+    have hQ : ∃ Q : Submodule ℝ (Euclid P),
+        HasApproximateTangentSpaceAt 0 R.carrier x Q ∧ IsUnitOrientationOf (R.orient x) Q := by
+      by_contra hnot
+      have h1 : (μHE[0].restrict R.carrier) {x} = 0 :=
+        measure_mono_null (Set.singleton_subset_iff.2 hnot) (ae_iff.1 R.orients)
+      rw [Measure.restrict_apply' R.measurableSet_carrier, Set.singleton_inter_of_mem hx, hpt] at h1
+      exact one_ne_zero h1
+    refine ⟨hQ, fun h0 => ?_⟩
+    -- `ξ(x)` maps the constant `0`-covector `1` to `±1`
+    obtain ⟨Q, -, τ, -, -, hξ⟩ := hQ
+    rcases hξ with h | h
+    · have h1 := h (ContinuousAlternatingMap.constOfIsEmpty ℝ (Euclid P) (Fin 0) (1 : ℝ))
+      simp [h0, ContinuousAlternatingMap.constOfIsEmpty_apply] at h1
+    · have h1 := h (ContinuousAlternatingMap.constOfIsEmpty ℝ (Euclid P) (Fin 0) (1 : ℝ))
+      simp [h0, ContinuousAlternatingMap.constOfIsEmpty_apply] at h1
+  refine ⟨hcount, hloc, horient, fun hU => Set.Subset.antisymm ?_ fun x hx => ?_⟩
+  · -- (iv, ⊆) a point of `U \ M` has a neighbourhood missing the finite set `M ∩ B̄_{ε/2}(x)`
+    rintro x ⟨hxU, hxs⟩
+    by_contra hxM
+    obtain ⟨ε, hε, hεU⟩ := Metric.isOpen_iff.1 hU x hxU
+    have hcb : closedBall x (ε / 2) ⊆ U := (closedBall_subset_ball (half_lt_self hε)).trans hεU
+    have hF := (hloc _ (isCompact_closedBall x (ε / 2)) hcb).1
+    have hN : (R.carrier ∩ closedBall x (ε / 2))ᶜ ∩ closedBall x (ε / 2) ∈ 𝓝 x :=
+      Filter.inter_mem (hF.isClosed.isOpen_compl.mem_nhds fun h => hxM h.1)
+        (closedBall_mem_nhds x (half_pos hε))
+    have h0 : (μHE[0].restrict R.carrier)
+        ((R.carrier ∩ closedBall x (ε / 2))ᶜ ∩ closedBall x (ε / 2)) = 0 := by
+      rw [Measure.restrict_apply' R.measurableSet_carrier]
+      convert measure_empty (μ := (μHE[0] : Measure (Euclid P)))
+      exact Set.eq_empty_iff_forall_notMem.2 fun z ⟨⟨h1, h2⟩, h3⟩ => h1 ⟨h3, h2⟩
+    exact ((Measure.mem_support_iff_forall x).1 hxs _ hN).ne'
+      (withDensity_absolutelyContinuous _ _ h0)
+  · -- (iv, ⊇) a carrier point has `μ_R`-mass `θ(x) ≥ 1`
+    refine ⟨R.carrier_subset hx, (Measure.mem_support_iff_forall x).2 fun N hN => ?_⟩
+    have hx1 : R.measure {x} = R.mult x := by
+      rw [IMRep.measure, withDensity_apply _ (measurableSet_singleton x), lintegral_singleton,
+        Measure.restrict_apply' R.measurableSet_carrier, Set.singleton_inter_of_mem hx, hpt,
+        mul_one]
+    calc (0 : ℝ≥0∞) < R.mult x := by exact_mod_cast R.mult_pos x hx
+      _ = R.measure {x} := hx1.symm
+      _ ≤ R.measure N := measure_mono (Set.singleton_subset_iff.2 (mem_of_mem_nhds hN))
+/-- **Degree-0 unit orientations** (Simon 6.1.1, 6.1.7; 6.2.2).  If `ξ ∈ Λ₀(ℝᴾ)` orients `Q`,
+i.e. `⟨α, ξ⟩ = ±α(τ)` for every `0`-covector `α`, with `τ : Fin 0 → ℝᴾ` orthonormal spanning `Q`,
+then `⟨α, ξ⟩ = s α(())` with `s = ±1`, since `τ` is the empty family `()`. -/
+theorem Submission.regcomp_cop_zdr_unitOrientation_zero : ∀ (P : ℕ) (ξ : MultiVector P 0) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf ξ Q → ∃ s : ℝ, |s| = 1 ∧ ∀ α : Covector (Euclid P) 0, ξ α = s * α (fun i => i.elim0) := by
+  intro P ξ Q hξ
+  obtain ⟨τ, -, -, h | h⟩ := hξ
+  -- `Fin 0 → ℝᴾ` has exactly one element, so `τ = ()`
+  · exact ⟨1, abs_one, fun α => by rw [h α, one_mul, Subsingleton.elim τ fun i => i.elim0]⟩
+  · exact ⟨-1, by rw [abs_neg, abs_one],
+      fun α => by rw [h α, neg_one_mul, Subsingleton.elim τ fun i => i.elim0]⟩
+/-- **Integrals over a finite set against `H⁰`** (`H⁰` is counting measure, Simon Ch. 2).  Since
+`μHE[0] = μH[0]`, every point has `H⁰`-mass `1`; so `f` is integrable on each singleton, hence on
+the finite union `F = ⋃_{x ∈ F} {x}`, and `∫_F f dH⁰ = Σ_{x ∈ F} H⁰({x}) f(x) = Σ_{x ∈ F} f(x)`. -/
+theorem Submission.cbr_cc_zcs_setIntegral_finset_hausdorff_zero : ∀ (P : ℕ) (F : Finset (Euclid P)) (f : Euclid P → ℝ), ∫ x in (F : Set (Euclid P)), f x ∂μHE[0] = ∑ x ∈ F, f x := by
+  intro P F f
+  -- `H⁰ = μH[0]`: every point has `H⁰`-mass `1`
+  have hpt : ∀ x : Euclid P, μHE[0] ({x} : Set (Euclid P)) = 1 := fun x => by
+    rw [Measure.euclideanHausdorffMeasure_zero, Measure.hausdorffMeasure_zero_singleton]
+  -- `f` is integrable on each singleton, hence on the finite union `F = ⋃_{x ∈ F} {x}`
+  have hint : IntegrableOn f (F : Set (Euclid P)) μHE[0] := by
+    rw [← Set.biUnion_of_singleton (F : Set (Euclid P)), Finset.set_biUnion_coe,
+      integrableOn_finset_iUnion]
+    exact fun x _ => integrableOn_singleton enorm_ne_top (by rw [hpt]; exact ENNReal.one_lt_top)
+  -- `∫_F f dH⁰ = Σ_{x ∈ F} H⁰.real({x}) • f(x)`, and `H⁰.real({x}) = 1`
+  rw [setIntegral_finset F hint]
+  refine Finset.sum_congr rfl fun x _ => ?_
+  rw [measureReal_def, hpt, ENNReal.toReal_one, one_smul]
+/-- **Compactly supported integer multiplicity `0`-currents are finite sums of point masses**
+(Simon Ch. 6, 3.1; `H⁰` is counting measure, Ch. 2).  Let `S = τ(M, θ, ξ)` in `ℝᴾ` with `spt S`
+compact.  `S` kills every test form supported in its open zero region `G = ℝᴾ \ spt S`, so
+`μ_R(G) = M_G(S) = 0` by the mass identity; as `M = spt μ_R`, this gives `M ⊆ spt S`, and
+`M = M ∩ spt S` is finite.  At each `x ∈ M`, `ξ(x) = ±⟨·⟩`, so
+`S(g) = ∫_M θ ⟨g, ξ⟩ dH⁰ = Σ_{x ∈ M} ±θ(x) g(x)⟨⟩`. -/
+theorem Submission.dmcbr_cc_zero_current_finite_sum : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → ∀ (P : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) 0), IsIntegerMultiplicity S → IsCompact S.support → ∃ (F : Finset (Euclid P)) (m : Euclid P → ℤ), (↑F : Set (Euclid P)) ⊆ S.support ∧ ∀ g : TestFormOn (univ : Set (Euclid P)) 0, S g = ∑ x ∈ F, (m x : ℝ) * (g : DifferentialForm (Euclid P) 0) x (fun i => i.elim0) := by
+  rintro hMR hVO P S ⟨R, hR⟩ hK
+  obtain ⟨-, hloc, horient, hspt⟩ := Submission.dor_zdm_imrep_zero_structure P univ R
+  -- `S` vanishes on its open zero region `G = ℝᴾ \ spt S`, so `μ_R(G) = M_G(S) = 0`
+  have hG : R.measure S.zeroRegion = 0 := by
+    rw [← hMR P 0 univ S R isOpen_univ hR _ S.isOpen_zeroRegion]
+    refine nonpos_iff_eq_zero.1 (sSup_le ?_)
+    rintro r ⟨ω, hω, rfl⟩
+    dsimp only
+    rw [hVO P 0 univ S ω (Set.disjoint_of_subset_left hω.1 disjoint_sdiff_self_right),
+      ENNReal.ofReal_zero]
+  -- carrier points lie in `spt μ_R`, hence outside `G`: `M ⊆ spt S`
+  have hsub : R.carrier ⊆ S.support := fun x hx => by
+    rw [GeometricCurrentOn.support, Set.mem_sdiff]
+    refine ⟨mem_univ x, fun hxG => ?_⟩
+    rw [← hspt isOpen_univ] at hx
+    exact ((Measure.mem_support_iff_forall x).1 hx.2 _ (S.isOpen_zeroRegion.mem_nhds hxG)).ne' hG
+  -- `M = M ∩ spt S` is finite, `spt S` being compact
+  have hfin : R.carrier.Finite := by
+    have h := (hloc _ hK (subset_univ _)).1
+    rwa [Set.inter_eq_left.2 hsub] at h
+  obtain ⟨F, hF⟩ := hfin.exists_finset_coe
+  -- `ξ(x) = ±⟨·⟩` at every carrier point
+  have hsign : ∀ x ∈ R.carrier, ∃ σ : ℤ, ∀ α : Covector (Euclid P) 0,
+      R.orient x α = (σ : ℝ) * α (fun i => i.elim0) := fun x hx => by
+    obtain ⟨Q, -, hQ⟩ := (horient x hx).1
+    obtain ⟨s, hs, hξ⟩ := Submission.regcomp_cop_zdr_unitOrientation_zero P (R.orient x) Q hQ
+    rcases (abs_eq zero_le_one).1 hs with rfl | rfl
+    · exact ⟨1, fun α => by rw [hξ α, Int.cast_one]⟩
+    · exact ⟨-1, fun α => by rw [hξ α, Int.cast_neg, Int.cast_one]⟩
+  choose! σ hσ using hsign
+  -- `S(g) = ∫_M θ ⟨g, ξ⟩ dH⁰ = Σ_{x ∈ M} θ(x) σ(x) g(x)⟨⟩`
+  refine ⟨F, fun x => σ x * R.mult x, hF ▸ hsub, fun g => ?_⟩
+  rw [hR g, IMRep.action, ← hF, Submission.cbr_cc_zcs_setIntegral_finset_hausdorff_zero]
+  refine Finset.sum_congr rfl fun x hx => ?_
+  rw [hσ x (hF ▸ Finset.mem_coe.2 hx)]
+  push_cast
+  ring
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
