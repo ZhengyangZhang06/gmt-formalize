@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1",
+  "depth": 5,
+  "title": "A translation-invariant minimizing cone splits off its spine: S = [[L]] × S₀ (Simon Lemma 7.3.5) (fresh-named registered obligation)",
+  "statement": "Let P, n ∈ ℕ, L ⊆ ℝ^P a linear subspace with d := dim L < n ≤ P, and S ∈ 𝒟_n(ℝ^P) minimizing in ℝ^P (IsMinimizingIn S univ) with ∂S = 0, S a cone (IsConeCurrent S), and S invariant under translations by L (currentEval (blowUp S (−v) 1) ω = S ω for v ∈ L, ω ∈ 𝒟^n(ℝ^P)). Let R = (M, θ, ξ) ∈ IMRep(ℝ^P, n) represent S, μ := R.measure, and assume L ⊆ T_x for μ-a.e. x (p_x v = v for all v ∈ L). Then there are S₀ ∈ 𝒟_{n−d}(ℝ^P) and an integer multiplicity representation R₀ of S₀ (IMRep univ (n − d)) such that S₀ is minimizing in L^⊥ (IsMinimizingIn S₀ L^⊥), ∂S₀ = 0, S₀ is a cone, spt S₀ ⊆ L^⊥, μ₀ := R₀.measure satisfies μ₀(ℝ^P ∖ L^⊥) = 0, and μ(A) = ∫_L μ₀(A − t) dH^d(t) (written ∫⁻ t in L, μ₀((fun y => t + y)⁻¹' A) ∂μHE[d]) for every Borel A ⊆ ℝ^P.",
+  "lean_statement": "∀ (P n : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (L : Submodule ℝ (Euclid P)), Module.finrank ℝ L < n → n ≤ P → IsMinimizingIn S univ → BoundaryVanishes S → IsConeCurrent S → (∀ v ∈ L, ∀ ω : TestFormOn (univ : Set (Euclid P)) n, currentEval (blowUp S (-v) 1 one_ne_zero) (ω : DifferentialForm (Euclid P) n) = S ω) → R.Represents S → (∀ᵐ x ∂R.measure, ∀ v ∈ L, (approxTangentPlane n R.carrier x).starProjection v = v) → ∃ (S₀ : GeometricCurrentOn (univ : Set (Euclid P)) (n - Module.finrank ℝ L)) (R₀ : IMRep (univ : Set (Euclid P)) (n - Module.finrank ℝ L)), R₀.Represents S₀ ∧ IsMinimizingIn S₀ (Lᗮ : Set (Euclid P)) ∧ BoundaryVanishes S₀ ∧ IsConeCurrent S₀ ∧ S₀.support ⊆ (Lᗮ : Set (Euclid P)) ∧ R₀.measure (Lᗮ : Set (Euclid P))ᶜ = 0 ∧ ∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (L : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[Module.finrank ℝ L]",
+  "lean_name": "idtp_fons_cs_split_off_spine",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-im-mass-measure-a1-a1",
+      "result_commit": "01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ac0f702949-a1"
+}
