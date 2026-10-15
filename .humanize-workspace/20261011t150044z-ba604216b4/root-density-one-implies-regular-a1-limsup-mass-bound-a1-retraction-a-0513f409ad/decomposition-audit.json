@@ -1,0 +1,62 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "toOpenPartialHomeomorph|contDiffAt_symm|to_localInverse|variable|CompleteSpace",
+        "theorem.*contDiffAt_symm|theorem.*continuousOn_fderiv_of_isOpen|theorem.*clm_apply|theorem.*isOpen_image_of_subset_source",
+        "finrank_range_of_inj|finrank_add_finrank_orthogonal|inf_orthogonal_eq_bot|starProjection_apply_eq_zero_iff|injective_iff_surjective_of_finrank_eq_finrank|toContinuousLinearEquiv",
+        "normal_coordinates|local_inverse|dor_lmb_ret_nc_|contDiffOn_symm",
+        "dor_lmb_ret_nc_local_inverse|dor_lmb_ret_nc_linear_iso|dor_lmb_ret_nc_map_calculus",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/nc-independent-audit-33ac3cc8/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/nc-independent-audit-33ac3cc8/Children.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/nc-independent-audit-33ac3cc8/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ContDiff.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/BoundedLinearMaps.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Operations.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Comp.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/CompCLM.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthogonal.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Projection/FiniteDimensional.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/OpenPartialHomeomorph/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-0513f409ad/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-0513f409ad/decomposition-v1.json",
+        "/tmp/nc-independent-audit-33ac3cc8/Types.lean",
+        "/tmp/nc-independent-audit-33ac3cc8/Children.lean",
+        "/tmp/nc-independent-audit-33ac3cc8/Assembly.lean"
+      ],
+      "conclusion": "Verified project b4d606db and Mathlib 25730c7c compatibility; snapshot Contract, workspace Contract and Submission are byte-identical. The cited APIs support all proof steps with the stated hypotheses. The project keyword search returned no matches. All names are bare identifiers, with no collisions in the DAG or 1,720 branch tips. All frozen types independently elaborate as propositions in comparator scope; exact Submission.X checks pass. Product max metric, subtype completeness and range coercion checks pass. Each child proof compiles with only propext, Classical.choice and Quot.sound. An assembly proof taking the three children and two declared siblings as local hypotheses proves the exact selected parent, also without additional axioms. The split appropriately isolates three genuine obligations; dependencies are acyclic and correctly directed, and the radius and recovery arguments establish the selected conclusion."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "local_inverse",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type exactly matches the prose, including completeness of X and a single inverse G valid for every permitted W. The proof obtains an IFT source, restricts to nearby invertible derivatives, and establishes C¹ regularity at every image point. The pinned APIs require no missing completeness hypothesis on Y. The proof is complete, independent and non-circular."
+    },
+    {
+      "key": "linear_iso",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated equivalence with the inherited subtype and product norms. Orthogonality gives a trivial kernel; injectivity of L gives the required dimension equality; finite-dimensional continuity produces the continuous linear equivalence with the exact evaluation formula. This also covers zero dimensions without an unstated restriction. No child or parent result is assumed."
+    },
+    {
+      "key": "map_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states C¹ regularity on V × univ in the subtype product and the claimed Fréchet derivative. Openness and base-point membership correctly justify differentiability at v₀. The application rule produces Q(v₀)h and (DQ(v₀)w)(0), which vanish by the stated annihilation hypothesis and linearity. The supplied proof fully establishes both conclusions independently."
+    }
+  ],
+  "required_changes": []
+}
