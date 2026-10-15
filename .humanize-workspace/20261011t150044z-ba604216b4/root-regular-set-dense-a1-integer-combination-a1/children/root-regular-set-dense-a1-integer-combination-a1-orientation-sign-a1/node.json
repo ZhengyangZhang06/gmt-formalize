@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+  "parent_id": "root.regular_set_dense-a1.integer_combination-a1",
+  "depth": 3,
+  "title": "Two unit orientations of the same n-plane differ by a sign",
+  "statement": "Let P, n ∈ ℕ, let Q be a linear subspace of ℝ^P and let v, w ∈ Λ_n(ℝ^P) (MultiVector P n: continuous linear functionals on n-covectors, ⟨α, v⟩ = v(α)). If v and w are both unit orientations of Q (IsUnitOrientationOf v Q and IsUnitOrientationOf w Q: for some orthonormal families τ, τ' : Fin n → ℝ^P spanning Q, v(α) = ±α(τ) and w(α) = ±α(τ') for all n-covectors α), then w = v or w = −v.",
+  "lean_statement": "∀ (P n : ℕ) (v w : MultiVector P n) (Q : Submodule ℝ (Euclid P)), IsUnitOrientationOf v Q → IsUnitOrientationOf w Q → w = v ∨ w = -v",
+  "lean_name": "rsdic_unitOrientation_eq_or_eq_neg",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1"
+}

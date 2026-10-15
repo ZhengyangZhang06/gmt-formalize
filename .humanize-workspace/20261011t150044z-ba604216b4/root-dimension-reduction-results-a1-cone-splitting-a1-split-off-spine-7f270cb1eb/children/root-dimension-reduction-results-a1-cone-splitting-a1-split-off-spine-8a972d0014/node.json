@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.competitor_mass-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1",
+  "depth": 5,
+  "title": "Large-box comparison: minimality of S = [[G]] × S₀ and a cube cycle Z give (2r)^k M_{W₀}(S₀) ≤ (2r)^k M_{W₀}(S₀′) + M(E′)",
+  "statement": "Let P, k, m, n ∈ ℕ with k ≥ 1, m ≥ 1 and h : n = k + m; let g = (g_1, …, g_k) (g : Fin k → Euclid P) be orthonormal with span g = G, a linear subspace of ℝ^P; p := G.starProjection, q := G^⊥.starProjection, H^k := μHE[k], and Q_r := {t ∈ span g : |⟨g_i, t⟩| ≤ r for all i}. Let S ∈ 𝒟_n(ℝ^P) be minimizing in ℝ^P (IsMinimizingIn S univ) with an integer multiplicity representation R, and let S₀, S₀' ∈ 𝒟_m(ℝ^P) have integer multiplicity representations R₀, R₀'. Assume:\n- R₀.measure(ℝ^P ∖ G^⊥) = 0;\n- R.measure(A) = ∫_G R₀.measure(A − t) dH^k(t) for every Borel A (Lean: ∫⁻ t in G, R₀.measure((fun y => t + y)⁻¹' A) ∂μHE[k]);\n- S(ω) = ∫_G currentEval S₀ (y ↦ flat(ω(t + y))) dH^k(t) for every test n-form ω and every map flat : Λ^n → Λ^m with flat α v = α(Fin.append g v ∘ Fin.cast h);\n- W₀ ⊆ ℝ^P is open with compact closure and spt(S₀' − S₀) ⊆ G^⊥ ∩ W₀;\n- K ⊆ ℝ^P is compact and r > 0;\n- Z, E' ∈ 𝒟_n(ℝ^P), Z is integer multiplicity, ∂Z = 0 (BoundaryVanishes Z), spt Z is compact, spt Z ⊆ {x : |⟨g_i, x⟩| ≤ r for all i} ∩ q⁻¹(K), and Z(ω) = ∫_{Q_r} currentEval (S₀' − S₀) (y ↦ flat(ω(t + y))) dH^k(t) + E'(ω) for every test n-form ω and every such map flat.\nThen ENNReal.ofReal((2r)^k)·M_{W₀}(S₀) ≤ ENNReal.ofReal((2r)^k)·M_{W₀}(S₀') + M(E') in [0, ∞], where M_{W₀} = massOn W₀ and M = mass.",
+  "lean_statement": "∀ (P k m n : ℕ) (g : Fin k → Euclid P) (h : n = k + m) (G : Submodule ℝ (Euclid P)) (S : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n) (S₀ S₀' : GeometricCurrentOn (univ : Set (Euclid P)) m) (R₀ R₀' : IMRep (univ : Set (Euclid P)) m) (W₀ K : Set (Euclid P)) (Z E' : GeometricCurrentOn (univ : Set (Euclid P)) n) (r : ℝ), 0 < k → 0 < m → Orthonormal ℝ g → Submodule.span ℝ (Set.range g) = G → IsMinimizingIn S univ → R.Represents S → R₀.Represents S₀ → R₀'.Represents S₀' → R₀.measure (Gᗮ : Set (Euclid P))ᶜ = 0 → (∀ A : Set (Euclid P), MeasurableSet A → R.measure A = ∫⁻ t in (G : Set (Euclid P)), R₀.measure ((fun y => t + y) ⁻¹' A) ∂μHE[k]) → (∀ flat : Covector (Euclid P) n → Covector (Euclid P) m, (∀ (α : Covector (Euclid P) n) (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, S ω = ∫ t in (G : Set (Euclid P)), currentEval S₀ (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[k]) → IsOpen W₀ → IsCompact (closure W₀) → (S₀' - S₀).support ⊆ (Gᗮ : Set (Euclid P)) ∩ W₀ → IsCompact K → 0 < r → IsIntegerMultiplicity Z → BoundaryVanishes Z → IsCompact Z.support → Z.support ⊆ {x | ∀ i, |inner ℝ (g i) x| ≤ r} ∩ (Submodule.span ℝ (Set.range g))ᗮ.starProjection ⁻¹' K → (∀ flat : Covector (Euclid P) n → Covector (Euclid P) m, (∀ (α : Covector (Euclid P) n) (v : Fin m → Euclid P), flat α v = α (Fin.append g v ∘ Fin.cast h)) → ∀ ω : TestFormOn (univ : Set (Euclid P)) n, Z ω = (∫ t in {t | t ∈ Submodule.span ℝ (Set.range g) ∧ ∀ i, |inner ℝ (g i) t| ≤ r}, currentEval (S₀' - S₀) (fun y => flat ((ω : DifferentialForm (Euclid P) n) (t + y))) ∂μHE[k]) + E' ω) → ENNReal.ofReal ((2 * r) ^ k) * S₀.massOn W₀ ≤ ENNReal.ofReal ((2 * r) ^ k) * S₀'.massOn W₀ + E'.mass",
+  "lean_name": "dimred_cs_sos_mt_competitor_mass",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.interior_product-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1.product_current-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.product_box_measure-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1",
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.measure_comparison-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.interior_product-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1.product_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-da13543666-a1",
+      "result_commit": "4aa9ba8dc9ec5fe22643a88f4a53931e8190119e",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.slice_integrable-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-triangle-a1-a1",
+      "result_commit": "c7dea4b81c94f56650b6060d3bcb1e801f43d7e9",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.product_box_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.frame_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.measure_comparison-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-8a972d0014-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1.null_of_average_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1",
+  "depth": 4,
+  "title": "Vanishing on compact null sets from an ε + C∫a bound (parent steps 5(i) and 6)",
+  "statement": "Let n ∈ ℕ, let (X, ν) be a measure space (ν need not be finite), let q : X → ℝⁿ (Euclid n) be measurable and h : X → ℝ ν-integrable. Assume that for every ε > 0 there is C ∈ ℝ such that, for every C^∞ function a : ℝⁿ → ℝ with compact support and 0 ≤ a ≤ 1, |∫ h(x)·a(q(x)) dν(x)| ≤ ε + C·∫ a dλ, where λ is Lebesgue measure (volume) on ℝⁿ. Then ∫_{q⁻¹(K)} h dν = 0 for every compact K ⊆ ℝⁿ with λ(K) = 0.",
+  "lean_statement": "∀ (n : ℕ) (X : Type) [MeasurableSpace X] (ν : Measure X) (q : X → Euclid n) (h : X → ℝ), Measurable q → Integrable h ν → (∀ ε : ℝ, 0 < ε → ∃ C : ℝ, ∀ a : Euclid n → ℝ, ContDiff ℝ (⊤ : ℕ∞) a → HasCompactSupport a → (∀ y, 0 ≤ a y) → (∀ y, a y ≤ 1) → |∫ x, h x * a (q x) ∂ν| ≤ ε + C * ∫ y, a y) → ∀ K : Set (Euclid n), IsCompact K → volume K = 0 → ∫ x in q ⁻¹' K, h x ∂ν = 0",
+  "lean_name": "cmr_tdn_null_of_average_bound",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1.null_set_cutoffs-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.mass_representation-a1.top_dim_null-a1.null_set_cutoffs-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-mass-representation-a1-top-7f3f68faf9-a1"
+}

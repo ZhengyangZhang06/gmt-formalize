@@ -1,0 +1,72 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IMRep|IsUnitOrientationOf",
+        "norm_curryLeft|curryLeftLI|curryLeft_add|curryLeft_smul",
+        "one_of_mem_closedBall|zero_of_le_dist|eventuallyEq_one_of_mem_ball|hasCompactSupport|theorem contDiff|structure ContDiffBump",
+        "extDeriv_eq|def extDeriv",
+        "norm_integral_le_of_norm_le|integrable_toReal_of_lintegral_ne_top|theorem integral_toReal",
+        "TestFormOnConverges|structure GeometricCurrentOn|def boundary|boundary_apply|def zeroRegion|def support|isOpen_zeroRegion|def TestFormOn|def IsSmoothForm",
+        "dimred_cs_sos_cfs_cc_imrep_vanish_bound",
+        "dimred_cs_sos_cfs_cc_cutoff_cone_operator",
+        "dimred_cs_sos_cfs_cc_cutoff_homotopy",
+        "python3 /tmp/cone-current-independent-audit/run_lean.py /tmp/cone-current-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/DifferentialForm/Basic.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        ".lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-77a7f533dd/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-77a7f533dd/decomposition-v1.json",
+        "/tmp/cone-current-independent-audit/Types.lean",
+        "/tmp/cone-current-independent-audit/Reuse.lean",
+        "/tmp/cone-current-independent-audit/Inline.lean",
+        "/tmp/cone-current-independent-audit/Assembly.lean"
+      ],
+      "conclusion": "Verified the project and Mathlib pins and compatibility of the inspected SimonGMT definitions. All five frozen propositions pass the statement validator and elaborate independently in comparator scope. Checked the smoothness-order coercion, bump instances, curryLeft operator norm, and exterior-derivative alignment. The three new names have no reservations elsewhere; both reused declarations are accepted with byte-identical frozen types and unchanged imports. Their recompiled proofs use only propext, Classical.choice and Quot.sound. The localized-homotopy proof also compiled with only these axioms. Independently compiled a conditional assembly from the five exact child contracts and the existing radial-homotopy contract to the exact selected parent proposition, without sorry or additional axioms. The prerequisite closure is acyclic. The split appropriately separates representation estimates, cutoff construction, localized homotopy, continuity and support; it establishes the selected cone-current theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "imrep_vanish_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact type agree. Carrierwise vanishing proves part (a) without finite mass. For part (b), the almost-everywhere unit-orientation estimate, measurable multiplicity and finite density integral give precisely the stated operator-norm bound, including n = 0. No additional positivity assumption on b is needed. The proof is complete and independent."
+    },
+    {
+      "key": "cutoff_cone_operator",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses, including radial smoothness H and ρ > 0, are explicit and match the type. Continuous integrands justify integral linearity; the bump product is a smooth compactly supported test form. The bound at zero implies b ≥ 0, and the contraction estimate gives exactly (ρ+1)b. The proof supplies the construction without circular reliance."
+    },
+    {
+      "key": "cutoff_homotopy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "H matches the existing radial-homotopy contract at (P,q). The bump with inner radius |ρ|+1 works for every real ρ. Germ equality identifies the exterior derivatives, and rearranging H yields the exact conclusion. The supplied proof is complete; an independent formalization compiled with only standard axioms."
+    },
+    {
+      "key": "order_zero_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the accepted declaration with an identical frozen type. Order-zero uniform convergence on the common compact support, together with vanishing outside it, gives global smallness. Choosing δ/(|c|+1) proves the required sequential continuity for arbitrary c. The prose proof and recompiled declaration establish the exact statement."
+    },
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the accepted declaration with an identical frozen type. Openness of U and compactness of K provide relatively compact zero neighborhoods outside K. The identity F.support = K ∖ F.zeroRegion then proves compactness using the relative support definition. Every hypothesis is accounted for, and the proof is complete and non-circular."
+    }
+  ],
+  "required_changes": []
+}

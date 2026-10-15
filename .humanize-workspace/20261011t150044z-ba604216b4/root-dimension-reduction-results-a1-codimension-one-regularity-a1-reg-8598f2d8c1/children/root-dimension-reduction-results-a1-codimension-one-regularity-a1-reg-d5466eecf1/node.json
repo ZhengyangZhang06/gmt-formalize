@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1.normal_defect-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.tangent_measure_ae-a1",
+  "depth": 6,
+  "title": "Normal-defect estimate: weighting by ⟨v, ν⟩ does not change blow-up limits",
+  "statement": "Let P, n ∈ ℕ, μ a measure on ℝ^P, ν : ℝ^P → ℝ^P Borel with |ν(z)| = 1 for all z, y, v ∈ ℝ^P with |v| = 1, ρ₁ > 0 and C ≥ 0 with μ(B̄_ρ(y)) ≤ C ρ^n for 0 < ρ < ρ₁, and suppose the normal averages A(ρ) := μ(B̄_ρ(y))_ℝ^{-1} ∫_{B̄_ρ(y)} ν dμ converge to v as ρ ↓ 0 (μ(·)_ℝ = ENNReal.toReal, 0^{-1} = 0). Let f : ℝ^P → ℝ be continuous with compact support and L ∈ ℝ. If r^{-n} ∫ f(r^{-1}(z − y)) ⟨v, ν(z)⟩ dμ(z) → L as r ↓ 0, then r^{-n} ∫ f(r^{-1}(z − y)) dμ(z) → L as r ↓ 0.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (ν : Euclid P → Euclid P) (y v : Euclid P) (ρ₁ C L : ℝ) (f : Euclid P → ℝ), Measurable ν → (∀ z, ‖ν z‖ = 1) → ‖v‖ = 1 → 0 < ρ₁ → 0 ≤ C → (∀ ρ : ℝ, 0 < ρ → ρ < ρ₁ → μ (closedBall y ρ) ≤ ENNReal.ofReal (C * ρ ^ n)) → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → Continuous f → HasCompactSupport f → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) * inner ℝ v (ν z) ∂μ) (𝓝[>] 0) (𝓝 L) → Tendsto (fun r : ℝ => (r ^ n)⁻¹ * ∫ z, f (r⁻¹ • (z - y)) ∂μ) (𝓝[>] 0) (𝓝 L)",
+  "lean_name": "codim1_rdo_dg_tma_normal_defect",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-d5466eecf1-a1"
+}

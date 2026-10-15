@@ -1,0 +1,108 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IsUnitOrientationOf|structure IMRep|def IMRep.action|def IMRep.Represents|def IMRep.measure|def IsIntegerMultiplicity",
+        "cylinder|product.?null|hausdorffMeasure.*prod|prod.*hausdorffMeasure",
+        "theorem hausdorffMeasure_le_liminf_tsum|theorem hausdorffMeasure_apply|theorem hausdorffMeasure_prod_real|theorem one_le_hausdorffMeasure_zero_of_nonempty|euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero",
+        "weighted_area_formula_lipschitz_injOn|measurableSet_areaRegularSet|area_image_compl_regularSet_eq_zero|measurable_areaJacobianAt",
+        "euclideanHausdorffMeasure_def|addHaarScalarFactor_volume_hausdorffMeasure_ne_zero|normDet_sq_eq_det_gram|volume_preserving_piFinSuccAbove|exists_partition_approximatesLinearOn_of_hasFDerivWithinAt",
+        "def CountablyRectifiable|def HasApproximateTangentSpaceAt|theorem HasApproximateTangentSpaceAt.unique|namespace HasApproximateTangentSpaceAt|theorem unique",
+        "Continuous.measurableEmbedding|curryLeftLI|curryLeft_apply_apply",
+        "dpf_rectifiable_bilipschitz_pieces",
+        "dpf_approxTangent_ae_bilipschitz_piece",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imcyl-independent-audit/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/imcyl/verified/Combined.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-959b56b2f3/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-959b56b2f3/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa16/20261013T045307Z-ch07-root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a-9hox5g14/input-identity.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa16/20261013T045307Z-ch07-root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.bilipschitz_pieces-a-9hox5g14/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa43/20261013T160813Z-ch07-root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_densit-ej3048p6/input-identity.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa43/20261013T160813Z-ch07-root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_densit-ej3048p6/comparator.log",
+        "/tmp/imcyl-independent-audit/Types.lean",
+        "/tmp/imcyl/verified/Combined.lean"
+      ],
+      "conclusion": "The pinned revisions match, and Submission.lean is byte-identical to the snapshot contract. The project search found no matching cylinder/product-null declaration. Relevant pinned library results support the supplied arguments. All ten raw types independently elaborate without child implementations. The combined proof compiles using only propext, Classical.choice and Quot.sound; its conclusions and dependency premises match the submitted types byte-for-byte. Both reused declarations have identical comparator-accepted frozen types, compatible pins and permitted-axiom evidence. All names are bare identifiers, eight new names are unreserved in the inspected DAG, and dependencies are acyclic. The split is appropriate: its children establish the selected cylinder construction, and the supplied Fubini assembly proves the exact selected parent contract."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "suspension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. Coordinate identities prove both Lipschitz estimates, the derivative, injectivity, range and Gram determinant equality. The proof handles negative m and n = 0. Both Gram matrices use Matrix.of; no matrix-instance ambiguity occurs."
+    },
+    {
+      "key": "product_null",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes the full unbounded-product statement without measurability assumptions: normalization preserves null sets, n = 0 forces emptiness, bounded-strip coverings have vanishing Hausdorff cost, and countable exhaustion covers ℝ."
+    },
+    {
+      "key": "pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The frozen type is identical to the comparator-accepted declaration. Independently, removal of nonregular images, the approximation partition, coercivity and disjointization prove every conjunct, including the zero-dimensional and n > P cases. Reuse introduces no dependency cycle."
+    },
+    {
+      "key": "piece_tangent_in",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the accepted declaration and includes all local-finiteness and piece hypotheses. The supplied density argument gives o(r^n) ambient excess; the area formula, differentiation and rescaling identify the piece blow-up with its derivative range. Null transfer and n = 0 are covered."
+    },
+    {
+      "key": "orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the contracted covector β, so the relational hypothesis is applicable. The lifted frame is orthonormal, spans the stated subspace and preserves the fixed orientation sign. This proves the exact proposition in every degree."
+    },
+    {
+      "key": "piece_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The suspension Gram identity yields the normalized Jacobian equality. Two injective area formulas and the volume-preserving coordinate decomposition establish equality on every Borel set. Finiteness supplies the required product-measure instances; suspension is the only child dependency."
+    },
+    {
+      "key": "cylinder_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Disjoint Borel pieces give a sum of restricted measures. The one-piece identities commute with product and image-measure sums, while product_null removes the target remainder. All hypotheses and declared dependencies suffice for the exact measure equality."
+    },
+    {
+      "key": "cylinder_rectifiable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Lifting the rectifiable parametrizations and the null exceptional set proves the defining covering condition. The argument applies to arbitrary I and M without adding Borel or finiteness assumptions, matching the frozen type."
+    },
+    {
+      "key": "cylinder_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measure identity supplies cylinder finiteness. Applying the accepted tangent lemma to original and suspended pieces, removing the explicitly controlled null sets, and using tangent uniqueness proves the universal conditional statement about Q. Dependencies are sufficient and correctly directed."
+    },
+    {
+      "key": "cylinder_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The construction verifies every IMRep field, including local integrability and measurable orientation. Product-null transfer, cylinder tangents and the orientation lemma justify orients. Multiplicity holds everywhere and the orientation identity holds for almost every x uniformly in t, α and β, exactly as required for the parent assembly."
+    }
+  ],
+  "required_changes": []
+}

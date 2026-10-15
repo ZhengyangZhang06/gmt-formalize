@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1.product_support-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1",
+  "depth": 6,
+  "title": "The support of a product current [[E]] × A lies in E + spt A",
+  "statement": "Let P, k, m', n' ∈ ℕ, E ⊆ ℝ^P compact, A ∈ 𝒟_{m'}(ℝ^P) with spt A compact and an integer multiplicity representation R_A of A (R_A.Represents A), and B ∈ 𝒟_{n'}(ℝ^P) with an integer multiplicity representation R_B (R_B.Represents B). Suppose R_B.measure(C) = ∫⁻_{t ∈ E} R_A.measure((y ↦ t + y)⁻¹(C)) dμHE[k](t) for every Borel set C. Then spt B ⊆ E + spt A = {t + y : t ∈ E, y ∈ spt A} (Set.image2 (fun t y => t + y) E A.support).",
+  "lean_statement": "∀ (P k m' n' : ℕ) (E : Set (Euclid P)) (A : GeometricCurrentOn (univ : Set (Euclid P)) m') (RA : IMRep (univ : Set (Euclid P)) m') (B : GeometricCurrentOn (univ : Set (Euclid P)) n') (RB : IMRep (univ : Set (Euclid P)) n'), IsCompact E → IsCompact A.support → RA.Represents A → RB.Represents B → (∀ C : Set (Euclid P), MeasurableSet C → RB.measure C = ∫⁻ t in E, RA.measure ((fun y => t + y) ⁻¹' C) ∂μHE[k]) → B.support ⊆ Set.image2 (fun t y => t + y) E A.support",
+  "lean_name": "dimred_cs_sos_mt_cc_product_support",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1.support_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_cycle-a1.support_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-1649cb1ddf-a1"
+}

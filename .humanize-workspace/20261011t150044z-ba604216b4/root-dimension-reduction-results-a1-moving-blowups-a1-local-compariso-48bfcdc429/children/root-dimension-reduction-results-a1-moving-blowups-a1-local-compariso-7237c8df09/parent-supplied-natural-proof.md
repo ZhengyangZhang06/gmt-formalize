@@ -1,0 +1,55 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.retraction_comparison-a1.measure_subadditive-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 8(b) of the parent proof (μ_{QY}(S_G) ≤ μ_{R₃}(S_G) + μ_{R_Y}(S_G), obtained from the open-set inequality via (MR), (MT) and (COB)), stated for arbitrary integer multiplicity currents and extended from compact sets to closed sets by exhaustion; the parent applies it to the closed set ℝ^P ∖ B_G, which contains the sphere S_G. Siblings: (MR) mass_and_support; (MT) mass_triangle; (COB) compact_outer_bound.
+Write μ := μ_R, μ_i := μ_{R_i} (i = 1, 2) and ν := μ₁ + μ₂.
+1. (Open sets.) Let G ⊆ ℝ^P be open. By (MR)(i) (V is open), μ(G) = M_G(X), μ₁(G) = M_G(X₁) and μ₂(G) = M_G(X₂). By (MT) with c := 1 (|c| ≤ 1, and X(ω) = X₁(ω) + 1·X₂(ω) for every ω ∈ 𝒟ⁿ(V), in particular for those with tsupport ω ⊆ G), M_G(X) ≤ M_G(X₁) + M_G(X₂). Hence μ(G) ≤ μ₁(G) + μ₂(G) = ν(G).
+2. (ν is finite on compact subsets of V.) Let K ⊆ V be compact. K is closed, hence Borel, so for an IMRep R′ = (M′, θ′, ξ′) in V, μ_{R′}(K) = ∫_K θ′ d(Hⁿ⌞M′) = ∫_{M′∩K} θ′ dHⁿ (withDensity_apply, Measure.restrict_restrict), which is finite by the local integrability field of R′ (K compact, K ⊆ V). So ν(K) = μ₁(K) + μ₂(K) < ∞.
+3. (Compact sets.) Let K ⊆ V be compact. By step 1, μ(G) ≤ ν(G) + 0 for every open G ⊇ K, in particular for every such G with G ⊂⊂ V. By (COB) with U := V, E := K, the measures μ and ν (finite on compact subsets of V by step 2) and c := 0: μ(K) ≤ ν(K).
+4. (Closed sets.) Let F ⊆ V be closed, and put F_j := F ∩ closedBall(0, j) for j ∈ ℕ. Each F_j is closed and bounded, hence compact, and F_j ⊆ F ⊆ V; the F_j increase with j, and ⋃_j F_j = F (every x lies in closedBall(0, j) for any integer j ≥ |x|). By continuity of measures from below along an increasing sequence of sets (Mathlib Monotone.measure_iUnion), step 3 and monotonicity of ν: μ(F) = sup_j μ(F_j) ≤ sup_j ν(F_j) ≤ ν(F) = μ₁(F) + μ₂(F). ∎
+
+## Key steps
+
+1. For open G: μ_R(G) = M_G(X) ≤ M_G(X₁) + M_G(X₂) = μ_{R₁}(G) + μ_{R₂}(G), by (MR)(i) and (MT) with c = 1.
+2. μ_{R₁} + μ_{R₂} is finite on compact subsets of V (local integrability of the multiplicities).
+3. (COB) with c = 0 passes the inequality to compact K ⊆ V.
+4. A closed F ⊆ V is the increasing union of the compact sets F ∩ closedBall(0, j); continuity from below gives μ_R(F) ≤ μ_{R₁}(F) + μ_{R₂}(F).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean`
+- `python3 over RUN/dag.json: lean_statement/status/candidate_commit of the seven resolved dependencies of the selected node; accepted nodes (status accepted + candidate_commit) whose lean_statement matches '\.support ⊆', 'restrictDomain', 'IsMinimizingIn T A', 'IsIntegerMultiplicity', 'R\.measure K (<|≠) ∞'; lean_name collisions for dimred_mbl_lc_rc_restrict_to_univ / _push_add / _cycle_competitor / _measure_le_add_of_closed / _massOn_restrict_univ (none); byte comparison of the six reused lean_statements with their accepted DAG nodes (identical)`
+- `grep -n 'def GeometricCurrentOn.massOn|def massAdmissibleOn|def GeometricCurrentOn.support|def GeometricCurrentOn.zeroRegion|def GeometricCurrentOn.restrictDomain|def testFormOnInclusion|def exteriorDerivativeTestOn|def covectorEuclideanNorm|abbrev Covector|def IsTestForm' in .lake/packages/simongmt/Poincare/SimonGMT/Chapter06`
+- `grep -rn 'support_restrict_subset|measure_compl_support|Monotone.measure_iUnion|integrableOn_of_bounded|integrableOn_iff_integrable_of_support_subset|isBoundedBilinearMap_apply|bounded_above_of_compact_support|integral_add_compl|measure_inter_add_sdiff|compl_eq_univ_sdiff|ENNReal.add_le_add_iff_right' in .lake/packages/mathlib/Mathlib`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint|def _solve_children|def ensure' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py store.py; sed -n 540,640p verifier/gmt-compare.py (contract_scope, child_modules)`
+- `sed -n 150,275p book/chapter-07.txt is cited through the parent proof (Simon 7.2.4 (8)–(9), Remark 7.2.5(2)); lake env lean /tmp/rc_dec/Final.lean (11 child types, 5 child proofs from declared deps, assembly_check, end_to_end_check, #print axioms)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-48bfcdc429/parent-supplied-plan.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-comparison-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Continuity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Integral/IntegrableOn.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/mathlib/Mathlib/MeasureTheory/Measure/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+- `/tmp/rc_dec/Final.lean`
+
+Pins match the manifest: project b4d606db1, Mathlib 25730c7c, and SimonGMT 2b366308 per lakefile.toml. Submission.lean is byte-identical to the frozen contract. Six comparator-accepted declarations supply the proof's foundational facts and are reused with byte-identical types (checked against dag.json; all are accepted with candidate commits): dor_imrep_massOn_eq_measure_and_support (MR), cmc_imRep_locality_restrict_sub (IMC), dtc_restrictDomain_isIntegerMultiplicity (RO), lcmp_imRep_measure_restrict (IR), lcmp_massOn_le_add_of_eval_eq (MT) and lcmp_measure_le_add_of_open_nhds (COB). Some related accepted lemmas were found and deliberately not used. cmc_fc_extend_to_univ and dtc_extend_by_zero extend a current to ℝ^P, but they give neither the weight μ_T⌞E nor T = Q + T₁. rsd_cmr_support_subset_of_vanish, cbrld_ns_support_sub_subset, cbr_imRep_measure_basic, rsd_imrep_compact_measure_ne_top and cbr_cc_current_algebra are covered inside the new children's short proofs. No pinned library file or accepted node contains the five new statements, and their names are unused. Mathlib supplies Measure.support_restrict_subset, Measure.measure_compl_support, Monotone.measure_iUnion, Measure.integrableOn_of_bounded and integral_add_compl. The Lean checks in Final.lean all passed: the 11 child types elaborate in comparator scope; each new child is proved from exactly its declared dependencies; assembly_check gives the exact parent type from the new children together with MR and MT; end_to_end_check gives it from the six reused types alone. The only axioms are propext, Classical.choice and Quot.sound.
