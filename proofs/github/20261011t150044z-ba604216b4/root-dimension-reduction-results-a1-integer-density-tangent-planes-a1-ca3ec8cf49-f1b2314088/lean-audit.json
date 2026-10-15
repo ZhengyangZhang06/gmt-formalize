@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "b36054a85c321416a44f89e55cf839893a59826790d3d63711a9689919e96b46",
+  "git_delta": {
+    "base_commit": "5e45a28c0373c6ebdbcd64e7e2dbc1db7d17b8b9",
+    "candidate_commit": "6dfb0c53bd296d0801e7e14aadbd70c33b15d3f5",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "3a5917547bd4946184d49e4f2de83182764fff5f8fa8a4d09d5a5d0dae09c541",
+    "source_sha256": "e3f0a638ac1bdda2ea16ef10b991a755b189b7947061a9009265fedcd7f48d37",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_tangent_plane_of_flat",
+      "statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ x ∈ T.support, (∀ β : ℝ, 0 < β → ∀ R : ℝ, 0 < R → ∃ ρ : ℝ, 0 < ρ ∧ ρ < R ∧ ∃ Q : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ Q = n ∧ ∀ y ∈ T.support, dist y x < ρ → ‖(y - x) - Q.starProjection (y - x)‖ < β * ρ) → HasTangentPlaneAt T x",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}
