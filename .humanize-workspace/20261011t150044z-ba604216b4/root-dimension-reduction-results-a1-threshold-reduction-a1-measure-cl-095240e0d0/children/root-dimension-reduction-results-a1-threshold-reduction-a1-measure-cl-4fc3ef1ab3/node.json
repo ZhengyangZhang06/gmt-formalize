@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.homogeneous_infinite_mass-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1",
+  "depth": 4,
+  "title": "A measure Hⁿ⌞g whose own density g is 0-homogeneous and positive somewhere has infinite mass (parent (A.3)(1) and step 8)",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, let μ be a measure on ℝ^P, g : ℝ^P → ℝ and x₀ ∈ ℝ^P. Assume: g(x) = (limsup_{ρ→0⁺} μ(B_ρ(x))/(ω_n·ofReal(ρⁿ))).toReal for every x (limsup in [0, ∞] along 𝓝[>]0, open balls, ω_n = unitBallVolume n); μ = Hⁿ.withDensity(x ↦ ofReal(g(x))) with Hⁿ = μHE[n]; g(t·x) = g(x) for every t > 0 and every x; and g(x₀) > 0. Then μ(ℝ^P) = ∞.",
+  "lean_statement": "∀ (P n : ℕ) (μ : Measure (Euclid P)) (g : Euclid P → ℝ) (x₀ : Euclid P), 1 ≤ n → (∀ x, g x = (limsup (fun ρ : ℝ => μ (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal) → μ = (μHE[n] : Measure (Euclid P)).withDensity (fun x => ENNReal.ofReal (g x)) → (∀ t : ℝ, 0 < t → ∀ x, g (t • x) = g x) → 0 < g x₀ → μ univ = ∞",
+  "lean_name": "dimred_tr_mcr_homogeneous_infinite_mass",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.nonhomogeneous-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.nonhomogeneous-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-66521e895c-a1",
+      "result_commit": "2b4b0bbc7a7ae612682807617c1ee28adb259e11",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-4fc3ef1ab3-a1"
+}

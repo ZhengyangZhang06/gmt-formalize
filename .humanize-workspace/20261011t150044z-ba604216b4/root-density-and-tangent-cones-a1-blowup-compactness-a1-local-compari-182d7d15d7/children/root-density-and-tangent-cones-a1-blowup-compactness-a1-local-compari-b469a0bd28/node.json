@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.piece_pushforward-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1",
+  "depth": 6,
+  "title": "Push-forward of one oriented bi-Lipschitz piece of an integer multiplicity triple (Simon 3.6–3.7)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P, R = (M, θ, ξ) an IMRep in U, G : ℝⁿ → ℝ^P L-Lipschitz, A ⊆ ℝⁿ Borel, κ > 0 with κ|a − a'| ≤ |G(a) − G(a')| on A, G differentiable with injective derivative on A, G(A) ⊆ M, ∫⁻_{G(A)} θ dHⁿ < ∞, and assume that for a.e. a ∈ A there is σ ∈ {1, −1} with J_G(a)·ξ(G(a))(β) = σ·β(DG(a)e) for all n-covectors β. Let φ : ℝ^P → ℝ^P be differentiable and Λ-Lipschitz, and assume either (regular) φ∘G satisfies κ'|a − a'| ≤ |φ(G a) − φ(G a')| on A for some κ' > 0 and D(φ∘G)(a) is injective for a ∈ A, or (critical) D(φ∘G)(a) is not injective for any a ∈ A. Then there are a Borel set N ⊆ φ(G(A)) that is countably n-rectifiable, a measurable g : ℝ^P → ℤ with g ≠ 0 on N, and a strongly measurable η : ℝ^P → Λ_n(ℝ^P) such that for Hⁿ-a.e. y ∈ N, η(y) is a unit orientation of an approximate tangent space of N at y; ∫⁻_N |g| dHⁿ ≤ Λⁿ·∫⁻_{G(A)} θ dHⁿ; and for every strongly measurable β : ℝ^P → Λⁿ(ℝ^P), ∫_{G(A)} θ(x)·ξ(x)(β(φ(x))∘Dφ(x)) dHⁿ(x) = ∫_N g(y)·η(y)(β(y)) dHⁿ(y), where (β∘L)(v) := β(Lv_1, …, Lv_n) (compContinuousLinearMap).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (G : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (κ : ℝ) (φ : Euclid P → Euclid P) (Λ : NNReal), LipschitzWith L G → MeasurableSet A → 0 < κ → (∀ a ∈ A, ∀ a' ∈ A, κ * ‖a - a'‖ ≤ ‖G a - G a'‖) → (∀ a ∈ A, DifferentiableAt ℝ G a ∧ Injective (fderiv ℝ G a)) → G '' A ⊆ R.carrier → ∫⁻ x in G '' A, (R.mult x : ℝ≥0∞) ∂μHE[n] ≠ ∞ → (∀ᵐ a ∂(volume.restrict A), ∃ σ : ℝ, (σ = 1 ∨ σ = -1) ∧ ∀ β : Covector (Euclid P) n, Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (fderiv ℝ G a (EuclideanSpace.single k 1)) (fderiv ℝ G a (EuclideanSpace.single l 1)))) * R.orient (G a) β = σ * β (fun k => fderiv ℝ G a (EuclideanSpace.single k 1))) → Differentiable ℝ φ → LipschitzWith Λ φ → (((∃ κ' : ℝ, 0 < κ' ∧ ∀ a ∈ A, ∀ a' ∈ A, κ' * ‖a - a'‖ ≤ ‖φ (G a) - φ (G a')‖) ∧ ∀ a ∈ A, Injective (fderiv ℝ (φ ∘ G) a)) ∨ ∀ a ∈ A, ¬ Injective (fderiv ℝ (φ ∘ G) a)) → ∃ (N : Set (Euclid P)) (g : Euclid P → ℤ) (η : Euclid P → MultiVector P n), MeasurableSet N ∧ N ⊆ φ '' (G '' A) ∧ CountablyRectifiable n N ∧ Measurable g ∧ (∀ y ∈ N, g y ≠ 0) ∧ StronglyMeasurable η ∧ (∀ᵐ y ∂(μHE[n].restrict N), ∃ T : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n N y T ∧ IsUnitOrientationOf (η y) T) ∧ ∫⁻ y in N, ((g y).natAbs : ℝ≥0∞) ∂μHE[n] ≤ (Λ : ℝ≥0∞) ^ n * ∫⁻ x in G '' A, (R.mult x : ℝ≥0∞) ∂μHE[n] ∧ ∀ β : Euclid P → Covector (Euclid P) n, StronglyMeasurable β → ∫ x in G '' A, (R.mult x : ℝ) * R.orient x ((β (φ x)).compContinuousLinearMap (fderiv ℝ φ x)) ∂μHE[n] = ∫ y in N, (g y : ℝ) * η y (β y) ∂μHE[n]",
+  "lean_name": "dtc_bc_lc_pfi_piece_pushforward_image",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.change_of_variables-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.orient_algebra-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9-a1",
+      "result_commit": "a21680472b6919972de04d02dc3e1395a15d4171",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f-a1",
+      "result_commit": "d5ba41d68f1ca2e5ef9b0ebdd62cf01e6e24a919",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.orient_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-b469a0bd28-a1"
+}

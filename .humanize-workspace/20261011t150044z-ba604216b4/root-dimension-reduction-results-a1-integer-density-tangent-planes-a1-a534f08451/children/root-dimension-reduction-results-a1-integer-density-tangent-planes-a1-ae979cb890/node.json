@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.tangent_measures-a1.zero_cycle-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.tangent_measures-a1",
+  "depth": 6,
+  "title": "The zero current of ℝ^P is a minimizing cycle with an integer multiplicity representation of zero weight (parent step 2)",
+  "statement": "For all P, n ∈ ℕ there exist a current C ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n on Euclid P) and an integer multiplicity representation R_C of C in ℝ^P (an IMRep univ n with R_C.Represents C) such that C is minimizing in ℝ^P (IsMinimizingIn C univ), ∂C = 0 in ℝ^P (BoundaryVanishes C), and the weight of R_C is the zero measure (R_C.measure = 0). One may take C = 0 and R_C = (∅, 1, 0).",
+  "lean_statement": "∀ (P n : ℕ), ∃ (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (RC : IMRep (univ : Set (Euclid P)) n), IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ RC.Represents C ∧ RC.measure = 0",
+  "lean_name": "idtp_fons_cc_tm_zero_cycle",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ae979cb890-a1"
+}

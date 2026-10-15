@@ -1,0 +1,115 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_calculus-a1.pullback_composition-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: selected parent proof, step 1(b) and step 4. Step 1(b) is the contravariance of affine pull-backs: affinePullbackForm L₁ b₁ (affinePullbackForm L₂ b₂ ω) = affinePullbackForm (L₂∘L₁) (b₂ + L₂b₁) ω, by evaluating both sides at p. Step 4 is the law η_{y,μ}∘η_{x,λ} = η_{x+λy,λμ}: μ⁻¹(λ⁻¹(p − x) − y) = (λμ)⁻¹(p − x − λy), with linear parts μ⁻¹λ⁻¹·id = (λμ)⁻¹·id. Here both are specialized to the three dilation pull-backs.
+Conventions. ℝ^P = Euclid P. For a continuous linear map L : ℝ^P → ℝ^P, b ∈ ℝ^P and an n-form β, affinePullbackForm L b β is the n-form p ↦ β(b + L p) ∘ L (compContinuousLinearMap). Thus (affinePullbackForm L b β)(p)(v₁, …, vₙ) = β(b + L p)(L v₁, …, L vₙ). Also dilationCLM P a = a⁻¹·id, so dilationCLM P a v = a⁻¹v. Put L₁ := dilationCLM P λ, b₁ := −λ⁻¹x, L₂ := dilationCLM P μ, b₂ := −μ⁻¹y, L₃ := dilationCLM P (λμ) and b₃ := −(λμ)⁻¹(x + λy). Recall (λμ)⁻¹ = λ⁻¹μ⁻¹ for all real λ, μ (with 0⁻¹ = 0; mul_inv in a commutative division monoid).
+1. (Left side; parent step 1(b).) Let p, v₁, …, vₙ ∈ ℝ^P. Applying the definition twice, LHS(p)(v₁, …, vₙ) = (affinePullbackForm L₂ b₂ ω)(b₁ + L₁p)(L₁v₁, …, L₁vₙ) = ω(b₂ + L₂(b₁ + L₁p))(L₂L₁v₁, …, L₂L₁vₙ).
+2. (Right side.) By the definition, RHS(p)(v₁, …, vₙ) = ω(b₃ + L₃p)(L₃v₁, …, L₃vₙ).
+3. (Linear parts agree; parent step 4.) For every v ∈ ℝ^P, L₂(L₁v) = μ⁻¹(λ⁻¹v) = (μ⁻¹λ⁻¹)v = (λ⁻¹μ⁻¹)v = (λμ)⁻¹v = L₃v.
+4. (Base points agree; parent step 4.) For every p ∈ ℝ^P, b₂ + L₂(b₁ + L₁p) = −μ⁻¹y + μ⁻¹(−λ⁻¹x + λ⁻¹p) = −μ⁻¹y − (μ⁻¹λ⁻¹)x + (μ⁻¹λ⁻¹)p. Also b₃ + L₃p = −(λμ)⁻¹x − ((λμ)⁻¹λ)y + (λμ)⁻¹p = −(λ⁻¹μ⁻¹)x − μ⁻¹y + (λ⁻¹μ⁻¹)p, because (λμ)⁻¹λ = λ⁻¹μ⁻¹λ = (λ⁻¹λ)μ⁻¹ = μ⁻¹ as λ ≠ 0. By commutativity of real multiplication and of vector addition, the two expressions are equal.
+5. By steps 1–4, LHS(p)(v₁, …, vₙ) = RHS(p)(v₁, …, vₙ) for all p and all v₁, …, vₙ. By extensionality of continuous alternating maps (equal values on all argument tuples) and of functions (equal values at all p), LHS = RHS as n-forms. The hypothesis λ ≠ 0 is used only in step 4; μ is arbitrary. ∎
+Formalization notes (this exact statement was compiled in a scratch build; axioms propext, Classical.choice, Quot.sound):
+- Base-point identity: prove `∀ p, -(mu⁻¹ • y) + dilationCLM P mu (-(lam⁻¹ • x) + dilationCLM P lam p) = -((lam * mu)⁻¹ • (x + lam • y)) + dilationCLM P (lam * mu) p` by `simp only [dilationCLM, ContinuousLinearMap.coe_smul', Pi.smul_apply, ContinuousLinearMap.id_apply, smul_add, smul_neg, smul_smul, mul_inv]`, then `lam⁻¹ * mu⁻¹ * lam = mu⁻¹` (field_simp), `mul_comm mu⁻¹ lam⁻¹` and abel.
+- Linear-part identity: the same simp set together with smul_smul, mul_inv and mul_comm.
+- Main proof: `funext p; ext v; simp only [affinePullbackForm, ContinuousAlternatingMap.compContinuousLinearMap_apply]`, rewrite the base point, then `congr 1; funext i` and apply the linear-part identity to `v i`.
+
+## Key steps
+
+1. Unfold both sides by contravariance of affine pull-back: LHS(p)(v) = ω(b₂ + L₂(b₁ + L₁p))(L₂L₁v₁, …, L₂L₁vₙ) and RHS(p)(v) = ω(b₃ + L₃p)(L₃v₁, …, L₃vₙ).
+2. The linear parts agree: μ⁻¹λ⁻¹·id = (λμ)⁻¹·id.
+3. The base points agree: −μ⁻¹y + μ⁻¹(−λ⁻¹x + λ⁻¹p) = −(λμ)⁻¹(x + λy) + (λμ)⁻¹p, using (λμ)⁻¹λ = μ⁻¹ for λ ≠ 0. Conclude by extensionality.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD`
+- `cmp <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; cmp <snapshot>/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean`
+- `rg -n 'def currentEval|def blowUp|def dilation |def dilationCLM' <snapshot>/project/GMT/Ch07/Contract.lean`
+- `rg -n 'theorem map_smul_univ' and rg -n 'compContinuousLinearMap_apply' <snapshot>/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `rg -n 'theorem mul_inv ' <snapshot>/mathlib/Mathlib/Algebra/Group/Basic.lean; rg -n 'theorem image_preimage_eq ' <snapshot>/mathlib/Mathlib/Data/Set/Image.lean; rg -n 'theorem coe_smul ' <snapshot>/mathlib/Mathlib/Algebra/Module/Submodule/Defs.lean; rg -n 'lemma mul_inv_cancel₀' <snapshot>/mathlib/Mathlib`
+- `rg -c 'dimred_tr_bc_|dtc_blowUp_massOn_image|dtc_blowUp_testForm_corr' <snapshot>/project <snapshot>/mathlib (exit 1, no match)`
+- `grep -n and sed -n on .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{AffineCurrentPushforward,Mass,CurrentLocalEquality,Currents,Forms}.lean: affinePullbackForm, affinePullbackForm_isTestForm, tsupport_affinePullbackForm_subset, affinePushforward_apply, massOn, massAdmissibleOn, testFormOnInclusion_coe, restrictDomain_apply, TestFormOn, IsTestForm`
+- `python3 over dag.json: every node whose lean_statement mentions blowUp, affinePullbackForm or currentEval; owners and status of the lean_names dtc_blowUp_testForm_corr, dtc_blowUp_massOn_image, dimred_tr_bc_currentEval_blowUp, dimred_tr_bc_dilation_pullback_comp; depends_on of all ancestors of the selected node`
+- `git show 5e184fbc2dc0f26dbd9ce6b79feabd198b8ba518:GMT/Ch07/Submission.lean and git show 17c63f22cc8bff3693345ac9074b98fadbf16246:GMT/Ch07/Submission.lean, grep -n for theorem declarations and sorry; reading isolated-comparator-result.json, lean-audit-v1.json, accepted-candidate.json, parent-child-handoff.json and parent-supplied-natural-proof.md of both reused nodes`
+- `gh api repos/humanfia/math-lean-flow/contents/_recursive_lean/{runtime,store,decomposition_scope,inherited}.py?ref=feature/humanize-api-update-claude; grep -n for _existing_lean_name_problem, _accepted_checkpoint, _overlay_accepted_children, _install_parent_supplied_child_handoff, def ensure, cited_inherited`
+- `python3 /tmp/bc-decomp-out/validate.py (verifier/lean_contract.validate_lean_statement on the four child types; key, name, dependency and acyclicity checks; replica of _existing_lean_name_problem on the 2375-node dag.json; verbatim presence of each frozen type in EndState.lean)`
+- `lake env lean /tmp/bc-decomp-lean/Types.lean; lake env lean /tmp/bc-decomp-lean/Assembly.lean; lake env lean /tmp/bc-decomp-lean/EndState.lean (with #print axioms)`
+- `grep -rl -e dimred_tr_bc_currentEval_blowUp -e dimred_tr_bc_dilation_pullback_comp .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes GMT .lake/packages/simongmt/Poincare (no match)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Group/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Image.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Module/Submodule/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/GroupWithZero/Defs.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-calculus-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-v6.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-testform-correspondence-a1/lean-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/accepted-candidate.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-scaling-a1-mass-scaling-a1/lean-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/tmp/bc-decomp-ref/runtime.py`
+- `/tmp/bc-decomp-ref/store.py`
+- `/tmp/bc-decomp-ref/decomposition_scope.py`
+- `/tmp/bc-decomp-ref/inherited.py`
+- `/tmp/bc-decomp-lean/Types.lean`
+- `/tmp/bc-decomp-lean/Assembly.lean`
+- `/tmp/bc-decomp-lean/EndState.lean`
+- `/tmp/bc-decomp-lean/EndState.log`
+- `/tmp/bc-decomp-out/validate.py`
+- `/tmp/bc-decomp-out/subproblems.json`
+
+Pins match. The snapshot manifest records project b4d606d and mathlib 25730c7c, equal to the workspace HEAD and .lake/packages/mathlib; simongmt is 2b36630. The snapshot Contract.lean and Submission.lean are byte-identical to the workspace files. Contract.lean defines currentEval (line 153), dilationCLM (175), dilation (179) and blowUp (184) as the children use them: blowUp is an affinePushforward of a restrictDomain.
+
+SimonGMT supplies the rest:
+- affinePullbackForm L b ω = fun p => (ω (b + L p)).compContinuousLinearMap L (AffineCurrentPushforward.lean);
+- affinePushforward_apply, restrictDomain_apply and testFormOnInclusion_coe;
+- massOn/massAdmissibleOn (Mass.lean);
+- TestFormOn as a submodule (Currents.lean);
+- IsTestForm = smooth ∧ compact support (Forms.lean).
+It has no dilation or blow-up lemmas.
+
+The snapshot mathlib has every library fact the new children use:
+- ContinuousAlternatingMap.map_smul_univ (Alternating/Basic.lean:518) and compContinuousLinearMap_apply (:319);
+- mul_inv for DivisionCommMonoid (Algebra/Group/Basic.lean:523);
+- Set.image_preimage_eq (Data/Set/Image.lean:429);
+- Submodule.coe_smul (Submodule/Defs.lean:277);
+- mul_inv_cancel₀ (GroupWithZero/Defs.lean:227).
+
+Neither the snapshot nor GMT nor SimonGMT contains any of the four child names. The two reused declarations live only on their accepted candidate commits:
+- 5e184fbc declares Submission.dtc_blowUp_testForm_corr;
+- 17c63f22 declares Submission.dtc_blowUp_testForm_corr and Submission.dtc_blowUp_massOn_image.
+Each declares exactly the frozen type, its only sorry is main_theorem, the isolated comparators passed, and the machine Lean audits record comparator_passed true.
+
+The DAG has no accepted declaration for part (ii) or for the composition law, so those two children are new. The runtime source confirms that an accepted declaration with an identical frozen type may be reused under a different parent. Such a child needs no handoff or worker, and its candidate history is overlaid. Neither reused node is an ancestor dependency, so they reach this worktree only as registered children.
+
+Scratch Lean results:
+- All five types elaborate in the replayed contract scope.
+- The parent assembles from the exact child types.
+- The two new children have compiling proofs.
+- An end-state emulation with the accepted proofs compiles with axioms propext, Classical.choice and Quot.sound only.

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.volume_density_lower-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1",
+  "depth": 5,
+  "title": "Two-sided volume density bounds at a reduced-boundary point (De Giorgi; Simon 4.3 (10)–(11))",
+  "statement": "Let m ≥ 1. Suppose D ⊆ ℝ^{m+1} is open, F ⊆ ℝ^{m+1} is Borel, μ is a Borel measure on ℝ^{m+1} with μ(ℝ^{m+1} \\ D) = 0 and μ(K) < ∞ for every compact K ⊆ D, ν : ℝ^{m+1} → ℝ^{m+1} is Borel with |ν(z)| = 1 for every z, and the Gauss–Green identity (GG) ∫_F div φ dL^{m+1} = −∫⟨φ, ν⟩ dμ holds for every C¹ compactly supported φ : ℝ^{m+1} → ℝ^{m+1} with tsupport φ ⊆ D (div φ = trace Dφ, L^{m+1} = volume). Let y ∈ D and v ∈ ℝ^{m+1} with |v| = 1 be such that the normal averages A(ρ) := μ(B̄_ρ(y))_ℝ^{-1} ∫_{B̄_ρ(y)} ν dμ converge to v as ρ ↓ 0 (μ(·)_ℝ = ENNReal.toReal, 0^{-1} = 0). Then there are c > 0 and ρ₂ > 0 such that L^{m+1}(F ∩ B_ρ(y)) ≥ c ρ^{m+1} and L^{m+1}(B_ρ(y) \\ F) ≥ c ρ^{m+1} for all 0 < ρ < ρ₂.",
+  "lean_statement": "∀ (m : ℕ) (D F : Set (Euclid (m + 1))) (μ : Measure (Euclid (m + 1))) (ν : Euclid (m + 1) → Euclid (m + 1)) (y v : Euclid (m + 1)), 1 ≤ m → IsOpen D → MeasurableSet F → μ Dᶜ = 0 → (∀ K : Set (Euclid (m + 1)), IsCompact K → K ⊆ D → μ K ≠ ∞) → Measurable ν → (∀ z, ‖ν z‖ = 1) → (∀ φ : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ 1 φ → HasCompactSupport φ → tsupport φ ⊆ D → ∫ z in F, LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ φ z : Euclid (m + 1) →ₗ[ℝ] Euclid (m + 1)) = -∫ z, inner ℝ (φ z) (ν z) ∂μ) → y ∈ D → ‖v‖ = 1 → Tendsto (fun ρ : ℝ => (μ (closedBall y ρ)).toReal⁻¹ • ∫ z in closedBall y ρ, ν z ∂μ) (𝓝[>] 0) (𝓝 v) → ∃ c ρ₂ : ℝ, 0 < c ∧ 0 < ρ₂ ∧ ∀ ρ : ℝ, 0 < ρ → ρ < ρ₂ → ENNReal.ofReal (c * ρ ^ (m + 1)) ≤ volume (F ∩ ball y ρ) ∧ ENNReal.ofReal (c * ρ ^ (m + 1)) ≤ volume (ball y ρ \\ F)",
+  "lean_name": "codim1_rdo_dg_volume_density_lower",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.cutoff_estimates-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.de_giorgi-a1.sobolev_perimeter-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-0c71c3da25-a1"
+}

@@ -1,0 +1,146 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1.class_tangent-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 7 of the selected node's supplied proof (parent 2(e), 3(vii); Simon 7.3.3, proof of (1): the hypotheses of A.4 for 𝒯, chapter-07.txt lines 443–486, with the tangent cones of 7.3.1(2) and 7.3.2), together with the preliminaries (0a)–(0l) it uses, in the parametrization (a, t) = (z + rx, rλ) of positive-scale members and (c_i, t_i, b) = (z + rx_i, rλ_i, z + rx̄) of zero-scale data. Siblings used: zero_limit_minimizing (Submission.dimred_tr_bc_zero_limit_minimizing, with (MB)), vanishing_blowup (Submission.dimred_tr_bc_vanishing_blowup, with (BC)) and ambient_calculus (Submission.idtp_fons_cc_ambient_calculus) parts (1), (2), (3), (7). The hypotheses (IM), (MON), (TAN), (BUI), (IBL) are used exactly where the supplied proof cites them.
+Notation: E := ℝ^{n+k}; Hⁿ := μHE[n]; for a measure m, a ∈ E and s > 0, m^{a,s} := ofReal(s⁻¹ⁿ) • m.map(dilation a s); μ_T := RT.measure; W := B_{2r}(z); K := B̄_{2r}(z).
+Preliminaries.
+P1. (Mass equals weight.) By (IM)(a) for T (U open, RT represents T), M_O(T) = μ_T(O) for every open O ⊆ U. By locallyIntegrable_mult of RT, μ_T(K) = ∫⁻_{RT.carrier ∩ K} RT.mult dHⁿ < ∞ (withDensity_apply, Measure.restrict_restrict; K compact, K ⊆ U), hence μ_T(W) < ∞.
+P2. (Integrals against rescaled measures.) For a measure m on E, a ∈ E, s > 0 and continuous f: ∫ f dm^{a,s} = s⁻ⁿ·∫ f∘(dilation a s) dm. Indeed (ofReal(s⁻¹ⁿ)).toReal = s⁻ⁿ (integral_smul_measure), and dilation a s is continuous, so integral_map applies (f is continuous, hence AEStronglyMeasurable).
+P3. (Support of f∘η.) If tsupport f ⊆ B_{R_f}(0) and η := dilation a s with s > 0, then f(η(v)) ≠ 0 implies v ∈ η⁻¹(B_{R_f}(0)) = B_{sR_f}(a) (ambient_calculus (3) with w = 0). Every continuous f with compact support admits such an R_f > 0 (compact sets are bounded).
+P4. (The zero member.) Let R_∅ be the IMRep in E with carrier ∅, multiplicity 0 and orientation 0. Its fields hold: ∅ is Borel and ∅ ⊆ E; ∅ is countably n-rectifiable (countablyRectifiable_of_measure_zero, Hⁿ(∅) = 0); mult_pos is vacuous; lower integrals over ∅ are 0 ≠ ∞; Hⁿ⌞∅ = 0, so the two a.e. fields hold trivially. R_∅.action ω = ∫_∅ … = 0 = (0 : GeometricCurrentOn univ n) ω, so R_∅ represents 0, and R_∅.measure = (Hⁿ⌞∅).withDensity 0 = 0. The zero measure is n-homogeneous: 0((v ↦ λv)(s)) = 0 = ofReal(λⁿ)·0.
+P5. (E as ambient manifold.) ambient_calculus (1) gives IsEmbeddedSubmanifold 2 (n + k) univ; also (closure univ ∖ univ) ∩ univ = ∅, univ ∩ univ = univ, IsOpen univ, k ≤ k and spt S ⊆ univ. Hence (TAN) (with ℓ := k and U = N = univ) applies to every S ∈ 𝒟_n(E) that is minimizing in E with ∂S = 0, at every point of spt S.
+P6. (Zero-scale data.) If (c_i, t_i, b) are zero-scale data for S (dist(c_i, z) < r − t_i, t_i → 0, c_i → b, blowUp T c_i t_i ⇀ S), then dist(b, z) ≤ r (dist(c_i, z) ≤ r for all i and dist(·, z) is continuous: le_of_tendsto), so b ∈ B̄_r(z) ⊆ K ⊆ U. zero_limit_minimizing (with (MB), the hypotheses of T and x := b) shows that S is minimizing in E and ∂S = 0.
+P7. (IMReps of blow-ups.) For a current A on a domain O with an IMRep R, a ∈ E and s > 0, (BUI) gives an IMRep R′ in dilation a s '' O representing blowUp A a s with R′.measure(B) = ofReal(s⁻¹ⁿ)·R.measure((dilation a s)⁻¹(B)) for Borel B. The measure (R.measure)^{a,s} is given on Borel sets by the same formula (Measure.smul_apply, Measure.map_apply; dilation is measurable), so R′.measure = (R.measure)^{a,s} (Measure.ext).
+P8. (Mass bound for (IBL).) Apply (MON) to T with d := n + ℓ (1 ≤ n ≤ n + ℓ ≤ n + k) and part (i) to the compact K ⊆ U: there is Λ_K ≥ 0 such that τ ↦ ofReal(e^{Λ_Kτ}/τⁿ)·M_{B_τ(c′)}(T) is monotone on (0, R′) whenever B̄_{R′}(c′) ⊆ K. Let b ∈ B̄_r(z), δ := r/4, Γ′ := ofReal(e^{Λ_K r/4}/(r/4)ⁿ)·μ_T(W) (finite by P1) and Γ := Γ′.toReal. Let x′ ∈ B_δ(b) and 0 < ρ < δ. Then dist(x′, z) < 5r/4, so B̄_{r/2}(x′) ⊆ K and B_{r/4}(x′) ⊆ W ⊆ U. Monotonicity on (0, r/2), at ρ < r/4, gives ofReal(e^{Λ_Kρ}/ρⁿ)·M_{B_ρ(x′)}(T) ≤ ofReal(e^{Λ_K r/4}/(r/4)ⁿ)·M_{B_{r/4}(x′)}(T) ≤ Γ′, because M_{B_{r/4}(x′)}(T) = μ_T(B_{r/4}(x′)) ≤ μ_T(W) (P1). As e^{Λ_Kρ} ≥ 1, ofReal(1/ρⁿ)·M_{B_ρ(x′)}(T) ≤ Γ′, so M_{B_ρ(x′)}(T) ≤ ofReal(ρⁿ)·Γ′ = ofReal(Γρⁿ). Thus the mass hypothesis of (IBL) holds at b with (δ, Γ).
+P9. (Tails and parameter congruence.) If evaluations converge along a sequence, they converge along each tail j ↦ j + j₀ (Tendsto.comp with tendsto_add_atTop_nat); so ConvergesWeakly passes to tails. Blow-ups with equal centres and scales are equal currents (the nonvanishing proofs are irrelevant).
+Main argument. Let μ ∈ 𝓜, y ∈ E with ‖y‖ < 1, and λ_j > 0 strictly decreasing with λ_j → 0 (only λ_j > 0 and λ_j → 0 are used). By the class hypothesis μ is (PS) or (ZS).
+1. Case (PS): μ = (μ_T⌞W)^{a,t} with 0 < t ≤ r and dist(a, z) ≤ r − t. Put p := a + t•y.
+ (a) By ambient_calculus (7), μ^{y,s} = (μ_T⌞W)^{p,ts} for every s > 0.
+ (b) dist(p, z) ≤ dist(a, z) + t‖y‖ ≤ r − t + t‖y‖ < r. Put d := r − dist(p, z) > 0. Then p ∈ B_r(z) ⊆ U, and B_ρ(p) ⊆ W for every ρ ≤ r.
+ (c) Choose j₀ with tλ_j < d for all j ≥ j₀ (λ_j → 0).
+ Case (PS-i): p ∈ spt T. Apply (TAN) to T (with its hypotheses) at x := p with the scales tλ_j > 0 (tλ_j → 0). It gives a strictly increasing φ and C ∈ 𝒟_n(E) with blowUp T p (tλ_{φ(j)}) ⇀ C, MassMeasuresConverge for the same sequence, C minimizing in E, and n-homogeneous weights for every IMRep of C. C is integer multiplicity (the first conjunct of IsMinimizingIn); fix an IMRep R_C of C in E and put ν := R_C.measure, sub := φ.
+ – ν ∈ 𝓜: c′_j := p, t′_j := tλ_{φ(j+j₀)} and b′ := p are zero-scale data for C. Indeed φ(j + j₀) ≥ j + j₀ ≥ j₀ (StrictMono.id_le), so t′_j < d, i.e. dist(p, z) < r − t′_j; t′_j → 0; the constant sequence tends to p; and blowUp T p t′_j ⇀ C by P9. As R_C represents C, the class hypothesis gives ν ∈ 𝓜.
+ – Homogeneity of ν is the last conclusion of (TAN), applied to R_C.
+ – Convergence: let f be continuous with compact support, tsupport f ⊆ B_{R_f}(0). Let R_j be the IMRep of blowUp T p (tλ_{φ(j)}) given by P7 from RT, so R_j.measure = μ_T^{p,tλ_{φ(j)}}. MassMeasuresConverge, applied to (R_j), R_C, f and tsupport f ⊆ univ, gives ∫ f dR_j.measure → ∫ f dν. For every j with tλ_{φ(j)}R_f < r (all large j), put η := dilation p (tλ_{φ(j)}). By P2 and (a), ∫ f dμ^{y,λ_{φ(j)}} = (tλ_{φ(j)})⁻ⁿ ∫ f∘η d(μ_T⌞W) and ∫ f dR_j.measure = (tλ_{φ(j)})⁻ⁿ ∫ f∘η dμ_T. By P3 and (b), f∘η vanishes outside B_{tλ_{φ(j)}R_f}(p) ⊆ W, so ∫ f∘η d(μ_T⌞W) = ∫ f∘η dμ_T (setIntegral_eq_integral_of_forall_compl_eq_zero). The two sequences agree eventually, hence ∫ f dμ^{y,λ_{φ(j)}} → ∫ f dν (Tendsto.congr').
+ Case (PS-ii): p ∉ spt T. As p ∈ U, vanishing_blowup (with (BC)) gives ε > 0 with B_ε(p) ⊆ U, M_{B_ε(p)}(T) = 0 and blowUp T p s_j ⇀ 0 for every sequence s_j > 0 with s_j → 0. By P1, μ_T(B_ε(p)) = 0. Put ν := 0 = R_∅.measure (P4) and sub := id.
+ – ν ∈ 𝓜: c′_j := p, t′_j := tλ_{j+j₀} and b′ := p are zero-scale data for the zero current: dist(p, z) < r − t′_j by (c); t′_j → 0; c′_j → p; and blowUp T p t′_j ⇀ 0 by vanishing_blowup. As R_∅ represents 0, 0 ∈ 𝓜.
+ – ν = 0 is homogeneous (P4).
+ – Convergence: for f as above and j with tλ_jR_f < ε, put η := dilation p (tλ_j). By P2 and (a), ∫ f dμ^{y,λ_j} = (tλ_j)⁻ⁿ ∫ f∘η d(μ_T⌞W). By P3, f∘η vanishes outside B_ε(p), which is μ_T-null and hence (μ_T⌞W)-null, so f∘η = 0 a.e. and the integral is 0 (integral_eq_zero_of_ae). The sequence is eventually 0, so it tends to 0 = ∫ f d0 (integral_zero_measure).
+2. Case (ZS): μ = RS.measure, RS an IMRep of S in E, with zero-scale data (c_i, t_i, b). By P6, S is minimizing in E with ∂S = 0, and b ∈ B̄_r(z) ⊆ U. By P8, the mass hypothesis of (IBL) holds at b.
+ Case (ZS-i): y ∈ spt S. By P5, (TAN) applies to S at y with the scales λ_j: it gives a strictly increasing φ and C ∈ 𝒟_n(E) with blowUp S y λ_{φ(j)} ⇀ C, MassMeasuresConverge for the same sequence, C minimizing in E, and n-homogeneous weights. Fix an IMRep R_C of C; ν := R_C.measure, sub := φ.
+ – Convergence: by P7 (A := S, R := RS), the IMRep R′_j of blowUp S y λ_{φ(j)} has weight RS.measure^{y,λ_{φ(j)}} = μ^{y,λ_{φ(j)}}. MassMeasuresConverge, applied to (R′_j), R_C, f and tsupport f ⊆ univ, gives ∫ f dμ^{y,λ_{φ(j)}} → ∫ f dν.
+ – Homogeneity of ν: the last conclusion of (TAN).
+ – ν ∈ 𝓜: apply (IBL) with P := n + k, U (open), T, x := b ∈ U, xs := (c_i), lams := (t_i), S, y, ss := (λ_{φ(k)}) (positive, → 0) and C. Its hypotheses are c_i → b, t_i → 0, λ_{φ(k)} → 0, the mass bound of P8, blowUp T c_i t_i ⇀ S and blowUp S y λ_{φ(k)} ⇀ C. It yields a strictly increasing φ′ with blowUp T (c_{φ′(k)} + t_{φ′(k)}•y) (t_{φ′(k)}λ_{φ(k)}) ⇀ C. Since λ_{φ(k)} → 0 and 1 − ‖y‖ > 0, choose k₀ with λ_{φ(k)} ≤ 1 − ‖y‖ for all k ≥ k₀. Put i(k) := φ′(k + k₀), c″_k := c_{i(k)} + t_{i(k)}•y, t″_k := t_{i(k)}λ_{φ(k+k₀)} > 0 and b″ := b. These are zero-scale data for C: dist(c″_k, z) ≤ dist(c_{i(k)}, z) + t_{i(k)}‖y‖ < (r − t_{i(k)}) + t_{i(k)}(1 − λ_{φ(k+k₀)}) = r − t″_k; t″_k → 0 (a product of two sequences tending to 0); c″_k → b + 0•y = b; and blowUp T c″_k t″_k ⇀ C by P9. As R_C represents C, ν ∈ 𝓜.
+ Case (ZS-ii): y ∉ spt S. vanishing_blowup, applied to S (domain univ, y ∈ univ), gives ε > 0 with M_{B_ε(y)}(S) = 0 and blowUp S y s_k ⇀ 0 for every sequence s_k > 0 with s_k → 0. By (IM)(a) for S (univ open, RS represents S), μ(B_ε(y)) = RS.measure(B_ε(y)) = M_{B_ε(y)}(S) = 0. Put ν := 0 = R_∅.measure and sub := id.
+ – ν ∈ 𝓜: apply (IBL) as in (ZS-i), now with ss := (λ_k), C := 0 and blowUp S y λ_k ⇀ 0. With k₀ such that λ_k ≤ 1 − ‖y‖ for all k ≥ k₀, the data c″_k := c_{φ′(k+k₀)} + t_{φ′(k+k₀)}•y, t″_k := t_{φ′(k+k₀)}λ_{k+k₀} and b are zero-scale data for 0 (same estimates), and R_∅ represents 0. So 0 ∈ 𝓜.
+ – ν = 0 is homogeneous (P4).
+ – Convergence: for f with tsupport f ⊆ B_{R_f}(0) and λ_jR_f < ε, P2 gives ∫ f dμ^{y,λ_j} = λ_j⁻ⁿ ∫ f∘(dilation y λ_j) dμ, and by P3 the integrand vanishes outside the μ-null set B_ε(y). So the integrals are eventually 0, and they tend to 0 = ∫ f d0.
+3. In every case sub is strictly increasing, ν ∈ 𝓜, ν is n-homogeneous, and ∫ f dμ^{y,λ_{sub(j)}} → ∫ f dν for every continuous compactly supported f. ∎
+
+## Key steps
+
+1. Preliminaries: mass equals weight on open sets ((IM)(a)), integrals against rescaled measures, the zero IMRep, ℝ^{n+k} as ambient manifold, minimality of zero-scale limits (zero_limit_minimizing), IMReps of blow-ups ((BUI)), and the mass bound required by (IBL) from (MON)(i).
+2. Positive-scale member, p = a + ty ∈ spt T: (TAN) at p with scales tλ_j gives a homogeneous minimizing tangent limit C; its weight is a zero-scale member (constant centres p) and the vague limit, since the rescaled member and the IMRep weight of the blow-up agree on test functions supported in B_{2r}(z).
+3. Positive-scale member with p ∉ spt T: vanishing_blowup gives blow-ups ⇀ 0 and a μ_T-null ball, so ν = 0 = R_∅.measure works.
+4. Zero-scale member, y ∈ spt S: (TAN) for S at y gives C and vague convergence via MassMeasuresConverge; (IBL) plus a tail argument shows C is again a zero-scale limit of blow-ups of T, so its weight lies in 𝓜.
+5. Zero-scale member with y ∉ spt S: vanishing_blowup and (IBL) with C = 0 show 0 ∈ 𝓜, and the rescaled integrals vanish eventually.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD`
+- `sha256sum GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean <snapshot>/project/GMT/Ch07/Contract.lean <snapshot>/project/GMT/Ch07/Submission.lean`
+- `rg -n dimred_tr_bc <snapshot>/project (exit 1, no match); grep -rn dimred_tr_bc GMT .lake/packages/simongmt/Poincare (no match)`
+- `rg -n 'def VanishesOn|def zeroRegion|def support|def blowUp|def currentEval|def ConvergesWeakly|def MassMeasuresConverge|structure IMRep|def IMRep.measure' <snapshot>/project/GMT/Ch07/Contract.lean`
+- `rg -n 'theorem tendsto_nhds_unique |theorem integral_smul_measure|theorem integral_map |theorem setIntegral_eq_integral_of_forall_compl_eq_zero|theorem withDensity_congr_ae|theorem withDensity_indicator |theorem tendsto_add_atTop_nat|theorem integral_zero_measure|theorem integral_eq_zero_of_ae|theorem StrictMono.id_le' <snapshot>/mathlib/Mathlib`
+- `rg -n -e '(theorem|lemma) [A-Za-z_.]*(StrictMono.tendsto_atTop|Tendsto.limsup_eq|closedBall_subset_closedBall_iff|Homeomorph.isProperMap|withDensity_apply |restrict_restrict )' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem countablyRectifiable_of_measure_zero|theorem tsupport_affinePullbackForm_subset|theorem affinePullbackForm_isTestForm' .lake/packages/simongmt/Poincare/SimonGMT; sed -n on SimonGMT Chapter06 Currents.lean, CurrentLocalEquality.lean, Mass.lean, AffineCurrentPushforward.lean`
+- `python3 inspection of dag.json: selected node, its four registered dependencies, all ancestors' dependencies (lean names and status), and accepted lean_statements matching 'IsEmbeddedSubmanifold … univ', '∀ᵐ x ∂μHE[n], Tendsto', 'Set (Measure', 'ConvergesWeakly' uniqueness`
+- `python3 reading of the accepted precedent cone_class decomposition-v1.json and of the parent-child-handoff.json of ambient_calculus, density_representation and borel_restriction`
+- `python3 /tmp/bc-a1/scripts/check_reuse.py (git show <candidate>:GMT/Ch07/Submission.lean; declared type vs dag.json; sorry count) for aebb2ae, 1f0fe9f, 90d679a, cb3c7f3; git show 90d679a:GMT/Ch07/Submission.lean | grep '^theorem Submission'`
+- `lake env lean /tmp/bc-a1/lean/Types.lean; lake env lean /tmp/bc-a1/lean/Assembly.lean; lake env lean /tmp/bc-a1/lean/Skeleton.lean; lake env lean /tmp/bc-a1/lean/Skeleton2.lean`
+- `gh api repos/humanfia/math-lean-flow/contents/_recursive_lean/{runtime,inherited,store}.py?ref=feature/humanize-api-update-claude; grep -n '_inherited_prerequisites|_overlay_accepted_children|_render_parent_supplied_natural|_dependency_problem'`
+- `grep -n on book/chapter-07.txt (class 𝒯 in the proof of 7.3.3, lines 443–486) and book/chapter-A.txt (A.4, line 35)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Separation/Hausdorff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Tendsto.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Maps/Proper/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/WellFounded.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-class-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-class-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5982ed9bb9/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-4e8b16732b/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-699466b76b/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-borel-restriction-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt`
+- `/tmp/bc-a1/lean/Types.lean`
+- `/tmp/bc-a1/lean/Assembly.lean`
+- `/tmp/bc-a1/lean/Skeleton.lean`
+- `/tmp/bc-a1/lean/Skeleton2.lean`
+- `/tmp/bc-a1/scripts/check_reuse.py`
+- `/tmp/bc-a1/scripts/build.py`
+- `/tmp/bc-a1/mlf/inherited.py`
+- `/tmp/bc-a1/mlf/runtime.py`
+
+Pins and contract:
+- The snapshot manifest pins project b4d606d and Mathlib 25730c7c. These equal the workspace HEAD and .lake/packages/mathlib.
+- The snapshot Contract.lean, snapshot Submission.lean and the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+- No dimred_tr_bc_* identifier exists in the snapshot (rg exit 1), in GMT, in SimonGMT or in dag.json.
+
+Library facts cited by the children exist at these paths:
+- tendsto_nhds_unique (Topology/Separation/Hausdorff.lean:180)
+- StrictMono.tendsto_atTop (Order/Filter/AtTopBot/Tendsto.lean:84)
+- integral_smul_measure and integral_map (MeasureTheory/Integral/Bochner/Basic.lean:1052, 1081)
+- setIntegral_eq_integral_of_forall_compl_eq_zero (Bochner/Set.lean:486)
+- withDensity_apply, withDensity_congr_ae and withDensity_indicator (Measure/WithDensity.lean:44, 88, 192)
+- Filter.Tendsto.limsup_eq (Topology/Order/LiminfLimsup.lean:190)
+- tendsto_add_atTop_nat (AtTopBot/Basic.lean:331)
+- Homeomorph.isProperMap (Topology/Maps/Proper/Basic.lean:264)
+- StrictMono.id_le (Order/WellFounded.lean:267)
+- integral_eq_zero_of_ae and integral_zero_measure (Bochner/Basic.lean:349, 1020)
+closedBall_subset_closedBall_iff has no match; the children use a unit-vector argument instead.
+
+SimonGMT facts:
+- affinePullbackForm, tsupport_affinePullbackForm_subset and affinePullbackForm_isTestForm are at AffineCurrentPushforward.lean:35–64.
+- countablyRectifiable_of_measure_zero is at Rectifiable.lean:45.
+- support = U ∖ zeroRegion, with VanishesOn, is at CurrentLocalEquality.lean:101–118.
+
+Reuse:
+- ambient_calculus (aebb2ae), density_representation (1f0fe9f) and dor_lmb_imrep_restrict_current (90d679a) are accepted, and their isolated comparators passed.
+- Their candidates' declared types equal the DAG types, and each candidate's only sorry is main_theorem.
+- The precedent cone_class decomposition reused the same three in the same way.
+
+Lean checks:
+- All 8 new child types elaborate.
+- The assembly of the selected frozen type compiles from the 5 class children and the 4 registered dependencies, with only standard axioms otherwise.
+- class_rescale is fully proved from its siblings.
+- The key steps of class_tangent, class_monotone and class_finite_density compile.
+
+Framework (math-lean-flow inherited.py) and its effect on the split:
+- A child inherits every ancestor dependency whose Lean name appears in its proof text, and waits for it to be accepted.
+- So new children take unaccepted results as hypotheses, and a script checks that their proofs avoid all twelve ancestor-dependency names.

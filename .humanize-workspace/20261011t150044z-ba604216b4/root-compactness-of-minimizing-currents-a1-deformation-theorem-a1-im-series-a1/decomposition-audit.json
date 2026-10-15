@@ -1,0 +1,106 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cmcdt_ims",
+        "hasSum_integral_of_dominated_convergence|theorem Measurable.tprod|enorm_tsum_le_tsum_enorm|stronglyMeasurable_of_tendsto|measurableSet_eq_fun|ae_tendsto_measure_inter_div",
+        "TestFormOnConverges|structure GeometricCurrentOn|covectorEuclideanNorm|def mass|def zeroRegion|def support|countablyRectifiable_iUnion|CountablyRectifiable.mono|HasApproximateTangentSpaceAt.unique|def HasApproximateTangentSpaceAt",
+        "git show f492ba4a003c8f1324077e050d48667ae23c7100:GMT/Ch07/Submission.lean",
+        "git show 8d68dfd93a5a51671384c6648f0ebabf56bd95bd:GMT/Ch07/Submission.lean",
+        "git show a02fee1b895fd5361bd0d6d2865e4b0d85f5d08a:GMT/Ch07/Submission.lean",
+        "git show fe95347baaed6a2cf2ecde4455e2b32f361fde51:GMT/Ch07/Submission.lean",
+        "git show a157a5f4f62ba1c354a3b0cc070d947560abf2e6:GMT/Ch07/Submission.lean",
+        "git show 0325970d8b47298803106a41abbcdb3c8c9ac103:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/cmcdt_im_series_decomposition/Reference.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmcdt_ims_independent_audit_tiytbfgf/ChallengeTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cmcdt_ims_independent_audit_tiytbfgf/FullAccepted.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DominatedConvergence.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Covering/Besicovitch.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-series-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-series-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcdt_im_series_decomposition/Reference.lean",
+        "/tmp/cmcdt_ims_independent_audit_tiytbfgf/ChallengeTypes.lean",
+        "/tmp/cmcdt_ims_independent_audit_tiytbfgf/FullAccepted.lean"
+      ],
+      "conclusion": "The pinned revisions match the manifest, and the snapshot Ch07 contract equals the workspace contract and submission. No cmcdt_ims declaration occurs in the searched snapshot. All ten frozen propositions pass validation and elaborate in independently regenerated comparator scope without child implementations. The six reused names have identical accepted frozen types; the four new names are unreserved. Proposed dependencies and the reused dependency closure are acyclic and do not reach the selected theorem or its ancestors. Independently compiling the supplied proofs with actual accepted implementations replacing all six stand-in axioms succeeds: every child and the exact selected parent depend only on propext, Classical.choice and Quot.sound. The recomputed binding digest matches. Splitting is appropriate: the current construction supplies convergence, mass and support, while the IMRep construction supplies integer multiplicity through MR and uniqueness of sums. Leaving IMC unused is valid."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type; prose includes every quantifier. The coefficient-vector argument proves all four conclusions, including the explicit operator-norm bound and continuity, without circular reliance."
+    },
+    {
+      "key": "uniform_small",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. The proof extracts the common compact support, uses derivative order zero for uniform convergence there, and proves vanishing outside it. No openness hypothesis is needed."
+    },
+    {
+      "key": "series_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact standalone proposition matches the prose, including VO and openness. The proof establishes absolute summability, linearity, sequential continuity, the mass bound and support inclusion using precisely its declared siblings and VO."
+    },
+    {
+      "key": "tangent_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Positive multiplicity establishes local finiteness of the carrier; two correctly directed locality applications transfer its oriented tangent through B to C. Restriction of the exceptional null sets is justified."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. The orthonormal-basis determinant argument supplies a single sign independent of the covector, proving equality of the continuous linear functionals. The zero-degree case is covered."
+    },
+    {
+      "key": "tangent_locality",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Localized density, the supplied growth argument and blow-up comparison prove both directions outside one null set independent of Q. Its existing accepted dependencies are acyclic and independent of this parent."
+    },
+    {
+      "key": "orient_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Evaluation on an orthonormal frame gives the required bound for every covector; the continuous-linear-map norm criterion proves the conclusion, including degree zero."
+    },
+    {
+      "key": "common_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and standalone type agree. Strongly measurable versions, disjoint carrier pieces and countable exceptional-set control justify the reference orientation and measurable signs. Tangent uniqueness and the declared sign lemma prove the relations. The explicit metrizable instance checks against the existing topology."
+    },
+    {
+      "key": "density_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the arbitrary-form conclusion match. The proof verifies every IMRep field for N intersect {m ≠ 0}, floor(|m|) and the signed orientation. The action identity uses pointwise equality and measurable indicators, requiring no unstated regularity or integrability of the form."
+    },
+    {
+      "key": "imrep_tsum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the prose. Finite total weight establishes carrier finiteness and domination; the real tsum is measurable and integer-valued everywhere, with nonsummable cases explicitly handled. The declared construction lemmas and fully checked dominated-convergence hypotheses yield HasSum and complete the selected parent's integer-multiplicity conclusion."
+    }
+  ],
+  "required_changes": []
+}

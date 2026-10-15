@@ -1,0 +1,86 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "rg -n -i 'telescop|cmcsdtd_' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "def cthickening|theorem mem_cthickening_of_dist_le|theorem isClosed_cthickening|theorem summable_toReal|theorem tsum_toReal_eq|theorem ne_top_of_tsum_ne_top|theorem tendsto_toReal|theorem Tendsto.const_mul|theorem Summable.of_norm_bounded|theorem tendsto_nhds_unique|theorem tendsto_add_atTop_nat",
+        "git -C .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib rev-parse HEAD",
+        "git show f492ba4a003c8f1324077e050d48667ae23c7100:GMT/Ch07/Submission.lean",
+        "git show 827f2b91f9f4bc56c57c61f028ddb49fff28d5b8:GMT/Ch07/Submission.lean",
+        "git show 7a706164baaf42fc7f55751247396a8836928310:GMT/Ch07/Submission.lean",
+        "git show ea5c1199c9160b359cf351e442ec9e8b76e9a258:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean GMT/Scratch/cmcsdtd_telescoping_deformation_decomposition/FullFromJson.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/ENNReal.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Group/InfiniteSum.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-ske-ae4abe6dc4/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcsdtd_telescoping_deformation_decomposition/draft_subproblems.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/cmcsdtd_telescoping_deformation_decomposition/FullFromJson.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected telescoping-deformation theorem. The pinned contract matches the workspace, and package revisions match the compiler environment. No telescoping declaration or cmcsdtd_ name occurs in the snapshot project. DAG checks confirm that the four new names are unreserved; the four reused declarations are accepted with identical frozen types and byte-identical proof blocks. Dependencies are correctly directed and acyclic. All eight types are standalone one-line propositions with bare declaration names. Independent compilation succeeded: every child uses only propext, Classical.choice and Quot.sound. The assembly has exactly the selected frozen parent type and uses only its existing support-calculus dependency beyond standard axioms. PF, VO and IMS are preserved verbatim. Compiled evaluation identities confirm the contract subtraction instance; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. The coefficient-vector construction proves the triangle inequality and homogeneity; the operator-norm bound gives the stated constant and Lipschitz continuity. The proof is complete and independent."
+    },
+    {
+      "key": "coeff_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Continuity of the coefficient norm and compact support of the test form give a global bound; max(C, 0) + 1 supplies positivity. No openness assumption on U is needed."
+    },
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. The proof derives r ≥ 0, checks both signed rescalings are admissible, uses finite local mass correctly, and passes to the limit. This also covers r = 0."
+    },
+    {
+      "key": "mass_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Identical accepted type. Negation preserves admissibility, contract subtraction gives the required evaluation identity, and ofReal subadditivity followed by the supremum bound proves the claim without finiteness or openness assumptions."
+    },
+    {
+      "key": "telescoping_real",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Induction proves the inclusive partial-sum identity; shifting HasSum partial sums by one and using the null remainder yields s = 0 by uniqueness of limits."
+    },
+    {
+      "key": "mass_eval",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both conclusions match the type. The proof handles eventual finiteness before applying the evaluation bound, justifies toReal convergence and summability, and proves the mass bound by admissible evaluations and the defining supremum. Only the declared dependencies are used."
+    },
+    {
+      "key": "shell_deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match the type. The proof establishes normality of slice differences, including degree zero, and checks common Lipschitz constants before locality and linearity. The reversed homotopy gives the correct signs; integrality, six mass bounds and four support bounds follow completely."
+    },
+    {
+      "key": "series_sum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The abstract statement matches its type and applies to the shell outputs. Three positive-degree IMS applications construct the limits; both telescoping arguments are justified. The boundary series, mass bound and support inclusion follow from the declared helpers, VO and S-i, including m = 0 and arbitrary real δ."
+    }
+  ],
+  "required_changes": []
+}

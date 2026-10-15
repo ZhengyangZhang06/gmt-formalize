@@ -1,0 +1,111 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "def IsEmbeddedSubmanifold|def IsIntegerMultiplicity|def MassMeasuresConverge|def boundaryMassOn|def blowUp|axiom|sorry",
+        "simon_theorem_4_14_caratheodory|simon_theorem_4_14_positive_envelope|simon_theorem_4_16_compact_metrizable",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt",
+        "axiom|sorry|admit|Federer|deformation|[Ff]lat",
+        "weighted_area_formula_lipschitzOn_fiberSum|injective_area_formula_lipschitzOn|area_image_criticalSet_eq_zero",
+        "eLpNorm_le_eLpNorm_fderiv_one|intervalIntegral_deriv_mem_uIcc|lintegral_eq_lintegral_meas_lt|limsup_lintegral_le",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -R /tmp/mbl-independent-audit-3fa01s6h/src /tmp/mbl-independent-audit-3fa01s6h/src/Assembly.lean"
+      ],
+      "files": [
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/FunctionalSpaces/SobolevInequality.lean",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1/parent-child-handoff.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1/decomposition-v2.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-vanish-off-support-a1/accepted-candidate.json",
+        ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-imrep-mass-and-support-a1/accepted-candidate.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter01/RadonPolarRepresentation.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLiteral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/tmp/mbl-independent-audit-3fa01s6h/src/Assembly.lean"
+      ],
+      "conclusion": "The project and package revisions match the pins; the workspace contract matches the snapshot. The inspected current library supplies mass, support, weak convergence and affine push-forward, but no implementation discharging the proposed deformation, closure or flat-convergence obligations. AreaLiteral proves the normalization identification needed by the density arguments. Both reused declarations have identical frozen types and successful comparator evidence restricted to propext, Classical.choice and Quot.sound. The ten new names have no DAG reservations. The augmented dependency closure is acyclic. All twelve one-line propositions independently elaborate without child implementations; no problematic inline matrix construction occurs. A fresh conditional assembly proves exactly the selected parent type using its monotonicity prerequisite and the proposed children, with only the three permitted axioms. The split is appropriate and every child contributes to this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The finite-cover and smooth partition-of-unity argument proves vanishing for arbitrary U, exactly as stated. Reuse matches the accepted frozen type."
+    },
+    {
+      "key": "mass_and_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Orientation duality gives the upper bound; Lusin approximation and mollification give the reverse bound. The support argument then proves the second conjunct. The accepted declaration has the identical type."
+    },
+    {
+      "key": "foundations",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies the Riesz extension, exact mass identification and normal-current absolute continuity via the projection argument. Tangent locality, restrictions, subtraction and orientation bounds establish all IMC conjuncts without circular dependence."
+    },
+    {
+      "key": "slicing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The supplied representations construct the restricted currents. Smooth approximations establish the support and pointwise bounds, including exceptional levels; monotone differentiation yields the integral bound. Hypotheses and quantifiers match."
+    },
+    {
+      "key": "deformation_theorem",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof develops the required push-forward and homotopy calculus, then constructs the grid deformation and controls its limits without assuming closure. Integer face coefficients give the mass dichotomy and finite approximant set; scaling gives the exact bounds and supports."
+    },
+    {
+      "key": "closure_and_boundary_rectifiability",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The induction CL(0), CL(d)⇒BR(d), and CL(d)∧BR(d)⇒CL(d+1) is non-circular. Localization, density bounds, tangent-plane analysis, rectifiability and integer multiplicities supply the stated closure and boundary conclusions."
+    },
+    {
+      "key": "flat_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Localization and finite deformation approximants produce a flat-Cauchy subsequence. Closure justifies the integral series limits, and absorbing the exterior restrictions into S proves the required equality throughout U, not merely inside W."
+    },
+    {
+      "key": "pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The extension is representation-independent. Parametrization and the area formula prove integrality; secants prove the identity clause, and smooth approximation proves preservation of cycles. The empty-domain case handles the absence of an explicit nonnegative-L hypothesis."
+    },
+    {
+      "key": "blowup_hypotheses",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Affine transport proves minimality, support and boundary claims. The explicit monotonicity hypothesis supplies the mass bounds. The chart construction gives the required asymptotically nonexpanding retractions, with the empty-intersection alternative handled at each index."
+    },
+    {
+      "key": "truncated_compactness",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Good slicing radii produce global integer multiplicity truncations with the claimed local bounds. The diagonal construction gives a current limit; closure gives integrality, and agreement on expanding balls proves both boundary vanishing and the exact currentEval convergence."
+    },
+    {
+      "key": "local_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The level and subsequence are fixed before choosing a competitor. The corrected slice sign, admissible retracted cycles and cancellation outside W give the required inequality for every competitor. This supplies the modification discussed in [Simon, Chapter 7 §2](https://math.stanford.edu/~lms/ntu-gmt-text.pdf)."
+    },
+    {
+      "key": "minimizing_and_measures",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Lower semicontinuity and locality turn comparison into minimality. The arbitrary-subsequence argument supplies compact-set upper bounds; layer cake and Fatou give convergence for every representation. The proof also covers degree zero and matches the universally quantified measure contract."
+    }
+  ],
+  "required_changes": []
+}

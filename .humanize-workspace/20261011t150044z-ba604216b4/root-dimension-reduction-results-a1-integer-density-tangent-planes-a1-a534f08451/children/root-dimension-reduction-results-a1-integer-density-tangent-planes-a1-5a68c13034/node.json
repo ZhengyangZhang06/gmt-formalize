@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.tangent_measures-a1.density_homogeneous-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.tangent_measures-a1",
+  "depth": 6,
+  "title": "Degree-n homogeneous measures have scale-invariant upper density ratios: limsup_{ρ→0⁺} r_ν(t·w, ρ) = limsup_{ρ→0⁺} r_ν(w, ρ) (parent step 6, (F5))",
+  "statement": "Let P, n ∈ ℕ and let ν be a measure on ℝ^P such that ν((v ↦ λv)(A)) = ofReal(λ^n)·ν(A) for every λ > 0 and every measurable A ⊆ ℝ^P. For w ∈ ℝ^P and ρ ∈ ℝ, let r_ν(w, ρ) := ν(B_ρ(w))/(unitBallVolume n·ofReal(ρ^n)) ∈ [0, ∞]. Then for every t > 0 and every w ∈ ℝ^P, limsup_{ρ→0⁺} r_ν(t·w, ρ) = limsup_{ρ→0⁺} r_ν(w, ρ), with both limsups taken in [0, ∞] along 𝓝[>]0.",
+  "lean_statement": "∀ (P n : ℕ) (ν : Measure (Euclid P)), (∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid P), MeasurableSet A → ν ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * ν A) → ∀ t : ℝ, 0 < t → ∀ w : Euclid P, limsup (fun ρ : ℝ => ν (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => ν (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)",
+  "lean_name": "idtp_fons_cc_tm_density_homogeneous",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5a68c13034-a1"
+}
