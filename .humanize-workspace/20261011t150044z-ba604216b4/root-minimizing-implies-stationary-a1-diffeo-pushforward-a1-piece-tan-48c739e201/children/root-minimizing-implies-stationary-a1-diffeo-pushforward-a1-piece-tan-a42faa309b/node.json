@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1.tangent_growth-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1",
+  "depth": 5,
+  "title": "Growth bound from an approximate tangent plane (Simon Ch. 3, Remark 1.5(3))",
+  "statement": "Let P, n ∈ ℕ, let D ⊆ ℝ^P be a Borel set, x ∈ ℝ^P, Q a linear subspace of ℝ^P, and r₀ > 0 with H^n(D ∩ B̄_{r₀}(x)) < ∞, where H^n := μHE[n]. Suppose D has approximate tangent space Q at x (HasApproximateTangentSpaceAt n D x Q). That is, finrank Q = n and, for every f ∈ C_c(ℝ^P, ℝ), ∫_{η_{x,r}(D)} f dH^n → ∫_Q f dH^n as r → 0 in 𝓝[>] 0. Then there are real numbers C and r₁ with r₁ > 0 such that H^n(D ∩ B̄_ρ(x)) ≤ ENNReal.ofReal(C · ρ^n) for all ρ ∈ (0, r₁).",
+  "lean_statement": "∀ (P n : ℕ) (D : Set (Euclid P)) (x : Euclid P) (Q : Submodule ℝ (Euclid P)) (r₀ : ℝ), MeasurableSet D → 0 < r₀ → μHE[n] (D ∩ closedBall x r₀) ≠ ∞ → HasApproximateTangentSpaceAt n D x Q → ∃ C r₁ : ℝ, 0 < r₁ ∧ ∀ ρ : ℝ, 0 < ρ → ρ < r₁ → μHE[n] (D ∩ closedBall x ρ) ≤ ENNReal.ofReal (C * ρ ^ n)",
+  "lean_name": "ptd_tl_measure_closedBall_le_of_tangent",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1.blowup_scaling-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.tangent_locality-a1.blowup_scaling-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-a42faa309b-a1"
+}

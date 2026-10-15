@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.directional-a1.cycle_pairing-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.constant_planes-a1.directional-a1",
+  "depth": 6,
+  "title": "The cycle condition tested on φα gives ∫Dφ[v]dν = 0 for a Riesz vector v of α",
+  "statement": "Let P, d ∈ ℕ, ν a Borel measure on ℝ^P, ζ₀ ∈ Λ_{d+1}(ℝ^P) (MultiVector P (d+1)), α a d-covector, v ∈ ℝ^P and φ : ℝ^P → ℝ a C^∞ function with compact support. Assume (i) ∫ζ₀(dψ(y))dν(y) = 0 for every test d-form ψ ∈ TestFormOn univ d, where dψ := exteriorDerivative ψ, and (ii) ζ₀(γ) = ⟨v, w⟩ whenever w ∈ ℝ^P and γ is a (d+1)-covector with γ(u) = Σ_{i=0}^{d} (−1)^i⟨w, u_i⟩α(Fin.removeNth i u) for all u. Then ∫Dφ(y)[v]dν(y) = 0.",
+  "lean_statement": "∀ (P d : ℕ) (ν : Measure (Euclid P)) (ζ₀ : MultiVector P (d + 1)) (α : Covector (Euclid P) d) (v : Euclid P) (φ : Euclid P → ℝ), (∀ ψ : TestFormOn (univ : Set (Euclid P)) d, ∫ y, ζ₀ (exteriorDerivative (ψ : DifferentialForm (Euclid P) d) y) ∂ν = 0) → (∀ (w : Euclid P) (γ : Covector (Euclid P) (d + 1)), (∀ u : Fin (d + 1) → Euclid P, γ u = ∑ i : Fin (d + 1), (-1 : ℝ) ^ (i : ℕ) * (inner ℝ w (u i) * α (i.removeNth u))) → ζ₀ γ = inner ℝ v w) → ContDiff ℝ (⊤ : ℕ∞) φ → HasCompactSupport φ → ∫ y, fderiv ℝ φ y v ∂ν = 0",
+  "lean_name": "cbr_ci_cp_dir_cycle_fderiv_integral_zero",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.extderiv_smul_const-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.epsilon_regularity-a1.graph_cycle_regular-a1.boundary_weak_derivatives-a1.extderiv_smul_const-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-18aa777bf2-a1",
+      "result_commit": "9dcae6bdd56dfe358491f8344e7a8610f929bf88",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-371d1f6aaf-a1"
+}

@@ -1,0 +1,99 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "map_euclideanHausdorffMeasure|euclideanHausdorffMeasure_eq_volume|trace_eq_sum_inner|finrank_orthogonal_span_singleton|volume_preserving_piFinSuccAbove|integral_Ioi_deriv_eq|hasDerivAt_integral_of_dominated_loc_of_deriv_le|contDiff_convolution_left|support_convolution_subset|exists_contDiff_tsupport_subset",
+        "instMeasureSpace|volume_prod|volume_eq_prod|def.*volume|instance.*MeasureSpace",
+        "codim1_rdo_dg_tma_",
+        "[(n['id'],n['status']) for n in nodes if n.get('lean_name')==c['lean_name'] or c['lean_name'] in n.get('theorems',[])]",
+        "[(n['id'],n['status']) for n in nodes if n.get('lean_statement')==c['lean_statement']]",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/tma-independent-audit-90jx00oe/Audit.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntegralEqImproper.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-8598f2d8c1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-8598f2d8c1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/tma-independent-audit-90jx00oe/Audit.lean",
+        "/tmp/tma-independent-audit-90jx00oe/Audit.out"
+      ],
+      "conclusion": "The ten-child split is appropriate for this selected theorem. The handoff, frozen type and proof binding match. Project/mathlib revisions match the manifest; inspected mathematical sources match the active compiler sources. All names are valid bare identifiers, with no reserved-name or identical-type matches in the inspected DAG. Dependencies are acyclic and exactly match the supplied child proofs. Each frozen proposition elaborated before any child declaration. Independently extracted, unchanged proof appendices compiled successfully; all ten have only propext, Classical.choice and Quot.sound as axioms. The supplied parent assembly also compiled with the three external prerequisites as explicit hypotheses of their exact frozen types, preserving the a.e.-then-all-tests conclusion. Product volume was independently verified by rfl to be product Lebesgue measure; the snapshot confirms the required μHE normalization. No cross-branch declaration reuse is proposed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "hyperplane_param",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type match. Nonzero v gives hyperplane dimension m; an orthonormal parametrization and isometry invariance of normalized Hausdorff measure prove the exact push-forward identity, including m = 0."
+    },
+    {
+      "key": "orthogonal_fubini",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses match. The adapted orthonormal basis and explicit tuple-coordinate transformations prove measure preservation. The inferred source volume is independently confirmed to be product Lebesgue measure."
+    },
+    {
+      "key": "tangential_halfspace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact statement follows from translation invariance along u. The proof supplies measurability, integrability and a uniform integrable derivative bound before differentiating the constant integral; no nonzero-vector assumption is needed."
+    },
+    {
+      "key": "normal_halfspace",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared orthogonal_fubini dependency supplies the coordinate change. Integrability justifies Fubini, and the isometric normal lines preserve compact support, allowing the half-line FTC with the correct negative boundary term."
+    },
+    {
+      "key": "halfspace_gauss_green",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The trace decomposition, integrable finite sum, tangential vanishing and normal FTC establish the formula. hyperplane_param supplies exactly the normalized boundary measure. All three declared dependencies are correctly directed."
+    },
+    {
+      "key": "rescaled_gauss_green",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match. The affine pullback has support inside D; its derivative contributes r⁻¹ and the volume substitution contributes r^(m+1), giving the exact sign and r⁻m scaling from the assumed GG identity."
+    },
+    {
+      "key": "vector_convergence",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The eventual rescaled identity and bounded-divergence symmetric-difference estimate prove convergence. Finite ball volume and continuity of ENNReal.toReal at zero justify the real estimate; halfspace_gauss_green identifies the exact limit."
+    },
+    {
+      "key": "normal_defect",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof establishes integrability on finite small balls, handles zero-measure averaging balls explicitly, and bounds the defect by a constant times |1 − ⟨v,A(rR)⟩|. Normal-average convergence transfers the weighted limit exactly."
+    },
+    {
+      "key": "smooth_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Normalized nonnegative bump convolution gives C¹ regularity and the required support bound. Uniform continuity gives the stated error everywhere. The argument covers arbitrary real R, including the empty-support cases."
+    },
+    {
+      "key": "continuous_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof supplies integrability and uniform bounds for both measures, applies smooth_approx with controlled support, and completes an explicit epsilon estimate. Its hypotheses match the frozen type and suffice for the parent's continuous-test conclusion."
+    }
+  ],
+  "required_changes": []
+}

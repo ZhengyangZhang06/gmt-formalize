@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.eilenberg-a1.single_scale-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.eilenberg-a1",
+  "depth": 6,
+  "title": "Eilenberg's covering estimate at one scale (Simon Ch. 2, proof of Theorem 1.9: (1), g_i and (2), case m = 1)",
+  "statement": "Let P, d ∈ ℕ, let A ⊆ ℝ^P be any set, let L ≥ 0 and let f : ℝ^P → ℝ be L-Lipschitz on all of ℝ^P (LipschitzWith L f). Let δ, ε ∈ (0, ∞] and assume μH[d+1](A) < ∞, where μH[s] is Mathlib's unnormalised s-dimensional Hausdorff measure on ℝ^P. For S ⊆ ℝ^P let μH[d]_δ(S) be the infimum of Σ_{i∈ℕ} ⨆_{c_i≠∅} (diam c_i)^d over all sequences (c_i)_{i∈ℕ} of subsets of ℝ^P with S ⊆ ⋃_i c_i and diam c_i ≤ δ for every i. Here diam = Metric.ediam ∈ [0, ∞], and the i-th term is (diam c_i)^d if c_i ≠ ∅ and 0 if c_i = ∅; this is the inner infimum of Mathlib's `hausdorffMeasure_apply`. Then there is a Borel function ψ : ℝ → [0, ∞] with μH[d]_δ(A ∩ f⁻¹(t)) ≤ ψ(t) for every t ∈ ℝ and ∫_ℝ ψ dL¹ ≤ L·(μH[d+1](A) + ε). Arithmetic is in [0, ∞] with 0·∞ = 0. The powers are ENNReal.rpow with real exponents (d : ℝ) and ((d + 1 : ℕ) : ℝ). For these natural-number exponents they equal ordinary powers (ENNReal.rpow_natCast), so x^0 = 1 for all x ∈ [0, ∞].",
+  "lean_statement": "∀ (P d : ℕ) (A : Set (Euclid P)) (f : Euclid P → ℝ) (L : NNReal) (δ ε : ℝ≥0∞), LipschitzWith L f → 0 < δ → 0 < ε → μH[((d + 1 : ℕ) : ℝ)] A ≠ ∞ → ∃ ψ : ℝ → ℝ≥0∞, Measurable ψ ∧ (∀ t : ℝ, (⨅ (c : ℕ → Set (Euclid P)) (_ : A ∩ f ⁻¹' {t} ⊆ ⋃ i, c i) (_ : ∀ i, Metric.ediam (c i) ≤ δ), ∑' i, ⨆ _ : (c i).Nonempty, Metric.ediam (c i) ^ (d : ℝ)) ≤ ψ t) ∧ ∫⁻ t, ψ t ≤ (L : ℝ≥0∞) * (μH[((d + 1 : ℕ) : ℝ)] A + ε)",
+  "lean_name": "dtc_bc_lc_sl_eil_scale",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-176ec03ea2-a1"
+}

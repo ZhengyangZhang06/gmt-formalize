@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_isp-a1.testform_comp-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.dilation_isp-a1",
+  "depth": 5,
+  "title": "Composition with a dilation preserves test forms on ℝ^P",
+  "statement": "Let P, m ∈ ℕ, a ∈ ℝ^P (Euclid P) and λ > 0, and let η := dilation a λ, η(y) = −λ⁻¹a + λ⁻¹y. For every test m-form φ on ℝ^P, there is a test m-form φ' on ℝ^P with φ'(y) = φ(η(y)) for every y ∈ ℝ^P. Here a test m-form on ℝ^P is an element of TestFormOn univ m: a C^∞ map ℝ^P → Λ^m(ℝ^P) with compact support.",
+  "lean_statement": "∀ (P m : ℕ) (a : Euclid P) (lam : ℝ), 0 < lam → ∀ φ : TestFormOn (univ : Set (Euclid P)) m, ∃ φ' : TestFormOn (univ : Set (Euclid P)) m, ∀ y : Euclid P, (φ' : DifferentialForm (Euclid P) m) y = (φ : DifferentialForm (Euclid P) m) (dilation a lam y)",
+  "lean_name": "cbr_ci_dsp_testForm_comp_dilation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-bf6ac3d2a2-a1"
+}
