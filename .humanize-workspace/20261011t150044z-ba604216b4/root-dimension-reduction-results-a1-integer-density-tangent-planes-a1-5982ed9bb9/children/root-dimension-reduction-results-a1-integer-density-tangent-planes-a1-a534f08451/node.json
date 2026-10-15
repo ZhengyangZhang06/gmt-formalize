@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.tangent_measures-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1",
+  "depth": 5,
+  "title": "Tangent measures via (DTC): localized blow-ups of the weight of a minimizing cycle subconverge vaguely to the weight of a minimizing cone cycle with homogeneous density (parent steps 4(e), 5 with (F4), (F5), (F7), (F8))",
+  "statement": "Assume (DTC). (DTC) is the contract proposition DensityAndTangentCones (Simon 7.3.1): for n, k, ℓ ∈ ℕ with ℓ ≤ k, U ⊆ ℝ^{n+k} open, N an embedded C² (n+ℓ)-dimensional submanifold with (closure N ∖ N) ∩ U = ∅ and T ∈ 𝒟_n(U) minimizing in U ∩ N with spt T ⊆ U ∩ N: (1) there is Θ with HasMassDensity T x (Θ x) on U ∖ spt ∂T, upper semicontinuous there; (2) for every x ∈ spt T ∖ boundarySupport T and every sequence λ_j > 0 with λ_j → 0 there are a strictly increasing φ and C ∈ 𝒟_n(ℝ^{n+k}) with blowUp T x λ_{φ(j)} ⇀ C (ConvergesWeakly), MassMeasuresConverge for these blow-ups and C, IsMinimizingIn C univ, IsConeCurrent C, and a common density θ of T at x and of C at 0. For a measure ν on ℝ^{n+k}, a point a and s > 0 write ν^{a,s} := ofReal(s^{−n})•ν.map(dilation a s), and r_ν(w, ρ) := ν(B_ρ(w))/(unitBallVolume n·ofReal(ρ^n)). (A) Let n, k, ℓ ∈ ℕ with ℓ ≤ k and n ≥ 1, U, N, G ⊆ ℝ^{n+k} with U and G open, N an embedded C² (n+ℓ)-dimensional submanifold with (closure N ∖ N) ∩ U = ∅, T ∈ 𝒟_n(U) minimizing in U ∩ N with spt T ⊆ U ∩ N and ∂T = 0 in U, R an IMRep of T in U, p ∈ U with p ∈ G, and λ_j > 0 (j ∈ ℕ) with λ_j → 0. Then there are a strictly increasing sub : ℕ → ℕ, a current C ∈ 𝒟_n(ℝ^{n+k}) minimizing in ℝ^{n+k} with ∂C = 0, and an IMRep R_C of C in ℝ^{n+k} such that, with μ_C := R_C.measure, limsup_{ρ→0⁺} r_{μ_C}(t·w, ρ) = limsup_{ρ→0⁺} r_{μ_C}(w, ρ) for all t > 0 and w, and ∫ f d(R.measure⌞G)^{p,λ_{sub(j)}} → ∫ f dμ_C for every continuous compactly supported f : ℝ^{n+k} → ℝ. (B) For n, k ∈ ℕ with n ≥ 1, every S ∈ 𝒟_n(ℝ^{n+k}) minimizing in ℝ^{n+k} with ∂S = 0, every IMRep R of S in ℝ^{n+k}, every y ∈ ℝ^{n+k} and every λ_j > 0 with λ_j → 0, the same conclusion holds with (R.measure)^{y,λ_{sub(j)}} in place of (R.measure⌞G)^{p,λ_{sub(j)}}.",
+  "lean_statement": "DensityAndTangentCones → (∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N G : Set (Euclid (n + k))) (T : GeometricCurrentOn U n) (R : IMRep U n) (p : Euclid (n + k)) (lams : ℕ → ℝ), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → R.Represents T → IsOpen G → p ∈ U → p ∈ G → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RC : IMRep (univ : Set (Euclid (n + k))) n), StrictMono sub ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ RC.Represents C ∧ (∀ t : ℝ, 0 < t → ∀ w : Euclid (n + k), limsup (fun ρ : ℝ => RC.measure (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => RC.measure (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)) ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • (R.measure.restrict G).map (dilation p (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂RC.measure))) ∧ ∀ (n k : ℕ) (S : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (R : IMRep (univ : Set (Euclid (n + k))) n) (y : Euclid (n + k)) (lams : ℕ → ℝ), 1 ≤ n → IsMinimizingIn S univ → BoundaryVanishes S → R.Represents S → (∀ j, 0 < lams j) → Tendsto lams atTop (𝓝 0) → ∃ (sub : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n) (RC : IMRep (univ : Set (Euclid (n + k))) n), StrictMono sub ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C ∧ RC.Represents C ∧ (∀ t : ℝ, 0 < t → ∀ w : Euclid (n + k), limsup (fun ρ : ℝ => RC.measure (ball (t • w) ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) = limsup (fun ρ : ℝ => RC.measure (ball w ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)) ∧ ∀ f : Euclid (n + k) → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun j => ∫ x, f x ∂(ENNReal.ofReal ((lams (sub j))⁻¹ ^ n) • R.measure.map (dilation y (lams (sub j))))) atTop (𝓝 (∫ x, f x ∂RC.measure))",
+  "lean_name": "idtp_fons_cc_tangent_measures",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.blowup_limit_cycle-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.ambient_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-im-mass-measure-a1-a1",
+      "result_commit": "01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-scaling-a1-a1",
+      "result_commit": "a94d596c81cfb78de36a706eb0e81f430f835418",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-a1",
+      "result_commit": "e183b985f8baf48aa0fe07ee8e978c1474ec9d0a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_point_tangent_plane-a1.blowup_limit_cycle-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-34a94daa02-a1",
+      "result_commit": "f498a8efc56f20a419c00b83bd2efcfe9a10712c",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.ambient_calculus-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a534f08451-a1"
+}
