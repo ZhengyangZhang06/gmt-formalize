@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.skeleton_decomposition-a1.faces_meeting_compact_finite-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.skeleton_decomposition-a1",
+  "depth": 6,
+  "title": "Only finitely many unit lattice faces meet a compact set (parent step 5)",
+  "statement": "Let P, k ∈ ℕ and let K ⊆ ℝ^P be compact. Consider index pairs p = (ι, b) with ι : Fin k → Fin P arbitrary (not necessarily injective) and b ∈ ℤ^P. Only finitely many of them have Φ_p(y) := b + Σ_j y_j e_{ι(j)} ∈ K for some y in the closed unit cube [0,1]^k. In Lean, the set {p | ∃ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) 1 ∈ K} is finite.",
+  "lean_statement": "∀ (P k : ℕ) (K : Set (Euclid P)), IsCompact K → {p : (Fin k → Fin P) × (Fin P → ℤ) | ∃ y : Euclid k, (∀ i, 0 ≤ y i ∧ y i ≤ 1) ∧ WithLp.toLp 2 (fun i => (p.2 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.1 j) (1 : ℝ) ∈ K}.Finite",
+  "lean_name": "dimred_mbl_dtfrsd_faces_meeting_compact_finite",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-1df79f4510-a1"
+}

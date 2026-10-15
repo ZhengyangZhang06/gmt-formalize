@@ -1,0 +1,121 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def IsUnitOrientationOf|def IsIntegerMultiplicity|def action|def measure|def Represents|abbrev MultiVector|def CountablyRectifiable|theorem.*pushforward",
+        "weighted_area_formula_volume_of_injective_derivative|integral_area_formula_of_injective_derivative|areaJacobianAt_eq_sqrt_det_adjoint_comp|weighted_area_formula_lipschitz_injOn|HasApproximateTangentSpaceAt.unique|def HasApproximateTangentSpaceAt|countablyRectifiable_range",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|LinearMap.exists_antilipschitzWith|exists_contDiff_support_eq_eq_one_iff|ContinuousLinearMap.normDet_sq|MeasurableEmbedding.stronglyMeasurable_extend|theorem hasSum_integral_iUnion",
+        "prod_fiberwise|measurable_fderiv|area_image_compl_regularSet_eq_zero",
+        "git show a2ba78fca36b5fe8a0051278d30da09823c8b59c:GMT/Ch07/Submission.lean",
+        "git show c9573f9d1e1ecf9ca2594f227f83826f0f5003c4:GMT/Ch07/Submission.lean",
+        "git show a21680472b6919972de04d02dc3e1395a15d4171:GMT/Ch07/Submission.lean",
+        "git show bed5b8494a351297a2be8f0a0b63079868d53507:GMT/Ch07/Submission.lean",
+        "git show 329e3832b55d19228d95b8532a02784b7d0bc807:GMT/Ch07/Submission.lean",
+        "git show fe95347baaed6a2cf2ecde4455e2b32f361fde51:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-pfi-independent-audit-u94ieso5/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/gmt-pfi-independent-audit-u94ieso5/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d9628d89ea/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/decomposition-proposal.json",
+        "/tmp/gmt-pfi-independent-audit-u94ieso5/FrozenTypes.lean",
+        "/tmp/gmt-pfi-independent-audit-u94ieso5/Cutoff.lean",
+        "/tmp/gmt-pfi-independent-audit-u94ieso5/Partition.lean",
+        "/tmp/gmt-pfi-independent-audit-u94ieso5/JacobianAlgebra.lean",
+        "/tmp/gmt-pfi-independent-audit-u94ieso5/OrientAlongPiece.lean",
+        "/tmp/gmt-pfi-independent-audit-u94ieso5/PieceIMRep.lean",
+        "/tmp/gmt-pfi-independent-audit-u94ieso5/ParamSeries.lean",
+        "/tmp/gmt-pfi-independent-audit-u94ieso5/Assembly.lean",
+        "/tmp/gmt-pfi-independent-audit-u94ieso5/reuse-evidence.json"
+      ],
+      "conclusion": "The split appropriately establishes exactly dimred_mbl_pf_pushforward_isIntegerMultiplicity. Project and dependency pins match. All twelve frozen propositions independently elaborate without child implementations. All names are valid bare identifiers; six new names are unreserved, and six reuses have identical frozen types and candidate hashes matching passed comparator records under the three-axiom policy. Dependencies are correctly directed and acyclic, including reused dependency closures. Fresh Lean checks of all six supplied new proofs, with only their listed siblings as assumptions, and the exact-parent assembly passed with only propext, Classical.choice and Quot.sound. Borel pieces suffice throughout; the established tangent result legitimately makes TL unnecessary while preserving its antecedent. Determinants and the proof's IsUnit expression use ordinary linear endomorphisms; no prohibited function-multiplication construction occurs. The parent digest was independently recomputed and matches."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "rect_pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and frozen type match the accepted declaration. Null nonregular images, the approximation partition, Lusin–Souslin and image disjointification establish every conclusion, including the exceptional dimensions."
+    },
+    {
+      "key": "imrep_tsum",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Finite total mass supplies domination and local finiteness. The established common-orientation and integer-density lemmas, integer-series argument and integral summation prove the stated HasSum without circularity."
+    },
+    {
+      "key": "piece_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match. Density comparison makes the additional part of Y negligible, and the area-formula blow-up calculation identifies range DF as the tangent plane. Null-set transfer and dimension zero are addressed; TL is not assumed."
+    },
+    {
+      "key": "piece_pullback",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Lusin–Souslin proves image measurability, and the Lipschitz inverse transports null exceptional sets to null parameter sets. The argument correctly allows arbitrary predicates."
+    },
+    {
+      "key": "inj_orientation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type agree. The established frame identities and trivial kernel of F*F give positive determinant; cancellation then yields precisely the required signed unit orientation."
+    },
+    {
+      "key": "orientation_sign",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Restriction to Q, orthonormal change of basis and its determinant ±1 establish the multivector equality uniformly over all covectors, including degree zero."
+    },
+    {
+      "key": "cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and conclusions match. The compact buffer and smooth cutoff give global C¹ regularity, local agreement with f and derivative agreement on K; the bounded derivative gives the claimed Lipschitz constant."
+    },
+    {
+      "key": "bilip_partition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The precise lower-bound proposition matches its prose. Positive coercivity constants and the pinned partition theorem give Borel disjoint pieces covering B exactly, with the required lower bounds; no global Lipschitz hypothesis is needed."
+    },
+    {
+      "key": "jac_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All three clauses match, including the operator norm convention. The proof handles noninjective maps, obtains normalized orientations from the listed siblings, and proves Jacobian growth by linear area transport. No circular or incorrectly inferred algebraic instance occurs."
+    },
+    {
+      "key": "orient_piece",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Local finiteness follows from positive multiplicity. The listed tangent and pullback results, followed by tangent uniqueness, prove orientation alignment; pulling back a strongly measurable version proves the separate measurability conclusion."
+    },
+    {
+      "key": "piece_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The measurable inverse construction, positive Jacobian and tangent argument verify every IMRep field and the exact mass identity. The pinned Bochner area formula genuinely applies to arbitrary integrands, supporting the stated action identity for every differential form."
+    },
+    {
+      "key": "param_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly removes zero weights and zero Jacobians, partitions the remaining parameters, constructs the piece representations and sums their finite masses. Domination, vanishing and fiberwise summation establish the exact HasSum using only the listed dependencies."
+    }
+  ],
+  "required_changes": []
+}

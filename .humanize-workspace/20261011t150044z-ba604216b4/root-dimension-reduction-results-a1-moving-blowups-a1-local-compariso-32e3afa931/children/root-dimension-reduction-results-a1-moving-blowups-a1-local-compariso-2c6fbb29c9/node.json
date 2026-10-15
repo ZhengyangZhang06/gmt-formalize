@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1.cancel-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1",
+  "depth": 5,
+  "title": "Cancelling the finite mass outside F in [0, ∞] (parent step 8)",
+  "statement": "Let a, b, s, e, M ∈ [0, ∞], L ∈ ℝ and n ∈ ℕ, with 1 ≤ L, b ≤ M and M ≠ ∞. If a + b ≤ ofReal(Lⁿ)·(s + e + e + b), then a ≤ ofReal(Lⁿ)·(s + 2e) + ofReal(Lⁿ − 1)·M. Here ofReal = ENNReal.ofReal, and all arithmetic is in [0, ∞].",
+  "lean_statement": "∀ (a b s e M : ℝ≥0∞) (L : ℝ) (n : ℕ), 1 ≤ L → b ≤ M → M ≠ ∞ → a + b ≤ ENNReal.ofReal (L ^ n) * (s + e + e + b) → a ≤ ENNReal.ofReal (L ^ n) * (s + 2 * e) + ENNReal.ofReal (L ^ n - 1) * M",
+  "lean_name": "dimred_mbl_lc_ic_cancel",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-2c6fbb29c9-a1"
+}

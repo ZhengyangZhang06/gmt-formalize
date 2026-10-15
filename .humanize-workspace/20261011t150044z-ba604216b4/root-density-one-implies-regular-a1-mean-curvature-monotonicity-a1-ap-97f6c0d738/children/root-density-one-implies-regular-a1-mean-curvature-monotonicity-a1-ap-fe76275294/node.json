@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1.plane_integral_pos-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.approx_tangent_in_tangent_space-a1",
+  "depth": 4,
+  "title": "Positive integrals of nonnegative bumps over an n-plane",
+  "statement": "Let P, n ∈ ℕ and let Q be a linear subspace of ℝ^P with dim Q = n (Module.finrank ℝ Q = n). Let g : ℝ^P → ℝ be continuous, compactly supported and nonnegative, and let w ∈ Q with g(w) > 0. Then ∫_Q g dHⁿ > 0. Here Hⁿ = μHE[n], and ∫_Q g dHⁿ is the integral of g against the restricted measure Hⁿ⌞Q.",
+  "lean_statement": "∀ (P n : ℕ) (Q : Submodule ℝ (Euclid P)) (g : Euclid P → ℝ) (w : Euclid P), Module.finrank ℝ Q = n → Continuous g → HasCompactSupport g → (∀ y, 0 ≤ g y) → w ∈ Q → 0 < g w → 0 < ∫ y in (Q : Set (Euclid P)), g y ∂μHE[n]",
+  "lean_name": "dsmc_att_setIntegral_submodule_pos",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ap-fe76275294-a1"
+}

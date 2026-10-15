@@ -1,0 +1,110 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IMRep|currentEval|CompactlyContained|IsMinimizingIn|Sub \\(GeometricCurrentOn",
+        "def GeometricCurrentOn\\.(support|zeroRegion|massOn|mass)|massAdmissibleOn|le_massOn|massOn_mono|testFormOnInclusion|restrictDomain_apply|boundary_apply|isOpen_zeroRegion|covectorEuclideanNorm_neg",
+        "le_of_add_le_add_right|ofReal_add",
+        "dimred_mbl_lc_ic_|IsUnit \\(fun|Matrix\\.of",
+        "dtc_vanish_off_support",
+        "dor_imrep_massOn_eq_measure_and_support",
+        "cmc_imRep_locality_restrict_sub",
+        "dtc_restrictDomain_isIntegerMultiplicity",
+        "lcmp_measure_le_add_of_open_nhds",
+        "rsd_cmr_support_subset_of_vanish",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/ic_dec/Proofs.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Operations.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-32e3afa931/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-32e3afa931/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa62/20261011T234948Z-ch07-root.density_and_tangent_cones-a1.vanish_off_support-a1-_ym43_uw/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa53/20261013T003759Z-ch07-root.density_one_implies_regular-a1.imrep_mass_and_support-a1-7q74w0y4/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa23/20261013T053553Z-ch07-root.compactness_of_minimizing_currents-a1.im_calculus-a1-wyz0xcys/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa7/20261012T162323Z-ch07-root.density_and_tangent_cones-a1.localize-a1.restrict_im-a1-i67cgi_n/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa25/20261013T075302Z-ch07-root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bou-l65lvqqb/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa24/20261012T135810Z-ch07-root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishin-17gpkxm1/comparator-config.json",
+        "/tmp/ic_dec/Proofs.lean"
+      ],
+      "conclusion": "Split appropriate for this selected contract. Verified pinned revisions and byte-identical frozen/workspace contracts. All six reused declarations match their accepted frozen types and successful comparator receipts permitting only standard axioms. No new-name collision was found. Proposed dependencies and the existing dependency closure are acyclic. All eleven types are standalone one-line propositions matching their prose; none contains a declaration, placeholder, self-reference, or problematic matrix construction. Independently inspected and reran the conditional proofs: all five new obligations and assembly of the exact frozen parent type passed Lean with only propext, Classical.choice and Quot.sound. The assembly correctly retains retraction_comparison as a parent prerequisite."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Compact support is covered by finitely many zero-region sets; the subordinate smooth partition splits the form into tests annihilated by the current. Openness of U is unnecessary."
+    },
+    {
+      "key": "mass_and_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The orientation norm bound proves the upper mass bound; compact approximation, Lusin, extension and mollification prove the lower bound. Local finiteness and openness justify the measure arguments, and the final argument establishes the stated relative support identity."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. The supplied proof addresses all four conjuncts: density-zero locality, restricted representations, differences with cancellation on overlaps, and the orientation bound. Its internal dependencies are correctly ordered and non-circular."
+    },
+    {
+      "key": "restrict_open_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Every representation field transfers to M ∩ V. Openness of V supplies the local blow-up equality for approximate tangents; forms supported in V give the required integral identity. No openness assumption on U is needed."
+    },
+    {
+      "key": "compact_outer_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. After the empty-set case, decreasing open thickenings have compact closures in U and intersection E. Local finiteness of ν permits continuity from above; the argument remains valid for c = ∞."
+    },
+    {
+      "key": "support_of_vanishing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Exact accepted-type reuse. Relatively compact balls in U ∖ K exclude every point outside K from the support. The identity support = K ∖ zeroRegion then proves compactness."
+    },
+    {
+      "key": "mass_zero_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly matches the arbitrary-domain statement. Every admissible form misses the current support and evaluates to zero by the declared dependency; taking the ENNReal supremum proves zero mass."
+    },
+    {
+      "key": "cycle",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The explicit iterated-difference construction establishes integer multiplicity and the required evaluation identity. Boundary evaluation proves the cycle condition, while the two support dependencies give compact support inside F. The parent supplies every hypothesis."
+    },
+    {
+      "key": "add_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restriction to the open domain preserves integer multiplicity. Three applications of difference closure construct Z, and evaluation gives exactly T(ω) + Y(ιω). Both declared dependencies suffice."
+    },
+    {
+      "key": "region_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The Borel partition gives the exact T-side identity. The supplied supremum arguments establish the bounds on W and B ∖ F. On F ∖ W, the open domain U ∖ support(S − C) and local finiteness justify compact_outer_bound. This proves both conclusions without unstated integer-multiplicity assumptions on S, C, Sr or Y."
+    },
+    {
+      "key": "cancel",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly derives b ≠ ∞ and ofReal(Lⁿ) = 1 + ofReal(Lⁿ − 1), distributes in ENNReal, cancels only the finite b, and applies b ≤ M. It covers infinite a, s or e and n = 0."
+    }
+  ],
+  "required_changes": []
+}

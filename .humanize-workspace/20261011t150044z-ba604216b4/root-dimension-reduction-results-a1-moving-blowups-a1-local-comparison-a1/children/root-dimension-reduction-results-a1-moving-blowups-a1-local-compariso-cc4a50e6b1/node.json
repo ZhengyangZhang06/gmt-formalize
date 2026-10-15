@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.slice_decomposition-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1",
+  "depth": 4,
+  "title": "Good-level slice decomposition of the flat-convergence remainder (Simon 7.2.4 (1)–(7); steps 2, 4–6 of the parent)",
+  "statement": "Let P, m ∈ ℕ and n := m + 1. Let C ∈ 𝒟_n(ℝ^P) and Ŝ_j ∈ 𝒟_n(ℝ^P) (j ∈ ℕ) be integer multiplicity currents (contract IsIntegerMultiplicity, currents GeometricCurrentOn univ), let κ_j (j ∈ ℕ) be measures on ℝ^P, K ⊆ ℝ^P compact and ε > 0. Assume: (FL′) for every open W₀ ⊆ ℝ^P with compact closure (CompactlyContained W₀ univ) there are integer multiplicity R_j ∈ 𝒟_{n+1}(ℝ^P) and S′_j ∈ 𝒟_n(ℝ^P) with C − Ŝ_j − S′_j = ∂R_j for every j and M_{W₀}(R_j) + M_{W₀}(S′_j) → 0; (SL′) for every T ∈ 𝒟_{n+1}(ℝ^P), all measures μ, μ′ on ℝ^P that are finite on compact sets, all maps ξ : ℝ^P → Λ_{n+1}(ℝ^P), ξ′ : ℝ^P → Λ_n(ℝ^P) (MultiVector) that are a.e. strongly measurable for μ, μ′ respectively, with |ξ(x)(α)| ≤ |α| for μ-a.e. x and all (n+1)-covectors α and |ξ′(x)(α)| ≤ |α| for μ′-a.e. x and all n-covectors α (|·| the Euclidean coefficient norm covectorEuclideanNorm), T(ω) = ∫ ξ(x)(ω(x)) dμ(x) for all ω ∈ 𝒟^{n+1}(ℝ^P) and ∂T(η) = ∫ ξ′(x)(η(x)) dμ′(x) for all η ∈ 𝒟ⁿ(ℝ^P), and every L-Lipschitz f : ℝ^P → ℝ (L ∈ [0, ∞)), there are currents A_t ∈ 𝒟_{n+1}(ℝ^P) and B_t ∈ 𝒟_n(ℝ^P) (t ∈ ℝ) with A_t(ω) = ∫_{f<t} ξ(ω) dμ, B_t(η) = ∫_{f<t} ξ′(η) dμ′, ∂A_t(η) = B_t(η) whenever tsupport η ∩ {f = t} = ∅, and M_W(∂A_t − B_t) ≤ L · liminf_{h→0⁺} h⁻¹ μ(W ∩ {t − h < f < t}) for every open W and every t; (BR′) every integer multiplicity R ∈ 𝒟_{n+1}(ℝ^P) with M_W(∂R) < ∞ for every open W with compact closure has an integer multiplicity boundary ∂R; (κ) for every r ∈ ℝ, κ_j(B_r(0)) < ∞ for all sufficiently large j. Then there are an open W ⊆ ℝ^P, a compact F ⊆ ℝ^P, a strictly increasing φ′ : ℕ → ℕ, numbers e_i ∈ [0, ∞] with e_i → 0, and currents Ŷ_i, Sr_i ∈ 𝒟_n(ℝ^P) (i ∈ ℕ) such that K ⊆ W ⊆ F, W ⊆ thickening(ε, K) (Mathlib Metric.thickening: the points at distance < ε from K; empty if K = ∅), and for every i: Ŷ_i is integer multiplicity, ∂Ŷ_i = 0 and spt Ŷ_i ⊆ F; M(Sr_i) ≤ e_i; μ_R(F ∖ W) ≤ e_i for every integer multiplicity representation R of Ŷ_i in ℝ^P (μ_R = R.measure); κ_{φ′(i)}(F ∖ W) = 0; and C(ω) = Ŝ_{φ′(i)}(ω) + Ŷ_i(ω) + Sr_i(ω) for every ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ W.",
+  "lean_statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (Ŝ : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (κ : ℕ → Measure (Euclid P)) (K : Set (Euclid P)) (ε : ℝ), IsIntegerMultiplicity C → (∀ j, IsIntegerMultiplicity (Ŝ j)) → (∀ W₀ : Set (Euclid P), IsOpen W₀ → CompactlyContained W₀ univ → ∃ (R : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (S' : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ j, IsIntegerMultiplicity (R j) ∧ IsIntegerMultiplicity (S' j) ∧ C - Ŝ j - S' j = (R j).boundary) ∧ Tendsto (fun j => (R j).massOn W₀ + (S' j).massOn W₀) atTop (𝓝 0)) → (∀ (T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (μ μ' : Measure (Euclid P)) (ξ : Euclid P → MultiVector P (m + 2)) (ξ' : Euclid P → MultiVector P (m + 1)) (f : Euclid P → ℝ) (L : NNReal), (∀ K : Set (Euclid P), IsCompact K → μ K < ∞) → (∀ K : Set (Euclid P), IsCompact K → μ' K < ∞) → AEStronglyMeasurable ξ μ → AEStronglyMeasurable ξ' μ' → (∀ᵐ x ∂μ, ∀ α : Covector (Euclid P) (m + 2), |ξ x α| ≤ covectorEuclideanNorm α) → (∀ᵐ x ∂μ', ∀ α : Covector (Euclid P) (m + 1), |ξ' x α| ≤ covectorEuclideanNorm α) → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 2), T ω = ∫ x, ξ x ((ω : DifferentialForm (Euclid P) (m + 2)) x) ∂μ) → (∀ η : TestFormOn (univ : Set (Euclid P)) (m + 1), T.boundary η = ∫ x, ξ' x ((η : DifferentialForm (Euclid P) (m + 1)) x) ∂μ') → LipschitzWith L f → ∃ (A : ℝ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (B : ℝ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), (∀ (t : ℝ) (ω : TestFormOn (univ : Set (Euclid P)) (m + 2)), A t ω = ∫ x in {x | f x < t}, ξ x ((ω : DifferentialForm (Euclid P) (m + 2)) x) ∂μ) ∧ (∀ (t : ℝ) (η : TestFormOn (univ : Set (Euclid P)) (m + 1)), B t η = ∫ x in {x | f x < t}, ξ' x ((η : DifferentialForm (Euclid P) (m + 1)) x) ∂μ') ∧ (∀ (t : ℝ) (η : TestFormOn (univ : Set (Euclid P)) (m + 1)), Disjoint (tsupport (η : DifferentialForm (Euclid P) (m + 1))) {x | f x = t} → (A t).boundary η = B t η) ∧ ∀ (W : Set (Euclid P)) (t : ℝ), IsOpen W → ((A t).boundary - B t).massOn W ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → (∀ R : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity R → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → R.boundary.massOn W < ∞) → IsIntegerMultiplicity R.boundary) → (∀ r : ℝ, ∀ᶠ j in atTop, κ j (ball 0 r) ≠ ∞) → IsCompact K → 0 < ε → ∃ (W F : Set (Euclid P)) (φ' : ℕ → ℕ) (e : ℕ → ℝ≥0∞) (Ŷ Sr : ℕ → GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)), IsOpen W ∧ IsCompact F ∧ K ⊆ W ∧ W ⊆ F ∧ W ⊆ thickening ε K ∧ StrictMono φ' ∧ Tendsto e atTop (𝓝 0) ∧ ∀ i, IsIntegerMultiplicity (Ŷ i) ∧ (Ŷ i).boundary = 0 ∧ (Ŷ i).support ⊆ F ∧ (Sr i).mass ≤ e i ∧ (∀ R : IMRep (univ : Set (Euclid P)) (m + 1), R.Represents (Ŷ i) → R.measure (F \\ W) ≤ e i) ∧ κ (φ' i) (F \\ W) = 0 ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ W → C ω = Ŝ (φ' i) ω + Ŷ i ω + Sr i ω",
+  "lean_name": "dimred_mbl_lc_slice_decomposition",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.imrep_restriction-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_localization-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.good_slice_level-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.imrep_restriction-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-imrep-1bd5f15878-a1",
+      "result_commit": "ae810e9b4cb8d26664747b2f51d22fb4241e09ca",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-triangle-a1-a1",
+      "result_commit": "c7dea4b81c94f56650b6060d3bcb1e801f43d7e9",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-compac-a4168491cb-a1",
+      "result_commit": "bb7f0a567a77ec463f2a7135f2f0fe37047b43f2",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_localization-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-l-9981f1246a-a1",
+      "result_commit": "a3cc98d1f008606225ddd111bbd6688136867146",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.good_slice_level-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-good-s-2d2986292d-a1",
+      "result_commit": "2db111bb9ff42aa1b397d0a7e014137d48002a6c",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-cc4a50e6b1-a1"
+}
