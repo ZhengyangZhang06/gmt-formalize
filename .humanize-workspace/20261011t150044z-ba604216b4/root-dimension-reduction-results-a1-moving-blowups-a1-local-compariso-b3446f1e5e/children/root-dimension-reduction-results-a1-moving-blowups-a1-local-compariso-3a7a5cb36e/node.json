@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1.region_bound-a1.compact_sum_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1.region_bound-a1",
+  "depth": 6,
+  "title": "Mass-measure bound on a compact set for Z = T + Y|_U near the set (parent step 4; Simon 7.2.4 (10))",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be open, let U′ ⊆ U be open and let E ⊆ U′ be compact. Let T, Z ∈ 𝒟_n(U) and Y ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n). Let R and R_Z be integer multiplicity representations in U (IMRep U n) with R.Represents T and R_Z.Represents Z, and let R_Y be one in ℝ^P (IMRep univ n) with R_Y.Represents Y. Suppose Z(ω) = T(ω) + Y(ιω) for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ U′, where ιω = testFormOnInclusion (subset_univ U) n ω is ω regarded as a test form on ℝ^P. Then μ_{R_Z}(E) ≤ μ_R(E) + μ_{R_Y}(E) in [0, ∞], where μ_{R′} := R′.measure = θ′Hⁿ⌞M′ is the weight of R′ = (M′, θ′, ξ′).",
+  "lean_statement": "∀ (P n : ℕ) (U U' E : Set (Euclid P)) (T Z : GeometricCurrentOn U n) (Y : GeometricCurrentOn (univ : Set (Euclid P)) n) (R RZ : IMRep U n) (RY : IMRep (univ : Set (Euclid P)) n), IsOpen U → IsOpen U' → U' ⊆ U → IsCompact E → E ⊆ U' → R.Represents T → RZ.Represents Z → RY.Represents Y → (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ U' → Z ω = T ω + Y (testFormOnInclusion (subset_univ U) n ω)) → RZ.measure E ≤ R.measure E + RY.measure E",
+  "lean_name": "dimred_mbl_lc_ic_rb_measure_le_add_of_compact",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1",
+    "root.regular_set_dense-a1.density_eq_multiplicity-a1.imrep_local_finiteness-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1.region_bound-a1.mixed_mass_triangle-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-compac-a4168491cb-a1",
+      "result_commit": "bb7f0a567a77ec463f2a7135f2f0fe37047b43f2",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.density_eq_multiplicity-a1.imrep_local_finiteness-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-density-eq-multiplicity-a1-imrep-local-finiteness-a1-a1",
+      "result_commit": "702e7082a5a7012f7a8f6efd9d272697e426f50b",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.index_comparison-a1.region_bound-a1.mixed_mass_triangle-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-3a7a5cb36e-a1"
+}
