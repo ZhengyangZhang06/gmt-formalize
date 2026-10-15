@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.mass_integral-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.slicing-a1",
+  "depth": 3,
+  "title": "Integrated slice-mass bound from the pointwise bound (Simon Ch. 6, 4.10)",
+  "statement": "Let P ∈ ℕ, μ a measure on ℝ^P, f : ℝ^P → ℝ measurable, W ⊆ ℝ^P measurable, L ≥ 0, m : ℝ → [0, ∞] an arbitrary function and a, b ∈ ℝ. Suppose m(t) ≤ L·liminf_{h→0+} ofReal(h⁻¹)·μ(W ∩ {t − h < f < t}) for every t ∈ (a, b). Then the lower Lebesgue integral satisfies ∫⁻_{(a,b)} m(t) dt ≤ L·μ(W ∩ {a < f < b}).",
+  "lean_statement": "∀ (P : ℕ) (μ : Measure (Euclid P)) (f : Euclid P → ℝ) (W : Set (Euclid P)) (L : NNReal) (m : ℝ → ℝ≥0∞) (a b : ℝ), Measurable f → MeasurableSet W → (∀ t ∈ Ioo a b, m t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μ (W ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∫⁻ t in Ioo a b, m t ≤ (L : ℝ≥0∞) * μ (W ∩ {x | a < f x ∧ f x < b})",
+  "lean_name": "cmcs_slice_mass_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-mass-integral-a1-a1"
+}

@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.lipschitz_leibniz-a1.action_dct-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.lipschitz_leibniz-a1",
+  "depth": 6,
+  "title": "Dominated convergence for the action of an integer multiplicity triple under bounded pointwise-convergent multipliers",
+  "statement": "Let P, n ∈ ℕ, let U ⊆ ℝ^P be any set, let R = (M, θ, ξ) be an integer multiplicity triple in U of dimension n (IMRep U n, with M = R.carrier, θ = R.mult, ξ = R.orient), and let ω ∈ 𝒟ⁿ(U) (TestFormOn U n). Let h_k : ℝ^P → ℝ (k ∈ ℕ) be Borel measurable, let h : ℝ^P → ℝ be any function, and let C ∈ ℝ be such that |h_k(x)| ≤ C for all k and x and h_k(x) → h(x) as k → ∞ for every x ∈ ℝ^P. Then, with Hⁿ = μHE[n] and Bochner integrals, ∫_M θ(x)·h_k(x)·⟨ω(x), ξ(x)⟩ dHⁿ(x) → ∫_M θ(x)·h(x)·⟨ω(x), ξ(x)⟩ dHⁿ(x) as k → ∞, where ⟨ω(x), ξ(x)⟩ = R.orient x (ω x).",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (ω : TestFormOn U n) (hs : ℕ → Euclid P → ℝ) (h : Euclid P → ℝ) (C : ℝ), (∀ k, Measurable (hs k)) → (∀ k x, |hs k x| ≤ C) → (∀ x, Tendsto (fun k => hs k x) atTop (𝓝 (h x))) → Tendsto (fun k => ∫ x in R.carrier, (R.mult x : ℝ) * hs k x * R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) atTop (𝓝 (∫ x in R.carrier, (R.mult x : ℝ) * h x * R.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]))",
+  "lean_name": "dor_lmbsf_ll_action_mul_tendsto",
+  "depends_on": [
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_current-a1.action_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.imrep_current-a1.action_integrable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-imrep-cu-db12d15d12-a1",
+      "result_commit": "5c54ddba5dec85274dd7c6e4e765104160cb32fd",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-65ff0119c2-a1"
+}

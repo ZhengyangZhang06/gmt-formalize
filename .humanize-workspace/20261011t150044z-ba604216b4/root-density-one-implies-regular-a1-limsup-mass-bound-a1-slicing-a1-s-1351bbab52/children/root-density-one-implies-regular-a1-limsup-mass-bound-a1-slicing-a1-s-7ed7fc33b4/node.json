@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.immersion_injective-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1",
+  "depth": 6,
+  "title": "A C¹ map is injective, with injective derivatives, on a closed ball around a point where its derivative is injective",
+  "statement": "Let P, m ∈ ℕ, write ℝ^k = Euclid k with the Euclidean norm |·|, and let G : ℝ^m → ℝ^P be of class C¹ (ContDiff ℝ 1 G). Let x ∈ ℝ^m be a point at which the derivative DG(x) = fderiv ℝ G x : ℝ^m → ℝ^P is injective. Then there is r > 0 with two properties:\n- G is injective on the closed ball B̄_r(x) = {z : |z − x| ≤ r};\n- DG(z) is injective for every z ∈ B̄_r(x).",
+  "lean_statement": "∀ (P m : ℕ) (G : Euclid m → Euclid P) (x : Euclid m), ContDiff ℝ 1 G → Function.Injective (fderiv ℝ G x) → ∃ r : ℝ, 0 < r ∧ Set.InjOn G (Metric.closedBall x r) ∧ ∀ z ∈ Metric.closedBall x r, Function.Injective (fderiv ℝ G z)",
+  "lean_name": "dor_lmbsf_c1c_immersion_local_injOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-7ed7fc33b4-a1"
+}

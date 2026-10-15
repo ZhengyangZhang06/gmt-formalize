@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.density_gap-a1.origin_regularity-a1.flat_stationarity-a1",
+  "parent_id": "root.dimension_reduction_results-a1.density_gap-a1.origin_regularity-a1",
+  "depth": 4,
+  "title": "Minimizing integer multiplicity cycles in ℝ^P are stationary (Simon 7.1.2, flat case)",
+  "statement": "Let P, j ∈ ℕ, let C ∈ 𝒟_j(ℝ^P) (GeometricCurrentOn (univ : Set (Euclid P)) j), and let R = (M, θ, ξ) ∈ IMRep(ℝ^P, j). Suppose that:\n- C is minimizing in ℝ^P (IsMinimizingIn C univ, Simon 7.1.1);\n- ∂C = 0 (BoundaryVanishes C);\n- R represents C (R.Represents C: C(ω) = ∫_M θ⟨ω, ξ⟩ dH^j for every ω ∈ 𝒟^j(ℝ^P));\n- spt C ≠ ∅ (C.support.Nonempty).\nLet X : ℝ^P → ℝ^P be any C¹ vector field with compact support. Then the first variation δV(X) = R.firstVariation X = ∫_M θ div_M X dH^j of the associated varifold vanishes. That is, minimizing integer multiplicity cycles in ℝ^P are stationary (Simon 7.1.2, flat case N = ℝ^P).",
+  "lean_statement": "∀ (P j : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) j) (R : IMRep (univ : Set (Euclid P)) j), IsMinimizingIn C univ → BoundaryVanishes C → R.Represents C → C.support.Nonempty → ∀ X : Euclid P → Euclid P, ContDiff ℝ 1 X → HasCompactSupport X → R.firstVariation X = 0",
+  "lean_name": "dimred_cdg_or_minimizing_firstVariation_eq_zero",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-density-gap-a1-origin-regularity-a6941e7a37-a1"
+}

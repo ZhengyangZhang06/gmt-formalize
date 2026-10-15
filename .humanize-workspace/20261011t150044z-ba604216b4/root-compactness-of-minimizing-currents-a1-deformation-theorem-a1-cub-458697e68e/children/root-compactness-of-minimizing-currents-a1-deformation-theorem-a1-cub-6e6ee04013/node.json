@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1.grad_bound-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1",
+  "depth": 5,
+  "title": "Mollification by a kernel of radius σ < δ does not increase the variation on Q_δ: ∫_{Q_δ}‖D(ρ⋆1_{Q₁}u)‖ ≤ V",
+  "statement": "Let m ∈ ℕ, n := m + 1, ℝⁿ = Euclid n with Lebesgue measure, Q₁ := {y : 0 < y_i < 1 for all i}, Q_δ := {y : δ < y_i < 1 − δ for all i}, and div g := trace Dg. Let u : ℝⁿ → ℝ be integrable on Q₁ and V ∈ ℝ with ∫_{Q₁} u · div g ≤ V for every C^∞ map g : ℝⁿ → ℝⁿ with compact support, tsupport g ⊆ Q₁ and |g| ≤ 1. Let δ, σ ∈ ℝ with 0 < σ < δ, and let ρ : ℝⁿ → ℝ be C^∞ with ρ ≥ 0, ∫ρ = 1 and support ρ ⊆ B_σ(0). Then f := ρ ⋆ (1_{Q₁}u), f(x) = ∫ ρ(t) (1_{Q₁}u)(x − t) dt (Mathlib's convolution with lsmul ℝ ℝ and volume), satisfies ∫_{Q_δ} ‖Df(x)‖ dx ≤ V (operator norm, Bochner integral).",
+  "lean_statement": "∀ (m : ℕ) (u : Euclid (m + 1) → ℝ) (V δ σ : ℝ) (ρ : Euclid (m + 1) → ℝ), IntegrableOn u {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ g : Euclid (m + 1) → Euclid (m + 1), ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → tsupport g ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} → (∀ y, ‖g y‖ ≤ 1) → ∫ y in {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}, u y * LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y) ≤ V) → 0 < σ → σ < δ → ContDiff ℝ (⊤ : ℕ∞) ρ → (∀ z, 0 ≤ ρ z) → ∫ z, ρ z = 1 → support ρ ⊆ ball (0 : Euclid (m + 1)) σ → ∫ x in {z : Euclid (m + 1) | ∀ i, δ < z i ∧ z i < 1 - δ}, ‖fderiv ℝ (convolution ρ ({y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1}.indicator u) (ContinuousLinearMap.lsmul ℝ ℝ) volume) x‖ ≤ V",
+  "lean_name": "cmcdt_cbm_sa_grad_bound",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1.mollify_adjoint-a1",
+    "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1.smoothed_field-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1.mollify_adjoint-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_approx-a1.smoothed_field-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-6e6ee04013-a1"
+}
