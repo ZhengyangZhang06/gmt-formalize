@@ -40406,46 +40406,6 @@ theorem Submission.dimred_mbl_slice_mass_bounds : ∀ (P k : ℕ) (U : Set (Eucl
       (hA t) (hB t) η hη
   · exact Submission.cmcs_slice_mass_integral P μ f W L (fun t => ((A t).boundary - B t).massOn W)
       a b hf.continuous.measurable hW.measurableSet fun t _ => hpt W t
-    obtain ⟨a, ha, t, ht, rfl⟩ := support_convolution_subset_swap _ hy
-    have haQ : ∀ i, δ < a i ∧ a i < 1 - δ := by
-      by_contra h
-      exact ha (hs0 a h)
-    have htn : ‖t‖ < σ := by simpa using hρsupp ht
-    intro i
-    have hti : |t i| < σ := by
-      have := PiLp.norm_apply_le t i
-      rw [Real.norm_eq_abs] at this
-      linarith
-    obtain ⟨ha1, ha2⟩ := haQ i
-    obtain ⟨ht1, ht2⟩ := abs_lt.1 hti
-    simp only [PiLp.add_apply]
-    constructor <;> linarith
-  -- Step 6: `P` is closed and, as `0 < σ < δ`, lies in `Q₁ ⊆ B̄_{√(m+1)}(0)`; so it is compact.
-  have hPclosed : IsClosed P := by
-    have : P = ⋂ i, ({y : Euclid (m + 1) | δ - σ ≤ y i} ∩
-        {y : Euclid (m + 1) | y i ≤ 1 - δ + σ}) := by
-      ext y; simp [P]
-    rw [this]
-    exact isClosed_iInter fun i => (isClosed_le continuous_const (by fun_prop)).inter
-      (isClosed_le (by fun_prop) continuous_const)
-  have hPQ1 : P ⊆ {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} := by
-    intro y hy i
-    obtain ⟨h1, h2⟩ := hy i
-    exact ⟨by linarith, by linarith⟩
-  have hQ1bdd : {y : Euclid (m + 1) | ∀ i, 0 < y i ∧ y i < 1} ⊆
-      closedBall (0 : Euclid (m + 1)) (Real.sqrt (m + 1)) := by
-    intro y hy
-    rw [mem_closedBall, dist_zero_right, EuclideanSpace.norm_eq]
-    apply Real.sqrt_le_sqrt
-    calc ∑ i, ‖y i‖ ^ 2 ≤ ∑ _i : Fin (m + 1), (1 : ℝ) := Finset.sum_le_sum fun i _ => by
-            obtain ⟨h0, h1⟩ := hy i
-            rw [Real.norm_eq_abs, sq_abs]; nlinarith
-      _ = m + 1 := by simp
-  have hPcompact : IsCompact P :=
-    isCompact_of_isClosed_isBounded hPclosed (isBounded_closedBall.subset (hPQ1.trans hQ1bdd))
-  -- Step 7: `tsupport G = closure (support G) ⊆ P`, so it is compact and lies in `Q₁`.
-  have htsupp : tsupport G ⊆ P := closure_minimal hsuppG hPclosed
-  exact ⟨hG, hPcompact.of_isClosed_subset (isClosed_tsupport G) htsupp, htsupp.trans hPQ1, hGle⟩
 
 /-- Gradient bound for the mollified function (Simon Ch. 2, Lemma 2.5, duality argument): if
 `∫_{Q₁} u div g ≤ V` for every smooth `g` with `|g| ≤ 1` and compact support in `Q₁`, then
