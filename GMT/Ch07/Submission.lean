@@ -584,6 +584,160 @@ theorem Submission.dsmc_att_blowUpMap_image_null : ∀ (P n : ℕ) (E : Set (Euc
   -- Steps 3–4: `Hⁿ(λ⁻¹ · τ(E)) = ‖λ⁻¹‖₊ⁿ • Hⁿ(τ(E)) = 0`
   rw [himage, Set.image_smul, Measure.euclideanHausdorffMeasure_smul₀ n (inv_ne_zero hlam), htrans,
     smul_zero]
+/-- **Good radius** (Simon 7.2.4, choice of the slicing level; the factor-2 averaging of Ch. 2,
+6.7(1)).  If `ρ < ρ'`, `μ(B̄_{ρ'}(y)) < ∞`, `∫ g dL¹ ≤ I` and `p` holds `L¹`-a.e., then some
+`t ∈ (ρ, ρ')` has `p t`, `μ(∂B_t(y)) = 0` and `g t ≤ (2 / (ρ' - ρ)) I`: the levels failing `p` and
+the (countably many) levels whose sphere charges the finite measure `μ⌞B̄_{ρ'}(y)` are `L¹`-null,
+and by Markov's inequality the levels with `g t > (2 / (ρ' - ρ)) I` have `L¹`-measure at most
+`(ρ' - ρ) / 2 < L¹((ρ, ρ'))`. -/
+theorem Submission.dor_lmb_glc_good_radius : ∀ (P : ℕ) (μ : Measure (Euclid P)) (y : Euclid P) (ρ ρ' : ℝ) (g : ℝ → ℝ≥0∞) (I : ℝ≥0∞) (p : ℝ → Prop), ρ < ρ' → μ (closedBall y ρ') ≠ ∞ → AEMeasurable g → ∫⁻ t, g t ≤ I → (∀ᵐ t, p t) → ∃ t : ℝ, ρ < t ∧ t < ρ' ∧ p t ∧ μ (sphere y t) = 0 ∧ g t ≤ ENNReal.ofReal (2 / (ρ' - ρ)) * I := by
+  intro P μ y ρ ρ' g I p hρ hμ hg hI hp
+  have hδ : 0 < ρ' - ρ := sub_pos.mpr hρ
+  set c := ENNReal.ofReal (2 / (ρ' - ρ)) with hc_def
+  have hc0 : c ≠ 0 := by
+    rw [hc_def, Ne, ENNReal.ofReal_eq_zero, not_le]
+    positivity
+  have hctop : c ≠ ∞ := ENNReal.ofReal_ne_top
+  have hcinv : c⁻¹ = ENNReal.ofReal ((ρ' - ρ) / 2) := by
+    rw [hc_def, ← ENNReal.ofReal_inv_of_pos (by positivity), inv_div]
+  -- `N₁`: the exceptional set of `p` is Lebesgue-null
+  have hN₁ : volume {t : ℝ | ¬ p t} = 0 := ae_iff.mp hp
+  -- `N₂`: only countably many spheres charge the finite measure `μ⌞B̄_{ρ'}(y)`
+  have hfin : IsFiniteMeasure (μ.restrict (closedBall y ρ')) := isFiniteMeasure_restrict.mpr hμ
+  have hcount : {s : ℝ | 0 < μ.restrict (closedBall y ρ') (sphere y s)}.Countable :=
+    Measure.countable_meas_pos_of_disjoint_iUnion (fun s => isClosed_sphere.measurableSet)
+      (fun s s' hss' => Set.disjoint_left.mpr fun x hx hx' =>
+        hss' ((mem_sphere.mp hx).symm.trans (mem_sphere.mp hx')))
+  have hN₂ : volume {s : ℝ | 0 < μ.restrict (closedBall y ρ') (sphere y s)} = 0 :=
+    hcount.measure_zero volume
+  -- `N₃`: Markov's inequality gives `L¹(N₃) ≤ (ρ' - ρ) / 2`
+  have hN₃ : volume {t : ℝ | c * I < g t} ≤ ENNReal.ofReal ((ρ' - ρ) / 2) := by
+    rcases eq_or_ne I 0 with h0 | h0
+    · have hzero : ∫⁻ t, g t = 0 := le_antisymm (hI.trans h0.le) zero_le
+      have hae : g =ᵐ[volume] 0 := (lintegral_eq_zero_iff' hg).mp hzero
+      have hnull : volume {t : ℝ | c * I < g t} = 0 := by
+        refine measure_mono_null (fun t ht => ?_) (ae_iff.mp hae)
+        simp only [Set.mem_ofPred_eq, h0, mul_zero] at ht ⊢
+        exact ht.ne'
+      rw [hnull]
+      exact zero_le
+    rcases eq_or_ne I ∞ with htop | htop
+    · have hempty : {t : ℝ | c * I < g t} = ∅ := by
+        ext t
+        simp [htop, ENNReal.mul_top hc0]
+      rw [hempty, measure_empty]
+      exact zero_le
+    have hε0 : c * I ≠ 0 := mul_ne_zero hc0 h0
+    have hεtop : c * I ≠ ∞ := ENNReal.mul_ne_top hctop htop
+    calc volume {t : ℝ | c * I < g t} ≤ volume {t : ℝ | c * I ≤ g t} :=
+          measure_mono fun t (ht : c * I < g t) => show c * I ≤ g t from ht.le
+      _ ≤ (∫⁻ t, g t) / (c * I) := meas_ge_le_lintegral_div hg hε0 hεtop
+      _ ≤ I / (c * I) := ENNReal.div_le_div_right hI _
+      _ = c⁻¹ := by
+        rw [ENNReal.div_eq_inv_mul, ENNReal.mul_inv (Or.inl hc0) (Or.inl hctop), mul_assoc,
+          ENNReal.inv_mul_cancel h0 htop, mul_one]
+      _ = ENNReal.ofReal ((ρ' - ρ) / 2) := hcinv
+  -- covering: if no good `t` existed, then `(ρ, ρ') ⊆ N₁ ∪ N₂ ∪ N₃`
+  by_contra hcon
+  have hcover : Ioo ρ ρ' ⊆ {t : ℝ | ¬ p t} ∪
+      {s : ℝ | 0 < μ.restrict (closedBall y ρ') (sphere y s)} ∪ {t : ℝ | c * I < g t} := by
+    intro t ht
+    by_contra hnot
+    simp only [Set.mem_union, Set.mem_ofPred_eq, not_or, not_not, not_lt, nonpos_iff_eq_zero]
+      at hnot
+    obtain ⟨⟨hpt, hνt⟩, hgt⟩ := hnot
+    have hμt : μ (sphere y t) = 0 := by
+      rwa [Measure.restrict_apply isClosed_sphere.measurableSet, Set.inter_eq_left.mpr
+        (sphere_subset_closedBall.trans (closedBall_subset_closedBall ht.2.le))] at hνt
+    exact hcon ⟨t, ht.1, ht.2, hpt, hμt, hgt⟩
+  have hle : ENNReal.ofReal (ρ' - ρ) ≤ ENNReal.ofReal ((ρ' - ρ) / 2) :=
+    calc ENNReal.ofReal (ρ' - ρ) = volume (Ioo ρ ρ') := Real.volume_Ioo.symm
+      _ ≤ volume ({t : ℝ | ¬ p t} ∪ {s : ℝ | 0 < μ.restrict (closedBall y ρ') (sphere y s)} ∪
+          {t : ℝ | c * I < g t}) := measure_mono hcover
+      _ ≤ volume {t : ℝ | ¬ p t} + volume {s : ℝ | 0 < μ.restrict (closedBall y ρ') (sphere y s)} +
+          volume {t : ℝ | c * I < g t} :=
+        (measure_union_le _ _).trans (add_le_add (measure_union_le _ _) le_rfl)
+      _ ≤ ENNReal.ofReal ((ρ' - ρ) / 2) := by
+        rw [hN₁, hN₂, zero_add, zero_add]
+        exact hN₃
+  rw [ENNReal.ofReal_le_ofReal_iff (by positivity)] at hle
+  linarith
+/-- **Simon Ch. 6, 2.5** (step 8(b) of the level cut in the proof of 7.2.4): if `Y = T − S` on
+the forms supported in `W`, then `M_W(Y) ≤ M_W(T) + M_W(S)`.  `M_W(Y)` is the supremum of `Y(ω)`
+over the forms `ω ∈ 𝒟ⁿ(U)` admissible for `M_W` (`spt ω ⊆ W`, `|ω| ≤ 1`).  For such `ω` the
+form `−ω` is admissible as well, since it has the same support and pointwise coefficient norm.
+As `Y(ω) = T(ω) − S(ω) = T(ω) + S(−ω)` and `ofReal` is subadditive, `Y(ω)` is bounded by
+`M_W(T) + M_W(S)`. -/
+theorem Submission.dor_lmb_glc_massOn_sub_le : ∀ (P n : ℕ) (U W : Set (Euclid P)) (T S Y : GeometricCurrentOn U n), (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ W → Y ω = T ω - S ω) → Y.massOn W ≤ T.massOn W + S.massOn W := by
+  intro P n U W T S Y hY
+  -- Step 1: `M_W(Y)` is a supremum, so fix an admissible `ω`
+  apply sSup_le
+  rintro r ⟨ω, hω, rfl⟩
+  -- Step 2: `−ω` is admissible (same support, same coefficient norm)
+  have hnω : -ω ∈ massAdmissibleOn U n W := by
+    refine ⟨?_, fun x => ?_⟩
+    · rw [Submodule.coe_neg, tsupport_neg]
+      exact hω.1
+    · rw [Submodule.coe_neg, Pi.neg_apply, covectorEuclideanNorm_neg]
+      exact hω.2 x
+  -- Step 3: `Y(ω) = T(ω) − S(ω) = T(ω) + S(−ω)`, as `spt ω ⊆ W`
+  have hY' : Y ω = T ω + S (-ω) := by
+    rw [hY ω hω.1, map_neg S.toCurrent ω, sub_eq_add_neg]
+  -- Steps 4–5: subadditivity of `ofReal`, and each admissible value is bounded by the mass
+  calc ENNReal.ofReal (Y ω) = ENNReal.ofReal (T ω + S (-ω)) := by rw [hY']
+    _ ≤ ENNReal.ofReal (T ω) + ENNReal.ofReal (S (-ω)) := ENNReal.ofReal_add_le
+    _ ≤ T.massOn W + S.massOn W := add_le_add (T.le_massOn hω) (S.le_massOn hnω)
+/-- Simon 7.2.4 (3) and Ch. 6, 4.5(2): by cancellation `X = D + Q` acts as
+`ω ↦ ∫_{M̂∩B_t(y)} θ̂⟨dω, ξ̂⟩ dH^{n+1}` (informally `∂(R⌞B_t(y))`), so `∂X = 0` by `d² = 0`,
+`X(ω) = 0` if `spt ω` misses `B̄_t(y)`, and `X(ω) = R(dω) = ∂R(ω)` if `spt ω ⊆ B_t(y)`. -/
+theorem Submission.dor_lmb_glc_cut_cycle : ∀ (P n : ℕ) (U : Set (Euclid P)) (R : GeometricCurrentOn U (n + 1)) (RR : IMRep U (n + 1)) (RB : IMRep U n) (D Q : GeometricCurrentOn U n) (y : Euclid P) (t : ℝ), RR.Represents R → (∀ ω : TestFormOn U n, D ω = ∫ x in RB.carrier ∩ ball y t, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → (∀ ω : TestFormOn U n, Q ω = (∫ x in RR.carrier ∩ ball y t, (RR.mult x : ℝ) * RR.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) ∂μHE[n + 1]) - ∫ x in RB.carrier ∩ ball y t, (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n]) → ∃ X : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, X ω = D ω + Q ω) ∧ BoundaryVanishes X ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (closedBall y t) → X ω = 0) ∧ ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball y t → X ω = R.boundary ω := by
+  intro P n U R RR RB D Q y t hR hD hQ
+  -- `X := D + Q` is a current, as the sum of two continuous functionals
+  let X : GeometricCurrentOn U n :=
+    { toCurrent := D.toCurrent + Q.toCurrent
+      continuous' := fun ωs h => by
+        simpa using (D.continuous' ωs h).add (Q.continuous' ωs h) }
+  have hXDQ : ∀ ω : TestFormOn U n, X ω = D ω + Q ω := fun _ => rfl
+  -- (‡) `X(ω) = ∫_{M̂∩B} θ̂⟨dω, ξ̂⟩ dH^{n+1}`, by cancellation
+  have hX : ∀ ω : TestFormOn U n, X ω = ∫ x in RR.carrier ∩ ball y t,
+      (RR.mult x : ℝ) * RR.orient x (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x)
+        ∂μHE[n + 1] := fun ω => by
+    rw [hXDQ, hD, hQ]
+    ring
+  clear_value X
+  refine ⟨X, hXDQ, ?_, fun ω hω => ?_, fun ω hω => ?_⟩
+  · -- `∂X(η) = X(dη) = ∫ θ̂⟨d(dη), ξ̂⟩ = 0` as `d² = 0` (vacuous for `n = 0`)
+    cases n with
+    | zero => trivial
+    | succ m =>
+      show X.boundary = 0
+      refine GeometricCurrentOn.ext fun η => ?_
+      rw [GeometricCurrentOn.boundary_apply, hX, GeometricCurrentOn.zero_apply]
+      refine setIntegral_eq_zero_of_forall_eq_zero fun x _ => ?_
+      change (RR.mult x : ℝ) * RR.orient x
+        (exteriorDerivative (exteriorDerivative (η : DifferentialForm (Euclid P) m)) x) = 0
+      rw [exteriorDerivative_sq η.property.1.1, Pi.zero_apply, map_zero, mul_zero]
+  · -- `dω` vanishes on `B ⊆ B̄`, which misses `spt ω ⊇ spt dω`
+    have hdω : ∀ x ∈ ball y t, exteriorDerivative (ω : DifferentialForm (Euclid P) n) x = 0 :=
+      fun x hx => image_eq_zero_of_notMem_tsupport fun hx' =>
+        hω.notMem_of_mem_right (ball_subset_closedBall hx)
+          (tsupport_exteriorDerivative_subset _ hx')
+    rw [hX]
+    exact setIntegral_eq_zero_of_forall_eq_zero fun x hx => by rw [hdω x hx.2, map_zero, mul_zero]
+  · -- `∂R(ω) = R(dω) = ∫_{M̂} θ̂⟨dω, ξ̂⟩`, and `dω` vanishes on `M̂ \ B` as `spt dω ⊆ spt ω ⊆ B`
+    have hdω : ∀ x ∉ ball y t, exteriorDerivative (ω : DifferentialForm (Euclid P) n) x = 0 :=
+      fun x hx => image_eq_zero_of_notMem_tsupport fun hx' =>
+        hx (hω (tsupport_exteriorDerivative_subset _ hx'))
+    rw [hX, GeometricCurrentOn.boundary_apply, hR (exteriorDerivativeTestOn U n ω), IMRep.action]
+    refine (setIntegral_eq_of_subset_of_forall_sdiff_eq_zero RR.measurableSet_carrier
+      inter_subset_left fun x hx => ?_).symm
+    show (RR.mult x : ℝ) * RR.orient x
+      (exteriorDerivative (ω : DifferentialForm (Euclid P) n) x) = 0
+    rw [hdω x fun hxB => hx.2 ⟨hx.1, hxB⟩, map_zero, mul_zero]
+/-- Localized Besicovitch density (Simon Ch. 1, Theorem 3.16; Mathlib's
+`Besicovitch.ae_tendsto_measure_inter_div`).  Let `U` be open, `A ⊆ B ⊆ U` Borel, and
+`Hⁿ(B ∩ K) < ∞` for every compact `K ⊆ U`.  Then for `Hⁿ⌞A`-a.e. `x` and every `ε > 0`,
+`Hⁿ((B \ A) ∩ B̄_ρ(x)) ≤ ε Hⁿ(B ∩ B̄_ρ(x))` for all small `ρ > 0`.
 
 /-- **Blow-ups of `M ∩ N` approach every vector of an approximate tangent space** (Simon Ch. 3,
 Definition 1.4, chapter-03.txt lines 77–83, tested as in Remark 1.5(3), lines 90–92).  If
@@ -602,6 +756,126 @@ theorem Submission.dsmc_att_blowUp_points_of_approxTangent : ∀ (P n : ℕ) (M 
   have hg_ball : ∀ y, g y ≠ 0 → y ∈ ball w s := by
     intro y hy
     rw [mem_ball, dist_eq_norm]
+    have : IsFiniteMeasure ((μHE[n] : Measure (Euclid P)).restrict (B ∩ closedBall y (r y))) :=
+      ⟨by
+        rw [Measure.restrict_apply_univ]
+        exact (hfin _ (isCompact_closedBall y (r y)) (hrU y (hDU hy))).lt_top⟩
+    have h := Besicovitch.ae_tendsto_measure_inter_div
+      ((μHE[n] : Measure (Euclid P)).restrict (B ∩ closedBall y (r y))) A
+    -- `(Hⁿ⌞(B ∩ K))⌞A = (Hⁿ⌞A)⌞K` since `A ⊆ B`
+    have hres : ((μHE[n] : Measure (Euclid P)).restrict (B ∩ closedBall y (r y))).restrict A =
+        ((μHE[n] : Measure (Euclid P)).restrict A).restrict (closedBall y (r y)) := by
+      rw [Measure.restrict_restrict hA, Measure.restrict_restrict measurableSet_closedBall]
+      congr 1
+      ext z
+      exact ⟨fun ⟨hzA, _, hzK⟩ => ⟨hzK, hzA⟩, fun ⟨hzK, hzA⟩ => ⟨hzA, hAB hzA, hzK⟩⟩
+    rwa [hres, ae_restrict_iff' measurableSet_closedBall] at h
+  filter_upwards [hpiece, ae_restrict_mem hA] with x hx hxA ε hε
+  obtain ⟨y, hyD, hxy⟩ := mem_iUnion₂.1 (hcov (hBU (hAB hxA)))
+  obtain ⟨δ, hδ, hδy⟩ := Metric.isOpen_iff.1 isOpen_ball x hxy
+  have hsmall : ∀ ρ : ℝ, ρ < δ → closedBall x ρ ⊆ closedBall y (r y) := fun ρ hρ =>
+    ((closedBall_subset_ball hρ).trans hδy).trans ball_subset_closedBall
+  have hBK : MeasurableSet (B ∩ closedBall y (r y)) := hB.inter measurableSet_closedBall
+  -- Step 3: for `ρ < δ` the quotient is `Hⁿ(A ∩ B̄_ρ(x)) / Hⁿ(B ∩ B̄_ρ(x))`
+  have hT : Tendsto (fun ρ : ℝ => μHE[n] (A ∩ closedBall x ρ) / μHE[n] (B ∩ closedBall x ρ))
+      (𝓝[>] 0) (𝓝 1) := by
+    refine (hx y hyD (ball_subset_closedBall hxy)).congr' ?_
+    filter_upwards [Ioo_mem_nhdsGT hδ] with ρ hρ
+    rw [Measure.restrict_apply' hBK, Measure.restrict_apply' hBK]
+    congr 2
+    · ext z
+      exact ⟨fun ⟨hz, _⟩ => hz, fun ⟨hzA, hzx⟩ => ⟨⟨hzA, hzx⟩, hAB hzA, hsmall ρ hρ.2 hzx⟩⟩
+    · ext z
+      exact ⟨fun ⟨hzx, hzB, _⟩ => ⟨hzB, hzx⟩, fun ⟨hzB, hzx⟩ => ⟨hzx, hzB, hsmall ρ hρ.2 hzx⟩⟩
+  have hfinρ : ∀ ρ : ℝ, ρ < δ → μHE[n] (B ∩ closedBall x ρ) ≠ ∞ := fun ρ hρ =>
+    ne_top_of_le_ne_top (hfin _ (isCompact_closedBall y (r y)) (hrU y (hDU hyD)))
+      (measure_mono (inter_subset_inter_right B (hsmall ρ hρ)))
+  -- `Hⁿ((B \ A) ∩ B̄_ρ(x)) + Hⁿ(A ∩ B̄_ρ(x)) = Hⁿ(B ∩ B̄_ρ(x))`
+  have hsplit : ∀ ρ : ℝ, μHE[n] ((B \ A) ∩ closedBall x ρ) + μHE[n] (A ∩ closedBall x ρ) =
+      μHE[n] (B ∩ closedBall x ρ) := by
+    intro ρ
+    rw [← measure_union _ (hA.inter measurableSet_closedBall)]
+    · congr 1
+      ext z
+      constructor
+      · rintro (⟨⟨hzB, -⟩, hzx⟩ | ⟨hzA, hzx⟩)
+        · exact ⟨hzB, hzx⟩
+        · exact ⟨hAB hzA, hzx⟩
+      · rintro ⟨hzB, hzx⟩
+        by_cases hzA : z ∈ A
+        · exact Or.inr ⟨hzA, hzx⟩
+        · exact Or.inl ⟨⟨hzB, hzA⟩, hzx⟩
+    · rw [Set.disjoint_left]
+      rintro z ⟨⟨-, hzA⟩, -⟩ ⟨hzA', -⟩
+      exact hzA hzA'
+  -- Step 4: the excess estimate
+  rcases le_or_gt 1 ε with hε1 | hε1
+  · -- `ε ≥ 1`: monotonicity
+    refine Eventually.of_forall fun ρ => ?_
+    calc μHE[n] ((B \ A) ∩ closedBall x ρ) ≤ μHE[n] (B ∩ closedBall x ρ) :=
+          measure_mono (inter_subset_inter_left _ sdiff_subset)
+      _ = 1 * μHE[n] (B ∩ closedBall x ρ) := (one_mul _).symm
+      _ ≤ ε * μHE[n] (B ∩ closedBall x ρ) := by gcongr
+  · -- `ε < 1`: eventually `b / a > 1 − ε`, with `a ≠ ∞`
+    have hsub : 1 - ε < 1 := ENNReal.sub_lt_self ENNReal.one_ne_top one_ne_zero hε.ne'
+    filter_upwards [hT (isOpen_Ioi.mem_nhds hsub), Ioo_mem_nhdsGT hδ] with ρ hρq hρ
+    set a := μHE[n] (B ∩ closedBall x ρ)
+    set b := μHE[n] (A ∩ closedBall x ρ)
+    set e := μHE[n] ((B \ A) ∩ closedBall x ρ)
+    have hatop : a ≠ ∞ := hfinρ ρ hρ.2
+    have hsplitρ : e + b = a := hsplit ρ
+    -- `a ≠ 0`, since otherwise `b / a = 0 / 0 = 0 ≤ 1 − ε`
+    have ha0 : a ≠ 0 := by
+      intro h0
+      have hb0 : b = 0 := nonpos_iff_eq_zero.1 (h0 ▸ hsplitρ ▸ le_add_self)
+      have : b / a = 0 := by rw [hb0, ENNReal.zero_div]
+      rw [mem_preimage, this, mem_Ioi] at hρq
+      exact not_lt_zero hρq
+    have hlt : (1 - ε) * a < b :=
+      (ENNReal.lt_div_iff_mul_lt (Or.inl ha0) (Or.inl hatop)).1 hρq
+    -- `e + (1 − ε)a ≤ e + b = a = εa + (1 − ε)a`, and `(1 − ε)a ≠ ∞`
+    have h1 : e + (1 - ε) * a ≤ ε * a + (1 - ε) * a := by
+      calc e + (1 - ε) * a ≤ e + b := by gcongr
+        _ = a := hsplitρ
+        _ = (ε + (1 - ε)) * a := by rw [add_tsub_cancel_of_le hε1.le, one_mul]
+        _ = ε * a + (1 - ε) * a := add_mul _ _ _
+    exact ENNReal.le_of_add_le_add_right (ENNReal.mul_ne_top (by simp) hatop) h1
+/-- **Countable gluing of the co-area identity over disjoint Borel pieces** (Simon Ch. 3, 2.8–2.9
+summed over the decomposition `M = ⋃ⱼ Mⱼ` of Remark 1.3).  If `g` vanishes off the pairwise disjoint
+Borel pieces `S j ⊆ M` and each piece satisfies `∫ ∫_{(S j)_t} φ dν dt = ∫_{S j} |g| φ dμ` (with an
+a.e.-measurable slice integral), then so does `M`: the slice `M_t = M ∩ {g ≠ 0} ∩ f⁻¹(t)` is the
+disjoint union of the `(S j)_t`, both sides are series over `j`, and monotone convergence exchanges
+`∫ dt` with `∑ⱼ`. -/
+theorem Submission.dor_lmbsf_tg_coarea_gluing : ∀ (P : ℕ) (μ ν : Measure (Euclid P)) (M : Set (Euclid P)) (S : ℕ → Set (Euclid P)) (g : Euclid P → Euclid P) (f : Euclid P → ℝ) (φ : Euclid P → ℝ≥0∞), MeasurableSet M → (∀ j, MeasurableSet (S j)) → Pairwise (fun i j => Disjoint (S i) (S j)) → (∀ j, S j ⊆ M) → Measurable g → (∀ x, (∀ j, x ∉ S j) → g x = 0) → Measurable f → (∀ j, AEMeasurable (fun t => ∫⁻ x in S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν) ∧ ∫⁻ t, (∫⁻ x in S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν) = ∫⁻ x in S j, ‖g x‖ₑ * φ x ∂μ) → AEMeasurable (fun t => ∫⁻ x in M ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν) ∧ ∫⁻ t, (∫⁻ x in M ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν) = ∫⁻ x in M, ‖g x‖ₑ * φ x ∂μ := by
+  intro P μ ν M S g f φ _ hS hdisj hSM hg hg0 hf hpiece
+  -- Step 1: `M_t = ⋃ⱼ (S j)_t`, since `g = 0` off `⋃ⱼ S j` and `S j ⊆ M`
+  have hset : ∀ t : ℝ,
+      M ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t} = ⋃ j, S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t} := by
+    intro t
+    ext x
+    simp only [mem_inter_iff, mem_ofPred_eq, mem_preimage, mem_singleton_iff, mem_iUnion]
+    constructor
+    · rintro ⟨⟨-, hgx⟩, hfx⟩
+      obtain ⟨j, hj⟩ : ∃ j, x ∈ S j := by
+        by_contra h
+        exact hgx (hg0 x fun j hj => h ⟨j, hj⟩)
+      exact ⟨j, ⟨hj, hgx⟩, hfx⟩
+    · rintro ⟨j, ⟨hj, hgx⟩, hfx⟩
+      exact ⟨⟨hSM j hj, hgx⟩, hfx⟩
+  -- Step 2: the slices `(S j)_t` are Borel and pairwise disjoint
+  have hmeas : ∀ (t : ℝ) j, MeasurableSet (S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}) := fun t j =>
+    ((hS j).inter (hg (measurableSet_singleton 0).compl)).inter (hf (measurableSet_singleton t))
+  have hdisj' : ∀ t : ℝ, Pairwise (Disjoint on fun j => S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}) :=
+    fun t i j hij => (hdisj hij).mono (inter_subset_left.trans inter_subset_left)
+      (inter_subset_left.trans inter_subset_left)
+  -- Step 3: `∫_{M_t} φ dν = ∑ⱼ ∫_{(S j)_t} φ dν` for every `t`
+  have hslice : ∀ t : ℝ, ∫⁻ x in M ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν =
+      ∑' j, ∫⁻ x in S j ∩ {x | g x ≠ 0} ∩ f ⁻¹' {t}, φ x ∂ν := fun t => by
+    rw [hset t, lintegral_iUnion (hmeas t) (hdisj' t)]
+  -- Step 6: `|g| φ` vanishes off `⋃ⱼ S j ⊆ M`, so `∫_M |g| φ dμ = ∑ⱼ ∫_{S j} |g| φ dμ`
+  have hsupp : support (fun x => ‖g x‖ₑ * φ x) ⊆ ⋃ j, S j := by
+    intro x hx
+    rw [mem_support] at hx
     by_contra h
     exact hy (max_eq_left (by linarith [not_lt.mp h]))
   have hg_supp : HasCompactSupport g :=
@@ -26256,6 +26530,120 @@ theorem Submission.dor_lmb_c1_retraction : ∀ (P d : ℕ) (U N : Set (Euclid P)
       ((hQ.contDiffAt (hV.mem_nhds (hδV hgx))).differentiableAt one_ne_zero) hnormal hcomp
       (Submodule.starProjection_norm_le _) ha hb (hDQ _ hgx) (hDψ _ hgx) hsmall
     linarith [mul_le_mul_of_nonneg_left hxπ (mul_nonneg zero_le_two hab)]
+
+/-- **Cut-off at a good level** (Simon 7.2.4, displays (3)–(7) and (10), chapter-07.txt lines
+187–246, with the Lipschitz slicing function `f = |· − y|` of Simon Ch. 6, 4.5): let
+`T − T' = ∂R + S` in `U` with `T, T', S, R` integer multiplicity, and `B̄_{ρ'}(y) ⊆ U`.  Then for
+some `t ∈ (ρ, ρ')` there are an integer multiplicity cycle `X` (constructed as `∂(R⌞B_t(y))`)
+vanishing on forms supported off `B̄_t(y)`, and a triple `RY` representing `Y = T' + X`, with
+`μ_{RY}(B̄_t(y)) ≤ M_{B_{ρ'}(y)}(T) + M_{B_{ρ'}(y)}(S) + (2/(ρ' − ρ)) M_{B_{ρ'}(y)}(R)`.
+
+Slice `R` by `|· − y|` and choose `t` so that the slice `P_t` is good, `μ_{T'}(∂B_t(y)) = 0` and
+`M_{B_{ρ'}(y)}(P_t) ≤ 2 M_{B_{ρ'}(y)}(R)/(ρ' − ρ)`; put `X := (∂R)⌞B_t(y) + P_t`.  On `B_t(y)`,
+`Y = T' + ∂R = T − S`; on `∂B_t(y)`, `μ_{RY} ≤ μ_{T'} + μ_{(∂R)⌞B_t(y)} + μ_{P_t}` and only the
+last term charges the sphere. -/
+theorem Submission.dor_lmb_good_level_cut : (∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → (∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) ∧ T.support = U ∩ R.measure.support) → ∀ (P n : ℕ) (U : Set (Euclid P)) (T T' S : GeometricCurrentOn U n) (R : GeometricCurrentOn U (n + 1)) (y : Euclid P) (ρ ρ' : ℝ), IsOpen U → 0 < n → IsIntegerMultiplicity T → IsIntegerMultiplicity T' → IsIntegerMultiplicity S → IsIntegerMultiplicity R → (∀ ω : TestFormOn U n, T ω - T' ω = R.boundary ω + S ω) → 0 < ρ → ρ < ρ' → closedBall y ρ' ⊆ U → ∃ (t : ℝ) (X Y : GeometricCurrentOn U n) (RY : IMRep U n), ρ < t ∧ t < ρ' ∧ IsIntegerMultiplicity X ∧ BoundaryVanishes X ∧ (∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) (closedBall y t) → X ω = 0) ∧ (∀ ω : TestFormOn U n, Y ω = T' ω + X ω) ∧ RY.Represents Y ∧ RY.measure (closedBall y t) ≤ T.massOn (ball y ρ') + S.massOn (ball y ρ') + ENNReal.ofReal (2 / (ρ' - ρ)) * R.massOn (ball y ρ') := by
+  intro hC1 P n U T T' S R y ρ ρ' hU _hn hTim hT'im hSim hRim hrel _hρ hρρ' hball
+  -- Step 1(a): representations of `T`, `T'`, `S` and `R`
+  obtain ⟨RT, hRT⟩ := hTim
+  obtain ⟨RT', hRT'⟩ := hT'im
+  obtain ⟨RS, hRS⟩ := hSim
+  obtain ⟨RR, hRR⟩ := hRim
+  -- Step 1(b): a representation of `T − T'`, then one of `∂R = (T − T') − S`
+  have hsub : ∀ ω : TestFormOn U n, (T - T') ω = T ω - T' ω := fun ω => rfl
+  obtain ⟨RD, hRD, -⟩ := Submission.dor_lmb_int_combination_imrep P n U T T' (T - T') RT RT'
+    1 (-1) hU hRT hRT' fun ω => by
+      rw [hsub ω]
+      push_cast
+      ring
+  obtain ⟨RB, hRB, -⟩ := Submission.dor_lmb_int_combination_imrep P n U (T - T') S R.boundary
+    RD RS 1 (-1) hU hRD hRS fun ω => by
+      rw [hsub ω]
+      push_cast
+      linarith [hrel ω]
+  -- Step 2: slice `R` by the 1-Lipschitz function `|· − y|`; `{|· − y| < t} = B_t(y)`
+  obtain ⟨Ps, hPmass, hPae⟩ := Submission.dor_lmb_slicing_lipschitz hC1 P n U R RR RB
+    (fun x => dist x y) 1 hU hRR hRB (LipschitzWith.dist_left y)
+  -- Step 3: `μ_{T'}(B̄_{ρ'}(y)) < ∞`, as `B̄_{ρ'}(y)` is a compact subset of `U`
+  have hT'fin : RT'.measure (closedBall y ρ') ≠ ∞ := by
+    rw [IMRep.measure, withDensity_apply _ measurableSet_closedBall,
+      Measure.restrict_restrict measurableSet_closedBall, inter_comm]
+    exact RT'.locallyIntegrable_mult _ (isCompact_closedBall y ρ') hball
+  -- Step 4: a level `t ∈ (ρ, ρ')` where the slice is good, `μ_{T'}(∂B_t(y)) = 0`, and
+  -- `M_{B_{ρ'}(y)}(P_t) ≤ (2/(ρ' − ρ)) M_{B_{ρ'}(y)}(R)`
+  have hPint : ∫⁻ s, (Ps s).massOn (ball y ρ') ≤ R.massOn (ball y ρ') := by
+    simpa only [ENNReal.coe_one, one_mul] using (hPmass _ isOpen_ball).2
+  obtain ⟨t, hρt, htρ', ⟨⟨RP, hRP⟩, -, hPt⟩, hsph, hPtmass⟩ :=
+    Submission.dor_lmb_glc_good_radius P RT'.measure y ρ ρ' (fun s => (Ps s).massOn (ball y ρ'))
+      (R.massOn (ball y ρ')) _ hρρ' hT'fin (hPmass _ isOpen_ball).1 hPint hPae
+  -- Step 5: `D = (∂R)⌞B_t(y)`, represented by `RBt = (M_B ∩ B_t(y), θ_B, ξ_B)`
+  obtain ⟨D, RBt, hRBt, hcar, hmult, hor, hmeas⟩ :=
+    Submission.dor_lmb_imrep_restrict_current P n U (ball y t) RB hU measurableSet_ball
+  have hD : ∀ ω : TestFormOn U n, D ω = ∫ x in RB.carrier ∩ ball y t,
+      (RB.mult x : ℝ) * RB.orient x ((ω : DifferentialForm (Euclid P) n) x) ∂μHE[n] := by
+    intro ω
+    rw [hRBt ω, IMRep.action, hcar, hmult, hor]
+  -- Step 6: the cut cycle `X = D + P_t`
+  obtain ⟨X, hXDP, hXbd, hXoff, hXin⟩ :=
+    Submission.dor_lmb_glc_cut_cycle P n U R RR RB D (Ps t) y t hRR hD hPt
+  -- Step 6(c): `X` is integer multiplicity, with `μ_{RX} ≤ μ_{RB}⌞B_t(y) + μ_{RP}`
+  obtain ⟨RX, hRX, hRXle⟩ := Submission.dor_lmb_int_combination_imrep P n U D (Ps t) X RBt RP
+    1 1 hU hRBt hRP fun ω => by
+      rw [hXDP ω]
+      push_cast
+      ring
+  -- Step 7: `Y = T' + X`, with `μ_{RY} ≤ μ_{T'} + μ_{RX}`
+  let Y : GeometricCurrentOn U n :=
+    { toCurrent := T'.toCurrent + X.toCurrent
+      continuous' := fun ωs h => by
+        simpa using (T'.continuous' ωs h).add (X.continuous' ωs h) }
+  have hY : ∀ ω : TestFormOn U n, Y ω = T' ω + X ω := fun ω => rfl
+  obtain ⟨RY, hRY, hRYle⟩ := Submission.dor_lmb_int_combination_imrep P n U T' X Y RT' RX
+    1 1 hU hRT' hRX fun ω => by
+      rw [hY ω]
+      push_cast
+      ring
+  -- Step 8: on `B_t(y)`, `Y = T' + ∂R = T − S`, so `μ_{RY}(B_t(y)) = M_{B_t(y)}(Y)` is at most
+  -- `M_{B_{ρ'}(y)}(T) + M_{B_{ρ'}(y)}(S)`
+  have hYin : ∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ ball y t →
+      Y ω = T ω - S ω := by
+    intro ω hω
+    rw [hY ω, hXin ω hω]
+    linarith [hrel ω]
+  have hBt : RY.measure (ball y t) ≤ T.massOn (ball y ρ') + S.massOn (ball y ρ') := by
+    rw [← (hC1 P n U Y RY hU hRY).1 _ isOpen_ball]
+    calc Y.massOn (ball y t) ≤ T.massOn (ball y t) + S.massOn (ball y t) :=
+          Submission.dor_lmb_glc_massOn_sub_le P n U (ball y t) T S Y hYin
+      _ ≤ T.massOn (ball y ρ') + S.massOn (ball y ρ') :=
+          add_le_add (T.massOn_mono (ball_subset_ball htρ'.le))
+            (S.massOn_mono (ball_subset_ball htρ'.le))
+  -- Step 9: on `∂B_t(y)`, only `μ_{RP}` can charge the sphere, and
+  -- `μ_{RP}(∂B_t(y)) ≤ μ_{RP}(B_{ρ'}(y)) = M_{B_{ρ'}(y)}(P_t)`
+  have hSt : RY.measure (sphere y t) ≤
+      ENNReal.ofReal (2 / (ρ' - ρ)) * R.massOn (ball y ρ') := by
+    have hY3 : RY.measure (sphere y t) ≤
+        RT'.measure (sphere y t) + (RBt.measure (sphere y t) + RP.measure (sphere y t)) := by
+      have h1 := Measure.le_iff'.1 hRYle (sphere y t)
+      have h2 := Measure.le_iff'.1 hRXle (sphere y t)
+      simp only [Int.natAbs_one, Nat.cast_one, one_smul, Measure.coe_add, Pi.add_apply] at h1 h2
+      exact h1.trans (add_le_add le_rfl h2)
+    have hRBt0 : RBt.measure (sphere y t) = 0 := by
+      rw [hmeas, Measure.restrict_apply isClosed_sphere.measurableSet,
+        sphere_disjoint_ball.inter_eq, measure_empty]
+    calc RY.measure (sphere y t)
+        ≤ RT'.measure (sphere y t) + (RBt.measure (sphere y t) + RP.measure (sphere y t)) := hY3
+      _ = RP.measure (sphere y t) := by rw [hsph, hRBt0, zero_add, zero_add]
+      _ ≤ RP.measure (ball y ρ') :=
+          measure_mono (sphere_subset_closedBall.trans (closedBall_subset_ball htρ'))
+      _ = (Ps t).massOn (ball y ρ') := ((hC1 P n U (Ps t) RP hU hRP).1 _ isOpen_ball).symm
+      _ ≤ ENNReal.ofReal (2 / (ρ' - ρ)) * R.massOn (ball y ρ') := hPtmass
+  -- Step 10: `B̄_t(y) = B_t(y) ∪ ∂B_t(y)`
+  refine ⟨t, X, Y, RY, hρt, htρ', ⟨RX, hRX⟩, hXbd, hXoff, hY, hRY, ?_⟩
+  calc RY.measure (closedBall y t) = RY.measure (ball y t ∪ sphere y t) := by
+        rw [ball_union_sphere]
+    _ ≤ RY.measure (ball y t) + RY.measure (sphere y t) := measure_union_le _ _
+    _ ≤ T.massOn (ball y ρ') + S.massOn (ball y ρ') +
+          ENNReal.ofReal (2 / (ρ' - ρ)) * R.massOn (ball y ρ') := add_le_add hBt hSt
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
