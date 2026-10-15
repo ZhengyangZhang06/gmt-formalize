@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1.line_integral_pos-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1",
+  "depth": 6,
+  "title": "A nonnegative continuous compactly supported function that is positive at a unit vector u has positive H¹-integral over the line ℝu (parent step 4a)",
+  "statement": "Let P ∈ ℕ, let u ∈ ℝ^P with ‖u‖ = 1, and let f : ℝ^P → ℝ be continuous with compact support, f(y) ≥ 0 for all y, and f(u) > 0. Then ∫_{span{u}} f dH¹ > 0, where H¹ = μHE[1] is the normalized 1-dimensional Hausdorff measure on ℝ^P and the integral is taken over the line span{u} = ℝu (with respect to H¹ restricted to that set).",
+  "lean_statement": "∀ (P : ℕ) (u : Euclid P) (f : Euclid P → ℝ), ‖u‖ = 1 → Continuous f → HasCompactSupport f → (∀ y, 0 ≤ f y) → 0 < f u → 0 < ∫ y in (Submodule.span ℝ {u} : Set (Euclid P)), f y ∂(μHE[1] : Measure (Euclid P))",
+  "lean_name": "idtp_fons_odc_ro_line_integral_pos",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-0d93921451-a1"
+}
