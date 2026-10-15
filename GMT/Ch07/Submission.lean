@@ -1905,6 +1905,141 @@ theorem Submission.dsmc_em_cutoff_tendsto_ball : ∃ η : ℕ → ℝ → ℝ, (
     · rw [indicator_of_notMem hx]
       exact tendsto_const_nhds.congr fun j => (hzero j _ (hge x hx)).symm
 
+/-- **Integrating factor for the monotonicity identity** (Simon Ch. 4, 3.16–3.17).  If `I` is
+continuous on `(0, r]`, has derivative `I'` on `(0, r)` and `n I(s) − s I'(s) ≤ κ s I(s)` there,
+then `s ↦ e^{κs} s⁻ⁿ I(s)` is nondecreasing on `(0, r]`.  On `(0, r]` this function equals
+`G(s) = exp(κs − n log s) I(s)`, and `G'(s) = exp(κs − n log s) s⁻¹ (κ s I(s) − (n I(s) − s I'(s)))
+≥ 0` on `(0, r)`, so the mean value theorem applies. -/
+theorem Submission.dsmc_em_exp_monotoneOn_of_deriv_ineq : ∀ (n : ℕ) (κ r : ℝ) (I I' : ℝ → ℝ), ContinuousOn I (Ioc 0 r) → (∀ s ∈ Ioo 0 r, HasDerivAt I (I' s) s) → (∀ s ∈ Ioo 0 r, (n : ℝ) * I s - s * I' s ≤ κ * s * I s) → MonotoneOn (fun s => Real.exp (κ * s) / s ^ n * I s) (Ioc 0 r) := by
+  intro n κ r I I' hIc hId hineq
+  -- on `(0, r]`, `e^{κs}/sⁿ · I(s) = G(s) := exp(κs − n log s) · I(s)`
+  refine MonotoneOn.congr (f₁ := fun s => Real.exp (κ * s - n * Real.log s) * I s) ?_ ?_
+  swap
+  · intro s hs
+    simp only [Real.exp_sub, Real.exp_nat_mul, Real.exp_log hs.1]
+  -- `G` is continuous on `(0, r]`
+  have hGc : ContinuousOn (fun s => Real.exp (κ * s - n * Real.log s) * I s) (Ioc 0 r) := by
+    refine ContinuousOn.mul (Real.continuous_exp.comp_continuousOn ?_) hIc
+    exact (continuousOn_const.mul continuousOn_id).sub
+      (continuousOn_const.mul (Real.continuousOn_log.mono fun s hs => hs.1.ne'))
+  -- `G' = exp(κs − n log s) · ((κ − n/s) I + I') ≥ 0` on `(0, r)`; mean value theorem
+  refine monotoneOn_of_hasDerivWithinAt_nonneg (convex_Ioc 0 r) hGc
+    (f' := fun s => Real.exp (κ * s - n * Real.log s) * ((κ - n * s⁻¹) * I s + I' s)) ?_ ?_
+  · intro s hs
+    rw [interior_Ioc] at hs
+    have h1 : HasDerivAt (fun s => κ * s - n * Real.log s) (κ * 1 - n * s⁻¹) s :=
+      ((hasDerivAt_id' s).const_mul κ).sub ((Real.hasDerivAt_log hs.1.ne').const_mul (n : ℝ))
+    exact ((h1.exp.mul (hId s hs)).congr_deriv (by ring)).hasDerivWithinAt
+  · intro s hs
+    rw [interior_Ioc] at hs
+    have key : (κ - n * s⁻¹) * I s + I' s = s⁻¹ * (κ * s * I s - (n * I s - s * I' s)) := by
+      linear_combination (-(κ * I s + I' s)) * mul_inv_cancel₀ hs.1.ne'
+    rw [key]
+    exact mul_nonneg (Real.exp_pos _).le
+      (mul_nonneg (inv_nonneg.mpr hs.1.le) (sub_nonneg.mpr (hineq s hs)))
+/-- **Differentiation of radial cutoff integrals** (Simon Ch. 4, 3.3–3.4, where
+`I(ρ) = ∫ φ(r/ρ) dμ` is differentiated in `ρ`; here the cutoff is written in the squared ratio
+`|x - z|²/t²`).  If `μ(B_r(z)) < ∞` and `η` is `C¹` with `η = 0` on `[1, ∞)`, then
+`I(t) = ∫ η(|x - z|²/t²) dμ` is continuous on `(0, r]` and, for `0 < s < r`,
+`I'(s) = -(∫ 2 (|x - z|²/s²) η'(|x - z|²/s²) dμ)/s` (dominated convergence and differentiation
+under the integral sign). -/
+theorem Submission.dsmc_em_cutoff_integral_hasDerivAt : ∀ (P : ℕ) (μ : Measure (Euclid P)) (z : Euclid P) (r : ℝ) (η : ℝ → ℝ), μ (ball z r) < ∞ → ContDiff ℝ 1 η → (∀ u, 1 ≤ u → η u = 0) → ContinuousOn (fun t => ∫ x, η (‖x - z‖ ^ 2 / t ^ 2) ∂μ) (Ioc 0 r) ∧ ∀ s ∈ Ioo 0 r, HasDerivAt (fun t => ∫ x, η (‖x - z‖ ^ 2 / t ^ 2) ∂μ) (-(∫ x, 2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2) ∂μ) / s) s := by
+  intro P μ z r η hμ hη hη1
+  have hηc : Continuous η := hη.continuous
+  have hη'c : Continuous (deriv η) := hη.continuous_deriv le_rfl
+  -- `η' = deriv η` vanishes on `(1, ∞)` (where `η` is locally zero), hence on `[1, ∞)`.
+  have hη'1 : ∀ u, 1 ≤ u → deriv η u = 0 := by
+    have hIoi : Ioi (1 : ℝ) ⊆ {u | deriv η u = 0} := fun u hu => by
+      have hloc : η =ᶠ[𝓝 u] fun _ => (0 : ℝ) := by
+        filter_upwards [Ioi_mem_nhds hu] with v hv
+        exact hη1 v (le_of_lt hv)
+      show deriv η u = 0
+      rw [hloc.deriv_eq, deriv_const]
+    have hIci : Ici (1 : ℝ) ⊆ {u | deriv η u = 0} := by
+      rw [← closure_Ioi]
+      exact closure_minimal hIoi (isClosed_eq hη'c continuous_const)
+    exact fun u hu => hIci hu
+  -- Bounds on `[0, 1]` for `η` and for `u ↦ 2 u η'(u)`.
+  obtain ⟨C, hC⟩ := isCompact_Icc.exists_bound_of_continuousOn (s := Icc (0 : ℝ) 1)
+    hηc.continuousOn
+  obtain ⟨K, hK⟩ := isCompact_Icc.exists_bound_of_continuousOn (s := Icc (0 : ℝ) 1)
+    (f := fun u : ℝ => 2 * u * deriv η u) (by fun_prop)
+  have hg1 : ∀ u, 1 ≤ u → 2 * u * deriv η u = 0 := fun u hu => by
+    rw [hη'1 u hu, mul_zero]
+  -- For `0 < t ≤ r`, `g(|x - z|²/t²)` vanishes off `B_t(z) ⊆ B_r(z)` and is dominated there.
+  have hdom : ∀ (g : ℝ → ℝ) (B : ℝ), (∀ u, 1 ≤ u → g u = 0) → (∀ u ∈ Icc (0 : ℝ) 1, ‖g u‖ ≤ B) →
+      ∀ t, 0 < t → t ≤ r → ∀ x : Euclid P,
+        ‖g (‖x - z‖ ^ 2 / t ^ 2)‖ ≤ (ball z r).indicator (fun _ => B) x := by
+    intro g B hg0 hgB t ht htr x
+    have hB : 0 ≤ B := (norm_nonneg _).trans (hgB 0 ⟨le_rfl, zero_le_one⟩)
+    by_cases hx : ‖x - z‖ < t
+    · have hxr : x ∈ ball z r := by
+        rw [mem_ball, dist_eq_norm]
+        exact hx.trans_le htr
+      rw [indicator_of_mem hxr]
+      apply hgB
+      refine ⟨by positivity, ?_⟩
+      rw [div_le_one (by positivity)]
+      exact pow_le_pow_left₀ (norm_nonneg _) hx.le 2
+    · rw [not_lt] at hx
+      rw [hg0 _ ?_, norm_zero]
+      · exact indicator_nonneg (fun _ _ => hB) x
+      · rw [le_div_iff₀ (by positivity), one_mul]
+        exact pow_le_pow_left₀ ht.le hx 2
+  have hint : ∀ c : ℝ, Integrable ((ball z r).indicator (fun _ => c)) μ := fun c =>
+    (integrable_indicator_iff measurableSet_ball).2 (integrableOn_const hμ.ne)
+  have hcont : ∀ t : ℝ, Continuous fun x : Euclid P => η (‖x - z‖ ^ 2 / t ^ 2) := fun t => by
+    fun_prop
+  -- Pointwise derivative in `t ≠ 0`.
+  have hderiv : ∀ x : Euclid P, ∀ t : ℝ, t ≠ 0 →
+      HasDerivAt (fun t => η (‖x - z‖ ^ 2 / t ^ 2))
+        (-(2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)) / t) t := by
+    intro x t ht
+    have h1 := (hasDerivAt_const t (‖x - z‖ ^ 2)).div (hasDerivAt_pow 2 t) (pow_ne_zero 2 ht)
+    have h2 := (hη.differentiable one_ne_zero (‖x - z‖ ^ 2 / t ^ 2)).hasDerivAt.comp t h1
+    refine h2.congr_deriv ?_
+    field_simp
+    ring
+  refine ⟨?_, fun s hs => ?_⟩
+  · -- (i) continuity on `(0, r]` by dominated convergence
+    refine continuousOn_of_dominated (F := fun t x => η (‖x - z‖ ^ 2 / t ^ 2))
+      (bound := (ball z r).indicator (fun _ => C)) (fun t _ => (hcont t).aestronglyMeasurable)
+      (fun t ht => Eventually.of_forall (hdom η C hη1 hC t ht.1 ht.2)) (hint C)
+      (Eventually.of_forall fun x t ht => (hderiv x t ht.1.ne').continuousAt.continuousWithinAt)
+  · -- (ii) differentiation under the integral sign on `(s/2, r)`
+    have hs0 : 0 < s := hs.1
+    have hb : ∀ x : Euclid P, ∀ t ∈ Ioo (s / 2) r,
+        ‖-(2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)) / t‖ ≤
+          (ball z r).indicator (fun _ => K) x / (s / 2) := by
+      intro x t ht
+      have ht0 : 0 < t := by linarith [ht.1]
+      have h1 : ‖2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)‖ ≤
+          (ball z r).indicator (fun _ => K) x :=
+        hdom (fun u => 2 * u * deriv η u) K hg1 hK t ht0 ht.2.le x
+      have h2 : 0 ≤ (ball z r).indicator (fun _ => K) x := (norm_nonneg _).trans h1
+      rw [norm_div, norm_neg, Real.norm_of_nonneg ht0.le]
+      calc ‖2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)‖ / t
+          ≤ (ball z r).indicator (fun _ => K) x / t := by gcongr
+        _ ≤ (ball z r).indicator (fun _ => K) x / (s / 2) := by
+          gcongr
+          exact ht.1.le
+    have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := μ) (x₀ := s)
+      (F := fun t x => η (‖x - z‖ ^ 2 / t ^ 2))
+      (F' := fun t x => -(2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)) / t)
+      (bound := fun x => (ball z r).indicator (fun _ => K) x / (s / 2))
+      (Ioo_mem_nhds (by linarith) hs.2)
+      (Eventually.of_forall fun t => (hcont t).aestronglyMeasurable)
+      ((hint C).mono' (hcont s).aestronglyMeasurable
+        (Eventually.of_forall (hdom η C hη1 hC s hs0 hs.2.le)))
+      (by fun_prop : Continuous fun x : Euclid P =>
+        -(2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2)) / s).aestronglyMeasurable
+      (Eventually.of_forall hb) ((hint K).div_const (s / 2))
+      (Eventually.of_forall fun x t ht => hderiv x t (by linarith [ht.1] : 0 < t).ne')
+    have hval : ∫ x, -(2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2)) / s ∂μ =
+        -(∫ x, 2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2) ∂μ) / s := by
+      rw [integral_div, integral_neg]
+    rw [← hval]
+    exact key.2
 /-- **Monotonicity of `e^{κρ} ρ⁻ⁿ μ_R(B_ρ(z))` under bounded generalized mean curvature**
 (Simon Ch. 4, 3.14–3.17).  If `δV(X) = -∫ X · H dμ_R` for `C¹` fields `X` supported in `B_r(z)`,
 `B̄_r(z) ⊆ U` and `|H| ≤ κ`, then `e^{κs} s⁻ⁿ μ_R(B_s(z))` is nondecreasing on `(0, r]`.  For each
@@ -34983,6 +35118,56 @@ theorem Submission.continuous_blowUp_image_setIntegral : ∀ (P n : ℕ) (M : Se
   exact (continuous_const.mul
     (Submission.continuous_integral_comp_blowUpMap P _ hμ f hf hfs r hr)).congr fun x =>
       (Submission.setIntegral_blowUpMap_image_eq_inv_pow_mul P n M x r hr f).symm
+/-- A field of orthogonal projections `p_x = (K x).starProjection` is a.e.-measurable (Borel
+σ-algebra of the operator-norm topology) when each quadratic form `x ↦ |p_x u|²` is.  As `p_x` is
+self-adjoint and idempotent, `⟪p_x u, w⟫ = (|p_x(u + w)|² − |p_x(u − w)|²)/4`, so the matrix
+coefficients `⟪p_x e_a, e_b⟫` are a.e.-measurable, and `p_x = Σ_{a,b} ⟪p_x e_a, e_b⟫ ⟪e_a, ·⟫ e_b`
+is a continuous linear function of them. -/
+theorem Submission.aemeasurable_starProjection_of_aemeasurable_norm_sq : ∀ (P : ℕ) (μ : Measure (Euclid P)) (K : Euclid P → Submodule ℝ (Euclid P)), (∀ u : Euclid P, AEMeasurable (fun x => ‖(K x).starProjection u‖ ^ 2) μ) → AEMeasurable (fun x => (K x).starProjection) μ := by
+  intro P μ K h
+  -- by polarization every coefficient `x ↦ ⟪p_x u, w⟫` is a.e.-measurable
+  have hcoef : ∀ u w : Euclid P,
+      AEMeasurable (fun x => inner ℝ ((K x).starProjection u) w) μ := by
+    intro u w
+    have key : ∀ x, inner ℝ ((K x).starProjection u) w =
+        (‖(K x).starProjection (u + w)‖ ^ 2 - ‖(K x).starProjection (u - w)‖ ^ 2) / 4 := by
+      intro x
+      have hsym : inner ℝ ((K x).starProjection u) w =
+          inner ℝ ((K x).starProjection u) ((K x).starProjection w) := by
+        rw [Submodule.inner_starProjection_left_eq_right,
+          Submodule.inner_starProjection_left_eq_right,
+          Submodule.starProjection_eq_self_iff.2 ((K x).starProjection_apply_mem w)]
+      rw [hsym, map_add, map_sub, norm_add_sq_real, norm_sub_sq_real]
+      ring
+    simp_rw [key]
+    exact ((h (u + w)).sub (h (u - w))).div_const 4
+  -- `p_x = Λ (g x)`, `Λ m = ∑ m_{ab} ⟪e_a, ·⟫ e_b`, `g x = (⟪p_x e_a, e_b⟫)_{ab}`
+  let e := EuclideanSpace.basisFun (Fin P) ℝ
+  let Λ : (Fin P × Fin P → ℝ) → (Euclid P →L[ℝ] Euclid P) := fun m =>
+    ∑ ab, m ab • (innerSL ℝ (e ab.1)).smulRight (e ab.2)
+  have heq : (fun x => (K x).starProjection) =
+      fun x => Λ fun ab => inner ℝ ((K x).starProjection (e ab.1)) (e ab.2) := by
+    funext x
+    refine ContinuousLinearMap.ext fun v => ?_
+    simp only [Λ, FunLike.coe_sum, Finset.sum_apply, FunLike.coe_smul,
+      Pi.smul_apply, ContinuousLinearMap.smulRight_apply, innerSL_apply_apply,
+      Fintype.sum_prod_type]
+    calc (K x).starProjection v = (K x).starProjection (∑ a, inner ℝ (e a) v • e a) := by
+          rw [e.sum_repr']
+      _ = ∑ a, inner ℝ (e a) v • (K x).starProjection (e a) := by
+          simp only [map_sum, map_smul]
+      _ = ∑ a, inner ℝ (e a) v • ∑ b, inner ℝ (e b) ((K x).starProjection (e a)) • e b := by
+          simp only [e.sum_repr']
+      _ = _ := by
+          refine Finset.sum_congr rfl fun a _ => ?_
+          rw [Finset.smul_sum]
+          refine Finset.sum_congr rfl fun b _ => ?_
+          rw [real_inner_comm (e b), smul_smul, smul_smul, mul_comm]
+  -- `Λ` is continuous and `g` is a.e.-measurable coordinatewise
+  have hΛ : Continuous Λ :=
+    continuous_finsetSum _ fun ab _ => (continuous_apply ab).smul continuous_const
+  rw [heq]
+  exact hΛ.measurable.comp_aemeasurable (AEMeasurable.of_eval fun ab => hcoef _ _)
 /-- **Simon Ch. 3, 1.4** (measurability of the approximate tangent planes): if `Hⁿ(M ∩ K) < ∞`
 for every compact `K` and `Q(x)` is an approximate tangent space of `M` at `Hⁿ⌞M`-a.e. `x`, then
 `x ↦ p_{Q(x)} = (Q x).starProjection` is `Hⁿ⌞M`-a.e. strongly measurable.  For `n = 0`,
@@ -70337,56 +70522,6 @@ theorem Submission.imrep_represents_massOn_eq_measure : ∀ (P n : ℕ) (U W : S
       _ = ⨆ k, μ (Kk k) := hKkmono.measure_iUnion
       _ ≤ T.massOn W := iSup_le fun k => hKbound _ (hKkc k) (hKkW k)
   exact le_antisymm hupper (hlowerGen R.measure R.orient hrep hfin hmeas hH1 hH2)
-/-- A field of orthogonal projections `p_x = (K x).starProjection` is a.e.-measurable (Borel
-σ-algebra of the operator-norm topology) when each quadratic form `x ↦ |p_x u|²` is.  As `p_x` is
-self-adjoint and idempotent, `⟪p_x u, w⟫ = (|p_x(u + w)|² − |p_x(u − w)|²)/4`, so the matrix
-coefficients `⟪p_x e_a, e_b⟫` are a.e.-measurable, and `p_x = Σ_{a,b} ⟪p_x e_a, e_b⟫ ⟪e_a, ·⟫ e_b`
-is a continuous linear function of them. -/
-theorem Submission.aemeasurable_starProjection_of_aemeasurable_norm_sq : ∀ (P : ℕ) (μ : Measure (Euclid P)) (K : Euclid P → Submodule ℝ (Euclid P)), (∀ u : Euclid P, AEMeasurable (fun x => ‖(K x).starProjection u‖ ^ 2) μ) → AEMeasurable (fun x => (K x).starProjection) μ := by
-  intro P μ K h
-  -- by polarization every coefficient `x ↦ ⟪p_x u, w⟫` is a.e.-measurable
-  have hcoef : ∀ u w : Euclid P,
-      AEMeasurable (fun x => inner ℝ ((K x).starProjection u) w) μ := by
-    intro u w
-    have key : ∀ x, inner ℝ ((K x).starProjection u) w =
-        (‖(K x).starProjection (u + w)‖ ^ 2 - ‖(K x).starProjection (u - w)‖ ^ 2) / 4 := by
-      intro x
-      have hsym : inner ℝ ((K x).starProjection u) w =
-          inner ℝ ((K x).starProjection u) ((K x).starProjection w) := by
-        rw [Submodule.inner_starProjection_left_eq_right,
-          Submodule.inner_starProjection_left_eq_right,
-          Submodule.starProjection_eq_self_iff.2 ((K x).starProjection_apply_mem w)]
-      rw [hsym, map_add, map_sub, norm_add_sq_real, norm_sub_sq_real]
-      ring
-    simp_rw [key]
-    exact ((h (u + w)).sub (h (u - w))).div_const 4
-  -- `p_x = Λ (g x)`, `Λ m = ∑ m_{ab} ⟪e_a, ·⟫ e_b`, `g x = (⟪p_x e_a, e_b⟫)_{ab}`
-  let e := EuclideanSpace.basisFun (Fin P) ℝ
-  let Λ : (Fin P × Fin P → ℝ) → (Euclid P →L[ℝ] Euclid P) := fun m =>
-    ∑ ab, m ab • (innerSL ℝ (e ab.1)).smulRight (e ab.2)
-  have heq : (fun x => (K x).starProjection) =
-      fun x => Λ fun ab => inner ℝ ((K x).starProjection (e ab.1)) (e ab.2) := by
-    funext x
-    refine ContinuousLinearMap.ext fun v => ?_
-    simp only [Λ, FunLike.coe_sum, Finset.sum_apply, FunLike.coe_smul,
-      Pi.smul_apply, ContinuousLinearMap.smulRight_apply, innerSL_apply_apply,
-      Fintype.sum_prod_type]
-    calc (K x).starProjection v = (K x).starProjection (∑ a, inner ℝ (e a) v • e a) := by
-          rw [e.sum_repr']
-      _ = ∑ a, inner ℝ (e a) v • (K x).starProjection (e a) := by
-          simp only [map_sum, map_smul]
-      _ = ∑ a, inner ℝ (e a) v • ∑ b, inner ℝ (e b) ((K x).starProjection (e a)) • e b := by
-          simp only [e.sum_repr']
-      _ = _ := by
-          refine Finset.sum_congr rfl fun a _ => ?_
-          rw [Finset.smul_sum]
-          refine Finset.sum_congr rfl fun b _ => ?_
-          rw [real_inner_comm (e b), smul_smul, smul_smul, mul_comm]
-  -- `Λ` is continuous and `g` is a.e.-measurable coordinatewise
-  have hΛ : Continuous Λ :=
-    continuous_finsetSum _ fun ab _ => (continuous_apply ab).smul continuous_const
-  rw [heq]
-  exact hΛ.measurable.comp_aemeasurable (AEMeasurable.of_eval fun ab => hcoef _ _)
 /-- For an integer multiplicity triple `R = (M, θ, ξ)` in an open set `U`, `Hⁿ⌞M` is σ-finite.
 The open set `U ⊆ ℝᴾ` is σ-compact, `U = ⋃ⱼ Kⱼ` with `Kⱼ` compact.  As `θ ≥ 1` on `M`,
 `Hⁿ(M ∩ Kⱼ) ≤ ∫_{M ∩ Kⱼ} θ dHⁿ < ∞`, and `M ⊆ ⋃ⱼ (M ∩ Kⱼ)`. -/
@@ -70523,141 +70658,6 @@ theorem Submission.dsmc_approxTangentPlane_starProjection_aemeasurable : ∀ (P 
   refine ((aemeasurable_of_tendsto_metrizable_ae' (fun k => (hΦ k).aemeasurable) hlim).const_mul
     c⁻¹).congr (Eventually.of_forall fun x => ?_)
   exact inv_mul_cancel_left₀ hc.ne' _
-/-- **Integrating factor for the monotonicity identity** (Simon Ch. 4, 3.16–3.17).  If `I` is
-continuous on `(0, r]`, has derivative `I'` on `(0, r)` and `n I(s) − s I'(s) ≤ κ s I(s)` there,
-then `s ↦ e^{κs} s⁻ⁿ I(s)` is nondecreasing on `(0, r]`.  On `(0, r]` this function equals
-`G(s) = exp(κs − n log s) I(s)`, and `G'(s) = exp(κs − n log s) s⁻¹ (κ s I(s) − (n I(s) − s I'(s)))
-≥ 0` on `(0, r)`, so the mean value theorem applies. -/
-theorem Submission.dsmc_em_exp_monotoneOn_of_deriv_ineq : ∀ (n : ℕ) (κ r : ℝ) (I I' : ℝ → ℝ), ContinuousOn I (Ioc 0 r) → (∀ s ∈ Ioo 0 r, HasDerivAt I (I' s) s) → (∀ s ∈ Ioo 0 r, (n : ℝ) * I s - s * I' s ≤ κ * s * I s) → MonotoneOn (fun s => Real.exp (κ * s) / s ^ n * I s) (Ioc 0 r) := by
-  intro n κ r I I' hIc hId hineq
-  -- on `(0, r]`, `e^{κs}/sⁿ · I(s) = G(s) := exp(κs − n log s) · I(s)`
-  refine MonotoneOn.congr (f₁ := fun s => Real.exp (κ * s - n * Real.log s) * I s) ?_ ?_
-  swap
-  · intro s hs
-    simp only [Real.exp_sub, Real.exp_nat_mul, Real.exp_log hs.1]
-  -- `G` is continuous on `(0, r]`
-  have hGc : ContinuousOn (fun s => Real.exp (κ * s - n * Real.log s) * I s) (Ioc 0 r) := by
-    refine ContinuousOn.mul (Real.continuous_exp.comp_continuousOn ?_) hIc
-    exact (continuousOn_const.mul continuousOn_id).sub
-      (continuousOn_const.mul (Real.continuousOn_log.mono fun s hs => hs.1.ne'))
-  -- `G' = exp(κs − n log s) · ((κ − n/s) I + I') ≥ 0` on `(0, r)`; mean value theorem
-  refine monotoneOn_of_hasDerivWithinAt_nonneg (convex_Ioc 0 r) hGc
-    (f' := fun s => Real.exp (κ * s - n * Real.log s) * ((κ - n * s⁻¹) * I s + I' s)) ?_ ?_
-  · intro s hs
-    rw [interior_Ioc] at hs
-    have h1 : HasDerivAt (fun s => κ * s - n * Real.log s) (κ * 1 - n * s⁻¹) s :=
-      ((hasDerivAt_id' s).const_mul κ).sub ((Real.hasDerivAt_log hs.1.ne').const_mul (n : ℝ))
-    exact ((h1.exp.mul (hId s hs)).congr_deriv (by ring)).hasDerivWithinAt
-  · intro s hs
-    rw [interior_Ioc] at hs
-    have key : (κ - n * s⁻¹) * I s + I' s = s⁻¹ * (κ * s * I s - (n * I s - s * I' s)) := by
-      linear_combination (-(κ * I s + I' s)) * mul_inv_cancel₀ hs.1.ne'
-    rw [key]
-    exact mul_nonneg (Real.exp_pos _).le
-      (mul_nonneg (inv_nonneg.mpr hs.1.le) (sub_nonneg.mpr (hineq s hs)))
-/-- **Differentiation of radial cutoff integrals** (Simon Ch. 4, 3.3–3.4, where
-`I(ρ) = ∫ φ(r/ρ) dμ` is differentiated in `ρ`; here the cutoff is written in the squared ratio
-`|x - z|²/t²`).  If `μ(B_r(z)) < ∞` and `η` is `C¹` with `η = 0` on `[1, ∞)`, then
-`I(t) = ∫ η(|x - z|²/t²) dμ` is continuous on `(0, r]` and, for `0 < s < r`,
-`I'(s) = -(∫ 2 (|x - z|²/s²) η'(|x - z|²/s²) dμ)/s` (dominated convergence and differentiation
-under the integral sign). -/
-theorem Submission.dsmc_em_cutoff_integral_hasDerivAt : ∀ (P : ℕ) (μ : Measure (Euclid P)) (z : Euclid P) (r : ℝ) (η : ℝ → ℝ), μ (ball z r) < ∞ → ContDiff ℝ 1 η → (∀ u, 1 ≤ u → η u = 0) → ContinuousOn (fun t => ∫ x, η (‖x - z‖ ^ 2 / t ^ 2) ∂μ) (Ioc 0 r) ∧ ∀ s ∈ Ioo 0 r, HasDerivAt (fun t => ∫ x, η (‖x - z‖ ^ 2 / t ^ 2) ∂μ) (-(∫ x, 2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2) ∂μ) / s) s := by
-  intro P μ z r η hμ hη hη1
-  have hηc : Continuous η := hη.continuous
-  have hη'c : Continuous (deriv η) := hη.continuous_deriv le_rfl
-  -- `η' = deriv η` vanishes on `(1, ∞)` (where `η` is locally zero), hence on `[1, ∞)`.
-  have hη'1 : ∀ u, 1 ≤ u → deriv η u = 0 := by
-    have hIoi : Ioi (1 : ℝ) ⊆ {u | deriv η u = 0} := fun u hu => by
-      have hloc : η =ᶠ[𝓝 u] fun _ => (0 : ℝ) := by
-        filter_upwards [Ioi_mem_nhds hu] with v hv
-        exact hη1 v (le_of_lt hv)
-      show deriv η u = 0
-      rw [hloc.deriv_eq, deriv_const]
-    have hIci : Ici (1 : ℝ) ⊆ {u | deriv η u = 0} := by
-      rw [← closure_Ioi]
-      exact closure_minimal hIoi (isClosed_eq hη'c continuous_const)
-    exact fun u hu => hIci hu
-  -- Bounds on `[0, 1]` for `η` and for `u ↦ 2 u η'(u)`.
-  obtain ⟨C, hC⟩ := isCompact_Icc.exists_bound_of_continuousOn (s := Icc (0 : ℝ) 1)
-    hηc.continuousOn
-  obtain ⟨K, hK⟩ := isCompact_Icc.exists_bound_of_continuousOn (s := Icc (0 : ℝ) 1)
-    (f := fun u : ℝ => 2 * u * deriv η u) (by fun_prop)
-  have hg1 : ∀ u, 1 ≤ u → 2 * u * deriv η u = 0 := fun u hu => by
-    rw [hη'1 u hu, mul_zero]
-  -- For `0 < t ≤ r`, `g(|x - z|²/t²)` vanishes off `B_t(z) ⊆ B_r(z)` and is dominated there.
-  have hdom : ∀ (g : ℝ → ℝ) (B : ℝ), (∀ u, 1 ≤ u → g u = 0) → (∀ u ∈ Icc (0 : ℝ) 1, ‖g u‖ ≤ B) →
-      ∀ t, 0 < t → t ≤ r → ∀ x : Euclid P,
-        ‖g (‖x - z‖ ^ 2 / t ^ 2)‖ ≤ (ball z r).indicator (fun _ => B) x := by
-    intro g B hg0 hgB t ht htr x
-    have hB : 0 ≤ B := (norm_nonneg _).trans (hgB 0 ⟨le_rfl, zero_le_one⟩)
-    by_cases hx : ‖x - z‖ < t
-    · have hxr : x ∈ ball z r := by
-        rw [mem_ball, dist_eq_norm]
-        exact hx.trans_le htr
-      rw [indicator_of_mem hxr]
-      apply hgB
-      refine ⟨by positivity, ?_⟩
-      rw [div_le_one (by positivity)]
-      exact pow_le_pow_left₀ (norm_nonneg _) hx.le 2
-    · rw [not_lt] at hx
-      rw [hg0 _ ?_, norm_zero]
-      · exact indicator_nonneg (fun _ _ => hB) x
-      · rw [le_div_iff₀ (by positivity), one_mul]
-        exact pow_le_pow_left₀ ht.le hx 2
-  have hint : ∀ c : ℝ, Integrable ((ball z r).indicator (fun _ => c)) μ := fun c =>
-    (integrable_indicator_iff measurableSet_ball).2 (integrableOn_const hμ.ne)
-  have hcont : ∀ t : ℝ, Continuous fun x : Euclid P => η (‖x - z‖ ^ 2 / t ^ 2) := fun t => by
-    fun_prop
-  -- Pointwise derivative in `t ≠ 0`.
-  have hderiv : ∀ x : Euclid P, ∀ t : ℝ, t ≠ 0 →
-      HasDerivAt (fun t => η (‖x - z‖ ^ 2 / t ^ 2))
-        (-(2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)) / t) t := by
-    intro x t ht
-    have h1 := (hasDerivAt_const t (‖x - z‖ ^ 2)).div (hasDerivAt_pow 2 t) (pow_ne_zero 2 ht)
-    have h2 := (hη.differentiable one_ne_zero (‖x - z‖ ^ 2 / t ^ 2)).hasDerivAt.comp t h1
-    refine h2.congr_deriv ?_
-    field_simp
-    ring
-  refine ⟨?_, fun s hs => ?_⟩
-  · -- (i) continuity on `(0, r]` by dominated convergence
-    refine continuousOn_of_dominated (F := fun t x => η (‖x - z‖ ^ 2 / t ^ 2))
-      (bound := (ball z r).indicator (fun _ => C)) (fun t _ => (hcont t).aestronglyMeasurable)
-      (fun t ht => Eventually.of_forall (hdom η C hη1 hC t ht.1 ht.2)) (hint C)
-      (Eventually.of_forall fun x t ht => (hderiv x t ht.1.ne').continuousAt.continuousWithinAt)
-  · -- (ii) differentiation under the integral sign on `(s/2, r)`
-    have hs0 : 0 < s := hs.1
-    have hb : ∀ x : Euclid P, ∀ t ∈ Ioo (s / 2) r,
-        ‖-(2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)) / t‖ ≤
-          (ball z r).indicator (fun _ => K) x / (s / 2) := by
-      intro x t ht
-      have ht0 : 0 < t := by linarith [ht.1]
-      have h1 : ‖2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)‖ ≤
-          (ball z r).indicator (fun _ => K) x :=
-        hdom (fun u => 2 * u * deriv η u) K hg1 hK t ht0 ht.2.le x
-      have h2 : 0 ≤ (ball z r).indicator (fun _ => K) x := (norm_nonneg _).trans h1
-      rw [norm_div, norm_neg, Real.norm_of_nonneg ht0.le]
-      calc ‖2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)‖ / t
-          ≤ (ball z r).indicator (fun _ => K) x / t := by gcongr
-        _ ≤ (ball z r).indicator (fun _ => K) x / (s / 2) := by
-          gcongr
-          exact ht.1.le
-    have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le (μ := μ) (x₀ := s)
-      (F := fun t x => η (‖x - z‖ ^ 2 / t ^ 2))
-      (F' := fun t x => -(2 * (‖x - z‖ ^ 2 / t ^ 2) * deriv η (‖x - z‖ ^ 2 / t ^ 2)) / t)
-      (bound := fun x => (ball z r).indicator (fun _ => K) x / (s / 2))
-      (Ioo_mem_nhds (by linarith) hs.2)
-      (Eventually.of_forall fun t => (hcont t).aestronglyMeasurable)
-      ((hint C).mono' (hcont s).aestronglyMeasurable
-        (Eventually.of_forall (hdom η C hη1 hC s hs0 hs.2.le)))
-      (by fun_prop : Continuous fun x : Euclid P =>
-        -(2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2)) / s).aestronglyMeasurable
-      (Eventually.of_forall hb) ((hint K).div_const (s / 2))
-      (Eventually.of_forall fun x t ht => hderiv x t (by linarith [ht.1] : 0 < t).ne')
-    have hval : ∫ x, -(2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2)) / s ∂μ =
-        -(∫ x, 2 * (‖x - z‖ ^ 2 / s ^ 2) * deriv η (‖x - z‖ ^ 2 / s ^ 2) ∂μ) / s := by
-      rw [integral_div, integral_neg]
-    rw [← hval]
-    exact key.2
 /-- **Simon Ch. 6, 3.2(3) and 2.11–2.12**: if `T = τ(M, θ, ξ)` in the open set `U`, then
 (i) `M_W(T) = μ_R(W)` for every open `W`, where `μ_R = θ Hⁿ⌞M`, and (ii) `spt T = U ∩ spt μ_R`.
 `M_W(T) ≤ μ_R(W)` because admissible forms pair with `ξ` to at most `1`; `μ_R(W) ≤ M_W(T)` by
