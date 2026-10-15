@@ -1,0 +1,76 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1`
+- Child DAG node: `root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.skeleton_deformation-a1.telescoping-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 6 of the parent proof (PF on each shell: identity, homotopy formula 2.25, linearity, locality, and the telescoping sums (S1), (S2)). Dependencies: im_calculus ((IMC)(c)), zero_neg. Conventions: id := (x ↦ x); all currents are on univ; (A − B)(ω) = A(ω) − B(ω) and 0(ω) = 0 hold by definition; currents with equal values are equal (GeometricCurrentOn.ext).
+1. Lipschitz bookkeeping: id is Λ_j-Lipschitz because 1 ≤ Λ_j (LipschitzWith.id.weaken), and φ_j is Λ_{j+1}-Lipschitz because Λ_j ≤ Λ_{j+1} (LipschitzWith.weaken).
+2. Images of 0. The zero current is IM (zero_neg (a)) and vanishes off every set. PF(2) with X = Y = 0, F = id, G = φ_j, E = E_j gives homot_m(id, φ_j, 0 − 0) = homot_m(id, φ_j, 0) − homot_m(id, φ_j, 0); as 0 − 0 = 0 (ext), evaluating at any ω gives homot_m(id, φ_j, 0)(ω) = 0. PF(2) with F = G = φ_j gives push_m(φ_j, 0)(ω) = 0 in the same way.
+3. One-shell lemma. Fix j and IM currents X ∈ 𝒟_{m+1}, D′, Z′, Z″ ∈ 𝒟_m vanishing off E_j with ∂X(ω) = D′(ω) + Z′(ω) − Z″(ω) for all ω. Claim: (i) push_{m+1}(φ_j, X)(η) − X(η) − ∂homot_{m+1}(id, φ_j, X)(η) = homot_m(id, φ_j, D′)(η) + homot_m(id, φ_j, Z′)(η) − homot_m(id, φ_j, Z″)(η) for all η, and (ii) ∂push_{m+1}(φ_j, X)(ω) = push_m(φ_j, D′)(ω) + push_m(φ_j, Z′)(ω) − push_m(φ_j, Z″)(ω) for all ω. Proof: 0 − Z′ is IM (zero_neg (b)) and D′ − (0 − Z′) is IM ((IMC)(c)); ∂X = (D′ − (0 − Z′)) − Z″ as currents (ext and the pointwise formula), so ∂X is IM ((IMC)(c)); 0 − Z′ and D′ − (0 − Z′) vanish off E_j. PF(5) with k = m, Λ = Λ_j, (F, G) = (id, φ_j), E = E_j gives push_{m+1}(φ_j, X) − push_{m+1}(id, X) − homot_m(id, φ_j, ∂X) = ∂homot_{m+1}(id, φ_j, X), and PF(1) gives push_{m+1}(id, X) = X. Applying PF(2) to the pairs (D′ − (0 − Z′), Z″), (D′, 0 − Z′) and (0, Z′) (all IM and vanishing off E_j) expands homot_m(id, φ_j, ∂X) = (homot_m(id, φ_j, D′) − (homot_m(id, φ_j, 0) − homot_m(id, φ_j, Z′))) − homot_m(id, φ_j, Z″). Evaluating at η and using step 2 gives (i). For (ii), PF(5) with (F, G) = (φ_j, φ_j) gives ∂push_{m+1}(φ_j, X) = push_m(φ_j, ∂X); expand with PF(2) (F = G = φ_j) in the same way and use step 2.
+4. Notation: V_j := push_{m+1}(φ_j, W_j), H_j := homot_{m+1}(id, φ_j, W_j), E′_j := homot_m(id, φ_j, D_j), Y_j := push_m(φ_j, D_j), K_j := homot_m(id, φ_j, Z_j), L_j := push_m(φ_j, Z_j).
+5. Shell 0: step 3 with j = 0, X = W_0, D′ = D_0, Z′ = 0, Z″ = Z_0 (∂W_0 = D_0 + 0 − Z_0) together with step 2 gives V_0 − W_0 − ∂H_0 = E′_0 − K_0 and ∂V_0 = Y_0 − L_0 pointwise.
+6. Shell j + 1: step 3 with j + 1, X = W_{j+1}, D′ = D_{j+1}, Z′ = Z_j, Z″ = Z_{j+1} (Z_j vanishes off E_j ⊆ E_{j+1}) gives V_{j+1} − W_{j+1} − ∂H_{j+1} = E′_{j+1} + homot_m(id, φ_{j+1}, Z_j) − K_{j+1} and ∂V_{j+1} = Y_{j+1} + push_m(φ_{j+1}, Z_j) − L_{j+1}.
+7. Locality: PF(3) with Λ = Λ_{j+1}, E = E_j (compact), X = Z_j (IM, vanishing off E_j) and (F, G, F′, G′) = (id, φ_{j+1}, id, φ_j) gives homot_m(id, φ_{j+1}, Z_j) = homot_m(id, φ_j, Z_j) = K_j; with (F, G, F′, G′) = (φ_{j+1}, id, φ_j, id) it gives push_m(φ_{j+1}, Z_j) = L_j. (EqOn id id E_j is trivial, EqOn φ_{j+1} φ_j E_j is a hypothesis, and the four maps are Λ_{j+1}-Lipschitz by step 1.)
+8. Telescoping: by induction on N, adding the shell-(N+1) identities of steps 6–7 to the identities for N (Finset.sum_range_succ applied only to the sums over range (N+1+1)), one gets Σ_{j≤N}(V_j − W_j − ∂H_j) = Σ_{j≤N} E′_j − K_N, which is (S1), and Σ_{j≤N} ∂V_j = Σ_{j≤N} Y_j − L_N, which is (S2); the base case N = 0 is step 5. ∎
+
+## Key steps
+
+1. Images of the zero current under push and homot vanish (PF(2) with X = Y = 0).
+2. One-shell lemma: PF(1), PF(5) and three applications of PF(2) to ∂X = (D′ − (0 − Z′)) − Z″, with integrality from (IMC)(c) and zero_neg.
+3. PF(3) identifies homot_m(id, φ_{j+1}, Z_j) = K_j and push_m(φ_{j+1}, Z_j) = L_j since φ_{j+1} = φ_j on E_j.
+4. Induction on N telescopes the shell identities into (S1) and (S2).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat local-references/123e8435b4a2469b/manifest.json (mode local-project, project b4d606db, mathlib 25730c7c)`
+- `cmp local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean; diff GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (both identical)`
+- `rg -n "theorem LipschitzOnWith.extend_real|theorem LipschitzOnWith.extend_pi" mathlib/Mathlib`
+- `rg -n "theorem mul_meas_ge_le_lintegral₀|theorem meas_ge_le_lintegral_div|theorem lintegral_eq_zero_iff'" mathlib/Mathlib`
+- `rg -n "theorem integral_inter_add_sdiff|theorem lipschitz_infDist_pt|theorem mem_cthickening_of_dist_le|theorem tprod_eq_zero_mul'" mathlib/Mathlib`
+- `rg -n "tsum_geometric |theorem one_sub_inv_two|le_sum_of_subadditive|bddAbove_range_of_hasCompactSupport|theorem setLIntegral_le_lintegral|theorem ae_restrict_iff'" mathlib/Mathlib`
+- `rg -n "dor_lmb_fcd_sd_|skeleton_deformation|good_slice|shell" project -g "*.lean" (no match)`
+- `grep -n "^def |^theorem |^structure |^instance" .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/{Currents,Mass,FormSupNorm,CurrentLocalEquality,Forms}.lean and Chapter03/Rectifiable.lean (GeometricCurrentOn, ext, Zero, boundary, exteriorDerivativeTestOn, tsupport_exteriorDerivative_subset, WeaklyConvergesOn.boundary, massAdmissibleOn, massOn, le_massOn, WeaklyConvergesOn.massOn_le_liminf, covectorEuclideanNorm_neg, countablyRectifiable_of_measure_zero)`
+- `python3 -I scans of dag.json: frozen types of dor_lmb_fcd_good_center, dor_lmb_fcd_retraction, dor_lmb_fcd_pushforward_homotopy (decomposing siblings), dor_imrep_massOn_eq_measure_and_support and cmc_imRep_locality_restrict_sub (accepted, byte-identical types), accepted helpers cmc_fc_cs_massOn_sub_le, cmc_fc_sc_abs_le_mul_mass, dor_lmb_imrep_restrict_current; freshness of the ten dor_lmb_fcd_sd_* names`
+- `sed -n 1651,1860p book/chapter-06.txt (Simon 5.1 proof, displays (1)-(25)); sed of runtime.py (_decompose depth check, _overlay_accepted_children, _existing_lean_name_problem) and verifier/gmt-compare.py (contract_scope, child_modules)`
+- `lake env lean /tmp/skd-decomp/final/AllChallenges.lean (12 exact challenge types), /tmp/skd-decomp/Assembly.lean (parent frozen type from children + GC/RET/PF/C1 stand-ins), CoreCheck, SeriesCheck, TeleCheck, GSCheck, SHCheck, ICCheck, Leaf, Bound2 with #print axioms`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/NatInt.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/BigOperators/Group/Finset.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/FormSupNorm.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-f2406f5f27/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-cab3e79dc1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-9a0895c8c5e1/_recursive_lean/prompts.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/tmp/skd-decomp/Assembly.lean`
+- `/tmp/skd-decomp/CoreCheck.lean`
+- `/tmp/skd-decomp/final/AllChallenges.lean`
+
+Snapshot project b4d606db / mathlib 25730c7c; its Ch07 Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean. No project file contains a skeleton deformation, good-slice or shell lemma (no match for dor_lmb_fcd_sd_*, skeleton_deformation, good_slice, shell). SimonGMT supplies the current API used by the children (GeometricCurrentOn with ext and Zero, boundary via exteriorDerivativeTestOn whose underlying form is exteriorDerivative ω by definition, tsupport_exteriorDerivative_subset, massAdmissibleOn/massOn/le_massOn, WeaklyConvergesOn.massOn_le_liminf, covectorEuclideanNorm_neg, countablyRectifiable_of_measure_zero) but no Lipschitz push-forward, homotopy, slicing or restriction lemma, so those enter through the DAG siblings (GC, RET, PF) and the reused accepted (C1) dor_imrep_massOn_eq_measure_and_support and (IMC) cmc_imRep_locality_restrict_sub (byte-identical frozen types). Every Mathlib lemma cited in the child proofs exists in the pinned snapshot: LipschitzOnWith.extend_real (Lipschitz.lean:308), lintegral_eq_zero_iff', setLIntegral_le_lintegral, integral_inter_add_sdiff (Bochner/Set.lean:114), lipschitz_infDist_pt, mem_cthickening_of_dist_le, tsum_eq_zero_add' (to_additive of tprod_eq_zero_mul'), ENNReal.tsum_geometric, ENNReal.one_sub_inv_two, Finset.le_sum_of_subadditive, ae_restrict_iff', Continuous.bddAbove_range_of_hasCompactSupport. Lean: all 12 child types elaborate as exact comparator challenges; the parent frozen type compiles from the four used children plus stand-ins for GC, RET, PF and C1 with no sorry in the assembly body; core compiles from telescoping and series_limit, series_limit from zero_neg, telescoping from (IMC) and zero_neg, good_slice from markov_point, im_concentrated and (C1), shells from im_restrict, im_concentrated from (C1) (axioms propext, Classical.choice, Quot.sound, plus sorryAx only from the stand-ins).
