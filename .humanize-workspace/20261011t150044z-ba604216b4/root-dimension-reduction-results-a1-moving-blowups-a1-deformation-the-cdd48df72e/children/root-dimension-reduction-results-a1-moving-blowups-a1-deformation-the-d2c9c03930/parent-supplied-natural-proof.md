@@ -1,0 +1,83 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.cube_bv_median-a1.smooth_trace-a1.box_integrable-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: fact (F3) of the supplied proof of `dimred_mbl_dt_cbm_smooth_trace`: "v, Dv, G, DG are continuous, hence bounded on Q̄; every function below is a bounded measurable function on a set of finite measure, so all integrals are finite". Here it is isolated as a lemma about an arbitrary open box. The parent assembly uses it for the integrands ∂_i(vG_i), Dv(G) and ‖Dv‖ on Q_δ. The sibling `dimred_mbl_dt_cbm_st_coord_bound` also uses it, for F, H, |v| and ‖Dv‖; that sibling consumes this lemma and is not a dependency of it.
+
+Notation. n ∈ ℕ. ℝⁿ is `Euclid n` = EuclideanSpace ℝ (Fin n) with Lebesgue measure (volume), and z_j := z.ofLp j is the j-th coordinate (j ∈ Fin n). Let a, b ∈ ℝ be arbitrary; no order between them is assumed. Put B := {z ∈ ℝⁿ : a < z_j < b for all j}. Let h : ℝⁿ → ℝ be continuous. Claim: h is integrable on B (IntegrableOn h B).
+
+1. Closed box. Let I := {w ∈ Fin n → ℝ : a ≤ w_j ≤ b for all j}. This is the order interval Icc (fun _ => a) (fun _ => b) for the product order. Let K := toLp(I) ⊆ ℝⁿ be its image under the canonical map toLp 2 : (Fin n → ℝ) → Euclid n. (If a > b and n ≥ 1, then I = K = ∅. If n = 0, then I and K are single points. Neither case needs separate treatment.)
+2. B ⊆ K. Let z ∈ B and w := z.ofLp. Then a < w_j < b, hence a ≤ w_j ≤ b, for every j. So w ∈ I and z = toLp w ∈ K.
+3. K is compact. I is compact because closed order intervals of the finite product Fin n → ℝ are compact (Mathlib `isCompact_Icc`). The map toLp 2 is continuous (`PiLp.continuous_toLp`), and the continuous image of a compact set is compact.
+4. h is integrable on K. h is continuous, so it is continuous on K. Lebesgue measure on ℝⁿ is finite on compact sets, so a function continuous on a compact set is integrable on it (`ContinuousOn.integrableOn_compact`).
+5. Since B ⊆ K (step 2), integrability restricts from K to B (`IntegrableOn.mono_set`). Hence h is integrable on B. ∎
+
+Formalization notes. The Lean proof below was re-compiled in this decomposition session against exactly the frozen type above (Lean v4.35.0-rc3, Mathlib 25730c7c, project commit b4d606db with GMT/Ch07/Submission.lean byte-identical to the frozen Contract). It compiled (a) in a scratch file `import GMT.Ch07.Submission` followed by the contract scope (`open Filter Function Set MeasureTheory Metric`, `open scoped ENNReal Topology`, `namespace GMT.Ch07`, `open Poincare.SimonGMT.Chapter06`, `open Poincare.SimonGMT.Chapter03 (CountablyRectifiable HasApproximateTangentSpaceAt)`), and (b) inserted into a copy of GMT/Ch07/Submission.lean immediately before `main_theorem`, after the contract's `noncomputable section ... end`. It needs no imports beyond the frozen header, and `#print axioms` lists only propext, Classical.choice and Quot.sound. The comparator form `theorem _root_.HumanizeNodeComparator.target : (<frozen type>) := by exact Submission.dimred_mbl_dt_cbm_st_box_integrableOn` elaborates in the replayed contract scope.
+
+```lean
+theorem Submission.dimred_mbl_dt_cbm_st_box_integrableOn : ∀ (n : ℕ) (h : Euclid n → ℝ) (a b : ℝ), Continuous h → IntegrableOn h {z : Euclid n | ∀ j, a < z j ∧ z j < b} := by
+  intro n h a b hh
+  have hsub : {z : Euclid n | ∀ j, a < z j ∧ z j < b} ⊆
+      (WithLp.toLp 2) '' (Set.Icc (fun _ => a) (fun _ => b) : Set (Fin n → ℝ)) :=
+    fun z hz => ⟨z.ofLp, ⟨fun j => (hz j).1.le, fun j => (hz j).2.le⟩, rfl⟩
+  have hKc : IsCompact ((WithLp.toLp 2) '' (Set.Icc (fun _ => a) (fun _ => b) : Set (Fin n → ℝ))) :=
+    isCompact_Icc.image (PiLp.continuous_toLp 2 _)
+  exact (hh.continuousOn.integrableOn_compact hKc).mono_set hsub
+```
+
+## Key steps
+
+1. B ⊆ K := toLp '' Icc (fun _ => a) (fun _ => b), the closed box.
+2. K is compact: the order interval Icc in Fin n → ℝ is compact and toLp 2 is continuous.
+3. A continuous h is integrable on the compact set K (ContinuousOn.integrableOn_compact).
+4. Restrict from K to B ⊆ K (IntegrableOn.mono_set).
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat SNAPSHOT/manifest.json (project_commit b4d606db1da5…, mathlib_commit 25730c7c759d…); git rev-parse HEAD (b4d606db1da5…); cmp GMT/Ch07/Submission.lean GMT/Ch07/Contract.lean (identical)`
+- `rg -n 'theorem volume_preserving_piFinSuccAbove|theorem PiLp.volume_preserving_toLp|theorem integral_prod_symm|theorem Integrable.integral_prod_right|theorem ContinuousOn.integrableOn_compact|theorem prod_restrict|theorem integral_deriv_eq_sub|theorem integral_mono_interval|theorem norm_integral_le_abs_integral_norm|lemma trace_eq_sum_inner|theorem contDiff_piLp_apply|theorem norm_apply_le' SNAPSHOT/mathlib/Mathlib -g '*.lean' (all found: Constructions/Pi.lean:818, Measure/Haar/InnerProductSpace.lean:139, Integral/Prod.lean:338,463, Function/LocallyIntegrable.lean:592, Measure/Prod.lean:778, IntervalIntegral/FundThmCalculus.lean:1176, IntervalIntegral/Basic.lean:743,1405, InnerProductSpace/Trace.lean:25, Calculus/ContDiff/WithLp.lean:83, Normed/Lp/PiLp.lean:713)`
+- `rg -n 'abs_integral_le_integral_abs' SNAPSHOT/mathlib/Mathlib (Integral/Bochner/Basic.lean:982); rg -n 'theorem integral_divergence_of_hasFDerivAt_off_countable' (Integral/DivergenceTheorem.lean:266, outside the Submission import closure, not needed by the coordinatewise route)`
+- `rg -n -i 'piFinSuccAbove|insertNth|trace_eq_sum_inner|integral_divergence|divergence|trace inequality|BVExtension' SNAPSHOT/project -g '*.lean' (only tangentialDivergence definitions and the unproved Ch02 Props BVExtensionEstimate/BVPoincare; no box divergence theorem or trace inequality)`
+- `rg -n 'def euclideanDivergence|theorem .*divergence|piFinSuccAbove|insertNth' lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/{BV,SubmanifoldCalculus}.lean (euclideanDivergence, euclideanDivergence_eq_sum_inner only; no trace or Fubini-slicing lemma)`
+- `python3 -I scan of RUN/dag.json: twin node cmcdt_cbm_smooth_trace (identical lean_statement, waiting-children) with unaccepted children cmcdt_cbm_st_{box_integrableOn,slice_integral,interval_bound,coord_bound,div_product}; grep -c dimred_mbl_dt_cbm_st dag.json = 0; /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py _existing_lean_name_problem and max_depth logic (depth 5 < 6)`
+- `lake env lean /tmp/dimred-st-split/All.lean, /tmp/dimred-st-split/SubmissionCopy.lean, /tmp/dimred-st-split/SolutionCombined.lean and /tmp/dimred-st-split/chal/*_NodeChallenge.lean (generated by verifier/gmt-compare.py child_modules); verifier/lean_contract.py validate_lean_statement on all six types`
+- `sed -n 655,680p book/chapter-02.txt (Simon Ch. 2, 2.8–2.9)`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch02/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/FundThmCalculus.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/DivergenceTheorem.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Trace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/BV.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-10b7629544/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-cub-10b7629544/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-cdd48df72e/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt`
+- `/tmp/dimred-st-split/All.lean`
+- `/tmp/dimred-st-split/SubmissionCopy.lean`
+- `/tmp/dimred-st-split/SolutionCombined.lean`
+
+The pins match (project b4d606db, Mathlib 25730c7c), and Submission.lean is byte-identical to the frozen contract. Neither the snapshot project nor SimonGMT contains a box divergence theorem, coordinate-slicing lemma or trace inequality. SimonGMT has only euclideanDivergence and its basis-sum formula, and the Ch02 BVExtensionEstimate is an unproved Prop. All Mathlib ingredients exist at the pinned revision inside the bare Submission import closure: volume_preserving_piFinSuccAbove, PiLp.volume_preserving_toLp, integral_prod_symm, Integrable.integral_prod_right, Measure.prod_restrict, ContinuousOn.integrableOn_compact, intervalIntegral FTC and monotonicity, LinearMap.trace_eq_sum_inner, PiLp.norm_apply_le and abs_integral_le_integral_abs. The five child types are byte-identical to the audited, accepted split of the twin cmcdt_cbm_smooth_trace. Those twin children are unaccepted and owned by another parent, so the fresh names dimred_mbl_dt_cbm_st_* are used; they collide with nothing. In this session all five child proofs and the parent assembly compiled with the exact frozen types and only standard axioms. The comparator challenges elaborate, and both statement validators accept the types.

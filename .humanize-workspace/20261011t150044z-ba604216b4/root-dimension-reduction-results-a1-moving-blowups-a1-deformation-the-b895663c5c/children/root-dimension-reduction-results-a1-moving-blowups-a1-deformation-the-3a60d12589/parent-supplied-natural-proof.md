@@ -1,0 +1,143 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.plane_orientation-a1.frame_sign-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 4 of the parent proof (two unit orientations of one n-plane differ by a sign), isolated as a statement about two orthonormal frames of the same subspace. Compare Simon Ch. 6, proof of the Rectifiability Theorem 8.1, where an approximate tangent plane is oriented by ±τ₁ ∧ ⋯ ∧ τₙ for any orthonormal basis τ₁, …, τₙ of it (book/chapter-06.txt lines 2223–2226), and (27) of §5, where a face is oriented by e₁ ∧ ⋯ ∧ eₙ (book/chapter-06.txt line 1851).
+
+Notation. Let W := span(range e) ⊆ Euclid P. W carries the inner product restricted from Euclid P (Submodule.coe_inner), so inner products and norms of elements of W are computed in Euclid P. For an n-covector α and v : Fin n → Euclid P, α(v) is the value of α on v.
+
+1. A basis of W from e. Since e is orthonormal, it is linearly independent (Orthonormal.linearIndependent). Let b := Module.Basis.span of this linear independence. This is a basis of W indexed by Fin n with b j = ⟨e j, subset_span (mem_range_self j)⟩ (Module.Basis.span_apply), so (b j : Euclid P) = e j (Module.Basis.coe_span_apply). Consequently finrank W = card(Fin n) = n (finrank_span_eq_card and Fintype.card_fin).
+
+2. τ as a family in W. For each j, τ j ∈ span(range τ) = W by hypothesis (Submodule.subset_span). Let τ_W : Fin n → W be τ_W j := ⟨τ j, _⟩, so (τ_W j : Euclid P) = τ j.
+
+3. Reduction to one determinant. Fix an n-covector α. Let α_W be the alternating n-linear map W^n → ℝ obtained by composing the underlying alternating map of α with the inclusion W.subtype: α_W := α.toAlternatingMap.compLinearMap W.subtype. Thus α_W(w) = α(j ↦ (w j : Euclid P)) for every w : Fin n → W.
+ Since b is a basis of W indexed by the same type Fin n, AlternatingMap.eq_smul_basis_det gives α_W = α_W(b) • b.det, where b.det is the determinant alternating map of b. Evaluating both sides at τ_W:
+ α_W(τ_W) = α_W(b) · b.det(τ_W).
+ Here α_W(τ_W) = α(τ), because (τ_W j : Euclid P) = τ j, and α_W(b) = α(e), because (b j : Euclid P) = e j. So
+ α(τ) = α(e) · c, where c := b.det(τ_W) ∈ ℝ.
+ The number c depends only on b and τ_W, not on α.
+
+4. c = ±1.
+ (i) b is orthonormal in W. By step 1, b is the family j ↦ ⟨e j, _⟩ of span(range e), and this family is orthonormal because e is (orthonormal_span). So oe := b.toOrthonormalBasis is an orthonormal basis of W, and oe.toBasis = b (Module.Basis.toBasis_toOrthonormalBasis).
+ (ii) τ_W is an orthonormal basis of W. τ_W is orthonormal in W because τ is orthonormal in Euclid P and inner products in W are those of Euclid P (Orthonormal.codRestrict). Hence τ_W is linearly independent. It has card(Fin n) = n = finrank W members (step 1), so span(range τ_W) = W (LinearIndependent.span_eq_top_of_card_eq_finrank'). Thus oτ := OrthonormalBasis.mk is an orthonormal basis of W with ⇑oτ = τ_W (OrthonormalBasis.coe_mk).
+ (iii) The change-of-basis determinant between two orthonormal bases of a finite-dimensional real inner product space is ±1: its matrix is orthogonal, so its determinant squares to 1 (OrthonormalBasis.det_to_matrix_orthonormalBasis_real: oe.toBasis.det oτ = 1 ∨ oe.toBasis.det oτ = −1). By (i) and (ii), oe.toBasis.det oτ = b.det τ_W = c. Hence c = 1 or c = −1.
+
+5. Conclusion. If c = 1, step 3 gives α(τ) = α(e) · 1 = α(e) for every n-covector α. If c = −1, step 3 gives α(τ) = α(e) · (−1) = −α(e) for every n-covector α. Since c does not depend on α, this is the required dichotomy.
+
+6. The case n = 0 is included. Then W = {0}, b and τ_W are the empty family, and b.det(τ_W) = 1 (the determinant of the empty matrix), so the first alternative holds. The argument above covers this case without change. ∎
+
+Formalization note: a direct Lean proof of this exact type following steps 1–5 (about 45 lines) compiled in the comparator's replayed Ch07 scope with axioms propext, Classical.choice, Quot.sound. In the evaluation of eq_smul_basis_det at τ_W, the hypothesis simplifies to α.toAlternatingMap (fun i => W.subtype (τW i)) = α.toAlternatingMap (fun i => W.subtype (b i)) * b.det τW; rewrite (fun i => W.subtype (τW i)) = τ by rfl and (fun i => W.subtype (b i)) = e by funext with step 1.
+
+## Key steps
+
+1. W := span(range e) has the basis b = Module.Basis.span (e is linearly independent) with b_j = e_j, and finrank W = n. Each τ_j lies in span(range τ) = W, giving τ_W : Fin n → W.
+2. For each n-covector α, restrict it to W and apply AlternatingMap.eq_smul_basis_det with the basis b. This gives α(τ) = α(e) · c with c := b.det(τ_W), which does not depend on α.
+3. b and τ_W are orthonormal bases of W (τ_W spans because it has n = finrank W independent members). So c = oe.toBasis.det oτ ∈ {1, −1} by det_to_matrix_orthonormalBasis_real.
+4. c = 1 gives α(τ) = α(e) for all α, and c = −1 gives α(τ) = −α(e) for all α. The case n = 0 is included.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/local-references/123e8435b4a2469b/manifest.json (mode local-project, project_commit b4d606db1da5…, mathlib_commit 25730c7c759d…); git -C SNAPSHOT/mathlib rev-parse HEAD (25730c7c759d108ef87ab70af2342a196760f79d); cmp SNAPSHOT/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean (identical); cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean (identical)`
+- `rg -n 'dimred_mbl_dtfrpo|dtfrpo_approxTangent|dtfrpo_orthonormal' SNAPSHOT/project lake-packages-25730c7c/simongmt GMT -g '*.lean' (no match); rg -l 'dimred_mbl_dtfrpo' SNAPSHOT/mathlib/Mathlib -g '*.lean' (no match)`
+- `python3 -I scan of RUN/dag.json (2092 nodes): both proposed names and the prefix dimred_mbl_dtfrpo_ are unused, and no lean_name is duplicated. Exact-type matches: only the twin's cmcdtfrpo_approxTangent_le_of_sub_mem and cmcdtfrpo_orthonormal_frame_sign (rlcr-lean, unaccepted). Related accepted nodes with different types: atsm_approxTangent_le_of_flat, dgcr_atg_approxTangent_le_of_flat, dgoj_covector_eq_det_mul_of_mem_span, dor_lmbsf_io_orientation_frame_sign, idtp_pc_orient_ae_eq_or_neg`
+- `python3 -I read of RUN/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-342d8827bb/decomposition-v1.json (twin node, identical frozen type, audited 2-child split) and of the …-44b4878763 and …-ea64782274 decomposition-v1.json files (both twin children judged atomic)`
+- `grep -n in SNAPSHOT/mathlib/Mathlib:
+- AlternatingMap.eq_smul_basis_det: LinearAlgebra/Determinant.lean:650
+- in Analysis/InnerProductSpace/PiL2.lean: OrthonormalBasis.det_to_matrix_orthonormalBasis_real (992), Module.Basis.toBasis_toOrthonormalBasis (628), OrthonormalBasis.mk and coe_mk (712/717), EuclideanSpace.orthonormal_single (349), EuclideanSpace.basisFun, basisFun_apply and basisFun_repr (802/806/810)
+- Orthonormal.comp: Analysis/InnerProductSpace/Orthonormal.lean:193
+- Orthonormal.codRestrict and orthonormal_span: Analysis/InnerProductSpace/Subspace.lean:43/48
+- finrank_span_eq_card: LinearAlgebra/Dimension/Constructions.lean:463
+- Submodule.eq_of_le_of_finrank_eq: LinearAlgebra/FiniteDimensional/Basic.lean:257
+- LinearIndependent.span_eq_top_of_card_eq_finrank': LinearAlgebra/FiniteDimensional/Lemmas.lean:266
+- Module.Basis.span_apply and coe_span_apply: LinearAlgebra/Basis/Basic.lean:191/196`
+- `grep -n in SNAPSHOT/mathlib/Mathlib:
+- Measure.mem_support_iff_forall: MeasureTheory/Measure/Support.lean:75
+- setIntegral_eq_zero_of_forall_eq_zero: MeasureTheory/Integral/Bochner/Set.lean:357, no measurability hypothesis
+- integral_pos_iff_support_of_nonneg: MeasureTheory/Integral/Bochner/Basic.lean:790
+- Continuous.integrable_of_hasCompactSupport: MeasureTheory/Function/LocallyIntegrable.lean:622
+- IsClosed.notMem_iff_infDist_pos and infDist_le_dist_of_mem: Topology/MetricSpace/HausdorffDistance.lean:584/500`
+- `sed -n 1,260p lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean: blowUpMap l.96, HasApproximateTangentSpaceAt l.102 (finrank = n ∧ C_c convergence along 𝓝[>] 0), support_euclideanHausdorffMeasure_restrict_submodule l.157, regular_euclideanHausdorffMeasure_restrict_submodule l.187
+sed -n 25,40p …/Chapter06/Forms.lean: Covector l.31
+sed -n 1,80p GMT/Ch07/Submission.lean: Euclid, MultiVector, IsUnitOrientationOf`
+- `lake env lean on four files in /tmp/dmpo-scratch:
+- Types.lean: both child types and the parent type elaborate in the contract scope, with sorry warnings only.
+- Assembly.lean: #print axioms DMPOAsm.check gives propext, Classical.choice, Quot.sound.
+- ChildA.lean and ChildB.lean: direct proofs of both exact child types, same axioms.
+- E2E.lean: Submission.X declarations plus comparator-style `exact Submission.X` targets, same axioms.`
+- `python3 -I with verifier/gmt-compare.py contract_scope/child_modules (contract mode) generated NodeChallenge/NodeSolution modules for both children and the parent. They were checked against a scratch copy /tmp/dmpo-e2e/ws, whose GMT/Ch07/Submission.lean holds the three declarations:
+- lake build GMT.Ch07.Submission;
+- lake env lean on the 6 generated files: the challenges give only sorry warnings, and the solutions use propext, Classical.choice, Quot.sound;
+- find lake-packages-25730c7c -newer: the shared package tree is unchanged.`
+- `python3 -I verifier/lean_contract.py validate_lean_statement on both child statements: both accepted unchanged; the file is identical to the runtime copy`
+- `grep/sed of /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py (_decompose max_depth check l.1391, _existing_lean_name_problem l.6557, child activation l.1834–1900) and store.py ensure (l.179); grep of swarm-project.json (max_depth 6, max_children 12, max_nodes 5000)`
+- `sed -n 70,93p book/chapter-03.txt (Simon 3.1.4 Definition, 1.5 Remarks); sed -n 1832,1866p and 2218,2230p book/chapter-06.txt (6.5 (26)–(27); orientation ±τ₁∧⋯∧τₙ for any orthonormal basis in the proof of 8.1)`
+- `An independent reviewer agent recompiled Assembly, ChildA, ChildB and the generated NodeSolution files, plus its own Review_Assembly and Review_E2E (logs in /tmp/dmpo-review/). It also ran character-for-character statement checks and name scans. Verdict: ACCEPT, no required changes.`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Determinant.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Orthonormal.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Subspace.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Dimension/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/FiniteDimensional/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra/Basis/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Support.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/LocallyIntegrable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/HausdorffDistance.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-b895663c5c/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-342d8827bb/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-44b4878763/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-fac-ea64782274/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/store.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/swarm-project.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt`
+- `/tmp/dmpo-scratch/Types.lean`
+- `/tmp/dmpo-scratch/Assembly.lean`
+- `/tmp/dmpo-scratch/ChildA.lean`
+- `/tmp/dmpo-scratch/ChildB.lean`
+- `/tmp/dmpo-scratch/E2E.lean`
+- `/tmp/dmpo-e2e/ws/GMT/Ch07/Submission.lean`
+- `/tmp/dmpo-e2e/gen/A_NodeSolution.lean`
+- `/tmp/dmpo-e2e/gen/B_NodeSolution.lean`
+- `/tmp/dmpo-e2e/gen/P_NodeSolution.lean`
+
+Pins:
+- The snapshot is local-project with project b4d606db and Mathlib 25730c7c; the snapshot Mathlib HEAD matches.
+- The snapshot Contract equals the workspace Contract and Submission byte for byte.
+
+Names and reuse:
+- No snapshot project, Mathlib, SimonGMT or DAG declaration uses dimred_mbl_dtfrpo_approxTangent_le_of_sub_mem, dimred_mbl_dtfrpo_orthonormal_frame_sign or the prefix dimred_mbl_dtfrpo_ (rg: no match).
+- Neither the snapshot project nor Mathlib proves 'an approximate tangent plane of a subset of x + V lies in V' or 'orthonormal frames with equal spans give the same Covector values up to one sign'.
+- The only DAG nodes with these exact types are the twin's unaccepted cmcdtfrpo_* children, so nothing can be reused and fresh names are required.
+
+Lemmas:
+- Every Mathlib and SimonGMT lemma cited in the child proofs exists at the recorded lines and resolves under import GMT.Ch07.Submission.
+- setIntegral_eq_zero_of_forall_eq_zero needs no measurability of the blow-up sets.
+
+Lean:
+- Both child types elaborate.
+- The assembly from the two child types to the exact selected type compiles with only propext, Classical.choice and Quot.sound.
+- Both children are proved directly in scratch.
+- The comparator-generated modules pass in a scratch workspace copy.
+- The shared package tree is untouched.

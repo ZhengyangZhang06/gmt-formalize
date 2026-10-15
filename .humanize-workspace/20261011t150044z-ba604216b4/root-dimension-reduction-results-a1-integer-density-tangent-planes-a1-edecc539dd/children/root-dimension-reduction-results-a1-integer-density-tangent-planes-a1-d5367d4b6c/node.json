@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.no_infinite_planar_pieces-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1",
+  "depth": 4,
+  "title": "An integer multiplicity 2-current cannot carry infinitely many disjoint planar discs of unit lower density in a bounded region",
+  "statement": "Let P ∈ ℕ and let C ∈ 𝒟_2(ℝ^P) be integer multiplicity. Let ρ > 0 and R ∈ ℝ, and for each i ∈ ℕ let Q_i ⊆ ℝ^P be a 2-dimensional linear subspace and z_i ∈ Q_i with |z_i| ≤ R. Put D_i := Q_i ∩ B_ρ(z_i). Assume D_i ∩ D_j = ∅ whenever i ≠ j, and that every w ∈ D_i has some ε > 0 such that H²(W ∩ Q_i) ≤ M_W(C) for every open W ⊆ B_ε(w), where H² = μHE[2] and M_W = massOn. Then these assumptions are contradictory, i.e. the conclusion is False.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : ℕ → Submodule ℝ (Euclid P)) (z : ℕ → Euclid P) (ρ R : ℝ), IsIntegerMultiplicity C → 0 < ρ → (∀ i, Module.finrank ℝ (Q i) = 2) → (∀ i, z i ∈ Q i) → (∀ i, ‖z i‖ ≤ R) → (∀ i j, i ≠ j → Disjoint ((Q i : Set (Euclid P)) ∩ ball (z i) ρ) ((Q j : Set (Euclid P)) ∩ ball (z j) ρ)) → (∀ i, ∀ w ∈ (Q i : Set (Euclid P)) ∩ ball (z i) ρ, ∃ ε : ℝ, 0 < ε ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball w ε → μHE[2] (W ∩ (Q i : Set (Euclid P))) ≤ C.massOn W) → False",
+  "lean_name": "idtp_tdc_no_infinite_planar_pieces",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.two_dim_cone_density-a1.subspace_ball_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-d5367d4b6c-a1"
+}
