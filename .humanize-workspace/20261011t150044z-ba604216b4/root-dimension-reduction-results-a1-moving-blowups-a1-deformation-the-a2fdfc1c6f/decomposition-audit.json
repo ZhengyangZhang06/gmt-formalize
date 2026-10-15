@@ -1,0 +1,106 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def (MultiVector|IsUnitOrientationOf|boundaryMassOn)|def Represents|def measure|def action|IsIntegerMultiplicity|^import|^namespace|^open",
+        "lipschitz.*push|pushforward.*lipschitz|weak.continuity.*jacobian|def CountablyRectifiable|def HasApproximateTangentSpaceAt|def covectorEuclideanNorm|structure GeometricCurrentOn|def TestFormConverges|structure TestFormOn",
+        "exists_partition_approximatesLinearOn_of_hasFDerivWithinAt|integral_lineDeriv_mul_eq|ae_convolution_tendsto_right_of_locallyIntegrable|euclideanHausdorffMeasure_eq_volume|volume_preserving_piFinSuccAbove|measurableSet_of_differentiableAt|image_of_continuousOn_injOn",
+        "injective_area_formula_lipschitzOn|weighted_area_formula_lipschitzOn_fiberSum|area_image_criticalSet_eq_zero|areaJacobianWithin|exteriorDerivativeOn_pullbackFormWithin|theorem exteriorDerivative_apply",
+        "dimred_mbl_dt_lp_|jacobian_weak_continuity",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmlp-independent-audit/IndependentTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmlp/lean/Assembly.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmlp/lean/InstCheck.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/dmlp/lean/Reexport.lean",
+        "#print axioms GMT.Ch07.Submission.covectorEuclideanNorm_gram_bounds",
+        "#print axioms GMT.Ch07.Submission.dpf_rectifiable_bilipschitz_pieces",
+        "#print axioms GMT.Ch07.Submission.ptd_piece_image_approxTangent_ae"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Rademacher.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Convolution.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-a2fdfc1c6f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-a2fdfc1c6f/decomposition-v1.json",
+        "/tmp/dmlp-independent-audit/IndependentTypes.lean",
+        "/tmp/dmlp-independent-audit/Reuse_covectorEuclideanNorm_gram_bounds.lean",
+        "/tmp/dmlp-independent-audit/Reuse_dpf_rectifiable_bilipschitz_pieces.lean",
+        "/tmp/dmlp-independent-audit/Reuse_ptd_piece_image_approxTangent_ae.lean",
+        "/tmp/dmlp/lean/Assembly.lean",
+        "/tmp/dmlp/lean/InstCheck.lean",
+        "/tmp/dmlp/lean/Reexport.lean"
+      ],
+      "conclusion": "Verified project, Mathlib and SimonGMT pins and compatibility with the frozen definitions. All nine one-line propositions independently elaborate without their implementations. The six new names are unreserved and have no snapshot matches; the three reused declarations have byte-identical comparator-accepted types. Recompiling their immutable sources confirmed that the reused theorems depend only on propext, Classical.choice and Quot.sound; unrelated root placeholders are not dependencies. The exact parent assembly and cylinder re-export compile with the same standard axioms. Coordinate, contraction, smoothness-order, volume and boundary conventions check correctly; the Gram matrix uses Matrix.of. The split is appropriate: its obligations establish the selected theorem through Part C and the explicitly recorded im_series dependency. Dependency closures are acyclic and contain no reverse reliance on the selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "covector_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proposition exactly matches both norm estimates. Basis invariance, factorial counting, the adjoint one-slot estimate and the contraction calculation prove them without circular dependencies, including zero-degree and degenerate-dimensional cases."
+    },
+    {
+      "key": "gram_bounds",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical accepted type. The supplied independent proof establishes the Gram bound and constructs the norming determinant covector. Matrix.of gives the intended matrix construction."
+    },
+    {
+      "key": "cylinder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "VO and REP are fully stated. The slice construction, continuity and mass estimates, support argument, and Fubini/FTC computation prove all five clauses. The boundary sign and separate degree-zero formula are correct; only the declared covector dependency is used."
+    },
+    {
+      "key": "operators",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The twelve clauses match the prose and supply the required parent interfaces. Smooth cutoff push-forwards, the cylinder identities, mollification estimates and uniformly Lipschitz cutoff homotopies establish every clause, including locality, approximation and negative-δ handling, without assuming integrality or the parent theorem."
+    },
+    {
+      "key": "pieces",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical accepted type. Rademacher, removal of critical images, the verified approximately-linear partition theorem and Borel disjointification establish every stated property without requiring finite measure or compact pieces."
+    },
+    {
+      "key": "piece_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of the identical accepted type. Density and Lebesgue-point estimates, the rescaled area formula and identification of the limiting linear-plane measure prove the exact approximate-tangent predicate under the listed hypotheses."
+    },
+    {
+      "key": "jacobian_continuity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof covers the stated continuous compactly supported form, without requiring smoothness. Uniform bounds, L¹ approximation, the minor expansion and mollified integration-by-parts induction establish convergence; degree zero is handled explicitly."
+    },
+    {
+      "key": "im_pushforward",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The normalization, measurable orientation signs, construction of integer-multiplicity image pieces, mass-summable IMS combination and Jacobian-limit identification prove integrality of the specified S. IMS is an explicit exact antecedent supplied by the parent's recorded dependency. No boundary-mass hypothesis or circular integrality assumption is used."
+    },
+    {
+      "key": "im_cylinder",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The product-null estimate and normalized area formula establish the product measure identity. Product tangent planes and orientations supply all IMRep fields, and Fubini identifies its action with the hypothesized t-integral action of C. The proof uses only stated antecedents and declared dependencies."
+    }
+  ],
+  "required_changes": []
+}

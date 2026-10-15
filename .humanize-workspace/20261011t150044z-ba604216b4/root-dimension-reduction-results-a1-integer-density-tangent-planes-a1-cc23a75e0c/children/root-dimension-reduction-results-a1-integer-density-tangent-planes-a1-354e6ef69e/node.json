@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.line_conclusion-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1",
+  "depth": 5,
+  "title": "k[[ℝa]] is supported in ℝa and has density k at every point of ℝa (parent step 6)",
+  "statement": "Let P ∈ ℕ, C ∈ 𝒟_1(ℝ^P), F a finite set of unit vectors and m : ℝ^P → ℤ with C(ω) = Σ_{e∈F} m(e)·∫_{(0,∞)} ω(te)(e) dt for every ω ∈ 𝒟¹(ℝ^P). Let a ∈ F with −a ∈ F such that every e ∈ F with m(e) ≠ 0 equals a or −a, and let k ∈ ℕ with m(a) = k and m(−a) = −k (so that C = k[[ℝa]]). Then spt C ⊆ span{a} = ℝa, and Θ¹(μ_C, y) = k, i.e. HasMassDensity C y k, for every y ∈ ℝa.",
+  "lean_statement": "∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 1) (F : Finset (Euclid P)), (∀ e ∈ F, ‖e‖ = 1) → ∀ m : Euclid P → ℤ, (∀ ω : TestFormOn (univ : Set (Euclid P)) 1, C ω = ∑ e ∈ F, (m e : ℝ) * ∫ t in Ioi (0 : ℝ), (ω : DifferentialForm (Euclid P) 1) (t • e) (fun _ => e)) → ∀ a ∈ F, -a ∈ F → (∀ e ∈ F, m e ≠ 0 → e = a ∨ e = -a) → ∀ k : ℕ, m a = k → m (-a) = -k → C.support ⊆ (Submodule.span ℝ {a} : Set (Euclid P)) ∧ ∀ y ∈ Submodule.span ℝ {a}, HasMassDensity C y k",
+  "lean_name": "idtp_fons_odc_line_conclusion",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_current_rep-a1",
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.line_param-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_current_rep-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.im_mass_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-im-mass-measure-a1-a1",
+      "result_commit": "01ae2c59e8d725f9f3839402fe6fe9bf93c32c3a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.line_param-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-354e6ef69e-a1"
+}

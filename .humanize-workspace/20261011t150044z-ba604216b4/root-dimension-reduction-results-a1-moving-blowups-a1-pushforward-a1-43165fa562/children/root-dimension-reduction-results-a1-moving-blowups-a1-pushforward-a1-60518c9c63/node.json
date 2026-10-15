@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.orient_comp-a1.norm_comp-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.orient_comp-a1",
+  "depth": 5,
+  "title": "(L1) Euclidean coefficient norm of a pulled-back covector: |β∘A|_E ≤ ‖A‖^k·|β|_E",
+  "statement": "Let N, N', k ∈ ℕ. Let A : ℝ^N → ℝ^{N'} be a continuous linear map (A : Euclid N →L[ℝ] Euclid N') with operator norm ‖A‖, and let β be a k-covector on ℝ^{N'} (β : Covector (Euclid N') k). Let β∘A := β.compContinuousLinearMap A, the k-covector (v_1, …, v_k) ↦ β(Av_1, …, Av_k) on ℝ^N. Then |β∘A|_E ≤ ‖A‖^k·|β|_E, where |·|_E = covectorEuclideanNorm is the Euclidean coefficient norm on ℝ^N and on ℝ^{N'} respectively. The parent uses this with N = N' = P, A = L and k = n.",
+  "lean_statement": "∀ (N N' k : ℕ) (A : Euclid N →L[ℝ] Euclid N') (β : Covector (Euclid N') k), covectorEuclideanNorm (β.compContinuousLinearMap A) ≤ ‖A‖ ^ k * covectorEuclideanNorm β",
+  "lean_name": "dimred_mbl_pf_oc_covectorEuclideanNorm_comp_le",
+  "depends_on": [
+    "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.orient_comp-a1.hs_comp-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.regular_components_are_minimizing-a1.imrep_mass_formula-a1.covector_sq_sum-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-components-are-minimizing-a1-imrep-mass-formula-a1-covec-c35871b74d-a1",
+      "result_commit": "16144a475b272196ba8b2bd15f104028282dbcfc",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.orient_comp-a1.hs_comp-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-60518c9c63-a1"
+}

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.radial_slice-a1.cutoff_defect-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.radial_slice-a1",
+  "depth": 5,
+  "title": "Defect estimate from ∂S = 0: |∫_M g·θ⟨dβ, ξ⟩ dHⁿ| ≤ ∫ ‖Dg‖·|β| dμ for a smooth g supported where ∂S vanishes",
+  "statement": "Let P, m ∈ ℕ, n := m + 1, U, V ⊆ ℝ^P (no openness needed), S ∈ 𝒟_n(U) (GeometricCurrentOn U n) and Rp = (M, θ, ξ) an integer multiplicity representation of S in U (IMRep U n with Rp.Represents S, i.e. S(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ for every ω ∈ 𝒟ⁿ(U), Hⁿ = μHE[n]). Assume ∂S(ω) = 0 for every ω ∈ 𝒟^m(U) (TestFormOn U m) with tsupport ω ⊆ V. Let g : ℝ^P → ℝ be C^∞ (ContDiff ℝ (⊤ : ℕ∞) g) with tsupport g ⊆ U and tsupport g ⊆ V, and let β ∈ 𝒟^m(ℝ^P) (TestFormOn univ m). Then, in [0, ∞],\n  ENNReal.ofReal |∫_M g(x)·(θ(x)·⟨dβ(x), ξ(x)⟩) dHⁿ(x)| ≤ ∫⁻ ENNReal.ofReal(‖Dg(x)‖·|β(x)|) dμ(x),\nwhere d = exteriorDerivative (Mathlib extDeriv), ⟨dβ(x), ξ(x)⟩ = Rp.orient x (dβ x), Dg(x) = fderiv ℝ g x with its operator norm, |·| = covectorEuclideanNorm (Euclidean coefficient norm) and μ = Rp.measure = (Hⁿ⌞M).withDensity θ.",
+  "lean_statement": "∀ (P m : ℕ) (U V : Set (Euclid P)) (S : GeometricCurrentOn U (m + 1)) (Rp : IMRep U (m + 1)) (g : Euclid P → ℝ) (β : TestFormOn (univ : Set (Euclid P)) m), Rp.Represents S → (∀ ω : TestFormOn U m, tsupport (ω : DifferentialForm (Euclid P) m) ⊆ V → S.boundary ω = 0) → ContDiff ℝ (⊤ : ℕ∞) g → tsupport g ⊆ U → tsupport g ⊆ V → ENNReal.ofReal |∫ x in Rp.carrier, g x * ((Rp.mult x : ℝ) * Rp.orient x (exteriorDerivative (β : DifferentialForm (Euclid P) m) x)) ∂μHE[m + 1]| ≤ ∫⁻ x, ENNReal.ofReal (‖fderiv ℝ g x‖ * covectorEuclideanNorm ((β : DifferentialForm (Euclid P) m) x)) ∂Rp.measure",
+  "lean_name": "dtc_bc_tc_rs_cutoff_defect",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.cutoff_defect-a1.leibniz-a1",
+    "root.compactness_of_minimizing_currents-a1.slicing-a1.wedge_norm-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.pairing_integrable-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.cutoff_defect-a1.leibniz-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-cutoff-defect-a-9dbb42610d-a1",
+      "result_commit": "19f5e1986c50f3aea0edcade3d15ca618e3f6763",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.slicing-a1.wedge_norm-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-slicing-a1-wedge-norm-a1-a1",
+      "result_commit": "6c9a0741ef7348ef9dcc005b9eeaa2593511c6ca",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_representation-a1.pairing_integrable-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-rep-0e98a44316-a1",
+      "result_commit": "df4d2f905b5c222cc16b76ff5ad81cc644b85d53",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-806845fdc2-a1"
+}

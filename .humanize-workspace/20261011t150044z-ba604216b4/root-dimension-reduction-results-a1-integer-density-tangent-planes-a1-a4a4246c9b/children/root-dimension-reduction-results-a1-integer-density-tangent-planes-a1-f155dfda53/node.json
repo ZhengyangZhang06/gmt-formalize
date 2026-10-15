@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1.ray_isolation-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.one_dim_cones-a1.ray_orientation-a1",
+  "depth": 6,
+  "title": "Near a point of ray(e), the union of the open rays of finitely many unit vectors is contained in ray(e) (parent steps 2–3)",
+  "statement": "Let P ∈ ℕ, let F ⊆ ℝ^P be a finite set of unit vectors (‖e'‖ = 1 for every e' ∈ F), let e ∈ ℝ^P be a unit vector (e need not belong to F), and let t₀ > 0. Write ray(w) := {t·w : t > 0}. Then there is δ > 0 such that every point of the open ball B_δ(t₀e) that lies on ray(e') for some e' ∈ F lies on ray(e); that is, B_δ(t₀e) ∩ ⋃_{e'∈F} ray(e') ⊆ ray(e).",
+  "lean_statement": "∀ (P : ℕ) (F : Finset (Euclid P)) (e : Euclid P) (t₀ : ℝ), (∀ e' ∈ F, ‖e'‖ = 1) → ‖e‖ = 1 → 0 < t₀ → ∃ δ : ℝ, 0 < δ ∧ ball (t₀ • e) δ ∩ (⋃ e' ∈ F, (fun t : ℝ => t • e') '' Ioi 0) ⊆ (fun t : ℝ => t • e) '' Ioi 0",
+  "lean_name": "idtp_fons_odc_ro_ray_isolation",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-f155dfda53-a1"
+}

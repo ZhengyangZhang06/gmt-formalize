@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1.composed_piece-a1",
+  "parent_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.image_tangent_transport-a1",
+  "depth": 4,
+  "title": "Composing a bi-Lipschitz immersed piece with a bi-Lipschitz immersion of ℝ^P",
+  "statement": "Let P, n ∈ ℕ, F : ℝ^n → ℝ^P L-Lipschitz, B ⊆ ℝ^n, m > 0 with m|a − a'| ≤ |F(a) − F(a')| for all a, a' ∈ B, and F differentiable with injective derivative DF(a) at every a ∈ B. Let φ : ℝ^P → ℝ^P be differentiable everywhere with Dφ(x) injective for every x, Λ-Lipschitz and Λ'-antilipschitz (|x − y| ≤ Λ'|φ(x) − φ(y)|). Then (i) φ∘F is (ΛL)-Lipschitz; (ii) there is m' > 0 with m'|a − a'| ≤ |φ(F(a)) − φ(F(a'))| for all a, a' ∈ B; (iii) for every a ∈ B, φ∘F is differentiable at a and D(φ∘F)(a) is injective; (iv) for every a ∈ B, range D(φ∘F)(a) = Dφ(F(a))(range DF(a)) (as linear subspaces of ℝ^P).",
+  "lean_statement": "∀ (P n : ℕ) (F : Euclid n → Euclid P) (φ : Euclid P → Euclid P) (B : Set (Euclid n)) (L Λ Λ' : NNReal) (m : ℝ), LipschitzWith L F → 0 < m → (∀ a ∈ B, ∀ a' ∈ B, m * ‖a - a'‖ ≤ ‖F a - F a'‖) → (∀ a ∈ B, DifferentiableAt ℝ F a ∧ Injective (fderiv ℝ F a)) → Differentiable ℝ φ → (∀ x, Injective (fderiv ℝ φ x)) → LipschitzWith Λ φ → AntilipschitzWith Λ' φ → LipschitzWith (Λ * L) (φ ∘ F) ∧ (∃ m' : ℝ, 0 < m' ∧ ∀ a ∈ B, ∀ a' ∈ B, m' * ‖a - a'‖ ≤ ‖(φ ∘ F) a - (φ ∘ F) a'‖) ∧ (∀ a ∈ B, DifferentiableAt ℝ (φ ∘ F) a ∧ Injective (fderiv ℝ (φ ∘ F) a)) ∧ ∀ a ∈ B, LinearMap.range (fderiv ℝ (φ ∘ F) a : Euclid n →ₗ[ℝ] Euclid P) = Submodule.map (fderiv ℝ φ (F a) : Euclid P →ₗ[ℝ] Euclid P) (LinearMap.range (fderiv ℝ F a : Euclid n →ₗ[ℝ] Euclid P))",
+  "lean_name": "dpf_itt_comp_bilipschitz_piece",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-image-tan-6af99da77d-a1"
+}

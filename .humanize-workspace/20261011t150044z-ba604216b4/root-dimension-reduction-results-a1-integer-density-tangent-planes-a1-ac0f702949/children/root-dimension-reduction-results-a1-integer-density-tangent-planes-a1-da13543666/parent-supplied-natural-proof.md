@@ -1,0 +1,119 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_splitting-a1.split_off_spine-a1.product_current-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Registration and depth note (context, not part of the numbered proof). New obligation with the fresh name idtp_fons_cs_sos_product_current. It is Part I (tools I.1–I.3) of the independently audited parent-supplied proof of the original minimality_transfer child (dimred_cs_sos_minimality_transfer of root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1). The proof is moved into a separate child so that the depth-6 leaf minimality_transfer stays smaller. The text below is that Part I, changed only in the last bullet of I.1 (adapted to the arbitrary map flat of the statement), in the integrand letter of (PM) (ψ instead of g, which names the frame), and in the final step (e), which matches the conclusion to the frozen type. The hypothesis 0 < m' is not needed by the argument. It is included because every use in minimality_transfer has m' ∈ {m, m + 1} with m = n − d ≥ 1, and it spares the formalization the degenerate case m' = 0. This node sits at depth 6, the configured maximum, so it is a machine leaf: its Lean proof adds only Submission.idtp_fons_cs_sos_product_current, proves I.1, I.2 and every auxiliary claim inline (have/obtain/let/show), and adds no helper declaration and no import.
+
+Source: Simon Ch. 6, 2.17–2.20 (Cartesian products of currents and their mass), 3.9 (products of integer multiplicity currents are integer multiplicity), the area formula of Ch. 3, §2, and Federer 2.10.45 / 3.2.23 for the Hausdorff product formula of rectifiable sets.
+Notation: H^j := μHE[j]; Λ^j := Covector (Euclid P) j; p_G := G.starProjection and q_G := (G^⊥).starProjection; E + M := {t + y : t ∈ E, y ∈ M}.
+Sibling children used:
+ (F7) dtc_imrep_current (sibling imrep_current): every IMRep represents some current;
+ dpf_piece, the accepted Submission.dpf_approxTangent_ae_bilipschitz_piece, only for the AreaLipschitz import (see Imports).
+Imports. I.3(b) uses the SimonGMT area formula weighted_area_formula_lipschitz_injOn and area_image_compl_regularSet_eq_zero, in Poincare.SimonGMT.Chapter02.AreaLipschitz, outside the contract import closure. This leaf adds no import. Its dependency dpf_piece (candidate a21680472b6919972de04d02dc3e1395a15d4171) carries `import Poincare.SimonGMT.Chapter02.AreaLipschitz` in GMT/Ch07/Submission.lean, and the controller merges accepted dependency candidates into this node's worktree before the implementation base is recorded. All other facts are in scope after `import GMT.Ch07.Submission` (Mathlib exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, MeasurableSet.image_of_continuousOn_injOn, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, Isometry.euclideanHausdorffMeasure_image, MeasureTheory.euclideanHausdorffMeasure_homothety_image, LinearMap.mkContinuous; SimonGMT euclideanHausdorffMeasure_image_le_of_lipschitzOn).
+
+I.1 (Interior product with an orthonormal frame.) Let g = (g_1, …, g_k) be orthonormal and k + m' = n' (formalize with an explicit m' and h : n' = k + m', to avoid degree casts).
+ - For α ∈ Λ^{n'} define ♭_gα(v) := α(Fin.append g v ∘ Fin.cast h), i.e. α(g_1, …, g_k, v_1, …, v_{m'}).
+ - Updating one entry of v updates one entry of Fin.append g v (Fin.addCases). Hence ♭_gα is multilinear, and alternating because equal entries stay at distinct indices; and |♭_gα(v)| ≤ ‖α‖∏|v_j|.
+ - So ♭_g : Λ^{n'} →L[ℝ] Λ^{m'} is continuous linear with ‖♭_g‖ ≤ 1 (LinearMap.mkContinuous).
+ - For a test n'-form ω, ♭_gω(t + ·) := y ↦ ♭_g(ω(t + y)) is a test m'-form with tsupport ⊆ tsupport ω − t.
+ - Any map flat : Λ^{n'} → Λ^{m'} with flat α v = α(Fin.append g v ∘ Fin.cast h) for all α and v equals ♭_g, both being given by the same formula (evaluate at each α and v). Hence, for a test n'-form ω, y ↦ flat(ω(t + y)) is the test m'-form ♭_gω(t + ·), and currentEval A of it equals A(♭_gω(t + ·)) (currentEval returns the value of A on a test form supported in ℝ^P).
+I.2 (Tangent planes inside a subspace.) If H^j(M' ∖ V) = 0 for a linear subspace V, y ∈ V and HasApproximateTangentSpaceAt j M' y Q, then Q ⊆ V.
+ Proof:
+ - Suppose z ∈ Q ∖ V. Then ρ := dist(z, V)/2 > 0 and j ≥ 1. Let φ(x) := max(0, 1 − |x − z|/ρ); it vanishes on V, and φ ≥ 1/2 on B(z, ρ/2).
+ - For r > 0, η := η_{y,r} preserves V, so η(M') ∖ V = η(M' ∖ V), which has H^j-measure r^{−j}H^j(M' ∖ V) = 0.
+ - Hence 0 ≤ ∫_{η(M')} φ dH^j ≤ H^j(η(M') ∖ V) = 0, and the tangent limit gives ∫_Q φ dH^j = 0.
+ - This contradicts ∫_Q φ dH^j ≥ (1/2)H^j(Q ∩ B(z, ρ/2)) > 0, since H^j⌞Q is Lebesgue measure on Q.
+I.3 (Product with a Borel subset of a frame span.) Let g be orthonormal (k vectors), G := span g, and k + m' = n'. Let E ⊆ G be Borel and A an IM m'-current with an IMRep R_A = (M_A, θ_A, ζ_A) such that μ_A(ℝ^P ∖ G^⊥) = 0. Then there is an IM n'-current [[E]] ×_g A, with an IMRep R_B, such that for every test n'-form ω and Borel C:
+ ([[E]] ×_g A)(ω) = ∫_E A(♭_gω(t + ·)) dH^k(t) and R_B.measure(C) = ∫_E μ_A(C − t) dH^k(t).
+ Proof. Write q_G := (G^⊥).starProjection and ι(a) := Σ_i a_ig_i, an isometry ℝ^k → G.
+ (a) Reduction. H^{m'}(M_A ∖ G^⊥) ≤ μ_A(ℝ^P ∖ G^⊥) = 0. Replace M_A by M_A ∩ G^⊥; action, measure and all blow-up integrals (hence approximate tangent spaces) are unchanged. By I.2 (V = G^⊥), for H^{m'}-a.e. y ∈ M_A the approximate tangent space T_y oriented by ζ_A(y) satisfies T_y ⊆ G^⊥.
+ (b) Product formula for H^{n'} (PM). For Borel E ⊆ G, Borel M ⊆ G^⊥ countably m'-rectifiable and locally H^{m'}-finite, and Borel ψ ≥ 0:
+ ∫_{E+M} ψ dH^{n'} = ∫_E ∫_M ψ(t + y) dH^{m'}(y) dH^k(t), where E + M = p_G⁻¹(E) ∩ q_G⁻¹(M) is Borel.
+ - Null part: if H^{m'}(N) = 0 then H^{n'}(E + N) = 0. By σ-additivity let E lie in a cube of side ℓ in G. Cover N by sets C_i of positive diameters < δ ≤ 1 with Σ_i (diam C_i)^{m'} < ε; enlarge degenerate sets slightly, keeping the sum < ε. Cover the cube by ≤ (ℓ/diam C_i + 1)^k subcubes of side diam C_i; each subcube plus C_i has diameter ≤ (√k + 1) diam C_i. Hence the H^{n'}_{(√k+1)δ}-premeasure of E + N is ≤ c Σ_i (ℓ^k (diam C_i)^{m'} + (diam C_i)^{n'}) ≤ c(ℓ^k + 1)ε. Let ε → 0, then δ → 0.
+ - Rectifiable part: cover M up to an H^{m'}-null set by disjoint Borel images Φ_l(T_l), with Φ_l Lipschitz and injective on T_l (bi-Lipschitz pieces via Mathlib exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, with tolerance c_A/2 for injective A and 1 otherwise; Lusin–Souslin; SimonGMT area_image_compl_regularSet_eq_zero). Replace Φ_l by q_G∘Φ_l, which equals Φ_l on T_l and has values in G^⊥.
+ - G_l(a, u) := ι(a) + Φ_l(u) on ℝ^k × ℝ^{m'} is Lipschitz and injective on ι⁻¹E × T_l. At a.e. point DG_l = [ι | DΦ_l(u)] with range DΦ_l(u) ⊆ G^⊥ ⊥ G, so its Gram matrix is diag(I, DΦ_l*DΦ_l) and JG_l = JΦ_l.
+ - The area formula for G_l and Φ_l, Tonelli, summation over l and the null part give (PM).
+ (c) The product IMRep R_B. Put M_B := E + M_A, θ_B := θ_A∘q_G and ξ_B(x)(α) := ζ_A(q_G x)(♭_gα).
+ - M_B is countably n'-rectifiable: covered by E + N and the Lipschitz images G_l(ℝ^{n'}).
+ - θ_B ≥ 1 on M_B and θ_B is locally integrable: by (PM), ∫_{M_B∩K} θ_B ≤ H^k(p_GK)·∫_{M_A∩q_GK} θ_A < ∞.
+ - ξ_B is a.e.-strongly measurable: compose a Borel version of ζ_A with q_G and ♭_g; the exceptional set is null by (PM).
+ - Tangent planes. Let x = t + y with t a Lebesgue density point of E (in G) and y ∈ M_A having T_y ⊆ G^⊥. Then η_{x,r}(M_B) = η_{t,r}(E) + η_{y,r}(M_A). By (PM), for φ ∈ C_c with spt φ ⊆ B_ρ, ∫_{η_{x,r}(M_B)} φ = ∫_{η_{t,r}E} Φ_r(s) dH^k(s) with Φ_r(s) := ∫_{η_{y,r}M_A} φ(s + z) dH^{m'}(z). As r ↓ 0:
+  - Φ_r(s) → ∫_{T_y} φ(s + z) dH^{m'}(z) for each s;
+  - |Φ_r(s)| ≤ ‖φ‖_∞ H^{m'}(η_{y,r}M_A ∩ B_ρ) is bounded and vanishes for |s| ≥ ρ, because |s + z|² = |s|² + |z|²;
+  - 1_{η_{t,r}E} → 1_G in L¹_loc(G).
+  Dominated convergence gives the limit ∫_G ∫_{T_y} φ(s + z) = ∫_{G⊕T_y} φ dH^{n'}, by (PM) for subspaces. So M_B has approximate tangent space G ⊕ T_y at x (finrank k + m' = n').
+ - Orientation. If ζ_A(y) = ±(β ↦ β(τ)) with τ an orthonormal basis of T_y, then ξ_B(x)(α) = ±α(Fin.append g τ ∘ Fin.cast h), and Fin.append g τ is an orthonormal basis of G ⊕ T_y. The bad x (t not a density point, or y bad) lie in (Z_E + M_A) ∪ (E + Z_A) with Z_E, Z_A Borel null sets, which is H^{n'}-null by (PM).
+ - So R_B := (M_B, θ_B, ξ_B) is an IMRep. Let [[E]] ×_g A be a current it represents (F7).
+ (d) Formulas. By (PM) applied to θ_B1_C, R_B.measure(C) = ∫_E μ_A(C − t) dt. For the action, the integrand θ_Bξ_B(ω) is integrable, being bounded by θ_B‖ω‖_∞1_{tsupport ω}. By (PM) on its positive and negative parts,
+ R_B.action(ω) = ∫_E ∫_{M_A} θ_Aζ_A(♭_gω(t + y)) dH^{m'}(y) dt = ∫_E A(♭_gω(t + ·)) dt. ∎(I.3)
+(e) (Conclusion in the frozen form.) Put B := [[E]] ×_g A and R_B as in I.3(c), so R_B.Represents B. By I.3(d), for every Borel C, R_B.measure(C) = ∫_E μ_A(C − t) dH^k(t), and μ_A(C − t) = R_A.measure({y : t + y ∈ C}) = R_A.measure((fun y => t + y)⁻¹' C); this is (i). For (ii), let flat satisfy the defining identity. By the last bullet of I.1, currentEval A (y ↦ flat(ω(t + y))) = A(♭_gω(t + ·)) for every t, and by I.3(d), B(ω) = R_B.action(ω) = ∫_E A(♭_gω(t + ·)) dH^k(t). The integrand is continuous in t (translation acts continuously on test forms and A is continuous) and bounded by ‖ω‖_∞·μ_A(q_G(tsupport ω)). It vanishes for t ∉ p_G(tsupport ω), since by I.3(a) A only sees M_A ∩ G^⊥ and p_G(t + y) = t for t ∈ G and y ∈ G^⊥. So it is integrable on E, and the Bochner integral in (ii) is the integral computed in I.3(d). ∎
+
+## Key steps
+
+1. I.1: the interior product ♭_g with the orthonormal frame g is continuous linear, and every flat with the defining identity equals it.
+2. I.2: if H^j(M' ∖ V) = 0 for a subspace V, then approximate tangent planes of M' at points of V lie in V; so the tangent planes of A lie in G^⊥.
+3. Hausdorff product formula (PM) for E + M with E ⊆ G Borel and M ⊆ G^⊥ rectifiable: the null part by coverings, and the rectifiable part by bi-Lipschitz pieces G_l(a, u) = ι(a) + Φ_l(u) with JG_l = JΦ_l and the area formula.
+4. R_B := (E + M_A, θ_A∘q_G, ζ_A(q_G ·)∘♭_g) is an IMRep: blow-ups at density points give the tangent plane G ⊕ T_y, oriented by Fin.append g τ.
+5. (PM) gives R_B.measure(C) = ∫_E μ_A(C − t) dt and R_B.action(ω) = ∫_E A(♭_gω(t + ·)) dt, which is the frozen conclusion.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `python3 -I -c json.load(<snap>/manifest.json); git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; git -C .lake/packages/simongmt rev-parse HEAD`
+- `cmp GMT/Ch07/Contract.lean <snap>/project/GMT/Ch07/Contract.lean; cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n '^def (IsMinimizingIn|IsConeCurrent|BoundaryVanishes|SameBoundary|blowUp|currentEval|approxTangentPlane)|^structure IMRep|^def IMRep\.(measure|Represents|action)' <snap>/project/GMT/Ch07/Contract.lean`
+- `rg -n -i -l coarea <snap>/mathlib/Mathlib (no match)`
+- `rg -n -i -l 'cartesian product of currents|slice of a current' <snap>/mathlib/Mathlib (no match)`
+- `rg -n 'idtp_fons_cs_sos|dimred_cs_sos|dpf_approxTangent_ae_bilipschitz_piece|dimred_im_mass_measure' <snap>/project (no match)`
+- `rg -n 'theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt' <snap>/mathlib/Mathlib`
+- `rg -n 'theorem measurableSet_of_differentiableAt|theorem measurable_fderiv' <snap>/mathlib/Mathlib`
+- `rg -n "theorem ae_all_iff|theorem ae_restrict_iff'" <snap>/mathlib/Mathlib`
+- `rg -n 'theorem isOpen_iUnion_countable' <snap>/mathlib/Mathlib/Topology/Bases.lean; rg -n 'theorem ContinuousLinearMap.isOpen_injective' <snap>/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean; rg -n 'theorem MeasureTheory.Measure.euclideanHausdorffMeasure_zero ' <snap>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `grep -n 'theorem weighted_area_formula_lipschitz_injOn|theorem area_image_compl_regularSet_eq_zero|theorem euclideanHausdorffMeasure_image_le_of_lipschitzOn|def areaRegularSet|theorem measurableSet_areaRegularSet' .lake/packages/simongmt/Poincare/SimonGMT/Chapter02/{AreaLipschitz,Lipschitz}.lean`
+- `python3 scans of dag.json: status, candidate_commit, lean_statement, parent of dimred_cs_split_off_spine, dimred_cs_sos_*, the 5 reuses and all accepted nodes; accepted candidates whose Submission.lean imports Poincare.SimonGMT.Chapter02.AreaLipschitz; absence of the 7 fresh names`
+- `git show <candidate_commit>:GMT/Ch07/Submission.lean for the 5 reuses (declaration with identical type present; a21680472b has import Poincare.SimonGMT.Chapter02.AreaLipschitz)`
+- `cat cluster-state/verification/results/hoa43/20261013T160813Z-ch07-root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_densit-ej3048p6/{result.json,comparator-config.json}`
+- `grep -n '_existing_lean_name_problem|_dependency_problem|_overlay_accepted_children|_leaf_author_task|max_depth' /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `lake env lean /tmp/idtp_sos_decomp/check/{Types,Names,NamesArea,Assembly,Assembly2,Assembly3}.lean`
+- `python3 /tmp/idtp_sos_decomp/scripts/gates.py /tmp/idtp_sos_decomp/envelope_test3.json (ScopedDecomposition.model_validate; replay of Runtime._dependency_problem, _topological, _existing_lean_name_problem on dag.json)`
+- `sed -n 395,420p book/chapter-07.txt (Simon Lemma 7.3.5)`
+- `WebSearch: Simon Introduction to GMT Lemma 3.5 minimizing cone translation invariant S = [[R^m]] × S_0`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/AE.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Restrict.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-ac0f702949/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-a1/decomposition-audit-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-im-mass-measure-a1/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/models.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt`
+- `/tmp/idtp_sos_decomp/check/Assembly3.lean`
+- `/tmp/idtp_sos_decomp/check/NamesArea.lean`
+- `/tmp/idtp_sos_review/LipCheck.lean`
+- `/tmp/idtp_sos_review/CarrierCheck.lean`
+- `/tmp/idtp_sos_review/UsageCheck.lean`
+
+Pins match: the snapshot manifest records project b4d606d (= workspace HEAD) and Mathlib 25730c7c (= workspace Mathlib); SimonGMT is 2b36630. The snapshot Contract.lean is byte-identical to the workspace Contract.lean and Submission.lean, which hold no Submission declarations; none of the 7 fresh names, nor the reused names, occur in the snapshot project. No coarea formula, slicing or Cartesian product of currents exists in the snapshot Mathlib (no match). Mathlib does have exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, measurableSet_of_differentiableAt, measurable_fderiv, ContinuousLinearMap.isOpen_injective, TopologicalSpace.isOpen_iUnion_countable and euclideanHausdorffMeasure_zero, all used by the child proofs. SimonGMT's area formula (weighted_area_formula_lipschitz_injOn, area_image_compl_regularSet_eq_zero, measurableSet_areaRegularSet) lies in Chapter02/AreaLipschitz.lean, outside the contract imports. In dag.json, the accepted dpf_approxTangent_ae_bilipschitz_piece (candidate a21680472b, comparator passed with propext, Quot.sound, Classical.choice) carries that import and proves the bi-Lipschitz-piece tangent lemma. The 5 reused declarations are accepted with byte-identical types present in their candidate commits. The six dimred_cs_sos_* children of the identical-type node dimred_cs_split_off_spine are unaccepted and owned by another parent, hence the fresh names. All 12 child types and the parent type elaborate. The parent assembly and the product_current usage checks compile; #print axioms shows only propext, Classical.choice and Quot.sound beyond the stubs' sorryAx. The runtime gate replay reports no problem.

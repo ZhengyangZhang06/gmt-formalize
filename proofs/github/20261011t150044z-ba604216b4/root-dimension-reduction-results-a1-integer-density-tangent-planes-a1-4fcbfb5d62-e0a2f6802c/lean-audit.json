@@ -1,0 +1,27 @@
+{
+  "review_method": "machine-nonleaf",
+  "comparison_identity": "fc3f584d9533b4ec3b1a10b24740faec9d0ba021840a51c0258ff007c89ba081",
+  "git_delta": {
+    "base_commit": "3b552d048935016fe9b2ad94b4f0a7a3084e3918",
+    "candidate_commit": "4cea73b2628820be6f3b295889c5790061b9bdeb",
+    "target": "GMT/Ch07/Submission.lean",
+    "changed_files": [
+      "GMT/Ch07/Submission.lean"
+    ],
+    "diff_sha256": "ff8901d3a33fd0b7aea8e08af70911e3cf3493dcbeb4e4f07bdd37a6ec4d7869",
+    "source_sha256": "5ecf136fb4fcecb39bf521e2613813e984b5cae5b07df4eb2bca0cf07017cf9c",
+    "accepted_commit": "",
+    "inherited_inputs": {}
+  },
+  "comparator_passed": true,
+  "theorems": [
+    {
+      "name": "Submission.idtp_flat_off_null_set",
+      "statement": "∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∃ F : Set (Euclid (n + k)), (∀ α : ℝ, 0 < α → μH[(n : ℝ) - 2 + α] F = 0) ∧ ∀ x ∈ T.support \\ F, ∀ β : ℝ, 0 < β → ∀ R : ℝ, 0 < R → ∃ ρ : ℝ, 0 < ρ ∧ ρ < R ∧ ∃ Q : Submodule ℝ (Euclid (n + k)), Module.finrank ℝ Q = n ∧ ∀ y ∈ T.support, dist y x < ρ → ‖(y - x) - Q.starProjection (y - x)‖ < β * ρ",
+      "lean_file": "GMT/Ch07/Submission.lean",
+      "natural_summary": "Implements the independently reviewed natural-language proof; see the theorem issue and retained proof."
+    }
+  ],
+  "publication_proof_reviewed": false,
+  "publication_proof_blob": ""
+}

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.slice_decomposition-a1.level_decomposition-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.local_comparison-a1.slice_decomposition-a1",
+  "depth": 5,
+  "title": "Decomposition at one good slicing level for one index (Simon 7.2.4 (3), (6), (7); steps 6–12 of the selected proof)",
+  "statement": "Let P, m ∈ ℕ and n := m + 1; all currents are currents in ℝ^P (SimonGMT GeometricCurrentOn univ, ℝ^P = Euclid P). Let R, A ∈ 𝒟_{n+1}(ℝ^P) and B, S′ ∈ 𝒟_n(ℝ^P). Let ρ be an integer multiplicity representation in ℝ^P of degree n + 1 (contract IMRep univ (n + 1)) with ρ.Represents R, i.e. R(ω) = ρ.action(ω) for every ω ∈ 𝒟^{n+1}(ℝ^P), and let β be any IMRep in ℝ^P of degree n; write μ_ρ := ρ.measure, ξ_ρ := ρ.orient, μ_β := β.measure, ξ_β := β.orient. Let f : ℝ^P → ℝ be continuous, t ∈ ℝ, W₀ ⊆ ℝ^P open and c ∈ [0, ∞] with c ≠ ∞, and put W := {x : f(x) < t}, F := {x : f(x) ≤ t}, Σ := {x : f(x) = t}. Assume: (i) S′ is integer multiplicity (contract IsIntegerMultiplicity); (ii) F is compact and F ⊆ W₀; (iii) A(ω) = ∫_W ξ_ρ(x)(ω(x)) dμ_ρ(x) for every ω ∈ 𝒟^{n+1}(ℝ^P) (TestFormOn univ (n + 1)); (iv) B(η) = ∫_W ξ_β(x)(η(x)) dμ_β(x) for every η ∈ 𝒟ⁿ(ℝ^P); (v) ∂A(η) = B(η) for every η ∈ 𝒟ⁿ(ℝ^P) whose topological support tsupport η is disjoint from Σ; (vi) M_{W₀}(∂A − B) ≤ c, where M_G is the SimonGMT local mass massOn G (Euclidean coefficient norm) and ∂A − B is the difference current; (vii) (BR′) every integer multiplicity T ∈ 𝒟_{n+1}(ℝ^P) such that M_G(∂T) < ∞ for every open G ⊆ ℝ^P with compact closure (contract CompactlyContained G univ) has an integer multiplicity boundary ∂T. Then there are Y, Sr ∈ 𝒟_n(ℝ^P) such that: Y is integer multiplicity, ∂Y = 0 and spt Y ⊆ F (GeometricCurrentOn.support); M(Sr) ≤ M_{W₀}(S′) + c, where M = mass = M_{ℝ^P}; Q.measure(Σ) ≤ c for every IMRep Q in ℝ^P (degree n) with Q.Represents Y; and Y(ω) = ∂R(ω) and Sr(ω) = S′(ω) for every ω ∈ 𝒟ⁿ(ℝ^P) with tsupport ω ⊆ W.",
+  "lean_statement": "∀ (P m : ℕ) (R A : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2)) (B S' : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1)) (ρ : IMRep (univ : Set (Euclid P)) (m + 2)) (β : IMRep (univ : Set (Euclid P)) (m + 1)) (f : Euclid P → ℝ) (t : ℝ) (W₀ : Set (Euclid P)) (c : ℝ≥0∞), ρ.Represents R → IsIntegerMultiplicity S' → Continuous f → IsOpen W₀ → IsCompact {x | f x ≤ t} → {x | f x ≤ t} ⊆ W₀ → (∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 2), A ω = ∫ x in {x | f x < t}, ρ.orient x ((ω : DifferentialForm (Euclid P) (m + 2)) x) ∂ρ.measure) → (∀ η : TestFormOn (univ : Set (Euclid P)) (m + 1), B η = ∫ x in {x | f x < t}, β.orient x ((η : DifferentialForm (Euclid P) (m + 1)) x) ∂β.measure) → (∀ η : TestFormOn (univ : Set (Euclid P)) (m + 1), Disjoint (tsupport (η : DifferentialForm (Euclid P) (m + 1))) {x | f x = t} → A.boundary η = B η) → (A.boundary - B).massOn W₀ ≤ c → c ≠ ∞ → (∀ T : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity T → (∀ W : Set (Euclid P), IsOpen W → CompactlyContained W univ → T.boundary.massOn W < ∞) → IsIntegerMultiplicity T.boundary) → ∃ Y Sr : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Y ∧ Y.boundary = 0 ∧ Y.support ⊆ {x | f x ≤ t} ∧ Sr.mass ≤ S'.massOn W₀ + c ∧ (∀ Q : IMRep (univ : Set (Euclid P)) (m + 1), Q.Represents Y → Q.measure {x | f x = t} ≤ c) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) (m + 1), tsupport (ω : DifferentialForm (Euclid P) (m + 1)) ⊆ {x | f x < t} → Y ω = R.boundary ω ∧ Sr ω = S' ω",
+  "lean_name": "dimred_mbl_lc_sd_level_decomposition",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.imrep_restriction-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1",
+    "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_localization-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.imrep_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-a1",
+      "result_commit": "d49dda91b75b7417d67a10053e6dc4b65d4f0312",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.imrep_restriction-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-imrep-1bd5f15878-a1",
+      "result_commit": "ae810e9b4cb8d26664747b2f51d22fb4241e09ca",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_triangle-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-triangle-a1-a1",
+      "result_commit": "c7dea4b81c94f56650b6060d3bcb1e801f43d7e9",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.compact_outer_bound-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-compac-a4168491cb-a1",
+      "result_commit": "bb7f0a567a77ec463f2a7135f2f0fe37047b43f2",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.local_comparison-a1.mass_localization-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-local-comparison-a1-mass-l-9981f1246a-a1",
+      "result_commit": "a3cc98d1f008606225ddd111bbd6688136867146",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81-a1",
+      "result_commit": "02c6122c94d0280a6288d299659b2dab7b59e109",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.im_local-a1.imrep_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6249c06eba-a1",
+      "result_commit": "d37eb4dfabd4fb449ac71a0682db55be0cc13023",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-local-compariso-f8dede8b2d-a1"
+}

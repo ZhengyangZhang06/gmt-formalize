@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1",
+  "depth": 4,
+  "title": "Countably n-rectifiable sets of finite measure have density one almost everywhere (general fact G7; Simon Ch. 3, 1.2, 1.3, 1.5(3), 1.6)",
+  "statement": "Let P, n ∈ ℕ with n ≥ 1, and let M ⊆ ℝ^P be a Borel set that is countably n-rectifiable with H^n(M) < ∞ (H^n = μHE[n]). Then H^n(M ∩ B_t(w))/(ω_n t^n) → 1 in [0, ∞] as t ↓ 0 for H^n-almost every w ∈ M (ω_n = unitBallVolume n).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)), 1 ≤ n → MeasurableSet M → CountablyRectifiable n M → μHE[n] M ≠ ∞ → ∀ᵐ w ∂(μHE[n].restrict M), Tendsto (fun t : ℝ => μHE[n] (M ∩ ball w t) / (unitBallVolume n * ENNReal.ofReal (t ^ n))) (𝓝[>] 0) (𝓝 1)",
+  "lean_name": "codim1_rdo_rectifiable_ae_density_one",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-96d3c5f21c-a1"
+}

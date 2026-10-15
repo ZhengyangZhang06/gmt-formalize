@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.piece_orientation-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1",
+  "depth": 6,
+  "title": "Orientation of an integer multiplicity triple along a bi-Lipschitz piece: J_G·ξ∘G = ±DG_#e a.e. (Simon 3.4–3.5)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n), G : ℝⁿ → ℝ^P L-Lipschitz, A ⊆ ℝⁿ Borel and κ > 0 with κ|a − a'| ≤ |G(a) − G(a')| for a, a' ∈ A, G differentiable with injective derivative at every point of A, and G(A) ⊆ M. Then for Lebesgue-a.e. a ∈ A there is σ ∈ {1, −1} such that J_G(a)·ξ(G(a))(β) = σ·β(DG(a)e_1, …, DG(a)e_n) for every n-covector β, where J_G(a) := (det[⟨DG(a)e_k, DG(a)e_l⟩]_{k,l})^{1/2} and e_k := EuclideanSpace.single k 1.",
+  "lean_statement": "∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (G : Euclid n → Euclid P) (A : Set (Euclid n)) (L : NNReal) (κ : ℝ), IsOpen U → LipschitzWith L G → MeasurableSet A → 0 < κ → (∀ a ∈ A, ∀ a' ∈ A, κ * ‖a - a'‖ ≤ ‖G a - G a'‖) → (∀ a ∈ A, DifferentiableAt ℝ G a ∧ Injective (fderiv ℝ G a)) → G '' A ⊆ R.carrier → ∀ᵐ a ∂(volume.restrict A), ∃ σ : ℝ, (σ = 1 ∨ σ = -1) ∧ ∀ β : Covector (Euclid P) n, Real.sqrt (Matrix.det (Matrix.of fun k l : Fin n => inner ℝ (fderiv ℝ G a (EuclideanSpace.single k 1)) (fderiv ℝ G a (EuclideanSpace.single l 1)))) * R.orient (G a) β = σ * β (fun k => fderiv ℝ G a (EuclideanSpace.single k 1))",
+  "lean_name": "dtc_bc_lc_pfi_piece_orientation_sign",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.change_of_variables-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.orient_algebra-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9-a1",
+      "result_commit": "a21680472b6919972de04d02dc3e1395a15d4171",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.change_of_variables-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.pushforward-a1.pf_integer-a1.orient_algebra-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-c5b9c62bef-a1"
+}

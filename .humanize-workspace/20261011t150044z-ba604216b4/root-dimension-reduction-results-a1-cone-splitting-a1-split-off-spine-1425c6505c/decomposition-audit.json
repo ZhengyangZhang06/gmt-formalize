@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "^(import|namespace|open)|structure IMRep|def (currentEval|IsIntegerMultiplicity)|IMRep\\.(measure|action|Represents)|translat|addRight",
+        "IsAddRightInvariant|IsAddLeftInvariant|measurePreserving_euclideanHausdorffMeasure",
+        "theorem (setLIntegral_comp_preimage_emb|setIntegral_preimage_emb|measure_preimage_equiv|restrict_preimage)|protected theorem quasiMeasurePreserving|comp_measurePreserving|^theorem ae ",
+        "dimred_cs_sos_mt_fc_translate_imrep|dimred_cs_sos_mt_fc_box_face|cbr_cc_current_algebra|translat|addRight",
+        "git show 791f7d722ecc7a162afa46e5f9e1dd564f0ce80b:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fc-independent-audit-v2otyipv/Types.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fc-independent-audit-v2otyipv/Reuse.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/fc-independent-audit-v2otyipv/Combined.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Map.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Dynamics/Ergodic/MeasurePreserving.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-1425c6505c/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-1425c6505c/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-253f25df92/accepted-candidate.json",
+        "/tmp/fc-independent-audit-v2otyipv/Types.lean",
+        "/tmp/fc-independent-audit-v2otyipv/Reuse.lean",
+        "/tmp/fc-independent-audit-v2otyipv/Reuse.out",
+        "/tmp/fc-independent-audit-v2otyipv/Combined.lean",
+        "/tmp/fc-independent-audit-v2otyipv/Combined.out"
+      ],
+      "conclusion": "The project and mathlib revisions match the manifest; the snapshot Contract is byte-identical to the workspace Contract and Submission. The snapshot supplies translation invariance and the required change-of-variables results; SimonGMT's tangent-space definition depends on the stated blow-up images. The targeted translation/new-name search found no match in Contract. All three frozen child propositions independently elaborate before implementation, with autoImplicit disabled; current subtraction and Hausdorff-measure instances also check. Both new names are unreserved. The reused algebra declaration has the identical frozen type, preserves the pinned preamble, and recompiles with only propext, Classical.choice and Quot.sound. The relevant dependency closure is acyclic and does not reach the selected parent. Fresh Lean checks of the supplied child proofs and exact parent assembly passed using exact external-dependency stubs; their sorryAx dependency is confined to those stubs, including the pending frame_measure obligation. Splitting is appropriate: translation, one-face construction, and finite integer summation establish precisely the selected face-current contract, including j = 0 and infinite total mass."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "translate_imrep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The standalone one-line proposition exactly matches the prose, including arbitrary ambient forms and the Borel-set measure identity. The proof checks every IMRep field, transports tangent planes through equal blow-up images, and proves both branches of currentEval using translation invariance of test forms in both directions. Change of variables proves the action and measure formulas without additional integrability hypotheses. Its only external theorem is the available inherited dtc_imrep_current; there is no circular reliance. The fresh bare name is valid."
+    },
+    {
+      "key": "box_face",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and quantifiers match the exact one-line type. The dependency on translate_imrep is correctly directed. The proof establishes translated concentration, measurability of the box, every product_current hypothesis, the action for every qualifying flat map, and the exact mass equality using the inherited mass and frame-measure contracts. It requires no global finite-mass assumption. Substituting each deleted frame and either translation vector supplies exactly the parent's faces. The proof is complete and the fresh bare name is unreserved."
+    },
+    {
+      "key": "current_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid reuse of comparator-accepted cbr_cc_current_algebra at commit 791f7d722ecc7a162afa46e5f9e1dd564f0ce80b: the proposed, DAG, and candidate frozen types are byte-identical. Independent recompilation confirms only standard axioms. The supplied proof establishes all three conjuncts through the empty representation, negation of admissible forms, integer-multiple and finite-set induction under the explicit subtraction premise, and the supremum mass estimate. The parent's inherited F4 supplies that premise; coefficients ±(-1)^a on the 2(j+1) faces give exactly its signs and mass constant. The bare name is legitimate accepted reuse."
+    }
+  ],
+  "required_changes": []
+}
