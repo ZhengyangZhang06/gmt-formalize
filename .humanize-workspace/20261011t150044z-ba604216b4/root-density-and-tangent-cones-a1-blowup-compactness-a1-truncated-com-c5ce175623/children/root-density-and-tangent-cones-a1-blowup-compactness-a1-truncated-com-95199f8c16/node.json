@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.slice_limit-a1.ae_finite-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.slice_limit-a1",
+  "depth": 6,
+  "title": "For almost every level, the liminf of slice-mass majorants is finite on every ball B_{k+1}(0) (parent step 4 via (MM))",
+  "statement": "Assume (MM), the (MM) part of the conjunct (T1) ∧ (T2) ∧ (MM) of the selected node's dependency foundations (dtc_bc_tc_cl_foundations; verbatim, and also the type of the accepted declaration cbr_slice_mass_majorant): for every P ∈ ℕ, measures μ_j (j ∈ ℕ) on ℝ^P, continuous f : ℝ^P → ℝ, G ⊆ ℝ^P, a, b ∈ ℝ, L ∈ ℝ≥0 and Z_j : ℝ → [0, ∞] with μ_j(G ∩ {a < f < b}) < ∞ for every j and Z_j(t) ≤ L · liminf_{h→0+} ofReal(h⁻¹) μ_j(G ∩ {t − h < f < t}) for all j and all t ∈ (a, b), there is a measurable g : ℝ → [0, ∞] with liminf_{j→∞} Z_j(t) ≤ g(t) for L¹-a.e. t ∈ (a, b) and ∫_{(a,b)} g dL¹ ≤ L · liminf_{j→∞} μ_j(G ∩ {a < f < b}). Let P ∈ ℕ, μ_i (i ∈ ℕ) measures on ℝ^P, f : ℝ^P → ℝ continuous, L ∈ ℝ≥0 and Z_{i,k}(t) ∈ [0, ∞] (i, k ∈ ℕ, t ∈ ℝ); write W_k := B_{k+1}(0) (open ball of radius k + 1 about 0). Suppose sup_i μ_i(W_k) < ∞ for every k ∈ ℕ, and Z_{i,k}(t) ≤ L · liminf_{h→0+} ofReal(h⁻¹) μ_i(W_k ∩ {t − h < f < t}) for all i, k ∈ ℕ and all t ∈ ℝ (liminf along 𝓝[>]0, values in [0, ∞]). Then for L¹-a.e. t ∈ ℝ, liminf_{i→∞} Z_{i,k}(t) < ∞ for every k ∈ ℕ.",
+  "lean_statement": "(∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (G : Set (Euclid P)) (a b : ℝ) (L : NNReal) (Z : ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ j, μs j (G ∩ {x | a < f x ∧ f x < b}) < ∞) → (∀ (j : ℕ) (t : ℝ), t ∈ Ioo a b → Z j t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs j (G ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∃ g : ℝ → ℝ≥0∞, Measurable g ∧ (∀ᵐ t ∂(volume : Measure ℝ), t ∈ Ioo a b → liminf (fun j => Z j t) atTop ≤ g t) ∧ ∫⁻ t in Ioo a b, g t ≤ (L : ℝ≥0∞) * liminf (fun j => μs j (G ∩ {x | a < f x ∧ f x < b})) atTop) → ∀ (P : ℕ) (μs : ℕ → Measure (Euclid P)) (f : Euclid P → ℝ) (L : NNReal) (Z : ℕ → ℕ → ℝ → ℝ≥0∞), Continuous f → (∀ k : ℕ, ⨆ i, μs i (ball (0 : Euclid P) ((k : ℝ) + 1)) < ∞) → (∀ (i k : ℕ) (t : ℝ), Z i k t ≤ (L : ℝ≥0∞) * liminf (fun h : ℝ => ENNReal.ofReal h⁻¹ * μs i (ball (0 : Euclid P) ((k : ℝ) + 1) ∩ {x | t - h < f x ∧ f x < t})) (𝓝[>] 0)) → ∀ᵐ t ∂(volume : Measure ℝ), ∀ k : ℕ, liminf (fun i => Z i k t) atTop < ∞",
+  "lean_name": "dtc_bc_tc_cl_sl_ae_liminf_lt_top",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-95199f8c16-a1"
+}
