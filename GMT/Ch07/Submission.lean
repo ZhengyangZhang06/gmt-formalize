@@ -2341,6 +2341,183 @@ theorem Submission.idtp_cse_etp_cusp : ∀ (P : ℕ) (μ : Measure (Euclid P)) (
   have hge := ge_of_tendsto' hqlim fun j => (hq j).le
   rw [Submodule.starProjection_eq_self_iff.2 hwQ, sub_self, norm_zero] at hge
   exact absurd hε (not_lt.2 hge)
+/-- **Orthogonal projection onto a 2-plane in an orthonormal frame.**  If `Q ⊆ ℝᴾ` has dimension
+`2` and `a, e ∈ Q` are orthonormal, then `π_Q x = ⟨x, a⟩a + ⟨x, e⟩e` for every `x`.  The family
+`(a, e)` is orthonormal, hence linearly independent, so `span {a, e} ≤ Q` has dimension `2` and
+equals `Q`.  The candidate `y = ⟨x, a⟩a + ⟨x, e⟩e` lies in `Q`, and `⟨x − y, a⟩ = ⟨x − y, e⟩ = 0`,
+so `x − y` is orthogonal to every `w = c₀a + c₁e ∈ Q`; the orthogonal projection is the unique
+point of `Q` with this property. -/
+theorem Submission.idtp_cse_etp_loc_frame_projection : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → ∀ x : Euclid P, Q.starProjection x = inner ℝ x a • a + inner ℝ x e • e := by
+  intro P Q a e hQ ha he hna hne hae x
+  have hea : inner ℝ e a = 0 := by rw [real_inner_comm]; exact hae
+  have haa : inner ℝ a a = 1 := by rw [real_inner_self_eq_norm_sq, hna]; norm_num
+  have hee : inner ℝ e e = 1 := by rw [real_inner_self_eq_norm_sq, hne]; norm_num
+  -- Step 1: `![a, e]` is orthonormal, hence linearly independent
+  have hon : Orthonormal ℝ ![a, e] := by
+    rw [orthonormal_iff_ite]
+    intro i j
+    fin_cases i <;> fin_cases j <;> simp [hna, hne, hae, hea]
+  -- Step 2: `span {a, e} ≤ Q` and both have dimension `2`, so `span {a, e} = Q`
+  have hle : Submodule.span ℝ (range ![a, e]) ≤ Q := by
+    rw [Submodule.span_le]
+    rintro _ ⟨i, rfl⟩
+    fin_cases i
+    · exact ha
+    · exact he
+  have hspan : Submodule.span ℝ (range ![a, e]) = Q :=
+    Submodule.eq_of_le_of_finrank_eq hle
+      (by rw [finrank_span_eq_card hon.linearIndependent, hQ]; simp)
+  -- Step 5: `π_Q x` is the unique point `y ∈ Q` with `⟨x − y, w⟩ = 0` for all `w ∈ Q`
+  apply Submodule.eq_starProjection_of_mem_of_inner_eq_zero
+  -- Step 3: the candidate `y = ⟨x, a⟩a + ⟨x, e⟩e` lies in `Q`
+  · exact Q.add_mem (Q.smul_mem _ ha) (Q.smul_mem _ he)
+  -- Step 4: `w = c₀a + c₁e` and `⟨x − y, w⟩ = c₀⟨x − y, a⟩ + c₁⟨x − y, e⟩ = 0`
+  · intro w hw
+    rw [← hspan, Submodule.mem_span_range_iff_exists_fun] at hw
+    obtain ⟨c, rfl⟩ := hw
+    simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, inner_add_right,
+      real_inner_smul_right, inner_sub_left, inner_add_left, real_inner_smul_left, haa, hee, hae,
+      hea]
+    ring
+
+/-- **Distance to `a` in polar form near the frame `(a, e)`.**  Let `Q ⊆ ℝᴾ` have dimension `2`,
+`a, e ∈ Q` be orthonormal and `π = π_Q`.  If `⟨x, a⟩ > 0`, then
+`|x − a| ≤ ||x| − 1| + |arctan(⟨x, e⟩/⟨x, a⟩)| + η + η²` with `η = |x − πx|/|x|`.  With `r = |x|`,
+`ρ = |πx|`, `x − a = (1 − r⁻¹)x + r⁻¹(x − πx) + (r⁻¹ − ρ⁻¹)πx + (ρ⁻¹πx − a)`.  The first two terms
+have norms `|r − 1|` and `η`; Pythagoras gives `(ρ/r)² = 1 − η²`, so the third has norm
+`1 − ρ/r ≤ η²`.  As `πx = ⟨x, a⟩a + ⟨x, e⟩e`, `cos f = ⟨x, a⟩/ρ` for `f = arctan(⟨x, e⟩/⟨x, a⟩)`
+and `|ρ⁻¹πx − a|² = 2 − 2 cos f ≤ f²`. -/
+theorem Submission.idtp_cse_etp_loc_dist_bound : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → ∀ x : Euclid P, 0 < inner ℝ x a → dist x a ≤ |‖x‖ - 1| + |Real.arctan (inner ℝ x e / inner ℝ x a)| + ‖x - Q.starProjection x‖ / ‖x‖ + (‖x - Q.starProjection x‖ / ‖x‖) ^ 2 := by
+  intro P Q a e hQ ha he hna hne hae x hxa
+  -- Step 1: `⟨x, a⟩ > 0 = ⟨0, a⟩`, so `x ≠ 0` and `r = |x| > 0`
+  have hr0 : 0 < ‖x‖ := norm_pos_iff.2 fun hx0 => by
+    rw [hx0, inner_zero_left] at hxa
+    exact lt_irrefl _ hxa
+  have hea : inner ℝ e a = (0 : ℝ) := by rw [real_inner_comm]; exact hae
+  have haa : inner ℝ a a = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, hna]; norm_num
+  have hee : inner ℝ e e = (1 : ℝ) := by rw [real_inner_self_eq_norm_sq, hne]; norm_num
+  -- Step 2: the frame formula `πx = αa + βe`
+  have hπ : Q.starProjection x = inner ℝ x a • a + inner ℝ x e • e :=
+    Submission.idtp_cse_etp_loc_frame_projection P Q a e hQ ha he hna hne hae x
+  -- Step 3: `πx ∈ Q` and `x − πx ⊥ Q`, so `⟨πx, x − πx⟩ = 0`
+  have horth : inner ℝ (Q.starProjection x) (x - Q.starProjection x) = (0 : ℝ) := by
+    rw [real_inner_comm]
+    exact Submodule.starProjection_inner_eq_zero x _ (Q.starProjection_apply_mem x)
+  generalize Q.starProjection x = p at hπ horth ⊢
+  generalize inner ℝ x a = α at hxa hπ ⊢
+  generalize inner ℝ x e = β at hπ ⊢
+  -- `⟨πx, a⟩ = α` and `ρ² = α² + β² > 0`
+  have hpa : inner ℝ p a = α := by
+    rw [hπ, inner_add_left, real_inner_smul_left, real_inner_smul_left, haa, hea]
+    ring
+  have hap : inner ℝ a p = α := by rw [real_inner_comm, hpa]
+  have hρsq : ‖p‖ ^ 2 = α ^ 2 + β ^ 2 := by
+    rw [← real_inner_self_eq_norm_sq, hπ]
+    simp only [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right, haa,
+      hee, hae, hea]
+    ring
+  have hρ0 : 0 < ‖p‖ := norm_pos_iff.2 fun hp0 => by
+    rw [hp0, norm_zero] at hρsq
+    nlinarith [sq_nonneg β]
+  -- Step 3: Pythagoras `r² = ρ² + |x − πx|²`, so `ρ ≤ r`, `(ρ/r)² = 1 − η²` and `1 − ρ/r ≤ η²`
+  have hpyth : ‖x‖ ^ 2 = ‖p‖ ^ 2 + ‖x - p‖ ^ 2 := by
+    have h := norm_add_sq_eq_norm_sq_add_norm_sq_real horth
+    rw [add_sub_cancel] at h
+    rw [sq, sq, sq, h]
+  have hρr : ‖p‖ ≤ ‖x‖ :=
+    (pow_le_pow_iff_left₀ (norm_nonneg _) (norm_nonneg _) two_ne_zero).1
+      (by rw [hpyth]; exact le_add_of_nonneg_right (sq_nonneg _))
+  have hη2 : 1 - ‖p‖ / ‖x‖ ≤ (‖x - p‖ / ‖x‖) ^ 2 := by
+    have ht0 : 0 ≤ ‖p‖ / ‖x‖ := div_nonneg (norm_nonneg _) (norm_nonneg _)
+    have ht1 : ‖p‖ / ‖x‖ ≤ 1 := (div_le_one hr0).2 hρr
+    have htsq : (‖p‖ / ‖x‖) ^ 2 = 1 - (‖x - p‖ / ‖x‖) ^ 2 := by
+      rw [div_pow, div_pow, eq_sub_iff_add_eq, ← add_div, ← hpyth,
+        div_self (pow_ne_zero 2 hr0.ne')]
+    nlinarith [mul_le_mul_of_nonneg_left ht1 ht0]
+  -- Step 4: `√(1 + (β/α)²) = ρ/α`, so `cos f = α/ρ`
+  have hcos : Real.cos (Real.arctan (β / α)) = α / ‖p‖ := by
+    have h : 1 + (β / α) ^ 2 = (‖p‖ / α) ^ 2 := by
+      rw [div_pow, div_pow, hρsq, add_div, div_self (pow_ne_zero 2 hxa.ne')]
+    rw [Real.cos_arctan, h, Real.sqrt_sq (div_nonneg (norm_nonneg _) hxa.le), one_div_div]
+  -- Step 5: `x − a = (1 − r⁻¹)x + r⁻¹(x − πx) + (r⁻¹ − ρ⁻¹)πx + (ρ⁻¹πx − a)`
+  have hdecomp : x - a = (1 - ‖x‖⁻¹) • x + ‖x‖⁻¹ • (x - p) + (‖x‖⁻¹ - ‖p‖⁻¹) • p +
+      (‖p‖⁻¹ • p - a) := by
+    module
+  -- Step 6(a): `|(1 − r⁻¹)x| = |r − 1|`
+  have h1 : ‖(1 - ‖x‖⁻¹) • x‖ = |‖x‖ - 1| := by
+    have h : (1 - ‖x‖⁻¹) * ‖x‖ = ‖x‖ - 1 := by rw [sub_mul, one_mul, inv_mul_cancel₀ hr0.ne']
+    rw [norm_smul, Real.norm_eq_abs, ← h, abs_mul, abs_norm]
+  -- Step 6(b): `|r⁻¹(x − πx)| = η`
+  have h2 : ‖‖x‖⁻¹ • (x - p)‖ = ‖x - p‖ / ‖x‖ := by
+    rw [norm_smul, norm_inv, norm_norm, inv_mul_eq_div]
+  -- Step 6(c): `|(r⁻¹ − ρ⁻¹)πx| = 1 − ρ/r ≤ η²`
+  have h3 : ‖(‖x‖⁻¹ - ‖p‖⁻¹) • p‖ ≤ (‖x - p‖ / ‖x‖) ^ 2 := by
+    have h : |‖x‖⁻¹ - ‖p‖⁻¹| * ‖p‖ = 1 - ‖p‖ / ‖x‖ := by
+      rw [abs_of_nonpos (sub_nonpos.2 (inv_anti₀ hρ0 hρr)), neg_sub, sub_mul,
+        inv_mul_cancel₀ hρ0.ne', inv_mul_eq_div]
+    rw [norm_smul, Real.norm_eq_abs, h]
+    exact hη2
+  -- Step 6(d): `|ρ⁻¹πx − a|² = 2 − 2 cos f ≤ f²`
+  have h4 : ‖‖p‖⁻¹ • p - a‖ ≤ |Real.arctan (β / α)| := by
+    have hsq : ‖‖p‖⁻¹ • p - a‖ ^ 2 = 2 - 2 * (α / ‖p‖) := by
+      rw [← real_inner_self_eq_norm_sq]
+      simp only [inner_sub_left, inner_sub_right, real_inner_smul_left, real_inner_smul_right, hpa,
+        hap, haa]
+      rw [real_inner_self_eq_norm_sq]
+      field_simp
+      ring
+    refine (pow_le_pow_iff_left₀ (norm_nonneg _) (abs_nonneg _) two_ne_zero).1 ?_
+    rw [hsq, sq_abs, ← hcos]
+    linarith [Real.one_sub_sq_div_two_le_cos (x := Real.arctan (β / α))]
+  -- Step 7: the triangle inequality
+  calc dist x a = ‖x - a‖ := dist_eq_norm x a
+    _ = ‖(1 - ‖x‖⁻¹) • x + ‖x‖⁻¹ • (x - p) + (‖x‖⁻¹ - ‖p‖⁻¹) • p + (‖p‖⁻¹ • p - a)‖ := by
+      rw [← hdecomp]
+    _ ≤ ‖(1 - ‖x‖⁻¹) • x‖ + ‖‖x‖⁻¹ • (x - p)‖ + ‖(‖x‖⁻¹ - ‖p‖⁻¹) • p‖ + ‖‖p‖⁻¹ • p - a‖ :=
+      norm_add₄_le
+    _ ≤ |‖x‖ - 1| + |Real.arctan (β / α)| + ‖x - p‖ / ‖x‖ + (‖x - p‖ / ‖x‖) ^ 2 := by
+      rw [h1, h2]
+      linarith
+
+/-- **Localization near the frame `(a, e)` from the cusp bound.**  Let `Q ⊆ ℝᴾ` have dimension `2`,
+`a, e ∈ Q` be orthonormal, `π = π_Q`, and suppose `|x − πx| ≤ |x − a|/20` for `x ∈ Z` with
+`|x − a| < s₁`.  Take `s₀ = min(1/4, s₁/6)`.  If `0 < s' ≤ s₀`, `x ∈ Z`, `⟨x, a⟩ > 0`,
+`||x| − 1| < s'`, `|arctan(⟨x, e⟩/⟨x, a⟩)| < s'` and `|x − πx| ≤ 2s₀|x|`, then `|x| > 3/4` and
+`η = |x − πx|/|x| ≤ 2s₀ ≤ 1/2`, so `η² ≤ η/2` and the polar distance bound gives
+`|x − a| < 2s' + (3/2)η ≤ 5s₀ < s₁`.  The cusp bound then yields
+`(3/4)η ≤ |x − πx| < s'/10 + (3/40)η`, i.e. `η < (4/27)s'`; hence `|x − πx| < (s'/4)|x|` and
+`|x − a| < 2s' + (2/9)s' < 3s'`. -/
+theorem Submission.idtp_cse_etp_localization : ∀ (P : ℕ) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (Z : Set (Euclid P)) (s₁ : ℝ), Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < s₁ → (∀ x ∈ Z, dist x a < s₁ → ‖x - Q.starProjection x‖ ≤ 1 / 20 * dist x a) → ∃ s₀ : ℝ, 0 < s₀ ∧ s₀ ≤ 1 / 4 ∧ (∀ s' : ℝ, 0 < s' → s' ≤ s₀ → ∀ x ∈ Z, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s₀ * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s') := by
+  intro P Q a e Z s₁ hQ ha he hna hne hae hs₁ hcusp
+  -- Step 1: `s₀ = min(1/4, s₁/6)`, so `0 < s₀ ≤ 1/4` and `6s₀ ≤ s₁`
+  refine ⟨min (1 / 4) (s₁ / 6), lt_min (by norm_num) (by linarith), min_le_left _ _, ?_⟩
+  intro s' hs' hs's₀ x hxZ hxa hr hf hq
+  have hs₀4 : min (1 / 4 : ℝ) (s₁ / 6) ≤ 1 / 4 := min_le_left _ _
+  have hs₀6 : min (1 / 4 : ℝ) (s₁ / 6) ≤ s₁ / 6 := min_le_right _ _
+  generalize min (1 / 4 : ℝ) (s₁ / 6) = s₀ at hs₀4 hs₀6 hs's₀ hq
+  -- Step 2: `|x| > 1 − s' ≥ 3/4`
+  have hr34 : 3 / 4 < ‖x‖ := by linarith [(abs_lt.1 hr).1]
+  have hr0 : 0 < ‖x‖ := by linarith
+  -- Step 3: `η = |x − πx|/|x|` has `|x − πx| = η|x|` and `0 ≤ η ≤ 2s₀ ≤ 1/2`, so `η² ≤ η/2`
+  have hqη : ‖x - Q.starProjection x‖ = ‖x - Q.starProjection x‖ / ‖x‖ * ‖x‖ :=
+    (div_mul_cancel₀ _ hr0.ne').symm
+  have hη0 : 0 ≤ ‖x - Q.starProjection x‖ / ‖x‖ := div_nonneg (norm_nonneg _) hr0.le
+  have hη2s₀ : ‖x - Q.starProjection x‖ / ‖x‖ ≤ 2 * s₀ := (div_le_iff₀ hr0).2 hq
+  -- Step 4: the polar distance bound `|x − a| ≤ ||x| − 1| + |f| + η + η²`
+  have hd := Submission.idtp_cse_etp_loc_dist_bound P Q a e hQ ha he hna hne hae x hxa
+  generalize ‖x - Q.starProjection x‖ / ‖x‖ = η at hqη hη0 hη2s₀ hd
+  have hηsq : η ^ 2 ≤ η / 2 := by
+    have hη12 : η ≤ 1 / 2 := by linarith
+    nlinarith [mul_le_mul_of_nonneg_left hη12 hη0]
+  -- Step 5: `|x − a| < 2s' + (3/2)η ≤ 5s₀ < s₁`
+  have hdist : dist x a < 2 * s' + 3 / 2 * η := by linarith
+  -- Step 6: the cusp bound `(3/4)η ≤ η|x| = |x − πx| ≤ |x − a|/20 < s'/10 + (3/40)η`, so
+  -- `η < (4/27)s'`
+  have hc := hcusp x hxZ (by linarith)
+  rw [hqη] at hc ⊢
+  have hη : η < 4 / 27 * s' := by nlinarith [mul_le_mul_of_nonneg_left hr34.le hη0]
+  -- Step 7: `η|x| < (4/27)s'|x| ≤ (s'/4)|x|` and `|x − a| < 2s' + (2/9)s' < 3s'`
+  exact ⟨by nlinarith [mul_lt_mul_of_pos_right hη hr0, mul_pos hs' hr0], by linarith⟩
 
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
