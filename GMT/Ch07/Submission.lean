@@ -61680,4 +61680,43 @@ theorem Submission.dtc_massOn_eq_of_agreeOn : ∀ (P n : ℕ) (U V W : Set (Eucl
     dsimp only
     rw [hagree ω' hω'.1]
 
+/-- **Mass of a planar piece** (step 6 of the proof of `idtp_tdc_dlc_light_disc`, toward the local
+constancy of the density of a two-dimensional minimizing cone away from `0`, Simon 7.3.3(1)).  Let
+`C` be a `2`-dimensional minimizing cone in `ℝᴾ` with `∂C = 0`, `Q` a linear subspace, `x ∈ Q`,
+`x ≠ 0`, `k ≥ 1` and `ε > 0`, with `spt C ∩ B_ε(x) = Q ∩ B_ε(x)` and density `k` on
+`spt C ∩ B_ε(x)`.  Then some `ε' > 0` keeps both properties and has `H²(W ∩ Q) ≤ M_W(C)` for every
+open `W ⊆ B_ε'(x)`.  As `x ∈ Q ∩ B_ε(x) = spt C ∩ B_ε(x)`, `idtp_cone_constant_density_planar`
+gives `δ > 0` and a plane `Q₂` with `spt C ∩ B_δ(x) = Q₂ ∩ B_δ(x)` and `M_W(C) = k H²(W ∩ Q₂)` for
+open `W ⊆ B_δ(x)`.  Take `ε' = min(ε, δ)`.  Then `Q ∩ B_ε'(x) = spt C ∩ B_ε'(x) = Q₂ ∩ B_ε'(x)`, so
+`W ∩ Q = W ∩ Q₂` for `W ⊆ B_ε'(x)`, and `H²(W ∩ Q) ≤ k H²(W ∩ Q) = M_W(C)` as `k ≥ 1`. -/
+theorem Submission.idtp_tdc_dlc_ld_piece_mass_bound : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (x : Euclid P) (k : ℕ) (ε : ℝ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → 1 ≤ k → x ∈ Q → x ≠ 0 → 0 < ε → C.support ∩ ball x ε = (Q : Set (Euclid P)) ∩ ball x ε → (∀ y ∈ C.support, y ∈ ball x ε → HasMassDensity C y k) → ∃ ε' : ℝ, 0 < ε' ∧ C.support ∩ ball x ε' = (Q : Set (Euclid P)) ∩ ball x ε' ∧ (∀ y ∈ C.support, y ∈ ball x ε' → HasMassDensity C y k) ∧ ∀ W : Set (Euclid P), IsOpen W → W ⊆ ball x ε' → μHE[2] (W ∩ (Q : Set (Euclid P))) ≤ C.massOn W := by
+  intro P C Q x k ε hmin hbd hcone hk hxQ hx0 hε hA hB
+  -- Step 1: `x ∈ spt C`, as `x ∈ Q ∩ B_ε(x) = spt C ∩ B_ε(x)`
+  have hxC : x ∈ C.support := (hA.symm.subset ⟨hxQ, mem_ball_self hε⟩).1
+  -- Step 2: the planar structure at `x`: `spt C ∩ B_δ(x) = Q₂ ∩ B_δ(x)` and
+  -- `M_W(C) = k H²(W ∩ Q₂)` for open `W ⊆ B_δ(x)`
+  obtain ⟨δ, Q₂, hδ, -, -, hC₂, hmass⟩ :=
+    Submission.idtp_cone_constant_density_planar P C x k ε hmin hbd hcone hxC hx0 hε hB
+  -- Step 3: `ε' = min ε δ`; restricting both equations to `B_ε'(x)` gives
+  -- `spt C ∩ B_ε'(x) = Q ∩ B_ε'(x)` and `Q ∩ B_ε'(x) = Q₂ ∩ B_ε'(x)`
+  have hε' : ball x (min ε δ) ⊆ ball x ε := ball_subset_ball (min_le_left ε δ)
+  have hδ' : ball x (min ε δ) ⊆ ball x δ := ball_subset_ball (min_le_right ε δ)
+  have hrestrict : ∀ (S₁ S₂ : Set (Euclid P)) (r : ℝ), ball x (min ε δ) ⊆ ball x r →
+      S₁ ∩ ball x r = S₂ ∩ ball x r → S₁ ∩ ball x (min ε δ) = S₂ ∩ ball x (min ε δ) := by
+    intro S₁ S₂ r hr h
+    rw [← inter_eq_right.2 hr, ← inter_assoc, ← inter_assoc, h]
+  have hA' := hrestrict _ _ ε hε' hA
+  have hQQ₂ : (Q : Set (Euclid P)) ∩ ball x (min ε δ) = (Q₂ : Set (Euclid P)) ∩ ball x (min ε δ) :=
+    hA'.symm.trans (hrestrict _ _ δ hδ' hC₂)
+  -- Step 4: the support equation and the density `k` hold on `B_ε'(x) ⊆ B_ε(x)`
+  refine ⟨min ε δ, lt_min hε hδ, hA', fun y hy hyx => hB y hy (hε' hyx), fun W hW hWx => ?_⟩
+  -- Step 5: `W ∩ Q = W ∩ Q₂`, as `W ⊆ B_ε'(x)`
+  have hWQ : W ∩ (Q : Set (Euclid P)) = W ∩ (Q₂ : Set (Euclid P)) := by
+    ext y
+    exact ⟨fun hy => ⟨hy.1, (hQQ₂.subset ⟨hy.2, hWx hy.1⟩).1⟩,
+      fun hy => ⟨hy.1, (hQQ₂.symm.subset ⟨hy.2, hWx hy.1⟩).1⟩⟩
+  -- Step 6: `H²(W ∩ Q) ≤ k H²(W ∩ Q) = M_W(C)`, as `k ≥ 1`
+  rw [hmass W hW (hWx.trans hδ'), ← hWQ]
+  exact le_mul_of_one_le_left zero_le (Nat.one_le_cast.2 hk)
+
 end GMT.Ch07
