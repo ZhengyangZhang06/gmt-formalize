@@ -1,0 +1,59 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "sed -n '1,160p' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "covectorEuclideanNorm|massAdmissibleOn|def massOn|theorem le_massOn|mass.*(weight|measure)|pending",
+        "Cauchy.Binet|cauchy.?binet|cauchyBinet",
+        "theorem Integrable.exists_hasCompactSupport_integral_sub_le|theorem UniformContinuous.exists_contDiff_dist_le|exists_contDiff_support_eq_eq_one_iff|exists_open_between_and_isCompact_closure|of_sigmaCompactSpace_of_isLocallyFiniteMeasure|integral_withDensity_eq_integral_smul|enorm_integral_le_lintegral_enorm",
+        "IsUnit \\(fun|Matrix.of|rsd_mw_"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/LinearAlgebra",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/ContinuousMapDense.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/SmoothApprox.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/tmp/rsd-mw-independent-audit-20261012/Contracts.lean",
+        "/tmp/rsd-mw-independent-audit-20261012/APIs.lean",
+        "/tmp/rsd-mw-review/GlueFull.lean"
+      ],
+      "conclusion": "The split appropriately isolates algebra, approximation, and the two inequalities for this selected parent. Dependencies are acyclic and correctly directed. All four names are bare identifiers, with no collisions in the DAG or other proposed decompositions. All frozen propositions independently elaborate without their child declarations; the two inequalities assemble into the exact frozen parent type. The snapshot contract and inspected Mathlib files match the compiler sources. No Cauchy–Binet match was found in the searched LinearAlgebra subtree; child 1 supplies its own derivation. Independently checked the J construction, completeness and regularity instances, and approximation APIs with the two explicitly identified imports. Recompiled the conditional inequality proofs and parent assembly; their axiom sets, and those of the checked library lemmas, contain only propext, Classical.choice and Quot.sound. No matrix-unit instance ambiguity occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "unit_orientation_dual",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The one-line type matches the prose, including one continuous linear J independent of ξ and Q. The determinant expansion, coordinate covectors, Gram-determinant identity and Cauchy–Schwarz argument establish every conclusion without circularity. Continuity is justified explicitly; zero degree and n > P are covered."
+    },
+    {
+      "key": "mass_le_weight",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type correctly permits arbitrary U and W. The proof uses only the declared orientation dependency, bounds the integrand by the multiplicity on measurable tsupport, and applies the unconditional integral inequality before measure monotonicity. Neither integrability nor measurability of W is silently assumed."
+    },
+    {
+      "key": "test_form_approx",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes every analytic hypothesis and the exact support, pointwise bound and strict approximation conclusion. Compact exhaustion, L¹ density, the factor-two retraction estimate, uniform smoothing with rescaling, and cutoff give the stated error bound. The cited pinned APIs apply to the complete covector space with the identified imports; no finite-dimensional codomain assumption or future proof-search obligation is hidden."
+    },
+    {
+      "key": "weight_le_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the open-set lower bound. Compact localization gives a finite restricted measure; absolute continuity transfers orientation and measurability, and boundedness of J establishes integrability. The declared approximation dependency then supplies an admissible form. Density conversion, localization and the strict integral estimate prove the lower bound, including infinite total weight. Together with mass_le_weight this proves the exact selected parent."
+    }
+  ],
+  "required_changes": []
+}

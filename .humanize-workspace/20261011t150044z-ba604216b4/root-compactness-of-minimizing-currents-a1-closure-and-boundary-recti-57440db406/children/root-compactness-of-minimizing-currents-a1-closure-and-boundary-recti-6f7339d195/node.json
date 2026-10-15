@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1.tangent_subseq-a1",
+  "parent_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.cycle_im-a1.pointwise-a1",
+  "depth": 5,
+  "title": "Subsequence criterion for an approximate tangent plane",
+  "statement": "Let P, n ∈ ℕ, M ⊆ ℝ^P, a ∈ ℝ^P and Q a linear subspace of ℝ^P with dim Q = n (Module.finrank ℝ Q = n). Write Hⁿ = μHE[n] and blowUpMap a λ y = λ⁻¹(y − a). Assume: for every sequence (λ_i)_{i∈ℕ} with λ_i > 0 for all i and λ_i → 0, there is a strictly increasing φ : ℕ → ℕ such that, for every continuous compactly supported f : ℝ^P → ℝ, ∫_{blowUpMap a λ_{φ(k)} '' M} f dHⁿ → ∫_Q f dHⁿ as k → ∞. Then M has approximate tangent space Q at a, i.e. HasApproximateTangentSpaceAt n M a Q: finrank Q = n and ∫_{blowUpMap a r '' M} f dHⁿ → ∫_Q f dHⁿ as r → 0⁺ (along 𝓝[>] 0) for every f ∈ C_c(ℝ^P, ℝ).",
+  "lean_statement": "∀ (P n : ℕ) (M : Set (Euclid P)) (a : Euclid P) (Q : Submodule ℝ (Euclid P)), Module.finrank ℝ Q = n → (∀ lams : ℕ → ℝ, (∀ i, 0 < lams i) → Tendsto lams atTop (𝓝 0) → ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ f : Euclid P → ℝ, Continuous f → HasCompactSupport f → Tendsto (fun k => ∫ y in Poincare.SimonGMT.Chapter03.blowUpMap a (lams (φ k)) '' M, f y ∂μHE[n]) atTop (𝓝 (∫ y in (Q : Set (Euclid P)), f y ∂μHE[n]))) → HasApproximateTangentSpaceAt n M a Q",
+  "lean_name": "cbr_ci_pw_approxTangent_of_subseq",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-6f7339d195-a1"
+}
