@@ -1,0 +1,107 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "isodiametric|steiner",
+        "theorem le_hausdorffMeasure|instance isAddHaarMeasure_hausdorffMeasure",
+        "theorem addHaar_closedBall",
+        "volume_preserving_(toLp|ofLp)|volume_preserving_piFinSuccAbove|prod_apply_symm|theorem volume_parallelepiped",
+        "UpperSemicontinuous.isClosed_preimage|theorem UpperSemicontinuous.add|exists_isOpen_lt_of_lt|ofReal_lt_ofReal_iff_of_nonneg|toReal_lt_of_lt_ofReal",
+        "dmcbr_ci_iso_",
+        "lean_name",
+        "lean_statement",
+        "comparator_passed",
+        "candidate_commit",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/bin:/usr/bin:/bin lake env lean /tmp/dmcbr_iso_independent_audit_gtqul0rh/TypeChecks.lean",
+        "env PATH=/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin:/usr/local/bin:/usr/bin:/bin lake env lean /tmp/dmcbr_iso_independent_audit_gtqul0rh/Integrated.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Hausdorff.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Haar/InnerProductSpace.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Pi.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Prod.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Semicontinuity/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Regular.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-bf84361bcd/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-bf84361bcd/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-01.txt",
+        "/tmp/dmcbr_iso_independent_audit_gtqul0rh/TypeChecks.lean",
+        "/tmp/dmcbr_iso_independent_audit_gtqul0rh/Integrated.lean"
+      ],
+      "conclusion": "The split is appropriate and establishes this selected parent. Snapshot revisions and inspected sources match the workspace. No isodiametric or Steiner result was found in pinned Mathlib; SimonGMT's EuclideanNormalization is outside the contract import closure. The argument agrees with [Simon, Theorem 2.10 and completion of 2.9](https://web.stanford.edu/class/math285/ts-gmt.pdf). All ten contracts are self-contained one-line propositions with bare names. Seven reused declarations have comparator-passed records, identical frozen types, and matching candidate proof bodies; the three fresh names are unreserved. Dependencies are acyclic and correctly directed. Independent type checks and recompilation of the supplied development both passed under Lean 4.35.0-rc3. All children and the exact parent use only propext, Classical.choice, and Quot.sound. WithLp constructions select Euclidean geometry, and measure scalars have the intended instances. The parent's unit-cube cancellation correctly transfers the coefficient bound to every ambient dimension. The requested contract digest was independently reproduced."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "steiner_reflect",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type exactly states both reflection properties for arbitrary A. Coordinate updates, commutation, and involutivity prove equality of slices in both directions. No compactness, measurability, or finite slice measure is implicitly required."
+    },
+    {
+      "key": "steiner_diam",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compactness supplies compact slices, attained endpoints, and finite length bounds. The endpoint comparison controls the replaced coordinate, and the Euclidean squared-distance identity gives the required pairwise estimate. Taking ediam proves the exact conclusion, including empty sets."
+    },
+    {
+      "key": "slice_usc",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Uniformly finite slice measures justify the toReal conversions. Outer regularity supplies the open interval-set approximation; the compact projected complement supplies a neighborhood on which every slice lies in that open set. This proves the stated upper semicontinuity, including empty slices."
+    },
+    {
+      "key": "steiner_compact",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Both compactness and upper semicontinuity hypotheses appear explicitly in prose and type. The projected nonempty-slice condition and the upper-semicontinuous superlevel condition are closed; the 3R estimate proves boundedness. Upper semicontinuity is assumed here, so no dependency on slice_usc is missing."
+    },
+    {
+      "key": "cavalieri_coordinate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type includes measurability of both sets and equality of all slice measures. The coordinate-splitting equivalence and WithLp conversion preserve the appropriate volume measures. Tonelli integrates the equal fibers; Fin.elim0 handles dimension zero. No finiteness assumption on either set is needed."
+    },
+    {
+      "key": "steiner_slice_length",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Repeated coordinate updates identify every slice with the fixed set B. Compactness bounds its measure through the compact coordinate projection. The separate empty and nonempty cases give respectively an empty slice and the claimed closed interval, including the zero-length case."
+    },
+    {
+      "key": "symmetric_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof requires only the stated central symmetry. Infinite diameter forces positive dimension and an infinite bound. Otherwise symmetry places K in the closed ball of half its diameter; the pinned closed-ball formula applies also in dimension zero. Measure monotonicity needs no measurability hypothesis on K."
+    },
+    {
+      "key": "symmetric_replacement",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The declared siblings supply every property used in the finite-coordinate induction. Compactness makes the symmetrals measurable before Cavalieri is applied. A second explicit induction converts coordinate-reflection invariance into central symmetry. All existential conclusions match the type, with no parent or self-reliance."
+    },
+    {
+      "key": "isodiametric",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The infinite-diameter case and its dimension-zero exclusion are valid. Finite diameter gives compact closure without changing ediam; symmetric_replacement and symmetric_bound then give the inequality by measure and diameter monotonicity. These are exactly its declared dependencies."
+    },
+    {
+      "key": "volume_le_hausdorff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The normalization coefficient is proved nonzero and finite before inversion. The isodiametric estimate supplies precisely the hypothesis of Measure.le_hausdorffMeasure, including dimension zero. Multiplication back and Measure.le_iff' establish the exact setwise measure inequality required by the parent's normalization argument."
+    }
+  ],
+  "required_changes": []
+}
