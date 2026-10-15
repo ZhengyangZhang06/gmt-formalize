@@ -1,0 +1,84 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat local-references/123e8435b4a2469b/manifest.json; diff -q <snapshot>/project/GMT/Ch07/Submission.lean GMT/Ch07/Submission.lean (identical)",
+        "rg -n \"c1cov|lower_lipschitz|regular_ball_cover|image_ball_borel\" project mathlib/Mathlib (no match)",
+        "rg -n \"theorem approximates_deriv_on_nhds|theorem LinearMap.injective_iff_antilipschitz|theorem ContDiffOn.exists_lipschitzOnWith|theorem contDiff_piLp |theorem dist_apply_le|theorem EuclideanSpace.euclideanHausdorffMeasure_eq_volume|theorem exists_dense_seq|theorem exists_inv_nat_lt|theorem bound_of_antilipschitz|theorem measure_iUnion_fintype_le\" mathlib/Mathlib",
+        "rg -n \"AntilipschitzWith|antilipschitz\" mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/*.lean mathlib/Mathlib/Analysis/Calculus/FDeriv/*.lean",
+        "rg -n isSigmaCompact mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean | grep -i 'open\\|ball' (no match)",
+        "grep -rn 'theorem le_of_forall_lt' mathlib/Mathlib/Order (to_dual le_of_forall_gt)",
+        "grep -n area_image_criticalSet_eq_zero simongmt Chapter02/AreaCritical.lean; grep -n euclideanHausdorffMeasure_image_le_of_lipschitzOn Chapter02/Lipschitz.lean; sed -n 1,60p Chapter03/SubmanifoldCover.lean; sed -n 1,150p Chapter03/Rectifiable.lean; ls .lake/build/lib/lean/Poincare/SimonGMT/Chapter02 (AreaCritical.olean present)",
+        "python3 scans of dag.json: nodes under rectifiable_density_one-a1 (lean_name/status/lean_statement); lean_statements containing 'Injective (fderiv' with ball, \"'' ball\", 'AntilipschitzWith', 'volume {x'; subtree of dpf_rectifiable_bilipschitz_pieces (accepted a2ba78fc)",
+        "grep -c codim1_rdo_c1cov_{local_lower_lipschitz,regular_ball_cover,image_ball_borel_finite,lipschitz_range_c1_cover} dag.json (0 each); git log --all --oneline -S'c1cov' (none)",
+        "sed -n 1801,1999p and 6500,6640p /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py (_solve_children, _dependency_problem, _existing_lean_name_problem)",
+        "lake env lean -DautoImplicit=false /tmp/c1cov-split-check/final/TypesFinal.lean",
+        "lake env lean -DautoImplicit=false /tmp/c1cov-split-check/final/CombinedFinal.lean (#print axioms of four children and parent)",
+        "lake env lean -DautoImplicit=false /tmp/c1cov-split-check/importcheck/SubmissionWithAreaCritical.lean",
+        "sed -n 1,90p book/chapter-03.txt; sed -n 160,180p, 268,300p, 740,800p book/chapter-02.txt"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/FDeriv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/InverseFunctionTheorem/ApproximatesLinearOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Operator/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/RCLike.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/WithLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Lp/PiLp.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Bases.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Compactness/SigmaCompact.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/OuterMeasure/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaCritical.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/SubmanifoldCover.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-604cc328a3/parent-child-handoff.json",
+        "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/runtime.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-03.txt",
+        "/tmp/c1cov-split-check/final/statements.json",
+        "/tmp/c1cov-split-check/final/TypesFinal.lean",
+        "/tmp/c1cov-split-check/final/CombinedFinal.lean",
+        "/tmp/c1cov-split-check/importcheck/SubmissionWithAreaCritical.lean",
+        "/tmp/c1cov-split-check/out/subproblems.json",
+        "/tmp/c1cov-review/NoExtra.lean"
+      ],
+      "conclusion": "Pins and contract.\n- The manifest pins project b4d606db and Mathlib 25730c7c, matching the workspace.\n- The snapshot's project/GMT/Ch07/Submission.lean is identical to the workspace contract.\n\nMathlib (snapshot).\n- It provides every analytic tool the children use: LinearMap.injective_iff_antilipschitz, ZeroHomClass.bound_of_antilipschitz, HasStrictFDerivAt.approximates_deriv_on_nhds, ContDiffOn.exists_lipschitzOnWith, contDiff_piLp, PiLp.dist_apply_le, TopologicalSpace.exists_dense_seq, EuclideanSpace.euclideanHausdorffMeasure_eq_volume, measure_iUnion_fintype_le, ENNReal.exists_inv_nat_lt and le_of_forall_gt.\n- It has no lower-Lipschitz lemma for an injective, non-surjective derivative: ApproximatesLinearOn.antilipschitzWith requires an equivalence E ≃L F.\n- It has no σ-compactness lemma for open balls (no match in SigmaCompact.lean).\n- So local_lower_lipschitz and the closed-ball exhaustion in image_ball_borel_finite are genuine obligations.\n\nSimonGMT (pinned package).\n- area_image_criticalSet_eq_zero (Chapter02/AreaCritical; prebuilt olean, needs one extra import) holds for every f : E → F.\n- euclideanHausdorffMeasure_image_le_of_lipschitzOn (Chapter02/Lipschitz) is already in the contract's import closure.\n- The Chapter03/SubmanifoldCover docstring says the 'only if' direction of Lemma 1.2 is not proved.\n\nDAG.\n- No accepted node supplies these lemmas. dpf_rectifiable_bilipschitz_pieces is a single declaration with Lipschitz (not C¹) pieces and needs MeasurableSet M.\n- The parent's dependency codim1_rdo_c1_approximation is an active node under another parent. It cannot be a child of this node, so it enters child lipschitz_range_c1_cover as a verbatim hypothesis, which the parent discharges.\n- The four new names have 0 matches in dag.json, in git history and in the snapshot.\n\nLean.\n- TypesFinal.lean compiles: all child types elaborate with only the contract import, and comparator-style restatements check.\n- SubmissionWithAreaCritical.lean compiles: the contract builds with the AreaCritical import added.\n- CombinedFinal.lean compiles. All four children use only propext, Classical.choice and Quot.sound. The parent's exact frozen type follows from the child types, and its only extra axiom is sorryAx from the stub for codim1_rdo_c1_approximation."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1",
+  "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.rectifiable_density_one-a1.c1_cover-a1.image_ball_borel_finite-a1",
+  "subproblem": {
+    "key": "image_ball_borel_finite",
+    "title": "The image of an open ball under a C¹ map is Borel and has finite H^n measure",
+    "statement": "Let P, n ∈ ℕ, let g : ℝ^n → ℝ^P be a C¹ map, c ∈ ℝ^n and r ∈ ℝ. Then the image g(B_r(c)) of the open ball, which is empty if r ≤ 0, is a Borel subset of ℝ^P, and H^n(g(B_r(c))) < ∞, where H^n = μHE[n].",
+    "lean_statement": "∀ (P n : ℕ) (g : Euclid n → Euclid P) (c : Euclid n) (r : ℝ), ContDiff ℝ 1 g → MeasurableSet (g '' ball c r) ∧ μHE[n] (g '' ball c r) ≠ ∞",
+    "lean_name": "codim1_rdo_c1cov_image_ball_borel_finite",
+    "depends_on": [],
+    "natural_proof": "Source. Step 8 of the parent proof, i.e. properties (ii) and (iii) of the pieces N_k = g_k(B_{r_k}(c_k)), in the setting of Simon Ch. 3, Lemma 1.2 (chapter-03.txt lines 25–66).\n- That lemma's proof uses that C¹ maps are Lipschitz on each closed ball.\n- The measure bound is Simon Ch. 2, Theorem 1.8(i): H^m(f(A)) ≤ (Lip f)^m H^m(A). The book notes that this part of the argument is valid even if A is not H^m-measurable.\nNotation: H^n = μHE[n], which equals Lebesgue measure L^n (volume) on ℝ^n. B_r(c) is the open ball and closedBall(c, ρ) the closed ball; both are empty for negative radius.\n\n1. (Exhaustion of the open ball.) For t ∈ ℕ put ρ_t := r − 1/(t + 1). Then B_r(c) = ⋃_{t∈ℕ} closedBall(c, ρ_t).\n- If |y − c| < r, the Archimedean property gives t with 1/(t + 1) < r − |y − c|, so |y − c| ≤ ρ_t.\n- Conversely, |y − c| ≤ ρ_t implies |y − c| < r.\n2. ((ii) Borel.) Hence g(B_r(c)) = ⋃_t g(closedBall(c, ρ_t)).\n- Each closed ball of ℝ^n is compact (Heine–Borel), and g is continuous, being C¹.\n- So each g(closedBall(c, ρ_t)) is compact, hence closed in the metric space ℝ^P, hence Borel.\n- A countable union of Borel sets is Borel, so g(B_r(c)) is Borel.\n3. (g is Lipschitz on the ball.) closedBall(c, r) is compact and convex.\n- Dg is continuous, so it is bounded on this compact set, say ‖Dg(y)‖ ≤ Λ there.\n- By the mean value inequality on the convex set, |g(a) − g(b)| ≤ Λ|a − b| for all a, b ∈ closedBall(c, r).\n- In particular g is Λ-Lipschitz on B_r(c) ⊆ closedBall(c, r). If r < 0, both sets are empty and the claim is trivial.\n4. ((iii) Finite measure.) By Simon Ch. 2, 1.8(i), applied to g restricted to B_r(c), H^n(g(B_r(c))) ≤ Λ^n H^n(B_r(c)), where H^n on the right is the measure on ℝ^n.\n- On ℝ^n, H^n = μHE[n] equals Lebesgue measure.\n- B_r(c) is bounded, so L^n(B_r(c)) < ∞.\n- Hence H^n(g(B_r(c))) ≤ Λ^n L^n(B_r(c)) < ∞. ∎\n\nImplementation note (not part of the mathematics). No extra import is needed.\n- Steps 1–2: exists_nat_one_div_lt, image_iUnion, isCompact_closedBall, IsCompact.image (with hg.continuous), IsCompact.isClosed, IsClosed.measurableSet and MeasurableSet.iUnion.\n- Step 3: ContDiffOn.exists_lipschitzOnWith (hg.contDiffOn) (by norm_num) (convex_closedBall c r) (isCompact_closedBall c r), then LipschitzOnWith.mono ball_subset_closedBall.\n- Step 4:\n  - Poincare.SimonGMT.Chapter02.euclideanHausdorffMeasure_image_le_of_lipschitzOn n, available through the contract's import of Chapter03.Rectifiable.\n  - EuclideanSpace.euclideanHausdorffMeasure_eq_volume, measure_ball_lt_top, ENNReal.mul_ne_top, ENNReal.pow_ne_top and ne_top_of_le_ne_top.",
+    "proof_key_steps": [
+      "B_r(c) = ⋃_t closedBall(c, r − 1/(t+1)), by the Archimedean property.",
+      "g is continuous, so each g(closedBall) is compact, hence closed and Borel. The countable union g(B_r(c)) is therefore Borel.",
+      "g is C¹ on the compact convex set closedBall(c, r), so it is Λ-Lipschitz there (bounded derivative plus the mean value inequality).",
+      "By Simon 2.1.8(i), H^n(g(B_r(c))) ≤ Λ^n H^n(B_r(c)) = Λ^n L^n(B_r(c)) < ∞."
+    ]
+  },
+  "audit": {
+    "key": "image_ball_borel_finite",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Closed-ball exhaustion proves Borelness. Compactness and convexity give a finite Lipschitz constant, and the normalized Hausdorff image bound proves finiteness. The argument covers every real radius and zero-dimensional spaces without requiring injectivity."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4fb5ca86fa/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4fb5ca86fa/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-4fb5ca86fa/parent-supplied-natural-proof.json"
+}

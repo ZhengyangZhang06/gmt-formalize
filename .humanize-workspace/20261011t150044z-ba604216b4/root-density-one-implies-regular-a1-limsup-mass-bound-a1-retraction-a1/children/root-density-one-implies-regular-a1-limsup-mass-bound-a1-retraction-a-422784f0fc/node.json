@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1.normal_space_transfer-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.retraction-a1",
+  "depth": 4,
+  "title": "Normal-space transfer: I − Q′ maps T^⊥ onto T′^⊥ with inverse norm ≤ 2 when ‖Q′ − Q‖ ≤ 1/2",
+  "statement": "Let P ∈ ℕ and let T, T′ be linear subspaces of ℝ^P with dim T = dim T′. Let Q, Q′ be the orthogonal projections of ℝ^P onto T and T′, and assume ‖Q′ − Q‖ ≤ 1/2 (operator norm). Then for every n ∈ T′^⊥ there is e ∈ T^⊥ with e − Q′e = n and |e| ≤ 2|n|.",
+  "lean_statement": "∀ (P : ℕ) (T T' : Submodule ℝ (Euclid P)), Module.finrank ℝ T = Module.finrank ℝ T' → ‖T'.starProjection - T.starProjection‖ ≤ 1 / 2 → ∀ n ∈ T'ᗮ, ∃ e ∈ Tᗮ, e - T'.starProjection e = n ∧ ‖e‖ ≤ 2 * ‖n‖",
+  "lean_name": "dor_lmb_ret_normal_space_transfer",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-retraction-a-422784f0fc-a1"
+}

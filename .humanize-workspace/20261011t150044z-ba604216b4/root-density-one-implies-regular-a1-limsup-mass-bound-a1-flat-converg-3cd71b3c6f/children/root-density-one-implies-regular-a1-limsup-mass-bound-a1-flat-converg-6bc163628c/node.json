@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1.image_series_im-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1",
+  "depth": 6,
+  "title": "Integrality of the parametric push-forward: the image of countably many integer-weighted Lipschitz parameter domains under a Lipschitz map is an IM current, with per-domain bounds (Simon 6.3.6–3.9; step 7 of the selected proof)",
+  "statement": "Assume (IMS), the exact frozen statement of dor_lmb_fc_im_series, and (IMC), the exact frozen statement of cmc_imRep_locality_restrict_sub. Let N, N', k ∈ ℕ, put d := k + 1, and let G_i : ℝᵈ → ℝ^N (i ∈ ℕ) be Lipschitz, B_i ⊆ ℝᵈ Borel with G_i differentiable at every point of B_i, and w_i : ℝᵈ → ℝ Borel, integer-valued at every point, nonzero at every point of B_i and Lebesgue-integrable on B_i, with Σ_i ∫⁻_{B_i} |w_i|·J_{G_i} dLᵈ < ∞ (J as in the sibling lipschitz_jacobian_locality). Let F : ℝ^N → ℝ^{N'} be Λ-Lipschitz. Then there is an integer multiplicity Y ∈ 𝒟_d(ℝ^{N'}) such that for every ω ∈ 𝒟^d(ℝ^{N'}) the series Σ_i T_i(ω), T_i(ω) := ∫_{B_i} w_i(u)·ω((F∘G_i)(u))(D(F∘G_i)(u)e_0, …, D(F∘G_i)(u)e_k) du, converges (HasSum) to Y(ω); and for every ω and every c > 0 with covectorEuclideanNorm(ω(x)) ≤ c for all x, |T_i(ω)| ≤ c·Λᵈ·(∫⁻_{B_i} |w_i|·J_{G_i} dLᵈ).toReal for every i.",
+  "lean_statement": "(∀ (P m : ℕ) (U : Set (Euclid P)) (X : ℕ → GeometricCurrentOn U (m + 1)), IsOpen U → (∀ r, IsIntegerMultiplicity (X r)) → ∑' r, (X r).mass ≠ ∞ → ∃ Y : GeometricCurrentOn U (m + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn U (m + 1), HasSum (fun r => X r ω) (Y ω)) ∧ Y.mass ≤ ∑' r, (X r).mass) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (N N' k : ℕ) (G : ℕ → Euclid (k + 1) → Euclid N) (B : ℕ → Set (Euclid (k + 1))) (w : ℕ → Euclid (k + 1) → ℝ) (F : Euclid N → Euclid N') (Λ : NNReal), (∀ i, ∃ L : NNReal, LipschitzWith L (G i)) → (∀ i, MeasurableSet (B i)) → (∀ i, ∀ u ∈ B i, DifferentiableAt ℝ (G i) u) → (∀ i, Measurable (w i)) → (∀ i u, ∃ z : ℤ, w i u = z) → (∀ i, ∀ u ∈ B i, w i u ≠ 0) → (∀ i, IntegrableOn (w i) (B i)) → ∑' i, ∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (k + 1) => inner ℝ (fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ (G i) u (EuclideanSpace.single b (1 : ℝ)))))) ≠ ∞ → LipschitzWith Λ F → ∃ Y : GeometricCurrentOn (univ : Set (Euclid N')) (k + 1), IsIntegerMultiplicity Y ∧ (∀ ω : TestFormOn (univ : Set (Euclid N')) (k + 1), HasSum (fun i => ∫ u in B i, w i u * (ω : DifferentialForm (Euclid N') (k + 1)) ((F ∘ G i) u) (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ)))) (Y ω)) ∧ ∀ (ω : TestFormOn (univ : Set (Euclid N')) (k + 1)) (c : ℝ), 0 < c → (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid N') (k + 1)) x) ≤ c) → ∀ i, |∫ u in B i, w i u * (ω : DifferentialForm (Euclid N') (k + 1)) ((F ∘ G i) u) (fun a => fderiv ℝ (F ∘ G i) u (EuclideanSpace.single a (1 : ℝ)))| ≤ c * (Λ : ℝ) ^ (k + 1) * (∫⁻ u in B i, ‖w i u‖ₑ * ENNReal.ofReal (Real.sqrt (Matrix.det (Matrix.of fun a b : Fin (k + 1) => inner ℝ (fderiv ℝ (G i) u (EuclideanSpace.single a (1 : ℝ))) (fderiv ℝ (G i) u (EuclideanSpace.single b (1 : ℝ))))))).toReal",
+  "lean_name": "dor_lmb_fcd_imp_image_series_im",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1.piece_current-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1.regular_partition-a1",
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1.lipschitz_jacobian_locality-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1.piece_current-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1.regular_partition-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.im_pushforward-a1.lipschitz_jacobian_locality-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-6bc163628c-a1"
+}

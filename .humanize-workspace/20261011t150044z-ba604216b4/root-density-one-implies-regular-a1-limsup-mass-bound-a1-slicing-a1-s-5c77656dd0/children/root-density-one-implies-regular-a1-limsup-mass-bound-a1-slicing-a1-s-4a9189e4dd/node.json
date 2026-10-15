@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1.measurable_glue-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.chart_pieces-a1",
+  "depth": 6,
+  "title": "Borel gluing of chart fields over disjoint injective images (Lusin–Souslin; parent Step 9)",
+  "statement": "Let m, P ∈ ℕ, and for each j ∈ ℕ let Y_j ⊆ ℝ^m be Borel and ψ_j, Φ_j : ℝ^m → ℝ^P, with ψ_j continuous and injective on Y_j and Φ_j continuous on Y_j. Assume the sets ψ_j(Y_j) are pairwise disjoint.\n\nThen there is a Borel measurable g : ℝ^P → ℝ^P such that:\n- g(ψ_j(y)) = Φ_j(y) for every j and every y ∈ Y_j;\n- g(x) = 0 for every x ∉ ⋃_j ψ_j(Y_j).",
+  "lean_statement": "∀ (m P : ℕ) (Y : ℕ → Set (Euclid m)) (ψ Φ : ℕ → Euclid m → Euclid P), (∀ j, MeasurableSet (Y j) ∧ ContinuousOn (ψ j) (Y j) ∧ InjOn (ψ j) (Y j) ∧ ContinuousOn (Φ j) (Y j)) → Pairwise (fun i j => Disjoint (ψ i '' Y i) (ψ j '' Y j)) → ∃ g : Euclid P → Euclid P, Measurable g ∧ (∀ j, ∀ y ∈ Y j, g (ψ j y) = Φ j y) ∧ ∀ x, (∀ j, x ∉ ψ j '' Y j) → g x = 0",
+  "lean_name": "dor_lmbsf_cp_measurable_glue",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-4a9189e4dd-a1"
+}
