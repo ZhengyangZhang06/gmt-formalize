@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1.isometric_transport-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.flat_limit-a1",
+  "depth": 5,
+  "title": "Hausdorff integrals over the image of a measurable set under an affine isometry ℝ^m → ℝ^P (parent Part E)",
+  "statement": "Let m, P ∈ ℕ, let ι : ℝ^m → ℝ^P be a linear isometry (ℝ^d = Euclid d), c ∈ ℝ^P, G(w) := ιw + c, and let A ⊆ ℝ^m be measurable. Then G(A) is a (Borel) measurable subset of ℝ^P, and for every function f : ℝ^P → ℝ, ∫_{G(A)} f dH^m = ∫_A f(G(w)) dw, where H^m = μHE[m] (Mathlib's Euclidean Hausdorff measure) on ℝ^P and dw is Lebesgue measure (volume) on ℝ^m; both sides are Bochner integrals (a non-integrable function has integral 0).",
+  "lean_statement": "∀ (m P : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid P) (c : Euclid P) (A : Set (Euclid m)), MeasurableSet A → MeasurableSet ((fun w => ι w + c) '' A) ∧ ∀ f : Euclid P → ℝ, ∫ y in (fun w => ι w + c) '' A, f y ∂μHE[m] = ∫ w in A, f (ι w + c)",
+  "lean_name": "codim1_zsl_fl_isometry_image_setIntegral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-2e82ed509c-a1"
+}

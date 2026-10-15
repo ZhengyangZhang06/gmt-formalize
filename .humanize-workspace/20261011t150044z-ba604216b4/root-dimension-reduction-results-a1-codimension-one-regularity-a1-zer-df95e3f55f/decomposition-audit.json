@@ -1,0 +1,75 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "theorem (integral_withDensity_eq_integral_smul|integral_map|euclideanHausdorffMeasure_eq_volume)|hausdorffMeasure_image|measurable_fderiv|addHaar_image_continuousLinearMap|image_of_continuousOn_injOn",
+        "measurable_fderiv|countable_cover_nhdsWithin|theorem lintegral_iUnion|theorem Tendsto.mul_const|toMatrix_adjoint",
+        "map_comap_subtype_coe|restrict_withDensity|subtype_image|Tendsto.mul_const",
+        "codim1_zsl_ga_(linear_area|relative_lipschitz_measure|local_comparison|set_identity|integral_transfer)",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/graph-area-independent-audit-amwduqoh/FrozenTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/graph-area-independent-audit-amwduqoh/FullChecked.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean -DautoImplicit=false /tmp/graph-area-independent-audit-amwduqoh/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Lebesgue/EqHaar.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Measurable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/Polish/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter02/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-df95e3f55f/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-df95e3f55f/decomposition-v1.json",
+        "/tmp/ga-dec/Full.lean",
+        "/tmp/graph-area-independent-audit-amwduqoh/FrozenTypes.lean",
+        "/tmp/graph-area-independent-audit-amwduqoh/FullChecked.lean",
+        "/tmp/graph-area-independent-audit-amwduqoh/Assembly.lean"
+      ],
+      "conclusion": "The project, Mathlib and SimonGMT revisions match their pins; the frozen and working contracts are byte-identical. The inspected library results support arbitrary-set measure scaling, measurable images, the extended-real limit, and integral transfer for arbitrary integrands. All five names are bare identifiers, with no conflicting DAG reservation or previously accepted identical declaration found. Every one-line child proposition elaborates independently without any child implementation. The checked proofs have byte-identical frozen types; the complete chain compiles, and every child and the parent depend only on propext, Classical.choice and Quot.sound. With children treated as assumptions, the exact selected parent uses only set_identity and integral_transfer. The split is appropriate: linear_area and relative_lipschitz feed local_comparison, which feeds set_identity; integral_transfer is independent. These are distinct, non-circular obligations establishing this graph-area theorem. No problematic inline matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "linear_area",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and exact Lean proposition agree, including injectivity, positive Gram determinant and arbitrary sets. The range isometry gives L = κM; injectivity makes det M nonzero, and det(L*L) = (det M)^2. Isometry invariance and Haar scaling then prove the measure identity without measurability assumptions. The proof also covers dimension zero and has no child or parent reliance."
+    },
+    {
+      "key": "relative_lipschitz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses and ENNReal conclusions match exactly. The two distance inequalities ensure that the chosen transfer maps respect fibers and have constants b and a⁻¹. Applying the Lipschitz image bound twice and cancelling the finite positive factor proves both inequalities, including infinite measures, empty sets, b = 0 and n = 0. No injectivity or measurability assumption is silently added."
+    },
+    {
+      "key": "local_comparison",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses appear in both statements. The proof derives the graph derivative and its injectivity, obtains J₀ > 0 from linear_area, and chooses ε and the radius using the stated continuity assumptions. The mean-value estimate, relative_lipschitz and pointwise Jacobian bounds yield exactly the two requested inequalities. Only the declared children are used; the scalar manipulations remain valid for infinite measures."
+    },
+    {
+      "key": "set_identity",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exact type matches the measurable-set area identity. Orthogonality supplies a continuous left inverse and injectivity. The countable cover and disjointification produce measurable pieces with disjoint Borel images, permitting both sums. Letting t decrease to 1 is valid in ENNReal even for infinite values because the limiting multiplier is nonzero. The sole child dependency is local_comparison."
+    },
+    {
+      "key": "integral_transfer",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The abstract hypotheses and arbitrary-function Bochner conclusion match exactly. The proof establishes the subtype measurable embedding, identifies the restricted target measure with the push-forward, and transfers the integral through the inclusion. The measurable finite NNReal density theorem applies to arbitrary integrands; nonnegativity on A recovers J. No additional integrability, global continuity or sigma-finiteness assumption is needed, and no other child is used."
+    }
+  ],
+  "required_changes": []
+}

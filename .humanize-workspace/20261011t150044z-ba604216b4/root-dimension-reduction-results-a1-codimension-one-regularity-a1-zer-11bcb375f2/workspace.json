@@ -1,0 +1,451 @@
+{
+  "schema_version": 1,
+  "run_id": "20261011T150044Z-ba604216b4",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1",
+  "dispatch_branch": "proof-workspace/gmt-ch07/20261011t150044z-ba604216b4/dispatch/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2",
+  "source_commit": "b4d606db1da5da8fa2c0292ad4924d97de8b3c4b",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "comparator_success": "Your solution is okay!",
+  "lean_target": "GMT/Ch07/Submission.lean",
+  "children": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.eps_choice-a1",
+      "key": "eps_choice",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3d3bd4afd1-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3d3bd4afd1",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-child-handoff.json and parent-supplied-plan.md",
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; cat lakefile.toml lean-toolchain",
+              "python3 -I scan of dag.json: nodes with id prefix root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1 (status, lean_name, depends_on, lean_statement)",
+              "python3 -I scan of dag.json: collisions for lean_names codim1_zsl_ga_lc_graph_fderiv, codim1_zsl_ga_lc_eps_choice, codim1_zsl_ga_lc_local_bilipschitz, codim1_zsl_ga_lc_jacobian_continuousOn, codim1_zsl_ga_lc_sandwich; lean_statements containing 'adjoint'+'ContinuousOn', '(1 + ε) ^', 'toContinuousLinearMap'+'fderiv', '(1 - ε) * ‖', 'ENNReal.ofReal t *'",
+              "grep -n 'def check_source_delta' -A60 /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "git diff ecc53ec24a4257fbec663adb97bf513c2ccbefcb 24e3df5256a9a5aeb511fbc40fcae5062df412b2 -- GMT/Ch07/Submission.lean (leaf insertion position)",
+              "rg -n \"theorem ContinuousAt.eventually_lt|theorem ofReal_mul' |theorem setLIntegral_mono' |theorem setLIntegral_const |theorem norm_image_sub_le_of_norm_fderiv_le|theorem fderiv_fun_sub|theorem norm_add_sq_real\" local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n 'continuous_det|continuousOn_fderiv_of_isOpen|pow_le_pow_iff_left₀|Ioo_mem_nhdsGT|theorem continuousAt_iff|theorem isOpen_iff|def adjoint|protected theorem fderiv|protected theorem HasFDerivAt.fderiv' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n \"mul_le_mul_right'\" local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order",
+              "lake env lean /tmp/lc-dec-a1/LC.lean with '#count_heartbeats in' and 'set_option maxHeartbeats 100000/50000/25000 in' variants; LC_count_noarith.lean (final arithmetic replaced by sorry)",
+              "lake env lean /tmp/lc-dec-a1/Split.lean ('#count_heartbeats in' for each child and the parent assembly)",
+              "lake env lean /tmp/lc-dec-a1/SubmissionCheck.lean (#print axioms on a copy of GMT/Ch07/Submission.lean with the full chain inserted)",
+              "sed -n 740,780p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-supplied-plan.md",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Linear.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/tmp/lc-dec-a1/LC.lean",
+              "/tmp/lc-dec-a1/Split.lean",
+              "/tmp/lc-dec-a1/SubmissionCheck.lean"
+            ],
+            "conclusion": "Pins. The snapshot manifest records project b4d606db and Mathlib 25730c7c, the same revisions as the workspace lakefile.\n\nNo reusable node. No DAG node has the type of any proposed child, and the five codim1_zsl_ga_lc_* names are unused. The related accepted nodes have different types:\n- dgoj_graph_fderiv_left_inverse and dgcr_graph_orientation_jacobian: graphs z + ιv + ι'u(v) on ball 0 s;\n- dimred_rpd_near_isometric_chart: submanifold charts;\n- dimred_rpd_bilipschitz_image_measure: bi-Lipschitz relative to the identity.\nSo nothing can be reused by identical type.\n\nLemmas. Every lemma the children cite exists at the pin and inside the import closure of GMT.Ch07.Submission:\n- ContinuousAt.eventually_lt (OrderClosed.lean:691)\n- ENNReal.ofReal_mul' (Basic/ENNReal/Real.lean:301)\n- setLIntegral_const / setLIntegral_mono' (Lebesgue/Basic.lean:121/254)\n- norm_add_sq_real (InnerProductSpace/Basic.lean:411)\n- Convex.norm_image_sub_le_of_norm_fderiv_le (MeanValue.lean:499)\n- fderiv_fun_sub (FDeriv/Add.lean:680)\n- HasFDerivAt.fderiv (FDeriv/Basic.lean:415)\n- ContinuousLinearMap.fderiv (FDeriv/Linear.lean:79)\n- ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean:916)\n- ContinuousLinearMap.continuous_det (Normed/Module/FiniteDimension.lean:175)\n- ContinuousLinearMap.adjoint (Adjoint.lean:112)\n- pow_le_pow_iff_left₀ (GroupWithZero/Basic.lean:681)\n- Metric.isOpen_iff / Metric.continuousAt_iff (Pseudo/Defs.lean:833/871)\n\nRenames at this pin. mul_le_mul_right' is absent, so use the pattern `gcongr ENNReal.ofReal ?_ * X`. ContinuousLinearMap.add_apply is deprecated in favour of add_apply.\n\nLeaf rule. One theorem per leaf, with no helpers and no set_option. Leaf theorems go after the noncomputable section's `end`, inside namespace GMT.Ch07, as in commit 24e3df52.\n\nHeartbeats. The monolithic proof uses 197,210 of 200,000; about 37k of that is its final arithmetic. In the split the children use 11,665, 4,450, 25,897, 15,793 and 1,736, and the parent assembly 28,232.\n\nAxiom check. The full chain compiles in a copy of Submission.lean with axioms propext, Classical.choice and Quot.sound only.\n\nBook. chapter-02.txt lines 743–776 give 3.1 and derive 3.2–3.3 'by an approximation argument based on the linear case 3.1'."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.eps_choice-a1",
+        "subproblem": {
+          "key": "eps_choice",
+          "title": "Choice of the tolerance ε for a prescribed factor t > 1 (supplied step 4)",
+          "statement": "Let m ∈ ℕ and t ∈ ℝ with t > 1. Then there exists ε ∈ ℝ with 0 < ε < 1 such that (1 + ε)^m ≤ t·(1 − ε) and 1 + ε ≤ t·(1 − ε)^m.",
+          "lean_statement": "∀ (m : ℕ) (t : ℝ), 1 < t → ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧ (1 + ε) ^ m ≤ t * (1 - ε) ∧ 1 + ε ≤ t * (1 - ε) ^ m",
+          "lean_name": "codim1_zsl_ga_lc_eps_choice",
+          "depends_on": [],
+          "natural_proof": "Source. Step 4 of the supplied proof of local_comparison (the inequalities (∗)), with the positive denominators cleared at the end.\n\n1. (Continuity at 0.) For ε < 1 put φ(ε) := ((1 + ε)/(1 − ε))^{m+1}. φ is continuous at ε = 0. Numerator and denominator are continuous, the denominator is 1 ≠ 0 at ε = 0, and powers of functions continuous at a point are continuous there. Also φ(0) = 1 < t. Hence, shrinking δ if necessary, there is δ ∈ (0, 1] with φ(ε) < t whenever |ε| < δ. Every such ε satisfies ε < 1, so φ(ε) is defined.\n\n2. (Choice of ε.) Put ε := δ/2. Then 0 < ε < δ ≤ 1, so 0 < ε < 1 and φ(ε) < t. In filter language: {ε : φ(ε) < t} is a neighbourhood of 0, and (0, 1) belongs to 𝓝[>] 0 (Ioo_mem_nhdsGT), so their intersection belongs to 𝓝[>] 0 and is nonempty. Fix this ε and put q := (1 + ε)/(1 − ε). Then q^{m+1} = φ(ε) < t.\n\n3. (Comparison with q.) We have 0 < 1 − ε ≤ 1 ≤ 1 + ε.\n (a) 1 + ε ≤ q: since 1 − ε ≤ 1 and 1 + ε > 0, (1 + ε)(1 − ε) ≤ 1 + ε; dividing by 1 − ε > 0 gives 1 + ε ≤ (1 + ε)/(1 − ε) = q.\n (b) 1/(1 − ε) ≤ q: since 1 ≤ 1 + ε and 1 − ε > 0.\n All of 1 + ε, 1/(1 − ε) and q are positive.\n\n4. (First inequality.) Products and natural powers of nonnegative reals are monotone. So by 3, (1 + ε)^m·(1/(1 − ε)) ≤ q^m·q = q^{m+1} < t. Thus (1 + ε)^m/(1 − ε) ≤ t. Multiplying by 1 − ε > 0 gives (1 + ε)^m ≤ t·(1 − ε).\n\n5. (Second inequality.) Likewise (1 + ε)·(1/(1 − ε))^m ≤ q·q^m = q^{m+1} < t. Since (1/(1 − ε))^m = 1/(1 − ε)^m and (1 − ε)^m > 0, this says (1 + ε)/(1 − ε)^m ≤ t. Multiplying by (1 − ε)^m gives 1 + ε ≤ t·(1 − ε)^m.\n\n6. Steps 2, 4 and 5 give 0 < ε < 1 and both inequalities. Nothing depends on the size of m; for m = 0 the inequalities read 1 ≤ t(1 − ε) and 1 + ε ≤ t. ∎",
+          "proof_key_steps": [
+            "ε ↦ ((1+ε)/(1−ε))^{m+1} is continuous at 0 with value 1 < t, so some ε ∈ (0,1) has q^{m+1} < t for q := (1+ε)/(1−ε).",
+            "Because 0 < 1−ε ≤ 1 ≤ 1+ε, both 1+ε ≤ q and 1/(1−ε) ≤ q.",
+            "(1+ε)^m/(1−ε) ≤ q^{m+1} < t and (1+ε)/(1−ε)^m ≤ q^{m+1} < t; clearing the positive denominators gives (1+ε)^m ≤ t(1−ε) and 1+ε ≤ t(1−ε)^m."
+          ]
+        },
+        "audit": {
+          "key": "eps_choice",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Continuity at zero supplies a positive tolerance below one. The two comparisons with q and multiplication by explicitly positive denominators prove precisely the requested inequalities, including m = 0. No additional hypothesis or unproved construction is needed."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3d3bd4afd1/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3d3bd4afd1/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3d3bd4afd1/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.graph_fderiv-a1",
+      "key": "graph_fderiv",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-83ff847c4f-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-83ff847c4f",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-child-handoff.json and parent-supplied-plan.md",
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; cat lakefile.toml lean-toolchain",
+              "python3 -I scan of dag.json: nodes with id prefix root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1 (status, lean_name, depends_on, lean_statement)",
+              "python3 -I scan of dag.json: collisions for lean_names codim1_zsl_ga_lc_graph_fderiv, codim1_zsl_ga_lc_eps_choice, codim1_zsl_ga_lc_local_bilipschitz, codim1_zsl_ga_lc_jacobian_continuousOn, codim1_zsl_ga_lc_sandwich; lean_statements containing 'adjoint'+'ContinuousOn', '(1 + ε) ^', 'toContinuousLinearMap'+'fderiv', '(1 - ε) * ‖', 'ENNReal.ofReal t *'",
+              "grep -n 'def check_source_delta' -A60 /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "git diff ecc53ec24a4257fbec663adb97bf513c2ccbefcb 24e3df5256a9a5aeb511fbc40fcae5062df412b2 -- GMT/Ch07/Submission.lean (leaf insertion position)",
+              "rg -n \"theorem ContinuousAt.eventually_lt|theorem ofReal_mul' |theorem setLIntegral_mono' |theorem setLIntegral_const |theorem norm_image_sub_le_of_norm_fderiv_le|theorem fderiv_fun_sub|theorem norm_add_sq_real\" local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n 'continuous_det|continuousOn_fderiv_of_isOpen|pow_le_pow_iff_left₀|Ioo_mem_nhdsGT|theorem continuousAt_iff|theorem isOpen_iff|def adjoint|protected theorem fderiv|protected theorem HasFDerivAt.fderiv' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n \"mul_le_mul_right'\" local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order",
+              "lake env lean /tmp/lc-dec-a1/LC.lean with '#count_heartbeats in' and 'set_option maxHeartbeats 100000/50000/25000 in' variants; LC_count_noarith.lean (final arithmetic replaced by sorry)",
+              "lake env lean /tmp/lc-dec-a1/Split.lean ('#count_heartbeats in' for each child and the parent assembly)",
+              "lake env lean /tmp/lc-dec-a1/SubmissionCheck.lean (#print axioms on a copy of GMT/Ch07/Submission.lean with the full chain inserted)",
+              "sed -n 740,780p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-supplied-plan.md",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Linear.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/tmp/lc-dec-a1/LC.lean",
+              "/tmp/lc-dec-a1/Split.lean",
+              "/tmp/lc-dec-a1/SubmissionCheck.lean"
+            ],
+            "conclusion": "Pins. The snapshot manifest records project b4d606db and Mathlib 25730c7c, the same revisions as the workspace lakefile.\n\nNo reusable node. No DAG node has the type of any proposed child, and the five codim1_zsl_ga_lc_* names are unused. The related accepted nodes have different types:\n- dgoj_graph_fderiv_left_inverse and dgcr_graph_orientation_jacobian: graphs z + ιv + ι'u(v) on ball 0 s;\n- dimred_rpd_near_isometric_chart: submanifold charts;\n- dimred_rpd_bilipschitz_image_measure: bi-Lipschitz relative to the identity.\nSo nothing can be reused by identical type.\n\nLemmas. Every lemma the children cite exists at the pin and inside the import closure of GMT.Ch07.Submission:\n- ContinuousAt.eventually_lt (OrderClosed.lean:691)\n- ENNReal.ofReal_mul' (Basic/ENNReal/Real.lean:301)\n- setLIntegral_const / setLIntegral_mono' (Lebesgue/Basic.lean:121/254)\n- norm_add_sq_real (InnerProductSpace/Basic.lean:411)\n- Convex.norm_image_sub_le_of_norm_fderiv_le (MeanValue.lean:499)\n- fderiv_fun_sub (FDeriv/Add.lean:680)\n- HasFDerivAt.fderiv (FDeriv/Basic.lean:415)\n- ContinuousLinearMap.fderiv (FDeriv/Linear.lean:79)\n- ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean:916)\n- ContinuousLinearMap.continuous_det (Normed/Module/FiniteDimension.lean:175)\n- ContinuousLinearMap.adjoint (Adjoint.lean:112)\n- pow_le_pow_iff_left₀ (GroupWithZero/Basic.lean:681)\n- Metric.isOpen_iff / Metric.continuousAt_iff (Pseudo/Defs.lean:833/871)\n\nRenames at this pin. mul_le_mul_right' is absent, so use the pattern `gcongr ENNReal.ofReal ?_ * X`. ContinuousLinearMap.add_apply is deprecated in favour of add_apply.\n\nLeaf rule. One theorem per leaf, with no helpers and no set_option. Leaf theorems go after the noncomputable section's `end`, inside namespace GMT.Ch07, as in commit 24e3df52.\n\nHeartbeats. The monolithic proof uses 197,210 of 200,000; about 37k of that is its final arithmetic. In the split the children use 11,665, 4,450, 25,897, 15,793 and 1,736, and the parent assembly 28,232.\n\nAxiom check. The full chain compiles in a copy of Submission.lean with axioms propext, Classical.choice and Quot.sound only.\n\nBook. chapter-02.txt lines 743–776 give 3.1 and derive 3.2–3.3 'by an approximation argument based on the linear case 3.1'."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.graph_fderiv-a1",
+        "subproblem": {
+          "key": "graph_fderiv",
+          "title": "Derivative of the graph map and its norm lower bound (supplied steps 1–2)",
+          "statement": "Let m, k ∈ ℕ, let ι : ℝ^m → ℝ^{m+k} and ι' : ℝ^k → ℝ^{m+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v ∈ ℝ^m, w ∈ ℝ^k, let g : ℝ^m → ℝ^k and w₀ ∈ ℝ^m, and suppose that g is (Fréchet) differentiable at w₀. Put G(w) := ιw + ι'g(w). Then the Fréchet derivative of G at w₀ is DG(w₀) = ι + ι'∘Dg(w₀) (equality of continuous linear maps ℝ^m → ℝ^{m+k}, where DG(w₀) = fderiv ℝ G w₀, Dg(w₀) = fderiv ℝ g w₀, and ι, ι' are viewed as continuous linear maps), and |h| ≤ |DG(w₀)h| for every h ∈ ℝ^m.",
+          "lean_statement": "∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (w₀ : Euclid m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → DifferentiableAt ℝ g w₀ → fderiv ℝ (fun w => ι w + ι' (g w)) w₀ = ι.toContinuousLinearMap + ι'.toContinuousLinearMap ∘L fderiv ℝ g w₀ ∧ ∀ h : Euclid m, ‖h‖ ≤ ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ h‖",
+          "lean_name": "codim1_zsl_ga_lc_graph_fderiv",
+          "depends_on": [],
+          "natural_proof": "Source. Steps 1–2 of the supplied proof of local_comparison, specialised to one point w₀ at which g is differentiable.\n\nNotation. |·| is the Euclidean norm, B₀ := Dg(w₀) = fderiv ℝ g w₀, and ι, ι' are regarded as the continuous linear maps ι.toContinuousLinearMap, ι'.toContinuousLinearMap.\n\n1. (Derivative.) A continuous linear map is its own Fréchet derivative at every point. So ι has derivative ι at w₀, and ι' has derivative ι' at g(w₀). Since g is differentiable at w₀, it has derivative B₀ there. By the chain rule (HasFDerivAt.comp), w ↦ ι'(g(w)) has derivative ι'∘B₀ at w₀. By the sum rule (HasFDerivAt.add), G = ι + ι'∘g has derivative ι + ι'∘B₀ at w₀. By uniqueness of the Fréchet derivative (HasFDerivAt.fderiv), fderiv ℝ G w₀ = ι + ι'∘B₀. This is the first assertion.\n\n2. (Pythagoras.) Let h ∈ ℝ^m. By step 1, DG(w₀)h = ιh + ι'(B₀h). Expanding the squared norm of a sum in a real inner product space (norm_add_sq_real),\n |ιh + ι'(B₀h)|² = |ιh|² + 2⟨ιh, ι'(B₀h)⟩ + |ι'(B₀h)|².\n The middle term vanishes by the orthogonality hypothesis with v = h and w = B₀h. Since ι and ι' are isometries (LinearIsometry.norm_map), |ιh| = |h| and |ι'(B₀h)| = |B₀h|. Hence |DG(w₀)h|² = |h|² + |B₀h|².\n\n3. (Conclusion.) Since |B₀h|² ≥ 0, step 2 gives |h|² ≤ |DG(w₀)h|². Both |h| and |DG(w₀)h| are nonnegative, and for nonnegative reals a, b, a² ≤ b² implies a ≤ b (pow_le_pow_iff_left₀ with exponent 2 ≠ 0). Therefore |h| ≤ |DG(w₀)h| for every h ∈ ℝ^m, which is the second assertion. The argument does not use any property of m or k, so it covers m = 0 and k = 0. ∎",
+          "proof_key_steps": [
+            "Sum and chain rules for HasFDerivAt, with uniqueness of the derivative, give fderiv ℝ G w₀ = ι + ι'∘Dg(w₀).",
+            "norm_add_sq_real, orthogonality ⟨ιh, ι'(Dg(w₀)h)⟩ = 0 and the isometry property give |DG(w₀)h|² = |h|² + |Dg(w₀)h|².",
+            "Hence |h|² ≤ |DG(w₀)h|², and comparing nonnegative square roots gives |h| ≤ |DG(w₀)h|."
+          ]
+        },
+        "audit": {
+          "key": "graph_fderiv",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The hypotheses and both conclusions match exactly. Sum and chain rules identify the derivative; orthogonality and the isometry hypotheses give the squared-norm identity. Comparing nonnegative squares proves the lower bound without circularity, including zero-dimensional cases."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-83ff847c4f/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-83ff847c4f/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-83ff847c4f/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.jacobian_continuous_on-a1",
+      "key": "jacobian_continuous_on",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f151f8db54-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f151f8db54",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-child-handoff.json and parent-supplied-plan.md",
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; cat lakefile.toml lean-toolchain",
+              "python3 -I scan of dag.json: nodes with id prefix root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1 (status, lean_name, depends_on, lean_statement)",
+              "python3 -I scan of dag.json: collisions for lean_names codim1_zsl_ga_lc_graph_fderiv, codim1_zsl_ga_lc_eps_choice, codim1_zsl_ga_lc_local_bilipschitz, codim1_zsl_ga_lc_jacobian_continuousOn, codim1_zsl_ga_lc_sandwich; lean_statements containing 'adjoint'+'ContinuousOn', '(1 + ε) ^', 'toContinuousLinearMap'+'fderiv', '(1 - ε) * ‖', 'ENNReal.ofReal t *'",
+              "grep -n 'def check_source_delta' -A60 /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "git diff ecc53ec24a4257fbec663adb97bf513c2ccbefcb 24e3df5256a9a5aeb511fbc40fcae5062df412b2 -- GMT/Ch07/Submission.lean (leaf insertion position)",
+              "rg -n \"theorem ContinuousAt.eventually_lt|theorem ofReal_mul' |theorem setLIntegral_mono' |theorem setLIntegral_const |theorem norm_image_sub_le_of_norm_fderiv_le|theorem fderiv_fun_sub|theorem norm_add_sq_real\" local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n 'continuous_det|continuousOn_fderiv_of_isOpen|pow_le_pow_iff_left₀|Ioo_mem_nhdsGT|theorem continuousAt_iff|theorem isOpen_iff|def adjoint|protected theorem fderiv|protected theorem HasFDerivAt.fderiv' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n \"mul_le_mul_right'\" local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order",
+              "lake env lean /tmp/lc-dec-a1/LC.lean with '#count_heartbeats in' and 'set_option maxHeartbeats 100000/50000/25000 in' variants; LC_count_noarith.lean (final arithmetic replaced by sorry)",
+              "lake env lean /tmp/lc-dec-a1/Split.lean ('#count_heartbeats in' for each child and the parent assembly)",
+              "lake env lean /tmp/lc-dec-a1/SubmissionCheck.lean (#print axioms on a copy of GMT/Ch07/Submission.lean with the full chain inserted)",
+              "sed -n 740,780p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-supplied-plan.md",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Linear.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/tmp/lc-dec-a1/LC.lean",
+              "/tmp/lc-dec-a1/Split.lean",
+              "/tmp/lc-dec-a1/SubmissionCheck.lean"
+            ],
+            "conclusion": "Pins. The snapshot manifest records project b4d606db and Mathlib 25730c7c, the same revisions as the workspace lakefile.\n\nNo reusable node. No DAG node has the type of any proposed child, and the five codim1_zsl_ga_lc_* names are unused. The related accepted nodes have different types:\n- dgoj_graph_fderiv_left_inverse and dgcr_graph_orientation_jacobian: graphs z + ιv + ι'u(v) on ball 0 s;\n- dimred_rpd_near_isometric_chart: submanifold charts;\n- dimred_rpd_bilipschitz_image_measure: bi-Lipschitz relative to the identity.\nSo nothing can be reused by identical type.\n\nLemmas. Every lemma the children cite exists at the pin and inside the import closure of GMT.Ch07.Submission:\n- ContinuousAt.eventually_lt (OrderClosed.lean:691)\n- ENNReal.ofReal_mul' (Basic/ENNReal/Real.lean:301)\n- setLIntegral_const / setLIntegral_mono' (Lebesgue/Basic.lean:121/254)\n- norm_add_sq_real (InnerProductSpace/Basic.lean:411)\n- Convex.norm_image_sub_le_of_norm_fderiv_le (MeanValue.lean:499)\n- fderiv_fun_sub (FDeriv/Add.lean:680)\n- HasFDerivAt.fderiv (FDeriv/Basic.lean:415)\n- ContinuousLinearMap.fderiv (FDeriv/Linear.lean:79)\n- ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean:916)\n- ContinuousLinearMap.continuous_det (Normed/Module/FiniteDimension.lean:175)\n- ContinuousLinearMap.adjoint (Adjoint.lean:112)\n- pow_le_pow_iff_left₀ (GroupWithZero/Basic.lean:681)\n- Metric.isOpen_iff / Metric.continuousAt_iff (Pseudo/Defs.lean:833/871)\n\nRenames at this pin. mul_le_mul_right' is absent, so use the pattern `gcongr ENNReal.ofReal ?_ * X`. ContinuousLinearMap.add_apply is deprecated in favour of add_apply.\n\nLeaf rule. One theorem per leaf, with no helpers and no set_option. Leaf theorems go after the noncomputable section's `end`, inside namespace GMT.Ch07, as in commit 24e3df52.\n\nHeartbeats. The monolithic proof uses 197,210 of 200,000; about 37k of that is its final arithmetic. In the split the children use 11,665, 4,450, 25,897, 15,793 and 1,736, and the parent assembly 28,232.\n\nAxiom check. The full chain compiles in a copy of Submission.lean with axioms propext, Classical.choice and Quot.sound only.\n\nBook. chapter-02.txt lines 743–776 give 3.1 and derive 3.2–3.3 'by an approximation argument based on the linear case 3.1'."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.jacobian_continuous_on-a1",
+        "subproblem": {
+          "key": "jacobian_continuous_on",
+          "title": "Continuity of the Jacobian √det(DF*∘DF) of a C¹ map on an open set (supplied step 5)",
+          "statement": "Let m, P ∈ ℕ, let D ⊆ ℝ^m be open and let F : ℝ^m → ℝ^P be a map that is C¹ on D (ContDiffOn ℝ 1 F D). Then the function w ↦ √det(DF(w)*∘DF(w)) is continuous on D. Here DF(w) = fderiv ℝ F w, DF(w)* is its Hilbert-space adjoint ℝ^P → ℝ^m, det is the determinant of the endomorphism DF(w)*∘DF(w) of ℝ^m (ContinuousLinearMap.det), and √ is Real.sqrt.",
+          "lean_statement": "∀ (m P : ℕ) (F : Euclid m → Euclid P) (D : Set (Euclid m)), IsOpen D → ContDiffOn ℝ 1 F D → ContinuousOn (fun w => Real.sqrt (((fderiv ℝ F w).adjoint ∘L fderiv ℝ F w).det)) D",
+          "lean_name": "codim1_zsl_ga_lc_jacobian_continuousOn",
+          "depends_on": [],
+          "natural_proof": "Source. Step 5 of the supplied proof of local_comparison (\"The map T ↦ √det(T*∘T) is continuous: the adjoint is an isometric linear equivalence, composition is continuous, and ContinuousLinearMap.continuous_det and Real.continuous_sqrt apply. So J is continuous at w₀\"), stated for a general map F that is C¹ on D.\n\n1. (DF is continuous on D.) F is C¹ on the open set D and 1 ≤ 1. So w ↦ DF(w) = fderiv ℝ F w is continuous on D as a map into the normed space of continuous linear maps ℝ^m → ℝ^P (ContDiffOn.continuousOn_fderiv_of_isOpen).\n\n2. (Φ(T) := √det(T*∘T) is continuous on all continuous linear maps T : ℝ^m → ℝ^P.)\n (a) T ↦ T* is continuous: the adjoint ContinuousLinearMap.adjoint is a (conjugate-)linear isometric equivalence, hence continuous.\n (b) T ↦ T*∘T is continuous: composition of continuous linear maps is jointly continuous, and both factors depend continuously on T (Continuous.clm_comp with (a) and continuous_id).\n (c) det : (ℝ^m →L ℝ^m) → ℝ is continuous, as ℝ^m is finite dimensional (ContinuousLinearMap.continuous_det).\n (d) √ : ℝ → ℝ is continuous (Real.continuous_sqrt).\n Hence Φ = √ ∘ det ∘ (T ↦ T*∘T) is continuous.\n\n3. (Composition.) The function w ↦ √det(DF(w)*∘DF(w)) equals Φ ∘ DF. A continuous map composed after a map continuous on D is continuous on D (Continuous.comp_continuousOn). So by steps 1 and 2 the function is continuous on D. This holds for all m, P ≥ 0. ∎",
+          "proof_key_steps": [
+            "F is C¹ on the open set D, so DF is continuous on D.",
+            "T ↦ √det(T*∘T) is continuous: the adjoint is an isometric equivalence, composition is jointly continuous, det is continuous in finite dimensions, and √ is continuous.",
+            "Composing gives continuity of w ↦ √det(DF(w)*∘DF(w)) on D."
+          ]
+        },
+        "audit": {
+          "key": "jacobian_continuous_on",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "The proof correctly composes derivative continuity with continuous adjoint, continuous-linear-map composition, determinant and Real.sqrt. The expression is the intended Gram endomorphism determinant. Neither injectivity nor determinant positivity is required."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f151f8db54/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f151f8db54/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f151f8db54/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.sandwich-a1",
+      "key": "sandwich",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-d652eb72b6-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-d652eb72b6",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-child-handoff.json and parent-supplied-plan.md",
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; cat lakefile.toml lean-toolchain",
+              "python3 -I scan of dag.json: nodes with id prefix root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1 (status, lean_name, depends_on, lean_statement)",
+              "python3 -I scan of dag.json: collisions for lean_names codim1_zsl_ga_lc_graph_fderiv, codim1_zsl_ga_lc_eps_choice, codim1_zsl_ga_lc_local_bilipschitz, codim1_zsl_ga_lc_jacobian_continuousOn, codim1_zsl_ga_lc_sandwich; lean_statements containing 'adjoint'+'ContinuousOn', '(1 + ε) ^', 'toContinuousLinearMap'+'fderiv', '(1 - ε) * ‖', 'ENNReal.ofReal t *'",
+              "grep -n 'def check_source_delta' -A60 /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "git diff ecc53ec24a4257fbec663adb97bf513c2ccbefcb 24e3df5256a9a5aeb511fbc40fcae5062df412b2 -- GMT/Ch07/Submission.lean (leaf insertion position)",
+              "rg -n \"theorem ContinuousAt.eventually_lt|theorem ofReal_mul' |theorem setLIntegral_mono' |theorem setLIntegral_const |theorem norm_image_sub_le_of_norm_fderiv_le|theorem fderiv_fun_sub|theorem norm_add_sq_real\" local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n 'continuous_det|continuousOn_fderiv_of_isOpen|pow_le_pow_iff_left₀|Ioo_mem_nhdsGT|theorem continuousAt_iff|theorem isOpen_iff|def adjoint|protected theorem fderiv|protected theorem HasFDerivAt.fderiv' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n \"mul_le_mul_right'\" local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order",
+              "lake env lean /tmp/lc-dec-a1/LC.lean with '#count_heartbeats in' and 'set_option maxHeartbeats 100000/50000/25000 in' variants; LC_count_noarith.lean (final arithmetic replaced by sorry)",
+              "lake env lean /tmp/lc-dec-a1/Split.lean ('#count_heartbeats in' for each child and the parent assembly)",
+              "lake env lean /tmp/lc-dec-a1/SubmissionCheck.lean (#print axioms on a copy of GMT/Ch07/Submission.lean with the full chain inserted)",
+              "sed -n 740,780p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-supplied-plan.md",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Linear.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/tmp/lc-dec-a1/LC.lean",
+              "/tmp/lc-dec-a1/Split.lean",
+              "/tmp/lc-dec-a1/SubmissionCheck.lean"
+            ],
+            "conclusion": "Pins. The snapshot manifest records project b4d606db and Mathlib 25730c7c, the same revisions as the workspace lakefile.\n\nNo reusable node. No DAG node has the type of any proposed child, and the five codim1_zsl_ga_lc_* names are unused. The related accepted nodes have different types:\n- dgoj_graph_fderiv_left_inverse and dgcr_graph_orientation_jacobian: graphs z + ιv + ι'u(v) on ball 0 s;\n- dimred_rpd_near_isometric_chart: submanifold charts;\n- dimred_rpd_bilipschitz_image_measure: bi-Lipschitz relative to the identity.\nSo nothing can be reused by identical type.\n\nLemmas. Every lemma the children cite exists at the pin and inside the import closure of GMT.Ch07.Submission:\n- ContinuousAt.eventually_lt (OrderClosed.lean:691)\n- ENNReal.ofReal_mul' (Basic/ENNReal/Real.lean:301)\n- setLIntegral_const / setLIntegral_mono' (Lebesgue/Basic.lean:121/254)\n- norm_add_sq_real (InnerProductSpace/Basic.lean:411)\n- Convex.norm_image_sub_le_of_norm_fderiv_le (MeanValue.lean:499)\n- fderiv_fun_sub (FDeriv/Add.lean:680)\n- HasFDerivAt.fderiv (FDeriv/Basic.lean:415)\n- ContinuousLinearMap.fderiv (FDeriv/Linear.lean:79)\n- ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean:916)\n- ContinuousLinearMap.continuous_det (Normed/Module/FiniteDimension.lean:175)\n- ContinuousLinearMap.adjoint (Adjoint.lean:112)\n- pow_le_pow_iff_left₀ (GroupWithZero/Basic.lean:681)\n- Metric.isOpen_iff / Metric.continuousAt_iff (Pseudo/Defs.lean:833/871)\n\nRenames at this pin. mul_le_mul_right' is absent, so use the pattern `gcongr ENNReal.ofReal ?_ * X`. ContinuousLinearMap.add_apply is deprecated in favour of add_apply.\n\nLeaf rule. One theorem per leaf, with no helpers and no set_option. Leaf theorems go after the noncomputable section's `end`, inside namespace GMT.Ch07, as in commit 24e3df52.\n\nHeartbeats. The monolithic proof uses 197,210 of 200,000; about 37k of that is its final arithmetic. In the split the children use 11,665, 4,450, 25,897, 15,793 and 1,736, and the parent assembly 28,232.\n\nAxiom check. The full chain compiles in a copy of Submission.lean with axioms propext, Classical.choice and Quot.sound only.\n\nBook. chapter-02.txt lines 743–776 give 3.1 and derive 3.2–3.3 'by an approximation argument based on the linear case 3.1'."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.sandwich-a1",
+        "subproblem": {
+          "key": "sandwich",
+          "title": "Two-sided comparison in [0, ∞] from (1 ± ε)-sandwiches (supplied step 10)",
+          "statement": "Let m ∈ ℕ and t, ε, c ∈ ℝ with ε < 1, c ≥ 0, (1 + ε)^m ≤ t·(1 − ε) and 1 + ε ≤ t·(1 − ε)^m. Let X, H, I ∈ [0, ∞] satisfy ofReal((1 − ε)^m)·(ofReal(c)·X) ≤ H, H ≤ ofReal((1 + ε)^m)·(ofReal(c)·X), ofReal((1 − ε)·c)·X ≤ I and I ≤ ofReal((1 + ε)·c)·X, where ofReal = ENNReal.ofReal : ℝ → [0, ∞] (ofReal(x) = max(x, 0)) and products are taken in [0, ∞] (with 0·∞ = 0). Then H ≤ ofReal(t)·I and I ≤ ofReal(t)·H.",
+          "lean_statement": "∀ (m : ℕ) (t ε c : ℝ) (X H I : ℝ≥0∞), ε < 1 → 0 ≤ c → (1 + ε) ^ m ≤ t * (1 - ε) → 1 + ε ≤ t * (1 - ε) ^ m → ENNReal.ofReal ((1 - ε) ^ m) * (ENNReal.ofReal c * X) ≤ H → H ≤ ENNReal.ofReal ((1 + ε) ^ m) * (ENNReal.ofReal c * X) → ENNReal.ofReal ((1 - ε) * c) * X ≤ I → I ≤ ENNReal.ofReal ((1 + ε) * c) * X → H ≤ ENNReal.ofReal t * I ∧ I ≤ ENNReal.ofReal t * H",
+          "lean_name": "codim1_zsl_ga_lc_sandwich",
+          "depends_on": [],
+          "natural_proof": "Source. Step 10 of the supplied proof of local_comparison. The inequalities (∗) of step 4 are used in the multiplied-out form (1 + ε)^m ≤ t(1 − ε) and 1 + ε ≤ t(1 − ε)^m.\n\nFacts used about [0, ∞]:\n- multiplication is associative, commutative and monotone in each factor;\n- ofReal is monotone (ENNReal.ofReal_le_ofReal);\n- ofReal(p·q) = ofReal(p)·ofReal(q) whenever q ≥ 0 (ENNReal.ofReal_mul').\n\n1. (Signs.) From ε < 1 we get 1 − ε > 0, so (1 − ε)^m > 0. With c ≥ 0 this gives (1 − ε)·c ≥ 0 and (1 − ε)^m·c ≥ 0.\n\n2. (Real inequalities.) Multiply the two hypotheses by c ≥ 0:\n (1 + ε)^m·c ≤ t(1 − ε)·c = t·((1 − ε)·c), and\n (1 + ε)·c ≤ t(1 − ε)^m·c = t·((1 − ε)^m·c).\n\n3. (First conclusion.) The chain below uses, in order: the upper bound for H; ofReal_mul' with c ≥ 0 and reassociation; step 2 with monotonicity of ofReal and of multiplication by X; ofReal_mul' with (1 − ε)·c ≥ 0 and reassociation; the lower bound for I with monotonicity of multiplication by ofReal(t):\n H ≤ ofReal((1 + ε)^m)·(ofReal(c)·X) = ofReal((1 + ε)^m·c)·X ≤ ofReal(t·((1 − ε)·c))·X = ofReal(t)·(ofReal((1 − ε)·c)·X) ≤ ofReal(t)·I.\n\n4. (Second conclusion.) The chain below uses, in order: the upper bound for I; step 2 with monotonicity; ofReal_mul' twice (with (1 − ε)^m·c ≥ 0 and with c ≥ 0) and reassociation; the lower bound for H with monotonicity of multiplication by ofReal(t):\n I ≤ ofReal((1 + ε)·c)·X ≤ ofReal(t·((1 − ε)^m·c))·X = ofReal(t)·(ofReal((1 − ε)^m)·(ofReal(c)·X)) ≤ ofReal(t)·H.\n\n5. Steps 3 and 4 are the two assertions. They hold for all X, H, I ∈ [0, ∞], including the value ∞, because only monotonicity, associativity and the displayed identities were used. ∎",
+          "proof_key_steps": [
+            "ε < 1 and c ≥ 0 make (1−ε)c and (1−ε)^m c nonnegative, so ofReal is multiplicative on the products that occur.",
+            "(1+ε)^m c ≤ t((1−ε)c) gives H ≤ ofReal((1+ε)^m c)·X ≤ ofReal(t)·(ofReal((1−ε)c)·X) ≤ ofReal(t)·I.",
+            "(1+ε)c ≤ t((1−ε)^m c) gives I ≤ ofReal((1+ε)c)·X ≤ ofReal(t)·(ofReal((1−ε)^m)·(ofReal(c)·X)) ≤ ofReal(t)·H."
+          ]
+        },
+        "audit": {
+          "key": "sandwich",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Both inequality chains use exactly the stated bounds. ENNReal.ofReal_mul' requires only the verified nonnegative right factors, so no hidden positivity assumption on t or 1 + ε is introduced. Monotonicity and associativity remain valid for infinite values and c = 0."
+        },
+        "resolved_dependencies": [],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-d652eb72b6/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-d652eb72b6/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-d652eb72b6/parent-supplied-natural-proof.json"
+      }
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.local_bilipschitz-a1",
+      "key": "local_bilipschitz",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-5b6c52f60c-a1",
+      "bundle_path": ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-5b6c52f60c",
+      "handoff": {
+        "reference_use": [
+          {
+            "source": "local-project",
+            "queries": [
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-child-handoff.json and parent-supplied-plan.md",
+              "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; cat lakefile.toml lean-toolchain",
+              "python3 -I scan of dag.json: nodes with id prefix root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1 (status, lean_name, depends_on, lean_statement)",
+              "python3 -I scan of dag.json: collisions for lean_names codim1_zsl_ga_lc_graph_fderiv, codim1_zsl_ga_lc_eps_choice, codim1_zsl_ga_lc_local_bilipschitz, codim1_zsl_ga_lc_jacobian_continuousOn, codim1_zsl_ga_lc_sandwich; lean_statements containing 'adjoint'+'ContinuousOn', '(1 + ε) ^', 'toContinuousLinearMap'+'fderiv', '(1 - ε) * ‖', 'ENNReal.ofReal t *'",
+              "grep -n 'def check_source_delta' -A60 /runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "git diff ecc53ec24a4257fbec663adb97bf513c2ccbefcb 24e3df5256a9a5aeb511fbc40fcae5062df412b2 -- GMT/Ch07/Submission.lean (leaf insertion position)",
+              "rg -n \"theorem ContinuousAt.eventually_lt|theorem ofReal_mul' |theorem setLIntegral_mono' |theorem setLIntegral_const |theorem norm_image_sub_le_of_norm_fderiv_le|theorem fderiv_fun_sub|theorem norm_add_sq_real\" local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n 'continuous_det|continuousOn_fderiv_of_isOpen|pow_le_pow_iff_left₀|Ioo_mem_nhdsGT|theorem continuousAt_iff|theorem isOpen_iff|def adjoint|protected theorem fderiv|protected theorem HasFDerivAt.fderiv' local-references/123e8435b4a2469b/mathlib/Mathlib",
+              "rg -n \"mul_le_mul_right'\" local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order",
+              "lake env lean /tmp/lc-dec-a1/LC.lean with '#count_heartbeats in' and 'set_option maxHeartbeats 100000/50000/25000 in' variants; LC_count_noarith.lean (final arithmetic replaced by sorry)",
+              "lake env lean /tmp/lc-dec-a1/Split.lean ('#count_heartbeats in' for each child and the parent assembly)",
+              "lake env lean /tmp/lc-dec-a1/SubmissionCheck.lean (#print axioms on a copy of GMT/Ch07/Submission.lean with the full chain inserted)",
+              "sed -n 740,780p /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt"
+            ],
+            "files": [
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-child-handoff.json",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/parent-supplied-plan.md",
+              "/runtime/flows/gmt-claude-d253855dab51/_recursive_lean/leaf_verification.py",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/MeanValue.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Add.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/FDeriv/Linear.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/Adjoint.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Algebra/Order/GroupWithZero/Basic.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Pseudo/Defs.lean",
+              "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-02.txt",
+              "/tmp/lc-dec-a1/LC.lean",
+              "/tmp/lc-dec-a1/Split.lean",
+              "/tmp/lc-dec-a1/SubmissionCheck.lean"
+            ],
+            "conclusion": "Pins. The snapshot manifest records project b4d606db and Mathlib 25730c7c, the same revisions as the workspace lakefile.\n\nNo reusable node. No DAG node has the type of any proposed child, and the five codim1_zsl_ga_lc_* names are unused. The related accepted nodes have different types:\n- dgoj_graph_fderiv_left_inverse and dgcr_graph_orientation_jacobian: graphs z + ιv + ι'u(v) on ball 0 s;\n- dimred_rpd_near_isometric_chart: submanifold charts;\n- dimred_rpd_bilipschitz_image_measure: bi-Lipschitz relative to the identity.\nSo nothing can be reused by identical type.\n\nLemmas. Every lemma the children cite exists at the pin and inside the import closure of GMT.Ch07.Submission:\n- ContinuousAt.eventually_lt (OrderClosed.lean:691)\n- ENNReal.ofReal_mul' (Basic/ENNReal/Real.lean:301)\n- setLIntegral_const / setLIntegral_mono' (Lebesgue/Basic.lean:121/254)\n- norm_add_sq_real (InnerProductSpace/Basic.lean:411)\n- Convex.norm_image_sub_le_of_norm_fderiv_le (MeanValue.lean:499)\n- fderiv_fun_sub (FDeriv/Add.lean:680)\n- HasFDerivAt.fderiv (FDeriv/Basic.lean:415)\n- ContinuousLinearMap.fderiv (FDeriv/Linear.lean:79)\n- ContDiffOn.continuousOn_fderiv_of_isOpen (ContDiff/Defs.lean:916)\n- ContinuousLinearMap.continuous_det (Normed/Module/FiniteDimension.lean:175)\n- ContinuousLinearMap.adjoint (Adjoint.lean:112)\n- pow_le_pow_iff_left₀ (GroupWithZero/Basic.lean:681)\n- Metric.isOpen_iff / Metric.continuousAt_iff (Pseudo/Defs.lean:833/871)\n\nRenames at this pin. mul_le_mul_right' is absent, so use the pattern `gcongr ENNReal.ofReal ?_ * X`. ContinuousLinearMap.add_apply is deprecated in favour of add_apply.\n\nLeaf rule. One theorem per leaf, with no helpers and no set_option. Leaf theorems go after the noncomputable section's `end`, inside namespace GMT.Ch07, as in commit 24e3df52.\n\nHeartbeats. The monolithic proof uses 197,210 of 200,000; about 37k of that is its final arithmetic. In the split the children use 11,665, 4,450, 25,897, 15,793 and 1,736, and the parent assembly 28,232.\n\nAxiom check. The full chain compiles in a copy of Submission.lean with axioms propext, Classical.choice and Quot.sound only.\n\nBook. chapter-02.txt lines 743–776 give 3.1 and derive 3.2–3.3 'by an approximation argument based on the linear case 3.1'."
+          }
+        ],
+        "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1",
+        "child_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.local_bilipschitz-a1",
+        "subproblem": {
+          "key": "local_bilipschitz",
+          "title": "Local (1 ± ε)-bi-Lipschitz comparison of the C¹ graph map with its linearization (supplied steps 5–7)",
+          "statement": "Let m, k ∈ ℕ, let ι : ℝ^m → ℝ^{m+k} and ι' : ℝ^k → ℝ^{m+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, let D ⊆ ℝ^m be open, g : ℝ^m → ℝ^k a map that is C¹ on D (ContDiffOn ℝ 1 g D), ε > 0 and w₀ ∈ D. Put G(w) := ιw + ι'g(w) and L₀ := DG(w₀) = fderiv ℝ G w₀. Then there is r > 0 with B_r(w₀) ⊆ D (open ball) such that for all x, y ∈ B_r(w₀): (1 − ε)·|L₀x − L₀y| ≤ |G(x) − G(y)| and |G(x) − G(y)| ≤ (1 + ε)·|L₀x − L₀y|, where G(x) − G(y) is written out as (ιx + ι'g(x)) − (ιy + ι'g(y)).",
+          "lean_statement": "∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (D : Set (Euclid m)) (ε : ℝ) (w₀ : Euclid m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsOpen D → ContDiffOn ℝ 1 g D → 0 < ε → w₀ ∈ D → ∃ r : ℝ, 0 < r ∧ ball w₀ r ⊆ D ∧ ∀ x ∈ ball w₀ r, ∀ y ∈ ball w₀ r, (1 - ε) * ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ x - fderiv ℝ (fun w => ι w + ι' (g w)) w₀ y‖ ≤ ‖ι x + ι' (g x) - (ι y + ι' (g y))‖ ∧ ‖ι x + ι' (g x) - (ι y + ι' (g y))‖ ≤ (1 + ε) * ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ x - fderiv ℝ (fun w => ι w + ι' (g w)) w₀ y‖",
+          "lean_name": "codim1_zsl_ga_lc_local_bilipschitz",
+          "depends_on": [
+            "graph_fderiv"
+          ],
+          "natural_proof": "Source. Steps 1, 2, 5 (the radii r₁, r₂), 6 and 7 of the supplied proof of local_comparison.\n\nNotation. |·| is the Euclidean norm, ‖·‖ the operator norm of continuous linear maps, and B₀ := Dg(w₀) = fderiv ℝ g w₀.\n\n1. (Differentiability on D.) g is C¹ on D and 1 ≠ 0, so g is differentiable on D (ContDiffOn.differentiableOn). As D is open, it is a neighbourhood of each of its points, so g is differentiable at every w ∈ D.\n\n2. (Linearization at w₀.) By step 1, g is differentiable at w₀. Apply the sibling graph_fderiv to m, k, ι, ι', g, w₀, the orthogonality hypothesis and this differentiability. It gives L₀ = ι + ι'∘B₀ and |h| ≤ |L₀h| for every h ∈ ℝ^m.\n\n3. (Choice of r.) g is C¹ on the open set D, so Dg is continuous on D (ContDiffOn.continuousOn_fderiv_of_isOpen with 1 ≤ 1), hence continuous at w₀ ∈ D. Choose r₁ > 0 with B_{r₁}(w₀) ⊆ D (D open; Metric.isOpen_iff). Choose r₂ > 0 such that ‖Dg(w) − B₀‖ < ε whenever |w − w₀| < r₂ (continuity at w₀ with tolerance ε > 0; Metric.continuousAt_iff). Put r := min(r₁, r₂) > 0. Then B_r(w₀) ⊆ B_{r₁}(w₀) ⊆ D, which is the first assertion.\n\n4. (Mean value inequality.) Let φ(w) := g(w) − B₀w. Let z ∈ B_r(w₀) ⊆ D. Then g is differentiable at z (step 1), and the continuous linear map B₀ is differentiable with derivative B₀. So φ is differentiable at z with Dφ(z) = Dg(z) − B₀ (fderiv_fun_sub, ContinuousLinearMap.fderiv). As |z − w₀| < r ≤ r₂, ‖Dφ(z)‖ < ε, in particular ‖Dφ(z)‖ ≤ ε. The ball B_r(w₀) is convex. By the mean value inequality (Convex.norm_image_sub_le_of_norm_fderiv_le), |φ(x) − φ(y)| ≤ ε|x − y| for all x, y ∈ B_r(w₀). Since B₀ is linear, φ(x) − φ(y) = g(x) − g(y) − B₀(x − y). Hence |g(x) − g(y) − B₀(x − y)| ≤ ε|x − y|.\n\n5. (Decomposition.) Fix x, y ∈ B_r(w₀) and put e := g(x) − g(y) − B₀(x − y). By step 2 and linearity, L₀x − L₀y = (ιx − ιy) + (ι'(B₀x) − ι'(B₀y)). Using ι'(g(x)) − ι'(g(y)) = ι'(B₀(x − y)) + ι'(e), we get\n G(x) − G(y) = (ιx + ι'g(x)) − (ιy + ι'g(y)) = (L₀x − L₀y) + ι'(e).\n\n6. (Size of the error.) ι' is an isometry, so |ι'(e)| = |e| ≤ ε|x − y| by step 4. By step 2, |x − y| ≤ |L₀(x − y)| = |L₀x − L₀y|. As ε > 0, |ι'(e)| ≤ ε|L₀x − L₀y|.\n\n7. (Triangle inequality.) By steps 5 and 6 (norm_add_le), |G(x) − G(y)| ≤ |L₀x − L₀y| + |ι'(e)| ≤ (1 + ε)|L₀x − L₀y|. Similarly (norm_sub_norm_le), |G(x) − G(y)| ≥ |L₀x − L₀y| − |ι'(e)| ≥ (1 − ε)|L₀x − L₀y|. These are the two inequalities, for all x, y ∈ B_r(w₀). The argument is valid for every m, k ≥ 0. ∎",
+          "proof_key_steps": [
+            "graph_fderiv at w₀ gives L₀ = ι + ι'∘Dg(w₀) and |h| ≤ |L₀h|.",
+            "Openness of D and continuity of Dg at w₀ give r > 0 with B_r(w₀) ⊆ D and ‖Dg(w) − Dg(w₀)‖ < ε on B_r(w₀).",
+            "The mean value inequality for w ↦ g(w) − Dg(w₀)w on the convex ball gives |g(x) − g(y) − Dg(w₀)(x − y)| ≤ ε|x − y|.",
+            "G(x) − G(y) = (L₀x − L₀y) + ι'(error), with |ι'(error)| ≤ ε|x − y| ≤ ε|L₀x − L₀y|; the triangle inequality gives the (1 ± ε) bounds."
+          ]
+        },
+        "audit": {
+          "key": "local_bilipschitz",
+          "acceptable": true,
+          "natural_proof_acceptable": true,
+          "reason": "Openness and C¹ regularity justify ordinary differentiability and derivative continuity. The convex-ball mean-value estimate, declared graph_fderiv dependency and triangle inequalities prove both bounds. The proof requires only ε > 0, as stated; ε < 1 is unnecessary."
+        },
+        "resolved_dependencies": [
+          "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.graph_fderiv-a1"
+        ],
+        "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-5b6c52f60c/parent-supplied-plan.md",
+        "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-5b6c52f60c/parent-supplied-natural-proof.md",
+        "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-5b6c52f60c/parent-supplied-natural-proof.json"
+      }
+    }
+  ],
+  "files": {
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/task.md": "9e4ea41ef257319c83fb02009150ae5578d921c66b3d8377928fa0839feacb93",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/problem.md": "5b78b2fcb87970586dd76fea8db5f33ecf950ba8df40e0bbfb2eb94f2eb67d06",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/problem.json": "a64eb8eb7211544e754b40959feeb1378f1cc31f7893bafbe4c7add776da17a2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/reference-manifest.json": "166b882f6e1c222a7523ace3505311d8aa41f939a8ae9b59a30353c38d3be033",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/decomposition.json": "ce7ac73f6b4da383b6e0ee18409bf31ba89eb16c59d4bc8576e084a879b2eaa2",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/decomposition-audit.json": "8040c2583fda67f16b8020262930dd2751f447bead7622bfd763407dfef5dadb",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/controller-contract.json": "98ca6c78b2de77f692540fa24e80694ddcd2346111afbb4918901a159346efca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3d3bd4afd1/parent-child-handoff.json": "ff6922064874b65ef36d39bc6740b277306feded5528e621d3b0d4f9cd381f4f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3d3bd4afd1/parent-supplied-plan.md": "0bce510b5bffeef3abf1a8c99d18347b447f041f04f725ba0e413f83b60f411b",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3d3bd4afd1/parent-supplied-natural-proof.md": "5cf7d96448c5d23d411a9f228411b0dd01cdfa93772ba594899decf0d132321f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3d3bd4afd1/parent-supplied-natural-proof.json": "65360ce83ffdf539d644f100641d36090b9bee79aa4b6cdac6f99f1bbcb20b42",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-3d3bd4afd1/node.json": "5adbae300756b057c66f20aa45f75b4f846041f546a3272ef5fa65bd381f920f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-83ff847c4f/parent-child-handoff.json": "f8fac3f6f1008c285df59ed25200f3399b2d42064f06f9de2a298451d46bd31e",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-83ff847c4f/parent-supplied-plan.md": "6e7f52a8ce42a9a95e824d70fab92cb48f26b7934eee7bf561d87cda867a2b69",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-83ff847c4f/parent-supplied-natural-proof.md": "6db9cf89392c61506c27d8a923322cf48336c21bca3047c0091a0bc9b18d68c8",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-83ff847c4f/parent-supplied-natural-proof.json": "7b0f666519a6f3a4ff9bf6e92ce1da8905794747998a343c1095fa76a32f67e4",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-83ff847c4f/node.json": "2ea5c701d67b2af8ae3cb4a4fd4ad56f419717553a2b167f6593b2165196c4df",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f151f8db54/parent-child-handoff.json": "5e4a6aed71704364511ad7b6aea63263b454de91e2d684af7db5abf7dd622127",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f151f8db54/parent-supplied-plan.md": "eb29a174ee82b74fb0e840f6fcbdd802459b58df172fa5fbfd56ba922950318d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f151f8db54/parent-supplied-natural-proof.md": "91119ae7237dc2cac7af83222e3c8ddd485915dc8902f1bc115302ff7f165f8d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f151f8db54/parent-supplied-natural-proof.json": "ded3b0b7133814a53f6f6a122d3f37d44ff6bb4935722168691c297fc9b7c62c",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f151f8db54/node.json": "72ca04676f601d30a8df3bb9894e8433fafa8a4956eec9288d2e5cc1b9791cef",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-d652eb72b6/parent-child-handoff.json": "df0913a26c3956054f9ed655ac2d96d37869cf28dca90b5db075a62a09973f1a",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-d652eb72b6/parent-supplied-plan.md": "b6f49fab119d7aebf206731cbb0ffd58bdee45fabbe8847def95ab8a9e613729",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-d652eb72b6/parent-supplied-natural-proof.md": "a4876d2c6265a90aea584fed02f3ddbb68f5d0a2f65b654e52ebcc9495e3a890",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-d652eb72b6/parent-supplied-natural-proof.json": "56edd6added63c5fa2773c971a2efca5449408b1ffa7aa3b8659323651f2aa38",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-d652eb72b6/node.json": "151e4c5e1d6d39abe46bba526de868f04a856bc59aa1f790261a540e5300afeb",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-5b6c52f60c/parent-child-handoff.json": "dda46cf52ce11162615aa931f8be374569117349435356b65af21c6f89595336",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-5b6c52f60c/parent-supplied-plan.md": "24a7bcefe6f9a2df6513dad77a8488f7a263df80dbacd17ed0ad7115cc24182f",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-5b6c52f60c/parent-supplied-natural-proof.md": "716fdab22072cd8d853609e96463a4a5357adea93c16844917bd795f1b1bc72d",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-5b6c52f60c/parent-supplied-natural-proof.json": "4a0389eda76f09d9a24cd45d13b54417e71aeef41fc09d9b7c34f9e3104583ca",
+    ".humanize-workspace/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-11bcb375f2/children/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-5b6c52f60c/node.json": "a267ad09f1438174d3fa3b22f006655e19eac0044cea72c7cc747d8a9c82e893"
+  }
+}

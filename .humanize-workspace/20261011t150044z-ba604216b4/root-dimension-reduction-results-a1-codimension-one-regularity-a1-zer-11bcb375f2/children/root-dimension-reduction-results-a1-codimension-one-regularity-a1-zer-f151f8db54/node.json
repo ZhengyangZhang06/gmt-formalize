@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.jacobian_continuous_on-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1",
+  "depth": 6,
+  "title": "Continuity of the Jacobian √det(DF*∘DF) of a C¹ map on an open set (supplied step 5)",
+  "statement": "Let m, P ∈ ℕ, let D ⊆ ℝ^m be open and let F : ℝ^m → ℝ^P be a map that is C¹ on D (ContDiffOn ℝ 1 F D). Then the function w ↦ √det(DF(w)*∘DF(w)) is continuous on D. Here DF(w) = fderiv ℝ F w, DF(w)* is its Hilbert-space adjoint ℝ^P → ℝ^m, det is the determinant of the endomorphism DF(w)*∘DF(w) of ℝ^m (ContinuousLinearMap.det), and √ is Real.sqrt.",
+  "lean_statement": "∀ (m P : ℕ) (F : Euclid m → Euclid P) (D : Set (Euclid m)), IsOpen D → ContDiffOn ℝ 1 F D → ContinuousOn (fun w => Real.sqrt (((fderiv ℝ F w).adjoint ∘L fderiv ℝ F w).det)) D",
+  "lean_name": "codim1_zsl_ga_lc_jacobian_continuousOn",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-f151f8db54-a1"
+}

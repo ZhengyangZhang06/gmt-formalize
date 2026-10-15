@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.local_bilipschitz-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1",
+  "depth": 6,
+  "title": "Local (1 ± ε)-bi-Lipschitz comparison of the C¹ graph map with its linearization (supplied steps 5–7)",
+  "statement": "Let m, k ∈ ℕ, let ι : ℝ^m → ℝ^{m+k} and ι' : ℝ^k → ℝ^{m+k} be linear isometries with ⟨ιv, ι'w⟩ = 0 for all v, w, let D ⊆ ℝ^m be open, g : ℝ^m → ℝ^k a map that is C¹ on D (ContDiffOn ℝ 1 g D), ε > 0 and w₀ ∈ D. Put G(w) := ιw + ι'g(w) and L₀ := DG(w₀) = fderiv ℝ G w₀. Then there is r > 0 with B_r(w₀) ⊆ D (open ball) such that for all x, y ∈ B_r(w₀): (1 − ε)·|L₀x − L₀y| ≤ |G(x) − G(y)| and |G(x) − G(y)| ≤ (1 + ε)·|L₀x − L₀y|, where G(x) − G(y) is written out as (ιx + ι'g(x)) − (ιy + ι'g(y)).",
+  "lean_statement": "∀ (m k : ℕ) (ι : Euclid m →ₗᵢ[ℝ] Euclid (m + k)) (ι' : Euclid k →ₗᵢ[ℝ] Euclid (m + k)) (g : Euclid m → Euclid k) (D : Set (Euclid m)) (ε : ℝ) (w₀ : Euclid m), (∀ v w, inner ℝ (ι v) (ι' w) = 0) → IsOpen D → ContDiffOn ℝ 1 g D → 0 < ε → w₀ ∈ D → ∃ r : ℝ, 0 < r ∧ ball w₀ r ⊆ D ∧ ∀ x ∈ ball w₀ r, ∀ y ∈ ball w₀ r, (1 - ε) * ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ x - fderiv ℝ (fun w => ι w + ι' (g w)) w₀ y‖ ≤ ‖ι x + ι' (g x) - (ι y + ι' (g y))‖ ∧ ‖ι x + ι' (g x) - (ι y + ι' (g y))‖ ≤ (1 + ε) * ‖fderiv ℝ (fun w => ι w + ι' (g w)) w₀ x - fderiv ℝ (fun w => ι w + ι' (g w)) w₀ y‖",
+  "lean_name": "codim1_zsl_ga_lc_local_bilipschitz",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.graph_fderiv-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.zero_scale_limit_plane-a1.graph_area-a1.local_comparison-a1.graph_fderiv-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-zer-5b6c52f60c-a1"
+}
