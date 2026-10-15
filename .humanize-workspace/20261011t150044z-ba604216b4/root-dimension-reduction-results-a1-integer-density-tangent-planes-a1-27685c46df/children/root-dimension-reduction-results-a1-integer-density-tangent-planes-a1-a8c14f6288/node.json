@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1.cone_integral-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.cone_sector_endpoint_density-a1.flux_density-a1",
+  "depth": 5,
+  "title": "Integrals against the weight of a cone current scale homogeneously",
+  "statement": "Let P, n ∈ ℕ, C ∈ 𝒟_n(ℝ^P) a cone (IsConeCurrent C: η_{0,λ#}C = C for every λ > 0) and R an integer multiplicity triple in ℝ^P (IMRep univ n) representing C, with weight μ := R.measure. Then for every r > 0 and every function φ : ℝ^P → ℝ, ∫ φ(rx) dμ(x) = (r^n)^{−1} ∫ φ dμ (Bochner integrals; no measurability or integrability of φ is assumed).",
+  "lean_statement": "∀ (P n : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) n) (R : IMRep (univ : Set (Euclid P)) n), IsConeCurrent C → R.Represents C → ∀ r : ℝ, 0 < r → ∀ φ : Euclid P → ℝ, ∫ x, φ (r • x) ∂R.measure = (r ^ n)⁻¹ * ∫ x, φ x ∂R.measure",
+  "lean_name": "idtp_cse_fd_cone_integral_smul",
+  "depends_on": [
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-a1",
+      "result_commit": "e183b985f8baf48aa0fe07ee8e978c1474ec9d0a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-a8c14f6288-a1"
+}

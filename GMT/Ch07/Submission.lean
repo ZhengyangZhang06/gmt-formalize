@@ -1410,6 +1410,29 @@ theorem Submission.imrep_approxTangent_starProjection_aesm : ∀ (P n : ℕ) (U 
   exact ((hG.comp_aemeasurable R.aestronglyMeasurable_orient.aemeasurable).aestronglyMeasurable
     ).congr hae.symm
 
+/-- **Simon 7.3.3, proof (gap in a cone sector)**: let `R = (M, θ, ξ)` represent `C ∈ 𝒟₂(ℝᴾ)`,
+`μ = θH²⌞M`, `q(x) = x − π_Q x` and `f(x) = arctan(⟨x, e⟩/⟨x, a⟩)`.  Assume the localization
+`Loc(s)`: for `0 < s' ≤ s`, every `x ∈ spt C` with `⟨x, a⟩ > 0`, `|‖x‖ − 1| < s'`, `|f(x)| < s'`
+and `|q(x)| ≤ 2s|x|` has `|q(x)| < (s'/4)|x|` and `|x − a| < 3s'`.  Then `μ`-a.e. `x` with
+`⟨x, a⟩ > 0`, `|‖x‖ − 1| < s` and `|f(x)| < s` has `|q(x)| < (s/2)|x|` or `2s|x| < |q(x)|`.
+Indeed `spt C = ℝᴾ ∩ spt μ = spt μ`, which is `μ`-conull as `ℝᴾ` is second countable, hence
+hereditarily Lindelöf; at `x ∈ spt C` with `|q(x)| ≤ 2s|x|`, `Loc(s)` with `s' = s` gives
+`|q(x)| < (s/4)|x| ≤ (s/2)|x|`. -/
+theorem Submission.idtp_cse_fd_gap_ae : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (R : IMRep (univ : Set (Euclid P)) 2) (s : ℝ), R.Represents C → 0 < s → (∀ s' : ℝ, 0 < s' → s' ≤ s → ∀ x ∈ C.support, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s') → ∀ᵐ x ∂R.measure, 0 < inner ℝ x a → |‖x‖ - 1| < s → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s → ‖x - Q.starProjection x‖ < s / 2 * ‖x‖ ∨ 2 * s * ‖x‖ < ‖x - Q.starProjection x‖ := by
+  intro P C Q a e R s hRC hs hloc
+  -- `spt C = ℝᴾ ∩ spt μ = spt μ`, as `ℝᴾ` is open and `R` represents `C`
+  have hspt : C.support = R.measure.support := by
+    rw [Submission.imrep_represents_support_eq_inter_measure_support P 2 univ C R isOpen_univ hRC,
+      univ_inter]
+  -- `μ`-a.e. `x` lies in `spt μ = spt C` (`ℝᴾ` is second countable, hence hereditarily Lindelöf)
+  filter_upwards [Measure.support_mem_ae (μ := R.measure)] with x hx hxa hx1 hxf
+  rw [← hspt] at hx
+  -- either `2s|x| < |q(x)|`, or `|q(x)| ≤ 2s|x|` and `Loc(s)` gives `|q(x)| < (s/4)|x| ≤ (s/2)|x|`
+  rcases le_or_gt ‖x - Q.starProjection x‖ (2 * s * ‖x‖) with hle | hlt
+  · refine Or.inl ((hloc s hs le_rfl x hx hxa hx1 hxf hle).1.trans_le ?_)
+    exact mul_le_mul_of_nonneg_right (by linarith) (norm_nonneg x)
+  · exact Or.inr hlt
+
 /-- Chapter 7 of Simon's *Introduction to GMT*: the headline results above. -/
 theorem main_theorem : MinimizingImpliesStationary ∧ ExistenceOfMinimizingFilling ∧ CompactnessOfMinimizingCurrents ∧ DensityAndTangentCones ∧ IntegerDensityAndTangentPlanes ∧ RegularSetDense ∧ DensityOneImpliesRegular ∧ SingularSetSmallWhereDensityBelowTwo ∧ HalfSpaceConeLiesInBoundary ∧ CodimensionOneRegularity ∧ RegularComponentsAreMinimizing := by sorry
 
