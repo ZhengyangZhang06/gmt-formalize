@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.offvertex_rep-a1",
+  "parent_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1",
+  "depth": 4,
+  "title": "A cone that is regular with density one off the vertex is the multiplicity-one oriented C¹ cone spt C ∖ {0} (parent B0.1, B1–B4, B10b)",
+  "statement": "Multiplicity-one representation of a cone that is regular with density one off the vertex. Data: P, m ∈ ℕ with m ≥ 1 and C ∈ 𝒟_m(ℝ^P) (GeometricCurrentOn univ m). Hypotheses: C is integer multiplicity (IsIntegerMultiplicity C); C is a cone (IsConeCurrent C: η_{0,λ#}C = C for every λ > 0); every y ∈ spt C with y ≠ 0 lies in reg C and has Θ^m(μ_C, y) = 1. Conclusion, with M := spt C ∖ {0}: there is ξ : ℝ^P → Λ_m(ℝ^P) such that (i) M is an embedded C¹ m-dimensional submanifold of ℝ^P; (ii) ξ is an orientation of M (IsOrientation m M ξ); (iii) tx ∈ M for every x ∈ M and t > 0; (iv) H^m(M ∩ K) < ∞ for every compact K ⊆ ℝ^P; (v) C(ω) = ∫_M ⟨ω(x), ξ(x)⟩ dH^m(x) for every ω ∈ 𝒟^m(ℝ^P). In particular C = 0 when M = ∅. H^m = μHE[m].",
+  "lean_statement": "∀ (P m : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) m), 1 ≤ m → IsIntegerMultiplicity C → IsConeCurrent C → (∀ y ∈ C.support, y ≠ 0 → y ∈ regularSet C ∧ HasMassDensity C y 1) → ∃ ξ : Euclid P → MultiVector P m, IsEmbeddedSubmanifold 1 m (C.support \\ {0}) ∧ IsOrientation m (C.support \\ {0}) ξ ∧ (∀ t : ℝ, 0 < t → ∀ x ∈ C.support \\ {0}, t • x ∈ C.support \\ {0}) ∧ (∀ K : Set (Euclid P), IsCompact K → μHE[m] ((C.support \\ {0}) ∩ K) ≠ ∞) ∧ ∀ ω : TestFormOn (univ : Set (Euclid P)) m, C ω = ∫ x in C.support \\ {0}, ξ x ((ω : DifferentialForm (Euclid P) m) x) ∂μHE[m]",
+  "lean_name": "codim1_cone_offvertex_unit_multiplicity_rep",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.density_one_local_rep-a1",
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.cone_pullback_identity-a1",
+    "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+    "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+    "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+    "root.dimension_reduction_results-a1.regular_point_density-a1.bilipschitz_measure-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.simons_regular_cone-a1.density_one_local_rep-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-vanish-off-support-a1-a1",
+      "result_commit": "44ef61f79e2168134f8a5a6d6520baba56052d67",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1.cone_pullback_identity-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-27e5a07a68-a1",
+      "result_commit": "52115c22ec2d028a20c63361e75b9f6ee1c485bd",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_one_implies_regular-a1.imrep_mass_and_support-a1.unit_orientation_duality-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-imrep-mass-and-support-a1-unit-or-24edf309fb-a1",
+      "result_commit": "9c8432cb0101c6d41f824c0d8191b92a92dbdd80",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.integer_combination-a1.orientation_sign-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1-a1",
+      "result_commit": "fe95347baaed6a2cf2ecde4455e2b32f361fde51",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.chart_tangent_space-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-chart-tangent-space-a1-a1",
+      "result_commit": "d626082a69a01ae54fab73c0d6072850ddfab6ae",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.regular_point_density-a1.bilipschitz_measure-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-regular-point-density-a1-bilipsch-1804d7035f-a1",
+      "result_commit": "0501e07ced47186792005c0a22c976aafdb0ebdf",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-sim-b7ab3fcecc-a1"
+}
