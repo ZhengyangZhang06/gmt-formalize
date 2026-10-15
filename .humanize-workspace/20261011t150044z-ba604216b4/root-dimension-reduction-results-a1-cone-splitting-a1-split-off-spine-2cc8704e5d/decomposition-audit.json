@@ -1,0 +1,109 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "IMRep|BoundaryVanishes|IsUnitOrientationOf",
+        "TestFormOnConverges|GeometricCurrentOn|zeroRegion|def support|massAdmissibleOn|def massOn",
+        "hasFDerivAt_integral_of_dominated_of_fderiv_le",
+        "curryLeftLI|norm_curryLeft|alternatizeUncurryFin_curryLeft",
+        "volume_preserving_piFinSuccAbove",
+        "volume_preserving_ofLp|volume_preserving_toLp",
+        "lipschitzWith_of_hasCompactSupport",
+        "git rev-parse HEAD",
+        "git -C .lake/packages/mathlib rev-parse HEAD",
+        "git -C .lake/packages/simongmt rev-parse HEAD",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cfs-independent-audit/StandaloneTypes.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean /tmp/cfs-independent-audit/Assemblies.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/lake-manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ParametricIntegral.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Curry.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Uncurry/Fin.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-2cc8704e5d/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-2cc8704e5d/decomposition-v1.json",
+        "/tmp/cfs-independent-audit/StandaloneTypes.lean",
+        "/tmp/cfs-independent-audit/Assemblies.lean",
+        "/tmp/cfs-independent-audit/ReuseAudit.json"
+      ],
+      "conclusion": "The project, mathlib and SimonGMT pins match, and the frozen contract is unchanged. All eleven propositions independently elaborate without declaring any child. The selected parent assembly and both reuse-based child assemblies compile with explicit frozen-type hypotheses and only propext, Classical.choice and Quot.sound. All six direct reuse types are byte-identical to accepted DAG types; all twelve cited reuse artifacts match their successful archived comparator inputs. The proposed and inherited dependencies and reuse closures are acyclic. The five new names have no DAG reservation, and every name is bare. No child contains the forbidden matrix IsUnit construction; the cited Gram determinant type uses Matrix.of. Splitting is appropriate, and the children establish this exact selected parent."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "radial_homotopy",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and Lean type match. Joint smoothness, differentiation under the integral, Cartan's identity and the fundamental theorem of calculus prove both conclusions with the stated exponents, including q = 0."
+    },
+    {
+      "key": "cone_current",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The representation hypotheses provide support vanishing and the finite C⁰ bound needed for continuity. The cutoff homotopy proves the boundary identity and action formula; the zero-region argument proves compact support inside the stated cone, including empty support."
+    },
+    {
+      "key": "compact_im_param",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The complete assembly argument supplies every conjunct, including integrability and HasSum. Its four additional reuses are specifically identified, accepted and non-circular; their prescribed reuse-only wiring requires no new mathematical proof. The assembly was independently checked against their exact frozen types."
+    },
+    {
+      "key": "cone_param",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The hypotheses match exactly. The construction is globally Lipschitz, agrees locally with sG_i on the parameter sets, and has the claimed derivative. The contraction bound, measure-preserving coordinates, integrable domination and Fubini establish the coefficient bounds, summability and action series."
+    },
+    {
+      "key": "param_series_im",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The two specified accepted reuses give integer-multiplicity piece currents and their summable series. The supplied mass estimate verifies the series hypothesis, and uniqueness of HasSum identifies its limit with T. The exact-type assembly compiles; no pointwise differentiability assumption is missing."
+    },
+    {
+      "key": "param_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is an identical-type accepted reuse. Compact parameter-neighbourhood bounds justify differentiation under the integral; induction over complete value spaces proves smoothness without assuming finite-dimensional V."
+    },
+    {
+      "key": "euler_cartan",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is an identical-type accepted reuse. The bilinear product rule and explicit alternating-sum cancellation prove the formula using only differentiability at y, with the correct sign and degree factor."
+    },
+    {
+      "key": "curry_le",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is an identical-type accepted reuse. Homogeneity, orthonormal-basis extension and the position-sum argument prove the coefficient-norm inequality. Its cited square-sum result is present in the accepted dependency closure."
+    },
+    {
+      "key": "vanish_off_support",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is an identical-type accepted reuse. Compactness gives a finite zero-region cover, and a subordinate smooth partition splits the test form into annihilated pieces. The argument works for arbitrary U as stated."
+    },
+    {
+      "key": "mass_rep",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is an identical-type accepted reuse. Cauchy–Binet gives the upper bound; compact exhaustion, Lusin approximation, extension and smoothing give admissible forms establishing the lower bound. The proof accommodates infinite total mass and the stated degree edge cases."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "This is an identical-type accepted reuse matching all four prose clauses. Density comparison proves tangent locality; restriction preserves the representation fields; measurable signed multiplicities prove closure under subtraction; Cauchy–Binet proves the orientation bound. The internal dependencies are correctly ordered and non-circular."
+    }
+  ],
+  "required_changes": []
+}

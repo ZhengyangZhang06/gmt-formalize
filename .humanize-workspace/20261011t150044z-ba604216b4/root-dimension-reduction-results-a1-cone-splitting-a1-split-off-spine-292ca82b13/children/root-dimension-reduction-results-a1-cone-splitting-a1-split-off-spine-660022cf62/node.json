@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_param-a1.cone_map-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.cone_filling_subspace-a1.cone_param-a1",
+  "depth": 6,
+  "title": "Truncated cone map: a Lipschitz H on ℝ^{n+1} that equals (s, u) ↦ s·G(u) near {0 < s < 1, ‖G(u)‖ < ρ}, with its derivative there",
+  "statement": "Let P, n ∈ ℕ, L ≥ 0 (NNReal), ρ ∈ ℝ, and let G : ℝ^n → ℝ^P (Euclid n → Euclid P) be L-Lipschitz. For z ∈ ℝ^{n+1} write z_0 := WithLp.ofLp z 0 and tail z := WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)) ∈ ℝ^n. Then there is a map H : ℝ^{n+1} → ℝ^P, Lipschitz with some constant K ≥ 0, such that for every z ∈ ℝ^{n+1} with z_0 ∈ (0, 1) and ‖G(tail z)‖ < ρ: (a) H(z) = z_0·G(tail z); and (b) if G is differentiable at tail z, then the tuple (b ↦ DH(z)ê_b) of directional derivatives equals Fin.cons (G(tail z)) (a ↦ z_0·DG(tail z)e_a), i.e. DH(z)ê_0 = G(tail z) and DH(z)ê_{a+1} = z_0·DG(tail z)e_a for a ∈ Fin n. Here D = fderiv ℝ, ê_b := EuclideanSpace.single b 1 ∈ ℝ^{n+1} and e_a := EuclideanSpace.single a 1 ∈ ℝ^n.",
+  "lean_statement": "∀ (P n : ℕ) (G : Euclid n → Euclid P) (L : NNReal) (ρ : ℝ), LipschitzWith L G → ∃ H : Euclid (n + 1) → Euclid P, (∃ K : NNReal, LipschitzWith K H) ∧ ∀ z : Euclid (n + 1), WithLp.ofLp z 0 ∈ Ioo (0 : ℝ) 1 → ‖G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))‖ < ρ → H z = WithLp.ofLp z 0 • G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) ∧ (DifferentiableAt ℝ G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) → (fun b => fderiv ℝ H z (EuclideanSpace.single b 1)) = Fin.cons (G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z)))) (fun a => WithLp.ofLp z 0 • fderiv ℝ G (WithLp.toLp 2 (Fin.tail (WithLp.ofLp z))) (EuclideanSpace.single a 1)))",
+  "lean_name": "dimred_cs_sos_cfs_cp_cone_map",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-660022cf62-a1"
+}
