@@ -89027,36 +89027,6 @@ theorem Submission.dtc_bc_lc_sl_co_density_gradient_bound : ∀ (d P : ℕ) (f :
       ball p (ρ * r) ⊆ closedBall y r → (Y ∩ ball p (ρ * r)).Nonempty := by
     intro ρ hρ
     have hc0 : ENNReal.ofReal (ρ ^ Module.finrank ℝ (Euclid d)) ≠ 0 := by
-  have hlim : Tendsto (fun ρ : ℝ => ENNReal.ofReal (a ρ / w)) (𝓝[>] 0) (𝓝 1) := by
-    have := ENNReal.tendsto_ofReal (ha.div_const w)
-    rwa [div_self hw.ne', ENNReal.ofReal_one] at this
-  refine hlim.congr' ?_
-  filter_upwards [Ioc_mem_nhdsGT hs] with ρ hρ
-  exact (hconvert ρ hρ.1 hρ.2).symm
-/-- **Simon Ch. 1, 3.1–3.2** (densities may be computed with closed or open balls; cf. 6.2.8 and
-`HasMassDensity`): if `ν(B̄_ρ(x)) / (ωₙρⁿ) → θ ∈ [0, ∞]` as `ρ ↓ 0`, then also
-`ν(B_ρ(x)) / (ωₙρⁿ) → θ`.  The upper bound follows from `B_ρ(x) ⊆ B̄_ρ(x)`.  For the lower
-bound, given `a < θ` pick `t ∈ (0, 1)` with `a < tⁿθ`; then `B̄_{tρ}(x) ⊆ B_ρ(x)` and
-`ωₙ(tρ)ⁿ = tⁿ ωₙρⁿ` give `ν(B_ρ(x)) / (ωₙρⁿ) ≥ tⁿ · ν(B̄_{tρ}(x)) / (ωₙ(tρ)ⁿ) > a` for small
-`ρ`. -/
-theorem Submission.rsd_tendsto_ball_density_of_closedBall : ∀ (P n : ℕ) (ν : Measure (Euclid P)) (x : Euclid P) (θ : ℝ≥0∞), Tendsto (fun ρ : ℝ => ν (closedBall x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 θ) → Tendsto (fun ρ : ℝ => ν (ball x ρ) / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 θ) := by
-  intro P n ν x θ hg
-  set ω := unitBallVolume n
-  rw [tendsto_order]
-  refine ⟨fun a ha => ?_, fun b hb => ?_⟩
-  · -- Step 2: choose `t ∈ (0, 1)` with `a < tⁿθ`, using `tⁿθ → θ` as `t ↑ 1`
-    have hlim : Tendsto (fun t : ℝ => ENNReal.ofReal (t ^ n) * θ) (𝓝[<] 1) (𝓝 (1 * θ)) := by
-      refine ENNReal.Tendsto.mul_const ?_ (Or.inl one_ne_zero)
-      have : Tendsto (fun t : ℝ => ENNReal.ofReal (t ^ n)) (𝓝 1) (𝓝 (ENNReal.ofReal (1 ^ n))) :=
-        (ENNReal.continuous_ofReal.comp (continuous_pow n)).tendsto 1
-      simpa using this.mono_left nhdsWithin_le_nhds
-    rw [one_mul] at hlim
-    obtain ⟨t, hta, ht0, ht1⟩ : ∃ t : ℝ, a < ENNReal.ofReal (t ^ n) * θ ∧ 0 < t ∧ t < 1 := by
-      have h1 := (tendsto_order.1 hlim).1 a ha
-      have h2 : ∀ᶠ t in 𝓝[<] (1 : ℝ), t ∈ Ioo (0 : ℝ) 1 := Ioo_mem_nhdsLT (by norm_num)
-      obtain ⟨t, ht, ht'⟩ := (h1.and h2).exists
-      exact ⟨t, ht, ht'.1, ht'.2⟩
-    have hc0 : ENNReal.ofReal (t ^ n) ≠ 0 := by
       rw [Ne, ENNReal.ofReal_eq_zero, not_le]
       exact pow_pos hρ _
     have h1 : Tendsto (fun r => volume (Y ∩ closedBall y r) / volume (closedBall y r)
@@ -89163,7 +89133,6 @@ theorem Submission.rsd_tendsto_ball_density_of_closedBall : ∀ (P n : ℕ) (ν 
   calc (t n)⁻¹ * |f (ψ (z n)) - f (ψ y)| ≤ (t n)⁻¹ * (L * ‖ψ (z n) - ψ y‖) :=
         mul_le_mul_of_nonneg_left hL (inv_nonneg.2 htn.le)
     _ = L * ((t n)⁻¹ * ‖ψ (z n) - ψ y‖) := by ring
-
 /-- Gradient field of a Lipschitz `f` along disjoint `C¹` chart pieces (Simon Ch. 3, Definition
 2.1: `∇ᴹf := ∇^{N_j} f` on the `j`-th piece).  Let `f : ℝᴾ → ℝ` be `L`-Lipschitz and let
 `ψⱼ : ℝᵈ → ℝᴾ` be `C¹` immersions, injective on `Vⱼ ⊇ closure Yⱼ` (compact), with `f ∘ ψⱼ = Fⱼ`
@@ -96286,7 +96255,6 @@ theorem Submission.odc_rays_integrableOn {P n : ℕ} (R : IMRep (univ : Set (Euc
     calc ‖R.orient x (Φ x)‖ ≤ ‖R.orient x‖ * ‖Φ x‖ := (R.orient x).le_opNorm _
       _ ≤ 1 * C := mul_le_mul hx (hC x) (norm_nonneg _) zero_le_one
       _ = C := one_mul C
-    exact ball_subset_closedBall
 
 /-- **Simon Ch. 3, Remarks 1.8(1)–(2) and Theorem 1.9** (with the upper density theorem, Ch. 1,
 3.6–3.7(2)): if `R = (M, θ, ξ)` has weight `μ_R = θ Hⁿ⌞M` finite on compact sets, then for
