@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1.image_current-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1",
+  "depth": 6,
+  "title": "Integer multiplicity current of an integer-weighted bi-Lipschitz image piece (supplied step 5(b)–(c))",
+  "statement": "Assume (MR) and (IMC). (MR) is the exact frozen type of the accepted Submission.cmc_massOn_eq_imRep_measure: for U open, an IMRep R in U representing T ∈ 𝒟_n(U), and every open W, M_W(T) = T.massOn W = R.measure W. (IMC) is the exact frozen type of the accepted Submission.cmc_imRep_locality_restrict_sub, the conjunction of: (a) locality of approximate tangent spaces: for U ⊆ ℝ^P open and Borel M ⊆ M' ⊆ U with Hⁿ(M' ∩ K) < ∞ for every compact K ⊆ U, for Hⁿ-a.e. x ∈ M and every subspace Q, HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q; (b) restriction: for U open, an IMRep R in U and a Borel set E there are a current A ∈ 𝒟_n(U) and an IMRep R' with R'.Represents A, R'.carrier = R.carrier ∩ E, R'.mult = R.mult, R'.orient = R.orient; (c) A − B is integer multiplicity if A, B are (U open); (d) for every IMRep R, for Hⁿ-a.e. x ∈ R.carrier and every n-covector α, |R.orient x α| ≤ covectorEuclideanNorm α. Let P, n ∈ ℕ, L ∈ ℝ≥0, κ > 0, H : ℝⁿ → ℝ^P L-Lipschitz, A ⊆ ℝⁿ Borel with κ|a − a'| ≤ |H(a) − H(a')| for a, a' ∈ A, H differentiable with injective derivative at every point of A, and g : ℝⁿ → ℤ measurable with g(a) ≠ 0 for a ∈ A and g Lebesgue integrable on A. Then there is an integer multiplicity Φ ∈ 𝒟_n(ℝ^P) (GeometricCurrentOn univ n) with Φ(ω) = ∫_A g(u)·ω(H(u))(DH(u)e_0, …, DH(u)e_{n−1}) du for every test form ω ∈ 𝒟ⁿ(ℝ^P), and M(Φ) ≤ Lⁿ·∫⁻_A |g| dλ.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → ((∀ (P n : ℕ) (U M M' : Set (Euclid P)), IsOpen U → MeasurableSet M → MeasurableSet M' → M ⊆ M' → M' ⊆ U → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → μHE[n] (M' ∩ K) ≠ ∞) → ∀ᵐ x ∂(μHE[n].restrict M), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ↔ HasApproximateTangentSpaceAt n M' x Q) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n) (E : Set (Euclid P)), IsOpen U → MeasurableSet E → ∃ (A : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents A ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) ∧ (∀ (P n : ℕ) (U : Set (Euclid P)) (R : IMRep U n), ∀ᵐ x ∂(μHE[n].restrict R.carrier), ∀ α : Covector (Euclid P) n, |R.orient x α| ≤ covectorEuclideanNorm α)) → ∀ (P n : ℕ) (L : NNReal) (κ : ℝ) (H : Euclid n → Euclid P) (A : Set (Euclid n)) (g : Euclid n → ℤ), LipschitzWith L H → MeasurableSet A → 0 < κ → (∀ a ∈ A, ∀ a' ∈ A, κ * ‖a - a'‖ ≤ ‖H a - H a'‖) → (∀ a ∈ A, DifferentiableAt ℝ H a ∧ Injective (fderiv ℝ H a)) → Measurable g → (∀ a ∈ A, g a ≠ 0) → IntegrableOn (fun u => (g u : ℝ)) A → ∃ Φ : GeometricCurrentOn (univ : Set (Euclid P)) n, IsIntegerMultiplicity Φ ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) n, Φ ω = ∫ u in A, (g u : ℝ) * (ω : DifferentialForm (Euclid P) n) (H u) (fun a => fderiv ℝ H u (EuclideanSpace.single a 1))) ∧ Φ.mass ≤ (L : ℝ≥0∞) ^ n * ∫⁻ u in A, ‖(g u : ℝ)‖ₑ",
+  "lean_name": "dimred_mbl_dt_lpip_bilipschitz_image_current",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1.bilip_measure-a1",
+    "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_divergence-a1.gram_area_formula-a1",
+    "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.wedge_orientation-a1",
+    "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1.imrep_of_subset-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.lipschitz_pushforward-a1.im_pushforward-a1.bilip_measure-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.diffeo_pushforward-a1.piece_tangent_density-a1.piece_image_tangent-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-64a6473a66-a1",
+      "result_commit": "6ae39d3e6291e380ec7515fbf31bed82c190c394",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.area_formula-a1.gram_area-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-db95546c3f-a1",
+      "result_commit": "d5ba41d68f1ca2e5ef9b0ebdd62cf01e6e24a919",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.chart_divergence-a1.gram_area_formula-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-dad7016689-a1",
+      "result_commit": "15f8046553cb9af46b3f645a487e52fb756a62ac",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.codimension_one_regularity-a1.region_density_one-a1.local_unit_rep-a1.wedge_orientation-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-codimension-one-regularity-a1-reg-828dc69c10-a1",
+      "result_commit": "6057bc9f0af7e624ac82e56dc0bef1991ba13181",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.slicing-a1.slice_family-a1.imrep_of_subset-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-4d6ef43151-a1",
+      "result_commit": "98617b429473d07717501fdf85291b19cce2691a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-fc380854bc-a1"
+}
