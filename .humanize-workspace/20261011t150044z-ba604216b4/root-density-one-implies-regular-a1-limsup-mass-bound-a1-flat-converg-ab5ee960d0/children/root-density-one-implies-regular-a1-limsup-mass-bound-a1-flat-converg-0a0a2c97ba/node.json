@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1.divergence_form-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1",
+  "depth": 6,
+  "title": "Test (n−1)-forms near a face whose exterior derivative realises div g on the face, with coefficient norm ≤ 1 and support near Φ_p(spt g) (the test forms of step 4 of the parent proof; Simon Ch. 6, (28) via 2.34–2.35)",
+  "statement": "Conventions (as in the selected node): ℝ^P = Euclid P, ℝⁿ = Euclid n, Hᵈ = μHE[d], e_i = EuclideanSpace.single i 1 ∈ ℝ^P, x_i the i-th coordinate. n := m + 1. For a pair p = (z, ι) ∈ ℤ^P × (Fin n → Fin P): Φ_p(y) := z + Σ_{j<n} y_j e_{ι(j)} for y ∈ ℝⁿ (Lean: WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)); e_p := (e_{ι(0)}, …, e_{ι(m)}); Q₁ := {y ∈ ℝⁿ : 0 < y_i < 1 for all i} with Lebesgue measure (volume); F_p := {x ∈ ℝ^P : z_i ≤ x_i ≤ z_i + 1 for i ∈ range ι, x_i = z_i for i ∉ range ι} (the closed unit face of the selected node's statement); A_p := Φ_p(Q₁) (the open face). 𝒟^d(U) = TestFormOn U d and 𝒟_d(U) = GeometricCurrentOn U d (domain univ throughout); ∂X = X.boundary; M_W(X) = X.massOn W and M(X) = X.mass (Euclidean coefficient norm covectorEuclideanNorm); IMRep and IsIntegerMultiplicity are the contract notions. Statement: let P, m ∈ ℕ, p = (z, ι) with ι strictly increasing, g : ℝⁿ → ℝⁿ smooth (ContDiff ℝ (⊤ : ℕ∞)) with compact support and |g(y)| ≤ 1 for all y, and δ > 0. Then there is ω ∈ 𝒟^m(ℝ^P) (an (n−1)-form, TestFormOn univ m) such that (i) covectorEuclideanNorm(ω(x)) ≤ 1 for every x ∈ ℝ^P; (ii) for every x ∈ tsupport ω there is y ∈ tsupport g with dist(x, Φ_p(y)) ≤ δ; (iii) dω(Φ_p(y))(e_p) = trace(Dg(y)) = div g(y) for every y ∈ ℝⁿ (dω = exteriorDerivative ω, Dg(y) = fderiv ℝ g y, trace = LinearMap.trace ℝ (Euclid n)).",
+  "lean_statement": "∀ (P m : ℕ) (p : (Fin P → ℤ) × (Fin (m + 1) → Fin P)) (g : Euclid (m + 1) → Euclid (m + 1)) (δ : ℝ), StrictMono p.2 → ContDiff ℝ (⊤ : ℕ∞) g → HasCompactSupport g → (∀ y, ‖g y‖ ≤ 1) → 0 < δ → ∃ ω : TestFormOn (univ : Set (Euclid P)) m, (∀ x, covectorEuclideanNorm ((ω : DifferentialForm (Euclid P) m) x) ≤ 1) ∧ (∀ x ∈ tsupport (ω : DifferentialForm (Euclid P) m), ∃ y ∈ tsupport g, dist x (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) ≤ δ) ∧ ∀ y : Euclid (m + 1), exteriorDerivative (ω : DifferentialForm (Euclid P) m) (WithLp.toLp 2 (fun i => (p.1 i : ℝ)) + ∑ j, y j • EuclideanSpace.single (p.2 j) (1 : ℝ)) (fun k => EuclideanSpace.single (p.2 k) (1 : ℝ)) = LinearMap.trace ℝ (Euclid (m + 1)) (fderiv ℝ g y)",
+  "lean_name": "dor_lmb_fcd_fr_divergence_form",
+  "depends_on": [
+    "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1.coordinate_covectors-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.flat_convergence-a1.deformation-a1.face_replacement-a1.coordinate_covectors-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-0a0a2c97ba-a1"
+}

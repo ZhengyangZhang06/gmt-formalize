@@ -1,0 +1,66 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "norm_iteratedFDeriv_smul_le|norm_iteratedFDerivWithin_le_of_bilinear_aux",
+        "tsupport_iteratedFDeriv_subset|HasCompactSupport.iteratedFDeriv",
+        "theorem.*iteratedFDeriv_comp_(left|right)|norm_iteratedFDeriv_fderiv|fun_iteratedFDeriv_add_apply",
+        "theorem TestFormOnConverges\\.",
+        "Python inspection of actual import headers: 3045-module closure; Mathlib.Analysis.Calculus.ContDiff.Bounds absent; no missing source files",
+        "Python DAG searches for all four lean_name values, exact frozen-type comparisons, and dependency-cycle checks",
+        "git show f492ba4a003c8f1324077e050d48667ae23c7100:GMT/Ch07/Submission.lean",
+        "python3 /tmp/cp-independent-audit-wfvt0fk9/run_lean.py Chain.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Bounds.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/ContDiff/FTaylorSeries.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/BumpFunction/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Forms.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-3abc140ad4/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-flat-converg-3abc140ad4/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa1/20261012T190028Z-ch07-root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1-uewbgrnd/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa1/20261012T190028Z-ch07-root.regular_set_dense-a1.mass_eq_weight-a1.test_form_approx-a1.norm_props-a1-uewbgrnd/result.json",
+        "/tmp/cp-decomp/final/Chain.lean",
+        "/tmp/cp-independent-audit-wfvt0fk9/check-status.json",
+        "/tmp/cp-independent-audit-wfvt0fk9/import-closure-checked.json"
+      ],
+      "conclusion": "The pinned revisions and relevant definitions match the proposed contracts. Bounds.lean contains the Leibniz estimate but is outside the actual frozen import closure; the searched Chapter06 convergence declarations supply no cutoff-multiplication theorem. The split is appropriate: the parent's bump construction proves (i)–(iii), the norm children establish (iv), and cutoff_converges establishes (v). All names are bare identifiers; the three new names are unreserved. The reused norm declaration has an identical frozen type and matching accepted proof; its comparator receipt confirms kernel acceptance with only propext, Quot.sound and Classical.choice permitted. All four statements pass lexical validation and exactly match the inspected proof-chain declarations, without implementation-dependent types. Fresh Lean runs stalled during import loading under container memory pressure and were stopped; no fresh compilation or comparator success is claimed."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "proj_covector_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and one-line type include precisely the projection hypothesis and arbitrary dimensions and degree. The basis-image calculation, vanishing of coefficients outside the castSucc image, injective reindexing, and square-root step prove the exact norm identity, including degenerate cases. The proof is complete and independent of the parent."
+    },
+    {
+      "key": "norm_props",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Reuse is valid: the frozen type is identical to the comparator-accepted declaration. Independently, the linear coefficient-vector construction proves the triangle inequality and homogeneity, the coefficient estimate supplies the nonnegative domination constant, and the reverse triangle inequality proves continuity. All four conjuncts are established; homogeneity supplies the needed parent step."
+    },
+    {
+      "key": "leibniz_smul",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The type matches the stated real normed-space and smoothness hypotheses; the annotated ℕ∞ top denotes smoothness. Simultaneous induction over the auxiliary normed spaces validates both induction applications. The bilinear derivative formula, operator-norm bounds, Pascal identity, and scalar-multiplication specialization prove the exact estimate without circular reliance or additional hypotheses."
+    },
+    {
+      "key": "cutoff_converges",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All hypotheses and the exact TestFormOnConverges conclusion match. Derivative-support inclusion gives global decay; the bundled linear-map composition gives the stated jet bound. Bounded cutoff derivatives and the explicit ε/(S+1) estimate establish uniform convergence at every order, with common compact support tsupport ζ. Its sole dependency, leibniz_smul, is correctly directed and acyclic, and specialization supplies parent clause (v)."
+    }
+  ],
+  "required_changes": []
+}

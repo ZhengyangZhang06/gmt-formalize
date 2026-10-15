@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1.cutoff_ball_limit-a1",
+  "parent_id": "root.density_one_implies_regular-a1.mean_curvature_monotonicity-a1.exp_monotonicity-a1",
+  "depth": 4,
+  "title": "C¹ radial cutoffs whose integrals converge to the mass of the open ball",
+  "statement": "There is a sequence of functions η_j : ℝ → ℝ (j ∈ ℕ) such that every η_j is C¹, η_j ≥ 0, deriv η_j ≤ 0 everywhere, and η_j(u) = 0 for u ≥ 1, and such that for every P ∈ ℕ, every measure μ on ℝ^P, every z ∈ ℝ^P and every s > 0 with μ(B_s(z)) < ∞ (open ball): ∫ η_j(|x − z|²/s²) dμ(x) → μ(B_s(z)) (as a real number, μ.real (ball z s)) as j → ∞.",
+  "lean_statement": "∃ η : ℕ → ℝ → ℝ, (∀ j, ContDiff ℝ 1 (η j)) ∧ (∀ j u, 0 ≤ η j u) ∧ (∀ j u, deriv (η j) u ≤ 0) ∧ (∀ j u, 1 ≤ u → η j u = 0) ∧ ∀ (P : ℕ) (μ : Measure (Euclid P)) (z : Euclid P) (s : ℝ), 0 < s → μ (ball z s) < ∞ → Tendsto (fun j => ∫ x, η j (‖x - z‖ ^ 2 / s ^ 2) ∂μ) atTop (𝓝 (μ.real (ball z s)))",
+  "lean_name": "dsmc_em_cutoff_tendsto_ball",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-mean-curvature-monotonicity-a1-ex-da7da15889-a1"
+}

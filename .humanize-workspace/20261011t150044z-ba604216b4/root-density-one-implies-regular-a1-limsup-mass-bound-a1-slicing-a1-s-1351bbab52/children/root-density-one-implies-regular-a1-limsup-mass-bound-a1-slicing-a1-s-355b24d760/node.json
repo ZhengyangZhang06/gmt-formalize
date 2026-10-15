@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1.ball_chart-a1",
+  "parent_id": "root.density_one_implies_regular-a1.limsup_mass_bound-a1.slicing-a1.slice_family-a1.c1_cover-a1",
+  "depth": 6,
+  "title": "The image of an open ball under a C¹ immersion that is injective on the closed ball is an embedded C¹ submanifold",
+  "statement": "Let P, m ∈ ℕ, let G : ℝ^m → ℝ^P be of class C¹ (ContDiff ℝ 1 G; ℝ^k = Euclid k), x ∈ ℝ^m and r ∈ ℝ. Assume:\n- G is injective on the closed ball B̄_r(x) = {z : |z − x| ≤ r};\n- DG(z) = fderiv ℝ G z is injective for every z in the open ball B_r(x) = {z : |z − x| < r}.\nThen N := G(B_r(x)) is an embedded m-dimensional C¹ submanifold of ℝ^P in the sense of the contract (IsEmbeddedSubmanifold 1 m N). That is, every y ∈ N has an open W ∋ y, an open V ⊆ ℝ^m and a map ψ such that:\n- ψ is C¹ on V and injective on V;\n- ψ(V) = W ∩ N;\n- V ∩ ψ⁻¹(K) is compact for every compact K ⊆ W;\n- Dψ(z) is injective for every z ∈ V.\nIf r ≤ 0, then N = ∅ and the statement is vacuous.",
+  "lean_statement": "∀ (P m : ℕ) (G : Euclid m → Euclid P) (x : Euclid m) (r : ℝ), ContDiff ℝ 1 G → Set.InjOn G (Metric.closedBall x r) → (∀ z ∈ Metric.ball x r, Function.Injective (fderiv ℝ G z)) → IsEmbeddedSubmanifold 1 m (G '' Metric.ball x r)",
+  "lean_name": "dor_lmbsf_c1c_injOn_closedBall_chart",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-s-355b24d760-a1"
+}
