@@ -1,0 +1,82 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json; git -C .lake/packages/mathlib rev-parse HEAD; git log --oneline -1",
+        "sed -n 1,260p <snapshot>/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean (euclideanHausdorffMeasure_def, addHaarScalarFactor_volume_hausdorffMeasure_ne_zero, euclideanHausdorffMeasure_smul₀, InnerProductSpace.euclideanHausdorffMeasure_eq_volume)",
+        "rg --no-ignore --hidden -n \"theorem MonotoneOn.tendsto_nhdsWithin_Ioo_right|theorem le_limsup_of_frequently_le|theorem Ioo_mem_nhdsGT |theorem measure_ball_pos|theorem measure_ball_lt_top|theorem ofReal_inv_of_pos|theorem le_div_iff_mul_le|theorem preimage_closure|protected theorem Tendsto.mul |protected theorem Tendsto.div_const|theorem Tendsto.limsup_eq|theorem ofReal_le_ofReal_iff \" <snapshot>/mathlib/Mathlib --glob '*.lean'",
+        "rg --no-ignore --hidden -n \"tendsto_nhdsWithin_Ioo_right|^lemma le_limsup_of_frequently_le|Ioo_mem_nhdsGT \\(\" <snapshot>/mathlib/Mathlib --glob '*.lean'",
+        "grep -rn \"theorem extraction_of_frequently_atTop \\|theorem IsCompact.tendsto_subseq\\|theorem Ioo_mem_nhdsLT\" <snapshot>/mathlib/Mathlib --include=*.lean",
+        "rg --no-ignore --hidden -n \"dimred_tr_mcr|idtp_fons_cr_density|cbr_vague_portmanteau|idtp_fons_cc_psf|idtp_fons_cc_tm\" <snapshot>/project (exit 1, no match); grep -rn dimred_tr_mcr GMT .lake/packages/simongmt --include=*.lean (no match)",
+        "python3 over dag.json: lean_statement searches for 'limsup', 'MonotoneOn'+'Real.exp (Λ', 'univ = ∞', 'withDensity', \"''\"+'ENNReal.ofReal (lam ^ n)', '∃ k₀'+'dist x z < ε'; lean_name collision check for the three new names",
+        "python3 /tmp/mcr-split/check_reuse.py <six reused names>: git cat-file -e <candidate>^{commit}; git show <candidate>:GMT/Ch07/Submission.lean; declared type of Submission.X vs dag.json lean_statement up to whitespace; sorry lines",
+        "git show 509564aca5:GMT/Ch07/Submission.lean, lines 2134-2400 (proof of Submission.idtp_fons_flat_class_reduction, the analogous application of abstract_dimension_reduction)",
+        "lake env lean /tmp/mcr-split/lean/Types.lean; lake env lean /tmp/mcr-split/lean/Assembly.lean; lake env lean /tmp/mcr-split/lean/N1.lean; lake env lean /tmp/mcr-split/lean/Small.lean; lake env lean /tmp/mcr-split/lean/Names.lean",
+        "lake env lean /tmp/mcr-split/reuse/<name>/Submission.lean (candidate file + #print axioms GMT.Ch07.Submission.<name>) for the six reused candidates",
+        "grep -n 'semicontinu\\|A\\.4' book/chapter-07.txt; sed -n 320,330p;378,406p;474,492p book/chapter-07.txt; sed -n 1,80p book/chapter-A.txt (book citations for the new children)"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Euclidean/Volume/Measure.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/OrderClosed.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Sequences.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/OpenPos.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/Typeclasses/Finite.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Instances/ENNReal/Lemmas.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Inv.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Basic/ENNReal/Real.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Homeomorph/Defs.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-095240e0d0/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-v6.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-59efd7b202/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-3a383ffd93/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-5a68c13034/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-644d8df7fd/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-66521e895c/isolated-comparator-result.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-959ef3c94c/isolated-comparator-result.json",
+        "/tmp/mcr-split/lean/Types.lean",
+        "/tmp/mcr-split/lean/Assembly.lean",
+        "/tmp/mcr-split/lean/N1.lean",
+        "/tmp/mcr-split/lean/Small.lean",
+        "/tmp/mcr-split/check_reuse.py",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-07.txt",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-A.txt"
+      ],
+      "conclusion": "Pins match: the snapshot manifest records project b4d606d and mathlib 25730c7c, which equal the workspace HEAD and .lake/packages/mathlib. Every library fact used by the new children and the assembly exists in the snapshot mathlib, for example: MonotoneOn.tendsto_nhdsWithin_Ioo_right (Topology/Order/Monotone.lean:457), le_limsup_of_frequently_le (Order/LiminfLimsup.lean:241), Ioo_mem_nhdsLT (Topology/Order/OrderClosed.lean:282), extraction_of_frequently_atTop (Order/Filter/AtTopBot/Basic.lean:114), IsCompact.tendsto_subseq (Topology/Sequences.lean:298), ENNReal.Tendsto.mul/div_const (Topology/Instances/ENNReal/Lemmas.lean:337/481), ENNReal.le_div_iff_mul_le (Basic/ENNReal/Inv.lean:369), Homeomorph.preimage_closure (Topology/Homeomorph/Defs.lean:300) and euclideanHausdorffMeasure_def (Geometry/Euclidean/Volume/Measure.lean:74). The DAG search found six comparator-accepted declarations, reused at identical frozen types. Four give steps 1–4 after rewriting with the defining equation of dens; step 4 then has an existential constant κ > 0 in place of c_n⁻¹. The other two are the step-8 infinite-mass core and the portmanteau claim of Lemma D. No dimred_tr_mcr_ identifier exists in dag.json, the snapshot project, GMT or simongmt, so the three new names are unreserved. Lean checks: all child types elaborate; the selected type compiles from (ADR) and the seven directly used children with no sorryAx; each new child compiles from exactly its declared sibling dependencies; each reused candidate recompiles with only propext, Classical.choice and Quot.sound."
+    }
+  ],
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1",
+  "child_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.eventually_near-a1",
+  "subproblem": {
+    "key": "eventually_near",
+    "title": "Subsequential closedness in B_1(0) gives eventual ε-neighbourhood inclusion (compactness step of parent (A.3)(3))",
+    "statement": "Let P ∈ ℕ, S ⊆ ℝ^P and S_k ⊆ ℝ^P (k ∈ ℕ). Assume that whenever sub : ℕ → ℕ is strictly increasing, z_k ∈ B_1(0) ∩ S_{sub(k)} for every k, and z_k → x in ℝ^P, then x ∈ S. Then for every ε > 0 there is k₀ ∈ ℕ such that B_1(0) ∩ S_k ⊆ {x : there is z ∈ S with |x − z| < ε} for every k ≥ k₀ (open unit ball B_1(0), Euclidean distance).",
+    "lean_statement": "∀ (P : ℕ) (S : Set (Euclid P)) (Ss : ℕ → Set (Euclid P)), (∀ (sub : ℕ → ℕ) (z : ℕ → Euclid P) (x : Euclid P), StrictMono sub → (∀ k, z k ∈ ball (0 : Euclid P) 1 ∩ Ss (sub k)) → Tendsto z atTop (𝓝 x) → x ∈ S) → ∀ ε : ℝ, 0 < ε → ∃ k₀ : ℕ, ∀ k ≥ k₀, ball (0 : Euclid P) 1 ∩ Ss k ⊆ {x | ∃ z ∈ S, dist x z < ε}",
+    "lean_name": "dimred_tr_mcr_eventually_near",
+    "depends_on": [],
+    "natural_proof": "Source: Simon, Appendix A, hypothesis A.3(3) (book/chapter-A.txt lines 31–32: \"If φ, φ_k ∈ F with φ_k ⇀ φ, then for each ε > 0 there is a k(ε) such that B_1(0) ∩ sing φ_k ⊆ {x : dist(sing φ, x) < ε} for all k ≥ k(ε)\"), which Simon asserts follows from (12) in the proof of 7.3.3 (chapter-07.txt lines 478–491: \"It now follows from (10), (11), (12) and 2.4 that all the hypotheses of Theorem A.4 … are satisfied\") without writing out the compactness step. This lemma is that step, as carried out in the parent proof, step 7 (A.3)(3), the contradiction-and-compactness argument: \"Suppose the conclusion fails. Then there are k_1 < k_2 < … and w_j ∈ B_1(0) ∩ sing φ_{μ_{k_j}} with dist(w_j, z) ≥ ε for all z ∈ sing φ_μ. … After passing to a further subsequence, w_j → w with |w| ≤ 1 … Then dist(w_j, w) ≥ ε for all j, contradicting w_j → w.\" It is stated here for arbitrary sets S_k, S; in the parent, S_k = sing φ_k and S = sing φ_μ, and the hypothesis is supplied there by step 6 and the sibling threshold_limit.\nNotation. N_ε(S) := {x : there is z ∈ S with |x − z| < ε}.\n1. Fix ε > 0 and suppose, for contradiction, that no k₀ works: for every k₀ there is k ≥ k₀ with B_1(0) ∩ S_k ⊄ N_ε(S). For such k pick x ∈ B_1(0) ∩ S_k with x ∉ N_ε(S); then |x − z| ≥ ε for every z ∈ S (otherwise x ∈ N_ε(S)). Hence the property Bad(k): \"there is x ∈ B_1(0) ∩ S_k with |x − z| ≥ ε for every z ∈ S\" holds for arbitrarily large k, i.e. frequently along atTop.\n2. By Filter.extraction_of_frequently_atTop there is a strictly increasing sub : ℕ → ℕ with Bad(sub(j)) for every j. By choice, pick z_j ∈ B_1(0) ∩ S_{sub(j)} with |z_j − z| ≥ ε for every z ∈ S.\n3. Every z_j lies in the closed ball B̄_1(0), which is compact because ℝ^P is a proper space (isCompact_closedBall). By sequential compactness (IsCompact.tendsto_subseq) there are x ∈ B̄_1(0) and a strictly increasing ψ : ℕ → ℕ with z_{ψ(i)} → x as i → ∞.\n4. The map sub ∘ ψ is strictly increasing (StrictMono.comp), z_{ψ(i)} ∈ B_1(0) ∩ S_{sub(ψ(i))} for every i, and z_{ψ(i)} → x. By the hypothesis (applied to the indices sub ∘ ψ and the points i ↦ z_{ψ(i)}), x ∈ S.\n5. Since z_{ψ(i)} → x, there is i with |z_{ψ(i)} − x| < ε (Metric.tendsto_atTop). But x ∈ S, so step 2 gives |z_{ψ(i)} − x| ≥ ε. This contradiction shows that some k₀ satisfies B_1(0) ∩ S_k ⊆ N_ε(S) for all k ≥ k₀. ∎",
+    "proof_key_steps": [
+      "If the conclusion fails for some ε, then for infinitely many k there is a point of B_1(0) ∩ S_k at distance ≥ ε from every point of S.",
+      "Extract a strictly increasing sub with such points z_j ∈ B_1(0) ∩ S_{sub(j)} (extraction_of_frequently_atTop and choice).",
+      "By compactness of B̄_1(0), a further subsequence z_{ψ(i)} converges to some x; the hypothesis (indices sub ∘ ψ) gives x ∈ S.",
+      "Then |z_{ψ(i)} − x| < ε for some i, contradicting the choice of the z_j."
+    ]
+  },
+  "audit": {
+    "key": "eventually_near",
+    "acceptable": true,
+    "natural_proof_acceptable": true,
+    "reason": "Failure yields strictly increasing bad indices. Compactness of the closed unit ball supplies a convergent further subsequence; the hypothesis places its limit in S, contradicting uniform separation. No closedness assumption on S is missing."
+  },
+  "resolved_dependencies": [],
+  "plan_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-1855270541/parent-supplied-plan.md",
+  "natural_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-1855270541/parent-supplied-natural-proof.md",
+  "structured_proof_path": ".humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-1855270541/parent-supplied-natural-proof.json"
+}

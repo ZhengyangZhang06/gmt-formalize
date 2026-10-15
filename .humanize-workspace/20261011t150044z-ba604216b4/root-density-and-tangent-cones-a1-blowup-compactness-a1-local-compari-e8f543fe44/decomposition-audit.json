@@ -1,0 +1,118 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n 'dtc_bc_lc_fd_lz_|good_radius|Dini|dini_measurable|cutoff_estimate|cmcs_level_cutoff' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "lintegral_withDensity_eq_lintegral_mul_non_measurable|lintegral_liminf_le|map_liminf_of_continuousAt|liminf_eq_iSup_iInf|Monotone.measurable|theorem restrict_withDensity",
+        "def mass|def massOn|massAdmissibleOn|def covectorEuclideanNorm|abbrev exteriorDerivative|def TestFormOn|ContDiff|boundary_apply",
+        "git show 9dfa6578ac37c7b726ddad9a7e894ee3466d0cc4:GMT/Ch07/Submission.lean",
+        "git show 2af75d6921b01a9c889a45103692ca0af95ea394:GMT/Ch07/Submission.lean",
+        "git show 81485ceb96999b3c8eabac3c5b058488a2bdc059:GMT/Ch07/Submission.lean",
+        "git show 19f5e1986c50f3aea0edcade3d15ca618e3f6763:GMT/Ch07/Submission.lean",
+        "git show 6c9a0741ef7348ef9dcc005b9eeaa2593511c6ca:GMT/Ch07/Submission.lean",
+        "git show b6218183362914502612c8fef9e231776b727aa0:GMT/Ch07/Submission.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lean /tmp/localize_independent_audit_mqr2x9t1/AllNew.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Constructions/BorelSpace/Order.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-e8f543fe44/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/book/chapter-06.txt",
+        "/tmp/localize_independent_audit_mqr2x9t1/AllNew.lean",
+        "/tmp/localize_independent_audit_mqr2x9t1/Reuse_slice_mass_integral.lean",
+        "/tmp/localize_independent_audit_mqr2x9t1/Reuse_im_calculus.lean",
+        "/tmp/localize_independent_audit_mqr2x9t1/Reuse_level_cutoff.lean",
+        "/tmp/localize_independent_audit_mqr2x9t1/Reuse_leibniz.lean",
+        "/tmp/localize_independent_audit_mqr2x9t1/Reuse_wedge_norm.lean",
+        "/tmp/localize_independent_audit_mqr2x9t1/Reuse_cutoff_integral_tendsto.lean"
+      ],
+      "conclusion": "The split is appropriate for the selected localization theorem. The pinned project search found no matching Dini or cutoff lemmas; the inspected definitions and Mathlib results support the proposed arguments. All 12 types independently elaborate against the frozen contract, without child implementations. All names are bare identifiers; the six new names are unreserved. The six reused declarations have identical frozen types, unchanged contract definitions and matching dependency manifests. The proposed dependencies and their existing dependency closure are acyclic and do not reach the selected parent. Independently recompiled all six reused proofs, all six new proofs parameterized by their declared dependencies, and the exact-parent assembly using the inherited mass and support lemmas. Their axiom reports contain only propext, Classical.choice and Quot.sound. The bound Λ = 2Λ₀ + 2C establishes the selected conclusion. Smoothness, norm and ENNReal coercions match the prose; no matrix-unit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "dini_measurable",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The prose and type agree. Finite ball measures justify subtraction and rational approximation from below; the resulting countable supremum of countable infima proves global measurability without circular dependencies."
+    },
+    {
+      "key": "good_radius",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The integrated bound, measurability and Fatou argument give a finite liminf on a positive-measure interval. The explicit NNReal bound and frequent-index extraction yield the required strictly increasing subsequence for every real r₀."
+    },
+    {
+      "key": "truncate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Restriction calculus supplies the representation. Restriction-with-density and vanishing integrands prove the exact weight equality, agreement and vanishing conclusions under the stated openness and measurability hypotheses."
+    },
+    {
+      "key": "action_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The integral norm inequality, carrier-a.e. orientation bound and finite measurable density establish precisely the ENNReal estimate. No additional openness or integrability hypothesis is needed."
+    },
+    {
+      "key": "cutoff_estimate",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof constructs the required test forms, applies Leibniz, scales admissible forms and bounds the wedge integral. Nonnegativity of a and c follows from the hypotheses; the indicator estimate also handles arbitrary S."
+    },
+    {
+      "key": "boundary_mass",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The representation equalities identify the limit correctly. Compact support and local multiplicity integrability justify dominated convergence; the cutoff estimate and continuous ENNReal liminf operation give exactly the stated constants. Arbitrary U and nonpositive t₀ cause no gap."
+    },
+    {
+      "key": "slice_mass_integral",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The finite distribution function, strip comparison, a.e. differentiation and derivative-integral bound prove the lower-integral statement, including arbitrary nonmeasurable m and the zero/infinite cases."
+    },
+    {
+      "key": "im_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The supplied arguments establish all four conjuncts: tangent locality, restricted representations, differences and the orientation bound. The exceptional-set and integrability arguments supply the required hypotheses without parent reliance."
+    },
+    {
+      "key": "level_cutoff",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The profile and accepted smoothing result give the stated gradient bound; local constancy proves both plateaus and confinement of the nonzero derivative to the strict strip."
+    },
+    {
+      "key": "leibniz",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The Fréchet product rule followed by additivity and homogeneity of alternatizeUncurryFin proves the exact identity from the two differentiability hypotheses."
+    },
+    {
+      "key": "wedge_norm",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. The adapted orthonormal basis, tuple estimate and factorial square-sum identities establish the operator-norm/coefficient-norm inequality, including degenerate dimensions."
+    },
+    {
+      "key": "cutoff_integral_tendsto",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type reuse. Eventual measurability, integrable domination and pointwise eventual equality to the sublevel indicator justify dominated convergence along the countably generated right-neighborhood filter."
+    }
+  ],
+  "required_changes": []
+}

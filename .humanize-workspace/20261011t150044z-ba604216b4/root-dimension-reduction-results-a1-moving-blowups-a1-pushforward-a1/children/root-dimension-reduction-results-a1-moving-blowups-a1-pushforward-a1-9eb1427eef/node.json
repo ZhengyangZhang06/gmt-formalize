@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_current-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1",
+  "depth": 4,
+  "title": "The push-forward formula defines a current with compact support in f(K) (Simon 6.2.23–2.24(2))",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, R = (M, θ, ξ) an integer multiplicity triple in U (IMRep U n), K ⊆ U compact with Hⁿ(M ∖ K) = 0 (Hⁿ = μHE[n]), O ⊆ ℝ^P open with K ⊆ O, and f : ℝ^P → ℝ^P of class C¹ on O (ContDiffOn ℝ 1 f O) with f(K) ⊆ U. Then there is Q ∈ 𝒟_n(U) (GeometricCurrentOn U n) with Q(ω) = ∫_M θ(x)·ξ(x)(ω(f(x))∘Df(x)) dHⁿ(x) for every ω ∈ 𝒟ⁿ(U), where Df(x) = fderiv ℝ f x and (β∘A)(v₁, …, vₙ) = β(Av₁, …, Avₙ) (β.compContinuousLinearMap A); moreover spt Q is compact and spt Q ⊆ f(K).",
+  "lean_statement": "∀ (P n : ℕ) (U K O : Set (Euclid P)) (R : IMRep U n) (f : Euclid P → Euclid P), IsOpen U → IsCompact K → K ⊆ U → μHE[n] (R.carrier \\ K) = 0 → IsOpen O → K ⊆ O → ContDiffOn ℝ 1 f O → f '' K ⊆ U → ∃ Q : GeometricCurrentOn U n, (∀ ω : TestFormOn U n, Q ω = ∫ x in R.carrier, (R.mult x : ℝ) * R.orient x (((ω : DifferentialForm (Euclid P) n) (f x)).compContinuousLinearMap (fderiv ℝ f x)) ∂μHE[n]) ∧ IsCompact Q.support ∧ Q.support ⊆ f '' K",
+  "lean_name": "dimred_mbl_pf_pushforward_current_exists",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-9eb1427eef-a1"
+}

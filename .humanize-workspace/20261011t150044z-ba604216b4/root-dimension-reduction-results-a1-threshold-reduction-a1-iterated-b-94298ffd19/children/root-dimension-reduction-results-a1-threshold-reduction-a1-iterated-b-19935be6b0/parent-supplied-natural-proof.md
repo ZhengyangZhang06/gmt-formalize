@@ -1,0 +1,131 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1.iterated_blowup_limit-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.threshold_reduction-a1.iterated_blowup_limit-a1.countable_tests-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: parent proof, Step A (Lemma CT, criterion (C) of step 2(d) of the grandparent proof). The statement and the ε-argument are those of the supplied Lemma CT (its step CT3). The supplied step CT1 builds the countable family by hand (a smooth grid partition of unity times a dense sequence of covectors), and the supplied step CT2 bounds test values by mass. Both ingredients are taken here from comparator-accepted siblings with identical frozen types:
+ - testform_dense = Submission.dor_lmbs_testForm_countable_approx supplies the countable family. It approximates every test form uniformly, with all supports in one compact set K. So the radius R below is chosen from K instead of from tsupport ω.
+ - eval_mass_bound = Submission.cmr_abs_apply_le_massOn is CT2.
+ - norm_props = Submission.rsd_mw_tfa_norm_props, part (iii), is the coefficient bound of CT1(c).
+Notation: |α| := covectorEuclideanNorm α and ‖α‖ := operator norm, for α ∈ Covector (Euclid P) n; M_W := massOn; B := B_{R+1}(0) = ball 0 (R+1).
+
+1. (The sequence.) Apply testform_dense with U := ℝ^P, which is open. It gives a countable set D ⊆ 𝒟ⁿ(ℝ^P) with this property: for every ω ∈ 𝒟ⁿ(ℝ^P) there are a compact K ⊇ tsupport ω and a sequence (ω'_j) in D with tsupport ω'_j ⊆ K for all j and ω'_j → ω uniformly on ℝ^P in the operator norm. The part about exterior derivatives is not used.
+ - D is nonempty: applying the property to ω = 0 produces elements ω'_j ∈ D.
+ - A countable nonempty set is the range of a sequence (Set.Countable.exists_eq_range). So D = {ω_m : m ∈ ℕ} for a sequence (ω_m) in 𝒟ⁿ(ℝ^P). This is the sequence of the statement.
+2. (Norm comparison.) By norm_props (iii), fix C₀ ≥ 0 with |α| ≤ C₀·‖α‖ for every α ∈ Covector (Euclid P) n.
+3. Now let V_k, A_k and A satisfy the mass hypothesis (M) and the test hypothesis (T). Fix ω ∈ 𝒟ⁿ(ℝ^P). We show currentEval(A_k, ω) → A(ω). Since ω is arbitrary, this is ConvergesWeakly (A_k) A.
+4. (Choice of R, k₀ and Γ.) Take K and (ω'_j) from step 1 for this ω.
+ - K is compact, hence bounded: K ⊆ B̄_r(0) for some r ∈ ℝ. Let R := ⌈r⌉₊ ∈ ℕ. Since r ≤ R < R + 1, K ⊆ B.
+ - Take k₀ ∈ ℕ and Γ ∈ [0, ∞) from (M) for this R, and put G := Γ.toReal ≥ 0.
+ - Then M_B(A) ≤ Γ < ∞, and for every k ≥ k₀, B ⊆ V_k and M_B(A_k) ≤ Γ < ∞. Hence M_B(A).toReal ≤ G and M_B(A_k).toReal ≤ G (ENNReal.toReal_mono).
+5. (Choice of m.) Let ε > 0 and put η := ε/(4(C₀G + 1)) > 0. By uniform convergence choose j with ‖ω(p) − ω'_j(p)‖ < η for every p ∈ ℝ^P. Since ω'_j ∈ D, ω'_j = ω_m for some m.
+6. (The difference form.) Let β := ω − ω_m.
+ - tsupport β ⊆ tsupport ω ∪ tsupport ω_m ⊆ K ⊆ B.
+ - For every p, |β(p)| ≤ C₀·‖ω(p) − ω_m(p)‖ ≤ C₀η, by step 2.
+7. (Limit side.) β ∈ 𝒟ⁿ(ℝ^P) and A is linear, so A(ω) − A(ω_m) = A(β). Apply eval_mass_bound with T := A, W := B, r := C₀η; it applies because M_B(A) ≠ ∞. It gives |A(ω) − A(ω_m)| ≤ C₀η·M_B(A).toReal ≤ C₀ηG.
+8. (Sequence side.) Let k ≥ k₀.
+ - tsupport ω and tsupport ω_m lie in B ⊆ V_k, so both forms are also test forms of the domain V_k. Write ω^♭, ω_m^♭ ∈ 𝒟ⁿ(V_k) for them.
+ - By the definition of currentEval, currentEval(A_k, ω) = A_k(ω^♭) and currentEval(A_k, ω_m) = A_k(ω_m^♭).
+ - By linearity of A_k, the difference is A_k(ω^♭ − ω_m^♭), and the underlying form of ω^♭ − ω_m^♭ is β.
+ - Apply eval_mass_bound with T := A_k, W := B, r := C₀η; it applies because M_B(A_k) ≤ Γ < ∞. It gives |currentEval(A_k, ω) − currentEval(A_k, ω_m)| ≤ C₀η·M_B(A_k).toReal ≤ C₀ηG.
+9. (Size of the error.) C₀ηG = ε·C₀G/(4(C₀G + 1)) ≤ ε/4, because C₀G ≥ 0.
+10. (Tests.) By (T) for this m, there is k₁ with |currentEval(A_k, ω_m) − A(ω_m)| < ε/2 for every k ≥ k₁.
+11. (Conclusion.) For k ≥ max(k₀, k₁), the triangle inequality and steps 7–10 give
+ |currentEval(A_k, ω) − A(ω)| ≤ |currentEval(A_k, ω) − currentEval(A_k, ω_m)| + |currentEval(A_k, ω_m) − A(ω_m)| + |A(ω_m) − A(ω)| < ε/4 + ε/2 + ε/4 = ε.
+ As ε > 0 was arbitrary, currentEval(A_k, ω) → A(ω). As ω was arbitrary, A_k ⇀ A in ℝ^P. ∎
+Lean note (not part of the proof): this argument compiles in about 90 lines against stubs of the three siblings with their frozen types. It uses Set.Countable.exists_eq_range, IsCompact.isBounded.subset_closedBall, Metric.tendstoUniformly_iff, tsupport_sub, map_sub on the underlying linear map, and unfold currentEval followed by dite_eq_left (dif_pos is deprecated in this toolchain).
+
+## Key steps
+
+1. The accepted countable family D (testform_dense with U = ℝ^P) is nonempty and countable, hence the range of a sequence (ω_m).
+2. Given ω, take the common compact support set K of its approximants and R ∈ ℕ with K ⊆ B_{R+1}(0); (M) gives k₀ and a finite bound Γ for A and for A_k, k ≥ k₀.
+3. Pick ω_m uniformly η-close to ω; by norm_props (iii), β = ω − ω_m satisfies |β| ≤ C₀η and tsupport β ⊆ B_{R+1}(0).
+4. eval_mass_bound gives |A(ω) − A(ω_m)| ≤ C₀ηG and, for k ≥ k₀, |currentEval(A_k, ω) − currentEval(A_k, ω_m)| ≤ C₀ηG ≤ ε/4.
+5. With (T) for ω_m, |currentEval(A_k, ω) − A(ω)| < ε eventually; hence ConvergesWeakly.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat <snapshot>/manifest.json; git rev-parse HEAD; git -C .lake/packages/mathlib rev-parse HEAD; sha256sum <snapshot>/project/GMT/Ch07/Contract.lean GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean`
+- `rg -n 'theorem extraction_forall_of_eventually' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem Countable.exists_eq_range|lemma Countable.exists_eq_range' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem eventually_all_finite' <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem tendsto_one_div_add_atTop_nhds_zero_nat' <snapshot>/mathlib/Mathlib; rg -ln "squeeze_zero_norm'" <snapshot>/mathlib/Mathlib`
+- `rg -n 'theorem secondCountable_of_countable_discretization' <snapshot>/mathlib/Mathlib`
+- `rg -n 'tsupport_sub' <snapshot>/mathlib/Mathlib (only tsupport_subset hits; tsupport_sub is the to_additive form, confirmed by compiling)`
+- `rg -n 'dimred_tr_ibl|dimred_tr_countable_tests|dimred_tr_iterated_blowup_limit' <snapshot>/project GMT .lake/packages/simongmt/Poincare --glob '*.lean' (exit 1, no match)`
+- `rg -n 'def currentEval|def ConvergesWeakly|def blowUp|def dilation ' <snapshot>/project/GMT/Ch07/Contract.lean`
+- `rg -n 'def GeometricCurrentOn.massOn|theorem GeometricCurrentOn.le_massOn|def massAdmissibleOn|def covectorEuclideanNorm' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `rg -n 'theorem affinePullbackForm_isTestForm|def GeometricCurrentOn.affinePushforward' .lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `python3 scans of dag.json: accepted lean_statements mentioning massOn/ConvergesWeakly/dilation ⁻¹' ball/covectorEuclideanNorm/testForm; status, candidate_commit and lean_name reservations`
+- `python3 /tmp/ibl-split/scripts/check_reuse.py (git show <candidate>:GMT/Ch07/Submission.lean; declared type vs dag.json type; sorry count)`
+- `lake env lean /tmp/ibl-split/cands/<name>.lean (#print axioms of the five reused declarations at their candidates)`
+- `lake env lean /tmp/ibl-split/lean/Assembly.lean (new children and parent from exact-type stubs)`
+- `python3 -I /tmp/ibl-split/mkchallenge.py (verifier lean_contract.validate_lean_statement and gmt-compare child_modules, contract mode); lake env lean /tmp/ibl-split/challenge/<key>_Challenge.lean`
+- `python3 /tmp/ibl-split/validate.py (replica of runtime _dependency_problem and _existing_lean_name_problem)`
+- `reading of runtime.py (_overlay_accepted_children, _solve_children, _existing_lean_name_problem), inherited.py and prompts.py of /runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean`
+- `python3 reading of the grandparent's decomposition-v4.json/v5.json (countable_tests child and its merge rationale) and of the reused nodes' parent-supplied-natural-proof.md and isolated-comparator-result.json`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/AtTopBot/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Data/Set/Countable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Order/Filter/Finite.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/SpecificLimits/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-iterated-b-94298ffd19/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-v4.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1/decomposition-v5.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-t-9b84f5afc6/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-limsup-mass-bound-a1-slicing-a1-t-9b84f5afc6/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-mass-eq-weight-a1-test-form-approx-a1-norm-props-a1/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-mass-representation-a1-eva-463e096c91/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c658ab2df9/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-c658ab2df9/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-95c10b37fe/parent-supplied-natural-proof.md`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-and-tangent-cones-a1-blowup-compactness-a1-codim-zero-a1-95c10b37fe/isolated-comparator-result.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/runtime.py`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/inherited.py`
+- `/runtime/flows/gmt-claude-cf346c63e6ef/_recursive_lean/prompts.py`
+- `/tmp/ibl-split/lean/Assembly.lean`
+- `/tmp/ibl-split/cands/dor_lmbs_testForm_countable_approx.lean`
+- `/tmp/ibl-split/challenge/countable_tests_Challenge.lean`
+- `/tmp/ibl-split/challenge/diagonal_limit_Challenge.lean`
+- `/tmp/ibl-split/validate.py`
+
+Pins match. The snapshot manifest records project b4d606d and mathlib 25730c7c, equal to the workspace HEAD and .lake/packages/mathlib. The snapshot Contract.lean, the workspace Contract.lean and Submission.lean are byte-identical (sha256 e4148e7f…).
+
+Library facts cited by the new children exist in the snapshot mathlib:
+- Filter.extraction_forall_of_eventually (Order/Filter/AtTopBot/Basic.lean:135);
+- Set.Countable.exists_eq_range (Data/Set/Countable.lean:149);
+- Filter.eventually_all_finite (Order/Filter/Finite.lean:252);
+- tendsto_one_div_add_atTop_nhds_zero_nat (Analysis/SpecificLimits/Basic.lean:70);
+- Metric.secondCountable_of_countable_discretization (Topology/MetricSpace/Basic.lean:168).
+tsupport_sub has no textual hit; it is generated by to_additive, and the compiled proofs use it.
+
+The contract's currentEval, ConvergesWeakly, blowUp and dilation, and SimonGMT's massOn, le_massOn, massAdmissibleOn, covectorEuclideanNorm and affinePullbackForm_isTestForm, are as the proofs use them.
+
+Names: no dimred_tr_ibl_* declaration exists in the snapshot, GMT, SimonGMT or dag.json.
+
+Reused declarations: dor_lmbs_testForm_countable_approx, rsd_mw_tfa_norm_props, cmr_abs_apply_le_massOn, idtp_convergesWeakly_massOn_le and dtc_bc_cz_blowUp_eval_dilation_ball are accepted. Their child lean_statements are string-identical to dag.json. Their candidates keep the frozen imports, passed isolated comparators, and recompile with only propext, Classical.choice and Quot.sound.
+
+Lean checks:
+- All 7 types pass the verifier's statement validator, and their comparator challenge files elaborate.
+- The new children and the exact selected type compile from exact-type stubs of the five reused children and dimred_tr_blowup_calculus (exit 0; sorry only in the stubs).

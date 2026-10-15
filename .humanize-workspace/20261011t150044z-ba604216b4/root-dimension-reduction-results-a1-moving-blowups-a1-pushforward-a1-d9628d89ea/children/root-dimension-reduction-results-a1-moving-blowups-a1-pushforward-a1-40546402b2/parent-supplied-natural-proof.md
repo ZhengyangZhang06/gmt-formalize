@@ -1,0 +1,85 @@
+# Parent-supplied natural-language proof
+
+- Parent DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1`
+- Child DAG node: `root.dimension_reduction_results-a1.moving_blowups-a1.pushforward-a1.pf_integer-a1.cutoff-a1`
+- Review gate: accepted as part of the parent's decomposition audit
+
+## Proof
+
+Source: step 1(c) of the parent proof (the cutoff f̂ := χf with χ = 1 near K and tsupport χ inside O; f̂ is C¹ with compactly supported continuous derivative, hence Lipschitz by the mean value inequality, and f̂ = f near K).
+Notation: thickening(r, K) := {x : dist(x, K) < r} (open), cthickening(r, K) := {x : dist(x, K) ≤ r} (closed); tsupport χ := closure{χ ≠ 0}.
+1. Room around K. K is compact, O is open and K ⊆ O, so there is δ > 0 with cthickening(δ, K) ⊆ O (Mathlib IsCompact.exists_cthickening_subset_open). Put t := cthickening(δ/3, K) (closed) and s := thickening(2δ/3, K) (open). Then t ⊆ s (Mathlib cthickening_subset_thickening', since δ/3 < 2δ/3).
+2. Smooth Urysohn function. There is χ : ℝ^P → ℝ of class C^∞ with values in [0, 1], support χ = s, and χ(x) = 1 exactly for x ∈ t (Mathlib exists_contDiff_support_eq_eq_one_iff for the open set s ⊇ the closed set t). Hence tsupport χ = closure(s) ⊆ cthickening(2δ/3, K) (Mathlib closure_thickening_subset_cthickening) ⊆ cthickening(δ, K) ⊆ O. The set cthickening(2δ/3, K) is compact (IsCompact.cthickening; ℝ^P is proper), so χ has compact support.
+3. Definition. g(x) := χ(x)·f(x) for x ∈ ℝ^P. Where χ(x) = 0 (in particular off s, hence off O) we have g(x) = 0 whatever f(x) is.
+4. g is C¹ on ℝ^P. It suffices to prove that g is C¹ at every point x (contDiff_iff_contDiffAt). If x ∈ O: O is an open neighbourhood of x on which f is C¹, so f is C¹ at x (ContDiffOn.contDiffAt with O ∈ 𝓝 x); χ is C^∞ at x; so g = χ·f is C¹ at x (ContDiffAt.smul). If x ∉ O: then x ∉ tsupport χ (step 2), the complement of the closed set tsupport χ is an open neighbourhood of x on which χ = 0, hence g = 0 on it, and g is C¹ at x (a function eventually equal to the constant 0; ContDiffAt.congr_of_eventuallyEq).
+5. g = f near K. Let x ∈ K. The open set thickening(δ/3, K) contains x and is contained in t, where χ = 1; so g = f on a neighbourhood of x. Therefore g(x) = f(x), and Dg(x) = Df(x) because Fréchet derivatives only depend on the germ (Filter.EventuallyEq.fderiv_eq).
+6. Lipschitz bound. g has compact support (it vanishes off tsupport χ; HasCompactSupport.smul_right), hence Dg has compact support (HasCompactSupport.fderiv), and Dg is continuous since g is C¹ (ContDiff.continuous_fderiv). A continuous function with compact support is bounded: there is C with ‖Dg(x)‖ ≤ C for all x (HasCompactSupport.exists_bound_of_continuous). Let L := max(C, 0) ∈ ℝ≥0. By the mean value inequality on the convex set ℝ^P (lipschitzWith_of_nnnorm_fderiv_le, g differentiable everywhere), g is L-Lipschitz. Together with steps 4 and 5 this proves the claim. ∎
+Remark: K = ∅ needs no separate treatment (then every δ > 0 works, χ ≡ 0 and g ≡ 0).
+
+Lean reference implementation. A complete Lean proof of exactly this frozen type, following the steps above, is stored as theorem Submission.dimred_mbl_pfi_c1_lipschitz_cutoff in /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Reference.lean (all new children and the parent assembly, in dependency order), and the same proof is checked stand-alone (siblings as hypotheses) in /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Cutoff.lean. It uses no sibling declaration. It was kernel-checked in this decomposition session (Lean v4.35.0-rc3, Mathlib 25730c7c, SimonGMT 2b366308) as a declaration of GMT/Ch07/Submission.lean inside namespace GMT.Ch07 with the contract's opens, after import GMT.Ch07.Submission alone (no extra import is needed). #print axioms gives propext, Classical.choice, Quot.sound only. It may be copied verbatim.
+
+## Key steps
+
+1. Choose δ > 0 with cthickening(δ, K) ⊆ O and a C^∞ function χ with values in [0, 1], χ = 1 exactly on cthickening(δ/3, K) and support χ = thickening(2δ/3, K) (smooth Urysohn).
+2. g := χ·f is C¹ near every point: near points of O by the product rule, near points off O because g vanishes off tsupport χ ⊆ O.
+3. g = f on the open set thickening(δ/3, K) ⊇ K, hence g = f and Dg = Df on K.
+4. Dg is continuous with compact support, hence bounded, and the mean value inequality makes g Lipschitz on ℝ^P.
+
+## Reference use
+
+### local-project
+
+Queries:
+- `cat RUN/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d9628d89ea/parent-child-handoff.json and parent-supplied-plan.md (frozen type, supplied proof, no resolved dependencies)`
+- `cmp GMT/Ch07/Contract.lean GMT/Ch07/Submission.lean; cat RUN/local-references/123e8435b4a2469b/manifest.json (project b4d606d, Mathlib 25730c7c)`
+- `python3 scans of RUN/dag.json: accepted nodes whose lean_statement mentions IsUnitOrientationOf, bilipschitz, compContinuousLinearMap (fderiv, adjoint/.det, Injective (fderiv; children of im_series-a1, diffeo_pushforward-a1, piece_tangent_density-a1, graph_orientation_jacobian-a1; lean_name collision check for dimred_mbl_pfi_* (no match)`
+- `grep -n '_existing_lean_name_problem|_accepted_checkpoint|_overlay_accepted_children|max_children' /runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `grep -rn 'theorem integral_area_formula_of_injective_derivative|theorem weighted_area_formula_volume_of_injective_derivative|theorem areaJacobianAt_eq_sqrt_det_adjoint_comp|theorem weighted_area_formula_lipschitz_injOn|theorem HasApproximateTangentSpaceAt.unique|theorem countablyRectifiable_range|euclideanHausdorffMeasure_image_le_of_lipschitzOn' lake-packages-25730c7c/simongmt/Poincare/SimonGMT`
+- `grep -rnF (one name at a time) in RUN/local-references/123e8435b4a2469b/mathlib/Mathlib for: theorem exists_partition_approximatesLinearOn_of_hasFDerivWithinAt, theorem LinearMap.exists_antilipschitzWith, theorem exists_contDiff_support_eq_eq_one_iff, theorem euclideanHausdorffMeasure_image, theorem _root_.ContinuousLinearMap.normDet_sq, theorem continuous_compContinuousLinearMapCLM, theorem ContinuousLinearMap.continuous_det, theorem hasSum_integral_iUnion, theorem HasProd.prod_fiberwise, theorem setIntegral_eq_of_subset_of_ae_sdiff_eq_zero; rg -n 'stronglyMeasurable_extend' (found as _root_.MeasurableEmbedding.stronglyMeasurable_extend)`
+- `git show <candidate>:GMT/Ch07/Submission.lean for a2ba78f, c9573f9, a216804, bed5b84, 329e383, fe95347 (declaration present, type identical to dag.json, only sorry = main_theorem; auxiliary accepted declarations present)`
+- `python3 index of cluster-state/verification/results/*/*/result.json by node_id (latest comparator status passed; comparator-config permitted_axioms propext, Quot.sound, Classical.choice)`
+- `lake env lean GMT/Scratch/dimred_mbl_pfi_decomposition/Types.lean (12 child types + parent type elaborate)`
+- `lake env lean GMT/Scratch/dimred_mbl_pfi_decomposition/Assembly.lean (exact parent type from the 12 child types as hypotheses; #print axioms)`
+- `lake env lean on Cutoff.lean, Partition.lean, JacobianAlgebra.lean, OrientAlongPiece.lean, PieceIMRep.lean, ParamSeries.lean (conditional proofs, #print axioms) and Reference.lean (Submission-form reference implementations)`
+- `python3 -I verifier/lean_contract.py validate_lean_statement on all 12 child types; topological sort of depends_on`
+
+Files inspected:
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Ch07/Submission.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1-d9628d89ea/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-pushforward-a1/decomposition-v1.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-bilipschi-4344c8c0d8/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-compactness-of-minimizing-currents-a1-deformation-theorem-a1-im-38ac66b3de/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-680a7024c9/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-minimizing-implies-stationary-a1-diffeo-pushforward-a1-piece-tan-e483a373f0/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-density-one-implies-regular-a1-epsilon-regularity-a1-graph-cycle-b87b86ed4f/parent-child-handoff.json`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-regular-set-dense-a1-integer-combination-a1-orientation-sign-a1/parent-child-handoff.json`
+- `/runtime/flows/gmt-claude-b888e19cffb1/_recursive_lean/runtime.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/lean_contract.py`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/WeightedArea.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/Area.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaDomain.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter02/AreaLipschitz.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter03/Rectifiable.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/Jacobian.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/NormDet.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Geometry/Manifold/PartitionOfUnity.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/Alternating/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Set.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Lemmas.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Function/StronglyMeasurable/Basic.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Normed/Module/FiniteDimension.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Algebra/InfiniteSum/Constructions.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Types.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Assembly.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Reference.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Cutoff.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/Partition.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/JacobianAlgebra.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/OrientAlongPiece.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/PieceIMRep.lean`
+- `/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_pfi_decomposition/ParamSeries.lean`
+
+Pins match: HEAD b4d606d, Mathlib 25730c7c and SimonGMT 2b366308. Submission.lean is byte-identical to the frozen contract. Neither the contract nor SimonGMT contains a non-affine push-forward integrality theorem, so the obligation is genuine. SimonGMT does supply the injective Lipschitz area formulas (lintegral and Bochner) and HasApproximateTangentSpaceAt.unique, and Mathlib supplies the partition lemma, smooth Urysohn functions, normDet and the linear area formula. Six accepted declarations are reused with byte-identical frozen types: dpf_rectifiable_bilipschitz_pieces, cmcdt_ims_imrep_tsum, dpf_approxTangent_ae_bilipschitz_piece, ptd_piece_image_measurable_ae_pullback, dgoj_unitOrientation_of_injective and rsdic_unitOrientation_eq_or_eq_neg. Their candidate commits are present and their comparator results passed under the three-axiom policy. The six new dimred_mbl_pfi_* names are unreserved. All 12 child types and the parent type elaborate. A conditional assembly proves the exact frozen parent type from the child types, and every new child has a kernel-checked reference proof from its listed siblings, all with axioms propext, Classical.choice and Quot.sound.

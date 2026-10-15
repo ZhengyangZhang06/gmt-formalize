@@ -1,0 +1,125 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "cat .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "rg -n -i 'deformation|skeleton|telescop|mcshane' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT -g '*.lean'",
+        "LipschitzOnWith.extend_real",
+        "Monotone.ae_differentiableAt",
+        "HasDerivAt.tendsto_slope_zero_left",
+        "mul_meas_ge_le_lintegral₀",
+        "intervalIntegral_deriv_mem_uIcc",
+        "integral_withDensity_eq_integral_smul",
+        "ENNReal.tsum_geometric",
+        "GeometricCurrentOn.zeroRegion",
+        "tsupport_exteriorDerivative_subset",
+        "rg -n 'abbrev EuclideanSpace|theorem EuclideanSpace.norm_eq|theorem EuclideanSpace.dist_eq|def EuclideanSpace' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "rg -o '\"lean_name\"\\s*:\\s*\"(dimred_mbl_dtsd_[^\"]*|cbr_cc_current_algebra|cmc_fcl_massOn_le_measure_inter|cmcs_smi_lintegral_ofReal_deriv_le|cmc_fc_cs_massOn_sub_le|cmr_abs_apply_le_massOn|lcmp_imRep_measure_restrict)\"' .humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/toolchains/lean-4.35.0-rc3-linux/bin/lake env lean GMT/Scratch/dimred_mbl_dtsd_skeleton_deformation_decomposition/AssemblyAx.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch06/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Lipschitz.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/InnerProductSpace/PiL2.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Analysis/Calculus/Monotone.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Lebesgue/Markov.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/IntervalIntegral/DerivIntegrable.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/ContinuousLinearMap.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/MetricSpace/Thickening.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Currents.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/Mass.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-9b75b9802b/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-9b75b9802b/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsd_skeleton_deformation_decomposition/AssemblyAx.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsd_skeleton_deformation_decomposition/ReusedCA.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsd_skeleton_deformation_decomposition/ReusedML.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsd_skeleton_deformation_decomposition/Reused_cmcs_smi_lintegral_ofReal_deriv_le.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsd_skeleton_deformation_decomposition/Reused_cmc_fc_cs_massOn_sub_le.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsd_skeleton_deformation_decomposition/Reused_cmr_abs_apply_le_massOn.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/GMT/Scratch/dimred_mbl_dtsd_skeleton_deformation_decomposition/Reused_lcmp_imRep_measure_restrict.lean"
+      ],
+      "conclusion": "The split is appropriate and establishes this selected theorem. Project, Mathlib and SimonGMT revisions match the pinned environment; the cited analytic and current-calculus facts have the required hypotheses. The snapshot's Ch06 deformation result is an unproved specification and is not used. All twelve types are standalone, one-line propositions matching their prose, and all thirteen comparator challenge types independently elaborate. Every lean_name is bare; the six new names are unreserved, and the six accepted reuses have byte-identical frozen types. Their accepted proof bodies independently recompile with only propext, Classical.choice and Quot.sound. The augmented dependency graph is acyclic. The conditional assembly compiles for the exact selected frozen type using only the declared prerequisite stubs and standard axioms, without sorryAx. The requested contract digest was independently recomputed and matches. No Matrix/IsUnit construction occurs."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "support_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All five clauses follow from the zero-region definition on univ. Compact balls, intersections of zero neighborhoods, and support containment for exterior derivatives justify every step without assuming VO or the parent theorem."
+    },
+    {
+      "key": "good_radius",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Finite distribution functions, left difference quotients and simultaneous almost-everywhere differentiability give the slice bounds. The Markov argument correctly handles B = 0, finite positive B, and B = ∞. The declared lebesgue_deriv dependency supplies exactly the integral estimate used."
+    },
+    {
+      "key": "lipschitz_extension",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Coordinatewise McShane extensions agree on S, and the Euclidean squared-norm calculation gives precisely sqrt(P)·K. The WithLp construction uses the intended Euclidean metric and also covers empty S and P = 0."
+    },
+    {
+      "key": "dyadic_series",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The exponent inequalities and geometric tail sum give the stated 1 + C bound, including infinite A. The decay argument correctly uses finiteness of K and A to multiply a sequence tending to zero."
+    },
+    {
+      "key": "shell_decomposition",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The five foundational antecedents are explicitly retained. The proof verifies representations, integrability, good radii, IM restrictions, boundary identities, support and mass bounds, and HasSum. Its separate treatment of m = 0 and second slicing for positive m supplies all required boundary-mass finiteness."
+    },
+    {
+      "key": "telescoping_deformation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "PF and IMS are explicit hypotheses. Locality and the reversed homotopy give the correct telescoping signs; vanishing slice remainders establish the identity and boundary evaluation series. The proof derives every mass, support and integrality conclusion without requiring integer multiplicity of D_j or using IMS in degree zero."
+    },
+    {
+      "key": "current_algebra",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Eligible accepted reuse with an identical frozen type and standard axioms. Independently, the empty IMRep proves the zero clause, symmetric admissibility proves coefficient mass bounds, and iterated differences plus finite-set induction prove the integer-combination clause."
+    },
+    {
+      "key": "mass_le_measure",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Eligible identical-type reuse. The integral norm bound and the measurable indicator of tsupport yield μ(E ∩ V), even for arbitrary E and V. No unstated integrability, finiteness or measurability assumption is needed."
+    },
+    {
+      "key": "lebesgue_deriv",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Eligible identical-type reuse. The proof handles the empty interval, establishes derivative nonnegativity and integrability, converts the lower integral to the interval integral, and applies the verified monotone-derivative bound."
+    },
+    {
+      "key": "mass_sub",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Eligible identical-type reuse. Negation preserves admissibility, pointwise subtraction becomes A(ω) + B(-ω), and ofReal subadditivity followed by the defining supremum proves the exact statement for arbitrary U and G."
+    },
+    {
+      "key": "eval_mass_bound",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Eligible identical-type reuse. The proof derives r ≥ 0, rescales by r + ε, applies the finite-mass bound to both signs, and passes ε to zero. It correctly accommodates arbitrary support regions and r = 0."
+    },
+    {
+      "key": "imrep_restriction",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Eligible identical-type reuse. Absolute continuity transfers strong measurability; measurable restriction commutes with density; the verified finite-valued density integral identity proves the action formula for arbitrary differential forms. The numbered proof is independent of the declaration being reused."
+    }
+  ],
+  "required_changes": []
+}

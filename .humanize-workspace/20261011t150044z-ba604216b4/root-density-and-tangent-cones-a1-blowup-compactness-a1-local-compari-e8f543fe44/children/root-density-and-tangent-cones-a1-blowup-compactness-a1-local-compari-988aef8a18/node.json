@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1.truncate-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.local_comparison-a1.flat_decomposition-a1.localize-a1",
+  "depth": 6,
+  "title": "Restriction T⌞E of an integer multiplicity current to a Borel set: representation, weight, agreement and vanishing (parent steps 5–8)",
+  "statement": "Let P, n ∈ ℕ, U ⊆ ℝ^P open, E ⊆ ℝ^P measurable, and R = (M, θ, ξ) an integer multiplicity representation (IMRep) in U representing T ∈ 𝒟_n(U). Here R.Represents T means T(ω) = ∫_M θ⟨ω, ξ⟩ dHⁿ for every ω ∈ 𝒟ⁿ(U), with Hⁿ = μHE[n]. Then there are T′ ∈ 𝒟_n(U) and an IMRep R′ in U with R′.Represents T′, R′.carrier = M ∩ E, R′.mult = θ and R′.orient = ξ, such that: (i) R′.measure = R.measure⌞E, i.e. θHⁿ⌞(M ∩ E) = (θHⁿ⌞M)⌞E; (ii) T′(ω) = T(ω) for every ω ∈ 𝒟ⁿ(U) with tsupport ω ⊆ E; (iii) T′(ω) = 0 for every ω ∈ 𝒟ⁿ(U) whose tsupport is disjoint from E.",
+  "lean_statement": "∀ (P n : ℕ) (U E : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → MeasurableSet E → R.Represents T → ∃ (T' : GeometricCurrentOn U n) (R' : IMRep U n), R'.Represents T' ∧ R'.carrier = R.carrier ∩ E ∧ R'.mult = R.mult ∧ R'.orient = R.orient ∧ R'.measure = R.measure.restrict E ∧ (∀ ω : TestFormOn U n, tsupport (ω : DifferentialForm (Euclid P) n) ⊆ E → T' ω = T ω) ∧ ∀ ω : TestFormOn U n, Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) E → T' ω = 0",
+  "lean_name": "dtc_bc_lc_fd_lz_truncate",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.im_calculus-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.im_calculus-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-im-calculus-a1-a1",
+      "result_commit": "2af75d6921b01a9c889a45103692ca0af95ea394",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-local-compari-988aef8a18-a1"
+}

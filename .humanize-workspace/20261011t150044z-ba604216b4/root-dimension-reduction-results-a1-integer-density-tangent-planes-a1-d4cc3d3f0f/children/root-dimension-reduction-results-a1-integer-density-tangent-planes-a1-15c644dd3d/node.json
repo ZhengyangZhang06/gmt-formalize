@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.lower_bound-a1",
+  "parent_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1",
+  "depth": 6,
+  "title": "Transferred lower mass bound for the members μ₀^{x,λ} on balls whose closure lies in their domain (parent steps 0(c)–(e), 7)",
+  "statement": "Let P, n ∈ ℕ, μ a measure on ℝ^P, z ∈ ℝ^P, r > 0 and μ₀ := ofReal(r⁻¹^n)•(μ⌞B_{2r}(z)).map(dilation z r); for x ∈ ℝ^P and λ > 0 let μ₀^{x,λ} := ofReal(λ⁻¹^n)•μ₀.map(dilation x λ) and G_{x,λ} := dilation x λ '' B_2(0). Let Λ₀ ≥ 0 and suppose that ofReal(e^{−(Λ₀σ)})·(ω_n·ofReal(σ^n)) ≤ μ(B_σ(p)) whenever p ∈ ℝ^P satisfies μ(B_ε(p)) ≠ 0 for all ε > 0, closedBall p ρ' ⊆ closedBall z (2r) and 0 < σ < ρ' (ω_n = unitBallVolume n). Then for all x, y ∈ ℝ^P, 0 < λ ≤ 1 and ρ > 0 with closedBall y ρ ⊆ G_{x,λ} and μ₀^{x,λ}(B_ε(y)) ≠ 0 for all ε > 0: ofReal(e^{−(r·Λ₀·ρ)})·(ω_n·ofReal(ρ^n)) ≤ μ₀^{x,λ}(B_ρ(y)).",
+  "lean_statement": "∀ (P n : ℕ) (μ μ₀ : Measure (Euclid P)) (z : Euclid P) (r : ℝ), 0 < r → μ₀ = ENNReal.ofReal (r⁻¹ ^ n) • (μ.restrict (ball z (2 * r))).map (dilation z r) → ∀ Λ₀ : ℝ, 0 ≤ Λ₀ → (∀ p : Euclid P, (∀ ε : ℝ, 0 < ε → μ (ball p ε) ≠ 0) → ∀ σ ρ : ℝ, closedBall p ρ ⊆ closedBall z (2 * r) → 0 < σ → σ < ρ → ENNReal.ofReal (Real.exp (-(Λ₀ * σ))) * (unitBallVolume n * ENNReal.ofReal (σ ^ n)) ≤ μ (ball p σ)) → ∀ (x y : Euclid P) (lam ρ : ℝ), 0 < lam → lam ≤ 1 → 0 < ρ → closedBall y ρ ⊆ dilation x lam '' ball 0 2 → (∀ ε : ℝ, 0 < ε → (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) (ball y ε) ≠ 0) → ENNReal.ofReal (Real.exp (-(r * Λ₀ * ρ))) * (unitBallVolume n * ENNReal.ofReal (ρ ^ n)) ≤ (ENNReal.ofReal (lam⁻¹ ^ n) • μ₀.map (dilation x lam)) (ball y ρ)",
+  "lean_name": "idtp_fons_cc_psf_lower_bound",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.domain_geometry-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.cone_class-a1.positive_scale_family-a1.domain_geometry-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-integer-density-tangent-planes-a1-15c644dd3d-a1"
+}

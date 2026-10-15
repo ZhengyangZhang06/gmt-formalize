@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.closure_compact-a1.filling-a1",
+  "parent_id": "root.density_and_tangent_cones-a1.blowup_compactness-a1.truncated_compactness-a1.closure-a1.closure_compact-a1",
+  "depth": 6,
+  "title": "Compactly supported finite-mass IM filling of an IM boundary for d < P, using the in-range isoperimetric filling (parent step 3, V3)",
+  "statement": "Assume (MR), (IMC)(c), (VO) and (Isor). (MR) is the frozen type of the accepted cmc_massOn_eq_imRep_measure: M_W(X) = R.measure(W) whenever the IMRep R represents X ∈ 𝒟_n(U), U open, W open. (IMC)(c): for all P, n, every open U ⊆ ℝ^P and IM A, B ∈ 𝒟_n(U), A − B is IM. (VO) is the frozen type of the accepted dtc_vanish_off_support: S(ω) = 0 for every current S ∈ 𝒟_n(U) and every ω ∈ 𝒟ⁿ(U) whose topological support is disjoint from spt S. (Isor) is the in-range isoperimetric filling, verbatim the corresponding hypothesis of the selected node (the second conjunct of the frozen type of dtc_bc_tc_cl_deformation_isoperimetric): for all P, m ∈ ℕ with m + 1 < P there is a real c ≥ 1 such that every IM Z ∈ 𝒟_{m+1}(ℝ^P) with compact support, ∂Z = 0 and M(Z) < ∞ equals ∂Y for an IM Y ∈ 𝒟_{m+2}(ℝ^P) with M(Y) ≤ c(2cM(Z))^{1/(m+1)}M(Z) and spt Y ⊆ {x : dist(x, spt Z) < 3√P(2cM(Z))^{1/(m+1)}}. Let P, d ∈ ℕ with d < P, and let T ∈ 𝒟_{d+1}(ℝ^P) have compact support, with M(∂T) < ∞ and ∂T IM. Then there is an IM Y ∈ 𝒟_{d+1}(ℝ^P) with ∂Y = ∂T, M(Y) < ∞ and spt Y compact. Notation: SimonGMT currents in U = ℝ^P, M = mass = M_{ℝ^P}, spt = GeometricCurrentOn.support, IM = IsIntegerMultiplicity. This is the unaccepted dmcbr_cc_compact_im_filling / cbr_cc_compact_im_filling with the isoperimetric hypothesis restricted to the range m + 1 < P.",
+  "lean_statement": "(∀ (P n : ℕ) (U : Set (Euclid P)) (T : GeometricCurrentOn U n) (R : IMRep U n), IsOpen U → R.Represents T → ∀ W : Set (Euclid P), IsOpen W → T.massOn W = R.measure W) → (∀ (P n : ℕ) (U : Set (Euclid P)) (A B : GeometricCurrentOn U n), IsOpen U → IsIntegerMultiplicity A → IsIntegerMultiplicity B → IsIntegerMultiplicity (A - B)) → (∀ (P n : ℕ) (U : Set (Euclid P)) (S : GeometricCurrentOn U n) (ω : TestFormOn U n), Disjoint (tsupport (ω : DifferentialForm (Euclid P) n)) S.support → S ω = 0) → (∀ (P m : ℕ), m + 1 < P → ∃ c : ℝ, 1 ≤ c ∧ ∀ Z : GeometricCurrentOn (univ : Set (Euclid P)) (m + 1), IsIntegerMultiplicity Z → IsCompact Z.support → Z.boundary = 0 → Z.mass < ∞ → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (m + 2), IsIntegerMultiplicity Y ∧ Y.boundary = Z ∧ Y.mass ≤ ENNReal.ofReal (c * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1)) * Z.mass.toReal) ∧ Y.support ⊆ thickening (3 * Real.sqrt P * (2 * c * Z.mass.toReal) ^ ((1 : ℝ) / (m + 1))) Z.support) → ∀ (P d : ℕ), d < P → ∀ (T : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1)), IsCompact T.support → T.boundary.mass < ∞ → IsIntegerMultiplicity T.boundary → ∃ Y : GeometricCurrentOn (univ : Set (Euclid P)) (d + 1), IsIntegerMultiplicity Y ∧ Y.boundary = T.boundary ∧ Y.mass < ∞ ∧ IsCompact Y.support",
+  "lean_name": "dtc_bc_tc_cl_cc_compact_im_filling",
+  "depends_on": [
+    "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.current_algebra-a1",
+    "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1",
+    "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.zero_current_sum-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.compactness_of_minimizing_currents-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.current_algebra-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-compactness-of-minimizing-currents-a1-closure-and-boundary-recti-253f25df92-a1",
+      "result_commit": "791f7d722ecc7a162afa46e5f9e1dd564f0ce80b",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.support_of_vanishing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-support-a67ad69f81-a1",
+      "result_commit": "02c6122c94d0280a6288d299659b2dab7b59e109",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.segment_current-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-437b2394ee-a1",
+      "result_commit": "3a4872b49a9c0eb8a3c88f58522e0e1b6bc771af",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.closure_and_boundary_rectifiability-a1.closure_compact-a1.zero_current_sum-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-closure-and-bou-dbf4768ac7-a1",
+      "result_commit": "594767533a275ee5cf34ab7fbe3fea03af4d081a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-compactness-a1-truncated-com-a1aae3fa10-a1"
+}

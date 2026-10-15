@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1.isometry_image_integral-a1",
+  "parent_id": "root.dimension_reduction_results-a1.moving_blowups-a1.deformation_theorem-a1.face_replacement-a1.polyhedral_im-a1",
+  "depth": 6,
+  "title": "Isometric images: Borel, Hᵏ-measure and change of variables",
+  "statement": "Let P, k ∈ ℕ, let Φ : Euclid k → Euclid P be an isometry for the Euclidean metrics, and let A ⊆ Euclid k be a Borel set. Then Φ(A) is Borel, Hᵏ(Φ(A)) = Lᵏ(A), and ∫_{Φ(A)} h dHᵏ = ∫_A h(Φ(y)) dy for every function h : Euclid P → ℝ. Here Hᵏ = μHE[k] is Mathlib's normalized k-dimensional Hausdorff measure, Lᵏ = volume is Lebesgue measure on Euclid k = EuclideanSpace ℝ (Fin k), and the integrals are Bochner integrals (each is 0 when its integrand is not integrable).",
+  "lean_statement": "∀ (P k : ℕ) (Φ : Euclid k → Euclid P) (A : Set (Euclid k)), Isometry Φ → MeasurableSet A → MeasurableSet (Φ '' A) ∧ μHE[k] (Φ '' A) = volume A ∧ ∀ h : Euclid P → ℝ, ∫ x in Φ '' A, h x ∂μHE[k] = ∫ y in A, h (Φ y)",
+  "lean_name": "dimred_mbl_dtfrpi_isometry_image_integral",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-moving-blowups-a1-deformation-the-1b69afafdf-a1"
+}

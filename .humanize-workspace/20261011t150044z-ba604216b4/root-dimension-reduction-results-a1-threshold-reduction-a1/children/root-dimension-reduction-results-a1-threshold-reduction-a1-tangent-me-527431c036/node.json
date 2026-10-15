@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.tangent_measure_homogeneous-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1",
+  "depth": 3,
+  "title": "Tangent limits of minimizing currents with ∂T = 0 have n-homogeneous weights (Simon 7.3.1(2) with parent 3(vii)), from the registered siblings and the hypotheses (MON), (MB)",
+  "statement": "Assume (MON) and (MB). These are, in exactly the form of their frozen Lean types, the statements of Submission.dimred_minimizing_monotonicity and Submission.dimred_blowup_limit_moving_centres, two of the three registered dependencies of the selected parent: (MON) monotonicity, existence and upper semicontinuity of densities, and density ≥ 1 on the support, for minimizing currents with ∂T = 0 in an embedded C² submanifold; (MB) subsequential weak limits of blow-ups with moving centres x_j → x ∈ U and scales → 0 exist, are minimizing in ℝ^P with ∂ = 0, and carry mass-measure convergence. Under these hypotheses: let n, k, ℓ ∈ ℕ with ℓ ≤ k and n ≥ 1, P := n + k, let U ⊆ ℝ^P be open, let N be an embedded C² (n+ℓ)-dimensional submanifold of ℝ^P (IsEmbeddedSubmanifold 2 (n + ℓ) N) with (closure N ∖ N) ∩ U = ∅, and let T ∈ 𝒟_n(U) be minimizing in U ∩ N with spt T ⊆ U ∩ N and ∂T = 0 in U (BoundaryVanishes T). Let x ∈ spt T and let λ_j > 0 with λ_j → 0. Then there are a strictly increasing φ : ℕ → ℕ and C ∈ 𝒟_n(ℝ^P) such that the blow-ups η_{x,λ_{φ(j)}#}T (blowUp T x λ_{φ(j)}) converge weakly to C in ℝ^P (ConvergesWeakly), their mass measures converge to μ_C for all integer multiplicity representations (MassMeasuresConverge), C is minimizing in ℝ^P (IsMinimizingIn C univ), and the weight of every integer multiplicity representation R of C (IMRep univ n with R.Represents C) is n-homogeneous: R.measure(λA) = λⁿ·R.measure(A) for every λ > 0 and every Borel set A ⊆ ℝ^P, where λA = (x ↦ λx) '' A and λⁿ is written ENNReal.ofReal(λⁿ).",
+  "lean_statement": "(∀ (P n d : ℕ) (U N : Set (Euclid P)) (T : GeometricCurrentOn U n), 1 ≤ n → n ≤ d → d ≤ P → IsOpen U → IsEmbeddedSubmanifold 2 d N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → (∀ K : Set (Euclid P), IsCompact K → K ⊆ U → ∃ Λ : ℝ, 0 ≤ Λ ∧ ∀ (y : Euclid P) (R : ℝ), closedBall y R ⊆ K → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (N = univ → ∀ (y : Euclid P) (R : ℝ), ball y R ⊆ U → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (1 / ρ ^ n) * T.massOn (ball y ρ)) (Ioo 0 R)) ∧ (∃ Θ : Euclid P → ℝ, (∀ y ∈ U, HasMassDensity T y (Θ y)) ∧ UpperSemicontinuousOn Θ U) ∧ ∀ y ∈ T.support, ∀ θ : ℝ, HasMassDensity T y θ → 1 ≤ θ) → (∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ (x : Euclid (n + k)) (xs : ℕ → Euclid (n + k)) (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), x ∈ U → Tendsto xs atTop (𝓝 x) → Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T (xs (φ j)) (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ BoundaryVanishes C) → ∀ (n k ℓ : ℕ), ℓ ≤ k → ∀ (U N : Set (Euclid (n + k))) (T : GeometricCurrentOn U n), 1 ≤ n → IsOpen U → IsEmbeddedSubmanifold 2 (n + ℓ) N → (closure N \\ N) ∩ U = ∅ → IsMinimizingIn T (U ∩ N) → T.support ⊆ U ∩ N → BoundaryVanishes T → ∀ x ∈ T.support, ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C : GeometricCurrentOn (univ : Set (Euclid (n + k))) n), StrictMono φ ∧ ConvergesWeakly (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧ MassMeasuresConverge (fun j => blowUp T x (lams (φ j)) (hlams (φ j)).ne') C ∧ IsMinimizingIn C univ ∧ ∀ R : IMRep (univ : Set (Euclid (n + k))) n, R.Represents C → ∀ lam : ℝ, 0 < lam → ∀ A : Set (Euclid (n + k)), MeasurableSet A → R.measure ((fun x => lam • x) '' A) = ENNReal.ofReal (lam ^ n) * R.measure A",
+  "lean_name": "dimred_tr_tangent_measure_homogeneous",
+  "depends_on": [
+    "root.minimizing_implies_stationary-a1.stationary_of_minimizing-a1",
+    "root.density_and_tangent_cones-a1.blowup_density-a1",
+    "root.density_and_tangent_cones-a1.cone-a1",
+    "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.minimizing_implies_stationary-a1.stationary_of_minimizing-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-minimizing-implies-stationary-a1-stationary-of-minimizing-a1-a1",
+      "result_commit": "c2d6ad3e021de8215c1c8bde8b550eb049c1418a",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.blowup_density-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-blowup-density-a1-a1",
+      "result_commit": "13c3e6ac8a8b5a690178ef03597aeff52d503ce3",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.density_and_tangent_cones-a1.cone-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-density-and-tangent-cones-a1-cone-a1-a1",
+      "result_commit": "47d40434110ec18e63e3f56e10d5517a2aa7c2a8",
+      "integrated_commit": ""
+    },
+    {
+      "node_id": "root.half_space_cone_lies_in_boundary-a1.cone_measure_homogeneous-a1",
+      "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-half-space-cone-lies-in-boundary-a1-cone-measure-homogeneous-a1-a1",
+      "result_commit": "e183b985f8baf48aa0fe07ee8e978c1474ec9d0a",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-tangent-me-527431c036-a1"
+}

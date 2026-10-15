@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1.class_tangent-a1.zero_imrep-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.blowup_class-a1.class_tangent-a1",
+  "depth": 5,
+  "title": "The zero current in ℝ^P is represented by the empty IMRep, whose weight is the zero measure (preliminary P4)",
+  "statement": "For all P, n ∈ ℕ there is an integer multiplicity representation R of the zero current of ℝ^P: an IMRep R in univ ⊆ ℝ^P = Euclid P (IMRep univ n) with R.Represents (0 : GeometricCurrentOn univ n), i.e. 0(ω) = R.action ω = ∫_{R.carrier} R.mult·⟨ω, R.orient⟩ dHⁿ for every test form ω ∈ 𝒟ⁿ(ℝ^P), and whose weight R.measure = (Hⁿ⌞R.carrier).withDensity R.mult is the zero measure. Here Hⁿ = μHE[n].",
+  "lean_statement": "∀ (P n : ℕ), ∃ R : IMRep (univ : Set (Euclid P)) n, R.Represents (0 : GeometricCurrentOn (univ : Set (Euclid P)) n) ∧ R.measure = 0",
+  "lean_name": "dimred_tr_bc_ct_zero_imrep",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-cla-84f57eeaf1-a1"
+}

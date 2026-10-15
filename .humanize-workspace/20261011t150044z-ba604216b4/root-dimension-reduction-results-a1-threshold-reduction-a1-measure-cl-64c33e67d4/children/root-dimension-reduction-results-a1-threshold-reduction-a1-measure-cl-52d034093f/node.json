@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.threshold_limit-a1.monotone_density-a1",
+  "parent_id": "root.dimension_reduction_results-a1.threshold_reduction-a1.measure_class_reduction-a1.threshold_limit-a1",
+  "depth": 5,
+  "title": "Monotone density lemma: the monotonicity formula gives a finite density limit and a lower bound on balls (parent steps 1–2)",
+  "statement": "Let n ∈ ℕ and Λ, R ∈ ℝ with R > 0. Let m : ℝ → [0, ∞] satisfy m(ρ) < ∞ for every ρ ∈ (0, R). Assume that g(ρ) := ofReal(e^{Λρ}/ρⁿ)·m(ρ) is nondecreasing on (0, R). Put ω := unitBallVolume n, the volume of the open unit ball of ℝⁿ = Euclid n. Put q(ρ) := m(ρ)/(ω·ofReal(ρⁿ)) ∈ [0, ∞] (division in [0, ∞]) and Θ := (limsup_{ρ→0⁺} q(ρ)).toReal (limsup in [0, ∞] along 𝓝[>]0; toReal sends ∞ to 0). Then (i) q(ρ) → ofReal(Θ) as ρ → 0⁺ (along 𝓝[>]0), and (ii) ω·ofReal(Θ)·ofReal(σⁿe^{−Λσ}) ≤ m(σ) for every σ ∈ (0, R).",
+  "lean_statement": "∀ (n : ℕ) (Λ R : ℝ) (m : ℝ → ℝ≥0∞), 0 < R → (∀ ρ ∈ Ioo 0 R, m ρ ≠ ∞) → MonotoneOn (fun ρ : ℝ => ENNReal.ofReal (Real.exp (Λ * ρ) / ρ ^ n) * m ρ) (Ioo 0 R) → Tendsto (fun ρ : ℝ => m ρ / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0) (𝓝 (ENNReal.ofReal (limsup (fun ρ : ℝ => m ρ / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal)) ∧ ∀ σ ∈ Ioo 0 R, unitBallVolume n * ENNReal.ofReal (limsup (fun ρ : ℝ => m ρ / (unitBallVolume n * ENNReal.ofReal (ρ ^ n))) (𝓝[>] 0)).toReal * ENNReal.ofReal (σ ^ n * Real.exp (-(Λ * σ))) ≤ m σ",
+  "lean_name": "dimred_tr_mcr_tl_monotone_density",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-threshold-reduction-a1-measure-cl-52d034093f-a1"
+}

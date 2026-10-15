@@ -1,0 +1,108 @@
+{
+  "reference_use": [
+    {
+      "source": "local-project",
+      "queries": [
+        "structure IMRep|def (IMRep.measure|HasMassDensity|MassMeasuresConverge|ConvergesWeakly|currentEval|blowUp|IsMinimizingIn)|IsEmbeddedSubmanifold",
+        "dimred_tr_bc_|idtp_fons_cc_ambient_calculus|idtp_fons_cc_density_representation|dor_lmb_imrep_restrict_current",
+        "theorem (integral_smul_measure|integral_map|setIntegral_eq_integral_of_forall_compl_eq_zero)|theorem (withDensity_congr_ae|withDensity_indicator)|lemma.*limsup_eq|theorem.*limsup_eq",
+        "git show aebb2aec658738b9517d6f9d578187c7b7a008f5:GMT/Ch07/Submission.lean",
+        "git show 1f0fe9f81dcb1f46cbf39c3a7d57d22c47fcf1e5:GMT/Ch07/Submission.lean",
+        "git show 90d679afa37d51964319f73fdad9e27019c64a81:GMT/Ch07/Submission.lean",
+        "python3 /tmp/bc-independent-audit/run_lean.py /tmp/bc-independent-audit/Types.lean",
+        "python3 /tmp/bc-independent-audit/run_lean.py /tmp/bc-independent-audit/Assembly.lean"
+      ],
+      "files": [
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/manifest.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/project/GMT/Ch07/Contract.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Measure/WithDensity.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/MeasureTheory/Integral/Bochner/Basic.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/local-references/123e8435b4a2469b/mathlib/Mathlib/Topology/Order/LiminfLimsup.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/CurrentLocalEquality.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.lake/packages/simongmt/Poincare/SimonGMT/Chapter06/AffineCurrentPushforward.lean",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/dag.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-class-a1/parent-child-handoff.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/workspaces/gmt-ch07/.humanize/github-theorem-prover/runs/20261011T150044Z-ba604216b4/nodes/root-dimension-reduction-results-a1-threshold-reduction-a1-blowup-class-a1/decomposition-v1.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa47/20261014T005639Z-ch07-root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_n-v4pjyolg/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa47/20261014T005639Z-ch07-root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_n-v4pjyolg/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa36/20261014T011607Z-ch07-root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_n-brglbij9/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa36/20261014T011607Z-ch07-root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_n-brglbij9/comparator-config.json",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa0/20261013T085846Z-ch07-root.density_one_implies_regular-a1.limsup_mass_bound-a1.borel_restriction-a1-raskdbpp/comparator.log",
+        "/mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification/results/hoa0/20261013T085846Z-ch07-root.density_one_implies_regular-a1.limsup_mass_bound-a1.borel_restriction-a1-raskdbpp/comparator-config.json",
+        "/tmp/bc-independent-audit/Types.lean",
+        "/tmp/bc-independent-audit/Assembly.lean"
+      ],
+      "conclusion": "Project and mathlib revisions match the snapshot; the workspace contract matches byte-for-byte. Relevant definitions and library lemmas support the supplied arguments. The snapshot search found no proposed declaration names; the DAG confirms eight fresh names and three accepted reuses with identical frozen types. All eleven one-line propositions independently elaborate with autoImplicit disabled and without child implementations. Conditional assembly of the exact selected parent compiles using precisely the five class-property contracts, four registered dependencies, and standard axioms. The augmented dependency graph is acyclic. Existing isolated comparator evidence verifies the reused declarations with only propext, Quot.sound and Classical.choice permitted; fresh recompilations of those reused proofs were interrupted during library loading. All names are bare identifiers, and no matrix-instance ambiguity occurs. The split appropriately establishes this selected theorem."
+    }
+  ],
+  "acceptable": true,
+  "nodes": [
+    {
+      "key": "zero_limit_minimizing",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Prose and type match. Applying MB and uniqueness of real-valued test-form limits proves S = C, transferring minimality and vanishing boundary without circularity."
+    },
+    {
+      "key": "vanishing_blowup",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The support definition supplies the required ball even without assuming U open. Vanishing proves zero mass, and shrinking pullback supports make every evaluation eventually zero. All conclusions are proved."
+    },
+    {
+      "key": "zero_limit_rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The proof correctly constructs S′ independently of its representations, transports weak convergence through a fixed proper affine pullback, and uses BUI and measure extensionality for the weight identity."
+    },
+    {
+      "key": "class_finite_density",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Compact finiteness and both density cases are established. The alternative positive-scale argument validly uses accepted restriction and BUI; DEN supplies exactly the premise required by density_representation."
+    },
+    {
+      "key": "class_rescale",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Affine composition and the triangle inequality preserve positive-scale admissibility and strict zero-scale admissibility. zero_limit_rescale supplies the transformed current and weight. Dependencies are sufficient and correctly directed."
+    },
+    {
+      "key": "class_tangent",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "All four support cases are covered. The uniform mass estimate justifies IBL; explicit subsequences and tails establish class membership. TAN, BUI and MassMeasuresConverge yield homogeneity and the required integral convergence without circular reliance."
+    },
+    {
+      "key": "class_monotone",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The single choice Λ = rΛ_K works in both cases. The proof handles empty intervals, uses n+k ≥ 1 correctly for the ball-containment estimate, and justifies the nondecreasing exponential factors."
+    },
+    {
+      "key": "class_anchor_infinite",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "The anchor follows from the exact scaled density ratio and nonnegative density. Finite total mass excludes positive-scale infinite members; zero-scale data, MB, MON and IM establish every clause of property (7)."
+    },
+    {
+      "key": "ambient_calculus",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. The independently read proof establishes the identity chart and all eight dilation/measure identities with the stated positivity and measurability hypotheses."
+    },
+    {
+      "key": "density_representation",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse. DEM gives finite almost-everywhere limits; limsup identification, ofReal_toReal, withDensity_congr_ae and withDensity_indicator prove exactly the stated measure equality."
+    },
+    {
+      "key": "imrep_restrict",
+      "acceptable": true,
+      "natural_proof_acceptable": true,
+      "reason": "Valid identical-type accepted reuse retaining its original accepted tangent-locality dependency. The proof supplies the restricted orientation, integrability, current continuity and weight identity; no new unregistered obligation is introduced."
+    }
+  ],
+  "required_changes": []
+}
