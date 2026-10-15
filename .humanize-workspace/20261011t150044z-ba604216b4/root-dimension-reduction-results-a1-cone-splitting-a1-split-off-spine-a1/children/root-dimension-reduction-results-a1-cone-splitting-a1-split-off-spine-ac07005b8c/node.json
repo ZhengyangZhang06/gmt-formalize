@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.spine_coarea-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1",
+  "depth": 4,
+  "title": "Coarea formula along a spine: slicing a rectifiable set whose approximate tangent planes contain L by the orthogonal projection onto L",
+  "statement": "Setting:\n- P, n ∈ ℕ and L ⊆ ℝ^P a linear subspace with d := dim L < n; put m := n − d ≥ 1.\n- p := L.starProjection is the orthogonal projection onto L, viewed as a map ℝ^P → ℝ^P, and H^k := μHE[k].\n- For t ∈ L, M_t := M ∩ p⁻¹(t) = M ∩ {x : L.starProjection x = t}.\nHypotheses on M ⊆ ℝ^P:\n- M is Borel and countably n-rectifiable;\n- H^n(M ∩ K) < ∞ for every compact K;\n- for H^n-a.e. x ∈ M there is a subspace Q with HasApproximateTangentSpaceAt n M x Q and L ⊆ Q.\nConclusions:\n(i) For H^d-a.e. t ∈ L (i.e. μHE[d]⌞L-a.e.), M_t is countably m-rectifiable. Moreover, for H^m-a.e. x ∈ M_t and every subspace Q with HasApproximateTangentSpaceAt n M x Q, we have HasApproximateTangentSpaceAt m M_t x (Q ∩ L^⊥).\n(ii) For every Borel g : ℝ^P → [0, ∞], the function t ↦ ∫_{M_t} g dH^m is a.e.-measurable for H^d⌞L, and\n ∫_M g dH^n = ∫_L (∫_{M_t} g dH^m) dH^d(t).\nThis is Federer 3.2.22 for the map p restricted to M. Its coarea factor is 1, because on T_xM ⊇ L the map p is the orthogonal projection onto L.",
+  "lean_statement": "∀ (P n : ℕ) (L : Submodule ℝ (Euclid P)) (M : Set (Euclid P)), Module.finrank ℝ L < n → MeasurableSet M → CountablyRectifiable n M → (∀ K : Set (Euclid P), IsCompact K → μHE[n] (M ∩ K) ≠ ∞) → (∀ᵐ x ∂(μHE[n].restrict M), ∃ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q ∧ L ≤ Q) → (∀ᵐ t ∂(μHE[Module.finrank ℝ L].restrict (L : Set (Euclid P))), CountablyRectifiable (n - Module.finrank ℝ L) (M ∩ {x | L.starProjection x = t}) ∧ ∀ᵐ x ∂(μHE[n - Module.finrank ℝ L].restrict (M ∩ {x | L.starProjection x = t})), ∀ Q : Submodule ℝ (Euclid P), HasApproximateTangentSpaceAt n M x Q → HasApproximateTangentSpaceAt (n - Module.finrank ℝ L) (M ∩ {x | L.starProjection x = t}) x (Q ⊓ Lᗮ)) ∧ ∀ g : Euclid P → ℝ≥0∞, Measurable g → AEMeasurable (fun t => ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[n - Module.finrank ℝ L]) (μHE[Module.finrank ℝ L].restrict (L : Set (Euclid P))) ∧ ∫⁻ x in M, g x ∂μHE[n] = ∫⁻ t in (L : Set (Euclid P)), ∫⁻ x in M ∩ {x | L.starProjection x = t}, g x ∂μHE[n - Module.finrank ℝ L] ∂μHE[Module.finrank ℝ L]",
+  "lean_name": "dimred_cs_sos_spine_coarea",
+  "depends_on": [
+    "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.lipschitz_tangent-a1"
+  ],
+  "dependency_workspaces": [
+    {
+      "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.lipschitz_tangent-a1",
+      "result_branch": "",
+      "result_commit": "",
+      "integrated_commit": ""
+    }
+  ],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-ac07005b8c-a1"
+}

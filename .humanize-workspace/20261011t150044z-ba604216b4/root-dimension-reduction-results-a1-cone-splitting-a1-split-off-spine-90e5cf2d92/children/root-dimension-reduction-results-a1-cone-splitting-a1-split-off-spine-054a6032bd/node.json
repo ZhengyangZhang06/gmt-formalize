@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1.fderiv_test_form-a1",
+  "parent_id": "root.dimension_reduction_results-a1.cone_splitting-a1.split_off_spine-a1.minimality_transfer-a1.cube_stokes-a1",
+  "depth": 6,
+  "title": "Directional derivatives of test forms are test forms",
+  "statement": "Let P, q ∈ ℕ, let φ be a differential q-form on ℝ^P (φ : DifferentialForm (Euclid P) q) that is a test form (IsTestForm φ: φ is C^∞ and has compact support), and let v ∈ ℝ^P. Then the q-form z ↦ Dφ(z)[v] := fderiv ℝ φ z v is again a test form.",
+  "lean_statement": "∀ (P q : ℕ) (φ : DifferentialForm (Euclid P) q) (v : Euclid P), IsTestForm φ → IsTestForm (fun z => fderiv ℝ φ z v)",
+  "lean_name": "dimred_cs_sos_mt_cs_isTestForm_fderiv_apply",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-dimension-reduction-results-a1-cone-splitting-a1-split-off-spine-054a6032bd-a1"
+}
