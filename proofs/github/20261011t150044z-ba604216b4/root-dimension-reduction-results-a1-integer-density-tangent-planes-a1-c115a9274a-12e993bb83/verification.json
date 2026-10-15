@@ -1,0 +1,29 @@
+{
+  "node_id": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.tangent_cones-a1",
+  "issue": "https://github.com/ZhengyangZhang06/gmt-formalize/issues/5836",
+  "solution_pr": "see this branch's pull request",
+  "candidate_commit": "61d83b1e47f9145ecd7eb3b729a747f053530a29",
+  "integrated_commit": "",
+  "proof_base_commit": "a2f3bbf6dad5fd9f22f390eea801ef3a4eb6f373",
+  "comparator_command": "python3 /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier/gmt-compare.py --lean-target {lean_target} --verifier-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/verifier --verify-dir /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/cluster-state/verification --packages /mnt/data/zhengyang-workspace/gmt-formalize-claude-opus55-max-20261011/lake-packages-25730c7c --frozen-commit b4d606db1da5da8fa2c0292ad4924d97de8b3c4b {node_id}",
+  "required_success_marker": "Your solution is okay!",
+  "machine_comparator_passed": true,
+  "lean_review_method": "machine-nonleaf",
+  "reviewer_comparator_passed": null,
+  "parent": "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1",
+  "requires": [
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.stationarity-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.monotonicity-a1",
+    "root.dimension_reduction_results-a1.im_mass_measure-a1",
+    "root.density_and_tangent_cones-a1.mass_eq_measure-a1",
+    "root.density_and_tangent_cones-a1.vanish_off_support-a1",
+    "root.density_and_tangent_cones-a1.im_sub-a1",
+    "root.density_and_tangent_cones-a1.blowup_scaling-a1",
+    "root.density_and_tangent_cones-a1.dim_zero-a1",
+    "root.density_and_tangent_cones-a1.localize-a1",
+    "root.density_and_tangent_cones-a1.density_usc-a1",
+    "root.dimension_reduction_results-a1.integer_density_tangent_planes-a1.flat_off_null_set-a1.tangent_cones-a1.blowup_compactness-a1",
+    "root.density_and_tangent_cones-a1.blowup_density-a1",
+    "root.density_and_tangent_cones-a1.cone-a1"
+  ]
+}
