@@ -91959,4 +91959,95 @@ theorem Submission.idtp_cone_tangent_cone_planar : ∀ (P : ℕ) (C : GeometricC
   · exact_mod_cast (hθc ▸ hθ : (1 : ℝ) ≤ c.natAbs)
   · rw [hc ω, univ_inter]
 
+/-- **Tangent plane at an edge point of a planar sector of a 2-dimensional minimizing cone**
+(proof of Simon 7.3.3(1), case `n − d = 2`, chapter-07.txt lines 497–510).  Let `C ∈ 𝒟₂(ℝᴾ)` be
+a minimizing cone with `∂C = 0`, `a ∈ spt C` a unit vector, `(a, e)` an orthonormal basis of the
+plane `Q`, and suppose `C` has density `k ≥ 1` at every point `t(cos φ a + sin φ e)` of the open
+sector `t > 0`, `0 < φ < δ`.  Then `m = Θ²(μ_C, a)` is an integer `≥ 1`, along a subsequence of
+every `λⱼ ↓ 0` the blow-ups `η_{a,λⱼ#}C` converge to `±m[[Q]]` (oriented by `(a, e)`) with
+`λⱼ⁻² ∫ g ∘ η_{a,λⱼ} dμ_C → m ∫_Q g dH²`, and near `a` the support of `C` is localized in a thin
+cusp around `Q`.  The tangent cones `c[[Q']]` at `a` (`idtp_cone_tangent_cone_planar`) have
+`|c| = m` by uniqueness of densities; the sector points `a + λⱼe ∈ spt C` have mass
+`≥ ω₂(λⱼr)²` in `B_{λⱼr}(a + λⱼe)`, so `e ∈ Q'` (`idtp_cse_etp_rescaled_limit_mem`), whence
+`Q' = Q` and `c[[Q']] = ±c[[Q]]` (`idtp_cse_etp_plane_frame_sign`); the cusp
+(`idtp_cse_etp_cusp`) and the localization (`idtp_cse_etp_localization`) give the last part. -/
+theorem Submission.idtp_cse_edge_tangent_plane : ∀ (P : ℕ) (C : GeometricCurrentOn (univ : Set (Euclid P)) 2) (Q : Submodule ℝ (Euclid P)) (a e : Euclid P) (δ : ℝ) (k : ℕ), IsMinimizingIn C univ → BoundaryVanishes C → IsConeCurrent C → Module.finrank ℝ Q = 2 → a ∈ Q → e ∈ Q → ‖a‖ = 1 → ‖e‖ = 1 → inner ℝ a e = 0 → 0 < δ → 1 ≤ k → a ∈ C.support → (∀ t φ : ℝ, 0 < t → 0 < φ → φ < δ → HasMassDensity C (t • (Real.cos φ • a + Real.sin φ • e)) k ∧ ∃ r : ℝ, 0 < r ∧ C.support ∩ ball (t • (Real.cos φ • a + Real.sin φ • e)) r ⊆ (Q : Set (Euclid P))) → ∃ m : ℕ, 1 ≤ m ∧ HasMassDensity C a m ∧ (∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) → ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) 2) (c : ℤ), StrictMono φ ∧ c.natAbs = m ∧ ConvergesWeakly (fun j => blowUp C a (lams (φ j)) (hlams (φ j)).ne') C' ∧ (∀ ω : TestFormOn (univ : Set (Euclid P)) 2, C' ω = (c : ℝ) * ∫ x in (Q : Set (Euclid P)), (ω : DifferentialForm (Euclid P) 2) x ![a, e] ∂μHE[2]) ∧ ∀ R : IMRep (univ : Set (Euclid P)) 2, R.Represents C → ∀ g : Euclid P → ℝ, Continuous g → HasCompactSupport g → Tendsto (fun j => (lams (φ j))⁻¹ ^ 2 * ∫ x, g (dilation a (lams (φ j)) x) ∂R.measure) atTop (𝓝 ((m : ℝ) * ∫ x in (Q : Set (Euclid P)), g x ∂μHE[2]))) ∧ ∃ s₀ : ℝ, 0 < s₀ ∧ s₀ ≤ 1 / 4 ∧ (∀ s' : ℝ, 0 < s' → s' ≤ s₀ → ∀ x ∈ C.support, 0 < inner ℝ x a → |‖x‖ - 1| < s' → |Real.arctan (inner ℝ x e / inner ℝ x a)| < s' → ‖x - Q.starProjection x‖ ≤ 2 * s₀ * ‖x‖ → ‖x - Q.starProjection x‖ < s' / 4 * ‖x‖ ∧ dist x a < 3 * s') := by
+  intro P C Q a e δ k hmin hbd hcone hQ haQ heQ ha he hae hδ hk haC hsector
+  -- step 0: `C = τ(M, θ, ξ)` with `μ = μ_C`, and `M_W(C) = μ(W)` for open `W`
+  obtain ⟨R₀, hR₀⟩ := hmin.1
+  obtain ⟨hmass, -, -⟩ := Submission.dimred_im_mass_measure P 2 univ C R₀ isOpen_univ hR₀
+  have ha0 : a ≠ 0 := fun h => by
+    rw [h, norm_zero] at ha
+    exact zero_ne_one ha
+  -- `μ` is finite on compact sets
+  have hfin : ∀ K : Set (Euclid P), IsCompact K → R₀.measure K ≠ ∞ := by
+    intro K hK
+    rw [IMRep.measure, withDensity_apply _ hK.measurableSet,
+      Measure.restrict_restrict hK.measurableSet, inter_comm]
+    exact R₀.locallyIntegrable_mult K hK (subset_univ _)
+  -- step 1: `μ(B_ρ(y)) ≥ ω₂ρ²` for `y ∈ spt C` and `ρ > 0`
+  have hlow : ∀ y ∈ C.support, ∀ ρ : ℝ, 0 < ρ →
+      unitBallVolume 2 * ENNReal.ofReal (ρ ^ 2) ≤ R₀.measure (ball y ρ) := fun y hy ρ hρ =>
+    (Submission.idtp_cse_massOn_ball_lower_bound P C hmin hbd y hy ρ hρ).trans_eq
+      (hmass _ isOpen_ball (subset_univ _))
+  -- the sector points `a + l e`, `0 < l < l₀`, lie in `spt C`
+  obtain ⟨l₀, hl₀, hedge⟩ := Submission.idtp_cse_etp_edge_direction_support P C a e δ k hmin.1
+    hδ hk fun t φ ht hφ hφδ => (hsector t φ ht hφ hφδ).1
+  -- `m := Θ²(μ_C, a) = |c₀|` is an integer `≥ 1`
+  obtain ⟨_, _, _, c₀, _, _, _, _, _, hc₀, hc₀dens, _⟩ :=
+    Submission.idtp_cone_tangent_cone_planar P C hmin hbd hcone a haC ha0
+      (fun j => 1 / ((j : ℝ) + 1)) (fun j => by positivity)
+      tendsto_one_div_add_atTop_nhds_zero_nat
+  -- step 2: along a subsequence of every `λⱼ → 0`, `η_{a,λⱼ#}C ⇀ ±m[[Q]]`
+  have hblow : ∀ (lams : ℕ → ℝ) (hlams : ∀ j, 0 < lams j), Tendsto lams atTop (𝓝 0) →
+      ∃ (φ : ℕ → ℕ) (C' : GeometricCurrentOn (univ : Set (Euclid P)) 2) (c : ℤ), StrictMono φ ∧
+        c.natAbs = c₀.natAbs ∧
+        ConvergesWeakly (fun j => blowUp C a (lams (φ j)) (hlams (φ j)).ne') C' ∧
+        (∀ ω : TestFormOn (univ : Set (Euclid P)) 2, C' ω = (c : ℝ) *
+          ∫ x in (Q : Set (Euclid P)), (ω : DifferentialForm (Euclid P) 2) x ![a, e] ∂μHE[2]) ∧
+        ∀ R : IMRep (univ : Set (Euclid P)) 2, R.Represents C → ∀ g : Euclid P → ℝ,
+          Continuous g → HasCompactSupport g →
+          Tendsto (fun j => (lams (φ j))⁻¹ ^ 2 * ∫ x, g (dilation a (lams (φ j)) x) ∂R.measure)
+            atTop (𝓝 ((c₀.natAbs : ℝ) * ∫ x in (Q : Set (Euclid P)), g x ∂μHE[2])) := by
+    intro lams hlams hlams0
+    obtain ⟨φ, C', τ, c, hφ, hconv, hmconv, hτ, haτ, hc1, hcdens, hC'⟩ :=
+      Submission.idtp_cone_tangent_cone_planar P C hmin hbd hcone a haC ha0 lams hlams hlams0
+    -- densities are unique, so `|c| = |c₀|`
+    have hcc₀ : c.natAbs = c₀.natAbs := by
+      have h := (ENNReal.ofReal_eq_ofReal_iff hcdens.1 hc₀dens.1).1
+        (tendsto_nhds_unique hcdens.2 hc₀dens.2)
+      exact_mod_cast h
+    have hc : c ≠ 0 := Int.natAbs_pos.1 hc1
+    -- (V): `λ_{φ(j)}⁻² ∫ g ∘ η_{a,λ_{φ(j)}} dμ_R → |c| ∫_{Q'} g dH²`, `Q' = span τ`
+    have hV := Submission.idtp_cse_etp_blowup_vague_limit P 2 C a (fun j => lams (φ j))
+      (fun j => hlams (φ j)) C' τ c hτ hc hC' hmconv
+    -- step 2(d): `e ∈ Q'`, since `μ(B_{λr}(a + λe)) ≥ ω₂(λr)²` once `λ < l₀`
+    have heτ : e ∈ Submodule.span ℝ (Set.range τ) :=
+      Submission.idtp_cse_etp_rescaled_limit_mem P R₀.measure
+        (Submodule.span ℝ (Set.range τ) : Set (Euclid P)) a e (c.natAbs : ℝ)
+        (fun j => lams (φ j)) (fun _ => e) (Submodule.closed_of_finiteDimensional _) hfin
+        (fun j => hlams (φ j)) tendsto_const_nhds (hV R₀ hR₀) fun r hr => by
+          filter_upwards [(hlams0.comp hφ.tendsto_atTop).eventually_lt_const hl₀] with j hj
+          exact hlow _ (hedge _ (hlams (φ j)) hj) _ (mul_pos (hlams (φ j)) hr)
+    -- step 2(e): `Q' = Q` and `α(τ) = ε α(a, e)` with `ε = ±1`
+    obtain ⟨hQ', ε, hε, hατ⟩ :=
+      Submission.idtp_cse_etp_plane_frame_sign P Q a e τ hQ haQ heQ ha he hae hτ haτ heτ
+    refine ⟨φ, C', ε * c, hφ, ?_, hconv, fun ω => ?_, fun R hR g hg hgc => ?_⟩
+    · rw [Int.natAbs_mul, hε, one_mul, hcc₀]
+    · rw [hC' ω, hQ']
+      simp_rw [hατ]
+      rw [integral_const_mul]
+      push_cast
+      ring
+    · have h := hV R hR g hg hgc
+      rwa [hQ', hcc₀] at h
+  refine ⟨c₀.natAbs, hc₀, hc₀dens, hblow, ?_⟩
+  -- step 3: the cusp, `|x − π_Q x| ≤ |x − a|/20` for `x ∈ spt C` near `a`
+  obtain ⟨s₁, hs₁, hcusp⟩ := Submission.idtp_cse_etp_cusp P R₀.measure C.support Q a
+    (c₀.natAbs : ℝ) haQ hfin hlow (fun lams hlams hlams0 => by
+      obtain ⟨φ, _, _, hφ, _, _, _, hV⟩ := hblow lams hlams hlams0
+      exact ⟨φ, hφ, hV R₀ hR₀⟩) (1 / 20) (by norm_num)
+  -- step 4: the localization in the box around `a`
+  exact Submission.idtp_cse_etp_localization P Q a e C.support s₁ hQ haQ heQ ha he hae hs₁ hcusp
+
 end GMT.Ch07
