@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "node_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1.cutoff_vanishing-a1",
+  "parent_id": "root.regular_set_dense-a1.constant_multiplicity_reduction-a1",
+  "depth": 3,
+  "title": "A current vanishing away from a compact set and on a neighbourhood domain is zero",
+  "statement": "Let P, m ∈ ℕ and B ⊆ U ⊆ ℝ^P with B open, let K ⊆ B be compact, and let F ∈ 𝒟_m(U). Assume F(ω) = 0 for every ω ∈ 𝒟^m(U) whose topological support is disjoint from K, and F(ι ψ) = 0 for every ψ ∈ 𝒟^m(B) (ι = testFormOnInclusion). Then F(ω) = 0 for every ω ∈ 𝒟^m(U).",
+  "lean_statement": "∀ (P m : ℕ) (U B K : Set (Euclid P)) (hBU : B ⊆ U) (F : GeometricCurrentOn U m), IsOpen B → IsCompact K → K ⊆ B → (∀ ω : TestFormOn U m, Disjoint (tsupport (ω : DifferentialForm (Euclid P) m)) K → F ω = 0) → (∀ ψ : TestFormOn B m, F (testFormOnInclusion hBU m ψ) = 0) → ∀ ω : TestFormOn U m, F ω = 0",
+  "lean_name": "rsd_cmr_eq_zero_of_vanish_off_compact",
+  "depends_on": [],
+  "dependency_workspaces": [],
+  "result_branch": "humanize-recursive/gmt-ch07/20261011t150044z-ba604216b4/root-regular-set-dense-a1-constant-multiplicity-reduction-a1-cutoff-vanishing-a1-a1"
+}
